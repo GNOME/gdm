@@ -33,6 +33,17 @@ void		gdm_error_box		(GdmDisplay *d,
 					 const char *dialog_type,
 					 const char *error);
 
+char *		gdm_run_failsafe_question(const char *question,
+					  gboolean echo,
+					  int screenx,
+					  int screeny,
+					  int screenwidth,
+					  int screenheight);
+/* this spawns self with the argument to run the above */
+char *		gdm_failsafe_question	(GdmDisplay *d,
+					 const char *question,
+					 gboolean echo);
+
 #endif /* GDM_ERRORGUI_H */
 
 /* EOF */

@@ -22,7 +22,7 @@
 #include <pwd.h>
 
 #ifdef HAVE_CRYPT
-  #include <crypt.h>
+#  include <crypt.h>
 #endif /* HAVE_CRYPT */
 
 #include <vicious.h>
@@ -54,7 +54,8 @@ extern gboolean GdmAllowRemoteRoot;
  */
 
 gchar *
-gdm_verify_user (const char *username,
+gdm_verify_user (GdmDisplay *d,
+		 const char *username,
 		 const gchar *display,
 		 gboolean local) 
 {
@@ -203,7 +204,8 @@ gdm_verify_user (const char *username,
  */
 
 void
-gdm_verify_setup_user (const gchar *login, const gchar *display) 
+gdm_verify_setup_user (GdmDisplay *d,
+		       const gchar *login, const gchar *display) 
 {
 }
 
@@ -215,7 +217,7 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
  */
 
 void
-gdm_verify_cleanup (void)
+gdm_verify_cleanup (GdmDisplay *d)
 {
 }
 
@@ -234,7 +236,7 @@ gdm_verify_check (void)
 
 /* used in pam */
 gboolean
-gdm_verify_open_session (void)
+gdm_verify_open_session (GdmDisplay *d)
 {
 	return TRUE;
 }

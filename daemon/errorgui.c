@@ -172,4 +172,157 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 	}
 }
 
+char *
+gdm_run_failsafe_question (const char *question,
+			   gboolean echo,
+			   int screenx,
+			   int screeny,
+			   int screenwidth,
+			   int screenheight)
+{
+	GtkWidget *dialog;
+	GtkRequisition req;
+	guint sid;
+	GtkWidget *entry, *label;
+	char *ret;
+	char **argv = g_new0 (char *, 2);
+	argv[0] = "gdm-failsafe-question";
+
+	/* Avoid creating ~gdm/.gnome stuff */
+	gnome_do_not_create_directories = TRUE;
+
+	gnome_init ("gdm-failsafe-question", VERSION, 1, argv);
+
+	sid = gtk_signal_lookup ("event",
+				 GTK_TYPE_WIDGET);
+	gtk_signal_add_emission_hook (sid,
+				      gdm_event,
+				      NULL);
+
+	dialog = gnome_dialog_new (question,
+				   GNOME_STOCK_BUTTON_OK,
+				   NULL);
+	gnome_dialog_close_hides (GNOME_DIALOG (dialog), 
+				  TRUE /* just_hide */);
+
+	label = gtk_label_new (question);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+			    label, FALSE, FALSE, 0);
+	entry = gtk_entry_new ();
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+			    entry, FALSE, FALSE, 0);
+	if ( ! echo)
+		gtk_entry_set_visibility (GTK_ENTRY (entry),
+					  FALSE /* visible */);
+	gnome_dialog_editable_enters (GNOME_DIALOG (dialog),
+				      GTK_EDITABLE (entry));
+
+	gtk_widget_show_all (dialog);
+
+	gtk_widget_size_request (dialog, &req);
+
+	if (screenwidth <= 0)
+		screenwidth = gdk_screen_width ();
+	if (screenheight <= 0)
+		screenheight = gdk_screen_height ();
+
+	gtk_widget_set_uposition (dialog,
+				  screenx +
+				  (screenwidth / 2) -
+				  (req.width / 2),
+				  screeny +
+				  (screenheight / 2) -
+				  (req.height / 2));
+
+	gtk_widget_grab_focus (entry);
+
+	gtk_widget_show_now (dialog);
+
+	if (dialog->window != NULL) {
+		gdk_error_trap_push ();
+		XSetInputFocus (GDK_DISPLAY (),
+				GDK_WINDOW_XWINDOW (dialog->window),
+				RevertToPointerRoot,
+				CurrentTime);
+		gdk_flush ();
+		gdk_error_trap_pop ();
+	}
+
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+
+	ret = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+	gtk_widget_destroy (dialog);
+	return ret;
+}
+
+char *
+gdm_failsafe_question (GdmDisplay *d,
+		       const char *question,
+		       gboolean echo)
+{
+	pid_t pid;
+	int p[2];
+
+	if (pipe (p) < 0)
+		return NULL;
+
+	gdm_safe_fork (&extra_process);
+	pid = extra_process;
+	if (pid == 0) {
+		char *geom;
+		int i;
+
+		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
+			if (p[1] != i)
+				close(i);
+		}
+
+		/* No error checking here - if it's messed the best response
+		* is to ignore & try to continue */
+		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		/* The pipe on stdout */
+		dup2 (p[1], 1);
+
+		if (d != NULL)
+			geom = g_strdup_printf ("%d:%d:%d:%d",
+						d->screenx,
+						d->screeny,
+						d->screenwidth,
+						d->screenheight);
+		else
+			geom = "0:0:0:0";
+
+		if (stored_path != NULL)
+			putenv (stored_path);
+		execlp (stored_argv[0],
+			stored_argv[0],
+			"--run-failsafe-question",
+			question,
+			echo ? "TRUE" : "FALSE",
+			geom,
+			NULL);
+		gdm_error (_("gdm_failsafe_question: Failed to execute self"));
+		_exit (1);
+	} else if (pid > 0) {
+		char buf[BUFSIZ];
+		int bytes;
+		close (p[1]);
+		waitpid (pid, 0, 0);
+		extra_process = -1;
+		bytes = read (p[0], buf, BUFSIZ-1);
+		if (bytes > 0) {
+			close (p[0]);
+			buf[bytes] = '\0';
+			return g_strdup (buf);
+		} 
+		close (p[0]);
+	} else {
+		gdm_error (_("gdm_failsafe_question: Cannot fork to display error/info box"));
+	}
+	return NULL;
+}
+
 /* EOF */

@@ -1,3 +1,20 @@
+Wed Sep 26 21:01:38 2001  George Lebl <jirka@5z.com>
+
+	* daemon/verify.h, daemon/verify-*.c, daemon/slave.c,
+	  daemon/errorgui.[ch], daemon/gdm.c:  Add a failsafe question
+	  dialog similar in operation to the failsafe error box, and use
+	  it in the standalone pam conv function.  Kill all instances of
+	  PAM_SILENT since we can now always converse with the user.
+
+	* daemon/verify-pam.c: use a global pamh again but this time a bit
+	  smarter.  Make sure if we use a global one that it has all the
+	  right things set.  Also set PAM_RHOST to "localhost" or the remote
+	  host if not a "console" login.  Set PAM_RUSER to "gdm" (or whatever
+	  the gdm user is).  I'm sure I'm fucking something up again but
+	  I can't find enough docs to verify that what I'm doing is 100%
+	  correct.  Not to mention that there seem to be some braindead
+	  modules out there to begin with.
+
 Mon Sep 17 07:17:32 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: fix crash when quiver would happen while

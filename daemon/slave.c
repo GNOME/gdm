@@ -268,7 +268,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	greet = FALSE;
 	gdm_debug ("setup_automatic_session: Automatic login: %s", login);
 
-	gdm_verify_setup_user (login, display->name);
+	gdm_verify_setup_user (display, login, display->name);
 
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
@@ -679,7 +679,8 @@ gdm_slave_wait_for_login (void)
 		setegid (0);
 
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
-		login = gdm_verify_user (NULL /* username*/,
+		login = gdm_verify_user (d,
+					 NULL /* username*/,
 					 d->name,
 					 d->console);
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
@@ -705,7 +706,8 @@ gdm_slave_wait_for_login (void)
 			oldAllowRoot = GdmAllowRoot;
 			GdmAllowRoot = TRUE;
 			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "root");
-			login = gdm_verify_user ("root",
+			login = gdm_verify_user (d,
+						 "root",
 						 d->name,
 						 d->console);
 			GdmAllowRoot = oldAllowRoot;
@@ -762,7 +764,7 @@ gdm_slave_wait_for_login (void)
 			 * may have sighupped the main gdm server and with it
 			 * wiped us */
 
-			gdm_verify_cleanup ();
+			gdm_verify_cleanup (d);
 
 			gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 
@@ -1953,7 +1955,7 @@ gdm_slave_session_start (void)
 
 	/* setup the verify env vars, set credentials and such stuff 
 	 * and open the session */
-	if ( ! gdm_verify_open_session ())
+	if ( ! gdm_verify_open_session (d))
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not open session for %s. "
 				  "Aborting."),
@@ -2177,7 +2179,7 @@ gdm_slave_session_stop (pid_t sesspid)
     if (sesspid > 0)
 	    kill (- (sesspid), SIGTERM);
 
-    gdm_verify_cleanup();
+    gdm_verify_cleanup (d);
     
     pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
 
@@ -2259,7 +2261,7 @@ gdm_slave_term_handler (int sig)
 	gdm_debug ("gdm_slave_term_handler: Whacking server");
 
 	gdm_server_stop (d);
-	gdm_verify_cleanup();
+	gdm_verify_cleanup (d);
 	_exit (DISPLAY_ABORT);
 }
 
@@ -2327,7 +2329,7 @@ gdm_slave_child_handler (int sig)
 		/* if greet is TRUE, then the greeter died outside of our
 		 * control really, so clean up and die, something is wrong */
 		gdm_server_stop (d);
-		gdm_verify_cleanup ();
+		gdm_verify_cleanup (d);
 
 		if (WIFEXITED (status)) {
 			_exit (WEXITSTATUS (status));
@@ -2395,7 +2397,7 @@ gdm_slave_xioerror_handler (Display *disp)
 	gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
 
 	gdm_server_stop (d);
-	gdm_verify_cleanup ();
+	gdm_verify_cleanup (d);
 
 	if (do_xfailed_on_xio_error)
 		_exit (DISPLAY_XFAILED);
@@ -2463,7 +2465,7 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     setegid (0);
 
     gdm_server_stop (d);
-    gdm_verify_cleanup ();
+    gdm_verify_cleanup (d);
 
     /* Kill children where applicable */
     if (d->greetpid != 0)

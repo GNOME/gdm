@@ -1231,6 +1231,25 @@ main (int argc, char *argv[])
 	    gdm_run_errorgui (argv[2], argv[3], x, y, width, height);
 	    _exit (0);
     }
+    /* This is another utter hack.  Same as above but for questions */
+    if (argc == 5 &&
+	strcmp (argv[1], "--run-failsafe-question") == 0) {
+	    int x = 0, y = 0, width = 0, height = 0;
+	    gboolean echo;
+	    char *ret;
+	    sscanf (argv[4], "%d:%d:%d:%d", &x, &y, &width, &height);
+	    if (strcmp (argv[3], "FALSE") == 0)
+		    echo = FALSE;
+	    else
+		    echo = TRUE;
+	    ret = gdm_run_failsafe_question (argv[2], echo, x, y, width, height);
+	    if (ret != NULL) {
+		    g_print (ret);
+		    fflush (stdout);
+	    }
+	    _exit (0);
+    }
+
 
     /* XDM compliant error message */
     if (getuid() != 0) {
