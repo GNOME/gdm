@@ -18,13 +18,34 @@
  * 
  */
 
-#include <config.h>
+#include "config.h"
 #include <gnome.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
 #include "gdm.h"
+
+/* If path starts with a "trusted" directory, don't sanity check things */
+static gboolean
+is_in_trusted_pic_dir (const char *path)
+{
+	char *globalpix;
+
+	/* our own pixmap dir is trusted */
+	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
+		return TRUE;
+
+	/* gnome'skpixmap dir is trusted */
+	globalpix = gnome_unconditional_pixmap_file ("");
+	if (strncmp (path, globalpix, strlen (globalpix)) == 0) {
+		g_free (globalpix);
+		return TRUE;
+	}
+	g_free (globalpix);
+
+	return FALSE;
+}
 
 int
 main (int argc, char *argv[])
@@ -89,6 +110,20 @@ main (int argc, char *argv[])
 			GtkWidget *d;
 			d = gnome_warning_dialog (_("No picture selected."));
 			gnome_dialog_run_and_close (GNOME_DIALOG (d));
+		} else if (is_in_trusted_pic_dir (pixmap)) {
+			/* Picture is in trusted dir, no need to copy nor
+			 * check it */
+
+			/* yay, leak, who cares */
+			char *cfg_file = g_strconcat (g_get_home_dir (), 
+						      "/.gnome/gdm",
+						      NULL);
+			gnome_config_set_string ("/gdm/face/picture",
+						 pixmap);
+			gnome_config_sync ();
+			/* ensure proper permissions */
+			chmod (cfg_file, 0600);
+			break;
 		} else if (s.st_size > max_size) {
 			char *msg;
 			GtkWidget *d;
@@ -107,6 +142,9 @@ main (int argc, char *argv[])
 			char *photofile = g_strconcat (g_get_home_dir (), 
 						       "/.gnome/photo",
 						       NULL);
+			char *cfg_file = g_strconcat (g_get_home_dir (), 
+						      "/.gnome/gdm",
+						      NULL);
 			int fddest, fdsrc;
 
 			fdsrc = open (pixmap, O_RDONLY);
@@ -144,7 +182,10 @@ main (int argc, char *argv[])
 			close (fddest);
 			gnome_config_set_string ("/gdmphotosetup/last/picture",
 						 pixmap);
+			gnome_config_set_string ("/gdm/face/picture", "");
 			gnome_config_sync ();
+			/* ensure proper permissions */
+			chmod (cfg_file, 0600);
 			break;
 		}
 	}

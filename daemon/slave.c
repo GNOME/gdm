@@ -741,6 +741,27 @@ gdm_slave_wait_for_login (void)
 		   gdm_sure_string (login));
 }
 
+/* If path starts with a "trusted" directory, don't sanity check things */
+static gboolean
+is_in_trusted_pic_dir (const char *path)
+{
+	char *globalpix;
+
+	/* our own pixmap dir is trusted */
+	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
+		return TRUE;
+
+	/* gnome'skpixmap dir is trusted */
+	globalpix = gnome_unconditional_pixmap_file ("");
+	if (strncmp (path, globalpix, strlen (globalpix)) == 0) {
+		g_free (globalpix);
+		return TRUE;
+	}
+	g_free (globalpix);
+
+	return FALSE;
+}
+
 /* This is VERY evil! */
 static void
 run_pictures (void)
@@ -753,6 +774,7 @@ run_pictures (void)
 	struct passwd *pwent;
 	char *picfile;
 	FILE *fp;
+	char *cfgdir;
 
 	for (;;) {
 		response = gdm_slave_greeter_ctl (GDM_NEEDPIC, "");
@@ -774,43 +796,106 @@ run_pictures (void)
 			continue;
 		}
 
-		picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
-		if (access (picfile, F_OK) != 0) {
-			g_free (picfile);
-			picfile = g_strconcat (GdmGlobalFaceDir, "/",
-					       response, NULL);
-	
-			if (access (picfile, R_OK) == 0) {
-				gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
-							      picfile);
-				g_free (picfile);
-				continue;
-			}
-
-			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
-			g_free (picfile);
-			continue;
-		}
-		g_free (picfile);
+		picfile = NULL;
 
 		setegid (pwent->pw_gid);
 		seteuid (pwent->pw_uid);
 
-		/* Sanity check on ~user/.gnome/photo */
-		picfile = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
-		if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-				       picfile, "photo", TRUE, GdmUserMaxFile,
-				       GdmRelaxPerms)) {
+		/* Sanity check on ~user/.gnome/gdm */
+		cfgdir = g_strconcat (pwent->pw_dir, "/.gnome/gdm", NULL);
+		if (gdm_file_check ("run_pictures", pwent->pw_uid,
+				    cfgdir, "gdm", TRUE, GdmUserMaxFile,
+				    GdmRelaxPerms)) {
+			char *cfgstr;
+
+			cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/face/picture", NULL);
+			picfile = gnome_config_get_string (cfgstr);
+			g_free (cfgstr);
+
+			/* must exist and be absolute (note that this check
+			 * catches empty strings)*/
+			if (picfile != NULL &&
+			    (picfile[0] != '/' ||
+			     access (picfile, R_OK) != 0)) {
+				g_free (picfile);
+				picfile = NULL;
+			}
+
+			if (picfile != NULL) {
+				char *dir;
+
+				/* if in trusted dir, just use it */
+				if (is_in_trusted_pic_dir (picfile)) {
+					seteuid (0);
+					setegid (GdmGroupId);
+
+					g_free (cfgdir);
+
+					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
+								      picfile);
+					g_free (picfile);
+					continue;
+				}
+
+				/* if not in trusted dir, check it out */
+				dir = g_dirname (picfile);
+
+				/* Note that strict permissions checking is done
+				 * on this file.  Even if it may not even be owned by the
+				 * user.  This setting should ONLY point to pics in trusted
+				 * dirs. */
+				if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
+						       dir, g_basename (picfile), TRUE, GdmUserMaxFile,
+						       GdmRelaxPerms)) {
+					g_free (picfile);
+					picfile = NULL;
+				}
+
+				g_free (dir);
+			}
+		}
+		g_free (cfgdir);
+
+		/* Nothing found yet */
+		if (picfile == NULL) {
+			picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
+			if (access (picfile, F_OK) != 0) {
+				seteuid (0);
+				setegid (GdmGroupId);
+
+				g_free (picfile);
+				picfile = g_strconcat (GdmGlobalFaceDir, "/",
+						       response, NULL);
+
+				if (access (picfile, R_OK) == 0) {
+					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
+								      picfile);
+					g_free (picfile);
+					continue;
+				}
+
+				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+				g_free (picfile);
+				continue;
+			}
 			g_free (picfile);
 
-			seteuid (0);
-			setegid (GdmGroupId);
+			/* Sanity check on ~user/.gnome/photo */
+			picfile = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+			if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
+					       picfile, "photo", TRUE, GdmUserMaxFile,
+					       GdmRelaxPerms)) {
+				g_free (picfile);
 
-			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
-			continue;
+				seteuid (0);
+				setegid (GdmGroupId);
+
+				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+				continue;
+			}
+			g_free (picfile);
+			picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
 		}
-		g_free (picfile);
-		picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
 
 		fp = fopen (picfile, "r");
 		g_free (picfile);

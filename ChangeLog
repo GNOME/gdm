@@ -1,3 +1,11 @@
+Mon Jun 25 01:10:04 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmphotosetup.c, daemon/slave.c: Get a picture from the config
+	  file.  when the picture is in a known pixmap directory, don't
+	  check it since it's a system file.  Makes it possible to select
+	  larger system files which will be then scaled down, but the user
+	  can't point it to a malicious picture.
+
 Sun Jun 24 23:53:34 EDT 2001 Trevor Curtis <trevor.curtis@home.com>
 
 	* edited gdmconfig.sgml to make editing it a little easier.
