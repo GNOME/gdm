@@ -566,7 +566,8 @@ gdm_daemonify (void)
     FILE *pf;
     pid_t pid;
 
-    if ((pid = fork ())) {
+    pid = fork ();
+    if (pid > 0) {
 
 	if ((pf = fopen (GdmPidFile, "w"))) {
 	    fprintf (pf, "%d\n", pid);
