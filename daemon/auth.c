@@ -58,8 +58,6 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 	if (!d)
 		return FALSE;
 
-	dispnum = g_strdup_printf ("%d", d->dispnum);
-
 	xa = malloc (sizeof (Xauth));
 
 	if (xa == NULL)
@@ -71,10 +69,16 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 		free (xa);
 		return FALSE;
 	}
+
+
 	memcpy (xa->address, addr, addrlen);
 	xa->address_length = addrlen;
+
+	dispnum = g_strdup_printf ("%d", d->dispnum);
 	xa->number = strdup (dispnum);
 	xa->number_length = strlen (dispnum);
+	g_free (dispnum);
+
 	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
 	xa->name_length = strlen ("MIT-MAGIC-COOKIE-1");
 	xa->data = malloc (16);
@@ -93,8 +97,6 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 		XauWriteAuth (af2, xa);
 
 	d->auths = g_slist_append (d->auths, xa);
-
-	g_free (dispnum);
 
 	return TRUE;
 }

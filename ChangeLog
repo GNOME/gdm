@@ -1,3 +1,24 @@
+Tue May 14 12:08:25 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmphotosetup.c, daemon/auth.c:  Apply some leak fixes from
+	  ali.akcaagac@stud.fh-wilhelmshaven.de (Ali Akcaagac) #80888.  That
+	  is only those that really made sense
+
+	* gui/gdmphotosetup.c: Port to GtkDialog, should fix #80835
+
+	* config/gdm.conf.in, daemon/gdm.c, daemon/slave.c: fix #80829
+	  and add a whole bunch of checks for server paths so that we
+	  find servers other then /usr/bin/X11/X, also look for proggies
+	  in /opt/X11R6/bin
+
+	* configure.in: check for socklen_t and define it to be size_t
+	  if not found, fixes #79373
+
+	* daemon/gdm.[ch], daemon/slave.c, daemon/display.c, daemon/xdmcp.c,
+	  daemon/misc.[ch], daemon/server.c: Fix slave notifications.  We
+	  can't use a mainloop here since slaves are all synchroneous.  So
+	  we use a variety of signals and hacks to get this to work.
+
 Tue May 14 02:26:01 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c, daemon/gdm.c: a bit of debug info for the slave

@@ -1552,7 +1552,7 @@ gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint displa
     d->hostname = g_strdup (hostname);
     memcpy (&d->addr, addr, sizeof (struct in_addr));
 
-    d->slave_notify_conn = NULL;
+    d->slave_notify_fd = -1;
     d->master_notify_fd = -1;
     
     /* Secure display with cookie */

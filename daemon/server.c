@@ -1006,7 +1006,7 @@ gdm_server_alloc (gint id, const gchar *command)
 
     d->timed_login_ok = FALSE;
 
-    d->slave_notify_conn = NULL;
+    d->slave_notify_fd = -1;
     d->master_notify_fd = -1;
     
     return d;

@@ -91,11 +91,15 @@ main (int argc, char *argv[])
 		gtk_widget_destroy (d);
 	}
 
-	dialog = gnome_dialog_new (_("Select a photo"),
-				   GNOME_STOCK_BUTTON_CANCEL,
-				   GNOME_STOCK_BUTTON_OK,
-				   NULL);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+	dialog = gtk_dialog_new_with_buttons (_("Select a photo"),
+					      NULL /* parent */,
+					      0 /* flags */,
+					      GTK_STOCK_CANCEL,
+					      GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK,
+					      GTK_RESPONSE_OK,
+					      NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    gtk_label_new (_("Select a photograph to show "
 					     "in the facebrowser:")),
 			    FALSE, FALSE, 0);
@@ -103,7 +107,7 @@ main (int argc, char *argv[])
 	photo = gnome_pixmap_entry_new ("gdm_face",
 					_("Browse"),
 					TRUE);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    photo, TRUE, TRUE, 0);
 
 	if ( ! ve_string_empty (last_pix)) {
@@ -114,7 +118,7 @@ main (int argc, char *argv[])
 
 	gtk_widget_show_all (dialog);
 
-	while (gnome_dialog_run (GNOME_DIALOG (dialog)) == 0) {
+	while (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
 		struct stat s;
 		char *pixmap = gnome_pixmap_entry_get_filename (GNOME_PIXMAP_ENTRY (photo));
 		if (ve_string_empty (pixmap) ||
@@ -130,9 +134,8 @@ main (int argc, char *argv[])
 		} else if (is_in_trusted_pic_dir (pixmap)) {
 			/* Picture is in trusted dir, no need to copy nor
 			 * check it */
-
-			/* yay, leak, who cares */
-			char *cfg_file = g_strconcat (g_get_home_dir (), 
+			char *homedir = g_get_home_dir ();
+			char *cfg_file = g_strconcat (homedir,
 						      "/.gnome/gdm",
 						      NULL);
 			gnome_config_set_string ("/gdm/face/picture",
@@ -140,6 +143,8 @@ main (int argc, char *argv[])
 			gnome_config_sync ();
 			/* ensure proper permissions */
 			chmod (cfg_file, 0600);
+			g_free (cfg_file);
+			g_free (homedir);
 			break;
 		} else if (s.st_size > max_size) {
 			GtkWidget *d;
@@ -158,11 +163,11 @@ main (int argc, char *argv[])
 		} else {
 			char buf[4096];
 			size_t size;
-			/* yay, leak, who cares */
-			char *photofile = g_strconcat (g_get_home_dir (), 
+			char *homedir = g_get_home_dir ();
+			char *photofile = g_strconcat (homedir,
 						       "/.gnome/photo",
 						       NULL);
-			char *cfg_file = g_strconcat (g_get_home_dir (), 
+			char *cfg_file = g_strconcat (homedir,
 						      "/.gnome/gdm",
 						      NULL);
 			int fddest, fdsrc;
@@ -180,6 +185,7 @@ main (int argc, char *argv[])
 							    g_strerror (errno));
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
+				g_free (homedir);
 				g_free (cfg_file);
 				g_free (photofile);
 				continue;
@@ -199,6 +205,7 @@ main (int argc, char *argv[])
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);
+				g_free (homedir);
 				g_free (photofile);
 				close (fdsrc);
 				continue;
@@ -215,9 +222,14 @@ main (int argc, char *argv[])
 			gnome_config_sync ();
 			/* ensure proper permissions */
 			chmod (cfg_file, 0600);
+			g_free (cfg_file);
+			g_free (homedir);
+			g_free (photofile);
 			break;
 		}
 	}
+
+	gtk_widget_destroy (dialog);
 
 	return 0;
 }

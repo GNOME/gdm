@@ -207,11 +207,7 @@ gdm_display_manage (GdmDisplay *d)
 	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-	d->slave_notify_conn = gdm_connection_open_fd (fds[0]);
-	gdm_connection_set_handler (d->slave_notify_conn,
-				    gdm_slave_handle_notify,
-				    d /* data */,
-				    NULL /* destroy_notify */);
+	d->slave_notify_fd = fds[0];
 
 	if (d->type == TYPE_LOCAL) {
 	    gdm_slave_start (d);
@@ -311,10 +307,9 @@ gdm_display_dispose (GdmDisplay *d)
 	    gdm_connection_set_close_notify (conn, NULL, NULL);
     }
 
-    if (d->slave_notify_conn != NULL) {
-	    GdmConnection *conn = d->slave_notify_conn;
-	    d->slave_notify_conn = NULL;
-	    gdm_connection_close (conn);
+    if (d->slave_notify_fd >= 0) {
+	    close (d->slave_notify_fd);
+	    d->slave_notify_fd = -1;
     }
 
     if (d->master_notify_fd >= 0) {

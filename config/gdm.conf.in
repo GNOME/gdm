@@ -1,8 +1,12 @@
 # GDM Configuration file.  You can use gdmsetup program to graphically
-# edit this, or you can optionally just edit this file by hand.  If so,
-# you should send the HUP signal to the daemon so that it restarts
-# (HUP will make gdm not kill existing sessions and will only restart after
-# all users log out)
+# edit this, or you can optionally just edit this file by hand.  Note that
+# gdmsetup does not tweak every option here, just the ones most users
+# would care about.  Rest is for special setups and distro specific
+# tweaks.  If you edit this file, you should send the HUP signal to the
+# daemon so that it restarts: (Assuming you have not changed PidFile)
+#   kill -HUP `cat /var/run/gdm.pid`
+# (HUP will make gdm not kill existing sessions and will only restart gdm
+# after all users log out)
 #
 # Have fun! - George
 
@@ -15,7 +19,7 @@ AlwaysRestartServer=false
 Configurator=@EXPANDED_GDMCONFIGDIR@/gdmsetup --disable-sound --disable-crash-dialog
 GnomeDefaultSession=@EXPANDED_DATADIR@/gnome/default.session
 Chooser=@EXPANDED_BINDIR@/gdmchooser --disable-sound --disable-crash-dialog
-DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:@EXPANDED_BINDIR@
+DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:@EXPANDED_BINDIR@
 DisplayInitDir=@EXPANDED_SYSCONFDIR@/gdm/Init
 Greeter=@EXPANDED_BINDIR@/gdmlogin
 RemoteGreeter=@EXPANDED_BINDIR@/gdmlogin
@@ -31,7 +35,7 @@ PreSessionScriptDir=@EXPANDED_SYSCONFDIR@/gdm/PreSession/
 FailsafeXServer=
 XKeepsCrashing=@EXPANDED_SYSCONFDIR@/gdm/XKeepsCrashing
 RebootCommand=/sbin/shutdown -r now
-RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:@EXPANDED_BINDIR@
+RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:@EXPANDED_BINDIR@
 ServAuthDir=@EXPANDED_AUTHDIR@
 SessionDir=@EXPANDED_SYSCONFDIR@/gdm/Sessions/
 SuspendCommand=
@@ -42,9 +46,9 @@ UserAuthFile=.Xauthority
 TimedLoginEnable=false
 TimedLogin=
 TimedLoginDelay=30
-StandardXServer=/usr/bin/X11/X
+StandardXServer=/usr/X11R6/bin/X
 FlexibleXServers=5
-Xnest=/usr/bin/X11/Xnest -name Xnest
+Xnest=/usr/X11R6/bin/Xnest -name Xnest
 
 [security]
 # If any distributions ship with this one off, they should be shot
@@ -147,5 +151,5 @@ Enable=false
 
 [server-Standard]
 name=Standard server
-command=/usr/bin/X11/X
+command=/usr/X11R6/bin/X
 flexible=true

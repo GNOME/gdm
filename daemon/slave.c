@@ -73,6 +73,7 @@ static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
 static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
 						SIGCHLD hits */
+static gboolean check_notifies_immediately = 0; /* check notifies as they come */
 static gboolean greeter_disabled = FALSE;
 static gboolean greeter_no_focus = FALSE;
 
@@ -145,11 +146,37 @@ static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PR
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
+static void	gdm_slave_handle_notify (const char *msg);
 
 
 /* Yay thread unsafety */
 static gboolean x_error_occured = FALSE;
-static gboolean gdm_got_usr2 = FALSE;
+static gboolean gdm_got_ack = FALSE;
+static GList *unhandled_notifies = NULL;
+
+static void
+check_notifies_now (void)
+{
+	GList *list, *li;
+
+	if (unhandled_notifies == NULL)
+		return;
+       
+	gdm_sigusr2_block_push ();
+	list = unhandled_notifies;
+	unhandled_notifies = NULL;
+	gdm_sigusr2_block_pop ();
+
+	for (li = list; li != NULL; li = li->next) {
+		char *s = li->data;
+		li->data = NULL;
+
+		gdm_slave_handle_notify (s);
+
+		g_free (s);
+	}
+	g_list_free (list);
+}
 
 /* ignore handlers */
 static int
@@ -234,6 +261,8 @@ gdm_slave_start (GdmDisplay *display)
 
 	for (;;) {
 		time_t the_time;
+
+		check_notifies_now ();
 
 		gdm_debug ("gdm_slave_start: Loop Thingie");
 		gdm_slave_run (display);
@@ -382,6 +411,8 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
 	    sleep (d->sleep_before_run);
 	    d->sleep_before_run = 0;
+
+	    check_notifies_now ();
     }
 
     /* set it before we run the server, it may be that we're using
@@ -412,6 +443,8 @@ gdm_slave_run (GdmDisplay *display)
 		    _exit (DISPLAY_ABORT);
 	    }
 	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
+
+	    check_notifies_now ();
     }
     
     gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
@@ -463,6 +496,8 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_send (GDM_SOP_START_NEXT_LOCAL, FALSE);
     }
 
+    check_notifies_now ();
+
     /* something may have gone wrong, try xfailed, if local (non-flexi),
      * the toplevel loop of death will handle us */ 
     if (d->dsp == NULL) {
@@ -502,6 +537,7 @@ gdm_slave_run (GdmDisplay *display)
     if (d->use_chooser) {
 	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
+	    return;
     } else if ((d->console || GdmAllowRemoteAutoLogin) &&
 	       gdm_first_login &&
 	       ! ve_string_empty (ParsedAutomaticLogin) &&
@@ -527,51 +563,56 @@ gdm_slave_run (GdmDisplay *display)
 		    gdm_verify_cleanup (d);
 		    _exit (DISPLAY_REMANAGE);
 	    }
-    } else {
-	    if (gdm_first_login)
-		    gdm_first_login = FALSE;
-	    gdm_slave_greeter ();  /* Start the greeter */
-	    greeter_no_focus = FALSE;
-	    greeter_disabled = FALSE;
+    }
 
-	    do {
-		    gdm_slave_wait_for_login (); /* wait for a password */
+    if (gdm_first_login)
+	    gdm_first_login = FALSE;
 
-		    d->logged_in = TRUE;
-		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
+    do {
+	    check_notifies_now ();
 
-		    if (do_timed_login) {
-			    /* timed out into a timed login */
-			    do_timed_login = FALSE;
-			    if (setup_automatic_session (d, ParsedTimedLogin)) {
-				    gdm_slave_send_string (GDM_SOP_LOGIN,
-							   ParsedTimedLogin);
-				    gdm_slave_session_start ();
-			    }
-		    } else {
-			    gdm_slave_send_string (GDM_SOP_LOGIN, login);
+	    if ( ! greet) {
+		    gdm_slave_greeter ();  /* Start the greeter */
+		    greeter_no_focus = FALSE;
+		    greeter_disabled = FALSE;
+	    }
+
+	    gdm_slave_wait_for_login (); /* wait for a password */
+
+	    d->logged_in = TRUE;
+	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
+
+	    if (do_timed_login) {
+		    /* timed out into a timed login */
+		    do_timed_login = FALSE;
+		    if (setup_automatic_session (d, ParsedTimedLogin)) {
+			    gdm_slave_send_string (GDM_SOP_LOGIN,
+						   ParsedTimedLogin);
 			    gdm_slave_session_start ();
 		    }
+	    } else {
+		    gdm_slave_send_string (GDM_SOP_LOGIN, login);
+		    gdm_slave_session_start ();
+	    }
 
-		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
-		    d->logged_in = FALSE;
-		    gdm_slave_send_string (GDM_SOP_LOGIN, "");
+	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+	    d->logged_in = FALSE;
+	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
 
-		    if (remanage_asap) {
-			    gdm_server_stop (d);
-			    gdm_verify_cleanup (d);
-			    _exit (DISPLAY_REMANAGE);
-		    }
+	    if (remanage_asap) {
+		    gdm_server_stop (d);
+		    gdm_verify_cleanup (d);
+		    _exit (DISPLAY_REMANAGE);
+	    }
 
-		    if (greet) {
-			    greeter_no_focus = FALSE;
-			    gdm_slave_greeter_ctl_no_ret (GDM_FOCUS, "");
-			    greeter_disabled = FALSE;
-			    gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
-			    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
-		    }
-	    } while (greet);
-    }
+	    if (greet) {
+		    greeter_no_focus = FALSE;
+		    gdm_slave_greeter_ctl_no_ret (GDM_FOCUS, "");
+		    greeter_disabled = FALSE;
+		    gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+		    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
+	    }
+    } while (greet);
 }
 
 /* A hack really, this will wait around until the first mapped window
@@ -796,6 +837,8 @@ gdm_slave_wait_for_login (void)
 		/* We are NOT interrupted yet */
 		interrupted = FALSE;
 
+		check_notifies_now ();
+
 		/* just for paranoia's sake */
 		seteuid (0);
 		setegid (0);
@@ -817,6 +860,8 @@ gdm_slave_wait_for_login (void)
 			restart_the_greeter ();
 			continue;
 		}
+
+		check_notifies_now ();
 
 		if (do_configurator) {
 			struct passwd *pwent;
@@ -847,6 +892,8 @@ gdm_slave_wait_for_login (void)
 				restart_the_greeter ();
 				continue;
 			}
+
+			check_notifies_now ();
 
 			/* the wanker can't remember his password */
 			if (login == NULL) {
@@ -900,11 +947,14 @@ gdm_slave_wait_for_login (void)
 			gdm_slave_greeter_ctl_no_ret (GDM_NOFOCUS, "");
 			greeter_no_focus = TRUE;
 
+			check_notifies_now ();
+			check_notifies_immediately++;
 			restart_greeter_now = TRUE;
 
 			run_config (d, pwent);
 
 			restart_greeter_now = FALSE;
+			check_notifies_immediately--;
 
 			gdm_verify_cleanup (d);
 
@@ -1384,6 +1434,8 @@ gdm_slave_greeter (void)
 	gdm_slave_send_num (GDM_SOP_GREETPID, d->greetpid);
 
 	run_pictures (); /* Append pictures to greeter if browsing is on */
+
+	check_notifies_now ();
 	break;
     }
 }
@@ -1400,7 +1452,7 @@ parent_exists (void)
 }
 
 void
-gdm_slave_send (const char *str, gboolean wait_for_usr2)
+gdm_slave_send (const char *str, gboolean wait_for_ack)
 {
 	int fd;
 	char *fifopath;
@@ -1408,8 +1460,8 @@ gdm_slave_send (const char *str, gboolean wait_for_usr2)
 
 	gdm_debug ("Sending %s", str);
 
-	if (wait_for_usr2)
-		gdm_got_usr2 = FALSE;
+	if (wait_for_ack)
+		gdm_got_ack = FALSE;
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 	fd = open (fifopath, O_WRONLY);
@@ -1427,8 +1479,8 @@ gdm_slave_send (const char *str, gboolean wait_for_usr2)
 
 	for (i = 0;
 	     parent_exists () &&
-	     wait_for_usr2 &&
-	     ! gdm_got_usr2 &&
+	     wait_for_ack &&
+	     ! gdm_got_ack &&
 	     i < 10;
 	     i++) {
 		sleep (1);
@@ -1635,7 +1687,11 @@ gdm_slave_chooser (void)
 		d->chooserpid  = 0;
 		gdm_sigchld_block_pop ();
 
+
 		gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
+
+		/* Note: Nothing affecting the chooser needs update
+		 * from notifies */
 
 		bytes = read (p[0], buf, sizeof(buf)-1);
 		if (bytes > 0) {
@@ -1832,6 +1888,7 @@ find_prog (const char *name, const char *args, char **retpath)
 	char *try[] = {
 		"/usr/bin/X11/",
 		"/usr/X11R6/bin/",
+		"/opt/X11R6/bin/",
 		"/usr/bin/",
 		"/usr/local/bin/",
 		EXPANDED_BINDIR "/",
@@ -2681,9 +2738,39 @@ gdm_slave_child_handler (int sig)
 static void
 gdm_slave_usr2_handler (int sig)
 {
+	char buf[2048];
+	size_t count;
+	char **vec;
+	int i;
+
 	gdm_debug ("gdm_slave_usr2_handler: %s got USR2 signal", d->name);
-	
-	gdm_got_usr2 = TRUE;
+
+	count = read (d->slave_notify_fd, buf, sizeof (buf) -1);
+	if (count <= 0)
+		return;
+
+	buf[count] = '\0';
+
+	vec = g_strsplit (buf, "\n", -1);
+	if (vec == NULL)
+		return;
+
+	for (i = 0; vec[i] != NULL; i++) {
+		char *s = vec[i];
+		if (s[0] == GDM_SLAVE_NOTIFY_ACK) {
+			gdm_got_ack = TRUE;
+		} else if (s[0] == GDM_SLAVE_NOTIFY_KEY) {
+			if (check_notifies_immediately > 0) {
+				gdm_slave_handle_notify (&s[1]);
+			} else {
+				unhandled_notifies =
+					g_list_append (unhandled_notifies,
+						       g_strdup (&s[1]));
+			}
+		}
+	}
+
+	g_strfreev (vec);
 }
 
 /* Minor X faults */
@@ -2802,6 +2889,9 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     if ( ! greet)
 	    return NULL;
 
+    check_notifies_now ();
+    check_notifies_immediately ++;
+
     if ( ! ve_string_empty (str)) {
 	    g_print ("%c%c%s\n", STX, cmd, str);
     } else {
@@ -2814,10 +2904,13 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     } while (c != EOF && c != STX);
     
     if (c == EOF || fgets (buf, FIELD_SIZE-1, stdin) == NULL) {
+	    check_notifies_immediately --;
 	    interrupted = TRUE;
 	    /* things don't seem well with the greeter, it probably died */
 	    return NULL;
     }
+
+    check_notifies_immediately --;
 
     check_for_interruption (buf);
 
@@ -3132,10 +3225,9 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
     return buffer;
 }
 
-void
-gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
+static void
+gdm_slave_handle_notify (const char *msg)
 {
-	GdmDisplay *display = data;
 	int val;
 
 	gdm_debug ("Handling slave notify: '%s'", msg);
@@ -3148,44 +3240,60 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 		GdmAllowRemoteAutoLogin = val;
 	} else if (sscanf (msg, GDM_NOTIFY_SYSMENU " %d", &val) == 1) {
 		GdmSystemMenu = val;
-		kill (display->greetpid, SIGHUP);
+		if (d->greetpid > 0)
+			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_CONFIG_AVAILABLE " %d", &val) == 1) {
 		GdmConfigAvailable = val;
-		kill (display->greetpid, SIGHUP);
+		if (d->greetpid > 0)
+			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_RETRYDELAY " %d", &val) == 1) {
 		GdmRetryDelay = val;
 	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",
 			    strlen (GDM_NOTIFY_GREETER) + 1) == 0) {
-		/* FIXME: this is fairly nasty, we should handle this nicer */
-		/* FIXME: can't handle flexi servers without going all cranky */
-		if (display->type == TYPE_LOCAL) {
-			if ( ! display->logged_in) {
-				gdm_server_stop (d);
-				gdm_verify_cleanup (d);
-				_exit (DISPLAY_REMANAGE);
-			} else {
-				remanage_asap = TRUE;
+		g_free (GdmGreeter);
+		GdmGreeter = g_strdup (&msg[strlen (GDM_NOTIFY_GREETER) + 1]);
+
+		if (d->console) {
+			if (restart_greeter_now) {
+				restart_the_greeter ();
+			} else if (d->type == TYPE_LOCAL) {
+				/* FIXME: can't handle flexi servers like this
+				 * without going all cranky */
+				if ( ! d->logged_in) {
+					gdm_server_stop (d);
+					gdm_verify_cleanup (d);
+					_exit (DISPLAY_REMANAGE);
+				} else {
+					remanage_asap = TRUE;
+				}
 			}
 		}
 	} else if (strncmp (msg, GDM_NOTIFY_REMOTEGREETER " ",
 			    strlen (GDM_NOTIFY_REMOTEGREETER) + 1) == 0) {
-		/* FIXME: this is fairly nasty, we should handle this nicer */
-		/* FIXME: can't handle flexi servers without going all cranky */
-		if (display->type == TYPE_XDMCP) {
-			if ( ! display->logged_in) {
-				gdm_server_stop (d);
-				gdm_verify_cleanup (d);
-				_exit (DISPLAY_REMANAGE);
-			} else {
-				remanage_asap = TRUE;
+		g_free (GdmRemoteGreeter);
+		GdmRemoteGreeter = g_strdup
+			(&msg[strlen (GDM_NOTIFY_REMOTEGREETER) + 1]);
+		if ( ! d->console) {
+			if (restart_greeter_now) {
+				restart_the_greeter ();
+			} else if (d->type == TYPE_XDMCP) {
+				/* FIXME: can't handle flexi servers like this
+				 * without going all cranky */
+				if ( ! d->logged_in) {
+					gdm_server_stop (d);
+					gdm_verify_cleanup (d);
+					_exit (DISPLAY_REMANAGE);
+				} else {
+					remanage_asap = TRUE;
+				}
 			}
 		}
 	} else if (strncmp (msg, GDM_NOTIFY_TIMED_LOGIN " ",
 			    strlen (GDM_NOTIFY_TIMED_LOGIN) + 1) == 0) {
 		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
-		if (display->type == TYPE_LOCAL) {
-			if ( ! display->logged_in) {
+		if (d->type == TYPE_LOCAL || d->type == TYPE_XDMCP) {
+			if ( ! d->logged_in) {
 				gdm_server_stop (d);
 				gdm_verify_cleanup (d);
 				_exit (DISPLAY_REMANAGE);
@@ -3195,6 +3303,8 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 		}
 	} else if (sscanf (msg, GDM_NOTIFY_TIMED_LOGIN_DELAY " %d", &val) == 1) {
 		GdmTimedLoginDelay = val;
+		if (d->greetpid > 0)
+			kill (d->greetpid, SIGHUP);
 	}
 }
 

@@ -55,6 +55,8 @@ void	gdm_sigchld_block_push (void);
 void	gdm_sigchld_block_pop (void);
 void	gdm_sigterm_block_push (void);
 void	gdm_sigterm_block_pop (void);
+void	gdm_sigusr2_block_push (void);
+void	gdm_sigusr2_block_pop (void);
 
 pid_t	gdm_fork_extra (void);
 void	gdm_wait_for_extra (int *status);

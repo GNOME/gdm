@@ -320,7 +320,7 @@ struct _GdmDisplay {
 
     /* Notification connection */
     int master_notify_fd;  /* write part of the connection */
-    GdmConnection *slave_notify_conn; /* read part of the connection */
+    int slave_notify_fd; /* read part of the connection */
 };
 
 typedef struct _GdmXServer GdmXServer;
@@ -433,6 +433,11 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 #define GDM_NOTIFY_REMOTEGREETER "RemoteGreeter" /* <greeter binary> */
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
+
+/* Ack for a slave message */
+#define GDM_SLAVE_NOTIFY_ACK 'A'
+/* Update this key */
+#define GDM_SLAVE_NOTIFY_KEY '!'
 
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 

@@ -505,6 +505,9 @@ static sigset_t sigchldblock_mask, sigchldblock_oldmask;
 static int sigterm_blocked = 0;
 static sigset_t sigtermblock_mask, sigtermblock_oldmask;
 
+static int sigusr2_blocked = 0;
+static sigset_t sigusr2block_mask, sigusr2block_oldmask;
+
 void
 gdm_sigchld_block_push (void)
 {
@@ -552,6 +555,30 @@ gdm_sigterm_block_pop (void)
 	if (sigterm_blocked == 0) {
 		/* reset signal mask back */
 		sigprocmask (SIG_SETMASK, &sigtermblock_oldmask, NULL);
+	}
+}
+
+void
+gdm_sigusr2_block_push (void)
+{
+	sigusr2_blocked ++;
+
+	if (sigusr2_blocked == 1) {
+		/* Set signal mask */
+		sigemptyset (&sigusr2block_mask);
+		sigaddset (&sigusr2block_mask, SIGUSR2);
+		sigprocmask (SIG_BLOCK, &sigusr2block_mask, &sigusr2block_oldmask);
+	}
+}
+
+void
+gdm_sigusr2_block_pop (void)
+{
+	sigusr2_blocked --;
+
+	if (sigusr2_blocked == 0) {
+		/* reset signal mask back */
+		sigprocmask (SIG_SETMASK, &sigusr2block_oldmask, NULL);
 	}
 }
 

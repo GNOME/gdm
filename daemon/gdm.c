@@ -280,9 +280,20 @@ gdm_config_parse (void)
     GdmWilling = gnome_config_get_string (GDM_KEY_WILLING);    
 
     GdmStandardXServer = gnome_config_get_string (GDM_KEY_STANDARD_XSERVER);    
-    if (ve_string_empty (GdmStandardXServer)) {
-	    g_free (GdmStandardXServer);
-	    GdmStandardXServer = g_strdup ("/usr/bin/X11/X");
+    if (ve_string_empty (GdmStandardXServer) ||
+	access (GdmStandardXServer, X_OK) != 0) {
+	    gdm_info (_("%s: Standard X server not found, trying alternatives"),
+			"gdm_config_parse");
+	    if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
+		    g_free (GdmStandardXServer);
+		    GdmStandardXServer = g_strdup ("/usr/X11R6/bin/X");
+	    } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
+		    g_free (GdmStandardXServer);
+		    GdmStandardXServer = g_strdup ("/opt/X11R6/bin/X");
+	    } else if (ve_string_empty (GdmStandardXServer)) {
+		    g_free (GdmStandardXServer);
+		    GdmStandardXServer = g_strdup ("/usr/bin/X11/X");
+	    }
     }
     GdmFlexibleXServers = gnome_config_get_int (GDM_KEY_FLEXIBLE_XSERVERS);    
     GdmXnest = gnome_config_get_string (GDM_KEY_XNEST);    
@@ -455,14 +466,18 @@ gdm_config_parse (void)
 		    server = GdmStandardXServer;
 	    } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
 		    server = "/usr/bin/X11/X";
+	    } else if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
+		    server = "/usr/X11R6/bin/X";
+	    } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
+		    server = "/opt/X11R6/bin/X";
 	    }
 	    /* yay, we can add a backup emergency server */
 	    if (server != NULL) {
 		    int num = gdm_get_free_display (0 /* start */,
 						    0 /* server uid */);
-		    gdm_error (_("%s: XDMCP disabled and no local servers defined. Adding /usr/bin/X11/X on :%d to allow configuration!"),
+		    gdm_error (_("%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow configuration!"),
 			       "gdm_config_parse",
-			       num);
+			       server, num);
 
 		    gdm_emergency_server = TRUE;
 		    displays = g_slist_append
@@ -1539,6 +1554,20 @@ gdm_signal_notify (gint8 signal)
 }
 
 static void
+send_slave_ack (GdmDisplay *d)
+{
+	if (d->master_notify_fd >= 0) {
+		char not[2];
+		not[0] = GDM_SLAVE_NOTIFY_ACK;
+		not[1] = '\n';
+		write (d->master_notify_fd, not, 2);
+	}
+	if (d->slavepid > 0) {
+		kill (d->slavepid, SIGUSR2);
+	}
+}
+
+static void
 gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	/* Evil!, all this for debugging? */
@@ -1574,7 +1603,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->servpid = pid;
 			gdm_debug ("Got XPID == %ld", (long)pid);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_SESSPID " ",
 		            strlen (GDM_SOP_SESSPID " ")) == 0) {
@@ -1592,7 +1621,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->sesspid = pid;
 			gdm_debug ("Got SESSPID == %ld", (long)pid);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_GREETPID " ",
 		            strlen (GDM_SOP_GREETPID " ")) == 0) {
@@ -1610,7 +1639,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->greetpid = pid;
 			gdm_debug ("Got GREETPID == %ld", (long)pid);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_CHOOSERPID " ",
 		            strlen (GDM_SOP_CHOOSERPID " ")) == 0) {
@@ -1628,7 +1657,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->chooserpid = pid;
 			gdm_debug ("Got CHOOSERPID == %ld", (long)pid);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_LOGGED_IN " ",
 		            strlen (GDM_SOP_LOGGED_IN " ")) == 0) {
@@ -1654,7 +1683,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				gdm_safe_restart ();
 
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_DISP_NUM " ",
 		            strlen (GDM_SOP_DISP_NUM " ")) == 0) {
@@ -1675,7 +1704,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->dispnum = disp_num;
 			gdm_debug ("Got DISP_NUM == %d", disp_num);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_VT_NUM " ",
 		            strlen (GDM_SOP_VT_NUM " ")) == 0) {
@@ -1696,7 +1725,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 #endif
 			gdm_debug ("Got VT_NUM == %d", vt_num);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_LOGIN " ",
 		            strlen (GDM_SOP_LOGIN " ")) == 0) {
@@ -1723,7 +1752,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->login = g_strdup (p);
 			gdm_debug ("Got LOGIN == %s", p);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_COOKIE " ",
 		            strlen (GDM_SOP_COOKIE " ")) == 0) {
@@ -1750,7 +1779,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->cookie = g_strdup (p);
 			gdm_debug ("Got COOKIE == <secret>");
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_FLEXI_ERR " ",
 		            strlen (GDM_SOP_FLEXI_ERR " ")) == 0) {
@@ -1787,7 +1816,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			
 			gdm_debug ("Got FLEXI_ERR == %d", err);
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strncmp (msg, GDM_SOP_FLEXI_OK " ",
 		            strlen (GDM_SOP_FLEXI_OK " ")) == 0) {
@@ -1817,7 +1846,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			
 			gdm_debug ("Got FLEXI_OK");
 			/* send ack */
-			kill (slave_pid, SIGUSR2);
+			send_slave_ack (d);
 		}
 	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART) == 0) {
 		gdm_restart_mode = TRUE;
@@ -2159,7 +2188,10 @@ notify_displays_int (const char *key, int val)
 		GdmDisplay *disp = li->data;
 		if (disp->master_notify_fd >= 0) {
 			gdm_fdprintf (disp->master_notify_fd,
-				      "%s %d\n", key, val);
+				      "%c%s %d\n",
+				      GDM_SLAVE_NOTIFY_KEY, key, val);
+			if (disp->slavepid > 0)
+				kill (disp->slavepid, SIGUSR2);
 		}
 	}
 }
@@ -2172,7 +2204,10 @@ notify_displays_string (const char *key, const char *val)
 		GdmDisplay *disp = li->data;
 		if (disp->master_notify_fd >= 0) {
 			gdm_fdprintf (disp->master_notify_fd,
-				      "%s %s\n", key, val);
+				      "%c%s %s\n",
+				      GDM_SLAVE_NOTIFY_KEY, key, val);
+			if (disp->slavepid > 0)
+				kill (disp->slavepid, SIGUSR2);
 		}
 	}
 }
