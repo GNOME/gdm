@@ -22,6 +22,8 @@ gdmchooser_SOURCES = \
 gdmlogin_SOURCES = \
 	gdmlogin.c		\
 	gdmlogin.h		\
+	gdmlanguages.c		\
+	gdmlanguages.h		\
 	gdmwm.c			\
 	gdmwm.h			\
 	misc.c			\

@@ -228,3 +228,7 @@ void
 modify_session_name (GtkEntry *entry, gpointer data);
 void 
 session_directory_modified (GtkEntry *entry, gpointer data);
+
+void change_automatic_sensitivity (GtkButton *button, gpointer user_data);
+void change_timed_sensitivity (GtkButton *button, gpointer user_data);
+

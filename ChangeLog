@@ -1,3 +1,17 @@
+Mon May 14 20:53:16 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], gui/gdmconfig.(c|h|glade), gui/gdmlogin.c:  Add a
+	  boolean flag for both timed and automatic login.  This makes
+	  configuring it nicer and easier to understand
+
+	* gui/gdmlogin.c:  Add a clock, perhaps there should be a config
+	  option about this
+
+	* gui/gdmlogin.c, gui/gdmlanguages.[ch], gui/Makefile.am:  Add a
+	  somewhat primitive (unfinished) framework for translating language
+	  names.  Unfortunately names are hardcoded, though available
+	  languages are still read from locale.alias.
+
 Mon May 14 03:16:50 2001  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: in the error dialog thing do the button click

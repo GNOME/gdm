@@ -648,6 +648,25 @@ gdm_config_parse_remaining (void)
 
     /* Face browser stuff */
     gdm_toggle_set("enable_face_browser", gnome_config_get_bool (GDM_KEY_BROWSER));
+
+    /* Login stuff */
+    {
+	    char *login = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
+	    if (gdm_string_empty (login)) {
+		    gdm_toggle_set ("enable_automatic_login", FALSE);
+	    } else {
+		    gdm_toggle_set ("enable_automatic_login", gnome_config_get_bool (GDM_KEY_AUTOMATICLOGIN_ENABLE));
+	    }
+	    g_free (login);
+
+	    login = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
+	    if (gdm_string_empty (login)) {
+		    gdm_toggle_set ("enable_timed_login", FALSE);
+	    } else {
+		    gdm_toggle_set ("enable_timed_login", gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE));
+	    }
+	    g_free (login);
+    }
     
     gnome_config_pop_prefix();
 }
@@ -728,7 +747,9 @@ write_new_config_file                  (GtkButton *button,
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
     
     /* Write out the widget contents of the GDM tab */
+    gdm_toggle_write("enable_automatic_login", GDM_KEY_AUTOMATICLOGIN_ENABLE);
     gdm_entry_write("automatic_login", GDM_KEY_AUTOMATICLOGIN);
+    gdm_toggle_write("enable_timed_login", GDM_KEY_TIMED_LOGIN_ENABLE);
     gdm_entry_write("timed_login", GDM_KEY_TIMED_LOGIN);
     gdm_spin_write("timed_delay", GDM_KEY_TIMED_LOGIN_DELAY);
     gdm_entry_write("chooser_binary", GDM_KEY_CHOOSER);
@@ -1158,6 +1179,35 @@ set_face_sensitivity                   (GtkButton       *button,
 			     GTK_TOGGLE_BUTTON(get_widget("enable_face_browser"))->active);
 }
 
+void
+change_automatic_sensitivity (GtkButton *button,
+			      gpointer user_data)
+{
+	g_assert (button != NULL);
+	g_assert (GTK_IS_TOGGLE_BUTTON (button));
+
+	gtk_widget_set_sensitive (get_widget ("automatic_login"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+	gtk_widget_set_sensitive (get_widget ("automatic_login_label"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+}
+
+void
+change_timed_sensitivity (GtkButton *button,
+			  gpointer user_data)
+{
+	g_assert (button != NULL);
+	g_assert (GTK_IS_TOGGLE_BUTTON (button));
+
+	gtk_widget_set_sensitive (get_widget ("timed_login"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+	gtk_widget_set_sensitive (get_widget ("timed_login_label"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+	gtk_widget_set_sensitive (get_widget ("timed_delay"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+	gtk_widget_set_sensitive (get_widget ("timed_delay_label"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+}
 
 void handle_server_add_or_edit         (gchar           *string,
 					gpointer         user_data)

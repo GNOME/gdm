@@ -43,6 +43,7 @@
 #include "gdmlogin.h"
 #include "gdm.h"
 #include "gdmwm.h"
+#include "gdmlanguages.h"
 #include "misc.h"
 
 static const gchar RCSid[]="$Id$";
@@ -95,16 +96,18 @@ static gchar *GdmDefaultLocale;
 static gchar *GdmExclude;
 static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
+static gboolean GdmTimedLoginEnable;
 static gchar *GdmTimedLogin;
+static gint GdmTimedLoginDelay;
 static gboolean GdmLockPosition;
 static gboolean GdmSetPosition;
 static gint GdmPositionX;
 static gint GdmPositionY;
 static gboolean GdmTitleBar;
-static gint GdmTimedLoginDelay;
 
 static GtkWidget *login;
 static GtkWidget *label;
+static GtkWidget *clock_label = NULL;
 static GtkWidget *entry;
 static GtkWidget *msg;
 static gboolean require_quarter = FALSE;
@@ -143,8 +146,6 @@ static gint maxwidth;
 static pid_t backgroundpid = 0;
 
 static guint timed_handler_id = 0;
-
-static GHashTable *back_locales = NULL;
 
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */
@@ -222,38 +223,6 @@ setup_cursor (GdkCursorType type)
 	GdkCursor *cursor = gdk_cursor_new (type);
 	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
 	gdk_cursor_destroy (cursor);
-}
-
-static const char *
-gdm_lookup_locale_name (const char *locale)
-{
-	const char *ret;
-	char *shortname;
-	char *p;
-
-	if (locale == NULL ||
-	    back_locales == NULL)
-		return locale;
-
-	ret = g_hash_table_lookup (back_locales, locale);
-	if (ret != NULL)
-		return ret;
-
-	/* Cut the string at the dot */
-	shortname = g_strdup (locale);
-	p = strchr (shortname, '.');
-	if (p == NULL) {
-		g_free (shortname);
-		return locale;
-	}
-	*p = '\0';
-
-	ret = g_hash_table_lookup (back_locales, shortname);
-
-	if (ret != NULL)
-		return ret;
-	else
-		return locale;
 }
 
 static void
@@ -772,12 +741,18 @@ gdm_login_parse_config (void)
     GdmPositionX = gnome_config_get_int (GDM_KEY_POSITIONX);
     GdmPositionY = gnome_config_get_int (GDM_KEY_POSITIONY);
 
-    GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
-    GdmTimedLoginDelay =
-      gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
-    if (GdmTimedLoginDelay < 10) {
-	    syslog (LOG_WARNING,
-		    _("TimedLoginDelay was less then 10.  I'll just use 10."));
+    GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
+    if (GdmTimedLoginEnable) {
+	    GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
+	    GdmTimedLoginDelay =
+		    gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+	    if (GdmTimedLoginDelay < 10) {
+		    syslog (LOG_WARNING,
+			    _("TimedLoginDelay was less then 10.  I'll just use 10."));
+		    GdmTimedLoginDelay = 10;
+	    }
+    } else {
+	    GdmTimedLogin = NULL;
 	    GdmTimedLoginDelay = 10;
     }
 
@@ -962,12 +937,17 @@ gdm_login_language_lookup (const gchar* savedlang)
 	/* User's saved language is not the chosen one */
 	if (strcmp (savedlang, language) != 0) {
 	    gchar *msg;
+	    char *curname, *savedname;
+
+	    curname = gdm_lang_name (NULL, curlang, FALSE, TRUE);
+	    savedname = gdm_lang_name (NULL, savedlang, FALSE, TRUE);
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				     "%s.\nDo you wish to make %s the default for future sessions?"),
-				   gdm_lookup_locale_name (curlang),
-				   gdm_lookup_locale_name (savedlang),
-				   gdm_lookup_locale_name (curlang));
+				   curname, savedname, curname);
+	    g_free (curname);
+	    g_free (savedname);
+
 	    savelang = gdm_login_query (msg);
 	    g_free (msg);
 	}
@@ -1373,13 +1353,15 @@ static void
 gdm_login_language_handler (GtkWidget *widget) 
 {
     gchar *s;
+    char *name;
 
     if (!widget)
 	return;
 
     curlang = gtk_object_get_data (GTK_OBJECT (widget), "Language");
-    s = g_strdup_printf (_("%s language selected"),
-			 gdm_lookup_locale_name (curlang));
+    name = gdm_lang_name (NULL, curlang, FALSE, TRUE);
+    s = g_strdup_printf (_("%s language selected"), name);
+    g_free (name);
     gtk_label_set (GTK_LABEL (msg), s);
     g_free (s);
 }
@@ -1390,12 +1372,13 @@ gdm_login_language_menu_new (void)
 {
     GtkWidget *menu;
     GtkWidget *item, *ammenu, *nzmenu, *omenu;
-    FILE *langlist;
-    char curline[256];
+    GList *langlist, *li;
     gboolean has_other_locale = FALSE;
     GtkWidget *other_menu;
+    const char *g1;
+    const char *g2;
 
-    langlist = fopen (GdmLocaleFile, "r");
+    langlist = gdm_lang_read_locale_file (GdmLocaleFile);
 
     if (langlist == NULL)
 	    return NULL;
@@ -1424,13 +1407,13 @@ gdm_login_language_menu_new (void)
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
-    item = gtk_menu_item_new_with_label (_("A-M"));
+    item = gtk_menu_item_new_with_label (gdm_lang_group1 ());
     ammenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (ammenu));
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
-    item = gtk_menu_item_new_with_label (_("N-Z"));
+    item = gtk_menu_item_new_with_label (gdm_lang_group2 ());
     nzmenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), nzmenu);
     gtk_menu_append (GTK_MENU (menu), item);
@@ -1442,29 +1425,29 @@ gdm_login_language_menu_new (void)
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
-    while (fgets (curline, sizeof (curline), langlist)) {
+    g1 = gdm_lang_group1 ();
+    g2 = gdm_lang_group2 ();
+
+    for (li = langlist; li != NULL; li = li->next) {
+	    char *lang = li->data;
 	    char *name;
-	    char *lang;
+	    char *group;
+	    char *p;
 
-	    if (!isalpha (curline[0])) 
+	    li->data = NULL;
+
+	    group = name = gdm_lang_name (NULL, lang, FALSE, FALSE);
+	    if (name == NULL) {
+		    g_free (lang);
 		    continue;
+	    }
 
-	    name = strtok (curline, " \t");
-	    if (name == NULL)
-		    continue;
+	    p = strchr (name, '|');
+	    if (p != NULL) {
+		    *p = '\0';
+		    name = p+1;
+	    }
 
-	    lang = strtok (NULL, " \t");
-	    if (lang == NULL)
-		    continue;
-
-	    name[0] = toupper (name[0]);
-
-	    if (back_locales == NULL)
-		    back_locales = g_hash_table_new (g_str_hash, g_str_equal);
-	    g_hash_table_insert (back_locales,
-				 g_strdup (lang),
-				 g_strdup (name));
-	
 	    item = gtk_radio_menu_item_new_with_label (languages, name);
 	    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
 	    gtk_object_set_data_full (GTK_OBJECT (item),
@@ -1472,24 +1455,27 @@ gdm_login_language_menu_new (void)
 				      g_strdup (lang),
 				      (GtkDestroyNotify) g_free);
 
-	    if (curline[0] >= 'A' && curline[0] <= 'M') {
+	    if (strcmp (group, g1) == 0) {
 		    gtk_menu_append (GTK_MENU (ammenu), item);
-	    } else if (curline[0] >= 'N' && curline[0] <= 'Z') {
+	    } else if (strcmp (group, g2) == 0) {
 		    gtk_menu_append (GTK_MENU (nzmenu), item);
 	    } else {
 		    gtk_menu_append (GTK_MENU (omenu), item);
 		    has_other_locale = TRUE;
 	    }
 
-	gtk_signal_connect (GTK_OBJECT (item), "activate", 
-			    GTK_SIGNAL_FUNC (gdm_login_language_handler), 
-			    NULL);
-	gtk_widget_show (GTK_WIDGET (item));
+	    gtk_signal_connect (GTK_OBJECT (item), "activate", 
+				GTK_SIGNAL_FUNC (gdm_login_language_handler), 
+				NULL);
+	    gtk_widget_show (GTK_WIDGET (item));
+
+	    g_free (lang);
+	    g_free (group);
     }
     if ( ! has_other_locale) 
 	    gtk_widget_destroy (other_menu);
-    
-    fclose (langlist);
+
+    g_list_free (langlist);
 
     return menu;
 }
@@ -2286,10 +2272,42 @@ login_realized (GtkWidget *w)
 	}
 }
 
+static gboolean
+update_clock (gpointer data)
+{
+	struct tm *the_tm;
+	time_t the_time;
+	char str[256];
+
+	if (clock_label == NULL)
+		return FALSE;
+
+	time (&the_time);
+	the_tm = localtime (&the_time);
+
+	if (strftime (str, sizeof (str), _("%a %b %d, %X"), the_tm) == 0) {
+		/* according to docs, if the string does not fit, the
+		 * contents of str are undefined, thus just use
+		 * ??? */
+		strcpy (str, "???");
+	}
+	str [sizeof(str)-1] = '\0'; /* just for sanity */
+
+	gtk_label_set (GTK_LABEL (clock_label), str);
+
+	return TRUE;
+}
+
+static void
+clock_state_changed (GtkWidget *clock)
+{
+	clock->state = login->state;
+}
+
 static void
 gdm_login_gui_init (void)
 {
-    GtkWidget *frame1, *frame2;
+    GtkWidget *frame1, *frame2, *ebox;
     GtkWidget *mbox, *menu, *menubar, *item, *welcome;
     GtkWidget *table, *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
@@ -2409,6 +2427,32 @@ gdm_login_gui_init (void)
 				    GDK_y, GDK_MOD1_MASK, 0);
 	gtk_widget_show (GTK_WIDGET (item));
     }
+
+    /* The clock */
+    ebox = gtk_event_box_new ();
+    gtk_widget_show (ebox);
+    clock_label = gtk_label_new ("");
+    gtk_widget_show (clock_label);
+    gtk_container_add (GTK_CONTAINER (ebox), clock_label);
+    item = gtk_menu_item_new ();
+    gtk_container_add (GTK_CONTAINER (item), ebox);
+    gtk_widget_show (item);
+    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
+    gtk_menu_item_right_justify (GTK_MENU_ITEM (item));
+    gtk_widget_set_sensitive (item, FALSE);
+
+    /* hack */
+    clock_label->state = GTK_STATE_NORMAL;
+    gtk_signal_connect (GTK_OBJECT (clock_label), "state_changed",
+			GTK_SIGNAL_FUNC (clock_state_changed),
+			NULL);
+
+    gtk_signal_connect (GTK_OBJECT (clock_label), "destroy",
+			GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+			&clock_label);
+
+    gtk_timeout_add (1000, update_clock, NULL);
+
 
     if (GdmBrowser)
 	rows = 2;

@@ -60,6 +60,7 @@ gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmGnomeDefaultSession = NULL;
 gchar *GdmAutomaticLogin = NULL;
+gboolean GdmAutomaticLoginEnable = FALSE;
 gchar *GdmConfigurator = NULL;
 gboolean GdmConfigAvailable = FALSE;
 gboolean GdmSystemMenu = FALSE;
@@ -100,6 +101,7 @@ gboolean  GdmAllowRemoteRoot = FALSE;
 gint  GdmRelaxPerms = 0;
 gint  GdmRetryDelay = 0;
 gchar *GdmTimedLogin = NULL;
+gboolean GdmTimedLoginEnable = FALSE;
 gint GdmTimedLoginDelay = 0;
 
 /* set in the main function */
@@ -134,6 +136,7 @@ gdm_config_parse (void)
     GdmChooser = gnome_config_get_string (GDM_KEY_CHOOSER);
     GdmDefaultPath = gnome_config_get_string (GDM_KEY_PATH);
     GdmDisplayInit = gnome_config_get_string (GDM_KEY_INITDIR);
+    GdmAutomaticLoginEnable = gnome_config_get_bool (GDM_KEY_AUTOMATICLOGIN_ENABLE);
     GdmAutomaticLogin = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
     GdmGroup = gnome_config_get_string (GDM_KEY_GROUP);
@@ -159,6 +162,8 @@ gdm_config_parse (void)
     GdmUserAuthDir = gnome_config_get_string (GDM_KEY_UAUTHDIR);
     GdmUserAuthFile = gnome_config_get_string (GDM_KEY_UAUTHFILE);
     GdmUserAuthFB = gnome_config_get_string (GDM_KEY_UAUTHFB);
+
+    GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
     GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
     GdmTimedLoginDelay = gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 
@@ -185,7 +190,8 @@ gdm_config_parse (void)
 
     /* sanitize some values */
 
-    if (gdm_string_empty (GdmAutomaticLogin)) {
+    if ( ! GdmAutomaticLoginEnable ||
+	gdm_string_empty (GdmAutomaticLogin)) {
 	    g_free (GdmAutomaticLogin);
 	    GdmAutomaticLogin = NULL;
     }
@@ -197,7 +203,8 @@ gdm_config_parse (void)
 	    GdmAutomaticLogin = NULL;
     }
 
-    if (gdm_string_empty (GdmTimedLogin)) {
+    if ( ! GdmTimedLoginEnable ||
+	gdm_string_empty (GdmTimedLogin)) {
 	    g_free (GdmTimedLogin);
 	    GdmTimedLogin = NULL;
     }

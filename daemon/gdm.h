@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __GDM_H__
-#define __GDM_H__
+#ifndef GDM_H
+#define GDM_H
 
 #include <glib.h>
 #include <X11/Xlib.h>
@@ -89,6 +89,10 @@
 
 /* Configuration constants */
 #define GDM_KEY_CHOOSER "daemon/Chooser=" EXPANDED_BINDIR "/gdmchooser --disable-sound --disable-crash-dialog"
+/* This defaults to true for backward compatibility,
+ * it will not actually do automatic login since the AutomaticLogin defaults
+ * to nothing */
+#define GDM_KEY_AUTOMATICLOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
 #define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
 #define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin --disable-sound --disable-crash-dialog"
 #define GDM_KEY_GROUP "daemon/Group=gdm"
@@ -111,6 +115,10 @@
 #define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
 #define GDM_KEY_USER "daemon/User=gdm"
 
+/* This defaults to true for backward compatibility,
+ * it will not actually do timed login since the TimedLogin defaults
+ * to nothing */
+#define GDM_KEY_TIMED_LOGIN_ENABLE "daemon/TimedLoginEnable=true"
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
@@ -252,6 +260,6 @@ void gdm_quit (void);
 #define gdm_string_empty(x) ((x)==NULL||(x)[0]=='\0')
 #define gdm_sure_string(x) ((x)!=NULL?(x):"")
 
-#endif /* __GDM_H__ */
+#endif /* GDM_H */
 
 /* EOF */
