@@ -37,7 +37,7 @@ struct _Language {
  * The available languages come from the supplied locale.alias */
 static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Azerbaidjani"), "az_AZ", 0 },
+	{ N_("A-M|Azerbaijani"), "az_AZ", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Basque"), "eu_ES", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
