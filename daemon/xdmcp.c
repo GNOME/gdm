@@ -1012,7 +1012,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     
     /* libXdmcp doesn't terminate strings properly so we cheat and use strncmp() */
     for (i = 0 ; i < clnt_authorization.length ; i++)
-	if (! strncmp (clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18))
+	if (clnt_authorization.data[i].length == 18 &&
+	    strncmp (clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18) == 0)
 	    mitauth = TRUE;
     
     /* Manufacturer ID */
@@ -1355,7 +1356,7 @@ gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 	ARRAY8 clnt_address;
 
 	gdm_debug ("gdm_xdmcp_handle_got_managed_forward: "
-		   "Got MANAGED_FORWARD from %s",
+		   "Got GOT_MANAGED_FORWARD from %s",
 		   inet_ntoa (clnt_sa->sin_addr));
 
 	/* Hostname */
