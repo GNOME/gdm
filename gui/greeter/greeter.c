@@ -38,6 +38,7 @@ gboolean GdmShowXtermFailsafeSession = FALSE;
 gboolean GdmShowLastSession = FALSE;
 gchar *GdmSessionDir = NULL;
 gchar *GdmLocaleFile = NULL;
+gboolean GdmSystemMenu = TRUE;
 
 gboolean greeter_use_circles_in_entry = FALSE;
 
@@ -67,6 +68,7 @@ greeter_parse_config (void)
     GdmShowLastSession = gnome_config_get_bool (GDM_KEY_SHOW_LAST_SESSION);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
+    GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     
     gnome_config_pop_prefix();
 

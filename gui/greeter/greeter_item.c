@@ -10,6 +10,8 @@
 #define _(x) (x)
 #endif
 
+extern gboolean GdmSystemMenu;
+
 GreeterItemInfo *
 greeter_item_info_new (GreeterItemInfo *parent,
 		       GreeterItemType  type)
@@ -202,6 +204,19 @@ greeter_item_is_visible (GreeterItemInfo *info)
   if ( ! GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
     return FALSE;
+
+  /* FIXME: this is somewhat evil, maybe it should be part of the show
+   * modes */
+  if ( ! GdmSystemMenu &&
+      info->id != NULL &&
+      (strcmp (info->id, "system_button") == 0 ||
+       /* FIXME: reboot, halt and suspend should depend on the commands
+	* being set */
+       strcmp (info->id, "reboot_button") == 0 ||
+       strcmp (info->id, "halt_button") == 0 ||
+       strcmp (info->id, "suspend_button") == 0)) {
+        return FALSE;
+  }
 
   /* FIXME: this is somewhat evil, maybe it should be part of the show
    * modes */

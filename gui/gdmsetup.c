@@ -138,6 +138,43 @@ intspin_timeout (GtkWidget *spin)
 	return FALSE;
 }
 
+#define ITEM_STRING "GdmSetup:ItemString"
+
+static const char *
+get_str_from_option (GtkOptionMenu *option)
+{
+	GtkWidget *menu, *active;
+
+	menu = gtk_option_menu_get_menu (option);
+	if (menu == NULL)
+		return NULL;
+
+	active = gtk_menu_get_active (GTK_MENU (menu));
+	if (active == NULL)
+		return NULL;
+
+	return g_object_get_data (G_OBJECT (active), ITEM_STRING);
+}
+
+static gboolean
+option_timeout (GtkWidget *option_menu)
+{
+	const char *key = g_object_get_data (G_OBJECT (option_menu), "key");
+	const char *val;
+
+	val = get_str_from_option (GTK_OPTION_MENU (option_menu));
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	gnome_config_set_string (key, val);
+	gnome_config_pop_prefix ();
+
+	gnome_config_sync ();
+
+	update_key (key);
+
+	return FALSE;
+}
+
 static void
 toggle_toggled (GtkWidget *toggle)
 {
@@ -154,6 +191,12 @@ static void
 intspin_changed (GtkWidget *spin)
 {
 	run_timeout (spin, 500, intspin_timeout);
+}
+
+static void
+option_changed (GtkWidget *option_menu)
+{
+	run_timeout (option_menu, 500, option_timeout);
 }
 
 static void
@@ -284,6 +327,64 @@ setup_intspin (const char *name,
 }
 
 static void
+add_menuitem (GtkWidget *menu, const char *str, const char *label,
+	      const char *select, GtkWidget **selected)
+{
+	GtkWidget *item = gtk_menu_item_new_with_label (label);
+	gtk_widget_show (item);
+	g_object_set_data_full (G_OBJECT (item), ITEM_STRING,
+				g_strdup (str),
+				(GDestroyNotify)g_free);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+	if (select != NULL &&
+	    strcmp (str, select) == 0)
+		*selected = item;
+}
+
+static void
+setup_greeter_option (const char *name,
+		      const char *key)
+{
+	GtkWidget *menu;
+	GtkWidget *selected = NULL;
+	char *val;
+	GtkWidget *option_menu = glade_helper_get (xml, name,
+						   GTK_TYPE_OPTION_MENU);
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	val = gnome_config_get_string (key);
+	gnome_config_pop_prefix ();
+
+	menu = gtk_menu_new ();
+
+	add_menuitem (menu, EXPANDED_BINDIR "/gdmlogin",
+		      _("Standard greeter"), val, &selected);
+	add_menuitem (menu, EXPANDED_BINDIR "/gdmgreeter",
+		      _("Graphical greeter"), val, &selected);
+
+	if (val != NULL &&
+	    selected == NULL)
+		add_menuitem (menu, val, val, val, &selected);
+
+	if (selected != NULL)
+		gtk_menu_item_activate (GTK_MENU_ITEM (selected));
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
+
+	g_free (val);
+
+	g_object_set_data_full (G_OBJECT (option_menu),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+
+	g_signal_connect (G_OBJECT (option_menu), "changed",
+			  G_CALLBACK (option_changed), NULL);
+	g_signal_connect (G_OBJECT (option_menu), "destroy",
+			  G_CALLBACK (timeout_remove), NULL);
+}
+
+static void
 xdmcp_toggled (GtkWidget *toggle, gpointer data)
 {
 	GtkWidget *frame = data;
@@ -401,6 +502,9 @@ setup_gui (void)
 	setup_intspin ("pinginterval",
 		       GDM_KEY_PINGINTERVAL,
 		       "xdmcp/PARAMETERS" /* notify_key */);
+
+	setup_greeter_option ("local_greeter", GDM_KEY_GREETER);
+	setup_greeter_option ("remote_greeter", GDM_KEY_REMOTEGREETER);
 }
 
 static gboolean
