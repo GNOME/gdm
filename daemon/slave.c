@@ -56,6 +56,11 @@
 #include <time.h>
 #include <syslog.h>
 
+#ifdef HAVE_SELINUX
+#include <selinux/selinux.h>
+#include <selinux/get_context_list.h>
+#endif /* HAVE_SELINUX */
+
 #include <vicious.h>
 
 #include "gdm.h"
@@ -2996,6 +3001,41 @@ open_xsession_errors (struct passwd *pwent,
 	return logfd;
 }
 
+#ifdef HAVE_SELINUX
+/* This should be run just before we exec the user session */
+static gboolean
+gdm_selinux_setup (const char *login)
+{
+	security_context_t scontext;
+
+	/* If selinux is not enabled, then we don't do anything */
+	if ( ! is_selinux_enabled ())
+		return TRUE;
+
+	if (get_default_context((char*) login,0, &scontext) < 0) {
+		gdm_error ("SELinux gdm login: unable to obtain default security context for %s.", login);
+		/* note that this will be run when the .xsession-errors
+		   is already being logged, so we can use stderr */
+		gdm_fdprintf (2, "SELinux gdm login: unable to obtain default security context for %s.", login);
+		return FALSE;
+	}
+
+	gdm_assert (scontext != NULL);
+
+	if (setexeccon (scontext) != 0) {
+		gdm_error ("SELinux gdm login: unable to set executable context %s.",
+			  (char *)scontext);
+		gdm_fdprintf (2, "SELinux gdm login: unable to set executable context %s.",
+			      (char *)scontext);
+		return FALSE;
+	}
+
+	freecon (scontext);
+
+	return TRUE;
+}
+#endif /* HAVE_SELINUX */
+
 static void
 session_child_run (struct passwd *pwent,
 		   int logfd,
@@ -3305,6 +3345,20 @@ session_child_run (struct passwd *pwent,
 		   dialog */
 		_exit (66);
 	}
+
+#ifdef HAVE_SELINUX
+	if ( ! gdm_selinux_setup (pwent->pw_name)) {
+		/* 66 means no "session crashed" examine .xsession-errors
+		   dialog */
+		/* FIXME: do this when we get out of string freeze */
+		/*
+		gdm_error_box (d, GTK_MESSAGE_ERROR, _("Error! Unable to set executable context."));
+		_exit (66);
+		*/
+		/* errors have alredy been logged to .xsession-errors */
+		_exit (1);
+	}
+#endif
 
 	IGNORE_EINTR (execv (argv[0], argv));
 

@@ -65,6 +65,8 @@ AC_ARG_WITH(tcp-wrappers,
   [  --with-tcp-wrappers=[auto/yes/no]  Use TCP Wrappers [default=auto]],,
   with_tcp_wrappers=auto)
 
+AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
+
 dnl
 dnl PAM prefix
 dnl
@@ -440,6 +442,29 @@ fi
 AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
 
+#
+# SELinux stuff
+#
+if test "x$with_selinux" = "xyes" ; then
+	echo "SELinux support requested (--with-selinux was given), checking prerequisites"
+	if test -d /usr/local/selinux/include ; then
+		echo "Found /usr/local/selinux/include, will look there for SELinux stuff as well"
+		CFLAGS="$CFLAGS -I/usr/local/selinux/include"
+		LDFLAGS="$LDFLAGS -L/usr/local/selinux/lib"
+	fi
+	AC_CHECK_HEADER(selinux/selinux.h)
+	AC_CHECK_HEADER(selinux/get_context_list.h)
+	AC_CHECK_LIB(attr,attr_get,/bin/true)
+	# I'm anal and I don't know which versions have which symbols,
+	# so I check for all the ones we use
+	AC_CHECK_LIB(selinux,get_ordered_context_list,/bin/true)
+	AC_CHECK_LIB(selinux,freecon,/bin/true)
+	AC_CHECK_LIB(selinux,freeconary,/bin/true)
+	AC_CHECK_LIB(selinux,setexeccon,/bin/true)
+	AC_CHECK_LIB(selinux,is_selinux_enabled,/bin/true)
+	AC_DEFINE(HAVE_SELINUX)
+	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lselinux -lattr"
+fi
 
 #
 # Subst the extra libs
@@ -504,7 +529,7 @@ EXPANDED_LOGDIR=`eval echo $LOGDIR_TMP`
 AC_SUBST(EXPANDED_LOGDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LOGDIR,"$EXPANDED_LOGDIR")
 
-AC_MSG_CHECKING(for fbconsole)
+AC_MSG_CHECKING(for fbconsole (for Solaris))
 if test -x /usr/openwin/bin/fbconsole; then
    AC_DEFINE(HAVE_FBCONSOLE)
    AC_MSG_RESULT(yes)
@@ -652,6 +677,13 @@ if test "x$enable_console_helper" = "xyes"; then
 	echo "Console helper                    : YES"
 else
 	echo "Console helper                    : NO"
+fi
+
+dnl <= SELinux support =>
+if test "x$with_selinux" = "xyes" ; then
+	echo "SELinux support                   : YES"
+else
+	echo "SELinux support                   : NO"
 fi
 
 
