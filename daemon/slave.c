@@ -2469,6 +2469,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
         ve_setenv ("DISPLAY", d->name, TRUE);
 	ve_setenv ("PATH", GdmRootPath, TRUE);
+	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	ve_unsetenv ("MAIL");
 	argv = ve_split (scr);
 	execv (argv[0], argv);
