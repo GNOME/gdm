@@ -1,3 +1,16 @@
+Thu Dec 20 16:27:40 2001  George Lebl <jirka@5z.com>
+
+	* daemon/verify-pam.c: apparently the actually correct
+	  order (Which actually makes sense) is setcred/open_session.
+	  This is apparently the 'offical' word from the linux-pam
+	  people.  Though not everybody agrees.  Well screw this,
+	  this makes sense, so this is the way it will be damnit :)
+
+	* gui/gdmconfig.c: fix saving of server definitions
+
+	* gui/gdmlogin.c: add ability to have newlines in the 
+	  welcome string by just adding \n into the strings
+
 Thu Dec 06 22:09:11 2001  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: Fix TimedLogin I broke on last commit

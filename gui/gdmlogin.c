@@ -545,7 +545,20 @@ gdm_parse_enriched_string (const gchar *s)
 
     while (s[0] != '\0') {
 
-	if (s[0] == '%' && s[1] != 0) {
+	/* Backslash commands */
+	if (s[0] == '\\' && s[1] != '\0') {
+		cmd = s[1];
+		s++;
+
+		switch (cmd) {
+		case 'n':
+			g_string_append_c (str, '\n');
+			break;
+		default:
+			g_string_append_c (str, cmd);
+		}
+	/* Percent commands */
+	} else if (s[0] == '%' && s[1] != 0) {
 		cmd = s[1];
 		s++;
 

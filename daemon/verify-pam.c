@@ -280,6 +280,7 @@ gdm_verify_user (GdmDisplay *d,
     gchar *login;
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
+    gboolean credentials_set = FALSE;
     gboolean started_timer = FALSE;
     gchar *auth_errmsg;
 
@@ -395,20 +396,22 @@ gdm_verify_user (GdmDisplay *d,
 	    goto pamerr;
     }
 
-    /* Register the session */
-    pamerr = pam_open_session (pamh, 0);
-    if (pamerr != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't open session for %s"), login);
-	    goto pamerr;
-    }
-
     /* Set credentials */
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
 	if (gdm_slave_should_complain ())
 	    gdm_error (_("Couldn't set credentials for %s"), login);
 	goto pamerr;
+    }
+
+    credentials_set = TRUE;
+
+    /* Register the session */
+    pamerr = pam_open_session (pamh, 0);
+    if (pamerr != PAM_SUCCESS) {
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't open session for %s"), login);
+	    goto pamerr;
     }
 
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
@@ -442,8 +445,12 @@ gdm_verify_user (GdmDisplay *d,
 	    }
     }
 
-    if (pamh != NULL)
+    if (pamh != NULL) {
+	    /* Throw away the credentials */
+	    if (credentials_set)
+		    pam_setcred (pamh, PAM_DELETE_CRED);
 	    pam_end (pamh, pamerr);
+    }
     pamh = NULL;
     
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
