@@ -11,7 +11,6 @@ AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gdm,2.4.2.99)
 AM_MAINTAINER_MODE
 
-GDK_PIXBUF_REQUIRED=1.3.1
 GTK_REQUIRED=1.3.1
 LIBGLADE_REQUIRED=1.99.2
 LIBGNOME_REQUIRED=1.96.0
@@ -110,27 +109,27 @@ AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 GNOME_COMPILE_WARNINGS
 CFLAGS="$CFLAGS $WARN_CFLAGS"
 
-PKG_CHECK_MODULES(DAEMON, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED)
+PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
-PKG_CHECK_MODULES(GUI, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
+PKG_CHECK_MODULES(GUI, gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(GUI_CFLAGS)
 AC_SUBST(GUI_LIBS)
 
-PKG_CHECK_MODULES(GUIGLADE, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
+PKG_CHECK_MODULES(GUIGLADE, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(GUIGLADE_CFLAGS)
 AC_SUBST(GUIGLADE_LIBS)
 
-PKG_CHECK_MODULES(GUING, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED)
+PKG_CHECK_MODULES(GUING, gtk+-2.0 >= $GTK_REQUIRED)
 AC_SUBST(GUING_CFLAGS)
 AC_SUBST(GUING_LIBS)
 
-PKG_CHECK_MODULES(GREETER, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomecanvas-2.0 >= $LIBGNOMECANVAS_REQUIRED librsvg-2.0 >= $LIBRSVG_REQUIRED libxml-2.0 >= $LIBXML_REQUIRED libart-2.0 >= $LIBART_REQUIRED)
+PKG_CHECK_MODULES(GREETER, gtk+-2.0 >= $GTK_REQUIRED libgnomecanvas-2.0 >= $LIBGNOMECANVAS_REQUIRED librsvg-2.0 >= $LIBRSVG_REQUIRED libxml-2.0 >= $LIBXML_REQUIRED libart-2.0 >= $LIBART_REQUIRED)
 AC_SUBST(GREETER_CFLAGS)
 AC_SUBST(GREETER_LIBS)
 
-PKG_CHECK_MODULES(UTILS, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
+PKG_CHECK_MODULES(UTILS, gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(UTILS_CFLAGS)
 AC_SUBST(UTILS_LIBS)
 
@@ -509,19 +508,24 @@ if test -x /usr/X11R6/bin/X; then
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin"
+   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
 elif test -x /usr/openwin/bin/Xsun; then
    X_PATH="/usr/openwin/bin"
    X_SERVER_PATH="/usr/openwin/bin"
    X_SERVER="/usr/openwin/bin/Xsun"
    X_CONF_PATH="/usr/openwin/bin"
+elif test -x /opt/X11R6/bin/X; then
+   X_PATH="/opt/X11R6/bin:/usr/X11R6/bin:/usr/bin/X11"
+   X_SERVER_PATH="/opt/X11R6/bin"
+   X_SERVER="/opt/X11R6/bin/X"
+   X_CONF_PATH="/opt/X11R6/bin:/usr/local/bin:/usr/X11R6/bin:/usr/bin/X11"
 else
    # what to do, what to do, this is wrong, but this just sets the
    # defaults, perhaps this user is cross compiling or some such
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin"
+   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
 fi
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
@@ -611,6 +615,7 @@ echo "bin dir : $EXPANDED_BINDIR"
 echo "sbin dir : $EXPANDED_SBINDIR"
 echo "PAM prefix : $PAM_PREFIX"
 echo "data dir : "`eval echo $datadir`
+echo "X server : "`eval echo $X_SERVER`
 echo ""
 
 dnl <= TCP Wrappers support? =>
