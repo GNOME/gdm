@@ -186,8 +186,6 @@ void record_selected_server_def (GtkCList *clist,
 				 GdkEventButton *event,
 				 gpointer user_data);
 
-void handle_server_add_or_edit         (gchar           *string,
-					gpointer         user_data);
 void
 add_new_server                         (GtkButton       *button,
                                         gpointer         user_data);

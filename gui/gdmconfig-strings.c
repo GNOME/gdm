@@ -187,6 +187,7 @@ gchar *s = N_("Set as default");
 gchar *s = N_("Static Servers (servers to always run)");
 gchar *s = N_("No.");
 gchar *s = N_("Server");
+gchar *s = N_("Extra arguments");
 gchar *s = N_("Instead of reinitializing running servers when a user logs out.  Always kill and then start the server again.");
 gchar *s = N_("Always restart X servers");
 gchar *s = N_("Add server");
