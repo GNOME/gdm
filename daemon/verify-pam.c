@@ -505,13 +505,13 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_ERROR_MSG:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_ERRDLG, m);
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, m);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_MSG, m);
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, m);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
