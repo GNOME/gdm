@@ -782,6 +782,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 	int len;
 	int i;
 	gboolean gotvtarg = FALSE;
+	gboolean query_in_arglist = FALSE;
 
 	bin = ve_first_word (disp->command);
 	if (bin == NULL) {
@@ -831,6 +832,9 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		    (arg[3] == '\0' ||
 		     (isdigit (arg[3]) && arg[4] == '\0')))
 			gotvtarg = TRUE;
+		if (strcmp (arg, "-query") == 0 ||
+		    strcmp (arg, "-indirect") == 0)
+			query_in_arglist = TRUE;
 	}
 
 	argv = g_renew (char *, argv, len + 10);
@@ -840,11 +844,6 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 	/* server number is the FIRST argument, before any others */
 	argv[1] = g_strdup (disp->name);
 	len++;
-
-	if (GdmDisallowTCP) {
-		argv[len++] = g_strdup ("-nolisten");
-		argv[len++] = g_strdup ("tcp");
-	}
 
 	if (disp->authfile != NULL) {
 		argv[len++] = g_strdup ("-auth");
@@ -860,6 +859,12 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		argv[len++] = g_strdup ("-terminate");
 		argv[len++] = g_strdup ("-query");
 		argv[len++] = g_strdup (disp->chosen_hostname);
+		query_in_arglist = TRUE;
+	}
+
+	if (resolve_flags && GdmDisallowTCP && ! query_in_arglist) {
+		argv[len++] = g_strdup ("-nolisten");
+		argv[len++] = g_strdup ("tcp");
 	}
 
 	if (vtarg != NULL &&

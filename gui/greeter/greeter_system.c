@@ -123,6 +123,96 @@ greeter_chooser_handler (void)
 	_exit (DISPLAY_RUN_CHOOSER);
 }
 
+void
+greeter_system_append_system_menu (GtkWidget *menu)
+{
+	GtkWidget *w, *sep;
+	static GtkTooltips *tooltips = NULL;
+
+	/* should never be allowed by the UI */
+	if ( ! GdmSystemMenu ||
+	    ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
+		return;
+
+	if (tooltips == NULL)
+		tooltips = gtk_tooltips_new ();
+
+	if (GdmChooserButton) {
+		w = gtk_menu_item_new_with_mnemonic (_("Run _XDMCP Chooser"));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+		gtk_widget_show (GTK_WIDGET (w));
+		g_signal_connect (G_OBJECT (w), "activate",
+				  G_CALLBACK (greeter_chooser_handler),
+				  NULL);
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
+				      _("Run an XDMCP chooser which will allow "
+					"you to log into available remote "
+					"machines, if there are any."),
+				      NULL);
+	}
+
+	if (GdmConfigAvailable &&
+	    bin_exists (GdmConfigurator)) {
+		w = gtk_menu_item_new_with_mnemonic (_("_Configure the login manager..."));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+		gtk_widget_show (GTK_WIDGET (w));
+		g_signal_connect (G_OBJECT (w), "activate",
+				  G_CALLBACK (greeter_config_handler),
+				  NULL);
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
+				      _("Configure GDM (this login manager). "
+					"This will require the root password."),
+				      NULL);
+	}
+
+	sep = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), sep);
+
+
+	if (working_command_exists (GdmReboot)) {
+		w = gtk_menu_item_new_with_mnemonic (_("_Reboot the computer..."));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+		gtk_widget_show (GTK_WIDGET (w));
+		g_signal_connect (G_OBJECT (w), "activate",
+				  G_CALLBACK (query_greeter_reboot_handler),
+				  NULL);
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
+				      _("Reboot your computer"),
+				      NULL);
+
+		gtk_widget_show (sep);
+	}
+
+	if (working_command_exists (GdmHalt)) {
+		w = gtk_menu_item_new_with_mnemonic (_("Shut _down the computer..."));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+		gtk_widget_show (GTK_WIDGET (w));
+		g_signal_connect (G_OBJECT (w), "activate",
+				  G_CALLBACK (query_greeter_halt_handler),
+				  NULL);
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
+				      _("Shut down your computer so that "
+					"you may turn it off."),
+				      NULL);
+
+		gtk_widget_show (sep);
+	}
+
+	if (working_command_exists (GdmSuspend)) {
+		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend the computer..."));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+		gtk_widget_show (GTK_WIDGET (w));
+		g_signal_connect (G_OBJECT (w), "activate",
+				  G_CALLBACK (query_greeter_suspend_handler),
+				  NULL);
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
+				      _("Suspend your computer"),
+				      NULL);
+
+		gtk_widget_show (sep);
+	}
+}
+
 
 static void
 greeter_system_handler (GreeterItemInfo *info,
@@ -140,7 +230,8 @@ greeter_system_handler (GreeterItemInfo *info,
   static GtkTooltips *tooltips = NULL;
 
   /* should never be allowed by the UI */
-  if ( ! GdmSystemMenu)
+  if ( ! GdmSystemMenu ||
+       ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
 	  return;
 
   dialog = gtk_dialog_new ();

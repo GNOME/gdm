@@ -5,7 +5,7 @@
 #include "greeter_events.h"
 
 void greeter_item_system_setup (void);
-
+void greeter_system_append_system_menu (GtkWidget *menu);
 
 #endif
 

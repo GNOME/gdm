@@ -135,6 +135,9 @@ SessionMaxFile=524388
 # any particular server).  It's probably better to ship with this on
 # since most users will not need this and it's more of a security risk
 # then anything else.
+# Note: Anytime we find a -query or -indirect on the command line we do
+# not add a "-nolisten tcp", as then the query just wouldn't work, so
+# this setting only affects truly local sessions.
 DisallowTCP=true
 
 # XDMCP is the protocol that allows remote login.  If you want to log into

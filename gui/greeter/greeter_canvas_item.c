@@ -11,6 +11,7 @@
 #include "greeter.h"
 #include "greeter_item.h"
 #include "greeter_events.h"
+#include "greeter_system.h"
 #include "greeter_canvas_item.h"
 #include "greeter_configuration.h"
 
@@ -120,29 +121,21 @@ make_menubar (void)
 	menu = gtk_menu_new();
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (w), menu);
 
-	w = gtk_menu_item_new_with_mnemonic (_("_Language"));
+	w = gtk_menu_item_new_with_mnemonic (_("Select _Language..."));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 	gtk_widget_show (GTK_WIDGET (w));
 	g_signal_connect (G_OBJECT (w), "activate",
 			  G_CALLBACK (activate_button),
 			  "language_button");
 
-	w = gtk_menu_item_new_with_mnemonic (_("_Session"));
+	w = gtk_menu_item_new_with_mnemonic (_("Select _Session..."));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 	gtk_widget_show (GTK_WIDGET (w));
 	g_signal_connect (G_OBJECT (w), "activate",
 			  G_CALLBACK (activate_button),
 			  "session_button");
 
-	if (GdmSystemMenu &&
-	    !  ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-		w = gtk_menu_item_new_with_mnemonic (_("S_ystem"));
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
-		gtk_widget_show (GTK_WIDGET (w));
-		g_signal_connect (G_OBJECT (w), "activate",
-				  G_CALLBACK (activate_button),
-				  "system_button");
-	}
+	greeter_system_append_system_menu (menu);
 
 	/* Add a quit/disconnect item when in xdmcp mode or flexi mode */
 	/* Do note that the order is important, we always want "Quit" for
@@ -156,6 +149,12 @@ make_menubar (void)
 		w = NULL;
 	}
 	if (w != NULL) {
+		GtkWidget *sep;
+		/* add separator before the quit */
+		sep = gtk_separator_menu_item_new ();
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), sep);
+		gtk_widget_show (GTK_WIDGET (sep));
+
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -176,6 +175,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   int i;
   GtkAllocation rect;
   char *text;
+  GtkTooltips *tooltips;
 
   if (item->item != NULL)
     return;
@@ -315,6 +315,15 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 				   "height", (double)rect.height,
 				   "width", (double)rect.width,
 				   NULL);
+
+	    /* Here add a tooltip, so that the user knows about F10 */
+	    tooltips = gtk_tooltips_new ();
+	    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (entry),
+				  _("Answer questions here and press Enter "
+				    "when done.  For a menu press F10."),
+				  NULL);
+
+	    /* FIXME: how to make this accessible??? */
     }
 
     item->item = gnome_canvas_item_new (group,

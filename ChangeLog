@@ -1,3 +1,21 @@
+Fri May 30 09:40:31 2003  George Lebl <jirka@5z.com>
+
+	* daemon/server.c: when there is a query in the command line,
+	  don't add the -nolisten tcp even if DisallowTCP is on, also don't
+	  add this when not resolving flags (it would make no sense to
+	  query something over tcp and disallow listening tcp at the
+	  same time)
+
+	* config/gdm.conf.in: add note about DisallowTCP not working when
+	  the server is in query mode
+
+Fri May 30 08:50:28 2003  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter_system.[ch], gui/greeter/greeter_canvas_item.c:
+	  The F10 menu for the entry is now better, removed the System entry
+	  and just whack the system menu in there, that's a lot nicer,
+	  also add a tooltip to the entry that tells about the F10 menu.
+
 Fri May 30  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* configure.in, config/Default.in, config/PreSession.in,
