@@ -2040,12 +2040,6 @@ main (int argc, char *argv[])
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
-    /* XXX: with our own centering this should not be neccessary, is it? */
-    gnome_preferences_set_dialog_position (GTK_WIN_POS_CENTER);
-    
-    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-    textdomain (PACKAGE);
-
     gdm_login_parse_config ();
 
     gdm_screen_init ();
