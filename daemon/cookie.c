@@ -77,7 +77,7 @@ gdm_random_tick (void)
 
 	gettimeofday (&tv, &tz);
 
-	srand (tv.tv_usec + tv.tv_sec);
+	srand (tv.tv_usec ^ tv.tv_sec);
 	for (i = 0; i < RANDNUMS; i++)
 		randnums[i] += rand ();
 }

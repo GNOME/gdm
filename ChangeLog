@@ -1,3 +1,14 @@
+Fri Aug 15 12:36:30 2003  George Lebl <jirka@5z.com>
+
+	* docs/C/gdm.xml: added more notes on the MIT-MAGIC-COOKIE-1
+	  authorization scheme
+
+	* configure.in: raise version
+
+	* daemon/cookie.c: use xor instead of + for the seed since it
+	  looks more technical and makes it perhaps a little bit more
+	  random (depending on how long 'long' is)
+
 Fri Aug 15 12:14:58 2003  George Lebl <jirka@5z.com>
 
 	* daemon/cookie.[ch], daemon/slave.c, daemon/xdmcp.c, daemon/gdm.c:

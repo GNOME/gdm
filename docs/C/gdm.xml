@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.1.101"> 
-    <!ENTITY date "8/14/2003"> 
+    <!ENTITY date "8/15/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -206,6 +206,12 @@
       </para>
 
       <para>
+	GDM implements only the MIT-MAGIC-COOKIE-1 authorization scheme,
+	see the XDMCP section for more information about this, especially
+	relating to using X over the network.
+      </para>
+
+      <para>
 	Finally, the sysadmin can specify the maximum file size GDM
 	should accept, and, if the face browser is enabled, a tunable
 	maximum icon size is also enforced.  On large systems it is
@@ -298,6 +304,22 @@
 	network you use this on.  If snooping is possible
 	and undesirable, then you had better use ssh for tunneling
 	an X connection anyway rather then using GDM's XDMCP.
+      </para>
+
+      <para>
+	On the upside, GDM's random number generation is far superior
+	to XDM or KDM.  At least the last time I looked at both of
+	those.  XDM or KDM will only really have 32 bits of randomness
+	for the MIT-MAGIC-COOKIE-1 (they both get a 32bit seed and then
+	user a pseudorandom number generator to get 128 bits).  GDM goes
+	to extraordinary measures to truly get a 128 bit random number,
+	using hardware random number generators if available, plus the
+	current time (in microsecond precision), a 20 byte array of pseudorandom
+	numbers, process pid's, plus other random information (possibly using
+	/dev/audio or /dev/mem) to create a large buffer and then run MD5.
+	Obviously, all this work is wasted if you send this cookie over
+	an open network or store it on an NFS directory (see
+	<filename>UserAuthDir</filename> configuration key).
       </para>
 
       <para>
