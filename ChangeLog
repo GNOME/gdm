@@ -1,3 +1,12 @@
+2000-06-18  Stanislav Brabec  <utx@penguin.cz>
+
+	* daemon/misc.c,
+	daemon/misc.h,
+	configure.in: Thread-safe wrapper for gdm_setenv, new function
+	gdm_unsetenv. Change required for gdm basic funftionallity on some
+	systems. On systems without setenv/unsetenv functions, gdm_(un)setenv
+	still remains thread unsafe & POSIX safe!
+
 2000-06-05  Stanislav Brabec  <utx@penguin.cz>
 
 	* daemon/gdm.c: Typo fix.
