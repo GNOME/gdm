@@ -1244,12 +1244,13 @@
 	  <varlistentry>
 	    <term>PingInterval</term>
 	    <listitem>
-	      <synopsis>PingInterval=5</synopsis>
+	      <synopsis>PingInterval=15</synopsis>
 	      <para>
-		Interval in which to ping the X server in minutes.  If the
+		Interval in which to ping the X server in seconds.  If the
 		X server doesn't return before the next time we ping it,
 		the connection is stopped and the session ended.  This is
-		a combination of the xdm PingInterval and PingTimeout.
+		a combination of the xdm PingInterval and PingTimeout,
+		but in seconds.
 	      </para>
 	    </listitem>
 	  </varlistentry>

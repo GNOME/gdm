@@ -981,13 +981,28 @@ selection_changed (GtkTreeSelection *selection, gpointer data)
 					       GTK_TYPE_IMAGE);
         GtkWidget *no_preview = glade_helper_get (xml, "gg_theme_no_preview",
 						  GTK_TYPE_WIDGET);
+	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
+						  GTK_TYPE_BUTTON);
         char *screenshot;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GValue value = {0, };
 
-	if ( ! gtk_tree_selection_get_selected (selection, &model, &iter))
+	if ( ! gtk_tree_selection_get_selected (selection, &model, &iter)) {
+		gtk_widget_set_sensitive (del_button, FALSE);
 		return;
+	}
+
+	gtk_widget_set_sensitive (del_button, TRUE);
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_SELECTED,
+				  &value);
+	/* Do not allow deleting of selected theme */
+	if (g_value_get_boolean (&value)) {
+		gtk_widget_set_sensitive (del_button, FALSE);
+	}
+	g_value_unset (&value);
 
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_AUTHOR,
@@ -1562,20 +1577,23 @@ install_ok (GtkWidget *button, gpointer data)
 	if (chdir (theme_dir) == 0) {
 		if (system (untar_cmd) == 0) {
 			char *cmd;
+			char *quoted = g_shell_quote (dir);
 			success = TRUE;
 
 			/* HACK! */
-			cmd = g_strdup_printf ("/bin/chown -R root.root %s", dir);
+			cmd = g_strdup_printf ("/bin/chown -R root.root %s", quoted);
 			system (cmd);
 			g_free (cmd);
 
-			cmd = g_strdup_printf ("/bin/chmod -R a+r %s", dir);
+			cmd = g_strdup_printf ("/bin/chmod -R a+r %s", quoted);
 			system (cmd);
 			g_free (cmd);
 
-			cmd = g_strdup_printf ("/bin/chmod a+x %s", dir);
+			cmd = g_strdup_printf ("/bin/chmod a+x %s", quoted);
 			system (cmd);
 			g_free (cmd);
+
+			g_free (quoted);
 		}
 		chdir (cwd);
 	}
@@ -1648,6 +1666,108 @@ install_new_theme (GtkWidget *button, gpointer data)
 }
 
 static void
+delete_theme (GtkWidget *button, gpointer data)
+{
+	GtkListStore *store = data;
+	GtkWidget *theme_list;
+	GtkWidget *setup_dialog;
+	GtkWidget *del_button;
+	GtkTreeSelection *selection;
+        char *dir, *name;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GValue value = {0, };
+	GtkWidget *dlg;
+
+	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+	theme_list = glade_helper_get (xml, "gg_theme_list",
+				       GTK_TYPE_TREE_VIEW);
+	del_button = glade_helper_get (xml, "gg_delete_theme",
+				       GTK_TYPE_BUTTON);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
+
+	if ( ! gtk_tree_selection_get_selected (selection, &model, &iter)) {
+		/* should never get here since the button shuld not be
+		 * enabled */
+		return;
+	}
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_SELECTED,
+				  &value);
+	/* Do not allow deleting of selected theme */
+	if (g_value_get_boolean (&value)) {
+		/* should never get here since the button shuld not be
+		 * enabled */
+		g_value_unset (&value);
+		return;
+	}
+	g_value_unset (&value);
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_NAME,
+				  &value);
+	name = g_strdup (g_value_get_string (&value));
+	g_value_unset (&value);
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_DIR,
+				  &value);
+	dir = g_strdup (g_value_get_string (&value));
+	g_value_unset (&value);
+
+	dlg = gtk_message_dialog_new
+		(GTK_WINDOW (setup_dialog),
+		 GTK_DIALOG_MODAL | 
+		 GTK_DIALOG_DESTROY_WITH_PARENT,
+		 GTK_MESSAGE_QUESTION,
+		 GTK_BUTTONS_YES_NO,
+		 _("Do you really wish to remove theme '%s' from the system?"),
+		 name);
+	if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES) {
+		char *theme_dir = get_theme_dir ();
+		char *cwd = g_get_current_dir ();
+		if (chdir (theme_dir) == 0 &&
+		    /* this is a security sanity check, since we're doing rm -fR */
+		    strchr (dir, '/') == NULL) {
+			/* HACK! */
+			DIR *dp;
+			GtkTreeIter *select_iter = NULL;
+			char *quoted = g_shell_quote (dir);
+			char *cmd = g_strdup_printf ("/bin/rm -fR %s", quoted);
+			system (cmd);
+			g_free (cmd);
+			g_free (quoted);
+
+			/* Update the list */
+			gtk_list_store_clear (store);
+
+			dp = opendir (theme_dir);
+
+			if (dp != NULL) {
+				select_iter = read_themes (store, theme_dir, dp, 
+							   selected_theme);
+				closedir (dp);
+			}
+
+			if (select_iter != NULL) {
+				gtk_tree_selection_select_iter (selection, select_iter);
+				g_free (select_iter);
+			}
+
+		}
+		chdir (cwd);
+		g_free (cwd);
+		g_free (theme_dir);
+	}
+	gtk_widget_destroy (dlg);
+
+	g_free (name);
+	g_free (dir);
+}
+
+static void
 setup_graphical_themes (void)
 {
 	DIR *dir;
@@ -1660,6 +1780,8 @@ setup_graphical_themes (void)
 						  GTK_TYPE_TREE_VIEW);
 	GtkWidget *button = glade_helper_get (xml, "gg_install_new_theme",
 					      GTK_TYPE_BUTTON);
+	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
+						  GTK_TYPE_BUTTON);
 
 	char *theme_dir = get_theme_dir ();
 
@@ -1679,6 +1801,9 @@ setup_graphical_themes (void)
 
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (install_new_theme), store);
+	g_signal_connect (del_button, "clicked",
+			  G_CALLBACK (delete_theme), store);
+	gtk_widget_set_sensitive (del_button, FALSE);
 
 	dir = opendir (theme_dir);
 

@@ -668,7 +668,7 @@ gdm_slave_run (GdmDisplay *display)
     /* If XDMCP setup pinging */
     if (d->type == TYPE_XDMCP &&
 	GdmPingInterval > 0) {
-	    alarm (GdmPingInterval * 60);
+	    alarm (GdmPingInterval);
     }
 
     /* checkout xinerama */
@@ -3051,7 +3051,7 @@ gdm_slave_alrm_handler (int sig)
 	in_ping = TRUE;
 
 	/* schedule next alarm */
-	alarm (GdmPingInterval * 60);
+	alarm (GdmPingInterval);
 
 	XSync (d->dsp, True);
 

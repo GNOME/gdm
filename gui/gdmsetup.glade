@@ -334,6 +334,10 @@
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
 			  <property name="mnemonic_widget">autologin_entry</property>
+			  <accessibility>
+			    <atkrelation target="autologin_entry" type="label-for"/>
+			    <atkrelation target="autologin_combo" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -365,6 +369,9 @@
 			      <property name="has_frame">True</property>
 			      <property name="invisible_char" translatable="yes">*</property>
 			      <property name="activates_default">False</property>
+			      <accessibility>
+				<atkrelation target="label19" type="labelled-by"/>
+			      </accessibility>
 			    </widget>
 			  </child>
 
@@ -1249,7 +1256,7 @@
 			      <child>
 				<widget class="GtkLabel" id="label33">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="no">&lt;b&gt;Copyright:&lt;/b&gt;</property>
+				  <property name="label" translatable="yes">&lt;b&gt;Copyright:&lt;/b&gt;</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">True</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1393,7 +1400,7 @@ widget</property>
 		    <widget class="GtkHButtonBox" id="hbuttonbox1">
 		      <property name="visible">True</property>
 		      <property name="layout_style">GTK_BUTTONBOX_END</property>
-		      <property name="spacing">0</property>
+		      <property name="spacing">5</property>
 
 		      <child>
 			<widget class="GtkButton" id="gg_install_new_theme">
@@ -1401,6 +1408,17 @@ widget</property>
 			  <property name="can_default">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">_Install new theme</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			</widget>
+		      </child>
+
+		      <child>
+			<widget class="GtkButton" id="gg_delete_theme">
+			  <property name="visible">True</property>
+			  <property name="can_default">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">_Delete theme</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			</widget>
@@ -1736,6 +1754,9 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkrelation target="udpport" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1760,6 +1781,9 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkrelation target="maxpending" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1784,6 +1808,9 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkrelation target="maxpendingindirect" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1808,6 +1835,9 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkrelation target="maxremotesessions" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1832,6 +1862,9 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkrelation target="maxwait" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1856,6 +1889,9 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkrelation target="maxwaitindirect" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1880,6 +1916,9 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkrelation target="displaysperhost" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1894,7 +1933,7 @@ widget</property>
 		      <child>
 			<widget class="GtkLabel" id="label16">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Ping interval (minutes):</property>
+			  <property name="label" translatable="yes">Ping interval (seconds):</property>
 			  <property name="use_underline">False</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1904,6 +1943,10 @@ widget</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <accessibility>
+			    <atkproperty name="AtkObject::accessible_name" translatable="yes">Ping interval (seconds):</atkproperty>
+			    <atkrelation target="pinginterval" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -1927,6 +1970,9 @@ widget</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">177 1 65536 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label9" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -1949,6 +1995,9 @@ widget</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">2 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label10" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -1971,6 +2020,9 @@ widget</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label11" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -1993,6 +2045,9 @@ widget</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label12" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -2015,6 +2070,9 @@ widget</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label13" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -2037,6 +2095,9 @@ widget</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label14" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -2059,6 +2120,9 @@ widget</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label15" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -2080,7 +2144,10 @@ widget</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">15 0 6000 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="label16" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>

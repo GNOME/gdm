@@ -1,3 +1,15 @@
+Tue May 13 17:00:16 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, daemon/gdm.h, config/gdm.conf.in,
+	  docs/C/gdm.(xml|sgml):  PingInterval is now in seconds.  It really
+	  makes no sense in minutes, I mean who wants to use a connection
+	  which hangs for several minutes, that makes no sense.  This
+	  fixes a whole bunch of bugs, among others #103266
+
+	* gui/gdmsetup.glade, gui/gdmsetup.c: add some accessibility stuff,
+	  change the ping interval label to say seconds and not minutes,
+	  and add "Delete theme" button which fixes #110302
+
 Tue May 13 12:22:45 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.c: when more then 50 users don't put them all in the
