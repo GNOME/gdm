@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0.0\n"
-"POT-Creation-Date: 2001-01-26 00:01-0800\n"
+"POT-Creation-Date: 2001-01-29 10:10+0200\n"
 "PO-Revision-Date: 1999-10-07 11:490-0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -125,7 +125,7 @@ msgstr "gdm_child_action: Зупинка не вдалася: %s"
 msgid ""
 "gdm_child_action: Greeter segfaulted too many times in the last 40 seconds "
 "for display %s, killing it"
-msgstr ""
+msgstr "gdm_child_action: Програма прив╕тання зазнала авар╕йного збою надто багато раз╕в за останн╕ 40 секунд для дисплея %s, знищено."
 
 #: daemon/gdm.c:507
 msgid "Only root wants to run gdm\n"
@@ -215,6 +215,8 @@ msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
+"Не вдалось запустити X-сервер дек╕лька раз╕в за короткий пром╕жок часу; "
+"вимкнення дисплея %s"
 
 #: daemon/server.c:241
 msgid "gdm_server_start: Error setting up USR1 signal handler"
@@ -238,14 +240,12 @@ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Помилка встановлення USR1 у SIG_IGN"
 
 #: daemon/server.c:418
-#, fuzzy
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
-msgstr "gdm_server_spawn: Помилка встановлення USR1 у SIG_IGN"
+msgstr "gdm_server_spawn: Помилка встановлення HUP у SIG_DFL"
 
 #: daemon/server.c:422
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
-msgstr "gdm_server_spawn: Помилка встановлення USR1 у SIG_IGN"
+msgstr "gdm_server_spawn: Помилка встановлення TERM у SIG_DFL"
 
 #: daemon/server.c:447
 #, c-format
@@ -328,10 +328,9 @@ msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Не вдалося запустити сеанс `%s'"
 
 #: daemon/slave.c:740
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
-msgstr ""
-"gdm_slave_windows_kill_ioerror_handler: Фатальна помилка X - перезапуск %s"
+msgstr "gdm_slave_xioerror_handler: Фатальна помилка X Window - перезапуск %s"
 
 #: daemon/slave.c:835
 #, c-format
@@ -379,7 +378,7 @@ msgstr "Не вдалося в╕дкрити сеанс для %s"
 
 #: daemon/verify-pam.c:198
 msgid "Authentication failed"
-msgstr ""
+msgstr "Зб╕й автенф╕кац╕╖"
 
 #: daemon/verify-pam.c:322
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
@@ -537,9 +536,8 @@ msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: Не вдалося зчитати номер дисплея"
 
 #: daemon/xdmcp.c:776
-#, fuzzy
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-msgstr "gdm_xdmcp_manage: Не вдалося зчитати клас дисплея"
+msgstr "gdm_xdmcp_handle_manage: Не вдалося зчитати клас дисплея"
 
 #: daemon/xdmcp.c:798
 #, c-format
@@ -681,7 +679,7 @@ msgstr "╤нш╕"
 
 #: gui/gdmlogin.c:1342
 msgid "GNOME Desktop Manager"
-msgstr ""
+msgstr "Менеджер робочого столу GNOME"
 
 #: gui/gdmlogin.c:1354
 #, c-format
@@ -732,25 +730,5 @@ msgid "main: Error setting up TERM signal handler"
 msgstr "main: Помилка встановлення обробника сигналу TERM"
 
 #: gui/gdmlogin.c:1929
-#, fuzzy
 msgid "main: Error setting up CHLD signal handler"
-msgstr "gdm_main: Помилка встановлення обробника сигналу CHLD"
-
-#~ msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
-#~ msgstr "gdm_slave_xsync_ping: Помилка встановлення обробника сигналу ALARM"
-
-#~ msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
-#~ msgstr "gdm_parse_enriched_string: Неможливо розм╕стити тимчасовий буфер!"
-
-#~ msgid "Iconify"
-#~ msgstr "М╕н╕м╕зувати"
-
-#~ msgid ""
-#~ "According to %s, gdm was already running (%d),\n"
-#~ "but seems to have been murdered mysteriously.\n"
-#~ msgstr ""
-#~ "Зг╕дно до %s, gdm вже запущено (%d) але, схоже, \n"
-#~ "було знищено з нев╕домих обставин.\n"
-
-#~ msgid "gdm_server_stop: Could not unlink auth file: %s!"
-#~ msgstr "gdm_server_stop: Не вдалося в╕дчепити файл авторизац╕╖: %s!"
+msgstr "main: Помилка встановлення обробника сигналу CHLD"
