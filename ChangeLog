@@ -1,3 +1,24 @@
+2002-01-29  Alex Larsson  <alexl@redhat.com>
+
+	* gui/greeter/Makefile.am:
+	Add WARN_CFLAGS to INCLUDES.
+	mumble mumble...
+
+	* gui/greeter/greeter.c:
+	Call greeter_layout() from main().
+
+	* gui/greeter/greeter_canvas_item.c:
+	Change anchor handling. Now it's done manually by
+	greeter_geometry.c for everything but labels.
+
+	* gui/greeter/greeter_geometry.[ch]:
+	Boxes now work.
+
+	* gui/greeter/greeter_parser.c:
+	* gui/greeter/greeter_item.h:
+	Add expand property to items
+	Build root item.
+
 2002-01-29  Alexander Larsson  <alla@lysator.liu.se>
 
 	* gui/greeter/Makefile.am:

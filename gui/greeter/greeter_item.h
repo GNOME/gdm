@@ -51,6 +51,9 @@ struct _GreeterItemInfo {
   double width;
   double height;
 
+  /* For packed items */
+  gboolean expand;
+  
   char *id;
 
   GreeterItemType item_type;

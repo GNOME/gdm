@@ -12,6 +12,7 @@
 
 #include "greeter.h"
 #include "greeter_parser.h"
+#include "greeter_geometry.h"
 #include "greeter_item_clock.h"
 #include "greeter_item_pam.h"
 #include "greeter_events.h"
@@ -555,7 +556,6 @@ main (int argc, char *argv[])
   sigset_t mask;
   GIOChannel *ctrlch;
   gint w, h;
-  gboolean res;
   GError *error;
   GreeterItemInfo *root;
   int r;
@@ -611,7 +611,7 @@ main (int argc, char *argv[])
 		    NULL);
     g_io_channel_unref (ctrlch);
   }
-  
+
   w = gdk_screen_width ();
   h = gdk_screen_height ();
 
@@ -621,7 +621,7 @@ main (int argc, char *argv[])
   gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
 		      GTK_SIGNAL_FUNC (key_press_event), NULL);
 #endif
-
+  
   canvas = gnome_canvas_new_aa ();
   gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas),
 				  0.0, 0.0,
@@ -637,6 +637,8 @@ main (int argc, char *argv[])
   if (root == NULL)
     g_warning ("Failed to parse file: %s!", error->message);
 
+  greeter_layout (root, GNOME_CANVAS (canvas));
+  
   greeter_setup_items ();
   gtk_widget_show_all (window);
 

@@ -4,6 +4,7 @@ INCLUDES = \
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
+	$(WARN_CFLAGS)					\
 	$(GREETER_CFLAGS)
 
 bin_PROGRAMS = \

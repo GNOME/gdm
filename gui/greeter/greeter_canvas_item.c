@@ -90,47 +90,6 @@ transform_pixbuf (GdkPixbuf *orig,
 }
 
 void
-fixup_from_anchor (GtkAllocation *rect,
-		   GtkAnchorType  anchor)
-{
-  switch (anchor)
-    {
-    case GTK_ANCHOR_NW:
-      break;
-    case GTK_ANCHOR_N:
-      rect->x -= rect->width/2;
-      break;
-    case GTK_ANCHOR_NE:
-      rect->x -= rect->width;
-      break;
-      
-    case GTK_ANCHOR_W:
-      rect->y -= rect->height/2;
-      break;
-    case GTK_ANCHOR_CENTER:
-      rect->x -= rect->width/2;
-      rect->y -= rect->height/2;
-      break;
-    case GTK_ANCHOR_E:
-      rect->x -= rect->width;
-      rect->y -= rect->height/2;
-      break;
-      
-    case GTK_ANCHOR_SW:
-      rect->y -= rect->height;
-      break;
-    case GTK_ANCHOR_S:
-      rect->x -= rect->width/2;
-      rect->y -= rect->height;
-      break;
-    case GTK_ANCHOR_SE:
-      rect->x -= rect->width;
-      rect->y -= rect->height;
-      break;
-    }
-}
-
-void
 greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
   GnomeCanvasGroup *group;
@@ -161,14 +120,12 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 
   rect = item->allocation;
 
-  if (item->item_type == GREETER_ITEM_TYPE_RECT)
-    fixup_from_anchor (&rect, item->anchor);
   
   x1 = (gdouble) rect.x;
   y1 = (gdouble) rect.y;
   x2 = (gdouble) rect.x + rect.width;
   y2 = (gdouble) rect.y + rect.height;
-  
+
   switch (item->item_type) {
   case GREETER_ITEM_TYPE_RECT:
     item->item = gnome_canvas_item_new (group,
@@ -186,7 +143,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	if (item->files[i])
 	  item->orig_pixbufs[i] =
 	    rsvg_pixbuf_from_file_at_size (item->files[i],
-					   item->allocation.width, item->allocation.height,
+					   rect.width, rect.height,
 					   NULL);
 	else
 	  item->orig_pixbufs[i] = NULL;
@@ -208,8 +165,8 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     item->item = gnome_canvas_item_new (group,
 					GNOME_TYPE_CANVAS_PIXBUF,
 					"x", (gdouble) x1,
-					"y", (gdouble) x2,
-					"anchor", item->anchor,
+					"y", (gdouble) y1,
+					//					"anchor", item->anchor,
 					"pixbuf", item->pixbufs[GREETER_ITEM_STATE_NORMAL],
 					NULL);
     break;
@@ -220,7 +177,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					GNOME_TYPE_CANVAS_TEXT,
 					"text", text,
 					"x", x1,
-					"y", x2,
+					"y", y1,
 					"anchor", item->anchor,
 					"font", item->fonts[GREETER_ITEM_STATE_NORMAL],
 					"fill_color_rgba", item->colors[GREETER_ITEM_STATE_NORMAL],
@@ -240,7 +197,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					"y", y1,
 					"height", (double)rect.height,
 					"width", (double)rect.width,
-					"anchor", item->anchor,
+					//"anchor", item->anchor,
 					NULL);
     break;
   }

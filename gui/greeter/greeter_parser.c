@@ -193,7 +193,29 @@ parse_pos (xmlNodePtr       node,
 	}
       xmlFree (prop);
     }
-  
+
+  prop = xmlGetProp (node, "expand");
+  if (prop)
+    {
+      if (strcmp (prop, "true") == 0)
+	{
+	  info->expand = TRUE;
+	}
+      else if (strcmp (prop, "false") == 0)
+	{
+	  info->expand = FALSE;
+	}
+      else
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"bad expand spec %s\n", prop);
+	  return FALSE;
+	}
+      
+      xmlFree (prop);
+    }
+
   return TRUE;
 }
 
@@ -884,7 +906,7 @@ parse_items (xmlNodePtr  node,
 	    if (!res)
 	      return FALSE;
 
-	    items = g_list_append (items, info);
+	    items = g_list_prepend (items, info);
 	    
 	  }
 	child = child->next;
@@ -983,7 +1005,8 @@ greeter_parse (char *file, GnomeCanvas *canvas,
   root->height = height;
   root->width_type = GREETER_ITEM_SIZE_ABSOLUTE;
   root->width_type = GREETER_ITEM_SIZE_ABSOLUTE;
-  /* TODO: step 2 done here */
+
+  root->group_item = gnome_canvas_root (canvas);
   
   return root;
 }
