@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-23 14:20-0400\n"
+"POT-Creation-Date: 2002-05-24 17:00-0500\n"
 "PO-Revision-Date: 2002-05-15 11:03-0300\n"
 "Last-Translator: Isam Bayazidi <bayazidi@arabeyes.org>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -63,23 +63,45 @@ msgstr ""
 "هل تريدني أن أشغل برنامج تعريف الفأرة؟ لاحظ أنك تحتاك كلمة السر للمستخدم "
 "الجذر لعمل هذا."
 
-#: daemon/auth.c:146
+#: daemon/auth.c:55
+#, fuzzy, c-format
+msgid "%s: Could not write new authorization entry: %s"
+msgstr "%s: لا أستطيع إنشاء ملف كوكي في %s"
+
+#: daemon/auth.c:58
+#, c-format
+msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
+msgstr ""
+
+#: daemon/auth.c:63
+#, c-format
+msgid ""
+"GDM could not write a new authorization entry to disk.  Possibly out of "
+"diskspace.%s%s"
+msgstr ""
+
+#: daemon/auth.c:179
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: لا أستطيع إنشاء ملف كوكي في %s"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:369 daemon/auth.c:400
+#: daemon/auth.c:419 daemon/auth.c:449
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add: لا أستطيع فتح ملف كوكي %s"
 
-#: daemon/auth.c:386
+#: daemon/auth.c:435
 #, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add: لا أستطيع فقل ملف الكوكي %s"
 
-#: daemon/auth.c:476
+#: daemon/auth.c:470
+#, fuzzy, c-format
+msgid "%s: Could not write cookie"
+msgstr "%s: لا أستطيع إنشاء ملف كوكي في %s"
+
+#: daemon/auth.c:530
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: أهمال ملف كوكي ذو مضهر مريب %s"
@@ -100,17 +122,22 @@ msgstr "فشل في تشغيل خادم العرض أكثر من مرة في و�
 msgid "%s: Cannot create pipe"
 msgstr ""
 
-#: daemon/display.c:243
+#: daemon/display.c:242
 #, fuzzy, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr "فشل"
 
-#: daemon/errorgui.c:154
+#: daemon/errorgui.c:87
+#, c-format
+msgid "%s could not be opened"
+msgstr ""
+
+#: daemon/errorgui.c:240
 #, fuzzy
 msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr "الى"
 
-#: daemon/errorgui.c:292 daemon/errorgui.c:412
+#: daemon/errorgui.c:393 daemon/errorgui.c:519
 #, fuzzy
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
 msgstr "الى"
@@ -155,190 +182,195 @@ msgstr "عن طريق غير ذلك."
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
 
-#: daemon/gdm.c:212
+#: daemon/gdm.c:214
 #, fuzzy, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "لا."
 
-#: daemon/gdm.c:300
+#: daemon/gdm.c:287
+#, c-format
+msgid "%s: Standard X server not found, trying alternatives"
+msgstr ""
+
+#: daemon/gdm.c:313
 #, fuzzy, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr "مفعل"
 
-#: daemon/gdm.c:313
+#: daemon/gdm.c:326
 #, fuzzy, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
 msgstr "الجذر لا تعمل"
 
-#: daemon/gdm.c:326
+#: daemon/gdm.c:339
 #, fuzzy, c-format
 msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr "الجذر لا تعمل"
 
-#: daemon/gdm.c:332
+#: daemon/gdm.c:345
 #, fuzzy, c-format
 msgid "%s: TimedLoginDelay less then 5, so I will just use 5."
 msgstr "I."
 
-#: daemon/gdm.c:342
+#: daemon/gdm.c:355
 #, fuzzy, c-format
 msgid "%s: No greeter specified."
 msgstr "لا."
 
-#: daemon/gdm.c:345
+#: daemon/gdm.c:358
 #, fuzzy, c-format
 msgid "%s: No remote greeter specified."
 msgstr "لا."
 
-#: daemon/gdm.c:350
+#: daemon/gdm.c:363
 #, fuzzy
 msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "لا ال"
 
-#: daemon/gdm.c:351
+#: daemon/gdm.c:364
 #, fuzzy, c-format
 msgid "%s: No authdir specified."
 msgstr "لا."
 
-#: daemon/gdm.c:358
+#: daemon/gdm.c:371
 #, fuzzy, c-format
 msgid "%s: No sessions directory specified."
 msgstr "لا."
 
-#: daemon/gdm.c:382
+#: daemon/gdm.c:395
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr ""
 
-#: daemon/gdm.c:427
+#: daemon/gdm.c:440
 #, fuzzy, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr "عرض I"
 
-#: daemon/gdm.c:444
+#: daemon/gdm.c:457
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr ""
 
 #. start
 #. server uid
-#: daemon/gdm.c:463
+#: daemon/gdm.c:480
 #, fuzzy, c-format
 msgid ""
-"%s: XDMCP disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
-"d to allow configuration!"
+"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
+"configuration!"
 msgstr "معطل و محلي تعمل الى!"
 
-#: daemon/gdm.c:478
+#: daemon/gdm.c:495
 #, fuzzy, c-format
 msgid ""
 "XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
 "Please correct the configuration %s and restart gdm."
 msgstr "معطل و محلي الى ال."
 
-#: daemon/gdm.c:485
+#: daemon/gdm.c:502
 #, fuzzy, c-format
 msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
 msgstr "معطل و محلي!"
 
-#: daemon/gdm.c:493
+#: daemon/gdm.c:510
 #, fuzzy, c-format
 msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
 msgstr "ال!"
 
-#: daemon/gdm.c:501
+#: daemon/gdm.c:518
 #, fuzzy, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
 "gdm."
 msgstr "و."
 
-#: daemon/gdm.c:506
+#: daemon/gdm.c:523
 #, fuzzy, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "ال!"
 
-#: daemon/gdm.c:513
+#: daemon/gdm.c:530
 #, fuzzy, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct gdm configuration %s and restart gdm."
 msgstr "الى و."
 
-#: daemon/gdm.c:519
+#: daemon/gdm.c:536
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr ""
 
-#: daemon/gdm.c:525
+#: daemon/gdm.c:542
 #, fuzzy, c-format
 msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr "ال!"
 
-#: daemon/gdm.c:533
+#: daemon/gdm.c:550
 #, fuzzy, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
 "restart gdm."
 msgstr "و."
 
-#: daemon/gdm.c:538
+#: daemon/gdm.c:555
 #, fuzzy, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "ال!"
 
-#: daemon/gdm.c:545
+#: daemon/gdm.c:562
 #, fuzzy, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct gdm configuration %s and restart gdm."
 msgstr "الى و."
 
-#: daemon/gdm.c:551
+#: daemon/gdm.c:568
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr ""
 
-#: daemon/gdm.c:561
+#: daemon/gdm.c:578
 #, fuzzy, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr "أو عن طريق ال"
 
-#: daemon/gdm.c:568
+#: daemon/gdm.c:585
 #, fuzzy, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
 msgstr "أو عن طريق ال"
 
-#: daemon/gdm.c:579
+#: daemon/gdm.c:596
 #, fuzzy, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr "أو عن طريق ال"
 
-#: daemon/gdm.c:588
+#: daemon/gdm.c:605
 #, fuzzy, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist. Please correct gdm configuration %s and restart gdm."
 msgstr "الخادم الترخيص الى و."
 
-#: daemon/gdm.c:595
+#: daemon/gdm.c:612
 #, fuzzy, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "الدليل."
 
-#: daemon/gdm.c:600
+#: daemon/gdm.c:617
 #, fuzzy, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory. Please correct gdm configuration %s and restart gdm."
 msgstr "الخادم الترخيص الى و."
 
-#: daemon/gdm.c:607
+#: daemon/gdm.c:624
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:612
+#: daemon/gdm.c:629
 #, fuzzy, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -346,12 +378,12 @@ msgid ""
 "configuration %s and restart gdm."
 msgstr "الخادم الترخيص الى عن طريق و ال أو و."
 
-#: daemon/gdm.c:621
+#: daemon/gdm.c:638
 #, fuzzy, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "عن طريق."
 
-#: daemon/gdm.c:627
+#: daemon/gdm.c:644
 #, fuzzy, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -359,31 +391,33 @@ msgid ""
 "permissions or the gdm configuration %s and restart gdm."
 msgstr "الخادم الترخيص الى ال ال أو ال و."
 
-#: daemon/gdm.c:636
+#: daemon/gdm.c:653
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:691
-msgid "gdm_daemonify: fork() failed!"
-msgstr ""
-
-#: daemon/gdm.c:694
+#: daemon/gdm.c:708
 #, c-format
-msgid "gdm_daemonify: setsid() failed: %s!"
+msgid "%s: fork() failed!"
 msgstr ""
 
-#: daemon/gdm.c:802
+#. should never happen
+#: daemon/gdm.c:711 daemon/slave.c:2057
+#, c-format
+msgid "%s: setsid() failed: %s!"
+msgstr ""
+
+#: daemon/gdm.c:820
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
 msgstr ""
 
-#: daemon/gdm.c:818
+#: daemon/gdm.c:836
 #, fuzzy
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr "ال"
 
-#: daemon/gdm.c:891
+#: daemon/gdm.c:911
 #, fuzzy
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
@@ -396,125 +430,133 @@ msgstr "I ال الى تعمل و ال."
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:903
+#: daemon/gdm.c:923
 #, fuzzy, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr "فشل الى"
 
-#: daemon/gdm.c:1009
+#: daemon/gdm.c:1029
 #, fuzzy, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
 "display %s"
 msgstr "أو"
 
-#: daemon/gdm.c:1017
+#: daemon/gdm.c:1037
 #, fuzzy, c-format
-msgid "gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
+msgid ""
+"gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
 msgstr "اعد التشغيل أو محلي"
 
 #. Bury this display for good
-#: daemon/gdm.c:1051
+#: daemon/gdm.c:1071
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr ""
 
 #. Reboot machine
-#: daemon/gdm.c:1063
+#: daemon/gdm.c:1083
 msgid "gdm_child_action: Master rebooting..."
 msgstr ""
 
-#: daemon/gdm.c:1070
+#: daemon/gdm.c:1090
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr ""
 
 #. Halt machine
-#: daemon/gdm.c:1074
+#: daemon/gdm.c:1094
 msgid "gdm_child_action: Master halting..."
 msgstr ""
 
-#: daemon/gdm.c:1081
+#: daemon/gdm.c:1101
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr ""
 
 #. Suspend machine
-#: daemon/gdm.c:1085
+#: daemon/gdm.c:1105
 msgid "gdm_child_action: Master suspending..."
 msgstr ""
 
-#: daemon/gdm.c:1092
+#: daemon/gdm.c:1112
 #, c-format
 msgid "gdm_child_action: Suspend failed: %s"
 msgstr ""
 
-#: daemon/gdm.c:1187
-msgid "Gdm restarting ..."
+#: daemon/gdm.c:1207
+msgid "GDM restarting ..."
 msgstr ""
 
-#: daemon/gdm.c:1192
+#: daemon/gdm.c:1212
 #, fuzzy
 msgid "Failed to restart self"
 msgstr "فشل الى"
 
-#: daemon/gdm.c:1295
+#: daemon/gdm.c:1315
 #, fuzzy
 msgid "Do not fork into the background"
 msgstr "ال"
 
-#: daemon/gdm.c:1297
+#: daemon/gdm.c:1317
 msgid "Preserve LD_* variables"
 msgstr ""
 
-#: daemon/gdm.c:1331
+#: daemon/gdm.c:1347
+#, c-format
+msgid ""
+"Error on option %s: %s.\n"
+"Run '%s --help' to see a full list of available command line options.\n"
+msgstr ""
+
+#: daemon/gdm.c:1358
 #, fuzzy
 msgid "Only root wants to run gdm\n"
 msgstr "الى"
 
-#: daemon/gdm.c:1354
+#: daemon/gdm.c:1381
 msgid "gdm already running. Aborting!"
 msgstr ""
 
-#: daemon/gdm.c:1385
+#: daemon/gdm.c:1412
 #, fuzzy, c-format
 msgid "%s: Error setting up TERM signal handler"
 msgstr "خطأ"
 
-#: daemon/gdm.c:1389
+#: daemon/gdm.c:1416
 #, fuzzy, c-format
 msgid "%s: Error setting up INT signal handler"
 msgstr "خطأ"
 
-#: daemon/gdm.c:1393
+#: daemon/gdm.c:1420
 #, fuzzy, c-format
 msgid "%s: Error setting up HUP signal handler"
 msgstr "خطأ"
 
-#: daemon/gdm.c:1397
+#: daemon/gdm.c:1424
 #, fuzzy, c-format
 msgid "%s: Error setting up USR1 signal handler"
 msgstr "خطأ"
 
-#: daemon/gdm.c:1406
+#: daemon/gdm.c:1433
 #, fuzzy, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "خطأ"
 
-#: daemon/gdm.c:2384 daemon/gdm.c:2401
+#: daemon/gdm.c:2500 daemon/gdm.c:2517
 msgid "Flexible server request denied: Not authenticated"
 msgstr ""
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2419
+#: daemon/gdm.c:2535
 #, fuzzy
 msgid "Unknown server type requested, using standard server."
 msgstr "غير معروف."
 
-#: daemon/gdm.c:2423
+#: daemon/gdm.c:2539
 #, fuzzy, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -542,37 +584,27 @@ msgid "%s: Could not open FIFO"
 msgstr ""
 
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:422
+#: daemon/misc.c:439
 #, fuzzy
 msgid "y = Yes or n = No? >"
 msgstr "نعم أو لا"
 
-#: daemon/misc.c:666
+#: daemon/misc.c:713
 #, fuzzy, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "محلي!"
 
-#: daemon/misc.c:707
-#, c-format
-msgid "%s: Could not get server hostname: %s!"
-msgstr ""
-
-#: daemon/misc.c:714
-#, c-format
-msgid "%s: Could not get address from hostname!"
-msgstr ""
-
-#: daemon/misc.c:772
+#: daemon/misc.c:827
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr ""
 
-#: daemon/misc.c:777
+#: daemon/misc.c:832
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr ""
 
-#: daemon/server.c:167
+#: daemon/server.c:169
 #, fuzzy, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -580,7 +612,7 @@ msgid ""
 "server on %s again.%s"
 msgstr "الى تعمل I I الى ال تعمل"
 
-#: daemon/server.c:174
+#: daemon/server.c:176
 #, fuzzy
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
@@ -588,137 +620,137 @@ msgid ""
 "higher.)"
 msgstr "عن طريق Ctrl Alt Ctrl Alt الى الى تعمل و"
 
-#: daemon/server.c:213
+#: daemon/server.c:215
 #, fuzzy, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "عرض عن طريق"
 
-#: daemon/server.c:243
+#: daemon/server.c:245
 #, fuzzy, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "عرض"
 
-#: daemon/server.c:340
+#: daemon/server.c:342
 #, fuzzy, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "خطأ"
 
-#: daemon/server.c:352
+#: daemon/server.c:354
 #, fuzzy, c-format
 msgid "%s: Error setting up USR1 signal handler: %s"
 msgstr "خطأ"
 
-#: daemon/server.c:365 daemon/slave.c:199
+#: daemon/server.c:367 daemon/slave.c:237
 #, fuzzy, c-format
 msgid "%s: Error setting up CHLD signal handler: %s"
 msgstr "خطأ"
 
-#: daemon/server.c:379 daemon/slave.c:175
+#: daemon/server.c:381 daemon/slave.c:213
 #, fuzzy, c-format
 msgid "%s: Error setting up ALRM signal handler: %s"
 msgstr "خطأ"
 
 #. Send X too busy
-#: daemon/server.c:539
+#: daemon/server.c:541
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr ""
 
-#: daemon/server.c:554
+#: daemon/server.c:556
 #, fuzzy, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "عرض."
 
-#: daemon/server.c:689
+#: daemon/server.c:695
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr ""
 
-#: daemon/server.c:699
+#: daemon/server.c:705
 #, fuzzy
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "خطأ الى"
 
-#: daemon/server.c:703
+#: daemon/server.c:709
 #, fuzzy
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr "خطأ الى"
 
-#: daemon/server.c:707
+#: daemon/server.c:713
 #, fuzzy
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr "خطأ الى"
 
-#: daemon/server.c:717
+#: daemon/server.c:723
 #, fuzzy
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr "خطأ الى"
 
-#: daemon/server.c:721
+#: daemon/server.c:727
 #, fuzzy
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "خطأ الى"
 
-#: daemon/server.c:740
+#: daemon/server.c:746
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr ""
 
-#: daemon/server.c:746
+#: daemon/server.c:752
 #, fuzzy, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "الخادم اسم"
 
-#: daemon/server.c:778
+#: daemon/server.c:784
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr ""
 
-#: daemon/server.c:804
+#: daemon/server.c:810
 #, fuzzy, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "الخادم الى عن طريق"
 
-#: daemon/server.c:819 daemon/slave.c:1144 daemon/slave.c:1482
+#: daemon/server.c:825 daemon/slave.c:1312 daemon/slave.c:1660
 #, fuzzy, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "الى"
 
-#: daemon/server.c:825 daemon/slave.c:1149 daemon/slave.c:1487
+#: daemon/server.c:831 daemon/slave.c:1317 daemon/slave.c:1665
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr ""
 
-#: daemon/server.c:831 daemon/slave.c:1154 daemon/slave.c:1492
+#: daemon/server.c:837 daemon/slave.c:1322 daemon/slave.c:1670
 #, fuzzy, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "الى"
 
-#: daemon/server.c:838
+#: daemon/server.c:844
 #, fuzzy, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "الى"
 
-#: daemon/server.c:849
+#: daemon/server.c:855
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr ""
 
-#: daemon/server.c:854
+#: daemon/server.c:860
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr ""
 
-#: daemon/slave.c:189
+#: daemon/slave.c:227
 #, fuzzy, c-format
 msgid "%s: Error setting up TERM/INT signal handler: %s"
 msgstr "خطأ"
 
-#: daemon/slave.c:209
+#: daemon/slave.c:247
 #, fuzzy, c-format
 msgid "%s: Error setting up USR2 signal handler: %s"
 msgstr "خطأ"
 
-#: daemon/slave.c:372
+#: daemon/slave.c:438
 #, fuzzy
 msgid ""
 "I could not start the X\n"
@@ -739,16 +771,16 @@ msgstr ""
 " معطل\n"
 " ال."
 
-#: daemon/slave.c:569
+#: daemon/slave.c:633
 msgid "focus_first_x_window: cannot fork"
 msgstr ""
 
-#: daemon/slave.c:588
+#: daemon/slave.c:656
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr ""
 
-#: daemon/slave.c:693
+#: daemon/slave.c:767
 #, fuzzy
 msgid ""
 "Could not execute the configuration\n"
@@ -763,7 +795,7 @@ msgstr ""
 " I الى ال\n"
 " تلقائي."
 
-#: daemon/slave.c:707
+#: daemon/slave.c:781
 #, fuzzy
 msgid ""
 "Could not execute the configuration\n"
@@ -774,7 +806,7 @@ msgstr ""
 "\n"
 " ال."
 
-#: daemon/slave.c:762
+#: daemon/slave.c:888
 #, fuzzy
 msgid ""
 "Enter the root password\n"
@@ -783,17 +815,17 @@ msgstr ""
 "ال\n"
 " الى ال."
 
-#: daemon/slave.c:777 daemon/slave.c:847
+#: daemon/slave.c:911 daemon/slave.c:997
 #, fuzzy
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "لا"
 
-#: daemon/slave.c:1107
+#: daemon/slave.c:1271
 #, fuzzy, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "الى"
 
-#: daemon/slave.c:1215
+#: daemon/slave.c:1383
 #, fuzzy
 msgid ""
 "No servers were defined in the\n"
@@ -814,7 +846,7 @@ msgstr ""
 " ملاحظة و\n"
 " معطل."
 
-#: daemon/slave.c:1229
+#: daemon/slave.c:1397
 #, fuzzy
 msgid ""
 "I could not start the regular X\n"
@@ -829,19 +861,19 @@ msgstr ""
 " و\n"
 " ال."
 
-#: daemon/slave.c:1238
+#: daemon/slave.c:1406
 #, fuzzy, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr "تعمل."
 
-#: daemon/slave.c:1251
+#: daemon/slave.c:1419
 #, fuzzy, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr "تلقائي"
 
-#: daemon/slave.c:1263
+#: daemon/slave.c:1431
 #, fuzzy
 msgid ""
 "Cannot start the greeter program,\n"
@@ -856,27 +888,27 @@ msgstr ""
 " عن طريق غير ذلك و\n"
 " ال"
 
-#: daemon/slave.c:1269
+#: daemon/slave.c:1437
 #, fuzzy, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "خطأ تعمل"
 
-#: daemon/slave.c:1272
+#: daemon/slave.c:1440
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr ""
 
-#: daemon/slave.c:1331 daemon/slave.c:1419
+#: daemon/slave.c:1505 daemon/slave.c:1593
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr ""
 
-#: daemon/slave.c:1446
+#: daemon/slave.c:1620
 #, fuzzy
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr "الى"
 
-#: daemon/slave.c:1525
+#: daemon/slave.c:1703
 #, fuzzy
 msgid ""
 "Cannot start the chooser program,\n"
@@ -887,33 +919,38 @@ msgstr ""
 " الى\n"
 " ال"
 
-#: daemon/slave.c:1529
+#: daemon/slave.c:1707
 #, fuzzy, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "خطأ تعمل"
 
-#: daemon/slave.c:1532
+#: daemon/slave.c:1710
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr ""
 
-#: daemon/slave.c:1897
+#: daemon/slave.c:2094
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr ""
 
-#: daemon/slave.c:1907
+#: daemon/slave.c:2108
+#, c-format
+msgid "%s: setusercontext() failed for %s. Aborting."
+msgstr ""
+
+#: daemon/slave.c:2124
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr ""
 
 #. yaikes
-#: daemon/slave.c:1980
+#: daemon/slave.c:2207
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
 msgstr ""
 
-#: daemon/slave.c:1984
+#: daemon/slave.c:2211
 #, fuzzy
 msgid ""
 "Could not find the GNOME installation,\n"
@@ -924,7 +961,7 @@ msgstr ""
 " ال xterm\n"
 "."
 
-#: daemon/slave.c:1990
+#: daemon/slave.c:2217
 #, fuzzy
 msgid ""
 "This is the Failsafe Gnome session.\n"
@@ -939,12 +976,12 @@ msgstr ""
 " الى\n"
 "."
 
-#: daemon/slave.c:2009
+#: daemon/slave.c:2237
 #, fuzzy
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "xterm الى."
 
-#: daemon/slave.c:2016
+#: daemon/slave.c:2244
 #, fuzzy
 msgid ""
 "This is the Failsafe xterm session.\n"
@@ -961,17 +998,25 @@ msgstr ""
 " ال\n"
 " و ال."
 
-#: daemon/slave.c:2038
+#: daemon/slave.c:2272
 #, fuzzy, c-format
 msgid "Running %s for %s on %s"
 msgstr "تعمل"
 
-#: daemon/slave.c:2052
+#: daemon/slave.c:2291
+#, fuzzy, c-format
+msgid "%s: Could not open ~/.xsession-errors"
+msgstr ""
+"\n"
+"\n"
+" خطأ"
+
+#: daemon/slave.c:2301
 #, fuzzy
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "المستخدم الى"
 
-#: daemon/slave.c:2054
+#: daemon/slave.c:2303
 #, fuzzy
 msgid ""
 "The system administrator has\n"
@@ -980,12 +1025,12 @@ msgstr ""
 "\n"
 " معطل."
 
-#: daemon/slave.c:2057
+#: daemon/slave.c:2306
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr ""
 
-#: daemon/slave.c:2062
+#: daemon/slave.c:2311
 #, fuzzy
 msgid ""
 "Cannot start the session, most likely the\n"
@@ -998,12 +1043,12 @@ msgstr ""
 " ال موجود ال\n"
 "."
 
-#: daemon/slave.c:2070
+#: daemon/slave.c:2319
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr ""
 
-#: daemon/slave.c:2073
+#: daemon/slave.c:2322
 #, fuzzy
 msgid ""
 "Cannot start your shell.  It could be that the\n"
@@ -1013,12 +1058,12 @@ msgstr ""
 "ال\n"
 " معطل\n"
 
-#: daemon/slave.c:2105
+#: daemon/slave.c:2357
 #, fuzzy, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr "المستخدم!"
 
-#: daemon/slave.c:2111
+#: daemon/slave.c:2363
 #, fuzzy, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1039,68 +1084,88 @@ msgstr ""
 "\n"
 "."
 
-#: daemon/slave.c:2119
+#: daemon/slave.c:2371
 #, fuzzy, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "المنزل!"
 
-#: daemon/slave.c:2266
-#, fuzzy
-msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr "التحقق"
-
-#: daemon/slave.c:2284
+#: daemon/slave.c:2537
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr ""
 
-#: daemon/slave.c:2321
+#: daemon/slave.c:2560
+msgid ""
+"GDM could not write to your authorization\n"
+"file.  This could mean that you are out of\n"
+"disk space or that your home directory could\n"
+"not be opened for writing.  In any case, it\n"
+"is not possible to log in.  Please contact\n"
+"your system administrator"
+msgstr ""
+
+#: daemon/slave.c:2595
 #, fuzzy
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "خطأ"
 
-#: daemon/slave.c:2505
+#: daemon/slave.c:2655
+msgid ""
+"Your session only lasted less then\n"
+"10 seconds.  If you have not logged out\n"
+"yourself, this could mean that there is\n"
+"some installation problem or that you may\n"
+"be out of diskspace.  Try logging in with\n"
+"one of the failsafe sessions to see if you\n"
+"can fix this problem."
+msgstr ""
+
+#: daemon/slave.c:2663
+msgid "View details (~/.xsession-errors file)"
+msgstr ""
+
+#: daemon/slave.c:2816
 #, fuzzy, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "الى!"
 
-#: daemon/slave.c:2626
+#: daemon/slave.c:2997
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 
-#: daemon/slave.c:2817
+#: daemon/slave.c:3255
 #, fuzzy, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "فشل"
 
-#: daemon/slave.c:2823
+#: daemon/slave.c:3261
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr ""
 
-#: daemon/slave.c:2947
+#: daemon/slave.c:3353
 #, fuzzy
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "فشل"
 
-#: daemon/slave.c:2969
+#: daemon/slave.c:3385
 #, fuzzy, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "فشل"
 
-#: daemon/slave.c:2974
+#: daemon/slave.c:3390
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr ""
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:298 daemon/verify-shadow.c:70
-#: gui/gdmlogin.c:3187
+#: daemon/verify-crypt.c:71 daemon/verify-pam.c:301 daemon/verify-shadow.c:70
+#: gui/gdmlogin.c:3213
 msgid "Please enter your username"
 msgstr ""
 
-#: daemon/verify-crypt.c:72 daemon/verify-pam.c:299 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3149
+#: daemon/verify-crypt.c:72 daemon/verify-pam.c:302 daemon/verify-shadow.c:71
+#: gui/gdmlogin.c:3173
 #, fuzzy
 msgid "Username:"
 msgstr " "
@@ -1110,7 +1175,7 @@ msgstr " "
 msgid "Password: "
 msgstr "كلمة السر "
 
-#: daemon/verify-crypt.c:112 daemon/verify-pam.c:332 daemon/verify-pam.c:499
+#: daemon/verify-crypt.c:112 daemon/verify-pam.c:335 daemon/verify-pam.c:501
 #: daemon/verify-shadow.c:121
 msgid "Couldn't authenticate user"
 msgstr ""
@@ -1125,7 +1190,7 @@ msgstr ""
 "\n"
 " أو ال ال قفل"
 
-#: daemon/verify-crypt.c:152 daemon/verify-pam.c:345
+#: daemon/verify-crypt.c:152 daemon/verify-pam.c:348
 #: daemon/verify-shadow.c:161
 #, fuzzy, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1141,7 +1206,7 @@ msgstr "الى"
 msgid "User %s not allowed to log in"
 msgstr "المستخدم الى"
 
-#: daemon/verify-crypt.c:172 daemon/verify-pam.c:375 daemon/verify-pam.c:532
+#: daemon/verify-crypt.c:172 daemon/verify-pam.c:378 daemon/verify-pam.c:534
 #: daemon/verify-shadow.c:181
 #, fuzzy
 msgid ""
@@ -1151,15 +1216,15 @@ msgstr ""
 "\n"
 " معطل."
 
-#: daemon/verify-crypt.c:187 daemon/verify-crypt.c:221 daemon/verify-pam.c:393
-#: daemon/verify-pam.c:549 daemon/verify-shadow.c:195
+#: daemon/verify-crypt.c:187 daemon/verify-crypt.c:221 daemon/verify-pam.c:396
+#: daemon/verify-pam.c:551 daemon/verify-shadow.c:195
 #: daemon/verify-shadow.c:228
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr ""
 
-#: daemon/verify-crypt.c:189 daemon/verify-crypt.c:224 daemon/verify-pam.c:395
-#: daemon/verify-pam.c:552 daemon/verify-shadow.c:197
+#: daemon/verify-crypt.c:189 daemon/verify-crypt.c:224 daemon/verify-pam.c:398
+#: daemon/verify-pam.c:554 daemon/verify-shadow.c:197
 #: daemon/verify-shadow.c:231
 #, fuzzy
 msgid ""
@@ -1175,32 +1240,32 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:218
+#: daemon/verify-pam.c:221
 #, fuzzy
 msgid "Cannot setup pam handle with null login and/or display"
 msgstr "و أو"
 
-#: daemon/verify-pam.c:232
+#: daemon/verify-pam.c:235
 #, c-format
 msgid "Can't find /etc/pam.d/%s!"
 msgstr ""
 
-#: daemon/verify-pam.c:239
+#: daemon/verify-pam.c:242
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr ""
 
-#: daemon/verify-pam.c:246
+#: daemon/verify-pam.c:249
 #, c-format
 msgid "Can't set PAM_RUSER=%s"
 msgstr ""
 
-#: daemon/verify-pam.c:254
+#: daemon/verify-pam.c:257
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr ""
 
-#: daemon/verify-pam.c:348
+#: daemon/verify-pam.c:351
 #, fuzzy
 msgid ""
 "\n"
@@ -1209,12 +1274,12 @@ msgstr ""
 "\n"
 " الى"
 
-#: daemon/verify-pam.c:364
+#: daemon/verify-pam.c:367
 #, fuzzy, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "التحقق"
 
-#: daemon/verify-pam.c:366
+#: daemon/verify-pam.c:369
 #, fuzzy
 msgid ""
 "\n"
@@ -1224,41 +1289,41 @@ msgstr ""
 "\n"
 " ال أو ال."
 
-#: daemon/verify-pam.c:373 daemon/verify-pam.c:529
+#: daemon/verify-pam.c:376 daemon/verify-pam.c:531
 #, fuzzy, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "المستخدم الى ال"
 
-#: daemon/verify-pam.c:379 daemon/verify-pam.c:535
+#: daemon/verify-pam.c:382 daemon/verify-pam.c:537
 #, fuzzy, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "المستخدم الى"
 
-#: daemon/verify-pam.c:381
+#: daemon/verify-pam.c:384
 #, fuzzy
 msgid ""
 "\n"
-"The system administrator has disabled access to the system temporary."
+"The system administrator has disabled access to the system temporairly."
 msgstr ""
 "\n"
 " معطل الى ال."
 
-#: daemon/verify-pam.c:386 daemon/verify-pam.c:542
+#: daemon/verify-pam.c:389 daemon/verify-pam.c:544
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:405 daemon/verify-pam.c:570
+#: daemon/verify-pam.c:408 daemon/verify-pam.c:572
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:415 daemon/verify-pam.c:562
+#: daemon/verify-pam.c:418 daemon/verify-pam.c:564
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:441 daemon/verify-shadow.c:127
+#: daemon/verify-pam.c:444 daemon/verify-shadow.c:127
 #: daemon/verify-shadow.c:147
 #, fuzzy
 msgid ""
@@ -1269,12 +1334,12 @@ msgstr ""
 "\n"
 " أو ال ال قفل"
 
-#: daemon/verify-pam.c:447 daemon/verify-pam.c:502
+#: daemon/verify-pam.c:449 daemon/verify-pam.c:504
 #, fuzzy
 msgid "Authentication failed"
 msgstr "التحقق"
 
-#: daemon/verify-pam.c:538
+#: daemon/verify-pam.c:540
 #, fuzzy
 msgid ""
 "\n"
@@ -1283,12 +1348,12 @@ msgstr ""
 "\n"
 " معطل الى ال."
 
-#: daemon/verify-pam.c:656 daemon/verify-pam.c:658
+#: daemon/verify-pam.c:658 daemon/verify-pam.c:660
 #, fuzzy
 msgid "Can't find PAM configuration for gdm."
 msgstr "I و"
 
-#: daemon/xdmcp.c:243
+#: daemon/xdmcp.c:244
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr ""
@@ -1470,86 +1535,81 @@ msgstr "لا."
 msgid "Choose a host to connect to from the selection below."
 msgstr "أختر الى اتصال الى ال أسفل."
 
-#: gui/gdmchooser.c:756
+#: gui/gdmchooser.c:753
 #, fuzzy, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "لا."
+
+#: gui/gdmchooser.c:868
+#, fuzzy
+msgid ""
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
+"\n"
+"You can rescan the network for new hosts by clicking \"Refresh\".  When you "
+"have selected a host click \"Connect\" to open a session to that machine."
+msgstr ""
+"ال تعمل ال محلي\n"
+" مفعل الى\n"
+" الى غير ذلك تعمل ال\n"
+"\n"
+"\n"
+" ال عن طريق\n"
+" الى\n"
+" الى."
 
 #: gui/gdmchooser.c:900
 #, fuzzy, c-format
 msgid "Can't open default host icon: %s"
 msgstr "تلقائي"
 
-#: gui/gdmchooser.c:913
-#, fuzzy
-msgid ""
-"Cannot find the glade interface description\n"
-"file, cannot run gdmchooser.\n"
-"Please check your installation and the\n"
-"location of the gdmchooser.glade2 file."
-msgstr ""
-"ال\n"
-"\n"
-" و ال\n"
-" ال."
-
-#: gui/gdmchooser.c:938
-#, fuzzy
-msgid ""
-"The glade interface description file\n"
-"appears to be corrupted.\n"
-"Please check your installation."
-msgstr ""
-"\n"
-" الى\n"
-"."
-
-#: gui/gdmchooser.c:986
+#: gui/gdmchooser.c:949
 #, fuzzy
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "خطأ"
 
-#: gui/gdmchooser.c:989
+#: gui/gdmchooser.c:952
 #, fuzzy
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "خطأ"
 
-#: gui/gdmchooser.c:992
+#: gui/gdmchooser.c:955
 #, fuzzy
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "خطأ"
 
-#: gui/gdmchooser.c:1000 gui/gdmlogin.c:3898 gui/greeter/greeter.c:665
+#: gui/gdmchooser.c:963 gui/gdmlogin.c:4020 gui/greeter/greeter.c:811
 msgid "Could not set signal mask!"
 msgstr ""
 
-#: gui/gdmchooser.c:1006
+#: gui/gdmchooser.c:969
 msgid "Socket for xdm communication"
 msgstr ""
 
-#: gui/gdmchooser.c:1006
+#: gui/gdmchooser.c:969
 msgid "SOCKET"
 msgstr ""
 
-#: gui/gdmchooser.c:1009
+#: gui/gdmchooser.c:972
 #, fuzzy
 msgid "Client address to return in response to xdm"
 msgstr "العميل الى الى"
 
-#: gui/gdmchooser.c:1009
+#: gui/gdmchooser.c:972
 msgid "ADDRESS"
 msgstr ""
 
-#: gui/gdmchooser.c:1012
+#: gui/gdmchooser.c:975
 #, fuzzy
 msgid "Connection type to return in response to xdm"
 msgstr "إتصال الى الى"
 
-#: gui/gdmchooser.c:1012
+#: gui/gdmchooser.c:975
 msgid "TYPE"
 msgstr ""
 
-#: gui/gdmchooser.c:1127
+#: gui/gdmchooser.c:1090
 #, fuzzy, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -1573,61 +1633,41 @@ msgstr "المضيف"
 
 #: gui/gdmchooser-strings.c:8
 #, fuzzy
+msgid "How to use this application"
+msgstr "الى"
+
+#: gui/gdmchooser-strings.c:9
+#, fuzzy
 msgid "Open a session to the selected host"
 msgstr "فتح الى ال"
 
-#: gui/gdmchooser-strings.c:9
-msgid "Connect"
+#: gui/gdmchooser-strings.c:10
+msgid "C_onnect"
 msgstr ""
 
-#: gui/gdmchooser-strings.c:10
+#: gui/gdmchooser-strings.c:11
 #, fuzzy
 msgid "Probe the network"
 msgstr "ال"
 
-#: gui/gdmchooser-strings.c:11
-msgid "Rescan"
-msgstr ""
-
 #: gui/gdmchooser-strings.c:12
-#, fuzzy
-msgid "How to use this application"
-msgstr "الى"
-
-#: gui/gdmchooser-strings.c:13
-#, fuzzy
-msgid "Help"
-msgstr "مساعدة"
-
-#: gui/gdmchooser-strings.c:14
 #, fuzzy
 msgid "Exit the application"
 msgstr "ال"
 
-#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2929
-#, fuzzy
-msgid "Quit"
-msgstr "إقلاع"
-
-#: gui/gdmchooser-strings.c:16 gui/gdmconfig-strings.c:16
-msgid " "
+#: gui/gdmchooser-strings.c:13
+msgid "Status"
 msgstr ""
 
-#: gui/gdmchooser-strings.c:17
-msgid "Most recently queried hosts"
-msgstr ""
-
-#: gui/gdmchooser-strings.c:18
+#: gui/gdmchooser-strings.c:14
 #, fuzzy
 msgid ""
-"The main area of this application shows the hosts on the local\n"
-"network that have \"XDMCP\" enabled. This allows users to login\n"
-"remotely to other machines as if they were logged on using the\n"
-"console.\n"
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
 "\n"
-"You can rescan the network for new hosts by clicking 'rescan'.\n"
-"When you have selected a host click \"Connect\" to open a session\n"
-"to that machine."
+"You can rescan the network for new hosts by clicking \"Refresh\". When you "
+"have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
 "ال تعمل ال محلي\n"
 " مفعل الى\n"
@@ -1638,364 +1678,169 @@ msgstr ""
 " الى\n"
 " الى."
 
-#: gui/gdmchooser-strings.c:26
+#: gui/gdmchooser-strings.c:17
 #, fuzzy
 msgid "Information"
 msgstr "معلومات"
 
-#. 3 user levels are present in the CList
-#: gui/gdmconfig.c:60
-#, fuzzy
-msgid "Basic"
-msgstr "بسيط"
-
-#: gui/gdmconfig.c:61
-msgid "Expert"
-msgstr ""
-
-#: gui/gdmconfig.c:62 gui/gdmlogin.c:2915
-#, fuzzy
-msgid "System"
-msgstr "نظام"
-
-#: gui/gdmconfig.c:64
+#: gui/gdmXnestchooser.c:263 gui/gdmcomm.c:380
 #, fuzzy
 msgid ""
-"This panel displays the basic options for configuring GDM.\n"
-"\n"
-"If you need finer detail, select 'expert' or 'system setup' from the list "
-"above.\n"
-"\n"
-"This will display some of the more complex options of GDM that rarely need "
-"to be changed."
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
 msgstr ""
-"ال\n"
 "\n"
-" أو ال أعلى\n"
-"\n"
-" ال الى."
+" الى."
 
-#: gui/gdmconfig.c:69
+#: gui/gdmcomm.c:391 gui/gdmcomm.c:406 gui/gdmcomm.c:409
+#: gui/gdmflexiserver.c:239
+msgid "Cannot communicate with gdm, perhaps you have an old version running."
+msgstr ""
+
+#: gui/gdmcomm.c:412
+msgid "The allowed limit of flexible X servers reached."
+msgstr ""
+
+#: gui/gdmcomm.c:414
+#, fuzzy
+msgid "There were errors trying to start the X server."
+msgstr "الى ال."
+
+#: gui/gdmcomm.c:416
+#, fuzzy
+msgid "The X server failed.  Perhaps it is not configured well."
+msgstr "موجود."
+
+#: gui/gdmcomm.c:419
+msgid "Too many X sessions running."
+msgstr ""
+
+#: gui/gdmcomm.c:421
 #, fuzzy
 msgid ""
-"This panel displays the more advanced options of GDM.\n"
-"\n"
-"Be sure to take care when manipulating the security options, or you could be "
-"vulnerable to attackers.\n"
-"\n"
-"Choose \"System\" to change fundamental options in GDM."
-msgstr ""
-"ال\n"
-"\n"
-" الى ال أو الى\n"
-"\n"
-" أختر نظام الى."
+"The nested X server (Xnest) cannot connect to your current X server.  You "
+"may be missing an X authorization file."
+msgstr "اتصال الى."
 
-#: gui/gdmconfig.c:75
+#: gui/gdmcomm.c:426
 #, fuzzy
 msgid ""
-"This panel displays GDM's fundamental system settings.\n"
-"\n"
-"You should only change these paths if you really know what you are doing, as "
-"an incorrect setup could stop your machine from booting properly.\n"
-"\n"
-"Choose \"Basic\" if you just want to change your machine's login appearance."
+"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
+"Please install the Xnest package in order to use the nested login."
 msgstr ""
-"\n"
-"\n"
-"\n"
-"\n"
-" أختر بسيط الى."
+"موجود أو\n"
+" ال الى ال."
 
-#: gui/gdmconfig.c:141
-#, fuzzy, c-format
+#: gui/gdmcomm.c:431
+#, fuzzy
 msgid ""
-"The glade ui description file doesn't seem to contain the\n"
-"widget \"%s\". Unfortunately I cannot continue.\n"
-"Please check your installation."
-msgstr ""
-"الى ال\n"
-" I\n"
-"."
+"The X server is not available, it is likely that gdm is badly configured."
+msgstr "موجود."
 
-#: gui/gdmconfig.c:393
+#: gui/gdmcomm.c:435
+msgid "Trying to update an unsupported configuration key."
+msgstr ""
+
+#: gui/gdmcomm.c:437 gui/gdmflexiserver.c:250
+#, fuzzy
+msgid ""
+"You do not seem to have authentication needed be for this operation.  "
+"Perhaps your .Xauthority file is not set up correctly."
+msgstr "الى."
+
+#: gui/gdmcomm.c:441
+#, fuzzy
+msgid "Unknown error occured."
+msgstr "غير معروف."
+
+#: gui/gdmsetup.c:106
+msgid ""
+"An error occured while trying to contact the login screens.  Not all updates "
+"may have taken effect."
+msgstr ""
+
+#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
+#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:848
+#, fuzzy
+msgid "Standard greeter"
+msgstr "القياسي"
+
+#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
+#: gui/gdmsetup-strings.c:49 gui/gdmsetup.c:850
+msgid "Graphical greeter"
+msgstr ""
+
+#: gui/gdmsetup.c:1323
+msgid "Archive is not of a subdirectory"
+msgstr ""
+
+#: gui/gdmsetup.c:1331
+msgid "Archive is not of a single subdirectory"
+msgstr ""
+
+#: gui/gdmsetup.c:1346 gui/gdmsetup.c:1425
+msgid "File not a tar.gz or tar archive"
+msgstr ""
+
+#: gui/gdmsetup.c:1348
+msgid "Archive does not include a GdmGreeterTheme.info file"
+msgstr ""
+
+#: gui/gdmsetup.c:1370
+#, fuzzy
+msgid "File does not exist"
+msgstr "الدليل."
+
+#: gui/gdmsetup.c:1478
+#, fuzzy
+msgid "No file selected"
+msgstr "لا."
+
+#: gui/gdmsetup.c:1504
+#, c-format
+msgid ""
+"Not a theme archive\n"
+"Details: %s"
+msgstr ""
+
+#: gui/gdmsetup.c:1526
+#, c-format
+msgid ""
+"Theme directory '%s' seems to be already installed, install again anyway?"
+msgstr ""
+
+#: gui/gdmsetup.c:1571
+msgid "Some error occured when installing the theme"
+msgstr ""
+
+#: gui/gdmsetup.c:1616
+msgid "Select new theme archive to install"
+msgstr ""
+
+#. This is the temporary help dialog
+#: gui/gdmsetup.c:1752
+#, c-format
+msgid ""
+"This configuration window changes settings for the GDM daemon, which is the "
+"graphical login screen for GNOME.  Changes that you make will take effect "
+"immediately.\n"
+"\n"
+"Note that not all configuration options are listed here.  You may want to "
+"edit %s if you cannot find what you are looking for."
+msgstr ""
+
+#: gui/gdmsetup.c:1963
 #, fuzzy
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "ال الى"
 
-#: gui/gdmconfig.c:438
-#, fuzzy
-msgid ""
-"Cannot find the glade interface description\n"
-"file, cannot run gdmconfig.\n"
-"Please check your installation and the\n"
-"location of the gdmconfig.glade2 file."
-msgstr ""
-"ال\n"
-"\n"
-" و ال\n"
-" ال."
-
-#: gui/gdmconfig.c:471
-#, fuzzy
-msgid ""
-"Cannot find the gdmconfigurator widget in\n"
-"the glade interface description file\n"
-"Please check your installation."
-msgstr ""
-"ال\n"
-" ال\n"
-"."
-
-#: gui/gdmconfig.c:522
-#, fuzzy
-msgid "GNOME Display Manager Configurator"
-msgstr "عرض مدير"
-
-#: gui/gdmconfig.c:754
-#, fuzzy, c-format
-msgid ""
-"The configuration file: %s\n"
-"does not exist! Using default values."
-msgstr ""
-"\n"
-" تلقائي."
-
-#: gui/gdmconfig.c:761 gui/gdmconfig.c:1112 gui/gdmconfig.c:2005
-#: gui/gdmconfig.c:2229 gui/gdmflexiserver.c:141
-#, fuzzy
-msgid "Standard server"
-msgstr "القياسي"
-
-#: gui/gdmconfig.c:960
-#, fuzzy
-msgid "Error reading session script!"
-msgstr "خطأ!"
-
-#: gui/gdmconfig.c:963
-#, fuzzy
-msgid "Error reading this session script"
-msgstr "خطأ"
-
-#: gui/gdmconfig.c:1071 gui/gdmconfig.c:1117 gui/gdmconfig.c:1551
-#: gui/gdmconfig.c:1989 gui/gdmconfig.c:2069 gui/gdmconfig.c:2085
-#, fuzzy
-msgid "Yes"
-msgstr "نعم"
-
-#: gui/gdmconfig.c:1073 gui/gdmconfig.c:2073 gui/gdmconfig.c:2087
-#, fuzzy
-msgid "No"
-msgstr "لا"
-
-#: gui/gdmconfig.c:1148
-msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr ""
-
-#: gui/gdmconfig.c:1323
-#, fuzzy
-msgid ""
-"The applied settings cannot take effect until gdm\n"
-"is restarted or your computer is rebooted.\n"
-"You can restart GDM when all sessions are\n"
-"closed (when all users log out) or you can\n"
-"restart GDM now (which will kill all current\n"
-"sessions)"
-msgstr ""
-"\n"
-" أو\n"
-"\n"
-" أو\n"
-"\n"
-
-#: gui/gdmconfig.c:1329
-#, fuzzy
-msgid "Restart after logout"
-msgstr "اعد التشغيل"
-
-#: gui/gdmconfig.c:1330
-#, fuzzy
-msgid "Restart now"
-msgstr "اعد التشغيل"
-
-#: gui/gdmconfig.c:1340
-#, fuzzy
-msgid ""
-"Are you sure you wish to restart GDM\n"
-"now and lose any unsaved data?"
-msgstr ""
-"الى\n"
-" و?"
-
-#: gui/gdmconfig.c:1348
-#, fuzzy
-msgid ""
-"The greeter settings will take effect the next time\n"
-"it is displayed.  The rest of the settings will not\n"
-"take effect until gdm is restarted or the computer is\n"
-"rebooted"
-msgstr ""
-"ال\n"
-" ال\n"
-" أو ال\n"
-
-#: gui/gdmconfig.c:1372
-#, fuzzy
-msgid ""
-"You have not defined any local servers.\n"
-"Usually this is not a good idea unless you\n"
-"are sure you do not want users to be able to\n"
-"log in with the graphical interface on the\n"
-"local console and only use the XDMCP service.\n"
-"\n"
-"Are you sure you wish to apply these settings?"
-msgstr ""
-"محلي\n"
-"\n"
-" الى الى\n"
-" ال تعمل ال\n"
-" محلي و ال\n"
-"\n"
-" الى?"
-
-#: gui/gdmconfig.c:1587
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not delete session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"\n"
-" خطأ"
-
-#: gui/gdmconfig.c:1623
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not remove session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"\n"
-" خطأ"
-
-#: gui/gdmconfig.c:1666
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not write session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"\n"
-" خطأ"
-
-#: gui/gdmconfig.c:1677
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not write contents to session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-" الى\n"
-" خطأ"
-
-#: gui/gdmconfig.c:1702
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not unlink old default session\n"
-"   Error: %s"
-msgstr ""
-"\n"
-" تلقائي\n"
-" خطأ"
-
-#: gui/gdmconfig.c:1741
-#, fuzzy
-msgid ""
-"\n"
-"Could not find a suitable name for the default session link"
-msgstr ""
-"\n"
-" اسم ال تلقائي"
-
-#: gui/gdmconfig.c:1750
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not link new default session\n"
-"   Error: %s"
-msgstr ""
-"\n"
-" رايط تلقائي\n"
-" خطأ"
-
-#: gui/gdmconfig.c:1770
-#, fuzzy
-msgid ""
-"There were errors writing changes to the session files.\n"
-"The configuration may not be completely saved.\n"
-msgstr "الى ال\n"
-
-#: gui/gdmconfig.c:1790
-#, fuzzy
-msgid ""
-"This will destroy any changes made in this session.\n"
-"Are you sure you want to do this?"
-msgstr ""
-"\n"
-" الى?"
-
-#: gui/gdmconfig.c:1801
-#, fuzzy
-msgid ""
-"This will destroy any changes made in the configuration.\n"
-"Are you sure you want to do this?"
-msgstr ""
-"ال\n"
-" الى?"
-
-#: gui/gdmconfig.c:2027 gui/gdmconfig.c:2359
-msgid "A command line must start with a forward slash ('/')"
-msgstr ""
-
-#: gui/gdmconfig.c:2031
-#, fuzzy
-msgid "A descriptive server name must be supplied"
-msgstr "اسم"
-
-#: gui/gdmconfig.c:2705
-#, fuzzy
-msgid "A session name must be unique and not empty"
-msgstr "اسم و"
-
-#: gui/gdmconfig.c:2718
-#, fuzzy
-msgid "Enter a name for the new session"
-msgstr "اسم ال"
-
-#: gui/gdmconfig.c:2833
-#, fuzzy
-msgid ""
-"You have modified the sessions directory.\n"
-"Your session changes will still get written\n"
-"to the old directory however, until you reload\n"
-"the configuration dialog again."
-msgstr ""
-"تم التعديل ال\n"
-"\n"
-" الى ال\n"
-" ال."
-
-#: gui/gdmconfig.desktop.in.h:1
+#. EOF
+#: gui/gdmsetup.desktop.in.h:1
 #, fuzzy
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr "ال عرض مدير"
 
-#: gui/gdmconfig.desktop.in.h:2
+#: gui/gdmsetup.desktop.in.h:2
 msgid "GDM Configurator"
 msgstr ""
 
@@ -2004,1251 +1849,255 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmconfig-strings.c:7
-#, fuzzy
-msgid "GDM Configuration Utility"
-msgstr "تعريف"
-
-#: gui/gdmconfig-strings.c:8
-msgid "_Configuration"
+#: gui/gdmsetup-strings.c:7
+msgid "GDM Setup"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:9
+#: gui/gdmsetup-strings.c:8
 #, fuzzy
-msgid "Revert to settings in the configuration file"
-msgstr "الى ال"
+msgid "L_ocal: "
+msgstr "الإعداد المحلي "
 
-#: gui/gdmconfig-strings.c:10
-msgid "Revert settings"
+#: gui/gdmsetup-strings.c:9
+msgid "_Remote: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:11
+#: gui/gdmsetup-strings.c:14
 #, fuzzy
-msgid "Revert to settings that were shipped with your system"
-msgstr "الى"
+msgid "Greeter"
+msgstr "M"
 
-#: gui/gdmconfig-strings.c:12
+#: gui/gdmsetup-strings.c:15
 #, fuzzy
-msgid "Revert to Factory Settings"
-msgstr "الى"
+msgid "_Login a user automatically on first bootup"
+msgstr "دخول تعمل"
 
-#: gui/gdmconfig-strings.c:13
+#: gui/gdmsetup-strings.c:16
 #, fuzzy
-msgid "Apply the current changes"
-msgstr "تطبيق ال"
+msgid "_Automatic login username:"
+msgstr "اوتوماتيكي "
 
-#: gui/gdmconfig-strings.c:14
-#, fuzzy
-msgid "Apply"
-msgstr "تطبيق"
-
-#: gui/gdmconfig-strings.c:15 gui/gdmconfig-strings.c:135
-#, fuzzy
-msgid "Options"
-msgstr "خيارات"
-
-#: gui/gdmconfig-strings.c:17
-msgid "basic_settings"
+#: gui/gdmsetup-strings.c:17 gui/gdmsetup-strings.c:22
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup-strings.c:28
+#: gui/gdmsetup-strings.c:37
+msgid "*"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:18
-#, fuzzy
-msgid "General Appearance"
-msgstr "عام"
-
-#: gui/gdmconfig-strings.c:19
-msgid "Logo: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:20
-#, fuzzy
-msgid "Select a logo to be displayed during login"
-msgstr "اختيار الى"
-
-#: gui/gdmconfig-strings.c:21
-#, fuzzy
-msgid "Minimised Icon: "
-msgstr "أيقونة "
-
-#: gui/gdmconfig-strings.c:22
-#, fuzzy
-msgid "Select a GTK+ theme file (gtkrc)"
-msgstr "اختيار"
-
-#: gui/gdmconfig-strings.c:23
-#, fuzzy
-msgid ""
-"This is the GTK+ RC file that describes the theme that the login window "
-"should use"
-msgstr "ال ال ال"
-
-#: gui/gdmconfig-strings.c:24
-msgid "Gtk+ RC file: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:25
-#, fuzzy
-msgid "Login appearance"
-msgstr "دخول"
-
-#: gui/gdmconfig-strings.c:26
-#, fuzzy
-msgid "Greeter Look and Feel"
-msgstr "منظر و"
-
-#: gui/gdmconfig-strings.c:27
-#, fuzzy
-msgid ""
-"Show the \"System\" menu.  This has the shutdown, reboot and configuration "
-"items"
-msgstr "ال نظام ال و"
-
-#: gui/gdmconfig-strings.c:28
-#, fuzzy
-msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr "ال"
-
-#: gui/gdmconfig-strings.c:29
-#, fuzzy
-msgid "Allow users to run the configurator from the system menu"
-msgstr "سماح الى ال ال"
-
-#: gui/gdmconfig-strings.c:30
-#, fuzzy
-msgid ""
-"If the user fails to authenticate himself the login window should Quiver to "
-"indicate failure"
-msgstr "ال الى ال الى"
-
-#: gui/gdmconfig-strings.c:31
-#, fuzzy
-msgid "Quiver on failure"
-msgstr "تعمل"
-
-#: gui/gdmconfig-strings.c:32
-#, fuzzy
-msgid ""
-"Show the title bar on the login window.  If this is off the user won't be "
-"able to move nor iconify the login window"
-msgstr "ال تعمل ال لا تعمل ال الى ال"
-
-#: gui/gdmconfig-strings.c:33
-#, fuzzy
-msgid "Show title bar on login window"
-msgstr "تعمل"
-
-#: gui/gdmconfig-strings.c:34
-#, fuzzy, c-format
-msgid "Welcome to %n"
-msgstr "مرحبا الى"
-
-#: gui/gdmconfig-strings.c:35
-#, c-format
-msgid "%n"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:36 gui/gdmconfig-strings.c:38
-#, c-format
-msgid "This is %n"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:37
-#, fuzzy
-msgid "The welcome message displayed on the login window"
-msgstr "تعمل ال"
-
-#: gui/gdmconfig-strings.c:39
-#, fuzzy
-msgid "Default font: "
-msgstr "الإفتراضي "
-
-#: gui/gdmconfig-strings.c:40
-#, fuzzy
-msgid "Welcome message: "
-msgstr "مرحبا "
-
-#: gui/gdmconfig-strings.c:41
-#, fuzzy
-msgid "The font to use on the welcome message"
-msgstr "الى تعمل ال"
-
-#: gui/gdmconfig-strings.c:42
-msgid "Pick a Font"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:43
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:44
-#, fuzzy
-msgid "Extras"
-msgstr "اضافات"
-
-#: gui/gdmconfig-strings.c:45
-#, fuzzy
-msgid "Default locale: "
-msgstr "الإفتراضي "
-
-#: gui/gdmconfig-strings.c:46 gui/gdmconfig-strings.c:80
-msgid "ca_ES"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:47
-msgid "cs_CZ"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:48
-msgid "hr_HR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:49
-msgid "da_DK"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:50 gui/gdmconfig-strings.c:58
-msgid "de_DE"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:51
-msgid "nl_NL"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:52
-msgid "en_US"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:53
-msgid "en_UK"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:54
-msgid "et_EE"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:55
-msgid "fi_FI"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:56
-msgid "fr_FR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:57
-msgid "gl_ES"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:59
-msgid "el_GR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:60
-msgid "iw_IL"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:61
-msgid "hu_HU"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:62
-msgid "is_IS"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:63
-msgid "it_IT"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:64
-msgid "ja_JP"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:65
-msgid "ko_KR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:66
-msgid "lt_LT"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:67
-msgid "nn_NO"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:68
-msgid "no_NO"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:69
-msgid "pl_PL"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:70
-#, fuzzy
-msgid "pt_PT"
-msgstr "نقطة"
-
-#: gui/gdmconfig-strings.c:71
-#, fuzzy
-msgid "pt_BR"
-msgstr "نقطة"
-
-#: gui/gdmconfig-strings.c:72
-msgid "ro_RO"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:73
-msgid "ru_RU"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:74
-msgid "sk_SK"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:75
-msgid "sl_SI"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:76
-msgid "es_ES"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:77
-msgid "sv_SE"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:78
-msgid "tr_TR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:79
-#, fuzzy
-msgid ""
-"This is the locale that GDM uses when it cannot find what the system locale "
-"is set to.  This should be in the standard format such as \"en_US\" for "
-"American English or \"cs_CZ\" for Czech"
-msgstr "ال ال الى ال أنجليزي أو"
-
-#: gui/gdmconfig-strings.c:81
-#, fuzzy
-msgid ""
-"Always use the 24 hour format for the clock in the greeter, even if the norm "
-"for the current locale is 12 hour"
-msgstr "دائما ال ال ال ال ال"
-
-#: gui/gdmconfig-strings.c:82
-#, fuzzy
-msgid "Always use 24 hour clock format"
-msgstr "دائما"
-
-#: gui/gdmconfig-strings.c:83
-#, fuzzy
-msgid "Position"
-msgstr "الموقع"
-
-#: gui/gdmconfig-strings.c:84
-#, fuzzy
-msgid "Set the initial position of the login window to the values below"
-msgstr "ال ال الى ال"
-
-#: gui/gdmconfig-strings.c:85
-msgid "Manually set position"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:86
-#, fuzzy
-msgid "Do note allow the user to drag the login window around"
-msgstr "ال الى ال"
-
-#: gui/gdmconfig-strings.c:87
-#, fuzzy
-msgid "Lock position"
-msgstr "قفل"
-
-#: gui/gdmconfig-strings.c:88
-msgid "X position: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:89
-msgid "Y position: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:90
-#, fuzzy
-msgid "Xinerama screen: "
-msgstr "سينيراما "
-
-#: gui/gdmconfig-strings.c:91
-#, fuzzy
-msgid ""
-"If you have xinerama multi display setup which screen should the login "
-"window appear on.  0 will usually do just fine."
-msgstr "ال تعمل."
-
-#: gui/gdmconfig-strings.c:92
-#, fuzzy
-msgid "Login behaviour"
-msgstr "دخول"
-
-#: gui/gdmconfig-strings.c:93 gui/gdmconfig-strings.c:104
-msgid "Face browser"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:94
-msgid ""
-"Show a browser of user face images. The users can put their picture in ~/."
-"gnome/photo"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:95
-msgid "Show choosable user images (enable face browser)"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:96
-#, fuzzy
-msgid "Default face image: "
-msgstr "الإفتراضي "
-
-#: gui/gdmconfig-strings.c:97
-msgid "Global faces directory: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:98
-msgid "Maximum face width: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:99
-#, fuzzy
-msgid "Select an image for users with no 'face'"
-msgstr "اختيار"
-
-#: gui/gdmconfig-strings.c:100
-#, fuzzy
-msgid "Choose the directory to search for faces"
-msgstr "أختر ال الى"
-
-#: gui/gdmconfig-strings.c:101
-msgid "Maximum face height: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:102
-msgid "Exclude these users: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:103
-#, fuzzy
-msgid "A comma separated list of users to exclude from the face browser."
-msgstr "الى ال."
-
-#: gui/gdmconfig-strings.c:105 gui/gdmconfig-strings.c:125
-#, fuzzy
-msgid "Background"
-msgstr "الخلفية"
-
-#: gui/gdmconfig-strings.c:106
-#, fuzzy
-msgid "Background type: "
-msgstr "الخلفية "
-
-#: gui/gdmconfig-strings.c:107
-#, fuzzy
-msgid "The background should be the standard background"
-msgstr "ال"
-
-#: gui/gdmconfig-strings.c:108
-#, fuzzy
-msgid "None"
-msgstr "لا يوجد"
-
-#: gui/gdmconfig-strings.c:109
-msgid "The background should be an image"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:110
-#, fuzzy
-msgid "Image"
-msgstr "صورة"
-
-#: gui/gdmconfig-strings.c:111
-msgid "The background should be a color"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:112
-#, fuzzy
-msgid "Color"
-msgstr "اللون"
-
-#: gui/gdmconfig-strings.c:113
-#, fuzzy
-msgid ""
-"Scale background image to fit the entire screen. If this is not set then the "
-"image will be tiled on the background."
-msgstr "الى ال ال تعمل ال."
-
-#: gui/gdmconfig-strings.c:114
-#, fuzzy
-msgid "Scale background image to fit"
-msgstr "الى"
-
-#: gui/gdmconfig-strings.c:115
-#, fuzzy
-msgid "Background color: "
-msgstr "الخلفية "
-
-#: gui/gdmconfig-strings.c:116
-#, fuzzy
-msgid "The color to use on the background"
-msgstr "الى تعمل ال"
-
-#: gui/gdmconfig-strings.c:117
-#, fuzzy
-msgid "Pick a color"
-msgstr "اختر لونا"
-
-#: gui/gdmconfig-strings.c:118
-#, fuzzy
-msgid "Background image:"
-msgstr "الخلفية:"
-
-#: gui/gdmconfig-strings.c:119
-#, fuzzy
-msgid "On remote login screens only set color to reduce network traffic"
-msgstr "عامل الى"
-
-#: gui/gdmconfig-strings.c:120
-#, fuzzy
-msgid "Only color on remote displays"
-msgstr "تعمل"
-
-#: gui/gdmconfig-strings.c:121
-#, fuzzy
-msgid "Background program"
-msgstr "الخلفية"
-
-#: gui/gdmconfig-strings.c:122
-#, fuzzy
-msgid "Background program: "
-msgstr "الخلفية "
-
-#: gui/gdmconfig-strings.c:123 gui/gdmconfig-strings.c:269
-#, fuzzy
-msgid "Select a file containing Locale information"
-msgstr "اختيار الإعداد المحلي"
-
-#: gui/gdmconfig-strings.c:124
-#, fuzzy
-msgid "The program to run in the background of the login."
-msgstr "الى ال ال."
-
-#: gui/gdmconfig-strings.c:126 gui/gdmconfig-strings.c:133
+#: gui/gdmsetup-strings.c:18
 #, fuzzy
 msgid "Automatic login"
 msgstr "تسجيل دخول آلي"
 
-#: gui/gdmconfig-strings.c:127
+#: gui/gdmsetup-strings.c:19
 #, fuzzy
-msgid "Automatic login: "
-msgstr "اوتوماتيكي "
+msgid "Login a user automa_tically after a specified number of seconds"
+msgstr "دخول"
 
-#: gui/gdmconfig-strings.c:128
+#: gui/gdmsetup-strings.c:20
+msgid "Timed login us_ername:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:21
 #, fuzzy
-msgid "Login a user automatically on first bootup"
-msgstr "دخول تعمل"
+msgid "_Seconds before login:"
+msgstr "الثواني "
 
-#: gui/gdmconfig-strings.c:129
+#: gui/gdmsetup-strings.c:23
 msgid "Timed login"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:130
-msgid "Timed login: "
+#: gui/gdmsetup-strings.c:24
+#, fuzzy
+msgid "General"
+msgstr "M"
+
+#: gui/gdmsetup-strings.c:26
+#, fuzzy
+msgid "_Welcome string: "
+msgstr "مرحبا "
+
+#: gui/gdmsetup-strings.c:27
+#, fuzzy
+msgid "Welcome string: "
+msgstr "مرحبا "
+
+#: gui/gdmsetup-strings.c:29
+msgid "Logo"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:131
+#: gui/gdmsetup-strings.c:30
 #, fuzzy
-msgid "Seconds before login: "
-msgstr "الثواني "
+msgid "Always use 24 hour cloc_k format"
+msgstr "دائما"
 
-#: gui/gdmconfig-strings.c:132
-#, fuzzy
-msgid "Login a user automatically after a specified number of seconds"
-msgstr "دخول"
-
-#: gui/gdmconfig-strings.c:134
-msgid "expert"
+#: gui/gdmsetup-strings.c:31
+msgid "Show choosable user images (_face browser)"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:136
+#: gui/gdmsetup-strings.c:32
 #, fuzzy
-msgid "Allow logging in as root (administrator) user."
-msgstr "سماح."
+msgid "Miscellaneous"
+msgstr "متفرقات"
 
-#: gui/gdmconfig-strings.c:137
+#: gui/gdmsetup-strings.c:33
 #, fuzzy
-msgid "Allow root to login with GDM"
+msgid "_No background"
+msgstr "الخلفية"
+
+#: gui/gdmsetup-strings.c:34
+#, fuzzy
+msgid "_Image"
+msgstr "صورة"
+
+#: gui/gdmsetup-strings.c:35
+#, fuzzy
+msgid "Co_lor"
+msgstr "اللون"
+
+#: gui/gdmsetup-strings.c:36
+#, fuzzy
+msgid "_Scale background image to fit"
+msgstr "الى"
+
+#: gui/gdmsetup-strings.c:38
+#, fuzzy
+msgid "_Only color on remote displays"
+msgstr "تعمل"
+
+#: gui/gdmsetup-strings.c:39
+#, fuzzy
+msgid "_Background color: "
+msgstr "الخلفية "
+
+#: gui/gdmsetup-strings.c:40
+#, fuzzy
+msgid "Pick a color"
+msgstr "اختر لونا"
+
+#: gui/gdmsetup-strings.c:41
+#, fuzzy
+msgid "Background"
+msgstr "الخلفية"
+
+#: gui/gdmsetup-strings.c:43
+msgid "<b>Preview:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:44
+msgid "No screenshot available"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:45
+msgid "<b>Description:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:46
+msgid "<b>Copyright:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:47
+msgid "<b>Author:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:48
+msgid "_Install new theme"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:50
+#, fuzzy
+msgid "Allow _root to login with GDM"
 msgstr "سماح الى"
 
-#: gui/gdmconfig-strings.c:138
+#: gui/gdmsetup-strings.c:51
 #, fuzzy
-msgid ""
-"Allow logging in as root (administrator) user from a remote host using GDM.  "
-"This is only relevant if you enable the XDMCP protocol."
-msgstr "سماح ال."
-
-#: gui/gdmconfig-strings.c:139
-#, fuzzy
-msgid "Allow root to login remotely with GDM"
+msgid "Allow root to login r_emotely with GDM"
 msgstr "سماح الى"
 
-#: gui/gdmconfig-strings.c:140
+#: gui/gdmsetup-strings.c:52
 #, fuzzy
-msgid ""
-"Allow logging in using the timed from a remote host using GDM.  This is only "
-"relevant if you enable the XDMCP protocol.  Note that this is insecure since "
-"remote hosts can gain access to this computer without the use of a password, "
-"so be careful."
-msgstr "سماح ال ال ملاحظة الى ال."
-
-#: gui/gdmconfig-strings.c:141
-#, fuzzy
-msgid "Allow remote timed logins"
+msgid "Allow remote _timed logins"
 msgstr "سماح"
 
-#: gui/gdmconfig-strings.c:142
-#, fuzzy
-msgid ""
-"Determines whether GDM should kill X clients started by the init scripts "
-"when the user logs in."
-msgstr "عن طريق ال ال."
-
-#: gui/gdmconfig-strings.c:143
-msgid "Kill 'init' clients"
+#: gui/gdmsetup-strings.c:53
+msgid "Show _system menu"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:144
+#: gui/gdmsetup-strings.c:54
 #, fuzzy
-msgid "Should GDM print authentication errors in the greeter"
-msgstr "طباعة ال"
+msgid "Allow c_onfiguration from the login screen"
+msgstr "سماح الى ال ال"
 
-#: gui/gdmconfig-strings.c:145
-#, fuzzy
-msgid "Select how relaxed permissions are"
-msgstr "اختيار"
-
-#: gui/gdmconfig-strings.c:146
-#, fuzzy
-msgid "Permissions: "
-msgstr "الأذونات "
-
-#: gui/gdmconfig-strings.c:147
-#, fuzzy
-msgid "Allow world writable files and directories"
-msgstr "سماح و"
-
-#: gui/gdmconfig-strings.c:148
-msgid "World writable"
+#: gui/gdmsetup-strings.c:55
+msgid "Retry _delay (seconds) :"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:149
+#: gui/gdmsetup-strings.c:56
 #, fuzzy
-msgid "Allow group writable files and directories"
-msgstr "سماح و"
+msgid "Options"
+msgstr "خيارات"
 
-#: gui/gdmconfig-strings.c:150
-#, fuzzy
-msgid "Group writable"
-msgstr "مجموعة"
-
-#: gui/gdmconfig-strings.c:151
-#, fuzzy
-msgid "Only accept user owned files and directories"
-msgstr "و"
-
-#: gui/gdmconfig-strings.c:152
-msgid "Paranoia"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:153
-#, fuzzy
-msgid "Authorization Details"
-msgstr "الترخيص"
-
-#: gui/gdmconfig-strings.c:154
-msgid "GDM runs as this user: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:155
-#, fuzzy
-msgid "User 'auth' directory: "
-msgstr "المستخدم "
-
-#: gui/gdmconfig-strings.c:156
-#, fuzzy
-msgid "User 'auth' FB directory: "
-msgstr "المستخدم "
-
-#: gui/gdmconfig-strings.c:157
-#, fuzzy
-msgid "User 'auth' file: "
-msgstr "المستخدم "
-
-#: gui/gdmconfig-strings.c:158
-msgid "GDM runs as this group: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:159
-#, fuzzy
-msgid "Limits"
-msgstr "الحدود"
-
-#: gui/gdmconfig-strings.c:160
-#, fuzzy
-msgid "The number of seconds before a login is allowed after an unsuccesful try."
-msgstr "ثوانى."
-
-#: gui/gdmconfig-strings.c:161
-#, fuzzy
-msgid ""
-"The maximum size of a file that gdm will attempt to read.  This is for files "
-"that are read into memory and so you don't want users \"attacking\" gdm by "
-"having large files."
-msgstr "الى و عن طريق."
-
-#: gui/gdmconfig-strings.c:162
-msgid "Retry delay: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:163
-msgid "Maximum user file length: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:164
-msgid "Maximum session file length: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:165
-#, fuzzy
-msgid ""
-"The session file is read in a way where a higher limit is still ok.  That is "
-"it is never stored in memory."
-msgstr "أبداً."
-
-#: gui/gdmconfig-strings.c:166
+#: gui/gdmsetup-strings.c:57
 #, fuzzy
 msgid "Security"
 msgstr "الأمن"
 
-#: gui/gdmconfig-strings.c:167
+#: gui/gdmsetup-strings.c:58
 #, fuzzy
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
 msgstr "لا ال ال."
 
-#: gui/gdmconfig-strings.c:168
+#: gui/gdmsetup-strings.c:59
 #, fuzzy
-msgid "Enable XDMCP, a protocol to allow others to log in remotely"
-msgstr "تفعيل الى الى"
-
-#: gui/gdmconfig-strings.c:169
-#, fuzzy
-msgid "Enable XDMCP"
-msgstr "تفعيل"
-
-#: gui/gdmconfig-strings.c:170
-#, fuzzy
-msgid "Connection Settings"
-msgstr "إتصال"
-
-#: gui/gdmconfig-strings.c:171
-msgid "Honour indirect requests"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:172
-msgid "Maximum indirect wait time: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:173
-msgid "Maximum wait time: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:174
-msgid "Maximum remote sessions: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:175
-#, fuzzy
-msgid "Max pending indirect requests: "
+msgid "Honour _indirect requests"
 msgstr "الحد الأقصى "
 
-#: gui/gdmconfig-strings.c:176
-msgid "Maximum pending requests: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:177
+#: gui/gdmsetup-strings.c:60
 #, fuzzy
 msgid "Listen on UDP port: "
 msgstr "تعمل "
 
-#: gui/gdmconfig-strings.c:178
+#: gui/gdmsetup-strings.c:61
+#, fuzzy
+msgid "Maximum pending requests:"
+msgstr "الحد الأقصى "
+
+#: gui/gdmsetup-strings.c:62
+#, fuzzy
+msgid "Max pending indirect requests:"
+msgstr "الحد الأقصى "
+
+#: gui/gdmsetup-strings.c:63
+#, fuzzy
+msgid "Maximum remote sessions:"
+msgstr "حذف"
+
+#: gui/gdmsetup-strings.c:64
+msgid "Maximum wait time:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:65
+msgid "Maximum indirect wait time:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:66
+msgid "Displays per host:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:67
 #, fuzzy
 msgid "Ping interval (minutes):"
 msgstr "دقائق:"
 
-#: gui/gdmconfig-strings.c:179
+#: gui/gdmsetup-strings.c:68
 #, fuzzy
-msgid ""
-"Interval in minutes in which to ping the server.  If the server doesn't "
-"respond in this many minutes (that is before the next time we ping it) the "
-"display will be terminated."
-msgstr "دقائق الى ال ال دقائق ال ال."
-
-#: gui/gdmconfig-strings.c:180
-#, fuzzy
-msgid ""
-"The script to run when the server sends a WILLING response to a QUERY.  If "
-"this is empty or does not exist, the standard message with the system ID is "
-"sent.  Only the first line of output from this script is read."
-msgstr "الى ال الى فارغ أو ال ال الهوية ال."
-
-#: gui/gdmconfig-strings.c:181
-msgid "Willing script (optional):"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:182
-#, fuzzy
-msgid ""
-"Maximum displays per single host.  You can use this to prevent attacks by "
-"hogging all the possible displays.  Does not apply to local connections."
-msgstr "الى عن طريق ال الى محلي."
-
-#: gui/gdmconfig-strings.c:183
-msgid "Displays per host:"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:184
-msgid "XDMCP"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:185
-#, fuzzy
-msgid "Servers"
-msgstr "الخوادم"
-
-#: gui/gdmconfig-strings.c:186
-#, fuzzy
-msgid "Name"
-msgstr "الاسم"
-
-#: gui/gdmconfig-strings.c:187
-#, fuzzy
-msgid "Command"
-msgstr "الأمر"
-
-#: gui/gdmconfig-strings.c:188
-msgid "Flexible"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:189 gui/gdmconfig-strings.c:199
-#, fuzzy
-msgid "Add server"
-msgstr "إضافة"
-
-#: gui/gdmconfig-strings.c:190 gui/gdmconfig-strings.c:200
-#, fuzzy
-msgid "Edit server"
-msgstr "تحرير"
-
-#: gui/gdmconfig-strings.c:191 gui/gdmconfig-strings.c:201
-#, fuzzy
-msgid "Delete server"
-msgstr "إلغاء"
-
-#: gui/gdmconfig-strings.c:192 gui/gdmconfig-strings.c:226
-#, fuzzy
-msgid "Set as default"
-msgstr "اجعلها افتراضية"
-
-#: gui/gdmconfig-strings.c:193
-#, fuzzy
-msgid "Static Servers (servers to always run)"
-msgstr "الخوادم الى دائماً"
-
-#: gui/gdmconfig-strings.c:194
-#, fuzzy
-msgid "No."
-msgstr "لا."
-
-#: gui/gdmconfig-strings.c:195
-#, fuzzy
-msgid "Server"
-msgstr "الخادم"
-
-#: gui/gdmconfig-strings.c:196
-msgid "Extra arguments"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:197
-#, fuzzy
-msgid ""
-"Instead of reinitializing running servers when a user logs out.  Always kill "
-"and then start the server again."
-msgstr "دائما و ال."
-
-#: gui/gdmconfig-strings.c:198
-#, fuzzy
-msgid "Always restart X servers"
-msgstr "دائما"
-
-#: gui/gdmconfig-strings.c:202 gui/gdmconfig-strings.c:247
-#: gui/gdmconfig-strings.c:261 gui/gdmconfig-strings.c:265
-#, fuzzy
-msgid "Miscellaneous"
-msgstr "متفرقات"
-
-#: gui/gdmconfig-strings.c:203
-msgid "Xnest server: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:204
-msgid "Maximum number of flexible servers: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:205
-#, fuzzy
-msgid ""
-"The Xnest server.  This is a server that can run inside another server, used "
-"for the flexible nested login."
-msgstr "ال."
-
-#: gui/gdmconfig-strings.c:206
-#, fuzzy
-msgid "Standard X server: "
-msgstr "القياسي "
-
-#: gui/gdmconfig-strings.c:207
-#, fuzzy
-msgid "This is the standard X server to run when we are not told otherwise."
-msgstr "ال الى."
-
-#: gui/gdmconfig-strings.c:208 gui/gdmlogin.c:67
-msgid "Failsafe"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:209
-#, fuzzy
-msgid "Script to run when X is crashing: "
-msgstr "الى "
-
-#: gui/gdmconfig-strings.c:210
-#, fuzzy
-msgid ""
-"A script to run when the X server keeps crashing and the failsafe X server "
-"is either empty or also didn't take.  This will run an X setup program "
-"defined below."
-msgstr "الى ال و ال فارغ أو أسفل."
-
-#: gui/gdmconfig-strings.c:211
-msgid "Failsafe X server:"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:212
-#, fuzzy
-msgid ""
-"An X server binary to run if the standard one keeps crashing.  If this fails "
-"the script below will be run."
-msgstr "الى ال ال أسفل."
-
-#: gui/gdmconfig-strings.c:213
-msgid "X-server setup"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:214
-#, fuzzy
-msgid "Session configuration"
-msgstr "الجلسة"
-
-#: gui/gdmconfig-strings.c:215
-#, fuzzy
-msgid "Session directory: "
-msgstr "الجلسة "
-
-#: gui/gdmconfig-strings.c:216
-#, fuzzy
-msgid "Select a directory to be used for system-wide session scripts"
-msgstr "اختيار الى"
-
-#: gui/gdmconfig-strings.c:217
-msgid "Available Sessions"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:218
-#, fuzzy
-msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
-msgstr "ال"
-
-#: gui/gdmconfig-strings.c:219 gui/gdmlogin.c:71 gui/gdmlogin.c:1459
-#: gui/greeter/greeter_session.c:344
-msgid "Gnome Chooser"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:220
-#, fuzzy
-msgid "Show the Gnome failsafe session"
-msgstr "ال"
-
-#: gui/gdmconfig-strings.c:221
-msgid "Gnome Failsafe"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:222
-#, fuzzy
-msgid "Show the Xterm failsafe session"
-msgstr "ال"
-
-#: gui/gdmconfig-strings.c:223
-msgid "Xterm Failsafe"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:224
-#, fuzzy
-msgid "Add session"
-msgstr "إضافة"
-
-#: gui/gdmconfig-strings.c:225
-#, fuzzy
-msgid "Remove session"
-msgstr "حذف"
-
-#: gui/gdmconfig-strings.c:227
-#, fuzzy
-msgid "Selected session name: "
-msgstr "اسم "
-
-#: gui/gdmconfig-strings.c:228
-#, fuzzy
-msgid ""
-"The exact script details of a session\n"
-"will appear here when you select\n"
-"one from the list on the left.\n"
-msgstr ""
-"\n"
-"\n"
-" ال تعمل ال"
-
-#: gui/gdmconfig-strings.c:232
-#, fuzzy
-msgid "Login sessions"
-msgstr "دخول"
-
-#: gui/gdmconfig-strings.c:233
-#, fuzzy
-msgid "Appearance"
-msgstr "مظهر"
-
-#: gui/gdmconfig-strings.c:234
-#, fuzzy
-msgid "Directory for host images: "
-msgstr "الدليل "
-
-#: gui/gdmconfig-strings.c:235
-#, fuzzy
-msgid "Default host image:"
-msgstr "الإفتراضي:"
-
-#: gui/gdmconfig-strings.c:236
-#, fuzzy
-msgid "Refresh"
-msgstr "اعادة تحميل"
-
-#: gui/gdmconfig-strings.c:237
-#, fuzzy
-msgid "Scan every 'x' seconds: "
-msgstr "مسح ثوانى "
-
-#: gui/gdmconfig-strings.c:238
-msgid "Hosts"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:239
-#, fuzzy
-msgid "Send a query to the local network and list all servers that respond"
-msgstr "ارسال الى ال محلي و"
-
-#: gui/gdmconfig-strings.c:240
-msgid "Broadcast query"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:241
-#, fuzzy
-msgid "Hosts to list: "
-msgstr "الى "
-
-#: gui/gdmconfig-strings.c:242
-#, fuzzy
-msgid ""
-"Comma separated list of hostnames to list in the chooser (in addition to the "
-"broadcast above)"
-msgstr "فاصل￧ الى ال الى ال أعلى"
-
-#: gui/gdmconfig-strings.c:243
-msgid "Chooser"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:244
-msgid "Debugging"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:245
-#, fuzzy
-msgid ""
-"Enable debugging output to be printed into the syslog.  Useful for tracking "
-"down problems.  But not so useful for normal usage as it can fill up your "
-"logs very quickly."
-msgstr "تفعيل الى ال."
-
-#: gui/gdmconfig-strings.c:246
-#, fuzzy
-msgid "Enable debugging output"
+msgid "Enable _XDMCP"
 msgstr "تفعيل"
 
-#: gui/gdmconfig-strings.c:248
-msgid "system_setup"
+#: gui/gdmsetup-strings.c:69
+msgid "XDMCP"
 msgstr ""
-
-#: gui/gdmconfig-strings.c:249
-msgid "Executables"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:250
-msgid "Chooser command: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:251
-msgid "Greeter command: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:252
-msgid "Halt command: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:253
-msgid "Reboot command: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:254
-msgid "Configurator command: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:255
-msgid "Suspend command: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:256
-#, fuzzy
-msgid "Directories"
-msgstr "الأدلة"
-
-#: gui/gdmconfig-strings.c:257
-msgid "PRE session scripts directory: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:258
-msgid "POST session scripts directory: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:259
-#, fuzzy
-msgid "Logging directory: "
-msgstr "جاري التسجيل "
-
-#: gui/gdmconfig-strings.c:260
-#, fuzzy
-msgid "Display initialization directory: "
-msgstr "عرض "
-
-#: gui/gdmconfig-strings.c:262
-#, fuzzy
-msgid "PID file: "
-msgstr "رمز المهمة "
-
-#: gui/gdmconfig-strings.c:263
-#, fuzzy
-msgid "Default GNOME session file: "
-msgstr "الإفتراضي "
-
-#: gui/gdmconfig-strings.c:264
-msgid "Paths"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:266
-#, fuzzy
-msgid "Default $PATH: "
-msgstr "الإفتراضي "
-
-#: gui/gdmconfig-strings.c:267
-#, fuzzy
-msgid "Root $PATH: "
-msgstr "الجذر "
-
-#: gui/gdmconfig-strings.c:268
-msgid "Localization"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:270
-#, fuzzy
-msgid "Locale file: "
-msgstr "الإعداد المحلي "
-
-#: gui/gdmconfig-strings.c:271
-msgid "Environment"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:272
-#, fuzzy
-msgid "(C) 2001 Lee Mallabone"
-msgstr "C"
-
-#: gui/gdmconfig-strings.c:273
-#, fuzzy
-msgid ""
-"Configure the GNOME Display Manager.\n"
-"Please submit any bugs or feature requests at http://bugzilla.gnome.org "
-"under the `gdm' product."
-msgstr ""
-"عرف ال عرض مدير\n"
-" أوhttp://bugzilla.gnome.org ال."
-
-#: gui/gdmconfig-strings.c:275
-msgid "label273"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:276
-msgid "Extra arguments:"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:277
-#, fuzzy
-msgid "Custom command line:"
-msgstr "مخصّص:"
-
-#: gui/gdmconfig-strings.c:278 gui/gdmlogin.c:1862
-#, fuzzy
-msgid "Name: "
-msgstr "الاسم: "
-
-#: gui/gdmconfig-strings.c:279
-#, fuzzy
-msgid "Command line: "
-msgstr "الأمر "
-
-#: gui/gdmconfig-strings.c:280
-#, fuzzy
-msgid "Allow as flexible server"
-msgstr "سماح"
-
-#: gui/gdmconfig-strings.c:281
-#, fuzzy
-msgid "Make this the default server"
-msgstr "ال تلقائي"
 
 #: gui/gdmflexiserver.c:129
 #, fuzzy
@@ -3259,6 +2108,11 @@ msgstr "أختر"
 #, fuzzy
 msgid "Choose the X server to start"
 msgstr "أختر ال الى"
+
+#: gui/gdmflexiserver.c:141
+#, fuzzy
+msgid "Standard server"
+msgstr "القياسي"
 
 #: gui/gdmflexiserver.c:191
 #, fuzzy
@@ -3285,29 +2139,18 @@ msgstr ""
 msgid "Authenticate before running --command"
 msgstr ""
 
-#: gui/gdmflexiserver.c:239
-msgid "Cannot communicate with gdm, perhaps you have an old version running."
-msgstr ""
-
-#: gui/gdmflexiserver.c:250
-#, fuzzy
-msgid ""
-"You do not seem to have authentication needed be for this operation.  "
-"Perhaps your .Xauthority file is not set up correctly."
-msgstr "الى."
-
-#: gui/gdmflexiserver.c:269
+#: gui/gdmflexiserver.c:270
 #, fuzzy
 msgid ""
 "You do not seem to be logged in on the console.  Starting a new login only "
 "works correctly on the console."
 msgstr "الى تعمل ال تعمل ال."
 
-#: gui/gdmflexiserver.c:295
+#: gui/gdmflexiserver.c:296
 msgid "Can't lock screen"
 msgstr ""
 
-#: gui/gdmflexiserver.c:298
+#: gui/gdmflexiserver.c:299
 msgid "Can't disable xscreensaver display hacks"
 msgstr ""
 
@@ -3590,10 +2433,14 @@ msgstr ""
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:66 gui/gdmlogin.c:1817 gui/gdmlogin.c:1839
+#: gui/gdmlogin.c:66 gui/gdmlogin.c:1804 gui/gdmlogin.c:1826
 #, fuzzy
 msgid "Default"
 msgstr "الإفتراضي"
+
+#: gui/gdmlogin.c:67
+msgid "Failsafe"
+msgstr ""
 
 #: gui/gdmlogin.c:68
 msgid "Gnome"
@@ -3608,32 +2455,37 @@ msgstr "KDE"
 msgid "XSession"
 msgstr ""
 
+#: gui/gdmlogin.c:71 gui/gdmlogin.c:1446 gui/greeter/greeter_session.c:344
+msgid "Gnome Chooser"
+msgstr ""
+
 #: gui/gdmlogin.c:72
 #, fuzzy
 msgid "Last"
 msgstr "الأخير"
 
-#: gui/gdmlogin.c:203
+#: gui/gdmlogin.c:206
 #, fuzzy, c-format
 msgid "User %s will login in %d seconds"
 msgstr "المستخدم"
 
-#: gui/gdmlogin.c:467
+#: gui/gdmlogin.c:470
 #, fuzzy
-msgid "Doubleclick here to un-iconify the login window, so that you may log in."
+msgid ""
+"Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr "الى ال."
 
-#: gui/gdmlogin.c:549 gui/gdmlogin.c:557 gui/gdmlogin.c:566
-#, fuzzy, c-format
-msgid "%sWelcome to %s%s"
-msgstr "الى"
-
-#: gui/gdmlogin.c:564
+#: gui/gdmlogin.c:544
 #, fuzzy
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "مجموعة محارف!"
 
-#: gui/gdmlogin.c:719
+#: gui/gdmlogin.c:546
+#, fuzzy, c-format
+msgid "%sWelcome to %s%s"
+msgstr "الى"
+
+#: gui/gdmlogin.c:699
 #, fuzzy
 msgid ""
 "Could not fork a new process!\n"
@@ -3644,42 +2496,47 @@ msgstr ""
 "\n"
 " الى."
 
-#: gui/gdmlogin.c:766 gui/greeter/greeter_system.c:18
+#: gui/gdmlogin.c:746 gui/greeter/greeter_system.c:18
 #, fuzzy
 msgid "Are you sure you want to reboot the machine?"
 msgstr "الى ال?"
 
-#: gui/gdmlogin.c:778 gui/greeter/greeter_system.c:29
+#: gui/gdmlogin.c:758 gui/greeter/greeter_system.c:29
 #, fuzzy
 msgid "Are you sure you want to shut down the machine?"
 msgstr "الى ال?"
 
-#: gui/gdmlogin.c:789 gui/greeter/greeter_system.c:39
+#: gui/gdmlogin.c:769 gui/greeter/greeter_system.c:39
 #, fuzzy
 msgid "Are you sure you want to suspend the machine?"
 msgstr "الى ال?"
 
-#: gui/gdmlogin.c:803
+#: gui/gdmlogin.c:783
 #, fuzzy, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr "لا."
 
-#: gui/gdmlogin.c:870
+#: gui/gdmlogin.c:809 gui/gdmlogin.c:3799
+#, fuzzy, c-format
+msgid "Welcome to %n"
+msgstr "مرحبا الى"
+
+#: gui/gdmlogin.c:853
 #, fuzzy
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "I."
 
-#: gui/gdmlogin.c:932 gui/gdmlogin.c:1507 gui/greeter/greeter_session.c:64
+#: gui/gdmlogin.c:915 gui/gdmlogin.c:1494 gui/greeter/greeter_session.c:64
 #: gui/greeter/greeter_session.c:391
 msgid "Failsafe Gnome"
 msgstr ""
 
-#: gui/gdmlogin.c:934 gui/gdmlogin.c:1532 gui/greeter/greeter_session.c:66
+#: gui/gdmlogin.c:917 gui/gdmlogin.c:1519 gui/greeter/greeter_session.c:66
 #: gui/greeter/greeter_session.c:417
 msgid "Failsafe xterm"
 msgstr ""
 
-#: gui/gdmlogin.c:980 gui/greeter/greeter_session.c:110
+#: gui/gdmlogin.c:963 gui/greeter/greeter_session.c:110
 #, fuzzy, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3688,8 +2545,8 @@ msgstr ""
 "تعمل\n"
 " الى ال تلقائي?"
 
-#: gui/gdmlogin.c:1005 gui/gdmlogin.c:1093
-#: gui/greeter/greeter_action_language.c:191 gui/greeter/greeter_session.c:138
+#: gui/gdmlogin.c:988 gui/gdmlogin.c:1076
+#: gui/greeter/greeter_action_language.c:192 gui/greeter/greeter_session.c:138
 #, fuzzy, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3703,7 +2560,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:1021 gui/greeter/greeter_session.c:156
+#: gui/gdmlogin.c:1004 gui/greeter/greeter_session.c:156
 #, fuzzy, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3716,38 +2573,39 @@ msgstr ""
 " ال\n"
 " نظام سطح المكتب ال."
 
-#: gui/gdmlogin.c:1316
+#: gui/gdmlogin.c:1303
 #, c-format
 msgid "%s session selected"
 msgstr ""
 
-#: gui/gdmlogin.c:1349 gui/greeter/greeter_session.c:230
+#: gui/gdmlogin.c:1336 gui/greeter/greeter_session.c:230
 #, fuzzy
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "سجل ال"
 
-#: gui/gdmlogin.c:1362 gui/greeter/greeter_session.c:243
+#: gui/gdmlogin.c:1349 gui/greeter/greeter_session.c:243
 #, fuzzy
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "الجلسة!"
 
-#: gui/gdmlogin.c:1447 gui/greeter/greeter_session.c:330
-msgid "This session will log you directly into GNOME, into your current session."
+#: gui/gdmlogin.c:1434 gui/greeter/greeter_session.c:330
+msgid ""
+"This session will log you directly into GNOME, into your current session."
 msgstr ""
 
-#: gui/gdmlogin.c:1462 gui/greeter/greeter_session.c:347
+#: gui/gdmlogin.c:1449 gui/greeter/greeter_session.c:347
 #, fuzzy
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
 msgstr "و ال الى."
 
-#: gui/gdmlogin.c:1497 gui/greeter/greeter_session.c:380
+#: gui/gdmlogin.c:1484 gui/greeter/greeter_session.c:380
 #, fuzzy
 msgid "Yaikes, nothing found in the session directory."
 msgstr "ال."
 
-#: gui/gdmlogin.c:1509 gui/greeter/greeter_session.c:393
+#: gui/gdmlogin.c:1496 gui/greeter/greeter_session.c:393
 #, fuzzy
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
@@ -3755,7 +2613,7 @@ msgid ""
 "GNOME will use the 'Default' session."
 msgstr "لا و الى ال الإفتراضي."
 
-#: gui/gdmlogin.c:1534 gui/greeter/greeter_session.c:419
+#: gui/gdmlogin.c:1521 gui/greeter/greeter_session.c:419
 #, fuzzy
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
@@ -3763,134 +2621,150 @@ msgid ""
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr "لا و الى ال."
 
-#: gui/gdmlogin.c:1555 gui/greeter/greeter_session.c:441
+#: gui/gdmlogin.c:1542 gui/greeter/greeter_session.c:441
 #, fuzzy
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "لا تلقائي رايط"
 
-#: gui/gdmlogin.c:1595
+#: gui/gdmlogin.c:1582
 #, c-format
 msgid "%s language selected"
 msgstr ""
 
-#: gui/gdmlogin.c:1633
+#: gui/gdmlogin.c:1620
 #, fuzzy
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "سجل ال"
 
-#: gui/gdmlogin.c:1654
+#: gui/gdmlogin.c:1641
 #, fuzzy
 msgid "Other"
 msgstr "أخرى"
 
-#: gui/gdmlogin.c:1779 gui/gdmlogin.c:1786
+#: gui/gdmlogin.c:1766 gui/gdmlogin.c:1773
 #, fuzzy
 msgid "Select GNOME session"
 msgstr "اختيار"
 
-#: gui/gdmlogin.c:1853
+#: gui/gdmlogin.c:1840
 msgid "Create new session"
 msgstr ""
 
+#: gui/gdmlogin.c:1849
+#, fuzzy
+msgid "Name: "
+msgstr "الاسم: "
+
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1884
+#: gui/gdmlogin.c:1871
 msgid "Remember this setting"
 msgstr ""
 
-#: gui/gdmlogin.c:2222
+#: gui/gdmlogin.c:2234
 #, fuzzy
 msgid "Please insert 25 cents to log in."
 msgstr "الى."
 
-#: gui/gdmlogin.c:2582
+#: gui/gdmlogin.c:2618
 #, fuzzy
 msgid "GNOME Desktop Manager"
 msgstr "سطح المكتب"
 
-#: gui/gdmlogin.c:2590
+#: gui/gdmlogin.c:2626
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 
-#: gui/gdmlogin.c:2612
+#: gui/gdmlogin.c:2648
 #, fuzzy
 msgid "Iconify the login window"
 msgstr "ال"
 
-#: gui/gdmlogin.c:2647
+#: gui/gdmlogin.c:2684
 msgid "%a %b %d, %H:%M"
 msgstr ""
 
-#: gui/gdmlogin.c:2654
+#: gui/gdmlogin.c:2691 gui/greeter/greeter_item.c:93
 #, fuzzy
 msgid "%a %b %d, %I:%M %p"
 msgstr "I M"
 
-#: gui/gdmlogin.c:2715
+#: gui/gdmlogin.c:2753
 msgid "Finger"
 msgstr ""
 
-#: gui/gdmlogin.c:2790
+#: gui/gdmlogin.c:2827
 msgid "GDM Login"
 msgstr ""
 
-#: gui/gdmlogin.c:2836
+#: gui/gdmlogin.c:2870
 #, fuzzy
-msgid "Session"
+msgid "_Session"
 msgstr "الجلسة"
 
-#: gui/gdmlogin.c:2847
+#: gui/gdmlogin.c:2877
 #, fuzzy
-msgid "Language"
+msgid "_Language"
 msgstr "اللغة"
 
-#: gui/gdmlogin.c:2861
+#: gui/gdmlogin.c:2889
 #, fuzzy
-msgid "Configure..."
+msgid "_Configure..."
 msgstr "اعداد..."
 
-#: gui/gdmlogin.c:2868
+#: gui/gdmlogin.c:2896
 #, fuzzy
-msgid "Configure GDM (this login manager). This will require the root password."
+msgid ""
+"Configure GDM (this login manager). This will require the root password."
 msgstr "عرف ال."
 
-#: gui/gdmlogin.c:2875
-msgid "Reboot..."
+#: gui/gdmlogin.c:2903
+msgid "_Reboot..."
 msgstr ""
 
-#: gui/gdmlogin.c:2882
+#: gui/gdmlogin.c:2910
 msgid "Reboot your computer"
 msgstr ""
 
-#: gui/gdmlogin.c:2888
-msgid "Shut down..."
+#: gui/gdmlogin.c:2916
+msgid "Shut _down..."
 msgstr ""
 
-#: gui/gdmlogin.c:2895
+#: gui/gdmlogin.c:2923
 #, fuzzy
 msgid "Shut down your computer so that you may turn it off."
 msgstr "لا تعمل."
 
-#: gui/gdmlogin.c:2902
-msgid "Suspend..."
+#: gui/gdmlogin.c:2930
+msgid "_Suspend..."
 msgstr ""
 
-#: gui/gdmlogin.c:2909
+#: gui/gdmlogin.c:2937
 msgid "Suspend your computer"
 msgstr ""
 
-#: gui/gdmlogin.c:2931
-msgid "Disconnect"
+#: gui/gdmlogin.c:2943
+#, fuzzy
+msgid "S_ystem"
+msgstr "نظام"
+
+#: gui/gdmlogin.c:2955
+#, fuzzy
+msgid "_Quit"
+msgstr "إقلاع"
+
+#: gui/gdmlogin.c:2957
+msgid "D_isconnect"
 msgstr ""
 
-#: gui/gdmlogin.c:3445
+#: gui/gdmlogin.c:3510
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 
-#: gui/gdmlogin.c:3756 gui/gdmlogin.c:3783 gui/greeter/greeter.c:381
-#: gui/greeter/greeter.c:407
+#: gui/gdmlogin.c:3878 gui/gdmlogin.c:3905 gui/greeter/greeter.c:462
+#: gui/greeter/greeter.c:489
 #, fuzzy, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3901,12 +2775,12 @@ msgstr ""
 "\n"
 " ال أو ال."
 
-#: gui/gdmlogin.c:3789 gui/gdmlogin.c:3831 gui/greeter/greeter.c:413
-#: gui/greeter/greeter.c:455
+#: gui/gdmlogin.c:3911 gui/gdmlogin.c:3953 gui/greeter/greeter.c:495
+#: gui/greeter/greeter.c:538
 msgid "Reboot"
 msgstr ""
 
-#: gui/gdmlogin.c:3823 gui/greeter/greeter.c:447
+#: gui/gdmlogin.c:3945 gui/greeter/greeter.c:530
 #, fuzzy, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3917,32 +2791,32 @@ msgstr ""
 "\n"
 " ال أو ال."
 
-#: gui/gdmlogin.c:3829 gui/greeter/greeter.c:453
+#: gui/gdmlogin.c:3951 gui/greeter/greeter.c:536
 #, fuzzy
 msgid "Restart"
 msgstr "اعد التشغيل"
 
-#: gui/gdmlogin.c:3870 gui/greeter/greeter.c:645
+#: gui/gdmlogin.c:3992 gui/greeter/greeter.c:791
 #, fuzzy
 msgid "main: Error setting up HUP signal handler"
 msgstr "خطأ"
 
-#: gui/gdmlogin.c:3878 gui/greeter/greeter.c:653
+#: gui/gdmlogin.c:4000 gui/greeter/greeter.c:799
 #, fuzzy
 msgid "main: Error setting up INT signal handler"
 msgstr "خطأ"
 
-#: gui/gdmlogin.c:3881 gui/greeter/greeter.c:656
+#: gui/gdmlogin.c:4003 gui/greeter/greeter.c:802
 #, fuzzy
 msgid "main: Error setting up TERM signal handler"
 msgstr "خطأ"
 
-#: gui/gdmlogin.c:3889
+#: gui/gdmlogin.c:4011
 #, fuzzy
 msgid "main: Error setting up CHLD signal handler"
 msgstr "خطأ"
 
-#: gui/gdmlogin.c:3963
+#: gui/gdmlogin.c:4085 gui/greeter/greeter.c:935
 #, fuzzy
 msgid ""
 "Your session directory is missing or empty!\n"
@@ -3955,7 +2829,7 @@ msgstr ""
 " موجود\n"
 " و ال."
 
-#: gui/gdmlogin.c:3982
+#: gui/gdmlogin.c:4106 gui/greeter/greeter.c:957
 #, fuzzy
 msgid ""
 "The configuration file contains an invalid command\n"
@@ -3966,7 +2840,7 @@ msgstr ""
 " ال و I ال\n"
 " تلقائي."
 
-#: gui/gdmlogin.c:4002
+#: gui/gdmlogin.c:4128 gui/greeter/greeter.c:980
 #, fuzzy
 msgid ""
 "The configuration was not found.  GDM is using\n"
@@ -3979,7 +2853,7 @@ msgstr ""
 " و ال\n"
 "."
 
-#: gui/gdmphotosetup.c:85
+#: gui/gdmphotosetup.c:91
 #, fuzzy
 msgid ""
 "The face browser is not configured,\n"
@@ -3990,27 +2864,27 @@ msgstr ""
 " الى\n"
 " ال."
 
-#: gui/gdmphotosetup.c:93
+#: gui/gdmphotosetup.c:100
 #, fuzzy
 msgid "Select a photo"
 msgstr "اختيار"
 
-#: gui/gdmphotosetup.c:98
+#: gui/gdmphotosetup.c:109
 #, fuzzy
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "اختيار الى ال:"
 
-#: gui/gdmphotosetup.c:103
+#: gui/gdmphotosetup.c:114
 #, fuzzy
 msgid "Browse"
 msgstr "بحث"
 
-#: gui/gdmphotosetup.c:126
+#: gui/gdmphotosetup.c:137
 #, fuzzy
 msgid "No picture selected."
 msgstr "لا."
 
-#: gui/gdmphotosetup.c:148
+#: gui/gdmphotosetup.c:159
 #, fuzzy, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
@@ -4021,7 +2895,7 @@ msgstr ""
 " الى\n"
 " ال"
 
-#: gui/gdmphotosetup.c:174
+#: gui/gdmphotosetup.c:185
 #, fuzzy, c-format
 msgid ""
 "File %s cannot be open for reading\n"
@@ -4030,7 +2904,7 @@ msgstr ""
 "ملف\n"
 " خطأ"
 
-#: gui/gdmphotosetup.c:191
+#: gui/gdmphotosetup.c:203
 #, fuzzy, c-format
 msgid ""
 "File %s cannot be open for writing\n"
@@ -4041,7 +2915,8 @@ msgstr ""
 
 #: gui/gdmphotosetup.desktop.in.h:1
 #, fuzzy
-msgid "Change the picture that will show in the GDM (login manager) face browser"
+msgid ""
+"Change the picture that will show in the GDM (login manager) face browser"
 msgstr "ال ال"
 
 #: gui/gdmphotosetup.desktop.in.h:2
@@ -4107,23 +2982,26 @@ msgstr ""
 " الى\n"
 " ال."
 
-#: gui/gdmXnestchooser.c:263
-#, fuzzy
-msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
-msgstr ""
-"\n"
-" الى."
-
 #: gui/gdmXnestchooser.c:274
 msgid "Could not find a free display number"
 msgstr ""
 
-#: gui/greeter/greeter.c:49
+#: gui/greeter/greeter.c:61
 #, fuzzy, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr "لا."
+
+#: gui/greeter/greeter.c:874
+msgid ""
+"There was an error loading the theme, and the default theme also could not "
+"have been loaded, I will attempt to start the standard greeter"
+msgstr ""
+
+#: gui/greeter/greeter.c:892
+msgid ""
+"I could not start the standard greeter.  This display will abort and you may "
+"have to login another way and fix the installation of gdm"
+msgstr ""
 
 #: gui/greeter/greeter_lang_list.c:11
 #, fuzzy
@@ -4290,15 +3168,15 @@ msgstr ""
 msgid "Turkish"
 msgstr ""
 
-#: gui/greeter/greeter_system.c:60
+#: gui/greeter/greeter_system.c:78
 msgid "Shut down the computer"
 msgstr ""
 
-#: gui/greeter/greeter_system.c:68
+#: gui/greeter/greeter_system.c:86
 msgid "Suspend the computer"
 msgstr ""
 
-#: gui/greeter/greeter_system.c:76
+#: gui/greeter/greeter_system.c:94
 msgid "Reboot the computer"
 msgstr ""
 
@@ -4387,38 +3265,879 @@ msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "لا"
 
 #, fuzzy
+#~ msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
+#~ msgstr "التحقق"
+
+#, fuzzy
+#~ msgid ""
+#~ "Cannot find the glade interface description\n"
+#~ "file, cannot run gdmchooser.\n"
+#~ "Please check your installation and the\n"
+#~ "location of the gdmchooser.glade2 file."
+#~ msgstr ""
+#~ "ال\n"
+#~ "\n"
+#~ " و ال\n"
+#~ " ال."
+
+#, fuzzy
+#~ msgid ""
+#~ "The glade interface description file\n"
+#~ "appears to be corrupted.\n"
+#~ "Please check your installation."
+#~ msgstr ""
+#~ "\n"
+#~ " الى\n"
+#~ "."
+
+#, fuzzy
+#~ msgid "Help"
+#~ msgstr "مساعدة"
+
+#, fuzzy
+#~ msgid "Basic"
+#~ msgstr "بسيط"
+
+#, fuzzy
+#~ msgid ""
+#~ "This panel displays the basic options for configuring GDM.\n"
+#~ "\n"
+#~ "If you need finer detail, select 'expert' or 'system setup' from the list "
+#~ "above.\n"
+#~ "\n"
+#~ "This will display some of the more complex options of GDM that rarely "
+#~ "need to be changed."
+#~ msgstr ""
+#~ "ال\n"
+#~ "\n"
+#~ " أو ال أعلى\n"
+#~ "\n"
+#~ " ال الى."
+
+#, fuzzy
+#~ msgid ""
+#~ "This panel displays the more advanced options of GDM.\n"
+#~ "\n"
+#~ "Be sure to take care when manipulating the security options, or you could "
+#~ "be vulnerable to attackers.\n"
+#~ "\n"
+#~ "Choose \"System\" to change fundamental options in GDM."
+#~ msgstr ""
+#~ "ال\n"
+#~ "\n"
+#~ " الى ال أو الى\n"
+#~ "\n"
+#~ " أختر نظام الى."
+
+#, fuzzy
+#~ msgid ""
+#~ "This panel displays GDM's fundamental system settings.\n"
+#~ "\n"
+#~ "You should only change these paths if you really know what you are doing, "
+#~ "as an incorrect setup could stop your machine from booting properly.\n"
+#~ "\n"
+#~ "Choose \"Basic\" if you just want to change your machine's login "
+#~ "appearance."
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "\n"
+#~ "\n"
+#~ " أختر بسيط الى."
+
+#, fuzzy
+#~ msgid ""
+#~ "The glade ui description file doesn't seem to contain the\n"
+#~ "widget \"%s\". Unfortunately I cannot continue.\n"
+#~ "Please check your installation."
+#~ msgstr ""
+#~ "الى ال\n"
+#~ " I\n"
+#~ "."
+
+#, fuzzy
+#~ msgid ""
+#~ "Cannot find the glade interface description\n"
+#~ "file, cannot run gdmconfig.\n"
+#~ "Please check your installation and the\n"
+#~ "location of the gdmconfig.glade2 file."
+#~ msgstr ""
+#~ "ال\n"
+#~ "\n"
+#~ " و ال\n"
+#~ " ال."
+
+#, fuzzy
+#~ msgid ""
+#~ "Cannot find the gdmconfigurator widget in\n"
+#~ "the glade interface description file\n"
+#~ "Please check your installation."
+#~ msgstr ""
+#~ "ال\n"
+#~ " ال\n"
+#~ "."
+
+#, fuzzy
+#~ msgid "GNOME Display Manager Configurator"
+#~ msgstr "عرض مدير"
+
+#, fuzzy
+#~ msgid ""
+#~ "The configuration file: %s\n"
+#~ "does not exist! Using default values."
+#~ msgstr ""
+#~ "\n"
+#~ " تلقائي."
+
+#, fuzzy
+#~ msgid "Error reading session script!"
+#~ msgstr "خطأ!"
+
+#, fuzzy
+#~ msgid "Error reading this session script"
+#~ msgstr "خطأ"
+
+#, fuzzy
+#~ msgid "Yes"
+#~ msgstr "نعم"
+
+#, fuzzy
+#~ msgid "No"
+#~ msgstr "لا"
+
+#, fuzzy
+#~ msgid ""
+#~ "The applied settings cannot take effect until gdm\n"
+#~ "is restarted or your computer is rebooted.\n"
+#~ "You can restart GDM when all sessions are\n"
+#~ "closed (when all users log out) or you can\n"
+#~ "restart GDM now (which will kill all current\n"
+#~ "sessions)"
+#~ msgstr ""
+#~ "\n"
+#~ " أو\n"
+#~ "\n"
+#~ " أو\n"
+#~ "\n"
+
+#, fuzzy
+#~ msgid "Restart after logout"
+#~ msgstr "اعد التشغيل"
+
+#, fuzzy
+#~ msgid "Restart now"
+#~ msgstr "اعد التشغيل"
+
+#, fuzzy
+#~ msgid ""
+#~ "Are you sure you wish to restart GDM\n"
+#~ "now and lose any unsaved data?"
+#~ msgstr ""
+#~ "الى\n"
+#~ " و?"
+
+#, fuzzy
+#~ msgid ""
+#~ "The greeter settings will take effect the next time\n"
+#~ "it is displayed.  The rest of the settings will not\n"
+#~ "take effect until gdm is restarted or the computer is\n"
+#~ "rebooted"
+#~ msgstr ""
+#~ "ال\n"
+#~ " ال\n"
+#~ " أو ال\n"
+
+#, fuzzy
+#~ msgid ""
+#~ "You have not defined any local servers.\n"
+#~ "Usually this is not a good idea unless you\n"
+#~ "are sure you do not want users to be able to\n"
+#~ "log in with the graphical interface on the\n"
+#~ "local console and only use the XDMCP service.\n"
+#~ "\n"
+#~ "Are you sure you wish to apply these settings?"
+#~ msgstr ""
+#~ "محلي\n"
+#~ "\n"
+#~ " الى الى\n"
+#~ " ال تعمل ال\n"
+#~ " محلي و ال\n"
+#~ "\n"
+#~ " الى?"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not delete session %s\n"
+#~ "   Error: %s"
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ " خطأ"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not write session %s\n"
+#~ "   Error: %s"
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ " خطأ"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not write contents to session %s\n"
+#~ "   Error: %s"
+#~ msgstr ""
+#~ "\n"
+#~ " الى\n"
+#~ " خطأ"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not unlink old default session\n"
+#~ "   Error: %s"
+#~ msgstr ""
+#~ "\n"
+#~ " تلقائي\n"
+#~ " خطأ"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not find a suitable name for the default session link"
+#~ msgstr ""
+#~ "\n"
+#~ " اسم ال تلقائي"
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not link new default session\n"
+#~ "   Error: %s"
+#~ msgstr ""
+#~ "\n"
+#~ " رايط تلقائي\n"
+#~ " خطأ"
+
+#, fuzzy
+#~ msgid ""
+#~ "There were errors writing changes to the session files.\n"
+#~ "The configuration may not be completely saved.\n"
+#~ msgstr "الى ال\n"
+
+#, fuzzy
+#~ msgid ""
+#~ "This will destroy any changes made in this session.\n"
+#~ "Are you sure you want to do this?"
+#~ msgstr ""
+#~ "\n"
+#~ " الى?"
+
+#, fuzzy
+#~ msgid ""
+#~ "This will destroy any changes made in the configuration.\n"
+#~ "Are you sure you want to do this?"
+#~ msgstr ""
+#~ "ال\n"
+#~ " الى?"
+
+#, fuzzy
+#~ msgid "A descriptive server name must be supplied"
+#~ msgstr "اسم"
+
+#, fuzzy
+#~ msgid "A session name must be unique and not empty"
+#~ msgstr "اسم و"
+
+#, fuzzy
+#~ msgid "Enter a name for the new session"
+#~ msgstr "اسم ال"
+
+#, fuzzy
+#~ msgid ""
+#~ "You have modified the sessions directory.\n"
+#~ "Your session changes will still get written\n"
+#~ "to the old directory however, until you reload\n"
+#~ "the configuration dialog again."
+#~ msgstr ""
+#~ "تم التعديل ال\n"
+#~ "\n"
+#~ " الى ال\n"
+#~ " ال."
+
+#, fuzzy
+#~ msgid "GDM Configuration Utility"
+#~ msgstr "تعريف"
+
+#, fuzzy
+#~ msgid "Revert to settings in the configuration file"
+#~ msgstr "الى ال"
+
+#, fuzzy
+#~ msgid "Revert to settings that were shipped with your system"
+#~ msgstr "الى"
+
+#, fuzzy
+#~ msgid "Revert to Factory Settings"
+#~ msgstr "الى"
+
+#, fuzzy
+#~ msgid "Apply the current changes"
+#~ msgstr "تطبيق ال"
+
+#, fuzzy
+#~ msgid "Apply"
+#~ msgstr "تطبيق"
+
+#, fuzzy
+#~ msgid "General Appearance"
+#~ msgstr "عام"
+
+#, fuzzy
+#~ msgid "Select a logo to be displayed during login"
+#~ msgstr "اختيار الى"
+
+#, fuzzy
+#~ msgid "Minimised Icon: "
+#~ msgstr "أيقونة "
+
+#, fuzzy
+#~ msgid "Select a GTK+ theme file (gtkrc)"
+#~ msgstr "اختيار"
+
+#, fuzzy
+#~ msgid ""
+#~ "This is the GTK+ RC file that describes the theme that the login window "
+#~ "should use"
+#~ msgstr "ال ال ال"
+
+#, fuzzy
+#~ msgid "Login appearance"
+#~ msgstr "دخول"
+
+#, fuzzy
+#~ msgid "Greeter Look and Feel"
+#~ msgstr "منظر و"
+
+#, fuzzy
+#~ msgid ""
+#~ "Show the \"System\" menu.  This has the shutdown, reboot and "
+#~ "configuration items"
+#~ msgstr "ال نظام ال و"
+
+#, fuzzy
+#~ msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
+#~ msgstr "ال"
+
+#, fuzzy
+#~ msgid ""
+#~ "If the user fails to authenticate himself the login window should Quiver "
+#~ "to indicate failure"
+#~ msgstr "ال الى ال الى"
+
+#, fuzzy
+#~ msgid "Quiver on failure"
+#~ msgstr "تعمل"
+
+#, fuzzy
+#~ msgid ""
+#~ "Show the title bar on the login window.  If this is off the user won't be "
+#~ "able to move nor iconify the login window"
+#~ msgstr "ال تعمل ال لا تعمل ال الى ال"
+
+#, fuzzy
+#~ msgid "Show title bar on login window"
+#~ msgstr "تعمل"
+
+#, fuzzy
+#~ msgid "The welcome message displayed on the login window"
+#~ msgstr "تعمل ال"
+
+#, fuzzy
+#~ msgid "Default font: "
+#~ msgstr "الإفتراضي "
+
+#, fuzzy
+#~ msgid "The font to use on the welcome message"
+#~ msgstr "الى تعمل ال"
+
+#, fuzzy
+#~ msgid "Extras"
+#~ msgstr "اضافات"
+
+#, fuzzy
+#~ msgid "Default locale: "
+#~ msgstr "الإفتراضي "
+
+#, fuzzy
+#~ msgid "pt_PT"
+#~ msgstr "نقطة"
+
+#, fuzzy
+#~ msgid "pt_BR"
+#~ msgstr "نقطة"
+
+#, fuzzy
+#~ msgid ""
+#~ "This is the locale that GDM uses when it cannot find what the system "
+#~ "locale is set to.  This should be in the standard format such as \"en_US"
+#~ "\" for American English or \"cs_CZ\" for Czech"
+#~ msgstr "ال ال الى ال أنجليزي أو"
+
+#, fuzzy
+#~ msgid ""
+#~ "Always use the 24 hour format for the clock in the greeter, even if the "
+#~ "norm for the current locale is 12 hour"
+#~ msgstr "دائما ال ال ال ال ال"
+
+#, fuzzy
+#~ msgid "Position"
+#~ msgstr "الموقع"
+
+#, fuzzy
+#~ msgid "Set the initial position of the login window to the values below"
+#~ msgstr "ال ال الى ال"
+
+#, fuzzy
+#~ msgid "Do note allow the user to drag the login window around"
+#~ msgstr "ال الى ال"
+
+#, fuzzy
+#~ msgid "Lock position"
+#~ msgstr "قفل"
+
+#, fuzzy
+#~ msgid "Xinerama screen: "
+#~ msgstr "سينيراما "
+
+#, fuzzy
+#~ msgid ""
+#~ "If you have xinerama multi display setup which screen should the login "
+#~ "window appear on.  0 will usually do just fine."
+#~ msgstr "ال تعمل."
+
+#, fuzzy
+#~ msgid "Login behaviour"
+#~ msgstr "دخول"
+
+#, fuzzy
+#~ msgid "Default face image: "
+#~ msgstr "الإفتراضي "
+
+#, fuzzy
+#~ msgid "Select an image for users with no 'face'"
+#~ msgstr "اختيار"
+
+#, fuzzy
+#~ msgid "Choose the directory to search for faces"
+#~ msgstr "أختر ال الى"
+
+#, fuzzy
+#~ msgid "A comma separated list of users to exclude from the face browser."
+#~ msgstr "الى ال."
+
+#, fuzzy
+#~ msgid "Background type: "
+#~ msgstr "الخلفية "
+
+#, fuzzy
+#~ msgid "The background should be the standard background"
+#~ msgstr "ال"
+
+#, fuzzy
+#~ msgid "None"
+#~ msgstr "لا يوجد"
+
+#, fuzzy
+#~ msgid ""
+#~ "Scale background image to fit the entire screen. If this is not set then "
+#~ "the image will be tiled on the background."
+#~ msgstr "الى ال ال تعمل ال."
+
+#, fuzzy
+#~ msgid "The color to use on the background"
+#~ msgstr "الى تعمل ال"
+
+#, fuzzy
+#~ msgid "Background image:"
+#~ msgstr "الخلفية:"
+
+#, fuzzy
+#~ msgid "On remote login screens only set color to reduce network traffic"
+#~ msgstr "عامل الى"
+
+#, fuzzy
+#~ msgid "Background program"
+#~ msgstr "الخلفية"
+
+#, fuzzy
+#~ msgid "Background program: "
+#~ msgstr "الخلفية "
+
+#, fuzzy
+#~ msgid "Select a file containing Locale information"
+#~ msgstr "اختيار الإعداد المحلي"
+
+#, fuzzy
+#~ msgid "The program to run in the background of the login."
+#~ msgstr "الى ال ال."
+
+#, fuzzy
+#~ msgid "Allow logging in as root (administrator) user."
+#~ msgstr "سماح."
+
+#, fuzzy
+#~ msgid ""
+#~ "Allow logging in as root (administrator) user from a remote host using "
+#~ "GDM.  This is only relevant if you enable the XDMCP protocol."
+#~ msgstr "سماح ال."
+
+#, fuzzy
+#~ msgid ""
+#~ "Allow logging in using the timed from a remote host using GDM.  This is "
+#~ "only relevant if you enable the XDMCP protocol.  Note that this is "
+#~ "insecure since remote hosts can gain access to this computer without the "
+#~ "use of a password, so be careful."
+#~ msgstr "سماح ال ال ملاحظة الى ال."
+
+#, fuzzy
+#~ msgid ""
+#~ "Determines whether GDM should kill X clients started by the init scripts "
+#~ "when the user logs in."
+#~ msgstr "عن طريق ال ال."
+
+#, fuzzy
+#~ msgid "Should GDM print authentication errors in the greeter"
+#~ msgstr "طباعة ال"
+
+#, fuzzy
+#~ msgid "Select how relaxed permissions are"
+#~ msgstr "اختيار"
+
+#, fuzzy
+#~ msgid "Permissions: "
+#~ msgstr "الأذونات "
+
+#, fuzzy
+#~ msgid "Allow world writable files and directories"
+#~ msgstr "سماح و"
+
+#, fuzzy
+#~ msgid "Allow group writable files and directories"
+#~ msgstr "سماح و"
+
+#, fuzzy
+#~ msgid "Group writable"
+#~ msgstr "مجموعة"
+
+#, fuzzy
+#~ msgid "Only accept user owned files and directories"
+#~ msgstr "و"
+
+#, fuzzy
+#~ msgid "Authorization Details"
+#~ msgstr "الترخيص"
+
+#, fuzzy
+#~ msgid "User 'auth' directory: "
+#~ msgstr "المستخدم "
+
+#, fuzzy
+#~ msgid "User 'auth' FB directory: "
+#~ msgstr "المستخدم "
+
+#, fuzzy
+#~ msgid "User 'auth' file: "
+#~ msgstr "المستخدم "
+
+#, fuzzy
+#~ msgid "Limits"
+#~ msgstr "الحدود"
+
+#, fuzzy
+#~ msgid ""
+#~ "The number of seconds before a login is allowed after an unsuccesful try."
+#~ msgstr "ثوانى."
+
+#, fuzzy
+#~ msgid ""
+#~ "The maximum size of a file that gdm will attempt to read.  This is for "
+#~ "files that are read into memory and so you don't want users \"attacking\" "
+#~ "gdm by having large files."
+#~ msgstr "الى و عن طريق."
+
+#, fuzzy
+#~ msgid ""
+#~ "The session file is read in a way where a higher limit is still ok.  That "
+#~ "is it is never stored in memory."
+#~ msgstr "أبداً."
+
+#, fuzzy
+#~ msgid "Enable XDMCP, a protocol to allow others to log in remotely"
+#~ msgstr "تفعيل الى الى"
+
+#, fuzzy
+#~ msgid "Connection Settings"
+#~ msgstr "إتصال"
+
+#, fuzzy
+#~ msgid ""
+#~ "Interval in minutes in which to ping the server.  If the server doesn't "
+#~ "respond in this many minutes (that is before the next time we ping it) "
+#~ "the display will be terminated."
+#~ msgstr "دقائق الى ال ال دقائق ال ال."
+
+#, fuzzy
+#~ msgid ""
+#~ "The script to run when the server sends a WILLING response to a QUERY.  "
+#~ "If this is empty or does not exist, the standard message with the system "
+#~ "ID is sent.  Only the first line of output from this script is read."
+#~ msgstr "الى ال الى فارغ أو ال ال الهوية ال."
+
+#, fuzzy
+#~ msgid ""
+#~ "Maximum displays per single host.  You can use this to prevent attacks by "
+#~ "hogging all the possible displays.  Does not apply to local connections."
+#~ msgstr "الى عن طريق ال الى محلي."
+
+#, fuzzy
+#~ msgid "Servers"
+#~ msgstr "الخوادم"
+
+#, fuzzy
+#~ msgid "Name"
+#~ msgstr "الاسم"
+
+#, fuzzy
+#~ msgid "Command"
+#~ msgstr "الأمر"
+
+#, fuzzy
+#~ msgid "Add server"
+#~ msgstr "إضافة"
+
+#, fuzzy
+#~ msgid "Edit server"
+#~ msgstr "تحرير"
+
+#, fuzzy
+#~ msgid "Delete server"
+#~ msgstr "إلغاء"
+
+#, fuzzy
+#~ msgid "Set as default"
+#~ msgstr "اجعلها افتراضية"
+
+#, fuzzy
+#~ msgid "Static Servers (servers to always run)"
+#~ msgstr "الخوادم الى دائماً"
+
+#, fuzzy
+#~ msgid "No."
+#~ msgstr "لا."
+
+#, fuzzy
+#~ msgid "Server"
+#~ msgstr "الخادم"
+
+#, fuzzy
+#~ msgid ""
+#~ "Instead of reinitializing running servers when a user logs out.  Always "
+#~ "kill and then start the server again."
+#~ msgstr "دائما و ال."
+
+#, fuzzy
+#~ msgid "Always restart X servers"
+#~ msgstr "دائما"
+
+#, fuzzy
+#~ msgid ""
+#~ "The Xnest server.  This is a server that can run inside another server, "
+#~ "used for the flexible nested login."
+#~ msgstr "ال."
+
+#, fuzzy
+#~ msgid "Standard X server: "
+#~ msgstr "القياسي "
+
+#, fuzzy
+#~ msgid "This is the standard X server to run when we are not told otherwise."
+#~ msgstr "ال الى."
+
+#, fuzzy
+#~ msgid "Script to run when X is crashing: "
+#~ msgstr "الى "
+
+#, fuzzy
+#~ msgid ""
+#~ "A script to run when the X server keeps crashing and the failsafe X "
+#~ "server is either empty or also didn't take.  This will run an X setup "
+#~ "program defined below."
+#~ msgstr "الى ال و ال فارغ أو أسفل."
+
+#, fuzzy
+#~ msgid ""
+#~ "An X server binary to run if the standard one keeps crashing.  If this "
+#~ "fails the script below will be run."
+#~ msgstr "الى ال ال أسفل."
+
+#, fuzzy
+#~ msgid "Session configuration"
+#~ msgstr "الجلسة"
+
+#, fuzzy
+#~ msgid "Session directory: "
+#~ msgstr "الجلسة "
+
+#, fuzzy
+#~ msgid "Select a directory to be used for system-wide session scripts"
+#~ msgstr "اختيار الى"
+
+#, fuzzy
+#~ msgid ""
+#~ "Show the Gnome Chooser session, if a session named 'Gnome' is present"
+#~ msgstr "ال"
+
+#, fuzzy
+#~ msgid "Show the Gnome failsafe session"
+#~ msgstr "ال"
+
+#, fuzzy
+#~ msgid "Show the Xterm failsafe session"
+#~ msgstr "ال"
+
+#, fuzzy
+#~ msgid "Add session"
+#~ msgstr "إضافة"
+
+#, fuzzy
+#~ msgid "Selected session name: "
+#~ msgstr "اسم "
+
+#, fuzzy
+#~ msgid ""
+#~ "The exact script details of a session\n"
+#~ "will appear here when you select\n"
+#~ "one from the list on the left.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ " ال تعمل ال"
+
+#, fuzzy
+#~ msgid "Login sessions"
+#~ msgstr "دخول"
+
+#, fuzzy
+#~ msgid "Appearance"
+#~ msgstr "مظهر"
+
+#, fuzzy
+#~ msgid "Directory for host images: "
+#~ msgstr "الدليل "
+
+#, fuzzy
+#~ msgid "Default host image:"
+#~ msgstr "الإفتراضي:"
+
+#, fuzzy
+#~ msgid "Refresh"
+#~ msgstr "اعادة تحميل"
+
+#, fuzzy
+#~ msgid "Scan every 'x' seconds: "
+#~ msgstr "مسح ثوانى "
+
+#, fuzzy
+#~ msgid "Send a query to the local network and list all servers that respond"
+#~ msgstr "ارسال الى ال محلي و"
+
+#, fuzzy
+#~ msgid "Hosts to list: "
+#~ msgstr "الى "
+
+#, fuzzy
+#~ msgid ""
+#~ "Comma separated list of hostnames to list in the chooser (in addition to "
+#~ "the broadcast above)"
+#~ msgstr "فاصل￧ الى ال الى ال أعلى"
+
+#, fuzzy
+#~ msgid ""
+#~ "Enable debugging output to be printed into the syslog.  Useful for "
+#~ "tracking down problems.  But not so useful for normal usage as it can "
+#~ "fill up your logs very quickly."
+#~ msgstr "تفعيل الى ال."
+
+#, fuzzy
+#~ msgid "Enable debugging output"
+#~ msgstr "تفعيل"
+
+#, fuzzy
+#~ msgid "Directories"
+#~ msgstr "الأدلة"
+
+#, fuzzy
+#~ msgid "Logging directory: "
+#~ msgstr "جاري التسجيل "
+
+#, fuzzy
+#~ msgid "Display initialization directory: "
+#~ msgstr "عرض "
+
+#, fuzzy
+#~ msgid "PID file: "
+#~ msgstr "رمز المهمة "
+
+#, fuzzy
+#~ msgid "Default GNOME session file: "
+#~ msgstr "الإفتراضي "
+
+#, fuzzy
+#~ msgid "Default $PATH: "
+#~ msgstr "الإفتراضي "
+
+#, fuzzy
+#~ msgid "Root $PATH: "
+#~ msgstr "الجذر "
+
+#, fuzzy
+#~ msgid "(C) 2001 Lee Mallabone"
+#~ msgstr "C"
+
+#, fuzzy
+#~ msgid ""
+#~ "Configure the GNOME Display Manager.\n"
+#~ "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
+#~ "under the `gdm' product."
+#~ msgstr ""
+#~ "عرف ال عرض مدير\n"
+#~ " أوhttp://bugzilla.gnome.org ال."
+
+#, fuzzy
+#~ msgid "Custom command line:"
+#~ msgstr "مخصّص:"
+
+#, fuzzy
+#~ msgid "Command line: "
+#~ msgstr "الأمر "
+
+#, fuzzy
+#~ msgid "Allow as flexible server"
+#~ msgstr "سماح"
+
+#, fuzzy
+#~ msgid "Make this the default server"
+#~ msgstr "ال تلقائي"
+
+#, fuzzy
 #~ msgid ""
 #~ "\n"
 #~ "The system administrator has your disabled access to the system temporary."
 #~ msgstr ""
 #~ "\n"
 #~ " معطل الى ال."
-
-#, fuzzy
-#~ msgid "There were errors trying to start the X server."
-#~ msgstr "الى ال."
-
-#, fuzzy
-#~ msgid ""
-#~ "The nested X server (Xnest) cannot connect to your current X server.  You "
-#~ "may be missing an X authorization file."
-#~ msgstr "اتصال الى."
-
-#, fuzzy
-#~ msgid ""
-#~ "The nested X server (Xnest) is not available, or gdm is badly "
-#~ "configured.\n"
-#~ "Please install the Xnest package in order to use the nested login."
-#~ msgstr ""
-#~ "موجود أو\n"
-#~ " ال الى ال."
-
-#, fuzzy
-#~ msgid ""
-#~ "The X server is not available, it is likely that gdm is badly configured."
-#~ msgstr "موجود."
-
-#, fuzzy
-#~ msgid "Unknown error occured."
-#~ msgstr "غير معروف."
-
