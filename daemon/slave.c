@@ -1465,7 +1465,7 @@ parent_exists (void)
 {
 	pid_t ppid = getppid ();
 
-	if (ppid <= 0 ||
+	if (ppid <= 1 ||
 	    kill (ppid, 0) < 0)
 		return FALSE;
 	return TRUE;
