@@ -49,10 +49,7 @@ msgstr "Ubufuna ngizame uhlelo lwesimo esilinganisiwe X? Qaphela ukuthi uzodinga
 
 #: config/gettextfoo.h:5
 msgid "Please type in the root (privileged user) password."
-msgstr "Sicela ufake impande yebizo ngena (umsebenzisi ovunyelwe)
-
-"
-
+msgstr "Sicela ufake impande yebizo ngena (umsebenzisi ovunyelwe)."
 
 #: config/gettextfoo.h:6
 msgid "I will now try to restart the X server again."
@@ -598,7 +595,7 @@ msgstr "Yehlulekile ukuziqalela"
 #. FIXME: note that this could mean out of memory
 #: daemon/gdm.c:1733
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
-msgstr ""
+msgstr "daemon yamampela: Ithole SIGABRT, kukhona okuhambe kabi kakhulu. Ishona phansi!"
 
 #: daemon/gdm.c:1892
 msgid "Do not fork into the background"
@@ -1118,8 +1115,6 @@ msgstr "%s: Ukwenziwa kombhalo weSingeniso Sesiqalo esingasemuva sibuyisiwe > 0.
 
 #: daemon/slave.c:3891
 #, c-format
-#, review - last sentence is short
-#, fuzzy
 msgid ""
 "Your home directory is listed as:\n"
 "'%s'\n"
@@ -1130,10 +1125,9 @@ msgid ""
 msgstr ""
 "Umbombo wasekhaya wakho uhlelwe nje:\n"
 "'%s'\n"
-"kodwa ayibonakali ukuthi ikhona. Ufuna ukungena nge / (mpande) "
-"yombombo njengombombo wasekhaya?\n"
+"kodwa ayibonakali ukuthi ikhona. Ufuna ukungena nge / (mpande) yombombo njengombombo wasekhaya?\n"
 "\n"
-"inhlanganiso yephutha lomkhawu,"
+"Akuvamile ukuba ingasebenza ngaphandle kokusebenzisa inhlanganiso yephutha lomkhawu."
 
 #: daemon/slave.c:3899
 #, c-format
@@ -1154,14 +1148,12 @@ msgid "%s: Error forking user session"
 msgstr "%s: Iphutha ekubjudleni inhlanganiso yomsebenzisi"
 
 #: daemon/slave.c:4233
-#, fuzzy
-#, review - to short
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
 "you may be out of diskspace.  Try logging in with one of the failsafe "
 "sessions to see if you can fix this problem."
-msgstr "Imhlanganiso yakho isebenze imizuzwana eyishumi. Uma ungazikhiphanga, kusho ukuthi kunenkinga yokufakwa noma kuphele isikhala ecwecweni"
+msgstr "Imhlanganiso yakho isebenze imizuzwana eyishumi. Uma ungazikhiphanga, kusho ukuthi kunenkinga yokufakwa noma kuphele isikhala ecwecweni. Zama ukungena ngezithuba zomkhawulo ukuzama ukubona ukuthi ungacazulula lenkinga."
 
 #: daemon/slave.c:4241
 msgid "View details (~/.xsession-errors file)"
@@ -1173,9 +1165,8 @@ msgstr "I-GDM ihlonge ukucima noma ukuqala okwenzakalayo."
 
 #: daemon/slave.c:4479
 #, c-format
-#, review - unsure of whacking
 msgid "Ping to %s failed, whacking display!"
-msgstr "Ukuthi ntwii ku-%s kwehlulekile, isiboniso esidansukayo!"
+msgstr "Ukuthi ntwii %s kwehlulekile, kutshengiswe isiboniso esidansukayo!"
 
 #: daemon/slave.c:4765
 #, c-format
@@ -1399,9 +1390,8 @@ msgid "Sorry, passwords do not match"
 msgstr "Uxolo, umngenisi-bizo akahambelani"
 
 #: daemon/verify-pam.c:653
-#, review - pam handle
 msgid "Cannot setup pam handle with null display"
-msgstr "Ngakhoni ukuhlela (pam handle) ngesiboniso esingelutho"
+msgstr "Ngakhoni ukuhlela kokuphathwa kwepam ngesiboniso esingelutho"
 
 #: daemon/verify-pam.c:670
 #, c-format
@@ -1467,10 +1457,11 @@ msgstr ""
 "Umphathi hlelo ukhinande ukungenala ohlelweni okwesikhashana."
 
 #: daemon/verify-pam.c:940 daemon/verify-pam.c:1223
+#: daemon/verify-pam.c:940
+#: daemon/verify-pam.c:1223
 #, c-format
-#, review - translate account management acct. mgmt
 msgid "Couldn't set acct. mgmt for %s"
-msgstr "Ngakhonanga ukuhlela acct. mgmt ku-%s"
+msgstr "Ngakhonanga ukuhlela impatho yezibalo ye %s"
 
 #: daemon/verify-pam.c:968 daemon/verify-pam.c:1253
 #, c-format
@@ -1549,9 +1540,11 @@ msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Ngakhonanga ukuthatha uhlu-sigunyazo ephaketheni"
 
 #: daemon/xdmcp.c:709 daemon/xdmcp.c:1158
+#: daemon/xdmcp.c:709
+#: daemon/xdmcp.c:1158
 #, c-format
 msgid "%s: Error in checksum"
-msgstr ""
+msgstr "%s: Iphutha makuhlolwa ukuhlanganiswa"
 
 #: daemon/xdmcp.c:1121
 #, c-format
@@ -1691,10 +1684,8 @@ msgid "Xnest doesn't exist."
 msgstr "Xnest asikho"
 
 #: gui/gdmXnestchooser.c:523
-#, fuzzy
-#, review - too short
 msgid "Please ask your system administrator to install it."
-msgstr "Cela umphathi ayifake."
+msgstr "Cela umphathi wehlelo ukuthi ayifake."
 
 #. markup
 #: gui/gdmXnestchooser.c:549
@@ -2650,8 +2641,9 @@ msgid "Just For _This Session"
 msgstr "Okwa _lenhlanganiso"
 
 #: gui/gdmlogin.c:897 gui/greeter/greeter_session.c:168
+#: gui/gdmlogin.c:897
+#: gui/greeter/greeter_session.c:168
 #, c-format
-#, review - last sentence missing
 msgid ""
 "You have chosen %s for this session.\n"
 "If you wish to make %s the default for future sessions,\n"
@@ -2660,7 +2652,8 @@ msgid ""
 msgstr ""
 "Ukhethe %s kulenhlanganiso.\n"
 "Uma ufisa ukwenza %s iphutha lenhlanganiso yakho nakusasa,\n"
-"sebenzisa inzuzo 'switchdesk'"
+"sebenzisa inzuzo 'switchdesk' isisebenzi\n"
+"(Uhlelo->Ithulusi lokucisha isiga-nyezi kwihlu eliphezulu)."
 
 #: gui/gdmlogin.c:941 gui/gdmlogin.c:950
 #: gui/greeter/greeter_action_language.c:53
@@ -3383,10 +3376,6 @@ msgstr "Ngabe ufisa ukususa indikimba '%s' kuhlelo?"
 #. This is the temporary help dialog
 #: gui/gdmsetup.c:2386
 #, c-format
-#, fuzzy
-#_ escapes: checks whether escaping is consistent between the two strings
-#_ doublespacing: checks for bad double-spaces by comparing to original
-#_ endpunc: checks whether punctuation at the end of the strings match
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
 "graphical login screen for GNOME.  Changes that you make will take effect "
@@ -3397,11 +3386,12 @@ msgid ""
 "\n"
 "For complete documentation see the GNOME help browser Under the category "
 "GNOME/System."
-msgstr "Lelifasitela lesilinganisi liguqula izinhlelo ze GDM daemon, isiqhamisi sesibuko somngenisi we-GNOME. Izinguquko ozozenza zofezeka manjalo.\n"
+msgstr ""
+"Lelifasitela lesilinganisi liguqula izinhlelo ze GDM daemon, isiqhamisi sesibuko somngenisi we-GNOME. Izinguquko ozozenza zofezeka manjalo.\n"
 "\n"
 "Qaphela ukuthi khetho lwezilinganisi oluhlelwe lapha. Ungafuna ukuhlela %s uma ungatholi lokho okufunayo.\n"
 "\n"
-"Bheka isiyaluzi sosizo ku-GNOME Ngaphansi kohlobo lwe-GNOME/Hlelo ukuthola ibhukwana eligcwele."
+"Bheka isiyaluzi sosizo ku-GNOME Ngaphansi kohlobo lwe-GNOME/Hlelo ukuthola umbhalo ophelele."
 
 #. markup
 #: gui/gdmsetup.c:2797
@@ -3438,20 +3428,18 @@ msgstr ""
 #: gui/greeter/greeter.c:1173
 #, c-format
 msgid "There was an error loading the theme %s"
-msgstr ""
+msgstr "Kube khona iphutha elifake isihloko %s"
 
 #. markup
 #: gui/greeter/greeter.c:1226
 msgid "The theme for the graphical greeter is corrupt"
-msgstr ""
+msgstr "Isihloko seminingwane engenisayo sonakele"
 
 #: gui/greeter/greeter.c:1229
-#, fuzzy
-#, review - short
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
-msgstr "umfakela webizo-ngena/umngenisi-bizo "
+msgstr "Isihloko asinayo umfakela webizo-ngena/umngenisi-bizo njenge singeniso."
 
 #. markup
 #: gui/greeter/greeter.c:1262
@@ -3573,7 +3561,7 @@ msgstr "(C) 2002 GNOME"
 
 #: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles with a Face Browser"
-msgstr ""
+msgstr "GNOME ukuhlukana kwesidwebi ngezizungezo sine siyaluzi sobuso"
 
 #: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:3
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
@@ -3586,7 +3574,7 @@ msgstr "Injabulo yeGNOME enesiyaluzi"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles"
-msgstr ""
+msgstr "GNOME ukuhlukana kwesidwebi ngezizungezo"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:4
 msgid "Happy GNOME"
@@ -3626,15 +3614,12 @@ msgstr "Ngakhoni ukufaka inhlanganiso yomsebenzisi"
 
 #: vicious-extensions/glade-helper.c:195
 #, c-format
-#, fuzzy
-#, review - missing variables
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
 "s.  Possibly the glade interface description was corrupted.  %s cannot "
 "continue and will exit now.  You should check your installation of %s or "
 "reinstall %s."
-msgstr ""
-"Kwenzeke iphutha masifaka isici senhlanganiso yomsebenzisi %s%s. Kungenzeka isikhala sesichasisi senhlanganiso sonakele. Qaphela ukufakwa kwe-%s noma faka %s futhi."
+msgstr "Kwenzeke iphutha masifaka isici senhlanganiso yomsebenzisi %s%s ebuya kwihele %s. Kungenzeka isikhala se glade senhlanganiso sonakele. %s ungaqhubeka kanti izophuma manje. Qaphela ukufakwa kwe-%s noma faka futhi %s."
 
 #: vicious-extensions/glade-helper.c:211
 #, c-format
@@ -3645,14 +3630,12 @@ msgstr "Isikhala sehele sichachambile! Qiniseka kufakwe ihele elilungile!\n hele
 
 #: vicious-extensions/glade-helper.c:248
 #, c-format
-#, review - needs a check
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
 "s.  CList type widget should have %d columns.  Possibly the glade interface "
 "description was corrupted.  %s cannot continue and will exit now.  You "
 "should check your installation of %s or reinstall %s."
-msgstr ""
-"Kwenzeke iphutha masifaka isici senhlanganiso yomsebenzisi %s%s kusuka kuhele %s. Hlela uhlobo lwewidget kufanele lubenesihume %d. Kungenzeka isikhala sesichasisi senhlanganiso sonakele. %s ingeqhubeke kanti izophuma manje. Qaphela ukufakwa kwe-%s noma faka %s futhi."
+msgstr "Kwenzeke iphutha masifaka isici senhlanganiso yomsebenzisi %s%s kusuka kuhele %s. Hlela uhlobo lwewidget kufanele lubenesihume %d. Kungenzeka isikhala se glade senhlanganiso sonakele. %s ingeqhubeke kanti izophuma manje. Kumele  uqaphele ukufakwa kwe-%s noma faka futhi %s."
 
 #: vicious-extensions/glade-helper.c:266
 #, c-format
@@ -3660,6 +3643,8 @@ msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s expected clist columns: %d"
 msgstr ""
+"Ihele Glade liyamangalisa! Qinisekisa ukuba ihele elifanele lifakiwe!\n"
+"ihele: %s iwidget: %s ilindele amakholomu abambene: %d"
 
 #: vicious-extensions/glade-helper.c:291
 #, c-format
@@ -3672,9 +3657,9 @@ msgstr "Kwenzeke iphutha masifaka inhlanganiso yomsebenzisi yehele %s. Kungenzek
 #: vicious-extensions/glade-helper.c:303
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
-msgstr ""
+msgstr "Akukho uhlelo olufakiwe, Kubi! (ihele: %s)"
 
 #: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr ""
+msgstr "Maniningi kakhulu amazinga endawo, ungakhombisa ukusebenzisana"
 
