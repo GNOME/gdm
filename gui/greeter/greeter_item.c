@@ -140,7 +140,7 @@ get_clock (void)
     } 
   else 
     {
-      return ve_strftime (the_tm, _("%a %b %d, %I:%M %p"));
+      return ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
     }
 }
 

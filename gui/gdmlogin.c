@@ -2381,7 +2381,7 @@ update_clock (gpointer data)
 	if (GdmUse24Clock) {
 		str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
 	} else {
-		str = ve_strftime (the_tm, _("%a %b %d, %I:%M %p"));
+		str = ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
   	}
 
 	gtk_label_set_text (GTK_LABEL (clock_label), str);
