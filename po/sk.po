@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0.97.1\n"
-"POT-Creation-Date: 2001-02-09 16:39+0100\n"
-"PO-Revision-Date: 2001-02-09 16:41CET\n"
+"POT-Creation-Date: 2001-02-11 17:29+0100\n"
+"PO-Revision-Date: 2001-02-11 17:34CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
 "MIME-Version: 1.0\n"
@@ -685,7 +685,7 @@ msgstr "Re¹tartova»..."
 msgid "Halt..."
 msgstr "Vypnú»..."
 
-#: gui/gdmlogin.c:1595
+#: gui/gdmconfig.c:40 gui/gdmlogin.c:1595
 msgid "System"
 msgstr "Systém"
 
@@ -714,27 +714,87 @@ msgstr "main: Chyba pri nastavovaní ovládaèa signálu TERM"
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Chyba pri nastavovaní ovládaèa signálu CHLD"
 
-#: gui/gdmconfig.c:56
+#. 3 user levels are present in the CList
+#: gui/gdmconfig.c:38
+msgid "Basic"
+msgstr "Základné"
+
+#: gui/gdmconfig.c:39
+msgid "Expert"
+msgstr "Expert"
+
+#: gui/gdmconfig.c:42
+msgid ""
+"This panel displays the basic options for configuring GDM.\n"
+"\n"
+"If you need finer detail, select 'expert' or 'system setup' from the list "
+"above.\n"
+"\n"
+"This will display some of the more complex options of GDM that rarely need "
+"to be changed."
+msgstr ""
+"Tento panel zobrazuje základné mo¾nosti nastavenia GDM.\n"
+"\n"
+"Ak potrebujete jemnej¹ie nastavenie, pou¾ite 'expert' alebo\n"
+"'systémové nastavenie' zo zoznamu.\n"
+"\n"
+"Toto zobrazí niektoré zlo¾itej¹ie mo¾nosti GDM, ktoré nie je "
+"obvykle nutné meni»."
+
+#: gui/gdmconfig.c:47
+msgid ""
+"This panel displays the more advanced options of GDM.\n"
+"\n"
+"Be sure to take care when manipulating the security options, or you could be "
+"vulnerable to attackers.\n"
+"\n"
+"Choose \"System setup\" to change fundamental options in GDM."
+msgstr ""
+"Tento panel zobrazuje pokroèilej¹ie mo¾nosti GDM.\n"
+"\n"
+"Buïte opatrní pri práci s nastavením zabezpeèenia,\n"
+"preto¾e tým mô¾ete umo¾ni» útok.\n"
+"\n"
+"Pou¾ite \"Systémové nastavenie\" pre zmenu základných mo¾ností GDM."
+
+#: gui/gdmconfig.c:53
+msgid ""
+"This panel displays GDM's fundamental system settings.\n"
+"\n"
+"You should only change these paths if you really know what you are doing, as "
+"an incorrect setup could stop your machine from booting properly.\n"
+"\n"
+"Choose \"Basic\" if you just want to change your machine's login appearance."
+msgstr ""
+"Tento panel zobrazuje základné nastavenie GDM.\n"
+"\n"
+"Tieto cesty by ste mali meni» iba ak naozaj viete èo robíte,\n"
+"preto¾e nesprávne nastavenie mô¾e spôsobi» nefunkènos»\n"
+"celého poèítaèa.\n"
+"\n"
+"Pou¾ite \"Základné\" ak chcete zmeni» iba vzhµad prihlásenia."
+
+#: gui/gdmconfig.c:105
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "Musíte by» superpou¾ívateµ (root) pre nastavenie GDM.\n"
 
-#: gui/gdmconfig.c:97
+#: gui/gdmconfig.c:174
 msgid "GNOME Display Manager Configurator"
 msgstr "Nastavenie GNOME Správcu displeja"
 
-#: gui/gdmconfig.c:116
+#: gui/gdmconfig.c:228
 msgid "The configuration file: "
 msgstr "Konfiguraèný súbor:"
 
-#: gui/gdmconfig.c:225
+#: gui/gdmconfig.c:337
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse_most: Neplatný riadok so serverom v konfiguraènom súbore. "
 "Ignorujem!"
 
-#: gui/gdmconfig.c:292
+#: gui/gdmconfig.c:404
 msgid ""
-"The settings cannot take effect until gdm\n"
+"The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
 "Do you wish to restart GDM now?\n"
 "This will kill all your current sessions\n"
@@ -746,7 +806,7 @@ msgstr ""
 "To ukonèí va¹e momentálne sedenie a\n"
 "v¹etky neulo¾ené dáta budú stratené!"
 
-#: gui/gdmconfig.c:297
+#: gui/gdmconfig.c:409
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -754,7 +814,7 @@ msgstr ""
 "Naozaj chcete re¹tartova» GDM\n"
 "a strati» tak v¹etky neulo¾ené dáta?"
 
-#: gui/gdmconfig.c:304
+#: gui/gdmconfig.c:416
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -765,7 +825,16 @@ msgstr ""
 "zobrazení uvítania. Zvy¹ok nastavení sa prejaví\n"
 "a¾ po re¹tarte gdm alebo celého poèítaèa."
 
-#: gui/gdmconfig.c:531
+#: gui/gdmconfig.c:543
+msgid ""
+"This will destroy any changes made in this session.\n"
+"Are you sure you want to do this?"
+msgstr ""
+"Toto znièí v¹etky zmeny, ktoré ste urobili do tohto\n"
+"sedenia. Naozaj to chcete?"
+
+#. Request the command line for this new server
+#: gui/gdmconfig.c:637 gui/gdmconfig.c:656
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
