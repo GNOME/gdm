@@ -49,9 +49,11 @@ greeter_langauge_initialize_model (void)
       name = gdm_lang_name (lang,
 			    FALSE /* never_encoding */,
 			    TRUE /* no_group */,
-			    FALSE /* untranslated */);
+			    FALSE /* untranslated */,
+			    FALSE /* markup */);
 
-      untranslated = gdm_lang_untranslated_name (lang);
+      untranslated = gdm_lang_untranslated_name (lang,
+						 TRUE /* markup */);
 
       gtk_list_store_append (lang_model, &iter);
       gtk_list_store_set (lang_model, &iter,
@@ -150,11 +152,13 @@ greeter_language_get_language (const char *old_language)
 	  current_name = gdm_lang_name (current_language,
 					FALSE /* never_encoding */,
 					TRUE /* no_group */,
-					TRUE /* untranslated */);
+					TRUE /* untranslated */,
+					TRUE /* markup */);
 	  saved_name = gdm_lang_name (old_language,
 				      FALSE /* never_encoding */,
 				      TRUE /* no_group */,
-				      TRUE /* untranslated */);
+				      TRUE /* untranslated */,
+				      TRUE /* markup */);
 
 	  msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				   "%s.\nDo you wish to make %s the default for future sessions?"),
@@ -162,9 +166,7 @@ greeter_language_get_language (const char *old_language)
 	  g_free (current_name);
 	  g_free (saved_name);
 
-#if TODO
-	  savelang = gdm_login_query (msg);
-#endif
+	  savelang = greeter_query (msg);
 	  g_free (msg);
 	}
     }
@@ -229,7 +231,8 @@ greeter_action_language (GreeterItemInfo *info,
 					       GTK_DIALOG_MODAL,
 					       NULL,
 					       gtk_cell_renderer_text_new (),
-					       "text", UNTRANSLATED_NAME_COLUMN,
+					       "markup",
+					       UNTRANSLATED_NAME_COLUMN,
 					       NULL);
       swindow = gtk_scrolled_window_new (NULL, NULL);
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swindow),

@@ -663,6 +663,8 @@ gdm_login_query (const gchar *msg)
 				      GTK_BUTTONS_YES_NO,
 				      "%s",
 				      msg);
+	gtk_label_set_use_markup
+		(GTK_LABEL (GTK_MESSAGE_DIALOG (req)->label), TRUE);
 
 	g_signal_connect (G_OBJECT (req), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),
@@ -1075,11 +1077,13 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    curname = gdm_lang_name (curlang,
 				     FALSE /* never_encoding */,
 				     TRUE /* no_group */,
-				     TRUE /* untranslated */);
+				     TRUE /* untranslated */,
+				     TRUE /* markup */);
 	    savedname = gdm_lang_name (savedlang,
 				       FALSE /* never_encoding */,
 				       TRUE /* no_group */,
-				       TRUE /* untranslated */);
+				       TRUE /* untranslated */,
+				       TRUE /* markup */);
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				     "%s.\nDo you wish to make %s the default for future sessions?"),
@@ -1590,10 +1594,11 @@ gdm_login_language_handler (GtkWidget *widget)
     name = gdm_lang_name (curlang,
 			  FALSE /* never_encoding */,
 			  TRUE /* no_group */,
-			  TRUE /* untranslated */);
+			  TRUE /* untranslated */,
+			  TRUE /* makrup */);
     s = g_strdup_printf (_("%s language selected"), name);
     g_free (name);
-    gtk_label_set_text (GTK_LABEL (msg), s);
+    gtk_label_set_markup (GTK_LABEL (msg), s);
     g_free (s);
 }
 
@@ -1672,13 +1677,15 @@ gdm_login_language_menu_new (void)
 	    group = name = gdm_lang_name (lang,
 					  FALSE /* never_encoding */,
 					  FALSE /* no_group */,
-					  FALSE /* untranslated */);
+					  FALSE /* untranslated */,
+					  FALSE /* markup */);
 	    if (name == NULL) {
 		    g_free (lang);
 		    continue;
 	    }
 
-	    untranslated = gdm_lang_untranslated_name (lang);
+	    untranslated = gdm_lang_untranslated_name (lang,
+						       TRUE /* markup */);
 
 	    p = strchr (name, '|');
 	    if (p != NULL) {
@@ -1695,6 +1702,7 @@ gdm_login_language_menu_new (void)
 
 	    if (untranslated != NULL) {
 		    l = gtk_label_new (untranslated);
+		    gtk_label_set_use_markup (GTK_LABEL (l), TRUE);
 		    gtk_widget_show (l);
 		    gtk_box_pack_end (GTK_BOX (box), l, FALSE, FALSE, 0);
 	    }

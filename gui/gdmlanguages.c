@@ -77,7 +77,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Greek"), "el_GR", "ελληνικά", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Hebrew"), "he_IL", "תירבע" /* FIXME: is he_IL correct for Hebrew at all? */, 0 },
+	{ N_("A-M|Hebrew"), "he_IL", "תירבע", 0 },
 	{ N_("A-M|Hebrew"), "iw_IL", "תירבע", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hungarian"), "hu_HU", NULL, 0 },
@@ -198,7 +198,8 @@ char *
 gdm_lang_name (const char *language,
 	       gboolean never_encoding,
 	       gboolean no_group,
-	       gboolean untranslated)
+	       gboolean untranslated,
+	       gboolean markup)
 {
 	Language *lang;
 	char *name;
@@ -225,8 +226,17 @@ gdm_lang_name (const char *language,
 		name = g_strdup (_(lang->name));
 
 	if (lang->untranslated != NULL && untranslated) {
-		char *full = g_strdup_printf ("%s (%s)",
-					      name, lang->untranslated);
+		char *full;
+		if (markup) {
+			full = g_strdup_printf
+				("%s (<span lang=\"%s\">%s</span>)",
+				 name,
+				 lang->code,
+				 lang->untranslated);
+		} else {
+			full = g_strdup_printf ("%s (%s)",
+						name, lang->untranslated);
+		}
 		g_free (name);
 		name = full;
 	}
@@ -243,7 +253,8 @@ gdm_lang_name (const char *language,
 
 /* NULL if not found */
 char *
-gdm_lang_untranslated_name (const char *language)
+gdm_lang_untranslated_name (const char *language,
+			    gboolean markup)
 {
 	Language *lang;
 	gboolean clean;
@@ -254,7 +265,13 @@ gdm_lang_untranslated_name (const char *language)
 	if (lang == NULL)
 		return NULL;
 
-	return g_strdup (lang->untranslated);
+	if (markup && lang->untranslated != NULL) {
+		return g_strdup_printf ("<span lang=\"%s\">%s</span>",
+					lang->code,
+					lang->untranslated);
+	} else {
+		return g_strdup (lang->untranslated);
+	}
 }
 
 const char *

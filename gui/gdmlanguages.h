@@ -30,10 +30,12 @@ const char *	gdm_lang_group2		(void);
 char *		gdm_lang_name		(const char *language,
 					 gboolean never_encoding,
 					 gboolean no_group,
-					 gboolean untranslated);
+					 gboolean untranslated,
+					 gboolean markup);
 
 /* NULL if not found */
-char *		gdm_lang_untranslated_name (const char *language);
+char *		gdm_lang_untranslated_name (const char *language,
+					    gboolean markup);
 
 GList *		gdm_lang_read_locale_file (const char *file);
 

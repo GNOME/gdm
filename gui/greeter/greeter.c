@@ -682,6 +682,8 @@ greeter_query (const gchar *msg)
 				      GTK_BUTTONS_YES_NO,
 				      "%s",
 				      msg);
+	gtk_label_set_use_markup
+		(GTK_LABEL (GTK_MESSAGE_DIALOG (req)->label), TRUE);
 
 	g_signal_connect (G_OBJECT (req), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),
