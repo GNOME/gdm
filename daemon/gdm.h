@@ -123,6 +123,8 @@
 #define GDM_KEY_LOGO "greeter/Logo="
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
+#define GDM_KEY_CONFIG "daemon/Configurator=/usr/sbin/gdmconfig"
+#define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=false"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %h"
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="

@@ -71,6 +71,8 @@ static gint  GdmIconMaxWidth;
 static gboolean GdmQuiver;
 static gint  GdmRelaxPerms;
 static gboolean GdmSystemMenu;
+static gboolean GdmConfigAvailable;
+static gchar *GdmConfig;
 static gint  GdmUserMaxFile;
 static gint GdmXineramaScreen;
 static gchar *GdmLogo;
@@ -525,6 +527,25 @@ gdm_login_query (const gchar *msg)
 		return FALSE;
 }
 
+static gboolean
+gdm_run_gdmconfig (void) {
+   char **argv;
+   pid_t gdmconfig_pid;
+   
+   printf ("running gdmconfig.\n");
+   gdmconfig_pid = fork ();
+   
+   if (gdmconfig_pid == -1) {
+      /*Try and warn the user */
+      gdmconfig_pid = 0;
+      gnome_error_dialog (_("Could not launch gdmconfig.\nYour GDM installation may have been built incorrectly.\n"));
+   } else if (gdmconfig_pid == 0) {
+      argv = g_strsplit (GdmConfig, " ", MAX_ARGS);	
+      execv (argv[0], argv);
+      /*ingore errors, this is irrelevant */
+      _exit (0);
+   }
+}
 
 static gboolean
 gdm_login_reboot_handler (void)
@@ -571,6 +592,8 @@ gdm_login_parse_config (void)
     GdmIcon = gnome_config_get_string (GDM_KEY_ICON);
     GdmQuiver = gnome_config_get_bool (GDM_KEY_QUIVER);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
+    GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
+    GdmConfig = gnome_config_get_string (GDM_KEY_CONFIG);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
@@ -1839,6 +1862,16 @@ gdm_login_gui_init (void)
 
     if (GdmSystemMenu) {
 	menu = gtk_menu_new();
+        if (GdmConfigAvailable) {
+	   item = gtk_menu_item_new_with_label (_("Configure..."));
+	   gtk_menu_append (GTK_MENU (menu), item);
+	   gtk_signal_connect (GTK_OBJECT (item), "activate",
+			       GTK_SIGNAL_FUNC (gdm_run_gdmconfig),
+			       NULL);
+	   gtk_widget_show (item);
+	   printf ("config option.\n");
+	}
+       printf ("sys menu.\n");
 	item = gtk_menu_item_new_with_label (_("Reboot..."));
 	gtk_menu_append (GTK_MENU (menu), item);
 	gtk_signal_connect (GTK_OBJECT (item), "activate",
