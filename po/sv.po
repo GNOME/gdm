@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-05-20 23:03+0200\n"
-"PO-Revision-Date: 2001-05-21 01:27+0200\n"
+"POT-Creation-Date: 2001-05-21 16:15+0200\n"
+"PO-Revision-Date: 2001-05-21 16:19+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -151,7 +151,7 @@ msgstr "deal_with_x_crashes: Kör skriptet XKeepsCrashing"
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  You will need to log in on a console and rerun "
-"the X configuration program.  And then restart GDM."
+"the X configuration program.  Then restart GDM."
 msgstr ""
 "Jag kan inte starta X-servern (ditt grafiska gränssnitt). Troligtvis är den "
 "inte korrekt inställd. Du kommer att behöva logga in på en konsoll och köra "
@@ -418,17 +418,15 @@ msgid ""
 "program.  Make sure it's path is set\n"
 "correctly in the configuration file.\n"
 "I will attempt to start it from the\n"
-"default location.  If I succeed, you\n"
-"should fix your configuration."
+"default location."
 msgstr ""
 "Kunde inte köra konfigurationsprogrammet.\n"
 "Försäkra dig om att dess sökväg är\n"
-"korrekt angiven i konfigurationsfilen."
-"Jag kommer att försöka starta från\n"
-"standardplatsen. Om jag lyckas bör\n"
-"du fixa din konfiguration."
+"korrekt angiven i konfigurationsfilen.\n"
+"Jag kommer att försöka starta det från\n"
+"standardplatsen."
 
-#: daemon/slave.c:577
+#: daemon/slave.c:576
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -438,7 +436,7 @@ msgstr ""
 "Försäkra dig om att dess sökväg är\n"
 "korrekt angiven i konfigurationsfilen."
 
-#: daemon/slave.c:619
+#: daemon/slave.c:618
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -446,30 +444,30 @@ msgstr ""
 "Ange rootlösenordet för\n"
 "att köra konfigurationen."
 
-#: daemon/slave.c:633 daemon/slave.c:693
+#: daemon/slave.c:632 daemon/slave.c:692
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: Ingen inloggning/Felaktig inloggning"
 
-#: daemon/slave.c:837
+#: daemon/slave.c:836
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Kan inte initiera rör till gdmgreeter"
 
-#: daemon/slave.c:865
+#: daemon/slave.c:864
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: Kunde inte sätta grupp-id till %d"
 
-#: daemon/slave.c:868
+#: daemon/slave.c:867
 #, c-format
 msgid "gdm_slave_greeter: initgroups() failed for %s"
 msgstr "gdm_slave_greeter: initgroups() misslyckades för %s"
 
-#: daemon/slave.c:871
+#: daemon/slave.c:870
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: Kunde inte sätta användar-id till %d"
 
-#: daemon/slave.c:914
+#: daemon/slave.c:913
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -488,7 +486,7 @@ msgstr ""
 "Observera att automatiska och tids-\n"
 "begränsade inloggningar är avstängda nu."
 
-#: daemon/slave.c:926
+#: daemon/slave.c:925
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -502,13 +500,13 @@ msgstr ""
 "bör logga in och se till att\n"
 "X-servern konfigureras korrekt."
 
-#: daemon/slave.c:936
+#: daemon/slave.c:935
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr ""
 "gdm_slave_greeter: Kan inte starta hälsare, försöker med standardvärde: %s"
 
-#: daemon/slave.c:947
+#: daemon/slave.c:946
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -523,27 +521,27 @@ msgstr ""
 "andra sätt och redigera konfigurations-\n"
 "filen"
 
-#: daemon/slave.c:953
+#: daemon/slave.c:952
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Fel vid start av hälsare på display %s"
 
-#: daemon/slave.c:956
+#: daemon/slave.c:955
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Kan inte grena gdmgreeter-processen"
 
-#: daemon/slave.c:1207
+#: daemon/slave.c:1206
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Användaren klarade autentiseringen men getpwnam(%s) "
 "misslyckades!"
 
-#: daemon/slave.c:1311
+#: daemon/slave.c:1310
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Autentisering klar. Tar bort hälsaren"
 
-#: daemon/slave.c:1340
+#: daemon/slave.c:1339
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -551,27 +549,27 @@ msgstr ""
 "gdm_slave_session_start: Körning av PreSession-skriptet returnerade > 0. "
 "Avbryter."
 
-#: daemon/slave.c:1373
+#: daemon/slave.c:1372
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Fel vid grening av användarsession"
 
-#: daemon/slave.c:1417
+#: daemon/slave.c:1416
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Kunde inte sätta grupp-id %d. Avbryter."
 
-#: daemon/slave.c:1421
+#: daemon/slave.c:1420
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: initgroups() misslyckades för %s. Avbryter."
 
-#: daemon/slave.c:1425
+#: daemon/slave.c:1424
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Kunde inte bli %s. Avbryter."
 
 #. yaikes
-#: daemon/slave.c:1484
+#: daemon/slave.c:1483
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -579,7 +577,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session hittades inte för en felsäker "
 "gnomesession, försöker med xterm"
 
-#: daemon/slave.c:1488
+#: daemon/slave.c:1487
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -589,7 +587,7 @@ msgstr ""
 "kommer att försöka köra sessionen\n"
 "\"Felsäker xterm\"."
 
-#: daemon/slave.c:1493
+#: daemon/slave.c:1492
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -604,11 +602,11 @@ msgstr ""
 "för att problem i din installation ska\n"
 "kunna åtgärdas."
 
-#: daemon/slave.c:1512
+#: daemon/slave.c:1511
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Kan inte hitta \"xterm\" för att starta en felsäker session."
 
-#: daemon/slave.c:1518
+#: daemon/slave.c:1517
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -626,16 +624,16 @@ msgstr ""
 "du \"exit\" och trycker enter i\n"
 "fönstret."
 
-#: daemon/slave.c:1535
+#: daemon/slave.c:1534
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Kör %s för %s på %s"
 
-#: daemon/slave.c:1548
+#: daemon/slave.c:1547
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Användaren får inte logga in"
 
-#: daemon/slave.c:1549
+#: daemon/slave.c:1548
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -643,12 +641,12 @@ msgstr ""
 "Systemadministratören har\n"
 "stängt av ditt konto."
 
-#: daemon/slave.c:1552
+#: daemon/slave.c:1551
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Kunde inte hitta/köra sessionen \"%s\""
 
-#: daemon/slave.c:1556
+#: daemon/slave.c:1555
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -660,12 +658,12 @@ msgstr ""
 "från listan över tillgängliga sessioner i\n"
 "inloggningsfönstret."
 
-#: daemon/slave.c:1564
+#: daemon/slave.c:1563
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Kunde inte starta sessionen \"%s\""
 
-#: daemon/slave.c:1566
+#: daemon/slave.c:1565
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -676,17 +674,17 @@ msgstr ""
 "konto.\n"
 "Det kan också bero på ett fel med ditt konto.\n"
 
-#: daemon/slave.c:1731
+#: daemon/slave.c:1730
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Ödesdigert X-fel - Startar om %s"
 
-#: daemon/slave.c:1842
+#: daemon/slave.c:1841
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Misslyckades med att starta: %s"
 
-#: daemon/slave.c:1846
+#: daemon/slave.c:1845
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Kan inte grena skriptprocessen!"
 
@@ -947,7 +945,7 @@ msgstr "Ingen bild är vald."
 #, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
-"disallowed pictores larger then %d bytes to\n"
+"disallowed pictures larger then %d bytes to\n"
 "show in the face browser"
 msgstr ""
 "Bilden är för stor, och systemadministratören tillåter\n"
@@ -2179,8 +2177,8 @@ msgid ""
 "Show a browser of user face images. The users can put their picture in "
 "~/.gnome/photo"
 msgstr ""
-"Visa en bläddrare med bilder på användaransikten. Användarna kan lägga "
-"sina bilder i ~/.gnome/photo"
+"Visa en bläddrare med bilder på användaransikten. Användarna kan lägga sina "
+"bilder i ~/.gnome/photo"
 
 #: gui/gdmconfig-strings.c:89
 msgid "Show choosable user images (enable face browser)"
@@ -2330,8 +2328,7 @@ msgstr "Sekunder innan inloggning: "
 
 #: gui/gdmconfig-strings.c:126
 msgid "Login a user automatically after a specified number of seconds"
-msgstr ""
-"Logga in en användare automatiskt efter det angivna antalet sekunder"
+msgstr "Logga in en användare automatiskt efter det angivna antalet sekunder"
 
 #: gui/gdmconfig-strings.c:128
 msgid "expert"
@@ -2804,7 +2801,7 @@ msgstr "Testa nätverket"
 
 #: gui/gdmchooser-strings.c:11
 msgid "Rescan"
-msgstr "Skanna om"
+msgstr "Genomsök igen"
 
 #: gui/gdmchooser-strings.c:12
 msgid "How to use this application"
@@ -2842,9 +2839,9 @@ msgstr ""
 "logga in på andra maskiner över nätverket på samma sätt som\n"
 "om de var inloggade lokalt på konsollen.\n"
 "\n"
-"Du kan skanna nätverket och leta efter nya värdar genom att\n"
-"klicka på \"Skanna om\". När du har valt en värd kan du klicka\n"
-"på \"Anslut\" för att öppna en session med den maskinen."
+"Du kan genomsöka nätverket och leta efter nya värdar genom att\n"
+"klicka på \"Genomsök igen\". När du har valt en värd kan du\n"
+"klicka på \"Anslut\" för att öppna en session med den maskinen."
 
 #: gui/gdmchooser-strings.c:26
 msgid "Information"
