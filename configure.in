@@ -13,6 +13,9 @@ AM_ACLOCAL_INCLUDE(macros)
 
 GDK_PIXBUF_REQUIRED=0.7.0
 
+# vicious-extensions stuff
+AC_CHECK_FUNCS([setenv unsetenv clearenv])
+
 # find the actual value for $prefix that we'll end up with
 REAL_PREFIX=
 if test "x$prefix" = "xNONE"; then
@@ -110,8 +113,6 @@ dnl ## internationalization support
 ALL_LINGUAS="az ca cs da de el es et fi fr ga gl hu it ja ko lt ms nl nn no pl pt_BR ro ru sk sl sv tr uk zh_CN.GB2312 zh_TW.Big5"
 dnl AM_GNOME_GETTEXT
 AM_GNU_GETTEXT
-
-AC_CHECK_FUNCS([setenv unsetenv clearenv])
 
 # TCP Wrappers for XDMCP access control
 if test x$with_tcp_wrappers = xno ; then
@@ -388,6 +389,7 @@ docs/gdmconfig/C/Makefile
 omf-install/Makefile
 po/Makefile.in
 intl/Makefile
+vicious-extensions/Makefile
 config/gdm.conf
 config/Gnome
 config/gnomerc

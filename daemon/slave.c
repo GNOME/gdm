@@ -44,6 +44,8 @@
 #include <errno.h>
 #include <syslog.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "slave.h"
 #include "misc.h"
@@ -331,13 +333,13 @@ gdm_slave_run (GdmDisplay *display)
     
     d = display;
 
-    if ( ! gdm_string_empty (GdmAutomaticLogin) &&
+    if ( ! ve_string_empty (GdmAutomaticLogin) &&
 	ParsedAutomaticLogin == NULL) {
 	    ParsedAutomaticLogin = gdm_parse_enriched_login (GdmAutomaticLogin,
 							     display);
     }
 
-    if ( ! gdm_string_empty (GdmTimedLogin) &&
+    if ( ! ve_string_empty (GdmTimedLogin) &&
 	ParsedTimedLogin == NULL) {
 	    ParsedTimedLogin = gdm_parse_enriched_login (GdmTimedLogin,
 							 display);
@@ -357,8 +359,8 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_send_pid (GDM_SOP_XPID, d->servpid);
     }
     
-    gdm_setenv ("XAUTHORITY", d->authfile);
-    gdm_setenv ("DISPLAY", d->name);
+    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+    ve_setenv ("DISPLAY", d->name, TRUE);
     
     /* X error handlers to avoid the default one (i.e. exit (1)) */
     XSetErrorHandler (gdm_slave_xerror_handler);
@@ -425,7 +427,7 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_chooser ();  /* Run the chooser */
     } else if ((d->type == TYPE_LOCAL || GdmAllowRemoteAutoLogin) &&
 	       gdm_first_login &&
-	       ! gdm_string_empty (ParsedAutomaticLogin) &&
+	       ! ve_string_empty (ParsedAutomaticLogin) &&
 	       strcmp (ParsedAutomaticLogin, "root") != 0) {
 	    gdm_first_login = FALSE;
 
@@ -574,15 +576,15 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		/* setup environment */
 		gdm_clearenv_no_lang ();
 
-		gdm_setenv ("XAUTHORITY", display->authfile);
-		gdm_setenv ("DISPLAY", display->name);
-		gdm_setenv ("LOGNAME", "root");
-		gdm_setenv ("USER", "root");
-		gdm_setenv ("USERNAME", "root");
-		gdm_setenv ("HOME", pwent->pw_dir);
-		gdm_setenv ("SHELL", pwent->pw_shell);
-		gdm_setenv ("PATH", GdmRootPath);
-		gdm_setenv ("RUNNING_UNDER_GDM", "true");
+		ve_setenv ("XAUTHORITY", display->authfile, TRUE);
+		ve_setenv ("DISPLAY", display->name, TRUE);
+		ve_setenv ("LOGNAME", "root", TRUE);
+		ve_setenv ("USER", "root", TRUE);
+		ve_setenv ("USERNAME", "root", TRUE);
+		ve_setenv ("HOME", pwent->pw_dir, TRUE);
+		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+		ve_setenv ("PATH", GdmRootPath, TRUE);
+		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
@@ -594,7 +596,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		/* exec the configurator */
-		argv = gdm_split (GdmConfigurator);
+		argv = ve_split (GdmConfigurator);
 		if (argv != NULL &&
 		    argv[0] != NULL &&
 		    access (argv[0], X_OK) == 0)
@@ -608,7 +610,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 				 "I will attempt to start it from the\n"
 				 "default location."));
 
-		argv = gdm_split
+		argv = ve_split
 			(EXPANDED_GDMCONFIGDIR
 			 "/gdmconfig --disable-sound --disable-crash-dialog");
 		if (access (argv[0], X_OK) == 0)
@@ -651,7 +653,7 @@ gdm_slave_wait_for_login (void)
 					 d->name,
 					 d->type == TYPE_LOCAL);
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
-			   gdm_sure_string (login));
+			   ve_sure_string (login));
 		/* Complex, make sure to always handle the do_configurator
 		 * and do_timed_login after any call to gdm_verify_user */
 
@@ -761,7 +763,7 @@ gdm_slave_wait_for_login (void)
 	}
 
 	gdm_debug ("gdm_slave_wait_for_login: got_login for '%s'",
-		   gdm_sure_string (login));
+		   ve_sure_string (login));
 }
 
 /* If path starts with a "trusted" directory, don't sanity check things */
@@ -801,7 +803,7 @@ run_pictures (void)
 
 	for (;;) {
 		response = gdm_slave_greeter_ctl (GDM_NEEDPIC, "");
-		if (gdm_string_empty (response)) {
+		if (ve_string_empty (response)) {
 			g_free (response);
 			return;
 		}
@@ -1013,45 +1015,45 @@ gdm_slave_greeter (void)
 	    gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
 	
 	gdm_clearenv_no_lang ();
-	gdm_setenv ("XAUTHORITY", d->authfile);
-	gdm_setenv ("DISPLAY", d->name);
+	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+	ve_setenv ("DISPLAY", d->name, TRUE);
 
-	gdm_setenv ("LOGNAME", GdmUser);
-	gdm_setenv ("USER", GdmUser);
-	gdm_setenv ("USERNAME", GdmUser);
+	ve_setenv ("LOGNAME", GdmUser, TRUE);
+	ve_setenv ("USER", GdmUser, TRUE);
+	ve_setenv ("USERNAME", GdmUser, TRUE);
 
-	gdm_setenv ("GDM_VERSION", VERSION);
+	ve_setenv ("GDM_VERSION", VERSION, TRUE);
 
 	pwent = getpwnam (GdmUser);
 	if (pwent != NULL) {
 		/* Note that usually this doesn't exist */
 		if (g_file_exists (pwent->pw_dir))
-			gdm_setenv ("HOME", pwent->pw_dir);
+			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			gdm_setenv ("HOME", "/"); /* Hack */
-		gdm_setenv ("SHELL", pwent->pw_shell);
+			ve_setenv ("HOME", "/", TRUE); /* Hack */
+		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 	} else {
-		gdm_setenv ("HOME", "/"); /* Hack */
-		gdm_setenv ("SHELL", "/bin/sh");
+		ve_setenv ("HOME", "/", TRUE); /* Hack */
+		ve_setenv ("SHELL", "/bin/sh", TRUE);
 	}
-	gdm_setenv ("PATH", GdmDefaultPath);
-	gdm_setenv ("RUNNING_UNDER_GDM", "true");
+	ve_setenv ("PATH", GdmDefaultPath, TRUE);
+	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local
 	 * display so it's not a security risk */
 	if (d->type == TYPE_LOCAL) {
-		gdm_setenv ("GDM_IS_LOCAL", "yes");
+		ve_setenv ("GDM_IS_LOCAL", "yes", TRUE);
 	} else {
-		gdm_unsetenv ("GDM_IS_LOCAL");
+		ve_unsetenv ("GDM_IS_LOCAL");
 	}
 
 	/* this is again informal only, if the greeter does time out it will
 	 * not actually login a user if it's not enabled for this display */
 	if (d->timed_login_ok) {
-		gdm_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin);
+		ve_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin, TRUE);
 	} else {
-		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
+		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
 	if(gdm_emergency_server) {
@@ -1065,7 +1067,7 @@ gdm_slave_greeter (void)
 				 "log in and fix the configuration.\n"
 				 "Note that automatic and timed logins\n"
 				 "are disabled now."));
-		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
+		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
 	if (d->failsafe_xserver) {
@@ -1078,17 +1080,17 @@ gdm_slave_greeter (void)
 				 "configure the X server."));
 	}
 
-	argv = gdm_split (GdmGreeter);
+	argv = ve_split (GdmGreeter);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_slave_greeter: Cannot start greeter trying default: %s"),
 		   EXPANDED_BINDIR
 		   "/gdmlogin --disable-sound --disable-crash-dialog");
 
-	gdm_setenv ("GDM_WHACKED_GREETER_CONFIG", "true");
+	ve_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
 
-	argv = gdm_split (EXPANDED_BINDIR
-			  "/gdmlogin --disable-sound --disable-crash-dialog");
+	argv = ve_split (EXPANDED_BINDIR
+			 "/gdmlogin --disable-sound --disable-crash-dialog");
 	execv (argv[0], argv);
 
 	gdm_error_box (d,
@@ -1299,31 +1301,31 @@ gdm_slave_chooser (void)
 			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Couldn't set userid to %d"), GdmUserId);
 
 		gdm_clearenv_no_lang ();
-		gdm_setenv ("XAUTHORITY", d->authfile);
-		gdm_setenv ("DISPLAY", d->name);
+		ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+		ve_setenv ("DISPLAY", d->name, TRUE);
 
-		gdm_setenv ("LOGNAME", GdmUser);
-		gdm_setenv ("USER", GdmUser);
-		gdm_setenv ("USERNAME", GdmUser);
+		ve_setenv ("LOGNAME", GdmUser, TRUE);
+		ve_setenv ("USER", GdmUser, TRUE);
+		ve_setenv ("USERNAME", GdmUser, TRUE);
 
-		gdm_setenv ("GDM_VERSION", VERSION);
+		ve_setenv ("GDM_VERSION", VERSION, TRUE);
 
 		pwent = getpwnam (GdmUser);
 		if (pwent != NULL) {
 			/* Note that usually this doesn't exist */
 			if (g_file_exists (pwent->pw_dir))
-				gdm_setenv ("HOME", pwent->pw_dir);
+				ve_setenv ("HOME", pwent->pw_dir, TRUE);
 			else
-				gdm_setenv ("HOME", "/"); /* Hack */
-			gdm_setenv ("SHELL", pwent->pw_shell);
+				ve_setenv ("HOME", "/", TRUE); /* Hack */
+			ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 		} else {
-			gdm_setenv ("HOME", "/"); /* Hack */
-			gdm_setenv ("SHELL", "/bin/sh");
+			ve_setenv ("HOME", "/", TRUE); /* Hack */
+			ve_setenv ("SHELL", "/bin/sh", TRUE);
 		}
-		gdm_setenv ("PATH", GdmDefaultPath);
-		gdm_setenv ("RUNNING_UNDER_GDM", "true");
+		ve_setenv ("PATH", GdmDefaultPath, TRUE);
+		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
-		argv = gdm_split (GdmChooser);
+		argv = ve_split (GdmChooser);
 		execv (argv[0], argv);
 
 		gdm_error_box (d,
@@ -1505,7 +1507,7 @@ is_session_ok (const char *session_name)
 	    strcmp (session_name, GDM_SESSION_FAILSAFE_XTERM) == 0)
 		return TRUE;
 
-	if (gdm_string_empty (GdmSessDir))
+	if (ve_string_empty (GdmSessDir))
 		return FALSE;
 
 	file = g_strconcat (GdmSessDir, "/", session_name, NULL);
@@ -1586,7 +1588,7 @@ unaliaslang (const char *origlang)
 	FILE *langlist;
 	char curline[256];
 
-	if (gdm_string_empty (GdmLocaleFile))
+	if (ve_string_empty (GdmLocaleFile))
 		return g_strdup (origlang);
 
 	langlist = fopen (GdmLocaleFile, "r");
@@ -1610,7 +1612,7 @@ unaliaslang (const char *origlang)
 		if (lang == NULL)
 			continue;
 
-		if (gdm_strcasecmp_no_locale (name, origlang) == 0) {
+		if (ve_strcasecmp_no_locale (name, origlang) == 0) {
 			fclose (langlist);
 			return g_strdup (lang);
 		}
@@ -1726,7 +1728,7 @@ gdm_slave_session_start (void)
     g_free (usrsess);
     g_free (usrlang);
     
-    if (gdm_string_empty (session)) {
+    if (ve_string_empty (session)) {
 	    g_free (session);
 	    session = find_a_session ();
 	    if (session == NULL) {
@@ -1735,7 +1737,7 @@ gdm_slave_session_start (void)
 	    }
     }
 
-    if (gdm_string_empty (language)) {
+    if (ve_string_empty (language)) {
 	    const char *lang = g_getenv ("LANG");
 
 	    g_free (language);
@@ -1747,7 +1749,7 @@ gdm_slave_session_start (void)
 		    language = g_strdup (GdmDefaultLocale);
 	    savelang = TRUE;
 
-	    if (gdm_string_empty (language)) {
+	    if (ve_string_empty (language)) {
 		    g_free (language);
 		    language = g_strdup ("C");
 	    }
@@ -1758,12 +1760,12 @@ gdm_slave_session_start (void)
 
     if (greet) {
 	    char *ret = gdm_slave_greeter_ctl (GDM_SSESS, "");
-	    if ( ! gdm_string_empty (ret))
+	    if ( ! ve_string_empty (ret))
 		    savesess = TRUE;
 	    g_free (ret);
 
 	    ret = gdm_slave_greeter_ctl (GDM_SLANG, "");
-	    if ( ! gdm_string_empty (ret))
+	    if ( ! ve_string_empty (ret))
 		    savelang = TRUE;
 	    g_free (ret);
 
@@ -1781,7 +1783,7 @@ gdm_slave_session_start (void)
 		    g_free (ret);
 
 		    ret = gdm_slave_greeter_ctl (GDM_SGNOMESESS, "");
-		    if ( ! gdm_string_empty (ret)) {
+		    if ( ! ve_string_empty (ret)) {
 			    savegnomesess = TRUE;
 		    }
 		    g_free (ret);
@@ -1796,7 +1798,7 @@ gdm_slave_session_start (void)
 	    gdm_server_whack_clients (d);
 
     /* setup some env for PreSession script */
-    gdm_setenv ("DISPLAY", d->name);
+    ve_setenv ("DISPLAY", d->name, TRUE);
 
     /* If script fails reset X server and restart greeter */
     if (gdm_slave_exec_script (d, GdmPreSession,
@@ -1832,27 +1834,27 @@ gdm_slave_session_start (void)
 	
     case 0:
 
-	gdm_clearenv ();
+	ve_clearenv ();
 
 	/* Prepare user session */
-	gdm_setenv ("XAUTHORITY", d->userauth);
-	gdm_setenv ("DISPLAY", d->name);
-	gdm_setenv ("LOGNAME", login);
-	gdm_setenv ("USER", login);
-	gdm_setenv ("USERNAME", login);
-	gdm_setenv ("HOME", pwent->pw_dir);
-	gdm_setenv ("GDMSESSION", session);
-	gdm_setenv ("SHELL", pwent->pw_shell);
-	gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
+	ve_setenv ("XAUTHORITY", d->userauth, TRUE);
+	ve_setenv ("DISPLAY", d->name, TRUE);
+	ve_setenv ("LOGNAME", login, TRUE);
+	ve_setenv ("USER", login, TRUE);
+	ve_setenv ("USERNAME", login, TRUE);
+	ve_setenv ("HOME", pwent->pw_dir, TRUE);
+	ve_setenv ("GDMSESSION", session, TRUE);
+	ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 	if (gnome_session != NULL)
-		gdm_setenv ("GDM_GNOME_SESSION", gnome_session);
+		ve_setenv ("GDM_GNOME_SESSION", gnome_session, TRUE);
 
 	/* Special PATH for root */
 	if (pwent->pw_uid == 0)
-		gdm_setenv ("PATH", GdmRootPath);
+		ve_setenv ("PATH", GdmRootPath, TRUE);
 	else
-		gdm_setenv ("PATH", GdmDefaultPath);
+		ve_setenv ("PATH", GdmDefaultPath, TRUE);
 
 	/* Eeeeek, this no lookie as a correct language code, let's
 	 * try unaliasing it */
@@ -1864,8 +1866,8 @@ gdm_slave_session_start (void)
 	}
 
 	/* Set locale */
-	gdm_setenv ("LANG", language);
-	gdm_setenv ("GDM_LANG", language);
+	ve_setenv ("LANG", language, TRUE);
+	ve_setenv ("GDM_LANG", language, TRUE);
     
 	/* setup the verify env vars */
 	gdm_verify_env_setup ();
@@ -2024,7 +2026,7 @@ gdm_slave_session_start (void)
 	gdm_debug (_("Running %s for %s on %s"),
 		   sesspath, login, d->name);
 
-	if ( ! gdm_string_empty (pwent->pw_shell)) {
+	if ( ! ve_string_empty (pwent->pw_shell)) {
 		shell = pwent->pw_shell;
 	} else {
 		shell = "/bin/sh";
@@ -2262,7 +2264,7 @@ gdm_slave_child_handler (int sig)
 	} else if (pid != 0 && pid == d->servpid) {
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
-		if ( ! gdm_string_empty (d->authfile))
+		if ( ! ve_string_empty (d->authfile))
 			unlink (d->authfile);
 	} else if (pid != 0) {
 		last_killed_pid = pid;
@@ -2448,27 +2450,27 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	    
     case 0:
         if (login != NULL) {
-	        gdm_setenv ("LOGNAME", login);
-	        gdm_setenv ("USER", login);
-	        gdm_setenv ("USERNAME", login);
+	        ve_setenv ("LOGNAME", login, TRUE);
+	        ve_setenv ("USER", login, TRUE);
+	        ve_setenv ("USERNAME", login, TRUE);
         } else {
-	        gdm_setenv ("LOGNAME", GdmUser);
-	        gdm_setenv ("USER", GdmUser);
-	        gdm_setenv ("USERNAME", GdmUser);
+	        ve_setenv ("LOGNAME", GdmUser, TRUE);
+	        ve_setenv ("USER", GdmUser, TRUE);
+	        ve_setenv ("USERNAME", GdmUser, TRUE);
         }
         if (pwent != NULL) {
-	        gdm_setenv ("HOME", pwent->pw_dir);
-	        gdm_setenv ("SHELL", pwent->pw_shell);
+	        ve_setenv ("HOME", pwent->pw_dir, TRUE);
+	        ve_setenv ("SHELL", pwent->pw_shell, TRUE);
         } else {
-	        gdm_setenv ("HOME", "/");
-	        gdm_setenv ("SHELL", "/bin/sh");
+	        ve_setenv ("HOME", "/", TRUE);
+	        ve_setenv ("SHELL", "/bin/sh", TRUE);
         }
 
-	gdm_setenv ("XAUTHORITY", d->authfile);
-        gdm_setenv ("DISPLAY", d->name);
-	gdm_setenv ("PATH", GdmRootPath);
-	gdm_unsetenv ("MAIL");
-	argv = gdm_split (scr);
+	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+        ve_setenv ("DISPLAY", d->name, TRUE);
+	ve_setenv ("PATH", GdmRootPath, TRUE);
+	ve_unsetenv ("MAIL");
+	argv = ve_split (scr);
 	execv (argv[0], argv);
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"), scr);
 	_exit (EXIT_SUCCESS);
@@ -2504,7 +2506,7 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			 * correctly */
 			if ((d->type == TYPE_LOCAL || GdmAllowRemoteAutoLogin) 
                             && d->timed_login_ok &&
-			    ! gdm_string_empty (ParsedTimedLogin) &&
+			    ! ve_string_empty (ParsedTimedLogin) &&
                             strcmp (ParsedTimedLogin, "root") != 0 &&
 			    GdmTimedLoginDelay > 0) {
 				do_timed_login = TRUE;
@@ -2515,7 +2517,7 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			if (d->type == TYPE_LOCAL &&
 			    GdmConfigAvailable &&
 			    GdmSystemMenu &&
-			    ! gdm_string_empty (GdmConfigurator)) {
+			    ! ve_string_empty (GdmConfigurator)) {
 				do_configurator = TRUE;
 			}
 			break;
@@ -2608,12 +2610,12 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
           if(pipe1[1] != STDOUT_FILENO) 
 	    dup2 (pipe1[1], STDOUT_FILENO);
 
-	  gdm_setenv ("XAUTHORITY", display->authfile);
-	  gdm_setenv ("DISPLAY", display->name);
-	  gdm_setenv ("PATH", GdmRootPath);
-	  gdm_unsetenv ("MAIL");
+	  ve_setenv ("XAUTHORITY", display->authfile, TRUE);
+	  ve_setenv ("DISPLAY", display->name, TRUE);
+	  ve_setenv ("PATH", GdmRootPath, TRUE);
+	  ve_unsetenv ("MAIL");
 
-	  argv = gdm_split (str->str);
+	  argv = ve_split (str->str);
 	  execv (argv[0], argv);
 	  syslog (LOG_ERR, _("gdm_parse_enriched_login: Failed executing: %s"),
 		  str->str);

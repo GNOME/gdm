@@ -26,6 +26,8 @@
   #include <crypt.h>
 #endif /* HAVE_CRYPT */
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "misc.h"
 #include "slave.h"
@@ -90,7 +92,7 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
     endspent();
 
     /* Request the user's password */
-    if (gdm_string_empty (ppasswd)) {
+    if (ve_string_empty (ppasswd)) {
 	    /* eeek a passwordless account */
 	    passwd = g_strdup ("");
     } else {

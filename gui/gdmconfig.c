@@ -21,12 +21,16 @@
  */
 
 #include <config.h>
+#include <gnome.h>
+
 #include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <syslog.h>
+
+#include <viciousui.h>
+
 #include "gdmconfig.h"
-#include "icon-entry-hack.h"
 #include "misc.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you don't
@@ -165,13 +169,13 @@ gdm_event (GtkObject *object,
 static void
 check_binary (GtkEntry *entry)
 {
-	char *bin = gdm_first_word (gtk_entry_get_text (entry));
+	char *bin = ve_first_word (gtk_entry_get_text (entry));
 
-	if ( ! gdm_string_empty (bin) &&
+	if ( ! ve_string_empty (bin) &&
 	    access (bin, X_OK) == 0)
-		entry_set_red (GTK_WIDGET (entry), FALSE);
+		ve_entry_set_red (GTK_WIDGET (entry), FALSE);
 	else
-		entry_set_red (GTK_WIDGET (entry), TRUE);
+		ve_entry_set_red (GTK_WIDGET (entry), TRUE);
 
 	g_free (bin);
 }
@@ -182,17 +186,17 @@ check_dir (GtkEntry *entry)
 	char *text = gtk_entry_get_text (entry);
 
 	/* first try access as it's a LOT faster then stat */
-	if ( ! gdm_string_empty (text) &&
+	if ( ! ve_string_empty (text) &&
 	    access (text, R_OK) == 0) {
 		struct stat sbuf;
 		/* check for this being a directory */
 		if (stat (text, &sbuf) < 0 ||
 		    ! S_ISDIR (sbuf.st_mode))
-			entry_set_red (GTK_WIDGET (entry), TRUE);
+			ve_entry_set_red (GTK_WIDGET (entry), TRUE);
 		else
-			entry_set_red (GTK_WIDGET (entry), FALSE);
+			ve_entry_set_red (GTK_WIDGET (entry), FALSE);
 	} else {
-		entry_set_red (GTK_WIDGET (entry), TRUE);
+		ve_entry_set_red (GTK_WIDGET (entry), TRUE);
 	}
 }
 
@@ -209,17 +213,17 @@ check_dirname (GtkEntry *entry)
 		return;
 
 	/* first try access as it's a LOT faster then stat */
-	if ( ! gdm_string_empty (dir) &&
+	if ( ! ve_string_empty (dir) &&
 	    access (dir, R_OK) == 0) {
 		struct stat sbuf;
 		/* check for this being a directory */
 		if (stat (dir, &sbuf) < 0 ||
 		    ! S_ISDIR (sbuf.st_mode))
-			entry_set_red (GTK_WIDGET (entry), TRUE);
+			ve_entry_set_red (GTK_WIDGET (entry), TRUE);
 		else
-			entry_set_red (GTK_WIDGET (entry), FALSE);
+			ve_entry_set_red (GTK_WIDGET (entry), FALSE);
 	} else {
-		entry_set_red (GTK_WIDGET (entry), TRUE);
+		ve_entry_set_red (GTK_WIDGET (entry), TRUE);
 	}
 
 	g_free (dir);
@@ -230,11 +234,11 @@ check_file (GtkEntry *entry)
 {
 	char *text = gtk_entry_get_text (entry);
 
-	if ( ! gdm_string_empty (text) &&
+	if ( ! ve_string_empty (text) &&
 	    access (text, R_OK) == 0) {
-		entry_set_red (GTK_WIDGET (entry), FALSE);
+		ve_entry_set_red (GTK_WIDGET (entry), FALSE);
 	} else {
-		entry_set_red (GTK_WIDGET (entry), TRUE);
+		ve_entry_set_red (GTK_WIDGET (entry), TRUE);
 	}
 }
 
@@ -335,7 +339,7 @@ main (int argc, char *argv[])
 		gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 		gtkrc = gnome_config_get_string (GDM_KEY_GTKRC);
 		gnome_config_pop_prefix ();
-		if ( ! gdm_string_empty (gtkrc))
+		if ( ! ve_string_empty (gtkrc))
 			gtk_rc_parse (gtkrc);
 		g_free (gtkrc);
 	}
@@ -710,7 +714,7 @@ gdm_config_parse_most (gboolean factory)
 
         /* If default session link exists, find out what it points to */
 	if (S_ISLNK (statbuf.st_mode) &&
-	    strcasecmp_no_locale (dent->d_name, "default") == 0) 
+	    ve_strcasecmp_no_locale (dent->d_name, "default") == 0) 
 	 {
 	    gchar t[_POSIX_PATH_MAX];
 	    
@@ -876,7 +880,7 @@ gdm_config_parse_remaining (gboolean factory)
     /* Login stuff */
     {
 	    char *login = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
-	    if (gdm_string_empty (login)) {
+	    if (ve_string_empty (login)) {
 		    gdm_toggle_set ("enable_automatic_login", FALSE);
 	    } else {
 		    gdm_toggle_set ("enable_automatic_login", gnome_config_get_bool (GDM_KEY_AUTOMATICLOGIN_ENABLE));
@@ -884,7 +888,7 @@ gdm_config_parse_remaining (gboolean factory)
 	    g_free (login);
 
 	    login = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
-	    if (gdm_string_empty (login)) {
+	    if (ve_string_empty (login)) {
 		    gdm_toggle_set ("enable_timed_login", FALSE);
 	    } else {
 		    gdm_toggle_set ("enable_timed_login", gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE));
@@ -1710,7 +1714,7 @@ sessions_clist_row_selected                  (GtkCList *clist,
    gtk_editable_set_editable (GTK_EDITABLE (get_widget ("session_name_entry")),
 			      sess_details->changable);
    /* not red by default */
-   entry_set_red (get_widget ("session_name_entry"), FALSE);
+   ve_entry_set_red (get_widget ("session_name_entry"), FALSE);
 
    gtk_signal_handler_unblock_by_func (GTK_OBJECT(get_widget("session_text")),
 				       session_text_edited, NULL);
@@ -1750,7 +1754,7 @@ is_legal_session_name (const char *text, GdmConfigSession *this_session)
 {
 	int i;
 
-	if (gdm_string_empty (text))
+	if (ve_string_empty (text))
 		return FALSE;
 
 	for (i = 0; i < GTK_CLIST(get_widget ("sessions_clist"))->rows; i++) {
@@ -1879,7 +1883,7 @@ modify_session_name (GtkEntry *entry, gpointer data)
     * bad UI.  The user probably wiped the entry to typoe in something
     * different*/
    if (is_legal_session_name (text, selected_session)) {
-	entry_set_red (GTK_WIDGET (entry), FALSE);
+	ve_entry_set_red (GTK_WIDGET (entry), FALSE);
 	/* We need to track the first name of this session to rename
 	 * the actual session file.
 	 */
@@ -1893,7 +1897,7 @@ modify_session_name (GtkEntry *entry, gpointer data)
 			    selected_session_row, 0,
 			    selected_session->name);
    } else {
-	entry_set_red (GTK_WIDGET (entry), TRUE);
+	ve_entry_set_red (GTK_WIDGET (entry), TRUE);
    }
 }
 

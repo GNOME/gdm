@@ -23,6 +23,8 @@
 #include <security/pam_appl.h>
 #include <pwd.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "misc.h"
 #include "slave.h"
@@ -158,7 +160,7 @@ gdm_verify_user (const char *username,
 
     /* start the timer for timed logins */
     if (local ||
-	(!gdm_string_empty(GdmTimedLogin) && GdmAllowRemoteAutoLogin)) {
+	(!ve_string_empty(GdmTimedLogin) && GdmAllowRemoteAutoLogin)) {
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 	    started_timer = TRUE;
     }

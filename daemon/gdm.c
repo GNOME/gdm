@@ -32,6 +32,8 @@
 #include <errno.h>
 #include <syslog.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "misc.h"
 #include "slave.h"
@@ -241,7 +243,7 @@ gdm_config_parse (void)
 #endif
 
     if ( ! GdmAutomaticLoginEnable ||
-	gdm_string_empty (GdmAutomaticLogin)) {
+	ve_string_empty (GdmAutomaticLogin)) {
 	    g_free (GdmAutomaticLogin);
 	    GdmAutomaticLogin = NULL;
     }
@@ -254,7 +256,7 @@ gdm_config_parse (void)
     }
 
     if ( ! GdmTimedLoginEnable ||
-	gdm_string_empty (GdmTimedLogin)) {
+	ve_string_empty (GdmTimedLogin)) {
 	    g_free (GdmTimedLogin);
 	    GdmTimedLogin = NULL;
     }
@@ -276,17 +278,17 @@ gdm_config_parse (void)
     }
 
     /* Prerequisites */ 
-    if (gdm_string_empty (GdmGreeter)) {
+    if (ve_string_empty (GdmGreeter)) {
 	    gdm_error (_("gdm_config_parse: No greeter specified."));
     }
 
-    if (gdm_string_empty (GdmServAuthDir))
+    if (ve_string_empty (GdmServAuthDir))
 	gdm_fail (_("gdm_config_parse: No authdir specified."));
 
-    if (gdm_string_empty (GdmLogDir))
+    if (ve_string_empty (GdmLogDir))
 	GdmLogDir = GdmServAuthDir;
 
-    if (gdm_string_empty (GdmSessDir))
+    if (ve_string_empty (GdmSessDir))
 	gdm_error (_("gdm_config_parse: No sessions directory specified."));
 
 
@@ -364,9 +366,9 @@ gdm_config_parse (void)
 
 
     /* Check that the greeter can be executed */
-    bin = gdm_first_word (GdmGreeter);
+    bin = ve_first_word (GdmGreeter);
 
-    if ( ! gdm_string_empty (bin) &&
+    if ( ! ve_string_empty (bin) &&
 	access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
     }
@@ -375,10 +377,10 @@ gdm_config_parse (void)
 
 
     /* Check that chooser can be executed */
-    bin = gdm_first_word (GdmChooser);
+    bin = ve_first_word (GdmChooser);
 
     if (GdmIndirect &&
-	! gdm_string_empty (bin) &&
+	! ve_string_empty (bin) &&
 	access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Chooser not found or it can't be executed by the gdm user"), "gdm_config_parse");
     }
@@ -506,10 +508,10 @@ deal_with_x_crashes (GdmDisplay *d)
     char *msg;
 
     if ( ! d->failsafe_xserver &&
-	 ! gdm_string_empty (GdmFailsafeXServer)) {
-	    char *bin = gdm_first_word (GdmFailsafeXServer);
+	 ! ve_string_empty (GdmFailsafeXServer)) {
+	    char *bin = ve_first_word (GdmFailsafeXServer);
 	    /* Yay we have a failsafe */
-	    if ( ! gdm_string_empty (bin) &&
+	    if ( ! ve_string_empty (bin) &&
 		access (bin, X_OK) == 0) {
 		    gdm_info (_("deal_with_x_crashes: Trying failsafe X "
 				"server %s"), GdmFailsafeXServer);
@@ -523,8 +525,8 @@ deal_with_x_crashes (GdmDisplay *d)
     }
 
     /* Eeek X keeps crashing, let's try the XKeepsCrashing script */
-    if ( ! gdm_string_empty (GdmXKeepsCrashing) &&
-	 ! gdm_string_empty (GdmXKeepsCrashingConfigurators) &&
+    if ( ! ve_string_empty (GdmXKeepsCrashing) &&
+	 ! ve_string_empty (GdmXKeepsCrashingConfigurators) &&
 	access (GdmXKeepsCrashing, X_OK|R_OK) == 0) {
 	    char tempname[256];
 	    int tempfd;
@@ -532,7 +534,7 @@ deal_with_x_crashes (GdmDisplay *d)
 	    char **configurators;
 	    int i;
 
-	    configurators = gdm_split (GdmXKeepsCrashingConfigurators);
+	    configurators = ve_split (GdmXKeepsCrashingConfigurators);
 	    for (i = 0; configurators[i] != NULL; i++) {
 		    if (access (configurators[i], X_OK) == 0)
 			    break;
@@ -661,10 +663,10 @@ bin_executable (const char *command)
 {
 	char **argv;
 
-	if (gdm_string_empty (command))
+	if (ve_string_empty (command))
 		return FALSE;
 
-	argv = gdm_split (command);
+	argv = ve_split (command);
 	if (argv != NULL &&
 	    argv[0] != NULL &&
 	    access (argv[0], X_OK) == 0) {
@@ -805,7 +807,7 @@ gdm_cleanup_children (void)
 
 	final_cleanup ();
 
-	argv = gdm_split (GdmReboot);
+	argv = ve_split (GdmReboot);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
@@ -816,7 +818,7 @@ gdm_cleanup_children (void)
 
 	final_cleanup ();
 
-	argv = gdm_split (GdmHalt);
+	argv = ve_split (GdmHalt);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
@@ -827,7 +829,7 @@ gdm_cleanup_children (void)
 
 	final_cleanup ();
 
-	argv = gdm_split (GdmSuspend);
+	argv = ve_split (GdmSuspend);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));

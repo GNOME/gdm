@@ -298,9 +298,6 @@ void gdm_quit (void);
 
 void gdm_fifo_close (void);
 
-#define gdm_string_empty(x) ((x)==NULL||(x)[0]=='\0')
-#define gdm_sure_string(x) ((x)!=NULL?(x):"")
-
 #endif /* GDM_H */
 
 /* EOF */

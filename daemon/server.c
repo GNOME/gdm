@@ -31,6 +31,8 @@
 #include <errno.h>
 #include <X11/Xlib.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "server.h"
 #include "misc.h"
@@ -233,7 +235,7 @@ gdm_server_start (GdmDisplay *disp)
     /* Create new cookie */
     if ( ! gdm_auth_secure_display (d))
 	    return FALSE;
-    gdm_setenv ("DISPLAY", d->name);
+    ve_setenv ("DISPLAY", d->name, TRUE);
 
     /* Catch USR1 from X server */
     usr1.sa_handler = gdm_server_usr1_handler;
@@ -365,7 +367,7 @@ gdm_server_spawn (GdmDisplay *d)
     int len, i;
 
     if (d == NULL ||
-	gdm_string_empty (d->command)) {
+	ve_string_empty (d->command)) {
 	    return;
     }
 
@@ -442,7 +444,7 @@ gdm_server_spawn (GdmDisplay *d)
 	sigaddset (&mask, SIGTERM);
 	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
-	argv = gdm_split (d->command);
+	argv = ve_split (d->command);
 	for (len = 0; argv != NULL && argv[len] != NULL; len++)
 		;
 

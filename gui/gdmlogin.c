@@ -38,6 +38,9 @@
 #include <X11/Xlib.h>
 #include <pwd.h>
 #include <sys/utsname.h>
+
+#include <viciousui.h>
+
 #include "gdmlogin.h"
 #include "gdm.h"
 #include "gdmwm.h"
@@ -655,7 +658,7 @@ gdm_run_command (const char *command)
 		open("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-		argv = gdm_split (command);
+		argv = ve_split (command);
 		execv (argv[0], argv);
 		/*ingore errors, this is irrelevant */
 		_exit (0);
@@ -741,7 +744,7 @@ gdm_login_parse_config (void)
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME_TR);
-    if (gdm_string_empty (GdmWelcome))
+    if (ve_string_empty (GdmWelcome))
 	    GdmWelcome = gnome_config_get_string (GDM_KEY_WELCOME);
     GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
     GdmBackgroundImage = gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE);
@@ -773,7 +776,7 @@ gdm_login_parse_config (void)
      * already maybe */
     if (GdmTimedLoginEnable) {
 	    GdmTimedLogin = g_getenv("GDM_TIMED_LOGIN_OK");
-            if (gdm_string_empty (GdmTimedLogin)) {
+            if (ve_string_empty (GdmTimedLogin)) {
 	      g_free (GdmTimedLogin);
 	      GdmTimedLogin = NULL;
 	    }
@@ -797,14 +800,14 @@ gdm_login_parse_config (void)
     if (GdmXineramaScreen < 0) GdmXineramaScreen = 0;
 
     /* Disable System menu on non-local displays */
-    if (gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    GdmSystemMenu = FALSE;
 	    GdmConfigAvailable = FALSE;
 	    if (GdmBackgroundRemoteOnlyColor &&
 		GdmBackgroundType == GDM_BACKGROUND_IMAGE)
 		    GdmBackgroundType = GDM_BACKGROUND_COLOR;
 	    if (GdmBackgroundRemoteOnlyColor &&
-		! gdm_string_empty (GdmBackgroundProg)) {
+		! ve_string_empty (GdmBackgroundProg)) {
 		    g_free (GdmBackgroundProg);
 		    GdmBackgroundProg = NULL;
 	    }
@@ -933,7 +936,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
 
     /* Previously saved language not found in ~user/.gnome/gdm */
-    if (gdm_string_empty (savedlang)) {
+    if (ve_string_empty (savedlang)) {
 	/* If "Last" is chosen use Default, which is the current language,
 	 * or the GdmDefaultLocale if that's not set or is "C"
 	 * else use current selection */
@@ -943,7 +946,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 		char *lang = g_getenv ("LANG");
 		if (lang == NULL ||
 		    lang[0] == '\0' ||
-		    strcasecmp_no_locale (lang, "C") == 0) {
+		    ve_strcasecmp_no_locale (lang, "C") == 0) {
 			language = g_strdup (GdmDefaultLocale);
 		} else {
 			language = g_strdup (lang);
@@ -952,7 +955,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 		language = g_strdup (curlang);
 	}
 
-	if (gdm_string_empty (language)) {
+	if (ve_string_empty (language)) {
 		g_free (language);
 		language = g_strdup ("C");
 	}
@@ -1093,7 +1096,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	/* If in timed login mode, and if this is the login
 	 * entry.  Then an enter by itself is sort of like I want to
 	 * log in as the timed user "damn it".  */
-	if (gdm_string_empty (login_string) &&
+	if (ve_string_empty (login_string) &&
 	    timed_handler_id != 0 &&
 	    login_entry) {
 		login_entry = FALSE;
@@ -1230,7 +1233,7 @@ gdm_login_session_init (GtkWidget *menu)
 
 	/* If default session link exists, find out what it points to */
 	if (S_ISLNK (statbuf.st_mode) &&
-	    strcasecmp_no_locale (dent->d_name, "default") == 0) {
+	    ve_strcasecmp_no_locale (dent->d_name, "default") == 0) {
 	    gchar t[_POSIX_PATH_MAX];
 	    
 	    linklen = readlink (s, t, _POSIX_PATH_MAX);
@@ -1265,12 +1268,12 @@ gdm_login_session_init (GtkWidget *menu)
 		/* if there is a session called Default, use that as default
 		 * if no link has been made */
 		if ( ! got_default_link &&
-		    strcasecmp_no_locale (dent->d_name, "Default") == 0) {
+		    ve_strcasecmp_no_locale (dent->d_name, "Default") == 0) {
 			g_free (defsess);
 			defsess = g_strdup (dent->d_name);
 		}	
 
-		if (strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
+		if (ve_strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
 			/* Just in case there is no Default session and
 			 * no default link, make Gnome the default */
 			if (defsess == NULL)
@@ -2017,7 +2020,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	 */
 
 	if (timed_handler_id == 0 &&
-	    ! gdm_string_empty (GdmTimedLogin) &&
+	    ! ve_string_empty (GdmTimedLogin) &&
 	    GdmTimedLoginDelay > 0) {
 		curdelay = GdmTimedLoginDelay;
 		timed_handler_id = gtk_timeout_add (1000,
@@ -2428,20 +2431,19 @@ clock_state_changed (GtkWidget *clock)
 static gboolean
 bin_exists (const char *command)
 {
-	char **argv;
+	char *bin;
 
-	if (gdm_string_empty (command))
+	if (ve_string_empty (command))
 		return FALSE;
 
 	/* Note, check only for existance, not for executability */
-	argv = gdm_split (command);
-	if (argv != NULL &&
-	    argv[0] != NULL &&
-	    access (argv[0], F_OK) == 0) {
-		g_strfreev (argv);
+	bin = ve_first_word (command);
+	if (bin != NULL &&
+	    access (bin, F_OK) == 0) {
+		g_free (bin);
 		return TRUE;
 	} else {
-		g_strfreev (argv);
+		g_free (bin);
 		return FALSE;
 	}
 }
@@ -2519,7 +2521,7 @@ gdm_login_gui_init (void)
     gint cols, rows;
     struct stat statbuf;
 
-    if( ! gdm_string_empty (GdmGtkRC))
+    if( ! ve_string_empty (GdmGtkRC))
 	gtk_rc_parse (GdmGtkRC);
 
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -2661,7 +2663,7 @@ gdm_login_gui_init (void)
     }
 
     /* Add a quit item when in xdmcp mode */
-    if (gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    item = gtk_menu_item_new_with_label (_("Quit"));
 	    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
 	    gtk_widget_add_accelerator (item, "activate_item", accel,
@@ -3059,8 +3061,8 @@ gdm_login_check_exclude (struct passwd *pwent)
 
 		for (i=0 ; excludes[i] != NULL ; i++)  {
 			g_strstrip (excludes[i]);
-			if (strcasecmp_no_locale (excludes[i],
-						  pwent->pw_name) == 0) {
+			if (ve_strcasecmp_no_locale (excludes[i],
+						     pwent->pw_name) == 0) {
 				g_strfreev (excludes);
 				return TRUE;
 			}
@@ -3325,7 +3327,7 @@ main (int argc, char *argv[])
     gdm_login_parse_config ();
 
     /* no language set, use the GdmDefaultLocale */
-    if ( ! gdm_string_empty (GdmDefaultLocale) &&
+    if ( ! ve_string_empty (GdmDefaultLocale) &&
 	g_getenv ("LANG") == NULL &&
 	g_getenv ("LC_ALL") == NULL) {
 	    setlocale (LC_ALL, GdmDefaultLocale);
@@ -3347,7 +3349,7 @@ main (int argc, char *argv[])
     if ( ! DOING_GDM_DEVELOPMENT &&
 	(gdm_version == NULL ||
 	 strcmp (gdm_version, VERSION) != 0) &&
-	gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    char *msg;
 	    GtkWidget *dialog;
 
@@ -3501,7 +3503,7 @@ main (int argc, char *argv[])
 
     /* if in timed mode, delay timeout on keyboard or menu
      * activity */
-    if ( ! gdm_string_empty (GdmTimedLogin)) {
+    if ( ! ve_string_empty (GdmTimedLogin)) {
 	    guint sid = gtk_signal_lookup ("activate",
 					   GTK_TYPE_MENU_ITEM);
 	    gtk_signal_add_emission_hook (sid,

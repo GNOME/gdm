@@ -21,12 +21,6 @@
 
 #include <gnome.h>
 
-void entry_set_red (GtkWidget *w, gboolean state);
-int strcasecmp_no_locale (const char *s1, const char *s2);
-
-char ** gdm_split (const char *s);
-char * gdm_first_word (const char *s);
-
 #endif /* MISC_H */
 
 /* EOF */

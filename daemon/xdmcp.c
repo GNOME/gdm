@@ -84,6 +84,8 @@
   #include <tcpd.h>
 #endif
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "display.h"
 #include "auth.h"
@@ -1239,7 +1241,7 @@ gdm_xdmcp_display_alloc (const char *hostname, gint displaynum)
 
     d->sleep_before_run = 0;
     if (GdmAllowRemoteAutoLogin &&
-	! gdm_string_empty (GdmTimedLogin)) {
+	! ve_string_empty (GdmTimedLogin)) {
 	    d->timed_login_ok = TRUE;
     } else {
 	    d->timed_login_ok = FALSE;

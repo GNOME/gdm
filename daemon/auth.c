@@ -26,6 +26,8 @@
 #include <netinet/in.h>
 #include <X11/Xauth.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "cookie.h"
 #include "misc.h"
@@ -211,7 +213,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     }
 
     fclose (af);
-    gdm_setenv ("XAUTHORITY", d->authfile);
+    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
 
     gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
 	       d->name, g_slist_length (d->auths));

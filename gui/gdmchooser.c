@@ -44,6 +44,8 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 
+#include <viciousui.h>
+
 #include "gdmchooser.h"
 #include "gdm.h"
 #include "misc.h"
@@ -507,7 +509,7 @@ gdm_chooser_parse_config (void)
     GdmBroadcast = gnome_config_get_bool (GDM_KEY_BROADCAST);
     /* if broadcasting, then append BROADCAST to hosts */
     if (GdmBroadcast) {
-	    if (gdm_string_empty (GdmHosts)) {
+	    if (ve_string_empty (GdmHosts)) {
 		    g_free (GdmHosts);
 		    GdmHosts = "BROADCAST";
 	    } else {
@@ -980,7 +982,7 @@ set_background (void)
 		GdkColor color;
 		GdkColormap *colormap;
 
-		if (gdm_string_empty (GdmBackgroundColor) ||
+		if (ve_string_empty (GdmBackgroundColor) ||
 		    ! gdk_color_parse (GdmBackgroundColor, &color)) {
 			gdk_color_parse ("#007777", &color);
 		}

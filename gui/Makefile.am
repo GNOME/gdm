@@ -7,7 +7,12 @@ DEFS += -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 	-DGDM_FACTORY_CONFIG_FILE=\"@sysconfdir@/gdm/factory-gdm.conf\" \
 	-DGDM_GLADE_DIR=\"@datadir@/gdm\"
 
-INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
+INCLUDES = \
+	-I.						\
+	-I..						\
+	-I$(top_srcdir)/daemon				\
+	-I$(top_srcdir)/vicious-extensions		\
+	-I$(includedir)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	@LIBGLADE_CFLAGS@				\
 	@PIXBUF_CFLAGS@					\
@@ -39,8 +44,6 @@ gdmlogin_SOURCES = \
 	misc.h
 
 gdmconfig_SOURCES = \
-	icon-entry-hack.c	\
-	icon-entry-hack.h	\
 	gdmconfig.c		\
 	gdmconfig.h		\
 	misc.c			\
@@ -53,27 +56,39 @@ gdmchooser_LDADD = \
 	$(XDMCP_LIBS)		\
 	-lX11			\
 	$(INTLLIBS)		\
-	$(LIBGLADE_LIBS)
+	$(LIBGLADE_LIBS)	\
+	-L$(top_builddir)/vicious-extensions	\
+	-lvicious		\
+	-lviciousui
 
 gdmlogin_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(GNOME_LIBS)		\
 	$(GNOMEUI_LIBS)		\
 	$(INTLLIBS)		\
-	$(PIXBUF_LIBS)
+	$(PIXBUF_LIBS)		\
+	-L$(top_builddir)/vicious-extensions	\
+	-lvicious		\
+	-lviciousui
 
 gdmconfig_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(GNOME_LIBS)		\
 	$(GNOMEUI_LIBS)		\
 	$(INTLLIBS)		\
-	$(LIBGLADE_LIBS)
+	$(LIBGLADE_LIBS)	\
+	-L$(top_builddir)/vicious-extensions	\
+	-lvicious		\
+	-lviciousui
 
 gdmphotosetup_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(GNOME_LIBS)		\
 	$(GNOMEUI_LIBS)		\
-	$(INTLLIBS)
+	$(INTLLIBS)		\
+	-L$(top_builddir)/vicious-extensions	\
+	-lvicious		\
+	-lviciousui
  
 Settingsdir = $(datadir)/gnome/apps/Settings
 Settings_in_files = gdmphotosetup.desktop.in

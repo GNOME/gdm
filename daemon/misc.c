@@ -20,6 +20,8 @@
 #include <gnome.h>
 #include <syslog.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "misc.h"
 
@@ -148,122 +150,8 @@ gdm_debug (const gchar *format, ...)
     g_free (s);
 }
 
-
-/**
- * gdm_setenv:
- * @var: Variable to set/unset
- * @value: Value to assign to the variable, NULL for unsetting
- *
- * Wrapper around putenv() because POSIX/SUS is incredibly stupid.
- * 
- *   char *foo; char *bar;
- *   putenv (foo); putenv (bar); free (foo); 
- *
- * is legal, while
- *
- *   char *foo;
- *   putenv (foo); free (foo); 
- *
- * isn't.
- *
- * Afterall, providing the programmer with a nice, consistent
- * interface is what the standard C Library is all about. - Duh!
- *
- * Note from George:
- * You cannot free the last env as it could have been something else
- * and could still be in the env!  We just have to leak, there is no
- * recourse.
- * -George
- */
-
-#ifndef HAVE_SETENV
-gint 
-gdm_setenv (const gchar *var, const gchar *value)
-{
-#if 0
-    static gchar *lastenv = NULL; /* Holds last successful assignment pointer */
-#endif
-    gchar *envstr;		  /* Temporary environment string */
-    gint result;		  /* Return value from the putenv() call */
-
-    /* `var' is a prerequisite */
-    if (!var)
-	return -1;
-
-    /* `value' is a prerequisite */
-    if (!value)
-	return -1;
-
-    envstr = g_strconcat (var, "=", value, NULL);
-
-    /* If string space allocation failed then abort */
-    if (!envstr)
-	return -1;
-
-    /* Stuff the resulting string into the environment */
-    result = putenv (envstr);
-
-#if 0
-    /* If putenv() succeeded and lastenv is set, free the old pointer */
-    if (result == 0 && lastenv)
-	g_free (lastenv);
-
-    /* Save the current string pointer for the next gdm_setenv call */
-    lastenv = envstr;
-#endif
-    
-    return result;
-}
-#endif
-
-#ifndef HAVE_UNSETENV
-gint 
-gdm_unsetenv (const gchar *var)
-{
-#if 0
-    static gchar *lastenv = NULL; /* Holds last successful assignment pointer */
-#endif
-    gchar *envstr;		  /* Temporary environment string */
-    gint result;		  /* Return value from the putenv() call */
-
-    /* `var' is a prerequisite */
-    if (!var)
-	return -1;
-
-    envstr = g_strdup (var);
-
-    /* If string space allocation failed then abort */
-    if (!envstr)
-	return -1;
-
-    /* Stuff the resulting string into the environment */
-    result = putenv (envstr);
-
-#if 0
-    /* If putenv() succeeded and lastenv is set, free the old pointer */
-    if (result == 0 && lastenv)
-	g_free (lastenv);
-
-    /* Save the current string pointer for the next gdm_setenv call */
-    lastenv = envstr;
-#endif
-    
-    return result;
-}
-#endif
-
-void
-gdm_clearenv (void)
-{
-#ifdef HAVE_CLEARENV
-	clearenv ();
-#else
-	environ[0] = NULL;
-#endif
-}
-
 /* clear environment, but keep the i18n ones,
- * note that this leak memory so only use before exec */
+ * note that this leaks memory so only use before exec */
 void
 gdm_clearenv_no_lang (void)
 {
@@ -278,99 +166,13 @@ gdm_clearenv_no_lang (void)
 			envs = g_list_prepend (envs, g_strdup (env));
 	}
 
-	gdm_clearenv ();
+	ve_clearenv ();
 
 	for (li = envs; li != NULL; li = li->next) {
 		putenv (li->data);
 	}
 
 	g_list_free (envs);
-}
-
-/* Do strcasecmp but ignore locale */
-int
-gdm_strcasecmp_no_locale (const char *s1, const char *s2)
-{
-	int i;
-
-	/* Error, but don't make them equal then */
-	g_return_val_if_fail (s1 != NULL, G_MAXINT);
-	g_return_val_if_fail (s2 != NULL, G_MININT);
-
-	for (i = 0; s1[i] != '\0' && s2[i] != '\0'; i++) {
-		char a = s1[i];
-		char b = s2[i];
-
-		if (a >= 'A' && a <= 'Z')
-			a -= 'A' - 'a';
-		if (b >= 'A' && b <= 'Z')
-			b -= 'A' - 'a';
-
-		if (a < b)
-			return -1;
-		else if (a > b)
-			return 1;
-	}
-
-	/* find out which string is smaller */
-	if (s2[i] != '\0')
-		return -1; /* s1 is smaller */
-	else if (s1[i] != '\0')
-		return 1; /* s2 is smaller */
-	else
-		return 0; /* equal */
-}
-
-char **
-gdm_split (const char *s)
-{
-	int argc;
-	char **temp_argv;
-	char **ret;
-	int i;
-
-	if (s == NULL)
-		return NULL;
-
-	if (poptParseArgvString (s, &argc, &temp_argv) != 0) {
-		return g_strsplit (s, " ", -1);
-	}
-
-	ret = g_new (char *, argc+1);
-	for (i = 0; i < argc; i++) {
-		ret[i] = g_strdup (temp_argv[i]);
-	}
-	ret[i] = NULL;
-
-	free (temp_argv);
-
-	return ret;
-}
-
-char *
-gdm_first_word (const char *s)
-{
-	int argc;
-	char **temp_argv;
-	char *ret;
-
-	if (s == NULL)
-		return NULL;
-
-	if (poptParseArgvString (s, &argc, &temp_argv) != 0) {
-		char *p;
-		ret = g_strdup (s);
-		p = strchr (ret, ' ');
-		if (p != NULL)
-			*p = '\0';
-		return ret;
-	}
-
-	ret = g_strdup (temp_argv[0]);
-
-	free (temp_argv);
-
-	return ret;
 }
 
 /* EOF */

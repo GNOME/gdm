@@ -24,6 +24,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#include <viciousui.h>
+
 #include "gdm.h"
 
 /* If path starts with a "trusted" directory, don't sanity check things */
@@ -94,7 +97,7 @@ main (int argc, char *argv[])
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
 			    photo, TRUE, TRUE, 0);
 
-	if ( ! gdm_string_empty (last_pix)) {
+	if ( ! ve_string_empty (last_pix)) {
 		GtkWidget *e = gnome_pixmap_entry_gtk_entry
 			(GNOME_PIXMAP_ENTRY (photo));
 		gtk_entry_set_text (GTK_ENTRY (e), last_pix);
@@ -105,7 +108,7 @@ main (int argc, char *argv[])
 	while (gnome_dialog_run (GNOME_DIALOG (dialog)) == 0) {
 		struct stat s;
 		char *pixmap = gnome_pixmap_entry_get_filename (GNOME_PIXMAP_ENTRY (photo));
-		if (gdm_string_empty (pixmap) ||
+		if (ve_string_empty (pixmap) ||
 		    stat (pixmap, &s) < 0) {
 			GtkWidget *d;
 			d = gnome_warning_dialog (_("No picture selected."));
