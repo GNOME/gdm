@@ -84,6 +84,9 @@ static gboolean interrupted = FALSE;
 static gchar *ParsedAutomaticLogin = NULL;
 static gchar *ParsedTimedLogin = NULL;
 
+int greeter_fd_out = -1;
+int greeter_fd_in = -1;
+
 extern gboolean gdm_first_login;
 extern gboolean gdm_emergency_server;
 extern pid_t extra_process;
@@ -189,6 +192,18 @@ ignore_xerror_handler (Display *disp, XErrorEvent *evt)
 	x_error_occured = TRUE;
 	return 0;
 }
+
+static void
+whack_greeter_fds (void)
+{
+	if (greeter_fd_out > 0)
+		close (greeter_fd_out);
+	greeter_fd_out = -1;
+	if (greeter_fd_in > 0)
+		close (greeter_fd_in);
+	greeter_fd_in = -1;
+}
+
 
 void 
 gdm_slave_start (GdmDisplay *display)
@@ -397,6 +412,8 @@ gdm_slave_whack_greeter (void)
 	if (d->greetpid > 0)
 		ve_waitpid_no_signal (d->greetpid, 0, 0); 
 	d->greetpid = 0;
+
+	whack_greeter_fds ();
 
 	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
@@ -877,6 +894,8 @@ restart_the_greeter (void)
 			ve_waitpid_no_signal (d->greetpid, 0, 0); 
 		d->greetpid = 0;
 
+		whack_greeter_fds ();
+
 		gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
 		gdm_sigchld_block_pop ();
@@ -1272,12 +1291,12 @@ run_pictures (void)
 		}
 		g_free (ret);
 
-		gdm_fdprintf (STDOUT_FILENO, "%c", STX);
+		gdm_fdprintf (greeter_fd_out, "%c", STX);
 
 		i = 0;
 		while ((bytes = fread (buf, sizeof (char),
 				       sizeof (buf), fp)) > 0) {
-			write (STDOUT_FILENO, buf, bytes);
+			write (greeter_fd_out, buf, bytes);
 			i += bytes;
 		}
 
@@ -1337,12 +1356,9 @@ gdm_slave_greeter (void)
 	/* Plumbing */
 	close (pipe1[1]);
 	close (pipe2[0]);
-	
-	if (pipe1[0] != STDIN_FILENO) 
-	    dup2 (pipe1[0], STDIN_FILENO);
-	
-	if (pipe2[1] != STDOUT_FILENO) 
-	    dup2 (pipe2[1], STDOUT_FILENO);
+
+	dup2 (pipe1[0], STDIN_FILENO);
+	dup2 (pipe2[1], STDOUT_FILENO);
 
 	closelog ();
 
@@ -1494,18 +1510,10 @@ gdm_slave_greeter (void)
 	fcntl(pipe1[1], F_SETFD, fcntl(pipe1[1], F_GETFD, 0) | FD_CLOEXEC);
 	fcntl(pipe2[0], F_SETFD, fcntl(pipe2[0], F_GETFD, 0) | FD_CLOEXEC);
 
-	/* flush our input before we change the piping */
-	fflush (stdin);
+	whack_greeter_fds ();
 
-	if (pipe1[1] != STDOUT_FILENO) {
-	    dup2 (pipe1[1], STDOUT_FILENO);
-	    close (pipe1[1]);
-	}
-	
-	if (pipe2[0] != STDIN_FILENO)  {
-	    dup2 (pipe2[0], STDIN_FILENO);
-	    close (pipe2[0]);
-	}
+	greeter_fd_out = pipe1[1];
+	greeter_fd_in = pipe2[0];
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", (int)pid);
 
@@ -2986,6 +2994,7 @@ gdm_slave_child_handler (int sig)
 		    WEXITSTATUS (status) == DISPLAY_RESTARTGREETER) {
 			greet = FALSE;
 			d->greetpid = 0;
+			whack_greeter_fds ();
 			gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
 			if (restart_greeter_now) {
@@ -2998,6 +3007,8 @@ gdm_slave_child_handler (int sig)
 			gdm_in_signal--;
 			return;
 		}
+
+		whack_greeter_fds ();
 
 		/* just for paranoia's sake */
 		seteuid (0);
@@ -3206,18 +3217,18 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     check_notifies_immediately ++;
 
     if ( ! ve_string_empty (str)) {
-	    gdm_fdprintf (STDOUT_FILENO, "%c%c%s\n", STX, cmd, str);
+	    gdm_fdprintf (greeter_fd_out, "%c%c%s\n", STX, cmd, str);
     } else {
-	    gdm_fdprintf (STDOUT_FILENO, "%c%c\n", STX, cmd);
+	    gdm_fdprintf (greeter_fd_out, "%c%c\n", STX, cmd);
     }
 
     /* Skip random junk that might have accumulated */
     do {
-	    c = gdm_fdgetc (STDIN_FILENO);
+	    c = gdm_fdgetc (greeter_fd_in);
     } while (c != EOF && c != STX);
     
     if (c == EOF ||
-	(buf = gdm_fdgets (STDIN_FILENO)) == NULL) {
+	(buf = gdm_fdgets (greeter_fd_in)) == NULL) {
 	    check_notifies_immediately --;
 	    interrupted = TRUE;
 	    /* things don't seem well with the greeter, it probably died */

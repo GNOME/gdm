@@ -1,3 +1,10 @@
+Mon Aug 05 11:17:20 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: don't use stdout/stdin for communication with the
+	  greeter.  This is first a cleanup and second it may just actually
+	  fix the freebsd issue.  I know I've been promising that in every
+	  release, but without a freebsd box I can't actually test this :)
+
 Mon Aug 05 10:12:57 2002  George Lebl <jirka@5z.com>
 
 	* config/Gnome.in, config/Xsession.in: whack xdm resource reading,
