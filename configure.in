@@ -211,7 +211,10 @@ if test x$enable_ipv6 = xyes; then
       fi
     fi
   fi
+else
+  AC_MSG_RESULT(no)
 fi
+
 dnl ****************************
 dnl    IPv6 checks end here
 dnl ****************************
@@ -636,15 +639,27 @@ else
 fi
 
 # Check for Solaris auditing API
+# Note, Solaris auditing not supported for Solaris 9 or earlier and
+# should not be used on these versions of Solaris if auditing is
+# required.  Solaris auditing is only supported on systems that
+# support the ADT_USER enumeration value.
 #
 AC_MSG_CHECKING(for Solaris auditing API)
-AC_CHECK_LIB(bsm, adt_start_session, [
-		     	AC_DEFINE(HAVE_ADT)
-			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lbsm" ])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <bsm/adt.h>
+adt_user_context = ADT_USER;
+]], [[]])], [ check_sun_audit=yes ], [ check_sun_audit=no ])
+
+if test ${check_sun_audit} = yes
+then
+   AC_DEFINE(HAVE_ADT)
+   AC_MSG_RESULT(yes)
+else
+   AC_MSG_RESULT(no)
+fi
 
 # Check for Solaris logindevperm support
 #
-AC_MSG_CHECKING(for Solaris logindevperm)
 AC_CHECK_LIB(devinfo, di_devperm_login, [
 		     	AC_DEFINE(HAVE_LOGINDEVPERM)
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
