@@ -26,7 +26,12 @@ void		gdm_error_box_full	(GdmDisplay *d,
 					 GtkMessageType type,
 					 const char *error,
 					 const char *details_label,
-					 const char *details_file);
+					 const char *details_file,
+					 /* zero doesn't mean root,
+					    we never wish to run as root,
+					    zero means use the gdm user */
+					 uid_t uid,
+					 gid_t gid);
 
 void		gdm_error_box		(GdmDisplay *d,
 					 GtkMessageType type,

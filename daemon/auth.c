@@ -670,5 +670,11 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
     g_slist_free (keep);
 }
 
+void
+gdm_auth_set_local_auth (GdmDisplay *d)
+{
+	XSetAuthorization ((char *)"MIT-MAGIC-COOKIE-1", (int) strlen ("MIT-MAGIC-COOKIE-1"),
+			   (char *)d->bcookie, (int) 16);
+}
 
 /* EOF */

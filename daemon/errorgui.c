@@ -25,12 +25,14 @@
 #include <gdk/gdkx.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <grp.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include "gdm.h"
 #include "misc.h"
+#include "auth.h"
 
 #include <vicious.h>
 
@@ -40,6 +42,12 @@
 extern char **stored_argv;
 extern int stored_argc;
 extern char *stored_path;
+
+/* Configuration option variables */
+extern gchar *GdmUser;
+extern gchar *GdmServAuthDir;
+extern uid_t GdmUserId;
+extern gid_t GdmGroupId;
 
 static int screenx = 0;
 static int screeny = 0;
@@ -100,71 +108,68 @@ get_screen_size (GdmDisplay *d)
 static void
 center_window (GtkWidget *window)
 {
-	GtkRequisition req;
+	int w, h;
 
-	gtk_widget_size_request (window, &req);
+	/* sanity, should never happen */
+	if (window == NULL)
+		return;
+
+	gtk_window_get_size (GTK_WINDOW (window), &w, &h);
 
 	gtk_window_move (GTK_WINDOW (window),
 			 screenx +
 			 (screenwidth / 2) -
-			 (req.width / 2),
+			 (w / 2),
 			 screeny +
 			 (screenheight / 2) -
-			 (req.height / 2));
+			 (h / 2));
 }
 
 static void
 show_errors (GtkWidget *button, gpointer data)
 {
-	const char *file = data;
-	char *details;
-	FILE *fp;
-	struct stat s;
-	GtkWidget *sw;
-	GtkWidget *label;
-	GtkWidget *dlg = gtk_widget_get_toplevel (button);
-	GtkWidget *parent = button->parent;
-	GString *gs = g_string_new (NULL);
-	gboolean valid_utf8 = TRUE;
+	GtkRequisition req;
+	GtkWidget *textsw = data;
+	GtkWidget *dlg = g_object_get_data (G_OBJECT (button), "dlg");
 
-	fp = NULL;
-	if (stat (file, &s) == 0) {
-		if (S_ISREG (s.st_mode))
-			fp = fopen (file, "r");
-		else {
-			g_string_printf (gs, "%s not a regular file!\n", file);
-		}
-	}
-
-	if (fp != NULL) {
-		char buf[128];
-		int lines = 0;
-		while (fgets (buf, sizeof (buf), fp)) {
-			if ( ! g_utf8_validate (buf, -1, NULL))
-				valid_utf8 = FALSE;
-			g_string_append (gs, buf);
-			/* cap lines at 100 */
-			if (lines ++ > 100) {
-				g_string_append (gs, "\n... File too long to display ...\n");
-				break;
-			}
-		}
-		fclose (fp);
+	if (GTK_TOGGLE_BUTTON (button)->active) {
+		gtk_widget_show (textsw);
 	} else {
-		char  *loc;
-		loc = gdm_locale_to_utf8 (_("%s could not be opened"));
-		g_string_append_printf (gs, loc, file);
-		g_free (loc);
+		gtk_widget_hide (textsw);
 	}
 
-	gtk_widget_destroy (button);
+	/* keep window at the size request size */
+	gtk_widget_size_request (dlg, &req);
+	gtk_window_resize (GTK_WINDOW (dlg), req.width, req.height);
+}
+
+static GtkWidget *
+get_error_text_view (const char *details)
+{
+	GtkWidget *sw;
+	GtkWidget *tv;
+	GtkTextBuffer *buf;
+	GtkTextIter iter;
+
+	tv = gtk_text_view_new ();
+	buf = gtk_text_view_get_buffer (GTK_TEXT_VIEW (tv));
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (tv), FALSE);
+	gtk_text_buffer_create_tag (buf, "foo",
+				    "editable", FALSE,
+				    "family", "monospace",
+				    NULL);
+	gtk_text_buffer_get_iter_at_offset (buf, &iter, 0);
+
+	gtk_text_buffer_insert_with_tags_by_name
+		(buf, &iter,
+		 ve_sure_string (details), -1,
+		 "foo", NULL);
 
 	sw = gtk_scrolled_window_new (NULL, NULL);
 	if (gdk_screen_width () >= 800)
 		gtk_widget_set_size_request (sw, 500, 150);
 	else
 		gtk_widget_set_size_request (sw, 200, 150);
-	gtk_widget_show (sw);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
 					GTK_POLICY_AUTOMATIC,
@@ -173,27 +178,70 @@ show_errors (GtkWidget *button, gpointer data)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
 					     GTK_SHADOW_IN);
 
-	details = g_string_free (gs, FALSE);
+	gtk_container_add (GTK_CONTAINER (sw), tv);
+	gtk_widget_show (tv);
 
-	if ( ! valid_utf8) {
-		char *tmp = gdm_locale_to_utf8 (details);
-		g_free (details);
-		details = tmp;
+	return sw;
+}
+
+static void
+setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_ids)
+{
+	int argc = 1;
+	char **argv;
+
+	closelog ();
+
+	gdm_close_all_descriptors (0 /* from */, closefdexcept /* except */);
+
+	/* No error checking here - if it's messed the best response
+	 * is to ignore & try to continue */
+	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+
+	if (set_ids) {
+		setgid (GdmGroupId);
+		initgroups (GdmUser, GdmGroupId);
+		setuid (GdmUserId);
 	}
 
-	label = gtk_label_new (details);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (sw), label);
-	gtk_widget_show (label);
+	gdm_desetuid ();
 
-	gtk_box_pack_start (GTK_BOX (parent),
-			    sw, TRUE, TRUE, 0);
+	/* restore initial environment */
+	gdm_restoreenv ();
 
-	center_window (dlg);
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+	gnome_setenv ("LOGNAME", GdmUser, TRUE);
+	gnome_setenv ("USER", GdmUser, TRUE);
+	gnome_setenv ("USERNAME", GdmUser, TRUE);
+
+	gnome_setenv ("DISPLAY", d->name, TRUE);
+	gnome_unsetenv ("XAUTHORITY");
+
+	gdm_auth_set_local_auth (d);
+
+	/* sanity env stuff */
+	gnome_setenv ("SHELL", "/bin/sh", TRUE);
+	/* set HOME to /, we don't need no stinking HOME anyway */
+	if (set_ids)
+		gnome_setenv ("HOME", "/", TRUE);
+	else
+		gnome_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
+
+	argv = g_new0 (char *, 2);
+	argv[0] = (char *)name;
+
+	gtk_init (&argc, &argv);
+
+	get_screen_size (d);
 }
 
 void
 gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
-		    const char *details_label, const char *details_file)
+		    const char *details_label, const char *details_file,
+		    uid_t uid, gid_t gid)
 {
 	pid_t pid;
 
@@ -201,48 +249,76 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 	if (pid == 0) {
 		guint sid;
-		int argc = 1;
-		char **argv;
 		GtkWidget *dlg;
 		GtkWidget *button;
 		char *loc;
-		char *display;
-		char *xauthority;
+		char *details;
 
-		closelog ();
+		if (uid != 0) {
+			gid_t groups[1] = { gid };
 
-		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+			setgid (gid);
+			setgroups (1, groups);
+			setuid (uid);
 
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+			gdm_desetuid ();
+		}
 
-		gdm_desetuid ();
+		/* First read the details if they exist */
+		if (details_file) {
+			FILE *fp;
+			struct stat s;
+			int r;
+			gboolean valid_utf8 = TRUE;
+			GString *gs = g_string_new (NULL);
 
-		display = g_strdup (g_getenv ("DISPLAY"));
-		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
+			fp = NULL;
+			IGNORE_EINTR (r = lstat (details_file, &s));
+			if (r == 0) {
+				if (S_ISREG (s.st_mode))
+					fp = fopen (details_file, "r");
+				else {
+					loc = gdm_locale_to_utf8 ("%s not a regular file!\n");
+					g_string_printf (gs, loc, details_file);
+					g_free (loc);
+				}
+			}
+			if (fp != NULL) {
+				char buf[256];
+				int lines = 0;
+				while (fgets (buf, sizeof (buf), fp)) {
+					if ( ! g_utf8_validate (buf, -1, NULL))
+						valid_utf8 = FALSE;
+					g_string_append (gs, buf);
+					/* cap the lines at 500, that's already
+					   a possibility of 128k of crap */
+					if (lines ++ > 500) {
+						loc = gdm_locale_to_utf8 ("\n... File too long to display ...\n");
+						g_string_append (gs, loc);
+						g_free (loc);
+						break;
+					}
+				}
+				fclose (fp);
+			} else {
+				loc = gdm_locale_to_utf8 (_("%s could not be opened"));
+				g_string_append_printf (gs, loc, details_file);
+				g_free (loc);
+			}
 
-		/* restore initial environment */
-		gdm_restoreenv ();
+			details = g_string_free (gs, FALSE);
 
-		if (display != NULL)
-			gnome_setenv ("DISPLAY", display, TRUE);
-		if (xauthority != NULL)
-			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
-		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/bash", TRUE);
-		gnome_setenv ("HOME", "/", TRUE);
+			if ( ! valid_utf8) {
+				char *tmp = gdm_locale_to_utf8 (details);
+				g_free (details);
+				details = tmp;
+			}
+		} else {
+			details = NULL;
+		}
 
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-		argv = g_new0 (char *, 2);
-		argv[0] = "gtk-error-box";
-
-		gtk_init (&argc, &argv);
-
-		get_screen_size (d);
+		setup_dialog (d, "gtk-error-box", -1,
+			      (uid == 0 || uid == GdmUserId) /* set_ids */);
 
 		loc = gdm_locale_to_utf8 (error);
 
@@ -256,19 +332,26 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		if (details_label != NULL) {
+			GtkWidget *text = get_error_text_view (details);
+
 			loc = gdm_locale_to_utf8 (details_label);
-			button = gtk_button_new_with_label (loc);
+			button = gtk_check_button_new_with_label (loc);
 			g_free (loc);
 
 			gtk_widget_show (button);
-			g_signal_connect (button, "clicked",
+			g_object_set_data (G_OBJECT (button), "dlg", dlg);
+			g_signal_connect (button, "toggled",
 					  G_CALLBACK (show_errors),
-					  /* leak? who cares we exit right
-					   * away */
-					  g_strdup (details_file));
+					  text);
 
 			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
-					    button, FALSE, FALSE, 3);
+					    button, FALSE, FALSE, 6);
+			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
+					    text, FALSE, FALSE, 6);
+
+			g_signal_connect_after (dlg, "size_allocate",
+						G_CALLBACK (center_window),
+						NULL);
 		}
 
 		button = gtk_dialog_add_button (GTK_DIALOG (dlg),
@@ -325,7 +408,10 @@ press_ok (GtkWidget *entry, gpointer data)
 void
 gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 {
-	gdm_error_box_full (d, type, error, NULL, NULL);
+	gdm_error_box_full (d, type, error, NULL, NULL,
+			    /* zero for uid/gid doesn't mean root, but
+			       it means to use the gdm user/group */
+			    0, 0);
 }
 
 char *
@@ -342,47 +428,10 @@ gdm_failsafe_question (GdmDisplay *d,
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		guint sid;
-		int argc = 1;
-		char **argv;
 		GtkWidget *dlg, *label, *entry;
 		char *loc;
-		char *display;
-		char *xauthority;
 
-		closelog ();
-
-		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
-
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-		gdm_desetuid ();
-
-		display = g_strdup (g_getenv ("DISPLAY"));
-		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
-
-		/* restore initial environment */
-		gdm_restoreenv ();
-
-		if (display != NULL)
-			gnome_setenv ("DISPLAY", display, TRUE);
-		if (xauthority != NULL)
-			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
-		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/bash", TRUE);
-		gnome_setenv ("HOME", "/", TRUE);
-
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-		argv = g_new0 (char *, 2);
-		argv[0] = "gtk-failsafe-question";
-
-		gtk_init (&argc, &argv);
-
-		get_screen_size (d);
+		setup_dialog (d, "gtk-failsafe-question", p[1], TRUE /* set_ids */);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -392,6 +441,7 @@ gdm_failsafe_question (GdmDisplay *d,
 						   GTK_STOCK_OK,
 						   GTK_RESPONSE_OK,
 						   NULL);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		g_signal_connect (G_OBJECT (dlg), "delete_event",
 				  G_CALLBACK (gtk_true), NULL);
 
@@ -451,17 +501,17 @@ gdm_failsafe_question (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		close (p[1]);
+		IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (NULL);
 
-		bytes = read (p[0], buf, BUFSIZ-1);
+		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
-			close (p[0]);
+			IGNORE_EINTR (close (p[0]));
 			buf[bytes] = '\0';
 			return g_strdup (buf);
 		} 
-		close (p[0]);
+		IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("gdm_failsafe_question: Cannot fork to display error/info box"));
 	}
@@ -481,47 +531,10 @@ gdm_failsafe_yesno (GdmDisplay *d,
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		guint sid;
-		int argc = 1;
-		char **argv;
 		GtkWidget *dlg;
 		char *loc;
-		char *display;
-		char *xauthority;
 
-		closelog ();
-
-		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
-
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-		gdm_desetuid ();
-
-		display = g_strdup (g_getenv ("DISPLAY"));
-		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
-
-		/* restore initial environment */
-		gdm_restoreenv ();
-
-		if (display != NULL)
-			gnome_setenv ("DISPLAY", display, TRUE);
-		if (xauthority != NULL)
-			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
-		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/bash", TRUE);
-		gnome_setenv ("HOME", "/", TRUE);
-
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-		argv = g_new0 (char *, 2);
-		argv[0] = "gtk-failsafe-yesno";
-
-		gtk_init (&argc, &argv);
-
-		get_screen_size (d);
+		setup_dialog (d, "gtk-failsafe-yesno", p[1], TRUE /* set_ids */);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -558,9 +571,9 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		setup_cursor (GDK_LEFT_PTR);
 
 		if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES)
-			gdm_fdprintf (STDOUT_FILENO, "yes\n");
+			gdm_fdprintf (p[1], "yes\n");
 		else
-			gdm_fdprintf (STDOUT_FILENO, "no\n");
+			gdm_fdprintf (p[1], "no\n");
 
 		XSetInputFocus (GDK_DISPLAY (),
 				PointerRoot,
@@ -572,19 +585,19 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		close (p[1]);
+		IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (NULL);
 
-		bytes = read (p[0], buf, BUFSIZ-1);
+		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
-			close (p[0]);
+			IGNORE_EINTR (close (p[0]));
 			if (buf[0] == 'y')
 				return TRUE;
 			else
 				return FALSE;
 		} 
-		close (p[0]);
+		IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("gdm_failsafe_question: Cannot fork to display error/info box"));
 	}

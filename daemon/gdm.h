@@ -623,6 +623,12 @@ enum {
 					  * from a local display we started */
 };
 
+#define IGNORE_EINTR(expr) \
+	do {		\
+		errno = 0;	\
+		expr;		\
+	} while (errno == EINTR);
+
 #endif /* GDM_H */
 
 /* EOF */

@@ -2597,6 +2597,8 @@ gdm_slave_session_start (void)
     time_t session_start_time, end_time; 
     gboolean failsafe = FALSE;
     pid_t pid;
+    uid_t uid;
+    gid_t gid;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
@@ -2610,6 +2612,9 @@ gdm_slave_session_start (void)
 	    gdm_slave_exit (DISPLAY_REMANAGE,
 			    _("gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"), login);
     }
+
+    uid = pwent->pw_uid;
+    gid = pwent->pw_gid;
 
     if (pwent->pw_dir == NULL ||
 	! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
@@ -2897,7 +2902,8 @@ gdm_slave_session_start (void)
 				(home_dir_ok && ! failsafe) ?
 			       	  _("View details (~/.xsession-errors file)") :
 				  NULL,
-				errfile);
+				errfile,
+				uid, gid);
 	    g_free (errfile);
     }
 
