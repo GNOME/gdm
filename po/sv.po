@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2002-05-23 02:06+0200\n"
-"PO-Revision-Date: 2002-05-23 02:06+0200\n"
+"POT-Creation-Date: 2002-05-25 03:35+0200\n"
+"PO-Revision-Date: 2002-05-25 03:35+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -203,6 +203,26 @@ msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
 "%s: %s är större än den av systemadministratören angivna maximala "
 "filstorleken."
+
+#: daemon/gdm-net.c:247
+#, c-format
+msgid "%s: Could not make socket"
+msgstr "%s: Kunde inte skapa uttag (socket)"
+
+#: daemon/gdm-net.c:257
+#, c-format
+msgid "%s: Could not bind socket"
+msgstr "%s: Kunde inte binda uttag (socket)"
+
+#: daemon/gdm-net.c:333
+#, c-format
+msgid "%s: Could not make FIFO"
+msgstr "%s: Kunde inte skapa FIFO"
+
+#: daemon/gdm-net.c:341
+#, c-format
+msgid "%s: Could not open FIFO"
+msgstr "%s: Kunde inte öppna FIFO"
 
 #: daemon/gdm.c:214
 #, c-format
@@ -618,26 +638,6 @@ msgid ""
 msgstr ""
 "Begärda servern %s är inte tillåten för användning med flexibla servrar, "
 "använder standardserver."
-
-#: daemon/gdm-net.c:247
-#, c-format
-msgid "%s: Could not make socket"
-msgstr "%s: Kunde inte skapa uttag (socket)"
-
-#: daemon/gdm-net.c:257
-#, c-format
-msgid "%s: Could not bind socket"
-msgstr "%s: Kunde inte binda uttag (socket)"
-
-#: daemon/gdm-net.c:333
-#, c-format
-msgid "%s: Could not make FIFO"
-msgstr "%s: Kunde inte skapa FIFO"
-
-#: daemon/gdm-net.c:341
-#, c-format
-msgid "%s: Could not open FIFO"
-msgstr "%s: Kunde inte öppna FIFO"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:439
@@ -1226,7 +1226,7 @@ msgid "Please enter your username"
 msgstr "Ange ditt användarnamn"
 
 #: daemon/verify-crypt.c:72 daemon/verify-pam.c:302 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3173
+#: gui/gdmlogin.c:3173 gui/greeter/themes/circles/circles.xml.in.h:6
 msgid "Username:"
 msgstr "Användarnamn:"
 
@@ -1555,97 +1555,73 @@ msgstr "gdm_xdmcp_run: Inget XDMCP-stöd"
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close: Inget XDMCP-stöd"
 
-#: gui/gdmchooser.c:72
-msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
-msgstr "Vänta: söker igenom det lokala nätverket för XDMCP-värdar..."
+#: gui/gdmXnestchooser.c:99
+msgid "Xnest command line"
+msgstr "Xnest-kommandorad"
 
-#: gui/gdmchooser.c:73
-msgid "No serving hosts were found."
-msgstr "Inga betjänande värdar hittades."
+#: gui/gdmXnestchooser.c:99
+msgid "STRING"
+msgstr "STRÄNG"
 
-#: gui/gdmchooser.c:74
-msgid "Choose a host to connect to from the selection below."
-msgstr "Välj en värd att koppla upp mot från alternativen nedan."
+#: gui/gdmXnestchooser.c:100
+msgid "Extra options for Xnest"
+msgstr "Extra flaggor för Xnest"
 
-#: gui/gdmchooser.c:753
-#, c-format
-msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
-msgstr "gdm_chooser_parse_config: Ingen konfigurationsfil: %s. Avbryter."
+#: gui/gdmXnestchooser.c:100
+msgid "OPTIONS"
+msgstr "FLAGGOR"
 
-#: gui/gdmchooser.c:868
+#: gui/gdmXnestchooser.c:101
+msgid "Just run Xnest, no query (no chooser)"
+msgstr "Kör bara Xnest, ingen undersökning (ingen väljare)"
+
+#: gui/gdmXnestchooser.c:102
+msgid "Do direct query instead of indirect (chooser)"
+msgstr "Gör direkt undersökning istället för indirekt (väljare)"
+
+#: gui/gdmXnestchooser.c:103
+msgid "Run broadcast instead of indirect (chooser)"
+msgstr "Kör broadcast istället för indirekt (väljare)"
+
+#: gui/gdmXnestchooser.c:104
+msgid "Run in background"
+msgstr "Kör i bakgrunden"
+
+#: gui/gdmXnestchooser.c:105
+msgid "Don't check for running gdm"
+msgstr "Kontrollera inte om gdm kör"
+
+#: gui/gdmXnestchooser.c:221
 msgid ""
-"The main area of this application shows the hosts on the local network that "
-"have \"XDMCP\" enabled. This allows users to login remotely to other "
-"machines as if they were logged on using the console.\n"
-"\n"
-"You can rescan the network for new hosts by clicking \"Refresh\".  When you "
-"have selected a host click \"Connect\" to open a session to that machine."
+"Xnest doesn't exist.\n"
+"Please ask your system administrator\n"
+"to install it."
 msgstr ""
-"Huvudutrymmet i detta program visar värdarna på det lokala nätverket som har "
-"\"XDMCP\" påslaget. Detta låter användare logga in på andra maskiner över "
-"nätverket på samma sätt som om de var inloggade lokalt på konsollen.\n"
-"\n"
-"Du kan genomsöka nätverket och leta efter nya värdar genom att klicka på "
-"\"Genomsök igen\". När du har valt en värd kan du klicka på \"Anslut\" för "
-"att öppna en session med den maskinen."
+"Xnest finns inte.\n"
+"Be din systemadministratör installera det."
 
-#: gui/gdmchooser.c:900
-#, c-format
-msgid "Can't open default host icon: %s"
-msgstr "Kan inte öppna standardvärdikon: %s"
-
-#: gui/gdmchooser.c:949
-msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr "gdm_signals_init: Fel vid inställning av HUP-signalhanteraren"
-
-#: gui/gdmchooser.c:952
-msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr "gdm_signals_init: Fel vid inställning av INT-signalhanteraren"
-
-#: gui/gdmchooser.c:955
-msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr "gdm_signals_init: Fel vid inställning av TERM-signalhanteraren"
-
-#: gui/gdmchooser.c:963 gui/gdmlogin.c:4020 gui/greeter/greeter.c:811
-msgid "Could not set signal mask!"
-msgstr "Kunde inte sätta signalmask!"
-
-#: gui/gdmchooser.c:969
-msgid "Socket for xdm communication"
-msgstr "Uttag (socket) för xdm-kommunikation"
-
-#: gui/gdmchooser.c:969
-msgid "SOCKET"
-msgstr "UTTAG"
-
-#: gui/gdmchooser.c:972
-msgid "Client address to return in response to xdm"
-msgstr "Klientadress att returnera som svar till xdm"
-
-#: gui/gdmchooser.c:972
-msgid "ADDRESS"
-msgstr "ADRESS"
-
-#: gui/gdmchooser.c:975
-msgid "Connection type to return in response to xdm"
-msgstr "Anslutningstyp att returnera som svar till xdm"
-
-#: gui/gdmchooser.c:975
-msgid "TYPE"
-msgstr "TYP"
-
-#: gui/gdmchooser.c:1090
-#, c-format
+#: gui/gdmXnestchooser.c:240
 msgid ""
-"The chooser version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Indirect XDMCP is not enabled,\n"
+"please ask your system administrator to enable it\n"
+"in the GDM configurator program."
 msgstr ""
-"Väljarversionen (%s) passar inte med demonversionen (%s).\n"
-"Du har troligtvis nyss uppgraderat gdm.\n"
-"Starta om gdm-demonen eller datorn."
+"Indirekt XDMCP är inte aktiverat.Be din systemadministratör att aktivera "
+"det\n"
+"i GDM-konfigurationsprogrammet."
 
-#. EOF
+#: gui/gdmXnestchooser.c:263 gui/gdmcomm.c:380
+msgid ""
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
+msgstr ""
+"GDM kör inte.\n"
+"Be din systemadministratör att starta den."
+
+#: gui/gdmXnestchooser.c:274
+msgid "Could not find a free display number"
+msgstr "Kunde inte hitta ett ledigt displaynummer"
+
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -1700,13 +1676,95 @@ msgstr ""
 msgid "Information"
 msgstr "Information"
 
-#: gui/gdmcomm.c:380 gui/gdmXnestchooser.c:263
+#: gui/gdmchooser.c:72
+msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+msgstr "Vänta: söker igenom det lokala nätverket för XDMCP-värdar..."
+
+#: gui/gdmchooser.c:73
+msgid "No serving hosts were found."
+msgstr "Inga betjänande värdar hittades."
+
+#: gui/gdmchooser.c:74
+msgid "Choose a host to connect to from the selection below."
+msgstr "Välj en värd att koppla upp mot från alternativen nedan."
+
+#: gui/gdmchooser.c:753
+#, c-format
+msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
+msgstr "gdm_chooser_parse_config: Ingen konfigurationsfil: %s. Avbryter."
+
+#: gui/gdmchooser.c:868
 msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
+"\n"
+"You can rescan the network for new hosts by clicking \"Refresh\".  When you "
+"have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
-"GDM kör inte.\n"
-"Be din systemadministratör att starta den."
+"Huvudutrymmet i detta program visar värdarna på det lokala nätverket som har "
+"\"XDMCP\" påslaget. Detta låter användare logga in på andra maskiner över "
+"nätverket på samma sätt som om de var inloggade lokalt på konsollen.\n"
+"\n"
+"Du kan genomsöka nätverket och leta efter nya värdar genom att klicka på "
+"\"Genomsök igen\". När du har valt en värd kan du klicka på \"Anslut\" för "
+"att öppna en session med den maskinen."
+
+#: gui/gdmchooser.c:900
+#, c-format
+msgid "Can't open default host icon: %s"
+msgstr "Kan inte öppna standardvärdikon: %s"
+
+#: gui/gdmchooser.c:949
+msgid "gdm_signals_init: Error setting up HUP signal handler"
+msgstr "gdm_signals_init: Fel vid inställning av HUP-signalhanteraren"
+
+#: gui/gdmchooser.c:952
+msgid "gdm_signals_init: Error setting up INT signal handler"
+msgstr "gdm_signals_init: Fel vid inställning av INT-signalhanteraren"
+
+#: gui/gdmchooser.c:955
+msgid "gdm_signals_init: Error setting up TERM signal handler"
+msgstr "gdm_signals_init: Fel vid inställning av TERM-signalhanteraren"
+
+#: gui/gdmchooser.c:963 gui/gdmlogin.c:4020 gui/greeter/greeter.c:817
+msgid "Could not set signal mask!"
+msgstr "Kunde inte sätta signalmask!"
+
+#: gui/gdmchooser.c:969
+msgid "Socket for xdm communication"
+msgstr "Uttag (socket) för xdm-kommunikation"
+
+#: gui/gdmchooser.c:969
+msgid "SOCKET"
+msgstr "UTTAG"
+
+#: gui/gdmchooser.c:972
+msgid "Client address to return in response to xdm"
+msgstr "Klientadress att returnera som svar till xdm"
+
+#: gui/gdmchooser.c:972
+msgid "ADDRESS"
+msgstr "ADRESS"
+
+#: gui/gdmchooser.c:975
+msgid "Connection type to return in response to xdm"
+msgstr "Anslutningstyp att returnera som svar till xdm"
+
+#: gui/gdmchooser.c:975
+msgid "TYPE"
+msgstr "TYP"
+
+#: gui/gdmchooser.c:1090
+#, c-format
+msgid ""
+"The chooser version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+"Väljarversionen (%s) passar inte med demonversionen (%s).\n"
+"Du har troligtvis nyss uppgraderat gdm.\n"
+"Starta om gdm-demonen eller datorn."
 
 #: gui/gdmcomm.c:391 gui/gdmcomm.c:406 gui/gdmcomm.c:409
 #: gui/gdmflexiserver.c:239
@@ -1770,326 +1828,13 @@ msgstr ""
 msgid "Unknown error occured."
 msgstr "Ett okänt fel inträffade."
 
-#: gui/gdmsetup.c:106
-msgid ""
-"An error occured while trying to contact the login screens.  Not all updates "
-"may have taken effect."
-msgstr ""
-"Ett fel inträffade vid försök att kontakta inloggningsskärmarna. Alla "
-"uppdateringar behöver inte ha börjat gälla."
-
-#: gui/gdmsetup.c:848 gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
-#: gui/gdmsetup-strings.c:42
-msgid "Standard greeter"
-msgstr "Standardhälsare"
-
-#: gui/gdmsetup.c:850 gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
-#: gui/gdmsetup-strings.c:49
-msgid "Graphical greeter"
-msgstr "Grafisk hälsare"
-
-#: gui/gdmsetup.c:1323
-msgid "Archive is not of a subdirectory"
-msgstr "Arkivet är inte av en underkatalog"
-
-#: gui/gdmsetup.c:1331
-msgid "Archive is not of a single subdirectory"
-msgstr "Arkivet är inte av en ensam underkatalog"
-
-#: gui/gdmsetup.c:1346 gui/gdmsetup.c:1425
-msgid "File not a tar.gz or tar archive"
-msgstr "Filen är ingen tar.gz-fil eller tararkiv"
-
-#: gui/gdmsetup.c:1348
-msgid "Archive does not include a GdmGreeterTheme.info file"
-msgstr "Arkivet innehåller ingen GdmGreeterTheme.info-fil"
-
-#: gui/gdmsetup.c:1370
-msgid "File does not exist"
-msgstr "Filen finns inte."
-
-#: gui/gdmsetup.c:1478
-msgid "No file selected"
-msgstr "Ingen fil är vald"
-
-#: gui/gdmsetup.c:1504
-#, c-format
-msgid ""
-"Not a theme archive\n"
-"Details: %s"
-msgstr ""
-"Inte ett temaarkiv\n"
-"Detaljer: %s"
-
-#: gui/gdmsetup.c:1526
-#, c-format
-msgid ""
-"Theme directory '%s' seems to be already installed, install again anyway?"
-msgstr ""
-"Temakatalogen \"%s\" verkar redan vara installerad. Installera igen ändå?"
-
-#: gui/gdmsetup.c:1571
-msgid "Some error occured when installing the theme"
-msgstr "Ett fel inträffade då temat skulle installeras"
-
-#: gui/gdmsetup.c:1616
-msgid "Select new theme archive to install"
-msgstr "Välj nytt temaarkiv att installera"
-
-#. This is the temporary help dialog
-#: gui/gdmsetup.c:1752
-#, c-format
-msgid ""
-"This configuration window changes settings for the GDM daemon, which is the "
-"graphical login screen for GNOME.  Changes that you make will take effect "
-"immediately.\n"
-"\n"
-"Note that not all configuration options are listed here.  You may want to "
-"edit %s if you cannot find what you are looking for."
-msgstr ""
-"Detta konfigurationsfönster ändrar inställningar för GDM-demonen, som är den "
-"grafiska inloggningsskärmen för GNOME. Ändringar som du gör kommer att börja "
-"gälla omedelbart.\n"
-"\n"
-"Observera att inte alla konfigurationsalternativ visas här. Du kanske vill "
-"redigera %s om du inte kan hitta det du letar efter."
-
-#: gui/gdmsetup.c:1963
-msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr "Du måste vara superanvändaren (root) för att kunna konfigurera GDM.\n"
-
-#. EOF
-#: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
-"Ett grafiskt program för att konfigurera GNOME:s displayhanterare (GDM)"
-
-#: gui/gdmsetup.desktop.in.h:2
-msgid "GDM Configurator"
-msgstr "GDM-konfigurationsprogram"
-
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: gui/gdmsetup-strings.c:7
-msgid "GDM Setup"
-msgstr "GDM-konfiguration"
-
-#: gui/gdmsetup-strings.c:8
-msgid "L_ocal: "
-msgstr "L_okal: "
-
-#: gui/gdmsetup-strings.c:9
-msgid "_Remote: "
-msgstr "_Fjärr: "
-
-#: gui/gdmsetup-strings.c:14
-msgid "Greeter"
-msgstr "Hälsare"
-
-#: gui/gdmsetup-strings.c:15
-msgid "_Login a user automatically on first bootup"
-msgstr "_Logga in en användare automatiskt vid första uppstarten"
-
-#: gui/gdmsetup-strings.c:16
-msgid "_Automatic login username:"
-msgstr "_Automatisk inloggning av användarnamn:"
-
-#: gui/gdmsetup-strings.c:17 gui/gdmsetup-strings.c:22
-#: gui/gdmsetup-strings.c:25 gui/gdmsetup-strings.c:28
-#: gui/gdmsetup-strings.c:37
-msgid "*"
-msgstr "*"
-
-#: gui/gdmsetup-strings.c:18
-msgid "Automatic login"
-msgstr "Automatisk inloggning"
-
-#: gui/gdmsetup-strings.c:19
-msgid "Login a user automa_tically after a specified number of seconds"
-msgstr "Logga in en användare automa_tiskt efter det angivna antalet sekunder"
-
-#: gui/gdmsetup-strings.c:20
-msgid "Timed login us_ername:"
-msgstr "Tidsbaserad inloggning av anv_ändarnamn:"
-
-#: gui/gdmsetup-strings.c:21
-msgid "_Seconds before login:"
-msgstr "_Sekunder innan inloggning:"
-
-#: gui/gdmsetup-strings.c:23
-msgid "Timed login"
-msgstr "Tidsbaserad inloggning"
-
-#: gui/gdmsetup-strings.c:24
-msgid "General"
-msgstr "Allmänt"
-
-#: gui/gdmsetup-strings.c:26
-msgid "_Welcome string: "
-msgstr "_Välkomstmeddelande: "
-
-#: gui/gdmsetup-strings.c:27
-msgid "Welcome string: "
-msgstr "Välkomstmeddelande: "
-
-#: gui/gdmsetup-strings.c:29
-msgid "Logo"
-msgstr "Logotyp"
-
-#: gui/gdmsetup-strings.c:30
-msgid "Always use 24 hour cloc_k format"
-msgstr "Använd alltid 24-timmars_klocka"
-
-#: gui/gdmsetup-strings.c:31
-msgid "Show choosable user images (_face browser)"
-msgstr "Visa väljbara användarbilder (ansiktsblä_ddrare)"
-
-#: gui/gdmsetup-strings.c:32
-msgid "Miscellaneous"
-msgstr "Diverse"
-
-#: gui/gdmsetup-strings.c:33
-msgid "_No background"
-msgstr "_Ingen bakgrund"
-
-#: gui/gdmsetup-strings.c:34
-msgid "_Image"
-msgstr "_Bild"
-
-#: gui/gdmsetup-strings.c:35
-msgid "Co_lor"
-msgstr "F_ärg"
-
-#: gui/gdmsetup-strings.c:36
-msgid "_Scale background image to fit"
-msgstr "_Skala bakgrundsbilden så att den passar"
-
-#: gui/gdmsetup-strings.c:38
-msgid "_Only color on remote displays"
-msgstr "_Endast färg på fjärrdisplayer"
-
-#: gui/gdmsetup-strings.c:39
-msgid "_Background color: "
-msgstr "Bak_grundsfärg: "
-
-#: gui/gdmsetup-strings.c:40
-msgid "Pick a color"
-msgstr "Välj en färg"
-
-#: gui/gdmsetup-strings.c:41
-msgid "Background"
-msgstr "Bakgrund"
-
-#: gui/gdmsetup-strings.c:43
-msgid "<b>Preview:</b>"
-msgstr "<b>Förhandsvisning:</b>"
-
-#: gui/gdmsetup-strings.c:44
-msgid "No screenshot available"
-msgstr "Ingen skärmdump tillgänglig"
-
-#: gui/gdmsetup-strings.c:45
-msgid "<b>Description:</b>"
-msgstr "<b>Beskrivning:</b>"
-
-#: gui/gdmsetup-strings.c:46
-msgid "<b>Copyright:</b>"
-msgstr "<b>Copyright:</b>"
-
-#: gui/gdmsetup-strings.c:47
-msgid "<b>Author:</b>"
-msgstr "<b>Författare:</b>"
-
-#: gui/gdmsetup-strings.c:48
-msgid "_Install new theme"
-msgstr "_Installera nytt tema"
-
-#: gui/gdmsetup-strings.c:50
-msgid "Allow _root to login with GDM"
-msgstr "Tillåt att _root loggar in med GDM"
-
-#: gui/gdmsetup-strings.c:51
-msgid "Allow root to login r_emotely with GDM"
-msgstr "Tillåt att root gör _fjärrinloggningar med GDM"
-
-#: gui/gdmsetup-strings.c:52
-msgid "Allow remote _timed logins"
-msgstr "Tillåt _tidsbaserade inloggningar över nätverket"
-
-#: gui/gdmsetup-strings.c:53
-msgid "Show _system menu"
-msgstr "Visa _systemmeny"
-
-#: gui/gdmsetup-strings.c:54
-msgid "Allow c_onfiguration from the login screen"
-msgstr "Tillåt k_onfiguration från systemmenyn"
-
-#: gui/gdmsetup-strings.c:55
-msgid "Retry _delay (seconds) :"
-msgstr "För_dröjning (sekunder):"
-
-#: gui/gdmsetup-strings.c:56
-msgid "Options"
-msgstr "Alternativ"
-
-#: gui/gdmsetup-strings.c:57
-msgid "Security"
-msgstr "Säkerhet"
-
-#: gui/gdmsetup-strings.c:58
-msgid ""
-"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
-"GDM with the XDMCP libraries."
-msgstr ""
-"Inget XDMCP-stöd i binärfilen. För att slå på XDMCP-stöd måste du kompilera "
-"om GDM med XDMCP-biblioteken."
-
-#: gui/gdmsetup-strings.c:59
-msgid "Honour _indirect requests"
-msgstr "Ta emot _indirekta förfrågningar"
-
-#: gui/gdmsetup-strings.c:60
-msgid "Listen on UDP port: "
-msgstr "Lyssna på UDP-port: "
-
-#: gui/gdmsetup-strings.c:61
-msgid "Maximum pending requests:"
-msgstr "Maximalt antal väntande förfrågningar:"
-
-#: gui/gdmsetup-strings.c:62
-msgid "Max pending indirect requests:"
-msgstr "Maximalt antal väntande indirekta förfrågningar:"
-
-#: gui/gdmsetup-strings.c:63
-msgid "Maximum remote sessions:"
-msgstr "Maximalt antal fjärrsessioner:"
-
-#: gui/gdmsetup-strings.c:64
-msgid "Maximum wait time:"
-msgstr "Maximal väntetid:"
-
-#: gui/gdmsetup-strings.c:65
-msgid "Maximum indirect wait time:"
-msgstr "Maximal indirekt väntetid:"
-
-#: gui/gdmsetup-strings.c:66
-msgid "Displays per host:"
-msgstr "Displayer per värd:"
-
-#: gui/gdmsetup-strings.c:67
-msgid "Ping interval (minutes):"
-msgstr "Pingintervall (minuter):"
-
-#: gui/gdmsetup-strings.c:68
-msgid "Enable _XDMCP"
-msgstr "Använd _XDMCP"
-
-#: gui/gdmsetup-strings.c:69
-msgid "XDMCP"
-msgstr "XDMCP"
+#: gui/gdmflexiserver-xnest.desktop.in.h:1
+msgid "Log in as another user inside a nested window"
+msgstr "Logga in som en annan användare inuti ett nästlat fönster"
+
+#: gui/gdmflexiserver-xnest.desktop.in.h:2
+msgid "New login in a nested window"
+msgstr "Ny inloggning i ett nästlat fönster"
 
 #: gui/gdmflexiserver.c:129
 msgid "Choose server"
@@ -2150,14 +1895,6 @@ msgstr "Logga in som en annan användare utan att logga ut"
 #: gui/gdmflexiserver.desktop.in.h:2
 msgid "New login"
 msgstr "Ny inloggning"
-
-#: gui/gdmflexiserver-xnest.desktop.in.h:1
-msgid "Log in as another user inside a nested window"
-msgstr "Logga in som en annan användare inuti ett nästlat fönster"
-
-#: gui/gdmflexiserver-xnest.desktop.in.h:2
-msgid "New login in a nested window"
-msgstr "Ny inloggning i ett nästlat fönster"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:41
@@ -2445,15 +2182,15 @@ msgstr ""
 "\n"
 "Du kommer troligtvis inte att kunna logga in heller."
 
-#: gui/gdmlogin.c:746 gui/greeter/greeter_system.c:18
+#: gui/gdmlogin.c:746 gui/greeter/greeter_system.c:40
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Vill du verkligen starta om datorn?"
 
-#: gui/gdmlogin.c:758 gui/greeter/greeter_system.c:29
+#: gui/gdmlogin.c:758 gui/greeter/greeter_system.c:51
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Är du säker på att du vill stänga av datorn?"
 
-#: gui/gdmlogin.c:769 gui/greeter/greeter_system.c:39
+#: gui/gdmlogin.c:769 gui/greeter/greeter_system.c:61
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Vill du verkligen försätta datorn i viloläge?"
 
@@ -2703,8 +2440,8 @@ msgstr "_Koppla från"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan inte öppna DefaultImage: %s. Inaktiverar ansiktsbläddraren!"
 
-#: gui/gdmlogin.c:3878 gui/gdmlogin.c:3905 gui/greeter/greeter.c:462
-#: gui/greeter/greeter.c:489
+#: gui/gdmlogin.c:3878 gui/gdmlogin.c:3905 gui/greeter/greeter.c:464
+#: gui/greeter/greeter.c:491
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -2715,12 +2452,12 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3911 gui/gdmlogin.c:3953 gui/greeter/greeter.c:495
-#: gui/greeter/greeter.c:538
+#: gui/gdmlogin.c:3911 gui/gdmlogin.c:3953 gui/greeter/greeter.c:497
+#: gui/greeter/greeter.c:540
 msgid "Reboot"
 msgstr "Starta om"
 
-#: gui/gdmlogin.c:3945 gui/greeter/greeter.c:530
+#: gui/gdmlogin.c:3945 gui/greeter/greeter.c:532
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -2731,19 +2468,19 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3951 gui/greeter/greeter.c:536
+#: gui/gdmlogin.c:3951 gui/greeter/greeter.c:538
 msgid "Restart"
 msgstr "Starta om gdm"
 
-#: gui/gdmlogin.c:3992 gui/greeter/greeter.c:791
+#: gui/gdmlogin.c:3992 gui/greeter/greeter.c:797
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Fel vid inställning av HUP-signalhanteraren"
 
-#: gui/gdmlogin.c:4000 gui/greeter/greeter.c:799
+#: gui/gdmlogin.c:4000 gui/greeter/greeter.c:805
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Fel vid inställning av INT-signalhanteraren"
 
-#: gui/gdmlogin.c:4003 gui/greeter/greeter.c:802
+#: gui/gdmlogin.c:4003 gui/greeter/greeter.c:808
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fel vid inställning av TERM-signalhanteraren"
 
@@ -2751,7 +2488,7 @@ msgstr "main: Fel vid inställning av TERM-signalhanteraren"
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Fel vid inställning av CHLD-signalhanteraren"
 
-#: gui/gdmlogin.c:4085 gui/greeter/greeter.c:935
+#: gui/gdmlogin.c:4085 gui/greeter/greeter.c:941
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -2764,7 +2501,7 @@ msgstr ""
 "använda, men du bör logga in och korrigera gdm-\n"
 "konfigurationen."
 
-#: gui/gdmlogin.c:4106 gui/greeter/greeter.c:957
+#: gui/gdmlogin.c:4106 gui/greeter/greeter.c:963
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -2774,7 +2511,7 @@ msgstr ""
 "rad för inloggningsfönstret, och därför körde jag\n"
 "standardkommandot. Fixa din konfiguration."
 
-#: gui/gdmlogin.c:4128 gui/greeter/greeter.c:980
+#: gui/gdmlogin.c:4128 gui/greeter/greeter.c:986
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -2852,72 +2589,334 @@ msgstr ""
 msgid "Login Photo"
 msgstr "Inloggningsfoto"
 
-#: gui/gdmXnestchooser.c:99
-msgid "Xnest command line"
-msgstr "Xnest-kommandorad"
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: gui/gdmsetup-strings.c:7
+msgid "GDM Setup"
+msgstr "GDM-konfiguration"
 
-#: gui/gdmXnestchooser.c:99
-msgid "STRING"
-msgstr "STRÄNG"
+#: gui/gdmsetup-strings.c:8
+msgid "L_ocal: "
+msgstr "L_okal: "
 
-#: gui/gdmXnestchooser.c:100
-msgid "Extra options for Xnest"
-msgstr "Extra flaggor för Xnest"
+#: gui/gdmsetup-strings.c:9
+msgid "_Remote: "
+msgstr "_Fjärr: "
 
-#: gui/gdmXnestchooser.c:100
-msgid "OPTIONS"
-msgstr "FLAGGOR"
+#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
+#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:848
+msgid "Standard greeter"
+msgstr "Standardhälsare"
 
-#: gui/gdmXnestchooser.c:101
-msgid "Just run Xnest, no query (no chooser)"
-msgstr "Kör bara Xnest, ingen undersökning (ingen väljare)"
+#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
+#: gui/gdmsetup-strings.c:49 gui/gdmsetup.c:850
+msgid "Graphical greeter"
+msgstr "Grafisk hälsare"
 
-#: gui/gdmXnestchooser.c:102
-msgid "Do direct query instead of indirect (chooser)"
-msgstr "Gör direkt undersökning istället för indirekt (väljare)"
+#: gui/gdmsetup-strings.c:14
+msgid "Greeter"
+msgstr "Hälsare"
 
-#: gui/gdmXnestchooser.c:103
-msgid "Run broadcast instead of indirect (chooser)"
-msgstr "Kör broadcast istället för indirekt (väljare)"
+#: gui/gdmsetup-strings.c:15
+msgid "_Login a user automatically on first bootup"
+msgstr "_Logga in en användare automatiskt vid första uppstarten"
 
-#: gui/gdmXnestchooser.c:104
-msgid "Run in background"
-msgstr "Kör i bakgrunden"
+#: gui/gdmsetup-strings.c:16
+msgid "_Automatic login username:"
+msgstr "_Automatisk inloggning av användarnamn:"
 
-#: gui/gdmXnestchooser.c:105
-msgid "Don't check for running gdm"
-msgstr "Kontrollera inte om gdm kör"
+#: gui/gdmsetup-strings.c:17 gui/gdmsetup-strings.c:22
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup-strings.c:28
+#: gui/gdmsetup-strings.c:37
+msgid "*"
+msgstr "*"
 
-#: gui/gdmXnestchooser.c:221
+#: gui/gdmsetup-strings.c:18
+msgid "Automatic login"
+msgstr "Automatisk inloggning"
+
+#: gui/gdmsetup-strings.c:19
+msgid "Login a user automa_tically after a specified number of seconds"
+msgstr "Logga in en användare automa_tiskt efter det angivna antalet sekunder"
+
+#: gui/gdmsetup-strings.c:20
+msgid "Timed login us_ername:"
+msgstr "Tidsbaserad inloggning av anv_ändarnamn:"
+
+#: gui/gdmsetup-strings.c:21
+msgid "_Seconds before login:"
+msgstr "_Sekunder innan inloggning:"
+
+#: gui/gdmsetup-strings.c:23
+msgid "Timed login"
+msgstr "Tidsbaserad inloggning"
+
+#: gui/gdmsetup-strings.c:24
+msgid "General"
+msgstr "Allmänt"
+
+#: gui/gdmsetup-strings.c:26
+msgid "_Welcome string: "
+msgstr "_Välkomstmeddelande: "
+
+#: gui/gdmsetup-strings.c:27
+msgid "Welcome string: "
+msgstr "Välkomstmeddelande: "
+
+#: gui/gdmsetup-strings.c:29
+msgid "Logo"
+msgstr "Logotyp"
+
+#: gui/gdmsetup-strings.c:30
+msgid "Always use 24 hour cloc_k format"
+msgstr "Använd alltid 24-timmars_klocka"
+
+#: gui/gdmsetup-strings.c:31
+msgid "Show choosable user images (_face browser)"
+msgstr "Visa väljbara användarbilder (ansiktsblä_ddrare)"
+
+#: gui/gdmsetup-strings.c:32
+msgid "Miscellaneous"
+msgstr "Diverse"
+
+#: gui/gdmsetup-strings.c:33
+msgid "_No background"
+msgstr "_Ingen bakgrund"
+
+#: gui/gdmsetup-strings.c:34
+msgid "_Image"
+msgstr "_Bild"
+
+#: gui/gdmsetup-strings.c:35
+msgid "Co_lor"
+msgstr "F_ärg"
+
+#: gui/gdmsetup-strings.c:36
+msgid "_Scale background image to fit"
+msgstr "_Skala bakgrundsbilden så att den passar"
+
+#: gui/gdmsetup-strings.c:38
+msgid "_Only color on remote displays"
+msgstr "_Endast färg på fjärrdisplayer"
+
+#: gui/gdmsetup-strings.c:39
+msgid "_Background color: "
+msgstr "Bak_grundsfärg: "
+
+#: gui/gdmsetup-strings.c:40
+msgid "Pick a color"
+msgstr "Välj en färg"
+
+#: gui/gdmsetup-strings.c:41
+msgid "Background"
+msgstr "Bakgrund"
+
+#: gui/gdmsetup-strings.c:43
+msgid "<b>Preview:</b>"
+msgstr "<b>Förhandsvisning:</b>"
+
+#: gui/gdmsetup-strings.c:44
+msgid "No screenshot available"
+msgstr "Ingen skärmdump tillgänglig"
+
+#: gui/gdmsetup-strings.c:45
+msgid "<b>Description:</b>"
+msgstr "<b>Beskrivning:</b>"
+
+#: gui/gdmsetup-strings.c:46
+msgid "<b>Copyright:</b>"
+msgstr "<b>Copyright:</b>"
+
+#: gui/gdmsetup-strings.c:47
+msgid "<b>Author:</b>"
+msgstr "<b>Författare:</b>"
+
+#: gui/gdmsetup-strings.c:48
+msgid "_Install new theme"
+msgstr "_Installera nytt tema"
+
+#: gui/gdmsetup-strings.c:50
+msgid "Allow _root to login with GDM"
+msgstr "Tillåt att _root loggar in med GDM"
+
+#: gui/gdmsetup-strings.c:51
+msgid "Allow root to login r_emotely with GDM"
+msgstr "Tillåt att root gör _fjärrinloggningar med GDM"
+
+#: gui/gdmsetup-strings.c:52
+msgid "Allow remote _timed logins"
+msgstr "Tillåt _tidsbaserade inloggningar över nätverket"
+
+#: gui/gdmsetup-strings.c:53
+msgid "Show _system menu"
+msgstr "Visa _systemmeny"
+
+#: gui/gdmsetup-strings.c:54
+msgid "Allow c_onfiguration from the login screen"
+msgstr "Tillåt k_onfiguration från systemmenyn"
+
+#: gui/gdmsetup-strings.c:55
+msgid "Retry _delay (seconds) :"
+msgstr "För_dröjning (sekunder):"
+
+#: gui/gdmsetup-strings.c:56
+msgid "Options"
+msgstr "Alternativ"
+
+#: gui/gdmsetup-strings.c:57
+msgid "Security"
+msgstr "Säkerhet"
+
+#: gui/gdmsetup-strings.c:58
 msgid ""
-"Xnest doesn't exist.\n"
-"Please ask your system administrator\n"
-"to install it."
+"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
+"GDM with the XDMCP libraries."
 msgstr ""
-"Xnest finns inte.\n"
-"Be din systemadministratör installera det."
+"Inget XDMCP-stöd i binärfilen. För att slå på XDMCP-stöd måste du kompilera "
+"om GDM med XDMCP-biblioteken."
 
-#: gui/gdmXnestchooser.c:240
+#: gui/gdmsetup-strings.c:59
+msgid "Honour _indirect requests"
+msgstr "Ta emot _indirekta förfrågningar"
+
+#: gui/gdmsetup-strings.c:60
+msgid "Listen on UDP port: "
+msgstr "Lyssna på UDP-port: "
+
+#: gui/gdmsetup-strings.c:61
+msgid "Maximum pending requests:"
+msgstr "Maximalt antal väntande förfrågningar:"
+
+#: gui/gdmsetup-strings.c:62
+msgid "Max pending indirect requests:"
+msgstr "Maximalt antal väntande indirekta förfrågningar:"
+
+#: gui/gdmsetup-strings.c:63
+msgid "Maximum remote sessions:"
+msgstr "Maximalt antal fjärrsessioner:"
+
+#: gui/gdmsetup-strings.c:64
+msgid "Maximum wait time:"
+msgstr "Maximal väntetid:"
+
+#: gui/gdmsetup-strings.c:65
+msgid "Maximum indirect wait time:"
+msgstr "Maximal indirekt väntetid:"
+
+#: gui/gdmsetup-strings.c:66
+msgid "Displays per host:"
+msgstr "Displayer per värd:"
+
+#: gui/gdmsetup-strings.c:67
+msgid "Ping interval (minutes):"
+msgstr "Pingintervall (minuter):"
+
+#: gui/gdmsetup-strings.c:68
+msgid "Enable _XDMCP"
+msgstr "Använd _XDMCP"
+
+#: gui/gdmsetup-strings.c:69
+msgid "XDMCP"
+msgstr "XDMCP"
+
+#: gui/gdmsetup.c:106
 msgid ""
-"Indirect XDMCP is not enabled,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
+"An error occured while trying to contact the login screens.  Not all updates "
+"may have taken effect."
 msgstr ""
-"Indirekt XDMCP är inte aktiverat.Be din systemadministratör att aktivera "
-"det\n"
-"i GDM-konfigurationsprogrammet."
+"Ett fel inträffade vid försök att kontakta inloggningsskärmarna. Alla "
+"uppdateringar behöver inte ha börjat gälla."
 
-#: gui/gdmXnestchooser.c:274
-msgid "Could not find a free display number"
-msgstr "Kunde inte hitta ett ledigt displaynummer"
+#: gui/gdmsetup.c:1328
+msgid "Archive is not of a subdirectory"
+msgstr "Arkivet är inte av en underkatalog"
 
-#: gui/greeter/greeter.c:61
+#: gui/gdmsetup.c:1336
+msgid "Archive is not of a single subdirectory"
+msgstr "Arkivet är inte av en ensam underkatalog"
+
+#: gui/gdmsetup.c:1360 gui/gdmsetup.c:1439
+msgid "File not a tar.gz or tar archive"
+msgstr "Filen är ingen tar.gz-fil eller tararkiv"
+
+#: gui/gdmsetup.c:1362
+msgid "Archive does not include a GdmGreeterTheme.info file"
+msgstr "Arkivet innehåller ingen GdmGreeterTheme.info-fil"
+
+#: gui/gdmsetup.c:1384
+msgid "File does not exist"
+msgstr "Filen finns inte."
+
+#: gui/gdmsetup.c:1492
+msgid "No file selected"
+msgstr "Ingen fil är vald"
+
+#: gui/gdmsetup.c:1518
+#, c-format
+msgid ""
+"Not a theme archive\n"
+"Details: %s"
+msgstr ""
+"Inte ett temaarkiv\n"
+"Detaljer: %s"
+
+#: gui/gdmsetup.c:1540
+#, c-format
+msgid ""
+"Theme directory '%s' seems to be already installed, install again anyway?"
+msgstr ""
+"Temakatalogen \"%s\" verkar redan vara installerad. Installera igen ändå?"
+
+#: gui/gdmsetup.c:1585
+msgid "Some error occured when installing the theme"
+msgstr "Ett fel inträffade då temat skulle installeras"
+
+#: gui/gdmsetup.c:1630
+msgid "Select new theme archive to install"
+msgstr "Välj nytt temaarkiv att installera"
+
+#. This is the temporary help dialog
+#: gui/gdmsetup.c:1766
+#, c-format
+msgid ""
+"This configuration window changes settings for the GDM daemon, which is the "
+"graphical login screen for GNOME.  Changes that you make will take effect "
+"immediately.\n"
+"\n"
+"Note that not all configuration options are listed here.  You may want to "
+"edit %s if you cannot find what you are looking for."
+msgstr ""
+"Detta konfigurationsfönster ändrar inställningar för GDM-demonen, som är den "
+"grafiska inloggningsskärmen för GNOME. Ändringar som du gör kommer att börja "
+"gälla omedelbart.\n"
+"\n"
+"Observera att inte alla konfigurationsalternativ visas här. Du kanske vill "
+"redigera %s om du inte kan hitta det du letar efter."
+
+#: gui/gdmsetup.c:1977
+msgid "You must be the superuser (root) to configure GDM.\n"
+msgstr "Du måste vara superanvändaren (root) för att kunna konfigurera GDM.\n"
+
+#. EOF
+#: gui/gdmsetup.desktop.in.h:1
+msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
+msgstr ""
+"Ett grafiskt program för att konfigurera GNOME:s displayhanterare (GDM)"
+
+#: gui/gdmsetup.desktop.in.h:2
+msgid "GDM Configurator"
+msgstr "GDM-konfigurationsprogram"
+
+#: gui/greeter/greeter.c:62
 #, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "greeter_parse_config: Ingen konfigurationsfil: %s. Använder standardvärden."
 
-#: gui/greeter/greeter.c:874
+#: gui/greeter/greeter.c:880
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
@@ -2925,7 +2924,7 @@ msgstr ""
 "Det inträffade ett fel vid inläsning av temat, och standardtemat kunde också "
 "inte ha lästs in. Jag kommer att försöka starta standardhälsaren"
 
-#: gui/greeter/greeter.c:892
+#: gui/greeter/greeter.c:898
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3074,17 +3073,66 @@ msgstr "Svenska"
 msgid "Turkish"
 msgstr "Turkiska"
 
-#: gui/greeter/greeter_system.c:78
+#: gui/greeter/greeter_system.c:106
 msgid "Shut down the computer"
 msgstr "Stäng ner datorn"
 
-#: gui/greeter/greeter_system.c:86
+#: gui/greeter/greeter_system.c:118
 msgid "Suspend the computer"
 msgstr "Försätt datorn i viloläge"
 
-#: gui/greeter/greeter_system.c:94
+#: gui/greeter/greeter_system.c:130
 msgid "Reboot the computer"
 msgstr "Starta om datorn"
+
+#: gui/greeter/greeter_system.c:143
+msgid "Configure"
+msgstr "Konfigurera"
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
+msgid "(c) 2002 Bond, James Bond"
+msgstr "© 2002 Bond, James Bond"
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:2
+msgid "Bond, James Bond"
+msgstr "Bond, James Bond"
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:3
+msgid "Circles"
+msgstr "Cirklar"
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
+msgid "Theme with blue circles"
+msgstr "Tema med blåa cirklar"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:1
+msgid "Disconnect"
+msgstr "Koppla från"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:2
+msgid "Option"
+msgstr "Alternativ"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:3
+msgid "Quit"
+msgstr "Avsluta"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:4
+msgid "Session"
+msgstr "Session"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:5
+msgid "System"
+msgstr "System"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:8
+#, no-c-format
+msgid "Welcome to %h"
+msgstr "Välkommen till %h"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:9
+msgid "You've got capslock on!"
+msgstr "Du har CapsLock på!"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
