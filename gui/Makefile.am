@@ -136,10 +136,15 @@ gdmflexiserver_LDADD = \
 	-lviciousui-gnome
 
 Settingsdir = $(datadir)/gnome/capplets
+Settings_files = gdmphotosetup.desktop
 Settings_in_files = gdmphotosetup.desktop.in
 Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
 
 Systemdir = $(datadir)/applications
+System_files = \
+	gdmsetup.desktop	\
+	gdmflexiserver.desktop	\
+	gdmflexiserver-xnest.desktop
 System_in_files = \
 	gdmsetup.desktop.in		\
 	gdmflexiserver.desktop.in	\
@@ -168,6 +173,11 @@ EXTRA_DIST = \
 	$(Glade_DATA)		\
 	$(Icons_DATA)		\
 	$(System_DATA)		\
+	$(System_files)		\
 	$(System_in_files)	\
 	$(Settings_DATA)	\
+	$(Settings_files)	\
 	$(Settings_in_files)
+
+clean-local:
+	rm -f $(System_files) $(Settings_files)

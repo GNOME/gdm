@@ -12,13 +12,15 @@ postdir = $(sysconfdir)/gdm/PostSession
 predir = $(sysconfdir)/gdm/PreSession
 postlogindir = $(sysconfdir)/gdm/PostLogin
 
-
 noinst_DATA = gdm.conf
+
+DESKTOP_FILES = default.desktop CDE.desktop gnome.desktop
 
 EXTRA_DIST = \
 	gdm.conf.in \
-	gnome.desktop.in \
+	$(DESKTOP_FILES) \
 	default.desktop.in \
+	gnome.desktop.in \
 	CDE.desktop.in \
 	Xsession.in \
 	gdm \
@@ -36,6 +38,26 @@ gettextfoo.h: XKeepsCrashing Xsession.in
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 
 @INTLTOOL_DESKTOP_RULE@
+
+clean-local:
+	rm -f $(DESKTOP_FILES)
+ 
+uninstall-hook:
+	rm -f $(DESTDIR)$(bisessdir)/gnome.desktop \
+	$(DESTDIR)$(bisessdir)/default.desktop \
+	$(DESTDIR)$(bisessdir)/CDE.desktop \
+	$(DESTDIR)$(instsessdir)/gnome.desktop \
+	$(DESTDIR)$(instsessdir)/default.desktop \
+	$(DESTDIR)$(instsessdir)/CDE.desktop \
+	$(DESTDIR)$(confdir)/gdm.conf \
+	$(DESTDIR)$(confdir)/factory-gdm.conf \
+	$(DESTDIR)$(confdir)/XKeepsCrashing \
+	$(DESTDIR)$(confdir)/Xsession \
+	$(DESTDIR)$(localedir)/locale.alias \
+	$(DESTDIR)$(initdir)/Default \
+	$(DESTDIR)$(postlogindir)/Default.sample \
+	$(DESTDIR)$(predir)/Default \
+	$(DESTDIR)$(postdir)/Default
 
 install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop Default PostSession PreSession
 	if test '!' -d $(DESTDIR)$(confdir); then \

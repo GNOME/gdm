@@ -51,6 +51,12 @@ EXTRA_DIST = \
 	AccessKeyMouseEvents.in \
 	AccessDwellMouseEvents.in
 
+uninstall-hook: 
+	rm -f $(DESTDIR)$(moduleconfdir)/AccessKeyMouseEvents \
+	$(DESTDIR)$(moduleconfdir)/factory-AccessKeyMouseEvents \
+	$(DESTDIR)$(moduleconfdir)/AccessDwellMouseEvents \
+	$(DESTDIR)$(moduleconfdir)/factory-AccessDwellMouseEvents
+
 install-data-hook: AccessKeyMouseEvents AccessDwellMouseEvents
 	if test '!' -d $(DESTDIR)$(moduleconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(moduleconfdir); \

@@ -16,3 +16,6 @@ happygnome_in_files = \
 @INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST = $(happygnome_DATA) $(happygnome_in_files)
+
+clean-local:
+	rm -f GdmGreeterTheme.desktop

@@ -1,5 +1,27 @@
 Tue Jan 25 17:18:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
+	* This patch makes gdm2 build with newer versions of the build
+	  tools.  Previously it was requiring automake-1.4, autoconf-1.4,
+	  and clocal-1.4.  Better error checking in the newer version
+	  caught the following issues:
+	* Makefile.am:  Added distuninstallcheck_listfiles for the
+	  files in /var/scrollkeeper, which were causing "makedist"
+	  to fail.  Removed intltool-modules/XML/Parser/Style/OrigTree.pm
+	  from EXTRA_DIST since that file isn't required by newer 
+	  versions of intltool.
+	* omf.make, xmldocs.make:  Fixed errors in "makedist".   I found a
+	  pointer to the fix here:
+    	  mail.gnome.org/archives/desktop-devel-list/2003-December/msg00587.html
+	* gui/Makefile.am, gui/greeter/themes/circles/Makefile.am,
+	  gui/modules/Makefile.am, gui/greeter/themes/happygnome/Makefile.am,
+	  config/Makefile.am, gui/greeter/themes/happygnome-list/Makefile.am:
+	  Added clean-local and uninstall-hook to fix errors in "makedist".
+	  Made sure all *.desktop files are in EXTRA_DIST.
+	* daemon/slave.c: Not related to above patches.  Fixed grammar again
+	  since we aren't in a string freeze.  Sorry for the confusion.  
+
+Tue Jan 25 17:18:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
 	* daemon/slave.c: Fixed grammar.  Then backed out fix
 	  since just realized we are in a string freeze.
 

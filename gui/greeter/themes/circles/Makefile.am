@@ -14,3 +14,6 @@ circles_in_files = \
 @INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST = $(circles_DATA) $(circles_in_files)
+
+clean-local:
+	rm -f GdmGreeterTheme.desktop
