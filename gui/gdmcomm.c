@@ -183,7 +183,7 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 	return ret;
 }
 
-char *
+const char *
 gdmcomm_get_display (void)
 {
 	static char *display = NULL;
@@ -229,7 +229,7 @@ get_dispnum (void)
 
 /* This just gets a cookie of MIT-MAGIC-COOKIE-1 type */
 char *
-gdmcomm_get_a_cookie (void)
+gdmcomm_get_a_cookie (gboolean binary)
 {
 	FILE *fp;
 	char *number;
@@ -246,14 +246,12 @@ gdmcomm_get_a_cookie (void)
 	cookie = NULL;
 
 	while ((xau = XauReadAuth (fp)) != NULL) {
-		int i;
-		GString *str;
-
 		/* Just find the FIRST magic cookie, that's what gdm uses */
 		if (xau->number_length != strlen (number) ||
 		    strncmp (xau->number, number, xau->number_length) != 0 ||
 		    /* gdm sends MIT-MAGIC-COOKIE-1 cookies of length 16,
 		     * so just do those */
+		    xau->data_length != 16 ||
 		    xau->name_length != strlen ("MIT-MAGIC-COOKIE-1") ||
 		    strncmp (xau->name, "MIT-MAGIC-COOKIE-1",
 			     xau->name_length) != 0) {
@@ -261,17 +259,24 @@ gdmcomm_get_a_cookie (void)
 			continue;
 		}
 
-		str = g_string_new (NULL);
+		if (binary) {
+			cookie = g_new0 (char, 16);
+			memcpy (cookie, xau->data, 16);
+		} else {
+			int i;
+			GString *str;
 
-		for (i = 0; i < xau->data_length; i++) {
-			g_string_sprintfa (str, "%02x",
-					   (guint)(guchar)xau->data[i]);
+			str = g_string_new (NULL);
+
+			for (i = 0; i < xau->data_length; i++) {
+				g_string_sprintfa (str, "%02x",
+						   (guint)(guchar)xau->data[i]);
+			}
+			cookie = g_string_free (str, FALSE);
 		}
 
 		XauDisposeAuth (xau);
 
-		cookie = str->str;
-		g_string_free (str, FALSE);
 		break;
 	}
 	fclose (fp);
@@ -317,6 +322,7 @@ gdmcomm_get_auth_cookie (void)
 		    strncmp (xau->number, number, xau->number_length) != 0 ||
 		    /* gdm sends MIT-MAGIC-COOKIE-1 cookies of length 16,
 		     * so just do those */
+		    xau->data_length != 16 ||
 		    xau->name_length != strlen ("MIT-MAGIC-COOKIE-1") ||
 		    strncmp (xau->name, "MIT-MAGIC-COOKIE-1",
 			     xau->name_length) != 0 ||

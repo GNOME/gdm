@@ -623,7 +623,7 @@ gdm_wait_for_extra (int *status)
 	gdm_sigchld_block_push ();
 
 	if (extra_process > 0) {
-		waitpid (extra_process, &extra_status, 0);
+		ve_waitpid_no_signal (extra_process, &extra_status, 0);
 	}
 	extra_process = -1;
 
@@ -752,6 +752,7 @@ gdm_peek_local_address_list (void)
 #else /* SIOCGIFCONF */
 	/* host based fallback, will likely only get 127.0.0.1 i think */
 
+	hostbuf[BUFSIZ-1] = '\0';
 	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
 		gdm_debug ("%s: Could not get server hostname: %s!",
 			   "gdm_peek_local_address_list",

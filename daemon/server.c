@@ -153,7 +153,7 @@ gdm_server_stop (GdmDisplay *disp)
 
 	    if (servpid > 0 &&
 		kill (servpid, SIGTERM) == 0)
-		    waitpid (servpid, 0, 0);
+		    ve_waitpid_no_signal (servpid, 0, 0);
 	    gdm_sigchld_block_pop ();
 
 
@@ -519,7 +519,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	    d->servpid = 0;
 	    if (pid > 0 &&
 		kill (pid, SIGTERM) == 0)
-		    waitpid (pid, NULL, 0);
+		    ve_waitpid_no_signal (pid, NULL, 0);
 	    gdm_sigchld_block_pop ();
     }
 
@@ -666,7 +666,7 @@ gdm_server_spawn (GdmDisplay *d)
 	    pid_t pid = d->servpid;
 	    d->servpid = 0;
 	    if (kill (pid, SIGTERM) == 0)
-		    waitpid (pid, NULL, 0);
+		    ve_waitpid_no_signal (pid, NULL, 0);
     }
 
 
@@ -1005,6 +1005,7 @@ gdm_server_alloc (gint id, const gchar *command)
     gchar hostname[1024];
     GdmDisplay *d;
     
+    hostname[1023] = '\0';
     if (gethostname (hostname, 1023) == -1)
 	    strcmp (hostname, "localhost.localdomain");
 

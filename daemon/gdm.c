@@ -1004,22 +1004,22 @@ gdm_cleanup_children (void)
 
 	    if (d->sesspid > 0) {
 		    if (kill (d->sesspid, SIGTERM) == 0)
-			    waitpid (d->sesspid, NULL, 0);
+			    ve_waitpid_no_signal (d->sesspid, NULL, 0);
 		    d->sesspid = 0;
 	    }
 	    if (d->greetpid > 0) {
 		    if (kill (d->greetpid, SIGTERM) == 0)
-			    waitpid (d->greetpid, NULL, 0);
+			    ve_waitpid_no_signal (d->greetpid, NULL, 0);
 		    d->greetpid = 0;
 	    }
 	    if (d->chooserpid > 0) {
 		    if (kill (d->chooserpid, SIGTERM) == 0)
-			    waitpid (d->chooserpid, NULL, 0);
+			    ve_waitpid_no_signal (d->chooserpid, NULL, 0);
 		    d->chooserpid = 0;
 	    }
 	    if (d->servpid > 0) {
 		    if (kill (d->servpid, SIGTERM) == 0)
-			    waitpid (d->servpid, NULL, 0);
+			    ve_waitpid_no_signal (d->servpid, NULL, 0);
 		    d->servpid = 0;
 	    }
     }

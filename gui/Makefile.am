@@ -33,7 +33,9 @@ gdmphotosetup_SOURCES = \
 	gdmphotosetup.c
 
 gdmXnestchooser_SOURCES = \
-	gdmXnestchooser.c
+	gdmXnestchooser.c	\
+	gdmcomm.c		\
+	gdmcomm.h
 
 gdmflexiserver_SOURCES = \
 	gdmflexiserver.c	\
@@ -105,6 +107,7 @@ gdmphotosetup_LDADD = \
 
 gdmXnestchooser_LDADD = \
 	$(GUI_LIBS)		\
+	-lXau			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
@@ -136,6 +139,9 @@ Iconsdir = $(datadir)/pixmaps
 
 Icons_DATA = \
 	login-photo.png
+
+install-data-local:
+	$(LN_S) $(DESTDIR)$(bindir)/gdmXnestchooser $(DESTDIR)$(bindir)/gdmXnest
 
 EXTRA_DIST = \
 	gdmsetup-strings.c	\

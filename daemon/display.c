@@ -26,6 +26,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "gdm-net.h"
 #include "server.h"
@@ -169,7 +171,7 @@ gdm_display_manage (GdmDisplay *d)
     /* If we have an old slave process hanging around, kill it */
     if (d->slavepid) {
 	    if (kill (d->slavepid, SIGINT) == 0)
-		    waitpid (d->slavepid, 0, 0);
+		    ve_waitpid_no_signal (d->slavepid, 0, 0);
 	    d->slavepid = 0;
     }
 
@@ -277,7 +279,7 @@ gdm_display_unmanage (GdmDisplay *d)
     /* Kill slave */
     if (d->slavepid != 0) {
 	if (kill (d->slavepid, SIGTERM) == 0)
-		waitpid (d->slavepid, 0, 0);
+		ve_waitpid_no_signal (d->slavepid, 0, 0);
 	d->slavepid = 0;
     }
     

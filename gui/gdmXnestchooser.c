@@ -32,10 +32,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <X11/Xauth.h>
 
 #include <viciousui.h>
 
 #include "gdm.h"
+#include "gdmcomm.h"
 
 static int
 get_free_display (void)
@@ -94,6 +96,14 @@ static gboolean no_gdm_check = FALSE;
 
 static char display_num[BUFSIZ] = "";
 static char indirect_host[BUFSIZ] = "";
+
+/* options for Xnest only mode */
+static const struct poptOption xnest_only_options[] = {
+	{ "xnest", 'x', POPT_ARG_STRING, &xnest_binary, 0, N_("Xnest command line"), N_("STRING") },
+	{ "xnest-extra-options", 'o', POPT_ARG_STRING, &xnest_options, 0, N_("Extra options for Xnest"), N_("OPTIONS") },
+	{ "background", 'b', POPT_ARG_NONE, &background, 0, N_("Run in background"), NULL },
+	{ NULL } 
+};
 
 static const struct poptOption options[] = {
 	{ "xnest", 'x', POPT_ARG_STRING, &xnest_binary, 0, N_("Xnest command line"), N_("STRING") },
@@ -206,6 +216,133 @@ make_us_an_exec_vector (const char *xnest)
 	return vector;
 }
 
+static const char *
+base (const char *s)
+{
+	const char *p = strchr (s, '/');
+	if (p == NULL)
+		return s;
+	return p+1;
+}
+
+static const char *
+xauth_path (void)
+{
+	static char *xauth_path = NULL;
+	if (xauth_path == NULL)
+		xauth_path = g_find_program_in_path ("xauth");
+	return xauth_path;
+}
+
+static void
+whack_cookie (int display)
+{
+	char *command;
+
+	if (xauth_path () == NULL) {
+		return;
+	}
+
+	command = g_strdup_printf ("%s remove :%d",
+				   xauth_path (),
+				   display);
+	system (command);
+	g_free (command);
+}
+
+static Xauth *
+get_auth_entry (int disp, char *cookie)
+{
+	Xauth *xa;
+	gchar *dispnum;
+	char hostname [1024];
+
+	xa = malloc (sizeof (Xauth));
+
+	if (xa == NULL)
+		return NULL;
+
+	hostname[1023] = '\0';
+	if (gethostname (hostname, 1023) != 0) {
+		strcpy (hostname, "localhost");
+	}
+
+	xa->family = FamilyLocal;
+	xa->address = malloc (strlen (hostname) + 1);
+	if (xa->address == NULL) {
+		free (xa);
+		return FALSE;
+	}
+
+	strcpy (xa->address, hostname);
+	xa->address_length = strlen (hostname);;
+
+	dispnum = g_strdup_printf ("%d", disp);
+	xa->number = strdup (dispnum);
+	xa->number_length = strlen (dispnum);
+	g_free (dispnum);
+
+	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
+	xa->name_length = strlen ("MIT-MAGIC-COOKIE-1");
+	xa->data = malloc (16);
+	if (xa->data == NULL) {
+		free (xa->number);
+		free (xa->name);
+		free (xa->address);
+		free (xa);
+		return FALSE;
+	}
+	memcpy (xa->data, cookie, 16);
+	xa->data_length = 16;
+
+	return xa;
+}
+
+static void
+setup_cookie (int disp)
+{
+    char *cookie;
+    FILE *af;
+    Xauth *xa;
+    const char *filename = XauFileName ();
+    if (filename == NULL)
+	    return;
+
+    if (XauLockAuth (filename, 3, 3, 0) != LOCK_SUCCESS)
+	    return;
+
+    cookie = gdmcomm_get_a_cookie (TRUE /* binary */);
+    if (cookie == NULL) {
+	    XauUnlockAuth (filename);
+	    return;
+    }
+
+    af = fopen (filename, "a+");
+    if (af == NULL) {
+	    XauUnlockAuth (filename);
+	    g_free (cookie);
+	    return;
+    }
+
+    xa = get_auth_entry (disp, cookie);
+    if (xa == NULL) {
+	    g_free (cookie);
+	    fclose (af);
+	    XauUnlockAuth (filename);
+	    return;
+    }
+
+    g_free (cookie);
+
+    XauWriteAuth (af, xa);
+
+    XauDisposeAuth (xa);
+
+    fclose (af);
+
+    XauUnlockAuth (filename);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -224,8 +361,16 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	gnome_init_with_popt_table ("gdmXnestchooser", VERSION,
-				    argc, argv, options, 0, &ctx);
+	if (strcmp (base (argv[0]), "gdmXnest") == 0) {
+		gnome_init_with_popt_table ("gdmXnest", VERSION,
+					    argc, argv, xnest_only_options,
+					    0, &ctx);
+		no_query = TRUE;
+		no_gdm_check = TRUE;
+	} else {
+		gnome_init_with_popt_table ("gdmXnestchooser", VERSION,
+					    argc, argv, options, 0, &ctx);
+	}
 
 	args = poptGetArgs (ctx);
 	if (args != NULL && args[0] != NULL)
@@ -243,11 +388,17 @@ main (int argc, char *argv[])
 
 	if (execvec == NULL) {
 		GtkWidget *d;
-		d = gnome_warning_dialog (_("Xnest doesn't exist.\n"
+		d = gtk_message_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_WARNING,
+					    GTK_BUTTONS_OK,
+					    _("Xnest doesn't exist.\n"
 					    "Please ask your system "
 					    "administrator\n"
 					    "to install it."));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
+		gtk_widget_show_all (d);
+		gtk_dialog_run (GTK_DIALOG (d));
+		gtk_widget_destroy (d);
 		return 0;
 	}
 
@@ -261,13 +412,19 @@ main (int argc, char *argv[])
 		if ( ! xdmcp_enabled ||
 		     ! honor_indirect) {
 			GtkWidget *d;
-			d = gnome_warning_dialog
-				(_("Indirect XDMCP is not enabled,\n"
+			d = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("Indirect XDMCP is not enabled,\n"
 				   "please ask your "
 				   "system administrator to enable "
 				   "it\nin the GDM configurator "
 				   "program."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (d));
+			gtk_widget_show_all (d);
+			gtk_dialog_run (GTK_DIALOG (d));
+			gtk_widget_destroy (d);
 			return 0;
 		}
 
@@ -284,11 +441,17 @@ main (int argc, char *argv[])
 		    (kill (pid, 0) < 0 &&
 		     errno != EPERM)) {
 			GtkWidget *d;
-			d = gnome_warning_dialog
-				(_("GDM is not running.\n"
+			d = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("GDM is not running.\n"
 				   "Please ask your "
 				   "system administrator to start it."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (d));
+			gtk_widget_show_all (d);
+			gtk_dialog_run (GTK_DIALOG (d));
+			gtk_widget_destroy (d);
 			return 0;
 		}
 	}
@@ -296,16 +459,33 @@ main (int argc, char *argv[])
 	display = get_free_display ();
 	if (display < 0) {
 		GtkWidget *d;
-		d = gnome_warning_dialog (_("Could not find a free "
-					    "display number"));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
+		d = gtk_message_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_WARNING,
+					    GTK_BUTTONS_OK,
+					    _("Could not find a free "
+					      "display number"));
+		gtk_widget_show_all (d);
+		gtk_dialog_run (GTK_DIALOG (d));
+		gtk_widget_destroy (d);
 		return 0;
 	}
 
-	g_print ("DISPLAY=:%d\n", display);
+	printf ("DISPLAY=:%d\n", display);
 
 	g_snprintf (display_num, sizeof (display_num), ":%d", display);
 	g_snprintf (indirect_host, sizeof (indirect_host), "%s", host);
+
+	if (no_query) {
+		whack_cookie (display);
+		setup_cookie (display);
+	}
+
+	if (background) {
+		if (fork () > 0) {
+			_exit (0);
+		}
+	}
 
 	pid = fork ();
 	if (pid == 0) {
@@ -322,17 +502,14 @@ main (int argc, char *argv[])
 		_exit (1);
 	}
 
-	if (background) {
-		if (fork () > 0) {
-			_exit (0);
-		}
-	}
-
-	waitpid (pid, 0, 0);
+	ve_waitpid_no_signal (pid, 0, 0);
 
 	socket = g_strdup_printf ("/tmp/.X11-unix/X%d", display);
-
 	unlink (socket);
+	g_free (socket);
+
+	if (no_query)
+		whack_cookie (display);
 
 	return 0;
 }

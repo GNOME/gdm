@@ -230,7 +230,7 @@ gboolean
 gdm_xdmcp_init (void)
 {
     struct sockaddr_in serv_sa = {0};
-    gchar hostbuf[256];
+    gchar hostbuf[1024];
     struct utsname name;
 
     if ( ! GdmXdmcp)
@@ -239,7 +239,8 @@ gdm_xdmcp_init (void)
     globsessid = time (NULL);
     
     /* Fetch and store local hostname in XDMCP friendly format */
-    if (gethostname (hostbuf, 255) != 0) {
+    hostbuf[1023] = '\0';
+    if (gethostname (hostbuf, 1023) != 0) {
 	gdm_error (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
 	strcmp (hostbuf, "localhost.localdomain");
     }

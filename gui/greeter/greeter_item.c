@@ -128,14 +128,16 @@ greeter_item_expand_text (const char *text)
 	      g_string_append (str, "%");
 	      break;
 	    case 'h':
-	      r = gethostname (buf, sizeof(buf));
+	      buf[sizeof(buf) - 1] = '\0';
+	      r = gethostname (buf, sizeof(buf) - 1);
 	      if (r)
 		g_string_append (str, "localhost");
 	      else
 		g_string_append (str, buf);
 	      break;
 	    case 'o':
-	      r = getdomainname (buf, sizeof(buf));
+	      buf[sizeof(buf) - 1] = '\0';
+	      r = getdomainname (buf, sizeof(buf) - 1);
 	      if (r)
 		g_string_append (str, "localdomain");
 	      else

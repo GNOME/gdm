@@ -393,7 +393,7 @@ gdm_slave_whack_greeter (void)
 	/* Wait for the greeter to really die, the check is just
 	 * being very anal, the pid is always set to something */
 	if (d->greetpid > 0)
-		waitpid (d->greetpid, 0, 0); 
+		ve_waitpid_no_signal (d->greetpid, 0, 0); 
 	d->greetpid = 0;
 
 	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
@@ -838,7 +838,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			/* must use the pid var here since sesspid might get
 			 * zeroed between the check and here by sigchld
 			 * handler */
-			waitpid (pid, 0, 0);
+			ve_waitpid_no_signal (pid, 0, 0);
 		display->sesspid = 0;
 	}
 }
@@ -861,7 +861,7 @@ restart_the_greeter (void)
 		/* Wait for the greeter to really die, the check is just
 		 * being very anal, the pid is always set to something */
 		if (d->greetpid > 0)
-			waitpid (d->greetpid, 0, 0); 
+			ve_waitpid_no_signal (d->greetpid, 0, 0); 
 		d->greetpid = 0;
 
 		gdm_slave_send_num (GDM_SOP_GREETPID, 0);
@@ -1750,7 +1750,7 @@ gdm_slave_chooser (void)
 		gdm_sigchld_block_push ();
 		/* wait for the chooser to die */
 		if (d->chooserpid > 0)
-			waitpid (d->chooserpid, 0, 0);
+			ve_waitpid_no_signal (d->chooserpid, 0, 0);
 		d->chooserpid  = 0;
 		gdm_sigchld_block_pop ();
 
@@ -2665,7 +2665,7 @@ gdm_slave_session_start (void)
 
 	    gdm_sigchld_block_pop ();
 
-	    waitpid (pid, NULL, 0);
+	    ve_waitpid_no_signal (pid, NULL, 0);
     } else {
 	    gdm_sigchld_block_pop ();
     }
@@ -2800,7 +2800,7 @@ gdm_slave_term_handler (int sig)
 		greet = FALSE;
 		gdm_debug ("gdm_slave_term_handler: Whacking greeter");
 		if (kill (pid, sig) == 0)
-			waitpid (pid, 0, 0); 
+			ve_waitpid_no_signal (pid, 0, 0); 
 	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
 		gdm_slave_session_cleanup ();
@@ -2811,7 +2811,7 @@ gdm_slave_term_handler (int sig)
 		d->chooserpid = 0;
 		gdm_debug ("gdm_slave_term_handler: Whacking chooser");
 		if (kill (pid, sig) == 0)
-			waitpid (pid, 0, 0); 
+			ve_waitpid_no_signal (pid, 0, 0); 
 	}
 
 	gdm_debug ("gdm_slave_term_handler: Whacking server");
@@ -3018,7 +3018,7 @@ gdm_slave_xioerror_handler (Display *disp)
 		d->greetpid = 0;
 		greet = FALSE;
 		if (kill (pid, SIGINT) == 0)
-			waitpid (pid, 0, 0); 
+			ve_waitpid_no_signal (pid, 0, 0); 
 	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
 		gdm_slave_session_cleanup ();
@@ -3028,7 +3028,7 @@ gdm_slave_xioerror_handler (Display *disp)
 		pid_t pid = d->chooserpid;
 		d->chooserpid = 0;
 		if (kill (pid, SIGINT) == 0)
-			waitpid (pid, 0, 0); 
+			ve_waitpid_no_signal (pid, 0, 0); 
 	}
     
 	gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);

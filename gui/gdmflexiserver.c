@@ -244,7 +244,7 @@ main (int argc, char *argv[])
 	}
 
 	if (use_xnest) {
-		char *cookie = gdmcomm_get_a_cookie ();
+		char *cookie = gdmcomm_get_a_cookie (FALSE /* binary */);
 		if (cookie == NULL) {
 			dialog = gnome_warning_dialog
 				(_("You do not seem to have the "

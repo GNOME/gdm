@@ -252,6 +252,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     if (SERVER_IS_LOCAL (d)) {
 	    char hostname[1024];
 
+	    hostname[1023] = '\0';
 	    if (gethostname (hostname, 1023) == 0) {
 		    g_free (d->hostname);
 		    d->hostname = g_strdup (hostname);
@@ -286,6 +287,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    if ( ! SERVER_IS_LOCAL (d)) {
 		    char hostname[1024];
 
+		    hostname[1023] = '\0';
 		    if (gethostname (hostname, 1023) == 0 &&
 			strcmp (hostname, d->hostname) != 0) {
 			    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,

@@ -1,3 +1,19 @@
+Sun Jul 21 12:57:57 2002  George Lebl <jirka@5z.com>
+
+	* daemon/xdmcp.c, daemon/server.c, daemon/auth.c, daemon/misc.c,
+	  gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmlogin.c,
+	  gui/greeter/greeter_item.c: note that gethostname doesn't
+	  neccessairly nul terminate string
+
+	* gui/Makefile.am, gui/gdmXnestchooser.c: fix background xnest mode,
+	  add plain X nest mode by just running gdmXnest.  Use gtk dialogs
+	  instead of gnomes.  Setup a cookie in plain x nest mode.
+
+	* daemon/slave.c, daemon/server.c, daemon/display.c, gui/gdmlogin.c:
+	  use the waitpid version from ve that doesn't break on signals
+	  this could fix some possible session being killed bugs
+	  unintentionally
+
 Sat Jul 20 10:19:25 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c, gui/gdmsetup.c: setup busy cursor when starting

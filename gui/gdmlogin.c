@@ -521,7 +521,7 @@ gdm_login_abort (const gchar *format, ...)
 static gchar *
 gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 {
-    gchar hostbuf[256] = "";
+    gchar hostbuf[1023] = "";
     gchar *hostname, *display;
     struct utsname name;
     GString *str;
@@ -529,15 +529,21 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
     if (s == NULL)
 	return(NULL);
 
-    display = g_strdup (g_getenv ("DISPLAY"));
-
-    if (display == NULL)
-	return(NULL);
-
+    hostbuf[sizeof (hostbuf) - 1] = '\0';
     if (gethostname (hostbuf, sizeof (hostbuf) - 1) < 0)
 	    hostname = g_strdup ("Gnome");
     else
 	    hostname = g_strdup (hostbuf);
+
+    display = g_strdup (g_getenv ("DISPLAY"));
+
+    if (display == NULL) {
+	    char *buffer;
+	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
+				      pre, hostname, post);
+	    g_free (hostname);
+	    return buffer;
+    }
     
     uname (&name);
 
