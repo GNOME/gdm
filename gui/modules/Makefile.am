@@ -19,19 +19,31 @@ libkeymouselistener_la_LDFLAGS =	\
 	$(GUI_LIBS)	\
 	$(X_LIBS)
 
+libdwellmouselistener_la_SOURCES = \
+	dwellmouselistener.c
+
+libdwellmouselistener_la_LDFLAGS =	\
+	-rpath $(moduledir) -module -avoid-version \
+	$(GUI_LIBS)	\
+	$(X_LIBS)
+
 moduledir = $(libdir)/gtk-2.0/modules
 
 module_LTLIBRARIES = 		\
-	libkeymouselistener.la
+	libkeymouselistener.la  \
+	libdwellmouselistener.la
 
 moduleconfdir = $(sysconfdir)/gdm/modules
 
-noinst_DATA = AccessKeyMouseEvents
+noinst_DATA = \
+	AccessKeyMouseEvents \
+	AccessDwellMouseEvents
 
 EXTRA_DIST = \
-	AccessKeyMouseEvents.in
+	AccessKeyMouseEvents.in \
+	AccessDwellMouseEvents.in
 
-install-data-hook: AccessKeyMouseEvents
+install-data-hook: AccessKeyMouseEvents AccessDwellMouseEvents
 	if test '!' -d $(DESTDIR)$(moduleconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(moduleconfdir); \
 		chmod 755 $(DESTDIR)$(moduleconfdir); \
@@ -44,3 +56,11 @@ install-data-hook: AccessKeyMouseEvents
 		$(INSTALL_DATA) AccessKeyMouseEvents $(DESTDIR)$(moduleconfdir)/AccessKeyMouseEvents; \
 	fi
 	$(INSTALL_DATA) AccessKeyMouseEvents $(DESTDIR)$(moduleconfdir)/factory-AccessKeyMouseEvents
+	-if cmp -s $(DESTDIR)$(moduleconfdir)/AccessDwellMouseEvents $(DESTDIR)$(moduleconfdir)/factory-AccessDwellMouseEvents 2>&1 /dev/null ; then \
+		cp -f $(DESTDIR)$(moduleconfdir)/AccessDwellMouseEvents $(DESTDIR)$(moduleconfdir)/AccessDwellMouseEvents.orig; \
+		$(INSTALL_DATA) AccessDwellMouseEvents $(DESTDIR)$(moduleconfdir)/AccessDwellMouseEvents; \
+	fi
+	if test '!' -f $(DESTDIR)$(moduleconfdir)/AccessDwellMouseEvents; then \
+		$(INSTALL_DATA) AccessDwellMouseEvents $(DESTDIR)$(moduleconfdir)/AccessDwellMouseEvents; \
+	fi
+	$(INSTALL_DATA) AccessDwellMouseEvents $(DESTDIR)$(moduleconfdir)/factory-AccessDwellMouseEvents

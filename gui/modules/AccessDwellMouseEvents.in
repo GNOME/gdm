@@ -1,0 +1,30 @@
+# This is the configuration file for the keymouselistener.so module.
+# The confiuration syntax is as follows:
+#
+#   crossing inital_direction timeout full_executable_path +args
+#
+# where:
+#
+# + crossing is a string that includes any combination of TBLR characters, where
+#   T means Top, B means Bottom, L means Left, and R means Right.
+#
+# + initial_direction can be either the I or O character which indicates
+#   that the initial crossing is a motion In or Out of the window.
+# 
+# e.g.
+# TBLR I 10000    @EXPANDED_BINDIR@/gok
+#
+# Means the user crosses into the top border, out the bottom border, into the left
+# border, and then out the right border (in that order).  The initial_direction
+# value of I is what specifies that the first crossing is into the top border
+# rather than out of the top border.  Each border crossing must occur within
+# 10000ms of the last border crossing for the gesture to be valid.
+#
+# It is possible to invoke multiple actions from a single gesture using the <Add>
+# keyword.  Action specified with <Add> are invoked by the previous gesture
+# defined in the file.  If the <Add> action is the first action defined in the
+# file, then it is ignored.
+#
+# e.g.
+#
+# <Add>           @EXPANDED_BINDIR@/gnome-mag

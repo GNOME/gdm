@@ -47,9 +47,9 @@
 
 typedef enum
 {
-	BINDING_TYPE_KEY	= 1 << 0,
-	BINDING_TYPE_MOUSE	= 1 << 1
-} BindingType;
+	GESTURE_TYPE_KEY	= 1 << 0,
+	GESTURE_TYPE_MOUSE	= 1 << 1
+} GestureType;
 
 typedef struct {
 	guint keysym;
@@ -68,27 +68,27 @@ union Input {
 };
 
 typedef struct {
-	BindingType type;
+	GestureType type;
 	union Input input;
-	char *binding_str;
+	char *gesture_str;
 	GSList *actions;
 	guint n_times;
 	guint duration;
 	guint timeout;
-} Binding;
+} Gesture;
 
 static int lineno = 0;
-static GSList *binding_list = NULL;
+static GSList *gesture_list = NULL;
 extern char **environ;
 
 static gchar * screen_exec_display_string (GdkScreen *screen);
 static void create_event_watcher ();
-static void load_bindings(gchar *path);
+static void load_gestures(gchar *path);
 static gchar ** get_exec_environment (XEvent *xevent);
-static Binding * parse_line(gchar *buf);
-static gboolean binding_already_used (Binding *binding);
+static Gesture * parse_line(gchar *buf);
+static gboolean gesture_already_used (Gesture *gesture);
 static GdkFilterReturn	
-bindings_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data);
+gestures_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data);
 static gint is_mouseX (const gchar *string);
 			
 static gchar *
@@ -137,51 +137,51 @@ static void create_event_watcher ()
 	 * Switch off keyboard autorepeat
 	 */
 	XAutoRepeatOff(GDK_DISPLAY_XDISPLAY(display));
-	load_bindings(CONFIGFILE);
-	gdk_window_add_filter (NULL, bindings_filter, NULL);
+	load_gestures(CONFIGFILE);
+	gdk_window_add_filter (NULL, gestures_filter, NULL);
 
 	return;
 }
 
 
 static void
-load_bindings(gchar *path)
+load_gestures(gchar *path)
 {
 	FILE *fp;
-	Binding *tmp_binding;
+	Gesture *tmp_gesture;
 	gchar buf[1024];
 
 	if ((fp = fopen(path, "r")) == NULL) {
 		/* TODO - I18n */
-		printf("Cannot open bindings file: %s\n", path);
+		printf("Cannot open gestures file: %s\n", path);
 		return;
 	}
 
 	while (((fgets(buf, 1024, fp)) != NULL) && ((feof(fp)) == 0)) {
-		tmp_binding = (Binding *)parse_line(buf);
-		if (tmp_binding) {
+		tmp_gesture = (Gesture *)parse_line(buf);
+		if (tmp_gesture) {
 		/*
-		 * Is the key already associated with an existing binding?
+		 * Is the key already associated with an existing gesture?
 		 */
-			if (!strcmp(tmp_binding->binding_str, "<Add>")) {
+			if (!strcmp(tmp_gesture->gesture_str, "<Add>")) {
 				/*
-				 * Add another action to the last binding
+				 * Add another action to the last gesture
 				 */
-				Binding *last_binding;
-				GSList *last_item = g_slist_last(binding_list);
+				Gesture *last_gesture;
+				GSList *last_item = g_slist_last(gesture_list);
 				/*
 				 * If there is no last_item to add onto ignore the entry
 				 */
 				if (last_item) {
-					last_binding = (Binding *)last_item->data;
-					/* Add the action to the last binding's actions list */
-					last_binding->actions = 
-						g_slist_append(last_binding->actions,
-						g_strdup((gchar *)tmp_binding->actions->data));
+					last_gesture = (Gesture *)last_item->data;
+					/* Add the action to the last gesture's actions list */
+					last_gesture->actions = 
+						g_slist_append(last_gesture->actions,
+						g_strdup((gchar *)tmp_gesture->actions->data));
 				}
-				/* Ignore duplicate bindings */
-			} else if (!binding_already_used (tmp_binding))
-				binding_list = g_slist_append(binding_list, tmp_binding);
+				/* Ignore duplicate gestures */
+			} else if (!gesture_already_used (tmp_gesture))
+				gesture_list = g_slist_append(gesture_list, tmp_gesture);
 		}
 	}
 	fclose(fp);
@@ -235,14 +235,14 @@ get_exec_environment (XEvent *xevent)
 	return retval;
 }
 
-static Binding *
+static Gesture *
 parse_line(gchar *buf)
 {
 	gchar *c;
 	gchar *keystring;
 	gchar *keyservice;
 	gint button = 0;
-	Binding *tmp_binding = NULL;
+	Gesture *tmp_gesture = NULL;
 	static GdkDisplay *display = NULL;
 	
 	if(!display) {
@@ -254,7 +254,7 @@ parse_line(gchar *buf)
 	if ((*buf == '#') || (iseol(*buf)) || (buf == NULL))
 		return NULL;
 	
-	tmp_binding = g_new0 (Binding, 1);
+	tmp_gesture = g_new0 (Gesture, 1);
 	keystring = c = buf;
 
 	/*
@@ -269,23 +269,23 @@ parse_line(gchar *buf)
 	}
 
 	*c++ = '\0';
-	tmp_binding->binding_str = (gchar *)g_malloc(strlen(keystring) + 1);
-	strncpy(tmp_binding->binding_str, keystring, strlen(keystring)+1);
+	tmp_gesture->gesture_str = (gchar *)g_malloc(strlen(keystring) + 1);
+	strncpy(tmp_gesture->gesture_str, keystring, strlen(keystring)+1);
 
-	if(strcmp(tmp_binding->binding_str, "<Add>")) {
+	if(strcmp(tmp_gesture->gesture_str, "<Add>")) {
 		guint n, duration, timeout;
 		gchar *tmp_string;
 
-		if ((button = is_mouseX(tmp_binding->binding_str)) > 0) {
-			tmp_binding->type = BINDING_TYPE_MOUSE;
-			tmp_binding->input.button.number = button;
+		if ((button = is_mouseX(tmp_gesture->gesture_str)) > 0) {
+			tmp_gesture->type = GESTURE_TYPE_MOUSE;
+			tmp_gesture->input.button.number = button;
 		} else {
-			tmp_binding->type = BINDING_TYPE_KEY;
-			gtk_accelerator_parse(tmp_binding->binding_str, 
-	 			&(tmp_binding->input.key.keysym), 
-	 			&(tmp_binding->input.key.state));
-			tmp_binding->input.key.keycode = 
-				XKeysymToKeycode(GDK_DISPLAY_XDISPLAY (display), tmp_binding->input.key.keysym);
+			tmp_gesture->type = GESTURE_TYPE_KEY;
+			gtk_accelerator_parse(tmp_gesture->gesture_str, 
+	 			&(tmp_gesture->input.key.keysym), 
+	 			&(tmp_gesture->input.key.state));
+			tmp_gesture->input.key.keycode = 
+				XKeysymToKeycode(GDK_DISPLAY_XDISPLAY (display), tmp_gesture->input.key.keysym);
 		}
 		/* [TODO] Need to clean up here. */
 		 
@@ -316,7 +316,7 @@ parse_line(gchar *buf)
 				/* Add an error message */
 			return NULL;
 		}
-		tmp_binding->n_times = n;
+		tmp_gesture->n_times = n;
 
 		/*
 	 	 * Skip over white space
@@ -329,7 +329,7 @@ parse_line(gchar *buf)
 		} while (isspace(*c) && (c++));
 
 		/*
-		 * Find the key press duration (in seconds)
+		 * Find the key press duration (in ms)
 		 */
 		tmp_string = c;
 		while(!(isspace(*c))) {
@@ -345,7 +345,7 @@ parse_line(gchar *buf)
 				/* Add an error message */
 			return NULL;
 		}
-		tmp_binding->duration = duration;
+		tmp_gesture->duration = duration;
 
 		/*
 	 	 * Skip over white space
@@ -358,7 +358,7 @@ parse_line(gchar *buf)
 		} while (isspace(*c) && (c++));
 
 		/*
-		 * Find the timeout duration (in seconds). Timeout value is the 
+		 * Find the timeout duration (in ms). Timeout value is the 
 		 * time within which consecutive keypress actions must be performed
 		 * by the user before the sequence is discarded.
 		 */
@@ -377,7 +377,7 @@ parse_line(gchar *buf)
 				/* Add an error message */;
 			return NULL;
 		}
-		tmp_binding->timeout = timeout;
+		tmp_gesture->timeout = timeout;
 	}
 
 	/*
@@ -393,8 +393,8 @@ parse_line(gchar *buf)
 	keyservice = c;
 	for (; !iseol(*c); c++);
 	*c = '\0';
-	tmp_binding->actions = g_slist_append(tmp_binding->actions, g_strdup(keyservice));
-	return tmp_binding;
+	tmp_gesture->actions = g_slist_append(tmp_gesture->actions, g_strdup(keyservice));
+	return tmp_gesture;
 }
 
 /* 
@@ -409,21 +409,21 @@ parse_line(gchar *buf)
 #define N_BITS 32
 
 static gboolean 
-binding_already_used (Binding *binding)
+gesture_already_used (Gesture *gesture)
 {
 	GSList *li;
 
-	for (li = binding_list; li != NULL; li = li->next) {
-		Binding *tmp_binding =  (Binding*) li->data;
+	for (li = gesture_list; li != NULL; li = li->next) {
+		Gesture *tmp_gesture =  (Gesture*) li->data;
 
-		if (tmp_binding != binding && tmp_binding->type == binding->type) {
-			switch (tmp_binding->type) {
-		  	case (BINDING_TYPE_KEY):
-				if (tmp_binding->input.key.keycode == binding->input.key.keycode &&
-			    	tmp_binding->input.key.state == binding->input.key.state)
+		if (tmp_gesture != gesture && tmp_gesture->type == gesture->type) {
+			switch (tmp_gesture->type) {
+		  	case (GESTURE_TYPE_KEY):
+				if (tmp_gesture->input.key.keycode == gesture->input.key.keycode &&
+			    	tmp_gesture->input.key.state == gesture->input.key.state)
 					return TRUE;
-		  	case (BINDING_TYPE_MOUSE):
-				if (tmp_binding->input.button.number == binding->input.button.number)
+		  	case (GESTURE_TYPE_MOUSE):
+				if (tmp_gesture->input.button.number == gesture->input.button.number)
 					return TRUE;
 		  	default:
 		  		break;
@@ -434,7 +434,7 @@ binding_already_used (Binding *binding)
 }
 
 GdkFilterReturn
-bindings_filter (GdkXEvent *gdk_xevent,
+gestures_filter (GdkXEvent *gdk_xevent,
 		    GdkEvent *event,
 		    gpointer data)
 {
@@ -443,7 +443,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 	KeySym sym;
 	
 	static XEvent *last_event = NULL;
-	static Binding *curr_binding = NULL;
+	static Gesture *curr_gesture = NULL;
 	static gint seq_count = 0;
 
 	if (xevent->type != KeyPress &&
@@ -468,22 +468,22 @@ bindings_filter (GdkXEvent *gdk_xevent,
 				seq_count = 0;
 			} else {
 				/*
-				 * Find the associated binding for this keycode & state
+				 * Find the associated gesture for this keycode & state
 				 * TODO: write a custom g_slist_find function.
 				 */
-				 for (li = binding_list; li != NULL; li = li->next) {
-				 	Binding *binding = (Binding *) li->data;
-					if (binding->type == BINDING_TYPE_KEY &&
-						xevent->xkey.keycode == binding->input.key.keycode &&
-						(xevent->xkey.state & USED_MODS) == binding->input.key.state) {
+				 for (li = gesture_list; li != NULL; li = li->next) {
+				 	Gesture *gesture = (Gesture *) li->data;
+					if (gesture->type == GESTURE_TYPE_KEY &&
+						xevent->xkey.keycode == gesture->input.key.keycode &&
+						(xevent->xkey.state & USED_MODS) == gesture->input.key.state) {
 						/* 
-						 * OK Found the binding.
+						 * OK Found the gesture.
 						 * Now check if it has a timeout value > 0;
 						 */
-						curr_binding = binding;
-						if (binding->timeout > 0) {
-							 /* xevent time values are in milliseconds. The config file spec is in seconds */
-							if ((xevent->xkey.time - last_event->xkey.time) > binding->timeout)	
+						curr_gesture = gesture;
+						if (gesture->timeout > 0) {
+							 /* xevent time values are in milliseconds. The config file spec is in ms */
+							if ((xevent->xkey.time - last_event->xkey.time) > gesture->timeout)	
 								seq_count = 0; /* The timeout has been exceeded. Reset the sequence. */
 						}
 					}
@@ -500,21 +500,21 @@ bindings_filter (GdkXEvent *gdk_xevent,
 			seq_count = 0;
 		else {
 			/*
-			 * Find the associated binding for this keycode &state
+			 * Find the associated gesture for this keycode &state
 			 * TODO: write a custom g_slist_find function.
 			 */
-			for (li = binding_list; li != NULL; li = li->next) {
-				Binding *binding = (Binding *) li->data;
-				if (binding->type == BINDING_TYPE_KEY &&
-					xevent->xkey.keycode == binding->input.key.keycode &&
-					(xevent->xkey.state & USED_MODS) == binding->input.key.state) {
+			for (li = gesture_list; li != NULL; li = li->next) {
+				Gesture *gesture = (Gesture *) li->data;
+				if (gesture->type == GESTURE_TYPE_KEY &&
+					xevent->xkey.keycode == gesture->input.key.keycode &&
+					(xevent->xkey.state & USED_MODS) == gesture->input.key.state) {
 					/* 
-					 * OK Found the binding.
+					 * OK Found the gesture.
 					 * Now check if it has a duration value > 0.
 					 */
-					curr_binding = binding;
-					if ((binding->duration > 0) &&
-						((xevent->xkey.time - last_event->xkey.time) < binding->duration))
+					curr_gesture = gesture;
+					if ((gesture->duration > 0) &&
+						((xevent->xkey.time - last_event->xkey.time) < gesture->duration))
 						seq_count = 0;
 					else
 						seq_count++;
@@ -531,21 +531,21 @@ bindings_filter (GdkXEvent *gdk_xevent,
 				seq_count = 0;
 			else {
 				/*
-				 * Find the associated binding for this button.
+				 * Find the associated gesture for this button.
 				 * TODO: write a custom g_slist_find function
 				 */
-				for (li = binding_list; li != NULL; li = li->next) {
-					Binding *binding = (Binding *) li->data;
-					if (binding->type == BINDING_TYPE_MOUSE &&
-						xevent->xbutton.button == binding->input.button.number) { /* TODO: Support state? */
+				for (li = gesture_list; li != NULL; li = li->next) {
+					Gesture *gesture = (Gesture *) li->data;
+					if (gesture->type == GESTURE_TYPE_MOUSE &&
+						xevent->xbutton.button == gesture->input.button.number) { /* TODO: Support state? */
 						/*
-						 * Ok Found the binding.
+						 * Ok Found the gesture.
 						 * Now check if it has a timeout value > 0;
 						 */
-						curr_binding = binding;
-						if (binding->timeout > 0 ) {
-							/* xevent time values are in milliseconds. The config file spec is in seconds */
-							if ((xevent->xbutton.time - last_event->xbutton.time) > binding->timeout)
+						curr_gesture = gesture;
+						if (gesture->timeout > 0 ) {
+							/* xevent time values are in milliseconds. The config file spec is in ms */
+							if ((xevent->xbutton.time - last_event->xbutton.time) > gesture->timeout)
 								seq_count = 0; /* Timeout has elapsed. Reset the sequence. */
 						}
 					}
@@ -560,20 +560,20 @@ bindings_filter (GdkXEvent *gdk_xevent,
 			seq_count = 0;
 		else {
 			/*
-			 * Find the associated binding for this button.
+			 * Find the associated gesture for this button.
 			 * TODO: write a custom g_slist_find function
 			 */
-			for (li = binding_list; li != NULL; li = li->next) {
-				Binding *binding = (Binding *) li->data;
-				if (binding->type == BINDING_TYPE_MOUSE &&
-					xevent->xbutton.button == binding->input.button.number) { /* TODO: Support state? */
+			for (li = gesture_list; li != NULL; li = li->next) {
+				Gesture *gesture = (Gesture *) li->data;
+				if (gesture->type == GESTURE_TYPE_MOUSE &&
+					xevent->xbutton.button == gesture->input.button.number) { /* TODO: Support state? */
 					/*
-					 * OK Found the binding.
+					 * OK Found the gesture.
 					 * Now check if it has a duration value > 0.
 					 */
-					curr_binding = binding;
-					if ((binding->duration > 0) &&
-						((xevent->xbutton.time - last_event->xbutton.time) < binding->duration))
+					curr_gesture = gesture;
+					if ((gesture->duration > 0) &&
+						((xevent->xbutton.time - last_event->xbutton.time) < gesture->duration))
 						seq_count = 0;
 					else
 						seq_count++;
@@ -587,11 +587,11 @@ bindings_filter (GdkXEvent *gdk_xevent,
 	}
 
 	/*
-	 * Did this event complete any binding sequences?
+	 * Did this event complete any gesture sequences?
 	 */
 	last_event = memcpy(last_event, xevent, sizeof(XEvent));
-	if (curr_binding) {
-		if (seq_count != curr_binding->n_times) 
+	if (curr_gesture) {
+		if (seq_count != curr_gesture->n_times) 
 			return GDK_FILTER_REMOVE;
 		else {
 			GError* error = NULL;
@@ -600,7 +600,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 			gchar **envp = NULL; 
 
 			seq_count = 0;
-			for (act_li = curr_binding->actions; act_li != NULL; act_li = act_li->next) {
+			for (act_li = curr_gesture->actions; act_li != NULL; act_li = act_li->next) {
 				gchar *action = (gchar *)act_li->data;
 				g_return_val_if_fail (action != NULL, GDK_FILTER_CONTINUE);
 				if (!g_shell_parse_argv (action, NULL, &argv, &error))
@@ -626,7 +626,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 							_("Error while trying to run (%s)\n"\
 							"which is linked to (%s)"),
 							action,
-							curr_binding->binding_str);
+							curr_gesture->gesture_str);
 					g_signal_connect (dialog, "response",
 						G_CALLBACK (gtk_widget_destroy),
 						NULL);
