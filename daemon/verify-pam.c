@@ -429,7 +429,8 @@ gdm_verify_user (GdmDisplay *d,
     if ( ! error_msg_given &&
 	gdm_slave_should_complain ()) {
 	    /* I'm not sure yet if I should display this message for any other issues - heeten */
-	    if (pamerr == PAM_AUTH_ERR) {
+	    if (pamerr == PAM_AUTH_ERR ||
+		pamerr == PAM_USER_UNKNOWN) {
 		    /* FIXME: Hmm, how are we sure that the login is username
 		     * and password.  That is the most common case but not
 		     * neccessairly true, this message needs to be changed
