@@ -63,9 +63,8 @@ gchar *system_row[1] = { N_("System") };
 
 gchar *desc1 = N_("This panel displays the basic options for configuring GDM.\n"
 				"\n"
-				"If you need finer detail, select 'expert' or 'system setup' from the list above.\n"
-				"\n"
-				"This will display some of the more complex options of GDM that rarely need to be changed.");
+				"If you need finer detail, select 'Expert' or 'System' from the list above,"
+				"which will display some of the more complex options of GDM that rarely need to be changed.");
 gchar *desc2 = N_("This panel displays the more advanced options of GDM.\n"
 				"\n"
 				"Be sure to take care when manipulating the security options, or you could be "
