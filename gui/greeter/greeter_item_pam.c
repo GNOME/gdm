@@ -110,11 +110,11 @@ greeter_item_pam_prompt (const char *message,
     {
       entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
       
-      gtk_widget_grab_focus (entry);
       gtk_entry_set_visibility (GTK_ENTRY (entry), entry_visible);
       gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
       gtk_entry_set_max_length (GTK_ENTRY (entry), entry_len);
       gtk_entry_set_text (GTK_ENTRY (entry), "");
+      gtk_widget_grab_focus (entry);
     }
 
   messages_to_give = FALSE;
