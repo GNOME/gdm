@@ -56,7 +56,7 @@ extern gint GdmXdmcp;
 extern sigset_t sysmask;
 
 /* Global vars */
-GdmDisplay *d = NULL;
+static GdmDisplay *d = NULL;
 
 static gboolean
 gdm_server_check_loop (GdmDisplay *disp)

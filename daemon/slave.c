@@ -47,12 +47,12 @@
 static const gchar RCSid[]="$Id$";
 
 /* Global vars */
-GdmDisplay *d;
-gchar *login = NULL;
-sigset_t mask, omask;
-gboolean pingack;
-gboolean greet = FALSE;
-FILE *greeter;
+static GdmDisplay *d;
+static gchar *login = NULL;
+static sigset_t mask, omask;
+static gboolean pingack;
+static gboolean greet = FALSE;
+static FILE *greeter;
 
 extern gboolean gdm_first_login;
 
@@ -624,12 +624,24 @@ gdm_slave_child_handler (int sig)
 	gdm_debug ("gdm_slave_child_handler: %d died", pid);
 	
 	if (WIFEXITED (status))
-	    gdm_debug ("gdm_slave_child_handler: %d returned %d", pid, WEXITSTATUS (status));
+	    gdm_debug ("gdm_slave_child_handler: %d returned %d",
+		       (int)pid, (int)WEXITSTATUS (status));
+	if (WIFSIGNALED (status))
+	    gdm_debug ("gdm_slave_child_handler: %d died of %d",
+		       (int)pid, (int)WTERMSIG (status));
 	
 	if (pid == d->greetpid && greet) {
 	    if (WIFEXITED (status)) {
 		gdm_server_kill (d);
 		exit (WEXITSTATUS (status));
+	    } else if (WIFSIGNALED (status) &&
+		       WTERMSIG (status) != SIGQUIT &&
+		       WTERMSIG (status) != SIGKILL &&
+		       WTERMSIG (status) != SIGTERM &&
+		       WTERMSIG (status) != SIGINT) {
+		    /* if we died of some weird signal, we are broken */
+		    gdm_server_kill (d);
+		    exit (DISPLAY_GREETERSEGV);
 	    } else {
 		if (d && d->dsp) {
 		    XCloseDisplay (d->dsp);

@@ -395,7 +395,34 @@ gdm_cleanup_children (void)
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
 	break;
+
+    case DISPLAY_GREETERSEGV:
+	/* hmmm this may have been caused by something weird, so we should try
+	 * again */
+	{
+		time_t now = time (NULL);
+
+		/* if we segv more then 4 times in 40 seconds
+		 * then we don't want to do anything with this display
+		 * anymore it's defective */
+		if (d->slave_last_start_time > now ||
+		    d->slave_last_start_time == 0 ||
+		    d->slave_last_start_time + 40 < now) {
+			d->slave_retry_count = 1;
+			/*fall through to remanage */
+		} else if (d->slave_retry_count > 4) {
+			gdm_info (_("gdm_child_action: Greeter segfaulted too many times in the last 40 seconds for display %s, killing it"), d->name);
+
+			gdm_display_unmanage (d);
+			/* don't fall through, just get out */
+			break;
+		} else {
+			d->slave_retry_count ++;
+		}
 	
+		d->slave_last_start_time = now;
+		/* fall through */
+	}
     case DISPLAY_REMANAGE:	/* Remanage display */
     default:
 	gdm_debug ("gdm_child_action: Slave process returned %d", status);

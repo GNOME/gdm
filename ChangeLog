@@ -1,3 +1,10 @@
+Wed Jan 10 13:57:56 2001  George Lebl <jirka@5z.com>
+
+	* daemon/display.c, daemon/gdm.[ch], daemon/server.c,
+	  daemon/slave.c:  A little bit of cleanup, if the greeter
+	  segs 5 times during 40 seconds, unmanage the display
+	  so that we don't hog the console.
+
 Wed Jan 10 07:22:29 2001  George Lebl <jirka@5z.com>
 
 	* daemon/server.[ch], daemon/slave.c: When slave is exitting

@@ -44,7 +44,7 @@ extern GSList *displays;
  * Manage (Initialize and start login session) display
  */
 
-gint 
+gboolean 
 gdm_display_manage (GdmDisplay *d)
 {
     sigset_t mask, omask;
