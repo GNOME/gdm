@@ -22,6 +22,7 @@
 #include <config.h>
 #include <libgnome/libgnome.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>

@@ -140,7 +140,7 @@ authenticate_again:
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
 
 	    if (GdmDisplayLastLogin) {
-		    char *info = gdm_get_last_info (s);
+		    char *info = gdm_get_last_info (login);
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
 		    g_free (info);
 	    }

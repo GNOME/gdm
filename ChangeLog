@@ -1,3 +1,12 @@
+Tue Jan 13 08:40:29 2004  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c: Add sys/socket.h include to fix compilation
+	  on freebsd, fixes #130963, thanks to Joe Marcus Clarke
+	  <marcus@freebsd.org>
+
+	* daemon/verify-crypt.c, daemon/verify-shadow.c: Fix compilation
+	  of the crypt and shadow compilation.  Fixes #131042
+
 Thu Jan 08 10:23:32 2004  George Lebl <jirka@5z.com>
 
 	* Release 2.5.90.0
