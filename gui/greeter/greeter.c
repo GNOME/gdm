@@ -1071,7 +1071,6 @@ main (int argc, char *argv[])
     return r;
 
   greeter_session_init ();
-  greeter_language_init ();
 
   ve_signal_add (SIGHUP, greeter_reread_config, NULL);
 

@@ -86,18 +86,6 @@ greeter_langauge_initialize_model (void)
   g_list_free (list);
 }
 
-void
-greeter_language_init (void)
-{
-  static gboolean initted = FALSE;
-
-  g_assert ( ! initted);
-    
-  greeter_langauge_initialize_model ();
-
-  initted = TRUE;
-}
-
 gboolean
 greeter_language_get_save_language (void)
 {
@@ -196,9 +184,10 @@ void
 greeter_action_language (GreeterItemInfo *info,
 			 gpointer         user_data)
 {
+  GtkWidget *view = NULL;
+
   if (dialog == NULL)
     {
-      GtkWidget *view;
       GtkWidget *swindow;
       GtkWidget *label;
       char *s;
@@ -226,7 +215,7 @@ greeter_action_language (GreeterItemInfo *info,
       gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
       gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			  label, FALSE, FALSE, 0);
-      view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (lang_model));
+      view = gtk_tree_view_new ();
       gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (view), TRUE);
       /* FIXME: we should handle this better, but things really look
        * like crap if we aren't always LTR */
@@ -267,6 +256,13 @@ greeter_action_language (GreeterItemInfo *info,
       gdm_wm_center_window (GTK_WINDOW (dialog));
     }
   gdm_wm_no_login_focus_push ();
+  if (view != NULL)
+    {
+      gtk_widget_show_now (dialog);
+      greeter_langauge_initialize_model ();
+      gtk_tree_view_set_model (GTK_TREE_VIEW (view),
+			       GTK_TREE_MODEL (lang_model));
+    }
   switch (gtk_dialog_run (GTK_DIALOG (dialog)))
     {
     case GTK_RESPONSE_OK:
