@@ -763,6 +763,11 @@ gdm_center_window (GtkWindow *cw)
 	x = screen.x + (screen.width - req.width)/2;
 	y = screen.y + (screen.height - req.height)/2;	
 
+	if (x < screen.x)
+		x = screen.x;
+	if (y < screen.y)
+		y = screen.y;
+
  	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
 }
 
@@ -1273,7 +1278,7 @@ gdm_login_session_handler (GtkWidget *widget)
 
     cursess = gtk_object_get_data (GTK_OBJECT (widget), SESSION_NAME);
 
-    s = g_strdup_printf (_("%s session selected"), _(cursess));
+    s = g_strdup_printf (_("%s session selected"), translate_session (cursess));
 
     gtk_label_set (GTK_LABEL (msg), s);
     g_free (s);
@@ -1977,9 +1982,6 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_RESET:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
-	buf[len-1] = '\0';
-
 	if (GdmQuiver) {
 	    gdk_window_get_position (login->window, &x, &y);
 	    
@@ -1998,6 +2000,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		usleep (200);
 	    }
 	}
+
+    case GDM_RESETOK:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	buf[len-1] = '\0';
 
 	if (curuser != NULL) {
 	    g_free (curuser);
@@ -3245,6 +3251,65 @@ revert_focus_to_login (void)
 	}
 }
 
+static void
+center_x_window (Window w)
+{
+	XSizeHints hints;
+	Status status;
+	long ret;
+	int x, y;
+	Window root;
+	unsigned int width, height, border, depth;
+
+	gdk_error_trap_push ();
+
+	status = XGetWMNormalHints (GDK_DISPLAY (),
+				    w,
+				    &hints,
+				    &ret);
+
+	if ( ! status) {
+		gdk_flush ();
+		gdk_error_trap_pop ();
+		return;
+	}
+
+	if (hints.flags & USPosition &&
+	    hints.flags & USSize) {
+		gdk_flush ();
+		gdk_error_trap_pop ();
+		return;
+	}
+
+	XGetGeometry (GDK_DISPLAY (), w,
+		      &root, &x, &y, &width, &height, &border, &depth);
+
+	/* we replace the x,y and width,height with some new values */
+
+	if ( ! (hints.flags & USSize)) {
+		if (width > screen.width)
+			width = screen.width;
+		if (height > screen.height)
+			height = screen.height;
+	}
+
+	if ( ! (hints.flags & USPosition)) {
+		/* we wipe the X with some new values */
+		x = screen.x + (screen.width - width)/2;
+		y = screen.y + (screen.height - height)/2;	
+
+		if (x < screen.x)
+			x = screen.x;
+		if (y < screen.y)
+			y = screen.y;
+	}
+	
+	XMoveResizeWindow (GDK_DISPLAY (), w, x, y, width, height);
+	
+	gdk_flush ();
+	gdk_error_trap_pop ();
+}
+
 static GdkFilterReturn
 root_filter (GdkXEvent *gdk_xevent,
 	     GdkEvent *event,
@@ -3252,8 +3317,34 @@ root_filter (GdkXEvent *gdk_xevent,
 {
 	Window w;
 	XEvent *xevent = (XEvent *)gdk_xevent;
+	XWindowChanges wchanges;
 
 	switch (xevent->type) {
+	case MapRequest:
+		w = xevent->xmaprequest.window;
+		center_x_window (w);
+		XMapWindow (GDK_DISPLAY (), w);
+		break;
+	case ConfigureRequest:
+		w = xevent->xconfigurerequest.window;
+		wchanges.x = xevent->xconfigurerequest.x;
+		wchanges.y = xevent->xconfigurerequest.y;
+		wchanges.width = xevent->xconfigurerequest.width;
+		wchanges.height = xevent->xconfigurerequest.height;
+		wchanges.border_width = xevent->xconfigurerequest.border_width;
+		wchanges.sibling = xevent->xconfigurerequest.above;
+		wchanges.stack_mode = xevent->xconfigurerequest.detail;
+		XConfigureWindow (GDK_DISPLAY (),
+				   w,
+				   xevent->xconfigurerequest.value_mask,
+				   &wchanges);
+		break;
+	case CirculateRequest:
+		w = xevent->xcirculaterequest.window;
+		XCirculateSubwindows (GDK_DISPLAY (),
+				      w,
+				      xevent->xcirculaterequest.place);
+		break;
 	case MapNotify:
 		if ( ! xevent->xmap.override_redirect) {
 			w = xevent->xmap.window;
@@ -3447,7 +3538,8 @@ main (int argc, char *argv[])
     XSelectInput (GDK_DISPLAY (),
 		  GDK_ROOT_WINDOW (),
 		  attribs.your_event_mask |
-		  SubstructureNotifyMask);
+		  SubstructureNotifyMask |
+		  SubstructureRedirectMask);
 
     gdk_flush ();
     gdk_error_trap_pop ();

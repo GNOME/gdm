@@ -55,31 +55,32 @@
 
 /* Opcodes for the highly sophisticated protocol used for
  * daemon<->greeter communications */
-#define GDM_MSGERR 'D'
-#define GDM_NOECHO 'U'
-#define GDM_PROMPT 'N'
-#define GDM_SESS   'G'
-#define GDM_LANG   '&'
-#define GDM_SSESS  'C'
-#define GDM_SLANG  'R'
-#define GDM_RESET  'A'
-#define GDM_QUIT   'P'
-#define GDM_STOP   '!'
+#define GDM_MSGERR     'D'
+#define GDM_NOECHO     'U'
+#define GDM_PROMPT     'N'
+#define GDM_SESS       'G'
+#define GDM_LANG       '&'
+#define GDM_SSESS      'C'
+#define GDM_SLANG      'R'
+#define GDM_RESET      'A'
+#define GDM_QUIT       'P'
+#define GDM_STOP       '!'
 /* crap, these don't fit into the above theme, this protocol
  * is thus liable to change */
-#define GDM_GNOMESESS '?'
+#define GDM_GNOMESESS  '?'
 #define GDM_STARTTIMER 's'
-#define GDM_STOPTIMER 'S'
-#define GDM_LOGIN 'L' /* this is the login prompt, much like PROMPT but
-			 different */
-#define GDM_SETLOGIN 'l' /* this just sets the login to be this, just for
-			    the greeters knowledge */
-#define GDM_DISABLE '-' /* disable the login screen */
-#define GDM_ENABLE '+' /* enable the login screen */
+#define GDM_STOPTIMER  'S'
+#define GDM_LOGIN      'L' /* this is the login prompt, much like PROMPT but
+			      different */
+#define GDM_SETLOGIN   'l' /* this just sets the login to be this, just for
+			      the greeters knowledge */
+#define GDM_DISABLE    '-' /* disable the login screen */
+#define GDM_ENABLE     '+' /* enable the login screen */
+#define GDM_RESETOK    'r' /* reset but don't shake */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'
-#define GDM_INTERRUPT_CONFIGURE 'C'
+#define GDM_INTERRUPT_CONFIGURE   'C'
 
 /* The dreaded miscellaneous category */
 #define MAX_ARGS 32
@@ -87,30 +88,31 @@
 #define PIPE_SIZE 4096
 
 /* Configuration constants */
-#define GDM_KEY_CHOOSER "daemon/Chooser=gdmchooser"
+#define GDM_KEY_CHOOSER "daemon/Chooser=" EXPANDED_BINDIR "/gdmchooser --disable-sound --disable-crash-dialog"
 #define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
-#define GDM_KEY_GREETER "daemon/Greeter=gdmlogin"
+#define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin --disable-sound --disable-crash-dialog"
 #define GDM_KEY_GROUP "daemon/Group=gdm"
-#define GDM_KEY_HALT "daemon/HaltCommand=shutdown -h now"
-#define GDM_KEY_INITDIR "daemon/DisplayInitDir="
+#define GDM_KEY_HALT "daemon/HaltCommand=/sbin/shutdown -h now"
+#define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
 #define GDM_KEY_KILLIC "daemon/KillInitClients=true"
-#define GDM_KEY_LOGDIR "daemon/LogDir="
-#define GDM_KEY_PATH "daemon/DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin"
+#define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_AUTHDIR
+#define GDM_KEY_PATH "daemon/DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
 #define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
-#define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir="
-#define GDM_KEY_PRESESS "daemon/PreSessionScriptDir="
-#define GDM_KEY_REBOOT "daemon/RebootCommand=shutdown -r now"
-#define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin"
-#define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=/usr/share/gnome/default.session"
-#define GDM_KEY_SERVAUTH "daemon/ServAuthDir=/var/gdm"
-#define GDM_KEY_SESSDIR "daemon/SessionDir="
+#define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
+#define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
+#define GDM_KEY_REBOOT "daemon/RebootCommand=/sbin/shutdown -r now"
+#define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
+#define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=" EXPANDED_DATADIR "/gnome/default.session"
+#define GDM_KEY_SERVAUTH "daemon/ServAuthDir=" EXPANDED_AUTHDIR
+#define GDM_KEY_SESSDIR "daemon/SessionDir=" EXPANDED_SYSCONFDIR "/gdm/Sessions/"
+
 #define GDM_KEY_UAUTHDIR "daemon/UserAuthDir="
 #define GDM_KEY_UAUTHFB "daemon/UserAuthFBDir=/tmp"
 #define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
 #define GDM_KEY_USER "daemon/User=gdm"
 
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
-#define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=0"
+#define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
@@ -120,35 +122,35 @@
 #define GDM_KEY_RETRYDELAY "security/RetryDelay=3"
 #define GDM_KEY_VERBAUTH "security/VerboseAuth=true"
 
-#define GDM_KEY_XDMCP "xdmcp/Enable=true"
+#define GDM_KEY_XDMCP "xdmcp/Enable=false"
 #define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
 #define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
 #define GDM_KEY_MAXWAIT "xdmcp/MaxWait=30"
 #define GDM_KEY_DISPERHOST "xdmcp/DisplaysPerHost=1"
 #define GDM_KEY_UDPPORT "xdmcp/Port=177"
-#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=true"
+#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=false"
 #define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
 #define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=30"
 
-#define GDM_KEY_GTKRC "gui/GtkRC="
+#define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk/gtkrc"
 #define GDM_KEY_ICONWIDTH "gui/MaxIconWidth=128"
 #define GDM_KEY_ICONHEIGHT "gui/MaxIconHeight=128"
 
 #define GDM_KEY_BROWSER "greeter/Browser=false"
-#define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody"
-#define GDM_KEY_FACE "greeter/DefaultFace=nobody.png"
-#define GDM_KEY_FACEDIR "greeter/GlobalFaceDir="
+#define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm"
+#define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "nobody.png"
+#define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/faces/"
 #define GDM_KEY_FONT "greeter/Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*"
-#define GDM_KEY_ICON "greeter/Icon=gdm.xpm"
+#define GDM_KEY_ICON "greeter/Icon=" EXPANDED_PIXMAPDIR "/gdm.xpm"
 #define GDM_KEY_LOCALE "greeter/DefaultLocale=english"
-#define GDM_KEY_LOCFILE "greeter/LocaleFile="
-#define GDM_KEY_LOGO "greeter/Logo="
+#define GDM_KEY_LOCFILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
+#define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gnome-logo-large.png"
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
 #define GDM_KEY_CONFIGURATOR "daemon/Configurator=/usr/sbin/gdmconfig"
-#define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=false"
+#define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
-#define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %h"
+#define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %n"
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
 #define GDM_KEY_BACKGROUNDIMAGE "greeter/BackgroundImage="
@@ -161,8 +163,8 @@
 #define GDM_KEY_POSITIONY "greeter/PositionY=0"
 
 #define GDM_KEY_SCAN "chooser/ScanTime=3"
-#define GDM_KEY_HOST "chooser/DefaultHostImg=nohost.png"
-#define GDM_KEY_HOSTDIR "chooser/HostImageDir="
+#define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
+#define GDM_KEY_HOSTDIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
 
 #define GDM_KEY_DEBUG "debug/Enable=false"
 
@@ -207,6 +209,9 @@ struct _GdmDisplay {
     gboolean disabled;
 
     gboolean timed_login_ok;
+
+    int screenx;
+    int screeny;
 };
 
 
@@ -244,6 +249,7 @@ void gdm_run (void);
 void gdm_quit (void);
 
 #define gdm_string_empty(x) ((x)==NULL||(x)[0]=='\0')
+#define gdm_sure_string(x) ((x)!=NULL?(x):"")
 
 #endif /* __GDM_H__ */
 

@@ -21,6 +21,7 @@
 
 #include <config.h>
 #include <gnome.h>
+#include <gdk/gdkx.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -29,6 +30,9 @@
 #include <sys/wait.h>
 #include <strings.h>
 #include <X11/Xlib.h>
+#ifdef HAVE_LIBXINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
 #include <signal.h>
 #include <pwd.h>
 #include <grp.h>
@@ -69,6 +73,7 @@ extern gchar *GdmAutomaticLogin;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
 extern gboolean GdmSystemMenu;
+extern gint GdmXineramaScreen;
 extern gchar *GdmGreeter;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmPreSession;
@@ -189,6 +194,72 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	gdm_debug ("gdm_slave_start: DisplayInit script finished");
 }
 
+#ifdef HAVE_LIBXINERAMA
+/* Yay thread unsafety */
+static gboolean x_error_occured = FALSE;
+
+/* ignore handlers */
+static int
+ignore_xerror_handler (Display *disp, XErrorEvent *evt)
+{
+	x_error_occured = TRUE;
+	return 0;
+}
+
+static int
+ignore_xioerror_handler (Display *disp)
+{
+	x_error_occured = TRUE;
+	return 0;
+}
+#endif
+
+static void 
+gdm_screen_init (GdmDisplay *display) 
+{
+#ifdef HAVE_LIBXINERAMA
+	int (* old_xerror_handler) (Display *, XErrorEvent *);
+	int (* old_xioerror_handler) (Display *);
+	gboolean have_xinerama = FALSE;
+
+	x_error_occured = FALSE;
+	old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
+	old_xioerror_handler = XSetIOErrorHandler (ignore_xioerror_handler);
+
+	have_xinerama = XineramaIsActive (display->dsp);
+
+	XSync (display->dsp, False);
+	XSetErrorHandler (old_xerror_handler);
+	XSetIOErrorHandler (old_xioerror_handler);
+
+	if (x_error_occured)
+		have_xinerama = FALSE;
+
+	if (have_xinerama) {
+		int screen_num;
+		XineramaScreenInfo *xscreens =
+			XineramaQueryScreens (display->dsp,
+					      &screen_num);
+
+
+		if (screen_num <= 0)
+			gdm_fail ("Xinerama active, but <= 0 screens?");
+
+		if (screen_num <= GdmXineramaScreen)
+			GdmXineramaScreen = 0;
+
+		display->screenx = xscreens[GdmXineramaScreen].x_org;
+		display->screeny = xscreens[GdmXineramaScreen].y_org;
+
+		XFree (xscreens);
+	} else
+#endif
+	{
+		display->screenx = 0;
+		display->screeny = 0;
+	}
+}
+
 
 static void 
 gdm_slave_run (GdmDisplay *display)
@@ -234,6 +305,10 @@ gdm_slave_run (GdmDisplay *display)
     }
 
     if (d->dsp != NULL) {
+
+	/* checkout xinerama */
+        gdm_screen_init (d);
+
 	if (d->type == TYPE_LOCAL &&
 	    gdm_first_login &&
 	    ! gdm_string_empty (GdmAutomaticLogin) &&
@@ -307,6 +382,7 @@ run_error_dialog (const char *error)
 		gtk_init (&argc, &argv);
 
 		dialog = gtk_dialog_new ();
+		gtk_widget_set_uposition (dialog, d->screenx, d->screeny);
 
 		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
 				    GTK_SIGNAL_FUNC(gtk_main_quit),
@@ -328,8 +404,21 @@ run_error_dialog (const char *error)
 		gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
 					   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
 					   GTK_OBJECT (dialog));
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_grab_default (button);
 
 		gtk_widget_show_all (dialog);
+		gtk_widget_show_now (dialog);
+
+		if (dialog->window != NULL) {
+			gdk_error_trap_push ();
+			XSetInputFocus (GDK_DISPLAY (),
+					GDK_WINDOW_XWINDOW (dialog->window),
+					RevertToPointerRoot,
+					CurrentTime);
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
 
 		gtk_main ();
 
@@ -490,7 +579,7 @@ gdm_slave_wait_for_login (void)
 			gdm_verify_cleanup ();
 
 			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
-			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
+			gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
 			continue;
 		}
 
@@ -794,7 +883,7 @@ find_a_session (void)
 }
 
 static char *
-find_prog (const char *name, const char *args)
+find_prog (const char *name, const char *args, char **retpath)
 {
 	char *ret;
 	char *path;
@@ -809,27 +898,30 @@ find_prog (const char *name, const char *args)
 	};
 
 	path = gnome_is_program_in_path (name);
-	if (path != NULL) {
+	if (path != NULL &&
+	    access (path, X_OK) == 0) {
 		ret = g_strdup_printf ("%s %s", path, args);
-		g_free (path);
+		*retpath = path;
 		return ret;
 	}
+	g_free (path);
 	for (i = 0; try[i] != NULL; i++) {
 		path = g_strconcat (try[i], name, NULL);
-		if (g_file_exists (path)) {
+		if (access (path, X_OK) == 0) {
 			ret = g_strdup_printf ("%s %s", path, args);
-			g_free (path);
+			*retpath = path;
 			return ret;
 		}
 		g_free (path);
 	}
+	*retpath = NULL;
 	return NULL;
 }
 
 static void
 gdm_slave_session_start (void)
 {
-    char *cfgdir, *sesspath;
+    char *cfgdir, *sesspath, *sessexec;
     struct stat statbuf;
     struct passwd *pwent;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
@@ -1112,10 +1204,12 @@ gdm_slave_session_start (void)
 	sigprocmask (SIG_SETMASK, &sysmask, NULL);
 	
 	sesspath = NULL;
+	sessexec = NULL;
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
 		sesspath = find_prog ("gnome-session",
-				      "--choose-session=Default");
+				      "--choose-session=Default",
+				      &sessexec);
 		if (sesspath == NULL) {
 			/* yaikes */
 			gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
@@ -1138,8 +1232,12 @@ gdm_slave_session_start (void)
 	/* an if and not an else, we could have done a fall-through
 	 * to here in the above code if we can't find gnome-session */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
+		char *params = g_strdup_printf ("-geometry 80x24+%d+%d",
+						d->screenx, d->screeny);
 		sesspath = find_prog ("xterm",
-				      "-geometry 80x24-0-0");
+				      params,
+				      &sessexec);
+		g_free (params);
 		if (sesspath == NULL) {
 			run_error_dialog
 				(_("Cannot find \"xterm\" to start "
@@ -1153,7 +1251,7 @@ gdm_slave_session_start (void)
 				   "console so that you may fix your system\n"
 				   "if you cannot log in any other way.\n"
 				   "To exit the terminal emulator, type\n"
-				   "'exit'and an enter into the window."));
+				   "'exit' and an enter into the window."));
 		}
 	} 
 
@@ -1180,8 +1278,8 @@ gdm_slave_session_start (void)
 		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
 		run_error_dialog (_("The system administrator has\n"
 				    "disabled your account."));
-	} else if (access (sesspath, X_OK|R_OK) != 0) {
-		gdm_error (_("gdm_slave_session_start: Could not find session `%s'"), sesspath);
+	} else if (access (sessexec != NULL ? sessexec : sesspath, X_OK) != 0) {
+		gdm_error (_("gdm_slave_session_start: Could not find/run session `%s'"), sesspath);
 		/* if we can't read and exec the session, then make a nice
 		 * error dialog */
 		run_error_dialog

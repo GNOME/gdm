@@ -63,6 +63,7 @@ gchar *GdmAutomaticLogin = NULL;
 gchar *GdmConfigurator = NULL;
 gboolean GdmConfigAvailable = FALSE;
 gboolean GdmSystemMenu = FALSE;
+gint GdmXineramaScreen = 0;
 gchar *GdmGreeter = NULL;
 gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
@@ -146,6 +147,7 @@ gdm_config_parse (void)
     GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
+    GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
     GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
     GdmRetryDelay = gnome_config_get_int (GDM_KEY_RETRYDELAY);
     GdmRootPath = gnome_config_get_string (GDM_KEY_ROOTPATH);

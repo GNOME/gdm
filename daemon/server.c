@@ -460,6 +460,8 @@ gdm_server_alloc (gint id, const gchar *command)
     d->sessionid = 0;
     d->acctime = 0;
     d->dsp = NULL;
+    d->screenx = 0; /* xinerama offset */
+    d->screeny = 0;
 
     d->last_start_time = 0;
     d->retry_count = 0;
@@ -474,24 +476,24 @@ gdm_server_alloc (gint id, const gchar *command)
 }
 
 /* ignore handlers */
-static gint
+static int
 ignore_xerror_handler (Display *disp, XErrorEvent *evt)
 {
-    return 0;
+	return 0;
 }
 
-static gint
+static int
 ignore_xioerror_handler (Display *disp)
 {
-    return 0;
+	return 0;
 }
 
 void
 gdm_server_whack_clients (GdmDisplay *disp)
 {
 	int i, screen_count;
-	gint (* old_xerror_handler) (Display *, XErrorEvent *);
-	gint (* old_xioerror_handler) (Display *);
+	int (* old_xerror_handler) (Display *, XErrorEvent *);
+	int (* old_xioerror_handler) (Display *);
 
 	if (disp == NULL ||
 	    disp->dsp == NULL)
@@ -521,6 +523,7 @@ gdm_server_whack_clients (GdmDisplay *disp)
 		}
 	}
 
+	XSync (disp->dsp, False);
 	XSetErrorHandler (old_xerror_handler);
 	XSetIOErrorHandler (old_xioerror_handler);
 }
