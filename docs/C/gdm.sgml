@@ -297,18 +297,10 @@
 	</para>
 	
 	<para>
-	  The face browser makes a few assumptions about your
-	  environment. First of all, the greeter runs under a
-	  dedicated userid, and therefore any face icons located in
-	  user directories must be readable to the gdm user. I.e. all
-	  home- and <filename>~/.gnome</filename> directories must be
-	  made readable and executable to the ``other'' group on the
-	  system.
-	</para>
-
-	<para>
-	  Similarly, face icons placed in the global face directory
-	  must be readable to the gdm user.
+	  Face icons placed in the global face directory
+	  must be readable to the gdm user.  However, the daemon, proxies
+	  user pictures to the greeter and thus those don't have be be
+	  readable by the gdm user, but root.
 	</para>
 
 	<para>
@@ -356,6 +348,16 @@
 
   <chapter id="Configuration">
     <title>The Configuration Directory</title>
+
+    <para> 
+      This chapter will cover the structure of the configuration
+      directory and the format of the configuration file.  However you 
+      can use the <filename>gdmconfig</filename> binary to configure
+      GDM from a graphical environment.  The terms from this chapter
+      could however still come in handy.  If you want to run the
+      configurator from the GNOME menu, it should be installed under
+      the <filename>System</filename> submenu.
+    </para>
 
     <para> 
       The configuration files for GDM are located in the
@@ -559,7 +561,7 @@
 	  <varlistentry>
 	    <term>Configurator</term>
 	    <listitem>
-	      <synopsis>Configurator=/usr/bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis>
+	      <synopsis>Configurator=bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis>
 	      <para>
 		The pathname to the configurator binary.  If the greeter
 		ConfigAvailable option is set to true then run this binary
@@ -751,6 +753,10 @@
 		Directory containing the X authentication files for the
 		individual displays.  Should be owned by
 		<filename>gdm.gdm</filename> with permissions 750.
+		This directory is also used for other private files that
+		the daemon needs to store.  Other user should not
+		have any way to get into this directory and read/change
+		it's contents.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1795,25 +1801,105 @@
 
       <sect2>
 
-	<title>Local X Server Configuration</title>
+	<title>X Server definitions</title>
+
+	<para>
+	  To set up X servers, you need to provide gdm with
+	  information about the installed X servers.  You can
+	  have as many different definitions as you wish, each
+	  identified with a unique name.  The name
+	  <filename>Standard</filename>
+	  is required.  If you do not specify this server, gdm
+	  will assume default values for a 'Standard' server
+	  and the path given by <filename>daemon/StandardXServer</filename>.
+	  <filename>Standard</filename> is used as the default,
+	  in situations when no other server has been defined.
+	</para>
+
+	<para>
+	  Servers are defined by sections named <filename>server-</filename>
+	  followed by the identifier of this server.  This should be a 
+	  simple ascii string with no spaces.  If you use the GUI
+	  configurator, it will use random words for these.  These will
+	  not be user visible, they are just needed to uniquel identify the
+	  server.
+	</para>
 	
+	<variablelist>
+	  <title>[server-Standard]</title>
+
+	  <varlistentry>
+	    <term>name</term>
+	    <listitem>
+	      <synopsis>name=Standard server</synopsis>
+	      <para>
+		The name that will be displayed to the user.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>command</term>
+	    <listitem>
+	      <synopsis>command=/usr/bin/X11/X</synopsis>
+	      <para>
+		The command to execute, with full path to the binary
+		of the X server, and any extra arguments needed.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>flexible</term>
+	    <listitem>
+	      <synopsis>flexible=true</synopsis>
+	      <para>
+		Indicates if this server is available as a choice when a
+		user wishes to run a flexible server.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	</variablelist>
+
+      </sect2>
+
+      <sect2>
+
+	<title>Local X Server Configuration</title>
+
 	<variablelist>
 	  <title>[servers]</title>
 	  
 	  <varlistentry>
 	    <term>0</term>
 	    <listitem>
-	      <synopsis>0=/usr/bin/X11/X</synopsis>
+	      <synopsis>0=Standard</synopsis>
 	      <para>
 		Control section for local X servers. Each line indicates
 		the local display number and the command that needs to
 		be run to start the X server(s).
 	      </para>
+
+	      <para>
+		The command can either be a path to an X executable, or
+		a name of one of the server definitions.  This can be
+		followed by some arguments that should be passed to the
+		X server when executed.
+	      </para>
+
+	      <para>
+		The gdm daemon doesn't enforce the numbers to be in
+		order or for them to be "packed".  However when you use
+		the GUI configurator, the servers will always start from
+		0 and go up by 1.  That is, leaving no holes.
+	      </para>
 	      
 	      <para>
-		GDM will append "<filename>-auth
+		GDM will splice "<filename>-auth
 		  &lt;ServAuthDir&gt;/:n.Xauth :n</filename>", where n is
-		the display number.
+		the display number.  Inside the command line before all
+		other arguments before running the server.
 	      </para>
 
 	      <para>
