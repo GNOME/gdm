@@ -4,7 +4,7 @@ localedir = $(sysconfdir)/gdm
 sessdir = $(sysconfdir)/gdm/Sessions
 initdir = $(sysconfdir)/gdm/Init
 authdir = $(localstatedir)/gdm
-gnomercdir = $(sysconfdir)
+gnomercdir = $(sysconfdir)/gdm
 postdir = $(sysconfdir)/gdm/PostSession
 predir = $(sysconfdir)/gdm/PreSession
 
@@ -24,6 +24,11 @@ Gnome: Gnome.in Makefile
 	    < $(srcdir)/Gnome.in > Gnome.tmp \
 	    && mv -f Gnome.tmp Gnome
 
+Failsafe: Failsafe.in Makefile
+	sed -e 's,\@sessdir\@,$(sessdir),g' \
+	    < $(srcdir)/Failsafe.in > Failsafe.tmp \
+	    && mv -f Failsafe.tmp Gnome
+
 gnomerc: gnomerc.in Makefile
 	sed -e 's,\@bindir\@,$(bindir),g' \
 	    < $(srcdir)/gnomerc.in > gnomerc.tmp \
@@ -36,11 +41,14 @@ EXTRA_DIST = \
 	Gnome.in \
 	gnomerc.in \
 	Xsession \
+	Failsafe.in \
 	gdm \
 	locale.alias \
 	Default \
 	PostSession \
-	PreSession
+	PreSession \
+	Default.redhat \
+	Failsafe.redhat
 
 install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -d $(confdir); then \
@@ -63,7 +71,10 @@ install-data-hook: gdm.conf gnomerc Gnome
 		$(INSTALL_SCRIPT) $(srcdir)/Xsession $(sessdir)/Xsession; \
 	fi
 	if test '!' -f $(sessdir)/Gnome; then \
-		$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome; \
+		$(INSTALL_SCRIPT) $(srcdir)/Gnome $(sessdir)/Gnome; \
+	fi
+	if test '!' -f $(sessdir)/Failsafe; then \
+		$(INSTALL_SCRIPT) $(srcdir)/Failsafe.session $(sessdir)/Failsafe; \
 	fi
 
 	if test '!' -d $(initdir); then \
@@ -95,7 +106,7 @@ install-data-hook: gdm.conf gnomerc Gnome
 		chmod 755 $(gnomercdir); \
 	fi
 	if test '!' -f $(gnomercdir)/gnomerc; then \
-		$(INSTALL_SCRIPT) gnomerc $(gnomercdir)/gnomerc; \
+		$(INSTALL_SCRIPT) $(srcdir)/gnomerc $(gnomercdir)/gnomerc; \
 	fi
 
 	if test '!' -d $(authdir); then \

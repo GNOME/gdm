@@ -1,7 +1,7 @@
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.0.97)
+AM_INIT_AUTOMAKE(gdm,2.0.97.1)
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -146,6 +146,7 @@ docs/Makefile
 docs/C/Makefile
 po/Makefile.in
 intl/Makefile
+gdm.spec
 ],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])
 
 
