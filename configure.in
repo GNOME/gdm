@@ -85,7 +85,9 @@ if test -n "$LIBWRAP_PATH"; then
                 AC_DEFINE(HAVE_TCPWRAPPERS)
 	fi
 fi
-LIBS="$LIBS -lwrap"
+if test -n "$LIBWRAP_PATH"; then
+	LIBS="$LIBS -lwrap"
+fi
 
 dnl find out if we need -lnsl or whatever
 LIB_NSL=
