@@ -3,6 +3,7 @@ happygnome_DATA = \
 	GdmGreeterTheme.desktop \
 	happygnome.xml \
 	background.svg \
+	disconnect.png \
 	gnome-logo.png  \
 	options.png \
 	screenshot.png \
