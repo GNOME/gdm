@@ -3087,7 +3087,10 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 
 	user->uid = uid;
 	user->login = g_strdup (logname);
-	user->gecos = g_strdup (gecos);
+	if (!g_utf8_validate (gecos, -1, NULL))
+		user->gecos = ve_locale_to_utf8 (gecos);
+	else
+		user->gecos = g_strdup (gecos);
 	user->homedir = g_strdup (homedir);
 	if (defface != NULL)
 		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));

@@ -725,6 +725,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     FILE *af;
     gchar *authfile;
     gchar *authdir;
+    mode_t oldmode;
 
     if G_UNLIKELY (!d || !d->userauth)
 	return;
@@ -784,7 +785,9 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 	return;
     }
 
+    oldmode = umask (077);
     af = gdm_safe_fopen_ap (d->userauth);
+    umask (oldmode);
 
     if G_UNLIKELY (af == NULL) {
 	XauUnlockAuth (d->userauth);
@@ -858,6 +861,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 {
     Xauth *xa;
     GSList *keep = NULL, *li;
+    mode_t oldmode;
     int cnt;
 
     if G_UNLIKELY (!d || !af)
@@ -904,7 +908,9 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 	    return NULL;
     }
 
+    oldmode = umask (077);
     af = gdm_safe_fopen_w (d->userauth);
+    umask (oldmode);
 
     /* Write out remaining entries */
     for (li = keep; li != NULL; li = li->next) {

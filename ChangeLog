@@ -1,3 +1,17 @@
+Fri Oct 17 10:54:12 2003  George Lebl <jirka@5z.com>
+
+	* Release 2.4.4.5
+
+Fri Oct 17 10:40:08 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c:  Apply patch
+	  from Frederic Crozat <fcrozat@mandrakesoft.com> to make gecos 
+	  into utf8 before displaying it in the face browser.
+
+	* daemon/auth.c: make sure that umask 077 before reopening the
+	  .Xauthority since apparently it can happen that the file doesn't
+	  exist then.
+
 Thu Oct 16 09:55:55 2003  George Lebl <jirka@5z.com>
 
 	* Release 2.4.4.4
