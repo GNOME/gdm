@@ -32,6 +32,9 @@
 #include <errno.h>
 #include <syslog.h>
 
+/* This should be moved to auth.c I suppose */
+#include <X11/Xauth.h>
+
 #include <vicious.h>
 
 #include "gdm.h"
@@ -713,7 +716,8 @@ deal_with_x_crashes (GdmDisplay *d)
 			    gdm_info (_("deal_with_x_crashes: Running the "
 					"XKeepsCrashing script"));
 
-			    extra_process = pid = fork ();
+			    gdm_safe_fork (&extra_process);
+			    pid = extra_process;
 		    } else {
 			    /* no forking, we're screwing this */
 			    pid = -1;
@@ -846,7 +850,7 @@ bin_executable (const char *command)
 	}
 }
 
-static void 
+static gboolean 
 gdm_cleanup_children (void)
 {
     pid_t pid;
@@ -857,6 +861,9 @@ gdm_cleanup_children (void)
 
     /* Pid and exit status of slave that died */
     pid = waitpid (-1, &exitstatus, WNOHANG);
+
+    if (pid < 0)
+	    return FALSE;
 
     if (WIFEXITED (exitstatus)) {
 	    status = WEXITSTATUS (exitstatus);
@@ -869,14 +876,17 @@ gdm_cleanup_children (void)
     gdm_debug ("gdm_cleanup_children: child %d returned %d%s", pid, status,
 	       crashed ? " (child crashed)" : "");
 
-    if (pid < 1)
-	return;
+    if (pid == extra_process) {
+	    /* an extra process died, yay! */
+	    extra_process = -1;
+	    return TRUE;
+    }
 
     /* Find out who this slave belongs to */
     d = gdm_display_lookup (pid);
 
-    if (!d)
-	return;
+    if (d == NULL)
+	    return TRUE;
 
     if (crashed) {
 	    gdm_debug ("gdm_cleanup_children: Slave crashed, killing it's "
@@ -1080,6 +1090,8 @@ gdm_cleanup_children (void)
 	    gdm_safe_restart ();
 
     gdm_quit ();
+
+    return TRUE;
 }
 
 static void
@@ -1116,7 +1128,8 @@ mainloop_sig_callback (gint8 sig, gpointer data)
   switch (sig)
     {
     case SIGCHLD:
-      gdm_cleanup_children ();
+      while (gdm_cleanup_children ())
+	      ;
       break;
 
     case SIGINT:
@@ -1747,14 +1760,19 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 /* extract second word and the rest of the string */
 static void
-extract_dispname_xauthfile (const char *msg, char **dispname, char **xauthfile)
+extract_dispname_xauthfile_cookie (const char *msg,
+				   char **dispname,
+				   char **xauthfile,
+				   char **cookie)
 {
 	const char *p;
 	char *pp;
 
 	*dispname = NULL;
 	*xauthfile = NULL;
+	*cookie = NULL;
 
+	/* Get dispname */
 	p = strchr (msg, ' ');
 	if (p == NULL)
 		return;
@@ -1763,9 +1781,32 @@ extract_dispname_xauthfile (const char *msg, char **dispname, char **xauthfile)
 		p++;
 
 	*dispname = g_strdup (p);
+	pp = strchr (*dispname, ' ');
+	if (pp != NULL)
+		*pp = '\0';
 
+	/* Get cookie */
 	p = strchr (p, ' ');
 	if (p == NULL) {
+		*dispname = NULL;
+		g_free (*dispname);
+		return;
+	}
+	while (*p == ' ')
+		p++;
+
+	*cookie = g_strdup (p);
+	pp = strchr (*cookie, ' ');
+	if (pp != NULL)
+		*pp = '\0';
+
+	/* Get xauthfile */
+	p = strchr (p, ' ');
+	if (p == NULL) {
+		*cookie = NULL;
+		g_free (*cookie);
+		*dispname = NULL;
+		g_free (*dispname);
 		return;
 	}
 
@@ -1774,9 +1815,6 @@ extract_dispname_xauthfile (const char *msg, char **dispname, char **xauthfile)
 
 	*xauthfile = g_strstrip (g_strdup (p));
 
-	pp = strchr (*dispname, ' ');
-	if (pp != NULL)
-		*pp = '\0';
 }
 
 static void
@@ -1805,14 +1843,140 @@ find_display (const char *name)
 	return NULL;
 }
 
+static char *
+extract_dispnum (const char *addy)
+{
+	int num;
+	char *p;
+
+	g_assert (addy != NULL);
+
+	p = strchr (addy, ':');
+	if (p == NULL)
+		return NULL;
+
+	/* Whee! handles DECnet even if we don't do that */
+	while (*p == ':')
+		p++;
+
+	if (sscanf (p, "%d", &num) != 1)
+		return NULL;
+
+	return g_strdup_printf ("%d", num);
+}
+
+static char *
+dehex_cookie (const char *cookie, int *len)
+{
+	/* it should be +1 really, but I'm paranoid */
+	char *bcookie = g_new0 (char, (strlen (cookie) / 2) + 2);
+	int i;
+	const char *p;
+
+	*len = 0;
+
+	for (i = 0, p = cookie;
+	     *p != '\0' && *(p+1) != '\0';
+	     i++, p += 2) {
+		int num;
+		if (sscanf (p, "%02x", &num) != 1) {
+			g_free (bcookie);
+			return NULL;
+		}
+		bcookie[i] = num;
+	}
+	*len = i;
+	return bcookie;
+}
+
+static gboolean
+check_cookie (const char *file, const char *disp, const char *cookie)
+{
+	Xauth *xa;
+	char *number;
+	char *bcookie;
+	int cookielen;
+	gboolean ret = FALSE;
+
+	FILE *fp = fopen (file, "r");
+	if (fp == NULL)
+		return FALSE;
+
+	number = extract_dispnum (disp);
+	if (number == NULL)
+		return FALSE;
+	bcookie = dehex_cookie (cookie, &cookielen);
+	if (bcookie == NULL) {
+		g_free (number);
+		return FALSE;
+	}
+
+	while ((xa = XauReadAuth (fp)) != NULL) {
+		if (xa->number_length == strlen (number) &&
+		    strncmp (xa->number, number, xa->number_length) == 0 &&
+		    xa->name_length == strlen ("MIT-MAGIC-COOKIE-1") &&
+		    strncmp (xa->name, "MIT-MAGIC-COOKIE-1",
+			     xa->name_length) == 0 &&
+		    xa->data_length == cookielen &&
+		    memcmp (xa->data, bcookie, cookielen) == 0) {
+			XauDisposeAuth (xa);
+			ret = TRUE;
+			break; 
+		}
+		XauDisposeAuth (xa);
+	}
+
+	g_free (number);
+	g_free (bcookie);
+
+	fclose (fp);
+
+	return ret;
+}
+
 static void
 handle_flexi_server (GdmConnection *conn, int type, const char *server,
-		     const char *xnest_disp, const char *xnest_auth_file)
+		     const char *xnest_disp, const char *xnest_auth_file,
+		     const char *xnest_cookie)
 {
 	GdmDisplay *display;
 	char *bin;
+	uid_t server_uid = 0;
 
 	gdm_debug ("server: '%s'", server);
+
+	if (type == TYPE_FLEXI_XNEST) {
+		struct stat s;
+		gboolean authorized = TRUE;
+
+		g_assert (xnest_auth_file != NULL);
+		g_assert (xnest_disp != NULL);
+		g_assert (xnest_cookie != NULL);
+
+		if (stat (xnest_auth_file, &s) < 0)
+			authorized = FALSE;
+		if (authorized &&
+		    /* if readable or writable by group or others,
+		     * we are NOT authorized */
+		    s.st_mode & 0077)
+			authorized = FALSE;
+		if (authorized &&
+		    ! check_cookie (xnest_auth_file,
+				    xnest_disp,
+				    xnest_cookie)) {
+			authorized = FALSE;
+		}
+
+		if ( ! authorized) {
+			/* Sorry dude, you're not doing something
+			 * right */
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+		server_uid = s.st_uid;
+	}
 
 	if (flexi_servers >= GdmFlexibleXServers) {
 		gdm_connection_write (conn,
@@ -1860,6 +2024,8 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		else
 			display->console = FALSE;
 		g_free (disp);
+
+		display->server_uid = server_uid;
 	}
 
 	flexi_servers ++;
@@ -1928,7 +2094,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		}
 		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
-				     NULL, NULL);
+				     NULL, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
 		char *name;
@@ -1969,12 +2135,14 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 		g_free (name);
 
-		handle_flexi_server (conn, TYPE_FLEXI, command, NULL, NULL);
+		handle_flexi_server (conn, TYPE_FLEXI, command,
+				     NULL, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
-		char *dispname = NULL, *xauthfile = NULL;
+		char *dispname = NULL, *xauthfile = NULL, *cookie = NULL;
 
-		extract_dispname_xauthfile (msg, &dispname, &xauthfile);
+		extract_dispname_xauthfile_cookie (msg, &dispname, &xauthfile, &cookie);
+
 		if (dispname == NULL) {
 			/* Something bogus is going on, so just whack the
 			 * connection */
@@ -1982,9 +2150,19 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_connection_close (conn);
 			return;
 		}
+
+		/* This is probably a pre-2.2.4.2 client */
+		if (xauthfile == NULL || cookie == NULL) {
+			/* evil, just whack the connection in this case */
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			gdm_connection_close (conn);
+			g_free (cookie);
+			return;
+		}
 		
 		handle_flexi_server (conn, TYPE_FLEXI_XNEST, GdmXnest,
-				     dispname, xauthfile);
+				     dispname, xauthfile, cookie);
 
 		g_free (dispname);
 		g_free (xauthfile);

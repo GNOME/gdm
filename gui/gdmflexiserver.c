@@ -196,6 +196,84 @@ get_display (void)
 }
 
 static char *
+get_dispnum (void)
+{
+	static char *number = NULL;
+
+	if (number == NULL) {
+		char *p;
+		number = g_strdup (get_display ());
+
+		/* whee! handles even DECnet crap */
+		number = strchr (number, ':');
+		if (number != NULL) {
+			while (*number == ':') {
+				number++;
+			}
+		} else {
+			number = "0";
+		}
+		p = strchr (number, '.');
+		if (p != NULL)
+			p = '\0';
+	}
+
+	return number;
+}
+
+/* This just gets a cookie of MIT-MAGIC-COOKIE-1 type */
+static char *
+get_a_cookie (void)
+{
+	FILE *fp;
+	char *number;
+	char *cookie = NULL;
+	Xauth *xau;
+
+	fp = fopen (XauFileName (), "r");
+	if (fp == NULL) {
+		return NULL;
+	}
+
+	number = get_dispnum ();
+
+	cookie = NULL;
+
+	while ((xau = XauReadAuth (fp)) != NULL) {
+		int i;
+		GString *str;
+
+		/* Just find the FIRST magic cookie, that's what gdm uses */
+		if (xau->number_length != strlen (number) ||
+		    strncmp (xau->number, number, xau->number_length) != 0 ||
+		    /* gdm sends MIT-MAGIC-COOKIE-1 cookies of length 16,
+		     * so just do those */
+		    xau->name_length != strlen ("MIT-MAGIC-COOKIE-1") ||
+		    strncmp (xau->name, "MIT-MAGIC-COOKIE-1",
+			     xau->name_length) != 0) {
+			XauDisposeAuth (xau);
+			continue;
+		}
+
+		str = g_string_new (NULL);
+
+		for (i = 0; i < xau->data_length; i++) {
+			g_string_sprintfa (str, "%02x",
+					   (guint)(guchar)xau->data[i]);
+		}
+
+		XauDisposeAuth (xau);
+
+		cookie = str->str;
+		g_string_free (str, FALSE);
+		break;
+	}
+	fclose (fp);
+
+	return cookie;
+}
+
+static char *
 get_auth_cookie (void)
 {
 	FILE *fp;
@@ -214,17 +292,7 @@ get_auth_cookie (void)
 		return NULL;
 	}
 
-	number = get_display ();
-
-	/* whee! handles even DECnet crap */
-	number = strchr (number, ':');
-	if (number != NULL) {
-		while (*number == ':') {
-		       number++;
-		}
-	} else {
-		number = "0";
-	}
+	number = get_dispnum ();
 
 	cookie = NULL;
 
@@ -239,12 +307,13 @@ get_auth_cookie (void)
 		 * logins, though those will not pass by gdm itself of
 		 * course) */
 		if (xau->family != FamilyLocal ||
-		    xau->number == NULL ||
+		    xau->number_length != strlen (number) ||
 		    strncmp (xau->number, number, xau->number_length) != 0 ||
 		    /* gdm sends MIT-MAGIC-COOKIE-1 cookies of length 16,
 		     * so just do those */
 		    xau->name_length != strlen ("MIT-MAGIC-COOKIE-1") ||
-		    strncmp (xau->name, "MIT-MAGIC-COOKIE-1", xau->name_length) != 0 ||
+		    strncmp (xau->name, "MIT-MAGIC-COOKIE-1",
+			     xau->name_length) != 0 ||
 		    xau->data_length != 16) {
 			XauDisposeAuth (xau);
 			continue;
@@ -253,7 +322,8 @@ get_auth_cookie (void)
 		buffer[0] = '\0';
 		for (i = 0; i < 16; i++) {
 			char sub[3];
-			g_snprintf (sub, sizeof (sub), "%02x", (guint)(guchar)xau->data[i]);
+			g_snprintf (sub, sizeof (sub), "%02x",
+				    (guint)(guchar)xau->data[i]);
 			strcat (buffer, sub);
 		}
 
@@ -498,11 +568,22 @@ main (int argc, char *argv[])
 	}
 
 	if (use_xnest) {
-		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST
-					   " %s %s",
+		char *cookie = get_a_cookie ();
+		if (cookie == NULL) {
+			dialog = gnome_warning_dialog
+				(_("You do not seem to have authentication "
+				   "needed be for this operation.  Perhaps "
+				   "your .Xauthority file is not set up "
+				   "correctly."));
+			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			return 1;
+		}
+		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST " %s %s %s",
 					   get_display (),
+					   cookie,
 					   XauFileName ());
-		version = "2.2.4.0";
+		g_free (cookie);
+		version = "2.2.4.2";
 		auth_cookie = NULL;
 	} else {
 		auth_cookie = get_auth_cookie ();
@@ -576,9 +657,9 @@ main (int argc, char *argv[])
 				    "it is likely that gdm is badly "
 				    "configured.");
 	} else if (strncmp (ret, "ERROR 100 ", strlen ("ERROR 100 ")) == 0) {
-		message = _("You do not seem to be logged in on the "
-			    "console.  Starting a new login only "
-			    "works correctly on the console.");
+		message = _("You do not seem to have authentication needed "
+			    "be for this operation.  Perhaps your .Xauthority "
+			    "file is not set up correctly.");
 	} else {
 		message = _("Unknown error occured.");
 	}

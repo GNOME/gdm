@@ -71,6 +71,11 @@
 
 /* Opcodes for the highly sophisticated protocol used for
  * daemon<->greeter communications */
+
+/* This will change if there are incompatible
+ * protocol changes */
+#define GDM_GREETER_PROTOCOL_VERSION "1"
+
 #define GDM_MSGERR     'D'
 #define GDM_NOECHO     'U'
 #define GDM_PROMPT     'N'
@@ -80,8 +85,7 @@
 #define GDM_SLANG      'R'
 #define GDM_RESET      'A'
 #define GDM_QUIT       'P'
-/* crap, these don't fit into the above theme, this protocol
- * is thus liable to change */
+/* Well these aren't as nice as above, oh well */
 #define GDM_GNOMESESS  '?'
 #define GDM_SGNOMESESS '*'
 #define GDM_STARTTIMER 's'
@@ -240,10 +244,16 @@ typedef struct _GdmConnection GdmConnection;
 
 typedef struct _GdmDisplay GdmDisplay;
 
+/* Use this to get the right authfile name */
+#define GDM_AUTHFILE(display) \
+	(display->authfile_gdm != NULL ? display->authfile_gdm : display->authfile)
+
 struct _GdmDisplay {
     CARD32 sessionid;
     Display *dsp;
-    gchar *authfile;
+    gchar *authfile; /* authfile for the server */
+    gchar *authfile_gdm; /* authfile readable by gdm user
+			    if necessary */
     GSList *auths; 
     gchar *userauth;
     gboolean authfb;
@@ -298,6 +308,7 @@ struct _GdmDisplay {
     /* Flexi stuff */
     char *xnest_disp;
     char *xnest_auth_file;
+    uid_t server_uid;
     GdmConnection *socket_conn;
 };
 
@@ -456,10 +467,20 @@ void gdm_quit (void);
  *      100 = Not authenticated
  *      999 = Unknown error
  */
-#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <xauth file> */
+#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <xauth cookie> <xauth file> */
 /* FLEXI_XNEXT: Start a new flexible Xnest server
- * Supported since: 2.2.4.0
- * Arguments:  <display> <xauth file>
+ * Supported since: 2.2.4.2
+ *   Note: supported an older version from 2.2.4.0, but since 2.2.4.2 you must
+ *   supply 3 arguments or ERROR 100 will be returned.  This will start Xnest
+ *   using the XAUTHORITY file supplied and as the uid same as the owner of that
+ *   file.  You Must also supply the cookie as the third argument for this
+ *   display, to prove that you indeed are this user.  Also this file must be
+ *   readable ONLY by this user, that is have a mode of 0600.  If this all is
+ *   not met, ERROR 100 is returned.
+ *   Note: The cookie should be the MIT-MAGIC-COOKIE-1, the first one gdm
+ *   can find in the XAUTHORITY file for this display.  If that's not what you
+ *   use you should generate one first.  The cookie should be in hex form.
+ * Arguments:  <display to run on> <xauth cookie for the display> <xauth file>
  * Answers:
  *   OK <display>
  *   ERROR <err number> <english error description>
@@ -470,6 +491,7 @@ void gdm_quit (void);
  *      4 = X too busy
  *      5 = Xnest can't connect
  *      6 = No server binary
+ *      100 = Not authenticated
  *      999 = Unknown error
  */
 #define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS" /* None */

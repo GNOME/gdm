@@ -64,7 +64,6 @@ static GdmDisplay *d;
 static gchar *login = NULL;
 static sigset_t mask;
 static gboolean greet = FALSE;
-static pid_t last_killed_pid = 0;
 static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
 static gboolean do_configurator = FALSE; /* if this is true, login as root
@@ -353,6 +352,10 @@ gdm_slave_run (GdmDisplay *display)
 	    d->sleep_before_run = 0;
     }
 
+    /* set it before we run the server, it may be that we're using
+     * the XOpenDisplay to find out if a server is ready (as with Xnest) */
+    d->dsp = NULL;
+
     /* if this is local display start a server if one doesn't
      * exist */
     if (SERVER_IS_LOCAL (d) &&
@@ -376,7 +379,6 @@ gdm_slave_run (GdmDisplay *display)
      * X server resetting due to lack of active connections. */
 
     gdm_debug ("gdm_slave_run: Opening display %s", d->name);
-    d->dsp = NULL;
 
     /* if local then the the server should be ready for openning, so
      * don't try so long before killing it and trying again */
@@ -586,7 +588,7 @@ focus_first_x_window (const char *class_res_name)
 static void
 run_config (GdmDisplay *display, struct passwd *pwent)
 {
-	display->sesspid = fork ();
+	gdm_safe_fork (&(display->sesspid));
 	if (display->sesspid < 0) {
 		/* can't fork, damnit */
 		display->sesspid = 0;
@@ -603,6 +605,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		/* setup environment */
 		gdm_clearenv_no_lang ();
 
+		/* root here */
 		ve_setenv ("XAUTHORITY", display->authfile, TRUE);
 		ve_setenv ("DISPLAY", display->name, TRUE);
 		ve_setenv ("LOGNAME", "root", TRUE);
@@ -1015,10 +1018,8 @@ gdm_slave_greeter (void)
     greet = TRUE;
 
     /* Fork. Parent is gdmslave, child is greeter process. */
-    last_killed_pid = 0; /* race condition wrapper,
-			  * it could be that we recieve sigchld before
-			  * we can set greetpid.  eek! */
-    switch (d->greetpid = fork()) {
+    gdm_safe_fork (&(d->greetpid));
+    switch (d->greetpid) {
 	
     case 0:
 	sigfillset (&mask);
@@ -1043,28 +1044,36 @@ gdm_slave_greeter (void)
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 	
 	if (setgid (GdmGroupId) < 0) 
-	    gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set groupid to %d"), GdmGroupId);
+	    gdm_child_exit (DISPLAY_ABORT,
+			    _("%s: Couldn't set groupid to %d"),
+			    "gdm_slave_greeter", GdmGroupId);
 
 	if (initgroups (GdmUser, GdmGroupId) < 0)
-            gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: initgroups() failed for %s"), GdmUser);
+            gdm_child_exit (DISPLAY_ABORT,
+			    _("%s: initgroups() failed for %s"),
+			    "gdm_slave_greeter", GdmUser);
 	
 	if (setuid (GdmUserId) < 0) 
-	    gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
+	    gdm_child_exit (DISPLAY_ABORT,
+			    _("%s: Couldn't set userid to %d"),
+			    "gdm_slave_greeter", GdmUserId);
 	
 	gdm_clearenv_no_lang ();
-	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+	ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 	ve_setenv ("DISPLAY", d->name, TRUE);
 
 	ve_setenv ("LOGNAME", GdmUser, TRUE);
 	ve_setenv ("USER", GdmUser, TRUE);
 	ve_setenv ("USERNAME", GdmUser, TRUE);
-
+	ve_setenv ("GDM_GREETER_PROTOCOL_VERSION",
+		   GDM_GREETER_PROTOCOL_VERSION, TRUE);
 	ve_setenv ("GDM_VERSION", VERSION, TRUE);
 
 	pwent = getpwnam (GdmUser);
 	if (pwent != NULL) {
 		/* Note that usually this doesn't exist */
-		if (g_file_exists (pwent->pw_dir))
+		if (pwent->pw_dir != NULL &&
+		    g_file_exists (pwent->pw_dir))
 			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
 			ve_setenv ("HOME", "/", TRUE); /* Hack */
@@ -1161,14 +1170,6 @@ gdm_slave_greeter (void)
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't fork gdmgreeter process"));
 	
     default:
-	if (last_killed_pid == d->greetpid) {
-		/* foo, this is a bad case really.  We always remanage since
-		 * we assume that the greeter died, we should probably store
-		 * the status.  But this race is not likely to happen
-		 * normally. */
-		gdm_server_stop (d);
-		_exit (DISPLAY_REMANAGE);
-	}
 	close (pipe1[0]);
 	close (pipe2[1]);
 
@@ -1336,10 +1337,8 @@ gdm_slave_chooser (void)
 	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL);
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
-	last_killed_pid = 0; /* race condition wrapper,
-			      * it could be that we recieve sigchld before
-			      * we can set chooserpid.  eek! */
-	switch (d->chooserpid = fork()) {
+	gdm_safe_fork (&(d->chooserpid));
+	switch (d->chooserpid) {
 
 	case 0:
 		sigfillset (&mask);
@@ -1362,16 +1361,22 @@ gdm_slave_chooser (void)
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		if (setgid (GdmGroupId) < 0) 
-			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Couldn't set groupid to %d"), GdmGroupId);
+			gdm_child_exit (DISPLAY_ABORT,
+					_("%s: Couldn't set groupid to %d"),
+					"gdm_slave_chooser", GdmGroupId);
 
 		if (initgroups (GdmUser, GdmGroupId) < 0)
-			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: initgroups() failed for %s"), GdmUser);
+			gdm_child_exit (DISPLAY_ABORT,
+					_("%s: initgroups() failed for %s"),
+					"gdm_slave_chooser", GdmUser);
 
 		if (setuid (GdmUserId) < 0) 
-			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Couldn't set userid to %d"), GdmUserId);
+			gdm_child_exit (DISPLAY_ABORT,
+					_("%s: Couldn't set userid to %d"),
+					"gdm_slave_chooser", GdmUserId);
 
 		gdm_clearenv_no_lang ();
-		ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+		ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 		ve_setenv ("DISPLAY", d->name, TRUE);
 
 		ve_setenv ("LOGNAME", GdmUser, TRUE);
@@ -1410,14 +1415,6 @@ gdm_slave_chooser (void)
 		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't fork gdmchooser process"));
 
 	default:
-		if (last_killed_pid == d->chooserpid) {
-			/* foo, this is a bad case really.  We always remanage
-			 * since we assume that the chooser died, we should
-			 * probably store the status.  But this race is not
-			 * likely to happen normally. */
-			_exit (DISPLAY_REMANAGE);
-		}
-
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
 		gdm_slave_send_num (GDM_SOP_CHOOSERPID, d->chooserpid);
 
@@ -1899,7 +1896,8 @@ gdm_slave_session_start (void)
     } 
 
     /* Start user process */
-    switch (d->sesspid = fork()) {
+    gdm_safe_fork (&(d->sesspid));
+    switch (d->sesspid) {
 	
     case -1:
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_session_start: Error forking user session"));
@@ -2343,8 +2341,11 @@ gdm_slave_child_handler (int sig)
 		d->servpid = 0;
 		if ( ! ve_string_empty (d->authfile))
 			unlink (d->authfile);
-	} else if (pid != 0) {
-		last_killed_pid = pid;
+		if ( ! ve_string_empty (d->authfile_gdm))
+			unlink (d->authfile_gdm);
+	} else if (pid == extra_process) {
+		/* an extra process died, yay! */
+		extra_process = -1;
 	}
     }
 }
@@ -2524,7 +2525,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     else
 	return EXIT_SUCCESS;
 
-    extra_process = pid = fork();
+    gdm_safe_fork (&extra_process);
+    pid = extra_process;
     switch (pid) {
 	    
     case 0:
@@ -2554,6 +2556,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	        ve_setenv ("SHELL", "/bin/sh", TRUE);
         }
 
+	/* Runs as root, uses server authfile */
 	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
         ve_setenv ("DISPLAY", d->name, TRUE);
 	ve_setenv ("PATH", GdmRootPath, TRUE);
@@ -2691,7 +2694,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
       if (pipe (pipe1) < 0) {
         gdm_error (_("gdm_parse_enriched_login: Failed creating pipe"));
       } else {
-        extra_process = pid = fork();
+	gdm_safe_fork (&extra_process);
+	pid = extra_process;
         switch (pid) {
 	    
         case 0:
@@ -2702,6 +2706,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
             if(pipe1[1] != STDOUT_FILENO) 
 	      dup2 (pipe1[1], STDOUT_FILENO);
 
+	    /* runs as root */
 	    ve_setenv ("XAUTHORITY", display->authfile, TRUE);
 	    ve_setenv ("DISPLAY", display->name, TRUE);
 	    ve_setenv ("PATH", GdmRootPath, TRUE);

@@ -31,11 +31,16 @@ void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
  * note that this leak memory so only use before exec */
 void gdm_clearenv_no_lang (void);
 
-int gdm_get_free_display (int start, int server_uid);
+int gdm_get_free_display (int start, uid_t server_uid);
 
 gboolean gdm_text_message_dialog (const char *msg);
 gboolean gdm_text_yesno_dialog (const char *msg, gboolean *ret);
 int	gdm_exec_wait (char * const *argv, gboolean no_display);
+
+/* This is a race free fork, that is the pid will
+ * be set before sigchld is sent.  This is achieved by
+ * blocking sigchld for the moment */
+void	gdm_safe_fork (pid_t *pid);
 
 #endif /* GDM_MISC_H */
 

@@ -189,7 +189,7 @@ gdm_clearenv_no_lang (void)
 
 /* Evil function to figure out which display number is free */
 int
-gdm_get_free_display (int start, int server_uid)
+gdm_get_free_display (int start, uid_t server_uid)
 {
 	int sock;
 	int i;
@@ -405,7 +405,8 @@ gdm_exec_wait (char * const *argv, gboolean no_display)
 	 * impossible to happen race.  If the parent gets
 	 * whacked before it executes any code, it will
 	 * not whack the child.  Oh well. */
-	extra_process = pid = fork ();
+	gdm_safe_fork (&extra_process);
+	pid = extra_process;
 	if (pid == 0) {
 		int i;
 
@@ -439,6 +440,22 @@ gdm_exec_wait (char * const *argv, gboolean no_display)
 		return WEXITSTATUS (status);
 	else
 		return -1;
+}
+
+void
+gdm_safe_fork (pid_t *pid)
+{
+    sigset_t mask, oldmask;
+
+    /* Set signal mask */
+    sigemptyset (&mask);
+    sigaddset (&mask, SIGCHLD);
+    sigprocmask (SIG_BLOCK, &mask, &oldmask);
+
+    *pid = fork ();
+
+    /* reset signal mask back */
+    sigprocmask (SIG_SETMASK, &oldmask, NULL);
 }
 
 /* EOF */

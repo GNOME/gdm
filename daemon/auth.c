@@ -47,9 +47,10 @@ extern gchar *GdmUserAuthFile;
 extern gchar *GdmUserAuthFB;
 extern gint  GdmUserMaxFile;
 extern gint  GdmRelaxPerms;
+extern gboolean GdmDebug;
 
 static gboolean
-add_auth_entry (GdmDisplay *d, FILE *af,
+add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 		unsigned short family, char *addr, int addrlen)
 {
 	Xauth *xa;
@@ -89,6 +90,8 @@ add_auth_entry (GdmDisplay *d, FILE *af,
 	xa->data_length = 16;
 
 	XauWriteAuth (af, xa);
+	if (af2 != NULL)
+		XauWriteAuth (af2, xa);
 
 	d->auths = g_slist_append (d->auths, xa);
 
@@ -109,7 +112,7 @@ add_auth_entry (GdmDisplay *d, FILE *af,
 gboolean
 gdm_auth_secure_display (GdmDisplay *d)
 {
-    FILE *af;
+    FILE *af, *af_gdm;
     struct hostent *hentry;
     struct in_addr *ia;
     guint i;
@@ -122,34 +125,91 @@ gdm_auth_secure_display (GdmDisplay *d)
 
     gdm_debug ("gdm_auth_secure_display: Setting up access for %s", d->name);
 
-    if (! d->authfile)
-	d->authfile = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
-    
-    unlink (d->authfile);
+    g_free (d->authfile);
+    d->authfile = NULL;
+    g_free (d->authfile_gdm);
+    d->authfile_gdm = NULL;
 
-    af = fopen (d->authfile, "w");
+    if (d->server_uid != 0) {
+	    int authfd;
 
-    if (! af)
-	return FALSE;
+	    /* Note, Xnest can't use the ServAuthDir unless running as
+	     * root, which is rare anyway, unless the user is a wanker */
+
+	    d->authfile = g_strconcat (GdmUserAuthFB, "/.gdmXXXXXX", NULL);
+
+	    umask (077);
+	    authfd = mkstemp (d->authfile);
+	    umask (022);
+
+	    if (authfd == -1) {
+		    gdm_error (_("%s: Could not make new cookie file in %s"),
+			       "gdm_auth_secure_display", GdmUserAuthFB);
+		    g_free (d->authfile);
+		    d->authfile = NULL;
+		    return FALSE;
+	    }
+
+	    /* Make it owned by the user that Xnest is started as */
+	    fchown (authfd, d->server_uid, -1);
+
+	    af = fdopen (authfd, "w");
+
+	    if (af == NULL) {
+		    g_free (d->authfile);
+		    d->authfile = NULL;
+		    return FALSE;
+	    }
+
+	    /* Make another authfile since the greeter can't read the server/user
+	     * readable file */
+	    d->authfile_gdm = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
+	    unlink (d->authfile_gdm);
+
+	    af_gdm = fopen (d->authfile_gdm, "w");
+
+	    if (af_gdm == NULL) {
+		    g_free (d->authfile_gdm);
+		    d->authfile_gdm = NULL;
+		    g_free (d->authfile);
+		    d->authfile = NULL;
+		    fclose (af);
+		    return FALSE;
+	    }
+    } else {
+	    /* gdm and xserver authfile can be the same, server will run as root */
+	    d->authfile = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
+	    unlink (d->authfile);
+
+	    af = fopen (d->authfile, "w");
+
+	    if (af == NULL) {
+		    g_free (d->authfile);
+		    d->authfile = NULL;
+		    return FALSE;
+	    }
+
+	    af_gdm = NULL;
+    }
 
     /* If this is a local display the struct hasn't changed and we
      * have to eat up old authentication cookies before baking new
      * ones... */
     if (SERVER_IS_LOCAL (d) && d->auths) {
-	GSList *alist = d->auths;
+	    GSList *li;
+	   
+	    for (li = d->auths; li != NULL; li = li->next) {
+		    XauDisposeAuth ((Xauth *) li->data);
+		    li->data = NULL;
+	    }
 
-	while (alist && alist->data) {
-	    XauDisposeAuth ((Xauth *) alist->data);
-	    alist = alist->next;
-	}
+	    g_slist_free (d->auths);
+	    d->auths = NULL;
 
-	g_slist_free (d->auths);
-	d->auths = NULL;
-
-	g_free (d->cookie);
-	d->cookie = NULL;
-	g_free (d->bcookie);
-	d->bcookie = NULL;
+	    g_free (d->cookie);
+	    d->cookie = NULL;
+	    g_free (d->bcookie);
+	    d->bcookie = NULL;
     }
 
     /* Create new random cookie */
@@ -181,7 +241,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    gdm_debug ("gdm_auth_secure_display: Setting up socket access");
 
-	    if ( ! add_auth_entry (d, af, FamilyLocal,
+	    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
 				   d->hostname, strlen (d->hostname)))
 		    return FALSE;
 
@@ -193,7 +253,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 		    if (gethostname (hostname, 1023) == 0 &&
 			strcmp (hostname, d->hostname) != 0) {
-			    if ( ! add_auth_entry (d, af, FamilyLocal,
+			    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
 						   hostname,
 						   strlen (hostname)))
 				    return FALSE;
@@ -211,16 +271,19 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    if (ia == NULL)
 		    break;
 
-	    if ( ! add_auth_entry (d, af, FamilyInternet,
+	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
 				   (char *)&ia->s_addr, 4))
 		    return FALSE;
     }
 
     fclose (af);
+    if (af_gdm != NULL)
+	    fclose (af_gdm);
     ve_setenv ("XAUTHORITY", d->authfile, TRUE);
 
-    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
-	       d->name, g_slist_length (d->auths));
+    if (GdmDebug)
+	    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
+		       d->name, g_slist_length (d->auths));
 
     return TRUE;
 }

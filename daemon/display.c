@@ -157,7 +157,8 @@ gdm_display_manage (GdmDisplay *d)
     }
 
     /* Fork slave process */
-    switch (d->slavepid = fork()) {
+    gdm_safe_fork (&(d->slavepid));
+    switch (d->slavepid) {
 
     case 0:
 	setpgid (0, 0);
@@ -211,7 +212,8 @@ gdm_display_manage (GdmDisplay *d)
 	return FALSE;
 
     default:
-	gdm_debug ("gdm_display_manage: Forked slave: %d", d->slavepid);
+	gdm_debug ("gdm_display_manage: Forked slave: %d",
+		   (int)d->slavepid);
 	break;
     }
 
@@ -299,6 +301,9 @@ gdm_display_dispose (GdmDisplay *d)
 
     g_free (d->authfile);
     d->authfile = NULL;
+
+    g_free (d->authfile_gdm);
+    d->authfile_gdm = NULL;
 
     if (d->auths) {
 	GSList *tmpauth = d->auths;

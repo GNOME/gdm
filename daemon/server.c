@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <pwd.h>
+#include <grp.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -60,6 +62,7 @@ extern gchar *GdmStandardXServer;
 extern gboolean GdmXdmcp;
 extern sigset_t sysmask;
 extern gint high_display_num;
+extern pid_t extra_process;
 
 /* Global vars */
 static GdmDisplay *d = NULL;
@@ -125,6 +128,8 @@ gdm_server_stop (GdmDisplay *disp)
     }
 
     unlink (disp->authfile);
+    if (disp->authfile_gdm != NULL)
+	    unlink (disp->authfile_gdm);
 }
 
 static gboolean
@@ -278,7 +283,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	treat_as_flexi) {
 	    flexi_disp = gdm_get_free_display
 		    (MAX (high_display_num + 1, min_flexi_disp) /* start */,
-		     0 /* server uid */);
+		     d->server_uid /* server uid */);
 
 	    g_free (d->name);
 	    d->name = g_strdup_printf (":%d", flexi_disp);
@@ -341,7 +346,10 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
      * sockets etc. If the old X server isn't completely dead, the new
      * one will fail and we'll hang here forever */
 
-    alarm (SERVER_WAIT_ALARM);
+    /* Only do alarm if esrver will be run as root */
+    if (d->server_uid == 0) {
+	    alarm (SERVER_WAIT_ALARM);
+    }
 
     d->servstat = SERVER_DEAD;
 
@@ -349,11 +357,41 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     gdm_server_spawn (d);
 
     /* Wait for X server to send ready signal */
-    if (d->servstat == SERVER_STARTED)
-	    gdm_run ();
+    if (d->servstat == SERVER_STARTED) {
+	    if (d->server_uid != 0) {
+		    int i;
+
+		    /* if we're running the server as a non-root, we can't
+		     * use USR1 of course, so try openning the display 
+		     * as a test, but the */
+
+		    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+		    for (i = 0;
+			 d->dsp == NULL &&
+			 d->servstat == SERVER_STARTED &&
+			 i < SERVER_WAIT_ALARM;
+			 i++) {
+			    d->dsp = XOpenDisplay (d->name);
+			    if (d->dsp == NULL)
+				    sleep (1);
+			    else
+				    d->servstat = SERVER_RUNNING;
+		    }
+		    ve_unsetenv ("XAUTHORITY");
+		    if (d->dsp == NULL &&
+			/* Note: we could have still gotten a SIGCHLD */
+			d->servstat == SERVER_STARTED) {
+			    d->servstat = SERVER_TIMEOUT;
+		    }
+	    } else {
+		    gdm_run ();
+	    }
+    }
 
     /* Unset alarm */
-    alarm (0);
+    if (d->server_uid == 0) {
+	    alarm (0);
+    }
 
     switch (d->servstat) {
 
@@ -397,6 +435,11 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		    waitpid (d->servpid, NULL, 0);
 	    d->servpid = 0;
     }
+
+    /* We will rebake cookies anyway, so wipe these */
+    unlink (disp->authfile);
+    if (disp->authfile_gdm != NULL)
+	    unlink (disp->authfile_gdm);
 
     sigprocmask (SIG_SETMASK, &oldmask, NULL);
 
@@ -508,8 +551,10 @@ gdm_server_spawn (GdmDisplay *d)
     
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
+
+    gdm_safe_fork (&(d->servpid));
     
-    switch (d->servpid = fork()) {
+    switch (d->servpid) {
 	
     case 0:
         alarm (0);
@@ -521,6 +566,12 @@ gdm_server_spawn (GdmDisplay *d)
 	/* close things */
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 		close(i);
+
+	/* No error checking here - if it's messed the best response
+         * is to ignore & try to continue */
+	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
         /* Log all output from spawned programs to a file */
 	logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
@@ -540,16 +591,16 @@ gdm_server_spawn (GdmDisplay *d)
 	sigemptyset (&ign_signal.sa_mask);
 
 	if (sigaction (SIGUSR1, &ign_signal, NULL) < 0) {
-	    gdm_error (_("gdm_server_spawn: Error setting USR1 to SIG_IGN"));
-	    _exit (SERVER_ABORT);
+		gdm_error (_("gdm_server_spawn: Error setting USR1 to SIG_IGN"));
+		_exit (SERVER_ABORT);
 	}
 	if (sigaction (SIGTTIN, &ign_signal, NULL) < 0) {
-	    gdm_error (_("gdm_server_spawn: Error setting TTIN to SIG_IGN"));
-	    _exit (SERVER_ABORT);
+		gdm_error (_("gdm_server_spawn: Error setting TTIN to SIG_IGN"));
+		_exit (SERVER_ABORT);
 	}
 	if (sigaction (SIGTTOU, &ign_signal, NULL) < 0) {
-	    gdm_error (_("gdm_server_spawn: Error setting TTOU to SIG_IGN"));
-	    _exit (SERVER_ABORT);
+		gdm_error (_("gdm_server_spawn: Error setting TTOU to SIG_IGN"));
+		_exit (SERVER_ABORT);
 	}
 
 	/* And HUP and TERM should be at default */
@@ -636,8 +687,7 @@ gdm_server_spawn (GdmDisplay *d)
 	/* server number is the FIRST argument, before any others */
 	argv[1] = d->name;
 	argv[len+1] = "-auth";
-	argv[len+2] = g_strconcat (GdmServAuthDir, "/", d->name,
-				   ".Xauth", NULL);
+	argv[len+2] = d->authfile;
 	argv[len+3] = NULL;
 
 	srvcmd = g_strjoinv (" ", argv);
@@ -645,6 +695,44 @@ gdm_server_spawn (GdmDisplay *d)
 	g_free (srvcmd);
 	
 	setpgid (0, 0);
+
+	if (d->server_uid != 0) {
+		struct passwd *pwent;
+		pwent = getpwuid (d->server_uid);
+		if (pwent == NULL) {
+			gdm_error (_("%s: Server was to be spawned by uid %d but "
+				     "that user doesn't exist"),
+				   "gdm_server_spawn",
+				   (int)d->server_uid);
+			_exit (SERVER_ABORT);
+		}
+		if (pwent->pw_dir != NULL &&
+		    g_file_exists (pwent->pw_dir))
+			ve_setenv ("HOME", pwent->pw_dir, TRUE);
+		else
+			ve_setenv ("HOME", "/", TRUE); /* Hack */
+		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+		ve_unsetenv ("MAIL");
+
+		if (setgid (pwent->pw_gid) < 0)  {
+			gdm_error (_("%s: Couldn't set groupid to %d"), 
+				   "gdm_server_spawn", (int)pwent->pw_gid);
+			_exit (SERVER_ABORT);
+		}
+
+		if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
+			gdm_error (_("%s: initgroups() failed for %s"),
+				   "gdm_server_spawn", pwent->pw_name);
+			_exit (SERVER_ABORT);
+		}
+
+		if (setuid (d->server_uid) < 0)  {
+			gdm_error (_("%s: Couldn't set userid to %d"),
+				   "gdm_server_spawn", (int)d->server_uid);
+			_exit (SERVER_ABORT);
+		}
+	}
+
 	execv (argv[0], argv);
 	
 	gdm_error (_("gdm_server_spawn: Xserver not found: %s"), command);
@@ -659,6 +747,7 @@ gdm_server_spawn (GdmDisplay *d)
 	break;
 	
     default:
+	gdm_debug ("gdm_server_spawn: Forked server on pid %d", (int)d->servpid);
 	break;
     }
 }
@@ -708,14 +797,36 @@ gdm_server_alarm_handler (gint signal)
  */
 
 static void 
-gdm_server_child_handler (gint signal)
+gdm_server_child_handler (int signal)
 {
-    gdm_debug ("gdm_server_child_handler: Got SIGCHLD, server abort");
+	int status;
+	pid_t pid;
 
-    d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
-    d->servpid = 0;
+	gdm_debug ("gdm_server_child_handler: Got SIGCHLD");
 
-    gdm_quit ();
+	while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
+		gdm_debug ("gdm_server_child_handler: %d died", pid);
+
+		if (WIFEXITED (status))
+			gdm_debug ("gdm_server_child_handler: %d returned %d",
+				   (int)pid, (int)WEXITSTATUS (status));
+		if (WIFSIGNALED (status))
+			gdm_debug ("gdm_server_child_handler: %d died of %d",
+				   (int)pid, (int)WTERMSIG (status));
+
+		if (pid == d->servpid) {
+			gdm_debug ("gdm_server_child_handler: Got SIGCHLD from server, "
+				   "server abort");
+
+			d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
+			d->servpid = 0;
+
+			gdm_quit ();
+		} else if (pid == extra_process) {
+			/* an extra process died, yay! */
+			extra_process = -1;
+		}
+	}
 }
 
 
@@ -739,6 +850,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d = g_new0 (GdmDisplay, 1);
 
     d->authfile = NULL;
+    d->authfile_gdm = NULL;
     d->auths = NULL;
     d->userauth = NULL;
     d->command = g_strdup (command);

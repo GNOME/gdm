@@ -1,3 +1,26 @@
+Mon Sep 10 20:20:59 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: raise version
+
+	* daemon/gdm.[ch], daemon/auth.c, daemon/misc.[ch], daemon/display.c, 
+	  daemon/server.c, daemon/slave.c, gui/gdmflexiserver.c:  Implement
+	  a new scheme for the FLEXI_XNEST command.  Old implementations
+	  will get ERROR 100 (I doubt there are any).  This solves some
+	  security issues with the Xnest stuff.  The Xnest server is now
+	  run as the user who owns the .Xauthority file, but only if that
+	  file is readable ONLY by the user and only if the user can
+	  access keys inside it.  An MIT-MAGIC-COOKIE-1 must exist for
+	  the current display on which Xnest will run.  This is of course
+	  true for gdm created sessions.
+	  
+	* daemon/misc.[ch], daemon/gdm.c, daemon/server.c, daemon/slave.c,
+	  daemon/display.c:  Implement a race safe fork, and improve the
+	  signal handlers to handle some more corner cases and avoid some
+	  races.  Also remove the old last_killed_pid hack since it's now
+	  handled nicer.
+
+	* daemon/gdm.[ch]: add a protocol
+
 Sat Sep 08 02:35:51 2001  George Lebl <jirka@5z.com>
 
 	* daemon/verify-pam.c: OK, PAM documentation is officially on crack.
