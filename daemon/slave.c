@@ -144,7 +144,7 @@ static void	gdm_slave_wait_for_login (void);
 static void     gdm_slave_greeter (void);
 static void     gdm_slave_chooser (void);
 static void     gdm_slave_session_start (void);
-static void     gdm_slave_session_stop (pid_t sesspid);
+static void     gdm_slave_session_stop (gboolean run_post_session);
 static void     gdm_slave_alrm_handler (int sig);
 static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);

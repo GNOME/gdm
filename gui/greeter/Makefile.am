@@ -1,10 +1,6 @@
 SUBDIRS = . themes
 
 ## Process this file with automake to produce makefile.in
-CFLAGS = @CFLAGS@ -g -Wall 	\
-	-Wpointer-arith  	\
-	-Wmissing-prototypes -Wmissing-declarations 
-
 INCLUDES = \
 	-I.						\
 	-DG_DISABLE_DEPRECATED				\

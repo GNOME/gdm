@@ -106,6 +106,17 @@ AC_PROG_CC
 AC_STDC_HEADERS
 dnl AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
+
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \ ]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall -Wpointer-arith -Wmissing-prototypes -Wmissing-declarations" ;;
+  esac
+fi
+changequote([,])dnl
+
+
 AC_PATH_XTRA
 AC_CHECK_TYPE(socklen_t,size_t)
 AC_CHECK_FUNCS(setresuid)

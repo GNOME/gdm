@@ -1,10 +1,6 @@
 SUBDIRS = . greeter
 
 ## Process this file with automake to produce makefile.in
-CFLAGS = @CFLAGS@ -g -Wall 	\
-	-Wpointer-arith  	\
-	-Wmissing-prototypes -Wmissing-declarations 
-
 DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 	-DGDM_FACTORY_CONFIG_FILE=\"@sysconfdir@/gdm/factory-gdm.conf\" \
 	-DGDM_GLADE_DIR=\"@datadir@/gdm\"
@@ -100,6 +96,7 @@ gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
 	$(GUI_LIBS)		\
 	-lXau			\
+	-lX11			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui

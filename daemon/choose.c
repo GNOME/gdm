@@ -99,7 +99,7 @@ gdm_choose_data (const char *data)
 	}
 
 	p = strtok (NULL, " ");
-	if (p == NULL || inet_aton (p, &addr) == 0) {
+	if (p == NULL || inet_pton (AF_INET, p, &addr) == 0) {
 		g_free (msg);
 		return FALSE;
 	}
