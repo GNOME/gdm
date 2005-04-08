@@ -3430,6 +3430,8 @@ gdm_event (GSignalInvocationHint *ihint,
 int 
 main (int argc, char *argv[])
 {
+	guint sid;
+
 	if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 		DOING_GDM_DEVELOPMENT = TRUE;
 	if (g_getenv ("RUNNING_UNDER_GDM") != NULL)
@@ -3454,7 +3456,6 @@ main (int argc, char *argv[])
 	if (RUNNING_UNDER_GDM) {
 		char *gtkrc;
 		char *theme_name;
-		guint sid;
 
 		/* Set busy cursor */
 		setup_cursor (GDK_WATCH);
@@ -3479,17 +3480,17 @@ main (int argc, char *argv[])
 
 		/* evil, but oh well */
 		g_type_class_ref (GTK_TYPE_WIDGET);	
-
-		/* also setup third button to work as first to work in reverse
-		 * situations transparently */
-		sid = g_signal_lookup ("event",
-				       GTK_TYPE_WIDGET);
-		g_signal_add_emission_hook (sid,
-					    0 /* detail */,
-					    gdm_event,
-					    NULL /* data */,
-					    NULL /* destroy_notify */);
 	}
+
+	/* also setup third button to work as first to work in reverse
+	 * situations transparently */
+	sid = g_signal_lookup ("event",
+			       GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    gdm_event,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
 
 	glade_helper_add_glade_directory (GDM_GLADE_DIR);
 

@@ -40,6 +40,7 @@
 #include <X11/XKBlib.h>
 #include <pwd.h>
 #include <sys/utsname.h>
+#include <security/pam_appl.h>;
 
 #include <viciousui.h>
 
@@ -1922,7 +1923,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
-	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
+	gtk_entry_set_max_length (GTK_ENTRY (entry), PAM_MAX_RESP_SIZE);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, TRUE);
@@ -1954,7 +1955,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
-	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
+	gtk_entry_set_max_length (GTK_ENTRY (entry), PAM_MAX_RESP_SIZE);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, TRUE);
@@ -3118,9 +3119,6 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
     gtk_widget_set_size_request (msg, -1, 30);
 
-    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg),
-			FALSE /* expand */, TRUE /* fill */, 0);
-
     gtk_widget_ref (msg);
     g_object_set_data_full (G_OBJECT (login), "msg", msg,
 			    (GDestroyNotify) gtk_widget_unref);
@@ -3146,8 +3144,6 @@ gdm_login_gui_init (void)
     gtk_widget_show (cancel_button);
 
     button_box = gtk_hbox_new (0, 5);
-    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (auto_timed_msg),
-			FALSE /* expand */, TRUE /* fill */, 0);
     /*gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (help_button),
 			FALSE, FALSE, 0);*/
     gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (cancel_button),
@@ -3560,6 +3556,7 @@ main (int argc, char *argv[])
     GIOChannel *ctrlch;
     const char *gdm_version;
     const char *gdm_protocol_version;
+    guint sid;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
@@ -3785,8 +3782,8 @@ main (int argc, char *argv[])
     /* if in timed mode, delay timeout on keyboard or menu
      * activity */
     if ( ! ve_string_empty (GdmTimedLogin)) {
-	    guint sid = g_signal_lookup ("activate",
-					 GTK_TYPE_MENU_ITEM);
+	    sid = g_signal_lookup ("activate",
+				   GTK_TYPE_MENU_ITEM);
 	    g_signal_add_emission_hook (sid,
 					0 /* detail */,
 					gdm_timer_up_delay,
@@ -3815,8 +3812,8 @@ main (int argc, char *argv[])
 	! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER")) &&
 	/* but don't reap Xnest flexis */
 	ve_string_empty (g_getenv ("GDM_PARENT_DISPLAY"))) {
-	    guint sid = g_signal_lookup ("activate",
-					 GTK_TYPE_MENU_ITEM);
+	    sid = g_signal_lookup ("activate",
+				   GTK_TYPE_MENU_ITEM);
 	    g_signal_add_emission_hook (sid,
 					0 /* detail */,
 					delay_reaping,
@@ -3843,15 +3840,13 @@ main (int argc, char *argv[])
 	    g_timeout_add (60*1000, reap_flexiserver, NULL);
     }
 
-    if G_LIKELY (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
-	    guint sid = g_signal_lookup ("event",
-					 GTK_TYPE_WIDGET);
-	    g_signal_add_emission_hook (sid,
-					0 /* detail */,
-					gdm_event,
-					NULL /* data */,
-					NULL /* destroy_notify */);
-    }
+    sid = g_signal_lookup ("event",
+                           GTK_TYPE_WIDGET);
+    g_signal_add_emission_hook (sid,
+				0 /* detail */,
+				gdm_event,
+				NULL /* data */,
+				NULL /* destroy_notify */);
 
     gtk_widget_queue_resize (login);
     gtk_widget_show_now (login);

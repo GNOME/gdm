@@ -3515,6 +3515,8 @@ update_config (const char *key)
 		GdmMaxIndirect = ve_config_get_int (cfg, GDM_KEY_MAXINDIR);
 		GdmMaxIndirectWait = ve_config_get_int (cfg, GDM_KEY_MAXINDWAIT);
 		GdmPingInterval = ve_config_get_int (cfg, GDM_KEY_PINGINTERVAL);
+	} else if (is_key (key, GDM_KEY_DEBUG)) {
+		GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 	} else if (is_key (key, GDM_KEY_UDPPORT)) {
 		int val = ve_config_get_int (cfg, GDM_KEY_UDPPORT);
 		if (GdmPort == val)

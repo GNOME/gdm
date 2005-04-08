@@ -24,6 +24,7 @@
 #include <syslog.h>
 #include <unistd.h>
 #include <signal.h>
+#include <security/pam_appl.h>;
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -305,7 +306,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	} else {
 		greeter_probably_login_prompt = FALSE;
 	}
-	greeter_item_pam_prompt (tmp, 128, TRUE);
+	greeter_item_pam_prompt (tmp, PAM_MAX_RESP_SIZE, TRUE);
 	g_free (tmp);
 	break;
 
@@ -314,7 +315,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	greeter_item_pam_prompt (tmp, 128, FALSE);
+	greeter_item_pam_prompt (tmp, PAM_MAX_RESP_SIZE, FALSE);
 	g_free (tmp);
 	break;
 
@@ -1049,6 +1050,33 @@ gdm_kill_thingies (void)
 	return;
 }
 
+static gboolean
+gdm_event (GSignalInvocationHint *ihint,
+           guint                n_param_values,
+           const GValue        *param_values,
+           gpointer             data)
+{
+        GdkEvent *event;
+
+        /* HAAAAAAAAAAAAAAAAACK */
+        /* Since the user has not logged in yet and may have left/right
+         * mouse buttons switched, we just translate every right mouse click
+         * to a left mouse click */
+        if (n_param_values != 2 ||
+            !G_VALUE_HOLDS (&param_values[1], GDK_TYPE_EVENT))
+          return FALSE;
+
+        event = g_value_get_boxed (&param_values[1]);
+        if ((event->type == GDK_BUTTON_PRESS ||
+             event->type == GDK_2BUTTON_PRESS ||
+             event->type == GDK_3BUTTON_PRESS ||
+             event->type == GDK_BUTTON_RELEASE)
+            && event->button.button == 3)
+                event->button.button = 1;
+
+        return TRUE;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -1061,6 +1089,7 @@ main (int argc, char *argv[])
   char *theme_file;
   char *theme_dir;
   const char *gdm_gtk_theme;
+  guint sid;
   int r;
 
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
@@ -1443,8 +1472,8 @@ main (int argc, char *argv[])
       /* but don't reap Xnest flexis */
       ve_string_empty (g_getenv ("GDM_PARENT_DISPLAY")))
     {
-      guint sid = g_signal_lookup ("activate",
-				   GTK_TYPE_MENU_ITEM);
+      sid = g_signal_lookup ("activate",
+			     GTK_TYPE_MENU_ITEM);
       g_signal_add_emission_hook (sid,
 				  0 /* detail */,
 				  delay_reaping,
@@ -1470,6 +1499,14 @@ main (int argc, char *argv[])
       last_reap_delay = time (NULL);
       g_timeout_add (60*1000, reap_flexiserver, NULL);
     }
+
+  sid = g_signal_lookup ("event",
+                               GTK_TYPE_WIDGET);
+  g_signal_add_emission_hook (sid,
+                              0 /* detail */,
+                              gdm_event,
+                              NULL /* data */,
+                              NULL /* destroy_notify */);
 
   gdm_wm_restore_wm_order ();
 

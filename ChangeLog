@@ -1,6 +1,29 @@
+2005-04-08  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmlogin.c, gui/gdmsetup.c, gui/greeter/greeter.c:
+	  Now make button3 always act like button 1 for better
+	  left-hand support.  No longer just set this for the
+	  login/setup programs when RUNNING_UNDER_GDM is
+	  set since gdmsetup can be run from console and 
+	  so can gdmlogin (for development).  gdmgreet needs
+	  this so the Actions and Languages pop-up dialogs
+	  work with the left mouse.  Aside from such pop-ups
+	  the logic in greeter_events was taking care of this.
+	  Fixes bug #155142.
+	  Also increased the max size of the username password
+	  field to PAM_MAX_RESP_SIZE to fix bug #144809.  I
+	  talked with the PAM expert here at Sun and he 
+	  recommended using this value.
+	  Lastly, fixed a bug I introduced on the 6th so now
+	  I really fixed bug #67647.
+	* daemon/gdm.c: Now the GDM daemon recognizes if the
+	  user changed the "Enable debug" value in gdmsetup.
+	  I added the checkbox to gdmsetup on the 4th.
+
 2005-04-07  Gareth Owen  <gowen72@yahoo.com>
 
 	* po/en_GB.po: Updated British English translation.
+
 
 2005-04-06  Brian Cameron  <brian.cameron@sun.com>
 
