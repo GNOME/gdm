@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-11-25 14:32+0700\n"
-"PO-Revision-Date: 2004-11-25 14:28+0700\n"
+"POT-Creation-Date: 2005-04-10 13:21+0700\n"
+"PO-Revision-Date: 2005-04-10 13:11+0700\n"
 "Last-Translator: -=Dicky Wahyu Purnomo=- <dicky.wahyu@massaint.or.id>\n"
 "Language-Team: Indonesian <l10n@gnome.linux.or.id>\n"
 "MIME-Version: 1.0\n"
@@ -119,9 +119,8 @@ msgstr ""
 "terletak di pojok kiri atas."
 
 #: config/gnome.desktop.in.h:1
-#, fuzzy
 msgid "GNOME"
-msgstr "Happy GNOME"
+msgstr "GNOME"
 
 #: config/gnome.desktop.in.h:2
 msgid "This session logs you into GNOME"
@@ -165,9 +164,9 @@ msgid "%s: Could not open cookie file %s"
 msgstr "%s: Tidak dapat membuka berkas cookie %s"
 
 #: daemon/auth.c:698
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not lock cookie file %s"
-msgstr "%s: Tidak dapat membuat berkas cookie pada %s"
+msgstr "%s: Tidak dapat mengunci berkas cookie %s"
 
 #: daemon/auth.c:748 daemon/auth.c:770
 #, c-format
@@ -175,9 +174,9 @@ msgid "%s: Could not write cookie"
 msgstr "%s: Tidak dapat menuliskan cookie"
 
 #: daemon/auth.c:855
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
-msgstr "gdm_auth_user_remove: Abaikan berkas cookie %s yang mencurigakan"
+msgstr "%s: Tidak perdulikan berkas cookie yang kelihatan mencurigakan %s"
 
 #: daemon/auth.c:898 daemon/gdm.c:2018 daemon/gdm.c:2374
 #, c-format
@@ -194,7 +193,7 @@ msgstr "Tidak dapat menulis ke %s: %s"
 #. * that should give people ample time to stop gdm if needed,
 #. * or just wait for the stupid malicious user to get bored
 #. * and go away
-#: daemon/display.c:114
+#: daemon/display.c:111
 #, c-format
 msgid ""
 "The display server has been shut down about 6 times in the last 90 seconds, "
@@ -205,15 +204,15 @@ msgstr ""
 "kemungkinan telah terjadi kesalahan. X server akan dicoba untuk dinyalakan "
 "kembali setelah 2 menit dari sekarang dan mencoba lagi pada layar %s."
 
-#: daemon/display.c:260
+#: daemon/display.c:257
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Tidak dapat membuat pipa"
 
-#: daemon/display.c:336
-#, fuzzy, c-format
+#: daemon/display.c:333
+#, c-format
 msgid "%s: Failed forking gdm slave process for %s"
-msgstr "gdm_display_manage: Gagal saat menjalankan sub proses gdm untuk %s"
+msgstr ""
 
 #: daemon/errorgui.c:356
 #, c-format
@@ -339,7 +338,7 @@ msgstr ""
 "%s: Direktori log %s tidak ditemukan atau yang ditemukan adalah bukan "
 "directory. Akan menggunakan ServAuthDir %s."
 
-#: daemon/gdm.c:329 gui/gdmlogin.c:650 gui/greeter/greeter.c:105
+#: daemon/gdm.c:329 gui/gdmlogin.c:651 gui/greeter/greeter.c:106
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "%s: Tidak ada berkas konfigurasi: %s. Gunakan default saja."
@@ -374,9 +373,9 @@ msgstr ""
 "waktu ini dimatikan"
 
 #: daemon/gdm.c:488
-#, fuzzy, c-format
+#, c-format
 msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
-msgstr "%s: Jeda waktu login kurang dari 5, paksakan jadi 5"
+msgstr "%s: JedaWaktuLogin kurang dari 5, jadi saya menggunakan 5."
 
 #: daemon/gdm.c:498
 #, c-format
@@ -513,9 +512,9 @@ msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "Tidak ada daemon/ServAuthDir yang ditentukan pada berkas konfigurasi"
 
 #: daemon/gdm.c:753
-#, fuzzy, c-format
+#, c-format
 msgid "%s: No daemon/ServAuthDir specified."
-msgstr "%s: Tidak ada authdir yang dipilih"
+msgstr "%s: Tidak ada daemon/Serv/AuthDir yang ditentukan."
 
 #: daemon/gdm.c:777
 #, c-format
@@ -534,20 +533,21 @@ msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Authdir %s tidak dimiliki oleh pengguna %s, grup %s. Batal."
 
 #: daemon/gdm.c:794
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
 "wrong permissions, it should have permissions of %o. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
 msgstr ""
 "Direktori Otorisasi Server (daemon/ServAuthDir) diisi dengan %s tapi "
-"justrutidak dimiliki oleh user %s dan grup %s. Silakan perbaiki kepemilikan "
-"ini atau konfigurasi %s dan jalankan lagi gdmnya."
+"memiliki permisi yang salah, seharusnya memiliki permisi %o. Silakan "
+"perbaiki permisi ini atau konfigurasi dari gdm %s dan jalankan lagi gdm."
 
 #: daemon/gdm.c:805
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "%s: Authdir %s tidak dimiliki oleh pengguna %s, grup %s. Batal."
+msgstr ""
+"%s: Authdir %s memiliki permisi yang salah %o. Seharusnya %o. Membatalkan."
 
 #. FIXME: how to handle this?
 #: daemon/gdm.c:861 daemon/gdm.c:869 daemon/gdm.c:2149 daemon/gdm.c:2157
@@ -568,20 +568,20 @@ msgid "%s: fork() failed!"
 msgstr "%s: fork() gagal!"
 
 #. should never happen
-#: daemon/gdm.c:884 daemon/slave.c:3437
+#: daemon/gdm.c:884 daemon/slave.c:3433
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() gagal: %s"
 
 #: daemon/gdm.c:1071
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Trying failsafe X server %s"
-msgstr "deal_with_x_crashes: Jalankan server X failsafe %s"
+msgstr "%s: Mencoba X server failsafe %s"
 
 #: daemon/gdm.c:1089
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Running the XKeepsCrashing script"
-msgstr "deal_with_x_crashes: Jalankan skrip XKeepsCrashing"
+msgstr "%s: Menjalankan skrip XKeepsCrashing"
 
 #: daemon/gdm.c:1209
 msgid ""
@@ -589,9 +589,9 @@ msgid ""
 "it is not set up correctly. You will need to log in on a console and rerun "
 "the X configuration program.  Then restart GDM."
 msgstr ""
-"Server X tidak dapat dijalankan. Mungkin karena belum dikonfigurasikan "
-"denganbenar. Silakan login dulu pada konsol dan jalankan program konfigurasi "
-"X. Kemudian jalankan ulang lagi GDM."
+"Saya tidak dapat menjalankan Server X (antar muka grafis anda).  "
+"Kelihatannya belum dikonfigurasikan dengan benar. Silakan login dulu pada "
+"konsol dan jalankan program konfigurasi X. Kemudian jalankan ulang lagi GDM."
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -612,12 +612,10 @@ msgid "Master suspending..."
 msgstr "Me-suspend master..."
 
 #: daemon/gdm.c:1283
-#, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "Sedang me-reboot system, harap menunggu ..."
 
 #: daemon/gdm.c:1285
-#, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "Sedang mematikan system, harap menunggu ..."
 
@@ -626,18 +624,18 @@ msgid "Master halting..."
 msgstr "Mematikan master..."
 
 #: daemon/gdm.c:1309
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Halt failed: %s"
-msgstr "%s: setsid() gagal: %s"
+msgstr "%s: Menghentikan gagal: %s"
 
 #: daemon/gdm.c:1318
 msgid "Master rebooting..."
 msgstr "Me-reboot master..."
 
 #: daemon/gdm.c:1331
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Reboot failed: %s"
-msgstr "%s: setsid() gagal: %s"
+msgstr "%s: Boot ulang gagal: %s"
 
 #: daemon/gdm.c:1429
 #, c-format
@@ -713,14 +711,14 @@ msgstr "Hanya 'root' yang diijinkan untuk menjalankan gdm\n"
 
 #: daemon/gdm.c:2103 daemon/gdm.c:2107 daemon/gdm.c:2182 daemon/gdm.c:2186
 #: daemon/gdm.c:2190 daemon/gdm.c:2194 daemon/gdm.c:2204 daemon/gdm.c:2210
-#: daemon/gdm.c:2221 daemon/misc.c:1648 daemon/misc.c:1652 daemon/misc.c:1656
-#: daemon/misc.c:1663 daemon/misc.c:1667 daemon/misc.c:1671
-#: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:811
-#: daemon/slave.c:825 daemon/slave.c:835 daemon/slave.c:845 daemon/slave.c:857
+#: daemon/gdm.c:2221 daemon/misc.c:1746 daemon/misc.c:1750 daemon/misc.c:1754
+#: daemon/misc.c:1761 daemon/misc.c:1765 daemon/misc.c:1769
+#: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:810
+#: daemon/slave.c:824 daemon/slave.c:834 daemon/slave.c:844 daemon/slave.c:856
 #: gui/gdmchooser.c:1936 gui/gdmchooser.c:1939 gui/gdmchooser.c:1942
-#: gui/gdmlogin.c:3958 gui/gdmlogin.c:3966 gui/gdmlogin.c:3969
-#: gui/greeter/greeter.c:1085 gui/greeter/greeter.c:1093
-#: gui/greeter/greeter.c:1096
+#: gui/gdmlogin.c:3962 gui/gdmlogin.c:3970 gui/gdmlogin.c:3973
+#: gui/greeter/greeter.c:1094 gui/greeter/greeter.c:1102
+#: gui/greeter/greeter.c:1105
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Kesalahan pengaturan %s pengendali sinyal: %s"
@@ -734,9 +732,11 @@ msgstr "gdm telah jalan. Dibatalkan!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Kesalahan dalam mengatur pengendali sinyal CHLD"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "Permintaan FLEXI_XSERVER ditolak: Tidak terotentikasai"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "%s Permintaan ditolak: Tidak terotentikasi"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -754,44 +754,32 @@ msgstr ""
 "Server %s yang diminta tidak diijinkan untuk digunakan untuk server "
 "fleksibel, menggunakan server biasa."
 
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "Permintaan QUERY_LOGOUT_ACTION ditolak: Tidak terotentikasi"
-
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "Permintaan SET_LOGOUT_ACTION ditolak: Tidak terotentikasi"
-
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "Permintaan QUERY_VT ditolak: Tidak terotentikasi"
-
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:652
+#: daemon/misc.c:750
 msgid "y = Yes or n = No? >"
 msgstr "y = Ya atau n = Ndak? >"
 
-#: daemon/misc.c:1016
+#: daemon/misc.c:1114
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: Gagal mendapatkan alamat lokal!"
 
-#: daemon/misc.c:1168
+#: daemon/misc.c:1266
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "Tidak dapat melakukan setgid %d. Dibatalkan."
 
-#: daemon/misc.c:1173
+#: daemon/misc.c:1271
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "initgroups() gagal untuk %s. Dibatalkan."
 
-#: daemon/misc.c:1410 daemon/misc.c:1424
+#: daemon/misc.c:1508 daemon/misc.c:1522
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: Gagal mengatur sinyal %d menjadi %s"
 
-#: daemon/misc.c:2317
+#: daemon/misc.c:2415
 #, c-format
 msgid ""
 "Last login:\n"
@@ -862,9 +850,9 @@ msgid "Server name '%s' not found, using standard server"
 msgstr "Nama server '%s' tidak ditemukan, menggunakan server biasa"
 
 #: daemon/server.c:1112
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not open logfile for display %s!"
-msgstr "%s: Tidak dapat membuat berkas cookie pada %s"
+msgstr "%s: Tidak dapat membuat berkas log untuk tampil %s!"
 
 #: daemon/server.c:1124 daemon/server.c:1130 daemon/server.c:1135
 #, c-format
@@ -881,17 +869,17 @@ msgstr "%s: Tidak ada perintah server untuk tampilan %s"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Server telah dijalankan oleh uid %d tetapi user tersebut tidak ada"
 
-#: daemon/server.c:1201 daemon/slave.c:2500 daemon/slave.c:2978
+#: daemon/server.c:1201 daemon/slave.c:2497 daemon/slave.c:2974
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Tidak dapat mengubah groupid menjadi %d"
 
-#: daemon/server.c:1207 daemon/slave.c:2505 daemon/slave.c:2983
+#: daemon/server.c:1207 daemon/slave.c:2502 daemon/slave.c:2979
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() gagal untuk %s"
 
-#: daemon/server.c:1213 daemon/slave.c:2510 daemon/slave.c:2988
+#: daemon/server.c:1213 daemon/slave.c:2507 daemon/slave.c:2984
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Tidak dapat mengubah userid menjadi %d"
@@ -911,19 +899,19 @@ msgstr "%s: Xserver tidak ditemukan: %s"
 msgid "%s: Can't fork Xserver process!"
 msgstr ":%s: Tidak dapat melakukan fork untuk proses Xserver!"
 
-#: daemon/slave.c:307
+#: daemon/slave.c:306
 msgid "Can't set EGID to user GID"
 msgstr "Tidak dapat mengubah EGID untuk pengguna GID"
 
-#: daemon/slave.c:315
+#: daemon/slave.c:314
 msgid "Can't set EUID to user UID"
 msgstr "Tidak dapat mengubah EUID untuk pengguna UID"
 
-#: daemon/slave.c:1120
+#: daemon/slave.c:1118
 msgid "Log in anyway"
 msgstr "Login saja"
 
-#: daemon/slave.c:1122
+#: daemon/slave.c:1120
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -931,21 +919,21 @@ msgstr ""
 "Anda telah login.  Anda dapat meneruskan login, kembali ke sesi login "
 "sebelumnya, atau membatalkan login ini"
 
-#: daemon/slave.c:1126
+#: daemon/slave.c:1124
 msgid "Return to previous login"
 msgstr "Kembali ke tampilan login sebelumnya"
 
-#: daemon/slave.c:1127 daemon/slave.c:1133
+#: daemon/slave.c:1125 daemon/slave.c:1131
 msgid "Abort login"
 msgstr "Membatalkan login"
 
-#: daemon/slave.c:1130
+#: daemon/slave.c:1128
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 "Anda saat ini telah login. Anda dapat meneruskan login ini atau "
 "membatalkannya."
 
-#: daemon/slave.c:1221
+#: daemon/slave.c:1219
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -965,17 +953,17 @@ msgstr ""
 "dimatikan.  Silahkan restart gdm setelah\n"
 "diperbaiki."
 
-#: daemon/slave.c:1470
+#: daemon/slave.c:1468
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: tidak dapat melakukan fork"
 
-#: daemon/slave.c:1517
+#: daemon/slave.c:1515
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: tidak dapat membuka tampilan %s"
 
-#: daemon/slave.c:1668
+#: daemon/slave.c:1666
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file.  I will attempt to start it from the "
@@ -985,7 +973,7 @@ msgstr ""
 "telah diatur dengan benar dalam berkas konfigurasi.  Akan mencoba untuk "
 "menjalankan dari lokasi standar."
 
-#: daemon/slave.c:1682
+#: daemon/slave.c:1680
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
@@ -993,7 +981,7 @@ msgstr ""
 "Tidak dapat menjalakan aplikasi konfigurasi.  Pastikan path telah diatur "
 "dengan benar dalam berkas konfigurasi."
 
-#: daemon/slave.c:1812
+#: daemon/slave.c:1810
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -1001,12 +989,12 @@ msgstr ""
 "Ketikkan password untuk root\n"
 "untuk mengubah konfigurasi"
 
-#: daemon/slave.c:2454 daemon/slave.c:2459
+#: daemon/slave.c:2451 daemon/slave.c:2456
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Tidak dapat meneruskan data ke gdmgreeter"
 
-#: daemon/slave.c:2582
+#: daemon/slave.c:2579
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  So I have started a single server "
@@ -1018,7 +1006,7 @@ msgstr ""
 "menjalankan server tunggal untuk Anda.  Anda harus login dan memperbaiki "
 "konfigurasi.  Ingat: saat ini, login otomatis dan berwaktu dimatikan."
 
-#: daemon/slave.c:2596
+#: daemon/slave.c:2593
 msgid ""
 "I could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1028,7 +1016,7 @@ msgstr ""
 "dijalankan X server darurat.  Sebaiknya Anda login dan mengonfigurasi X "
 "server dengan benar."
 
-#: daemon/slave.c:2605
+#: daemon/slave.c:2602
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1037,7 +1025,7 @@ msgstr ""
 "Tampilan yang dipilih sedang sibuk, sehingga server ini dijalankan pada "
 "tampilan %s."
 
-#: daemon/slave.c:2625
+#: daemon/slave.c:2622
 msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
@@ -1046,49 +1034,49 @@ msgstr ""
 "Akan dicoba menggunakan yang lain."
 
 #. Something went wrong
-#: daemon/slave.c:2646
+#: daemon/slave.c:2643
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: Gagal menjalankan Penyambut dengan modul gtk: %s. Mencoba tanpa modul"
 
-#: daemon/slave.c:2653
+#: daemon/slave.c:2650
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Gagal menjalankan Penyambut, mencoba standar: %s"
 
-#: daemon/slave.c:2665
+#: daemon/slave.c:2662
 msgid ""
-"Cannot start the greeter program, you will not be able to log in.  This "
+"Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
 msgstr ""
-"Tidak dapat menjalankan aplikasi Penyambut, Anda mungkin tidak dapat login.  "
+"Tidak dapat menjalankan aplikasi Penyambut, Anda tidak akan dapat login.  "
 "Tampilan ini akan dimatikan.  Cobalah login dengan cara lain dan ubahlah "
 "berkas konfigurasi"
 
 #. If no greeter we really have to disable the display
-#: daemon/slave.c:2672
+#: daemon/slave.c:2669
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Masalah saat menjalankan Salam Penyambutan pada tampilan %s"
 
-#: daemon/slave.c:2676
+#: daemon/slave.c:2673
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Tidak dapat melakukan fork untuk proses gdmgreeter"
 
-#: daemon/slave.c:2761
+#: daemon/slave.c:2758
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Tidak dapat membuka fifo!"
 
-#: daemon/slave.c:2937
+#: daemon/slave.c:2934
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Tidak dapat meneruskan data ke gdmchooser"
 
-#: daemon/slave.c:3035
+#: daemon/slave.c:3031
 msgid ""
 "Cannot start the chooser program, you will probably not be able to log in.  "
 "Please contact the system administrator."
@@ -1096,62 +1084,63 @@ msgstr ""
 "Tidak dapat menjalankan aplikasi pemilih, Anda mungkin tidak dapat login."
 "Silahkan hubungi sistem administrator."
 
-#: daemon/slave.c:3039
+#: daemon/slave.c:3035
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Masalah saat menjalankan Pemilih pada tampilan %s"
 
-#: daemon/slave.c:3042
-#, fuzzy, c-format
+#: daemon/slave.c:3038
+#, c-format
 msgid "%s: Can't fork gdmchooser process"
-msgstr "gdm_display_manage: Gagal saat menjalankan sub proses gdm untuk %s"
+msgstr ""
 
-#: daemon/slave.c:3338
+#: daemon/slave.c:3334
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Tidak dapat membuka ~/.xsession-errors"
 
-#: daemon/slave.c:3474
+#: daemon/slave.c:3469
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: Pelaksanaan script PraSesi mengembalikan > 0. Dibatalkan."
 
-#: daemon/slave.c:3516
+#: daemon/slave.c:3511
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Bahasa %s tidak ditemukan, akan menggunakan %s"
 
-#: daemon/slave.c:3517
+#: daemon/slave.c:3512
 msgid "System default"
 msgstr "Sistem standar"
 
-#: daemon/slave.c:3533
+#: daemon/slave.c:3528
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr ":%s: Tidak dapat melakukan pengaturan lingkungan untuk %s. Dibatalkan."
 
-#: daemon/slave.c:3580
+#: daemon/slave.c:3575
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() gagal untuk %s. Dibatalkan."
 
-#: daemon/slave.c:3586
-#, fuzzy, c-format
+#: daemon/slave.c:3581
+#, c-format
 msgid "%s: Could not become %s. Aborting."
-msgstr "%s: tidak dapat membuat soket"
+msgstr "%s: Tidak dapat menjadi %s. Membatalkan."
 
-#: daemon/slave.c:3649
-#, fuzzy, c-format
+#: daemon/slave.c:3644
+#, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
-msgstr "Tidak ada link sesi default. Sekarang menggunakan GNOME Failsafe.\n"
+msgstr ""
+"%s: Tidak ada baris Exec pada berkas session: %s, memulai GNOME failsafe"
 
-#: daemon/slave.c:3655
+#: daemon/slave.c:3650
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
 msgstr "Sesi yang Anda pilih tidak ada. Akan menjalankan sesi GNOME darurat."
 
-#: daemon/slave.c:3669
+#: daemon/slave.c:3664
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
@@ -1159,7 +1148,7 @@ msgstr ""
 "%s: Tidak dapat menemukan atau menjalankan script Xsesseion, akan mencoba "
 "GNOME darurat"
 
-#: daemon/slave.c:3675
+#: daemon/slave.c:3670
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1168,14 +1157,14 @@ msgstr ""
 "darurat."
 
 #. yaikes
-#: daemon/slave.c:3690
+#: daemon/slave.c:3685
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: gnome-session tidak ditemukan untuk sesi GNOME darurat, akan mencoba "
 "xterm"
 
-#: daemon/slave.c:3695
+#: daemon/slave.c:3690
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
@@ -1183,7 +1172,7 @@ msgstr ""
 "Tidak dapat menemukan instalasi GNOME, akan menjalankan sesi \"xterm darurat"
 "\"."
 
-#: daemon/slave.c:3703
+#: daemon/slave.c:3698
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
@@ -1192,11 +1181,11 @@ msgstr ""
 "Ini adalah sesi Gnome Darurat.  Anda akan masuk dengan sesi Gnome standar "
 "tanpa script awal.  Hal ini hanya untuk memperbaiki kesalahan konfigurasi."
 
-#: daemon/slave.c:3718
+#: daemon/slave.c:3713
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Tidak dapat menemukan \"xterm\" untuk menjalankan sesi darurat."
 
-#: daemon/slave.c:3731
+#: daemon/slave.c:3726
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1206,41 +1195,41 @@ msgstr ""
 "agar dapat memperbaiki kesalahan. Untuk keluar dari terminal buatan, ketik "
 "'exit' dan tekan 'Enter' pada kotak window."
 
-#: daemon/slave.c:3758
+#: daemon/slave.c:3753
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Pengguna tidak diijinkan untuk login"
 
-#: daemon/slave.c:3761
+#: daemon/slave.c:3756
 msgid "The system administrator has disabled your account."
 msgstr "Sistem Administrator telah menutup login Anda."
 
-#: daemon/slave.c:3790
+#: daemon/slave.c:3787
 msgid "Error! Unable to set executable context."
 msgstr "Kesalahan! Tidak dapat mengatur konteks yang dapat dijalankan."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
-#, fuzzy, c-format
+#: daemon/slave.c:3795 daemon/slave.c:3800
+#, c-format
 msgid "%s: Could not exec %s %s %s"
-msgstr "%s: Tidak dapat membuat berkas cookie pada %s"
+msgstr "%s: Tidak dapat menjalankan %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3811
 msgid "Cannot start the session due to some internal error."
 msgstr "Tidak dapat menjalankan sesi dikarenakan beberapa error internal."
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3865
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Pengguna memberikan auth tetapi getpwnam(%s) gagal!"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3878
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Pelaksanaan script PascaLogin mengembalikan > 0. Dibatalkan."
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3887
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1258,12 +1247,12 @@ msgstr ""
 "Kurang lebih tidak ada yang dapat berjalan kecuali Anda menggunakan sesi "
 "darurat."
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3895
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Direktori home untuk %s: '%s' tidak ada!"
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4072
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1274,12 +1263,12 @@ msgstr ""
 "penuh atau direktori home Anda tidak dapat ditulis.  Anda mungkin tidak "
 "dapat login.  Harap hubungi sistem administrator."
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4148
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Gagal melakukan fork sesi user"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4229
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1291,25 +1280,25 @@ msgstr ""
 "yang penuh.  Cobalah untuk login lagi dengan sesi darurat yang ada dan coba "
 "perbaiki masalah ini."
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4237
 msgid "View details (~/.xsession-errors file)"
 msgstr "Melihat detil (berkas ~/.xsession-errors)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4380
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM mendeteksi proses reboot atau shutdown sedang berlangsung."
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4474
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Melakukan ping ke %s gagal, whacking tampilan!"
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4760
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Kesalahan fatal X - Restart %s"
 
-#: daemon/slave.c:4859
+#: daemon/slave.c:4854
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1317,22 +1306,22 @@ msgstr ""
 "Suara login pada tampilan non-lokal atau aplikasi untuk membunyikannya tidak "
 "dapat dijalankan atau berkas suara tersebut tidak ditemukan"
 
-#: daemon/slave.c:5214
-#, fuzzy, c-format
+#: daemon/slave.c:5206
+#, c-format
 msgid "%s: Failed starting: %s"
-msgstr "%s: Tidak dapat membuat pipa"
+msgstr "%s: Gagal untuk mulai: %s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5213 daemon/slave.c:5351
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr ":%s: Tidak dapat melakukan fork untuk script!"
 
-#: daemon/slave.c:5316
-#, fuzzy, c-format
+#: daemon/slave.c:5306
+#, c-format
 msgid "%s: Failed creating pipe"
-msgstr "%s: Tidak dapat membuat pipa"
+msgstr "%s: Gagal membuat pipa"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5345
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Gagal menjalankan: %s"
@@ -1352,21 +1341,21 @@ msgstr "Pastikan bahwa tombol Caps Lock mati"
 
 #. I think I'll add the buttons next to this
 #: daemon/verify-crypt.c:127 daemon/verify-pam.c:441
-#: daemon/verify-shadow.c:126 gui/gdmlogin.c:3069
+#: daemon/verify-shadow.c:126 gui/gdmlogin.c:3073
 msgid "Please enter your username"
 msgstr "Silahkan ketik nama pengguna (username) Anda"
 
 #. login: is whacked always translate to Username:
 #: daemon/verify-crypt.c:128 daemon/verify-pam.c:341 daemon/verify-pam.c:342
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
-#: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
-#: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: daemon/verify-shadow.c:127 gui/gdmlogin.c:1075 gui/gdmlogin.c:1089
+#: gui/gdmlogin.c:1875 gui/gdmlogin.c:2374 gui/greeter/greeter.c:283
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "Nama Pengguna:"
 
 #: daemon/verify-crypt.c:166 daemon/verify-pam.c:344 daemon/verify-pam.c:345
-#: daemon/verify-pam.c:489 daemon/verify-shadow.c:184 gui/gdmlogin.c:1905
+#: daemon/verify-pam.c:489 daemon/verify-shadow.c:184 gui/gdmlogin.c:1907
 msgid "Password:"
 msgstr "Password:"
 
@@ -1556,9 +1545,6 @@ msgstr "Tidak dapat mengubah PAM_RHOST=%s"
 
 #. #endif
 #. PAM_FAIL_DELAY
-#. is not really an auth problem, but it will
-#. pretty much look as such, it shouldn't really
-#. happen
 #: daemon/verify-pam.c:840 daemon/verify-pam.c:858 daemon/verify-pam.c:1152
 #: daemon/verify-pam.c:1164
 msgid "Couldn't authenticate user"
@@ -1644,34 +1630,34 @@ msgstr ""
 "\n"
 "Sistem Administrator telah menutup akses ke sistem untuk sementara waktu."
 
-#: daemon/verify-pam.c:1428 daemon/verify-pam.c:1430
+#: daemon/verify-pam.c:1433 daemon/verify-pam.c:1435
 msgid "Can't find PAM configuration for gdm."
 msgstr "Tidak dapat menemukan konfigurasi PAM untuk gdm."
 
 #: daemon/xdmcp.c:369
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not get server hostname: %s!"
-msgstr "%s: Tidak dapat menuliskan entri otorisasi: %s"
+msgstr "%s: Tidak mendapatkan nama host server: %s!"
 
 #: daemon/xdmcp.c:394
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not create socket!"
-msgstr "%s: tidak dapat membuat soket"
+msgstr "%s: Tidak dapat membuat soket!"
 
 #: daemon/xdmcp.c:487
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not bind to XDMCP socket!"
-msgstr "%s: tidak dapat melakukan bind pada socket"
+msgstr "%s: Tidak dapat melakukan bind pada socket XDMCP!"
 
 #: daemon/xdmcp.c:559
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not create XDMCP buffer!"
-msgstr "%s: Tidak dapat menuliskan cookie"
+msgstr "%s: Tidak dapat membuat buffer XDMCP!"
 
 #: daemon/xdmcp.c:565
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read XDMCP header!"
-msgstr "%s: Tidak dapat menuliskan cookie"
+msgstr "%s: Tidak dapat membaca judul XDMCP!"
 
 #: daemon/xdmcp.c:572
 #, c-format
@@ -1684,9 +1670,9 @@ msgid "%s: Unknown opcode from host %s"
 msgstr "%s: Opcode tidak dikenal dari host %s"
 
 #: daemon/xdmcp.c:693 daemon/xdmcp.c:1138
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not extract authlist from packet"
-msgstr "%s: tidak dapat membuat soket"
+msgstr "%s: Tidak dapat menguraikan daftar auth dari paket"
 
 #: daemon/xdmcp.c:709 daemon/xdmcp.c:1158
 #, c-format
@@ -1694,97 +1680,97 @@ msgid "%s: Error in checksum"
 msgstr "%s: Kesalahan pada checksum"
 
 #: daemon/xdmcp.c:1121
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read display address"
-msgstr "%s: Tidak dapat menuliskan cookie"
+msgstr "%s: Tidak dapat membaca alamat tampil"
 
 #: daemon/xdmcp.c:1129
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read display port number"
-msgstr "%s: tidak dapat melakukan bind pada socket"
+msgstr "%s: Tidak dapat membaca nomor port tampil"
 
-#: daemon/xdmcp.c:1169 daemon/xdmcp.c:1193
+#: daemon/xdmcp.c:1193 daemon/xdmcp.c:1217
 #, c-format
 msgid "%s: Bad address"
 msgstr "%s: Salah alamat"
 
-#: daemon/xdmcp.c:1352 daemon/xdmcp.c:1359
+#: daemon/xdmcp.c:1376 daemon/xdmcp.c:1383
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Menolak permintaan XDMCP dari host %s"
 
-#: daemon/xdmcp.c:1585 daemon/xdmcp.c:1592
+#: daemon/xdmcp.c:1609 daemon/xdmcp.c:1616
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Mendapatkan REQUEST dari host yang dikucilkan %s"
 
-#: daemon/xdmcp.c:1604 daemon/xdmcp.c:1980 daemon/xdmcp.c:2390
-#, fuzzy, c-format
+#: daemon/xdmcp.c:1628 daemon/xdmcp.c:2004 daemon/xdmcp.c:2414
+#, c-format
 msgid "%s: Could not read Display Number"
-msgstr "%s: Tidak dapat menuliskan cookie"
-
-#: daemon/xdmcp.c:1611
-#, fuzzy, c-format
-msgid "%s: Could not read Connection Type"
-msgstr "%s: Tidak dapat menuliskan cookie"
-
-#: daemon/xdmcp.c:1618
-#, fuzzy, c-format
-msgid "%s: Could not read Client Address"
-msgstr "%s: Tidak dapat menuliskan cookie"
-
-#: daemon/xdmcp.c:1626
-#, fuzzy, c-format
-msgid "%s: Could not read Authentication Names"
-msgstr "%s: Tidak dapat menuliskan entri otorisasi: %s"
+msgstr "%s: Tidak dapat membaca Nomor Tampil"
 
 #: daemon/xdmcp.c:1635
-#, fuzzy, c-format
+#, c-format
+msgid "%s: Could not read Connection Type"
+msgstr "%s: Tidak dapat membaca Jenis Sambungan"
+
+#: daemon/xdmcp.c:1642
+#, c-format
+msgid "%s: Could not read Client Address"
+msgstr "%s: Tidak dapat membaca Alamat Client"
+
+#: daemon/xdmcp.c:1650
+#, c-format
+msgid "%s: Could not read Authentication Names"
+msgstr "%s: Tidak dapat membaca Nama Pembuktian"
+
+#: daemon/xdmcp.c:1659
+#, c-format
 msgid "%s: Could not read Authentication Data"
-msgstr "%s: Tidak dapat menuliskan entri otorisasi: %s"
+msgstr "%s: Tidak dapat membaca Data Pembuktian"
 
-#: daemon/xdmcp.c:1645
-#, fuzzy, c-format
+#: daemon/xdmcp.c:1669
+#, c-format
 msgid "%s: Could not read Authorization List"
-msgstr "%s: Tidak dapat menuliskan entri otorisasi: %s"
+msgstr "%s: Tidak dapat membaca Daftar Kuasa"
 
-#: daemon/xdmcp.c:1662
-#, fuzzy, c-format
+#: daemon/xdmcp.c:1686
+#, c-format
 msgid "%s: Could not read Manufacturer ID"
-msgstr "%s: Tidak dapat menuliskan cookie"
+msgstr "%s: Tidak dapat membaca ID Pabrikan"
 
-#: daemon/xdmcp.c:1688 daemon/xdmcp.c:1695
+#: daemon/xdmcp.c:1712 daemon/xdmcp.c:1719
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Gagal melakukan checksum dari %s"
 
-#: daemon/xdmcp.c:1956 daemon/xdmcp.c:1963
+#: daemon/xdmcp.c:1980 daemon/xdmcp.c:1987
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Berhasil mengatur dari host yang dikucilkan %s"
 
-#: daemon/xdmcp.c:1973 daemon/xdmcp.c:2397
-#, fuzzy, c-format
+#: daemon/xdmcp.c:1997 daemon/xdmcp.c:2421
+#, c-format
 msgid "%s: Could not read Session ID"
-msgstr "%s: Tidak dapat membuka FIFO"
+msgstr "%s: Tidak dapat membuka ID Session"
 
-#: daemon/xdmcp.c:1987
-#, fuzzy, c-format
+#: daemon/xdmcp.c:2011
+#, c-format
 msgid "%s: Could not read Display Class"
-msgstr "%s: Tidak dapat menuliskan cookie"
+msgstr "%s: Tidak dapat membaca Kelas Tampil"
 
-#: daemon/xdmcp.c:2108 daemon/xdmcp.c:2115 daemon/xdmcp.c:2127
-#: daemon/xdmcp.c:2237 daemon/xdmcp.c:2244 daemon/xdmcp.c:2256
+#: daemon/xdmcp.c:2132 daemon/xdmcp.c:2139 daemon/xdmcp.c:2151
+#: daemon/xdmcp.c:2261 daemon/xdmcp.c:2268 daemon/xdmcp.c:2280
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Tidak dapat membaca alamat"
 
-#: daemon/xdmcp.c:2367 daemon/xdmcp.c:2381
+#: daemon/xdmcp.c:2391 daemon/xdmcp.c:2405
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Mendapatkan KEEPALIVE dari host yang dikucilkan %s"
 
-#: daemon/xdmcp.c:2690 daemon/xdmcp.c:2697 daemon/xdmcp.c:2703
+#: daemon/xdmcp.c:2714 daemon/xdmcp.c:2721 daemon/xdmcp.c:2727
 #, c-format
 msgid "%s: No XDMCP support"
 msgstr "%s: Tidak ada dukungan XDMCP"
@@ -1827,9 +1813,8 @@ msgstr "Jangan memeriksa apakah ada gdm yang telah dijalankan"
 
 #. markup
 #: gui/gdmXnestchooser.c:521
-#, fuzzy
 msgid "Xnest doesn't exist."
-msgstr "File tidak ada"
+msgstr "Xnest tidak ada."
 
 #: gui/gdmXnestchooser.c:523
 msgid "Please ask your system administrator to install it."
@@ -1993,8 +1978,8 @@ msgstr ""
 msgid "Can't open default host icon: %s"
 msgstr "Tidak dapat membuka ikon host standar: %s"
 
-#: gui/gdmchooser.c:1950 gui/gdmlogin.c:3977 gui/gdmlogin.c:3984
-#: gui/greeter/greeter.c:1104 gui/greeter/greeter.c:1111
+#: gui/gdmchooser.c:1950 gui/gdmlogin.c:3981 gui/gdmlogin.c:3988
+#: gui/greeter/greeter.c:1113 gui/greeter/greeter.c:1120
 msgid "Could not set signal mask!"
 msgstr "Tidak dapat mengatur mask sinyal!"
 
@@ -2158,9 +2143,8 @@ msgstr "Login baru di Window Bersarang"
 
 #. markup
 #: gui/gdmflexiserver.c:100
-#, fuzzy
 msgid "Cannot change display"
-msgstr "%s: Tidak dapat membuat pipa"
+msgstr "Tidak dapat mengganti tampil"
 
 #: gui/gdmflexiserver.c:177
 msgid "Nobody"
@@ -2176,8 +2160,8 @@ msgstr "Tampilan %s di terminal virtual %d"
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Tampilan bersarang %s pada terminal virtual %d"
 
-#: gui/gdmflexiserver.c:247 gui/gdmlogin.c:2917
-#: gui/greeter/greeter_item_ulist.c:449
+#: gui/gdmflexiserver.c:247 gui/gdmlogin.c:2919
+#: gui/greeter/greeter_item_ulist.c:476
 msgid "Username"
 msgstr "Nama Pengguna"
 
@@ -2280,531 +2264,535 @@ msgid "Log in as another user without logging out"
 msgstr "Login sebagai pengguna lain tanpa logout"
 
 #: gui/gdmflexiserver.desktop.in.h:2
-#, fuzzy
 msgid "New Login"
-msgstr "Login GDM"
+msgstr "Login Baru"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
+msgid "A-M|Afrikaans"
+msgstr "A-M|Afrika"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:55
 msgid "A-M|Albanian"
 msgstr "A-M|Albania"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:55
+#: gui/gdmlanguages.c:57
 msgid "A-M|Amharic"
 msgstr "A-M|Amharic"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:57
+#: gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Egypt)"
 msgstr "A-M|Arab (Mesir)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:59
+#: gui/gdmlanguages.c:61
 msgid "A-M|Arabic (Lebanon)"
 msgstr "A-M|Arab (Libanon)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:61
-#, fuzzy
+#: gui/gdmlanguages.c:63
 msgid "A-M|Armenian"
-msgstr "A-M|Albania"
+msgstr "A-M|Armenia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
 msgid "A-M|Azerbaijani"
 msgstr "A-M|Azerbaijan"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:67
 msgid "A-M|Basque"
 msgstr "A-M|Basque"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:69
 msgid "A-M|Belarusian"
 msgstr "A-M|Belarusia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:71
 msgid "A-M|Bengali"
 msgstr "A-M|Bengali"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:73
 msgid "A-M|Bengali (India)"
 msgstr "A-M|Bengali (India)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:75
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bulgaria"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:77
 msgid "A-M|Bosnian"
 msgstr "A-M|Bosnia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:79
 msgid "A-M|Catalan"
 msgstr "A-M|Catalan"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:81
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|China (sederhana)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
+#: gui/gdmlanguages.c:83
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|China (tradisional)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:85
 msgid "A-M|Croatian"
 msgstr "A-M|Kroasia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:87
 msgid "A-M|Czech"
 msgstr "A-M|Ceko"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:89
 msgid "A-M|Danish"
 msgstr "A-M|Denmark"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:91
 msgid "A-M|Dutch"
 msgstr "A-M|Belanda"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:93
 msgid "A-M|English"
 msgstr "A-M|Inggris"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
-#, fuzzy
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (USA)"
-msgstr "A-M|Inggris"
+msgstr "A-M|Inggris (USA)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
-#, fuzzy
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (Australia)"
 msgstr "A-M|Inggris (Australia)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
-#, fuzzy
-msgid "A-M|English (UK)"
-msgstr "A-M|Inggris"
-
-#. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:99
-#, fuzzy
-msgid "A-M|English (Canada)"
-msgstr "A-M|Inggris (Irlandia)"
+msgid "A-M|English (UK)"
+msgstr "A-M|Inggris (UK)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:101
+msgid "A-M|English (Canada)"
+msgstr "A-M|Inggris (Kanada)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:103
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Inggris (Irlandia)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
-#, fuzzy
+#: gui/gdmlanguages.c:105
 msgid "A-M|English (Denmark)"
-msgstr "A-M|Inggris (Irlandia)"
+msgstr "A-M|Inggris (Denmark)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:107
+msgid "A-M|English (South Africa)"
+msgstr "A-M|Inggris (Afrika Selatan)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:109
 msgid "A-M|Estonian"
 msgstr "A-M|Estonia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:111
 msgid "A-M|Finnish"
 msgstr "A-M|Finlandia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:113
 msgid "A-M|French"
 msgstr "N-Z|Perancis"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
-#, fuzzy
-msgid "A-M|French (Belgium)"
-msgstr "N-Z|Perancis"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113
-#, fuzzy
-msgid "A-M|French (Switzerland)"
-msgstr "A-M|Inggris (Irlandia)"
-
-#. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:115
+msgid "A-M|French (Belgium)"
+msgstr "N-Z|Perancis (Belgia)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:117
+msgid "A-M|French (Switzerland)"
+msgstr "A-M|Prancis (Swiss)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:119
 msgid "A-M|Galician"
 msgstr "A-M|Galicia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:121
 msgid "A-M|German"
 msgstr "A-M|Jerman"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
-#, fuzzy
+#: gui/gdmlanguages.c:123
 msgid "A-M|German (Austria)"
-msgstr "A-M|Inggris (Australia)"
+msgstr "A-M|Jerman (Austria)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:125
 msgid "A-M|German (Switzerland)"
 msgstr "A-M|Jerman (Swis)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:127
 msgid "A-M|Greek"
 msgstr "N-Z|Yunani"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:129
 msgid "A-M|Gujarati"
 msgstr "A-M|Gujarat"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127 gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:131 gui/gdmlanguages.c:133
 msgid "A-M|Hebrew"
 msgstr "A-M|Ibrani"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:135
 msgid "A-M|Hindi"
 msgstr "A-M|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:137
 msgid "A-M|Hungarian"
 msgstr "A-M|Hungaria"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:139
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:141
 msgid "A-M|Indonesian"
 msgstr "A-M|Indonesia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:143
 msgid "A-M|Interlingua"
 msgstr "A-M|Interlingua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:145
 msgid "A-M|Irish"
 msgstr "A-M|Irish"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:147
 msgid "A-M|Italian"
 msgstr "A-M|Italia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:149
 msgid "A-M|Japanese"
 msgstr "A-M|Jepang"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:151
 msgid "A-M|Kannada"
 msgstr "A-M|Kanada"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:154
+msgid "A-M|Kinyarwanda"
+msgstr "A-M|Kinyarwanda"
+
+#: gui/gdmlanguages.c:155
 msgid "A-M|Korean"
 msgstr "A-M|Korea"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:157
 msgid "A-M|Latvian"
 msgstr "A-M|Latvia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:159
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lithuania"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:161
 msgid "A-M|Macedonian"
 msgstr "A-M|Macedonia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:163
 msgid "A-M|Malay"
 msgstr "A-M|Malaysia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:159
-#, fuzzy
+#: gui/gdmlanguages.c:165
 msgid "A-M|Malayalam"
-msgstr "A-M|Malaysia"
+msgstr "A-M|Malayalam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:161
-#, fuzzy
+#: gui/gdmlanguages.c:167
 msgid "A-M|Marathi"
-msgstr "A-M|Gujarat"
+msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:169
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongolia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:171
+msgid "N-Z|Northern Sotho"
+msgstr "N-Z|Sotho Utara"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norwegia (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norwegia (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
-#, fuzzy
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Oriya"
-msgstr "N-Z|Serbia"
+msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Panjabi"
 msgstr "N-Z|Punjabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Persian"
 msgstr "N-Z|Persia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Polish"
 msgstr "N-Z|Polandia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugis"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugis (Brasil)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Romanian"
 msgstr "N-Z|Romania"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Russian"
 msgstr "N-Z|Russia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185 gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:193 gui/gdmlanguages.c:195
 msgid "N-Z|Serbian"
 msgstr "N-Z|Serbia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
-#, fuzzy
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Serbian (Latin)"
-msgstr "N-Z|Serbia"
+msgstr "N-Z|Serbia (Latin)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
-#, fuzzy
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Serbian (Jekavian)"
-msgstr "N-Z|Serbia"
+msgstr "N-Z|Serbia (Jekavian)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovak"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovenia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Spanish"
 msgstr "N-Z|Spanyol"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Spanyol (Mexico)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Swedish"
 msgstr "N-Z|Swedia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:211
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Swedia (Finlandia)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:205
+#: gui/gdmlanguages.c:213
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:207
+#: gui/gdmlanguages.c:215
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:209
+#: gui/gdmlanguages.c:217
 msgid "N-Z|Thai"
 msgstr "N-Z|Thailand"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:211
+#: gui/gdmlanguages.c:219
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turki"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:213
+#: gui/gdmlanguages.c:221
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrainia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:215
+#: gui/gdmlanguages.c:223
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnam"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:217
+#: gui/gdmlanguages.c:225
 msgid "N-Z|Walloon"
 msgstr "N-Z|Walloon"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:219
+#: gui/gdmlanguages.c:227
 msgid "N-Z|Welsh"
 msgstr "N-Z|Welsh"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:221
+#: gui/gdmlanguages.c:229
 msgid "N-Z|Yiddish"
 msgstr "N-Z|Yiddish"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:231
+msgid "N-Z|Zulu"
+msgstr "N-Z|Zulu"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:223
+#: gui/gdmlanguages.c:233
 msgid "Other|POSIX/C English"
 msgstr "Lainnya|POSIX/C Inggris"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:419
+#: gui/gdmlanguages.c:429
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:427
+#: gui/gdmlanguages.c:437
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:223
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "User %s akan login dalam %d detik"
 
-#: gui/gdmlogin.c:447
+#: gui/gdmlogin.c:448
 #, c-format
 msgid "%s: String too long!"
 msgstr "%s: Tulisan terlalu panjang!"
 
-#: gui/gdmlogin.c:449
+#: gui/gdmlogin.c:450
 #, c-format
 msgid "%sWelcome to %s%s"
 msgstr "%sSelamat Datang di %s%s"
 
 #. markup
-#: gui/gdmlogin.c:537
-#, fuzzy
+#: gui/gdmlogin.c:538
 msgid "Could not fork a new process!"
-msgstr "%s: tidak dapat membuat soket"
+msgstr ""
 
-#: gui/gdmlogin.c:539
+#: gui/gdmlogin.c:540
 msgid "You likely won't be able to log in either."
 msgstr "Sepertinya Anda tidak dapat login."
 
-#: gui/gdmlogin.c:583 gui/greeter/greeter_system.c:45
+#: gui/gdmlogin.c:584 gui/greeter/greeter_system.c:45
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Apakah Anda yakin ingin me-reboot komputer?"
 
 #. markup
-#: gui/gdmlogin.c:585 gui/gdmlogin.c:2781 gui/greeter/greeter_parser.c:1027
+#: gui/gdmlogin.c:586 gui/gdmlogin.c:2783 gui/greeter/greeter_parser.c:1027
 #: gui/greeter/greeter_system.c:47 gui/greeter/greeter_system.c:168
-#, fuzzy
 msgid "_Reboot"
-msgstr "_Reboot..."
+msgstr "_Boot ulang"
 
-#: gui/gdmlogin.c:597 gui/greeter/greeter_system.c:58
+#: gui/gdmlogin.c:598 gui/greeter/greeter_system.c:58
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Apakah Anda yakin ingin mematikan komputer?"
 
 #. markup
-#: gui/gdmlogin.c:599 gui/gdmlogin.c:2794 gui/greeter/greeter_parser.c:1017
+#: gui/gdmlogin.c:600 gui/gdmlogin.c:2796 gui/greeter/greeter_parser.c:1017
 #: gui/greeter/greeter_system.c:60 gui/greeter/greeter_system.c:180
-#, fuzzy
 msgid "Shut _Down"
-msgstr "Matikan K_omputer..."
+msgstr "Ma_tikan"
 
-#: gui/gdmlogin.c:619 gui/greeter/greeter_system.c:70
+#: gui/gdmlogin.c:620 gui/greeter/greeter_system.c:70
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Apakah Anda yakin ingin me-suspend komputer?"
 
 #. markup
-#: gui/gdmlogin.c:621 gui/gdmlogin.c:2808 gui/greeter/greeter_system.c:72
-#, fuzzy
+#: gui/gdmlogin.c:622 gui/gdmlogin.c:2810 gui/greeter/greeter_system.c:72
 msgid "_Suspend"
-msgstr "_Suspend..."
+msgstr "_Tunda"
 
-#: gui/gdmlogin.c:685 gui/gdmlogin.c:3752 gui/greeter/greeter.c:164
-#: gui/greeter/greeter.c:858
-#, fuzzy
+#: gui/gdmlogin.c:686 gui/gdmlogin.c:3756 gui/greeter/greeter.c:166
+#: gui/greeter/greeter.c:864
 msgid "Welcome"
-msgstr "Selamat datang di %h"
+msgstr "Selamat Datang"
 
-#: gui/gdmlogin.c:688 gui/gdmlogin.c:3755 gui/greeter/greeter.c:167
-#: gui/greeter/greeter.c:861
+#: gui/gdmlogin.c:689 gui/gdmlogin.c:3759 gui/greeter/greeter.c:169
+#: gui/greeter/greeter.c:867
 #, c-format
 msgid "Welcome to %n"
 msgstr "Selamat Datang di %n"
 
-#: gui/gdmlogin.c:736 gui/greeter/greeter.c:192
-#, fuzzy
+#: gui/gdmlogin.c:738 gui/greeter/greeter.c:194
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
-msgstr "%s: Jeda waktu login kurang dari 5, paksakan jadi 5"
+msgstr "JedaWaktuLogin kurang dari 5,  Saya gunakan saja 5."
 
-#: gui/gdmlogin.c:854 gui/greeter/greeter_session.c:119
+#: gui/gdmlogin.c:856 gui/greeter/greeter_session.c:119
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -2814,14 +2802,13 @@ msgstr ""
 "Apakah Anda ingin menggunakan %s sebagai sesi standar?"
 
 #. markup
-#: gui/gdmlogin.c:860 gui/gdmlogin.c:887 gui/gdmlogin.c:965
+#: gui/gdmlogin.c:862 gui/gdmlogin.c:889 gui/gdmlogin.c:967
 #: gui/greeter/greeter_action_language.c:143 gui/greeter/greeter_session.c:125
 #: gui/greeter/greeter_session.c:155
-#, fuzzy
 msgid "Make _Default"
-msgstr "Default"
+msgstr "Buat _Default"
 
-#: gui/gdmlogin.c:860 gui/greeter/greeter_session.c:125
+#: gui/gdmlogin.c:862 gui/greeter/greeter_session.c:125
 msgid "Just _Log In"
 msgstr "_Login Saja"
 
@@ -2829,7 +2816,7 @@ msgstr "_Login Saja"
 #. no_group
 #. untranslated
 #. markup
-#: gui/gdmlogin.c:879 gui/gdmlogin.c:959
+#: gui/gdmlogin.c:881 gui/gdmlogin.c:961
 #: gui/greeter/greeter_action_language.c:137 gui/greeter/greeter_session.c:147
 #, c-format
 msgid ""
@@ -2839,12 +2826,12 @@ msgstr ""
 "Anda telah memilih %s untuk sesi ini, tetapi biasanya adalah %s.\n"
 "Apakah Anda ingin menggunakan %s sebagai sesi standar?"
 
-#: gui/gdmlogin.c:887 gui/gdmlogin.c:965
+#: gui/gdmlogin.c:889 gui/gdmlogin.c:967
 #: gui/greeter/greeter_action_language.c:143 gui/greeter/greeter_session.c:155
 msgid "Just For _This Session"
 msgstr "Hanya Un_tuk Sesi Ini"
 
-#: gui/gdmlogin.c:897 gui/greeter/greeter_session.c:168
+#: gui/gdmlogin.c:899 gui/greeter/greeter_session.c:168
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2857,56 +2844,53 @@ msgstr ""
 "jalankan utilitas 'switchdesk'\n"
 "(System->Desktop Switching Tool dari menu panel)."
 
-#: gui/gdmlogin.c:941 gui/gdmlogin.c:950
+#: gui/gdmlogin.c:943 gui/gdmlogin.c:952
 #: gui/greeter/greeter_action_language.c:53
 #: gui/greeter/greeter_action_language.c:121
 #: gui/greeter/greeter_action_language.c:129
-#, fuzzy
 msgid "System Default"
-msgstr "Default"
+msgstr "System Default"
 
-#: gui/gdmlogin.c:1074 gui/gdmlogin.c:1088 gui/gdmlogin.c:1875
-#: gui/gdmlogin.c:2373 gui/gdmlogin.c:3023
+#: gui/gdmlogin.c:1076 gui/gdmlogin.c:1090 gui/gdmlogin.c:1877
+#: gui/gdmlogin.c:2375 gui/gdmlogin.c:3025
 msgid "_Username:"
 msgstr "Nama Pengg_una:"
 
-#: gui/gdmlogin.c:1146
+#: gui/gdmlogin.c:1148
 #, c-format
 msgid "%s session selected"
 msgstr "Sesi %s dipilih"
 
-#: gui/gdmlogin.c:1172 gui/gdmlogin.c:1482 gui/greeter/greeter_session.c:271
-#, fuzzy
+#: gui/gdmlogin.c:1174 gui/gdmlogin.c:1484 gui/greeter/greeter_session.c:271
 msgid "_Last"
-msgstr "Akhir"
+msgstr "_Akhir"
 
-#: gui/gdmlogin.c:1183 gui/greeter/greeter_session.c:277
+#: gui/gdmlogin.c:1185 gui/greeter/greeter_session.c:277
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Login menggunakan sesi yang Anda gunakan terakhir kali login."
 
-#: gui/gdmlogin.c:1194 gui/greeter/greeter_session.c:264
+#: gui/gdmlogin.c:1196 gui/greeter/greeter_session.c:264
 msgid "Failsafe Gnome"
 msgstr "Gnome Darurat"
 
-#: gui/gdmlogin.c:1195 gui/greeter/greeter_session.c:265
+#: gui/gdmlogin.c:1197 gui/greeter/greeter_session.c:265
 msgid "Failsafe xterm"
 msgstr "xterm Darurat"
 
-#: gui/gdmlogin.c:1344 gui/greeter/greeter_session.c:429
-#, fuzzy, c-format
+#: gui/gdmlogin.c:1346 gui/greeter/greeter_session.c:429
+#, c-format
 msgid "%s: Session directory %s not found!"
-msgstr "%s: Direktori sesi belum dipilih."
+msgstr "%s: Direktori sesi %s tidak ditemukan!"
 
-#: gui/gdmlogin.c:1350 gui/greeter/greeter_session.c:437
+#: gui/gdmlogin.c:1352 gui/greeter/greeter_session.c:437
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Waduh, tidak ditemukan apa-apa di direktori sesi."
 
-#: gui/gdmlogin.c:1361 gui/greeter/greeter_session.c:449
-#, fuzzy
+#: gui/gdmlogin.c:1363 gui/greeter/greeter_session.c:449
 msgid "Failsafe _Gnome"
-msgstr "Failsafe"
+msgstr "_Gnome Failsafe"
 
-#: gui/gdmlogin.c:1363 gui/greeter/greeter_session.c:451
+#: gui/gdmlogin.c:1365 gui/greeter/greeter_session.c:451
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -2916,12 +2900,11 @@ msgstr ""
 "script awal yang dijalankan dan hanya digunakan jika tidak bisa login.  "
 "GNOME akan menggunakan sesi standar."
 
-#: gui/gdmlogin.c:1386 gui/greeter/greeter_session.c:473
-#, fuzzy
+#: gui/gdmlogin.c:1388 gui/greeter/greeter_session.c:473
 msgid "Failsafe _Terminal"
-msgstr "Failsafe"
+msgstr "_Terminal Failsafe"
 
-#: gui/gdmlogin.c:1388 gui/greeter/greeter_session.c:475
+#: gui/gdmlogin.c:1390 gui/greeter/greeter_session.c:475
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -2931,7 +2914,7 @@ msgstr ""
 "Tidak ada script awal yang akan dibaca dan hanya digunakan saat tidak bisa "
 "login.  Untuk keluar, ketik 'exit'."
 
-#: gui/gdmlogin.c:1409 gui/greeter/greeter_session.c:495
+#: gui/gdmlogin.c:1411 gui/greeter/greeter_session.c:495
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "Tidak ada link sesi default. Sekarang menggunakan GNOME Failsafe.\n"
 
@@ -2939,78 +2922,75 @@ msgstr "Tidak ada link sesi default. Sekarang menggunakan GNOME Failsafe.\n"
 #. no_group
 #. untranslated
 #. makrup
-#: gui/gdmlogin.c:1453
+#: gui/gdmlogin.c:1455
 #, c-format
 msgid "%s language selected"
 msgstr "Bahasa %s dipilih"
 
-#: gui/gdmlogin.c:1493
+#: gui/gdmlogin.c:1495
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Login menggunakan bahasa yang Anda gunakan terakhir kali login"
 
-#: gui/gdmlogin.c:1497
-#, fuzzy
+#: gui/gdmlogin.c:1499
 msgid "_System Default"
-msgstr "Default"
+msgstr "_System Default"
 
-#: gui/gdmlogin.c:1508
+#: gui/gdmlogin.c:1510
 msgid "Log in using the default system language"
 msgstr "Login dengan bahasa standar sistem"
 
-#: gui/gdmlogin.c:1528
-#, fuzzy
+#: gui/gdmlogin.c:1530
 msgid "_Other"
-msgstr "Lainnya"
+msgstr "_Lainnya"
 
-#: gui/gdmlogin.c:1906
+#: gui/gdmlogin.c:1908
 msgid "_Password:"
 msgstr "_Password:"
 
 #. markup
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:2130 gui/greeter/greeter.c:434
+#: gui/gdmlogin.c:2132 gui/greeter/greeter.c:436
 msgid "Please insert 25 cents to log in."
 msgstr "Masukan koin Rp 100 untuk mulai."
 
-#: gui/gdmlogin.c:2381
+#: gui/gdmlogin.c:2383
 msgid "Doubleclick on the user to log in"
 msgstr "Klik dua kali di pengguna untuk login"
 
-#: gui/gdmlogin.c:2506
+#: gui/gdmlogin.c:2508
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Desktop Manager"
 
-#: gui/gdmlogin.c:2532 gui/greeter/greeter_item.c:139
+#: gui/gdmlogin.c:2534 gui/greeter/greeter_item.c:139
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H:%M"
 
-#: gui/gdmlogin.c:2534 gui/greeter/greeter_item.c:143
-#, fuzzy
+#: gui/gdmlogin.c:2536 gui/greeter/greeter_item.c:143
 msgid "%a %b %d, %l:%M %p"
-msgstr "%a %d %b, %I:%M %p"
+msgstr "%a %b %d, %l:%M %p"
 
-#: gui/gdmlogin.c:2583
+#: gui/gdmlogin.c:2585
 msgid "Finger"
 msgstr "FInger"
 
-#: gui/gdmlogin.c:2689
+#: gui/gdmlogin.c:2691
 msgid "GDM Login"
 msgstr "Login GDM"
 
-#: gui/gdmlogin.c:2732 gui/greeter/greeter_parser.c:997
+#: gui/gdmlogin.c:2734 gui/greeter/greeter_parser.c:997
 msgid "_Session"
 msgstr "_Sesi"
 
-#: gui/gdmlogin.c:2739 gui/greeter/greeter_parser.c:992
+#: gui/gdmlogin.c:2741 gui/greeter/greeter_parser.c:992
 msgid "_Language"
 msgstr "_Bahasa"
 
-#: gui/gdmlogin.c:2751 gui/greeter/greeter_system.c:134
+#: gui/gdmlogin.c:2753 gui/greeter/greeter_system.c:134
 msgid "_XDMCP Chooser..."
 msgstr "Pemilih _XDMCP..."
 
-#: gui/gdmlogin.c:2758 gui/greeter/greeter_system.c:141
+#: gui/gdmlogin.c:2760 gui/greeter/greeter_system.c:141
 #: gui/greeter/greeter_system.c:331
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
@@ -3019,71 +2999,67 @@ msgstr ""
 "Menjalankan Pemilih XDMCP yang mengijinkan untuk login ke komputer lain, "
 "jika ada."
 
-#: gui/gdmlogin.c:2767 gui/greeter/greeter_system.c:149
-#, fuzzy
+#: gui/gdmlogin.c:2769 gui/greeter/greeter_system.c:149
 msgid "_Configure Login Manager..."
-msgstr "_Konfigurasi..."
+msgstr "_Konfigurasikan Pengatur Login..."
 
-#: gui/gdmlogin.c:2774 gui/greeter/greeter_system.c:156
+#: gui/gdmlogin.c:2776 gui/greeter/greeter_system.c:156
 #: gui/greeter/greeter_system.c:351
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr "Konfigurasi GDM (login manager ini). Memerlukan password root."
 
-#: gui/gdmlogin.c:2788 gui/greeter/greeter_system.c:175
+#: gui/gdmlogin.c:2790 gui/greeter/greeter_system.c:175
 msgid "Reboot your computer"
 msgstr "Reboot komputer"
 
-#: gui/gdmlogin.c:2801 gui/greeter/greeter_system.c:187
-#, fuzzy
+#: gui/gdmlogin.c:2803 gui/greeter/greeter_system.c:187
 msgid "Shut down the system so that you may safely turn off the computer."
-msgstr "Matikan komputer"
+msgstr "Matikan system sehingga anda dapat dengan aman mematikan komputer."
 
-#: gui/gdmlogin.c:2815 gui/greeter/greeter_system.c:200
+#: gui/gdmlogin.c:2817 gui/greeter/greeter_system.c:200
 msgid "Suspend your computer"
 msgstr "Suspend komputer"
 
-#: gui/gdmlogin.c:2821 gui/greeter/greeter_parser.c:1002
-#, fuzzy
+#: gui/gdmlogin.c:2823 gui/greeter/greeter_parser.c:1002
 msgid "_Actions"
-msgstr "Pilihan"
+msgstr "_Aksi"
 
-#: gui/gdmlogin.c:2830
+#: gui/gdmlogin.c:2832
 msgid "_Theme"
 msgstr "_Tema"
 
-#: gui/gdmlogin.c:2841 gui/greeter/greeter_canvas_item.c:146
+#: gui/gdmlogin.c:2843 gui/greeter/greeter_canvas_item.c:146
 #: gui/greeter/greeter_parser.c:1012
 msgid "_Quit"
 msgstr "_Keluar"
 
-#: gui/gdmlogin.c:2843 gui/greeter/greeter_canvas_item.c:148
+#: gui/gdmlogin.c:2845 gui/greeter/greeter_canvas_item.c:148
 #: gui/greeter/greeter_parser.c:1007
 msgid "D_isconnect"
 msgstr "Putuskan Koneks_i"
 
-#: gui/gdmlogin.c:2910 gui/greeter/greeter_item_ulist.c:442
+#: gui/gdmlogin.c:2912 gui/greeter/greeter_item_ulist.c:469
 msgid "Icon"
 msgstr "Ikon"
 
-#: gui/gdmlogin.c:3391
+#: gui/gdmlogin.c:3395
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Tidak dapat membuka GambarStandar: %s. Menunda Penampil Muka!"
 
-#: gui/gdmlogin.c:3413 gui/gdmsetup.c:569 gui/greeter/greeter_item_ulist.c:297
+#: gui/gdmlogin.c:3417 gui/gdmsetup.c:569 gui/greeter/greeter_item_ulist.c:324
 msgid "Too many users to list here..."
 msgstr "Terlalu banyak pengguna untuk dibuat daftarnya di sini ..."
 
 #. markup
-#: gui/gdmlogin.c:3831 gui/gdmlogin.c:3862 gui/gdmlogin.c:3906
-#: gui/greeter/greeter.c:637 gui/greeter/greeter.c:668
-#: gui/greeter/greeter.c:713
-#, fuzzy
+#: gui/gdmlogin.c:3835 gui/gdmlogin.c:3866 gui/gdmlogin.c:3910
+#: gui/greeter/greeter.c:639 gui/greeter/greeter.c:671
+#: gui/greeter/greeter.c:716
 msgid "Cannot start the greeter"
-msgstr "Penyambut standar"
+msgstr "Tidak dapat memulai penyambut"
 
-#: gui/gdmlogin.c:3832 gui/gdmlogin.c:3863
+#: gui/gdmlogin.c:3836 gui/gdmlogin.c:3867
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -3093,12 +3069,12 @@ msgstr ""
 "Versi Penyambut (%s) tidak cocok dengan versi daemon.  Mungkin Anda baru "
 "saja mengupgradde gdm.  Harap restart daemon gdm atau reboot komputer."
 
-#: gui/gdmlogin.c:3869 gui/gdmlogin.c:3915 gui/greeter/greeter.c:675
-#: gui/greeter/greeter.c:722
+#: gui/gdmlogin.c:3873 gui/gdmlogin.c:3919 gui/greeter/greeter.c:678
+#: gui/greeter/greeter.c:725
 msgid "Reboot"
 msgstr "Reboot"
 
-#: gui/gdmlogin.c:3907
+#: gui/gdmlogin.c:3911
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -3108,17 +3084,16 @@ msgstr ""
 "Versi Penyambut (%s) tidak cocok dengan versi daemon (%s).  Mungkin Anda "
 "baru saja mengupgrade gdm.  Silahkan restart daemon gdm atau reboot komputer."
 
-#: gui/gdmlogin.c:3913 gui/greeter/greeter.c:720
+#: gui/gdmlogin.c:3917 gui/greeter/greeter.c:723
 msgid "Restart"
 msgstr "Restart"
 
 #. markup
-#: gui/gdmlogin.c:4099 gui/greeter/greeter.c:1335
-#, fuzzy
+#: gui/gdmlogin.c:4103 gui/greeter/greeter.c:1348
 msgid "Session directory is missing"
-msgstr "%s: Direktori sesi belum dipilih."
+msgstr "Direktori sesi hilang"
 
-#: gui/gdmlogin.c:4101 gui/greeter/greeter.c:1337
+#: gui/gdmlogin.c:4105 gui/greeter/greeter.c:1350
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3128,11 +3103,11 @@ msgstr ""
 "Anda gunakan, tetapi Anda harus login dulu dan memperbaikin konfigurasi gdm."
 
 #. markup
-#: gui/gdmlogin.c:4125 gui/greeter/greeter.c:1362
+#: gui/gdmlogin.c:4129 gui/greeter/greeter.c:1375
 msgid "Configuration is not correct"
 msgstr "Ada yang salah pada konfigurasi"
 
-#: gui/gdmlogin.c:4127 gui/greeter/greeter.c:1364
+#: gui/gdmlogin.c:4131 gui/greeter/greeter.c:1377
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, and thus I ran the default command.  Please fix your configuration."
@@ -3142,11 +3117,11 @@ msgstr ""
 "konfigurasi Anda."
 
 #. markup
-#: gui/gdmlogin.c:4152 gui/greeter/greeter.c:1391
+#: gui/gdmlogin.c:4156 gui/greeter/greeter.c:1404
 msgid "No configuration was found"
 msgstr "Konfigurasi tidak ditemukan"
 
-#: gui/gdmlogin.c:4154 gui/greeter/greeter.c:1393
+#: gui/gdmlogin.c:4158 gui/greeter/greeter.c:1406
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3265,9 +3240,8 @@ msgid "_Welcome string: "
 msgstr "Kali_mat sambutan:"
 
 #: gui/gdmsetup-strings.c:13 gui/gdmsetup.glade.h:43
-#, fuzzy
 msgid "Re_mote welcome string: "
-msgstr "Kali_mat sambutan:"
+msgstr "Kalimat sambutan re_mote:"
 
 #: gui/gdmsetup-strings.c:14 gui/gdmsetup-strings.c:16
 #: gui/gdmsetup-strings.c:51 gui/gdmsetup.c:969 gui/gdmsetup.glade.h:50
@@ -3304,9 +3278,8 @@ msgid "Always use 24 hour cloc_k format"
 msgstr "Selalu guna_kan format 24 jam "
 
 #: gui/gdmsetup-strings.c:23 gui/gdmsetup.glade.h:12
-#, fuzzy
 msgid "Automatic Login"
-msgstr "<b>Pembuat:</b>"
+msgstr "Login Automatis"
 
 #: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:58
 msgid "_Automatic login username:"
@@ -3317,7 +3290,6 @@ msgid "_Login a user automatically on first bootup"
 msgstr "_Login otomatis saat boot atas nama pengguna tertentu"
 
 #: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:55
-#, fuzzy
 msgid "Timed Login"
 msgstr "Login berwaktu"
 
@@ -3343,7 +3315,6 @@ msgid "Logo"
 msgstr "Logo"
 
 #: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:35
-#, fuzzy
 msgid "Miscellaneous"
 msgstr "Lainnya"
 
@@ -3352,9 +3323,8 @@ msgid "Show choosable user images (_face browser)"
 msgstr "Tampilkan gambar-gambar pengguna sistem (penampil _wajah)"
 
 #: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:13
-#, fuzzy
 msgid "Background"
-msgstr "Ta_npa latar"
+msgstr "Latar belakang"
 
 #: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:64
 msgid "_No background"
@@ -3385,28 +3355,24 @@ msgid "Pick a color"
 msgstr "Pilih warna"
 
 #: gui/gdmsetup-strings.c:52 gui/gdmsetup.glade.h:42
-#, fuzzy
 msgid "Preview:"
-msgstr "<b>Contoh Jadi:</b>"
+msgstr "Tampilan contoh:"
 
 #: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:37
 msgid "No screenshot available"
 msgstr "Tidak ada screenshot"
 
 #: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:16
-#, fuzzy
 msgid "Description:"
-msgstr "<b>Keterangan:</b>"
+msgstr "Keterangan:"
 
 #: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:15
-#, fuzzy
 msgid "Copyright:"
-msgstr "hak cipta"
+msgstr "Hak cipta:"
 
 #: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:11
-#, fuzzy
 msgid "Author:"
-msgstr "pembuat"
+msgstr "Penulis:"
 
 #: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:74
 msgid ""
@@ -3433,9 +3399,8 @@ msgid "_Delete theme"
 msgstr "_Hapus tema"
 
 #: gui/gdmsetup-strings.c:64 gui/gdmsetup-strings.c:78 gui/gdmsetup.glade.h:38
-#, fuzzy
 msgid "Options"
-msgstr "<b>Keterangan:</b>"
+msgstr "Pilihan"
 
 #: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:5
 msgid "Allow _root to login with GDM"
@@ -3460,18 +3425,16 @@ msgstr ""
 "reboot, shutdown, konfigurasi, pemilih)"
 
 #: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:46
-#, fuzzy
 msgid "Show _actions menu"
-msgstr "Tampilkan menu _sistem"
+msgstr "Tampilkan menu _aksi"
 
 #: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:6
 msgid "Allow c_onfiguration from the login screen"
 msgstr "Mengijinkan k_onfigurasi dari layar login"
 
 #: gui/gdmsetup-strings.c:74 gui/gdmsetup.glade.h:4
-#, fuzzy
 msgid "Allo_w running XDMCP chooser from the login screen"
-msgstr "Bolehkan k_onfigurasi dari layar login"
+msgstr "Boleh_kan menjalankan pemilih XDMCP dari layar login"
 
 #: gui/gdmsetup-strings.c:75 gui/gdmsetup.glade.h:9
 msgid ""
@@ -3506,9 +3469,8 @@ msgid "Sound _file:"
 msgstr "_File Suara:"
 
 #: gui/gdmsetup-strings.c:86 gui/gdmsetup.glade.h:69
-#, fuzzy
 msgid "_Test sound"
-msgstr "_Sesi"
+msgstr "_Coba suara"
 
 #: gui/gdmsetup-strings.c:87 gui/gdmsetup.glade.h:3
 msgid "Accessibility"
@@ -3523,7 +3485,6 @@ msgstr ""
 "kompilasi ulang pada GDM dengan librari XDMCP."
 
 #: gui/gdmsetup-strings.c:89 gui/gdmsetup.glade.h:18
-#, fuzzy
 msgid "Enable _XDMCP"
 msgstr "Aktifkan _XDMCP"
 
@@ -3532,49 +3493,40 @@ msgid "Honour _indirect requests"
 msgstr "Perhatikan perm_intaan tak langsung"
 
 #: gui/gdmsetup-strings.c:92 gui/gdmsetup.glade.h:25
-#, fuzzy
 msgid "Listen on _UDP port: "
-msgstr "Jalan pada port UDP: "
+msgstr "Dengar pada port _UDP: "
 
 #: gui/gdmsetup-strings.c:93 gui/gdmsetup.glade.h:31
-#, fuzzy
 msgid "Maximum _pending requests:"
-msgstr "Permintaan tunda maksimum:"
+msgstr "Permintaan _tunda maksimal:"
 
 #: gui/gdmsetup-strings.c:94 gui/gdmsetup.glade.h:30
-#, fuzzy
 msgid "Max p_ending indirect requests:"
-msgstr "Permintaan tunda tak langsung maksimum: "
+msgstr "Permintaan t_unda tak langsung maksimal:"
 
 #: gui/gdmsetup-strings.c:95 gui/gdmsetup.glade.h:32
-#, fuzzy
 msgid "Maximum _remote sessions:"
-msgstr "Sesi jarak jauh maksimum:"
+msgstr "Sesi jarak _jauh maksimal:"
 
 #: gui/gdmsetup-strings.c:96 gui/gdmsetup.glade.h:33
-#, fuzzy
 msgid "Maximum _wait time:"
-msgstr "Waktu tunggu maksimum: "
+msgstr "Waktu _tunggu maksimal: "
 
 #: gui/gdmsetup-strings.c:97 gui/gdmsetup.glade.h:34
-#, fuzzy
 msgid "Maximum indirect w_ait time:"
-msgstr "Waktu tunggu tak langsung maksimum:"
+msgstr "Waktu t_unggu tak langsung maksimal:"
 
 #: gui/gdmsetup-strings.c:98 gui/gdmsetup.glade.h:17
-#, fuzzy
 msgid "Displays per _host:"
-msgstr "Jumlah tampilan per host:"
+msgstr "Tampilan per _host:"
 
 #: gui/gdmsetup-strings.c:99 gui/gdmsetup.glade.h:40
-#, fuzzy
 msgid "Pin_g interval (seconds):"
-msgstr "Interval ping (dalam menit):"
+msgstr "Interval pin_g (dalam detik):"
 
 #: gui/gdmsetup-strings.c:100 gui/gdmsetup.glade.h:41
-#, fuzzy
 msgid "Ping interval (seconds):"
-msgstr "Interval ping (dalam menit):"
+msgstr "Interval ping (dalam detik):"
 
 #: gui/gdmsetup-strings.c:101 gui/gdmsetup.glade.h:57
 msgid "XDMCP"
@@ -3622,11 +3574,8 @@ msgstr "Tidak ada berkas yang dipilih"
 
 #. markup
 #: gui/gdmsetup.c:1954
-#, fuzzy
 msgid "Not a theme archive"
-msgstr ""
-"Ini bukan arsip tema\n"
-"Detil: %s"
+msgstr "Ini bukan arsip tema"
 
 #: gui/gdmsetup.c:1955
 #, c-format
@@ -3651,18 +3600,21 @@ msgid "Select new theme archive to install"
 msgstr "Pilih arsip tema yang hendak diinstal"
 
 #: gui/gdmsetup.c:2109
-#, fuzzy
 msgid "_Install"
-msgstr "_Instal tema baru"
+msgstr "_Pasang"
 
 #: gui/gdmsetup.c:2173
 #, c-format
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "Apakah Anda yakin ingin menghapus tema '%s' dari sistem?"
 
+#: gui/gdmsetup.c:2191
+msgid "_Remove Theme"
+msgstr "_Buang Tema"
+
 #. This is the temporary help dialog
 #: gui/gdmsetup.c:2386
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
 "graphical login screen for GNOME.  Changes that you make will take effect "
@@ -3674,24 +3626,26 @@ msgid ""
 "For complete documentation see the GNOME help browser Under the category "
 "GNOME/System."
 msgstr ""
-"Window konfigurasi ini akan merubah setingan daemon GNOME, yaitu layar login "
-"grafik yang dipakai GNOME. Semua perubahan akan berlaku secara langsung.\n"
+"Window konfigurasi ini akan merubah setingan daemon GDM, yaitu layar login "
+"grafik yang dipakai GNOME.  Semua perubahan akan berlaku secara langsung.\n"
 "\n"
-"Perhatikan bahwa tidak semua pilihan konfigurasi diuraikan di sini. Anda "
-"bisa edit %s bila Anda tidak temui pilihan yang Anda mau di sini."
+"Perhatikan bahwa tidak semua pilihan konfigurasi diperlihatkan di sini.  "
+"Anda bisa merubah %s bila Anda tidak menemui pilihan yang Anda cari.\n"
+"\n"
+"Untuk dokumentasi lengkap lihat pencari bantuan GNOME, di bawah kategori "
+"GNOME/sSystem."
 
 #. markup
 #: gui/gdmsetup.c:2797
-#, fuzzy
 msgid "You must be the superuser (root) to configure GDM."
-msgstr "Anda harus menjadi root untuk melakukan konfigurasi GDM.\n"
+msgstr "Anda harus menjadi superuser (root) untuk mengkonfigurasi GDM."
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "Aplikasi grafik untuk mengkonfigurasi GNOME Display Manager (GDM)"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "Konfigurasikan layar login (Pengatur Tampil Gnome)"
 
-#: gui/greeter/greeter.c:638 gui/greeter/greeter.c:669
+#: gui/greeter/greeter.c:640 gui/greeter/greeter.c:672
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3702,7 +3656,7 @@ msgstr ""
 "Anda mungkin baru saja mengupgrade gdm.\n"
 "Silahkan restart gdm daemon-nya atau reboot komputer."
 
-#: gui/greeter/greeter.c:714
+#: gui/greeter/greeter.c:717
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3713,27 +3667,26 @@ msgstr ""
 "Anda mungkin baru saja mengupgrade gdm.\n"
 "Silahkan restart gdm daemon-nya atau reboot komputer."
 
-#: gui/greeter/greeter.c:1173
+#: gui/greeter/greeter.c:1182
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Ada error saat membuka tema %s"
 
 #. markup
-#: gui/greeter/greeter.c:1226
+#: gui/greeter/greeter.c:1236
 msgid "The theme for the graphical greeter is corrupt"
 msgstr "Tema untuk Salam Penyambutan versi grafis rusak"
 
-#: gui/greeter/greeter.c:1229
-#, fuzzy
+#: gui/greeter/greeter.c:1239
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr ""
-"Tema untuk penyambut grafiknya rusak. Tema ini tidak mengandung elemen untuk "
-"mendefinisikan nama pemakai dan passwordnya."
+"Tema ini tidak mengandung definisi untuk bagian masukan nama pemakai dan "
+"passwordnya."
 
 #. markup
-#: gui/greeter/greeter.c:1262
+#: gui/greeter/greeter.c:1273
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
@@ -3742,7 +3695,7 @@ msgstr ""
 "karena itu akan ditampilkan penyambut standar saja."
 
 #. markup
-#: gui/greeter/greeter.c:1284
+#: gui/greeter/greeter.c:1296
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3763,27 +3716,25 @@ msgid "Select a language for your session to use:"
 msgstr "Pilih bahasa yang digunakan pada sesi ini: "
 
 #: gui/greeter/greeter_canvas_item.c:125
-#, fuzzy
 msgid "Select _Language..."
-msgstr "Pilih bahasa"
+msgstr "Pilih _Bahasa..."
 
 #: gui/greeter/greeter_canvas_item.c:132
-#, fuzzy
 msgid "Select _Session..."
-msgstr "Pilih sesi GNOME"
+msgstr "Pilih _Sesi..."
 
-#: gui/greeter/greeter_canvas_item.c:374
+#: gui/greeter/greeter_canvas_item.c:377
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Jawablah pertanyaan di sini dan tekan Enter jika sudah selesai. Untuk menu, "
 "tekan F10"
 
-#: gui/greeter/greeter_item_ulist.c:279
+#: gui/greeter/greeter_item_ulist.c:306
 #, c-format
 msgid "Can't open DefaultImage: %s!"
 msgstr "Tidak dapat membuka GambarMula: %s!"
 
-#: gui/greeter/greeter_item_ulist.c:381
+#: gui/greeter/greeter_item_ulist.c:408
 msgid ""
 "Doubleclick on the user\n"
 "to log in"
@@ -3792,22 +3743,27 @@ msgstr ""
 "untuk masuk"
 
 #: gui/greeter/greeter_parser.c:1022 gui/greeter/greeter_system.c:193
-#, fuzzy
 msgid "Sus_pend"
-msgstr "_Suspend..."
+msgstr "Tun_da"
 
 #: gui/greeter/greeter_parser.c:1032
 msgid "_XDMCP Chooser"
 msgstr "Pemilih _XDMCP"
 
 #: gui/greeter/greeter_parser.c:1037
-#, fuzzy
 msgid "_Configure"
-msgstr "Konfigurasi"
+msgstr "_Konfigurasi"
 
 #: gui/greeter/greeter_parser.c:1042
 msgid "You've got capslock on!"
 msgstr "Tombol capslock menyala!"
+
+#: gui/greeter/greeter_parser.c:1047
+#, fuzzy, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "User %s akan login dalam %d detik"
+msgstr[1] "User %s akan login dalam %d detik"
 
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
@@ -3818,23 +3774,20 @@ msgid "Choose an Action"
 msgstr "Pilih Aksi"
 
 #: gui/greeter/greeter_system.c:282
-#, fuzzy
 msgid "Shut _down the computer"
-msgstr "Matikan komputer"
+msgstr "Mati_kan komputer"
 
 #: gui/greeter/greeter_system.c:285
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Matikan komputer"
 
 #: gui/greeter/greeter_system.c:300
-#, fuzzy
 msgid "_Reboot the computer"
-msgstr "Reboot komputer"
+msgstr "_Boot ulang komputer"
 
 #: gui/greeter/greeter_system.c:314
-#, fuzzy
 msgid "Sus_pend the computer"
-msgstr "Suspen Komputer"
+msgstr "Tun_da Komputer"
 
 #: gui/greeter/greeter_system.c:328
 msgid "Run _XDMCP chooser"
@@ -3866,9 +3819,8 @@ msgid "(c) 2002 GNOME"
 msgstr "(c) 2002 GNOME"
 
 #: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:2
-#, fuzzy
 msgid "GNOME Art variation of Circles with a Face Browser"
-msgstr "GNOME Art variation of Circles"
+msgstr "Variasi Lingkaran GNOME Art dengan Face Browser"
 
 #: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:3
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
@@ -3876,9 +3828,8 @@ msgid "GNOME Artists"
 msgstr "GNOME Artists"
 
 #: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:4
-#, fuzzy
 msgid "Happy GNOME with Browser"
-msgstr "Happy GNOME"
+msgstr "Selamat GNOME dengan Pencari"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles"
@@ -3888,7 +3839,7 @@ msgstr "GNOME Art variation of Circles"
 msgid "Happy GNOME"
 msgstr "Happy GNOME"
 
-#: gui/modules/dwellmouselistener.c:579 gui/modules/keymouselistener.c:674
+#: gui/modules/dwellmouselistener.c:650 gui/modules/keymouselistener.c:887
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -3897,13 +3848,21 @@ msgstr ""
 "Terjadi masalah saat menjalankan (%s)\n"
 "yang terhubung dengan (%s)"
 
-#: utils/gdmaskpass.c:26
+#. TODO - I18n
+#: gui/modules/keymouselistener.c:249
 #, c-format
+msgid ""
+"Cannot open gestures file: %s\n"
+")"
+msgstr ""
+"Tidak dapat isyarat file: %s\n"
+")"
+
+#: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
 msgstr "gdmaskpass hanya jalan sebagai root\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
-#, c-format
 msgid "Authentication failure!\n"
 msgstr "Otentikasi gagal\n"
 
@@ -3918,7 +3877,7 @@ msgstr "(buffer memori"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "Tidak dapat menjalankan tampilan untuk pengguna"
 
@@ -3945,19 +3904,29 @@ msgstr ""
 "file:%s widget: %s"
 
 #: vicious-extensions/glade-helper.c:248
-#, c-format
+#, fuzzy, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
-"Error telah terjadi saat menjalankan tampilan pengguna %s%s dari berkas %s. "
-"Widget tipe CLIST seharusnya memiliki kolom %d.  Kemungkinan deskripsi "
-"penghubung glade telah rusak.  %s tidak dapat dilanjutkan dan segera "
-"dihentikan. Harap periksa instalasi %s atau instal ulang %s."
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] ""
+"Masalah terjadi saat menjalankan tampilan pengguna %s%s dari berkas %s. "
+"Kemungkinan deskripsi dari penghubung glade telah rusak. %s tidak dapat "
+"dilanjutkan dan segera dihentikan. Harap periksa instalasi dari %s atau "
+"instal ulang %s."
+msgstr[1] ""
+"Masalah terjadi saat menjalankan tampilan pengguna %s%s dari berkas %s. "
+"Kemungkinan deskripsi dari penghubung glade telah rusak. %s tidak dapat "
+"dilanjutkan dan segera dihentikan. Harap periksa instalasi dari %s atau "
+"instal ulang %s."
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3967,7 +3936,7 @@ msgstr ""
 "terinstal!\n"
 "file: %s widget: %s mengharapkan kolom clist: %d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3979,7 +3948,7 @@ msgstr ""
 "dilanjutkan dan akan segera dihentikan. Harap periksa instalasi dari %s atau "
 "instal ulang %s."
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Tidak ada penghubung yang dapat dijalankan, BURUK! (file: %s)"
@@ -3990,15 +3959,44 @@ msgstr ""
 "Terlalu banyak tingkatan alias untuk sebuah locale, kemungkinan merupakan "
 "perulangan"
 
+#~ msgid ""
+#~ "An error occured while loading the user interface element %s%s from file %"
+#~ "s. CList type widget should have %d column. Possibly the glade interface "
+#~ "description was corrupted. %s cannot continue and will exit now. You "
+#~ "should check your installation of %s or reinstall %s.An error occured "
+#~ "while loading the user interface element %s%s from file %s. CList type "
+#~ "widget should have %d columns. Possibly the glade interface description "
+#~ "was corrupted. %s cannot continue and will exit now. You should check "
+#~ "your installation of %s or reinstall %s."
+#~ msgstr ""
+#~ "Kesalahan telah terjadi saat menjalankan tampilan pengguna %s%s dari "
+#~ "berkas %s. Widget tipe CLIST seharusnya memiliki kolom %d.  Kemungkinan "
+#~ "deskripsi penghubung glade telah rusak. %s tidak dapat dilanjutkan dan "
+#~ "segera dihentikan. Harap periksa pemasangan %s atau pasang ulang %s."
+#~ "Kesalahan telah terjadi saat menjalankan tampilan pengguna %s%s dari "
+#~ "berkas %s. Widget tipe CLIST seharusnya memiliki kolom %d.  Kemungkinan "
+#~ "deskripsi penghubung glade telah rusak. %s tidak dapat dilanjutkan dan "
+#~ "segera dihentikan. Harap periksa pemasangan %s atau pasang ulang %s."
+
+#~ msgid "FLEXI_XSERVER request denied: Not authenticated"
+#~ msgstr "Permintaan FLEXI_XSERVER ditolak: Tidak terotentikasai"
+
+#~ msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
+#~ msgstr "Permintaan QUERY_LOGOUT_ACTION ditolak: Tidak terotentikasi"
+
+#~ msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
+#~ msgstr "Permintaan SET_LOGOUT_ACTION ditolak: Tidak terotentikasi"
+
+#~ msgid ""
+#~ "A graphical application for configuring the GNOME Display Manager (GDM)"
+#~ msgstr "Aplikasi grafik untuk mengkonfigurasi GNOME Display Manager (GDM)"
+
 #~ msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
 #~ msgstr ""
 #~ "%s: Tidak dapat menemukan pengguna atas nama (%s). Rubah menjadi 'nobody'"
 
 #~ msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
 #~ msgstr "%s: Group gdm (%s) tidak ada. Ganti menjadi 'nobody'"
-
-#~ msgid "A-M|English (American)"
-#~ msgstr "A-M|Inggris (Amerika)"
 
 #~ msgid "A-M|English (British)"
 #~ msgstr "A-M|Inggris (Inggris Raya)"
