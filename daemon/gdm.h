@@ -133,7 +133,7 @@ enum {
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
 #define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
-#define GDM_KEY_HALT "daemon/DefaultPath=" HALT_COMMAND
+#define GDM_KEY_HALT "daemon/HaltCommand=" HALT_COMMAND
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
 #define GDM_KEY_KILLIC "daemon/KillInitClients=true"
 #define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_LOGDIR
