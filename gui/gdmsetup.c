@@ -1369,9 +1369,24 @@ noimage_button_cb (GtkWidget *widget, gpointer data)
 {
 	ImageData *image_data = data;
 	GtkWidget *preview;
+	char *val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	gtk_image_set_from_file (GTK_IMAGE (image_data->image), NULL);
 	image_data->filename = NULL;
+	val = ve_config_get_string (config, image_data->key);
+
+	if (strcmp (ve_sure_string (val), ve_sure_string (image_data->filename)) != 0) {
+		ve_config_set_string (config, image_data->key,
+			ve_sure_string (image_data->filename));
+
+		ve_config_save (config, FALSE /* force */);
+
+		update_greeters ();
+	}
+
+	g_free (val);
+/* HERE */
 }
 
 static void
@@ -1815,7 +1830,7 @@ no_sound_cb (GtkWidget *widget, gpointer data)
 	config_val = ve_sure_string (val);
 
 	if (config_val != NULL && *config_val != NULL) {
-		ve_config_set_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE, "");
+		ve_config_set_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE, NULL);
 
 		ve_config_save (config, FALSE /* force */);
 
@@ -3208,7 +3223,7 @@ setup_gui (void)
 			     NULL /* notify_key */);
 	setup_notify_toggle ("timedlogin",
 			     GDM_KEY_TIMED_LOGIN_ENABLE,
-			     NULL /* notify_key */);
+			     GDM_KEY_TIMED_LOGIN_ENABLE /* notify_key */);
 
 	setup_notify_toggle ("allowroot",
 			     GDM_KEY_ALLOWROOT,

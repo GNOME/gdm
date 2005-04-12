@@ -2124,15 +2124,13 @@ main (int argc, char *argv[])
     gdm_chooser_xdmcp_init (hosts);
     poptFreeContext (ctx);
 
-    if (RUNNING_UNDER_GDM) {
-	    guint sid = g_signal_lookup ("event",
-					 GTK_TYPE_WIDGET);
-	    g_signal_add_emission_hook (sid,
-					0 /* detail */,
-					gdm_event,
-					NULL /* data */,
-					NULL /* destroy_notify */);
-    }
+    guint sid = g_signal_lookup ("event",
+				 GTK_TYPE_WIDGET);
+    g_signal_add_emission_hook (sid,
+				0 /* detail */,
+				gdm_event,
+				NULL /* data */,
+				NULL /* destroy_notify */);
 
     gtk_widget_queue_resize (chooser);
     gtk_widget_show_now (chooser);

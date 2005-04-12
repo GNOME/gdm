@@ -40,7 +40,7 @@
 #include <X11/XKBlib.h>
 #include <pwd.h>
 #include <sys/utsname.h>
-#include <security/pam_appl.h>;
+#include <security/pam_appl.h>
 
 #include <viciousui.h>
 
@@ -301,6 +301,15 @@ gdm_event (GSignalInvocationHint *ihint,
 	     event->type == GDK_BUTTON_RELEASE)
 	    && event->button.button == 3)
 		event->button.button = 1;
+
+	/* Support Ctrl-U for blanking the username/password entry */
+	if (event->type == GDK_KEY_PRESS &&
+	    (event->key.state & GDK_CONTROL_MASK) &&
+	    (event->key.keyval == GDK_u ||
+	     event->key.keyval == GDK_U)) {
+
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+	}
 
 	return TRUE;
 }      

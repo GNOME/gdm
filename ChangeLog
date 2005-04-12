@@ -3,6 +3,18 @@
 	* config/locale.alias:  Patched locale.alias to 
 	  include missing languages.  Patch provided by
 	  Ray Dassen.
+	* gui/gdmchooser.c: Make button 3 always act like
+	  button1 for the chooser as well, further fixes
+	  bug #155142.
+	* gui/gdmlogin.c, gui/greeter/greeter.c: Support
+	  Control-U for blanking the username/password
+	  entry.  Fixes bug #103498.  Also removed 
+	  needless ";" from include lines.
+	* gdm/gdmsetup.c: Now clicking "No Logo" or 
+	  "No background" image causes gdmlogin to update
+	  itself immediately.  Also fixed "Timed Login"
+	  enable checkbox so it takes effect immediately
+	  when changed.
 
 2005-04-08  Brian Cameron  <brian.cameron@sun.com>
 

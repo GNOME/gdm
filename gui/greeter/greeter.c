@@ -24,7 +24,7 @@
 #include <syslog.h>
 #include <unistd.h>
 #include <signal.h>
-#include <security/pam_appl.h>;
+#include <security/pam_appl.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -1073,6 +1073,23 @@ gdm_event (GSignalInvocationHint *ihint,
              event->type == GDK_BUTTON_RELEASE)
             && event->button.button == 3)
                 event->button.button = 1;
+
+        /* Support Ctrl-U for blanking the username/password entry */
+        if (event->type == GDK_KEY_PRESS &&
+            (event->key.state & GDK_CONTROL_MASK) &&
+            (event->key.keyval == GDK_u ||
+             event->key.keyval == GDK_U)) {
+
+		GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+		if (entry_info && entry_info->item &&
+		    GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+		    GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
+		{
+			GtkWidget *entry;
+			entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+			gtk_entry_set_text (GTK_ENTRY (entry), "");
+		}
+	}
 
         return TRUE;
 }
