@@ -60,13 +60,13 @@ gchar *GdmInclude = NULL;
 gboolean GdmIncludeAll;
 gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
-
 static char *GdmSoundProgram = NULL;
 
 static GladeXML *xml;
 
 static GList *timeout_widgets = NULL;
 
+static gchar *last_theme_installed = NULL;
 static int last_remote_login_setting = -1;
 static gboolean have_soundfile = FALSE;
 
@@ -2562,11 +2562,10 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 			g_free (unzip);
 			g_free (quoted);
 			return dir;
-		}
-		g_free (dir);
-		if (ret != 0) {
+		} else {
 			*error = NULL;
 		}
+		g_free (dir);
 	}
 
 	/* error due to command failing */
@@ -2586,11 +2585,10 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 				g_free (unzip);
 				g_free (quoted);
 				return dir;
-			}
-			g_free (dir);
-			if (ret != 0) {
+			} else {
 				*error = NULL;
 			}
+			g_free (dir);
 		}
 	}
 
@@ -2645,6 +2643,9 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 	theme_dir = get_theme_dir ();
 
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+	if (last_theme_installed != NULL)
+		g_free (last_theme_installed);
+	last_theme_installed = g_strdup (filename);
 	if (filename == NULL) {
 		GtkWidget *dlg =
 			ve_hig_dialog_new (GTK_WINDOW (chooser),
@@ -2837,6 +2838,10 @@ install_new_theme (GtkWidget *button, gpointer data)
 			  G_CALLBACK (gtk_widget_destroyed), &chooser);
 	g_signal_connect (G_OBJECT (chooser), "response",
 			  G_CALLBACK (theme_install_response), store);
+
+	if (last_theme_installed != NULL)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser),
+			last_theme_installed);
 
 	gtk_widget_show (chooser);
 }

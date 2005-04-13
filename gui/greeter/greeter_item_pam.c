@@ -142,11 +142,17 @@ key_press_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
        event->keyval == GDK_KP_Tab) &&
       (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0)
     {
-      g_signal_emit_by_name (entry,
-		             "insert_at_cursor",
-		             "\t");
-      return TRUE;
-  }
+	GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+	if (entry_info && entry_info->item &&
+	    GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+	    GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
+	{
+		GtkWidget *entry;
+		entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+		greeter_item_pam_login (GTK_ENTRY (entry), entry_info);
+		return TRUE;
+        }
+    }
 
   return FALSE;
 }

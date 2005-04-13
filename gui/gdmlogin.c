@@ -2677,15 +2677,14 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 	return FALSE;
 }
 
+/* HERE */
 static gboolean
 key_press_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
 {
 	if ((event->keyval == GDK_Tab ||
 	     event->keyval == GDK_KP_Tab) &&
 	    (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0) {
-		g_signal_emit_by_name (entry,
-				       "insert_at_cursor",
-				       "\t");
+		gdm_login_enter (entry);
 		return TRUE;
 	}
 

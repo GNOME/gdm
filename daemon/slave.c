@@ -3835,21 +3835,21 @@ static void
 gdm_slave_session_start (void)
 {
     struct passwd *pwent;
+    const char *home_dir = NULL;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
+    char *tmp;
     gboolean savesess = FALSE, savelang = FALSE;
     gboolean usrcfgok = FALSE, authok = FALSE;
-    const char *home_dir = NULL;
     gboolean home_dir_ok = FALSE;
-    time_t session_start_time, end_time; 
     gboolean failsafe = FALSE;
+    time_t session_start_time, end_time; 
     pid_t pid;
     GdmWaitPid *wp;
     uid_t uid;
     gid_t gid;
     int logpipe[2];
     int logfilefd;
-    char *tmp;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
@@ -3964,6 +3964,17 @@ gdm_slave_session_start (void)
 
 	ve_config_destroy (cfg);
     } else {
+	/* This won't get displayed if the .dmrc file simply doesn't
+	 * exist since we pass absentok=TRUE when we call gdm_file_check
+	 */
+	gdm_error_box (d,
+		GTK_MESSAGE_WARNING,
+		_("Your $HOME/.dmrc file has incorrect "
+		  "permissions and is being ignored.  "
+		  "This prevents the default session "
+		  "and language from being saved.  "
+		  "File sould be owned by user and have "
+		  "644 permissions."));
 	usrsess = g_strdup ("");
 	usrlang = g_strdup ("");
     }
