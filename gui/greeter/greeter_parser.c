@@ -725,6 +725,44 @@ parse_state_color_rect (xmlNodePtr node,
 }
 
 static gboolean
+parse_color_list (xmlNodePtr node,
+		      GreeterItemInfo  *info,
+		      GError         **error)
+{
+  xmlChar *prop;
+  char *p;
+  guint32 color;
+
+  prop = xmlGetProp (node, "iconcolor");
+  if (prop)
+    {
+      if G_UNLIKELY (!parse_color (prop, &color, error)) {
+        info->data.list.icon_color = NULL;
+	return FALSE;
+      } else {
+        info->data.list.icon_color = g_strdup (prop);
+      }
+
+      xmlFree (prop);
+    }
+
+  prop = xmlGetProp (node, "labelcolor");
+  if (prop)
+    {
+      if G_UNLIKELY (!parse_color (prop, &color, error)) {
+        info->data.list.label_color = NULL;
+	return FALSE;
+      } else {
+        info->data.list.label_color = g_strdup (prop);
+      }
+
+      xmlFree (prop);
+    }
+
+  return TRUE;
+}
+
+static gboolean
 parse_pixmap (xmlNodePtr        node,
 	      gboolean          svg,
 	      GreeterItemInfo  *info,
@@ -1365,6 +1403,11 @@ parse_list (xmlNodePtr        node,
   child = node->children;
   while (child)
     {
+      if (strcmp (child->name, "color") == 0)
+	{
+	  if G_UNLIKELY (!parse_color_list (child, info, error))
+	    return FALSE;
+	}
       if (strcmp (child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))

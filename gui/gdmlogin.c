@@ -55,6 +55,7 @@
 /* set the DOING_GDM_DEVELOPMENT env variable if you aren't running
  * within the protocol */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
+static char *greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
 static char *greeter_Welcome_key = GDM_KEY_WELCOME;
 
 #define LAST_SESSION "Last"
@@ -84,6 +85,7 @@ static gboolean GdmConfigAvailableReal;
 static gchar *GdmConfigurator;
 static gint GdmXineramaScreen;
 static gchar *GdmLogo;
+static gboolean GdmDefaultWelcome;
 static gchar *GdmWelcome;
 static gchar *GdmBackgroundProg;
 static gboolean GdmRunBackgroundProgAlways;
@@ -668,8 +670,10 @@ gdm_login_parse_config (void)
 
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    greeter_Welcome_key = GDM_KEY_REMOTEWELCOME;
+	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_REMOTEWELCOME;
     } else {
 	    greeter_Welcome_key = GDM_KEY_WELCOME;
+	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
     }
 
     config = ve_config_get (GDM_CONFIG_FILE);
@@ -693,14 +697,18 @@ gdm_login_parse_config (void)
     GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
     GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULTSESSION);
     GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
-    /* A hack! */
-    if (strcmp (ve_sure_string (GdmWelcome), "Welcome") == 0) {
+    GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
+
+    /* Replace default welcome message with one specified in the config file, if
+     * use default is set to no */
+    if (GdmDefaultWelcome && strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
 	    g_free (GdmWelcome);
-	    GdmWelcome = g_strdup (_("Welcome"));
-    } else if (strcmp (ve_sure_string (GdmWelcome), "Welcome to %n") == 0) {
+	    GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+    } else if (GdmDefaultWelcome && strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
 	    g_free (GdmWelcome);
-	    GdmWelcome = g_strdup (_("Welcome to %n"));
+	    GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
     }
+
     GdmBackgroundProg = ve_config_get_string (config, GDM_KEY_BACKGROUNDPROG);
     GdmRunBackgroundProgAlways = ve_config_get_bool (config, GDM_KEY_RUNBACKGROUNDPROGALWAYS);
     GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
@@ -2677,7 +2685,6 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 	return FALSE;
 }
 
-/* HERE */
 static gboolean
 key_press_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
 {
@@ -3106,23 +3113,11 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
 
-    auto_timed_msg = gtk_label_new ("");
-    gtk_widget_set_name(auto_timed_msg, "Message");
-    gtk_label_set_line_wrap (GTK_LABEL (auto_timed_msg), TRUE);
-    gtk_label_set_justify (GTK_LABEL (auto_timed_msg), GTK_JUSTIFY_LEFT);
-    gtk_table_attach (GTK_TABLE (stack), auto_timed_msg, 0, 1, 6, 7,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 10);
-    gtk_widget_set_size_request (auto_timed_msg, -1, 20);
-    
-    gtk_widget_ref (auto_timed_msg);
-    gtk_widget_show (auto_timed_msg);
-
     msg = gtk_label_new (_("Please enter your username"));
     gtk_widget_set_name(msg, "Message");
     gtk_label_set_line_wrap (GTK_LABEL (msg), TRUE);
     gtk_label_set_justify (GTK_LABEL (msg), GTK_JUSTIFY_LEFT);
-    gtk_table_attach (GTK_TABLE (stack), msg, 0, 1, 7, 8,
+    gtk_table_attach (GTK_TABLE (stack), msg, 0, 1, 6, 7,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
     gtk_widget_set_size_request (msg, -1, 30);
@@ -3131,6 +3126,18 @@ gdm_login_gui_init (void)
     g_object_set_data_full (G_OBJECT (login), "msg", msg,
 			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (msg);
+
+    auto_timed_msg = gtk_label_new ("");
+    gtk_widget_set_name(auto_timed_msg, "Message");
+    gtk_label_set_line_wrap (GTK_LABEL (auto_timed_msg), TRUE);
+    gtk_label_set_justify (GTK_LABEL (auto_timed_msg), GTK_JUSTIFY_LEFT);
+    gtk_table_attach (GTK_TABLE (stack), auto_timed_msg, 0, 1, 7, 8,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 10);
+    gtk_widget_set_size_request (auto_timed_msg, -1, 20);
+    
+    gtk_widget_ref (auto_timed_msg);
+    gtk_widget_show (auto_timed_msg);
 
     /* FIXME: No Documentation yet.... */
     /*help_button = gtk_button_new_from_stock (GTK_STOCK_OK);
@@ -3525,27 +3532,40 @@ gdm_reread_config (int sig, gpointer data)
 		g_free (str);
 	}
 
-	str = ve_config_get_translated_string (config, greeter_Welcome_key);
-	/* A hack */
-	if (strcmp (ve_sure_string (str), "Welcome") == 0) {
-		g_free (str);
-		str = g_strdup (_("Welcome"));
-	} else if (strcmp (ve_sure_string (str), "Welcome to %n") == 0) {
-		g_free (str);
-		str = g_strdup (_("Welcome to %n"));
-	}
-	if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != 0) {
-		char *greeting;
-		g_free (GdmWelcome);
-		GdmWelcome = str;
+     if (! gdm_common_bool_same (config, GdmDefaultWelcome, greeter_DefaultWelcome_key) ||
+	(!GdmDefaultWelcome && 
+	 ! gdm_common_string_same (config, GdmWelcome, greeter_Welcome_key))) {
 
-		greeting = gdm_parse_enriched_string ("<big><big><big>", GdmWelcome, "</big></big></big>");    
-		gtk_label_set_markup (GTK_LABEL (welcome), greeting);
-		g_free (greeting);
+		GdmWelcome = ve_config_get_string (config, greeter_Welcome_key);
+		GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
 
-		resize = TRUE;
-	} else {
-		g_free (str);
+		if (GdmDefaultWelcome) {
+			if (strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
+				g_free (GdmWelcome);
+				GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
+				g_free (GdmWelcome);
+				GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
+			}
+			resize = TRUE;
+		} else {
+		        str = ve_config_get_translated_string (config, greeter_Welcome_key);
+
+			if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != 0) {
+				char *greeting;
+				g_free (GdmWelcome);
+				GdmWelcome = str;
+
+				greeting = gdm_parse_enriched_string ("<big><big><big>",
+					GdmWelcome, "</big></big></big>");    
+				gtk_label_set_markup (GTK_LABEL (welcome), greeting);
+				g_free (greeting);
+
+				resize = TRUE;
+			} else {
+				g_free (str);
+			}
+		}
 	}
 
 	if (resize) {

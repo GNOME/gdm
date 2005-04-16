@@ -311,14 +311,19 @@ Browser=false
 # to connect to some remote host.  Local XDMCP does not need to be enabled
 # however
 #ChooserButton=true
-# Note to distributors, if you wish to have a different Welcome string
-# and wish to have this translated you can have entries such as
-# Welcome[cs]=Vitejte na %n
-# Just make sure the string is in utf-8
 # Welcome is for all console logins and RemoteWelcome is for remote logins
 # (through XDMCP).
-# The default entries that are shipped are translated inside gdm and
-# are as follows:
+# DefaultWelcome and DefaultRemoteWelcome set the string for Welcome
+# to "Welcome" and for DefaultWelcome to "Welcome to %n", and properly
+# translate the message to the appropriate language.  Note that %n gets
+# translated to the hostname of the machine.  These default values can
+# be overridden by setting DefaultWelcome and/or DefaultRemoteWelcome to
+# false, and setting the Welcome and DefaultWelcome values as desired.
+# Just make sure the strings are in utf-8 Note to distributors, if you
+# wish to have a different Welcome string and wish to have this
+# translated you can have entries such as "Welcome[cs]=Vitejte na %n".
+DefaultWelcome=true
+DefaultRemoteWelcome=true
 #Welcome=Welcome
 #RemoteWelcome=Welcome to %n
 # Don't allow user to move the standard greeter window.  Only makes sense

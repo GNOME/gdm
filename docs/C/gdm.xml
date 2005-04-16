@@ -2510,6 +2510,20 @@ XKeepsCrashing
           </varlistentry>
 
           <varlistentry>
+            <term>DefaultRemoteWelcome</term>
+            <listitem>
+              <synopsis>DefaultRemoteWelcome=true</synopsis>
+              <para>
+                If set to true, the value "Welcome to %n" is used for the
+                <filename>RemoteWelcome</filename>.  This value is translated
+                into the appropriate language for the user.  If set to false,
+                the <filename>RemoteWelcome</filename> setting is used.
+                false, the <filename>Welcome</filename> setting is used.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>RemoteWelcome</term>
             <listitem>
               <synopsis>RemoteWelcome=Welcome to &percnt;n</synopsis>
@@ -2682,6 +2696,19 @@ XKeepsCrashing
                 Do not show any visual feedback is the password entry.
                 This is the standard in console and xdm. Settings this
                 option discards the "UseCirclesInEntry" option.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>DefaultWelcome</term>
+            <listitem>
+              <synopsis>DefaultWelcome=true</synopsis>
+              <para>
+                If set to true, the value "Welcome" is used for the
+                <filename>Welcome</filename>.  This value is translated
+                into the appropriate language for the user.  If set to
+                false, the <filename>Welcome</filename> setting is used.
               </para>
             </listitem>
           </varlistentry>
@@ -4234,7 +4261,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             <term>userlist</term>
             <listitem>
               <para>
-                A user browser list, so that users can pick
+                A Face Browser list, so that users can pick
                 their username by clicking on this instead
                 of typing.
               </para>
@@ -4561,8 +4588,8 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
         <title>Normal/Active/Prelight Nodes</title>
 
         <para>
-            Depending on the item type, it can specify its color, font, or
-          image via the following tags:
+          Depending on the item type (except for userlist - refer to Color node below),
+          it can specify its color, font, or image via the following tags:
         </para>
 
         <para>
@@ -4596,6 +4623,19 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
           Note that relative pathnames are assumed to be in the same 
           directory as the theme <filename>.xml</filename> file in
           <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>.
+        </para>
+      </sect3>
+
+      <sect3 id="listcoloronodes">
+        <title>Face Browser Icon/Label Color Nodes</title>
+
+        <para>
+          If the item type is of userlist, then the background color for the
+          icon and label can be set separately via the the following tag:
+        </para>
+
+        <para>
+        <screen>&lt;color iconcolor="#dddddd" labelcolor="#ffffff"/&gt;</screen>
         </para>
       </sect3>
 

@@ -1,3 +1,30 @@
+2005-04-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.h, config/gdm.conf.in, gui/gdmlogin.c,
+	  gui/gdmsetup.c, gui/gdmsetup.glade, gui/gdmsetup-strings.c,
+	  gui/greeter/greeter.c: Added DefaultWelcome and
+	  DefaultRemoteWelcome keys to the config file which
+	  cause the default strings to be used.  This allows
+	  us to better translate the string in gdmsetup for
+	  display and fixes bug #300304.
+	* gui/greeter/greeter_item_ulist.c,
+	  gui/greeter/greeter_parser.c,
+	  gui/greeter/themes/happygnome-list/happygnome.xml:
+	  Now allow theming of background colors in the Face
+	  Browser.  Also shrink the FaceBrowser so it is the
+	  same size as the treeview, so a big white space is
+	  not displayed under the FaceBrowser.  I probably 
+	  did not pick good default colors in the xml file,
+	  but perhaps someone with a better design eye can
+	  give me a recommendation for better colors.
+	  Fixes bug #140312.
+	* docs/C/gdm.xml: Added docs for above two
+	  features.
+	* gui/gdmlogin.c: Moved auto_timed_msg label after 
+	  msg label since that looks better.
+	* gui/gdmsetup.c: Moved call to g_signal_lookup so it
+	  happens when the call works.
+
 2005-04-12  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/slave.c: Display an error dialog

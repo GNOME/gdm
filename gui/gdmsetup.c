@@ -396,24 +396,41 @@ toggle_toggled (GtkWidget *toggle)
 }
 
 static void
-remote_toggled (GtkWidget *toggle)
+remote_toggled (GtkWidget *toggle, gpointer data)
 {
-	GtkWidget *remote_greeter = glade_helper_get (xml,
-		"remote_greeter", GTK_TYPE_COMBO_BOX);
+	GtkWidget *widget = data;
 	gboolean val;
 
 	val = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle));
 
 	if (val == TRUE) {
 		if (last_remote_login_setting != -1)
-		gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter),
+		gtk_combo_box_set_active (GTK_COMBO_BOX (widget),
 			last_remote_login_setting);
-		gtk_widget_set_sensitive (remote_greeter, TRUE);
+		gtk_widget_set_sensitive (widget, TRUE);
 
 	} else {
-		gtk_widget_set_sensitive (remote_greeter, FALSE);
-		gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter),
+		gtk_widget_set_sensitive (widget, FALSE);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (widget),
 			2);
+	}
+
+	run_timeout (toggle, 200, toggle_timeout);
+}
+
+static void
+sensitive_entry_toggled (GtkWidget *toggle, gpointer data)
+{
+	GtkWidget *widget = data;
+	gboolean val;
+
+	val = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle));
+
+	if (val == FALSE) {
+		gtk_widget_set_sensitive (widget, TRUE);
+
+	} else {
+		gtk_widget_set_sensitive (widget, FALSE);
 	}
 
 	run_timeout (toggle, 200, toggle_timeout);
@@ -491,14 +508,15 @@ setup_notify_toggle (const char *name,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
 
 	if (strcmp ("enable_xdmcp", name) == 0) {
+		GtkWidget *remote_greeter = glade_helper_get (xml,
+			"remote_greeter", GTK_TYPE_COMBO_BOX);
+
 		if (val == FALSE) {
-			GtkWidget *remote_greeter = glade_helper_get (xml,
-				"remote_greeter", GTK_TYPE_COMBO_BOX);
 			gtk_widget_set_sensitive (remote_greeter, FALSE);
 		}
 		
 		g_signal_connect (G_OBJECT (toggle), "toggled",
-			  G_CALLBACK (remote_toggled), NULL);
+			  G_CALLBACK (remote_toggled), remote_greeter);
 	} else {
 		g_signal_connect (G_OBJECT (toggle), "toggled",
 			  G_CALLBACK (toggle_toggled), NULL);
@@ -1178,6 +1196,28 @@ setup_greeter_toggle (const char *name,
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
 
+	if (strcmp ("sg_defaultwelcome", name) == 0) {
+		GtkWidget *welcome = glade_helper_get (xml,
+			"welcome", GTK_TYPE_ENTRY);
+
+		if (val == TRUE) {
+			gtk_widget_set_sensitive (welcome, FALSE);
+		}
+
+		g_signal_connect (G_OBJECT (toggle), "toggled",	
+			G_CALLBACK (sensitive_entry_toggled), welcome);
+	} else if (strcmp ("sg_defaultremotewelcome", name) == 0) {
+		GtkWidget *remotewelcome = glade_helper_get (xml,
+			"remote_welcome", GTK_TYPE_ENTRY);
+
+		if (val == TRUE) {
+			gtk_widget_set_sensitive (remotewelcome, FALSE);
+		}
+
+		g_signal_connect (G_OBJECT (toggle), "toggled",	
+			G_CALLBACK (sensitive_entry_toggled), remotewelcome);
+	}
+
 	g_signal_connect (G_OBJECT (toggle), "toggled",
 			  G_CALLBACK (greeter_toggle_toggled), NULL);
 }
@@ -1386,7 +1426,6 @@ noimage_button_cb (GtkWidget *widget, gpointer data)
 	}
 
 	g_free (val);
-/* HERE */
 }
 
 static void
@@ -3145,12 +3184,22 @@ setup_gui (void)
 {
 	GtkWidget *dialog;
 	GtkSizeGroup *sg;
+	GtkWidget *label_welcome;
+	GtkWidget *label_remote_welcome;
+	gchar *GdmDefaultWelcome;
+	gchar *GdmDefaultRemoteWelcome;
 
 	xml = glade_helper_load ("gdmsetup.glade",
 				 "setup_dialog",
 				 GTK_TYPE_DIALOG,
 				 TRUE /* dump_on_destroy */);
+
 	dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_DIALOG);
+	label_welcome = glade_helper_get (xml,
+		"sg_defaultwelcomelabel", GTK_TYPE_WIDGET);
+	label_remote_welcome = glade_helper_get (xml,
+		"sg_defaultremotewelcomelabel", GTK_TYPE_WIDGET);
+
 	g_signal_connect (G_OBJECT (dialog), "delete_event",
 			  G_CALLBACK (delete_event), NULL);
 	g_signal_connect (G_OBJECT (dialog), "response",
@@ -3252,6 +3301,12 @@ setup_gui (void)
 			     GDM_KEY_DISALLOWTCP,
 			     GDM_KEY_DISALLOWTCP /* notify_key */);
 
+	GdmDefaultWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+	GdmDefaultRemoteWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
+
+	gtk_label_set_text (GTK_LABEL (label_welcome), GdmDefaultWelcome);
+	gtk_label_set_text (GTK_LABEL (label_remote_welcome), GdmDefaultRemoteWelcome);
+
 	/* Security */
 	setup_sensitivity_positive_toggle ("sysmenu", "config_available");
 	setup_sensitivity_positive_toggle ("sysmenu", "chooser_button");
@@ -3314,6 +3369,10 @@ setup_gui (void)
         setup_greeter_color ("sg_backcolor",
 			     GDM_KEY_BACKGROUNDCOLOR);
 
+	setup_greeter_toggle ("sg_defaultwelcome",
+			      GDM_KEY_DEFAULT_WELCOME);
+	setup_greeter_toggle ("sg_defaultremotewelcome",
+			      GDM_KEY_DEFAULT_REMOTEWELCOME);
 	setup_greeter_untranslate_entry ("welcome",
 					 GDM_KEY_WELCOME);
 	setup_greeter_untranslate_entry ("remote_welcome",
@@ -3502,16 +3561,6 @@ main (int argc, char *argv[])
 		g_type_class_ref (GTK_TYPE_WIDGET);	
 	}
 
-	/* also setup third button to work as first to work in reverse
-	 * situations transparently */
-	sid = g_signal_lookup ("event",
-			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    gdm_event,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
-
 	glade_helper_add_glade_directory (GDM_GLADE_DIR);
 
 	/* Make sure the user is root. If not, they shouldn't be messing with 
@@ -3561,6 +3610,16 @@ main (int argc, char *argv[])
 	}
 
 	setup_gui ();
+
+	/* also setup third button to work as first to work in reverse
+	 * situations transparently */
+	sid = g_signal_lookup ("event",
+			       GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    gdm_event,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
 
 	if (RUNNING_UNDER_GDM) {
 		setup_disable_handler ();

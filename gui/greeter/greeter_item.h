@@ -169,6 +169,8 @@ struct _GreeterItemInfo {
 
 #define GREETER_ITEM_TYPE_IS_LIST(info) ((info)->item_type == GREETER_ITEM_TYPE_LIST)
 	  struct {
+		  char *icon_color;
+		  char *label_color;
 		  /* If this is a custom list, then these are the items
 		     to pick from */
 		  GList *items;

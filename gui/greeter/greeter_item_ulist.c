@@ -132,6 +132,7 @@ greeter_populate_user_list (GtkTreeModel *tm)
 			  -1);
       g_free (label);
     }
+
 }
 
 static void
@@ -167,42 +168,64 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 static void
 greeter_generate_userlist (GtkWidget *tv)
 {
-  GtkTreeModel *tm;
-  GtkTreeViewColumn *column;
-  GtkTreeSelection *selection;
+	GtkTreeModel *tm;
+	GtkTreeViewColumn *column_one, *column_two;
+	GtkTreeSelection *selection;
+	GreeterItemInfo *info;
+	GList *list, *li;
 
-  gdm_greeter_users_init ();
-  gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tv),
-				     FALSE);
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
-  gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
-  if (users != NULL)
-    {
-      g_signal_connect (selection, "changed",
+	gdm_greeter_users_init ();
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tv),
+					   FALSE);
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+	if (users != NULL)
+	{
+		g_signal_connect (selection, "changed",
 			G_CALLBACK (user_selected),
 			NULL);
 
-      tm = (GtkTreeModel *)gtk_list_store_new (3,
+		tm = (GtkTreeModel *)gtk_list_store_new (3,
 					       GDK_TYPE_PIXBUF,
 					       G_TYPE_STRING,
 					       G_TYPE_STRING);
-      gtk_tree_view_set_model (GTK_TREE_VIEW (tv), tm);
-      column = gtk_tree_view_column_new_with_attributes
+		gtk_tree_view_set_model (GTK_TREE_VIEW (tv), tm);
+		column_one = gtk_tree_view_column_new_with_attributes
 		             (_("Icon"),
 			      gtk_cell_renderer_pixbuf_new (),
 			      "pixbuf", GREETER_ULIST_ICON_COLUMN,
 			      NULL);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column);
+		gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column_one);
       
-      column = gtk_tree_view_column_new_with_attributes
+		column_two = gtk_tree_view_column_new_with_attributes
 		             (_("Username"),
 			      gtk_cell_renderer_text_new (),
 			      "markup", GREETER_ULIST_LABEL_COLUMN,
 			      NULL);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column);
+		gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column_two);
       
-      greeter_populate_user_list (tm);
-    }
+		greeter_populate_user_list (tm);
+
+		info = greeter_lookup_id ("userlist");
+
+		list = gtk_tree_view_column_get_cell_renderers (column_one);
+		for (li = list; li != NULL; li = li->next) {
+			GtkObject *cell = li->data;
+
+			if (info->data.list.icon_color != NULL)
+				g_object_set (cell, "cell-background",
+					info->data.list.icon_color, NULL);
+		}
+
+		list = gtk_tree_view_column_get_cell_renderers (column_two);
+		for (li = list; li != NULL; li = li->next) {
+			GtkObject *cell = li->data;
+
+			if (info->data.list.label_color != NULL) 
+				g_object_set (cell, "background",
+					info->data.list.label_color, NULL);
+		}
+	}
 }
 
 gboolean
@@ -225,10 +248,20 @@ greeter_item_ulist_setup (void)
       if (GTK_IS_SCROLLED_WINDOW (sw) && 
 	  GTK_IS_TREE_VIEW (GTK_BIN (sw)->child))
         {
+	  GtkRequisition req;
+
           user_list = GTK_BIN (sw)->child;
           greeter_generate_userlist (user_list);
 	  if ( ! DOING_GDM_DEVELOPMENT)
             greeter_item_ulist_disable ();
+
+         /* Reset size of the widget canvas item so it is the same
+          * size as the userlist.  This avoids the ugly white background
+          * displayed below the Face Browser when the list isn't as large
+          * as the rectangle defined in the GDM theme file.
+          */
+	  gtk_widget_size_request (user_list, &req);
+          g_object_set (info->item, "height", (double)req.height, NULL);
         }
     }
   return TRUE;
