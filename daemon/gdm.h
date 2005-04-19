@@ -264,8 +264,12 @@ enum {
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
 #define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="
 
-#define GDM_KEY_SOUND_ON_LOGIN "greeter/SoundOnLogin=true"
-#define GDM_KEY_SOUND_ON_LOGIN_FILE "greeter/SoundOnLoginFile="
+#define GDM_KEY_SOUND_ON_LOGIN_READY "greeter/SoundOnLogin=true"
+#define GDM_KEY_SOUND_ON_LOGIN_SUCCESS "greeter/SoundOnLoginSuccess=true"
+#define GDM_KEY_SOUND_ON_LOGIN_FAILURE "greeter/SoundOnLoginFailure=true"
+#define GDM_KEY_SOUND_ON_LOGIN_READY_FILE "greeter/SoundOnLoginFile="
+#define GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE "greeter/SoundOnLoginSuccessFile="
+#define GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE "greeter/SoundOnLoginFailureFile="
 #define GDM_KEY_SOUND_PROGRAM "daemon/SoundProgram=/usr/bin/play"
 
 #define GDM_KEY_SCAN "chooser/ScanTime=4"
@@ -586,7 +590,9 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
 #define GDM_NOTIFY_DISALLOWTCP "DisallowTCP" /* <true/false as int> */
-#define GDM_NOTIFY_SOUND_ON_LOGIN_FILE "SoundOnLoginFile" /* <sound file> */
+#define GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE "SoundOnLoginFile" /* <sound file> */
+#define GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE "SoundOnLoginSuccessFile" /* <sound file> */
+#define GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE "SoundOnLoginFailureFile" /* <sound file> */
 #define GDM_NOTIFY_ADD_GTK_MODULES "AddGtkModules" /* <true/false as int> */
 #define GDM_NOTIFY_GTK_MODULES_LIST "GtkModulesList" /* <modules list> */
 

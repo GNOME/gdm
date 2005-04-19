@@ -184,7 +184,9 @@ extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmDebug;
 extern gboolean GdmDisallowTCP;
 extern gchar *GdmSoundProgram;
-extern gchar *GdmSoundOnLoginFile;
+extern gchar *GdmSoundOnLoginReadyFile;
+extern gchar *GdmSoundOnLoginSuccessFile;
+extern gchar *GdmSoundOnLoginFailureFile;
 
 
 /* Local prototypes */
@@ -1932,6 +1934,39 @@ gdm_slave_wait_for_login (void)
 		if (login == NULL) {
 			gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
+
+			/* Play sounds if specified for a failed login*/
+			if (d->console &&
+			    ! G_UNLIKELY (do_configurator) &&
+			    ! ve_string_empty (GdmSoundProgram) &&
+			    ! ve_string_empty (GdmSoundOnLoginFailureFile) &&
+			    access (GdmSoundProgram, X_OK) == 0 &&
+			    access (GdmSoundOnLoginFailureFile, F_OK) == 0) {
+
+				pid_t pid;
+
+				gdm_sigchld_block_push ();
+				gdm_sigterm_block_push ();
+				pid = fork ();
+				if (pid == 0)
+					gdm_unset_signals ();
+				gdm_sigterm_block_pop ();
+				gdm_sigchld_block_pop ();
+
+				if (pid == 0) {
+					setsid ();
+					seteuid (0);
+					setegid (0);
+					execl (GdmSoundProgram,
+					       GdmSoundProgram,
+					       GdmSoundOnLoginFailureFile,
+					       NULL);
+
+					_exit (0);
+				}
+			} else if (! G_UNLIKELY (do_configurator)) {
+				gdm_error (_("Login sound requested on non-local display or the play software cannot be run or the sound does not exist."));
+			}
 		}
 	}
 
@@ -1947,8 +1982,42 @@ gdm_slave_wait_for_login (void)
 		gdm_debug ("gdm_slave_wait_for_login: Timed Login");
 	}
 
+	/* Play sounds if specified for a successful login */
+	if (login != NULL &&
+		d->console &&
+		! ve_string_empty (GdmSoundProgram) &&
+		! ve_string_empty (GdmSoundOnLoginSuccessFile) &&
+		access (GdmSoundProgram, X_OK) == 0 &&
+		access (GdmSoundOnLoginSuccessFile, F_OK) == 0) {
+
+		pid_t pid;
+
+		gdm_sigchld_block_push ();
+		gdm_sigterm_block_push ();
+		pid = fork ();
+		if (pid == 0)
+			gdm_unset_signals ();
+		gdm_sigterm_block_pop ();
+		gdm_sigchld_block_pop ();
+		if (pid == 0) {
+			setsid ();
+			seteuid (0);
+			setegid (0);
+			execl (GdmSoundProgram,
+			       GdmSoundProgram,
+			       GdmSoundOnLoginSuccessFile,
+			       NULL);
+
+			_exit (0);
+		}
+	} else if (! G_UNLIKELY (do_configurator)) {
+		gdm_error (_("Login sound requested on non-local display or the play software cannot be run or the sound does not exist."));
+	}
+
 	gdm_debug ("gdm_slave_wait_for_login: got_login for '%s'",
 		   ve_sure_string (login));
+
+
 }
 
 /* If path starts with a "trusted" directory, don't sanity check things */
@@ -4852,9 +4921,9 @@ check_for_interruption (const char *msg)
 		case GDM_INTERRUPT_LOGIN_SOUND:
 			if (d->console &&
 			    ! ve_string_empty (GdmSoundProgram) &&
-			    ! ve_string_empty (GdmSoundOnLoginFile) &&
+			    ! ve_string_empty (GdmSoundOnLoginReadyFile) &&
 			    access (GdmSoundProgram, X_OK) == 0 &&
-			    access (GdmSoundOnLoginFile, F_OK) == 0) {
+			    access (GdmSoundOnLoginReadyFile, F_OK) == 0) {
 				pid_t pid;
 
 				gdm_sigchld_block_push ();
@@ -4871,7 +4940,7 @@ check_for_interruption (const char *msg)
 					setegid (0);
 					execl (GdmSoundProgram,
 					       GdmSoundProgram,
-					       GdmSoundOnLoginFile,
+					       GdmSoundOnLoginReadyFile,
 					       NULL);
 
 					_exit (0);
@@ -5494,11 +5563,25 @@ gdm_slave_handle_notify (const char *msg)
 		GdmTimedLoginDelay = val;
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
-	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FILE " ",
-			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1) == 0) {
-		g_free (GdmSoundOnLoginFile);
-		GdmSoundOnLoginFile = g_strdup
-			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1]);
+	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE " ",
+			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE) + 1) == 0) {
+		g_free (GdmSoundOnLoginReadyFile);
+		GdmSoundOnLoginReadyFile = g_strdup
+			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE) + 1]);
+		if (d->greetpid > 1)
+			kill (d->greetpid, SIGHUP);
+	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE " ",
+			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1) == 0) {
+		g_free (GdmSoundOnLoginSuccessFile);
+		GdmSoundOnLoginSuccessFile = g_strdup
+			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1]);
+		if (d->greetpid > 1)
+			kill (d->greetpid, SIGHUP);
+	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE " ",
+			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1) == 0) {
+		g_free (GdmSoundOnLoginFailureFile);
+		GdmSoundOnLoginFailureFile = g_strdup
+			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1]);
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_GTK_MODULES_LIST " ",

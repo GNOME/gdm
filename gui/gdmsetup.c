@@ -68,7 +68,9 @@ static GList *timeout_widgets = NULL;
 
 static gchar *last_theme_installed = NULL;
 static int last_remote_login_setting = -1;
-static gboolean have_soundfile = FALSE;
+static gboolean have_sound_ready_file = FALSE;
+static gboolean have_sound_success_file = FALSE;
+static gboolean have_sound_failure_file = FALSE;
 
 enum {
 	THEME_COLUMN_SELECTED,
@@ -1532,6 +1534,7 @@ setup_greeter_untranslate_entry (const char *name,
 	g_free (val);
 }
 
+
 static gboolean
 greeter_backselect_timeout (GtkWidget *toggle)
 {
@@ -1853,10 +1856,19 @@ static void
 no_sound_cb (GtkWidget *widget, gpointer data)
 {
 	GtkWidget *acc_sound_file_label = data;
-	GtkWidget *acc_no_sound_file = glade_helper_get (xml, "acc_nosoundbutton",
-		GTK_TYPE_BUTTON);
-	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_soundtest",
-		GTK_TYPE_BUTTON);
+	const char *key = g_object_get_data (G_OBJECT (acc_sound_file_label),
+	                                     "key");
+
+	const char *nosound_button;
+	const char *soundtest_button;
+	nosound_button = g_strconcat("acc_nosound_",key,"_button",NULL);
+	soundtest_button = g_strconcat("acc_soundtest_",key,"_button",NULL);
+
+	GtkWidget *acc_no_sound_file = glade_helper_get (xml, nosound_button,
+	                                                 GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test = glade_helper_get (xml, soundtest_button,
+	                                              GTK_TYPE_BUTTON);
+
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 	char *val, *config_val;
 
@@ -1865,17 +1877,27 @@ no_sound_cb (GtkWidget *widget, gpointer data)
 	gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
 	gtk_widget_set_sensitive (acc_sound_test, FALSE);
 
-        val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+	const gchar* sound_key;
+	if (strcmp (key, "ready") == 0) {
+		sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+	} else if (strcmp (key, "success") == 0) {
+		sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+	} else if (strcmp (key, "failure") == 0) {
+		sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
+	} else {
+		sound_key = NULL;
+	}
+
+	val = ve_config_get_string (config, sound_key);
 	config_val = ve_sure_string (val);
 
 	if (config_val != NULL && *config_val != NULL) {
-		ve_config_set_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE, NULL);
-
+		ve_config_set_string (config, sound_key, "\0");
 		ve_config_save (config, FALSE /* force */);
-
 		update_greeters ();
 	}
 
+	g_free (sound_key);
 	g_free (val);
 }
 
@@ -1883,44 +1905,81 @@ static void
 sound_response (GtkWidget *file_dialog, gint response, gpointer data)
 {
 	GtkWidget *acc_sound_file_label = data;
-	GtkWidget *acc_no_sound_file = glade_helper_get (xml, "acc_nosoundbutton",
-		GTK_TYPE_BUTTON);
-	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_soundtest",
-		GTK_TYPE_BUTTON);
+	const char *key = g_object_get_data (G_OBJECT (acc_sound_file_label), "key");
 
+	const char *nosound_button;
+	const char *soundtest_button;
+	nosound_button = g_strconcat("acc_nosound_",key,"_button",NULL);
+	soundtest_button = g_strconcat("acc_soundtest_",key,"_button",NULL);
+
+	GtkWidget *acc_no_sound_file = glade_helper_get (xml, nosound_button,
+		GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test = glade_helper_get (xml, soundtest_button,
+		GTK_TYPE_BUTTON);
 	if (response == GTK_RESPONSE_ACCEPT) {
 		VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 		char *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_dialog));
 		char *val;
 
-		have_soundfile = TRUE;
 		gtk_label_set_text (GTK_LABEL (acc_sound_file_label), filename);
 
 		gtk_widget_set_sensitive (acc_no_sound_file, TRUE);
 		gtk_widget_set_sensitive (acc_sound_test, TRUE);
 
-                val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
 
-                if (strcmp (ve_sure_string (val), ve_sure_string (filename)) != 0) {
-                        ve_config_set_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE,
-                                ve_sure_string (filename));
-
-                        ve_config_save (config, FALSE /* force */);
-
-                        update_greeters ();
-                }
-
-                g_free (val);
-	} else {
-		if (have_soundfile) {
-			gtk_widget_set_sensitive (acc_no_sound_file, TRUE);
-			gtk_widget_set_sensitive (acc_sound_test, TRUE);
+		char* sound_key;
+		if (strcmp (key, "ready") == 0 ) {
+			have_sound_ready_file = TRUE;
+			sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+		} else if (strcmp (key, "success") == 0 ) {
+			have_sound_success_file = TRUE;
+			sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+		} else if (strcmp (key, "failure") == 0 ) {
+			have_sound_failure_file = TRUE;
+			sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 		} else {
-			gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
-			gtk_widget_set_sensitive (acc_sound_test, FALSE);
+			sound_key = NULL;
 		}
-	}
 
+		val = ve_config_get_string (config, sound_key);
+
+		if (strcmp (ve_sure_string (val), ve_sure_string (filename)) != 0) {
+			ve_config_set_string (config, sound_key,
+		    ve_sure_string (filename));
+			ve_config_save (config, FALSE /* force */);
+			update_greeters ();
+		}
+		g_free (val);
+
+	} else {
+
+		if (strcmp (key,"ready") == 0) {
+			if (have_sound_ready_file) {
+				gtk_widget_set_sensitive (acc_no_sound_file, TRUE);
+				gtk_widget_set_sensitive (acc_sound_test, TRUE);
+			} else {
+				gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
+				gtk_widget_set_sensitive (acc_sound_test, FALSE);
+			}
+		} else if (strcmp (key,"success") == 0) {
+			if (have_sound_success_file) {
+				gtk_widget_set_sensitive (acc_no_sound_file, TRUE);
+				gtk_widget_set_sensitive (acc_sound_test, TRUE);
+			} else {
+				gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
+				gtk_widget_set_sensitive (acc_sound_test, FALSE);
+			}
+		} else if (strcmp (key,"failure") == 0) {
+			if (have_sound_failure_file) {
+				gtk_widget_set_sensitive (acc_no_sound_file, TRUE);
+				gtk_widget_set_sensitive (acc_sound_test, TRUE);
+			} else {
+				gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
+				gtk_widget_set_sensitive (acc_sound_test, FALSE);
+			}
+		}
+		
+	}
 	gtk_widget_destroy (file_dialog);
 }
 
@@ -1957,13 +2016,57 @@ browse_sound_cb (GtkWidget *widget, gpointer data)
 static void
 setup_accessibility_support (void)
 {
-	GtkWidget *acc_modules = glade_helper_get (xml, "acc_modules", GTK_TYPE_TOGGLE_BUTTON);
-	GtkWidget *acc_sound_file_label = glade_helper_get (xml, "acc_soundfile", GTK_TYPE_LABEL);
-	GtkWidget *acc_sound_file = glade_helper_get (xml, "acc_soundbutton", GTK_TYPE_BUTTON);
-	GtkWidget *acc_no_sound_file = glade_helper_get (xml, "acc_nosoundbutton", GTK_TYPE_BUTTON);
-	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_soundtest", GTK_TYPE_BUTTON);
+	GtkWidget *acc_modules = glade_helper_get (xml, "acc_modules",
+	                         GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *acc_sound_ready_file_label = glade_helper_get (xml,
+	                                        "acc_sound_ready_file",
+	                                        GTK_TYPE_LABEL);
+	GtkWidget *acc_sound_ready_file = glade_helper_get (xml,
+	                                  "acc_sound_ready_button",
+	                                  GTK_TYPE_BUTTON);
+	GtkWidget *acc_no_sound_ready_file = glade_helper_get (xml,
+	                                     "acc_nosound_ready_button",
+	                                     GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test_ready = glade_helper_get (xml,
+	                                  "acc_soundtest_ready_button",
+	                                  GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_success_file_label = glade_helper_get (xml,
+	                                          "acc_sound_success_file",
+	                                          GTK_TYPE_LABEL);
+	GtkWidget *acc_sound_success_file = glade_helper_get (xml,
+	                                    "acc_sound_success_button",
+	                                    GTK_TYPE_BUTTON);
+	GtkWidget *acc_no_sound_success_file = glade_helper_get (xml,
+	                                       "acc_nosound_success_button",
+	                                       GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test_success = glade_helper_get (xml,
+	                                    "acc_soundtest_success_button",
+	                                    GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_failure_file_label = glade_helper_get (xml,
+	                                          "acc_sound_failure_file",
+	                                          GTK_TYPE_LABEL);
+	GtkWidget *acc_sound_failure_file = glade_helper_get (xml,
+	                                    "acc_sound_failure_button",
+	                                    GTK_TYPE_BUTTON);
+	GtkWidget *acc_no_sound_failure_file = glade_helper_get (xml,
+	                                       "acc_nosound_failure_button",
+	                                       GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test_failure = glade_helper_get (xml,
+	                                    "acc_soundtest_failure_button",
+	                                    GTK_TYPE_BUTTON);
+	                  
+	gchar *ready_key = g_strdup("ready");
+	gchar *success_key = g_strdup("success");
+	gchar *failure_key = g_strdup("failure");
+	g_object_set_data (G_OBJECT (acc_sound_ready_file_label), "key",
+	                   ready_key);
+	g_object_set_data (G_OBJECT (acc_sound_success_file_label), "key",
+	                   success_key);
+	g_object_set_data (G_OBJECT (acc_sound_failure_file_label), "key",
+	                   failure_key);
+
 	gboolean add_gtk_modules = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
-						       GDM_KEY_ADD_GTK_MODULES);
+					       GDM_KEY_ADD_GTK_MODULES);
 	char *modules_list = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 						   GDM_KEY_GTK_MODULES_LIST);
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
@@ -1981,29 +2084,66 @@ setup_accessibility_support (void)
 					      FALSE);
 	}
 
-	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+
+if (val != NULL && *val != NULL) {
+		gtk_label_set_text (GTK_LABEL (acc_sound_ready_file_label), val);
+	} else {
+		gtk_label_set_text (GTK_LABEL (acc_sound_ready_file_label), _("None"));
+		gtk_widget_set_sensitive (acc_no_sound_ready_file, FALSE);
+		gtk_widget_set_sensitive (acc_sound_test_ready, FALSE);
+	}
+
+	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
 
 	if (val != NULL && *val != NULL) {
-		gtk_label_set_text (GTK_LABEL (acc_sound_file_label), val);
-		have_soundfile = TRUE;
+		gtk_label_set_text (GTK_LABEL (acc_sound_success_file_label), val);
 	} else {
-		gtk_label_set_text (GTK_LABEL (acc_sound_file_label), _("None"));
-		gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
-		gtk_widget_set_sensitive (acc_sound_test, FALSE);
+		gtk_label_set_text (GTK_LABEL (acc_sound_success_file_label), _("None"));
+		gtk_widget_set_sensitive (acc_no_sound_success_file, FALSE);
+		gtk_widget_set_sensitive (acc_sound_test_success, FALSE);
+	}
+
+	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
+
+	if (val != NULL && *val != NULL) {
+		gtk_label_set_text (GTK_LABEL (acc_sound_failure_file_label), val);
+	} else {
+		gtk_label_set_text (GTK_LABEL (acc_sound_failure_file_label), _("None"));
+		gtk_widget_set_sensitive (acc_no_sound_failure_file, FALSE);
+		gtk_widget_set_sensitive (acc_sound_test_failure, FALSE);
 	}
 
 	g_signal_connect (G_OBJECT (acc_modules), "toggled",
 			  G_CALLBACK (acc_modules_toggled),
 			  NULL);
-	g_signal_connect (G_OBJECT (acc_sound_file), "clicked",
+	g_signal_connect (G_OBJECT (acc_sound_ready_file), "clicked",
 			  G_CALLBACK (browse_sound_cb),
-			  acc_sound_file_label);
-	g_signal_connect (G_OBJECT (acc_no_sound_file), "clicked",
+			  acc_sound_ready_file_label);
+	g_signal_connect (G_OBJECT (acc_no_sound_ready_file), "clicked",
 			  G_CALLBACK (no_sound_cb),
-			  acc_sound_file_label);
-	g_signal_connect (G_OBJECT (acc_sound_test), "clicked",
+			  acc_sound_ready_file_label);
+	g_signal_connect (G_OBJECT (acc_sound_test_ready), "clicked",
 			  G_CALLBACK (test_sound),
-			  acc_sound_file_label);
+			  acc_sound_ready_file_label);
+	g_signal_connect (G_OBJECT (acc_sound_success_file), "clicked",
+			  G_CALLBACK (browse_sound_cb),
+			  acc_sound_success_file_label);
+	g_signal_connect (G_OBJECT (acc_no_sound_success_file), "clicked",
+			  G_CALLBACK (no_sound_cb),
+			  acc_sound_success_file_label);
+	g_signal_connect (G_OBJECT (acc_sound_test_success), "clicked",
+			  G_CALLBACK (test_sound),
+			  acc_sound_success_file_label);
+	g_signal_connect (G_OBJECT (acc_sound_failure_file), "clicked",
+			  G_CALLBACK (browse_sound_cb),
+			  acc_sound_failure_file_label);
+	g_signal_connect (G_OBJECT (acc_no_sound_failure_file), "clicked",
+			  G_CALLBACK (no_sound_cb),
+			  acc_sound_failure_file_label);
+	g_signal_connect (G_OBJECT (acc_sound_test_failure), "clicked",
+			  G_CALLBACK (test_sound),
+			  acc_sound_failure_file_label);
 }
 
 static void
@@ -3379,12 +3519,20 @@ setup_gui (void)
 					 GDM_KEY_REMOTEWELCOME);
 
 	/* Accesibility */
-	setup_sensitivity_positive_toggle ("acc_beep", "acc_sound_file_box");
-
-	setup_greeter_toggle ("acc_beep",
-			      GDM_KEY_SOUND_ON_LOGIN);
 	setup_greeter_toggle ("acc_theme",
 			      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
+	setup_sensitivity_positive_toggle ("acc_sound_ready",
+	                                   "acc_sound_ready_file_box");
+	setup_greeter_toggle ("acc_sound_ready",
+			      GDM_KEY_SOUND_ON_LOGIN_READY);
+	setup_sensitivity_positive_toggle ("acc_sound_success",
+	                                   "acc_sound_success_file_box");
+	setup_greeter_toggle ("acc_sound_success",
+			      GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
+	setup_sensitivity_positive_toggle ("acc_sound_failure",
+	                                   "acc_sound_failure_file_box");
+	setup_greeter_toggle ("acc_sound_failure",
+			      GDM_KEY_SOUND_ON_LOGIN_FAILURE);
 
 	/* Face browser */
 	setup_face ();

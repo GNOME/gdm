@@ -130,8 +130,12 @@ static gint GdmFlexiReapDelayMinutes;
 /* FIXME: Should move everything to externs and move reading to gdmcommon.c */
 gchar *GdmInfoMsgFile;
 gchar *GdmInfoMsgFont;
-gboolean GdmSoundOnLogin;
-gchar *GdmSoundOnLoginFile;
+gboolean GdmSoundOnLoginReady;
+gboolean GdmSoundOnLoginSuccess;
+gboolean GdmSoundOnLoginFailure;
+gchar *GdmSoundOnLoginReadyFile;
+gchar *GdmSoundOnLoginSuccessFile;
+gchar *GdmSoundOnLoginFailureFile;
 gchar *GdmSoundProgram;
 gint  GdmIconMaxHeight;
 gint  GdmIconMaxWidth;
@@ -769,8 +773,18 @@ gdm_login_parse_config (void)
     GdmFlexiReapDelayMinutes = ve_config_get_int (config, GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
     GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 
-    GdmSoundOnLogin = ve_config_get_bool (config, GDM_KEY_SOUND_ON_LOGIN);
-    GdmSoundOnLoginFile = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+    GdmSoundOnLoginReady = ve_config_get_bool (config,
+	                       GDM_KEY_SOUND_ON_LOGIN_READY);
+    GdmSoundOnLoginSuccess = ve_config_get_bool (config,
+	                         GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
+    GdmSoundOnLoginFailure = ve_config_get_bool (config,
+	                         GDM_KEY_SOUND_ON_LOGIN_FAILURE);
+    GdmSoundOnLoginReadyFile = ve_config_get_string (config,
+	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+    GdmSoundOnLoginSuccessFile = ve_config_get_string (config,
+	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+    GdmSoundOnLoginFailureFile = ve_config_get_string (config,
+	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
     GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
 
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
@@ -3487,8 +3501,18 @@ gdm_reread_config (int sig, gpointer data)
 	}
 
 	GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
-	GdmSoundOnLogin = ve_config_get_bool (config, GDM_KEY_SOUND_ON_LOGIN);
-	GdmSoundOnLoginFile = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+	GdmSoundOnLoginReady = ve_config_get_bool (config,
+	                       GDM_KEY_SOUND_ON_LOGIN_READY);
+	GdmSoundOnLoginSuccess = ve_config_get_bool (config,
+	                         GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
+	GdmSoundOnLoginFailure = ve_config_get_bool (config,
+	                         GDM_KEY_SOUND_ON_LOGIN_FAILURE);
+	GdmSoundOnLoginReadyFile = ve_config_get_string (config,
+	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+	GdmSoundOnLoginSuccessFile = ve_config_get_string (config,
+	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+	GdmSoundOnLoginFailureFile = ve_config_get_string (config,
+	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
 	GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 	update_clock (NULL);

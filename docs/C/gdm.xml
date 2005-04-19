@@ -2612,9 +2612,33 @@ XKeepsCrashing
           </varlistentry>
 
           <varlistentry>
+            <term>SoundOnLoginSuccess</term>
+            <listitem>
+              <synopsis>SoundOnLoginSuccess=true</synopsis>
+              <para>
+                If true, the greeter will play a sound after a successful login
+                attempt.  See also the
+                <filename>SoundOnLoginSuccessFile</filename> key.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SoundOnLoginFailure</term>
+            <listitem>
+              <synopsis>SoundOnLoginFailure=true</synopsis>
+              <para>
+                If true, the greeter will play a sound after a failed login
+                attempt.  See also the
+                <filename>SoundOnLoginFailureFile</filename> key.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>SoundOnLoginFile</term>
             <listitem>
-              <synopsis>SoundOnLogin=/path/to/sound.wav</synopsis>
+              <synopsis>SoundOnLoginFile=/path/to/sound.wav</synopsis>
               <para>
                 The file that will be played using the specified sound program
                 (by default that is <filename>/usr/bin/play</filename>) instead
@@ -2622,6 +2646,34 @@ XKeepsCrashing
                 <filename>SoundOnLogin</filename> key and the
                 <filename>SoundProgram</filename> key.
                 Supported since 2.5.90.0.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SoundOnLoginSuccessFile</term>
+            <listitem>
+              <synopsis>SoundOnLoginSuccessFile=/path/to/sound.wav</synopsis>
+              <para>
+                The file that will be played using the specified sound program
+                (by default that is <filename>/usr/bin/play</filename>) after
+                a successful login attempt.  See also the
+                <filename>SoundOnLoginSuccess</filename> key and the
+                <filename>SoundProgram</filename> key.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SoundOnLoginFailureFile</term>
+            <listitem>
+              <synopsis>SoundOnLoginFailureFile=/path/to/sound.wav</synopsis>
+              <para>
+                The file that will be played using the specified sound program
+                (by default that is <filename>/usr/bin/play</filename>) after
+                a failed login attempt.  See also the
+                <filename>SoundOnLoginFailure</filename> key and the
+                <filename>SoundProgram</filename> key.
               </para>
             </listitem>
           </varlistentry>

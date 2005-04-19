@@ -56,8 +56,12 @@ extern gchar *GdmServAuthDir;
 extern gchar *GdmInfoMsgFile;
 extern gchar *GdmInfoMsgFont;
 extern gchar *GdmSoundProgram;
-extern gchar *GdmSoundOnLoginFile;
-extern gboolean GdmSoundOnLogin;
+extern gchar *GdmSoundOnLoginReadyFile;
+extern gchar *GdmSoundOnLoginSuccessFile;
+extern gchar *GdmSoundOnLoginFailureFile;
+extern gboolean GdmSoundOnLoginReady;
+extern gboolean GdmSoundOnLoginSuccess;
+extern gboolean GdmSoundOnLoginFailure;
 
 extern gboolean GDM_IS_LOCAL;
 extern gboolean DOING_GDM_DEVELOPMENT;

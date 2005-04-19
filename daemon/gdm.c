@@ -210,7 +210,9 @@ int GdmFirstVT = 7;
 gboolean GdmVTAllocation = TRUE;
 gboolean GdmDisallowTCP = TRUE;
 gchar *GdmSoundProgram = NULL;
-gchar *GdmSoundOnLoginFile = NULL;
+gchar *GdmSoundOnLoginReadyFile = NULL;
+gchar *GdmSoundOnLoginSuccessFile = NULL;
+gchar *GdmSoundOnLoginFailureFile = NULL;
 gchar *GdmConsoleCannotHandle = NULL;
 
 
@@ -445,7 +447,12 @@ gdm_config_parse (void)
     GdmDisallowTCP = ve_config_get_bool (cfg, GDM_KEY_DISALLOWTCP);
 
     GdmSoundProgram = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
-    GdmSoundOnLoginFile = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FILE);
+    GdmSoundOnLoginReadyFile = ve_config_get_string (cfg,
+	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+    GdmSoundOnLoginSuccessFile = ve_config_get_string (cfg,
+	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+    GdmSoundOnLoginFailureFile = ve_config_get_string (cfg,
+	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
     GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 
@@ -3528,16 +3535,40 @@ update_config (const char *key)
 			if (gdm_xdmcp_init ())
 				gdm_xdmcp_run ();
 		}
-	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_FILE)) {
-		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FILE);
-		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginFile)) == 0) {
+	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_READY_FILE)) {
+		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginReadyFile)) == 0) {
 			g_free (val);
 			goto update_config_ok;
 		}
-		g_free (GdmSoundOnLoginFile);
-		GdmSoundOnLoginFile = val;
+		g_free (GdmSoundOnLoginReadyFile);
+		GdmSoundOnLoginReadyFile = val;
 
-		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FILE, val);
+		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE)) {
+		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginSuccessFile)) == 0) {
+			g_free (val);
+			goto update_config_ok;
+		}
+		g_free (GdmSoundOnLoginSuccessFile);
+		GdmSoundOnLoginSuccessFile = val;
+
+		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE)) {
+		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
+		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginFailureFile)) == 0) {
+			g_free (val);
+			goto update_config_ok;
+		}
+		g_free (GdmSoundOnLoginFailureFile);
+		GdmSoundOnLoginFailureFile = val;
+
+		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE, val);
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_GTK_MODULES_LIST)) {
