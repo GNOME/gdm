@@ -1,3 +1,15 @@
+2005-04-18  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c:
+	  I noticed that double clicking in the Face Browser
+	  was causing the focus to be taken away from the 
+	  username/password entry field.  I added a
+	  button-release-event listener that returns the
+	  focus back to the entry field when the user clicks
+	  on the Face Browser.  This ensures that the focus
+	  is always kept on the entry field where it should
+	  be.
+
 2005-04-15  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.h, config/gdm.conf.in, gui/gdmlogin.c,

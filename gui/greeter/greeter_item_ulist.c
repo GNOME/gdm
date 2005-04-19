@@ -166,6 +166,12 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 }
 
 static void
+browser_change_focus (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+    gtk_widget_grab_focus (pam_entry);
+}
+
+static void
 greeter_generate_userlist (GtkWidget *tv)
 {
 	GtkTreeModel *tm;
@@ -183,6 +189,10 @@ greeter_generate_userlist (GtkWidget *tv)
 	{
 		g_signal_connect (selection, "changed",
 			G_CALLBACK (user_selected),
+			NULL);
+
+		g_signal_connect (GTK_TREE_VIEW (tv), "button_release_event",
+			G_CALLBACK (browser_change_focus),
 			NULL);
 
 		tm = (GtkTreeModel *)gtk_list_store_new (3,

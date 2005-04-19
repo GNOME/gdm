@@ -2453,6 +2453,12 @@ user_selected (GtkTreeSelection *selection, gpointer data)
   }
 }
 
+static void
+browser_change_focus (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+    gtk_widget_grab_focus (entry);	
+}
+
 static gboolean
 gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
 {
@@ -2944,6 +2950,10 @@ gdm_login_gui_init (void)
 
 	    g_signal_connect (selection, "changed",
 			      G_CALLBACK (user_selected),
+			      NULL);
+
+	    g_signal_connect (browser, "button_release_event",
+			      G_CALLBACK (browser_change_focus),
 			      NULL);
 
 	    browser_model = (GtkTreeModel *)gtk_list_store_new (3,
