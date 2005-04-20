@@ -3521,16 +3521,10 @@ setup_gui (void)
 	/* Accesibility */
 	setup_greeter_toggle ("acc_theme",
 			      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
-	setup_sensitivity_positive_toggle ("acc_sound_ready",
-	                                   "acc_sound_ready_file_box");
 	setup_greeter_toggle ("acc_sound_ready",
 			      GDM_KEY_SOUND_ON_LOGIN_READY);
-	setup_sensitivity_positive_toggle ("acc_sound_success",
-	                                   "acc_sound_success_file_box");
 	setup_greeter_toggle ("acc_sound_success",
 			      GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
-	setup_sensitivity_positive_toggle ("acc_sound_failure",
-	                                   "acc_sound_failure_file_box");
 	setup_greeter_toggle ("acc_sound_failure",
 			      GDM_KEY_SOUND_ON_LOGIN_FAILURE);
 
