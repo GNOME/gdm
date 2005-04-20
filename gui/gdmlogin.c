@@ -131,11 +131,7 @@ static gint GdmFlexiReapDelayMinutes;
 gchar *GdmInfoMsgFile;
 gchar *GdmInfoMsgFont;
 gboolean GdmSoundOnLoginReady;
-gboolean GdmSoundOnLoginSuccess;
-gboolean GdmSoundOnLoginFailure;
 gchar *GdmSoundOnLoginReadyFile;
-gchar *GdmSoundOnLoginSuccessFile;
-gchar *GdmSoundOnLoginFailureFile;
 gchar *GdmSoundProgram;
 gint  GdmIconMaxHeight;
 gint  GdmIconMaxWidth;
@@ -775,16 +771,8 @@ gdm_login_parse_config (void)
 
     GdmSoundOnLoginReady = ve_config_get_bool (config,
 	                       GDM_KEY_SOUND_ON_LOGIN_READY);
-    GdmSoundOnLoginSuccess = ve_config_get_bool (config,
-	                         GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
-    GdmSoundOnLoginFailure = ve_config_get_bool (config,
-	                         GDM_KEY_SOUND_ON_LOGIN_FAILURE);
     GdmSoundOnLoginReadyFile = ve_config_get_string (config,
 	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
-    GdmSoundOnLoginSuccessFile = ve_config_get_string (config,
-	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
-    GdmSoundOnLoginFailureFile = ve_config_get_string (config,
-	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
     GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
 
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
@@ -3022,7 +3010,8 @@ gdm_login_gui_init (void)
     }
 
     /* this will make the logo always left justified */
-    logo_frame = gtk_alignment_new (0, 0.5, 0, 0);
+/* HERE */
+    logo_frame = gtk_alignment_new (0, 0.10, 0, 0);
     gtk_widget_show (logo_frame);
 
     frame = gtk_frame_new (NULL);
@@ -3065,13 +3054,12 @@ gdm_login_gui_init (void)
     gtk_widget_show (welcome);
     gtk_table_attach (GTK_TABLE (stack), welcome, 0, 1, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 15);
 
     /* Put in error box here */
-
     err_box = gtk_label_new (NULL);
     gtk_widget_set_name (err_box, "Error box");
-    gtk_widget_set_size_request (err_box, -1, 50);
+    gtk_widget_set_size_request (err_box, -1, 40);
     g_signal_connect (G_OBJECT (err_box), "destroy",
 		      G_CALLBACK (gtk_widget_destroyed),
 		      &err_box);
@@ -3158,7 +3146,7 @@ gdm_login_gui_init (void)
     gtk_table_attach (GTK_TABLE (stack), auto_timed_msg, 0, 1, 7, 8,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
-    gtk_widget_set_size_request (auto_timed_msg, -1, 20);
+    gtk_widget_set_size_request (auto_timed_msg, -1, 15);
     
     gtk_widget_ref (auto_timed_msg);
     gtk_widget_show (auto_timed_msg);
@@ -3203,16 +3191,16 @@ gdm_login_gui_init (void)
 			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 	    gtk_table_attach (GTK_TABLE (table), logo_frame, 0, 1, 1, 2,
 			      (GtkAttachOptions) (GTK_FILL),
-			      (GtkAttachOptions) (0), 0, 0);
+			      (GtkAttachOptions) (GTK_FILL), 0, 0);
 	    gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 1, 2,
 			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			      (GtkAttachOptions) (GTK_FILL), 0, 0);
     } else {
 	    gtk_table_attach (GTK_TABLE (table), logo_frame, 0, 1, 0, 1,
 			      (GtkAttachOptions) (0),
-			      (GtkAttachOptions) (0), 0, 0);
+			      (GtkAttachOptions) (GTK_FILL), 0, 0);
 	    gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 0, 1,
-			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			      (GtkAttachOptions) (0),
 			      (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     
@@ -3503,16 +3491,8 @@ gdm_reread_config (int sig, gpointer data)
 	GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
 	GdmSoundOnLoginReady = ve_config_get_bool (config,
 	                       GDM_KEY_SOUND_ON_LOGIN_READY);
-	GdmSoundOnLoginSuccess = ve_config_get_bool (config,
-	                         GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
-	GdmSoundOnLoginFailure = ve_config_get_bool (config,
-	                         GDM_KEY_SOUND_ON_LOGIN_FAILURE);
 	GdmSoundOnLoginReadyFile = ve_config_get_string (config,
 	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
-	GdmSoundOnLoginSuccessFile = ve_config_get_string (config,
-	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
-	GdmSoundOnLoginFailureFile = ve_config_get_string (config,
-	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
 	GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 	update_clock (NULL);

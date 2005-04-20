@@ -479,7 +479,7 @@
         on an on demand mounted filesystem like AFS, then GDM may mount all
         the home directories just to check for pictures if the face browser is
         on.  GDM will try to give up after 5 seconds of activity however and
-        only display the users whoose pictures it has gotten so far.
+        only display the users whose pictures it has gotten so far.
       </para>
 
       <para>
@@ -640,19 +640,19 @@
       <para>
         The GDM user, and group, which are normally just
         <filename>gdm</filename> should not be user or group of any particular
-        privilage.  The reason for using them is to have the user interface
-        run as a user without privilages so that in the unlikely case that
+        privilege.  The reason for using them is to have the user interface
+        run as a user without privileges so that in the unlikely case that
         someone finds a weakness in the GUI, they cannot access root on the
         machine.
       </para>
 
       <para>
         It should however be noted that the GDM user and group have some
-        privilages that make them somewhat dangerous.  For one they have
+        privileges that make them somewhat dangerous.  For one they have
         access to the server authorization directory (the
         <filename>ServAuthDir</filename>), which contains all the X server
         authorization files and other private information.  This means that
-        someone who gains the GDM user/group privilages can then connect to
+        someone who gains the GDM user/group privileges can then connect to
         any session.  So you should not, under any circumstances, make this
         some user/group which may be easy to get access to, such as the
         user <filename>nobody</filename>.
@@ -1598,7 +1598,7 @@ XKeepsCrashing
                 want to set this to <filename>/tmp</filename> when user has the
                 home directory on NFS, since you really don't want cookie files
                 to go over the wire.  The users should really have write
-                privilages to this directory, and this directory should really
+                privileges to this directory, and this directory should really
                 be sticky and all that, just like the <filename>/tmp</filename>
                 directory.
               </para>
@@ -2692,7 +2692,7 @@ XKeepsCrashing
                 Note that the actions menu is only shown on local logins as it
                 would not be safe or even desirable on remote logins, so you
                 don't have to worry about remote users having any sort of
-                console privilages.
+                console privileges.
               </para>
 
               <para>
@@ -3372,7 +3372,7 @@ Answers:
       <sect3 id="consoleservers">
       <title>CONSOLE_SERVERS</title>
       <screen>
-CONSOLE_SERVERS: List all console servers, useful for linux
+CONSOLE_SERVERS: List all console servers, useful for Linux
                  mostly.  Doesn't list xdmcp and xnest
                  non-console servers
 Supported since: 2.2.4.0
@@ -3384,7 +3384,7 @@ Answers:
 
   &lt;logged in user&gt; can be empty in case no one logged
   in yet, and &lt;vt&gt; can be -1 if it's not known or not
-  supported (on non-linux for example).  If the display is an
+  supported (on non-Linux for example).  If the display is an
   xnest display and is a console one (that is, it is an xnest
   inside another console display) it is listed and instead of
   vt, it lists the parent display in standard form.
@@ -3523,7 +3523,7 @@ Answers:
      SET_SAFE_LOGOUT_ACTION.
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
-     100 = Not authenticanted
+     100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
       </screen>
@@ -3547,7 +3547,7 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      7 = Unknown logout action, or not available
-     100 = Not authenticanted
+     100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
       </screen>
@@ -3561,7 +3561,7 @@ SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend
                          one person logs out, then this is
                          obviously the same as the
                          SET_LOGOUT_ACTION.  Note that
-                         SET_LOGOUT_ACTION has precendence over
+                         SET_LOGOUT_ACTION has precedence over
                          SET_SAFE_LOGOUT_ACTION if it is set to
                          something other then NONE.  If no one
                          is logged in, then the action takes
@@ -3579,7 +3579,7 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      7 = Unknown logout action, or not available
-     100 = Not authenticanted
+     100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
       </screen>
@@ -3603,7 +3603,7 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      8 = Virtual terminals not supported
-     100 = Not authenticanted
+     100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
       </screen>
@@ -3625,7 +3625,7 @@ Answers:
      0 = Not implemented
      8 = Virtual terminals not supported
      9 = Invalid virtual terminal number
-     100 = Not authenticanted
+     100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
       </screen>
@@ -4535,6 +4535,12 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
         </para>
 
         <para>
+          If the item contains an SVG image, you can specify width and height
+	  to be "scale" to mean that the SVG image should be scaled to fit
+	  the requested area.
+        </para>
+
+        <para>
           You can also specify an "expand" property to either be "true" or
           false.  If true then the child will be expanded in the box as much
           as possible (that is it will be given more space if available).
@@ -4922,6 +4928,17 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              instance, when using the Screen Reader in speech mode) on some
              operating systems, the gdm user must be made a member of the
              "audio" group
+             </para>
+     </sect2>
+       <sect2 id="accessibilitysound">
+          <title>Accessibility Login Sound Configuration</title>
+             <para>
+             By default, gdm requires a media application such as "sox" to be 
+             present to play login sounds.  GDM defaults the location of this
+             application to <filename>/usr/bin/play</filename> by way of the
+             SoundProgram configuration option in <filename>gdm.conf</filename>.
+             This value can be changed by modifying the value in the
+             <filename>gdm.conf</filename> file.
              </para>
      </sect2>
   </sect1>

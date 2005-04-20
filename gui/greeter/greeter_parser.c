@@ -253,6 +253,8 @@ parse_pos (xmlNodePtr       node,
     {
       if (strcmp (prop, "box") == 0)
 	info->width_type = GREETER_ITEM_SIZE_BOX;
+      else if (strcmp (prop, "scale") == 0)
+       info->width_type = GREETER_ITEM_SIZE_SCALE;
       else
 	{
 	  info->width = g_ascii_strtod (prop, &p);
@@ -280,6 +282,8 @@ parse_pos (xmlNodePtr       node,
     {
       if (strcmp (prop, "box") == 0)
 	info->height_type = GREETER_ITEM_SIZE_BOX;
+      else if (strcmp (prop, "scale") == 0)
+       info->height_type = GREETER_ITEM_SIZE_SCALE;
       else
 	{
 	  info->height = g_ascii_strtod (prop, &p);

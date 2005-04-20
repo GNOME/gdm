@@ -211,7 +211,9 @@ gboolean GdmVTAllocation = TRUE;
 gboolean GdmDisallowTCP = TRUE;
 gchar *GdmSoundProgram = NULL;
 gchar *GdmSoundOnLoginReadyFile = NULL;
+gboolean GdmSoundOnLoginSuccess = FALSE;
 gchar *GdmSoundOnLoginSuccessFile = NULL;
+gboolean GdmSoundOnLoginFailure = FALSE;
 gchar *GdmSoundOnLoginFailureFile = NULL;
 gchar *GdmConsoleCannotHandle = NULL;
 
@@ -449,8 +451,12 @@ gdm_config_parse (void)
     GdmSoundProgram = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
     GdmSoundOnLoginReadyFile = ve_config_get_string (cfg,
 	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+    GdmSoundOnLoginSuccess = ve_config_get_bool (cfg,
+	                           GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
     GdmSoundOnLoginSuccessFile = ve_config_get_string (cfg,
 	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+    GdmSoundOnLoginFailure = ve_config_get_bool (cfg,
+	                           GDM_KEY_SOUND_ON_LOGIN_FAILURE);
     GdmSoundOnLoginFailureFile = ve_config_get_string (cfg,
 	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
@@ -2782,13 +2788,10 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->socket_conn = NULL;
 
 			if (conn != NULL) {
-				char *msg = g_strdup_printf
-					("OK %s\n", d->name);
 				gdm_connection_set_close_notify (conn,
 								 NULL, NULL);
-				if ( ! gdm_connection_write (conn, msg))
+				if ( ! gdm_connection_printf (conn, "OK %s\n", d->name))
 					gdm_display_unmanage (d);
-				g_free (msg);
 			}
 			
 			gdm_debug ("Got FLEXI_OK");
@@ -3753,64 +3756,69 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_free (dispname);
 		g_free (xauthfile);
 	} else if (strcmp (msg, GDM_SUP_CONSOLE_SERVERS) == 0) {
+                GString *msg;
 		GSList *li;
 		const char *sep = " ";
-		gdm_connection_write (conn, "OK");
+
+		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
 			if ( ! disp->console)
 				continue;
-			gdm_connection_printf (conn,
-					       "%s%s,%s,",
-					       sep,
+			g_string_append_printf (msg, "%s%s,%s,", sep,
 					       ve_sure_string (disp->name),
 					       ve_sure_string (disp->login));
 			sep = ";";
 			if (disp->type == TYPE_FLEXI_XNEST) {
-				gdm_connection_write
-					(conn,
+				g_string_append (msg, 
 					 ve_sure_string (disp->xnest_disp));
 			} else {
-				gdm_connection_printf (conn, "%d",
-						       disp->vt);
+				g_string_append_printf (msg, "%d", disp->vt);
 			}
 		}
-		gdm_connection_write (conn, "\n");
+		g_string_append (msg, "\n");
+		gdm_connection_write (conn, msg->str);
+		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_ALL_SERVERS) == 0) {
+		GString *msg;
 		GSList *li;
 		const char *sep = " ";
-		gdm_connection_write (conn, "OK");
+
+		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
-			gdm_connection_printf (conn,
-					       "%s%s,%s",
-					       sep,
+			g_string_append_printf (msg, "%s%s,%s", sep,
 					       ve_sure_string (disp->name),
 					       ve_sure_string (disp->login));
 			sep = ";";
 		}
-		gdm_connection_write (conn, "\n");
+		g_string_append (msg, "\n");
+		gdm_connection_write (conn, msg->str);
+		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
+		GString *msg;
 		GSList *li;
 		const char *sep = " ";
-		gdm_connection_write (conn, "OK");
+
+		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
 			if (disp->greetpid > 0) {
-				gdm_connection_printf (conn, "%s%ld",
+				g_string_append_printf (msg, "%s%ld",
 						       sep, (long)disp->greetpid);
 				sep = ";";
 			}
 		}
-		gdm_connection_write (conn, "\n");
+		g_string_append (msg, "\n");
+		gdm_connection_write (conn, msg->str);
+		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_UPDATE_CONFIG " ",
 		     strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
 		const char *key = 
 			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
 
 		if ( ! update_config (key)) {
-			char *msg = g_strdup_printf ("ERROR 50 Unsupported key <%s>\n", key);
-			gdm_connection_write (conn, msg);
+			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
 		} else {
 			gdm_connection_write (conn, "OK\n");
 		}
@@ -3826,16 +3834,15 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		val = ve_config_get_string (cfg, key);
 
 		if (val == NULL) {
-			char *msg = g_strdup_printf ("ERROR 50 Unsupported key <%s>\n", key);
-			gdm_connection_write (conn, msg);
+			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
 		} else {
-			char *msg = g_strdup_printf ("OK %s\n", val);
-			gdm_connection_write (conn, msg);
+			gdm_connection_printf (conn, "OK %s\n", val);
 		}
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
 		const char *sep = " ";
 		GdmDisplay *disp;
 		GdmLogoutAction logout_action;
+		GString *msg;
 
 		disp = gdm_connection_get_display (conn);
 
@@ -3850,7 +3857,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		}
 
-		gdm_connection_write (conn, "OK");
+		msg = g_string_new ("OK");
 
 		logout_action = disp->logout_action;
 		if (logout_action == GDM_LOGOUT_ACTION_NONE)
@@ -3859,34 +3866,30 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (GdmSystemMenu &&
 		    disp->console &&
 		    ! ve_string_empty (GdmHaltReal)) {
-			gdm_connection_printf (conn, "%s%s",
-					       sep,
-					       GDM_SUP_LOGOUT_ACTION_HALT);
+			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_HALT);
 			if (logout_action == GDM_LOGOUT_ACTION_HALT)
-				gdm_connection_write (conn, "!");
+				g_string_append (msg, "!");
 			sep = ";";
 		}
 		if (GdmSystemMenu &&
 		    disp->console &&
 		    ! ve_string_empty (GdmRebootReal)) {
-			gdm_connection_printf (conn, "%s%s",
-					       sep,
-					       GDM_SUP_LOGOUT_ACTION_REBOOT);
+			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_REBOOT);
 			if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
-				gdm_connection_write (conn, "!");
+				g_string_append (msg, "!");
 			sep = ";";
 		}
 		if (GdmSystemMenu &&
 		    disp->console &&
 		    ! ve_string_empty (GdmSuspendReal)) {
-			gdm_connection_printf (conn, "%s%s",
-					       sep,
-					       GDM_SUP_LOGOUT_ACTION_SUSPEND);
+			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
 			if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
-				gdm_connection_write (conn, "!");
+				g_string_append (msg, "!");
 			sep = ";";
 		}
-		gdm_connection_write (conn, "\n");
+		g_string_append (msg, "\n");
+		gdm_connection_write (conn, msg->str);
+		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_SET_LOGOUT_ACTION " ",
 		     strlen (GDM_SUP_SET_LOGOUT_ACTION " ")) == 0) {
 		const char *action = 

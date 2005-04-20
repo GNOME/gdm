@@ -172,11 +172,7 @@ static gchar *GdmMulticastAddr;
 /* */  gchar *GdmInfoMsgFont;
 /* */  gchar *GdmSoundProgram;
 /* */  gboolean GdmSoundOnLoginReady;
-/* */  gboolean GdmSoundOnLoginSuccess;
-/* */  gboolean GdmSoundOnLoginFailure;
 /* */  gchar *GdmSoundOnLoginReadyFile;
-/* */  gchar *GdmSoundOnLoginSuccessFile;
-/* */  gchar *GdmSoundOnLoginFailureFile;
 /* */  void
 /* */  gdm_kill_thingies (void)
 /* */  {

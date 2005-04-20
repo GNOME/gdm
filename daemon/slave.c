@@ -185,7 +185,9 @@ extern gboolean GdmDebug;
 extern gboolean GdmDisallowTCP;
 extern gchar *GdmSoundProgram;
 extern gchar *GdmSoundOnLoginReadyFile;
+extern gboolean GdmSoundOnLoginSuccess;
 extern gchar *GdmSoundOnLoginSuccessFile;
+extern gboolean GdmSoundOnLoginFailure;
 extern gchar *GdmSoundOnLoginFailureFile;
 
 
@@ -1750,6 +1752,41 @@ restart_the_greeter (void)
 	gdm_slave_sensitize_config ();
 }
 
+static gboolean
+play_login_sound (const char *sound_file)
+{
+	pid_t pid;
+
+	if (ve_string_empty (GdmSoundProgram) ||
+	    ve_string_empty (sound_file) ||
+	    access (GdmSoundProgram, X_OK) != 0 ||
+	    access (sound_file, F_OK) != 0)
+		return FALSE;
+
+	gdm_sigchld_block_push ();
+	gdm_sigterm_block_push ();
+
+	pid = fork ();
+	if (pid == 0)
+		gdm_unset_signals ();
+
+	gdm_sigterm_block_pop ();
+	gdm_sigchld_block_pop ();
+
+	if (pid == 0) {
+		setsid ();
+		seteuid (0);
+		setegid (0);
+		execl (GdmSoundProgram,
+		       GdmSoundProgram,
+		       sound_file,
+		       NULL);
+		_exit (0);
+	}
+
+	return TRUE;
+}
+
 static void
 gdm_slave_wait_for_login (void)
 {
@@ -1935,37 +1972,12 @@ gdm_slave_wait_for_login (void)
 			gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 
-			/* Play sounds if specified for a failed login*/
+			/* Play sounds if specified for a failed login */
 			if (d->console &&
-			    ! G_UNLIKELY (do_configurator) &&
-			    ! ve_string_empty (GdmSoundProgram) &&
-			    ! ve_string_empty (GdmSoundOnLoginFailureFile) &&
-			    access (GdmSoundProgram, X_OK) == 0 &&
-			    access (GdmSoundOnLoginFailureFile, F_OK) == 0) {
-
-				pid_t pid;
-
-				gdm_sigchld_block_push ();
-				gdm_sigterm_block_push ();
-				pid = fork ();
-				if (pid == 0)
-					gdm_unset_signals ();
-				gdm_sigterm_block_pop ();
-				gdm_sigchld_block_pop ();
-
-				if (pid == 0) {
-					setsid ();
-					seteuid (0);
-					setegid (0);
-					execl (GdmSoundProgram,
-					       GdmSoundProgram,
-					       GdmSoundOnLoginFailureFile,
-					       NULL);
-
-					_exit (0);
-				}
-			} else if (! G_UNLIKELY (do_configurator)) {
-				gdm_error (_("Login sound requested on non-local display or the play software cannot be run or the sound does not exist."));
+			    GdmSoundOnLoginFailure &&
+			    ! play_login_sound (GdmSoundOnLoginFailureFile)) {
+				gdm_error (_("Login sound requested on non-local display or the play "
+					     "software cannot be run or the sound does not exist."));
 			}
 		}
 	}
@@ -1984,34 +1996,11 @@ gdm_slave_wait_for_login (void)
 
 	/* Play sounds if specified for a successful login */
 	if (login != NULL &&
-		d->console &&
-		! ve_string_empty (GdmSoundProgram) &&
-		! ve_string_empty (GdmSoundOnLoginSuccessFile) &&
-		access (GdmSoundProgram, X_OK) == 0 &&
-		access (GdmSoundOnLoginSuccessFile, F_OK) == 0) {
-
-		pid_t pid;
-
-		gdm_sigchld_block_push ();
-		gdm_sigterm_block_push ();
-		pid = fork ();
-		if (pid == 0)
-			gdm_unset_signals ();
-		gdm_sigterm_block_pop ();
-		gdm_sigchld_block_pop ();
-		if (pid == 0) {
-			setsid ();
-			seteuid (0);
-			setegid (0);
-			execl (GdmSoundProgram,
-			       GdmSoundProgram,
-			       GdmSoundOnLoginSuccessFile,
-			       NULL);
-
-			_exit (0);
-		}
-	} else if (! G_UNLIKELY (do_configurator)) {
-		gdm_error (_("Login sound requested on non-local display or the play software cannot be run or the sound does not exist."));
+	    d->console &&
+	    GdmSoundOnLoginSuccess &&
+	    ! play_login_sound (GdmSoundOnLoginSuccessFile)) {
+		gdm_error (_("Login sound requested on non-local display or the play software "
+			     "cannot be run or the sound does not exist."));
 	}
 
 	gdm_debug ("gdm_slave_wait_for_login: got_login for '%s'",
@@ -4920,33 +4909,9 @@ check_for_interruption (const char *msg)
 			return TRUE;
 		case GDM_INTERRUPT_LOGIN_SOUND:
 			if (d->console &&
-			    ! ve_string_empty (GdmSoundProgram) &&
-			    ! ve_string_empty (GdmSoundOnLoginReadyFile) &&
-			    access (GdmSoundProgram, X_OK) == 0 &&
-			    access (GdmSoundOnLoginReadyFile, F_OK) == 0) {
-				pid_t pid;
-
-				gdm_sigchld_block_push ();
-				gdm_sigterm_block_push ();
-				pid = fork ();
-				if (pid == 0)
-					gdm_unset_signals ();
-				gdm_sigterm_block_pop ();
-				gdm_sigchld_block_pop ();
-
-				if (pid == 0) {
-					setsid ();
-					seteuid (0);
-					setegid (0);
-					execl (GdmSoundProgram,
-					       GdmSoundProgram,
-					       GdmSoundOnLoginReadyFile,
-					       NULL);
-
-					_exit (0);
-				}
-			} else {
-				gdm_error (_("Login sound requested on non-local display or the play software cannot be run or the sound does not exist"));
+			    ! play_login_sound (GdmSoundOnLoginReadyFile)) {
+				gdm_error (_("Login sound requested on non-local display or the play software "
+					     "cannot be run or the sound does not exist"));
 			}
 			return TRUE;
 		case GDM_INTERRUPT_SELECT_USER:

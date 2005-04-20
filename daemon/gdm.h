@@ -265,8 +265,8 @@ enum {
 #define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="
 
 #define GDM_KEY_SOUND_ON_LOGIN_READY "greeter/SoundOnLogin=true"
-#define GDM_KEY_SOUND_ON_LOGIN_SUCCESS "greeter/SoundOnLoginSuccess=true"
-#define GDM_KEY_SOUND_ON_LOGIN_FAILURE "greeter/SoundOnLoginFailure=true"
+#define GDM_KEY_SOUND_ON_LOGIN_SUCCESS "greeter/SoundOnLoginSuccess=false"
+#define GDM_KEY_SOUND_ON_LOGIN_FAILURE "greeter/SoundOnLoginFailure=false"
 #define GDM_KEY_SOUND_ON_LOGIN_READY_FILE "greeter/SoundOnLoginFile="
 #define GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE "greeter/SoundOnLoginSuccessFile="
 #define GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE "greeter/SoundOnLoginFailureFile="
@@ -535,7 +535,7 @@ void		gdm_final_cleanup	(void);
 /* if user already logged in somewhere, the ack response will be
    <display>,<vt>,<display>,<vt>,... */
 #define GDM_SOP_DISP_NUM     "DISP_NUM" /* <slave pid> <display as int> */
-/* For linux only currently */
+/* For Linux only currently */
 #define GDM_SOP_VT_NUM       "VT_NUM" /* <slave pid> <vt as int> */
 #define GDM_SOP_FLEXI_ERR    "FLEXI_ERR" /* <slave pid> <error num> */
 	/* 3 = X failed */
@@ -708,7 +708,7 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS" /* None */
-/* CONSOLE_SERVERS: List all console servers, useful for linux mostly
+/* CONSOLE_SERVERS: List all console servers, useful for Linux mostly
  *  Doesn't list xdmcp and xnest non-console servers
  * Supported since: 2.2.4.0
  * Arguments:  None
@@ -718,7 +718,7 @@ void		gdm_final_cleanup	(void);
  *   <server> is <display>,<logged in user>,<vt or xnest display>
  *
  *   <logged in user> can be empty in case no one logged in yet,
- *   and <vt> can be -1 if it's not known or not supported (on non-linux
+ *   and <vt> can be -1 if it's not known or not supported (on non-Linux
  *   for example).  If the display is an xnest display and is a console one
  *   (that is, it is an xnest inside another console display) it is listed
  *   and instead of vt, it lists the parent display in standard form.
@@ -831,7 +831,7 @@ void		gdm_final_cleanup	(void);
  *      over SET_SAFE_LOGOUT_ACTION.
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
- *      100 = Not authenticanted
+ *      100 = Not authenticated
  *      200 = Too many messages
  *      999 = Unknown error
  */
@@ -851,7 +851,7 @@ void		gdm_final_cleanup	(void);
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      7 = Unknown logout action, or not available
- *      100 = Not authenticanted
+ *      100 = Not authenticated
  *      200 = Too many messages
  *      999 = Unknown error
  */
@@ -875,7 +875,7 @@ void		gdm_final_cleanup	(void);
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      7 = Unknown logout action, or not available
- *      100 = Not authenticanted
+ *      100 = Not authenticated
  *      200 = Too many messages
  *      999 = Unknown error
  */
@@ -899,7 +899,7 @@ void		gdm_final_cleanup	(void);
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      8 = Virtual terminals not supported
- *      100 = Not authenticanted
+ *      100 = Not authenticated
  *      200 = Too many messages
  *      999 = Unknown error
  */
@@ -917,7 +917,7 @@ void		gdm_final_cleanup	(void);
  *      0 = Not implemented
  *      8 = Virtual terminals not supported
  *      9 = Invalid virtual terminal number
- *      100 = Not authenticanted
+ *      100 = Not authenticated
  *      200 = Too many messages
  *      999 = Unknown error
  */

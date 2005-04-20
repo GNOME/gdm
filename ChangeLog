@@ -1,3 +1,47 @@
+2005-04-19  Brian Cameron  <brian.cameron@sun.com>
+
+	* config/gdm.conf.in, daemon/gdm.[ch], daemon/slave.c,
+	  gui/gdmchooser.c, giu/gdmlogin.c:  Cleanup for
+	  login success/failure sounds.  Patch provided by
+	  Mark McLoughlin.  Refer to bug #300136.
+	* daemon/gdm.c: Fix FlexiServer commands so that all
+	  output for a single command is sent as a single call
+	  to gdm_connection_write or gdm_connection_printf
+	  rather than building commands and sending them out
+	  in pieces.  Also use gdm_connection_printf rather
+	  than building so many temporary strings.  Patch
+	  provided by for GDM_SUP_QUERY_LOGOUT_ACTION, but
+	  I reworked the patch so the same technique is used
+	  for all gdmflexiserver commands.  Fixes bug 
+	  #158799.  Patch based on one provided by Raffaele
+	  Sandrini <rasa@gmx.ch>
+	* gui/greeter/greeter_geometry.c,
+	  gui/greeter/greeter_item.h,
+	  gui/greeter/greeter_parser.c, docs/C/gdm.xml:  Now
+	  support ratio scaling of SVG images.  Docs weren't
+	  provided with the patch so I added some.  Patch
+	  provided by.  Fixes bug 159524.  Patch provided by
+	  Vincent Untz <vincent@vuntz.net>.
+	* gui/gdmlogin.c: Rearrange how the widgets are
+	  organized to make it look a bit better now that
+	  the message fields have sizes defined to avoid gdm2
+	  resizing.  Bit more of a fix for bug #117779.
+	* README.install: Spell corrections and minor updates,
+	  now mention that running configure with the option
+	  --with-post-path=/usr/openwin/bin is recommended
+	  on Solaris.
+	* MAINTAINERS, AUTHORS, NEWS, docs/C/gdm.xml, 
+	  daemon/gdm.h: Fixed spelling,	added contributors
+	  to AUTHORS file for patches made in the past
+	  few months.
+	* docs/C/gdm.xml: Fixed bug 300138 by providing
+	  better sound docs in the a11y section.  Fixes
+	  bug #300138.  Patch provided by Andrew Case.
+	* gui/gdmsetup.glade, gui/gdmsetup-strings.c: Removed
+	  strings "sdfg" and "asdf" since they can't be
+	  translated.  Fixes bug #301211.
+	* gui/gdmchooser.c: Removed needless comment.
+
 2005-04-18  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.[ch], daemon/slave.c, docs/C/gdm.xml,

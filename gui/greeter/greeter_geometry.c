@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
 #include "gdmwm.h"
 #include "greeter_geometry.h"
 #include "greeter_canvas_item.h"
@@ -485,6 +486,7 @@ greeter_item_size_request (GreeterItemInfo *item,
     case GREETER_ITEM_SIZE_BOX:
       set_width = box_requisition.width;
       break;
+    case GREETER_ITEM_SIZE_SCALE:
     case GREETER_ITEM_SIZE_UNSET:
       break;
     }
@@ -500,6 +502,7 @@ greeter_item_size_request (GreeterItemInfo *item,
     case GREETER_ITEM_SIZE_BOX:
       set_height = box_requisition.height;
       break;
+    case GREETER_ITEM_SIZE_SCALE:
     case GREETER_ITEM_SIZE_UNSET:
       break;
     }
@@ -545,6 +548,24 @@ greeter_item_size_request (GreeterItemInfo *item,
     {
       req->width = gdk_pixbuf_get_width (item->data.pixmap.pixbufs[0]);
       req->height = gdk_pixbuf_get_height (item->data.pixmap.pixbufs[0]);
+    }
+
+  if (item->item_type == GREETER_ITEM_TYPE_SVG)
+    {
+      GdkPixbuf *svg;
+
+      svg = rsvg_pixbuf_from_file (item->data.pixmap.files[0], NULL);
+      req->width = gdk_pixbuf_get_width (svg);
+      req->height = gdk_pixbuf_get_height (svg);
+      g_object_unref (svg);
+    }
+ 
+  if (req->width > 0 && req->height > 0)
+    {
+      if (item->width_type == GREETER_ITEM_SIZE_SCALE && set_height > 0)
+        set_width = (req->width * set_height) / req->height;
+      else if (item->height_type == GREETER_ITEM_SIZE_SCALE && set_width > 0)
+        set_height = (req->height * set_width) / req->width;
     }
   
   if (set_width > 0)

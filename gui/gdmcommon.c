@@ -238,7 +238,6 @@ gdm_common_int_same (VeConfig *config, int cur, const char *key)
 	}
 }
 
-/* TODO: make for each sound */
 void
 gdm_common_login_sound (void)
 {

@@ -55,7 +55,8 @@ enum _GreeterItemSizeType {
   GREETER_ITEM_SIZE_UNSET,
   GREETER_ITEM_SIZE_ABSOLUTE,
   GREETER_ITEM_SIZE_RELATIVE,
-  GREETER_ITEM_SIZE_BOX
+  GREETER_ITEM_SIZE_BOX,
+  GREETER_ITEM_SIZE_SCALE
 };
 
 /* Make sure to adjust the bitfield in the structure if
@@ -89,8 +90,8 @@ struct _GreeterItemInfo {
   float height;
   GreeterItemPosType x_type:2;
   GreeterItemPosType y_type:2;
-  GreeterItemSizeType width_type:2;
-  GreeterItemSizeType height_type:2;
+  GreeterItemSizeType width_type:4;
+  GreeterItemSizeType height_type:4;
   guint x_negative:1; /* needed for -0 */
   guint y_negative:1; /* needed for -0 */
 

@@ -23,12 +23,12 @@ proper operation!  This userid is used to run the GDM GUI programs
 required for login.  All functionality that requires root authority
 is done by the GDM daemon process.  This design ensures that if the
 GUI programs are somehow exploited, only the dedicated user 
-privilidges are available.  By default GDM assumes the user and the
+privileges are available.  By default GDM assumes the user and the
 group are called `gdm'.  These are configured via the User and
 Group configuration options in the gdm.conf file.  The user and
 group should be created before running "make install".
 
-Distributions and system admistrators using GDM are expected to
+Distributions and system administrators using GDM are expected to
 setup the dedicated user properly.  It is recommended that this
 userid be configured to disallow login and to not have a default
 shell.  Distributions and system administrators should set up
@@ -48,7 +48,7 @@ user "nobody" is not appropriate for gdm.
 
 If the gdm user is set up properly and gdm user access is somehow
 exploited, this means that the GDM user should only be able to
-malicoiusly modify the Xauth keys causing potential
+maliciously modify the Xauth keys causing potential
 Denial-Of-Service attacks.  If a person gains the ability to run
 programs as the user gdm, it would be possible to snoop on running
 GDM processes, including usernames and passwords as they are
@@ -65,7 +65,7 @@ you run with the debug option all the time.  (Not to mention
 it generates a LOT of spew)
 
 XDMCP is disabled by default since XDMCP can be exploited to
-create Denial-Of-Service attacks if a malicous user sends a
+create Denial-Of-Service attacks if a malicious user sends a
 flood of XDMCP requests to your computer.  It may be enabled
 by setting "enable=true" in the "[xdmcp]" section of the
 gdm.conf file.
@@ -95,7 +95,7 @@ file is located (default is sysconfdir - /etc).
 
 If you want accessibility to work and have AT programs like gok and
 gnopernicus installed to a different directory than EXPANDED_BINDIR,
-then use the --with-at-bindir configure optin.
+then use the --with-at-bindir configure option.
 
 If you want IPv6 enabled, use --enable-ipv6=yes option to configure.
 
@@ -128,6 +128,9 @@ the box.
 
 Solaris
 -------
+
+Configuring GDM with the "--with-post-path=/usr/openwin/bin" on Solaris
+is recommended.
 
 GDM includes code to integrate with /etc/logindevperm and Solaris audit API's.
 These interfaces are only supported on Solaris 10 and higher.  GDM should not
