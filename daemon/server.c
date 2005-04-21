@@ -1274,8 +1274,6 @@ gdm_server_usr1_handler (gint sig)
     d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
     d->starttime = time (NULL);
 
-    gdm_debug ("gdm_server_usr1_handler: Got SIGUSR1, server running");
-
     server_signal_notified = TRUE;
     /* this will quit the select */
     VE_IGNORE_EINTR (write (server_signal_pipe[1], "Yay!", 4));
@@ -1295,8 +1293,6 @@ static void
 gdm_server_child_handler (int signal)
 {
 	gdm_in_signal++;
-
-	gdm_debug ("gdm_server_child_handler: Got SIGCHLD");
 
 	/* go to the main child handler */
 	gdm_slave_child_handler (signal);

@@ -1,3 +1,18 @@
+2005-04-21  Mark McLoughlin  <mark@skynet.ie>
+
+	Don't use gdm_debug() from signal handlers - the message
+	formatting and the syslog() both involve malloc() which
+	isn't safe in signal handlers. Fixes random lockups with
+	debugging enabled.
+
+	* daemon/server.c:
+	(gdm_server_usr1_handler),
+	(gdm_server_child_handler): don't use gdm_debug() here.
+	
+	* daemon/slave.c:
+	(gdm_slave_usr2_handler),
+	(gdm_slave_child_handler): or here.
+
 2005-04-20  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmlanguages.c: For Danish-English use

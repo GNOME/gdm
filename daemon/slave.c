@@ -4592,16 +4592,12 @@ gdm_slave_child_handler (int sig)
 
     gdm_in_signal++;
 
-    gdm_debug ("gdm_slave_child_handler");
-
     old = geteuid ();
     if (old != 0)
 	    seteuid (0);
     
     while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
         GSList *li;
-
-	gdm_debug ("gdm_slave_child_handler: %d died", pid);
 
 	for (li = slave_waitpids; li != NULL; li = li->next) {
 		GdmWaitPid *wp = li->data;
@@ -4613,13 +4609,6 @@ gdm_slave_child_handler (int sig)
 		}
 	}
 	
-	if (WIFEXITED (status))
-	    gdm_debug ("gdm_slave_child_handler: %d returned %d",
-		       (int)pid, (int)WEXITSTATUS (status));
-	if (WIFSIGNALED (status))
-	    gdm_debug ("gdm_slave_child_handler: %d died of %d",
-		       (int)pid, (int)WTERMSIG (status));
-
 	if (pid == d->greetpid && greet) {
 		if (WIFEXITED (status) &&
 		    WEXITSTATUS (status) == DISPLAY_RESTARTGREETER) {
@@ -4798,8 +4787,6 @@ gdm_slave_usr2_handler (int sig)
 {
 	gdm_in_signal++;
 	in_usr2_signal++;
-
-	gdm_debug ("gdm_slave_usr2_handler: %s got USR2 signal", d->name);
 
 	gdm_slave_handle_usr2_message ();
 
