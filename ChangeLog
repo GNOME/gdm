@@ -1,3 +1,53 @@
+2005-04-22  Mark McLoughlin  <mark@skynet.ie>
+
+	Add the ability to make GDM spawn XDMCP sessions on a local
+	X proxy server. Experimental support for disconnect/reconnect
+	or "session migration" is also implemented using DMX.
+	More details in bug #301602.
+
+	* configure.in: require glib 2.6.0 and check for DMX.
+	
+	* config/gdm.conf.in: add xdmpc/EnableProxy, xdmcp/ProxyXServer
+	and xdmcp/ProxyReconnect config keys.
+
+	* docs/C/gdm.xml: document new config keys.
+
+	* daemon/gdm.h: add TYPE_XDMCP_PROXY server type, add #defines
+	for the new config keys, re-name various xnest related GdmDisplay
+	members to be applicable for all proxy servers, add xdmcp_dispnum
+	GdmDisplay member, modify the format of GDM_SOP_QUERYLOGIN and
+	add GDM_SOP_AUTHFILE and GDM_SOP_MIGRATE.
+
+	* daemon/gdm.c: read the new config keys, change format of what
+	GDM_SOP_QUERYLOGIN returns, implement GDM_SOP_AUTHFILE and 
+	GDM_SOP_MIGRATE.
+
+	* daemon/xdmcp.h: add gdm_xdmcp_migrate.
+
+	* daemon/xdmcp.c: when xdmpc/EnableProxy and xdmcp/ProxyXServer,
+	set things up such that a proxy sever (which displays on the
+	requesting X server) is run locally by the slave.
+	Also implement migrating the proxy server from one parent display
+	to another using the xdmcp/ProxyReconnect command.
+
+	* daemon/server.c: if we're running a proxy server (e.g. Xnest
+	or Xdmx), hold a connection open to the parent display so that
+	it doesn't reset.
+	Run proxy servers with -display rather than setting $DISPLAY.
+
+	* daemon/slave.c:
+	Once we've successfully logged the user in, send SOP_QUERYLOGIN
+	to the slave - if the result from that indicates that the user
+	is already logged in and that session is migratable (e.g. by
+	reconnecting a proxy server or changing the VT), then migrate
+	to the existing session using SOP_MIGRATE.
+	In the case of an Xdmcp proxy, hold open the connection to the
+	parent display so that it doesn't reset. Exit the slave as
+	soon as that connection closes.
+
+	* utils/Makefile.am, utils/gdm-dmx-reconnect-proxy.c: implementation
+	of xdmcp/ProxyReconnect for use with Xdmx.
+	
 2005-04-21  Mark McLoughlin  <mark@skynet.ie>
 
 	Don't use gdm_debug() from signal handlers - the message

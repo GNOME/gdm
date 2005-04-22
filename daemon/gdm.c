@@ -193,6 +193,9 @@ gint  GdmMaxIndirect = 0;
 gint  GdmMaxIndirectWait = 0;
 gint  GdmPingInterval = 0;
 gchar *GdmWilling = NULL;
+gboolean GdmXdmcpProxy = FALSE;
+gchar *GdmXdmcpProxyCommand = NULL;
+gchar *GdmXdmcpProxyReconnect = NULL;
 gboolean  GdmDebug = FALSE;
 gboolean  GdmAllowRoot = FALSE;
 gboolean  GdmAllowRemoteRoot = FALSE;
@@ -420,6 +423,14 @@ gdm_config_parse (void)
     GdmMaxIndirectWait = ve_config_get_int (cfg, GDM_KEY_MAXINDWAIT);    
     GdmPingInterval = ve_config_get_int (cfg, GDM_KEY_PINGINTERVAL);    
     GdmWilling = ve_config_get_string (cfg, GDM_KEY_WILLING);    
+
+    GdmXdmcpProxy = ve_config_get_bool (cfg, GDM_KEY_XDMCP_PROXY);
+    GdmXdmcpProxyCommand = ve_config_get_string (cfg, GDM_KEY_XDMCP_PROXY_XSERVER);
+    if (ve_string_empty (GdmXdmcpProxyCommand))
+	    GdmXdmcpProxyCommand = NULL;
+    GdmXdmcpProxyReconnect = ve_config_get_string (cfg, GDM_KEY_XDMCP_PROXY_RECONNECT);
+    if (ve_string_empty (GdmXdmcpProxyReconnect))
+	    GdmXdmcpProxyReconnect = NULL;
 
     GdmStandardXServer = ve_config_get_string (cfg, GDM_KEY_STANDARD_XSERVER);    
     bin = ve_first_word (GdmStandardXServer);
@@ -982,8 +993,8 @@ gdm_final_cleanup (void)
 	   slaves, we'll wait for them later */
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
-		if (d->type == TYPE_XDMCP ||
-		    d->type == TYPE_FLEXI_XNEST) {
+		if (SERVER_IS_XDMCP (d) ||
+		    SERVER_IS_PROXY (d)) {
 			/* set to DEAD so that we won't kill it again */
 			d->dispstat = DISPLAY_DEAD;
 			if (d->slavepid > 1)
@@ -1000,8 +1011,8 @@ gdm_final_cleanup (void)
 	list = g_slist_reverse (list);
 	for (li = list; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
-		if (d->type == TYPE_XDMCP ||
-		    d->type == TYPE_FLEXI_XNEST)
+		if (SERVER_IS_XDMCP (d) ||
+		    SERVER_IS_PROXY (d))
 			continue;
 		/* HACK! Wait 2 seconds between killing of local servers
 		 * because X is stupid and full of races and will otherwise
@@ -1023,8 +1034,8 @@ gdm_final_cleanup (void)
 	list = g_slist_copy (displays);
 	for (li = list; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
-		if (d->type == TYPE_XDMCP ||
-		    d->type == TYPE_FLEXI_XNEST)
+		if (SERVER_IS_XDMCP (d) ||
+		    SERVER_IS_PROXY (d))
 			gdm_display_unmanage (d);
 	}
 	g_slist_free (list);
@@ -2365,9 +2376,7 @@ write_x_servers (GdmDisplay *d)
 		VE_IGNORE_EINTR (fprintf (fp, "%s local /usr/X11R6/bin/Xbogus\n", buf));
 	}
 
-	if (d->type == TYPE_XDMCP) {
-		VE_IGNORE_EINTR (fprintf (fp, "%s foreign\n", d->name));
-	} else {
+	if (SERVER_IS_LOCAL (d)) {
 		char **argv;
 		char *command;
 		argv = gdm_server_resolve_command_line
@@ -2377,6 +2386,8 @@ write_x_servers (GdmDisplay *d)
 		g_strfreev (argv);
 		VE_IGNORE_EINTR (fprintf (fp, "%s local %s\n", d->name, command));
 		g_free (command);
+	} else {
+		VE_IGNORE_EINTR (fprintf (fp, "%s foreign\n", d->name));
 	}
 
 	/* FIXME: What about out of disk space errors? */
@@ -2689,13 +2700,23 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				if (di->logged_in &&
 				    di->login != NULL &&
 				    strcmp (di->login, p) == 0) {
-					if (resp == NULL) {
-						resp = g_string_new (di->name);
-						g_string_append_printf (resp, ",%d", di->vt);
-					} else {
-						g_string_append_printf (resp, ",%s,%d",
-									di->name, di->vt);
-					}
+					gboolean migratable = FALSE;
+
+					if (resp == NULL)
+						resp = g_string_new (NULL);
+					else
+						resp = g_string_append_c (resp, ',');
+
+					g_string_append (resp, di->name);
+					g_string_append_c (resp, ',');
+
+					if (d->console && di->console && di->vt > 0)
+						migratable = TRUE;
+					else if (GdmXdmcpProxyReconnect != NULL &&
+						 d->type == TYPE_XDMCP_PROXY && di->type == TYPE_XDMCP_PROXY)
+						migratable = TRUE;
+
+					g_string_append_c (resp, migratable ? '1' : '0');
 				}
 			}
 
@@ -2707,6 +2728,39 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				send_slave_ack (d, NULL);
 			}
 		}
+	} else if (strncmp (msg, GDM_SOP_MIGRATE " ",
+		            strlen (GDM_SOP_MIGRATE " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		char *p;
+		GSList *li;
+
+		if (sscanf (msg, GDM_SOP_MIGRATE " %ld", &slave_pid) != 1)
+			return;
+		p = strchr (msg, ' ');
+		if (p != NULL)
+			p = strchr (p+1, ' ');
+		if (p == NULL)
+			return;
+
+		p++;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+		if (d == NULL)
+			return;
+
+		gdm_debug ("Got MIGRATE %s", p);
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *di = li->data;
+			if (di->logged_in && strcmp (di->name, p) == 0) {
+				if (d->console && di->vt > 0)
+					gdm_change_vt (di->vt);
+				else if (d->type == TYPE_XDMCP_PROXY && di->type == TYPE_XDMCP_PROXY)
+					gdm_xdmcp_migrate (d, di);
+			}
+		}
+		send_slave_ack (d, NULL);
 	} else if (strncmp (msg, GDM_SOP_COOKIE " ",
 		            strlen (GDM_SOP_COOKIE " ")) == 0) {
 		GdmDisplay *d;
@@ -2731,6 +2785,33 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			g_free (d->cookie);
 			d->cookie = g_strdup (p);
 			gdm_debug ("Got COOKIE == <secret>");
+			/* send ack */
+			send_slave_ack (d, NULL);
+		}
+	} else if (strncmp (msg, GDM_SOP_AUTHFILE " ",
+		            strlen (GDM_SOP_AUTHFILE " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		char *p;
+
+		if (sscanf (msg, GDM_SOP_AUTHFILE " %ld",
+			    &slave_pid) != 1)
+			return;
+		p = strchr (msg, ' ');
+		if (p != NULL)
+			p = strchr (p+1, ' ');
+		if (p == NULL)
+			return;
+
+		p++;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			g_free (d->authfile);
+			d->authfile = g_strdup (p);
+			gdm_debug ("Got AUTHFILE == %s", d->authfile);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -3268,8 +3349,8 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 
 	display->type = type;
 	display->socket_conn = conn;
-	display->xnest_disp = g_strdup (xnest_disp);
-	display->xnest_auth_file = g_strdup (xnest_auth_file);
+	display->parent_disp = g_strdup (xnest_disp);
+	display->parent_auth_file = g_strdup (xnest_auth_file);
 	if (conn != NULL)
 		gdm_connection_set_close_notify (conn, display, close_conn);
 	displays = g_slist_append (displays, display);
@@ -3771,7 +3852,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			sep = ";";
 			if (disp->type == TYPE_FLEXI_XNEST) {
 				g_string_append (msg, 
-					 ve_sure_string (disp->xnest_disp));
+					 ve_sure_string (disp->parent_disp));
 			} else {
 				g_string_append_printf (msg, "%d", disp->vt);
 			}

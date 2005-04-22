@@ -1919,6 +1919,29 @@ XKeepsCrashing
           </varlistentry>
           
           <varlistentry>
+            <term>EnableProxy</term>
+            <listitem>
+              <synopsis>EnableProxy=false</synopsis>
+              <para>
+                Setting this to true enables support for running XDMCP sessions
+                on a local proxy X server. This may improve the performance of
+                XDMCP sessions, especially on high latency networks, as many
+                X protocol operations can be completed without going over the
+                network.
+              </para>
+              <para>
+                Note, however, that this mode will significantly increase the
+                burden on the server hosting the XDMCP sessions
+              </para>
+              <para>
+                See the <filename>FlexiProxy</filename> and
+                <filename>FlexiProxyDisconnect</filename> options for further
+                 details on how to configure support for this feature.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>HonorIndirect</term>
             <listitem>
               <synopsis>HonorIndirect=true</synopsis>
@@ -2045,6 +2068,42 @@ XKeepsCrashing
                 XDMCP would be used (such as terminal labs), a lag of more
                 than 15 or so seconds would really mean that the terminal was
                 turned off or rebooted and you would want to end the session.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ProxyReconnect</term>
+            <listitem>
+              <synopsis>FlexiProxyReconnect=</synopsis>
+              <para>
+                Setting this option enables experimental support for session
+                migration with XDMCP sessions. This enables users to disconnect
+                from their session and later reconnect to that same session,
+                possibly from a different terminal.
+              </para>
+              <para>
+                In order to use this feature, you must have a nested X server
+                available which supports disconnecting from its parent X server
+                and reconnecting to another X server. Currently, the Distributed
+                Multihead X (DMX) server supports this feature to some extent
+                and other projects like NoMachine NX are busy implementing it.
+              </para>
+              <para>
+                This option should be set to the path of a command which will
+                handle reconnecting the XDMCP proxy to another backend display.
+                A sample implementation for use with DMX is supplied.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ProxyXServer</term>
+            <listitem>
+              <synopsis>ProxyXServer=</synopsis>
+              <para>
+                The X server command line for a XDMCP proxy. Any nested X server
+                like Xnest, Xephr or Xdmx should work fairly well.
               </para>
             </listitem>
           </varlistentry>

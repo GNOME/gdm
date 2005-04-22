@@ -121,6 +121,7 @@ static gboolean initted = FALSE;
 extern GSList *displays;
 extern gint xdmcp_pending;
 extern gint xdmcp_sessions;
+extern uid_t GdmUserId;
 extern gchar *GdmLogDir;
 extern gchar *GdmServAuthDir;
 
@@ -137,6 +138,11 @@ extern gboolean GdmAllowRemoteAutoLogin;
 extern gchar *GdmWilling;	/* The willing script */
 
 extern gboolean GdmXdmcp;	/* xdmcp enabled */
+
+extern gboolean GdmXdmcpProxy;        /* Proxy X server enabled */
+extern gchar *GdmXdmcpProxyCommand;   /* Proxy X server command */
+extern gchar *GdmXdmcpProxyReconnect; /* Proxy reconnect command */
+
 
 extern gboolean GdmDebug;	/* debug enabled */
 
@@ -227,7 +233,7 @@ static void gdm_xdmcp_whack_queued_managed_forwards (struct sockaddr_in *clnt_sa
 static void gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
 						struct in_addr *origin);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
-static void gdm_xdmcp_display_dispose_check (const gchar *name);
+static void gdm_xdmcp_display_dispose_check (const gchar *hostname, int dspnum);
 static void gdm_xdmcp_displays_check (void);
 static void gdm_forward_query_dispose (GdmForwardQuery *q);
 
@@ -298,7 +304,7 @@ gdm_xdmcp_displays_from_host (struct sockaddr_in *addr)
 
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *disp = li->data;
-		if (disp->type == TYPE_XDMCP) { 
+		if (SERVER_IS_XDMCP (disp)) {
 #ifdef ENABLE_IPV6
 		    if (disp->addrtype == AF_INET6 &&
 			memcmp (&disp->addr6, &((struct sockaddr_in6 *)addr)->sin6_addr, sizeof (struct in6_addr)) == 0)
@@ -325,15 +331,15 @@ gdm_xdmcp_display_lookup_by_host (struct sockaddr_in *addr, int dspnum)
 
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *disp = li->data;
-		if (disp->type == TYPE_XDMCP) {
+		if (SERVER_IS_XDMCP (disp)) {
 #ifdef ENABLE_IPV6
 		    if (disp->addrtype == AF_INET6) {
-			if ((memcmp (&disp->addr6, &((struct sockaddr_in6 *)addr)->sin6_addr, sizeof (struct in6_addr)) == 0) && disp->dispnum == dspnum)
+			if ((memcmp (&disp->addr6, &((struct sockaddr_in6 *)addr)->sin6_addr, sizeof (struct in6_addr)) == 0) && disp->xdmcp_dispnum == dspnum)
 			return disp;
 		    }
 		    else
 #endif
-		    if ((memcmp (&disp->addr, &((struct sockaddr_in *)addr)->sin_addr, sizeof (struct in_addr)) == 0) && disp->dispnum == dspnum)
+		    if ((memcmp (&disp->addr, &((struct sockaddr_in *)addr)->sin_addr, sizeof (struct in_addr)) == 0) && disp->xdmcp_dispnum == dspnum)
 			return disp;
 		}
 	}
@@ -1757,14 +1763,11 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	}
 
 	if (entered) {
-	    char *disp;
 	    GdmHostent *he;
 		he = gdm_gethostbyaddr (clnt_sa);
-	    disp = g_strdup_printf ("%s:%d", he->hostname, clnt_dspnum);
 
 	    /* Check if we are already talking to this host */
-	    gdm_xdmcp_display_dispose_check (disp);
-	    g_free (disp);
+	    gdm_xdmcp_display_dispose_check (he->hostname, clnt_dspnum);
 
 	    if (xdmcp_pending >= GdmMaxPending) {
 		    gdm_debug ("gdm_xdmcp_handle_request: maximum pending");
@@ -2537,17 +2540,24 @@ gdm_xdmcp_display_alloc (
     GdmDisplay *d = NULL;
     
     d = g_new0 (GdmDisplay, 1);
+
+    if (GdmXdmcpProxy && GdmXdmcpProxyCommand != NULL) {
+	    d->type = TYPE_XDMCP_PROXY;
+	    d->command = g_strdup (GdmXdmcpProxyCommand);
+	    gdm_debug ("Using proxy server for XDMCP: %s\n", d->command);
+    } else {
+	    d->type = TYPE_XDMCP;
+    }
+
     d->logout_action = GDM_LOGOUT_ACTION_NONE;
     d->authfile = NULL;
     d->auths = NULL;
     d->userauth = NULL;
-    d->command = NULL;
     d->greetpid = 0;
     d->servpid = 0;
     d->servstat = 0;
     d->sesspid = 0;
     d->slavepid = 0;
-    d->type = TYPE_XDMCP;
     d->console = FALSE;
     d->dispstat = XDMCP_PENDING;
     d->sessionid = globsessid++;
@@ -2555,6 +2565,7 @@ gdm_xdmcp_display_alloc (
 	    d->sessionid = globsessid++;
     d->acctime = time (NULL);
     d->dispnum = displaynum;
+    d->xdmcp_dispnum = displaynum;
 
     d->handled = TRUE;
     d->tcp_disallowed = FALSE;
@@ -2608,11 +2619,22 @@ gdm_xdmcp_display_alloc (
     d->chooser_last_line = NULL;
 
     d->theme_name = NULL;
-    
+
     /* Secure display with cookie */
     if G_UNLIKELY (! gdm_auth_secure_display (d))
 	gdm_error ("gdm_xdmcp_display_alloc: Error setting up cookies for %s", d->name);
-    
+
+    if (d->type == TYPE_XDMCP_PROXY) {
+	    d->parent_disp = d->name;
+	    d->name = g_strdup (":-1");
+	    d->dispnum = -1;
+
+	    d->server_uid = GdmUserId;
+
+	    d->parent_auth_file = d->authfile;
+	    d->authfile = NULL;
+    }
+
     displays = g_slist_append (displays, d);
     
     xdmcp_pending++;
@@ -2647,22 +2669,23 @@ gdm_xdmcp_display_lookup (CARD32 sessid)
 
 
 static void
-gdm_xdmcp_display_dispose_check (const gchar *name)
+gdm_xdmcp_display_dispose_check (const gchar *hostname, int dspnum)
 {
 	GSList *dlist;
 
-	if (name == NULL)
+	if (hostname == NULL)
 		return;
 
-	gdm_debug ("gdm_xdmcp_display_dispose_check (%s)", name);
+	gdm_debug ("gdm_xdmcp_display_dispose_check (%s:%d)", hostname, dspnum);
 
 	dlist = displays;
 	while (dlist != NULL) {
 		GdmDisplay *d = dlist->data;
 
 		if (d != NULL &&
-		    d->type == TYPE_XDMCP &&
-		    strcmp (d->name, name) == 0) {
+		    SERVER_IS_XDMCP (d) &&
+		    d->xdmcp_dispnum == dspnum &&
+		    strcmp (d->hostname, hostname) == 0) {
 			if (d->dispstat == XDMCP_MANAGED)
 				gdm_display_unmanage (d);
 			else
@@ -2689,7 +2712,7 @@ gdm_xdmcp_displays_check (void)
 		GdmDisplay *d = dlist->data;
 
 		if (d != NULL &&
-		    d->type == TYPE_XDMCP &&
+		    SERVER_IS_XDMCP (d) &&
 		    d->dispstat == XDMCP_PENDING &&
 		    curtime > d->acctime + GdmMaxManageWait) {
 			gdm_debug ("gdm_xdmcp_displays_check: Disposing session id %ld",
@@ -2703,6 +2726,60 @@ gdm_xdmcp_displays_check (void)
 			dlist = dlist->next;
 		}
 	}
+}
+
+static void
+reconnect_to_parent (GdmDisplay *to)
+{
+	GError *error;
+	gchar *command_argv[10];
+
+	command_argv[0] = GdmXdmcpProxyReconnect;
+	command_argv[1] = "--display";
+	command_argv[2] = to->parent_disp;
+	command_argv[3] = "--display-authfile";
+	command_argv[4] = to->parent_auth_file;
+	command_argv[5] = "--to";
+	command_argv[6] = to->name;
+	command_argv[7] = "--to-authfile";
+	command_argv[8] = to->authfile;
+	command_argv[9] = NULL;
+
+	gdm_debug ("XDMCP: migrating display by running "
+		   "'%s --display %s --display-authfile %s --to %s --to-authfile %s'",
+		   GdmXdmcpProxyReconnect,
+		   to->parent_disp, to->parent_auth_file,
+		   to->name, to->authfile);
+
+	error = NULL;
+	if (!g_spawn_async (NULL, command_argv, NULL, 0, NULL, NULL, NULL, &error)) {
+		gdm_error (_("%s: Failed to run "
+			     "'%s --display %s --display-authfile %s --to %s --to-authfile %s': %s"),
+			   "gdm_xdmcp_migrate",
+			   GdmXdmcpProxyReconnect,
+			   to->parent_disp, to->parent_auth_file,
+			   to->name, to->authfile,
+			   error->message);
+		g_error_free (error);
+	}
+}
+
+void
+gdm_xdmcp_migrate (GdmDisplay *from, GdmDisplay *to)
+{
+	if (from->type != TYPE_XDMCP_PROXY ||
+	    to->type   != TYPE_XDMCP_PROXY)
+		return;
+
+	g_free (to->parent_disp);
+	to->parent_disp = from->parent_disp;
+	from->parent_disp = NULL;
+
+	g_free (to->parent_auth_file);
+	to->parent_auth_file = from->parent_auth_file;
+	from->parent_auth_file = NULL;
+
+	reconnect_to_parent (to);
 }
 
 #else /* HAVE_LIBXDMCP */
@@ -2725,6 +2802,12 @@ void
 gdm_xdmcp_close (void)
 {
 	gdm_error (_("%s: No XDMCP support"), "gdm_xdmcp_close");
+}
+
+void
+gdm_xdmcp_migrate (GdmDisplay *from, GdmDisplay *to)
+{
+	gdm_error (_("%s: No XDMCP support"), "gdm_xdmcp_migrate");
 }
 
 #endif /* HAVE_LIBXDMCP */

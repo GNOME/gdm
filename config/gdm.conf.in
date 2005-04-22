@@ -236,6 +236,15 @@ Enable=false
 # or mail details for some user, or some such.
 #Willing=@EXPANDED_SYSCONFDIR@/gdm/Xwilling
 
+# Run XDMCP sessions on a local proxy X server
+#EnableProxy=false
+# Proxy X server on which XDMCP session should be run
+#ProxyXServer=@X_XNEST_PATH@/Xnest @X_XNEST_CONFIG_OPTIONS@ -geometry 768x576
+#ProxyXServer=@X_SERVER_PATH@/Xdmx @X_CONFIG_OPTIONS@ -addremovescreens -norender -noglxproxy
+# Command which enables the proxy X server to be reconnected
+# to another backend display
+#ProxyReconnect=@GDM_RECONNECT_PROXY@
+
 [gui]
 # The specific gtkrc file we use.  It should be the full path to the gtkrc
 # that we need.  Unless you need a specific gtkrc that doesn't correspond to

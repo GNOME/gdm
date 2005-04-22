@@ -409,12 +409,13 @@ count_session_limits (void)
 
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
-		if (d->type == TYPE_XDMCP) {
+		if (SERVER_IS_XDMCP (d)) {
 			if (d->dispstat == XDMCP_MANAGED)
 				xdmcp_sessions ++;
 			else if (d->dispstat == XDMCP_PENDING)
 				xdmcp_pending ++;
-		} else if (SERVER_IS_FLEXI (d)) {
+		}
+		if (SERVER_IS_FLEXI (d)) {
 			flexi_servers ++;
 		}
 	}
@@ -482,11 +483,19 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->authfile_gdm);
     d->authfile_gdm = NULL;
 
-    if (d->xnest_temp_auth_file != NULL) {
-	    VE_IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+    if (d->type == TYPE_XDMCP_PROXY) {
+	    if (d->parent_auth_file != NULL) {
+		    VE_IGNORE_EINTR (unlink (d->parent_auth_file));
+	    }
+	    g_free (d->parent_auth_file);
+	    d->parent_auth_file = NULL;
     }
-    g_free (d->xnest_temp_auth_file);
-    d->xnest_temp_auth_file = NULL;
+
+    if (d->parent_temp_auth_file != NULL) {
+	    VE_IGNORE_EINTR (unlink (d->parent_temp_auth_file));
+    }
+    g_free (d->parent_temp_auth_file);
+    d->parent_temp_auth_file = NULL;
 
     if (d->auths) {
 	    gdm_auth_free_auth_list (d->auths);
@@ -514,11 +523,11 @@ gdm_display_dispose (GdmDisplay *d)
 	    gdm_choose_indirect_dispose_empty_id (d->indirect_id);
     d->indirect_id = 0;
 
-    g_free (d->xnest_disp);
-    d->xnest_disp = NULL;
+    g_free (d->parent_disp);
+    d->parent_disp = NULL;
 
-    g_free (d->xnest_auth_file);
-    d->xnest_auth_file = NULL;
+    g_free (d->parent_auth_file);
+    d->parent_auth_file = NULL;
 
     g_free (d->login);
     d->login = NULL;

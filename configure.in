@@ -7,6 +7,7 @@ AM_MAINTAINER_MODE
 
 AC_PROG_INTLTOOL([0.28])
 
+GLIB_REQUIRED=2.6.0
 GTK_REQUIRED=2.3.0
 LIBGLADE_REQUIRED=1.99.2
 LIBGNOME_REQUIRED=1.96.0
@@ -60,6 +61,10 @@ AC_ARG_WITH(xdmcp,
 AC_ARG_WITH(tcp-wrappers,
   [  --with-tcp-wrappers=[auto/yes/no]  Use TCP Wrappers [default=auto]],,
   with_tcp_wrappers=auto)
+
+AC_ARG_WITH(dmx,
+  [  --with-dmx=[auto/yes/no]  Add DMX (Distributed Multihead X) support [default=auto]],,
+  with_dmx=auto)
 
 AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
 
@@ -144,6 +149,10 @@ AC_SUBST(GREETER_LIBS)
 PKG_CHECK_MODULES(UTILS, gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(UTILS_CFLAGS)
 AC_SUBST(UTILS_LIBS)
+
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLIB_REQUIRED)
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
 
 dnl Allow users to run gdmsetup using the console helper PAM stuff.
 if test "x$enable_console_helper" = "xyes"; then
@@ -582,6 +591,28 @@ AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
 
 #
+# Distributed Multihead X extension (DMX)
+#
+DMX_SUPPORT=""
+DMX_LIBS=""
+if test x$with_dmx != xno ; then
+	dmx_save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+	AC_CHECK_HEADER(X11/extensions/dmxext.h, [
+		AC_CHECK_LIB(dmx, DMXQueryExtension, [
+			DMX_LIBS="-ldmx"
+			DMX_SUPPORT=yes],,[$X_LIBS -lX11 $X_EXTRA_LIBS])
+	],,[#include <X11/Xlib.h>])
+
+	if test x$with_dmx = xyes -a x$DMX_SUPPORT = x ; then
+		AC_MSG_ERROR(DMX support requested but DMX librariy not found)
+	fi
+	CPPFLAGS="$dmx_save_CPPFLAGS"
+fi
+AC_SUBST(DMX_LIBS)
+AM_CONDITIONAL(DMX_SUPPORT, test x$DMX_SUPPORT = xyes)
+
+#
 # SELinux stuff
 #
 if test "x$with_selinux" = "xyes" ; then
@@ -664,6 +695,13 @@ LOGDIR_TMP="$localstatedir/log/gdm"
 EXPANDED_LOGDIR=`eval echo $LOGDIR_TMP`
 AC_SUBST(EXPANDED_LOGDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LOGDIR,"$EXPANDED_LOGDIR")
+
+if test x$DMX_SUPPORT = xyes ; then
+	GDM_RECONNECT_PROXY=$EXPANDED_BINDIR/gdm-dmx-reconnect-proxy
+else
+	GDM_RECONNECT_PROXY=
+fi
+AC_SUBST(GDM_RECONNECT_PROXY)
 
 withval=""
 AC_ARG_WITH(at-bindir,
@@ -929,45 +967,52 @@ echo ""
 
 dnl <= TCP Wrappers support? =>
 if test x"$LIBWRAP_PATH" = x ; then
-	echo "TCP Wrappers support              : NO"
+	echo "TCP Wrappers support                  : NO"
 else
-	echo "TCP Wrappers support              : YES"
+	echo "TCP Wrappers support                  : YES"
 fi
 
 dnl <= XINERAMA =>
 if test x"$XINERAMA_SUPPORT" = xyes ; then
-	echo "Xinerama support                  : YES"
+	echo "Xinerama support                      : YES"
 else
-	echo "Xinerama support                  : NO"
+	echo "Xinerama support                      : NO"
 fi
 
 dnl <= XDMCP =>
 if test x"$XDMCP_SUPPORT" = xyes ; then
-	echo "XDMCP (remote login) support      : YES"
+	echo "XDMCP (remote login) support          : YES"
 else
-	echo "XDMCP (remote login) support      : NO"
+	echo "XDMCP (remote login) support          : NO"
+fi
+
+dnl <= DMX =>
+if test x"$DMX_SUPPORT" = xyes ; then
+	echo "DMX (Distributed Multihead X) support : YES"
+else
+	echo "DMX (Distributed Multihead X) support : NO"
 fi
 
 dnl <= Console Helper =>
 if test "x$enable_console_helper" = "xyes"; then
-	echo "Console helper                    : YES"
+	echo "Console helper                        : YES"
 else
-	echo "Console helper                    : NO"
+	echo "Console helper                        : NO"
 fi
 
 dnl <= SELinux support =>
 if test "x$with_selinux" = "xyes" ; then
-	echo "SELinux support                   : YES"
+	echo "SELinux support                       : YES"
 else
-	echo "SELinux support                   : NO"
+	echo "SELinux support                       : NO"
 fi
 
 
 dnl <= Authentication scheme =>
-echo "Authentication scheme             : $VRFY"
+echo "Authentication scheme                 : $VRFY"
 
 dnl <= Utils built =>
-echo "Extra utilities built             : "`echo $GDMOPEN $GDMASKPASS`
+echo "Extra utilities built                 : "`echo $GDMOPEN $GDMASKPASS`
 
 echo ""
 dnl <= End of configuration summary =>

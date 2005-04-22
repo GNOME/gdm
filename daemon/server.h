@@ -36,7 +36,7 @@ void		gdm_server_stop		(GdmDisplay *d);
 gboolean	gdm_server_reinit	(GdmDisplay *d);
 GdmDisplay *	gdm_server_alloc	(gint id,
 					 const gchar *command);
-void		gdm_server_whack_clients (GdmDisplay *disp);
+void		gdm_server_whack_clients (Display *dsp);
 void		gdm_server_checklog	(GdmDisplay *disp);
 
 char **		gdm_server_resolve_command_line (GdmDisplay *disp,

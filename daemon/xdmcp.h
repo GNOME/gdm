@@ -33,6 +33,8 @@ gboolean	gdm_xdmcp_init	(void);
 void		gdm_xdmcp_run	(void);
 void		gdm_xdmcp_close	(void);
 
+void gdm_xdmcp_migrate (GdmDisplay *from, GdmDisplay *to);
+
 #ifdef HAVE_LIBXDMCP
 /* Fix broken X includes */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);

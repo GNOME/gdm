@@ -773,8 +773,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigaddset (&mask, SIGCHLD);
 	sigaddset (&mask, SIGUSR2);
 	sigaddset (&mask, SIGUSR1); /* normally we ignore USR1 */
-	if (display->type == TYPE_XDMCP &&
-	    GdmPingInterval > 0) {
+	if ( ! SERVER_IS_LOCAL (display) && GdmPingInterval > 0) {
 		sigaddset (&mask, SIGALRM);
 	}
 	/* must set signal mask before the Setjmp as it will be
@@ -804,8 +803,7 @@ gdm_slave_start (GdmDisplay *display)
 		_exit (DISPLAY_REMANAGE);
 	}
 
-	if (display->type == TYPE_XDMCP &&
-	    GdmPingInterval > 0) {
+	if ( ! SERVER_IS_LOCAL (display) && GdmPingInterval > 0) {
 		/* Handle a ALRM signals from our ping alarms */
 		alrm.sa_handler = gdm_slave_alrm_handler;
 		alrm.sa_flags = SA_RESTART | SA_NODEFER;
@@ -909,6 +907,7 @@ gdm_slave_start (GdmDisplay *display)
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
 			gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
+			gdm_slave_send_string (GDM_SOP_AUTHFILE, d->authfile);
 
 			if G_UNLIKELY ( ! gdm_server_reinit (d)) {
 				gdm_error ("Error reinitilizing server");
@@ -1085,22 +1084,60 @@ gdm_slave_whack_greeter (void)
 	gdm_slave_whack_temp_auth_file ();
 }
 
+static void
+wait_for_display_to_die (Display    *display,
+			 const char *display_name)
+{
+	fd_set rfds;
+	int    fd;
+
+	gdm_debug ("wait_for_display_to_die: waiting for display '%s' to die",
+		   display_name);
+
+	fd = ConnectionNumber (display);
+
+	FD_ZERO (&rfds);
+	FD_SET (fd, &rfds);
+
+	while (1) {
+		char           buf[256];
+		struct timeval tv;
+		int            n;
+
+		tv.tv_sec  = 5;
+		tv.tv_usec = 0;
+
+		n = select (fd + 1, &rfds, NULL, NULL, &tv);
+		if (G_LIKELY (n == 0)) {
+			XSync (display, True);
+		} else if (n > 0) {
+			VE_IGNORE_EINTR (n = read (fd, buf, sizeof (buf)));
+			if (n <= 0)
+				break;
+		} else if (errno != EINTR) {
+			break;
+		}
+
+		FD_CLR (fd, &rfds);
+	}
+
+	gdm_debug ("wait_for_display_to_die: '%s' dead", display_name);
+}
+
 gboolean
 gdm_slave_check_user_wants_to_log_in (const char *user)
 {
 	gboolean loggedin = FALSE;
-	int vt = -1;
 	int i;
 	char **vec;
 	char *msg;
-	int r;
-	char *but[4];
+	char *migrate_to = NULL;
 
-	if ( ! GdmDoubleLoginWarning ||
-	    /* always ignore root here, this is mostly a special case
-	     * since a root login may not be a real login, such as the
-	     config stuff, and people shouldn't log in as root anyway */
-	    strcmp (user, gdm_root_user ()) == 0)
+	/* always ignore root here, this is mostly a special case
+	 * since a root login may not be a real login, such as the
+	 * config stuff, and people shouldn't log in as root anyway
+	 */
+	if (strcmp (user, gdm_root_user ()) == 0)
 		return TRUE;
 
 	gdm_slave_send_string (GDM_SOP_QUERYLOGIN, user);
@@ -1110,11 +1147,15 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 	if (vec == NULL)
 		return TRUE;
 
+	gdm_debug ("QUERYLOGIN response: %s\n", gdm_ack_response);
+
 	for (i = 0; vec[i] != NULL && vec[i+1] != NULL; i += 2) {
 		int ii;
 		loggedin = TRUE;
-		if (d->console && vt < 0 && sscanf (vec[i+1], "%d", &ii) == 1)
-			vt = ii;
+		if (sscanf (vec[i+1], "%d", &ii) == 1 && ii == 1) {
+			migrate_to = g_strdup (vec[i]);
+			break;
+		}
 	}
 
 	g_strfreev (vec);
@@ -1122,37 +1163,46 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 	if ( ! loggedin)
 		return TRUE;
 
-	but[0] = _("Log in anyway");
-	if (vt >= 0) {
-		msg = _("You are already logged in.  "
-			"You can log in anyway, return to your "
-			"previous login session, or abort this "
-			"login");
-		but[1] = _("Return to previous login");
-		but[2] = _("Abort login");
-		but[3] = NULL;
-	} else {
-		msg = _("You are already logged in.  "
-			"You can log in anyway or abort this "
-			"login");
-		but[1] = _("Abort login");
-		but[2] = NULL;
-	}
+	if (d->type != TYPE_XDMCP_PROXY) {
+		int r;
+		char *but[4];
 
-	if (greet)
-		gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
+		if (!GdmDoubleLoginWarning)
+			return TRUE;
 
-	r = gdm_failsafe_ask_buttons (d, msg, but);
+		but[0] = _("Log in anyway");
+		if (migrate_to != NULL) {
+			msg = _("You are already logged in.  "
+				"You can log in anyway, return to your "
+				"previous login session, or abort this "
+				"login");
+			but[1] = _("Return to previous login");
+			but[2] = _("Abort login");
+			but[3] = NULL;
+		} else {
+			msg = _("You are already logged in.  "
+				"You can log in anyway or abort this "
+				"login");
+			but[1] = _("Abort login");
+			but[2] = NULL;
+		}
 
-	if (greet)
-		gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+		if (greet)
+			gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
 
-	if (r <= 0)
-		return TRUE;
+		r = gdm_failsafe_ask_buttons (d, msg, but);
 
-	if (vt >= 0) {
-		if (r == 2) /* Abort */
+		if (greet)
+			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+
+		if (r <= 0)
+			return TRUE;
+
+		if (migrate_to == NULL ||
+		    (migrate_to != NULL && r == 2)) {
+			g_free (migrate_to);
 			return FALSE;
+		}
 
 		/* Must be that r == 1, that is
 		   return to previous login */
@@ -1166,23 +1216,49 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 			 */
 			gdm_sleep_no_signal (1);
 
-			gdm_change_vt (vt);
+			gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
+			g_free (migrate_to);
 
 			/* we are no longer needed so just die.
 			   REMANAGE == ABORT here really */
 			gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		}
 
-		gdm_change_vt (vt);
-
-		/* abort this login attempt */
-		return FALSE;
+		gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
+		g_free (migrate_to);
 	} else {
-		if (r == 1) /* Abort */
-			return FALSE;
-		else
+		Display *parent_dsp;
+
+		if (migrate_to == NULL)
 			return TRUE;
+		
+		gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
+		g_free (migrate_to);
+
+		/*
+		 * We must stay running and hold open our connection to the
+		 * parent display because with XDMCP the Xserver resets when
+		 * the initial X client closes its connection (rather than
+		 * when *all* X clients have closed their connection)
+		 */
+
+		gdm_slave_whack_greeter ();
+
+		parent_dsp = d->parent_dsp;
+		d->parent_dsp = NULL;
+		gdm_server_stop (d);
+
+		gdm_slave_send_num (GDM_SOP_XPID, 0);
+
+		gdm_debug ("Slave not exiting in order to hold open the connection to the parent display");
+
+		wait_for_display_to_die (d->parent_dsp, d->parent_disp);
+
+		gdm_slave_quick_exit (DISPLAY_ABORT);
 	}
+
+	/* abort this login attempt */
+	return FALSE;
 }
 
 static gboolean do_xfailed_on_xio_error = FALSE;
@@ -1339,8 +1415,7 @@ gdm_slave_run (GdmDisplay *display)
     do_xfailed_on_xio_error = FALSE;
 
     /* If XDMCP setup pinging */
-    if (d->type == TYPE_XDMCP &&
-	GdmPingInterval > 0) {
+    if ( ! SERVER_IS_LOCAL (d) && GdmPingInterval > 0) {
 	    alarm (GdmPingInterval);
     }
 
@@ -1447,7 +1522,7 @@ gdm_slave_run (GdmDisplay *display)
     } while (greet);
 
     /* If XDMCP stop pinging */
-    if (d->type == TYPE_XDMCP)
+    if ( ! SERVER_IS_LOCAL (d))
 	    alarm (0);
 }
 
@@ -2622,10 +2697,8 @@ gdm_slave_greeter (void)
 		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
-	if (d->type == TYPE_FLEXI) {
+	if (SERVER_IS_FLEXI (d)) {
 		ve_setenv ("GDM_FLEXI_SERVER", "yes", TRUE);
-	} else if (d->type == TYPE_FLEXI_XNEST) {
-		ve_setenv ("GDM_FLEXI_SERVER", "Xnest", TRUE);
 	} else {
 		ve_unsetenv ("GDM_FLEXI_SERVER");
 	}
@@ -3128,7 +3201,7 @@ gdm_slave_chooser (void)
 			char *host = d->chooser_last_line;
 			d->chooser_last_line = NULL;
 
-			if (d->type == TYPE_XDMCP) {
+			if (SERVER_IS_XDMCP (d)) {
 				send_chosen_host (d, host);
 				gdm_slave_quick_exit (DISPLAY_CHOSEN);
 			} else {
@@ -3547,6 +3620,8 @@ session_child_run (struct passwd *pwent,
 		ve_setenv ("GDM_XSERVER_LOCATION", "flexi", TRUE);
 	} else if (d->type == TYPE_FLEXI_XNEST) {
 		ve_setenv ("GDM_XSERVER_LOCATION", "flexi-xnest", TRUE);
+	} else if (d->type == TYPE_XDMCP_PROXY) {
+		ve_setenv ("GDM_XSERVER_LOCATION", "xdmcp-proxy", TRUE);
 	} else {
 		/* huh? */
 		ve_setenv ("GDM_XSERVER_LOCATION", "unknown", TRUE);
@@ -4109,7 +4184,7 @@ gdm_slave_session_start (void)
     }
 
     if (GdmKillInitClients)
-	    gdm_server_whack_clients (d);
+	    gdm_server_whack_clients (d->dsp);
 
     /* Now that we will set up the user authorization we will
        need to run session_stop to whack it */
@@ -4376,7 +4451,7 @@ gdm_slave_session_stop (gboolean run_post_session,
        This is to fix #126071, that is kill processes that may still hold open
        fd's in the home directory to allow a clean unmount.  However note of course
        that this is a race. */
-    gdm_server_whack_clients (d);
+    gdm_server_whack_clients (d->dsp);
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
     /* let the other processes die perhaps or whatnot */
@@ -4748,8 +4823,7 @@ gdm_slave_handle_usr2_message (void)
 			if (strcmp (&s[1], GDM_NOTIFY_DIRTY_SERVERS) == 0) {
 				/* never restart flexi servers
 				 * they whack themselves */
-				if (d->type != TYPE_FLEXI_XNEST &&
-				    d->type != TYPE_FLEXI)
+				if (!SERVER_IS_FLEXI (d))
 					remanage_asap = TRUE;
 			} else if (strcmp (&s[1], GDM_NOTIFY_SOFT_RESTART_SERVERS) == 0) {
 				/* never restart flexi servers,
@@ -4757,8 +4831,7 @@ gdm_slave_handle_usr2_message (void)
 				/* FIXME: here we should handle actual
 				 * restarts of flexi servers, but it probably
 				 * doesn't matter */
-				if (d->type != TYPE_FLEXI_XNEST &&
-				    d->type != TYPE_FLEXI) {
+				if (!SERVER_IS_FLEXI (d)) {
 					if ( ! d->logged_in) {
 						if (gdm_in_signal > 0) {
 							exit_code_to_use = DISPLAY_REMANAGE;
@@ -5081,11 +5154,11 @@ gdm_slave_whack_temp_auth_file (void)
 	old = geteuid ();
 	if (old != 0)
 		seteuid (0);
-	if (d->xnest_temp_auth_file != NULL) {
-		VE_IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+	if (d->parent_temp_auth_file != NULL) {
+		VE_IGNORE_EINTR (unlink (d->parent_temp_auth_file));
 	}
-	g_free (d->xnest_temp_auth_file);
-	d->xnest_temp_auth_file = NULL;
+	g_free (d->parent_temp_auth_file);
+	d->parent_temp_auth_file = NULL;
 	if (old != 0)
 		seteuid (old);
 }
@@ -5094,15 +5167,15 @@ static void
 create_temp_auth_file (void)
 {
 	if (d->type == TYPE_FLEXI_XNEST &&
-	    d->xnest_auth_file != NULL) {
-		if (d->xnest_temp_auth_file != NULL) {
-			VE_IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+	    d->parent_auth_file != NULL) {
+		if (d->parent_temp_auth_file != NULL) {
+			VE_IGNORE_EINTR (unlink (d->parent_temp_auth_file));
 		}
-		g_free (d->xnest_temp_auth_file);
-		d->xnest_temp_auth_file =
+		g_free (d->parent_temp_auth_file);
+		d->parent_temp_auth_file =
 			copy_auth_file (d->server_uid,
 					GdmUserId,
-					d->xnest_auth_file);
+					d->parent_auth_file);
 	}
 }
 
@@ -5110,12 +5183,12 @@ static void
 set_xnest_parent_stuff (void)
 {
 	if (d->type == TYPE_FLEXI_XNEST) {
-		ve_setenv ("GDM_PARENT_DISPLAY", d->xnest_disp, TRUE);
-		if (d->xnest_temp_auth_file != NULL) {
+		ve_setenv ("GDM_PARENT_DISPLAY", d->parent_disp, TRUE);
+		if (d->parent_temp_auth_file != NULL) {
 			ve_setenv ("GDM_PARENT_XAUTHORITY",
-				      d->xnest_temp_auth_file, TRUE);
-			g_free (d->xnest_temp_auth_file);
-			d->xnest_temp_auth_file = NULL;
+				      d->parent_temp_auth_file, TRUE);
+			g_free (d->parent_temp_auth_file);
+			d->parent_temp_auth_file = NULL;
 		}
 	}
 }
@@ -5147,7 +5220,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	    }
     }
     if (script == NULL &&
-	d->type == TYPE_XDMCP) {
+	SERVER_IS_XDMCP (d)) {
 	    script = g_build_filename (dir, "XDMCP", NULL);
 	    if (access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
@@ -5237,7 +5310,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 					    d->name, ".Xservers");
 	ve_setenv ("X_SERVERS", x_servers_file, TRUE);
 	g_free (x_servers_file);
-	if (d->type == TYPE_XDMCP)
+	if (SERVER_IS_XDMCP (d))
 		ve_setenv ("REMOTE_HOST", d->hostname, TRUE);
 
 	/* Runs as root */
@@ -5382,7 +5455,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    else
 		    ve_unsetenv ("XAUTHORITY");
 	    ve_setenv ("DISPLAY", display->name, TRUE);
-	    if (display->type == TYPE_XDMCP)
+	    if (SERVER_IS_XDMCP (display))
 		    ve_setenv ("REMOTE_HOST", display->hostname, TRUE);
 	    ve_setenv ("PATH", GdmRootPath, TRUE);
 	    ve_setenv ("SHELL", "/bin/sh", TRUE);

@@ -276,9 +276,18 @@ gdm_server_stop (GdmDisplay *disp)
     if (disp->dsp != NULL) {
 	    /* on XDMCP servers first kill everything in sight */
 	    if (disp->type == TYPE_XDMCP)
-		    gdm_server_whack_clients (d);
+		    gdm_server_whack_clients (disp->dsp);
 	    XCloseDisplay (disp->dsp);
 	    disp->dsp = NULL;
+    }
+
+    /* Kill our parent connection if one existed */
+    if (disp->parent_dsp != NULL) {
+	    /* on XDMCP servers first kill everything in sight */
+	    if (disp->type == TYPE_XDMCP_PROXY)
+		    gdm_server_whack_clients (disp->parent_dsp);
+	    XCloseDisplay (disp->parent_dsp);
+	    disp->parent_dsp = NULL;
     }
 
     if (disp->servpid <= 0)
@@ -369,7 +378,7 @@ busy_ask_user (GdmDisplay *disp)
 
 /* Checks only output, no XFree86 v4 logfile */
 static gboolean
-display_xnest_no_connect (GdmDisplay *disp)
+display_parent_no_connect (GdmDisplay *disp)
 {
 	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
 	FILE *fp;
@@ -393,7 +402,7 @@ display_xnest_no_connect (GdmDisplay *disp)
 		 * of course additions are welcome to make this more robust */
 		if (strstr (buf, "Unable to open display \"") == buf) {
 			gdm_error (_("Display '%s' cannot be opened by Xnest"),
-				   ve_sure_string (disp->xnest_disp));
+				   ve_sure_string (disp->parent_disp));
 			VE_IGNORE_EINTR (fclose (fp));
 			return TRUE;
 		}
@@ -662,6 +671,45 @@ do_server_wait (GdmDisplay *d)
     }
 }
 
+/* We keep a connection (parent_dsp) open with the parent X server
+ * before running a proxy on it to prevent the X server resetting
+ * as we open and close other connections.
+ * Note that XDMCP servers, by default, reset when the seed X
+ * connection closes whereas usually the X server only quits when
+ * all X connections have closed.
+ */
+static gboolean
+connect_to_parent (GdmDisplay *d)
+{
+	int maxtries;
+	int openretries;
+
+	gdm_debug ("gdm_server_start: Connecting to parent display \'%s\'",
+		   d->parent_disp);
+
+	d->parent_dsp = NULL;
+
+	maxtries = SERVER_IS_XDMCP (d) ? 10 : 2;
+
+	openretries = 0;
+	while (openretries < maxtries &&
+	       d->parent_dsp == NULL) {
+		d->parent_dsp = XOpenDisplay (d->parent_disp);
+
+		if G_UNLIKELY (d->parent_dsp == NULL) {
+			gdm_debug ("gdm_server_start: Sleeping %d on a retry", 1+openretries*2);
+			gdm_sleep_no_signal (1+openretries*2);
+			openretries++;
+		}
+	}
+
+	if (d->parent_dsp == NULL)
+		gdm_error (_("%s: failed to connect to parent display '\%s\'"),
+			   "gdm_server_start", d->parent_disp);
+
+	return d->parent_dsp != NULL;
+}
+
 /**
  * gdm_server_start:
  * @disp: Pointer to a GdmDisplay structure
@@ -708,6 +756,9 @@ gdm_server_start (GdmDisplay *disp,
 	    gdm_slave_send_num (GDM_SOP_DISP_NUM, flexi_disp);
     }
 
+    if (d->type == TYPE_XDMCP_PROXY &&
+	! connect_to_parent (d))
+	    return FALSE;
 
     gdm_debug ("gdm_server_start: %s", d->name);
 
@@ -715,6 +766,7 @@ gdm_server_start (GdmDisplay *disp,
     if ( ! gdm_auth_secure_display (d)) 
 	    return FALSE;
     gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
+    gdm_slave_send_string (GDM_SOP_AUTHFILE, d->authfile);
     ve_setenv ("DISPLAY", d->name, TRUE);
 
     if ( ! setup_server_wait (d))
@@ -774,10 +826,10 @@ gdm_server_start (GdmDisplay *disp,
 	    break;
     }
 
-    if (disp->type == TYPE_FLEXI_XNEST &&
-	display_xnest_no_connect (disp)) {
+    if (SERVER_IS_PROXY (disp) &&
+	display_parent_no_connect (disp)) {
 	    gdm_slave_send_num (GDM_SOP_FLEXI_ERR,
-				5 /* Xnest can't connect */);
+				5 /* proxy can't connect */);
 	    _exit (DISPLAY_REMANAGE);
     }
 
@@ -1146,27 +1198,36 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	sigemptyset (&mask);
 	sigprocmask (SIG_SETMASK, &mask, NULL);
 
-	if (d->type == TYPE_FLEXI_XNEST) {
-		char *font_path = NULL;
-		ve_setenv ("DISPLAY", d->xnest_disp, TRUE);
-		if (d->xnest_auth_file != NULL)
-			ve_setenv ("XAUTHORITY", d->xnest_auth_file, TRUE);
+	if (SERVER_IS_PROXY (d)) {
+		int argc = ve_vector_len (argv);
+
+		ve_unsetenv ("DISPLAY");
+		if (d->parent_auth_file != NULL)
+			ve_setenv ("XAUTHORITY", d->parent_auth_file, TRUE);
 		else
 			ve_unsetenv ("XAUTHORITY");
 
-		/* Add -fp with the current font path, but only if not
-		 * already among the arguments */
-		if (strstr (command, "-fp") == NULL)
-			font_path = get_font_path (d->xnest_disp);
-		if (font_path != NULL) {
-			int argc = ve_vector_len (argv);
-			argv = g_renew (char *, argv, argc + 3);
-			argv[argc++] = "-fp";
-			argv[argc++] = font_path;
-			argv[argc++] = NULL;
-			command = g_strconcat (command, " -fp ",
-					       font_path, NULL);
+		if (d->type == TYPE_FLEXI_XNEST) {
+			char *font_path = NULL;
+			/* Add -fp with the current font path, but only if not
+			 * already among the arguments */
+			if (strstr (command, "-fp") == NULL)
+				font_path = get_font_path (d->parent_disp);
+			if (font_path != NULL) {
+				argv = g_renew (char *, argv, argc + 2);
+				argv[argc++] = "-fp";
+				argv[argc++] = font_path;
+				command = g_strconcat (command, " -fp ",
+						       font_path, NULL);
+			}
 		}
+
+		argv = g_renew (char *, argv, argc + 3);
+		argv[argc++] = "-display";
+		argv[argc++] = d->parent_disp;
+		argv[argc++] = NULL;
+		command = g_strconcat (command, " -display ",
+				       d->parent_disp, NULL);
 	}
 
 	if (argv[0] == NULL) {
@@ -1382,43 +1443,42 @@ gdm_server_alloc (gint id, const gchar *command)
 }
 
 void
-gdm_server_whack_clients (GdmDisplay *disp)
+gdm_server_whack_clients (Display *dsp)
 {
 	int i, screen_count;
 	int (* old_xerror_handler) (Display *, XErrorEvent *);
 
-	if (disp == NULL ||
-	    disp->dsp == NULL)
+	if (dsp == NULL)
 		return;
 
 	old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
 
-	XGrabServer (disp->dsp);
+	XGrabServer (dsp);
 
-	screen_count = ScreenCount (disp->dsp);
+	screen_count = ScreenCount (dsp);
 
 	for (i = 0; i < screen_count; i++) {
 		Window root_ret, parent_ret;
 		Window *childs = NULL;
 		unsigned int childs_count = 0;
-		Window root = RootWindow (disp->dsp, i);
+		Window root = RootWindow (dsp, i);
 
-		while (XQueryTree (disp->dsp, root, &root_ret, &parent_ret,
+		while (XQueryTree (dsp, root, &root_ret, &parent_ret,
 				   &childs, &childs_count) &&
 		       childs_count > 0) {
 			int ii;
 
 			for (ii = 0; ii < childs_count; ii++) {
-				XKillClient (disp->dsp, childs[ii]);
+				XKillClient (dsp, childs[ii]);
 			}
 
 			XFree (childs);
 		}
 	}
 
-	XUngrabServer (disp->dsp);
+	XUngrabServer (dsp);
 
-	XSync (disp->dsp, False);
+	XSync (dsp, False);
 	XSetErrorHandler (old_xerror_handler);
 }
 

@@ -20,6 +20,10 @@ libexec_PROGRAMS = \
 # bin_PROGRAMS = \
 #	gdmmktemp
 
+if DMX_SUPPORT
+bin_PROGRAMS = gdm-dmx-reconnect-proxy
+endif
+
 EXTRA_PROGRAMS = gdmaskpass gdmopen
 
 gdmaskpass_SOURCES = \
@@ -47,3 +51,15 @@ gdmtranslate_LDADD = \
 
 #gdmmktemp_LDADD = \
 #	$(INTLLIBS)
+
+if DMX_SUPPORT
+gdm_dmx_reconnect_proxy_SOURCES = \
+	gdm-dmx-reconnect-proxy.c
+
+gdm_dmx_reconnect_proxy_LDADD = \
+	$(GLIB_LIBS) \
+	$(X_EXTRA_LIBS) \
+	$(X_LIBS) \
+	-lX11 \
+	$(DMX_LIBS)
+endif

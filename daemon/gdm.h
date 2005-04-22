@@ -34,12 +34,19 @@
 #define TYPE_XDMCP 2		/* Remote display */
 #define TYPE_FLEXI 3		/* Local Flexi X server */
 #define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
+#define TYPE_XDMCP_PROXY 5      /* Proxy X server for XDMCP */
 
 #define SERVER_IS_LOCAL(d) ((d)->type == TYPE_LOCAL || \
 			    (d)->type == TYPE_FLEXI || \
-			    (d)->type == TYPE_FLEXI_XNEST)
+			    (d)->type == TYPE_FLEXI_XNEST || \
+			    (d)->type == TYPE_XDMCP_PROXY)
 #define SERVER_IS_FLEXI(d) ((d)->type == TYPE_FLEXI || \
-			    (d)->type == TYPE_FLEXI_XNEST)
+			    (d)->type == TYPE_FLEXI_XNEST || \
+			    (d)->type == TYPE_XDMCP_PROXY)
+#define SERVER_IS_PROXY(d) ((d)->type == TYPE_FLEXI_XNEST || \
+			    (d)->type == TYPE_XDMCP_PROXY)
+#define SERVER_IS_XDMCP(d) ((d)->type == TYPE_XDMCP || \
+			    (d)->type == TYPE_XDMCP_PROXY)
 
 /* These are the servstat values, also used as server
  * process exit codes */
@@ -215,6 +222,10 @@ enum {
 #define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=15"
 #define GDM_KEY_PINGINTERVAL "xdmcp/PingIntervalSeconds=15"
 #define GDM_KEY_WILLING "xdmcp/Willing=" EXPANDED_SYSCONFDIR "/gdm/Xwilling"
+
+#define GDM_KEY_XDMCP_PROXY "xdmcp/EnableProxy=false"
+#define GDM_KEY_XDMCP_PROXY_XSERVER "xdmcp/ProxyXServer="
+#define GDM_KEY_XDMCP_PROXY_RECONNECT "xdmcp/ProxyReconnect="
 
 #define GDM_KEY_GTK_THEME "gui/GtkTheme=Default"
 #define GDM_KEY_GTKRC "gui/GtkRC="
@@ -409,11 +420,14 @@ struct _GdmDisplay {
     int lrh_offsety; /* lower right hand corner y offset */
 
     /* Flexi stuff */
-    char *xnest_disp;
-    char *xnest_auth_file;
-    char *xnest_temp_auth_file;
+    char *parent_disp;
+    Display *parent_dsp;
+    char *parent_auth_file;
+    char *parent_temp_auth_file;
     uid_t server_uid;
     GdmConnection *socket_conn;
+
+    int xdmcp_dispnum;
 
     /* Notification connection */
     int master_notify_fd;  /* write part of the connection */
@@ -531,9 +545,11 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_LOGGED_IN    "LOGGED_IN" /* <slave pid> <logged_in as int> */
 #define GDM_SOP_LOGIN        "LOGIN" /* <slave pid> <username> */
 #define GDM_SOP_COOKIE       "COOKIE" /* <slave pid> <cookie> */
+#define GDM_SOP_AUTHFILE     "AUTHFILE" /* <slave pid> <authfile> */
 #define GDM_SOP_QUERYLOGIN   "QUERYLOGIN" /* <slave pid> <username> */
 /* if user already logged in somewhere, the ack response will be
-   <display>,<vt>,<display>,<vt>,... */
+   <display>,<migratable>,<display>,<migratable>,... */
+#define GDM_SOP_MIGRATE      "MIGRATE" /* <slave pid> <display> */
 #define GDM_SOP_DISP_NUM     "DISP_NUM" /* <slave pid> <display as int> */
 /* For Linux only currently */
 #define GDM_SOP_VT_NUM       "VT_NUM" /* <slave pid> <vt as int> */
