@@ -747,8 +747,7 @@ gestures_filter (GdkXEvent *gdk_xevent,
 			curr_gesture = li->data;
 			if (curr_gesture->timeout > 0 && seq_count > 0) {
 				/* xevent time values are in milliseconds. The config file spec is in ms */
-				if (curr_gesture->type == 
-				    elapsed_time (last_event, xevent) > curr_gesture->timeout) {
+				if (elapsed_time (last_event, xevent) > curr_gesture->timeout) {
 					seq_count = 0; /* Timeout has elapsed. Reset the sequence. */
 					curr_gesture = NULL;
 #ifdef DEBUG_GESTURES
