@@ -490,7 +490,7 @@ gdm_config_parse (void)
 
     if (GdmAutomaticLogin != NULL &&
 	strcmp (GdmAutomaticLogin, gdm_root_user ()) == 0) {
-	    gdm_info (_("%s: Root cannot be autologged in; turning off automatic login"), "gdm_config_parse");
+	    gdm_info (_("%s: Root cannot be logged in automatically, turning off automatic login"), "gdm_config_parse");
 	    g_free (GdmAutomaticLogin);
 	    GdmAutomaticLogin = NULL;
     }
@@ -503,7 +503,7 @@ gdm_config_parse (void)
 
     if (GdmTimedLogin != NULL &&
 	strcmp (GdmTimedLogin, gdm_root_user ()) == 0) {
-	    gdm_info (_("%s: Root cannot be autologged in, turing off timed login"), "gdm_config_parse");
+	    gdm_info (_("%s: Root cannot be logged in automatically, turning off timed login"), "gdm_config_parse");
 	    g_free (GdmTimedLogin);
 	    GdmTimedLogin = NULL;
     }
@@ -1125,7 +1125,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    gdm_unset_signals ();
 
 		    /* Also make a new process group so that we may use
-		     * kill -(extra_process) to kill extra process and all it's
+		     * kill -(extra_process) to kill extra process and all its
 		     * possible children */
 		    setsid ();
 

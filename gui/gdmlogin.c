@@ -1388,7 +1388,7 @@ gdm_login_session_init (GtkWidget *menu)
     }
 
     if G_UNLIKELY (sessions == NULL) {
-	    syslog (LOG_WARNING, _("Yaikes, nothing found in the session directory."));
+	    syslog (LOG_WARNING, _("Yikes, nothing found in the session directory."));
 	    session_dir_whacked_out = TRUE;
 	    GdmShowXtermFailsafeSession = TRUE;
 

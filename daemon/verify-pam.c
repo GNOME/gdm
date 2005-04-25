@@ -1216,7 +1216,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	gdm_error (_("User %s not permitted to gain access at this time"), login);
 	gdm_error_box (cur_gdm_disp,
 		       GTK_MESSAGE_ERROR,
-		       _("\nThe system administrator has disabled your access to the system temporary."));
+		       _("\nThe system administrator has disabled your access to the system temporarily."));
 	goto setup_pamerr;
     default :
 	if (gdm_slave_action_pending ())

@@ -1746,7 +1746,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Could not execute the configuration "
-				 "program.  Make sure it's path is set "
+				 "program.  Make sure its path is set "
 				 "correctly in the configuration file.  "
 				 "Attempting to start it from the default "
 				 "location."));
@@ -1760,7 +1760,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Could not execute the configuration "
-				 "program.  Make sure it's path is set "
+				 "program.  Make sure its path is set "
 				 "correctly in the configuration file."));
 
 		_exit (0);

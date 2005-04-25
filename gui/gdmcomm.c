@@ -487,8 +487,8 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 	} else if (strncmp (ret, "ERROR 50 ", strlen ("ERROR 50 ")) == 0) {
 		return _("Trying to update an unsupported configuration key.");
 	} else if (strncmp (ret, "ERROR 100 ", strlen ("ERROR 100 ")) == 0) {
-		return _("You do not seem to have authentication needed "
-			 "be for this operation.  Perhaps your .Xauthority "
+		return _("You do not seem to have the authentication needed "
+			 "for this operation.  Perhaps your .Xauthority "
 			 "file is not set up correctly.");
 	} else if (strncmp (ret, "ERROR 200 ", strlen ("ERROR 200 ")) == 0) {
 		return _("Too many messages were sent to gdm and it hung up"
