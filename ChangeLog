@@ -5,6 +5,13 @@
 	  vicious-extensions/glade-helper.c:  Fix typos
 	  in strings.  Fixes bug 301694.  Patch provided
 	  by Kjartan Maraas.
+	* daemon/slave.c: To support when one username can be
+	  mapped to another canonical username, we use the
+	  loginname that pwent returns instead of the one
+	  that was typed. in.  Fixes bug #301820.  Now use
+	  seteuid before checking existance of user's home
+	  directory since root doesn't always have access
+	  and fails otherwise.  Fixes bug #301821.
 
 2005-04-22  Brian Cameron  <brian.cameron@sun.com>
 

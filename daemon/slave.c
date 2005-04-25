@@ -3590,7 +3590,7 @@ session_child_run (struct passwd *pwent,
 
 	/* Run the PreSession script */
 	if G_UNLIKELY (gdm_slave_exec_script (d, GdmPreSession,
-					      login, pwent,
+                                              pwent->pw_name, pwent,
 					      TRUE /* pass_stdout */) != EXIT_SUCCESS &&
 		       /* ignore errors in failsafe modes */
 		       ! failsafe) 
@@ -3603,9 +3603,9 @@ session_child_run (struct passwd *pwent,
 	/* Prepare user session */
 	ve_setenv ("XAUTHORITY", d->userauth, TRUE);
 	ve_setenv ("DISPLAY", d->name, TRUE);
-	ve_setenv ("LOGNAME", login, TRUE);
-	ve_setenv ("USER", login, TRUE);
-	ve_setenv ("USERNAME", login, TRUE);
+	ve_setenv ("LOGNAME", pwent->pw_name, TRUE);
+	ve_setenv ("USER", pwent->pw_name, TRUE);
+	ve_setenv ("USERNAME", pwent->pw_name, TRUE);
 	ve_setenv ("HOME", home_dir, TRUE);
 	ve_setenv ("GDMSESSION", session, TRUE);
 	ve_setenv ("DESKTOP_SESSION", session, TRUE);
@@ -4011,6 +4011,15 @@ gdm_slave_session_start (void)
 	    /* script failed so just try again */
 	    return;
 		
+
+    }
+
+    if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+		   seteuid (pwent->pw_uid) != 0) {
+	    gdm_error ("Cannot set effective user/group id");
+	    gdm_verify_cleanup (d);
+	    session_started = FALSE;
+	    return;
     }
 
     if G_UNLIKELY (pwent->pw_dir == NULL ||
@@ -4023,6 +4032,9 @@ gdm_slave_session_start (void)
 		       "It is unlikely anything will work unless "
 		       "you use a failsafe session."),
 		     ve_sure_string (pwent->pw_dir));
+
+            seteuid (0);
+            setegid (GdmGroupId);
 
 	    gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
 		       "gdm_slave_session_start",
