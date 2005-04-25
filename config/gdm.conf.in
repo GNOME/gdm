@@ -359,8 +359,21 @@ DefaultRemoteWelcome=true
 # Program to run to draw the background in the standard greeter.  Perhaps
 # something like an xscreensaver hack or some such.
 #BackgroundProgram=
-# if this is true then the background program is run always, otherwise
+# If this is true then the background program is run always, otherwise
 # it is only run when the BackgroundType is 0 (None)
+#BackgroundProgramInitialDelay=30
+#  The background program will be started after at least that many 
+#  seconds of inactivity. Note that in the current implementation, the actual
+#  delay could be twice as long as the one specified here in the worst case. 
+#  Basically GDM checks from time to time if there was activity and runs
+#  the program if there was none.
+#RestartBackgroundProgram=true
+#  If set the background program will be restarted when it has exited, after 
+#  the delay described below has elapsed.  This option can be useful when you
+#  wish to run a screen saver program when no user is using the machine.
+#BackgroundProgramRestartDelay=30
+#  The background program will be restarted after at least that many seconds 
+#  of inactivity.
 #RunBackgroundProgramAlways=false
 # Show the Failsafe sessions.  These are much MUCH nicer (focus for xterm for
 # example) and more failsafe then those supplied by scripts so distros should

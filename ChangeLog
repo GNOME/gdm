@@ -8,10 +8,25 @@
 	* daemon/slave.c: To support when one username can be
 	  mapped to another canonical username, we use the
 	  loginname that pwent returns instead of the one
-	  that was typed. in.  Fixes bug #301820.  Now use
-	  seteuid before checking existance of user's home
-	  directory since root doesn't always have access
-	  and fails otherwise.  Fixes bug #301821.
+	  that was typed. in.  Fixes bug #301820.  Patch
+	  provided by Mike Patnode.  Now use seteuid before
+	  checking existance of user's home directory since
+	  root doesn't always have access and fails otherwise.
+	  Fixes bug #301821.  Patch provided by Ray Strode.
+	* gui/greeter/Makefile.am,
+	  gui/greeter/greeter_canvas_item.c:
+	  Added:  gui/greeter/canvas_text.[ch]: 
+	  No longer rely on Xserver physical screen geometry
+	  which sometimes causes text to be too big or too
+	  small.  Now use gdk/pango functions to get root
+	  window resources.  Fixes bug #301824.  Patch 
+	  provided by Ray Strode.
+	* config/gdm.conf.in, daemon/gdm.h, docs/C/gdm.xml,
+	  gui/gdmlogin.c:  Now support background programs
+	  that are started after a timedelay and can be
+	  restarted after a delay.  Useful for running a
+	  screensaver at login time.  Fixes bug #301528.
+	  Patch provided by Laurent Birtz.
 
 2005-04-22  Brian Cameron  <brian.cameron@sun.com>
 

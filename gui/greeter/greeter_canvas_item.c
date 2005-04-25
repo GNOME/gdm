@@ -33,6 +33,7 @@
 #include "greeter_system.h"
 #include "greeter_canvas_item.h"
 #include "greeter_configuration.h"
+#include "greeter_canvas_text.h"
 
 static void
 apply_tint (GdkPixbuf *pixbuf, guint32 tint_color)
@@ -263,9 +264,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	      item->data.pixmap.pixbufs[i] = g_object_ref (item->data.pixmap.pixbufs[0]);
 	    else
 	      item->data.pixmap.pixbufs[i] =
-	        rsvg_pixbuf_from_file_at_size (item->data.pixmap.files[i],
-					       rect.width, rect.height,
-					       NULL);
+                  gdk_pixbuf_new_from_file_at_size (item->data.pixmap.files[i], rect.width, rect.height, NULL);
 	  }
 	else
 	  item->data.pixmap.pixbufs[i] = NULL;
@@ -313,7 +312,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	    just = GTK_JUSTIFY_CENTER;
 
     item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_TEXT,
+					GREETER_TYPE_CANVAS_TEXT,
 					"text", "",
 					"x", x1,
 					"y", y1,
@@ -555,7 +554,7 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 		canvas_item = real_item;
 	else
 		canvas_item = gnome_canvas_item_new (gnome_canvas_root (canvas),
-						     GNOME_TYPE_CANVAS_TEXT,
+						     GREETER_TYPE_CANVAS_TEXT,
 						     textattr, "",
 						     "x", 0.0,
 						     "y", 0.0,

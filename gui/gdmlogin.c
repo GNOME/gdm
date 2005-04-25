@@ -89,6 +89,9 @@ static gboolean GdmDefaultWelcome;
 static gchar *GdmWelcome;
 static gchar *GdmBackgroundProg;
 static gboolean GdmRunBackgroundProgAlways;
+static gint GdmBackgroundProgInitialDelay;
+static gboolean GdmRestartBackgroundProgram;
+static gint GdmBackgroundProgRestartDelay;
 static gchar *GdmBackgroundImage;
 static gchar *GdmBackgroundColor;
 static gboolean GdmBackgroundScaleToFit;
@@ -190,7 +193,21 @@ static gint curdelay = 0;
 static gint savesess = GTK_RESPONSE_NO;
 static gint savelang = GTK_RESPONSE_NO;
 
-static pid_t backgroundpid = 0;
+/* back_prog_timeout_event_id: event of the timer.
+ * back_prog_watcher_event_id: event of the background program watcher.
+ * back_prog_pid: 	       process ID of the background program.
+ * back_prog_has_run:	       true if the background program has run
+ *  			       at least once.
+ * back_prog_watching_events:  true if we are watching for user events.
+ * back_prog_delayed: 	       true if the execution of the program has
+ *                             been delayed.
+ */
+static gint back_prog_timeout_event_id = -1;
+static gint back_prog_watcher_event_id = -1;
+static gint back_prog_pid = -1;
+static gboolean back_prog_has_run = FALSE;
+static gboolean back_prog_watching_events = FALSE;
+static gboolean back_prog_delayed = FALSE;
 
 static guint timed_handler_id = 0;
 
@@ -204,6 +221,250 @@ static gboolean selecting_user = TRUE;
 static gboolean session_dir_whacked_out = FALSE;
 
 static void login_window_resize (gboolean force);
+
+
+/* Background program logic */
+static void back_prog_on_exit (GPid pid, gint status, gpointer data);
+static gboolean back_prog_on_timeout (gpointer data);
+static gboolean back_prog_delay_timeout (GSignalInvocationHint *ihint, 
+					 guint n_param_values, 
+					 const GValue *param_values, 
+					 gpointer data);
+static void back_prog_watch_events (void);
+static gchar * back_prog_get_path (void);
+static void back_prog_launch_after_timeout (void);
+static void back_prog_run (void);
+static void back_prog_stop (void);
+
+/* 
+ * This function is called when the background program exits.
+ * It will add a timer to restart the program after the
+ * restart delay has elapsed, if this is enabled.
+ */
+static void 
+back_prog_on_exit (GPid pid, gint status, gpointer data)
+{
+	g_assert (back_prog_timeout_event_id == -1);
+	
+	back_prog_watcher_event_id = -1;
+	back_prog_pid = -1;
+	
+	back_prog_launch_after_timeout ();
+}
+
+/* 
+ * This function starts the background program (if any) when
+ * the background program timer triggers, unless the execution
+ * has been delayed.
+ */
+static gboolean 
+back_prog_on_timeout (gpointer data)
+{
+	g_assert (back_prog_watcher_event_id == -1);
+	g_assert (back_prog_pid == -1);
+	
+	back_prog_timeout_event_id = -1;
+	
+	if (back_prog_delayed) {
+	 	back_prog_launch_after_timeout ();
+	} else {
+		back_prog_run ();
+	}
+	
+	return FALSE;
+}
+
+/*
+ * This function is called to delay the execution of the background
+ * program when the user is doing something (when we detect an event).
+ */
+static gboolean
+back_prog_delay_timeout (GSignalInvocationHint *ihint,
+	       		 guint n_param_values,
+	       		 const GValue *param_values,
+	       		 gpointer data)
+{
+	back_prog_delayed = TRUE;
+	return TRUE;
+}
+
+/*
+ * This function creates signal listeners to catch user events.
+ * That allows us to avoid spawning the background program
+ * when the user is doing something.
+ */
+static void
+back_prog_watch_events (void)
+	{
+	guint sid;
+	
+	if (back_prog_watching_events)
+		return;
+	
+	back_prog_watching_events = TRUE;
+	
+	sid = g_signal_lookup ("activate", GTK_TYPE_MENU_ITEM);
+	g_signal_add_emission_hook (sid, 0, back_prog_delay_timeout, 
+				    NULL, NULL);
+
+	sid = g_signal_lookup ("key_press_event", GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid, 0, back_prog_delay_timeout, 
+				    NULL, NULL);
+
+	sid = g_signal_lookup ("button_press_event", GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid, 0, back_prog_delay_timeout, 
+				    NULL, NULL);
+	}
+
+/*
+ * This function returns the path of the background program
+ * if there is one. Otherwise, NULL is returned.
+ */
+static gchar *
+back_prog_get_path (void)
+{
+	if ((GdmBackgroundType == GDM_BACKGROUND_NONE ||
+	     GdmRunBackgroundProgAlways) &&
+	    ! ve_string_empty (GdmBackgroundProg)) {
+		return GdmBackgroundProg;
+	} else 
+		return NULL;
+}
+
+/* 
+ * This function creates a timer to start the background 
+ * program after the requested delay (in seconds) has elapsed.
+ */ 
+static void 
+back_prog_launch_after_timeout ()
+{
+	g_assert (back_prog_timeout_event_id == -1);
+	g_assert (back_prog_watcher_event_id == -1);
+	g_assert (back_prog_pid == -1);
+	
+	int timeout;
+	
+	/* No program to run. */
+	if (! back_prog_get_path ())
+		return;
+	
+	/* First time. */
+	if (! back_prog_has_run) {
+		timeout = GdmBackgroundProgInitialDelay;
+		
+	/* Already run, but we are allowed to restart it. */
+	} else if (GdmRestartBackgroundProgram) {
+		timeout = GdmBackgroundProgRestartDelay;
+	
+	/* Already run, but we are not allowed to restart it. */
+	} else {
+		return;
+	}
+	
+	back_prog_delayed = FALSE;
+	back_prog_watch_events ();
+	back_prog_timeout_event_id = g_timeout_add (timeout * 1000,
+						    back_prog_on_timeout,
+						    NULL);
+}
+
+/* 
+ * This function starts the background program (if any).
+ */
+static void
+back_prog_run (void)
+{
+	GPid pid = -1;
+	GError *error = NULL;
+	gchar *command = NULL;
+	gchar **back_prog_argv = NULL;
+	
+	g_assert (back_prog_timeout_event_id == -1);
+	g_assert (back_prog_watcher_event_id == -1);
+	g_assert (back_prog_pid == -1);
+	
+	command = back_prog_get_path ();
+	if (! command)
+		return;
+	
+	/* Focus new windows. We want to give focus to the background program. */
+	gdm_wm_focus_new_windows (TRUE);
+		
+	back_prog_argv = ve_split (command);	
+	
+	/* Don't reap child automatically: we want to catch the event. */
+	if (! g_spawn_async (".", 
+			     back_prog_argv, 
+			     NULL, 
+			     (GSpawnFlags) (G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD), 
+			     NULL, 
+			     NULL, 
+			     &pid, 
+			     &error)) {
+			    
+		GtkWidget *dialog;
+		dialog = ve_hig_dialog_new (NULL,
+					    GTK_DIALOG_MODAL,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    FALSE,
+					    _("Cannot start background program"),
+					    _("Cannot start program '%s': %s."),
+					    command,
+					    error->message);
+		gtk_widget_show_all (dialog);
+		gdm_wm_center_window (GTK_WINDOW (dialog));
+
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		g_error_free (error);
+		g_strfreev (back_prog_argv);
+		
+		return;
+	}
+	
+	g_strfreev (back_prog_argv);
+	back_prog_watcher_event_id = g_child_watch_add (pid, 
+							back_prog_on_exit,
+							NULL);
+	back_prog_pid = pid;
+	back_prog_has_run = TRUE;
+}
+
+/*
+ * This function stops the background program if it is running,
+ * and removes any associated timer or watcher.
+ */
+static void 
+back_prog_stop (void)
+{
+	if (back_prog_timeout_event_id != -1) {
+		GSource *source = g_main_context_find_source_by_id
+					(NULL, back_prog_timeout_event_id);
+		if (source != NULL)
+			g_source_destroy (source);
+			
+		back_prog_timeout_event_id = -1;
+	}
+	
+	if (back_prog_watcher_event_id != -1) {
+		GSource *source = g_main_context_find_source_by_id
+					(NULL, back_prog_watcher_event_id);
+		if (source != NULL)
+			g_source_destroy (source);
+			
+		back_prog_watcher_event_id = -1;
+	}
+	
+	if (back_prog_pid != -1) {		
+		if (kill (back_prog_pid, SIGTERM) == 0) {
+			waitpid (back_prog_pid, NULL, 0);
+		}
+
+		back_prog_pid = -1;
+	}
+}
+
 
 /*
  * Timed Login: Timer
@@ -319,21 +580,15 @@ gdm_event (GSignalInvocationHint *ihint,
 void
 gdm_kill_thingies (void)
 {
-	pid_t pid = backgroundpid;
-
-	backgroundpid = 0;
-	if (pid > 0) {
-		if (kill (pid, SIGTERM) == 0)
-			waitpid (pid, NULL, 0);
-	}
+	back_prog_stop ();
 }
 
 
 static void
 gdm_login_done (int sig)
 {
-    gdm_kill_thingies ();
-    _exit (EXIT_SUCCESS);
+	gdm_kill_thingies ();
+	_exit (EXIT_SUCCESS);
 }
 
 static void
@@ -533,55 +788,6 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
     return g_string_free (str, FALSE);
 }
 
-static pid_t
-gdm_run_command (const char *command)
-{
-	pid_t pid;
-	char **argv;
-
-	pid = fork ();
-
-	if G_UNLIKELY (pid == -1) {
-		GtkWidget *dialog;
-		/* We can't fork, that means we're pretty up a creek
-		 * without a paddle. */
-		dialog = ve_hig_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    FALSE /* markup */,
-					    _("Could not fork a new process!"),
-					    "%s",
-					    _("You likely won't be able to log "
-					      "in either."));
-		gtk_widget_show_all (dialog);
-		gdm_wm_center_window (GTK_WINDOW (dialog));
-
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-	} else if (pid == 0) {
-		int i;
-
-		/* close everything */
-
-		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-			close(i);
-
-		/* No error checking here - if it's messed the best
-		 * response is to ignore & try to continue */
-		open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-		open("/dev/null", O_RDWR); /* open stdout - fd 1 */
-		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
-
-		argv = ve_split (command);
-		execv (argv[0], argv);
-		/*ingore errors, this is irrelevant */
-		_exit (0);
-	}
-
-	return pid;
-}
-
 static void
 gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 {
@@ -711,6 +917,9 @@ gdm_login_parse_config (void)
 
     GdmBackgroundProg = ve_config_get_string (config, GDM_KEY_BACKGROUNDPROG);
     GdmRunBackgroundProgAlways = ve_config_get_bool (config, GDM_KEY_RUNBACKGROUNDPROGALWAYS);
+    GdmBackgroundProgInitialDelay = ve_config_get_int (config, GDM_KEY_BACKGROUNDPROGINITIALDELAY);
+    GdmRestartBackgroundProgram = ve_config_get_bool (config, GDM_KEY_RESTARTBACKGROUNDPROG);
+    GdmBackgroundProgRestartDelay = ve_config_get_int (config, GDM_KEY_BACKGROUNDPROGRESTARTDELAY);
     GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
     GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
     GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUNDTYPE);
@@ -2604,7 +2813,7 @@ update_clock (gpointer data)
 	return FALSE;
 }
 
-/* doesn't check for executability, just for existance */
+/* doesn't check for executability, just for existence */
 static gboolean
 bin_exists (const char *command)
 {
@@ -2613,7 +2822,7 @@ bin_exists (const char *command)
 	if (ve_string_empty (command))
 		return FALSE;
 
-	/* Note, check only for existance, not for executability */
+	/* Note, check only for existence, not for executability */
 	bin = ve_first_word (command);
 	if (bin != NULL &&
 	    access (bin, F_OK) == 0) {
@@ -3399,22 +3608,6 @@ setup_background (void)
 	}
 }
 
-
-/* Load the background stuff, the image and program */
-static void
-run_backgrounds (void)
-{
-	setup_background ();
-
-	/* Launch a background program if one exists */
-	if ((GdmBackgroundType == GDM_BACKGROUND_NONE ||
-	     GdmRunBackgroundProgAlways) &&
-	    ! ve_string_empty (GdmBackgroundProg)) {
-		backgroundpid = gdm_run_command (GdmBackgroundProg);
-		g_atexit (gdm_kill_thingies);
-	}
-}
-
 enum {
 	RESPONSE_RESTART,
 	RESPONSE_REBOOT,
@@ -3474,18 +3667,9 @@ gdm_reread_config (int sig, gpointer data)
 		GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUNDSCALETOFIT);
 		GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
 
-		if (GdmBackgroundType != GDM_BACKGROUND_NONE &&
-		    ! GdmRunBackgroundProgAlways)
-			gdm_kill_thingies ();
-
+		gdm_kill_thingies ();
 		setup_background ();
-
-		/* Launch a background program if one exists */
-		if ((GdmBackgroundType == GDM_BACKGROUND_NONE ||
-		     GdmRunBackgroundProgAlways) &&
-		    ! ve_string_empty (GdmBackgroundProg)) {
-			backgroundpid = gdm_run_command (GdmBackgroundProg);
-		}
+		back_prog_launch_after_timeout ();
 	}
 
 	GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
@@ -3800,15 +3984,11 @@ main (int argc, char *argv[])
     
     if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) 
 	gdm_common_abort (_("Could not set signal mask!"));
-
-    /* ignore SIGCHLD */
-    sigemptyset (&mask);
-    sigaddset (&mask, SIGCHLD);
     
-    if G_UNLIKELY (sigprocmask (SIG_BLOCK, &mask, NULL) == -1) 
-	gdm_common_abort (_("Could not set signal mask!"));
-
-    run_backgrounds ();
+    /* Load the background stuff, the image and program */
+    setup_background ();
+    g_atexit (gdm_kill_thingies);
+    back_prog_launch_after_timeout ();
 
     if G_LIKELY ( ! DOING_GDM_DEVELOPMENT) {
 	    ctrlch = g_io_channel_unix_new (STDIN_FILENO);

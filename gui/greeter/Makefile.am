@@ -31,6 +31,8 @@ gdmgreeter_SOURCES =  \
 	greeter.h \
 	greeter_action_language.c \
 	greeter_action_language.h \
+	greeter_canvas_text.c \
+	greeter_canvas_text.h \
 	greeter_canvas_item.c \
 	greeter_canvas_item.h \
 	greeter_configuration.h \
