@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-23 14:53-0400\n"
-"PO-Revision-Date: 2005-04-23 10:41-0400\n"
+"POT-Creation-Date: 2005-04-27 15:41-0400\n"
+"PO-Revision-Date: 2005-04-27 10:41-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -336,7 +336,7 @@ msgid ""
 msgstr ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 
-#: ../daemon/gdm.c:336 ../gui/gdmlogin.c:666 ../gui/greeter/greeter.c:133
+#: ../daemon/gdm.c:336 ../gui/gdmlogin.c:872 ../gui/greeter/greeter.c:133
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "%s: No configuration file: %s. Using defaults."
@@ -358,13 +358,12 @@ msgstr "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 
 #: ../daemon/gdm.c:493
 #, c-format
-msgid "%s: Root cannot be autologged in; turning off automatic login"
-msgstr ""
-"%s: Root cannot be logged in automatically; turning off automatic login"
+msgid "%s: Root cannot be logged in automatically, turning off automatic login"
+msgstr "%s: Root cannot be logged in automatically; turning off automatic login"
 
 #: ../daemon/gdm.c:506
 #, c-format
-msgid "%s: Root cannot be autologged in, turing off timed login"
+msgid "%s: Root cannot be logged in automatically, turning off timed login"
 msgstr "%s: Root cannot be logged in automatically; turning off timed login"
 
 #: ../daemon/gdm.c:512
@@ -704,8 +703,8 @@ msgstr "Only root wants to run gdm\n"
 #: ../daemon/server.c:531 ../daemon/server.c:544 ../daemon/slave.c:815
 #: ../daemon/slave.c:829 ../daemon/slave.c:839 ../daemon/slave.c:849
 #: ../daemon/slave.c:861 ../gui/gdmchooser.c:1936 ../gui/gdmchooser.c:1939
-#: ../gui/gdmchooser.c:1942 ../gui/gdmlogin.c:3783 ../gui/gdmlogin.c:3791
-#: ../gui/gdmlogin.c:3794 ../gui/greeter/greeter.c:1215
+#: ../gui/gdmchooser.c:1942 ../gui/gdmlogin.c:3967 ../gui/gdmlogin.c:3975
+#: ../gui/gdmlogin.c:3978 ../gui/greeter/greeter.c:1215
 #: ../gui/greeter/greeter.c:1223 ../gui/greeter/greeter.c:1226
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
@@ -956,7 +955,7 @@ msgstr "%s: cannot open display %s"
 
 #: ../daemon/slave.c:1748
 msgid ""
-"Could not execute the configuration program.  Make sure it's path is set "
+"Could not execute the configuration program.  Make sure its path is set "
 "correctly in the configuration file.  Attempting to start it from the "
 "default location."
 msgstr ""
@@ -966,10 +965,10 @@ msgstr ""
 
 #: ../daemon/slave.c:1762
 msgid ""
-"Could not execute the configuration program.  Make sure it's path is set "
+"Could not execute the configuration program.  Make sure its path is set "
 "correctly in the configuration file."
 msgstr ""
-"Could not execute the configuration program.  Make sure it's path is set "
+"Could not execute the configuration program.  Make sure its path is set "
 "correctly in the configuration file."
 
 #: ../daemon/slave.c:1924
@@ -1224,7 +1223,7 @@ msgstr "%s: User passed auth but getpwnam(%s) failed!"
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Execution of PostLogin script returned > 0. Aborting."
 
-#: ../daemon/slave.c:4019
+#: ../daemon/slave.c:4028
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1241,12 +1240,12 @@ msgstr ""
 "\n"
 "It is unlikely anything will work unless you use a failsafe session."
 
-#: ../daemon/slave.c:4027
+#: ../daemon/slave.c:4039
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Home directory for %s: '%s' does not exist!"
 
-#: ../daemon/slave.c:4105
+#: ../daemon/slave.c:4117
 msgid ""
 "Your $HOME/.dmrc file has incorrect permissions and is being ignored.  This "
 "prevents the default session and language from being saved.  File sould be "
@@ -1256,7 +1255,7 @@ msgstr ""
 "prevents the default session and language from being saved.  File sould be "
 "owned by user and have 644 permissions."
 
-#: ../daemon/slave.c:4231
+#: ../daemon/slave.c:4243
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1268,12 +1267,12 @@ msgstr ""
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
 
-#: ../daemon/slave.c:4307
+#: ../daemon/slave.c:4319
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Error forking user session"
 
-#: ../daemon/slave.c:4388
+#: ../daemon/slave.c:4400
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1285,25 +1284,25 @@ msgstr ""
 "you may be out of diskspace.  Try logging in with one of the failsafe "
 "sessions to see if you can fix this problem."
 
-#: ../daemon/slave.c:4396
+#: ../daemon/slave.c:4408
 msgid "View details (~/.xsession-errors file)"
 msgstr "View details (~/.xsession-errors file)"
 
-#: ../daemon/slave.c:4539
+#: ../daemon/slave.c:4551
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM detected a shutdown or reboot in progress."
 
-#: ../daemon/slave.c:4633
+#: ../daemon/slave.c:4645
 #, c-format
 msgid "Ping to %s failed; whacking display!"
 msgstr "Ping to %s failed; whacking display!"
 
-#: ../daemon/slave.c:4904
+#: ../daemon/slave.c:4916
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Fatal X error - Restarting %s"
 
-#: ../daemon/slave.c:4973
+#: ../daemon/slave.c:4985
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1311,22 +1310,22 @@ msgstr ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
 
-#: ../daemon/slave.c:5329
+#: ../daemon/slave.c:5341
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Failed starting: %s"
 
-#: ../daemon/slave.c:5336 ../daemon/slave.c:5475
+#: ../daemon/slave.c:5348 ../daemon/slave.c:5487
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Can't fork script process!"
 
-#: ../daemon/slave.c:5430
+#: ../daemon/slave.c:5442
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Failed creating pipe"
 
-#: ../daemon/slave.c:5469
+#: ../daemon/slave.c:5481
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Failed executing: %s"
@@ -1346,7 +1345,7 @@ msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Please make sure the Caps Lock key is not enabled."
 
 #: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:441
-#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:3128
+#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:3337
 msgid "Please enter your username"
 msgstr "Please enter your username"
 
@@ -1354,15 +1353,15 @@ msgstr "Please enter your username"
 #: ../daemon/verify-crypt.c:128 ../daemon/verify-pam.c:341
 #: ../daemon/verify-pam.c:342 ../daemon/verify-pam.c:343
 #: ../daemon/verify-pam.c:428 ../daemon/verify-pam.c:787
-#: ../daemon/verify-shadow.c:127 ../gui/gdmlogin.c:1098 ../gui/gdmlogin.c:1112
-#: ../gui/gdmlogin.c:1935 ../gui/gdmlogin.c:2442 ../gui/greeter/greeter.c:324
+#: ../daemon/verify-shadow.c:127 ../gui/gdmlogin.c:1307 ../gui/gdmlogin.c:1321
+#: ../gui/gdmlogin.c:2144 ../gui/gdmlogin.c:2651 ../gui/greeter/greeter.c:324
 #: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "Username:"
 
 #: ../daemon/verify-crypt.c:166 ../daemon/verify-pam.c:344
 #: ../daemon/verify-pam.c:345 ../daemon/verify-pam.c:489
-#: ../daemon/verify-shadow.c:184 ../gui/gdmlogin.c:1968
+#: ../daemon/verify-shadow.c:184 ../gui/gdmlogin.c:2177
 msgid "Password:"
 msgstr "Password:"
 
@@ -1636,10 +1635,10 @@ msgstr "Automatic login"
 #: ../daemon/verify-pam.c:1219
 msgid ""
 "\n"
-"The system administrator has disabled your access to the system temporary."
+"The system administrator has disabled your access to the system temporarily."
 msgstr ""
 "\n"
-"The system administrator has disabled your access to the system temporary."
+"The system administrator has disabled your access to the system temporarily."
 
 #: ../daemon/verify-pam.c:1433 ../daemon/verify-pam.c:1435
 msgid "Can't find PAM configuration for gdm."
@@ -2000,7 +1999,7 @@ msgstr ""
 msgid "Can't open default host icon: %s"
 msgstr "Can't open default host icon: %s"
 
-#: ../gui/gdmchooser.c:1950 ../gui/gdmlogin.c:3802 ../gui/gdmlogin.c:3809
+#: ../gui/gdmchooser.c:1950 ../gui/gdmlogin.c:3986
 #: ../gui/greeter/greeter.c:1234 ../gui/greeter/greeter.c:1241
 msgid "Could not set signal mask!"
 msgstr "Could not set signal mask!"
@@ -2137,11 +2136,11 @@ msgstr "Trying to update an unsupported configuration key."
 
 #: ../gui/gdmcomm.c:490
 msgid ""
-"You do not seem to have authentication needed be for this operation.  "
+"You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
-"You do not seem to have authentication needed be for this operation.  "
-"Perhaps your .Xauthority file is not set up correctly."
+"You do not seem to have the authentication needed for this operation.  "
+"Your .Xauthority file may be set up incorrectly."
 
 #: ../gui/gdmcomm.c:494
 msgid "Too many messages were sent to gdm and it hung upon us."
@@ -2178,7 +2177,7 @@ msgstr "Display %s on virtual terminal %d"
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Nested display %s on virtual terminal %d"
 
-#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2974
+#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:3183
 #: ../gui/greeter/greeter_item_ulist.c:211
 msgid "Username"
 msgstr "Username"
@@ -2746,74 +2745,74 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: ../gui/gdmlogin.c:225
+#: ../gui/gdmlogin.c:411
+msgid "Cannot start background program"
+msgstr "Cannot start background program"
+
+#: ../gui/gdmlogin.c:412
+#, c-format
+msgid "Cannot start program '%s': %s."
+msgstr "Cannot start program '%s': %s."
+
+#: ../gui/gdmlogin.c:486
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "User %s will login in %d seconds"
 
-#: ../gui/gdmlogin.c:229 ../gui/greeter/greeter_parser.c:1107
+#: ../gui/gdmlogin.c:490 ../gui/greeter/greeter_parser.c:1107
 #, c-format
 msgid "User %s will login in %d second"
 msgid_plural "User %s will login in %d seconds"
 msgstr[0] "User %s will log in in %d second"
 msgstr[1] "User %s will log in in %d seconds"
 
-#: ../gui/gdmlogin.c:463
+#: ../gui/gdmlogin.c:718
 #, c-format
 msgid "%s: String too long!"
 msgstr "%s: String too long!"
 
-#: ../gui/gdmlogin.c:465
+#: ../gui/gdmlogin.c:720
 #, c-format
 msgid "%sWelcome to %s%s"
 msgstr "%sWelcome to %s%s"
 
-#. markup
-#: ../gui/gdmlogin.c:553
-msgid "Could not fork a new process!"
-msgstr "Could not fork a new process!"
-
-#: ../gui/gdmlogin.c:555
-msgid "You likely won't be able to log in either."
-msgstr "You likely won't be able to log in either."
-
-#: ../gui/gdmlogin.c:599 ../gui/greeter/greeter_system.c:63
+#: ../gui/gdmlogin.c:805 ../gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Are you sure you want to reboot the machine?"
 
 #. markup
-#: ../gui/gdmlogin.c:601 ../gui/gdmlogin.c:2837
+#: ../gui/gdmlogin.c:807 ../gui/gdmlogin.c:3046
 #: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
 #: ../gui/greeter/greeter_system.c:186
 msgid "_Reboot"
 msgstr "_Reboot"
 
-#: ../gui/gdmlogin.c:613 ../gui/greeter/greeter_system.c:76
+#: ../gui/gdmlogin.c:819 ../gui/greeter/greeter_system.c:76
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Are you sure you want to shut down the machine?"
 
 #. markup
-#: ../gui/gdmlogin.c:615 ../gui/gdmlogin.c:2850
+#: ../gui/gdmlogin.c:821 ../gui/gdmlogin.c:3059
 #: ../gui/greeter/greeter_parser.c:1077 ../gui/greeter/greeter_system.c:77
 #: ../gui/greeter/greeter_system.c:198
 msgid "Shut _Down"
 msgstr "Shut _Down"
 
-#: ../gui/gdmlogin.c:635 ../gui/greeter/greeter_system.c:88
+#: ../gui/gdmlogin.c:841 ../gui/greeter/greeter_system.c:88
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Are you sure you want to suspend the machine?"
 
 #. markup
-#: ../gui/gdmlogin.c:637 ../gui/gdmlogin.c:2864
+#: ../gui/gdmlogin.c:843 ../gui/gdmlogin.c:3073
 #: ../gui/greeter/greeter_system.c:89
 msgid "_Suspend"
 msgstr "_Suspend"
 
-#: ../gui/gdmlogin.c:761 ../gui/greeter/greeter.c:228
+#: ../gui/gdmlogin.c:970 ../gui/greeter/greeter.c:228
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
 msgstr "TimedLoginDelay was less than 5.  I'll just use 5."
 
-#: ../gui/gdmlogin.c:879 ../gui/greeter/greeter_session.c:137
+#: ../gui/gdmlogin.c:1088 ../gui/greeter/greeter_session.c:137
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -2823,13 +2822,13 @@ msgstr ""
 "Do you wish to make %s the default for future sessions?"
 
 #. markup
-#: ../gui/gdmlogin.c:886 ../gui/gdmlogin.c:914 ../gui/gdmlogin.c:989
+#: ../gui/gdmlogin.c:1095 ../gui/gdmlogin.c:1123 ../gui/gdmlogin.c:1198
 #: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:143 ../gui/greeter/greeter_session.c:173
 msgid "Make _Default"
 msgstr "Make _Default"
 
-#: ../gui/gdmlogin.c:886 ../gui/greeter/greeter_session.c:143
+#: ../gui/gdmlogin.c:1095 ../gui/greeter/greeter_session.c:143
 msgid "Just _Log In"
 msgstr "Just _Log In"
 
@@ -2837,7 +2836,7 @@ msgstr "Just _Log In"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:905 ../gui/gdmlogin.c:983
+#: ../gui/gdmlogin.c:1114 ../gui/gdmlogin.c:1192
 #: ../gui/greeter/greeter_action_language.c:155
 #: ../gui/greeter/greeter_session.c:165
 #, c-format
@@ -2848,13 +2847,13 @@ msgstr ""
 "You have chosen %s for this session, but your default setting is %s.\n"
 "Do you wish to make %s the default for future sessions?"
 
-#: ../gui/gdmlogin.c:914 ../gui/gdmlogin.c:989
+#: ../gui/gdmlogin.c:1123 ../gui/gdmlogin.c:1198
 #: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:173
 msgid "Just For _This Session"
 msgstr "Just For _This Session"
 
-#: ../gui/gdmlogin.c:924 ../gui/greeter/greeter_session.c:186
+#: ../gui/gdmlogin.c:1133 ../gui/greeter/greeter_session.c:186
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2867,54 +2866,54 @@ msgstr ""
 "run the 'switchdesk' utility\n"
 "(System->Desktop Switching Tool from the panel menu)."
 
-#: ../gui/gdmlogin.c:965 ../gui/gdmlogin.c:974
+#: ../gui/gdmlogin.c:1174 ../gui/gdmlogin.c:1183
 #: ../gui/greeter/greeter_action_language.c:71
 #: ../gui/greeter/greeter_action_language.c:139
 #: ../gui/greeter/greeter_action_language.c:147
 msgid "System Default"
 msgstr "System Default"
 
-#: ../gui/gdmlogin.c:1099 ../gui/gdmlogin.c:1113 ../gui/gdmlogin.c:1937
-#: ../gui/gdmlogin.c:2443 ../gui/gdmlogin.c:3081
+#: ../gui/gdmlogin.c:1308 ../gui/gdmlogin.c:1322 ../gui/gdmlogin.c:2146
+#: ../gui/gdmlogin.c:2652 ../gui/gdmlogin.c:3290
 msgid "_Username:"
 msgstr "_Username:"
 
-#: ../gui/gdmlogin.c:1187
+#: ../gui/gdmlogin.c:1396
 #, c-format
 msgid "%s session selected"
 msgstr "%s session selected"
 
-#: ../gui/gdmlogin.c:1213 ../gui/gdmlogin.c:1529
+#: ../gui/gdmlogin.c:1422 ../gui/gdmlogin.c:1738
 #: ../gui/greeter/greeter_session.c:289
 msgid "_Last"
 msgstr "_Last"
 
-#: ../gui/gdmlogin.c:1224 ../gui/greeter/greeter_session.c:295
+#: ../gui/gdmlogin.c:1433 ../gui/greeter/greeter_session.c:295
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Log in using the session that you have used last time you logged in"
 
-#: ../gui/gdmlogin.c:1235
+#: ../gui/gdmlogin.c:1444
 msgid "Failsafe GNOME"
 msgstr "Failsafe GNOME"
 
-#: ../gui/gdmlogin.c:1236 ../gui/greeter/greeter_session.c:283
+#: ../gui/gdmlogin.c:1445 ../gui/greeter/greeter_session.c:283
 msgid "Failsafe xterm"
 msgstr "Failsafe xterm"
 
-#: ../gui/gdmlogin.c:1385 ../gui/greeter/greeter_session.c:447
+#: ../gui/gdmlogin.c:1594 ../gui/greeter/greeter_session.c:447
 #, c-format
 msgid "%s: Session directory %s not found!"
 msgstr "%s: Session directory %s not found!"
 
-#: ../gui/gdmlogin.c:1391 ../gui/greeter/greeter_session.c:455
-msgid "Yaikes, nothing found in the session directory."
+#: ../gui/gdmlogin.c:1600
+msgid "Yikes, nothing found in the session directory."
 msgstr "Yikes! Nothing found in the session directory."
 
-#: ../gui/gdmlogin.c:1402
+#: ../gui/gdmlogin.c:1611
 msgid "Failsafe _GNOME"
 msgstr "Failsafe _GNOME"
 
-#: ../gui/gdmlogin.c:1404 ../gui/greeter/greeter_session.c:469
+#: ../gui/gdmlogin.c:1613 ../gui/greeter/greeter_session.c:469
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -2924,11 +2923,11 @@ msgstr ""
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 
-#: ../gui/gdmlogin.c:1427 ../gui/greeter/greeter_session.c:491
+#: ../gui/gdmlogin.c:1636 ../gui/greeter/greeter_session.c:491
 msgid "Failsafe _Terminal"
 msgstr "Failsafe _Terminal"
 
-#: ../gui/gdmlogin.c:1429 ../gui/greeter/greeter_session.c:493
+#: ../gui/gdmlogin.c:1638 ../gui/greeter/greeter_session.c:493
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -2938,7 +2937,7 @@ msgstr ""
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 
-#: ../gui/gdmlogin.c:1450 ../gui/greeter/greeter_session.c:513
+#: ../gui/gdmlogin.c:1659 ../gui/greeter/greeter_session.c:513
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "No default session link found. Using Failsafe GNOME.\n"
 
@@ -2946,71 +2945,71 @@ msgstr "No default session link found. Using Failsafe GNOME.\n"
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1494
+#: ../gui/gdmlogin.c:1703
 #, c-format
 msgid "%s language selected"
 msgstr "%s language selected"
 
-#: ../gui/gdmlogin.c:1540
+#: ../gui/gdmlogin.c:1749
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Log in using the language that you have used last time you logged in"
 
-#: ../gui/gdmlogin.c:1544
+#: ../gui/gdmlogin.c:1753
 msgid "_System Default"
 msgstr "_System Default"
 
-#: ../gui/gdmlogin.c:1555
+#: ../gui/gdmlogin.c:1764
 msgid "Log in using the default system language"
 msgstr "Log in using the default system language"
 
-#: ../gui/gdmlogin.c:1579
+#: ../gui/gdmlogin.c:1788
 msgid "_Other"
 msgstr "_Other"
 
-#: ../gui/gdmlogin.c:1969
+#: ../gui/gdmlogin.c:2178
 msgid "_Password:"
 msgstr "_Password:"
 
 #. markup
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:2202 ../gui/greeter/greeter.c:484
+#: ../gui/gdmlogin.c:2411 ../gui/greeter/greeter.c:484
 msgid "Please insert 25 cents to log in."
 msgstr "Please insert 25 cents to log in."
 
-#: ../gui/gdmlogin.c:2564
+#: ../gui/gdmlogin.c:2773
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Desktop Manager"
 
-#: ../gui/gdmlogin.c:2590 ../gui/greeter/greeter_item.c:157
+#: ../gui/gdmlogin.c:2799 ../gui/greeter/greeter_item.c:157
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H:%M"
 
-#: ../gui/gdmlogin.c:2592 ../gui/greeter/greeter_item.c:161
+#: ../gui/gdmlogin.c:2801 ../gui/greeter/greeter_item.c:161
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d %b, %l:%M %p"
 
-#: ../gui/gdmlogin.c:2641
+#: ../gui/gdmlogin.c:2850
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2745
+#: ../gui/gdmlogin.c:2954
 msgid "GDM Login"
 msgstr "GDM Login"
 
-#: ../gui/gdmlogin.c:2788 ../gui/greeter/greeter_parser.c:1057
+#: ../gui/gdmlogin.c:2997 ../gui/greeter/greeter_parser.c:1057
 msgid "_Session"
 msgstr "_Session"
 
-#: ../gui/gdmlogin.c:2795 ../gui/greeter/greeter_parser.c:1052
+#: ../gui/gdmlogin.c:3004 ../gui/greeter/greeter_parser.c:1052
 msgid "_Language"
 msgstr "_Language"
 
-#: ../gui/gdmlogin.c:2807 ../gui/greeter/greeter_system.c:152
+#: ../gui/gdmlogin.c:3016 ../gui/greeter/greeter_system.c:152
 msgid "_XDMCP Chooser..."
 msgstr "_XDMCP Chooser..."
 
-#: ../gui/gdmlogin.c:2814 ../gui/greeter/greeter_system.c:159
+#: ../gui/gdmlogin.c:3023 ../gui/greeter/greeter_system.c:159
 #: ../gui/greeter/greeter_system.c:349
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
@@ -3019,59 +3018,59 @@ msgstr ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "machines, if there are any."
 
-#: ../gui/gdmlogin.c:2823 ../gui/greeter/greeter_system.c:167
+#: ../gui/gdmlogin.c:3032 ../gui/greeter/greeter_system.c:167
 msgid "_Configure Login Manager..."
 msgstr "_Configure Login Manager..."
 
-#: ../gui/gdmlogin.c:2830 ../gui/greeter/greeter_system.c:174
+#: ../gui/gdmlogin.c:3039 ../gui/greeter/greeter_system.c:174
 #: ../gui/greeter/greeter_system.c:369
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Configure GDM (this login manager). This will require the root password."
 
-#: ../gui/gdmlogin.c:2844 ../gui/greeter/greeter_system.c:193
+#: ../gui/gdmlogin.c:3053 ../gui/greeter/greeter_system.c:193
 msgid "Reboot your computer"
 msgstr "Reboot your computer"
 
-#: ../gui/gdmlogin.c:2857 ../gui/greeter/greeter_system.c:205
+#: ../gui/gdmlogin.c:3066 ../gui/greeter/greeter_system.c:205
 msgid "Shut down the system so that you may safely turn off the computer."
 msgstr "Shut down the system so that you may safely turn off the computer."
 
-#: ../gui/gdmlogin.c:2871 ../gui/greeter/greeter_system.c:218
+#: ../gui/gdmlogin.c:3080 ../gui/greeter/greeter_system.c:218
 msgid "Suspend your computer"
 msgstr "Suspend your computer"
 
-#: ../gui/gdmlogin.c:2877 ../gui/greeter/greeter_parser.c:1062
+#: ../gui/gdmlogin.c:3086 ../gui/greeter/greeter_parser.c:1062
 msgid "_Actions"
 msgstr "_Actions"
 
-#: ../gui/gdmlogin.c:2886
+#: ../gui/gdmlogin.c:3095
 msgid "_Theme"
 msgstr "_Theme"
 
-#: ../gui/gdmlogin.c:2897 ../gui/greeter/greeter_canvas_item.c:164
+#: ../gui/gdmlogin.c:3106 ../gui/greeter/greeter_canvas_item.c:165
 #: ../gui/greeter/greeter_parser.c:1072
 msgid "_Quit"
 msgstr "_Quit"
 
-#: ../gui/gdmlogin.c:2899 ../gui/greeter/greeter_canvas_item.c:166
+#: ../gui/gdmlogin.c:3108 ../gui/greeter/greeter_canvas_item.c:167
 #: ../gui/greeter/greeter_parser.c:1067
 msgid "D_isconnect"
 msgstr "D_isconnect"
 
-#: ../gui/gdmlogin.c:2967 ../gui/greeter/greeter_item_ulist.c:204
+#: ../gui/gdmlogin.c:3176 ../gui/greeter/greeter_item_ulist.c:204
 msgid "Icon"
 msgstr "Icon"
 
 #. markup
-#: ../gui/gdmlogin.c:3646 ../gui/gdmlogin.c:3677 ../gui/gdmlogin.c:3721
+#: ../gui/gdmlogin.c:3830 ../gui/gdmlogin.c:3861 ../gui/gdmlogin.c:3905
 #: ../gui/greeter/greeter.c:717 ../gui/greeter/greeter.c:749
 #: ../gui/greeter/greeter.c:794
 msgid "Cannot start the greeter"
 msgstr "Cannot start the greeter"
 
-#: ../gui/gdmlogin.c:3647 ../gui/gdmlogin.c:3678
+#: ../gui/gdmlogin.c:3831 ../gui/gdmlogin.c:3862
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -3082,12 +3081,12 @@ msgstr ""
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
 
-#: ../gui/gdmlogin.c:3684 ../gui/gdmlogin.c:3730 ../gui/greeter/greeter.c:756
+#: ../gui/gdmlogin.c:3868 ../gui/gdmlogin.c:3914 ../gui/greeter/greeter.c:756
 #: ../gui/greeter/greeter.c:803
 msgid "Reboot"
 msgstr "Reboot"
 
-#: ../gui/gdmlogin.c:3722
+#: ../gui/gdmlogin.c:3906
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -3098,21 +3097,21 @@ msgstr ""
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
 
-#: ../gui/gdmlogin.c:3728 ../gui/greeter/greeter.c:801
+#: ../gui/gdmlogin.c:3912 ../gui/greeter/greeter.c:801
 msgid "Restart"
 msgstr "Restart"
 
-#: ../gui/gdmlogin.c:3760
+#: ../gui/gdmlogin.c:3944
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Can't open DefaultImage: %s. Suspending face browser!"
 
 #. markup
-#: ../gui/gdmlogin.c:3922 ../gui/greeter/greeter.c:1467
+#: ../gui/gdmlogin.c:4102 ../gui/greeter/greeter.c:1467
 msgid "Session directory is missing"
 msgstr "Session directory is missing"
 
-#: ../gui/gdmlogin.c:3924 ../gui/greeter/greeter.c:1469
+#: ../gui/gdmlogin.c:4104 ../gui/greeter/greeter.c:1469
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3123,11 +3122,11 @@ msgstr ""
 "configuration."
 
 #. markup
-#: ../gui/gdmlogin.c:3948 ../gui/greeter/greeter.c:1494
+#: ../gui/gdmlogin.c:4128 ../gui/greeter/greeter.c:1494
 msgid "Configuration is not correct"
 msgstr "Configuration is not correct"
 
-#: ../gui/gdmlogin.c:3950 ../gui/greeter/greeter.c:1496
+#: ../gui/gdmlogin.c:4130 ../gui/greeter/greeter.c:1496
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3136,11 +3135,11 @@ msgstr ""
 "dialogue, so the default command will be run.  Please fix your configuration."
 
 #. markup
-#: ../gui/gdmlogin.c:3975 ../gui/greeter/greeter.c:1523
+#: ../gui/gdmlogin.c:4155 ../gui/greeter/greeter.c:1523
 msgid "No configuration was found"
 msgstr "No configuration was found"
 
-#: ../gui/gdmlogin.c:3977 ../gui/greeter/greeter.c:1525
+#: ../gui/gdmlogin.c:4157 ../gui/greeter/greeter.c:1525
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3728,8 +3727,8 @@ msgid ""
 "Note that not all configuration options are listed here.  You may want to "
 "edit %s if you cannot find what you are looking for.\n"
 "\n"
-"For complete documentation see the GNOME help browser Under the category "
-"GNOME/System."
+"For complete documentation see the GNOME help browser under the \"Desktop\" "
+"category."
 msgstr ""
 "This configuration window changes settings for the GDM daemon, which is the "
 "graphical login screen for GNOME.  Changes that you make will take effect "
@@ -3738,8 +3737,8 @@ msgstr ""
 "Note that not all configuration options are listed here.  You may want to "
 "edit %s if you cannot find what you are looking for.\n"
 "\n"
-"For complete documentation see the GNOME help browser Under the category "
-"GNOME/System."
+"For complete documentation see the GNOME help browser under the \"Desktop\" "
+"category."
 
 #. markup
 #: ../gui/gdmsetup.c:3720
@@ -3843,15 +3842,15 @@ msgstr "Select a language"
 msgid "Select a language for your session to use:"
 msgstr "Select a language for your session to use:"
 
-#: ../gui/greeter/greeter_canvas_item.c:143
+#: ../gui/greeter/greeter_canvas_item.c:144
 msgid "Select _Language..."
 msgstr "Select _Language..."
 
-#: ../gui/greeter/greeter_canvas_item.c:150
+#: ../gui/greeter/greeter_canvas_item.c:151
 msgid "Select _Session..."
 msgstr "Select _Session..."
 
-#: ../gui/greeter/greeter_canvas_item.c:395
+#: ../gui/greeter/greeter_canvas_item.c:394
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Answer questions here and press Enter when done.  For a menu press F10."
@@ -3892,6 +3891,10 @@ msgstr "Choose a Session"
 #: ../gui/greeter/greeter_session.c:282
 msgid "Failsafe Gnome"
 msgstr "Failsafe Gnome"
+
+#: ../gui/greeter/greeter_session.c:455
+msgid "Yaikes, nothing found in the session directory."
+msgstr "Yikes! Nothing found in the session directory."
 
 #: ../gui/greeter/greeter_session.c:467
 msgid "Failsafe _Gnome"
@@ -3994,14 +3997,11 @@ msgid "Authentication failure!\n"
 msgstr "Authentication failure!\n"
 
 #: ../vicious-extensions/glade-helper.c:84
-msgid "(memory buffer)"
-msgstr "(memory buffer)"
-
 #: ../vicious-extensions/glade-helper.c:116
 #: ../vicious-extensions/glade-helper.c:138
 #: ../vicious-extensions/glade-helper.c:158
-msgid "(memory buffer"
-msgstr "(memory buffer"
+msgid "(memory buffer)"
+msgstr "(memory buffer)"
 
 #. markup
 #: ../vicious-extensions/glade-helper.c:194
@@ -4013,13 +4013,12 @@ msgstr "Cannot load user interface"
 #: ../vicious-extensions/glade-helper.c:195
 #, c-format
 msgid ""
-"An error occurred while loading the user interface element %s%s from file %"
-"s.  Possibly the glade interface description was corrupted.  %s cannot "
-"continue and will exit now.  You should check your installation of %s or "
-"reinstall %s."
+"An error occurred while loading user interface element %s%s from file %s.  "
+"Possibly the glade interface description was corrupted.  %s cannot continue "
+"and will exit now.  You should check your installation of %s or reinstall %s."
 msgstr ""
-"An error occurred while loading the user interface element %s%s from file %"
-"s.  The glade interface description may be corrupted.  %s cannot continue "
+"An error occurred while loading user interface element %s%s from file %s.  "
+"The glade interface description may be corrupted.  %s cannot continue "
 "and will exit now.  You should check your installation of %s or reinstall %s."
 
 #: ../vicious-extensions/glade-helper.c:211
