@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.6.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-15 21:42+0900\n"
-"PO-Revision-Date: 2005-02-15 21:47+0900\n"
+"POT-Creation-Date: 2005-05-03 07:20+0900\n"
+"PO-Revision-Date: 2005-05-03 07:21+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -694,14 +694,14 @@ msgstr "루트만이 gdm을 실행합니다\n"
 #: ../daemon/gdm.c:2103 ../daemon/gdm.c:2107 ../daemon/gdm.c:2182
 #: ../daemon/gdm.c:2186 ../daemon/gdm.c:2190 ../daemon/gdm.c:2194
 #: ../daemon/gdm.c:2204 ../daemon/gdm.c:2210 ../daemon/gdm.c:2221
-#: ../daemon/misc.c:1648 ../daemon/misc.c:1652 ../daemon/misc.c:1656
-#: ../daemon/misc.c:1663 ../daemon/misc.c:1667 ../daemon/misc.c:1671
+#: ../daemon/misc.c:1746 ../daemon/misc.c:1750 ../daemon/misc.c:1754
+#: ../daemon/misc.c:1761 ../daemon/misc.c:1765 ../daemon/misc.c:1769
 #: ../daemon/server.c:521 ../daemon/server.c:534 ../daemon/slave.c:810
 #: ../daemon/slave.c:824 ../daemon/slave.c:834 ../daemon/slave.c:844
 #: ../daemon/slave.c:856 ../gui/gdmchooser.c:1936 ../gui/gdmchooser.c:1939
 #: ../gui/gdmchooser.c:1942 ../gui/gdmlogin.c:3962 ../gui/gdmlogin.c:3970
-#: ../gui/gdmlogin.c:3973 ../gui/greeter/greeter.c:1091
-#: ../gui/greeter/greeter.c:1099 ../gui/greeter/greeter.c:1102
+#: ../gui/gdmlogin.c:3973 ../gui/greeter/greeter.c:1094
+#: ../gui/greeter/greeter.c:1102 ../gui/greeter/greeter.c:1105
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: %s 시그널 처리기 설정에 오류가 발생했습니다: %s"
@@ -738,31 +738,31 @@ msgstr ""
 "다."
 
 #. Translators, don't translate the 'y' and 'n'
-#: ../daemon/misc.c:652
+#: ../daemon/misc.c:750
 msgid "y = Yes or n = No? >"
 msgstr "y = 예 또는 n = 아니오? >"
 
-#: ../daemon/misc.c:1016
+#: ../daemon/misc.c:1114
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: 로컬 주소를 얻을 수 없습니다!"
 
-#: ../daemon/misc.c:1168
+#: ../daemon/misc.c:1266
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "setgid %d 실패했습니다. 중지."
 
-#: ../daemon/misc.c:1173
+#: ../daemon/misc.c:1271
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "%s에 대하여 initgroups() 실패. 중지."
 
-#: ../daemon/misc.c:1410 ../daemon/misc.c:1424
+#: ../daemon/misc.c:1508 ../daemon/misc.c:1522
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: 시그널 %d을(를) %s(으)로 설정하는 데 오류가 발생했습니다"
 
-#: ../daemon/misc.c:2317
+#: ../daemon/misc.c:2415
 #, c-format
 msgid ""
 "Last login:\n"
@@ -1027,7 +1027,9 @@ msgid ""
 "Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
-msgstr "환영 프로그램을 시작할 수 없어서, 로그인 할 수 없습니다.  이 화면은 사용할 수 없습니다.  다른 방법으로 로그인 하여서 설정파일을 편집하십시오."
+msgstr ""
+"환영 프로그램을 시작할 수 없어서, 로그인 할 수 없습니다.  이 화면은 사용할 "
+"수 없습니다.  다른 방법으로 로그인 하여서 설정파일을 편집하십시오."
 
 #. If no greeter we really have to disable the display
 #: ../daemon/slave.c:2669
@@ -1667,88 +1669,88 @@ msgstr "%s: 보여줄 주소를 읽지 못했습니다"
 msgid "%s: Could not read display port number"
 msgstr "%s: 디스플레이 번호를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1169 ../daemon/xdmcp.c:1193
+#: ../daemon/xdmcp.c:1193 ../daemon/xdmcp.c:1217
 #, c-format
 msgid "%s: Bad address"
 msgstr "%s: 잘못된 주소입니다"
 
-#: ../daemon/xdmcp.c:1352 ../daemon/xdmcp.c:1359
+#: ../daemon/xdmcp.c:1376 ../daemon/xdmcp.c:1383
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "%s 호스트에서 XDMCP 질의를 거부했습니다"
 
-#: ../daemon/xdmcp.c:1585 ../daemon/xdmcp.c:1592
+#: ../daemon/xdmcp.c:1609 ../daemon/xdmcp.c:1616
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: 금지된 호스트 %s에서 REQUEST를 받았습니다"
 
-#: ../daemon/xdmcp.c:1604 ../daemon/xdmcp.c:1980 ../daemon/xdmcp.c:2390
+#: ../daemon/xdmcp.c:1628 ../daemon/xdmcp.c:2004 ../daemon/xdmcp.c:2414
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: 디스플레이 번호를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1611
+#: ../daemon/xdmcp.c:1635
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: 연결 형식을 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1618
+#: ../daemon/xdmcp.c:1642
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: 클라이언트 주소를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1626
+#: ../daemon/xdmcp.c:1650
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: 인증 이름을 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1635
+#: ../daemon/xdmcp.c:1659
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: 인증 자료를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1645
+#: ../daemon/xdmcp.c:1669
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: 인증 리스트를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1662
+#: ../daemon/xdmcp.c:1686
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: 제조자 아이디를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1688 ../daemon/xdmcp.c:1695
+#: ../daemon/xdmcp.c:1712 ../daemon/xdmcp.c:1719
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: %s에서 검사합 실패"
 
-#: ../daemon/xdmcp.c:1956 ../daemon/xdmcp.c:1963
+#: ../daemon/xdmcp.c:1980 ../daemon/xdmcp.c:1987
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: 금지된 호스트 %s에서 Manage를 받았습니다"
 
-#: ../daemon/xdmcp.c:1973 ../daemon/xdmcp.c:2397
+#: ../daemon/xdmcp.c:1997 ../daemon/xdmcp.c:2421
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: 세션 ID를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:1987
+#: ../daemon/xdmcp.c:2011
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: 보여주기 클래스를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:2108 ../daemon/xdmcp.c:2115 ../daemon/xdmcp.c:2127
-#: ../daemon/xdmcp.c:2237 ../daemon/xdmcp.c:2244 ../daemon/xdmcp.c:2256
+#: ../daemon/xdmcp.c:2132 ../daemon/xdmcp.c:2139 ../daemon/xdmcp.c:2151
+#: ../daemon/xdmcp.c:2261 ../daemon/xdmcp.c:2268 ../daemon/xdmcp.c:2280
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: 주소를 읽지 못했습니다"
 
-#: ../daemon/xdmcp.c:2367 ../daemon/xdmcp.c:2381
+#: ../daemon/xdmcp.c:2391 ../daemon/xdmcp.c:2405
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: 금지된 호스트 %s에서 KEEPALIVE를 받았습니다"
 
-#: ../daemon/xdmcp.c:2690 ../daemon/xdmcp.c:2697 ../daemon/xdmcp.c:2703
+#: ../daemon/xdmcp.c:2714 ../daemon/xdmcp.c:2721 ../daemon/xdmcp.c:2727
 #, c-format
 msgid "%s: No XDMCP support"
 msgstr "%s: XDMCP을 지원하지 않습니다"
@@ -1957,7 +1959,7 @@ msgid "Can't open default host icon: %s"
 msgstr "기본 호스트 아이콘을 열 수 없습니다: %s"
 
 #: ../gui/gdmchooser.c:1950 ../gui/gdmlogin.c:3981 ../gui/gdmlogin.c:3988
-#: ../gui/greeter/greeter.c:1110 ../gui/greeter/greeter.c:1117
+#: ../gui/greeter/greeter.c:1113 ../gui/greeter/greeter.c:1120
 msgid "Could not set signal mask!"
 msgstr "시그날 마스크를 맞추지 못했습니다!"
 
@@ -2136,7 +2138,7 @@ msgid "Nested display %s on virtual terminal %d"
 msgstr "가상 터미널 %2$d에서 중첩 디스플레이 %1$s"
 
 #: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2919
-#: ../gui/greeter/greeter_item_ulist.c:449
+#: ../gui/greeter/greeter_item_ulist.c:476
 msgid "Username"
 msgstr "사용자이름"
 
@@ -3018,7 +3020,7 @@ msgstr "끝내기(_Q)"
 msgid "D_isconnect"
 msgstr "연결 끊기(_I)"
 
-#: ../gui/gdmlogin.c:2912 ../gui/greeter/greeter_item_ulist.c:442
+#: ../gui/gdmlogin.c:2912 ../gui/greeter/greeter_item_ulist.c:469
 msgid "Icon"
 msgstr "아이콘"
 
@@ -3028,7 +3030,7 @@ msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "기본 이미지를 열 수 없습니다: %s. 얼굴 브라우저 중지."
 
 #: ../gui/gdmlogin.c:3417 ../gui/gdmsetup.c:569
-#: ../gui/greeter/greeter_item_ulist.c:297
+#: ../gui/greeter/greeter_item_ulist.c:324
 msgid "Too many users to list here..."
 msgstr "목록에 너무 많은 사용자..."
 
@@ -3069,11 +3071,11 @@ msgid "Restart"
 msgstr "다시 시작"
 
 #. markup
-#: ../gui/gdmlogin.c:4103 ../gui/greeter/greeter.c:1345
+#: ../gui/gdmlogin.c:4103 ../gui/greeter/greeter.c:1348
 msgid "Session directory is missing"
 msgstr "세션 디렉토리가 지정되지 않았습니다."
 
-#: ../gui/gdmlogin.c:4105 ../gui/greeter/greeter.c:1347
+#: ../gui/gdmlogin.c:4105 ../gui/greeter/greeter.c:1350
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3083,11 +3085,11 @@ msgstr ""
 "로그인 하여서 gdm 설정을 올바르게 고쳐야 할것 입니다."
 
 #. markup
-#: ../gui/gdmlogin.c:4129 ../gui/greeter/greeter.c:1372
+#: ../gui/gdmlogin.c:4129 ../gui/greeter/greeter.c:1375
 msgid "Configuration is not correct"
 msgstr "설정이 올바르지 않습니다"
 
-#: ../gui/gdmlogin.c:4131 ../gui/greeter/greeter.c:1374
+#: ../gui/gdmlogin.c:4131 ../gui/greeter/greeter.c:1377
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, and thus I ran the default command.  Please fix your configuration."
@@ -3096,11 +3098,11 @@ msgstr ""
 "본 명령으로 실행합니다.설정을 고쳐 주십시오."
 
 #. markup
-#: ../gui/gdmlogin.c:4156 ../gui/greeter/greeter.c:1401
+#: ../gui/gdmlogin.c:4156 ../gui/greeter/greeter.c:1404
 msgid "No configuration was found"
 msgstr "설정을 찾을 수 없습니다"
 
-#: ../gui/gdmlogin.c:4158 ../gui/greeter/greeter.c:1403
+#: ../gui/gdmlogin.c:4158 ../gui/greeter/greeter.c:1406
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3589,6 +3591,10 @@ msgstr "설치(_I)"
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "시스템에서 테마 '%s'을(를) 정말로 지우겠습니까?"
 
+#: ../gui/gdmsetup.c:2191
+msgid "_Remove Theme"
+msgstr "테마 지우기(_R)"
+
 #. This is the temporary help dialog
 #: ../gui/gdmsetup.c:2386
 #, c-format
@@ -3644,24 +3650,24 @@ msgstr ""
 "아마도 gdm을 막 업그레이드했을 것입니다.\n"
 "gdm 데몬을 다시 시작하거나 컴퓨터를 다시 시작하십시오."
 
-#: ../gui/greeter/greeter.c:1179
+#: ../gui/greeter/greeter.c:1182
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "테마 %s(을)를 읽는 중 오류가 생겼습니다"
 
 #. markup
-#: ../gui/greeter/greeter.c:1233
+#: ../gui/greeter/greeter.c:1236
 msgid "The theme for the graphical greeter is corrupt"
 msgstr "환영 프로그램의 테마가 잘못되었습니다"
 
-#: ../gui/greeter/greeter.c:1236
+#: ../gui/greeter/greeter.c:1239
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "테마에 사용자이름/열쇠글 항목 요소가 들어있지 않습니다."
 
 #. markup
-#: ../gui/greeter/greeter.c:1270
+#: ../gui/greeter/greeter.c:1273
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
@@ -3670,7 +3676,7 @@ msgstr ""
 "본 환영 프로그램을 시작하겠습니다"
 
 #. markup
-#: ../gui/greeter/greeter.c:1293
+#: ../gui/greeter/greeter.c:1296
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3698,16 +3704,16 @@ msgstr "언어 선택(_L)..."
 msgid "Select _Session..."
 msgstr "세션 선택(_S)..."
 
-#: ../gui/greeter/greeter_canvas_item.c:376
+#: ../gui/greeter/greeter_canvas_item.c:377
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr "질문에 답하고 엔터를 누르십시오. 메뉴는 F10을 누르십시오."
 
-#: ../gui/greeter/greeter_item_ulist.c:279
+#: ../gui/greeter/greeter_item_ulist.c:306
 #, c-format
 msgid "Can't open DefaultImage: %s!"
 msgstr "기본 그림을 열 수 없습니다: %s!"
 
-#: ../gui/greeter/greeter_item_ulist.c:381
+#: ../gui/greeter/greeter_item_ulist.c:408
 msgid ""
 "Doubleclick on the user\n"
 "to log in"
@@ -3892,7 +3898,11 @@ msgid_plural ""
 "CList type widget should have %d columns. Possibly the glade interface "
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
-msgstr[0] "사용자 인터페이스 항목 %s%s을(를) %s 파일에서 읽어들이는 중에 오류가 발생했습니다.  CList 타입의 위젯에는 %d 개의 열이 있어야 합니다.  glade 인터페이스 기술 파일이 망가져 있을 것입니다. %s은(는) 계속할 수 없고 지금 끝냅니다.  %s이(가) 제대로 설치되었는 지 확인하거나 %s을(를) 재설치해야 합니다."
+msgstr[0] ""
+"사용자 인터페이스 항목 %s%s을(를) %s 파일에서 읽어들이는 중에 오류가 발생했습"
+"니다.  CList 타입의 위젯에는 %d 개의 열이 있어야 합니다.  glade 인터페이스 기"
+"술 파일이 망가져 있을 것입니다. %s은(는) 계속할 수 없고 지금 끝냅니다.  %s이"
+"(가) 제대로 설치되었는 지 확인하거나 %s을(를) 재설치해야 합니다."
 
 #: ../vicious-extensions/glade-helper.c:277
 #, c-format
