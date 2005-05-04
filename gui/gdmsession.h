@@ -30,6 +30,7 @@ typedef struct {
         char *comment;
 } GdmSession;
 
+void		gdm_session_list_init		(void);
 gint		gdm_session_sort_func		(const char *a, const char *b);
 const char *	gdm_session_name 		(const char *name);
 void		gdm_session_list_from_hash_table_func (const char *key,

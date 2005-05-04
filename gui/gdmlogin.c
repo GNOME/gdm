@@ -110,7 +110,6 @@ enum {
 	GDM_BACKGROUND_COLOR = 2
 };
 static gchar *GdmGtkRC;
-static gchar *GdmSessionDir;
 static gchar *GdmLocaleFile;
 static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
@@ -128,8 +127,6 @@ static gboolean GdmAllowGtkThemeChange;
 static char *GdmGtkThemesToAllow;
 static char *GdmGtkTheme;
 
-static gboolean GdmShowGnomeFailsafeSession;
-static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
 
 static gboolean GdmUseCirclesInEntry;
@@ -137,6 +134,9 @@ static gboolean GdmUseInvisibleInEntry;
 static gint GdmFlexiReapDelayMinutes;
 
 /* FIXME: Should move everything to externs and move reading to gdmcommon.c */
+gchar *GdmSessionDir;
+gboolean GdmShowGnomeFailsafeSession;
+gboolean GdmShowXtermFailsafeSession;
 gchar *GdmDefaultSession;
 gchar *GdmInfoMsgFile;
 gchar *GdmInfoMsgFont;
@@ -173,7 +173,6 @@ static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GtkTooltips *tooltips;
-GHashTable *sessnames;
 
 static gboolean login_is_local = FALSE;
 static gboolean used_defaults = FALSE;
@@ -183,14 +182,11 @@ static GtkTreeModel *browser_model;
 static GdkPixbuf *defface;
 
 /* Eew. Loads of global vars. It's hard to be event controlled while maintaining state */
-static GList *sessions = NULL;
 static GSList *languages = NULL;
 static GList *users = NULL;
 static GList *users_string = NULL;
 static gint size_of_users = 0;
 
-static gchar *defsess = NULL;
-static const gchar *cursess = NULL;
 static const gchar *curlang = NULL;
 static gchar *curuser = NULL;
 static gchar *session = NULL;
@@ -223,12 +219,13 @@ static char *selected_browser_user = NULL;
 #endif FIXME
 static gboolean selecting_user = TRUE;
 
-/* This is true if session dir doesn't exist or is whacked out
- * in some way or another */
-static gboolean session_dir_whacked_out = FALSE;
+extern GList *sessions = NULL;
+extern GHashTable *sessnames;
+extern gchar *default_session;
+extern const gchar *current_session;
+extern gboolean session_dir_whacked_out;
 
 static void login_window_resize (gboolean force);
-
 
 /* Background program logic */
 static void back_prog_on_exit (GPid pid, gint status, gpointer data);
@@ -1016,7 +1013,7 @@ gdm_login_parse_config (void)
 
 
 static gboolean 
-gdm_login_list_lookup (GSList *l, const gchar *data)
+gdm_login_list_lookup (GList *l, const gchar *data)
 {
     GList *list = l;
 
@@ -1054,18 +1051,18 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    /* If "Last" is chosen run Default,
 	     * else run user's current selection */
 	    g_free (session);
-	    if (cursess == NULL || strcmp (cursess, LAST_SESSION) == 0)
-		    session = g_strdup (defsess);
+	    if (current_session == NULL || strcmp (current_session, LAST_SESSION) == 0)
+		    session = g_strdup (default_session);
 	    else
-		    session = g_strdup (cursess);
+		    session = g_strdup (current_session);
 
 	    savesess = GTK_RESPONSE_YES;
 	    return;
     }
 
     /* If "Last" session is selected */
-    if (cursess == NULL ||
-	strcmp (cursess, LAST_SESSION) == 0) { 
+    if (current_session == NULL ||
+	strcmp (current_session, LAST_SESSION) == 0) { 
 	g_free (session);
 	session = g_strdup (savedsess);
 
@@ -1074,13 +1071,13 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    gchar *msg;
 
 	    g_free (session);
-	    session = g_strdup (defsess);
+	    session = g_strdup (default_session);
             msg = g_strdup_printf (_("Your preferred session type %s is not "
 				     "installed on this machine.\n"
                                      "Do you wish to make %s the default for "
 				     "future sessions?"),
                                    gdm_session_name (savedsess),
-                                   gdm_session_name (defsess));	    
+                                   gdm_session_name (default_session));	    
 	    savesess = gdm_common_query (msg, FALSE /* markup */,
 		 _("Make _Default"), _("Just _Log In"), TRUE);
 	    g_free (msg);
@@ -1089,7 +1086,7 @@ gdm_login_session_lookup (const gchar* savedsess)
     /* One of the other available session types is selected */
     else { 
 	g_free (session);
-	session = g_strdup (cursess);
+	session = g_strdup (current_session);
 
 	/* User's saved session is not the chosen one */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
@@ -1111,7 +1108,7 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                gdm_session_name (session));
 			savesess = gdm_common_query (msg, FALSE /* markup */,
 				_("Make _Default"), _("Just For _This Session"), TRUE);
-                } else if (strcmp (session, defsess) != 0 &&
+                } else if (strcmp (session, default_session) != 0 &&
 			   strcmp (session, savedsess) != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
                         /* if !GdmShowLastSession then our saved session is
@@ -1381,9 +1378,9 @@ gdm_login_session_handler (GtkWidget *widget)
 {
     gchar *s;
 
-    cursess = g_object_get_data (G_OBJECT (widget), SESSION_NAME);
+    current_session = g_object_get_data (G_OBJECT (widget), SESSION_NAME);
 
-    s = g_strdup_printf (_("%s session selected"), gdm_session_name (cursess));
+    s = g_strdup_printf (_("%s session selected"), gdm_session_name (current_session));
 
     gtk_label_set_text (GTK_LABEL (msg), s);
     g_free (s);
@@ -1395,23 +1392,15 @@ static void
 gdm_login_session_init (GtkWidget *menu)
 {
     GSList *sessgrp = NULL;
-    GdmSession *session = NULL;
     GList *tmp;
     GtkWidget *item;
-    DIR *sessdir;
-    struct dirent *dent;
-    gboolean searching_for_default = TRUE;
     int num = 1;
-    int i;
-    char **vec;
     char *label;
-    char *name;
-    gboolean some_dir_exists = FALSE;
 
-    cursess = NULL;
+    current_session = NULL;
     
     if (GdmShowLastSession) {
-            cursess = LAST_SESSION;
+            current_session = LAST_SESSION;
             item = gtk_radio_menu_item_new_with_mnemonic (NULL, _("_Last"));
             g_object_set_data (G_OBJECT (item),
 			       SESSION_NAME,
@@ -1433,198 +1422,7 @@ gdm_login_session_init (GtkWidget *menu)
             gtk_widget_show (GTK_WIDGET (item));
     }
 
-    sessnames = g_hash_table_new (g_str_hash, g_str_equal);
-
-    if (GdmShowGnomeFailsafeSession) {
-	session = g_new0 (GdmSession, 1);
-	session->name = g_strdup (_("Failsafe _Gnome"));
-	session->comment = g_strdup (_("This is a failsafe session that will log you "
-		"into GNOME. No startup scripts will be read "
-		"and it is only to be used when you can't log "
-		"in otherwise.  GNOME will use the 'Default' "
-		"session."));
-	g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_GNOME), session);
-    }
-
-    if (GdmShowXtermFailsafeSession) {
-	session = g_new0 (GdmSession, 1);
-	session->name = g_strdup (_("Failsafe _Terminal"));
-	session->comment = g_strdup (_("This is a failsafe session that will log you "
-		"into a terminal.  No startup scripts will be read "
-		"and it is only to be used when you can't log "
-		"in otherwise.  To exit the terminal, "
-		"type 'exit'."));
-	g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_XTERM), session);
-    }
-
-    vec = g_strsplit (GdmSessionDir, ":", -1);
-    for (i = 0; vec != NULL && vec[i] != NULL; i++) {
-	    const char *dir = vec[i];
-
-	    /* Check that session dir is readable */
-	    if G_UNLIKELY (dir == NULL || access (dir, R_OK|X_OK) != 0)
-		    continue;
-
-	    some_dir_exists = TRUE;
-
-	    /* Read directory entries in session dir */
-	    sessdir = opendir (dir);
-
-	    if G_LIKELY (sessdir != NULL)
-		    dent = readdir (sessdir);
-	    else
-		    dent = NULL;
-
-	    while (dent != NULL) {
-		    VeConfig *cfg;
-		    char *exec;
-		    char *comment;
-		    char *s;
-		    char *tryexec;
-		    char *ext;
-
-		    /* ignore everything but the .desktop files */
-		    ext = strstr (dent->d_name, ".desktop");
-		    if (ext == NULL ||
-			strcmp (ext, ".desktop") != 0) {
-			    dent = readdir (sessdir);
-			    continue;
-		    }
-
-		    /* already found this session, ignore */
-		    if (g_hash_table_lookup (sessnames, dent->d_name) != NULL) {
-			    dent = readdir (sessdir);
-			    continue;
-		    }
-
-		    s = g_strconcat (dir, "/", dent->d_name, NULL);
-		    cfg = ve_config_new (s);
-		    g_free (s);
-
-		    if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false")) {
-			    session = g_new0 (GdmSession, 1);
-			    session->name = "foo";
-			    g_hash_table_insert (sessnames, g_strdup (dent->d_name), session);
-			    ve_config_destroy (cfg);
-			    dent = readdir (sessdir);
-			    continue;
-		    }
-
-		    tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
-		    if ( ! ve_string_empty (tryexec)) {
-			    char *full = g_find_program_in_path (tryexec);
-			    if (full == NULL) {
-				    session = g_new0 (GdmSession, 1);
-				    session->name = "foo";
-				    g_hash_table_insert (sessnames, g_strdup (dent->d_name),
-					 session);
-				    g_free (tryexec);
-				    ve_config_destroy (cfg);
-				    dent = readdir (sessdir);
-				    continue;
-			    }
-			    g_free (full);
-		    }
-		    g_free (tryexec);
-
-		    exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
-		    name = ve_config_get_translated_string (cfg, "Desktop Entry/Name");
-		    comment = ve_config_get_translated_string (cfg, "Desktop Entry/Comment");
-
-		    ve_config_destroy (cfg);
-
-		    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
-			    session = g_new0 (GdmSession, 1);
-			    session->name = "foo";
-			    g_hash_table_insert (sessnames, g_strdup (dent->d_name), session);
-			    g_free (exec);
-			    g_free (name);
-			    g_free (comment);
-			    dent = readdir (sessdir);
-			    continue;
-		    }
-
-		    /* if we found the default session */
-		    if ( ! ve_string_empty (GdmDefaultSession) &&
-			 strcmp (dent->d_name, GdmDefaultSession) == 0) {
-			    g_free (defsess);
-			    defsess = g_strdup (dent->d_name);
-			    searching_for_default = FALSE;
-		    }
-
-		    /* if there is a session called Default */
-		    if (searching_for_default &&
-			g_ascii_strcasecmp (dent->d_name, "default.desktop") == 0) {
-			    g_free (defsess);
-			    defsess = g_strdup (dent->d_name);
-		    }
-
-		    if (searching_for_default &&
-			g_ascii_strcasecmp (dent->d_name, "gnome.desktop") == 0) {
-			    /* Just in case there is no default session and
-			     * no default link, make gnome the default */
-			    if (defsess == NULL)
-				    defsess = g_strdup (dent->d_name);
-
-		    }
-
-		    session = g_new0 (GdmSession, 1);
-		    session->name = name;
-		    session->comment = comment;
-		    g_hash_table_insert (sessnames, g_strdup (dent->d_name), session);
-		    g_free (exec);
-		    g_free (comment);
-		    dent = readdir (sessdir);
-	    }
-
-	    if G_LIKELY (sessdir != NULL)
-		    closedir (sessdir);
-    }
-
-    g_strfreev (vec);
-
-    /* Check that session dir is readable */
-    if G_UNLIKELY ( ! some_dir_exists) {
-	syslog (LOG_ERR, _("%s: Session directory %s not found!"),
-		"gdm_login_session_init", ve_sure_string (GdmSessionDir));
-	GdmShowXtermFailsafeSession = TRUE;
-	session_dir_whacked_out = TRUE;
-    }
-
-    if G_UNLIKELY (g_hash_table_size (sessnames) == 0) {
-	    syslog (LOG_WARNING, _("Yikes, nothing found in the session directory."));
-	    session_dir_whacked_out = TRUE;
-	    GdmShowXtermFailsafeSession = TRUE;
-	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
-    }
-
-    if (GdmShowGnomeFailsafeSession) {
-	    session = g_new0 (GdmSession, 1);
-	    session->name = g_strdup (_("Failsafe _Gnome"));
-	    session->comment = g_strdup (_("This is a failsafe session that will log you "
-				    "into GNOME. No startup scripts will be read "
-                                    "and it is only to be used when you can't log "
-                                    "in otherwise.  GNOME will use the 'Default' "
-				    "session."));
-	    g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_GNOME), session);
-    }
-
-    if (GdmShowXtermFailsafeSession) {
-	    session = g_new0 (GdmSession, 1);
-	    session->name = g_strdup (_("Failsafe _Terminal"));
-	    session->comment = g_strdup (_("This is a failsafe session that will log you "
-				    "into a terminal.  No startup scripts will be read "
-				    "and it is only to be used when you can't log "
-				    "in otherwise.  To exit the terminal, "
-				    "type 'exit'."));
-	    g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_XTERM), session);
-    }
-
-    /* Convert to list (which is unsorted) */
-    g_hash_table_foreach (sessnames, (GHFunc) gdm_session_list_from_hash_table_func, &sessions);
-
-    /* Prioritize and sort the list */
-    sessions = g_list_sort (sessions, (GCompareFunc) gdm_session_sort_func);
+    gdm_session_list_init ();
 
     for (tmp = sessions; tmp != NULL; tmp = tmp->next) {
 	    GdmSession *session;
@@ -1657,14 +1455,6 @@ gdm_login_session_init (GtkWidget *menu)
 	    gtk_widget_show (GTK_WIDGET (item));
     }
 
-    if G_UNLIKELY (defsess == NULL) {
-	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
-	    syslog (LOG_WARNING, _("No default session link found. Using Failsafe GNOME.\n"));
-    }
-    
-    if (cursess == NULL)
-            cursess = defsess;
-
     /* Select the proper session */
     {
             GSList *tmp;
@@ -1676,7 +1466,7 @@ gdm_login_session_init (GtkWidget *menu)
 
                     n = g_object_get_data (G_OBJECT (w), SESSION_NAME);
                     
-                    if (n && strcmp (n, cursess) == 0) {
+                    if (n && strcmp (n, current_session) == 0) {
                             gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w),
                                                             TRUE);
                             break;
