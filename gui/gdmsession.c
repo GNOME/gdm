@@ -36,7 +36,7 @@
 GHashTable *sessnames        = NULL;
 gchar *default_session       = NULL;
 const gchar *current_session = NULL;
-static GList *sessions       = NULL;
+GList *sessions              = NULL;
 
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */

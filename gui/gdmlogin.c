@@ -219,7 +219,7 @@ static char *selected_browser_user = NULL;
 #endif FIXME
 static gboolean selecting_user = TRUE;
 
-extern GList *sessions = NULL;
+extern GList *sessions;
 extern GHashTable *sessnames;
 extern gchar *default_session;
 extern const gchar *current_session;

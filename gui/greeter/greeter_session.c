@@ -46,14 +46,14 @@
 #define SESSION_NAME "SessionName"
 
 static gint save_session = GTK_RESPONSE_NO;
-static GList *sessions = NULL;
 static GtkWidget *session_dialog;
 static GSList *session_group = NULL;
 
+extern GList *sessions;
 extern GHashTable *sessnames;
-extern gboolean session_dir_whacked_out;
-extern char *current_session;
 extern gchar *default_session;
+extern char *current_session;
+extern gboolean session_dir_whacked_out;
 
 static gboolean 
 greeter_login_list_lookup (GList *l, const gchar *data)
@@ -273,7 +273,7 @@ greeter_session_init (void)
       gtk_widget_show (radio);
     }
 
-    gdm_session_list_init;
+    gdm_session_list_init();
 
     for (tmp = sessions; tmp != NULL; tmp = tmp->next)
       {
