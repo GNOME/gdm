@@ -360,3 +360,4 @@ gdm_setup_blinking_entry (GtkWidget *entry)
 
 	entries = g_slist_prepend (entries, eb);
 }
+

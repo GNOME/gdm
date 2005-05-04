@@ -26,6 +26,9 @@
 #include <netinet/in.h>
 #include <time.h>
 
+#define GDM_MAX_PASS 256	/* Define a value for password length. Glibc
+				 * leaves MAX_PASS undefined. */
+
 #define STX 0x2			/* Start of txt */
 #define BEL 0x7			/* Bell, used to interrupt login for
 				 * say timed login or something similar */
@@ -123,6 +126,10 @@ enum {
 #define GDM_INTERRUPT_LOGIN_SOUND 'L'
 #define GDM_INTERRUPT_THEME       'H'
 #define GDM_INTERRUPT_CANCEL      'X'
+
+/* List delimiter for config file lists */
+#define GDM_DELIMITER_MODULES ":"
+#define GDM_DELIMITER_THEMES "/:"
 
 /* The dreaded miscellaneous category */
 #define FIELD_SIZE 256
@@ -273,6 +280,8 @@ enum {
 #define GDM_KEY_ENTRY_CIRCLES "greeter/UseCirclesInEntry=false"
 #define GDM_KEY_ENTRY_INVISIBLE "greeter/UseInvisibleInEntry=false"
 #define GDM_KEY_GRAPHICAL_THEME "greeter/GraphicalTheme=circles"
+#define GDM_KEY_GRAPHICAL_THEMES "greeter/GraphicalThemes=circles"
+#define GDM_KEY_GRAPHICAL_THEME_RAND "greeter/GraphicalThemeRand=false"
 #define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" EXPANDED_DATADIR "/gdm/themes/"
 
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="

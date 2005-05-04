@@ -51,7 +51,6 @@ static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
-static gboolean gdm_running = FALSE;
 gint  GdmIconMaxHeight;
 gint  GdmIconMaxWidth;
 gint GdmMinimalUID = 100;
@@ -61,11 +60,11 @@ gboolean GdmIncludeAll;
 gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
 static char *GdmSoundProgram = NULL;
+static gboolean GdmGraphicalThemeRand = FALSE;
 
+static gboolean gdm_running = FALSE;
 static GladeXML *xml;
-
 static GList *timeout_widgets = NULL;
-
 static gchar *last_theme_installed = NULL;
 static int last_remote_login_setting = -1;
 static gboolean have_sound_ready_file = FALSE;
@@ -74,6 +73,7 @@ static gboolean have_sound_failure_file = FALSE;
 
 enum {
 	THEME_COLUMN_SELECTED,
+	THEME_COLUMN_SELECTED_LIST,
 	THEME_COLUMN_DIR,
 	THEME_COLUMN_FILE,
 	THEME_COLUMN_NAME,
@@ -85,11 +85,18 @@ enum {
 };
 
 enum {
-    USERLIST_NAME,
-    USERLIST_NUM_COLUMNS
+	USERLIST_NAME,
+	USERLIST_NUM_COLUMNS
 };
 
-static char *selected_theme = NULL;
+enum {
+	ONE_THEME,
+	RANDOM_THEME
+};
+
+static char *selected_themes = NULL;
+static char *selected_theme  = NULL;
+
 static void
 simple_spawn_sync (char **argv)
 {
@@ -277,7 +284,7 @@ toggle_timeout (GtkWidget *toggle)
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 		ve_config_set_bool (config, key,
 				    GTK_TOGGLE_BUTTON (toggle)->active);
-		ve_config_save (config, FALSE /*force */);
+		ve_config_save (config, FALSE /* force */);
 
 		update_key (notify_key);
 	}
@@ -338,15 +345,14 @@ static gboolean
 combobox_timeout (GtkWidget *combo_box)
 {
 	const char *key = g_object_get_data (G_OBJECT (combo_box), "key");
-	char *new_val = NULL;
-	gchar *val;
-	int selected;
+	int selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box));
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
-
-	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box));
 
 	if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0 ||
 	    strcmp (key, GDM_KEY_GREETER) == 0) {
+
+		char *new_val = NULL;
+		gchar *val;
 
 		if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0 &&
 		    selected == 2) {
@@ -359,16 +365,29 @@ combobox_timeout (GtkWidget *combo_box)
 		}
 
 		else if (selected == 0) {
+			/* GTK+ Greeter */
 			new_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
 			last_remote_login_setting = 0;
 		} else if (selected == 1) {
+			/* Themed Greeter */
 			new_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmgreeter");
 			last_remote_login_setting = 1;
 		}
+
+		val = ve_config_get_string (config, key);
+		if (new_val && strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
+			ve_config_set_string (config, key, new_val);
+			ve_config_save (config, FALSE /* force */);
+			update_key (key);
+		}
+		g_free (new_val);
+
 	} else if (strcmp (key, GDM_KEY_AUTOMATICLOGIN) == 0 ||
 		   strcmp (key, GDM_KEY_TIMED_LOGIN) == 0) {
 
 		GtkTreeIter iter;
+		char *new_val = NULL;
+		gchar *val;
 		
 		if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo_box), 
 		    &iter)) {
@@ -376,18 +395,49 @@ combobox_timeout (GtkWidget *combo_box)
 				GTK_COMBO_BOX (combo_box)), &iter,
 				0, &new_val, -1);
 		}
-	}
 
-	val = ve_config_get_string (config, key);
+		val = ve_config_get_string (config, key);
+		if (new_val && strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
+			ve_config_set_string (config, key, new_val);
+			ve_config_save (config, FALSE /* force */);
+			update_key (key);
+		}
+		g_free (new_val);
 
-	if (new_val && strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
-		ve_config_set_string (config, key, new_val);
-		ve_config_save (config, FALSE /* force */);
+	} else if (strcmp (key, GDM_KEY_GRAPHICAL_THEME_RAND) == 0 ) {
+		gboolean new_val;
+		GtkTreeViewColumn *radioColumn = NULL;
+		GtkTreeViewColumn *checkboxColumn = NULL;
+		gboolean val = ve_config_get_bool (config, key);
+		GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
+			GTK_TYPE_TREE_VIEW);
 
-		update_key (key);
-	}
+		/* Choose to display radio or checkbox toggle column */
+		if (selected == RANDOM_THEME) {
+			new_val = TRUE;
+			radioColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
+				THEME_COLUMN_SELECTED);
+			checkboxColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
+				THEME_COLUMN_SELECTED_LIST);
+			gtk_tree_view_column_set_visible (radioColumn, FALSE);
+			gtk_tree_view_column_set_visible (checkboxColumn, TRUE);
+		} else { /* Default to one theme */
+			new_val = FALSE;
+			radioColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
+				THEME_COLUMN_SELECTED);
+			checkboxColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
+				THEME_COLUMN_SELECTED_LIST);
+			gtk_tree_view_column_set_visible (radioColumn, TRUE);
+			gtk_tree_view_column_set_visible (checkboxColumn, FALSE);
+		}
 
-	g_free (new_val);
+		if (new_val != val) {
+			ve_config_set_bool (config, key, new_val);
+			ve_config_save (config, FALSE /* force */);
+			update_key (key);
+		}
+        }
+
 	return FALSE;
 }
 
@@ -629,13 +679,14 @@ check_exclude (struct passwd *pwent, char **excludes)
 	return FALSE;
 }
 
+/* Sets up Automatic Login and Timed Login user entry comboboxes from the
+   general configuration tab. */
 static void
 setup_user_combobox (const char *name, const char *key)
 {
 	GtkWidget *combobox_entry = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX_ENTRY);
 	GtkListStore *combobox_store = gtk_list_store_new (USERLIST_NUM_COLUMNS,
 		G_TYPE_STRING);
-	GtkTreeModel *tree_model;
 	GtkTreeIter iter;
 	GList *users = NULL;
 	GList *users_string = NULL;
@@ -654,11 +705,10 @@ setup_user_combobox (const char *name, const char *key)
 	if ( ! ve_string_empty (selected_user))
 		users_string = g_list_append (users_string, g_strdup (selected_user));
 
-	if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
 		GDM_IS_LOCAL = FALSE;
-	} else {
+	else
 		GDM_IS_LOCAL = TRUE;
-	}
 
         gdm_users_init (&users, &users_string, selected_user, NULL, &size_of_users,
 		GDM_IS_LOCAL, FALSE);
@@ -666,7 +716,7 @@ setup_user_combobox (const char *name, const char *key)
 	users_string = g_list_reverse (users_string);
 
 	cnt=0;
-        for (li = users_string; li != NULL; li = li->next) {
+	for (li = users_string; li != NULL; li = li->next) {
 		gtk_list_store_append (combobox_store, &iter);
 		if (strcmp (li->data, selected_user) == 0)
 			selected=cnt;
@@ -680,13 +730,13 @@ setup_user_combobox (const char *name, const char *key)
 	if (selected != -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combobox_entry), selected);
 
-        g_object_set_data_full (G_OBJECT (combobox_entry),
-                                "key", g_strdup (key),
-                                (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (combobox_entry),
+		"key", g_strdup (key),
+		(GDestroyNotify) g_free);
 	g_signal_connect (G_OBJECT (combobox_entry), "changed",
-			  G_CALLBACK (combobox_changed), NULL);
+		G_CALLBACK (combobox_changed), NULL);
 	g_signal_connect (G_OBJECT (combobox_entry), "changed",
-			  G_CALLBACK (root_not_allowed), NULL);
+		G_CALLBACK (root_not_allowed), NULL);
 
 	g_list_foreach (users, (GFunc)g_free, NULL);
 	g_list_free (users);
@@ -727,9 +777,8 @@ setup_include_exclude (GtkWidget *treeview, const char *key)
 	GtkTreeIter iter;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-        char **list;
-	char *val;
-        int i;
+	char **list;
+	int i;
 
 	column = gtk_tree_view_column_new ();
 
@@ -797,7 +846,6 @@ face_add (GtkWidget *button, gpointer data)
 	FaceData *fd = data;
 	const char *text, *model_text;
 	GtkTreeIter iter;
-	GtkWidget *message;
 	gboolean valid;
 
 	if (fd->type == INCLUDE)
@@ -1187,14 +1235,11 @@ setup_greeter_toggle (const char *name,
 		      const char *key)
 {
 	GtkWidget *toggle = glade_helper_get (xml, name,
-					      GTK_TYPE_TOGGLE_BUTTON);
-	gboolean val;
+	      GTK_TYPE_TOGGLE_BUTTON);
+	gboolean val = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE), key);
 
-	val = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE), key);
-
-	g_object_set_data_full (G_OBJECT (toggle),
-				"key", g_strdup (key),
-				(GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (toggle), "key", g_strdup (key),
+		(GDestroyNotify) g_free);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
 
@@ -1202,26 +1247,25 @@ setup_greeter_toggle (const char *name,
 		GtkWidget *welcome = glade_helper_get (xml,
 			"welcome", GTK_TYPE_ENTRY);
 
-		if (val == TRUE) {
+		if (val == TRUE)
 			gtk_widget_set_sensitive (welcome, FALSE);
-		}
 
 		g_signal_connect (G_OBJECT (toggle), "toggled",	
 			G_CALLBACK (sensitive_entry_toggled), welcome);
+
 	} else if (strcmp ("sg_defaultremotewelcome", name) == 0) {
 		GtkWidget *remotewelcome = glade_helper_get (xml,
 			"remote_welcome", GTK_TYPE_ENTRY);
 
-		if (val == TRUE) {
+		if (val == TRUE)
 			gtk_widget_set_sensitive (remotewelcome, FALSE);
-		}
 
 		g_signal_connect (G_OBJECT (toggle), "toggled",	
 			G_CALLBACK (sensitive_entry_toggled), remotewelcome);
 	}
 
 	g_signal_connect (G_OBJECT (toggle), "toggled",
-			  G_CALLBACK (greeter_toggle_toggled), NULL);
+		G_CALLBACK (greeter_toggle_toggled), NULL);
 }
 
 static gboolean
@@ -1603,6 +1647,7 @@ setup_greeter_backselect (void)
 }
 
 
+/* Local and Remote greeter comboboxes from General configuration tab */
 static void
 setup_greeter_combobox (const char *name,
 		      const char *key)
@@ -1617,7 +1662,8 @@ setup_greeter_combobox (const char *name,
 	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
 	if (val != NULL &&
-	    strcmp (val, EXPANDED_LIBEXECDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
+	    strcmp (val,
+	    EXPANDED_LIBEXECDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
 		g_free (val);
 		val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
 	}
@@ -1638,11 +1684,10 @@ setup_greeter_combobox (const char *name,
 		
 	g_free (val);
 
-        g_object_set_data_full (G_OBJECT (combobox),
-                                "key", g_strdup (key),
-                                (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (combobox),
+		"key", g_strdup (key), (GDestroyNotify) g_free);
 	g_signal_connect (G_OBJECT (combobox), "changed",
-		  G_CALLBACK (combobox_changed), NULL);
+		G_CALLBACK (combobox_changed), NULL);
 }
 
 static void
@@ -1738,6 +1783,30 @@ modules_list_contains (const char *modules_list, const char *module)
 	return FALSE;
 }
 
+static gboolean
+themes_list_contains (const char *themes_list, const char *theme)
+{
+	char **vec;
+	int i;
+
+	if (ve_string_empty (themes_list))
+		return FALSE;
+
+	vec = g_strsplit (themes_list, GDM_DELIMITER_THEMES, -1);
+	if (vec == NULL)
+		return FALSE;
+
+	for (i = 0; vec[i] != NULL; i++) {
+		if (strcmp (vec[i], theme) == 0) {
+			g_strfreev (vec);
+			return TRUE;
+		}
+	}
+
+	g_strfreev (vec);
+	return FALSE;
+}
+
 static char *
 modules_list_remove (char *modules_list, const char *module)
 {
@@ -1768,15 +1837,19 @@ modules_list_remove (char *modules_list, const char *module)
 	return g_string_free (str, FALSE);
 }
 
+/* This function concatenates *string to *strings_list with the addition of
+   *sep in between the strings_list and string, then returns a copy of the
+   new strings_list. */
+
 static char *
-modules_list_add (char *modules_list, const char *module)
+strings_list_add (char *strings_list, const char *string, const char *sep)
 {
 	char *n;
-	if (ve_string_empty (modules_list))
-		n = g_strdup (module);
+	if (ve_string_empty (strings_list))
+		n = g_strdup (string);
 	else
-		n = g_strconcat (modules_list, ":", module, NULL);
-	g_free (modules_list);
+		n = g_strconcat (strings_list, sep, string, NULL);
+	g_free (strings_list);
 	return n;
 }
 
@@ -1800,11 +1873,16 @@ acc_modules_toggled (GtkWidget *toggle, gpointer data)
 			modules_list = NULL;
 		}
 
-		modules_list = modules_list_add (modules_list, "gail");
-		modules_list = modules_list_add (modules_list, "atk-bridge");
-		modules_list = modules_list_add (modules_list, EXPANDED_LIBDIR "/gtk-2.0/modules/libkeymouselistener");
-		modules_list = modules_list_add (modules_list, EXPANDED_LIBDIR "/gtk-2.0/modules/libdwellmouselistener");
-
+		modules_list = strings_list_add (modules_list, "gail",
+			GDM_DELIMITER_MODULES);
+		modules_list = strings_list_add (modules_list, "atk-bridge",
+			GDM_DELIMITER_MODULES);
+		modules_list = strings_list_add (modules_list,
+			EXPANDED_LIBDIR "/gtk-2.0/modules/libkeymouselistener",
+			GDM_DELIMITER_MODULES);
+		modules_list = strings_list_add (modules_list,
+			EXPANDED_LIBDIR "/gtk-2.0/modules/libdwellmouselistener",
+			GDM_DELIMITER_MODULES);
 		add_gtk_modules = TRUE;
 	}
 
@@ -2241,17 +2319,19 @@ textview_set_buffer (GtkTextView *view, const char *text)
 	gtk_text_buffer_set_text (buffer, text, -1);
 }
 
+/* Sets up the preview section of Themed Greeter page
+   after a theme has been selected */
 static void
-selection_changed (GtkTreeSelection *selection, gpointer data)
+gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 {
-        GtkWidget *label;
-        GtkWidget *preview = glade_helper_get (xml, "gg_theme_preview",
+	GtkWidget *label;
+	GtkWidget *preview = glade_helper_get (xml, "gg_theme_preview",
 					       GTK_TYPE_IMAGE);
-        GtkWidget *no_preview = glade_helper_get (xml, "gg_theme_no_preview",
+	GtkWidget *no_preview = glade_helper_get (xml, "gg_theme_no_preview",
 						  GTK_TYPE_WIDGET);
 	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
 						  GTK_TYPE_BUTTON);
-        char *screenshot;
+	char *screenshot;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GValue value = {0, };
@@ -2262,10 +2342,8 @@ selection_changed (GtkTreeSelection *selection, gpointer data)
 	}
 
 	gtk_widget_set_sensitive (del_button, TRUE);
+	gtk_tree_model_get_value (model, &iter, THEME_COLUMN_SELECTED, &value);
 
-	gtk_tree_model_get_value (model, &iter,
-				  THEME_COLUMN_SELECTED,
-				  &value);
 	/* Do not allow deleting of selected theme */
 	if (g_value_get_boolean (&value)) {
 		gtk_widget_set_sensitive (del_button, FALSE);
@@ -2275,7 +2353,7 @@ selection_changed (GtkTreeSelection *selection, gpointer data)
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_AUTHOR,
 				  &value);
-        label = glade_helper_get (xml, "gg_author_text_view",
+	label = glade_helper_get (xml, "gg_author_text_view",
 				  GTK_TYPE_TEXT_VIEW);
 	textview_set_buffer (GTK_TEXT_VIEW (label),
 			     ve_sure_string (g_value_get_string (&value)));
@@ -2284,7 +2362,7 @@ selection_changed (GtkTreeSelection *selection, gpointer data)
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_COPYRIGHT,
 				  &value);
-        label = glade_helper_get (xml, "gg_copyright_text_view",
+	label = glade_helper_get (xml, "gg_copyright_text_view",
 				  GTK_TYPE_TEXT_VIEW);
 	textview_set_buffer (GTK_TEXT_VIEW (label),
 			    ve_sure_string (g_value_get_string (&value)));
@@ -2293,7 +2371,7 @@ selection_changed (GtkTreeSelection *selection, gpointer data)
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_DESCRIPTION,
 				  &value);
-        label = glade_helper_get (xml, "gg_desc_text_view",
+	label = glade_helper_get (xml, "gg_desc_text_view",
 				  GTK_TYPE_TEXT_VIEW);
 	textview_set_buffer (GTK_TEXT_VIEW (label),
 			    ve_sure_string (g_value_get_string (&value)));
@@ -2345,7 +2423,8 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 		char *n, *file, *name, *desc, *author, *copyright, *ss;
 		char *full;
 		GtkTreeIter iter;
-		gboolean sel;
+		gboolean sel_theme;
+		gboolean sel_themes;
 		VeConfig *theme_file;
 		if (dent->d_name[0] == '.')
 			continue;
@@ -2379,11 +2458,18 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			continue;
 		}
 		g_free (full);
+
 		if (selected_theme != NULL &&
 		    strcmp (dent->d_name, selected_theme) == 0)
-			sel = TRUE;
+			sel_theme = TRUE;
 		else
-			sel = FALSE;
+			sel_theme = FALSE;
+
+		if (selected_themes != NULL &&
+		    themes_list_contains (selected_themes, dent->d_name))
+			sel_themes = TRUE;
+		else
+			sel_themes = FALSE;
 
 		name = ve_config_get_translated_string
 			(theme_file, "GdmGreeterTheme/Name");
@@ -2410,7 +2496,8 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter,
-				    THEME_COLUMN_SELECTED, sel,
+				    THEME_COLUMN_SELECTED, sel_theme,
+				    THEME_COLUMN_SELECTED_LIST, sel_themes,
 				    THEME_COLUMN_DIR, dent->d_name,
 				    THEME_COLUMN_FILE, file,
 				    THEME_COLUMN_NAME, name,
@@ -2443,22 +2530,35 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 static gboolean
 greeter_theme_timeout (GtkWidget *toggle)
 {
-	char *val;
+	char *theme;
+	char *themes;
+
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
-	val = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
+	theme  = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
+	themes = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEMES);
 
-	if (strcmp (ve_sure_string (val),
-		    ve_sure_string (selected_theme)) != 0) {
+	/* If no checkbox themes selected */
+	if (selected_themes == NULL)
+		selected_themes = "";
+
+	/* If themes have changed from the config file, update it. */
+	if ((strcmp (ve_sure_string (theme),
+		ve_sure_string (selected_theme)) != 0) ||
+	    (strcmp (ve_sure_string (themes),
+		ve_sure_string (selected_themes)) != 0)) {
+
 		ve_config_set_string (config, GDM_KEY_GRAPHICAL_THEME,
-				      selected_theme);
-		ve_config_save (config, FALSE /* force */);
+			selected_theme);
+		ve_config_set_string (config, GDM_KEY_GRAPHICAL_THEMES,
+			selected_themes);
 
+		ve_config_save (config, FALSE /* force */);
 		update_greeters ();
 	}
 
-	g_free (val);
-
+	g_free (theme);
+	g_free (themes);
 	return FALSE;
 }
 
@@ -2467,35 +2567,85 @@ selected_toggled (GtkCellRendererToggle *cell,
 		  char                  *path_str,
 		  gpointer               data)
 {
+	gchar *theme_name = NULL;
 	GtkTreeModel *model = GTK_TREE_MODEL (data);
 	GtkTreeIter selected_iter;
 	GtkTreeIter iter;
+	GtkTreePath *path;
 	GtkTreePath *sel_path = gtk_tree_path_new_from_string (path_str);
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
 						  GTK_TYPE_TREE_VIEW);
-	GtkTreePath *path;
+	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
+						  GTK_TYPE_BUTTON);
+	gboolean is_radio;
 
 	gtk_tree_model_get_iter (model, &selected_iter, sel_path);
+	path     = gtk_tree_path_new_first ();
+	is_radio = gtk_cell_renderer_toggle_get_radio (cell);
+	
+	if (is_radio) { /* Radiobuttons */
+		/* Clear list of all selected themes */
+		g_free (selected_theme);
 
-	g_free (selected_theme);
-	gtk_tree_model_get (model, &selected_iter,
-			    THEME_COLUMN_DIR, &selected_theme,
-			    -1);
+		/* Get the new selected theme */
+		gtk_tree_model_get (model, &selected_iter,
+			THEME_COLUMN_DIR, &selected_theme, -1);
 
-	path = gtk_tree_path_new_first ();
-	while (gtk_tree_model_get_iter (model, &iter, path)) {
+		/* Loop through all themes in list */
+		while (gtk_tree_model_get_iter (model, &iter, path)) {
+			/* If this toggle was just toggled */
+			if (gtk_tree_path_compare (path, sel_path) == 0) {
+				gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					THEME_COLUMN_SELECTED, TRUE,
+					-1); /* Toggle ON */
+				gtk_widget_set_sensitive (del_button, FALSE);
+			} else {
+				gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					THEME_COLUMN_SELECTED, FALSE,
+					-1); /* Toggle OFF */
+			}
 
-		if (gtk_tree_path_compare (path, sel_path) == 0) {
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    THEME_COLUMN_SELECTED, TRUE,
-					    -1);
-		} else {
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    THEME_COLUMN_SELECTED, FALSE,
-					    -1);
+			gtk_tree_path_next (path);
+		}
+	} else { /* Checkboxes */
+
+		/* Clear list of all selected themes */
+		g_free(selected_themes);
+		selected_themes = NULL;
+
+		/* Loop through all checkboxes */
+		while (gtk_tree_model_get_iter (model, &iter, path)) {
+			/* If this checkbox was just toggled */
+			if (gtk_tree_path_compare (path, sel_path) == 0) {
+
+			gtk_tree_model_get (model, &selected_iter,
+				THEME_COLUMN_DIR, &theme_name, -1);
+				if (gtk_cell_renderer_toggle_get_active (cell)) {
+					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+						THEME_COLUMN_SELECTED_LIST,
+						FALSE, -1); /* Toggle OFF */
+					gtk_widget_set_sensitive (del_button, FALSE);
+				} else {
+					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+						THEME_COLUMN_SELECTED_LIST,
+						TRUE, -1); /* Toggle ON */
+				}
+			}
+	
+			gboolean selected = FALSE;
+			gtk_tree_model_get (model, &iter, THEME_COLUMN_SELECTED_LIST,
+				&selected, THEME_COLUMN_DIR, &theme_name, -1);
+	
+			if (selected)
+				selected_themes = strings_list_add (selected_themes,
+					theme_name, GDM_DELIMITER_THEMES);
+	
+			g_free(theme_name);
+			gtk_tree_path_next (path);
 		}
 
-		gtk_tree_path_next (path);
+		if (selected_themes == NULL)
+			selected_themes = g_strdup("");
 	}
 
 	gtk_tree_path_free (path);
@@ -3163,6 +3313,8 @@ setup_graphical_themes (void)
 					      GTK_TYPE_BUTTON);
 	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
 						  GTK_TYPE_BUTTON);
+	GtkWidget *mode_combobox = glade_helper_get (xml, "gg_mode_combobox",
+						     GTK_TYPE_COMBO_BOX);
 
 	char *theme_dir = get_theme_dir ();
 
@@ -3170,10 +3322,25 @@ setup_graphical_themes (void)
 
 	selected_theme = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 					       GDM_KEY_GRAPHICAL_THEME);
+	selected_themes = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+						GDM_KEY_GRAPHICAL_THEMES);
+
+	/* FIXME: If a theme directory contains the string GDM_DELIMITER_THEMES
+		  in the name, then this theme won't work when trying to load as it
+		  will be perceived as two different themes seperated by
+		  GDM_DELIMITER_THEMES.  This can be fixed by setting up an escape
+		  character for it, but I'm not sure if directories can have the
+		  slash (/) character in them, so I just made GDM_DELIMITER_THEMES
+		  equal to "/:" instead. */
+
+	GdmGraphicalThemeRand = ve_config_get_bool (
+		ve_config_get (GDM_CONFIG_FILE),
+		GDM_KEY_GRAPHICAL_THEME_RAND);
 
 	/* create list store */
 	store = gtk_list_store_new (THEME_NUM_COLUMNS,
-				    G_TYPE_BOOLEAN /* selected */,
+				    G_TYPE_BOOLEAN /* selected theme */,
+				    G_TYPE_BOOLEAN /* selected themes */,
 				    G_TYPE_STRING /* dir */,
 				    G_TYPE_STRING /* file */,
 				    G_TYPE_STRING /* name */,
@@ -3182,66 +3349,75 @@ setup_graphical_themes (void)
 				    G_TYPE_STRING /* copyright */,
 				    G_TYPE_STRING /* screenshot */);
 
+	/* Mode */
+	g_object_set_data_full (G_OBJECT (mode_combobox), "key",
+		g_strdup (GDM_KEY_GRAPHICAL_THEME_RAND),
+		(GDestroyNotify) g_free);
+
+	/* Signals */
+	g_signal_connect (mode_combobox, "changed",
+		G_CALLBACK (combobox_changed), NULL);
+
 	g_signal_connect (button, "clicked",
 			  G_CALLBACK (install_new_theme), store);
 	g_signal_connect (del_button, "clicked",
 			  G_CALLBACK (delete_theme), store);
+
+	/* Init controls */
 	gtk_widget_set_sensitive (del_button, FALSE);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (mode_combobox),
+		GdmGraphicalThemeRand);
 
+	/* Read all Themes from directory and store in tree */
 	dir = opendir (theme_dir);
-
 	if (dir != NULL) {
 		select_iter = read_themes (store, theme_dir, dir,
 					   selected_theme);
 		closedir (dir);
 	}
-
 	g_free (theme_dir);
-
 	gtk_tree_view_set_model (GTK_TREE_VIEW (theme_list), 
 				 GTK_TREE_MODEL (store));
 
-	/* The toggle column */
-
+	/* The radio toggle column */
 	column = gtk_tree_view_column_new ();
-
 	renderer = gtk_cell_renderer_toggle_new ();
 	gtk_cell_renderer_toggle_set_radio (GTK_CELL_RENDERER_TOGGLE (renderer),
 					    TRUE);
-        gtk_tree_view_column_pack_start (column, renderer, FALSE);
-
-        gtk_tree_view_column_set_attributes (column, renderer,
-                                             "active", THEME_COLUMN_SELECTED,
-                                             NULL);
-
 	g_signal_connect (G_OBJECT (renderer), "toggled",
 			  G_CALLBACK (selected_toggled), store);
-
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_set_attributes (column, renderer,
+		"active", THEME_COLUMN_SELECTED, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
+	gtk_tree_view_column_set_visible(column, !GdmGraphicalThemeRand);
+
+	/* The checkbox toggle column */
+	column = gtk_tree_view_column_new ();
+	renderer = gtk_cell_renderer_toggle_new ();
+	gtk_cell_renderer_toggle_set_radio (GTK_CELL_RENDERER_TOGGLE (renderer),
+		FALSE);
+	g_signal_connect (G_OBJECT (renderer), "toggled",
+		G_CALLBACK (selected_toggled), store);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_set_attributes (column, renderer, "active",
+		THEME_COLUMN_SELECTED_LIST, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
+	gtk_tree_view_column_set_visible(column, GdmGraphicalThemeRand);
 
 	/* The text column */
-
-	column = gtk_tree_view_column_new ();
-
-
+	column   = gtk_tree_view_column_new ();
 	renderer = gtk_cell_renderer_text_new ();
-        gtk_tree_view_column_pack_start (column, renderer, TRUE);
-
-        gtk_tree_view_column_set_attributes (column, renderer,
-                                             "text", THEME_COLUMN_NAME,
-                                             NULL);
-
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_set_attributes (column, renderer,
+		"text", THEME_COLUMN_NAME, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
 
 	/* Selection setup */
-
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
-
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
-
-        g_signal_connect (selection, "changed",
-			  G_CALLBACK (selection_changed),
-			  NULL);
+	g_signal_connect (selection, "changed",
+		G_CALLBACK (gg_selection_changed), NULL);
 
 	if (select_iter != NULL) {
 		gtk_tree_selection_select_iter (selection, select_iter);
@@ -3349,12 +3525,9 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "greeter_cat_label", "b");
 	glade_helper_tagify_label (xml, "autologin_cat_label", "b");
 	glade_helper_tagify_label (xml, "timedlogin_cat_label", "b");
-
 	glade_helper_tagify_label (xml, "sg_logo_cat_label", "b");
 	glade_helper_tagify_label (xml, "sg_background_cat_label", "b");
-
 	glade_helper_tagify_label (xml, "options_cat_label", "b");
-
 	glade_helper_tagify_label (xml, "gg_preview_cat_label", "b");
 	glade_helper_tagify_label (xml, "gg_author_label", "b");
 	glade_helper_tagify_label (xml, "gg_desc_label", "b");
@@ -3368,7 +3541,7 @@ setup_gui (void)
 	setup_greeter_backselect ();
 	setup_graphical_themes ();
 
-       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "local_greeter");
 	add_to_size_group (sg, "remote_greeter");
 	add_to_size_group (sg, "welcome");
@@ -3378,7 +3551,7 @@ setup_gui (void)
 	add_to_size_group (sg, "timedlogin_seconds");
 	g_object_unref (G_OBJECT (sg));
 
-       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "local_greeter_label");
 	add_to_size_group (sg, "remote_greeter_label");
 	add_to_size_group (sg, "welcome_label");
@@ -3388,13 +3561,13 @@ setup_gui (void)
 	add_to_size_group (sg, "timedlogin_seconds_label");
 	g_object_unref (G_OBJECT (sg));
 
-       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "greeter_table");
 	add_to_size_group (sg, "autologin_table");
 	add_to_size_group (sg, "timed_login_table");
 	g_object_unref (G_OBJECT (sg));
 
-       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "sg_use_24_clock");
 	add_to_size_group (sg, "autologin");
 	add_to_size_group (sg, "timedlogin");
@@ -3419,6 +3592,7 @@ setup_gui (void)
 			     GDM_KEY_TIMED_LOGIN_ENABLE,
 			     GDM_KEY_TIMED_LOGIN_ENABLE /* notify_key */);
 
+	/* Security */
 	setup_notify_toggle ("allowroot",
 			     GDM_KEY_ALLOWROOT,
 			     GDM_KEY_ALLOWROOT /* notify_key */);
@@ -3441,6 +3615,7 @@ setup_gui (void)
 			     GDM_KEY_DISALLOWTCP,
 			     GDM_KEY_DISALLOWTCP /* notify_key */);
 
+	/* General */
 	GdmDefaultWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
 	GdmDefaultRemoteWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
 
@@ -3460,14 +3635,12 @@ setup_gui (void)
 	setup_notify_toggle ("honour_indirect",
 			     GDM_KEY_INDIRECT,
 			     "xdmcp/PARAMETERS" /* notify_key */);
-
 	setup_intspin ("timedlogin_seconds",
 		       GDM_KEY_TIMED_LOGIN_DELAY,
 		       GDM_KEY_TIMED_LOGIN_DELAY /* notify_key */);
 	setup_intspin ("retry_delay",
 		       GDM_KEY_RETRYDELAY,
 		       GDM_KEY_RETRYDELAY /* notify_key */);
-
 	setup_intspin ("udpport",
 		       GDM_KEY_UDPPORT,
 		       GDM_KEY_UDPPORT /* notify_key */);
@@ -3494,6 +3667,7 @@ setup_gui (void)
 		       GDM_KEY_PINGINTERVAL,
 		       "xdmcp/PARAMETERS" /* notify_key */);
 
+	/* General */
 	setup_greeter_combobox ("local_greeter", GDM_KEY_GREETER);
 	setup_greeter_combobox ("remote_greeter", GDM_KEY_REMOTEGREETER);
 

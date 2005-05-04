@@ -2478,6 +2478,35 @@ XKeepsCrashing
           </varlistentry>
 
           <varlistentry>
+            <term>GraphicalThemes</term>
+            <listitem>
+              <synopsis>GraphicalThemes=circles</synopsis>
+              <para>
+                The graphical themes that the Themed Greeter should use is the
+                Mode is set on Random Themes.  This is a "/:" delimited list.
+                It should refer to a directory in the theme directory set by
+                <filename>GraphicalThemeDir</filename>.  This is only used if
+				<filename>GraphicalThemeRand</filename> is set to true.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>GraphicalThemeRand</term>
+            <listitem>
+              <synopsis>GraphicalThemeRand=false</synopsis>
+              <para>
+                Whether the graphical greeter will use Only One Theme or Random
+                Theme mode.  Only One Theme mode uses themes listed by
+                <filename>GraphicalTheme</filename>, Random Themes mode uses
+                themes listed by <filename>GraphicalThemes</filename>.  A value
+                of false sets greeter to use Only One Theme mode, a value of
+                true sets the greeter to use Random Theme mode.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>GraphicalThemeDir</term>
             <listitem>
               <synopsis>GraphicalThemeDir=&lt;share&gt;/gdm/themes/</synopsis>

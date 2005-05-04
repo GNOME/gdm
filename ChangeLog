@@ -1,3 +1,27 @@
+2005-05-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* Makefile.am: Correct Makefile so that if 
+	  CONSOLE_HELPER is set, we don't try to create
+	  an /sbin/gdmsetup symlink to gdmsetup.  Now
+	  gdmsetup is already installed to /sbin always.
+	  Fixes #302319.
+	* gui/gdmsetup.c: Fix sensitivity of the 
+	  "Delete Theme" button.
+	* daemon/gdm.h, gui/gdmlogin.c, gui/greeter/greeter.c:
+	  Now only set user/password entry to PAM_MAX_RESP_SIZE
+	  if HAVE_PAM is defined, otherwise set it to 
+	  GDM_MAX_PASS set to 256 in daemon/gdm.h.  This 
+	  allows gdm to be used on systems that do not have
+	  PAM.  Fixes #302228.
+	* daemon/gdm.h, docs/C/gdm.xml, gui/gdmsetup.c,
+	  gui/greeter/greeter.c, gui/gdmsetup.glade, 
+	  gui/gdmsetup-strings.c, config/gdm.conf.in:
+	  Now support random theme.  Fixes #302354.
+	* gui/gdmcommon.c, gui/gdmlogin.c,
+	  gui/greeter/greeter_session.c, gui/Makefile.am,
+	  added gui/gdmsession.[ch]:  Support better
+	  sorting for session names.  Fixes #301818.
+
 2005-04-26  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/modules/AccessKeyMouseEvents.in:  Now use more

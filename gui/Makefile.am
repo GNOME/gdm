@@ -63,6 +63,8 @@ libgdmcommon_a_SOURCES = \
 	gdmlanguages.h		\
 	gdmuser.c		\
 	gdmuser.h		\
+	gdmsession.c		\
+	gdmsession.h		\
 	misc.c			\
 	misc.h			\
 	gdmcommon.c		\

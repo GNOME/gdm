@@ -24,7 +24,13 @@
 #include <syslog.h>
 #include <unistd.h>
 #include <signal.h>
+
+#if HAVE_PAM
 #include <security/pam_appl.h>
+#define PW_ENTRY_SIZE PAM_MAX_RESP_SIZE
+#else
+#define PW_ENTRY_SIZE GDM_MAX_PASS
+#endif
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -60,7 +66,9 @@ GtkWidget *canvas;
 
 gboolean GDM_IS_LOCAL = FALSE;
 char *GdmGraphicalTheme = NULL;
+char *GdmGraphicalThemes = NULL;
 char *GdmGraphicalThemeDir = NULL;
+gboolean GdmGraphicalThemeRand = FALSE;
 int GdmXineramaScreen = 0;
 gboolean GdmShowGnomeFailsafeSession = FALSE;
 gboolean GdmShowXtermFailsafeSession = FALSE;
@@ -123,6 +131,38 @@ extern gboolean require_quarter;
 
 gboolean greeter_probably_login_prompt = FALSE;
 
+/* If in random theme mode then grab a random theme from those selected */
+static char *
+get_random_theme ()
+{
+    char **vec;
+	char *themes_list;
+	char *theme;
+    int size;
+	int i;
+
+    VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	themes_list = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEMES);
+
+    if (ve_string_empty (themes_list))
+        return NULL;
+
+    vec = g_strsplit (themes_list, GDM_DELIMITER_THEMES, -1);
+    if (vec == NULL)
+        return NULL;
+
+	/* Get Number of elements in vector */
+    for (size = 0; vec[size] != NULL; size++) {}
+
+	/* Get Random Theme from list */
+	srand ( time(NULL) );
+	i = rand() % size;
+	theme = g_strdup (vec[i]);
+    g_strfreev (vec);
+
+    return theme;
+}
+
 static void 
 greeter_parse_config (void)
 {
@@ -145,13 +185,21 @@ greeter_parse_config (void)
 
     config = ve_config_get (GDM_CONFIG_FILE);
 
-    GdmGraphicalTheme = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
-    if (GdmGraphicalTheme == NULL ||
-	GdmGraphicalTheme[0] == '\0')
-      {
-	g_free (GdmGraphicalTheme);
-	GdmGraphicalTheme = g_strdup ("circles");
-      }
+	GdmGraphicalThemeRand = ve_config_get_bool (config,
+	                                            GDM_KEY_GRAPHICAL_THEME_RAND);
+
+	if (GdmGraphicalThemeRand)
+		GdmGraphicalTheme = get_random_theme(); 
+	else
+		GdmGraphicalTheme = ve_config_get_string (config,
+		                                          GDM_KEY_GRAPHICAL_THEME);
+
+	if (GdmGraphicalTheme == NULL || GdmGraphicalTheme[0] == '\0')
+	{
+		g_free (GdmGraphicalTheme);
+		GdmGraphicalTheme = g_strdup ("circles");
+	}
+
 
     GdmGraphicalThemeDir = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_DIR);
     if (GdmGraphicalThemeDir == NULL ||
@@ -327,7 +375,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	} else {
 		greeter_probably_login_prompt = FALSE;
 	}
-	greeter_item_pam_prompt (tmp, PAM_MAX_RESP_SIZE, TRUE);
+	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, TRUE);
 	g_free (tmp);
 	break;
 
@@ -336,7 +384,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	greeter_item_pam_prompt (tmp, PAM_MAX_RESP_SIZE, FALSE);
+	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, FALSE);
 	g_free (tmp);
 	break;
 
