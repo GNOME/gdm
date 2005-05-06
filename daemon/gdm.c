@@ -104,8 +104,8 @@ gboolean gdm_wait_for_go = FALSE; /* wait for a GO in the fifo */
 gboolean print_version = FALSE; /* print version number and quit */
 gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
 gboolean no_daemon = FALSE;	/* Do not daemonize */
-gboolean no_console = FALSE;	/* There are no local servers, this means,
-				   don't run local servers and second,
+gboolean no_console = FALSE;	/* There are no static servers, this means,
+				   don't run static servers and second,
 				   don't display info on the console */
 
 GdmConnection *fifoconn = NULL; /* Fifo connection */
@@ -121,8 +121,8 @@ char *gdm_charset = NULL;
 int gdm_normal_runlevel = -1; /* runlevel on linux that gdm was started in */
 
 /* True if the server that was run was in actuallity not specified in the
- * config file.  That is if xdmcp was disabled and no local servers were
- * defined.  If the user kills all his local servers by mistake and keeps
+ * config file.  That is if xdmcp was disabled and no static servers were
+ * defined.  If the user kills all his static servers by mistake and keeps
  * xdmcp on.  Well then he's screwed.  The configurator should be smarter
  * about that.  But by default xdmcp is disabled so we're likely to catch
  * some errors like this. */
@@ -577,7 +577,7 @@ gdm_config_parse (void)
 	    xservers = g_slist_append (xservers, svr);
     }
 
-    /* Find local X server definitions */
+    /* Find static X server definitions */
     list = ve_config_get_keys (cfg, GDM_KEY_SERVERS);
     /* only read the list if no_console is FALSE
        at this stage */
@@ -621,10 +621,10 @@ gdm_config_parse (void)
     if G_UNLIKELY (displays == NULL && ! GdmXdmcp) {
 	    char *server = NULL;
 
-	    /* if we requested no local servers (there is no console),
+	    /* if we requested no static servers (there is no console),
 	       then don't display errors in console messages */
 	    if (no_console) {
-		    gdm_fail (_("%s: XDMCP disabled and no local servers defined. Aborting!"), "gdm_config_parse");
+		    gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
 	    }
 
 	    bin = ve_first_word (GdmStandardXServer);
@@ -642,7 +642,7 @@ gdm_config_parse (void)
 	    if (server != NULL) {
 		    int num = gdm_get_free_display (0 /* start */,
 						    0 /* server uid */);
-		    gdm_error (_("%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow configuration!"),
+		    gdm_error (_("%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"),
 			       "gdm_config_parse",
 			       server, num);
 
@@ -658,14 +658,14 @@ gdm_config_parse (void)
 	    } else {
 		    char *s = g_strdup_printf
 			    (C_(N_("XDMCP is disabled and gdm "
-				   "cannot find any local server "
+				   "cannot find any static server "
 				   "to start.  Aborting!  Please "
 				   "correct the configuration %s "
 				   "and restart gdm.")),
 			     GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
 		    GdmPidFile = NULL;
-		    gdm_fail (_("%s: XDMCP disabled and no local servers defined. Aborting!"), "gdm_config_parse");
+		    gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
 	    }
     }
 
@@ -932,7 +932,7 @@ gdm_start_first_unborn_local (int delay)
 		GdmDisplay *d = li->data;
 
 		if (d != NULL &&
-		    d->type == TYPE_LOCAL &&
+		    d->type == TYPE_STATIC &&
 		    d->dispstat == DISPLAY_UNBORN) {
 			GdmXServer *svr;
 			gdm_debug ("gdm_start_first_unborn_local: "
@@ -942,7 +942,7 @@ gdm_start_first_unborn_local (int delay)
 			 * before starting */
 			d->sleep_before_run = delay;
 
-			/* only the first local display has
+			/* only the first static display has
 			 * timed login going on */
 			if (gdm_first_login)
 				d->timed_login_ok = TRUE;
@@ -951,7 +951,7 @@ gdm_start_first_unborn_local (int delay)
 
 			if ( ! gdm_display_manage (d)) {
 				gdm_display_unmanage (d);
-				/* only the first local display where
+				/* only the first static display where
 				   we actually log in gets
 				   autologged in */
 				if (svr != NULL &&
@@ -959,7 +959,7 @@ gdm_start_first_unborn_local (int delay)
 				    ! svr->chooser)
 					gdm_first_login = FALSE;
 			} else {
-				/* only the first local display where
+				/* only the first static display where
 				   we actually log in gets
 				   autologged in */
 				if (svr != NULL &&
@@ -1002,7 +1002,7 @@ gdm_final_cleanup (void)
 		}
 	}
 
-	/* Now completely unmanage the local servers */
+	/* Now completely unmanage the static servers */
 	first = TRUE;
 	list = g_slist_copy (displays);
 	/* somewhat of a hack to kill last server
@@ -1014,7 +1014,7 @@ gdm_final_cleanup (void)
 		if (SERVER_IS_XDMCP (d) ||
 		    SERVER_IS_PROXY (d))
 			continue;
-		/* HACK! Wait 2 seconds between killing of local servers
+		/* HACK! Wait 2 seconds between killing of static servers
 		 * because X is stupid and full of races and will otherwise
 		 * hang my keyboard */
 		if ( ! first) {
@@ -1454,12 +1454,12 @@ gdm_cleanup_children (void)
 	    status = DISPLAY_REMANAGE;
     }
 
-    if ( ! d->console &&
+    if ( ! d->attached &&
 	(status == DISPLAY_RESTARTGDM ||
 	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_SUSPEND ||
 	 status == DISPLAY_HALT)) {
-	    gdm_info (_("Restart, Reboot or Halt request from a non-local display %s"), d->name);
+	    gdm_info (_("Restart, Reboot or Halt request from a non-static display %s"), d->name);
 	    status = DISPLAY_REMANAGE;
     }
 
@@ -1533,7 +1533,7 @@ start_autopsy:
 
 	gdm_display_unmanage (d);
 
-	/* If there are some pending locals, start them now */
+	/* If there are some pending statics, start them now */
 	gdm_start_first_unborn_local (3 /* delay */);
 	break;
 	
@@ -1578,7 +1578,7 @@ start_autopsy:
 	gdm_safe_restart ();
 
 	/* in remote/flexi case just drop to _REMANAGE */
-	if (d->type == TYPE_LOCAL) {
+	if (d->type == TYPE_STATIC) {
 		time_t now = time (NULL);
 		d->x_faileds ++;
 		/* This really is likely the first time if it's been,
@@ -1597,7 +1597,7 @@ start_autopsy:
 				 * "Screw you guys, I'm going home!" */
 				gdm_display_unmanage (d);
 
-				/* If there are some pending locals,
+				/* If there are some pending statics,
 				 * start them now */
 				gdm_start_first_unborn_local (3 /* delay */);
 				break;
@@ -1639,11 +1639,11 @@ start_autopsy:
 	gdm_try_logout_action (d);
 	gdm_safe_restart ();
 	
-	/* This is a local server so we start a new slave */
-	if (d->type == TYPE_LOCAL) {
+	/* This is a static server so we start a new slave */
+	if (d->type == TYPE_STATIC) {
 		if ( ! gdm_display_manage (d)) {
 			gdm_display_unmanage (d);
-			/* If there are some pending locals,
+			/* If there are some pending statics,
 			 * start them now */
 			gdm_start_first_unborn_local (3 /* delay */);
 		}
@@ -1914,7 +1914,7 @@ struct poptOption options [] = {
 	{ "nodaemon", '\0', POPT_ARG_NONE | POPT_ARGFLAG_ONEDASH,
 	  &no_daemon, 0, N_("Do not fork into the background"), NULL },
 	{ "no-console", '\0', POPT_ARG_NONE,
-	  &no_console, 0, N_("No console (local) servers to be run"), NULL },
+	  &no_console, 0, N_("No console (static) servers to be run"), NULL },
 	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
 	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
 	{ "version", '\0', POPT_ARG_NONE,
@@ -2299,7 +2299,7 @@ main (int argc, char *argv[])
     /* Make us a unique global cookie to authenticate */
     gdm_make_global_cookie ();
 
-    /* Start local X servers */
+    /* Start static X servers */
     gdm_start_first_unborn_local (0 /* delay */);
 
     /* Accept remote connections */
@@ -2710,7 +2710,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 					g_string_append (resp, di->name);
 					g_string_append_c (resp, ',');
 
-					if (d->console && di->console && di->vt > 0)
+					if (d->attached && di->attached && di->vt > 0)
 						migratable = TRUE;
 					else if (GdmXdmcpProxyReconnect != NULL &&
 						 d->type == TYPE_XDMCP_PROXY && di->type == TYPE_XDMCP_PROXY)
@@ -2754,7 +2754,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *di = li->data;
 			if (di->logged_in && strcmp (di->name, p) == 0) {
-				if (d->console && di->vt > 0)
+				if (d->attached && di->vt > 0)
 					gdm_change_vt (di->vt);
 				else if (d->type == TYPE_XDMCP_PROXY && di->type == TYPE_XDMCP_PROXY)
 					gdm_xdmcp_migrate (d, di);
@@ -3330,16 +3330,16 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 			p = strchr (p+1, '.');
 		if (p != NULL)
 			*p = '\0';
-		/* if it's on one of the console displays we started,
+		/* if it's on one of the attached displays we started,
 		 * it's on the console, else it's not (it could be but
 		 * we aren't sure and we don't want to be fooled) */
 		parent = find_display (disp);
 		if (/* paranoia */xnest_disp[0] == ':' &&
 		    parent != NULL &&
-		    parent->console)
-			display->console = TRUE;
+		    parent->attached)
+			display->attached = TRUE;
 		else
-			display->console = FALSE;
+			display->attached = FALSE;
 		g_free (disp);
 
 		display->server_uid = server_uid;
@@ -3712,10 +3712,10 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			g_free (cookie);
 			return;
 		}
-		/* check if cookie matches one of the console displays */
+		/* check if cookie matches one of the attached displays */
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
-			if (disp->console &&
+			if (disp->attached &&
 			    disp->cookie != NULL &&
 			    g_ascii_strcasecmp (disp->cookie, cookie) == 0) {
 				g_free (cookie);
@@ -3836,7 +3836,8 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		g_free (dispname);
 		g_free (xauthfile);
-	} else if (strcmp (msg, GDM_SUP_CONSOLE_SERVERS) == 0) {
+	} else if ((strcmp (msg, GDM_SUP_ATTACHED_SERVERS) == 0) ||
+               (strcmp (msg, GDM_SUP_CONSOLE_SERVERS) == 0)) {
                 GString *msg;
 		GSList *li;
 		const char *sep = " ";
@@ -3844,7 +3845,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
-			if ( ! disp->console)
+			if ( ! disp->attached)
 				continue;
 			g_string_append_printf (msg, "%s%s,%s,", sep,
 					       ve_sure_string (disp->name),
@@ -3945,7 +3946,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			logout_action = safe_logout_action;
 
 		if (GdmSystemMenu &&
-		    disp->console &&
+		    disp->attached &&
 		    ! ve_string_empty (GdmHaltReal)) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_HALT);
 			if (logout_action == GDM_LOGOUT_ACTION_HALT)
@@ -3953,7 +3954,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			sep = ";";
 		}
 		if (GdmSystemMenu &&
-		    disp->console &&
+		    disp->attached &&
 		    ! ve_string_empty (GdmRebootReal)) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_REBOOT);
 			if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
@@ -3961,7 +3962,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			sep = ";";
 		}
 		if (GdmSystemMenu &&
-		    disp->console &&
+		    disp->attached &&
 		    ! ve_string_empty (GdmSuspendReal)) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
 			if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
@@ -3997,7 +3998,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			was_ok = TRUE;
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
 			if (GdmSystemMenu &&
-			    disp->console &&
+			    disp->attached &&
 			    ! ve_string_empty (GdmHaltReal)) {
 				disp->logout_action =
 					GDM_LOGOUT_ACTION_HALT;
@@ -4005,7 +4006,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
 			if (GdmSystemMenu &&
-			    disp->console &&
+			    disp->attached &&
 			    ! ve_string_empty (GdmRebootReal)) {
 				disp->logout_action =
 					GDM_LOGOUT_ACTION_REBOOT;
@@ -4013,7 +4014,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
 			if (GdmSystemMenu &&
-			    disp->console &&
+			    disp->attached &&
 			    ! ve_string_empty (GdmSuspendReal)) {
 				disp->logout_action =
 					GDM_LOGOUT_ACTION_SUSPEND;
@@ -4052,7 +4053,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			was_ok = TRUE;
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
 			if (GdmSystemMenu &&
-			    disp->console &&
+			    disp->attached &&
 			    ! ve_string_empty (GdmHaltReal)) {
 				safe_logout_action =
 					GDM_LOGOUT_ACTION_HALT;
@@ -4060,7 +4061,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
 			if (GdmSystemMenu &&
-			    disp->console &&
+			    disp->attached &&
 			    ! ve_string_empty (GdmRebootReal)) {
 				safe_logout_action =
 					GDM_LOGOUT_ACTION_REBOOT;
@@ -4068,7 +4069,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
 			if (GdmSystemMenu &&
-			    disp->console &&
+			    disp->attached &&
 			    ! ve_string_empty (GdmSuspendReal)) {
 				safe_logout_action =
 					GDM_LOGOUT_ACTION_SUSPEND;

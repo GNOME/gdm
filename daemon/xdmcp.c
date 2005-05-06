@@ -2558,7 +2558,7 @@ gdm_xdmcp_display_alloc (
     d->servstat = 0;
     d->sesspid = 0;
     d->slavepid = 0;
-    d->console = FALSE;
+    d->attached = FALSE;
     d->dispstat = XDMCP_PENDING;
     d->sessionid = globsessid++;
     if (d->sessionid == 0)

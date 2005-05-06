@@ -874,7 +874,7 @@ gdm_slave_start (GdmDisplay *display)
 		gdm_slave_run (display);
 
 		/* remote and flexi only run once */
-		if (display->type != TYPE_LOCAL ||
+		if (display->type != TYPE_STATIC ||
 		    ! parent_exists ()) {
 			gdm_server_stop (display);
 			gdm_slave_send_num (GDM_SOP_XPID, 0);
@@ -1404,7 +1404,7 @@ gdm_slave_run (GdmDisplay *display)
     /* something may have gone wrong, try xfailed, if local (non-flexi),
      * the toplevel loop of death will handle us */ 
     if G_UNLIKELY (d->handled && d->dsp == NULL) {
-	    if (d->type == TYPE_LOCAL)
+	    if (d->type == TYPE_STATIC)
 		    gdm_slave_quick_exit (DISPLAY_XFAILED);
 	    else
 		    gdm_slave_quick_exit (DISPLAY_ABORT);
@@ -1438,7 +1438,7 @@ gdm_slave_run (GdmDisplay *display)
 	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
 	    return;
-    } else if (d->type == TYPE_LOCAL &&
+    } else if (d->type == TYPE_STATIC &&
 	       gdm_first_login &&
 	       ! ve_string_empty (ParsedAutomaticLogin) &&
 	       strcmp (ParsedAutomaticLogin, gdm_root_user ()) != 0) {
@@ -1892,7 +1892,7 @@ gdm_slave_wait_for_login (void)
 		login = gdm_verify_user (d /* the display */,
 					 NULL /* username*/,
 					 d->name /* display name */,
-					 d->console /* console? (bool) */);
+					 d->attached /* display attached? (bool) */);
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
 			   ve_sure_string (login));
 
@@ -1938,7 +1938,7 @@ gdm_slave_wait_for_login (void)
 			login = gdm_verify_user (d,
 						 pwent->pw_name,
 						 d->name,
-						 d->console);
+						 d->attached);
 			GdmAllowRoot = oldAllowRoot;
 
 			/* Clear message */
@@ -2048,7 +2048,7 @@ gdm_slave_wait_for_login (void)
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 
 			/* Play sounds if specified for a failed login */
-			if (d->console &&
+			if (d->attached &&
 			    GdmSoundOnLoginFailure &&
 			    ! play_login_sound (GdmSoundOnLoginFailureFile)) {
 				gdm_error (_("Login sound requested on non-local display or the play "
@@ -2071,7 +2071,7 @@ gdm_slave_wait_for_login (void)
 
 	/* Play sounds if specified for a successful login */
 	if (login != NULL &&
-	    d->console &&
+	    d->attached &&
 	    GdmSoundOnLoginSuccess &&
 	    ! play_login_sound (GdmSoundOnLoginSuccessFile)) {
 		gdm_error (_("Login sound requested on non-local display or the play software "
@@ -2680,7 +2680,7 @@ gdm_slave_greeter (void)
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local
 	 * display so it's not a security risk */
-	if (d->console) {
+	if (d->attached) {
 		ve_setenv ("GDM_IS_LOCAL", "yes", TRUE);
 	} else {
 		ve_unsetenv ("GDM_IS_LOCAL");
@@ -2736,7 +2736,7 @@ gdm_slave_greeter (void)
 		g_free (msg);
 	}
 
-	if (d->console)
+	if (d->attached)
 		command = GdmGreeter;
 	else
 		command = GdmRemoteGreeter;
@@ -3612,7 +3612,7 @@ session_child_run (struct passwd *pwent,
 	ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
-	if (d->type == TYPE_LOCAL) {
+	if (d->type == TYPE_STATIC) {
 		ve_setenv ("GDM_XSERVER_LOCATION", "local", TRUE);
 	} else if (d->type == TYPE_XDMCP) {
 		ve_setenv ("GDM_XSERVER_LOCATION", "xdmcp", TRUE);
@@ -4903,7 +4903,7 @@ gdm_slave_xioerror_handler (Display *disp)
 	/* Display is all gone */
 	d->dsp = NULL;
 
-	if ((d->type == TYPE_LOCAL ||
+	if ((d->type == TYPE_STATIC ||
 	     d->type == TYPE_FLEXI) &&
 	    (do_xfailed_on_xio_error ||
 	     d->starttime + 5 >= time (NULL))) {
@@ -4953,7 +4953,7 @@ check_for_interruption (const char *msg)
 			 * it is allowed for this display (it's only allowed
 			 * for the first local display) and if it's set up
 			 * correctly */
-			if ((d->console || GdmAllowRemoteAutoLogin) 
+			if ((d->attached || GdmAllowRemoteAutoLogin) 
                             && d->timed_login_ok &&
 			    ! ve_string_empty (ParsedTimedLogin) &&
                             strcmp (ParsedTimedLogin, gdm_root_user ()) != 0 &&
@@ -4962,7 +4962,7 @@ check_for_interruption (const char *msg)
 			}
 			break;
 		case GDM_INTERRUPT_CONFIGURE:
-			if (d->console &&
+			if (d->attached &&
 			    GdmConfigAvailable &&
 			    GdmSystemMenu &&
 			    ! ve_string_empty (GdmConfigurator)) {
@@ -4970,7 +4970,7 @@ check_for_interruption (const char *msg)
 			}
 			break;
 		case GDM_INTERRUPT_SUSPEND:
-			if (d->console &&
+			if (d->attached &&
 			    GdmSystemMenu &&
 			    ! ve_string_empty (GdmSuspend)) {
 				gdm_slave_send (GDM_SOP_SUSPEND_MACHINE,
@@ -4980,7 +4980,7 @@ check_for_interruption (const char *msg)
 			 * just proxy this to the master server */
 			return TRUE;
 		case GDM_INTERRUPT_LOGIN_SOUND:
-			if (d->console &&
+			if (d->attached &&
 			    ! play_login_sound (GdmSoundOnLoginReadyFile)) {
 				gdm_error (_("Login sound requested on non-local display or the play software "
 					     "cannot be run or the sound does not exist"));
@@ -5551,11 +5551,11 @@ gdm_slave_handle_notify (const char *msg)
 		g_free (GdmGreeter);
 		GdmGreeter = g_strdup (&msg[strlen (GDM_NOTIFY_GREETER) + 1]);
 
-		if (d->console) {
+		if (d->attached) {
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
 				; /* will get restarted later */
-			} else if (d->type == TYPE_LOCAL) {
+			} else if (d->type == TYPE_STATIC) {
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */
 				if ( ! d->logged_in) {
@@ -5570,7 +5570,7 @@ gdm_slave_handle_notify (const char *msg)
 		g_free (GdmRemoteGreeter);
 		GdmRemoteGreeter = g_strdup
 			(&msg[strlen (GDM_NOTIFY_REMOTEGREETER) + 1]);
-		if ( ! d->console) {
+		if ( ! d->attached) {
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
 				; /* will get restarted later */
@@ -5589,7 +5589,7 @@ gdm_slave_handle_notify (const char *msg)
 		do_restart_greeter = TRUE;
 		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
-		if (d->type == TYPE_LOCAL || d->type == TYPE_XDMCP) {
+		if (d->type == TYPE_STATIC || d->type == TYPE_XDMCP) {
 			if ( ! d->logged_in) {
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			} else {
@@ -5631,7 +5631,7 @@ gdm_slave_handle_notify (const char *msg)
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
 				; /* will get restarted later */
-			} else if (d->type == TYPE_LOCAL) {
+			} else if (d->type == TYPE_STATIC) {
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */
 				if ( ! d->logged_in) {
@@ -5647,7 +5647,7 @@ gdm_slave_handle_notify (const char *msg)
 		do_restart_greeter = TRUE;
 		if (restart_greeter_now) {
 			; /* will get restarted later */
-		} else if (d->type == TYPE_LOCAL) {
+		} else if (d->type == TYPE_STATIC) {
 			/* FIXME: can't handle flexi servers like this
 			 * without going all cranky */
 			if ( ! d->logged_in) {

@@ -737,7 +737,7 @@ gdm_server_start (GdmDisplay *disp,
     gdm_server_stop (d);
 
     /* First clear the VT number */
-    if (d->type == TYPE_LOCAL ||
+    if (d->type == TYPE_STATIC ||
 	d->type == TYPE_FLEXI) {
 	    d->vt = -1;
 	    gdm_slave_send_num (GDM_SOP_VT_NUM, -1);
@@ -774,7 +774,7 @@ gdm_server_start (GdmDisplay *disp,
 
     d->servstat = SERVER_DEAD;
 
-    if (d->type == TYPE_LOCAL ||
+    if (d->type == TYPE_STATIC ||
 	d->type == TYPE_FLEXI) {
 	    vtarg = gdm_get_empty_vt_argument (&vtfd, &vt);
     }
@@ -806,7 +806,7 @@ gdm_server_start (GdmDisplay *disp,
 
 	    if (SERVER_IS_FLEXI (d))
 		    gdm_slave_send_num (GDM_SOP_FLEXI_OK, 0 /* bogus */);
-	    if (d->type == TYPE_LOCAL ||
+	    if (d->type == TYPE_STATIC ||
 		d->type == TYPE_FLEXI) {
 		    if (vt >= 0)
 			    d->vt = vt;
@@ -898,7 +898,7 @@ void
 gdm_server_checklog (GdmDisplay *disp)
 {
 	if (d->vt < 0 &&
-	    (d->type == TYPE_LOCAL ||
+	    (d->type == TYPE_STATIC ||
 	     d->type == TYPE_FLEXI)) {
 		d->vt = display_vt (d);
 		if (d->vt >= 0)
@@ -1404,8 +1404,8 @@ gdm_server_alloc (gint id, const gchar *command)
     d->servstat = SERVER_DEAD;
     d->sesspid = 0;
     d->slavepid = 0;
-    d->type = TYPE_LOCAL;
-    d->console = TRUE;
+    d->type = TYPE_STATIC;
+    d->attached = TRUE;
     d->sessionid = 0;
     d->acctime = 0;
     d->dsp = NULL;

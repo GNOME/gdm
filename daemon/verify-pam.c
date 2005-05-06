@@ -149,7 +149,7 @@ audit_success_login(int pw_change, struct passwd *pwent)
  *
  *	Entry	did_setcred == FALSE, process audit context is not established.
  *			       TRUE, process audit context established.
- *		d = display structure, d->console non 0 if local,
+ *		d = display structure, d->attached non 0 if local,
  *			d->hostname used if remote.
  *		pw_change == PW_FALSE, if no password change requested.
  *			     PW_TRUE, if successful password change audit
@@ -186,7 +186,7 @@ audit_fail_login(GdmDisplay *d, int pw_change, struct passwd *pwent,
 			    "adt_start_session(ADT_login, ADT_FAILURE): %m");
 			return;
 		}
-		if (d->console) {
+		if (d->attached) {
 			/* login from the local host */
 			if (adt_load_hostname(NULL, &tid) != 0) {
 
@@ -674,7 +674,7 @@ create_pamh (GdmDisplay *d,
 
 	/* Inform PAM of the user's tty */
 #ifdef	sun
-	if (d->console == 0)
+	if (d->attached == 0)
 		(void) pam_set_item (pamh, PAM_TTY, "/dev/console");
 	else 
 #endif	/* sun */
@@ -684,7 +684,7 @@ create_pamh (GdmDisplay *d,
 		return FALSE;
 	}
 
-	if ( ! d->console) {
+	if ( ! d->attached) {
 		/* Only set RHOST if host is remote */
 		/* From the host of the display */
 		if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
@@ -993,7 +993,7 @@ authenticate_again:
     tmp_PAM_USER = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-	if (d->console)
+	if (d->attached)
 		(void) di_devperm_login("/dev/console", pwent->pw_uid,
 		    pwent->pw_gid, NULL);
 #endif	/* HAVE_LOGINDEVPERM */
@@ -1280,7 +1280,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     extra_standalone_message = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-	if (d->console)
+	if (d->attached)
 		(void) di_devperm_login("/dev/console", pwent->pw_uid,
 		    pwent->pw_gid, NULL);
 #endif	/* HAVE_LOGINDEVPERM */
@@ -1382,7 +1382,7 @@ gdm_verify_cleanup (GdmDisplay *d)
 		pam_end (tmp_pamh, pamerr);
 
 #ifdef  HAVE_LOGINDEVPERM
-        if (old_opened_session && old_did_setcred && d->console)
+        if (old_opened_session && old_did_setcred && d->attached)
         {
             (void) di_devperm_logout("/dev/console");
             /* give it back to gdm user */

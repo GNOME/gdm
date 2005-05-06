@@ -115,7 +115,7 @@ gdm_display_check_loop (GdmDisplay *disp)
 					   "before trying again on display %s.")),
 					disp->name);
 	  /* only display a dialog box if this is a local display */
-	  if (disp->type == TYPE_LOCAL ||
+	  if (disp->type == TYPE_STATIC ||
 	      disp->type == TYPE_FLEXI) {
 		  gdm_text_message_dialog (s);
 	  }
@@ -389,7 +389,7 @@ gdm_display_unmanage (GdmDisplay *d)
     whack_old_slave (d, TRUE /* kill_connection */);
     
     d->dispstat = DISPLAY_DEAD;
-    if (d->type != TYPE_LOCAL)
+    if (d->type != TYPE_STATIC)
 	gdm_display_dispose (d);
 
     gdm_debug ("gdm_display_unmanage: Display stopped");

@@ -69,7 +69,7 @@ display_add_error (GdmDisplay *d)
 		gdm_error (_("%s: Could not write new authorization entry.  "
 			     "Possibly out of diskspace"),
 			   "add_auth_entry");
-	if (d->console) {
+	if (d->attached) {
 		char *s = g_strdup_printf
 			(C_(N_("GDM could not write a new authorization "
 			       "entry to disk.  Possibly out of diskspace.%s%s")),

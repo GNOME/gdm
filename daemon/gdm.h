@@ -33,13 +33,13 @@
 #define BEL 0x7			/* Bell, used to interrupt login for
 				 * say timed login or something similar */
 
-#define TYPE_LOCAL 1		/* Local X server */
-#define TYPE_XDMCP 2		/* Remote display */
+#define TYPE_STATIC 1		/* X server defined in gdm.conf */
+#define TYPE_XDMCP 2		/* Remote display/Xserver */
 #define TYPE_FLEXI 3		/* Local Flexi X server */
 #define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
 #define TYPE_XDMCP_PROXY 5      /* Proxy X server for XDMCP */
 
-#define SERVER_IS_LOCAL(d) ((d)->type == TYPE_LOCAL || \
+#define SERVER_IS_LOCAL(d) ((d)->type == TYPE_STATIC || \
 			    (d)->type == TYPE_FLEXI || \
 			    (d)->type == TYPE_FLEXI_XNEST || \
 			    (d)->type == TYPE_XDMCP_PROXY)
@@ -406,7 +406,8 @@ struct _GdmDisplay {
 
     gboolean busy_display;
 
-    gboolean console;
+    gboolean attached;  /* Display is physically attached to the machine. */
+                        /* TYPE_XDMCP would have this FALSE, eg. */
 
     time_t last_start_time;
     time_t last_loop_start_time;
@@ -735,9 +736,11 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
-#define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS" /* None */
-/* CONSOLE_SERVERS: List all console servers, useful for Linux mostly
- *  Doesn't list xdmcp and xnest non-console servers
+#define GDM_SUP_ATTACHED_SERVERS "ATTACHED_SERVERS" /* None */
+#define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS"  /* None */
+/* ATTACHED_SERVERS: List all attached servers, useful for Linux mostly
+ *   Doesn't list xdmcp and xnest non-attached servers
+ * CONSOLE_SERVERS supported, but deprecated due to terminology
  * Supported since: 2.2.4.0
  * Arguments:  None
  * Answers:
@@ -747,8 +750,8 @@ void		gdm_final_cleanup	(void);
  *
  *   <logged in user> can be empty in case no one logged in yet,
  *   and <vt> can be -1 if it's not known or not supported (on non-Linux
- *   for example).  If the display is an xnest display and is a console one
- *   (that is, it is an xnest inside another console display) it is listed
+ *   for example).  If the display is an xnest display and is an attached one
+ *   (that is, it is an xnest inside another attached display) it is listed
  *   and instead of vt, it lists the parent display in standard form.
  *
  *   ERROR <err number> <english error description>
@@ -757,7 +760,7 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_ALL_SERVERS  "ALL_SERVERS" /* None */
-/* ALL_SERVERS: List all servers, including console, remote, xnest.  This
+/* ALL_SERVERS: List all servers, including attached, remote, xnest.  This
  * Can for example be useful to figure out if the server you are on is managed
  * by the gdm daemon, by seeing if it is in the list.  It is also somewhat
  * like the 'w' command but for graphical sessions.
