@@ -563,7 +563,7 @@ do_server_wait (GdmDisplay *d)
 {
     /* Wait for X server to send ready signal */
     if (d->servstat == SERVER_PENDING) {
-	    if (d->server_uid != 0 && ! d->handled) {
+	    if (d->server_uid != 0 && ! d->handled && ! d->chosen_hostname) {
 		    /* FIXME: If not handled, we just don't know, so
 		     * just wait a few seconds and hope things just work,
 		     * fortunately there is no such case yet and probably
