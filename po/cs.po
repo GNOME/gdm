@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-06 05:14+0000\n"
-"PO-Revision-Date: 2005-05-06 10:18+0200\n"
+"POT-Creation-Date: 2005-05-12 05:12+0000\n"
+"PO-Revision-Date: 2005-05-12 11:33+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -406,30 +406,24 @@ msgstr "%s: Nesprávná řádek serveru v konfiguračním souboru. Ignoruji!"
 
 #: ../daemon/gdm.c:627 ../daemon/gdm.c:668
 #, c-format
-msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
-msgstr ""
-"%s: Protokol XDMCP je vypnut a žádné místní servery nebyly definovány. "
-"Končím!"
+msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
+msgstr "%s: XDMCP je zakázán a nebyly definovány žádné místní servery. Končím!"
 
 #. start
 #. server uid
 #: ../daemon/gdm.c:645
 #, c-format
 msgid ""
-"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
+"%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
 "configuration!"
-msgstr ""
-"%s: Protokol XDMCP je vypnut a nebyly definovány žádné místní servery. "
-"Přidávám %s na :%d pro možnost nastavení!"
+msgstr "%s: XDMCP je zakázán a nebyly definovány žádné místní servery. Přidávám %s na :%d pro možnost nastavení!"
 
 #: ../daemon/gdm.c:660
 #, c-format
 msgid ""
-"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
-"Please correct the configuration %s and restart gdm."
-msgstr ""
-"Protokol XDMCP je vypnut a nelze najít žádný lokální server, který by bylo "
-"možné spustit. Končím! Opravte prosím nastavení %s a znovu spusťte GDM."
+"XDMCP is disabled and gdm cannot find any static server to start.  "
+"Aborting!  Please correct the configuration %s and restart gdm."
+msgstr "XDMCP je zakázán a gdm nemůže najít žádný statický server, který by bylo možné spustit. Končím! Opravte prosím nastavení %s a znovu spusťte gdm."
 
 #: ../daemon/gdm.c:682
 #, c-format
@@ -646,9 +640,8 @@ msgstr ""
 
 #: ../daemon/gdm.c:1462
 #, c-format
-msgid "Restart, Reboot or Halt request from a non-local display %s"
-msgstr ""
-"Požadavek na nové spuštění, restart, nebo vypnutí z nelokálního displeje %s"
+msgid "Restart, Reboot or Halt request from a non-static display %s"
+msgstr "Požadavek na nové spuštění, restart, nebo vypnutí z nestatického displeje %s"
 
 #. Bury this display for good
 #: ../daemon/gdm.c:1528
@@ -674,8 +667,8 @@ msgid "Do not fork into the background"
 msgstr "Nevětvit se do pozadí"
 
 #: ../daemon/gdm.c:1917
-msgid "No console (local) servers to be run"
-msgstr "Nemají být spuštěny žádné místní servery"
+msgid "No console (static) servers to be run"
+msgstr "Nemají být spuštěny žádné servery na konzoli (statické)"
 
 #: ../daemon/gdm.c:1919
 msgid "Preserve LD_* variables"
@@ -733,9 +726,9 @@ msgstr "gdm již běží. Končím!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Chyba při nastavování zpracování signálu CHLD"
 
-#: ../daemon/gdm.c:3749 ../daemon/gdm.c:3768 ../daemon/gdm.c:3934
-#: ../daemon/gdm.c:3988 ../daemon/gdm.c:4043 ../daemon/gdm.c:4088
-#: ../daemon/gdm.c:4115
+#: ../daemon/gdm.c:3749 ../daemon/gdm.c:3768 ../daemon/gdm.c:3935
+#: ../daemon/gdm.c:3989 ../daemon/gdm.c:4044 ../daemon/gdm.c:4089
+#: ../daemon/gdm.c:4116
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "Požadavek %s odepřen: Nepřihlášen"
