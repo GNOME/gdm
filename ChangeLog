@@ -1,5 +1,16 @@
 2005-05-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm-net.c: Fix gdm2 so it works better
+	  on BSD and MacOS.  Upon getting EOF on a socket/pipe/etc.
+	  G_IO_IN is always set and G_IO_HUP may not be set.
+	  Therefore, the 0 return from read() is important.  If
+	  we get a length <= 0 from read() we force the socket
+	  to be closed.  This prevents gdm-binary from causing
+	  high CPU-load after logout.  Fixes bug #172491.
+	  Fix posted by Joe Marcus Clarke.
+
+2005-05-13  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/greeter/greeter.c: No longer set default
 	  font size.  Thanks to Erwann Chenede for catching
 	  this.
