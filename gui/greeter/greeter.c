@@ -1459,8 +1459,8 @@ main (int argc, char *argv[])
 				  GTK_BUTTONS_OK,
 				  FALSE /* markup */,
 				  _("The GTK+ greeter could not be started.  "
-				    "This display will abort and you may"
-				    "have to login another way and fix the"
+				    "This display will abort and you may "
+				    "have to login another way and fix the "
 				    "installation of gdm"),
 				  /* avoid warning */ "%s", "");
     
