@@ -20,7 +20,7 @@
  * and the user's session scripts. */
 
 #include <config.h>
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <unistd.h>

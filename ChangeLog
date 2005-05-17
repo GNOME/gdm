@@ -1,3 +1,12 @@
+2005-05-16  Brian Cameron  <brian.cameron@sun.com>
+
+	* Now use gi18n.h instead of libgnome header files to get
+	  access to translation code.  libgnome is still used in
+	  vicious-extensions, so this still needs to be cleaned up
+	  before bug #117889 is fully fixed.
+	* configure.in:  Backed out adding zh_HK to
+	  ALL_LINGUAS since it breaks the build.
+	
 2005-05-16  Danilo \305\240egan  <dsegan@gmx.net>
 
        * gui/gdmsetup-strings.c: Removed.

@@ -1,6 +1,5 @@
 #include "config.h"
 
-#include <libgnome/libgnome.h>
 #include <vicious.h>
 #include "gdm.h"
 #include "misc.h"

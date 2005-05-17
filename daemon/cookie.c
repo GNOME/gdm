@@ -35,7 +35,6 @@
 #include <fcntl.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <libgnome/libgnome.h>
 #include <vicious.h>
 
 #include "gdm.h"

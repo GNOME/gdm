@@ -17,10 +17,11 @@
  */
 
 #include <config.h>
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 #include <signal.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <popt.h>
 #include <unistd.h>
 #if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 #include <sched.h>
