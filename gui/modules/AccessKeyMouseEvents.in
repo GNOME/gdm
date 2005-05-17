@@ -67,10 +67,10 @@
 <Switch2> 3 50 3000 @AT_BINDIR@/gok --login --access-method=inversescanning --scan-action=switch1 --select-action=switch2
 <Switch3> 3 1000 10000 @AT_BINDIR@/gok --login  --access-method=automaticscanning --scan-action=switch3 --select-action=switch3
 
-# press ctrl-k for 1 second
+# press ctrl-s for 1 second to launch gnopernicus speech
 # gnopernicus, speech mode
 <Control>s  1 1000 10000  @AT_BINDIR@/srcore --login --enable-speech
-# gnopernicus magnifier
+# press ctrl-m for 1 second to launch gnopernicus magnifier
 <Control>m  1 1000 10000  @AT_BINDIR@/srcore --login --enable-magnifier --disable-speech --disable-braille
-# both
+# press ctrl-g for 1 second to launch both gnopernicus speech and magnifier
 <Control>g  1 1000 10000  @AT_BINDIR@/srcore --login 
