@@ -60,6 +60,10 @@
 #include "cookie.h"
 #include "filecheck.h"
 
+#define DYNAMIC_ADD     0
+#define DYNAMIC_RELEASE 1
+#define DYNAMIC_REMOVE  2
+
 #ifdef  HAVE_LOGINDEVPERM
 #include <libdevinfo.h>
 #endif  /* HAVE_LOGINDEVPERM */
@@ -209,6 +213,7 @@ gboolean GdmTimedLoginEnable = FALSE;
 gint GdmTimedLoginDelay = 0;
 gchar *GdmStandardXServer = NULL;
 gint  GdmFlexibleXServers = 5;
+gboolean GdmDynamicXServers = FALSE;
 gchar *GdmXnest = NULL;
 int GdmFirstVT = 7;
 gboolean GdmVTAllocation = TRUE;
@@ -220,7 +225,7 @@ gchar *GdmSoundOnLoginSuccessFile = NULL;
 gboolean GdmSoundOnLoginFailure = FALSE;
 gchar *GdmSoundOnLoginFailureFile = NULL;
 gchar *GdmConsoleCannotHandle = NULL;
-
+gboolean GdmConsoleNotify = TRUE;
 
 /* set in the main function */
 char **stored_argv = NULL;
@@ -233,6 +238,28 @@ static gboolean gdm_restart_mode = FALSE;
 static GMainLoop *main_loop = NULL;
 
 static gboolean monte_carlo_sqrt2 = FALSE;
+
+
+/*
+ * lookup display number if the display number is
+ * exists then clear the remove flag and return TRUE
+ * otherwise return FALSE
+ */
+static gboolean
+mark_display_exists (int num)
+{
+    GSList *li;
+
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->dispnum == num) {
+			disp->removeconf = FALSE;
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 
 static gboolean
 display_exists (int num)
@@ -275,7 +302,7 @@ check_servauthdir (struct stat *statbuf)
 			   "correct gdm configuration %s and "
 			   "restart gdm.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
@@ -289,7 +316,7 @@ check_servauthdir (struct stat *statbuf)
 			   "correct gdm configuration %s and "
 			   "restart gdm.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
@@ -398,6 +425,7 @@ gdm_config_parse (void)
     GdmNeverPlaceCookiesOnNFS = ve_config_get_bool (cfg, GDM_KEY_NEVERPLACECOOKIESONNFS);
     GdmUserAuthFile = ve_config_get_string (cfg, GDM_KEY_UAUTHFILE);
     GdmUserAuthFB = ve_config_get_string (cfg, GDM_KEY_UAUTHFB);
+    GdmConsoleNotify = ve_config_get_bool (cfg, GDM_KEY_CONSOLE_NOTIFY);
 
     GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
     GdmGtkTheme = ve_config_get_string (cfg, GDM_KEY_GTK_THEME);
@@ -451,6 +479,7 @@ gdm_config_parse (void)
 	    }
     }
     g_free (bin);
+    GdmDynamicXServers = ve_config_get_bool (cfg, GDM_KEY_DYNAMIC_XSERVERS);
     GdmFlexibleXServers = ve_config_get_int (cfg, GDM_KEY_FLEXIBLE_XSERVERS);    
     GdmXnest = ve_config_get_string (cfg, GDM_KEY_XNEST);    
     if (ve_string_empty (GdmXnest))
@@ -619,7 +648,8 @@ gdm_config_parse (void)
     }
     ve_config_free_list_of_strings (list);
 
-    if G_UNLIKELY (displays == NULL && ! GdmXdmcp) {
+    if G_UNLIKELY ((displays == NULL) && (! GdmXdmcp) &&
+	               (!GdmDynamicXServers)) {
 	    char *server = NULL;
 
 	    /* if we requested no static servers (there is no console),
@@ -675,6 +705,9 @@ gdm_config_parse (void)
     if (displays == NULL)
 	    no_console = TRUE;
 
+    if (no_console)
+        GdmConsoleNotify = FALSE;
+
     /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
 
@@ -684,7 +717,7 @@ gdm_config_parse (void)
 			   "Please correct gdm configuration %s "
 			   "and restart gdm.")),
 		     GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Can't find the gdm user (%s). Aborting!"), "gdm_config_parse", GdmUser);
@@ -699,7 +732,7 @@ gdm_config_parse (void)
 			   "pose a security risk.  Please "
 			   "correct gdm configuration %s and "
 			   "restart gdm.")), GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: The gdm user should not be root. Aborting!"), "gdm_config_parse");
@@ -713,7 +746,7 @@ gdm_config_parse (void)
 		       "Please correct gdm configuration %s "
 		       "and restart gdm.")),
 		     GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Can't find the gdm group (%s). Aborting!"), "gdm_config_parse", GdmGroup);
@@ -728,7 +761,7 @@ gdm_config_parse (void)
 			   "pose a security risk. Please "
 			   "correct gdm configuration %s and "
 			   "restart gdm.")), GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: The gdm group should not be root. Aborting!"), "gdm_config_parse");
@@ -771,7 +804,7 @@ gdm_config_parse (void)
 
     /* Check the serv auth and log dirs */
     if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog
 			    (C_(N_("No daemon/ServAuthDir specified in the configuration file")));
 	    GdmPidFile = NULL;
@@ -807,7 +840,7 @@ gdm_config_parse (void)
 			   "gdm.")),
 		     GdmServAuthDir, GdmUser, GdmGroup,
 		     GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."), "gdm_config_parse", 
@@ -824,7 +857,7 @@ gdm_config_parse (void)
 			   "the gdm configuration %s and "
 			   "restart gdm.")),
 		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX), GDM_CONFIG_FILE);
-	    if ( ! no_console)
+        if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
@@ -1427,6 +1460,8 @@ gdm_cleanup_children (void)
 	    if (d->servpid > 1)
 		    kill (d->servpid, SIGTERM);
 	    d->servpid = 0;
+        if (GdmDynamicXServers)  /* XXX - This needs to be handled better */
+            gdm_server_whack_lockfile (d);
 
 	    /* race avoider */
 	    gdm_sleep_no_signal (1);
@@ -1448,7 +1483,8 @@ gdm_cleanup_children (void)
     d->dispstat = DISPLAY_DEAD;
 
     if ( ! GdmSystemMenu &&
-	(status == DISPLAY_REBOOT ||
+	(status == DISPLAY_RESTARTGDM ||
+	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_SUSPEND ||
 	 status == DISPLAY_HALT)) {
 	    gdm_info (_("Reboot or Halt request when there is no system menu from display %s"), d->name);
@@ -3365,6 +3401,111 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	/* Now we wait for the server to start up (or not) */
 }
 
+static void
+handle_dynamic_server (GdmConnection *conn, int type, char *key)
+{
+    GdmDisplay *disp;
+    int disp_num;
+    char *full;
+    char *val;
+
+    if (!(GdmDynamicXServers)) {
+        gdm_connection_write (conn, "ERROR 200 Dynamic Displays not allowed\n");
+        return;
+    }
+
+    if ( ! GDM_CONN_AUTH_GLOBAL(conn)) {
+        gdm_info (_("DYNAMIC request denied: " "Not authenticated"));
+        gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
+        return;
+    }
+
+    if ((key == NULL) || (!(isdigit (*key)))) {
+        gdm_connection_write (conn, "ERROR 1 Bad display number\n");
+        return;
+    }
+    disp_num = atoi (key);
+
+    if (type == DYNAMIC_ADD) {
+        /* prime an X server for launching */
+
+        if (mark_display_exists (disp_num)) {
+            /* need to skip starting this one again */
+            gdm_connection_write (conn, "ERROR 2 Existing display\n");
+            return;
+        }
+
+        full = strchr(key, '=');
+        if (full == NULL || *(full+1) == 0) {
+            gdm_connection_write (conn, "ERROR 3 No server string\n");
+            return;
+        }
+
+        val = full+1;
+        disp = gdm_server_alloc (disp_num, val);
+
+        if (disp == NULL) {
+            gdm_connection_write (conn, "ERROR 4 Display startup failure\n");
+            return;
+        }
+        displays = g_slist_insert_sorted (displays,
+                                          disp,
+                                          compare_displays);
+
+        disp->dispstat = DISPLAY_CONFIG;
+        disp->removeconf = FALSE;
+
+        if (disp_num > high_display_num)
+            high_display_num = disp_num;
+
+        gdm_connection_write (conn, "OK\n");
+        return;
+    }
+
+    if (type == DYNAMIC_REMOVE) {
+        GSList *li;
+        GSList *nli;
+        /* shutdown a dynamic X server */
+
+        for (li = displays; li != NULL; li = nli) {
+            disp = li->data;
+            nli = li->next;
+            if (disp->dispnum == disp_num) {
+                disp->removeconf = TRUE;
+                gdm_display_unmanage (disp);
+                gdm_connection_write (conn, "OK\n");
+                return;
+            }
+        }
+
+        gdm_connection_write (conn, "ERROR 1 Bad display number\n");
+        return;
+    }
+
+    if (type == DYNAMIC_RELEASE) {
+        /* cause the newly configured X servers to actually run */
+        GSList *li;
+        GSList *nli;
+
+        for (li = displays; li != NULL; li = nli) {
+            GdmDisplay *disp = li->data;
+            nli = li->next;
+            if ((disp->dispnum == disp_num) &&
+                (disp->dispstat == DISPLAY_CONFIG)) {
+                disp->dispstat = DISPLAY_UNBORN;
+
+                if ( ! gdm_display_manage (disp)) {
+                    gdm_display_unmanage(disp);
+                }
+            }
+        }
+
+        gdm_connection_write (conn, "OK\n");
+        /* Now we wait for the server to start up (or not) */
+        return;
+    }
+}
+
 static gboolean
 is_key (const char *key1, const char *key2)
 {
@@ -3732,7 +3873,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		    g_ascii_strcasecmp (gdm_global_cookie, cookie) == 0) {
 			g_free (cookie);
 			GDM_CONNECTION_SET_USER_FLAG
-				(conn, GDM_SUP_FLAG_AUTHENTICATED);
+				(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
 			gdm_connection_write (conn, "OK\n");
 			return;
 		}
@@ -3740,13 +3881,14 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Hmmm, perhaps this is better defined behaviour */
 		GDM_CONNECTION_UNSET_USER_FLAG
 			(conn, GDM_SUP_FLAG_AUTHENTICATED);
+		GDM_CONNECTION_UNSET_USER_FLAG
+			(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
 		gdm_connection_set_display (conn, NULL);
 		gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
 		g_free (cookie);
 	} else if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
 		/* Only allow locally authenticated connections */
-		if ( ! (gdm_connection_get_user_flags (conn) &
-			GDM_SUP_FLAG_AUTHENTICATED)) {
+		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
 			gdm_info (_("%s request denied: "
 				    "Not authenticated"), "FLEXI_XSERVER");
 			gdm_connection_write (conn,
@@ -3764,8 +3906,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		GdmXServer *svr;
 
 		/* Only allow locally authenticated connections */
-		if ( ! (gdm_connection_get_user_flags (conn) &
-			GDM_SUP_FLAG_AUTHENTICATED)) {
+		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
 			gdm_info (_("%s request denied: "
 				    "Not authenticated"), "FLEXI_XSERVER");
 			gdm_connection_write (conn,
@@ -3837,31 +3978,49 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		g_free (dispname);
 		g_free (xauthfile);
-	} else if ((strcmp (msg, GDM_SUP_ATTACHED_SERVERS) == 0) ||
-               (strcmp (msg, GDM_SUP_CONSOLE_SERVERS) == 0)) {
-                GString *msg;
-		GSList *li;
+	} else if ((strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
+	                     strlen(GDM_SUP_ATTACHED_SERVERS)) == 0) ||
+	           (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
+	                     strlen(GDM_SUP_CONSOLE_SERVERS)) == 0)) {
+		GString *retMsg;
+		GSList  *li;
 		const char *sep = " ";
+		char    *key;
+		int     msgLen=0;
 
-		msg = g_string_new ("OK");
+		if (strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
+		             strlen(GDM_SUP_ATTACHED_SERVERS)) == 0)
+			msgLen = strlen (GDM_SUP_ATTACHED_SERVERS);
+		else if (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
+						  strlen(GDM_SUP_CONSOLE_SERVERS)) == 0)
+			msgLen = strlen (GDM_SUP_CONSOLE_SERVERS);
+
+		key = g_strdup (&msg[msgLen]);
+		g_strstrip (key);
+
+		retMsg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
+
 			if ( ! disp->attached)
 				continue;
-			g_string_append_printf (msg, "%s%s,%s,", sep,
-					       ve_sure_string (disp->name),
-					       ve_sure_string (disp->login));
-			sep = ";";
-			if (disp->type == TYPE_FLEXI_XNEST) {
-				g_string_append (msg, 
-					 ve_sure_string (disp->parent_disp));
-			} else {
-				g_string_append_printf (msg, "%d", disp->vt);
+			if (!(strlen(key)) || (g_pattern_match_simple(key, disp->command))) {
+				g_string_append_printf (retMsg, "%s%s,%s,", sep,
+				                        ve_sure_string (disp->name),
+				                        ve_sure_string (disp->login));
+				sep = ";";
+				if (disp->type == TYPE_FLEXI_XNEST) {
+					g_string_append (retMsg, ve_sure_string (disp->parent_disp));
+				} else {
+					g_string_append_printf (retMsg, "%d", disp->vt);
+				}
 			}
 		}
-		g_string_append (msg, "\n");
-		gdm_connection_write (conn, msg->str);
-		g_string_free (msg, TRUE);
+
+		g_string_append (retMsg, "\n");
+		gdm_connection_write (conn, retMsg->str);
+		g_free(key);
+		g_string_free (retMsg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_ALL_SERVERS) == 0) {
 		GString *msg;
 		GSList *li;
@@ -3930,8 +4089,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		disp = gdm_connection_get_display (conn);
 
 		/* Only allow locally authenticated connections */
-		if ( ! (gdm_connection_get_user_flags (conn) &
-			GDM_SUP_FLAG_AUTHENTICATED) ||
+		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
 		     disp == NULL) {
 			gdm_info (_("%s request denied: "
 				    "Not authenticated"), "QUERY_LOGOUT_ACTION");
@@ -3983,8 +4141,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		disp = gdm_connection_get_display (conn);
 
 		/* Only allow locally authenticated connections */
-		if ( ! (gdm_connection_get_user_flags (conn) &
-			GDM_SUP_FLAG_AUTHENTICATED) ||
+		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
 		     disp == NULL ||
 		     ! disp->logged_in) {
 			gdm_info (_("%s request denied: "
@@ -4038,8 +4195,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		disp = gdm_connection_get_display (conn);
 
 		/* Only allow locally authenticated connections */
-		if ( ! (gdm_connection_get_user_flags (conn) &
-			GDM_SUP_FLAG_AUTHENTICATED) ||
+		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
 		     disp == NULL ||
 		     ! disp->logged_in) {
 			gdm_info (_("%s request denied: "
@@ -4085,8 +4241,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 	} else if (strcmp (msg, GDM_SUP_QUERY_VT) == 0) {
 		/* Only allow locally authenticated connections */
-		if ( ! (gdm_connection_get_user_flags (conn) &
-			GDM_SUP_FLAG_AUTHENTICATED)) {
+		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
 			gdm_info (_("%s request denied: "
 				    "Not authenticated"), "QUERY_VT");
 			gdm_connection_write (conn,
@@ -4112,8 +4267,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 
 		/* Only allow locally authenticated connections */
-		if ( ! (gdm_connection_get_user_flags (conn) &
-			GDM_SUP_FLAG_AUTHENTICATED)) {
+		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
 			gdm_info (_("%s request denied: "
 				    "Not authenticated"), "QUERY_VT");
 			gdm_connection_write (conn,
@@ -4134,6 +4288,40 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 #else
 		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
 #endif
+    } else if (strncmp (msg, GDM_SUP_ADD_DYNAMIC_DISPLAY " ",
+                 strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")) == 0) {
+        char *key;
+
+        key = g_strdup (&msg[strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")]);
+        g_strstrip (key);
+
+        handle_dynamic_server(conn, DYNAMIC_ADD, key);
+
+        g_free(key);
+
+    } else if (strncmp (msg, GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ",
+                        strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")) == 0) {
+        char *key;
+
+        key = g_strdup (&msg[strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")]);
+        g_strstrip (key);
+
+        handle_dynamic_server(conn, DYNAMIC_REMOVE, key);
+
+        g_free(key);
+
+    } else if (strncmp (msg, GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ",
+                        strlen(GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
+
+        char *key;
+
+        key = g_strdup (&msg[strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")]);
+        g_strstrip (key);
+
+        handle_dynamic_server(conn, DYNAMIC_RELEASE, key);
+
+        g_free(key);
+
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");
 	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {

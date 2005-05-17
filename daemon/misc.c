@@ -67,7 +67,7 @@ extern pid_t gdm_main_pid;
 extern gboolean preserve_ld_vars;
 extern int gdm_in_signal;
 
-extern gboolean no_console;
+extern gboolean GdmConsoleNotify;
 
 extern char *gdm_charset;
 
@@ -585,7 +585,7 @@ gdm_text_message_dialog (const char *msg)
 	char *dialog; /* do we have dialog?*/
 	char *msg_quoted;
 
-	if (no_console)
+    if ( ! GdmConsoleNotify)
 		return FALSE;
 
 	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
@@ -663,7 +663,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	char *dialog; /* do we have dialog?*/
 	char *msg_quoted;
 
-	if (no_console)
+    if ( ! GdmConsoleNotify)
 		return FALSE;
 	
 	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)

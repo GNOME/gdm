@@ -58,7 +58,7 @@ extern gboolean GdmDisplayLastLogin;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 
-extern gboolean no_console;
+extern gboolean GdmConsoleNotify;
 
 /* Evil, but this way these things are passed to the child session */
 static pam_handle_t *pamh = NULL;
@@ -1428,7 +1428,7 @@ gdm_verify_check (void)
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		if ( ! no_console)
+        if (GdmConsoleNotify)
 			gdm_text_message_dialog
 				(C_(N_("Can't find PAM configuration for gdm.")));
 		gdm_fail ("gdm_verify_check: %s",

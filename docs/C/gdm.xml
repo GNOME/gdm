@@ -1143,6 +1143,17 @@ XKeepsCrashing
               </para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>ConsoleNotify</term>
+            <listitem>
+              <synopsis>ConsoleNotify=true</synopsis>
+              <para>
+                If false, gdm will not display a message dialog on the
+                console when an error happens.
+              </para>
+            </listitem>
+          </varlistentry>
           
           <varlistentry>
             <term>DefaultPath</term>
@@ -1212,6 +1223,21 @@ XKeepsCrashing
                 on another virtual terminal.  On systems where GDM supports
                 checking the X virtual terminals, GDM will let the user switch
                 to the previous login virtual terminal instead of logging in.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>DynamicXServers</term>
+            <listitem>
+              <synopsis>DynamicXServers=false</synopsis>
+              <para>
+                If true, the gdm daemon will honor requests to manage
+                displays via the <filename>/tmp/.gdm_socket</filename>
+                socket connection. Displays can be created, started,
+                and deleted with the appropriate commands. The
+                <filename>gdmdynamic</filename> command is a convenient
+                method to send these messages.
               </para>
             </listitem>
           </varlistentry>
@@ -3372,7 +3398,7 @@ VERSION
 AUTH_LOCAL
 FLEXI_XSERVER
 FLEXI_XNEST
-CONSOLE_SERVERS
+ATTACHED_SERVERS
 ALL_SERVERS
 GET_CONFIG
 UPDATE_CONFIG
@@ -3492,14 +3518,76 @@ Answers:
       </screen>
       </sect3>
       
-      <sect3 id="consoleservers">
-      <title>CONSOLE_SERVERS</title>
+      <sect3 id="adddynamic">
+      <title>ADD_DYNAMIC_DISPLAY</title>
       <screen>
-CONSOLE_SERVERS: List all console servers, useful for Linux
-                 mostly.  Doesn't list xdmcp and xnest
-                 non-console servers
-Supported since: 2.2.4.0
+ADD_DYNAMIC_DISPLAY: Create a new server definition that will run on the
+                     specified display leaving, it in DISPLAY_CONFIG state.
+Supported since: 2.8.0.0
+Arguments:  &lt;display to run on&gt;=&lt;server&gt;
+  Where &lt;server&gt; is either a configuration named in gdm.conf or
+  a literal command name.
+Answers:
+  OK &lt;display&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     2 = Existing display
+     3 = No server string
+     4 = Display startup failure
+     100 = Not authenticated
+     200 = Dynamic Displays not allowed
+     999 = Unknown error
+      </screen>
+      </sect3>
+
+      <sect3 id="releasedynamic">
+      <title>RELEASE_DYNAMIC_DISPLAYS</title>
+      <screen>
+RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in DISPLAY_CONFIG
+                          state
+Supported since: 2.8.0.0
 Arguments:  None
+Answers:
+  OK &lt;display&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     100 = Not authenticated
+     200 = Dynamic Displays not allowed
+     999 = Unknown error
+      </screen>
+      </sect3>
+
+      <sect3 id="removedynamic">
+      <title>REMOVE_DYNAMIC_DISPLAY</title>
+      <screen>
+REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server and purging
+                        the display configuration
+Supported since: 2.8.0.0
+Arguments:  &lt;display to remove&gt;
+Answers:
+  OK &lt;display&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     1 = Bad display number
+     100 = Not authenticated
+     200 = Dynamic Displays not allowed
+     999 = Unknown error
+      </screen>
+      </sect3>
+
+      <sect3 id="attachedservers">
+      <title>ATTACHED_SERVERS</title>
+      <screen>
+ATTACHED_SERVERS: List all attached servers.  Doesn't list xdmcp and xnest
+                  non-attached servers
+Supported since: 2.2.4.0
+Note: This command used to be named CONSOLE_SERVERS, which is still recognized
+      for backwards compatibility. The optional pattern argument is supported
+      as of version 2.8.0.0.
+Arguments:  &lt;pattern&gt; (optional)
+  With no argument, all attached displays are returned. The optional
+  &lt;pattern&gt; is a string that may contain glob characters '*', '?', and
+  '[]'. Only displays that match the pattern will be returned.
 Answers:
   OK &lt;server&gt;;&lt;server&gt;;...
 
@@ -3941,6 +4029,100 @@ Supported since: 2.2.4.0
             </para>
           </listitem>
         </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2 id="gdmdynamiccommandline">
+      <title><filename>gdmdynamic</filename> Command Line Options</title>
+
+      <para>
+       The <filename>gdmdynamic</filename> command which creates, runs, and
+       removes displays (X servers) on demand.
+      </para>
+
+      <para>
+      Some environments need the ability to tell gdm to create and manage new
+      displays on the fly, where it is not possible to list the possible
+      displays in gdm.conf. The gdmdynamic command can be used to create
+      a new display on a particular display number, run all newly created
+      displays, or remove a display. The gdmdynamic command can also be
+      used to list all attached displays, or only attached displays that
+      match a pattern.
+      </para>
+
+      <variablelist>
+        <title><filename>gdmflexichooser</filename> Command Line Options</title>
+
+        <para>
+        One of the following options can be used per instance:
+        </para>
+
+        <varlistentry>
+          <term>-a display=server</term>
+          <listitem>
+            <para>
+            Add a new display configuration. For example,
+            <listitem>"-a 2=StandardServerTwo"</listitem>
+            <listitem>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</listitem>
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>-r</term>
+          <listitem>
+            <para>
+            Release (run) all displays waiting in the DISPLAY_CONFIG state.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>-d display</term>
+          <listitem>
+            <para>
+            Delete a display, killing the X server and purging the
+            display configuration. For example, "-d 3".
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>-l [pattern]</term>
+          <listitem>
+            <para>
+            List displays via the ATTACHED_SERVERS command. Without a pattern
+            lists all attached displays. With a pattern will match using glob
+            characters '*', '?', and '[]'. For example:
+            <listitem>"-l Standard*"</listitem>
+            <listitem>"-l *Xorg*"</listitem>
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <para>
+        These options can be added to the above:
+        </para>
+
+        <varlistentry>
+          <term>-v</term>
+          <listitem>
+            <para>
+            Verbose mode. Prinr diagnostic messages about each message sent
+            to gdm.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>-b</term>
+          <listitem>
+            <para>
+            Background mode. Fork child to do the work and return immediately.
+            </para>
+          </listitem>
+        </varlistentry>
+        
       </variablelist>
     </sect2>
 

@@ -38,7 +38,8 @@ sbin_PROGRAMS = \
 bin_PROGRAMS = \
 	gdmphotosetup 		\
 	@GDMXNESTCHOOSER@	\
-	gdmflexiserver
+	gdmflexiserver      \
+	gdmdynamic
 EXTRA_PROGRAMS = gdmchooser gdmXnestchooser
 
 gdmphotosetup_SOURCES = \
@@ -52,6 +53,11 @@ gdmXnestchooser_SOURCES = \
 gdmflexiserver_SOURCES = \
 	gdmflexiserver.c	\
 	gdmcomm.c		\
+	gdmcomm.h
+
+gdmdynamic_SOURCES = \
+	gdmdynamic.c \
+	gdmcomm.c    \
 	gdmcomm.h
 
 libgdmwm_a_SOURCES = \
@@ -143,6 +149,13 @@ gdmflexiserver_LDADD = \
 	-lXau			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
+	-lviciousui-gnome
+
+gdmdynamic_LDADD = \
+	$(GUI_LIBS) \
+	-lXau \
+	$(INTLLIBS) \
+	-L$(top_builddir)/vicious-extensions \
 	-lviciousui-gnome
 
 Settingsdir = $(datadir)/gnome/capplets

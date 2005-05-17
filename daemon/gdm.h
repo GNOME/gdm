@@ -81,7 +81,8 @@ enum {
 	DISPLAY_ALIVE /* Yay! we're alive (non-xdmcp) */,
 	XDMCP_PENDING /* Pending XDMCP display */,
 	XDMCP_MANAGED /* Managed XDMCP display */,
-	DISPLAY_DEAD /* Left for dead */
+	DISPLAY_DEAD /* Left for dead */,
+	DISPLAY_CONFIG /* in process of being configured */
 };
 
 /* Opcodes for the highly sophisticated protocol used for
@@ -171,6 +172,7 @@ enum {
 #define GDM_KEY_UAUTHFB "daemon/UserAuthFBDir=/tmp"
 #define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
 #define GDM_KEY_USER "daemon/User=gdm"
+#define GDM_KEY_CONSOLE_NOTIFY "daemon/ConsoleNotify=true"
 
 #define GDM_KEY_DOUBLELOGINWARNING "daemon/DoubleLoginWarning=true"
 
@@ -187,6 +189,7 @@ enum {
 
 #define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=" X_SERVER
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
+#define GDM_KEY_DYNAMIC_XSERVERS "daemon/DynamicXServers=false"
 #define GDM_KEY_XNEST "daemon/Xnest=" X_SERVER_PATH "/Xnest -name Xnest"
 /* Keys for automatic VT allocation rather then letting it up to the
  * X server */
@@ -387,6 +390,7 @@ struct _GdmDisplay {
 
     guint8 dispstat;
     guint16 dispnum;
+	gboolean removeconf;
     guint8 servstat;
     time_t starttime;
     time_t managetime;
@@ -742,7 +746,13 @@ void		gdm_final_cleanup	(void);
  *   Doesn't list xdmcp and xnest non-attached servers
  * CONSOLE_SERVERS supported, but deprecated due to terminology
  * Supported since: 2.2.4.0
- * Arguments:  None
+ * Note: This command used to be named CONSOLE_SERVERS, which is still recognized
+ *       for backwards compatibility.  The optional pattern argument is supported
+ *       as of version 2.8.0.0.
+ * Arguments:  <pattern> (optional)
+ *   With no argument, all dynamic displays are returned. The optional
+ *   <pattern> is a string that may contain glob characters '*', '?', and
+ *   '[]'. Only displays that match the pattern will be returned.
  * Answers:
  *   OK <server>;<server>;...
  *
@@ -957,11 +967,60 @@ void		gdm_final_cleanup	(void);
  * Supported since: 2.2.4.0
  */
 
+#define GDM_SUP_ADD_DYNAMIC_DISPLAY	"ADD_DYNAMIC_DISPLAY" 
+/*
+ * ADD_X_SERVER: Add a dynamic display configuration.
+ *   Configures a dynamic X server to run on the specified display
+ *   leaving it in DISPLAY_CONFIG state.
+ * Supported since: 2.8.0.0
+ * Arguments:  <display to run on>=<server>
+ *   Where <server> is either a configuration named in gdm.conf or
+ *   a literal command name.
+ * Answers:
+ *  OK
+ *  ERROR
+ *     0 = Not implemented
+ *     999 = Unknown error
+ */
+#define GDM_SUP_REMOVE_DYNAMIC_DISPLAY	"REMOVE_DYNAMIC_DISPLAY" 
+/*
+ * REMOVE_X_SERVER: Remove a dynamic display
+ *   Removes a dynamic display, killing the server and purging
+ *   the display configuration
+ * Supported since: 2.8.0.0
+ * Arguments:  <display to remove>
+ * Answers:
+ *  OK
+ *  ERROR
+ *     0 = Not implemented
+ *     999 = Unknown error
+ */
+#define GDM_SUP_RELEASE_DYNAMIC_DISPLAYS	"RELEASE_DYNAMIC_DISPLAYS"
+/*
+ * RELEASE_SERVERS: Release dynamic displays currently in PAUSED state
+ * Supported since: 2.8.0.0
+ * Arguments: None
+ * Answers:
+ *  OK
+ *  ERROR
+ *     0 = Not implemented
+ *     999 = Unknown error
+ */
+
 /* User flags for the SUP protocol */
 enum {
-	GDM_SUP_FLAG_AUTHENTICATED = 0x1 /* authenticated as a local user,
+	GDM_SUP_FLAG_AUTHENTICATED = 0x1, /* authenticated as a local user,
 					  * from a local display we started */
+	GDM_SUP_FLAG_AUTH_GLOBAL = 0x2 /* authenticated with global cookie */
 };
+
+/* Macros to check authentication level */
+#define GDM_CONN_AUTHENTICATED(conn) \
+	((gdm_connection_get_user_flags (conn) & GDM_SUP_FLAG_AUTHENTICATED) || \
+	 (gdm_connection_get_user_flags (conn) & GDM_SUP_FLAG_AUTH_GLOBAL))
+
+#define GDM_CONN_AUTH_GLOBAL(conn) \
+	 (gdm_connection_get_user_flags (conn) & GDM_SUP_FLAG_AUTH_GLOBAL)
 
 
 #define NEVER_FAILS_seteuid(uid) \
