@@ -176,10 +176,6 @@ install-data-local:
 	$(LN_S) -f gdmXnestchooser $(DESTDIR)$(bindir)/gdmXnest
 
 EXTRA_DIST = \
-	gdmsetup-strings.c	\
-	gdmchooser-strings.c	\
-	gdmsetup.gladep		\
-	gdmchooser.gladep	\
 	$(Glade_DATA)		\
 	$(Icons_DATA)		\
 	$(System_DATA)		\
