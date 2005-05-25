@@ -1,3 +1,13 @@
+2005-05-25  Brian Cameron  <brian.cameron@sun.com>
+
+	* acconfig.h, configure.in, config/gdm.conf.in,
+	  config/Xsession.in, README.install: Now allow xevie to
+	  be turned on for server-Standard.  This is for better
+	  a11y support.  Now use /bin/ksh for Xsession shell if
+	  on Solaris instead of /bin/sh.  This is needed to
+	  support Solaris users who are using ksh or bash as
+	  their $HOME shell.
+
 2005-05-17  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.[ch], daemon/misc.c, daemon/verify-pam.c,
@@ -115,7 +125,7 @@
 	* daemon/slave.c: To support when one username can be
 	  mapped to another canonical username, we use the
 	  loginname that pwent returns instead of the one
-	  that was typed. in.  Fixes bug #301820.  Patch
+	  that was typed in.  Fixes bug #301820.  Patch
 	  provided by Mike Patnode.  Now use seteuid before
 	  checking existance of user's home directory since
 	  root doesn't always have access and fails otherwise.
@@ -367,7 +377,6 @@
 2005-04-07  Gareth Owen  <gowen72@yahoo.com>
 
 	* po/en_GB.po: Updated British English translation.
-
 
 2005-04-06  Brian Cameron  <brian.cameron@sun.com>
 

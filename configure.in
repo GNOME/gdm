@@ -716,6 +716,19 @@ fi
 AC_SUBST(AT_BINDIR)
 AC_DEFINE_UNQUOTED(AT_BINDIR,"$AT_BINDIR")
 
+AC_ARG_WITH(xevie,
+  [  --with-xevie=[yes/no]  Add XEvIE Xserver extension support [default=no]],,
+  with_xevie=no)
+
+if test x$with_xevie != xno ; then
+	XEVIE_OPTION="+extension XEVIE"
+else
+	XEVIE_OPTION=""
+fi
+
+AC_SUBST(XEVIE_OPTION)
+AC_DEFINE_UNQUOTED(XEVIE_OPTION,"$XEVIE_OPTION")
+
 AC_MSG_CHECKING(for fbconsole (for Solaris))
 if test -x /usr/openwin/bin/fbconsole; then
    AC_DEFINE(HAVE_FBCONSOLE)
@@ -762,12 +775,14 @@ case "$host" in
         HALT_COMMAND="/sbin/init 5"
         REBOOT_COMMAND="/sbin/init 6"
         SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
+        XSESSION_SHELL=/bin/ksh
         ;;
 *)
         GDM_USER_PATH="/bin:/usr/bin"
         HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
         REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
         SUSPEND_COMMAND=""
+        XSESSION_SHELL=/bin/ksh
         ;;
 esac
 
@@ -854,6 +869,8 @@ AC_SUBST(REBOOT_COMMAND)
 AC_DEFINE_UNQUOTED(REBOOT_COMMAND,"$REBOOT_COMMAND")
 AC_SUBST(SUSPEND_COMMAND)
 AC_DEFINE_UNQUOTED(SUSPEND_COMMAND,"$SUSPEND_COMMAND")
+AC_SUBST(XSESSION_SHELL)
+AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL")
 AC_SUBST(GDM_USER_PATH)
 AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
 
