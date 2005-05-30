@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-05-30 17:49+0200\n"
-"PO-Revision-Date: 2005-05-30 17:59+0200\n"
+"PO-Revision-Date: 2005-05-30 18:15+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -365,21 +365,17 @@ msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s: S'ha habilitat l'XDMCP encara que l'XDMCP no està suportat; s'està desactivant"
 
 #: ../daemon/gdm.c:523
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Root cannot be logged in automatically, turning off automatic login"
-msgstr ""
-"%s: El superusuari no pot entrar automàticament, s'està desactivant "
-"l'entrada automàtica"
+msgstr "%s: El superusuari no pot entrar automàticament; s'està desactivant l'entrada automàtica"
 
 #: ../daemon/gdm.c:536
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Root cannot be logged in automatically, turning off timed login"
-msgstr ""
-"%s: El superusuari no pot entrar automàticament, s'està desactivant "
-"l'entrada temporitzada"
+msgstr "%s: El superusuari no pot entrar automàticament; s'està desactivant l'entrada temporitzada"
 
 #: ../daemon/gdm.c:542
-#, fuzzy, c-format
+#, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: TimedLoginDelay és menys de 5, per tant s'utilitzarà 5."
 
@@ -399,14 +395,14 @@ msgid "%s: No sessions directory specified."
 msgstr "%s: No s'ha especificat el directori de sessions."
 
 #: ../daemon/gdm.c:584
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Empty server command; using standard command."
-msgstr "%s: Ordre de servidor buida, se n'està utilitzant una d'estàndard."
+msgstr "%s: Ordre de servidor buida; se n'està utilitzant una d'estàndard."
 
 #: ../daemon/gdm.c:627
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Display number %d in use!  Defaulting to %d"
-msgstr "%s: La pantalla número %d està en ús!  Utilitzaré %d"
+msgstr "%s: La pantalla número %d està en ús! S'utilitzarà la %d"
 
 #: ../daemon/gdm.c:646
 #, c-format
@@ -416,7 +412,7 @@ msgstr ""
 "S'està ignorant!"
 
 #: ../daemon/gdm.c:658 ../daemon/gdm.c:699
-#, fuzzy, c-format
+#, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
 "%s: L'XDMCP està inhabilitat i no s'han definit servidors locals. S'està "
@@ -425,16 +421,14 @@ msgstr ""
 #. start
 #. server uid
 #: ../daemon/gdm.c:676
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
 "configuration!"
-msgstr ""
-"%s: L'XDMCP està inhabilitat i no s'han definit servidors locals. S'està "
-"afegint %s a :%d per a permetre la configuració!"
+msgstr "%s: L'XDMCP està inhabilitat i no s'han definit servidors locals. S'està afegint %s a :%d per a permetre la configuració!"
 
 #: ../daemon/gdm.c:691
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "XDMCP is disabled and gdm cannot find any static server to start.  "
 "Aborting!  Please correct the configuration %s and restart gdm."
@@ -699,9 +693,8 @@ msgid "Do not fork into the background"
 msgstr "No bifurquis al segon pla"
 
 #: ../daemon/gdm.c:1954
-#, fuzzy
 msgid "No console (static) servers to be run"
-msgstr "No hi ha servidors de consola (locals) a executar"
+msgstr "No hi ha servidors de consola (estàtics) a executar"
 
 #: ../daemon/gdm.c:1956
 msgid "Preserve LD_* variables"
@@ -761,9 +754,8 @@ msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: S'ha produït un error en configurar el gestor del senyal CHLD"
 
 #: ../daemon/gdm.c:3418
-#, fuzzy
 msgid "DYNAMIC request denied: Not authenticated"
-msgstr "S'ha denegat la sol·licitud %s: No s'ha autenticat"
+msgstr "S'ha denegat la sol·licitud DYNAMIC: No s'ha autenticat"
 
 #: ../daemon/gdm.c:3892 ../daemon/gdm.c:3910 ../daemon/gdm.c:4094
 #: ../daemon/gdm.c:4147 ../daemon/gdm.c:4201 ../daemon/gdm.c:4245
@@ -866,9 +858,9 @@ msgid "%s: Error opening a pipe: %s"
 msgstr "%s: S'ha produït un error en obrir un conducte: %s"
 
 #: ../daemon/server.c:707
-#, fuzzy, c-format
+#, c-format
 msgid "%s: failed to connect to parent display '\\%s'"
-msgstr "%s: no es pot obrir la pantalla %s"
+msgstr "%s: no s'ha pogut connectar a la pantalla pare «\\%s»"
 
 #. Send X too busy
 #: ../daemon/server.c:847
@@ -3510,7 +3502,7 @@ msgid ""
 "Themed Greeter"
 msgstr ""
 "Rebedor GTK+\n"
-"Rebedor tematitzat"
+"Rebedor amb temes"
 
 #: ../gui/gdmsetup.glade.h:27
 msgid ""
@@ -3519,7 +3511,7 @@ msgid ""
 "Disabled"
 msgstr ""
 "Rebedor GTK+\n"
-"Rebedor tematitzat\n"
+"Rebedor amb temes\n"
 "Inhabilitat"
 
 #: ../gui/gdmsetup.glade.h:30
@@ -3723,7 +3715,7 @@ msgstr "_2 Rebedor GTK+"
 
 #: ../gui/gdmsetup.glade.h:76
 msgid "_3 Themed Greeter"
-msgstr "_3 Rebedor tematitzat"
+msgstr "_3 Rebedor amb temes"
 
 #: ../gui/gdmsetup.glade.h:77
 msgid "_4 Face Browser"
@@ -4136,14 +4128,13 @@ msgstr ""
 "a instal·lar %s."
 
 #: ../vicious-extensions/glade-helper.c:314
-#, fuzzy, c-format
+#, c-format
 msgid "No interface could be loaded. This is BAD! (file: %s)"
-msgstr "No s'ha pogut carregar cap interfície, MALAMENT! (fitxer: %s)"
+msgstr "No s'ha pogut carregar cap interfície. Això és DOLENT! (fitxer: %s)"
 
 #: ../vicious-extensions/ve-nongnome.c:134
-#, fuzzy
 msgid "Too many alias levels for a locale; may indicate a loop"
-msgstr "Hi ha massa nivells d'àlies per al locale, pot indicar un bucle"
+msgstr "Hi ha massa nivells d'àlies per al locale; pot indicar un bucle"
 
 #~ msgid ""
 #~ "I cannot start the X server (your graphical interface).  It is likely "
