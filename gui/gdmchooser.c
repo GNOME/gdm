@@ -2092,7 +2092,7 @@ main (int argc, char *argv[])
 					_("The chooser version (%s) does not match the daemon "
 					  "version (%s).  "
 					  "You have probably just upgraded gdm.  "
-					  "Please restart the gdm daemon or reboot the computer."),
+					  "Please restart the gdm daemon or the computer."),
 					VERSION, gdm_version);
 
 	    gtk_widget_show_all (dialog);

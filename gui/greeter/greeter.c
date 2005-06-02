@@ -766,7 +766,7 @@ verify_gdm_version (void)
 				  _("The greeter version (%s) does not match the daemon "
 				    "version.\n"
 				    "You have probably just upgraded gdm.\n"
-				    "Please restart the gdm daemon or reboot the computer."),
+				    "Please restart the gdm daemon or the computer."),
 				  VERSION);
     
       gtk_widget_show_all (dialog);
@@ -798,7 +798,7 @@ verify_gdm_version (void)
 				  _("The greeter version (%s) does not match the daemon "
 				    "version.\n"
 				    "You have probably just upgraded gdm.\n"
-				    "Please restart the gdm daemon or reboot the computer."),
+				    "Please restart the gdm daemon or the computer."),
 				  VERSION);
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Reboot"),
@@ -843,7 +843,7 @@ verify_gdm_version (void)
 				  _("The greeter version (%s) does not match the daemon "
 				    "version (%s).\n"
 				    "You have probably just upgraded gdm.\n"
-				    "Please restart the gdm daemon or reboot the computer."),
+				    "Please restart the gdm daemon or the computer."),
 				  VERSION, gdm_version);
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Restart"),

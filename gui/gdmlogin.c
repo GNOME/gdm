@@ -804,11 +804,11 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 }
 
 static void
-gdm_login_reboot_handler (void)
+gdm_login_restart_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to reboot the machine?"),
+	if (gdm_common_query (_("Are you sure you want to restart the machine?"),
 			     FALSE /* markup */,
-			     _("_Reboot"), NULL, TRUE) == GTK_RESPONSE_YES) {
+			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog();
 
 		gdm_kill_thingies ();
@@ -2836,14 +2836,14 @@ gdm_login_gui_init (void)
 	}
 
 	if (gdm_working_command_exists (GdmReboot)) {
-		item = gtk_menu_item_new_with_mnemonic (_("_Reboot"));
+		item = gtk_menu_item_new_with_mnemonic (_("_Restart"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
-				  G_CALLBACK (gdm_login_reboot_handler), 
+				  G_CALLBACK (gdm_login_restart_handler), 
 				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				      _("Reboot your computer"),
+				      _("Restart your computer"),
 				      NULL);
 		got_anything = TRUE;
 	}
@@ -3623,7 +3623,7 @@ main (int argc, char *argv[])
 					_("The greeter version (%s) does not match the daemon "
 					  "version.  "
 					  "You have probably just upgraded gdm.  "
-					  "Please restart the gdm daemon or reboot the computer."),
+					  "Please restart the gdm daemon or the computer."),
 					VERSION);
 
 	    gtk_widget_show_all (dialog);
@@ -3654,10 +3654,10 @@ main (int argc, char *argv[])
 					_("The greeter version (%s) does not match the daemon "
 					  "version.  "
 					  "You have probably just upgraded gdm.  "
-					  "Please restart the gdm daemon or reboot the computer."),
+					  "Please restart the gdm daemon or the computer."),
 					VERSION);
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				    _("Reboot"),
+				    _("Restart"),
 				    RESPONSE_REBOOT,
 				    GTK_STOCK_CLOSE,
 				    RESPONSE_CLOSE,
@@ -3698,12 +3698,12 @@ main (int argc, char *argv[])
 					_("The greeter version (%s) does not match the daemon "
 					  "version (%s).  "
 					  "You have probably just upgraded gdm.  "
-					  "Please restart the gdm daemon or reboot the computer."),
+					  "Please restart the gdm daemon or the computer."),
 					VERSION, gdm_version);
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				    _("Restart"),
+				    _("Restart gdm"),
 				    RESPONSE_RESTART,
-				    _("Reboot"),
+				    _("Restart computer"),
 				    RESPONSE_REBOOT,
 				    GTK_STOCK_CLOSE,
 				    RESPONSE_CLOSE,

@@ -1,5 +1,17 @@
 2005-06-02  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmchooser.c, gui/gdmlogin.c, gui/gdmsetup.glade,
+	  gui/greeter/greeter.c, gui/greeter/greeter_system.c:
+	  Change "reboot" to "restart".  Changed function names
+	  and variables from reboot to restart.  It's still
+	  "reboot_button" in the GDM2 theme XML files since 
+	  changing this would break backwards compatibility.
+	  Fixes bug #305939.  Patch for gdmlogin by Nicholas
+	  Skehin.  I updated the patch so it also applies to
+	  gdmgreeter.
+	  
+2005-06-02  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmdynamic.c:  Added new file so build works.
 
 2005-05-25  Brian Cameron  <brian.cameron@sun.com>

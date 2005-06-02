@@ -58,9 +58,9 @@ bin_exists (const char *command)
 }
 
 static void
-query_greeter_reboot_handler (void)
+query_greeter_restart_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to reboot the machine?"),
+	if (gdm_common_query (_("Are you sure you want to restart the machine?"),
 			   FALSE /* markup */, _("_Reboot"), NULL,
 			   TRUE) == GTK_RESPONSE_YES) {
 		closelog();
@@ -95,7 +95,7 @@ query_greeter_suspend_handler (void)
 }
 
 static void
-greeter_reboot_handler (void)
+greeter_restart_handler (void)
 {
 	closelog();
 	_exit (DISPLAY_REBOOT);
@@ -187,7 +187,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
-				  G_CALLBACK (query_greeter_reboot_handler),
+				  G_CALLBACK (query_greeter_restart_handler),
 				  NULL);
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
 				      _("Reboot your computer"),
@@ -244,7 +244,7 @@ greeter_system_handler (GreeterItemInfo *info,
   GtkWidget *group_radio = NULL;
   GtkWidget *halt_radio = NULL;
   GtkWidget *suspend_radio = NULL;
-  GtkWidget *reboot_radio = NULL;
+  GtkWidget *restart_radio = NULL;
   GtkWidget *config_radio = NULL;
   GtkWidget *chooser_radio = NULL;
   int ret;
@@ -314,15 +314,15 @@ greeter_system_handler (GreeterItemInfo *info,
   if (GdmRebootFound) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
-	  reboot_radio = gtk_radio_button_new_with_mnemonic (radio_group,
+	  restart_radio = gtk_radio_button_new_with_mnemonic (radio_group,
 							     _("_Reboot the computer"));
-	  group_radio = reboot_radio;
-	  g_signal_connect(G_OBJECT(reboot_radio), "button_press_event",
+	  group_radio = restart_radio;
+	  g_signal_connect(G_OBJECT(restart_radio), "button_press_event",
 			   G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
-			      reboot_radio,
+			      restart_radio,
 			      FALSE, FALSE, 4);
-	  gtk_widget_show (reboot_radio);
+	  gtk_widget_show (restart_radio);
   }
 
   if (GdmSuspendFound) {
@@ -403,8 +403,8 @@ greeter_system_handler (GreeterItemInfo *info,
 
   if (halt_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (halt_radio)))
     greeter_halt_handler();
-  else if (reboot_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (reboot_radio)))
-    greeter_reboot_handler ();
+  else if (restart_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (restart_radio)))
+    greeter_restart_handler ();
   else if (suspend_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (suspend_radio)))
     greeter_suspend_handler ();
   else if (config_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (config_radio)))
@@ -420,7 +420,7 @@ void
 greeter_item_system_setup (void)
 {
   greeter_item_register_action_callback ("reboot_button",
-					 (ActionFunc)query_greeter_reboot_handler,
+					 (ActionFunc)query_greeter_restart_handler,
 					 NULL);
   greeter_item_register_action_callback ("halt_button",
 					 (ActionFunc)query_greeter_halt_handler,
