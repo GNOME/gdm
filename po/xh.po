@@ -8,13 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-08 16:01+0200\n"
+"POT-Creation-Date: 2005-06-03 12:45+0200\n"
 "PO-Revision-Date: 2005-04-07 17:52+0200\n"
 "Last-Translator: Canonical Ltd <translations@canonical.com>\n"
 "Language-Team: Xhosa <xh-translate@ubuntu.com> \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
 
 #: ../config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -779,9 +780,9 @@ msgstr "%s: Impazamo ekumiseleni isikhombisi somqondiso we-CHLD"
 #: ../daemon/gdm.c:3633 ../daemon/gdm.c:3652 ../daemon/gdm.c:3796
 #: ../daemon/gdm.c:3854 ../daemon/gdm.c:3909 ../daemon/gdm.c:3954
 #: ../daemon/gdm.c:3981
-#, fuzzy, c-format
+#, c-format
 msgid "%s request denied: Not authenticated"
-msgstr "QUERY_VT isicelo saliwe: Asiqinisekiswanga"
+msgstr "Isicelo se-%s saliwe: Asiqinisekiswanga"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -1096,15 +1097,14 @@ msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Ayinakuqala i-greeter izama okumiselweyo: %s"
 
 #: ../daemon/slave.c:2662
-#, fuzzy
 msgid ""
 "Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
 msgstr ""
-"Ayinakuqala inkqubo ye-greeter, awuyi kuba nako ukungena.  Esi sikrini siya "
-"kwenziwa ukuba singasebenzi.  Zama ukungena ngezinye iindlela kunye "
-"nokuhlela ifayili yokumiselwa kwenkqubo yekhompyutha"
+"Ayikwazi ukuqala inkqubo ye-greeter; awuyi kuba nako ukungena.  Esi skrini "
+"siya kwenziwa ukuba singasebenzi.  Zama ukungena ngezinye iindlela "
+"kwanokuhlela ifayili yokumiselwa kwenkqubo"
 
 #. If no greeter we really have to disable the display
 #: ../daemon/slave.c:2669
@@ -2596,9 +2596,8 @@ msgstr "u-A-M|Kannada"
 #. Note translate the A-M to the A-M you used in the group label
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:154
-#, fuzzy
 msgid "A-M|Kinyarwanda"
-msgstr "u-A-M|Kannada"
+msgstr "u-A-M|Kinyarwanda"
 
 #: ../gui/gdmlanguages.c:155
 msgid "A-M|Korean"
@@ -3722,9 +3721,8 @@ msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "Ingaba nyani unqwenela ukususa umxholo '%s' kwinkqubo?"
 
 #: ../gui/gdmsetup.c:2191
-#, fuzzy
 msgid "_Remove Theme"
-msgstr "_Kwenye indawo: "
+msgstr "_Susa Umxholo"
 
 #. This is the temporary help dialog
 #: ../gui/gdmsetup.c:2386
@@ -3760,9 +3758,9 @@ msgstr ""
 
 #. EOF
 #: ../gui/gdmsetup.desktop.in.h:1
-#, fuzzy
 msgid "Configure the login screen (Gnome Display Manager)"
-msgstr "Mi_sela umphathi wokungena"
+msgstr ""
+"Misela inkqubo yeskrini sokungena (Umphathi Wokuvela Kwiskrini weGnome)"
 
 #: ../gui/greeter/greeter.c:640 ../gui/greeter/greeter.c:672
 #, c-format
@@ -3878,11 +3876,11 @@ msgid "You've got capslock on!"
 msgstr "I-capslock ayicinywanga!"
 
 #: ../gui/greeter/greeter_parser.c:1047
-#, fuzzy, c-format
+#, c-format
 msgid "User %s will login in %d second"
 msgid_plural "User %s will login in %d seconds"
-msgstr[0] "Umsebenzisi %s uyakungena kwi %d yemizuzwana"
-msgstr[1] "Umsebenzisi %s uyakungena kwi %d yemizuzwana"
+msgstr[0] "Umsebenzisi %s uyakungena kumzuzwana o-%d"
+msgstr[1] "Umsebenzisi %s uyakungena kwimizuzwana e-%d"
 
 #: ../gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
@@ -3970,11 +3968,13 @@ msgstr ""
 
 #. TODO - I18n
 #: ../gui/modules/keymouselistener.c:249
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot open gestures file: %s\n"
 ")"
-msgstr "Ayinakuyivula ifayili"
+msgstr ""
+"Ayinako ukuvula ifayili yezibonisi: %s\n"
+")"
 
 #: ../utils/gdmaskpass.c:26
 #, c-format
@@ -4027,7 +4027,7 @@ msgstr ""
 "ifayili %s isixhobo: %s"
 
 #: ../vicious-extensions/glade-helper.c:248
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured while loading the user interface element %s%s from file %s. "
 "CList type widget should have %d column. Possibly the glade interface "
@@ -4039,17 +4039,19 @@ msgid_plural ""
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
 msgstr[0] ""
-"Impazamo yenzekile ngexa ufaka okufunekayo kumdibaniso wemida yomsebenzisi %s"
-"%s usuka kwifayili %s.  Isixhobo sohlobo lwe-CList kufuneka ukuba sibe %d "
-"nezintlu.  Kunokwenzeka ukuba inkcazo yomdibaniso wemida ye-glade "
-"yonakalisiwe.  %s ayinakuqhubeka kwaye iza kuphuma ngoku.  Kufuneka "
-"ukhangele ufakelo lwakho lwe %s okanye ufake kwakhona %s."
+"Kwenzeke impazamo ngexa ufaka okufunekayo kumdibaniso wemida yomsebenzisi %s%"
+"s ukusuka kwifayili %s. Isixhobo sohlobo lwe-CList kufuneka ukuba sibe "
+"nekholam e-%d. Kunokwenzeka ukuba inkcazo yomdibaniso wemida ye-glade "
+"yonakalisiwe. Ayinakuqhubeka i-%s kwaye iza kuphuma ngoku. Kufuneka "
+"ukhangele useko-zixhobo lwakho lwe-%s okanye wenze ngokutsha useko-zixhobo "
+"lwe-%s."
 msgstr[1] ""
-"Impazamo yenzekile ngexa ufaka okufunekayo kumdibaniso wemida yomsebenzisi %s"
-"%s usuka kwifayili %s.  Isixhobo sohlobo lwe-CList kufuneka ukuba sibe %d "
-"nezintlu.  Kunokwenzeka ukuba inkcazo yomdibaniso wemida ye-glade "
-"yonakalisiwe.  %s ayinakuqhubeka kwaye iza kuphuma ngoku.  Kufuneka "
-"ukhangele ufakelo lwakho lwe %s okanye ufake kwakhona %s."
+"Kwenzeke impazamo ngexa ufaka okufunekayo kumdibaniso wemida yomsebenzisi %s%"
+"s ukusuka kwifayili %s. Isixhobo sohlobo lwe-CList kufuneka ukuba sibe "
+"neekholam ezi-%d. Kunokwenzeka ukuba inkcazo yomdibaniso wemida ye-glade "
+"yonakalisiwe. Ayinakuqhubeka i-%s kwaye iza kuphuma ngoku. Kufuneka "
+"ukhangele useko-zixhobo lwakho lwe-%s okanye wenze ngokutsha useko-zixhobo "
+"lwe-%s."
 
 #: ../vicious-extensions/glade-helper.c:277
 #, c-format
@@ -4081,17 +4083,3 @@ msgstr "Akukho mdibaniso wemida unokufakwa, MBI! (ifayili: %s)"
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr ""
 "Amanqanam amaninzi amanye amagama e-locale, anokukhombisa iseti yeengxelo"
-
-#~ msgid "FLEXI_XSERVER request denied: Not authenticated"
-#~ msgstr "Isicelo se-FLEXI_XSERVER saliwe: asiqinisekiswanga"
-
-#~ msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-#~ msgstr "Isicelo so MBUZO_PHUMA_ISENZO saliwe: Asiqinisekiswanga"
-
-#~ msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-#~ msgstr "Isicelo soKu MISELA_PHUMA_ISENZO saliwe: Asiqinisekiswanga"
-
-#~ msgid ""
-#~ "A graphical application for configuring the GNOME Display Manager (GDM)"
-#~ msgstr ""
-#~ "Inkqubo yekhompyutha yegrafu yokumisela i-GNOME Display Manager (GDM)"
