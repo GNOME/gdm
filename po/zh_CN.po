@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-27 05:54+0000\n"
-"PO-Revision-Date: 2005-01-29 16:43+0800\n"
+"POT-Creation-Date: 2005-06-05 05:15+0000\n"
+"PO-Revision-Date: 2005-06-05 17:15+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -1200,8 +1200,8 @@ msgid ""
 "prevents the default session and language from being saved.  File sould be "
 "owned by user and have 644 permissions."
 msgstr ""
-"您的 $HOME/.dmrc 文件权限不正确，因此已被忽略。这将无法保存默认会话和语言。"
-"该文件应该由用户所有，并且权限设置为 644。"
+"您的 $HOME/.dmrc 文件权限不正确，因此已被忽略。这将无法保存默认会话和语言。该"
+"文件应该由用户所有，并且权限设置为 644。"
 
 #: ../daemon/slave.c:4243
 msgid ""
@@ -1726,8 +1726,8 @@ msgid ""
 "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
 "authfile %s': %s"
 msgstr ""
-"%s：运行“%s --display %s --display-authfile %s --to %s --to-"
-"authfile %s”失败：%s"
+"%s：运行“%s --display %s --display-authfile %s --to %s --to-authfile %s”失"
+"败：%s"
 
 #: ../daemon/xdmcp.c:2791 ../daemon/xdmcp.c:2798 ../daemon/xdmcp.c:2804
 #: ../daemon/xdmcp.c:2810
@@ -1916,8 +1916,7 @@ msgstr "无法运行选择程序"
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
 "选择程序版本(%s)与守护程序版本(%s)不匹配。您可能刚刚升级 gdm。请重启 gdm 守护"
 "程序或重新启动计算机。"
@@ -2690,15 +2689,13 @@ msgid "%sWelcome to %s%s"
 msgstr "%s欢迎来到 %s%s"
 
 #: ../gui/gdmlogin.c:809 ../gui/greeter/greeter_system.c:63
-msgid "Are you sure you want to reboot the machine?"
-msgstr "您确定想要重新启动计算机？"
+msgid "Are you sure you want to restart the machine?"
+msgstr "您确定想要重新启动计算机吗？"
 
 #. markup
 #: ../gui/gdmlogin.c:811 ../gui/gdmlogin.c:2839
-#: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
-#: ../gui/greeter/greeter_system.c:186
-msgid "_Reboot"
-msgstr "重启(_R)"
+msgid "_Restart"
+msgstr "重新启动(_R)"
 
 #: ../gui/gdmlogin.c:823 ../gui/greeter/greeter_system.c:76
 msgid "Are you sure you want to shut down the machine?"
@@ -2890,8 +2887,8 @@ msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr "配置 GDM (该登录管理器)。这将需要 root 密码。"
 
-#: ../gui/gdmlogin.c:2846 ../gui/greeter/greeter_system.c:193
-msgid "Reboot your computer"
+#: ../gui/gdmlogin.c:2846
+msgid "Restart your computer"
 msgstr "重新启动您的计算机"
 
 #: ../gui/gdmlogin.c:2859 ../gui/greeter/greeter_system.c:205
@@ -2935,30 +2932,31 @@ msgstr "无法启动欢迎程序"
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
 "欢迎程序版本(%s)与守护程序版本不匹配。您可能刚刚升级 gdm。请重新启动 gdm 守护"
 "程序或重新启动计算机。"
 
-#: ../gui/gdmlogin.c:3660 ../gui/gdmlogin.c:3706 ../gui/greeter/greeter.c:804
-#: ../gui/greeter/greeter.c:851
-msgid "Reboot"
-msgstr "重启"
+#: ../gui/gdmlogin.c:3660 ../gui/greeter/greeter.c:849
+msgid "Restart"
+msgstr "重新启动"
 
 #: ../gui/gdmlogin.c:3698
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
 "欢迎程序版本(%s)与守护程序版本(%s)不匹配。您可能刚刚升级 gdm。请重新启动 gdm "
 "守护程序或重新启动计算机。"
 
-#: ../gui/gdmlogin.c:3704 ../gui/greeter/greeter.c:849
-msgid "Restart"
-msgstr "重新启动"
+#: ../gui/gdmlogin.c:3704
+msgid "Restart gdm"
+msgstr "重新 gdm"
+
+#: ../gui/gdmlogin.c:3706
+msgid "Restart computer"
+msgstr "重启计算机"
 
 #: ../gui/gdmlogin.c:3736
 #, c-format
@@ -3051,8 +3049,7 @@ msgstr "无法打开文件"
 #: ../gui/gdmphotosetup.c:373
 #, c-format
 msgid "File %s cannot be opened for writing\n"
-msgstr ""
-"无法按写打开文件 %s\n"
+msgstr "无法按写打开文件 %s\n"
 
 #: ../gui/gdmphotosetup.desktop.in.h:1
 msgid ""
@@ -3385,7 +3382,9 @@ msgstr "没有可用的屏幕截图"
 msgid ""
 "Only One Theme\n"
 "Random Theme"
-msgstr "只有一种主题\n随机主题"
+msgstr ""
+"只有一种主题\n"
+"随机主题"
 
 #: ../gui/gdmsetup.glade.h:53
 msgid "Options"
@@ -3423,7 +3422,7 @@ msgstr "显示动作菜单(_A)"
 #: ../gui/gdmsetup.glade.h:62
 msgid ""
 "Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
-"set, none of the system commands will be available (this includes reboot, "
+"set, none of the system commands will be available (this includes restart, "
 "shutdown, configure, chooser)"
 msgstr ""
 "显示“动作”菜单(即先前的“系统”菜单)。如果未设定，系统的任何命令都不可用(其中包"
@@ -3601,22 +3600,26 @@ msgstr "要在此列出的用户太多..."
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
 "欢迎程序版本 (%s) 与守护程序版本不匹配。\n"
 "您可能刚刚升级 gdm。\n"
-"请重新启动 gdm daemon 或重新启动计算机。"
+"请重新启动 gdm 守护程序或重新启动计算机。"
+
+#: ../gui/greeter/greeter.c:804 ../gui/greeter/greeter.c:851
+msgid "Reboot"
+msgstr "重启"
 
 #: ../gui/greeter/greeter.c:843
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
 "欢迎程序版本 (%s) 与守护程序版本 (%s) 不匹配。\n"
 "您可能刚刚升级 gdm。\n"
-"请重新启动 gdm daemon 或重新启动计算机。"
+"请重新启动 gdm 守护程序或重新启动计算机。"
 
 #: ../gui/greeter/greeter.c:1348
 #, c-format
@@ -3683,6 +3686,12 @@ msgstr "无法打开默认主机图标：%s！"
 msgid "Sus_pend"
 msgstr "挂起(_S)"
 
+#. markup
+#: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
+#: ../gui/greeter/greeter_system.c:186
+msgid "_Reboot"
+msgstr "重启(_R)"
+
 #: ../gui/greeter/greeter_parser.c:1092
 msgid "_XDMCP Chooser"
 msgstr "_XDMCP 选择程序"
@@ -3706,6 +3715,10 @@ msgstr "取消(_C)"
 #: ../gui/greeter/greeter_session.c:243
 msgid "Choose a Session"
 msgstr "选择会话"
+
+#: ../gui/greeter/greeter_system.c:193
+msgid "Reboot your computer"
+msgstr "重新启动您的计算机"
 
 #: ../gui/greeter/greeter_system.c:278
 msgid "Choose an Action"
@@ -3791,8 +3804,7 @@ msgstr ""
 #: ../gui/modules/keymouselistener.c:249
 #, c-format
 msgid "Cannot open gestures file: %s\n"
-msgstr ""
-"无法打开手势文件：%s\n"
+msgstr "无法打开手势文件：%s\n"
 
 #: ../utils/gdmaskpass.c:26
 #, c-format
@@ -3881,4 +3893,3 @@ msgstr "没有可以装入的界面。糟糕！(文件：%s)"
 #: ../vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "一个语系的别名级别太多；可能有无穷循环"
-
