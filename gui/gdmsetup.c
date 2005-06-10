@@ -1640,8 +1640,6 @@ setup_greeter_image (GtkWidget *dialog)
 		GTK_TYPE_WIDGET);
 	GtkWidget *nologo_button = glade_helper_get (xml, "sg_nologo",
 		GTK_TYPE_WIDGET);
-	GtkWidget *nobackimage_button = glade_helper_get (xml, "sg_nobackimage",
-		GTK_TYPE_WIDGET);
 
 	logo_data.image = glade_helper_get (xml, "sg_logo", GTK_TYPE_WIDGET);
 	logo_data.key = GDM_KEY_LOGO;
@@ -1679,8 +1677,6 @@ setup_greeter_image (GtkWidget *dialog)
 
 	g_signal_connect (G_OBJECT (backimage_button), "clicked",
 		G_CALLBACK (browse_button_cb), &backimage_data);
-	g_signal_connect (G_OBJECT (nobackimage_button), "clicked",
-		G_CALLBACK (noimage_button_cb), &backimage_data);
 }
 
 static gboolean
@@ -2374,7 +2370,6 @@ background_toggled (void)
 	GtkWidget *color_label = glade_helper_get (xml, "sg_backcolor_label", GTK_TYPE_WIDGET);
 	GtkWidget *color = glade_helper_get (xml, "sg_backcolor", GTK_TYPE_WIDGET);
 	GtkWidget *browse_button = glade_helper_get (xml, "sg_browsebackimage", GTK_TYPE_WIDGET);
-	GtkWidget *no_image_button = glade_helper_get (xml, "sg_nobackimage", GTK_TYPE_WIDGET);
 
 	if (GTK_TOGGLE_BUTTON (no_bg)->active) {
 		gtk_widget_set_sensitive (scale, FALSE);
@@ -2383,13 +2378,11 @@ background_toggled (void)
 		gtk_widget_set_sensitive (color_label, FALSE);
 		gtk_widget_set_sensitive (color, FALSE);
 		gtk_widget_set_sensitive (browse_button, FALSE);
-		gtk_widget_set_sensitive (no_image_button, FALSE);
 	} else if (GTK_TOGGLE_BUTTON (image_bg)->active) {
 		gtk_widget_set_sensitive (scale, TRUE);
 		gtk_widget_set_sensitive (image, TRUE);
 		gtk_widget_set_sensitive (onlycolor, TRUE);
 		gtk_widget_set_sensitive (browse_button, TRUE);
-		gtk_widget_set_sensitive (no_image_button, TRUE);
 		if (GTK_TOGGLE_BUTTON (onlycolor)->active) {
 			gtk_widget_set_sensitive (color_label, TRUE);
 			gtk_widget_set_sensitive (color, TRUE);
@@ -2404,7 +2397,6 @@ background_toggled (void)
 		gtk_widget_set_sensitive (color_label, TRUE);
 		gtk_widget_set_sensitive (color, TRUE);
 		gtk_widget_set_sensitive (browse_button, FALSE);
-		gtk_widget_set_sensitive (no_image_button, FALSE);
 	}
 }
 

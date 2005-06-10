@@ -46,7 +46,6 @@ gchar *s = N_("_Image");
 gchar *s = N_("_Color");
 gchar *s = N_("_Scale background image to fit");
 gchar *s = N_("Browse");
-gchar *s = N_("No Background");
 gchar *s = N_("_Only color on remote displays");
 gchar *s = N_("_Background color: ");
 gchar *s = N_("Pick a color");

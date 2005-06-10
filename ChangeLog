@@ -1,5 +1,13 @@
 2005-06-10  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmsetup-strings.c, gui/gdmsetup.c, 
+	  gui/gdmsetup.glade:  Removed "No Image" button
+	  for setting the background since it is redundant.
+	  You can also say "no background" on the radio
+	  button list.
+
+2005-06-10  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/gdm.conf.in: Updated setting for gdmsetup,
 	  gdmlogin, and gdmchooser so they point to the new
 	  installation locations.  Fixes bug #306464.
@@ -132,15 +140,17 @@
 	  if HAVE_PAM is defined, otherwise set it to 
 	  GDM_MAX_PASS set to 256 in daemon/gdm.h.  This 
 	  allows gdm to be used on systems that do not have
-	  PAM.  Fixes #302228.
+	  PAM.  Fixes #302228.  Patch by Ali Akcaagac.
 	* daemon/gdm.h, docs/C/gdm.xml, gui/gdmsetup.c,
 	  gui/greeter/greeter.c, gui/gdmsetup.glade, 
 	  gui/gdmsetup-strings.c, config/gdm.conf.in:
 	  Now support random theme.  Fixes #302354.
+	  Patch by Andrew Case.
 	* gui/gdmcommon.c, gui/gdmlogin.c,
 	  gui/greeter/greeter_session.c, gui/Makefile.am,
 	  added gui/gdmsession.[ch]:  Support better
 	  sorting for session names.  Fixes #301818.
+	  Patch by Ray Strode.
 
 2005-04-26  Brian Cameron  <brian.cameron@sun.com>
 
@@ -486,7 +496,7 @@
 	* gui/gdmlogin.c, gui/gdmsetup.c, gui/gdmsetup-strings.c,
 	  gui/gdmsetup.glade: Revamped gdmsetup so that it uses the
 	  new file browser everywhere, uses GtkComboBox and
-	  GtkComboBoxEntryinstead of GtkEntry and GtkOptionMenu
+	  GtkComboBoxEntry instead of GtkEntry and GtkOptionMenu
 	  since they are deprecated.  This fixed bug 171558.
 	  Improved Remote Welcome label to fix bug 105156.
 	  Now Remote Greeter option in the Greeter tab reads
@@ -509,8 +519,7 @@
 	* gui/gdmlanguages.c: Correct inconsistant spacing in 
 	  languages list.  Patch by Seb Wills.  Fixes bug
 	  171519.  Also corrected the fix made on March 4th
-	  to remove span tags properly.  The fact it wasn't
-	  done right was noticed by Seb Wills.
+	  to remove span tags properly.  
 
 2005-03-25  Abel Cheung  <maddog@linuxhall.org>
 
@@ -635,12 +644,11 @@ Thu Mar 10 17:50:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  EXPANDED_SBINDIR (gdm/gdm-binary/gdmsetup), all programs
 	  that are not intended to be run by end-users are in 
 	  EXPANDED_LIBEXEC (gdmchooser/gdmgreeter/gdmlogin).  Removed
-	  gdmconfig wrapper script and gdm Xnest symlink since they
+	  gdmconfig wrapper script and gdmXnest symlink since they
 	  only serve to clutter the filesystem.  I announced this 
 	  change in the 2.6.0.8 release notes and will be bumping
 	  the next release to 2.6 because of this change and the 
 	  change to the default face directory.
-
 	* configure.in, gui/faces/*: Add default faces.  Images
 	  provided by Jaap A. Haitsma.  Refer to bugzilla bug
 	  #149838.
