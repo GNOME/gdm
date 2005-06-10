@@ -1,5 +1,193 @@
 Ahh news...
 
+2.8.0.0 stuff:
+
+Interface Changes:
+
+- Now gdm, gdm-binary, gdmsetup are installed to /sbin and 
+  gdmchooser, gdmgreeter, gdmlogin are installed to /libexec.
+  This better conforms to UNIX recommend installation locations.
+  The gdmconfig and gdmXnest symlinks have been removed since
+  they were redundant.  Distributions will need to modify the
+  way GDM programs are launched to reflect these changes.
+  (Brian Cameron)
+
+- gdm.conf and GdmSetup now use the DefaultWelcome and
+  DefaultRemoteWelcome keys to specify if the default message should
+  be used.  Now the Welcome and RemoteWelcome keys are empty 
+  by default.  This is to avoid putting strings that are translated
+  in the gdm.conf file.  Users that want to use a non-default 
+  welcome string will need to ensure that DefaultWelcome and/or
+  DefaultRemoteWelcome are set to false.  (Brian Cameron)
+
+- Now users to be included in the face browser need to be 
+  identified using the gdm.conf "Include" configure option or the
+  "Face Browser" tab in gdmsetup.  Previously, GDM parsed the 
+  system's password file for a complete list of users and excluded
+  userid's listed in the gdm.conf "Exclude" configure option.  
+  This behavior did not work well on systems that use NIS for
+  storing passwords.  This previous behavior may be turned back
+  on by setting the gdm.conf "IncludeAll" configure option to
+  "true".  (Brian Cameron)
+
+- xevie Xserver extension is now turned on by default on Linux for
+  better a11y support.
+
+- /bin/ksh is used in the GDM2 Xsession script on Solaris.  Since
+  this script sources the user's $HOME/.profile, ksh works better
+  if the profile has bash/ksh style syntax.  (Brian Cameron)
+
+Other Changes:
+
+- Fix so GDM works better on BSD and MacOS.  Upon getting EOF on
+  socket/pipe/etc. G_IO_IN is always set and G_IO_HUP may not be
+  set.  Therefore, if a length <= 0 is returned from read(), the
+  socket is closed.   This prevents gdm2 from causing high CPU-load
+  after logout.  (Joe Marcus Clarke)
+
+- Now support "session migration" using DMX.  Refer to docs.
+  (Mark McLoughlin)
+
+- Now support "Dynamic Xservers".  Refer to docs.  (Bob Terek)
+
+- The background colors used in gdmgreeter's Face Browser in can now
+  be themed using the <color iconcolor="" "labelcolor=""> syntax.
+  The Face Browser now shrinks so it is the same size as the treeview
+  so extra white space isn't shown.  (Brian Cameron)
+
+- To better conform to the Usability Guide, gdmlogin and gdmgreeter
+  now supports an "OK" button which functions the same as hitting
+  <Return> and a Cancel button which allows the user to go back to
+  the "Username" prompt without having to enter an invalid password.
+  (Brian Cameron)
+  
+- The Face Browser usability has been improved.  Now the user can
+  select a different face without having to enter an invalid
+  password.  Single-clicking on the face takes the user to Password
+  entry.  The cancel button can be used to get back to "Username"
+  entry.  (Brian Cameron)
+
+- GDM now ships with a collection of default faces installed to
+  datadir/pixmaps/faces.  (Jaap A. Haitsma)
+
+- Support for ratio scaling of SVG images.  (Vincent Untz)
+
+- Better left-handed support.  Now right and left mouse buttons can
+  be used in all GDM windows/dialogs/etc.  (Brian Cameron)
+
+- Now can use XDMCP from Xnest session.  (Leena Gunda)
+
+- Now login success/failure sounds can be selected in gdm.conf or
+  in the Accessibility tab of gdmsetup.  (Andrew Case,
+  Mark McLoughlin)
+
+- Now "random theme" can be selected in the gdm.conf file or 
+  gdmsetup to allow a different theme to be used for each login.
+  (Andrew Case)
+
+- Now support background programs that are started after a timedelay
+  and can be restarted after a delay.  Useful for running a
+  screensaver at login time.  (Laurent Birtz)
+
+- gdmphotosetup has been improved so it now scales the face image
+  to GDM's max icon size before saving it.  By default it looks
+  in datadir/pixmaps/faces to find face images.  (Brian Cameron)
+  
+- <Control>-U may now be used to clear the entry field.  Now <Tab>
+  works like <Enter> in the login screen.  (Brian Cameron)
+
+- gdmflexiserver now supports the GET_CONFIG command, so that other
+  programs can access the GDM configuration data in a stable fashion.
+  This is useful for other programs that might want to know what the
+  system suspend/halt/reboot command is or what the max icon size for
+  creating gdm2 face images, etc.  (Brian Cameron)
+
+- Flexiserver commands are now sent as a single call to
+  gdm_connection_write or gdm_connection_printf rather than building
+  commands and sending them in pieces.   Fixes bug #158799.
+  (Brian Cameron)
+
+- Now gesture listener configuration files specify AT programs by
+  full PATH (default EXPANDED_BINDIR).  This can be overridden via
+  the --with-at-bindir configure option.  Since AT programs are 
+  launched as user gdm2, it is more secure to not depend on PATH.
+  (Brian Cameron)
+
+- Now use more sensible arguments for starting magnifier.
+  (Bill Haneman)
+
+- gdmsetup Now has a separate tab for configuring the Face Browser,
+  and for configuring the Xserver.  Now the checkboxes for turning
+  on the Face Browser and XDMCP are on the Security tab.  The
+  Face Browser and XDMCP tabs are insenitive if they are not
+  enabled.  Now users can turn on/off Theme menu choice for gdmlogin
+  in the Accessibility tab.  Can turn on/off debug in the Security
+  tab.  RemoteWelcome is insensitive if XDMCP is not enabled.
+  Better mnemonics.  (Brian Cameron, Andrew Case)
+
+- GDM now no longer uses deprecated widgets.  The new file selection
+  widget is used (which no longer core dumps if you click on the
+  sidebars).  GtkComboBox and GtkComboBoxEntry are used instead
+  of GtkEntry and GtkOptionMenu (Brian Cameron)
+
+- gdmthemetester now uses gdmwhich instead of which, so it works
+  better on Solaris.  (Brian Cameron)
+
+- Timed login message is displayed in a separate label on gdmlogin
+  which avoids problems caused because different things were trying
+  to use the same label for status messages.  Reorganized gdmlogin
+  screen so it no longer should resize as it is being used.
+  (Brian Cameron)
+
+- The max size of the username/password entry is now set to 
+  PAM_MAX_RESP_SIZE to allow long username/password entry.  If
+  PAM is not set, it is defaulted to 256.  (Brian Cameron,
+  Ali Akcaagac)
+
+- Now dialogs that ask the user if they want to change their default
+  language/session have a Cancel button so the user can return to
+  the login screen.  (Brian Cameron)
+
+- Theme save remembers where the last theme was installed and opens
+  to that location.  Also fixed bug which was causing *.tar theme
+  files to not install properly.  (Brian Cameron)
+
+- No longer rely on Xserver physical screen geometry which sometimes
+  causes text to be too big or too small.  Now use gdk/pango functions
+  to get root window resources.  (Ray Strode)
+
+- Better sorting of session names in the Session menu.  (Ray Strode)
+
+- Remove gdm_debug from signal handlers since they aren't safe in
+  signal handlers (Mark McLoughlin)
+
+- Many strings, docs, README's have been improved.  Better wording,
+  better grammar.  (Brian Cameron, Seb Wills, Adam Weinberger, Abel
+  Cheung, Kjartan Maraas, Danilo \305\240egan, Nicholas Skehin)
+
+- Many translation improvements.  Entries in the language list
+  now show their encoding so you no longer see what appear to be
+  identical entries in the language list.  (Nikos Charonitakis,
+  Theppitak Karoonboonyanan, Priit Laes, David Lodge, Jordi Mallach,
+  Kjartan Maraas, Gareth Owen, Ahmad Riza H Nst, Kostas Papadimas,
+  Francisco Javier F. Serrador, Danilo \305\240egan,
+  Alexander Shopov, \303\205smund Skj\303\246veland,
+  Clytie Siddall, Miloslav Trmac, Tommi Vainikainen, Funda Wang,
+  Adam Weinberger)
+
+- gi18n.h is used instead of libgnome header files.
+  (Christian - Manny Calavera - Neumair)
+
+- Some cleanup (Brian Cameron, Mark McLoughlin)
+
+2.6.0.9 stuff:
+
+- Fix HaltCommand setting so it works again.
+
+- Change HaltCommand from "init 0" to "init 5" on Solaris.
+
+- Minor translation improvements.
+
 2.6.0.8 stuff:
 
 - Enhanced a11y gesture listeners so they support XInput events
