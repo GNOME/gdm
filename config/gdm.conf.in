@@ -37,19 +37,19 @@ TimedLoginDelay=30
 
 # The gdm configuration program that is run from the login screen, you should
 # probably leave this alone
-#Configurator=@EXPANDED_GDMCONFIGDIR@/gdmsetup --disable-sound --disable-crash-dialog
+#Configurator=@EXPANDED_SBINDIR@/gdmsetup --disable-sound --disable-crash-dialog
 
 # The chooser program.  Must output the chosen host on stdout, probably you
 # should leave this alone
-#Chooser=@EXPANDED_BINDIR@/gdmchooser
+#Chooser=@EXPANDED_LIBEXECDIR@/gdmchooser
 
 # The greeter for local (non-xdmcp) logins.  Change gdmlogin to gdmgreeter to
 # get the new graphical greeter.
-#Greeter=@EXPANDED_BINDIR@/gdmlogin
+#Greeter=@EXPANDED_LIBEXECDIR@/gdmlogin
 
 # The greeter for xdmcp logins, usually you want a less graphically intensive
 # greeter here so it's better to leave this with gdmlogin
-#RemoteGreeter=@EXPANDED_BINDIR@/gdmlogin
+#RemoteGreeter=@EXPANDED_LIBEXECDIR@/gdmlogin
 
 # Launch the greeter with an additional list of colon seperated gtk 
 # modules. This is useful for enabling additional feature support 
