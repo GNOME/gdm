@@ -1,7 +1,7 @@
 
 imagedir = $(datadir)/pixmaps/faces
 
-IMGFILES = bonfire.jpg \
+EXTRA_DIST = bonfire.jpg \
            cdrom.jpg \
            clock.jpg \
            daisy.jpg \
@@ -11,8 +11,6 @@ IMGFILES = bonfire.jpg \
            seal.jpg \
            sky.jpg \
            skyline.jpg
-
-EXTRA_DIST = $(IMGFILES)
 
 uninstall-hook:
 	rm -f $(DESTDIR)$(imagedir)/bonfire.jpg \
@@ -26,11 +24,20 @@ uninstall-hook:
         $(DESTDIR)$(imagedir)/sky.jpg \
         $(DESTDIR)$(imagedir)/skyline.jpg
 
-install-data-hook: $(IMGFILES)
+install-data-hook: $(EXTRA_DIST)
 	if test '!' -d $(DESTDIR)$(imagedir); then \
 		$(mkinstalldirs) $(DESTDIR)$(imagedir); \
 		chmod 755 $(DESTDIR)$(imagedir); \
 	fi
-	$(INSTALL_DATA) $(IMGFILES) $(DESTDIR)$(imagedir)
 
+	$(INSTALL_DATA) $(srcdir)/bonfire.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/cdrom.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/clock.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/daisy.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/dice.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/hollyleaf.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/lamas.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/seal.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/sky.jpg $(DESTDIR)$(imagedir)
+	$(INSTALL_DATA) $(srcdir)/skyline.jpg $(DESTDIR)$(imagedir)
 
