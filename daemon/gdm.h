@@ -37,7 +37,7 @@
 #define TYPE_XDMCP 2		/* Remote display/Xserver */
 #define TYPE_FLEXI 3		/* Local Flexi X server */
 #define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
-#define TYPE_XDMCP_PROXY 5      /* Proxy X server for XDMCP */
+#define TYPE_XDMCP_PROXY 5	/* Proxy X server for XDMCP */
 
 #define SERVER_IS_LOCAL(d) ((d)->type == TYPE_STATIC || \
 			    (d)->type == TYPE_FLEXI || \
@@ -199,6 +199,7 @@ enum {
 #define GDM_KEY_CONSOLE_CANNOT_HANDLE "daemon/ConsoleCannotHandle=am,ar,az,bn,el,fa,gu,hi,ja,ko,ml,mr,pa,ta,zh"
 
 /* Per server definitions */
+#define GDM_KEY_SERVER_PREFIX "server-"
 #define GDM_KEY_SERVER_NAME "name=Standard server"
 #define GDM_KEY_SERVER_COMMAND "command=" X_SERVER
 /* runnable as flexi server */

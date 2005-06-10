@@ -70,6 +70,15 @@ static int last_remote_login_setting = -1;
 static gboolean have_sound_ready_file = FALSE;
 static gboolean have_sound_success_file = FALSE;
 static gboolean have_sound_failure_file = FALSE;
+static char *selected_themes = NULL;
+static char *selected_theme  = NULL;
+
+enum {
+	XSERVER_COLUMN_VT,
+	XSERVER_COLUMN_SERVER,
+	XSERVER_COLUMN_OPTIONS,
+	XSERVER_NUM_COLUMNS
+};
 
 enum {
 	THEME_COLUMN_SELECTED,
@@ -94,24 +103,21 @@ enum {
 	RANDOM_THEME
 };
 
-static char *selected_themes = NULL;
-static char *selected_theme  = NULL;
-
 static void
 simple_spawn_sync (char **argv)
 {
 	g_spawn_sync (NULL /* working_directory */,
-		      argv,
-		      NULL /* envp */,
-		      G_SPAWN_SEARCH_PATH |
-		        G_SPAWN_STDOUT_TO_DEV_NULL |
-			G_SPAWN_STDERR_TO_DEV_NULL,
-		      NULL /* child_setup */,
-		      NULL /* user_data */,
-		      NULL /* stdout */,
-		      NULL /* stderr */,
-		      NULL /* exit status */,
-		      NULL /* error */);
+	              argv,
+	              NULL /* envp */,
+	              G_SPAWN_SEARCH_PATH |
+	              G_SPAWN_STDOUT_TO_DEV_NULL |
+	              G_SPAWN_STDERR_TO_DEV_NULL,
+	              NULL /* child_setup */,
+	              NULL /* user_data */,
+	              NULL /* stdout */,
+	              NULL /* stderr */,
+	              NULL /* exit status */,
+	              NULL /* error */);
 }
 
 static void
@@ -276,43 +282,17 @@ toggle_timeout (GtkWidget *toggle)
 {
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	const char *notify_key = g_object_get_data (G_OBJECT (toggle),
-						    "notify_key");
+	                                            "notify_key");
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
-	gboolean val;
+	gboolean val = ve_config_get_bool (config, key);
 
-	val = ve_config_get_bool (config, key);
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 		ve_config_set_bool (config, key,
-				    GTK_TOGGLE_BUTTON (toggle)->active);
+		                    GTK_TOGGLE_BUTTON (toggle)->active);
 		ve_config_save (config, FALSE /* force */);
 
 		update_key (notify_key);
 	}
-
-	return FALSE;
-}
-
-static gboolean
-entry_timeout (GtkWidget *entry)
-{
-	const char *key = g_object_get_data (G_OBJECT (entry), "key");
-	const char *text;
-	char *val;
-	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
-
-	text = gtk_entry_get_text (GTK_ENTRY (entry));
-
-	val = ve_config_get_string (config, key);
-
-	if (strcmp (ve_sure_string (val), ve_sure_string (text)) != 0) {
-		ve_config_set_string (config, key, ve_sure_string (text));
-
-		ve_config_save (config, FALSE /* force */);
-
-		update_key (key);
-	}
-
-	g_free (val);
 
 	return FALSE;
 }
@@ -341,6 +321,141 @@ intspin_timeout (GtkWidget *spin)
 	return FALSE;
 }
 
+static void 
+xservers_get_servers (GtkListStore *store)
+{
+    /* Find server definitions */
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	GList *list, *li;
+	gchar *server, *options, *cpy;
+	
+	/* Fill list with all the active servers */
+    list = ve_config_get_keys (cfg, GDM_KEY_SERVERS);
+
+	for (li = list; li != NULL; li = li->next) {
+        char *key = li->data;
+		int vt = atoi(key);
+		key = g_strconcat(GDM_KEY_SERVERS, "/", key, NULL);
+		cpy = ve_config_get_string (cfg, key);
+		server = ve_first_word (cpy);
+		options = ve_rest (cpy);
+		
+		GtkTreeIter iter;
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+		                    XSERVER_COLUMN_VT, vt,
+		                    XSERVER_COLUMN_SERVER, server,
+		                    XSERVER_COLUMN_OPTIONS, options,
+		                    -1);
+		g_free(server);
+    }
+}
+
+static GSList *
+xservers_get_server_definitions()
+{
+	/* Find server definitions */
+	GSList *xservers = NULL;
+	GList *list, *li;
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	gchar *StandardXServer = ve_config_get_string (cfg,
+	                                               GDM_KEY_STANDARD_XSERVER);
+
+	/* Fill list with all server definitions */
+	list = ve_config_get_sections (cfg);
+	for (li = list; li != NULL; li = li->next) {
+		const char *sec = li->data;
+		if (strncmp (sec, GDM_KEY_SERVER_PREFIX,
+		             strlen (GDM_KEY_SERVER_PREFIX)) == 0) {
+			GdmXServer *svr = g_new0 (GdmXServer, 1);
+			char buf[256];
+
+			svr->id = g_strdup (sec + strlen (GDM_KEY_SERVER_PREFIX));
+			g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_NAME, sec);
+			svr->name = ve_config_get_string (cfg, buf);
+			g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_COMMAND, sec);
+			svr->command = ve_config_get_string (cfg, buf);
+			g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_FLEXIBLE, sec);
+			svr->flexible = ve_config_get_bool (cfg, buf);
+			g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSABLE, sec);
+			svr->choosable = ve_config_get_bool (cfg, buf);
+			g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_HANDLED, sec);
+			svr->handled = ve_config_get_bool (cfg, buf);
+			g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
+			svr->chooser = ve_config_get_bool (cfg, buf);
+
+			if (ve_string_empty (svr->command)) {
+				g_free (svr->command);
+				svr->command = g_strdup (StandardXServer);
+			}
+
+			xservers = g_slist_append (xservers, svr);
+		}
+	}
+	return xservers;
+}
+
+static void
+xserver_update_delete_sensitivity()
+{
+
+	GtkWidget *modify_combobox, *delete_button;
+	GtkListStore *store;
+	GtkTreeIter iter;
+	GSList *xservers;
+	GdmXServer *xserver;
+	gchar *text;
+	gchar *selected;
+	gboolean valid;
+	gint i;
+
+	modify_combobox = glade_helper_get (xml, "xserver_mod_combobox",
+                                            GTK_TYPE_COMBO_BOX);
+	delete_button   = glade_helper_get (xml, "xserver_delete_button",
+                                            GTK_TYPE_BUTTON);
+
+	/* Get list of servers that are set to start */
+	store = gtk_list_store_new (XSERVER_NUM_COLUMNS,
+	                            G_TYPE_INT    /* virtual terminal */,
+	                            G_TYPE_STRING /* server type */,
+	                            G_TYPE_STRING /* options */);
+	xservers_get_servers(store);
+
+	/* Get list of servers and determine which one was selected */
+	xservers = xservers_get_server_definitions();
+	i = gtk_combo_box_get_active (GTK_COMBO_BOX (modify_combobox));
+	if (i < 0) {
+		gtk_widget_set_sensitive(delete_button, FALSE);
+	} else {
+		/* Get the xserver selected */
+		xserver = g_slist_nth_data(xservers, i);
+	
+		/* Sensitivity of delete_button */
+		if (g_slist_length(xservers) <= 1) {
+			/* Can't delete the laster server */
+			gtk_widget_set_sensitive(delete_button, FALSE);
+		} else {
+			gtk_widget_set_sensitive(delete_button, TRUE);
+			valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (store),
+			                                       &iter);
+			selected = gtk_combo_box_get_active_text (
+			              GTK_COMBO_BOX (modify_combobox));
+
+			/* Can't delete servers currently in use */
+			while (valid) {
+				gtk_tree_model_get (GTK_TREE_MODEL (store), &iter,
+				                    XSERVER_COLUMN_SERVER, &text, -1);
+				if (strcmp (text, selected) == 0) {
+					gtk_widget_set_sensitive(delete_button, FALSE);
+					break;
+				}
+				valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (store),
+				                                  &iter);
+			}
+		}
+	}
+}
+
 static gboolean
 combobox_timeout (GtkWidget *combo_box)
 {
@@ -348,6 +463,7 @@ combobox_timeout (GtkWidget *combo_box)
 	int selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box));
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
+	/* Local Greeter and Remote Greeter Comboboxes */
 	if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0 ||
 	    strcmp (key, GDM_KEY_GREETER) == 0) {
 
@@ -375,15 +491,18 @@ combobox_timeout (GtkWidget *combo_box)
 		}
 
 		val = ve_config_get_string (config, key);
-		if (new_val && strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
+		if (new_val &&
+		    strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
+
 			ve_config_set_string (config, key, new_val);
 			ve_config_save (config, FALSE /* force */);
 			update_key (key);
 		}
 		g_free (new_val);
 
+	/* Automatic Login Combobox */
 	} else if (strcmp (key, GDM_KEY_AUTOMATICLOGIN) == 0 ||
-		   strcmp (key, GDM_KEY_TIMED_LOGIN) == 0) {
+	           strcmp (key, GDM_KEY_TIMED_LOGIN) == 0) {
 
 		GtkTreeIter iter;
 		char *new_val = NULL;
@@ -397,13 +516,16 @@ combobox_timeout (GtkWidget *combo_box)
 		}
 
 		val = ve_config_get_string (config, key);
-		if (new_val && strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
+		if (new_val &&
+		    strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
+
 			ve_config_set_string (config, key, new_val);
 			ve_config_save (config, FALSE /* force */);
 			update_key (key);
 		}
 		g_free (new_val);
 
+	/* Theme Combobox */
 	} else if (strcmp (key, GDM_KEY_GRAPHICAL_THEME_RAND) == 0 ) {
 		gboolean new_val;
 		GtkTreeViewColumn *radioColumn = NULL;
@@ -416,7 +538,7 @@ combobox_timeout (GtkWidget *combo_box)
 		if (selected == RANDOM_THEME) {
 			new_val = TRUE;
 			radioColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
-				THEME_COLUMN_SELECTED);
+			                                        THEME_COLUMN_SELECTED);
 			checkboxColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
 				THEME_COLUMN_SELECTED_LIST);
 			gtk_tree_view_column_set_visible (radioColumn, FALSE);
@@ -424,7 +546,7 @@ combobox_timeout (GtkWidget *combo_box)
 		} else { /* Default to one theme */
 			new_val = FALSE;
 			radioColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
-				THEME_COLUMN_SELECTED);
+			                                        THEME_COLUMN_SELECTED);
 			checkboxColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
 				THEME_COLUMN_SELECTED_LIST);
 			gtk_tree_view_column_set_visible (radioColumn, TRUE);
@@ -436,7 +558,80 @@ combobox_timeout (GtkWidget *combo_box)
 			ve_config_save (config, FALSE /* force */);
 			update_key (key);
 		}
-        }
+
+	/* Add/Modify Server to Start combobox */
+	} else if (strcmp (key, GDM_KEY_SERVERS) == 0 ) { 
+		GtkWidget *add_button = glade_helper_get (xml, "xserver_add_button",
+		                                          GTK_TYPE_BUTTON);
+		gtk_widget_set_sensitive(add_button, TRUE);
+
+	/* Modify Server Definition combobox */
+	} else if (strcmp (key, GDM_KEY_SERVER_PREFIX) == 0 ) {
+		/* Init Widgets */
+		GtkWidget *frame, *modify_combobox;
+		GtkWidget *name_entry, *command_entry;
+		GtkWidget *handled_check, *flexible_check;
+		GtkWidget *greeter_radio, *chooser_radio;
+		GtkWidget *create_button, *delete_button;
+		GtkListStore *store;
+		GSList *xservers;
+		GdmXServer *xserver;
+		gint i;
+
+		/* Get Widgets from glade */
+		frame           = glade_helper_get (xml, "xserver_modify_frame",
+		                                    GTK_TYPE_FRAME);
+		name_entry      = glade_helper_get (xml, "xserver_name_entry",
+	                                        GTK_TYPE_ENTRY);
+		command_entry   = glade_helper_get (xml, "xserver_command_entry",
+		                                    GTK_TYPE_ENTRY);
+		handled_check   = glade_helper_get (xml, "xserver_handled_checkbutton",
+		                                    GTK_TYPE_CHECK_BUTTON);
+		flexible_check  = glade_helper_get (xml, "xserver_flexible_checkbutton",
+		                                    GTK_TYPE_CHECK_BUTTON);
+		greeter_radio   = glade_helper_get (xml, "xserver_greeter_radiobutton",
+		                                    GTK_TYPE_RADIO_BUTTON);
+		chooser_radio   = glade_helper_get (xml, "xserver_chooser_radiobutton",
+		                                    GTK_TYPE_RADIO_BUTTON);
+		modify_combobox = glade_helper_get (xml, "xserver_mod_combobox",
+		                                    GTK_TYPE_COMBO_BOX);
+		create_button   = glade_helper_get (xml, "xserver_create_button",
+		                                    GTK_TYPE_BUTTON);
+		delete_button   = glade_helper_get (xml, "xserver_delete_button",
+		                                    GTK_TYPE_BUTTON);
+
+	    /* Get list of servers that are set to start */
+		store = gtk_list_store_new (XSERVER_NUM_COLUMNS,
+		                            G_TYPE_INT    /* virtual terminal */,
+		                            G_TYPE_STRING /* server type */,
+		                            G_TYPE_STRING /* options */);
+		xservers_get_servers(store);
+
+		/* Get list of servers and determine which one was selected */
+		xservers = xservers_get_server_definitions();
+		i = gtk_combo_box_get_active (GTK_COMBO_BOX (modify_combobox));
+		xserver = g_slist_nth_data(xservers, i);
+
+		/* Set all the corresponding values in the frame */
+		gtk_entry_set_text (GTK_ENTRY (name_entry), xserver->name);
+		gtk_entry_set_text (GTK_ENTRY (command_entry), xserver->command);
+
+		/* Update sensitivity of delete button */
+		xserver_update_delete_sensitivity();
+
+		if (xserver->chooser)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (chooser_radio),
+			                              TRUE);
+		else
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (greeter_radio),
+			                              TRUE);
+
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (handled_check),
+		                              xserver->handled);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flexible_check),
+		                              xserver->flexible);
+		gtk_widget_set_sensitive(frame, TRUE);
+	}
 
 	return FALSE;
 }
@@ -489,21 +684,15 @@ sensitive_entry_toggled (GtkWidget *toggle, gpointer data)
 }
 
 static void
-entry_changed (GtkWidget *entry)
-{
-	run_timeout (entry, 500, entry_timeout);
-}
-
-static void
 intspin_changed (GtkWidget *spin)
 {
 	run_timeout (spin, 500, intspin_timeout);
 }
 
 static void
-combobox_changed (GtkWidget *option_menu)
+combobox_changed (GtkWidget *combobox)
 {
-	run_timeout (option_menu, 500, combobox_timeout);
+	run_timeout (combobox, 500, combobox_timeout);
 }
 
 static void
@@ -649,38 +838,8 @@ root_not_allowed (GtkWidget *combo_box)
 	}
 }
 
-static gboolean
-check_exclude (struct passwd *pwent, char **excludes)
-{
-	const char * const lockout_passes[] = { "!!", NULL };
-	gint i;
-
-	if (pwent->pw_uid == 0)
-		return TRUE;
-
-	if (pwent->pw_uid < GdmMinimalUID)
-		return TRUE;
-
-	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
-		if (strcmp (lockout_passes[i], pwent->pw_passwd) == 0) {
-			return TRUE;
-		}
-	}
-
-	if (excludes != NULL) {
-		for (i=0 ; excludes[i] != NULL ; i++)  {
-			if (g_ascii_strcasecmp (excludes[i],
-						pwent->pw_name) == 0) {
-				return TRUE;
-			}
-		}
-	}
-
-	return FALSE;
-}
-
-/* Sets up Automatic Login and Timed Login user entry comboboxes from the
-   general configuration tab. */
+/* Sets up Automatic Login Username and Timed Login User entry comboboxes
+ * from the general configuration tab. */
 static void
 setup_user_combobox (const char *name, const char *key)
 {
@@ -710,8 +869,8 @@ setup_user_combobox (const char *name, const char *key)
 	else
 		GDM_IS_LOCAL = TRUE;
 
-        gdm_users_init (&users, &users_string, selected_user, NULL, &size_of_users,
-		GDM_IS_LOCAL, FALSE);
+	gdm_users_init (&users, &users_string, selected_user, NULL,
+	                &size_of_users, GDM_IS_LOCAL, FALSE);
 
 	users_string = g_list_reverse (users_string);
 
@@ -730,13 +889,12 @@ setup_user_combobox (const char *name, const char *key)
 	if (selected != -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combobox_entry), selected);
 
-	g_object_set_data_full (G_OBJECT (combobox_entry),
-		"key", g_strdup (key),
-		(GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (combobox_entry), "key",
+	                        g_strdup (key), (GDestroyNotify) g_free);
 	g_signal_connect (G_OBJECT (combobox_entry), "changed",
-		G_CALLBACK (combobox_changed), NULL);
+	                  G_CALLBACK (combobox_changed), NULL);
 	g_signal_connect (G_OBJECT (combobox_entry), "changed",
-		G_CALLBACK (root_not_allowed), NULL);
+	                  G_CALLBACK (root_not_allowed), NULL);
 
 	g_list_foreach (users, (GFunc)g_free, NULL);
 	g_list_free (users);
@@ -796,8 +954,10 @@ setup_include_exclude (GtkWidget *treeview, const char *key)
 		list = g_strsplit (GdmInclude, ",", 0);
 	else if (strcmp (key, GDM_KEY_EXCLUDE) == 0)
 		list = g_strsplit (GdmExclude, ",", 0);
+	else
+		list = NULL;
 
-        for (i=0; list != NULL && list[i] != NULL; i++) {
+	for (i=0; list != NULL && list[i] != NULL; i++) {
 		gtk_list_store_append (face_store, &iter);
 		gtk_list_store_set(face_store, &iter, USERLIST_NAME, list[i], -1);
 	}
@@ -844,7 +1004,8 @@ static void
 face_add (GtkWidget *button, gpointer data)
 {
 	FaceData *fd = data;
-	const char *text, *model_text;
+	const char *text = NULL;
+	const char *model_text;
 	GtkTreeIter iter;
 	gboolean valid;
 
@@ -931,9 +1092,9 @@ static void
 browser_move (GtkWidget *button, gpointer data)
 {
 	FaceData *fd = data;
-	GtkTreeSelection *selection;
+	GtkTreeSelection *selection = NULL;
 	GtkTreeIter iter;
-	GtkTreeModel *model;
+	GtkTreeModel *model = NULL;
 	char *text;
 
 	/* The fd->type value passed in corresponds with the list moving to */
@@ -974,7 +1135,6 @@ browser_apply (GtkWidget *button, gpointer data)
 	char *val;
 	GtkTreeIter iter;
 	gboolean valid;
-	gboolean first = TRUE;
 	char *sep = "";
 
 	valid = gtk_tree_model_get_iter_first (fc->include_model, &iter);
@@ -1107,8 +1267,20 @@ face_selection_changed (GtkTreeSelection *selection, gpointer data)
 }
 
 static void
+sensitivity_toggled (GtkWidget *toggle, gpointer data)
+{
+	GtkWidget *widget = data;
+
+	gtk_widget_set_sensitive (widget,
+				  GTK_TOGGLE_BUTTON (toggle)->active);
+}
+
+static void
 setup_face (void)
 {
+	GtkWidget *fb_browser = glade_helper_get (xml, "fb_browser", GTK_TYPE_WIDGET);
+	GtkWidget *face_label = glade_helper_get (xml, "Face_label", GTK_TYPE_WIDGET);
+	GtkWidget *face_frame = glade_helper_get (xml, "face_frame", GTK_TYPE_WIDGET);
 	static FaceCommon fc;
 	static FaceData fd_include;
 	static FaceData fd_exclude;
@@ -1116,36 +1288,40 @@ setup_face (void)
 
 	GtkTreeSelection *selection;
 
-	fc.include_add = glade_helper_get (xml, "fb_includeadd",
-		GTK_TYPE_WIDGET);
-	fc.include_del = glade_helper_get (xml, "fb_includedelete",
-		GTK_TYPE_WIDGET);
-	fc.exclude_add = glade_helper_get (xml, "fb_excludeadd",
-		GTK_TYPE_WIDGET);
-	fc.exclude_del = glade_helper_get (xml, "fb_excludedelete",
-		GTK_TYPE_WIDGET);
+	fc.include_add       = glade_helper_get (xml, "fb_includeadd",
+	                                         GTK_TYPE_WIDGET);
+	fc.include_del       = glade_helper_get (xml, "fb_includedelete",
+	                                         GTK_TYPE_WIDGET);
+	fc.exclude_add       = glade_helper_get (xml, "fb_excludeadd",
+	                                         GTK_TYPE_WIDGET);
+	fc.exclude_del       = glade_helper_get (xml, "fb_excludedelete",
+	                                         GTK_TYPE_WIDGET);
 	fc.to_include_button = glade_helper_get (xml, "fb_toinclude",
-		GTK_TYPE_WIDGET);
+	                                         GTK_TYPE_WIDGET);
 	fc.to_exclude_button = glade_helper_get (xml, "fb_toexclude",
-		GTK_TYPE_WIDGET);
-	fc.apply = glade_helper_get (xml, "fb_faceapply", GTK_TYPE_WIDGET);
-	fc.label = glade_helper_get (xml, "fb_message", GTK_TYPE_WIDGET);
-	fc.include_entry = glade_helper_get (xml, "fb_includeentry",
-		GTK_TYPE_WIDGET);
-	fc.exclude_entry = glade_helper_get (xml, "fb_excludeentry",
-		GTK_TYPE_WIDGET);
-        fc.include_treeview = glade_helper_get (xml, "fb_include_treeview",
-		GTK_TYPE_TREE_VIEW);
-	fc.exclude_treeview = glade_helper_get (xml, "fb_exclude_treeview",
-		GTK_TYPE_TREE_VIEW);
+	                                         GTK_TYPE_WIDGET);
+	fc.apply             = glade_helper_get (xml, "fb_faceapply",
+	                                         GTK_TYPE_WIDGET);
+	fc.label             = glade_helper_get (xml, "fb_message",
+	                                         GTK_TYPE_WIDGET);
+	fc.include_entry     = glade_helper_get (xml, "fb_includeentry",
+	                                         GTK_TYPE_WIDGET);
+	fc.exclude_entry     = glade_helper_get (xml, "fb_excludeentry",
+	                                         GTK_TYPE_WIDGET);
+	fc.include_treeview  = glade_helper_get (xml, "fb_include_treeview",
+	                                         GTK_TYPE_TREE_VIEW);
+	fc.exclude_treeview  = glade_helper_get (xml, "fb_exclude_treeview",
+	                                         GTK_TYPE_TREE_VIEW);
 
 	fc.include_store = setup_include_exclude (fc.include_treeview,
-		GDM_KEY_INCLUDE);
+	                                          GDM_KEY_INCLUDE);
 	fc.exclude_store = setup_include_exclude (fc.exclude_treeview,
-		GDM_KEY_EXCLUDE);
+	                                          GDM_KEY_EXCLUDE);
 
-	fc.include_model = gtk_tree_view_get_model (GTK_TREE_VIEW (fc.include_treeview));
-	fc.exclude_model = gtk_tree_view_get_model (GTK_TREE_VIEW (fc.exclude_treeview));
+	fc.include_model = gtk_tree_view_get_model (
+	                   GTK_TREE_VIEW (fc.include_treeview));
+	fc.exclude_model = gtk_tree_view_get_model (
+	                   GTK_TREE_VIEW (fc.exclude_treeview));
 
 	fd_include.fc = &fc;
 	fd_include.type = INCLUDE;
@@ -1165,52 +1341,56 @@ setup_face (void)
 	face_apply.exclude = &fd_exclude;
 
 	g_signal_connect (fc.include_add, "clicked",
-			  G_CALLBACK (face_add), &fd_include);
+	                  G_CALLBACK (face_add), &fd_include);
 	g_signal_connect (fc.exclude_add, "clicked",
-			  G_CALLBACK (face_add), &fd_exclude);
+	                  G_CALLBACK (face_add), &fd_exclude);
 	g_signal_connect (fc.include_del, "clicked",
-			  G_CALLBACK (face_del), &fd_include);
+	                  G_CALLBACK (face_del), &fd_include);
 	g_signal_connect (fc.exclude_del, "clicked",
-			  G_CALLBACK (face_del), &fd_exclude);
+	                  G_CALLBACK (face_del), &fd_exclude);
 
 	g_signal_connect (fc.include_entry, "changed",
-			  G_CALLBACK (face_entry_changed), &fd_include);
+	                  G_CALLBACK (face_entry_changed), &fd_include);
 	g_signal_connect (fc.exclude_entry, "changed",
-			  G_CALLBACK (face_entry_changed), &fd_exclude);
+	                  G_CALLBACK (face_entry_changed), &fd_exclude);
 
-        g_signal_connect (fc.include_model, "row-deleted",
-		G_CALLBACK (face_rowdel), &fc);
-        g_signal_connect (fc.exclude_model, "row-deleted",
-		G_CALLBACK (face_rowdel), &fc);
+	g_signal_connect (fc.include_model, "row-deleted",
+	                  G_CALLBACK (face_rowdel), &fc);
+	g_signal_connect (fc.exclude_model, "row-deleted",
+	                  G_CALLBACK (face_rowdel), &fc);
 
 	selection = gtk_tree_view_get_selection (
-		GTK_TREE_VIEW (fc.include_treeview));
+	            GTK_TREE_VIEW (fc.include_treeview));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
-        g_signal_connect (selection, "changed", G_CALLBACK (face_selection_changed),
-		&fd_include);
+	g_signal_connect (selection, "changed",
+	                  G_CALLBACK (face_selection_changed), &fd_include);
 	selection = gtk_tree_view_get_selection (
-		GTK_TREE_VIEW (fc.exclude_treeview));
+	            GTK_TREE_VIEW (fc.exclude_treeview));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
-        g_signal_connect (selection, "changed", G_CALLBACK (face_selection_changed),
-		&fd_exclude);
+	g_signal_connect (selection, "changed",
+	                  G_CALLBACK (face_selection_changed), &fd_exclude);
 
 	g_signal_connect (fc.to_include_button, "clicked",
-			  G_CALLBACK (browser_move), &fd_include);
+	                  G_CALLBACK (browser_move), &fd_include);
 	g_signal_connect (fc.to_exclude_button, "clicked",
-			  G_CALLBACK (browser_move), &fd_exclude);
+	                  G_CALLBACK (browser_move), &fd_exclude);
 
 	g_signal_connect (fc.apply, "clicked",
-			  G_CALLBACK (browser_apply), &fc);
+	                  G_CALLBACK (browser_apply), &fc);
+
+        g_signal_connect (G_OBJECT (fb_browser), "toggled", 
+			 G_CALLBACK (sensitivity_toggled), face_frame);
+        g_signal_connect (G_OBJECT (fb_browser), "toggled", 
+			 G_CALLBACK (sensitivity_toggled), face_label);
+
 }
 
 static gboolean
 greeter_toggle_timeout (GtkWidget *toggle)
 {
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
-	gboolean val;
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
-
-	val = ve_config_get_bool (config, key);
+	gboolean val = ve_config_get_bool (config, key);
 
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 		ve_config_set_bool (config, key,
@@ -1331,31 +1511,6 @@ setup_greeter_color (const char *name,
 	g_free (val);
 }
 
-static gboolean
-greeter_editable_timeout (GtkWidget *editable)
-{
-	const char *key = g_object_get_data (G_OBJECT (editable), "key");
-	char *text, *val;
-	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
-
-	text = gtk_editable_get_chars (GTK_EDITABLE (editable), 0, -1);
-
-	val = ve_config_get_string (config, key);
-
-	if (strcmp (ve_sure_string (val), ve_sure_string (text)) != 0) {
-		ve_config_set_string (config, key, ve_sure_string (text));
-
-		ve_config_save (config, FALSE /* force */);
-
-		update_greeters ();
-	}
-
-	g_free (text);
-	g_free (val);
-
-	return FALSE;
-}
-
 typedef enum {
 	BACKIMAGE,
 	LOGO
@@ -1427,7 +1582,7 @@ browse_button_cb (GtkWidget *widget, gpointer data)
                                               GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                               NULL);
 
-        if (image_data->filename != NULL && *(image_data->filename) != NULL)
+        if (image_data->filename != NULL && *(image_data->filename) != '\0')
                 gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_dialog),
                         image_data->filename);
         else
@@ -1454,7 +1609,6 @@ static void
 noimage_button_cb (GtkWidget *widget, gpointer data)
 {
 	ImageData *image_data = data;
-	GtkWidget *preview;
 	char *val;
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
@@ -1480,7 +1634,7 @@ setup_greeter_image (GtkWidget *dialog)
 	static ImageData logo_data;
 	static ImageData backimage_data;
 	GdkPixbuf *pixbuf;
-	GtkWidget *logo_button      = glade_helper_get (xml, "sg_browselogo",
+	GtkWidget *logo_button = glade_helper_get (xml, "sg_browselogo",
 		GTK_TYPE_WIDGET);
 	GtkWidget *backimage_button = glade_helper_get (xml, "sg_browsebackimage",
 		GTK_TYPE_WIDGET);
@@ -1489,10 +1643,10 @@ setup_greeter_image (GtkWidget *dialog)
 	GtkWidget *nobackimage_button = glade_helper_get (xml, "sg_nobackimage",
 		GTK_TYPE_WIDGET);
 
-	logo_data.image    = glade_helper_get (xml, "sg_logo", GTK_TYPE_WIDGET);
+	logo_data.image = glade_helper_get (xml, "sg_logo", GTK_TYPE_WIDGET);
+	logo_data.key = GDM_KEY_LOGO;
 	logo_data.filename = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 		GDM_KEY_LOGO);
-	logo_data.key = GDM_KEY_LOGO;
 
 	backimage_data.image    = glade_helper_get (xml, "sg_backimage",
 		GTK_TYPE_WIDGET);
@@ -1652,8 +1806,6 @@ static void
 setup_greeter_combobox (const char *name,
 		      const char *key)
 {
-	GtkWidget *menu;
-	GtkWidget *selected = NULL;
 	GtkWidget *combobox = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX);
 	GtkWidget *toggle   = glade_helper_get (xml, "enable_xdmcp",
 	      GTK_TYPE_TOGGLE_BUTTON);
@@ -1684,19 +1836,10 @@ setup_greeter_combobox (const char *name,
 		
 	g_free (val);
 
-	g_object_set_data_full (G_OBJECT (combobox),
-		"key", g_strdup (key), (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (combobox), "key",
+	                        g_strdup (key), (GDestroyNotify) g_free);
 	g_signal_connect (G_OBJECT (combobox), "changed",
-		G_CALLBACK (combobox_changed), NULL);
-}
-
-static void
-xdmcp_toggled (GtkWidget *toggle, gpointer data)
-{
-	GtkWidget *frame = data;
-
-	gtk_widget_set_sensitive (frame,
-				  GTK_TOGGLE_BUTTON (toggle)->active);
+	                  G_CALLBACK (combobox_changed), NULL);
 }
 
 static void
@@ -1722,10 +1865,10 @@ setup_xdmcp_support (void)
 				  GTK_TOGGLE_BUTTON (xdmcp_toggle)->active);
 
 	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
-			  G_CALLBACK (xdmcp_toggled),
+			  G_CALLBACK (sensitivity_toggled),
 			  xdmcp_frame);
 	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
-			  G_CALLBACK (xdmcp_toggled),
+			  G_CALLBACK (sensitivity_toggled),
 			  xdmcp_label);
 }
 
@@ -1837,10 +1980,9 @@ modules_list_remove (char *modules_list, const char *module)
 	return g_string_free (str, FALSE);
 }
 
-/* This function concatenates *string to *strings_list with the addition of
-   *sep in between the strings_list and string, then returns a copy of the
-   new strings_list. */
-
+/* This function concatenates *string onto *strings_list with the addition
+   of *sep as a deliminator inbetween the strings_list and string, then
+   returns a copy of the new strings_list. */
 static char *
 strings_list_add (char *strings_list, const char *string, const char *sep)
 {
@@ -1856,10 +1998,11 @@ strings_list_add (char *strings_list, const char *string, const char *sep)
 static void
 acc_modules_toggled (GtkWidget *toggle, gpointer data)
 {
-	gboolean add_gtk_modules = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
-						       GDM_KEY_ADD_GTK_MODULES);
-	char *modules_list = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
-						   GDM_KEY_GTK_MODULES_LIST);
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	gboolean add_gtk_modules = ve_config_get_bool (cfg,
+	                                               GDM_KEY_ADD_GTK_MODULES);
+	char *modules_list = ve_config_get_string (cfg,
+	                                           GDM_KEY_GTK_MODULES_LIST);
 
 	/* first whack the modules from the list */
 	modules_list = modules_list_remove (modules_list, "gail");
@@ -1889,14 +2032,11 @@ acc_modules_toggled (GtkWidget *toggle, gpointer data)
 	if (ve_string_empty (modules_list))
 		add_gtk_modules = FALSE;
 
-	ve_config_set_string (ve_config_get (GDM_CONFIG_FILE),
-			      GDM_KEY_GTK_MODULES_LIST,
-			      ve_sure_string (modules_list));
-	ve_config_set_bool (ve_config_get (GDM_CONFIG_FILE),
-			    GDM_KEY_ADD_GTK_MODULES,
-			    add_gtk_modules);
-
-	ve_config_save (ve_config_get (GDM_CONFIG_FILE), FALSE /*force */);
+	ve_config_set_string (cfg, GDM_KEY_GTK_MODULES_LIST,
+	                      ve_sure_string (modules_list));
+	ve_config_set_bool (cfg, GDM_KEY_ADD_GTK_MODULES,
+	                    add_gtk_modules);
+	ve_config_save (cfg, FALSE /* force */);
 
 	g_free (modules_list);
 
@@ -1923,7 +2063,7 @@ test_sound (GtkWidget *button, gpointer data)
 	g_spawn_async ("/" /* working directory */,
 		       (char **)argv,
 		       NULL /* envp */,
-		       0 /* flags */,
+		       0    /* flags */,
 		       NULL /* child setup */,
 		       NULL /* user data */,
 		       NULL /* child pid */,
@@ -1936,11 +2076,12 @@ no_sound_cb (GtkWidget *widget, gpointer data)
 	GtkWidget *acc_sound_file_label = data;
 	const char *key = g_object_get_data (G_OBJECT (acc_sound_file_label),
 	                                     "key");
-
 	const char *nosound_button;
 	const char *soundtest_button;
-	nosound_button = g_strconcat("acc_nosound_",key,"_button",NULL);
-	soundtest_button = g_strconcat("acc_soundtest_",key,"_button",NULL);
+	char *sound_key, *val, *config_val;
+	
+	nosound_button = g_strconcat ("acc_nosound_", key, "_button", NULL);
+	soundtest_button = g_strconcat ("acc_soundtest_", key, "_button", NULL);
 
 	GtkWidget *acc_no_sound_file = glade_helper_get (xml, nosound_button,
 	                                                 GTK_TYPE_BUTTON);
@@ -1948,14 +2089,10 @@ no_sound_cb (GtkWidget *widget, gpointer data)
 	                                              GTK_TYPE_BUTTON);
 
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
-	char *val, *config_val;
-
 	gtk_label_set_text (GTK_LABEL (acc_sound_file_label), _("None"));
-
 	gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
 	gtk_widget_set_sensitive (acc_sound_test, FALSE);
 
-	const gchar* sound_key;
 	if (strcmp (key, "ready") == 0) {
 		sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
 	} else if (strcmp (key, "success") == 0) {
@@ -1969,7 +2106,7 @@ no_sound_cb (GtkWidget *widget, gpointer data)
 	val = ve_config_get_string (config, sound_key);
 	config_val = ve_sure_string (val);
 
-	if (config_val != NULL && *config_val != NULL) {
+	if (config_val != NULL && *config_val != '\0') {
 		ve_config_set_string (config, sound_key, "\0");
 		ve_config_save (config, FALSE /* force */);
 		update_greeters ();
@@ -2136,6 +2273,8 @@ setup_accessibility_support (void)
 	gchar *ready_key = g_strdup("ready");
 	gchar *success_key = g_strdup("success");
 	gchar *failure_key = g_strdup("failure");
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+
 	g_object_set_data (G_OBJECT (acc_sound_ready_file_label), "key",
 	                   ready_key);
 	g_object_set_data (G_OBJECT (acc_sound_success_file_label), "key",
@@ -2143,11 +2282,10 @@ setup_accessibility_support (void)
 	g_object_set_data (G_OBJECT (acc_sound_failure_file_label), "key",
 	                   failure_key);
 
-	gboolean add_gtk_modules = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
-					       GDM_KEY_ADD_GTK_MODULES);
-	char *modules_list = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
-						   GDM_KEY_GTK_MODULES_LIST);
-	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	gboolean add_gtk_modules = ve_config_get_bool (config,
+	                                               GDM_KEY_ADD_GTK_MODULES);
+	char *modules_list = ve_config_get_string (config,
+	                                           GDM_KEY_GTK_MODULES_LIST);
 	char *val;
 
 	if (add_gtk_modules &&
@@ -2164,7 +2302,7 @@ setup_accessibility_support (void)
 
 	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
 
-if (val != NULL && *val != NULL) {
+	if (val != NULL && *val != '\0') {
 		gtk_label_set_text (GTK_LABEL (acc_sound_ready_file_label), val);
 	} else {
 		gtk_label_set_text (GTK_LABEL (acc_sound_ready_file_label), _("None"));
@@ -2174,7 +2312,7 @@ if (val != NULL && *val != NULL) {
 
 	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
 
-	if (val != NULL && *val != NULL) {
+	if (val != NULL && *val != '\0') {
 		gtk_label_set_text (GTK_LABEL (acc_sound_success_file_label), val);
 	} else {
 		gtk_label_set_text (GTK_LABEL (acc_sound_success_file_label), _("None"));
@@ -2184,7 +2322,7 @@ if (val != NULL && *val != NULL) {
 
 	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
-	if (val != NULL && *val != NULL) {
+	if (val != NULL && *val != '\0') {
 		gtk_label_set_text (GTK_LABEL (acc_sound_failure_file_label), val);
 	} else {
 		gtk_label_set_text (GTK_LABEL (acc_sound_failure_file_label), _("None"));
@@ -2273,10 +2411,14 @@ background_toggled (void)
 static void
 setup_background_support (void)
 {
-	GtkWidget *no_bg = glade_helper_get (xml, "sg_no_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
-	GtkWidget *image_bg = glade_helper_get (xml, "sg_image_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
-	GtkWidget *color_bg = glade_helper_get (xml, "sg_color_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
-	GtkWidget *onlycolor = glade_helper_get (xml, "sg_remote_color_only", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *no_bg     = glade_helper_get (xml, "sg_no_bg_rb",
+	                                         GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *image_bg  = glade_helper_get (xml, "sg_image_bg_rb",
+	                                         GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *color_bg  = glade_helper_get (xml, "sg_color_bg_rb",
+	                                         GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *onlycolor = glade_helper_get (xml, "sg_remote_color_only",
+	                                         GTK_TYPE_TOGGLE_BUTTON);
 
 	g_signal_connect (G_OBJECT (no_bg), "toggled",
 			  G_CALLBACK (background_toggled),
@@ -2325,12 +2467,12 @@ static void
 gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 {
 	GtkWidget *label;
-	GtkWidget *preview = glade_helper_get (xml, "gg_theme_preview",
-					       GTK_TYPE_IMAGE);
+	GtkWidget *preview    = glade_helper_get (xml, "gg_theme_preview",
+	                                          GTK_TYPE_IMAGE);
 	GtkWidget *no_preview = glade_helper_get (xml, "gg_theme_no_preview",
-						  GTK_TYPE_WIDGET);
+	                                          GTK_TYPE_WIDGET);
 	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
-						  GTK_TYPE_BUTTON);
+	                                          GTK_TYPE_BUTTON);
 	char *screenshot;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -3298,6 +3440,525 @@ delete_theme (GtkWidget *button, gpointer data)
 	g_free (dir);
 }
 
+static gboolean
+xserver_entry_timeout (GtkWidget *entry)
+{
+	/* Get xserver section to update */
+	GtkWidget *combobox = glade_helper_get (xml, "xserver_mod_combobox",
+	                                        GTK_TYPE_COMBO_BOX);
+	gchar *section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
+	section = g_strconcat(GDM_KEY_SERVER_PREFIX, section, "/", NULL);
+	const char *key = g_object_get_data (G_OBJECT (entry), "key");
+
+	if (strcmp (key, GDM_KEY_SERVER_NAME) == 0)
+		section = g_strconcat(section, GDM_KEY_SERVER_NAME, NULL);
+	else if (strcmp (key, GDM_KEY_SERVER_COMMAND) == 0)
+		section = g_strconcat(section, GDM_KEY_SERVER_COMMAND, NULL);
+
+	/* Locate this server's section */
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+
+	/* Update this servers configuration */
+	const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
+	ve_config_set_string (cfg, section, ve_sure_string (text));
+	ve_config_save (cfg, FALSE /* force */);
+	g_free(section);
+
+	return FALSE;
+}
+
+static gboolean
+xserver_toggle_timeout (GtkWidget *toggle)
+{
+	/* Get xserver section to update */
+	GtkWidget *combobox = glade_helper_get (xml, "xserver_mod_combobox",
+	                                        GTK_TYPE_COMBO_BOX);
+	gchar *section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
+	section = g_strconcat(GDM_KEY_SERVER_PREFIX, section, "/", NULL);
+	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
+
+	if (strcmp (key, GDM_KEY_SERVER_HANDLED) == 0)
+		section = g_strconcat(section, GDM_KEY_SERVER_HANDLED, NULL);
+	else if (strcmp (key, GDM_KEY_SERVER_FLEXIBLE) == 0)
+		section = g_strconcat(section, GDM_KEY_SERVER_FLEXIBLE, NULL);
+	else if (strcmp (key, GDM_KEY_SERVER_CHOOSER) == 0)
+		section = g_strconcat(section, GDM_KEY_SERVER_CHOOSER, NULL);
+
+	/* Locate this server's section */
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	gboolean val = ve_config_get_bool (cfg, section);
+
+	/* Update this servers configuration */
+	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+		ve_config_set_bool (cfg, section,
+				    GTK_TOGGLE_BUTTON (toggle)->active);
+		ve_config_save (cfg, FALSE /* force */);
+	}
+	g_free(section);
+
+	return FALSE;
+}
+
+static void
+xserver_toggle_toggled (GtkWidget *toggle)
+{
+	run_timeout (toggle, 500, xserver_toggle_timeout);
+}
+
+static void
+xserver_entry_changed (GtkWidget *entry)
+{
+	run_timeout (entry, 500, xserver_entry_timeout);
+}
+
+static void
+xserver_append_combobox(GdmXServer *xserver, GtkComboBox *combobox)
+{
+	gtk_combo_box_append_text (combobox, xserver->id);
+}
+
+static void
+xserver_populate_combobox(GtkComboBox* combobox)
+{
+    gint i,j;
+
+	/* Get number of items in combobox */
+	i = gtk_tree_model_iter_n_children(
+	        gtk_combo_box_get_model (GTK_COMBO_BOX (combobox)), NULL);
+
+    /* Delete all items from combobox */
+    for (j = 0; j < i; j++) {
+        gtk_combo_box_remove_text(combobox,0);
+    }
+
+    /* Populate combobox with list of current servers */
+	GSList *xservers = xservers_get_server_definitions();
+    g_slist_foreach(xservers, (GFunc) xserver_append_combobox, combobox);
+}
+
+static void
+xserver_init_server_list()
+{
+	/* Get Widgets from glade */
+	GtkWidget *treeview = glade_helper_get (xml, "xserver_tree_view",
+	                                        GTK_TYPE_TREE_VIEW);
+	GtkWidget *remove_button = glade_helper_get (xml, "xserver_remove_button",
+	                                        GTK_TYPE_BUTTON);
+
+	/* create list store */
+	GtkListStore *store = gtk_list_store_new (XSERVER_NUM_COLUMNS,
+	                            G_TYPE_INT    /* virtual terminal */,
+	                            G_TYPE_STRING /* server type */,
+	                            G_TYPE_STRING /* options */);
+
+	/* Read all xservers to start from configuration */
+	xservers_get_servers(store);
+	gtk_tree_view_set_model (GTK_TREE_VIEW (treeview),
+	                         GTK_TREE_MODEL (store));
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview), TRUE);
+	gtk_widget_set_sensitive (remove_button, FALSE);
+}
+
+static void
+xserver_init_servers()
+{
+    GtkWidget *spinner, *combo, *entry, *add_button, *remove_button;
+
+    /* Get Widgets from glade */
+    spinner      = glade_helper_get (xml, "xserver_spin_button",
+                                        GTK_TYPE_SPIN_BUTTON);
+    combo = glade_helper_get (xml, "xserver_server_combobox",
+                                        GTK_TYPE_COMBO_BOX);
+    entry      = glade_helper_get (xml, "xserver_options_entry",
+                                        GTK_TYPE_ENTRY);
+    add_button   = glade_helper_get (xml, "xserver_add_button",
+                                        GTK_TYPE_BUTTON);
+    remove_button   = glade_helper_get (xml, "xserver_remove_button",
+                                        GTK_TYPE_BUTTON);
+
+
+    /* Init widget states */
+	xserver_init_server_list();
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinner), 1);
+    xserver_populate_combobox (GTK_COMBO_BOX (combo));
+	gtk_entry_set_text (GTK_ENTRY (entry), "");
+    gtk_widget_set_sensitive (add_button, FALSE);
+    gtk_widget_set_sensitive (remove_button, FALSE);
+}
+
+static void
+xserver_row_selected(GtkTreeSelection *selection, gpointer data)
+{
+    GtkWidget *remove_button = glade_helper_get (xml, "xserver_remove_button",
+                                                 GTK_TYPE_BUTTON);
+    gtk_widget_set_sensitive (remove_button, TRUE);
+}
+
+/* Remove a server from the list of servers to start (not the same as
+ * deleting a server definition) */
+static void
+xserver_remove(gpointer data)
+{
+	GtkWidget *treeview, *combo;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	VeConfig *cfg;
+	gint vt;
+    char vt_value[3];
+
+    treeview = glade_helper_get (xml, "xserver_tree_view",
+                                 GTK_TYPE_TREE_VIEW);
+	combo = glade_helper_get (xml, "xserver_server_combobox",
+	                          GTK_TYPE_COMBO_BOX);
+
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
+	{
+		/* Update config */
+		cfg = ve_config_get (GDM_CONFIG_FILE);
+		gtk_tree_model_get (model, &iter, XSERVER_COLUMN_VT, &vt, -1);
+
+
+		g_snprintf (vt_value,  sizeof (vt_value), "%d", vt);
+		char *key = g_object_get_data (G_OBJECT (combo), "key");
+		key = g_strconcat (key, "/", vt_value, "=", NULL);
+		ve_config_delete_key (cfg, key);
+    	ve_config_save (cfg, FALSE /* force */);
+
+		/* Update gdmsetup */
+		xserver_init_server_list();
+		xserver_update_delete_sensitivity();
+	}
+}
+	
+/* Add a server to the list of servers to start (not the same as
+ * creating a server definition) */
+static void
+xserver_add(gpointer data)
+{
+
+	GtkWidget *spinner, *combo, *entry, *button;
+	gchar *string;
+	char spinner_value[3];
+
+	/* Get Widgets from glade */
+	spinner      = glade_helper_get (xml, "xserver_spin_button",
+	                                 GTK_TYPE_SPIN_BUTTON);
+	entry      = glade_helper_get (xml, "xserver_options_entry",
+	                              GTK_TYPE_ENTRY);
+	combo = glade_helper_get (xml, "xserver_server_combobox",
+		                                    GTK_TYPE_COMBO_BOX);
+	button   = glade_helper_get (xml, "xserver_add_button",
+		                                    GTK_TYPE_BUTTON);
+
+	/* Section in config to modify */
+	char *key = g_object_get_data (G_OBJECT (combo), "key");
+
+	/* String to add to config */
+	g_snprintf (spinner_value,  sizeof (spinner_value), "%d", 
+	            gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spinner)));
+
+	key = g_strconcat (key, "/", spinner_value, "=", NULL);
+	string = g_strconcat (gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo)),
+	                      " ", gtk_entry_get_text (GTK_ENTRY (entry)),
+	                      NULL);
+
+	/* Add to config */
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	ve_config_set_string (cfg, key, ve_sure_string(string));
+    ve_config_save (cfg, FALSE /* force */);
+
+	/* Reinitialize gdmsetup */
+	xserver_init_servers();
+	xserver_update_delete_sensitivity();
+
+	/* Free memory */
+	g_free(string);
+	g_free(key);
+}
+
+/* TODO: This section needs a little work until it is ready (mainly config
+   section modifications) */
+/* Create a server definition (not the same as removing a server
+ * from the list of servers to start) */
+static void
+xserver_create(gpointer data)
+{
+	/* Init Widgets */
+	GtkWidget *frame, *modify_combobox;
+	GtkWidget *name_entry, *command_entry;
+	GtkWidget *handled_check, *flexible_check;
+	GtkWidget *greeter_radio, *chooser_radio;
+	GtkWidget *create_button, *delete_button;
+
+	/* Get Widgets from glade */
+	frame           = glade_helper_get (xml, "xserver_modify_frame",
+	                                    GTK_TYPE_FRAME);
+	name_entry      = glade_helper_get (xml, "xserver_name_entry",
+                                        GTK_TYPE_ENTRY);
+	command_entry   = glade_helper_get (xml, "xserver_command_entry",
+	                                    GTK_TYPE_ENTRY);
+	handled_check   = glade_helper_get (xml, "xserver_handled_checkbutton",
+	                                    GTK_TYPE_CHECK_BUTTON);
+	flexible_check  = glade_helper_get (xml, "xserver_flexible_checkbutton",
+	                                    GTK_TYPE_CHECK_BUTTON);
+	greeter_radio   = glade_helper_get (xml, "xserver_greeter_radiobutton",
+	                                    GTK_TYPE_RADIO_BUTTON);
+	chooser_radio   = glade_helper_get (xml, "xserver_chooser_radiobutton",
+	                                    GTK_TYPE_RADIO_BUTTON);
+	modify_combobox = glade_helper_get (xml, "xserver_mod_combobox",
+	                                    GTK_TYPE_COMBO_BOX);
+	create_button   = glade_helper_get (xml, "xserver_create_button",
+	                                    GTK_TYPE_BUTTON);
+	delete_button   = glade_helper_get (xml, "xserver_delete_button",
+	                                    GTK_TYPE_BUTTON);
+
+	gtk_combo_box_append_text (GTK_COMBO_BOX (modify_combobox),
+	                           "New Server");
+
+	/* TODO: Create a new section for this server */
+	/* TODO: Write this value to the config and update xservers list */
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	gboolean success = FALSE;
+	/* success = ve_config_add_section (cfg, SECTION_NAME); */
+
+	if (success)
+	{
+		/* Update settings for new server */
+		gtk_widget_set_sensitive (frame, TRUE);
+		gtk_widget_set_sensitive (delete_button, TRUE);
+		gtk_widget_grab_focus (name_entry);
+		gtk_entry_set_text (GTK_ENTRY (name_entry), "New Server");
+		gtk_editable_select_region (GTK_EDITABLE (name_entry), 0, -1);
+		gtk_entry_set_text (GTK_ENTRY (command_entry), X_SERVER);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (greeter_radio),
+		                              TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (chooser_radio),
+		                              FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (handled_check),
+		                              TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flexible_check),
+		                              FALSE);
+
+		/* Select the new server in the combobox */
+		gint i = gtk_tree_model_iter_n_children (
+		   gtk_combo_box_get_model (GTK_COMBO_BOX (modify_combobox)), NULL) - 1;
+		gtk_combo_box_set_active (GTK_COMBO_BOX (modify_combobox), i);
+	}
+}
+
+static void
+xserver_init_definitions()
+{
+    /* Init Widgets */
+    GtkWidget *frame, *modify_combobox, *server_combobox;
+    GtkWidget *name_entry, *command_entry;
+    GtkWidget *handled_check, *flexible_check;
+    GtkWidget *greeter_radio, *chooser_radio;
+    GtkWidget *create_button, *delete_button;
+
+    /* Get Widgets from glade */
+    frame           = glade_helper_get (xml, "xserver_modify_frame",
+                                        GTK_TYPE_FRAME);
+    name_entry      = glade_helper_get (xml, "xserver_name_entry",
+                                        GTK_TYPE_ENTRY);
+    command_entry   = glade_helper_get (xml, "xserver_command_entry",
+                                        GTK_TYPE_ENTRY);
+    handled_check   = glade_helper_get (xml, "xserver_handled_checkbutton",
+                                        GTK_TYPE_CHECK_BUTTON);
+    flexible_check  = glade_helper_get (xml, "xserver_flexible_checkbutton",
+                                        GTK_TYPE_CHECK_BUTTON);
+    greeter_radio   = glade_helper_get (xml, "xserver_greeter_radiobutton",
+                                        GTK_TYPE_RADIO_BUTTON);
+    chooser_radio   = glade_helper_get (xml, "xserver_chooser_radiobutton",
+                                        GTK_TYPE_RADIO_BUTTON);
+    modify_combobox = glade_helper_get (xml, "xserver_mod_combobox",
+                                        GTK_TYPE_COMBO_BOX);
+    server_combobox = glade_helper_get (xml, "xserver_server_combobox",
+                                        GTK_TYPE_COMBO_BOX);
+    create_button   = glade_helper_get (xml, "xserver_create_button",
+                                        GTK_TYPE_BUTTON);
+    delete_button   = glade_helper_get (xml, "xserver_delete_button",
+                                        GTK_TYPE_BUTTON);
+
+    /* Populate comboboxes with servers*/
+    xserver_populate_combobox (GTK_COMBO_BOX (server_combobox));
+    xserver_populate_combobox (GTK_COMBO_BOX (modify_combobox));
+
+	/* Default sensitivity and settings */
+	gtk_widget_set_sensitive (frame, FALSE);
+	gtk_widget_set_sensitive (delete_button, FALSE);
+	gtk_widget_set_sensitive (create_button, FALSE);
+	gtk_widget_grab_focus (modify_combobox);
+	gtk_entry_set_text (GTK_ENTRY (name_entry), "");
+	gtk_entry_set_text (GTK_ENTRY (command_entry), "");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (greeter_radio),TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (chooser_radio),FALSE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (handled_check),TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flexible_check),FALSE);
+
+}
+
+/* Deletes a server definition (not the same as removing a server
+ * from the list of servers to start) */
+static void
+xserver_delete(gpointer data)
+{
+	/* Get xserver section to delete */
+	GtkWidget *combobox = glade_helper_get (xml, "xserver_mod_combobox",
+	                                        GTK_TYPE_COMBO_BOX);
+	gchar *section = gtk_combo_box_get_active_text ( GTK_COMBO_BOX (combobox));
+
+	/* Delete xserver section */
+	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	ve_config_delete_section (cfg, g_strconcat (GDM_KEY_SERVER_PREFIX,
+	                                            section, NULL));
+
+	/* Reinitialize definitions */
+	xserver_init_definitions();
+}
+
+static void
+setup_xserver_support (void)
+{
+	GtkWidget *frame, *treeview;
+	GtkWidget *modify_combobox, *server_combobox;
+	GtkWidget *name_entry, *command_entry;
+	GtkWidget *handled_check, *flexible_check;
+	GtkWidget *greeter_radio, *chooser_radio;
+	GtkWidget *create_button, *delete_button, *add_button, *remove_button;
+    GtkCellRenderer  *renderer;
+    GtkTreeViewColumn *column;
+	GtkTreeSelection *selection;
+
+	/* Initialize the xserver settings */
+	xserver_init_definitions();
+	xserver_init_servers();
+
+	/* TODO: In the future, resolution/refresh rate configuration */
+	/* setup_xrandr_support (); */
+
+	/* Get Widgets from glade */
+	frame           = glade_helper_get (xml, "xserver_modify_frame",
+	                                    GTK_TYPE_FRAME);
+	treeview        = glade_helper_get (xml, "xserver_tree_view",
+	                                    GTK_TYPE_TREE_VIEW);
+	name_entry      = glade_helper_get (xml, "xserver_name_entry",
+                                        GTK_TYPE_ENTRY);
+	command_entry   = glade_helper_get (xml, "xserver_command_entry",
+	                                    GTK_TYPE_ENTRY);
+	handled_check   = glade_helper_get (xml, "xserver_handled_checkbutton",
+	                                    GTK_TYPE_CHECK_BUTTON);
+	flexible_check  = glade_helper_get (xml, "xserver_flexible_checkbutton",
+	                                    GTK_TYPE_CHECK_BUTTON);
+	greeter_radio   = glade_helper_get (xml, "xserver_greeter_radiobutton",
+	                                    GTK_TYPE_RADIO_BUTTON);
+	chooser_radio   = glade_helper_get (xml, "xserver_chooser_radiobutton",
+	                                    GTK_TYPE_RADIO_BUTTON);
+	modify_combobox = glade_helper_get (xml, "xserver_mod_combobox",
+	                                    GTK_TYPE_COMBO_BOX);
+	server_combobox = glade_helper_get (xml, "xserver_server_combobox",
+	                                    GTK_TYPE_COMBO_BOX);
+	create_button   = glade_helper_get (xml, "xserver_create_button",
+	                                    GTK_TYPE_BUTTON);
+	delete_button   = glade_helper_get (xml, "xserver_delete_button",
+	                                    GTK_TYPE_BUTTON);
+	remove_button   = glade_helper_get (xml, "xserver_remove_button",
+	                                    GTK_TYPE_BUTTON);
+	add_button   = glade_helper_get (xml, "xserver_add_button",
+	                                    GTK_TYPE_BUTTON);
+
+    /* Setup Virtual terminal column in servers to start frame */
+    column = gtk_tree_view_column_new ();
+    renderer = gtk_cell_renderer_text_new ();
+    gtk_tree_view_column_pack_start (column, renderer, TRUE);
+    gtk_tree_view_column_set_title (column, "VT");
+    gtk_tree_view_column_set_attributes (column, renderer,
+                                         "text", XSERVER_COLUMN_VT,
+                                         NULL);
+    gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+
+    /* Setup Server column in servers to start frame */
+    column = gtk_tree_view_column_new ();
+    renderer = gtk_cell_renderer_text_new ();
+    gtk_tree_view_column_pack_start (column, renderer, TRUE);
+    gtk_tree_view_column_set_title (column, "Server");
+    gtk_tree_view_column_set_attributes (column, renderer,
+                                         "text", XSERVER_COLUMN_SERVER,
+                                         NULL);
+    gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+    /* Setup Options column in servers to start frame*/
+    column   = gtk_tree_view_column_new ();
+    renderer = gtk_cell_renderer_text_new ();
+    gtk_tree_view_column_pack_start (column, renderer, TRUE);
+    gtk_tree_view_column_set_title (column, "Options");
+    gtk_tree_view_column_set_attributes (column, renderer,
+                                         "text",XSERVER_COLUMN_OPTIONS,
+                                         NULL);
+    gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+	/* Setup tree selections */
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+
+
+	/* Register these items with keys */
+	g_object_set_data_full (G_OBJECT (modify_combobox), "key",
+	                        g_strdup (GDM_KEY_SERVER_PREFIX),
+	                        (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (server_combobox), "key",
+	                        g_strdup (GDM_KEY_SERVERS),
+	                        (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (name_entry), "key",
+	                        g_strdup (GDM_KEY_SERVER_NAME),
+	                        (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (command_entry), "key",
+	                        g_strdup (GDM_KEY_SERVER_COMMAND),
+	                        (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (handled_check), "key",
+	                        g_strdup (GDM_KEY_SERVER_HANDLED),
+	                        (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (flexible_check), "key",
+	                        g_strdup (GDM_KEY_SERVER_FLEXIBLE),
+	                        (GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (chooser_radio), "key",
+	                        g_strdup (GDM_KEY_SERVER_CHOOSER),
+	                        (GDestroyNotify) g_free);
+
+		
+	/* Signals Handlers */
+    g_signal_connect (G_OBJECT (name_entry), "changed",
+	                  G_CALLBACK (xserver_entry_changed),NULL);
+    g_signal_connect (G_OBJECT (command_entry), "changed",
+	                  G_CALLBACK (xserver_entry_changed), NULL);
+	g_signal_connect (modify_combobox, "changed",
+	                  G_CALLBACK (combobox_changed), NULL);
+	g_signal_connect (server_combobox, "changed",
+	                  G_CALLBACK (combobox_changed), NULL);
+	g_signal_connect (G_OBJECT (handled_check), "toggled",
+	                  G_CALLBACK (xserver_toggle_toggled), NULL);
+	g_signal_connect (G_OBJECT (flexible_check), "toggled",
+	                  G_CALLBACK (xserver_toggle_toggled), NULL);
+	g_signal_connect (G_OBJECT (chooser_radio), "toggled",
+	                  G_CALLBACK (xserver_toggle_toggled), NULL);
+	/* TODO: In the future, allow creation of servers
+	g_signal_connect (create_button, "clicked",
+			  G_CALLBACK (xserver_create), NULL);
+	*/
+	g_signal_connect (delete_button, "clicked",
+	                  G_CALLBACK (xserver_delete), NULL);
+	g_signal_connect (add_button, "clicked",
+	                  G_CALLBACK (xserver_add), NULL);
+	g_signal_connect (remove_button, "clicked",
+	                  G_CALLBACK (xserver_remove), NULL);
+	g_signal_connect (G_OBJECT (selection), "changed",
+	                  G_CALLBACK (xserver_row_selected), NULL);
+
+}
 static void
 setup_graphical_themes (void)
 {
@@ -3349,7 +4010,7 @@ setup_graphical_themes (void)
 				    G_TYPE_STRING /* copyright */,
 				    G_TYPE_STRING /* screenshot */);
 
-	/* Mode */
+	/* Register theme mode combobox */
 	g_object_set_data_full (G_OBJECT (mode_combobox), "key",
 		g_strdup (GDM_KEY_GRAPHICAL_THEME_RAND),
 		(GDestroyNotify) g_free);
@@ -3532,14 +4193,15 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "gg_author_label", "b");
 	glade_helper_tagify_label (xml, "gg_desc_label", "b");
 	glade_helper_tagify_label (xml, "gg_copyright_label", "b");
-
 	glade_helper_tagify_label (xml, "acc_options_cat_label", "b");
+	glade_helper_tagify_label (xml, "xserver_cat_label", "b");
 
 	setup_accessibility_support ();
 	setup_xdmcp_support ();
 	setup_background_support ();
 	setup_greeter_backselect ();
 	setup_graphical_themes ();
+	setup_xserver_support ();
 
 	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "local_greeter");
@@ -3667,6 +4329,9 @@ setup_gui (void)
 		       GDM_KEY_PINGINTERVAL,
 		       "xdmcp/PARAMETERS" /* notify_key */);
 
+	setup_greeter_toggle ("fb_browser",
+			      GDM_KEY_BROWSER);
+
 	/* General */
 	setup_greeter_combobox ("local_greeter", GDM_KEY_GREETER);
 	setup_greeter_combobox ("remote_greeter", GDM_KEY_REMOTEGREETER);
@@ -3680,34 +4345,32 @@ setup_gui (void)
 			      GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
 
 	setup_greeter_image (dialog);
-        setup_greeter_color ("sg_backcolor",
-			     GDM_KEY_BACKGROUNDCOLOR);
+	setup_greeter_color ("sg_backcolor",
+	                     GDM_KEY_BACKGROUNDCOLOR);
 
 	setup_greeter_toggle ("sg_defaultwelcome",
-			      GDM_KEY_DEFAULT_WELCOME);
+	                      GDM_KEY_DEFAULT_WELCOME);
 	setup_greeter_toggle ("sg_defaultremotewelcome",
-			      GDM_KEY_DEFAULT_REMOTEWELCOME);
+	                      GDM_KEY_DEFAULT_REMOTEWELCOME);
 	setup_greeter_untranslate_entry ("welcome",
-					 GDM_KEY_WELCOME);
+	                                 GDM_KEY_WELCOME);
 	setup_greeter_untranslate_entry ("remote_welcome",
-					 GDM_KEY_REMOTEWELCOME);
+	                                 GDM_KEY_REMOTEWELCOME);
 
 	/* Accesibility */
 	setup_greeter_toggle ("acc_theme",
-			      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
+	                      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
 	setup_greeter_toggle ("acc_sound_ready",
-			      GDM_KEY_SOUND_ON_LOGIN_READY);
+	                      GDM_KEY_SOUND_ON_LOGIN_READY);
 	setup_greeter_toggle ("acc_sound_success",
-			      GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
+	                      GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
 	setup_greeter_toggle ("acc_sound_failure",
-			      GDM_KEY_SOUND_ON_LOGIN_FAILURE);
+	                      GDM_KEY_SOUND_ON_LOGIN_FAILURE);
 
 	/* Face browser */
-	setup_face ();
-	setup_greeter_toggle ("fb_browser",
-			      GDM_KEY_BROWSER);
 	setup_greeter_toggle ("fb_allusers",
 			      GDM_KEY_INCLUDEALL);
+	setup_face ();
 }
 
 static gboolean
