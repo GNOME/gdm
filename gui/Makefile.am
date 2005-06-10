@@ -1,4 +1,4 @@
-SUBDIRS = . greeter modules
+SUBDIRS = . greeter modules faces
 
 ## Process this file with automake to produce makefile.in
 DEFS = @DEFS@ \
