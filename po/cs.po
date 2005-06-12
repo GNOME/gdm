@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-19 13:19+0000\n"
-"PO-Revision-Date: 2005-05-22 13:15+0200\n"
+"POT-Creation-Date: 2005-06-12 05:57+0000\n"
+"PO-Revision-Date: 2005-06-12 14:21+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2006,15 +2006,11 @@ msgstr "Nemohu spustit program pro výběr"
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
-msgstr ""
-"Verze programu pro výběr (%s) neodpovídá verzi démona (%s). Pravděpodobně "
-"jste právě aktualizovali gdm. Restartujte prosím démona gdm nebo restartujte "
-"počítač."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+msgstr "Verze programu pro výběr (%s) neodpovídá verzi démona (%s). Pravděpodobně jste právě aktualizovali gdm. Restartujte prosím démona gdm nebo počítač."
 
 #. EOF
-#: ../gui/gdmchooser.glade.h:1
+#: ../gui/gdmchooser.glade.h:1 ../gui/gdmsetup.glade.h:3
 msgid "*"
 msgstr "*"
 
@@ -2054,7 +2050,7 @@ msgstr "Kontaktovat tento počítač a přidat jej do seznamu výše"
 msgid "Status"
 msgstr "Stav"
 
-#: ../gui/gdmchooser.glade.h:11 ../gui/gdmsetup.glade.h:81
+#: ../gui/gdmchooser.glade.h:11 ../gui/gdmsetup.glade.h:107
 msgid "_Add"
 msgstr "_Přidat"
 
@@ -2794,19 +2790,17 @@ msgid "%sWelcome to %s%s"
 msgstr "%sVítejte na %s%s"
 
 #: ../gui/gdmlogin.c:809 ../gui/greeter/greeter_system.c:63
-msgid "Are you sure you want to reboot the machine?"
-msgstr "Jste si jisti, že chcete restartovat svůj počítač?"
+msgid "Are you sure you want to restart the machine?"
+msgstr "Opravdu chcete restartovat počítač?"
 
 #. markup
 #: ../gui/gdmlogin.c:811 ../gui/gdmlogin.c:2839
-#: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
-#: ../gui/greeter/greeter_system.c:186
-msgid "_Reboot"
+msgid "_Restart"
 msgstr "_Restartovat"
 
 #: ../gui/gdmlogin.c:823 ../gui/greeter/greeter_system.c:76
 msgid "Are you sure you want to shut down the machine?"
-msgstr "Jste si jisti, že chcete vypnout svůj počítač?"
+msgstr "Opravdu chcete vypnout svůj počítač?"
 
 #. markup
 #: ../gui/gdmlogin.c:825 ../gui/gdmlogin.c:2852
@@ -2817,7 +2811,7 @@ msgstr "_Zastavit"
 
 #: ../gui/gdmlogin.c:845 ../gui/greeter/greeter_system.c:88
 msgid "Are you sure you want to suspend the machine?"
-msgstr "Jste si jisti, že chcete uspat svůj počítač?"
+msgstr "Opravdu chcete uspat svůj počítač?"
 
 #. markup
 #: ../gui/gdmlogin.c:847 ../gui/gdmlogin.c:2866
@@ -2998,8 +2992,8 @@ msgstr ""
 "Nastavit GDM (tohoto správce přihlášení). Budu potřebovat heslo uživatele "
 "root."
 
-#: ../gui/gdmlogin.c:2846 ../gui/greeter/greeter_system.c:193
-msgid "Reboot your computer"
+#: ../gui/gdmlogin.c:2846
+msgid "Restart your computer"
 msgstr "Restartovat váš počítač"
 
 #: ../gui/gdmlogin.c:2859 ../gui/greeter/greeter_system.c:205
@@ -3043,32 +3037,27 @@ msgstr "Nemohu spustit program pro přivítání"
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
-msgstr ""
-"Verze programu pro přivítání (%s) neodpovídá verzi démona. Pravděpodobně "
-"jste právě aktualizovali gdm. Restartujte prosím démona gdm nebo restartujte "
-"počítač."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+msgstr "Verze programu pro přivítání (%s) neodpovídá verzi démona. Pravděpodobně jste právě aktualizovali gdm. Restartujte prosím démona gdm nebo počítač."
 
-#: ../gui/gdmlogin.c:3660 ../gui/gdmlogin.c:3706 ../gui/greeter/greeter.c:804
-#: ../gui/greeter/greeter.c:851
-msgid "Reboot"
-msgstr "Restartovat počítač"
+#: ../gui/gdmlogin.c:3660 ../gui/greeter/greeter.c:849
+msgid "Restart"
+msgstr "Restartovat GDM"
 
 #: ../gui/gdmlogin.c:3698
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
-msgstr ""
-"Verze programu pro přivítání (%s) neodpovídá verzi démona (%s). "
-"Pravděpodobně jste právě aktualizovali gdm. Restartujte prosím démona gdm "
-"nebo restartujte počítač."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+msgstr "Verze programu pro přivítání (%s) neodpovídá verzi démona (%s). Pravděpodobně jste právě aktualizovali gdm. Restartujte prosím démona gdm nebo počítač."
 
-#: ../gui/gdmlogin.c:3704 ../gui/greeter/greeter.c:849
-msgid "Restart"
-msgstr "Restartovat GDM"
+#: ../gui/gdmlogin.c:3704
+msgid "Restart gdm"
+msgstr "Restartovat gdm"
+
+#: ../gui/gdmlogin.c:3706
+msgid "Restart computer"
+msgstr "Restartovat počítač"
 
 #: ../gui/gdmlogin.c:3736
 #, c-format
@@ -3117,11 +3106,11 @@ msgstr ""
 "Měli byste se přihlásit a vytvořit soubor nastavení pomocí programu pro "
 "nastavení GDM."
 
-#: ../gui/gdmphotosetup.c:180 ../gui/gdmsetup.c:1423 ../gui/gdmsetup.c:2071
+#: ../gui/gdmphotosetup.c:180 ../gui/gdmsetup.c:1578 ../gui/gdmsetup.c:2204
 msgid "Open File"
 msgstr "Otevřít soubor"
 
-#: ../gui/gdmphotosetup.c:198 ../gui/gdmsetup.c:1438
+#: ../gui/gdmphotosetup.c:198 ../gui/gdmsetup.c:1593
 msgid "PNG and JPEG"
 msgstr "PNG a JPEG"
 
@@ -3173,7 +3162,7 @@ msgstr ""
 "přihlášení) "
 
 #. markup
-#: ../gui/gdmsetup.c:203
+#: ../gui/gdmsetup.c:209
 msgid ""
 "An error occurred while trying to contact the login screens.  Not all "
 "updates may have taken effect."
@@ -3182,60 +3171,60 @@ msgstr ""
 "se všechny aktualizace."
 
 #. markup
-#: ../gui/gdmsetup.c:642
+#: ../gui/gdmsetup.c:831
 msgid ""
 "Autologin or timed login to the superuser (root) account is not allowed."
 msgstr ""
 "Automatické nebo časované přihlášení k účtu superuživatele (root) není "
 "dovoleno."
 
-#: ../gui/gdmsetup.c:1914 ../gui/gdmsetup.c:1953 ../gui/gdmsetup.c:2170
-#: ../gui/gdmsetup.c:2180 ../gui/gdmsetup.c:2190
+#: ../gui/gdmsetup.c:2050 ../gui/gdmsetup.c:2088 ../gui/gdmsetup.c:2304
+#: ../gui/gdmsetup.c:2314 ../gui/gdmsetup.c:2324
 msgid "None"
 msgstr "Žádný"
 
-#: ../gui/gdmsetup.c:2079
+#: ../gui/gdmsetup.c:2212
 msgid "All files"
 msgstr "Všechny soubory"
 
-#: ../gui/gdmsetup.c:2815
+#: ../gui/gdmsetup.c:2949
 msgid "Archive is not of a subdirectory"
 msgstr "Archív není podadresářem"
 
-#: ../gui/gdmsetup.c:2823
+#: ../gui/gdmsetup.c:2957
 msgid "Archive is not of a single subdirectory"
 msgstr "Archív není jediný podadresář"
 
-#: ../gui/gdmsetup.c:2847 ../gui/gdmsetup.c:2925
+#: ../gui/gdmsetup.c:2981 ../gui/gdmsetup.c:3059
 msgid "File not a tar.gz or tar archive"
 msgstr "Soubor není tar.gz či tar archív"
 
-#: ../gui/gdmsetup.c:2849
+#: ../gui/gdmsetup.c:2983
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "Archív neobsahuje soubor GdmGreeterTheme.info"
 
-#: ../gui/gdmsetup.c:2871
+#: ../gui/gdmsetup.c:3005
 msgid "File does not exist"
 msgstr "Soubor neexistuje."
 
 #. markup
-#: ../gui/gdmsetup.c:2986
+#: ../gui/gdmsetup.c:3120
 msgid "No file selected"
 msgstr "Žádný soubor není vybrán"
 
 #. markup
-#: ../gui/gdmsetup.c:3014
+#: ../gui/gdmsetup.c:3148
 msgid "Not a theme archive"
 msgstr "Není archív s tématem"
 
-#: ../gui/gdmsetup.c:3015
+#: ../gui/gdmsetup.c:3149
 #, c-format
 msgid "Details: %s"
 msgstr "Detaily: %s"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:3033
+#: ../gui/gdmsetup.c:3167
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed. Install again anyway?"
@@ -3243,29 +3232,29 @@ msgstr ""
 "Adresář s tématem '%s' je zřejmě již nainstalován. Přesto instalovat znovu?"
 
 #. markup
-#: ../gui/gdmsetup.c:3119
+#: ../gui/gdmsetup.c:3253
 msgid "Some error occurred when installing the theme"
 msgstr "Při instalaci tématu došlo k nějaké chybě"
 
-#: ../gui/gdmsetup.c:3159
+#: ../gui/gdmsetup.c:3293
 msgid "Select new theme archive to install"
 msgstr "Vyberte nový archív s tématem k instalaci"
 
-#: ../gui/gdmsetup.c:3163
+#: ../gui/gdmsetup.c:3297
 msgid "_Install"
 msgstr "_Instalovat"
 
-#: ../gui/gdmsetup.c:3231
+#: ../gui/gdmsetup.c:3365
 #, c-format
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "Opravdu chcete ze systému odstranit téma '%s'?"
 
-#: ../gui/gdmsetup.c:3249
+#: ../gui/gdmsetup.c:3383
 msgid "_Remove Theme"
 msgstr "_Odstranit téma"
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:3470
+#: ../gui/gdmsetup.c:4123
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3288,7 +3277,7 @@ msgstr ""
 "pracovní plochy\"."
 
 #. markup
-#: ../gui/gdmsetup.c:3894
+#: ../gui/gdmsetup.c:4549
 msgid "You must be the superuser (root) to configure GDM."
 msgstr "Pro nastavení GDM musíte být superuživatel (root)."
 
@@ -3297,7 +3286,7 @@ msgstr "Pro nastavení GDM musíte být superuživatel (root)."
 msgid "Configure the login screen (GNOME Display Manager)"
 msgstr "Nastavit přihlašovací obrazovku (GNOME Display Manager)"
 
-#: ../gui/gdmsetup.desktop.in.h:2 ../gui/gdmsetup.glade.h:35
+#: ../gui/gdmsetup.desktop.in.h:2 ../gui/gdmsetup.glade.h:52
 msgid "Login Screen Setup"
 msgstr "Nastavení přihlašovací obrazovky"
 
@@ -3306,38 +3295,64 @@ msgid "    "
 msgstr "    "
 
 #: ../gui/gdmsetup.glade.h:2
+msgid "     "
+msgstr "     "
+
+#: ../gui/gdmsetup.glade.h:4
 msgid "<"
 msgstr "<"
 
-#: ../gui/gdmsetup.glade.h:3
+#: ../gui/gdmsetup.glade.h:5
+msgid "<b>Server Settings</b>"
+msgstr "<b>Nastavení serveru</b>"
+
+#: ../gui/gdmsetup.glade.h:6
+msgid "<b>Servers to Start</b>"
+msgstr "<b>Servery, které spustit</b>"
+
+#: ../gui/gdmsetup.glade.h:7
+msgid ""
+"<b>WARNING:</b> Placing values in this section that your Xserver does not "
+"support will stop your Xserver\n"
+"from restarting (effectively not allowing this configuration program to "
+"run), BE CAREFUL!"
+msgstr ""
+"<b>VAROVÁNÍ:</b> Umístění hodnot, které váš Xserver nepodporuje, do tohoto oddílu, zastaví\n"
+"restartování vašeho Xserveru (což zabrání spouštění tohoto konfiguračního programu), BUĎTE OPATRNÍ!"
+
+#: ../gui/gdmsetup.glade.h:9
 msgid ">"
 msgstr ">"
 
-#: ../gui/gdmsetup.glade.h:4
+#: ../gui/gdmsetup.glade.h:10
+msgid "Add/Modify Server"
+msgstr "Přidat/upravit server"
+
+#: ../gui/gdmsetup.glade.h:11
 msgid "Allow _configuration from the login screen"
 msgstr "Povolit _nastavení z přihlašovací obrazovky"
 
-#: ../gui/gdmsetup.glade.h:5
+#: ../gui/gdmsetup.glade.h:12
 msgid "Allow _root to login with GDM"
 msgstr "Povolit přihlášení s GDM jako '_root'"
 
-#: ../gui/gdmsetup.glade.h:6
+#: ../gui/gdmsetup.glade.h:13
 msgid "Allow remote _timed logins"
 msgstr "Povoli_t vzdálené časované přihlášení"
 
-#: ../gui/gdmsetup.glade.h:7
+#: ../gui/gdmsetup.glade.h:14
 msgid "Allow root to login r_emotely with GDM"
 msgstr "Povolit vzdál_ené přihlášení s GDM jako 'root'"
 
-#: ../gui/gdmsetup.glade.h:8
+#: ../gui/gdmsetup.glade.h:15
 msgid "Allow running _XDMCP chooser from the login screen"
 msgstr "Povolit spuštění výběru XDM_CP z přihlašovací obrazovky"
 
-#: ../gui/gdmsetup.glade.h:9
+#: ../gui/gdmsetup.glade.h:16
 msgid "Allow theme selection in _GTK+ Greeter."
 msgstr "Povolit výběr tématu v programu pro přivítání v GTK+."
 
-#: ../gui/gdmsetup.glade.h:10
+#: ../gui/gdmsetup.glade.h:17
 msgid ""
 "Always _disallow TCP connections to X server (disables all remote "
 "connections)"
@@ -3345,63 +3360,91 @@ msgstr ""
 "Vždy zakázat připojení k _X serveru přes TCP (zakáže všechna vzdálená "
 "připojení)"
 
-#: ../gui/gdmsetup.glade.h:11
+#: ../gui/gdmsetup.glade.h:18
 msgid "Always use 24 hour cloc_k format"
 msgstr "Vždy používat dvacetičtyř_hodinový formát"
 
-#: ../gui/gdmsetup.glade.h:12
+#: ../gui/gdmsetup.glade.h:19
 msgid "Apply"
 msgstr "Použít"
 
-#: ../gui/gdmsetup.glade.h:13
+#: ../gui/gdmsetup.glade.h:20
 msgid "Author:"
 msgstr "Autor:"
 
-#: ../gui/gdmsetup.glade.h:14
+#: ../gui/gdmsetup.glade.h:21
 msgid "Automatic Login"
 msgstr "Automatické přihlášení"
 
-#: ../gui/gdmsetup.glade.h:15
+#: ../gui/gdmsetup.glade.h:22
 msgid "Background"
 msgstr "Pozadí"
 
-#: ../gui/gdmsetup.glade.h:16
+#: ../gui/gdmsetup.glade.h:23
 msgid "Browse"
 msgstr "Procházet"
 
-#: ../gui/gdmsetup.glade.h:17
+#: ../gui/gdmsetup.glade.h:24
+msgid "Choose network computer to connect to."
+msgstr "Vyberte počítač na síti, ke kterému se připojit."
+
+#: ../gui/gdmsetup.glade.h:25
+msgid "Chooser"
+msgstr "Program pro výběr"
+
+#: ../gui/gdmsetup.glade.h:26
+msgid "Color Depth:"
+msgstr "Barevná hloubka:"
+
+#: ../gui/gdmsetup.glade.h:27
+msgid "Command:"
+msgstr "Příkaz:"
+
+#: ../gui/gdmsetup.glade.h:28
 msgid "Copyright:"
 msgstr "Copyright:"
 
-#: ../gui/gdmsetup.glade.h:18
+#: ../gui/gdmsetup.glade.h:29
+msgid "Create Server Definition"
+msgstr "Vytvořit definici serveru"
+
+#: ../gui/gdmsetup.glade.h:30
 msgid "Delete"
 msgstr "Odstranit"
 
-#: ../gui/gdmsetup.glade.h:19
+#: ../gui/gdmsetup.glade.h:31
+msgid "Delete Server Definition"
+msgstr "Odstranit definici serveru"
+
+#: ../gui/gdmsetup.glade.h:32
 msgid "Description:"
 msgstr "Popis:"
 
-#: ../gui/gdmsetup.glade.h:20
+#: ../gui/gdmsetup.glade.h:33
 msgid "Displays per _host:"
 msgstr "Displejů na _počítač:"
 
-#: ../gui/gdmsetup.glade.h:21
+#: ../gui/gdmsetup.glade.h:34
 msgid "Enable _XDMCP"
 msgstr "Povolit _XDMCP"
 
-#: ../gui/gdmsetup.glade.h:22
+#: ../gui/gdmsetup.glade.h:35
 msgid "Enable _accessibility modules"
 msgstr "Povolit moduly _zpřístupnění"
 
-#: ../gui/gdmsetup.glade.h:23
+#: ../gui/gdmsetup.glade.h:36
 msgid "Enable debu_g messages to system log"
 msgstr "Povolit _ladicí zprávy do systémového záznamu"
 
-#: ../gui/gdmsetup.glade.h:24
+#: ../gui/gdmsetup.glade.h:37
 msgid "Exclude"
 msgstr "Vyjmout"
 
-#: ../gui/gdmsetup.glade.h:25
+#: ../gui/gdmsetup.glade.h:38
+msgid "Flexible"
+msgstr "Flexibilní"
+
+#: ../gui/gdmsetup.glade.h:39
 msgid ""
 "GTK+ Greeter\n"
 "Themed Greeter"
@@ -3409,7 +3452,7 @@ msgstr ""
 "Program pro přivítání v GTK+\n"
 "Program pro přivítání s tématy"
 
-#: ../gui/gdmsetup.glade.h:27
+#: ../gui/gdmsetup.glade.h:41
 msgid ""
 "GTK+ Greeter\n"
 "Themed Greeter\n"
@@ -3419,79 +3462,87 @@ msgstr ""
 "Program pro přivítání s tématy\n"
 "Zakázáno"
 
-#: ../gui/gdmsetup.glade.h:30
+#: ../gui/gdmsetup.glade.h:44
 msgid "Greeter"
 msgstr "Přivítání"
 
-#: ../gui/gdmsetup.glade.h:31
+#: ../gui/gdmsetup.glade.h:45
+msgid "Handled"
+msgstr "Obsluhováno"
+
+#: ../gui/gdmsetup.glade.h:46
 msgid "Honour _indirect requests"
 msgstr "Uznávat _nepřímé požadavky"
 
-#: ../gui/gdmsetup.glade.h:32
+#: ../gui/gdmsetup.glade.h:47
 msgid "Include"
 msgstr "Zahrnout"
 
-#: ../gui/gdmsetup.glade.h:33
+#: ../gui/gdmsetup.glade.h:48
+msgid "Is a login attempt handled by this machine?"
+msgstr "Je pokus o přihlášení obsluhován tímto strojem?"
+
+#: ../gui/gdmsetup.glade.h:49
 msgid "L_ocal: "
 msgstr "_Místní: "
 
-#: ../gui/gdmsetup.glade.h:34
+#: ../gui/gdmsetup.glade.h:50
 msgid "Listen on _UDP port: "
 msgstr "Poslouchat na _UDP portu: "
 
-#: ../gui/gdmsetup.glade.h:36
+#: ../gui/gdmsetup.glade.h:51
+msgid "Login Greeter."
+msgstr "Program pro přivítání."
+
+#: ../gui/gdmsetup.glade.h:53
 msgid "Login a _user automatically after a specified number of seconds"
 msgstr "Au_tomaticky přihlásit uživatele po zadaném počtu sekund"
 
-#: ../gui/gdmsetup.glade.h:37
+#: ../gui/gdmsetup.glade.h:54
 msgid "Logo"
 msgstr "Logo"
 
-#: ../gui/gdmsetup.glade.h:38
+#: ../gui/gdmsetup.glade.h:55
 msgid "Make a _sound after a failed login attempt"
 msgstr "Zahrát _zvuk po neúspěšném pokusu přihlásit se"
 
-#: ../gui/gdmsetup.glade.h:39
+#: ../gui/gdmsetup.glade.h:56
 msgid "Make a _sound after a successful login attempt"
 msgstr "Zahrát _zvuk po úspěšném pokusu přihlásit se"
 
-#: ../gui/gdmsetup.glade.h:40
+#: ../gui/gdmsetup.glade.h:57
 msgid "Make a _sound when login window is ready"
 msgstr "_Přehrát zvuk, když je připraveno okno přihlášení"
 
-#: ../gui/gdmsetup.glade.h:41
+#: ../gui/gdmsetup.glade.h:58
 msgid "Max p_ending indirect requests:"
 msgstr "Max. č_ekajících nepřímých požadavků:"
 
-#: ../gui/gdmsetup.glade.h:42
+#: ../gui/gdmsetup.glade.h:59
 msgid "Maximum _pending requests:"
 msgstr "Maximum _čekajících požadavků:"
 
-#: ../gui/gdmsetup.glade.h:43
+#: ../gui/gdmsetup.glade.h:60
 msgid "Maximum _remote sessions:"
 msgstr "Maximum _vzdálených sezení:"
 
-#: ../gui/gdmsetup.glade.h:44
+#: ../gui/gdmsetup.glade.h:61
 msgid "Maximum _wait time:"
 msgstr "Maximální _doba čekání:"
 
-#: ../gui/gdmsetup.glade.h:45
+#: ../gui/gdmsetup.glade.h:62
 msgid "Maximum indirect w_ait time:"
 msgstr "Maximální doba čekání pro nepřímé:"
 
-#: ../gui/gdmsetup.glade.h:46
-msgid "No Background"
-msgstr "Žádné pozadí"
-
-#: ../gui/gdmsetup.glade.h:47
+#: ../gui/gdmsetup.glade.h:63
 msgid "No Logo"
 msgstr "Žádné logo"
 
-#: ../gui/gdmsetup.glade.h:48
+#: ../gui/gdmsetup.glade.h:64
 msgid "No Sound"
 msgstr "Žádný zvuk"
 
-#: ../gui/gdmsetup.glade.h:49
+#: ../gui/gdmsetup.glade.h:65
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -3499,11 +3550,16 @@ msgstr ""
 "Program nepodporuje protokol XDMCP. Chcete-li podporu protokolu XDMCP "
 "zapnout, musíte znovu přeložit program GDM s knihovnami pro protokol XDMCP."
 
-#: ../gui/gdmsetup.glade.h:50
+#: ../gui/gdmsetup.glade.h:66
 msgid "No screenshot available"
 msgstr "Žádný obrázek k dispozici"
 
-#: ../gui/gdmsetup.glade.h:51
+#: ../gui/gdmsetup.glade.h:67
+msgid ""
+"Note: For settings to take effect, the gdm service will require a restart."
+msgstr "Poznámka: Pro projevení nastavení bude potřeba restartovat službu gdm."
+
+#: ../gui/gdmsetup.glade.h:68
 msgid ""
 "Only One Theme\n"
 "Random Theme"
@@ -3511,54 +3567,75 @@ msgstr ""
 "Jen jedno téma\n"
 "Náhodné téma"
 
-#: ../gui/gdmsetup.glade.h:53
+#: ../gui/gdmsetup.glade.h:70
 msgid "Options"
 msgstr "Možnosti"
 
-#: ../gui/gdmsetup.glade.h:54
+#: ../gui/gdmsetup.glade.h:71
 msgid "Pick a color"
 msgstr "Vyber barvu"
 
-#: ../gui/gdmsetup.glade.h:55
+#: ../gui/gdmsetup.glade.h:72
 msgid "Pin_g interval (seconds):"
 msgstr "Interval pin_gu (sekundy):"
 
-#: ../gui/gdmsetup.glade.h:56
+#: ../gui/gdmsetup.glade.h:73
 msgid "Ping interval (seconds):"
 msgstr "Interval pingu (sekundy):"
 
-#: ../gui/gdmsetup.glade.h:57
+#: ../gui/gdmsetup.glade.h:74
 msgid "Preview:"
 msgstr "Náhled:"
 
-#: ../gui/gdmsetup.glade.h:59
+#: ../gui/gdmsetup.glade.h:76
 #, no-c-format
 msgid "Re_mote welcome string (%n = hostname): "
 msgstr "Zpráva vz_dáleného přivítání (%n = název počítače): "
 
-#: ../gui/gdmsetup.glade.h:60
+#: ../gui/gdmsetup.glade.h:77
+msgid "Refresh Rate:"
+msgstr "Obnovovací frekvence:"
+
+#: ../gui/gdmsetup.glade.h:78
+msgid "Remove Server"
+msgstr "Odstranit server"
+
+#: ../gui/gdmsetup.glade.h:79
+msgid "Resolution:"
+msgstr "Rozlišení:"
+
+#: ../gui/gdmsetup.glade.h:80
 msgid "Retry delay (_seconds):"
 msgstr "_Pauza mezi pokusy (sekundy):"
 
-#: ../gui/gdmsetup.glade.h:61
+#: ../gui/gdmsetup.glade.h:81
+msgid "Server Definition to Modify:"
+msgstr "Definice serveru, kterou upravit:"
+
+#: ../gui/gdmsetup.glade.h:82
+msgid "Server Name:"
+msgstr "Název serveru:"
+
+#: ../gui/gdmsetup.glade.h:83
 msgid "Show _actions menu"
 msgstr "Zobrazovat menu _akcí"
 
-#: ../gui/gdmsetup.glade.h:62
+#: ../gui/gdmsetup.glade.h:84
+msgid "Show choosable user images (_Face Browser)"
+msgstr "Zobrazovat vybratelné obráz_ky uživatelů (probírání tváří)"
+
+#: ../gui/gdmsetup.glade.h:85
 msgid ""
 "Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
-"set, none of the system commands will be available (this includes reboot, "
+"set, none of the system commands will be available (this includes restart, "
 "shutdown, configure, chooser)"
-msgstr ""
-"Zobrazit menu \"Akce\" (dříve známé jako menu \"Systém\"). Pokud není "
-"nastaveno, nebude k dispozici žádný systémový příkaz (to je restart, "
-"vypnutí, nastavení, výběr)"
+msgstr "Zobrazovat menu \"Akce\" (dříve známé jako menu \"Systém\"). Pokud není nastaveno, nebude k dispozici žádný systémový příkaz (to je restart, vypnutí, nastavení, výběr)"
 
-#: ../gui/gdmsetup.glade.h:63
+#: ../gui/gdmsetup.glade.h:86
 msgid "Sound file:"
 msgstr "Soubor zvuku:"
 
-#: ../gui/gdmsetup.glade.h:65
+#: ../gui/gdmsetup.glade.h:88
 #, no-c-format
 msgid ""
 "String to be shown in the greeter as welcome.  You can insert %n in here and "
@@ -3567,7 +3644,7 @@ msgstr ""
 "Řetězec, který zobrazovat v programu pro přivítání jako přivítání. Můžete do "
 "něj vložit %n a ono bude nahrazeno názvem vašeho počítače."
 
-#: ../gui/gdmsetup.glade.h:67
+#: ../gui/gdmsetup.glade.h:90
 #, no-c-format
 msgid ""
 "String to be shown in the greeter for people logging in remotely with "
@@ -3578,135 +3655,143 @@ msgstr ""
 "vzdáleně pomocí XDMCP. Můžete do něj vložit %n a ono bude nahrazeno názvem "
 "vašeho počítače."
 
-#: ../gui/gdmsetup.glade.h:68
+#: ../gui/gdmsetup.glade.h:91
 msgid "Test Sound"
 msgstr "Otestovat zvuk"
 
-#: ../gui/gdmsetup.glade.h:69
+#: ../gui/gdmsetup.glade.h:92
 msgid "Timed Login"
 msgstr "Časované přihlášení"
 
-#: ../gui/gdmsetup.glade.h:70
+#: ../gui/gdmsetup.glade.h:93
 msgid "Use default Remote Welcome"
 msgstr "Používat implicitní vzdálené přivítání"
 
-#: ../gui/gdmsetup.glade.h:71
+#: ../gui/gdmsetup.glade.h:94
 msgid "Use default Welcome"
 msgstr "Používat implicitní přivítání"
 
-#: ../gui/gdmsetup.glade.h:72
+#: ../gui/gdmsetup.glade.h:95
 msgid "User to Include"
 msgstr "Uživatel, kterého zahrnout"
 
-#: ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.glade.h:96
 msgid "User to exclude"
 msgstr "Uživatel, kterého vyjmout"
 
-#: ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.glade.h:97
+msgid "Usually something like: /usr/bin/X"
+msgstr "Obvykle něco jako /usr/bin/X"
+
+#: ../gui/gdmsetup.glade.h:98
+msgid "X Server Settings"
+msgstr "Nastavení X serveru"
+
+#: ../gui/gdmsetup.glade.h:99
 msgid "_1 General"
 msgstr "_1 Obecné"
 
-#: ../gui/gdmsetup.glade.h:75
+#: ../gui/gdmsetup.glade.h:100
 msgid "_2 GTK+ Greeter"
 msgstr "_2 Program pro přivítání v GTK+"
 
-#: ../gui/gdmsetup.glade.h:76
+#: ../gui/gdmsetup.glade.h:101
 msgid "_3 Themed Greeter"
 msgstr "_3 Program pro uvítání s tématy"
 
-#: ../gui/gdmsetup.glade.h:77
-msgid "_4 Face Browser"
-msgstr "_4 Probírání tváří"
+#: ../gui/gdmsetup.glade.h:102
+msgid "_4 Security"
+msgstr "_4 Zabezpečení"
 
-#: ../gui/gdmsetup.glade.h:78
-msgid "_5 Security"
-msgstr "_5 Zabezpečení"
+#: ../gui/gdmsetup.glade.h:103
+msgid "_5 XServer"
+msgstr "_5 XServer"
 
-#: ../gui/gdmsetup.glade.h:79
+#: ../gui/gdmsetup.glade.h:104
 msgid "_6 Accessibility"
 msgstr "_6 Zpřístupnění"
 
-#: ../gui/gdmsetup.glade.h:80
+#: ../gui/gdmsetup.glade.h:105
 msgid "_7 XDMCP"
 msgstr "_7 XDMCP"
 
-#: ../gui/gdmsetup.glade.h:82
+#: ../gui/gdmsetup.glade.h:106
+msgid "_8 Face Browser"
+msgstr "_8 Probírání tváří"
+
+#: ../gui/gdmsetup.glade.h:108
 msgid "_Automatic login username:"
 msgstr "Uživatel pro _automatické přihlášení:"
 
-#: ../gui/gdmsetup.glade.h:83
+#: ../gui/gdmsetup.glade.h:109
 msgid "_Background color: "
 msgstr "_Barva pozadí: "
 
-#: ../gui/gdmsetup.glade.h:84
+#: ../gui/gdmsetup.glade.h:110
 msgid "_Color"
 msgstr "B_arva"
 
-#: ../gui/gdmsetup.glade.h:85
+#: ../gui/gdmsetup.glade.h:111
 msgid "_Delete theme"
 msgstr "_Odstranit téma"
 
-#: ../gui/gdmsetup.glade.h:86
+#: ../gui/gdmsetup.glade.h:112
 msgid "_Image"
 msgstr "_Obrázek"
 
-#: ../gui/gdmsetup.glade.h:87
+#: ../gui/gdmsetup.glade.h:113
 msgid "_Include All Users"
 msgstr "_Zahrnout všechny uživatele"
 
-#: ../gui/gdmsetup.glade.h:88
+#: ../gui/gdmsetup.glade.h:114
 msgid "_Install new theme"
 msgstr "_Instalovat nové téma"
 
-#: ../gui/gdmsetup.glade.h:89
+#: ../gui/gdmsetup.glade.h:115
 msgid "_Login a user automatically on first bootup"
 msgstr "Automatické přih_lášení při prvním zapnutí"
 
-#: ../gui/gdmsetup.glade.h:90
+#: ../gui/gdmsetup.glade.h:116
 msgid "_Mode:"
 msgstr "_Režim:"
 
-#: ../gui/gdmsetup.glade.h:91
+#: ../gui/gdmsetup.glade.h:117
 msgid "_No background"
 msgstr "Žád_né pozadí"
 
-#: ../gui/gdmsetup.glade.h:92
+#: ../gui/gdmsetup.glade.h:118
 msgid "_Only color on remote displays"
 msgstr "Na _vzdálených displejích jen barva"
 
-#: ../gui/gdmsetup.glade.h:93
+#: ../gui/gdmsetup.glade.h:119
 msgid "_Remote: "
 msgstr "_Vzdálené: "
 
-#: ../gui/gdmsetup.glade.h:94
+#: ../gui/gdmsetup.glade.h:120
 msgid "_Scale background image to fit"
 msgstr "_Roztáhnout pozadí přes celou obrazovku"
 
-#: ../gui/gdmsetup.glade.h:95
+#: ../gui/gdmsetup.glade.h:121
 msgid "_Seconds before login:"
 msgstr "_Sekund před přihlášením:"
 
-#: ../gui/gdmsetup.glade.h:96
-msgid "_Show choosable user images (Face Browser)"
-msgstr "Zobrazovat vybratelné obráz_ky uživatelů (probírání tváří)"
-
-#: ../gui/gdmsetup.glade.h:97
+#: ../gui/gdmsetup.glade.h:122
 msgid "_Timed login username:"
 msgstr "Jméno uživatele _časovaného přihlášení:"
 
-#: ../gui/gdmsetup.glade.h:98
+#: ../gui/gdmsetup.glade.h:123
 msgid "_Welcome string: "
 msgstr "Zpráva _přivítání: "
 
-#: ../gui/gdmsetup.glade.h:99
+#: ../gui/gdmsetup.glade.h:124
 msgid "author"
 msgstr "autor"
 
-#: ../gui/gdmsetup.glade.h:100
+#: ../gui/gdmsetup.glade.h:125
 msgid "copyright"
 msgstr "copyright"
 
-#: ../gui/gdmsetup.glade.h:101
+#: ../gui/gdmsetup.glade.h:126
 msgid ""
 "description\n"
 "widget"
@@ -3714,7 +3799,7 @@ msgstr ""
 "prvek\n"
 "popisu"
 
-#: ../gui/gdmsetup.glade.h:103
+#: ../gui/gdmsetup.glade.h:128
 msgid "dummy"
 msgstr "prázdné"
 
@@ -3727,22 +3812,26 @@ msgstr "Příliš mnoho uživatelů pro výpis zde..."
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
 "Verze programu pro přivítání (%s) neodpovídá verzi démona.\n"
-"Pravděpodobně jste právě aktualizovali program GDM.\n"
-"Prosím, restartujte démona GDM nebo restartujte počítač."
+"Pravděpodobně jste právě aktualizovali gdm.\n"
+"Restartujte prosím démona gdm nebo počítač."
+
+#: ../gui/greeter/greeter.c:804 ../gui/greeter/greeter.c:851
+msgid "Reboot"
+msgstr "Restartovat počítač"
 
 #: ../gui/greeter/greeter.c:843
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
 "Verze programu pro přivítání (%s) neodpovídá verzi démona (%s).\n"
-"Pravděpodobně jste právě aktualizovali program GDM.\n"
-"Prosím, restartujte démona GDM nebo restartujte počítač."
+"Pravděpodobně jste právě aktualizovali gdm.\n"
+"Restartujte prosím démona gdm nebo počítač."
 
 #: ../gui/greeter/greeter.c:1348
 #, c-format
@@ -3774,7 +3863,9 @@ msgstr ""
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
-msgstr "Nelze spustit program pro přivítání v GTK+. Tento displej skončí a vy se budete muset přihlásit jiným způsobem a opravit instalaci gdm"
+msgstr ""
+"Nelze spustit program pro přivítání v GTK+. Tento displej skončí a vy se "
+"budete muset přihlásit jiným způsobem a opravit instalaci gdm"
 
 #: ../gui/greeter/greeter_action_language.c:64
 msgid "Last"
@@ -3811,6 +3902,12 @@ msgstr "Nemohu otevřít DefaultImage: %s!"
 msgid "Sus_pend"
 msgstr "U_spat"
 
+#. markup
+#: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
+#: ../gui/greeter/greeter_system.c:186
+msgid "_Reboot"
+msgstr "_Restartovat"
+
 #: ../gui/greeter/greeter_parser.c:1092
 msgid "_XDMCP Chooser"
 msgstr "Výběr připojení _XDMCP"
@@ -3834,6 +3931,10 @@ msgstr "_Zrušit"
 #: ../gui/greeter/greeter_session.c:243
 msgid "Choose a Session"
 msgstr "Vyberte sezení"
+
+#: ../gui/greeter/greeter_system.c:193
+msgid "Reboot your computer"
+msgstr "Restartovat váš počítač"
 
 #: ../gui/greeter/greeter_system.c:278
 msgid "Choose an Action"
@@ -4022,6 +4123,9 @@ msgstr "Nelze načíst rozhraní. To je ŠPATNÉ! (soubor: %s)"
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "Příliš mnoho úrovní aliasů pro locale; možná to znamená smyčku"
 
+#~ msgid "No Background"
+#~ msgstr "Žádné pozadí"
+
 #~ msgid "GTK+ Greeter"
 #~ msgstr "Program pro přivítání v GTK+"
 
@@ -4185,9 +4289,6 @@ msgstr "Příliš mnoho úrovní aliasů pro locale; možná to znamená smyčku
 
 #~ msgid "Select GNOME session"
 #~ msgstr "Vyberte sezení GNOME"
-
-#~ msgid "Create new session"
-#~ msgstr "Vytvořit nové sezení"
 
 #~ msgid "Name: "
 #~ msgstr "Jméno: "
