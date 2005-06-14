@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-23 13:19+0000\n"
-"PO-Revision-Date: 2005-05-23 19:43+0200\n"
+"POT-Creation-Date: 2005-06-10 05:57+0000\n"
+"PO-Revision-Date: 2005-06-10 10:07+0200\n"
 "Last-Translator: Lucas Vieites Fariña <lucas@asixinformatica.com>\n"
 "Language-Team: Español <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -83,12 +83,12 @@ msgid ""
 "diagnose the problem?"
 msgstr ""
 "No se puede iniciar el servidor X (su interfaz gráfica). Probablemente no "
-"está configurado correctamente. ¿Quiere ver la salida del servidor X para "
+"está configurado correctamente. ¿Quiere ver el registro de salida del servidor X para "
 "diagnosticar el problema?"
 
 #: ../config/gettextfoo.h:9
 msgid "Would you like to view the detailed X server output as well?"
-msgstr "¿Quiere ver la salida detallada del servidor X también?"
+msgstr "¿Quiere también ver la salida detallada del servidor X?"
 
 #: ../config/gettextfoo.h:10
 msgid ""
@@ -135,18 +135,18 @@ msgstr "Gnome"
 
 #: ../config/gnome.desktop.in.h:2
 msgid "This session logs you into GNOME"
-msgstr "Con esta sesión accede a GNOME"
+msgstr "Con esta sesión accede a Gnome"
 
 #: ../daemon/auth.c:66
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
-msgstr "%s: No se pudo crear un registro de autorización nuevo: %s"
+msgstr "%s: No se pudo crear una nueva entrada de autorización: %s"
 
 #: ../daemon/auth.c:69
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr ""
-"%s: No se pudo escribir un registro de autorización nuevo. Posiblemente no "
+"%s: No se pudo crear una nueva entrada de autorización. Posiblemente no "
 "hay espacio en el disco"
 
 #: ../daemon/auth.c:74
@@ -155,7 +155,7 @@ msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
 "diskspace.%s%s"
 msgstr ""
-"GDM no pudo escribir un registro de autorización nuevo en el disco. "
+"GDM no pudo crear una nueva entrada de autorización en el disco. "
 "Posiblemente no hay espacio en el disco. %s%s"
 
 #: ../daemon/auth.c:204
@@ -166,7 +166,7 @@ msgstr "%s: No se pudo crear un nuevo archivo de cookie en %s"
 #: ../daemon/auth.c:228 ../daemon/auth.c:245 ../daemon/auth.c:879
 #, c-format
 msgid "%s: Cannot safely open %s"
-msgstr "%s: No se puede abrir con seguridad %s"
+msgstr "%s: No se puede abrir %s con seguridad."
 
 #. Really no need to clean up here - this process is a goner anyway
 #: ../daemon/auth.c:677 ../daemon/auth.c:717
@@ -187,7 +187,7 @@ msgstr "%s: No se pudo escribir la cookie"
 #: ../daemon/auth.c:855
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
-msgstr "%s Ignorando archivo cookie con apariencia sospechosa %s"
+msgstr "%s Ignorando archivo cookie sospechoso %s"
 
 #: ../daemon/auth.c:898 ../daemon/gdm.c:2078 ../daemon/gdm.c:2434
 #, c-format
@@ -341,14 +341,14 @@ msgstr ""
 #: ../daemon/gdm.c:322
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
-msgstr "%s: Authdir %s no es un directorio. Se aborta."
+msgstr "%s: Authdir %s no es un directorio. Se detiene."
 
 #: ../daemon/gdm.c:335
 #, c-format
 msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: El directorio de registro %s no existe o no es un directorio. Se "
-"utilizará el directorio %s."
+"utilizará el directorio ServAuthDir %s."
 
 #: ../daemon/gdm.c:364 ../gui/gdmlogin.c:876 ../gui/greeter/greeter.c:173
 #, c-format
@@ -381,7 +381,7 @@ msgstr ""
 #, c-format
 msgid "%s: Root cannot be logged in automatically, turning off timed login"
 msgstr ""
-"%s: Root no puede acceder con inicio de sesión automático, desactivando "
+"%s: Root no puede acceder automáticamente, desactivando "
 "inicio de sesión temporizado"
 
 #: ../daemon/gdm.c:542
@@ -422,7 +422,9 @@ msgstr "%s: Línea de servidor inválida en el archivo de configuración. Se ign
 #: ../daemon/gdm.c:658 ../daemon/gdm.c:699
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-msgstr "%s: XDMCP está desactivado y no hay definidos servidores estáticos. Se detendrá."
+msgstr ""
+"%s: XDMCP está desactivado y no hay definidos servidores estáticos. Se "
+"detendrá."
 
 #. start
 #. server uid
@@ -432,8 +434,8 @@ msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
 "configuration!"
 msgstr ""
-"%s: XDMCP está desactivado y no hay definidos servidores estáticos. Se añade %s "
-"en :%d para permitir la configuración."
+"%s: XDMCP está desactivado y no hay definidos servidores estáticos. Se añade "
+"%s en :%d para permitir la configuración."
 
 #: ../daemon/gdm.c:691
 #, c-format
@@ -2032,12 +2034,8 @@ msgstr "No se puede ejecutar el selector de sesión"
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
-msgstr ""
-"La versión del selector (%s) no coincide con la versión del demonio (%s).\n"
-"Probablemente acaba de modernizar gdm. Reinicie el demonio gdm o reinicie el "
-"equipo."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+msgstr "La versión del selector (%s) no coincide con la versión del demonio (%s). Probablemente acaba de actulizar gdm. Reinicie el demonio gdm o el equipo."
 
 #. EOF
 #: ../gui/gdmchooser.glade.h:1
@@ -2821,14 +2819,12 @@ msgid "%sWelcome to %s%s"
 msgstr "%s Bienvenido a %s%s"
 
 #: ../gui/gdmlogin.c:809 ../gui/greeter/greeter_system.c:63
-msgid "Are you sure you want to reboot the machine?"
-msgstr "¿Está seguro que quiere reiniciar la máquina?"
+msgid "Are you sure you want to restart the machine?"
+msgstr "¿Está seguro de querer reiniciar la máquina?"
 
 #. markup
 #: ../gui/gdmlogin.c:811 ../gui/gdmlogin.c:2839
-#: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
-#: ../gui/greeter/greeter_system.c:186
-msgid "_Reboot"
+msgid "_Restart"
 msgstr "_Reiniciar"
 
 #: ../gui/gdmlogin.c:823 ../gui/greeter/greeter_system.c:76
@@ -3026,9 +3022,9 @@ msgstr ""
 "Configurar GDM (este gestor de inicio de sesión). Requiere la contraseña de "
 "root."
 
-#: ../gui/gdmlogin.c:2846 ../gui/greeter/greeter_system.c:193
-msgid "Reboot your computer"
-msgstr "Reinicia su equipo"
+#: ../gui/gdmlogin.c:2846
+msgid "Restart your computer"
+msgstr "Reinicie su equipo"
 
 #: ../gui/gdmlogin.c:2859 ../gui/greeter/greeter_system.c:205
 msgid "Shut down the system so that you may safely turn off the computer."
@@ -3071,32 +3067,32 @@ msgstr "No se puede iniciar la interfaz de entrada"
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
 "La versión de la interfaz de entrada (%s) no coincide con la versión del "
-"servicio. Probablemente acaba de modernizar gdm.  Reinicie el servicio gdm o "
-"reinicie el equipo."
+"servicio. Probablemente acaba de actualizar gdm. Reinicie el servicio gdm o el equipo."
 
-#: ../gui/gdmlogin.c:3660 ../gui/gdmlogin.c:3706 ../gui/greeter/greeter.c:804
-#: ../gui/greeter/greeter.c:851
-msgid "Reboot"
+#: ../gui/gdmlogin.c:3660 ../gui/greeter/greeter.c:849
+msgid "Restart"
 msgstr "Reiniciar"
 
 #: ../gui/gdmlogin.c:3698
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
 "La versión de la interfaz de entrada (%s) no coincide con la versión del "
-"demonio (%s). Probablemente acaba de modernizar gdm. Reinicie el servicio "
-"gdm o reinicie el equipo."
+"demonio (%s). Probablemente acaba de actualizar gdm. Reinicie el servicio "
+"gdm o el equipo."
 
-#: ../gui/gdmlogin.c:3704 ../gui/greeter/greeter.c:849
-msgid "Restart"
-msgstr "Reiniciar"
+#: ../gui/gdmlogin.c:3704
+msgid "Restart gdm"
+msgstr "Reiniciar gdm"
+
+#: ../gui/gdmlogin.c:3706
+msgid "Restart computer"
+msgstr "Reiniciar el equipo"
 
 #: ../gui/gdmlogin.c:3736
 #, c-format
@@ -3578,10 +3574,10 @@ msgstr "Mostrar menú del _acciones"
 #: ../gui/gdmsetup.glade.h:62
 msgid ""
 "Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
-"set, none of the system commands will be available (this includes reboot, "
+"set, none of the system commands will be available (this includes restart, "
 "shutdown, configure, chooser)"
 msgstr ""
-"Mostrar el menú de «Acciones» (conocido formalmente como el menú de "
+"Mostrar el menú «Acciones» (conocido anteriormente como el menú de "
 "«Sistema»). Si no está activo no estarán disponibles los comandos de sistema "
 "(esto incluye reiniciar, apagar, configurar, selector)"
 
@@ -3758,24 +3754,27 @@ msgstr "Demasiados usuarios para mostrar aquí..."
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
-"La versión de la interfaz de entrada (%s) no coincide con la versión del "
-"servidor.\n"
-"Probablemente acaba de modernizar gdm.\n"
-"Reinicie el servicio gdm o reinicie el equipo."
+"La versión de la interfaz de entrada (%s) no coincide con la versión del servicio.\n"
+"Probablemente acaba de actualizar gdm.\n"
+"Reinicie el servicio gdm o el equipo."
+
+#: ../gui/greeter/greeter.c:804 ../gui/greeter/greeter.c:851
+msgid "Reboot"
+msgstr "Reiniciar"
 
 #: ../gui/greeter/greeter.c:843
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
 "La versión de la interfaz de entrada (%s) no coincide con la versión del "
 "servicio (%s).\n"
-"Probablemente acaba de modernizar gdm.\n"
-"Reinicie el servicio gdm o reinicie el equipo."
+"Probablemente acaba de actualizar gdm.\n"
+"Reinicie el servicio gdm o el equipo."
 
 #: ../gui/greeter/greeter.c:1348
 #, c-format
@@ -3848,6 +3847,12 @@ msgstr "No se pudo abrir la imagen predeterminada: %s."
 msgid "Sus_pend"
 msgstr "Sus_pender"
 
+#. markup
+#: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
+#: ../gui/greeter/greeter_system.c:186
+msgid "_Reboot"
+msgstr "_Reiniciar"
+
 #: ../gui/greeter/greeter_parser.c:1092
 msgid "_XDMCP Chooser"
 msgstr "Selector de _XDMCP"
@@ -3871,6 +3876,10 @@ msgstr "_Cancelar"
 #: ../gui/greeter/greeter_session.c:243
 msgid "Choose a Session"
 msgstr "Elija una sesión"
+
+#: ../gui/greeter/greeter_system.c:193
+msgid "Reboot your computer"
+msgstr "Reinicia su equipo"
 
 #: ../gui/greeter/greeter_system.c:278
 msgid "Choose an Action"
