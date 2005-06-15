@@ -1,3 +1,13 @@
+2005-06-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/modules/dwellmouselistener.c, 
+	  gui/modules/keymouselistener.c:  Now log messages to 
+	  syslog since you can't see messages printed to
+	  stdout/stderr when running under gdm2.  Now only 
+	  print messages if GDM_DEBUG_GESTURES environment
+	  variable is set to TRUE.  Cleaned up the code so it
+	  is more readible.
+
 2005-06-13  Brian Cameron  <brian.cameron@sun.com>
 
 	* vicious-extensions/ve-gnome.c:  Remove reference
