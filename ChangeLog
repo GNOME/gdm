@@ -1,12 +1,24 @@
 2005-06-15  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmXnestchooser.c, gui/gdmcomm.c, 
+	  gui/gdmflexiserver.c, gui/gdmphotosetup.c, 
+	  gui/gdmwm.c:  Fix leaks.  Addresses bug 
+	  #307482.  Patch provided by Kjartan Maraas.
+	* gui/modules/dwellmouselistener.c, 
+	  gui/modules/keymouselistener.c:  Remove
+	  needless "\n" from syslog calls.
+
+2005-06-15  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/modules/dwellmouselistener.c, 
 	  gui/modules/keymouselistener.c:  Now log messages to 
 	  syslog since you can't see messages printed to
 	  stdout/stderr when running under gdm2.  Now only 
 	  print messages if GDM_DEBUG_GESTURES environment
 	  variable is set to TRUE.  Cleaned up the code so it
-	  is more readible.
+	  is more readible.  No longer modify PATH since
+	  gdm2 now puts full path to executables in the
+	  gesture listener config files.  More secure.
 
 2005-06-13  Brian Cameron  <brian.cameron@sun.com>
 

@@ -275,6 +275,8 @@ main (int argc, char *argv[])
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
 	}
+	g_free (greeter);
+	g_free (remotegreeter);
 
 	dialog = gtk_dialog_new_with_buttons (_("Login Photo"),
 					      NULL /* parent */,
@@ -398,6 +400,7 @@ main (int argc, char *argv[])
 		}
 	}
 
+	g_free (current_pix);
 	gtk_widget_destroy (dialog);
 
 	return 0;

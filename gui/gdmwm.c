@@ -1242,34 +1242,6 @@ static GSourceFuncs event_funcs = {
 	event_dispatch
 };
 
-#if 0
-/* ALEX: WTF is this? It's not used by anything, and I don't want
- * the greeter to depend on libgnomeui and libbonoboui.
- */
-
-/* HAAAAAAAAAAAAAACK */
-void
-bonobo_dock_item_grab_pointer (BonoboDockItem *item)
-{
-  GdkCursor *fleur;
-
-  fleur = gdk_cursor_new (GDK_FLEUR);
-
-  /* Hm, not sure this is the right thing to do, but it seems to work.  */
-  while (gdk_pointer_grab (item->bin_window,
-                           FALSE,
-                           (GDK_BUTTON1_MOTION_MASK |
-                            GDK_POINTER_MOTION_HINT_MASK |
-                            GDK_BUTTON_RELEASE_MASK),
-                           NULL,
-                           fleur,
-                           GDK_CURRENT_TIME) != 0)
-	  gtk_main_iteration ();
-
-  gdk_cursor_destroy (fleur);
-}
-#endif
-
 void
 gdm_wm_init (Window login_window)
 {

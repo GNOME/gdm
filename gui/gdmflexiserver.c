@@ -774,6 +774,8 @@ main (int argc, char *argv[])
 	}
 
 	ret = gdmcomm_call_gdm (command, auth_cookie, version, 5);
+	g_free (command);
+
 	if (ret != NULL &&
 	    strncmp (ret, "OK ", 3) == 0) {
 

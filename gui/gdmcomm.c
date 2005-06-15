@@ -65,6 +65,7 @@ do_command (int fd, const char *command, gboolean get_response)
 	ret = send (fd, cstr, strlen (cstr), 0);
 	signal (SIGPIPE, old_handler);
 #endif
+	g_free (cstr);
 
 	if (ret < 0)
 		return NULL;

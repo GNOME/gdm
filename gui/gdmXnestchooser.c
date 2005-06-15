@@ -511,6 +511,7 @@ main (int argc, char *argv[])
 
 	/* complex and wonderous way to get the exec vector */
 	execvec = make_us_an_exec_vector (xnest);
+	g_free (xnest);
 
 	if (execvec == NULL) {
 		GtkWidget *d;
@@ -581,8 +582,10 @@ main (int argc, char *argv[])
 		}
 
 		pid = 0;
-		if (pidfile != NULL)
+		if (pidfile != NULL) {
 			VE_IGNORE_EINTR (fp = fopen (pidfile, "r"));
+			g_free (pidfile);
+		}
 		if (fp != NULL) {
 			int r;
 			VE_IGNORE_EINTR (r = fscanf (fp, "%ld", &pid));

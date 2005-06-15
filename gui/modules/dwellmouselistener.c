@@ -166,7 +166,7 @@ init_xinput (GdkDisplay *display, GdkWindow *root)
 	}
 
 	if (debug_gestures)
-		syslog (LOG_WARNING, "%d event types available\n", number);
+		syslog (LOG_WARNING, "%d event types available", number);
 
 	if (XSelectExtensionEvent (GDK_WINDOW_XDISPLAY (root), 
 				   GDK_WINDOW_XWINDOW (root),
