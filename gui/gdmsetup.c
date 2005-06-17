@@ -60,7 +60,6 @@ gboolean GdmIncludeAll;
 gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
 static char *GdmSoundProgram = NULL;
-static gboolean GdmGraphicalThemeRand = FALSE;
 
 static gboolean gdm_running = FALSE;
 static GladeXML *xml;
@@ -530,9 +529,14 @@ combobox_timeout (GtkWidget *combo_box)
 		gboolean new_val;
 		GtkTreeViewColumn *radioColumn = NULL;
 		GtkTreeViewColumn *checkboxColumn = NULL;
+		GtkTreeSelection *selection;
+		GtkTreeIter iter;
+		GValue value  = {0, };
 		gboolean val = ve_config_get_bool (config, key);
 		GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
 			GTK_TYPE_TREE_VIEW);
+		GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
+			GTK_TYPE_BUTTON);
 
 		/* Choose to display radio or checkbox toggle column */
 		if (selected == RANDOM_THEME) {
@@ -553,11 +557,44 @@ combobox_timeout (GtkWidget *combo_box)
 			gtk_tree_view_column_set_visible (checkboxColumn, FALSE);
 		}
 
+		/* Update config */
 		if (new_val != val) {
 			ve_config_set_bool (config, key, new_val);
 			ve_config_save (config, FALSE /* force */);
 			update_key (key);
 		}
+
+		/* Update Delete Button's sensitivity */
+	    gboolean GdmGraphicalThemeRand = ve_config_get_bool (
+    	    ve_config_get (GDM_CONFIG_FILE),
+        	GDM_KEY_GRAPHICAL_THEME_RAND);
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
+		gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+		gtk_widget_set_sensitive (del_button, FALSE);
+		if ( ! gtk_tree_selection_get_selected (selection, NULL, &iter))
+		{
+			gtk_widget_set_sensitive (del_button, FALSE);
+		} else {
+			/* Default to allow deleting of themes */
+			gtk_widget_set_sensitive (del_button, TRUE);
+
+			/* Determine if the theme selected is currently active */
+			GtkTreeModel *model;
+			model = gtk_tree_view_get_model (GTK_TREE_VIEW (theme_list));
+			if (GdmGraphicalThemeRand) {
+				gtk_tree_model_get_value (model, &iter,
+				                          THEME_COLUMN_SELECTED_LIST, &value);
+			} else {
+				gtk_tree_model_get_value (model, &iter,
+				                          THEME_COLUMN_SELECTED, &value);
+			}
+	
+		    /* Do not allow deleting of active themes */
+    		if (g_value_get_boolean (&value)) {
+        		gtk_widget_set_sensitive (del_button, FALSE);
+		    }
+		}
+
 
 	/* Add/Modify Server to Start combobox */
 	} else if (strcmp (key, GDM_KEY_SERVERS) == 0 ) { 
@@ -2468,17 +2505,28 @@ gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 	char *screenshot;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	GValue value = {0, };
+	GValue value  = {0, };
+
+    gboolean GdmGraphicalThemeRand = ve_config_get_bool (
+        ve_config_get (GDM_CONFIG_FILE),
+        GDM_KEY_GRAPHICAL_THEME_RAND);
 
 	if ( ! gtk_tree_selection_get_selected (selection, &model, &iter)) {
 		gtk_widget_set_sensitive (del_button, FALSE);
 		return;
 	}
 
+	/* Default to allow deleting of themes */
 	gtk_widget_set_sensitive (del_button, TRUE);
-	gtk_tree_model_get_value (model, &iter, THEME_COLUMN_SELECTED, &value);
 
-	/* Do not allow deleting of selected theme */
+	/* Determine if the theme selected is currently active */
+	if (GdmGraphicalThemeRand) {
+		gtk_tree_model_get_value (model, &iter, THEME_COLUMN_SELECTED_LIST, &value);
+	} else {
+		gtk_tree_model_get_value (model, &iter, THEME_COLUMN_SELECTED, &value);
+	}
+
+	/* Do not allow deleting of active themes */
 	if (g_value_get_boolean (&value)) {
 		gtk_widget_set_sensitive (del_button, FALSE);
 	}
@@ -2758,11 +2806,12 @@ selected_toggled (GtkCellRendererToggle *cell,
 					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 						THEME_COLUMN_SELECTED_LIST,
 						FALSE, -1); /* Toggle OFF */
-					gtk_widget_set_sensitive (del_button, FALSE);
+					gtk_widget_set_sensitive (del_button, TRUE);
 				} else {
 					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 						THEME_COLUMN_SELECTED_LIST,
 						TRUE, -1); /* Toggle ON */
+					gtk_widget_set_sensitive (del_button, FALSE);
 				}
 			}
 	
@@ -3986,7 +4035,7 @@ setup_graphical_themes (void)
 		  slash (/) character in them, so I just made GDM_DELIMITER_THEMES
 		  equal to "/:" instead. */
 
-	GdmGraphicalThemeRand = ve_config_get_bool (
+	gboolean GdmGraphicalThemeRand = ve_config_get_bool (
 		ve_config_get (GDM_CONFIG_FILE),
 		GDM_KEY_GRAPHICAL_THEME_RAND);
 
