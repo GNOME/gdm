@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: GDM HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-16 05:53+0000\n"
-"PO-Revision-Date: 2005-06-16 14:32+0300\n"
+"PO-Revision-Date: 2005-06-17 13:25+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -857,7 +857,7 @@ msgstr "%s: Ei leia Xserverit: %s"
 #: ../daemon/server.c:1307
 #, c-format
 msgid "%s: Can't fork Xserver process!"
-msgstr "%s: Ei õnnestu forkida Xserver protsessi!"
+msgstr "%s: Xserver protsessi pole võimalik forkida!"
 
 #: ../daemon/slave.c:313
 msgid "Can't set EGID to user GID"
@@ -944,7 +944,7 @@ msgstr ""
 #: ../daemon/slave.c:2583 ../daemon/slave.c:2588
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
-msgstr "%s: Ei õnnestu gdmgreeter-isse toru avada"
+msgstr "%s: Gdmgreeter-isse pole võimalik toru avada"
 
 #: ../daemon/slave.c:2709
 msgid ""
@@ -1001,7 +1001,7 @@ msgstr "%s: Viga tervitaja (greeter) kävitamisel kuval %s"
 #: ../daemon/slave.c:2803
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
-msgstr "%s: Ei õnnestu forkida gdmgreeter protsessi"
+msgstr "%s: Gdmgreeter protsessi pole võimalik forkida"
 
 #: ../daemon/slave.c:2888
 #, c-format
@@ -1011,7 +1011,7 @@ msgstr "%s: Ei saa avada järjekorda!"
 #: ../daemon/slave.c:3064
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
-msgstr "%s: Ei õnnestu gdmgreeter-isse toru avada"
+msgstr "%s: Gdmgreeter-isse pole võimalik toru avada"
 
 #: ../daemon/slave.c:3161
 msgid ""
@@ -1027,7 +1027,7 @@ msgstr "%s: Viga valikute (chooser) kävitamisel displeil %s"
 #: ../daemon/slave.c:3168
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
-msgstr "%s: Ei õnnestu forkida gdmchooser protsessi"
+msgstr "%s: Gdmchooser protsessi pole võimalik forkida"
 
 #: ../daemon/slave.c:3464
 #, c-format
@@ -1064,10 +1064,10 @@ msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Ei saa hakata kasutajaks %s. Katkestan."
 
 #: ../daemon/slave.c:3776
-#, fuzzy, c-format
+#, c-format
 msgid "%s: No Exec line in the session file: %s. Starting failsafe GNOME"
 msgstr ""
-"%s: Ei leia Exec-rida seansifailist: %s, kasutusele läheb veakindel "
+"%s: Seansifailid puudub Exec-rida: %s. Kasutusele läheb veakindel "
 "(failsafe) GNOME"
 
 #: ../daemon/slave.c:3782
@@ -1514,7 +1514,7 @@ msgstr "Ei õnnestunud määrata mandaate %s jaoks"
 #: ../daemon/verify-pam.c:982 ../daemon/verify-pam.c:1268
 #, c-format
 msgid "Couldn't open session for %s"
-msgstr "Ei õnnestunud avada seanssi %s jaoks"
+msgstr "Seanssi pole võimalik %s jaoks avada"
 
 #: ../daemon/verify-pam.c:1036
 msgid ""
@@ -1863,14 +1863,14 @@ msgid "Cannot run chooser"
 msgstr "Valijat pole võimalik käivitada"
 
 #: ../gui/gdmchooser.c:2092
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
-"Tervitaja versioon (%s) ei sobi deemoni versiooniga.  Sa oled arvatavasti "
-"just värskendanud gdm'i versiooni.  Palun taaskäivita gdm deemon või tee "
-"arvutile alglaadimine"
+"Tervitaja versioon (%s) ei sobi deemoni versiooniga (%s).  Sa oled "
+"arvatavasti just värskendanud gdm'i versiooni.  Palun taaskäivita gdm deemon "
+"või tee arvutile alglaadimine"
 
 #. EOF
 #: ../gui/gdmchooser.glade.h:1 ../gui/gdmsetup.glade.h:3
@@ -2636,9 +2636,8 @@ msgid "%sWelcome to %s%s"
 msgstr "%s%s - tere tulemast!%s"
 
 #: ../gui/gdmlogin.c:809 ../gui/greeter/greeter_system.c:63
-#, fuzzy
 msgid "Are you sure you want to restart the machine?"
-msgstr "Soovite Te kindlasti teha masinale uut alglaadimist?"
+msgstr "Oled sa kindel, et soovid teha masinale uut alglaadimist?"
 
 #. markup
 #: ../gui/gdmlogin.c:811 ../gui/gdmlogin.c:2839
@@ -2876,28 +2875,28 @@ msgid "Cannot start the greeter"
 msgstr "Tervitajat pole võimalik käivitada"
 
 #: ../gui/gdmlogin.c:3623 ../gui/gdmlogin.c:3654
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
 "Tervitaja versioon (%s) ei sobi deemoni versiooniga.  Sa oled arvatavasti "
 "just värskendanud gdm'i versiooni.  Palun taaskäivita gdm deemon või tee "
-"arvutile alglaadimine"
+"arvutile alglaadimine."
 
 #: ../gui/gdmlogin.c:3660 ../gui/greeter/greeter.c:849
 msgid "Restart"
 msgstr "Taaskäivitamine"
 
 #: ../gui/gdmlogin.c:3698
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
-"Tervitaja versioon (%s) ei sobi deemoni versiooniga.  Sa oled arvatavasti "
-"just värskendanud gdm'i versiooni.  Palun taaskäivita gdm deemon või tee "
-"arvutile alglaadimine"
+"Tervitaja versioon (%s) ei sobi deemoni versiooniga (%s).  Sa oled "
+"arvatavasti just värskendanud gdm'i versiooni.  Palun taaskäivita gdm deemon "
+"või tee arvutile alglaadimine."
 
 #: ../gui/gdmlogin.c:3704
 msgid "Restart gdm"
@@ -3314,9 +3313,8 @@ msgid "Login Greeter."
 msgstr "Sisselogimistervitaja"
 
 #: ../gui/gdmsetup.glade.h:53
-#, fuzzy
 msgid "Login a _user automatically after a specified number of seconds"
-msgstr "L_ogi kasutaja automaatselt sisse peale määratud aega"
+msgstr "Kasutaja automaatne sisselogimine peale määratud aega (sekundites)"
 
 #: ../gui/gdmsetup.glade.h:54
 msgid "Logo"
@@ -3619,15 +3617,15 @@ msgid "Too many users to list here..."
 msgstr ""
 
 #: ../gui/greeter/greeter.c:766 ../gui/greeter/greeter.c:798
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
 "You have probably just upgraded gdm.\n"
 "Please restart the gdm daemon or the computer."
 msgstr ""
-"Tervitaja versioon (%s) ei sobi deemoni versiooniga.  Sa oled arvatavasti "
-"just värskendanud gdm'i versiooni.  Palun taaskäivita gdm deemon või tee "
-"arvutile alglaadimine"
+"Tervitaja versioon (%s) ei sobi deemoni versiooniga.\n"
+"Sa oled arvatavasti just värskendanud gdm'i versiooni.\n"
+"Palun taaskäivita gdm deemon või tee arvutile alglaadimine"
 
 #: ../gui/greeter/greeter.c:804 ../gui/greeter/greeter.c:851
 msgid "Reboot"
