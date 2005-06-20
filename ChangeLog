@@ -1,3 +1,16 @@
+2005-06-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/slave.c: On 04/25, a change was made
+	  to move seteuid/setegid to before checking
+	  the existance of the user's $HOME id to fix
+	  bug #301821.  That patch added new seteuid/setegid
+	  calls before the check, but didn't remove the
+	  calls after the check.  Calling these functions
+	  twice is needless and was causing problems on
+	  NetBSD (refer to bug #301821), so now removing
+	  the needless second call.  This fixes bug
+	  #301821.
+
 2005-06-17  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmsetup.c:  Fix Delete button sensitivity.
