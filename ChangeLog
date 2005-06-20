@@ -1,5 +1,11 @@
 2005-06-20  Brian Cameron  <brian.cameron@sun.com>
 
+	* autogen.sh: Updated REQUIRED_AUTOMAKE_VERSION
+	  from 1.4 to 1.5 since it no longer requires 1.4
+	  and gnome-autogen.sh would complain if you had
+	  a newer version of automake.  Fixes bug 
+	  #307543.
+
 	* daemon/slave.c: On 04/25, a change was made
 	  to move seteuid/setegid to before checking
 	  the existance of the user's $HOME id to fix
