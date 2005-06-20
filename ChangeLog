@@ -7,9 +7,11 @@
 	  calls before the check, but didn't remove the
 	  calls after the check.  Calling these functions
 	  twice is needless and was causing problems on
-	  NetBSD (refer to bug #301821), so now removing
-	  the needless second call.  This fixes bug
-	  #301821.
+	  NetBSD (refer to bug #301821), so now fixing
+	  the logic so it doesn't needlessly call the
+	  function twice.  This fixes bug #301821.  Patch
+	  provided by Julio M. Merino Vidal.  This fixes
+	  bug #301821.
 
 2005-06-17  Brian Cameron  <brian.cameron@sun.com>
 
