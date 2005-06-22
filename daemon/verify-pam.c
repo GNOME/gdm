@@ -188,7 +188,7 @@ audit_fail_login(GdmDisplay *d, int pw_change, struct passwd *pwent,
 		}
 		if (d->attached) {
 			/* login from the local host */
-			if (adt_load_hostname(NULL, &tid) != 0) {
+			if (adt_load_ttyname("/dev/console", &tid) != 0) {
 
 				syslog(LOG_AUTH | LOG_ALERT,
 				    "adt_loadhostname(localhost): %m");
