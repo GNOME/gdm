@@ -1,3 +1,16 @@
+2005-06-22  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.in, vicious-extensions/Makefile.am,
+	  daemon/Makefile.am, gui/Makefile.am, 
+	  gui/greeter/Makefile.am: Upgrading to 
+	  pkgconfig 0.17.2 broke the Solaris build 
+	  because it no longer allows the linker to
+	  pull in libraries that are implicitely
+	  included.  Now explicitely specify the
+	  dependant libraries and ensure they are
+	  included in the link statements for each
+	  binary.
+
 2005-06-20  Brian Cameron  <brian.cameron@sun.com>
 
 	* autogen.sh: Updated REQUIRED_AUTOMAKE_VERSION

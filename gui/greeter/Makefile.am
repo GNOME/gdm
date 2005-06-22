@@ -71,6 +71,12 @@ gdmgreeter_LDADD = \
 	-lX11			\
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(PANGO_LIBS)		\
+	$(PANGOFT_LIBS)		\
+	$(GDK_LIBS)		\
+	$(GDKPIXBUF_LIBS)	\
 	$(GREETER_LIBS)
 
 EXTRA_DIST = \

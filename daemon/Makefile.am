@@ -73,6 +73,9 @@ gdm_binary_LDADD = \
 	-lpopt					\
 	$(XINERAMA_LIBS)			\
 	$(INTLLIBS)				\
+	$(GLIB_LIBS)				\
+	$(GOBJECT_LIBS)				\
+	$(GDK_LIBS)				\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious
 

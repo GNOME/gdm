@@ -104,8 +104,13 @@ gdmchooser_LDADD = \
 	-lpopt			\
 	-lX11			\
 	$(XINERAMA_LIBS)	\
-	$(X_EXTRA_LIBS)	\
+	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(PANGO_LIBS)		\
+	$(GDK_LIBS)		\
+	$(GDKPIXBUF_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
 
@@ -118,6 +123,13 @@ gdmlogin_LDADD = \
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(GDK_LIBS)		\
+	$(PANGO_LIBS)		\
+	$(GDKPIXBUF_LIBS)	\
+	$(LIBGNOME_LIBS)	\
+	$(LIBGNOMEUI_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui-minimal
 
@@ -127,11 +139,26 @@ gdmsetup_LDADD = \
 	-lXau			\
 	-lX11			\
 	$(INTLLIBS)		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(PANGO_LIBS)		\
+	$(GDK_LIBS)		\
+	$(GDKPIXBUF_LIBS)	\
+	$(LIBGNOME_LIBS)	\
+	$(LIBGNOMEUI_LIBS)	\
+	$(EXTRA_SETUP_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui-gnome
 
 gdmphotosetup_LDADD = \
 	$(GUI_LIBS)		\
+	$(INTLLIBS)		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(GDK_LIBS)		\
+	$(GDKPIXBUF_LIBS)	\
+	$(LIBGNOME_LIBS)	\
+	$(LIBGNOMEUI_LIBS)	\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui-gnome
@@ -141,6 +168,12 @@ gdmXnestchooser_LDADD = \
 	-lXau			\
 	-lX11			\
 	$(INTLLIBS)		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(GDK_LIBS)		\
+	$(LIBGNOME_LIBS)	\
+	$(LIBGNOMEUI_LIBS)	\
+	$(EXTRA_XNEST_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui-gnome
 
@@ -148,13 +181,25 @@ gdmflexiserver_LDADD = \
 	$(GUI_LIBS)		\
 	-lXau			\
 	$(INTLLIBS)		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(GDK_LIBS)		\
+	$(LIBGNOME_LIBS)	\
+	$(LIBGNOMEUI_LIBS)	\
+	$(EXTRA_FLEXI_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui-gnome
 
-gdmdynamic_LDADD = \
-	$(GUI_LIBS) \
-	-lXau \
-	$(INTLLIBS) \
+gdmdynamic_LDADD = 		\
+	$(GUI_LIBS)		\
+	-lXau			\
+	$(INTLLIBS) 		\
+	$(GLIB_LIBS) 		\
+	$(GOBJECT_LIBS) 	\
+	$(GDK_LIBS) 		\
+	$(LIBGNOME_LIBS) 	\
+	$(LIBGNOMEUI_LIBS)	\
+	$(EXTRA_DYNAMIC_LIBS)	\
 	-L$(top_builddir)/vicious-extensions \
 	-lviciousui-gnome
 
