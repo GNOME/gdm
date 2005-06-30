@@ -1,5 +1,45 @@
 Ahh news...
 
+2.8.0.1 stuff:
+
+- This release fixes a nasty bug which was causing the
+  /etc/gdm/Xsession file to always use /bin/ksh.  This
+  caused problems on Linux, where it should be /bin/sh.
+  It now is only /bin/ksh on Solaris builds.  (Brian
+  Cameron)
+
+- seteuid/setegid logic in the GDM slave logic has been
+  made more sane.  This was causing problems running GDM2
+  on NetBSD (refer to bug #301821).  (Julio M. Merino Vidal)
+
+- Minor correction to Solaris audit logic.  (Gary Winiger)
+
+- Updated autogen.sh so it now works with automake > 1.4.
+
+- No longer use C99 features that do not work with gcc 2.95,
+  specifically do not declare variables except at the
+  beginning of a block.  (Jens Granseuer)
+
+- Corrected configure script so it works with pkgconfig
+  0.17.2.  The new pkgconfig broke the build on Solaris
+  since it no longer allows the linker to pull in libraries
+  that are implicitely included.  Now all libraries are
+  explicit.
+
+- References to libgnome removed from vicious-extensions,
+  so it no longer depends on libgnome.  It now depends
+  directly on i18n libraries.  (Andrew Case)
+
+- The gesture listeners now log debug messages to syslog
+  instead of stdout, and debug can now be turned on by
+  setting the GDM_DEBUG_GESTURES environment variable
+  rather than needing to recompile with debug.  This makes
+  it much easier to debug issues.  (Brian Cameron)
+
+- Leaks fixed (Kjartan Maraas)
+
+- Corrections to docs (Andrew Case, Martin Petersen)
+
 2.8.0.0 stuff:
 
 Interface Changes:
