@@ -2,6 +2,7 @@
 # Run this to generate all the initial makefiles, etc.
 
 REQUIRED_AUTOMAKE_VERSION=1.5
+USE_GNOME2_MACROS=1
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
