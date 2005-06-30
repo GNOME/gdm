@@ -332,14 +332,14 @@ xservers_get_servers (GtkListStore *store)
     list = ve_config_get_keys (cfg, GDM_KEY_SERVERS);
 
 	for (li = list; li != NULL; li = li->next) {
-        char *key = li->data;
+		GtkTreeIter iter;
+		char *key = li->data;
 		int vt = atoi(key);
 		key = g_strconcat(GDM_KEY_SERVERS, "/", key, NULL);
 		cpy = ve_config_get_string (cfg, key);
 		server = ve_first_word (cpy);
 		options = ve_rest (cpy);
 		
-		GtkTreeIter iter;
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter,
 		                    XSERVER_COLUMN_VT, vt,
@@ -2106,6 +2106,8 @@ test_sound (GtkWidget *button, gpointer data)
 static void
 no_sound_cb (GtkWidget *widget, gpointer data)
 {
+	VeConfig *config;
+	GtkWidget *acc_no_sound_file, *acc_sound_test;
 	GtkWidget *acc_sound_file_label = data;
 	const char *key = g_object_get_data (G_OBJECT (acc_sound_file_label),
 	                                     "key");
@@ -2116,12 +2118,12 @@ no_sound_cb (GtkWidget *widget, gpointer data)
 	nosound_button = g_strconcat ("acc_nosound_", key, "_button", NULL);
 	soundtest_button = g_strconcat ("acc_soundtest_", key, "_button", NULL);
 
-	GtkWidget *acc_no_sound_file = glade_helper_get (xml, nosound_button,
-	                                                 GTK_TYPE_BUTTON);
-	GtkWidget *acc_sound_test = glade_helper_get (xml, soundtest_button,
-	                                              GTK_TYPE_BUTTON);
+	acc_no_sound_file = glade_helper_get (xml, nosound_button,
+	                                      GTK_TYPE_BUTTON);
+	acc_sound_test = glade_helper_get (xml, soundtest_button,
+                                              GTK_TYPE_BUTTON);
 
-	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	config = ve_config_get (GDM_CONFIG_FILE);
 	gtk_label_set_text (GTK_LABEL (acc_sound_file_label), _("None"));
 	gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
 	gtk_widget_set_sensitive (acc_sound_test, FALSE);
@@ -2152,6 +2154,7 @@ no_sound_cb (GtkWidget *widget, gpointer data)
 static void
 sound_response (GtkWidget *file_dialog, gint response, gpointer data)
 {
+	GtkWidget *acc_no_sound_file, *acc_sound_test;
 	GtkWidget *acc_sound_file_label = data;
 	const char *key = g_object_get_data (G_OBJECT (acc_sound_file_label), "key");
 
@@ -2160,14 +2163,14 @@ sound_response (GtkWidget *file_dialog, gint response, gpointer data)
 	nosound_button = g_strconcat("acc_nosound_",key,"_button",NULL);
 	soundtest_button = g_strconcat("acc_soundtest_",key,"_button",NULL);
 
-	GtkWidget *acc_no_sound_file = glade_helper_get (xml, nosound_button,
+	acc_no_sound_file = glade_helper_get (xml, nosound_button,
 		GTK_TYPE_BUTTON);
-	GtkWidget *acc_sound_test = glade_helper_get (xml, soundtest_button,
+	acc_sound_test = glade_helper_get (xml, soundtest_button,
 		GTK_TYPE_BUTTON);
 	if (response == GTK_RESPONSE_ACCEPT) {
 		VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 		char *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_dialog));
-		char *val;
+		char *val, *sound_key;
 
 		gtk_label_set_text (GTK_LABEL (acc_sound_file_label), filename);
 
@@ -2175,7 +2178,6 @@ sound_response (GtkWidget *file_dialog, gint response, gpointer data)
 		gtk_widget_set_sensitive (acc_sound_test, TRUE);
 
 
-		char* sound_key;
 		if (strcmp (key, "ready") == 0 ) {
 			have_sound_ready_file = TRUE;
 			sound_key = g_strdup(GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
@@ -2307,6 +2309,11 @@ setup_accessibility_support (void)
 	gchar *success_key = g_strdup("success");
 	gchar *failure_key = g_strdup("failure");
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	gboolean add_gtk_modules = ve_config_get_bool (config,
+	                                               GDM_KEY_ADD_GTK_MODULES);
+	char *modules_list = ve_config_get_string (config,
+	                                           GDM_KEY_GTK_MODULES_LIST);
+	char *val;
 
 	g_object_set_data (G_OBJECT (acc_sound_ready_file_label), "key",
 	                   ready_key);
@@ -2314,12 +2321,6 @@ setup_accessibility_support (void)
 	                   success_key);
 	g_object_set_data (G_OBJECT (acc_sound_failure_file_label), "key",
 	                   failure_key);
-
-	gboolean add_gtk_modules = ve_config_get_bool (config,
-	                                               GDM_KEY_ADD_GTK_MODULES);
-	char *modules_list = ve_config_get_string (config,
-	                                           GDM_KEY_GTK_MODULES_LIST);
-	char *val;
 
 	if (add_gtk_modules &&
 	    modules_list_contains (modules_list, "gail") &&
@@ -2797,6 +2798,8 @@ selected_toggled (GtkCellRendererToggle *cell,
 
 		/* Loop through all checkboxes */
 		while (gtk_tree_model_get_iter (model, &iter, path)) {
+			gboolean selected = FALSE;
+
 			/* If this checkbox was just toggled */
 			if (gtk_tree_path_compare (path, sel_path) == 0) {
 
@@ -2815,7 +2818,6 @@ selected_toggled (GtkCellRendererToggle *cell,
 				}
 			}
 	
-			gboolean selected = FALSE;
 			gtk_tree_model_get (model, &iter, THEME_COLUMN_SELECTED_LIST,
 				&selected, THEME_COLUMN_DIR, &theme_name, -1);
 	
@@ -3484,12 +3486,15 @@ delete_theme (GtkWidget *button, gpointer data)
 static gboolean
 xserver_entry_timeout (GtkWidget *entry)
 {
+	VeConfig *cfg;
+	const char *key = g_object_get_data (G_OBJECT (entry), "key");
+	const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
+
 	/* Get xserver section to update */
 	GtkWidget *combobox = glade_helper_get (xml, "xserver_mod_combobox",
 	                                        GTK_TYPE_COMBO_BOX);
 	gchar *section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
 	section = g_strconcat(GDM_KEY_SERVER_PREFIX, section, "/", NULL);
-	const char *key = g_object_get_data (G_OBJECT (entry), "key");
 
 	if (strcmp (key, GDM_KEY_SERVER_NAME) == 0)
 		section = g_strconcat(section, GDM_KEY_SERVER_NAME, NULL);
@@ -3497,10 +3502,9 @@ xserver_entry_timeout (GtkWidget *entry)
 		section = g_strconcat(section, GDM_KEY_SERVER_COMMAND, NULL);
 
 	/* Locate this server's section */
-	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	cfg = ve_config_get (GDM_CONFIG_FILE);
 
 	/* Update this servers configuration */
-	const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 	ve_config_set_string (cfg, section, ve_sure_string (text));
 	ve_config_save (cfg, FALSE /* force */);
 	g_free(section);
@@ -3511,12 +3515,15 @@ xserver_entry_timeout (GtkWidget *entry)
 static gboolean
 xserver_toggle_timeout (GtkWidget *toggle)
 {
+	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
+	VeConfig *cfg;
+	gboolean val;
+
 	/* Get xserver section to update */
 	GtkWidget *combobox = glade_helper_get (xml, "xserver_mod_combobox",
 	                                        GTK_TYPE_COMBO_BOX);
 	gchar *section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
 	section = g_strconcat(GDM_KEY_SERVER_PREFIX, section, "/", NULL);
-	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 
 	if (strcmp (key, GDM_KEY_SERVER_HANDLED) == 0)
 		section = g_strconcat(section, GDM_KEY_SERVER_HANDLED, NULL);
@@ -3526,8 +3533,8 @@ xserver_toggle_timeout (GtkWidget *toggle)
 		section = g_strconcat(section, GDM_KEY_SERVER_CHOOSER, NULL);
 
 	/* Locate this server's section */
-	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
-	gboolean val = ve_config_get_bool (cfg, section);
+	cfg = ve_config_get (GDM_CONFIG_FILE);
+	val = ve_config_get_bool (cfg, section);
 
 	/* Update this servers configuration */
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
@@ -3562,6 +3569,7 @@ static void
 xserver_populate_combobox(GtkComboBox* combobox)
 {
     gint i,j;
+    GSList *xservers;
 
 	/* Get number of items in combobox */
 	i = gtk_tree_model_iter_n_children(
@@ -3573,7 +3581,7 @@ xserver_populate_combobox(GtkComboBox* combobox)
     }
 
     /* Populate combobox with list of current servers */
-	GSList *xservers = xservers_get_server_definitions();
+	xservers = xservers_get_server_definitions();
     g_slist_foreach(xservers, (GFunc) xserver_append_combobox, combobox);
 }
 
@@ -3657,16 +3665,18 @@ xserver_remove(gpointer data)
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
+		char *key;
+
 		/* Update config */
 		cfg = ve_config_get (GDM_CONFIG_FILE);
 		gtk_tree_model_get (model, &iter, XSERVER_COLUMN_VT, &vt, -1);
 
 
 		g_snprintf (vt_value,  sizeof (vt_value), "%d", vt);
-		char *key = g_object_get_data (G_OBJECT (combo), "key");
+		key = g_object_get_data (G_OBJECT (combo), "key");
 		key = g_strconcat (key, "/", vt_value, "=", NULL);
 		ve_config_delete_key (cfg, key);
-    	ve_config_save (cfg, FALSE /* force */);
+		ve_config_save (cfg, FALSE /* force */);
 
 		/* Update gdmsetup */
 		xserver_init_server_list();
@@ -3679,10 +3689,10 @@ xserver_remove(gpointer data)
 static void
 xserver_add(gpointer data)
 {
-
+	VeConfig *cfg;
 	GtkWidget *spinner, *combo, *entry, *button;
 	gchar *string;
-	char spinner_value[3];
+	char spinner_value[3], *key;
 
 	/* Get Widgets from glade */
 	spinner      = glade_helper_get (xml, "xserver_spin_button",
@@ -3695,7 +3705,7 @@ xserver_add(gpointer data)
 		                                    GTK_TYPE_BUTTON);
 
 	/* Section in config to modify */
-	char *key = g_object_get_data (G_OBJECT (combo), "key");
+	key = g_object_get_data (G_OBJECT (combo), "key");
 
 	/* String to add to config */
 	g_snprintf (spinner_value,  sizeof (spinner_value), "%d", 
@@ -3707,7 +3717,7 @@ xserver_add(gpointer data)
 	                      NULL);
 
 	/* Add to config */
-	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
+	cfg = ve_config_get (GDM_CONFIG_FILE);
 	ve_config_set_string (cfg, key, ve_sure_string(string));
     ve_config_save (cfg, FALSE /* force */);
 
@@ -3727,6 +3737,9 @@ xserver_add(gpointer data)
 static void
 xserver_create(gpointer data)
 {
+	VeConfig *cfg;
+	gboolean success;
+
 	/* Init Widgets */
 	GtkWidget *frame, *modify_combobox;
 	GtkWidget *name_entry, *command_entry;
@@ -3761,12 +3774,14 @@ xserver_create(gpointer data)
 
 	/* TODO: Create a new section for this server */
 	/* TODO: Write this value to the config and update xservers list */
-	VeConfig *cfg = ve_config_get (GDM_CONFIG_FILE);
-	gboolean success = FALSE;
+	cfg = ve_config_get (GDM_CONFIG_FILE);
+	success = FALSE;
 	/* success = ve_config_add_section (cfg, SECTION_NAME); */
 
 	if (success)
 	{
+		gint i;
+
 		/* Update settings for new server */
 		gtk_widget_set_sensitive (frame, TRUE);
 		gtk_widget_set_sensitive (delete_button, TRUE);
@@ -3784,7 +3799,7 @@ xserver_create(gpointer data)
 		                              FALSE);
 
 		/* Select the new server in the combobox */
-		gint i = gtk_tree_model_iter_n_children (
+		i = gtk_tree_model_iter_n_children (
 		   gtk_combo_box_get_model (GTK_COMBO_BOX (modify_combobox)), NULL) - 1;
 		gtk_combo_box_set_active (GTK_COMBO_BOX (modify_combobox), i);
 	}

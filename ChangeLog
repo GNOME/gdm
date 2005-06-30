@@ -2,6 +2,12 @@
 
 	* docs/C/gdm.xml: Corrected grammar.  Thanks
 	  to Martin Petersen for noticing this.
+	* gui/gdmlogin.c, gui/gdmsetup.c:  No longer
+	  use C99 features that do not work with gcc
+	  2.95, specifically do not declare variables
+	  except at the beginning of a block.  Fixes
+	  bug #309110, patch provied by Jens
+	  Granseuer.
 
 2005-06-22  Brian Cameron  <brian.cameron@sun.com>
 
