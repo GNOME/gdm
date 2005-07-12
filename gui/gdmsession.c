@@ -126,7 +126,7 @@ gdm_session_list_init ()
 
     if (GdmShowGnomeFailsafeSession) {
 	session = g_new0 (GdmSession, 1);
-	session->name = g_strdup (_("Failsafe _Gnome"));
+	session->name = g_strdup (_("Failsafe _GNOME"));
 	session->comment = g_strdup (_("This is a failsafe session that will log you "
 		"into GNOME. No startup scripts will be read "
 		"and it is only to be used when you can't log "
@@ -289,7 +289,7 @@ gdm_session_list_init ()
 
     if (GdmShowGnomeFailsafeSession) {
 	    session = g_new0 (GdmSession, 1);
-	    session->name = g_strdup (_("Failsafe _Gnome"));
+	    session->name = g_strdup (_("Failsafe _GNOME"));
 	    session->comment = g_strdup (_("This is a failsafe session that will log you "
 				    "into GNOME. No startup scripts will be read "
                                     "and it is only to be used when you can't log "
