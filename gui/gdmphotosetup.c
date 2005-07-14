@@ -19,13 +19,16 @@
  */
 
 #include "config.h"
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 
 #include <viciousui.h>
 
@@ -292,7 +295,7 @@ main (int argc, char *argv[])
 					     "in the facebrowser:")),
 			    FALSE, FALSE, 0);
 
-	if (stat (current_pix, &s) < 0 || current_pix == NULL) {
+	if (g_stat (current_pix, &s) < 0 || current_pix == NULL) {
 		preview       = gtk_image_new ();
 		current_image = gtk_image_new ();
 	} else {
@@ -335,7 +338,7 @@ main (int argc, char *argv[])
 			break;
 
 		if (ve_string_empty (current_pix) ||
-		    stat (current_pix, &s) < 0) {
+		    g_stat (current_pix, &s) < 0) {
 
 			/*
 			 * This can happen if the user has a setting for their face
@@ -357,7 +360,7 @@ main (int argc, char *argv[])
 						      "/.gnome2/gdm",
 						      NULL);
 
-			VE_IGNORE_EINTR (unlink (photofile));
+			VE_IGNORE_EINTR (g_unlink (photofile));
 			preview_pixbuf = gtk_image_get_pixbuf (GTK_IMAGE (current_image));
 
 			if (gdk_pixbuf_save (preview_pixbuf, photofile, "png", NULL,
@@ -391,8 +394,8 @@ main (int argc, char *argv[])
 			gnome_config_sync ();
 
 			/* ensure proper permissions */
-			chmod (cfg_file, 0600);
-			chmod (photofile, 0600);
+			g_chmod (cfg_file, 0600);
+			g_chmod (photofile, 0644);
 
 			g_free (cfg_file);
 			g_free (photofile);
