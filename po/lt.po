@@ -4,14 +4,15 @@
 # Mantas Kriaučiūnas <mantelis@centras.lt>, 2002-2003.
 # Eglė Girinaitė <eglyte@centras.lt>, 2002.
 # Žygimantas Beručka  <uid0@akl.lt>, 2003-2005.
+# Justina Klingaitė <uid0@akl.lt>, 2005.
 # 
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-05 12:22+0200\n"
-"PO-Revision-Date: 2005-03-05 12:23+0200\n"
+"POT-Creation-Date: 2005-07-18 05:52+0000\n"
+"PO-Revision-Date: 2005-07-18 19:27+0300\n"
 "Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -184,7 +185,7 @@ msgstr "%s: Nepavyko įrašyti slapuko"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Ignoruojama įtartinai atrodanti slapuko byla %s"
 
-#: ../daemon/auth.c:898 ../daemon/gdm.c:2018 ../daemon/gdm.c:2374
+#: ../daemon/auth.c:898 ../daemon/gdm.c:2078 ../daemon/gdm.c:2434
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Negalima rašyti į %s: %s"
@@ -202,13 +203,13 @@ msgstr "Negalima rašyti į %s: %s"
 #: ../daemon/display.c:111
 #, c-format
 msgid ""
-"The display server has been shut down about 6 times in the last 90 seconds, "
-"it is likely that something bad is going on.  I will wait for 2 minutes "
-"before trying again on display %s."
+"The display server has been shut down about 6 times in the last 90 seconds. "
+"It is likely that something bad is going on.  Waiting for 2 minutes before "
+"trying again on display %s."
 msgstr ""
 "Ekrano serveris buvo išjungtas maždaug 6 kartus per paskutines 90 sekundžių, "
-"greičiausiai vyksta kažkas negero.  Prieš bandydamas vėl ekrane %s aš 2 "
-"minutes palauksiu."
+"greičiausiai vyksta kažkas negero. Po 2 minučių laukimo, ekrane %s bus "
+"bandoma prisijungti iš naujo."
 
 #: ../daemon/display.c:257
 #, c-format
@@ -306,138 +307,138 @@ msgstr "%s: Nepavyko sukurti FIFO"
 msgid "%s: Could not open FIFO"
 msgstr "%s: Nepavyko atverti FIFO"
 
-#: ../daemon/gdm.c:264
+#: ../daemon/gdm.c:299
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist. Please correct gdm configuration %s and restart gdm."
 msgstr ""
-"Serverio autorizacijos katalogas (demonas/ServAuthDir) nustatytas %s, bet "
+"Serverio autorizacijos aplankas (demonas/ServAuthDir) nustatytas %s, bet "
 "jis neegzistuoja. Pataisykite gdm konfigūraciją %s ir iš naujo paleiskite "
 "gdm."
 
-#: ../daemon/gdm.c:273
+#: ../daemon/gdm.c:308
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s neegzistuoja. Nutraukiu darbą."
 
-#: ../daemon/gdm.c:278
+#: ../daemon/gdm.c:313
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory. Please correct gdm configuration %s and restart gdm."
 msgstr ""
-"Serverio autorizacijos katalogas (demonas/ServAuthDir) nustatytas kaip %s, "
-"bet tai nėra katalogas. Pataisykite gdm konfigūraciją %s ir iš naujo "
+"Serverio autorizacijos aplankas (demonas/ServAuthDir) nustatytas kaip %s, "
+"bet tai nėra aplankas. Pataisykite gdm konfigūraciją %s ir iš naujo "
 "paleiskite gdm."
 
-#: ../daemon/gdm.c:287
+#: ../daemon/gdm.c:322
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
-msgstr "%s: Authdir %s nėra katalogas. Nutraukiu."
+msgstr "%s: Authdir %s nėra aplankas. Nutraukiama."
 
-#: ../daemon/gdm.c:300
+#: ../daemon/gdm.c:335
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
-"%s: Žurnalo katalogas %s neegzistuoja arba nėra katalogas.  Naudoju "
+"%s: Žurnalo aplankas %s neegzistuoja arba nėra aplankas.  Naudojame "
 "ServAuthDir %s."
 
-#: ../daemon/gdm.c:329 ../gui/gdmlogin.c:651 ../gui/greeter/greeter.c:106
+#: ../daemon/gdm.c:364 ../gui/gdmlogin.c:876 ../gui/greeter/greeter.c:173
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
-msgstr "%s: Nėra konfigūracijos bylos: %s. Naudojam įprastą."
+msgstr "%s: Nėra konfigūracijos bylos: %s. Naudojami numatytieji nustatymai."
 
-#: ../daemon/gdm.c:380
+#: ../daemon/gdm.c:415
 #, c-format
-msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
-msgstr "%s: BaseXsession tuščia, naudoju %s/gdm/Xsession"
+msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
+msgstr "%s: BaseXsession tuščia; naudojama %s/gdm/Xsession"
 
-#: ../daemon/gdm.c:424
+#: ../daemon/gdm.c:468
 #, c-format
-msgid "%s: Standard X server not found, trying alternatives"
+msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: Standartinis X serveris nerastas, bandomos alternatyvos"
 
-#: ../daemon/gdm.c:456
+#: ../daemon/gdm.c:510
 #, c-format
-msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
-msgstr "%s: XDMCP buvo įjungtas, bet nėra XDMCP palaikymo, išjungiu jį"
+msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
+msgstr "%s: XDMCP buvo įjungtas, bet nėra XDMCP palaikymo, jis išjungiamas"
 
-#: ../daemon/gdm.c:469
+#: ../daemon/gdm.c:523
 #, c-format
-msgid "%s: Root cannot be autologged in, turing off automatic login"
+msgid "%s: Root cannot be logged in automatically, turning off automatic login"
 msgstr ""
-"%s: Root negali automatiškai prisijungti, išjungiamas automatinis "
+"%s: Root negali prisijungti automatiškai, išjungiamas automatinis "
 "prisijungimas"
 
-#: ../daemon/gdm.c:482
+#: ../daemon/gdm.c:536
 #, c-format
-msgid "%s: Root cannot be autologged in, turing off timed login"
+msgid "%s: Root cannot be logged in automatically, turning off timed login"
 msgstr ""
-"%s: Root negali automatiškai prisijungti, išjungiu uždelstą prisijungimą"
+"%s: Root negali automatiškai prisijungti, išjungiamas uždelstas prisijungimas"
 
-#: ../daemon/gdm.c:488
+#: ../daemon/gdm.c:542
 #, c-format
-msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
-msgstr "%s: TimedLoginDelay yra mažiau nei 5, taigi bus naudojamas 5."
+msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
+msgstr "%s: TimedLoginDelay yra mažiau nei 5, bus naudojamas 5."
 
-#: ../daemon/gdm.c:498
+#: ../daemon/gdm.c:552
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Nenurodytas pasveikintuvas."
 
-#: ../daemon/gdm.c:501
+#: ../daemon/gdm.c:555
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Nenurodytas nuotolinis pasveikintuvas."
 
-#: ../daemon/gdm.c:505
+#: ../daemon/gdm.c:559
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Nenurodytas sesijų aplankas."
 
-#: ../daemon/gdm.c:530
+#: ../daemon/gdm.c:584
 #, c-format
-msgid "%s: Empty server command, using standard one."
-msgstr "%s: Tuščia serverio komanda, naudoju standartinę."
+msgid "%s: Empty server command; using standard command."
+msgstr "%s: Tuščia serverio komanda, naudojama standartinė."
 
-#: ../daemon/gdm.c:573
+#: ../daemon/gdm.c:627
 #, c-format
-msgid "%s: Display number %d in use!  I will use %d"
-msgstr "%s: Ekranas numeriu %d jau naudojamas! Naudosiu %d"
+msgid "%s: Display number %d in use!  Defaulting to %d"
+msgstr "%s: Ekranas numeriu %d jau naudojamas! Grįžtama prie %d"
 
-#: ../daemon/gdm.c:592
+#: ../daemon/gdm.c:646
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Netaisyklinga serverio eilutė konfigūracijos byloje. Ignoruoju!"
 
-#: ../daemon/gdm.c:603 ../daemon/gdm.c:644
+#: ../daemon/gdm.c:658 ../daemon/gdm.c:699
 #, c-format
-msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
-msgstr "%s: XDMCP atjungtas ir nenurodytas joks vietinis serveris. Nutraukiu!"
+msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
+msgstr "%s: XDMCP atjungtas ir nenurodytas joks statinis serveris. Nutraukiama!"
 
 #. start
 #. server uid
-#: ../daemon/gdm.c:621
+#: ../daemon/gdm.c:676
 #, c-format
 msgid ""
-"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
+"%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
 "configuration!"
 msgstr ""
-"%s: XDMCP atjungtas ir nėra nurodytų vietinių serverių. Konfigūracijos "
+"%s: XDMCP atjungtas ir nėra nurodytų statinių serverių. Konfigūracijos "
 "leidimui pridedamas %s ant :%d!"
 
-#: ../daemon/gdm.c:636
+#: ../daemon/gdm.c:691
 #, c-format
 msgid ""
-"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
-"Please correct the configuration %s and restart gdm."
+"XDMCP is disabled and gdm cannot find any static server to start.  "
+"Aborting!  Please correct the configuration %s and restart gdm."
 msgstr ""
-"XDMCP atjungtas ir gdm negali rasti jokio vietinio serverio.  Nutraukiu! "
+"XDMCP atjungtas ir gdm negali rasti jokio statinio serverio.  Nutraukiama! "
 "Pataisykite konfigūraciją %s ir paleiskite iš naujo gdm."
 
-#: ../daemon/gdm.c:658
+#: ../daemon/gdm.c:716
 #, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
@@ -446,12 +447,12 @@ msgstr ""
 "gdm naudotojas neegzistuoja. Pataisykite gdm nustatymą %s ir paleiskite iš "
 "naujo gdm."
 
-#: ../daemon/gdm.c:665
+#: ../daemon/gdm.c:723
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "%s: Nepavyko rasti gdm vartotojo (%s). Nutraukiama!"
 
-#: ../daemon/gdm.c:672
+#: ../daemon/gdm.c:730
 #, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
@@ -460,12 +461,12 @@ msgstr ""
 "gdm naudotojas yra root, tačiau tai neleidžiama dėl saugumo. Pataisykite gdm "
 "nustatymą %s ir paleiskite gdm iš naujo."
 
-#: ../daemon/gdm.c:680
+#: ../daemon/gdm.c:738
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr "%s: gdm vartotojas neturėtų būti root. Nutraukiu!"
 
-#: ../daemon/gdm.c:687
+#: ../daemon/gdm.c:745
 #, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
@@ -474,12 +475,12 @@ msgstr ""
 "gdm grupė neegzistuoja. Pataisykite gdm nustatymą %s ir paleiskite gdm iš "
 "naujo."
 
-#: ../daemon/gdm.c:694
+#: ../daemon/gdm.c:752
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "%s: Nepavyko rasti gdm grupės (%s). Nutraukiu!"
 
-#: ../daemon/gdm.c:701
+#: ../daemon/gdm.c:759
 #, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
@@ -488,122 +489,122 @@ msgstr ""
 "gdm grupė yra root, tačiau tai nėra leidžiama dėl saugumo. Pataisykite gdm "
 "nustatymą %s ir paleiskite gdm iš naujo."
 
-#: ../daemon/gdm.c:709
+#: ../daemon/gdm.c:767
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr "%s: gdm grupė neturėtų būti root. Nutraukiu!"
 
-#: ../daemon/gdm.c:724
+#: ../daemon/gdm.c:782
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr "%s: Pasveikintuvas nerastas arba negali būti paleistas gdm naudotojo"
 
-#: ../daemon/gdm.c:731
+#: ../daemon/gdm.c:789
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
 msgstr ""
 "%s: Nuotolinis pasveikintuvas nerastas arba negali būti paleistas gdm "
 "naudotojo"
 
-#: ../daemon/gdm.c:742
+#: ../daemon/gdm.c:800
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr "%s: Parinkiklis nerastas arba negali būti paleistas gdm naudotojo"
 
-#: ../daemon/gdm.c:751
+#: ../daemon/gdm.c:809
 msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "Konfigūracijos byloje nenurodytas demonas/ServAuthDir"
 
-#: ../daemon/gdm.c:753
+#: ../daemon/gdm.c:811
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Nenurodytas demonas/ServAuthDir."
 
-#: ../daemon/gdm.c:777
+#: ../daemon/gdm.c:835
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
 "owned by user %s and group %s. Please correct the ownership or gdm "
 "configuration %s and restart gdm."
 msgstr ""
-"Serverio autorizacijos katalogas (demonas/ServAuthDir) nustatytas į %s, bet "
+"Serverio autorizacijos aplankas (demonas/ServAuthDir) nustatytas į %s, bet "
 "jo savininkas nėra %s ir grupė %s. Pataisykite nuosavybės teises arba gdm "
 "konfigūraciją %s ir paleiskite iš naujo gdm."
 
-#: ../daemon/gdm.c:788
+#: ../daemon/gdm.c:846
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Authdir %s nepriklauso vartotojui %s, grupei %s. Nutraukiu."
 
-#: ../daemon/gdm.c:794
+#: ../daemon/gdm.c:852
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
-"wrong permissions, it should have permissions of %o. Please correct the "
+"wrong permissions: it should have permissions of %o. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
 msgstr ""
-"Serverio autorizacijos katalogas (demonas/ServAuthDir) nustatytas į %s, bet "
+"Serverio autorizacijos aplankas (demonas/ServAuthDir) nustatytas į %s, bet "
 "turi neteisingus leidimus, jis turi turėti %o leidimus. Pataisykite leidimus "
 "arba gdm konfigūraciją %s ir paleiskite iš naujo gdm."
 
-#: ../daemon/gdm.c:805
+#: ../daemon/gdm.c:863
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 "%s: Authdir %s turi neteisingus leidimus %o. Turėtų būti %o. Nutraukiu."
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:861 ../daemon/gdm.c:869 ../daemon/gdm.c:2149
-#: ../daemon/gdm.c:2157
+#: ../daemon/gdm.c:919 ../daemon/gdm.c:927 ../daemon/gdm.c:2209
+#: ../daemon/gdm.c:2217
 #, c-format
-msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
+msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr ""
-"Nepavyko įrašyti PID bylos %s, greičiausiai diske nėra vietos.  Klaida: %s\n"
+"Įrašyti PID bylos %s nepavyko, tikriausiai diske nėra vietos.  Klaida: %s\n"
 
-#: ../daemon/gdm.c:863 ../daemon/gdm.c:871 ../daemon/gdm.c:2151
-#: ../daemon/gdm.c:2159
+#: ../daemon/gdm.c:921 ../daemon/gdm.c:929 ../daemon/gdm.c:2211
+#: ../daemon/gdm.c:2219
 #, c-format
-msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
+msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr ""
-"Nepavyko įrašyti PID bylos %s, greičiausiai diske nėra vietos.  Klaida: %s"
+"Įrašyti PID bylos %s nepavyko, tkriausiai diske nėra vietos.  Klaida: %s"
 
-#: ../daemon/gdm.c:881
+#: ../daemon/gdm.c:939
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: fork() nepavyko!"
 
 #. should never happen
-#: ../daemon/gdm.c:884 ../daemon/slave.c:3433
+#: ../daemon/gdm.c:942 ../daemon/slave.c:3563
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() nepavyko: %s!"
 
-#: ../daemon/gdm.c:1071
+#: ../daemon/gdm.c:1129
 #, c-format
 msgid "%s: Trying failsafe X server %s"
-msgstr "%s: Bandau atsarginį X serverį %s"
+msgstr "%s: Bandomas atsarginis X serveris %s"
 
-#: ../daemon/gdm.c:1089
+#: ../daemon/gdm.c:1147
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
-msgstr "%s: Leidžiu XKeepsCrashing scenarijų"
+msgstr "%s: Paleidžiamas  XKeepsCrashing scenarijus"
 
-#: ../daemon/gdm.c:1209
+#: ../daemon/gdm.c:1267
 msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly. You will need to log in on a console and rerun "
-"the X configuration program.  Then restart GDM."
+"The X server (your graphical interface) cannot be started.  It is likely "
+"that it is not set up correctly.  You will need to log in on a console and "
+"rerun the X configuration program, then restart GDM."
 msgstr ""
-"Nepavyko paleisti X serverio (Jūsų grafinės aplinkos). Ji turbūt "
-"nesutvarkyta. Prisijunkite terminale ir paleiskite X serverio konfigūravimo "
-"programą. Kai baigsite, paleiskite GDM iš naujo."
+"Nepavyko paleisti X serverio (Jūsų grafinės aplinkos). Tikėtina, kad ji "
+"neteisingai sutvarkyta. Turite prisijungti terminale ir paleisti X serverio "
+"konfigūravimo programą. Baigę tvarkyti, paleiskite GDM iš naujo."
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:1221
+#: ../daemon/gdm.c:1279
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -612,95 +613,95 @@ msgstr ""
 "Nepavyko paleisti X serverio kelis kartus per trumpą laiko tarpą, išjungiu "
 "ekraną %s"
 
-#: ../daemon/gdm.c:1229 ../daemon/gdm.c:2877
+#: ../daemon/gdm.c:1287 ../daemon/gdm.c:3004
 msgid "Master suspending..."
 msgstr "Kompiuteris sulaikomas..."
 
-#: ../daemon/gdm.c:1283
+#: ../daemon/gdm.c:1341
 #, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "Sistema įkeliama iš naujo, prašau palaukti ..."
 
-#: ../daemon/gdm.c:1285
+#: ../daemon/gdm.c:1343
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "Sistema išjungiama, prašom palaukti ..."
 
-#: ../daemon/gdm.c:1296
+#: ../daemon/gdm.c:1354
 msgid "Master halting..."
 msgstr "Kompiuteris išjungiamas..."
 
-#: ../daemon/gdm.c:1309
+#: ../daemon/gdm.c:1367
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: Išjungimas nepavyko: %s"
 
-#: ../daemon/gdm.c:1318
+#: ../daemon/gdm.c:1376
 msgid "Master rebooting..."
 msgstr "Kompiuteris perkraunamas..."
 
-#: ../daemon/gdm.c:1331
+#: ../daemon/gdm.c:1389
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: Perkrovimas nepavyko: %s"
 
-#: ../daemon/gdm.c:1429
+#: ../daemon/gdm.c:1490
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "Gauta perkrovimo arba išjungimo užklausa, nors ekrane %s nėra sistemos meniu"
 
-#: ../daemon/gdm.c:1438
+#: ../daemon/gdm.c:1499
 #, c-format
-msgid "Restart, Reboot or Halt request from a non-local display %s"
-msgstr "Perleidimo, perkrovimo arba išjungimo užklausa iš nevietinio ekrano %s"
+msgid "Restart, Reboot or Halt request from a non-static display %s"
+msgstr "Perleidimo, perkrovimo arba išjungimo užklausa iš ne statinio ekrano %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:1504
+#: ../daemon/gdm.c:1565
 #, c-format
 msgid "%s: Aborting display %s"
-msgstr "%s: Nutraukiu ekraną %s"
+msgstr "%s: Ekranas %s išjungiamas"
 
-#: ../daemon/gdm.c:1655
+#: ../daemon/gdm.c:1716
 msgid "GDM restarting ..."
 msgstr "GDM paleidžiamas iš naujo ..."
 
-#: ../daemon/gdm.c:1659
+#: ../daemon/gdm.c:1720
 msgid "Failed to restart self"
 msgstr "Nepavyko savęs paleisti iš naujo"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1733
-msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
+#: ../daemon/gdm.c:1794
+msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr ""
-"pagrindinis demonas: Gavau SIGABRT, atsitiko kažkas labai negero. Išsijungiu!"
+"pagrindinis demonas: Gautas SIGABRT. Atsitiko kažkas labai negero. Išjungiama!"
 
-#: ../daemon/gdm.c:1892
+#: ../daemon/gdm.c:1952
 msgid "Do not fork into the background"
 msgstr "Neatšakoti į foną"
 
-#: ../daemon/gdm.c:1894
-msgid "No console (local) servers to be run"
-msgstr "Nėra paleidžiamų konsolės (vietinių) serverių"
+#: ../daemon/gdm.c:1954
+msgid "No console (static) servers to be run"
+msgstr "Nėra paleidžiamų konsolės (statinių) serverių"
 
-#: ../daemon/gdm.c:1896
+#: ../daemon/gdm.c:1956
 msgid "Preserve LD_* variables"
 msgstr "Išsaugoti LD_* kintamuosius"
 
-#: ../daemon/gdm.c:1898
+#: ../daemon/gdm.c:1958
 msgid "Print GDM version"
 msgstr "Rodyti GDM versiją"
 
-#: ../daemon/gdm.c:1900
+#: ../daemon/gdm.c:1960
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "Paleisti pirmą X serverį, bet tada sustoti kol fifo gausime GO"
 
-#: ../daemon/gdm.c:2007 ../daemon/gdm.c:2343
+#: ../daemon/gdm.c:2067 ../daemon/gdm.c:2403
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Nepavyko atverti %s rašymui"
 
-#: ../daemon/gdm.c:2064 ../gui/gdmchooser.c:2057
+#: ../daemon/gdm.c:2124 ../gui/gdmchooser.c:2057
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -710,55 +711,59 @@ msgstr ""
 "Paleiskit '%s --help', kad pamatyti pilną sąrašą galimų komandinės eilutės "
 "parametrų.\n"
 
-#: ../daemon/gdm.c:2087
+#: ../daemon/gdm.c:2147
 msgid "Only root wants to run gdm\n"
 msgstr "Tik root'as nori paleisti gdm\n"
 
-#: ../daemon/gdm.c:2103 ../daemon/gdm.c:2107 ../daemon/gdm.c:2182
-#: ../daemon/gdm.c:2186 ../daemon/gdm.c:2190 ../daemon/gdm.c:2194
-#: ../daemon/gdm.c:2204 ../daemon/gdm.c:2210 ../daemon/gdm.c:2221
+#: ../daemon/gdm.c:2163 ../daemon/gdm.c:2167 ../daemon/gdm.c:2242
+#: ../daemon/gdm.c:2246 ../daemon/gdm.c:2250 ../daemon/gdm.c:2254
+#: ../daemon/gdm.c:2264 ../daemon/gdm.c:2270 ../daemon/gdm.c:2281
 #: ../daemon/misc.c:1746 ../daemon/misc.c:1750 ../daemon/misc.c:1754
 #: ../daemon/misc.c:1761 ../daemon/misc.c:1765 ../daemon/misc.c:1769
-#: ../daemon/server.c:521 ../daemon/server.c:534 ../daemon/slave.c:810
-#: ../daemon/slave.c:824 ../daemon/slave.c:834 ../daemon/slave.c:844
-#: ../daemon/slave.c:856 ../gui/gdmchooser.c:1936 ../gui/gdmchooser.c:1939
-#: ../gui/gdmchooser.c:1942 ../gui/gdmlogin.c:3962 ../gui/gdmlogin.c:3970
-#: ../gui/gdmlogin.c:3973 ../gui/greeter/greeter.c:1094
-#: ../gui/greeter/greeter.c:1102 ../gui/greeter/greeter.c:1105
+#: ../daemon/server.c:531 ../daemon/server.c:544 ../daemon/slave.c:815
+#: ../daemon/slave.c:829 ../daemon/slave.c:839 ../daemon/slave.c:849
+#: ../daemon/slave.c:861 ../gui/gdmchooser.c:1936 ../gui/gdmchooser.c:1939
+#: ../gui/gdmchooser.c:1942 ../gui/gdmlogin.c:3759 ../gui/gdmlogin.c:3767
+#: ../gui/gdmlogin.c:3770 ../gui/greeter/greeter.c:1260
+#: ../gui/greeter/greeter.c:1268 ../gui/greeter/greeter.c:1271
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Klaida nustatant %s signalo valdiklį: %s"
 
-#: ../daemon/gdm.c:2131
+#: ../daemon/gdm.c:2191
 msgid "gdm already running. Aborting!"
 msgstr "gdm jau paleistas. Nutraukiama!"
 
-#: ../daemon/gdm.c:2230
+#: ../daemon/gdm.c:2290
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Klaida nurodant CHLD signalo valdiklį"
 
-#: ../daemon/gdm.c:3633 ../daemon/gdm.c:3652 ../daemon/gdm.c:3796
-#: ../daemon/gdm.c:3854 ../daemon/gdm.c:3909 ../daemon/gdm.c:3954
-#: ../daemon/gdm.c:3981
+#: ../daemon/gdm.c:3418
+msgid "DYNAMIC request denied: Not authenticated"
+msgstr "DYNAMIC užklausa atmesta: Tapatybė nepatvirtinta"
+
+#: ../daemon/gdm.c:3892 ../daemon/gdm.c:3910 ../daemon/gdm.c:4094
+#: ../daemon/gdm.c:4147 ../daemon/gdm.c:4201 ../daemon/gdm.c:4245
+#: ../daemon/gdm.c:4271
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s užklausa atmesta: Nepatvirtinta tapatybė"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:3670
-msgid "Unknown server type requested, using standard server."
+#: ../daemon/gdm.c:3928
+msgid "Unknown server type requested; using standard server."
 msgstr "Užklaustas nežinomas serverio tipas, naudojamas standartinis serveris."
 
-#: ../daemon/gdm.c:3674
+#: ../daemon/gdm.c:3932
 #, c-format
 msgid ""
-"Requested server %s not allowed to be used for flexible servers, using "
+"Requested server %s not allowed to be used for flexible servers; using "
 "standard server."
 msgstr ""
 "Užklaustas serveris %s yra neleidžiamas naudoti lankstiems serveriams, "
-"naudoju standartinį serverį."
+"naudojamas standartinis serveris."
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:750
@@ -798,18 +803,18 @@ msgstr ""
 msgid "Can not start fallback console"
 msgstr "Nepavyko paleisti atsarginės konsolės"
 
-#: ../daemon/server.c:341
+#: ../daemon/server.c:350
 #, c-format
 msgid ""
-"There already appears to be an X server running on display %s.  Should I try "
-"another display number?  If you answer no, I will attempt to start the "
-"server on %s again.%s"
+"There already appears to be an X server running on display %s.  Should "
+"another display number by tried?  Answering no will cause GDM to attempt "
+"starting the server on %s again.%s"
 msgstr ""
-"Panašu, kad ekrane %s jau yra veikiantis X serveris.  Ar turėčiau bandyti "
-"kitą ekrano numerį?  Jeigu atsakysite neigiamai, aš pabandysiu paleisti "
+"Panašu, kad ekrane %s jau yra veikiantis X serveris.  Ar turėtų būti bandomas"
+"kitas ekrano numeris?  Jeigu atsakysite neigiamai, GDM pabandys paleisti "
 "serverį ekrane %s dar kartą.%s"
 
-#: ../daemon/server.c:348
+#: ../daemon/server.c:358
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -819,105 +824,110 @@ msgstr ""
 "Ctrl-Alt-F7 - pereiti į konsolę 7.  X serveriai paprastai veikia konsolėse 7 "
 "ir tolesnėse.)"
 
-#: ../daemon/server.c:394
+#: ../daemon/server.c:404
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Xnest negali atverti ekrano „%s“"
 
-#: ../daemon/server.c:425
+#: ../daemon/server.c:435
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Ekranas %s yra užimtas. Jau veikia kitas X serveris."
 
-#: ../daemon/server.c:509
+#: ../daemon/server.c:519
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Klaida atveriant konvejerį: %s"
 
+#: ../daemon/server.c:707
+#, c-format
+msgid "%s: failed to connect to parent display '\\%s'"
+msgstr "%s: nepavyko prisijungti motininio ekrano „\\%s“"
+
 #. Send X too busy
-#: ../daemon/server.c:794
+#: ../daemon/server.c:847
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Nepavyko rasti laisvo ekrano numerio"
 
-#: ../daemon/server.c:821
+#: ../daemon/server.c:874
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
-msgstr "%s: Ekranas %s užimtas.  Bandau kitą ekraną."
+msgstr "%s: Ekranas %s užimtas.  Bandomas kitas ekrano numeris."
 
-#: ../daemon/server.c:930
+#: ../daemon/server.c:983
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Neteisinga serverio komanda '%s'"
 
-#: ../daemon/server.c:935
+#: ../daemon/server.c:988
 #, c-format
-msgid "Server name '%s' not found, using standard server"
+msgid "Server name '%s' not found; using standard server"
 msgstr "Serverio vardas '%s' nerastas, naudojamas standartinis serveris"
 
-#: ../daemon/server.c:1112
+#: ../daemon/server.c:1165
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Nepavyko atverti ekrano %s žurnalo bylos!"
 
-#: ../daemon/server.c:1124 ../daemon/server.c:1130 ../daemon/server.c:1135
+#: ../daemon/server.c:1177 ../daemon/server.c:1183 ../daemon/server.c:1188
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Klaida nustatant %s į %s"
 
-#: ../daemon/server.c:1172
+#: ../daemon/server.c:1234
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tuščia serverio komanda ekranui %s"
 
-#: ../daemon/server.c:1186
+#: ../daemon/server.c:1248
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Serveris buvo sukurtas uid %d, bet toks vartotojas neegzistuoja"
 
-#: ../daemon/server.c:1201 ../daemon/slave.c:2497 ../daemon/slave.c:2974
+#: ../daemon/server.c:1263 ../daemon/slave.c:2629 ../daemon/slave.c:3104
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Nepavyko pakeisti groupid į %d"
 
-#: ../daemon/server.c:1207 ../daemon/slave.c:2502 ../daemon/slave.c:2979
+#: ../daemon/server.c:1269 ../daemon/slave.c:2634 ../daemon/slave.c:3109
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() %s nepavyko"
 
-#: ../daemon/server.c:1213 ../daemon/slave.c:2507 ../daemon/slave.c:2984
+#: ../daemon/server.c:1275 ../daemon/slave.c:2639 ../daemon/slave.c:3114
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Nepavyko pakeisti userid į %d"
 
-#: ../daemon/server.c:1220
+#: ../daemon/server.c:1282
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Nepavyko nustatyti groupid į 0"
 
-#: ../daemon/server.c:1237
+#: ../daemon/server.c:1299
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: Nerastas Xserver: %s"
 
-#: ../daemon/server.c:1245
+#: ../daemon/server.c:1307
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Nepavyko atšakoti Xserver proceso!"
 
-#: ../daemon/slave.c:306
+#: ../daemon/slave.c:313
 msgid "Can't set EGID to user GID"
 msgstr "Nepavyko nustatyti EGID į vartotojo GID"
 
-#: ../daemon/slave.c:314
+#: ../daemon/slave.c:321
 msgid "Can't set EUID to user UID"
 msgstr "Nepavyko nustatyti EUID į vartotojo UID"
 
-#: ../daemon/slave.c:1118
+#: ../daemon/slave.c:1173
 msgid "Log in anyway"
 msgstr "Vis tiek prisijungti"
 
-#: ../daemon/slave.c:1120
+#: ../daemon/slave.c:1175
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -925,23 +935,23 @@ msgstr ""
 "Jūs jau prisijungę. Galite vis tiek prisijungti, grįžti į ankstesnio "
 "prisijungimo sesiją, arba nutraukti šį prisijungimą"
 
-#: ../daemon/slave.c:1124
+#: ../daemon/slave.c:1179
 msgid "Return to previous login"
 msgstr "Grįžti prie ankstesnio prisijungimo"
 
-#: ../daemon/slave.c:1125 ../daemon/slave.c:1131
+#: ../daemon/slave.c:1180 ../daemon/slave.c:1186
 msgid "Abort login"
 msgstr "Nutraukti prisijungimą"
 
-#: ../daemon/slave.c:1128
+#: ../daemon/slave.c:1183
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 "Jūs jau prisijungę.  Galite vis tiek prisijungti arba nutraukti šį "
 "prisijungimą"
 
-#: ../daemon/slave.c:1219
+#: ../daemon/slave.c:1302
 msgid ""
-"I could not start the X\n"
+"Could not start the X\n"
 "server (your graphical environment)\n"
 "due to some internal error.\n"
 "Please contact your system administrator\n"
@@ -957,73 +967,79 @@ msgstr ""
 "arba patikrinkite syslog, jei norite\n"
 "diagnozuoti problemą.\n"
 "Kol kas šis ekranas bus atjungtas.\n"
-"Prašau paleisti iš naujo gdm, kai problema\n"
+"Paleiskite gdm iš naujo, kai problema\n"
 "bus išspręsta."
 
-#: ../daemon/slave.c:1468
+#: ../daemon/slave.c:1550
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: negaliu atšakoti"
 
-#: ../daemon/slave.c:1515
+#: ../daemon/slave.c:1597
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: negaliu atverti ekrano %s"
 
-#: ../daemon/slave.c:1666
+#: ../daemon/slave.c:1748
 msgid ""
-"Could not execute the configuration program.  Make sure it's path is set "
-"correctly in the configuration file.  I will attempt to start it from the "
+"Could not execute the configuration program.  Make sure its path is set "
+"correctly in the configuration file.  Attempting to start it from the "
 "default location."
 msgstr ""
 "Nepavyko paleisti konfigūravimo programos.  Įsitikinkite, kad konfigūracijos "
-"byloje jos kelias nurodytas teisingai.  Pabandysiu ją paleisti iš įprastos "
+"byloje jos kelias nurodytas teisingai. Bandoma ją paleisti iš įprastos "
 "vietos."
 
-#: ../daemon/slave.c:1680
+#: ../daemon/slave.c:1762
 msgid ""
-"Could not execute the configuration program.  Make sure it's path is set "
+"Could not execute the configuration program.  Make sure its path is set "
 "correctly in the configuration file."
 msgstr ""
 "Nepavyko paleisti konfigūravimo programos.  Įsitikinkite, kad "
 "konfigūracinėje byloje jos kelias nurodytas teisingai."
 
-#: ../daemon/slave.c:1810
-msgid ""
-"Enter the root password\n"
-"to run the configuration."
+#: ../daemon/slave.c:1924
+msgid "You must authenticate as root to run configuration."
 msgstr ""
-"Įveskite root slaptažodį,\n"
-"jei norite keisti nustatymus."
+"Norėdami paleisti konfigūraciją, Jūs turite prisijungti kaip root."
 
-#: ../daemon/slave.c:2451 ../daemon/slave.c:2456
+
+#: ../daemon/slave.c:2054 ../daemon/slave.c:2077
+msgid ""
+"Login sound requested on non-local display or the play software cannot be "
+"run or the sound does not exist."
+msgstr ""
+"Paprašytas prisijungimo garsas ne vietiniame ekrane, grojimo programos "
+"negali būti paleistos, arba garsas neegzistuoja."
+
+#: ../daemon/slave.c:2583 ../daemon/slave.c:2588
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Nepavyko sukurti konvejerio į gdmgreeter"
 
-#: ../daemon/slave.c:2579
+#: ../daemon/slave.c:2709
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
-"This can only be a configuration error.  So I have started a single server "
-"for you.  You should log in and fix the configuration.  Note that automatic "
-"and timed logins are disabled now."
+"This can only be a configuration error.  GDM has started a single server for "
+"you.  You should log in and fix the configuration.  Note that automatic and "
+"timed logins are disabled now."
 msgstr ""
 "Konfigūracijos byloje nebuvo nurodytas nei vienas serveris ir XDMCP buvo "
-"išjungtas.  Tai gali būti tik konfigūracijos klaida.  Taigi aš Jums paleidau "
-"vieną serverį.  Jūs turėtumėte prisijungti ir pataisyti konfigūraciją.  "
-"Pastaba: automatiniai ir uždelsti prisijungimai dabar yra išjungti."
+"išjungtas. Tai gali būti tik konfigūracijos klaida. Taigi aš Jums paleidau "
+"vieną serverį. Jūs turėtumėte prisijungti ir pataisyti konfigūraciją.  "
+"Pastebėkite, kad dabar automatiniai ir uždelsti prisijungimai yra išjungti."
 
-#: ../daemon/slave.c:2593
+#: ../daemon/slave.c:2723
 msgid ""
-"I could not start the regular X server (your graphical environment) and so "
+"Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
 "server."
 msgstr ""
-"Nepavyko paleisti įprasto X serverio (jūsų grafinės aplinkos) taigi dabar "
-"yra failsafe X serveris.  Jūs turėtumėte prisijungti ir tinkamai nustatyti X "
-"serverį."
+"Nepavyko paleisti įprasto X serverio (Jūsų grafinės aplinkos) taigi dabar "
+"tai yra failsafe X serveris.  Jūs turėtumėte prisijungti ir tinkamai "
+"sukonfigūruoti X serverį."
 
-#: ../daemon/slave.c:2602
+#: ../daemon/slave.c:2732
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1032,27 +1048,27 @@ msgstr ""
 "Nurodytas ekrano numeris buvo užimtas, taigi šis serveris buvo paleistas "
 "ekrane %s."
 
-#: ../daemon/slave.c:2622
+#: ../daemon/slave.c:2752
 msgid ""
 "The greeter program appears to be crashing.\n"
-"I will attempt to use a different one."
+"Attempting to use a different one."
 msgstr ""
 "Atrodo, kad pasveikintuvo programa lūžinėja.\n"
-"Bandysiu naudoti kitą."
+"Bandomas naudoti kitas."
 
 #. Something went wrong
-#: ../daemon/slave.c:2643
+#: ../daemon/slave.c:2773
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: Nepavyko paleisti pasveikintuvo su gtk moduliais: %s. Bandau be modulių"
 
-#: ../daemon/slave.c:2650
+#: ../daemon/slave.c:2780
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Nepavyko paleisti pasveikintuvo, bandau įprastą: %s"
 
-#: ../daemon/slave.c:2662
+#: ../daemon/slave.c:2792
 msgid ""
 "Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1063,178 +1079,180 @@ msgstr ""
 "paredaguokite konfigūracijos bylą."
 
 #. If no greeter we really have to disable the display
-#: ../daemon/slave.c:2669
+#: ../daemon/slave.c:2799
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Klaida paleidžiant pasveikintuvą ekrane %s"
 
-#: ../daemon/slave.c:2673
+#: ../daemon/slave.c:2803
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Nepavyko atšakoti gdmgreeter proceso"
 
-#: ../daemon/slave.c:2758
+#: ../daemon/slave.c:2888
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Nepavyko atverti fifo!"
 
-#: ../daemon/slave.c:2934
+#: ../daemon/slave.c:3064
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Nepavyko sukurti konvejerio į gdmchooser"
 
-#: ../daemon/slave.c:3031
+#: ../daemon/slave.c:3161
 msgid ""
-"Cannot start the chooser program, you will probably not be able to log in.  "
+"Cannot start the chooser program. You will probably not be able to log in.  "
 "Please contact the system administrator."
 msgstr ""
-"Nepavyko paleisti parinkiklio programos, Jūs greičiausiai negalėsite "
-"prisijungti.  Prašom susisiekti su sistemos administratoriumi."
+"Nepavyko paleisti parinkiklio programos. Tikėtina, kad Jūs negalėsite "
+"prisijungti. Susisiekite su sistemos administratoriumi."
 
-#: ../daemon/slave.c:3035
+#: ../daemon/slave.c:3165
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Klaida paleidžiant parinkiklį ekrane %s"
 
-#: ../daemon/slave.c:3038
+#: ../daemon/slave.c:3168
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: Nepavyko atšakoti gdmchooser proceso"
 
-#: ../daemon/slave.c:3334
+#: ../daemon/slave.c:3464
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Nepavyko atverti ~/.xsession-errors"
 
-#: ../daemon/slave.c:3469
+#: ../daemon/slave.c:3599
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
-msgstr "%s: Vykdant PreSession skriptą, gautas rezultatas > 0. Nutraukiu."
+msgstr "%s: Vykdant PreSession scenarijų, gautas rezultatas > 0. Nutraukiama."
 
-#: ../daemon/slave.c:3511
+#: ../daemon/slave.c:3643
 #, c-format
-msgid "Language %s does not exist, using %s"
-msgstr "Kalba %s neegzistuoja, naudoju %s"
+msgid "Language %s does not exist; using %s"
+msgstr "Kalba %s neegzistuoja; naudojama %s"
 
-#: ../daemon/slave.c:3512
+#: ../daemon/slave.c:3644
 msgid "System default"
 msgstr "Sistemos įprasta"
 
-#: ../daemon/slave.c:3528
+#: ../daemon/slave.c:3660
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Nepavyko sukurti aplinkos skirtos %s. Nutraukiu."
 
-#: ../daemon/slave.c:3575
+#: ../daemon/slave.c:3707
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() %s nepavyko. Nutraukiama."
 
-#: ../daemon/slave.c:3581
+#: ../daemon/slave.c:3713
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Nepavyko tapti %s. Nutraukiama."
 
-#: ../daemon/slave.c:3644
+#: ../daemon/slave.c:3776
 #, c-format
-msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
-msgstr "%s: Sesijos byloje nerasta Exec eilutė: %s, leidžiu failsafe GNOME"
+msgid "%s: No Exec line in the session file: %s. Starting failsafe GNOME"
+msgstr "%s: Sesijos byloje nerasta Exec eilutė: %s. Leidžiu failsafe GNOME"
 
-#: ../daemon/slave.c:3650
+#: ../daemon/slave.c:3782
 msgid ""
-"The session you selected does not look valid.  I will run the GNOME failsafe "
-"session for you."
+"The session you selected does not look valid.  Running the GNOME failsafe "
+"session instead."
 msgstr ""
-"Jūsų pasirinkta sesija neatrodo tinkama.  Aš Jums paleisiu GNOME failsafe "
-"sesiją."
+"Jūsų pasirinkta sesija neatrodo tinkama. Vietoje to, paleidžiama GNOME "
+"failsafe sesija."
 
-#: ../daemon/slave.c:3664
+#: ../daemon/slave.c:3796
 #, c-format
 msgid ""
-"%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
+"%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
+"session instead."
 msgstr ""
-"%s: Nepavyko rasti ar paleisti pagrindinio Xsession skripto, bandysiu "
-"failsafe GNOME"
+"%s: Nepavyko rasti ar paleisti Xsession skripto. Vietoje to, paleidžiama "
+"GNOME failsafe sesija."
 
-#: ../daemon/slave.c:3670
+#: ../daemon/slave.c:3802
 msgid ""
-"Cannot find or run the base session script, will try the GNOME failsafe "
-"session for you."
+"Cannot find or run the base session script.  Running the GNOME failsafe "
+"session instead."
 msgstr ""
-"Nepavyko rasti ar paleisti pagrindinės sesijos skripto, bandysiu GNOME "
-"failsafe sesiją."
+"Nepavyko rasti ar paleisti pagrindinės sesijos skripto. Vietoje to, "
+"paleidžiama GNOME failsafe sesija."
 
 #. yaikes
-#: ../daemon/slave.c:3685
+#: ../daemon/slave.c:3817
 #, c-format
-msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-msgstr "%s: gnome-session nerasta failsafe GNOME sesijai, bandau xterm"
+msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
+msgstr "%s: gnome-session nerasta failsafe GNOME sesijai, bandoma  xterm"
 
-#: ../daemon/slave.c:3690
+#: ../daemon/slave.c:3822
 msgid ""
-"Could not find the GNOME installation, will try running the \"Failsafe xterm"
-"\" session."
-msgstr "Neradau įdiegto GNOME, bandysiu paleisti \"Failsafe xterm\" sesiją."
+"Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
+"session instead."
+msgstr "Nepavyko rasti GNOME įdiegimo. Vietoje to, „Failsafe xterm“ sesija."
 
-#: ../daemon/slave.c:3698
+#: ../daemon/slave.c:3830
 msgid ""
-"This is the Failsafe Gnome session.  You will be logged into the 'Default' "
-"session of Gnome with no startup scripts run.  This is only to fix problems "
-"in your installation."
+"This is the Failsafe GNOME session.  You will be logged into the 'Default' "
+"session of GNOME without the startup scripts being run.  This should be used "
+"to fix problems in your installation."
 msgstr ""
-"Tai yra Failsafe Gnome sesija. Jūs būsite prijungtas prie įprastos 'Default' "
-"Gnome sesijos nepaleidžiant jokių startinių skriptų. Ši sesija naudojama tik "
-"jei reikia taisyti jūsų Gnome aplinkos problemas."
+"Tai yra Failsafe Gnome sesija. Jūs būsite prijungti prie „Įprastos“ "
+"Gnome sesijos nepaleidžiant jokių startinių scenarijų. Ši sesija turėtų būti "
+"naudojama jei reikia taisyti problemas įdiegime."
 
-#: ../daemon/slave.c:3713
+#: ../daemon/slave.c:3845
 msgid "Cannot find \"xterm\" to start a failsafe session."
-msgstr "Nerandu \"xterm\" kad paleisti failsafe sesiją."
+msgstr "Nepavyko rasti „xterm“, reikalingo paleisti failsafe sesijai."
 
-#: ../daemon/slave.c:3726
+#: ../daemon/slave.c:3858
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
 "To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr ""
-"Tai yra Failsafe xterm sesija. Jūs būsite prijungtas prie terminalo konsolės "
-"ir galėsite pataisyti savo sistemą jei negalite prisijungti kitu būdu. Kad "
-"išeiti iš terminalo parašykite 'exit' ir paspauskite 'Enter' terminalo lange."
+"Tai yra Failsafe xterm sesija. Jūs būsite prijungti prie terminalo konsolės "
+"ir galėsite pataisyti savo sistemą, jei negalite prisijungti kitu būdu. "
+"Norėdami išeiti iš terminalo, terminalo lange parašykite „exit“ ir "
+"paspauskite „Enter“."
 
-#: ../daemon/slave.c:3753
+#: ../daemon/slave.c:3885
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Naudotojui prisijungti neleidžiama"
 
-#: ../daemon/slave.c:3756
+#: ../daemon/slave.c:3888
 msgid "The system administrator has disabled your account."
 msgstr "Sistemos administratorius atjungė Jūsų abonementą."
 
-#: ../daemon/slave.c:3787
+#: ../daemon/slave.c:3919
 msgid "Error! Unable to set executable context."
 msgstr "Klaida! Nepavyko nustatyti vykdomojo konteksto."
 
 #. will go to .xsession-errors
-#: ../daemon/slave.c:3795 ../daemon/slave.c:3800
+#: ../daemon/slave.c:3927 ../daemon/slave.c:3932
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Nepavyko paleisti %s %s %s"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:3811
+#: ../daemon/slave.c:3943
 msgid "Cannot start the session due to some internal error."
 msgstr "Nepavyko paleisti sesijos dėl vidinės klaidos."
 
-#: ../daemon/slave.c:3865
+#: ../daemon/slave.c:3997
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Vartotojo tapatybė patvirtinta, bet getpwnam(%s) nepavyko!"
 
-#: ../daemon/slave.c:3878
+#: ../daemon/slave.c:4010
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Vykdant PostLogin skriptą, gautas rezultatas > 0. Nutraukiu."
 
-#: ../daemon/slave.c:3887
+#: ../daemon/slave.c:4032
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1244,19 +1262,29 @@ msgid ""
 "\n"
 "It is unlikely anything will work unless you use a failsafe session."
 msgstr ""
-"Jūsų namų katalogas yra nurodytas kaip:\n"
+"Jūsų namų aplankas yra nurodytas kaip:\n"
 "'%s'\n"
 "bet atrodo, kad jis neegzistuoja.  Ar norite prisijungti su / (root) "
 "katalogu kaip Jūsų namų katalogu?\n"
 "\n"
 "Vargu ar kas nors veiks, nebent Jūs naudosite atsarginę sesiją."
 
-#: ../daemon/slave.c:3895
+#: ../daemon/slave.c:4044
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
-msgstr "%s: %s namų katalogas: '%s' neegzistuoja !"
+msgstr "%s: %s namų aplankas: '%s' neegzistuoja !"
 
-#: ../daemon/slave.c:4072
+#: ../daemon/slave.c:4123
+msgid ""
+"Your $HOME/.dmrc file has incorrect permissions and is being ignored.  This "
+"prevents the default session and language from being saved.  File sould be "
+"owned by user and have 644 permissions."
+msgstr ""
+"Jūsų $HOME/.dmrc byla turi neteisingus leidimus ir yra ignoruojama. Tai "
+"neleidžia išsaugoti įprastos sesijos ir kalbos. Byla turėtų būti priklausyti "
+"naudotojui ir turėti 644 leidimus."
+
+#: ../daemon/slave.c:4249
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1267,12 +1295,12 @@ msgstr ""
 "diske trūksta laisvos vietos arba į Jūsų namų katalogą uždraustas rašymas. "
 "Pasiklauskite savo sistemos administratoriaus."
 
-#: ../daemon/slave.c:4148
+#: ../daemon/slave.c:4325
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Klaida atšakojant vartotojo sesiją"
 
-#: ../daemon/slave.c:4229
+#: ../daemon/slave.c:4406
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1284,25 +1312,25 @@ msgstr ""
 "pritrūkote laisvos vietos diske.  Pabandykit prisijungti su viena iš "
 "failsafe sesijų tam, kad pamatyti ar Jūs galite sutvarkyti šią problemą."
 
-#: ../daemon/slave.c:4237
+#: ../daemon/slave.c:4414
 msgid "View details (~/.xsession-errors file)"
 msgstr "Žiūrėti detales (~/.xsession-errors byla)"
 
-#: ../daemon/slave.c:4380
+#: ../daemon/slave.c:4557
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM aptiko vykstantį išjungimą arba perkrovimą."
 
-#: ../daemon/slave.c:4474
+#: ../daemon/slave.c:4651
 #, c-format
-msgid "Ping to %s failed, whacking display!"
-msgstr "Ping'as į %s nepavyko, mušu ekraną!"
+msgid "Ping to %s failed; whacking display!"
+msgstr "Ping'as į %s nepavyko."
 
-#: ../daemon/slave.c:4760
+#: ../daemon/slave.c:4922
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Lemtinga X klaida - Perkraunu %s"
 
-#: ../daemon/slave.c:4854
+#: ../daemon/slave.c:4991
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1310,22 +1338,22 @@ msgstr ""
 "Paprašytas prisijungimo garsas ne vietiniame ekrane arba grojimo programa "
 "negali būti paleista, arba garsas neegzistuoja."
 
-#: ../daemon/slave.c:5206
+#: ../daemon/slave.c:5347
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Nepavyko paleisti: %s"
 
-#: ../daemon/slave.c:5213 ../daemon/slave.c:5351
+#: ../daemon/slave.c:5354 ../daemon/slave.c:5493
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Nepavyko atšakoti skripto proceso!"
 
-#: ../daemon/slave.c:5306
+#: ../daemon/slave.c:5448
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Nepavyko sukurti konvejerio"
 
-#: ../daemon/slave.c:5345
+#: ../daemon/slave.c:5487
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Nepavyko paleisti: %s"
@@ -1345,9 +1373,8 @@ msgstr ""
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Įsitikinkit, kad Caps Lock klavišas neįjungtas."
 
-#. I think I'll add the buttons next to this
 #: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:441
-#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:3073
+#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:3129
 msgid "Please enter your username"
 msgstr "Prašau įvesti savo vartotojo vardą"
 
@@ -1355,15 +1382,15 @@ msgstr "Prašau įvesti savo vartotojo vardą"
 #: ../daemon/verify-crypt.c:128 ../daemon/verify-pam.c:341
 #: ../daemon/verify-pam.c:342 ../daemon/verify-pam.c:343
 #: ../daemon/verify-pam.c:428 ../daemon/verify-pam.c:787
-#: ../daemon/verify-shadow.c:127 ../gui/gdmlogin.c:1075 ../gui/gdmlogin.c:1089
-#: ../gui/gdmlogin.c:1875 ../gui/gdmlogin.c:2374 ../gui/greeter/greeter.c:283
-#: ../gui/greeter/greeter_parser.c:1065
+#: ../daemon/verify-shadow.c:127 ../gui/gdmlogin.c:1294 ../gui/gdmlogin.c:1308
+#: ../gui/gdmlogin.c:1937 ../gui/gdmlogin.c:2444 ../gui/greeter/greeter.c:372
+#: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "Vartotojo vardas:"
 
 #: ../daemon/verify-crypt.c:166 ../daemon/verify-pam.c:344
 #: ../daemon/verify-pam.c:345 ../daemon/verify-pam.c:489
-#: ../daemon/verify-shadow.c:184 ../gui/gdmlogin.c:1907
+#: ../daemon/verify-shadow.c:184 ../gui/gdmlogin.c:1970
 msgid "Password:"
 msgstr "Slaptažodis:"
 
@@ -1411,12 +1438,12 @@ msgstr "Nepavyko %s nustatyti vartotojo grupės"
 #: ../daemon/verify-shadow.c:298 ../daemon/verify-shadow.c:437
 msgid ""
 "\n"
-"Cannot set your user group, you will not be able to log in, please contact "
+"Cannot set your user group; you will not be able to log in. Please contact "
 "your system administrator."
 msgstr ""
 "\n"
-"Nepavyko nustatyti Jūsų vartotojo grupės, prisijungti negalėsite, "
-"susisiekite su sistemos administratoriumi."
+"Jūsų vartotojo grupės nustatyti nepavyko, prisijungti negalėsite. "
+"Susisiekite su Jūsų sistemos administratoriumi."
 
 #: ../daemon/verify-crypt.c:291 ../daemon/verify-crypt.c:364
 #: ../daemon/verify-shadow.c:309 ../daemon/verify-shadow.c:383
@@ -1435,21 +1462,21 @@ msgstr ""
 #: ../daemon/verify-crypt.c:304 ../daemon/verify-shadow.c:322
 msgid ""
 "\n"
-"Cannot change your password, you will not be able to log in, please try "
+"Cannot change your password; you will not be able to log in. Please try "
 "again later or contact your system administrator."
 msgstr ""
 "\n"
-"Nepavyko pakeisti slaptažodžio, negalėsite prisijungti, bandykite vėliau "
+"Nepavyko pakeisti Jūsų slaptažodžio; negalėsite prisijungti. Bandykite vėliau "
 "arba susisiekite su sistemos administratoriumi."
 
 #: ../daemon/verify-crypt.c:347 ../daemon/verify-crypt.c:355
 #: ../daemon/verify-shadow.c:366 ../daemon/verify-shadow.c:374
 msgid ""
-"Your password has been changed but you may have to change it again, please "
+"Your password has been changed but you may have to change it again. Please "
 "try again later or contact your system administrator."
 msgstr ""
 "Jūsų slaptažodis buvo pakeistas, bet gali būti, kad vėl turėsite jį "
-"pakeisti, bandykite vėliau arba susisiekite su sistemos administratoriumi."
+"pakeisti. Bandykite vėliau arba susisiekite su sistemos administratoriumi."
 
 #: ../daemon/verify-crypt.c:366 ../daemon/verify-shadow.c:385
 msgid ""
@@ -1465,11 +1492,11 @@ msgstr "Vidinė passwdexpired klaida"
 
 #: ../daemon/verify-crypt.c:375 ../daemon/verify-shadow.c:394
 msgid ""
-"An internal error occured, you will not be able to log in.\n"
+"An internal error occurred. You will not be able to log in.\n"
 "Please try again later or contact your system administrator."
 msgstr ""
 "Įvyko vidinė klaida, prisijungti negalėsite.\n"
-"Bandykite dar kartą arba susisiekit su sistemos administratoriumi."
+"Bandykite dar kartą arba susisiekite su sistemos administratoriumi."
 
 #: ../daemon/verify-crypt.c:411 ../daemon/verify-shadow.c:429
 #, c-format
@@ -1640,7 +1667,7 @@ msgstr "Automatinis prijungimas"
 #: ../daemon/verify-pam.c:1219
 msgid ""
 "\n"
-"The system administrator has disabled your access to the system temporary."
+"The system administrator has disabled your access to the system temporarily."
 msgstr ""
 "\n"
 "Sistemos administratorius laikinai uždraudė Jūsų priėjimą prie sistemos."
@@ -1649,198 +1676,208 @@ msgstr ""
 msgid "Can't find PAM configuration for gdm."
 msgstr "Nepavyko rasti PAM konfigūracijos, reikalingos gdm."
 
-#: ../daemon/xdmcp.c:369
+#: ../daemon/xdmcp.c:375
 #, c-format
 msgid "%s: Could not get server hostname: %s!"
 msgstr "%s: Nepavyko gauti serverio hosto vardo: %s!"
 
-#: ../daemon/xdmcp.c:394
+#: ../daemon/xdmcp.c:400
 #, c-format
 msgid "%s: Could not create socket!"
 msgstr "%s: Nepavyko sukurti lizdo!"
 
-#: ../daemon/xdmcp.c:487
+#: ../daemon/xdmcp.c:493
 #, c-format
 msgid "%s: Could not bind to XDMCP socket!"
 msgstr "%s: Nepavyko prisijungti prie XDMCP lizdo!"
 
-#: ../daemon/xdmcp.c:559
+#: ../daemon/xdmcp.c:565
 #, c-format
 msgid "%s: Could not create XDMCP buffer!"
 msgstr "%s: Nepavyko sukurti XDMCP buferio!"
 
-#: ../daemon/xdmcp.c:565
+#: ../daemon/xdmcp.c:571
 #, c-format
 msgid "%s: Could not read XDMCP header!"
 msgstr "%s: Nepavyko perskaityti XDMCP antraštės!"
 
-#: ../daemon/xdmcp.c:572
+#: ../daemon/xdmcp.c:578
 #, c-format
 msgid "%s: Incorrect XDMCP version!"
 msgstr "%s: Neteisinga XDMCP versija!"
 
-#: ../daemon/xdmcp.c:652 ../daemon/xdmcp.c:659
+#: ../daemon/xdmcp.c:658 ../daemon/xdmcp.c:665
 #, c-format
 msgid "%s: Unknown opcode from host %s"
 msgstr "%s: Nežinomas opcode iš hosto %s"
 
-#: ../daemon/xdmcp.c:693 ../daemon/xdmcp.c:1138
+#: ../daemon/xdmcp.c:699 ../daemon/xdmcp.c:1144
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Nepavyko iš paketo ištraukti authlist"
 
-#: ../daemon/xdmcp.c:709 ../daemon/xdmcp.c:1158
+#: ../daemon/xdmcp.c:715 ../daemon/xdmcp.c:1164
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Klaida kontrolinėje sumoje"
 
-#: ../daemon/xdmcp.c:1121
+#: ../daemon/xdmcp.c:1127
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Nepavyko perskaityti ekrano adreso"
 
-#: ../daemon/xdmcp.c:1129
+#: ../daemon/xdmcp.c:1135
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Nepavyko perskaityti ekrano prievado numerio"
 
-#: ../daemon/xdmcp.c:1193 ../daemon/xdmcp.c:1217
+#: ../daemon/xdmcp.c:1199 ../daemon/xdmcp.c:1223
 #, c-format
 msgid "%s: Bad address"
 msgstr "%s: Blogas adresas"
 
-#: ../daemon/xdmcp.c:1376 ../daemon/xdmcp.c:1383
+#: ../daemon/xdmcp.c:1382 ../daemon/xdmcp.c:1389
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Atmesta XDMCP užklausa iš hosto %s"
 
-#: ../daemon/xdmcp.c:1609 ../daemon/xdmcp.c:1616
+#: ../daemon/xdmcp.c:1615 ../daemon/xdmcp.c:1622
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Gautas REQUEST iš uždrausto hosto %s"
 
-#: ../daemon/xdmcp.c:1628 ../daemon/xdmcp.c:2004 ../daemon/xdmcp.c:2414
+#: ../daemon/xdmcp.c:1634 ../daemon/xdmcp.c:2007 ../daemon/xdmcp.c:2417
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Nepavyko perskaityti Display Number"
 
-#: ../daemon/xdmcp.c:1635
+#: ../daemon/xdmcp.c:1641
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Nepavyko perskaityti Connection Type"
 
-#: ../daemon/xdmcp.c:1642
+#: ../daemon/xdmcp.c:1648
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Nepavyko perskaityti Client Address"
 
-#: ../daemon/xdmcp.c:1650
+#: ../daemon/xdmcp.c:1656
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Nepavyko perskaityti Authentication Names"
 
-#: ../daemon/xdmcp.c:1659
+#: ../daemon/xdmcp.c:1665
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Nepavyko perskaityti Authentication Data"
 
-#: ../daemon/xdmcp.c:1669
+#: ../daemon/xdmcp.c:1675
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Nepavyko perskaityti Authorization List"
 
-#: ../daemon/xdmcp.c:1686
+#: ../daemon/xdmcp.c:1692
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Nepavyko perskaityti Manufacturer ID"
 
-#: ../daemon/xdmcp.c:1712 ../daemon/xdmcp.c:1719
+#: ../daemon/xdmcp.c:1718 ../daemon/xdmcp.c:1725
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Bloga kontrolinė suma iš %s"
 
-#: ../daemon/xdmcp.c:1980 ../daemon/xdmcp.c:1987
+#: ../daemon/xdmcp.c:1983 ../daemon/xdmcp.c:1990
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Gautas Manage iš uždrausto hosto %s"
 
-#: ../daemon/xdmcp.c:1997 ../daemon/xdmcp.c:2421
+#: ../daemon/xdmcp.c:2000 ../daemon/xdmcp.c:2424
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Nepavyko perskaityti Sesijos ID"
 
-#: ../daemon/xdmcp.c:2011
+#: ../daemon/xdmcp.c:2014
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Nepavyko perskaityti Display Class"
 
-#: ../daemon/xdmcp.c:2132 ../daemon/xdmcp.c:2139 ../daemon/xdmcp.c:2151
-#: ../daemon/xdmcp.c:2261 ../daemon/xdmcp.c:2268 ../daemon/xdmcp.c:2280
+#: ../daemon/xdmcp.c:2135 ../daemon/xdmcp.c:2142 ../daemon/xdmcp.c:2154
+#: ../daemon/xdmcp.c:2264 ../daemon/xdmcp.c:2271 ../daemon/xdmcp.c:2283
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Nepavyko perskaityti adreso"
 
-#: ../daemon/xdmcp.c:2391 ../daemon/xdmcp.c:2405
+#: ../daemon/xdmcp.c:2394 ../daemon/xdmcp.c:2408
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Gautas KEEPALIVE iš uždrausto hosto %s"
 
-#: ../daemon/xdmcp.c:2714 ../daemon/xdmcp.c:2721 ../daemon/xdmcp.c:2727
+#: ../daemon/xdmcp.c:2756
+#, c-format
+msgid ""
+"%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
+"authfile %s': %s"
+msgstr ""
+"%s: Nepavyko paleisti '%s --display %s --display-authfile %s --to %s --to-"
+"authfile %s': %s"
+
+#: ../daemon/xdmcp.c:2791 ../daemon/xdmcp.c:2798 ../daemon/xdmcp.c:2804
+#: ../daemon/xdmcp.c:2810
 #, c-format
 msgid "%s: No XDMCP support"
 msgstr "%s: Nėra XDMCP palaikymo"
 
-#: ../gui/gdmXnestchooser.c:166 ../gui/gdmXnestchooser.c:173
+#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
 msgid "Xnest command line"
 msgstr "Xnest komandinė eilutė"
 
-#: ../gui/gdmXnestchooser.c:166 ../gui/gdmXnestchooser.c:173
+#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
 msgid "STRING"
 msgstr "EILUTĖ"
 
-#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
 msgid "Extra options for Xnest"
 msgstr "Papildomi Xnest parametrai"
 
-#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
 msgid "OPTIONS"
 msgstr "PARAMETRAI"
 
-#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:178
+#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:179
 msgid "Run in background"
 msgstr "Leisti fone"
 
-#: ../gui/gdmXnestchooser.c:175
+#: ../gui/gdmXnestchooser.c:176
 msgid "Just run Xnest, no query (no chooser)"
 msgstr "Tiesiog paleisti Xnest, be užklausos (be parinkiklio)"
 
-#: ../gui/gdmXnestchooser.c:176
+#: ../gui/gdmXnestchooser.c:177
 msgid "Do direct query instead of indirect (chooser)"
 msgstr "Daryti tiesioginę užklausą vietoje netiesioginės (parinkiklis)"
 
-#: ../gui/gdmXnestchooser.c:177
+#: ../gui/gdmXnestchooser.c:178
 msgid "Run broadcast instead of indirect (chooser)"
 msgstr "Leisti transliaciją vietoje netiesioginės užklausos (parinkiklis)"
 
-#: ../gui/gdmXnestchooser.c:179
+#: ../gui/gdmXnestchooser.c:180
 msgid "Don't check for running gdm"
 msgstr "Neieškoti veikiančio gdm"
 
 #. markup
-#: ../gui/gdmXnestchooser.c:521
+#: ../gui/gdmXnestchooser.c:523
 msgid "Xnest doesn't exist."
 msgstr "Xnest nerastas."
 
-#: ../gui/gdmXnestchooser.c:523
+#: ../gui/gdmXnestchooser.c:525
 msgid "Please ask your system administrator to install it."
 msgstr "Paprašykite sistemos administratoriaus, kad jį įdiegtų."
 
 #. markup
-#: ../gui/gdmXnestchooser.c:549
+#: ../gui/gdmXnestchooser.c:551
 msgid "Indirect XDMCP is not enabled"
 msgstr "Netiesioginis XDMCP neįjungtas"
 
-#: ../gui/gdmXnestchooser.c:551 ../gui/gdmXnestchooser.c:572
+#: ../gui/gdmXnestchooser.c:553 ../gui/gdmXnestchooser.c:574
 msgid ""
 "Please ask your system administrator to enable it in the GDM configurator "
 "program."
@@ -1849,77 +1886,23 @@ msgstr ""
 "programoje."
 
 #. markup
-#: ../gui/gdmXnestchooser.c:570
+#: ../gui/gdmXnestchooser.c:572
 msgid "XDMCP is not enabled"
 msgstr "XDMCP neįjungtas"
 
 #. markup
-#: ../gui/gdmXnestchooser.c:604
+#: ../gui/gdmXnestchooser.c:608
 msgid "GDM is not running"
 msgstr "Šiuo metu GDM neveikia"
 
-#: ../gui/gdmXnestchooser.c:606
+#: ../gui/gdmXnestchooser.c:610
 msgid "Please ask your system administrator to start it."
 msgstr "Paprašykite sistemos administratoriaus, kad jį paleistų."
 
 #. markup
-#: ../gui/gdmXnestchooser.c:623
+#: ../gui/gdmXnestchooser.c:627
 msgid "Could not find a free display number"
 msgstr "Nepavyko rasti laisvo ekrano numerio"
-
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: ../gui/gdmchooser-strings.c:7 ../gui/gdmchooser.glade.h:5
-msgid "GDM Host Chooser"
-msgstr "GDM tinklo kompiuterių parinkiklis"
-
-#: ../gui/gdmchooser-strings.c:8 ../gui/gdmchooser.glade.h:6
-msgid "How to use this application"
-msgstr "Kaip naudotis šia programa"
-
-#: ../gui/gdmchooser-strings.c:9 ../gui/gdmchooser.glade.h:8
-msgid "Probe the network"
-msgstr "Zonduoti tinklą"
-
-#: ../gui/gdmchooser-strings.c:10 ../gui/gdmchooser.glade.h:4
-msgid "Exit the application"
-msgstr "Išeiti iš programos"
-
-#: ../gui/gdmchooser-strings.c:11 ../gui/gdmchooser.glade.h:7
-msgid "Open a session to the selected host"
-msgstr "Atverti sesiją į pasirinktą hostą"
-
-#: ../gui/gdmchooser-strings.c:12 ../gui/gdmchooser.glade.h:3
-msgid "C_onnect"
-msgstr "Prisi_jungti"
-
-#: ../gui/gdmchooser-strings.c:13 ../gui/gdmchooser.glade.h:10
-msgid "Status"
-msgstr "Būsena"
-
-#: ../gui/gdmchooser-strings.c:14 ../gui/gdmchooser.glade.h:2
-msgid "A_dd host: "
-msgstr "P_ridėti hostą: "
-
-#. EOF
-#: ../gui/gdmchooser-strings.c:15 ../gui/gdmchooser.glade.h:1
-#: ../gui/gdmsetup-strings.c:19 ../gui/gdmsetup-strings.c:21
-#: ../gui/gdmsetup-strings.c:26 ../gui/gdmsetup-strings.c:32
-#: ../gui/gdmsetup-strings.c:37 ../gui/gdmsetup-strings.c:47
-#: ../gui/gdmsetup-strings.c:85 ../gui/gdmsetup.glade.h:2
-msgid "*"
-msgstr "*"
-
-#: ../gui/gdmchooser-strings.c:16 ../gui/gdmchooser.glade.h:9
-msgid "Query and add this host to the above list"
-msgstr "Užklausti ir pridėti šį hostą į sąrašą viršuje"
-
-#: ../gui/gdmchooser-strings.c:17 ../gui/gdmchooser.glade.h:11
-msgid "_Add"
-msgstr "_Pridėti"
 
 #: ../gui/gdmchooser.c:80
 msgid "Please wait: scanning local network..."
@@ -1969,8 +1952,8 @@ msgstr "Nepavyko rasti hosto"
 
 #: ../gui/gdmchooser.c:1392
 #, c-format
-msgid "I cannot find the host \"%s\", perhaps you have mistyped it."
-msgstr "Nepavyko rasti hosto „%s“, galbūt parašėte jį su klaida."
+msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
+msgstr "Nepavyko rasti host „%s“, galbūt parašėte jį su klaida."
 
 #: ../gui/gdmchooser.c:1678
 msgid ""
@@ -1994,8 +1977,8 @@ msgstr ""
 msgid "Can't open default host icon: %s"
 msgstr "Nepavyko atverti įprastos kompiuterio ikonos: %s"
 
-#: ../gui/gdmchooser.c:1950 ../gui/gdmlogin.c:3981 ../gui/gdmlogin.c:3988
-#: ../gui/greeter/greeter.c:1113 ../gui/greeter/greeter.c:1120
+#: ../gui/gdmchooser.c:1950 ../gui/gdmlogin.c:3778
+#: ../gui/greeter/greeter.c:1279 ../gui/greeter/greeter.c:1286
 msgid "Could not set signal mask!"
 msgstr "Nepavyko nustatyti signalo kaukės!"
 
@@ -2032,19 +2015,63 @@ msgstr "Nepavyko paleisti parinkiklio"
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
 msgstr ""
 "Parinkiklio versija (%s) neatitinka demono versijos (%s).  Jūs tikriausiai "
 "ką tik atnaujinote gdm.  Paleiskite gdm demoną iš naujo arba perkraukite "
 "kompiuterį."
 
+#. EOF
+#: ../gui/gdmchooser.glade.h:1 ../gui/gdmsetup.glade.h:3
+msgid "*"
+msgstr "*"
+
+#: ../gui/gdmchooser.glade.h:2
+msgid "A_dd host: "
+msgstr "P_ridėti hostą: "
+
+#: ../gui/gdmchooser.glade.h:3
+msgid "C_onnect"
+msgstr "Prisi_jungti"
+
+#: ../gui/gdmchooser.glade.h:4
+msgid "Exit the application"
+msgstr "Išeiti iš programos"
+
+#: ../gui/gdmchooser.glade.h:5
+msgid "GDM Host Chooser"
+msgstr "GDM tinklo kompiuterių parinkiklis"
+
+#: ../gui/gdmchooser.glade.h:6
+msgid "How to use this application"
+msgstr "Kaip naudotis šia programa"
+
+#: ../gui/gdmchooser.glade.h:7
+msgid "Open a session to the selected host"
+msgstr "Atverti sesiją į pasirinktą hostą"
+
+#: ../gui/gdmchooser.glade.h:8
+msgid "Probe the network"
+msgstr "Zonduoti tinklą"
+
+#: ../gui/gdmchooser.glade.h:9
+msgid "Query and add this host to the above list"
+msgstr "Užklausti ir pridėti šį hostą į sąrašą viršuje"
+
+#: ../gui/gdmchooser.glade.h:10
+msgid "Status"
+msgstr "Būsena"
+
+#: ../gui/gdmchooser.glade.h:11 ../gui/gdmsetup.glade.h:107
+msgid "_Add"
+msgstr "_Pridėti"
+
 #. markup
-#: ../gui/gdmcomm.c:405 ../gui/gdmphotosetup.c:70
+#: ../gui/gdmcomm.c:406 ../gui/gdmphotosetup.c:79
 msgid "GDM (The GNOME Display Manager) is not running."
 msgstr "Šiuo metu GDM (GNOME ekrano tvarkyklė) neveikia."
 
-#: ../gui/gdmcomm.c:408 ../gui/gdmphotosetup.c:73
+#: ../gui/gdmcomm.c:409 ../gui/gdmphotosetup.c:82
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm."
@@ -2052,7 +2079,7 @@ msgstr ""
 "Galite naudoti kitą ekrano tvarkyklę, pavyzdžiui, KDM (KDE ekrano tvarkyklė) "
 "ar xdm."
 
-#: ../gui/gdmcomm.c:411 ../gui/gdmphotosetup.c:76
+#: ../gui/gdmcomm.c:412 ../gui/gdmphotosetup.c:85
 msgid ""
 "If you still wish to use this feature, either start GDM yourself or ask your "
 "system administrator to start GDM."
@@ -2061,35 +2088,35 @@ msgstr ""
 "paprašykite, kad tai už Jus padarytų sistemos administratorius."
 
 #. markup
-#: ../gui/gdmcomm.c:433 ../gui/gdmflexiserver.c:697
+#: ../gui/gdmcomm.c:434 ../gui/gdmflexiserver.c:697
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Nepavyko susisiekti su GDM (GNOME ekrano tvarkykle)"
 
-#: ../gui/gdmcomm.c:436 ../gui/gdmflexiserver.c:700
+#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:700
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Galbūt šiuo metu veikia senesnė GDM versija."
 
-#: ../gui/gdmcomm.c:453 ../gui/gdmcomm.c:456
-msgid "Cannot communicate with gdm, perhaps you have an old version running."
-msgstr "Nepavyko bendrauti su gdm, gal veikia senesnė versija."
+#: ../gui/gdmcomm.c:454 ../gui/gdmcomm.c:457
+msgid "Cannot communicate with gdm. Perhaps you have an old version running."
+msgstr "Susisiekti su gdm nepavyko, galbūt veikia senesnė versija."
 
-#: ../gui/gdmcomm.c:459
+#: ../gui/gdmcomm.c:460
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Pasiektas lanksčių X serverių limitas."
 
-#: ../gui/gdmcomm.c:461
+#: ../gui/gdmcomm.c:462
 msgid "There were errors trying to start the X server."
 msgstr "Bandant paleisti X serverį buvo klaidų."
 
-#: ../gui/gdmcomm.c:463
+#: ../gui/gdmcomm.c:464
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "X serveris žlugo.  Galbūt jis nėra gerai sukonfigūruotas."
 
-#: ../gui/gdmcomm.c:466
+#: ../gui/gdmcomm.c:467
 msgid "Too many X sessions running."
 msgstr "Veikia per daug X sesijų."
 
-#: ../gui/gdmcomm.c:468
+#: ../gui/gdmcomm.c:469
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
@@ -2097,7 +2124,7 @@ msgstr ""
 "Įterptas X serveris (Xnest) negali prisijungti prie dabartinio Jūsų X "
 "serverio.  Jums gali trūkti X autorizacijos bylos."
 
-#: ../gui/gdmcomm.c:473
+#: ../gui/gdmcomm.c:474
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
@@ -2105,10 +2132,9 @@ msgstr ""
 "Įdėtinis X serveris (Xnest) neprieinamas, arba gdm blogai sukonfigūruotas.\n"
 "Įdiekite Xnest paketą tam, kad galėtumėte naudotis įdėtiniu prisijungimu."
 
-#: ../gui/gdmcomm.c:478
-msgid ""
-"The X server is not available, it is likely that gdm is badly configured."
-msgstr "X serveris neprieinamas, greičiausiai gdm blogai sukonfigūruotas."
+#: ../gui/gdmcomm.c:479
+msgid "The X server is not available. Gdm may be misconfigured."
+msgstr "X serveris neprieinamas. Gdm gali būti blogai sukonfigūruotas."
 
 #: ../gui/gdmcomm.c:482
 msgid ""
@@ -2132,18 +2158,18 @@ msgstr "Bandoma atnaujinti nepalaikomą konfigūracijos raktą."
 
 #: ../gui/gdmcomm.c:491
 msgid ""
-"You do not seem to have authentication needed be for this operation.  "
+"You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
 "Neturite tapatybės patvirtinimo, reikiamo šiai operacijai įvykdyti. Galbūt "
-"Jūsų .Xauthority byla yra neteisingai sukonfigūruota."
+"Jūsų .Xauthority byla yra neteisingai nustatyta."
 
 #: ../gui/gdmcomm.c:495
 msgid "Too many messages were sent to gdm and it hung upon us."
 msgstr "GDM'ui buvo nusiųsta per daug žinučių, ir jis pakibo."
 
 #: ../gui/gdmcomm.c:498
-msgid "Unknown error occured."
+msgid "Unknown error occurred."
 msgstr "Įvyko nežinoma klaida."
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:1
@@ -2173,8 +2199,8 @@ msgstr "Ekranas %s virtualiame terminale %d"
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Įterptas ekranas %s virtualiam terminale %d"
 
-#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2919
-#: ../gui/greeter/greeter_item_ulist.c:476
+#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2976
+#: ../gui/greeter/greeter_item_ulist.c:211
 msgid "Username"
 msgstr "Vartotojo vardas"
 
@@ -2204,11 +2230,11 @@ msgstr ""
 "Jau yra atvertų ekranų.  Galite pasirinkti vieną iš žemiau esančio sąrašo "
 "arba atverti naują."
 
-#: ../gui/gdmflexiserver.c:390 ../gui/gdmflexiserver.c:785
+#: ../gui/gdmflexiserver.c:390 ../gui/gdmflexiserver.c:787
 msgid "Can't lock screen"
 msgstr "Nepavyko užrakinti ekrano"
 
-#: ../gui/gdmflexiserver.c:393 ../gui/gdmflexiserver.c:788
+#: ../gui/gdmflexiserver.c:393 ../gui/gdmflexiserver.c:790
 msgid "Can't disable xscreensaver display hacks"
 msgstr "Nepavyko atjungti xscreensaver ekrano užsklandų"
 
@@ -2267,7 +2293,7 @@ msgid "Starting a new login only works correctly on the console."
 msgstr "Naujas prisijungimas korektiškai veikia tik konsolėje."
 
 #. markup
-#: ../gui/gdmflexiserver.c:803
+#: ../gui/gdmflexiserver.c:805
 msgid "Cannot start new display"
 msgstr "Nepavyko paleisti naujo ekrano"
 
@@ -2351,43 +2377,43 @@ msgstr "A-M|Katalonų"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:81
-msgid "A-M|Chinese (simplified)"
-msgstr "A-M|Kinų (supaprastinta)"
+msgid "A-M|Chinese (China Mainland)"
+msgstr "A-M|Kinų (Pagrindinė Kinijos žemė)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:83
-msgid "A-M|Chinese (HongKong)"
+msgid "A-M|Chinese (Hong Kong)"
 msgstr "A-M|Kinų (Hong Kongas)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:85
-msgid "A-M|Chinese (traditional)"
-msgstr "A-M|Kinų (tradicinė)"
+msgid "A-M|Chinese (Singapore)"
+msgstr "A-M|Kinų (Singapūras)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:87
+msgid "A-M|Chinese (Taiwan)"
+msgstr "A-M|Chinese (Taivanas)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: ../gui/gdmlanguages.c:89
 msgid "A-M|Croatian"
 msgstr "A-M|Kroatų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:89
+#: ../gui/gdmlanguages.c:91
 msgid "A-M|Czech"
 msgstr "A-M|Čekų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:91
+#: ../gui/gdmlanguages.c:93
 msgid "A-M|Danish"
 msgstr "A-M|Danų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:93
+#: ../gui/gdmlanguages.c:95
 msgid "A-M|Dutch"
 msgstr "N-Z|Olandų"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:95
-msgid "A-M|English"
-msgstr "A-M|Anglų"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:97
@@ -2731,88 +2757,83 @@ msgstr "Other|POSIX/C Anglų"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: ../gui/gdmlanguages.c:431
+#: ../gui/gdmlanguages.c:419
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: ../gui/gdmlanguages.c:439
+#: ../gui/gdmlanguages.c:427
 msgid "N-Z"
 msgstr "N-Z"
 
-#: ../gui/gdmlogin.c:223
+#: ../gui/gdmlogin.c:415
+msgid "Cannot start background program"
+msgstr "Nepavyko paleisti foninės programos"
+
+#: ../gui/gdmlogin.c:416
+#, c-format
+msgid "Cannot start program '%s': %s."
+msgstr "Nepavyko paleisti programos „%s“: %s."
+
+#: ../gui/gdmlogin.c:490
 #, c-format
 msgid "User %s will login in %d seconds"
-msgstr "Vartotojas %s bus prijungtas per %d sek."
+msgstr "Naudotojas %s bus prijungtas per %d sek."
 
-#: ../gui/gdmlogin.c:448
+#: ../gui/gdmlogin.c:494 ../gui/greeter/greeter_parser.c:1107
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "Naudotojas %s prisijungs po %d sekundės"
+msgstr[1] "Naudotojas %s prisijungs po %d sekundžių"
+msgstr[2] "Naudotojas %s prisijungs po %d sekundžių"
+
+#: ../gui/gdmlogin.c:722
 #, c-format
 msgid "%s: String too long!"
 msgstr "%s: Eilutė per ilga!"
 
-#: ../gui/gdmlogin.c:450
+#: ../gui/gdmlogin.c:724
 #, c-format
 msgid "%sWelcome to %s%s"
 msgstr "%sSveiki atvykę į %s%s"
 
-#. markup
-#: ../gui/gdmlogin.c:538
-msgid "Could not fork a new process!"
-msgstr "Nepavyko atšakoti naujo proceso!"
-
-#: ../gui/gdmlogin.c:540
-msgid "You likely won't be able to log in either."
-msgstr "Greičiausiai bet kuriuo atveju negalėsite prisijungti."
-
-#: ../gui/gdmlogin.c:584 ../gui/greeter/greeter_system.c:45
-msgid "Are you sure you want to reboot the machine?"
+#: ../gui/gdmlogin.c:809 ../gui/greeter/greeter_system.c:63
+msgid "Are you sure you want to restart the machine?"
 msgstr "Ar tikrai norite perkrauti kompiuterį?"
 
 #. markup
-#: ../gui/gdmlogin.c:586 ../gui/gdmlogin.c:2783
-#: ../gui/greeter/greeter_parser.c:1027 ../gui/greeter/greeter_system.c:47
-#: ../gui/greeter/greeter_system.c:168
-msgid "_Reboot"
+#: ../gui/gdmlogin.c:811 ../gui/gdmlogin.c:2839
+msgid "_Restart"
 msgstr "_Perkrauti"
 
-#: ../gui/gdmlogin.c:598 ../gui/greeter/greeter_system.c:58
+#: ../gui/gdmlogin.c:823 ../gui/greeter/greeter_system.c:76
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Ar tikrai norite išjungti kompiuterį?"
 
 #. markup
-#: ../gui/gdmlogin.c:600 ../gui/gdmlogin.c:2796
-#: ../gui/greeter/greeter_parser.c:1017 ../gui/greeter/greeter_system.c:60
-#: ../gui/greeter/greeter_system.c:180
+#: ../gui/gdmlogin.c:825 ../gui/gdmlogin.c:2852
+#: ../gui/greeter/greeter_parser.c:1077 ../gui/greeter/greeter_system.c:77
+#: ../gui/greeter/greeter_system.c:198
 msgid "Shut _Down"
 msgstr "Iš_jungti"
 
-#: ../gui/gdmlogin.c:620 ../gui/greeter/greeter_system.c:70
+#: ../gui/gdmlogin.c:845 ../gui/greeter/greeter_system.c:88
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Ar tikrai norite sustabdyti kompiuterį?"
 
 #. markup
-#: ../gui/gdmlogin.c:622 ../gui/gdmlogin.c:2810
-#: ../gui/greeter/greeter_system.c:72
+#: ../gui/gdmlogin.c:847 ../gui/gdmlogin.c:2866
+#: ../gui/greeter/greeter_system.c:89
 msgid "_Suspend"
 msgstr "_Sustabdyti"
 
-#: ../gui/gdmlogin.c:686 ../gui/gdmlogin.c:3756 ../gui/greeter/greeter.c:166
-#: ../gui/greeter/greeter.c:864
-msgid "Welcome"
-msgstr "Sveiki atvykę"
-
-#: ../gui/gdmlogin.c:689 ../gui/gdmlogin.c:3759 ../gui/greeter/greeter.c:169
-#: ../gui/greeter/greeter.c:867
-#, c-format
-msgid "Welcome to %n"
-msgstr "Sveiki atvykę į %n"
-
-#: ../gui/gdmlogin.c:738 ../gui/greeter/greeter.c:194
+#: ../gui/gdmlogin.c:974 ../gui/greeter/greeter.c:276
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
 msgstr "TimedLoginDelay buvo mažesnis nei 5.  Aš naudosiu 5."
 
-#: ../gui/gdmlogin.c:856 ../gui/greeter/greeter_session.c:119
+#: ../gui/gdmlogin.c:1075 ../gui/greeter/greeter_session.c:119
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -2822,13 +2843,13 @@ msgstr ""
 "Ar norite padaryti %s įprasta ateities sesijoms?"
 
 #. markup
-#: ../gui/gdmlogin.c:862 ../gui/gdmlogin.c:889 ../gui/gdmlogin.c:967
-#: ../gui/greeter/greeter_action_language.c:143
+#: ../gui/gdmlogin.c:1082 ../gui/gdmlogin.c:1110 ../gui/gdmlogin.c:1185
+#: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:125 ../gui/greeter/greeter_session.c:155
 msgid "Make _Default"
 msgstr "Pa_daryti įprasta"
 
-#: ../gui/gdmlogin.c:862 ../gui/greeter/greeter_session.c:125
+#: ../gui/gdmlogin.c:1082 ../gui/greeter/greeter_session.c:125
 msgid "Just _Log In"
 msgstr "Tik _Prisijungti"
 
@@ -2836,8 +2857,8 @@ msgstr "Tik _Prisijungti"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:881 ../gui/gdmlogin.c:961
-#: ../gui/greeter/greeter_action_language.c:137
+#: ../gui/gdmlogin.c:1101 ../gui/gdmlogin.c:1179
+#: ../gui/greeter/greeter_action_language.c:155
 #: ../gui/greeter/greeter_session.c:147
 #, c-format
 msgid ""
@@ -2847,13 +2868,13 @@ msgstr ""
 "Jūs pasirinkote %s šiai sesijai, bet įprasta parinktis buvo %s.\n"
 "Ar norite padaryti %s įprasta ateities sesijoms?"
 
-#: ../gui/gdmlogin.c:889 ../gui/gdmlogin.c:967
-#: ../gui/greeter/greeter_action_language.c:143
+#: ../gui/gdmlogin.c:1110 ../gui/gdmlogin.c:1185
+#: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:155
 msgid "Just For _This Session"
 msgstr "_Tik šiai sesijai"
 
-#: ../gui/gdmlogin.c:899 ../gui/greeter/greeter_session.c:168
+#: ../gui/gdmlogin.c:1120 ../gui/greeter/greeter_session.c:168
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2866,156 +2887,102 @@ msgstr ""
 "pasileiskite 'switchdesk' programėlę\n"
 "(arba skydelio meniu išsirinkite Sistema->Darbalaukio perjungimo įrankis)."
 
-#: ../gui/gdmlogin.c:943 ../gui/gdmlogin.c:952
-#: ../gui/greeter/greeter_action_language.c:53
-#: ../gui/greeter/greeter_action_language.c:121
-#: ../gui/greeter/greeter_action_language.c:129
+#: ../gui/gdmlogin.c:1161 ../gui/gdmlogin.c:1170
+#: ../gui/greeter/greeter_action_language.c:71
+#: ../gui/greeter/greeter_action_language.c:139
+#: ../gui/greeter/greeter_action_language.c:147
 msgid "System Default"
 msgstr "Sistemos įprasta"
 
-#: ../gui/gdmlogin.c:1076 ../gui/gdmlogin.c:1090 ../gui/gdmlogin.c:1877
-#: ../gui/gdmlogin.c:2375 ../gui/gdmlogin.c:3025
+#: ../gui/gdmlogin.c:1295 ../gui/gdmlogin.c:1309 ../gui/gdmlogin.c:1939
+#: ../gui/gdmlogin.c:2445 ../gui/gdmlogin.c:3082
 msgid "_Username:"
 msgstr "_Vartotojo vardas:"
 
-#: ../gui/gdmlogin.c:1148
+#: ../gui/gdmlogin.c:1383
 #, c-format
 msgid "%s session selected"
 msgstr "Pasirinkta %s sesija"
 
-#: ../gui/gdmlogin.c:1174 ../gui/gdmlogin.c:1484
-#: ../gui/greeter/greeter_session.c:271
+#: ../gui/gdmlogin.c:1404 ../gui/gdmlogin.c:1531
+#: ../gui/greeter/greeter_session.c:263
 msgid "_Last"
 msgstr "_Paskutinė"
 
-#: ../gui/gdmlogin.c:1185 ../gui/greeter/greeter_session.c:277
+#: ../gui/gdmlogin.c:1415 ../gui/greeter/greeter_session.c:269
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Prisijungti naudojant paskutinį kartą naudotą sesiją"
-
-#: ../gui/gdmlogin.c:1196 ../gui/greeter/greeter_session.c:264
-msgid "Failsafe Gnome"
-msgstr "Failsafe Gnome"
-
-#: ../gui/gdmlogin.c:1197 ../gui/greeter/greeter_session.c:265
-msgid "Failsafe xterm"
-msgstr "Failsafe xterm"
-
-#: ../gui/gdmlogin.c:1346 ../gui/greeter/greeter_session.c:429
-#, c-format
-msgid "%s: Session directory %s not found!"
-msgstr "%s: Sesijos katalogas %s nerastas!"
-
-#: ../gui/gdmlogin.c:1352 ../gui/greeter/greeter_session.c:437
-msgid "Yaikes, nothing found in the session directory."
-msgstr "Oi, sesijos kataloge nieko nerasta."
-
-#: ../gui/gdmlogin.c:1363 ../gui/greeter/greeter_session.c:449
-msgid "Failsafe _Gnome"
-msgstr "Failsafe _Gnome"
-
-#: ../gui/gdmlogin.c:1365 ../gui/greeter/greeter_session.c:451
-msgid ""
-"This is a failsafe session that will log you into GNOME.  No startup scripts "
-"will be read and it is only to be used when you can't log in otherwise.  "
-"GNOME will use the 'Default' session."
-msgstr ""
-"Tai yra atsarginė sesija, kuri Jus prijungs prie GNOME. Startup skriptai "
-"nebus vykdomi. Ši sesija naudojama tik tada, jei negalite prisijungti kitu "
-"būdu. GNOME naudos „Įprastą“ sesiją."
-
-#: ../gui/gdmlogin.c:1388 ../gui/greeter/greeter_session.c:473
-msgid "Failsafe _Terminal"
-msgstr "Failsafe _Terminalas"
-
-#: ../gui/gdmlogin.c:1390 ../gui/greeter/greeter_session.c:475
-msgid ""
-"This is a failsafe session that will log you into a terminal.  No startup "
-"scripts will be read and it is only to be used when you can't log in "
-"otherwise.  To exit the terminal, type 'exit'."
-msgstr ""
-"Tai yra atsarginė xterm sesija, kuri prijungs Jūs prie terminalo. Startup "
-"skriptai nebus vykdomi. Šita sesija naudojama tik tada, jei negalite "
-"prisijungti kitu būdu. Norėdami išeiti iš terminalo įveskite „exit“ ir "
-"terminalo lange paspauskite „Enter“."
-
-#: ../gui/gdmlogin.c:1411 ../gui/greeter/greeter_session.c:495
-msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr "Nerasta nuoroda į įprastą sesiją. Naudojama Failsafe GNOME.\n"
 
 #. never_encoding
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1455
+#: ../gui/gdmlogin.c:1496
 #, c-format
 msgid "%s language selected"
 msgstr "Pasirinkta %s kalba"
 
-#: ../gui/gdmlogin.c:1495
+#: ../gui/gdmlogin.c:1542
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Prisijungti naudojant paskutinį kartą naudotą kalbą"
 
-#: ../gui/gdmlogin.c:1499
+#: ../gui/gdmlogin.c:1546
 msgid "_System Default"
 msgstr "_Sistemos įprasta"
 
-#: ../gui/gdmlogin.c:1510
+#: ../gui/gdmlogin.c:1557
 msgid "Log in using the default system language"
 msgstr "Prisijungti naudojant įprastą sistemos kalbą"
 
-#: ../gui/gdmlogin.c:1530
+#: ../gui/gdmlogin.c:1581
 msgid "_Other"
 msgstr "_Kita"
 
-#: ../gui/gdmlogin.c:1908
+#: ../gui/gdmlogin.c:1971
 msgid "_Password:"
 msgstr "_Slaptažodis: "
 
 #. markup
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:2132 ../gui/greeter/greeter.c:436
+#: ../gui/gdmlogin.c:2204 ../gui/greeter/greeter.c:532
 msgid "Please insert 25 cents to log in."
 msgstr "Prašom įdėti 25 centus, jei norite prisijungti. "
 
-#: ../gui/gdmlogin.c:2383
-msgid "Doubleclick on the user to log in"
-msgstr "Norėdami prisijungti, du kartus spragtelkite ant naudotojo"
-
-#: ../gui/gdmlogin.c:2508
+#: ../gui/gdmlogin.c:2566
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Darbastalio Tvarkyklė"
 
-#: ../gui/gdmlogin.c:2534 ../gui/greeter/greeter_item.c:139
+#: ../gui/gdmlogin.c:2592 ../gui/greeter/greeter_item.c:157
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
-#: ../gui/gdmlogin.c:2536 ../gui/greeter/greeter_item.c:143
+#: ../gui/gdmlogin.c:2594 ../gui/greeter/greeter_item.c:161
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %b %d, %l:%M %p"
 
-#: ../gui/gdmlogin.c:2585
+#: ../gui/gdmlogin.c:2643
 msgid "Finger"
 msgstr "Pirštas"
 
-#: ../gui/gdmlogin.c:2691
+#: ../gui/gdmlogin.c:2747
 msgid "GDM Login"
 msgstr "GDM prisijungimas"
 
-#: ../gui/gdmlogin.c:2734 ../gui/greeter/greeter_parser.c:997
+#: ../gui/gdmlogin.c:2790 ../gui/greeter/greeter_parser.c:1057
 msgid "_Session"
 msgstr "_Sesija"
 
-#: ../gui/gdmlogin.c:2741 ../gui/greeter/greeter_parser.c:992
+#: ../gui/gdmlogin.c:2797 ../gui/greeter/greeter_parser.c:1052
 msgid "_Language"
 msgstr "_Kalba"
 
-#: ../gui/gdmlogin.c:2753 ../gui/greeter/greeter_system.c:134
+#: ../gui/gdmlogin.c:2809 ../gui/greeter/greeter_system.c:152
 msgid "_XDMCP Chooser..."
 msgstr "_XDMCP parinkiklis..."
 
-#: ../gui/gdmlogin.c:2760 ../gui/greeter/greeter_system.c:141
-#: ../gui/greeter/greeter_system.c:331
+#: ../gui/gdmlogin.c:2816 ../gui/greeter/greeter_system.c:159
+#: ../gui/greeter/greeter_system.c:349
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "machines, if there are any."
@@ -3023,132 +2990,128 @@ msgstr ""
 "Paleisti XDMCP parinkiklį, kuris leis prisijungti prie prieinamų nutolusių "
 "mašinų, jeigu tokių yra."
 
-#: ../gui/gdmlogin.c:2769 ../gui/greeter/greeter_system.c:149
+#: ../gui/gdmlogin.c:2825 ../gui/greeter/greeter_system.c:167
 msgid "_Configure Login Manager..."
 msgstr "_Konfigūruoti prisijungimų tvarkyklę..."
 
-#: ../gui/gdmlogin.c:2776 ../gui/greeter/greeter_system.c:156
-#: ../gui/greeter/greeter_system.c:351
+#: ../gui/gdmlogin.c:2832 ../gui/greeter/greeter_system.c:174
+#: ../gui/greeter/greeter_system.c:369
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Konfigūruoti GDM (šią prisijungimo tvarkyklę). Reikės įvesti root slaptažodį."
 
-#: ../gui/gdmlogin.c:2790 ../gui/greeter/greeter_system.c:175
-msgid "Reboot your computer"
-msgstr "Perkrauti jūsų kompiuterį"
+#: ../gui/gdmlogin.c:2846
+msgid "Restart your computer"
+msgstr "Perkrauti kompiuterį"
 
-#: ../gui/gdmlogin.c:2803 ../gui/greeter/greeter_system.c:187
+#: ../gui/gdmlogin.c:2859 ../gui/greeter/greeter_system.c:205
 msgid "Shut down the system so that you may safely turn off the computer."
 msgstr "Išjungti sistemą, kad Jūs saugiai galėtumėt išjungti kompiuterį."
 
-#: ../gui/gdmlogin.c:2817 ../gui/greeter/greeter_system.c:200
+#: ../gui/gdmlogin.c:2873 ../gui/greeter/greeter_system.c:218
 msgid "Suspend your computer"
 msgstr "Sulaikyti Jūsų kompiuterį"
 
-#: ../gui/gdmlogin.c:2823 ../gui/greeter/greeter_parser.c:1002
+#: ../gui/gdmlogin.c:2879 ../gui/greeter/greeter_parser.c:1062
 msgid "_Actions"
 msgstr "_Veiksmai"
 
-#: ../gui/gdmlogin.c:2832
+#: ../gui/gdmlogin.c:2888
 msgid "_Theme"
 msgstr "_Tema"
 
-#: ../gui/gdmlogin.c:2843 ../gui/greeter/greeter_canvas_item.c:146
-#: ../gui/greeter/greeter_parser.c:1012
+#: ../gui/gdmlogin.c:2899 ../gui/greeter/greeter_canvas_item.c:165
+#: ../gui/greeter/greeter_parser.c:1072
 msgid "_Quit"
 msgstr "Iš_eiti"
 
-#: ../gui/gdmlogin.c:2845 ../gui/greeter/greeter_canvas_item.c:148
-#: ../gui/greeter/greeter_parser.c:1007
+#: ../gui/gdmlogin.c:2901 ../gui/greeter/greeter_canvas_item.c:167
+#: ../gui/greeter/greeter_parser.c:1067
 msgid "D_isconnect"
 msgstr "A_tsijungti"
 
-#: ../gui/gdmlogin.c:2912 ../gui/greeter/greeter_item_ulist.c:469
+#: ../gui/gdmlogin.c:2969 ../gui/greeter/greeter_item_ulist.c:204
 msgid "Icon"
 msgstr "Piktograma"
 
-#: ../gui/gdmlogin.c:3395
+#. markup
+#: ../gui/gdmlogin.c:3622 ../gui/gdmlogin.c:3653 ../gui/gdmlogin.c:3697
+#: ../gui/greeter/greeter.c:765 ../gui/greeter/greeter.c:797
+#: ../gui/greeter/greeter.c:842
+msgid "Cannot start the greeter"
+msgstr "Nepavyko paleisti pasveikintuvo"
+
+#: ../gui/gdmlogin.c:3623 ../gui/gdmlogin.c:3654
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version.  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+msgstr ""
+"Pasveikintuvo versija (%s) neatitinka demono versijos.  Jūs tikriausiai ką "
+"tik atnaujinote gdm.  Iš naujo paleiskite gdm arba perkraukite kompiuterį."
+
+#: ../gui/gdmlogin.c:3660 ../gui/greeter/greeter.c:849
+msgid "Restart"
+msgstr "Paleisti iš naujo"
+
+#: ../gui/gdmlogin.c:3698
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version (%s).  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+msgstr ""
+"Pasveikintuvo versija (%s) neatitinka demono versijos (%s). Tikriausiai Jūs "
+"ką tik atnaujinote gdm. Paleiskite iš naujo gdm demoną arba perkraukite "
+"kompiuterį."
+
+#: ../gui/gdmlogin.c:3704
+msgid "Restart gdm"
+msgstr "Perkrauti gdm"
+
+#: ../gui/gdmlogin.c:3706
+msgid "Restart computer"
+msgstr "Perkrauti kompiuterį"
+
+#: ../gui/gdmlogin.c:3736
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Nepavyko atverti DefaultImage: %s. Nebus veidų naršyklės!"
 
-#: ../gui/gdmlogin.c:3417 ../gui/gdmsetup.c:569
-#: ../gui/greeter/greeter_item_ulist.c:324
-msgid "Too many users to list here..."
-msgstr "Per daug vartotojų, kad čia išvardyti..."
-
 #. markup
-#: ../gui/gdmlogin.c:3835 ../gui/gdmlogin.c:3866 ../gui/gdmlogin.c:3910
-#: ../gui/greeter/greeter.c:639 ../gui/greeter/greeter.c:671
-#: ../gui/greeter/greeter.c:716
-msgid "Cannot start the greeter"
-msgstr "Nepavyko paleisti pasveikintuvo"
-
-#: ../gui/gdmlogin.c:3836 ../gui/gdmlogin.c:3867
-#, c-format
-msgid ""
-"The greeter version (%s) does not match the daemon version.  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
-msgstr ""
-"pasveikintuvo versija (%s) neatitinka demono versijos.  Jūs tikriausiai ką "
-"tik atnaujinote gdm.  Iš naujo paleiskite gdm arba perkraukite kompiuterį."
-
-#: ../gui/gdmlogin.c:3873 ../gui/gdmlogin.c:3919 ../gui/greeter/greeter.c:678
-#: ../gui/greeter/greeter.c:725
-msgid "Reboot"
-msgstr "Perkrauti"
-
-#: ../gui/gdmlogin.c:3911
-#, c-format
-msgid ""
-"The greeter version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
-"computer."
-msgstr ""
-"pasveikintuvo versija (%s) neatitinka demono versijos (%s).  Tikriausiai Jūs "
-"ką tik atnaujinote gdm.  Paleiskite iš naujo gdm demoną arba perkraukite "
-"kompiuterį."
-
-#: ../gui/gdmlogin.c:3917 ../gui/greeter/greeter.c:723
-msgid "Restart"
-msgstr "Paleisti iš naujo"
-
-#. markup
-#: ../gui/gdmlogin.c:4103 ../gui/greeter/greeter.c:1348
+#: ../gui/gdmlogin.c:3894 ../gui/greeter/greeter.c:1512
 msgid "Session directory is missing"
-msgstr "Trūksta sesijos katalogo"
+msgstr "Trūksta sesijos aplanko"
 
-#: ../gui/gdmlogin.c:4105 ../gui/greeter/greeter.c:1350
+#: ../gui/gdmlogin.c:3896 ../gui/greeter/greeter.c:1514
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
 "configuration."
 msgstr ""
-"Nėra Jūsų sesijos katalogo arba jis yra tuščias!  Yra dvi prieinamos sesijos "
+"Nėra Jūsų sesijos aplanko arba jis yra tuščias!  Yra dvi prieinamos sesijos "
 "kurias galite naudoti, bet turėtumėte prisijungti ir pataisyti gdm "
 "konfigūraciją."
 
 #. markup
-#: ../gui/gdmlogin.c:4129 ../gui/greeter/greeter.c:1375
+#: ../gui/gdmlogin.c:3920 ../gui/greeter/greeter.c:1539
 msgid "Configuration is not correct"
 msgstr "Konfigūracija yra neteisinga"
 
-#: ../gui/gdmlogin.c:4131 ../gui/greeter/greeter.c:1377
+#: ../gui/gdmlogin.c:3922 ../gui/greeter/greeter.c:1541
 msgid ""
 "The configuration file contains an invalid command line for the login "
-"dialog, and thus I ran the default command.  Please fix your configuration."
+"dialog, so running the default command.  Please fix your configuration."
 msgstr ""
 "Konfigūracijos byloje yra neteisinga komandinė eilutė prisijungimo dialogui, "
-"todėl paleidau įprastą komandą.  Pataisykite konfigūraciją."
+"todėl paleidžiama įprasta komanda.  Pataisykite konfigūraciją."
 
 #. markup
-#: ../gui/gdmlogin.c:4156 ../gui/greeter/greeter.c:1404
+#: ../gui/gdmlogin.c:3947 ../gui/greeter/greeter.c:1568
 msgid "No configuration was found"
 msgstr "Konfigūracija nerasta"
 
-#: ../gui/gdmlogin.c:4158 ../gui/greeter/greeter.c:1406
+#: ../gui/gdmlogin.c:3949 ../gui/greeter/greeter.c:1570
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3158,12 +3121,20 @@ msgstr ""
 "Turėtumėte prisijungti ir sukurti konfigūracijos bylą su GDM konfigūravimo "
 "programa."
 
+#: ../gui/gdmphotosetup.c:183 ../gui/gdmsetup.c:1615 ../gui/gdmsetup.c:2243
+msgid "Open File"
+msgstr "Atverti bylą"
+
+#: ../gui/gdmphotosetup.c:201 ../gui/gdmsetup.c:1630
+msgid "PNG and JPEG"
+msgstr "PNG ir JPEG"
+
 #. markup
-#: ../gui/gdmphotosetup.c:144
+#: ../gui/gdmphotosetup.c:269
 msgid "The face browser is not configured"
 msgstr "Veidų naršyklė nesukonfigūruota"
 
-#: ../gui/gdmphotosetup.c:147
+#: ../gui/gdmphotosetup.c:272
 msgid ""
 "The face browser is not configured in the GDM configuration.  Please ask "
 "your system administrator to enable it in the GDM configurator program."
@@ -3171,59 +3142,33 @@ msgstr ""
 "Veidų naršyklė nėra sukonfigūruota GDM konfigūracijoje.  Paprašykite Jūsų "
 "sistemos administratoriaus, kad ją įjungtų GDM konfigūratoriaus programoje."
 
-#: ../gui/gdmphotosetup.c:157 ../gui/gdmphotosetup.desktop.in.h:2
+#: ../gui/gdmphotosetup.c:284 ../gui/gdmphotosetup.desktop.in.h:2
 msgid "Login Photo"
 msgstr "Prisijungimo paveikslėlis"
 
-#: ../gui/gdmphotosetup.c:167
+#: ../gui/gdmphotosetup.c:294
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Pasirinkite nuotrauką, kurią matysite prisijungimo programoje:"
 
-#: ../gui/gdmphotosetup.c:172
-msgid "Browse"
-msgstr "Naršyti"
+#: ../gui/gdmphotosetup.c:320
+msgid "_Browse"
+msgstr "_Naršyti"
 
 #. markup
-#: ../gui/gdmphotosetup.c:206
+#: ../gui/gdmphotosetup.c:353
 msgid "No picture selected."
 msgstr "Nepasirinktas joks paveikslėlis."
 
 #. markup
-#: ../gui/gdmphotosetup.c:217
-msgid "Picture is too large"
-msgstr "Paveikslėlis per didelis"
-
-#: ../gui/gdmphotosetup.c:218
-#, c-format
-msgid ""
-"The system administrator disallowed pictures larger than %d bytes to show in "
-"the face browser"
-msgstr ""
-"Sistemos administratorius uždraudė prisijungimo programoje naudoti "
-"paveikslėlius, didesnius nei %d baitų"
-
-#. markup
-#: ../gui/gdmphotosetup.c:245 ../gui/gdmphotosetup.c:267
+#: ../gui/gdmphotosetup.c:377
 msgid "Cannot open file"
 msgstr "Nepavyko atverti bylos"
 
-#: ../gui/gdmphotosetup.c:246
+#: ../gui/gdmphotosetup.c:378
 #, c-format
-msgid ""
-"File %s cannot be open for reading\n"
-"Error: %s"
-msgstr ""
-"Byla %s negali būti atverta skaitymui\n"
-"Klaida: %s"
-
-#: ../gui/gdmphotosetup.c:268
-#, c-format
-msgid ""
-"File %s cannot be open for writing\n"
-"Error: %s"
+msgid "File %s cannot be opened for writing\n"
 msgstr ""
 "Byla %s negali būti atverta rašymui\n"
-"Klaida: %s"
 
 #: ../gui/gdmphotosetup.desktop.in.h:1
 msgid ""
@@ -3232,421 +3177,100 @@ msgstr ""
 "Pakeisti paveikslėlį, kuris bus rodomas GDM (prisijungimo programos) "
 "vartotoju"
 
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: ../gui/gdmsetup-strings.c:7 ../gui/gdmsetup.desktop.in.h:2
-#: ../gui/gdmsetup.glade.h:26
-msgid "Login Screen Setup"
-msgstr "Prisijungimo ekrano sąranka"
-
-#: ../gui/gdmsetup-strings.c:8 ../gui/gdmsetup.glade.h:22
-msgid "Greeter"
-msgstr "Pasveikintuvas"
-
-#: ../gui/gdmsetup-strings.c:9 ../gui/gdmsetup-strings.c:24
-#: ../gui/gdmsetup-strings.c:29 ../gui/gdmsetup-strings.c:36
-#: ../gui/gdmsetup-strings.c:39 ../gui/gdmsetup-strings.c:42
-#: ../gui/gdmsetup-strings.c:65 ../gui/gdmsetup-strings.c:71
-#: ../gui/gdmsetup-strings.c:73 ../gui/gdmsetup-strings.c:79
-#: ../gui/gdmsetup-strings.c:82 ../gui/gdmsetup-strings.c:90
-#: ../gui/gdmsetup.glade.h:1
-msgid "    "
-msgstr "    "
-
-#: ../gui/gdmsetup-strings.c:10 ../gui/gdmsetup.glade.h:24
-msgid "L_ocal: "
-msgstr "L_okalus: "
-
-#: ../gui/gdmsetup-strings.c:11 ../gui/gdmsetup.glade.h:66
-msgid "_Remote: "
-msgstr "_Nutolęs: "
-
-#: ../gui/gdmsetup-strings.c:12 ../gui/gdmsetup.glade.h:70
-msgid "_Welcome string: "
-msgstr "P_asveikinimo pranešimas: "
-
-#: ../gui/gdmsetup-strings.c:13 ../gui/gdmsetup.glade.h:43
-msgid "Re_mote welcome string: "
-msgstr "Nuo_tolinio pasveikinimo pranešimas: "
-
-#: ../gui/gdmsetup-strings.c:14 ../gui/gdmsetup-strings.c:16
-#: ../gui/gdmsetup-strings.c:51 ../gui/gdmsetup.c:969
-#: ../gui/gdmsetup.glade.h:50
-msgid "Standard greeter"
-msgstr "Standartinis sveikintuvas"
-
-#: ../gui/gdmsetup-strings.c:15 ../gui/gdmsetup-strings.c:17
-#: ../gui/gdmsetup-strings.c:63 ../gui/gdmsetup.c:971
-#: ../gui/gdmsetup.glade.h:21
-msgid "Graphical greeter"
-msgstr "Grafinis pasveikintuvas"
-
-#: ../gui/gdmsetup-strings.c:18 ../gui/gdmsetup.glade.h:52
-#, no-c-format
-msgid ""
-"String to be shown in the greeter as welcome.  You can insert %n in here and "
-"it will be replaced by the name of your computer."
-msgstr ""
-"Pasveikinimo žinutė rodoma pasveikintuvo lange.  Jūs galite čia įterpti %n "
-"ir tai bus pakeista į kompiuterio vardą."
-
-#: ../gui/gdmsetup-strings.c:20 ../gui/gdmsetup.glade.h:54
-#, no-c-format
-msgid ""
-"String to be shown in the greeter for people logging in remotely with "
-"XDMCP.  You can insert %n in here and it will be replaced by the name of "
-"your computer."
-msgstr ""
-"Užrašas rodomas žmonėms prisijungiant per atstumą su XDMCP.  Jūs galite "
-"įterpti %n ir tai bus pakeista į Jūsų kompiuterio vardą."
-
-#: ../gui/gdmsetup-strings.c:22 ../gui/gdmsetup.glade.h:10
-msgid "Always use 24 hour cloc_k format"
-msgstr "Visada naudoti 24 valandų lai_ko formatą"
-
-#: ../gui/gdmsetup-strings.c:23 ../gui/gdmsetup.glade.h:12
-msgid "Automatic Login"
-msgstr "Automatinis prijungimas"
-
-#: ../gui/gdmsetup-strings.c:25 ../gui/gdmsetup.glade.h:58
-msgid "_Automatic login username:"
-msgstr "_Automatiškai prijungiamo vartotojo vardas: "
-
-#: ../gui/gdmsetup-strings.c:27 ../gui/gdmsetup.glade.h:63
-msgid "_Login a user automatically on first bootup"
-msgstr "Automatiškai pri_jungti vartotoją tik įjungus kompiuterį"
-
-#: ../gui/gdmsetup-strings.c:28 ../gui/gdmsetup.glade.h:55
-msgid "Timed Login"
-msgstr "Uždelstas prijungimas"
-
-#: ../gui/gdmsetup-strings.c:30 ../gui/gdmsetup.glade.h:56
-msgid "Timed login us_ername:"
-msgstr "Už_delsto prijungimo vartotojo vardas:"
-
-#: ../gui/gdmsetup-strings.c:31 ../gui/gdmsetup.glade.h:68
-msgid "_Seconds before login:"
-msgstr "_Sekundės prieš prijungiant:"
-
-#: ../gui/gdmsetup-strings.c:33 ../gui/gdmsetup.glade.h:27
-msgid "Login a user automa_tically after a specified number of seconds"
-msgstr "Po nurodyto laiko tarpo prijungti naudotoją automa_tiškai"
-
-#: ../gui/gdmsetup-strings.c:34 ../gui/gdmsetup.glade.h:20
-msgid "General"
-msgstr "Bendra"
-
-#: ../gui/gdmsetup-strings.c:35 ../gui/gdmsetup.glade.h:28
-msgid "Logo"
-msgstr "Logotipas"
-
-#: ../gui/gdmsetup-strings.c:38 ../gui/gdmsetup.glade.h:35
-msgid "Miscellaneous"
-msgstr "Įvairūs"
-
-#: ../gui/gdmsetup-strings.c:40 ../gui/gdmsetup.glade.h:47
-msgid "Show choosable user images (_face browser)"
-msgstr "Rodyti pasirenkamus naudotojų paveikslėlius (_veidų naršyklę)"
-
-#: ../gui/gdmsetup-strings.c:41 ../gui/gdmsetup.glade.h:13
-msgid "Background"
-msgstr "Fonas"
-
-#: ../gui/gdmsetup-strings.c:43 ../gui/gdmsetup.glade.h:64
-msgid "_No background"
-msgstr "_Jokio fono"
-
-#: ../gui/gdmsetup-strings.c:44 ../gui/gdmsetup.glade.h:61
-msgid "_Image"
-msgstr "Paveikslėl_is"
-
-#: ../gui/gdmsetup-strings.c:45 ../gui/gdmsetup.glade.h:14
-msgid "Co_lor"
-msgstr "_Spalva"
-
-#: ../gui/gdmsetup-strings.c:46 ../gui/gdmsetup.glade.h:67
-msgid "_Scale background image to fit"
-msgstr "Ište_mpti fono paveikslėlį, kad tilptų"
-
-#: ../gui/gdmsetup-strings.c:48 ../gui/gdmsetup.glade.h:65
-msgid "_Only color on remote displays"
-msgstr "_Nutolusiuose ekranuose tik spalva"
-
-#: ../gui/gdmsetup-strings.c:49 ../gui/gdmsetup.glade.h:59
-msgid "_Background color: "
-msgstr "_Fono spalva:"
-
-#: ../gui/gdmsetup-strings.c:50 ../gui/gdmsetup.glade.h:39
-msgid "Pick a color"
-msgstr "Pasirinkite spalvą"
-
-#: ../gui/gdmsetup-strings.c:52 ../gui/gdmsetup.glade.h:42
-msgid "Preview:"
-msgstr "Peržiūra:"
-
-#: ../gui/gdmsetup-strings.c:53 ../gui/gdmsetup.glade.h:37
-msgid "No screenshot available"
-msgstr "Nuotrauka neprieinama"
-
-#: ../gui/gdmsetup-strings.c:54 ../gui/gdmsetup.glade.h:16
-msgid "Description:"
-msgstr "Aprašymas:"
-
-#: ../gui/gdmsetup-strings.c:55 ../gui/gdmsetup.glade.h:15
-msgid "Copyright:"
-msgstr "Autorinės teisės:"
-
-#: ../gui/gdmsetup-strings.c:56 ../gui/gdmsetup.glade.h:11
-msgid "Author:"
-msgstr "Autorius:"
-
-#: ../gui/gdmsetup-strings.c:57 ../gui/gdmsetup.glade.h:74
-msgid ""
-"description\n"
-"widget"
-msgstr ""
-"aprašymas\n"
-"objektas"
-
-#: ../gui/gdmsetup-strings.c:59 ../gui/gdmsetup.glade.h:72
-msgid "author"
-msgstr "autorius"
-
-#: ../gui/gdmsetup-strings.c:60 ../gui/gdmsetup.glade.h:73
-msgid "copyright"
-msgstr "autorinės teisės"
-
-#: ../gui/gdmsetup-strings.c:61 ../gui/gdmsetup.glade.h:62
-msgid "_Install new theme"
-msgstr "Į_diegti naują temą"
-
-#: ../gui/gdmsetup-strings.c:62 ../gui/gdmsetup.glade.h:60
-msgid "_Delete theme"
-msgstr "_Trinti temą"
-
-#: ../gui/gdmsetup-strings.c:64 ../gui/gdmsetup-strings.c:78
-#: ../gui/gdmsetup.glade.h:38
-msgid "Options"
-msgstr "Nustatymai"
-
-#: ../gui/gdmsetup-strings.c:66 ../gui/gdmsetup.glade.h:5
-msgid "Allow _root to login with GDM"
-msgstr "Leisti _root prisijungti per GDM"
-
-#: ../gui/gdmsetup-strings.c:67 ../gui/gdmsetup.glade.h:8
-msgid "Allow root to login r_emotely with GDM"
-msgstr "Leisti root prisijungti per GDM _nuotoliniu būdu"
-
-#: ../gui/gdmsetup-strings.c:68 ../gui/gdmsetup.glade.h:7
-msgid "Allow remote _timed logins"
-msgstr "Leisti nuotolinius _uždelstus prisijungimus"
-
-#: ../gui/gdmsetup-strings.c:69 ../gui/gdmsetup.glade.h:48
-msgid ""
-"Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
-"set, none of the system commands will be available (this includes reboot, "
-"shutdown, configure, chooser)"
-msgstr ""
-"Rodyti „Veiksmų“ meniu (seniau buvo žinomas kaip „Sistemos“ meniu).  Jeigu "
-"nenurodyta, nei viena iš sistemos komandų nebus prieinamos (įskaitant "
-"perkrovimą, išjungimą, konfigūravimą, parinkiklį)"
-
-#: ../gui/gdmsetup-strings.c:70 ../gui/gdmsetup.glade.h:46
-msgid "Show _actions menu"
-msgstr "Rodyti _veiksmų meniu"
-
-#: ../gui/gdmsetup-strings.c:72 ../gui/gdmsetup.glade.h:6
-msgid "Allow c_onfiguration from the login screen"
-msgstr "Leisti keisti _nustatymus iš prisijungimo lango"
-
-#: ../gui/gdmsetup-strings.c:74 ../gui/gdmsetup.glade.h:4
-msgid "Allo_w running XDMCP chooser from the login screen"
-msgstr "Lei_sti XDMCP parinkiklio paleidimą iš prisijungimo ekrano"
-
-#: ../gui/gdmsetup-strings.c:75 ../gui/gdmsetup.glade.h:9
-msgid ""
-"Always disallow TCP connections to _X server (disables all remote "
-"connections)"
-msgstr ""
-"Niekada neleisti TCP prisijungimų prie _X serverio (uždraudžia visus "
-"nuotolinius prisijungimus)"
-
-#: ../gui/gdmsetup-strings.c:76 ../gui/gdmsetup.glade.h:44
-msgid "Retry _delay (seconds) :"
-msgstr "Kartojimo _uždelsimas (sekundėmis):"
-
-#: ../gui/gdmsetup-strings.c:77 ../gui/gdmsetup.glade.h:45
-msgid "Security"
-msgstr "Saugumas"
-
-#: ../gui/gdmsetup-strings.c:80 ../gui/gdmsetup.glade.h:19
-msgid "Enable _accessibility modules"
-msgstr "Įjungti _prieinamumo modulius"
-
-#: ../gui/gdmsetup-strings.c:81 ../gui/gdmsetup.glade.h:29
-msgid "Make a _sound when login window is ready"
-msgstr "_Sugroti garsą kai prisijungimo langas jau pasiruošęs"
-
-#: ../gui/gdmsetup-strings.c:83 ../gui/gdmsetup.glade.h:71
-msgid "acc_sound_file_box"
-msgstr "acc_sound_file_box"
-
-#: ../gui/gdmsetup-strings.c:84 ../gui/gdmsetup.glade.h:49
-msgid "Sound _file:"
-msgstr "Garsinė _byla:"
-
-#: ../gui/gdmsetup-strings.c:86 ../gui/gdmsetup.glade.h:69
-msgid "_Test sound"
-msgstr "_Išbandyti garsą"
-
-#: ../gui/gdmsetup-strings.c:87 ../gui/gdmsetup.glade.h:3
-msgid "Accessibility"
-msgstr "Prieinamumas"
-
-#: ../gui/gdmsetup-strings.c:88 ../gui/gdmsetup.glade.h:36
-msgid ""
-"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
-"GDM with the XDMCP libraries."
-msgstr ""
-"Dvejetainėje byloje nėra XDMCP palaikymo.  Norėdami įjungti XDMCP palaikymą "
-"turite perkompiliuoti GDM su XDMCP bibliotekomis."
-
-#: ../gui/gdmsetup-strings.c:89 ../gui/gdmsetup.glade.h:18
-msgid "Enable _XDMCP"
-msgstr "Leisti _XDMCP"
-
-#: ../gui/gdmsetup-strings.c:91 ../gui/gdmsetup.glade.h:23
-msgid "Honour _indirect requests"
-msgstr "Gerbti _netiesiogines užklausas"
-
-#: ../gui/gdmsetup-strings.c:92 ../gui/gdmsetup.glade.h:25
-msgid "Listen on _UDP port: "
-msgstr "Klausytis _UDP prievado: "
-
-#: ../gui/gdmsetup-strings.c:93 ../gui/gdmsetup.glade.h:31
-msgid "Maximum _pending requests:"
-msgstr "Daugiausiai _laukiančių užklausų:"
-
-#: ../gui/gdmsetup-strings.c:94 ../gui/gdmsetup.glade.h:30
-msgid "Max p_ending indirect requests:"
-msgstr "Daugiausiai laukiančių n_etiesioginių užklausų:"
-
-#: ../gui/gdmsetup-strings.c:95 ../gui/gdmsetup.glade.h:32
-msgid "Maximum _remote sessions:"
-msgstr "Maksimalus _nutolusių sesijų skaičius:"
-
-#: ../gui/gdmsetup-strings.c:96 ../gui/gdmsetup.glade.h:33
-msgid "Maximum _wait time:"
-msgstr "Maksimalus _laukimo laikas:"
-
-#: ../gui/gdmsetup-strings.c:97 ../gui/gdmsetup.glade.h:34
-msgid "Maximum indirect w_ait time:"
-msgstr "Maksimalus netiesioginis l_aukimo laikas:"
-
-#: ../gui/gdmsetup-strings.c:98 ../gui/gdmsetup.glade.h:17
-msgid "Displays per _host:"
-msgstr "Ekranų _hoste:"
-
-#: ../gui/gdmsetup-strings.c:99 ../gui/gdmsetup.glade.h:40
-msgid "Pin_g interval (seconds):"
-msgstr "Pin_g intervalas (sekundėmis):"
-
-#: ../gui/gdmsetup-strings.c:100 ../gui/gdmsetup.glade.h:41
-msgid "Ping interval (seconds):"
-msgstr "Ping intervalas (sekundėmis):"
-
-#: ../gui/gdmsetup-strings.c:101 ../gui/gdmsetup.glade.h:57
-msgid "XDMCP"
-msgstr "XDMCP"
-
 #. markup
-#: ../gui/gdmsetup.c:164
+#: ../gui/gdmsetup.c:208
 msgid ""
-"An error occured while trying to contact the login screens.  Not all updates "
-"may have taken effect."
+"An error occurred while trying to contact the login screens.  Not all "
+"updates may have taken effect."
 msgstr ""
 "Bandant susisiekti su prisijungimo ekranais įvyko klaida. Galbūt įsigalėjo "
 "ne visi atnaujinimai."
 
 #. markup
-#: ../gui/gdmsetup.c:487
+#: ../gui/gdmsetup.c:868
 msgid ""
 "Autologin or timed login to the superuser (root) account is not allowed."
 msgstr ""
 "Automatinis prisijungimas arba uždelstas prisijungimas administratoriui "
 "(root) neleidžiamas."
 
-#: ../gui/gdmsetup.c:1756
+#: ../gui/gdmsetup.c:2087 ../gui/gdmsetup.c:2127 ../gui/gdmsetup.c:2342
+#: ../gui/gdmsetup.c:2352 ../gui/gdmsetup.c:2362
+msgid "None"
+msgstr "Nėra"
+
+#: ../gui/gdmsetup.c:2251
+msgid "All files"
+msgstr "Visos bylos"
+
+#: ../gui/gdmsetup.c:3000
 msgid "Archive is not of a subdirectory"
 msgstr "Archyvas nėra iš pakatalogio"
 
-#: ../gui/gdmsetup.c:1764
+#: ../gui/gdmsetup.c:3008
 msgid "Archive is not of a single subdirectory"
 msgstr "Archyvas nėra iš vieno pakatalogio"
 
-#: ../gui/gdmsetup.c:1788 ../gui/gdmsetup.c:1868
+#: ../gui/gdmsetup.c:3032 ../gui/gdmsetup.c:3110
 msgid "File not a tar.gz or tar archive"
 msgstr "Byla nėra tar.gz ar tar archyvas"
 
-#: ../gui/gdmsetup.c:1790
+#: ../gui/gdmsetup.c:3034
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "Archyve nėra GdmGreeterTheme.info bylos"
 
-#: ../gui/gdmsetup.c:1812
+#: ../gui/gdmsetup.c:3056
 msgid "File does not exist"
 msgstr "Byla neegzistuoja"
 
 #. markup
-#: ../gui/gdmsetup.c:1926
+#: ../gui/gdmsetup.c:3171
 msgid "No file selected"
 msgstr "Nepasirinkta jokia byla"
 
 #. markup
-#: ../gui/gdmsetup.c:1954
+#: ../gui/gdmsetup.c:3199
 msgid "Not a theme archive"
 msgstr "Nėra temos archyvas"
 
-#: ../gui/gdmsetup.c:1955
+#: ../gui/gdmsetup.c:3200
 #, c-format
 msgid "Details: %s"
 msgstr "Detalės: %s"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:1973
+#: ../gui/gdmsetup.c:3218
 #, c-format
 msgid ""
-"Theme directory '%s' seems to be already installed, install again anyway?"
+"Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr ""
-"Atrodo, kad temos aplankas „%s“ jau įdiegtas. Vis vien įdiegti dar kartą?"
+"Atrodo, kad temos aplankas „%s“ jau įdiegtas. Ar  įdiegti dar kartą?"
 
 #. markup
-#: ../gui/gdmsetup.c:2059
-msgid "Some error occured when installing the theme"
+#: ../gui/gdmsetup.c:3304
+msgid "Some error occurred when installing the theme"
 msgstr "Temos įdiegimo metu įvyko kažkokia klaida"
 
-#: ../gui/gdmsetup.c:2105
+#: ../gui/gdmsetup.c:3344
 msgid "Select new theme archive to install"
 msgstr "Pasirinkite norimą įdiegti naujos temos archyvą"
 
-#: ../gui/gdmsetup.c:2109
+#: ../gui/gdmsetup.c:3348
 msgid "_Install"
 msgstr "Į_diegti"
 
-#: ../gui/gdmsetup.c:2173
+#: ../gui/gdmsetup.c:3416
 #, c-format
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "Ar tikrai norite iš sistemos pašalinti temą „%s“?"
 
-#: ../gui/gdmsetup.c:2191
+#: ../gui/gdmsetup.c:3434
 msgid "_Remove Theme"
-msgstr "_Pa6alinti temą"
+msgstr "_Pašalinti temą"
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:2386
+#: ../gui/gdmsetup.c:4187
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3656,8 +3280,8 @@ msgid ""
 "Note that not all configuration options are listed here.  You may want to "
 "edit %s if you cannot find what you are looking for.\n"
 "\n"
-"For complete documentation see the GNOME help browser Under the category "
-"GNOME/System."
+"For complete documentation see the GNOME help browser under the \"Desktop\" "
+"category."
 msgstr ""
 "Šiame konfigūravimo lange keičiami GDM, grafinio GNOME prisijungimų ekrano, "
 "demono nustatymai. Jūsų padaryti pakeitimai įsigalios tuojau pat.\n"
@@ -3666,51 +3290,580 @@ msgstr ""
 "galite pabandyti paredaguoti bylą %s.\n"
 "\n"
 "Išsamios dokumentacijos ieškokite GNOME pagalbos naršyklėje, kategorijoje "
-"GNOME/Sistema."
+"darbastalis."
 
 #. markup
-#: ../gui/gdmsetup.c:2797
+#: ../gui/gdmsetup.c:4613
 msgid "You must be the superuser (root) to configure GDM."
 msgstr "Norėdami konfigūruoti GDM, turite turėti supernaudotojo (root) teises."
 
 #. EOF
 #: ../gui/gdmsetup.desktop.in.h:1
-msgid "Configure the login screen (Gnome Display Manager)"
+msgid "Configure the login screen (GNOME Display Manager)"
 msgstr "Konfigūruoti prisijungimų ekraną (Gnome ekrano tvarkyklę)"
 
-#: ../gui/greeter/greeter.c:640 ../gui/greeter/greeter.c:672
+#: ../gui/gdmsetup.desktop.in.h:2 ../gui/gdmsetup.glade.h:52
+msgid "Login Screen Setup"
+msgstr "Prisijungimo ekrano sąranka"
+
+#: ../gui/gdmsetup.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: ../gui/gdmsetup.glade.h:2
+msgid "     "
+msgstr "     "
+
+#: ../gui/gdmsetup.glade.h:4
+msgid "<"
+msgstr "<"
+
+#: ../gui/gdmsetup.glade.h:5
+msgid "<b>Server Settings</b>"
+msgstr "<b>Serverio nustatymai</b>"
+
+#: ../gui/gdmsetup.glade.h:6
+msgid "<b>Servers to Start</b>"
+msgstr "<b>Paleidžiami serveriai</b>"
+
+#: ../gui/gdmsetup.glade.h:7
+msgid ""
+"<b>WARNING:</b> Placing values in this section that your Xserver does not "
+"support will stop your Xserver\n"
+"from restarting (effectively not allowing this configuration program to "
+"run), BE CAREFUL!"
+msgstr ""
+"<b>ĮSPĖJIMAS:</b> Šiame skyriuje įrašius reikšmes, kurių Jūsų Xserveris "
+"nepalaiko, sustabdys Jūsų Xserverį\n"
+"nuo perkrovimo  (iš esmės neleidžiant šiai konfigūracijos programai "
+"pasileisti),  BŪKITE ATSARGŪS!"
+
+#: ../gui/gdmsetup.glade.h:9
+msgid ">"
+msgstr ">"
+
+#: ../gui/gdmsetup.glade.h:10
+msgid "Add/Modify Server"
+msgstr "Pridėti/keisti serverį"
+
+#: ../gui/gdmsetup.glade.h:11
+msgid "Allow _configuration from the login screen"
+msgstr "Leisti keisti _nustatymus iš prisijungimo lango"
+
+#: ../gui/gdmsetup.glade.h:12
+msgid "Allow _root to login with GDM"
+msgstr "Leisti _root prisijungti per GDM"
+
+#: ../gui/gdmsetup.glade.h:13
+msgid "Allow remote _timed logins"
+msgstr "Leisti nuotolinius _uždelstus prisijungimus"
+
+#: ../gui/gdmsetup.glade.h:14
+msgid "Allow root to login r_emotely with GDM"
+msgstr "Leisti root prisijungti per GDM _nuotoliniu būdu"
+
+#: ../gui/gdmsetup.glade.h:15
+msgid "Allow running _XDMCP chooser from the login screen"
+msgstr "Leisti _XDMCP parinkiklio paleidimą iš prisijungimo ekrano"
+
+#: ../gui/gdmsetup.glade.h:16
+msgid "Allow theme selection in _GTK+ Greeter."
+msgstr "Leisti temos pasirinkimą _GTK+ Pasveikintuve."
+
+#: ../gui/gdmsetup.glade.h:17
+msgid ""
+"Always _disallow TCP connections to X server (disables all remote "
+"connections)"
+msgstr ""
+"Niekada _neleisti TCP prisijungimų prie X serverio (uždraudžia visus "
+"nuotolinius prisijungimus)"
+
+#: ../gui/gdmsetup.glade.h:18
+msgid "Always use 24 hour cloc_k format"
+msgstr "Visada naudoti 24 valandų lai_ko formatą"
+
+#: ../gui/gdmsetup.glade.h:19
+msgid "Apply"
+msgstr "Pritaikyti"
+
+#: ../gui/gdmsetup.glade.h:20
+msgid "Author:"
+msgstr "Autorius:"
+
+#: ../gui/gdmsetup.glade.h:21
+msgid "Automatic Login"
+msgstr "Automatinis prijungimas"
+
+#: ../gui/gdmsetup.glade.h:22
+msgid "Background"
+msgstr "Fonas"
+
+#: ../gui/gdmsetup.glade.h:23
+msgid "Browse"
+msgstr "Naršyti"
+
+#: ../gui/gdmsetup.glade.h:24
+msgid "Choose network computer to connect to."
+msgstr "Pasirinkite kompiuterį tinkle prie kurio jungsitės."
+
+#: ../gui/gdmsetup.glade.h:25
+msgid "Chooser"
+msgstr "Parinkiklis"
+
+#: ../gui/gdmsetup.glade.h:26
+msgid "Color Depth:"
+msgstr "Spalvos gylis:"
+
+#: ../gui/gdmsetup.glade.h:27
+msgid "Command:"
+msgstr "Komanda:"
+
+#: ../gui/gdmsetup.glade.h:28
+msgid "Copyright:"
+msgstr "Autorinės teisės:"
+
+#: ../gui/gdmsetup.glade.h:29
+msgid "Create Server Definition"
+msgstr "Sukurti serverio aprašymą"
+
+#: ../gui/gdmsetup.glade.h:30
+msgid "Delete"
+msgstr "Trinti"
+
+#: ../gui/gdmsetup.glade.h:31
+msgid "Delete Server Definition"
+msgstr "Ištrinti serverio aprašymą"
+
+#: ../gui/gdmsetup.glade.h:32
+msgid "Description:"
+msgstr "Aprašymas:"
+
+#: ../gui/gdmsetup.glade.h:33
+msgid "Displays per _host:"
+msgstr "Ekranų _hoste:"
+
+#: ../gui/gdmsetup.glade.h:34
+msgid "Enable _XDMCP"
+msgstr "Leisti _XDMCP"
+
+#: ../gui/gdmsetup.glade.h:35
+msgid "Enable _accessibility modules"
+msgstr "Įjungti _prieinamumo modulius"
+
+#: ../gui/gdmsetup.glade.h:36
+msgid "Enable debu_g messages to system log"
+msgstr "Įjun_gti derinimo žinutes į sistemos žurnalą"
+
+#: ../gui/gdmsetup.glade.h:37
+msgid "Exclude"
+msgstr "IŠskirti"
+
+#: ../gui/gdmsetup.glade.h:38
+msgid "Flexible"
+msgstr "Lankstus"
+
+#: ../gui/gdmsetup.glade.h:39
+msgid ""
+"GTK+ Greeter\n"
+"Themed Greeter"
+msgstr ""
+"GTK+ Pasveikintuvas\n"
+"Apipavidalintas pasveikintuvas"
+
+#: ../gui/gdmsetup.glade.h:41
+msgid ""
+"GTK+ Greeter\n"
+"Themed Greeter\n"
+"Disabled"
+msgstr ""
+"GTK+ Pasveikintuvas\n"
+"Apipavidalintas pasveikintuvas\n"
+"Atjungtas"
+
+#: ../gui/gdmsetup.glade.h:44
+msgid "Greeter"
+msgstr "Pasveikintuvas"
+
+#: ../gui/gdmsetup.glade.h:45
+msgid "Handled"
+msgstr ""
+
+#: ../gui/gdmsetup.glade.h:46
+msgid "Honour _indirect requests"
+msgstr "Gerbti _netiesiogines užklausas"
+
+#: ../gui/gdmsetup.glade.h:47
+msgid "Include"
+msgstr "Įtraukti"
+
+#: ../gui/gdmsetup.glade.h:48
+msgid "Is a login attempt handled by this machine?"
+msgstr "Ar šis kompiuteris priima bandymus prisijungti?"
+
+#: ../gui/gdmsetup.glade.h:49
+msgid "L_ocal: "
+msgstr "L_okalus: "
+
+#: ../gui/gdmsetup.glade.h:50
+msgid "Listen on _UDP port: "
+msgstr "Klausytis _UDP prievado: "
+
+#: ../gui/gdmsetup.glade.h:51
+msgid "Login Greeter."
+msgstr "Prisijungimo pasveikintuvas"
+
+#: ../gui/gdmsetup.glade.h:53
+msgid "Login a _user automatically after a specified number of seconds"
+msgstr "Po nurodyto laiko tarpo prijungti _naudotoją automatiškai"
+
+#: ../gui/gdmsetup.glade.h:54
+msgid "Logo"
+msgstr "Logotipas"
+
+#: ../gui/gdmsetup.glade.h:55
+msgid "Make a _sound after a failed login attempt"
+msgstr "Sugroti _garsą po nepavykusio bandymo prisijungti"
+
+#: ../gui/gdmsetup.glade.h:56
+msgid "Make a _sound after a successful login attempt"
+msgstr "Sugroti _garsą po sėkmingo bandymo prisijungti"
+
+#: ../gui/gdmsetup.glade.h:57
+msgid "Make a _sound when login window is ready"
+msgstr "_Sugroti garsą kai prisijungimo langas jau pasiruošęs"
+
+#: ../gui/gdmsetup.glade.h:58
+msgid "Max p_ending indirect requests:"
+msgstr "Daugiausiai laukiančių n_etiesioginių užklausų:"
+
+#: ../gui/gdmsetup.glade.h:59
+msgid "Maximum _pending requests:"
+msgstr "Daugiausiai _laukiančių užklausų:"
+
+#: ../gui/gdmsetup.glade.h:60
+msgid "Maximum _remote sessions:"
+msgstr "Maksimalus _nutolusių sesijų skaičius:"
+
+#: ../gui/gdmsetup.glade.h:61
+msgid "Maximum _wait time:"
+msgstr "Maksimalus _laukimo laikas:"
+
+#: ../gui/gdmsetup.glade.h:62
+msgid "Maximum indirect w_ait time:"
+msgstr "Maksimalus netiesioginis l_aukimo laikas:"
+
+#: ../gui/gdmsetup.glade.h:63
+msgid "No Logo"
+msgstr "Be logotipo"
+
+#: ../gui/gdmsetup.glade.h:64
+msgid "No Sound"
+msgstr "Be garso"
+
+#: ../gui/gdmsetup.glade.h:65
+msgid ""
+"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
+"GDM with the XDMCP libraries."
+msgstr ""
+"Dvejetainėje byloje nėra XDMCP palaikymo.  Norėdami įjungti XDMCP palaikymą "
+"turite perkompiliuoti GDM su XDMCP bibliotekomis."
+
+#: ../gui/gdmsetup.glade.h:66
+msgid "No screenshot available"
+msgstr "Nuotrauka neprieinama"
+
+#: ../gui/gdmsetup.glade.h:67
+msgid ""
+"Note: For settings to take effect, the gdm service will require a restart."
+msgstr "Pastaba: nustatymams įsigalioti, reikia perkrauti gdm tarnybą."
+
+#: ../gui/gdmsetup.glade.h:68
+msgid ""
+"Only One Theme\n"
+"Random Theme"
+msgstr ""
+"Tik viena tema\n"
+"Atsitiktinė tema"
+
+#: ../gui/gdmsetup.glade.h:70
+msgid "Options"
+msgstr "Nustatymai"
+
+#: ../gui/gdmsetup.glade.h:71
+msgid "Pick a color"
+msgstr "Pasirinkite spalvą"
+
+#: ../gui/gdmsetup.glade.h:72
+msgid "Pin_g interval (seconds):"
+msgstr "Pin_g intervalas (sekundėmis):"
+
+#: ../gui/gdmsetup.glade.h:73
+msgid "Ping interval (seconds):"
+msgstr "Ping intervalas (sekundėmis):"
+
+#: ../gui/gdmsetup.glade.h:74
+msgid "Preview:"
+msgstr "Peržiūra:"
+
+#: ../gui/gdmsetup.glade.h:76
+#, no-c-format
+msgid "Re_mote welcome string (%n = hostname): "
+msgstr "Nuotolinio pasveikinimo užrašas (%n = kompiuterio vardas): "
+
+#: ../gui/gdmsetup.glade.h:77
+msgid "Refresh Rate:"
+msgstr "Atnaujimo dažnis:"
+
+#: ../gui/gdmsetup.glade.h:78
+msgid "Remove Server"
+msgstr "Pašalinti serverį"
+
+#: ../gui/gdmsetup.glade.h:79
+msgid "Resolution:"
+msgstr "Raiška:"
+
+#: ../gui/gdmsetup.glade.h:80
+msgid "Retry delay (_seconds):"
+msgstr "Kartojimo uždelsimas (_sekundėmis):"
+
+#: ../gui/gdmsetup.glade.h:81
+msgid "Server Definition to Modify:"
+msgstr "Keistinas serverio aprašymas:"
+
+#: ../gui/gdmsetup.glade.h:82
+msgid "Server Name:"
+msgstr "Serverio pavadinimas"
+
+#: ../gui/gdmsetup.glade.h:83
+msgid "Show _actions menu"
+msgstr "Rodyti _veiksmų meniu"
+
+#: ../gui/gdmsetup.glade.h:84
+msgid "Show choosable user images (_Face Browser)"
+msgstr "Rodyti pasirenkamus naudotojų paveikslėlius (_veidų naršyklę)"
+
+#: ../gui/gdmsetup.glade.h:85
+msgid ""
+"Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
+"set, none of the system commands will be available (this includes restart, "
+"shutdown, configure, chooser)"
+msgstr ""
+"Rodyti „Veiksmų“ meniu (seniau buvo žinomas kaip „Sistemos“ meniu). Jeigu "
+"nenurodyta, nei viena iš sistemos komandų nebus prieinamos (įskaitant "
+"perkrovimą, išjungimą, konfigūravimą, parinkiklį)"
+
+#: ../gui/gdmsetup.glade.h:86
+msgid "Sound file:"
+msgstr "Garsinė byla:"
+
+#: ../gui/gdmsetup.glade.h:88
+#, no-c-format
+msgid ""
+"String to be shown in the greeter as welcome.  You can insert %n in here and "
+"it will be replaced by the name of your computer."
+msgstr ""
+"Pasveikinimo žinutė rodoma pasveikintuvo lange.  Jūs galite čia įterpti %n "
+"ir tai bus pakeista į kompiuterio vardą."
+
+#: ../gui/gdmsetup.glade.h:90
+#, no-c-format
+msgid ""
+"String to be shown in the greeter for people logging in remotely with "
+"XDMCP.  You can insert %n in here and it will be replaced by the name of "
+"your computer."
+msgstr ""
+"Užrašas rodomas žmonėms prisijungiant per atstumą su XDMCP.  Jūs galite "
+"įterpti %n ir tai bus pakeista į Jūsų kompiuterio vardą."
+
+#: ../gui/gdmsetup.glade.h:91
+msgid "Test Sound"
+msgstr "Išbandyti garsą"
+
+#: ../gui/gdmsetup.glade.h:92
+msgid "Timed Login"
+msgstr "Uždelstas prijungimas"
+
+#: ../gui/gdmsetup.glade.h:93
+msgid "Use default Remote Welcome"
+msgstr "Naudoti įprastą nuotolinį pasveikinimą"
+
+#: ../gui/gdmsetup.glade.h:94
+msgid "Use default Welcome"
+msgstr "Naudoti įprastą pasveikinimą"
+
+#: ../gui/gdmsetup.glade.h:95
+msgid "User to Include"
+msgstr "Įtrauktinas naudotojas"
+
+#: ../gui/gdmsetup.glade.h:96
+msgid "User to exclude"
+msgstr "Išskirtinas naudotojas"
+
+#: ../gui/gdmsetup.glade.h:97
+msgid "Usually something like: /usr/bin/X"
+msgstr "Dažniausiai kažkas panašaus į: /usr/bin/X"
+
+#: ../gui/gdmsetup.glade.h:98
+msgid "X Server Settings"
+msgstr "X serverio nustatymai"
+
+#: ../gui/gdmsetup.glade.h:99
+msgid "_1 General"
+msgstr "_1 Bendras"
+
+#: ../gui/gdmsetup.glade.h:100
+msgid "_2 GTK+ Greeter"
+msgstr "_2 GTK+ Pasveikintuvas"
+
+#: ../gui/gdmsetup.glade.h:101
+msgid "_3 Themed Greeter"
+msgstr "_3 Apipavidalintas pasveikintuvas"
+
+#: ../gui/gdmsetup.glade.h:102
+msgid "_4 Security"
+msgstr "_4 Saugumas"
+
+#: ../gui/gdmsetup.glade.h:103
+msgid "_5 XServer"
+msgstr "_5 XServeris"
+
+#: ../gui/gdmsetup.glade.h:104
+msgid "_6 Accessibility"
+msgstr "_6 Prieinamumas"
+
+#: ../gui/gdmsetup.glade.h:105
+msgid "_7 XDMCP"
+msgstr "_7 XDMCP"
+
+#: ../gui/gdmsetup.glade.h:106
+msgid "_8 Face Browser"
+msgstr "_8 Veidų naršyklė"
+
+#: ../gui/gdmsetup.glade.h:108
+msgid "_Automatic login username:"
+msgstr "_Automatiškai prijungiamo vartotojo vardas:"
+
+#: ../gui/gdmsetup.glade.h:109
+msgid "_Background color: "
+msgstr "_Fono spalva: "
+
+#: ../gui/gdmsetup.glade.h:110
+msgid "_Color"
+msgstr "_Spalva"
+
+#: ../gui/gdmsetup.glade.h:111
+msgid "_Delete theme"
+msgstr "_Trinti temą"
+
+#: ../gui/gdmsetup.glade.h:112
+msgid "_Image"
+msgstr "Paveikslėl_is"
+
+#: ../gui/gdmsetup.glade.h:113
+msgid "_Include All Users"
+msgstr "Įtraukti visus naudotojus"
+
+#: ../gui/gdmsetup.glade.h:114
+msgid "_Install new theme"
+msgstr "Į_diegti naują temą"
+
+#: ../gui/gdmsetup.glade.h:115
+msgid "_Login a user automatically on first bootup"
+msgstr "Automatiškai pri_jungti vartotoją tik įjungus kompiuterį"
+
+#: ../gui/gdmsetup.glade.h:116
+msgid "_Mode:"
+msgstr "_Režimas:"
+
+#: ../gui/gdmsetup.glade.h:117
+msgid "_No background"
+msgstr "_Jokio fono"
+
+#: ../gui/gdmsetup.glade.h:118
+msgid "_Only color on remote displays"
+msgstr "_Nutolusiuose ekranuose tik spalva"
+
+#: ../gui/gdmsetup.glade.h:119
+msgid "_Remote: "
+msgstr "_Nutolęs: "
+
+#: ../gui/gdmsetup.glade.h:120
+msgid "_Scale background image to fit"
+msgstr "Ište_mpti fono paveikslėlį, kad tilptų"
+
+#: ../gui/gdmsetup.glade.h:121
+msgid "_Seconds before login:"
+msgstr "_Sekundės prieš prijungiant:"
+
+#: ../gui/gdmsetup.glade.h:122
+msgid "_Timed login username:"
+msgstr "Už_delsto prijungimo vartotojo vardas:"
+
+#: ../gui/gdmsetup.glade.h:123
+msgid "_Welcome string: "
+msgstr "P_asveikinimo pranešimas: "
+
+#: ../gui/gdmsetup.glade.h:124
+msgid "author"
+msgstr "autorius"
+
+#: ../gui/gdmsetup.glade.h:125
+msgid "copyright"
+msgstr "autorinės teisės"
+
+#: ../gui/gdmsetup.glade.h:126
+msgid ""
+"description\n"
+"widget"
+msgstr ""
+"aprašymas\n"
+"objektas"
+
+#: ../gui/gdmsetup.glade.h:128
+msgid "dummy"
+msgstr "netikras"
+
+#: ../gui/gdmuser.c:296 ../gui/gdmuser.c:298
+msgid "Too many users to list here..."
+msgstr "Per daug vartotojų, kad čia išvardyti..."
+
+#: ../gui/greeter/greeter.c:766 ../gui/greeter/greeter.c:798
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
-"Prisijungimo ekrano versija (%s) neatitinka demono versijos.\n"
+"Pasveikintuvo versija (%s) neatitinka demono versijos.\n"
 "Jūs tikriausiai ką tik atnaujinote gdm.\n"
 "Paleiskite iš naujo gdm demoną arba perkraukite kompiuterį."
 
-#: ../gui/greeter/greeter.c:717
+#: ../gui/greeter/greeter.c:804 ../gui/greeter/greeter.c:851
+msgid "Reboot"
+msgstr "Perkrauti"
+
+#: ../gui/greeter/greeter.c:843
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
 "You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"Please restart the gdm daemon or the computer."
 msgstr ""
-"Prisijungimo ekrano versija (%s) neatitinka demono versijos (%s).\n"
+"Pasveikintuvo versija (%s) neatitinka demono versijos (%s).\n"
 "Jūs tikriausiai ką tik atnaujinote gdm.\n"
 "Paleiskite iš naujo gdm demoną arba perkraukite kompiuterį."
 
-#: ../gui/greeter/greeter.c:1182
+#: ../gui/greeter/greeter.c:1348
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Įkeliant temą įvyko klaida %s"
 
 #. markup
-#: ../gui/greeter/greeter.c:1236
-msgid "The theme for the graphical greeter is corrupt"
-msgstr "Grafinio sveikinamojo ekrano tema sugadinta"
+#: ../gui/greeter/greeter.c:1402
+msgid "The greeter theme is corrupt"
+msgstr "Pasveikintuvo tema sugadinta"
 
-#: ../gui/greeter/greeter.c:1239
+#: ../gui/greeter/greeter.c:1404
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
@@ -3719,115 +3872,117 @@ msgstr ""
 "elementas."
 
 #. markup
-#: ../gui/greeter/greeter.c:1273
+#: ../gui/greeter/greeter.c:1438
 msgid ""
-"There was an error loading the theme, and the default theme also could not "
-"have been loaded, I will attempt to start the standard greeter"
+"There was an error loading the theme, and the default theme could not be "
+"loaded. Attempting to start the standard greeter"
 msgstr ""
 "Įkeliant temą įvyko klaida, taip pat nepavyko įkelti ir įprastos temos. "
-"Bandysiu paleisti standartinį pasveikintuvą"
+"Bandoma paleisti standartinį pasveikintuvą"
 
 #. markup
-#: ../gui/greeter/greeter.c:1296
+#: ../gui/greeter/greeter.c:1461
 msgid ""
-"I could not start the standard greeter.  This display will abort and you may "
+"The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
 msgstr ""
-"Nepavyko paleisti standartinio pasveikintuvo.  Šis ekranas bus nutrauktas, "
+"GTK+ pasveikintuvas negali būti pradėtas.  Šis ekranas bus nutrauktas, "
 "Jūs greičiausiai turėsite prisijungti kitu būdu ir pataisyti gdm įdiegimą"
 
-#: ../gui/greeter/greeter_action_language.c:46
+#: ../gui/greeter/greeter_action_language.c:64
 msgid "Last"
 msgstr "Praeita"
 
-#: ../gui/greeter/greeter_action_language.c:198
+#: ../gui/greeter/greeter_action_language.c:216
 msgid "Select a language"
 msgstr "Pasirinkite kalbą"
 
-#: ../gui/greeter/greeter_action_language.c:217
+#: ../gui/greeter/greeter_action_language.c:235
 msgid "Select a language for your session to use:"
 msgstr "Pasirinkite kalbą sesijai:"
 
-#: ../gui/greeter/greeter_canvas_item.c:125
+#: ../gui/greeter/greeter_canvas_item.c:144
 msgid "Select _Language..."
 msgstr "Pasirinkite _kalbą..."
 
-#: ../gui/greeter/greeter_canvas_item.c:132
+#: ../gui/greeter/greeter_canvas_item.c:151
 msgid "Select _Session..."
 msgstr "Pasirinkite _sesiją..."
 
-#: ../gui/greeter/greeter_canvas_item.c:377
+#: ../gui/greeter/greeter_canvas_item.c:394
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Atsakykite į klausimus. Kai baigsite spauskite Enter. Meniu galite pasiekti "
 "paspaudę F10."
 
-#: ../gui/greeter/greeter_item_ulist.c:306
+#: ../gui/greeter/greeter_item_ulist.c:98
 #, c-format
 msgid "Can't open DefaultImage: %s!"
 msgstr "Nepavyko atverti ĮprastoPaveikslėlio: %s!"
 
-#: ../gui/greeter/greeter_item_ulist.c:408
-msgid ""
-"Doubleclick on the user\n"
-"to log in"
-msgstr ""
-"Norėdami prisijungti,\n"
-"spragtelkite du kartus ant naudotojo"
-
-#: ../gui/greeter/greeter_parser.c:1022 ../gui/greeter/greeter_system.c:193
+#: ../gui/greeter/greeter_parser.c:1082 ../gui/greeter/greeter_system.c:211
 msgid "Sus_pend"
 msgstr "Su_laikyti"
 
-#: ../gui/greeter/greeter_parser.c:1032
+#. markup
+#: ../gui/greeter/greeter_parser.c:1087 ../gui/greeter/greeter_system.c:64
+#: ../gui/greeter/greeter_system.c:186
+msgid "_Reboot"
+msgstr "_Perkrauti"
+
+#: ../gui/greeter/greeter_parser.c:1092
 msgid "_XDMCP Chooser"
 msgstr "_XDMCP parinkiklis"
 
-#: ../gui/greeter/greeter_parser.c:1037
+#: ../gui/greeter/greeter_parser.c:1097
 msgid "_Configure"
 msgstr "_Konfigūruoti"
 
-#: ../gui/greeter/greeter_parser.c:1042
+#: ../gui/greeter/greeter_parser.c:1102
 msgid "You've got capslock on!"
 msgstr "Jūsų Caps Lock įjungtas!"
 
-#: ../gui/greeter/greeter_parser.c:1047
-#, c-format
-msgid "User %s will login in %d second"
-msgid_plural "User %s will login in %d seconds"
-msgstr[0] "Naudotojas %s prisijungs po %d sekundės"
-msgstr[1] "Naudotojas %s prisijungs po %d sekundžių"
-msgstr[2] "Naudotojas %s prisijungs po %d sekundžių"
+#: ../gui/greeter/greeter_parser.c:1130
+msgid "_OK"
+msgstr "_Gerai"
 
-#: ../gui/greeter/greeter_session.c:247
+#: ../gui/greeter/greeter_parser.c:1135
+msgid "_Cancel"
+msgstr "_Atšaukti"
+
+#: ../gui/greeter/greeter_session.c:243
 msgid "Choose a Session"
 msgstr "Pasirinkite sesiją"
 
-#: ../gui/greeter/greeter_system.c:260
+#: ../gui/greeter/greeter_system.c:193
+msgid "Reboot your computer"
+msgstr "Perkrauti jūsų kompiuterį"
+
+#: ../gui/greeter/greeter_system.c:278
 msgid "Choose an Action"
 msgstr "Pasirinkite veiksmą"
 
-#: ../gui/greeter/greeter_system.c:282
+#: ../gui/greeter/greeter_system.c:300
 msgid "Shut _down the computer"
 msgstr "Iš_jungti kompiuterį"
 
-#: ../gui/greeter/greeter_system.c:285
+#: ../gui/greeter/greeter_system.c:303
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Išjungti jūsų kompiuterį (paruošti kompiuterį išjungimui)."
 
-#: ../gui/greeter/greeter_system.c:300
+#: ../gui/greeter/greeter_system.c:318
 msgid "_Reboot the computer"
 msgstr "Pe_rkrauti kompiuterį"
 
-#: ../gui/greeter/greeter_system.c:314
+#: ../gui/greeter/greeter_system.c:332
 msgid "Sus_pend the computer"
 msgstr "Su_laikyti kompiuterį"
 
-#: ../gui/greeter/greeter_system.c:328
+#: ../gui/greeter/greeter_system.c:346
 msgid "Run _XDMCP chooser"
 msgstr "Paleisti _XDMCP parinkiklį"
 
-#: ../gui/greeter/greeter_system.c:348
+#: ../gui/greeter/greeter_system.c:366
 msgid "Confi_gure the login manager"
 msgstr "Konfi_gūruoti prisijungimų tvarkyklę"
 
@@ -3873,8 +4028,8 @@ msgstr "GNOME Art Apskritimų variantas"
 msgid "Happy GNOME"
 msgstr "Laimingas GNOME"
 
-#: ../gui/modules/dwellmouselistener.c:650
-#: ../gui/modules/keymouselistener.c:887
+#: ../gui/modules/dwellmouselistener.c:612
+#: ../gui/modules/keymouselistener.c:927
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -3883,15 +4038,11 @@ msgstr ""
 "Klaida bandant paleisti (%s),\n"
 "kuris yra susietas su (%s)"
 
-#. TODO - I18n
-#: ../gui/modules/keymouselistener.c:249
+#: ../gui/modules/keymouselistener.c:255
 #, c-format
-msgid ""
-"Cannot open gestures file: %s\n"
-")"
+msgid "Cannot open gestures file: %s"
 msgstr ""
-"Nepavyko atverti gestų bylos: %s\n"
-")"
+"Nepavyko atverti gestų bylos: %s"
 
 #: ../utils/gdmaskpass.c:26
 #, c-format
@@ -3904,14 +4055,11 @@ msgid "Authentication failure!\n"
 msgstr "Tapatybės patvirtinimas nepavyko!\n"
 
 #: ../vicious-extensions/glade-helper.c:84
-msgid "(memory buffer)"
-msgstr "(atminties buferis)"
-
 #: ../vicious-extensions/glade-helper.c:116
 #: ../vicious-extensions/glade-helper.c:138
 #: ../vicious-extensions/glade-helper.c:158
-msgid "(memory buffer"
-msgstr "(atminties buferis"
+msgid "(memory buffer)"
+msgstr "(atminties buferis)"
 
 #. markup
 #: ../vicious-extensions/glade-helper.c:194
@@ -3923,10 +4071,9 @@ msgstr "Nepavyko įkelti vartotojo sąsajos"
 #: ../vicious-extensions/glade-helper.c:195
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  Possibly the glade interface description was corrupted.  %s cannot "
-"continue and will exit now.  You should check your installation of %s or "
-"reinstall %s."
+"An error occurred while loading user interface element %s%s from file %s.  "
+"Possibly the glade interface description was corrupted.  %s cannot continue "
+"and will exit now.  You should check your installation of %s or reinstall %s."
 msgstr ""
 "Įkeliant vartotojo sąsajos elementą %s%s iš bylos %s įvyko klaida.  Galbūt "
 "glade sąsajos aprašas buvo sugadintas.  %s negali tęsti ir dabar užsidarys.  "
@@ -3944,13 +4091,13 @@ msgstr ""
 #: ../vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %s. "
-"CList type widget should have %d column. Possibly the glade interface "
+"An error occurred while loading the user interface element %s%s from file %"
+"s. CList type widget should have %d column. Possibly the glade interface "
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
 msgid_plural ""
-"An error occured while loading the user interface element %s%s from file %s. "
-"CList type widget should have %d columns. Possibly the glade interface "
+"An error occurred while loading the user interface element %s%s from file %"
+"s. CList type widget should have %d columns. Possibly the glade interface "
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
 msgstr[0] ""
@@ -3981,7 +4128,7 @@ msgstr ""
 #: ../vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
-"An error occured while loading the user interface from file %s.  Possibly "
+"An error occurred while loading the user interface from file %s.  Possibly "
 "the glade interface description was not found.  %s cannot continue and will "
 "exit now.  You should check your installation of %s or reinstall %s."
 msgstr ""
@@ -3991,9 +4138,9 @@ msgstr ""
 
 #: ../vicious-extensions/glade-helper.c:314
 #, c-format
-msgid "No interface could be loaded, BAD! (file: %s)"
+msgid "No interface could be loaded. This is BAD! (file: %s)"
 msgstr "Jokia sąsaja negali būti įkelta, BLOGAI! (byla: %s)"
 
 #: ../vicious-extensions/ve-nongnome.c:134
-msgid "Too many alias levels for a locale, may indicate a loop"
+msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "Per daug alternatyvių vardų lygių lokalei, tai gali reikšti ciklą"
