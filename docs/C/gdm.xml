@@ -97,7 +97,7 @@
     </para>
 
     <para>
-      Configurator - The configuration program (<filename>gdmsetup</filename>).
+      Configurator - The configuration application (<filename>gdmsetup</filename>).
     </para>
 
     <para>
@@ -132,7 +132,7 @@
 
       <para>
         For further information about GDM, see the
-        <ulink type="http" url="http://www.jirka.org/gdm.html">
+        <ulink type="http" url="http://yippi.hypermall.com/gdm/index.shtml">
         the GDM website</ulink>.
       </para>
 
@@ -159,7 +159,7 @@
       
       <para> 
         The <filename>gdm</filename> slave process opens the display and starts
-        <filename>gdmlogin</filename>, the graphical login program.
+        <filename>gdmlogin</filename>, the graphical login application.
         <filename>gdmlogin</filename> runs as a dedicated user and communicates
         asynchronously with the slave process through a pipe.  Alternatively
         <filename>gdmgreeter</filename> command can be used which is the same
@@ -178,7 +178,7 @@
       <para>
         Remote displays can connect to the XDMCP port on the GDM host.
         <filename>gdm</filename> will grant access to hosts specified in the
-        gdm service section in your TCP Wrappers configuration file. GDM does
+        GDM service section in your TCP Wrappers configuration file. GDM does
         not support remote display access control on systems without TCP
         Wrappers.  XDMCP support can be turned off completely, however.
       </para>
@@ -442,7 +442,7 @@
       <para>
         The menu bar in the top of the greeter enables the user to select the
         requested session type/desktop environment, select an appropriate
-        locale/language and optionally shutdown/reboot/suspend the machine,
+        locale/language and optionally shutdown/reboot/suspend the computer,
         configure GDM (given the user knows the root password), change
         the GTK+ theme, or start an XDMCP chooser.
       </para>
@@ -460,14 +460,14 @@
 
       <para>
         The users can place their icons in a file called
-        <filename>~/.face</filename>, and they can use the program
+        <filename>~/.face</filename>, and they can use the command
         <filename>gdmphotosetup</filename> to graphically configure this.
       </para>
         
       <para>
         Face icons placed in the global face directory must be readable to
-        the gdm user.  However, the daemon, proxies user pictures to the
-        greeter and thus those don't have be be readable by the gdm user, but
+        the GDM user.  However, the daemon, proxies user pictures to the
+        greeter and thus those don't have be be readable by the GDM user, but
         root.
       </para>
 
@@ -495,7 +495,7 @@
       </para>
 
       <para>
-        When the browser is turned on, valid usernames on the machine are
+        When the browser is turned on, valid usernames on the computer are
         inherently exposed to a potential intruder.  This may be a bad idea if
         you don't know who can get to a login screen.  This is especially true
         if you run XDMCP.  However you should never run XDMCP on an open
@@ -506,7 +506,7 @@
         The greeter can optionally display a logo in the login window.  The
         image must be in a format readable to the gdk-pixbuf library (GIF,
         JPG, PNG, TIFF, XPM and possibly others), and it must be readable to
-        the gdm user. See the <filename>Logo</filename> option in the
+        the GDM user. See the <filename>Logo</filename> option in the
         reference section below for details.
       </para>
 
@@ -518,7 +518,7 @@
       <para>
         The Themed Greeter is a greeter interface that takes up the whole
         screen and is very themable.  Themes can be selected and new themes
-        can be installed by the Configuration program or by setting the
+        can be installed by the configuration application or by setting the
         <filename>GraphicalTheme</filename> configuration key.
       </para>
 
@@ -578,7 +578,7 @@
         back).  This is useful if you have some sort of special logins for
         which it is not an error to return less then 10 seconds later, or if
         you setup the session to already display some error message and the
-        gdm message would be confusing and redundant.
+        GDM message would be confusing and redundant.
       </para>
 
       <para>
@@ -643,7 +643,7 @@
         privilege.  The reason for using them is to have the user interface
         run as a user without privileges so that in the unlikely case that
         someone finds a weakness in the GUI, they cannot access root on the
-        machine.
+        computer.
       </para>
 
       <para>
@@ -695,9 +695,9 @@
     <para> 
       This section will cover the configuration of GDM and the format of the
       configuration file.  However you can use the
-      <filename>gdmsetup</filename> binary to configure GDM from a graphical
-      environment.  The configuration program does not let you configure every
-      aspect of GDM, so if the setup program does not cover your needs you may
+      <filename>gdmsetup</filename> command to configure GDM from a graphical
+      environment.  The configuration application does not let you configure every
+      aspect of GDM, so if the configuration application does not cover your needs you may
       find information in this section.
     </para>
 
@@ -763,7 +763,7 @@ XKeepsCrashing
       <filename>XKeepsCrashing</filename> is a script which gets run when the
       X server keeps crashing and we cannot recover.  The shipped default
       script will work with most Linux distributions and can run the X
-      configuration program provided the person on the console knows the root
+      configuration application provided the person on the console knows the root
       password.
     </para>
 
@@ -837,7 +837,7 @@ XKeepsCrashing
         servers.  If none of the above were found, GDM will run
         <filename>Init/Default</filename>. The script will be run as root and
         GDM blocks until it terminates. Use the <filename>Init/*</filename>
-        script for programs that are supposed to run alongside with the GDM
+        script for applications that are supposed to run alongside with the GDM
         login window. xconsole for instance.  Commands to set the background
         etc. goes in this file too.
       </para>
@@ -875,7 +875,7 @@ XKeepsCrashing
         not true for failsafe sessions however.  Also
         <filename>$X_SERVERS</filename> environmental variable is set and this
         points to a fake generated x servers file for use with the sessreg
-        accounting program.
+        accounting application.
       </para>
 
       <para>
@@ -913,7 +913,7 @@ XKeepsCrashing
         this display may already be dead and so you shouldn't try to access it.
         Also <filename>$X_SERVERS</filename> environmental variable is set and
         this points to a fake generated x servers file for use with the sessreg
-        accounting program.
+        accounting application.
       </para>
 
       <para>
@@ -1055,7 +1055,7 @@ XKeepsCrashing
 
               <para>
                 Alternatively, the name may end with a vertical bar |, the
-                pipe symbol.  The name is then used as a program to execute
+                pipe symbol.  The name is then used as a application to execute
                 which returns the desired username on standard output. If an
                 empty or otherwise invalid username is returned, automatic
                 login is not performed. This feature is typically used when
@@ -1232,7 +1232,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>DynamicXServers=false</synopsis>
               <para>
-                If true, the gdm daemon will honor requests to manage
+                If true, the GDM daemon will honor requests to manage
                 displays via the <filename>/tmp/.gdm_socket</filename>
                 socket connection. Displays can be created, started,
                 and deleted with the appropriate commands. The
@@ -1429,7 +1429,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>RebootCommand=/sbin/shutdown -r now</synopsis>
               <para>
-                Full path and optional arguments to the program to be
+                Full path and optional arguments to the command to be
                 executed when user selects Reboot from the Actions menu.  This
                 can be a ';' separated list of commands to try.  If missing,
                 the reboot command is not available.  Note that the default for
@@ -1477,7 +1477,7 @@ XKeepsCrashing
                 <filename>Group</filename> option.  That is should be owned by
                 root, with <filename>gdm</filename> group having full write
                 permissions and the directory should be sticky and others
-                should have no permission to the directory.  This way the gdm
+                should have no permission to the directory.  This way the GDM
                 user can't remove files owned by root in that directory, while
                 still being able to write its own files there.  GDM will
                 attempt to change permissions for you when it's first run if
@@ -1485,7 +1485,7 @@ XKeepsCrashing
                 for other private files that the daemon needs to store.  Other
                 users should not have any way to get into this directory and
                 read/change it's contents.  Anybody who can read this directory
-                can connect to any display on this machine.
+                can connect to any display on this computer.
               </para>
             </listitem>
           </varlistentry>
@@ -1508,7 +1508,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>SoundProgram=/usr/bin/play</synopsis>
               <para>
-                Program to use when playing a sound.  Currently used for
+                Application to use when playing a sound.  Currently used for
                 playing the login sound, see the
                 <filename>SoundOnLoginFile</filename> key.  Supported since
                 2.5.90.0.
@@ -1572,7 +1572,7 @@ XKeepsCrashing
                 and gdm will refuse to log in root this way.
                 The same features as for <filename>AutomaticLogin</filename>
                 are supported.  The same control chars and piping to a
-                program are supported.
+                application are supported.
               </para>
             </listitem>
           </varlistentry>
@@ -1894,14 +1894,14 @@ XKeepsCrashing
               <synopsis>DisplaysPerHost=1</synopsis>
               <para>
                 To prevent attackers from filling up the pending queue, GDM
-                will only allow one connection for each remote machine.  If
-                you want to provide display services to machines with more
+                will only allow one connection for each remote computer.  If
+                you want to provide display services to computers with more
                 than one screen, you should increase the
                 <filename>DisplaysPerHost</filename> value accordingly.
               </para>
 
               <para>
-                Note that the number of connections from the local machine is
+                Note that the number of connections from the local computer is
                 unlimited.  Only remote connections are limited by this number.
               </para>
             </listitem>
@@ -2269,7 +2269,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>BackgroundProgramInitialDelay=30</synopsis>
               <para>
-	        The background program will be started after at least that many 
+	        The background application will be started after at least that many 
 		seconds of inactivity.
               </para>
             </listitem>
@@ -2280,10 +2280,10 @@ XKeepsCrashing
             <listitem>
               <synopsis>RestartBackgroundProgram=true</synopsis>
               <para>
-	        If set the background program will be restarted when it has
+	        If set the background application will be restarted when it has
 		exited, after the delay described below has elapsed.  This
 		option can be useful when you wish to run a screen saver 
-		program when no user is using the machine.
+		application when no user is using the computer.
               </para>
             </listitem>
           </varlistentry>
@@ -2293,7 +2293,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>BackgroundProgramRestartDelay=30</synopsis>
               <para>
-	        The background program will be restarted after at least that 
+	        The background application will be restarted after at least that 
 		many seconds of inactivity.
               </para>
             </listitem>
@@ -2316,11 +2316,11 @@ XKeepsCrashing
             <listitem>
               <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
               <para>
-                If set this program will be run in the background while
+                If set this command will be run in the background while
                 the login window is being displayed.  Note that not all
-                programs will run this way, since gdm does not usually have
+                applications will run this way, since GDM does not usually have
                 a home directory.  You could set up home directory for the
-                gdm user if you wish to run applications which require it.
+                GDM user if you wish to run applications which require it.
                 This only affects the GTK+ Greeter.
               </para>
             </listitem>
@@ -2382,7 +2382,7 @@ XKeepsCrashing
               <para>
                 If true, add a chooser button to the Actions menu that will
                 restart the current server with a chooser.  XDMCP does not need
-                to be enabled on the local machine for this to work.
+                to be enabled on the local computer for this to work.
               </para>
             </listitem>
           </varlistentry>
@@ -2408,7 +2408,7 @@ XKeepsCrashing
                 Default icon file for users without a personal picture
                 in <filename>~/gnome/photo</filename>. The image must be
                 in an gdk-pixbuf supported format and the file must be
-                readable for the gdm user.
+                readable for the GDM user.
               </para>
             </listitem>
           </varlistentry>
@@ -2614,7 +2614,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>MinimalUID=100</synopsis>
               <para>
-                The minimal UID that gdm should consider a user.  All
+                The minimal UID that GDM should consider a user.  All
                 users with a lower UID will be excluded from the face browser.
                 See also <filename>Include</filename>,
 		<filename>Exclude</filename>, and
@@ -2689,7 +2689,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>RunBackgroundProgramAlways=false</synopsis>
               <para>
-                If this is true then the background program is run always,
+                If this is true then the background application is run always,
                 otherwise it is only run when the
                 <filename>BackgroundType</filename> is 0 (None)
                 This only affects the GTK+ Greeter.
@@ -2789,7 +2789,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>SoundOnLoginFile=/path/to/sound.wav</synopsis>
               <para>
-                The file that will be played using the specified sound program
+                The file that will be played using the specified sound application
                 (by default that is <filename>/usr/bin/play</filename>) instead
                 of a beep when the greeter is ready for a login.  See also the
                 <filename>SoundOnLogin</filename> key and the
@@ -2804,7 +2804,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>SoundOnLoginSuccessFile=/path/to/sound.wav</synopsis>
               <para>
-                The file that will be played using the specified sound program
+                The file that will be played using the specified sound application
                 (by default that is <filename>/usr/bin/play</filename>) after
                 a successful login attempt.  See also the
                 <filename>SoundOnLoginSuccess</filename> key and the
@@ -2818,7 +2818,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>SoundOnLoginFailureFile=/path/to/sound.wav</synopsis>
               <para>
-                The file that will be played using the specified sound program
+                The file that will be played using the specified sound application
                 (by default that is <filename>/usr/bin/play</filename>) after
                 a failed login attempt.  See also the
                 <filename>SoundOnLoginFailure</filename> key and the
@@ -3066,7 +3066,7 @@ XKeepsCrashing
               <para>
                 The file name must match the fully qualified name (FQDN) for
                 the host.  The icons must be stored in gdk-pixbuf supported
-                formats and they must be readable to the gdm user.
+                formats and they must be readable to the GDM user.
               </para>
               
             </listitem>
@@ -3108,11 +3108,11 @@ XKeepsCrashing
         <title>X Server definitions</title>
 
         <para>
-          To set up X servers, you need to provide gdm with information about
+          To set up X servers, you need to provide GDM with information about
           the installed X servers.  You can have as many different definitions
           as you wish, each identified with a unique name.  The name
           <filename>Standard</filename> is required.  If you do not specify
-          this server, gdm will assume default values for a 'Standard' server
+          this server, GDM will assume default values for a 'Standard' server
           and the path given by <filename>daemon/StandardXServer</filename>.
           <filename>Standard</filename> is used as the default,
           in situations when no other server has been defined.
@@ -3244,7 +3244,7 @@ XKeepsCrashing
               </para>
 
               <para>
-                On some systems it is necessary for gdm to know on which
+                On some systems it is necessary for GDM to know on which
                 virtual consoles to run the X server.  In this case,
                 (if running XFree86) add "vt7" to the command line for example
                 to run on virtual console 7.  However on Linux and
@@ -3341,7 +3341,7 @@ Language=cs_CZ.UTF-8
         new flexible (on demand) servers.  Run
         <filename>gdmflexiserver --help</filename> to get a listing of possible
         options.  This command will also lock the current screen with
-        xscreensaver so that the user can safely walk away from the machine and
+        xscreensaver so that the user can safely walk away from the computer and
         let someone else log in.  XFree86 will automatically switch back to the
         same virtual terminal (if your operating system supports it), after the
         new session has ended, so this should work quite transparently to the
@@ -3359,8 +3359,8 @@ Language=cs_CZ.UTF-8
         root to use this protocol, and it is mostly used for internal GDM
         chatter.  It is a very simple protocol where you just echo a command on
         a single line to this file.  It can be used to tell GDM things such as
-        restart, suspend the machine, or restart all X servers next time it has
-        a chance (which would be useful from an X configuration program).
+        restart, suspend the computer, or restart all X servers next time it has
+        a chance (which would be useful from an X configuration application).
       </para>
 
       <para>
@@ -3436,8 +3436,8 @@ Answers:
 AUTH_LOCAL: Setup this connection as authenticated for
             FLEXI_SERVER Because all full blown (non-Xnest)
             servers can be started only from users logged in
-            locally, and here gdm assumes only users logged
-            in from gdm.  They must pass the xauth
+            locally, and here GDM assumes only users logged
+            in from GDM.  They must pass the xauth
             MIT-MAGIC-COOKIE-1 that they were passed before
             the connection is authenticated.
 Note:       The AUTH LOCAL command requires the
@@ -3495,7 +3495,7 @@ Note:        Supported an older version from 2.2.4.0, later
              ONLY by this user, that is have a mode of 0600.
              If this all is not met, ERROR 100 is returned.
 Note:        The cookie should be the MIT-MAGIC-COOKIE-1,
-             the first one gdm can find in the XAUTHORITY
+             the first one GDM can find in the XAUTHORITY
              file for this display.  If that's not what you
              use you should generate one first.  The cookie
              should be in hex form.
@@ -3635,7 +3635,7 @@ Answers:
       <title>GET_CONFIG</title> 
       <screen>
 GET_CONFIG:  Get configuration value for key.  Useful so
-             that other programs can request configuration
+             that other applications can request configuration
              information from GDM.  Any key defined as GDM_KEY_*
              in gdm.h is supported.
 Supported since: 2.6.0.9
@@ -3868,13 +3868,13 @@ Supported since: 2.2.4.0
         The <filename>gdmXnestchooser</filename> command automatically gets
         the correct display number, sets up access, and runs
         <filename>Xnest</filename> with -indirect localhost.  This way you
-        get an XDMCP chooser provided by your machine. You can also supply
+        get an XDMCP chooser provided by your computer. You can also supply
         as an argument the hostname whose chooser should be displayed, so
         <filename>gdmXnestchooser somehost</filename> will run the XDMCP
         chooser from host <filename>somehost</filename> inside an Xnest
         session.  You can make this command do a direct query instead by
         passing the <filename>-d</filename> option as well.  In addition to
-        the following options, this program also supports standard GNOME
+        the following options, this command also supports standard GNOME
         options.
       </para>
 
@@ -3989,7 +3989,7 @@ Supported since: 2.2.4.0
           <term>-c, --command=COMMAND</term>
           <listitem>
             <para>
-              Send the specified protocol command to gdm
+              Send the specified protocol command to GDM
             </para>
           </listitem>
         </varlistentry>
@@ -4041,7 +4041,7 @@ Supported since: 2.2.4.0
       </para>
 
       <para>
-      Some environments need the ability to tell gdm to create and manage new
+      Some environments need the ability to tell GDM to create and manage new
       displays on the fly, where it is not possible to list the possible
       displays in gdm.conf. The gdmdynamic command can be used to create
       a new display on a particular display number, run all newly created
@@ -4109,7 +4109,7 @@ Supported since: 2.2.4.0
           <listitem>
             <para>
             Verbose mode. Prinr diagnostic messages about each message sent
-            to gdm.
+            to GDM.
             </para>
           </listitem>
         </varlistentry>
@@ -4132,7 +4132,7 @@ Supported since: 2.2.4.0
       <para>
        Allows the user to select an image that will be used as the user's
        photo by GDM's face browser, if enabled by GDM.  The selected file
-       is stored as ~/.face.  This program accepts standard GNOME options.
+       is stored as ~/.face.  This command accepts standard GNOME options.
       </para>
     </sect2>
 
@@ -4205,7 +4205,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           <term>-nodaemon</term>
           <listitem>
             <para>
-              If this option is specified, then gdm does not fork into the
+              If this option is specified, then GDM does not fork into the
               background when run.  You can use just a single dash with this
               option to preserve compatibility with XDM.
             </para>
@@ -4276,12 +4276,12 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
       </para>
 
       <para>
-       gdmsetup runs a graphical program for modifying the GDM
+       gdmsetup runs a graphical application for modifying the GDM
        configuration file, gdm.conf.  Normally on systems that support the
        PAM userhelper, this is setup such that when you run
        <filename>gdmsetup</filename> as an ordinary user, it will first
        ask you for your root password before starting.  Otherwise, this
-       program may only be run as root.  This program supports standard
+       application may only be run as root.  This application supports standard
        GNOME options.
       </para>
     </sect2>
@@ -4330,10 +4330,10 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
 
       <para>
         The <filename>gdmgreeter</filename> and <filename>gdmlogin</filename>
-        are two different login programs, either can be used by GDM.  
+        are two different login applications, either can be used by GDM.  
         <filename>gdmgreeter</filename> is themeable with GDM themes while
         <filename>gdmlogin</filename> is themable with GTK+ themes.  These
-        programs are normally executed by the GDM daemon.  Both programs
+        applications are normally executed by the GDM daemon.  Both commands
         support standard GNOME options. 
       </para>
     </sect2>
@@ -4345,7 +4345,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
         The <filename>gdmchooser</filename> is the XDMCP chooser application.  
         The <filename>gdmchooser</filename> is normally executed by the GDM
         daemon.  It supports the following options for XDM compatibility.
-        This program supports standard GNOME options and is found in
+        This command supports standard GNOME options and is found in
         support standard GNOME options.
       </para>
 
@@ -4460,8 +4460,8 @@ Screenshot=screenshot.png
         Once you have all this done, then make a tarball that contains the
         directory name (so that you could just untar it in the
         <filename>/usr/share/gdm/themes</filename> directory).  And this is the
-        tarball you distribute and people can install from the graphical setup
-        program.  You can do this with the commands:
+        tarball you distribute and people can install from the graphical configuration
+        application.  You can do this with the commands:
       <screen>
 cd /usr/share/gdm/themes
 tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
@@ -4729,7 +4729,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             <term>config_button</term>
             <listitem>
               <para>
-                Runs the GDM Setup program.
+                Runs the GDM configuration application.
               </para>
             </listitem>
           </varlistentry>
@@ -4792,9 +4792,9 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             <term>system_button</term>
             <listitem>
               <para>
-                Perform halt/reboot/suspend/etc. options (if allowed by gdm
+                Perform halt/reboot/suspend/etc. options (if allowed by GDM
                 configuration).  Also allows user to run configurator if user
-                enters root password (again if allowed by gdm configuration).
+                enters root password (again if allowed by GDM configuration).
                 This is usually now labeled Actions, and referred to as the
                 Actions menu.
               </para>
@@ -5204,7 +5204,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              <para>
              The AccessKeyMouseEvents file controls the keymouselistener
              Gesture Listener and is used to define key-press, mouse button,
-             or XInput device sequences that can be used to launch programs
+             or XInput device sequences that can be used to launch applications
              needed for accessibility.  In order to reduce the likelihood of
              unintentional launch, these 'gestures' may be associated with
              multiple switch presses and/or minimum durations.
@@ -5231,7 +5231,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              <para>
              In order to use text-to-speech services at login time (for
              instance, when using the Screen Reader in speech mode) on some
-             operating systems, the gdm user must be made a member of the
+             operating systems, the GDM user must be made a member of the
              "audio" group
              </para>
      </sect2>
@@ -5311,7 +5311,7 @@ handled=false
         to some choice of servers.  For now let's make it
         <filename>appserverone</filename> and
         <filename>appservertwo</filename>.  Again we'll call our example X
-        terminal machine <filename>xterminal</filename>.  The setup on both
+        terminal server <filename>xterminal</filename>.  The setup on both
         servers is the same as with the case of one server in the previous
         section.  You do not need to explicitly enable indirect queries on the
         server since we'll run the choosers locally on the X terminals.

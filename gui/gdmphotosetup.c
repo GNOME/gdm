@@ -272,8 +272,7 @@ main (int argc, char *argv[])
 				       _("The face browser is not configured in the "
 					 "GDM configuration.  Please ask your "
 					 "system administrator to enable "
-					 "it in the GDM configurator "
-					 "program."));
+					 "this feature."));
 
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);

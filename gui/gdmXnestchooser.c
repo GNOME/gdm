@@ -552,8 +552,7 @@ main (int argc, char *argv[])
 				 "%s",
 				 _("Please ask your "
 				   "system administrator to enable "
-				   "it in the GDM configurator "
-				   "program."));
+				   "this feature."));
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -573,8 +572,7 @@ main (int argc, char *argv[])
 				 "%s",
 				 _("Please ask your "
 				   "system administrator to enable "
-				   "it in the GDM configurator "
-				   "program."));
+				   "this feature."));
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);

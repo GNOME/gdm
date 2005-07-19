@@ -117,7 +117,7 @@ greeter_session_lookup (const char *saved_session)
 	  
 	  session = g_strdup (default_session);
 	  msg = g_strdup_printf (_("Your preferred session type %s is not "
-				   "installed on this machine.\n"
+				   "installed on this computer.\n"
 				   "Do you wish to make %s the default for "
 				   "future sessions?"),
 				 gdm_session_name (saved_session),

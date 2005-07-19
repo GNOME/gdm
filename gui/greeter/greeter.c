@@ -1570,7 +1570,7 @@ main (int argc, char *argv[])
 				  _("The configuration was not found.  GDM is using "
 				    "defaults to run this session.  You should log in "
 				    "and create a configuration file with the GDM "
-				    "configuration program."));
+				    "configuration application."));
 
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));

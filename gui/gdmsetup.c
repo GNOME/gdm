@@ -865,7 +865,7 @@ root_not_allowed (GtkWidget *combo_box)
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
 					   FALSE /* markup */,
-					   _("Autologin or timed login to the superuser (root) account is not allowed."),
+					   _("Autologin or timed login to the root account is not allowed."),
 					   /* avoid warning */ "%s", "");
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);
@@ -4610,7 +4610,7 @@ main (int argc, char *argv[])
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
 					   FALSE /* markup */,
-					   _("You must be the superuser (root) to configure GDM."),
+					   _("You must be the root user to configure GDM."),
 					   /* avoid warning */ "%s", "");
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);

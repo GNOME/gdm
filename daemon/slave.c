@@ -1746,7 +1746,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Could not execute the configuration "
-				 "program.  Make sure its path is set "
+				 "application.  Make sure its path is set "
 				 "correctly in the configuration file.  "
 				 "Attempting to start it from the default "
 				 "location."));
@@ -1760,7 +1760,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Could not execute the configuration "
-				 "program.  Make sure its path is set "
+				 "application.  Make sure its path is set "
 				 "correctly in the configuration file."));
 
 		_exit (0);
@@ -2749,7 +2749,7 @@ gdm_slave_greeter (void)
 		   something works instead of a flickering screen */
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("The greeter program appears to be crashing.\n"
+			       _("The greeter application appears to be crashing.\n"
 				 "Attempting to use a different one."));
 		if (strstr (command, "gdmlogin") != NULL) {
 			/* in case it is gdmlogin that's crashing
@@ -2789,7 +2789,7 @@ gdm_slave_greeter (void)
 
 	gdm_error_box (d,
 		       GTK_MESSAGE_ERROR,
-		       _("Cannot start the greeter program; "
+		       _("Cannot start the greeter application; "
 			 "you will not be able to log in.  "
 			 "This display will be disabled.  "
 			 "Try logging in by other means and "
@@ -3158,7 +3158,7 @@ gdm_slave_chooser (void)
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("Cannot start the chooser program. "
+			       _("Cannot start the chooser application. "
 				 "You will probably not be able to log in.  "
 				 "Please contact the system administrator."));
 

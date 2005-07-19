@@ -477,7 +477,7 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 				 "order to use the nested login.");
 		else
 			return _("The X server is not available. "
-				 "Gdm may be misconfigured.");
+				 "GDM may be misconfigured.");
 	} else if (strncmp (ret, "ERROR 7 ", strlen ("ERROR 7 ")) == 0) {
 		return _("Trying to set an unknown logout action, or trying "
 			 "to set a logout action which is not available.");

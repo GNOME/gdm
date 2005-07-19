@@ -1677,11 +1677,11 @@ display_chooser_information (void)
 		 GTK_BUTTONS_OK,
 		 _("The main area of this application shows the hosts on "
 		   "the local network that have \"XDMCP\" enabled. This "
-		   "allows users to login remotely to other machines as "
+		   "allows users to login remotely to other computers as "
 		   "if they were logged on using the console.\n\n"
 		   "You can rescan the network for new hosts by clicking "
 		   "\"Refresh\".  When you have selected a host click "
-		   "\"Connect\" to open a session to that machine."));
+		   "\"Connect\" to open a session to that computer."));
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	if (RUNNING_UNDER_GDM)

@@ -412,8 +412,8 @@ back_prog_run (void)
 					    GTK_MESSAGE_ERROR,
 					    GTK_BUTTONS_OK,
 					    FALSE,
-					    _("Cannot start background program"),
-					    _("Cannot start program '%s': %s."),
+					    _("Cannot start background application"),
+					    _("Cannot run command '%s': %s."),
 					    command,
 					    error->message);
 		gtk_widget_show_all (dialog);
@@ -806,7 +806,7 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 static void
 gdm_login_restart_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to restart the machine?"),
+	if (gdm_common_query (_("Are you sure you want to restart the computer?"),
 			     FALSE /* markup */,
 			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog();
@@ -820,7 +820,7 @@ gdm_login_restart_handler (void)
 static void
 gdm_login_halt_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to shut down the machine?"),
+	if (gdm_common_query (_("Are you sure you want to shut down the computer?"),
 			     FALSE /* markup */,
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog();
@@ -842,7 +842,7 @@ gdm_login_use_chooser_handler (void)
 static void
 gdm_login_suspend_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to suspend the machine?"),
+	if (gdm_common_query (_("Are you sure you want to suspend the computer?"),
 			     FALSE /* markup */,
 			     _("_Suspend"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		/* suspend interruption */
@@ -1073,7 +1073,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    g_free (session);
 	    session = g_strdup (default_session);
             msg = g_strdup_printf (_("Your preferred session type %s is not "
-				     "installed on this machine.\n"
+				     "installed on this computer.\n"
                                      "Do you wish to make %s the default for "
 				     "future sessions?"),
                                    gdm_session_name (savedsess),
@@ -2815,7 +2815,7 @@ gdm_login_gui_init (void)
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
 				      _("Run an XDMCP chooser which will allow "
 					"you to log into available remote "
-					"machines, if there are any."),
+					"computers, if there are any."),
 				      NULL);
 		got_anything = TRUE;
 	}
@@ -3949,7 +3949,7 @@ main (int argc, char *argv[])
 					_("The configuration was not found.  GDM is using "
 					  "defaults to run this session.  You should log in "
 					  "and create a configuration file with the GDM "
-					  "configuration program."));
+					  "configuration application."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 

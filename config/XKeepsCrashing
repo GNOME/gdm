@@ -38,12 +38,12 @@ gdmwhich () {
   echo "$OUTPUT"
 }
 
-MSG3=`gettextfunc "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."`
-MSG4=`gettextfunc "Would you like me to try to run the X configuration program?  Note that you will need the root password for this."`
+MSG3=`gettextfunc "Failed to start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and reconfigure the X server.  Then restart GDM."`
+MSG4=`gettextfunc "Would you like to try to configure the X server?  Note that you will need the root password for this."`
 MSG5=`gettextfunc "Please type in the root (privileged user) password."`
-MSG6=`gettextfunc "I will now try to restart the X server again."`
-MSG7=`gettextfunc "I will disable this X server for now.  Restart GDM when it is configured correctly."`
-MSG8=`gettextfunc "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
+MSG6=`gettextfunc "Trying to restart the X server."`
+MSG7=`gettextfunc "The X server is now disabled.  Restart GDM when it is configured correctly."`
+MSG8=`gettextfunc "Failed to start the X server (your graphical interface).  It is likely that it is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
 MSG9=`gettextfunc "Would you like to view the detailed X server output as well?"`
 
 # there are some env vars defined:
@@ -99,18 +99,18 @@ fi
 #
 if grep '^\(Cannot open mouse\|No core pointer\)' "$XLOG" 2> /dev/null ; then
 
-  MSG8=`gettextfunc "I cannot start the X server (your graphical interface).  It seems that the pointer device (your mouse) is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
+  MSG8=`gettextfunc "Failed to start the X server (your graphical interface).  It seems that the pointer device (your mouse) is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
 
   if test -x /usr/sbin/mouseconfig ; then
     XCONFIGURATOR=/usr/sbin/mouseconfig
     # Note: we know this is a mouse problem and yay we have mouseconfig
-    MSG4=`gettextfunc "Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this."`
+    MSG4=`gettextfunc "Would you like to try to configure the mouse?  Note that you will need the root password for this."`
   fi
 
   if test -x /usr/bin/system-config-mouse ; then
     XCONFIGURATOR=/usr/bin/system-config-mouse
     # Note: we know this is a mouse problem and yay we have system-config-mouse
-    MSG4=`gettextfunc "Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this."`
+    MSG4=`gettextfunc "Would you like to try to configure the mouse?  Note that you will need the root password for this."`
   fi
 
 fi

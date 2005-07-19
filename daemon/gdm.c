@@ -299,8 +299,8 @@ check_servauthdir (struct stat *statbuf)
 		    (C_(N_("Server Authorization directory "
 			   "(daemon/ServAuthDir) is set to %s "
 			   "but this does not exist. Please "
-			   "correct gdm configuration %s and "
-			   "restart gdm.")), GdmServAuthDir,
+			   "correct GDM configuration %s and "
+			   "restart GDM.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
@@ -313,8 +313,8 @@ check_servauthdir (struct stat *statbuf)
 		    (C_(N_("Server Authorization directory "
 			   "(daemon/ServAuthDir) is set to %s "
 			   "but this is not a directory. Please "
-			   "correct gdm configuration %s and "
-			   "restart gdm.")), GdmServAuthDir,
+			   "correct GDM configuration %s and "
+			   "restart GDM.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
@@ -688,11 +688,11 @@ gdm_config_parse (void)
 		    GdmTimedLogin = NULL;
 	    } else {
 		    char *s = g_strdup_printf
-			    (C_(N_("XDMCP is disabled and gdm "
+			    (C_(N_("XDMCP is disabled and GDM "
 				   "cannot find any static server "
 				   "to start.  Aborting!  Please "
 				   "correct the configuration %s "
-				   "and restart gdm.")),
+				   "and restart GDM.")),
 			     GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
 		    GdmPidFile = NULL;
@@ -713,58 +713,60 @@ gdm_config_parse (void)
 
     if G_UNLIKELY (pwent == NULL) {
 	    char *s = g_strdup_printf
-		    (C_(N_("The gdm user does not exist. "
-			   "Please correct gdm configuration %s "
-			   "and restart gdm.")),
+		    (C_(N_("The GDM user '%s' does not exist. "
+			   "Please correct GDM configuration %s "
+			   "and restart GDM.")),
+		     GdmUser,
 		     GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: Can't find the gdm user (%s). Aborting!"), "gdm_config_parse", GdmUser);
+	    gdm_fail (_("%s: Can't find the GDM user '%s'. Aborting!"), "gdm_config_parse", GdmUser);
     } else {
 	    GdmUserId = pwent->pw_uid;
     }
 
     if G_UNLIKELY (GdmUserId == 0) {
 	    char *s = g_strdup_printf
-		    (C_(N_("The gdm user is set to be root, but "
+		    (C_(N_("The GDM user is set to be root, but "
 			   "this is not allowed since it can "
 			   "pose a security risk.  Please "
-			   "correct gdm configuration %s and "
-			   "restart gdm.")), GDM_CONFIG_FILE);
+			   "correct GDM configuration %s and "
+			   "restart GDM.")), GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: The gdm user should not be root. Aborting!"), "gdm_config_parse");
+	    gdm_fail (_("%s: The GDM user should not be root. Aborting!"), "gdm_config_parse");
     }
 
     grent = getgrnam (GdmGroup);
 
     if G_UNLIKELY (grent == NULL) {
 	    char *s = g_strdup_printf
-		    (C_(N_("The gdm group does not exist. "
+		    (C_(N_("The GDM group '%s' does not exist. "
 		       "Please correct gdm configuration %s "
 		       "and restart gdm.")),
+		     GdmGroup,
 		     GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: Can't find the gdm group (%s). Aborting!"), "gdm_config_parse", GdmGroup);
+	    gdm_fail (_("%s: Can't find the GDM group '%s'. Aborting!"), "gdm_config_parse", GdmGroup);
     } else  {
 	    GdmGroupId = grent->gr_gid;   
     }
 
     if G_UNLIKELY (GdmGroupId == 0) {
 	    char *s = g_strdup_printf
-		    (C_(N_("The gdm group is set to be root, but "
+		    (C_(N_("The GDM group is set to be root, but "
 			   "this is not allowed since it can "
 			   "pose a security risk. Please "
-			   "correct gdm configuration %s and "
-			   "restart gdm.")), GDM_CONFIG_FILE);
+			   "correct GDM configuration %s and "
+			   "restart GDM.")), GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: The gdm group should not be root. Aborting!"), "gdm_config_parse");
+	    gdm_fail (_("%s: The GDM group should not be root. Aborting!"), "gdm_config_parse");
     }
 
     /* get the actual commands to use */
@@ -779,7 +781,7 @@ gdm_config_parse (void)
     bin = ve_first_word (GdmGreeter);
     if G_UNLIKELY (ve_string_empty (bin) ||
 		   access (bin, X_OK) != 0) {
-	    gdm_error (_("%s: Greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
+	    gdm_error (_("%s: Greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
     }
     g_free (bin);
 
@@ -797,7 +799,7 @@ gdm_config_parse (void)
     if G_UNLIKELY (GdmIndirect &&
 		   (ve_string_empty (bin) ||
 		    access (bin, X_OK) != 0)) {
-	    gdm_error (_("%s: Chooser not found or it can't be executed by the gdm user"), "gdm_config_parse");
+	    gdm_error (_("%s: Chooser not found or it can't be executed by the GDM user"), "gdm_config_parse");
     }
     
     g_free (bin);
@@ -836,8 +838,8 @@ gdm_config_parse (void)
 			   "(daemon/ServAuthDir) is set to %s "
 			   "but is not owned by user %s and group "
 			   "%s. Please correct the ownership or "
-			   "gdm configuration %s and restart "
-			   "gdm.")),
+			   "GDM configuration %s and restart "
+			   "GDM.")),
 		     GdmServAuthDir, GdmUser, GdmGroup,
 		     GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
@@ -854,8 +856,8 @@ gdm_config_parse (void)
 			   "but has the wrong permissions: it "
 			   "should have permissions of %o. "
 			   "Please correct the permissions or "
-			   "the gdm configuration %s and "
-			   "restart gdm.")),
+			   "the GDM configuration %s and "
+			   "restart GDM.")),
 		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX), GDM_CONFIG_FILE);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
@@ -1268,7 +1270,7 @@ deal_with_x_crashes (GdmDisplay *d)
 			  "cannot be started.  It is likely that it is not "
 			  "set up correctly.  You will need to log in on a "
 			  "console and rerun the X configuration "
-			  "program, then restart GDM."));
+			  "application, then restart GDM."));
 	    gdm_text_message_dialog (error);
     } /* else {
        * At this point .... screw the user, we don't know how to

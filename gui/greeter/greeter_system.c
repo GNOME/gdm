@@ -60,7 +60,7 @@ bin_exists (const char *command)
 static void
 query_greeter_restart_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to restart the machine?"),
+	if (gdm_common_query (_("Are you sure you want to restart the computer?"),
 			   FALSE /* markup */, _("_Reboot"), NULL,
 			   TRUE) == GTK_RESPONSE_YES) {
 		closelog();
@@ -73,7 +73,7 @@ query_greeter_restart_handler (void)
 static void
 query_greeter_halt_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to shut down the machine?"),
+	if (gdm_common_query (_("Are you sure you want to shut down the computer?"),
 			   FALSE /* markup */, _("Shut _Down"), NULL,
 			   TRUE) == GTK_RESPONSE_YES) {
 		closelog();
@@ -85,7 +85,7 @@ query_greeter_halt_handler (void)
 static void
 query_greeter_suspend_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to suspend the machine?"),
+	if (gdm_common_query (_("Are you sure you want to suspend the computer?"),
 			   FALSE /* markup */, _("_Suspend"), NULL,
 			   TRUE) == GTK_RESPONSE_YES) {
 		/* suspend interruption */
@@ -158,7 +158,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
 				      _("Run an XDMCP chooser which will allow "
 					"you to log into available remote "
-					"machines, if there are any."),
+					"computers, if there are any."),
 				      NULL);
 	}
 
@@ -348,7 +348,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (chooser_radio),
 				_("Run an XDMCP chooser which will allow "
 				  "you to log into available remote "
-				  "machines, if there are any."),
+				  "computers, if there are any."),
 				NULL);
 	  g_signal_connect(G_OBJECT(chooser_radio), "button_press_event",
 			   G_CALLBACK(radio_button_press_event), NULL);

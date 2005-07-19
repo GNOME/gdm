@@ -330,7 +330,7 @@ gdm_display_manage (GdmDisplay *d)
 
     case -1:
 	d->slavepid = 0;
-	gdm_error (_("%s: Failed forking gdm slave process for %s"),
+	gdm_error (_("%s: Failed forking GDM slave process for %s"),
 		   "gdm_display_manage",
 		   d->name);
 
