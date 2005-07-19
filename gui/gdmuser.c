@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This file Copyright (c) 2003 George Lebl
@@ -45,12 +47,13 @@ extern gboolean GdmIncludeAll;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 
-static gint maxwidth = 0;
-static gint maxheight = 0;
-
 static GdmUser * 
-gdm_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
-		const char *gecos, GdkPixbuf *defface, gboolean read_faces)
+gdm_user_alloc (const gchar *logname,
+		uid_t uid,
+		const gchar *homedir,
+		const char *gecos,
+		GdkPixbuf *defface,
+		gboolean read_faces)
 {
 	GdmUser *user;
 	GdkPixbuf *img = NULL;
@@ -153,7 +156,10 @@ gdm_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 		/* read the "done" bit, but don't check */
 		read (STDIN_FILENO, buf, sizeof (buf));
 	} else if (access (&buf[1], R_OK) == 0) {
-		img = gdk_pixbuf_new_from_file (&buf[1], NULL);
+		img = gdm_common_get_face (&buf[1],
+					   NULL,
+					   GdmIconMaxWidth,
+					   GdmIconMaxHeight);
 	} else {
 		img = NULL;
 	}
@@ -163,32 +169,10 @@ gdm_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 	fflush (stdout);
 
 	if (img != NULL) {
-		gint w, h;
-
-		w = gdk_pixbuf_get_width (img);
-		h = gdk_pixbuf_get_height (img);
-
-		if (w > h && w > GdmIconMaxWidth) {
-			h = h * ((gfloat) GdmIconMaxWidth/w);
-			w = GdmIconMaxWidth;
-		} else if (h > GdmIconMaxHeight) {
-			w = w * ((gfloat) GdmIconMaxHeight/h);
-			h = GdmIconMaxHeight;
-		}
-
 		if (user->picture != NULL)
 			g_object_unref (G_OBJECT (user->picture));
 
-		maxwidth = MAX (maxwidth, w);
-		maxheight = MAX (maxheight, h);
-		if (w != gdk_pixbuf_get_width (img) ||
-		    h != gdk_pixbuf_get_height (img)) {
-			user->picture = gdk_pixbuf_scale_simple
-				(img, w, h, GDK_INTERP_BILINEAR);
-			g_object_unref (G_OBJECT (img));
-		} else {
-			user->picture = img;
-		}
+		user->picture = img;
 	}
 
 	return user;
@@ -257,9 +241,16 @@ gdm_sort_func (gpointer d1, gpointer d2)
 }
 
 
-gboolean setup_user(struct passwd *pwent, GList **users, GList **users_string,
-	char **excludes, char *exclude_user, GdkPixbuf *defface,
-	int *size_of_users, gboolean is_local, gboolean read_faces)
+static gboolean
+setup_user (struct passwd *pwent,
+	    GList **users,
+	    GList **users_string,
+	    char **excludes,
+	    char *exclude_user,
+	    GdkPixbuf *defface,
+	    int *size_of_users,
+	    gboolean is_local,
+	    gboolean read_faces)
 {
     GdmUser *user;
     int cnt = 0;
@@ -315,9 +306,13 @@ gdm_is_user_valid (const char *username)
 }
 
 void 
-gdm_users_init (GList **users, GList **users_string, char *exclude_user,
-   GdkPixbuf *defface, int *size_of_users, gboolean is_local,
-   gboolean read_faces)
+gdm_users_init (GList **users,
+		GList **users_string,
+		char *exclude_user,
+		GdkPixbuf *defface,
+		int *size_of_users,
+		gboolean is_local,
+		gboolean read_faces)
 {
     struct passwd *pwent;
     char **includes;

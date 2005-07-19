@@ -65,6 +65,8 @@ libgdmwm_a_SOURCES = \
 	gdmwm.h
 
 libgdmcommon_a_SOURCES = \
+	gdmwm.c			\
+	gdmwm.h			\
 	gdmlanguages.c		\
 	gdmlanguages.h		\
 	gdmuser.c		\
@@ -87,16 +89,11 @@ gdmlogin_SOURCES = \
 gdmsetup_SOURCES = \
 	gdmsetup.c		\
 	gdmcomm.c		\
-	gdmcomm.h		\
-	gdmuser.c		\
-	gdmuser.h		\
-	misc.c			\
-	misc.h
+	gdmcomm.h
 
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	$(EXTRA_CHOOSER_LIBS)	\
-	libgdmwm.a		\
 	libgdmcommon.a		\
 	$(GUIGLADE_LIBS)	\
 	$(X_LIBS)		\
@@ -115,7 +112,6 @@ gdmchooser_LDADD = \
 	-lviciousui
 
 gdmlogin_LDADD = \
-	libgdmwm.a		\
 	libgdmcommon.a		\
 	$(GUING_LIBS)		\
 	$(X_LIBS)		\
@@ -135,6 +131,7 @@ gdmlogin_LDADD = \
 
 gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
+	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	-lXau			\
 	-lX11			\

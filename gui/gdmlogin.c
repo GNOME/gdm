@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -533,6 +535,12 @@ delay_reaping (GSignalInvocationHint *ihint,
 	return TRUE;
 }      
 
+static void
+gdm_kill_thingies (void)
+{
+	back_prog_stop ();
+}
+
 static gboolean
 reap_flexiserver (gpointer data)
 {
@@ -580,13 +588,6 @@ gdm_event (GSignalInvocationHint *ihint,
 
 	return TRUE;
 }      
-
-void
-gdm_kill_thingies (void)
-{
-	back_prog_stop ();
-}
-
 
 static void
 gdm_login_done (int sig)
@@ -1935,7 +1936,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	tmp = ve_locale_to_utf8 (buf);
 	if (strcmp (tmp, _("Username:")) == 0) {
-		gdm_common_login_sound ();
+		gdm_common_login_sound (GdmSoundProgram,
+					GdmSoundOnLoginReadyFile,
+					GdmSoundOnLoginReady);
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Username:"));
 	} else {
 		gtk_label_set_text (GTK_LABEL (label), tmp);
@@ -2355,6 +2358,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 	
     default:
+	gdm_kill_thingies ();
 	gdm_common_abort ("Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
@@ -2946,7 +2950,7 @@ gdm_login_gui_init (void)
 	    GtkTreeViewColumn *column;
 
 	    browser = gtk_tree_view_new ();
-	    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (browser), TRUE);
+	    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (browser), FALSE);
 	    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (browser),
 					       FALSE);
 	    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
@@ -3739,15 +3743,19 @@ main (int argc, char *argv[])
     }
 
     if (GdmBrowser) {
-	    if (access (GdmDefaultFace, R_OK)) {
-		syslog (LOG_WARNING,
-		   _("Can't open DefaultImage: %s. Suspending face browser!"),
-		GdmDefaultFace);
-		GdmBrowser = FALSE;
+	    defface = gdm_common_get_face (NULL,
+					   GdmDefaultFace,
+					   GdmIconMaxWidth,
+					   GdmIconMaxHeight);
+
+	    if (! defface) {
+		    syslog (LOG_WARNING,
+			    _("Can't open DefaultImage: %s. Suspending face browser!"),
+			    GdmDefaultFace);
+		    GdmBrowser = FALSE;
 	    } else  {
-		defface = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
-	        gdm_users_init (&users, &users_string, NULL, defface,
-			&size_of_users, login_is_local, !DOING_GDM_DEVELOPMENT);
+		    gdm_users_init (&users, &users_string, NULL, defface,
+				    &size_of_users, login_is_local, !DOING_GDM_DEVELOPMENT);
 	    }
     }
 
@@ -3763,28 +3771,36 @@ main (int argc, char *argv[])
     sigemptyset(&hup.sa_mask);
     sigaddset (&hup.sa_mask, SIGCHLD);
 
-    if G_UNLIKELY (sigaction (SIGHUP, &hup, NULL) < 0) 
-        gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
+    if G_UNLIKELY (sigaction (SIGHUP, &hup, NULL) < 0) {
+	    gdm_kill_thingies ();
+	    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
+    }
 
     term.sa_handler = gdm_login_done;
     term.sa_flags = 0;
     sigemptyset(&term.sa_mask);
     sigaddset (&term.sa_mask, SIGCHLD);
 
-    if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) 
-        gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
+    if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) {
+	    gdm_kill_thingies ();
+	    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
+    }
 
-    if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) 
-        gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
+    if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) {
+	    gdm_kill_thingies ();
+	    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
+    }
 
     sigemptyset (&mask);
     sigaddset (&mask, SIGTERM);
     sigaddset (&mask, SIGHUP);
     sigaddset (&mask, SIGINT);
     
-    if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) 
-	gdm_common_abort (_("Could not set signal mask!"));
-    
+    if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) {
+	    gdm_kill_thingies ();
+	    gdm_common_abort (_("Could not set signal mask!"));
+    }
+
     /* Load the background stuff, the image and program */
     setup_background ();
     g_atexit (gdm_kill_thingies);
@@ -3971,7 +3987,7 @@ main (int argc, char *argv[])
 
     gdm_wm_restore_wm_order ();
 
-    gdm_common_show_info_msg ();
+    gdm_common_show_info_msg (GdmInfoMsgFile, GdmInfoMsgFont);
 
     /* Only setup the cursor now since it will be a WATCH from before */
     gdm_common_setup_cursor (GDK_LEFT_PTR);

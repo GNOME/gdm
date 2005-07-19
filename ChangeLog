@@ -1,5 +1,45 @@
 2005-07-19  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init): 
+	Use common function for loading face images.
+	
+	* gui/greeter/greeter.c (greeter_ctrl_handler):
+	Update for new common code.
+
+	* gui/gdmuser.c (gdm_user_alloc): Use common function for
+	loading face images.
+	(setup_user): Define as static.
+
+	* gui/gdmlogin.c (gdm_kill_thingies): Make static.
+	(gdm_login_ctrl_handler): Update for new gdm_common_login_sound.
+	Add gdm_kill_thingies before all abort calls since they are
+	not in gdm_common_abort anymore.
+	(main): Use new common get face function.
+
+	* gui/Makefile.am:
+	* gui/gdmcommon.c (gdm_common_show_info_msg, gdm_common_login_sound):
+	Make more common by not depending on external variables.
+	(gdm_common_abort): Make more common by not depending on
+	external functions.
+	(gdm_common_get_face): Add a common function for loading
+	face images.
+
+	* daemon/slave.c (path_is_local, check_user_file) 
+	(check_global_file, get_facefile_from_gnome2_dir_config) 
+	(get_facefile_from_home, get_facefile_from_global, run_pictures):
+	Don't stat or read from remote home directories.  Fixes #310545.
+
+	* configure.in:
+	* daemon/Makefile.am:
+	* daemon/fstype.c: Add ability to detect filesystem types.
+
+	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init): 
+	* gui/gdmlogin.c (main):
+	Try GTK+ themed icon stock_person before falling back to
+	nobody.png.  Fixes #310906.
+
+2005-07-19  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/gdmlogin.c (gdm_login_gui_init):
 	Use HIG style button layout.  Fixes #310549.
 

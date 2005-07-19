@@ -279,6 +279,46 @@ else
   AC_MSG_RESULT(no)
 fi
 
+dnl borrowed from gnu findutils
+dnl and relicensed as LGPL by the FSF
+
+AC_ARG_WITH(afs,
+[  --with-afs              support -fstype afs],
+[  AC_DEFINE(AFS, [], [Define if you have the Andrew File System])
+  CPPFLAGS="$CPPFLAGS -I/usr/afsws/include"
+  LIBS="$LIBS -L/usr/afsws/lib -L/usr/afsws/lib/afs -lsys -lrx -llwp"])
+
+AC_MSG_CHECKING(how to get filesystem type)
+fstype=no
+# The order of these tests is important.
+AC_TRY_CPP([#include <sys/statvfs.h>
+#include <sys/fstyp.h>], AC_DEFINE(FSTYPE_STATVFS, [],
+							[Define to use SVR4 statvfs to get filesystem type]) fstype=SVR4)
+if test $fstype = no; then
+AC_TRY_CPP([#include <sys/statfs.h>
+#include <sys/fstyp.h>], AC_DEFINE(FSTYPE_USG_STATFS, [],
+							[Define to use SVR3.2 statfs to get filesystem type]) fstype=SVR3)
+fi
+if test $fstype = no; then
+AC_TRY_CPP([#include <sys/statfs.h>
+#include <sys/vmount.h>], AC_DEFINE(FSTYPE_AIX_STATFS, [],
+							 [Define to use AIX3 statfs to get filesystem type]) fstype=AIX)
+fi
+if test $fstype = no; then  
+AC_TRY_CPP([#include <mntent.h>], AC_DEFINE(FSTYPE_MNTENT, [],
+						    [Define to use 4.3BSD getmntent to get filesystem typ]) fstype=4.3BSD)
+fi
+if test $fstype = no; then  
+AC_EGREP_HEADER(f_type;, sys/mount.h, AC_DEFINE(FSTYPE_STATFS, [],
+							   [Define to use 4.4BSD and OSF1 statfs to get filesystem typ]) fstype=4.4BSD/OSF1)
+fi
+if test $fstype = no; then  
+AC_TRY_CPP([#include <sys/mount.h>
+#include <sys/fs_types.h>], AC_DEFINE(FSTYPE_GETMNT, [],
+							   [Define to use Ultrix getmnt to get filesystem typ]) fstype=Ultrix)
+fi
+AC_MSG_RESULT($fstype)
+
 dnl ****************************
 dnl    IPv6 checks end here
 dnl ****************************

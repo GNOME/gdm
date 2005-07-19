@@ -26,7 +26,8 @@
 
 #include "misc.h"
 
-void	gdm_common_show_info_msg	(void);
+void    gdm_common_show_info_msg        (const gchar *msg_file,
+                                         const gchar *msg_font);
 void	gdm_common_message		(const gchar *msg);
 void	gdm_common_abort		(const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void	gdm_common_setup_cursor		(GdkCursorType type);
@@ -43,13 +44,16 @@ gboolean gdm_common_bool_same		(VeConfig *config,
 gboolean gdm_common_int_same		(VeConfig *config,
 					 int cur, const char *key);
 
-void	gdm_common_login_sound		(void);
-
-/* The greeter defines this, we just call it from here */
-void	gdm_kill_thingies		(void);
+void    gdm_common_login_sound          (const gchar *GdmSoundProgram,
+                                         const gchar *GdmSoundOnLoginReadyFile,
+                                         gboolean     GdmSoundOnLoginReady);
 
 void	gdm_setup_blinking		(void);
 void	gdm_setup_blinking_entry	(GtkWidget *entry);
 gint	gdm_session_sort_func		(const char *a, const char *b);
+GdkPixbuf *gdm_common_get_face          (const char *filename,
+                                         const char *fallback_filename,
+                                         guint       max_width,
+                                         guint       max_height);
 
 #endif /* GDM_COMMON_H */

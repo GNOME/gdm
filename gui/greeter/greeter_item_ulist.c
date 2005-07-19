@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,6 +36,7 @@
 #include "vicious.h"
 
 #include "gdm.h"
+#include "gdmcommon.h"
 #include "gdmuser.h"
 #include "greeter.h"
 #include "greeter_item_ulist.h"
@@ -43,9 +46,7 @@
 static GList *users = NULL;
 static GList *users_string = NULL;
 static GdkPixbuf *defface;
-static gint maxwidth = 0;
-static gint maxheight = 0;
-static gint number_of_users = 0;
+
 static GtkWidget *pam_entry = NULL;
 static GtkWidget *user_list = NULL;
 
@@ -59,48 +60,23 @@ enum
 };
 
 static void 
-gdm_greeter_users_init ()
+gdm_greeter_users_init (void)
 {
-    gint size_of_users = 0;
-    time_t time_started;
+	gint          size_of_users = 0;
+	time_t        time_started;
 
-    if (access (GdmDefaultFace, R_OK) == 0) {
-		GdkPixbuf *img;
-		guint w, h;
-	
-        img = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
+	defface = gdm_common_get_face (NULL,
+				       GdmDefaultFace,
+				       GdmIconMaxWidth,
+				       GdmIconMaxHeight);
+	if (! defface) {
+		syslog (LOG_WARNING,
+			_("Can't open DefaultImage: %s!"),
+			GdmDefaultFace);
+	}
 
-		w = gdk_pixbuf_get_width (img);
-		h = gdk_pixbuf_get_height (img);
-
-		if (w > h && w > GdmIconMaxWidth) {
-			h = h * ((gfloat) GdmIconMaxWidth/w);
-			w = GdmIconMaxWidth;
-		} else if (h > GdmIconMaxHeight) {
-			w = w * ((gfloat) GdmIconMaxHeight/h);
-			h = GdmIconMaxHeight;
-		}
-
-		maxwidth = MAX (maxwidth, w);
-		maxheight = MAX (maxheight, h);
-
-		if (w != gdk_pixbuf_get_width (img) ||
-		    h != gdk_pixbuf_get_height (img)) {
-			defface = gdk_pixbuf_scale_simple
-				(img, w, h, GDK_INTERP_BILINEAR);
-			g_object_unref (G_OBJECT (img));
-
-		} else {
-			defface = img;
-		}
-    } else  {
-	    syslog (LOG_WARNING,
-		    _("Can't open DefaultImage: %s!"),
-		    GdmDefaultFace);
-    }
-
-    gdm_users_init (&users, &users_string, NULL, defface,
-	&size_of_users, GDM_IS_LOCAL, !DOING_GDM_DEVELOPMENT);
+	gdm_users_init (&users, &users_string, NULL, defface,
+			&size_of_users, GDM_IS_LOCAL, !DOING_GDM_DEVELOPMENT);
 }
 
 static void

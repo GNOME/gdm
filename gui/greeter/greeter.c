@@ -370,7 +370,9 @@ greeter_ctrl_handler (GIOChannel *source,
 
 	tmp = ve_locale_to_utf8 (buf);
 	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0) {
-		gdm_common_login_sound ();
+		gdm_common_login_sound (GdmSoundProgram,
+					GdmSoundOnLoginReadyFile,
+					GdmSoundOnLoginReady);
 		greeter_probably_login_prompt = TRUE;
 	} else {
 		greeter_probably_login_prompt = FALSE;
@@ -1146,7 +1148,7 @@ reap_flexiserver (gpointer data)
 }
 
 
-void
+static void
 gdm_kill_thingies (void)
 {
 	/* Empty kill thingies */
@@ -1627,7 +1629,7 @@ main (int argc, char *argv[])
 
   gdm_wm_restore_wm_order ();
 
-  gdm_common_show_info_msg ();
+  gdm_common_show_info_msg (GdmInfoMsgFile, GdmInfoMsgFont);
 
   gdm_common_setup_cursor (GDK_LEFT_PTR);
 

@@ -29,6 +29,7 @@ gdm_binary_SOURCES = \
 	gdm.h \
 	display.c \
 	display.h \
+	fstype.c \
 	slave.c \
 	slave.h \
 	server.c \

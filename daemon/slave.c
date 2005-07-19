@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -2097,6 +2099,240 @@ is_in_trusted_pic_dir (const char *path)
 	return FALSE;
 }
 
+static GHashTable *fstype_hash = NULL;
+extern char *filesystem_type (char *path, char *relpath, struct stat *statp);
+
+static gboolean
+path_is_local (const char *path)
+{
+	gpointer local = NULL;
+
+	if (path == NULL)
+		return FALSE;
+
+	if (fstype_hash == NULL)
+		fstype_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	else
+		local = g_hash_table_lookup (fstype_hash, path);
+
+	if (local == NULL) {
+		struct stat statbuf;
+
+		if (stat (path, &statbuf) == 0) {
+			char *type = filesystem_type ((char *)path, (char *)path, &statbuf);
+			gboolean is_local = ((strcmp (type, "nfs") != 0) && 
+					     (strcmp (type, "afs") != 0) &&
+					     (strcmp (type, "autofs") != 0) &&
+					     (strcmp (type, "unknown") != 0) &&
+					     (strcmp (type, "ncpfs") != 0));
+			local = GINT_TO_POINTER (is_local ? 1 : -1);
+			g_hash_table_insert (fstype_hash, g_strdup (path), local);
+		}
+	}
+
+	return GPOINTER_TO_INT (local) > 0;
+}
+
+static gboolean
+check_user_file (const char *path,
+		 guint       uid)
+{
+	char    *dir;
+	char    *file;
+	gboolean is_ok;
+
+	if (path == NULL)
+		return FALSE;
+
+	if (access (path, R_OK) != 0)
+		return FALSE;
+
+	dir = g_path_get_dirname (path);
+	file = g_path_get_basename (path);
+
+	is_ok = gdm_file_check ("run_pictures",
+				uid,
+				dir,
+				file,
+				TRUE, TRUE,
+				GdmUserMaxFile,
+				GdmRelaxPerms);
+	g_free (dir);
+	g_free (file);
+
+	return is_ok;
+}
+
+static gboolean
+check_global_file (const char *path,
+		   guint       uid)
+{
+	if (path == NULL)
+		return FALSE;
+
+	if (access (path, R_OK) != 0)
+		return FALSE;
+
+	return TRUE;
+}
+
+static char *
+get_facefile_from_gnome2_dir_config (const char *homedir,
+				     guint       uid)
+{
+	char *picfile = NULL;
+	char *cfgdir;
+
+	/* Sanity check on ~user/.gnome2/gdm */
+	cfgdir = g_build_filename (homedir, ".gnome2", "gdm", NULL);
+	if (G_LIKELY (check_user_file (cfgdir, uid))) {
+		VeConfig *cfg;
+		char *cfgfile;
+
+		cfgfile = g_build_filename (homedir, ".gnome2", "gdm", NULL);
+		cfg = ve_config_new (cfgfile);
+		g_free (cfgfile);
+
+		picfile = ve_config_get_string (cfg, "face/picture=");
+		ve_config_destroy (cfg);
+
+		/* must exist and be absolute (note that this check
+		 * catches empty strings)*/
+		/* Note that these days we just set ~/.face */
+		if G_UNLIKELY (picfile != NULL &&
+			       (picfile[0] != '/' ||
+				/* this catches readability by user */
+				access (picfile, R_OK) != 0)) {
+			g_free (picfile);
+			picfile = NULL;
+		}
+
+		if (picfile != NULL) {
+			char buf[PATH_MAX];
+			if (realpath (picfile, buf) == NULL) {
+				g_free (picfile);
+				picfile = NULL;
+			} else {
+				g_free (picfile);
+				picfile = g_strdup (buf);
+			}
+		}
+
+		if G_UNLIKELY (picfile != NULL) {
+			if (! is_in_trusted_pic_dir (picfile)) {
+				/* if not in trusted dir, check it out */
+
+				/* Note that strict permissions checking is done
+				 * on this file.  Even if it may not even be owned by the
+				 * user.  This setting should ONLY point to pics in trusted
+				 * dirs. */
+				if (! check_user_file (picfile, uid)) {
+					g_free (picfile);
+					picfile = NULL;
+				}
+			}
+		}
+	}
+	g_free (cfgdir);
+
+	return picfile;
+}
+
+static char *
+get_facefile_from_home (const char *homedir,
+			guint       uid)
+{
+	char    *picfile = NULL;
+	char    *path;
+	gboolean is_local;
+
+	/* special case: look at parent of home to detect autofs
+	   this is so we don't try to trigger an automount */
+	path = g_path_get_dirname (homedir);
+	is_local = path_is_local (path);
+	g_free (path);
+
+	/* now check that home dir itself is local */
+	if (is_local) {
+		is_local = path_is_local (homedir);
+	}
+
+	/* only look at local home directories so we don't try to
+	   read from remote (e.g. NFS) volumes */
+	if (! is_local)
+		return NULL;
+
+
+	picfile = g_build_filename (homedir, ".face", NULL);
+
+	if (check_user_file (picfile, uid))
+		return picfile;
+	else {
+		g_free (picfile);
+		picfile = NULL;
+	}
+
+	picfile = g_build_filename (homedir, ".face.icon", NULL);
+
+	if (check_user_file (picfile, uid))
+		return picfile;
+	else {
+		g_free (picfile);
+		picfile = NULL;
+	}
+
+	picfile = get_facefile_from_gnome2_dir_config (homedir, uid);
+	if (check_user_file (picfile, uid))
+		return picfile;
+	else {
+		g_free (picfile);
+		picfile = NULL;
+	}
+
+	/* Nothing found yet, try the old locations */
+
+	picfile = g_build_filename (homedir, ".gnome2", "photo", NULL);
+	if (check_user_file (picfile, uid))
+		return picfile;
+	else {
+		g_free (picfile);
+		picfile = NULL;
+	}
+
+	picfile = g_build_filename (homedir, ".gnome", "photo", NULL);
+	if (check_user_file (picfile, uid))
+		return picfile;
+	else {
+		g_free (picfile);
+		picfile = NULL;
+	}
+
+	return NULL;
+}
+
+static gchar *
+get_facefile_from_global (const char *username,
+			  guint       uid)
+{
+	char *picfile = NULL;
+
+	/* Try the global face directory */
+
+	picfile = g_build_filename (GdmGlobalFaceDir,
+				    username, NULL);
+
+	if (check_global_file (picfile, uid))
+		return picfile;
+
+	picfile = gdm_make_filename (GdmGlobalFaceDir,
+				     username, ".png");
+
+	if (check_global_file (picfile, uid))
+		return picfile;
+
+	return NULL;
+}
+
 /* This is VERY evil! */
 static void
 run_pictures (void)
@@ -2107,9 +2343,7 @@ run_pictures (void)
 	size_t bytes;
 	struct passwd *pwent;
 	char *picfile;
-	char *picdir;
 	FILE *fp;
-	char *cfgdir;
 
 	response = NULL;
 	for (;;) {
@@ -2140,182 +2374,15 @@ run_pictures (void)
 			continue;
 		}
 
-		if G_LIKELY (picfile == NULL) {
-			picfile = g_build_filename (pwent->pw_dir, ".face", NULL);
-			if (access (picfile, R_OK) != 0) {
-				g_free (picfile);
-				picfile = NULL;
-			} else if G_UNLIKELY ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-								 pwent->pw_dir, ".face", TRUE, TRUE, GdmUserMaxFile,
-								 GdmRelaxPerms)) {
-				g_free (picfile);
+		picfile = get_facefile_from_home (pwent->pw_dir, pwent->pw_uid);
 
-				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
+		if (! picfile)
+			picfile = get_facefile_from_global (pwent->pw_name, pwent->pw_uid);
 
-				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
-				continue;
-			}
-		}
-
-		if (picfile == NULL) {
-			picfile = g_build_filename (pwent->pw_dir, ".face.icon", NULL);
-			if (access (picfile, R_OK) != 0) {
-				g_free (picfile);
-				picfile = NULL;
-			} else if G_UNLIKELY ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-								 pwent->pw_dir, ".face.icon", TRUE, TRUE, GdmUserMaxFile,
-								 GdmRelaxPerms)) {
-				g_free (picfile);
-
-				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
-
-				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
-				continue;
-			}
-		}
-
-		if (picfile == NULL) {
-			/* Sanity check on ~user/.gnome2/gdm */
-			cfgdir = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
-			if G_LIKELY (gdm_file_check ("run_pictures", pwent->pw_uid,
-						     cfgdir, "gdm", TRUE, TRUE, GdmUserMaxFile,
-						     GdmRelaxPerms)) {
-				VeConfig *cfg;
-				char *cfgfile;
-
-				cfgfile = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
-				cfg = ve_config_new (cfgfile);
-				g_free (cfgfile);
-				picfile = ve_config_get_string (cfg, "face/picture=");
-				ve_config_destroy (cfg);
-
-				/* must exist and be absolute (note that this check
-				 * catches empty strings)*/
-				/* Note that these days we just set ~/.face */
-				if G_UNLIKELY (picfile != NULL &&
-					       (picfile[0] != '/' ||
-						/* this catches readability by user */
-						access (picfile, R_OK) != 0)) {
-					g_free (picfile);
-					picfile = NULL;
-				}
-
-				if (picfile != NULL) {
-					char buf[PATH_MAX];
-					if (realpath (picfile, buf) == NULL) {
-						g_free (picfile);
-						picfile = NULL;
-					} else {
-						g_free (picfile);
-						picfile = g_strdup (buf);
-					}
-				}
-
-				if G_UNLIKELY (picfile != NULL) {
-					char *dir;
-					char *base;
-
-					/* if in trusted dir, just use it */
-					if (is_in_trusted_pic_dir (picfile)) {
-						struct stat s;
-
-						if (stat (picfile, &s) != 0 ||
-						    ! S_ISREG (s.st_mode)) {
-							g_free (picfile);
-							picfile = g_strdup ("");
-						}
-						NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
-
-						g_free (cfgdir);
-
-						gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
-									      picfile);
-						g_free (picfile);
-						continue;
-					}
-
-					/* if not in trusted dir, check it out */
-					dir = g_path_get_dirname (picfile);
-					base = g_path_get_basename (picfile);
-
-					/* Note that strict permissions checking is done
-					 * on this file.  Even if it may not even be owned by the
-					 * user.  This setting should ONLY point to pics in trusted
-					 * dirs. */
-					if (ve_string_empty (dir) ||
-					    ve_string_empty (base) ||
-					    ! gdm_file_check ("run_pictures", pwent->pw_uid,
-							      dir, base, TRUE, TRUE, GdmUserMaxFile,
-							      GdmRelaxPerms)) {
-						g_free (picfile);
-						picfile = NULL;
-					}
-
-					g_free (base);
-					g_free (dir);
-				}
-			}
-			g_free (cfgdir);
-		}
-
-		/* Nothing found yet, try the old location,
-		 * and if we don't find anything there we try the global
-		 * dir.  So this is NOT JUST A FALLBACK, don't remove
-		 * this branch in the future! */
-		if (picfile == NULL) {
-			picfile = g_build_filename (pwent->pw_dir, ".gnome2", "photo", NULL);
-			picdir = g_build_filename (pwent->pw_dir, ".gnome2", NULL);
-			if (access (picfile, F_OK) != 0) {
-				g_free (picfile);
-				picfile = g_build_filename (pwent->pw_dir, ".gnome", "photo", NULL);
-				g_free (picdir);
-				picdir = g_build_filename (pwent->pw_dir, ".gnome", NULL);
-			}
-			if (access (picfile, F_OK) != 0) {
-				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
-
-				/* Try the global face directory */
-
-				g_free (picfile);
-				g_free (picdir);
-				picfile = g_build_filename (GdmGlobalFaceDir,
-							    response, NULL);
-
-				if (access (picfile, R_OK) == 0) {
-					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
-								      picfile);
-					g_free (picfile);
-					continue;
-				}
-
-				g_free (picfile);
-				picfile = gdm_make_filename (GdmGlobalFaceDir,
-							     response, ".png");
-
-				if (access (picfile, R_OK) == 0) {
-					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
-								      picfile);
-					g_free (picfile);
-					continue;
-				}
-
-				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
-				g_free (picfile);
-				continue;
-			}
-
-			/* Sanity check on ~user/.gnome[2]/photo */
-			if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-					       picdir, "photo", TRUE, TRUE, GdmUserMaxFile,
-					       GdmRelaxPerms)) {
-				g_free (picdir);
-
-				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
-
-				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
-				continue;
-			}
-			g_free (picdir);
+		if (! picfile) {
+			NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
 		}
 
 		VE_IGNORE_EINTR (r = stat (picfile, &s));

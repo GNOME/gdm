@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This file Copyright (c) 2003 George Lebl
@@ -34,22 +36,17 @@
 #include "gdmwm.h"
 #include "gdmcommon.h"
 
-extern gchar *GdmInfoMsgFile;
-extern gchar *GdmInfoMsgFont;
-extern gchar *GdmSoundProgram;
-extern gboolean GdmSoundOnLoginReady;
-extern gchar *GdmSoundOnLoginReadyFile;
-
 void
-gdm_common_show_info_msg (void)
+gdm_common_show_info_msg (const gchar *msg_file,
+			  const gchar *msg_font)
 {
 	GtkWidget *dialog, *label;
 	gchar *InfoMsg;
 	gsize InfoMsgLength;
 
-	if (ve_string_empty (GdmInfoMsgFile) ||
-	    ! g_file_test (GdmInfoMsgFile, G_FILE_TEST_EXISTS) ||
-	    ! g_file_get_contents (GdmInfoMsgFile, &InfoMsg, &InfoMsgLength, NULL))
+	if (ve_string_empty (msg_file) ||
+	    ! g_file_test (msg_file, G_FILE_TEST_EXISTS) ||
+	    ! g_file_get_contents (msg_file, &InfoMsg, &InfoMsgLength, NULL))
 		return;
 
 	if (InfoMsgLength <= 0) {
@@ -65,8 +62,8 @@ gdm_common_show_info_msg (void)
 					      NULL);
 	label = gtk_label_new (InfoMsg);
 
-	if (GdmInfoMsgFont && strlen(GdmInfoMsgFont) > 0) {
-		PangoFontDescription *GdmInfoMsgFontDesc = pango_font_description_from_string (GdmInfoMsgFont);
+	if (msg_font && strlen (msg_font) > 0) {
+		PangoFontDescription *GdmInfoMsgFontDesc = pango_font_description_from_string (msg_font);
 		if (GdmInfoMsgFontDesc) {
 			gtk_widget_modify_font (label, GdmInfoMsgFontDesc);
 			pango_font_description_free (GdmInfoMsgFontDesc);
@@ -79,10 +76,10 @@ gdm_common_show_info_msg (void)
 
 	gdm_common_setup_cursor (GDK_LEFT_PTR);
 
-	gdm_wm_no_login_focus_push();
+	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
-	gdm_wm_no_login_focus_pop();
+	gdm_wm_no_login_focus_pop ();
 
 	g_free (InfoMsg);
 }
@@ -178,7 +175,6 @@ gdm_common_abort (const gchar *format, ...)
     gchar *s;
 
     if (!format) {
-	gdm_kill_thingies ();
 	_exit (DISPLAY_GREETERFAILED);
     }
 
@@ -187,11 +183,10 @@ gdm_common_abort (const gchar *format, ...)
     va_end (args);
     
     syslog (LOG_ERR, "%s", s);
-    closelog();
+    closelog ();
 
     g_free (s);
 
-    gdm_kill_thingies ();
     _exit (DISPLAY_GREETERFAILED);
 }
 
@@ -239,7 +234,9 @@ gdm_common_int_same (VeConfig *config, int cur, const char *key)
 }
 
 void
-gdm_common_login_sound (void)
+gdm_common_login_sound (const gchar *GdmSoundProgram,
+			const gchar *GdmSoundOnLoginReadyFile,
+			gboolean     GdmSoundOnLoginReady)
 {
 	if ( ! GdmSoundOnLoginReady)
 		return;
@@ -361,3 +358,55 @@ gdm_setup_blinking_entry (GtkWidget *entry)
 	entries = g_slist_prepend (entries, eb);
 }
 
+GdkPixbuf *
+gdm_common_get_face (const char *filename,
+		     const char *fallback_filename,
+		     guint       max_width,
+		     guint       max_height)
+{
+	GdkPixbuf *pixbuf    = NULL;
+
+	/* If we don't have a filename then try the fallback */
+	if (! filename) {
+		GtkIconTheme *theme;
+		int           icon_size = 48;
+
+		/* If we don't have a fallback then return NULL */
+		if (! fallback_filename)
+			return NULL;
+
+		/* Try to load an icon from the theme before the fallback */
+		theme = gtk_icon_theme_get_default ();
+		pixbuf = gtk_icon_theme_load_icon (theme, "stock_person", icon_size, 0, NULL);
+		if (! pixbuf)
+			pixbuf = gdk_pixbuf_new_from_file (fallback_filename, NULL);
+	} else {
+		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+	}
+
+	if (pixbuf) {
+		guint w, h;
+	
+		w = gdk_pixbuf_get_width (pixbuf);
+		h = gdk_pixbuf_get_height (pixbuf);
+
+		if (w > h && w > max_width) {
+			h = h * ((gfloat) max_width / w);
+			w = max_width;
+		} else if (h > max_height) {
+			w = w * ((gfloat) max_height / h);
+			h = max_height;
+		}
+
+		if (w != gdk_pixbuf_get_width (pixbuf) ||
+		    h != gdk_pixbuf_get_height (pixbuf)) {
+			GdkPixbuf *img;
+
+			img = gdk_pixbuf_scale_simple (pixbuf, w, h, GDK_INTERP_BILINEAR);
+			g_object_unref (pixbuf);
+			pixbuf = img;
+		}
+        }
+
+	return pixbuf;
+}
