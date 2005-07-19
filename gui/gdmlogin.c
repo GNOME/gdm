@@ -3171,13 +3171,21 @@ gdm_login_gui_init (void)
 		      entry);
     gtk_widget_show (cancel_button);
 
-    button_box = gtk_hbox_new (0, 5);
-    /*gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (help_button),
-			FALSE, FALSE, 0);*/
+    button_box = gtk_hbutton_box_new ();
+    gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box),
+                               GTK_BUTTONBOX_END);
+    gtk_box_set_spacing (GTK_BOX (button_box), 10);
+
+#if 0
+    gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (help_button),
+                      FALSE, TRUE, 0);
+    gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (button_box), help_button, TRUE);
+#endif
+
     gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (cancel_button),
-		      FALSE, FALSE, 0);
+		      FALSE, TRUE, 0);
     gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (ok_button),
-		      FALSE, FALSE, 0);
+		      FALSE, TRUE, 0);
     gtk_widget_show (button_box);
     
     gtk_table_attach (GTK_TABLE (stack), button_box, 0, 1, 8, 9,
