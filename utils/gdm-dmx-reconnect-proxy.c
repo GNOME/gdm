@@ -106,7 +106,7 @@ main (int argc, char **argv)
 	}
 
 	if (backend_display == NULL) {
-		g_printerr (_("You must specify a backend display which using %s\n"), "--display");
+		g_printerr (_("You must specify a backend display by using %s\n"), "--display");
 		return 1;
 	}
 
