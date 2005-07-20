@@ -1,3 +1,9 @@
+2005-07-19  Brian Cameron  <Brian.Cameron@sun.com>
+
+	* gui/gdmphotosetup.c: Backed out calls to g_chmod since gdm2
+	  should not depend on glib functions only available in an
+	  unstable build (2.7).
+
 2005-07-19  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init): 
