@@ -502,18 +502,30 @@ if test x$with_tcp_wrappers = xno ; then
 else
   AC_MSG_CHECKING([whether to use TCP wrappers])
   LIBWRAP_PATH=""
-  for I in $LDFLAGS $LIBS -L/usr/lib; do
-	case "$I" in
-	-L*)
-	THEFILE="`echo $I | sed -e 's,^-L,,'`"
-	echo "From $I, checking in dir $THEFILE for libwrap.a" 1>&5
-	if test -f $THEFILE/libwrap.a; then
-		LIBWRAP_PATH=$THEFILE/libwrap.a
+  case "$host" in
+    *-*-solaris*)
+	if test -f /usr/sfw/lib/libwrap.so; then
+		LIBWRAP_PATH=/usr/sfw/lib/libwrap.so
 		echo "Found $LIBWRAP_PATH" 1>&5
-		break
 	fi
-	esac
-  done
+	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
+	;;
+    *)
+        for I in $LDFLAGS $LIBS -L/usr/lib; do
+		case "$I" in
+		-L*)
+			THEFILE="`echo $I | sed -e 's,^-L,,'`"
+			echo "From $I, checking in dir $THEFILE for libwrap.a" 1>&5
+			if test -f $THEFILE/libwrap.a; then
+				LIBWRAP_PATH=$THEFILE/libwrap.a
+				echo "Found $LIBWRAP_PATH" 1>&5
+				break
+			fi
+			;;
+		esac
+	done
+	;;
+  esac
 
   if test -n "$LIBWRAP_PATH"; then
         AC_MSG_RESULT(yes)
@@ -536,19 +548,25 @@ else
                 AC_DEFINE(HAVE_TCPWRAPPERS)
 	fi
   fi
-  if test -n "$LIBWRAP_PATH"; then
-	AC_CHECK_LIB(wrap, hosts_ctl, [
-		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lwrap"], [
-		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIBWRAP_PATH"])
-  fi
 
-  dnl find out if we need -lnsl or whatever
-  LIB_NSL=
-  if test -n "$LIBWRAP_PATH"; then
-        AC_MSG_CHECKING(whether -lwrap also requires -lnsl)
-        ORIG_LIBS="$LIBS"
-        LIBS="$EXTRA_DAEMON_LIBS $LIBS"
-        AC_TRY_LINK([
+  case "$host" in
+    *-*-solaris*)
+	# No need for extra libwrap checking.
+	;;
+    *)
+	if test -n "$LIBWRAP_PATH"; then
+	AC_CHECK_LIB(wrap, hosts_ctl, [
+		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lwrap"], [
+		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIBWRAP_PATH"])
+	fi
+
+	dnl find out if we need -lnsl or whatever
+	LIB_NSL=
+	if test -n "$LIBWRAP_PATH"; then
+		AC_MSG_CHECKING(whether -lwrap also requires -lnsl)
+		ORIG_LIBS="$LIBS"
+		LIBS="$EXTRA_DAEMON_LIBS $LIBS"
+		AC_TRY_LINK([
 #include <tcpd.h>
 int allow_severity, deny_severity;
 ], [return hosts_access;], ,[
@@ -562,14 +580,16 @@ int allow_severity, deny_severity;
 LIBWRAP_PATH="")
 LIBS="$OLD_LIBS"
 ])
-        LIBS="$ORIG_LIBS"
-	if test -n "$LIB_NSL"; then
-        	AC_MSG_RESULT(yes)
-        	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIB_NSL"
-	else
-        	AC_MSG_RESULT(no)
+		LIBS="$ORIG_LIBS"
+		if test -n "$LIB_NSL"; then
+			AC_MSG_RESULT(yes)
+			EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIB_NSL"
+		else
+			AC_MSG_RESULT(no)
+		fi
 	fi
-  fi
+	;;
+   esac
 fi
 
 AC_MSG_CHECKING([for corrupt government])
@@ -582,7 +602,8 @@ if test "x$XINPUT_LIBS" = x; then
   for xinputpath in $x_libraries /usr/X11R6/lib /usr/openwin/lib; do
     LIBS="-L$xinputpath -lXi"
     case "$host" in
-    *solaris*) XINPUT_RPATH_FLAGS="-R$xinputpath" ;;
+       *solaris*) XINPUT_RPATH_FLAGS="-R$xinputpath" 
+       ;;
     esac
     AC_MSG_CHECKING(for -lXi in $xinputpath)
     AC_TRY_LINK([], [XOpenDisplay()], [
@@ -841,6 +862,7 @@ fi
 
 # Check for Solaris logindevperm support
 #
+AC_MSG_CHECKING(for Solaris di_devperm_login)
 AC_CHECK_LIB(devinfo, di_devperm_login, [
 		     	AC_DEFINE(HAVE_LOGINDEVPERM)
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
