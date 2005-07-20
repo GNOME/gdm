@@ -94,9 +94,15 @@ greeter_populate_user_list (GtkTreeModel *tm)
       login = g_markup_escape_text (usr->login, -1);
       gecos = g_markup_escape_text (usr->gecos, -1);
 
-      label = g_strdup_printf ("<b>%s</b>\n%s",
-			       login,
-			       gecos);
+      if (usr->gecos && strcmp (usr->gecos, "") != 0) {
+	      label = g_strdup_printf ("<b>%s</b>\n    %s",
+				       gecos,
+				       login);
+      } else {
+	      label = g_strdup_printf ("<b>%s</b>\n%s",
+				       login,
+				       gecos);
+      }
 
       g_free (login);
       g_free (gecos);
@@ -182,14 +188,14 @@ greeter_generate_userlist (GtkWidget *tv)
 			      "pixbuf", GREETER_ULIST_ICON_COLUMN,
 			      NULL);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column_one);
-      
+
 		column_two = gtk_tree_view_column_new_with_attributes
 		             (_("Username"),
 			      gtk_cell_renderer_text_new (),
 			      "markup", GREETER_ULIST_LABEL_COLUMN,
 			      NULL);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column_two);
-      
+
 		greeter_populate_user_list (tm);
 
 		info = greeter_lookup_id ("userlist");
@@ -214,6 +220,27 @@ greeter_generate_userlist (GtkWidget *tv)
 	}
 }
 
+static inline void
+force_no_tree_separators (GtkWidget *widget)
+{
+	gboolean first_time = TRUE;
+
+	if (first_time) {
+		gtk_rc_parse_string ("\n"
+				     "	 style \"gdm-userlist-treeview-style\"\n"
+				     "	 {\n"
+				     "	    GtkTreeView::horizontal-separator=0\n"
+				     "	    GtkTreeView::vertical-separator=0\n"
+				     "	 }\n"
+				     "\n"
+				     "	  widget \"*.gdm-userlist-treeview\" style \"gdm-userlist-treeview-style\"\n"
+				     "\n");
+		first_time = FALSE;
+	}
+
+	gtk_widget_set_name (widget, "gdm-userlist-treeview");
+}
+
 gboolean
 greeter_item_ulist_setup (void)
 {
@@ -235,8 +262,12 @@ greeter_item_ulist_setup (void)
 	  GTK_IS_TREE_VIEW (GTK_BIN (sw)->child))
         {
 	  GtkRequisition req;
+	  gdouble        height;
 
           user_list = GTK_BIN (sw)->child;
+
+	  force_no_tree_separators (user_list);
+
           greeter_generate_userlist (user_list);
 	  if ( ! DOING_GDM_DEVELOPMENT)
             greeter_item_ulist_disable ();
@@ -247,7 +278,10 @@ greeter_item_ulist_setup (void)
           * as the rectangle defined in the GDM theme file.
           */
 	  gtk_widget_size_request (user_list, &req);
-          g_object_set (info->item, "height", (double)req.height, NULL);
+	  g_object_get (info->item, "height", &height, NULL);
+
+	  if (req.height < height)
+		  g_object_set (info->item, "height", (double)req.height, NULL);
         }
     }
   return TRUE;

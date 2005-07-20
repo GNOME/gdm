@@ -1,3 +1,20 @@
+2005-07-20  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/greeter/themes/happygnome-list/happygnome.xml:
+	Tweak the colors in the user list.  Make the background
+	translucent behind the user list.
+
+	* gui/greeter/greeter_item_ulist.c (greeter_populate_user_list):
+	Make real name bold if it is available.  Design for humans.
+	(force_no_tree_separators): Set treeview style so that we don't
+	get strange lines between tree rows when we set a userlist
+	color in the theme.
+	(greeter_item_ulist_setup): Only shrink the size of the user
+	list.  Set the default widget style.
+
+	* gui/greeter/greeter_canvas_item.c (greeter_item_create_canvas_item):
+	Don't set rules hint for userlist treeview.
+
 2005-07-20  Brian Cameron  <Brian.Cameron@sun.com>
 
 	* utils/gdm-dmx-reconnect-proxy.c: Fixed grammar,

@@ -417,7 +417,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
      * to it then, depending on the type.  Likely userlist is the
      * only type we support */
     list = gtk_tree_view_new ();
-    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (list), TRUE);
+
     swin = gtk_scrolled_window_new (NULL, NULL);
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swin),
     					GTK_SHADOW_NONE);
