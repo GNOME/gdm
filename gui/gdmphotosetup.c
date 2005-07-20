@@ -392,13 +392,9 @@ main (int argc, char *argv[])
 			gnome_config_set_string ("/gdm/face/picture", "");
 			gnome_config_sync ();
 
-#if 0
-			/* These can be added after g_chmod becomes available
-			 * in a stable glib build */
-			/* ensure proper permissions */
-			g_chmod (cfg_file, 0600);
-			g_chmod (photofile, 0644);
-#endif
+                        /* Change to g_chmod after glib 2.8 release */
+			chmod (cfg_file, 0600);
+			chmod (photofile, 0644);
 
 			g_free (cfg_file);
 			g_free (photofile);

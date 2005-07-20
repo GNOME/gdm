@@ -1,3 +1,15 @@
+2005-07-20  Brian Cameron  <Brian.Cameron@sun.com>
+
+	* gui/Makefile.am, gui/gdmcommon.c, gdmwm.c:
+	  Moved gdm_common_show_info_msg, gdm_common_msg
+	  and gdm_common_query from gdmcommon.c to gdmwm.c.
+	  Now no longer include gdmwm.[ch] in libgdmcommon.a
+	  since these are in libgdmwm.a:  This is cleaner
+	  since these 3 functions reference gdmwm functions.
+	  This fixes a link problem on Solaris caused because
+	  the Xinerama functions were getting referenced in
+	  gdmsetup even though they are unused.  
+
 2005-07-19  Brian Cameron  <Brian.Cameron@sun.com>
 
 	* gui/gdmphotosetup.c: Backed out calls to g_chmod since gdm2
