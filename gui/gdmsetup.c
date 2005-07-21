@@ -526,6 +526,7 @@ combobox_timeout (GtkWidget *combo_box)
 
 	/* Theme Combobox */
 	} else if (strcmp (key, GDM_KEY_GRAPHICAL_THEME_RAND) == 0 ) {
+		gboolean GdmGraphicalThemeRand;
 		gboolean new_val;
 		GtkTreeViewColumn *radioColumn = NULL;
 		GtkTreeViewColumn *checkboxColumn = NULL;
@@ -565,9 +566,9 @@ combobox_timeout (GtkWidget *combo_box)
 		}
 
 		/* Update Delete Button's sensitivity */
-	    gboolean GdmGraphicalThemeRand = ve_config_get_bool (
-    	    ve_config_get (GDM_CONFIG_FILE),
-        	GDM_KEY_GRAPHICAL_THEME_RAND);
+		GdmGraphicalThemeRand = ve_config_get_bool (
+			ve_config_get (GDM_CONFIG_FILE),
+			GDM_KEY_GRAPHICAL_THEME_RAND);
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
 		gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 		gtk_widget_set_sensitive (del_button, FALSE);
@@ -575,11 +576,12 @@ combobox_timeout (GtkWidget *combo_box)
 		{
 			gtk_widget_set_sensitive (del_button, FALSE);
 		} else {
+			GtkTreeModel *model;
+
 			/* Default to allow deleting of themes */
 			gtk_widget_set_sensitive (del_button, TRUE);
 
 			/* Determine if the theme selected is currently active */
-			GtkTreeModel *model;
 			model = gtk_tree_view_get_model (GTK_TREE_VIEW (theme_list));
 			if (GdmGraphicalThemeRand) {
 				gtk_tree_model_get_value (model, &iter,
@@ -4018,6 +4020,7 @@ setup_xserver_support (void)
 static void
 setup_graphical_themes (void)
 {
+	gboolean GdmGraphicalThemeRand;
 	DIR *dir;
 	GtkListStore *store;
 	GtkCellRenderer *renderer;
@@ -4050,7 +4053,7 @@ setup_graphical_themes (void)
 		  slash (/) character in them, so I just made GDM_DELIMITER_THEMES
 		  equal to "/:" instead. */
 
-	gboolean GdmGraphicalThemeRand = ve_config_get_bool (
+	GdmGraphicalThemeRand = ve_config_get_bool (
 		ve_config_get (GDM_CONFIG_FILE),
 		GDM_KEY_GRAPHICAL_THEME_RAND);
 
