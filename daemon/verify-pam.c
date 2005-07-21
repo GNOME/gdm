@@ -18,7 +18,6 @@
 
 #include <config.h>
 #include <libgnome/libgnome.h>
-#include <gtk/gtkmessagedialog.h>
 #include <grp.h>
 #include <sys/types.h>
 #include <sys/stat.h>
