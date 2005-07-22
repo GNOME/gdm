@@ -219,7 +219,7 @@ System_DATA = $(System_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
 Gladedir = $(datadir)/gdm
-Glade_DATA = gdmsetup.glade gdmchooser.glade
+Glade_DATA = gdmsetup.glade gdmchooser.glade gdmphotosetup.glade
 
 Iconsdir = $(datadir)/pixmaps
 
