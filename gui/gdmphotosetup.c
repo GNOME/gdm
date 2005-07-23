@@ -38,6 +38,7 @@
 #include <viciousui.h>
 
 #include "gdm.h"
+#include "gdmcommon.h"
 
 static GladeXML *xml;
 static char	*photofile;
@@ -322,12 +323,13 @@ maybe_migrate_old_config (void)
 {
 	char *name;
 
-	if (photofile && g_access (photofile, R_OK) == 0)
+	/* Note, change access to g_access after GTK 2.8 is released */
+	if (photofile && access (photofile, R_OK) == 0)
 		return;
 
 	/* if we don't have a face then look for old one */
 	name = gnome_config_get_string ("/gdmphotosetup/last/picture");
-	if (name && g_access (name, R_OK) != 0) {
+	if (name && access (name, R_OK) != 0) {
 		GdkPixbuf *pixbuf;
 
 		pixbuf = gdk_pixbuf_new_from_file (name, NULL);
@@ -423,16 +425,16 @@ selection_changed (GtkIconView *icon_list,
 }
 
 static void
-setup_icon_view (GtkWidget *iconview)
+setup_icon_view (GtkIconView *iconview)
 {
 	GtkTreeModel	*model;
 	GtkCellRenderer *cell;
 
-	gtk_icon_view_set_selection_mode (GTK_ICON_VIEW (iconview),
+	gtk_icon_view_set_selection_mode (iconview,
 					  GTK_SELECTION_SINGLE);
 
 	model = create_model ();
-	gtk_icon_view_set_model (GTK_ICON_VIEW (iconview), model);
+	gtk_icon_view_set_model (iconview, model);
 	fill_model (model);
 
 	cell = gtk_cell_renderer_pixbuf_new ();
@@ -441,7 +443,7 @@ setup_icon_view (GtkWidget *iconview)
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (iconview),
 					cell, "pixbuf", 0, NULL);
 
-	g_signal_connect (iconview, "selection_changed",
+	g_signal_connect (GTK_WIDGET (iconview), "selection_changed",
 			  G_CALLBACK (selection_changed), NULL);
 
 }
@@ -454,6 +456,7 @@ main (int argc, char *argv[])
 	GtkWidget  *face_image;
 	GtkWidget  *iconview;
 	gboolean    face_browser;
+	gchar	   *config_file, *config_prefix;
 	char	   *greeter;
 	int	    max_size;
 
@@ -470,7 +473,14 @@ main (int argc, char *argv[])
 
 	maybe_migrate_old_config ();
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+        config_file = gdm_common_get_config_file ();
+        if (config_file == NULL) {
+                g_print (_("Could not access GDM configuration file.\n"));
+                exit (EXIT_FAILURE);
+        }
+
+        config_prefix = g_strdup_printf("=%s=/", config_file);
+	gnome_config_push_prefix (config_prefix);
 	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
 	max_size = gnome_config_get_int (GDM_KEY_MAXFILE);
 	max_width = gnome_config_get_int (GDM_KEY_ICONWIDTH);
@@ -479,6 +489,8 @@ main (int argc, char *argv[])
 
 	facedir = gnome_config_get_string (GDM_KEY_FACEDIR);
 	gnome_config_pop_prefix ();
+	g_free (config_prefix);
+	g_free (config_file);
 
 	gtk_window_set_default_icon_name ("stock_person");
 
@@ -489,7 +501,7 @@ main (int argc, char *argv[])
 	browse_button = glade_xml_get_widget (xml, "browse_button");
 	iconview      = glade_xml_get_widget (xml, "face_iconview");
 
-	if (g_access (photofile, R_OK) == 0) {
+	if (access (photofile, R_OK) == 0) {
 		gtk_image_set_from_file (GTK_IMAGE (face_image),
 					 photofile);
 	} else {
@@ -498,7 +510,7 @@ main (int argc, char *argv[])
 					      GTK_ICON_SIZE_DIALOG);
 	}
 
-	setup_icon_view (iconview);
+	setup_icon_view (GTK_ICON_VIEW (iconview));
 
 	g_signal_connect (browse_button, "clicked",
 			  G_CALLBACK (browse_button_cb), dialog);

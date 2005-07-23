@@ -1292,9 +1292,9 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
 	gdm_fdprintf (2, "GDM: Xserver not found: %s\n"
 		      "Error: Command could not be executed!\n"
-		      "Please install the X server or edit %s to point "
-		      "to the right place.",
-		      command, GDM_CONFIG_FILE);
+		      "Please install the X server or correct "
+		      "GDM configuration and restart GDM.",
+		      command);
 
 	gdm_error (_("%s: Xserver not found: %s"), 
 		   "gdm_server_spawn", command);

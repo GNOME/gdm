@@ -1,3 +1,46 @@
+2005-07-22  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.in: Bumped version to 2.8.0.2 since
+	  a new interface was added, the gdmflexiserver
+	  command, GET_CONFIG_FILE was added.
+	* daemon/Makefile.am, daemon/gdm.[ch], 
+	  daemon/server.c, daemon/xdmcp.c, docs/C/gdm.xml,
+	  gui/Makefile.am, gui/gdmXnestchooser.c, 
+	  gui/gdmchooser.c, gdm/gdmcomm.[ch], 
+	  gui/gdmcommon.[ch], gdm/gdmdynamic.c, 
+	  gui/gdmflexiserver.c, gui/gdmlogin.c, 
+	  gui/gdmphotosetup.c, gui/gdmsetup.c, 
+	  gui/greeter/greeter.c:  If /etc/gdm/gdm.conf
+	  does not exist, then GDM will look in 
+	  /usr/share/gdm/gdm.conf.  Since /usr/share can be
+          shared across multiple systems, this makes it easier
+          for sysadmins to configure sitewide settings for GDM2
+	  instead of having to customize /etc/gdm/gdm.conf on
+	  all the machines separately.  Now GDM installs the 
+	  gdm.conf and factory-gdm.conf files in the 
+	  /usr/share/gdm location.  The gdm daemon needs to be
+	  restarted to use a different configuration file.
+	  All applications that use the config file now use
+	  the new GET_CONFIG_FILE gdmflexiserver command to get
+	  the configuration file to use.  This way the
+	  applications don't get confused if, say, the sysadmin
+	  creates an /etc/gdm/gdm.conf file after the server
+	  was started using one in /usr/share/gdm.  Both
+	  the gdm daemon and gdmsetup now allow a --config
+	  option so the sysadmin can specify their own 
+	  location for the config file.  
+
+	  Moved GdmMulticast and GdmMulticastAddr to
+	  gdm.c so we don't access the config file a
+	  second time in xdmcp.c.  Corrected grammar
+	  for some messages.  Changed g_access() to
+	  access() in gdmphotosetup.c since this is a
+	  new 2.7 usntable function.  I will change it 
+	  back when 2.8 is released.
+	* config/Makefile.am: Changed install location
+	  of gdm.conf and factory-gdm.conf to
+	  %datadir%/gdm
+
 2005-07-21  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/gdmphotosetup.glade: New file.

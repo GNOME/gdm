@@ -124,6 +124,8 @@ extern gint xdmcp_sessions;
 extern uid_t GdmUserId;
 extern gchar *GdmLogDir;
 extern gchar *GdmServAuthDir;
+extern gboolean GdmMulticast;      /* Whether Multicast options are set */
+extern gchar *GdmMulticastAddr;    /* Multicast address */
 
 /* Tunables */
 extern gint GdmMaxPending;	/* only accept this number of pending sessions */
@@ -353,10 +355,6 @@ gdm_xdmcp_init (void)
 {
 #ifdef ENABLE_IPV6
     struct sockaddr_storage serv_sa = {0};
-    static gboolean GdmMulticast;      /* Whether Multicast options are set */
-    static gchar *GdmMulticastAddr;    /* Multicast address */
-    VeConfig *cfg;
-
 #else
     struct sockaddr_in serv_sa = {0};
 #endif
@@ -409,11 +407,7 @@ gdm_xdmcp_init (void)
 	((struct sockaddr_in6 *)(&serv_sa))->sin6_addr = in6addr_any;
 	addrlen = sizeof (struct sockaddr_in6);
 
-	cfg = ve_config_get (GDM_CONFIG_FILE);
-
 	/* Checking and Setting Multicast options */
-	GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
-
 	if (GdmMulticast) {
 	    int socktemp;       /* temporary socket for getting info about available interfaces*/
 	    int i, num;
@@ -425,8 +419,6 @@ gdm_xdmcp_init (void)
 	    struct ifreq *ifr;
 
 	    /* Extract Multicast address for IPv6 */
-	    GdmMulticastAddr = ve_config_get_string (cfg, GDM_KEY_MULTICAST_ADDR);
-
 	    if (ve_string_empty (GdmMulticastAddr)) {
 		g_free (GdmMulticastAddr);
 

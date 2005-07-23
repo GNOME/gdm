@@ -178,6 +178,8 @@ gchar *GdmRebootReal = NULL;
 gchar *GdmSuspend = NULL;
 gchar *GdmSuspendReal = NULL;
 gchar *GdmServAuthDir = NULL;
+gboolean GdmMulticast;
+gchar *GdmMulticastAddr;
 gchar *GdmUserAuthDir = NULL;
 gboolean GdmNeverPlaceCookiesOnNFS = TRUE;
 gchar *GdmUserAuthFile = NULL;
@@ -231,6 +233,9 @@ gboolean GdmConsoleNotify = TRUE;
 char **stored_argv = NULL;
 int stored_argc = 0;
 
+static VeConfig *cfg;
+
+static gchar *config_file = NULL;
 static time_t config_file_mtime = 0;
 
 static gboolean gdm_restart_mode = FALSE;
@@ -299,9 +304,8 @@ check_servauthdir (struct stat *statbuf)
 		    (C_(N_("Server Authorization directory "
 			   "(daemon/ServAuthDir) is set to %s "
 			   "but this does not exist. Please "
-			   "correct GDM configuration %s and "
-			   "restart GDM.")), GdmServAuthDir,
-		     GDM_CONFIG_FILE);
+			   "correct GDM configuration and "
+			   "restart GDM.")), GdmServAuthDir);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -313,9 +317,8 @@ check_servauthdir (struct stat *statbuf)
 		    (C_(N_("Server Authorization directory "
 			   "(daemon/ServAuthDir) is set to %s "
 			   "but this is not a directory. Please "
-			   "correct GDM configuration %s and "
-			   "restart GDM.")), GdmServAuthDir,
-		     GDM_CONFIG_FILE);
+			   "correct GDM configuration and "
+			   "restart GDM.")), GdmServAuthDir);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -340,6 +343,39 @@ check_logdir (void)
 }
 
 /**
+ * gdm_get_config:
+ *
+ * Get config file
+ */
+static VeConfig *
+gdm_get_config (struct stat *statbuf)
+{
+    int r;
+
+    /* Not NULL if config_file was set by command-line option. */
+    if (config_file != NULL) {
+       VE_IGNORE_EINTR (r = stat (config_file, statbuf));
+    } else {
+       /* First check sysconfdir */
+       VE_IGNORE_EINTR (r = stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
+       if (r < 0) {
+
+           /* If not found, then check datadir */
+           VE_IGNORE_EINTR (r = stat (GDM_DATADIR_CONFIG_FILE, statbuf));
+           if (r < 0) {
+               gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
+                   "gdm_config_parse", GDM_DATADIR_CONFIG_FILE);
+           } else {
+               config_file = GDM_DATADIR_CONFIG_FILE;
+           }
+       } else {
+               config_file = GDM_SYSCONFDIR_CONFIG_FILE;
+       }
+    } 
+    return ve_config_new (config_file);
+}
+
+/**
  * gdm_config_parse:
  *
  * Parse the configuration file and warn about bad permissions etc.
@@ -354,21 +390,12 @@ gdm_config_parse (void)
     gchar *bin;
     VeConfig *cfg;
     GList *list, *li;
-    int r;
     
     displays = NULL;
     high_display_num = 0;
 
-    VE_IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
-    if (r < 0) {
-	    gdm_error (_("%s: No configuration file: %s. Using defaults."),
-		       "gdm_config_parse", GDM_CONFIG_FILE);
-    } else {
-	    config_file_mtime = statbuf.st_mtime;
-    }
-
-    /* Parse configuration options */
-    cfg = ve_config_new (GDM_CONFIG_FILE);
+    cfg = gdm_get_config (&statbuf);
+    config_file_mtime = statbuf.st_mtime;
 
     /* get and cache the OKness of a language */
     GdmConsoleCannotHandle = ve_config_get_string (cfg, GDM_KEY_CONSOLE_CANNOT_HANDLE);
@@ -409,6 +436,9 @@ gdm_config_parse (void)
     GdmRetryDelay = ve_config_get_int (cfg, GDM_KEY_RETRYDELAY);
     GdmRootPath = ve_config_get_string (cfg, GDM_KEY_ROOTPATH);
     GdmServAuthDir = ve_config_get_string (cfg, GDM_KEY_SERVAUTH);
+    GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
+    GdmMulticastAddr = ve_config_get_string (cfg, GDM_KEY_MULTICAST_ADDR);
+
     GdmSessDir = ve_config_get_string (cfg, GDM_KEY_SESSDIR);
     GdmXsession = ve_config_get_string (cfg, GDM_KEY_BASEXSESSION);
     if (ve_string_empty (GdmXsession)) {
@@ -691,9 +721,8 @@ gdm_config_parse (void)
 			    (C_(N_("XDMCP is disabled and GDM "
 				   "cannot find any static server "
 				   "to start.  Aborting!  Please "
-				   "correct the configuration %s "
-				   "and restart GDM.")),
-			     GDM_CONFIG_FILE);
+				   "correct the configuration "
+				   "and restart GDM.")));
 		    gdm_text_message_dialog (s);
 		    GdmPidFile = NULL;
 		    gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
@@ -708,16 +737,15 @@ gdm_config_parse (void)
     if (no_console)
         GdmConsoleNotify = FALSE;
 
-    /* Lookup user and groupid for the gdm user */
+    /* Lookup user and groupid for the GDM user */
     pwent = getpwnam (GdmUser);
 
     if G_UNLIKELY (pwent == NULL) {
 	    char *s = g_strdup_printf
 		    (C_(N_("The GDM user '%s' does not exist. "
-			   "Please correct GDM configuration %s "
+			   "Please correct GDM configuration "
 			   "and restart GDM.")),
-		     GdmUser,
-		     GDM_CONFIG_FILE);
+		     GdmUser);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -731,8 +759,8 @@ gdm_config_parse (void)
 		    (C_(N_("The GDM user is set to be root, but "
 			   "this is not allowed since it can "
 			   "pose a security risk.  Please "
-			   "correct GDM configuration %s and "
-			   "restart GDM.")), GDM_CONFIG_FILE);
+			   "correct GDM configuration and "
+			   "restart GDM.")));
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -744,10 +772,9 @@ gdm_config_parse (void)
     if G_UNLIKELY (grent == NULL) {
 	    char *s = g_strdup_printf
 		    (C_(N_("The GDM group '%s' does not exist. "
-		       "Please correct gdm configuration %s "
-		       "and restart gdm.")),
-		     GdmGroup,
-		     GDM_CONFIG_FILE);
+		       "Please correct GDM configuration "
+		       "and restart GDM.")),
+		     GdmGroup);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -761,8 +788,8 @@ gdm_config_parse (void)
 		    (C_(N_("The GDM group is set to be root, but "
 			   "this is not allowed since it can "
 			   "pose a security risk. Please "
-			   "correct GDM configuration %s and "
-			   "restart GDM.")), GDM_CONFIG_FILE);
+			   "correct GDM configuration and "
+			   "restart GDM.")));
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -788,7 +815,7 @@ gdm_config_parse (void)
     bin = ve_first_word (GdmRemoteGreeter);
     if G_UNLIKELY (ve_string_empty (bin) ||
 		   access (bin, X_OK) != 0) {
-	    gdm_error (_("%s: Remote greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
+	    gdm_error (_("%s: Remote greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
     }
     g_free (bin);
 
@@ -808,7 +835,7 @@ gdm_config_parse (void)
     if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog
-			    (C_(N_("No daemon/ServAuthDir specified in the configuration file")));
+			    (C_(N_("No daemon/ServAuthDir specified in the GDM configuration file")));
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: No daemon/ServAuthDir specified."), "gdm_config_parse");
     }
@@ -838,10 +865,9 @@ gdm_config_parse (void)
 			   "(daemon/ServAuthDir) is set to %s "
 			   "but is not owned by user %s and group "
 			   "%s. Please correct the ownership or "
-			   "GDM configuration %s and restart "
+			   "GDM configuration and restart "
 			   "GDM.")),
-		     GdmServAuthDir, GdmUser, GdmGroup,
-		     GDM_CONFIG_FILE);
+		     GdmServAuthDir, GdmUser, GdmGroup);
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -856,9 +882,9 @@ gdm_config_parse (void)
 			   "but has the wrong permissions: it "
 			   "should have permissions of %o. "
 			   "Please correct the permissions or "
-			   "the GDM configuration %s and "
+			   "the GDM configuration and "
 			   "restart GDM.")),
-		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX), GDM_CONFIG_FILE);
+		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -1954,6 +1980,8 @@ struct poptOption options [] = {
 	  &no_daemon, 0, N_("Do not fork into the background"), NULL },
 	{ "no-console", '\0', POPT_ARG_NONE,
 	  &no_console, 0, N_("No console (static) servers to be run"), NULL },
+	{ "config", '\0', POPT_ARG_STRING,
+	  &config_file, 0, N_("Alternative configuration file"), N_("CONFIGFILE") },
 	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
 	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
 	{ "version", '\0', POPT_ARG_NONE,
@@ -3576,7 +3604,7 @@ update_config (const char *key)
 	VeConfig *cfg;
 	int r;
 
-	VE_IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
+	VE_IGNORE_EINTR (r = stat (config_file, &statbuf));
 	if G_UNLIKELY (r < 0) {
 		/* if the file didn't exist before either */
 		if (config_file_mtime == 0)
@@ -3587,7 +3615,7 @@ update_config (const char *key)
 		config_file_mtime = statbuf.st_mtime;
 	}
 
-	cfg = ve_config_new (GDM_CONFIG_FILE);
+	cfg = ve_config_new (config_file);
 
 	if (is_key (key, GDM_KEY_ALLOWROOT)) {
 		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ALLOWROOT);
@@ -4073,8 +4101,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		char *val;
 		VeConfig *cfg;
 
-		cfg = ve_config_new (GDM_CONFIG_FILE);
-
+		cfg = ve_config_new (config_file);
 		val = ve_config_get_string (cfg, key);
 
 		if (val == NULL) {
@@ -4082,6 +4109,15 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		} else {
 			gdm_connection_printf (conn, "OK %s\n", val);
 		}
+	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
+		GString *msg;
+		GSList *li;
+		const char *sep = " ";
+
+		msg = g_string_new ("OK");
+		g_string_append (msg, "\n");
+		gdm_connection_printf (conn, "OK %s\n", config_file);
+		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
 		const char *sep = " ";
 		GdmDisplay *disp;

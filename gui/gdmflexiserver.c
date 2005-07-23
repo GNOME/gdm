@@ -22,7 +22,6 @@
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 #include <gdk/gdkx.h>
-#include <X11/Xauth.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -40,6 +39,7 @@
 
 #include "gdm.h"
 #include "gdmcomm.h"
+#include "gdmcommon.h"
 
 static GSList *xservers = NULL;
 static gboolean got_standard = FALSE;
@@ -470,13 +470,15 @@ check_for_users (void)
 }
 
 static void
-read_servers (void)
+read_servers (gchar *config_file)
 {
 	gpointer iter;
+	gchar *config_sections;
 	char *k;
 
 	/* Find server definitions */
-	iter = gnome_config_init_iterator_sections ("=" GDM_CONFIG_FILE "=/");
+	config_sections = g_strdup_printf ("=%s=/", config_file);
+	iter = gnome_config_init_iterator_sections (config_sections);
 	iter = gnome_config_iterator_next (iter, &k, NULL);
 
 	while (iter) {
@@ -484,7 +486,7 @@ read_servers (void)
 			char *section;
 			GdmXServer *svr;
 
-			section = g_strdup_printf ("=" GDM_CONFIG_FILE "=/%s/", k);
+			section = g_strdup_printf ("=%s=/%s/", config_file);
 			gnome_config_push_prefix (section);
 
 			if ( ! gnome_config_get_bool
@@ -625,7 +627,6 @@ calc_pi (void)
 			printf ("pi ~~ %1.10f\t(%lu/%lu * 4) iteration: %lu \r",
 				((double)h)/(double)n * 4.0, h, n, n);
 	}
-	printf ("\n");
 }
 
 struct poptOption options [] = {
@@ -644,6 +645,7 @@ int
 main (int argc, char *argv[])
 {
 	GtkWidget *dialog;
+	gchar *config_file;
 	char *command;
 	char *version;
 	char *ret;
@@ -676,8 +678,16 @@ main (int argc, char *argv[])
 	if (args != NULL && args[0] != NULL)
 		server = args[0];
 
-	if ( ! gdmcomm_check (TRUE /* gui_bitching */))
+	config_file = gdm_common_get_config_file ();
+	if (config_file == NULL) {
+		g_print (_("Could not access GDM configuration file.\n"));
+		exit (0);
+	}
+
+	if ( ! gdmcomm_check (config_file, TRUE /* gui_bitching */)) {
+		g_free (config_file);
 		return 1;
+	}
 
 	if (send_command != NULL) {
 		if (authenticate)
@@ -686,6 +696,7 @@ main (int argc, char *argv[])
 					"2.2.4.0", 5);
 		if (ret != NULL) {
 			g_print ("%s\n", ret);
+			g_free (config_file);
 			return 0;
 		} else {
 			dialog = ve_hig_dialog_new
@@ -702,6 +713,7 @@ main (int argc, char *argv[])
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
+			g_free (config_file);
 			return 1;
 		}
 	}
@@ -732,6 +744,7 @@ main (int argc, char *argv[])
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
+			g_free (config_file);
 			return 1;
 		}
 		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST " %s %d %s %s",
@@ -760,10 +773,11 @@ main (int argc, char *argv[])
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
+			g_free (config_file);
 			return 1;
 		}
 
-		read_servers ();
+		read_servers (config_file);
 		server = choose_server ();
 		if (server == NULL)
 			command = g_strdup (GDM_SUP_FLEXI_XSERVER);
@@ -772,6 +786,8 @@ main (int argc, char *argv[])
 						   server);
 		version = "2.2.4.0";
 	}
+
+	g_free (config_file);
 
 	ret = gdmcomm_call_gdm (command, auth_cookie, version, 5);
 	g_free (command);

@@ -804,6 +804,18 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
+#define GDM_SUP_GET_CONFIG_FILE  "GET_CONFIG_FILE" /* None */
+/* GET_CONFIG_FILE: Get config file location being used by
+ # the daemon.
+ * Supported since: 2.8.0.2
+ * Arguments:  None
+ * Answers:
+ *   OK <full path to GDM configuration file>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
 #define GDM_SUP_UPDATE_CONFIG "UPDATE_CONFIG" /* <key> */
 /* UPDATE_CONFIG: Tell the daemon to update config of some key.  Any user
  *             can really request that values are re-read but the daemon

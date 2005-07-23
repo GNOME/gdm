@@ -120,6 +120,7 @@ gchar *GdmSoundProgram;
 gboolean GdmUseCirclesInEntry = FALSE;
 gboolean GdmUseInvisibleInEntry = FALSE;
 
+static gchar *config_file;
 static gboolean used_defaults = FALSE;
 gint greeter_current_delay = 0;
 
@@ -141,7 +142,7 @@ get_random_theme ()
     int size;
 	int i;
 
-    VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+    VeConfig *config = ve_config_get (config_file);
 	themes_list = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEMES);
 
     if (ve_string_empty (themes_list))
@@ -168,10 +169,10 @@ greeter_parse_config (void)
 {
     VeConfig *config;
 
-    if (!g_file_test (GDM_CONFIG_FILE, G_FILE_TEST_EXISTS))
+    if (!g_file_test (config_file, G_FILE_TEST_EXISTS))
       {
 	syslog (LOG_ERR, _("%s: No configuration file: %s. Using defaults."), 
-		"greeter_parse_config", GDM_CONFIG_FILE);
+		"greeter_parse_config", config_file);
 	used_defaults = TRUE;
       }
 
@@ -183,7 +184,7 @@ greeter_parse_config (void)
 	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
     }
 
-    config = ve_config_get (GDM_CONFIG_FILE);
+    config = ve_config_get (config_file);
 
 	GdmGraphicalThemeRand = ve_config_get_bool (config,
 	                                            GDM_KEY_GRAPHICAL_THEME_RAND);
@@ -884,7 +885,7 @@ verify_gdm_version (void)
 static gboolean
 greeter_reread_config (int sig, gpointer data)
 {
-	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	VeConfig *config = ve_config_get (config_file);
 	char *theme, *theme_dir;
 	char *str;
 
@@ -1094,7 +1095,7 @@ setup_background_color (void)
 {
   GdkColormap *colormap;
   GdkColor color;
-  VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+  VeConfig *config = ve_config_get (config_file);
   char *bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
 
   if (bg_color == NULL ||
@@ -1224,6 +1225,12 @@ main (int argc, char *argv[])
   textdomain (GETTEXT_PACKAGE);
 
   setlocale (LC_ALL, "");
+
+  config_file = gdm_common_get_config_file ();
+  if (config_file == NULL) {
+	   g_print (_("Could not access GDM configuration file.\n"));
+	   exit (EXIT_FAILURE);
+  }
 
   greeter_parse_config ();
 

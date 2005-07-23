@@ -66,6 +66,7 @@
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 static char *greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
 static char *greeter_Welcome_key = GDM_KEY_WELCOME;
+static gchar *config_file;
 
 #define LAST_SESSION "Last"
 #define LAST_LANGUAGE "Last"
@@ -873,9 +874,9 @@ gdm_login_parse_config (void)
     struct stat unused;
     VeConfig *config;
 	
-    if G_UNLIKELY (stat (GDM_CONFIG_FILE, &unused) == -1) {
+    if G_UNLIKELY (stat (config_file, &unused) == -1) {
 	syslog (LOG_ERR, _("%s: No configuration file: %s. Using defaults."), 
-		"gdm_login_parse_config", GDM_CONFIG_FILE);
+		"gdm_login_parse_config", config_file);
 	used_defaults = TRUE;
     }
 
@@ -887,7 +888,7 @@ gdm_login_parse_config (void)
 	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
     }
 
-    config = ve_config_get (GDM_CONFIG_FILE);
+    config = ve_config_get (config_file);
 
     GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOWROOT);
     GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOWREMOTEROOT);
@@ -3426,7 +3427,7 @@ gdm_reread_config (int sig, gpointer data)
 	gboolean resize = FALSE;
 	/* reparse config stuff here.  At least ones we care about */
 
-	config = ve_config_get (GDM_CONFIG_FILE);
+	config = ve_config_get (config_file);
 
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
@@ -3601,6 +3602,12 @@ main (int argc, char *argv[])
 
     /* Should be a watch already, but just in case */
     gdm_common_setup_cursor (GDK_WATCH);
+
+    config_file = gdm_common_get_config_file ();
+    if (config_file == NULL) {
+	   g_print (_("Could not access GDM configuration file.\n"));
+	   exit (EXIT_FAILURE);
+    }
 
     gdm_login_parse_config ();
 

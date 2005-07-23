@@ -1,5 +1,5 @@
 ## Process this file with automake to produce makefile.in
-DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
+DEFS = @DEFS@ -DGDM_SYSCONFDIR_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" -DGDM_DATADIR_CONFIG_FILE=\"@datadir@/gdm/gdm.conf\"
 
 # Note that we have cflags for just about everything even if
 # we don't link to everything

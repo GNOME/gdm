@@ -55,6 +55,8 @@
 #include "gdmwm.h"
 #include "gdmcommon.h"
 
+static gchar *config_file;
+
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
 enum {
@@ -1587,7 +1589,7 @@ gdm_chooser_parse_config (void)
 {
     VeConfig *cfg;
 
-    cfg = ve_config_get (GDM_CONFIG_FILE);
+    cfg = ve_config_get (config_file);
 
     GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMASCREEN);
     GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
@@ -1875,7 +1877,7 @@ gdm_reread_config (int sig, gpointer data)
 	VeConfig *config;
 	/* reparse config stuff here.  At least ones we care about */
 
-	config = ve_config_get (GDM_CONFIG_FILE);
+	config = ve_config_get (config_file);
 
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
@@ -2067,6 +2069,12 @@ main (int argc, char *argv[])
 
     glade_init();
 
+    config_file = gdm_common_get_config_file ();
+    if (config_file == NULL) {
+	    g_print (_("Could not access GDM configuration file.\n"));
+	    exit (EXIT_FAILURE);
+    }
+        
     gdm_chooser_parse_config();
 
     if (RUNNING_UNDER_GDM)

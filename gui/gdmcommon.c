@@ -35,6 +35,7 @@
 
 #include "gdmwm.h"
 #include "gdmcommon.h"
+#include "gdmcomm.h"
 
 void
 gdm_common_abort (const gchar *format, ...)
@@ -278,3 +279,23 @@ gdm_common_get_face (const char *filename,
 
 	return pixbuf;
 }
+
+gchar * 
+gdm_common_get_config_file (void)
+{
+	gchar *config_file;
+
+	/* Get config file */
+	config_file = gdmcomm_call_gdm ("GET_CONFIG_FILE", NULL /* auth cookie */, "2.8.0.2", 5);
+	if (ve_string_empty (config_file) ||
+		strncmp (config_file, "OK ", 3) != 0) {
+		g_free (config_file);
+		return NULL;
+	}
+
+	/* skip the "OK " */
+	config_file = config_file + 3;
+
+	return config_file;
+}
+

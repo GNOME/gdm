@@ -40,6 +40,7 @@
 
 #include "gdm.h"
 #include "gdmcomm.h"
+#include "gdmcommon.h"
 
 static pid_t xnest_pid = 0;
 
@@ -468,6 +469,7 @@ main (int argc, char *argv[])
 	const char **args;
 	char *xnest;
 	char **execvec;
+	gchar *config_file, *config_prefix;
 	struct sigaction term;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
@@ -502,12 +504,21 @@ main (int argc, char *argv[])
 	if (args != NULL && args[0] != NULL)
 		host = args[0];
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	config_file = gdm_common_get_config_file ();
+	if (config_file == NULL) {
+		g_print (_("Could not access GDM configuration file.\n"));
+		_exit (1);
+	}
+
+	config_prefix = g_strdup_printf("=%s=/", config_file);
+	gnome_config_push_prefix (config_prefix);
 	xdmcp_enabled = gnome_config_get_bool (GDM_KEY_XDMCP);
 	honor_indirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
 	pidfile = gnome_config_get_string (GDM_KEY_PIDFILE);
 	xnest = gnome_config_get_string (GDM_KEY_XNEST);
 	gnome_config_pop_prefix ();
+	g_free (config_file);
+	g_free (config_prefix);
 
 	/* complex and wonderous way to get the exec vector */
 	execvec = make_us_an_exec_vector (xnest);

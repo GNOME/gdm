@@ -43,22 +43,16 @@ bin_PROGRAMS = \
 EXTRA_PROGRAMS = gdmchooser gdmXnestchooser
 
 gdmphotosetup_SOURCES = \
-	gdmphotosetup.c
+	gdmphotosetup.c	
 
 gdmXnestchooser_SOURCES = \
-	gdmXnestchooser.c	\
-	gdmcomm.c		\
-	gdmcomm.h
+	gdmXnestchooser.c
 
 gdmflexiserver_SOURCES = \
-	gdmflexiserver.c	\
-	gdmcomm.c		\
-	gdmcomm.h
+	gdmflexiserver.c
 
 gdmdynamic_SOURCES = \
-	gdmdynamic.c \
-	gdmcomm.c    \
-	gdmcomm.h
+	gdmdynamic.c
 
 libgdmwm_a_SOURCES = \
 	gdmwm.c			\
@@ -73,6 +67,8 @@ libgdmcommon_a_SOURCES = \
 	gdmsession.h		\
 	misc.c			\
 	misc.h			\
+	gdmcomm.c		\
+	gdmcomm.h		\
 	gdmcommon.c		\
 	gdmcommon.h
 
@@ -85,9 +81,7 @@ gdmlogin_SOURCES = \
 	gdmlogin.c
 
 gdmsetup_SOURCES = \
-	gdmsetup.c		\
-	gdmcomm.c		\
-	gdmcomm.h
+	gdmsetup.c
 
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
@@ -148,6 +142,7 @@ gdmsetup_LDADD = \
 	-lviciousui-gnome
 
 gdmphotosetup_LDADD = \
+	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
@@ -161,6 +156,7 @@ gdmphotosetup_LDADD = \
 	-lviciousui-gnome
 
 gdmXnestchooser_LDADD = \
+	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	-lXau			\
 	-lX11			\
@@ -175,6 +171,7 @@ gdmXnestchooser_LDADD = \
 	-lviciousui-gnome
 
 gdmflexiserver_LDADD = \
+	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	-lXau			\
 	$(INTLLIBS)		\
@@ -188,6 +185,7 @@ gdmflexiserver_LDADD = \
 	-lviciousui-gnome
 
 gdmdynamic_LDADD = 		\
+	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	-lXau			\
 	$(INTLLIBS) 		\

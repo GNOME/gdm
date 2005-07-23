@@ -367,7 +367,7 @@ gdmcomm_get_auth_cookie (void)
 }
 
 gboolean
-gdmcomm_check (gboolean gui_bitching)
+gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 {
 	GtkWidget *dialog;
 	FILE *fp = NULL;
@@ -376,7 +376,10 @@ gdmcomm_check (gboolean gui_bitching)
 	struct stat s;
 	int statret;
 
-	pidfile = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+	if (config_file == NULL)
+		return FALSE;
+
+	pidfile = ve_config_get_string (ve_config_get (config_file),
 					GDM_KEY_PIDFILE);
 
 	pid = 0;
