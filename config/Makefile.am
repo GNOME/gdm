@@ -49,8 +49,8 @@ uninstall-hook:
 	$(DESTDIR)$(instsessdir)/gnome.desktop \
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/CDE.desktop \
-	$(DESTDIR)$(confdir)/gdm.conf \
-	$(DESTDIR)$(confdir)/factory-gdm.conf \
+	$(DESTDIR)$(datadir)/gdm.conf \
+	$(DESTDIR)$(datadir)/factory-gdm.conf \
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
 	$(DESTDIR)$(localedir)/locale.alias \

@@ -34,7 +34,8 @@ char *		gdmcomm_get_a_cookie (gboolean binary);
 /* get the gdm auth cookie */
 char *		gdmcomm_get_auth_cookie (void);
 
-gboolean	gdmcomm_check (gboolean gui_bitching);
+gboolean	gdmcomm_check (gchar *config_file,
+			       gboolean gui_bitching);
 const char *	gdmcomm_get_error_message (const char *ret,
 					   gboolean use_xnest);
 

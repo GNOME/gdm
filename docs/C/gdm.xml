@@ -108,7 +108,7 @@
       GDM is installed with <filename>--sysconfigdir=/etc/X11</filename>,
       meaning any path to which we refer to as
       <filename>&lt;etc&gt;/gdm/PreSession</filename> usually means
-      <filename>/etc/X11/gdm/PreSession</filename>.  Note that for
+      <filename>&lt;etc/X11&gt;/gdm/PreSession</filename>.  Note that for
       interoperability it is recommended that you use a prefix of
       <filename>/usr</filename> and a sysconfdir of
       <filename>/etc/X11</filename>.
@@ -392,19 +392,19 @@
 
       <para>
         You should use the daemon name <filename>gdm</filename> in the
-        <filename>/etc/hosts.allow</filename> and
-        <filename>/etc/hosts.deny</filename> files.  For example to 
+        <filename>&lt;etc&gt;/hosts.allow</filename> and
+        <filename>&lt;etc&gt;hosts.deny</filename> files.  For example to 
         deny computers from <filename>.evil.domain</filename> from logging in,
         then add
       </para>
       <screen>gdm: .evil.domain</screen>
       <para>
-        to <filename>/etc/hosts.deny</filename>.  You may also need
+        to <filename>&lt;etc&gt;/hosts.deny</filename>.  You may also need
         to add
       </para>
       <screen>gdm: .your.domain</screen>
       <para>
-        to your <filename>/etc/hosts.allow</filename> if you normally disallow
+        to your <filename>&lt;etc&gt;/hosts.allow</filename> if you normally disallow
         all services from all hosts.  See the
         <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink> man
         page for details.
@@ -483,15 +483,15 @@
       </para>
 
       <para>
-	To control the faces that get displayed, there are a number of 
-	configuration options that can be used.  If the
-	<filename>Include</filename> option contains a list of users
-	separated by commas, then only the specified users will be displayed.
-	If the <filename>IncludeAll</filename> option is set to true, then
-	the password file will be scanned and all users will be displayed.
-	Any user listed in the <filename>Exclude</filename> option and users
-	whose UID's is lower than <filename>MinimalUID</filename> will be
-	filtered out.
+        To control the faces that get displayed, there are a number of 
+        configuration options that can be used.  If the
+        <filename>Include</filename> option contains a list of users
+        separated by commas, then only the specified users will be displayed.
+        If the <filename>IncludeAll</filename> option is set to true, then
+        the password file will be scanned and all users will be displayed.
+        Any user listed in the <filename>Exclude</filename> option and users
+        whose UID's is lower than <filename>MinimalUID</filename> will be
+        filtered out.
       </para>
 
       <para>
@@ -697,14 +697,14 @@
       configuration file.  However you can use the
       <filename>gdmsetup</filename> command to configure GDM from a graphical
       environment.  The configuration application does not let you configure every
-      aspect of GDM, so if the configuration application does not cover your needs you may
-      find information in this section.
+      aspect of GDM, so if the configuration application does not cover your needs
+      you may find information in this section.
     </para>
 
     <para>
-      The configuration files, and especially the <filename>gdm.conf</filename>
-      file, contain lots of useful comments, so also read these when
-      changing your setup.
+      The configuration files (especially the <filename>gdm.conf</filename>
+      file) contain lots of useful comments and examples, so also read this
+      for more information about changing your setup.
     </para>
 
     <para>
@@ -715,10 +715,33 @@
     </para>
 
     <para> 
-      The configuration files for GDM are located in the
-      <filename>&lt;etc&gt;/gdm/</filename> directory.  And some which can be
-      shared among other display managers are located in the
-      <filename>&lt;etc&gt;/dm/</filename> directory.
+      The <filename>gdm.conf</filename> file contains the main configuration
+      choices for GDM.  This file by default is installed to 
+      <filename>&lt;usr/share&gt;</filename>.  Since this directory can be
+      shared across machines, this allows for having a single configuration
+      for a network of machines.  To create machine-specific GDM configuration
+      settings, the system administrator can place a modified gdm.conf file in
+      <filename>&lt;etc&gt;/gdm</filename> and it will be used instead.
+      The gdm --config option may instead be used to specify a configuration
+      file installed to another location.  All GDM utilities (such as
+      gdmchooser, gdmsetup, etc.) query the GDM daemon process and will use
+      the same configuration file as being used by the daemon.  The GDM2
+      daemon must be restarted to change the configuration file being used.
+      GDM 2.8.0.1 and earlier only supported machine-specific configuration.
+    </para>
+
+    <para> 
+      <filename>factory-gdm.conf</filename> is the configuration file as
+      shipped with the daemon.  This can be useful if you wish to revert to
+      the default configuration.
+    </para>
+
+    <para>
+      Most other GDM configuration files are located, by default, in the
+      <filename>&lt;etc&gt;/gdm/</filename> folder or its subdirectories.
+      However, the location of all configuration files can be defined in 
+      the <filename>gdm.conf</filename> file, so the sysadmin may choose
+      to locate these files in any location. 
     </para>
 
     <para>
@@ -731,20 +754,11 @@ PostLogin/
 PostSession/
 PreSession/
 modules/
-gdm.conf
-factory-gdm.conf
 locale.alias
 Xsession
 XKeepsCrashing
     </screen>
 
-    <para> 
-      <filename>gdm.conf</filename> is the main GDM configuration file. The
-      options will be described later in this section.
-      <filename>factory-gdm.conf</filename> is the configuration file as
-      shipped with the daemon.  This can be useful if you wish to revert to
-      the default configuration.
-    </para>
 
     <para> 
       <filename>locale.alias</filename> is a file which looks much like the
@@ -752,6 +766,12 @@ XKeepsCrashing
       languages that are available on your system.  All the languages are
       still tested to see if they actually exist before presenting them to the
       user.
+    </para>
+
+    <para>
+      The <filename>Init</filename>, <filename>PreSession</filename>,
+      <filename>PostSession</filename>, and <filename>PostLogin</filename> 
+      scripts are described later in this section.
     </para>
 
     <para> 
@@ -768,10 +788,9 @@ XKeepsCrashing
     </para>
 
     <para>
-      <filename>gdm.conf</filename> is configuration file for both
-      <filename>gdm</filename>, <filename>gdmgreeter</filename>,
-      <filename>gdmlogin</filename>, and <filename>gdmchooser</filename>
-      since a lot of parameters overlap.
+      <filename>gdm.conf</filename> configuration settings are used by most
+      GDM applications since a number of configuration settings are used by
+      each program.
     </para>
 
     <para>
@@ -784,34 +803,33 @@ XKeepsCrashing
     </para>
 
     <para>
-      The remaining configuration is done by dropping scripts in the
-      subdirectories of the <filename>&lt;etc&gt;/gdm/</filename> folder or
-      dropping <filename>.desktop</filename>-style files in
-      <filename>/etc/X11/sessions/</filename>.  The latter is also
-      read by KDM for common configuration.  Next the directory
+      Files describing available GDM session follow the freedesktop.org
+      desktop file specification and are <filename>.desktop</filename>-style
+      files are installed to <filename>&lt;etc&gt;/X11/sessions/</filename>.  This
+      directory is also read by the KDE desktop manager (KDM) for common
+      configuration.  Next the directory
       <filename>&lt;share&gt;/gdm/BuiltInSessions/</filename> is read for
-      GDM specific built in sessions (KDM hardcodes these at time of this
-      writing).  Also the default setup will also read
+      GDM specific built-in sessions (KDM hardcodes these at time of
+      this writing).  Lastly the default setup will also read
       <filename>&lt;share&gt;/xsessions/</filename> (which should be
       <filename>/usr/share/xsessions/</filename> if you really wish to
       cooperate with KDM) where desktop packages can install their session
-      files.  The directories under the <filename>/etc</filename> should be
-      reserved for configuration.  This approach makes it easy for package
-      management systems to install window managers and different session
-      types without requiring the sysadmin to edit files.  See the
-      <filename>SessionDesktopDir</filename> configuration key for
+      files.  The directories under the <filename>&lt;etc&gt;</filename> should be
+      reserved for configuration.  The desktop file specification approach
+      makes it easy for package management systems to install window managers
+      and different session types without requiring the sysadmin to edit files.
+      See the <filename>SessionDesktopDir</filename> configuration key for
       changing the paths.  It used to be that GDM stored its built in
       sessions in <filename>&lt;etc&gt;/dm/Sessions/</filename> but this is
-      now deprecated as of 2.5.90.0.  Note that prior to version
-      2.4.4.2 only the <filename>&lt;etc&gt;/dm/Sessions/</filename> was
-      being read.
+      deprecated as of 2.5.90.0.  Note that prior to version 2.4.4.2 only the
+      <filename>&lt;etc&gt;/dm/Sessions/</filename> was being read.
     </para>
 
     <para>
       A session can be disabled (if it was installed in
       <filename>/usr/share/xsessions/</filename>) by adding an identically
       named <filename>.desktop</filename> to one of the directories earlier in
-      the path (likely <filename>/etc/X11/sessions</filename>) and using
+      the path (likely <filename>&lt;etc&gt;/X11/sessions</filename>) and using
       <filename>Hidden=true</filename> in that file.
     </para>
 
@@ -885,7 +903,7 @@ XKeepsCrashing
         executables are taken from the <filename>Exec=</filename> line in the
         <filename>.desktop</filename> files in the path specified by
         <filename>SessionDesktopDir</filename>.  Usually this path is
-        <filename>/etc/X11/sessions/:&lt;etc&gt;/dm/Sessions:/usr/share/xsessions/</filename>.
+        <filename>&lt;etc&gt;/X11/sessions/:&lt;etc&gt;/dm/Sessions:/usr/share/xsessions/</filename>.
         The first found file is used.  The user either picks from these
         sessions or GDM will look inside the file <filename>~/.dmrc</filename>
         for the stored preference.
@@ -951,8 +969,21 @@ XKeepsCrashing
       <title>The Configuration File - <filename>gdm.conf</filename></title>
       
       <para>
-        The daemon and the accompanying utilities share a common
-        configuration file: <filename>&lt;etc&gt;/gdm/gdm.conf</filename>.
+        The daemon and the accompanying utilities use a common
+        configuration file: <filename>gdm.conf</filename>.  To support
+        multiple machines sharing the same configuration file, this file
+        is installed by default to <filename>/usr/share/gdm</filename>.
+        To specify a machine-specific configuration, the system 
+        administrator  may place a modified configuration file
+        in <filename>&lt;etc&gt;/gdm</filename> and GDM will instead use
+        this file. The gdm --config option may instead be used to specify
+        a configuration file installed to another location.  All GDM
+        utilities (such as All GDM utilities (such as gdmchooser,
+        gdmsetup, etc.) query the GDM daemon process and will use the same
+        configuration file as being used by the daemon.  The GDM2
+        daemon must be restarted to change the configuration file
+        being used.  GDM 2.8.0.1 and earlier only supported
+        machine-specific configuration.
       </para>
 
       <para>
@@ -1092,11 +1123,11 @@ XKeepsCrashing
 
               <para>
                 This script should take care of doing the "login" for the user
-                and so it should source the <filename>/etc/profile</filename>
+                and so it should source the <filename>&lt;etc&gt;/profile</filename>
                 and friends.  The standard script shipped with GDM sources
-                the files in this order: <filename>/etc/profile</filename>
+                the files in this order: <filename>&lt;etc&gt;/profile</filename>
                 then <filename>~/.profile</filename> then
-                <filename>/etc/xprofile</filename> and finally
+                <filename>&lt;etc&gt;/xprofile</filename> and finally
                 <filename>~/.xprofile</filename>.  Note that different
                 distributions may change this however.  Sometimes users
                 personal setup will be in <filename>~/.bash_profile</filename>,
@@ -1493,7 +1524,7 @@ XKeepsCrashing
           <varlistentry>
             <term>SessionDesktopDir</term>
             <listitem>
-              <synopsis>SessionDesktopDir=/etc/X11/sessions/:&lt;etc&gt;/dm/Sessions/:/usr/share/xsessions/</synopsis>
+              <synopsis>SessionDesktopDir=&lt;etc&gt;/X11/sessions/:&lt;etc&gt;/dm/Sessions/:&lt;/usr/share&gt;/xsessions/</synopsis>
               <para>
                 Directory containing the <filename>.desktop</filename> files
                 which are the available sessions on the system.  Since 2.4.4.2
@@ -1700,7 +1731,7 @@ XKeepsCrashing
           <varlistentry>
             <term>Xnest</term>
             <listitem>
-              <synopsis>Xnest=/usr/bin/X11/Xnest</synopsis>
+              <synopsis>Xnest=/usr/bin/X11/Xnest (/usr/openwin/bin/Xnest on Solaris)</synopsis>
               <para>
                 The full path and arguments to the Xnest command.  This is used
                 for the flexible Xnest servers.  This way the user can start
@@ -1930,7 +1961,7 @@ XKeepsCrashing
               <para>
                 You should add 
               <screen>gdm:.my.domain</screen>
-                to your <filename>/etc/hosts.allow</filename>, depending on your
+                to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending on your
                 TCP Wrappers configuration.  See the
                 <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink>
                 man page for details.
@@ -2263,38 +2294,38 @@ XKeepsCrashing
               </para>
             </listitem>
           </varlistentry>
-	  
-	  <varlistentry>
+          
+          <varlistentry>
             <term>BackgroundProgramInitialDelay</term>
             <listitem>
               <synopsis>BackgroundProgramInitialDelay=30</synopsis>
               <para>
-	        The background application will be started after at least that many 
-		seconds of inactivity.
+                The background application will be started after at least that many 
+                seconds of inactivity.
               </para>
             </listitem>
           </varlistentry>
-	  
-	  <varlistentry>
+          
+          <varlistentry>
             <term>RestartBackgroundProgram</term>
             <listitem>
               <synopsis>RestartBackgroundProgram=true</synopsis>
               <para>
-	        If set the background application will be restarted when it has
-		exited, after the delay described below has elapsed.  This
-		option can be useful when you wish to run a screen saver 
-		application when no user is using the computer.
+                If set the background application will be restarted when it has
+                exited, after the delay described below has elapsed.  This
+                option can be useful when you wish to run a screen saver 
+                application when no user is using the computer.
               </para>
             </listitem>
           </varlistentry>
-	  
-	  <varlistentry>
+          
+          <varlistentry>
             <term>BackgroundProgramRestartDelay</term>
             <listitem>
               <synopsis>BackgroundProgramRestartDelay=30</synopsis>
               <para>
-	        The background application will be restarted after at least that 
-		many seconds of inactivity.
+                The background application will be restarted after at least that 
+                many seconds of inactivity.
               </para>
             </listitem>
           </varlistentry>
@@ -2417,12 +2448,12 @@ XKeepsCrashing
             <term>Include</term>
             <listitem>
               <synopsis>Include=</synopsis>
-		Comma separated list of users to be included in the face
-		browser and in the gdmsetup selection list for
-		Automatic/Timed login. 
-		See also <filename>Exclude</filename>,
-		<filename>IncludeAll</filename>, and
-		<filename>MinimalUID</filename>.
+                Comma separated list of users to be included in the face
+                browser and in the gdmsetup selection list for
+                Automatic/Timed login. 
+                See also <filename>Exclude</filename>,
+                <filename>IncludeAll</filename>, and
+                <filename>MinimalUID</filename>.
               <para>
               </para>
             </listitem>
@@ -2433,13 +2464,13 @@ XKeepsCrashing
             <listitem>
               <synopsis>Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,...</synopsis>
               <para>
-		Comma separated list of users to be excluded from the face
-		browser and from the gdmsetup selection list for
-		Automatic/Timed login.  Excluded users will still be able to
-		log in, but will have to type their username.
-		See also <filename>Include</filename>,
-		<filename>IncludeAll</filename>, and
-		<filename>MinimalUID</filename>.
+                Comma separated list of users to be excluded from the face
+                browser and from the gdmsetup selection list for
+                Automatic/Timed login.  Excluded users will still be able to
+                log in, but will have to type their username.
+                See also <filename>Include</filename>,
+                <filename>IncludeAll</filename>, and
+                <filename>MinimalUID</filename>.
               </para>
             </listitem>
           </varlistentry>
@@ -2448,16 +2479,16 @@ XKeepsCrashing
             <term>IncludeAll</term>
             <listitem>
               <synopsis>IncludeAll=false</synopsis>
-		By default, an empty include list means display no users.
-		By setting IncludeAll to true, the password file will be
-		scanned and all users will be displayed aside from users
-		excluded via the Exclude setting and user ID's less than
-		MinimalUID.  Scanning the password file can be slow on
-		systems with large numbers of users and this feature should
-		not be used in such environments.
-		See also <filename>Include</filename>,
-		<filename>Exclude</filename>, and
-		<filename>MinimalUID</filename>.
+                By default, an empty include list means display no users.
+                By setting IncludeAll to true, the password file will be
+                scanned and all users will be displayed aside from users
+                excluded via the Exclude setting and user ID's less than
+                MinimalUID.  Scanning the password file can be slow on
+                systems with large numbers of users and this feature should
+                not be used in such environments.
+                See also <filename>Include</filename>,
+                <filename>Exclude</filename>, and
+                <filename>MinimalUID</filename>.
               <para>
               </para>
             </listitem>
@@ -2512,7 +2543,7 @@ XKeepsCrashing
                 Mode is set on Random Themes.  This is a "/:" delimited list.
                 It should refer to a directory in the theme directory set by
                 <filename>GraphicalThemeDir</filename>.  This is only used if
-				<filename>GraphicalThemeRand</filename> is set to true.
+                                <filename>GraphicalThemeRand</filename> is set to true.
               </para>
             </listitem>
           </varlistentry>
@@ -2549,7 +2580,7 @@ XKeepsCrashing
               <synopsis>InfoMsgFile=/path/to/infofile</synopsis>
               <para>
                 If present and /path/to/infofile specifies an existing and
-                readable text file (e.g. /etc/infomsg.txt) the contents of the
+                readable text file (e.g. &lt;etc&gt;/infomsg.txt) the contents of the
                 file will be displayed in a modal dialog box before the user
                 is allowed to login.
                 This works both with the standard and the themable greeters.
@@ -2617,8 +2648,8 @@ XKeepsCrashing
                 The minimal UID that GDM should consider a user.  All
                 users with a lower UID will be excluded from the face browser.
                 See also <filename>Include</filename>,
-		<filename>Exclude</filename>, and
-		<filename>IncludeAll</filename>.
+                <filename>Exclude</filename>, and
+                <filename>IncludeAll</filename>.
               </para>
             </listitem>
           </varlistentry>
@@ -3401,6 +3432,7 @@ FLEXI_XNEST
 ATTACHED_SERVERS
 ALL_SERVERS
 GET_CONFIG
+GET_CONFIG_FILE
 UPDATE_CONFIG
 GREETERPIDS
 QUERY_LOGOUT_ACTION
@@ -3645,6 +3677,22 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      50 = Unsupported key
+     200 = Too many messages
+     999 = Unknown error
+      </screen>
+      </sect3>
+
+      <sect3 id="getconfigfile">
+      <title>GET_CONFIG_FILE</title> 
+      <screen>
+GET_CONFIG_FILE:  Get config file location being used by
+                  the daemon.
+Supported since: 2.8.0.2
+Arguments:  None
+Answers:
+  OK <full path to GDM configuration file>
+  ERROR <err number> <english error description>
+     0 = Not implemented
      200 = Too many messages
      999 = Unknown error
       </screen>
@@ -4180,7 +4228,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
         The <filename>gdm</filename> command is really just a script which
         runs the <filename>gdm-binary</filename>, passing along any options.
         Before launching gdm-binary, the gdm wrapper script will source the
-        <filename>/etc/profile</filename> file to set the standard system
+        <filename>&lt;etc&gt;/profile</filename> file to set the standard system
         environment variables.  In order to better support
         internationalization, it will also set the LC_MESSAGES environment
         variable to LANG if neither LC_MESSAGES or LC_ALL are set.  If you
@@ -4227,6 +4275,15 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
         </varlistentry>
 
         <varlistentry>
+          <term>--config=CONFIGFILE</term>
+          <listitem>
+            <para>
+              Specify an alternative configuration file.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>--preserve-ld-vars</term>
           <listitem>
             <para>
@@ -4265,15 +4322,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
     </sect2>
 
     <sect2 id="gdmsetupcommandline">
-      <title><filename>gdmconfig</filename> and
-             <filename>gdmsetup</filename> Command Line Options</title>
-
-      <para>
-       <filename>gdmconfig</filename> is a wrapper script for running
-       <filename>gdmsetup</filename> for binary name compatibility.
-       <filename>gdmconfig</filename> is installed to the
-       <filename>&lt;sbin&gt;/</filename> directory.
-      </para>
+      <title><filename>gdmsetup</filename> Command Line Options</title>
 
       <para>
        gdmsetup runs a graphical application for modifying the GDM
@@ -4284,6 +4333,21 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
        application may only be run as root.  This application supports standard
        GNOME options.
       </para>
+
+      <variablelist>
+        <title><filename>gdmsetup</filename> Command Line Options</title>
+
+        <varlistentry>
+          <term>--config=CONFIGFILE</term>
+          <listitem>
+            <para>
+              Specify an alternative configuration file.  By default, 
+              <filename>gdmsetup</filename> will edit the same configuration
+              file being used by the GDM daemon. 
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </sect2>
 
     <sect2 id="gdmrestartcommandline">
@@ -4841,8 +4905,8 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
 
         <para>
           If the item contains an SVG image, you can specify width and height
-	  to be "scale" to mean that the SVG image should be scaled to fit
-	  the requested area.
+          to be "scale" to mean that the SVG image should be scaled to fit
+          the requested area.
         </para>
 
         <para>
@@ -5101,7 +5165,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
 
         <para>
           For example suppose we are on display :0,
-          <filename>ServAuthDir</filename> is <filename>/var/gdm</filename>
+          <filename>ServAuthDir</filename> is <filename>&lt;var&gt;/gdm</filename>
           and we have the following in the theme:
         </para>
 
@@ -5119,7 +5183,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
 
         <para>
           Then if the user chooses 'Foo' then 
-          <filename>/var/gdm/:0.GreeterInfo</filename> will contain:
+          <filename>&lt;var&gt/gdm/:0.GreeterInfo</filename> will contain:
           <screen>custom-config=foo</screen>
         </para>
       </sect3>
