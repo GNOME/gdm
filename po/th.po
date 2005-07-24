@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-22 16:58+0700\n"
-"PO-Revision-Date: 2005-07-22 18:31+0700\n"
+"POT-Creation-Date: 2005-07-24 11:27+0700\n"
+"PO-Revision-Date: 2005-07-24 11:57+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -69,8 +69,8 @@ msgid ""
 "I will disable this X server for now.  Restart GDM when it is configured "
 "correctly."
 msgstr ""
-"ขณะนี้จะปิดการใช้งานของ X server  ให้เริ่มการทำงาน GDM ใหม่เมื่อ X server มีการ "
-"กำหนดค่าอย่างถูกต้องแล้ว"
+"จะปิดการใช้งานของ X server ไปก่อน กรุณาเริ่มการทำงาน GDM ใหม่เมื่อตั้งค่า "
+"X server อย่างถูกต้องแล้ว"
 
 #: ../config/gettextfoo.h:8
 msgid ""
@@ -79,7 +79,7 @@ msgid ""
 "diagnose the problem?"
 msgstr ""
 "ไม่สามารถเริ่มทำงาน X server (ส่วนติดต่อแบบกราฟิกของคุณ) ได้ ดูเหมือนว่า "
-"ยังไม่ได้ตั้งค่าอย่างถูกต้อง คุณต้องการจะดูผลลัพธ์จาก X server เพื่อหาสาเหตุของปัญหาหรือไม่ ?"
+"การตั้งค่าจะยังไม่ถูกต้อง คุณต้องการจะดูผลลัพธ์จาก X server เพื่อหาสาเหตุของปัญหาหรือไม่?"
 
 #: ../config/gettextfoo.h:9
 msgid "Would you like to view the detailed X server output as well?"
@@ -93,7 +93,7 @@ msgid ""
 msgstr ""
 "ไม่สามารถเริ่มทำงาน X server (ส่วนติดต่อแบบกราฟิกของคุณ) ได้  ดูเหมือนว่า อุปกรณ์ชี้ตำแหน่ง "
 "(เมาส์ของคุณ) ยังไม่ได้ตั้งค่าอย่างถูกต้อง  คุณต้องการจะดูผลลัพธ์จาก X server "
-"เพื่อหาสาเหตุของปัญหาหรือไม่ ?"
+"เพื่อหาสาเหตุของปัญหาหรือไม่?"
 
 #: ../config/gettextfoo.h:11 ../config/gettextfoo.h:12
 msgid ""
@@ -177,7 +177,7 @@ msgstr "%s: ไม่สามารถเขียนคุกกี้ได�
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: กำลังข้ามแฟ้มคุกกี้ที่ดูน่าสงสัย %s"
 
-#: ../daemon/auth.c:898 ../daemon/gdm.c:2080 ../daemon/gdm.c:2436
+#: ../daemon/auth.c:898 ../daemon/gdm.c:2108 ../daemon/gdm.c:2464
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "ไม่สามารถเขียนไปยัง %s: %s"
@@ -297,113 +297,113 @@ msgstr "%s: ไม่สามารถสร้าง FIFO ได้"
 msgid "%s: Could not open FIFO"
 msgstr "%s: ไม่สามารถเปิด FIFO ได้"
 
-#: ../daemon/gdm.c:299
+#: ../daemon/gdm.c:304
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-"does not exist. Please correct GDM configuration %s and restart GDM."
+"does not exist. Please correct GDM configuration and restart GDM."
 msgstr ""
 "ไดเรกทอรีการอนุญาตสิทธิ์เซิร์ฟเวอร์ (daemon/ServAuthDir) กำหนดเป็น %s แต่ไม่มีอยู่ "
-"กรุณาแก้ไขการกำหนดค่า %s ของ GDM และเริ่มการทำงาน GDM ใหม่"
+"กรุณาแก้ไขการกำหนดค่าของ GDM และเริ่มการทำงาน GDM ใหม่"
 
-#: ../daemon/gdm.c:308
+#: ../daemon/gdm.c:312
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "ไม่มี %s: Authdir %s อยู่ กำลังยกเลิก"
 
-#: ../daemon/gdm.c:313
+#: ../daemon/gdm.c:317
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
-"not a directory. Please correct GDM configuration %s and restart GDM."
+"not a directory. Please correct GDM configuration and restart GDM."
 msgstr ""
 "ไดเรกทอรีการอนุญาตสิทธิ์เซิร์ฟเวอร์ (daemon/ServAuthDir) กำหนดเป็น %s "
-"แต่ไม่ได้เป็นไดเรกทอรี กรุณาแก้ไขการกำหนดค่า %s ของ GDM และเริ่มการทำงาน GDM ใหม่"
+"แต่ไม่ได้เป็นไดเรกทอรี กรุณาแก้ไขการกำหนดค่าของ GDM และเริ่มการทำงาน GDM ใหม่"
 
-#: ../daemon/gdm.c:322
+#: ../daemon/gdm.c:325
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s ไม่ใช่ไดเรกทอรี จะยกเลิก"
 
-#: ../daemon/gdm.c:335
+#: ../daemon/gdm.c:338
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr "%s: Logdir %s ไม่มีอยู่จริงหรือไม่ใช่ไดเรกทอรี  จะใช้  ServAuthDir %s"
 
-#: ../daemon/gdm.c:364 ../gui/gdmlogin.c:877 ../gui/greeter/greeter.c:173
+#: ../daemon/gdm.c:366
 #, c-format
-msgid "%s: No configuration file: %s. Using defaults."
-msgstr "%s: ไม่พบแฟ้มการกำหนดค่า: %s กำลังใช้ค่าปริยาย"
+msgid "%s: No GDM configuration file: %s. Using defaults."
+msgstr "%s: ไม่พบแฟ้มการกำหนดค่าของ GDM: %s กำลังใช้ค่าปริยาย"
 
-#: ../daemon/gdm.c:415
+#: ../daemon/gdm.c:445
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession ว่างเปล่า กำลังจะใช้ %s/gdm/Xsession"
 
-#: ../daemon/gdm.c:468
+#: ../daemon/gdm.c:498
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: ไม่พบ X server มาตรฐาน กำลังลองใช้ทางเลือกอื่น"
 
-#: ../daemon/gdm.c:510
+#: ../daemon/gdm.c:540
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s: มีการเปิด XDMCP ในขณะที่ระบบไม่สนับสนุน XDMCP กำลังจะปิดการใช้งาน"
 
-#: ../daemon/gdm.c:523
+#: ../daemon/gdm.c:553
 #, c-format
 msgid "%s: Root cannot be logged in automatically, turning off automatic login"
 msgstr "%s: ผู้ดูแลระบบไม่สามารถเข้าระบบโดยอัตโนมัติ กำลังปิดการเข้าระบบอัตโนมัติ"
 
-#: ../daemon/gdm.c:536
+#: ../daemon/gdm.c:566
 #, c-format
 msgid "%s: Root cannot be logged in automatically, turning off timed login"
 msgstr "%s: ผู้ดูแลระบบไม่สามารถเข้าระบบโดยอัตโนมัติ กำลังปิดการตั้งเวลาเข้าระบบ"
 
-#: ../daemon/gdm.c:542
+#: ../daemon/gdm.c:572
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: เวลาที่หน่วงก่อนการเข้าระบบน้อยกว่า 5 ดังนั้นระบบจะใช้ค่า 5"
 
-#: ../daemon/gdm.c:552
+#: ../daemon/gdm.c:582
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: ไม่ได้ระบุหน้าต่างต้อนรับ"
 
-#: ../daemon/gdm.c:555
+#: ../daemon/gdm.c:585
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: ไม่ได้ระบุหน้าต่างต้อนรับสำหรับเครื่องอื่น"
 
-#: ../daemon/gdm.c:559
+#: ../daemon/gdm.c:589
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: ไม่มีการระบุไดเรกทอรีของวาระ"
 
-#: ../daemon/gdm.c:584
+#: ../daemon/gdm.c:614
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: คำสั่งของเซิร์ฟเวอร์ว่างเปล่า กำลังจะใช้คำสั่งมาตรฐาน"
 
-#: ../daemon/gdm.c:627
+#: ../daemon/gdm.c:657
 #, c-format
 msgid "%s: Display number %d in use!  Defaulting to %d"
 msgstr "%s: ดิสเพลย์หมายเลข %d กำลังใช้งาน ระบบจะใช้ %d"
 
-#: ../daemon/gdm.c:646
+#: ../daemon/gdm.c:676
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: บรรทัดของเซิร์ฟเวอร์ในแฟ้มกำหนดค่าไม่ถูกต้อง ไม่สนใจ"
 
-#: ../daemon/gdm.c:658 ../daemon/gdm.c:699
+#: ../daemon/gdm.c:688 ../daemon/gdm.c:728
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr "%s: XDMCP ถูกปิดการใช้งาน และไม่มีการกำหนดเซิร์ฟเวอร์ในเครื่องนี้ กำลังยกเลิก"
 
 #. start
 #. server uid
-#: ../daemon/gdm.c:676
+#: ../daemon/gdm.c:706
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -412,160 +412,159 @@ msgstr ""
 "%s: XDMCP ถูกปิดการใช้งาน และไม่มีการกำหนดเซิร์ฟเวอร์ในเครื่องนี้ กำลังเพิ่ม %s ที่ :%d "
 "เพื่อให้ตั้งค่าได้!"
 
-#: ../daemon/gdm.c:691
-#, c-format
+#: ../daemon/gdm.c:721
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
-"Aborting!  Please correct the configuration %s and restart GDM."
+"Aborting!  Please correct the configuration and restart GDM."
 msgstr ""
 "XDMCP ถูกปิดการใช้งานและ GDM ไม่สามารถค้นหาเซิร์ฟเวอร์ในเครื่องนี้เพื่อเริ่มทำงานได้ ดังนั้น "
-"จะยกเลิกการทำงาน  กรุณากำหนดค่า %s ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
+"จะยกเลิกการทำงาน  กรุณาแก้ไขการกำหนดค่าให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
 
-#: ../daemon/gdm.c:716
+#: ../daemon/gdm.c:745
 #, c-format
 msgid ""
-"The GDM user '%s' does not exist. Please correct GDM configuration %s and "
+"The GDM user '%s' does not exist. Please correct GDM configuration and "
 "restart GDM."
 msgstr ""
-"ไม่มีบัญชีผู้ใช้ '%s' สำหรับ GDM อยู่ กรุณาแก้ไขการกำหนดค่า GDM %s ให้ถูกต้อง และเริ่มการทำงาน GDM ใหม่"
+"ไม่มีบัญชีผู้ใช้ '%s' สำหรับ GDM อยู่ กรุณาแก้ไขการกำหนดค่า GDM ให้ถูกต้อง และเริ่มการทำงาน "
+"GDM ใหม่"
 
-#: ../daemon/gdm.c:724
+#: ../daemon/gdm.c:752
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: ไม่พบบัญชีผู้ใช้ '%s' สำหรับ GDM  กำลังยกเลิก!"
 
-#: ../daemon/gdm.c:731
-#, c-format
+#: ../daemon/gdm.c:759
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
-"security risk.  Please correct GDM configuration %s and restart GDM."
+"security risk.  Please correct GDM configuration and restart GDM."
 msgstr ""
 "บัญชีผู้ใช้สำหรับ GDM ถูกกำหนดให้เป็น root แต่ไม่อนุญาตวิธีการนี้ เนื่องจากเสี่ยงต่อความปลอดภัย  "
-"กรุณาแก้ไขการกำหนดค่า %s ของ GDM ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
+"กรุณาแก้ไขการกำหนดค่าของ GDM ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
 
-#: ../daemon/gdm.c:739
+#: ../daemon/gdm.c:767
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: บัญชีผู้ใช้สำหรับ GDM ไม่ควรเป็น root กำลังยกเลิก!"
 
-#: ../daemon/gdm.c:746
+#: ../daemon/gdm.c:774
 #, c-format
 msgid ""
-"The GDM group '%s' does not exist. Please correct gdm configuration %s and "
-"restart gdm."
+"The GDM group '%s' does not exist. Please correct GDM configuration and "
+"restart GDM."
 msgstr ""
-"ไม่มีกลุ่ม '%s' ของ GDM อยู่ กรุณาแก้ไขการกำหนดค่า GDM %s ให้ถูกต้องและ เริ่มการใช้งาน GDM ใหม่"
+"ไม่มีบัญชีผู้ใช้ '%s' สำหรับ GDM อยู่ กรุณาแก้ไขการกำหนดค่าของ GDM ให้ถูกต้อง และเริ่มการทำงาน "
+"GDM ใหม่"
 
-#: ../daemon/gdm.c:754
+#: ../daemon/gdm.c:781
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: ไม่สามารถหากลุ่ม '%s' ของ GDM  กำลังยกเลิก!"
 
-#: ../daemon/gdm.c:761
-#, c-format
+#: ../daemon/gdm.c:788
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
-"security risk. Please correct GDM configuration %s and restart GDM."
+"security risk. Please correct GDM configuration and restart GDM."
 msgstr ""
 "กลุ่มของ GDM ถูกกำหนดให้เป็น root แต่ไม่อนุญาตวิธีการนี้ เนื่องจากเสี่ยงต่อความปลอดภัย  "
-"กรุณาแก้ไขการกำหนดค่า GDM %s ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
+"กรุณาแก้ไขการกำหนดค่าของ GDM ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
 
-#: ../daemon/gdm.c:769
+#: ../daemon/gdm.c:796
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: กลุ่มของ GDM ไม่ควรเป็น root  กำลังยกเลิก!"
 
-#: ../daemon/gdm.c:784
+#: ../daemon/gdm.c:811
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr "%s: ไม่พบหน้าต่างต้อนรับ หรือไม่สามารถดำเนินการได้โดยบัญชีผู้ใช้ของ GDM"
 
-#: ../daemon/gdm.c:791
+#: ../daemon/gdm.c:818
 #, c-format
-msgid "%s: Remote greeter not found or can't be executed by the gdm user"
-msgstr "%s: ไม่พบโปรแกรมหน้าต่างต้อนรับสำหรับเครื่องอื่น หรืออาจมีแต่ gdm ไม่มีสิทธิ์ดำเนินการ"
+msgid "%s: Remote greeter not found or can't be executed by the GDM user"
+msgstr "%s: ไม่พบโปรแกรมหน้าต่างต้อนรับสำหรับเครื่องอื่น หรืออาจมีแต่ GDM ไม่มีสิทธิ์ดำเนินการ"
 
-#: ../daemon/gdm.c:802
+#: ../daemon/gdm.c:829
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr "%s: ไม่พบ Chooser หรือไม่สามารถดำเนินการได้โดยบัญชีผู้ใช้ของ GDM"
 
-#: ../daemon/gdm.c:811
-msgid "No daemon/ServAuthDir specified in the configuration file"
-msgstr "ไม่มีการระบุ daemon/ServAuthDir ในแฟ้มการกำหนดค่า"
+#: ../daemon/gdm.c:838
+msgid "No daemon/ServAuthDir specified in the GDM configuration file"
+msgstr "ไม่มีการระบุ daemon/ServAuthDir ในแฟ้มการกำหนดค่าของ GDM"
 
-#: ../daemon/gdm.c:813
+#: ../daemon/gdm.c:840
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: ไม่มีการระบุ daemon/ServAuthDir"
 
-#: ../daemon/gdm.c:837
+#: ../daemon/gdm.c:864
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
 "owned by user %s and group %s. Please correct the ownership or GDM "
-"configuration %s and restart GDM."
+"configuration and restart GDM."
 msgstr ""
 "ไดเรกทอรีการอนุญาตสิทธิเซิร์ฟเวอร์ (daemon/ServAuthDir) กำหนดเป็น %s แต่ไม่ได้เป็นของผู้ใช้ "
-"%s และกลุ่ม %s กรุณาแก้ไขความเป็นเจ้าของ หรือแก้ไขการกำหนดค่า %s ของ GDM "
+"%s และกลุ่ม %s กรุณาแก้ไขความเป็นเจ้าของ หรือแก้ไขการกำหนดค่าของ GDM "
 "ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
 
-#: ../daemon/gdm.c:848
+#: ../daemon/gdm.c:874
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: AuthDir %s ไม่ใช่เจ้าของโดยผู้ใช้ %s กลุ่ม %s กำลังยกเลิก"
 
-#: ../daemon/gdm.c:854
+#: ../daemon/gdm.c:880
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
 "wrong permissions: it should have permissions of %o. Please correct the "
-"permissions or the GDM configuration %s and restart GDM."
+"permissions or the GDM configuration and restart GDM."
 msgstr ""
 "ไดเรกทอรีการอนุญาตสิทธิ์เซิร์ฟเวอร์ (daemon/ServAuthDir) กำหนดเป็น %s "
-"แต่การกำหนดสิทธิ์ไม่ถูกต้อง โดยควรมีค่าเป็น %o  กรุณาแก้ไขการกำหนดสิทธิ์ หรือแก้ไขการกำหนดค่า "
-"%s ของ GDM ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
+"แต่การกำหนดสิทธิ์ไม่ถูกต้อง โดยควรมีค่าเป็น %o  กรุณาแก้ไขการกำหนดสิทธิ์ "
+"หรือแก้ไขการกำหนดค่าของ GDM ให้ถูกต้องและเริ่มการทำงาน GDM ใหม่"
 
-#: ../daemon/gdm.c:865
+#: ../daemon/gdm.c:891
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: Authdir %s มีสิทธิ์อนุญาตไม่ถูกต้อง %o ควรเป็น %o กำลังยกเลิก"
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:921 ../daemon/gdm.c:929 ../daemon/gdm.c:2211
-#: ../daemon/gdm.c:2219
+#: ../daemon/gdm.c:947 ../daemon/gdm.c:955 ../daemon/gdm.c:2239
+#: ../daemon/gdm.c:2247
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr "ไม่สามารถเขียนแฟ้ม PID %s: เป็นไปได้ว่าพื้นที่ในดิสก์ไม่พอ ข้อผิดพลาด: %s\n"
 
-#: ../daemon/gdm.c:923 ../daemon/gdm.c:931 ../daemon/gdm.c:2213
-#: ../daemon/gdm.c:2221
+#: ../daemon/gdm.c:949 ../daemon/gdm.c:957 ../daemon/gdm.c:2241
+#: ../daemon/gdm.c:2249
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr "ไม่สามารถเขียนแฟ้ม PID %s: เป็นไปได้ว่าพื้นที่ดิสก์ไม่พอ  ข้อผิดพลาด: %s"
 
-#: ../daemon/gdm.c:941
+#: ../daemon/gdm.c:967
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: fork() ล้มเหลว"
 
 #. should never happen
-#: ../daemon/gdm.c:944 ../daemon/slave.c:3630
+#: ../daemon/gdm.c:970 ../daemon/slave.c:3630
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() ล้มเหลว: %s"
 
-#: ../daemon/gdm.c:1131
+#: ../daemon/gdm.c:1157
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: จะลอง X server แบบ failsafe %s"
 
-#: ../daemon/gdm.c:1149
+#: ../daemon/gdm.c:1175
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: กำลังเรียกทำงานสคริปต์ XKeepsCrashing"
 
-#: ../daemon/gdm.c:1269
+#: ../daemon/gdm.c:1295
 msgid ""
 "The X server (your graphical interface) cannot be started.  It is likely "
 "that it is not set up correctly.  You will need to log in on a console and "
@@ -580,101 +579,110 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:1281
+#: ../daemon/gdm.c:1307
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
-"การเริ่มต้นทำงาน X server ล้มเหลวหลายครั้งในช่วงเวลาอันสั้น กำลังปิดการใช้งานการแสดงผล %s"
+"การเริ่มต้นทำงาน X server ล้มเหลวหลายครั้งในช่วงเวลาอันสั้น "
+"กำลังปิดการใช้งานดิสเพลย์ %s"
 
-#: ../daemon/gdm.c:1289 ../daemon/gdm.c:3006
+#: ../daemon/gdm.c:1315 ../daemon/gdm.c:3034
 msgid "Master suspending..."
 msgstr "มาสเตอร์กำลังหยุดทำงานชั่วคราว..."
 
-#: ../daemon/gdm.c:1343
+#: ../daemon/gdm.c:1369
 #, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "ระบบกำลังเริ่มระบบใหม่ กรุณารอสักครู่ ..."
 
-#: ../daemon/gdm.c:1345
+#: ../daemon/gdm.c:1371
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "ระบบกำลังปิด กรุณารอสักครู่ ..."
 
-#: ../daemon/gdm.c:1356
+#: ../daemon/gdm.c:1382
 msgid "Master halting..."
-msgstr "มาสเตอร์กำลังหยุดทำงาน..."
+msgstr "มาสเตอร์กำลังปิดระบบ..."
 
-#: ../daemon/gdm.c:1369
+#: ../daemon/gdm.c:1395
 #, c-format
 msgid "%s: Halt failed: %s"
-msgstr "%s: การหยุดทำงานล้มเหลว: %s"
+msgstr "%s: การปิดระบบล้มเหลว: %s"
 
-#: ../daemon/gdm.c:1378
+#: ../daemon/gdm.c:1404
 msgid "Master rebooting..."
 msgstr "มาสเตอร์กำลังเริ่มระบบใหม่..."
 
-#: ../daemon/gdm.c:1391
+#: ../daemon/gdm.c:1417
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: การเริ่มระบบใหม่ล้มเหลว: %s"
 
-#: ../daemon/gdm.c:1492
+#: ../daemon/gdm.c:1518
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
-msgstr "ต้องการการเริ่มระบบใหม่ หรือการหยุดทำงานเมื่อไม่มีเมนูระบบจากการแสดงผล %s"
+msgstr "มีการร้องขอให้เริ่มระบบใหม่ หรือปิดระบบ ขณะที่ไม่มีเมนูระบบ จากดิสเพลย์ %s"
 
-#: ../daemon/gdm.c:1501
+#: ../daemon/gdm.c:1527
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-static display %s"
 msgstr "เริ่ม gdm ใหม่, บูตเครื่องใหม่ หรือปิดระบบจากเครื่องอื่น %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:1567
+#: ../daemon/gdm.c:1593
 #, c-format
 msgid "%s: Aborting display %s"
-msgstr "%s: กำลังยกเลิกการแสดงผล %s"
+msgstr "%s: กำลังยกเลิกดิสเพลย์ %s"
 
-#: ../daemon/gdm.c:1718
+#: ../daemon/gdm.c:1744
 msgid "GDM restarting ..."
 msgstr "GDM กำลังเริ่มการทำงานของเครื่องใหม่..."
 
-#: ../daemon/gdm.c:1722
+#: ../daemon/gdm.c:1748
 msgid "Failed to restart self"
 msgstr "การเริ่มทำงานของเครื่องใหม่ด้วยตัวเองล้มเหลว"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1796
+#: ../daemon/gdm.c:1822
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr "ดีมอนหลัก: ได้รับสัญญาณ SIGABRT อาจมีความผิดพลาดร้ายแรงเกิดขึ้น จะปิดโปรแกรมเดี๋ยวนี้!"
 
-#: ../daemon/gdm.c:1954
+#: ../daemon/gdm.c:1980
 msgid "Do not fork into the background"
 msgstr "ไม่ควร fork ไปเป็นพื้นหลัง"
 
-#: ../daemon/gdm.c:1956
+#: ../daemon/gdm.c:1982
 msgid "No console (static) servers to be run"
 msgstr "ไม่มีคอนโซล (ในเครื่องนี้) ที่จะทำงาน"
 
-#: ../daemon/gdm.c:1958
+#: ../daemon/gdm.c:1984 ../gui/gdmsetup.c:4549
+msgid "Alternative configuration file"
+msgstr "แฟ้มการกำหนดค่าแฟ้มอื่น"
+
+#: ../daemon/gdm.c:1984 ../gui/gdmsetup.c:4549
+msgid "CONFIGFILE"
+msgstr "CONFIGFILE"
+
+#: ../daemon/gdm.c:1986
 msgid "Preserve LD_* variables"
 msgstr "สงวนตัวแปร LD_*"
 
-#: ../daemon/gdm.c:1960
+#: ../daemon/gdm.c:1988
 msgid "Print GDM version"
 msgstr "พิมพ์รุ่น GDM"
 
-#: ../daemon/gdm.c:1962
+#: ../daemon/gdm.c:1990
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "เปิด X server ตัวแรก แต่หยุดรอไว้ จนกว่าจะมีข้อความ GO ใน fifo"
 
-#: ../daemon/gdm.c:2069 ../daemon/gdm.c:2405
+#: ../daemon/gdm.c:2097 ../daemon/gdm.c:2433
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "ไม่สามารถเปิด %s สำหรับเขียนได้"
 
-#: ../daemon/gdm.c:2126 ../gui/gdmchooser.c:2057
+#: ../daemon/gdm.c:2154 ../gui/gdmchooser.c:2059
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -683,52 +691,52 @@ msgstr ""
 "เกิดความผิดพลาดที่ตัวเลือก %s: %s\n"
 "เรียกทำงาน '%s --help' เพื่อดูรายการตัวเลือกของบรรทัดคำสั่งที่สามารถใช้ได้\n"
 
-#: ../daemon/gdm.c:2149
+#: ../daemon/gdm.c:2177
 msgid "Only root wants to run gdm\n"
 msgstr "root เท่านั้นที่ต้องการเรียกทำงาน gdm\n"
 
-#: ../daemon/gdm.c:2165 ../daemon/gdm.c:2169 ../daemon/gdm.c:2244
-#: ../daemon/gdm.c:2248 ../daemon/gdm.c:2252 ../daemon/gdm.c:2256
-#: ../daemon/gdm.c:2266 ../daemon/gdm.c:2272 ../daemon/gdm.c:2283
+#: ../daemon/gdm.c:2193 ../daemon/gdm.c:2197 ../daemon/gdm.c:2272
+#: ../daemon/gdm.c:2276 ../daemon/gdm.c:2280 ../daemon/gdm.c:2284
+#: ../daemon/gdm.c:2294 ../daemon/gdm.c:2300 ../daemon/gdm.c:2311
 #: ../daemon/misc.c:1746 ../daemon/misc.c:1750 ../daemon/misc.c:1754
 #: ../daemon/misc.c:1761 ../daemon/misc.c:1765 ../daemon/misc.c:1769
 #: ../daemon/server.c:531 ../daemon/server.c:544 ../daemon/slave.c:817
 #: ../daemon/slave.c:831 ../daemon/slave.c:841 ../daemon/slave.c:851
-#: ../daemon/slave.c:863 ../gui/gdmchooser.c:1936 ../gui/gdmchooser.c:1939
-#: ../gui/gdmchooser.c:1942 ../gui/gdmlogin.c:3776 ../gui/gdmlogin.c:3786
-#: ../gui/gdmlogin.c:3791 ../gui/greeter/greeter.c:1262
-#: ../gui/greeter/greeter.c:1270 ../gui/greeter/greeter.c:1273
+#: ../daemon/slave.c:863 ../gui/gdmchooser.c:1938 ../gui/gdmchooser.c:1941
+#: ../gui/gdmchooser.c:1944 ../gui/gdmlogin.c:3783 ../gui/gdmlogin.c:3793
+#: ../gui/gdmlogin.c:3798 ../gui/greeter/greeter.c:1269
+#: ../gui/greeter/greeter.c:1277 ../gui/greeter/greeter.c:1280
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: เกิดความผิดพลาดขณะตั้งค่าตัวจัดการสัญญาณ %s: %s"
 
-#: ../daemon/gdm.c:2193
+#: ../daemon/gdm.c:2221
 msgid "gdm already running. Aborting!"
 msgstr "gdm กำลังทำงานอยู่แล้ว จะยกเลิก"
 
-#: ../daemon/gdm.c:2292
+#: ../daemon/gdm.c:2320
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: เกิดความผิดพลาดขณะตั้งค่าตัวจัดการสัญญาณ CHLD"
 
-#: ../daemon/gdm.c:3420
+#: ../daemon/gdm.c:3448
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "การร้องขอไปยัง %s ถูกปฏิเสธ: ไม่ผ่านการตรวจสอบสิทธิ์"
 
-#: ../daemon/gdm.c:3894 ../daemon/gdm.c:3912 ../daemon/gdm.c:4096
-#: ../daemon/gdm.c:4149 ../daemon/gdm.c:4203 ../daemon/gdm.c:4247
-#: ../daemon/gdm.c:4273
+#: ../daemon/gdm.c:3922 ../daemon/gdm.c:3940 ../daemon/gdm.c:4132
+#: ../daemon/gdm.c:4185 ../daemon/gdm.c:4239 ../daemon/gdm.c:4283
+#: ../daemon/gdm.c:4309
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "การร้องขอไปยัง %s ถูกปฏิเสธ: ยังไม่ผ่านการตรวจสอบสิทธิ์"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:3930
+#: ../daemon/gdm.c:3958
 msgid "Unknown server type requested; using standard server."
 msgstr "ไม่รู้จักชนิดของเซิร์ฟเวอร์ที่ร้องขอ จะใช้เซิร์ฟเวอร์มาตรฐาน"
 
-#: ../daemon/gdm.c:3934
+#: ../daemon/gdm.c:3962
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -796,12 +804,12 @@ msgstr ""
 #: ../daemon/server.c:404
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
-msgstr "การแสดงผล '%s' ไม่สามารถเปิดด้วย Xnest"
+msgstr "ดิสเพลย์ '%s' ไม่สามารถเปิดด้วย Xnest ได้"
 
 #: ../daemon/server.c:435
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
-msgstr "การแสดงผล %s ไม่ว่าง มี X server อื่นกำลังทำงานอยู่"
+msgstr "ดิสเพลย์ %s ไม่ว่าง มี X server อื่นกำลังทำงานอยู่"
 
 #: ../daemon/server.c:519
 #, c-format
@@ -817,12 +825,12 @@ msgstr "%s: ไม่สามารถเปิดดิสเพลย์แ�
 #: ../daemon/server.c:847
 #, c-format
 msgid "%s: Cannot find a free display number"
-msgstr "%s: ไม่สามารถค้นหาหมายเลขการแสดงผลอิสระ"
+msgstr "%s: ไม่มีหมายเลขดิสเพลย์ที่ว่างอยู่"
 
 #: ../daemon/server.c:874
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
-msgstr "%s: การแสดงผล %s ไม่ว่าง  กำลังพยายามใช้หมายเลขการแสดงผลอื่น"
+msgstr "%s: ดิสเพลย์ %s ไม่ว่าง  กำลังพยายามใช้ดิสเพลย์หมายเลขอื่น"
 
 #: ../daemon/server.c:983
 #, c-format
@@ -837,7 +845,7 @@ msgstr "ไม่พบเซิร์ฟเวอร์ชื่อ '%s' กำ
 #: ../daemon/server.c:1165
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
-msgstr "%s: ไม่สามารถเปิดแฟ้มบันทึกปฏิบัติการสำหรับการแสดงผล %s"
+msgstr "%s: ไม่สามารถเปิดแฟ้มบันทึกปฏิบัติการสำหรับดิสเพลย์ %s!"
 
 #: ../daemon/server.c:1177 ../daemon/server.c:1183 ../daemon/server.c:1188
 #, c-format
@@ -847,7 +855,7 @@ msgstr "%s: เกิดความผิดพลาดขณะตั้ง�
 #: ../daemon/server.c:1234
 #, c-format
 msgid "%s: Empty server command for display %s"
-msgstr "%s: คำสั่งเซิร์ฟเวอร์ว่างเปล่าสำหรับการแสดงผล %s"
+msgstr "%s: คำสั่งเซิร์ฟเวอร์ว่างเปล่าสำหรับดิสเพลย์ %s"
 
 #: ../daemon/server.c:1248
 #, c-format
@@ -944,7 +952,7 @@ msgstr "%s: ไม่สามารถ fork ได้"
 #: ../daemon/slave.c:1599
 #, c-format
 msgid "%s: cannot open display %s"
-msgstr "%s: ไม่สามารถเปิดการแสดงผล %s"
+msgstr "%s: ไม่สามารถเปิดดิสเพลย์ %s"
 
 #: ../daemon/slave.c:1750
 msgid ""
@@ -1005,7 +1013,7 @@ msgstr ""
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
-msgstr "หมายเลขการแสดงผลที่ระบุไม่ว่าง ดังนั้นเซิร์ฟเวอร์นี้จะเริ่มต้นที่การแสดงผล %s"
+msgstr "ดิสเพลย์หมายเลขที่ระบุไม่ว่าง ดังนั้นเซิร์ฟเวอร์นี้จะเริ่มทำงานที่ดิสเพลย์ %s"
 
 #: ../daemon/slave.c:2819
 msgid ""
@@ -1039,7 +1047,7 @@ msgstr ""
 #: ../daemon/slave.c:2866
 #, c-format
 msgid "%s: Error starting greeter on display %s"
-msgstr "%s: เกิดความผิดพลาดของการเริ่มหน้าต่างต้อนรับที่การแสดงผล %s"
+msgstr "%s: เกิดข้อผิดพลาดขณะเริ่มหน้าต่างต้อนรับที่ดิสเพลย์ %s"
 
 #: ../daemon/slave.c:2870
 #, c-format
@@ -1060,13 +1068,12 @@ msgstr "%s: ไม่สามารถเริ่มต้นไปป์ไ�
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
-msgstr ""
-"ไม่สามารถเรียกโปรแกรม chooser คุณอาจจะไม่สามารถเข้าระบบได้  กรุณาติดต่อผู้ดูแลระบบ"
+msgstr "ไม่สามารถเรียกโปรแกรม chooser คุณอาจจะไม่สามารถเข้าระบบได้  กรุณาติดต่อผู้ดูแลระบบ"
 
 #: ../daemon/slave.c:3232
 #, c-format
 msgid "%s: Error starting chooser on display %s"
-msgstr "%s: เกิดความผิดพลาดขณะเริ่มต้น chooser ที่การแสดงผล %s"
+msgstr "%s: เกิดข้อผิดพลาดขณะเริ่มทำงาน chooser ที่ดิสเพลย์ %s"
 
 #: ../daemon/slave.c:3235
 #, c-format
@@ -1318,7 +1325,7 @@ msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "กรุณาตรวจสอบให้แน่ใจว่าปุ่ม Caps Lock ไม่ได้ถูกใช้งานอยู่"
 
 #: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:440
-#: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3133
+#: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3134
 msgid "Please enter your username"
 msgstr "กรุณาป้อนชื่อผู้ใช้ของคุณ"
 
@@ -1326,15 +1333,15 @@ msgstr "กรุณาป้อนชื่อผู้ใช้ของคุ
 #: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:340
 #: ../daemon/verify-pam.c:341 ../daemon/verify-pam.c:342
 #: ../daemon/verify-pam.c:427 ../daemon/verify-pam.c:786
-#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:1295 ../gui/gdmlogin.c:1309
-#: ../gui/gdmlogin.c:1938 ../gui/gdmlogin.c:2448 ../gui/greeter/greeter.c:372
+#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:1296 ../gui/gdmlogin.c:1310
+#: ../gui/gdmlogin.c:1939 ../gui/gdmlogin.c:2449 ../gui/greeter/greeter.c:373
 #: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "ชื่อผู้ใช้:"
 
 #: ../daemon/verify-crypt.c:165 ../daemon/verify-pam.c:343
 #: ../daemon/verify-pam.c:344 ../daemon/verify-pam.c:488
-#: ../daemon/verify-shadow.c:183 ../gui/gdmlogin.c:1973
+#: ../daemon/verify-shadow.c:183 ../gui/gdmlogin.c:1974
 msgid "Password:"
 msgstr "รหัสผ่าน:"
 
@@ -1348,7 +1355,7 @@ msgstr "ไม่สามารถอนุญาตสิทธิ์ให้
 #: ../daemon/verify-shadow.c:228
 #, c-format
 msgid "Root login disallowed on display '%s'"
-msgstr "การเข้าระบบของ root ไม่ได้รับอนุญาตที่การแสดงผล '%s'"
+msgstr "ไม่อนุญาตให้ root เข้าระบบที่ดิสเพลย์ '%s'"
 
 #: ../daemon/verify-crypt.c:212 ../daemon/verify-shadow.c:230
 msgid "The system administrator is not allowed to login from this screen"
@@ -1503,7 +1510,7 @@ msgstr "ขออภัย รหัสผ่านไม่ตรงกัน"
 
 #: ../daemon/verify-pam.c:652
 msgid "Cannot setup pam handle with null display"
-msgstr "ไม่สามารถตั้งค่าการจัดการ pam ด้วยการแสดงผลที่ไม่มีค่ากำกับ"
+msgstr "ไม่สามารถตั้งค่าการจัดการ pam ด้วยดิสเพลย์ที่ไม่มีค่ากำกับ"
 
 #: ../daemon/verify-pam.c:669
 #, c-format
@@ -1614,143 +1621,143 @@ msgstr ""
 msgid "Can't find PAM configuration for gdm."
 msgstr "ไม่สามารถค้นหาการกำหนดค่า PAM สำหรับ gdm"
 
-#: ../daemon/xdmcp.c:375
+#: ../daemon/xdmcp.c:373
 #, c-format
 msgid "%s: Could not get server hostname: %s!"
 msgstr "%s: ไม่สามารถรับค่าชื่อโฮสต์ของเซิร์ฟเวอร์: %s"
 
-#: ../daemon/xdmcp.c:400
+#: ../daemon/xdmcp.c:398
 #, c-format
 msgid "%s: Could not create socket!"
 msgstr "%s: ไม่สามารถสร้างซ็อกเก็ตได้"
 
-#: ../daemon/xdmcp.c:493
+#: ../daemon/xdmcp.c:485
 #, c-format
 msgid "%s: Could not bind to XDMCP socket!"
 msgstr "%s: ไม่สามารถไบด์ไปยังซ็อกเก็ตของ XDMCP ได้"
 
-#: ../daemon/xdmcp.c:565
+#: ../daemon/xdmcp.c:557
 #, c-format
 msgid "%s: Could not create XDMCP buffer!"
 msgstr "%s: ไม่สามารถสร้างบัฟเฟอร์ของ XDMCP ได้"
 
-#: ../daemon/xdmcp.c:571
+#: ../daemon/xdmcp.c:563
 #, c-format
 msgid "%s: Could not read XDMCP header!"
 msgstr "%s: ไม่สามารถอ่านเฮดเดอร์ของ XDMCP ได้"
 
-#: ../daemon/xdmcp.c:578
+#: ../daemon/xdmcp.c:570
 #, c-format
 msgid "%s: Incorrect XDMCP version!"
 msgstr "%s: รุ่นของ XDMCP ไม่ถูกต้อง"
 
-#: ../daemon/xdmcp.c:658 ../daemon/xdmcp.c:665
+#: ../daemon/xdmcp.c:650 ../daemon/xdmcp.c:657
 #, c-format
 msgid "%s: Unknown opcode from host %s"
 msgstr "%s: ไม่รู้จัก opcode จากโฮสต์ %s"
 
-#: ../daemon/xdmcp.c:699 ../daemon/xdmcp.c:1144
+#: ../daemon/xdmcp.c:691 ../daemon/xdmcp.c:1136
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: ไม่สามารถขยายรายการการอนุญาตสิทธิ์จากแพ็กเก็ต"
 
-#: ../daemon/xdmcp.c:715 ../daemon/xdmcp.c:1164
+#: ../daemon/xdmcp.c:707 ../daemon/xdmcp.c:1156
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: เกิดความผิดพลาดในการ checksum"
 
-#: ../daemon/xdmcp.c:1127
+#: ../daemon/xdmcp.c:1119
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: ไม่สามารถอ่านค่าที่อยู่ของดิสเพลย์"
 
-#: ../daemon/xdmcp.c:1135
+#: ../daemon/xdmcp.c:1127
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: ไม่สามารถอ่านค่าหมายเลขพอร์ตของดิสเพลย์"
 
-#: ../daemon/xdmcp.c:1199 ../daemon/xdmcp.c:1223
+#: ../daemon/xdmcp.c:1191 ../daemon/xdmcp.c:1215
 #, c-format
 msgid "%s: Bad address"
 msgstr "%s: ที่อยู่ไม่ถูกต้อง"
 
-#: ../daemon/xdmcp.c:1382 ../daemon/xdmcp.c:1389
+#: ../daemon/xdmcp.c:1374 ../daemon/xdmcp.c:1381
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "ปฏิเสธการ XDMCP query ที่มาจากโฮสต์ %s"
 
-#: ../daemon/xdmcp.c:1615 ../daemon/xdmcp.c:1622
+#: ../daemon/xdmcp.c:1607 ../daemon/xdmcp.c:1614
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: ได้รับการร้องขอจากโฮสต์ที่ถูกห้าม %s"
 
-#: ../daemon/xdmcp.c:1634 ../daemon/xdmcp.c:2007 ../daemon/xdmcp.c:2417
+#: ../daemon/xdmcp.c:1626 ../daemon/xdmcp.c:1999 ../daemon/xdmcp.c:2409
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: ไม่สามารถอ่านค่าหมายเลขดิสเพลย์ได้"
 
-#: ../daemon/xdmcp.c:1641
+#: ../daemon/xdmcp.c:1633
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: ไม่สามารถอ่านค่าชนิดของการเชื่อมต่อได้"
 
-#: ../daemon/xdmcp.c:1648
+#: ../daemon/xdmcp.c:1640
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: ไม่สามารถอ่านค่าที่อยู่ของไคลเอนต์ได้"
 
-#: ../daemon/xdmcp.c:1656
+#: ../daemon/xdmcp.c:1648
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: ไม่สามารถอ่านค่าชื่อของการตรวจสอบสิทธิ์ได้"
 
-#: ../daemon/xdmcp.c:1665
+#: ../daemon/xdmcp.c:1657
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: ไม่สามารถอ่านข้อมูลการตรวจสอบสิทธิ์ได้"
 
-#: ../daemon/xdmcp.c:1675
+#: ../daemon/xdmcp.c:1667
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: ไม่สามารถอ่านรายการการตรวจสอบสิทธิ์ได้"
 
-#: ../daemon/xdmcp.c:1692
+#: ../daemon/xdmcp.c:1684
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: ไม่สามารถอ่านค่าหมายเลขประจำตัวของผู้ผลิตได้"
 
-#: ../daemon/xdmcp.c:1718 ../daemon/xdmcp.c:1725
+#: ../daemon/xdmcp.c:1710 ../daemon/xdmcp.c:1717
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: การ checksum ล้มเหลวจาก %s"
 
-#: ../daemon/xdmcp.c:1983 ../daemon/xdmcp.c:1990
+#: ../daemon/xdmcp.c:1975 ../daemon/xdmcp.c:1982
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: ได้รับการจัดการจากโฮสต์ที่ถูกห้าม %s"
 
-#: ../daemon/xdmcp.c:2000 ../daemon/xdmcp.c:2424
+#: ../daemon/xdmcp.c:1992 ../daemon/xdmcp.c:2416
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: ไม่สามารถอ่านค่าหมายเลขประจำตัวของวาระได้"
 
-#: ../daemon/xdmcp.c:2014
+#: ../daemon/xdmcp.c:2006
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: ไม่สามารถอ่านค่าคลาสของดิสเพลย์"
 
-#: ../daemon/xdmcp.c:2135 ../daemon/xdmcp.c:2142 ../daemon/xdmcp.c:2154
-#: ../daemon/xdmcp.c:2264 ../daemon/xdmcp.c:2271 ../daemon/xdmcp.c:2283
+#: ../daemon/xdmcp.c:2127 ../daemon/xdmcp.c:2134 ../daemon/xdmcp.c:2146
+#: ../daemon/xdmcp.c:2256 ../daemon/xdmcp.c:2263 ../daemon/xdmcp.c:2275
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: ไม่สามารถอ่านค่าที่อยู่ได้"
 
-#: ../daemon/xdmcp.c:2394 ../daemon/xdmcp.c:2408
+#: ../daemon/xdmcp.c:2386 ../daemon/xdmcp.c:2400
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: ได้รับ KEEPALIVE จากโฮสต์ที่ถูกห้าม %s"
 
-#: ../daemon/xdmcp.c:2756
+#: ../daemon/xdmcp.c:2748
 #, c-format
 msgid ""
 "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
@@ -1759,103 +1766,110 @@ msgstr ""
 "%s: ไม่สามารถเรียกคำสั่ง '%s --display %s --display-authfile %s --to %s --to-"
 "authfile %s': %s"
 
-#: ../daemon/xdmcp.c:2791 ../daemon/xdmcp.c:2798 ../daemon/xdmcp.c:2804
-#: ../daemon/xdmcp.c:2810
+#: ../daemon/xdmcp.c:2783 ../daemon/xdmcp.c:2790 ../daemon/xdmcp.c:2796
+#: ../daemon/xdmcp.c:2802
 #, c-format
 msgid "%s: No XDMCP support"
 msgstr "%s: ไม่สนับสนุน XDMCP"
 
-#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
 msgid "Xnest command line"
 msgstr "บรรทัดคำสั่ง Xnest"
 
-#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
 msgid "STRING"
 msgstr "สตริง"
 
-#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
+#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:176
 msgid "Extra options for Xnest"
 msgstr "ตัวเลือกพิเศษสำหรับ Xnest"
 
-#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
+#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:176
 msgid "OPTIONS"
 msgstr "ตัวเลือก"
 
-#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:179
+#: ../gui/gdmXnestchooser.c:170 ../gui/gdmXnestchooser.c:180
 msgid "Run in background"
 msgstr "ทำงานในเบื้องหลัง"
 
-#: ../gui/gdmXnestchooser.c:176
+#: ../gui/gdmXnestchooser.c:177
 msgid "Just run Xnest, no query (no chooser)"
 msgstr "ให้เรียกทำงาน Xnest ไม่มีการ query (ไม่มี chooser)"
 
-#: ../gui/gdmXnestchooser.c:177
+#: ../gui/gdmXnestchooser.c:178
 msgid "Do direct query instead of indirect (chooser)"
 msgstr "ถามโดยตรงแทนการถามโดยอ้อม (สำหรับ chooser)"
 
-#: ../gui/gdmXnestchooser.c:178
+#: ../gui/gdmXnestchooser.c:179
 msgid "Run broadcast instead of indirect (chooser)"
 msgstr "ทำงานแบบกระจายทั้งหมด (broadcast) แทนการถามโดยอ้อม (สำหรับ chooser)"
 
-#: ../gui/gdmXnestchooser.c:180
+#: ../gui/gdmXnestchooser.c:181
 msgid "Don't check for running gdm"
 msgstr "ไม่ต้องตรวจสอบการทำงานของ gdm"
 
+#: ../gui/gdmXnestchooser.c:509 ../gui/gdmchooser.c:2074
+#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:683 ../gui/gdmlogin.c:3608
+#: ../gui/gdmphotosetup.c:478 ../gui/gdmsetup.c:4586
+#: ../gui/greeter/greeter.c:1231
+msgid "Could not access GDM configuration file.\n"
+msgstr "ไม่สามารถเข้าถึงแฟ้มการกำหนดค่าของ GDM\n"
+
 #. markup
-#: ../gui/gdmXnestchooser.c:523
+#: ../gui/gdmXnestchooser.c:534
 msgid "Xnest doesn't exist."
 msgstr "ไม่มี Xnest อยู่"
 
-#: ../gui/gdmXnestchooser.c:525
+#: ../gui/gdmXnestchooser.c:536
 msgid "Please ask your system administrator to install it."
 msgstr "กรุณาสอบถามผู้บริหารระบบของคุณเกี่ยวกับการติดตั้งระบบ"
 
 #. markup
-#: ../gui/gdmXnestchooser.c:551
+#: ../gui/gdmXnestchooser.c:562
 msgid "Indirect XDMCP is not enabled"
 msgstr "ไม่ได้เปิดใช้งานการใช้ XDMCP โดยอ้อม"
 
-#: ../gui/gdmXnestchooser.c:553 ../gui/gdmXnestchooser.c:573
+#: ../gui/gdmXnestchooser.c:564 ../gui/gdmXnestchooser.c:584
 msgid "Please ask your system administrator to enable this feature."
 msgstr "กรุณาขอให้ผู้ดูแลระบบของคุณเปิดใช้ความสามารถนี้"
 
 #. markup
-#: ../gui/gdmXnestchooser.c:571
+#: ../gui/gdmXnestchooser.c:582
 msgid "XDMCP is not enabled"
 msgstr "XDMCP ไม่ได้เปิดใช้งาน"
 
 #. markup
-#: ../gui/gdmXnestchooser.c:606
+#: ../gui/gdmXnestchooser.c:617
 msgid "GDM is not running"
 msgstr "GDM ไม่ได้กำลังทำงาน"
 
-#: ../gui/gdmXnestchooser.c:608
+#: ../gui/gdmXnestchooser.c:619
 msgid "Please ask your system administrator to start it."
 msgstr "กรุณาสอบถามผู้บริหารระบบของคุณเกี่ยวกับการเริ่มทำงานระบบ"
 
 #. markup
-#: ../gui/gdmXnestchooser.c:625
+#: ../gui/gdmXnestchooser.c:636
 msgid "Could not find a free display number"
-msgstr "ไม่สามารถค้นหาหมายเลขการแสดงผลที่ว่างได้"
+msgstr "ไม่มีหมายเลขดิสเพลย์ที่ว่างอยู่"
 
-#: ../gui/gdmchooser.c:80
+#: ../gui/gdmchooser.c:82
 msgid "Please wait: scanning local network..."
 msgstr "โปรดรอสักครู่: กำลังสแกนเครือข่ายท้องถิ่น..."
 
-#: ../gui/gdmchooser.c:81
+#: ../gui/gdmchooser.c:83
 msgid "No serving hosts were found."
 msgstr "ไม่พบโฮสต์ที่กำลังบริการ"
 
-#: ../gui/gdmchooser.c:82
+#: ../gui/gdmchooser.c:84
 msgid "Choose a ho_st to connect to:"
 msgstr "เลือกโ_ฮสต์ที่จะเชื่อมต่อ:"
 
 #. markup
-#: ../gui/gdmchooser.c:659
+#: ../gui/gdmchooser.c:661
 msgid "Cannot connect to remote server"
 msgstr "ไม่สามารถเชื่อมต่อไปยังเซิร์ฟเวอร์เครื่องอื่น"
 
-#: ../gui/gdmchooser.c:660
+#: ../gui/gdmchooser.c:662
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
@@ -1863,11 +1877,11 @@ msgid ""
 msgstr "โฮสต์ \"%s\" ไม่สามารถรองรับการเข้าระบบได้ในขณะนี้  กรุณาลองใหม่อีกครั้งภายหลัง"
 
 #. markup
-#: ../gui/gdmchooser.c:1284
+#: ../gui/gdmchooser.c:1286
 msgid "Did not receive response from server"
 msgstr "ไม่ได้รับการตอบสนองจากเซิร์ฟเวอร์"
 
-#: ../gui/gdmchooser.c:1285
+#: ../gui/gdmchooser.c:1287
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1877,16 +1891,16 @@ msgstr ""
 "ไม่ได้รับการตอบสนองใดจากโฮสต์ \"%s\" ใน %d วินาที  บางทีโฮสต์อาจยังไม่ได้เปิด "
 "หรือไม่สามารถรองรับการเข้าระบบได้ในขณะนี้  กรุณาลองใหม่อีกครั้งภายหลัง"
 
-#: ../gui/gdmchooser.c:1391
+#: ../gui/gdmchooser.c:1393
 msgid "Cannot find host"
 msgstr "ไม่สามารถค้นหาโฮสต์ได้"
 
-#: ../gui/gdmchooser.c:1392
+#: ../gui/gdmchooser.c:1394
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
 msgstr "ไม่สามารถค้นหาโฮสต์ \"%s\" ได้ บางทีคุณอาจจะพิมพ์ผิด"
 
-#: ../gui/gdmchooser.c:1678
+#: ../gui/gdmchooser.c:1680
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1901,46 +1915,46 @@ msgstr ""
 "คุณสามารถสแกนเครือข่ายอีกครั้งเพื่อหาโฮสต์ใหม่โดยคลิก \"เรียกใหม่\"  เมื่อคุณ "
 "ได้เลือกโฮสต์แล้วให้คลิก \"เชื่อมต่อ\" เพื่อเปิดวาระไปยังเครื่องนั้น"
 
-#: ../gui/gdmchooser.c:1725
+#: ../gui/gdmchooser.c:1727
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "ไม่สามารถเปิดไอคอนของโฮสต์ปริยาย: %s"
 
-#: ../gui/gdmchooser.c:1950 ../gui/gdmlogin.c:3801
-#: ../gui/greeter/greeter.c:1281 ../gui/greeter/greeter.c:1288
+#: ../gui/gdmchooser.c:1952 ../gui/gdmlogin.c:3808
+#: ../gui/greeter/greeter.c:1288 ../gui/greeter/greeter.c:1295
 msgid "Could not set signal mask!"
 msgstr "ไม่สามารถกำหนดแมสก์ของสัญญาณได้!"
 
-#: ../gui/gdmchooser.c:1956
+#: ../gui/gdmchooser.c:1958
 msgid "Socket for xdm communication"
 msgstr "ซ็อกเก็ตสำหรับการติดต่อสื่อสารของ xdm"
 
-#: ../gui/gdmchooser.c:1956
+#: ../gui/gdmchooser.c:1958
 msgid "SOCKET"
 msgstr "ซ็อกเก็ต"
 
-#: ../gui/gdmchooser.c:1959
+#: ../gui/gdmchooser.c:1961
 msgid "Client address to return in response to xdm"
 msgstr "ที่อยู่ของไคลเอ็นต์ที่ใช้คืนค่าในการตอบสนองไปยัง xdm"
 
-#: ../gui/gdmchooser.c:1959
+#: ../gui/gdmchooser.c:1961
 msgid "ADDRESS"
 msgstr "ที่อยู่"
 
-#: ../gui/gdmchooser.c:1962
+#: ../gui/gdmchooser.c:1964
 msgid "Connection type to return in response to xdm"
 msgstr "ชนิดของการเชื่อมต่อเพื่อคืนค่าในการตอบสนองไปยัง xdm"
 
-#: ../gui/gdmchooser.c:1962
+#: ../gui/gdmchooser.c:1964
 msgid "TYPE"
 msgstr "ชนิด"
 
 #. markup
-#: ../gui/gdmchooser.c:2091
+#: ../gui/gdmchooser.c:2099
 msgid "Cannot run chooser"
 msgstr "ไม่สามารถเรียกใช้งาน chooser"
 
-#: ../gui/gdmchooser.c:2092
+#: ../gui/gdmchooser.c:2100
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -1995,17 +2009,18 @@ msgid "_Add"
 msgstr "เพิ่_ม"
 
 #. markup
-#: ../gui/gdmcomm.c:406
-msgid "GDM (The GNOME Display Manager) is not running."
-msgstr "GDM (ตัวจัดการการแสดงผล GNOME) ไม่ได้กำลังทำงาน"
-
 #: ../gui/gdmcomm.c:409
+msgid "GDM (The GNOME Display Manager) is not running."
+msgstr "GDM (ตัวจัดการดิสเพลย์ของ GNOME) ไม่ได้ทำงานอยู่"
+
+#: ../gui/gdmcomm.c:412
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm."
-msgstr "คุณอาจใช้ตัวจัดการการแสดงผลที่ต่างกัน เช่น KDM (ตัวจัดการการแสดงผล KDE) หรือ xdm"
+msgstr ""
+"คุณอาจกำลังใช้ตัวจัดการดิสเพลย์อื่นอยู่ เช่น KDM (ตัวจัดการดิสเพลย์ของ KDE) หรือ xdm"
 
-#: ../gui/gdmcomm.c:412
+#: ../gui/gdmcomm.c:415
 msgid ""
 "If you still wish to use this feature, either start GDM yourself or ask your "
 "system administrator to start GDM."
@@ -2013,42 +2028,42 @@ msgstr ""
 "ถ้าคุณต้องการใช้คุณสมบัตินี้  คุณจะเริ่ม GDM ด้วยตัวเอง หรือถามผู้บริหารระบบของคุณเพื่อเริ่ม GDM ก็ได้"
 
 #. markup
-#: ../gui/gdmcomm.c:434 ../gui/gdmflexiserver.c:697
+#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:708
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
-msgstr "ไม่สามารถติดต่อสื่อสารกับ GDM (ตัวจัดการการแสดงผล GNOME)"
+msgstr "ไม่สามารถติดต่อสื่อสารกับ GDM (ตัวจัดการดิสเพลย์ของ GNOME)"
 
-#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:700
+#: ../gui/gdmcomm.c:440 ../gui/gdmflexiserver.c:711
 msgid "Perhaps you have an old version of GDM running."
 msgstr "บางทีคุณอาจมีรุ่นเก่าของ GDM ที่กำลังทำงานอยู่"
 
-#: ../gui/gdmcomm.c:454 ../gui/gdmcomm.c:457
+#: ../gui/gdmcomm.c:457 ../gui/gdmcomm.c:460
 msgid "Cannot communicate with gdm. Perhaps you have an old version running."
 msgstr "ไม่สามารถติดต่อสื่อสารกับ gdm บางทีคุณอาจมีรุ่นเก่าที่กำลังทำงานอยู่"
 
-#: ../gui/gdmcomm.c:460
+#: ../gui/gdmcomm.c:463
 msgid "The allowed limit of flexible X servers reached."
 msgstr "ถึงขีดจำกัดความยืดหยุ่นของ X server ที่ได้รับอนุญาตแล้ว"
 
-#: ../gui/gdmcomm.c:462
+#: ../gui/gdmcomm.c:465
 msgid "There were errors trying to start the X server."
 msgstr "เกิดความผิดพลาดขณะพยายามที่จะเริ่ม X server"
 
-#: ../gui/gdmcomm.c:464
+#: ../gui/gdmcomm.c:467
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "X server ล้มเหลว  อาจจะเป็นเพราะมีการกำหนดค่าไม่ถูกต้อง"
 
-#: ../gui/gdmcomm.c:467
+#: ../gui/gdmcomm.c:470
 msgid "Too many X sessions running."
 msgstr "มีวาระของ X กำลังทำงานอยู่จำนวนมากเกินไป"
 
-#: ../gui/gdmcomm.c:469
+#: ../gui/gdmcomm.c:472
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr ""
 "Xnest ไม่สามารถเชื่อมต่อกับ X server ปัจจุบันของคุณ  คุณอาจจะมีแฟ้มการอนุญาตของ X ที่ไม่ถูกต้อง"
 
-#: ../gui/gdmcomm.c:474
+#: ../gui/gdmcomm.c:477
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
@@ -2056,11 +2071,11 @@ msgstr ""
 "Xnest ใช้งานไม่ได้ หรือ gdm ไม่ได้กำหนดค่าอย่างถูกต้อง\n"
 "กรุณาติดตั้งแพ็กเกจของ Xnest เพื่อใช้ nested login "
 
-#: ../gui/gdmcomm.c:479
+#: ../gui/gdmcomm.c:482
 msgid "The X server is not available. GDM may be misconfigured."
 msgstr "X server ใช้งานไม่ได้ ดูเหมือนว่า GDM จะมีการกำหนดค่าที่ไม่ถูกต้อง"
 
-#: ../gui/gdmcomm.c:482
+#: ../gui/gdmcomm.c:485
 msgid ""
 "Trying to set an unknown logout action, or trying to set a logout action "
 "which is not available."
@@ -2068,19 +2083,19 @@ msgstr ""
 "กำลังพยายามตั้งค่าการดำเนินการการออกจากระบบที่ไม่รู้จัก "
 "หรือการดำเนินการการออกจากระบบที่ไม่สามารถทำงานได้"
 
-#: ../gui/gdmcomm.c:485
+#: ../gui/gdmcomm.c:488
 msgid "Virtual terminals not supported."
 msgstr "ไม่สนับสนุนเทอร์มินัลเสมือน"
 
-#: ../gui/gdmcomm.c:487
+#: ../gui/gdmcomm.c:490
 msgid "Trying to change to an invalid virtual terminal number."
 msgstr "พยายามจะเปลี่ยนไปยังหมายเทอร์มินัลเสมือนที่ไม่ถูกต้อง"
 
-#: ../gui/gdmcomm.c:489
+#: ../gui/gdmcomm.c:492
 msgid "Trying to update an unsupported configuration key."
 msgstr "พยายามที่จะปรับปรุงคีย์การกำหนดค่าที่ไม่มีการสนับสนุน"
 
-#: ../gui/gdmcomm.c:491
+#: ../gui/gdmcomm.c:494
 msgid ""
 "You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -2088,11 +2103,11 @@ msgstr ""
 "ดูเหมือนคุณจะไม่ได้รับการอนุญาตสิทธิ์ที่จำเป็นสำหรับการดำเนินการนี้ อาจจะเป็นเพราะแฟ้ม ."
 "Xauthority ของคุณมีการตั้งค่าไม่ถูกต้อง"
 
-#: ../gui/gdmcomm.c:495
+#: ../gui/gdmcomm.c:498
 msgid "Too many messages were sent to gdm and it hung upon us."
 msgstr "มีข้อความส่งไปยัง gdm มากเกินไป ทำให้ gdm ค้างอยู่"
 
-#: ../gui/gdmcomm.c:498
+#: ../gui/gdmcomm.c:501
 msgid "Unknown error occurred."
 msgstr "เกิดความผิดพลาดที่ไม่ทราบสาเหตุ"
 
@@ -2123,7 +2138,7 @@ msgstr "ดิสเพลย์ %s บนเทอร์มินัลเส�
 msgid "Nested display %s on virtual terminal %d"
 msgstr "ดิสเพลย์ซ้อน %s บนเทอร์มินัลเสมือน %d"
 
-#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2980
+#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2981
 #: ../gui/greeter/greeter_item_ulist.c:193
 msgid "Username"
 msgstr "ชื่อผู้ใช้"
@@ -2152,72 +2167,72 @@ msgid ""
 "below or open a new one."
 msgstr "มีหน้าจอแสดงผลบางอันเปิดอยู่ คุณสามารถเลือก 1 รายการจากรายการต่อไปนี้หรือเปิดใหม่"
 
-#: ../gui/gdmflexiserver.c:390 ../gui/gdmflexiserver.c:787
+#: ../gui/gdmflexiserver.c:390 ../gui/gdmflexiserver.c:803
 msgid "Can't lock screen"
 msgstr "ไม่สามารถล็อกหน้าจอได้"
 
-#: ../gui/gdmflexiserver.c:393 ../gui/gdmflexiserver.c:790
+#: ../gui/gdmflexiserver.c:393 ../gui/gdmflexiserver.c:806
 msgid "Can't disable xscreensaver display hacks"
 msgstr "ไม่สามารถปิดโปรแกรมรักษาหน้าจอชั่วคราวได้"
 
-#: ../gui/gdmflexiserver.c:548
+#: ../gui/gdmflexiserver.c:550
 msgid "Choose server"
 msgstr "เลือกเซิร์ฟเวอร์"
 
-#: ../gui/gdmflexiserver.c:559
+#: ../gui/gdmflexiserver.c:561
 msgid "Choose the X server to start"
 msgstr "เลือก X server ที่จะเริ่มทำงาน"
 
-#: ../gui/gdmflexiserver.c:565
+#: ../gui/gdmflexiserver.c:567
 msgid "Standard server"
 msgstr "เซิร์ฟเวอร์มาตรฐาน"
 
-#: ../gui/gdmflexiserver.c:632
+#: ../gui/gdmflexiserver.c:633
 msgid "Send the specified protocol command to gdm"
 msgstr "ส่งคำสั่งโพรโทคอลที่ระบุไปยัง gdm"
 
-#: ../gui/gdmflexiserver.c:632
+#: ../gui/gdmflexiserver.c:633
 msgid "COMMAND"
 msgstr "คำสั่ง"
 
-#: ../gui/gdmflexiserver.c:633
+#: ../gui/gdmflexiserver.c:634
 msgid "Xnest mode"
 msgstr "โหมด Xnest"
 
-#: ../gui/gdmflexiserver.c:634
+#: ../gui/gdmflexiserver.c:635
 msgid "Do not lock current screen"
 msgstr "ไม่ล็อกหน้าจอปัจจุบัน"
 
-#: ../gui/gdmflexiserver.c:635
-msgid "Debugging output"
-msgstr "การแสดงผลของการดีบั๊ก"
-
 #: ../gui/gdmflexiserver.c:636
+msgid "Debugging output"
+msgstr "การแสดงข้อความดีบั๊ก"
+
+#: ../gui/gdmflexiserver.c:637
 msgid "Authenticate before running --command"
 msgstr "ตรวจสอบสิทธิ์ก่อนเรียกทำงาน --command"
 
 #. markup
-#: ../gui/gdmflexiserver.c:725
+#: ../gui/gdmflexiserver.c:737
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "ดูเหมือนคุณจะไม่ได้รับการอนุญาตสิทธิ์ที่จำเป็นสำหรับการดำเนินการนี้"
 
-#: ../gui/gdmflexiserver.c:729
+#: ../gui/gdmflexiserver.c:741
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "แฟ้ม .Xauthority ของคุณอาจจะตั้งค่าไม่ถูกต้อง"
 
 #. markup
-#: ../gui/gdmflexiserver.c:753
+#: ../gui/gdmflexiserver.c:766
 msgid "You do not seem to be logged in on the console"
 msgstr "ดูเหมือนคุณยังไม่ได้เข้าระบบที่คอนโซล"
 
-#: ../gui/gdmflexiserver.c:756
+#: ../gui/gdmflexiserver.c:769
 msgid "Starting a new login only works correctly on the console."
 msgstr "การเริ่มต้นการเข้าระบบใหม่จะทำงานถูกต้องบนคอนโซลเท่านั้น"
 
 #. markup
-#: ../gui/gdmflexiserver.c:805
+#: ../gui/gdmflexiserver.c:821
 msgid "Cannot start new display"
-msgstr "ไม่สามารถเริ่มต้นการแสดงผลใหม่"
+msgstr "ไม่สามารถเริ่มการทำงานดิสเพลย์ชุดใหม่"
 
 #: ../gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
@@ -2689,72 +2704,77 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: ../gui/gdmlogin.c:417
+#: ../gui/gdmlogin.c:418
 msgid "Cannot start background application"
 msgstr "เปิดโปรแกรมทำงานเบื้องหลังไม่สำเร็จ"
 
-#: ../gui/gdmlogin.c:418
+#: ../gui/gdmlogin.c:419
 #, c-format
 msgid "Cannot run command '%s': %s."
 msgstr "ไม่สามารถเรียกโปรแกรม '%s': %s"
 
-#: ../gui/gdmlogin.c:492
+#: ../gui/gdmlogin.c:493
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "ผู้ใช้ %s จะเข้าระบบภายใน %d วินาที"
 
-#: ../gui/gdmlogin.c:496 ../gui/greeter/greeter_parser.c:1107
+#: ../gui/gdmlogin.c:497 ../gui/greeter/greeter_parser.c:1107
 #, c-format
 msgid "User %s will login in %d second"
 msgid_plural "User %s will login in %d seconds"
 msgstr[0] "ผู้ใช้ %s จะเข้าระบบภายใน %d วินาที"
 msgstr[1] "ผู้ใช้ %s จะเข้าระบบภายใน %d วินาที"
 
-#: ../gui/gdmlogin.c:723
+#: ../gui/gdmlogin.c:724
 #, c-format
 msgid "%s: String too long!"
 msgstr "%s: ข้อความยาวเกินไป"
 
-#: ../gui/gdmlogin.c:725
+#: ../gui/gdmlogin.c:726
 #, c-format
 msgid "%sWelcome to %s%s"
 msgstr "%s ยินดีต้อนรับสู่ %s%s"
 
-#: ../gui/gdmlogin.c:810 ../gui/greeter/greeter_system.c:63
+#: ../gui/gdmlogin.c:811 ../gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to restart the computer?"
 msgstr "คุณแน่ใจหรือไม่ ว่าจะเริ่มเปิดระบบคอมพิวเตอร์ใหม่?"
 
 #. markup
-#: ../gui/gdmlogin.c:812 ../gui/gdmlogin.c:2843
+#: ../gui/gdmlogin.c:813 ../gui/gdmlogin.c:2844
 msgid "_Restart"
 msgstr "เปิดเครื่องใ_หม่"
 
-#: ../gui/gdmlogin.c:824 ../gui/greeter/greeter_system.c:76
+#: ../gui/gdmlogin.c:825 ../gui/greeter/greeter_system.c:76
 msgid "Are you sure you want to shut down the computer?"
 msgstr "คุณแน่ใจหรือไม่ ว่าจะปิดเครื่อง?"
 
 #. markup
-#: ../gui/gdmlogin.c:826 ../gui/gdmlogin.c:2856
+#: ../gui/gdmlogin.c:827 ../gui/gdmlogin.c:2857
 #: ../gui/greeter/greeter_parser.c:1077 ../gui/greeter/greeter_system.c:77
 #: ../gui/greeter/greeter_system.c:198
 msgid "Shut _Down"
 msgstr "_ปิดเครื่อง"
 
-#: ../gui/gdmlogin.c:846 ../gui/greeter/greeter_system.c:88
+#: ../gui/gdmlogin.c:847 ../gui/greeter/greeter_system.c:88
 msgid "Are you sure you want to suspend the computer?"
 msgstr "คุณแน่ใจหรือไม่ ว่าจะหยุดทำงานเครื่องชั่วคราว?"
 
 #. markup
-#: ../gui/gdmlogin.c:848 ../gui/gdmlogin.c:2870
+#: ../gui/gdmlogin.c:849 ../gui/gdmlogin.c:2871
 #: ../gui/greeter/greeter_system.c:89
 msgid "_Suspend"
 msgstr "ห_ยุดทำงานชั่วคราว"
 
-#: ../gui/gdmlogin.c:975 ../gui/greeter/greeter.c:276
+#: ../gui/gdmlogin.c:878 ../gui/greeter/greeter.c:174
+#, c-format
+msgid "%s: No configuration file: %s. Using defaults."
+msgstr "%s: ไม่พบแฟ้มการกำหนดค่า: %s กำลังใช้ค่าปริยาย"
+
+#: ../gui/gdmlogin.c:976 ../gui/greeter/greeter.c:277
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
 msgstr "เวลาที่หน่วงในเข้าระบบน้อยกว่า 5 วินาที ระบบจะใช้ 5 วินาที"
 
-#: ../gui/gdmlogin.c:1076 ../gui/greeter/greeter_session.c:119
+#: ../gui/gdmlogin.c:1077 ../gui/greeter/greeter_session.c:119
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this computer.\n"
@@ -2764,13 +2784,13 @@ msgstr ""
 "คุณต้องการใช้ %s เป็นวาระปริยายหรือไม่?"
 
 #. markup
-#: ../gui/gdmlogin.c:1083 ../gui/gdmlogin.c:1111 ../gui/gdmlogin.c:1186
+#: ../gui/gdmlogin.c:1084 ../gui/gdmlogin.c:1112 ../gui/gdmlogin.c:1187
 #: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:125 ../gui/greeter/greeter_session.c:155
 msgid "Make _Default"
 msgstr "กำหนดให้เป็นค่า_ปริยาย"
 
-#: ../gui/gdmlogin.c:1083 ../gui/greeter/greeter_session.c:125
+#: ../gui/gdmlogin.c:1084 ../gui/greeter/greeter_session.c:125
 msgid "Just _Log In"
 msgstr "เพิ่งเ_ข้าระบบ"
 
@@ -2778,7 +2798,7 @@ msgstr "เพิ่งเ_ข้าระบบ"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:1102 ../gui/gdmlogin.c:1180
+#: ../gui/gdmlogin.c:1103 ../gui/gdmlogin.c:1181
 #: ../gui/greeter/greeter_action_language.c:155
 #: ../gui/greeter/greeter_session.c:147
 #, c-format
@@ -2789,13 +2809,13 @@ msgstr ""
 "คุณได้เลือก %s สำหรับวาระนี้ แต่ค่าปริยายที่คุณกำหนดไว้คือ %s\n"
 "คุณต้องการใช้ %s เป็นวาระปริยายต่อไปหรือไม่?"
 
-#: ../gui/gdmlogin.c:1111 ../gui/gdmlogin.c:1186
+#: ../gui/gdmlogin.c:1112 ../gui/gdmlogin.c:1187
 #: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:155
 msgid "Just For _This Session"
 msgstr "เพียงแค่วาระ_นี้เท่านั้น"
 
-#: ../gui/gdmlogin.c:1121 ../gui/greeter/greeter_session.c:168
+#: ../gui/gdmlogin.c:1122 ../gui/greeter/greeter_session.c:168
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2808,29 +2828,29 @@ msgstr ""
 "ให้เรียกคำสั่ง 'switchdesk'\n"
 "(เครื่องมือระบบ->เครื่องมือสลับเดสก์ท็อป จากเมนูแพเนล)"
 
-#: ../gui/gdmlogin.c:1162 ../gui/gdmlogin.c:1171
+#: ../gui/gdmlogin.c:1163 ../gui/gdmlogin.c:1172
 #: ../gui/greeter/greeter_action_language.c:71
 #: ../gui/greeter/greeter_action_language.c:139
 #: ../gui/greeter/greeter_action_language.c:147
 msgid "System Default"
 msgstr "ค่าปริยายของระบบ"
 
-#: ../gui/gdmlogin.c:1296 ../gui/gdmlogin.c:1310 ../gui/gdmlogin.c:1942
-#: ../gui/gdmlogin.c:2449 ../gui/gdmlogin.c:3086
+#: ../gui/gdmlogin.c:1297 ../gui/gdmlogin.c:1311 ../gui/gdmlogin.c:1943
+#: ../gui/gdmlogin.c:2450 ../gui/gdmlogin.c:3087
 msgid "_Username:"
 msgstr "_ชื่อผู้ใช้:"
 
-#: ../gui/gdmlogin.c:1384
+#: ../gui/gdmlogin.c:1385
 #, c-format
 msgid "%s session selected"
 msgstr "เลือกวาระ %s"
 
-#: ../gui/gdmlogin.c:1405 ../gui/gdmlogin.c:1532
+#: ../gui/gdmlogin.c:1406 ../gui/gdmlogin.c:1533
 #: ../gui/greeter/greeter_session.c:263
 msgid "_Last"
 msgstr "_ล่าสุด"
 
-#: ../gui/gdmlogin.c:1416 ../gui/greeter/greeter_session.c:269
+#: ../gui/gdmlogin.c:1417 ../gui/greeter/greeter_session.c:269
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "เข้าระบบโดยใช้วาระที่คุณใช้เมื่อเข้าระบบครั้งล่าสุด"
 
@@ -2838,129 +2858,129 @@ msgstr "เข้าระบบโดยใช้วาระที่คุณ
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1497
+#: ../gui/gdmlogin.c:1498
 #, c-format
 msgid "%s language selected"
 msgstr "เลือกภาษา %s"
 
-#: ../gui/gdmlogin.c:1543
+#: ../gui/gdmlogin.c:1544
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "เข้าระบบโดยใช้ภาษาที่คุณได้ใช้เมื่อตอนเข้าระบบครั้งล่าสุด"
 
-#: ../gui/gdmlogin.c:1547
+#: ../gui/gdmlogin.c:1548
 msgid "_System Default"
 msgstr "_ค่าปริยายของระบบ"
 
-#: ../gui/gdmlogin.c:1558
+#: ../gui/gdmlogin.c:1559
 msgid "Log in using the default system language"
 msgstr "เข้าระบบโดยใช้ภาษาปริยายของระบบ"
 
-#: ../gui/gdmlogin.c:1582
+#: ../gui/gdmlogin.c:1583
 msgid "_Other"
 msgstr "_อื่นๆ"
 
-#: ../gui/gdmlogin.c:1974
+#: ../gui/gdmlogin.c:1975
 msgid "_Password:"
 msgstr "_รหัสผ่าน:"
 
 #. markup
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:2207 ../gui/greeter/greeter.c:534
+#: ../gui/gdmlogin.c:2208 ../gui/greeter/greeter.c:535
 msgid "Please insert 25 cents to log in."
 msgstr "กรุณาหยอดเหรียญ 10 บาทเพื่อเข้าระบบ"
 
-#: ../gui/gdmlogin.c:2570
+#: ../gui/gdmlogin.c:2571
 msgid "GNOME Desktop Manager"
 msgstr "ตัวจัดการเดสก์ท็อปของ GNOME"
 
-#: ../gui/gdmlogin.c:2596 ../gui/greeter/greeter_item.c:157
+#: ../gui/gdmlogin.c:2597 ../gui/greeter/greeter_item.c:157
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
-#: ../gui/gdmlogin.c:2598 ../gui/greeter/greeter_item.c:161
+#: ../gui/gdmlogin.c:2599 ../gui/greeter/greeter_item.c:161
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %b %d, %l:%M %p"
 
-#: ../gui/gdmlogin.c:2647
+#: ../gui/gdmlogin.c:2648
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2751
+#: ../gui/gdmlogin.c:2752
 msgid "GDM Login"
 msgstr "การเข้าระบบของ GDM"
 
-#: ../gui/gdmlogin.c:2794 ../gui/greeter/greeter_parser.c:1057
+#: ../gui/gdmlogin.c:2795 ../gui/greeter/greeter_parser.c:1057
 msgid "_Session"
 msgstr "_วาระ"
 
-#: ../gui/gdmlogin.c:2801 ../gui/greeter/greeter_parser.c:1052
+#: ../gui/gdmlogin.c:2802 ../gui/greeter/greeter_parser.c:1052
 msgid "_Language"
 msgstr "_ภาษา"
 
-#: ../gui/gdmlogin.c:2813 ../gui/greeter/greeter_system.c:152
+#: ../gui/gdmlogin.c:2814 ../gui/greeter/greeter_system.c:152
 msgid "_XDMCP Chooser..."
 msgstr "ตัวเ_ลือก XDMCP..."
 
-#: ../gui/gdmlogin.c:2820 ../gui/greeter/greeter_system.c:159
+#: ../gui/gdmlogin.c:2821 ../gui/greeter/greeter_system.c:159
 #: ../gui/greeter/greeter_system.c:349
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
 msgstr "เรียกทำงานตัวเลือก XDMCP ซึ่งจะอนุญาตให้คุณเข้าสู่ระบบของเครื่องอื่นที่มีอยู่"
 
-#: ../gui/gdmlogin.c:2829 ../gui/greeter/greeter_system.c:167
+#: ../gui/gdmlogin.c:2830 ../gui/greeter/greeter_system.c:167
 msgid "_Configure Login Manager..."
 msgstr "การกำหนด_ค่าตัวจัดการการเข้าระบบ..."
 
-#: ../gui/gdmlogin.c:2836 ../gui/greeter/greeter_system.c:174
+#: ../gui/gdmlogin.c:2837 ../gui/greeter/greeter_system.c:174
 #: ../gui/greeter/greeter_system.c:369
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr "กำหนดค่า GDM (ตัวจัดการการเข้าระบบนี้) ซึ่งจะต้องการรหัสผ่านของ root"
 
-#: ../gui/gdmlogin.c:2850
+#: ../gui/gdmlogin.c:2851
 msgid "Restart your computer"
 msgstr "เริ่มเปิดระบบคอมพิวเตอร์ของคุณใหม่"
 
-#: ../gui/gdmlogin.c:2863 ../gui/greeter/greeter_system.c:205
+#: ../gui/gdmlogin.c:2864 ../gui/greeter/greeter_system.c:205
 msgid "Shut down the system so that you may safely turn off the computer."
 msgstr "การปิดระบบจะทำให้คุณปิดเครื่องคอมพิวเตอร์ได้อย่างปลอดภัย"
 
-#: ../gui/gdmlogin.c:2877 ../gui/greeter/greeter_system.c:218
+#: ../gui/gdmlogin.c:2878 ../gui/greeter/greeter_system.c:218
 msgid "Suspend your computer"
 msgstr "หยุดการทำงานคอมพิวเตอร์ของคุณชั่วคราว"
 
-#: ../gui/gdmlogin.c:2883 ../gui/greeter/greeter_parser.c:1062
+#: ../gui/gdmlogin.c:2884 ../gui/greeter/greeter_parser.c:1062
 msgid "_Actions"
 msgstr "_ปฏิบัติการ"
 
-#: ../gui/gdmlogin.c:2892
+#: ../gui/gdmlogin.c:2893
 msgid "_Theme"
 msgstr "ชุด_ตกแต่ง"
 
-#: ../gui/gdmlogin.c:2903 ../gui/greeter/greeter_canvas_item.c:165
+#: ../gui/gdmlogin.c:2904 ../gui/greeter/greeter_canvas_item.c:165
 #: ../gui/greeter/greeter_parser.c:1072
 msgid "_Quit"
 msgstr "_ออกจากระบบ"
 
-#: ../gui/gdmlogin.c:2905 ../gui/greeter/greeter_canvas_item.c:167
+#: ../gui/gdmlogin.c:2906 ../gui/greeter/greeter_canvas_item.c:167
 #: ../gui/greeter/greeter_parser.c:1067
 msgid "D_isconnect"
 msgstr "_ยกเลิกการเชื่อมต่อ"
 
-#: ../gui/gdmlogin.c:2973 ../gui/greeter/greeter_item_ulist.c:186
+#: ../gui/gdmlogin.c:2974 ../gui/greeter/greeter_item_ulist.c:186
 msgid "Icon"
 msgstr "ไ_อคอน"
 
 #. markup
-#: ../gui/gdmlogin.c:3634 ../gui/gdmlogin.c:3665 ../gui/gdmlogin.c:3709
-#: ../gui/greeter/greeter.c:767 ../gui/greeter/greeter.c:799
-#: ../gui/greeter/greeter.c:844
+#: ../gui/gdmlogin.c:3641 ../gui/gdmlogin.c:3672 ../gui/gdmlogin.c:3716
+#: ../gui/greeter/greeter.c:768 ../gui/greeter/greeter.c:800
+#: ../gui/greeter/greeter.c:845
 msgid "Cannot start the greeter"
 msgstr "ไม่สามารถเริ่มต้นทำงานหน้าต่างต้อนรับได้"
 
-#: ../gui/gdmlogin.c:3635 ../gui/gdmlogin.c:3666
+#: ../gui/gdmlogin.c:3642 ../gui/gdmlogin.c:3673
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -2969,11 +2989,11 @@ msgstr ""
 "รุ่นของหน้าต่างต้อนรับ (%s) ไม่ตรงกับรุ่นของดีมอน  คุณอาจจะเพิ่งปรับปรุงรุ่นของ gdm  "
 "กรุณาเริ่มการทำงานดีมอนของ gdm ใหม่ หรือเริ่มระบบคอมพิวเตอร์ใหม่"
 
-#: ../gui/gdmlogin.c:3672 ../gui/greeter/greeter.c:851
+#: ../gui/gdmlogin.c:3679 ../gui/greeter/greeter.c:852
 msgid "Restart"
 msgstr "เริ่มทำงานใหม่"
 
-#: ../gui/gdmlogin.c:3710
+#: ../gui/gdmlogin.c:3717
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -2982,25 +3002,25 @@ msgstr ""
 "รุ่นของหน้าต่างต้อนรับ (%s) ไม่ตรงกับรุ่นของดีมอน (%s)  คุณอาจจะเพิ่งปรับปรุงรุ่น gdm  "
 "กรุณาเริ่มการทำงานดีมอนของ gdm ใหม่ หรือเริ่มระบบคอมพิวเตอร์ใหม่"
 
-#: ../gui/gdmlogin.c:3716
+#: ../gui/gdmlogin.c:3723
 msgid "Restart gdm"
 msgstr "เริ่ม GDM ใหม่"
 
-#: ../gui/gdmlogin.c:3718
+#: ../gui/gdmlogin.c:3725
 msgid "Restart computer"
 msgstr "เปิดระบบคอมพิวเตอร์ใหม่"
 
-#: ../gui/gdmlogin.c:3753
+#: ../gui/gdmlogin.c:3760
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "ไม่สามารถเปิดรูปปริยาย: %s จะหยุดทำงานหน้าต่างแสดงผู้ใช้ชั่วคราว!"
 
 #. markup
-#: ../gui/gdmlogin.c:3918 ../gui/greeter/greeter.c:1514
+#: ../gui/gdmlogin.c:3925 ../gui/greeter/greeter.c:1521
 msgid "Session directory is missing"
 msgstr "ไม่ได้กำหนดไดเรกทอรีวาระ"
 
-#: ../gui/gdmlogin.c:3920 ../gui/greeter/greeter.c:1516
+#: ../gui/gdmlogin.c:3927 ../gui/greeter/greeter.c:1523
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3010,11 +3030,11 @@ msgstr ""
 "แต่คุณก็ควรเข้าระบบและแก้ไขการกำหนดค่าของ gdm ให้ถูกต้อง"
 
 #. markup
-#: ../gui/gdmlogin.c:3944 ../gui/greeter/greeter.c:1541
+#: ../gui/gdmlogin.c:3951 ../gui/greeter/greeter.c:1548
 msgid "Configuration is not correct"
 msgstr "การกำหนดค่าไม่ถูกต้อง"
 
-#: ../gui/gdmlogin.c:3946 ../gui/greeter/greeter.c:1543
+#: ../gui/gdmlogin.c:3953 ../gui/greeter/greeter.c:1550
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3023,11 +3043,11 @@ msgstr ""
 "ระบบจะเรียกคำสั่งปริยายแทน  กรุณาแก้ไขการกำหนดค่าของคุณ"
 
 #. markup
-#: ../gui/gdmlogin.c:3971 ../gui/greeter/greeter.c:1570
+#: ../gui/gdmlogin.c:3978 ../gui/greeter/greeter.c:1577
 msgid "No configuration was found"
 msgstr "ไม่พบค่ากำหนด"
 
-#: ../gui/gdmlogin.c:3973 ../gui/greeter/greeter.c:1572
+#: ../gui/gdmlogin.c:3980 ../gui/greeter/greeter.c:1579
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3037,25 +3057,25 @@ msgstr ""
 "คุณควรเข้าระบบและสร้างแฟ้มการกำหนดค่าด้วยโปรแกรมกำหนดค่าของ GDM"
 
 #. markup
-#: ../gui/gdmphotosetup.c:167
+#: ../gui/gdmphotosetup.c:168
 msgid "Cannot open file"
 msgstr "ไม่สามารถเปิดแฟ้มได้"
 
-#: ../gui/gdmphotosetup.c:168
+#: ../gui/gdmphotosetup.c:169
 #, c-format
 msgid "File %s cannot be opened for writing\n"
 msgstr "ไม่สามารถเปิดแฟ้ม %s เพื่อเขียนได้\n"
 
-#: ../gui/gdmphotosetup.c:233
+#: ../gui/gdmphotosetup.c:234
 msgid "Select Image"
 msgstr "เลือกรูป"
 
-#: ../gui/gdmphotosetup.c:254
+#: ../gui/gdmphotosetup.c:255
 msgid "All Images"
 msgstr "รูปภาพทั้งหมด"
 
 #. Filter name: First description then file extension, eg. "The PNG-Format (*.png)".
-#: ../gui/gdmphotosetup.c:274
+#: ../gui/gdmphotosetup.c:275
 #, c-format
 msgid "%s (*.%s)"
 msgstr "%s (*.%s)"
@@ -3129,7 +3149,7 @@ msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "ไม่พบวาระปริยาย จะใช้ Failsafe GNOME\n"
 
 #. markup
-#: ../gui/gdmsetup.c:208
+#: ../gui/gdmsetup.c:209
 msgid ""
 "An error occurred while trying to contact the login screens.  Not all "
 "updates may have taken effect."
@@ -3137,94 +3157,94 @@ msgstr ""
 "เกิดความผิดพลาดขณะพยายามติดต่อกับหน้าจอเข้าระบบ  อาจเกิดจากการไม่ได้ปรับปรุงครบทั้งหมด"
 
 #. markup
-#: ../gui/gdmsetup.c:870
+#: ../gui/gdmsetup.c:871
 msgid "Autologin or timed login to the root account is not allowed."
 msgstr "ไม่อนุญาตให้เข้าระบบเป็น root โดยอัตโนมัติหรือผ่านการตั้งเวลา"
 
-#: ../gui/gdmsetup.c:1617 ../gui/gdmsetup.c:2245
+#: ../gui/gdmsetup.c:1618 ../gui/gdmsetup.c:2246
 msgid "Open File"
 msgstr "เปิดแฟ้ม"
 
-#: ../gui/gdmsetup.c:1632
+#: ../gui/gdmsetup.c:1633
 msgid "PNG and JPEG"
 msgstr "PNG และ JPEG"
 
-#: ../gui/gdmsetup.c:2089 ../gui/gdmsetup.c:2129 ../gui/gdmsetup.c:2344
-#: ../gui/gdmsetup.c:2354 ../gui/gdmsetup.c:2364
+#: ../gui/gdmsetup.c:2090 ../gui/gdmsetup.c:2130 ../gui/gdmsetup.c:2345
+#: ../gui/gdmsetup.c:2355 ../gui/gdmsetup.c:2365
 msgid "None"
 msgstr "ไม่มี"
 
-#: ../gui/gdmsetup.c:2253
+#: ../gui/gdmsetup.c:2254
 msgid "All files"
 msgstr "ทั้งหมด"
 
-#: ../gui/gdmsetup.c:3002
+#: ../gui/gdmsetup.c:3003
 msgid "Archive is not of a subdirectory"
 msgstr "แฟ้มจัดเก็บไม่ได้เก็บข้อมูลในไดเรกทอรีย่อย"
 
-#: ../gui/gdmsetup.c:3010
+#: ../gui/gdmsetup.c:3011
 msgid "Archive is not of a single subdirectory"
 msgstr "แฟ้มจัดเก็บไม่ได้เก็บข้อมูลในไดเรกทอรีย่อยเดียว"
 
-#: ../gui/gdmsetup.c:3034 ../gui/gdmsetup.c:3112
+#: ../gui/gdmsetup.c:3035 ../gui/gdmsetup.c:3113
 msgid "File not a tar.gz or tar archive"
 msgstr "ไม่ใช่แฟ้มนามสกุล tar.gz หรือแฟ้มจัดเก็บข้อมูลของ tar"
 
-#: ../gui/gdmsetup.c:3036
+#: ../gui/gdmsetup.c:3037
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "แฟ้มจัดเก็บข้อมูลไม่มีแฟ้ม GdmGreeterTheme.info อยู่ด้วย"
 
-#: ../gui/gdmsetup.c:3058
+#: ../gui/gdmsetup.c:3059
 msgid "File does not exist"
 msgstr "ไม่มีแฟ้มอยู่"
 
 #. markup
-#: ../gui/gdmsetup.c:3173
+#: ../gui/gdmsetup.c:3174
 msgid "No file selected"
 msgstr "ไม่มีแฟ้มที่ถูกเลือก"
 
 #. markup
-#: ../gui/gdmsetup.c:3201
+#: ../gui/gdmsetup.c:3202
 msgid "Not a theme archive"
 msgstr "ไม่ใช่แฟ้มจัดเก็บชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:3202
+#: ../gui/gdmsetup.c:3203
 #, c-format
 msgid "Details: %s"
 msgstr "รายละเอียด: %s"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:3220
+#: ../gui/gdmsetup.c:3221
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr "ดูเหมือนว่าไดเรกทอรีของชุดตกแต่ง '%s' ได้ติดตั้งไว้แล้ว จะติดตั้งอีกครั้งหรือไม่?"
 
 #. markup
-#: ../gui/gdmsetup.c:3306
+#: ../gui/gdmsetup.c:3307
 msgid "Some error occurred when installing the theme"
 msgstr "เกิดความผิดพลาดบางอย่างขณะติดตั้งชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:3346
+#: ../gui/gdmsetup.c:3347
 msgid "Select new theme archive to install"
 msgstr "เลือกแฟ้มจัดเก็บข้อมูลชุดตกแต่งใหม่เพื่อติดตั้ง"
 
-#: ../gui/gdmsetup.c:3350
+#: ../gui/gdmsetup.c:3351
 msgid "_Install"
 msgstr "_ติดตั้ง"
 
-#: ../gui/gdmsetup.c:3418
+#: ../gui/gdmsetup.c:3419
 #, c-format
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "คุณต้องการที่จะเอาชุดตกแต่ง %s ออกจากระบบจริงหรือไม่ ?"
 
-#: ../gui/gdmsetup.c:3436
+#: ../gui/gdmsetup.c:3437
 msgid "_Remove Theme"
 msgstr "_ลบชุดตกแต่ง"
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:4190
+#: ../gui/gdmsetup.c:4191
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3246,7 +3266,7 @@ msgstr ""
 "สำหรับเอกสารที่สมบูรณ์ให้ดูที่คำแนะนำวิธีใช้ของ GNOME ภายในหมวด \"Desktop\""
 
 #. markup
-#: ../gui/gdmsetup.c:4616
+#: ../gui/gdmsetup.c:4636
 msgid "You must be the root user to configure GDM."
 msgstr "คุณต้องเป็น root เพื่อกำหนดค่า GDM"
 
@@ -3650,7 +3670,7 @@ msgstr "มักจะเป็นคำสั่งคล้ายๆ : /usr/b
 
 #: ../gui/gdmsetup.glade.h:98
 msgid "X Server Settings"
-msgstr "การตั้งค่าเอ็กซ์เซิร์ฟเวอร์"
+msgstr "การตั้งค่า X Server"
 
 #: ../gui/gdmsetup.glade.h:99
 msgid "_1 General"
@@ -3772,7 +3792,7 @@ msgstr "dummy"
 msgid "Too many users to list here..."
 msgstr "มีผู้ใช้มากเกินไปตามรายการนี้..."
 
-#: ../gui/greeter/greeter.c:768 ../gui/greeter/greeter.c:800
+#: ../gui/greeter/greeter.c:769 ../gui/greeter/greeter.c:801
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3783,11 +3803,11 @@ msgstr ""
 "คุณอาจจะเพิ่งปรับปรุงรุ่น gdm\n"
 "กรุณาเริ่มการทำงานดีมอนของ gdm ใหม่ หรือเปิดระบบคอมพิวเตอร์ใหม่"
 
-#: ../gui/greeter/greeter.c:806 ../gui/greeter/greeter.c:853
+#: ../gui/greeter/greeter.c:807 ../gui/greeter/greeter.c:854
 msgid "Reboot"
 msgstr "เริ่มระบบใหม่"
 
-#: ../gui/greeter/greeter.c:845
+#: ../gui/greeter/greeter.c:846
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3798,24 +3818,24 @@ msgstr ""
 "คุณอาจจะเพิ่งปรับปรุงรุ่น gdm\n"
 "กรุณาเริ่มการทำงานดีมอนของ gdm ใหม่ หรือเปิดระบบคอมพิวเตอร์ใหม่"
 
-#: ../gui/greeter/greeter.c:1350
+#: ../gui/greeter/greeter.c:1357
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "เกิดความผิดพลาดขณะโหลดชุดตกแต่ง %s"
 
 #. markup
-#: ../gui/greeter/greeter.c:1404
+#: ../gui/greeter/greeter.c:1411
 msgid "The greeter theme is corrupt"
 msgstr "ชุดตกแต่งสำหรับหน้าต่างต้อนรับเสีย"
 
-#: ../gui/greeter/greeter.c:1406
+#: ../gui/greeter/greeter.c:1413
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "ชุดตกแต่งไม่มีคำนิยามในส่วนประกอบรายการของชื่อผู้ใช้/รหัสผ่าน"
 
 #. markup
-#: ../gui/greeter/greeter.c:1440
+#: ../gui/greeter/greeter.c:1447
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
@@ -3824,7 +3844,7 @@ msgstr ""
 "ระบบจะลองพยายามเรียกหน้าต่างต้อนรับมาตรฐานแทน"
 
 #. markup
-#: ../gui/greeter/greeter.c:1463
+#: ../gui/greeter/greeter.c:1470
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -4130,6 +4150,13 @@ msgstr "ไม่สามารถโหลดส่วนติดต่อไ
 #: ../vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "มีการตั้งฉายาโลแคลหลายชั้นเกินไป เป็นไปได้ว่าอาจมีลูปเกิดขึ้น"
+
+#~ msgid ""
+#~ "The GDM group '%s' does not exist. Please correct gdm configuration %s "
+#~ "and restart gdm."
+#~ msgstr ""
+#~ "ไม่มีกลุ่ม '%s' ของ GDM อยู่ กรุณาแก้ไขการกำหนดค่า GDM %s ให้ถูกต้องและ เริ่มการใช้งาน "
+#~ "GDM ใหม่"
 
 #~ msgid ""
 #~ "Please ask your system administrator to enable it in the GDM configurator "
