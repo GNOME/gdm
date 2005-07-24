@@ -1,5 +1,16 @@
 2005-07-24  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/greeter/greeter_item_ulist.c (check_for_displays) 
+	(greeter_generate_userlist, greeter_populate_user_list):
+	A few more tweaks to the face browser.
+
+	* gui/gdmphotosetup.c (maybe_migrate_old_config): Fix leak.
+	(main): Freeing result of gdm_common_get_config file
+	causes memory corruption.  So, don't free it until
+	we find the problem.
+
+2005-07-24  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/faces/Makefile.am:
 	* gui/face/dice.jpg:
 	* gui/face/sky.jpg: Updated images.

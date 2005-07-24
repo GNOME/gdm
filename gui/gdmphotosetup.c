@@ -337,6 +337,7 @@ maybe_migrate_old_config (void)
 			gdk_pixbuf_save (pixbuf, photofile, "png", NULL, NULL);
 		}
 
+		g_object_unref (pixbuf);
 	}
 
 	g_free (name);
@@ -473,13 +474,15 @@ main (int argc, char *argv[])
 
 	maybe_migrate_old_config ();
 
-        config_file = gdm_common_get_config_file ();
-        if (config_file == NULL) {
-                g_print (_("Could not access GDM configuration file.\n"));
-                exit (EXIT_FAILURE);
-        }
+	config_file = gdm_common_get_config_file ();
+	if (config_file == NULL) {
+		g_print (_("Could not access GDM configuration file.\n"));
+		exit (EXIT_FAILURE);
+	}
 
-        config_prefix = g_strdup_printf("=%s=/", config_file);
+	config_prefix = g_strdup_printf ("=%s=/", config_file);
+	/*g_free (config_file);*/
+
 	gnome_config_push_prefix (config_prefix);
 	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
 	max_size = gnome_config_get_int (GDM_KEY_MAXFILE);
@@ -489,8 +492,8 @@ main (int argc, char *argv[])
 
 	facedir = gnome_config_get_string (GDM_KEY_FACEDIR);
 	gnome_config_pop_prefix ();
+
 	g_free (config_prefix);
-	g_free (config_file);
 
 	gtk_window_set_default_icon_name ("stock_person");
 
