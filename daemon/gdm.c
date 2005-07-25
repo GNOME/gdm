@@ -436,8 +436,10 @@ gdm_config_parse (void)
     GdmRetryDelay = ve_config_get_int (cfg, GDM_KEY_RETRYDELAY);
     GdmRootPath = ve_config_get_string (cfg, GDM_KEY_ROOTPATH);
     GdmServAuthDir = ve_config_get_string (cfg, GDM_KEY_SERVAUTH);
+#ifdef ENABLE_IPV6
     GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
     GdmMulticastAddr = ve_config_get_string (cfg, GDM_KEY_MULTICAST_ADDR);
+#endif
 
     GdmSessDir = ve_config_get_string (cfg, GDM_KEY_SESSDIR);
     GdmXsession = ve_config_get_string (cfg, GDM_KEY_BASEXSESSION);
