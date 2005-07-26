@@ -1,3 +1,16 @@
+2005-07-26  Tommi Vainikainen  <thv@iki.fi>
+
+	* gui/gdmsetup.c (setup_gui), gui/gdmsetup.glade: Removed special
+	option for 24 hour time format.
+	* gui/gdmcommon.h, gui/gdmcommon.c
+	(gdm_common_select_time_format): Added function to parse between
+	"auto", "true", and "false" in "Use24Clock" setting.
+	* gui/gdmlogin.c (gdm_login_parse_config), gui/greeter/greeter.c
+	(greeter_parse_config): Use gdm_common_select_time_format(...).
+	* docs/C/gdm.xml: Documented new default "auto" option for
+	Use24Clock, which selects 24 hour time format by locale
+	(translation).
+
 2005-07-25  Brian Cameron  <brian.cameron@sun.com>
 
 	* config/Makefile.am:  Now installs gdm.conf to

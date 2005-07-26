@@ -286,7 +286,7 @@ greeter_parse_config (void)
 
     GdmFlexiReapDelayMinutes = ve_config_get_int (config, GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
 
-    GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
+    GdmUse24Clock = gdm_common_select_time_format (config);
 
     GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICONHEIGHT);
@@ -952,11 +952,8 @@ greeter_reread_config (int sig, gpointer data)
 	GdmSoundOnLoginFailureFile = ve_config_get_string (config,
 	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
-	if ( ! gdm_common_bool_same (config,
-				     GdmUse24Clock,
-				     GDM_KEY_USE_24_CLOCK)) {
-		GdmUse24Clock = ve_config_get_bool (config,
-						    GDM_KEY_USE_24_CLOCK);
+	if ( gdm_common_select_time_format (config) != GdmUse24Clock) {
+		GdmUse24Clock = gdm_common_select_time_format (config);
 		greeter_item_clock_update ();
 	}
 

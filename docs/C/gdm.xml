@@ -2899,12 +2899,23 @@ XKeepsCrashing
           <varlistentry>
             <term>Use24Clock</term>
             <listitem>
-              <synopsis>Use24Clock=false</synopsis>
+              <synopsis>Use24Clock=auto</synopsis>
               <para>
-                Force the use of 24 hour clock even if the locale would default
-                to a 12 hour clock.  In some locales that normally use 24 hour
-                format (like czech, that is <filename>cs_CZ</filename>) this
-                setting has no effect.
+                Select the use of 24 hour clock.  Some locales do not
+                support 12 hour format (like Finnish, that is
+                <filename>fi_FI</filename>), and in those locales this
+                setting has no effect at all.
+              </para>
+              <para>
+                Possible values are "auto" (default), "true", and
+                "false". If this is set to "auto" or left empty, then
+                time format is chosen from locale settings. Locale
+                settings are based on the language in use, thus it is
+                changed by setting environment variables LANGUAGE (GNU
+                extension), LANG, LC_MESSAGES or LC_ALL in the GDM's
+                runtime environment. Priorities between the mentioned
+                environment variables can be found from your system's
+                C library manual.
               </para>
             </listitem>
           </varlistentry>

@@ -4290,7 +4290,6 @@ setup_gui (void)
 	g_object_unref (G_OBJECT (sg));
 
 	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-	add_to_size_group (sg, "sg_use_24_clock");
 	add_to_size_group (sg, "autologin");
 	add_to_size_group (sg, "timedlogin");
 	g_object_unref (G_OBJECT (sg));
@@ -4397,8 +4396,6 @@ setup_gui (void)
 	setup_greeter_combobox ("remote_greeter", GDM_KEY_REMOTEGREETER);
 
 	/* Greeter */
-	setup_greeter_toggle ("sg_use_24_clock",
-			      GDM_KEY_USE_24_CLOCK);
 	setup_greeter_toggle ("sg_scale_background",
 			      GDM_KEY_BACKGROUNDSCALETOFIT);
 	setup_greeter_toggle ("sg_remote_color_only",

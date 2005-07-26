@@ -982,7 +982,7 @@ gdm_login_parse_config (void)
     }
   
     GdmFlexiReapDelayMinutes = ve_config_get_int (config, GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
-    GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
+    GdmUse24Clock = gdm_common_select_time_format (config);
 
     GdmSoundOnLoginReady = ve_config_get_bool (config,
 	                       GDM_KEY_SOUND_ON_LOGIN_READY);
@@ -2596,6 +2596,9 @@ update_clock (gpointer data)
 	if (GdmUse24Clock) {
 		str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
 	} else {
+		/* Translators: You should translate time part as
+		   %H:%M if your language does not have AM and PM
+		   equivalent. */
 		str = ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
   	}
 
@@ -3483,7 +3486,7 @@ gdm_reread_config (int sig, gpointer data)
 	GdmSoundOnLoginReadyFile = ve_config_get_string (config,
 	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
 
-	GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
+	GdmUse24Clock = gdm_common_select_time_format (config);
 	update_clock (NULL);
 
 	str = ve_config_get_string (config, GDM_KEY_LOGO);

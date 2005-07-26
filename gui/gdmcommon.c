@@ -308,3 +308,43 @@ gdm_common_get_config_file (void)
 	return config_file;
 }
 
+gboolean
+gdm_common_select_time_format (VeConfig *config)
+{
+	gchar *val;
+
+	g_return_val_if_fail (config != NULL, FALSE);
+
+	val = ve_config_get_string (config, GDM_KEY_USE_24_CLOCK);
+
+	if (val != NULL &&
+	    (val[0] == 'T' ||
+	     val[0] == 't' ||
+	     val[0] == 'Y' ||
+	     val[0] == 'y' ||
+	     atoi (val) != 0)) {
+		g_free (val);
+		return TRUE;
+	} else if (val != NULL &&
+	    (val[0] == 'F' ||
+	     val[0] == 'f' ||
+	     val[0] == 'N' ||
+	     val[0] == 'n')) {
+		g_free (val);
+		return FALSE;
+	} else {
+		/* Value is "auto" (default), thus select according to
+		   "locale" settings. */
+		g_free(val);
+
+		/* Translators: Translate this to '12-hour', or
+		   '24-hour'. Meaning of the translation is the
+		   default time format in your locale. */
+		return strcmp("12-hour", _("24-hour")) != 0;
+		/* Logic is that if translator does not understand the
+		   comment, then 24 hour format is selected. */
+	}
+	/* NOTREACHED */
+	return TRUE;
+}
+
