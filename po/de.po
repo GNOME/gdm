@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GDM 2.6.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-26 17:20+0200\n"
-"PO-Revision-Date: 2005-07-26 17:19+0200\n"
+"POT-Creation-Date: 2005-07-26 22:45+0200\n"
+"PO-Revision-Date: 2005-07-26 22:45+0200\n"
 "Last-Translator: Hendrik Richter <hendi@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -711,11 +711,11 @@ msgstr "Nicht in den Hintergrund abspalten"
 msgid "No console (static) servers to be run"
 msgstr "Es sollen keine Konsolen-Server (lokal) ausgeführt werden"
 
-#: ../daemon/gdm.c:1990 ../gui/gdmsetup.c:4549
+#: ../daemon/gdm.c:1990 ../gui/gdmsetup.c:4546
 msgid "Alternative configuration file"
 msgstr "Alternative Konfigurationsdatei"
 
-#: ../daemon/gdm.c:1990 ../gui/gdmsetup.c:4549
+#: ../daemon/gdm.c:1990 ../gui/gdmsetup.c:4546
 msgid "CONFIGFILE"
 msgstr "KONFIGURATIONSDATEI"
 
@@ -759,9 +759,9 @@ msgstr "Nur der »root«-Benutzer darf GDM starten\n"
 #: ../daemon/server.c:531 ../daemon/server.c:544 ../daemon/slave.c:821
 #: ../daemon/slave.c:835 ../daemon/slave.c:845 ../daemon/slave.c:855
 #: ../daemon/slave.c:867 ../gui/gdmchooser.c:1938 ../gui/gdmchooser.c:1941
-#: ../gui/gdmchooser.c:1944 ../gui/gdmlogin.c:3783 ../gui/gdmlogin.c:3793
-#: ../gui/gdmlogin.c:3798 ../gui/greeter/greeter.c:1269
-#: ../gui/greeter/greeter.c:1277 ../gui/greeter/greeter.c:1280
+#: ../gui/gdmchooser.c:1944 ../gui/gdmlogin.c:3786 ../gui/gdmlogin.c:3796
+#: ../gui/gdmlogin.c:3801 ../gui/greeter/greeter.c:1266
+#: ../gui/greeter/greeter.c:1274 ../gui/greeter/greeter.c:1277
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Fehler beim Einrichten des Signalhandlers %s: %s"
@@ -1436,7 +1436,7 @@ msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Stellen Sie sicher, dass die Dauerumschalttaste nicht aktiv ist"
 
 #: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:440
-#: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3134
+#: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3137
 msgid "Please enter your username"
 msgstr ""
 "Bitte geben Sie Ihren\n"
@@ -1935,9 +1935,9 @@ msgid "Don't check for running gdm"
 msgstr "Nicht auf laufenden GDM überprüfen"
 
 #: ../gui/gdmXnestchooser.c:509 ../gui/gdmchooser.c:2074
-#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:683 ../gui/gdmlogin.c:3608
-#: ../gui/gdmphotosetup.c:479 ../gui/gdmsetup.c:4586
-#: ../gui/greeter/greeter.c:1231
+#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:683 ../gui/gdmlogin.c:3611
+#: ../gui/gdmphotosetup.c:479 ../gui/gdmsetup.c:4583
+#: ../gui/greeter/greeter.c:1228
 msgid "Could not access GDM configuration file.\n"
 msgstr "Zugriff auf die GDM-Konfigurationsdatei war nicht möglich.\n"
 
@@ -2055,8 +2055,8 @@ msgstr ""
 msgid "Can't open default host icon: %s"
 msgstr "Voreingestelltes Rechnersymbol konnte nicht geöffnet werden: %s"
 
-#: ../gui/gdmchooser.c:1952 ../gui/gdmlogin.c:3808
-#: ../gui/greeter/greeter.c:1288 ../gui/greeter/greeter.c:1295
+#: ../gui/gdmchooser.c:1952 ../gui/gdmlogin.c:3811
+#: ../gui/greeter/greeter.c:1285 ../gui/greeter/greeter.c:1292
 msgid "Could not set signal mask!"
 msgstr "Signalmaske konnte nicht gesetzt werden!"
 
@@ -2100,7 +2100,7 @@ msgstr ""
 "GDM-Dienst oder den Computer neu."
 
 #. EOF
-#: ../gui/gdmchooser.glade.h:1 ../gui/gdmsetup.glade.h:3
+#: ../gui/gdmchooser.glade.h:1
 msgid "*"
 msgstr "*"
 
@@ -2140,7 +2140,7 @@ msgstr "Diesen Rechner abfragen und zur obigen Liste hinzufügen"
 msgid "Status"
 msgstr "Status"
 
-#: ../gui/gdmchooser.glade.h:11 ../gui/gdmsetup.glade.h:107
+#: ../gui/gdmchooser.glade.h:11 ../gui/gdmsetup.glade.h:105
 msgid "_Add"
 msgstr "_Hinzufügen"
 
@@ -2267,6 +2267,13 @@ msgstr ""
 msgid "Unknown error occurred."
 msgstr "Es ist ein unbekannter Fehler aufgetreten."
 
+#. Translators: Translate this to '12-hour', or
+#. '24-hour'. Meaning of the translation is the
+#. default time format in your locale.
+#: ../gui/gdmcommon.c:343
+msgid "24-hour"
+msgstr "24-hour"
+
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
 msgstr "In einem verschachtelten Fenster neu anmelden"
@@ -2294,7 +2301,7 @@ msgstr "Anzeige %s auf virtuellem Terminal %d"
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Anzeige %s in Fenster auf virtuellem Terminal %d"
 
-#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2981
+#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:2984
 #: ../gui/greeter/greeter_item_ulist.c:243
 msgid "Username"
 msgstr "Benutzername"
@@ -2573,7 +2580,7 @@ msgstr "A-M|Französisch (Belgien)"
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:119
 msgid "A-M|French (Switzerland)"
-msgstr "A-M|Englisch (Schweiz)"
+msgstr "A-M|Französisch (Schweiz)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:121
@@ -2904,7 +2911,7 @@ msgid "Are you sure you want to restart the computer?"
 msgstr "Sind Sie sicher, dass Sie den Rechner neu starten möchten?"
 
 #. markup
-#: ../gui/gdmlogin.c:813 ../gui/gdmlogin.c:2844
+#: ../gui/gdmlogin.c:813 ../gui/gdmlogin.c:2847
 msgid "_Restart"
 msgstr "_Neustart"
 
@@ -2913,7 +2920,7 @@ msgid "Are you sure you want to shut down the computer?"
 msgstr "Sind Sie sicher, dass Sie den Rechner ausschalten möchten?"
 
 #. markup
-#: ../gui/gdmlogin.c:827 ../gui/gdmlogin.c:2857
+#: ../gui/gdmlogin.c:827 ../gui/gdmlogin.c:2860
 #: ../gui/greeter/greeter_parser.c:1077 ../gui/greeter/greeter_system.c:77
 #: ../gui/greeter/greeter_system.c:198
 msgid "Shut _Down"
@@ -2925,7 +2932,7 @@ msgstr ""
 "Sind Sie sicher, dass Sie den Rechner in den Ruhezustand versetzen möchten?"
 
 #. markup
-#: ../gui/gdmlogin.c:849 ../gui/gdmlogin.c:2871
+#: ../gui/gdmlogin.c:849 ../gui/gdmlogin.c:2874
 #: ../gui/greeter/greeter_system.c:89
 msgid "_Suspend"
 msgstr "In _Ruhezustand versetzen"
@@ -3003,7 +3010,7 @@ msgid "System Default"
 msgstr "Systemvorgabe"
 
 #: ../gui/gdmlogin.c:1297 ../gui/gdmlogin.c:1311 ../gui/gdmlogin.c:1943
-#: ../gui/gdmlogin.c:2450 ../gui/gdmlogin.c:3087
+#: ../gui/gdmlogin.c:2450 ../gui/gdmlogin.c:3090
 msgid "_Username:"
 msgstr "_Benutzername:"
 
@@ -3067,31 +3074,34 @@ msgstr "GNOME Desktop-Manager"
 msgid "%a %b %d, %H:%M"
 msgstr "%a, %d. %b, %H:%M"
 
-#: ../gui/gdmlogin.c:2599 ../gui/greeter/greeter_item.c:161
+#. Translators: You should translate time part as
+#. %H:%M if your language does not have AM and PM
+#. equivalent.
+#: ../gui/gdmlogin.c:2602 ../gui/greeter/greeter_item.c:161
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a, %d. %b, %l:%M"
 
-#: ../gui/gdmlogin.c:2648
+#: ../gui/gdmlogin.c:2651
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2752
+#: ../gui/gdmlogin.c:2755
 msgid "GDM Login"
 msgstr "GDM-Anmeldung"
 
-#: ../gui/gdmlogin.c:2795 ../gui/greeter/greeter_parser.c:1057
+#: ../gui/gdmlogin.c:2798 ../gui/greeter/greeter_parser.c:1057
 msgid "_Session"
 msgstr "_Sitzung"
 
-#: ../gui/gdmlogin.c:2802 ../gui/greeter/greeter_parser.c:1052
+#: ../gui/gdmlogin.c:2805 ../gui/greeter/greeter_parser.c:1052
 msgid "_Language"
 msgstr "S_prache"
 
-#: ../gui/gdmlogin.c:2814 ../gui/greeter/greeter_system.c:152
+#: ../gui/gdmlogin.c:2817 ../gui/greeter/greeter_system.c:152
 msgid "_XDMCP Chooser..."
 msgstr "_XDMCP-Auswähler..."
 
-#: ../gui/gdmlogin.c:2821 ../gui/greeter/greeter_system.c:159
+#: ../gui/gdmlogin.c:2824 ../gui/greeter/greeter_system.c:159
 #: ../gui/greeter/greeter_system.c:349
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
@@ -3100,11 +3110,11 @@ msgstr ""
 "Einen XDMCP-Auswähler ausführen, der es Ihnen erlaubt, sich an entfernten "
 "Computern anzumelden, falls solche vorhanden sind."
 
-#: ../gui/gdmlogin.c:2830 ../gui/greeter/greeter_system.c:167
+#: ../gui/gdmlogin.c:2833 ../gui/greeter/greeter_system.c:167
 msgid "_Configure Login Manager..."
 msgstr "Anmeldemanager _konfigurieren..."
 
-#: ../gui/gdmlogin.c:2837 ../gui/greeter/greeter_system.c:174
+#: ../gui/gdmlogin.c:2840 ../gui/greeter/greeter_system.c:174
 #: ../gui/greeter/greeter_system.c:369
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
@@ -3112,48 +3122,48 @@ msgstr ""
 "GDM (diesen Anmeldemanager) konfigurieren. Hierzu ist das »root«-Passwort "
 "erforderlich."
 
-#: ../gui/gdmlogin.c:2851
+#: ../gui/gdmlogin.c:2854
 msgid "Restart your computer"
 msgstr "Das System neu starten"
 
-#: ../gui/gdmlogin.c:2864 ../gui/greeter/greeter_system.c:205
+#: ../gui/gdmlogin.c:2867 ../gui/greeter/greeter_system.c:205
 msgid "Shut down the system so that you may safely turn off the computer."
 msgstr "Den Computer herunterfahren, sodass Sie ihn sicher ausschalten können."
 
-#: ../gui/gdmlogin.c:2878 ../gui/greeter/greeter_system.c:218
+#: ../gui/gdmlogin.c:2881 ../gui/greeter/greeter_system.c:218
 msgid "Suspend your computer"
 msgstr "Den Computer in den Ruhezustand versetzen"
 
-#: ../gui/gdmlogin.c:2884 ../gui/greeter/greeter_parser.c:1062
+#: ../gui/gdmlogin.c:2887 ../gui/greeter/greeter_parser.c:1062
 msgid "_Actions"
 msgstr "_Aktionen"
 
-#: ../gui/gdmlogin.c:2893
+#: ../gui/gdmlogin.c:2896
 msgid "_Theme"
 msgstr "_Thema"
 
-#: ../gui/gdmlogin.c:2904 ../gui/greeter/greeter_canvas_item.c:165
+#: ../gui/gdmlogin.c:2907 ../gui/greeter/greeter_canvas_item.c:165
 #: ../gui/greeter/greeter_parser.c:1072
 msgid "_Quit"
 msgstr "_Beenden"
 
-#: ../gui/gdmlogin.c:2906 ../gui/greeter/greeter_canvas_item.c:167
+#: ../gui/gdmlogin.c:2909 ../gui/greeter/greeter_canvas_item.c:167
 #: ../gui/greeter/greeter_parser.c:1067
 msgid "D_isconnect"
 msgstr "_Trennen"
 
-#: ../gui/gdmlogin.c:2974 ../gui/greeter/greeter_item_ulist.c:237
+#: ../gui/gdmlogin.c:2977 ../gui/greeter/greeter_item_ulist.c:237
 msgid "Icon"
 msgstr "Symbol"
 
 #. markup
-#: ../gui/gdmlogin.c:3641 ../gui/gdmlogin.c:3672 ../gui/gdmlogin.c:3716
+#: ../gui/gdmlogin.c:3644 ../gui/gdmlogin.c:3675 ../gui/gdmlogin.c:3719
 #: ../gui/greeter/greeter.c:768 ../gui/greeter/greeter.c:800
 #: ../gui/greeter/greeter.c:845
 msgid "Cannot start the greeter"
 msgstr "Der Begrüßer konnte nicht gestartet werden"
 
-#: ../gui/gdmlogin.c:3642 ../gui/gdmlogin.c:3673
+#: ../gui/gdmlogin.c:3645 ../gui/gdmlogin.c:3676
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -3163,11 +3173,11 @@ msgstr ""
 "überein. Vermutlich haben Sie gerade GDM aktualisiert. Starten Sie den GDM-"
 "Dienst oder den Computer neu."
 
-#: ../gui/gdmlogin.c:3679 ../gui/greeter/greeter.c:852
+#: ../gui/gdmlogin.c:3682 ../gui/greeter/greeter.c:852
 msgid "Restart"
 msgstr "Neustart"
 
-#: ../gui/gdmlogin.c:3717
+#: ../gui/gdmlogin.c:3720
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -3177,15 +3187,15 @@ msgstr ""
 "s) überein. Vermutlich haben Sie gerade GDM aktualisiert. Starten Sie den "
 "GDM-Dienst oder den Computer neu."
 
-#: ../gui/gdmlogin.c:3723
+#: ../gui/gdmlogin.c:3726
 msgid "Restart gdm"
 msgstr "GDM neu starten"
 
-#: ../gui/gdmlogin.c:3725
+#: ../gui/gdmlogin.c:3728
 msgid "Restart computer"
 msgstr "System _neu starten"
 
-#: ../gui/gdmlogin.c:3760
+#: ../gui/gdmlogin.c:3763
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
@@ -3193,11 +3203,11 @@ msgstr ""
 "nicht verfügbar!"
 
 #. markup
-#: ../gui/gdmlogin.c:3925 ../gui/greeter/greeter.c:1521
+#: ../gui/gdmlogin.c:3928 ../gui/greeter/greeter.c:1518
 msgid "Session directory is missing"
 msgstr "Sitzungsverzeichnis fehlt"
 
-#: ../gui/gdmlogin.c:3927 ../gui/greeter/greeter.c:1523
+#: ../gui/gdmlogin.c:3930 ../gui/greeter/greeter.c:1520
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3208,11 +3218,11 @@ msgstr ""
 "Ihre GDM-Konfiguration korrigieren."
 
 #. markup
-#: ../gui/gdmlogin.c:3951 ../gui/greeter/greeter.c:1548
+#: ../gui/gdmlogin.c:3954 ../gui/greeter/greeter.c:1545
 msgid "Configuration is not correct"
 msgstr "Konfiguration ist nicht fehlerfrei"
 
-#: ../gui/gdmlogin.c:3953 ../gui/greeter/greeter.c:1550
+#: ../gui/gdmlogin.c:3956 ../gui/greeter/greeter.c:1547
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3222,11 +3232,11 @@ msgstr ""
 "Sie Ihre Konfiguration."
 
 #. markup
-#: ../gui/gdmlogin.c:3978 ../gui/greeter/greeter.c:1577
+#: ../gui/gdmlogin.c:3981 ../gui/greeter/greeter.c:1574
 msgid "No configuration was found"
 msgstr "Keine Konfiguration gefunden"
 
-#: ../gui/gdmlogin.c:3980 ../gui/greeter/greeter.c:1579
+#: ../gui/gdmlogin.c:3983 ../gui/greeter/greeter.c:1576
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3460,7 +3470,7 @@ msgstr ""
 "Kategorie »Desktop«."
 
 #. markup
-#: ../gui/gdmsetup.c:4636
+#: ../gui/gdmsetup.c:4633
 msgid "You must be the root user to configure GDM."
 msgstr "Sie müssen sich als Benutzer »root« anmelden, um GDM zu konfigurieren."
 
@@ -3469,7 +3479,7 @@ msgstr "Sie müssen sich als Benutzer »root« anmelden, um GDM zu konfigurieren
 msgid "Configure the login screen (GNOME Display Manager)"
 msgstr "Den Anmeldebildschirm (GNOME Display Manager) konfigurieren"
 
-#: ../gui/gdmsetup.desktop.in.h:2 ../gui/gdmsetup.glade.h:52
+#: ../gui/gdmsetup.desktop.in.h:2 ../gui/gdmsetup.glade.h:50
 msgid "Login Screen Setup"
 msgstr "Einrichtung des Anmeldebildschirms"
 
@@ -3477,19 +3487,19 @@ msgstr "Einrichtung des Anmeldebildschirms"
 msgid "     "
 msgstr "     "
 
-#: ../gui/gdmsetup.glade.h:4
+#: ../gui/gdmsetup.glade.h:3
 msgid "<"
 msgstr "<"
 
-#: ../gui/gdmsetup.glade.h:5
+#: ../gui/gdmsetup.glade.h:4
 msgid "<b>Server Settings</b>"
 msgstr "<b>Server-Einstellungen</b>"
 
-#: ../gui/gdmsetup.glade.h:6
+#: ../gui/gdmsetup.glade.h:5
 msgid "<b>Servers to Start</b>"
 msgstr "<b>Zu startende Server</b>"
 
-#: ../gui/gdmsetup.glade.h:7
+#: ../gui/gdmsetup.glade.h:6
 msgid ""
 "<b>WARNING:</b> Placing values in this section that your Xserver does not "
 "support will stop your Xserver\n"
@@ -3502,39 +3512,39 @@ msgstr ""
 "diesesKonfigurationsprogramm nicht mehr ausgeführt werden. SEIEN SIE "
 "VORSICHTIG!"
 
-#: ../gui/gdmsetup.glade.h:9
+#: ../gui/gdmsetup.glade.h:8
 msgid ">"
 msgstr ">"
 
-#: ../gui/gdmsetup.glade.h:10
+#: ../gui/gdmsetup.glade.h:9
 msgid "Add/Modify Server"
 msgstr "Server hinzufügen/bearbeiten"
 
-#: ../gui/gdmsetup.glade.h:11
+#: ../gui/gdmsetup.glade.h:10
 msgid "Allow _configuration from the login screen"
 msgstr "_Konfiguration vom Anmeldebildschirm aus erlauben"
 
-#: ../gui/gdmsetup.glade.h:12
+#: ../gui/gdmsetup.glade.h:11
 msgid "Allow _root to login with GDM"
 msgstr "»_root«-Benutzer erlauben, sich mit GDM anzumelden"
 
-#: ../gui/gdmsetup.glade.h:13
+#: ../gui/gdmsetup.glade.h:12
 msgid "Allow remote _timed logins"
 msgstr "Entfernte _zeitgesteuerte Anmeldungen zulassen"
 
-#: ../gui/gdmsetup.glade.h:14
+#: ../gui/gdmsetup.glade.h:13
 msgid "Allow root to login r_emotely with GDM"
 msgstr "»root«-Benutzer erlauben, sich _entfernt mit GDM anzumelden"
 
-#: ../gui/gdmsetup.glade.h:15
+#: ../gui/gdmsetup.glade.h:14
 msgid "Allow running _XDMCP chooser from the login screen"
 msgstr "Ausführen des XDMCP-Aus_wählers vom Anmeldebildschirm aus erlauben"
 
-#: ../gui/gdmsetup.glade.h:16
+#: ../gui/gdmsetup.glade.h:15
 msgid "Allow theme selection in _GTK+ Greeter."
 msgstr "Themenauswahl im _GTK+-Begrüßer zulassen"
 
-#: ../gui/gdmsetup.glade.h:17
+#: ../gui/gdmsetup.glade.h:16
 msgid ""
 "Always _disallow TCP connections to X server (disables all remote "
 "connections)"
@@ -3542,91 +3552,87 @@ msgstr ""
 "_TCP-Verbindungen zum X-Server immer abweisen (deaktiviert alle entfernten "
 "Verbindungen)"
 
-#: ../gui/gdmsetup.glade.h:18
-msgid "Always use 24 hour cloc_k format"
-msgstr "Immer 24-Stunden-_Zeitformat verwenden"
-
-#: ../gui/gdmsetup.glade.h:19
+#: ../gui/gdmsetup.glade.h:17
 msgid "Apply"
 msgstr "Anwenden"
 
-#: ../gui/gdmsetup.glade.h:20
+#: ../gui/gdmsetup.glade.h:18
 msgid "Author:"
 msgstr "Autor:"
 
-#: ../gui/gdmsetup.glade.h:21
+#: ../gui/gdmsetup.glade.h:19
 msgid "Automatic Login"
 msgstr "Automatische Anmeldung"
 
-#: ../gui/gdmsetup.glade.h:22
+#: ../gui/gdmsetup.glade.h:20
 msgid "Background"
 msgstr "Hintergrund"
 
-#: ../gui/gdmsetup.glade.h:23
+#: ../gui/gdmsetup.glade.h:21
 msgid "Browse"
 msgstr "Auswählen"
 
-#: ../gui/gdmsetup.glade.h:24
+#: ../gui/gdmsetup.glade.h:22
 msgid "Choose network computer to connect to."
 msgstr "Bitte wählen Sie einen Netzwerkrechner, zu dem verbunden werden soll."
 
-#: ../gui/gdmsetup.glade.h:25
+#: ../gui/gdmsetup.glade.h:23
 msgid "Chooser"
 msgstr "Auswähler"
 
-#: ../gui/gdmsetup.glade.h:26
+#: ../gui/gdmsetup.glade.h:24
 msgid "Color Depth:"
 msgstr "Farbtiefe:"
 
-#: ../gui/gdmsetup.glade.h:27
+#: ../gui/gdmsetup.glade.h:25
 msgid "Command:"
 msgstr "Befehl:"
 
-#: ../gui/gdmsetup.glade.h:28
+#: ../gui/gdmsetup.glade.h:26
 msgid "Copyright:"
 msgstr "Copyright:"
 
-#: ../gui/gdmsetup.glade.h:29
+#: ../gui/gdmsetup.glade.h:27
 msgid "Create Server Definition"
 msgstr "Server-Definition erstellen"
 
-#: ../gui/gdmsetup.glade.h:30
+#: ../gui/gdmsetup.glade.h:28
 msgid "Delete"
 msgstr "Löschen"
 
-#: ../gui/gdmsetup.glade.h:31
+#: ../gui/gdmsetup.glade.h:29
 msgid "Delete Server Definition"
 msgstr "Server-Definition löschen"
 
-#: ../gui/gdmsetup.glade.h:32
+#: ../gui/gdmsetup.glade.h:30
 msgid "Description:"
 msgstr "Beschreibung:"
 
-#: ../gui/gdmsetup.glade.h:33
+#: ../gui/gdmsetup.glade.h:31
 msgid "Displays per _host:"
 msgstr "Anzeigen pro _Rechner:"
 
-#: ../gui/gdmsetup.glade.h:34
+#: ../gui/gdmsetup.glade.h:32
 msgid "Enable _XDMCP"
 msgstr "_XDMCP aktivieren"
 
-#: ../gui/gdmsetup.glade.h:35
+#: ../gui/gdmsetup.glade.h:33
 msgid "Enable _accessibility modules"
 msgstr "_Barrierefreiheitsmodule aktivieren"
 
-#: ../gui/gdmsetup.glade.h:36
+#: ../gui/gdmsetup.glade.h:34
 msgid "Enable debu_g messages to system log"
 msgstr "Fehlermeldungen im Systemprotokoll aktivieren"
 
-#: ../gui/gdmsetup.glade.h:37
+#: ../gui/gdmsetup.glade.h:35
 msgid "Exclude"
 msgstr "Ausschließen"
 
-#: ../gui/gdmsetup.glade.h:38
+#: ../gui/gdmsetup.glade.h:36
 msgid "Flexible"
 msgstr "Flexibel"
 
-#: ../gui/gdmsetup.glade.h:39
+#: ../gui/gdmsetup.glade.h:37
 msgid ""
 "GTK+ Greeter\n"
 "Themed Greeter"
@@ -3634,7 +3640,7 @@ msgstr ""
 "GTK+-Begrüßer\n"
 "Thema-Begrüßer"
 
-#: ../gui/gdmsetup.glade.h:41
+#: ../gui/gdmsetup.glade.h:39
 msgid ""
 "GTK+ Greeter\n"
 "Themed Greeter\n"
@@ -3644,89 +3650,89 @@ msgstr ""
 "Thema-Begrüßer\n"
 "Deaktiviert"
 
-#: ../gui/gdmsetup.glade.h:44
+#: ../gui/gdmsetup.glade.h:42
 msgid "Greeter"
 msgstr "Begrüßer"
 
-#: ../gui/gdmsetup.glade.h:45
+#: ../gui/gdmsetup.glade.h:43
 msgid "Handled"
 msgstr "Behandeln"
 
-#: ../gui/gdmsetup.glade.h:46
+#: ../gui/gdmsetup.glade.h:44
 msgid "Honour _indirect requests"
 msgstr "_Indirekte Anforderungen annehmen"
 
-#: ../gui/gdmsetup.glade.h:47
+#: ../gui/gdmsetup.glade.h:45
 msgid "Include"
 msgstr "Einbeziehen"
 
-#: ../gui/gdmsetup.glade.h:48
+#: ../gui/gdmsetup.glade.h:46
 msgid "Is a login attempt handled by this computer?"
 msgstr "Soll eine Anmeldung von diesem Rechner behandelt werden?"
 
-#: ../gui/gdmsetup.glade.h:49
+#: ../gui/gdmsetup.glade.h:47
 msgid "L_ocal: "
 msgstr "_Lokal: "
 
-#: ../gui/gdmsetup.glade.h:50
+#: ../gui/gdmsetup.glade.h:48
 msgid "Listen on _UDP port: "
 msgstr "An _UDP-Port horchen: "
 
-#: ../gui/gdmsetup.glade.h:51
+#: ../gui/gdmsetup.glade.h:49
 msgid "Login Greeter."
 msgstr "Anmeldebegrüßer"
 
-#: ../gui/gdmsetup.glade.h:53
+#: ../gui/gdmsetup.glade.h:51
 msgid "Login a _user automatically after a specified number of seconds"
 msgstr ""
 "Einen Benutzer a_utomatisch nach einer bestimmten Anzahl von Sekunden "
 "anmelden"
 
-#: ../gui/gdmsetup.glade.h:54
+#: ../gui/gdmsetup.glade.h:52
 msgid "Logo"
 msgstr "Logo"
 
-#: ../gui/gdmsetup.glade.h:55
+#: ../gui/gdmsetup.glade.h:53
 msgid "Make a _sound after a failed login attempt"
 msgstr "Einen _Klang ausgeben, wenn ein Anmeldeversuch fehlschlägt"
 
-#: ../gui/gdmsetup.glade.h:56
+#: ../gui/gdmsetup.glade.h:54
 msgid "Make a _sound after a successful login attempt"
 msgstr "Einen _Klang ausgeben, wenn ein Anmeldeversuch erfolgreich war"
 
-#: ../gui/gdmsetup.glade.h:57
+#: ../gui/gdmsetup.glade.h:55
 msgid "Make a _sound when login window is ready"
 msgstr "Einen _Klang ausgeben, wenn das Anmeldefenster bereit ist"
 
-#: ../gui/gdmsetup.glade.h:58
+#: ../gui/gdmsetup.glade.h:56
 msgid "Max p_ending indirect requests:"
 msgstr "Maximale Anzahl au_sstehender indirekter Anforderungen:"
 
-#: ../gui/gdmsetup.glade.h:59
+#: ../gui/gdmsetup.glade.h:57
 msgid "Maximum _pending requests:"
 msgstr "Maximale Anzahl _ausstehender Anforderungen:"
 
-#: ../gui/gdmsetup.glade.h:60
+#: ../gui/gdmsetup.glade.h:58
 msgid "Maximum _remote sessions:"
 msgstr "Maximale Anzahl _entfernter Sitzungen:"
 
-#: ../gui/gdmsetup.glade.h:61
+#: ../gui/gdmsetup.glade.h:59
 msgid "Maximum _wait time:"
 msgstr "Maximale _Wartezeit:"
 
-#: ../gui/gdmsetup.glade.h:62
+#: ../gui/gdmsetup.glade.h:60
 msgid "Maximum indirect w_ait time:"
 msgstr "Maximale indirekte War_tezeit:"
 
-#: ../gui/gdmsetup.glade.h:63
+#: ../gui/gdmsetup.glade.h:61
 msgid "No Logo"
 msgstr "Kein Logo"
 
-#: ../gui/gdmsetup.glade.h:64
+#: ../gui/gdmsetup.glade.h:62
 msgid "No Sound"
 msgstr "Kein Klang"
 
-#: ../gui/gdmsetup.glade.h:65
+#: ../gui/gdmsetup.glade.h:63
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -3734,18 +3740,18 @@ msgstr ""
 "Keine XDMCP-Unterstützung im Programm. Um XDMCP-Unterstützung zu aktivieren, "
 "müssen Sie GDM mit den XDMCP-Bibliotheken kompilieren."
 
-#: ../gui/gdmsetup.glade.h:66
+#: ../gui/gdmsetup.glade.h:64
 msgid "No screenshot available"
 msgstr "Kein Bildschirmfoto verfügbar"
 
-#: ../gui/gdmsetup.glade.h:67
+#: ../gui/gdmsetup.glade.h:65
 msgid ""
 "Note: For settings to take effect, the gdm service will require a restart."
 msgstr ""
 "Hinweis: Damit alle Änderungen wirksam werden, muss der GDM-Dienst neu "
 "gestartet werden."
 
-#: ../gui/gdmsetup.glade.h:68
+#: ../gui/gdmsetup.glade.h:66
 msgid ""
 "Only One Theme\n"
 "Random Theme"
@@ -3753,64 +3759,64 @@ msgstr ""
 "Nur ein Thema\n"
 "Zufälliges Thema"
 
-#: ../gui/gdmsetup.glade.h:70
+#: ../gui/gdmsetup.glade.h:68
 msgid "Options"
 msgstr "Einstellungen"
 
-#: ../gui/gdmsetup.glade.h:71
+#: ../gui/gdmsetup.glade.h:69
 msgid "Pick a color"
 msgstr "Wählen Sie eine Farbe"
 
-#: ../gui/gdmsetup.glade.h:72
+#: ../gui/gdmsetup.glade.h:70
 msgid "Pin_g interval (seconds):"
 msgstr "_Ping-Intervall (in Sekunden):"
 
-#: ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.glade.h:71
 msgid "Ping interval (seconds):"
 msgstr "Ping-Intervall (in Sekunden):"
 
-#: ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.glade.h:72
 msgid "Preview:"
 msgstr "Vorschau:"
 
-#: ../gui/gdmsetup.glade.h:76
+#: ../gui/gdmsetup.glade.h:74
 #, no-c-format
 msgid "Re_mote welcome string (%n = hostname): "
 msgstr "Ent_fernte Begrüßungsnachricht (%n = Rechnername) : "
 
-#: ../gui/gdmsetup.glade.h:77
+#: ../gui/gdmsetup.glade.h:75
 msgid "Refresh Rate:"
 msgstr "Bildwiederholfrequenz:"
 
-#: ../gui/gdmsetup.glade.h:78
+#: ../gui/gdmsetup.glade.h:76
 msgid "Remove Server"
 msgstr "Server entfernen"
 
-#: ../gui/gdmsetup.glade.h:79
+#: ../gui/gdmsetup.glade.h:77
 msgid "Resolution:"
 msgstr "Auflösung:"
 
-#: ../gui/gdmsetup.glade.h:80
+#: ../gui/gdmsetup.glade.h:78
 msgid "Retry delay (_seconds):"
 msgstr "_Verzögerung bis zum erneuten Versuch (Sekunden):"
 
-#: ../gui/gdmsetup.glade.h:81
+#: ../gui/gdmsetup.glade.h:79
 msgid "Server Definition to Modify:"
 msgstr "Zu bearbeitende Server-Definition:"
 
-#: ../gui/gdmsetup.glade.h:82
+#: ../gui/gdmsetup.glade.h:80
 msgid "Server Name:"
 msgstr "Server-Name:"
 
-#: ../gui/gdmsetup.glade.h:83
+#: ../gui/gdmsetup.glade.h:81
 msgid "Show _actions menu"
 msgstr "_Aktionsmenü anzeigen"
 
-#: ../gui/gdmsetup.glade.h:84
+#: ../gui/gdmsetup.glade.h:82
 msgid "Show choosable user images (_Face Browser)"
 msgstr "Wählbare Benutzerbilder (_Benutzeralbum) anzeigen"
 
-#: ../gui/gdmsetup.glade.h:85
+#: ../gui/gdmsetup.glade.h:83
 msgid ""
 "Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
 "set, none of the system commands will be available (this includes restart, "
@@ -3821,11 +3827,11 @@ msgstr ""
 "Verfügung (einschließlich »System neu starten«, »Rechner ausschalten«, "
 "»Konfigurieren« sowie »Auswähler«)"
 
-#: ../gui/gdmsetup.glade.h:86
+#: ../gui/gdmsetup.glade.h:84
 msgid "Sound file:"
 msgstr "Klangdatei:"
 
-#: ../gui/gdmsetup.glade.h:88
+#: ../gui/gdmsetup.glade.h:86
 #, no-c-format
 msgid ""
 "String to be shown in the greeter as welcome.  You can insert %n in here and "
@@ -3834,7 +3840,7 @@ msgstr ""
 "Im Begrüßer als Begrüßung anzuzeigende Zeichenkette, wobei %n durch den "
 "Computernamen ersetzt wird."
 
-#: ../gui/gdmsetup.glade.h:90
+#: ../gui/gdmsetup.glade.h:88
 #, no-c-format
 msgid ""
 "String to be shown in the greeter for people logging in remotely with "
@@ -3844,143 +3850,143 @@ msgstr ""
 "Zeichenkette, die im Begrüßer für Benutzer angezeigt werden soll, die sich "
 "entfernt mit XDMCP anmelden, wobei %n durch den Computernamen ersetzt wird."
 
-#: ../gui/gdmsetup.glade.h:91
+#: ../gui/gdmsetup.glade.h:89
 msgid "Test Sound"
 msgstr "Klang testen"
 
-#: ../gui/gdmsetup.glade.h:92
+#: ../gui/gdmsetup.glade.h:90
 msgid "Timed Login"
 msgstr "Zeitgesteuerte Anmeldung"
 
-#: ../gui/gdmsetup.glade.h:93
+#: ../gui/gdmsetup.glade.h:91
 msgid "Use default Remote Welcome"
 msgstr "Entfernt den Standard-Willkommensgruß verwenden"
 
-#: ../gui/gdmsetup.glade.h:94
+#: ../gui/gdmsetup.glade.h:92
 msgid "Use default Welcome"
 msgstr "Standard-Willkommensgruß verwenden"
 
-#: ../gui/gdmsetup.glade.h:95
+#: ../gui/gdmsetup.glade.h:93
 msgid "User to Include"
 msgstr "Einzuschließende Benutzer"
 
-#: ../gui/gdmsetup.glade.h:96
+#: ../gui/gdmsetup.glade.h:94
 msgid "User to exclude"
 msgstr "Auszuschließende Benutzer"
 
-#: ../gui/gdmsetup.glade.h:97
+#: ../gui/gdmsetup.glade.h:95
 msgid "Usually something like: /usr/bin/X"
 msgstr "Für gewöhnlich etwa: /usr/bin/X"
 
-#: ../gui/gdmsetup.glade.h:98
+#: ../gui/gdmsetup.glade.h:96
 msgid "X Server Settings"
 msgstr "X-Server-Einstellungen"
 
-#: ../gui/gdmsetup.glade.h:99
+#: ../gui/gdmsetup.glade.h:97
 msgid "_1 General"
 msgstr "_1 Allgemein"
 
-#: ../gui/gdmsetup.glade.h:100
+#: ../gui/gdmsetup.glade.h:98
 msgid "_2 GTK+ Greeter"
 msgstr "2_ GTK+-Begrüßer"
 
-#: ../gui/gdmsetup.glade.h:101
+#: ../gui/gdmsetup.glade.h:99
 msgid "_3 Themed Greeter"
 msgstr "_3 Thema-Begrüßer"
 
-#: ../gui/gdmsetup.glade.h:102
+#: ../gui/gdmsetup.glade.h:100
 msgid "_4 Security"
 msgstr "_4 Sicherheit"
 
-#: ../gui/gdmsetup.glade.h:103
+#: ../gui/gdmsetup.glade.h:101
 msgid "_5 XServer"
 msgstr "_5 X-Server"
 
-#: ../gui/gdmsetup.glade.h:104
+#: ../gui/gdmsetup.glade.h:102
 msgid "_6 Accessibility"
 msgstr "_6 Barrierefreiheit"
 
-#: ../gui/gdmsetup.glade.h:105
+#: ../gui/gdmsetup.glade.h:103
 msgid "_7 XDMCP"
 msgstr "_7 XDMCP"
 
-#: ../gui/gdmsetup.glade.h:106
+#: ../gui/gdmsetup.glade.h:104
 msgid "_8 Face Browser"
 msgstr "_8 Benutzeralbum"
 
-#: ../gui/gdmsetup.glade.h:108
+#: ../gui/gdmsetup.glade.h:106
 msgid "_Automatic login username:"
 msgstr "_Benutzername bei automatischer Anmeldung:"
 
-#: ../gui/gdmsetup.glade.h:109
+#: ../gui/gdmsetup.glade.h:107
 msgid "_Background color: "
 msgstr "_Hintergrundfarbe: "
 
-#: ../gui/gdmsetup.glade.h:110
+#: ../gui/gdmsetup.glade.h:108
 msgid "_Color"
 msgstr "_Farbe"
 
-#: ../gui/gdmsetup.glade.h:111
+#: ../gui/gdmsetup.glade.h:109
 msgid "_Delete theme"
 msgstr "Thema _löschen"
 
-#: ../gui/gdmsetup.glade.h:112
+#: ../gui/gdmsetup.glade.h:110
 msgid "_Image"
 msgstr "_Bild"
 
-#: ../gui/gdmsetup.glade.h:113
+#: ../gui/gdmsetup.glade.h:111
 msgid "_Include All Users"
 msgstr "Alle _Benutzer einbeziehen"
 
-#: ../gui/gdmsetup.glade.h:114
+#: ../gui/gdmsetup.glade.h:112
 msgid "_Install new theme"
 msgstr "Neues Thema _installieren"
 
-#: ../gui/gdmsetup.glade.h:115
+#: ../gui/gdmsetup.glade.h:113
 msgid "_Login a user automatically on first bootup"
 msgstr "Beim ersten Start _automatisch einen Benutzer anmelden"
 
-#: ../gui/gdmsetup.glade.h:116
+#: ../gui/gdmsetup.glade.h:114
 msgid "_Mode:"
 msgstr "_Modus:"
 
-#: ../gui/gdmsetup.glade.h:117
+#: ../gui/gdmsetup.glade.h:115
 msgid "_No background"
 msgstr "_Kein Hintergrund"
 
-#: ../gui/gdmsetup.glade.h:118
+#: ../gui/gdmsetup.glade.h:116
 msgid "_Only color on remote displays"
 msgstr "Auf entfernten Anzeigen _nur Farben"
 
-#: ../gui/gdmsetup.glade.h:119
+#: ../gui/gdmsetup.glade.h:117
 msgid "_Remote: "
 msgstr "_Entfernt: "
 
-#: ../gui/gdmsetup.glade.h:120
+#: ../gui/gdmsetup.glade.h:118
 msgid "_Scale background image to fit"
 msgstr "Hintergrundbild _einpassen"
 
-#: ../gui/gdmsetup.glade.h:121
+#: ../gui/gdmsetup.glade.h:119
 msgid "_Seconds before login:"
 msgstr "Zeit bis zur Anmeldung (in Sekunden):"
 
-#: ../gui/gdmsetup.glade.h:122
+#: ../gui/gdmsetup.glade.h:120
 msgid "_Timed login username:"
 msgstr "Be_nutzername bei zeitgesteuerter Anmeldung:"
 
-#: ../gui/gdmsetup.glade.h:123
+#: ../gui/gdmsetup.glade.h:121
 msgid "_Welcome string: "
 msgstr "_Begrüßungsnachricht: "
 
-#: ../gui/gdmsetup.glade.h:124
+#: ../gui/gdmsetup.glade.h:122
 msgid "author"
 msgstr "Autor"
 
-#: ../gui/gdmsetup.glade.h:125
+#: ../gui/gdmsetup.glade.h:123
 msgid "copyright"
 msgstr "Copyright"
 
-#: ../gui/gdmsetup.glade.h:126
+#: ../gui/gdmsetup.glade.h:124
 msgid ""
 "description\n"
 "widget"
@@ -3988,7 +3994,7 @@ msgstr ""
 "Beschreibung\n"
 "Widget"
 
-#: ../gui/gdmsetup.glade.h:128
+#: ../gui/gdmsetup.glade.h:126
 msgid "dummy"
 msgstr "Dummy"
 
@@ -4024,17 +4030,17 @@ msgstr ""
 "Vermutlich haben Sie gerade GDM aktualisiert.\n"
 "Starten Sie den GDM-Dienst oder den Computer neu."
 
-#: ../gui/greeter/greeter.c:1357
+#: ../gui/greeter/greeter.c:1354
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Beim Laden des Themas %s ist ein Fehler aufgetreten"
 
 #. markup
-#: ../gui/greeter/greeter.c:1411
+#: ../gui/greeter/greeter.c:1408
 msgid "The greeter theme is corrupt"
 msgstr "Das Thema des grafischen Begrüßers ist fehlerhaft"
 
-#: ../gui/greeter/greeter.c:1413
+#: ../gui/greeter/greeter.c:1410
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
@@ -4042,7 +4048,7 @@ msgstr ""
 "Das Thema enthält keine Definition des Benutzername/Passwort-Eingabeelements."
 
 #. markup
-#: ../gui/greeter/greeter.c:1447
+#: ../gui/greeter/greeter.c:1444
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
@@ -4052,7 +4058,7 @@ msgstr ""
 "starten"
 
 #. markup
-#: ../gui/greeter/greeter.c:1470
+#: ../gui/greeter/greeter.c:1467
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
