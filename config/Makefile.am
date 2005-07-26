@@ -69,6 +69,10 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop I
 		$(mkinstalldirs) $(DESTDIR)$(crossconfdir); \
 		chmod 755 $(DESTDIR)$(crossconfdir); \
 	fi
+	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
+		chmod 755 $(DESTDIR)$(gdmconfdir); \
+	fi
 	-if cmp -s $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
 		cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf.orig; \
 		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf; \
