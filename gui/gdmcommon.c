@@ -22,11 +22,14 @@
  */
 
 #include "config.h"
+
+#include <unistd.h>
 #include <locale.h>
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
 #include <string.h>
 #include <syslog.h>
+
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
 
 #include <vicious.h>
 #include "viciousui.h"
@@ -283,18 +286,24 @@ gdm_common_get_face (const char *filename,
 gchar * 
 gdm_common_get_config_file (void)
 {
+	gchar *result;
 	gchar *config_file;
 
 	/* Get config file */
-	config_file = gdmcomm_call_gdm ("GET_CONFIG_FILE", NULL /* auth cookie */, "2.8.0.2", 5);
-	if (ve_string_empty (config_file) ||
-		strncmp (config_file, "OK ", 3) != 0) {
-		g_free (config_file);
+	result = gdmcomm_call_gdm ("GET_CONFIG_FILE", NULL /* auth cookie */, "2.8.0.2", 5);
+	if (! result)
+		return NULL;
+
+	if (ve_string_empty (result) ||
+		strncmp (result, "OK ", 3) != 0) {
+		g_free (result);
 		return NULL;
 	}
 
 	/* skip the "OK " */
-	config_file = config_file + 3;
+	config_file = g_strdup (result + 3);
+
+	g_free (result);
 
 	return config_file;
 }

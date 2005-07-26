@@ -1,5 +1,13 @@
 2005-07-25  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/gdmcommon.c (gdm_common_get_config_file): Don't return
+	a pointer into the middle of a string that must be freed.
+	Fixes bug #311499.
+
+	* gui/gdmphotosetup.c (main): Free config file string again.
+
+2005-07-25  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm.c: Fix build by only using GDM_KEY_MULTICAST
 	when IPV6 is enabled.
 

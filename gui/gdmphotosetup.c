@@ -481,7 +481,7 @@ main (int argc, char *argv[])
 	}
 
 	config_prefix = g_strdup_printf ("=%s=/", config_file);
-	/*g_free (config_file);*/
+	g_free (config_file);
 
 	gnome_config_push_prefix (config_prefix);
 	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
