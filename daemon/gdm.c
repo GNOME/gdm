@@ -17,7 +17,7 @@
  */
 
 #include <config.h>
-#include <glib/gi18n.h>
+
 #include <signal.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -43,7 +43,9 @@
 #include <locale.h>
 
 /* This should be moved to auth.c I suppose */
+
 #include <X11/Xauth.h>
+#include <glib/gi18n.h>
 
 #include <vicious.h>
 
@@ -157,6 +159,7 @@ gboolean GdmChooserButton = FALSE;
 gboolean GdmBrowser = FALSE;
 gboolean GdmAddGtkModules = FALSE;
 gboolean GdmDoubleLoginWarning = TRUE;
+gboolean GdmAlwaysLoginCurrentSession = FALSE;
 gboolean GdmDisplayLastLogin = TRUE;
 gchar *GdmGlobalFaceDir = NULL;
 gint GdmXineramaScreen = 0;
@@ -413,6 +416,7 @@ gdm_config_parse (void)
     GdmRemoteGreeter = ve_config_get_string (cfg, GDM_KEY_REMOTEGREETER);
     GdmAddGtkModules = ve_config_get_bool (cfg, GDM_KEY_ADD_GTK_MODULES);
     GdmDoubleLoginWarning = ve_config_get_bool (cfg, GDM_KEY_DOUBLELOGINWARNING);
+    GdmAlwaysLoginCurrentSession = ve_config_get_bool (cfg, GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);
     GdmDisplayLastLogin = ve_config_get_bool (cfg, GDM_KEY_DISPLAY_LAST_LOGIN);
     GdmGtkModulesList = ve_config_get_string (cfg, GDM_KEY_GTK_MODULES_LIST);	
     GdmGroup = ve_config_get_string (cfg, GDM_KEY_GROUP);

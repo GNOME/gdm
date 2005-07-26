@@ -22,9 +22,7 @@
  * and the user's session scripts. */
 
 #include <config.h>
-#include <libgnome/libgnome.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gdk/gdkx.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -46,6 +44,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #ifdef HAVE_XFREE_XINERAMA
@@ -69,6 +68,10 @@
 #include <selinux/selinux.h>
 #include <selinux/get_context_list.h>
 #endif /* HAVE_SELINUX */
+
+#include <glib/gi18n.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtk.h>
 
 #include <vicious.h>
 
@@ -154,6 +157,7 @@ extern gboolean GdmAllowRemoteAutoLogin;
 extern gboolean GdmAlwaysRestartServer;
 extern gboolean GdmAddGtkModules;
 extern gboolean GdmDoubleLoginWarning;
+extern gboolean GdmAlwaysLoginCurrentSession;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
 extern gboolean GdmChooserButton;
@@ -1126,13 +1130,47 @@ wait_for_display_to_die (Display    *display,
 	gdm_debug ("wait_for_display_to_die: '%s' dead", display_name);
 }
 
+static int
+ask_migrate (const char *migrate_to)
+{
+	int   r;
+	char *msg;
+	char *but[4];
+
+	but[0] = _("Log in anyway");
+	if (migrate_to != NULL) {
+		msg = _("You are already logged in.  "
+			"You can log in anyway, return to your "
+			"previous login session, or abort this "
+			"login");
+		but[1] = _("Return to previous login");
+		but[2] = _("Abort login");
+		but[3] = NULL;
+	} else {
+		msg = _("You are already logged in.  "
+			"You can log in anyway or abort this "
+			"login");
+		but[1] = _("Abort login");
+		but[2] = NULL;
+	}
+
+	if (greet)
+		gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
+
+	r = gdm_failsafe_ask_buttons (d, msg, but);
+
+	if (greet)
+		gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+
+	return r;
+}
+
 gboolean
 gdm_slave_check_user_wants_to_log_in (const char *user)
 {
 	gboolean loggedin = FALSE;
 	int i;
 	char **vec;
-	char *msg;
 	char *migrate_to = NULL;
 
 	/* always ignore root here, this is mostly a special case
@@ -1167,35 +1205,14 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 
 	if (d->type != TYPE_XDMCP_PROXY) {
 		int r;
-		char *but[4];
 
 		if (!GdmDoubleLoginWarning)
 			return TRUE;
 
-		but[0] = _("Log in anyway");
-		if (migrate_to != NULL) {
-			msg = _("You are already logged in.  "
-				"You can log in anyway, return to your "
-				"previous login session, or abort this "
-				"login");
-			but[1] = _("Return to previous login");
-			but[2] = _("Abort login");
-			but[3] = NULL;
-		} else {
-			msg = _("You are already logged in.  "
-				"You can log in anyway or abort this "
-				"login");
-			but[1] = _("Abort login");
-			but[2] = NULL;
-		}
-
-		if (greet)
-			gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
-
-		r = gdm_failsafe_ask_buttons (d, msg, but);
-
-		if (greet)
-			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+		if (GdmAlwaysLoginCurrentSession)
+			r = 1;
+		else
+			r = ask_migrate (migrate_to);
 
 		if (r <= 0)
 			return TRUE;

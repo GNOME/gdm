@@ -175,6 +175,7 @@ enum {
 #define GDM_KEY_CONSOLE_NOTIFY "daemon/ConsoleNotify=true"
 
 #define GDM_KEY_DOUBLELOGINWARNING "daemon/DoubleLoginWarning=true"
+#define GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION "daemon/AlwaysLoginCurrentSession=false"
 
 #define GDM_KEY_DISPLAY_LAST_LOGIN "daemon/DisplayLastLogin=false"
 
