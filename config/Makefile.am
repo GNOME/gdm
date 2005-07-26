@@ -1,5 +1,6 @@
 pixmapdir = $(datadir)/pixmaps
 confdir = $(sysconfdir)/gdm
+gdmconfdir = $(datadir)/gdm
 crossconfdir = $(sysconfdir)/dm
 localedir = $(sysconfdir)/gdm
 bisessdir = $(datadir)/gdm/BuiltInSessions
@@ -49,8 +50,8 @@ uninstall-hook:
 	$(DESTDIR)$(instsessdir)/gnome.desktop \
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/CDE.desktop \
-	$(DESTDIR)$(datadir)/gdm.conf \
-	$(DESTDIR)$(datadir)/factory-gdm.conf \
+	$(DESTDIR)$(gdmconfdir)/gdm/gdm.conf \
+	$(DESTDIR)$(gdmconfdir)/factory-gdm.conf \
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
 	$(DESTDIR)$(localedir)/locale.alias \
@@ -68,14 +69,14 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop I
 		$(mkinstalldirs) $(DESTDIR)$(crossconfdir); \
 		chmod 755 $(DESTDIR)$(crossconfdir); \
 	fi
-	-if cmp -s $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
-		cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/gdm.conf.orig; \
-		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/gdm.conf; \
+	-if cmp -s $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
+		cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf.orig; \
+		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf; \
 	fi
-	if test '!' -f $(DESTDIR)$(confdir)/gdm.conf; then \
-		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/gdm.conf; \
+	if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf; then \
+		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf; \
 	fi
-	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf
+	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf
 
 	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
 	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(confdir)/Xsession
