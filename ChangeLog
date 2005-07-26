@@ -1,5 +1,18 @@
 2005-07-25  William Jon McCann  <mccann@jhu.edu>
 
+	* .cvsignore: Added depcomp and stamp-h1
+
+	* daemon/slave.c (ask_migrate) 
+	(gdm_slave_check_user_wants_to_log_in):
+	* daemon/gdm.[ch] (gdm_config_parse): 
+	* config/gdm.conf.in:
+	Add a configuration option AlwaysLoginCurrentSession
+	that will automatically switch the user back to their
+	previous session without asking.  This is off by
+	default for now.  Fixes bug #311415.
+
+2005-07-25  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/gdmcommon.c (gdm_common_get_config_file): Don't return
 	a pointer into the middle of a string that must be freed.
 	Fixes bug #311499.
