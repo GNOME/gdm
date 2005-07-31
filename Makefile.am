@@ -24,6 +24,7 @@ EXTRA_DIST = \
 	gdm-stop.in		\
 	gdm-restart.in		\
 	gdm-safe-restart.in	\
+	gnome-doc-utils.make	\
 	xmldocs.make		\
 	omf.make
 
@@ -36,8 +37,11 @@ if CONSOLE_HELPER
 endif
 
 DISTCLEANFILES = \
+	gnome-doc-utils.make	\
 	intltool-extract	\
 	intltool-merge		\
 	intltool-update
+
+DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper
 
 distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper'

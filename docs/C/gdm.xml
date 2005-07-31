@@ -9,6 +9,13 @@
 <article id="index" lang="en">
   <articleinfo>
     <title>Gnome Display Manager Reference Manual</title>
+
+    <abstract role="description">
+      <para>
+       Reference manual for the Gnome Display Manager (GDM).
+      </para>
+    </abstract>
+
     <authorgroup>
       <author>
         <firstname>Martin</firstname><othername>K.</othername>
@@ -23,7 +30,7 @@
           <address><email>jirka@5z.com</email></address>
         </affiliation>
       </author>
-      <author>
+      <author role="maintainer">
         <firstname>Brian</firstname><surname>Cameron</surname>
         <affiliation>
           <address><email>Brian.Cameron@Sun.COM</email></address>
@@ -2448,13 +2455,13 @@ XKeepsCrashing
             <term>Include</term>
             <listitem>
               <synopsis>Include=</synopsis>
+              <para>
                 Comma separated list of users to be included in the face
                 browser and in the gdmsetup selection list for
                 Automatic/Timed login. 
                 See also <filename>Exclude</filename>,
                 <filename>IncludeAll</filename>, and
                 <filename>MinimalUID</filename>.
-              <para>
               </para>
             </listitem>
           </varlistentry>
@@ -2479,6 +2486,7 @@ XKeepsCrashing
             <term>IncludeAll</term>
             <listitem>
               <synopsis>IncludeAll=false</synopsis>
+              <para>
                 By default, an empty include list means display no users.
                 By setting IncludeAll to true, the password file will be
                 scanned and all users will be displayed aside from users
@@ -2489,7 +2497,6 @@ XKeepsCrashing
                 See also <filename>Include</filename>,
                 <filename>Exclude</filename>, and
                 <filename>MinimalUID</filename>.
-              <para>
               </para>
             </listitem>
           </varlistentry>
@@ -3701,8 +3708,8 @@ GET_CONFIG_FILE:  Get config file location being used by
 Supported since: 2.8.0.2
 Arguments:  None
 Answers:
-  OK <full path to GDM configuration file>
-  ERROR <err number> <english error description>
+  OK &lt;full path to GDM configuration file&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
@@ -4110,19 +4117,24 @@ Supported since: 2.2.4.0
       </para>
 
       <variablelist>
-        <title><filename>gdmflexichooser</filename> Command Line Options</title>
+        <title><filename>gdmdynamic</filename> Command Line Options</title>
 
-        <para>
-        One of the following options can be used per instance:
-        </para>
+        <varlistentry>
+	  <term></term>
+	  <listitem>
+	  <para><emphasis>
+	    One of the following options can be used per instance:
+	    </emphasis></para>
+	  </listitem>
+        </varlistentry>
 
         <varlistentry>
           <term>-a display=server</term>
           <listitem>
             <para>
             Add a new display configuration. For example,
-            <listitem>"-a 2=StandardServerTwo"</listitem>
-            <listitem>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</listitem>
+            <command>"-a 2=StandardServerTwo"</command>
+            <command>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</command>
             </para>
           </listitem>
         </varlistentry>
@@ -4153,15 +4165,20 @@ Supported since: 2.2.4.0
             List displays via the ATTACHED_SERVERS command. Without a pattern
             lists all attached displays. With a pattern will match using glob
             characters '*', '?', and '[]'. For example:
-            <listitem>"-l Standard*"</listitem>
-            <listitem>"-l *Xorg*"</listitem>
+            <command>"-l Standard*"</command>
+            <command>"-l *Xorg*"</command>
             </para>
           </listitem>
         </varlistentry>
 
-        <para>
-        These options can be added to the above:
-        </para>
+	<varlistentry>
+	  <term></term>
+	  <listitem>
+	  <para><emphasis>
+            These options can be added to the above:
+	    </emphasis></para>
+	  </listitem>
+	</varlistentry>
 
         <varlistentry>
           <term>-v</term>
@@ -5194,7 +5211,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
 
         <para>
           Then if the user chooses 'Foo' then 
-          <filename>&lt;var&gt/gdm/:0.GreeterInfo</filename> will contain:
+          <filename>&lt;var&gt;/gdm/:0.GreeterInfo</filename> will contain:
           <screen>custom-config=foo</screen>
         </para>
       </sect3>

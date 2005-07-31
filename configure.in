@@ -3,9 +3,12 @@ AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gdm,2.8.0.2)
+AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
 
 AC_PROG_INTLTOOL([0.28])
+
+GNOME_DOC_INIT
 
 GLIB_REQUIRED=2.6.0
 GTK_REQUIRED=2.3.0
@@ -330,7 +333,7 @@ AC_CHECK_HEADERS(linux/vt.h, [
 		 GDMOPEN=gdmopen])
 AC_SUBST(GDMOPEN)
 
-dnl ## Autentication scheme
+dnl ## Authentication scheme
 have_pam=no
 VRFY="verify-crypt"
 if test x$enable_authentication_scheme != xcrypt -a \
@@ -1035,7 +1038,6 @@ config/Makefile
 po/Makefile.in
 vicious-extensions/Makefile
 docs/Makefile
-docs/C/Makefile
 docs/de/Makefile
 docs/es/Makefile
 docs/fr/Makefile
