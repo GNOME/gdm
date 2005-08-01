@@ -1624,16 +1624,16 @@ gdm_common_query (const gchar *msg,
 		gtk_widget_show (button);
 	}
 
-	if (posbutton != NULL) {
-		button = gtk_button_new_from_stock (posbutton);
-		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
+	if (has_cancel == TRUE) {
+		button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_CANCEL);
 		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 		gtk_widget_show (button);
 	}
 
-	if (has_cancel == TRUE) {
-		button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_CANCEL);
+	if (posbutton != NULL) {
+		button = gtk_button_new_from_stock (posbutton);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
 		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 		gtk_widget_show (button);
 	}
