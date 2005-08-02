@@ -85,6 +85,19 @@ Configuration is done by editing the gdm.conf file (located in
 <prefix>/etc/gdm/gdm.conf). If no config file exists, make install
 will create one for you.
 
+The default HaltCommand and RebootCommand gdm.conf options may
+not be appropriate for your distribution.  Distribution vendors
+who ship GDM are advised to modify these to the supported
+Halt/Reboot commands for their system.  The correct HaltCommand
+for FreeBSD is "/sbin/halt -p" so the disks are synced on shutdown,
+and on other systems "/sbin/init 0" or /sbin/init 5" may be most
+appropriate.  The correct RebootCommand for some systems may
+be "/sbin/init 6".  Patches to improve the GDM configure script
+and how it sets these values by default would be accepted.
+
+On some systems "/sbin/init 0", "/sbin/init 5",
+or "/sbin/halt -p" may be 
+
 If you want to add distribution-specific directories to the end of
 DefaultPath and RootDefaultPath, then use the --with-post-path
 configure option.  Argument value should be a list of directories
