@@ -723,14 +723,19 @@
 
     <para> 
       The <filename>gdm.conf</filename> file contains the main configuration
-      choices for GDM.  This file by default is installed to 
-      <filename>&lt;usr/share&gt;</filename>.  Since this directory can be
-      shared across machines, this allows for having a single configuration
-      for a network of machines.  To create machine-specific GDM configuration
-      settings, the system administrator can place a modified gdm.conf file in
-      <filename>&lt;etc&gt;/gdm</filename> and it will be used instead.
-      The gdm --config option may instead be used to specify a configuration
-      file installed to another location.  All GDM utilities (such as
+      choices for GDM.
+    </para>
+
+    <para>
+      GDM may be configured to support both system-wide configuration if
+      built with the <command>--with-configdir</command> option.  This
+      allows the gdm.conf file to be installed to a directory that can
+      be mounted across multiple-systems.  Regardless of whether this
+      option is used, GDM will first look for the gdm.conf file in the
+      <filename>&lt;etc&gt;/gdm</filename> directory.  This way 
+      machine-specific configuration always overrides the system-wide
+      defaults.  The gdm --config option may also be used to specify the 
+      configuration file location.  All GDM utilities (such as
       gdmchooser, gdmsetup, etc.) query the GDM daemon process and will use
       the same configuration file as being used by the daemon.  The GDM2
       daemon must be restarted to change the configuration file being used.
@@ -744,7 +749,7 @@
     </para>
 
     <para>
-      Most other GDM configuration files are located, by default, in the
+      The other GDM configuration files are located, by default, in the
       <filename>&lt;etc&gt;/gdm/</filename> folder or its subdirectories.
       However, the location of all configuration files can be defined in 
       the <filename>gdm.conf</filename> file, so the sysadmin may choose
@@ -812,8 +817,8 @@ XKeepsCrashing
     <para>
       Files describing available GDM session follow the freedesktop.org
       desktop file specification and are <filename>.desktop</filename>-style
-      files are installed to <filename>&lt;etc&gt;/X11/sessions/</filename>.  This
-      directory is also read by the KDE desktop manager (KDM) for common
+      files are installed to <filename>&lt;etc&gt;/X11/sessions/</filename>.
+      This directory is also read by the KDE desktop manager (KDM) for common
       configuration.  Next the directory
       <filename>&lt;share&gt;/gdm/BuiltInSessions/</filename> is read for
       GDM specific built-in sessions (KDM hardcodes these at time of
@@ -821,8 +826,8 @@ XKeepsCrashing
       <filename>&lt;share&gt;/xsessions/</filename> (which should be
       <filename>/usr/share/xsessions/</filename> if you really wish to
       cooperate with KDM) where desktop packages can install their session
-      files.  The directories under the <filename>&lt;etc&gt;</filename> should be
-      reserved for configuration.  The desktop file specification approach
+      files.  The directories under the <filename>&lt;etc&gt;</filename> should
+      be reserved for configuration.  The desktop file specification approach
       makes it easy for package management systems to install window managers
       and different session types without requiring the sysadmin to edit files.
       See the <filename>SessionDesktopDir</filename> configuration key for
@@ -977,13 +982,15 @@ XKeepsCrashing
       
       <para>
         The daemon and the accompanying utilities use a common
-        configuration file: <filename>gdm.conf</filename>.  To support
-        multiple machines sharing the same configuration file, this file
-        is installed by default to <filename>/usr/share/gdm</filename>.
-        To specify a machine-specific configuration, the system 
-        administrator  may place a modified configuration file
-        in <filename>&lt;etc&gt;/gdm</filename> and GDM will instead use
-        this file. The gdm --config option may instead be used to specify
+        configuration file: <filename>gdm.conf</filename>.  GDM may be
+        configured to support both system-wide configuration if
+        built with the <command>--with-configdir</command> option.  This
+        allows the gdm.conf file to be installed to a directory that can
+        be mounted across multiple-systems.  Regardless of whether this
+        option is used, GDM will first look for the gdm.conf file in the
+        <filename>&lt;etc&gt;/gdm</filename> directory.  This way 
+        machine-specific configuration always overrides the system-wide
+        defaults.  The gdm --config option may instead be used to specify
         a configuration file installed to another location.  All GDM
         utilities (such as All GDM utilities (such as gdmchooser,
         gdmsetup, etc.) query the GDM daemon process and will use the same

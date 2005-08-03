@@ -2,6 +2,7 @@
 #undef VERSION
 #undef AT_BINDIR
 #undef GETTEXT_PACKAGE
+#undef GDM_CONFIGDIR
 #undef GDM_USER_PATH
 #undef HALT_COMMAND
 #undef REBOOT_COMMAND

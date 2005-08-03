@@ -364,12 +364,12 @@ gdm_get_config (struct stat *statbuf)
        if (r < 0) {
 
            /* If not found, then check datadir */
-           VE_IGNORE_EINTR (r = stat (GDM_DATADIR_CONFIG_FILE, statbuf));
+           VE_IGNORE_EINTR (r = stat (GDM_INSTALL_CONFIG_FILE, statbuf));
            if (r < 0) {
                gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
-                   "gdm_config_parse", GDM_DATADIR_CONFIG_FILE);
+                   "gdm_config_parse", GDM_INSTALL_CONFIG_FILE);
            } else {
-               config_file = GDM_DATADIR_CONFIG_FILE;
+               config_file = GDM_INSTALL_CONFIG_FILE;
            }
        } else {
                config_file = GDM_SYSCONFDIR_CONFIG_FILE;
