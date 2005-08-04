@@ -1,3 +1,44 @@
+2005-08-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.[ch], gui/gdmsetup.c : Change GDM_KEY_SERVERS
+	  to GDM_KEY_SECTION_SERVER and added GDM_KEY_SECTION_GREETER.
+	  There alread is a GDM_KEY_GREETER, so for section 
+	  #defines it's better to include "SECTION" in it.
+
+	* gui/gdmsetup.c, gui/gdmsetup.glade:  Made a number of UI
+	  improvements.  Calum Benson is doing a UI review of 
+	  gdmsetup and I made the following fixes based on his
+	  recommendations.  No longer have mnemonics on the tabs
+	  since this is against HIG rules, changes "Face Browser"
+	  tab to "Users" since the Include/Exclude list really
+	  also affects Automatic/Timed login and not just the
+	  Face Browser.  Added label to the Users tab to explain
+	  what the tab does, since it wasn't too clear before.
+	  Improved description of "Disallow TCP connections" on
+	  the security tab so it is more clear what this does
+	  (and highlight it doesn't affect XDMCP).  I also fixed
+	  the sensitivities when "Include All Users" is checked.
+	  Previously it was making both the Include and Exclude
+	  list insensitive - it really should just make the
+	  Include list and buttons to move between Incude/Exclude
+	  insensitive.  This is now working.
+	
+2005-08-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.[ch], daemon/misc.[ch], daemon/verify-pam.c,
+	  config/gdm.conf.in, docs/C/gdm.xml, config/Makefile.am,
+	  daemon/Makefile.am: Provide better 
+	  support for /etc/default/login.  Previously it 
+	  supported only PASSREQ.  Now it supports PATH, SUPATH,
+	  and CONSOLE.  Added new PasswordRequired gdm.conf 
+	  setting to control whether NULL_PASSWORDS are allowed
+	  when using PAM.
+	* config/gdm.conf.in: Changed default for AllowRemoteRoot
+	  to false and ConfigAvailable.  This makes GDM more secure
+	  by default.  Some distros may want to change the default
+	  back to true.  If people complain about this change, I'll
+	  make it possible to set these via the configure script.
+
 2005-08-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* acconfig.h, configure.in, daemon/Makefile.am, daemon/gdm.c,
