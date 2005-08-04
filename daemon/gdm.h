@@ -78,7 +78,7 @@
 
 enum {
 	DISPLAY_UNBORN /* Not yet started */,
-	DISPLAY_ALIVE /* Yay! we're alive (non-xdmcp) */,
+	DISPLAY_ALIVE /* Yay! we're alive (non-XDMCP) */,
 	XDMCP_PENDING /* Pending XDMCP display */,
 	XDMCP_MANAGED /* Managed XDMCP display */,
 	DISPLAY_DEAD /* Left for dead */,
@@ -264,7 +264,9 @@ enum {
 #define GDM_KEY_CHOOSER_BUTTON "greeter/ChooserButton=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
 #define GDM_KEY_DEFAULT_WELCOME "greeter/DefaultWelcome=true"
+#define GDM_KEY_DEFAULT_WELCOME_BACKTEST "greeter/DefaultWelcome="
 #define GDM_KEY_DEFAULT_REMOTEWELCOME "greeter/DefaultRemoteWelcome=true"
+#define GDM_KEY_DEFAULT_REMOTEWELCOME_BACKTEST "greeter/DefaultRemoteWelcome="
 #define GDM_KEY_WELCOME "greeter/Welcome="
 #define GDM_KEY_REMOTEWELCOME "greeter/RemoteWelcome="
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
