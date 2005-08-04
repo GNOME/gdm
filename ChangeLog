@@ -1,5 +1,17 @@
 2005-08-04  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm.h, gui/gdmlogin.c, gui/greeter/greeter.c:
+	  GDM is more backwards compatible.  The change
+	  to add DefaultWelcome and DefaultRemoteWelcome
+	  to the config file would cause old configuration
+	  files to ignore the setting.  Now if the gdm.conf
+	  file is missing the DefaultWelcome or
+	  DefaultRemoteWelcome key it goes ahead and uses
+	  the message in gdm.conf (unless the message is
+	  the same as the default anyway).
+
+2005-08-04  Brian Cameron  <brian.cameron@sun.com>
+
 	* gdm.h: Change "xdmcp" to "XDMCP" in comments.
 	* acconfig.h, configure.in, daemon/Makefile.am, daemon/gdm.c,
 	  Change to the way the patch introduced on 07/22 works.

@@ -59,6 +59,7 @@
 
 gboolean DOING_GDM_DEVELOPMENT = FALSE;
 static char *greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
+static char *greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_WELCOME_BACKTEST;
 static char *greeter_Welcome_key = GDM_KEY_WELCOME;
 
 GtkWidget *window;
@@ -104,6 +105,7 @@ gboolean GdmIncludeAll;
 gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
 static gboolean GdmDefaultWelcome;
+static gboolean GdmDefaultWelcomeBacktest;
 gchar *GdmWelcome;
 gchar *GdmServAuthDir;
 gchar *GdmInfoMsgFile;
@@ -179,9 +181,11 @@ greeter_parse_config (void)
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    greeter_Welcome_key = GDM_KEY_REMOTEWELCOME;
 	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_REMOTEWELCOME;
+            greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_REMOTEWELCOME_BACKTEST;
     } else {
 	    greeter_Welcome_key = GDM_KEY_WELCOME;
 	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
+            greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_WELCOME_BACKTEST;
     }
 
     config = ve_config_get (config_file);
@@ -239,6 +243,20 @@ greeter_parse_config (void)
 
     GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
     GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
+
+    /*
+     * For backwards compatibility.  If DefaultWelcome isn't in config file, then
+     * assume GdmDefaultWelcome is FALSE unless the string matches the default
+     */
+    GdmDefaultWelcomeBacktest = ve_config_get_bool (config, greeter_DefaultWelcomeBacktest_key);
+    if (GdmDefaultWelcomeBacktest == FALSE) {
+            if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
+                GdmDefaultWelcome == TRUE;
+            else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
+                GdmDefaultWelcome == TRUE;
+            else
+                GdmDefaultWelcome = FALSE;
+    }
 
     /* Replace default welcome message with one specified in the config file, if
      * use default is set to no */
@@ -963,6 +981,20 @@ greeter_reread_config (int sig, gpointer data)
 
 		GdmWelcome = ve_config_get_string (config, greeter_Welcome_key);
 		GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
+                GdmDefaultWelcomeBacktest = ve_config_get_bool (config, greeter_DefaultWelcomeBacktest_key);
+
+                /*
+                 * For backwards compatibility.  If DefaultWelcome isn't in config file, then
+                 * assume GdmDefaultWelcome is FALSE unless the string matches the default
+                 */
+                if (GdmDefaultWelcomeBacktest == FALSE) {
+                        if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
+                                GdmDefaultWelcome == TRUE;
+                        else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
+                                GdmDefaultWelcome == TRUE;
+                        else
+                                GdmDefaultWelcome = FALSE;
+                }
 
 		if (GdmDefaultWelcome) {
 			if (strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
