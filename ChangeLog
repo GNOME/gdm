@@ -1,5 +1,18 @@
 2005-08-03  Brian Cameron  <brian.cameron@sun.com>
 
+	* docs/C/gdm.xml: Made XML conformant.
+	* gui/gdmlogin.c, gui/greeter/greeter.c:  Now
+	  GDM is more backwards compatible.  The change
+	  to add DefaultWelcome and DefaultRemoteWelcome
+	  to the config file would cause old configuration
+	  files to ignore the setting.  Now if the gdm.conf
+	  file is missing the DefaultWelcome or 
+	  DefaultRemoteWelcome key it goes ahead and uses
+	  the message in gdm.conf (unless the message is
+	  the same as the default anyway).
+
+2005-08-03  Brian Cameron  <brian.cameron@sun.com>
+
 	* configure.in: Correct AT_BINDIR.
 	* daemon/gdm.h: Changed "xdmcp" to "XDMCP" in comments.
 
