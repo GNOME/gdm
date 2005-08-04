@@ -185,6 +185,7 @@ gboolean GdmMulticast;
 gchar *GdmMulticastAddr;
 gchar *GdmUserAuthDir = NULL;
 gboolean GdmNeverPlaceCookiesOnNFS = TRUE;
+gboolean GdmPasswordRequired = FALSE;
 gchar *GdmUserAuthFile = NULL;
 gchar *GdmUserAuthFB = NULL;
 gchar *GdmPidFile = NULL;
@@ -348,7 +349,15 @@ check_logdir (void)
 /**
  * gdm_get_config:
  *
- * Get config file
+ * Get config file.  If GDM is configured with the --with-configdir option
+ * then GDM will first look in the sysconfdir location.  If the gdm.conf
+ * file is not found, it will look in the location specified via 
+ * --with-configdir.  This allows a configuration file to be placed on
+ * a mounted directory on a network with multiple machines for a common
+ * configuration file.  The two directories will be the same if the
+ * --with-configdir option is not specified.  Checking the same directory
+ * twice is a bit ugly, but will only happen in a rare error condition -
+ * when the gdm.conf file can't be found.
  */
 static VeConfig *
 gdm_get_config (struct stat *statbuf)
@@ -363,7 +372,7 @@ gdm_get_config (struct stat *statbuf)
        VE_IGNORE_EINTR (r = stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
        if (r < 0) {
 
-           /* If not found, then check datadir */
+           /* If not found, then check directory for a multi system network */
            VE_IGNORE_EINTR (r = stat (GDM_INSTALL_CONFIG_FILE, statbuf));
            if (r < 0) {
                gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
@@ -393,6 +402,7 @@ gdm_config_parse (void)
     gchar *bin;
     VeConfig *cfg;
     GList *list, *li;
+    int r;
     
     displays = NULL;
     high_display_num = 0;
@@ -407,7 +417,42 @@ gdm_config_parse (void)
     gdm_ok_console_language ();
 
     GdmChooser = ve_config_get_string (cfg, GDM_KEY_CHOOSER);
-    GdmDefaultPath = ve_config_get_string (cfg, GDM_KEY_PATH);
+
+    GdmDefaultPath = NULL;
+    GdmRootPath    = NULL;
+
+    /* First try to read values from /etc/default/login */
+    VE_IGNORE_EINTR (r = stat ("/etc/default/login", &statbuf));
+    if (r < 0) {
+	GdmPasswordRequired = ve_config_get_bool (cfg, GDM_KEY_PASSWORDREQUIRED);
+	GdmAllowRemoteRoot  = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
+    } else {
+	    gchar *temp;
+
+	    GdmDefaultPath = gdm_read_default ("PATH=");
+	    GdmRootPath    = gdm_read_default ("SUPATH=");
+
+	    temp = gdm_read_default ("PASSREQ=");
+	    if (temp == NULL)
+	       GdmPasswordRequired = ve_config_get_bool (cfg, GDM_KEY_PASSWORDREQUIRED);
+	    else if (g_ascii_strcasecmp (temp, "YES") == 0)
+	       GdmPasswordRequired = TRUE;
+	    else
+	       GdmPasswordRequired = FALSE;
+	
+	    temp = gdm_read_default ("CONSOLE=");
+	    if (temp == NULL || g_ascii_strcasecmp (temp, "/dev/console") != 0)
+	       GdmAllowRemoteRoot = TRUE;
+	    else
+	       GdmAllowRemoteRoot = FALSE;
+	    g_free (temp);
+    }
+
+    if (GdmDefaultPath == NULL)
+       GdmDefaultPath = ve_config_get_string (cfg, GDM_KEY_PATH);
+    if (GdmRootPath == NULL)
+       GdmRootPath = ve_config_get_string (cfg, GDM_KEY_ROOTPATH);
+
     GdmDisplayInit = ve_config_get_string (cfg, GDM_KEY_INITDIR);
     GdmAutomaticLoginEnable = ve_config_get_bool (cfg, GDM_KEY_AUTOMATICLOGIN_ENABLE);
     GdmAutomaticLogin = ve_config_get_string (cfg, GDM_KEY_AUTOMATICLOGIN);
@@ -438,7 +483,6 @@ gdm_config_parse (void)
     GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMASCREEN);
     GdmReboot = ve_config_get_string (cfg, GDM_KEY_REBOOT);
     GdmRetryDelay = ve_config_get_int (cfg, GDM_KEY_RETRYDELAY);
-    GdmRootPath = ve_config_get_string (cfg, GDM_KEY_ROOTPATH);
     GdmServAuthDir = ve_config_get_string (cfg, GDM_KEY_SERVAUTH);
 #ifdef ENABLE_IPV6
     GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
@@ -471,7 +515,6 @@ gdm_config_parse (void)
     GdmTimedLoginDelay = ve_config_get_int (cfg, GDM_KEY_TIMED_LOGIN_DELAY);
 
     GdmAllowRoot = ve_config_get_bool (cfg, GDM_KEY_ALLOWROOT);
-    GdmAllowRemoteRoot = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
     GdmAllowRemoteAutoLogin = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEAUTOLOGIN);
     GdmRelaxPerms = ve_config_get_int (cfg, GDM_KEY_RELAXPERM);
     GdmCheckDirOwner = ve_config_get_bool (cfg, GDM_KEY_CHECKDIROWNER);
@@ -3633,7 +3676,24 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_ALLOWREMOTEROOT)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
+		gchar *temp;
+		gboolean val;
+		struct stat statbuf;
+		int r;
+
+		/* First try to read values from /etc/default/login */
+		VE_IGNORE_EINTR (r = stat ("/etc/default/login", &statbuf));
+		if (r < 0) {
+			gchar *temp = gdm_read_default ("CONSOLE=");
+			if (temp == NULL || g_ascii_strcasecmp (temp, "/dev/console") != 0)
+				val = TRUE;
+			else
+				val = FALSE;
+			g_free (temp);
+		} else {
+			val = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
+		}
+
 		if (ve_bool_equal (val, GdmAllowRemoteRoot))
 			goto update_config_ok;
 		GdmAllowRemoteRoot = val;
@@ -4104,16 +4164,35 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
 		const char *key = 
 			&msg[strlen (GDM_SUP_GET_CONFIG " ")];
-		char *val;
-		VeConfig *cfg;
+		char *val = NULL;
 
-		cfg = ve_config_new (config_file);
-		val = ve_config_get_string (cfg, key);
+                /* Handle AllowRemoteRoot, RemoteRoot, Root, and
+                 * PasswordRequierd separately since they may be
+                 * modified run-time via /etc/default/login.
+                 */
+                if (is_key (key, GDM_KEY_ALLOWREMOTEROOT)) {
+                        if (GdmAllowRemoteRoot)
+                                gdm_connection_printf (conn, "OK true\n");
+                        else
+                                gdm_connection_printf (conn, "OK false\n");
+                } else if (is_key (key, GDM_KEY_PASSWORDREQUIRED)) {
+                        if (GdmPasswordRequired)
+                                gdm_connection_printf (conn, "OK true\n");
+                        else
+                                gdm_connection_printf (conn, "OK false\n");
+                } else if (is_key (key, GDM_KEY_PATH))
+                        gdm_connection_printf (conn, "OK %s\n", GdmDefaultPath);
+                else if (is_key (key, GDM_KEY_ROOTPATH))
+                        gdm_connection_printf (conn, "OK %s\n", GdmRootPath);
+                else {
+			VeConfig *cfg = ve_config_new (config_file);
+			val = ve_config_get_string (cfg, key);
 
-		if (val == NULL) {
-			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
-		} else {
-			gdm_connection_printf (conn, "OK %s\n", val);
+			if (val == NULL) {
+				gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
+			} else {
+				gdm_connection_printf (conn, "OK %s\n", val);
+			}
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;

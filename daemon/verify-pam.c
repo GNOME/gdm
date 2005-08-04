@@ -26,10 +26,6 @@
 #include <security/pam_appl.h>
 #include <pwd.h>
 
-#ifdef HAVE_DEFOPEN
-#include <deflt.h>
-#endif
-
 #include <vicious.h>
 
 #include "gdm.h"
@@ -56,6 +52,7 @@ extern gint GdmRetryDelay;
 extern gboolean GdmDisplayLastLogin;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
+extern gboolean GdmPasswordRequired;
 
 extern gboolean GdmConsoleNotify;
 
@@ -99,7 +96,7 @@ static	adt_session_data_t      *adt_ah = NULL;    /* audit session handle */
  *	
  */
 static void
-audit_success_login(int pw_change, struct passwd *pwent)
+audit_success_login (int pw_change, struct passwd *pwent)
 {
 	adt_event_data_t	*event;	/* event to generate */
 
@@ -164,7 +161,7 @@ audit_success_login(int pw_change, struct passwd *pwent)
  *	
  */
 static void
-audit_fail_login(GdmDisplay *d, int pw_change, struct passwd *pwent,
+audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
     int pamerr)
 {
 	adt_session_data_t	*ah;	/* audit session handle */
@@ -280,7 +277,7 @@ done:
  *		audit session adt_ah ended.
  */
 static void
-audit_logout(void)
+audit_logout (void)
 {
 	adt_event_data_t	*event;	/* event to generate */
 
@@ -719,7 +716,7 @@ gdm_verify_user (GdmDisplay *d,
 {
     gint pamerr;
     const void *p;
-    char *login;
+    char *login, *passreq, *consoleonly;
     struct passwd *pwent = NULL;
     gboolean error_msg_given;
     gboolean credentials_set;
@@ -752,23 +749,13 @@ verify_user_again:
 
     cur_gdm_disp = d;
 
-    /* A Solaris thing: */
-#ifdef HAVE_DEFOPEN
-    if (defopen(DEFLT"/login") == 0) {
-	    char *passreq;
-	    int def_flgs;
+    passreq = gdm_read_default ("PASSREQ=");
+    if ((passreq != NULL) &&
+	g_ascii_strcasecmp (passreq, "YES") == 0)
+	    GdmPasswordRequired = TRUE;
 
-	    def_flgs = defcntl(DC_GETFLAGS, 0);
-	    TURNOFF(def_flgs, DC_CASE);
-	    (void) defcntl (DC_SETFLAGS, def_flgs);	 /* ignore case */
-
-	    if (((passreq = defread("PASSREQ=")) != NULL) &&
-		g_ascii_strcasecmp (passreq, "YES") == 0)
-		    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
-
-	    (void) defopen(NULL); /* close defaults file  */
-    }
-#endif
+    if (GdmPasswordRequired)
+	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 	    
 authenticate_again:
 
@@ -874,6 +861,11 @@ authenticate_again:
 	    goto verify_user_again;
     }
 
+    consoleonly = gdm_read_default ("CONSOLE=");
+    if ((consoleonly != NULL) &&
+	g_ascii_strcasecmp (passreq, "/dev/console") == 0)
+	    GdmAllowRemoteRoot = FALSE;
+
     pwent = getpwnam (login);
     if ( ( ! GdmAllowRoot ||
 	  ( ! GdmAllowRemoteRoot && ! local) ) &&
@@ -889,12 +881,12 @@ authenticate_again:
 	      _("Root login disallowed"));*/
 	    error_msg_given = TRUE;
 
-#ifdef HAVE_ADT
-	/*
-	 * map console login not allowed as a pam_acct_mgmt() failure
-	 * indeed that's where these checks should be made.
-	 */
-    pamerr = PAM_PERM_DENIED;
+#ifdef  HAVE_ADT
+	   /*
+	    * map console login not allowed as a pam_acct_mgmt() failure
+	    * indeed that's where these checks should be made.
+	    */
+	    pamerr = PAM_PERM_DENIED;
 #endif	/* HAVE_ADT */
 	    goto pamerr;
     }
@@ -912,14 +904,14 @@ authenticate_again:
 		      "Please try again later or contact the system administrator."));
 	    error_msg_given = TRUE;
 #ifdef  HAVE_ADT
-		/* Password change failed */
-		pw_change = PW_FAILED;
+	    /* Password change failed */
+	    pw_change = PW_FAILED;
 #endif	/* HAVE_ADT */
 	    goto pamerr;
 	}
 #ifdef  HAVE_ADT
-		/* Password changed */
-		pw_change = PW_TRUE;
+	/* Password changed */
+	pw_change = PW_TRUE;
 #endif	/* HAVE_ADT */
         break;
     case PAM_ACCT_EXPIRED :
@@ -949,11 +941,11 @@ authenticate_again:
 					    "you will not be able to log in. "
 					    "Please contact your system administrator."));
 #ifdef  HAVE_ADT
-		/*
-		 * map group setup error as a pam_setcred() failure
-		 * indeed that's where this should be done.
-		 */
-		pamerr = PAM_SYSTEM_ERR;
+	    /*
+	     * map group setup error as a pam_setcred() failure
+	     * indeed that's where this should be done.
+	     */
+	    pamerr = PAM_SYSTEM_ERR;
 #endif	/* HAVE_ADT */
 	    goto pamerr;
     }
@@ -992,19 +984,19 @@ authenticate_again:
     tmp_PAM_USER = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-	if (d->attached)
-		(void) di_devperm_login("/dev/console", pwent->pw_uid,
-		    pwent->pw_gid, NULL);
+    if (d->attached)
+	(void) di_devperm_login ("/dev/console", pwent->pw_uid,
+	    pwent->pw_gid, NULL);
 #endif	/* HAVE_LOGINDEVPERM */
 #ifdef  HAVE_ADT
-	audit_success_login(pw_change, pwent);
+    audit_success_login (pw_change, pwent);
 #endif  /* HAVE_ADT */
 
     return login;
     
  pamerr:
 #ifdef  HAVE_ADT
-	audit_fail_login(d, pw_change, pwent, pamerr);
+    audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
 
     /* The verbose authentication is turned on, output the error
@@ -1100,6 +1092,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 {
     gint pamerr = 0;
     struct passwd *pwent = NULL;
+    char *passreq;
     const void *p;
     const char *after_login;
     int null_tok = 0;
@@ -1126,23 +1119,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    goto setup_pamerr;
     }
 
-    /* A Solaris thing: */
-#ifdef HAVE_DEFOPEN
-    if (defopen(DEFLT"/login") == 0) {
-	    char *passreq;
-	    int def_flgs;
+    passreq = gdm_read_default ("PASSREQ=");
+    if ((passreq != NULL) &&
+	g_ascii_strcasecmp (passreq, "YES") == 0)
+	    GdmPasswordRequired = TRUE;
 
-	    def_flgs = defcntl(DC_GETFLAGS, 0);
-	    TURNOFF(def_flgs, DC_CASE);
-	    (void) defcntl (DC_SETFLAGS, def_flgs);	 /* ignore case */
-
-	    if (((passreq = defread("PASSREQ=")) != NULL) &&
-		g_ascii_strcasecmp (passreq, "YES") == 0)
-		    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
-
-	    (void) defopen(NULL); /* close defaults file  */
-    }
-#endif
+    if (GdmPasswordRequired)
+	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 
     /* Start authentication session */
     did_we_ask_for_password = FALSE;
@@ -1174,8 +1157,8 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     }
 
 #ifdef  HAVE_ADT
-	/* to set up for same auditing calls as in gdm_verify_user */
-	pwent = getpwnam (login);
+    /* to set up for same auditing calls as in gdm_verify_user */
+    pwent = getpwnam (login);
 #endif	/* HAVE_ADT */
 
     /* Check if the user's account is healthy. */
@@ -1196,12 +1179,12 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 		    _("\nThe change of the authentication token failed. "
 		      "Please try again later or contact the system administrator."));
 #ifdef  HAVE_ADT
-		pw_change = PW_FAILED;
+	    pw_change = PW_FAILED;
 #endif	/* HAVE_ADT */
 	    goto setup_pamerr;
 	}
 #ifdef  HAVE_ADT
-    pw_change = PW_TRUE;
+	pw_change = PW_TRUE;
 #endif	/* HAVE_ADT */
 #endif	/* 0 */
         break;
@@ -1233,11 +1216,11 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 			     "you will not be able to log in. "
 			     "Please contact your system administrator."));
 #ifdef  HAVE_ADT
-		/*
-		 * map group setup error as a pam_setcred() failure
-		 * indeed that's where this should be done.
-		 */
-		pamerr = PAM_SYSTEM_ERR;
+	    /*
+	     * map group setup error as a pam_setcred() failure
+	     * indeed that's where this should be done.
+	     */
+	    pamerr = PAM_SYSTEM_ERR;
 #endif	/* HAVE_ADT */
 	    goto setup_pamerr;
     }
@@ -1279,12 +1262,12 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     extra_standalone_message = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-	if (d->attached)
-		(void) di_devperm_login("/dev/console", pwent->pw_uid,
-		    pwent->pw_gid, NULL);
+    if (d->attached)
+	(void) di_devperm_login ("/dev/console", pwent->pw_uid,
+	    pwent->pw_gid, NULL);
 #endif	/* HAVE_LOGINDEVPERM */
 #ifdef  HAVE_ADT
-    audit_success_login(pw_change, pwent);
+    audit_success_login (pw_change, pwent);
 #endif	/* HAVE_ADT */
     
     return TRUE;
@@ -1292,7 +1275,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
  setup_pamerr:
 
 #ifdef  HAVE_ADT
-    audit_fail_login(d, pw_change, pwent, pamerr);
+    audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
 
     did_setcred = FALSE;
@@ -1363,7 +1346,7 @@ gdm_verify_cleanup (GdmDisplay *d)
 		 * If logged in, audit logout before cleaning up
 		 */
 		if (old_opened_session && old_did_setcred) {
-			audit_logout();
+			audit_logout ();
 		}
 #endif	/* HAVE_ADT */
 		/* Close the users session */
@@ -1381,13 +1364,12 @@ gdm_verify_cleanup (GdmDisplay *d)
 		pam_end (tmp_pamh, pamerr);
 
 #ifdef  HAVE_LOGINDEVPERM
-        if (old_opened_session && old_did_setcred && d->attached)
-        {
-            (void) di_devperm_logout("/dev/console");
-            /* give it back to gdm user */
-            (void) di_devperm_login("/dev/console", GdmUserId, GdmGroupId,
-                NULL);
-        }
+		if (old_opened_session && old_did_setcred && d->attached) {
+			(void) di_devperm_logout ("/dev/console");
+			/* give it back to gdm user */
+			(void) di_devperm_login ("/dev/console", GdmUserId,
+				GdmGroupId, NULL);
+		}
 #endif  /* HAVE_LOGINDEVPERM */
 
 		/* Workaround to avoid gdm messages being logged as PAM_pwdb */

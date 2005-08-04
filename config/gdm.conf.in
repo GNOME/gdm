@@ -60,8 +60,12 @@ TimedLoginDelay=30
 #GtkModulesList=gail:atk-bridge:@EXPANDED_LIBDIR@/gtk-2.0/modules/libdwellmouselistener:@EXPANDED_LIBDIR@/gtk-2.0/modules/libkeymouselistener
 
 # Default path to set.  The profile scripts will likely override this
+# value.  This value will be overridden with the value from
+# /etc/default/login if it contains "ROOT=<pathvalue>".
 #DefaultPath=@GDM_USER_PATH@
 # Default path for root.  The profile scripts will likely override this
+# value.  This value will be overridden with the value from
+# /etc/default/login if it contains "SUROOT=<pathvalue>".
 #RootPath=/sbin:/usr/sbin:@GDM_USER_PATH@
 
 # If you are having trouble with using a single server for a long time and
@@ -173,8 +177,11 @@ Xnest=@X_XNEST_PATH@/Xnest @X_XNEST_CONFIG_OPTIONS@
 # this is only local, so it's only for say kiosk use, when you
 # want to minimize possibility of breakin
 AllowRoot=true
-# If you want to be paranoid, turn this one off
-AllowRemoteRoot=true
+# Allow login as root via XDMCP.  This value will be overridden and
+# set to false if the /etc/default/login file exists and contains
+# "CONSOLE=/dev/login", and set to true if the /etc/default/login
+# file exists and contains any other value or no value for CONSOLE.
+AllowRemoteRoot=false
 # This will allow remote timed login
 AllowRemoteAutoLogin=false
 # 0 is the most restrictive, 1 allows group write permissions, 2 allows all
@@ -205,6 +212,12 @@ CheckDirOwner=true
 # filesystems where this is OK and you may want to have the cookie in your
 # home directory.
 #NeverPlaceCookiesOnNFS=true
+# Will cause PAM_DISALLOW_NULL_AUTHTOK to be passed as a flag to 
+# pam_authenticate and pam_acct_mgmt, disallowing NULL password.
+# This setting will only take effect if PAM is being used by GDM.
+# This value will be overridden with the value from /etc/default/login
+# if it contains "PASSREQ=[YES|NO]"
+#PasswordRequired=false
 
 # XDMCP is the protocol that allows remote login.  If you want to log into
 # gdm remotely (I'd never turn this on on open network, use ssh for such
@@ -272,7 +285,7 @@ Enable=false
 # Greeter has a nice title bar that the user can move
 #TitleBar=true
 # Configuration is available from the system menu of the greeter
-#ConfigAvailable=true
+#ConfigAvailable=false
 # Face browser is enabled.  This only works currently for the
 # standard greeter as it is not yet enabled in the graphical greeter.
 Browser=false

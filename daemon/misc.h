@@ -179,6 +179,8 @@ const char * gdm_console_translate (const char *str);
 /* Use with C_(N_("foo")) to make gettext work it out right */
 #define C_(x) (gdm_console_translate(x))
 
+gchar * gdm_read_default (gchar *key);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

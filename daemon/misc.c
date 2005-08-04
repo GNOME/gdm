@@ -42,6 +42,10 @@
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
+#ifdef HAVE_DEFOPEN
+#include <deflt.h>
+#endif
+
 #include <X11/Xlib.h>
 
 #include <vicious.h>
@@ -2471,5 +2475,31 @@ gdm_console_translate (const char *str)
 		return str;
 }
 
+/*
+ * gdm_read_default
+ *
+ * This function is used to support systems that have the /etc/default/login
+ * interface to control programs that affect security.  This is a Solaris
+ * thing, though some users on other systems may find it useful.
+ */ 
+gchar *
+gdm_read_default (gchar *key)
+{
+    gchar *retval = NULL;
+
+#ifdef HAVE_DEFOPEN
+    if (defopen ("/etc/default/login") == 0) {
+       int flags = defcntl (DC_GETFLAGS, 0);
+
+       TURNOFF (flags, DC_CASE);
+       (void) defcntl (DC_SETFLAGS, flags);  /* ignore case */
+       retval = g_strdup (defread (key));
+       (void) defopen ((char *)NULL);
+    }
+    return retval;
+#else
+    return NULL;
+#endif
+}
 
 /* EOF */

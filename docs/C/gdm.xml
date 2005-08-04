@@ -1206,6 +1206,10 @@ XKeepsCrashing
               <synopsis>DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
               <para>
                 Specifies the path which will be set in the user's session.
+                This value will be overridden with the value from
+                /etc/default/login if it contains "ROOT=<pathname>".  If
+		the /etc/default/login file exists, but contains no value for
+		ROOT, the gdm.conf value will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1505,7 +1509,10 @@ XKeepsCrashing
               <para>
                 Specifies the path which will be set in the root's
                 session and the {Init,PostLogin,PreSession,PostSession} scripts
-                executed by GDM.
+                executed by GDM.  This value will be overridden with the value
+                from /etc/default/login if it contains "SUROOT=<pathname>".
+		If the /etc/default/login file exists, but contains no value
+		for SUROOT, the gdm.conf value will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1785,17 +1792,23 @@ XKeepsCrashing
           <varlistentry>
             <term>AllowRemoteRoot</term>
             <listitem>
-              <synopsis>AllowRemoteRoot=true</synopsis>
+              <synopsis>AllowRemoteRoot=false</synopsis>
               <para>
                 Allow root (privileged user) to log in remotely through GDM.
-                Set this to false if you want to disallow such logins.  Remote
-                logins are any logins that come in through the xdmcp.
+		This value should be set to true to allow such logins.
+                Remote logins are any logins that come in through the XDMCP.
               </para>
               <para>
                 On systems that support PAM, this parameter is not as useful
-                as you can use PAM to do the same thing, and in fact do even
-                more.  However it is still followed, so you should probably
-                leave it true for PAM systems.
+                since you can use PAM to do the same thing, and do even
+                more.
+              </para>
+              <para>
+                This value will be overridden and set to false if the
+                /etc/default/login file exists and contains
+                "CONSOLE=/dev/login", and set to true if the
+		/etc/default/login file exists and contains any other
+		value or no value for CONSOLE.
               </para>
             </listitem>
           </varlistentry>
@@ -1863,6 +1876,23 @@ XKeepsCrashing
                 using encryption).  In this case set this to 'false'.  Note
                 that this option appeared in version 2.4.4.4 and is ignored in
                 previous versions.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>PasswordRequired</term>
+            <listitem>
+              <synopsis>PasswordRequired=false</synopsis>
+              <para>
+		If true, this will cause PAM_DISALLOW_NULL_AUTHTOK to be
+		passed as a flag to pam_authenticate and pam_acct_mgmt,
+		disallowing NULL password.  This setting will only take
+		effect if PAM is being used by GDM.  This value will be
+		overridden with the value from /etc/default/login if it
+		contains "PASSREQ=[YES|NO]".  If the /etc/default/login
+		file exists, but contains no value for PASSREQ, the
+		gdm.conf value will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -2435,12 +2465,14 @@ XKeepsCrashing
           <varlistentry>
             <term>ConfigAvailable</term>
             <listitem>
-              <synopsis>ConfigAvailable=true</synopsis>
+              <synopsis>ConfigAvailable=false</synopsis>
               <para>
-                Allow the configurator to be run from the greeter.  Note that
-                the user will need to type in the root password before the
-                configurator is run however.  See the
-                <filename>Configurator</filename> option in the daemon section.
+                If true, allows the configurator to be run from the greeter.
+		Note that the user will need to type in the root password
+		before the configurator will be started.  This is set to 
+		false by default for additional security.  See the
+		<filename>Configurator</filename> option in the daemon
+		section.
               </para>
             </listitem>
           </varlistentry>
@@ -3635,7 +3667,7 @@ Answers:
       <sect3 id="attachedservers">
       <title>ATTACHED_SERVERS</title>
       <screen>
-ATTACHED_SERVERS: List all attached servers.  Doesn't list xdmcp and xnest
+ATTACHED_SERVERS: List all attached servers.  Doesn't list XDMCP and xnest
                   non-attached servers
 Supported since: 2.2.4.0
 Note: This command used to be named CONSOLE_SERVERS, which is still recognized
@@ -4540,9 +4572,9 @@ Screenshot=screenshot.png
         standard console login, console-timed is a console login with a timed
         login going on, flexi is for any local flexible server, remote-flexi is
         for flexi server that is not local (such as an Xnest flexiserver run
-        from a remote display) and xdmcp is for remote xdmcp connections.  The
+        from a remote display) and xdmcp is for remote XDMCP connections.  The
         second argument is the theme name.  So for example to test how things
-        look in the xdmcp mode with the circles theme you would run:
+        look in the XDMCP mode with the circles theme you would run:
       </para>
 
         <screen>gdmthemetester xdmcp circles</screen>
