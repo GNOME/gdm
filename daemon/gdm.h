@@ -78,7 +78,7 @@
 
 enum {
 	DISPLAY_UNBORN /* Not yet started */,
-	DISPLAY_ALIVE /* Yay! we're alive (non-xdmcp) */,
+	DISPLAY_ALIVE /* Yay! we're alive (non-XDMCP) */,
 	XDMCP_PENDING /* Pending XDMCP display */,
 	XDMCP_MANAGED /* Managed XDMCP display */,
 	DISPLAY_DEAD /* Left for dead */,
@@ -512,8 +512,8 @@ struct _GdmForwardQuery {
 #define GDM_MAX_FORWARD_QUERIES 10
 #define GDM_FORWARD_QUERY_TIMEOUT 30
 
-/* some extra xdmcp opcodes that xdm will happily ignore since they'll be
- * the wrong xdmcp version anyway */
+/* some extra XDMCP opcodes that xdm will happily ignore since they'll be
+ * the wrong XDMCP version anyway */
 #define GDM_XDMCP_PROTOCOL_VERSION 1001
 enum {
 	GDM_XDMCP_FIRST_OPCODE = 1000, /*just a marker, not an opcode */
@@ -745,7 +745,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_SUP_ATTACHED_SERVERS "ATTACHED_SERVERS" /* None */
 #define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS"  /* None */
 /* ATTACHED_SERVERS: List all attached servers, useful for Linux mostly
- *   Doesn't list xdmcp and xnest non-attached servers
+ *   Doesn't list XDMCP and xnest non-attached servers
  * CONSOLE_SERVERS supported, but deprecated due to terminology
  * Supported since: 2.2.4.0
  * Note: This command used to be named CONSOLE_SERVERS, which is still recognized
