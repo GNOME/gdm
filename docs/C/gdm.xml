@@ -9,6 +9,13 @@
 <article id="index" lang="en">
   <articleinfo>
     <title>Gnome Display Manager Reference Manual</title>
+
+    <abstract role="description">
+      <para>
+       Reference manual for the Gnome Display Manager (GDM).
+      </para>
+    </abstract>
+
     <authorgroup>
       <author>
         <firstname>Martin</firstname><othername>K.</othername>
@@ -23,7 +30,7 @@
           <address><email>jirka@5z.com</email></address>
         </affiliation>
       </author>
-      <author>
+      <author role="maintainer">
         <firstname>Brian</firstname><surname>Cameron</surname>
         <affiliation>
           <address><email>Brian.Cameron@Sun.COM</email></address>
@@ -716,14 +723,19 @@
 
     <para> 
       The <filename>gdm.conf</filename> file contains the main configuration
-      choices for GDM.  This file by default is installed to 
-      <filename>&lt;usr/share&gt;</filename>.  Since this directory can be
-      shared across machines, this allows for having a single configuration
-      for a network of machines.  To create machine-specific GDM configuration
-      settings, the system administrator can place a modified gdm.conf file in
-      <filename>&lt;etc&gt;/gdm</filename> and it will be used instead.
-      The gdm --config option may instead be used to specify a configuration
-      file installed to another location.  All GDM utilities (such as
+      choices for GDM.
+    </para>
+
+    <para>
+      GDM may be configured to support both system-wide configuration if
+      built with the <command>--with-configdir</command> option.  This
+      allows the gdm.conf file to be installed to a directory that can
+      be mounted across multiple-systems.  Regardless of whether this
+      option is used, GDM will first look for the gdm.conf file in the
+      <filename>&lt;etc&gt;/gdm</filename> directory.  This way 
+      machine-specific configuration always overrides the system-wide
+      defaults.  The gdm --config option may also be used to specify the 
+      configuration file location.  All GDM utilities (such as
       gdmchooser, gdmsetup, etc.) query the GDM daemon process and will use
       the same configuration file as being used by the daemon.  The GDM2
       daemon must be restarted to change the configuration file being used.
@@ -737,7 +749,7 @@
     </para>
 
     <para>
-      Most other GDM configuration files are located, by default, in the
+      The other GDM configuration files are located, by default, in the
       <filename>&lt;etc&gt;/gdm/</filename> folder or its subdirectories.
       However, the location of all configuration files can be defined in 
       the <filename>gdm.conf</filename> file, so the sysadmin may choose
@@ -805,8 +817,8 @@ XKeepsCrashing
     <para>
       Files describing available GDM session follow the freedesktop.org
       desktop file specification and are <filename>.desktop</filename>-style
-      files are installed to <filename>&lt;etc&gt;/X11/sessions/</filename>.  This
-      directory is also read by the KDE desktop manager (KDM) for common
+      files are installed to <filename>&lt;etc&gt;/X11/sessions/</filename>.
+      This directory is also read by the KDE desktop manager (KDM) for common
       configuration.  Next the directory
       <filename>&lt;share&gt;/gdm/BuiltInSessions/</filename> is read for
       GDM specific built-in sessions (KDM hardcodes these at time of
@@ -814,8 +826,8 @@ XKeepsCrashing
       <filename>&lt;share&gt;/xsessions/</filename> (which should be
       <filename>/usr/share/xsessions/</filename> if you really wish to
       cooperate with KDM) where desktop packages can install their session
-      files.  The directories under the <filename>&lt;etc&gt;</filename> should be
-      reserved for configuration.  The desktop file specification approach
+      files.  The directories under the <filename>&lt;etc&gt;</filename> should
+      be reserved for configuration.  The desktop file specification approach
       makes it easy for package management systems to install window managers
       and different session types without requiring the sysadmin to edit files.
       See the <filename>SessionDesktopDir</filename> configuration key for
@@ -970,13 +982,15 @@ XKeepsCrashing
       
       <para>
         The daemon and the accompanying utilities use a common
-        configuration file: <filename>gdm.conf</filename>.  To support
-        multiple machines sharing the same configuration file, this file
-        is installed by default to <filename>/usr/share/gdm</filename>.
-        To specify a machine-specific configuration, the system 
-        administrator  may place a modified configuration file
-        in <filename>&lt;etc&gt;/gdm</filename> and GDM will instead use
-        this file. The gdm --config option may instead be used to specify
+        configuration file: <filename>gdm.conf</filename>.  GDM may be
+        configured to support both system-wide configuration if
+        built with the <command>--with-configdir</command> option.  This
+        allows the gdm.conf file to be installed to a directory that can
+        be mounted across multiple-systems.  Regardless of whether this
+        option is used, GDM will first look for the gdm.conf file in the
+        <filename>&lt;etc&gt;/gdm</filename> directory.  This way 
+        machine-specific configuration always overrides the system-wide
+        defaults.  The gdm --config option may instead be used to specify
         a configuration file installed to another location.  All GDM
         utilities (such as All GDM utilities (such as gdmchooser,
         gdmsetup, etc.) query the GDM daemon process and will use the same
@@ -1774,14 +1788,13 @@ XKeepsCrashing
               <synopsis>AllowRemoteRoot=true</synopsis>
               <para>
                 Allow root (privileged user) to log in remotely through GDM.
-                Set this to false if you want to disallow such logins.  Remote
-                logins are any logins that come in through the xdmcp.
+		This value should be set to true to allow such logins.
+                Remote logins are any logins that come in through the XDMCP.
               </para>
               <para>
                 On systems that support PAM, this parameter is not as useful
-                as you can use PAM to do the same thing, and in fact do even
-                more.  However it is still followed, so you should probably
-                leave it true for PAM systems.
+                since you can use PAM to do the same thing, and do even
+                more.
               </para>
             </listitem>
           </varlistentry>
@@ -1852,7 +1865,7 @@ XKeepsCrashing
               </para>
             </listitem>
           </varlistentry>
-          
+
           <varlistentry>
             <term>RelaxPermissions</term>
             <listitem>
@@ -2423,10 +2436,11 @@ XKeepsCrashing
             <listitem>
               <synopsis>ConfigAvailable=true</synopsis>
               <para>
-                Allow the configurator to be run from the greeter.  Note that
-                the user will need to type in the root password before the
-                configurator is run however.  See the
-                <filename>Configurator</filename> option in the daemon section.
+                If true, allows the configurator to be run from the greeter.
+		Note that the user will need to type in the root password
+		before the configurator will be started.  See the
+		<filename>Configurator</filename> option in the daemon
+		section.
               </para>
             </listitem>
           </varlistentry>
@@ -2448,13 +2462,13 @@ XKeepsCrashing
             <term>Include</term>
             <listitem>
               <synopsis>Include=</synopsis>
+              <para>
                 Comma separated list of users to be included in the face
                 browser and in the gdmsetup selection list for
                 Automatic/Timed login. 
                 See also <filename>Exclude</filename>,
                 <filename>IncludeAll</filename>, and
                 <filename>MinimalUID</filename>.
-              <para>
               </para>
             </listitem>
           </varlistentry>
@@ -2479,6 +2493,7 @@ XKeepsCrashing
             <term>IncludeAll</term>
             <listitem>
               <synopsis>IncludeAll=false</synopsis>
+              <para>
                 By default, an empty include list means display no users.
                 By setting IncludeAll to true, the password file will be
                 scanned and all users will be displayed aside from users
@@ -2489,7 +2504,6 @@ XKeepsCrashing
                 See also <filename>Include</filename>,
                 <filename>Exclude</filename>, and
                 <filename>MinimalUID</filename>.
-              <para>
               </para>
             </listitem>
           </varlistentry>
@@ -3621,7 +3635,7 @@ Answers:
       <sect3 id="attachedservers">
       <title>ATTACHED_SERVERS</title>
       <screen>
-ATTACHED_SERVERS: List all attached servers.  Doesn't list xdmcp and xnest
+ATTACHED_SERVERS: List all attached servers.  Doesn't list XDMCP and xnest
                   non-attached servers
 Supported since: 2.2.4.0
 Note: This command used to be named CONSOLE_SERVERS, which is still recognized
@@ -3701,8 +3715,8 @@ GET_CONFIG_FILE:  Get config file location being used by
 Supported since: 2.8.0.2
 Arguments:  None
 Answers:
-  OK <full path to GDM configuration file>
-  ERROR <err number> <english error description>
+  OK &lt;full path to GDM configuration file&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
@@ -4110,19 +4124,24 @@ Supported since: 2.2.4.0
       </para>
 
       <variablelist>
-        <title><filename>gdmflexichooser</filename> Command Line Options</title>
+        <title><filename>gdmdynamic</filename> Command Line Options</title>
 
-        <para>
-        One of the following options can be used per instance:
-        </para>
+        <varlistentry>
+	  <term></term>
+	  <listitem>
+	  <para><emphasis>
+	    One of the following options can be used per instance:
+	    </emphasis></para>
+	  </listitem>
+        </varlistentry>
 
         <varlistentry>
           <term>-a display=server</term>
           <listitem>
             <para>
             Add a new display configuration. For example,
-            <listitem>"-a 2=StandardServerTwo"</listitem>
-            <listitem>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</listitem>
+            <command>"-a 2=StandardServerTwo"</command>
+            <command>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</command>
             </para>
           </listitem>
         </varlistentry>
@@ -4153,15 +4172,20 @@ Supported since: 2.2.4.0
             List displays via the ATTACHED_SERVERS command. Without a pattern
             lists all attached displays. With a pattern will match using glob
             characters '*', '?', and '[]'. For example:
-            <listitem>"-l Standard*"</listitem>
-            <listitem>"-l *Xorg*"</listitem>
+            <command>"-l Standard*"</command>
+            <command>"-l *Xorg*"</command>
             </para>
           </listitem>
         </varlistentry>
 
-        <para>
-        These options can be added to the above:
-        </para>
+	<varlistentry>
+	  <term></term>
+	  <listitem>
+	  <para><emphasis>
+            These options can be added to the above:
+	    </emphasis></para>
+	  </listitem>
+	</varlistentry>
 
         <varlistentry>
           <term>-v</term>
@@ -4516,9 +4540,9 @@ Screenshot=screenshot.png
         standard console login, console-timed is a console login with a timed
         login going on, flexi is for any local flexible server, remote-flexi is
         for flexi server that is not local (such as an Xnest flexiserver run
-        from a remote display) and xdmcp is for remote xdmcp connections.  The
+        from a remote display) and xdmcp is for remote XDMCP connections.  The
         second argument is the theme name.  So for example to test how things
-        look in the xdmcp mode with the circles theme you would run:
+        look in the XDMCP mode with the circles theme you would run:
       </para>
 
         <screen>gdmthemetester xdmcp circles</screen>
@@ -5194,7 +5218,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
 
         <para>
           Then if the user chooses 'Foo' then 
-          <filename>&lt;var&gt/gdm/:0.GreeterInfo</filename> will contain:
+          <filename>&lt;var&gt;/gdm/:0.GreeterInfo</filename> will contain:
           <screen>custom-config=foo</screen>
         </para>
       </sect3>

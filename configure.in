@@ -818,6 +818,20 @@ fi
 AC_SUBST(AT_BINDIR)
 AC_DEFINE_UNQUOTED(AT_BINDIR,"$AT_BINDIR")
 
+withval=""
+AC_ARG_WITH(configdir,
+[  --with-configdir=<PATH>   PATH to Install gdm.conf configuration file [defaul
+t=EXPANDED_SYSCONFDIR]],)
+
+if test x$withval != x; then
+        GDM_CONFIGDIR="$withval"
+else
+        GDM_CONFIGDIR=$EXPANDED_SYSCONFDIR
+fi
+
+AC_SUBST(GDM_CONFIGDIR)
+AC_DEFINE_UNQUOTED(GDM_CONFIGDIR,"$GDM_CONFIGDIR")
+
 AC_ARG_WITH(xevie,
   [  --with-xevie=[yes/no]  Add XEvIE Xserver extension support [default=no]],,
   with_xevie=no)

@@ -348,7 +348,15 @@ check_logdir (void)
 /**
  * gdm_get_config:
  *
- * Get config file
+ * Get config file.  If GDM is configured with the --with-configdir option
+ * then GDM will first look in the sysconfdir location.  If the gdm.conf
+ * file is not found, it will look in the location specified via
+ * --with-configdir.  This allows a configuration file to be placed on
+ * a mounted directory on a network with multiple machines for a common
+ * configuration file.  The two directories will be the same if the
+ * --with-configdir option is not specified.  Checking the same directory
+ * twice is a bit ugly, but will only happen in a rare error condition -
+ * when the gdm.conf file can't be found.
  */
 static VeConfig *
 gdm_get_config (struct stat *statbuf)
@@ -364,12 +372,12 @@ gdm_get_config (struct stat *statbuf)
        if (r < 0) {
 
            /* If not found, then check datadir */
-           VE_IGNORE_EINTR (r = stat (GDM_DATADIR_CONFIG_FILE, statbuf));
+           VE_IGNORE_EINTR (r = stat (GDM_INSTALL_CONFIG_FILE, statbuf));
            if (r < 0) {
                gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
-                   "gdm_config_parse", GDM_DATADIR_CONFIG_FILE);
+                   "gdm_config_parse", GDM_INSTALL_CONFIG_FILE);
            } else {
-               config_file = GDM_DATADIR_CONFIG_FILE;
+               config_file = GDM_INSTALL_CONFIG_FILE;
            }
        } else {
                config_file = GDM_SYSCONFDIR_CONFIG_FILE;
