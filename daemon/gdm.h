@@ -136,6 +136,36 @@ enum {
 #define FIELD_SIZE 256
 #define PIPE_SIZE 4096
 
+
+/*
+ * The following section contains keys used by the gdm.conf configuration file.
+ * Options exposed in this file are Stable, and should not change in ways that
+ * are not backwards incompatible.   Note the GDM_KEY_DEFAULTWELCOME_BACKTEST
+ * to see how backwards compatibility can be handled.
+ * 
+ * Developers who add new configuration options should ensure that they do the
+ * following:
+ * 
+ * + Specify the same default in this file as in the config/gdm.conf.in file.
+ * + Update the GET_CONFIG logic in the gdm_handle_user_message() function in
+ *   daemon/gdm.c to handle the new option.
+ * + Update the SET_CONFIG logic in the gdm_handle_user_message() function in
+ *   daemon/gdm.c to handle the new option if appropriate.
+ * + The gui/gdmsetup.c program should be updated to support the new option.
+ *   If the option affects the greeter program, make sure update_greeters() is
+ *   called.  For this to work, the update_config() logic in daemon/gdm.c
+ *   should be updated to call notify_displays_*() upon noticing the
+ *   configuration change.   The gdm_reread_config() in gui/gdmlogin.c and
+ *   gui/greeter/greeter.c will also need to be updated to notice the new
+ *   configuration option.
+ * + Update the docs/C/gdm.xml file to include information about the new
+ *   option.  Include information about any other interfaces (such as 
+ *   ENVIRONMENT variables) that may affect the configuration option.
+ *
+ * Please do this work *before* submitting an enhancement request via
+ * bugzilla. 
+ */
+
 /* Configuration constants */
 #define GDM_KEY_CHOOSER "daemon/Chooser=" EXPANDED_LIBEXECDIR "/gdmchooser"
 /* This defaults to true for backward compatibility,
@@ -241,7 +271,7 @@ enum {
 #define GDM_KEY_XDMCP_PROXY_RECONNECT "xdmcp/ProxyReconnect="
 
 #define GDM_KEY_GTK_THEME "gui/GtkTheme=Default"
-#define GDM_KEY_GTKRC "gui/GtkRC="
+#define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk-2.0/gtkrc"
 #define GDM_KEY_ICONWIDTH "gui/MaxIconWidth=128"
 #define GDM_KEY_ICONHEIGHT "gui/MaxIconHeight=128"
 

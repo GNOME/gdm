@@ -3925,6 +3925,70 @@ update_config_ok:
 	return TRUE;
 }
 
+/*
+ * These fuctions print out the runtime value if present, else print out the #define key
+ * which include compiled-in default settings if there isn't a setting in the gdm.conf
+ * file.
+ */
+static gboolean
+print_defaultbool_if_key (VeConfig *cfg, GdmConnection *conn, const char *checkkey, char *key, gboolean *runtime_val)
+{
+	gboolean val;
+
+	if (is_key (checkkey, key)) {
+		if (runtime_val != NULL) 
+			val = *runtime_val;
+		else
+			val = ve_config_get_bool (cfg, key);
+
+		if (val)
+			gdm_connection_printf (conn, "OK true\n");
+		else
+			gdm_connection_printf (conn, "OK false\n");
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+print_defaultstring_if_key (VeConfig *cfg, GdmConnection *conn, const char *checkkey, char *key, char *runtime_val)
+{
+	char *val;
+
+	if (is_key (checkkey, key)) {
+		if (runtime_val != NULL) 
+			val = runtime_val;
+		else
+			val = ve_config_get_string (cfg, key);
+
+		if (val != NULL) {
+			gdm_connection_printf (conn, "OK %s\n", val);
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
+print_defaultint_if_key (VeConfig *cfg, GdmConnection *conn, const char *checkkey, char *key, int *runtime_val)
+{
+	int val;
+
+	if (is_key (checkkey, key)) {
+		if (runtime_val != NULL) 
+			val = *runtime_val;
+		else
+			val = ve_config_get_int (cfg, key);
+
+		gdm_connection_printf (conn, "OK %d\n", val);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
@@ -4162,37 +4226,150 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
+		VeConfig *cfg = ve_config_get (config_file);
 		const char *key = 
 			&msg[strlen (GDM_SUP_GET_CONFIG " ")];
-		char *val = NULL;
 
-                /* Handle AllowRemoteRoot, RemoteRoot, Root, and
-                 * PasswordRequierd separately since they may be
-                 * modified run-time via /etc/default/login.
-                 */
-                if (is_key (key, GDM_KEY_ALLOWREMOTEROOT)) {
-                        if (GdmAllowRemoteRoot)
-                                gdm_connection_printf (conn, "OK true\n");
-                        else
-                                gdm_connection_printf (conn, "OK false\n");
-                } else if (is_key (key, GDM_KEY_PASSWORDREQUIRED)) {
-                        if (GdmPasswordRequired)
-                                gdm_connection_printf (conn, "OK true\n");
-                        else
-                                gdm_connection_printf (conn, "OK false\n");
-                } else if (is_key (key, GDM_KEY_PATH))
-                        gdm_connection_printf (conn, "OK %s\n", GdmDefaultPath);
-                else if (is_key (key, GDM_KEY_ROOTPATH))
-                        gdm_connection_printf (conn, "OK %s\n", GdmRootPath);
-                else {
-			VeConfig *cfg = ve_config_new (config_file);
-			val = ve_config_get_string (cfg, key);
+		/* If the value is loaded by the daemon, print out value from memory.
+		 * This is more useful than checking the config file, since the config
+		 * file may have changed since GDM was started, and may not be
+		 * currently used.
+		 */
+		if (!(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWREMOTEROOT, &GdmAllowRemoteRoot)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWROOT, &GdmAllowRoot)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWREMOTEAUTOLOGIN, &GdmAllowRemoteAutoLogin)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_PASSWORDREQUIRED, &GdmPasswordRequired)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_AUTOMATICLOGIN_ENABLE, &GdmAutomaticLoginEnable)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALWAYSRESTARTSERVER, &GdmAlwaysRestartServer)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ADD_GTK_MODULES, &GdmAddGtkModules)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DOUBLELOGINWARNING, &GdmDoubleLoginWarning)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION, &GdmAlwaysLoginCurrentSession)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DISPLAY_LAST_LOGIN, &GdmDisplayLastLogin)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_KILLIC, &GdmKillInitClients)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CONFIG_AVAILABLE, &GdmConfigAvailable)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SYSMENU, &GdmSystemMenu)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CHOOSER_BUTTON, &GdmChooserButton)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BROWSER, &GdmBrowser)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_MULTICAST, &GdmMulticast)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_NEVERPLACECOOKIESONNFS, &GdmNeverPlaceCookiesOnNFS)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CONSOLE_NOTIFY, &GdmConsoleNotify)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_TIMED_LOGIN_ENABLE, &GdmTimedLoginEnable)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWROOT, &GdmAllowRoot)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CHECKDIROWNER, &GdmCheckDirOwner)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_XDMCP, &GdmXdmcp)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_INDIRECT, &GdmIndirect)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_XDMCP_PROXY, &GdmXdmcpProxy)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DYNAMIC_XSERVERS, &GdmDynamicXServers)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_VTALLOCATION, &GdmVTAllocation)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DISALLOWTCP, &GdmDisallowTCP)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS, &GdmSoundOnLoginSuccess)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_FAILURE, &GdmSoundOnLoginFailure)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEBUG, &GdmDebug)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOW_GTK_THEME_CHANGE, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_TITLE_BAR, NULL)) &&
+                    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_INCLUDEALL, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEFAULT_WELCOME, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEFAULT_REMOTEWELCOME, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_LOCK_POSITION, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDSCALETOFIT, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_RUNBACKGROUNDPROGALWAYS, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SET_POSITION, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_QUIVER, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SHOW_GNOME_FAILSAFE, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SHOW_XTERM_FAILSAFE, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SHOW_LAST_SESSION, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_USE_24_CLOCK, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ENTRY_CIRCLES, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ENTRY_INVISIBLE, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME_RAND, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BROADCAST, NULL)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWADD, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_PATH, GdmDefaultPath)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_ROOTPATH, GdmRootPath)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CONSOLE_CANNOT_HANDLE, GdmConsoleCannotHandle)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CHOOSER, GdmChooser)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GREETER, GdmGreeter)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CONFIGURATOR, GdmConfigurator)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_POSTLOGIN, GdmPostLogin)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_PRESESS, GdmPreSession)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_POSTSESS, GdmPostSession)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_FAILSAFE_XSERVER, GdmFailsafeXServer)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XKEEPSCRASHING, GdmXKeepsCrashing)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BASEXSESSION, GdmXsession)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_REMOTEGREETER, GdmRemoteGreeter)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INITDIR, GdmDisplayInit)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_AUTOMATICLOGIN, GdmAutomaticLogin)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTK_MODULES_LIST, GdmGtkModulesList)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_REBOOT, GdmReboot)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HALT, GdmHalt)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SUSPEND, GdmSuspend)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOGDIR, GdmLogDir)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_PIDFILE, GdmPidFile)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_FACEDIR, GdmGlobalFaceDir)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SERVAUTH, GdmServAuthDir)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHDIR, GdmUserAuthDir)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFILE, GdmUserAuthFile)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFB, GdmUserAuthFB)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SESSDIR, GdmSessDir)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_MULTICAST_ADDR, GdmMulticastAddr)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_USER, GdmUser)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GROUP, GdmGroup)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTKRC, GdmGtkRC)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTK_THEME, GdmGtkTheme)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_TIMED_LOGIN, GdmTimedLogin)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_WILLING, GdmWilling)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XDMCP_PROXY_XSERVER, GdmXdmcpProxyCommand)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XDMCP_PROXY_RECONNECT, GdmXdmcpProxyReconnect)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_STANDARD_XSERVER, GdmStandardXServer)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XNEST, GdmXnest)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SOUND_PROGRAM, GdmSoundProgram)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE, GdmSoundOnLoginSuccessFile)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE, GdmSoundOnLoginFailureFile)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTK_THEMES_TO_ALLOW, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INCLUDE, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_EXCLUDE, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_FACE, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOCFILE, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOGO, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_WELCOME, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_REMOTEWELCOME, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDPROG, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDIMAGE, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDCOLOR, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME_DIR, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEMES, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FILE, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FONT, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FONT, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HOST, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HOSTDIR, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HOSTS, NULL)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_XINERAMASCREEN, &GdmXineramaScreen)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_RETRYDELAY, &GdmRetryDelay)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_TIMED_LOGIN_DELAY, &GdmTimedLoginDelay)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_RELAXPERM, &GdmRelaxPerms)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXFILE, &GdmUserMaxFile)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_DISPERHOST, &GdmDispPerHost)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXPEND, &GdmMaxPending)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXWAIT, &GdmMaxManageWait)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXSESS, &GdmMaxSessions)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_UDPPORT, &GdmPort)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXINDIR, &GdmMaxIndirect)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXINDWAIT, &GdmMaxIndirectWait)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_PINGINTERVAL, &GdmPingInterval)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_FLEXIBLE_XSERVERS, &GdmFlexibleXServers)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_FIRSTVT, &GdmFirstVT)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_POSITIONX, NULL)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_POSITIONY, NULL)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MINIMALUID, NULL)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_ICONWIDTH, NULL)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_ICONHEIGHT, NULL)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDTYPE, NULL)) &&
+		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_SCAN, NULL))) {
 
-			if (val == NULL) {
 				gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
-			} else {
-				gdm_connection_printf (conn, "OK %s\n", val);
-			}
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;
