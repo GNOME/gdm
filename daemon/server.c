@@ -704,7 +704,7 @@ connect_to_parent (GdmDisplay *d)
 	}
 
 	if (d->parent_dsp == NULL)
-		gdm_error (_("%s: failed to connect to parent display '\%s\'"),
+		gdm_error (_("%s: failed to connect to parent display \'%s\'"),
 			   "gdm_server_start", d->parent_disp);
 
 	return d->parent_dsp != NULL;

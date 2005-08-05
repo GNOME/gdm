@@ -1,6 +1,7 @@
 2005-08-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdm.c, gui/gdm.h: Fixed GET_CONFIG command so
+	* daemon/server.c: Fix malformed string.
+        * daemon/gdm.c, daemon/gdm.h: Fixed GET_CONFIG command so
           it works.  Before it only printed out the value if
           it had a value defined in the gdm.conf file.  Now
           it prints out the runtime value.  For values that
