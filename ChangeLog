@@ -1,5 +1,20 @@
 2005-08-04  Brian Cameron  <brian.cameron@sun.com>
 
+        * gui/gdm.c, gui/gdm.h: Fixed GET_CONFIG command so
+          it works.  Before it only printed out the value if
+          it had a value defined in the gdm.conf file.  Now
+          it prints out the runtime value.  For values that
+          are only used by other programs, it prints out the
+          compiled-in default if no value exists in gdm.conf.
+          Added comments to gdm.h to make it clear what work
+          developers should do when adding new configuration
+          options.
+        * gui/gdm.h, config/gdm.conf.in: Fixed default value
+          for GtkRC so it's %datadir%/themes/Default/gtk-2.0/gtkrc
+          instead of Default/gtk/gtkrc.
+
+2005-08-04  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm.h, gui/gdmlogin.c, gui/greeter/greeter.c:
 	  GDM is more backwards compatible.  The change
 	  to add DefaultWelcome and DefaultRemoteWelcome
@@ -12,6 +27,9 @@
 
 2005-08-04  Brian Cameron  <brian.cameron@sun.com>
 
+	  Since this returns the default interfaces back to the way it
+	  was in the previous version, I do not think that this
+	  requires release team approval.
 	* gdm.h: Change "xdmcp" to "XDMCP" in comments.
 	* acconfig.h, configure.in, daemon/Makefile.am, daemon/gdm.c,
 	  Change to the way the patch introduced on 07/22 works.
@@ -29,6 +47,7 @@
 
 2005-07-26  Tommi Vainikainen  <thv@iki.fi>
 
+	This change was given release team approval since it changes UI.
 	* gui/gdmsetup.c (setup_gui), gui/gdmsetup.glade: Removed special
 	option for 24 hour time format.
 	* gui/gdmcommon.h, gui/gdmcommon.c
