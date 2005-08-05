@@ -1,3 +1,18 @@
+2005-08-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdm.c, gui/gdm.h: Fixed GET_CONFIG command so
+	  it works.  Before it only printed out the value if
+	  it had a value defined in the gdm.conf file.  Now
+	  it prints out the runtime value.  For values that
+	  are only used by other programs, it prints out the
+	  compiled-in default if no value exists in gdm.conf.
+	  Added comments to gdm.h to make it clear what work
+	  developers should do when adding new configuration
+	  options.
+	* gui/gdm.h, config/gdm.conf.in: Fixed default value
+	  for GtkRC so it's %datadir%/themes/Default/gtk-2.0/gtkrc
+	  instead of Default/gtk/gtkrc.
+
 2005-08-03  Brian Cameron  <brian.cameron@sun.com>
 
 	* docs/C/gdm.xml: Made XML conformant.
@@ -22,7 +37,6 @@
 	  to GDM_KEY_SECTION_SERVER and added GDM_KEY_SECTION_GREETER.
 	  There already is a GDM_KEY_GREETER, so for section 
 	  #defines it's better to include "SECTION" in it.
-
 	* gui/gdmsetup.c, gui/gdmsetup.glade:  Made a number of UI
 	  improvements.  Calum Benson is doing a UI review of 
 	  gdmsetup and I made the following fixes based on his
