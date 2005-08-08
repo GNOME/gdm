@@ -1,3 +1,29 @@
+2005-08-08  Brian Cameron  <brian.cameron@sun.com>
+
+	This change was approved by the release team since it
+	affects UI after the UI freeze.
+        * daemon/gdm.[ch], gui/gdmsetup.c : Change GDM_KEY_SERVERS
+          to GDM_KEY_SECTION_SERVER and added GDM_KEY_SECTION_GREETER.
+          There already is a GDM_KEY_GREETER, so for section
+          #defines it's better to include "SECTION" in it.
+        * gui/gdmsetup.c, gui/gdmsetup.glade:  Made a number of UI
+          improvements.  Calum Benson is doing a UI review of
+          gdmsetup and I made the following fixes based on his
+          recommendations.  No longer have mnemonics on the tabs
+          since this is against HIG rules, changes "Face Browser"
+          tab to "Users" since the Include/Exclude list really
+          also affects Automatic/Timed login and not just the
+          Face Browser.  Added label to the Users tab to explain
+          what the tab does, since it wasn't too clear before.
+          Improved description of "Disallow TCP connections" on
+          the security tab so it is more clear what this does
+          (and highlight it doesn't affect XDMCP).  I also fixed
+          the sensitivities when "Include All Users" is checked.
+          Previously it was making both the Include and Exclude
+          list insensitive - it really should just make the
+          Include list and buttons to move between Incude/Exclude
+          insensitive.  This is now working.
+
 2005-08-04  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/server.c: Fix malformed string.

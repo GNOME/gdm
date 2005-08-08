@@ -345,7 +345,7 @@ enum {
 
 #define GDM_KEY_DEBUG "debug/Enable=false"
 
-#define GDM_KEY_SERVERS "servers"
+#define GDM_KEY_SECTION_SERVERS "servers"
 
 #define GDM_KEY_SHOW_GNOME_FAILSAFE "greeter/ShowGnomeFailsafeSession=true"
 #define GDM_KEY_SHOW_XTERM_FAILSAFE "greeter/ShowXtermFailsafeSession=true"

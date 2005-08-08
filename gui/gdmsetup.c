@@ -330,13 +330,13 @@ xservers_get_servers (GtkListStore *store)
 	gchar *server, *options, *cpy;
 	
 	/* Fill list with all the active servers */
-    list = ve_config_get_keys (cfg, GDM_KEY_SERVERS);
+	list = ve_config_get_keys (cfg, GDM_KEY_SECTION_SERVERS);
 
 	for (li = list; li != NULL; li = li->next) {
 		GtkTreeIter iter;
 		char *key = li->data;
 		int vt = atoi(key);
-		key = g_strconcat(GDM_KEY_SERVERS, "/", key, NULL);
+		key = g_strconcat(GDM_KEY_SECTION_SERVERS, "/", key, NULL);
 		cpy = ve_config_get_string (cfg, key);
 		server = ve_first_word (cpy);
 		options = ve_rest (cpy);
@@ -600,7 +600,7 @@ combobox_timeout (GtkWidget *combo_box)
 
 
 	/* Add/Modify Server to Start combobox */
-	} else if (strcmp (key, GDM_KEY_SERVERS) == 0 ) { 
+	} else if (strcmp (key, GDM_KEY_SECTION_SERVERS) == 0 ) { 
 		GtkWidget *add_button = glade_helper_get (xml, "xserver_add_button",
 		                                          GTK_TYPE_BUTTON);
 		gtk_widget_set_sensitive(add_button, TRUE);
@@ -715,7 +715,6 @@ sensitive_entry_toggled (GtkWidget *toggle, gpointer data)
 
 	if (val == FALSE) {
 		gtk_widget_set_sensitive (widget, TRUE);
-
 	} else {
 		gtk_widget_set_sensitive (widget, FALSE);
 	}
@@ -1028,6 +1027,7 @@ typedef struct _FaceCommon {
 	GtkWidget *to_exclude_button;
 	GtkWidget *include_entry;
 	GtkWidget *exclude_entry;
+	GtkWidget *allusers;
 } FaceCommon;
 
 typedef struct _FaceData {
@@ -1319,7 +1319,6 @@ static void
 setup_face (void)
 {
 	GtkWidget *fb_browser = glade_helper_get (xml, "fb_browser", GTK_TYPE_WIDGET);
-	GtkWidget *face_label = glade_helper_get (xml, "Face_label", GTK_TYPE_WIDGET);
 	GtkWidget *face_frame = glade_helper_get (xml, "face_frame", GTK_TYPE_WIDGET);
 	static FaceCommon fc;
 	static FaceData fd_include;
@@ -1352,6 +1351,8 @@ setup_face (void)
 	                                         GTK_TYPE_TREE_VIEW);
 	fc.exclude_treeview  = glade_helper_get (xml, "fb_exclude_treeview",
 	                                         GTK_TYPE_TREE_VIEW);
+	fc.allusers          = glade_helper_get (xml, "fb_allusers",
+	                                         GTK_TYPE_TOGGLE_BUTTON);
 
 	fc.include_store = setup_include_exclude (fc.include_treeview,
 	                                          GDM_KEY_INCLUDE);
@@ -1417,12 +1418,6 @@ setup_face (void)
 
 	g_signal_connect (fc.apply, "clicked",
 	                  G_CALLBACK (browser_apply), &fc);
-
-        g_signal_connect (G_OBJECT (fb_browser), "toggled", 
-			 G_CALLBACK (sensitivity_toggled), face_frame);
-        g_signal_connect (G_OBJECT (fb_browser), "toggled", 
-			 G_CALLBACK (sensitivity_toggled), face_label);
-
 }
 
 static gboolean
@@ -1482,6 +1477,21 @@ setup_greeter_toggle (const char *name,
 
 		g_signal_connect (G_OBJECT (toggle), "toggled",	
 			G_CALLBACK (sensitive_entry_toggled), remotewelcome);
+	} else if (strcmp ("fb_allusers", name) == 0) {
+		GtkWidget *fb_includebox = glade_helper_get (xml,
+			"fb_includebox", GTK_TYPE_VBOX);
+		GtkWidget *fb_buttonbox = glade_helper_get (xml,
+			"fb_buttonbox", GTK_TYPE_VBOX);
+
+		if (val == TRUE) {
+			gtk_widget_set_sensitive (fb_includebox, FALSE);
+			gtk_widget_set_sensitive (fb_buttonbox, FALSE);
+		}
+
+		g_signal_connect (G_OBJECT (toggle), "toggled",	
+			G_CALLBACK (sensitive_entry_toggled), fb_includebox);
+		g_signal_connect (G_OBJECT (toggle), "toggled",	
+			G_CALLBACK (sensitive_entry_toggled), fb_buttonbox);
 	}
 
 	g_signal_connect (G_OBJECT (toggle), "toggled",
@@ -3970,7 +3980,7 @@ setup_xserver_support (void)
 	                        g_strdup (GDM_KEY_SERVER_PREFIX),
 	                        (GDestroyNotify) g_free);
 	g_object_set_data_full (G_OBJECT (server_combobox), "key",
-	                        g_strdup (GDM_KEY_SERVERS),
+	                        g_strdup (GDM_KEY_SECTION_SERVERS),
 	                        (GDestroyNotify) g_free);
 	g_object_set_data_full (G_OBJECT (name_entry), "key",
 	                        g_strdup (GDM_KEY_SERVER_NAME),

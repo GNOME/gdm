@@ -652,7 +652,7 @@ gdm_config_parse (void)
     }
 
     /* Find static X server definitions */
-    list = ve_config_get_keys (cfg, GDM_KEY_SERVERS);
+    list = ve_config_get_keys (cfg, GDM_KEY_SECTION_SERVERS);
     /* only read the list if no_console is FALSE
        at this stage */
     for (li = list; ! no_console && li != NULL; li = li->next) {
@@ -672,7 +672,7 @@ gdm_config_parse (void)
 				       "gdm_config_parse", atoi (key), disp_num);
 		    }
 
-		    full = g_strdup_printf ("%s/%s", GDM_KEY_SERVERS, key);
+		    full = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
 		    val = ve_config_get_string (cfg, full);
 		    g_free (full);
 
