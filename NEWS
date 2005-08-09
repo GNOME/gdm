@@ -1,5 +1,79 @@
 Ahh news...
 
+2.8.0.2 stuff:
+
+- GDM now supports more dynamic configuration.  The
+  gdm daemon supports the --config option which allows
+  an alternative configuration file to be supported. 
+  The --with-configdir configure option may also be
+  used to specify a system-wide configuration location
+  so the gdm.conf file can be located on a mounted
+  directory.  To support machine-specific configuration,
+  an existing %sysconfdir/gdm configuration file will
+  override a system-wide configuration file.  Refer
+  to the GDM documentation for more information.
+  (Brian Cameron)
+
+- New configuration option AlwaysLoginCurrentSession
+  which will automatically switch the user to their
+  previous session without asking.  This feature is
+  turned off by default. (William Jon McCann)
+
+- Now Use24Clock setting support "auto" which will
+  use the system default for date/time formatting.
+  (Tommi Vainikainen)
+
+- Better backwards compatibility support for Welcome
+  and RemoteWelcome.  If using an old gdm.conf file
+  that does not have settings for DefaultWelcome and/or
+  DefaultRemoteWelcome, GDM will continue to work as
+  it did before these new configuration options were
+  added.  (Brian Cameron)
+
+- Usability improvements to gdmsetup.  "Face Browser"
+  tab renamed to "User".  Now tabs no longer have
+  mnemonics, since this violates HIG.  Fixed broken
+  sensitivity on the "Users" tab.  Improved labels.
+
+- Support HIG style button layout in gdmlogin.
+  (William Jon McCann)
+
+- Use GTK+ themed icon stock_person before falling
+  back to the DefaultFace.  (William Jon McCann)
+
+- Usability improvements to the face browser when using
+  gdmgreeter, now the background behind the userlist
+  translucent.  (William Jon McCann)
+
+- Usability improvements to gdmphotosetup, and now 
+  better follows HIG.   (William Jon McCann)
+
+- New selection of face browser images.  (William
+  Jon McCann) 
+
+- No longer stat or read face images from remote home
+  directories.  (William Jon McCann)
+
+- New gdmflexiserver command "GET_CONFIG_FILE" which
+  will return the location of the configuration file
+  being used by the daemon.  (Brian Cameron)
+
+- Now gdmflexiserver command "GET_CONFIG" works.
+  Previously it only returned a value if the value
+  was set in the gdm.conf file.  Now it returns
+  compiled-in default values if gdm.conf has no
+  setting.  (Brian Cameron)
+
+- Support DragonFly VT. (Joerg Sonnenberger)
+
+- GDM configure script now Supports TCP Wrappers on Solaris.
+  (Brian Cameron)
+
+- Many string/grammar improvements. (Tommi Vainikainen,
+  Brian Cameron)
+
+- Better C89 compiler support.  (Jens Granseuer)
+
 2.8.0.1 stuff:
 
 - This release fixes a nasty bug which was causing the
