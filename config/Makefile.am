@@ -1,6 +1,6 @@
 pixmapdir = $(datadir)/pixmaps
 confdir = $(sysconfdir)/gdm
-gdmconfdir = $(GDM_CONFIGDIR)/gdm
+gdmconfdir = $(GDM_CONFIGDIR)
 crossconfdir = $(sysconfdir)/dm
 localedir = $(sysconfdir)/gdm
 bisessdir = $(datadir)/gdm/BuiltInSessions
