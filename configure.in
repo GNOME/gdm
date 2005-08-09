@@ -828,12 +828,12 @@ AC_DEFINE_UNQUOTED(AT_BINDIR,"$AT_BINDIR")
 
 withval=""
 AC_ARG_WITH(configdir,
-[  --with-configdir=<PATH>   PATH to Install gdm.conf configuration file [default=EXPANDED_SYSCONFDIR]],)
+[  --with-configdir=<PATH>   PATH to Install gdm.conf configuration file [default=sysconfdir/gdm]],)
 
 if test x$withval != x; then
 	GDM_CONFIGDIR="$withval"
 else
-	GDM_CONFIGDIR="$EXPANDED_SYSCONFDIR/gdm"
+	GDM_CONFIGDIR="$sysconfdir/gdm"
 fi
 
 AC_SUBST(GDM_CONFIGDIR)
