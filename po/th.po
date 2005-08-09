@@ -12,14 +12,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-07 14:08+0700\n"
-"PO-Revision-Date: 2005-08-07 14:10+0700\n"
+"POT-Creation-Date: 2005-08-09 13:02+0700\n"
+"PO-Revision-Date: 2005-08-09 12:25+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -722,9 +722,9 @@ msgstr "%s: เกิดความผิดพลาดขณะตั้ง�
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "การร้องขอไปยัง %s ถูกปฏิเสธ: ไม่ผ่านการตรวจสอบสิทธิ์"
 
-#: ../daemon/gdm.c:4052 ../daemon/gdm.c:4070 ../daemon/gdm.c:4394
-#: ../daemon/gdm.c:4447 ../daemon/gdm.c:4501 ../daemon/gdm.c:4545
-#: ../daemon/gdm.c:4571
+#: ../daemon/gdm.c:4052 ../daemon/gdm.c:4070 ../daemon/gdm.c:4398
+#: ../daemon/gdm.c:4451 ../daemon/gdm.c:4505 ../daemon/gdm.c:4549
+#: ../daemon/gdm.c:4575
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "การร้องขอไปยัง %s ถูกปฏิเสธ: ยังไม่ผ่านการตรวจสอบสิทธิ์"
@@ -3616,7 +3616,7 @@ msgstr "ชื่อเซิร์ฟเวอร์:"
 
 #: ../gui/gdmsetup.glade.h:84
 msgid "Show _Face Browser"
-msgstr "รายการรูปผู้ใช้"
+msgstr "แสดงรายการ_รูปผู้ใช้"
 
 #: ../gui/gdmsetup.glade.h:85
 msgid "Show _actions menu"
@@ -3660,19 +3660,19 @@ msgstr "ทดสอบเสียง"
 
 #: ../gui/gdmsetup.glade.h:93
 msgid ""
-"The Users tab specifies which users are visible to GDM.  Users listed as "
-"Included will appear\n"
+"The \"Users\" tab specifies which users are visible to GDM.  Users listed in "
+"\"Include\" will appear\n"
 "in the Face Browser if it is enabled in the \"Security\" tab and will also "
 "appear in the\n"
 "drop-down list for Automatic/Timed login under the \"General\" tab.  Users "
-"listed as Excluded\n"
+"listed in \"Exclude\"\n"
 "will not be displayed regardless of whether \"Include All Users\" is checked."
 msgstr ""
 "แท็บ \"ผู้ใช้\" ใช้ระบุผู้ใช้ที่จะปรากฏใน GDM  ผู้ใช้ที่อยู่ในรายการ \"แสดง\"\n"
 "จะปรากฏในรายการใบหน้า (ถ้าเปิดใช้ในแท็บ \"ระบบความปลอดภัย\")\n"
 "และจะปรากฏในรายการสำหรับเลือกในการเข้าระบบแบบอัตโนมัติหรือตั้งเวลา\n"
-"ในแท็บ \"ทั่วไป\"  ผู้ใช้ที่อยู่ในรายการ \"ไม่แสดง\" จะไม่ปรากฏเสมอ แม้จะเลือก\n"
-"\"แสดงผู้ใช้ทุกคน\" ก็ตาม"
+"ในแท็บ \"ทั่วไป\" ด้วย  ผู้ใช้ที่อยู่ในรายการ \"ไม่แสดง\" จะไม่ปรากฏเสมอ\n"
+"แม้จะเลือก \"แสดงผู้ใช้ทุกคน\" ก็ตาม"
 
 #: ../gui/gdmsetup.glade.h:97
 msgid "Themed Greeter"
@@ -3736,10 +3736,10 @@ msgstr "_ลบชุดตกแต่ง"
 
 #: ../gui/gdmsetup.glade.h:113
 msgid ""
-"_Disallow TCP connections to Xserver (disables xforwarding, but does not "
-"affect XDMCP)"
+"_Deny TCP connections to Xserver (disables xforwarding, but does not affect "
+"XDMCP)"
 msgstr ""
-"ไม่อนุญาตให้มีการเ_ชื่อมต่อแบบ TCP ไปยัง X server (ปิดการใช้ xforwarding แต่ไม่มีผลกับ "
+"ไ_ม่อนุญาตให้มีการเชื่อมต่อแบบ TCP ไปยัง X server (ปิดการใช้ xforwarding แต่ไม่มีผลกับ "
 "XDMCP)"
 
 #: ../gui/gdmsetup.glade.h:114
@@ -3748,8 +3748,8 @@ msgstr "รูป_ภาพ"
 
 #: ../gui/gdmsetup.glade.h:115
 msgid ""
-"_Include All Users (Get Include user list from /etc/passwd, not appropriate "
-"if using NIS)"
+"_Include All Users (Get \"Include\" user list from /etc/passwd.  Not "
+"appropriate if using NIS)"
 msgstr "แ_สดงผู้ใช้ทุกคน (อ่านรายชื่อผู้ใช้ที่จะแสดงจาก /etc/passwd ไม่เหมาะที่จะใช้กับ NIS)"
 
 #: ../gui/gdmsetup.glade.h:116
