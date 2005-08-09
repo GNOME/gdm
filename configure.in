@@ -330,7 +330,7 @@ AC_CHECK_HEADERS(linux/vt.h, [
 		 GDMOPEN=gdmopen])
 AC_SUBST(GDMOPEN)
 
-dnl ## Autentication scheme
+dnl ## Authentication scheme
 have_pam=no
 VRFY="verify-crypt"
 if test x$enable_authentication_scheme != xcrypt -a \
@@ -798,6 +798,11 @@ EXPANDED_LOGDIR=`eval echo $LOGDIR_TMP`
 AC_SUBST(EXPANDED_LOGDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LOGDIR,"$EXPANDED_LOGDIR")
 
+SYSCONFDIR_TMP="$sysconfdir"
+EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`
+AC_SUBST(EXPANDED_SYSCONFDIR)
+AC_DEFINE_UNQUOTED(EXPANDED_SYSCONFDIR,"$EXPANDED_SYSCONFDIR")
+
 if test x$DMX_SUPPORT = xyes ; then
 	GDM_RECONNECT_PROXY=$EXPANDED_BINDIR/gdm-dmx-reconnect-proxy
 else
@@ -820,13 +825,12 @@ AC_DEFINE_UNQUOTED(AT_BINDIR,"$AT_BINDIR")
 
 withval=""
 AC_ARG_WITH(configdir,
-[  --with-configdir=<PATH>   PATH to Install gdm.conf configuration file [defaul
-t=EXPANDED_SYSCONFDIR]],)
+[  --with-configdir=<PATH>   PATH to Install gdm.conf configuration file [default=EXPANDED_SYSCONFDIR]],)
 
 if test x$withval != x; then
         GDM_CONFIGDIR="$withval"
 else
-        GDM_CONFIGDIR=$EXPANDED_SYSCONFDIR
+        GDM_CONFIGDIR="$EXPANDED_SYSCONFDIR/gdm"
 fi
 
 AC_SUBST(GDM_CONFIGDIR)
@@ -1000,11 +1004,6 @@ AC_SUBST(X_CONFIG_OPTIONS)
 AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
 AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launching xserver)
-
-SYSCONFDIR_TMP="$sysconfdir"
-EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`
-AC_SUBST(EXPANDED_SYSCONFDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_SYSCONFDIR,"$EXPANDED_SYSCONFDIR")
 
 SESSDIR_TMP="$sysconfdir/gdm/Sessions"
 EXPANDED_SESSDIR=`eval echo $SESSDIR_TMP`

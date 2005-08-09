@@ -1,6 +1,6 @@
 pixmapdir = $(datadir)/pixmaps
 confdir = $(sysconfdir)/gdm
-gdmconfdir = $(GDM_CONFIGDIR)
+gdmconfdir = $(GDM_CONFIGDIR)/gdm
 crossconfdir = $(sysconfdir)/dm
 localedir = $(sysconfdir)/gdm
 bisessdir = $(datadir)/gdm/BuiltInSessions
@@ -50,8 +50,8 @@ uninstall-hook:
 	$(DESTDIR)$(instsessdir)/gnome.desktop \
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/CDE.desktop \
-	$(DESTDIR)$(gdmconfdir)/gdm/gdm.conf \
-	$(DESTDIR)$(gdmconfdir)/gdm/factory-gdm.conf \
+	$(DESTDIR)$(gdmconfdir)/gdm.conf \
+	$(DESTDIR)$(gdmconfdir)/factory-gdm.conf \
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
 	$(DESTDIR)$(localedir)/locale.alias \
