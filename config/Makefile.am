@@ -51,7 +51,7 @@ uninstall-hook:
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/CDE.desktop \
 	$(DESTDIR)$(gdmconfdir)/gdm/gdm.conf \
-	$(DESTDIR)$(gdmconfdir)/factory-gdm.conf \
+	$(DESTDIR)$(gdmconfdir)/gdm/factory-gdm.conf \
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
 	$(DESTDIR)$(localedir)/locale.alias \
