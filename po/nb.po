@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.8.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-04 15:18+0200\n"
-"PO-Revision-Date: 2005-08-04 15:23+0200\n"
+"POT-Creation-Date: 2005-08-09 12:30+0200\n"
+"PO-Revision-Date: 2005-08-09 12:33+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -741,20 +741,20 @@ msgstr "%s: Feil under oppsett av CHLD signalhåndtereren"
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC-forespørsel nektet: Ikke autentisert"
 
-#: ../daemon/gdm.c:3988 ../daemon/gdm.c:4006 ../daemon/gdm.c:4217
-#: ../daemon/gdm.c:4270 ../daemon/gdm.c:4324 ../daemon/gdm.c:4368
-#: ../daemon/gdm.c:4394
+#: ../daemon/gdm.c:4052 ../daemon/gdm.c:4070 ../daemon/gdm.c:4398
+#: ../daemon/gdm.c:4451 ../daemon/gdm.c:4505 ../daemon/gdm.c:4549
+#: ../daemon/gdm.c:4575
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s-forespørsel nektet: Ikke autentisert"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:4024
+#: ../daemon/gdm.c:4088
 msgid "Unknown server type requested; using standard server."
 msgstr "Ukjent tjenertype etterspurt, bruker forvalgt tjener."
 
-#: ../daemon/gdm.c:4028
+#: ../daemon/gdm.c:4092
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -839,8 +839,8 @@ msgstr "%s: Feil under åpning av et rør: %s"
 
 #: ../daemon/server.c:707
 #, c-format
-msgid "%s: failed to connect to parent display '\\%s'"
-msgstr "%s: kan ikke åpne skjerm %s"
+msgid "%s: failed to connect to parent display '%s'"
+msgstr "%s: kunne ikke koble til opphavsskjerm «%s»"
 
 #. Send X too busy
 #: ../daemon/server.c:847
@@ -3744,17 +3744,17 @@ msgstr "Test lyd"
 
 #: ../gui/gdmsetup.glade.h:93
 msgid ""
-"The Users tab specifies which users are visible to GDM.  Users listed as "
-"Included will appear\n"
+"The \"Users\" tab specifies which users are visible to GDM.  Users listed in "
+"\"Include\" will appear\n"
 "in the Face Browser if it is enabled in the \"Security\" tab and will also "
 "appear in the\n"
 "drop-down list for Automatic/Timed login under the \"General\" tab.  Users "
-"listed as Excluded\n"
+"listed in \"Exclude\"\n"
 "will not be displayed regardless of whether \"Include All Users\" is checked."
 msgstr ""
-"Brukerfanen spesifiserer hvilke brukere som er synlige for GDM. Brukere oppgitt som inkludert vil vises\n"
+"Fanen «Brukere» angir hvilke brukere som er synlige for GDM. Brukere oppgitt som inkludert vil vises\n"
 "i ansiktsleseren hvis den er aktivert i sikkerhetsinnstillingene, og vil også vises i\n"
-"nedtrekksmenyen for automatisk/tidsbasert innlogging under fanen Generelt. Brukere som er oppgitt som ekskludert\n"
+"nedtrekksmenyen for automatisk/tidsbasert innlogging under fanen «Generelt». Brukere som er oppgitt som ekskludert\n"
 "vil ikke vises uansett om «Inkluder alle brukere» er krysset av."
 
 #: ../gui/gdmsetup.glade.h:97
@@ -3819,9 +3819,11 @@ msgstr "_Slett tema"
 
 #: ../gui/gdmsetup.glade.h:113
 msgid ""
-"_Disallow TCP connections to Xserver (disables xforwarding, but does not "
-"affect XDMCP)"
-msgstr "_Ikke tillat TCP-tilkoblinger til X-tjeneren (deaktiverer xforwarding men påvirker ikke XDMCP)"
+"_Deny TCP connections to Xserver (disables xforwarding, but does not affect "
+"XDMCP)"
+msgstr ""
+"_Ikke tillat TCP-tilkoblinger til X-tjeneren (deaktiverer xforwarding men "
+"påvirker ikke XDMCP)"
 
 #: ../gui/gdmsetup.glade.h:114
 msgid "_Image"
@@ -3829,9 +3831,9 @@ msgstr "B_ilde"
 
 #: ../gui/gdmsetup.glade.h:115
 msgid ""
-"_Include All Users (Get Include user list from /etc/passwd, not appropriate "
-"if using NIS)"
-msgstr "_Inkluder alle brukere (Henter liste med brukere fra /etc/passwd, ikke riktig hvis man bruker NIS)"
+"_Include All Users (Get \"Include\" user list from /etc/passwd.  Not "
+"appropriate if using NIS)"
+msgstr "_Inkluder alle brukere (Henter liste med brukere fra /etc/passwd, ikke korrekt hvis man bruker NIS)"
 
 #: ../gui/gdmsetup.glade.h:116
 msgid "_Install new theme"
