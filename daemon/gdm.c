@@ -4250,7 +4250,9 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SYSMENU, &GdmSystemMenu)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CHOOSER_BUTTON, &GdmChooserButton)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BROWSER, &GdmBrowser)) &&
+#ifdef ENABLE_IPV6
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_MULTICAST, &GdmMulticast)) &&
+#endif
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_NEVERPLACECOOKIESONNFS, &GdmNeverPlaceCookiesOnNFS)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CONSOLE_NOTIFY, &GdmConsoleNotify)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_TIMED_LOGIN_ENABLE, &GdmTimedLoginEnable)) &&
@@ -4312,7 +4314,9 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFILE, GdmUserAuthFile)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFB, GdmUserAuthFB)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SESSDIR, GdmSessDir)) &&
+#ifdef ENABLE_IPV6
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_MULTICAST_ADDR, GdmMulticastAddr)) &&
+#endif
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_USER, GdmUser)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GROUP, GdmGroup)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTKRC, GdmGtkRC)) &&
