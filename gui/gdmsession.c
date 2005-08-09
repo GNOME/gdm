@@ -258,8 +258,8 @@ gdm_session_list_init ()
 		    }
 
 		    session = g_new0 (GdmSession, 1);
-		    session->name = name;
-		    session->comment = comment;
+		    session->name = g_strdup (name);
+		    session->comment = g_strdup (comment);
 		    g_hash_table_insert (sessnames, g_strdup (dent->d_name), session);
 		    g_free (exec);
 		    g_free (comment);
