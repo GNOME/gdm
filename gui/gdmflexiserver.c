@@ -51,6 +51,7 @@ static const char *send_command = NULL;
 static const char *server = NULL;
 static const char *chosen_server = NULL;
 static gboolean debug = FALSE;
+static gboolean startnew = FALSE;
 static char *auth_cookie = NULL;
 
 static int
@@ -306,8 +307,12 @@ run_logged_in_dialogue (char **vec)
 	GtkWidget *treeview;
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
+	gint response;
 
-	dialog = gtk_dialog_new_with_buttons (_("Open Displays"),
+	if (startnew == TRUE) {
+		response = RESPONSE_OPEN_NEW_DISPLAY;
+	} else {
+		dialog = gtk_dialog_new_with_buttons (_("Open Displays"),
 					      NULL /* parent */,
 					      0 /* flags */,
 					      _("_Open New Display"),
@@ -317,56 +322,58 @@ run_logged_in_dialogue (char **vec)
 					      GTK_STOCK_CANCEL,
 					      GTK_RESPONSE_CANCEL,
 					      NULL);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-	vbox = GTK_DIALOG (dialog)->vbox;
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+		vbox = GTK_DIALOG (dialog)->vbox;
 
-	w = gtk_label_new (_("There are some displays already open.  You can select "
+		w = gtk_label_new (_("There are some displays already open.  You can select "
 			     "one from the list below or open a new one."));
-	gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
 
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
-					     GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
-					GTK_POLICY_NEVER,
-					GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (vbox), sw, TRUE, TRUE, 0);
+		sw = gtk_scrolled_window_new (NULL, NULL);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
+						     GTK_SHADOW_ETCHED_IN);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
+						GTK_POLICY_NEVER,
+						GTK_POLICY_AUTOMATIC);
+		gtk_box_pack_start (GTK_BOX (vbox), sw, TRUE, TRUE, 0);
 
-	/* create tree model */
-	model = create_model (vec);
+		/* create tree model */
+		model = create_model (vec);
 
-	/* create tree view */
-	treeview = gtk_tree_view_new_with_model (model);
-	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview), TRUE);
+		/* create tree view */
+		treeview = gtk_tree_view_new_with_model (model);
+		gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview), TRUE);
 
-	g_object_unref (model);
+		g_object_unref (model);
 
-	gtk_container_add (GTK_CONTAINER (sw), treeview);
+		gtk_container_add (GTK_CONTAINER (sw), treeview);
 
-	/* add columns to the tree view */
-	add_columns (GTK_TREE_VIEW (treeview));
+		/* add columns to the tree view */
+		add_columns (GTK_TREE_VIEW (treeview));
 
-	/* finish & show */
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 280, 250);
+		/* finish & show */
+		gtk_window_set_default_size (GTK_WINDOW (dialog), 280, 250);
 
-        g_signal_connect (G_OBJECT (treeview), "row_activated",
-			  G_CALLBACK (row_activated),
-			  dialog);
+	        g_signal_connect (G_OBJECT (treeview), "row_activated",
+				  G_CALLBACK (row_activated),
+				  dialog);
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
 
-        g_signal_connect (selection, "changed",
-			  G_CALLBACK (selection_changed),
-			  dialog);
+		g_signal_connect (selection, "changed",
+				  G_CALLBACK (selection_changed),
+				  dialog);
 
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
 					   RESPONSE_OPEN_EXISTING_DISPLAY,
 					   FALSE);
 
-	gtk_widget_show_all (dialog);
+		gtk_widget_show_all (dialog);
+		response = gtk_dialog_run (GTK_DIALOG (dialog));
+	}
 
 run_again:
-	switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
+	switch (response) {
 	case RESPONSE_OPEN_NEW_DISPLAY:
 		gtk_widget_destroy (dialog);
 		/* just continue what you are doing */
@@ -635,6 +642,7 @@ struct poptOption options [] = {
 	{ "no-lock", 'l', POPT_ARG_NONE, &no_lock, 0, N_("Do not lock current screen"), NULL },
 	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },
 	{ "authenticate", 'a', POPT_ARG_NONE, &authenticate, 0, N_("Authenticate before running --command"), NULL },
+	{ "startnew", 's', POPT_ARG_NONE, &startnew, 0, N_("Start new flexible session, do not show popup"), NULL },
 	{ "monte-carlo-pi", 0, POPT_ARG_NONE, &monte_carlo_pi, 0, NULL, NULL },
 	POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}

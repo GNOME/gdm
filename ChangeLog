@@ -5,9 +5,16 @@
 	  Now support Solaris SDTLOGIN mechanism which will
 	  cause the Xserver to be started as the user instead
 	  of as root for extra security.
+	* gui/gdmflexiserver.c: Add a new option --startnew
+	  (or -s) to start a new flexible server without 
+	  displaying a dialog askign the user if they wish
+	  to continue an existing session.  This is useful for
+	  starting gdmflexiserver from the screensaver where
+	  the user cannot respond to a dialog.
 	* docs/C/gdm.xml:  Updated gdmflexiserver docs
 	  so they are more clear and added info about the
-	  SDTLOGIN mechanism.
+	  SDTLOGIN mechanism.  Add info about new gdmflexiserver
+	  option.
 
 2005-08-09  Brian Cameron  <brian.cameron@sun.com>
 
