@@ -13,14 +13,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GDM HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-11 20:40+0200\n"
-"PO-Revision-Date: 2005-08-11 20:46+0200\n"
+"POT-Creation-Date: 2005-08-12 17:40+0200\n"
+"PO-Revision-Date: 2005-08-12 17:39+0200\n"
 "Last-Translator: Hendrik Brandt <heb@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -190,7 +190,7 @@ msgstr "%s: Cookie konnte nicht geschrieben werden"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Verdächtige Cookie-Datei %s wird ignoriert"
 
-#: ../daemon/auth.c:898 ../daemon/gdm.c:2157 ../daemon/gdm.c:2513
+#: ../daemon/auth.c:898 ../daemon/gdm.c:2170 ../daemon/gdm.c:2531
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Schreiben nach %s nicht möglich: %s"
@@ -314,7 +314,7 @@ msgstr "%s: FIFO konnte nicht erzeugt werden"
 msgid "%s: Could not open FIFO"
 msgstr "%s: FIFO konnte nicht geöffnet werden"
 
-#: ../daemon/gdm.c:308
+#: ../daemon/gdm.c:317
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -324,12 +324,12 @@ msgstr ""
 "festgelegt, dies existiert jedoch nicht. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdm.c:316
+#: ../daemon/gdm.c:325
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Legitimationsverzeichnis %s existiert nicht. Abbruch."
 
-#: ../daemon/gdm.c:321
+#: ../daemon/gdm.c:330
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -339,12 +339,12 @@ msgstr ""
 "festgelegt, dies ist jedoch kein Verzeichnis. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdm.c:329
+#: ../daemon/gdm.c:338
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Legitimationsverzeichnis %s ist kein Verzeichnis. Abbruch."
 
-#: ../daemon/gdm.c:342
+#: ../daemon/gdm.c:351
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -352,88 +352,88 @@ msgstr ""
 "%s: Protokollverzeichnis %s existiert nicht oder ist kein Verzeichnis "
 "ServAuthDir-Verzeichnis %s wird verwendet."
 
-#: ../daemon/gdm.c:378
+#: ../daemon/gdm.c:387
 #, c-format
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: Keine GDM-Konfigurationsdatei »%s«. Vorgaben werden verwendet."
 
-#: ../daemon/gdm.c:495
+#: ../daemon/gdm.c:508
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession ist leer, %s/gdm/Xsession wird verwendet"
 
-#: ../daemon/gdm.c:547
+#: ../daemon/gdm.c:560
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr ""
 "%s: Der Standard-X-Server wurde nicht gefunden, Alternativen werden versucht"
 
-#: ../daemon/gdm.c:589
+#: ../daemon/gdm.c:602
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr ""
 "%s: XDMCP wurde aktiviert, wird jedoch nicht unterstützt - XDMCP wird "
 "deshalb deaktiviert"
 
-#: ../daemon/gdm.c:602
+#: ../daemon/gdm.c:615
 #, c-format
 msgid "%s: Root cannot be logged in automatically, turning off automatic login"
 msgstr ""
 "%s: Der Benutzer »root« kann nicht automatisch angemeldet werden. "
 "Automatische Anmeldung wird deshalb deaktiviert."
 
-#: ../daemon/gdm.c:615
+#: ../daemon/gdm.c:628
 #, c-format
 msgid "%s: Root cannot be logged in automatically, turning off timed login"
 msgstr ""
 "%s: Der Benutzer »root« kann nicht automatisch angemeldet werden. "
 "Zeitgesteuerte Anmeldung wird deshalb deaktiviert."
 
-#: ../daemon/gdm.c:621
+#: ../daemon/gdm.c:634
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr ""
 "%s: Verzögerung bei zeitgesteuerter Anmeldung ist kleiner als 5. Daher wird "
 "5 verwendet."
 
-#: ../daemon/gdm.c:631
+#: ../daemon/gdm.c:644
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Kein Begrüßer angegeben."
 
-#: ../daemon/gdm.c:634
+#: ../daemon/gdm.c:647
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Kein entfernter Begrüßer angegeben."
 
-#: ../daemon/gdm.c:638
+#: ../daemon/gdm.c:651
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Kein Sitzungsverzeichnis angegeben."
 
-#: ../daemon/gdm.c:663
+#: ../daemon/gdm.c:676
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Leerer Server-Befehl, Standard wird verwendet."
 
-#: ../daemon/gdm.c:706
+#: ../daemon/gdm.c:719
 #, c-format
 msgid "%s: Display number %d in use!  Defaulting to %d"
 msgstr "%s: Anzeige Nr. %d in Gebrauch. Deshalb %d wird verwendet."
 
-#: ../daemon/gdm.c:725
+#: ../daemon/gdm.c:738
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Ungültige Server-Zeile in Konfigurationsdatei. Wird ignoriert!"
 
-#: ../daemon/gdm.c:737 ../daemon/gdm.c:777
+#: ../daemon/gdm.c:750 ../daemon/gdm.c:790
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr "%s: XDMCP deaktiviert und keine statischen Server definiert. Abbruch!"
 
 #. start
 #. server uid
-#: ../daemon/gdm.c:755
+#: ../daemon/gdm.c:768
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -442,7 +442,7 @@ msgstr ""
 "%s: XDMCP deaktiviert und keine lokalen Server definiert. Um die "
 "Konfiguration zu ermöglichen, wird %s auf :%d hinzugefügt!"
 
-#: ../daemon/gdm.c:770
+#: ../daemon/gdm.c:783
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -451,7 +451,7 @@ msgstr ""
 "finden. Abbruch! Bitte korrigieren Sie die Konfiguration %s und starten Sie "
 "GDM neu."
 
-#: ../daemon/gdm.c:794
+#: ../daemon/gdm.c:807
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -460,12 +460,12 @@ msgstr ""
 "Der GDM-Benutzer »%s« existiert nicht. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdm.c:801
+#: ../daemon/gdm.c:814
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: Der GDM-Benutzer »%s« konnte nicht gefunden werden. Abbruch!"
 
-#: ../daemon/gdm.c:808
+#: ../daemon/gdm.c:821
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -474,12 +474,12 @@ msgstr ""
 "es ein Sicherheitsrisiko darstellen kann. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdm.c:816
+#: ../daemon/gdm.c:829
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: Der GDM-Benutzer darf nicht »root« sein. Abbruch!"
 
-#: ../daemon/gdm.c:823
+#: ../daemon/gdm.c:836
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -488,12 +488,12 @@ msgstr ""
 "Die GDM-Gruppe »%s« existiert nicht. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdm.c:830
+#: ../daemon/gdm.c:843
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: Die GDM-Gruppe »%s« konnte nicht gefunden werden. Abbruch!"
 
-#: ../daemon/gdm.c:837
+#: ../daemon/gdm.c:850
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -502,42 +502,42 @@ msgstr ""
 "es ein Sicherheitsrisiko darstellen kann. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdm.c:845
+#: ../daemon/gdm.c:858
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: Die GDM-Gruppe darf nicht »root« sein. Abbruch!"
 
-#: ../daemon/gdm.c:860
+#: ../daemon/gdm.c:873
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Der Begrüßer konnte nicht gefunden oder nicht vom GDM-Benutzer "
 "ausgeführt werden"
 
-#: ../daemon/gdm.c:867
+#: ../daemon/gdm.c:880
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Der entfernte Begrüßer konnte nicht gefunden oder nicht vom GDM-Benutzer "
 "ausgeführt werden"
 
-#: ../daemon/gdm.c:878
+#: ../daemon/gdm.c:891
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
 "%s: Der Auswähler konnte nicht gefunden oder nicht vom GDM-Benutzer "
 "ausgeführt werden"
 
-#: ../daemon/gdm.c:887
+#: ../daemon/gdm.c:900
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "daemon/ServAuthDir ist nicht in der Konfigurationsdatei angegeben"
 
-#: ../daemon/gdm.c:889
+#: ../daemon/gdm.c:902
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Kein Daemon/ServAuthDir angegeben."
 
-#: ../daemon/gdm.c:913
+#: ../daemon/gdm.c:926
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -549,14 +549,14 @@ msgstr ""
 "korrigieren Sie die Besitzerrechte oder die GDM-Konfiguration und starten "
 "Sie GDM neu."
 
-#: ../daemon/gdm.c:923
+#: ../daemon/gdm.c:936
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Authentifizierungsverzeichnis %s gehört nicht Benutzer %s und Gruppe %s. "
 "Abbruch."
 
-#: ../daemon/gdm.c:929
+#: ../daemon/gdm.c:942
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -568,7 +568,7 @@ msgstr ""
 "auf %o gesetzt sein sollten. Bitte ändern Sie die Zugriffsrechte oder die "
 "GDM-Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdm.c:940
+#: ../daemon/gdm.c:953
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -576,44 +576,44 @@ msgstr ""
 "o sein. Abbruch."
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:996 ../daemon/gdm.c:1004 ../daemon/gdm.c:2288
-#: ../daemon/gdm.c:2296
+#: ../daemon/gdm.c:1009 ../daemon/gdm.c:1017 ../daemon/gdm.c:2301
+#: ../daemon/gdm.c:2309
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "PID-Datei %s konnte nicht geschrieben werden, möglicherweise geht der "
 "Plattenplatz zur Neige. Fehler: %s\n"
 
-#: ../daemon/gdm.c:998 ../daemon/gdm.c:1006 ../daemon/gdm.c:2290
-#: ../daemon/gdm.c:2298
+#: ../daemon/gdm.c:1011 ../daemon/gdm.c:1019 ../daemon/gdm.c:2303
+#: ../daemon/gdm.c:2311
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr ""
 "PID-Datei %s konnte nicht geschrieben werden, möglicherweise geht der "
 "Plattenplatz zur Neige. Fehler: %s"
 
-#: ../daemon/gdm.c:1016
+#: ../daemon/gdm.c:1029
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: fork() fehlgeschlagen!"
 
 #. should never happen
-#: ../daemon/gdm.c:1019 ../daemon/slave.c:3647
+#: ../daemon/gdm.c:1032 ../daemon/slave.c:3647
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() fehlgeschlagen: %s!"
 
-#: ../daemon/gdm.c:1206
+#: ../daemon/gdm.c:1219
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: Abgesicherter X-Server %s wird versucht"
 
-#: ../daemon/gdm.c:1224
+#: ../daemon/gdm.c:1237
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: Das Skript XKeepsCrashing wird gestartet"
 
-#: ../daemon/gdm.c:1344
+#: ../daemon/gdm.c:1357
 msgid ""
 "The X server (your graphical interface) cannot be started.  It is likely "
 "that it is not set up correctly.  You will need to log in on a console and "
@@ -629,7 +629,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:1356
+#: ../daemon/gdm.c:1369
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -638,46 +638,46 @@ msgstr ""
 "X-Server konnte nicht in kurzen Zeitabständen gestartet werden; Anzeige %s "
 "wird deaktiviert"
 
-#: ../daemon/gdm.c:1364 ../daemon/gdm.c:3083
+#: ../daemon/gdm.c:1377 ../daemon/gdm.c:3101
 msgid "Master suspending..."
 msgstr "Master wird in Ruhezustand versetzt..."
 
-#: ../daemon/gdm.c:1418
+#: ../daemon/gdm.c:1431
 #, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "System wird neu gestartet, bitte warten..."
 
-#: ../daemon/gdm.c:1420
+#: ../daemon/gdm.c:1433
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "System wird heruntergefahren, bitte warten..."
 
-#: ../daemon/gdm.c:1431
+#: ../daemon/gdm.c:1444
 msgid "Master halting..."
 msgstr "Master wird angehalten..."
 
-#: ../daemon/gdm.c:1444
+#: ../daemon/gdm.c:1457
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: Anhalten fehlgeschlagen: %s!"
 
-#: ../daemon/gdm.c:1453
+#: ../daemon/gdm.c:1466
 msgid "Master rebooting..."
 msgstr "Master wird neu gestartet..."
 
-#: ../daemon/gdm.c:1466
+#: ../daemon/gdm.c:1479
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: Neustart fehlgeschlagen: %s!"
 
-#: ../daemon/gdm.c:1567
+#: ../daemon/gdm.c:1580
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "Anfrage zum Neustart des Computers oder Herunterfahren, obwohl es kein "
 "Systemmenü auf Anzeige %s gibt"
 
-#: ../daemon/gdm.c:1576
+#: ../daemon/gdm.c:1589
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-static display %s"
 msgstr ""
@@ -685,62 +685,62 @@ msgstr ""
 "Rechners  von der entfernten Anzeige %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:1642
+#: ../daemon/gdm.c:1655
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Abbruch von Anzeige %s"
 
-#: ../daemon/gdm.c:1793
+#: ../daemon/gdm.c:1806
 msgid "GDM restarting ..."
 msgstr "GDM wird neu gestartet..."
 
-#: ../daemon/gdm.c:1797
+#: ../daemon/gdm.c:1810
 msgid "Failed to restart self"
 msgstr "Neustart fehlgeschlagen"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1871
+#: ../daemon/gdm.c:1884
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr ""
 "Hauptdienst: SIGABRT erhalten, irgendetwas ist verdammt schief gelaufen. Auf "
 "Wiedersehen."
 
-#: ../daemon/gdm.c:2029
+#: ../daemon/gdm.c:2042
 msgid "Do not fork into the background"
 msgstr "Nicht in den Hintergrund abspalten"
 
 # CHECK
-#: ../daemon/gdm.c:2031
+#: ../daemon/gdm.c:2044
 msgid "No console (static) servers to be run"
 msgstr "Es sollen keine Konsolen-Server (lokal) ausgeführt werden"
 
-#: ../daemon/gdm.c:2033 ../gui/gdmsetup.c:4556
+#: ../daemon/gdm.c:2046 ../gui/gdmsetup.c:4556
 msgid "Alternative configuration file"
 msgstr "Alternative Konfigurationsdatei"
 
-#: ../daemon/gdm.c:2033 ../gui/gdmsetup.c:4556
+#: ../daemon/gdm.c:2046 ../gui/gdmsetup.c:4556
 msgid "CONFIGFILE"
 msgstr "KONFIGURATIONSDATEI"
 
-#: ../daemon/gdm.c:2035
+#: ../daemon/gdm.c:2048
 msgid "Preserve LD_* variables"
 msgstr "LD_*-Variablen vorhalten"
 
-#: ../daemon/gdm.c:2037
+#: ../daemon/gdm.c:2050
 msgid "Print GDM version"
 msgstr "GDM-Version ausgeben"
 
-#: ../daemon/gdm.c:2039
+#: ../daemon/gdm.c:2052
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr ""
 "Den ersten X-Server starten, aber dann warten, bis im FIFO ein GO auftaucht"
 
-#: ../daemon/gdm.c:2146 ../daemon/gdm.c:2482
+#: ../daemon/gdm.c:2159 ../daemon/gdm.c:2500
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "%s konnte nicht zum Schreiben geöffnet werden"
 
-#: ../daemon/gdm.c:2203 ../gui/gdmchooser.c:2059
+#: ../daemon/gdm.c:2216 ../gui/gdmchooser.c:2059
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -750,13 +750,13 @@ msgstr ""
 "Führen Sie '%s --help' aus, um eine komplette Liste verfügbarer\n"
 "Befehlszeilenparameter zu erhalten.\n"
 
-#: ../daemon/gdm.c:2226
+#: ../daemon/gdm.c:2239
 msgid "Only root wants to run gdm\n"
 msgstr "Nur der »root«-Benutzer darf GDM starten\n"
 
-#: ../daemon/gdm.c:2242 ../daemon/gdm.c:2246 ../daemon/gdm.c:2321
-#: ../daemon/gdm.c:2325 ../daemon/gdm.c:2329 ../daemon/gdm.c:2333
-#: ../daemon/gdm.c:2343 ../daemon/gdm.c:2349 ../daemon/gdm.c:2360
+#: ../daemon/gdm.c:2255 ../daemon/gdm.c:2259 ../daemon/gdm.c:2339
+#: ../daemon/gdm.c:2343 ../daemon/gdm.c:2347 ../daemon/gdm.c:2351
+#: ../daemon/gdm.c:2361 ../daemon/gdm.c:2367 ../daemon/gdm.c:2378
 #: ../daemon/misc.c:1750 ../daemon/misc.c:1754 ../daemon/misc.c:1758
 #: ../daemon/misc.c:1765 ../daemon/misc.c:1769 ../daemon/misc.c:1773
 #: ../daemon/server.c:531 ../daemon/server.c:544 ../daemon/slave.c:821
@@ -769,33 +769,33 @@ msgstr "Nur der »root«-Benutzer darf GDM starten\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Fehler beim Einrichten des Signalhandlers %s: %s"
 
-#: ../daemon/gdm.c:2270
+#: ../daemon/gdm.c:2283
 msgid "gdm already running. Aborting!"
 msgstr "GDM läuft bereits. Abbruch!"
 
-#: ../daemon/gdm.c:2369
+#: ../daemon/gdm.c:2387
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Fehler beim Einrichten des CHLD-Signalhandlers"
 
-#: ../daemon/gdm.c:3497
+#: ../daemon/gdm.c:3515
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC-Anfrage abgewiesen: Nicht authentifiziert"
 
-#: ../daemon/gdm.c:4052 ../daemon/gdm.c:4070 ../daemon/gdm.c:4398
-#: ../daemon/gdm.c:4451 ../daemon/gdm.c:4505 ../daemon/gdm.c:4549
-#: ../daemon/gdm.c:4575
+#: ../daemon/gdm.c:4070 ../daemon/gdm.c:4088 ../daemon/gdm.c:4416
+#: ../daemon/gdm.c:4469 ../daemon/gdm.c:4523 ../daemon/gdm.c:4567
+#: ../daemon/gdm.c:4593
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s-Anfrage abgewiesen: Nicht legitimiert"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:4088
+#: ../daemon/gdm.c:4106
 msgid "Unknown server type requested; using standard server."
 msgstr "Unbekannter Servertyp angefragt, Standard-Server wird benutzt."
 
-#: ../daemon/gdm.c:4092
+#: ../daemon/gdm.c:4110
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -946,12 +946,12 @@ msgstr "%s: %d konnte nicht als Benutzerkennung festgelegt werden"
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: 0 konnte nicht als Gruppenkennung festgelegt werden"
 
-#: ../daemon/server.c:1299
+#: ../daemon/server.c:1309
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: X-Server nicht gefunden: %s"
 
-#: ../daemon/server.c:1307
+#: ../daemon/server.c:1317
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: X-Server-Prozess konnte nicht abgespalten werden!"
@@ -1423,7 +1423,7 @@ msgstr "%s: Weiterleitung konnte nicht angelegt werden"
 msgid "%s: Failed executing: %s"
 msgstr "%s: Ausführen fehlgeschlagen: %s"
 
-#: ../daemon/verify-crypt.c:74 ../daemon/verify-pam.c:1023
+#: ../daemon/verify-crypt.c:74 ../daemon/verify-pam.c:1137
 #: ../daemon/verify-shadow.c:75
 msgid ""
 "\n"
@@ -1433,12 +1433,12 @@ msgstr ""
 "Der Benutzername oder das Passwort ist fehlerhaft. Buchstaben müssen unter "
 "Berücksichtigung der Groß-/Kleinschreibung eingegeben werden."
 
-#: ../daemon/verify-crypt.c:79 ../daemon/verify-pam.c:1033
+#: ../daemon/verify-crypt.c:79 ../daemon/verify-pam.c:1147
 #: ../daemon/verify-shadow.c:80
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Stellen Sie sicher, dass die Dauerumschalttaste nicht aktiv ist"
 
-#: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:437
+#: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:543
 #: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3158
 msgid "Please enter your username"
 msgstr ""
@@ -1446,17 +1446,17 @@ msgstr ""
 "Benutzernamen ein"
 
 #. login: is whacked always translate to Username:
-#: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:337
-#: ../daemon/verify-pam.c:338 ../daemon/verify-pam.c:339
-#: ../daemon/verify-pam.c:424 ../daemon/verify-pam.c:773
+#: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:443
+#: ../daemon/verify-pam.c:444 ../daemon/verify-pam.c:445
+#: ../daemon/verify-pam.c:530 ../daemon/verify-pam.c:872
 #: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:1317 ../gui/gdmlogin.c:1331
 #: ../gui/gdmlogin.c:1960 ../gui/gdmlogin.c:2470 ../gui/greeter/greeter.c:391
 #: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "Benutzername:"
 
-#: ../daemon/verify-crypt.c:165 ../daemon/verify-pam.c:340
-#: ../daemon/verify-pam.c:341 ../daemon/verify-pam.c:485
+#: ../daemon/verify-crypt.c:165 ../daemon/verify-pam.c:446
+#: ../daemon/verify-pam.c:447 ../daemon/verify-pam.c:591
 #: ../daemon/verify-shadow.c:183 ../gui/gdmlogin.c:1995
 msgid "Password:"
 msgstr "Passwort:"
@@ -1467,7 +1467,7 @@ msgstr "Passwort:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Benutzer »%s« konnte nicht legitimiert werden"
 
-#: ../daemon/verify-crypt.c:210 ../daemon/verify-pam.c:874
+#: ../daemon/verify-crypt.c:210 ../daemon/verify-pam.c:983
 #: ../daemon/verify-shadow.c:228
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1485,7 +1485,7 @@ msgid "User %s not allowed to log in"
 msgstr "Benutzer %s darf sich nicht anmelden"
 
 #: ../daemon/verify-crypt.c:230 ../daemon/verify-crypt.c:254
-#: ../daemon/verify-pam.c:920 ../daemon/verify-pam.c:1195
+#: ../daemon/verify-pam.c:1029 ../daemon/verify-pam.c:1312
 #: ../daemon/verify-shadow.c:248 ../daemon/verify-shadow.c:272
 msgid ""
 "\n"
@@ -1495,14 +1495,14 @@ msgstr ""
 "Der Systemadministrator hat Ihren Zugang gesperrt."
 
 #: ../daemon/verify-crypt.c:277 ../daemon/verify-crypt.c:415
-#: ../daemon/verify-pam.c:938 ../daemon/verify-pam.c:1212
+#: ../daemon/verify-pam.c:1047 ../daemon/verify-pam.c:1329
 #: ../daemon/verify-shadow.c:295 ../daemon/verify-shadow.c:433
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Benutzergruppe für %s konnte nicht festgelegt werden"
 
 #: ../daemon/verify-crypt.c:279 ../daemon/verify-crypt.c:418
-#: ../daemon/verify-pam.c:940 ../daemon/verify-pam.c:1215
+#: ../daemon/verify-pam.c:1049 ../daemon/verify-pam.c:1332
 #: ../daemon/verify-shadow.c:297 ../daemon/verify-shadow.c:436
 msgid ""
 "\n"
@@ -1575,79 +1575,79 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "Passwd-Struktur für %s konnte nicht erhalten werden"
 
-#: ../daemon/verify-pam.c:342
+#: ../daemon/verify-pam.c:448
 msgid "You are required to change your password immediately (password aged)"
 msgstr "Sie müssen umgehend Ihr Passwort ändern (Passwort veraltet)"
 
-#: ../daemon/verify-pam.c:343
+#: ../daemon/verify-pam.c:449
 msgid "You are required to change your password immediately (root enforced)"
 msgstr ""
 "Sie müssen umgehend Ihr Passwort ändern (vom »root«-Benutzer erzwungen)"
 
-#: ../daemon/verify-pam.c:344
+#: ../daemon/verify-pam.c:450
 msgid "Your account has expired; please contact your system administrator"
 msgstr ""
 "Ihr Zugang ist abgelaufen; bitte kontaktieren Sie den Systemadministrator"
 
-#: ../daemon/verify-pam.c:345
+#: ../daemon/verify-pam.c:451
 msgid "No password supplied"
 msgstr "Kein Passwort angegeben"
 
-#: ../daemon/verify-pam.c:346
+#: ../daemon/verify-pam.c:452
 msgid "Password unchanged"
 msgstr "Passwort unverändert"
 
-#: ../daemon/verify-pam.c:347
+#: ../daemon/verify-pam.c:453
 msgid "Can not get username"
 msgstr "Benutzername konnte nicht ermittelt werden"
 
-#: ../daemon/verify-pam.c:348
+#: ../daemon/verify-pam.c:454
 msgid "Retype new UNIX password:"
 msgstr "Neues UNIX-Passwort bestätigen:"
 
-#: ../daemon/verify-pam.c:349
+#: ../daemon/verify-pam.c:455
 msgid "Enter new UNIX password:"
 msgstr "Neues UNIX-Passwort:"
 
-#: ../daemon/verify-pam.c:350
+#: ../daemon/verify-pam.c:456
 msgid "(current) UNIX password:"
 msgstr "(aktuelles) UNIX-Passwort:"
 
-#: ../daemon/verify-pam.c:351
+#: ../daemon/verify-pam.c:457
 msgid "Error while changing NIS password."
 msgstr "Fehler beim Ändern des NIS-Passworts."
 
-#: ../daemon/verify-pam.c:352
+#: ../daemon/verify-pam.c:458
 msgid "You must choose a longer password"
 msgstr "Sie müssen ein längeres Passwort wählen"
 
-#: ../daemon/verify-pam.c:353
+#: ../daemon/verify-pam.c:459
 msgid "Password has been already used. Choose another."
 msgstr "Passwort wurde bereits verwendet. Wählen Sie ein Anderes."
 
-#: ../daemon/verify-pam.c:354
+#: ../daemon/verify-pam.c:460
 msgid "You must wait longer to change your password"
 msgstr "Sie müssen länger warten, um Ihr Passwort zu ändern."
 
-#: ../daemon/verify-pam.c:355
+#: ../daemon/verify-pam.c:461
 msgid "Sorry, passwords do not match"
 msgstr "Leider stimmen die Passwörter nicht überein"
 
-#: ../daemon/verify-pam.c:649
+#: ../daemon/verify-pam.c:755
 msgid "Cannot setup pam handle with null display"
 msgstr "PAM-Handle konnte nicht mit leerer Anzeige eingerichtet werden"
 
-#: ../daemon/verify-pam.c:666
+#: ../daemon/verify-pam.c:772
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "Dienst %s konnte nicht bereitgestellt werden: %s\n"
 
-#: ../daemon/verify-pam.c:679
+#: ../daemon/verify-pam.c:785
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "PAM_TTY=%s konnte nicht gesetzt werden"
 
-#: ../daemon/verify-pam.c:689
+#: ../daemon/verify-pam.c:795
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "PAM_RHOST=%s konnte nicht gesetzt werden"
@@ -1657,12 +1657,12 @@ msgstr "PAM_RHOST=%s konnte nicht gesetzt werden"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:826 ../daemon/verify-pam.c:844
-#: ../daemon/verify-pam.c:1134 ../daemon/verify-pam.c:1146
+#: ../daemon/verify-pam.c:933 ../daemon/verify-pam.c:951
+#: ../daemon/verify-pam.c:1251 ../daemon/verify-pam.c:1263
 msgid "Couldn't authenticate user"
 msgstr "Benutzer konnte nicht legitimiert werden"
 
-#: ../daemon/verify-pam.c:877
+#: ../daemon/verify-pam.c:986
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1670,12 +1670,12 @@ msgstr ""
 "\n"
 "Der Systemadministrator darf sich von diesem Bildschirm aus nicht anmelden"
 
-#: ../daemon/verify-pam.c:901 ../daemon/verify-pam.c:1176
+#: ../daemon/verify-pam.c:1010 ../daemon/verify-pam.c:1293
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Wechsel der Legitimationskennung für Benutzer %s fehlgeschlagen"
 
-#: ../daemon/verify-pam.c:903 ../daemon/verify-pam.c:1179
+#: ../daemon/verify-pam.c:1012 ../daemon/verify-pam.c:1296
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1685,17 +1685,17 @@ msgstr ""
 "Die Änderung der Legitimationskennung schlug fehl. Bitte versuchen Sie es "
 "später noch einmal oder kontaktieren Sie den Systemadministrator."
 
-#: ../daemon/verify-pam.c:918 ../daemon/verify-pam.c:1192
+#: ../daemon/verify-pam.c:1027 ../daemon/verify-pam.c:1309
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Benutzer %s darf nicht mehr auf das System zugreifen"
 
-#: ../daemon/verify-pam.c:924 ../daemon/verify-pam.c:1198
+#: ../daemon/verify-pam.c:1033 ../daemon/verify-pam.c:1315
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Benutzer %s darf zu diesem Zeitpunkt nicht auf das System zugreifen"
 
-#: ../daemon/verify-pam.c:926
+#: ../daemon/verify-pam.c:1035
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1704,22 +1704,22 @@ msgstr ""
 "Der Systemadministrator hat den Zugriff auf das System vorübergehend "
 "gesperrt."
 
-#: ../daemon/verify-pam.c:931 ../daemon/verify-pam.c:1205
+#: ../daemon/verify-pam.c:1040 ../daemon/verify-pam.c:1322
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Zugangsverwaltung für %s konnte nicht gesetzt werden"
 
-#: ../daemon/verify-pam.c:959 ../daemon/verify-pam.c:1235
+#: ../daemon/verify-pam.c:1073 ../daemon/verify-pam.c:1356
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Berechtigungsnachweise für %s konnten nicht gesetzt werden"
 
-#: ../daemon/verify-pam.c:973 ../daemon/verify-pam.c:1250
+#: ../daemon/verify-pam.c:1087 ../daemon/verify-pam.c:1372
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Sitzung für %s konnte nicht geöffnet werden"
 
-#: ../daemon/verify-pam.c:1027
+#: ../daemon/verify-pam.c:1141
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1728,16 +1728,16 @@ msgstr ""
 "Legitimation fehlgeschlagen. Buchstaben müssen unter Berücksichtigung der "
 "Groß-/Kleinschreibung eingegeben werden."
 
-#: ../daemon/verify-pam.c:1043 ../daemon/verify-pam.c:1137
-#: ../daemon/verify-pam.c:1149
+#: ../daemon/verify-pam.c:1157 ../daemon/verify-pam.c:1254
+#: ../daemon/verify-pam.c:1266
 msgid "Authentication failed"
 msgstr "Legitimation fehlgeschlagen"
 
-#: ../daemon/verify-pam.c:1113
+#: ../daemon/verify-pam.c:1230
 msgid "Automatic login"
 msgstr "Automatische Anmeldung"
 
-#: ../daemon/verify-pam.c:1201
+#: ../daemon/verify-pam.c:1318
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporarily."
@@ -1746,7 +1746,7 @@ msgstr ""
 "Der Systemadministrator den Zugriff durch Sie auf das System vorübergehend "
 "unterbunden."
 
-#: ../daemon/verify-pam.c:1414 ../daemon/verify-pam.c:1416
+#: ../daemon/verify-pam.c:1539 ../daemon/verify-pam.c:1541
 msgid "Can't find PAM configuration for gdm."
 msgstr "PAM-Konfiguration für GDM konnte nicht gefunden werden"
 
@@ -1938,7 +1938,7 @@ msgid "Don't check for running gdm"
 msgstr "Nicht auf laufenden GDM überprüfen"
 
 #: ../gui/gdmXnestchooser.c:509 ../gui/gdmchooser.c:2074
-#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:683 ../gui/gdmlogin.c:3646
+#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:691 ../gui/gdmlogin.c:3646
 #: ../gui/gdmphotosetup.c:479 ../gui/gdmsetup.c:4593
 #: ../gui/greeter/greeter.c:1260
 msgid "Could not access GDM configuration file.\n"
@@ -2169,13 +2169,13 @@ msgstr ""
 "GDM selbst neu starten oder oder Ihren Systemadministrator darum bitten."
 
 #. markup
-#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:708
+#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:716
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr ""
 "Es konnte nicht mit GDM (GNOME Display Manager, dem GNOME Anzeigemanager) "
 "kommuniziert werden"
 
-#: ../gui/gdmcomm.c:440 ../gui/gdmflexiserver.c:711
+#: ../gui/gdmcomm.c:440 ../gui/gdmflexiserver.c:719
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Möglicherweise ist die Version veraltet."
 
@@ -2286,48 +2286,48 @@ msgid "New Login in a Nested Window"
 msgstr "In Fenster neu anmelden"
 
 #. markup
-#: ../gui/gdmflexiserver.c:100
+#: ../gui/gdmflexiserver.c:101
 msgid "Cannot change display"
 msgstr "Anzeigewechsel nicht möglich"
 
-#: ../gui/gdmflexiserver.c:177
+#: ../gui/gdmflexiserver.c:178
 msgid "Nobody"
 msgstr "Niemand"
 
-#: ../gui/gdmflexiserver.c:212
+#: ../gui/gdmflexiserver.c:213
 #, c-format
 msgid "Display %s on virtual terminal %d"
 msgstr "Anzeige %s auf virtuellem Terminal %d"
 
-#: ../gui/gdmflexiserver.c:217
+#: ../gui/gdmflexiserver.c:218
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Anzeige %s in Fenster auf virtuellem Terminal %d"
 
-#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:3005
+#: ../gui/gdmflexiserver.c:248 ../gui/gdmlogin.c:3005
 #: ../gui/greeter/greeter_item_ulist.c:243
 msgid "Username"
 msgstr "Benutzername"
 
-#: ../gui/gdmflexiserver.c:256
+#: ../gui/gdmflexiserver.c:257
 msgid "Display"
 msgstr "Anzeige"
 
-#: ../gui/gdmflexiserver.c:310
+#: ../gui/gdmflexiserver.c:315
 msgid "Open Displays"
 msgstr "Geöffnete Anzeigen"
 
 #. parent
 #. flags
-#: ../gui/gdmflexiserver.c:313
+#: ../gui/gdmflexiserver.c:318
 msgid "_Open New Display"
 msgstr "Neue Anzeige ö_ffnen"
 
-#: ../gui/gdmflexiserver.c:315
+#: ../gui/gdmflexiserver.c:320
 msgid "Change to _Existing Display"
 msgstr "Zur _existierenden Anzeige wechseln"
 
-#: ../gui/gdmflexiserver.c:323
+#: ../gui/gdmflexiserver.c:328
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
@@ -2335,75 +2335,79 @@ msgstr ""
 "Es wurde bereits mindestens eine Anzeige geöffnet. Sie können eine aus "
 "untenstehender Liste wählen oder eine neue öffnen."
 
-#: ../gui/gdmflexiserver.c:390 ../gui/gdmflexiserver.c:803
+#: ../gui/gdmflexiserver.c:397 ../gui/gdmflexiserver.c:811
 msgid "Can't lock screen"
 msgstr "Bildschirm konnte nicht gesperrt werden"
 
-#: ../gui/gdmflexiserver.c:393 ../gui/gdmflexiserver.c:806
+#: ../gui/gdmflexiserver.c:400 ../gui/gdmflexiserver.c:814
 msgid "Can't disable xscreensaver display hacks"
 msgstr "XScreenSaver-Anzeige-Hacks konnten nicht deaktiviert werden"
 
-#: ../gui/gdmflexiserver.c:550
+#: ../gui/gdmflexiserver.c:557
 msgid "Choose server"
 msgstr "Server auswählen"
 
-#: ../gui/gdmflexiserver.c:561
+#: ../gui/gdmflexiserver.c:568
 msgid "Choose the X server to start"
 msgstr "Den zu startenden X-Server auswählen"
 
-#: ../gui/gdmflexiserver.c:567
+#: ../gui/gdmflexiserver.c:574
 msgid "Standard server"
 msgstr "Standard-Server"
 
-#: ../gui/gdmflexiserver.c:633
+#: ../gui/gdmflexiserver.c:640
 msgid "Send the specified protocol command to gdm"
 msgstr "Den angegebenen Protokollbefehl an GDM senden"
 
-#: ../gui/gdmflexiserver.c:633
+#: ../gui/gdmflexiserver.c:640
 msgid "COMMAND"
 msgstr "BEFEHL"
 
-#: ../gui/gdmflexiserver.c:634
+#: ../gui/gdmflexiserver.c:641
 msgid "Xnest mode"
 msgstr "Xnest-Modus"
 
-#: ../gui/gdmflexiserver.c:635
+#: ../gui/gdmflexiserver.c:642
 msgid "Do not lock current screen"
 msgstr "Aktuellen Bildschirm nicht sperren"
 
-#: ../gui/gdmflexiserver.c:636
+#: ../gui/gdmflexiserver.c:643
 msgid "Debugging output"
 msgstr "Diagnose-Ausgabe aktivieren"
 
-#: ../gui/gdmflexiserver.c:637
+#: ../gui/gdmflexiserver.c:644
 msgid "Authenticate before running --command"
 msgstr "Vor dem Ausführen von »--command« legitimieren"
 
+#: ../gui/gdmflexiserver.c:645
+msgid "Start new flexible session, do not show popup"
+msgstr "Eine neue anpassungsfähige Sitzung starten, kein Popup anzeigen"
+
 #. markup
-#: ../gui/gdmflexiserver.c:737
+#: ../gui/gdmflexiserver.c:745
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr ""
 "Anscheinend haben Sie nicht die für diese Operation erforderliche "
 "Legitimation."
 
-#: ../gui/gdmflexiserver.c:741
+#: ../gui/gdmflexiserver.c:749
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
 "Möglicherweise ist Ihre ».Xauthority«-Datei nicht korrekt eingerichtet."
 
 #. markup
-#: ../gui/gdmflexiserver.c:766
+#: ../gui/gdmflexiserver.c:774
 msgid "You do not seem to be logged in on the console"
 msgstr "Anscheinend sind sie nicht über die Konsole angemeldet."
 
-#: ../gui/gdmflexiserver.c:769
+#: ../gui/gdmflexiserver.c:777
 msgid "Starting a new login only works correctly on the console."
 msgstr ""
 "Das Starten einer neuen Anmeldung funktioniert nur mittels der Konsole "
 "fehlerfrei."
 
 #. markup
-#: ../gui/gdmflexiserver.c:821
+#: ../gui/gdmflexiserver.c:829
 msgid "Cannot start new display"
 msgstr "Neue Anzeige konnte nicht gestartet werden"
 
@@ -4361,21 +4365,23 @@ msgid ""
 "s. CList type widget should have %d column. Possibly the glade interface "
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
+msgid_plural ""
 "An error occurred while loading the user interface element %s%s from file %"
 "s. CList type widget should have %d columns. Possibly the glade interface "
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
-msgstr ""
+msgstr[0] ""
 "Beim Laden des Benutzeroberflächenelements %s%s aus der Datei %s ist ein "
-"Fehler aufgetreten. Das Widget vom Typ CList muss %d Spalte haben. "
-"Möglicherweise ist die Glade-Oberflächenbeschreibung "
-"fehlerhaft. %s kann nicht fortgesetzt werden und wird daher nun beendet. Sie "
-"sollten Ihre %s-Installation überprüfen oder %s neu installieren."
+"Fehler aufgetreten. Das Widget vom Typ CList sollte %d Spalte besitzen. "
+"Möglicherweise ist die Glade-Oberflächenbeschreibung fehlerhaft. %s kann "
+"nicht fortgesetzt werden und wird daher nun beendet. Sie sollten Ihre %s-"
+"Installation überprüfen oder %s neu installieren."
+msgstr[1] ""
 "Beim Laden des Benutzeroberflächenelements %s%s aus der Datei %s ist ein "
-"Fehler aufgetreten. Das Widget vom Typ CList muss %d Spalten haben. "
-"Möglicherweise ist die Glade-Oberflächenbeschreibung "
-"fehlerhaft. %s kann nicht fortgesetzt werden und wird daher nun beendet. Sie "
-"sollten Ihre %s-Installation überprüfen oder %s neu installieren."
+"Fehler aufgetreten. Das Widget vom Typ CList sollte %d Spalten besitzen. "
+"Möglicherweise ist die Glade-Oberflächenbeschreibung fehlerhaft. %s kann "
+"nicht fortgesetzt werden und wird daher nun beendet. Sie sollten Ihre %s-"
+"Installation überprüfen oder %s neu installieren."
 
 #: ../vicious-extensions/glade-helper.c:277
 #, c-format
@@ -4412,3 +4418,23 @@ msgstr ""
 "Zu viele Aliasebenen für eine Standorteinstellung, deutet auf eine Rekursion "
 "hin"
 
+#~ msgid ""
+#~ "An error occurred while loading the user interface element %s%s from file "
+#~ "%s. CList type widget should have %d column. Possibly the glade interface "
+#~ "description was corrupted. %s cannot continue and will exit now. You "
+#~ "should check your installation of %s or reinstall %s.An error occurred "
+#~ "while loading the user interface element %s%s from file %s. CList type "
+#~ "widget should have %d columns. Possibly the glade interface description "
+#~ "was corrupted. %s cannot continue and will exit now. You should check "
+#~ "your installation of %s or reinstall %s."
+#~ msgstr ""
+#~ "Beim Laden des Benutzeroberflächenelements %s%s aus der Datei %s ist ein "
+#~ "Fehler aufgetreten. Das Widget vom Typ CList sollte %d Spalte besitzen. "
+#~ "Möglicherweise ist die Glade-Oberflächenbeschreibung fehlerhaft. %s kann "
+#~ "nicht fortgesetzt werden und wird daher nun beendet. Sie sollten Ihre %s-"
+#~ "Installation überprüfen oder %s neu installieren.Beim Laden des "
+#~ "Benutzeroberflächenelements %s%s aus der Datei %s ist ein Fehler "
+#~ "aufgetreten. Das Widget vom Typ CList sollte %d Spalten besitzen. "
+#~ "Möglicherweise ist die Glade-Oberflächenbeschreibung fehlerhaft. %s kann "
+#~ "nicht fortgesetzt werden und wird daher nun beendet. Sie sollten Ihre %s-"
+#~ "Installation überprüfen oder %s neu installieren."
