@@ -4146,6 +4146,17 @@ Supported since: 2.2.4.0
             </para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>-s, --startnew</term>
+          <listitem>
+            <para>
+              Starts a new flexible server without displaying a dialog
+              asking the user if they wish to continue any existing
+              sessions.
+            </para>
+          </listitem>
+        </varlistentry>
       </variablelist>
     </sect2>
 
@@ -5395,15 +5406,31 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
     <title>Solaris Specific Features</title>
 
     <para>
-	GDM supports two features specific to Solaris.  First, it supports
-	Solaris Auditing if running on Solaris 10 or higher.  Secondly, it
-	supports a security feature which causes the Xserver to run as
+	GDM supports a few features specific to Solaris, as follows:
+    </para>
+
+    <para>
+	GDM supports Solaris Auditing if running on Solaris 10 or higher.
+    </para>
+
+    <para>
+	GDM supports a security feature which causes the Xserver to run as
 	the user instead of as the root user.  GDM must be using PAM for
 	this feature to be enabled, which is the normal case for Solaris.
 	This second feature has the side-effect of causing the Xserver to
 	always restart between sessions, which disables the
-	 AlwaysRestartServer gdm.conf configuration option.  
+	AlwaysRestartServer gdm.conf configuration option.  
     </para>
+
+    <para>
+	Solaris supports the <filename>/etc/default/login</filename>
+	interface, which affects the <filename>DefaultPath</filename>,
+	<filename>RootPath</filename>,
+	<filename>PasswordRequired</filename>, and
+	<filename>AllowRemoteRoot</filename> options as described in the
+	Configuration section.
+    </para>
+
   </sect1>
 
   <sect1 id="exampleconf">
