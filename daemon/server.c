@@ -1288,6 +1288,16 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		setgroups (1, groups);
 	}
 
+#if sun
+    {
+        /* Remove old communication pipe, if present */
+        char old_pipe[MAXPATHLEN];
+
+        sprintf (old_pipe, "%s/%d", SDTLOGIN_DIR, d->name);
+        unlink (old_pipe);
+    }
+#endif
+
 	VE_IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_fdprintf (2, "GDM: Xserver not found: %s\n"

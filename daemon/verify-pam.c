@@ -17,15 +17,19 @@
  */
 
 #include <config.h>
-#include <libgnome/libgnome.h>
+
 #include <grp.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <security/pam_appl.h>
 #include <pwd.h>
+#ifdef sun
+#include <fcntl.h>
+#endif
 
+#include <libgnome/libgnome.h>
 #include <vicious.h>
 
 #include "gdm.h"
@@ -310,6 +314,108 @@ audit_logout (void)
 	(void) adt_end_session(adt_ah);
 }
 #endif	/* HAVE_ADT */
+
+#ifdef sun
+void
+solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
+{
+    	struct stat statbuf;
+        struct group *gr;
+	gid_t  groups[NGROUPS_UMAX];
+	char *home, *disp, *tmp, pipe[MAXPATHLEN], info[MAXPATHLEN];
+	int displayNumber = 0;
+	int retval, fd, i, nb;
+	int ngroups;
+
+	if (!d->attached)
+	    return;
+
+	if (access (pwent->pw_dir, F_OK) != 0) {
+	    gdm_debug ("solaris_xserver_cred: no HOME dir access\n");
+	    return;
+	}
+
+	/*
+	 * Handshake with server. Make sure it created a pipe.
+	 * Open and write.
+	 */
+        if ((tmp = strstr (d->name, ":")) != NULL) {
+		tmp++;
+                displayNumber = atoi (tmp);
+	}
+
+        sprintf (pipe, "%s/%d", SDTLOGIN_DIR, displayNumber);
+
+        if ( stat (SDTLOGIN_DIR, &statbuf) == 0) {
+	    if (! statbuf.st_mode & S_IFDIR) {
+		gdm_debug ("solaris_xserver_cred: %s is not a directory\n",
+		       SDTLOGIN_DIR);
+		return;
+	    }
+	}
+	else {
+            gdm_debug ("solaris_xserver_cred: %s does not exist\n", SDTLOGIN_DIR);
+	    return;
+	}
+
+	fd = open (pipe, O_RDWR);
+	unlink (pipe);
+
+	if (fd < 0) {
+            gdm_debug ("solaris_xserver_cred: could not open %s\n", pipe);
+	    return;
+	}
+        if ( fstat(fd, &statbuf) == 0 ) {
+	   if ( ! statbuf.st_mode & S_IFIFO) {
+	      close (fd);
+	      gdm_debug ("solaris_xserver_cred: %s is not a pipe\n", pipe);
+	      return;
+	   }
+	} else {
+	    close (fd);
+            gdm_debug ("solaris_xserver_cred: %s does not exist\n", pipe);
+	    return;
+	}
+	 
+	sprintf (info, "GID=\"%d\"; ", pwent->pw_gid);
+	nb = write (fd, info, strlen (info));
+        gdm_debug ("solaris_xserver_cred: %s\n", info);
+
+	if (initgroups (login, pwent->pw_gid) == -1) {
+	    ngroups = 0;
+	} else {
+	    ngroups = getgroups( NGROUPS_UMAX, groups);
+	}
+
+        for (i=0; i < ngroups; i++) {
+            sprintf (info, "G_LIST_ID=\"%u\" ", groups[i]);
+	    nb = write (fd, info, strlen(info));
+            gdm_debug ("solaris_xserver_cred: %s\n", info);
+	}
+
+	if (ngroups > 0) {
+            sprintf (info, ";");
+	    write (fd, info, strlen(info));
+	}
+	
+        sprintf (info, " HOME=\"%s\" ", pwent->pw_dir);
+	nb = write (fd, info, strlen(info));
+        gdm_debug ("solaris_xserver_cred: %s\n", info);
+
+        sprintf (info, " UID=\"%d\" EOF=\"\";", pwent->pw_uid);
+	nb = write (fd, info, strlen(info));
+        gdm_debug ("solaris_xserver_cred: %s\n", info);
+
+	/*
+	 * Handshake with server. Make sure it read the pipe.
+	 * 
+	 * Close file descriptor. 
+	 */
+ 	close (fd);
+	 
+	return;
+}
+#endif
 
 void
 gdm_verify_select_user (const char *user)
@@ -714,14 +820,15 @@ gdm_verify_user (GdmDisplay *d,
 		 const gchar *display,
 		 gboolean local) 
 {
-    gint pamerr;
+    gint pamerr = 0;
+    struct passwd *pwent = NULL;
     const void *p;
     char *login, *passreq, *consoleonly;
-    struct passwd *pwent = NULL;
-    gboolean error_msg_given;
-    gboolean credentials_set;
-    gboolean started_timer;
-    int null_tok;
+    int null_tok = 0;
+    gboolean credentials_set = FALSE;
+    gboolean error_msg_given = FALSE;
+    gboolean started_timer   = FALSE;
+
 #ifdef HAVE_ADT
     int pw_change = PW_FALSE;   /* if got to trying to change password */
 #endif	/* HAVE_ADT */
@@ -749,14 +856,6 @@ verify_user_again:
 
     cur_gdm_disp = d;
 
-    passreq = gdm_read_default ("PASSREQ=");
-    if ((passreq != NULL) &&
-	g_ascii_strcasecmp (passreq, "YES") == 0)
-	    GdmPasswordRequired = TRUE;
-
-    if (GdmPasswordRequired)
-	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
-	    
 authenticate_again:
 
     /* hack */
@@ -781,10 +880,18 @@ authenticate_again:
 #endif /* PAM_FAIL_DELAY */
 #endif
 
-    did_we_ask_for_password = FALSE;
+    passreq = gdm_read_default ("PASSREQ=");
+    if ((passreq != NULL) &&
+	g_ascii_strcasecmp (passreq, "YES") == 0)
+	    GdmPasswordRequired = TRUE;
 
+    if (GdmPasswordRequired)
+	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
+	    
     gdm_verify_select_user (NULL);
+
     /* Start authentication session */
+    did_we_ask_for_password = FALSE;
     if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
 	    if ( ! ve_string_empty (selected_user)) {
 		    pam_handle_t *tmp_pamh;
@@ -844,6 +951,7 @@ authenticate_again:
 		    gdm_error (_("Couldn't authenticate user"));
 	    goto pamerr;
     }
+
     login = g_strdup ((const char *)p);
     /* kind of anal, the greeter likely already knows, but it could have
        been changed */
@@ -861,9 +969,10 @@ authenticate_again:
 	    goto verify_user_again;
     }
 
+    /* Check if user is root and is allowed to log in */
     consoleonly = gdm_read_default ("CONSOLE=");
     if ((consoleonly != NULL) &&
-	g_ascii_strcasecmp (passreq, "/dev/console") == 0)
+	g_ascii_strcasecmp (consoleonly, "/dev/console") == 0)
 	    GdmAllowRemoteRoot = FALSE;
 
     pwent = getpwnam (login);
@@ -951,6 +1060,11 @@ authenticate_again:
     }
 
     did_setcred = TRUE;
+
+#ifdef sun
+    solaris_xserver_cred (login, d, pwent);
+#endif
+
     /* Set credentials */
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
@@ -961,8 +1075,8 @@ authenticate_again:
     }
 
     credentials_set = TRUE;
+    opened_session  = TRUE;
 
-    opened_session = TRUE;
     /* Register the session */
     pamerr = pam_open_session (pamh, 0);
     if (pamerr != PAM_SUCCESS) {
@@ -1092,11 +1206,14 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 {
     gint pamerr = 0;
     struct passwd *pwent = NULL;
-    char *passreq;
     const void *p;
-    const char *after_login;
+    char *passreq;
     int null_tok = 0;
+    gboolean credentials_set;
+    const char *after_login;
     
+    credentials_set = FALSE;
+
 #ifdef HAVE_ADT
     int pw_change = PW_FALSE;   /* if got to trying to change password */
 #endif	/* HAVE_ADT */
@@ -1227,6 +1344,10 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 
     did_setcred = TRUE;
 
+#ifdef sun
+    solaris_xserver_cred (login, d, pwent);
+#endif
+
     /* Set credentials */
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
@@ -1236,7 +1357,8 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    goto setup_pamerr;
     }
 
-    opened_session = TRUE;
+    credentials_set = TRUE;
+    opened_session  = TRUE;
 
     /* Register the session */
     pamerr = pam_open_session (pamh, 0);
@@ -1290,6 +1412,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    gdm_sigchld_block_pop ();
 	    gdm_sigterm_block_pop ();
 
+	    /* Throw away the credentials */
+	    if (credentials_set)
+		    pam_setcred (tmp_pamh, PAM_DELETE_CRED);
 	    pam_end (tmp_pamh, pamerr);
     }
     pamh = NULL;

@@ -151,7 +151,16 @@ gchar *GdmSessDir = NULL;
 gchar *GdmXsession = NULL;
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
+
+/* The SDTLOGIN feature is Solaris specific, and causes the Xserver to be
+ * run with user permissionsinstead of as root, which adds security but
+ * disables the AlwaysRestartServer option as highlighted in the gdm
+ * documentation */
+#ifdef sun
+gboolean GdmAlwaysRestartServer = TRUE;
+#else
 gboolean GdmAlwaysRestartServer = FALSE;
+#endif
 gchar *GdmConfigurator = NULL;
 gboolean GdmConfigAvailable = FALSE;
 gboolean GdmSystemMenu = FALSE;
@@ -456,7 +465,11 @@ gdm_config_parse (void)
     GdmDisplayInit = ve_config_get_string (cfg, GDM_KEY_INITDIR);
     GdmAutomaticLoginEnable = ve_config_get_bool (cfg, GDM_KEY_AUTOMATICLOGIN_ENABLE);
     GdmAutomaticLogin = ve_config_get_string (cfg, GDM_KEY_AUTOMATICLOGIN);
+#ifdef sun
+    GdmAlwaysRestartServer = TRUE;
+#else
     GdmAlwaysRestartServer = ve_config_get_bool (cfg, GDM_KEY_ALWAYSRESTARTSERVER);
+#endif
     GdmGreeter = ve_config_get_string (cfg, GDM_KEY_GREETER);
     GdmRemoteGreeter = ve_config_get_string (cfg, GDM_KEY_REMOTEGREETER);
     GdmAddGtkModules = ve_config_get_bool (cfg, GDM_KEY_ADD_GTK_MODULES);
@@ -2305,6 +2318,11 @@ main (int argc, char *argv[])
     }
     else
 	gdm_daemonify();
+
+#ifdef sun
+    unlink (SDTLOGIN_DIR);
+    mkdir (SDTLOGIN_DIR, 0700);
+#endif
 
     /* Signal handling */
     ve_signal_add (SIGCHLD, mainloop_sig_callback, NULL);

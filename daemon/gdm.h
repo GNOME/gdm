@@ -390,6 +390,10 @@ typedef struct _GdmDisplay GdmDisplay;
 #define GDM_AUTHFILE(display) \
 	(display->authfile_gdm != NULL ? display->authfile_gdm : display->authfile)
 
+#ifdef sun
+#define SDTLOGIN_DIR "/var/dt/sdtlogin"
+#endif
+
 struct _GdmDisplay {
     CARD32 sessionid;
     Display *dsp;
