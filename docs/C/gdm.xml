@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.6.0.4"> 
-    <!ENTITY date "7/14/2004"> 
+    <!ENTITY version "2.8.0.2"> 
+    <!ENTITY date "8/12/2005"> 
 ]>
 
 <article id="index" lang="en">
@@ -267,14 +267,14 @@
 
       <para>
         Next GDM supports flexible or on demand servers which can be started
-	via the socket protocol with the <command>gdmflexiserver</command>
-	command.  This feature is only available to users logged in on the
-	console.  <command>gdmflexiserver</command> can also be used to
-	launch nested <command>Xnest</command> servers which can be started
+        via the socket protocol with the <command>gdmflexiserver</command>
+        command.  This feature is only available to users logged in on the
+        console.  <command>gdmflexiserver</command> can also be used to
+        launch nested <command>Xnest</command> servers which can be started
         even if not logged inot the console.  This is done by running
         <command>gdmflexiserver -n</command>.  These servers are not
-	restarted when the user session ends.  The
-	<command>gdmflexiserver</command> normally locks the current
+        restarted when the user session ends.  The
+        <command>gdmflexiserver</command> normally locks the current
         session with a screensaver before starting a new server.
       </para>
 
@@ -1029,10 +1029,10 @@ XKeepsCrashing
               <synopsis>AddGtkModules=false</synopsis>
               <para>
                 If true, then enables <command>gdmgreeter</command> or
-		<command>gdmlogin</command> to be launched with additional
-		Gtk+ modules. This is useful when extra features are required
-		such as accessible login. Note that only "trusted" modules
-		should be used to minimize security issues.
+                <command>gdmlogin</command> to be launched with additional
+                Gtk+ modules. This is useful when extra features are required
+                such as accessible login. Note that only "trusted" modules
+                should be used to minimize security issues.
               </para>
               <para>
                 Usually this is used for accessibility modules.  The modules
@@ -1052,7 +1052,7 @@ XKeepsCrashing
                 start over.  Normally, just reinitializing is a nicer way to go
                 but if the X server memory usage keeps growing this may be
                 a safer option.  On Solaris, this value is always true, and
-		this configuration setting is ignored.
+                this configuration setting is ignored.
               </para>
             </listitem>
           </varlistentry>
@@ -1210,8 +1210,8 @@ XKeepsCrashing
                 Specifies the path which will be set in the user's session.
                 This value will be overridden with the value from
                 /etc/default/login if it contains "ROOT=&lt;pathname&gt;".  If
-		the /etc/default/login file exists, but contains no value for
-		ROOT, the gdm.conf value will be used.
+                the /etc/default/login file exists, but contains no value for
+                ROOT, the gdm.conf value will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1386,7 +1386,7 @@ XKeepsCrashing
               <synopsis>GtkModulesList=module-1:module-2:...</synopsis>
               <para>
                 A colon separated list of Gtk+ modules that
-		<command>gdmgreeter</command> or <command>gdmlogin</command>
+                <command>gdmgreeter</command> or <command>gdmlogin</command>
                 will be invoked with if <filename>AddGtkModules</filename> is
                 true.  The format is the same as the standard Gtk+ module
                 interface.
@@ -1514,8 +1514,8 @@ XKeepsCrashing
                 session and the {Init,PostLogin,PreSession,PostSession} scripts
                 executed by GDM.  This value will be overridden with the value
                 from /etc/default/login if it contains "SUROOT=&lt;pathname&gt;".
-		If the /etc/default/login file exists, but contains no value
-		for SUROOT, the gdm.conf value will be used.
+                If the /etc/default/login file exists, but contains no value
+                for SUROOT, the gdm.conf value will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1798,7 +1798,7 @@ XKeepsCrashing
               <synopsis>AllowRemoteRoot=false</synopsis>
               <para>
                 Allow root (privileged user) to log in remotely through GDM.
-		This value should be set to true to allow such logins.
+                This value should be set to true to allow such logins.
                 Remote logins are any logins that come in through the XDMCP.
               </para>
               <para>
@@ -1810,8 +1810,8 @@ XKeepsCrashing
                 This value will be overridden and set to false if the
                 /etc/default/login file exists and contains
                 "CONSOLE=/dev/login", and set to true if the
-		/etc/default/login file exists and contains any other
-		value or no value for CONSOLE.
+                /etc/default/login file exists and contains any other
+                value or no value for CONSOLE.
               </para>
             </listitem>
           </varlistentry>
@@ -1888,14 +1888,14 @@ XKeepsCrashing
             <listitem>
               <synopsis>PasswordRequired=false</synopsis>
               <para>
-		If true, this will cause PAM_DISALLOW_NULL_AUTHTOK to be
-		passed as a flag to pam_authenticate and pam_acct_mgmt,
-		disallowing NULL password.  This setting will only take
-		effect if PAM is being used by GDM.  This value will be
-		overridden with the value from /etc/default/login if it
-		contains "PASSREQ=[YES|NO]".  If the /etc/default/login
-		file exists, but contains no value for PASSREQ, the
-		gdm.conf value will be used.
+                If true, this will cause PAM_DISALLOW_NULL_AUTHTOK to be
+                passed as a flag to pam_authenticate and pam_acct_mgmt,
+                disallowing NULL password.  This setting will only take
+                effect if PAM is being used by GDM.  This value will be
+                overridden with the value from /etc/default/login if it
+                contains "PASSREQ=[YES|NO]".  If the /etc/default/login
+                file exists, but contains no value for PASSREQ, the
+                gdm.conf value will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -2471,11 +2471,11 @@ XKeepsCrashing
               <synopsis>ConfigAvailable=false</synopsis>
               <para>
                 If true, allows the configurator to be run from the greeter.
-		Note that the user will need to type in the root password
-		before the configurator will be started.  This is set to 
-		false by default for additional security.  See the
-		<filename>Configurator</filename> option in the daemon
-		section.
+                Note that the user will need to type in the root password
+                before the configurator will be started.  This is set to 
+                false by default for additional security.  See the
+                <filename>Configurator</filename> option in the daemon
+                section.
               </para>
             </listitem>
           </varlistentry>
@@ -3430,14 +3430,14 @@ Language=cs_CZ.UTF-8
       <para>
         The <command>gdmflexiserver</command> command can be used to start
         new flexible (on demand) servers if your system supports virtual
-	terminals.  This command will normally lock the current session with a
+        terminals.  This command will normally lock the current session with a
         screensaver so that the user can safely walk away from the computer and
         let someone else log in.  If more that two flexible servers have 
-	started <command>gdmflexiserver</command> will display a pop-up dialog
-	allowing the user to select which session to continue.  The user will
-	normally have to enter a password to return to the session.  On session
-	exit the system will return to the previous virtual terminal.  Run
-	<command>gdmflexiserver --help</command> to get a listing of possible
+        started <command>gdmflexiserver</command> will display a pop-up dialog
+        allowing the user to select which session to continue.  The user will
+        normally have to enter a password to return to the session.  On session
+        exit the system will return to the previous virtual terminal.  Run
+        <command>gdmflexiserver --help</command> to get a listing of possible
         options.  
       </para>
     </sect2>
@@ -3961,580 +3961,586 @@ Supported since: 2.2.4.0
     </sect2>
   </sect1>
 
-  <sect1 id="bindir_binaries">
-    <title>GDM Commands in EXPANDED_BINDIR</title>
+  <!-- ============= GDM Commands ============================= -->
 
-    <para>
-      The GDM package provides the following different commands in
-      EXPANDED_BINDIR intended to be used by the end-user:
-    </para>
+  <sect1 id="binaries">
+    <title>GDM Commands</title>
 
-    <sect2 id="gdmxnestchoosercommandline">
-      <title><command>gdmXnestchooser</command> and
-             <command>gdmXnest</command> Command Line Options</title>
+    <sect2 id="bindir_binaries">
+      <title>GDM User Commands</title>
 
       <para>
-        The <command>gdmXnestchooser</command> command automatically gets
-        the correct display number, sets up access, and runs
-        <command>Xnest</command> with -indirect localhost.  This way you
-        get an XDMCP chooser provided by your computer. You can also supply
-        as an argument the hostname whose chooser should be displayed, so
-        <command>gdmXnestchooser somehost</command> will run the XDMCP
-        chooser from host <command>somehost</command> inside an Xnest
-        session.  You can make this command do a direct query instead by
-        passing the <command>-d</command> option as well.  In addition to
-        the following options, this command also supports standard GNOME
-        options.
+        The GDM package provides the following different commands in
+        EXPANDED_BINDIR intended to be used by the end-user:
       </para>
 
-      <variablelist>
-      <title><command>gdmXnestchooser</command> Command Line Options</title>
+      <sect3 id="gdmxnestchoosercommandline">
+        <title><command>gdmXnestchooser</command> and
+               <command>gdmXnest</command> Command Line Options</title>
 
-        <varlistentry>
-          <term>-x, --xnest=STRING</term>
-          <listitem>
-            <para>
-              Xnest command line, default is "Xnest"
-            </para>
-          </listitem>
-        </varlistentry>
+        <para>
+          The <command>gdmXnestchooser</command> command automatically gets
+          the correct display number, sets up access, and runs
+          <command>Xnest</command> with -indirect localhost.  This way you
+          get an XDMCP chooser provided by your computer. You can also supply
+          as an argument the hostname whose chooser should be displayed, so
+          <command>gdmXnestchooser somehost</command> will run the XDMCP
+          chooser from host <command>somehost</command> inside an Xnest
+          session.  You can make this command do a direct query instead by
+          passing the <command>-d</command> option as well.  In addition to
+          the following options, this command also supports standard GNOME
+          options.
+        </para>
 
-        <varlistentry>
-          <term>-o, --xnest-extra-options=OPTIONS</term>
-          <listitem>
-            <para>
-              Extra options for Xnest, default is no options.
-            </para>
-          </listitem>
-        </varlistentry>
+        <variablelist>
+        <title><command>gdmXnestchooser</command> Command Line Options</title>
 
-        <varlistentry>
-          <term>-n, --no-query</term>
-          <listitem>
-            <para>
-              Just run Xnest, no query (no chooser)
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-x, --xnest=STRING</term>
+            <listitem>
+              <para>
+                Xnest command line, default is "Xnest"
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-d, --direct</term>
-          <listitem>
-            <para>
-              Do direct query instead of indirect (chooser)
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-o, --xnest-extra-options=OPTIONS</term>
+            <listitem>
+              <para>
+                Extra options for Xnest, default is no options.
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-B, --broadcast</term>
-          <listitem>
-            <para>
-              Run broadcast instead of indirect (chooser)
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-n, --no-query</term>
+            <listitem>
+              <para>
+                Just run Xnest, no query (no chooser)
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-b, --background</term>
-          <listitem>
-            <para>
-              Run in background
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-d, --direct</term>
+            <listitem>
+              <para>
+                Do direct query instead of indirect (chooser)
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>--no-gdm-check</term>
-          <listitem>
-            <para>
-              Don't check for running GDM
-            </para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
+          <varlistentry>
+            <term>-B, --broadcast</term>
+            <listitem>
+              <para>
+                Run broadcast instead of indirect (chooser)
+              </para>
+            </listitem>
+          </varlistentry>
 
-    <sect2 id="gdmflexichoosercommandline">
-      <title><command>gdmflexichooser</command> Command Line Options</title>
+          <varlistentry>
+            <term>-b, --background</term>
+            <listitem>
+              <para>
+                Run in background
+              </para>
+            </listitem>
+          </varlistentry>
 
-      <para>
-       The <command>gdmflexiserver</command> command provides three 
-       features.  It can be used to run flexible (on demand) X servers,
-       to run a flexible server via Xnest, and to send commands to the
-       GDM daemon process.
-      </para>
+          <varlistentry>
+            <term>--no-gdm-check</term>
+            <listitem>
+              <para>
+                Don't check for running GDM
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
 
-      <para>
-       Starting a flexible X servers will normally lock the current session
-       with a screensaver and will redisplay the GDM login screen so a second
-       user can log in.   This feature is only available on systems that
-       support virtual terminals and have them enabled.  This feature is
-       useful if you are logged in as user A, and user B wants to log in
-       quickly but user A does not wish to log out.  The X server takes
-       care of the virtual terminal switching so it works transparently.
-       If there is more than one server defined with flexible=true, then the
-       user is shown a dialog that displays the currently running sessions.
-       The user can then pick which session to continue and will normally
-       have to enter the password to unlock the screen. 
-      </para>
+      <sect3 id="gdmflexichoosercommandline">
+        <title><command>gdmflexichooser</command> Command Line Options</title>
 
-      <para>
-       Flexible servers started via Xnest works on systems that do not 
-       support virtual terminals.  This option starts a flexible server
-       in a window in the current session.  This does not lock the current
-       session, so is not as secure as a flexible server started via
-       virtual terminals.
-      </para>
+        <para>
+         The <command>gdmflexiserver</command> command provides three 
+         features.  It can be used to run flexible (on demand) X servers,
+         to run a flexible server via Xnest, and to send commands to the
+         GDM daemon process.
+        </para>
 
-      <para>
-       The <command>gdmflexiserver --command</command> option provides a way
-       to send commands to the GDM daemon and can be used to debug problems
-       or to change the GDM configuration.
-      </para>
+        <para>
+         Starting a flexible X servers will normally lock the current session
+         with a screensaver and will redisplay the GDM login screen so a second
+         user can log in.   This feature is only available on systems that
+         support virtual terminals and have them enabled.  This feature is
+         useful if you are logged in as user A, and user B wants to log in
+         quickly but user A does not wish to log out.  The X server takes
+         care of the virtual terminal switching so it works transparently.
+         If there is more than one server defined with flexible=true, then the
+         user is shown a dialog that displays the currently running sessions.
+         The user can then pick which session to continue and will normally
+         have to enter the password to unlock the screen. 
+        </para>
 
-      <para>
-       In addition to the following options,
-       <command>gdmflexiserver</command> also supports standard GNOME
-       options.
-      </para>
+        <para>
+         Flexible servers started via Xnest works on systems that do not 
+         support virtual terminals.  This option starts a flexible server
+         in a window in the current session.  This does not lock the current
+         session, so is not as secure as a flexible server started via
+         virtual terminals.
+        </para>
 
-      <variablelist>
-      <title><command>gdmflexichooser</command> Command Line Options</title>
+        <para>
+         The <command>gdmflexiserver --command</command> option provides a way
+         to send commands to the GDM daemon and can be used to debug problems
+         or to change the GDM configuration.
+        </para>
 
-        <varlistentry>
-          <term>-c, --command=COMMAND</term>
-          <listitem>
-            <para>
-              Send the specified protocol command to GDM
-            </para>
-          </listitem>
-        </varlistentry>
+        <para>
+         In addition to the following options,
+         <command>gdmflexiserver</command> also supports standard GNOME
+         options.
+        </para>
 
-        <varlistentry>
-          <term>-n, --xnest</term>
-          <listitem>
-            <para>
-              Start a flexible X server in Xnest mode
-            </para>
-          </listitem>
-        </varlistentry>
+        <variablelist>
+        <title><command>gdmflexichooser</command> Command Line Options</title>
 
-        <varlistentry>
-          <term>-l, --no-lock</term>
-          <listitem>
-            <para>
-              Do not lock current screen
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-c, --command=COMMAND</term>
+            <listitem>
+              <para>
+                Send the specified protocol command to GDM
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-d, --debug</term>
-          <listitem>
-            <para>
-              Debugging output
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-n, --xnest</term>
+            <listitem>
+              <para>
+                Start a flexible X server in Xnest mode
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-a, --authenticate</term>
-          <listitem>
-            <para>
-              Authenticate before running --command
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-l, --no-lock</term>
+            <listitem>
+              <para>
+                Do not lock current screen
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-s, --startnew</term>
-          <listitem>
-            <para>
-              Starts a new flexible server without displaying a dialog
-              asking the user if they wish to continue any existing
-              sessions.
-            </para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
+          <varlistentry>
+            <term>-d, --debug</term>
+            <listitem>
+              <para>
+                Debugging output
+              </para>
+            </listitem>
+          </varlistentry>
 
-    <sect2 id="gdmdynamiccommandline">
-      <title><command>gdmdynamic</command> Command Line Options</title>
+          <varlistentry>
+            <term>-a, --authenticate</term>
+            <listitem>
+              <para>
+                Authenticate before running --command
+              </para>
+            </listitem>
+          </varlistentry>
 
-      <para>
-       The <command>gdmdynamic</command> command which creates, runs, and
-       removes displays (X servers) on demand.
-      </para>
+          <varlistentry>
+            <term>-s, --startnew</term>
+            <listitem>
+              <para>
+                Starts a new flexible server without displaying a dialog
+                asking the user if they wish to continue any existing
+                sessions.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
 
-      <para>
-      Some environments need the ability to tell GDM to create and manage new
-      displays on the fly, where it is not possible to list the possible
-      displays in gdm.conf. The <command>gdmdynamic</command> command can be
-      used to create a new display on a particular display number, run all
-      newly created displays, or remove a display. The gdmdynamic command
-      can also be used to list all attached displays, or only attached
-      displays that match a pattern.
-      </para>
-
-      <variablelist>
+      <sect3 id="gdmdynamiccommandline">
         <title><command>gdmdynamic</command> Command Line Options</title>
 
-        <varlistentry>
-	  <term></term>
-	  <listitem>
-	  <para><emphasis>
-	    One of the following options can be used per instance:
-	    </emphasis></para>
-	  </listitem>
-        </varlistentry>
+        <para>
+         The <command>gdmdynamic</command> command which creates, runs, and
+         removes displays (X servers) on demand.
+        </para>
 
-        <varlistentry>
-          <term>-a display=server</term>
-          <listitem>
-            <para>
-            Add a new display configuration. For example,
-            <command>"-a 2=StandardServerTwo"</command>
-            <command>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</command>
-            </para>
-          </listitem>
-        </varlistentry>
+        <para>
+        Some environments need the ability to tell GDM to create and manage new
+        displays on the fly, where it is not possible to list the possible
+        displays in gdm.conf. The <command>gdmdynamic</command> command can be
+        used to create a new display on a particular display number, run all
+        newly created displays, or remove a display. The gdmdynamic command
+        can also be used to list all attached displays, or only attached
+        displays that match a pattern.
+        </para>
 
-        <varlistentry>
-          <term>-r</term>
-          <listitem>
-            <para>
-            Release (run) all displays waiting in the DISPLAY_CONFIG state.
-            </para>
-          </listitem>
-        </varlistentry>
+        <variablelist>
+          <title><command>gdmdynamic</command> Command Line Options</title>
 
-        <varlistentry>
-          <term>-d display</term>
-          <listitem>
-            <para>
-            Delete a display, killing the X server and purging the
-            display configuration. For example, "-d 3".
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term></term>
+            <listitem>
+            <para><emphasis>
+              One of the following options can be used per instance:
+              </emphasis></para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-l [pattern]</term>
-          <listitem>
-            <para>
-            List displays via the ATTACHED_SERVERS command. Without a pattern
-            lists all attached displays. With a pattern will match using glob
-            characters '*', '?', and '[]'. For example:
-            <command>"-l Standard*"</command>
-            <command>"-l *Xorg*"</command>
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-a display=server</term>
+            <listitem>
+              <para>
+              Add a new display configuration. For example,
+              <command>"-a 2=StandardServerTwo"</command>
+              <command>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</command>
+              </para>
+            </listitem>
+          </varlistentry>
 
-	<varlistentry>
-	  <term></term>
-	  <listitem>
-	  <para><emphasis>
-            These options can be added to the above:
-	    </emphasis></para>
-	  </listitem>
-	</varlistentry>
+          <varlistentry>
+            <term>-r</term>
+            <listitem>
+              <para>
+              Release (run) all displays waiting in the DISPLAY_CONFIG state.
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>-v</term>
-          <listitem>
-            <para>
-            Verbose mode. Prinr diagnostic messages about each message sent
-            to GDM.
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-d display</term>
+            <listitem>
+              <para>
+              Delete a display, killing the X server and purging the
+              display configuration. For example, "-d 3".
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>-l [pattern]</term>
+            <listitem>
+              <para>
+              List displays via the ATTACHED_SERVERS command. Without a pattern
+              lists all attached displays. With a pattern will match using glob
+              characters '*', '?', and '[]'. For example:
+              <command>"-l Standard*"</command>
+              <command>"-l *Xorg*"</command>
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term></term>
+            <listitem>
+            <para><emphasis>
+              These options can be added to the above:
+              </emphasis></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>-v</term>
+            <listitem>
+              <para>
+              Verbose mode. Prinr diagnostic messages about each message sent
+              to GDM.
+              </para>
+            </listitem>
+          </varlistentry>
         
-        <varlistentry>
-          <term>-b</term>
-          <listitem>
-            <para>
-            Background mode. Fork child to do the work and return immediately.
-            </para>
-          </listitem>
-        </varlistentry>
-        
-      </variablelist>
-    </sect2>
+          <varlistentry>
+            <term>-b</term>
+            <listitem>
+              <para>
+              Background mode. Fork child to do the work and return immediately.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
 
-    <sect2 id="gdmphotosetupcommandline">
-      <title><command>gdmphotosetup</command> Command Line Options</title>
+      <sect3 id="gdmphotosetupcommandline">
+        <title><command>gdmphotosetup</command> Command Line Options</title>
 
-      <para>
-       Allows the user to select an image that will be used as the user's
-       photo by GDM's face browser, if enabled by GDM.  The selected file
-       is stored as ~/.face.  This command accepts standard GNOME options.
-      </para>
-    </sect2>
+        <para>
+         Allows the user to select an image that will be used as the user's
+         photo by GDM's face browser, if enabled by GDM.  The selected file
+         is stored as ~/.face.  This command accepts standard GNOME options.
+        </para>
+      </sect3>
 
-    <sect2 id="gdmthemetestercommandline">
-      <title><command>gdmthemetester</command> Command Line Options</title>
+      <sect3 id="gdmthemetestercommandline">
+        <title><command>gdmthemetester</command> Command Line Options</title>
 
-      <para>
-       <command>gdmthemetester</command> takes two parameters.  The first
-       parameter specifies the environment and the second parameter
-       specifies the path name or the name of a theme to view.
+        <para>
+         <command>gdmthemetester</command> takes two parameters.  The first
+         parameter specifies the environment and the second parameter
+         specifies the path name or the name of a theme to view.
 
-       This is a tool for viewing a theme outside of GDM.  It is useful for
-       testing or viewing themes.  <command>gdmthemetester</command> requires
-       that the system support <command>gdmXnest</command>.
+         This is a tool for viewing a theme outside of GDM.  It is useful for
+         testing or viewing themes.  <command>gdmthemetester</command> requires
+         that the system support <command>gdmXnest</command>.
 
-       Note that themes can display differently depending on the theme's
-       "Show mode".  <command>gdmthemetester</command> allows viewing the
-       themes in different modes via the environment option.  Valid
-       environment values and their meanings follow:
+         Note that themes can display differently depending on the theme's
+         "Show mode".  <command>gdmthemetester</command> allows viewing the
+         themes in different modes via the environment option.  Valid
+         environment values and their meanings follow:
 
-       <screen>
+         <screen>
 console       - In console mode.
 console-timed - In console non-flexi mode.
 flexi         - In flexi mode.
 xdmcp         - In remote (XDMCP) mode.
 remote-flexi  - In remote (XDMCP) &amp; flexi mode.
-       </screen>
-      </para>
+         </screen>
+        </para>
+      </sect3>
     </sect2>
-  </sect1>
 
-  <sect1 id="sbindir_binaries">
-    <title>GDM Commands in EXPANDED_SBINDIR</title>
-
-    <para>
-      The GDM package provides the following different commands in
-      EXPANDED_SBINDIR intended to be used by the root user:
-    </para>
-
-    <sect2 id="gdmcommandline">
-      <title><command>gdm</command> and <command>gdm-binary</command>
-             Command Line Options</title>
+    <sect2 id="sbindir_binaries">
+      <title>GDM Root User Commands</title>
 
       <para>
-        The <command>gdm</command> command is really just a script which
-        runs the <command>gdm-binary</command>, passing along any options.
-        Before launching <command>gdm-binary</command>, the gdm wrapper script
-	will source the <filename>&lt;etc&gt;/profile</filename> file to set the
-	standard system environment variables.  In order to better support
-        internationalization, it will also set the LC_MESSAGES environment
-        variable to LANG if neither LC_MESSAGES or LC_ALL are set.  If you
-        really need to set some additional environment before launching GDM,
-        you can do so in this script.
+        The GDM package provides the following different commands in
+        EXPANDED_SBINDIR intended to be used by the root user:
       </para>
 
-      <variablelist>
+      <sect3 id="gdmcommandline">
         <title><command>gdm</command> and <command>gdm-binary</command>
                Command Line Options</title>
 
-        <varlistentry>
-          <term>--help</term>
-          <listitem>
-            <para>
-              Gives a brief overview of the command line options.
-            </para>
-          </listitem>
-        </varlistentry>
+        <para>
+          The <command>gdm</command> command is really just a script which
+          runs the <command>gdm-binary</command>, passing along any options.
+          Before launching <command>gdm-binary</command>, the gdm wrapper script
+          will source the <filename>&lt;etc&gt;/profile</filename> file to set 
+          the standard system environment variables.  In order to better support
+          internationalization, it will also set the LC_MESSAGES environment
+          variable to LANG if neither LC_MESSAGES or LC_ALL are set.  If you
+          really need to set some additional environment before launching GDM,
+          you can do so in this script.
+        </para>
 
-        <varlistentry>
-          <term>-nodaemon</term>
-          <listitem>
-            <para>
-              If this option is specified, then GDM does not fork into the
-              background when run.  You can use just a single dash with this
-              option to preserve compatibility with XDM.
-            </para>
-          </listitem>
-        </varlistentry>
+        <variablelist>
+          <title><command>gdm</command> and <command>gdm-binary</command>
+                 Command Line Options</title>
 
-        <varlistentry>
-          <term>--no-console</term>
-          <listitem>
-            <para>
-              Tell the daemon that it should not run anything on the console.
-              This means that none of the local servers from the
-              <filename>[servers]</filename> section will be run, and the
-              console will not be used for communicating errors to the user.
-              An empty <filename>[servers]</filename> section automatically
-              implies this option.
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>--help</term>
+            <listitem>
+              <para>
+                Gives a brief overview of the command line options.
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>--config=CONFIGFILE</term>
-          <listitem>
-            <para>
-              Specify an alternative configuration file.
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>-nodaemon</term>
+            <listitem>
+              <para>
+                If this option is specified, then GDM does not fork into the
+                background when run.  You can use just a single dash with this
+                option to preserve compatibility with XDM.
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>--preserve-ld-vars</term>
-          <listitem>
-            <para>
-              When clearing the environment internally, preserve all variables
-              starting with LD_.  This is mostly for debugging purposes.
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>--no-console</term>
+            <listitem>
+              <para>
+                Tell the daemon that it should not run anything on the console.
+                This means that none of the local servers from the
+                <filename>[servers]</filename> section will be run, and the
+                console will not be used for communicating errors to the user.
+                An empty <filename>[servers]</filename> section automatically
+                implies this option.
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>--version</term>
-          <listitem>
-            <para>
-              Print the version of the GDM daemon.
-            </para>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term>--config=CONFIGFILE</term>
+            <listitem>
+              <para>
+                Specify an alternative configuration file.
+              </para>
+            </listitem>
+          </varlistentry>
 
-        <varlistentry>
-          <term>--wait-for-go</term>
-          <listitem>
-            <para>
-              If started with this option, gdm will init, but only start the
-              first local display and then wait for a GO message in the fifo
-              protocol.  No greeter will be shown until the GO message is
-              sent.  Also flexiserver requests will be denied and XDMCP will
-              not be started until GO is given.  This is useful for
-              initialization scripts which wish to start X early, but where
-              you don't yet want the user to start logging in.  So the script
-              would send the GO to the fifo once it is ready and GDM will
-              then continue.  This functionality was added in version 2.5.90.0.
-            </para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
+          <varlistentry>
+            <term>--preserve-ld-vars</term>
+            <listitem>
+              <para>
+                When clearing the environment internally, preserve all variables
+                starting with LD_.  This is mostly for debugging purposes.
+              </para>
+            </listitem>
+          </varlistentry>
 
-    <sect2 id="gdmsetupcommandline">
-      <title><command>gdmsetup</command> Command Line Options</title>
+          <varlistentry>
+            <term>--version</term>
+            <listitem>
+              <para>
+                Print the version of the GDM daemon.
+              </para>
+            </listitem>
+          </varlistentry>
 
-      <para>
-       <command>gdmsetup</command> runs a graphical application for modifying the
-       GDM configuration file, gdm.conf.  Normally on systems that support the
-       PAM userhelper, this is setup such that when you run
-       <command>gdmsetup</command> as an ordinary user, it will first
-       ask you for your root password before starting.  Otherwise, this
-       application may only be run as root.  This application supports standard
-       GNOME options.
-      </para>
+          <varlistentry>
+            <term>--wait-for-go</term>
+            <listitem>
+              <para>
+                If started with this option, gdm will init, but only start the
+                first local display and then wait for a GO message in the fifo
+                protocol.  No greeter will be shown until the GO message is
+                sent.  Also flexiserver requests will be denied and XDMCP will
+                not be started until GO is given.  This is useful for
+                initialization scripts which wish to start X early, but where
+                you don't yet want the user to start logging in.  So the script
+                would send the GO to the fifo once it is ready and GDM will
+                then continue.  This functionality was added in version
+                2.5.90.0.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
 
-      <variablelist>
+      <sect3 id="gdmsetupcommandline">
         <title><command>gdmsetup</command> Command Line Options</title>
 
-        <varlistentry>
-          <term>--config=CONFIGFILE</term>
-          <listitem>
-            <para>
-              Specify an alternative configuration file.  By default, 
-              <command>gdmsetup</command> will edit the same configuration
-              file being used by the GDM daemon. 
-            </para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+        <para>
+         <command>gdmsetup</command> runs a graphical application for modifying
+         the GDM configuration file, gdm.conf.  Normally on systems that support
+         the PAM userhelper, this is setup such that when you run
+         <command>gdmsetup</command> as an ordinary user, it will first
+         ask you for your root password before starting.  Otherwise, this
+         application may only be run as root.  This application supports
+         standard GNOME options.
+        </para>
+
+        <variablelist>
+          <title><command>gdmsetup</command> Command Line Options</title>
+
+          <varlistentry>
+            <term>--config=CONFIGFILE</term>
+            <listitem>
+              <para>
+                Specify an alternative configuration file.  By default, 
+                <command>gdmsetup</command> will edit the same configuration
+                file being used by the GDM daemon. 
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
+
+      <sect3 id="gdmrestartcommandline">
+        <title><command>gdm-restart</command> Command Line Options</title>
+
+        <para>
+          <command>gdm-restart</command> stops and restarts GDM by sending
+          the GDM daemon a HUP signal.  This command will immediately terminate
+          all sessions and log out users currently logged in with GDM.
+        </para>
+      </sect3>
+
+      <sect3 id="gdmsaferestartcommandline">
+        <title><command>gdm-safe-restart</command> Command Line Options</title>
+  
+        <para>
+          <command>gdm-safe-restart</command> stops and restarts GDM by
+          sending the GDM daemon a USR1 signal.  GDM will be restarted as soon
+          as all users log out.
+        </para>
+      </sect3>
+
+      <sect3 id="gdmstopcommandline">
+        <title><command>gdm-stop</command> Command Line Options</title>
+
+        <para>
+          <command>gdm-stop</command> stops GDM by sending the GDM daemon
+          a TERM signal. 
+        </para>
+      </sect3>
     </sect2>
 
-    <sect2 id="gdmrestartcommandline">
-      <title><command>gdm-restart</command> Command Line Options</title>
+    <sect2 id="libexecdir_binaries">
+      <title>GDM Internal Commands</title>
 
       <para>
-        <command>gdm-restart</command> stops and restarts GDM by sending
-        the GDM daemon a HUP signal.  This command will immediately terminate
-        all sessions and log out users currently logged in with GDM.
-      </para>
-    </sect2>
-
-    <sect2 id="gdmsaferestartcommandline">
-      <title><command>gdm-safe-restart</command> Command Line Options</title>
-
-      <para>
-        <command>gdm-safe-restart</command> stops and restarts GDM by
-        sending the GDM daemon a USR1 signal.  GDM will be restarted as soon
-        as all users log out.
-      </para>
-    </sect2>
-
-    <sect2 id="gdmstopcommandline">
-      <title><command>gdm-stop</command> Command Line Options</title>
-
-      <para>
-        <command>gdm-stop</command> stops GDM by sending the GDM daemon
-        a TERM signal. 
-      </para>
-    </sect2>
-  </sect1>
-
-  <sect1 id="libexecdir_binaries">
-    <title>GDM Commands in EXPANDED_LIBEXECDIR</title>
-
-    <para>
-      The GDM package provides the following different commands in
-      EXPANDED_LIBEXECDIR intended to be used by the gdm daemon process.
-    </para>
-
-    <sect2 id="gdmgreeterlogincommandline">
-      <title><command>gdmchooser</command> and <command>gdmlogin</command>
-             Command Line Options</title>
-
-      <para>
-        The <command>gdmgreeter</command> and <command>gdmlogin</command>
-        are two different login applications, either can be used by GDM.  
-        <command>gdmgreeter</command> is themeable with GDM themes while
-        <command>gdmlogin</command> is themable with GTK+ themes.  These
-        applications are normally executed by the GDM daemon.  Both commands
-        support standard GNOME options. 
-      </para>
-    </sect2>
-
-    <sect2 id="gdmchoosercommandline">
-      <title><command>gdmchooser</command> Command Line Options</title>
-
-      <para>
-        The <command>gdmchooser</command> is the XDMCP chooser application.  
-        The <command>gdmchooser</command> is normally executed by the GDM
-        daemon.  It supports the following options for XDM compatibility.
-        This command supports standard GNOME options and is found in
-        support standard GNOME options.
+        The GDM package provides the following different commands in
+        EXPANDED_LIBEXECDIR intended to be used by the gdm daemon process.
       </para>
 
-      <variablelist>
+      <sect3 id="gdmgreeterlogincommandline">
+        <title><command>gdmchooser</command> and <command>gdmlogin</command>
+               Command Line Options</title>
+
+        <para>
+          The <command>gdmgreeter</command> and <command>gdmlogin</command>
+          are two different login applications, either can be used by GDM.  
+          <command>gdmgreeter</command> is themeable with GDM themes while
+          <command>gdmlogin</command> is themable with GTK+ themes.  These
+          applications are normally executed by the GDM daemon.  Both commands
+          support standard GNOME options. 
+        </para>
+      </sect3>
+
+      <sect3 id="gdmchoosercommandline">
         <title><command>gdmchooser</command> Command Line Options</title>
 
-        <varlistentry>
-          <term>-xdmaddress=SOCKET</term>
-          <listitem>
-           <para>
-               Socket for XDM communication.
-           </para>
-          </listitem>
-        </varlistentry>
+        <para>
+          The <command>gdmchooser</command> is the XDMCP chooser application.  
+          The <command>gdmchooser</command> is normally executed by the GDM
+          daemon.  It supports the following options for XDM compatibility.
+          This command supports standard GNOME options and is found in
+          support standard GNOME options.
+        </para>
 
-        <varlistentry>
-          <term>--clientaddress=ADDRESS</term>
-          <listitem>
-           <para>
-             Client address to return in response to XDM.  This option is for
-             running gdmchooser with XDM, and is not used within GDM.
-           </para>
-          </listitem>
-        </varlistentry>
+        <variablelist>
+          <title><command>gdmchooser</command> Command Line Options</title>
 
-        <varlistentry>
-          <term>-connectionType=TYPE</term>
-          <listitem>
-           <para>
-             Connection type to return in response to XDM.  This option is for
-             running gdmchooser with XDM, and is not used within GDM.
-           </para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+          <varlistentry>
+            <term>-xdmaddress=SOCKET</term>
+            <listitem>
+             <para>
+                 Socket for XDM communication.
+             </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>--clientaddress=ADDRESS</term>
+            <listitem>
+             <para>
+               Client address to return in response to XDM.  This option is for
+               running gdmchooser with XDM, and is not used within GDM.
+             </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>-connectionType=TYPE</term>
+            <listitem>
+             <para>
+               Connection type to return in response to XDM.  This option is for
+               running gdmchooser with XDM, and is not used within GDM.
+             </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
     </sect2>
   </sect1>
 
@@ -4547,7 +4553,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
       This section describes the creation of themes for the Themed
       Greeter.  For examples including screenshots, see the standard installed
       themes and the themes from
-      <ulink type="http" url="http://art.gnome.org/themes/gdm_greeter/index.php">
+      <ulink type="http" url="http://art.gnome.org/themes/gdm_greeter/">
       the theme website</ulink>.
     </para>
 
@@ -5406,29 +5412,29 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
     <title>Solaris Specific Features</title>
 
     <para>
-	GDM supports a few features specific to Solaris, as follows:
+        GDM supports a few features specific to Solaris, as follows:
     </para>
 
     <para>
-	GDM supports Solaris Auditing if running on Solaris 10 or higher.
+        GDM supports Solaris Auditing if running on Solaris 10 or higher.
     </para>
 
     <para>
-	GDM supports a security feature which causes the Xserver to run as
-	the user instead of as the root user.  GDM must be using PAM for
-	this feature to be enabled, which is the normal case for Solaris.
-	This second feature has the side-effect of causing the Xserver to
-	always restart between sessions, which disables the
-	AlwaysRestartServer gdm.conf configuration option.  
+        GDM supports a security feature which causes the Xserver to run as
+        the user instead of as the root user.  GDM must be using PAM for
+        this feature to be enabled, which is the normal case for Solaris.
+        This second feature has the side-effect of causing the Xserver to
+        always restart between sessions, which disables the
+        AlwaysRestartServer gdm.conf configuration option.  
     </para>
 
     <para>
-	Solaris supports the <filename>/etc/default/login</filename>
-	interface, which affects the <filename>DefaultPath</filename>,
-	<filename>RootPath</filename>,
-	<filename>PasswordRequired</filename>, and
-	<filename>AllowRemoteRoot</filename> options as described in the
-	Configuration section.
+        Solaris supports the <filename>/etc/default/login</filename>
+        interface, which affects the <filename>DefaultPath</filename>,
+        <filename>RootPath</filename>,
+        <filename>PasswordRequired</filename>, and
+        <filename>AllowRemoteRoot</filename> options as described in the
+        Configuration section.
     </para>
 
   </sect1>

@@ -310,7 +310,8 @@ run_logged_in_dialogue (char **vec)
 	gint response;
 
 	if (startnew == TRUE) {
-		response = RESPONSE_OPEN_NEW_DISPLAY;
+		/* Just return if the user doesn't want to see the dialog */
+		return;
 	} else {
 		dialog = gtk_dialog_new_with_buttons (_("Open Displays"),
 					      NULL /* parent */,
@@ -376,6 +377,7 @@ run_again:
 	switch (response) {
 	case RESPONSE_OPEN_NEW_DISPLAY:
 		gtk_widget_destroy (dialog);
+
 		/* just continue what you are doing */
 		return;
 
@@ -392,18 +394,24 @@ run_again:
 			/* we switched to a different screen as a result of this,
 			 * lock the current screen */
 			if ( ! no_lock && vt != get_cur_vt () && vt >= 0) {
-				char *argv[3] = {"xscreensaver-command", "-lock", NULL};
-				if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
+				char *argv[3] = {"xscreensaver-command",
+					"-lock", NULL};
+
+				if (gnome_execute_async (g_get_home_dir (),
+				    2, argv) < 0)
 					g_warning (_("Can't lock screen"));
+
 				argv[1] = "-throttle";
-				if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
+
+				if (gnome_execute_async (g_get_home_dir (),
+				    2, argv) < 0)
 					g_warning (_("Can't disable xscreensaver display hacks"));
 			}
 
 			change_vt (vt);
 
-			/* FIXME: wait + disturb the pointer (need SUP?), perhaps
-			 * part of the sup command to CHVT ?? */
+			/* FIXME: wait + disturb the pointer (need SUP?), 
+			 * perhaps part of the sup command to CHVT ?? */
 
 			exit (0);
 		} else {
