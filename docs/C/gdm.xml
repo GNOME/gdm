@@ -425,14 +425,116 @@
       </para>
     </sect2>
 
+    <sect2 id="facebrowser">
+      <title>The GDM Face Browser</title>
+
+      <para>
+        GDM supports a face browser which will display a list of users who
+        can login and an icon for each user.  This feature can be used with
+        the GTK+ Greeter if the <filename>Browser</filename> configuration
+        option is set to &quot;true&quot;.  This feature can be used with
+        the Themed Greeter if using a GDM theme which includes a
+        &quot;userlist&quot; item type is defined, such as
+        &quot;happygnome-list&quot;
+      </para>
+
+      <para>
+        By default, the face browser is disabled since revealing usernames on
+        the login screen is not appropriate on many systems for security
+        reasons and since GDM requires some setup to specify which users
+        should be visible.  Setup can be done on the &quot;Users&quot; tab
+        in <command>gdmsetup</command>.  This feature is most practical to use
+        on a system with a small number of users.
+      </para>
+
+      <para>
+        The icons used by GDM can be installed globally by the sysadmin or can
+        be located in the users' home directories.  If installed globally
+        they should be in the <filename>&lt;share&gt;/pixmaps/faces/</filename>
+        directory (though this can be configured with the
+        <filename>GlobalFaceDir</filename> configuration option) and the
+        filename should be the name of the user, optionally with a
+        <filename>.png</filename> appended.  Face icons placed in the global
+        face directory must be readable to the GDM user.  However, the daemon,
+        proxies user pictures to the greeter and thus those don't have be be
+        readable by the GDM user, but root.
+      </para>
+
+      <para>
+        Users may run the <command>gdmphotosetup</command> command to 
+        configure the image to use for their userid.  This program properly
+        scales the file down if it is larger than the
+        <filename>MaxIconWidth</filename> or 
+        <filename>MaxIconHeight</filename> configuration options and places the
+        icon in a file called <filename>~/.face</filename>.  Although
+        <command>gdmphotosetup</command> scales user images automatically,
+        this does not guarantee that user images are properly scaled since
+        a user may create their <filename>~/.face</filename> file by hand.
+      </para>
+        
+      <para>
+        GDM will first look for the user's face image in
+        <filename>~/.face</filename>.  If not found, it will try 
+        <filename>~/.face.icon</filename>.  If still not found, it will
+        use the value defined for "face/picture=" in the 
+        <filename>~/.gnome2/gdm</filename> file.  Lastly, it will try
+        <filename>~/.gnome2/photo</filename> and 
+        <filename>~/.gnome/photo</filename> which are deprecated and
+        supported for backwards compatibility.
+      </para>
+
+      <para>
+        If a user has no defined face image, GDM will use the "stock_person"
+        icon defined in the current GTK+ theme.  If no such image is defined,
+        it will fallback to the iamge specified in the
+        <filename>DefaultFace</filename> configuration option, normally
+        /usr/share/pixmaps/nobody.png.
+      </para>
+      
+      <para>
+        Please note that loading and scaling face icons located in user home
+        directories can be a very time consuming task.  Since it not 
+        practical to load images over NIS or NFS, GDM does not attempt to
+        load face images from remote home directories.  Furthermore, GDM will
+        give up loading face images after 5 seconds of activity and will
+        only display the users whose pictures it has gotten so far.  The
+        <filename>gdm.conf</filename> <filename>Include</filename> option
+        can be used to specify a set of users who should appear on the
+        face browser.  As long as the users to include is of a reasonable
+        size, there should not be a problem with GDM being unable to access
+        the face images.
+      </para>
+
+      <para>
+        To control the users who get displayed in the face browser, there are
+        a number of configuration options that can be used.  If the
+        <filename>IncludeAll</filename> option is set to true, then the
+        password file will be scanned and all users will be displayed.  If
+        <filename>IncludeAll</filename> option is set to false, then the
+        <filename>Include</filename> option should contain a list of users
+        separated by commas.  Only the users specified will be displayed.
+        Any user listed in the <filename>Exclude</filename> option and users
+        whose UID's is lower than <filename>MinimalUID</filename> will be
+        filtered out regardless of the <filename>IncludeAll</filename>
+        setting.
+      </para>
+
+      <para>
+        When the browser is turned on, valid usernames on the computer are
+        inherently exposed to a potential intruder.  This may be a bad idea if
+        you don't know who can get to a login screen.  This is especially true
+        if you run XDMCP (turned off by default).  However you should never
+        run XDMCP on an open network anyway.
+      </para>
+    </sect2>
+
     <sect2 id="stdgreeter">
       <title>The GTK+ Greeter</title>
 
       <para>
         The GTK+ Greeter is the default graphical user interface that is
         presented to the user. The greeter contains a menu at the top, an
-        optional face browser, an optional logo and a text entry
-        widget.
+        optional face browser, an optional logo and a text entry widget.
       </para>
 
       <para>
@@ -451,61 +553,6 @@
         locale/language and optionally shutdown/reboot/suspend the computer,
         configure GDM (given the user knows the root password), change
         the GTK+ theme, or start an XDMCP chooser.
-      </para>
-
-      <para>
-        Optionally the greeter can provide a face browser containing icons for
-        all the users on a system. The icons can be installed globally by the
-        sysadmin or in the users' home directories.  If installed globally
-        they should be in the <filename>&lt;share&gt;/pixmaps/faces/</filename>
-        directory (though this can be configured with the
-        <filename>GlobalFaceDir</filename>
-        configuration option) and the filename should be the name of the user,
-        optionally with a <filename>.png</filename> appended.
-      </para>
-
-      <para>
-        The users can place their icons in a file called
-        <filename>~/.face</filename>, and they can use the command
-        <command>gdmphotosetup</command> to graphically configure this.
-      </para>
-        
-      <para>
-        Face icons placed in the global face directory must be readable to
-        the GDM user.  However, the daemon, proxies user pictures to the
-        greeter and thus those don't have be be readable by the GDM user, but
-        root.
-      </para>
-
-      <para>
-        Please note that loading and scaling face icons located in user home
-        directories can be a very time consuming task.  Especially on large
-        systems or systems running NIS. The browser feature is only intended
-        for systems with relatively few users.  Also if home directories are
-        on an on demand mounted filesystem like AFS, then GDM may mount all
-        the home directories just to check for pictures if the face browser is
-        on.  GDM will try to give up after 5 seconds of activity however and
-        only display the users whose pictures it has gotten so far.
-      </para>
-
-      <para>
-        To control the faces that get displayed, there are a number of 
-        configuration options that can be used.  If the
-        <filename>Include</filename> option contains a list of users
-        separated by commas, then only the specified users will be displayed.
-        If the <filename>IncludeAll</filename> option is set to true, then
-        the password file will be scanned and all users will be displayed.
-        Any user listed in the <filename>Exclude</filename> option and users
-        whose UID's is lower than <filename>MinimalUID</filename> will be
-        filtered out.
-      </para>
-
-      <para>
-        When the browser is turned on, valid usernames on the computer are
-        inherently exposed to a potential intruder.  This may be a bad idea if
-        you don't know who can get to a login screen.  This is especially true
-        if you run XDMCP.  However you should never run XDMCP on an open
-        network anyway.
       </para>
 
       <para>
@@ -2485,10 +2532,12 @@ XKeepsCrashing
             <listitem>
               <synopsis>DefaultFace=&lt;share&gt;/pixmaps/nophoto.png</synopsis>
               <para>
-                Default icon file for users without a personal picture
-                in <filename>~/gnome/photo</filename>. The image must be
-                in an gdk-pixbuf supported format and the file must be
-                readable for the GDM user.
+                If a user has no defined face image, GDM will use the
+                "stock_person" icon defined in the current GTK+ theme.  If no
+                such image is defined, the image specified by 
+                <filename>DefaultFace</filename> will be used.  The image must
+                be in an gdk-pixbuf supported format and the file must be
+                readable to the GDM user.
               </para>
             </listitem>
           </varlistentry>
