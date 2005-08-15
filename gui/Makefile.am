@@ -198,7 +198,7 @@ gdmdynamic_LDADD = 		\
 	-L$(top_builddir)/vicious-extensions \
 	-lviciousui-gnome
 
-Settingsdir = $(datadir)/gnome/capplets
+Settingsdir = $(datadir)/applications
 Settings_files = gdmphotosetup.desktop
 Settings_in_files = gdmphotosetup.desktop.in
 Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
