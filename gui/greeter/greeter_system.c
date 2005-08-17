@@ -317,6 +317,9 @@ greeter_system_handler (GreeterItemInfo *info,
 	  restart_radio = gtk_radio_button_new_with_mnemonic (radio_group,
 							     _("_Reboot the computer"));
 	  group_radio = restart_radio;
+	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (restart_radio),
+				_("Reboot your computer"),
+				NULL);
 	  g_signal_connect(G_OBJECT(restart_radio), "button_press_event",
 			   G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
@@ -331,6 +334,9 @@ greeter_system_handler (GreeterItemInfo *info,
 	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
 							      _("Sus_pend the computer"));
 	  group_radio = suspend_radio;
+	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (suspend_radio),
+				_("Suspend your computer"),
+				NULL);
 	  g_signal_connect(G_OBJECT(suspend_radio), "button_press_event",
 			   G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
