@@ -1,5 +1,37 @@
 Ahh news...
 
+2.8.0.3 stuff:
+
+- The GDM website has moved to a new location
+  http://www.gnome.org/projects/gdm/, and the GDM
+  mail alias has moved from gdm@sunsite.dk to 
+  gdm-list@gnome.org.  README, and GDM docs updated
+  with the new information and corrected broken link
+  to the GDM Theme section at http://art.gnome.org/
+  (Brian Cameron)
+
+- Installation location of gdmphotosetup.desktop 
+  has moved from the deprecated /usr/share/gnome/capplets
+  to /usr/share/applications (Mark McLoughlin/Brian
+  Cameron)
+
+- Honor default session when logging in via autologin.
+  (Hans Petter Jansson).
+
+- Removed spaces in locale name since it caused GDM
+  to discard the locales.  (Frederic Crozat)
+
+- Added missing tooltips (Rodrigo Moya)
+
+- Corrected reading of configuration file in
+  gdmflexiserver so it works.  Fixes corrupted 
+  Session selection dialog presented to user.
+  (Brian Cameron)
+
+- Correct use-after-free with the dynamic session in 
+  the sessions list, corrects tooltip corruption.
+  (Joe Marcus Clarke)
+
 2.8.0.2 stuff:
 
 - GDM now supports more dynamic configuration.  The
@@ -27,7 +59,7 @@ Ahh news...
   and RemoteWelcome.  If using an old gdm.conf (older
   than 2.8.0.0) file that does not have settings for
   DefaultWelcome and/or DefaultRemoteWelcome, GDM will
-  now continue to work as it did before 2.8.0.0.  
+  now continue to work as it did before 2.8.0.0.
   (Brian Cameron)
 
 - Usability improvements to gdmsetup.  "Face Browser"
