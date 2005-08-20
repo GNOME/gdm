@@ -149,6 +149,7 @@ gchar *GdmGtkRC = NULL;
 gchar *GdmGtkTheme = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmXsession = NULL;
+gchar *GdmDefaultSession = NULL;
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
 gboolean GdmAlwaysRestartServer = FALSE;
@@ -463,6 +464,7 @@ gdm_config_parse (void)
 	    GdmXsession = g_build_filename (EXPANDED_SYSCONFDIR,
 					    "gdm", "Xsession", NULL);
     }
+    GdmDefaultSession = ve_config_get_string (cfg, GDM_KEY_DEFAULTSESSION);
     GdmSuspend = ve_config_get_string (cfg, GDM_KEY_SUSPEND);
     GdmUser = ve_config_get_string (cfg, GDM_KEY_USER);
     GdmUserAuthDir = ve_config_get_string (cfg, GDM_KEY_UAUTHDIR);
@@ -4262,6 +4264,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFILE, GdmUserAuthFile)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFB, GdmUserAuthFB)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SESSDIR, GdmSessDir)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_DEFAULTSESSION, GdmDefaultSession)) &&
 #ifdef ENABLE_IPV6
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_MULTICAST_ADDR, GdmMulticastAddr)) &&
 #endif

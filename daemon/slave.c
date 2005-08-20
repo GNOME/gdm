@@ -3421,7 +3421,12 @@ find_a_session (void)
 	int i;
 	char *session;
 
-	session = NULL;
+	if (!ve_string_empty (GdmDefaultSession) &&
+	    is_session_ok (GdmDefaultSession))
+		session = g_strdup (GdmDefaultSession);
+	else
+		session = NULL;
+
 	for (i = 0; try[i] != NULL && session == NULL; i ++) {
 		if (is_session_ok (try[i]))
 			session = g_strdup (try[i]);
