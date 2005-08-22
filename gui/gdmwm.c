@@ -35,7 +35,9 @@
 #include <syslog.h>
 #include "gdmwm.h"
 #include "gdm.h"
+#include "gdmcommon.h"
 #include "vicious.h"
+#include "ve-miscui.h"
 
 typedef struct _GdmWindow GdmWindow;
 struct _GdmWindow {
