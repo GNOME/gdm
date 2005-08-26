@@ -333,9 +333,8 @@ greeter_item_pam_leftover_messages (void)
 				   GTK_DIALOG_MODAL /* flags */,
 				   GTK_MESSAGE_INFO,
 				   GTK_BUTTONS_OK,
-				   FALSE /* markup */,
 				   oldtext,
-				   /* avoid warning */ "%s", "");
+				   "");
 	  gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 	  gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 	  gdm_wm_center_window (GTK_WINDOW (dlg));

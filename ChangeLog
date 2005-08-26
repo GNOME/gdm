@@ -1,3 +1,42 @@
+2005-08-20  Dennis Cranston  <dennis_cranston@yahoo.com>
+
+	* gui/gdmXnestchooser.c: (main):
+	* gui/gdmchooser.c: (gdm_chooser_decode_packet), (add_check),
+	  (gdm_chooser_add_host), (main):
+	* gui/gdmcomm.c: (gdmcomm_check):
+	* gui/gdmcommon.h:
+	* gui/gdmflexiserver.c: (change_vt), (main):
+	* gui/gdmlogin.c: (back_prog_run), (gdm_login_restart_handler),
+	  (gdm_login_halt_handler), (gdm_login_suspend_handler),
+	  (gdm_login_session_lookup), (gdm_login_language_lookup),
+	  (gdm_login_ctrl_handler), (main):
+	* gui/gdmphotosetup.c: (set_face_from_filename):
+	* gui/gdmsetup.c: (update_greeters), (root_not_allowed),
+	  (theme_install_response), (delete_theme), (main):
+	* gui/gdmwm.c: (gdm_common_message), (gdm_common_query),
+	  (gdm_common_warn):
+	* gui/greeter/greeter.c: (greeter_ctrl_handler),
+	  (verify_gdm_version), (main):
+	* gui/greeter/greeter_action_language.c:
+	  (greeter_langauge_initialize_model),
+	  (greeter_language_get_language), (greeter_action_language):
+	* gui/greeter/greeter_item_pam.c:
+	  (greeter_item_pam_leftover_messages):
+	* gui/greeter/greeter_session.c: (greeter_session_lookup),
+	  (greeter_session_init):
+	* gui/greeter/greeter_system.c: (query_greeter_restart_handler),
+	  (query_greeter_halt_handler), (query_greeter_suspend_handler):
+	* vicious-extensions/glade-helper.c: (glade_helper_bad_interface),
+	  (glade_helper_bad_columns), (glade_helper_no_interface):
+	* vicious-extensions/ve-miscui.c: (ve_hig_dialog_new):
+	* vicious-extensions/ve-miscui.h:
+
+	GNOME HIG fixes for the Language, Session and Message dialogs.
+	Modified the ve_hig_dialog_new() function to use
+	gtk_message_dialog_new() now that it supports both primary and
+	secondary text.  Changed the shutdown, reboot, and suspend
+	dialogs to type GTK_MESSAGE_WARNING.
+
 2005-08-22  Rodrigo Moya <rodrigo@novell.com>
 
 	* gui/gdmwm.c: added missing includes for clean 64 bit compilation.

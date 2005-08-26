@@ -61,7 +61,7 @@ greeter_langauge_initialize_model (void)
 
   gtk_list_store_append (lang_model, &iter);
   gtk_list_store_set (lang_model, &iter,
-		      TRANSLATED_NAME_COLUMN, _("Last"),
+		      TRANSLATED_NAME_COLUMN, _("Last Language"),
 		      UNTRANSLATED_NAME_COLUMN, NULL,
 		      LOCALE_COLUMN, LAST_LANGUAGE,
 		      -1);
@@ -132,7 +132,8 @@ greeter_language_get_language (const char *old_language)
       /* User's saved language is not the chosen one */
       if (strcmp (old_language, retval) != 0)
 	{
-	  gchar *msg;
+	  gchar *primary_message;
+	  gchar *secondary_message;
 	  char *current_name, *saved_name;
 
 	  if (strcmp (current_language, DEFAULT_LANGUAGE) == 0)
@@ -152,14 +153,16 @@ greeter_language_get_language (const char *old_language)
 					TRUE /* untranslated */,
 					TRUE /* markup */);
 
-	  msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
-				   "%s.\nDo you wish to make %s the default for future sessions?"),
-				 current_name, saved_name, current_name);
+	  primary_message = g_strdup_printf (_("Do you wish to make %s the default for future sessions?"),
+	                                     current_name);
+ 	  secondary_message = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
+	                                         "%s."), current_name, saved_name);
 	  g_free (current_name);
 	  g_free (saved_name);
 
-	  savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"), TRUE);
-	  g_free (msg);
+	  savelang = gdm_common_query (primary_message, secondary_message, _("Make _Default"), _("Just For _This Session"), TRUE);
+	  g_free (primary_message);
+	  g_free (secondary_message);
 	}
     }
   else
@@ -208,12 +211,14 @@ greeter_action_language (GreeterItemInfo *info,
 
   if (dialog == NULL)
     {
+      GtkWidget *main_vbox;
+      GtkWidget *button;
       GtkWidget **tmp_p;
       GtkWidget *swindow;
       GtkWidget *label;
       char *s;
 
-      dialog = gtk_dialog_new_with_buttons (_("Select a language"),
+      dialog = gtk_dialog_new_with_buttons (_("Select a Language"),
 #ifdef TODO
 					    GTK_WINDOW (parent_window),
 #endif
@@ -221,25 +226,38 @@ greeter_action_language (GreeterItemInfo *info,
 					    0,
 					    GTK_STOCK_CANCEL,
 					    GTK_RESPONSE_CANCEL,
-					    GTK_STOCK_OK,
-					    GTK_RESPONSE_OK,
 					    NULL);
+					    
+      button = gtk_button_new_with_mnemonic (_("Change _Language"));
+      GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+      gtk_widget_show (button);
+      gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button,
+                                    GTK_RESPONSE_OK);
+					    
       gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+      gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+      gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 
+      main_vbox = gtk_vbox_new (FALSE, 6);
+      gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 5);
+      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+                          main_vbox, TRUE, TRUE, 0);
+  
       gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 				       GTK_RESPONSE_OK);
       /* evil gcc warnings */
       tmp_p = &dialog;
       g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *)tmp_p);
-      s = g_strdup_printf ("<span size=\"x-large\" weight=\"bold\">%s</span>",
-			   _("Select a language for your session to use:"));
-      label = gtk_label_new (s);
+      s = g_strdup (_("_Select the language for your session to use:"));
+      label = gtk_label_new_with_mnemonic (s);
+      gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
       g_free (s);
       gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+      gtk_box_pack_start (GTK_BOX (main_vbox),
 			  label, FALSE, FALSE, 0);
       view = gtk_tree_view_new ();
       gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (view), TRUE);
+      gtk_label_set_mnemonic_widget (GTK_LABEL (label), view);
       /* FIXME: we should handle this better, but things really look
        * bad if we aren't always LTR */
       gtk_widget_set_direction (view, GTK_TEXT_DIR_LTR);
@@ -258,11 +276,12 @@ greeter_action_language (GreeterItemInfo *info,
 					       UNTRANSLATED_NAME_COLUMN,
 					       NULL);
       swindow = gtk_scrolled_window_new (NULL, NULL);
+      gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swindow), GTK_SHADOW_IN);
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swindow),
 				  GTK_POLICY_AUTOMATIC,
 				  GTK_POLICY_AUTOMATIC);
       gtk_container_add (GTK_CONTAINER (swindow), view);
-      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+      gtk_box_pack_start (GTK_BOX (main_vbox),
 			  swindow, TRUE, TRUE, 0);
       gtk_window_set_default_size (GTK_WINDOW (dialog),
 				   MIN (400, gdm_wm_screen.width),
@@ -281,10 +300,15 @@ greeter_action_language (GreeterItemInfo *info,
   gdm_wm_no_login_focus_push ();
   if (view != NULL)
     {
+      GtkTreeSelection *selection;
+	  
       gtk_widget_show_now (dialog);
       greeter_langauge_initialize_model ();
       gtk_tree_view_set_model (GTK_TREE_VIEW (view),
 			       GTK_TREE_MODEL (lang_model));
+      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
+      if (selection != NULL)
+	gtk_tree_selection_select_path (selection, gtk_tree_path_new_first());
     }
   switch (gtk_dialog_run (GTK_DIALOG (dialog)))
     {

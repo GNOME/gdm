@@ -159,20 +159,23 @@ set_face_from_filename (const char *filename)
 	if (gdk_pixbuf_save (pixbuf, photofile, "png", NULL, NULL) != TRUE) {
 		GtkWidget *d;
 		char	  *tmp = g_filename_to_utf8 (photofile, -1, NULL, NULL, NULL);
+		char      *msg;
+		
+		msg = g_strdup_printf (_("File %s cannot be opened for "
+					 "writing."), tmp);
 
 		d = ve_hig_dialog_new (NULL /* parent */,
 				       GTK_DIALOG_MODAL /* flags */,
 				       GTK_MESSAGE_ERROR,
 				       GTK_BUTTONS_OK,
-				       FALSE /* markup */,
 				       _("Cannot open file"),
-				       _("File %s cannot be opened for "
-					 "writing\n"), tmp);
+				       msg);
 
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
 
 		g_free (tmp);
+		g_free (msg);
 	} else {
 		/* Change to g_chmod after glib 2.8 release */
 		chmod (photofile, 0644);

@@ -97,9 +97,8 @@ change_vt (int vt)
 			 GTK_DIALOG_MODAL /* flags */,
 			 GTK_MESSAGE_ERROR,
 			 GTK_BUTTONS_OK,
-			 FALSE /* markup */,
 			 _("Cannot change display"),
-			 "%s", message);
+			 message);
 
 		gtk_widget_show_all (dialog);
 		gtk_dialog_run (GTK_DIALOG (dialog));
@@ -720,10 +719,8 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
 				 _("Cannot communicate with GDM "
 				   "(The GNOME Display Manager)"),
-				 "%s",
 				 _("Perhaps you have an old version "
 				   "of GDM running."));
 			gtk_widget_show_all (dialog);
@@ -749,11 +746,9 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
 				 _("You do not seem to have the "
 				   "authentication needed for this "
 				   "operation"),
-				 "%s",
 				 _("Perhaps your .Xauthority "
 				   "file is not set up correctly."));
 
@@ -778,10 +773,8 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
 				 _("You do not seem to be logged in on the "
 				   "console"),
-				 "%s",
 				 _("Starting a new login only "
 				   "works correctly on the console."));
 			gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
@@ -833,9 +826,8 @@ main (int argc, char *argv[])
 		 GTK_DIALOG_MODAL /* flags */,
 		 GTK_MESSAGE_ERROR,
 		 GTK_BUTTONS_OK,
-		 FALSE /* markup */,
 		 _("Cannot start new display"),
-		 "%s", message);
+		 message);
 
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));

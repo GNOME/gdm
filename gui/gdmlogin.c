@@ -412,15 +412,20 @@ back_prog_run (void)
 			     &error)) {
 			    
 		GtkWidget *dialog;
+		gchar *msg;
+		
+		msg = g_strdup_printf (_("Cannot run command '%s': %s."),
+		                       command,
+		                       error->message);
+					    
 		dialog = ve_hig_dialog_new (NULL,
 					    GTK_DIALOG_MODAL,
 					    GTK_MESSAGE_ERROR,
 					    GTK_BUTTONS_OK,
-					    FALSE,
 					    _("Cannot start background application"),
-					    _("Cannot run command '%s': %s."),
-					    command,
-					    error->message);
+					    msg);
+		g_free (msg);
+		
 		gtk_widget_show_all (dialog);
 		gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -810,8 +815,7 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 static void
 gdm_login_restart_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to restart the computer?"),
-			     FALSE /* markup */,
+	if (gdm_common_warn (_("Are you sure you want to restart the computer?"), "",
 			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog();
 
@@ -824,8 +828,7 @@ gdm_login_restart_handler (void)
 static void
 gdm_login_halt_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to shut down the computer?"),
-			     FALSE /* markup */,
+	if (gdm_common_warn (_("Are you sure you want to shut down the computer?"), "",
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog();
 
@@ -846,8 +849,7 @@ gdm_login_use_chooser_handler (void)
 static void
 gdm_login_suspend_handler (void)
 {
-	if (gdm_common_query (_("Are you sure you want to suspend the computer?"),
-			     FALSE /* markup */,
+	if (gdm_common_warn (_("Are you sure you want to suspend the computer?"), "",
 			     _("_Suspend"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
@@ -1091,19 +1093,22 @@ gdm_login_session_lookup (const gchar* savedsess)
 
 	/* Check if user's saved session exists on this box */
 	if (!gdm_login_list_lookup (sessions, session)) {
-	    gchar *msg;
+	    gchar *firstmsg;
+	    gchar *secondmsg;
 
 	    g_free (session);
 	    session = g_strdup (default_session);
-            msg = g_strdup_printf (_("Your preferred session type %s is not "
-				     "installed on this computer.\n"
-                                     "Do you wish to make %s the default for "
-				     "future sessions?"),
-                                   gdm_session_name (savedsess),
-                                   gdm_session_name (default_session));	    
-	    savesess = gdm_common_query (msg, FALSE /* markup */,
+	    firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
+	                                  "future sessions?"),
+	                                gdm_session_name (default_session));	   
+	    secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
+	                                   "installed on this computer."),
+	                                 gdm_session_name (savedsess));
+
+	    savesess = gdm_common_query (firstmsg, secondmsg,
 		 _("Make _Default"), _("Just _Log In"), TRUE);
-	    g_free (msg);
+	    g_free (firstmsg);
+	    g_free (secondmsg);
 	}
     }
     /* One of the other available session types is selected */
@@ -1118,18 +1123,20 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE) == 0) {
 		savesess = GTK_RESPONSE_NO;
 	} else if (strcmp (savedsess, session) != 0) {
-		gchar *msg = NULL;
+		gchar *firstmsg = NULL;
+		gchar *secondmsg = NULL;
 
                 if (GdmShowLastSession) {
-                        msg = g_strdup_printf (_("You have chosen %s for this "
-                                                 "session, but your default "
-                                                 "setting is %s.\nDo you wish "
-                                                 "to make %s the default for "
-                                                 "future sessions?"),
-                                               gdm_session_name (session),
-                                               gdm_session_name (savedsess),
-                                               gdm_session_name (session));
-			savesess = gdm_common_query (msg, FALSE /* markup */,
+                        firstmsg = g_strdup_printf (_("Do you wish "
+                                                      "to make %s the default for "
+                                                      "future sessions?"),
+                                                    gdm_session_name (session));
+                        secondmsg = g_strdup_printf (_("You have chosen %s for this "
+                                                      "session, but your default "
+                                                      "setting is %s."),
+                                                     gdm_session_name (session),
+                                                     gdm_session_name (savedsess));					       
+                        savesess = gdm_common_query (firstmsg, secondmsg,
 				_("Make _Default"), _("Just For _This Session"), TRUE);
                 } else if (strcmp (session, default_session) != 0 &&
 			   strcmp (session, savedsess) != 0 &&
@@ -1140,19 +1147,21 @@ gdm_login_session_lookup (const gchar* savedsess)
                          * in .Xclients
                          */
 			if (access ("/usr/bin/switchdesk", F_OK) == 0) {
-				msg = g_strdup_printf (_("You have chosen %s for this "
-							 "session.\nIf you wish to make %s "
-							 "the default for future sessions,\n"
-							 "run the 'switchdesk' utility\n"
-							 "(System->Desktop Switching Tool from "
-							 "the panel menu)."),
-						       gdm_session_name (session),
-						       gdm_session_name (session));
-				gdm_common_message (msg);
+				firstmsg = g_strdup_printf (_("You have chosen %s for this "
+				                              "session."),
+				                            gdm_session_name (session));
+				secondmsg = g_strdup_printf (_("If you wish to make %s "
+				                              "the default for future sessions, "
+				                              "run the 'switchdesk' utility "
+				                              "(System Tools->Desktop Switching Tool from "
+				                              "the main menu)."),
+				                             gdm_session_name (session));
+				gdm_common_message (firstmsg, secondmsg);
 			}
 			savesess = GTK_RESPONSE_NO;
                 }
-		g_free (msg);
+		g_free (firstmsg);
+		g_free (secondmsg);
 	}
     }
 }
@@ -1177,7 +1186,8 @@ gdm_login_language_lookup (const gchar* savedlang)
 
 	/* User's saved language is not the chosen one */
 	if (strcmp (savedlang, language) != 0) {
-	    gchar *msg;
+	    gchar *firstmsg;
+    	    gchar *secondmsg;
 	    char *curname, *savedname;
 
 	    if (strcmp (curlang, DEFAULT_LANGUAGE) == 0) {
@@ -1199,14 +1209,16 @@ gdm_login_language_lookup (const gchar* savedlang)
 					       TRUE /* markup */);
 	    }
 
-	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
-				     "%s.\nDo you wish to make %s the default for future sessions?"),
-				   curname, savedname, curname);
+	    firstmsg = g_strdup_printf (_("Do you wish to make %s the default for future sessions?"),
+	                                curname);
+	    secondmsg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is %s."),
+	                                 curname, savedname);
 	    g_free (curname);
 	    g_free (savedname);
 
-	    savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"), TRUE);
-	    g_free (msg);
+	    savelang = gdm_common_query (firstmsg, secondmsg, _("Make _Default"), _("Just For _This Session"), TRUE);
+	    g_free (firstmsg);
+	    g_free (secondmsg);
 	}
     } else {
 	g_free (language);
@@ -2093,9 +2105,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
 				 tmp,
-				 /* avoid warning */ "%s", "");
+				 "");
 	g_free (tmp);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
@@ -2223,12 +2234,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 					 GTK_DIALOG_MODAL /* flags */,
 					 GTK_MESSAGE_INFO,
 					 GTK_BUTTONS_OK,
-					 FALSE /* markup */,
 					 /* translators:  This is a nice and evil eggie text, translate
 					  * to your favourite currency */
 					 _("Please insert 25 cents "
 					   "to log in."),
-					 /* avoid warning */ "%s", "");
+					 "");
 		gdm_wm_center_window (GTK_WINDOW (dlg));
 
 		gdm_wm_no_login_focus_push ();
@@ -2252,9 +2262,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 						 GTK_DIALOG_MODAL /* flags */,
 						 GTK_MESSAGE_INFO,
 						 GTK_BUTTONS_OK,
-						 FALSE /* markup */,
 						 oldtext,
-						 /* avoid warning */ "%s", "");
+						 "");
 			gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 			gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -3666,22 +3675,25 @@ main (int argc, char *argv[])
 	    strcmp (gdm_version, VERSION) != 0))) &&
 	 ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    GtkWidget *dialog;
+	    gchar *msg;
 
 	    gdm_wm_init (0);
 
 	    gdm_wm_focus_new_windows (TRUE);
+	    
+	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
+				     "version.  "
+				     "You have probably just upgraded gdm.  "
+				     "Please restart the gdm daemon or the computer."),
+				   VERSION);
 
 	    dialog = ve_hig_dialog_new (NULL /* parent */,
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
-					FALSE /* markup */,
 					_("Cannot start the greeter"),
-					_("The greeter version (%s) does not match the daemon "
-					  "version.  "
-					  "You have probably just upgraded gdm.  "
-					  "Please restart the gdm daemon or the computer."),
-					VERSION);
+					msg);
+	    g_free (msg);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -3697,22 +3709,26 @@ main (int argc, char *argv[])
 	gdm_protocol_version == NULL &&
 	gdm_version == NULL) {
 	    GtkWidget *dialog;
+	    gchar *msg;
 
 	    gdm_wm_init (0);
 
 	    gdm_wm_focus_new_windows (TRUE);
+	    
+	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
+	                             "version.  "
+	                             "You have probably just upgraded gdm.  "
+	                             "Please restart the gdm daemon or the computer."),
+	                           VERSION);
 
 	    dialog = ve_hig_dialog_new (NULL /* parent */,
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_WARNING,
 					GTK_BUTTONS_NONE,
-					FALSE /* markup */,
 					_("Cannot start the greeter"),
-					_("The greeter version (%s) does not match the daemon "
-					  "version.  "
-					  "You have probably just upgraded gdm.  "
-					  "Please restart the gdm daemon or the computer."),
-					VERSION);
+					msg);	
+	    g_free (msg);
+
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				    _("Restart"),
 				    RESPONSE_REBOOT,
@@ -3741,22 +3757,26 @@ main (int argc, char *argv[])
 	  (gdm_protocol_version == NULL &&
 	   strcmp (gdm_version, VERSION) != 0))) {
 	    GtkWidget *dialog;
+	    gchar *msg;
 
 	    gdm_wm_init (0);
 
 	    gdm_wm_focus_new_windows (TRUE);
+	    
+	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
+	                             "version (%s).  "
+	                             "You have probably just upgraded gdm.  "
+	                             "Please restart the gdm daemon or the computer."),
+	                           VERSION, gdm_version);
 
 	    dialog = ve_hig_dialog_new (NULL /* parent */,
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_WARNING,
 					GTK_BUTTONS_NONE,
-					FALSE /* markup */,
 					_("Cannot start the greeter"),
-					_("The greeter version (%s) does not match the daemon "
-					  "version (%s).  "
-					  "You have probably just upgraded gdm.  "
-					  "Please restart the gdm daemon or the computer."),
-					VERSION, gdm_version);
+					msg);
+	    g_free (msg);
+
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				    _("Restart gdm"),
 				    RESPONSE_RESTART,
@@ -3959,9 +3979,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
-					FALSE /* markup */,
 					_("Session directory is missing"),
-					"%s",
 					_("Your session directory is missing or empty!  "
 					  "There are two available sessions you can use, but "
 					  "you should log in and correct the gdm configuration."));
@@ -3985,9 +4003,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
-					FALSE /* markup */,
 					_("Configuration is not correct"),
-					"%s",
 					_("The configuration file contains an invalid command "
 					  "line for the login dialog, so running the "
 					  "default command.  Please fix your configuration."));
@@ -4012,9 +4028,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
-					FALSE /* markup */,
 					_("No configuration was found"),
-					"%s",
 					_("The configuration was not found.  GDM is using "
 					  "defaults to run this session.  You should log in "
 					  "and create a configuration file with the GDM "

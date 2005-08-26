@@ -113,17 +113,19 @@ greeter_session_lookup (const char *saved_session)
       /* Check if user's saved session exists on this box */
       if (!greeter_login_list_lookup (sessions, session))
 	{
-	  gchar *msg;
+	  gchar *firstmsg;
+	  gchar *secondmsg;
 	  
 	  session = g_strdup (default_session);
-	  msg = g_strdup_printf (_("Your preferred session type %s is not "
-				   "installed on this computer.\n"
-				   "Do you wish to make %s the default for "
-				   "future sessions?"),
-				 gdm_session_name (saved_session),
-				 gdm_session_name (default_session));	    
-	  save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"), TRUE);
-	  g_free (msg);
+	  firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
+	                                "future sessions?"),
+	                              gdm_session_name (saved_session));	    
+	  secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
+	                                 "installed on this computer."),
+	                               gdm_session_name (default_session));
+	  save_session = gdm_common_query (firstmsg, secondmsg, _("Make _Default"), _("Just _Log In"), TRUE);
+	  g_free (firstmsg);
+	  g_free (secondmsg);
 	}
     }
   else /* One of the other available session types is selected */
@@ -140,19 +142,20 @@ greeter_session_lookup (const char *saved_session)
 	}
       else if (strcmp (saved_session, session) != 0)
 	{
-	  gchar *msg = NULL;
+	  gchar *firstmsg = NULL;
+	  gchar *secondmsg = NULL;
 	  
 	  if (GdmShowLastSession)
 	    {
-	      msg = g_strdup_printf (_("You have chosen %s for this "
-				       "session, but your default "
-				       "setting is %s.\nDo you wish "
-				       "to make %s the default for "
-				       "future sessions?"),
-				     gdm_session_name (session),
-				     gdm_session_name (saved_session),
-				     gdm_session_name (session));
-	      save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"), TRUE);
+	      firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
+	                                    "future sessions?"),
+	                                  gdm_session_name (session));
+	      secondmsg = g_strdup_printf (_("You have chosen %s for this "
+	                                     "session, but your default "
+	                                     "setting is %s."),
+	                                   gdm_session_name (session),
+	                                   gdm_session_name (saved_session));
+	      save_session = gdm_common_query (firstmsg, secondmsg, _("Make _Default"), _("Just For _This Session"), TRUE);
 	    }
 	  else if (strcmp (session, default_session) != 0 &&
 		   strcmp (session, saved_session) != 0 &&
@@ -165,19 +168,21 @@ greeter_session_lookup (const char *saved_session)
 	       */
 	      if (access ("/usr/bin/switchdesk", F_OK) == 0)
 	        {
-	          msg = g_strdup_printf (_("You have chosen %s for this "
-				           "session.\nIf you wish to make %s "
-				           "the default for future sessions,\n"
-				           "run the 'switchdesk' utility\n"
-					   "(System->Desktop Switching Tool from "
-					   "the panel menu)."),
-					 gdm_session_name (session),
-					 gdm_session_name (session));
-		  gdm_common_message (msg);
+	          firstmsg = g_strdup_printf (_("You have chosen %s for this "
+	                                        "session"),
+	                                      gdm_session_name (session));
+	          secondmsg = g_strdup_printf (_("If you wish to make %s "
+	                                         "the default for future sessions, "
+	                                         "run the 'switchdesk' utility "
+	                                         "(System->Desktop Switching Tool from "
+	                                         "the panel menu)."),
+	                                       gdm_session_name (session));			 
+		  gdm_common_message (firstmsg, secondmsg);
 		}
 	      save_session = GTK_RESPONSE_NO;
 	    }
-	  g_free (msg);
+	  g_free (firstmsg);
+	  g_free (secondmsg);
 	}
     }
   
@@ -200,6 +205,7 @@ greeter_session_init (void)
   GtkWidget *cat_vbox = NULL;
   GtkWidget *radio;
   GtkWidget *dialog;
+  GtkWidget *button;
   GList *tmp;
   static GtkTooltips *tooltips = NULL;
   GtkRequisition req;
@@ -218,13 +224,14 @@ greeter_session_init (void)
 			 GTK_STOCK_CANCEL,
 			 GTK_RESPONSE_CANCEL);
 
-  gtk_dialog_add_button (GTK_DIALOG (dialog),
-			 GTK_STOCK_OK,
-			 GTK_RESPONSE_OK);
-  gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-				   GTK_RESPONSE_OK);
+  button = gtk_button_new_with_mnemonic (_("Change _Session"));
+  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+  gtk_widget_show (button);
+  gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button,
+                                GTK_RESPONSE_OK);
 
   gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+  gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
   gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
   gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
@@ -239,8 +246,7 @@ greeter_session_init (void)
 		      cat_vbox,
 		      FALSE, FALSE, 0);
 
-  s = g_strdup_printf ("<b>%s</b>",
-		       _("Choose a Session"));
+  s = g_strdup_printf ("<b>%s</b>", _("Sessions"));
   w = gtk_label_new (s);
   gtk_label_set_use_markup (GTK_LABEL (w), TRUE);
   g_free (s);
@@ -260,7 +266,7 @@ greeter_session_init (void)
     {
       current_session = g_strdup (LAST_SESSION);
 
-      radio = gtk_radio_button_new_with_mnemonic (session_group, _("_Last"));
+      radio = gtk_radio_button_new_with_mnemonic (session_group, _("_Last session"));
       g_object_set_data (G_OBJECT (radio),
 			 SESSION_NAME,
 			 LAST_SESSION);
@@ -269,7 +275,7 @@ greeter_session_init (void)
 			    _("Log in using the session that you have used "
 			      "last time you logged in"),
 			    NULL);
-      gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
+      gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 0);
       gtk_widget_show (radio);
     }
 
@@ -296,7 +302,7 @@ greeter_session_init (void)
 	g_object_set_data_full (G_OBJECT (radio), SESSION_NAME,
 		file, (GDestroyNotify) g_free);
 	session_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radio));
-	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 0);
 	gtk_widget_show (radio);
  
 	if (! ve_string_empty (session->comment))

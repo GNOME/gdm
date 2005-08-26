@@ -443,9 +443,8 @@ greeter_ctrl_handler (GIOChannel *source,
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
 				 tmp,
-				 /* avoid warning */ "%s", "");
+				 "");
 	g_free (tmp);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
@@ -547,12 +546,11 @@ greeter_ctrl_handler (GIOChannel *source,
 					 GTK_DIALOG_MODAL /* flags */,
 					 GTK_MESSAGE_INFO,
 					 GTK_BUTTONS_OK,
-					 FALSE /* markup */,
 					 /* translators:  This is a nice and evil eggie text, translate
 					  * to your favourite currency */
 					 _("Please insert 25 cents "
 					   "to log in."),
-					 /* avoid warning */ "%s", "");
+					 "");
 		gdm_wm_center_window (GTK_WINDOW (dlg));
 
 		gdm_wm_no_login_focus_push ();
@@ -774,21 +772,24 @@ verify_gdm_version (void)
       (g_getenv ("GDM_IS_LOCAL") != NULL))
     {
       GtkWidget *dialog;
+      gchar *msg;
     
       gdm_wm_init (0);
       gdm_wm_focus_new_windows (TRUE);
+    
+      msg =  g_strdup_printf (_("The greeter version (%s) does not match the daemon "
+                                "version.  "
+                                "You have probably just upgraded gdm.  "
+                                "Please restart the gdm daemon or the computer."),
+                              VERSION);
     
       dialog = ve_hig_dialog_new (NULL /* parent */,
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
-				  FALSE /* markup */,
 				  _("Cannot start the greeter"),
-				  _("The greeter version (%s) does not match the daemon "
-				    "version.\n"
-				    "You have probably just upgraded gdm.\n"
-				    "Please restart the gdm daemon or the computer."),
-				  VERSION);
+				  msg);
+      g_free (msg);
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -806,21 +807,25 @@ verify_gdm_version (void)
       gdm_version == NULL)
     {
       GtkWidget *dialog;
+      gchar *msg;
     
       gdm_wm_init (0);
       gdm_wm_focus_new_windows (TRUE);
+    
+      msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
+                               "version. "
+                               "You have probably just upgraded gdm. "
+                               "Please restart the gdm daemon or the computer."),
+                             VERSION);
     
       dialog = ve_hig_dialog_new (NULL /* parent */,
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_WARNING,
 				  GTK_BUTTONS_NONE,
-				  FALSE /* markup */,
 				  _("Cannot start the greeter"),
-				  _("The greeter version (%s) does not match the daemon "
-				    "version.\n"
-				    "You have probably just upgraded gdm.\n"
-				    "Please restart the gdm daemon or the computer."),
-				  VERSION);
+				  msg);
+      g_free (msg);
+			  
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Reboot"),
 			      RESPONSE_REBOOT,
@@ -851,21 +856,25 @@ verify_gdm_version (void)
 	strcmp (gdm_version, VERSION) != 0)))
     {
       GtkWidget *dialog;
+      gchar *msg;
     
       gdm_wm_init (0);
       gdm_wm_focus_new_windows (TRUE);
+    
+      msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
+                               "version (%s).  "
+                               "You have probably just upgraded gdm.  "
+                               "Please restart the gdm daemon or the computer."),
+                             VERSION, gdm_version);
     
       dialog = ve_hig_dialog_new (NULL /* parent */,
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_WARNING,
 				  GTK_BUTTONS_NONE,
-				  FALSE /* markup */,
 				  _("Cannot start the greeter"),
-				  _("The greeter version (%s) does not match the daemon "
-				    "version (%s).\n"
-				    "You have probably just upgraded gdm.\n"
-				    "Please restart the gdm daemon or the computer."),
-				  VERSION, gdm_version);
+				  msg);
+      g_free (msg);
+
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Restart"),
 			      RESPONSE_RESTART,
@@ -1390,9 +1399,8 @@ main (int argc, char *argv[])
 				    GTK_DIALOG_MODAL /* flags */,
 				    GTK_MESSAGE_ERROR,
 				    GTK_BUTTONS_OK,
-				    FALSE /* markup */,
 				    s,
-				    "%s", (error && error->message) ? error->message : "");
+				    (error && error->message) ? error->message : "");
 	g_free (s);
     
         gtk_widget_show_all (dialog);
@@ -1436,9 +1444,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
-				  FALSE /* markup */,
 				  _("The greeter theme is corrupt"),
-				  "%s",
 				  _("The theme does not contain "
 				    "definition for the username/password "
 				    "entry element."));
@@ -1472,13 +1478,12 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
-				  FALSE /* markup */,
 				  _("There was an error loading the "
 				    "theme, and the default theme "
 				    "could not be loaded. "
 				    "Attempting to start the "
 				    "standard greeter"),
-				  /* avoid warning */ "%s", "");
+				  "");
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1495,12 +1500,11 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
-				  FALSE /* markup */,
 				  _("The GTK+ greeter could not be started.  "
 				    "This display will abort and you may "
 				    "have to login another way and fix the "
 				    "installation of gdm"),
-				  /* avoid warning */ "%s", "");
+				  "");
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1546,9 +1550,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
-				  FALSE /* markup */,
 				  _("Session directory is missing"),
-				  "%s",
 				  _("Your session directory is missing or empty!  "
 				    "There are two available sessions you can use, but "
 				    "you should log in and correct the gdm configuration."));
@@ -1573,9 +1575,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
-				  FALSE /* markup */,
 				  _("Configuration is not correct"),
-				  "%s",
 				  _("The configuration file contains an invalid command "
 				    "line for the login dialog, so running the "
 				    "default command.  Please fix your configuration."));
@@ -1602,9 +1602,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
-				  FALSE /* markup */,
 				  _("No configuration was found"),
-				  "%s",
 				  _("The configuration was not found.  GDM is using "
 				    "defaults to run this session.  You should log in "
 				    "and create a configuration file with the GDM "

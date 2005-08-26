@@ -1574,7 +1574,8 @@ gdm_common_show_info_msg (const gchar *msg_file,
 }
 
 void
-gdm_common_message (const gchar *msg)
+gdm_common_message (const gchar *primary_message, 
+                    const gchar *secondary_message)
 {
 	GtkWidget *req = NULL;
 
@@ -1585,9 +1586,8 @@ gdm_common_message (const gchar *msg)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_INFO,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
-				 msg,
-				 /* avoid warning */ "%s", "");
+				 primary_message,
+				 secondary_message);
 
 	gdm_wm_center_window (GTK_WINDOW (req));
 
@@ -1598,8 +1598,8 @@ gdm_common_message (const gchar *msg)
 }
 
 gint
-gdm_common_query (const gchar *msg,
-		  gboolean markup,
+gdm_common_query (const gchar *primary_message,
+		  const gchar *secondary_message,
 		  const char *posbutton,
 		  const char *negbutton,
 		  gboolean has_cancel)
@@ -1615,9 +1615,67 @@ gdm_common_query (const gchar *msg,
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_QUESTION,
 				 GTK_BUTTONS_NONE,
-				 markup,
-				 msg,
-				 /* avoid warning */ "%s", "");
+				 primary_message,
+				 secondary_message);
+
+	if (negbutton != NULL) {
+		button = gtk_button_new_from_stock (negbutton);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_NO);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+	}
+
+	if (has_cancel == TRUE) {
+		button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_CANCEL);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+	}
+
+	if (posbutton != NULL) {
+		button = gtk_button_new_from_stock (posbutton);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+	}
+
+	if (posbutton != NULL)
+		gtk_dialog_set_default_response (GTK_DIALOG (req), GTK_RESPONSE_YES);
+	else if (negbutton != NULL)
+		gtk_dialog_set_default_response (GTK_DIALOG (req), GTK_RESPONSE_NO);
+	else if (has_cancel)
+		gtk_dialog_set_default_response (GTK_DIALOG (req), GTK_RESPONSE_CANCEL);
+
+	gdm_wm_center_window (GTK_WINDOW (req));
+
+	gdm_wm_no_login_focus_push ();
+	ret = gtk_dialog_run (GTK_DIALOG (req));
+	gdm_wm_no_login_focus_pop ();
+	gtk_widget_destroy (req);
+
+	return ret;
+}
+
+gint
+gdm_common_warn (const gchar *primary_message,
+                 const gchar *secondary_message,
+                 const char *posbutton,
+                 const char *negbutton,
+                 gboolean has_cancel)
+{
+	int ret;
+	GtkWidget *req;
+	GtkWidget *button;
+
+	/* we should be now fine for focusing new windows */
+	gdm_wm_focus_new_windows (TRUE);
+
+	req = ve_hig_dialog_new (NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_NONE,
+				 primary_message,
+				 secondary_message);
 
 	if (negbutton != NULL) {
 		button = gtk_button_new_from_stock (negbutton);

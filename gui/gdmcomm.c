@@ -405,14 +405,12 @@ gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
 				 _("GDM (The GNOME Display Manager) "
 				   "is not running."),
-				 "%s\n%s",
 				 _("You might in fact be using a different "
 				   "display manager, such as KDM "
-				   "(KDE Display Manager) or xdm."),
-				 _("If you still wish to use this feature, "
+				   "(KDE Display Manager) or xdm."
+				   "If you still wish to use this feature, "
 				   "either start GDM yourself or ask your "
 				   "system administrator to start GDM."));
 
@@ -433,10 +431,8 @@ gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
 				 _("Cannot communicate with GDM "
 				   "(The GNOME Display Manager)"),
-				 "%s",
 				 _("Perhaps you have an old version "
 				   "of GDM running."));
 			gtk_widget_show_all (dialog);

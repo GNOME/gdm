@@ -205,13 +205,12 @@ check_update_error:
 						GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_OK,
-						FALSE /* markup */,
 						_("An error occurred while "
 						  "trying to contact the "
 						  "login screens.  Not all "
 						  "updates may have taken "
 						  "effect."),
-						/* avoid warning */ "%s", "");
+						"");
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
@@ -866,9 +865,8 @@ root_not_allowed (GtkWidget *combo_box)
 					   GTK_DIALOG_MODAL /* flags */,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
-					   FALSE /* markup */,
 					   _("Autologin or timed login to the root account is not allowed."),
-					   /* avoid warning */ "%s", "");
+					   "");
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);
 		gtk_dialog_run (GTK_DIALOG (dlg));
@@ -3180,9 +3178,8 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
-					   FALSE /* markup */,
 					   _("No file selected"),
-					   /* avoid warning */ "%s", "");
+					   "");
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (cwd);
@@ -3202,21 +3199,24 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 	 * the archive */
 
 	if (dir == NULL) {
-		GtkWidget *dlg =
-			ve_hig_dialog_new (GTK_WINDOW (chooser),
+		GtkWidget *dlg;
+		gchar *msg;
+
+		msg = g_strdup_printf (_("Details: %s"), error);
+
+		dlg = ve_hig_dialog_new (GTK_WINDOW (chooser),
 					   GTK_DIALOG_MODAL | 
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
-					   FALSE /* markup */,
 					   _("Not a theme archive"),
-					   _("Details: %s"),
-					   error);
+					   msg);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (filename);
 		g_free (cwd);
 		g_free (theme_dir);
+		g_free (msg);
 		return;
 	}
 
@@ -3237,9 +3237,8 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 			 GTK_DIALOG_DESTROY_WITH_PARENT,
 			 GTK_MESSAGE_QUESTION,
 			 GTK_BUTTONS_NONE,
-			 FALSE /* markup */,
 			 s,
-			 /* avoid warning */ "%s", "");
+			 "");
 		g_free (fname);
 		g_free (s);
 
@@ -3313,10 +3312,9 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
-					   FALSE /* markup */,
 					   _("Some error occurred when "
 					     "installing the theme"),
-					   /* avoid warning */ "%s", "");
+					   "");
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 	}
@@ -3434,9 +3432,8 @@ delete_theme (GtkWidget *button, gpointer data)
 		 GTK_DIALOG_DESTROY_WITH_PARENT,
 		 GTK_MESSAGE_QUESTION,
 		 GTK_BUTTONS_NONE,
-		 FALSE /* markup */,
 		 s,
-		 /* avoid warning */ "%s", "");
+		 "");
 	g_free (s);
 
 	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
@@ -4639,9 +4636,8 @@ main (int argc, char *argv[])
 					   GTK_DIALOG_MODAL /* flags */,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
-					   FALSE /* markup */,
 					   _("You must be the root user to configure GDM."),
-					   /* avoid warning */ "%s", "");
+					   "");
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);
 		gtk_dialog_run (GTK_DIALOG (fatal_error));

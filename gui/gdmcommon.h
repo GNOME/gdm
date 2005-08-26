@@ -28,11 +28,17 @@
 
 void    gdm_common_show_info_msg        (const gchar *msg_file,
                                          const gchar *msg_font);
-void	gdm_common_message		(const gchar *msg);
+void	gdm_common_message		(const gchar *primary_message, 
+					 const gchar *secondary_message);
 void	gdm_common_abort		(const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void	gdm_common_setup_cursor		(GdkCursorType type);
-gint	gdm_common_query		(const gchar *msg,
-					 gboolean markup,
+gint	gdm_common_query		(const gchar *primary_message,
+					 const gchar *secondary_message,
+					 const char *posbutton,
+					 const char *negbutton,
+					 gboolean has_cancel);
+gint	gdm_common_warn 		(const gchar *primary_message,
+					 const gchar *secondary_message,
 					 const char *posbutton,
 					 const char *negbutton,
 					 gboolean has_cancel);
