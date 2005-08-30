@@ -993,11 +993,13 @@ G_MODULE_EXPORT void gtk_module_init(int *argc, char* argv[]);
 
 void gtk_module_init(int *argc, char* argv[])
 {
-    if (g_getenv ("GDM_DEBUG_GESTURES") != NULL);
+    if (g_getenv ("GDM_DEBUG_GESTURES") != NULL)
 	debug_gestures = TRUE;
 
-    if (debug_gestures)
+    if (debug_gestures) {
+	openlog ("keymouselistener", LOG_PID, LOG_DAEMON);
 	syslog (LOG_WARNING, "keymouselistener loaded.");
+    }
 
     create_event_watcher ();
 }
