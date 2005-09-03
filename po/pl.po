@@ -1031,7 +1031,6 @@ msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Nie można utworzyć potoku do gdmgreeter"
 
 #: ../daemon/slave.c:2793
-#, fuzzy
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  GDM has started a single server for "
@@ -1039,20 +1038,19 @@ msgid ""
 "timed logins are disabled now."
 msgstr ""
 "W konfiguracji nie zdefiniowano serwerów i nie jest aktywne XDMCP. Może to "
-"oznaczać tylko błąd w konfiguracji. Został uruchomiony jeden serwer, z "
-"którego po zalogowaniu możesz poprawić konfigurację. Na razie logowanie "
+"oznaczać tylko błąd w konfiguracji. GDM uruchomił pojedynczy serwer. "
+"Należy się zalogować i poprawić konfigurację. Do tego czasu logowanie "
 "automatyczne i z opóźnieniem czasowym jest nieaktywne."
 
 #: ../daemon/slave.c:2807
-#, fuzzy
 msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
 "server."
 msgstr ""
 "Nie można uruchomić zwykłego serwera X (odpowiedzialnego za interfejs "
-"graficzny), zostanie więc uruchomiony awaryjny serwer. Po zalogowaniu się "
-"należy poprawnie skonfigurować podstawowy serwer X."
+"graficzny), został więc uruchomiony serwer awaryjny. Zaloguj się "
+"i skonfiguruj poprawnie podstawowy serwer X."
 
 #: ../daemon/slave.c:2816
 #, c-format
@@ -3447,13 +3445,11 @@ msgstr "Dostępność"
 
 #: ../gui/gdmsetup.glade.h:10
 msgid "Add/Modify Server"
-msgstr ""
+msgstr "Dodaj/modyfikuj serwer"
 
 #: ../gui/gdmsetup.glade.h:11
-#, fuzzy
 msgid "Allow _configuration from the login screen"
-msgstr ""
-"Możliwość uruchomienia przez użytkownika programu _konfiguracyjnego z menu"
+msgstr "Możliwość _konfiguracji z ekranu logowania"
 
 #: ../gui/gdmsetup.glade.h:12
 msgid "Allow _root to login with GDM"
@@ -3469,18 +3465,16 @@ msgstr ""
 "Możliwość _zdalnego logowania się za pomocą GDM przez użytkownika root."
 
 #: ../gui/gdmsetup.glade.h:15
-#, fuzzy
 msgid "Allow running _XDMCP chooser from the login screen"
-msgstr ""
-"Moż_liwość uruchomienia programu wybierającego XDMCP z ekranu logowania"
+msgstr "Możliwość uruchomienia programu wybierającego _XDMCP z ekranu logowania"
 
 #: ../gui/gdmsetup.glade.h:16
 msgid "Allow theme selection in _GTK+ Greeter"
-msgstr ""
+msgstr "Wybór motywu ekranu powitalnego _GTK+"
 
 #: ../gui/gdmsetup.glade.h:17
 msgid "Apply"
-msgstr ""
+msgstr "Zastosuj"
 
 #: ../gui/gdmsetup.glade.h:18
 msgid "Author:"
@@ -3499,22 +3493,20 @@ msgid "Browse"
 msgstr "Przeglądaj"
 
 #: ../gui/gdmsetup.glade.h:22
-#, fuzzy
 msgid "Choose network computer to connect to."
-msgstr "_Wybierz komputer z którym chcesz się połączyć:"
+msgstr "Wybierz komputer w sieci z którym chcesz się połączyć."
 
 #: ../gui/gdmsetup.glade.h:23
-#, fuzzy
 msgid "Chooser"
-msgstr "Wybór serwera"
+msgstr "Program wybierający"
 
 #: ../gui/gdmsetup.glade.h:24
 msgid "Color Depth:"
-msgstr ""
+msgstr "Głębia kolorów:"
 
 #: ../gui/gdmsetup.glade.h:25
 msgid "Command:"
-msgstr ""
+msgstr "Polecenie:"
 
 #: ../gui/gdmsetup.glade.h:26
 msgid "Copyright:"
@@ -3522,16 +3514,15 @@ msgstr "Prawa autorskie:"
 
 #: ../gui/gdmsetup.glade.h:27
 msgid "Create Server Definition"
-msgstr ""
+msgstr "Utwórz definicję serwera"
 
 #: ../gui/gdmsetup.glade.h:28
-#, fuzzy
 msgid "Delete"
-msgstr "_Usuń motyw"
+msgstr "Usuń"
 
 #: ../gui/gdmsetup.glade.h:29
 msgid "Delete Server Definition"
-msgstr ""
+msgstr "Usuń definicję serwera"
 
 #: ../gui/gdmsetup.glade.h:30
 msgid "Description:"
@@ -3551,26 +3542,27 @@ msgstr "Uaktywnienie modułów dostępności"
 
 #: ../gui/gdmsetup.glade.h:34
 msgid "Enable debu_g messages to system log"
-msgstr ""
+msgstr "Zapisywanie komunikatów śle_dzenia w dzienniku systemowym"
 
 #: ../gui/gdmsetup.glade.h:35
 msgid "Exclude"
-msgstr ""
+msgstr "Wyłączeni"
 
 #: ../gui/gdmsetup.glade.h:36
 msgid "Flexible"
-msgstr ""
+msgstr "Zagnieżdżony"
 
 #: ../gui/gdmsetup.glade.h:37
-#, fuzzy
 msgid "GTK+ Greeter"
-msgstr "Ekran powitalny"
+msgstr "Ekran powitalny GTK+"
 
 #: ../gui/gdmsetup.glade.h:38
 msgid ""
 "GTK+ Greeter\n"
 "Themed Greeter"
 msgstr ""
+"Ekran powitalny GTK+\n"
+"Ekran powitalny z motywem"
 
 #: ../gui/gdmsetup.glade.h:40
 msgid ""
@@ -3578,6 +3570,9 @@ msgid ""
 "Themed Greeter\n"
 "Disabled"
 msgstr ""
+"Ekran powitalny GTK+\n"
+"Ekran powitalny z motywem\n"
+"Wyłączony"
 
 #: ../gui/gdmsetup.glade.h:43
 msgid "General"
@@ -3589,19 +3584,19 @@ msgstr "Ekran powitalny"
 
 #: ../gui/gdmsetup.glade.h:45
 msgid "Handled"
-msgstr ""
+msgstr "Obsługiwany"
 
 #: ../gui/gdmsetup.glade.h:46
 msgid "Honour _indirect requests"
-msgstr "Przyjmowanie poś_rednich połączeń"
+msgstr "Przyjmowanie połączeń poś_rednich"
 
 #: ../gui/gdmsetup.glade.h:47
 msgid "Include"
-msgstr ""
+msgstr "Włączeni"
 
 #: ../gui/gdmsetup.glade.h:48
 msgid "Is a login attempt handled by this computer?"
-msgstr ""
+msgstr "Określa czy próby logowania są obsługiwane przez ten komputer?"
 
 #: ../gui/gdmsetup.glade.h:49
 msgid "L_ocal: "
@@ -3612,15 +3607,13 @@ msgid "Listen on _UDP port: "
 msgstr "Nasłuchiwanie na porcie _UDP: "
 
 #: ../gui/gdmsetup.glade.h:51
-#, fuzzy
 msgid "Login Greeter."
-msgstr "Ekran powitalny"
+msgstr "Ekran powitalny logowania."
 
 #: ../gui/gdmsetup.glade.h:53
-#, fuzzy
 msgid "Login a _user automatically after a specified number of seconds"
 msgstr ""
-"Aut_omatyczne logowanie wybranego użytkownika po określonej liczbie sekund"
+"Aut_omatyczne logowanie użytkownika po określonej liczbie sekund"
 
 #: ../gui/gdmsetup.glade.h:54
 msgid "Logo"
@@ -3628,11 +3621,11 @@ msgstr "Logo"
 
 #: ../gui/gdmsetup.glade.h:55
 msgid "Make a _sound after a failed login attempt"
-msgstr ""
+msgstr "Dźwięk po _nieudanej próbie logowania"
 
 #: ../gui/gdmsetup.glade.h:56
 msgid "Make a _sound after a successful login attempt"
-msgstr ""
+msgstr "Dźwięk po _udanej próbie logowania"
 
 #: ../gui/gdmsetup.glade.h:57
 msgid "Make a _sound when login window is ready"
@@ -3659,14 +3652,12 @@ msgid "Maximum indirect w_ait time:"
 msgstr "Maksymal_ny czas oczekiwania przy połączeniach pośrednich:"
 
 #: ../gui/gdmsetup.glade.h:63
-#, fuzzy
 msgid "No Logo"
-msgstr "Logo"
+msgstr "Bez logo"
 
 #: ../gui/gdmsetup.glade.h:64
-#, fuzzy
 msgid "No Sound"
-msgstr "_Bez tła"
+msgstr "Bez dźwięku"
 
 #: ../gui/gdmsetup.glade.h:65
 msgid ""
@@ -3684,12 +3675,15 @@ msgstr "Brak dostępnego podglądu"
 msgid ""
 "Note: For settings to take effect, the gdm service will require a restart."
 msgstr ""
+"Uwaga: Aby ustawienia odniosły skutek, usługa GDM musi być ponownie uruchomiona."
 
 #: ../gui/gdmsetup.glade.h:68
 msgid ""
 "Only One Theme\n"
 "Random Theme"
 msgstr ""
+"Motyw pojedynczy\n"
+"Motyw losowy"
 
 #: ../gui/gdmsetup.glade.h:70
 msgid "Options"
@@ -3712,52 +3706,47 @@ msgid "Preview:"
 msgstr "Podgląd:"
 
 #: ../gui/gdmsetup.glade.h:76
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Re_mote welcome string (%n = hostname): "
-msgstr "Z_dalny komunikat powitalny: "
+msgstr "Z_dalny komunikat powitalny (%n = nazwa komputera): "
 
 #: ../gui/gdmsetup.glade.h:77
 msgid "Refresh Rate:"
-msgstr ""
+msgstr "Częstotliwość odświeżania:"
 
 #: ../gui/gdmsetup.glade.h:78
-#, fuzzy
 msgid "Remove Server"
-msgstr "_Usuń motyw"
+msgstr "Usuń serwer"
 
 #: ../gui/gdmsetup.glade.h:79
-#, fuzzy
 msgid "Resolution:"
-msgstr "Opis:"
+msgstr "Rozdzielczość:"
 
 #: ../gui/gdmsetup.glade.h:80
-#, fuzzy
 msgid "Retry delay (_seconds):"
-msgstr "_Opóźnienie przed ponowieniem:"
+msgstr "Opóźnienie ponowienia (_sekundy):"
 
 #: ../gui/gdmsetup.glade.h:81
 msgid "Security"
-msgstr "Bezpieczeństwo"
+msgstr "Zabezpieczenia"
 
 #: ../gui/gdmsetup.glade.h:82
 msgid "Server Definition to Modify:"
-msgstr ""
+msgstr "Definicja serwera do modyfikacji:"
 
 #: ../gui/gdmsetup.glade.h:83
 msgid "Server Name:"
-msgstr ""
+msgstr "Nazwa serwera:"
 
 #: ../gui/gdmsetup.glade.h:84
-#, fuzzy
 msgid "Show _Face Browser"
-msgstr "Wyświetlanie menu op_eracje"
+msgstr "Wyświetlanie przeglądarki _twarzy"
 
 #: ../gui/gdmsetup.glade.h:85
 msgid "Show _actions menu"
 msgstr "Wyświetlanie menu op_eracje"
 
 #: ../gui/gdmsetup.glade.h:86
-#, fuzzy
 msgid ""
 "Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
 "set, none of the system commands will be available (this includes restart, "
@@ -3765,12 +3754,11 @@ msgid ""
 msgstr ""
 "Wyświetlanie menu \"Operacje\" (poprzednio znanego jako menu \"System\"). "
 "Jeżeli nie ustawione, żadne z poleceń systemowych nie będzie dostępne (w "
-"tym  restart, zamknięcie sytemu, konfiguracja, program wybierający)"
+"tym restart, zamknięcie sytemu, konfiguracja, program wybierający)"
 
 #: ../gui/gdmsetup.glade.h:87
-#, fuzzy
 msgid "Sound file:"
-msgstr "Plik _dźwiękowy:"
+msgstr "Plik dźwiękowy:"
 
 #: ../gui/gdmsetup.glade.h:89
 #, no-c-format
@@ -3793,9 +3781,8 @@ msgstr ""
 "nazwą komputera."
 
 #: ../gui/gdmsetup.glade.h:92
-#, fuzzy
 msgid "Test Sound"
-msgstr "_Testuj dźwięk"
+msgstr "Przetestuj dźwięk"
 
 #: ../gui/gdmsetup.glade.h:93
 msgid ""
@@ -3807,11 +3794,17 @@ msgid ""
 "listed in \"Exclude\"\n"
 "will not be displayed regardless of whether \"Include All Users\" is checked."
 msgstr ""
+"Zakładka \"Użytkownicy\" określa, którzy użytkownicy są widoczni dla GDM. Osoby z listy "
+"\"Włączeni\" pojawią się\n"
+"w przeglądarce twarzy jeżeli jest włączona w zakładce \"Zabezpieczenia\", pojawią się "
+"również w rozwijanej liście\n"
+"logowania automatycznego/z opóźnieniem czasowym w zakłądce \"Ogólne\". Użytkownicy "
+"wyświetleni na liście \"Wyłączeni\"\n"
+"nie będą dostępni, chyba, że zostanie zaznaczona opcja \"Wszyscy użytkownicy\"."
 
 #: ../gui/gdmsetup.glade.h:97
-#, fuzzy
 msgid "Themed Greeter"
-msgstr "Ekran powitalny"
+msgstr "Ekran powitalny z motywem"
 
 #: ../gui/gdmsetup.glade.h:98
 msgid "Timed Login"
@@ -3819,20 +3812,19 @@ msgstr "Logowanie z opóźnieniem czasowym"
 
 #: ../gui/gdmsetup.glade.h:99
 msgid "Use default Remote Welcome"
-msgstr ""
+msgstr "Domyślne powitanie zdalne"
 
 #: ../gui/gdmsetup.glade.h:100
-#, fuzzy
 msgid "Use default Welcome"
-msgstr "Systemowe ustawienie domyślne"
+msgstr "Domyślne powitanie"
 
 #: ../gui/gdmsetup.glade.h:101
 msgid "User to Include"
-msgstr ""
+msgstr "Użytkownicy włączeni"
 
 #: ../gui/gdmsetup.glade.h:102
 msgid "User to exclude"
-msgstr ""
+msgstr "Użytkownicy wyłączeni"
 
 #: ../gui/gdmsetup.glade.h:103
 msgid "Users"
@@ -3887,8 +3879,8 @@ msgid ""
 "_Include All Users (Get \"Include\" user list from /etc/passwd.  Not "
 "appropriate if using NIS)"
 msgstr ""
-"_Wszyscy użytkownicy (pobranie listy użytkowników /etc/passwd. Nie "
-"odpowiednie w przypadku użycia NIS)"
+"_Wszyscy użytkownicy (pobranie listy użytkowników z /etc/passwd. Nie "
+"zalecane w przypadku użycia NIS)"
 
 #: ../gui/gdmsetup.glade.h:116
 msgid "_Install new theme"
