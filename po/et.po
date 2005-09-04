@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GDM GNOME 2.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-08-15 14:05+0000\n"
-"PO-Revision-Date: 2005-08-15 17:50+0300\n"
+"PO-Revision-Date: 2005-09-02 18:44+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -675,7 +675,7 @@ msgid ""
 "Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-"Viga võtmes %s: %s.\n"
+"Võtme %s viga: %s.\n"
 "Kõikide võimalike käsureavõtmete vaatamiseks käivita '%s --help'.\n"
 
 #: ../daemon/gdm.c:2191
@@ -699,7 +699,7 @@ msgstr "%s: Viga signaali %s käsitleja ülesseadmisel: %s"
 
 #: ../daemon/gdm.c:2235
 msgid "gdm already running. Aborting!"
-msgstr "gdm juba töötab. Katkestan!"
+msgstr "gdm juba töötab. Katkestamine!"
 
 #: ../daemon/gdm.c:2334
 #, c-format
@@ -1033,7 +1033,7 @@ msgstr "%s: Ei saa avada järjekorda!"
 #: ../daemon/slave.c:3148
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
-msgstr "%s: Gdmgreeter-isse pole võimalik toru avada"
+msgstr "%s: Gdmchooser'isse pole võimalik toru avada"
 
 #: ../daemon/slave.c:3245
 msgid ""
@@ -1755,7 +1755,7 @@ msgstr "Käivitatud gdm'i kontrolle ei teostata"
 #: ../gui/gdmphotosetup.c:479 ../gui/gdmsetup.c:4593
 #: ../gui/greeter/greeter.c:1260
 msgid "Could not access GDM configuration file.\n"
-msgstr ""
+msgstr "GDM-i seadistusfailile pole võimalik ligi pääseda.\n"
 
 #. markup
 #: ../gui/gdmXnestchooser.c:534
@@ -1796,7 +1796,7 @@ msgstr "Ei leia vaba kuva numbrit"
 
 #: ../gui/gdmchooser.c:82
 msgid "Please wait: scanning local network..."
-msgstr "Palun oota: skannerin kohalikku võrku..."
+msgstr "Palun oota: sondeerin kohalikku võrku..."
 
 #: ../gui/gdmchooser.c:83
 msgid "No serving hosts were found."
@@ -1817,6 +1817,7 @@ msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
 "try again later."
 msgstr ""
+"Host \"%s\" ei toeta hetkel sisselogimisseansse. Palun proovi hiljem uuesti."
 
 #. markup
 #: ../gui/gdmchooser.c:1286
@@ -1907,7 +1908,7 @@ msgstr "*"
 
 #: ../gui/gdmchooser.glade.h:2
 msgid "A_dd host: "
-msgstr "L_isa host: "
+msgstr "Hosti l_isamine: "
 
 #: ../gui/gdmchooser.glade.h:3
 msgid "C_onnect"
@@ -1923,7 +1924,7 @@ msgstr "GDM'i hostivalija"
 
 #: ../gui/gdmchooser.glade.h:6
 msgid "How to use this application"
-msgstr ""
+msgstr "Rakenduse kasutamise kohta teabe kuvamine"
 
 #: ../gui/gdmchooser.glade.h:7
 msgid "Open a session to the selected host"
@@ -1931,11 +1932,11 @@ msgstr "Ava seanss valitud serverisse"
 
 #: ../gui/gdmchooser.glade.h:8
 msgid "Probe the network"
-msgstr ""
+msgstr "Võrgu sondeerimine"
 
 #: ../gui/gdmchooser.glade.h:9
 msgid "Query and add this host to the above list"
-msgstr ""
+msgstr "Hostile andmepäringu tegemine ja hosti lisamine ülalasuvasse loendisse"
 
 #: ../gui/gdmchooser.glade.h:10
 msgid "Status"
@@ -2651,14 +2652,14 @@ msgstr "Programmi '%s' pole võimali käivitada: %s."
 #: ../gui/gdmlogin.c:495
 #, c-format
 msgid "User %s will login in %d seconds"
-msgstr "Kasutaja %s logitakse sisse %d sekundi pärast"
+msgstr "Kasutaja %s logitakse sisse %d sekundi jooksul"
 
 #: ../gui/gdmlogin.c:499 ../gui/greeter/greeter_parser.c:1107
 #, c-format
 msgid "User %s will login in %d second"
 msgid_plural "User %s will login in %d seconds"
-msgstr[0] "Kasutaja %s logitakse sisse %d sekundi pärast"
-msgstr[1] "Kasutaja %s logitakse sisse %d sekundi pärast"
+msgstr[0] "Kasutaja %s logitakse sisse %d sekundi jooksul"
+msgstr[1] "Kasutaja %s logitakse sisse %d sekundi jooksul"
 
 #: ../gui/gdmlogin.c:726
 #, c-format
@@ -2672,7 +2673,7 @@ msgstr "%s%s - tere tulemast!%s"
 
 #: ../gui/gdmlogin.c:813 ../gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to restart the computer?"
-msgstr "Oled sa kindel, et soovid teha masinale alglaadimist?"
+msgstr "Oled sa kindel, et soovid masinat taaskäivitada?"
 
 #. markup
 #: ../gui/gdmlogin.c:815 ../gui/gdmlogin.c:2868
@@ -2692,7 +2693,7 @@ msgstr "_Seiska"
 
 #: ../gui/gdmlogin.c:849 ../gui/greeter/greeter_system.c:88
 msgid "Are you sure you want to suspend the computer?"
-msgstr "Oled sa kindel, et soovid masinat magama panna?"
+msgstr "Oled sa kindel, et soovid masinat ajutiselt peatada?"
 
 #. markup
 #: ../gui/gdmlogin.c:851 ../gui/gdmlogin.c:2895
@@ -2703,7 +2704,7 @@ msgstr "_Peata"
 #: ../gui/gdmlogin.c:881 ../gui/greeter/greeter.c:176
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
-msgstr "%s: Puudub seadistusfail %s.  Kasutan vaikeväärtusi."
+msgstr "%s: Puudub seadistusfail %s. Kasutatakse vaikeväärtusi."
 
 #: ../gui/gdmlogin.c:997 ../gui/greeter/greeter.c:295
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
@@ -2784,7 +2785,7 @@ msgstr "_Viimane"
 
 #: ../gui/gdmlogin.c:1438 ../gui/greeter/greeter_session.c:269
 msgid "Log in using the session that you have used last time you logged in"
-msgstr ""
+msgstr "Sisselogimine viimati sisselogimisel kasutatud seansiga"
 
 #. never_encoding
 #. no_group
@@ -2797,7 +2798,7 @@ msgstr "valitud keel %s"
 
 #: ../gui/gdmlogin.c:1565
 msgid "Log in using the language that you have used last time you logged in"
-msgstr ""
+msgstr "Sisselogimine viimati sisselogimisel kasutatud keele sätetega"
 
 #: ../gui/gdmlogin.c:1569
 msgid "_System Default"
@@ -2805,7 +2806,7 @@ msgstr "_Süsteemi vaikeväärtus"
 
 #: ../gui/gdmlogin.c:1580
 msgid "Log in using the default system language"
-msgstr ""
+msgstr "Sisselogimine süsteemis vaikimisi määratud keele sätetega"
 
 #: ../gui/gdmlogin.c:1604
 msgid "_Other"
@@ -2835,7 +2836,7 @@ msgstr "%a, %d. %b, %H:%M"
 #. equivalent.
 #: ../gui/gdmlogin.c:2623 ../gui/greeter/greeter_item.c:161
 msgid "%a %b %d, %l:%M %p"
-msgstr "%a, %d. %b, %I:%M %p"
+msgstr "%a, %d. %b, %H:%M"
 
 #: ../gui/gdmlogin.c:2672
 msgid "Finger"
@@ -2886,7 +2887,7 @@ msgstr "Seiska arvuti täielikult (nii, et saab välja lülitada)."
 
 #: ../gui/gdmlogin.c:2902 ../gui/greeter/greeter_system.c:218
 msgid "Suspend your computer"
-msgstr "Peata arvuti (säästuresiim)"
+msgstr "Peata arvuti ajutiselt"
 
 #: ../gui/gdmlogin.c:2908 ../gui/greeter/greeter_parser.c:1062
 msgid "_Actions"
@@ -2952,7 +2953,9 @@ msgstr "Arvutile alglaadimise tegemine"
 #: ../gui/gdmlogin.c:3798
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
-msgstr "Ei saa avada DefaultImage: %s. Näobrauser lülitatakse välja!"
+msgstr ""
+"Vaikimisi pilti (DefaultImage) pole võimalik avada: %s. Näosirvija jäetakse "
+"seisma!"
 
 #. markup
 #: ../gui/gdmlogin.c:3963 ../gui/greeter/greeter.c:1550
@@ -3016,7 +3019,7 @@ msgstr "%s (*.%s)"
 #: ../gui/gdmphotosetup.desktop.in.h:1
 msgid ""
 "Change the picture that will show in the GDM (login manager) face browser"
-msgstr "Vaheta pilt, mida näidatakse GDM (sisselogimise-haldur) näobrauseris"
+msgstr "Sisselogimishalduri (GDM) näosirvijas näidatava pildi vahetamine"
 
 #: ../gui/gdmphotosetup.desktop.in.h:2
 msgid "Login Photo"
@@ -3216,7 +3219,7 @@ msgstr "<b>Serveri sätted</b>"
 
 #: ../gui/gdmsetup.glade.h:5
 msgid "<b>Servers to Start</b>"
-msgstr ""
+msgstr "<b>Käivitatavad serverid</b>"
 
 #: ../gui/gdmsetup.glade.h:6
 msgid ""
@@ -3800,7 +3803,7 @@ msgstr "Vaikimisi pilti (DefaultImage) pole võimalik avada: %s!"
 
 #: ../gui/greeter/greeter_item_ulist.c:153
 msgid "Already logged in"
-msgstr ""
+msgstr "Juba sisselogitud"
 
 #: ../gui/greeter/greeter_parser.c:1082 ../gui/greeter/greeter_system.c:211
 msgid "Sus_pend"
@@ -4054,93 +4057,3 @@ msgstr "Liidest pole võimalik laadida. See on väga halb! (fail: %s)"
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "Liiga palju aliasetasemeid lokaadi jaoks; võib tähendada tsüklit"
 
-#~ msgid "Show choosable user images (_Face Browser)"
-#~ msgstr "Kasutajapiltide valik nähtaval (_näobrauser)"
-
-#~ msgid ""
-#~ "The GDM group '%s' does not exist. Please correct gdm configuration %s "
-#~ "and restart gdm."
-#~ msgstr ""
-#~ "GDM-i gruppi '%s' ei ole olemas. Palun paranda GDM-i seadistused %s ja "
-#~ "taaskäivita GDM."
-
-#~ msgid "Always use 24 hour cloc_k format"
-#~ msgstr "Alati kasutada 24-tunnist _kella"
-
-#~ msgid "The face browser is not configured"
-#~ msgstr "Näobrauser pole seadistatud"
-
-#~ msgid ""
-#~ "The face browser is not configured in the GDM configuration.  Please ask "
-#~ "your system administrator to enable this feature."
-#~ msgstr ""
-#~ "Näobrauseri kasutamist pole seadistatud.  Palun lase süsteemihalduril see "
-#~ "GDMi seadistusprogrammis lubada."
-
-#~ msgid "Select a photograph to show in the facebrowser:"
-#~ msgstr "Vali foto, mida näolehitsejas näidata:"
-
-#~ msgid "No picture selected."
-#~ msgstr "Pilti pole valitud."
-
-#~ msgid ""
-#~ "Please ask your system administrator to enable it in the GDM configurator "
-#~ "program."
-#~ msgstr "Paluge süsteemihalduril see GDMi'i seadistusprogrammis lubada."
-
-#~ msgid "No Background"
-#~ msgstr "Tausta pole"
-
-#~ msgid "A-M|English"
-#~ msgstr "A-M|Inglise"
-
-#~ msgid "Could not fork a new process!"
-#~ msgstr "Uut protsessi pole võimalik forkida!"
-
-#~ msgid "Welcome"
-#~ msgstr "Tere tulemast"
-
-#~ msgid "Welcome to %n"
-#~ msgstr "%n - tere tulemast!"
-
-#~ msgid "Failsafe Gnome"
-#~ msgstr "Veakindel (failsafe) Gnome"
-
-#~ msgid "Failsafe xterm"
-#~ msgstr "Veakindel (failsafe) xterm"
-
-#~ msgid "Picture is too large"
-#~ msgstr "Pilt on liiga suur"
-
-#~ msgid ""
-#~ "The system administrator disallowed pictures larger than %d bytes to show "
-#~ "in the face browser"
-#~ msgstr ""
-#~ "Süsteemihaldur on keelanud näobrauseris pildid, mis on suuremad kui %d "
-#~ "baiti"
-
-#~ msgid ""
-#~ "File %s cannot be open for reading\n"
-#~ "Error: %s"
-#~ msgstr ""
-#~ "Faili %s pole võimalik lugemiseks avada\n"
-#~ "Viga: %s"
-
-#~ msgid "Standard greeter"
-#~ msgstr "Tavaline tervitaja"
-
-#~ msgid "Graphical greeter"
-#~ msgstr "Graafiline tervitaja"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "Mitmesugust"
-
-#~ msgid ""
-#~ "Doubleclick on the user\n"
-#~ "to log in"
-#~ msgstr ""
-#~ "Sisselogimiseks tee\n"
-#~ "kasutaja peal topeltklõps"
-
-#~ msgid "(memory buffer"
-#~ msgstr "(mälupuhver"
