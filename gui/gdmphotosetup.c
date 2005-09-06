@@ -201,7 +201,7 @@ install_response (GtkWidget *file_dialog,
 	gtk_widget_destroy (file_dialog);
 }
 
-static GtkWidget *
+void
 add_preview_widget (GtkWidget *widget)
 {
 	GtkWidget *vbox;
