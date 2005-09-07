@@ -352,6 +352,7 @@ gdmcomm_get_auth_cookie (void)
 
 		cmd = g_strdup_printf (GDM_SUP_AUTH_LOCAL " %s", buffer);
 		ret = gdmcomm_call_gdm (cmd, NULL /* auth cookie */, "2.2.4.0", 5);
+		g_free (cmd);
 		if (ret != NULL &&
 		    strcmp (ret, "OK") == 0) {
 			g_free (ret);

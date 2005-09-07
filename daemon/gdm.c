@@ -323,6 +323,7 @@ check_servauthdir (struct stat *statbuf)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 
@@ -336,6 +337,7 @@ check_servauthdir (struct stat *statbuf)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 }
@@ -789,6 +791,7 @@ gdm_config_parse (void)
 				   "and restart GDM.")));
 		    gdm_text_message_dialog (s);
 		    GdmPidFile = NULL;
+		    g_free (s);
 		    gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
 	    }
     }
@@ -813,6 +816,7 @@ gdm_config_parse (void)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: Can't find the GDM user '%s'. Aborting!"), "gdm_config_parse", GdmUser);
     } else {
 	    GdmUserId = pwent->pw_uid;
@@ -828,6 +832,7 @@ gdm_config_parse (void)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: The GDM user should not be root. Aborting!"), "gdm_config_parse");
     }
 
@@ -842,6 +847,7 @@ gdm_config_parse (void)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: Can't find the GDM group '%s'. Aborting!"), "gdm_config_parse", GdmGroup);
     } else  {
 	    GdmGroupId = grent->gr_gid;   
@@ -857,6 +863,7 @@ gdm_config_parse (void)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: The GDM group should not be root. Aborting!"), "gdm_config_parse");
     }
 
@@ -935,6 +942,7 @@ gdm_config_parse (void)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, gdm_root_user (), GdmGroup);
     }
@@ -952,6 +960,7 @@ gdm_config_parse (void)
         if (GdmConsoleNotify)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
+	    g_free (s);
 	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
     }

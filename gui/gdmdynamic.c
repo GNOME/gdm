@@ -169,6 +169,7 @@ main (int argc, char *argv[])
             cookie = g_strdup(buf);
             VE_IGNORE_EINTR (fclose (fp));
         }
+	g_free (filename);
     }
 
     ret = gdmcomm_call_gdm (cstr, cookie, version, 5);

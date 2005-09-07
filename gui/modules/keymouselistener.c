@@ -174,7 +174,7 @@ init_xinput (GdkDisplay *display, GdkWindow *root)
 			device = XOpenDevice (GDK_DISPLAY_XDISPLAY (display),
 				devices[i].id);
 
-			for (j=0; j < device->num_classes && number < 40; j++) {
+			for (j=0; j < device->num_classes && number < 39; j++) {
 
 				switch (device->classes[j].input_class) 
 				{

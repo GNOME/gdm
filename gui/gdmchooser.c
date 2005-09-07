@@ -1341,11 +1341,13 @@ gdm_chooser_add_host (void)
 	qa6 = g_new0 (struct sockaddr_in6, 1);
 	qa6->sin6_family = AF_INET6;
 
-	if (have_ipv6 && strlen (name) == 32 && from_hex (name, (char *) &qa6->sin6_addr, strlen (name)) == 0) ;
+	if (have_ipv6 && strlen (name) == 32 && 
+	    from_hex (name, (char *) &qa6->sin6_addr, strlen (name)) == 0) ;
 
 	else
 #endif
-	if (strlen (name) == 8 && from_hex (name, (char *) &qa->sin_addr, strlen (name)) == 0) {
+	if (strlen (name) == 8 &&
+	    from_hex (name, (char *) &qa->sin_addr, strlen (name)) == 0) {
 #ifdef ENABLE_IPV6
 		if (have_ipv6) {
 			char tmpaddr[30];
@@ -1380,42 +1382,49 @@ gdm_chooser_add_host (void)
 			if (have_ipv6) {
 				char tmpaddr [30];
 
-				sprintf (tmpaddr, "::ffff:%s", inet_ntoa(((struct sockaddr_in *)result->ai_addr)->sin_addr));
+				sprintf (tmpaddr, "::ffff:%s",
+				  inet_ntoa(((struct sockaddr_in *)result->ai_addr)->sin_addr));
 				inet_pton (AF_INET6, tmpaddr, &qa6->sin6_addr);
 			}
 		}
 	}
 	else
 #endif
-	if ((hostent = gethostbyname (name)) != NULL && hostent->h_addrtype == AF_INET && hostent->h_length == 4) {
-					memmove (&qa->sin_addr, hostent->h_addr, 4);
+	if ((hostent = gethostbyname (name)) != NULL &&
+	     hostent->h_addrtype == AF_INET && hostent->h_length == 4) {
+		memmove (&qa->sin_addr, hostent->h_addr, 4);
 	} else {
-					GtkWidget *dialog;
-					gchar *msg;
+		GtkWidget *dialog;
+		gchar *msg;
 
-					msg = g_strdup_printf (_("Cannot find the host \"%s\". "
-					                         "Perhaps you have mistyped it."),
-					                       name);
+		msg = g_strdup_printf (_("Cannot find the host \"%s\". "
+		                         "Perhaps you have mistyped it."),
+		                       name);
 
-					dialog = ve_hig_dialog_new
-					(GTK_WINDOW (chooser) /* parent */,
-					 GTK_DIALOG_MODAL /* flags */,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_OK,
-					 _("Cannot find host"),
-					 msg);
-					 
-					g_free (msg);
+		dialog = ve_hig_dialog_new
+		(GTK_WINDOW (chooser) /* parent */,
+		 GTK_DIALOG_MODAL /* flags */,
+		 GTK_MESSAGE_ERROR,
+		 GTK_BUTTONS_OK,
+		 _("Cannot find host"),
+		 msg);
+		 
+		g_free (msg);
 
-					if (RUNNING_UNDER_GDM)
-						gdm_wm_center_window (GTK_WINDOW (dialog));
+		if (RUNNING_UNDER_GDM)
+			gdm_wm_center_window (GTK_WINDOW (dialog));
 
-					gdm_wm_no_login_focus_push ();
-					gtk_dialog_run (GTK_DIALOG (dialog));
-					gtk_widget_destroy (dialog);
-					gdm_wm_no_login_focus_pop ();
-					return; /* not a valid address */
-				}
+		gdm_wm_no_login_focus_push ();
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		gdm_wm_no_login_focus_pop ();
+		g_free (qa);
+#ifdef ENABLE_IPV6
+		g_free (qa6);
+#endif
+		return; /* not a valid address */
+	}
+
 #ifdef ENABLE_IPV6
 	if (have_ipv6) {
 		memset (&sock6, 0, sizeof (struct sockaddr_in6));
@@ -1484,6 +1493,10 @@ gdm_chooser_add_host (void)
 
 		/* empty the text entry to indicate success */
 		gtk_entry_set_text (GTK_ENTRY (add_entry), "");
+		g_free (qa);
+#ifdef ENABLE_IPV6
+		g_free (qa6);
+#endif
 		return;
 	}
 #ifdef ENABLE_IPV6
@@ -1514,11 +1527,9 @@ gdm_chooser_add_host (void)
 	/* empty the text entry to indicate success */
 	gtk_entry_set_text (GTK_ENTRY (add_entry), "");
 
-	if (have_ipv6)
-		g_free (qa);
+	g_free (qa);
 #ifdef ENABLE_IPV6
-	else
-		g_free (qa6);
+	g_free (qa6);
 #endif
 }
 
@@ -1577,6 +1588,7 @@ gdm_chooser_abort (const gchar *format, ...)
 
     syslog (LOG_ERR, "%s", s);
     closelog ();
+    g_free (s);
 
     exit (EXIT_FAILURE);
 }
@@ -1593,6 +1605,7 @@ gdm_chooser_warn (const gchar *format, ...)
 
     syslog (LOG_ERR, "%s", s);
     closelog ();
+    g_free (s);
 }
 
 

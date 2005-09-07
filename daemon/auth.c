@@ -581,6 +581,18 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     if (!d)
 	return FALSE;
 
+    if (d->local_auths != NULL) {
+	    gdm_auth_free_auth_list (d->local_auths);
+	    d->local_auths = NULL;
+    }
+
+    d->local_auths = get_local_auths (d);
+
+    if (d->local_auths == NULL) {
+	    gdm_error ("Can't make cookies");
+	    return FALSE;
+    }
+
     gdm_debug ("gdm_auth_user_add: Adding cookie for %d", user);
 
     /* Determine whether UserAuthDir is specified. Otherwise ~user is used */
@@ -595,18 +607,6 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 	    }
     } else {
 	    authdir = g_strdup (homedir);
-    }
-
-    if (d->local_auths != NULL) {
-	    gdm_auth_free_auth_list (d->local_auths);
-	    d->local_auths = NULL;
-    }
-
-    d->local_auths = get_local_auths (d);
-
-    if (d->local_auths == NULL) {
-	    gdm_error ("Can't make cookies");
-	    return FALSE;
     }
 
 try_user_add_again:
@@ -712,6 +712,8 @@ try_user_add_again:
 	af = gdm_safe_fopen_ap (d->userauth);
     }
 
+    g_free (authdir);
+
     if G_UNLIKELY (af == NULL) {
 	/* Really no need to clean up here - this process is a goner anyway */
 	gdm_error (_("%s: Could not open cookie file %s"),
@@ -728,8 +730,6 @@ try_user_add_again:
 		automatic_tmp_dir = TRUE;
 		goto try_user_add_again;
 	}
-
-	g_free (authdir);
 
 	return FALSE; 
     }
@@ -788,8 +788,6 @@ try_user_add_again:
     gdm_debug ("gdm_auth_user_add: Done");
 
     umask (022);
-
-    g_free (authdir);
     return ret;
 }
 

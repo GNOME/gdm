@@ -116,6 +116,7 @@ greeter_session_lookup (const char *saved_session)
 	  gchar *firstmsg;
 	  gchar *secondmsg;
 	  
+          g_free (session);
 	  session = g_strdup (default_session);
 	  firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
 	                                "future sessions?"),

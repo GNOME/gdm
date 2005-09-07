@@ -1113,6 +1113,7 @@ get_theme_file (const char *in, char **theme_dir)
     }
 
   config = ve_config_new (info);
+  g_free (info);
 
   s = ve_config_get_translated_string (config, "GdmGreeterTheme/Greeter");
   if (s == NULL || s[0] == '\0')

@@ -337,6 +337,7 @@ xservers_get_servers (GtkListStore *store)
 		int vt = atoi(key);
 		key = g_strconcat(GDM_KEY_SECTION_SERVERS, "/", key, NULL);
 		cpy = ve_config_get_string (cfg, key);
+		g_free (key);
 		server = ve_first_word (cpy);
 		options = ve_rest (cpy);
 		

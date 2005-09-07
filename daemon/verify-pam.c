@@ -488,16 +488,16 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     if (pamh == NULL)
 	return PAM_CONV_ERR;
     
-    reply = malloc (sizeof (struct pam_response) * num_msg);
-    
-    if (reply == NULL)
-	return PAM_CONV_ERR;
-
     /* Should never happen unless PAM is on crack and keeps asking questions
        after we told it to go away.  So tell it to go away again and
        maybe it will listen */
     if ( ! gdm_slave_action_pending ())
         return PAM_CONV_ERR;
+
+    reply = malloc (sizeof (struct pam_response) * num_msg);
+    
+    if (reply == NULL)
+	return PAM_CONV_ERR;
 
     memset (reply, 0, sizeof (struct pam_response) * num_msg);
 

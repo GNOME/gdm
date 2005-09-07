@@ -378,8 +378,10 @@ fill_model (GtkTreeModel *model)
 
 		path = g_build_filename (facedir, filename, NULL);
 		pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-		if (! pixbuf)
+		if (! pixbuf) {
+			g_free (path);
 			continue;
+		}
 
 		gtk_list_store_prepend (store, &iter);
 

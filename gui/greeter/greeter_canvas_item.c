@@ -565,8 +565,12 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 		gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, orig, NULL);
 		pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, width, height);
 
-		if (real_item != canvas_item)
+		if (real_item != canvas_item) {
 			gtk_object_destroy (GTK_OBJECT (canvas_item));
+			g_string_free (line, TRUE);
+			g_string_free (word, TRUE);
+			g_string_free (str, TRUE);
+		}
 		return;
 	}
 
@@ -579,8 +583,12 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 			*width = lwidth;
 		if (height != NULL)
 			*height = lheight;
-		if (real_item != canvas_item)
+		if (real_item != canvas_item) {
 			gtk_object_destroy (GTK_OBJECT (canvas_item));
+			g_string_free (line, TRUE);
+			g_string_free (word, TRUE);
+			g_string_free (str, TRUE);
+		}
 		return;
 	}
 

@@ -99,6 +99,7 @@ main (int argc, char **argv)
 	options_context = g_option_context_new (_("- migrate a backend display from one DMX display to another"));
 	g_option_context_add_main_entries (options_context, options, GETTEXT_PACKAGE);
 	g_option_context_parse (options_context, &argc, &argv, NULL);
+	g_option_context_free (options_context);
 
 	if (to_display == NULL) {
 		g_printerr (_("You must specify a destination DMX display using %s\n"), "--to");

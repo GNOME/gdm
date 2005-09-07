@@ -1206,16 +1206,20 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 	if (d->type != TYPE_XDMCP_PROXY) {
 		int r;
 
-		if (!GdmDoubleLoginWarning)
+		if (!GdmDoubleLoginWarning) {
+			g_free (migrate_to);
 			return TRUE;
+		}
 
 		if (GdmAlwaysLoginCurrentSession)
 			r = 1;
 		else
 			r = ask_migrate (migrate_to);
 
-		if (r <= 0)
+		if (r <= 0) {
+			g_free (migrate_to);
 			return TRUE;
+		}
 
 		if (migrate_to == NULL ||
 		    (migrate_to != NULL && r == 2)) {
@@ -2338,15 +2342,17 @@ get_facefile_from_global (const char *username,
 	picfile = g_build_filename (GdmGlobalFaceDir,
 				    username, NULL);
 
-	if (check_global_file (picfile, uid))
+	if (check_global_file (picfile, uid)) 
 		return picfile;
 
+	g_free (picfile);
 	picfile = gdm_make_filename (GdmGlobalFaceDir,
 				     username, ".png");
 
-	if (check_global_file (picfile, uid))
+	if (check_global_file (picfile, uid)) 
 		return picfile;
 
+	g_free (picfile);
 	return NULL;
 }
 
@@ -3512,6 +3518,7 @@ wipe_xsession_errors (struct passwd *pwent,
 			VE_IGNORE_EINTR (ent = readdir (dir));
 		}
 		VE_IGNORE_EINTR (closedir (dir));
+		g_free (prefix);
 	}
 
 	NEVER_FAILS_root_set_euid_egid (old, oldg);
@@ -3733,6 +3740,7 @@ session_child_run (struct passwd *pwent,
 					     language, _("System default"));
 		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
 		language = NULL;
+		g_free (msg);
 	}
 
 	/* Now still as root make the system authfile not readable by others,
@@ -4231,6 +4239,7 @@ gdm_slave_session_start (void)
 		    gdm_debug ("User canceled login");
 		    gdm_verify_cleanup (d);
 		    session_started = FALSE;
+		    g_free (usrlang);
 		    return;
 	    }
 
@@ -4240,6 +4249,7 @@ gdm_slave_session_start (void)
 		    gdm_debug ("User canceled login");
 		    gdm_verify_cleanup (d);
 		    session_started = FALSE;
+		    g_free (usrlang);
 		    return;
 	    }
     } else {

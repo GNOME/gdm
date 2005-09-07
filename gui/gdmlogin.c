@@ -1734,8 +1734,10 @@ theme_allowed (const char *theme)
 		return TRUE;
 
 	for (i = 0; vec[i] != NULL; i++) {
-		if (strcmp (vec[i], theme) == 0)
+		if (strcmp (vec[i], theme) == 0) {
+			g_strfreev (vec);
 			return TRUE;
+		}
 	}
 
 	g_strfreev (vec);
