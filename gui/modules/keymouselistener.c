@@ -997,7 +997,10 @@ void gtk_module_init(int *argc, char* argv[])
 	debug_gestures = TRUE;
 
     if (debug_gestures) {
-	openlog ("keymouselistener", LOG_PID, LOG_DAEMON);
+	/* If not running under GDM, then need to openlog ourselves */
+	if (!g_getenv ("RUNNING_UNDER_GDM") != NULL)
+		openlog ("gesturelistener", LOG_PID, LOG_DAEMON);
+
 	syslog (LOG_WARNING, "keymouselistener loaded.");
     }
 

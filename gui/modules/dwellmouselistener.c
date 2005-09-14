@@ -90,7 +90,7 @@ static guint leave_signal_id = 0;
 static int xinput_type_motion = 0;
 
 static Crossings *crossings = NULL;
-static int crossings_position = 0;
+static int cross_pos = 0;
 static guint max_crossings = 0;
 static XID *ext_input_devices = NULL;
 static gint ext_device_count = 0;
@@ -134,14 +134,14 @@ init_xinput (GdkDisplay *display, GdkWindow *root)
 		&num_devices);
 
 	if (debug_gestures)
-		syslog (LOG_WARNING, "checking %d input devices...",
+		syslog (LOG_WARNING, "Checking %d input devices...",
 			num_devices);
 
 	for (i=0; i < num_devices; i++) {
 		if (devices[i].use == IsXExtensionDevice) {
 			device = XOpenDevice (GDK_DISPLAY_XDISPLAY (display),
 				devices[i].id);
-			for (j=0; j < device->num_classes && number < 40; j++) {
+			for (j=0; j < device->num_classes && number < 39; j++) {
 				switch (device->classes[j].input_class) 
 				{
 				case ValuatorClass:
@@ -340,7 +340,7 @@ parse_line(gchar *buf)
 			if (bt == BINDING_DWELL_BORDER_ERROR) {
 				if (debug_gestures)
 					syslog (LOG_WARNING,
-						"Invalid value in binding %s\n",
+						"Invalid value in binding %s",
 						tmp_binding->binding_str);
 
 				continue;
@@ -363,13 +363,13 @@ parse_line(gchar *buf)
 
 		bd = get_binding_direction (tmp_string[0]);
 
-		if (bd == BINDING_DWELL_DIRECTION_ERROR)
-			if (debug_gestures) {
-				syslog (LOG_WARNING, "Invalid value in binding %s",
-					tmp_binding->binding_str);
-			} else {
-				tmp_binding->input.start_direction = bd;
-			}
+		if (bd == BINDING_DWELL_DIRECTION_ERROR) {
+			if (debug_gestures)
+			    syslog (LOG_WARNING, "Invalid value in binding %s",
+			       tmp_binding->binding_str);
+		} else {
+			tmp_binding->input.start_direction = bd;
+		}
 
 		/*
 		 * Find the timeout duration (in ms). Timeout value is the 
@@ -405,7 +405,8 @@ parse_line(gchar *buf)
 	while (*keyservice && isspace (*keyservice))
 		keyservice++;
 
-	tmp_binding->actions = g_slist_append (tmp_binding->actions, g_strdup (keyservice));
+	tmp_binding->actions = g_slist_append (tmp_binding->actions,
+		g_strdup (keyservice));
 
 	return tmp_binding;
 }
@@ -424,7 +425,8 @@ binding_already_used (Binding *binding)
 			int i;
 
 			for (i=0; i < tmp_binding->input.num_gestures; i++) {
-				if (tmp_binding->input.gesture != binding->input.gesture)
+				if (tmp_binding->input.gesture !=
+				    binding->input.gesture)
 					break;
 			}
 
@@ -446,7 +448,8 @@ load_bindings(gchar *path)
 	if (fp == NULL) {
 		/* TODO - I18n */
 		if (debug_gestures)
-			syslog (LOG_WARNING, "Cannot open bindings file: %s", path);
+			syslog (LOG_WARNING,
+				"Cannot open bindings file: %s", path);
 		return;
 	}
 
@@ -454,24 +457,30 @@ load_bindings(gchar *path)
 		tmp_binding = (Binding *)parse_line (buf);
 
 		if (tmp_binding) {
-			/* Is the key already associated with an existing binding? */
+			/* Is the key already associated with an existing */
+			/* binding? */
 			if (strcmp (tmp_binding->binding_str, "<Add>") == 0) {
 				/* Add another action to the last binding */
 				Binding *last_binding;
 				GSList *last_item = g_slist_last (binding_list);
 
-				/* If there is no last_item to add onto ignore the entry */
+				/* If there is no last_item to add onto */
+				/* ignore the entry */
 				if (last_item) {
-					last_binding = (Binding *)last_item->data;
+				    last_binding = (Binding *)last_item->data;
 
-					/* Add the action to the last binding's actions list */
-					last_binding->actions = g_slist_append (last_binding->actions,
-						g_strdup ((gchar *)tmp_binding->actions->data));
+				    /* Add the action to the last */
+				    /*  binding's actions list */
+				    last_binding->actions =
+				      g_slist_append (last_binding->actions,
+				      g_strdup ((gchar *)tmp_binding->actions->data));
 				}
 				free_binding (tmp_binding);
+
 				/* Ignore duplicate bindings */
 			} else if (!binding_already_used (tmp_binding))
-				binding_list = g_slist_append (binding_list, tmp_binding);
+				binding_list = g_slist_append (binding_list,
+					tmp_binding);
 			else
 				free_binding (tmp_binding);
 		}
@@ -497,143 +506,172 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                            gpointer                     data)
 {
 	GObject *object;
+	GtkWidget *widget;
+	GtkWindow *window;
 	GdkEventCrossing *event;
+	GdkRectangle rect;
+	GSList *li;
+	double mid_x, mid_y;
 	int i;
 
 	object = g_value_get_object (param_values + 0);
 	event  = g_value_get_boxed (param_values + 1);
+	widget = GTK_WIDGET (object);
+	window = GTK_WINDOW (object);
 
-	if (event->detail != GDK_NOTIFY_INFERIOR && 
-	    GTK_IS_WINDOW (object) && GTK_WIDGET_TOPLEVEL (object)) {
-
-		GtkWidget *widget = GTK_WIDGET (object);
-		GtkWindow *window = GTK_WINDOW (object);
-		GdkRectangle rect;
-		GSList *li, *act_li;
-		double mid_x, mid_y;
-
-		gdk_window_get_frame_extents (widget->window, &rect);
-
-		mid_x = rect.x + (rect.width  / 2);
-		mid_y = rect.y + (rect.height / 2);
-
-		/* avoid division by 0 */
-		if (fabs (event->x_root - mid_x) <= 0.001) {
-			if (event->x_root < mid_x)
-				crossings[crossings_position].type = BINDING_DWELL_BORDER_LEFT;
-			else
-				crossings[crossings_position].type = BINDING_DWELL_BORDER_RIGHT;
-		} else {
-			double slope = (event->y_root - mid_y) / (event->x_root - mid_x);
-
-			if (event->y_root < mid_y) {
-				if (slope > 1 || slope < -1)
-					crossings[crossings_position].type = BINDING_DWELL_BORDER_TOP;
-				else if (slope >= 0)
-					crossings[crossings_position].type = BINDING_DWELL_BORDER_LEFT;
-				else
-					crossings[crossings_position].type = BINDING_DWELL_BORDER_RIGHT;
-			} else {
-				if (slope > 1 || slope < -1)
-					crossings[crossings_position].type = BINDING_DWELL_BORDER_BOTTOM;
-				else if (slope >= 0)
-					crossings[crossings_position].type = BINDING_DWELL_BORDER_RIGHT;
-				else
-					crossings[crossings_position].type = BINDING_DWELL_BORDER_LEFT;
-			}
-		}
-
-		if (ihint->signal_id == enter_signal_id)
-			crossings[crossings_position].direction = BINDING_DWELL_DIRECTION_IN;
-		else if (ihint->signal_id == leave_signal_id)
-			crossings[crossings_position].direction = BINDING_DWELL_DIRECTION_OUT;
-
-		crossings[crossings_position].time = event->time;
-
-		/* Check to see if a gesture has been completed */
-		for (li=binding_list; li != NULL; li = li->next) {
-			Binding *curr_binding = (Binding *) li->data;
-			int start_position = (crossings_position - curr_binding->input.num_gestures + 1 +
-				max_crossings) % max_crossings;
-
-			/* being anal here */
-			if (start_position < 0)
-				start_position = 0;
-
-			/* check initial crossing direction */
-			if (curr_binding->input.start_direction == crossings[start_position].direction) {
-				/* check borders */
-				for (i=0; i < curr_binding->input.num_gestures; i++) {
-					if (curr_binding->input.gesture[i] !=
-					    crossings[(start_position + i) % max_crossings].type)
-						break; 
-				}
-
-				/* check timeout values */
-				if (i == curr_binding->input.num_gestures) {
-					for (i=1; i < curr_binding->input.num_gestures; i++) {
-						int cur_pos  = (start_position + i) % max_crossings;
-						int prev_pos = (start_position + i - 1) % max_crossings; 
-						guint32 diff_time = crossings[cur_pos].time -
-							crossings[prev_pos].time;
-	    
-						if (curr_binding->timeout != 0 &&
-						    curr_binding->timeout < diff_time)
-							break; 
-					}
-				}
-
-				/* If this is true, then gesture was recognized */
-				if (i == curr_binding->input.num_gestures) {
-					gboolean retval;
-					gchar **argv = NULL;
-					gchar **envp = NULL;
-
-					for (act_li=curr_binding->actions; act_li != NULL; act_li = act_li->next) {
-						gchar *action = (gchar *)act_li->data;
-						g_return_val_if_fail (action != NULL, TRUE);
-
-						if (!g_shell_parse_argv (action, NULL, &argv, NULL))
-							continue;
-
-						envp = get_exec_environment (gtk_window_get_screen(window));
-
-						retval = g_spawn_async (NULL, argv, envp,
-							G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-
-						g_strfreev (argv);
-						g_strfreev (envp);
-
-						if ( ! retval) {
-							GtkWidget *dialog =
-								gtk_message_dialog_new (NULL,
-									0, GTK_MESSAGE_ERROR,
-									GTK_BUTTONS_OK,
-									_("Error while trying to run (%s)\n"\
-									"which is linked to (%s)"),
-									action, curr_binding->binding_str);
-							gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
-								FALSE);
-							g_signal_connect (dialog, "response",
-								G_CALLBACK (gtk_widget_destroy), NULL);
-							gtk_widget_show (dialog);
-						} else {
-							GdkCursor *cursor = gdk_cursor_new (GDK_WATCH);
-							gdk_window_set_cursor (gdk_get_default_root_window (),
-								cursor);
-							gdk_cursor_unref (cursor);
-							g_timeout_add (2000, change_cursor_back, NULL);
-							latch_core_pointer = FALSE;
-							/* once we've recognized a gesture, we need to
-							   leave the pointer alone */
-						}
-					}
-				}
-			}
-		}
-
-		crossings_position = (crossings_position + 1) % max_crossings;
+	if (event->detail == GDK_NOTIFY_INFERIOR ||
+	    !GTK_IS_WINDOW (object) || !GTK_WIDGET_TOPLEVEL (object)) {
+		return TRUE;
 	}
+
+	gdk_window_get_frame_extents (widget->window, &rect);
+
+	mid_x = rect.x + (rect.width  / 2);
+	mid_y = rect.y + (rect.height / 2);
+
+	/* avoid division by 0 */
+	if (fabs (event->x_root - mid_x) <= 0.001) {
+		if (event->x_root < mid_x)
+			crossings[cross_pos].type = BINDING_DWELL_BORDER_LEFT;
+		else
+			crossings[cross_pos].type = BINDING_DWELL_BORDER_RIGHT;
+	} else {
+		double slope = (event->y_root - mid_y) / (event->x_root - mid_x);
+
+		if (event->y_root < mid_y) {
+			if (slope > 1 || slope < -1)
+				crossings[cross_pos].type = BINDING_DWELL_BORDER_TOP;
+			else if (slope >= 0)
+				crossings[cross_pos].type = BINDING_DWELL_BORDER_LEFT;
+			else
+				crossings[cross_pos].type = BINDING_DWELL_BORDER_RIGHT;
+		} else {
+			if (slope > 1 || slope < -1)
+				crossings[cross_pos].type = BINDING_DWELL_BORDER_BOTTOM;
+			else if (slope >= 0)
+				crossings[cross_pos].type = BINDING_DWELL_BORDER_RIGHT;
+			else
+				crossings[cross_pos].type = BINDING_DWELL_BORDER_LEFT;
+		}
+	}
+
+	if (ihint->signal_id == enter_signal_id)
+		crossings[cross_pos].direction = BINDING_DWELL_DIRECTION_IN;
+	else if (ihint->signal_id == leave_signal_id)
+		crossings[cross_pos].direction = BINDING_DWELL_DIRECTION_OUT;
+
+	if (debug_gestures) {
+		if (crossings[cross_pos].type == BINDING_DWELL_BORDER_BOTTOM) 
+			syslog (LOG_WARNING, "Crossing bottom.");
+		else if (crossings[cross_pos].type == BINDING_DWELL_BORDER_TOP) 
+			syslog (LOG_WARNING, "Crossing top.");
+		else if (crossings[cross_pos].type == BINDING_DWELL_BORDER_LEFT) 
+			syslog (LOG_WARNING, "Crossing left.");
+		else if (crossings[cross_pos].type == BINDING_DWELL_BORDER_RIGHT) 
+			syslog (LOG_WARNING, "Crossing right.");
+
+		if (crossings[cross_pos].direction == BINDING_DWELL_DIRECTION_IN) 
+			syslog (LOG_WARNING, "Crossing in.");
+		else if (crossings[cross_pos].direction == BINDING_DWELL_DIRECTION_OUT) 
+			syslog (LOG_WARNING, "Crossing out.");
+	}
+
+	crossings[cross_pos].time = event->time;
+
+	/* Check to see if a gesture has been completed */
+	for (li=binding_list; li != NULL; li = li->next) {
+		Binding *curr_binding = (Binding *) li->data;
+		GSList *act_li;
+		gboolean retval;
+		gchar **argv  = NULL;
+		gchar **envp  = NULL;
+		int start_pos = (cross_pos - curr_binding->input.num_gestures + 1 +
+			max_crossings) % max_crossings;
+
+		if (debug_gestures) {
+			syslog (LOG_WARNING, "Checking against registered gestures");
+		}
+
+		/* being anal here */
+		if (start_pos < 0)
+			start_pos = 0;
+
+		/* check direction */
+		if (curr_binding->input.start_direction != crossings[start_pos].direction) 
+			continue;
+
+		/* check borders */
+		for (i=0; i < curr_binding->input.num_gestures; i++) {
+			if (curr_binding->input.gesture[i] !=
+			    crossings[(start_pos + i) % max_crossings].type)
+				break; 
+		}
+
+		if (i != curr_binding->input.num_gestures)
+			continue;
+
+		/* check timeout values */
+		for (i=1; i < curr_binding->input.num_gestures; i++) {
+			int cur_pos  = (start_pos + i) % max_crossings;
+			int prev_pos = (start_pos + i - 1) % max_crossings; 
+			guint32 diff_time = crossings[cur_pos].time -
+					    crossings[prev_pos].time;
+  
+			if (curr_binding->timeout != 0 &&
+			    curr_binding->timeout < diff_time)
+				break; 
+		}
+
+		if (i != curr_binding->input.num_gestures)
+			continue;
+
+		/* gesture recognized */
+		if (debug_gestures) {
+			syslog (LOG_WARNING, "Found gesture");
+		}
+
+		for (act_li=curr_binding->actions; act_li != NULL; act_li=act_li->next) {
+			gchar *action = (gchar *)act_li->data;
+
+			g_return_val_if_fail (action != NULL, TRUE);
+
+			if (!g_shell_parse_argv (action, NULL, &argv, NULL))
+				continue;
+
+			envp = get_exec_environment (gtk_window_get_screen(window));
+
+			retval = g_spawn_async (NULL, argv, envp,
+				G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+
+			g_strfreev (argv);
+			g_strfreev (envp);
+
+			if ( ! retval) {
+				GtkWidget *dialog = gtk_message_dialog_new (NULL,
+						0, GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("Error while trying to run (%s)\n"\
+						"which is linked to (%s)"),
+						action, curr_binding->binding_str);
+				gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
+					FALSE);
+				g_signal_connect (dialog, "response",
+					G_CALLBACK (gtk_widget_destroy), NULL);
+				gtk_widget_show (dialog);
+			} else {
+				GdkCursor *cursor = gdk_cursor_new (GDK_WATCH);
+				gdk_window_set_cursor (gdk_get_default_root_window (),
+					cursor);
+				gdk_cursor_unref (cursor);
+				g_timeout_add (2000, change_cursor_back, NULL);
+				latch_core_pointer = FALSE;
+				/* once we've recognized a gesture, we need to *
+				/* leave the pointer alone */
+			}
+		}
+	}
+
+	cross_pos = (cross_pos + 1) % max_crossings;
 
 	return TRUE;
 }
@@ -703,7 +741,10 @@ void gtk_module_init (int *argc, char* argv[])
 		debug_gestures = TRUE;
 
 	if (debug_gestures) {
-		openlog ("dwellmouselistener", LOG_PID, LOG_DAEMON);
+		/* If not running under GDM, then need to openlog ourselves */
+		if (!g_getenv ("RUNNING_UNDER_GDM") != NULL)
+			openlog ("gesturelistener", LOG_PID, LOG_DAEMON);
+
 		syslog (LOG_WARNING, "dwellmouselistener loaded.");
 	}
 

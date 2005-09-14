@@ -2767,6 +2767,10 @@ gdm_slave_greeter (void)
 	if ( ! ve_string_empty (d->theme_name))
 		ve_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
+	if (GdmDebug) {
+		ve_setenv ("GDM_DEBUG_GESTURES", "true", TRUE);
+	}
+
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local
 	 * display so it's not a security risk */
