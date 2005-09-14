@@ -174,7 +174,7 @@ init_xinput (GdkDisplay *display, GdkWindow *root)
 			device = XOpenDevice (GDK_DISPLAY_XDISPLAY (display),
 				devices[i].id);
 
-			for (j=0; j < device->num_classes && number < 40; j++) {
+			for (j=0; j < device->num_classes && number < 39; j++) {
 
 				switch (device->classes[j].input_class) 
 				{
@@ -997,7 +997,10 @@ void gtk_module_init(int *argc, char* argv[])
 	debug_gestures = TRUE;
 
     if (debug_gestures) {
-	openlog ("keymouselistener", LOG_PID, LOG_DAEMON);
+	/* If not running under GDM, then need to openlog ourselves */
+	if (!g_getenv ("RUNNING_UNDER_GDM") != NULL)
+		openlog ("gesturelistener", LOG_PID, LOG_DAEMON);
+
 	syslog (LOG_WARNING, "keymouselistener loaded.");
     }
 
