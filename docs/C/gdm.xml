@@ -595,9 +595,9 @@
 
       <para>
         GDM itself will use syslog to log errors or status.  It can also log
-        debugging information, but this is not generally useful unless
-        something is very wrong, and this must be enabled in the configuration
-        file.
+        debugging information, which can be useful for tracking down problems
+        if GDM is not working properly.  This can be enabled in the 
+        configuration file.
       </para>
 
       <para>
@@ -3243,6 +3243,42 @@ XKeepsCrashing
         
       </sect3>
 
+      <sect3 id="debugsection">
+
+        <title>Debug Configuration</title>
+
+        <variablelist>
+          <title>[debug]</title>
+
+          <varlistentry>
+            <term>Enable</term>
+            <listitem>
+              <synopsis>Enable=false</synopsis>
+              <para>
+                Setting to true sends debug ouput to the syslog.  This can be 
+                useful for tracking down problems with GDM.  This output 
+                tends to be verbose so should not be turned on for general
+                use.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Gestures</term>
+            <listitem>
+              <synopsis>Gestures=false</synopsis>
+              <para>
+                Setting to true sends debug ouput concerning the accessibility
+                gesture listeners to the syslog.  This can be useful for tracking
+                down problems with them not working properly.  This output tends
+                to be verbose so should not be turned on for general use.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+        
+      </sect3>
+
       <sect3 id="serverdefs">
 
         <title>X Server definitions</title>
@@ -4187,7 +4223,8 @@ Supported since: 2.2.4.0
             <term>-d, --debug</term>
             <listitem>
               <para>
-                Debugging output
+                Turns on debugging output which gets sent to syslog.  Same as turning
+                on debug in the configuration file.
               </para>
             </listitem>
           </varlistentry>

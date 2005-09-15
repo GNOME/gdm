@@ -454,6 +454,12 @@ Multicast=false
 # and it creates a LOT of spew of random stuff to the syslog.  However it
 # can be useful in determining when something is going very wrong.
 Enable=false
+# This will enable debug messages for accessibilty gesture listeners
+# into the syslog.  This includes output about key events, mouse
+# button events, and pointer motion events.  This is useful for
+# figuring out the cause of why the gesture listeners may not be
+# working, but is too verbose for general debug.
+Gestures=false
 
 [servers]
 # These are the standard servers.  You can add as many you want here

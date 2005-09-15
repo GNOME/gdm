@@ -188,6 +188,7 @@ extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmDebug;
+extern gboolean GdmDebugGestures;
 extern gboolean GdmDisallowTCP;
 extern gchar *GdmSoundProgram;
 extern gchar *GdmSoundOnLoginReadyFile;
@@ -2513,7 +2514,7 @@ run_pictures (void)
 
 		NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 	}
-	g_free (response);
+	g_free (response); /* not reached */
 }
 
 /* hakish, copy file (owned by fromuid) to a temp file owned by touid */
@@ -2767,7 +2768,7 @@ gdm_slave_greeter (void)
 	if ( ! ve_string_empty (d->theme_name))
 		ve_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
-	if (GdmDebug) {
+	if (GdmDebugGestures) {
 		ve_setenv ("GDM_DEBUG_GESTURES", "true", TRUE);
 	}
 

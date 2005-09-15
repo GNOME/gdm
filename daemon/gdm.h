@@ -345,6 +345,7 @@ enum {
 #define GDM_KEY_ALLOWADD "chooser/AllowAdd=true"
 
 #define GDM_KEY_DEBUG "debug/Enable=false"
+#define GDM_KEY_DEBUG_GESTURES "debug/Gestures=false"
 
 #define GDM_KEY_SECTION_GREETER "greeter"
 #define GDM_KEY_SECTION_SERVERS "servers"

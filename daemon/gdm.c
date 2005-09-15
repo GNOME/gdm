@@ -218,6 +218,7 @@ gboolean GdmXdmcpProxy = FALSE;
 gchar *GdmXdmcpProxyCommand = NULL;
 gchar *GdmXdmcpProxyReconnect = NULL;
 gboolean  GdmDebug = FALSE;
+gboolean  GdmDebugGestures = FALSE;
 gboolean  GdmAllowRoot = FALSE;
 gboolean  GdmAllowRemoteRoot = FALSE;
 gboolean  GdmAllowRemoteAutoLogin = FALSE;
@@ -598,6 +599,7 @@ gdm_config_parse (void)
 	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
     GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
+    GdmDebugGestures = ve_config_get_bool (cfg, GDM_KEY_DEBUG_GESTURES);
 
     /* sanitize some values */
 
@@ -3875,6 +3877,8 @@ update_config (const char *key)
 		GdmPingInterval = ve_config_get_int (cfg, GDM_KEY_PINGINTERVAL);
 	} else if (is_key (key, GDM_KEY_DEBUG)) {
 		GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
+	} else if (is_key (key, GDM_KEY_DEBUG_GESTURES)) {
+		GdmDebugGestures = ve_config_get_bool (cfg, GDM_KEY_DEBUG_GESTURES);
 	} else if (is_key (key, GDM_KEY_UDPPORT)) {
 		int val = ve_config_get_int (cfg, GDM_KEY_UDPPORT);
 		if (GdmPort == val)
@@ -4296,6 +4300,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS, &GdmSoundOnLoginSuccess)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_FAILURE, &GdmSoundOnLoginFailure)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEBUG, &GdmDebug)) &&
+		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEBUG_GESTURES, &GdmDebugGestures)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOW_GTK_THEME_CHANGE, NULL)) &&
 		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_TITLE_BAR, NULL)) &&
                     !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_INCLUDEALL, NULL)) &&
