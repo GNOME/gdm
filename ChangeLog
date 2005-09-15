@@ -1,3 +1,10 @@
+2005-09-14  Bastien Nocera  <hadess@hadess.net>
+
+	* daemon/xdmcp.c: (gdm_xdmcp_decode_packet):
+	 Make XdmcpFill() failure a debug, as it also happens when the client
+	 disconnects from the XDMCP server before the session was setup
+	 (Closes: #316316)
+
 2005-09-14  Brian Cameron <Brian.Cameron@sun.com>
 
 	* daemon/gdm.[ch], daemon/slave.c,

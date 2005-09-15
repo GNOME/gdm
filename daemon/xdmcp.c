@@ -554,7 +554,7 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
         return TRUE;
 
     if G_UNLIKELY (!XdmcpFill (gdm_xdmcpfd, &buf, (XdmcpNetaddr)&clnt_sa, &sa_len)) {
-	gdm_error (_("%s: Could not create XDMCP buffer!"),
+	gdm_debug (_("%s: Could not create XDMCP buffer!"),
 		   "gdm_xdmcp_decode_packet");
 	return TRUE;
     }
