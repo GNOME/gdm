@@ -4222,12 +4222,13 @@ gdm_slave_session_start (void)
 	 */
 	gdm_error_box (d,
 		GTK_MESSAGE_WARNING,
-		_("Your $HOME/.dmrc file has incorrect "
-		  "permissions and is being ignored.  "
+		_("User's $HOME/.dmrc file is being ignored.  "
 		  "This prevents the default session "
-		  "and language from being saved.  "
-		  "File sould be owned by user and have "
-		  "644 permissions."));
+		  "and language from being saved.  File "
+		  "should be owned by user and have 644 "
+		  "permissions.  User's $HOME directory "
+		  "must be owned by user and writable by "
+		  "the GDM user."));
 	usrsess = g_strdup ("");
 	usrlang = g_strdup ("");
     }
