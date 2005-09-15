@@ -4227,8 +4227,8 @@ gdm_slave_session_start (void)
 		  "and language from being saved.  File "
 		  "should be owned by user and have 644 "
 		  "permissions.  User's $HOME directory "
-		  "must be owned by user and writable by "
-		  "the GDM user."));
+		  "must be owned by user and not writable "
+		  "by other users."));
 	usrsess = g_strdup ("");
 	usrlang = g_strdup ("");
     }
