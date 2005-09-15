@@ -879,11 +879,11 @@ root_not_allowed (GtkWidget *combo_box)
 /* Sets up Automatic Login Username and Timed Login User entry comboboxes
  * from the general configuration tab. */
 static void
-setup_user_combobox (const char *name, const char *key)
+setup_user_combobox_list (const char *name, const char *key)
 {
-	GtkWidget *combobox_entry = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX_ENTRY);
-	GtkListStore *combobox_store = gtk_list_store_new (USERLIST_NUM_COLUMNS,
-		G_TYPE_STRING);
+	GtkListStore *combobox_store = NULL;
+	GtkWidget    *combobox_entry = glade_helper_get (xml, name,
+		GTK_TYPE_COMBO_BOX_ENTRY);
 	GtkTreeIter iter;
 	GList *users = NULL;
 	GList *users_string = NULL;
@@ -894,7 +894,8 @@ setup_user_combobox (const char *name, const char *key)
 	int selected = -1;
 	int cnt;
 
-	selected_user = ve_config_get_string (ve_config_get (config_file), key);
+	combobox_store = gtk_list_store_new (USERLIST_NUM_COLUMNS, G_TYPE_STRING);
+	selected_user  = ve_config_get_string (ve_config_get (config_file), key);
 
 	/* normally empty */
 	users_string = g_list_append (users_string, g_strdup (""));
@@ -927,18 +928,24 @@ setup_user_combobox (const char *name, const char *key)
 	if (selected != -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combobox_entry), selected);
 
+	g_list_foreach (users, (GFunc)g_free, NULL);
+	g_list_free (users);
+	g_list_foreach (users_string, (GFunc)g_free, NULL);
+	g_list_free (users_string);
+	g_free (selected_user);
+}
+
+static void
+setup_user_combobox (const char *name, const char *key)
+{
+	GtkWidget *combobox_entry = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX_ENTRY);
+	setup_user_combobox_list (name, key);
 	g_object_set_data_full (G_OBJECT (combobox_entry), "key",
 	                        g_strdup (key), (GDestroyNotify) g_free);
 	g_signal_connect (G_OBJECT (combobox_entry), "changed",
 	                  G_CALLBACK (combobox_changed), NULL);
 	g_signal_connect (G_OBJECT (combobox_entry), "changed",
 	                  G_CALLBACK (root_not_allowed), NULL);
-
-	g_list_foreach (users, (GFunc)g_free, NULL);
-	g_list_free (users);
-	g_list_foreach (users_string, (GFunc)g_free, NULL);
-	g_list_free (users_string);
-	g_free (selected_user);
 }
 
 static void
@@ -1174,6 +1181,7 @@ browser_apply (GtkWidget *button, gpointer data)
 	char *val;
 	GtkTreeIter iter;
 	gboolean valid;
+	gboolean update_greet = FALSE;
 	char *sep = "";
 
 	valid = gtk_tree_model_get_iter_first (fc->include_model, &iter);
@@ -1195,7 +1203,7 @@ browser_apply (GtkWidget *button, gpointer data)
 		ve_config_set_string (config, GDM_KEY_INCLUDE, userlist->str);
 		ve_config_save (config, FALSE /* force */);
 
-		update_greeters ();
+		update_greet = TRUE;
 	}
 
 	g_string_free (userlist, TRUE);
@@ -1222,8 +1230,21 @@ browser_apply (GtkWidget *button, gpointer data)
 		ve_config_set_string (config, GDM_KEY_EXCLUDE, userlist->str);
 		ve_config_save (config, FALSE /* force */);
 
-		update_key (GDM_KEY_EXCLUDE);
+		update_greet = TRUE;
 	}
+
+	if (update_greet)
+		update_greeters ();
+
+	/* Re-initialize combox with updated userlist. */
+	GdmInclude = ve_config_get_string (ve_config_get (config_file),
+					   GDM_KEY_INCLUDE);
+	GdmExclude = ve_config_get_string (ve_config_get (config_file),
+					   GDM_KEY_EXCLUDE);
+	setup_user_combobox_list ("autologin_combo",
+			  GDM_KEY_AUTOMATICLOGIN);
+	setup_user_combobox_list ("timedlogin_combo",
+			  GDM_KEY_TIMED_LOGIN);
 
 	g_string_free (userlist, TRUE);
 	g_free (val);
@@ -1444,6 +1465,19 @@ greeter_toggle_toggled (GtkWidget *toggle)
 	run_timeout (toggle, 500, greeter_toggle_timeout);
 }
 
+include_all_toggle (GtkWidget *toggle)
+{
+	if (GTK_TOGGLE_BUTTON (toggle)->active)
+		GdmIncludeAll = TRUE;
+	else
+		GdmIncludeAll = FALSE;
+
+	setup_user_combobox_list ("autologin_combo",
+			  GDM_KEY_AUTOMATICLOGIN);
+	setup_user_combobox_list ("timedlogin_combo",
+			  GDM_KEY_TIMED_LOGIN);
+}
+
 static void
 setup_greeter_toggle (const char *name,
 		      const char *key)
@@ -1491,6 +1525,8 @@ setup_greeter_toggle (const char *name,
 			G_CALLBACK (sensitive_entry_toggled), fb_includebox);
 		g_signal_connect (G_OBJECT (toggle), "toggled",	
 			G_CALLBACK (sensitive_entry_toggled), fb_buttonbox);
+		g_signal_connect (G_OBJECT (toggle), "toggled",	
+			G_CALLBACK (include_all_toggle), NULL);
 	}
 
 	g_signal_connect (G_OBJECT (toggle), "toggled",

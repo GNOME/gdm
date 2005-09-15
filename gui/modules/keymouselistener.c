@@ -229,7 +229,6 @@ static void create_event_watcher (void)
 	if (!display)
 		return;
 
-	/* Switch off keyboard autorepeat */
 	load_gestures(CONFIGFILE);
 
 	init_xinput (display, gdk_screen_get_root_window (
