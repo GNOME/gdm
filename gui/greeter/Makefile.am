@@ -65,8 +65,7 @@ gdmgreeter_LDADD = \
 	-L$(top_builddir)/gui	\
 	-lgdmwm			\
 	-lgdmcommon		\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui-minimal	\
+	$(top_builddir)/vicious-extensions/libviciousui-minimal.a \
 	$(X_LIBS)		\
 	-lX11			\
 	$(XINERAMA_LIBS)	\

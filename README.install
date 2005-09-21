@@ -166,3 +166,26 @@ If someone wants to provide a patch to GDM to make it support processing
 /etc/logindevperm on Solaris 9 and lower to avoid the above workaround, then
 that would be great.  
 
+Automatic Login On Solaris
+--------------------------
+
+Automatic Login, if enabled on Solaris will still popup a GUI asking the user
+for a password.  To set up automatic login so it doesn't require password,
+use the following /etc/pam.conf settings:
+
+       gdm-autologin auth  required    pam_unix_cred.so.1
+       gdm-autologin auth  sufficient  pam_allow.so.1
+       gdm-autologin account  sufficient  pam_allow.so.1
+       gdm-autologin session  sufficient  pam_allow.so.1
+       gdm-autologin password  sufficient  pam_allow.so.1 
+
+The above setup will cause no lastlog entry to be generated.  If a lastlog
+entry is desired, then use the following for session:
+
+       gdm-autologin session required pam_unix_session.so.1 
+
+If using Solaris 10 or lower, then you also need to compile the pam_allow.c
+code and install it to /usr/lib/security (or anywhere and provide the full
+path in /etc/pam.conf) and ensure it is owned by uid 0 and not group or
+world writable.
+

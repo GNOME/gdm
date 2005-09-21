@@ -101,8 +101,7 @@ gdmchooser_LDADD = \
 	$(PANGO_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 gdmlogin_LDADD = \
 	libgdmwm.a		\
@@ -120,8 +119,7 @@ gdmlogin_LDADD = \
 	$(GDKPIXBUF_LIBS)	\
 	$(LIBGNOME_LIBS)	\
 	$(LIBGNOMEUI_LIBS)	\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui-minimal
+	$(top_builddir)/vicious-extensions/libviciousui-minimal.a
 
 gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
@@ -138,8 +136,7 @@ gdmsetup_LDADD = \
 	$(LIBGNOME_LIBS)	\
 	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_SETUP_LIBS)	\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui-gnome
+	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmphotosetup_LDADD = \
 	libgdmcommon.a		\
@@ -152,8 +149,7 @@ gdmphotosetup_LDADD = \
 	$(LIBGNOME_LIBS)	\
 	$(LIBGNOMEUI_LIBS)	\
 	$(INTLLIBS)		\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui-gnome
+	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmXnestchooser_LDADD = \
 	libgdmcommon.a		\
@@ -167,8 +163,7 @@ gdmXnestchooser_LDADD = \
 	$(LIBGNOME_LIBS)	\
 	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_XNEST_LIBS)	\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui-gnome
+	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmflexiserver_LDADD = \
 	libgdmcommon.a		\
@@ -181,8 +176,7 @@ gdmflexiserver_LDADD = \
 	$(LIBGNOME_LIBS)	\
 	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_FLEXI_LIBS)	\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui-gnome
+	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmdynamic_LDADD = 		\
 	libgdmcommon.a		\
@@ -195,8 +189,7 @@ gdmdynamic_LDADD = 		\
 	$(LIBGNOME_LIBS) 	\
 	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_DYNAMIC_LIBS)	\
-	-L$(top_builddir)/vicious-extensions \
-	-lviciousui-gnome
+	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 Settingsdir = $(datadir)/applications
 Settings_files = gdmphotosetup.desktop
