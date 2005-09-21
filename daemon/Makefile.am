@@ -77,8 +77,7 @@ gdm_binary_LDADD = \
 	$(GLIB_LIBS)				\
 	$(GOBJECT_LIBS)				\
 	$(GDK_LIBS)				\
-	-L$(top_builddir)/vicious-extensions	\
-	-lvicious
+	$(top_builddir)/vicious-extensions/libvicious.a
 
 sbin_SCRIPTS = gdm
 

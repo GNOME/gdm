@@ -2630,7 +2630,8 @@ update_clock (gpointer data)
 	} else {
 		/* Translators: You should translate time part as
 		   %H:%M if your language does not have AM and PM
-		   equivalent. */
+		   equivalent.  Note: %l is a strftime option for
+		   12-hour clock format */
 		str = ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
   	}
 

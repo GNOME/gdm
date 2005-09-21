@@ -1,3 +1,18 @@
+2005-09-20  Brian Cameron <Brian.Cameron@sun.com>
+
+	* README.install, pam_allow.c: Add documentation
+	  regarding how to set up Automatic Login on 
+	  Solaris.
+	* daemon/Makefile.am, gui/Makefile.am, 
+	  gui/greeter/Makefile.am, gui/modules/Makefile.am,
+	  vicious-extensions/Makefile.am:  Remove
+	  illegal reference to build directory in installed
+	  .la files.  Fixes bug #316793, patch provided by
+	  Stanislav Brabec <sbrabec@suse.cz>.
+	* gui/gdmlogin.c: Fix comment for translators to
+	  make it more clear that %l is a strftime option
+	  for 12 hour format.  Fixes bug #316773.
+	  
 2005-09-14  Brian Cameron <Brian.Cameron@sun.com>
 
 	* daemon/slave.c:  Made error message about dmrc

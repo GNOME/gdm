@@ -23,8 +23,7 @@ libkeymouselistener_la_LDFLAGS =	\
 	$(GUI_LIBS)	\
 	$(X_LIBS)	\
 	$(X_EXTRA_LIBS) \
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 libdwellmouselistener_la_SOURCES = \
 	dwellmouselistener.c
@@ -34,8 +33,7 @@ libdwellmouselistener_la_LDFLAGS =	\
 	$(GUI_LIBS)	\
 	$(X_LIBS)	\
 	$(X_EXTRA_LIBS) \
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 moduledir = $(libdir)/gtk-2.0/modules
 
