@@ -393,14 +393,26 @@ run_again:
 			/* we switched to a different screen as a result of this,
 			 * lock the current screen */
 			if ( ! no_lock && vt != get_cur_vt () && vt >= 0) {
-				char *argv[3] = {"xscreensaver-command",
-					"-lock", NULL};
+				char *argv[3], *path, *throttle_arg;
+
+				if ((path = g_find_program_in_path ("gnome-screensaver-command"))) {
+					argv[0] = "gnome-screensaver-command";
+					argv[1] = "--lock";
+					argv[2] = NULL;
+					throttle_arg = "--throttle";
+					g_free (path);
+				} else {
+					argv[0] = "xscreensaver-command";
+					argv[1] = "-lock";
+					argv[2] = NULL;
+					throttle_arg = "-throttle";
+				}
 
 				if (gnome_execute_async (g_get_home_dir (),
 				    2, argv) < 0)
 					g_warning (_("Can't lock screen"));
 
-				argv[1] = "-throttle";
+				argv[1] = throttle_arg;
 
 				if (gnome_execute_async (g_get_home_dir (),
 				    2, argv) < 0)
@@ -807,7 +819,21 @@ main (int argc, char *argv[])
 		/* if we switched to a different screen as a result of this,
 		 * lock the current screen */
 		if ( ! no_lock && ! use_xnest) {
-			char *argv[3] = {"xscreensaver-command", "-lock", NULL};
+			char *argv[3], *path, *throttle_arg;
+
+			if ((path = g_find_program_in_path ("gnome-screensaver-command"))) {
+				argv[0] = "gnome-screensaver-command";
+				argv[1] = "--lock";
+				argv[2] = NULL;
+				throttle_arg = "--throttle";
+				g_free (path);
+			} else {
+				argv[0] = "xscreensaver-command";
+				argv[1] = "-lock";
+				argv[2] = NULL;
+				throttle_arg = "-throttle";
+			}
+
 			if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
 				g_warning (_("Can't lock screen"));
 			argv[1] = "-throttle";

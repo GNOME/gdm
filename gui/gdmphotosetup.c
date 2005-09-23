@@ -201,7 +201,7 @@ install_response (GtkWidget *file_dialog,
 	gtk_widget_destroy (file_dialog);
 }
 
-void
+static void
 add_preview_widget (GtkWidget *widget)
 {
 	GtkWidget *vbox;
@@ -232,7 +232,6 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 	GSList	      *l;
 	GtkWidget     *file_dialog;
 	GSList	      *filters = NULL;
-	GtkWidget     *vbox;
 
 	file_dialog = gtk_file_chooser_dialog_new (_("Select Image"),
 						   parent,
@@ -362,8 +361,6 @@ static void
 fill_model (GtkTreeModel *model)
 {
 	GdkPixbuf    *pixbuf;
-	int	      i;
-	char	     *str, *str2;
 	GtkTreeIter   iter;
 	GtkListStore *store = GTK_LIST_STORE (model);
 	GDir	     *dir;
