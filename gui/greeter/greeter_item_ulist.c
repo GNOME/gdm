@@ -191,6 +191,9 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 				printf ("%c%c%c%s\n", STX, BEL,
 					GDM_INTERRUPT_SELECT_USER, login);
 				fflush (stdout);
+			} else {
+				syslog (LOG_WARNING,
+					_("Theme broken, must have pam-message label!"));
 			}
 		}
 	}
