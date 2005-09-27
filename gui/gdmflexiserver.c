@@ -311,8 +311,9 @@ run_logged_in_dialogue (char **vec)
 	if (startnew == TRUE) {
 		/* Just return if the user doesn't want to see the dialog */
 		return;
-	} else {
-		dialog = gtk_dialog_new_with_buttons (_("Open Displays"),
+	} 
+
+	dialog = gtk_dialog_new_with_buttons (_("Open Displays"),
 					      NULL /* parent */,
 					      0 /* flags */,
 					      _("_Open New Display"),
@@ -322,55 +323,54 @@ run_logged_in_dialogue (char **vec)
 					      GTK_STOCK_CANCEL,
 					      GTK_RESPONSE_CANCEL,
 					      NULL);
-		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-		vbox = GTK_DIALOG (dialog)->vbox;
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	vbox = GTK_DIALOG (dialog)->vbox;
 
-		w = gtk_label_new (_("There are some displays already open.  You can select "
-			     "one from the list below or open a new one."));
-		gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
+	w = gtk_label_new (_("There are some displays already open.  You can select "
+		     "one from the list below or open a new one."));
+	gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
 
-		sw = gtk_scrolled_window_new (NULL, NULL);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
-						     GTK_SHADOW_ETCHED_IN);
-		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
-						GTK_POLICY_NEVER,
-						GTK_POLICY_AUTOMATIC);
-		gtk_box_pack_start (GTK_BOX (vbox), sw, TRUE, TRUE, 0);
+	sw = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
+					     GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
+					GTK_POLICY_NEVER,
+					GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start (GTK_BOX (vbox), sw, TRUE, TRUE, 0);
 
-		/* create tree model */
-		model = create_model (vec);
+	/* create tree model */
+	model = create_model (vec);
 
-		/* create tree view */
-		treeview = gtk_tree_view_new_with_model (model);
-		gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview), TRUE);
+	/* create tree view */
+	treeview = gtk_tree_view_new_with_model (model);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview), TRUE);
 
-		g_object_unref (model);
+	g_object_unref (model);
 
-		gtk_container_add (GTK_CONTAINER (sw), treeview);
+	gtk_container_add (GTK_CONTAINER (sw), treeview);
 
-		/* add columns to the tree view */
-		add_columns (GTK_TREE_VIEW (treeview));
+	/* add columns to the tree view */
+	add_columns (GTK_TREE_VIEW (treeview));
 
-		/* finish & show */
-		gtk_window_set_default_size (GTK_WINDOW (dialog), 280, 250);
+	/* finish & show */
+	gtk_window_set_default_size (GTK_WINDOW (dialog), 280, 250);
 
-	        g_signal_connect (G_OBJECT (treeview), "row_activated",
-				  G_CALLBACK (row_activated),
-				  dialog);
+        g_signal_connect (G_OBJECT (treeview), "row_activated",
+			  G_CALLBACK (row_activated),
+			  dialog);
 
-		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
 
-		g_signal_connect (selection, "changed",
-				  G_CALLBACK (selection_changed),
-				  dialog);
+	g_signal_connect (selection, "changed",
+			  G_CALLBACK (selection_changed),
+			  dialog);
 
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
-					   RESPONSE_OPEN_EXISTING_DISPLAY,
-					   FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog),
+				   RESPONSE_OPEN_EXISTING_DISPLAY,
+				   FALSE);
 
-		gtk_widget_show_all (dialog);
-		response = gtk_dialog_run (GTK_DIALOG (dialog));
-	}
+	gtk_widget_show_all (dialog);
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
 
 run_again:
 	switch (response) {
