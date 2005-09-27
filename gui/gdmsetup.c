@@ -1675,6 +1675,7 @@ browse_button_cb (GtkWidget *widget, gpointer data)
                 gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
                         EXPANDED_DATADIR "/pixmaps");
 
+	gtk_file_chooser_set_show_hidden (file_dialog, TRUE);
         filter = gtk_file_filter_new ();
         gtk_file_filter_set_name (filter, _("PNG and JPEG"));
         gtk_file_filter_add_mime_type (filter, "image/jpeg");
@@ -2296,6 +2297,7 @@ browse_sound_cb (GtkWidget *widget, gpointer data)
 					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 					NULL);
 
+	gtk_file_chooser_set_show_hidden (file_dialog, TRUE);
         filter = gtk_file_filter_new ();
         gtk_file_filter_set_name (filter, _("All files"));
 	gtk_file_filter_add_pattern(filter, "*");
@@ -3397,6 +3399,7 @@ install_new_theme (GtkWidget *button, gpointer data)
 					       _("_Install"), GTK_RESPONSE_OK,
 					       NULL);
 	
+	gtk_file_chooser_set_show_hidden (chooser, TRUE);
 	g_signal_connect (G_OBJECT (chooser), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &chooser);
 	g_signal_connect (G_OBJECT (chooser), "response",
@@ -4598,7 +4601,6 @@ main (int argc, char *argv[])
 {
 	GnomeProgram *program;
 	poptContext ctx;
-	guint sid;
 
 	if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 		DOING_GDM_DEVELOPMENT = TRUE;
@@ -4712,17 +4714,19 @@ main (int argc, char *argv[])
 
 	setup_gui ();
 
-	/* also setup third button to work as first to work in reverse
-	 * situations transparently */
-	sid = g_signal_lookup ("event",
-			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    gdm_event,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
-
 	if (RUNNING_UNDER_GDM) {
+		guint sid;
+
+		/* also setup third button to work as first to work
+		   in reverse situations transparently */
+		sid = g_signal_lookup ("event",
+			       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_event,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+
 		setup_disable_handler ();
 
 		setup_cursor (GDK_LEFT_PTR);
