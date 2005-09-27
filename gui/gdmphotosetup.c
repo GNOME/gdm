@@ -239,6 +239,8 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 						   GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						   GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 						   NULL);
+
+	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (file_dialog), TRUE);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (file_dialog), TRUE);
 
 	if (facedir && g_file_test (facedir, G_FILE_TEST_IS_DIR)) {

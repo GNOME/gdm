@@ -1656,38 +1656,39 @@ static void
 browse_button_cb (GtkWidget *widget, gpointer data)
 {
 	ImageData *image_data = data;
-        GtkFileFilter *filter;
+	GtkFileFilter *filter;
 	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
 		GTK_TYPE_WINDOW);
 
-        GtkWidget *file_dialog = gtk_file_chooser_dialog_new (_("Open File"),
-                                              GTK_WINDOW (setup_dialog),
-                                              GTK_FILE_CHOOSER_ACTION_OPEN,
-                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                              NULL);
+	GtkWidget *file_dialog = gtk_file_chooser_dialog_new (_("Open File"),
+					GTK_WINDOW (setup_dialog),
+					GTK_FILE_CHOOSER_ACTION_OPEN,
+					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+					NULL);
 
-        if (image_data->filename != NULL && *(image_data->filename) != '\0')
-                gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_dialog),
-                        image_data->filename);
-        else
-                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
-                        EXPANDED_DATADIR "/pixmaps");
+	if (image_data->filename != NULL && *(image_data->filename) != '\0')
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_dialog),
+			image_data->filename);
+	else
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
+			EXPANDED_DATADIR "/pixmaps");
 
-        filter = gtk_file_filter_new ();
-        gtk_file_filter_set_name (filter, _("PNG and JPEG"));
-        gtk_file_filter_add_mime_type (filter, "image/jpeg");
-        gtk_file_filter_add_mime_type (filter, "image/png");
-        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
+	gtk_file_chooser_set_show_hidden (file_dialog, TRUE);
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("PNG and JPEG"));
+	gtk_file_filter_add_mime_type (filter, "image/jpeg");
+	gtk_file_filter_add_mime_type (filter, "image/png");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
 
 	g_signal_connect (file_dialog, "update-preview",
 			  G_CALLBACK (update_preview_cb), image_data);
-        g_signal_connect (G_OBJECT (file_dialog), "destroy",
-                          G_CALLBACK (gtk_widget_destroyed), &file_dialog);
+	g_signal_connect (G_OBJECT (file_dialog), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed), &file_dialog);
         g_signal_connect (G_OBJECT (file_dialog), "response",
-                          G_CALLBACK (image_install_response), image_data);
+			  G_CALLBACK (image_install_response), image_data);
 
-        gtk_widget_show (file_dialog);
+	gtk_widget_show (file_dialog);
 }
 
 static void
@@ -2287,7 +2288,7 @@ browse_sound_cb (GtkWidget *widget, gpointer data)
 	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
 		GTK_TYPE_WINDOW);
 	GtkWidget *label = data;
-        GtkFileFilter *filter;
+	GtkFileFilter *filter;
 	GtkWidget *file_dialog = gtk_file_chooser_dialog_new (_("Open File"),
 					GTK_WINDOW (setup_dialog),
 					GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -2295,10 +2296,11 @@ browse_sound_cb (GtkWidget *widget, gpointer data)
 					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 					NULL);
 
-        filter = gtk_file_filter_new ();
+	gtk_file_chooser_set_show_hidden (file_dialog, TRUE);
+	filter = gtk_file_filter_new ();
         gtk_file_filter_set_name (filter, _("All files"));
 	gtk_file_filter_add_pattern(filter, "*");
-        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
 
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
 		EXPANDED_DATADIR "/sounds");
@@ -3396,6 +3398,7 @@ install_new_theme (GtkWidget *button, gpointer data)
 					       _("_Install"), GTK_RESPONSE_OK,
 					       NULL);
 	
+	gtk_file_chooser_set_show_hidden (chooser, TRUE);
 	g_signal_connect (G_OBJECT (chooser), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &chooser);
 	g_signal_connect (G_OBJECT (chooser), "response",
@@ -4596,7 +4599,6 @@ main (int argc, char *argv[])
 {
 	GnomeProgram *program;
 	poptContext ctx;
-	guint sid;
 
 	if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 		DOING_GDM_DEVELOPMENT = TRUE;
@@ -4709,17 +4711,19 @@ main (int argc, char *argv[])
 
 	setup_gui ();
 
-	/* also setup third button to work as first to work in reverse
-	 * situations transparently */
-	sid = g_signal_lookup ("event",
-			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    gdm_event,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
-
 	if (RUNNING_UNDER_GDM) {
+		guint sid;
+
+		/* also setup third button to work as first to work
+		   in reverse situations transparently */
+		sid = g_signal_lookup ("event",
+				       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_event,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+
 		setup_disable_handler ();
 
 		setup_cursor (GDK_LEFT_PTR);
