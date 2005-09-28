@@ -1,4 +1,5 @@
-/*
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
  *    GDMflexiserver - run a flexible server
  *    (c)2001 Queen of England
  *    
@@ -19,9 +20,6 @@
  */
 
 #include "config.h"
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
-#include <gdk/gdkx.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -34,6 +32,12 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <pwd.h>
+
+#include <glib/gi18n.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtk.h>
+#include <libgnome/libgnome.h> /* for gnome_config */
+#include <libgnomeui/libgnomeui.h> /* for gnome_program */
 
 #include <viciousui.h>
 
@@ -295,6 +299,60 @@ row_activated (GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn *col, gpo
 	gtk_dialog_response (GTK_DIALOG (dialog), RESPONSE_OPEN_EXISTING_DISPLAY);
 }
 
+static gboolean
+is_program_in_path (const char *program)
+{
+	char *tmp = g_find_program_in_path (program);
+	if (tmp != NULL) {
+		g_free (tmp);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+static void
+maybe_lock_screen (void)
+{
+	gboolean   use_gscreensaver = FALSE;
+	GError    *error            = NULL;
+	char      *command;
+	GdkScreen *screen;
+
+	if (is_program_in_path ("gnome-screensaver-command"))
+		use_gscreensaver = TRUE;
+	else if (! is_program_in_path ("xscreensaver-command"))
+		return;
+
+	if (use_gscreensaver) {
+		command = g_strdup ("gnome-screensaver-command --lock");
+	} else {
+		command = g_strdup ("xscreensaver-command -lock");
+	}
+
+	screen = gdk_screen_get_default ();
+
+	if (! gdk_spawn_command_line_on_screen (screen, command, &error)) {
+		g_warning ("Cannot lock screen: %s", error->message);
+		g_error_free (error);
+	}
+
+	g_free (command);
+
+	if (use_gscreensaver) {
+		command = g_strdup ("gnome-screensaver-command --throttle");
+	} else {
+		command = g_strdup ("xscreensaver-command -throttle");
+	}
+
+	if (! gdk_spawn_command_line_on_screen (screen, command, &error)) {
+		g_warning ("Cannot disable screensaver engines: %s", error->message);
+		g_error_free (error);
+	}
+
+	g_free (command);
+}
+
 static void
 run_logged_in_dialogue (char **vec)
 {
@@ -393,30 +451,7 @@ run_again:
 			/* we switched to a different screen as a result of this,
 			 * lock the current screen */
 			if ( ! no_lock && vt != get_cur_vt () && vt >= 0) {
-				char *argv[3], *path, *throttle_arg;
-
-				if ((path = g_find_program_in_path ("gnome-screensaver-command"))) {
-					argv[0] = "gnome-screensaver-command";
-					argv[1] = "--lock";
-					argv[2] = NULL;
-					throttle_arg = "--throttle";
-					g_free (path);
-				} else {
-					argv[0] = "xscreensaver-command";
-					argv[1] = "-lock";
-					argv[2] = NULL;
-					throttle_arg = "-throttle";
-				}
-
-				if (gnome_execute_async (g_get_home_dir (),
-				    2, argv) < 0)
-					g_warning (_("Can't lock screen"));
-
-				argv[1] = throttle_arg;
-
-				if (gnome_execute_async (g_get_home_dir (),
-				    2, argv) < 0)
-					g_warning (_("Can't disable xscreensaver display hacks"));
+				maybe_lock_screen ();
 			}
 
 			change_vt (vt);
@@ -819,26 +854,7 @@ main (int argc, char *argv[])
 		/* if we switched to a different screen as a result of this,
 		 * lock the current screen */
 		if ( ! no_lock && ! use_xnest) {
-			char *argv[3], *path, *throttle_arg;
-
-			if ((path = g_find_program_in_path ("gnome-screensaver-command"))) {
-				argv[0] = "gnome-screensaver-command";
-				argv[1] = "--lock";
-				argv[2] = NULL;
-				throttle_arg = "--throttle";
-				g_free (path);
-			} else {
-				argv[0] = "xscreensaver-command";
-				argv[1] = "-lock";
-				argv[2] = NULL;
-				throttle_arg = "-throttle";
-			}
-
-			if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
-				g_warning (_("Can't lock screen"));
-			argv[1] = "-throttle";
-			if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
-				g_warning (_("Can't disable xscreensaver display hacks"));
+			maybe_lock_screen ();
 		}
 
 		/* all fine and dandy */
