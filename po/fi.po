@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-27 16:39+0300\n"
-"PO-Revision-Date: 2005-09-27 16:41+0300\n"
+"POT-Creation-Date: 2005-09-29 10:45+0300\n"
+"PO-Revision-Date: 2005-09-29 10:46+0300\n"
 "Last-Translator: Tommi Vainikainen <Tommi.Vainikainen@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -1881,7 +1881,7 @@ msgid "Don't check for running gdm"
 msgstr "Älä tarkista onko GDM päällä"
 
 #: ../gui/gdmXnestchooser.c:509 ../gui/gdmchooser.c:2074
-#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:690 ../gui/gdmlogin.c:3647
+#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:743 ../gui/gdmlogin.c:3647
 #: ../gui/gdmphotosetup.c:480 ../gui/gdmsetup.c:4631
 #: ../gui/greeter/greeter.c:1260
 msgid "Could not access GDM configuration file.\n"
@@ -2107,11 +2107,11 @@ msgstr ""
 "järjestelmän ylläpitäjää käynnistämään GDM."
 
 #. markup
-#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:715
+#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:768
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Kommunikointi GDM:n (Gnomen kirjautumisohjelman) kanssa ei onnistu"
 
-#: ../gui/gdmcomm.c:440 ../gui/gdmflexiserver.c:718
+#: ../gui/gdmcomm.c:440 ../gui/gdmflexiserver.c:771
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Kenties käynnissä on GDM:n vanha versio.."
 
@@ -2208,48 +2208,56 @@ msgid "New Login in a Nested Window"
 msgstr "Uusi kirjautuminen sisäkkäisestä ikkunasta"
 
 #. markup
-#: ../gui/gdmflexiserver.c:101
+#: ../gui/gdmflexiserver.c:105
 msgid "Cannot change display"
 msgstr "Näyttöä ei voi vaihtaa"
 
-#: ../gui/gdmflexiserver.c:178
+#: ../gui/gdmflexiserver.c:182
 msgid "Nobody"
 msgstr "Ei kukaan"
 
-#: ../gui/gdmflexiserver.c:213
+#: ../gui/gdmflexiserver.c:217
 #, c-format
 msgid "Display %s on virtual terminal %d"
 msgstr "Näyttö %s virtuaalipäätteellä %d"
 
-#: ../gui/gdmflexiserver.c:218
+#: ../gui/gdmflexiserver.c:222
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Sisäkkäinen näyttö %s virtuaalipäätteellä %d"
 
-#: ../gui/gdmflexiserver.c:248 ../gui/gdmlogin.c:3006
+#: ../gui/gdmflexiserver.c:252 ../gui/gdmlogin.c:3006
 #: ../gui/greeter/greeter_item_ulist.c:246
 msgid "Username"
 msgstr "Käyttäjätunnus"
 
-#: ../gui/gdmflexiserver.c:257
+#: ../gui/gdmflexiserver.c:261
 msgid "Display"
 msgstr "Näyttö"
 
-#: ../gui/gdmflexiserver.c:316
+#: ../gui/gdmflexiserver.c:337
+msgid "Can't lock screen"
+msgstr "Ruudun lukitseminen ei onnistu"
+
+#: ../gui/gdmflexiserver.c:350
+msgid "Can't disable xscreensaver display hacks"
+msgstr "XScreensaver-näyttöominaisuuksia ei voi poistaa käytöstä"
+
+#: ../gui/gdmflexiserver.c:374
 msgid "Open Displays"
 msgstr "Avoimet näytöt"
 
 #. parent
 #. flags
-#: ../gui/gdmflexiserver.c:319
+#: ../gui/gdmflexiserver.c:377
 msgid "_Open New Display"
 msgstr "_Avaa uusi näyttö"
 
-#: ../gui/gdmflexiserver.c:321
+#: ../gui/gdmflexiserver.c:379
 msgid "Change to _Existing Display"
 msgstr "Vaihda _olemassaolevaan näyttöön"
 
-#: ../gui/gdmflexiserver.c:329
+#: ../gui/gdmflexiserver.c:387
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
@@ -2257,74 +2265,66 @@ msgstr ""
 "Joitain näyttöjä on avoinna.  Voit valita alla olevasta luettelosta yhden "
 "tai avata uuden näytön."
 
-#: ../gui/gdmflexiserver.c:396 ../gui/gdmflexiserver.c:810
-msgid "Can't lock screen"
-msgstr "Ruudun lukitseminen ei onnistu"
-
-#: ../gui/gdmflexiserver.c:399 ../gui/gdmflexiserver.c:813
-msgid "Can't disable xscreensaver display hacks"
-msgstr "XScreensaver-näyttöominaisuuksia ei voi poistaa käytöstä"
-
-#: ../gui/gdmflexiserver.c:556
+#: ../gui/gdmflexiserver.c:609
 msgid "Choose server"
 msgstr "Valitse palvelin"
 
-#: ../gui/gdmflexiserver.c:567
+#: ../gui/gdmflexiserver.c:620
 msgid "Choose the X server to start"
 msgstr "Valitse käynnistettävä X-palvelin"
 
-#: ../gui/gdmflexiserver.c:573
+#: ../gui/gdmflexiserver.c:626
 msgid "Standard server"
 msgstr "Vakiopalvelin"
 
-#: ../gui/gdmflexiserver.c:639
+#: ../gui/gdmflexiserver.c:692
 msgid "Send the specified protocol command to gdm"
 msgstr "Lähetä määritetty protokollakomento GDM:lle"
 
-#: ../gui/gdmflexiserver.c:639
+#: ../gui/gdmflexiserver.c:692
 msgid "COMMAND"
 msgstr "KOMENTO"
 
-#: ../gui/gdmflexiserver.c:640
+#: ../gui/gdmflexiserver.c:693
 msgid "Xnest mode"
 msgstr "Xnest-tila"
 
-#: ../gui/gdmflexiserver.c:641
+#: ../gui/gdmflexiserver.c:694
 msgid "Do not lock current screen"
 msgstr "Älä lukitse nykyistä ruutua"
 
-#: ../gui/gdmflexiserver.c:642
+#: ../gui/gdmflexiserver.c:695
 msgid "Debugging output"
 msgstr "Vianetsintätuloste"
 
-#: ../gui/gdmflexiserver.c:643
+#: ../gui/gdmflexiserver.c:696
 msgid "Authenticate before running --command"
 msgstr "Todenna ennen --command:in ajamista"
 
-#: ../gui/gdmflexiserver.c:644
+#: ../gui/gdmflexiserver.c:697
 msgid "Start new flexible session, do not show popup"
 msgstr "Aloita uusi joustava istunto, älä näytä ponnahdusikkunaa"
 
 #. markup
-#: ../gui/gdmflexiserver.c:744
+#: ../gui/gdmflexiserver.c:797
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Toimintoon tarvittavaa todennusta ei näy olevan"
 
-#: ../gui/gdmflexiserver.c:748
+#: ../gui/gdmflexiserver.c:801
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Tiedosto .Xauthority voi olla väärin asetettu."
 
 #. markup
-#: ../gui/gdmflexiserver.c:773
+#: ../gui/gdmflexiserver.c:826
 msgid "You do not seem to be logged in on the console"
 msgstr "Et näytä kirjautuneen sisään konsolissa"
 
-#: ../gui/gdmflexiserver.c:776
+#: ../gui/gdmflexiserver.c:829
 msgid "Starting a new login only works correctly on the console."
 msgstr "Uuden kirjautumisen aloitus toimii oikein vain konsolista."
 
 #. markup
-#: ../gui/gdmflexiserver.c:828
+#: ../gui/gdmflexiserver.c:876
 msgid "Cannot start new display"
 msgstr "Uutta näyttöä ei voi käynnistää"
 
@@ -3781,11 +3781,11 @@ msgid ""
 "listed in \"Exclude\"\n"
 "will not be displayed regardless of whether \"Include All Users\" is checked."
 msgstr ""
-"\"Käyttäjät\"-välilehti määrittää GDM:ssä näkyvät käyttäjät. Käyttäjät, "
-"jotka on lueteltu \"Sisällytä\"-kohdassa, näkyvät kasvoselaimessa mikäli se "
-"on otettu käyttöön \"Turvallisuus\"-välilehdellä, ja he ovat myös "
-"alasvetovalikossa automaattiseen/ajastettuun sisäänkirjautumiseen \"Yleiset"
-"\"-välilehdellä. Käyttäjät, jotka on lueteltu \"Älä sisällytä\"-kohdassa, "
+"\"Käyttäjät\"-välilehti määrittää GDM:ssä näkyvät käyttäjät.\n"
+"Käyttäjät, jotka on lueteltu \"Sisällytä\"-kohdassa, näkyvät kasvoselaimessa\n"
+"mikäli se on otettu käyttöön \"Turvallisuus\"-välilehdellä, ja he ovat myös\n"
+"alasvetovalikossa automaattiseen/ajastettuun sisäänkirjautumiseen\n"
+"\"Yleiset\"-välilehdellä. Käyttäjät, jotka on lueteltu \"Älä sisällytä\"-kohdassa,\n"
 "eivät näy vaikka \"Sisällytä kaikki käyttäjät\" olisikin valittu."
 
 #: ../gui/gdmsetup.glade.h:97
