@@ -1,3 +1,13 @@
+2005-09-29  Brian Cameron <Brian.Cameron@sun.com>
+
+        * daemon/verify-pam.c: Remove syslog() test that causes
+          needless syslog message when Solaris auditing is turned
+          off.
+        * gui/gdmflexiserver.c, gui/greeter/greeter_item_ulist.c:
+          Correct grammar.  Corrects bug #317479, thanks to
+          adamw@gnome.org (Adam Weinberger).  Note this fixes
+	  grammar for added in the previous two commits.
+
 2005-09-28  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/gdmflexiserver.c (is_program_in_path, maybe_lock_screen) 

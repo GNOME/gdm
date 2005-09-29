@@ -193,7 +193,7 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 				fflush (stdout);
 			} else {
 				syslog (LOG_WARNING,
-					_("Theme broken, must have pam-message label!"));
+					_("Theme broken: must have pam-message label!"));
 			}
 		}
 	}

@@ -284,12 +284,6 @@ audit_logout(void)
 {
 	adt_event_data_t	*event;	/* event to generate */
 
-	if (adt_ah == NULL) {
-
-		syslog(LOG_AUTH | LOG_ALERT,
-		    "adt_ah(ADT_logout): NULL");
-		return;
-	}
 	if ((event = adt_alloc_event(adt_ah, ADT_logout)) == NULL) {
 
 		syslog(LOG_AUTH | LOG_ALERT,
