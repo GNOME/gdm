@@ -104,43 +104,44 @@ audit_success_login (int pw_change, struct passwd *pwent)
 {
 	adt_event_data_t	*event;	/* event to generate */
 
-	if (adt_start_session(&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
+	if (adt_start_session (&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
+		syslog (LOG_AUTH | LOG_ALERT,
 		    "adt_start_session(ADT_login): %m");
 		return;
 	}
-	if (adt_set_user(adt_ah, pwent->pw_uid, pwent->pw_gid,
+
+	if (adt_set_user (adt_ah, pwent->pw_uid, pwent->pw_gid,
 	    pwent->pw_uid, pwent->pw_gid, NULL, ADT_USER) != 0) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
+		syslog (LOG_AUTH | LOG_ALERT,
 		    "adt_set_user(ADT_login, %s): %m", pwent->pw_name);
 	}
-	if ((event = adt_alloc_event(adt_ah, ADT_login)) == NULL) {
+	if ((event = adt_alloc_event (adt_ah, ADT_login)) == NULL) {
 
-		syslog(LOG_AUTH | LOG_ALERT, "adt_alloc_event(ADT_login): %m");
+		syslog (LOG_AUTH | LOG_ALERT, "adt_alloc_event(ADT_login): %m");
 	} else if (adt_put_event(event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
+		syslog (LOG_AUTH | LOG_ALERT,
 		    "adt_put_event(ADT_login, ADT_SUCCESS): %m");
 	}
 
 	if (pw_change == PW_TRUE) {
 
 		/* Also audit password change */
-		adt_free_event(event);
-		if ((event = adt_alloc_event(adt_ah, ADT_passwd)) == NULL) {
+		adt_free_event (event);
+		if ((event = adt_alloc_event (adt_ah, ADT_passwd)) == NULL) {
 
-			syslog(LOG_AUTH | LOG_ALERT,
+			syslog (LOG_AUTH | LOG_ALERT,
 			    "adt_alloc_event(ADT_passwd): %m");
-		} else if (adt_put_event(event, ADT_SUCCESS,
+		} else if (adt_put_event (event, ADT_SUCCESS,
 		    ADT_SUCCESS) != 0) {
 
-			syslog(LOG_AUTH | LOG_ALERT,
-			    "adt_put_event(ADT_passwd, ADT_SUCCESS): %m");
+			syslog (LOG_AUTH | LOG_ALERT,
+			    "adt_put_event (ADT_passwd, ADT_SUCCESS): %m");
 		}
 	}
-	adt_free_event(event);
+	adt_free_event (event);
 }
 
 
@@ -173,14 +174,14 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 	adt_termid_t		*tid;	/* terminal ID for failures */
 
 	if (did_setcred == TRUE) {
-		if (adt_start_session(&ah, NULL, ADT_USE_PROC_DATA) != 0) {
+		if (adt_start_session (&ah, NULL, ADT_USE_PROC_DATA) != 0) {
 
 			syslog(LOG_AUTH | LOG_ALERT,
 			    "adt_start_session(ADT_login, ADT_FAILURE): %m");
 			return;
 		}
 	} else {
-		if (adt_start_session(&ah, NULL, 0) != 0) {
+		if (adt_start_session (&ah, NULL, 0) != 0) {
 		
 			syslog(LOG_AUTH | LOG_ALERT,
 			    "adt_start_session(ADT_login, ADT_FAILURE): %m");
@@ -188,84 +189,84 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		}
 		if (d->attached) {
 			/* login from the local host */
-			if (adt_load_ttyname("/dev/console", &tid) != 0) {
+			if (adt_load_ttyname ("/dev/console", &tid) != 0) {
 
-				syslog(LOG_AUTH | LOG_ALERT,
+				syslog (LOG_AUTH | LOG_ALERT,
 				    "adt_loadhostname(localhost): %m");
 			}
 		} else {
 			/* login from a remote host */
-			if (adt_load_hostname(d->hostname, &tid) != 0) {
+			if (adt_load_hostname (d->hostname, &tid) != 0) {
 
-				syslog(LOG_AUTH | LOG_ALERT,
+				syslog (LOG_AUTH | LOG_ALERT,
 				    "adt_loadhostname(%s): %m", d->hostname);
 			}
 		}
-		if (adt_set_user(ah,
+		if (adt_set_user (ah,
 		    pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
 		    pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
 		    pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
 		    pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
 		    tid, ADT_NEW) != 0) {
 
-			syslog(LOG_AUTH | LOG_ALERT,
+			syslog (LOG_AUTH | LOG_ALERT,
 			    "adt_set_user(%s): %m",
 			    pwent ? pwent->pw_name : "ADT_NO_ATTRIB");
 		}
 	}
-	if ((event = adt_alloc_event(ah, ADT_login)) == NULL) {
+	if ((event = adt_alloc_event (ah, ADT_login)) == NULL) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
-		    "adt_alloc_event(ADT_login, ADT_FAILURE): %m");
+		syslog (LOG_AUTH | LOG_ALERT,
+		    "adt_alloc_event (ADT_login, ADT_FAILURE): %m");
 		goto done;
 	} else if (adt_put_event(event, ADT_FAILURE,
 	    ADT_FAIL_PAM + pamerr) != 0) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
+		syslog (LOG_AUTH | LOG_ALERT,
 		    "adt_put_event(ADT_login(ADT_FAIL, %s): %m",
-		    pam_strerror(pamh, pamerr));
+		    pam_strerror (pamh, pamerr));
 	}
 	if (pw_change != PW_FALSE) {
 
 		/* Also audit password change */
-		adt_free_event(event);
-		if ((event = adt_alloc_event(ah, ADT_passwd)) == NULL) {
+		adt_free_event (event);
+		if ((event = adt_alloc_event (ah, ADT_passwd)) == NULL) {
 
-			syslog(LOG_AUTH | LOG_ALERT,
+			syslog (LOG_AUTH | LOG_ALERT,
 			    "adt_alloc_event(ADT_passwd): %m");
 			goto done;
 		}
 		if (pw_change == PW_TRUE) {
-			if (adt_put_event(event, ADT_SUCCESS,
+			if (adt_put_event (event, ADT_SUCCESS,
 			    ADT_SUCCESS) != 0) {
 
-				syslog(LOG_AUTH | LOG_ALERT,
+				syslog (LOG_AUTH | LOG_ALERT,
 				    "adt_put_event(ADT_passwd, ADT_SUCCESS): "
 				    "%m");
 			}
 		} else if (pw_change == PW_FAILED) {
-			if (adt_put_event(event, ADT_FAILURE,
+			if (adt_put_event (event, ADT_FAILURE,
 			    ADT_FAIL_PAM + pamerr) != 0) {
 
-				syslog(LOG_AUTH | LOG_ALERT,
+				syslog (LOG_AUTH | LOG_ALERT,
 				    "adt_put_event(ADT_passwd, ADT_FAILURE): "
 				    "%m");
 			}
 		}
 	}
-	adt_free_event(event);
+	adt_free_event (event);
 
 done:
 	/* reset process audit state. this process is being reused.*/
 
-	if ((adt_set_user(ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
+	if ((adt_set_user (ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
 	    ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
-	    (adt_set_proc(ah) != 0)) {
+	    (adt_set_proc (ah) != 0)) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
+		syslog (LOG_AUTH | LOG_ALERT,
 		    "adt_put_event(ADT_login(ADT_FAILURE reset, %m)");
 	}
-	(void) adt_end_session(ah);
+	(void) adt_end_session (ah);
 }
 
 
@@ -273,7 +274,7 @@ done:
  * audit_logout - audit user logout
  *
  *	Entry	adt_ah = audit session handle established by
- *			audit_success_login().
+ *			 audit_success_login().
  *
  *	Exit	ADT_logout (ADT_SUCCESS) audit record written
  *		process audit state reset.  (this process is reused for
@@ -285,13 +286,7 @@ audit_logout (void)
 {
 	adt_event_data_t	*event;	/* event to generate */
 
-	if (adt_ah == NULL) {
-
-		syslog(LOG_AUTH | LOG_ALERT,
-		    "adt_ah(ADT_logout): NULL");
-		return;
-	}
-	if ((event = adt_alloc_event(adt_ah, ADT_logout)) == NULL) {
+	if ((event = adt_alloc_event (adt_ah, ADT_logout)) == NULL) {
 
 		syslog(LOG_AUTH | LOG_ALERT,
 		    "adt_alloc_event(ADT_logout): %m");
@@ -304,14 +299,14 @@ audit_logout (void)
 
 	/* reset process audit state. this process is being reused.*/
 
-	if ((adt_set_user(adt_ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
+	if ((adt_set_user (adt_ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
 	    ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
-	    (adt_set_proc(adt_ah) != 0)) {
+	    (adt_set_proc (adt_ah) != 0)) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
+		syslog (LOG_AUTH | LOG_ALERT,
 		    "adt_set_proc(ADT_logout reset): %m");
 	}
-	(void) adt_end_session(adt_ah);
+	(void) adt_end_session (adt_ah);
 }
 #endif	/* HAVE_ADT */
 

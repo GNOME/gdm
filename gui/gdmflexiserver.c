@@ -696,7 +696,7 @@ struct poptOption options [] = {
 	{ "no-lock", 'l', POPT_ARG_NONE, &no_lock, 0, N_("Do not lock current screen"), NULL },
 	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },
 	{ "authenticate", 'a', POPT_ARG_NONE, &authenticate, 0, N_("Authenticate before running --command"), NULL },
-	{ "startnew", 's', POPT_ARG_NONE, &startnew, 0, N_("Start new flexible session, do not show popup"), NULL },
+	{ "startnew", 's', POPT_ARG_NONE, &startnew, 0, N_("Start new flexible session; do not show popup"), NULL },
 	{ "monte-carlo-pi", 0, POPT_ARG_NONE, &monte_carlo_pi, 0, NULL, NULL },
 	POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
