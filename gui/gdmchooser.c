@@ -1285,7 +1285,7 @@ add_check (gpointer data)
 		msg = g_strdup_printf (_("Did not receive any response from host \"%s\" "
 		                         "in %d seconds.  Perhaps the host is not "
 		                         "turned on, or is not willing to support a "
-		                         "login session right now.  Please try again. "
+		                         "login session right now.  Please try again "
 		                         "later."),
 		                       added_host,
 		                       ADD_TIMEOUT / 1000);

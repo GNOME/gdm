@@ -410,7 +410,7 @@ gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 				   "is not running."),
 				 _("You might in fact be using a different "
 				   "display manager, such as KDM "
-				   "(KDE Display Manager) or xdm."
+				   "(KDE Display Manager) or xdm. "
 				   "If you still wish to use this feature, "
 				   "either start GDM yourself or ask your "
 				   "system administrator to start GDM."));
