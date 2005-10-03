@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-27 11:26+0300\n"
-"PO-Revision-Date: 2005-09-27 11:26+0300\n"
+"POT-Creation-Date: 2005-10-03 07:49+0300\n"
+"PO-Revision-Date: 2005-10-03 07:49+0300\n"
 "Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -1315,17 +1315,17 @@ msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Домашната папка на %s: „%s“ не съществува!"
 
 #: ../daemon/slave.c:4225
-#, fuzzy
 msgid ""
 "User's $HOME/.dmrc file is being ignored.  This prevents the default session "
 "and language from being saved.  File should be owned by user and have 644 "
 "permissions.  User's $HOME directory must be owned by user and not writable "
 "by other users."
 msgstr ""
-"Вашият файл $HOME/.dmrc е с погрешни настройки за достъп. Поради тази "
-"причина той е игнориран. Това пречи да се запишат настройките за сесията и "
-"езика по подразбиране. Файлът трябва да се притежава от потребителя и да има "
-"настройки за достъп - 644."
+"Потребителският файл $HOME/.dmrc е игнориран. Това пречи да се запишат "
+"настройките за сесията и езика по подразбиране. Файлът трябва да се "
+"притежава от потребителя и да има настройки за достъп - 644. Домашната "
+"директория на потребителя - $HOME трябва да се притежава от потребителя, а "
+"другите потребители трябва да не могат да пишат в нея."
 
 #: ../daemon/slave.c:4354
 msgid ""
@@ -1403,7 +1403,7 @@ msgstr "%s: Не може да се създаде програмен канал
 msgid "%s: Failed executing: %s"
 msgstr "%s: Грешка при изпълнение на: %s"
 
-#: ../daemon/verify-crypt.c:74 ../daemon/verify-pam.c:1137
+#: ../daemon/verify-crypt.c:74 ../daemon/verify-pam.c:1132
 #: ../daemon/verify-shadow.c:75
 msgid ""
 "\n"
@@ -1412,28 +1412,28 @@ msgstr ""
 "\n"
 "Грешно име или парола. Регистърът (големината) на буквите е от значение."
 
-#: ../daemon/verify-crypt.c:79 ../daemon/verify-pam.c:1147
+#: ../daemon/verify-crypt.c:79 ../daemon/verify-pam.c:1142
 #: ../daemon/verify-shadow.c:80
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Проверете дали не е натиснат клавишът CapsLock."
 
-#: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:543
+#: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:538
 #: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3170
 msgid "Please enter your username"
 msgstr "Въведете Вашето потребителско име"
 
 #. login: is whacked always translate to Username:
-#: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:443
-#: ../daemon/verify-pam.c:444 ../daemon/verify-pam.c:445
-#: ../daemon/verify-pam.c:530 ../daemon/verify-pam.c:872
+#: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:438
+#: ../daemon/verify-pam.c:439 ../daemon/verify-pam.c:440
+#: ../daemon/verify-pam.c:525 ../daemon/verify-pam.c:867
 #: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:1329 ../gui/gdmlogin.c:1343
 #: ../gui/gdmlogin.c:1974 ../gui/gdmlogin.c:2481 ../gui/greeter/greeter.c:391
 #: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "Потребител:"
 
-#: ../daemon/verify-crypt.c:165 ../daemon/verify-pam.c:446
-#: ../daemon/verify-pam.c:447 ../daemon/verify-pam.c:591
+#: ../daemon/verify-crypt.c:165 ../daemon/verify-pam.c:441
+#: ../daemon/verify-pam.c:442 ../daemon/verify-pam.c:586
 #: ../daemon/verify-shadow.c:183 ../gui/gdmlogin.c:2009
 msgid "Password:"
 msgstr "Парола:"
@@ -1444,7 +1444,7 @@ msgstr "Парола:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Неуспех при идентифицирането на потребителя „%s“"
 
-#: ../daemon/verify-crypt.c:210 ../daemon/verify-pam.c:983
+#: ../daemon/verify-crypt.c:210 ../daemon/verify-pam.c:978
 #: ../daemon/verify-shadow.c:228
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1461,7 +1461,7 @@ msgid "User %s not allowed to log in"
 msgstr "Потребител %s не може да влиза в системата"
 
 #: ../daemon/verify-crypt.c:230 ../daemon/verify-crypt.c:254
-#: ../daemon/verify-pam.c:1029 ../daemon/verify-pam.c:1312
+#: ../daemon/verify-pam.c:1024 ../daemon/verify-pam.c:1307
 #: ../daemon/verify-shadow.c:248 ../daemon/verify-shadow.c:272
 msgid ""
 "\n"
@@ -1471,14 +1471,14 @@ msgstr ""
 "Системният администратор е забранил достъпа Ви до системата."
 
 #: ../daemon/verify-crypt.c:277 ../daemon/verify-crypt.c:415
-#: ../daemon/verify-pam.c:1047 ../daemon/verify-pam.c:1329
+#: ../daemon/verify-pam.c:1042 ../daemon/verify-pam.c:1324
 #: ../daemon/verify-shadow.c:295 ../daemon/verify-shadow.c:433
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Не може да се зададе потребителска група за %s"
 
 #: ../daemon/verify-crypt.c:279 ../daemon/verify-crypt.c:418
-#: ../daemon/verify-pam.c:1049 ../daemon/verify-pam.c:1332
+#: ../daemon/verify-pam.c:1044 ../daemon/verify-pam.c:1327
 #: ../daemon/verify-shadow.c:297 ../daemon/verify-shadow.c:436
 msgid ""
 "\n"
@@ -1547,80 +1547,80 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "Неуспех при получаването на структурата за „passwd“ за %s"
 
-#: ../daemon/verify-pam.c:448
+#: ../daemon/verify-pam.c:443
 msgid "You are required to change your password immediately (password aged)"
 msgstr "Задължени сте да смените паролата си веднага. (остаряла е)"
 
-#: ../daemon/verify-pam.c:449
+#: ../daemon/verify-pam.c:444
 msgid "You are required to change your password immediately (root enforced)"
 msgstr ""
 "Трябва задължително да смените Вашата парола веднага (изискване на системния "
 "администратор)"
 
-#: ../daemon/verify-pam.c:450
+#: ../daemon/verify-pam.c:445
 msgid "Your account has expired; please contact your system administrator"
 msgstr "Вашият абонамент е изтекъл. Свържете се със системния администратор"
 
-#: ../daemon/verify-pam.c:451
+#: ../daemon/verify-pam.c:446
 msgid "No password supplied"
 msgstr "Не беше въведена парола"
 
-#: ../daemon/verify-pam.c:452
+#: ../daemon/verify-pam.c:447
 msgid "Password unchanged"
 msgstr "Паролата е непроменена"
 
-#: ../daemon/verify-pam.c:453
+#: ../daemon/verify-pam.c:448
 msgid "Can not get username"
 msgstr "Неуспех при взимане на име"
 
-#: ../daemon/verify-pam.c:454
+#: ../daemon/verify-pam.c:449
 msgid "Retype new UNIX password:"
 msgstr "Напишете отново новата парола:"
 
-#: ../daemon/verify-pam.c:455
+#: ../daemon/verify-pam.c:450
 msgid "Enter new UNIX password:"
 msgstr "Напишете новата парола:"
 
-#: ../daemon/verify-pam.c:456
+#: ../daemon/verify-pam.c:451
 msgid "(current) UNIX password:"
 msgstr "(текуща) парола:"
 
-#: ../daemon/verify-pam.c:457
+#: ../daemon/verify-pam.c:452
 msgid "Error while changing NIS password."
 msgstr "Грешка при сменяне на парола за NIS."
 
-#: ../daemon/verify-pam.c:458
+#: ../daemon/verify-pam.c:453
 msgid "You must choose a longer password"
 msgstr "Трябва да изберете по-дълга парола"
 
-#: ../daemon/verify-pam.c:459
+#: ../daemon/verify-pam.c:454
 msgid "Password has been already used. Choose another."
 msgstr "Паролата е вече използвана. Изберете друга."
 
-#: ../daemon/verify-pam.c:460
+#: ../daemon/verify-pam.c:455
 msgid "You must wait longer to change your password"
 msgstr "Трябва да почакате повече, за да смените паролата си."
 
-#: ../daemon/verify-pam.c:461
+#: ../daemon/verify-pam.c:456
 msgid "Sorry, passwords do not match"
 msgstr "За съжаление паролите не са еднакви"
 
-#: ../daemon/verify-pam.c:755
+#: ../daemon/verify-pam.c:750
 msgid "Cannot setup pam handle with null display"
 msgstr ""
 "Неуспех при задаването на поддръжката на „pam“ за дисплей сочен от „null“"
 
-#: ../daemon/verify-pam.c:772
+#: ../daemon/verify-pam.c:767
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "Неуспех при установяване на услугата %s: %s\n"
 
-#: ../daemon/verify-pam.c:785
+#: ../daemon/verify-pam.c:780
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Неуспех при задаване на PAM_TTY=%s"
 
-#: ../daemon/verify-pam.c:795
+#: ../daemon/verify-pam.c:790
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Неуспех при задаване на PAM_RHOST=%s"
@@ -1630,12 +1630,12 @@ msgstr "Неуспех при задаване на PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:933 ../daemon/verify-pam.c:951
-#: ../daemon/verify-pam.c:1251 ../daemon/verify-pam.c:1263
+#: ../daemon/verify-pam.c:928 ../daemon/verify-pam.c:946
+#: ../daemon/verify-pam.c:1246 ../daemon/verify-pam.c:1258
 msgid "Couldn't authenticate user"
 msgstr "Неуспех при идентификацията на потребителя"
 
-#: ../daemon/verify-pam.c:986
+#: ../daemon/verify-pam.c:981
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1643,13 +1643,13 @@ msgstr ""
 "\n"
 "На системния администратор не е позволено да влиза от този екран"
 
-#: ../daemon/verify-pam.c:1010 ../daemon/verify-pam.c:1293
+#: ../daemon/verify-pam.c:1005 ../daemon/verify-pam.c:1288
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr ""
 "Неуспех при промяната на жетона (token) за идентификация за потребител %s"
 
-#: ../daemon/verify-pam.c:1012 ../daemon/verify-pam.c:1296
+#: ../daemon/verify-pam.c:1007 ../daemon/verify-pam.c:1291
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1659,17 +1659,17 @@ msgstr ""
 "Неуспех при промяната на жетона (token) за идентифициране. Опитайте отново "
 "по-късно или се обърнете към системния администратор"
 
-#: ../daemon/verify-pam.c:1027 ../daemon/verify-pam.c:1309
+#: ../daemon/verify-pam.c:1022 ../daemon/verify-pam.c:1304
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Потребител %s вече няма права за достъп до системата"
 
-#: ../daemon/verify-pam.c:1033 ../daemon/verify-pam.c:1315
+#: ../daemon/verify-pam.c:1028 ../daemon/verify-pam.c:1310
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Потребител %s няма права за достъп до системата в момента"
 
-#: ../daemon/verify-pam.c:1035
+#: ../daemon/verify-pam.c:1030
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1677,22 +1677,22 @@ msgstr ""
 "\n"
 "Системният администратор временно е забранил достъпа до системата."
 
-#: ../daemon/verify-pam.c:1040 ../daemon/verify-pam.c:1322
+#: ../daemon/verify-pam.c:1035 ../daemon/verify-pam.c:1317
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Неуспех при настройването на управлението на абонаментите за %s"
 
-#: ../daemon/verify-pam.c:1073 ../daemon/verify-pam.c:1356
+#: ../daemon/verify-pam.c:1068 ../daemon/verify-pam.c:1351
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Неуспех при задаване на акредитация за %s"
 
-#: ../daemon/verify-pam.c:1087 ../daemon/verify-pam.c:1372
+#: ../daemon/verify-pam.c:1082 ../daemon/verify-pam.c:1367
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Неуспех при отваряне на сесия за %s"
 
-#: ../daemon/verify-pam.c:1141
+#: ../daemon/verify-pam.c:1136
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1700,16 +1700,16 @@ msgstr ""
 "\n"
 "Идентификацията пропадна. Регистърът (големината) на буквите е от значение."
 
-#: ../daemon/verify-pam.c:1157 ../daemon/verify-pam.c:1254
-#: ../daemon/verify-pam.c:1266
+#: ../daemon/verify-pam.c:1152 ../daemon/verify-pam.c:1249
+#: ../daemon/verify-pam.c:1261
 msgid "Authentication failed"
 msgstr "Идентификацията пропадна"
 
-#: ../daemon/verify-pam.c:1230
+#: ../daemon/verify-pam.c:1225
 msgid "Automatic login"
 msgstr "Автоматично влизане"
 
-#: ../daemon/verify-pam.c:1318
+#: ../daemon/verify-pam.c:1313
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporarily."
@@ -1717,7 +1717,7 @@ msgstr ""
 "\n"
 "Системният администратор временно е забранил Вашия достъп до системата."
 
-#: ../daemon/verify-pam.c:1539 ../daemon/verify-pam.c:1541
+#: ../daemon/verify-pam.c:1534 ../daemon/verify-pam.c:1536
 msgid "Can't find PAM configuration for gdm."
 msgstr "Не може да се открие конфигурацията на PAM за GDM."
 
@@ -1911,7 +1911,7 @@ msgid "Don't check for running gdm"
 msgstr "Без проверка за работещ GDM"
 
 #: ../gui/gdmXnestchooser.c:509 ../gui/gdmchooser.c:2099
-#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:710 ../gui/gdmlogin.c:3658
+#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:745 ../gui/gdmlogin.c:3658
 #: ../gui/gdmphotosetup.c:483 ../gui/gdmsetup.c:4629
 #: ../gui/greeter/greeter.c:1270
 msgid "Could not access GDM configuration file.\n"
@@ -1973,11 +1973,11 @@ msgid "Cannot connect to remote server"
 msgstr "Не може да осъществи връзка към отдалечен сървър"
 
 #: ../gui/gdmchooser.c:1285
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
 "host is not turned on, or is not willing to support a login session right "
-"now.  Please try again. later."
+"now.  Please try again later."
 msgstr ""
 "Не е получен отговор от хоста „%s“ за последните %d секунди. Хостът може да "
 "е изключен или да не са позволени влизания в момента. Опитайте по-късно."
@@ -2111,21 +2111,22 @@ msgid "GDM (The GNOME Display Manager) is not running."
 msgstr "GDM (програмата за управление на дисплеи на GNOME) не е стартирана."
 
 #: ../gui/gdmcomm.c:411
-#, fuzzy
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
-"Display Manager) or xdm.If you still wish to use this feature, either start "
+"Display Manager) or xdm. If you still wish to use this feature, either start "
 "GDM yourself or ask your system administrator to start GDM."
 msgstr ""
-"Ако все още искате да използвате тази функция, стартирайте сами GDM или "
-"помолете Вашия системен администратор за това."
+"Възможно е да използвате различен мениджър на дисплеи - например KDM "
+"(мениджърът на дисплеи на KDE) или xdm. Ако все още искате да използвате "
+"тази функция, стартирайте сами GDM или помолете Вашия системен администратор "
+"за това."
 
-#: ../gui/gdmcomm.c:435 ../gui/gdmflexiserver.c:734
+#: ../gui/gdmcomm.c:435 ../gui/gdmflexiserver.c:769
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr ""
 "Неуспех при свързване с GDM (програмата за управление на дисплеи на GNOME)"
 
-#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:736
+#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:771
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Може би вече е стартирана стара версия на GDM."
 
@@ -2221,48 +2222,48 @@ msgstr "Влизане в системата като друг потребит�
 msgid "New Login in a Nested Window"
 msgstr "Ново влизане във вложен прозорец"
 
-#: ../gui/gdmflexiserver.c:100
+#: ../gui/gdmflexiserver.c:104
 msgid "Cannot change display"
 msgstr "Дисплеят не може да бъде променен"
 
-#: ../gui/gdmflexiserver.c:177
+#: ../gui/gdmflexiserver.c:181
 msgid "Nobody"
 msgstr "Никой"
 
-#: ../gui/gdmflexiserver.c:212
+#: ../gui/gdmflexiserver.c:216
 #, c-format
 msgid "Display %s on virtual terminal %d"
 msgstr "Дисплей %s на виртуален терминал %d"
 
-#: ../gui/gdmflexiserver.c:217
+#: ../gui/gdmflexiserver.c:221
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Вложен дисплей %s на виртуален терминал %d<"
 
-#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:3017
+#: ../gui/gdmflexiserver.c:251 ../gui/gdmlogin.c:3017
 #: ../gui/greeter/greeter_item_ulist.c:246
 msgid "Username"
 msgstr "Потребителско име"
 
-#: ../gui/gdmflexiserver.c:256
+#: ../gui/gdmflexiserver.c:260
 msgid "Display"
 msgstr "Дисплей"
 
-#: ../gui/gdmflexiserver.c:316
+#: ../gui/gdmflexiserver.c:374
 msgid "Open Displays"
 msgstr "Отваряне на дисплеи"
 
 #. parent
 #. flags
-#: ../gui/gdmflexiserver.c:319
+#: ../gui/gdmflexiserver.c:377
 msgid "_Open New Display"
 msgstr "_Отваряне на нов дисплей"
 
-#: ../gui/gdmflexiserver.c:321
+#: ../gui/gdmflexiserver.c:379
 msgid "Change to _Existing Display"
 msgstr "Преминаване към _съществуващ дисплей"
 
-#: ../gui/gdmflexiserver.c:329
+#: ../gui/gdmflexiserver.c:387
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
@@ -2270,71 +2271,63 @@ msgstr ""
 "Вече има отворени дисплеи. Можете да изберете някой от долния списък или да "
 "отворите нов."
 
-#: ../gui/gdmflexiserver.c:413 ../gui/gdmflexiserver.c:838
-msgid "Can't lock screen"
-msgstr "Неуспех при заключването на екрана"
-
-#: ../gui/gdmflexiserver.c:419 ../gui/gdmflexiserver.c:841
-msgid "Can't disable xscreensaver display hacks"
-msgstr "Неуспех при забраняването на предпазителя на екрана"
-
-#: ../gui/gdmflexiserver.c:576
+#: ../gui/gdmflexiserver.c:611
 msgid "Choose server"
 msgstr "Избор на сървър"
 
-#: ../gui/gdmflexiserver.c:587
+#: ../gui/gdmflexiserver.c:622
 msgid "Choose the X server to start"
 msgstr "Избор на X сървър за стартиране"
 
-#: ../gui/gdmflexiserver.c:593
+#: ../gui/gdmflexiserver.c:628
 msgid "Standard server"
 msgstr "Стандартен сървър"
 
-#: ../gui/gdmflexiserver.c:659
+#: ../gui/gdmflexiserver.c:694
 msgid "Send the specified protocol command to gdm"
 msgstr "Изпращане на команда със зададения протокол на GDM"
 
-#: ../gui/gdmflexiserver.c:659
+#: ../gui/gdmflexiserver.c:694
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: ../gui/gdmflexiserver.c:660
+#: ../gui/gdmflexiserver.c:695
 msgid "Xnest mode"
 msgstr "Режим на Xnest"
 
-#: ../gui/gdmflexiserver.c:661
+#: ../gui/gdmflexiserver.c:696
 msgid "Do not lock current screen"
 msgstr "Без заключване на текущия екран"
 
-#: ../gui/gdmflexiserver.c:662
+#: ../gui/gdmflexiserver.c:697
 msgid "Debugging output"
 msgstr "Съобщения за грешка"
 
-#: ../gui/gdmflexiserver.c:663
+#: ../gui/gdmflexiserver.c:698
 msgid "Authenticate before running --command"
 msgstr "Идентификация преди изпълнение на --команда"
 
-#: ../gui/gdmflexiserver.c:664
-msgid "Start new flexible session, do not show popup"
+#: ../gui/gdmflexiserver.c:699
+msgid "Start new flexible session; do not show popup"
 msgstr "Начало на нова гъвкава сесия, да не се показва изскачащ прозорец"
 
-#: ../gui/gdmflexiserver.c:761
+#: ../gui/gdmflexiserver.c:796
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Изглежда нямате идентификация за тази операция."
 
-#: ../gui/gdmflexiserver.c:764
+#: ../gui/gdmflexiserver.c:799
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Може би Вашият файл .Xauthority не е коректен"
 
-#: ../gui/gdmflexiserver.c:788
+#: ../gui/gdmflexiserver.c:823
 msgid "You do not seem to be logged in on the console"
 msgstr "Изглежда не сте влезли в конзолата."
 
-#: ../gui/gdmflexiserver.c:790
+#: ../gui/gdmflexiserver.c:825
 msgid "Starting a new login only works correctly on the console."
 msgstr "Стартирането на ново влизане работи само на конзолата"
 
-#: ../gui/gdmflexiserver.c:855
+#: ../gui/gdmflexiserver.c:871
 msgid "Cannot start new display"
 msgstr "Неуспех при стартирането на нов дисплей"
 
@@ -2883,18 +2876,14 @@ msgstr "TimedLoginDelay бе по-малко от 5. Ще бъде зададе�
 #: ../gui/gdmlogin.c:1101 ../gui/gdmlogin.c:1130 ../gui/gdmlogin.c:1212
 #: ../gui/greeter/greeter_action_language.c:156
 #: ../gui/greeter/greeter_session.c:121 ../gui/greeter/greeter_session.c:151
-#, fuzzy, c-format
+#, c-format
 msgid "Do you wish to make %s the default for future sessions?"
-msgstr ""
-"Сесията предпочитана от Вас %s не е инсталирана на тази машина.\n"
-"Искате ли да направите %s сесия по подразбиране?"
+msgstr "Искате ли да направите %s сесия по подразбиране?"
 
 #: ../gui/gdmlogin.c:1104 ../gui/greeter/greeter_session.c:124
-#, fuzzy, c-format
+#, c-format
 msgid "Your preferred session type %s is not installed on this computer."
-msgstr ""
-"Сесията предпочитана от Вас %s не е инсталирана на тази машина.\n"
-"Искате ли да направите %s сесия по подразбиране?"
+msgstr "Сесията предпочитана от Вас %s не е инсталирана на тази машина."
 
 #: ../gui/gdmlogin.c:1109 ../gui/gdmlogin.c:1140 ../gui/gdmlogin.c:1219
 #: ../gui/greeter/greeter_action_language.c:163
@@ -2909,11 +2898,9 @@ msgstr "Само _влизане"
 #: ../gui/gdmlogin.c:1134 ../gui/gdmlogin.c:1214
 #: ../gui/greeter/greeter_action_language.c:158
 #: ../gui/greeter/greeter_session.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "You have chosen %s for this session, but your default setting is %s."
-msgstr ""
-"Избрахте %s за тази сесия, но по подразбиране е %s.\n"
-"Искате ли да направите %s сесия по подразбиране?"
+msgstr "Избрахте %s за тази сесия, но по подразбиране е %s."
 
 #: ../gui/gdmlogin.c:1140 ../gui/gdmlogin.c:1219
 #: ../gui/greeter/greeter_action_language.c:163
@@ -2927,15 +2914,13 @@ msgid "You have chosen %s for this session."
 msgstr "Избрали сте „%s“ за тази сесия."
 
 #: ../gui/gdmlogin.c:1153
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
 "utility (System Tools->Desktop Switching Tool from the main menu)."
 msgstr ""
-"Избрахте %s за тази сесия.\n"
-"Ако искате да направите %s сесия по подразбиране,\n"
-"изпълнете програмата „switchdesk“\n"
-"(Система->Инструмент за превключване) от менюто на панела."
+"Ако искате да направите %s сесия по подразбиране, изпълнете програмата "
+"„switchdesk“ (Система->Инструмент за превключване от менюто на панела)."
 
 #: ../gui/gdmlogin.c:1194 ../gui/gdmlogin.c:1203
 #: ../gui/greeter/greeter_action_language.c:71
@@ -3174,9 +3159,9 @@ msgstr ""
 "конфигурационен файл с конфигурационната програма за GDM."
 
 #: ../gui/gdmphotosetup.c:164
-#, fuzzy, c-format
+#, c-format
 msgid "File %s cannot be opened for writing."
-msgstr "Файлът %s не може да бъде отворен за писане\n"
+msgstr "Файлът %s не може да бъде отворен за писане."
 
 #: ../gui/gdmphotosetup.c:171
 msgid "Cannot open file"
@@ -3464,9 +3449,8 @@ msgstr ""
 "Позволяване стартирането на избор чрез _XDMCP от програмата за посрещане"
 
 #: ../gui/gdmsetup.glade.h:16
-#, fuzzy
 msgid "Allow theme selection in _GTK+ Greeter"
-msgstr "Позволяване на избор на _тема в програмата за посрещане."
+msgstr "Позволяване на избор на _тема в програмата за посрещане на GTK+."
 
 #: ../gui/gdmsetup.glade.h:17
 msgid "Apply"
@@ -3549,9 +3533,8 @@ msgid "Flexible"
 msgstr "Гъвкав"
 
 #: ../gui/gdmsetup.glade.h:37
-#, fuzzy
 msgid "GTK+ Greeter"
-msgstr "_2 Програма за посрещане"
+msgstr "Програма за посрещане на GTK+"
 
 #: ../gui/gdmsetup.glade.h:38
 msgid ""
@@ -3734,9 +3717,8 @@ msgid "Server Name:"
 msgstr "Име на сървър:"
 
 #: ../gui/gdmsetup.glade.h:84
-#, fuzzy
 msgid "Show _Face Browser"
-msgstr "_8 Избор на лица"
+msgstr "Показване на избора на _лица"
 
 #: ../gui/gdmsetup.glade.h:85
 msgid "Show _actions menu"
@@ -3792,9 +3774,8 @@ msgid ""
 msgstr ""
 
 #: ../gui/gdmsetup.glade.h:97
-#, fuzzy
 msgid "Themed Greeter"
-msgstr "_3 Програма за посрещане с тема"
+msgstr "Програма за посрещане с тема"
 
 #: ../gui/gdmsetup.glade.h:98
 msgid "Timed Login"
@@ -3853,13 +3834,12 @@ msgid "_Delete theme"
 msgstr "_Изтриване на тема"
 
 #: ../gui/gdmsetup.glade.h:113
-#, fuzzy
 msgid ""
 "_Deny TCP connections to Xserver (disables xforwarding, but does not affect "
 "XDMCP)"
 msgstr ""
 "Да се _забраняват всички връзки по TCP към X сървъра (тази настройка "
-"забранява всички отдалечени връзки)"
+"забранява предаването на X - xforwarding, но не влияе на XDMCP)"
 
 #: ../gui/gdmsetup.glade.h:114
 msgid "_Image"
@@ -4023,9 +4003,9 @@ msgid "Already logged in"
 msgstr "Вече е влязъл"
 
 #: ../gui/greeter/greeter_item_ulist.c:196
-msgid "Theme broken, must have pam-message label!"
+msgid "Theme broken: must have pam-message label!"
 msgstr ""
-"Темата е развалена! В нея трябва да има етикет за съобщение на системата pam "
+"Темата е развалена: в нея трябва да има етикет за съобщение на системата pam "
 "(pam-message)."
 
 #: ../gui/greeter/greeter_parser.c:1082 ../gui/greeter/greeter_system.c:208
@@ -4063,15 +4043,13 @@ msgid "You have chosen %s for this session"
 msgstr "Избрали сте „%s“ за тази сесия"
 
 #: ../gui/greeter/greeter_session.c:175
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
 "utility (System->Desktop Switching Tool from the panel menu)."
 msgstr ""
-"Избрахте %s за тази сесия.\n"
-"Ако искате да направите %s сесия по подразбиране,\n"
-"изпълнете програмата „switchdesk“\n"
-"(Система->Инструмент за превключване) от менюто на панела."
+"Ако искате да направите %s сесия по подразбиране, изпълнете програмата "
+"„switchdesk“ (Система->Инструмент за превключване от менюто на панела)."
 
 #: ../gui/greeter/greeter_session.c:228
 msgid "Change _Session"
@@ -4327,6 +4305,12 @@ msgstr "Интерфейсите не могат да се заредят. То�
 #: ../vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "Прекалено много нива на синоними за локал. Вероятно има зацикляне."
+
+#~ msgid "Can't lock screen"
+#~ msgstr "Неуспех при заключването на екрана"
+
+#~ msgid "Can't disable xscreensaver display hacks"
+#~ msgstr "Неуспех при забраняването на предпазителя на екрана"
 
 #~ msgid ""
 #~ "You might in fact be using a different display manager, such as KDM (KDE "
