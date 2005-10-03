@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GDM GNOME 2.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-08-15 14:05+0000\n"
-"PO-Revision-Date: 2005-09-15 20:20+0300\n"
+"PO-Revision-Date: 2005-10-02 21:07+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -549,7 +549,7 @@ msgstr "%s: tõrge setsid() käsu täitmisel: %s!"
 #: ../daemon/gdm.c:1171
 #, c-format
 msgid "%s: Trying failsafe X server %s"
-msgstr "%s: Veakindla X-i serveri %s proovimine"
+msgstr "%s: Tõrkekindla X-i serveri %s proovimine"
 
 #: ../daemon/gdm.c:1189
 #, c-format
@@ -1091,8 +1091,8 @@ msgstr "%s: Ei saa hakata kasutajaks %s. Katkestan."
 #, c-format
 msgid "%s: No Exec line in the session file: %s. Starting failsafe GNOME"
 msgstr ""
-"%s: Seansifailid puudub Exec-rida: %s. Kasutusele läheb veakindel (failsafe) "
-"GNOME"
+"%s: Seansifailis puudub Exec-rida: %s. Kasutusele läheb tõrkekindel "
+"(failsafe) GNOME"
 
 #: ../daemon/slave.c:3866
 msgid ""
@@ -1106,6 +1106,8 @@ msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
 "session instead."
 msgstr ""
+"%s: Xsession baasskripti pole võimalik leida või käivitada.  Selle asemel "
+"käivitatakse GNOME tõrkekindel seanss."
 
 #: ../daemon/slave.c:3886
 msgid ""
@@ -2866,6 +2868,8 @@ msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
 msgstr ""
+"XDMCP valija käivitamine võimaldab sisse logida teistesse saadaolevatesse "
+"võrguarvutitesse (muidugi kui võrgus on selliseid)."
 
 #: ../gui/gdmlogin.c:2854 ../gui/greeter/greeter_system.c:167
 msgid "_Configure Login Manager..."
@@ -2876,12 +2880,12 @@ msgstr "_Seadista logimishaldurit..."
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
-"GDMi seadistamine (seesama sisselogimishaldur). Sul läheb vaja juurkasutaja "
-"parooli."
+"GDM-i seadistamine (seesama sisselogimishaldur). Selle jaoks läheb sul vaja "
+"juurkasutaja parooli."
 
 #: ../gui/gdmlogin.c:2875
 msgid "Restart your computer"
-msgstr "Tee arvutile alglaadimine"
+msgstr "Arvuti alglaadimine"
 
 #: ../gui/gdmlogin.c:2888 ../gui/greeter/greeter_system.c:205
 msgid "Shut down the system so that you may safely turn off the computer."
@@ -3049,7 +3053,7 @@ msgstr "_Sirvi"
 
 #: ../gui/gdmsession.c:129 ../gui/gdmsession.c:292
 msgid "Failsafe _GNOME"
-msgstr "Veakindel (failsafe) _GNOME"
+msgstr "Tõrkekindel (failsafe) _GNOME"
 
 #: ../gui/gdmsession.c:130 ../gui/gdmsession.c:293
 msgid ""
@@ -3060,7 +3064,7 @@ msgstr ""
 
 #: ../gui/gdmsession.c:140 ../gui/gdmsession.c:303
 msgid "Failsafe _Terminal"
-msgstr "Veakindel (failsafe) _terminal"
+msgstr "Tõrkekindel (failsafe) _terminal"
 
 #: ../gui/gdmsession.c:141 ../gui/gdmsession.c:304
 msgid ""
@@ -3245,11 +3249,11 @@ msgstr "Serveri lisamine/redigeerimine"
 
 #: ../gui/gdmsetup.glade.h:11
 msgid "Allow _configuration from the login screen"
-msgstr "Luba sisselogimise aknast _seadistamist"
+msgstr "Sisselogimisekraanilt on _seadistamine lubatud"
 
 #: ../gui/gdmsetup.glade.h:12
 msgid "Allow _root to login with GDM"
-msgstr "Luba kasutajal _root GDMiga sisse logida"
+msgstr "Kasutajal _root on lubatud GDM-iga sisse logida"
 
 #: ../gui/gdmsetup.glade.h:13
 msgid "Allow remote _timed logins"
@@ -3257,11 +3261,11 @@ msgstr ""
 
 #: ../gui/gdmsetup.glade.h:14
 msgid "Allow root to login r_emotely with GDM"
-msgstr "Luba kasutajal _root GDMiga teisest masinast sisse logida"
+msgstr "Kasutajal _root on lubatud GDM-iga teisest masinast sisse logida"
 
 #: ../gui/gdmsetup.glade.h:15
 msgid "Allow running _XDMCP chooser from the login screen"
-msgstr "Luba sisselogimise aknast XDMCP _valija käivitamist"
+msgstr "Sisselogimise aknast lubatakse XDMCP _valija käivitamist"
 
 #: ../gui/gdmsetup.glade.h:16
 msgid "Allow theme selection in _GTK+ Greeter"
@@ -3329,7 +3333,7 @@ msgstr "Kuvasid _hosti kohta:"
 
 #: ../gui/gdmsetup.glade.h:32
 msgid "Enable _XDMCP"
-msgstr "Luba _XDMCP"
+msgstr "_XDMCP lubatud"
 
 #: ../gui/gdmsetup.glade.h:33
 msgid "Enable _accessibility modules"
@@ -3541,6 +3545,9 @@ msgid ""
 "set, none of the system commands will be available (this includes restart, "
 "shutdown, configure, chooser)"
 msgstr ""
+"Menüü \"Tegevused\" lubamine. Kui see pole märgitud, siis pole võimalik "
+"ühtegi süsteemset käsku (kaasa arvatud taaskäivitamine, seiskamine, "
+"seadistamine ja valiku tegemine) kasutada"
 
 #: ../gui/gdmsetup.glade.h:87
 msgid "Sound file:"
@@ -3552,6 +3559,8 @@ msgid ""
 "String to be shown in the greeter as welcome.  You can insert %n in here and "
 "it will be replaced by the name of your computer."
 msgstr ""
+"Tervitaja tervitustekst. Kui tekstis on sümbolid %n, siis see asendatakse "
+"arvuti nimega."
 
 #: ../gui/gdmsetup.glade.h:91
 #, no-c-format
@@ -3560,6 +3569,8 @@ msgid ""
 "XDMCP.  You can insert %n in here and it will be replaced by the name of "
 "your computer."
 msgstr ""
+"Võrgu kaudu sisselogijate tervitustekst. Kui tekstis on sümbolid %n, siis "
+"see asendatakse arvuti nimega."
 
 #: ../gui/gdmsetup.glade.h:92
 msgid "Test Sound"
@@ -3851,11 +3862,11 @@ msgstr "Toimingu valimine"
 
 #: ../gui/greeter/greeter_system.c:300
 msgid "Shut _down the computer"
-msgstr "_Seiska arvuti (saab välja lülitada)"
+msgstr "Arvuti _seiskamine"
 
 #: ../gui/greeter/greeter_system.c:303
 msgid "Shut down your computer so that you may turn it off."
-msgstr "Seiska arvuti täielikult (nii, et saab välja lülitada)."
+msgstr "Arvuti täielik seiskamine - nii, et saab välja lülitada."
 
 #: ../gui/greeter/greeter_system.c:318
 msgid "_Reboot the computer"
@@ -3867,11 +3878,11 @@ msgstr "_Peata arvuti (säästuresiim)"
 
 #: ../gui/greeter/greeter_system.c:346
 msgid "Run _XDMCP chooser"
-msgstr "Käivita _XDMCP valija"
+msgstr "_XDMCP valija käivitamine"
 
 #: ../gui/greeter/greeter_system.c:366
 msgid "Confi_gure the login manager"
-msgstr "Seadista _logimise haldurit"
+msgstr "Sisse_logimishalduri seadistamine"
 
 #: ../gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
