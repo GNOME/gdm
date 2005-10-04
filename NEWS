@@ -1,11 +1,76 @@
 Ahh news...
 
+2.8.0.5 stuff:
+
+- gdmflexiserver supports --startnew option so that
+  gdmflexiserver can be told to not pop-up the dialog
+  asking if the user wants to start a current session.
+  With this option it just always starts a new session.
+  This allows running gdmflexiserver from the 
+  screensaver, where the pop-up can't be interacted
+  with due to the nature of the screensaver.
+  (Brian Cameron)
+
+- Now gdmflexiserver supports gnome-screensaver if
+  available, then defaults to xscreensaver. 
+  (William Jon McCann)
+
+- Bug corrected in dwellmouselistener which caused it
+  to always fail to recognize gestures.  (Brian
+  Cameron)
+
+- Added warning message if gdmgreeter theme supports
+  face browser but does not have pam-message defined.
+  (Brian Cameron)
+
+- gdmsetup and gdmphotosetup now only map right/left
+  mouse buttons to button1 when running under GDM.
+  When running as user, honor user defaults.  
+  (Brian Cameron)
+
+- XdmcpFill() failure is now logged as debug, since
+  this happens when the client disconnects from the
+  XDMCP server before the session was setup.
+  (Bastien Nocera)
+
+- gdmsetup fixed so when user modifies Include/Exclude
+  list, the automatic/timed dropdown lists are updated
+  immediately instead of having to stop and restart
+  gdmsetup to see the users in the list.
+
+- Correct illegal reference to build directory in 
+  installed .la files. (Stanislav Brabec)
+
+- Removed test that causes needless syslog() message
+  on Solaris when auditing is turned off.  New docs
+  explaining how to setup autologin on Solaris.
+  (Brian Cameron)
+
+- Translation updates (Gabor Kelemen, Priit Laes, Kjartan
+  Maraas, Ankit Patel, Ignacio Casal Quinteiro, Hendrick
+  Richter, Erdal Ronahi, Satoru SATOH, Francisco Javier F.
+  Serrador, Alexander Shopov, Clytie Siddall, Tommi
+  Vainikainen, Funda Wang, Vincent van Adrighem,
+  Adam Weinberger)
+
 2.8.0.4 stuff:
 
-- Corrected syslog debugging in gesture listeners so it
-  works better.
+- Corrected syslog debugging so it works better.
+  (Brian Cameron)
 
-- Minor fix for clean 64 bit compilation.
+- Minor fix for clean 64 bit compilation.  (Brian 
+  Cameron)
+	
+- Fix address of website in README (Tommi Vainikainen)
+
+- Translation updates (\305\275ygimantas Beru\304\215ka,
+   Hendrik Brandt, Baris Cicek, Maxim Dziumanenko, Artur
+   Flinta, Raphael Higino, Gabor Kelemen, Priit Laes,
+   Chao-Hsiung Liao, Duarte Loreto, Jordi Mallach,
+   Christophe Merlet, Ankit Patel, Changwoo Ryu, Francisco
+   Javier F. Serrador, Nickolay V. Shmyrev, Clytie Siddall,
+   Slobodan D. Sredojevic, Mugurel Tudor, Miloslav Trmac,
+   Vincent van Adrighem)
 
 2.8.0.3 stuff:
 
@@ -38,6 +103,12 @@ Ahh news...
 - Correct use-after-free with the dynamic session in 
   the sessions list, corrects tooltip corruption.
   (Joe Marcus Clarke)
+
+- Translation updates (Laurent Dhima, Raphael Higino,
+  Rhys Jones, Gabor Kelemen, Priit Laes, Kjartan Maraas,
+  Kostas Papadimas, Ignacio Casal Quinteiro, Francisco
+  Javier F. Serrador, Alexander Shopov, Terance Sola,
+  Marcel Telka, Mugurel Tudor, Funda Wang 
 
 2.8.0.2 stuff:
 
@@ -114,6 +185,14 @@ Ahh news...
 
 - Better C89 compiler support.  (Jens Granseuer)
 
+- Translation updates (Hendrik Brandt, Nikos Charonitakis,
+  Pawan Chitrakar, Laurent Dhima, Raphael Higino, Theppitak
+  Karoonboonyanan, Gabor Kelemen, Priit Laes, Chao-Hsiung Liao,
+  Kjartan Maraas, William Jon McCann, Ankit Patel, Hendrik Richter,
+  Francisco Javier F. Serrador, Alexander Shopov, Clytie Siddall,
+  Terance Sola, Marcel Telka, Miloslav Trmac, Tommi Vainikainen,
+  Funda Wang, Adam Weinberger, \305\275ygimantas Beru\304\215ka 
+
 2.8.0.1 stuff:
 
 - This release fixes a nasty bug which was causing the
@@ -156,6 +235,12 @@ Ahh news...
 - Leaks fixed (Kjartan Maraas)
 
 - Corrections to docs (Andrew Case, Martin Petersen)
+
+- Translation updates (Kjartan Maraas, Miloslav Trmac,
+  Ignacio Casal Quinteiro, Vincent van Adrighem, Francisco
+  Javier F. Serrador, Gabor Kelemen, Theppitak Karoonboonyanan,
+  Martin Willemoes Hansen, Priit Laes, Adam Awinberger,
+  Clytie Siddall, Abel Cheung
 
 2.8.0.0 stuff:
 
@@ -343,7 +428,11 @@ Other Changes:
 
 - Change HaltCommand from "init 0" to "init 5" on Solaris.
 
-- Minor translation improvements.
+- Translation updates (Takeshi AIHANA, Adi Attar, Abel Cheung,
+  Pawan Chitrakar, Baris Cicek, Martin Willemoes Hansen,
+  Gabor Kelemen, Steve Murphy, Ahmad Riza H Nst, Christian Rose,
+  Francisco Javier F. Serrador, Miloslav Trmac, Vincent van
+  Adrighem, Adam Weinberger)
 
 2.6.0.8 stuff:
 
@@ -414,6 +503,18 @@ Other Changes:
 
 - Cleanup.  (Mark McLoughlin and Kjartan Marass)
 
+- Translation updates (Takeshi AIHANA, \305\275ygimantas
+  Beru\304\215ka, Abel Cheung, Baris Cicek, Dan Damian,
+  Laurent Dhima, Laszlo Dvornik, Maxim Dziumanenko,
+  Artur Flinta, Martin Willemoes Hansen, Raphael Higino,
+  Leonid Kanter, Theppitak Karoonboonyanan, Priit Laes,
+  David Lodge, Duarte Loreto, Jordi Mallach, Kjartan Maraas,
+  Christophe Merlet, Kostas Papadimas, Ankit Patel,
+  Hendrik Richter, Christian Rose, Changwoo Ryu, Danilo
+  \305\240egan, Francisco Javier F. Serrador, Alexander Shopov,
+  Marcel Telka, Miloslav Trmac, Ilkka Tuohela, Tommi Vainikainen,
+  Vincent van Adrighem, Adam Weinberger)
+
 2.6.0.7 stuff:
 
 - Now using CVS head of vicious-extensions, left out of previous
@@ -433,6 +534,15 @@ Other Changes:
 
 - Updated build files so it can be built and distributed with new
   buildtools than 1.4.   makedist fixes, etc.
+
+- Dwayne Bailey, \305\275ygimantas Beru\304\215ka, Mohammad DAMT,
+  Laurent Dhima, Laszlo Dvornik, Artur Flinta, Martin Willemoes
+  Hansen, Raphael Higino, Priit Laes, David Lodge, Duarte Loreto,
+  Jordi Mallach, Kjartan Maraas, Kostas Papadimas, Hendrik Richter,
+  Christian Rose, Francisco Javier F. Serrador, Alexander Shopov,
+  Marcel Telka, Miloslav Trmac, Tommi Vainikainen, Vincent van
+  Adrighem, Funda Wang, Adam Weinberger, Simos Xenitellis,
+  Meelad Zakaria
 
 2.6.0.6 stuff:
 
