@@ -547,7 +547,7 @@ read_servers (gchar *config_file)
 			char *section;
 			GdmXServer *svr;
 
-			section = g_strdup_printf ("=%s=/", config_file);
+			section = g_strdup_printf ("=%s=/%s/", config_file, k);
 			gnome_config_push_prefix (section);
 
 			if ( ! gnome_config_get_bool
