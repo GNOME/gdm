@@ -2919,20 +2919,6 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	if ( ! gdm_wait_for_ack)
 		wait_for_ack = FALSE;
 
-	/* Evil!, all this for debugging? */
-	if G_UNLIKELY (GdmDebug && gdm_in_signal == 0) {
-		if (strncmp (str, GDM_SOP_COOKIE " ",
-			     strlen (GDM_SOP_COOKIE " ")) == 0) {
-			char *s = g_strndup
-				(str, strlen (GDM_SOP_COOKIE " XXXX XX"));
-			/* cut off most of the cookie for "security" */
-			gdm_debug ("Sending %s...", s);
-			g_free (s);
-		} else {
-			gdm_debug ("Sending %s", str);
-		}
-	}
-
 	if (wait_for_ack) {
 		gdm_got_ack = FALSE;
 		g_free (gdm_ack_response);
@@ -3057,17 +3043,10 @@ gdm_slave_send_string (const char *opcode, const char *str)
 {
 	char *msg;
 
-	/* Evil!, all this for debugging? */
 	if G_UNLIKELY (GdmDebug && gdm_in_signal == 0) {
-		if (strcmp (opcode, GDM_SOP_COOKIE) == 0)
-			gdm_debug ("Sending %s == <secret> for slave %ld",
-				   opcode,
-				   (long)getpid ());
-		else
-			gdm_debug ("Sending %s == %s for slave %ld",
-				   opcode,
-				   ve_sure_string (str),
-				   (long)getpid ());
+		gdm_debug ("Sending %s == <secret> for slave %ld",
+			   opcode,
+			   (long)getpid ());
 	}
 
 	msg = g_strdup_printf ("%s %ld %s", opcode,
