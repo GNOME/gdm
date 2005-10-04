@@ -5,14 +5,15 @@
 # Jarkko Ranta <jjranta@cc.joensuu.fi>, 2000-2002.
 # Lauri Nurmi <lanurmi@iki.fi>, 2003.
 # Tommi Vainikainen <Tommi.Vainikainen@iki.fi>, 2003-2005.
+# Ilkka Tuohela <hile@iki.fi>, 2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-10-03 15:33+0300\n"
-"PO-Revision-Date: 2005-10-03 15:33+0300\n"
-"Last-Translator: Tommi Vainikainen <Tommi.Vainikainen@iki.fi>\n"
+"PO-Revision-Date: 2005-10-04 14:15+0300\n"
+"Last-Translator: Hile Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1285,7 +1286,7 @@ msgid ""
 msgstr ""
 "Kotihakemistoksi on asetettu:\n"
 "\"%s\"\n"
-"mutta se ei näytä olevan olemassa. Haluatko kirjautua sisälle siten, että "
+"mutta se ei näytä olevan olemassa. Haluatko kirjautua siten, että "
 "kotihakemistona on juurihakemisto?\n"
 "\n"
 "Todennäköisesti mikään ei toimi ellet kirjaudu vikasietoiseen istuntoon."
@@ -1462,7 +1463,7 @@ msgid ""
 "your system administrator."
 msgstr ""
 "\n"
-"Ryhmäsi asettaminen ei onnistu; et voi kirjautua sisälle. Ota yhteyttä "
+"Ryhmäsi asettaminen ei onnistu; et voi kirjautua tietokoneelle. Ota yhteyttä "
 "järjestelmän ylläpitäjään."
 
 #: ../daemon/verify-crypt.c:290 ../daemon/verify-crypt.c:363
@@ -1486,7 +1487,7 @@ msgid ""
 "again later or contact your system administrator."
 msgstr ""
 "\n"
-"Salasanaasi ei voi vaihtaa; et voi kirjautua sisälle. Yritä myöhemmin "
+"Salasanaasi ei voi vaihtaa; et voi kirjautua tietokoneelle. Yritä myöhemmin "
 "uudelleen tai ota yhteyttä järjestelmän ylläpitäjään."
 
 #: ../daemon/verify-crypt.c:346 ../daemon/verify-crypt.c:354
@@ -3160,7 +3161,7 @@ msgid ""
 "configuration application."
 msgstr ""
 "Asetuksia ei löytynyt. GDM käyttää oletusasetuksia tämän istunnon ajamiseen. "
-"On suositeltavaa kirjautua sisälle ja luoda asetustiedosto GDM:n "
+"On suositeltavaa kirjautua tietokoneelle ja luoda asetustiedosto GDM:n "
 "asetusohjelmalla."
 
 #. markup
@@ -3421,8 +3422,8 @@ msgid ""
 "run), BE CAREFUL!"
 msgstr ""
 "<b>VAROITUS:</b> Sellaisten arvojen asettaminen tähän kohtaan, joita X-"
-"palvelimesi ei tue, estää X-palvelinta uudelleenkäynnistymästä "
-"(asetusohjelmaa ei siis pystytä ajamaan), OLE VAROVAINEN!"
+"palvelimesi ei tue,\n estää X-palvelinta uudelleenkäynnistymästä, jolloin "
+"tätä asetusohjelmaa ei pystytä suorittamaan. \nOLE VAROVAINEN!"
 
 #: ../gui/gdmsetup.glade.h:8
 msgid ">"
@@ -3580,7 +3581,7 @@ msgstr "Kunnioita epäs_uoria pyyntöjä"
 
 #: ../gui/gdmsetup.glade.h:47
 msgid "Include"
-msgstr "Ota mukaan"
+msgstr "Näytä"
 
 #: ../gui/gdmsetup.glade.h:48
 msgid "Is a login attempt handled by this computer?"
@@ -3600,7 +3601,8 @@ msgstr "Sisäänkirjautumistervehdin."
 
 #: ../gui/gdmsetup.glade.h:53
 msgid "Login a _user automatically after a specified number of seconds"
-msgstr "Kirjaa _käyttäjä automaattisesti kun tietty määrä sekunteja on kulunut"
+msgstr "Kirjaudu _valitun käyttäjän tunnuksella automaattisesti, kun "
+"annettu aika on kulunut"
 
 #: ../gui/gdmsetup.glade.h:54
 msgid "Logo"
@@ -3608,11 +3610,11 @@ msgstr "Logo"
 
 #: ../gui/gdmsetup.glade.h:55
 msgid "Make a _sound after a failed login attempt"
-msgstr "Anna _ääni epäonnistuneen kirjautumisyrityksen jälkeen"
+msgstr "Soita _ääni epäonnistuneen kirjautumisyrityksen jälkeen"
 
 #: ../gui/gdmsetup.glade.h:56
 msgid "Make a _sound after a successful login attempt"
-msgstr "Anna _ääni onnistuneen kirjautumisyrityksen jälkeen"
+msgstr "Soita _ääni onnistuneen kirjautumisyrityksen jälkeen"
 
 #: ../gui/gdmsetup.glade.h:57
 msgid "Make a _sound when login window is ready"
@@ -3662,7 +3664,7 @@ msgstr "Ei kuvakaappausta saatavilla"
 msgid ""
 "Note: For settings to take effect, the gdm service will require a restart."
 msgstr ""
-"Huom: GDM-palvelu täytyy uudelleenkäynnistää, jotta asetukset tulevat "
+"Huomautus: GDM-palvelu täytyy uudelleenkäynnistää, jotta asetukset tulevat "
 "voimaan."
 
 #: ../gui/gdmsetup.glade.h:68
@@ -3781,14 +3783,13 @@ msgid ""
 "listed in \"Exclude\"\n"
 "will not be displayed regardless of whether \"Include All Users\" is checked."
 msgstr ""
-"\"Käyttäjät\"-välilehti määrittää GDM:ssä näkyvät käyttäjät.\n"
-"Käyttäjät, jotka on lueteltu \"Sisällytä\"-kohdassa, näkyvät "
-"kasvoselaimessa\n"
-"mikäli se on otettu käyttöön \"Turvallisuus\"-välilehdellä, ja he ovat myös\n"
-"alasvetovalikossa automaattiseen/ajastettuun sisäänkirjautumiseen\n"
-"\"Yleiset\"-välilehdellä. Käyttäjät, jotka on lueteltu \"Älä sisällytä\"-"
-"kohdassa,\n"
-"eivät näy vaikka \"Sisällytä kaikki käyttäjät\" olisikin valittu."
+"\"Käyttäjät\"-välilehti määrittää GDM:ssä näkyvät käyttäjät.\n\n"
+"Käyttäjät, jotka on lueteltu \"Näytä\"-kohdassa, näkyvät kasvoselaimessa,"
+"mikäli se on otettu \nkäyttöön \"Turvallisuus\"-välilehdellä, ja he ovat myös "
+"valittavissa alasvetovalikosta automaattiseen\n tai ajastettuun "
+"sisäänkirjautumiseen \"Yleiset\"-välilehdeltä.\n\n"
+"Käyttäjät, jotka on lueteltu \"Jätä pois\"-" "kohdassa, eivät näy, "
+"vaikka \"Näytä kaikki käyttäjät\" olisikin valittu."
 
 #: ../gui/gdmsetup.glade.h:97
 msgid "Themed Greeter"
@@ -3808,11 +3809,11 @@ msgstr "Käytä oletustervetulotoivotusta"
 
 #: ../gui/gdmsetup.glade.h:101
 msgid "User to Include"
-msgstr "Mukaan otettavat käyttäjät"
+msgstr "Näytettävät käyttäjät"
 
 #: ../gui/gdmsetup.glade.h:102
 msgid "User to exclude"
-msgstr "Pois jätettävät käyttäjät"
+msgstr "Piilotettavat käyttäjät"
 
 #: ../gui/gdmsetup.glade.h:103
 msgid "Users"
@@ -3867,8 +3868,8 @@ msgid ""
 "_Include All Users (Get \"Include\" user list from /etc/passwd.  Not "
 "appropriate if using NIS)"
 msgstr ""
-"_Sisällytä kaikki käyttäjät (Lue \"Sisällytä\"-käyttäjäluettelo /etc/passwd:"
-"stä. Ei toimi NIS:n kanssa)"
+"_Näytä kaikki käyttäjät (näytetttävät käyttäjät luetaan tiedostosta "
+"/etc/passwd. Ei toimi NIS:n kanssa)"
 
 #: ../gui/gdmsetup.glade.h:116
 msgid "_Install new theme"
@@ -3876,7 +3877,8 @@ msgstr "_Asenna uusi teema"
 
 #: ../gui/gdmsetup.glade.h:117
 msgid "_Login a user automatically on first bootup"
-msgstr "K_irjaa jokin käyttäjä sisään automaattisesti kun kone käynnistetään"
+msgstr "_Kirjaudu valitun käyttäjän tunnuksella tietokoneelle automaattisesti, "
+"kun kone käynnistetään"
 
 #: ../gui/gdmsetup.glade.h:118
 msgid "_Mode:"
