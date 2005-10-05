@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GDM GNOME 2.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-08-15 14:05+0000\n"
-"PO-Revision-Date: 2005-10-02 21:07+0300\n"
+"PO-Revision-Date: 2005-10-04 20:39+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -347,7 +347,7 @@ msgstr ""
 #, c-format
 msgid "%s: Root cannot be logged in automatically, turning off timed login"
 msgstr ""
-"%s: Root kasutaja ei saa automaatselt sisse logida, viitlogimine lülitatakse "
+"%s: Juurkasutaja ei saa automaatselt sisse logida, viitlogimine lülitatakse "
 "välja"
 
 #: ../daemon/gdm.c:586
@@ -2985,6 +2985,8 @@ msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
 msgstr ""
+"Seadistusfail sisaldab sisselogimisdialoogi jaoks vigast käsurida - "
+"kasutatakse vaikimisi käsku. Palun paranda oma seadistused."
 
 #. markup
 #: ../gui/gdmlogin.c:4016 ../gui/greeter/greeter.c:1606
@@ -3076,7 +3078,7 @@ msgstr ""
 #: ../gui/gdmsession.c:277
 #, c-format
 msgid "%s: Session directory %s not found!"
-msgstr "%s: Ei leia seansikataloogi %s!"
+msgstr "%s: Seansikataloogi %s ei leitud!"
 
 #: ../gui/gdmsession.c:284
 msgid "Yikes, nothing found in the session directory."
@@ -3084,7 +3086,8 @@ msgstr ""
 
 #: ../gui/gdmsession.c:320
 msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr "Ei leia vaikeseansi linki. Kasutusele läheb Failsafe GNOME.\n"
+msgstr ""
+"Vaikeseansi viita pole võimalik leida. Kasutusele läheb tõrkekindel GNOME.\n"
 
 #. markup
 #: ../gui/gdmsetup.c:209
@@ -3096,7 +3099,7 @@ msgstr ""
 #. markup
 #: ../gui/gdmsetup.c:870
 msgid "Autologin or timed login to the root account is not allowed."
-msgstr ""
+msgstr "Juurkasutaja puhul pole automaat- ega viitlogimine lubatud."
 
 #: ../gui/gdmsetup.c:1628 ../gui/gdmsetup.c:2256
 msgid "Open File"
@@ -3782,6 +3785,9 @@ msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
 msgstr ""
+"GTK+-tervitajat pole võimalik käivitada.  Sellel kuval katkestatakse tegevus "
+"ja sul on võib-olla vaja logida arvutisse sisse teiste meetodite abil ning "
+"GDM-i paigalduse ära parandada."
 
 #: ../gui/greeter/greeter_action_language.c:64
 msgid "Last"
@@ -3870,11 +3876,11 @@ msgstr "Arvuti täielik seiskamine - nii, et saab välja lülitada."
 
 #: ../gui/greeter/greeter_system.c:318
 msgid "_Reboot the computer"
-msgstr "Tee arvutile _alglaadimine"
+msgstr "Arvutile _alglaadimise tegemine"
 
 #: ../gui/greeter/greeter_system.c:332
 msgid "Sus_pend the computer"
-msgstr "_Peata arvuti (säästuresiim)"
+msgstr "Arvuti _peatamine (säästuresiim)"
 
 #: ../gui/greeter/greeter_system.c:346
 msgid "Run _XDMCP chooser"
@@ -3937,7 +3943,7 @@ msgstr ""
 #: ../gui/modules/keymouselistener.c:255
 #, c-format
 msgid "Cannot open gestures file: %s"
-msgstr ""
+msgstr "Viibete faili pole võimalik avada: %s"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:39
 msgid "DMX display to migrate to"
@@ -3953,11 +3959,11 @@ msgstr ""
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:49
 msgid "Xauthority file for destination display"
-msgstr ""
+msgstr "Xauthority fail sihtkuva jaoks"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:50 ../utils/gdm-dmx-reconnect-proxy.c:55
 msgid "AUTHFILE"
-msgstr ""
+msgstr "AUTENTIMISFAIL"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:54
 msgid "Xauthority file for backend display"
