@@ -897,6 +897,7 @@ case "$host" in
         REBOOT_COMMAND="/sbin/init 6"
         SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
         XSESSION_SHELL=/bin/ksh
+        SOUND_PROGRAM=/usr/bin/audioplay
         ;;
 *)
         GDM_USER_PATH="/bin:/usr/bin"
@@ -904,6 +905,7 @@ case "$host" in
         REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
         SUSPEND_COMMAND=""
         XSESSION_SHELL=/bin/sh
+        SOUND_PROGRAM=/usr/bin/play
         ;;
 esac
 
@@ -994,6 +996,8 @@ AC_SUBST(XSESSION_SHELL)
 AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL")
 AC_SUBST(GDM_USER_PATH)
 AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
+AC_SUBST(SOUND_PROGRAM)
+AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
 
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
