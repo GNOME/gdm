@@ -27,4 +27,6 @@ extern GtkWidget *window;
 
 extern gboolean greeter_probably_login_prompt;
 
+void greeter_ignore_buttons (gboolean val);
+
 #endif

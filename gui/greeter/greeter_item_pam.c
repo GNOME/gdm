@@ -96,6 +96,8 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
   char *tmp;
   GreeterItemInfo *error_info;
 
+  greeter_ignore_buttons (TRUE);
+
   str = gtk_entry_get_text (GTK_ENTRY (entry));
   if (greeter_probably_login_prompt &&
       /* evilness */

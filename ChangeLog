@@ -1,5 +1,30 @@
 2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
 
+        * gui/gdmlogin.c, gui/greeter/greeter.c,
+          gui/greeter/greeter_item_pam.c:  Change
+          the way the "OK" and "Cancel" buttons work
+          so that they are consistant.  Now the
+          "Cancel" button in gdmlogin is active
+          when the Username is requested and
+          pressing it just clears the field.  This
+          makes gdmlogin work like gdmgreeter.  This
+          is easier than changing gdmgreeter
+          because the greeter themes don't support
+          changing buttons sensitivity.  Also it
+          is somewhat useful for Cancel to work
+          this way.  Now make the buttons
+          insensitive when ok/enter/tab is pressed
+          and make them sensitive again when the
+          greeter wants entry.  This fixes bug
+          #318017 where users could corrupt
+          gdmgreeter's memory by hitting cancel
+          after authentication (which would only
+          happen if the PostLogin script caused
+          a long enough delay to allow this (or
+          perhaps on a real slow machine).
+
+2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
+
         * daemon/slave.c: Fix problem with PostSession
           script not always getting executed when user
           kills the Xserver with ctl-alt-backspace.

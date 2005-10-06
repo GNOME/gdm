@@ -118,13 +118,13 @@ gchar *GdmSoundOnLoginReadyFile;
 gchar *GdmSoundOnLoginSuccessFile;
 gchar *GdmSoundOnLoginFailureFile;
 gchar *GdmSoundProgram;
-
 gboolean GdmUseCirclesInEntry = FALSE;
 gboolean GdmUseInvisibleInEntry = FALSE;
 
 static gchar *config_file;
 static gboolean used_defaults = FALSE;
 gint greeter_current_delay = 0;
+static gboolean ignore_buttons = FALSE;
 
 /* FIXME: hack */
 GreeterItemInfo *welcome_string_info = NULL;
@@ -133,6 +133,12 @@ extern gboolean session_dir_whacked_out;
 extern gboolean require_quarter;
 
 gboolean greeter_probably_login_prompt = FALSE;
+
+void
+greeter_ignore_buttons (gboolean val)
+{
+   ignore_buttons = val;
+}
 
 /* If in random theme mode then grab a random theme from those selected */
 static char *
@@ -396,6 +402,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	} else {
 		greeter_probably_login_prompt = FALSE;
 	}
+	greeter_ignore_buttons (FALSE);
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, TRUE);
 	g_free (tmp);
 	break;
@@ -405,6 +412,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
+	greeter_ignore_buttons (FALSE);
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, FALSE);
 	g_free (tmp);
 	break;
@@ -532,6 +540,7 @@ greeter_ctrl_handler (GIOChannel *source,
 
 	printf ("%c\n", STX);
 	fflush (stdout);
+	greeter_ignore_buttons (FALSE);
 	break;
 
     case GDM_QUIT:
@@ -700,24 +709,32 @@ static void
 greeter_action_ok (GreeterItemInfo *info,
                        gpointer         user_data)
 {
-   GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
-   if (entry_info && entry_info->item &&
-       GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
-       GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
+   if (ignore_buttons == FALSE)
      {
-       GtkWidget *entry;
-       entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
-       greeter_item_pam_login (GTK_ENTRY (entry), entry_info);
-     }
+       GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+       if (entry_info && entry_info->item &&
+           GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+           GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
+         {
+           GtkWidget *entry;
+           entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+           greeter_ignore_buttons (TRUE);
+           greeter_item_pam_login (GTK_ENTRY (entry), entry_info);
+         }
+    }
 }
 
 static void
 greeter_action_cancel (GreeterItemInfo *info,
                        gpointer         user_data)
 {
-   greeter_item_ulist_disable ();
-   printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CANCEL);
-   fflush (stdout);
+   if (ignore_buttons == FALSE)
+     {
+       greeter_item_ulist_disable ();
+       greeter_ignore_buttons (TRUE);
+       printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CANCEL);
+       fflush (stdout);
+     }
 }
 
 static void
