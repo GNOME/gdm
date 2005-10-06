@@ -331,7 +331,7 @@ enum {
 #define GDM_KEY_SOUND_ON_LOGIN_READY_FILE "greeter/SoundOnLoginFile="
 #define GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE "greeter/SoundOnLoginSuccessFile="
 #define GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE "greeter/SoundOnLoginFailureFile="
-#define GDM_KEY_SOUND_PROGRAM "daemon/SoundProgram=/usr/bin/play"
+#define GDM_KEY_SOUND_PROGRAM "daemon/SoundProgram=" SOUND_PROGRAM
 
 #define GDM_KEY_SCAN "chooser/ScanTime=4"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
