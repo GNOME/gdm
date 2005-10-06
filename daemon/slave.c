@@ -201,6 +201,7 @@ extern gchar *GdmSoundOnLoginFailureFile;
 /* Local prototypes */
 static gint     gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
 static gint     gdm_slave_xioerror_handler (Display *disp);
+static gint     gdm_slave_ignore_xioerror_handler (Display *disp);
 static void	gdm_slave_run (GdmDisplay *display);
 static void	gdm_slave_wait_for_login (void);
 static void     gdm_slave_greeter (void);
@@ -234,6 +235,8 @@ static GList *unhandled_notifies = NULL;
 
 /* for signals that want to exit */
 static Jmp_buf slave_start_jmp;
+/* for handling xioerror during ctl-alt-bs */
+static Jmp_buf ignore_xioerror_jmp;
 static gboolean return_to_slave_start_jmp = FALSE;
 static gboolean already_in_slave_start_jmp = FALSE;
 static char *slave_start_jmp_error_to_print = NULL;
@@ -4553,7 +4556,28 @@ gdm_slave_session_stop (gboolean run_post_session,
        This is to fix #126071, that is kill processes that may still hold open
        fd's in the home directory to allow a clean unmount.  However note of course
        that this is a race. */
+    /* FIX HACK: We will get an xioerror out of whack clients if the user crashed
+       X with ctl-alt-backspace.  So, we need to ignore xioerror while we do this.
+       Otherwise, we end up in a longjmp to quick_exit which will prevent things
+       like PostSession scripts from processing */
+    switch (Setjmp (ignore_xioerror_jmp)) {
+    case 0:
+       /* Having just set the jump point, activate the error handler that returns
+          us to the next case */
+       XSetIOErrorHandler (gdm_slave_ignore_xioerror_handler);
+       break;
+    default:
+       /* Here means we saw an xioerror and ignored it. */
+       /* xioerror will cause this to drop back into whack_clients, but I think
+          that is okay because I haven't seen it do so more than once */
+       gdm_debug("gdm_slave_session_stop: back here from xioerror");
+       break;
+    }
+
     gdm_server_whack_clients (d->dsp);
+
+    /* Now we should care about xioerror once again??? */
+    XSetIOErrorHandler (gdm_slave_xioerror_handler);
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
     /* let the other processes die perhaps or whatnot */
@@ -4977,7 +5001,15 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
     return (0);
 }
 
-/* We respond to fatal errors by restarting the display */
+/* Ignore fatal X errors when user did ctl-alt-backspace */
+static gint
+gdm_slave_ignore_xioerror_handler (Display *disp)
+{
+    gdm_debug ("Fatal X error detected.  Ignoring same during session shutdown.");
+    Longjmp(ignore_xioerror_jmp, 1);
+}
+
+/* We usually respond to fatal errors by restarting the display */
 static gint
 gdm_slave_xioerror_handler (Display *disp)
 {
