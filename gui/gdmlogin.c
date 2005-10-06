@@ -1348,7 +1348,7 @@ gdm_login_enter (GtkWidget *entry)
 		   this test */
 		gtk_widget_set_sensitive (entry, TRUE);
 		gtk_widget_set_sensitive (ok_button, TRUE);
-		gtk_widget_set_sensitive (cancel_button, FALSE);
+		gtk_widget_set_sensitive (cancel_button, TRUE);
 		gtk_widget_grab_focus (entry);	
 		gtk_window_set_focus (GTK_WINDOW (login), entry);	
 		return;
@@ -1987,7 +1987,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, TRUE);
-	gtk_widget_set_sensitive (cancel_button, FALSE);
+	gtk_widget_set_sensitive (cancel_button, TRUE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -2204,7 +2204,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, TRUE);
-	gtk_widget_set_sensitive (cancel_button, FALSE);
+	gtk_widget_set_sensitive (cancel_button, TRUE);
 
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
