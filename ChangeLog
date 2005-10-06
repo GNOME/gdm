@@ -1,3 +1,21 @@
+2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
+
+        * daemon/slave.c: Fix problem with PostSession
+          script not always getting executed when user
+          kills the Xserver with ctl-alt-backspace.
+          This is caused because an xioerror is generated
+          by whack clients and this xioerror needs to be
+          ignored for PostSession to be processed.  This
+          problem tended not to manifest in GDM 2.6
+          because the introduction of the whack clients
+          call made the xioerror get generated earlier.
+          However, it was still a race condition and
+          this fix ensures that the xioerror will not
+          cause the slave to ever exit too early.
+          Fixes bug #152906.  Patch provided by Jerry
+          G. DeLapp <jgd@lanl.gov>
+	* AUTHORS: Update AUTHORS file.
+
 2005-10-05  Brian Cameron <Brian.Cameron@sun.com>
 
         * acconfig.h, configure.in, config/gdm.conf.in,
