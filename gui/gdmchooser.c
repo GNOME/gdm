@@ -90,7 +90,6 @@ static gint connection_type = 0;
 
 static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-static void set_background (void);
 
 /* Exported for glade */
 void gdm_chooser_cancel (void);
@@ -215,14 +214,6 @@ find_host_in_list (GdmChooserHost *host, GtkTreeIter *iter)
 		} while (gtk_tree_model_iter_next (browser_model, iter));
 	}
 	return FALSE;
-}
-
-static void
-setup_cursor (GdkCursorType type)
-{
-	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
-	gdk_cursor_unref (cursor);
 }
 
 static void
@@ -1895,8 +1886,7 @@ gdm_reread_config (int sig, gpointer data)
 	     ! bool_same (config, GdmDebug, GDM_KEY_DEBUG)) {
 		if (RUNNING_UNDER_GDM) {
 			/* Set busy cursor */
-			setup_cursor (GDK_WATCH);
-
+			gdm_common_setup_cursor (GDK_WATCH);
 			gdm_wm_save_wm_order ();
 		}
 
@@ -1909,7 +1899,10 @@ gdm_reread_config (int sig, gpointer data)
 	/* we only use the color and do it for all types except NONE */
 	if ( ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
 	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE)) {
-		set_background ();
+
+		if (GdmBackgroundType != GDM_BACKGROUND_NONE) {
+			setup_background_color (GdmBackgroundColor);
+		}
 	}
 
 	return TRUE;
@@ -1965,37 +1958,6 @@ struct poptOption xdm_options [] = {
         POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
-
-static void
-set_background (void)
-{
-	if (GdmBackgroundType != GDM_BACKGROUND_NONE) {
-		GdkColor color;
-		GdkColormap *colormap;
-
-		if (ve_string_empty (GdmBackgroundColor) ||
-		    ! gdk_color_parse (GdmBackgroundColor, &color)) {
-			gdk_color_parse ("#007777", &color);
-		}
-
-		colormap = gdk_drawable_get_colormap
-			(gdk_get_default_root_window ());
-		/* paranoia */
-		if (colormap != NULL) {
-			gboolean success;
-			gdk_error_trap_push ();
-
-			gdk_colormap_alloc_colors (colormap, &color, 1,
-						   FALSE, TRUE, &success);
-
-			gdk_window_set_background (gdk_get_default_root_window (), &color);
-			gdk_window_clear (gdk_get_default_root_window ());
-
-			gdk_flush ();
-			gdk_error_trap_pop ();
-		}
-	}
-}
 
 static gboolean
 gdm_event (GSignalInvocationHint *ihint,
@@ -2063,10 +2025,6 @@ main (int argc, char *argv[])
 	    exit (1);
     }
 
-    /* Should be a watch already, but just in case */
-    if (RUNNING_UNDER_GDM)
-	    setup_cursor (GDK_WATCH);
-
     glade_init();
 
     config_file = gdm_common_get_config_file ();
@@ -2081,6 +2039,16 @@ main (int argc, char *argv[])
 	    gdm_wm_screen_init (GdmXineramaScreen);
 
     gdm_version = g_getenv ("GDM_VERSION");
+
+    /* Load the background as early as possible so GDM does not leave  */
+    /* the background unfilled.   The cursor should be a watch already */
+    /* but just in case */
+    if (RUNNING_UNDER_GDM) {
+	if (GdmBackgroundType != GDM_BACKGROUND_NONE)
+		setup_background_color (GdmBackgroundColor);
+
+	gdm_common_setup_cursor (GDK_WATCH);
+    }
 
     if (RUNNING_UNDER_GDM &&
 	gdm_version != NULL &&
@@ -2106,7 +2074,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -2115,9 +2083,6 @@ main (int argc, char *argv[])
     
     gdm_chooser_gui_init();
     gdm_chooser_signals_init();
-
-    if (RUNNING_UNDER_GDM)
-	    set_background ();
 
     hosts = (char **)poptGetArgs (ctx);
     /* when no hosts on the command line, take them from the config */
@@ -2164,7 +2129,7 @@ main (int argc, char *argv[])
 
     if (RUNNING_UNDER_GDM) {
 	    gdm_wm_restore_wm_order ();
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
     }
 
     gtk_main();

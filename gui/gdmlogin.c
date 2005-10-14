@@ -177,7 +177,6 @@ static gboolean require_quarter = FALSE;
 static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
-static GtkTooltips *tooltips;
 
 static gboolean login_is_local = FALSE;
 static gboolean used_defaults = FALSE;
@@ -1434,11 +1433,6 @@ gdm_login_session_init (GtkWidget *menu)
 			      G_CALLBACK (gdm_login_session_handler),
 			      NULL);
             gtk_widget_show (GTK_WIDGET (item));
-            gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-                                  _("Log in using the session that you have used "
-                                    "last time you logged in"),
-                                  NULL);
-      
             item = gtk_menu_item_new();
             gtk_widget_set_sensitive (item, FALSE);
             gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -1466,10 +1460,6 @@ gdm_login_session_init (GtkWidget *menu)
 	    g_free (label);
 	    g_object_set_data_full (G_OBJECT (item), SESSION_NAME,
 		 g_strdup (file), (GDestroyNotify) g_free);
-
-	    if ( ! ve_string_empty (session->comment))
-		    gtk_tooltips_set_tip
-		    (tooltips, GTK_WIDGET (item), session->comment, NULL);
 
 	    sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
 	    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -1561,10 +1551,6 @@ gdm_login_language_menu_new (void)
     g_object_set_data (G_OBJECT (item),
 		       "Language",
 		       LAST_LANGUAGE);
-    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-			  _("Log in using the language that you have used "
-			    "last time you logged in"),
-			  NULL);
 
     item = gtk_radio_menu_item_new_with_mnemonic (languages, _("_System Default"));
     languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
@@ -1576,9 +1562,6 @@ gdm_login_language_menu_new (void)
     g_object_set_data (G_OBJECT (item),
 		       "Language",
 		       DEFAULT_LANGUAGE);
-    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-			  _("Log in using the default system language"),
-			  NULL);
 
     item = gtk_menu_item_new();
     gtk_widget_set_sensitive (item, FALSE);
@@ -1794,8 +1777,6 @@ gdm_login_theme_menu_new (void)
 	gtk_widget_show (GTK_WIDGET (item));
 	g_signal_connect (G_OBJECT (item), "activate",
 			  G_CALLBACK (gdm_theme_handler), theme_name);
-	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item), _(theme_name), NULL);
-
 	g_free (menu_item_name);
     }
     g_slist_free (theme_list);
@@ -2842,11 +2823,6 @@ gdm_login_gui_init (void)
 				  G_CALLBACK (gdm_login_use_chooser_handler),
 				  NULL);
 		gtk_widget_show (item);
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				      _("Run an XDMCP chooser which will allow "
-					"you to log into available remote "
-					"computers, if there are any."),
-				      NULL);
 		got_anything = TRUE;
 	}
 
@@ -2858,10 +2834,6 @@ gdm_login_gui_init (void)
 				  G_CALLBACK (gdm_run_gdmconfig),
 				  NULL);
 		gtk_widget_show (item);
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				      _("Configure GDM (this login manager). "
-					"This will require the root password."),
-				      NULL);
 		got_anything = TRUE;
 	}
 
@@ -2872,9 +2844,6 @@ gdm_login_gui_init (void)
 				  G_CALLBACK (gdm_login_restart_handler), 
 				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				      _("Restart your computer"),
-				      NULL);
 		got_anything = TRUE;
 	}
 	
@@ -2885,10 +2854,6 @@ gdm_login_gui_init (void)
 				  G_CALLBACK (gdm_login_halt_handler), 
 				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				      _("Shut down the system so that "
-					"you may safely turn off the computer."),
-				      NULL);
 		got_anything = TRUE;
 	}
 
@@ -2899,9 +2864,6 @@ gdm_login_gui_init (void)
 				  G_CALLBACK (gdm_login_suspend_handler), 
 				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				      _("Suspend your computer"),
-				      NULL);
 		got_anything = TRUE;
 	}
 	
@@ -3412,29 +3374,7 @@ setup_background (void)
 		}
 	/* Load background color */
 	} else if (GdmBackgroundType != GDM_BACKGROUND_NONE) {
-		GdkColormap *colormap;
-
-		if (GdmBackgroundColor == NULL ||
-		    GdmBackgroundColor[0] == '\0' ||
-		    ! gdk_color_parse (GdmBackgroundColor, &color)) {
-			gdk_color_parse ("#007777", &color);
-		}
-
-		colormap = gdk_drawable_get_colormap
-			(gdk_get_default_root_window ());
-		/* paranoia */
-		if (colormap != NULL) {
-			gboolean success;
-			gdk_error_trap_push ();
-
-			gdk_colormap_alloc_colors (colormap, &color, 1,
-						   FALSE, TRUE, &success);
-			gdk_window_set_background (gdk_get_default_root_window (), &color);
-			gdk_window_clear (gdk_get_default_root_window ());
-
-			gdk_flush ();
-			gdk_error_trap_pop ();
-		}
+		setup_background_color (GdmBackgroundColor);
 	}
 }
 
@@ -3639,9 +3579,6 @@ main (int argc, char *argv[])
 
     gtk_init (&argc, &argv);
 
-    /* Should be a watch already, but just in case */
-    gdm_common_setup_cursor (GDK_WATCH);
-
     config_file = gdm_common_get_config_file ();
     if (config_file == NULL) {
 	   g_print (_("Could not access GDM configuration file.\n"));
@@ -3652,12 +3589,16 @@ main (int argc, char *argv[])
 
     setlocale (LC_ALL, "");
 
-    tooltips = gtk_tooltips_new ();
-
     gdm_wm_screen_init (GdmXineramaScreen);
 
     gdm_version = g_getenv ("GDM_VERSION");
     gdm_protocol_version = g_getenv ("GDM_GREETER_PROTOCOL_VERSION");
+
+    /* Load the background as early as possible so GDM does not leave  */
+    /* the background unfilled.   The cursor should be a watch already */
+    /* but just in case */
+    setup_background ();
+    gdm_common_setup_cursor (GDK_WATCH);
 
     if ( ! DOING_GDM_DEVELOPMENT &&
 	 ((gdm_protocol_version != NULL &&
@@ -3847,8 +3788,6 @@ main (int argc, char *argv[])
 	    gdm_common_abort (_("Could not set signal mask!"));
     }
 
-    /* Load the background stuff, the image and program */
-    setup_background ();
     g_atexit (gdm_kill_thingies);
     back_prog_launch_after_timeout ();
 

@@ -59,4 +59,6 @@ gchar*	gdm_common_get_config_file	(void);
 
 gboolean gdm_common_select_time_format	(VeConfig *config);
 
+void setup_background_color (gchar *bg_color);
+
 #endif /* GDM_COMMON_H */
