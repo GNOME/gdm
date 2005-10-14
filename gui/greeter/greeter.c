@@ -1145,42 +1145,6 @@ get_theme_file (const char *in, char **theme_dir)
   return file;
 }
 
-/* Not to look too shaby on Xinerama setups */
-static void
-setup_background_color (void)
-{
-  GdkColormap *colormap;
-  GdkColor color;
-  VeConfig *config = ve_config_get (config_file);
-  char *bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
-
-  if (bg_color == NULL ||
-      bg_color[0] == '\0' ||
-      ! gdk_color_parse (bg_color, &color))
-    {
-      gdk_color_parse ("#007777", &color);
-    }
-
-  g_free (bg_color);
-
-  colormap = gdk_drawable_get_colormap
-	  (gdk_get_default_root_window ());
-  /* paranoia */
-  if (colormap != NULL)
-    {
-      gboolean success;
-      gdk_error_trap_push ();
-
-      gdk_colormap_alloc_colors (colormap, &color, 1,
-				 FALSE, TRUE, &success);
-      gdk_window_set_background (gdk_get_default_root_window (), &color);
-      gdk_window_clear (gdk_get_default_root_window ());
-
-      gdk_flush ();
-      gdk_error_trap_pop ();
-    }
-}
-
 /* The reaping stuff */
 static time_t last_reap_delay = 0;
 
@@ -1259,6 +1223,8 @@ gdm_event (GSignalInvocationHint *ihint,
 int
 main (int argc, char *argv[])
 {
+  VeConfig *config;
+  char *bg_color;
   struct sigaction hup;
   struct sigaction term;
   sigset_t mask;
@@ -1312,6 +1278,12 @@ main (int argc, char *argv[])
   if (r != 0)
     return r;
 
+  /* Load the background as early as possible so GDM does not leave  */
+  /* the background unfilled.   The cursor should be a watch already */
+  /* but just in case */
+  config   = ve_config_get (config_file);
+  bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
+  setup_background_color (bg_color);
   greeter_session_init ();
 
   ve_signal_add (SIGHUP, greeter_reread_config, NULL);
@@ -1544,8 +1516,6 @@ main (int argc, char *argv[])
   gtk_widget_show_all (window);
   gtk_window_move (GTK_WINDOW (window), gdm_wm_screen.x, gdm_wm_screen.y);
   gtk_widget_show_now (window);
-
-  setup_background_color ();
 
   /* can it ever happen that it'd be NULL here ??? */
   if G_UNLIKELY (window->window != NULL)

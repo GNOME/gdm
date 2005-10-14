@@ -1,3 +1,22 @@
+2005-10-14  Brian Cameron <Brian.Cameron@sun.com>
+
+	* gui/gdmlogin.c: No longer set tooltips for menu 
+	  items in gdmlogin.  These are distracting, and 
+	  do not work with accessibility.  After talking 
+	  with Owen Taylor at the GNOME Boston Summit, he
+	  said no GNOME programs do this, and it is not
+	  recommended.  Fix for bug #144869.
+	* gui/gdmchooser.c:  Now use gdm_common_setup_cursor
+	  instead of its own copy of the same function.
+	* gui/gdmcommon.[ch]: gdmlogin, gdmgreeter and gdmchooser
+	  were all using their own functions to set the background
+	  color.  Now they use a common function in gdmcommon.
+	* gui/gdmlogin.c, gui/gdmchooser.c, gui/greeter/greeter.c:
+	  Now sets background color and sets cursor to 
+	  a watch as soon as GTK is initialized and the
+	  configure file read.  This shortens the amount of time
+	  the background is Xserver default gray.
+
 2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
 
 	* docs/C/gdm.xml: Add some information about
