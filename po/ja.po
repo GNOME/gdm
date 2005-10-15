@@ -13,10 +13,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2 HEAD\n"
+"Project-Id-Version: gdm2 gnome-2-12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-07 00:23+0900\n"
-"PO-Revision-Date: 2005-03-11 16:50+0900\n"
+"POT-Creation-Date: 2005-10-16 00:34+0900\n"
+"PO-Revision-Date: 2005-10-16 00:30+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -572,7 +572,7 @@ msgid "%s: fork() failed!"
 msgstr "%s: fork(2) に失敗しました！"
 
 #. should never happen
-#: ../daemon/gdm.c:986 ../daemon/slave.c:3652
+#: ../daemon/gdm.c:986 ../daemon/slave.c:3634
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid(2 に失敗しました: %s！"
@@ -682,11 +682,11 @@ msgstr "バックグラウンドへ fork しない"
 msgid "No console (static) servers to be run"
 msgstr "コンソールサーバー (ローカル) を起動しない"
 
-#: ../daemon/gdm.c:2000 ../gui/gdmsetup.c:4556
+#: ../daemon/gdm.c:2000 ../gui/gdmsetup.c:4595
 msgid "Alternative configuration file"
 msgstr "代替設定ファイル"
 
-#: ../daemon/gdm.c:2000 ../gui/gdmsetup.c:4556
+#: ../daemon/gdm.c:2000 ../gui/gdmsetup.c:4595
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
@@ -707,7 +707,7 @@ msgstr "最初に X サーバを起動してから FIFO で GO を受け取る�
 msgid "Can't open %s for writing"
 msgstr "%s を書き込みモードで開けません。"
 
-#: ../daemon/gdm.c:2170 ../gui/gdmchooser.c:2059
+#: ../daemon/gdm.c:2170 ../gui/gdmchooser.c:2021
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -726,12 +726,12 @@ msgstr "root 権限でのみ GDM を起動できます\n"
 #: ../daemon/gdm.c:2310 ../daemon/gdm.c:2316 ../daemon/gdm.c:2327
 #: ../daemon/misc.c:1746 ../daemon/misc.c:1750 ../daemon/misc.c:1754
 #: ../daemon/misc.c:1761 ../daemon/misc.c:1765 ../daemon/misc.c:1769
-#: ../daemon/server.c:531 ../daemon/server.c:544 ../daemon/slave.c:821
-#: ../daemon/slave.c:835 ../daemon/slave.c:845 ../daemon/slave.c:855
-#: ../daemon/slave.c:867 ../gui/gdmchooser.c:1938 ../gui/gdmchooser.c:1941
-#: ../gui/gdmchooser.c:1944 ../gui/gdmlogin.c:3821 ../gui/gdmlogin.c:3831
-#: ../gui/gdmlogin.c:3836 ../gui/greeter/greeter.c:1298
-#: ../gui/greeter/greeter.c:1306 ../gui/greeter/greeter.c:1309
+#: ../daemon/server.c:531 ../daemon/server.c:544 ../daemon/slave.c:824
+#: ../daemon/slave.c:838 ../daemon/slave.c:848 ../daemon/slave.c:858
+#: ../daemon/slave.c:870 ../gui/gdmchooser.c:1931 ../gui/gdmchooser.c:1934
+#: ../gui/gdmchooser.c:1937 ../gui/gdmlogin.c:3763 ../gui/gdmlogin.c:3773
+#: ../gui/gdmlogin.c:3778 ../gui/greeter/greeter.c:1287
+#: ../gui/greeter/greeter.c:1295 ../gui/greeter/greeter.c:1298
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: %s シグナル・ハンドラの設定中のエラー: %s"
@@ -892,17 +892,17 @@ msgstr "%s: ディスプレイ %s へのサーバ・コマンドが空です。"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: uid %d でサーバを起動したようですが、このユーザが存在しません。"
 
-#: ../daemon/server.c:1263 ../daemon/slave.c:2713 ../daemon/slave.c:3188
+#: ../daemon/server.c:1263 ../daemon/slave.c:2716 ../daemon/slave.c:3170
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: グループ ID を %d に設定できませんでした。"
 
-#: ../daemon/server.c:1269 ../daemon/slave.c:2718 ../daemon/slave.c:3193
+#: ../daemon/server.c:1269 ../daemon/slave.c:2721 ../daemon/slave.c:3175
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: %s の initgroups() に失敗しました。"
 
-#: ../daemon/server.c:1275 ../daemon/slave.c:2723 ../daemon/slave.c:3198
+#: ../daemon/server.c:1275 ../daemon/slave.c:2726 ../daemon/slave.c:3180
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: ユーザ ID を %d に設定できませんでした。"
@@ -922,19 +922,19 @@ msgstr "%s: Xserver が見つかりません: %s"
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Xserver プロセスを fork(2) できません！"
 
-#: ../daemon/slave.c:319
+#: ../daemon/slave.c:322
 msgid "Can't set EGID to user GID"
 msgstr "EGID をユーザの GID にセットできません"
 
-#: ../daemon/slave.c:327
+#: ../daemon/slave.c:330
 msgid "Can't set EUID to user UID"
 msgstr "EUID をユーザの UID にセットできません"
 
-#: ../daemon/slave.c:1140
+#: ../daemon/slave.c:1143
 msgid "Log in anyway"
 msgstr "強制的にログインする"
 
-#: ../daemon/slave.c:1142
+#: ../daemon/slave.c:1145
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -942,21 +942,21 @@ msgstr ""
 "既にログインしています。\"強制的にログインする\"、\"前回のログイン・セッショ"
 "ンに戻る\"、\"ログインしない\" の中から選択して下さい。"
 
-#: ../daemon/slave.c:1146
+#: ../daemon/slave.c:1149
 msgid "Return to previous login"
 msgstr "前回のログインに戻る"
 
-#: ../daemon/slave.c:1147 ../daemon/slave.c:1153
+#: ../daemon/slave.c:1150 ../daemon/slave.c:1156
 msgid "Abort login"
 msgstr "ログインしない"
 
-#: ../daemon/slave.c:1150
+#: ../daemon/slave.c:1153
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 "既にログインしています。\"強制的にログインする\"、\"ログインしない\" の中から"
 "選択して下さい。"
 
-#: ../daemon/slave.c:1321
+#: ../daemon/slave.c:1324
 msgid ""
 "Could not start the X\n"
 "server (your graphical environment)\n"
@@ -975,17 +975,17 @@ msgstr ""
 "とりあえず、このディスプレイを無効にします。\n"
 "問題が解決したら GDM を再起動して下さい"
 
-#: ../daemon/slave.c:1569
+#: ../daemon/slave.c:1572
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: fork(2) できません。"
 
-#: ../daemon/slave.c:1616
+#: ../daemon/slave.c:1619
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: ディスプレイ %s を開けません。"
 
-#: ../daemon/slave.c:1767
+#: ../daemon/slave.c:1770
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file.  Attempting to start it from the "
@@ -994,7 +994,7 @@ msgstr ""
 "設定プログラムを起動できませんでした。設定ファイルの中でプログラムへのパスが"
 "正しく設定されているか確認して下さい。デフォルトのパスから再起動します。"
 
-#: ../daemon/slave.c:1781
+#: ../daemon/slave.c:1784
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file."
@@ -1002,13 +1002,13 @@ msgstr ""
 "設定プログラムを起動できませんでした。設定ファイルの中でプログラムへのパスが"
 "正しく設定されているか確認して下さい"
 
-#: ../daemon/slave.c:1943
+#: ../daemon/slave.c:1946
 msgid "You must authenticate as root to run configuration."
 msgstr ""
 "設定プログラムを起動するための\n"
 "root パスワードを入力して下さい"
 
-#: ../daemon/slave.c:2073 ../daemon/slave.c:2096
+#: ../daemon/slave.c:2076 ../daemon/slave.c:2099
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist."
@@ -1016,12 +1016,12 @@ msgstr ""
 "リモートのディスプレイからのサウンド演奏や演奏ソフトが起動できない、あるいは"
 "サウンド・ファイルが存在していません"
 
-#: ../daemon/slave.c:2667 ../daemon/slave.c:2672
+#: ../daemon/slave.c:2670 ../daemon/slave.c:2675
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: gdmgreeter へのパイプを初期化できません。"
 
-#: ../daemon/slave.c:2793
+#: ../daemon/slave.c:2796
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  GDM has started a single server for "
@@ -1032,7 +1032,7 @@ msgstr ""
 "定エラーですので、シングル・サーバを起動します。ログインして設定を修正して下"
 "さい。自動ログインと時間指定ログインは無効になっていることに注意して下さい。"
 
-#: ../daemon/slave.c:2807
+#: ../daemon/slave.c:2810
 msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1041,7 +1041,7 @@ msgstr ""
 "標準の X サーバ (グラフィカル環境) を起動できなかったので、フェイルセーフの "
 "X サーバを起動しています。ログインして X サーバを適切に設定して下さい。"
 
-#: ../daemon/slave.c:2816
+#: ../daemon/slave.c:2819
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1050,7 +1050,7 @@ msgstr ""
 "指定したディスプレイ番号は使用中なので、このサーバはディスプレイ %s で起動し"
 "ました。"
 
-#: ../daemon/slave.c:2836
+#: ../daemon/slave.c:2839
 msgid ""
 "The greeter application appears to be crashing.\n"
 "Attempting to use a different one."
@@ -1059,19 +1059,19 @@ msgstr ""
 "別のプログラムを起動してみます"
 
 #. Something went wrong
-#: ../daemon/slave.c:2857
+#: ../daemon/slave.c:2860
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: GTK+ モジュール %s と Greeter は一緒に起動できません。モジュールなしで起"
 "動してみます。"
 
-#: ../daemon/slave.c:2864
+#: ../daemon/slave.c:2867
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: デフォルト %s の Greeter を起動できません。"
 
-#: ../daemon/slave.c:2876
+#: ../daemon/slave.c:2879
 msgid ""
 "Cannot start the greeter application; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1081,27 +1081,27 @@ msgstr ""
 "用できません。別の方法でログインしてみて、設定ファイルを編集して下さい。"
 
 #. If no greeter we really have to disable the display
-#: ../daemon/slave.c:2883
+#: ../daemon/slave.c:2886
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: ディスプレイ %s で Greeter を起動する際にエラー"
 
-#: ../daemon/slave.c:2887
+#: ../daemon/slave.c:2890
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: プロセス gdmgreeter を fork(2) できません。"
 
-#: ../daemon/slave.c:2972
+#: ../daemon/slave.c:2961
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: FIFO を開けません！"
 
-#: ../daemon/slave.c:3148
+#: ../daemon/slave.c:3130
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: gdmgreeter へのパイプを初期化できません。"
 
-#: ../daemon/slave.c:3245
+#: ../daemon/slave.c:3227
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
@@ -1109,58 +1109,58 @@ msgstr ""
 "Chooser プログラムを起動できないので、ログインできません。システム管理者に連"
 "絡して下さい"
 
-#: ../daemon/slave.c:3249
+#: ../daemon/slave.c:3231
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: ディスプレイ %s で Chooser を起動する際にエラー"
 
-#: ../daemon/slave.c:3252
+#: ../daemon/slave.c:3234
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: プロセス gdmgreeter プロセスを fork(2) できません。"
 
-#: ../daemon/slave.c:3553
+#: ../daemon/slave.c:3535
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: ~/.xsession-errors を開けませんでした。"
 
-#: ../daemon/slave.c:3688
+#: ../daemon/slave.c:3670
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: スクリプト PreSession が 0 より大きい値を返しました。中止します。"
 
-#: ../daemon/slave.c:3732
+#: ../daemon/slave.c:3714
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "言語 %s が存在しません。%s を使用します"
 
-#: ../daemon/slave.c:3733
+#: ../daemon/slave.c:3715
 msgid "System default"
 msgstr "システムのデフォルト"
 
-#: ../daemon/slave.c:3749
+#: ../daemon/slave.c:3731
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: %s の環境を設定できませんでした。中止します。"
 
-#: ../daemon/slave.c:3796
+#: ../daemon/slave.c:3778
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: %s の setusercontext() に失敗しました。中止します。"
 
-#: ../daemon/slave.c:3802
+#: ../daemon/slave.c:3784
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: %s になれませんでした。中止します。"
 
-#: ../daemon/slave.c:3865
+#: ../daemon/slave.c:3847
 #, c-format
 msgid "%s: No Exec line in the session file: %s. Starting failsafe GNOME"
 msgstr ""
 "%s: セッションファイル %s に Exec 行がありません。フェイルセーフの GNOME を起"
 "動します"
 
-#: ../daemon/slave.c:3871
+#: ../daemon/slave.c:3853
 msgid ""
 "The session you selected does not look valid.  Running the GNOME failsafe "
 "session instead."
@@ -1168,7 +1168,7 @@ msgstr ""
 "選択したセッションは適切なものではないようです。代わりにフェイルセーフの "
 "GNOME セッションを起動します"
 
-#: ../daemon/slave.c:3885
+#: ../daemon/slave.c:3867
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
@@ -1177,7 +1177,7 @@ msgstr ""
 "%s: Xsession スクリプトがみつからないか実行できません。代わりにフェイルセーフ"
 "の GNOME を起動します"
 
-#: ../daemon/slave.c:3891
+#: ../daemon/slave.c:3873
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
@@ -1186,14 +1186,14 @@ msgstr ""
 "ルセーフの GNOME を起動します"
 
 #. yaikes
-#: ../daemon/slave.c:3906
+#: ../daemon/slave.c:3888
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
 msgstr ""
 "%s: フェイルセーフの GNOME セッション用の `gnome-session` がみつかりません。"
 "代わりに xterm を起動します"
 
-#: ../daemon/slave.c:3911
+#: ../daemon/slave.c:3893
 msgid ""
 "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
 "session instead."
@@ -1201,7 +1201,7 @@ msgstr ""
 "インストールされた GNOME がみつかりません。代わりに \"フェイルセーフの xterm"
 "\" セッションを起動します"
 
-#: ../daemon/slave.c:3919
+#: ../daemon/slave.c:3901
 msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
@@ -1211,11 +1211,11 @@ msgstr ""
 "GNOME の 'デフォルト' セッションにログインしています。インストールの問題を修"
 "正するのに使えるはずです"
 
-#: ../daemon/slave.c:3934
+#: ../daemon/slave.c:3916
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "フェイルセーフセッションを起動するための \"xterm\" がみつかりません"
 
-#: ../daemon/slave.c:3947
+#: ../daemon/slave.c:3929
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1225,41 +1225,41 @@ msgstr ""
 "は、端末コンソールにログインしてシステムを訂正して下さい。端末エミュレータを"
 "終了する際は 'exit' を入力して下さい。"
 
-#: ../daemon/slave.c:3974
+#: ../daemon/slave.c:3956
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: ユーザはログインを許可されていません"
 
-#: ../daemon/slave.c:3977
+#: ../daemon/slave.c:3959
 msgid "The system administrator has disabled your account."
 msgstr "システム管理者はあなたのアカウントを無効にしています。"
 
-#: ../daemon/slave.c:4008
+#: ../daemon/slave.c:3990
 msgid "Error! Unable to set executable context."
 msgstr "エラーです。実行コンテキストをセットできません！"
 
 #. will go to .xsession-errors
-#: ../daemon/slave.c:4016 ../daemon/slave.c:4021
+#: ../daemon/slave.c:3998 ../daemon/slave.c:4003
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: %s %s %s を実行できませんでした。"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:4032
+#: ../daemon/slave.c:4014
 msgid "Cannot start the session due to some internal error."
 msgstr "いくつかの内部エラーのためにセッションを起動できません。"
 
-#: ../daemon/slave.c:4086
+#: ../daemon/slave.c:4068
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: ユーザは認証を通過しましたが、getpwnam(%s) が失敗しました！"
 
-#: ../daemon/slave.c:4099
+#: ../daemon/slave.c:4081
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: スクリプト PostLogin が 0 より大きい値を返しました。中止します。"
 
-#: ../daemon/slave.c:4121
+#: ../daemon/slave.c:4103
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1277,22 +1277,22 @@ msgstr ""
 "フェイルセーフのセッションを利用する場合を除いて、何も動作しないかもしれませ"
 "ん。"
 
-#: ../daemon/slave.c:4133
+#: ../daemon/slave.c:4115
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: %s のホーム・フォルダ '%s' が存在しません！"
 
-#: ../daemon/slave.c:4212
+#: ../daemon/slave.c:4194
 msgid ""
 "Your $HOME/.dmrc file has incorrect permissions and is being ignored.  This "
 "prevents the default session and language from being saved.  File sould be "
 "owned by user and have 644 permissions."
 msgstr ""
 "$HOME/.dmrc ファイルは誤った権限設定になっているため無視されました。このため"
-"デフォルトセッションと言語の保存ができません。ファイルはユーザーの所有かつ権"
-"限設定 644 にするべきです"
+"デフォルトのセッション情報と設定した言語を保存できません。このファイルの所有"
+"者をユーザにし 644 の権限を付与して下さい。"
 
-#: ../daemon/slave.c:4338
+#: ../daemon/slave.c:4320
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1303,12 +1303,12 @@ msgstr ""
 "いか、ホーム・フォルダに対する書き込み権限がないことを意味します。いずれにし"
 "てもログインすることはできません。システム管理者へ連絡して下さい。"
 
-#: ../daemon/slave.c:4414
+#: ../daemon/slave.c:4396
 #, c-format
 msgid "%s: Error forking user session"
-msgstr "%s: ユーザ・セッションの fork(2) 時にエラー"
+msgstr "%s: ユーザ・セッションを fork(2) する際にエラー"
 
-#: ../daemon/slave.c:4495
+#: ../daemon/slave.c:4477
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1320,25 +1320,25 @@ msgstr ""
 "ません。フェイルセーフなセッションからログインし、この問題を解決できるかどう"
 "か確認して下さい。"
 
-#: ../daemon/slave.c:4503
+#: ../daemon/slave.c:4485
 msgid "View details (~/.xsession-errors file)"
 msgstr "詳細 (~/.xsession-errors ファイル) を表示します"
 
-#: ../daemon/slave.c:4646
+#: ../daemon/slave.c:4649
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM が実行中に停止または再起動を検出しました。"
 
-#: ../daemon/slave.c:4740
+#: ../daemon/slave.c:4743
 #, c-format
 msgid "Ping to %s failed; whacking display!"
 msgstr "%s への ping に失敗しました。ディスプレイをフラッシュします!"
 
-#: ../daemon/slave.c:5011
+#: ../daemon/slave.c:5022
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: 致命的な X のエラー - %s を再起動します"
 
-#: ../daemon/slave.c:5080
+#: ../daemon/slave.c:5091
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1346,27 +1346,27 @@ msgstr ""
 "リモートのディスプレイからのサウンド演奏や演奏ソフトが起動できない、あるいは"
 "サウンド・ファイルが存在していません。"
 
-#: ../daemon/slave.c:5436
+#: ../daemon/slave.c:5447
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: 起動に失敗しました: %s"
 
-#: ../daemon/slave.c:5443 ../daemon/slave.c:5582
+#: ../daemon/slave.c:5454 ../daemon/slave.c:5593
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: スクリプト・プロセスを fork(2) できません！"
 
-#: ../daemon/slave.c:5537
+#: ../daemon/slave.c:5548
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: パイプの作成に失敗しました"
 
-#: ../daemon/slave.c:5576
+#: ../daemon/slave.c:5587
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: 実行に失敗しました: %s"
 
-#: ../daemon/verify-crypt.c:74 ../daemon/verify-pam.c:1031
+#: ../daemon/verify-crypt.c:74 ../daemon/verify-pam.c:1025
 #: ../daemon/verify-shadow.c:75
 msgid ""
 "\n"
@@ -1375,29 +1375,29 @@ msgstr ""
 "\n"
 "ユーザ名あるいはパスワードが間違っています。大/小文字を正しく入力して下さい。"
 
-#: ../daemon/verify-crypt.c:79 ../daemon/verify-pam.c:1041
+#: ../daemon/verify-crypt.c:79 ../daemon/verify-pam.c:1035
 #: ../daemon/verify-shadow.c:80
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "[Caps Lock] キーが無効になっていることを確認して下さい。"
 
-#: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:440
-#: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3158
+#: ../daemon/verify-crypt.c:126 ../daemon/verify-pam.c:434
+#: ../daemon/verify-shadow.c:125 ../gui/gdmlogin.c:3121
 msgid "Please enter your username"
 msgstr "ユーザ名を入力して下さい:"
 
 #. login: is whacked always translate to Username:
-#: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:340
-#: ../daemon/verify-pam.c:341 ../daemon/verify-pam.c:342
-#: ../daemon/verify-pam.c:427 ../daemon/verify-pam.c:786
-#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:1317 ../gui/gdmlogin.c:1331
-#: ../gui/gdmlogin.c:1960 ../gui/gdmlogin.c:2470 ../gui/greeter/greeter.c:391
+#: ../daemon/verify-crypt.c:127 ../daemon/verify-pam.c:334
+#: ../daemon/verify-pam.c:335 ../daemon/verify-pam.c:336
+#: ../daemon/verify-pam.c:421 ../daemon/verify-pam.c:780
+#: ../daemon/verify-shadow.c:126 ../gui/gdmlogin.c:1316 ../gui/gdmlogin.c:1330
+#: ../gui/gdmlogin.c:1941 ../gui/gdmlogin.c:2451 ../gui/greeter/greeter.c:397
 #: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "ユーザ名:"
 
-#: ../daemon/verify-crypt.c:165 ../daemon/verify-pam.c:343
-#: ../daemon/verify-pam.c:344 ../daemon/verify-pam.c:488
-#: ../daemon/verify-shadow.c:183 ../gui/gdmlogin.c:1995
+#: ../daemon/verify-crypt.c:165 ../daemon/verify-pam.c:337
+#: ../daemon/verify-pam.c:338 ../daemon/verify-pam.c:482
+#: ../daemon/verify-shadow.c:183 ../gui/gdmlogin.c:1976
 msgid "Password:"
 msgstr "パスワード:"
 
@@ -1407,7 +1407,7 @@ msgstr "パスワード:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "ユーザ \"%s\" を認証できませんでした"
 
-#: ../daemon/verify-crypt.c:210 ../daemon/verify-pam.c:882
+#: ../daemon/verify-crypt.c:210 ../daemon/verify-pam.c:876
 #: ../daemon/verify-shadow.c:228
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1424,7 +1424,7 @@ msgid "User %s not allowed to log in"
 msgstr "ユーザ %s はログインを許可されていません"
 
 #: ../daemon/verify-crypt.c:230 ../daemon/verify-crypt.c:254
-#: ../daemon/verify-pam.c:928 ../daemon/verify-pam.c:1212
+#: ../daemon/verify-pam.c:922 ../daemon/verify-pam.c:1206
 #: ../daemon/verify-shadow.c:248 ../daemon/verify-shadow.c:272
 msgid ""
 "\n"
@@ -1434,14 +1434,14 @@ msgstr ""
 "システム管理者はあなたのアカウントを無効にしています。"
 
 #: ../daemon/verify-crypt.c:277 ../daemon/verify-crypt.c:415
-#: ../daemon/verify-pam.c:946 ../daemon/verify-pam.c:1229
+#: ../daemon/verify-pam.c:940 ../daemon/verify-pam.c:1223
 #: ../daemon/verify-shadow.c:295 ../daemon/verify-shadow.c:433
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "ユーザ %s のグループをセットできません。"
 
 #: ../daemon/verify-crypt.c:279 ../daemon/verify-crypt.c:418
-#: ../daemon/verify-pam.c:948 ../daemon/verify-pam.c:1232
+#: ../daemon/verify-pam.c:942 ../daemon/verify-pam.c:1226
 #: ../daemon/verify-shadow.c:297 ../daemon/verify-shadow.c:436
 msgid ""
 "\n"
@@ -1510,78 +1510,78 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "%s の passwd 構造体を取得できません"
 
-#: ../daemon/verify-pam.c:345
+#: ../daemon/verify-pam.c:339
 msgid "You are required to change your password immediately (password aged)"
 msgstr "直ちにパスワードを変更するよう要求されています (パスワードが古いです)"
 
-#: ../daemon/verify-pam.c:346
+#: ../daemon/verify-pam.c:340
 msgid "You are required to change your password immediately (root enforced)"
 msgstr "直ちにパスワードを変更するよう要求されています (root が強制しています)"
 
-#: ../daemon/verify-pam.c:347
+#: ../daemon/verify-pam.c:341
 msgid "Your account has expired; please contact your system administrator"
 msgstr ""
 "あなたのアカウントは有効期限が切れています; システム管理者に連絡して下さい"
 
-#: ../daemon/verify-pam.c:348
+#: ../daemon/verify-pam.c:342
 msgid "No password supplied"
 msgstr "パスワードが与えられていません。"
 
-#: ../daemon/verify-pam.c:349
+#: ../daemon/verify-pam.c:343
 msgid "Password unchanged"
 msgstr "パスワードは変更されませんでした。"
 
-#: ../daemon/verify-pam.c:350
+#: ../daemon/verify-pam.c:344
 msgid "Can not get username"
 msgstr "ユーザ名を取得できません。"
 
-#: ../daemon/verify-pam.c:351
+#: ../daemon/verify-pam.c:345
 msgid "Retype new UNIX password:"
 msgstr "新しい UNIX パスワードを再入力して下さい:"
 
-#: ../daemon/verify-pam.c:352
+#: ../daemon/verify-pam.c:346
 msgid "Enter new UNIX password:"
 msgstr "新しい UNIX パスワードを入力して下さい:"
 
-#: ../daemon/verify-pam.c:353
+#: ../daemon/verify-pam.c:347
 msgid "(current) UNIX password:"
 msgstr "(現在の) UNIX パスワード:"
 
-#: ../daemon/verify-pam.c:354
+#: ../daemon/verify-pam.c:348
 msgid "Error while changing NIS password."
 msgstr "NIS パスワードの変更中にエラーが発生しました。"
 
-#: ../daemon/verify-pam.c:355
+#: ../daemon/verify-pam.c:349
 msgid "You must choose a longer password"
 msgstr "もっと長いパスワードを入力して下さい。"
 
-#: ../daemon/verify-pam.c:356
+#: ../daemon/verify-pam.c:350
 msgid "Password has been already used. Choose another."
 msgstr "既にそのパスワードは利用されています。別のパスワードを入力して下さい。"
 
-#: ../daemon/verify-pam.c:357
+#: ../daemon/verify-pam.c:351
 msgid "You must wait longer to change your password"
 msgstr "パスワードを変更するまで、もうしばらくお待ち下さい。"
 
-#: ../daemon/verify-pam.c:358
+#: ../daemon/verify-pam.c:352
 msgid "Sorry, passwords do not match"
 msgstr "申し訳ありません、パスワードが一致しません。"
 
-#: ../daemon/verify-pam.c:652
+#: ../daemon/verify-pam.c:646
 msgid "Cannot setup pam handle with null display"
 msgstr "ディスプレイなしでは pam ハンドルを設定できません。"
 
-#: ../daemon/verify-pam.c:669
+#: ../daemon/verify-pam.c:663
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "サービス %s を確立できません: %s\n"
 
-#: ../daemon/verify-pam.c:682
+#: ../daemon/verify-pam.c:676
 #, c-format
 msgid "Can't set PAM_TTY=%s"
-msgstr "PAM_TTY=%sを設定できません。"
+msgstr "PAM_TTY=%s を設定できません。"
 
-#: ../daemon/verify-pam.c:692
+#: ../daemon/verify-pam.c:686
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "PAM_RHOST=%s を設定できません。"
@@ -1591,12 +1591,12 @@ msgstr "PAM_RHOST=%s を設定できません。"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:839 ../daemon/verify-pam.c:857
-#: ../daemon/verify-pam.c:1151 ../daemon/verify-pam.c:1163
+#: ../daemon/verify-pam.c:833 ../daemon/verify-pam.c:851
+#: ../daemon/verify-pam.c:1145 ../daemon/verify-pam.c:1157
 msgid "Couldn't authenticate user"
 msgstr "ユーザを認証できませんでした。"
 
-#: ../daemon/verify-pam.c:885
+#: ../daemon/verify-pam.c:879
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1604,12 +1604,12 @@ msgstr ""
 "\n"
 "システム管理者はこのスクリーンからのログインを許可していません。"
 
-#: ../daemon/verify-pam.c:909 ../daemon/verify-pam.c:1193
+#: ../daemon/verify-pam.c:903 ../daemon/verify-pam.c:1187
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "ユーザ %s の認証トークンの変更に失敗しました。"
 
-#: ../daemon/verify-pam.c:911 ../daemon/verify-pam.c:1196
+#: ../daemon/verify-pam.c:905 ../daemon/verify-pam.c:1190
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1619,17 +1619,17 @@ msgstr ""
 "認証トークンの変更に失敗しました。後で再試行するか、システム管理者に連絡して"
 "下さい。"
 
-#: ../daemon/verify-pam.c:926 ../daemon/verify-pam.c:1209
+#: ../daemon/verify-pam.c:920 ../daemon/verify-pam.c:1203
 #, c-format
 msgid "User %s no longer permitted to access the system"
-msgstr "もはやユーザ %s はシステムへアクセスできません。"
+msgstr "ユーザ %s はシステムへアクセスできません。"
 
-#: ../daemon/verify-pam.c:932 ../daemon/verify-pam.c:1215
+#: ../daemon/verify-pam.c:926 ../daemon/verify-pam.c:1209
 #, c-format
 msgid "User %s not permitted to gain access at this time"
-msgstr "今のところユーザ %s にはアクセス権がありません。"
+msgstr "今のところユーザ %s にはアクセス権限はありません。"
 
-#: ../daemon/verify-pam.c:934
+#: ../daemon/verify-pam.c:928
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1637,22 +1637,22 @@ msgstr ""
 "\n"
 "システム管理者はシステムへのアクセスを一時的に無効にしています"
 
-#: ../daemon/verify-pam.c:939 ../daemon/verify-pam.c:1222
+#: ../daemon/verify-pam.c:933 ../daemon/verify-pam.c:1216
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
-msgstr "acct が設定できません。mgmt は %s です。"
+msgstr "acct を設定できません。mgmt は %s です。"
 
-#: ../daemon/verify-pam.c:967 ../daemon/verify-pam.c:1252
+#: ../daemon/verify-pam.c:961 ../daemon/verify-pam.c:1246
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "%s の credential を設定できませんでした。"
 
-#: ../daemon/verify-pam.c:981 ../daemon/verify-pam.c:1267
+#: ../daemon/verify-pam.c:975 ../daemon/verify-pam.c:1261
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "%s のセッションを開けませんでした。"
 
-#: ../daemon/verify-pam.c:1035
+#: ../daemon/verify-pam.c:1029
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1660,26 +1660,26 @@ msgstr ""
 "\n"
 "認証に失敗しました。大/小文字を正しく入力して下さい。"
 
-#: ../daemon/verify-pam.c:1051 ../daemon/verify-pam.c:1154
-#: ../daemon/verify-pam.c:1166
+#: ../daemon/verify-pam.c:1045 ../daemon/verify-pam.c:1148
+#: ../daemon/verify-pam.c:1160
 msgid "Authentication failed"
 msgstr "認証に失敗しました"
 
-#: ../daemon/verify-pam.c:1120
+#: ../daemon/verify-pam.c:1114
 msgid "Automatic login"
 msgstr "自動ログインを設定します"
 
-#: ../daemon/verify-pam.c:1218
+#: ../daemon/verify-pam.c:1212
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporarily."
 msgstr ""
 "\n"
-"システム管理者はあなたのシステムへのアクセスを一時的に無効にしています"
+"システム管理者があなたのアクセスを一時的に無効にしています。"
 
-#: ../daemon/verify-pam.c:1432 ../daemon/verify-pam.c:1434
+#: ../daemon/verify-pam.c:1426 ../daemon/verify-pam.c:1428
 msgid "Can't find PAM configuration for gdm."
-msgstr "GDM の PAM 設定ファイルが見つかりません。"
+msgstr "GDM 用の PAM 設定ファイルが見つかりません。"
 
 #: ../daemon/xdmcp.c:373
 #, c-format
@@ -1868,10 +1868,10 @@ msgstr "間接的ではなく (Chooser) ブロードキャストを実行する"
 msgid "Don't check for running gdm"
 msgstr "GDM の起動チェックをしない"
 
-#: ../gui/gdmXnestchooser.c:509 ../gui/gdmchooser.c:2074
-#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:683 ../gui/gdmlogin.c:3646
-#: ../gui/gdmphotosetup.c:479 ../gui/gdmsetup.c:4593
-#: ../gui/greeter/greeter.c:1260
+#: ../gui/gdmXnestchooser.c:509 ../gui/gdmchooser.c:2032
+#: ../gui/gdmdynamic.c:157 ../gui/gdmflexiserver.c:743 ../gui/gdmlogin.c:3584
+#: ../gui/gdmphotosetup.c:480 ../gui/gdmsetup.c:4631
+#: ../gui/greeter/greeter.c:1243
 msgid "Could not access GDM configuration file.\n"
 msgstr "GDM 設定ファイルにアクセスできませんでした\n"
 
@@ -1925,11 +1925,11 @@ msgid "Choose a ho_st to connect to:"
 msgstr "接続するホストの選択(_S):"
 
 #. markup
-#: ../gui/gdmchooser.c:661
+#: ../gui/gdmchooser.c:652
 msgid "Cannot connect to remote server"
 msgstr "リモート・サーバに接続できません"
 
-#: ../gui/gdmchooser.c:662
+#: ../gui/gdmchooser.c:653
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
@@ -1939,11 +1939,11 @@ msgstr ""
 "です。後で再試行して下さい。"
 
 #. markup
-#: ../gui/gdmchooser.c:1286
+#: ../gui/gdmchooser.c:1277
 msgid "Did not receive response from server"
 msgstr "サーバから応答がありませんでした"
 
-#: ../gui/gdmchooser.c:1287
+#: ../gui/gdmchooser.c:1278
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1954,16 +1954,16 @@ msgstr ""
 "電源が入っていないか、今のところはログイン・セッションをサポートする予定がな"
 "いのかもしれません。後で再試行して下さい。"
 
-#: ../gui/gdmchooser.c:1393
+#: ../gui/gdmchooser.c:1384
 msgid "Cannot find host"
 msgstr "ホストをみつけられません"
 
-#: ../gui/gdmchooser.c:1394
+#: ../gui/gdmchooser.c:1385
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
-msgstr "ホスト \"%s\" を見つけられません。入力ミスをしていませんか?"
+msgstr "ホスト \"%s\" を見つけられません。入力ミスをしていませんか？"
 
-#: ../gui/gdmchooser.c:1680
+#: ../gui/gdmchooser.c:1671
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1979,46 +1979,46 @@ msgstr ""
 "[更新] をクリックすると、ホストの一覧を更新できます。ホストを選択したら [接"
 "続] をクリックして、そのマシンのセッションを開いて下さい。"
 
-#: ../gui/gdmchooser.c:1727
+#: ../gui/gdmchooser.c:1718
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "デフォルトのホスト・アイコンを開けません: %s"
 
-#: ../gui/gdmchooser.c:1952 ../gui/gdmlogin.c:3846
-#: ../gui/greeter/greeter.c:1317 ../gui/greeter/greeter.c:1324
+#: ../gui/gdmchooser.c:1945 ../gui/gdmlogin.c:3788
+#: ../gui/greeter/greeter.c:1306 ../gui/greeter/greeter.c:1313
 msgid "Could not set signal mask!"
 msgstr "シグナル・マスクをセットできませんでした！"
 
-#: ../gui/gdmchooser.c:1958
+#: ../gui/gdmchooser.c:1951
 msgid "Socket for xdm communication"
 msgstr "XDM 通信用のソケットを指定する"
 
-#: ../gui/gdmchooser.c:1958
+#: ../gui/gdmchooser.c:1951
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: ../gui/gdmchooser.c:1961
+#: ../gui/gdmchooser.c:1954
 msgid "Client address to return in response to xdm"
 msgstr "XDM へ返すクライアントのアドレス"
 
-#: ../gui/gdmchooser.c:1961
+#: ../gui/gdmchooser.c:1954
 msgid "ADDRESS"
 msgstr "ADDRESS"
 
-#: ../gui/gdmchooser.c:1964
+#: ../gui/gdmchooser.c:1957
 msgid "Connection type to return in response to xdm"
 msgstr "XDM へ返す接続の種類"
 
-#: ../gui/gdmchooser.c:1964
+#: ../gui/gdmchooser.c:1957
 msgid "TYPE"
 msgstr "TYPE"
 
 #. markup
-#: ../gui/gdmchooser.c:2099
+#: ../gui/gdmchooser.c:2067
 msgid "Cannot run chooser"
 msgstr "Chooser を起動できません"
 
-#: ../gui/gdmchooser.c:2100
+#: ../gui/gdmchooser.c:2068
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -2095,11 +2095,11 @@ msgstr ""
 "に起動を依頼して下さい。"
 
 #. markup
-#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:708
+#: ../gui/gdmcomm.c:437 ../gui/gdmflexiserver.c:768
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "GDM (GNOME ディスプレイ・マネージャ) と通信することができません"
 
-#: ../gui/gdmcomm.c:440 ../gui/gdmflexiserver.c:711
+#: ../gui/gdmcomm.c:440 ../gui/gdmflexiserver.c:771
 msgid "Perhaps you have an old version of GDM running."
 msgstr "おそらく古いバージョンを起動しています。"
 
@@ -2196,48 +2196,56 @@ msgid "New Login in a Nested Window"
 msgstr "多重のウィンドウからの新しいログイン"
 
 #. markup
-#: ../gui/gdmflexiserver.c:100
+#: ../gui/gdmflexiserver.c:105
 msgid "Cannot change display"
 msgstr "ディスプレイを変更できません"
 
-#: ../gui/gdmflexiserver.c:177
+#: ../gui/gdmflexiserver.c:182
 msgid "Nobody"
 msgstr "Nobody"
 
-#: ../gui/gdmflexiserver.c:212
+#: ../gui/gdmflexiserver.c:217
 #, c-format
 msgid "Display %s on virtual terminal %d"
 msgstr "仮想端末 %2$d 上のディスプレイ %1$s"
 
-#: ../gui/gdmflexiserver.c:217
+#: ../gui/gdmflexiserver.c:222
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
 msgstr "仮想端末 %2$d 上の入れ子のディスプレイ %1$s"
 
-#: ../gui/gdmflexiserver.c:247 ../gui/gdmlogin.c:3005
-#: ../gui/greeter/greeter_item_ulist.c:243
+#: ../gui/gdmflexiserver.c:252 ../gui/gdmlogin.c:2968
+#: ../gui/greeter/greeter_item_ulist.c:246
 msgid "Username"
 msgstr "ユーザ名"
 
-#: ../gui/gdmflexiserver.c:256
+#: ../gui/gdmflexiserver.c:261
 msgid "Display"
 msgstr "ディスプレイ"
 
-#: ../gui/gdmflexiserver.c:310
+#: ../gui/gdmflexiserver.c:337
+msgid "Can't lock screen"
+msgstr "スクリーンをロックできません"
+
+#: ../gui/gdmflexiserver.c:350
+msgid "Can't disable xscreensaver display hacks"
+msgstr "xscreensaver ディスプレイ・ハックは使えません"
+
+#: ../gui/gdmflexiserver.c:374
 msgid "Open Displays"
 msgstr "ディスプレイを開きます"
 
 #. parent
 #. flags
-#: ../gui/gdmflexiserver.c:313
+#: ../gui/gdmflexiserver.c:377
 msgid "_Open New Display"
 msgstr "新しいディスプレイを開く(_O)"
 
-#: ../gui/gdmflexiserver.c:315
+#: ../gui/gdmflexiserver.c:379
 msgid "Change to _Existing Display"
 msgstr "既存のディスプレイへ変更(_E)"
 
-#: ../gui/gdmflexiserver.c:323
+#: ../gui/gdmflexiserver.c:387
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
@@ -2245,70 +2253,66 @@ msgstr ""
 "既に複数のディスプレイを開いています。次の一覧から一つ選択するか、新しいディ"
 "スプレイを選択して下さい。"
 
-#: ../gui/gdmflexiserver.c:390 ../gui/gdmflexiserver.c:803
-msgid "Can't lock screen"
-msgstr "スクリーンをロックできません"
-
-#: ../gui/gdmflexiserver.c:393 ../gui/gdmflexiserver.c:806
-msgid "Can't disable xscreensaver display hacks"
-msgstr "xscreensaver ディスプレイ・ハックは使えません"
-
-#: ../gui/gdmflexiserver.c:550
+#: ../gui/gdmflexiserver.c:609
 msgid "Choose server"
 msgstr "サーバの選択"
 
-#: ../gui/gdmflexiserver.c:561
+#: ../gui/gdmflexiserver.c:620
 msgid "Choose the X server to start"
 msgstr "起動する X サーバを起動します"
 
-#: ../gui/gdmflexiserver.c:567
+#: ../gui/gdmflexiserver.c:626
 msgid "Standard server"
 msgstr "標準のサーバ"
 
-#: ../gui/gdmflexiserver.c:633
+#: ../gui/gdmflexiserver.c:692
 msgid "Send the specified protocol command to gdm"
 msgstr "指定したプロトコル・コマンドを GDM へ送信する"
 
-#: ../gui/gdmflexiserver.c:633
+#: ../gui/gdmflexiserver.c:692
 msgid "COMMAND"
 msgstr "COMMAND"
 
-#: ../gui/gdmflexiserver.c:634
+#: ../gui/gdmflexiserver.c:693
 msgid "Xnest mode"
 msgstr "多重 X サーバ (Xnest) モードにする"
 
-#: ../gui/gdmflexiserver.c:635
+#: ../gui/gdmflexiserver.c:694
 msgid "Do not lock current screen"
-msgstr "現在のスクリーンをロックしない"
+msgstr "現在使用している画面をロックしない"
 
-#: ../gui/gdmflexiserver.c:636
+#: ../gui/gdmflexiserver.c:695
 msgid "Debugging output"
 msgstr "デバッグ情報を出力する"
 
-#: ../gui/gdmflexiserver.c:637
+#: ../gui/gdmflexiserver.c:696
 msgid "Authenticate before running --command"
-msgstr "オプション `--command` で起動する前に認証する"
+msgstr "オプション `--command` を実行する前に認証する"
+
+#: ../gui/gdmflexiserver.c:697
+msgid "Start new flexible session; do not show popup"
+msgstr "新しい flexible セッションを起動する (ポップアップを表示しない)"
 
 #. markup
-#: ../gui/gdmflexiserver.c:737
+#: ../gui/gdmflexiserver.c:797
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "この操作に必要とされる権限を持っていないようです。"
 
-#: ../gui/gdmflexiserver.c:741
+#: ../gui/gdmflexiserver.c:801
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "おそらくあなたの .Xauthority ファイルが正しく設定されていません"
 
 #. markup
-#: ../gui/gdmflexiserver.c:766
+#: ../gui/gdmflexiserver.c:826
 msgid "You do not seem to be logged in on the console"
 msgstr "コンソールにログインできないようです"
 
-#: ../gui/gdmflexiserver.c:769
+#: ../gui/gdmflexiserver.c:829
 msgid "Starting a new login only works correctly on the console."
 msgstr "新しいログインを起動した場合にのみ、コンソール上で実行できます。"
 
 #. markup
-#: ../gui/gdmflexiserver.c:821
+#: ../gui/gdmflexiserver.c:876
 msgid "Cannot start new display"
 msgstr "新しいディスプレイを起動できません"
 
@@ -2782,77 +2786,77 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: ../gui/gdmlogin.c:420
+#: ../gui/gdmlogin.c:419
 msgid "Cannot start background application"
-msgstr "バックグラウンドプログラムを起動できません"
+msgstr "バックグラウンドでプログラムを起動できません"
 
-#: ../gui/gdmlogin.c:421
+#: ../gui/gdmlogin.c:420
 #, c-format
 msgid "Cannot run command '%s': %s."
 msgstr "コマンド '%s' を実行できません: %s"
 
-#: ../gui/gdmlogin.c:495
+#: ../gui/gdmlogin.c:494
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "ユーザ %s は %d 秒後にログインします"
 
-#: ../gui/gdmlogin.c:499 ../gui/greeter/greeter_parser.c:1107
+#: ../gui/gdmlogin.c:498 ../gui/greeter/greeter_parser.c:1107
 #, c-format
 msgid "User %s will login in %d second"
 msgid_plural "User %s will login in %d seconds"
 msgstr[0] "ユーザ %s は %d 秒後にログインします"
 msgstr[1] "ユーザ %s は %d 秒後にログインします"
 
-#: ../gui/gdmlogin.c:726
+#: ../gui/gdmlogin.c:725
 #, c-format
 msgid "%s: String too long!"
 msgstr "%s: 文字列が長すぎます！"
 
-#: ../gui/gdmlogin.c:728
+#: ../gui/gdmlogin.c:727
 #, c-format
 msgid "%sWelcome to %s%s"
 msgstr "%sようこそ、%s%s へ"
 
-#: ../gui/gdmlogin.c:813 ../gui/greeter/greeter_system.c:63
+#: ../gui/gdmlogin.c:812 ../gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to restart the computer?"
 msgstr "本当にシステムを再起動しますか?"
 
 #. markup
-#: ../gui/gdmlogin.c:815 ../gui/gdmlogin.c:2868
+#: ../gui/gdmlogin.c:814 ../gui/gdmlogin.c:2841
 msgid "_Restart"
-msgstr "再スタート(_R)"
+msgstr "再起動(_R)"
 
-#: ../gui/gdmlogin.c:827 ../gui/greeter/greeter_system.c:76
+#: ../gui/gdmlogin.c:826 ../gui/greeter/greeter_system.c:76
 msgid "Are you sure you want to shut down the computer?"
-msgstr "本当にシステムを停止しますか?"
+msgstr "本当にシステムを停止してもよろしいですか？"
 
 #. markup
-#: ../gui/gdmlogin.c:829 ../gui/gdmlogin.c:2881
+#: ../gui/gdmlogin.c:828 ../gui/gdmlogin.c:2851
 #: ../gui/greeter/greeter_parser.c:1077 ../gui/greeter/greeter_system.c:77
 #: ../gui/greeter/greeter_system.c:198
 msgid "Shut _Down"
 msgstr "停止(_D)"
 
-#: ../gui/gdmlogin.c:849 ../gui/greeter/greeter_system.c:88
+#: ../gui/gdmlogin.c:848 ../gui/greeter/greeter_system.c:88
 msgid "Are you sure you want to suspend the computer?"
 msgstr "本当にシステムをサスペンドしますか?"
 
 #. markup
-#: ../gui/gdmlogin.c:851 ../gui/gdmlogin.c:2895
+#: ../gui/gdmlogin.c:850 ../gui/gdmlogin.c:2861
 #: ../gui/greeter/greeter_system.c:89
 msgid "_Suspend"
 msgstr "サスペンド(_S)"
 
-#: ../gui/gdmlogin.c:881 ../gui/greeter/greeter.c:176
+#: ../gui/gdmlogin.c:880 ../gui/greeter/greeter.c:182
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "%s: 設定ファイル %s がありません。デフォルト値を使用します。"
 
-#: ../gui/gdmlogin.c:997 ../gui/greeter/greeter.c:295
+#: ../gui/gdmlogin.c:996 ../gui/greeter/greeter.c:301
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
 msgstr "TimedLoginDelay が 5秒未満なので、 5秒を使用します。"
 
-#: ../gui/gdmlogin.c:1098 ../gui/greeter/greeter_session.c:119
+#: ../gui/gdmlogin.c:1097 ../gui/greeter/greeter_session.c:119
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this computer.\n"
@@ -2863,13 +2867,13 @@ msgstr ""
 "次回から %s をデフォルトのセッションにしますか？"
 
 #. markup
-#: ../gui/gdmlogin.c:1105 ../gui/gdmlogin.c:1133 ../gui/gdmlogin.c:1208
+#: ../gui/gdmlogin.c:1104 ../gui/gdmlogin.c:1132 ../gui/gdmlogin.c:1207
 #: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:125 ../gui/greeter/greeter_session.c:155
 msgid "Make _Default"
 msgstr "デフォルトにする(_D)"
 
-#: ../gui/gdmlogin.c:1105 ../gui/greeter/greeter_session.c:125
+#: ../gui/gdmlogin.c:1104 ../gui/greeter/greeter_session.c:125
 msgid "Just _Log In"
 msgstr "ログインのみ(_L)"
 
@@ -2877,7 +2881,7 @@ msgstr "ログインのみ(_L)"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:1124 ../gui/gdmlogin.c:1202
+#: ../gui/gdmlogin.c:1123 ../gui/gdmlogin.c:1201
 #: ../gui/greeter/greeter_action_language.c:155
 #: ../gui/greeter/greeter_session.c:147
 #, c-format
@@ -2888,13 +2892,13 @@ msgstr ""
 "このセッションに対して %s を選択していますが、デフォルト設定では %s です。\n"
 "次回から %s をデフォルトのセッションにしますか？"
 
-#: ../gui/gdmlogin.c:1133 ../gui/gdmlogin.c:1208
+#: ../gui/gdmlogin.c:1132 ../gui/gdmlogin.c:1207
 #: ../gui/greeter/greeter_action_language.c:161
 #: ../gui/greeter/greeter_session.c:155
 msgid "Just For _This Session"
 msgstr "このセッションだけ(_T)"
 
-#: ../gui/gdmlogin.c:1143 ../gui/greeter/greeter_session.c:168
+#: ../gui/gdmlogin.c:1142 ../gui/greeter/greeter_session.c:168
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2907,165 +2911,126 @@ msgstr ""
 "ユーティリティ `switchdesk` を起動して下さい\n"
 "(パネルメニューの \"システム・ツール\" -> \"デスクトップの切り替え\")。"
 
-#: ../gui/gdmlogin.c:1184 ../gui/gdmlogin.c:1193
+#: ../gui/gdmlogin.c:1183 ../gui/gdmlogin.c:1192
 #: ../gui/greeter/greeter_action_language.c:71
 #: ../gui/greeter/greeter_action_language.c:139
 #: ../gui/greeter/greeter_action_language.c:147
 msgid "System Default"
 msgstr "システムのデフォルト"
 
-#: ../gui/gdmlogin.c:1318 ../gui/gdmlogin.c:1332 ../gui/gdmlogin.c:1964
-#: ../gui/gdmlogin.c:2471 ../gui/gdmlogin.c:3111
+#: ../gui/gdmlogin.c:1317 ../gui/gdmlogin.c:1331 ../gui/gdmlogin.c:1945
+#: ../gui/gdmlogin.c:2452 ../gui/gdmlogin.c:3074
 msgid "_Username:"
 msgstr "ユーザ名(_U):"
 
-#: ../gui/gdmlogin.c:1406
+#: ../gui/gdmlogin.c:1405
 #, c-format
 msgid "%s session selected"
 msgstr "セッション %s が選択されました"
 
-#: ../gui/gdmlogin.c:1427 ../gui/gdmlogin.c:1554
+#: ../gui/gdmlogin.c:1426 ../gui/gdmlogin.c:1544
 #: ../gui/greeter/greeter_session.c:263
 msgid "_Last"
 msgstr "前回と同じセッション(_L)"
-
-#: ../gui/gdmlogin.c:1438 ../gui/greeter/greeter_session.c:269
-msgid "Log in using the session that you have used last time you logged in"
-msgstr "最後にログインした際のセッションを使用してログインします"
 
 #. never_encoding
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1519
+#: ../gui/gdmlogin.c:1509
 #, c-format
 msgid "%s language selected"
 msgstr "言語 %s が選択されました"
 
-#: ../gui/gdmlogin.c:1565
-msgid "Log in using the language that you have used last time you logged in"
-msgstr "最後にログインしたときと同じ言語を使ってログインします"
-
-#: ../gui/gdmlogin.c:1569
+#: ../gui/gdmlogin.c:1555
 msgid "_System Default"
 msgstr "システムのデフォルト(_S)"
 
-#: ../gui/gdmlogin.c:1580
-msgid "Log in using the default system language"
-msgstr "デフォルトのシステム言語を使ってログインします"
-
-#: ../gui/gdmlogin.c:1604
+#: ../gui/gdmlogin.c:1587
 msgid "_Other"
 msgstr "その他(_O)"
 
-#: ../gui/gdmlogin.c:1996
+#: ../gui/gdmlogin.c:1977
 msgid "_Password:"
 msgstr "パスワード(_P):"
 
 #. markup
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:2229 ../gui/greeter/greeter.c:553
+#: ../gui/gdmlogin.c:2210 ../gui/greeter/greeter.c:562
 msgid "Please insert 25 cents to log in."
-msgstr "ログインするには 20 円入れて下さい。"
+msgstr "ログインするには 20円入れて下さい。"
 
-#: ../gui/gdmlogin.c:2592
+#: ../gui/gdmlogin.c:2573
 msgid "GNOME Desktop Manager"
 msgstr "GNOME デスクトップ・マネージャ"
 
-#: ../gui/gdmlogin.c:2618 ../gui/greeter/greeter_item.c:157
+#: ../gui/gdmlogin.c:2599 ../gui/greeter/greeter_item.c:157
 msgid "%a %b %d, %H:%M"
 msgstr "%B%e日(%a) %H:%M"
 
 #. Translators: You should translate time part as
 #. %H:%M if your language does not have AM and PM
-#. equivalent.
-#: ../gui/gdmlogin.c:2623 ../gui/greeter/greeter_item.c:161
+#. equivalent.  Note: %l is a strftime option for
+#. 12-hour clock format
+#: ../gui/gdmlogin.c:2605 ../gui/greeter/greeter_item.c:161
 msgid "%a %b %d, %l:%M %p"
 msgstr "%B%e日(%a) %p%l時%M分"
 
-#: ../gui/gdmlogin.c:2672
+#: ../gui/gdmlogin.c:2654
 msgid "Finger"
 msgstr "finger"
 
-#: ../gui/gdmlogin.c:2776
+#: ../gui/gdmlogin.c:2758
 msgid "GDM Login"
 msgstr "GDM ログイン"
 
-#: ../gui/gdmlogin.c:2819 ../gui/greeter/greeter_parser.c:1057
+#: ../gui/gdmlogin.c:2801 ../gui/greeter/greeter_parser.c:1057
 msgid "_Session"
 msgstr "セッション(_S)"
 
-#: ../gui/gdmlogin.c:2826 ../gui/greeter/greeter_parser.c:1052
+#: ../gui/gdmlogin.c:2808 ../gui/greeter/greeter_parser.c:1052
 msgid "_Language"
 msgstr "言語(_L)"
 
-#: ../gui/gdmlogin.c:2838 ../gui/greeter/greeter_system.c:152
+#: ../gui/gdmlogin.c:2820 ../gui/greeter/greeter_system.c:152
 msgid "_XDMCP Chooser..."
 msgstr "XDMCP Chooser(_X)..."
 
-#: ../gui/gdmlogin.c:2845 ../gui/greeter/greeter_system.c:159
-#: ../gui/greeter/greeter_system.c:355
-msgid ""
-"Run an XDMCP chooser which will allow you to log into available remote "
-"computers, if there are any."
-msgstr ""
-"もし利用可能なリモート・マシンがあれば、そのログインを許可する XDMCP Chooser "
-"を起動します"
-
-#: ../gui/gdmlogin.c:2854 ../gui/greeter/greeter_system.c:167
+#: ../gui/gdmlogin.c:2831 ../gui/greeter/greeter_system.c:167
 msgid "_Configure Login Manager..."
 msgstr "ログイン・マネージャの設定(_C)..."
 
-#: ../gui/gdmlogin.c:2861 ../gui/greeter/greeter_system.c:174
-#: ../gui/greeter/greeter_system.c:375
-msgid ""
-"Configure GDM (this login manager). This will require the root password."
-msgstr "この GDM ログイン・マネージャを設定します (root 権限が必要です)"
-
-#: ../gui/gdmlogin.c:2875
-msgid "Restart your computer"
-msgstr "システムの再起動"
-
-#: ../gui/gdmlogin.c:2888 ../gui/greeter/greeter_system.c:205
-msgid "Shut down the system so that you may safely turn off the computer."
-msgstr "システムを停止したので、安全に電源を落とすことができます。"
-
-#: ../gui/gdmlogin.c:2902 ../gui/greeter/greeter_system.c:218
-#: ../gui/greeter/greeter_system.c:338
-msgid "Suspend your computer"
-msgstr "システムのサスペンド"
-
-#: ../gui/gdmlogin.c:2908 ../gui/greeter/greeter_parser.c:1062
+#: ../gui/gdmlogin.c:2871 ../gui/greeter/greeter_parser.c:1062
 msgid "_Actions"
 msgstr "アクション(_A)"
 
-#: ../gui/gdmlogin.c:2917
+#: ../gui/gdmlogin.c:2880
 msgid "_Theme"
 msgstr "テーマ(_T)"
 
-#: ../gui/gdmlogin.c:2928 ../gui/greeter/greeter_canvas_item.c:165
+#: ../gui/gdmlogin.c:2891 ../gui/greeter/greeter_canvas_item.c:165
 #: ../gui/greeter/greeter_parser.c:1072
 msgid "_Quit"
 msgstr "終了(_Q)"
 
-#: ../gui/gdmlogin.c:2930 ../gui/greeter/greeter_canvas_item.c:167
+#: ../gui/gdmlogin.c:2893 ../gui/greeter/greeter_canvas_item.c:167
 #: ../gui/greeter/greeter_parser.c:1067
 msgid "D_isconnect"
 msgstr "接続切断(_I)"
 
-#: ../gui/gdmlogin.c:2998 ../gui/greeter/greeter_item_ulist.c:237
+#: ../gui/gdmlogin.c:2961 ../gui/greeter/greeter_item_ulist.c:240
 msgid "Icon"
 msgstr "アイコン"
 
 #. markup
-#: ../gui/gdmlogin.c:3679 ../gui/gdmlogin.c:3710 ../gui/gdmlogin.c:3754
-#: ../gui/greeter/greeter.c:786 ../gui/greeter/greeter.c:818
-#: ../gui/greeter/greeter.c:863
+#: ../gui/gdmlogin.c:3621 ../gui/gdmlogin.c:3652 ../gui/gdmlogin.c:3696
+#: ../gui/greeter/greeter.c:803 ../gui/greeter/greeter.c:835
+#: ../gui/greeter/greeter.c:880
 msgid "Cannot start the greeter"
 msgstr "Greeter を起動できません"
 
-#: ../gui/gdmlogin.c:3680 ../gui/gdmlogin.c:3711
+#: ../gui/gdmlogin.c:3622 ../gui/gdmlogin.c:3653
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -3075,11 +3040,11 @@ msgstr ""
 "を更新したことが原因のようです。GDM デーモンを再起動するか、またはコンピュー"
 "タを再起動して下さい"
 
-#: ../gui/gdmlogin.c:3717 ../gui/greeter/greeter.c:870
+#: ../gui/gdmlogin.c:3659 ../gui/greeter/greeter.c:887
 msgid "Restart"
-msgstr "再スタート"
+msgstr "再起動"
 
-#: ../gui/gdmlogin.c:3755
+#: ../gui/gdmlogin.c:3697
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -3089,26 +3054,26 @@ msgstr ""
 "く GDM を更新したことが原因のようです。GDM デーモンを再起動するか、またはコン"
 "ピュータを再起動して下さい。"
 
-#: ../gui/gdmlogin.c:3761
+#: ../gui/gdmlogin.c:3703
 msgid "Restart gdm"
-msgstr "GDM を再スタート"
+msgstr "GDM の再起動"
 
-#: ../gui/gdmlogin.c:3763
+#: ../gui/gdmlogin.c:3705
 msgid "Restart computer"
 msgstr "コンピュータの再起動(_R)"
 
-#: ../gui/gdmlogin.c:3798
+#: ../gui/gdmlogin.c:3740
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "デフォルトの画像 %s を開けません。フェイス・ブラウザの起動を見合わせます！"
 
 #. markup
-#: ../gui/gdmlogin.c:3963 ../gui/greeter/greeter.c:1550
+#: ../gui/gdmlogin.c:3903 ../gui/greeter/greeter.c:1537
 msgid "Session directory is missing"
 msgstr "セッション・フォルダがありません"
 
-#: ../gui/gdmlogin.c:3965 ../gui/greeter/greeter.c:1552
+#: ../gui/gdmlogin.c:3905 ../gui/greeter/greeter.c:1539
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3118,11 +3083,11 @@ msgstr ""
 "ンが二つありますが、ログインして gdm の設定を訂正して下さい。"
 
 #. markup
-#: ../gui/gdmlogin.c:3989 ../gui/greeter/greeter.c:1577
+#: ../gui/gdmlogin.c:3929 ../gui/greeter/greeter.c:1564
 msgid "Configuration is not correct"
 msgstr "設定が正しくありません"
 
-#: ../gui/gdmlogin.c:3991 ../gui/greeter/greeter.c:1579
+#: ../gui/gdmlogin.c:3931 ../gui/greeter/greeter.c:1566
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3131,11 +3096,11 @@ msgstr ""
 "すので、デフォルトのコマンドを実行しました。設定を修正して下さい。"
 
 #. markup
-#: ../gui/gdmlogin.c:4016 ../gui/greeter/greeter.c:1606
+#: ../gui/gdmlogin.c:3956 ../gui/greeter/greeter.c:1593
 msgid "No configuration was found"
 msgstr "設定が見つかりません"
 
-#: ../gui/gdmlogin.c:4018 ../gui/greeter/greeter.c:1608
+#: ../gui/gdmlogin.c:3958 ../gui/greeter/greeter.c:1595
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3159,12 +3124,12 @@ msgstr "ファイル %s を書き込みモードで開けません\n"
 msgid "Select Image"
 msgstr "画像の選択"
 
-#: ../gui/gdmphotosetup.c:255
+#: ../gui/gdmphotosetup.c:256
 msgid "All Images"
 msgstr "すべての画像"
 
 #. Filter name: First description then file extension, eg. "The PNG-Format (*.png)".
-#: ../gui/gdmphotosetup.c:275
+#: ../gui/gdmphotosetup.c:276
 #, c-format
 msgid "%s (*.%s)"
 msgstr "%s (*.%s)"
@@ -3188,7 +3153,7 @@ msgstr "<b>選択</b>"
 
 #: ../gui/gdmphotosetup.glade.h:3
 msgid "<b>User Image</b>"
-msgstr "<b>ユーザーの画像</b>"
+msgstr "<b>ユーザの画像</b>"
 
 #: ../gui/gdmphotosetup.glade.h:4
 msgid "User Image"
@@ -3256,61 +3221,61 @@ msgid "Autologin or timed login to the root account is not allowed."
 msgstr ""
 "root アカウントに対する自動ログインまたは時間指定ログインは許可されていません"
 
-#: ../gui/gdmsetup.c:1628 ../gui/gdmsetup.c:2256
+#: ../gui/gdmsetup.c:1664 ../gui/gdmsetup.c:2293
 msgid "Open File"
 msgstr "ファイルを開く"
 
-#: ../gui/gdmsetup.c:1643
+#: ../gui/gdmsetup.c:1680
 msgid "PNG and JPEG"
 msgstr "PNG と JPEG"
 
-#: ../gui/gdmsetup.c:2100 ../gui/gdmsetup.c:2140 ../gui/gdmsetup.c:2355
-#: ../gui/gdmsetup.c:2365 ../gui/gdmsetup.c:2375
+#: ../gui/gdmsetup.c:2137 ../gui/gdmsetup.c:2177 ../gui/gdmsetup.c:2393
+#: ../gui/gdmsetup.c:2403 ../gui/gdmsetup.c:2413
 msgid "None"
 msgstr "なし"
 
-#: ../gui/gdmsetup.c:2264
+#: ../gui/gdmsetup.c:2302
 msgid "All files"
-msgstr "すべてのファイル"
+msgstr "全てのファイル"
 
-#: ../gui/gdmsetup.c:3013
+#: ../gui/gdmsetup.c:3051
 msgid "Archive is not of a subdirectory"
 msgstr "アーカイブはサブフォルダにありません"
 
-#: ../gui/gdmsetup.c:3021
+#: ../gui/gdmsetup.c:3059
 msgid "Archive is not of a single subdirectory"
 msgstr "アーカイブが複数のサブフォルダに存在します"
 
-#: ../gui/gdmsetup.c:3045 ../gui/gdmsetup.c:3123
+#: ../gui/gdmsetup.c:3083 ../gui/gdmsetup.c:3161
 msgid "File not a tar.gz or tar archive"
 msgstr "ファイルは tar.gz あるいは tar アーカイブではありません"
 
-#: ../gui/gdmsetup.c:3047
+#: ../gui/gdmsetup.c:3085
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "アーカイブにはファイル GdmGreeterTheme.info がありません"
 
-#: ../gui/gdmsetup.c:3069
+#: ../gui/gdmsetup.c:3107
 msgid "File does not exist"
 msgstr "ファイルが存在しません"
 
 #. markup
-#: ../gui/gdmsetup.c:3184
+#: ../gui/gdmsetup.c:3222
 msgid "No file selected"
 msgstr "ファイルが選択されていません"
 
 #. markup
-#: ../gui/gdmsetup.c:3212
+#: ../gui/gdmsetup.c:3250
 msgid "Not a theme archive"
 msgstr "テーマ・アーカイブではありません"
 
-#: ../gui/gdmsetup.c:3213
+#: ../gui/gdmsetup.c:3251
 #, c-format
 msgid "Details: %s"
 msgstr "詳細: %s"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:3231
+#: ../gui/gdmsetup.c:3269
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed. Install again anyway?"
@@ -3319,29 +3284,29 @@ msgstr ""
 "すか?"
 
 #. markup
-#: ../gui/gdmsetup.c:3317
+#: ../gui/gdmsetup.c:3355
 msgid "Some error occurred when installing the theme"
 msgstr "テーマをインストールする際にエラーが複数発生しました"
 
-#: ../gui/gdmsetup.c:3357
+#: ../gui/gdmsetup.c:3395
 msgid "Select new theme archive to install"
 msgstr "インストールする新しいテーマ・アーカイブの選択"
 
-#: ../gui/gdmsetup.c:3361
+#: ../gui/gdmsetup.c:3399
 msgid "_Install"
 msgstr "インストール(_I)"
 
-#: ../gui/gdmsetup.c:3429
+#: ../gui/gdmsetup.c:3468
 #, c-format
 msgid "Do you really wish to remove theme '%s' from the system?"
-msgstr "本当にシステムからテーマ '%s' を削除してもよろしいですか？"
+msgstr "本当にテーマ '%s' を削除してもよろしいですか？"
 
-#: ../gui/gdmsetup.c:3447
+#: ../gui/gdmsetup.c:3486
 msgid "_Remove Theme"
 msgstr "テーマの削除(_R)"
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:4201
+#: ../gui/gdmsetup.c:4240
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3364,14 +3329,14 @@ msgstr ""
 "照して下さい。"
 
 #. markup
-#: ../gui/gdmsetup.c:4643
+#: ../gui/gdmsetup.c:4681
 msgid "You must be the root user to configure GDM."
 msgstr "GDM を設定するには root 権限が必要です"
 
 #. EOF
 #: ../gui/gdmsetup.desktop.in.h:1
 msgid "Configure the login screen (GNOME Display Manager)"
-msgstr "GDM ログイン画面の設定"
+msgstr "GDM ログイン画面を設定します"
 
 #: ../gui/gdmsetup.desktop.in.h:2 ../gui/gdmsetup.glade.h:52
 msgid "Login Screen Setup"
@@ -3387,11 +3352,11 @@ msgstr "<"
 
 #: ../gui/gdmsetup.glade.h:4
 msgid "<b>Server Settings</b>"
-msgstr "<b>サーバー設定</b>"
+msgstr "<b>サーバの設定</b>"
 
 #: ../gui/gdmsetup.glade.h:5
 msgid "<b>Servers to Start</b>"
-msgstr "<b>起動するサーバー</b>"
+msgstr "<b>起動するサーバ</b>"
 
 #: ../gui/gdmsetup.glade.h:6
 msgid ""
@@ -3400,9 +3365,10 @@ msgid ""
 "from restarting (effectively not allowing this configuration application to "
 "run), BE CAREFUL!"
 msgstr ""
-"<b>警告:</b> ご利用の X サーバーが未サポートの値をこのセクション内で指定する"
-"と(設定を適用することが許されず) 再起動時に X サーバーが停止してしまいます。"
-"注意して下さい!"
+"<b>警告:</b> お使いの X サーバでサポートしていない値を指定した場合、\n"
+"再起動後にサーバ自身が停止するおそれがあります (実際のところ、設定内容を適用"
+"することはできません)。\n"
+"ご注意下さい！"
 
 #: ../gui/gdmsetup.glade.h:8
 msgid ">"
@@ -3414,11 +3380,11 @@ msgstr "アクセシビリティ"
 
 #: ../gui/gdmsetup.glade.h:10
 msgid "Add/Modify Server"
-msgstr "サーバーを追加/変更"
+msgstr "サーバの追加/変更"
 
 #: ../gui/gdmsetup.glade.h:11
 msgid "Allow _configuration from the login screen"
-msgstr "ログイン画面からの設定を許可する(_c)"
+msgstr "ログイン画面で設定を変更できるようにする(_C)"
 
 #: ../gui/gdmsetup.glade.h:12
 msgid "Allow _root to login with GDM"
@@ -3426,11 +3392,11 @@ msgstr "GDM から root のログインを許可する(_R)"
 
 #: ../gui/gdmsetup.glade.h:13
 msgid "Allow remote _timed logins"
-msgstr "リモートからの時間指定ログインを許可する(_T)"
+msgstr "リモートから時間指定ログインを許可する(_T)"
 
 #: ../gui/gdmsetup.glade.h:14
 msgid "Allow root to login r_emotely with GDM"
-msgstr "リモート GDM からの root のログインを許可する(_E)"
+msgstr "リモートの GDM から root のログインを許可する(_E)"
 
 #: ../gui/gdmsetup.glade.h:15
 msgid "Allow running _XDMCP chooser from the login screen"
@@ -3438,7 +3404,7 @@ msgstr "ログイン画面から XDMCP Chooser の実行を許可する(_X)"
 
 #: ../gui/gdmsetup.glade.h:16
 msgid "Allow theme selection in _GTK+ Greeter"
-msgstr "GTK+ Greeter 内でテーマの選択を許可する(_G)"
+msgstr "GTK+ 型の Greeter でテーマの選択を許可する(_G)"
 
 #: ../gui/gdmsetup.glade.h:17
 msgid "Apply"
@@ -3474,7 +3440,7 @@ msgstr "色深度:"
 
 #: ../gui/gdmsetup.glade.h:25
 msgid "Command:"
-msgstr "コマンド:"
+msgstr "コマンド: "
 
 #: ../gui/gdmsetup.glade.h:26
 msgid "Copyright:"
@@ -3482,7 +3448,7 @@ msgstr "著作権:"
 
 #: ../gui/gdmsetup.glade.h:27
 msgid "Create Server Definition"
-msgstr "サーバー定義を作成"
+msgstr "サーバ定義の生成"
 
 #: ../gui/gdmsetup.glade.h:28
 msgid "Delete"
@@ -3490,7 +3456,7 @@ msgstr "削除"
 
 #: ../gui/gdmsetup.glade.h:29
 msgid "Delete Server Definition"
-msgstr "サーバー定義を削除"
+msgstr "サーバ定義の削除"
 
 #: ../gui/gdmsetup.glade.h:30
 msgid "Description:"
@@ -3498,7 +3464,7 @@ msgstr "説明:"
 
 #: ../gui/gdmsetup.glade.h:31
 msgid "Displays per _host:"
-msgstr "一ホストあたりのディスプレイ数(_H):"
+msgstr "１ホストあたりのディスプレイ数(_H):"
 
 #: ../gui/gdmsetup.glade.h:32
 msgid "Enable _XDMCP"
@@ -3510,27 +3476,27 @@ msgstr "アクセシビリティ・モジュールを有効にする(_A)"
 
 #: ../gui/gdmsetup.glade.h:34
 msgid "Enable debu_g messages to system log"
-msgstr "システムログへのデバッグメッセージ出力を有効にする"
+msgstr "デバッグ・メッセージをシステム・ログに記録する(_G)"
 
 #: ../gui/gdmsetup.glade.h:35
 msgid "Exclude"
-msgstr "Exclude"
+msgstr "対象外のユーザ一覧"
 
 #: ../gui/gdmsetup.glade.h:36
 msgid "Flexible"
-msgstr "フレキシブル"
+msgstr "Flexible なサーバ"
 
 #: ../gui/gdmsetup.glade.h:37
 msgid "GTK+ Greeter"
-msgstr "GTK+ Greeter"
+msgstr "GTK+ 型の Greeter"
 
 #: ../gui/gdmsetup.glade.h:38
 msgid ""
 "GTK+ Greeter\n"
 "Themed Greeter"
 msgstr ""
-"GTK+ Greeter\n"
-"テーマ Greeter"
+"GTK+ 型の Greeter\n"
+"テーマ型の Greeter"
 
 #: ../gui/gdmsetup.glade.h:40
 msgid ""
@@ -3538,9 +3504,9 @@ msgid ""
 "Themed Greeter\n"
 "Disabled"
 msgstr ""
-"GTK+ Greeter\n"
-"テーマ Greeter\n"
-"無効"
+"GTK+ 型の Greeter\n"
+"テーマ型の Greeter\n"
+"無効にする"
 
 #: ../gui/gdmsetup.glade.h:43
 msgid "General"
@@ -3552,7 +3518,7 @@ msgstr "Greeter"
 
 #: ../gui/gdmsetup.glade.h:45
 msgid "Handled"
-msgstr "処理"
+msgstr "Handled なサーバ"
 
 #: ../gui/gdmsetup.glade.h:46
 msgid "Honour _indirect requests"
@@ -3560,7 +3526,7 @@ msgstr "間接的なリクエストを受け取る(_I)"
 
 #: ../gui/gdmsetup.glade.h:47
 msgid "Include"
-msgstr "Include"
+msgstr "対象となるユーザ一覧"
 
 #: ../gui/gdmsetup.glade.h:48
 msgid "Is a login attempt handled by this computer?"
@@ -3580,7 +3546,7 @@ msgstr "ログイン Greeter"
 
 #: ../gui/gdmsetup.glade.h:53
 msgid "Login a _user automatically after a specified number of seconds"
-msgstr "指定した時間 (秒) が経過したら自動的にログインする(_u)"
+msgstr "指定した時間 (秒) が経過したら自動的にログインする(_U)"
 
 #: ../gui/gdmsetup.glade.h:54
 msgid "Logo"
@@ -3588,15 +3554,15 @@ msgstr "ロゴ"
 
 #: ../gui/gdmsetup.glade.h:55
 msgid "Make a _sound after a failed login attempt"
-msgstr "失敗したログインの後で音を鳴らす(_S)"
+msgstr "ログインが失敗したら音を鳴らす(_S)"
 
 #: ../gui/gdmsetup.glade.h:56
 msgid "Make a _sound after a successful login attempt"
-msgstr "成功したログインの後で音を鳴らす(_S)"
+msgstr "ログインが完了したら音を鳴らす(_S)"
 
 #: ../gui/gdmsetup.glade.h:57
 msgid "Make a _sound when login window is ready"
-msgstr "ログインウィンドウの準備が整ったら音を鳴らす(_S)"
+msgstr "ログイン・ウィンドウの準備が整ったら音を鳴らす(_S)"
 
 #: ../gui/gdmsetup.glade.h:58
 msgid "Max p_ending indirect requests:"
@@ -3648,8 +3614,8 @@ msgid ""
 "Only One Theme\n"
 "Random Theme"
 msgstr ""
-"一つのテーマ\n"
-"テーマをランダムに"
+"単一のテーマ\n"
+"ランダムなテーマ"
 
 #: ../gui/gdmsetup.glade.h:70
 msgid "Options"
@@ -3674,7 +3640,7 @@ msgstr "プレビュー:"
 #: ../gui/gdmsetup.glade.h:76
 #, no-c-format
 msgid "Re_mote welcome string (%n = hostname): "
-msgstr "リモートのウェルカム・メッセージ(%n = ホスト名)(_M): "
+msgstr "リモートの Welcom メッセージ (%n = ホスト名)(_M): "
 
 #: ../gui/gdmsetup.glade.h:77
 msgid "Refresh Rate:"
@@ -3682,7 +3648,7 @@ msgstr "リフレッシュレート:"
 
 #: ../gui/gdmsetup.glade.h:78
 msgid "Remove Server"
-msgstr "サーバーの削除"
+msgstr "サーバの削除"
 
 #: ../gui/gdmsetup.glade.h:79
 msgid "Resolution:"
@@ -3690,7 +3656,7 @@ msgstr "解像度:"
 
 #: ../gui/gdmsetup.glade.h:80
 msgid "Retry delay (_seconds):"
-msgstr "再試行までの間隔 (秒)(_S):"
+msgstr "パスワードを再入力できるようになるまでの時間 (秒)(_S):"
 
 #: ../gui/gdmsetup.glade.h:81
 msgid "Security"
@@ -3698,19 +3664,19 @@ msgstr "セキュリティ"
 
 #: ../gui/gdmsetup.glade.h:82
 msgid "Server Definition to Modify:"
-msgstr "変更するサーバー定義:"
+msgstr "変更するサーバの定義:"
 
 #: ../gui/gdmsetup.glade.h:83
 msgid "Server Name:"
-msgstr "サーバー名:"
+msgstr "サーバ名: "
 
 #: ../gui/gdmsetup.glade.h:84
 msgid "Show _Face Browser"
-msgstr "フェースブラウザを表示(_F)"
+msgstr "フェイス・ブラウザを表示する(_F)"
 
 #: ../gui/gdmsetup.glade.h:85
 msgid "Show _actions menu"
-msgstr "アクションメニューを表示(_A)"
+msgstr "アクション・メニューを表示する(_A)"
 
 #: ../gui/gdmsetup.glade.h:86
 msgid ""
@@ -3758,16 +3724,16 @@ msgid ""
 "listed in \"Exclude\"\n"
 "will not be displayed regardless of whether \"Include All Users\" is checked."
 msgstr ""
-"\"ユーザー\" タブは GDM でどのユーザーを表示するかを指定します。\n"
-"\"セキュリティ\" タブ内で有効になっていればフェースブラウザ内に\n"
-"\"Include\"と、また \"全般\" タブの下の自動/時間ログインドロップ\n"
-"ダウンリスト内に表示されます。 \"Exclude\" にリストされている\n"
-"ユーザーは \"すべてのユーザーを Include\" が有効かどうかに関らず\n"
-"表示されません。"
+"ここでは GDM からログインできるユーザを指定します。\n"
+"[セキュリティ] タブでフェイス・ブラウザを有効にした場合、\n"
+"または [全般] タブで自動/時間指定ログインを有効にした場合に\n"
+"左側の一覧に含まれるユーザが表示されます。\n"
+"右側の一覧に含まれるユーザは、\"全てのユーザを対象とする\" を\n"
+"有効にしたかどうかに関わらず、全く表示されません。"
 
 #: ../gui/gdmsetup.glade.h:97
 msgid "Themed Greeter"
-msgstr "テーマ Greeter"
+msgstr "テーマ型の Greeter"
 
 #: ../gui/gdmsetup.glade.h:98
 msgid "Timed Login"
@@ -3775,23 +3741,23 @@ msgstr "時間指定ログイン"
 
 #: ../gui/gdmsetup.glade.h:99
 msgid "Use default Remote Welcome"
-msgstr "デフォルトリモート"
+msgstr "デフォルトの Welcome メッセージを使用する (リモート)"
 
 #: ../gui/gdmsetup.glade.h:100
 msgid "Use default Welcome"
-msgstr "システムのデフォルトウェルカムメッセージを使用"
+msgstr "デフォルトの Welcome メッセージを使用する (ローカル)"
 
 #: ../gui/gdmsetup.glade.h:101
 msgid "User to Include"
-msgstr "Include するユーザー"
+msgstr "対象となるユーザ"
 
 #: ../gui/gdmsetup.glade.h:102
 msgid "User to exclude"
-msgstr "Exclude するユーザー"
+msgstr "対象外のユーザ"
 
 #: ../gui/gdmsetup.glade.h:103
 msgid "Users"
-msgstr "ユーザー"
+msgstr "ユーザ"
 
 #: ../gui/gdmsetup.glade.h:104
 msgid "Usually something like: /usr/bin/X"
@@ -3799,7 +3765,7 @@ msgstr "通常は何か /usr/bin/X というようなもの"
 
 #: ../gui/gdmsetup.glade.h:105
 msgid "X Server Settings"
-msgstr "X サーバー設定"
+msgstr "X サーバの設定"
 
 #: ../gui/gdmsetup.glade.h:106
 msgid "XDMCP"
@@ -3807,7 +3773,7 @@ msgstr "XDMCP"
 
 #: ../gui/gdmsetup.glade.h:107
 msgid "XServer"
-msgstr "X サーバー"
+msgstr "X サーバ"
 
 #: ../gui/gdmsetup.glade.h:109
 msgid "_Automatic login username:"
@@ -3829,7 +3795,8 @@ msgstr "テーマの削除(_D)"
 msgid ""
 "_Deny TCP connections to Xserver (disables xforwarding, but does not affect "
 "XDMCP)"
-msgstr "TCP 接続を禁止する (X の転送を無効にする; XDMCP には影響しません)(_D)"
+msgstr ""
+"TCP 接続を禁止する (X の転送を無効にするだけで XDMCP には影響しません)(_D)"
 
 #: ../gui/gdmsetup.glade.h:114
 msgid "_Image"
@@ -3840,8 +3807,8 @@ msgid ""
 "_Include All Users (Get \"Include\" user list from /etc/passwd.  Not "
 "appropriate if using NIS)"
 msgstr ""
-"すべてのユーザーを Include (/etc/passwd から \"Include\" ユーザーリストを取"
-"得. NIS 利用時には適していません)(_I)"
+"全てのユーザを対象とする (/etc/passwd からユーザの一覧を挿入します。NIS 利用"
+"時には適していません)(_I)"
 
 #: ../gui/gdmsetup.glade.h:116
 msgid "_Install new theme"
@@ -3849,7 +3816,7 @@ msgstr "新しいテーマのインストール(_I)"
 
 #: ../gui/gdmsetup.glade.h:117
 msgid "_Login a user automatically on first bootup"
-msgstr "起動してすぐに自動でログインする(_L)"
+msgstr "システムを起動したら自動的にログインする(_L)"
 
 #: ../gui/gdmsetup.glade.h:118
 msgid "_Mode:"
@@ -3881,7 +3848,7 @@ msgstr "時間指定ログインのユーザ名(_T):"
 
 #: ../gui/gdmsetup.glade.h:125
 msgid "_Welcome string: "
-msgstr "ウェルカムメッセージ(_W): "
+msgstr "Welcome メッセージ(_W): "
 
 #: ../gui/gdmsetup.glade.h:126
 msgid "author"
@@ -3907,7 +3874,7 @@ msgstr "ダミー"
 msgid "Too many users to list here..."
 msgstr "一覧に表示するユーザが多すぎます..."
 
-#: ../gui/greeter/greeter.c:787 ../gui/greeter/greeter.c:819
+#: ../gui/greeter/greeter.c:804 ../gui/greeter/greeter.c:836
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3918,11 +3885,11 @@ msgstr ""
 "おそらく GDM を更新したことが原因のようです。\n"
 "GDM デーモンを再起動するか、またはコンピュータを再起動して下さい。"
 
-#: ../gui/greeter/greeter.c:825 ../gui/greeter/greeter.c:872
+#: ../gui/greeter/greeter.c:842 ../gui/greeter/greeter.c:889
 msgid "Reboot"
 msgstr "再起動"
 
-#: ../gui/greeter/greeter.c:864
+#: ../gui/greeter/greeter.c:881
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3933,24 +3900,24 @@ msgstr ""
 "おそらく GDM を更新したことが原因のようです。\n"
 "GDM デーモンを再起動するか、またはコンピュータを再起動して下さい。"
 
-#: ../gui/greeter/greeter.c:1386
+#: ../gui/greeter/greeter.c:1375
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "テーマ '%s' を読み込む際にエラーが発生しました"
 
 #. markup
-#: ../gui/greeter/greeter.c:1440
+#: ../gui/greeter/greeter.c:1429
 msgid "The greeter theme is corrupt"
 msgstr "Greeter のテーマが壊れています"
 
-#: ../gui/greeter/greeter.c:1442
+#: ../gui/greeter/greeter.c:1431
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "テーマにエントリ username/password 要素の定義がありません。"
 
 #. markup
-#: ../gui/greeter/greeter.c:1476
+#: ../gui/greeter/greeter.c:1465
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
@@ -3959,13 +3926,13 @@ msgstr ""
 "した。標準の Greeter を起動します"
 
 #. markup
-#: ../gui/greeter/greeter.c:1499
+#: ../gui/greeter/greeter.c:1488
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
 msgstr ""
-"GTK+ Greeter を起動できませんでした。このディスプレイの利用を中止します。別の"
-"方法でログインし、GDM を正しく再のインストールして下さい。"
+"GTK+ スタイルの Greeter を起動できませんでした。このディスプレイの利用を中止"
+"します。別の方法でログインして、GDM を正しく再インストールして下さい。"
 
 #: ../gui/greeter/greeter_action_language.c:64
 msgid "Last"
@@ -3996,11 +3963,15 @@ msgstr ""
 #: ../gui/greeter/greeter_item_ulist.c:119
 #, c-format
 msgid "Can't open DefaultImage: %s!"
-msgstr "DefaultImage %s を開けません！"
+msgstr "DefaultImage を開けません: %s"
 
 #: ../gui/greeter/greeter_item_ulist.c:153
 msgid "Already logged in"
 msgstr "既にログインしています"
+
+#: ../gui/greeter/greeter_item_ulist.c:196
+msgid "Theme broken: must have pam-message label!"
+msgstr "テーマが壊れています: pam-messeage という label がありません"
 
 #: ../gui/greeter/greeter_parser.c:1082 ../gui/greeter/greeter_system.c:211
 msgid "Sus_pend"
@@ -4030,15 +4001,40 @@ msgstr "OK(_O)"
 
 #: ../gui/greeter/greeter_parser.c:1135
 msgid "_Cancel"
-msgstr "取消(_C)"
+msgstr "キャンセル(_C)"
 
 #: ../gui/greeter/greeter_session.c:243
 msgid "Choose a Session"
 msgstr "セッションの選択"
 
+#: ../gui/greeter/greeter_session.c:269
+msgid "Log in using the session that you have used last time you logged in"
+msgstr "最後にログインした際のセッションを使用してログインします"
+
+#: ../gui/greeter/greeter_system.c:159 ../gui/greeter/greeter_system.c:355
+msgid ""
+"Run an XDMCP chooser which will allow you to log into available remote "
+"computers, if there are any."
+msgstr ""
+"もし利用可能なリモート・マシンがあれば、そのログインを許可する XDMCP Chooser "
+"を起動します"
+
+#: ../gui/greeter/greeter_system.c:174 ../gui/greeter/greeter_system.c:375
+msgid ""
+"Configure GDM (this login manager). This will require the root password."
+msgstr "この GDM ログイン・マネージャを設定します (root 権限が必要です)"
+
 #: ../gui/greeter/greeter_system.c:193 ../gui/greeter/greeter_system.c:321
 msgid "Reboot your computer"
 msgstr "システムの再起動"
+
+#: ../gui/greeter/greeter_system.c:205
+msgid "Shut down the system so that you may safely turn off the computer."
+msgstr "システムを停止したので、安全に電源を落とすことができます。"
+
+#: ../gui/greeter/greeter_system.c:218 ../gui/greeter/greeter_system.c:338
+msgid "Suspend your computer"
+msgstr "システムのサスペンド"
 
 #: ../gui/greeter/greeter_system.c:278
 msgid "Choose an Action"
@@ -4111,8 +4107,8 @@ msgstr "\"サークル\" の GNOME アート・バリエーション"
 msgid "Happy GNOME"
 msgstr "ハッピー GNOME"
 
-#: ../gui/modules/dwellmouselistener.c:612
-#: ../gui/modules/keymouselistener.c:927
+#: ../gui/modules/dwellmouselistener.c:653
+#: ../gui/modules/keymouselistener.c:926
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -4121,7 +4117,7 @@ msgstr ""
 "(%s) を実行する際にエラーが発生しました。\n"
 "これは (%s) にリンクされています。"
 
-#: ../gui/modules/keymouselistener.c:255
+#: ../gui/modules/keymouselistener.c:254
 #, c-format
 msgid "Cannot open gestures file: %s"
 msgstr "ジェスチャ・ファイルを開けません: %s"
