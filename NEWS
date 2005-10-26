@@ -1,5 +1,56 @@
 Ahh news...
 
+2.13.0.0 stuff:
+
+- Fix problem with PostSession script not always being
+  executed when user kills the Xserver with
+  ctrl-alt-backspace.  Fixes bug #152906. 
+  (Jerry G. DeLapp)
+
+- No longer set tooltips for menu items in gdmlogin.  
+  These do not work with accessibility and no GNOME
+  programs use menu tooltips, it is not recommended.
+  (Brian Cameron)
+
+- Change the way the "OK" and "Cancel" buttons work
+  so they are consistant.  Now the "Cancel" button
+  in gdmlogin is active when the Username is requested
+  and just clears the field.  This makes gdmlogin work
+  like gdmgreeter.  Now make the buttons insensitive
+  when the ok/enter/tab is pressed and make them
+  sensitive again when the greeter wants entry.  This
+  fixes a bug where the greeter's memory could get
+  corrupted by pressing "Cancel" after authentication
+  (which would only happen if the PostLogin script
+  caused a long enough delay to allow this to happen
+  or perhaps on a really slow machine).  (Brian
+  Cameron)
+
+- Correct reading of config file in gdmflexiserver.
+  (Christiaan Welvaart)
+
+- GNOME HIG fixes for the Language, Session, and 
+  Message dialogs.  (Dennis Cranston)
+
+- Define SoundProgram to be /usr/bin/audioplay instead
+  of /usr/bin/play on Solaris.  /usr/bin/play does not
+  exist on Solaris.
+
+- Better /etc/default/login support on Solaris.  Previously
+  it supported only PASSREQ.  Now it supports PATH, SUPATH
+  and CONSOLE (the same ones CDE login supports).  Added 
+  new PasswordRequired gdm.conf setting so that PASSREQ
+  can be controlled via gdm.conf as well.
+
+- Memory leaks fixed.  (Steve Grubb/Brian Cameron)
+
+- Improvements to strings and docs (Adam Weinberger,
+  Brian Cameron)
+
+- Translation updates (Takeshi AIHANA, Runa Bhattacharjee,
+  Priit Laes, Chao-Hsiung Liao, Ignacio Casal Quinteiro,
+  Vincent van Adrighem, Funda Wang, Adam Weinberger)
+
 2.8.0.5 stuff:
 
 - gdmflexiserver supports --startnew option so that

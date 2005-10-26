@@ -15,7 +15,7 @@ if test ! -d $srcdir/vicious-extensions; then
 	exit 1
 fi
 
-(test -f $srcdir/configure.in \
+(test -f $srcdir/configure.ac \
   && test -d $srcdir/daemon \
   && test -f $srcdir/daemon/gdm.h) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
