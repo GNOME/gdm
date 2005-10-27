@@ -5482,16 +5482,33 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              operating systems, the GDM user must be made a member of the
              "audio" group
              </para>
+
+             <para>
+             There are some issues that cause some users to have problems
+             getting the gesture listeners to work.  It is recommended that
+             people use GDM version 2.8.0.5 or later for best results.  
+             Some Xservers have a bug which causes detectable autorepeat
+             to fail when XEVIE is enabled (which happens when atk-bridge
+             is included as a GTK Module).  This bug causes key gestures
+             with a duration greater than 0 to always fail.  A workaround
+             is to simply redefine all key gestures so they have zero length
+             duration.  Some versions of GOK and gnopernicus will not launch
+             unless the gdm user has a writable home directory.  If you
+             see an hourglass cursor when you complete a gesture but the
+             program does not start, then you are likely having this problem.
+             Also note that some input devices require Xserver configuration
+             before GDM will recognize them.
+             </para>
      </sect2>
        <sect2 id="accessibilitysound">
           <title>Accessibility Login Sound Configuration</title>
              <para>
              By default, gdm requires a media application such as "sox" to be 
              present to play login sounds.  GDM defaults the location of this
-             application to <filename>/usr/bin/play</filename> by way of the
-             SoundProgram configuration option in <filename>gdm.conf</filename>.
-             This value can be changed by modifying the value in the
-             <filename>gdm.conf</filename> file.
+             application to <filename>/usr/bin/play</filename> (or 
+             <filename>/usr/bin/audioplay</filename> on Solaris.  This can
+             be changed via the SoundProgram configuration option in
+             <filename>gdm.conf</filename>.  
              </para>
      </sect2>
   </sect1>
