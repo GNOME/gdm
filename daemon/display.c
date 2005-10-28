@@ -205,9 +205,9 @@ wait_again:
 			ve_signal_was_notified (SIGINT) ||
 			ve_signal_was_notified (SIGHUP) ||
 			t + 10 <= time (NULL)) {
-			    gdm_debug ("whack_old_slave: GOT ANOTHER SIGTERM (or it was 10 secs already), killing slave again");
+			    gdm_debug ("whack_old_slave: GOT ANOTHER SIGTERM (or it was 10 secs already), killing slave again with SIGKILL");
 			    t = time (NULL);
-			    kill (d->slavepid, SIGTERM);
+			    kill (d->slavepid, SIGKILL);
 			    goto wait_again;
 		    } else if (ret < 0 && errno == EINTR) {
 			    goto wait_again;

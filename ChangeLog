@@ -1,3 +1,16 @@
+2005-10-28  Brian Cameron  <brian.cameron@sun.com>
+
+        * daemon/display.c: If the slave doesn't
+          respond to a SIGTERM, try SIGKILL the second
+          time.  GDM has a problem where it will
+          sometimes stop managing a display because
+          it just keeps waiting for a slave to die
+          after sending it a SIGTERM.  Some users
+          have found that this patch works around
+          the problem of a child ignoring SIGTERM.
+          Patch provided by Vaclav Smilauer
+          <eudoxos@arcig.cz>.  Fixes bug #113902.
+
 2005-10-27  Erdal Ronahi  <erdal.ronahi@gmail.com>
 
         * daemon/slave.c: Fix race condition where the d
