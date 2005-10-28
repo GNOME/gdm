@@ -1885,7 +1885,7 @@ get_parent_display (void)
 static gboolean
 greeter_is_capslock_on (void)
 {
-  unsigned int states;
+  XkbStateRec states;
   Display *dsp;
 
   /* HACK! incredible hack, if GDM_PARENT_DISPLAY is set we get
@@ -1895,10 +1895,10 @@ greeter_is_capslock_on (void)
   if (dsp == NULL)
     dsp = GDK_DISPLAY ();
 
-  if (XkbGetIndicatorState (dsp, XkbUseCoreKbd, &states) != Success)
+  if (XkbGetState (dsp, XkbUseCoreKbd, &states) != Success)
       return FALSE;
 
-  return (states & ShiftMask) != 0;
+  return (states.locked_mods & LockMask) != 0;
 }
 
 static gboolean

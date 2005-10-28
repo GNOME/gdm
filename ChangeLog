@@ -1,8 +1,17 @@
+2005-10-28  Brian Cameron  <brian.cameron@sun.com.
+
+        * gui/gdmlogin.c: Patch to make GDM warn
+          correctly about caps lock if an alternative
+          keymap is enabled.  Now use kbGetState
+          instead of XkbGetIndicatorState.  Fixes
+          bug #317732.  Patch provided by Sebastien
+          Bacher <seb128@debian.org>.
+
 2005-10-28  Jürg Billeter  <j@bitron.ch>
 
 	* configure.ac: Check for X server in prefix /usr
 
-2005-10-27  Erdal Ronahi  <erdal.ronahi@gmail.com>
+2005-10-27  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/slave.c: Fix race condition where the d
 	  variable wasn't being set until after the signal
