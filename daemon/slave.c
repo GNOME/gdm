@@ -88,7 +88,7 @@
 #include "cookie.h"
 
 /* Some per slave globals */
-static GdmDisplay *d;
+static GdmDisplay *d = 0;
 static gchar *login = NULL;
 static gboolean greet = FALSE;
 static gboolean configurator = FALSE;
@@ -763,6 +763,14 @@ gdm_slave_start (GdmDisplay *display)
 	struct sigaction xfsz;
 #endif /* SIGXFSZ */
 	sigset_t mask;
+
+	/*
+	 * Set display here because d is used in the signal handlers,
+	 * and we want to set this value before setting them up.  This
+	 * avoids a race condition.  It gets reset in gdm_slave_run
+	 * which is called in a loop
+	 */
+	d = display;
 
 	/* Ignore SIGUSR1/SIGPIPE, and especially ignore it
 	   before the Setjmp */
