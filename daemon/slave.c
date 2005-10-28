@@ -768,7 +768,8 @@ gdm_slave_start (GdmDisplay *display)
 	/*
 	 * Set d global to display before setting signal handlers,
 	 * since the signal handlers use the d value.  Avoids a 
-	 * race condition.
+	 * race condition.  It is also set again in gdm_slave_run
+	 * since it is called in a loop.
 	 */
 	d = display;
 
@@ -1303,6 +1304,9 @@ gdm_slave_run (GdmDisplay *display)
     gint openretries = 0;
     gint maxtries = 0;
     
+    /* Reset d since gdm_slave_run is called in a loop */
+    d = display;
+
     gdm_random_tick ();
 
     if (d->sleep_before_run > 0) {
