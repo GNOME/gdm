@@ -88,7 +88,7 @@
 #include "cookie.h"
 
 /* Some per slave globals */
-static GdmDisplay *d;
+static GdmDisplay *d = 0;
 static gchar *login = NULL;
 static gboolean greet = FALSE;
 static gboolean configurator = FALSE;
@@ -765,6 +765,13 @@ gdm_slave_start (GdmDisplay *display)
 #endif /* SIGXFSZ */
 	sigset_t mask;
 
+	/*
+	 * Set d global to display before setting signal handlers,
+	 * since the signal handlers use the d value.  Avoids a 
+	 * race condition.
+	 */
+	d = display;
+
 	/* Ignore SIGUSR1/SIGPIPE, and especially ignore it
 	   before the Setjmp */
 	gdm_signal_ignore (SIGUSR1);
@@ -1296,8 +1303,6 @@ gdm_slave_run (GdmDisplay *display)
     gint openretries = 0;
     gint maxtries = 0;
     
-    d = display;
-
     gdm_random_tick ();
 
     if (d->sleep_before_run > 0) {
