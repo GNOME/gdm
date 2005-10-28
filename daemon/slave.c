@@ -3643,6 +3643,7 @@ session_child_run (struct passwd *pwent,
 	const char *shell = NULL;
 	VeConfig *dmrc = NULL;
 	char *argv[4];
+	char *greeter;
 
 #ifdef CAN_USE_SETPENV
 	extern char **newenv;
@@ -3679,6 +3680,23 @@ session_child_run (struct passwd *pwent,
 	ve_setenv ("GDMSESSION", session, TRUE);
 
 	ve_setenv ("DESKTOP_SESSION", session, TRUE);
+
+	/* Determine default greeter type so the PreSession */
+	/* script can set the appropriate background color. */
+	if (d->attached) {
+		greeter = GdmGreeter;
+	} else {
+		greeter = GdmRemoteGreeter;		
+	}
+	
+	if (strstr (greeter, "gdmlogin") != NULL) {
+		ve_setenv ("GDM_GREETER_TYPE", "PLAIN", TRUE);	
+	} else if (strstr (greeter, "gdmgreeter") != NULL) {
+		ve_setenv ("GDM_GREETER_TYPE", "THEMED", TRUE);	
+	} else {
+		/* huh? */
+		ve_setenv ("GDM_GREETER_TYPE", "unknown", TRUE);
+	}
 
 	/* Run the PreSession script */
 	if G_UNLIKELY (gdm_slave_exec_script (d, GdmPreSession,

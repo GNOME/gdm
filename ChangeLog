@@ -1,3 +1,61 @@
+2005-10-27  Dennis Cranston  <dennis_cranston@yahoo.com>
+
+	Fix bug #314685, "Gdmsetup UI fixes".  Based on redesign mockups
+	by Calum Benson from http://www.gnome.org/~calum/usability/specs/gdm/.
+
+	* gui/gdmsetup.c: (logo_toggle_timeout), (logo_toggle_toggled),
+	  (xserver_update_delete_sensitivity), (init_servers_combobox),
+	  (update_remote_sensitivity), (refresh_remote_tab),
+	  (combobox_timeout), (list_selection_toggled), (combobox_changed),
+	  (toggle_toggled_sensitivity_positive),
+	  (timedlogin_allow_remote_toggled), (setup_notify_toggle),
+	  (setup_xdmcp_notify_toggle), (users_string_compare_func),
+	  (setup_user_combobox_list), (setup_xdmcp_intspin), (face_add),
+	  (face_del), (browser_move), (browser_apply),
+	  (users_add_button_clicked), (setup_face), (greeter_toggle_timeout),
+	  (sensitive_entry_toggled), (local_background_type_toggle_timeout),
+	  (local_background_type_toggled), (setup_greeter_toggle),
+	  (greeter_color_timeout), (setup_greeter_color),
+	  (xdmcp_button_clicked), (vt_spinbutton_activate),
+	  (setup_greeter_combobox), (setup_xdmcp_support),
+	  (acc_modules_toggled), (test_sound), (sound_response),
+	  (setup_users_tab), (setup_accessibility_tab),
+	  (gg_selection_changed), (read_themes), (selected_toggled),
+	  (theme_install_response), (install_new_theme), (delete_theme),
+	  (xserver_entry_timeout), (xserver_toggle_timeout),
+	  (xserver_init_server_list), (xserver_init_servers),
+	  (xserver_row_selected), (xserver_remove), (xserver_add),
+	  (xserver_add_button_clicked), (xserver_init_definitions),
+	  (xserver_delete), (setup_xserver_support),
+	  (xserver_button_clicked), (setup_security_tab),
+	  (setup_local_themed_settings), (image_filechooser_response),
+	  (logo_filechooser_response), (create_preview_pixbuf),
+	  (update_image_preview), (hookup_plain_background),
+	  (hookup_plain_logo), (setup_plain_menubar),
+	  (setup_local_welcome_message), (setup_remote_welcome_message),
+	  (setup_local_plain_settings), (setup_local_tab),
+	  (hookup_remote_plain_background), (hookup_remote_plain_logo),
+	  (setup_remote_plain_settings), (setup_remote_themed_settings),
+	  (setup_remote_tab), (setup_gui), (apply_user_changes), (main):
+	  Implement the new UI. Fix various compiler warnings.
+	* gui/gdmsetup.glade:  Implement the new UI.
+	* gui/greeter/greeter.c: (main):  Get the background color from
+	  GDM_KEY_GRAPHICAL_THEME_COLOR, but fallback to GDM_KEY_BACKGROUNDCOLOR
+	  if its does not exist.
+	* gui/gdmlogin.c: (gdm_login_parse_config), (setup_background),
+	  (gdm_reread_config): Fix bugs found in the parsing of the welcome
+	  messages.  Add support for a GDM_BACKGROUND_IMAGE background type.
+	  Fix the setup of the welcome message string in the greeter.  Fix
+	  various compiler warnings.
+	* vicious-extensions/glade-helper.c: (glade_helper_tagify_label):
+	  Add support for more than one markup tag.
+	* daemon/gdm.h:  Define GDM_KEY_GRAPHICAL_THEME_COLOR and
+	  GDM_KEY_CHOOSER_BUTTON_LOGO keys.
+	* daemon/gdm.c: (gdm_handle_user_message): Add newly defined keys.
+	* daemon/slave.c: (session_child_run):  Pass a GDM_GREETER_TYPE
+	  environmental variable to presession script.
+	* config/PreSession.in:  Add support for plain and background color.
+
 2005-10-28  Brian Cameron  <brian.cameron@sun.com>
 
         * daemon/display.c: If the slave doesn't

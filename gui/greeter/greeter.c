@@ -1282,7 +1282,11 @@ main (int argc, char *argv[])
   /* the background unfilled.   The cursor should be a watch already */
   /* but just in case */
   config   = ve_config_get (config_file);
-  bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
+  bg_color = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_COLOR);
+  /* If a graphical theme color does not exist fallback to the plain color */
+  if (ve_string_empty (bg_color)) {
+    bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
+  }
   setup_background_color (bg_color);
   greeter_session_init ();
 

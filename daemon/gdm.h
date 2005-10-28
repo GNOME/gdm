@@ -287,6 +287,7 @@ enum {
 #define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
 #define GDM_KEY_LOCFILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
 #define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
+#define GDM_KEY_CHOOSER_BUTTON_LOGO "greeter/ChooserButtonLogo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
 #define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_SBINDIR "/gdmsetup --disable-sound --disable-crash-dialog"
@@ -321,6 +322,7 @@ enum {
 #define GDM_KEY_GRAPHICAL_THEMES "greeter/GraphicalThemes=circles"
 #define GDM_KEY_GRAPHICAL_THEME_RAND "greeter/GraphicalThemeRand=false"
 #define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" EXPANDED_DATADIR "/gdm/themes/"
+#define GDM_KEY_GRAPHICAL_THEME_COLOR "greeter/GraphicalThemedColor=#76848F"
 
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
 #define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="

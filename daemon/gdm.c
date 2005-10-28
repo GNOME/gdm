@@ -4371,6 +4371,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_FACE, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOCFILE, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOGO, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CHOOSER_BUTTON_LOGO, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_WELCOME, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_REMOTEWELCOME, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDPROG, NULL)) &&
@@ -4379,6 +4380,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME_DIR, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEMES, NULL)) &&
+		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME_COLOR, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FILE, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FONT, NULL)) &&
 		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FONT, NULL)) &&

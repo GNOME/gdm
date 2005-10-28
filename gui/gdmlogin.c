@@ -111,8 +111,9 @@ static gboolean GdmBackgroundRemoteOnlyColor;
 static int GdmBackgroundType;
 enum {
 	GDM_BACKGROUND_NONE = 0,
-	GDM_BACKGROUND_IMAGE = 1,
-	GDM_BACKGROUND_COLOR = 2
+	GDM_BACKGROUND_IMAGE_AND_COLOR = 1,
+	GDM_BACKGROUND_COLOR = 2,
+	GDM_BACKGROUND_IMAGE = 3,
 };
 static gchar *GdmGtkRC;
 static gchar *GdmLocaleFile;
@@ -220,7 +221,7 @@ static guint timed_handler_id = 0;
 
 #if FIXME
 static char *selected_browser_user = NULL;
-#endif FIXME
+#endif
 static gboolean selecting_user = TRUE;
 
 extern GList *sessions;
@@ -874,7 +875,6 @@ gdm_theme_handler (GtkWidget *widget, gpointer data)
 static void 
 gdm_login_parse_config (void)
 {
-    GList *list, *li;
     struct stat unused;
     VeConfig *config;
 	
@@ -923,12 +923,19 @@ gdm_login_parse_config (void)
      */
     GdmDefaultWelcomeBacktest = ve_config_get_bool (config, greeter_DefaultWelcomeBacktest_key);
     if (GdmDefaultWelcomeBacktest == FALSE) {
-	    if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
-		GdmDefaultWelcome == TRUE;
-	    else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
-		GdmDefaultWelcome == TRUE;
-	    else
-		GdmDefaultWelcome = FALSE;
+	    if (strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
+		if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0) {
+		    GdmDefaultWelcome = TRUE;
+		} else {
+		    GdmDefaultWelcome = FALSE;
+		}
+	    } else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
+		if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0) {
+			GdmDefaultWelcome = TRUE;
+		} else {
+			GdmDefaultWelcome = FALSE;
+		}
+	    }
     }
 
     /* Replace default welcome message with one specified in the config file, if
@@ -1021,9 +1028,12 @@ gdm_login_parse_config (void)
 	    GdmSystemMenuReal = FALSE;
 	    GdmConfigAvailableReal = FALSE;
 	    GdmChooserButtonReal = FALSE;
-	    if (GdmBackgroundRemoteOnlyColor &&
-		GdmBackgroundType == GDM_BACKGROUND_IMAGE)
-		    GdmBackgroundType = GDM_BACKGROUND_COLOR;
+	    if (GdmBackgroundRemoteOnlyColor) {
+	    	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE_AND_COLOR)
+	    		GdmBackgroundType = GDM_BACKGROUND_COLOR;
+	    	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE)
+	        	GdmBackgroundType = GDM_BACKGROUND_NONE;	
+	    }
 	    if (GdmBackgroundRemoteOnlyColor &&
 		! ve_string_empty (GdmBackgroundProg)) {
 		    g_free (GdmBackgroundProg);
@@ -2411,33 +2421,6 @@ gdm_login_browser_populate (void)
     }
 }
 
-static gboolean
-resize_in_time (gpointer data)
-{
-	login_window_resize (FALSE /* force */);
-	return FALSE;
-}
-
-static int
-get_double_click_time (void)
-{
-	/* FIXME: what about multihead? */
-	GtkSettings *settings = gtk_settings_get_default ();
-	int t;
-
-	g_object_get (G_OBJECT (settings),
-		      "gtk-double-click-time",
-		      &t,
-		      NULL);
-
-	/* sanity */
-	if (t < 100)
-		t = 100;
-	if (t > 1500)
-		t = 1500;
-
-	return t;
-}
 
 static void
 user_selected (GtkTreeSelection *selection, gpointer data)
@@ -3357,20 +3340,23 @@ setup_background (void)
 	GdkColor color;
 	GdkPixbuf *pb = NULL;
 
-	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE &&
+	if ((GdmBackgroundType == GDM_BACKGROUND_IMAGE ||
+	     GdmBackgroundType == GDM_BACKGROUND_IMAGE_AND_COLOR) &&
 	    ! ve_string_empty (GdmBackgroundImage))
 		pb = gdk_pixbuf_new_from_file (GdmBackgroundImage, NULL);
 
 	/* Load background image */
 	if (pb != NULL) {
 		if (gdk_pixbuf_get_has_alpha (pb)) {
-			if (GdmBackgroundColor == NULL ||
-			    GdmBackgroundColor[0] == '\0' ||
-			    ! gdk_color_parse (GdmBackgroundColor,
+			if (GdmBackgroundType == GDM_BACKGROUND_IMAGE_AND_COLOR) {
+				if (GdmBackgroundColor == NULL ||
+				    GdmBackgroundColor[0] == '\0' ||
+				    ! gdk_color_parse (GdmBackgroundColor,
 					       &color)) {
-				gdk_color_parse ("#007777", &color);
+					gdk_color_parse ("#000000", &color);
+				}
+				add_color_to_pb (pb, &color);
 			}
-			add_color_to_pb (pb, &color);
 		}
 		if (GdmBackgroundScaleToFit) {
 			GdkPixbuf *spb = render_scaled_back (pb);
@@ -3384,8 +3370,13 @@ setup_background (void)
 			g_object_unref (G_OBJECT (pb));
 		}
 	/* Load background color */
-	} else if (GdmBackgroundType != GDM_BACKGROUND_NONE) {
+	} else if (GdmBackgroundType != GDM_BACKGROUND_NONE &&
+	           GdmBackgroundType != GDM_BACKGROUND_IMAGE) {
 		setup_background_color (GdmBackgroundColor);
+	/* Load default background */
+	} else {
+		gchar *blank_color = g_strdup ("#000000");
+		setup_background_color (blank_color);
 	}
 }
 
@@ -3421,7 +3412,7 @@ gdm_reread_config (int sig, gpointer data)
 	     ! gdm_common_string_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
 	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
 	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
-	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_ALLOW_GTK_THEME_CHANGE) ||
+	     ! gdm_common_bool_same (config, GdmAllowGtkThemeChange, GDM_KEY_ALLOW_GTK_THEME_CHANGE) ||
 	     ! gdm_common_bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
@@ -3515,6 +3506,7 @@ gdm_reread_config (int sig, gpointer data)
 	(!GdmDefaultWelcome && 
 	 ! gdm_common_string_same (config, GdmWelcome, greeter_Welcome_key))) {
 
+		char *greeting;
 		GdmWelcome = ve_config_get_string (config, greeter_Welcome_key);
 		GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
 		GdmDefaultWelcomeBacktest = ve_config_get_bool (config, greeter_DefaultWelcomeBacktest_key);
@@ -3524,12 +3516,19 @@ gdm_reread_config (int sig, gpointer data)
 		 * assume GdmDefaultWelcome is FALSE unless the string matches the default
 		 */
 		if (GdmDefaultWelcomeBacktest == FALSE) {
-			if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
-				GdmDefaultWelcome == TRUE;
-			else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
-				GdmDefaultWelcome == TRUE;
-			else
-				GdmDefaultWelcome = FALSE;
+			if (strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
+				if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0) {
+					GdmDefaultWelcome = TRUE;
+				} else {
+					GdmDefaultWelcome = FALSE;
+				}
+			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
+				if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0) {
+					GdmDefaultWelcome = TRUE;
+				} else {
+					GdmDefaultWelcome = FALSE;
+				}
+			}
 		}
 
 		if (GdmDefaultWelcome) {
@@ -3545,20 +3544,18 @@ gdm_reread_config (int sig, gpointer data)
 		        str = ve_config_get_translated_string (config, greeter_Welcome_key);
 
 			if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != 0) {
-				char *greeting;
 				g_free (GdmWelcome);
 				GdmWelcome = str;
-
-				greeting = gdm_parse_enriched_string ("<big><big><big>",
-					GdmWelcome, "</big></big></big>");    
-				gtk_label_set_markup (GTK_LABEL (welcome), greeting);
-				g_free (greeting);
-
 				resize = TRUE;
 			} else {
 				g_free (str);
 			}
 		}
+
+		greeting = gdm_parse_enriched_string ("<big><big><big>",
+			GdmWelcome, "</big></big></big>");    
+		gtk_label_set_markup (GTK_LABEL (welcome), greeting);
+		g_free (greeting);
 	}
 
 	if (resize) {
