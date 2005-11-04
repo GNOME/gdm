@@ -3,7 +3,6 @@
 INCLUDES = \
 	-I.						\
 	-I..						\
-	-I$(top_srcdir)/vicious-extensions		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(GUI_CFLAGS)
 
@@ -22,8 +21,7 @@ libkeymouselistener_la_LDFLAGS =	\
 	-rpath $(moduledir) -module -avoid-version \
 	$(GUI_LIBS)	\
 	$(X_LIBS)	\
-	$(X_EXTRA_LIBS) \
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(X_EXTRA_LIBS)
 
 libdwellmouselistener_la_SOURCES = \
 	dwellmouselistener.c
@@ -32,8 +30,7 @@ libdwellmouselistener_la_LDFLAGS =	\
 	-rpath $(moduledir) -module -avoid-version \
 	$(GUI_LIBS)	\
 	$(X_LIBS)	\
-	$(X_EXTRA_LIBS) \
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(X_EXTRA_LIBS)
 
 moduledir = $(libdir)/gtk-2.0/modules
 

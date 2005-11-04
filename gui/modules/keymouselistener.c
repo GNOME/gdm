@@ -33,7 +33,6 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <vicious.h>
 #include <gnome.h>
 
 #include <config.h>

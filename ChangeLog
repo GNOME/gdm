@@ -1,5 +1,12 @@
 2005-11-03  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/modules/Makefile.am, gui/modules/keymouselistener.c,
+	  gui/modules/dwellmouselistener.c:  No longer include
+	  vicious.h since it isn't used, and no longer link
+	  against libvicious.
+
+2005-11-03  Brian Cameron  <brian.cameron@sun.com>
+
         * daemon/getvt.c: Patch to make GDM use VT_GETSTATE for
           peeking VT freeness.  Patch provided by Samuel Thibault
           <samuel.thibault@ens-lyon.org>.  Fixes bug #315313.
