@@ -30,13 +30,13 @@
 #endif
 
 #include <libgnome/libgnome.h>
-#include <vicious.h>
 
 #include "gdm.h"
 #include "misc.h"
 #include "slave.h"
 #include "verify.h"
 #include "errorgui.h"
+#include "gdmconfig.h"
 
 #ifdef	HAVE_LOGINDEVPERM
 #include <libdevinfo.h>
@@ -45,20 +45,6 @@
 #include <bsm/adt.h>
 #include <bsm/adt_event.h>
 #endif	/* HAVE_ADT */
-
-/* Configuration option variables */
-extern gboolean GdmAllowRoot;
-extern gboolean GdmAllowRemoteRoot;
-extern gchar *GdmTimedLogin;
-extern gchar *GdmUser;
-extern gboolean GdmAllowRemoteAutoLogin;
-extern gint GdmRetryDelay;
-extern gboolean GdmDisplayLastLogin;
-extern uid_t GdmUserId;
-extern gid_t GdmGroupId;
-extern gboolean GdmPasswordRequired;
-
-extern gboolean GdmConsoleNotify;
 
 /* Evil, but this way these things are passed to the child session */
 static pam_handle_t *pamh = NULL;
@@ -570,7 +556,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		    g_free (tmp_PAM_USER);
 		    tmp_PAM_USER = g_strdup (s);
 
-		    if (GdmDisplayLastLogin) {
+		    if (gdm_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
 			    char *info = gdm_get_last_info (s);
 			    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
 			    g_free (info);
@@ -838,8 +824,8 @@ verify_user_again:
     null_tok = 0;
 
     /* start the timer for timed logins */
-    if ( ! ve_string_empty (GdmTimedLogin) &&
-	(local || GdmAllowRemoteAutoLogin)) {
+    if ( ! ve_string_empty (gdm_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
+	(local || gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 	    started_timer = TRUE;
     }
@@ -871,16 +857,16 @@ authenticate_again:
        when running the configurator.  We wish to ourselves cancel logins
        without a delay, so ... evil */
 #ifdef PAM_FAIL_DELAY
-    pam_fail_delay (pamh, GdmRetryDelay * 1000000);
+    pam_fail_delay (pamh, gdm_get_value_int (GDM_KEY_RETRY_DELAY) * 1000000);
 #endif /* PAM_FAIL_DELAY */
 #endif
 
     passreq = gdm_read_default ("PASSREQ=");
     if ((passreq != NULL) &&
 	g_ascii_strcasecmp (passreq, "YES") == 0)
-	    GdmPasswordRequired = TRUE;
+	    gdm_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
 
-    if (GdmPasswordRequired)
+    if (gdm_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
 	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 	    
     gdm_verify_select_user (NULL);
@@ -921,7 +907,7 @@ authenticate_again:
 	    if (gdm_slave_action_pending ()) {
 		    /* FIXME: see note above about PAM_FAIL_DELAY */
 /* #ifndef PAM_FAIL_DELAY */
-		    gdm_sleep_no_signal (GdmRetryDelay);
+		    gdm_sleep_no_signal (gdm_get_value_int (GDM_KEY_RETRY_DELAY));
 		    /* wait up to 100ms randomly */
 		    usleep (g_random_int_range (0, 100000));
 /* #endif */ /* PAM_FAIL_DELAY */
@@ -968,11 +954,11 @@ authenticate_again:
     consoleonly = gdm_read_default ("CONSOLE=");
     if ((consoleonly != NULL) &&
 	g_ascii_strcasecmp (consoleonly, "/dev/console") == 0)
-	    GdmAllowRemoteRoot = FALSE;
+	    gdm_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, FALSE);
 
     pwent = getpwnam (login);
-    if ( ( ! GdmAllowRoot ||
-	  ( ! GdmAllowRemoteRoot && ! local) ) &&
+    if ( ( ! gdm_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
+	  ( ! gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
 	pwent != NULL &&
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"),
@@ -1234,9 +1220,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     passreq = gdm_read_default ("PASSREQ=");
     if ((passreq != NULL) &&
 	g_ascii_strcasecmp (passreq, "YES") == 0)
-	    GdmPasswordRequired = TRUE;
+	    gdm_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
 
-    if (GdmPasswordRequired)
+    if (gdm_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
 	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 
     /* Start authentication session */
@@ -1487,8 +1473,8 @@ gdm_verify_cleanup (GdmDisplay *d)
 		if (old_opened_session && old_did_setcred && d->attached) {
 			(void) di_devperm_logout ("/dev/console");
 			/* give it back to gdm user */
-			(void) di_devperm_login ("/dev/console", GdmUserId,
-				GdmGroupId, NULL);
+			(void) di_devperm_login ("/dev/console", gdm_get_gdmuid(),
+				gdm_get_gdmgid(), NULL);
 		}
 #endif  /* HAVE_LOGINDEVPERM */
 
@@ -1529,7 +1515,7 @@ gdm_verify_check (void)
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-        if (GdmConsoleNotify)
+        if (gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 			gdm_text_message_dialog
 				(C_(N_("Can't find PAM configuration for gdm.")));
 		gdm_fail ("gdm_verify_check: %s",

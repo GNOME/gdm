@@ -21,13 +21,9 @@
 #include <syslog.h>
 #include <sys/stat.h>
 
-#include <vicious.h>
-
 #include "gdm.h"
 #include "filecheck.h"
-
-extern int GdmUserMaxFile;
-extern gboolean GdmCheckDirOwner;
+#include "gdmconfig.h"
 
 /**
  * gdm_file_check:
@@ -67,12 +63,12 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     }
 
     /* Check if dir is owned by the user ... 
-       Only, if GdmCheckDirOwner is true (default)
+       Only, if GDM_KEY_CHECK_DIR_OWNER is true (default)
        This is a "hack" for directories not owned by 
        the user.
        2004-06-22, Andreas Schubert, MATHEMA Software GmbH */
 
-    if G_UNLIKELY (GdmCheckDirOwner && (statbuf.st_uid != user)) {
+    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_CHECK_DIR_OWNER) && (statbuf.st_uid != user)) {
         syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
         return FALSE;
     }
@@ -153,6 +149,7 @@ gboolean
 gdm_auth_file_check (const gchar *caller, uid_t user, const gchar *authfile, gboolean absentok, struct stat *s)
 {
     struct stat statbuf;
+    gint usermaxfile;
     int r;
 
     if (ve_string_empty (authfile))
@@ -187,8 +184,9 @@ gdm_auth_file_check (const gchar *caller, uid_t user, const gchar *authfile, gbo
 	return FALSE;
     }
 
+    usermaxfile = gdm_get_value_int (GDM_KEY_USER_MAX_FILE);
     /* ... and smaller than sysadmin specified limit. */
-    if G_UNLIKELY (GdmUserMaxFile && statbuf.st_size > GdmUserMaxFile) {
+    if G_UNLIKELY (usermaxfile && statbuf.st_size > usermaxfile) {
 	syslog (LOG_WARNING, _("%s: %s is bigger than sysadmin specified maximum file size."), 
 		caller, authfile);
 	return FALSE;

@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -136,34 +136,45 @@ enum {
 #define FIELD_SIZE 256
 #define PIPE_SIZE 4096
 
-
 /*
  * The following section contains keys used by the gdm.conf configuration file.
  * Options exposed in this file are Stable, and should not change in ways that
- * are not backwards incompatible.   Note the GDM_KEY_DEFAULTWELCOME_BACKTEST
- * to see how backwards compatibility can be handled.
+ * are not backwards incompatible.   Note how GDM_KEY_DEFAULTWELCOME_BACKTEST
+ * works to see how backwards compatibility can be handled.
  * 
  * Developers who add new configuration options should ensure that they do the
  * following:
  * 
  * + Specify the same default in this file as in the config/gdm.conf.in file.
- * + Update the GET_CONFIG logic in the gdm_handle_user_message() function in
- *   daemon/gdm.c to handle the new option.
- * + Update the SET_CONFIG logic in the gdm_handle_user_message() function in
- *   daemon/gdm.c to handle the new option if appropriate.
- * + The gui/gdmsetup.c program should be updated to support the new option.
- *   If the option affects the greeter program, make sure update_greeters() is
- *   called.  For this to work, the update_config() logic in daemon/gdm.c
- *   should be updated to call notify_displays_*() upon noticing the
- *   configuration change.   The gdm_reread_config() in gui/gdmlogin.c and
- *   gui/greeter/greeter.c will also need to be updated to notice the new
- *   configuration option.
+ *
+ * + Update the val_hash and type_hash settings in gdm_config_init function
+ *   in daemon/gdmconfig.c to add the new options.
+ *
+ * + Add any validation to the _gdm_set_value_string, _gdm_set_value_int,
+ *   and/or _gdm_set_value_bool functions in gdmconfig.c, if needed.
+ *
+ * + The gui/gdmsetup.c program should be updated to support the new option
+ *   unless there's a good reason not to.
+ *
+ * + If GDM_UPDATE_CONFIG should not respond to this configuration setting,
+ *   update the update_config function in gdmconfig.c to return FALSE for
+ *   this key.  Examples include changing the PidFile, ServAuthDir, or
+ *   other values that GDM shouldn't change until it is restarted.  If 
+ *   this is true, the next bullet can be ignored.
+ *
+ * + If the option should cause the greeter (gdmlogin/gdmgreeter) program to
+ *   be updated immediately, make sure to update the appropriate 
+ *   _gdm_set_value_* function in gdmconfig.c to cause a call to
+ *   notify_displays_*() when this value is changed.  Supporting logic will
+ *   also be needed in the gdm_slave_handle_notify function in slave.c.
+ *   It should be simple to see how to do this from the other examples.
+ *
  * + Update the docs/C/gdm.xml file to include information about the new
  *   option.  Include information about any other interfaces (such as 
  *   ENVIRONMENT variables) that may affect the configuration option.
  *
- * Please do this work *before* submitting an enhancement request via
- * bugzilla. 
+ * Please do this work *before* submitting an patch.  Patches that are not
+ * complete will not likely be accepted.
  */
 
 /* Configuration constants */
@@ -171,40 +182,48 @@ enum {
 /* This defaults to true for backward compatibility,
  * it will not actually do automatic login since the AutomaticLogin defaults
  * to nothing */
-#define GDM_KEY_AUTOMATICLOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
-#define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
-#define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=false"
+#define GDM_KEY_AUTOMATIC_LOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
+#define GDM_KEY_AUTOMATIC_LOGIN "daemon/AutomaticLogin="
+/* The SDTLOGIN feature is Solaris specific, and causes the Xserver to be
+ * run with user permissionsinstead of as root, which adds security but
+ * disables the AlwaysRestartServer option as highlighted in the gdm
+ * documentation */
+#ifdef sun
+#define GDM_KEY_ALWAYS_RESTART_SERVER "daemon/AlwaysRestartServer=true"
+#else
+#define GDM_KEY_ALWAYS_RESTART_SERVER "daemon/AlwaysRestartServer=false"
+#endif
 #define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_LIBEXECDIR "/gdmlogin"
-#define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_LIBEXECDIR "/gdmlogin"
+#define GDM_KEY_REMOTE_GREETER "daemon/RemoteGreeter=" EXPANDED_LIBEXECDIR "/gdmlogin"
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
 #define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=" HALT_COMMAND
-#define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
-#define GDM_KEY_KILLIC "daemon/KillInitClients=true"
-#define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_LOGDIR
+#define GDM_KEY_DISPLAY_INIT_DIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
+#define GDM_KEY_KILL_INIT_CLIENTS "daemon/KillInitClients=true"
+#define GDM_KEY_LOG_DIR "daemon/LogDir=" EXPANDED_LOGDIR
 #define GDM_KEY_PATH "daemon/DefaultPath=" GDM_USER_PATH
-#define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
-#define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
-#define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
+#define GDM_KEY_PID_FILE "daemon/PidFile=/var/run/gdm.pid"
+#define GDM_KEY_POSTSESSION "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
+#define GDM_KEY_PRESESSION "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
 #define GDM_KEY_POSTLOGIN "daemon/PostLoginScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
 #define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
-#define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
+#define GDM_KEY_X_KEEPS_CRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
 #define GDM_KEY_REBOOT  "daemon/RebootCommand=" REBOOT_COMMAND
-#define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:" GDM_USER_PATH
-#define GDM_KEY_SERVAUTH "daemon/ServAuthDir=" EXPANDED_AUTHDIR
-#define GDM_KEY_SESSDIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_SYSCONFDIR "/dm/Sessions/:" EXPANDED_DATADIR "/gdm/BuiltInSessions/:" EXPANDED_DATADIR "/xsessions/"
-#define GDM_KEY_BASEXSESSION "daemon/BaseXsession=" EXPANDED_SYSCONFDIR "/gdm/Xsession"
-#define GDM_KEY_DEFAULTSESSION "daemon/DefaultSession=gnome.desktop"
+#define GDM_KEY_ROOT_PATH "daemon/RootPath=/sbin:/usr/sbin:" GDM_USER_PATH
+#define GDM_KEY_SERV_AUTHDIR "daemon/ServAuthDir=" EXPANDED_AUTHDIR
+#define GDM_KEY_SESSION_DESKTOP_DIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_SYSCONFDIR "/dm/Sessions/:" EXPANDED_DATADIR "/gdm/BuiltInSessions/:" EXPANDED_DATADIR "/xsessions/"
+#define GDM_KEY_BASE_XSESSION "daemon/BaseXsession=" EXPANDED_SYSCONFDIR "/gdm/Xsession"
+#define GDM_KEY_DEFAULT_SESSION "daemon/DefaultSession=gnome.desktop"
 #define GDM_KEY_SUSPEND "daemon/SuspendCommand=" SUSPEND_COMMAND
 
-#define GDM_KEY_UAUTHDIR "daemon/UserAuthDir="
-#define GDM_KEY_UAUTHFB "daemon/UserAuthFBDir=/tmp"
-#define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
+#define GDM_KEY_USER_AUTHDIR "daemon/UserAuthDir="
+#define GDM_KEY_USER_AUTHDIR_FALLBACK "daemon/UserAuthFBDir=/tmp"
+#define GDM_KEY_USER_AUTHFILE "daemon/UserAuthFile=.Xauthority"
 #define GDM_KEY_USER "daemon/User=gdm"
 #define GDM_KEY_CONSOLE_NOTIFY "daemon/ConsoleNotify=true"
 
-#define GDM_KEY_DOUBLELOGINWARNING "daemon/DoubleLoginWarning=true"
+#define GDM_KEY_DOUBLE_LOGIN_WARNING "daemon/DoubleLoginWarning=true"
 #define GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION "daemon/AlwaysLoginCurrentSession=false"
 
 #define GDM_KEY_DISPLAY_LAST_LOGIN "daemon/DisplayLastLogin=false"
@@ -224,8 +243,8 @@ enum {
 #define GDM_KEY_XNEST "daemon/Xnest=" X_SERVER_PATH "/Xnest -name Xnest"
 /* Keys for automatic VT allocation rather then letting it up to the
  * X server */
-#define GDM_KEY_FIRSTVT "daemon/FirstVT=7"
-#define GDM_KEY_VTALLOCATION "daemon/VTAllocation=true"
+#define GDM_KEY_FIRST_VT "daemon/FirstVT=7"
+#define GDM_KEY_VT_ALLOCATION "daemon/VTAllocation=true"
 
 #define GDM_KEY_CONSOLE_CANNOT_HANDLE "daemon/ConsoleCannotHandle=am,ar,az,bn,el,fa,gu,hi,ja,ko,ml,mr,pa,ta,zh"
 
@@ -242,28 +261,28 @@ enum {
 /* Instead of the greeter run the chooser */
 #define GDM_KEY_SERVER_CHOOSER "chooser=false"
 
-#define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
-#define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
-#define GDM_KEY_ALLOWREMOTEAUTOLOGIN "security/AllowRemoteAutoLogin=false"
-#define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
-#define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
-#define GDM_KEY_CHECKDIROWNER "security/CheckDirOwner=true"
-#define GDM_KEY_RETRYDELAY "security/RetryDelay=1"
-#define GDM_KEY_DISALLOWTCP "security/DisallowTCP=true"
+#define GDM_KEY_ALLOW_ROOT "security/AllowRoot=true"
+#define GDM_KEY_ALLOW_REMOTE_ROOT "security/AllowRemoteRoot=true"
+#define GDM_KEY_ALLOW_REMOTE_AUTOLOGIN "security/AllowRemoteAutoLogin=false"
+#define GDM_KEY_USER_MAX_FILE "security/UserMaxFile=65536"
+#define GDM_KEY_RELAX_PERM "security/RelaxPermissions=0"
+#define GDM_KEY_CHECK_DIR_OWNER "security/CheckDirOwner=true"
+#define GDM_KEY_RETRY_DELAY "security/RetryDelay=1"
+#define GDM_KEY_DISALLOW_TCP "security/DisallowTCP=true"
 
-#define GDM_KEY_NEVERPLACECOOKIESONNFS "security/NeverPlaceCookiesOnNFS=true"
-#define GDM_KEY_PASSWORDREQUIRED "security/PasswordRequired=false"
+#define GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS "security/NeverPlaceCookiesOnNFS=true"
+#define GDM_KEY_PASSWORD_REQUIRED "security/PasswordRequired=false"
 
 #define GDM_KEY_XDMCP "xdmcp/Enable=false"
-#define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
-#define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
-#define GDM_KEY_MAXWAIT "xdmcp/MaxWait=15"
-#define GDM_KEY_DISPERHOST "xdmcp/DisplaysPerHost=2"
-#define GDM_KEY_UDPPORT "xdmcp/Port=177"
+#define GDM_KEY_MAX_PENDING "xdmcp/MaxPending=4"
+#define GDM_KEY_MAX_SESSIONS "xdmcp/MaxSessions=16"
+#define GDM_KEY_MAX_WAIT "xdmcp/MaxWait=15"
+#define GDM_KEY_DISPLAYS_PER_HOST "xdmcp/DisplaysPerHost=2"
+#define GDM_KEY_UDP_PORT "xdmcp/Port=177"
 #define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=true"
-#define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
-#define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=15"
-#define GDM_KEY_PINGINTERVAL "xdmcp/PingIntervalSeconds=15"
+#define GDM_KEY_MAX_INDIRECT "xdmcp/MaxPendingIndirect=4"
+#define GDM_KEY_MAX_WAIT_INDIRECT "xdmcp/MaxWaitIndirect=15"
+#define GDM_KEY_PING_INTERVAL "xdmcp/PingIntervalSeconds=15"
 #define GDM_KEY_WILLING "xdmcp/Willing=" EXPANDED_SYSCONFDIR "/gdm/Xwilling"
 
 #define GDM_KEY_XDMCP_PROXY "xdmcp/EnableProxy=false"
@@ -272,8 +291,8 @@ enum {
 
 #define GDM_KEY_GTK_THEME "gui/GtkTheme=Default"
 #define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk-2.0/gtkrc"
-#define GDM_KEY_ICONWIDTH "gui/MaxIconWidth=128"
-#define GDM_KEY_ICONHEIGHT "gui/MaxIconHeight=128"
+#define GDM_KEY_ICON_WIDTH "gui/MaxIconWidth=128"
+#define GDM_KEY_ICON_HEIGHT "gui/MaxIconHeight=128"
 
 #define GDM_KEY_ALLOW_GTK_THEME_CHANGE "gui/AllowGtkThemeChange=true"
 #define GDM_KEY_GTK_THEMES_TO_ALLOW "gui/GtkThemesToAllow=all"
@@ -281,40 +300,40 @@ enum {
 #define GDM_KEY_BROWSER "greeter/Browser=false"
 #define GDM_KEY_INCLUDE "greeter/Include="
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm,nfsnobody,pcap"
-#define GDM_KEY_INCLUDEALL "greeter/IncludeAll=false"
-#define GDM_KEY_MINIMALUID "greeter/MinimalUID=100"
+#define GDM_KEY_INCLUDE_ALL "greeter/IncludeAll=false"
+#define GDM_KEY_MINIMAL_UID "greeter/MinimalUID=100"
 #define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "/nobody.png"
-#define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
-#define GDM_KEY_LOCFILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
+#define GDM_KEY_FACE_DIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
+#define GDM_KEY_LOCALE_FILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
 #define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
 #define GDM_KEY_CHOOSER_BUTTON_LOGO "greeter/ChooserButtonLogo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
-#define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
+#define GDM_KEY_SYSTEM_MENU "greeter/SystemMenu=true"
 #define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_SBINDIR "/gdmsetup --disable-sound --disable-crash-dialog"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_CHOOSER_BUTTON "greeter/ChooserButton=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
 #define GDM_KEY_DEFAULT_WELCOME "greeter/DefaultWelcome=true"
 #define GDM_KEY_DEFAULT_WELCOME_BACKTEST "greeter/DefaultWelcome="
-#define GDM_KEY_DEFAULT_REMOTEWELCOME "greeter/DefaultRemoteWelcome=true"
-#define GDM_KEY_DEFAULT_REMOTEWELCOME_BACKTEST "greeter/DefaultRemoteWelcome="
+#define GDM_KEY_DEFAULT_REMOTE_WELCOME "greeter/DefaultRemoteWelcome=true"
+#define GDM_KEY_DEFAULT_REMOTE_WELCOME_BACKTEST "greeter/DefaultRemoteWelcome="
 #define GDM_KEY_WELCOME "greeter/Welcome="
-#define GDM_KEY_REMOTEWELCOME "greeter/RemoteWelcome="
-#define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
-#define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
-#define GDM_KEY_RUNBACKGROUNDPROGALWAYS "greeter/RunBackgroundProgramAlways=false"
-#define GDM_KEY_BACKGROUNDPROGINITIALDELAY "greeter/BackgroundProgramInitialDelay=30"
-#define GDM_KEY_RESTARTBACKGROUNDPROG "greeter/RestartBackgroundProgram=true"
-#define GDM_KEY_BACKGROUNDPROGRESTARTDELAY "greeter/BackgroundProgramRestartDelay=30"
-#define GDM_KEY_BACKGROUNDIMAGE "greeter/BackgroundImage="
-#define GDM_KEY_BACKGROUNDCOLOR "greeter/BackgroundColor=#76848F"
-#define GDM_KEY_BACKGROUNDTYPE "greeter/BackgroundType=2"
-#define GDM_KEY_BACKGROUNDSCALETOFIT "greeter/BackgroundScaleToFit=true"
-#define GDM_KEY_BACKGROUNDREMOTEONLYCOLOR "greeter/BackgroundRemoteOnlyColor=true"
+#define GDM_KEY_REMOTE_WELCOME "greeter/RemoteWelcome="
+#define GDM_KEY_XINERAMA_SCREEN "greeter/XineramaScreen=0"
+#define GDM_KEY_BACKGROUND_PROGRAM "greeter/BackgroundProgram="
+#define GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS "greeter/RunBackgroundProgramAlways=false"
+#define GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY "greeter/BackgroundProgramInitialDelay=30"
+#define GDM_KEY_RESTART_BACKGROUND_PROGRAM "greeter/RestartBackgroundProgram=true"
+#define GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY "greeter/BackgroundProgramRestartDelay=30"
+#define GDM_KEY_BACKGROUND_IMAGE "greeter/BackgroundImage="
+#define GDM_KEY_BACKGROUND_COLOR "greeter/BackgroundColor=#76848F"
+#define GDM_KEY_BACKGROUND_TYPE "greeter/BackgroundType=2"
+#define GDM_KEY_BACKGROUND_SCALE_TO_FIT "greeter/BackgroundScaleToFit=true"
+#define GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR "greeter/BackgroundRemoteOnlyColor=true"
 #define GDM_KEY_LOCK_POSITION "greeter/LockPosition=false"
 #define GDM_KEY_SET_POSITION "greeter/SetPosition=false"
-#define GDM_KEY_POSITIONX "greeter/PositionX=0"
-#define GDM_KEY_POSITIONY "greeter/PositionY=0"
+#define GDM_KEY_POSITION_X "greeter/PositionX=0"
+#define GDM_KEY_POSITION_Y "greeter/PositionY=0"
 #define GDM_KEY_USE_24_CLOCK "greeter/Use24Clock=false"
 #define GDM_KEY_ENTRY_CIRCLES "greeter/UseCirclesInEntry=false"
 #define GDM_KEY_ENTRY_INVISIBLE "greeter/UseInvisibleInEntry=false"
@@ -335,16 +354,16 @@ enum {
 #define GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE "greeter/SoundOnLoginFailureFile="
 #define GDM_KEY_SOUND_PROGRAM "daemon/SoundProgram=" SOUND_PROGRAM
 
-#define GDM_KEY_SCAN "chooser/ScanTime=4"
-#define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
-#define GDM_KEY_HOSTDIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
+#define GDM_KEY_SCAN_TIME "chooser/ScanTime=4"
+#define GDM_KEY_DEFAULT_HOST_IMG "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
+#define GDM_KEY_HOST_IMAGE_DIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
 #define GDM_KEY_HOSTS "chooser/Hosts="
 #ifdef ENABLE_IPV6
 #define GDM_KEY_MULTICAST "chooser/Multicast=true"
 #define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr=ff02::1"
 #endif
 #define GDM_KEY_BROADCAST "chooser/Broadcast=true"
-#define GDM_KEY_ALLOWADD "chooser/AllowAdd=true"
+#define GDM_KEY_ALLOW_ADD "chooser/AllowAdd=true"
 
 #define GDM_KEY_DEBUG "debug/Enable=false"
 #define GDM_KEY_DEBUG_GESTURES "debug/Gestures=false"
@@ -367,7 +386,7 @@ enum {
 #define GDM_STANDARD "Standard"
 
 #define GDM_DEFAULT_WELCOME_MSG "Welcome"
-#define GDM_DEFAULT_REMOTEWELCOME_MSG "Welcome to %n"
+#define GDM_DEFAULT_REMOTE_WELCOME_MSG "Welcome to %n"
 
 #define GDM_RESPONSE_CANCEL "GDM_RESPONSE_CANCEL"
 
@@ -514,8 +533,8 @@ struct _GdmDisplay {
     char *theme_name;
 };
 
-typedef struct _GdmXServer GdmXServer;
-struct _GdmXServer {
+typedef struct _GdmXserver GdmXserver;
+struct _GdmXserver {
 	char *id;
 	char *name;
 	char *command;
@@ -584,7 +603,6 @@ enum {
 };
 
 /* If id == NULL, then get the first X server */
-GdmXServer *	gdm_find_x_server	(const char *id);
 void		gdm_final_cleanup	(void);
 
 
@@ -654,18 +672,18 @@ void		gdm_final_cleanup	(void);
 
 /* Notification protocol */
 /* keys */
-#define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */
-#define GDM_NOTIFY_ALLOWROOT "AllowRoot" /* <true/false as int> */
-#define GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN "AllowRemoteAutoLogin" /* <true/false as int> */
-#define GDM_NOTIFY_SYSMENU "SystemMenu" /* <true/false as int> */
+#define GDM_NOTIFY_ALLOW_REMOTE_ROOT "AllowRemoteRoot" /* <true/false as int> */
+#define GDM_NOTIFY_ALLOW_ROOT "AllowRoot" /* <true/false as int> */
+#define GDM_NOTIFY_ALLOW_REMOTE_AUTOLOGIN "AllowRemoteAutoLogin" /* <true/false as int> */
+#define GDM_NOTIFY_SYSTEM_MENU "SystemMenu" /* <true/false as int> */
 #define GDM_NOTIFY_CONFIG_AVAILABLE "ConfigAvailable" /* <true/false as int> */
 #define GDM_NOTIFY_CHOOSER_BUTTON "ChooserButton" /* <true/false as int> */
-#define GDM_NOTIFY_RETRYDELAY "RetryDelay" /* <seconds> */
+#define GDM_NOTIFY_RETRY_DELAY "RetryDelay" /* <seconds> */
 #define GDM_NOTIFY_GREETER "Greeter" /* <greeter binary> */
-#define GDM_NOTIFY_REMOTEGREETER "RemoteGreeter" /* <greeter binary> */
+#define GDM_NOTIFY_REMOTE_GREETER "RemoteGreeter" /* <greeter binary> */
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
-#define GDM_NOTIFY_DISALLOWTCP "DisallowTCP" /* <true/false as int> */
+#define GDM_NOTIFY_DISALLOW_TCP "DisallowTCP" /* <true/false as int> */
 #define GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE "SoundOnLoginFile" /* <sound file> */
 #define GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE "SoundOnLoginSuccessFile" /* <sound file> */
 #define GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE "SoundOnLoginFailureFile" /* <sound file> */

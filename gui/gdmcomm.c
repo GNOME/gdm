@@ -381,7 +381,7 @@ gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 		return FALSE;
 
 	pidfile = ve_config_get_string (ve_config_get (config_file),
-					GDM_KEY_PIDFILE);
+					GDM_KEY_PID_FILE);
 
 	pid = 0;
 	if (pidfile != NULL)

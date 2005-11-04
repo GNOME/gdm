@@ -66,7 +66,7 @@ get_dmx_display (const char *display_name,
 	const char *old_authfile;
 
 	old_authfile = getenv ("XAUTHORITY");
-	ve_setenv ("XAUTHORITY", authfile, TRUE);
+	g_setenv ("XAUTHORITY", authfile, TRUE);
 
 	if ((display = XOpenDisplay (display_name)) == NULL)
 		g_printerr (_("Failed to open display \"%s\"\n"), display_name);
@@ -78,7 +78,7 @@ get_dmx_display (const char *display_name,
 		display = NULL;
 	}
 
-	ve_setenv ("XAUTHORITY", old_authfile, TRUE);
+	g_setenv ("XAUTHORITY", old_authfile, TRUE);
 
 	return display;
 }

@@ -24,8 +24,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
-
-#include <vicious.h>
+#include <errno.h>
 
 #include "gdm.h"
 #include "gdm-net.h"
@@ -37,9 +36,9 @@
 #include "choose.h"
 #include "auth.h"
 #include "gdm-net.h"
+#include "gdmconfig.h"
 
 /* External vars */
-extern gboolean GdmXdmcp;
 extern gint xdmcp_sessions;
 extern gint flexi_servers;
 extern gint xdmcp_pending;
@@ -201,10 +200,8 @@ wait_again:
 		    /* rekill the slave to tell it to
 		       hurry up and die if we're getting
 		       killed ourselves */
-		    if (ve_signal_was_notified (SIGTERM) ||
-			ve_signal_was_notified (SIGINT) ||
-			ve_signal_was_notified (SIGHUP) ||
-			t + 10 <= time (NULL)) {
+		    if ((gdm_signal_terminthup_was_notified()) ||
+			(t + 10 <= time (NULL))) {
 			    gdm_debug ("whack_old_slave: GOT ANOTHER SIGTERM (or it was 10 secs already), killing slave again with SIGKILL");
 			    t = time (NULL);
 			    kill (d->slavepid, SIGKILL);
@@ -294,7 +291,7 @@ gdm_display_manage (GdmDisplay *d)
 	d->slavepid = getpid ();
 
 	/* Close XDMCP fd in slave process */
-	if (GdmXdmcp)
+	if (gdm_get_value_bool (GDM_KEY_XDMCP))
 	    gdm_xdmcp_close ();
 
 	gdm_connection_close (fifoconn);

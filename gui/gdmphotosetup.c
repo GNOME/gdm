@@ -489,12 +489,12 @@ main (int argc, char *argv[])
 
 	gnome_config_push_prefix (config_prefix);
 	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
-	max_size = gnome_config_get_int (GDM_KEY_MAXFILE);
-	max_width = gnome_config_get_int (GDM_KEY_ICONWIDTH);
-	max_height = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
+	max_size = gnome_config_get_int (GDM_KEY_USER_MAX_FILE);
+	max_width = gnome_config_get_int (GDM_KEY_ICON_WIDTH);
+	max_height = gnome_config_get_int (GDM_KEY_ICON_HEIGHT);
 	greeter = gnome_config_get_string (GDM_KEY_GREETER);
 
-	facedir = gnome_config_get_string (GDM_KEY_FACEDIR);
+	facedir = gnome_config_get_string (GDM_KEY_FACE_DIR);
 	gnome_config_pop_prefix ();
 
 	g_free (config_prefix);

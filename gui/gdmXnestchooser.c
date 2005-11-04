@@ -514,7 +514,7 @@ main (int argc, char *argv[])
 	gnome_config_push_prefix (config_prefix);
 	xdmcp_enabled = gnome_config_get_bool (GDM_KEY_XDMCP);
 	honor_indirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
-	pidfile = gnome_config_get_string (GDM_KEY_PIDFILE);
+	pidfile = gnome_config_get_string (GDM_KEY_PID_FILE);
 	xnest = gnome_config_get_string (GDM_KEY_XNEST);
 	gnome_config_pop_prefix ();
 	g_free (config_file);

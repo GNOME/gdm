@@ -27,6 +27,8 @@ sbin_PROGRAMS = gdm-binary
 gdm_binary_SOURCES = \
 	gdm.c \
 	gdm.h \
+	gdmconfig.c \
+	gdmconfig.h \
 	display.c \
 	display.h \
 	fstype.c \

@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 2002 Queen of England
  *
  * This program is free software; you can redistribute it and/or modify

@@ -1607,24 +1607,24 @@ gdm_chooser_parse_config (void)
 
     cfg = ve_config_get (config_file);
 
-    GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMASCREEN);
+    GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMA_SCREEN);
     GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
     GdmGtkTheme = ve_config_get_string (cfg, GDM_KEY_GTK_THEME);
-    GdmScanTime = ve_config_get_int (cfg, GDM_KEY_SCAN);
-    GdmHostDefaultIcon = ve_config_get_string (cfg, GDM_KEY_HOST);
-    GdmHostIconDir = ve_config_get_string (cfg, GDM_KEY_HOSTDIR);
-    GdmIconMaxWidth = ve_config_get_int (cfg, GDM_KEY_ICONWIDTH);
-    GdmIconMaxHeight = ve_config_get_int (cfg, GDM_KEY_ICONHEIGHT);
+    GdmScanTime = ve_config_get_int (cfg, GDM_KEY_SCAN_TIME);
+    GdmHostDefaultIcon = ve_config_get_string (cfg, GDM_KEY_DEFAULT_HOST_IMG);
+    GdmHostIconDir = ve_config_get_string (cfg, GDM_KEY_HOST_IMAGE_DIR);
+    GdmIconMaxWidth = ve_config_get_int (cfg, GDM_KEY_ICON_WIDTH);
+    GdmIconMaxHeight = ve_config_get_int (cfg, GDM_KEY_ICON_HEIGHT);
     GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 
-    GdmBackgroundColor = ve_config_get_string (cfg, GDM_KEY_BACKGROUNDCOLOR);
-    GdmBackgroundType = ve_config_get_int (cfg, GDM_KEY_BACKGROUNDTYPE);
+    GdmBackgroundColor = ve_config_get_string (cfg, GDM_KEY_BACKGROUND_COLOR);
+    GdmBackgroundType = ve_config_get_int (cfg, GDM_KEY_BACKGROUND_TYPE);
 #ifdef ENABLE_IPV6
     GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
     GdmMulticastAddr = ve_config_get_string (cfg, GDM_KEY_MULTICAST_ADDR);
 #endif
 
-    GdmAllowAdd = ve_config_get_bool (cfg, GDM_KEY_ALLOWADD);
+    GdmAllowAdd = ve_config_get_bool (cfg, GDM_KEY_ALLOW_ADD);
 
     /* note that command line arguments will prevail over these */
     GdmHosts = ve_config_get_string (cfg, GDM_KEY_HOSTS);
@@ -1901,13 +1901,13 @@ gdm_reread_config (int sig, gpointer data)
 	if ( ! string_same (config, GdmHostsOrig, GDM_KEY_HOSTS) ||
 	     ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
 	     ! string_same (config, GdmGtkTheme, GDM_KEY_GTK_THEME) ||
-	     ! string_same (config, GdmHostDefaultIcon, GDM_KEY_HOST) ||
-	     ! string_same (config, GdmHostIconDir, GDM_KEY_HOSTDIR) ||
+	     ! string_same (config, GdmHostDefaultIcon, GDM_KEY_DEFAULT_HOST_IMG) ||
+	     ! string_same (config, GdmHostIconDir, GDM_KEY_HOST_IMAGE_DIR) ||
 	     ! int_same (config,
-			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
-	     ! int_same (config, GdmIconMaxWidth, GDM_KEY_ICONWIDTH) ||
-	     ! int_same (config, GdmIconMaxHeight, GDM_KEY_ICONHEIGHT) ||
-	     ! int_same (config, GdmScanTime, GDM_KEY_SCAN) ||
+			 GdmXineramaScreen, GDM_KEY_XINERAMA_SCREEN) ||
+	     ! int_same (config, GdmIconMaxWidth, GDM_KEY_ICON_WIDTH) ||
+	     ! int_same (config, GdmIconMaxHeight, GDM_KEY_ICON_HEIGHT) ||
+	     ! int_same (config, GdmScanTime, GDM_KEY_SCAN_TIME) ||
 	     ! bool_same (config, GdmDebug, GDM_KEY_DEBUG)) {
 		if (RUNNING_UNDER_GDM) {
 			/* Set busy cursor */
@@ -1922,8 +1922,8 @@ gdm_reread_config (int sig, gpointer data)
 	}
 
 	/* we only use the color and do it for all types except NONE */
-	if ( ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
-	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE)) {
+	if ( ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUND_COLOR) ||
+	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUND_TYPE)) {
 
 		if (GdmBackgroundType != GDM_BACKGROUND_NONE) {
 			setup_background_color (GdmBackgroundColor);

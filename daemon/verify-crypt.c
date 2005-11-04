@@ -32,8 +32,6 @@
 #  include <crypt.h>
 #endif /* HAVE_CRYPT */
 
-#include <vicious.h>
-
 #include "gdm.h"
 #include "misc.h"
 #include "slave.h"

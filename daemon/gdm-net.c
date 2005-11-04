@@ -32,11 +32,10 @@
 #include <errno.h>
 #include <syslog.h>
 
-#include <vicious.h>
-
 #include "gdm.h"
 #include "misc.h"
 #include "gdm-net.h"
+#include "gdmconfig.h"
 
 /* Kind of a weird setup, new connections whack old connections */
 #define MAX_CONNECTIONS 10

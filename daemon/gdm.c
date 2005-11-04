@@ -47,6 +47,7 @@
 #include <X11/Xauth.h>
 #include <glib/gi18n.h>
 
+/* Needed for signal handling */
 #include <vicious.h>
 
 #include "gdm.h"
@@ -61,6 +62,7 @@
 #include "gdm-net.h"
 #include "cookie.h"
 #include "filecheck.h"
+#include "gdmconfig.h"
 
 #define DYNAMIC_ADD     0
 #define DYNAMIC_RELEASE 1
@@ -70,8 +72,9 @@
 #include <libdevinfo.h>
 #endif  /* HAVE_LOGINDEVPERM */
 
+extern GSList *displays;
+
 /* Local functions */
-static void gdm_config_parse (void);
 static void gdm_handle_message (GdmConnection *conn,
 				const char *msg,
 				gpointer data);
@@ -93,14 +96,9 @@ static void handle_flexi_server (GdmConnection *conn,
 				 const char *xnest_cookie);
 
 /* Global vars */
-GSList *displays = NULL;	/* List of displays managed */
-GSList *xservers = NULL;	/* List of x server definitions */
-gint high_display_num = 0;	/* Highest local non-flexi display */
 gint xdmcp_sessions = 0;	/* Number of remote sessions */
 gint xdmcp_pending = 0;		/* Number of pending remote sessions */
 gint flexi_servers = 0;		/* Number of flexi servers */
-uid_t GdmUserId;		/* Userid under which gdm should run */
-gid_t GdmGroupId;		/* Groupid under which gdm should run */
 pid_t extra_process = 0;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
 int extra_status = 0;		/* Last status from the last extra process */
@@ -142,117 +140,11 @@ gboolean gdm_in_final_cleanup = FALSE;
 
 GdmLogoutAction safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 
-/* Configuration options */
-gchar *GdmUser = NULL;
-gchar *GdmGroup = NULL;
-gchar *GdmGtkRC = NULL;
-gchar *GdmGtkTheme = NULL;
-gchar *GdmSessDir = NULL;
-gchar *GdmXsession = NULL;
-gchar *GdmDefaultSession = NULL;
-gchar *GdmAutomaticLogin = NULL;
-gboolean GdmAutomaticLoginEnable = FALSE;
-
-/* The SDTLOGIN feature is Solaris specific, and causes the Xserver to be
- * run with user permissionsinstead of as root, which adds security but
- * disables the AlwaysRestartServer option as highlighted in the gdm
- * documentation */
-#ifdef sun
-gboolean GdmAlwaysRestartServer = TRUE;
-#else
-gboolean GdmAlwaysRestartServer = FALSE;
-#endif
-gchar *GdmConfigurator = NULL;
-gboolean GdmConfigAvailable = FALSE;
-gboolean GdmSystemMenu = FALSE;
-gboolean GdmChooserButton = FALSE;
-gboolean GdmBrowser = FALSE;
-gboolean GdmAddGtkModules = FALSE;
-gboolean GdmDoubleLoginWarning = TRUE;
-gboolean GdmAlwaysLoginCurrentSession = FALSE;
-gboolean GdmDisplayLastLogin = TRUE;
-gchar *GdmGlobalFaceDir = NULL;
-gint GdmXineramaScreen = 0;
-gchar *GdmGreeter = NULL;
-gchar *GdmRemoteGreeter = NULL;
-gchar *GdmGtkModulesList = NULL;
-gchar *GdmChooser = NULL;
-gchar *GdmLogDir = NULL;
-gchar *GdmDisplayInit = NULL;
-gchar *GdmPostLogin = NULL;
-gchar *GdmPreSession = NULL;
-gchar *GdmPostSession = NULL;
-gchar *GdmFailsafeXServer = NULL;
-gchar *GdmXKeepsCrashing = NULL;
-gchar *GdmHalt = NULL;
-gchar *GdmHaltReal = NULL;
-gchar *GdmReboot = NULL;
-gchar *GdmRebootReal = NULL;
-gchar *GdmSuspend = NULL;
-gchar *GdmSuspendReal = NULL;
-gchar *GdmServAuthDir = NULL;
-gboolean GdmMulticast;
-gchar *GdmMulticastAddr;
-gchar *GdmUserAuthDir = NULL;
-gboolean GdmNeverPlaceCookiesOnNFS = TRUE;
-gboolean GdmPasswordRequired = FALSE;
-gchar *GdmUserAuthFile = NULL;
-gchar *GdmUserAuthFB = NULL;
-gchar *GdmPidFile = NULL;
-gchar *GdmDefaultPath = NULL;
-gchar *GdmRootPath = NULL;
-gboolean  GdmKillInitClients = FALSE;
-gint  GdmUserMaxFile = 0;
-gboolean  GdmXdmcp = FALSE;
-gint  GdmDispPerHost = 0;
-gint  GdmMaxPending = 0;
-gint  GdmMaxManageWait = 0;
-gint  GdmMaxSessions = 0;
-gint  GdmPort = 0;
-gboolean  GdmIndirect = FALSE;
-gint  GdmMaxIndirect = 0;
-gint  GdmMaxIndirectWait = 0;
-gint  GdmPingInterval = 0;
-gchar *GdmWilling = NULL;
-gboolean GdmXdmcpProxy = FALSE;
-gchar *GdmXdmcpProxyCommand = NULL;
-gchar *GdmXdmcpProxyReconnect = NULL;
-gboolean  GdmDebug = FALSE;
-gboolean  GdmDebugGestures = FALSE;
-gboolean  GdmAllowRoot = FALSE;
-gboolean  GdmAllowRemoteRoot = FALSE;
-gboolean  GdmAllowRemoteAutoLogin = FALSE;
-gint  GdmRelaxPerms = 0;
-gboolean GdmCheckDirOwner = TRUE;
-gint  GdmRetryDelay = 0;
-gchar *GdmTimedLogin = NULL;
-gboolean GdmTimedLoginEnable = FALSE;
-gint GdmTimedLoginDelay = 0;
-gchar *GdmStandardXServer = NULL;
-gint  GdmFlexibleXServers = 5;
-gboolean GdmDynamicXServers = FALSE;
-gchar *GdmXnest = NULL;
-int GdmFirstVT = 7;
-gboolean GdmVTAllocation = TRUE;
-gboolean GdmDisallowTCP = TRUE;
-gchar *GdmSoundProgram = NULL;
-gchar *GdmSoundOnLoginReadyFile = NULL;
-gboolean GdmSoundOnLoginSuccess = FALSE;
-gchar *GdmSoundOnLoginSuccessFile = NULL;
-gboolean GdmSoundOnLoginFailure = FALSE;
-gchar *GdmSoundOnLoginFailureFile = NULL;
-gchar *GdmConsoleCannotHandle = NULL;
-gboolean GdmConsoleNotify = TRUE;
-
 /* set in the main function */
 char **stored_argv = NULL;
 int stored_argc = 0;
 
-static VeConfig *cfg;
-
-static gchar *config_file = NULL;
-static time_t config_file_mtime = 0;
-
+extern gchar *config_file;
 static gboolean gdm_restart_mode = FALSE;
 
 static GMainLoop *main_loop = NULL;
@@ -280,723 +172,6 @@ mark_display_exists (int num)
 	return FALSE;
 }
 
-
-static gboolean
-display_exists (int num)
-{
-	GSList *li;
-
-	for (li = displays; li != NULL; li = li->next) {
-		GdmDisplay *disp = li->data;
-		if (disp->dispnum == num)
-			return TRUE;
-	}
-	return FALSE;
-}
-
-static int
-compare_displays (gconstpointer a, gconstpointer b)
-{
-	const GdmDisplay *d1 = a;
-	const GdmDisplay *d2 = b;
-	if (d1->dispnum < d2->dispnum)
-		return -1;
-	else if (d1->dispnum > d2->dispnum)
-		return 1;
-	else
-		return 0;
-}	
-
-static void
-check_servauthdir (struct stat *statbuf)
-{
-    int r;
-
-    /* Enter paranoia mode */
-    VE_IGNORE_EINTR (r = stat (GdmServAuthDir, statbuf));
-    if G_UNLIKELY (r < 0) {
-	    char *s = g_strdup_printf
-		    (C_(N_("Server Authorization directory "
-			   "(daemon/ServAuthDir) is set to %s "
-			   "but this does not exist. Please "
-			   "correct GDM configuration and "
-			   "restart GDM.")), GdmServAuthDir);
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
-    }
-
-    if G_UNLIKELY (! S_ISDIR (statbuf->st_mode)) {
-	    char *s = g_strdup_printf
-		    (C_(N_("Server Authorization directory "
-			   "(daemon/ServAuthDir) is set to %s "
-			   "but this is not a directory. Please "
-			   "correct GDM configuration and "
-			   "restart GDM.")), GdmServAuthDir);
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
-    }
-}
-
-static void
-check_logdir (void)
-{
-	struct stat statbuf;
-	int r;
-   
-	VE_IGNORE_EINTR (r = stat (GdmLogDir, &statbuf));
-	if (r < 0 ||
-	    ! S_ISDIR (statbuf.st_mode))  {
-		gdm_error (_("%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."), "gdm_config_parse",
-			   GdmLogDir, GdmServAuthDir);
-		g_free (GdmLogDir);
-		GdmLogDir = g_strdup (GdmServAuthDir);
-	}
-}
-
-/**
- * gdm_get_config:
- *
- * Get config file.  If GDM is configured with the --with-configdir option
- * then GDM will first look in the sysconfdir location.  If the gdm.conf
- * file is not found, it will look in the location specified via 
- * --with-configdir.  This allows a configuration file to be placed on
- * a mounted directory on a network with multiple machines for a common
- * configuration file.  The two directories will be the same if the
- * --with-configdir option is not specified.  Checking the same directory
- * twice is a bit ugly, but will only happen in a rare error condition -
- * when the gdm.conf file can't be found.
- */
-static VeConfig *
-gdm_get_config (struct stat *statbuf)
-{
-    int r;
-
-    /* Not NULL if config_file was set by command-line option. */
-    if (config_file != NULL) {
-       VE_IGNORE_EINTR (r = stat (config_file, statbuf));
-    } else {
-       /* First check sysconfdir */
-       VE_IGNORE_EINTR (r = stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
-       if (r < 0) {
-
-           /* If not found, then check directory for a multi system network */
-           VE_IGNORE_EINTR (r = stat (GDM_INSTALL_CONFIG_FILE, statbuf));
-           if (r < 0) {
-               gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
-                   "gdm_config_parse", GDM_INSTALL_CONFIG_FILE);
-           } else {
-               config_file = GDM_INSTALL_CONFIG_FILE;
-           }
-       } else {
-               config_file = GDM_SYSCONFDIR_CONFIG_FILE;
-       }
-    } 
-    return ve_config_new (config_file);
-}
-
-/**
- * gdm_config_parse:
- *
- * Parse the configuration file and warn about bad permissions etc.
- */
-
-static void 
-gdm_config_parse (void)
-{
-    struct passwd *pwent;
-    struct group *grent;
-    struct stat statbuf;
-    gchar *bin;
-    VeConfig *cfg;
-    GList *list, *li;
-    int r;
-    
-    displays = NULL;
-    high_display_num = 0;
-
-    cfg = gdm_get_config (&statbuf);
-    config_file_mtime = statbuf.st_mtime;
-
-    /* get and cache the OKness of a language */
-    GdmConsoleCannotHandle = ve_config_get_string (cfg, GDM_KEY_CONSOLE_CANNOT_HANDLE);
-    if (GdmConsoleCannotHandle == NULL)
-	    GdmConsoleCannotHandle = g_strdup ("");
-    gdm_ok_console_language ();
-
-    GdmChooser = ve_config_get_string (cfg, GDM_KEY_CHOOSER);
-
-    GdmDefaultPath = NULL;
-    GdmRootPath    = NULL;
-
-    /* First try to read values from /etc/default/login */
-    VE_IGNORE_EINTR (r = stat ("/etc/default/login", &statbuf));
-    if (r < 0) {
-	GdmPasswordRequired = ve_config_get_bool (cfg, GDM_KEY_PASSWORDREQUIRED);
-	GdmAllowRemoteRoot  = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
-    } else {
-	    gchar *temp;
-
-	    GdmDefaultPath = gdm_read_default ("PATH=");
-	    GdmRootPath    = gdm_read_default ("SUPATH=");
-
-	    temp = gdm_read_default ("PASSREQ=");
-	    if (temp == NULL)
-	       GdmPasswordRequired = ve_config_get_bool (cfg, GDM_KEY_PASSWORDREQUIRED);
-	    else if (g_ascii_strcasecmp (temp, "YES") == 0)
-	       GdmPasswordRequired = TRUE;
-	    else
-	       GdmPasswordRequired = FALSE;
-	
-	    temp = gdm_read_default ("CONSOLE=");
-	    if (temp == NULL || g_ascii_strcasecmp (temp, "/dev/console") != 0)
-	       GdmAllowRemoteRoot = TRUE;
-	    else
-	       GdmAllowRemoteRoot = FALSE;
-	    g_free (temp);
-    }
-
-    if (GdmDefaultPath == NULL)
-       GdmDefaultPath = ve_config_get_string (cfg, GDM_KEY_PATH);
-    if (GdmRootPath == NULL)
-       GdmRootPath = ve_config_get_string (cfg, GDM_KEY_ROOTPATH);
-
-    GdmDisplayInit = ve_config_get_string (cfg, GDM_KEY_INITDIR);
-    GdmAutomaticLoginEnable = ve_config_get_bool (cfg, GDM_KEY_AUTOMATICLOGIN_ENABLE);
-    GdmAutomaticLogin = ve_config_get_string (cfg, GDM_KEY_AUTOMATICLOGIN);
-#ifdef sun
-    GdmAlwaysRestartServer = TRUE;
-#else
-    GdmAlwaysRestartServer = ve_config_get_bool (cfg, GDM_KEY_ALWAYSRESTARTSERVER);
-#endif
-    GdmGreeter = ve_config_get_string (cfg, GDM_KEY_GREETER);
-    GdmRemoteGreeter = ve_config_get_string (cfg, GDM_KEY_REMOTEGREETER);
-    GdmAddGtkModules = ve_config_get_bool (cfg, GDM_KEY_ADD_GTK_MODULES);
-    GdmDoubleLoginWarning = ve_config_get_bool (cfg, GDM_KEY_DOUBLELOGINWARNING);
-    GdmAlwaysLoginCurrentSession = ve_config_get_bool (cfg, GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);
-    GdmDisplayLastLogin = ve_config_get_bool (cfg, GDM_KEY_DISPLAY_LAST_LOGIN);
-    GdmGtkModulesList = ve_config_get_string (cfg, GDM_KEY_GTK_MODULES_LIST);	
-    GdmGroup = ve_config_get_string (cfg, GDM_KEY_GROUP);
-    GdmHalt = ve_config_get_string (cfg, GDM_KEY_HALT);
-    GdmKillInitClients = ve_config_get_bool (cfg, GDM_KEY_KILLIC);
-    GdmLogDir= ve_config_get_string (cfg, GDM_KEY_LOGDIR);
-    GdmPidFile = ve_config_get_string (cfg, GDM_KEY_PIDFILE);
-    GdmPostLogin = ve_config_get_string (cfg, GDM_KEY_POSTLOGIN);
-    GdmPreSession = ve_config_get_string (cfg, GDM_KEY_PRESESS);
-    GdmPostSession = ve_config_get_string (cfg, GDM_KEY_POSTSESS);
-    GdmFailsafeXServer = ve_config_get_string (cfg, GDM_KEY_FAILSAFE_XSERVER);
-    GdmXKeepsCrashing = ve_config_get_string (cfg, GDM_KEY_XKEEPSCRASHING);
-    GdmConfigurator = ve_config_get_string (cfg, GDM_KEY_CONFIGURATOR);
-    GdmConfigAvailable = ve_config_get_bool (cfg, GDM_KEY_CONFIG_AVAILABLE);
-    GdmSystemMenu = ve_config_get_bool (cfg, GDM_KEY_SYSMENU);
-    GdmChooserButton = ve_config_get_bool (cfg, GDM_KEY_CHOOSER_BUTTON);
-    GdmBrowser = ve_config_get_bool (cfg, GDM_KEY_BROWSER);
-    GdmGlobalFaceDir = ve_config_get_string (cfg, GDM_KEY_FACEDIR);
-    GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMASCREEN);
-    GdmReboot = ve_config_get_string (cfg, GDM_KEY_REBOOT);
-    GdmRetryDelay = ve_config_get_int (cfg, GDM_KEY_RETRYDELAY);
-    GdmServAuthDir = ve_config_get_string (cfg, GDM_KEY_SERVAUTH);
-#ifdef ENABLE_IPV6
-    GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
-    GdmMulticastAddr = ve_config_get_string (cfg, GDM_KEY_MULTICAST_ADDR);
-#endif
-
-    GdmSessDir = ve_config_get_string (cfg, GDM_KEY_SESSDIR);
-    GdmXsession = ve_config_get_string (cfg, GDM_KEY_BASEXSESSION);
-    if (ve_string_empty (GdmXsession)) {
-	    gdm_info (_("%s: BaseXsession empty; using %s/gdm/Xsession"),
-			"gdm_config_parse",
-			EXPANDED_SYSCONFDIR);
-	    g_free (GdmXsession);
-	    GdmXsession = g_build_filename (EXPANDED_SYSCONFDIR,
-					    "gdm", "Xsession", NULL);
-    }
-    GdmDefaultSession = ve_config_get_string (cfg, GDM_KEY_DEFAULTSESSION);
-    GdmSuspend = ve_config_get_string (cfg, GDM_KEY_SUSPEND);
-    GdmUser = ve_config_get_string (cfg, GDM_KEY_USER);
-    GdmUserAuthDir = ve_config_get_string (cfg, GDM_KEY_UAUTHDIR);
-    GdmNeverPlaceCookiesOnNFS = ve_config_get_bool (cfg, GDM_KEY_NEVERPLACECOOKIESONNFS);
-    GdmUserAuthFile = ve_config_get_string (cfg, GDM_KEY_UAUTHFILE);
-    GdmUserAuthFB = ve_config_get_string (cfg, GDM_KEY_UAUTHFB);
-    GdmConsoleNotify = ve_config_get_bool (cfg, GDM_KEY_CONSOLE_NOTIFY);
-
-    GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
-    GdmGtkTheme = ve_config_get_string (cfg, GDM_KEY_GTK_THEME);
-
-    GdmTimedLoginEnable = ve_config_get_bool (cfg, GDM_KEY_TIMED_LOGIN_ENABLE);
-    GdmTimedLogin = ve_config_get_string (cfg, GDM_KEY_TIMED_LOGIN);
-    GdmTimedLoginDelay = ve_config_get_int (cfg, GDM_KEY_TIMED_LOGIN_DELAY);
-
-    GdmAllowRoot = ve_config_get_bool (cfg, GDM_KEY_ALLOWROOT);
-    GdmAllowRemoteAutoLogin = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEAUTOLOGIN);
-    GdmRelaxPerms = ve_config_get_int (cfg, GDM_KEY_RELAXPERM);
-    GdmCheckDirOwner = ve_config_get_bool (cfg, GDM_KEY_CHECKDIROWNER);
-    GdmUserMaxFile = ve_config_get_int (cfg, GDM_KEY_MAXFILE);
-
-    GdmXdmcp = ve_config_get_bool (cfg, GDM_KEY_XDMCP);
-    GdmDispPerHost = ve_config_get_int (cfg, GDM_KEY_DISPERHOST);
-    GdmMaxPending = ve_config_get_int (cfg, GDM_KEY_MAXPEND);
-    GdmMaxManageWait = ve_config_get_int (cfg, GDM_KEY_MAXWAIT);
-    GdmMaxSessions = ve_config_get_int (cfg, GDM_KEY_MAXSESS);
-    GdmPort = ve_config_get_int (cfg, GDM_KEY_UDPPORT);
-    GdmIndirect = ve_config_get_bool (cfg, GDM_KEY_INDIRECT);
-    GdmMaxIndirect = ve_config_get_int (cfg, GDM_KEY_MAXINDIR);
-    GdmMaxIndirectWait = ve_config_get_int (cfg, GDM_KEY_MAXINDWAIT);    
-    GdmPingInterval = ve_config_get_int (cfg, GDM_KEY_PINGINTERVAL);    
-    GdmWilling = ve_config_get_string (cfg, GDM_KEY_WILLING);    
-
-    GdmXdmcpProxy = ve_config_get_bool (cfg, GDM_KEY_XDMCP_PROXY);
-    GdmXdmcpProxyCommand = ve_config_get_string (cfg, GDM_KEY_XDMCP_PROXY_XSERVER);
-    if (ve_string_empty (GdmXdmcpProxyCommand))
-	    GdmXdmcpProxyCommand = NULL;
-    GdmXdmcpProxyReconnect = ve_config_get_string (cfg, GDM_KEY_XDMCP_PROXY_RECONNECT);
-    if (ve_string_empty (GdmXdmcpProxyReconnect))
-	    GdmXdmcpProxyReconnect = NULL;
-
-    GdmStandardXServer = ve_config_get_string (cfg, GDM_KEY_STANDARD_XSERVER);    
-    bin = ve_first_word (GdmStandardXServer);
-    if G_UNLIKELY (ve_string_empty (bin) ||
-		   access (bin, X_OK) != 0) {
-	    gdm_info (_("%s: Standard X server not found; trying alternatives"),
-			"gdm_config_parse");
-	    if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
-		    g_free (GdmStandardXServer);
-		    GdmStandardXServer = g_strdup ("/usr/X11R6/bin/X");
-	    } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
-		    g_free (GdmStandardXServer);
-		    GdmStandardXServer = g_strdup ("/opt/X11R6/bin/X");
-	    } else if (ve_string_empty (GdmStandardXServer)) {
-		    g_free (GdmStandardXServer);
-		    GdmStandardXServer = g_strdup ("/usr/bin/X11/X");
-	    }
-    }
-    g_free (bin);
-    GdmDynamicXServers = ve_config_get_bool (cfg, GDM_KEY_DYNAMIC_XSERVERS);
-    GdmFlexibleXServers = ve_config_get_int (cfg, GDM_KEY_FLEXIBLE_XSERVERS);    
-    GdmXnest = ve_config_get_string (cfg, GDM_KEY_XNEST);    
-    if (ve_string_empty (GdmXnest))
-	    GdmXnest = NULL;
-
-    GdmFirstVT = ve_config_get_int (cfg, GDM_KEY_FIRSTVT);
-    GdmVTAllocation = ve_config_get_bool (cfg, GDM_KEY_VTALLOCATION);
-    GdmDisallowTCP = ve_config_get_bool (cfg, GDM_KEY_DISALLOWTCP);
-
-    GdmSoundProgram = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
-    GdmSoundOnLoginReadyFile = ve_config_get_string (cfg,
-	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
-    GdmSoundOnLoginSuccess = ve_config_get_bool (cfg,
-	                           GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
-    GdmSoundOnLoginSuccessFile = ve_config_get_string (cfg,
-	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
-    GdmSoundOnLoginFailure = ve_config_get_bool (cfg,
-	                           GDM_KEY_SOUND_ON_LOGIN_FAILURE);
-    GdmSoundOnLoginFailureFile = ve_config_get_string (cfg,
-	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
-
-    GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
-    GdmDebugGestures = ve_config_get_bool (cfg, GDM_KEY_DEBUG_GESTURES);
-
-    /* sanitize some values */
-
-#ifndef HAVE_LIBXDMCP
-    if (GdmXdmcp) {
-	    gdm_info (_("%s: XDMCP was enabled while there is no XDMCP support; turning it off"), "gdm_config_parse");
-	    GdmXdmcp = FALSE;
-    }
-#endif
-
-    if ( ! GdmAutomaticLoginEnable ||
-	ve_string_empty (GdmAutomaticLogin)) {
-	    g_free (GdmAutomaticLogin);
-	    GdmAutomaticLogin = NULL;
-    }
-
-    if (GdmAutomaticLogin != NULL &&
-	strcmp (GdmAutomaticLogin, gdm_root_user ()) == 0) {
-	    gdm_info (_("%s: Root cannot be logged in automatically, turning off automatic login"), "gdm_config_parse");
-	    g_free (GdmAutomaticLogin);
-	    GdmAutomaticLogin = NULL;
-    }
-
-    if ( ! GdmTimedLoginEnable ||
-	ve_string_empty (GdmTimedLogin)) {
-	    g_free (GdmTimedLogin);
-	    GdmTimedLogin = NULL;
-    }
-
-    if (GdmTimedLogin != NULL &&
-	strcmp (GdmTimedLogin, gdm_root_user ()) == 0) {
-	    gdm_info (_("%s: Root cannot be logged in automatically, turning off timed login"), "gdm_config_parse");
-	    g_free (GdmTimedLogin);
-	    GdmTimedLogin = NULL;
-    }
-
-    if (GdmTimedLoginDelay < 5) {
-	    gdm_info (_("%s: TimedLoginDelay is less than 5, defaulting to 5."), "gdm_config_parse");
-	    GdmTimedLoginDelay = 5;
-    }
-
-    if (GdmMaxIndirect < 0) {
-	    GdmMaxIndirect = 0;
-    }
-
-    /* Prerequisites */ 
-    if (ve_string_empty (GdmGreeter)) {
-	    gdm_error (_("%s: No greeter specified."), "gdm_config_parse");
-    }
-    if (ve_string_empty (GdmRemoteGreeter)) {
-	    gdm_error (_("%s: No remote greeter specified."), "gdm_config_parse");
-    }
-
-    if (ve_string_empty (GdmSessDir))
-	gdm_error (_("%s: No sessions directory specified."), "gdm_config_parse");
-
-    /* Find server definitions */
-    list = ve_config_get_sections (cfg);
-    for (li = list; li != NULL; li = li->next) {
-	    const char *sec = li->data;
-	    if (strncmp (sec, "server-", strlen ("server-")) == 0) {
-		    GdmXServer *svr = g_new0 (GdmXServer, 1);
-		    char buf[256];
-
-		    svr->id = g_strdup (sec + strlen ("server-"));
-		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_NAME, sec);
-		    svr->name = ve_config_get_string (cfg, buf);
-		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_COMMAND, sec);
-		    svr->command = ve_config_get_string (cfg, buf);
-		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_FLEXIBLE, sec);
-		    svr->flexible = ve_config_get_bool (cfg, buf);
-		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSABLE, sec);
-		    svr->choosable = ve_config_get_bool (cfg, buf);
-		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_HANDLED, sec);
-		    svr->handled = ve_config_get_bool (cfg, buf);
-		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
-		    svr->chooser = ve_config_get_bool (cfg, buf);
-
-		    if (ve_string_empty (svr->command)) {
-			    gdm_error (_("%s: Empty server command; "
-					 "using standard command."),
-				       "gdm_config_parse");
-			    g_free (svr->command);
-			    svr->command = g_strdup (GdmStandardXServer);
-		    }
-
-		    xservers = g_slist_append (xservers, svr);
-	    }
-    }
-    ve_config_free_list_of_strings (list);
-
-    if (xservers == NULL ||
-	gdm_find_x_server (GDM_STANDARD) == NULL) {
-	    GdmXServer *svr = g_new0 (GdmXServer, 1);
-
-	    svr->id = g_strdup (GDM_STANDARD);
-	    svr->name = g_strdup ("Standard server");
-	    svr->command = g_strdup (GdmStandardXServer);
-	    svr->flexible = TRUE;
-	    svr->choosable = TRUE;
-	    svr->handled = TRUE;
-
-	    xservers = g_slist_append (xservers, svr);
-    }
-
-    /* Find static X server definitions */
-    list = ve_config_get_keys (cfg, GDM_KEY_SECTION_SERVERS);
-    /* only read the list if no_console is FALSE
-       at this stage */
-    for (li = list; ! no_console && li != NULL; li = li->next) {
-	    const char *key = li->data;
-	    if (isdigit (*key)) {
-		    char *full;
-		    char *val;
-		    int disp_num = atoi (key);
-		    GdmDisplay *disp;
-
-		    while (display_exists (disp_num)) {
-			    disp_num++;
-		    }
-
-		    if (disp_num != atoi (key)) {
-			    gdm_error (_("%s: Display number %d in use!  Defaulting to %d"),
-				       "gdm_config_parse", atoi (key), disp_num);
-		    }
-
-		    full = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
-		    val = ve_config_get_string (cfg, full);
-		    g_free (full);
-
-		    disp = gdm_server_alloc (disp_num, val);
-		    g_free (val);
-
-		    if (disp == NULL)
-			    continue;
-		    displays = g_slist_insert_sorted (displays,
-						      disp,
-						      compare_displays);
-		    if (disp_num > high_display_num)
-			    high_display_num = disp_num;
-	    } else {
-		    gdm_info (_("%s: Invalid server line in config file. Ignoring!"), "gdm_config_parse");
-	    }
-    }
-    ve_config_free_list_of_strings (list);
-
-    if G_UNLIKELY ((displays == NULL) && (! GdmXdmcp) &&
-	               (!GdmDynamicXServers)) {
-	    char *server = NULL;
-
-	    /* if we requested no static servers (there is no console),
-	       then don't display errors in console messages */
-	    if (no_console) {
-		    gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
-	    }
-
-	    bin = ve_first_word (GdmStandardXServer);
-	    if G_LIKELY (access (bin, X_OK) == 0) {
-		    server = GdmStandardXServer;
-	    } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
-		    server = "/usr/bin/X11/X";
-	    } else if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
-		    server = "/usr/X11R6/bin/X";
-	    } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
-		    server = "/opt/X11R6/bin/X";
-	    }
-	    g_free (bin);
-	    /* yay, we can add a backup emergency server */
-	    if (server != NULL) {
-		    int num = gdm_get_free_display (0 /* start */,
-						    0 /* server uid */);
-		    gdm_error (_("%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"),
-			       "gdm_config_parse",
-			       server, num);
-
-		    gdm_emergency_server = TRUE;
-		    displays = g_slist_append
-			    (displays, gdm_server_alloc (num, server));
-		    /* ALWAYS run the greeter and don't log anyone in,
-		     * this is just an emergency session */
-		    g_free (GdmAutomaticLogin);
-		    GdmAutomaticLogin = NULL;
-		    g_free (GdmTimedLogin);
-		    GdmTimedLogin = NULL;
-	    } else {
-		    char *s = g_strdup_printf
-			    (C_(N_("XDMCP is disabled and GDM "
-				   "cannot find any static server "
-				   "to start.  Aborting!  Please "
-				   "correct the configuration "
-				   "and restart GDM.")));
-		    gdm_text_message_dialog (s);
-		    GdmPidFile = NULL;
-		    g_free (s);
-		    gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
-	    }
-    }
-
-    /* If no displays were found, then obviously
-       we're in a no console mode */
-    if (displays == NULL)
-	    no_console = TRUE;
-
-    if (no_console)
-        GdmConsoleNotify = FALSE;
-
-    /* Lookup user and groupid for the GDM user */
-    pwent = getpwnam (GdmUser);
-
-    if G_UNLIKELY (pwent == NULL) {
-	    char *s = g_strdup_printf
-		    (C_(N_("The GDM user '%s' does not exist. "
-			   "Please correct GDM configuration "
-			   "and restart GDM.")),
-		     GdmUser);
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: Can't find the GDM user '%s'. Aborting!"), "gdm_config_parse", GdmUser);
-    } else {
-	    GdmUserId = pwent->pw_uid;
-    }
-
-    if G_UNLIKELY (GdmUserId == 0) {
-	    char *s = g_strdup_printf
-		    (C_(N_("The GDM user is set to be root, but "
-			   "this is not allowed since it can "
-			   "pose a security risk.  Please "
-			   "correct GDM configuration and "
-			   "restart GDM.")));
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: The GDM user should not be root. Aborting!"), "gdm_config_parse");
-    }
-
-    grent = getgrnam (GdmGroup);
-
-    if G_UNLIKELY (grent == NULL) {
-	    char *s = g_strdup_printf
-		    (C_(N_("The GDM group '%s' does not exist. "
-		       "Please correct GDM configuration "
-		       "and restart GDM.")),
-		     GdmGroup);
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: Can't find the GDM group '%s'. Aborting!"), "gdm_config_parse", GdmGroup);
-    } else  {
-	    GdmGroupId = grent->gr_gid;   
-    }
-
-    if G_UNLIKELY (GdmGroupId == 0) {
-	    char *s = g_strdup_printf
-		    (C_(N_("The GDM group is set to be root, but "
-			   "this is not allowed since it can "
-			   "pose a security risk. Please "
-			   "correct GDM configuration and "
-			   "restart GDM.")));
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: The GDM group should not be root. Aborting!"), "gdm_config_parse");
-    }
-
-    /* get the actual commands to use */
-    GdmHaltReal = ve_get_first_working_command (GdmHalt, FALSE);
-    GdmRebootReal = ve_get_first_working_command (GdmReboot, FALSE);
-    GdmSuspendReal = ve_get_first_working_command (GdmSuspend, FALSE);
-
-    /* gid remains `gdm' */
-    NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
-
-    /* Check that the greeter can be executed */
-    bin = ve_first_word (GdmGreeter);
-    if G_UNLIKELY (ve_string_empty (bin) ||
-		   access (bin, X_OK) != 0) {
-	    gdm_error (_("%s: Greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
-    }
-    g_free (bin);
-
-    bin = ve_first_word (GdmRemoteGreeter);
-    if G_UNLIKELY (ve_string_empty (bin) ||
-		   access (bin, X_OK) != 0) {
-	    gdm_error (_("%s: Remote greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
-    }
-    g_free (bin);
-
-
-    /* Check that chooser can be executed */
-    bin = ve_first_word (GdmChooser);
-
-    if G_UNLIKELY (GdmIndirect &&
-		   (ve_string_empty (bin) ||
-		    access (bin, X_OK) != 0)) {
-	    gdm_error (_("%s: Chooser not found or it can't be executed by the GDM user"), "gdm_config_parse");
-    }
-    
-    g_free (bin);
-
-    /* Check the serv auth and log dirs */
-    if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog
-			    (C_(N_("No daemon/ServAuthDir specified in the GDM configuration file")));
-	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: No daemon/ServAuthDir specified."), "gdm_config_parse");
-    }
-
-    if (ve_string_empty (GdmLogDir)) {
-	g_free (GdmLogDir);
-	GdmLogDir = g_strdup (GdmServAuthDir);
-    }
-
-    /* Enter paranoia mode */
-    check_servauthdir (&statbuf);
-
-    NEVER_FAILS_root_set_euid_egid (0, 0);
-
-    /* Now set things up for us as  */
-    chown (GdmServAuthDir, 0, GdmGroupId);
-    chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
-
-    NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
-
-    /* again paranoid */
-    check_servauthdir (&statbuf);
-
-    if G_UNLIKELY (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
-	    char *s = g_strdup_printf
-		    (C_(N_("Server Authorization directory "
-			   "(daemon/ServAuthDir) is set to %s "
-			   "but is not owned by user %s and group "
-			   "%s. Please correct the ownership or "
-			   "GDM configuration and restart "
-			   "GDM.")),
-		     GdmServAuthDir, GdmUser, GdmGroup);
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."), "gdm_config_parse", 
-		      GdmServAuthDir, gdm_root_user (), GdmGroup);
-    }
-
-    if G_UNLIKELY (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
-	    char *s = g_strdup_printf
-		    (C_(N_("Server Authorization directory "
-			   "(daemon/ServAuthDir) is set to %s "
-			   "but has the wrong permissions: it "
-			   "should have permissions of %o. "
-			   "Please correct the permissions or "
-			   "the GDM configuration and "
-			   "restart GDM.")),
-		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
-        if (GdmConsoleNotify)
-		    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    g_free (s);
-	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
-		      GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
-    }
-
-    NEVER_FAILS_root_set_euid_egid (0, 0);
-
-    check_logdir ();
-
-    /* Check that user authentication is properly configured */
-    gdm_verify_check ();
-
-    ve_config_destroy (cfg);
-}
-
-/* If id == NULL, then get the first X server */
-GdmXServer *
-gdm_find_x_server (const char *id)
-{
-	GSList *li;
-
-	if (xservers == NULL)
-		return NULL;
-
-	if (id == NULL)
-		return xservers->data;
-
-	for (li = xservers; li != NULL; li = li->next) {
-		GdmXServer *svr = li->data;
-		if (strcmp (svr->id, id) == 0)
-			return svr;
-	}
-	return NULL;
-}
-
 /**
  * gdm_daemonify:
  *
@@ -1011,26 +186,27 @@ gdm_daemonify (void)
 
     pid = fork ();
     if (pid > 0) {
+        gchar *pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
 
         errno = 0;
-	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
+	if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
 	    errno = 0;
 	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)pid));
 	    VE_IGNORE_EINTR (fclose (pf));
 	    if G_UNLIKELY (errno != 0) {
 		    /* FIXME: how to handle this? */
 		    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-				  GdmPidFile, strerror (errno));
+				  pidfile, strerror (errno));
 		    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-			       GdmPidFile, strerror (errno));
+			       pidfile, strerror (errno));
 
 	    }
 	} else if G_UNLIKELY (errno != 0) {
 	    /* FIXME: how to handle this? */
 	    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-			  GdmPidFile, strerror (errno));
+			  pidfile, strerror (errno));
 	    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-		       GdmPidFile, strerror (errno));
+		       pidfile, strerror (errno));
 
 	}
 
@@ -1045,7 +221,7 @@ gdm_daemonify (void)
 	gdm_fail (_("%s: setsid() failed: %s!"), "gdm_daemonify",
 		  strerror(errno));
 
-    VE_IGNORE_EINTR (chdir (GdmServAuthDir));
+    VE_IGNORE_EINTR (chdir (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)));
     umask (022);
 
     VE_IGNORE_EINTR (close (0));
@@ -1071,7 +247,7 @@ gdm_start_first_unborn_local (int delay)
 		if (d != NULL &&
 		    d->type == TYPE_STATIC &&
 		    d->dispstat == DISPLAY_UNBORN) {
-			GdmXServer *svr;
+			GdmXserver *svr;
 			gdm_debug ("gdm_start_first_unborn_local: "
 				   "Starting %s", d->name);
 
@@ -1113,6 +289,7 @@ void
 gdm_final_cleanup (void)
 {
 	GSList *list, *li;
+	gchar *pidfile;
 	gboolean first;
 
 	gdm_debug ("gdm_final_cleanup");
@@ -1179,13 +356,13 @@ gdm_final_cleanup (void)
 
 	/* Close stuff */
 
-	if (GdmXdmcp)
+	if (gdm_get_value_bool (GDM_KEY_XDMCP))
 		gdm_xdmcp_close ();
 
 	if (fifoconn != NULL) {
 		char *path;
 		gdm_connection_close (fifoconn);
-		path = g_build_filename (GdmServAuthDir, ".gdmfifo", NULL);
+		path = g_build_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), ".gdmfifo", NULL);
 		VE_IGNORE_EINTR (unlink (path));
 		g_free (path);
 		fifoconn = NULL;
@@ -1209,8 +386,9 @@ gdm_final_cleanup (void)
 
 	closelog();
 
-	if (GdmPidFile != NULL) {
-		VE_IGNORE_EINTR (unlink (GdmPidFile));
+	pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
+	if (pidfile != NULL) {
+		VE_IGNORE_EINTR (unlink (pidfile));
 	}
 
 #ifdef  HAVE_LOGINDEVPERM
@@ -1222,20 +400,22 @@ static gboolean
 deal_with_x_crashes (GdmDisplay *d)
 {
     gboolean just_abort = FALSE;
+    gchar* failsafe = gdm_get_value_string (GDM_KEY_FAILSAFE_XSERVER);
+    gchar* keepscrashing = gdm_get_value_string (GDM_KEY_X_KEEPS_CRASHING);
 
     if ( ! d->failsafe_xserver &&
-	 ! ve_string_empty (GdmFailsafeXServer)) {
-	    char *bin = ve_first_word (GdmFailsafeXServer);
+	 ! ve_string_empty (failsafe)) {
+	    char *bin = ve_first_word (failsafe);
 	    /* Yay we have a failsafe */
 	    if ( ! ve_string_empty (bin) &&
 		access (bin, X_OK) == 0) {
 		    gdm_info (_("%s: Trying failsafe X "
 				"server %s"), 
 			      "deal_with_x_crashes",
-			      GdmFailsafeXServer);
+			      failsafe);
 		    g_free (bin);
 		    g_free (d->command);
-		    d->command = g_strdup (GdmFailsafeXServer);
+		    d->command = g_strdup (failsafe);
 		    d->failsafe_xserver = TRUE;
 		    return TRUE;
 	    }
@@ -1243,8 +423,8 @@ deal_with_x_crashes (GdmDisplay *d)
     }
 
     /* Eeek X keeps crashing, let's try the XKeepsCrashing script */
-    if ( ! ve_string_empty (GdmXKeepsCrashing) &&
-	access (GdmXKeepsCrashing, X_OK|R_OK) == 0) {
+    if ( ! ve_string_empty (keepscrashing) &&
+	access (keepscrashing, X_OK|R_OK) == 0) {
 	    pid_t pid;
 
 	    gdm_info (_("%s: Running the "
@@ -1257,7 +437,7 @@ deal_with_x_crashes (GdmDisplay *d)
 
 	    if (pid == 0) {
 		    char *argv[2];
-		    char *xlog = gdm_make_filename (GdmLogDir, d->name, ".log");
+		    char *xlog = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 
 		    gdm_unset_signals ();
 
@@ -1266,7 +446,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		     * possible children */
 		    setsid ();
 
-		    if (GdmXdmcp)
+		    if (gdm_get_value_bool (GDM_KEY_XDMCP))
 			    gdm_xdmcp_close ();
 
 		    closelog ();
@@ -1279,33 +459,33 @@ deal_with_x_crashes (GdmDisplay *d)
 		    gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		    gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-		    argv[0] = GdmXKeepsCrashing;
+		    argv[0] = gdm_get_value_string (GDM_KEY_X_KEEPS_CRASHING);
 		    argv[1] = NULL;
 
 		    gdm_restoreenv ();
 
 		    /* unset DISPLAY and XAUTHORITY if they exist
 		     * so that gdialog (if used) doesn't get confused */
-		    ve_unsetenv ("DISPLAY");
-		    ve_unsetenv ("XAUTHORITY");
+		    g_unsetenv ("DISPLAY");
+		    g_unsetenv ("XAUTHORITY");
 
 		    /* some promised variables */
-		    ve_setenv ("XLOG", xlog, TRUE);
-		    ve_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
-		    ve_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
-		    ve_setenv ("LIBEXECDIR", EXPANDED_LIBEXECDIR, TRUE);
-		    ve_setenv ("SYSCONFDIR", EXPANDED_SYSCONFDIR, TRUE);
+		    g_setenv ("XLOG", xlog, TRUE);
+		    g_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
+		    g_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
+		    g_setenv ("LIBEXECDIR", EXPANDED_LIBEXECDIR, TRUE);
+		    g_setenv ("SYSCONFDIR", EXPANDED_SYSCONFDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
-		    ve_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
-		    ve_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
+		    g_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
+		    g_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
 		    if ( ! gdm_ok_console_language ()) {
-			    ve_unsetenv ("LANG");
-			    ve_unsetenv ("LC_ALL");
-			    ve_unsetenv ("LC_MESSAGES");
-			    ve_setenv ("LANG", "C", TRUE);
-			    ve_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
+			    g_unsetenv ("LANG");
+			    g_unsetenv ("LC_ALL");
+			    g_unsetenv ("LC_MESSAGES");
+			    g_setenv ("LANG", "C", TRUE);
+			    g_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
 		    }
 
 		    VE_IGNORE_EINTR (execv (argv[0], argv));
@@ -1328,10 +508,7 @@ deal_with_x_crashes (GdmDisplay *d)
 				    errno = 0;
 				    ret = waitpid (extra_process, &status, WNOHANG);
 				    storeerrno = errno;
-				    if (ret <= 0 &&
-					(ve_signal_was_notified (SIGTERM) ||
-					 ve_signal_was_notified (SIGINT) ||
-					 ve_signal_was_notified (SIGHUP))) {
+				    if ((ret <= 0) && gdm_signal_terminthup_was_notified()) {
 					    kill (-(extra_process), killsignal);
 					    killsignal = SIGKILL;
 				    }
@@ -1387,17 +564,18 @@ deal_with_x_crashes (GdmDisplay *d)
 static void
 suspend_machine (void)
 {
+	gchar *suspend = gdm_get_value_string (GDM_KEY_SUSPEND);
+	
 	gdm_info (_("Master suspending..."));
 
-	if (GdmSuspendReal != NULL &&
-	    fork () == 0) {
+	if (suspend != NULL && fork () == 0) {
 		char **argv;
 
 		/* sync everything to disk, just in case something goes
 		 * wrong with the suspend */
 		sync ();
 
-		if (GdmXdmcp)
+		if (gdm_get_value_bool (GDM_KEY_XDMCP))
 			gdm_xdmcp_close ();
 		/* In the child setup empty mask and set all signals to
 		 * default values */
@@ -1411,7 +589,7 @@ suspend_machine (void)
 		/* short sleep to give some processing time to master */
 		usleep (1000);
 
-		argv = ve_split (GdmSuspendReal);
+		argv = ve_split (suspend);
 		if (argv != NULL && argv[0] != NULL)
 			VE_IGNORE_EINTR (execv (argv[0], argv));
 		/* FIXME: what about fail */
@@ -1431,7 +609,7 @@ change_to_first_and_clear (gboolean reboot)
 	VE_IGNORE_EINTR (open ("/dev/tty1", O_WRONLY));
 	VE_IGNORE_EINTR (open ("/dev/tty1", O_WRONLY));
 
-	ve_setenv ("TERM", "linux", TRUE);
+	g_setenv ("TERM", "linux", TRUE);
 
 	/* evil hack that will get the fonts right */
 	if (access ("/bin/bash", X_OK) == 0)
@@ -1463,7 +641,7 @@ halt_machine (void)
 	change_to_first_and_clear (FALSE /* reboot */);
 #endif /* __linux */
 
-	argv = ve_split (GdmHaltReal);
+	argv = ve_split (gdm_get_value_string (GDM_KEY_HALT));
 	if (argv != NULL && argv[0] != NULL)
 		VE_IGNORE_EINTR (execv (argv[0], argv));
 
@@ -1485,7 +663,7 @@ reboot_machine (void)
 	change_to_first_and_clear (TRUE /* reboot */);
 #endif /* __linux */
 
-	argv = ve_split (GdmRebootReal);
+	argv = ve_split (gdm_get_value_string (GDM_KEY_REBOOT));
 	if (argv != NULL && argv[0] != NULL)
 		VE_IGNORE_EINTR (execv (argv[0], argv));
 
@@ -1563,7 +741,7 @@ gdm_cleanup_children (void)
 	    if (d->servpid > 1)
 		    kill (d->servpid, SIGTERM);
 	    d->servpid = 0;
-        if (GdmDynamicXServers)  /* XXX - This needs to be handled better */
+        if (gdm_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS))  /* XXX - This needs to be handled better */
             gdm_server_whack_lockfile (d);
 
 	    /* race avoider */
@@ -1585,7 +763,7 @@ gdm_cleanup_children (void)
     d->slavepid = 0;
     d->dispstat = DISPLAY_DEAD;
 
-    if ( ! GdmSystemMenu &&
+    if ( ! gdm_get_value_bool (GDM_KEY_SYSTEM_MENU) &&
 	(status == DISPLAY_RESTARTGDM ||
 	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_SUSPEND ||
@@ -1605,8 +783,8 @@ gdm_cleanup_children (void)
 
     if (status == DISPLAY_RUN_CHOOSER) {
 	    /* use the chooser on the next run (but only if allowed) */
-	    if (GdmSystemMenu &&
-		GdmChooserButton)
+	    if (gdm_get_value_bool (GDM_KEY_SYSTEM_MENU) &&
+		gdm_get_value_bool (GDM_KEY_CHOOSER_BUTTON))
 		    d->use_chooser = TRUE;
 	    status = DISPLAY_REMANAGE;
 	    /* go around the display loop detection, these are short
@@ -1638,15 +816,15 @@ gdm_cleanup_children (void)
     /* checkout if we can actually do stuff */
     switch (status) {
     case DISPLAY_REBOOT:
-	    if (GdmRebootReal == NULL)
+	    if (gdm_get_value_string (GDM_KEY_REBOOT) == NULL)
 		    status = DISPLAY_REMANAGE;
 	    break;
     case DISPLAY_HALT:
-	    if (GdmHaltReal == NULL)
+	    if (gdm_get_value_string (GDM_KEY_HALT) == NULL)
 		    status = DISPLAY_REMANAGE;
 	    break;
     case DISPLAY_SUSPEND:
-	    if (GdmSuspendReal == NULL)
+	    if (gdm_get_value_string (GDM_KEY_SUSPEND) == NULL)
 		    status = DISPLAY_REMANAGE;
 	    break;
     default:
@@ -1979,7 +1157,7 @@ create_connections (void)
 	int p[2];
 	gchar *path;
 
-	path = g_build_filename (GdmServAuthDir, ".gdmfifo", NULL);
+	path = g_build_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), ".gdmfifo", NULL);
 	fifoconn = gdm_connection_open_fifo (path, 0660);
 	g_free (path);
 
@@ -2162,7 +1340,7 @@ gdm_make_global_cookie (void)
 	gdm_global_cookie = faked.cookie;
 	gdm_global_bcookie = faked.bcookie;
 
-	file = g_build_filename (GdmServAuthDir, ".cookie", NULL);
+	file = g_build_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), ".cookie", NULL);
 	VE_IGNORE_EINTR (unlink (file));
 
 	oldmode = umask (077);
@@ -2190,10 +1368,11 @@ gdm_make_global_cookie (void)
 int 
 main (int argc, char *argv[])
 {
+    FILE *pf;
     sigset_t mask;
     struct sigaction sig, child, abrt;
-    FILE *pf;
     poptContext ctx;
+    gchar *pidfile;
     int nextopt;
     const char *charset;
 
@@ -2248,7 +1427,6 @@ main (int argc, char *argv[])
     /* XDM compliant error message */
     if G_UNLIKELY (getuid () != 0) {
 	    /* make sure the pid file doesn't get wiped */
-	    GdmPidFile = NULL;
 	    gdm_fail (_("Only root wants to run gdm\n"));
     }
 
@@ -2278,20 +1456,23 @@ main (int argc, char *argv[])
     /* Parse configuration file */
     gdm_config_parse();
 
+    pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
+
     /* Check if another gdm process is already running */
-    if (access (GdmPidFile, R_OK) == 0) {
+    if (access (pidfile, R_OK) == 0) {
 
         /* Check if the existing process is still alive. */
         gint pidv;
 
-        pf = fopen (GdmPidFile, "r");
+        pf = fopen (pidfile, "r");
 
         if (pf != NULL &&
 	    fscanf (pf, "%d", &pidv) == 1 &&
 	    kill (pidv, 0) == 0 &&
 	    linux_only_is_running (pidv)) {
 		/* make sure the pid file doesn't get wiped */
-		GdmPidFile = NULL;
+		gdm_set_value_string (GDM_KEY_PID_FILE, NULL);
+		pidfile = NULL;
 		VE_IGNORE_EINTR (fclose (pf));
 		gdm_fail (_("gdm already running. Aborting!"));
 	}
@@ -2305,28 +1486,28 @@ main (int argc, char *argv[])
 
 	/* Write pid to pidfile */
 	errno = 0;
-	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
+	if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
 	    errno = 0;
 	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)getpid()));
 	    VE_IGNORE_EINTR (fclose (pf));
 	    if (errno != 0) {
 		    /* FIXME: how to handle this? */
 		    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-				  GdmPidFile, strerror (errno));
+				  pidfile, strerror (errno));
 		    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-			       GdmPidFile, strerror (errno));
+			       pidfile, strerror (errno));
 
 	    }
 	} else if (errno != 0) {
 	    /* FIXME: how to handle this? */
 		gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-			      GdmPidFile, strerror (errno));
+			      pidfile, strerror (errno));
 	    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-		       GdmPidFile, strerror (errno));
+		       pidfile, strerror (errno));
 
 	}
 
-	VE_IGNORE_EINTR (chdir (GdmServAuthDir));
+	VE_IGNORE_EINTR (chdir (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)));
 	umask (022);
     }
     else
@@ -2430,11 +1611,11 @@ main (int argc, char *argv[])
     gdm_debug ("gdm_main: Here we go...");
 
 #ifdef  HAVE_LOGINDEVPERM
-    di_devperm_login("/dev/console", GdmUserId, GdmGroupId, NULL);
+    di_devperm_login("/dev/console", gdm_get_gdmuid(), gdm_get_gdmgid(), NULL);
 #endif  /* HAVE_LOGINDEVPERM */
 
     /* Init XDMCP if applicable */
-    if (GdmXdmcp && ! gdm_wait_for_go)
+    if (gdm_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go)
 	gdm_xdmcp_init();
 
     create_connections ();
@@ -2450,7 +1631,7 @@ main (int argc, char *argv[])
     gdm_start_first_unborn_local (0 /* delay */);
 
     /* Accept remote connections */
-    if (GdmXdmcp && ! gdm_wait_for_go) {
+    if (gdm_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
 	gdm_debug ("Accepting XDMCP connections...");
 	gdm_xdmcp_run();
     }
@@ -2501,7 +1682,7 @@ static void
 write_x_servers (GdmDisplay *d)
 {
 	FILE *fp;
-	char *file = gdm_make_filename (GdmServAuthDir, d->name, ".Xservers");
+	char *file = gdm_make_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), d->name, ".Xservers");
 	int i;
 	int bogusname;
 
@@ -2600,7 +1781,7 @@ static void
 gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	/* Evil!, all this for debugging? */
-	if G_UNLIKELY (GdmDebug) {
+	if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
 		if (strncmp (msg, GDM_SOP_COOKIE " ",
 			     strlen (GDM_SOP_COOKIE " ")) == 0) {
 			char *s = g_strndup
@@ -2859,7 +2040,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 					if (d->attached && di->attached && di->vt > 0)
 						migratable = TRUE;
-					else if (GdmXdmcpProxyReconnect != NULL &&
+					else if (gdm_get_value_string (GDM_KEY_XDMCP_PROXY_RECONNECT) != NULL &&
 						 d->type == TYPE_XDMCP_PROXY && di->type == TYPE_XDMCP_PROXY)
 						migratable = TRUE;
 
@@ -3086,7 +2267,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			send_slave_command (d, GDM_NOTIFY_GO);
 		}
 		/* Init XDMCP if applicable */
-		if (old_wait && GdmXdmcp) {
+		if (old_wait && gdm_get_value_bool (GDM_KEY_XDMCP)) {
 			if (gdm_xdmcp_init()) {
 				gdm_debug ("Accepting XDMCP connections...");
 				gdm_xdmcp_run();
@@ -3112,8 +2293,8 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 	} else if (strcmp (msg, GDM_SOP_SUSPEND_MACHINE) == 0) {
 		gdm_info (_("Master suspending..."));
-		if (GdmSuspendReal != NULL &&
-		    GdmSystemMenu) {
+		if (gdm_get_value_string (GDM_KEY_SUSPEND) != NULL &&
+		    gdm_get_value_string (GDM_KEY_SYSTEM_MENU)) {
 			suspend_machine ();
 		}
 	} else if (strncmp (msg, GDM_SOP_CHOSEN_THEME " ",
@@ -3147,7 +2328,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			send_slave_ack (d, NULL);
 		}
 	} else if (strcmp(msg, GDM_SOP_FLEXI_XSERVER) == 0) {
-		handle_flexi_server (NULL, TYPE_FLEXI, GdmStandardXServer,
+		handle_flexi_server (NULL, TYPE_FLEXI, gdm_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
 				     NULL, 0, NULL, NULL);
@@ -3394,7 +2575,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		NEVER_FAILS_seteuid (0);
 
 		if (setegid (pw->pw_gid) < 0)
-			NEVER_FAILS_setegid (GdmGroupId);
+			NEVER_FAILS_setegid (gdm_get_gdmgid);
 
 		if (seteuid (xnest_uid) < 0) {
 			if (conn != NULL)
@@ -3433,7 +2614,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		server_uid = xnest_uid;
 	}
 
-	if (flexi_servers >= GdmFlexibleXServers) {
+	if (flexi_servers >= gdm_get_value_int (GDM_KEY_FLEXIBLE_XSERVERS)) {
 		if (conn != NULL)
 			gdm_connection_write (conn,
 					      "ERROR 1 No more flexi servers\n");
@@ -3519,7 +2700,7 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
     char *full;
     char *val;
 
-    if (!(GdmDynamicXServers)) {
+    if (!(gdm_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS))) {
         gdm_connection_write (conn, "ERROR 200 Dynamic Displays not allowed\n");
         return;
     }
@@ -3560,13 +2741,13 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
         }
         displays = g_slist_insert_sorted (displays,
                                           disp,
-                                          compare_displays);
+                                          gdm_compare_displays);
 
         disp->dispstat = DISPLAY_CONFIG;
         disp->removeconf = FALSE;
 
-        if (disp_num > high_display_num)
-            high_display_num = disp_num;
+        if (disp_num > gdm_get_high_display_num())
+            gdm_set_high_display_num (disp_num);
 
         gdm_connection_write (conn, "OK\n");
         return;
@@ -3614,412 +2795,6 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
         /* Now we wait for the server to start up (or not) */
         return;
     }
-}
-
-static gboolean
-is_key (const char *key1, const char *key2)
-{
-	char *key1d, *key2d, *p;
-
-	key1d = g_strdup (key1);
-	key2d = g_strdup (key2);
-
-	g_strstrip (key1d);
-	p = strchr (key1d, '=');
-	if (p != NULL)
-		*p = '\0';
-
-	g_strstrip (key2d);
-	p = strchr (key2d, '=');
-	if (p != NULL)
-		*p = '\0';
-
-	if (strcmp (key1d, key2d) == 0) {
-		g_free (key1d);
-		g_free (key2d);
-		return TRUE;
-	} else {
-		g_free (key1d);
-		g_free (key2d);
-		return FALSE;
-	}
-}
-
-static void
-notify_displays_int (const char *key, int val)
-{
-	GSList *li;
-	for (li = displays; li != NULL; li = li->next) {
-		GdmDisplay *disp = li->data;
-		if (disp->master_notify_fd >= 0) {
-			gdm_fdprintf (disp->master_notify_fd,
-				      "%c%s %d\n",
-				      GDM_SLAVE_NOTIFY_KEY, key, val);
-			if (disp->slavepid > 1)
-				kill (disp->slavepid, SIGUSR2);
-		}
-	}
-}
-
-static void
-notify_displays_string (const char *key, const char *val)
-{
-	GSList *li;
-	for (li = displays; li != NULL; li = li->next) {
-		GdmDisplay *disp = li->data;
-		if (disp->master_notify_fd >= 0) {
-			gdm_fdprintf (disp->master_notify_fd,
-				      "%c%s %s\n",
-				      GDM_SLAVE_NOTIFY_KEY, key, val);
-			if (disp->slavepid > 1)
-				kill (disp->slavepid, SIGUSR2);
-		}
-	}
-}
-
-static gboolean
-update_config (const char *key)
-{
-	struct stat statbuf;
-	VeConfig *cfg;
-	int r;
-
-	VE_IGNORE_EINTR (r = stat (config_file, &statbuf));
-	if G_UNLIKELY (r < 0) {
-		/* if the file didn't exist before either */
-		if (config_file_mtime == 0)
-			return TRUE;
-	} else {
-		if (config_file_mtime == statbuf.st_mtime)
-			return TRUE;
-		config_file_mtime = statbuf.st_mtime;
-	}
-
-	cfg = ve_config_new (config_file);
-
-	if (is_key (key, GDM_KEY_ALLOWROOT)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ALLOWROOT);
-		if (ve_bool_equal (val, GdmAllowRoot))
-			goto update_config_ok;
-		GdmAllowRoot = val;
-
-		notify_displays_int (GDM_NOTIFY_ALLOWROOT, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_ALLOWREMOTEROOT)) {
-		gchar *temp;
-		gboolean val;
-		struct stat statbuf;
-		int r;
-
-		/* First try to read values from /etc/default/login */
-		VE_IGNORE_EINTR (r = stat ("/etc/default/login", &statbuf));
-		if (r < 0) {
-			gchar *temp = gdm_read_default ("CONSOLE=");
-			if (temp == NULL || g_ascii_strcasecmp (temp, "/dev/console") != 0)
-				val = TRUE;
-			else
-				val = FALSE;
-			g_free (temp);
-		} else {
-			val = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
-		}
-
-		if (ve_bool_equal (val, GdmAllowRemoteRoot))
-			goto update_config_ok;
-		GdmAllowRemoteRoot = val;
-
-		notify_displays_int (GDM_NOTIFY_ALLOWREMOTEROOT, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_ALLOWREMOTEAUTOLOGIN)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEAUTOLOGIN);
-		if (ve_bool_equal (val, GdmAllowRemoteAutoLogin))
-			goto update_config_ok;
-		GdmAllowRemoteAutoLogin = val;
-
-		notify_displays_int (GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_SYSMENU)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_SYSMENU);
-		if (ve_bool_equal (val, GdmSystemMenu))
-			goto update_config_ok;
-		GdmSystemMenu = val;
-
-		notify_displays_int (GDM_NOTIFY_SYSMENU, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_CONFIG_AVAILABLE)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_CONFIG_AVAILABLE);
-		if (ve_bool_equal (val, GdmConfigAvailable))
-			goto update_config_ok;
-		GdmConfigAvailable = val;
-
-		notify_displays_int (GDM_NOTIFY_CONFIG_AVAILABLE, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_CHOOSER_BUTTON)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_CHOOSER_BUTTON);
-		if (ve_bool_equal (val, GdmChooserButton))
-			goto update_config_ok;
-		GdmChooserButton = val;
-
-		notify_displays_int (GDM_NOTIFY_CHOOSER_BUTTON, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_RETRYDELAY)) {
-		int val = ve_config_get_int (cfg, GDM_KEY_RETRYDELAY);
-		if (val == GdmRetryDelay)
-			goto update_config_ok;
-		GdmRetryDelay = val;
-
-		notify_displays_int (GDM_NOTIFY_RETRYDELAY, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_DISALLOWTCP)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_DISALLOWTCP);
-		if (ve_bool_equal (val, GdmDisallowTCP))
-			goto update_config_ok;
-		GdmDisallowTCP = val;
-
-		notify_displays_int (GDM_NOTIFY_DISALLOWTCP, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_GREETER)) {
-		char *val = ve_config_get_string (cfg, GDM_KEY_GREETER);
-		if (strcmp (ve_sure_string (val), ve_sure_string (GdmGreeter)) == 0) {
-			g_free (val);
-			goto update_config_ok;
-		}
-		g_free (GdmGreeter);
-		GdmGreeter = val;
-
-		notify_displays_string (GDM_NOTIFY_GREETER, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_REMOTEGREETER)) {
-		char *val = ve_config_get_string (cfg, GDM_KEY_REMOTEGREETER);
-		if (strcmp (ve_sure_string (val), ve_sure_string (GdmRemoteGreeter)) == 0) {
-			g_free (val);
-			goto update_config_ok;
-		}
-		g_free (GdmRemoteGreeter);
-		GdmRemoteGreeter = val;
-
-		notify_displays_string (GDM_NOTIFY_REMOTEGREETER, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_TIMED_LOGIN) ||
-		   is_key (key, GDM_KEY_TIMED_LOGIN_ENABLE)) {
-		gboolean enable = ve_config_get_bool (cfg, GDM_KEY_TIMED_LOGIN_ENABLE);
-		char *val;
-
-		/* if not enabled, we just don't care */
-		if ( ! enable && ! GdmTimedLoginEnable)
-			goto update_config_ok;
-
-		val = ve_config_get_string (cfg, GDM_KEY_TIMED_LOGIN);
-		if (strcmp (ve_sure_string (val),
-			    ve_sure_string (GdmTimedLogin)) == 0 &&
-		    ve_bool_equal (enable, GdmTimedLoginEnable)) {
-			g_free (val);
-			goto update_config_ok;
-		}
-
-		GdmTimedLoginEnable = enable;
-		g_free (GdmTimedLogin);
-		if (GdmTimedLoginEnable) {
-			GdmTimedLogin = val;
-		} else {
-			g_free (val);
-			GdmTimedLogin = NULL;
-		}
-
-		notify_displays_string (GDM_NOTIFY_TIMED_LOGIN,
-					ve_sure_string (GdmTimedLogin));
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_TIMED_LOGIN_DELAY)) {
-		int val = ve_config_get_int (cfg, GDM_KEY_TIMED_LOGIN_DELAY);
-		if (val == GdmTimedLoginDelay)
-			goto update_config_ok;
-		GdmTimedLoginDelay = val;
-
-		notify_displays_int (GDM_NOTIFY_TIMED_LOGIN_DELAY, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_XDMCP)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_XDMCP);
-		if (ve_bool_equal (val, GdmXdmcp))
-			goto update_config_ok;
-		GdmXdmcp = val;
-
-		if (GdmXdmcp) {
-			if (gdm_xdmcp_init ()) {
-				gdm_debug ("Accepting XDMCP connections...");
-				gdm_xdmcp_run ();
-			}
-		} else {
-			gdm_debug ("Turning off XDMCP connections...");
-			gdm_xdmcp_close ();
-		}
-
-		goto update_config_ok;
-	} else if (is_key (key, "xdmcp/PARAMETERS")) {
-		GdmDispPerHost = ve_config_get_int (cfg, GDM_KEY_DISPERHOST);
-		GdmMaxPending = ve_config_get_int (cfg, GDM_KEY_MAXPEND);
-		GdmMaxManageWait = ve_config_get_int (cfg, GDM_KEY_MAXWAIT);
-		GdmMaxSessions = ve_config_get_int (cfg, GDM_KEY_MAXSESS);
-		GdmIndirect = ve_config_get_bool (cfg, GDM_KEY_INDIRECT);
-		GdmMaxIndirect = ve_config_get_int (cfg, GDM_KEY_MAXINDIR);
-		GdmMaxIndirectWait = ve_config_get_int (cfg, GDM_KEY_MAXINDWAIT);
-		GdmPingInterval = ve_config_get_int (cfg, GDM_KEY_PINGINTERVAL);
-	} else if (is_key (key, GDM_KEY_DEBUG)) {
-		GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
-	} else if (is_key (key, GDM_KEY_DEBUG_GESTURES)) {
-		GdmDebugGestures = ve_config_get_bool (cfg, GDM_KEY_DEBUG_GESTURES);
-	} else if (is_key (key, GDM_KEY_UDPPORT)) {
-		int val = ve_config_get_int (cfg, GDM_KEY_UDPPORT);
-		if (GdmPort == val)
-			goto update_config_ok;
-		GdmPort = val;
-
-		if (GdmXdmcp) {
-			gdm_xdmcp_close ();
-			if (gdm_xdmcp_init ())
-				gdm_xdmcp_run ();
-		}
-	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_READY_FILE)) {
-		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
-		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginReadyFile)) == 0) {
-			g_free (val);
-			goto update_config_ok;
-		}
-		g_free (GdmSoundOnLoginReadyFile);
-		GdmSoundOnLoginReadyFile = val;
-
-		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE)) {
-		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
-		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginSuccessFile)) == 0) {
-			g_free (val);
-			goto update_config_ok;
-		}
-		g_free (GdmSoundOnLoginSuccessFile);
-		GdmSoundOnLoginSuccessFile = val;
-
-		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE)) {
-		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
-		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginFailureFile)) == 0) {
-			g_free (val);
-			goto update_config_ok;
-		}
-		g_free (GdmSoundOnLoginFailureFile);
-		GdmSoundOnLoginFailureFile = val;
-
-		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_GTK_MODULES_LIST)) {
-		char *val = ve_config_get_string (cfg, GDM_KEY_GTK_MODULES_LIST);
-		if (strcmp (ve_sure_string (val), ve_sure_string (GdmGtkModulesList)) == 0) {
-			g_free (val);
-			goto update_config_ok;
-		}
-		g_free (GdmGtkModulesList);
-		GdmGtkModulesList = val;
-
-		notify_displays_string (GDM_NOTIFY_GTK_MODULES_LIST, val);
-
-		goto update_config_ok;
-	} else if (is_key (key, GDM_KEY_ADD_GTK_MODULES)) {
-		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ADD_GTK_MODULES);
-		if (ve_bool_equal (val, GdmAddGtkModules))
-			goto update_config_ok;
-		GdmAddGtkModules = val;
-
-		notify_displays_int (GDM_NOTIFY_ADD_GTK_MODULES, val);
-
-		goto update_config_ok;
-	}
-
-	ve_config_destroy (cfg);
-	return FALSE;
-
-update_config_ok:
-
-	ve_config_destroy (cfg);
-	return TRUE;
-}
-
-/*
- * These fuctions print out the runtime value if present, else print out the #define key
- * which include compiled-in default settings if there isn't a setting in the gdm.conf
- * file.
- */
-static gboolean
-print_defaultbool_if_key (VeConfig *cfg, GdmConnection *conn, const char *checkkey, char *key, gboolean *runtime_val)
-{
-	gboolean val;
-
-	if (is_key (checkkey, key)) {
-		if (runtime_val != NULL) 
-			val = *runtime_val;
-		else
-			val = ve_config_get_bool (cfg, key);
-
-		if (val)
-			gdm_connection_printf (conn, "OK true\n");
-		else
-			gdm_connection_printf (conn, "OK false\n");
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-print_defaultstring_if_key (VeConfig *cfg, GdmConnection *conn, const char *checkkey, char *key, char *runtime_val)
-{
-	char *val;
-
-	if (is_key (checkkey, key)) {
-		if (runtime_val != NULL) 
-			val = runtime_val;
-		else
-			val = ve_config_get_string (cfg, key);
-
-		if (val != NULL) {
-			gdm_connection_printf (conn, "OK %s\n", val);
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-static gboolean
-print_defaultint_if_key (VeConfig *cfg, GdmConnection *conn, const char *checkkey, char *key, int *runtime_val)
-{
-	int val;
-
-	if (is_key (checkkey, key)) {
-		if (runtime_val != NULL) 
-			val = *runtime_val;
-		else
-			val = ve_config_get_int (cfg, key);
-
-		gdm_connection_printf (conn, "OK %d\n", val);
-		return TRUE;
-	}
-
-	return FALSE;
 }
 
 static void
@@ -4088,7 +2863,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 					      "ERROR 100 Not authenticated\n");
 			return;
 		}
-		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
+		handle_flexi_server (conn, TYPE_FLEXI, gdm_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
 				     NULL, 0, NULL, NULL);
@@ -4096,7 +2871,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
 		char *name;
 		const char *command = NULL;
-		GdmXServer *svr;
+		GdmXserver *svr;
 
 		/* Only allow locally authenticated connections */
 		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
@@ -4120,12 +2895,12 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			 * long and dangerous */
 			gdm_error (_("Unknown server type requested; using "
 				     "standard server."));
-			command = GdmStandardXServer;
+			command = gdm_get_value_string (GDM_KEY_STANDARD_XSERVER);
 		} else if G_UNLIKELY ( ! svr->flexible) {
 			gdm_error (_("Requested server %s not allowed to be "
 				     "used for flexible servers; using "
 				     "standard server."), name);
-			command = GdmStandardXServer;
+			command = gdm_get_value_string (GDM_KEY_STANDARD_XSERVER);
 		} else {
 			command = svr->command;
 		}
@@ -4164,7 +2939,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		}
 		
-		handle_flexi_server (conn, TYPE_FLEXI_XNEST, GdmXnest,
+		handle_flexi_server (conn, TYPE_FLEXI_XNEST, gdm_get_value_string (GDM_KEY_XNEST),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
 				     dispname, uid, xauthfile, cookie);
@@ -4251,167 +3026,22 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		     strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
 		const char *key = 
 			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
+		char *val;
 
-		if ( ! update_config (key)) {
+		if (! gdm_update_config (key))
 			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
-		} else {
+		else
 			gdm_connection_write (conn, "OK\n");
-		}
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
-		VeConfig *cfg = ve_config_get (config_file);
-		const char *key = 
-			&msg[strlen (GDM_SUP_GET_CONFIG " ")];
+		const char *key = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
+		char *retval;
 
-		/* If the value is loaded by the daemon, print out value from memory.
-		 * This is more useful than checking the config file, since the config
-		 * file may have changed since GDM was started, and may not be
-		 * currently used.
-		 */
-		if (!(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWREMOTEROOT, &GdmAllowRemoteRoot)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWROOT, &GdmAllowRoot)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWREMOTEAUTOLOGIN, &GdmAllowRemoteAutoLogin)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_PASSWORDREQUIRED, &GdmPasswordRequired)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_AUTOMATICLOGIN_ENABLE, &GdmAutomaticLoginEnable)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALWAYSRESTARTSERVER, &GdmAlwaysRestartServer)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ADD_GTK_MODULES, &GdmAddGtkModules)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DOUBLELOGINWARNING, &GdmDoubleLoginWarning)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION, &GdmAlwaysLoginCurrentSession)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DISPLAY_LAST_LOGIN, &GdmDisplayLastLogin)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_KILLIC, &GdmKillInitClients)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CONFIG_AVAILABLE, &GdmConfigAvailable)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SYSMENU, &GdmSystemMenu)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CHOOSER_BUTTON, &GdmChooserButton)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BROWSER, &GdmBrowser)) &&
-#ifdef ENABLE_IPV6
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_MULTICAST, &GdmMulticast)) &&
-#endif
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_NEVERPLACECOOKIESONNFS, &GdmNeverPlaceCookiesOnNFS)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CONSOLE_NOTIFY, &GdmConsoleNotify)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_TIMED_LOGIN_ENABLE, &GdmTimedLoginEnable)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWROOT, &GdmAllowRoot)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_CHECKDIROWNER, &GdmCheckDirOwner)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_XDMCP, &GdmXdmcp)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_INDIRECT, &GdmIndirect)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_XDMCP_PROXY, &GdmXdmcpProxy)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DYNAMIC_XSERVERS, &GdmDynamicXServers)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_VTALLOCATION, &GdmVTAllocation)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DISALLOWTCP, &GdmDisallowTCP)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS, &GdmSoundOnLoginSuccess)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_FAILURE, &GdmSoundOnLoginFailure)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEBUG, &GdmDebug)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEBUG_GESTURES, &GdmDebugGestures)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOW_GTK_THEME_CHANGE, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_TITLE_BAR, NULL)) &&
-                    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_INCLUDEALL, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEFAULT_WELCOME, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_DEFAULT_REMOTEWELCOME, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_LOCK_POSITION, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDSCALETOFIT, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_RUNBACKGROUNDPROGALWAYS, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SET_POSITION, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_QUIVER, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SHOW_GNOME_FAILSAFE, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SHOW_XTERM_FAILSAFE, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_SHOW_LAST_SESSION, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_USE_24_CLOCK, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ENTRY_CIRCLES, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ENTRY_INVISIBLE, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME_RAND, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_BROADCAST, NULL)) &&
-		    !(print_defaultbool_if_key (cfg, conn, key, GDM_KEY_ALLOWADD, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_PATH, GdmDefaultPath)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_ROOTPATH, GdmRootPath)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CONSOLE_CANNOT_HANDLE, GdmConsoleCannotHandle)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CHOOSER, GdmChooser)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GREETER, GdmGreeter)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CONFIGURATOR, GdmConfigurator)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_POSTLOGIN, GdmPostLogin)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_PRESESS, GdmPreSession)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_POSTSESS, GdmPostSession)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_FAILSAFE_XSERVER, GdmFailsafeXServer)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XKEEPSCRASHING, GdmXKeepsCrashing)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BASEXSESSION, GdmXsession)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_REMOTEGREETER, GdmRemoteGreeter)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INITDIR, GdmDisplayInit)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_AUTOMATICLOGIN, GdmAutomaticLogin)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTK_MODULES_LIST, GdmGtkModulesList)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_REBOOT, GdmReboot)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HALT, GdmHalt)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SUSPEND, GdmSuspend)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOGDIR, GdmLogDir)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_PIDFILE, GdmPidFile)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_FACEDIR, GdmGlobalFaceDir)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SERVAUTH, GdmServAuthDir)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHDIR, GdmUserAuthDir)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFILE, GdmUserAuthFile)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_UAUTHFB, GdmUserAuthFB)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SESSDIR, GdmSessDir)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_DEFAULTSESSION, GdmDefaultSession)) &&
-#ifdef ENABLE_IPV6
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_MULTICAST_ADDR, GdmMulticastAddr)) &&
-#endif
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_USER, GdmUser)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GROUP, GdmGroup)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTKRC, GdmGtkRC)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTK_THEME, GdmGtkTheme)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_TIMED_LOGIN, GdmTimedLogin)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_WILLING, GdmWilling)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XDMCP_PROXY_XSERVER, GdmXdmcpProxyCommand)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XDMCP_PROXY_RECONNECT, GdmXdmcpProxyReconnect)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_STANDARD_XSERVER, GdmStandardXServer)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_XNEST, GdmXnest)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SOUND_PROGRAM, GdmSoundProgram)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE, GdmSoundOnLoginSuccessFile)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE, GdmSoundOnLoginFailureFile)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GTK_THEMES_TO_ALLOW, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INCLUDE, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_EXCLUDE, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_FACE, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOCFILE, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_LOGO, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_CHOOSER_BUTTON_LOGO, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_WELCOME, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_REMOTEWELCOME, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDPROG, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDIMAGE, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDCOLOR, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME_DIR, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEMES, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_GRAPHICAL_THEME_COLOR, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FILE, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FONT, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_INFO_MSG_FONT, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HOST, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HOSTDIR, NULL)) &&
-		    !(print_defaultstring_if_key (cfg, conn, key, GDM_KEY_HOSTS, NULL)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_XINERAMASCREEN, &GdmXineramaScreen)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_RETRYDELAY, &GdmRetryDelay)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_TIMED_LOGIN_DELAY, &GdmTimedLoginDelay)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_RELAXPERM, &GdmRelaxPerms)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXFILE, &GdmUserMaxFile)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_DISPERHOST, &GdmDispPerHost)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXPEND, &GdmMaxPending)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXWAIT, &GdmMaxManageWait)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXSESS, &GdmMaxSessions)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_UDPPORT, &GdmPort)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXINDIR, &GdmMaxIndirect)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MAXINDWAIT, &GdmMaxIndirectWait)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_PINGINTERVAL, &GdmPingInterval)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_FLEXIBLE_XSERVERS, &GdmFlexibleXServers)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_FIRSTVT, &GdmFirstVT)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_POSITIONX, NULL)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_POSITIONY, NULL)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_MINIMALUID, NULL)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_ICONWIDTH, NULL)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_ICONHEIGHT, NULL)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_BACKGROUNDTYPE, NULL)) &&
-		    !(print_defaultint_if_key (cfg, conn, key, GDM_KEY_SCAN, NULL))) {
-
-				gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
-		}
+                gdm_config_to_string (key, &retval);
+		if (retval != NULL)
+			gdm_connection_printf (conn, "OK %s", retval);
+		else 
+                	gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;
 		GSList *li;
@@ -4426,6 +3056,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		GdmDisplay *disp;
 		GdmLogoutAction logout_action;
 		GString *msg;
+		gboolean sysmenu = gdm_get_value_bool (GDM_KEY_SYSTEM_MENU);
 
 		disp = gdm_connection_get_display (conn);
 
@@ -4445,25 +3076,22 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (logout_action == GDM_LOGOUT_ACTION_NONE)
 			logout_action = safe_logout_action;
 
-		if (GdmSystemMenu &&
-		    disp->attached &&
-		    ! ve_string_empty (GdmHaltReal)) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_get_value_string (GDM_KEY_HALT))) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_HALT);
 			if (logout_action == GDM_LOGOUT_ACTION_HALT)
 				g_string_append (msg, "!");
 			sep = ";";
 		}
-		if (GdmSystemMenu &&
-		    disp->attached &&
-		    ! ve_string_empty (GdmRebootReal)) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_get_value_string (GDM_KEY_REBOOT))) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_REBOOT);
 			if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
 				g_string_append (msg, "!");
 			sep = ";";
 		}
-		if (GdmSystemMenu &&
-		    disp->attached &&
-		    ! ve_string_empty (GdmSuspendReal)) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_get_value_string (GDM_KEY_SUSPEND))) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
 			if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
 				g_string_append (msg, "!");
@@ -4478,6 +3106,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			&msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
+		gboolean sysmenu = gdm_get_value_bool (GDM_KEY_SYSTEM_MENU);
 
 		disp = gdm_connection_get_display (conn);
 
@@ -4496,25 +3125,22 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			disp->logout_action = GDM_LOGOUT_ACTION_NONE;
 			was_ok = TRUE;
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
-			if (GdmSystemMenu &&
-			    disp->attached &&
-			    ! ve_string_empty (GdmHaltReal)) {
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_HALT))) {
 				disp->logout_action =
 					GDM_LOGOUT_ACTION_HALT;
 				was_ok = TRUE;
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
-			if (GdmSystemMenu &&
-			    disp->attached &&
-			    ! ve_string_empty (GdmRebootReal)) {
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_REBOOT))) {
 				disp->logout_action =
 					GDM_LOGOUT_ACTION_REBOOT;
 				was_ok = TRUE;
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
-			if (GdmSystemMenu &&
-			    disp->attached &&
-			    ! ve_string_empty (GdmSuspendReal)) {
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_SUSPEND))) {
 				disp->logout_action =
 					GDM_LOGOUT_ACTION_SUSPEND;
 				was_ok = TRUE;
@@ -4532,6 +3158,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			&msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
+		gboolean sysmenu = gdm_get_value_bool (GDM_KEY_SYSTEM_MENU);
 
 		disp = gdm_connection_get_display (conn);
 
@@ -4550,25 +3177,22 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 			was_ok = TRUE;
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
-			if (GdmSystemMenu &&
-			    disp->attached &&
-			    ! ve_string_empty (GdmHaltReal)) {
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_HALT))) {
 				safe_logout_action =
 					GDM_LOGOUT_ACTION_HALT;
 				was_ok = TRUE;
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
-			if (GdmSystemMenu &&
-			    disp->attached &&
-			    ! ve_string_empty (GdmRebootReal)) {
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_REBOOT))) {
 				safe_logout_action =
 					GDM_LOGOUT_ACTION_REBOOT;
 				was_ok = TRUE;
 			}
 		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
-			if (GdmSystemMenu &&
-			    disp->attached &&
-			    ! ve_string_empty (GdmSuspendReal)) {
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_SUSPEND))) {
 				safe_logout_action =
 					GDM_LOGOUT_ACTION_SUSPEND;
 				was_ok = TRUE;

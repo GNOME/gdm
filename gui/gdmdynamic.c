@@ -159,7 +159,7 @@ main (int argc, char *argv[])
 	}
 
         GdmServAuthDir = ve_config_get_string (ve_config_get (config_file),
-                                               GDM_KEY_SERVAUTH);
+                                               GDM_KEY_SERV_AUTHDIR);
 	g_free (config_file);
         filename = g_build_filename (GdmServAuthDir, ".cookie", NULL);
 

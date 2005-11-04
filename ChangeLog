@@ -1,3 +1,39 @@
+2005-11-03  Brian Cameron  <brian.cameron@sun.com>
+
+	Redesign of daemon configuraton.  Now all vicious-extensions
+	logic is in gdmconfig.[ch].  This greatly simplifies how the
+	UPDATE_CONFIG, and GET_CONFIG commands work and makes it
+	easier to update the way GDM handles configuration.  Changed
+	ve_setenv/ve_unsetenv to g_setenv/g_unsetenv since GDM requires
+	a newer version of GLIB than could possibly cause the old
+	ve versions to get used.
+
+	* daemon/gdmconfig.[ch]: New logic for interacting with
+	  vicious-extensions.
+	* daemon/gdm.h: Updated comments and changed the #define
+	  for many configuration options so the naming is more
+	  consistant.  Now the #defines more closely match the
+	  keys in gdm.conf and more consistantly use the underscore.
+	* daemon/auth.c, daemon/choose.c, daemon/cookie.c,
+	  daemon/display.c, daemon/errorgui.c, daemon/gdm-net.c,
+	  daemon/gdm.c, daemon/getvt.c, daemon/misc.c,
+	  daemon/server.c, daemon/slave.c, daemon/verify-crypt.c,
+	  daemon/verify-pam.c, daemon/verify-shadow.c,
+	  daemon/xdmcp.c: Reorganized configuration.
+	* daemon/auth.h, daemon/cookie.h, daemon/display.h,
+	  daemon/errorgui.h, daemon/filecheck.h, daemon/gdm-net.h,
+	  daemon/getvt.h, daemon/misc.h, daemon/server.h,
+	  daemon/slave.h, daemon/verify.h, daemon/xdmcp.h:
+	  Now include gdmconfig.h instead of vicious.h and changed
+	  "Gnome" to "GNOME" in comment.
+	* daemon/Makefile.am: Added new gdmconfig.[ch]
+	* gui/gdmXnestChooser.c, gui/gdmchooser.c, gui/gdmcomm.c,
+	  gui/gdmdynamic.c, gui/gdmflexiserver.c, gui/gdmlogin.c,
+	  gui/gdmphotosetup.c, gui/gdmsetup.c, gui/greeter/greeter.c, 
+	  gui/greeter/greeter_item_capslock.c,
+	  utils/gdm-dmx-reconnect-proxy.c: Updated to reflect the
+	  new configuration #defines.
+
 2005-10-27  Dennis Cranston  <dennis_cranston@yahoo.com>
 
 	Fix bug #314685, "Gdmsetup UI fixes".  Based on redesign mockups

@@ -885,9 +885,9 @@ gdm_login_parse_config (void)
     }
 
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-	    greeter_Welcome_key = GDM_KEY_REMOTEWELCOME;
-	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_REMOTEWELCOME;
-	    greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_REMOTEWELCOME_BACKTEST;
+	    greeter_Welcome_key = GDM_KEY_REMOTE_WELCOME;
+	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_REMOTE_WELCOME;
+	    greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_REMOTE_WELCOME_BACKTEST;
     } else {
 	    greeter_Welcome_key = GDM_KEY_WELCOME;
 	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
@@ -896,12 +896,12 @@ gdm_login_parse_config (void)
 
     config = ve_config_get (config_file);
 
-    GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOWROOT);
-    GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOWREMOTEROOT);
+    GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOW_ROOT);
+    GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOW_REMOTE_ROOT);
     GdmBrowser = ve_config_get_bool (config, GDM_KEY_BROWSER);
     GdmLogo = ve_config_get_string (config, GDM_KEY_LOGO);
     GdmQuiver = ve_config_get_bool (config, GDM_KEY_QUIVER);
-    GdmSystemMenuReal = GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
+    GdmSystemMenuReal = GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSTEM_MENU);
     GdmChooserButtonReal = GdmChooserButton = ve_config_get_bool (config, GDM_KEY_CHOOSER_BUTTON);
     GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
     GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
@@ -911,9 +911,9 @@ gdm_login_parse_config (void)
     GdmInfoMsgFile = ve_config_get_string (config, GDM_KEY_INFO_MSG_FILE);
     GdmInfoMsgFont = ve_config_get_string (config, GDM_KEY_INFO_MSG_FONT);
     GdmTitleBar = ve_config_get_bool (config, GDM_KEY_TITLE_BAR);
-    GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
-    GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
-    GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULTSESSION);
+    GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCALE_FILE);
+    GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSION_DESKTOP_DIR);
+    GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULT_SESSION);
     GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
     GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
 
@@ -929,8 +929,8 @@ gdm_login_parse_config (void)
 		} else {
 		    GdmDefaultWelcome = FALSE;
 		}
-	    } else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
-		if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0) {
+	    } else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
+		if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0) {
 			GdmDefaultWelcome = TRUE;
 		} else {
 			GdmDefaultWelcome = FALSE;
@@ -945,38 +945,38 @@ gdm_login_parse_config (void)
 	    g_free (GdmWelcome);
 	    GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
     } else if (GdmDefaultWelcome &&
-	       strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
+	       strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
 	    g_free (GdmWelcome);
-	    GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
+	    GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
     }
 
-    GdmBackgroundProg = ve_config_get_string (config, GDM_KEY_BACKGROUNDPROG);
-    GdmRunBackgroundProgAlways = ve_config_get_bool (config, GDM_KEY_RUNBACKGROUNDPROGALWAYS);
-    GdmBackgroundProgInitialDelay = ve_config_get_int (config, GDM_KEY_BACKGROUNDPROGINITIALDELAY);
-    GdmRestartBackgroundProgram = ve_config_get_bool (config, GDM_KEY_RESTARTBACKGROUNDPROG);
-    GdmBackgroundProgRestartDelay = ve_config_get_int (config, GDM_KEY_BACKGROUNDPROGRESTARTDELAY);
-    GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
-    GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
-    GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUNDTYPE);
-    GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUNDSCALETOFIT);
-    GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
+    GdmBackgroundProg = ve_config_get_string (config, GDM_KEY_BACKGROUND_PROGRAM);
+    GdmRunBackgroundProgAlways = ve_config_get_bool (config, GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS);
+    GdmBackgroundProgInitialDelay = ve_config_get_int (config, GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY);
+    GdmRestartBackgroundProgram = ve_config_get_bool (config, GDM_KEY_RESTART_BACKGROUND_PROGRAM);
+    GdmBackgroundProgRestartDelay = ve_config_get_int (config, GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY);
+    GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUND_IMAGE);
+    GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUND_COLOR);
+    GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUND_TYPE);
+    GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUND_SCALE_TO_FIT);
+    GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR);
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
-    GdmIncludeAll = ve_config_get_bool (config, GDM_KEY_INCLUDEALL);
+    GdmIncludeAll = ve_config_get_bool (config, GDM_KEY_INCLUDE_ALL);
     GdmInclude = ve_config_get_string (config, GDM_KEY_INCLUDE);
     GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
-    GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMALUID);
-    GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACEDIR);
+    GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMAL_UID);
+    GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACE_DIR);
     GdmDefaultFace = ve_config_get_string (config, GDM_KEY_FACE);
     GdmDebug = ve_config_get_bool (config, GDM_KEY_DEBUG);
-    GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICONWIDTH);
-    GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICONHEIGHT);
-    GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMASCREEN);
+    GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICON_WIDTH);
+    GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICON_HEIGHT);
+    GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMA_SCREEN);
     GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
     GdmUseInvisibleInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_INVISIBLE);
     GdmLockPosition = ve_config_get_bool (config, GDM_KEY_LOCK_POSITION);
     GdmSetPosition = ve_config_get_bool (config, GDM_KEY_SET_POSITION);
-    GdmPositionX = ve_config_get_int (config, GDM_KEY_POSITIONX);
-    GdmPositionY = ve_config_get_int (config, GDM_KEY_POSITIONY);
+    GdmPositionX = ve_config_get_int (config, GDM_KEY_POSITION_X);
+    GdmPositionY = ve_config_get_int (config, GDM_KEY_POSITION_Y);
 
     GdmAllowGtkThemeChange = ve_config_get_bool (config, GDM_KEY_ALLOW_GTK_THEME_CHANGE);
     GdmGtkThemesToAllow = ve_config_get_string (config, GDM_KEY_GTK_THEMES_TO_ALLOW);
@@ -1878,14 +1878,14 @@ get_parent_display (void)
       char *old_xauth = g_strdup (g_getenv ("XAUTHORITY"));
       if (g_getenv ("GDM_PARENT_XAUTHORITY") != NULL)
         {
-	  ve_setenv ("XAUTHORITY",
+	  g_setenv ("XAUTHORITY",
 		     g_getenv ("GDM_PARENT_XAUTHORITY"), TRUE);
 	}
       dsp = XOpenDisplay (g_getenv ("GDM_PARENT_DISPLAY"));
       if (old_xauth != NULL)
-        ve_setenv ("XAUTHORITY", old_xauth, TRUE);
+        g_setenv ("XAUTHORITY", old_xauth, TRUE);
       else
-        ve_unsetenv ("XAUTHORITY");
+        g_unsetenv ("XAUTHORITY");
       g_free (old_xauth);
     }
 
@@ -3404,10 +3404,10 @@ gdm_reread_config (int sig, gpointer data)
 	     ! gdm_common_string_same (config, GdmInfoMsgFile, GDM_KEY_INFO_MSG_FILE) ||
 	     ! gdm_common_string_same (config, GdmInfoMsgFont, GDM_KEY_INFO_MSG_FONT) ||
 	     ! gdm_common_int_same (config,
-			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
-	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
+			 GdmXineramaScreen, GDM_KEY_XINERAMA_SCREEN) ||
+	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSTEM_MENU) ||
 	     ! gdm_common_bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
-	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDEALL) ||
+	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDE_ALL) ||
 	     ! gdm_common_string_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
 	     ! gdm_common_string_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
 	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
@@ -3424,20 +3424,20 @@ gdm_reread_config (int sig, gpointer data)
 		return TRUE;
 	}
 
-	if ( ! gdm_common_string_same (config, GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
-	     ! gdm_common_string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
-	     ! gdm_common_int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
+	if ( ! gdm_common_string_same (config, GdmBackgroundImage, GDM_KEY_BACKGROUND_IMAGE) ||
+	     ! gdm_common_string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUND_COLOR) ||
+	     ! gdm_common_int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUND_TYPE) ||
 	     ! gdm_common_bool_same (config,
 			  GdmBackgroundScaleToFit,
-			  GDM_KEY_BACKGROUNDSCALETOFIT) ||
+			  GDM_KEY_BACKGROUND_SCALE_TO_FIT) ||
 	     ! gdm_common_bool_same (config,
 			  GdmBackgroundRemoteOnlyColor,
-			  GDM_KEY_BACKGROUNDREMOTEONLYCOLOR)) {
-		GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
-		GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
-		GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUNDTYPE);
-		GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUNDSCALETOFIT);
-		GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
+			  GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR)) {
+		GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUND_IMAGE);
+		GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUND_COLOR);
+		GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUND_TYPE);
+		GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUND_SCALE_TO_FIT);
+		GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR);
 
 		gdm_kill_thingies ();
 		setup_background ();
@@ -3522,8 +3522,8 @@ gdm_reread_config (int sig, gpointer data)
 				} else {
 					GdmDefaultWelcome = FALSE;
 				}
-			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
-				if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0) {
+			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
+				if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0) {
 					GdmDefaultWelcome = TRUE;
 				} else {
 					GdmDefaultWelcome = FALSE;
@@ -3535,9 +3535,9 @@ gdm_reread_config (int sig, gpointer data)
 			if (strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
 				g_free (GdmWelcome);
 				GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
-			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
+			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
 				g_free (GdmWelcome);
-				GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
+				GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
 			}
 			resize = TRUE;
 		} else {

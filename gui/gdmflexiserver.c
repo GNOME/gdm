@@ -545,7 +545,7 @@ read_servers (gchar *config_file)
 	while (iter) {
 		if (strncmp (k, "server-", strlen ("server-")) == 0) {
 			char *section;
-			GdmXServer *svr;
+			GdmXserver *svr;
 
 			section = g_strdup_printf ("=%s=/%s/", config_file, k);
 			gnome_config_push_prefix (section);
@@ -560,7 +560,7 @@ read_servers (gchar *config_file)
 				continue;
 			}
 
-			svr = g_new0 (GdmXServer, 1);
+			svr = g_new0 (GdmXserver, 1);
 
 			svr->id = g_strdup (k + strlen ("server-"));
 			svr->name = gnome_config_get_string
@@ -632,7 +632,7 @@ choose_server (void)
 	}
 
 	for (li = xservers; li != NULL; li = li->next) {
-		GdmXServer *svr = li->data;
+		GdmXserver *svr = li->data;
 		w = gtk_radio_button_new_with_label
 			(group, svr->name ? svr->name : svr->id);
 		gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);

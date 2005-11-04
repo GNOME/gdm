@@ -48,14 +48,14 @@ get_parent_display (void)
       char *old_xauth = g_strdup (g_getenv ("XAUTHORITY"));
       if (g_getenv ("GDM_PARENT_XAUTHORITY") != NULL)
         {
-	  ve_setenv ("XAUTHORITY",
-		     g_getenv ("GDM_PARENT_XAUTHORITY"), TRUE);
+	  g_setenv ("XAUTHORITY",
+		    g_getenv ("GDM_PARENT_XAUTHORITY"), TRUE);
 	}
       dsp = XOpenDisplay (g_getenv ("GDM_PARENT_DISPLAY"));
       if (old_xauth != NULL)
-        ve_setenv ("XAUTHORITY", old_xauth, TRUE);
+        g_setenv ("XAUTHORITY", old_xauth, TRUE);
       else
-        ve_unsetenv ("XAUTHORITY");
+        g_unsetenv ("XAUTHORITY");
       g_free (old_xauth);
     }
 

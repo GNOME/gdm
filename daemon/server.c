@@ -37,8 +37,6 @@
 #include <ctype.h>
 #include <X11/Xlib.h>
 
-#include <vicious.h>
-
 #include "gdm.h"
 #include "server.h"
 #include "misc.h"
@@ -47,9 +45,9 @@
 #include "auth.h"
 #include "slave.h"
 #include "getvt.h"
+#include "gdmconfig.h"
 
 #define SERVER_WAIT_ALARM 10
-
 
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
@@ -57,14 +55,6 @@ static void gdm_server_usr1_handler (gint);
 static void gdm_server_child_handler (gint);
 static char * get_font_path (const char *display);
 
-/* Configuration options */
-extern gchar *GdmDisplayInit;
-extern gchar *GdmServAuthDir;
-extern gchar *GdmLogDir;
-extern gchar *GdmStandardXServer;
-extern gboolean GdmXdmcp;
-extern gboolean GdmDisallowTCP;
-extern gint high_display_num;
 extern pid_t extra_process;
 extern int extra_status;
 extern int gdm_in_signal;
@@ -380,7 +370,7 @@ busy_ask_user (GdmDisplay *disp)
 static gboolean
 display_parent_no_connect (GdmDisplay *disp)
 {
-	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
+	char *logname = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	FILE *fp;
 	char buf[256];
 	char *getsret;
@@ -412,7 +402,7 @@ display_parent_no_connect (GdmDisplay *disp)
 static gboolean
 display_busy (GdmDisplay *disp)
 {
-	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
+	char *logname = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	FILE *fp;
 	char buf[256];
 	char *getsret;
@@ -467,7 +457,7 @@ open_another_logfile (char buf[256], FILE **fp)
 static int
 display_vt (GdmDisplay *disp)
 {
-	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
+	char *logname = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	FILE *fp;
 	char buf[256];
 	gboolean switched = FALSE;
@@ -581,7 +571,7 @@ do_server_wait (GdmDisplay *d)
 		     * as a test, but the */
 
 		    /* just in case it's set */
-		    ve_unsetenv ("XAUTHORITY");
+		    g_unsetenv ("XAUTHORITY");
 
 		    gdm_auth_set_local_auth (d);
 
@@ -746,7 +736,7 @@ gdm_server_start (GdmDisplay *disp,
     if (SERVER_IS_FLEXI (d) ||
 	treat_as_flexi) {
 	    flexi_disp = gdm_get_free_display
-		    (MAX (high_display_num + 1, min_flexi_disp) /* start */,
+		    (MAX (gdm_get_high_display_num() + 1, min_flexi_disp) /* start */,
 		     d->server_uid /* server uid */);
 
 	    g_free (d->name);
@@ -767,7 +757,7 @@ gdm_server_start (GdmDisplay *disp,
 	    return FALSE;
     gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
     gdm_slave_send_string (GDM_SOP_AUTHFILE, d->authfile);
-    ve_setenv ("DISPLAY", d->name, TRUE);
+    g_setenv ("DISPLAY", d->name, TRUE);
 
     if ( ! setup_server_wait (d))
 	    return FALSE;
@@ -879,7 +869,7 @@ gdm_server_start (GdmDisplay *disp,
 			    return gdm_server_start (d,
 						     FALSE /*try_again_if_busy */,
 						     TRUE /* treat as flexi */,
-						     high_display_num + 1,
+						     gdm_get_high_display_num() + 1,
 						     flexi_retries - 1);
 		    }
 		    _exit (DISPLAY_REMANAGE);
@@ -930,12 +920,14 @@ safer_rename (const char *a, const char *b)
 static void
 rotate_logs (const char *dname)
 {
+	gchar *logdir = gdm_get_value_string (GDM_KEY_LOG_DIR);
+
 	/* I'm too lazy to write a loop damnit */
-	char *fname4 = gdm_make_filename (GdmLogDir, dname, ".log.4");
-	char *fname3 = gdm_make_filename (GdmLogDir, dname, ".log.3");
-	char *fname2 = gdm_make_filename (GdmLogDir, dname, ".log.2");
-	char *fname1 = gdm_make_filename (GdmLogDir, dname, ".log.1");
-	char *fname = gdm_make_filename (GdmLogDir, dname, ".log");
+	char *fname4 = gdm_make_filename (logdir, dname, ".log.4");
+	char *fname3 = gdm_make_filename (logdir, dname, ".log.3");
+	char *fname2 = gdm_make_filename (logdir, dname, ".log.2");
+	char *fname1 = gdm_make_filename (logdir, dname, ".log.1");
+	char *fname = gdm_make_filename (logdir, dname, ".log");
 
 	/* Rotate the logs (keep 4 last) */
 	VE_IGNORE_EINTR (unlink (fname4));
@@ -951,11 +943,11 @@ rotate_logs (const char *dname)
 	g_free (fname);
 }
 
-GdmXServer *
+GdmXserver *
 gdm_server_resolve (GdmDisplay *disp)
 {
 	char *bin;
-	GdmXServer *svr = NULL;
+	GdmXserver *svr = NULL;
 
 	bin = ve_first_word (disp->command);
 	if (bin != NULL && bin[0] != '/') {
@@ -981,13 +973,13 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 	bin = ve_first_word (disp->command);
 	if (bin == NULL) {
 		gdm_error (_("Invalid server command '%s'"), disp->command);
-		argv = ve_split (GdmStandardXServer);
+		argv = ve_split (gdm_get_value_string (GDM_KEY_STANDARD_XSERVER));
 	} else if (bin[0] != '/') {
-		GdmXServer *svr = gdm_find_x_server (bin);
+		GdmXserver *svr = gdm_find_x_server (bin);
 		if (svr == NULL) {
 			gdm_error (_("Server name '%s' not found; "
 				     "using standard server"), bin);
-			argv = ve_split (GdmStandardXServer);
+			argv = ve_split (gdm_get_value_string (GDM_KEY_STANDARD_XSERVER));
 		} else {
 			char **svr_command =
 				ve_split (ve_sure_string (svr->command));
@@ -1056,7 +1048,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		query_in_arglist = TRUE;
 	}
 
-	if (resolve_flags && GdmDisallowTCP && ! query_in_arglist) {
+	if (resolve_flags && gdm_get_value_bool (GDM_KEY_DISALLOW_TCP) && ! query_in_arglist) {
 		argv[len++] = g_strdup ("-nolisten");
 		argv[len++] = g_strdup ("tcp");
 		d->tcp_disallowed = TRUE;
@@ -1153,7 +1145,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	rotate_logs (d->name);
 
         /* Log all output from spawned programs to a file */
-	logfile = gdm_make_filename (GdmLogDir, d->name, ".log");
+	logfile = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	VE_IGNORE_EINTR (unlink (logfile));
 	VE_IGNORE_EINTR (logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 
@@ -1201,11 +1193,11 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	if (SERVER_IS_PROXY (d)) {
 		int argc = ve_vector_len (argv);
 
-		ve_unsetenv ("DISPLAY");
+		g_unsetenv ("DISPLAY");
 		if (d->parent_auth_file != NULL)
-			ve_setenv ("XAUTHORITY", d->parent_auth_file, TRUE);
+			g_setenv ("XAUTHORITY", d->parent_auth_file, TRUE);
 		else
-			ve_unsetenv ("XAUTHORITY");
+			g_unsetenv ("XAUTHORITY");
 
 		if (d->type == TYPE_FLEXI_XNEST) {
 			char *font_path = NULL;
@@ -1253,11 +1245,11 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		}
 		if (pwent->pw_dir != NULL &&
 		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
-			ve_setenv ("HOME", pwent->pw_dir, TRUE);
+			g_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			ve_setenv ("HOME", "/", TRUE); /* Hack */
-		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
-		ve_unsetenv ("MAIL");
+			g_setenv ("HOME", "/", TRUE); /* Hack */
+		g_setenv ("SHELL", pwent->pw_shell, TRUE);
+		g_unsetenv ("MAIL");
 
 		if (setgid (pwent->pw_gid) < 0)  {
 			gdm_error (_("%s: Couldn't set groupid to %d"), 

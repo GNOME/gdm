@@ -55,7 +55,6 @@
  */
 
 #include <config.h> 
-#include <libgnome/libgnome.h>
 
 #ifdef HAVE_LIBXDMCP
 #include <stdio.h>
@@ -88,9 +87,11 @@
 #ifdef HAVE_TCPWRAPPERS
   #include <tcpd.h>
 #endif
+#endif /* HAVE_LIBXDMCP */
 
-#include <vicious.h>
+#include <libgnome/libgnome.h>
 
+#ifdef HAVE_LIBXDMCP
 #include "gdm.h"
 #include "display.h"
 #include "auth.h"
@@ -100,6 +101,7 @@
 #include "choose.h"
 #include "xdmcp.h"
 #include "cookie.h"
+#include "gdmconfig.h"
 
 #define XDMCP_MULTICAST_ADDRESS "ff02::1"    /*This is to be changed when the Xdmcp Multicast address is decided */
 
@@ -121,32 +123,6 @@ static gboolean initted = FALSE;
 extern GSList *displays;
 extern gint xdmcp_pending;
 extern gint xdmcp_sessions;
-extern uid_t GdmUserId;
-extern gchar *GdmLogDir;
-extern gchar *GdmServAuthDir;
-extern gboolean GdmMulticast;      /* Whether Multicast options are set */
-extern gchar *GdmMulticastAddr;    /* Multicast address */
-
-/* Tunables */
-extern gint GdmMaxPending;	/* only accept this number of pending sessions */
-extern gint GdmMaxManageWait;	/* Dispose sessions not responding with MANAGE after 10 secs */
-extern gint GdmMaxSessions;	/* Maximum number of remote sessions */
-extern gint GdmPort;		/* UDP port number */
-extern gboolean GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
-extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
-extern gint GdmDispPerHost;	/* Max number of displays per remote host */
-extern gchar *GdmTimedLogin;
-extern gboolean GdmAllowRemoteAutoLogin;
-extern gchar *GdmWilling;	/* The willing script */
-
-extern gboolean GdmXdmcp;	/* xdmcp enabled */
-
-extern gboolean GdmXdmcpProxy;        /* Proxy X server enabled */
-extern gchar *GdmXdmcpProxyCommand;   /* Proxy X server command */
-extern gchar *GdmXdmcpProxyReconnect; /* Proxy reconnect command */
-
-
-extern gboolean GdmDebug;	/* debug enabled */
 
 /* Local prototypes */
 static gboolean gdm_xdmcp_decode_packet (GIOChannel *source,
@@ -361,8 +337,9 @@ gdm_xdmcp_init (void)
     gint addrlen;
     gchar hostbuf[1024];
     struct utsname name;
+    int udpport = gdm_get_value_int (GDM_KEY_UDP_PORT);
 
-    if ( ! GdmXdmcp)
+    if ( ! gdm_get_value_bool (GDM_KEY_XDMCP))
 	    return TRUE;
 
     globsessid = g_random_int ();
@@ -385,7 +362,7 @@ gdm_xdmcp_init (void)
 	    initted = TRUE;
     }
     
-    gdm_debug ("XDMCP: Start up on host %s, port %d", hostbuf, GdmPort);
+    gdm_debug ("XDMCP: Start up on host %s, port %d", hostbuf, udpport);
     
     /* Open socket for communications */
 #ifdef ENABLE_IPV6
@@ -396,19 +373,19 @@ gdm_xdmcp_init (void)
     
     if G_UNLIKELY (gdm_xdmcpfd < 0) {
 	gdm_error (_("%s: Could not create socket!"), "gdm_xdmcp_init");
-	GdmXdmcp = FALSE;
+        gdm_set_value_bool (GDM_KEY_XDMCP, FALSE);
 	return FALSE;
     }
 
 #ifdef ENABLE_IPV6
     if (have_ipv6 ()) {
 	((struct sockaddr_in6 *)(&serv_sa))->sin6_family = AF_INET6;
-	((struct sockaddr_in6 *)(&serv_sa))->sin6_port = htons (GdmPort); /* UDP 177 */
+	((struct sockaddr_in6 *)(&serv_sa))->sin6_port = htons (udpport); /* UDP 177 */
 	((struct sockaddr_in6 *)(&serv_sa))->sin6_addr = in6addr_any;
 	addrlen = sizeof (struct sockaddr_in6);
 
 	/* Checking and Setting Multicast options */
-	if (GdmMulticast) {
+	if (gdm_get_value_bool (GDM_KEY_MULTICAST)) {
 	    int socktemp;       /* temporary socket for getting info about available interfaces*/
 	    int i, num;
 	    char *buf;
@@ -419,12 +396,10 @@ gdm_xdmcp_init (void)
 	    struct ifreq *ifr;
 
 	    /* Extract Multicast address for IPv6 */
-	    if (ve_string_empty (GdmMulticastAddr)) {
-		g_free (GdmMulticastAddr);
+	    if (ve_string_empty (gdm_get_value_string (GDM_KEY_MULTICAST_ADDR))) {
 
 		/* Stuff it with all-node multicast address */
-		GdmMulticastAddr = g_new0 (char, strlen (XDMCP_MULTICAST_ADDRESS) + 1);
-		strcpy (GdmMulticastAddr, XDMCP_MULTICAST_ADDRESS);
+		gdm_set_value_string (GDM_KEY_MULTICAST_ADDR, XDMCP_MULTICAST_ADDRESS);
 	    }
 
 	    socktemp = socket (AF_INET, SOCK_DGRAM, 0);
@@ -464,7 +439,7 @@ gdm_xdmcp_init (void)
 			}
 
 		    mreq.ipv6mr_interface = ifindex;
-		    inet_pton (AF_INET6, GdmMulticastAddr, &mreq.ipv6mr_multiaddr);
+		    inet_pton (AF_INET6, gdm_get_value_string (GDM_KEY_MULTICAST_ADDR), &mreq.ipv6mr_multiaddr);
 		    setsockopt (gdm_xdmcpfd, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq, sizeof(mreq));
 		} 
            }
@@ -476,7 +451,7 @@ gdm_xdmcp_init (void)
 #endif
     {
 	((struct sockaddr_in *)(&serv_sa))->sin_family = AF_INET;
-	((struct sockaddr_in *)(&serv_sa))->sin_port = htons (GdmPort); /* UDP 177 */
+	((struct sockaddr_in *)(&serv_sa))->sin_port = htons (udpport); /* UDP 177 */
 	((struct sockaddr_in *)(&serv_sa))->sin_addr.s_addr = htonl (INADDR_ANY);
 	addrlen = sizeof (struct sockaddr_in);
     }
@@ -484,7 +459,7 @@ gdm_xdmcp_init (void)
     if G_UNLIKELY (bind (gdm_xdmcpfd, (struct sockaddr*) &serv_sa, addrlen) == -1) {
 	gdm_error (_("%s: Could not bind to XDMCP socket!"), "gdm_xdmcp_init");
 	gdm_xdmcp_close ();
-	GdmXdmcp = FALSE;
+	gdm_set_value_bool (GDM_KEY_XDMCP, FALSE);
 	return FALSE;
     }
 
@@ -695,7 +670,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     
     /* Crude checksumming */
     for (i = 0 ; i < clnt_authlist.length ; i++) {
-	    if G_UNLIKELY (GdmDebug) {
+	    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
 		    char *s = g_strndup (clnt_authlist.data[i].data, clnt_authlist.length);
 		    gdm_debug ("gdm_xdmcp_handle_query: authlist: %s", ve_sure_string (s));
 		    g_free (s);
@@ -717,7 +692,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
  	 * the pending list. If found send a FORWARD_QUERY to the
  	 * chosen manager. Otherwise alloc a new indirect display. */
 
-	if (GdmIndirect &&
+	if (gdm_get_value_bool (GDM_KEY_INDIRECT) &&
 	    type == INDIRECT_QUERY) {
 		GdmIndirectDisplay *id = gdm_choose_indirect_lookup (clnt_sa);
 
@@ -1144,7 +1119,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     explen += 2+clnt_port.length;
     
     for (i = 0 ; i < clnt_authlist.length ; i++) {
-	    if G_UNLIKELY (GdmDebug) {
+	    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
 		    char *s = g_strndup (clnt_authlist.data[i].data, clnt_authlist.length);
 		    gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", ve_sure_string (s));
 		    g_free (s);
@@ -1264,8 +1239,8 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     static time_t last_willing = 0;
     char *bin;
     FILE *fd;
-#ifdef ENABLE_IPV6
-#endif
+    char *willing = gdm_get_value_string (GDM_KEY_WILLING);
+    int dispperhost = gdm_get_value_int (GDM_KEY_DISPLAYS_PER_HOST);
     
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
@@ -1282,10 +1257,10 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     if (last_willing == 0 ||
 	time (NULL) - 3 > last_willing) {
 	    char statusBuf[256] = "";
-	    bin = ve_first_word (GdmWilling);
+	    bin = ve_first_word (willing);
 	    if ( ! ve_string_empty (bin) &&
 		 access (bin, X_OK) == 0 &&
-		 (fd = popen (GdmWilling, "r")) != NULL) {
+		 (fd = popen (willing, "r")) != NULL) {
 		    if (fgets (statusBuf, sizeof (statusBuf), fd) != NULL &&
 			! ve_string_empty (g_strstrip (statusBuf))) {
 			    g_free (last_status);
@@ -1305,7 +1280,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
 	if ( ! gdm_is_local_addr6 (&(((struct sockaddr_in6 *)clnt_sa)->sin6_addr)) &&
-	    gdm_xdmcp_displays_from_host (clnt_sa) >= GdmDispPerHost) {
+	    gdm_xdmcp_displays_from_host (clnt_sa) >= dispperhost) {
 		/* Don't translate, this goes over the wire to servers where we
 		 * don't know the charset or language, so it must be ascii */
 		status.data = g_strdup_printf ("%s (Server is busy)", last_status);
@@ -1317,7 +1292,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 #endif
     {
 	if ( ! gdm_is_local_addr (&(((struct sockaddr_in *)clnt_sa)->sin_addr)) &&
-	    gdm_xdmcp_displays_from_host (clnt_sa) >= GdmDispPerHost) {
+	    gdm_xdmcp_displays_from_host (clnt_sa) >= dispperhost) {
 		/* Don't translate, this goes over the wire to servers where we
 		 * don't know the charset or language, so it must be ascii */
 		status.data = g_strdup_printf ("%s (Server is busy)", last_status);
@@ -1584,6 +1559,9 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     gint i;
     gboolean mitauth = FALSE;
     gboolean entered = FALSE;
+    int maxsessions  = gdm_get_value_int (GDM_KEY_MAX_SESSIONS);
+    int maxpending   = gdm_get_value_int (GDM_KEY_MAX_PENDING);
+    int dispperhost  = gdm_get_value_int (GDM_KEY_DISPLAYS_PER_HOST);
     
 #ifdef ENABLE_IPV6
     char buffer6[INET6_ADDRSTRLEN];
@@ -1728,10 +1706,10 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
 
-    if G_UNLIKELY (GdmDebug) {
+    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
 	    char *s = g_strndup (clnt_manufacturer.data, clnt_manufacturer.length);
 	    gdm_debug ("gdm_xdmcp_handle_request: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d, ManufacturerID=%s",
-		       xdmcp_pending, GdmMaxPending, xdmcp_sessions, GdmMaxSessions, ve_sure_string (s));
+		       xdmcp_pending, maxpending, xdmcp_sessions, maxsessions, ve_sure_string (s));
 	    g_free (s);
     }
 
@@ -1739,17 +1717,17 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
 	if (mitauth &&
-	    xdmcp_sessions < GdmMaxSessions &&
-	    (gdm_is_local_addr6 (&((struct sockaddr_in6 *)clnt_sa)->sin6_addr) || gdm_xdmcp_displays_from_host (clnt_sa) < GdmDispPerHost)) 
+	    xdmcp_sessions < maxsessions &&
+	    (gdm_is_local_addr6 (&((struct sockaddr_in6 *)clnt_sa)->sin6_addr) || gdm_xdmcp_displays_from_host (clnt_sa) < dispperhost)) 
 
 		entered = TRUE;
 	} else
 #endif
 	{
 	if (mitauth &&
-	    xdmcp_sessions < GdmMaxSessions &&
+	    xdmcp_sessions < maxsessions &&
 	    (gdm_is_local_addr (&(((struct sockaddr_in *)clnt_sa)->sin_addr)) ||
-	    gdm_xdmcp_displays_from_host (clnt_sa) < GdmDispPerHost)) 
+	    gdm_xdmcp_displays_from_host (clnt_sa) < dispperhost)) 
 
 		entered = TRUE;
 	}
@@ -1761,7 +1739,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	    /* Check if we are already talking to this host */
 	    gdm_xdmcp_display_dispose_check (he->hostname, clnt_dspnum);
 
-	    if (xdmcp_pending >= GdmMaxPending) {
+	    if (xdmcp_pending >= maxpending) {
 		    gdm_debug ("gdm_xdmcp_handle_request: maximum pending");
 		    /* Don't translate, this goes over the wire to servers where we
 		    * don't know the charset or language, so it must be ascii */
@@ -1776,7 +1754,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	    * don't know the charset or language, so it must be ascii */
 	    if ( ! mitauth) {
 		    gdm_xdmcp_send_decline (clnt_sa, "Only MIT-MAGIC-COOKIE-1 supported");	
-	    } else if (xdmcp_sessions >= GdmMaxSessions) {
+	    } else if (xdmcp_sessions >= maxsessions) {
 		    gdm_info ("Maximum number of open XDMCP sessions reached");
 		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions reached");	
 	    } else {
@@ -2008,7 +1986,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
 
-    if G_UNLIKELY (GdmDebug) {
+    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
 	    char *s = g_strndup (clnt_dspclass.data, clnt_dspclass.length);
 
 #ifdef ENABLE_IPV6
@@ -2029,7 +2007,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 
 	gdm_debug ("gdm_xdmcp_handle_manage: Looked up %s", d->name);
 
-	if (GdmIndirect) {
+	if (gdm_get_value_bool (GDM_KEY_INDIRECT)) {
 		id = gdm_choose_indirect_lookup (clnt_sa);
 
 		/* This was an indirect thingie and nothing was yet chosen,
@@ -2530,12 +2508,13 @@ gdm_xdmcp_display_alloc (
 			 int displaynum)
 {
     GdmDisplay *d = NULL;
+    char *proxycmd = gdm_get_value_string (GDM_KEY_XDMCP_PROXY_XSERVER);
     
     d = g_new0 (GdmDisplay, 1);
 
-    if (GdmXdmcpProxy && GdmXdmcpProxyCommand != NULL) {
+    if (gdm_get_value_bool (GDM_KEY_XDMCP_PROXY) && proxycmd != NULL) {
 	    d->type = TYPE_XDMCP_PROXY;
-	    d->command = g_strdup (GdmXdmcpProxyCommand);
+	    d->command = g_strdup (proxycmd);
 	    gdm_debug ("Using proxy server for XDMCP: %s\n", d->command);
     } else {
 	    d->type = TYPE_XDMCP;
@@ -2570,8 +2549,8 @@ gdm_xdmcp_display_alloc (
     d->login = NULL;
 
     d->sleep_before_run = 0;
-    if (GdmAllowRemoteAutoLogin &&
-	! ve_string_empty (GdmTimedLogin)) {
+    if (gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN) &&
+	! ve_string_empty (gdm_get_value_string (GDM_KEY_TIMED_LOGIN))) {
 	    d->timed_login_ok = TRUE;
     } else {
 	    d->timed_login_ok = FALSE;
@@ -2621,7 +2600,7 @@ gdm_xdmcp_display_alloc (
 	    d->name = g_strdup (":-1");
 	    d->dispnum = -1;
 
-	    d->server_uid = GdmUserId;
+	    d->server_uid = gdm_get_gdmuid();
 
 	    d->parent_auth_file = d->authfile;
 	    d->authfile = NULL;
@@ -2706,7 +2685,7 @@ gdm_xdmcp_displays_check (void)
 		if (d != NULL &&
 		    SERVER_IS_XDMCP (d) &&
 		    d->dispstat == XDMCP_PENDING &&
-		    curtime > d->acctime + GdmMaxManageWait) {
+		    curtime > d->acctime + gdm_get_value_int (GDM_KEY_MAX_WAIT)) {
 			gdm_debug ("gdm_xdmcp_displays_check: Disposing session id %ld",
 				   (long)d->sessionid);
 			gdm_display_dispose (d);
@@ -2725,8 +2704,9 @@ reconnect_to_parent (GdmDisplay *to)
 {
 	GError *error;
 	gchar *command_argv[10];
+	gchar *proxyreconnect = gdm_get_value_string (GDM_KEY_XDMCP_PROXY_RECONNECT);
 
-	command_argv[0] = GdmXdmcpProxyReconnect;
+	command_argv[0] = proxyreconnect;
 	command_argv[1] = "--display";
 	command_argv[2] = to->parent_disp;
 	command_argv[3] = "--display-authfile";
@@ -2739,7 +2719,7 @@ reconnect_to_parent (GdmDisplay *to)
 
 	gdm_debug ("XDMCP: migrating display by running "
 		   "'%s --display %s --display-authfile %s --to %s --to-authfile %s'",
-		   GdmXdmcpProxyReconnect,
+		   proxyreconnect,
 		   to->parent_disp, to->parent_auth_file,
 		   to->name, to->authfile);
 
@@ -2748,7 +2728,7 @@ reconnect_to_parent (GdmDisplay *to)
 		gdm_error (_("%s: Failed to run "
 			     "'%s --display %s --display-authfile %s --to %s --to-authfile %s': %s"),
 			   "gdm_xdmcp_migrate",
-			   GdmXdmcpProxyReconnect,
+			   proxyreconnect,
 			   to->parent_disp, to->parent_auth_file,
 			   to->name, to->authfile,
 			   error->message);

@@ -17,7 +17,7 @@
  */
 
 #include "config.h"
-#include <libgnome/libgnome.h>
+
 #include <syslog.h>
 #include <unistd.h>
 #include <dirent.h>
@@ -48,20 +48,13 @@
 
 #include <X11/Xlib.h>
 
-#include <vicious.h>
+#include <libgnome/libgnome.h>
 
 #include "gdm.h"
 #include "misc.h"
 #include "xdmcp.h"
 #include "slave.h"
-
-/* Configuration option variables */
-extern gchar *GdmPidFile;
-extern gboolean GdmDebug;
-extern GSList *displays;
-extern int gdm_xdmcpfd;
-extern gboolean GdmXdmcp;
-extern gchar *GdmConsoleCannotHandle;
+#include "gdmconfig.h"
 
 extern char **environ;
 
@@ -70,9 +63,7 @@ extern int extra_status;
 extern pid_t gdm_main_pid;
 extern gboolean preserve_ld_vars;
 extern int gdm_in_signal;
-
-extern gboolean GdmConsoleNotify;
-
+extern GSList *displays;
 extern char *gdm_charset;
 
 #ifdef ENABLE_IPV6
@@ -318,7 +309,7 @@ gdm_debug (const gchar *format, ...)
     va_list args;
     char *s;
 
-    if G_LIKELY ( ! GdmDebug) 
+    if G_LIKELY (! gdm_get_value_bool (GDM_KEY_DEBUG)) 
 	return;
 
     va_start (args, format);
@@ -589,7 +580,7 @@ gdm_text_message_dialog (const char *msg)
 	char *dialog; /* do we have dialog?*/
 	char *msg_quoted;
 
-    if ( ! GdmConsoleNotify)
+    if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 		return FALSE;
 
 	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
@@ -610,11 +601,11 @@ gdm_text_message_dialog (const char *msg)
 		char *argv[6];
 
 		if ( ! gdm_ok_console_language ()) {
-			ve_unsetenv ("LANG");
-			ve_unsetenv ("LC_ALL");
-			ve_unsetenv ("LC_MESSAGES");
-			ve_setenv ("LANG", "C", TRUE);
-			ve_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
+			g_unsetenv ("LANG");
+			g_unsetenv ("LC_ALL");
+			g_unsetenv ("LC_MESSAGES");
+			g_setenv ("LANG", "C", TRUE);
+			g_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
 		}
 		
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
@@ -667,7 +658,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	char *dialog; /* do we have dialog?*/
 	char *msg_quoted;
 
-    if ( ! GdmConsoleNotify)
+    if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 		return FALSE;
 	
 	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
@@ -692,11 +683,11 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		int retint;
 
 		if ( ! gdm_ok_console_language ()) {
-			ve_unsetenv ("LANG");
-			ve_unsetenv ("LC_ALL");
-			ve_unsetenv ("LC_MESSAGES");
-			ve_setenv ("LANG", "C", TRUE);
-			ve_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
+			g_unsetenv ("LANG");
+			g_unsetenv ("LC_ALL");
+			g_unsetenv ("LC_MESSAGES");
+			g_setenv ("LANG", "C", TRUE);
+			g_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
 		}
 
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
@@ -814,8 +805,8 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		if (no_display) {
-			ve_unsetenv ("DISPLAY");
-			ve_unsetenv ("XAUTHORITY");
+			g_unsetenv ("DISPLAY");
+			g_unsetenv ("XAUTHORITY");
 		}
 		
 		VE_IGNORE_EINTR (execv (argv[0], argv));
@@ -950,7 +941,7 @@ gdm_fork_extra (void)
 		/* Harmless in children, but in case we'd run
 		   extra processes from main daemon would fix
 		   problems ... */
-		if (GdmXdmcp)
+		if (gdm_get_value_bool (GDM_KEY_XDMCP))
 			gdm_xdmcp_close ();
 	}
 
@@ -2434,12 +2425,13 @@ gdm_ok_console_language (void)
 	static gboolean cached = FALSE;
 	static gboolean is_ok;
 	const char *loc;
+	char *consolecannothandle = gdm_get_value_string (GDM_KEY_CONSOLE_CANNOT_HANDLE);
 
 	if (cached)
 		return is_ok;
 
 	/* so far we should be paranoid, we're not set yet */
-	if (GdmConsoleCannotHandle == NULL)
+	if (consolecannothandle == NULL)
 		return FALSE;
 
 	cached = TRUE;
@@ -2452,7 +2444,7 @@ gdm_ok_console_language (void)
 
 	is_ok = TRUE;
 
-	v = g_strsplit (GdmConsoleCannotHandle, ",", -1);
+	v = g_strsplit (consolecannothandle, ",", -1);
 	for (i = 0; v != NULL && v[i] != NULL; i++) {
 		if ( ! ve_string_empty (v[i]) &&
 		    strncmp (v[i], loc, strlen (v[i])) == 0) {
@@ -2485,9 +2477,9 @@ gdm_console_translate (const char *str)
 gchar *
 gdm_read_default (gchar *key)
 {
+#ifdef HAVE_DEFOPEN
     gchar *retval = NULL;
 
-#ifdef HAVE_DEFOPEN
     if (defopen ("/etc/default/login") == 0) {
        int flags = defcntl (DC_GETFLAGS, 0);
 

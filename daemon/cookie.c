@@ -35,11 +35,12 @@
 #include <fcntl.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <vicious.h>
+#include <errno.h>
 
 #include "gdm.h"
 #include "md5.h"
 #include "cookie.h"
+#include "gdmconfig.h"
 
 #define MAXBUFFERSIZE 1024
 

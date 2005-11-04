@@ -20,23 +20,23 @@
  * support other XAuth types and possibly DECnet... */
 
 #include <config.h>
-#include <glib/gi18n.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <netdb.h> 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <X11/Xauth.h>
-
-#include <vicious.h>
+#include <glib/gi18n.h>
 
 #include "gdm.h"
 #include "cookie.h"
 #include "misc.h"
 #include "filecheck.h"
 #include "auth.h"
+#include "gdmconfig.h"
 
 /* Ensure we know about FamilyInternetV6 even if what we're compiling
    against doesn't */
@@ -48,16 +48,6 @@
 
 /* Local prototypes */
 static FILE *gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty);
-
-/* Configuration option variables */
-extern gchar *GdmServAuthDir;
-extern gchar *GdmUserAuthDir;
-extern gchar *GdmUserAuthFile;
-extern gchar *GdmUserAuthFB;
-extern gint  GdmUserMaxFile;
-extern gint  GdmRelaxPerms;
-extern gboolean GdmDebug;
-extern gboolean GdmNeverPlaceCookiesOnNFS;
 
 static void
 display_add_error (GdmDisplay *d)
@@ -191,10 +181,10 @@ gdm_auth_secure_display (GdmDisplay *d)
     if (d->server_uid != 0) {
 	    int authfd;
 
-	    /* Note, Xnest can't use the ServAuthDir unless running as
+	    /* Note, Xnest can't use the GDM_KEY_SERV_AUTHDIR unless running as
 	     * root, which is rare anyway, unless the user is a wanker */
 
-	    d->authfile = g_build_filename (GdmUserAuthFB, ".gdmXXXXXX", NULL);
+	    d->authfile = g_build_filename (gdm_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK), ".gdmXXXXXX", NULL);
 
 	    umask (077);
 	    authfd = g_mkstemp (d->authfile);
@@ -202,7 +192,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    if G_UNLIKELY (authfd == -1) {
 		    gdm_error (_("%s: Could not make new cookie file in %s"),
-			       "gdm_auth_secure_display", GdmUserAuthFB);
+			       "gdm_auth_secure_display", gdm_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK));
 		    g_free (d->authfile);
 		    d->authfile = NULL;
 		    return FALSE;
@@ -221,7 +211,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    /* Make another authfile since the greeter can't read the server/user
 	     * readable file */
-	    d->authfile_gdm = gdm_make_filename (GdmServAuthDir, d->name, ".Xauth");
+	    d->authfile_gdm = gdm_make_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), d->name, ".Xauth");
 	    af_gdm = gdm_safe_fopen_w (d->authfile_gdm);
 
 	    if G_UNLIKELY (af_gdm == NULL) {
@@ -238,7 +228,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    }
     } else {
 	    /* gdm and xserver authfile can be the same, server will run as root */
-	    d->authfile = gdm_make_filename (GdmServAuthDir, d->name, ".Xauth");
+	    d->authfile = gdm_make_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), d->name, ".Xauth");
 	    af = gdm_safe_fopen_w (d->authfile);
 
 	    if G_UNLIKELY (af == NULL) {
@@ -298,9 +288,9 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    return FALSE;
 	    }
     }
-    ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+    g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
-    if G_UNLIKELY (GdmDebug)
+    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG))
 	    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
 		       d->name, g_slist_length (d->auths));
 
@@ -506,7 +496,7 @@ get_local_auths (GdmDisplay *d)
 
     }
 
-    if G_UNLIKELY (GdmDebug)
+    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG))
 	    gdm_debug ("get_local_auths: Setting up access for %s - %d entries", 
 		       d->name, g_slist_length (auths));
 
@@ -571,6 +561,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     gint authfd;
     FILE *af;
     GSList *auths = NULL;
+    gchar *userauthdir;
+    gchar *userauthfile;
     gboolean ret = TRUE;
     gboolean automatic_tmp_dir = FALSE;
     gboolean authdir_is_tmp_dir = FALSE;
@@ -595,13 +587,16 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 
     gdm_debug ("gdm_auth_user_add: Adding cookie for %d", user);
 
+    userauthdir  = gdm_get_value_string (GDM_KEY_USER_AUTHDIR);
+    userauthfile = gdm_get_value_string (GDM_KEY_USER_AUTHFILE);
+
     /* Determine whether UserAuthDir is specified. Otherwise ~user is used */
-    if ( ! ve_string_empty (GdmUserAuthDir) &&
-	strcmp (GdmUserAuthDir, "~") != 0) {
-	    if (strncmp (GdmUserAuthDir, "~/", 2) == 0) {
-		    authdir = g_build_filename (homedir, &GdmUserAuthDir[2], NULL);
+    if ( ! ve_string_empty (userauthdir) &&
+	strcmp (userauthdir, "~") != 0) {
+	    if (strncmp (userauthdir, "~/", 2) == 0) {
+		    authdir = g_build_filename (homedir, &userauthdir[2], NULL);
 	    } else {
-		    authdir = g_strdup (GdmUserAuthDir);
+		    authdir = g_strdup (userauthdir);
 		    automatic_tmp_dir = TRUE;
 		    authdir_is_tmp_dir = TRUE;
 	    }
@@ -618,7 +613,7 @@ try_user_add_again:
     if (authdir == NULL)
 	    d->userauth = NULL;
     else
-	    d->userauth = g_build_filename (authdir, GdmUserAuthFile, NULL);
+	    d->userauth = g_build_filename (authdir, userauthfile, NULL);
 
     user_auth_exists = (d->userauth != NULL &&
 			access (d->userauth, F_OK) == 0);
@@ -631,8 +626,9 @@ try_user_add_again:
 
 	/* first the standard paranoia check (this checks the home dir
 	 * too which is useful here) */
-	! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
-			  TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms) ||
+	! gdm_file_check ("gdm_auth_user_add", user, authdir, userauthfile, 
+			  TRUE, FALSE, gdm_get_value_int (GDM_KEY_USER_MAX_FILE),
+                          gdm_get_value_int (GDM_KEY_RELAX_PERM)) ||
 
 	/* now the auth file checking routine */
 	! gdm_auth_file_check ("gdm_auth_user_add", user, d->userauth, TRUE /* absentok */, NULL) ||
@@ -643,7 +639,8 @@ try_user_add_again:
 	/* try opening as root, if we can't open as root,
 	   then this is a NFS mounted directory with root squashing,
 	   and we don't want to write cookies over NFS */
-	(GdmNeverPlaceCookiesOnNFS && ! try_open_read_as_root (d->userauth))) {
+	(gdm_get_value_bool (GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS) &&
+         ! try_open_read_as_root (d->userauth))) {
 
         /* if the userauth file didn't exist and we were looking at it,
 	   it likely exists now but empty, so just whack it
@@ -653,14 +650,14 @@ try_user_add_again:
         if ( ! user_auth_exists && d->userauth != NULL)
 		unlink (d->userauth);
 
-	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp)
-	 * or perhaps GdmUserAuth directory (usually would be /tmp) */
+	/* No go. Let's create a fallback file in GDM_KEY_USER_AUTHDIR_FALLBACK (/tmp)
+	 * or perhaps userauthfile directory (usually would be /tmp) */
 	d->authfb = TRUE;
 	g_free (d->userauth);
 	if (authdir_is_tmp_dir && authdir != NULL)
 		d->userauth = g_build_filename (authdir, ".gdmXXXXXX", NULL);
 	else
-		d->userauth = g_build_filename (GdmUserAuthFB, ".gdmXXXXXX", NULL);
+		d->userauth = g_build_filename (gdm_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK), ".gdmXXXXXX", NULL);
 	authfd = g_mkstemp (d->userauth);
 
 	if G_UNLIKELY (authfd < 0 && authdir_is_tmp_dir) {
@@ -845,7 +842,8 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
      * to it. So we better play it safe... */
 
     if G_UNLIKELY ( ! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
-			   TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms) ||
+			   TRUE, FALSE, gdm_get_value_int (GDM_KEY_USER_MAX_FILE),
+                           gdm_get_value_int (GDM_KEY_RELAX_PERM)) ||
 		    /* be even paranoider with permissions */
 		    ! gdm_auth_file_check ("gdm_auth_user_remove", user, d->userauth, FALSE /* absentok */, NULL)) {
 	    g_free (authdir);

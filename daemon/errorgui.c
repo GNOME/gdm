@@ -20,9 +20,6 @@
  * and the user's session scripts. */
 
 #include <config.h>
-#include <glib/gi18n.h>
-#include <gtk/gtk.h>
-#include <gdk/gdkx.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <grp.h>
@@ -34,28 +31,20 @@
 #include <sys/types.h>
 #include <signal.h>
 
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
+
 #include "gdm.h"
 #include "misc.h"
 #include "auth.h"
-
-#include <vicious.h>
-
+#include "gdmconfig.h"
 #include "errorgui.h"
 
 /* set in the main function */
 extern char **stored_argv;
 extern int stored_argc;
 extern char *stored_path;
-
-/* Configuration option variables */
-extern gchar *GdmUser;
-extern gchar *GdmServAuthDir;
-extern gchar *GdmGtkRC;
-extern gchar *GdmGtkTheme;
-extern uid_t GdmUserId;
-extern gid_t GdmGroupId;
-extern gboolean GdmAddGtkModules;
-extern gchar *GdmGtkModulesList;
 
 static int screenx = 0;
 static int screeny = 0;
@@ -213,9 +202,9 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 	if (set_gdm_ids) {
-		setgid (GdmGroupId);
-		initgroups (GdmUser, GdmGroupId);
-		setuid (GdmUserId);
+		setgid (gdm_get_gdmgid());
+		initgroups (gdm_get_value_string (GDM_KEY_USER), gdm_get_gdmgid());
+		setuid (gdm_get_gdmuid());
 		pw = NULL;
 	} else {
 		pw = getpwuid (uid);
@@ -228,51 +217,52 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-	ve_setenv ("LOGNAME", GdmUser, TRUE);
-	ve_setenv ("USER", GdmUser, TRUE);
-	ve_setenv ("USERNAME", GdmUser, TRUE);
+	g_setenv ("LOGNAME", gdm_get_value_string (GDM_KEY_USER), TRUE);
+	g_setenv ("USER", gdm_get_value_string (GDM_KEY_USER), TRUE);
+	g_setenv ("USERNAME", gdm_get_value_string (GDM_KEY_USER), TRUE);
 
-	ve_setenv ("DISPLAY", d->name, TRUE);
-	ve_unsetenv ("XAUTHORITY");
+	g_setenv ("DISPLAY", d->name, TRUE);
+	g_unsetenv ("XAUTHORITY");
 
 	gdm_auth_set_local_auth (d);
 
 	/* sanity env stuff */
-	ve_setenv ("SHELL", "/bin/sh", TRUE);
+	g_setenv ("SHELL", "/bin/sh", TRUE);
 	/* set HOME to /, we don't need no stinking HOME anyway */
 	if (pw == NULL ||
 	    ve_string_empty (pw->pw_dir))
-		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
+		g_setenv ("HOME", ve_sure_string (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)), TRUE);
 	else
-		ve_setenv ("HOME", pw->pw_dir, TRUE);
+		g_setenv ("HOME", pw->pw_dir, TRUE);
 
 	argv = g_new0 (char *, 3);
 	argv[0] = (char *)name;
 	argc = 1;
 
 	if ( ! inhibit_gtk_modules &&
-	    GdmAddGtkModules &&
-	     ! ve_string_empty (GdmGtkModulesList)) {
-		argv[1] = g_strdup_printf ("--gtk-module=%s", GdmGtkModulesList);
+	    gdm_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
+	     ! ve_string_empty (gdm_get_value_string (GDM_KEY_GTK_MODULES_LIST))) {
+		argv[1] = g_strdup_printf ("--gtk-module=%s", gdm_get_value_string (GDM_KEY_GTK_MODULES_LIST));
 		argc = 2;
 	}
 
 	if (inhibit_gtk_modules) {
-		ve_unsetenv ("GTK_MODULES");
+		g_unsetenv ("GTK_MODULES");
 	}
 
 	gtk_init (&argc, &argv);
 
 	if ( ! inhibit_gtk_themes) {
 		const char *theme_name;
+                gchar *gtkrc = gdm_get_value_string (GDM_KEY_GTKRC);
 
-		if ( ! ve_string_empty (GdmGtkRC) &&
-		     access (GdmGtkRC, R_OK) == 0)
-			gtk_rc_parse (GdmGtkRC);
+		if ( ! ve_string_empty (gtkrc) &&
+		     access (gtkrc, R_OK) == 0)
+			gtk_rc_parse (gtkrc);
 
 		theme_name = d->theme_name;
 		if (ve_string_empty (theme_name))
-			theme_name = GdmGtkTheme;
+			theme_name = gdm_get_value_string (GDM_KEY_GTK_THEME);
 		if ( ! ve_string_empty (theme_name)) {
 			gchar *theme_dir = gtk_rc_get_theme_dir ();
 			char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
@@ -396,7 +386,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		}
 
 		setup_dialog (d, "gtk-error-box", -1,
-			      (uid == 0 || uid == GdmUserId) /* set_gdm_ids */,
+			      (uid == 0 || uid == gdm_get_gdmuid()) /* set_gdm_ids */,
 			      uid);
 
 		loc = gdm_locale_to_utf8 (error);

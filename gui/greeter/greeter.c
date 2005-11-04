@@ -185,9 +185,9 @@ greeter_parse_config (void)
       }
 
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-	    greeter_Welcome_key = GDM_KEY_REMOTEWELCOME;
-	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_REMOTEWELCOME;
-            greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_REMOTEWELCOME_BACKTEST;
+	    greeter_Welcome_key = GDM_KEY_REMOTE_WELCOME;
+	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_REMOTE_WELCOME;
+            greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_REMOTE_WELCOME_BACKTEST;
     } else {
 	    greeter_Welcome_key = GDM_KEY_WELCOME;
 	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
@@ -219,17 +219,17 @@ greeter_parse_config (void)
         g_free (GdmGraphicalThemeDir);
         GdmGraphicalThemeDir = g_strdup (GREETERTHEMEDIR);
       }
-    GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMASCREEN);
+    GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMA_SCREEN);
     GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
     GdmUseInvisibleInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_INVISIBLE);
 
     GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
     GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
-    GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
-    GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULTSESSION);
-    GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
-    GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
+    GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSION_DESKTOP_DIR);
+    GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULT_SESSION);
+    GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCALE_FILE);
+    GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSTEM_MENU);
     GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
     GdmChooserButton = ve_config_get_bool (config, GDM_KEY_CHOOSER_BUTTON);
     GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
@@ -238,7 +238,7 @@ greeter_parse_config (void)
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
     GdmGtkTheme = ve_config_get_string (config, GDM_KEY_GTK_THEME);
-    GdmServAuthDir = ve_config_get_string (config, GDM_KEY_SERVAUTH);
+    GdmServAuthDir = ve_config_get_string (config, GDM_KEY_SERV_AUTHDIR);
     GdmInfoMsgFile = ve_config_get_string (config, GDM_KEY_INFO_MSG_FILE);
     GdmInfoMsgFont = ve_config_get_string (config, GDM_KEY_INFO_MSG_FONT);
 
@@ -258,7 +258,7 @@ greeter_parse_config (void)
     if (GdmDefaultWelcomeBacktest == FALSE) {
             if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
                 GdmDefaultWelcome == TRUE;
-            else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
+            else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
                 GdmDefaultWelcome == TRUE;
             else
                 GdmDefaultWelcome = FALSE;
@@ -269,18 +269,18 @@ greeter_parse_config (void)
     if (GdmDefaultWelcome && strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
 	    g_free (GdmWelcome);
 	    GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
-    } else if (GdmDefaultWelcome && strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
+    } else if (GdmDefaultWelcome && strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
 	    g_free (GdmWelcome);
-	    GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
+	    GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
     }
 
     GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
-    GdmIncludeAll = ve_config_get_bool (config, GDM_KEY_INCLUDEALL);
+    GdmIncludeAll = ve_config_get_bool (config, GDM_KEY_INCLUDE_ALL);
     GdmInclude = ve_config_get_string (config, GDM_KEY_INCLUDE);
     GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
-    GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMALUID);
-    GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOWROOT);
-    GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOWREMOTEROOT);
+    GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMAL_UID);
+    GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOW_ROOT);
+    GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOW_REMOTE_ROOT);
     GdmTimedLoginDelay = ve_config_get_int (config, GDM_KEY_TIMED_LOGIN_DELAY);
 
     /* Note: TimedLogin here is not gotten out of the config
@@ -312,9 +312,9 @@ greeter_parse_config (void)
 
     GdmUse24Clock = gdm_common_select_time_format (config);
 
-    GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICONWIDTH);
-    GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICONHEIGHT);
-    GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACEDIR);
+    GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICON_WIDTH);
+    GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICON_HEIGHT);
+    GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACE_DIR);
     GdmDefaultFace = ve_config_get_string (config, GDM_KEY_FACE);
 
     GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
@@ -952,17 +952,17 @@ greeter_reread_config (int sig, gpointer data)
 	    strcmp (theme_dir, GdmGraphicalThemeDir) != 0 ||
 	     ! gdm_common_string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
 	     ! gdm_common_string_same (config, GdmGtkTheme, GDM_KEY_GTK_THEME) ||
-	     ! gdm_common_int_same (config, GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
+	     ! gdm_common_int_same (config, GdmXineramaScreen, GDM_KEY_XINERAMA_SCREEN) ||
 	     ! gdm_common_bool_same (config, GdmUseCirclesInEntry, GDM_KEY_ENTRY_CIRCLES) ||
 	     ! gdm_common_bool_same (config, GdmUseInvisibleInEntry, GDM_KEY_ENTRY_INVISIBLE) ||
 	     ! gdm_common_bool_same (config, GdmShowXtermFailsafeSession, GDM_KEY_SHOW_XTERM_FAILSAFE) ||
 	     ! gdm_common_bool_same (config, GdmShowGnomeFailsafeSession, GDM_KEY_SHOW_GNOME_FAILSAFE) ||
-	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDEALL) ||
+	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDE_ALL) ||
 	     ! gdm_common_string_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
 	     ! gdm_common_string_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
-	     ! gdm_common_string_same (config, GdmSessionDir, GDM_KEY_SESSDIR) ||
-	     ! gdm_common_string_same (config, GdmLocaleFile, GDM_KEY_LOCFILE) ||
-	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
+	     ! gdm_common_string_same (config, GdmSessionDir, GDM_KEY_SESSION_DESKTOP_DIR) ||
+	     ! gdm_common_string_same (config, GdmLocaleFile, GDM_KEY_LOCALE_FILE) ||
+	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSTEM_MENU) ||
 	     ! gdm_common_string_same (config, GdmHalt, GDM_KEY_HALT) ||
 	     ! gdm_common_string_same (config, GdmReboot, GDM_KEY_REBOOT) ||
 	     ! gdm_common_string_same (config, GdmSuspend, GDM_KEY_SUSPEND) ||
@@ -1016,7 +1016,7 @@ greeter_reread_config (int sig, gpointer data)
                 if (GdmDefaultWelcomeBacktest == FALSE) {
                         if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
                                 GdmDefaultWelcome == TRUE;
-                        else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
+                        else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
                                 GdmDefaultWelcome == TRUE;
                         else
                                 GdmDefaultWelcome = FALSE;
@@ -1026,9 +1026,9 @@ greeter_reread_config (int sig, gpointer data)
 			if (strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
 				g_free (GdmWelcome);
 				GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
-			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTEWELCOME) == 0) {
+			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
 				g_free (GdmWelcome);
-				GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTEWELCOME_MSG));
+				GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
 			}
 
 			if (welcome_string_info != NULL) {
@@ -1285,7 +1285,7 @@ main (int argc, char *argv[])
   bg_color = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_COLOR);
   /* If a graphical theme color does not exist fallback to the plain color */
   if (ve_string_empty (bg_color)) {
-    bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
+    bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUND_COLOR);
   }
   setup_background_color (bg_color);
   greeter_session_init ();

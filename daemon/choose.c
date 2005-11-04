@@ -45,10 +45,6 @@
 static gint ipending = 0;
 static GSList *indirect = NULL;
 
-/* Tunables */
-extern gint GdmMaxIndirect;	/* Maximum pending indirects, i.e. simultaneous choosing sessions */
-extern gint GdmMaxIndirectWait;	/* Maximum age before a pending session is removed from the list */
-
 static guint indirect_id = 1;
 
 static gboolean
@@ -150,7 +146,7 @@ gdm_choose_data (const char *data)
 		GdmIndirectDisplay *idisp = li->data;
 		if (idisp->id == id) {
 			/* whack the oldest if more then allowed */
-			while (ipending >= GdmMaxIndirect &&
+			while (ipending >= gdm_get_value_int (GDM_KEY_MAX_INDIRECT) &&
 			       remove_oldest_pending ())
 				;
 
@@ -335,7 +331,7 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 		continue;
 
 	if (id->acctime > 0 &&
-	    curtime > id->acctime + GdmMaxIndirectWait)	{
+	    curtime > id->acctime + gdm_get_value_int (GDM_KEY_MAX_WAIT_INDIRECT)) {
 #ifdef ENABLE_IPV6
 	    if (clnt_sa->ss_family == AF_INET6) {
 		char buffer6[INET6_ADDRSTRLEN];

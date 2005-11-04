@@ -477,7 +477,7 @@ xservers_get_server_definitions()
 		const char *sec = li->data;
 		if (strncmp (sec, GDM_KEY_SERVER_PREFIX,
 		             strlen (GDM_KEY_SERVER_PREFIX)) == 0) {
-			GdmXServer *svr = g_new0 (GdmXServer, 1);
+			GdmXserver *svr = g_new0 (GdmXserver, 1);
 			char buf[256];
 
 			svr->id = g_strdup (sec + strlen (GDM_KEY_SERVER_PREFIX));
@@ -513,7 +513,7 @@ xserver_update_delete_sensitivity()
 	GtkListStore *store;
 	GtkTreeIter iter;
 	GSList *xservers;
-	GdmXServer *xserver;
+	GdmXserver *xserver;
 	gchar *text;
 	gchar *selected;
 	gboolean valid;
@@ -577,7 +577,7 @@ void init_servers_combobox (int index)
 	GtkWidget *flexible_checkbutton;
 	GtkListStore *store;
 	GSList *xservers;
-	GdmXServer *xserver;
+	GdmXserver *xserver;
 
 	mod_combobox = glade_helper_get (xml_xservers, "xserver_mod_combobox",
 	                                 GTK_TYPE_COMBO_BOX);
@@ -706,7 +706,7 @@ refresh_remote_tab (void)
 	
 	local_style = gtk_combo_box_get_active (GTK_COMBO_BOX (local_greeter));
 	remote_style = ve_config_get_string (ve_config_get (config_file), 
-	                                     GDM_KEY_REMOTEGREETER);
+	                                     GDM_KEY_REMOTE_GREETER);
 					     			 
 	if (ve_config_get_bool (ve_config_get (config_file), GDM_KEY_XDMCP) == FALSE) {
 				
@@ -827,7 +827,7 @@ combobox_timeout (GtkWidget *combo_box)
 		g_free (new_key_val);
 	}
 	/* Remote Greeter Comboboxes */
-	else if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0) {
+	else if (strcmp (key, GDM_KEY_REMOTE_GREETER) == 0) {
 		
 		if (selected == REMOTE_DISABLED) {
 			ve_config_set_bool (config, GDM_KEY_XDMCP, FALSE);		
@@ -870,7 +870,7 @@ combobox_timeout (GtkWidget *combo_box)
 			return FALSE;
 		}
 	/* Automatic Login Combobox */
-	} else if (strcmp (key, GDM_KEY_AUTOMATICLOGIN) == 0 ||
+	} else if (strcmp (key, GDM_KEY_AUTOMATIC_LOGIN) == 0 ||
 	           strcmp (key, GDM_KEY_TIMED_LOGIN) == 0) {
 
 		GtkTreeIter iter;
@@ -1019,7 +1019,7 @@ combobox_changed (GtkWidget *combobox)
 			gtk_widget_hide (local_themed_vbox);
 		}
 	}
-	else if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0) {
+	else if (strcmp (key, GDM_KEY_REMOTE_GREETER) == 0) {
 
 		GtkWidget *remote_plain_vbox;
 		GtkWidget *remote_themed_vbox;
@@ -1916,7 +1916,7 @@ browser_apply (GtkWidget *button, gpointer data)
 	GdmExclude = ve_config_get_string (ve_config_get (config_file),
 					   GDM_KEY_EXCLUDE);
 	setup_user_combobox_list ("autologin_combo",
-			  GDM_KEY_AUTOMATICLOGIN);
+			  GDM_KEY_AUTOMATIC_LOGIN);
 	setup_user_combobox_list ("timedlogin_combo",
 			  GDM_KEY_TIMED_LOGIN);
 	gtk_widget_set_sensitive (button, FALSE);
@@ -2111,7 +2111,7 @@ greeter_toggle_timeout (GtkWidget *toggle)
 
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 	
-		if (strcmp (key, GDM_KEY_BACKGROUNDSCALETOFIT) == 0) {
+		if (strcmp (key, GDM_KEY_BACKGROUND_SCALE_TO_FIT) == 0) {
 	
 			if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
 
@@ -2208,19 +2208,19 @@ local_background_type_toggle_timeout (GtkWidget *toggle)
 		
 	if (image_value == TRUE && color_value == TRUE) {		
 		/* Image & color */
-		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUNDTYPE, 1);
+		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUND_TYPE, 1);
 	}
 	else if (image_value == FALSE && color_value == TRUE) {
 		/* Color only */
-		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUNDTYPE, 2);
+		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUND_TYPE, 2);
 	}
 	else if (image_value == TRUE && color_value == FALSE) {
 		/* Image only*/
-		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUNDTYPE, 3);
+		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUND_TYPE, 3);
 	}
 	else {
 		/* No Background */
-		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUNDTYPE, 0);
+		ve_config_set_int (ve_config_get (config_file), GDM_KEY_BACKGROUND_TYPE, 0);
 	}
 		
 	ve_config_save (config, FALSE);
@@ -2244,7 +2244,7 @@ include_all_toggle (GtkWidget *toggle)
 		GdmIncludeAll = FALSE;
 
 	setup_user_combobox_list ("autologin_combo",
-			  GDM_KEY_AUTOMATICLOGIN);
+			  GDM_KEY_AUTOMATIC_LOGIN);
 	setup_user_combobox_list ("timedlogin_combo",
 			  GDM_KEY_TIMED_LOGIN);
 }
@@ -2571,35 +2571,35 @@ xdmcp_button_clicked (void)
 				           "xdmcp/PARAMETERS");
 
 		setup_xdmcp_intspin ("udpport",
-			             GDM_KEY_UDPPORT,
-			             GDM_KEY_UDPPORT);
+			             GDM_KEY_UDP_PORT,
+			             GDM_KEY_UDP_PORT);
 
 		setup_xdmcp_intspin ("maxpending",
-		                     GDM_KEY_MAXPEND,
+		                     GDM_KEY_MAX_PENDING,
 		                     "xdmcp/PARAMETERS");
 
 		setup_xdmcp_intspin ("maxpendingindirect",
-		                     GDM_KEY_MAXINDIR,
+		                     GDM_KEY_MAX_INDIRECT,
 		                     "xdmcp/PARAMETERS");
 
 		setup_xdmcp_intspin ("maxremotesessions",
-			             GDM_KEY_MAXSESS,
+			             GDM_KEY_MAX_SESSIONS,
 			             "xdmcp/PARAMETERS");
 
 		setup_xdmcp_intspin ("maxwait",
-			             GDM_KEY_MAXWAIT,
+			             GDM_KEY_MAX_WAIT,
 			             "xdmcp/PARAMETERS");
 
 		setup_xdmcp_intspin ("maxwaitindirect",
-			             GDM_KEY_MAXINDWAIT,
+			             GDM_KEY_MAX_WAIT_INDIRECT,
 			             "xdmcp/PARAMETERS");
 
 		setup_xdmcp_intspin ("displaysperhost",
-			             GDM_KEY_DISPERHOST,
+			             GDM_KEY_DISPLAYS_PER_HOST,
 			             "xdmcp/PARAMETERS");
 
 		setup_xdmcp_intspin ("pinginterval",
-			             GDM_KEY_PINGINTERVAL,
+			             GDM_KEY_PING_INTERVAL,
 			             "xdmcp/PARAMETERS");
 	}
 	gtk_dialog_run (GTK_DIALOG (dialog));
@@ -2670,7 +2670,7 @@ setup_greeter_combobox (const char *name,
 		}
 	}
 	/* Set initial state of remote style combo box. */
-	else if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0) {
+	else if (strcmp (key, GDM_KEY_REMOTE_GREETER) == 0) {
 		refresh_remote_tab ();
 	}
 	g_free (val);
@@ -2923,7 +2923,7 @@ static void
 setup_users_tab (void)
 {
 	setup_greeter_toggle ("fb_allusers",
-			      GDM_KEY_INCLUDEALL);
+			      GDM_KEY_INCLUDE_ALL);
 	setup_face ();
 }
 
@@ -4310,7 +4310,7 @@ xserver_entry_changed (GtkWidget *entry)
 }
 
 static void
-xserver_append_combobox(GdmXServer *xserver, GtkComboBox *combobox)
+xserver_append_combobox(GdmXserver *xserver, GtkComboBox *combobox)
 {
 	gtk_combo_box_append_text (combobox, xserver->id);
 }
@@ -4849,13 +4849,13 @@ setup_security_tab (void)
 
 	/* Setup Local administrator login setttings */
 	setup_notify_toggle ("allowroot",
-			     GDM_KEY_ALLOWROOT,
-			     GDM_KEY_ALLOWROOT);
+			     GDM_KEY_ALLOW_ROOT,
+			     GDM_KEY_ALLOW_ROOT);
 
 	/* Setup Remote administrator login setttings */
 	setup_notify_toggle ("allowremoteroot",
-			     GDM_KEY_ALLOWREMOTEROOT,
-			     GDM_KEY_ALLOWREMOTEROOT);
+			     GDM_KEY_ALLOW_REMOTE_ROOT,
+			     GDM_KEY_ALLOW_REMOTE_ROOT);
 
 	/* Setup Enable debug message to system log */
 	setup_notify_toggle ("enable_debug",
@@ -4864,13 +4864,13 @@ setup_security_tab (void)
 
 	/* Setup Deny TCP connections to Xserver */
 	setup_notify_toggle ("disallow_tcp",
-			     GDM_KEY_DISALLOWTCP,
-			     GDM_KEY_DISALLOWTCP);
+			     GDM_KEY_DISALLOW_TCP,
+			     GDM_KEY_DISALLOW_TCP);
 
 	/* Setup Retry delay */
 	setup_intspin ("retry_delay",
-		       GDM_KEY_RETRYDELAY,
-		       GDM_KEY_RETRYDELAY);
+		       GDM_KEY_RETRY_DELAY,
+		       GDM_KEY_RETRY_DELAY);
 
 	/* Bold the Enable automatic login label */
 	checkbox = glade_helper_get (xml, "autologin",
@@ -4886,9 +4886,9 @@ setup_security_tab (void)
 
 	/* Setup Enable automatic login */
  	setup_user_combobox ("autologin_combo",
-			     GDM_KEY_AUTOMATICLOGIN);
+			     GDM_KEY_AUTOMATIC_LOGIN);
 	setup_notify_toggle ("autologin",
-			     GDM_KEY_AUTOMATICLOGIN_ENABLE,
+			     GDM_KEY_AUTOMATIC_LOGIN_ENABLE,
 			     NULL);
 
 	/* Setup Enable timed login */
@@ -4903,8 +4903,8 @@ setup_security_tab (void)
 
 	/* Setup Allow remote timed logins */
 	setup_notify_toggle ("allowremoteauto",
-			     GDM_KEY_ALLOWREMOTEAUTOLOGIN,
-			     GDM_KEY_ALLOWREMOTEAUTOLOGIN);
+			     GDM_KEY_ALLOW_REMOTE_AUTOLOGIN,
+			     GDM_KEY_ALLOW_REMOTE_AUTOLOGIN);
 
 	/* Setup Configure XDMCP button */
 	XDMCPbutton = glade_helper_get (xml, "config_xserverbutton",
@@ -5352,21 +5352,21 @@ hookup_plain_background (void)
 					       GTK_TYPE_CHECK_BUTTON);
 	
 	setup_greeter_color ("local_background_colorbutton", 
-	                     GDM_KEY_BACKGROUNDCOLOR);
+	                     GDM_KEY_BACKGROUND_COLOR);
 
 	setup_greeter_toggle ("sg_scale_background",
-			      GDM_KEY_BACKGROUNDSCALETOFIT);
+			      GDM_KEY_BACKGROUND_SCALE_TO_FIT);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (image_scale_to_fit), 
 	                              ve_config_get_bool (ve_config_get (config_file), 
-	                                                  GDM_KEY_BACKGROUNDSCALETOFIT));
+	                                                  GDM_KEY_BACKGROUND_SCALE_TO_FIT));
 	
 	background_filename = ve_config_get_string (ve_config_get (config_file), 
-	                                            GDM_KEY_BACKGROUNDIMAGE);
+	                                            GDM_KEY_BACKGROUND_IMAGE);
 	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
 	                               background_filename);
 
-	switch (ve_config_get_int (ve_config_get (config_file), GDM_KEY_BACKGROUNDTYPE)) {
+	switch (ve_config_get_int (ve_config_get (config_file), GDM_KEY_BACKGROUND_TYPE)) {
 	
 		case BACKGROUND_IMAGE_AND_COLOR: {
 			/* Image & Color background type */
@@ -5429,19 +5429,19 @@ hookup_plain_background (void)
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
 
 	g_object_set_data (G_OBJECT (color_radiobutton), "key",
-	                   GDM_KEY_BACKGROUNDTYPE);
+	                   GDM_KEY_BACKGROUND_TYPE);
 
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
-	                   GDM_KEY_BACKGROUNDCOLOR);
+	                   GDM_KEY_BACKGROUND_COLOR);
 
 	g_object_set_data (G_OBJECT (image_radiobutton), "key",
-	                   GDM_KEY_BACKGROUNDTYPE);
+	                   GDM_KEY_BACKGROUND_TYPE);
 			   
 	g_object_set_data (G_OBJECT (image_filechooser), "key",
-	                   GDM_KEY_BACKGROUNDIMAGE);			   
+	                   GDM_KEY_BACKGROUND_IMAGE);			   
 
 	g_object_set_data (G_OBJECT (image_scale_to_fit), "key",
-	                   GDM_KEY_BACKGROUNDSCALETOFIT);
+	                   GDM_KEY_BACKGROUND_SCALE_TO_FIT);
 
 	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (local_background_type_toggled), NULL);
@@ -5552,8 +5552,8 @@ setup_plain_menubar (void)
 {
 	/* Initialize and hookup callbacks for plain menu bar settings */
 	setup_notify_toggle ("sysmenu",
-			     GDM_KEY_SYSMENU,
-			     GDM_KEY_SYSMENU /* notify_key */);
+			     GDM_KEY_SYSTEM_MENU,
+			     GDM_KEY_SYSTEM_MENU /* notify_key */);
 	setup_notify_toggle ("config_available",
 			     GDM_KEY_CONFIG_AVAILABLE,
 			     GDM_KEY_CONFIG_AVAILABLE /* notify_key */);
@@ -5579,10 +5579,10 @@ setup_remote_welcome_message (void)
 {
 	/* Initialize and hookup callbacks for local welcome message settings */ 
 	setup_greeter_toggle ("sg_defaultwelcomeremote",
-	                      GDM_KEY_DEFAULT_REMOTEWELCOME);
+	                      GDM_KEY_DEFAULT_REMOTE_WELCOME);
 
  	setup_greeter_untranslate_entry ("welcomeremote",
-	                                 GDM_KEY_REMOTEWELCOME);
+	                                 GDM_KEY_REMOTE_WELCOME);
 }
 
 static void
@@ -5646,24 +5646,24 @@ hookup_remote_plain_background (void)
 					       GTK_TYPE_CHECK_BUTTON);
 	
 	setup_greeter_color ("remote_background_colorbutton", 
-	                     GDM_KEY_BACKGROUNDCOLOR);
+	                     GDM_KEY_BACKGROUND_COLOR);
 
 	setup_greeter_toggle ("sg_scale_background_remote",
-			      GDM_KEY_BACKGROUNDSCALETOFIT);
+			      GDM_KEY_BACKGROUND_SCALE_TO_FIT);
 
 	setup_greeter_toggle ("sg_remote_color_only",
-			      GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
+			      GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (image_scale_to_fit), 
 	                              ve_config_get_bool (ve_config_get (config_file), 
-	                                                  GDM_KEY_BACKGROUNDSCALETOFIT));
+	                                                  GDM_KEY_BACKGROUND_SCALE_TO_FIT));
 	
 	background_filename = ve_config_get_string (ve_config_get (config_file), 
-	                                            GDM_KEY_BACKGROUNDIMAGE);
+	                                            GDM_KEY_BACKGROUND_IMAGE);
 	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
 	                               background_filename);
 
-	switch (ve_config_get_int (ve_config_get (config_file), GDM_KEY_BACKGROUNDTYPE)) {
+	switch (ve_config_get_int (ve_config_get (config_file), GDM_KEY_BACKGROUND_TYPE)) {
 	
 		case BACKGROUND_IMAGE_AND_COLOR:	{
 			/* Image & Color background type */
@@ -5726,19 +5726,19 @@ hookup_remote_plain_background (void)
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
 
 	g_object_set_data (G_OBJECT (color_radiobutton), "key",
-	                   GDM_KEY_BACKGROUNDTYPE);
+	                   GDM_KEY_BACKGROUND_TYPE);
 
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
-	                   GDM_KEY_BACKGROUNDCOLOR);
+	                   GDM_KEY_BACKGROUND_COLOR);
 
 	g_object_set_data (G_OBJECT (image_radiobutton), "key",
-	                   GDM_KEY_BACKGROUNDTYPE);
+	                   GDM_KEY_BACKGROUND_TYPE);
 			   
 	g_object_set_data (G_OBJECT (image_filechooser), "key",
-	                   GDM_KEY_BACKGROUNDIMAGE);			   
+	                   GDM_KEY_BACKGROUND_IMAGE);			   
 
 	g_object_set_data (G_OBJECT (image_scale_to_fit), "key",
-	                   GDM_KEY_BACKGROUNDSCALETOFIT);
+	                   GDM_KEY_BACKGROUND_SCALE_TO_FIT);
 
 	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (local_background_type_toggled), NULL);
@@ -5866,7 +5866,7 @@ setup_remote_plain_settings (void)
 
 	/* Style setting */
 	setup_greeter_combobox ("remote_greeter",
-	                        GDM_KEY_REMOTEGREETER);
+	                        GDM_KEY_REMOTE_GREETER);
 	
 	/* Plain background settings */
 	hookup_remote_plain_background ();
@@ -6321,13 +6321,13 @@ main (int argc, char *argv[])
 	/* XXX: the setup proggie using a greeter config var for it's
 	 * ui?  Say it ain't so.  Our config sections are SUCH A MESS */
 	GdmIconMaxHeight = ve_config_get_int (ve_config_get (config_file),
-					   GDM_KEY_ICONHEIGHT);
+					   GDM_KEY_ICON_HEIGHT);
 	GdmIconMaxWidth = ve_config_get_int (ve_config_get (config_file),
-					   GDM_KEY_ICONWIDTH);
+					   GDM_KEY_ICON_WIDTH);
 	GdmMinimalUID = ve_config_get_int (ve_config_get (config_file),
-					   GDM_KEY_MINIMALUID);
+					   GDM_KEY_MINIMAL_UID);
 	GdmIncludeAll = ve_config_get_bool (ve_config_get (config_file),
-					   GDM_KEY_INCLUDEALL);
+					   GDM_KEY_INCLUDE_ALL);
 	GdmInclude = ve_config_get_string (ve_config_get (config_file),
 					   GDM_KEY_INCLUDE);
 	GdmExclude = ve_config_get_string (ve_config_get (config_file),
@@ -6335,9 +6335,9 @@ main (int argc, char *argv[])
 	GdmSoundProgram = ve_config_get_string (ve_config_get (config_file),
 						GDM_KEY_SOUND_PROGRAM);
 	GdmAllowRoot = ve_config_get_bool (ve_config_get (config_file),
-						GDM_KEY_ALLOWROOT);
+						GDM_KEY_ALLOW_ROOT);
 	GdmAllowRemoteRoot = ve_config_get_bool (ve_config_get (config_file),
-						GDM_KEY_ALLOWREMOTEROOT);
+						GDM_KEY_ALLOW_REMOTE_ROOT);
 	if (ve_string_empty (GdmSoundProgram) ||
 	    access (GdmSoundProgram, X_OK) != 0) {
 		g_free (GdmSoundProgram);
