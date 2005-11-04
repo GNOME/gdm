@@ -71,7 +71,8 @@ get_free_vt (int *vtfd)
 {
 	int fd, fdv;
 	int vtno;
-	GList *to_close_vts = NULL, *li;
+	unsigned short vtmask;
+	struct vt_stat vtstat;
 
 	*vtfd = -1;
 
@@ -86,7 +87,14 @@ get_free_vt (int *vtfd)
 	if (fd < 0)
 		return -1;
 
-	if ((ioctl(fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
+	if (ioctl (fd, VT_GETSTATE, &vtstat) < 0) {
+		VE_IGNORE_EINTR (close (fd));
+		return -1;
+	}
+
+	for (vtno = GdmFirstVT, vtmask = 1 << (vtno-1);
+			vtstat.v_state & vtmask; vtno++, vtmask <<= 1);
+	if (!vtmask) {
 		VE_IGNORE_EINTR (close (fd));
 		return -1;
 	}
@@ -96,39 +104,7 @@ get_free_vt (int *vtfd)
 		VE_IGNORE_EINTR (close (fd));
 		return -1;
 	}
-
-	while (vtno < GdmFirstVT) {
-		int oldvt = vtno;
-		to_close_vts = g_list_prepend (to_close_vts,
-					       GINT_TO_POINTER (fdv));
-
-#if defined (__linux__)
-		if ((ioctl(fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
-#elif defined (__FreeBSD__) || defined(__DragonFly__)
-		if (ioctl(fd, VT_OPENQRY, &vtno) == -1) {
-#endif
-			vtno = -1;
-			goto cleanup;
-		}
-
-		if (oldvt == vtno) {
-			vtno = -1;
-			goto cleanup;
-		}
-
-		fdv = open_vt (vtno);
-		if (fdv < 0) {
-			vtno = -1;
-			goto cleanup;
-		}
-	}
-
 	*vtfd = fdv;
-
-cleanup:
-	for (li = to_close_vts; li != NULL; li = li->next) {
-		VE_IGNORE_EINTR (close (GPOINTER_TO_INT (li->data)));
-	}
 	return vtno;
 }
 
