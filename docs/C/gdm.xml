@@ -503,8 +503,8 @@
         face browser.  As long as the users to include is of a reasonable
         size, there should not be a problem with GDM being unable to access
         the face images.  To work around these problems, it is recommended
-	to place face images in the directory specified by the
-	<filename>GlobalFaceDir</filename> configuration option.
+        to place face images in the directory specified by the
+        <filename>GlobalFaceDir</filename> configuration option.
       </para>
 
       <para>
@@ -2380,7 +2380,7 @@ XKeepsCrashing
           <varlistentry>
             <term>BackgroundColor</term>
             <listitem>
-              <synopsis>BackgroundColor=#007777</synopsis>
+              <synopsis>BackgroundColor=#76848F</synopsis>
               <para>
                 If the BackgroundType is 2, use this color in the background
                 of the greeter.  Also use it as the back of transparent images
@@ -2482,8 +2482,8 @@ XKeepsCrashing
             <listitem>
               <synopsis>BackgroundType=2</synopsis>
               <para>
-                The type of background to set.  0 is none, 1 is image and 2
-                is color.  This only affects the GTK+ Greeter.
+                The type of background to set.  0 is none, 1 is image and color,
+                2 is color and 3 is image.  This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>        
@@ -2674,6 +2674,17 @@ XKeepsCrashing
             </listitem>
           </varlistentry>
 
+         <varlistentry>
+            <term>GraphicalThemedColor</term>
+            <listitem>
+              <synopsis>GraphicalThemedColor=#76848F</synopsis>
+              <para>
+                Use this color in the background of the Themed Greeter.  
+                This only affects the Themed Greeter.
+              </para>
+            </listitem>
+          </varlistentry>
+
           <varlistentry>
             <term>InfoMsgFile</term>
             <listitem>
@@ -2736,6 +2747,19 @@ XKeepsCrashing
                 the GDM user. If no file is specified the logo feature
                 is disabled.
                 This only affects the GTK+ Greeter.
+              </para>
+            </listitem>
+          </varlistentry>
+
+         <varlistentry>
+            <term>ChooserButtonLogo</term>
+            <listitem>
+              <synopsis>ChooserButtonLogo=&lt;share&gt;/pixmaps/gnome-logo-large.png</synopsis>
+              <para>
+                Image file to display in the file chooser button in gdmsetup.
+                This key is modified by gdmsetup and should not be manually
+                modified by the user.
+                This only affects the Login Window Preferences (gdmsetup).
               </para>
             </listitem>
           </varlistentry>
@@ -3849,13 +3873,33 @@ Answers:
       <sect3 id="updateconfig">
       <title>UPDATE_CONFIG</title> 
       <screen>
-UPDATE_CONFIG: Tell the daemon to update config of some key.
-               Any user can really request that values are
-               re-read but the daemon caches the last date
-               of the config file so a user can't actually
-               change any values unless they can write the
-               config file.
-Supported keys:
+UPDATE_CONFIG: Tell the daemon to re-read a key from the 
+               gdm.conf configuration file.   Any user can
+               request that values are re-read but the daemon
+               will only do so if the file has been modified
+               since the last time it was read.  Only users
+               who can change the gdm.conf file (normally
+               writable only by the root user) can actually
+               modify the GDM configuration.  This command
+               is useful to cause the GDM to update itself
+               to recognize a change made to the gdm.conf
+               file by the root user.
+
+               Starting with version 2.13, all GDM keys are
+               supported except for the following:
+
+  daemon/PidFile
+  daemon/ConsoleNotify
+  daemon/User
+  daemon/Group
+  daemon/LogDir
+  daemon/ServAuthDir
+  daemon/UserAuthDir
+  daemon/UserAuthFile
+  daemon/UserAuthFBDir
+
+Supported keys for previous versions of GDM:
+
   security/AllowRoot (2.3.90.2)
   security/AllowRemoteRoot (2.3.90.2)
   security/AllowRemoteAutoLogin (2.3.90.2)
