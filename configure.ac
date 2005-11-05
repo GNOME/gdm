@@ -458,6 +458,12 @@ AC_CHECK_HEADER(login_cap.h, [
 AC_CHECK_HEADERS(sys/sockio.h, [
 		 AC_DEFINE(HAVE_SYS_SOCKIO_H)])
 
+#
+# Check for libgen.h
+#
+AC_CHECK_HEADERS(libgen.h, [
+		 AC_DEFINE(HAVE_LIBGEN_H)])
+
 
 #
 # Xdmcp checking
@@ -609,7 +615,7 @@ if test "x$XINPUT_LIBS" = x; then
        ;;
     esac
     AC_MSG_CHECKING(for -lXi in $xinputpath)
-    AC_TRY_LINK([], [XOpenDisplay()], [
+    AC_TRY_LINK([], [XOpenDevice()], [
 	AC_MSG_RESULT(yes)
 	XINPUT_LIBS="$XINPUT_RPATH_FLAGS -L$xinputpath -lXi"
         LIBS="$save_LIBS"
