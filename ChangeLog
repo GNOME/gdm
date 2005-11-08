@@ -1,3 +1,10 @@
+2005-11-07  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.h, gui/gdmchooser.c: No longer 
+	  #ifdef the reading of the Multicast config 
+	  data.  It's okay if these values are read in
+	  even if IPv6 isn't being used.
+
 2005-11-04  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac: Fix check for XInput and add a check

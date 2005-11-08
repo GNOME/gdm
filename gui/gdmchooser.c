@@ -163,10 +163,8 @@ static gboolean GdmAllowAdd;
 static gchar *GdmBackgroundColor;
 static int GdmBackgroundType;
 
-#ifdef ENABLE_IPV6
 static gboolean GdmMulticast;
 static gchar *GdmMulticastAddr;
-#endif
 
 /* HACK: for gdmcommon, else it complains */
 /* */  gchar *GdmInfoMsgFile;
@@ -1619,10 +1617,8 @@ gdm_chooser_parse_config (void)
 
     GdmBackgroundColor = ve_config_get_string (cfg, GDM_KEY_BACKGROUND_COLOR);
     GdmBackgroundType = ve_config_get_int (cfg, GDM_KEY_BACKGROUND_TYPE);
-#ifdef ENABLE_IPV6
     GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
     GdmMulticastAddr = ve_config_get_string (cfg, GDM_KEY_MULTICAST_ADDR);
-#endif
 
     GdmAllowAdd = ve_config_get_bool (cfg, GDM_KEY_ALLOW_ADD);
 

@@ -358,10 +358,8 @@ enum {
 #define GDM_KEY_DEFAULT_HOST_IMG "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
 #define GDM_KEY_HOST_IMAGE_DIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
 #define GDM_KEY_HOSTS "chooser/Hosts="
-#ifdef ENABLE_IPV6
 #define GDM_KEY_MULTICAST "chooser/Multicast=true"
 #define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr=ff02::1"
-#endif
 #define GDM_KEY_BROADCAST "chooser/Broadcast=true"
 #define GDM_KEY_ALLOW_ADD "chooser/AllowAdd=true"
 
