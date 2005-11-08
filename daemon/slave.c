@@ -949,7 +949,7 @@ gdm_screen_init (GdmDisplay *display)
 		if (screen_num <= gdm_get_value_int (GDM_KEY_XINERAMA_SCREEN))
 			gdm_set_value_int (GDM_KEY_XINERAMA_SCREEN, 0);
 
-		xineramascreen = gdm_get_value_int (GDM_KEY_XINERAMA);
+		xineramascreen = gdm_get_value_int (GDM_KEY_XINERAMA_SCREEN);
 
 		display->screenx = xscreens[xineramascreen].x_org;
 		display->screeny = xscreens[xineramascreen].y_org;

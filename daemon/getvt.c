@@ -18,19 +18,21 @@
 
 #include "config.h"
 
-#include "gdm.h"
-#include "misc.h"
-#include "getvt.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
 #include <dirent.h>
+#include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include "gdm.h"
+#include "misc.h"
+#include "getvt.h"
+#include "gdmconfig.h"
 
 extern int GdmFirstVT;
 extern gboolean GdmVTAllocation;
