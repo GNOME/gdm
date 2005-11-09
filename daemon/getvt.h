@@ -20,11 +20,11 @@
 #define GETVT_H
 
 /* gets an argument we should pass to the X server, on
- * linux for example we get the first empty vt (higher
- * then or equal to GdmFirstVT) and then return vt<number>
+ * linux for example we get the first empty vt (higher than
+ * or equal to GDM_KEY_FIRST_VT) and then return vt<number>
  * (e.g. "vt7") as a newly allocated string.
  * Can return NULL if we can't figure out what to do
- * or if GdmVTAllocation is false. */
+ * or if GDM_KEY_VT_ALLOCATION is false. */
 /* fd is opened so that we are saying we have opened this
  * vt.  This should be closed after the server has started.
  * This is to avoid race with other stuff openning this vt.

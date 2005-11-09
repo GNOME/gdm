@@ -34,9 +34,6 @@
 #include "getvt.h"
 #include "gdmconfig.h"
 
-extern int GdmFirstVT;
-extern gboolean GdmVTAllocation;
-
 #if defined (__linux__) || defined (__FreeBSD__) || defined(__DragonFly__)
 
 #ifdef __linux__
@@ -111,7 +108,7 @@ get_free_vt (int *vtfd)
 		return -1;
 	}
 
-	for (vtno = GdmFirstVT, vtmask = 1 << (vtno-1);
+	for (vtno = gdm_get_value_int (GDM_KEY_FIRST_VT), vtmask = 1 << (vtno-1);
 			vtstat.v_state & vtmask; vtno++, vtmask <<= 1);
 	if (!vtmask) {
 		VE_IGNORE_EINTR (close (fd));
@@ -130,7 +127,7 @@ get_free_vt (int *vtfd)
 char *
 gdm_get_empty_vt_argument (int *fd, int *vt)
 {
-	if ( ! GdmVTAllocation) {
+	if ( ! gdm_config_get_value_bool (GDM_KEY_VT_ALLOCATION)) {
 		*fd = -1;
 		return NULL;
 	}
