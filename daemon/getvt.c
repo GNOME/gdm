@@ -127,7 +127,7 @@ get_free_vt (int *vtfd)
 char *
 gdm_get_empty_vt_argument (int *fd, int *vt)
 {
-	if ( ! gdm_config_get_value_bool (GDM_KEY_VT_ALLOCATION)) {
+	if ( ! gdm_get_value_bool (GDM_KEY_VT_ALLOCATION)) {
 		*fd = -1;
 		return NULL;
 	}
