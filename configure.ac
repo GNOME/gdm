@@ -120,7 +120,17 @@ dnl AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
 
 AC_PATH_XTRA
-AC_CHECK_TYPE(socklen_t,size_t)
+
+dnl socklen_t may be declared, but not in a "standard" C header location
+AC_CHECK_HEADERS(sys/socket.h)
+AC_CHECK_TYPE(socklen_t,,
+        AC_DEFINE(socklen_t,size_t,Compatibility type),
+[AC_INCLUDES_DEFAULT]
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+)
+
 AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 
 GNOME_COMPILE_WARNINGS

@@ -1,3 +1,10 @@
+2005-11-11  Brian Cameron  <brian.cameron@sun.com>
+
+        * configure.ac: Update check for socklen_t so it
+          includes sys/socket.h.  Some platforms define
+          socklen_t there.  Patch provided by
+          dmacks@netspace.org.  Fixes bug #320930.
+
 2005-11-09  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/getvt.c: Oops, fix again.
