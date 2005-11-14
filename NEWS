@@ -1,5 +1,63 @@
 Ahh news...
 
+2.13.0.1 stuff:
+
+- Complete redesign of gdmsetup so it follows
+  usability recommendation mockups by Calum
+  Benson.  (Dennis Cranston, Calum Benson)
+
+- gdmsetup now supports drag-and-drop for new
+  themes.  (Dennis Cranston)
+
+- The chooser GUI has been HIGified. (Dennis
+  Cranston)
+
+- Redesign of configuration parsing logic in
+  the GDM daemon which simplifies how the
+  UPDATE_CONFIG and GET_CONFIG commands work,
+  better encapsulates the vicious-extensions
+  logic, and cleans up the code.  (Brian
+  Cameron)
+
+- If slave does not respond to a SIGTERM, try a
+  SIGKILL the second time.  This resolves a problem
+  where GDM sometimes stops managing a display
+  because it just keeps waiting for the slave to
+  die.  See bug #113902.  (Vaclav Smilauer).
+
+- GDM now uses VT_GETSTATE for peeking VT freeness
+
+- Now GDM warns correctly about caps lock if an
+  alternate keymap is enabled.  kbGetState is used
+  instead of XkbGetIndicator State. 
+  (Sebastien Bacher)
+
+- Fixed race condition where a variable used by
+  the signal handlers was not being set until after
+  the signal handlers were setup.  Now it is set
+  before avoiding a race.  (Simon Bowden/Brian
+  Cameron)
+
+- Now check for X server in prefix /usr.
+  (J\303\274rg Billeter)   
+
+- Check for XInput fixed in configure and add a
+  check for libgen.h to avoid compiler warnings.
+  (Brian Cameron)
+
+- Updated check in configure for socklen_t so it
+  includes sys/socket.h to better support BSD
+  platforms that define socklen_t there.
+  (dmacks@netspace.org)
+
+- Kurdish added to ALL_LINGUAS. (Erdal Ronahi)
+
+- Translation updates (Takeshi AIHANA, Dan Damian,
+  Theppitak Karoonboonyanan, Priit Laes, Chao-Hsiung
+  Liao, Roozbeh Pournader, Erdal Ronahi, Francisco
+  Javier F. Serrador, Marcel Telka, Funda Wang, Adam
+  Weinberger)
+
 2.13.0.0 stuff:
 
 - Fix problem with PostSession script not always being
