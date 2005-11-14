@@ -19,7 +19,6 @@
 #include <config.h>
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
-#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <gdk/gdkx.h>
 #include <glade/glade.h>
 #include <stdio.h>
@@ -140,6 +139,13 @@ enum {
 	BACKGROUND_COLOR,
 	BACKGROUND_IMAGE
 };
+
+
+static GtkTargetEntry target_table[] = {
+	{ "text/uri-list", 0, 0 }
+};
+
+static guint n_targets = sizeof (target_table) / sizeof (target_table[0]);
 
 static void
 simple_spawn_sync (char **argv)
@@ -622,7 +628,7 @@ void init_servers_combobox (int index)
 	xserver_update_delete_sensitivity ();
 }
 
-void
+static void
 update_remote_sensitivity (gboolean value)
 {
 	GtkWidget *remote_background_color_hbox;
@@ -669,7 +675,7 @@ update_remote_sensitivity (gboolean value)
 	gtk_widget_set_sensitive (sg_scale_background_remote_hbox, value);
 }
 
-void
+static void
 refresh_remote_tab (void)
 {
 	GtkWidget *local_greeter;
@@ -1471,7 +1477,7 @@ root_not_allowed (GtkWidget *combo_box)
 	}
 }
 
-gint
+static gint
 users_string_compare_func (gconstpointer a, gconstpointer b)
 {
 	return strcmp(a, b);
@@ -2606,7 +2612,7 @@ xdmcp_button_clicked (void)
 	gtk_widget_hide (dialog);
 }
 
-void
+static void
 vt_spinbutton_activate (GtkWidget * widget,
                         gpointer data)
 {
@@ -3864,124 +3870,110 @@ dir_exists (const char *parent, const char *dir)
 }
 
 static void
-theme_install_response (GtkWidget *chooser, gint response, gpointer data)
+install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 {
-	GtkListStore *store = data;
-	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
-						  GTK_TYPE_TREE_VIEW);
-	char *filename, *dir, *untar_cmd, *theme_dir, *cwd;
-	GtkTreeIter *select_iter = NULL;
 	GtkTreeSelection *selection;
-	char *error;
+	GtkTreeIter *select_iter = NULL;
+	GtkWidget *theme_list;
 	DIR *dp;
+	gchar *cwd;
+	gchar *dir;
+	gchar *error;
+	gchar *theme_dir;
+	gchar *untar_cmd;
 	gboolean success = FALSE;
 
-	if (response != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (chooser);
-		return;
-	}
+	theme_list = glade_helper_get (xml, "gg_theme_list", GTK_TYPE_TREE_VIEW);
 
 	cwd = g_get_current_dir ();
 	theme_dir = get_theme_dir ();
 
-	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
-	if (last_theme_installed != NULL)
-		g_free (last_theme_installed);
-	last_theme_installed = g_strdup (filename);
-	if (filename == NULL) {
-		GtkWidget *dlg =
-			ve_hig_dialog_new (GTK_WINDOW (chooser),
-					   GTK_DIALOG_MODAL | 
-					   GTK_DIALOG_DESTROY_WITH_PARENT,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("No file selected"),
-					   "");
-		gtk_dialog_run (GTK_DIALOG (dlg));
-		gtk_widget_destroy (dlg);
-		g_free (cwd);
-		g_free (theme_dir);
-		return;
-	}
+	if ( !g_path_is_absolute (filename)) {
 
-	if ( ! g_path_is_absolute (filename)) {
-		char *f = g_build_filename (cwd, filename, NULL);
+		gchar *temp;
+		
+		temp = g_build_filename (cwd, filename, NULL);
 		g_free (filename);
-		filename = f;
+		filename = temp;
 	}
-
+	
 	dir = get_archive_dir (filename, &untar_cmd, &error);
 
 	/* FIXME: perhaps do a little bit more sanity checking of
 	 * the archive */
 
 	if (dir == NULL) {
-		GtkWidget *dlg;
+
+		GtkWidget *dialog;
 		gchar *msg;
 
 		msg = g_strdup_printf (_("%s"), error);
 
-		dlg = ve_hig_dialog_new (GTK_WINDOW (chooser),
-					   GTK_DIALOG_MODAL | 
-					   GTK_DIALOG_DESTROY_WITH_PARENT,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("Not a theme archive"),
-					   msg);
-		gtk_dialog_run (GTK_DIALOG (dlg));
-		gtk_widget_destroy (dlg);
-		g_free (filename);
-		g_free (cwd);
+		dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
+					    GTK_DIALOG_MODAL | 
+					    GTK_DIALOG_DESTROY_WITH_PARENT,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("Not a theme archive"),
+					    msg);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
 		g_free (theme_dir);
+		g_free (untar_cmd);
+		g_free (cwd);
 		g_free (msg);
 		return;
 	}
 
 	if (dir_exists (theme_dir, dir)) {
-		char *fname = ve_filename_to_utf8 (dir);
-		char *s;
+
 		GtkWidget *button;
-		GtkWidget *dlg;
+		GtkWidget *dialog;
+		gchar *fname;
+		gchar *s;
+
+		fname = ve_filename_to_utf8 (dir);
 
 		/* FIXME: if exists already perhaps we could also have an
 		 * option to change the dir name */
 		s = g_strdup_printf (_("Theme directory '%s' seems to be already "
 				       "installed. Install again anyway?"),
 				     fname);
-		dlg = ve_hig_dialog_new
-			(GTK_WINDOW (chooser),
-			 GTK_DIALOG_MODAL | 
-			 GTK_DIALOG_DESTROY_WITH_PARENT,
-			 GTK_MESSAGE_QUESTION,
-			 GTK_BUTTONS_NONE,
-			 s,
-			 "");
+		
+		dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
+		                            GTK_DIALOG_MODAL | 
+		                            GTK_DIALOG_DESTROY_WITH_PARENT,
+		                            GTK_MESSAGE_QUESTION,
+		                            GTK_BUTTONS_NONE,
+		                            s,
+		                            "");
 		g_free (fname);
 		g_free (s);
 
 		button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-		gtk_dialog_add_action_widget (GTK_DIALOG (dlg), button, GTK_RESPONSE_NO);
+		gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, GTK_RESPONSE_NO);
 		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 		gtk_widget_show (button);
 
 		button = gtk_button_new_from_stock ("_Install Anyway");
-		gtk_dialog_add_action_widget (GTK_DIALOG (dlg), button, GTK_RESPONSE_YES);
+		gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, GTK_RESPONSE_YES);
 		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 		gtk_widget_show (button);
 
-		gtk_dialog_set_default_response (GTK_DIALOG (dlg),
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 						 GTK_RESPONSE_YES);
 
-		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
-		if (gtk_dialog_run (GTK_DIALOG (dlg)) != GTK_RESPONSE_YES) {
-			gtk_widget_destroy (dlg);
-			g_free (filename);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) != GTK_RESPONSE_YES) {
+			gtk_widget_destroy (dialog);
+			g_free (theme_dir);
+			g_free (untar_cmd);
 			g_free (cwd);
 			g_free (dir);
-			g_free (theme_dir);
 			return;
 		}
-		gtk_widget_destroy (dlg);
+		gtk_widget_destroy (dialog);
 	}
 
 	g_assert (untar_cmd != NULL);
@@ -3990,10 +3982,15 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 	    /* this is a security sanity check */
 	    strchr (dir, '/') == NULL &&
 	    system (untar_cmd) == 0) {
-		char *argv[5];
-		char *quoted = g_strconcat ("./", dir, NULL);
-		char *chown = find_chown ();
-		char *chmod = find_chmod ();
+
+		gchar *argv[5];
+		gchar *quoted;
+		gchar *chown;
+		gchar *chmod;
+
+		quoted = g_strconcat ("./", dir, NULL);
+		chown = find_chown ();
+		chmod = find_chmod ();
 		success = TRUE;
 
 		/* HACK! */
@@ -4022,18 +4019,20 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 		g_free (chmod);
 	}
 
-	if ( ! success) {
-		GtkWidget *dlg =
-			ve_hig_dialog_new (GTK_WINDOW (chooser),
-					   GTK_DIALOG_MODAL | 
-					   GTK_DIALOG_DESTROY_WITH_PARENT,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("Some error occurred when "
-					     "installing the theme"),
-					   "");
-		gtk_dialog_run (GTK_DIALOG (dlg));
-		gtk_widget_destroy (dlg);
+	if (!success) {
+	
+		GtkWidget *dialog;
+		
+		dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
+					    GTK_DIALOG_MODAL | 
+					    GTK_DIALOG_DESTROY_WITH_PARENT,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("Some error occurred when "
+					      "installing the theme"),
+					    "");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
 	}
 
 	gtk_list_store_clear (store);
@@ -4053,12 +4052,48 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 	}
 	
 	g_free (untar_cmd);
-	g_free (dir);
-	g_free (filename);
-	g_free (cwd);
 	g_free (theme_dir);
+	g_free (dir);
+	g_free (cwd);
+}
 
-	gtk_widget_destroy (GTK_WIDGET (chooser));
+static void
+theme_install_response (GtkWidget *chooser, gint response, gpointer data)
+{
+	GtkListStore *store = data;
+	gchar *filename;
+
+	if (response != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (chooser);
+		return;
+	}
+
+	if (last_theme_installed != NULL) {
+		g_free (last_theme_installed);
+	}
+
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));	
+	last_theme_installed = g_strdup (filename);
+	
+	if (filename == NULL) {
+	
+		GtkWidget *dialog;
+
+		dialog = ve_hig_dialog_new (GTK_WINDOW (chooser),
+					    GTK_DIALOG_MODAL | 
+					    GTK_DIALOG_DESTROY_WITH_PARENT,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("No file selected"),
+					    "");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		return;
+	}
+
+	install_theme_file (filename, store, GTK_WINDOW (chooser));
+	gtk_widget_destroy (chooser);
+	g_free (filename);
 }
 
 static void
@@ -4066,8 +4101,9 @@ install_new_theme (GtkWidget *button, gpointer data)
 {
 	GtkListStore *store = data;
 	static GtkWidget *chooser = NULL;
-	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
-		GTK_TYPE_WINDOW);
+	GtkWidget *setup_dialog;
+	
+	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
 	
 	chooser = gtk_file_chooser_dialog_new (_("Select Theme Archive"),
 					       GTK_WINDOW (setup_dialog),
@@ -4076,16 +4112,17 @@ install_new_theme (GtkWidget *button, gpointer data)
 					       _("_Install"), GTK_RESPONSE_OK,
 					       NULL);
 	
-	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (chooser), TRUE);
+	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (chooser), FALSE);
+
 	g_signal_connect (G_OBJECT (chooser), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &chooser);
 	g_signal_connect (G_OBJECT (chooser), "response",
 			  G_CALLBACK (theme_install_response), store);
 
-	if (last_theme_installed != NULL)
+	if (last_theme_installed != NULL) {
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser),
-			last_theme_installed);
-
+		                               last_theme_installed);
+	}
 	gtk_widget_show (chooser);
 }
 
@@ -4914,6 +4951,100 @@ setup_security_tab (void)
 	                  G_CALLBACK (xserver_button_clicked), NULL);
 }
 
+static GList *
+get_file_list_from_uri_list (gchar *uri_list)
+{
+	GList *list = NULL;
+	gchar **uris = NULL;
+	gint index;
+
+	if (uri_list == NULL) {
+		return NULL;
+	}
+	
+	uris = g_uri_list_extract_uris (uri_list);
+	
+	for (index = 0; uris[index] != NULL; index++) {
+		
+		gchar *file;
+
+		if (g_path_is_absolute (uris[index]) == TRUE) {
+			file = g_strdup (uris[index]);
+		}
+		else {
+			gchar *host = NULL;
+			
+			file = g_filename_from_uri (uris[index], &host, NULL);
+			
+			/* Sorry, we can only accept local files. */
+			if (host != NULL) {
+				g_free (file);
+				g_free (host);
+				file = NULL;
+			}
+		}
+
+		if (file != NULL) {
+			list = g_list_prepend (list, file);
+		}
+	}
+	g_strfreev (uris);
+	return g_list_reverse (list);
+}
+
+static void  
+theme_list_drag_data_received  (GtkWidget        *widget,
+                                GdkDragContext   *context,
+                                gint              x,
+                                gint              y,
+                                GtkSelectionData *data,
+                                guint             info,
+                                guint             time,
+                                gpointer          extra_data)
+{
+	GtkWidget *parent;
+	GtkWidget *theme_list;
+	GtkListStore *store;
+	GList *list;
+	
+	parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+	theme_list = glade_helper_get (xml, "gg_theme_list", GTK_TYPE_TREE_VIEW);
+	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (theme_list)));
+
+	gtk_drag_finish (context, TRUE, FALSE, time);
+
+	for (list = get_file_list_from_uri_list ((gchar *)data->data); list != NULL; list = list-> next) {
+
+		GtkWidget *prompt;
+		gchar *base;
+		gchar *mesg;
+		gchar *detail;
+		gint response;
+
+		base = g_path_get_basename ((gchar *)list->data);
+		mesg = g_strdup_printf (_("Install the theme from '%s'?"), base);
+		detail = g_strdup_printf (_("Select install to add the theme from the file '%s'."), (gchar *)list->data); 
+		
+		prompt = ve_hig_dialog_new (GTK_WINDOW (parent),
+		                            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		                            GTK_MESSAGE_QUESTION,
+		                            GTK_BUTTONS_NONE,
+		                            mesg,
+		                            detail);
+
+		gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-cancel", GTK_RESPONSE_CANCEL); 
+		gtk_dialog_add_button (GTK_DIALOG (prompt), _("_Install"), GTK_RESPONSE_OK);
+
+		response = gtk_dialog_run (GTK_DIALOG (prompt));
+		gtk_widget_destroy (prompt);
+		g_free (mesg);
+
+		if (response == GTK_RESPONSE_OK) {
+			install_theme_file (list->data, store, GTK_WINDOW (parent));
+		}
+	}
+}
+
 static void
 setup_local_themed_settings (void)
 {
@@ -5057,6 +5188,14 @@ setup_local_themed_settings (void)
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 	g_signal_connect (selection, "changed",
 		G_CALLBACK (gg_selection_changed), NULL);
+
+	gtk_drag_dest_set (theme_list,
+			   GTK_DEST_DEFAULT_ALL,
+			   target_table, n_targets,
+			   GDK_ACTION_COPY);
+			   
+	g_signal_connect (theme_list, "drag_data_received",
+		G_CALLBACK (theme_list_drag_data_received), NULL);
 
 	if (select_iter != NULL) {
 		gtk_tree_selection_select_iter (selection, select_iter);
@@ -5274,17 +5413,31 @@ create_preview_pixbuf (gchar *uri)
 	
 	if ((uri != NULL) && (uri[0] != '\0')) {
     
-		GnomeThumbnailFactory *thumbs;
-		gchar *mime_type;
+		gchar *file = NULL;
+		
+		if (g_path_is_absolute (uri) == TRUE) {
+			file = g_strdup (uri);
+		}
+		else {
+			/* URIs are local, because gtk_file_chooser_get_local_only() is true. */
+			file = g_filename_from_uri (uri, NULL, NULL);	
+		}
+		
+		if (file != NULL) {
 
-		thumbs = gnome_thumbnail_factory_new (GNOME_THUMBNAIL_SIZE_NORMAL);
-		mime_type = (gchar *)gnome_vfs_get_mime_type (uri);
+			GdkPixbufFormat *info;
+			gint width;
+			gint height;
 
-    		if (mime_type != NULL) {
-			pixbuf = gnome_thumbnail_factory_generate_thumbnail (thumbs,
-			                                                     uri,
-			                                                     mime_type);
-			g_free (mime_type);
+			info = gdk_pixbuf_get_file_info (file, &width, &height);
+			
+			if (width > 128 || height > 128) {
+				pixbuf = gdk_pixbuf_new_from_file_at_size (file, 128, 128, NULL);
+			}
+			else {
+				pixbuf = gdk_pixbuf_new_from_file (file, NULL);
+			}
+			g_free (file);
 		}
 	}				
 	return pixbuf;
@@ -5984,6 +6137,14 @@ setup_remote_themed_settings (void)
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 	g_signal_connect (selection, "changed",
 	                  G_CALLBACK (gg_selection_changed), NULL);
+
+	gtk_drag_dest_set (theme_list,
+			   GTK_DEST_DEFAULT_ALL,
+			   target_table, n_targets,
+			   GDK_ACTION_COPY);
+			   
+	g_signal_connect (theme_list, "drag_data_received",
+		G_CALLBACK (theme_list_drag_data_received), NULL);
 
 	if (select_iter != NULL) {
 		gtk_tree_selection_select_iter (selection, select_iter);
