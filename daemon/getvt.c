@@ -34,16 +34,15 @@
 #include "getvt.h"
 #include "gdmconfig.h"
 
-#if defined (__linux__) || defined (__FreeBSD__) || defined(__DragonFly__)
+/* Virtual terminals only supported on Linux, FreeBSD, or DragonFly */
+
+#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
 
 #ifdef __linux__
 #include <sys/vt.h>
-#endif
-#if defined(__FreeBSD__) || defined(__DragonFly__)
+#elif defined(__FreeBSD__) || defined(__DragonFly__)
 #include <sys/consio.h>
-#endif
 
-#if defined( __FreeBSD__) || defined(__DragonFly__)
 static const char*
 __itovty(int val)
 {
@@ -83,7 +82,7 @@ open_vt (int vtno)
 }
 
 static int 
-get_free_vt (int *vtfd)
+get_free_vt_linux (int *vtfd)
 {
 	int fd, fdv;
 	int vtno;
@@ -124,6 +123,68 @@ get_free_vt (int *vtfd)
 	return vtno;
 }
 
+static int
+get_free_vt_freebsd_dragonfly (int *vtfd)
+{
+	int fd, fdv;
+	int vtno;
+	GList *to_close_vts = NULL, *li;
+
+	*vtfd = -1;
+
+	do {
+		errno = 0;
+		fd = open ("/dev/console", O_WRONLY
+#ifdef O_NOCTTY
+			   |O_NOCTTY
+#endif
+			   , 0);
+	} while G_UNLIKELY (errno == EINTR);
+	if (fd < 0)
+		return -1;
+
+	if ((ioctl(fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
+		VE_IGNORE_EINTR (close (fd));
+		return -1;
+	}
+
+	fdv = open_vt (vtno);
+	if (fdv < 0) {
+		VE_IGNORE_EINTR (close (fd));
+		return -1;
+	}
+
+	while (vtno < gdm_get_value_int (GDM_KEY_FIRST_VT)) {
+		int oldvt = vtno;
+		to_close_vts = g_list_prepend (to_close_vts,
+					       GINT_TO_POINTER (fdv));
+
+		if (ioctl(fd, VT_OPENQRY, &vtno) == -1) {
+			vtno = -1;
+			goto cleanup;
+		}
+
+		if (oldvt == vtno) {
+			vtno = -1;
+			goto cleanup;
+		}
+
+		fdv = open_vt (vtno);
+		if (fdv < 0) {
+			vtno = -1;
+			goto cleanup;
+		}
+	}
+
+	*vtfd = fdv;
+
+cleanup:
+	for (li = to_close_vts; li != NULL; li = li->next) {
+		VE_IGNORE_EINTR (close (GPOINTER_TO_INT (li->data)));
+	}
+	return vtno;
+}
+
 char *
 gdm_get_empty_vt_argument (int *fd, int *vt)
 {
@@ -132,7 +193,12 @@ gdm_get_empty_vt_argument (int *fd, int *vt)
 		return NULL;
 	}
 
-	*vt = get_free_vt (fd);
+#if defined(__linux__)
+	*vt = get_free_vt_linux (fd);
+#elif defined(__FreeBSD__) || defined(__DragonFly__)
+	*vt = get_free_vt_freebsd_dragonfly (fd);
+#endif
+
 	if (*vt < 0)
 		return NULL;
 	else
