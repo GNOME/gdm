@@ -1,3 +1,10 @@
+2005-11-15  Brian Cameron <Brian.Cameron@sun.com>
+
+        * daemon/getvt.c: Change made on 11/03 to make
+          GDM use VT_GETSTATE for peeking VT freeness broke
+          BSD builds.  Put back code for BSD.  Linux will
+          continue to use VT_GETSTATE.  Fixes bug #321493.
+
 2005-11-14  Brian Cameron <Brian.Cameron@sun.com>
 
 	* Release 2.8.0.6.
