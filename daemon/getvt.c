@@ -38,9 +38,9 @@
 
 #if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
 
-#ifdef __linux__
+#ifdef (__linux__)
 #include <sys/vt.h>
-#elif defined(__FreeBSD__) || defined(__DragonFly__)
+#elif defined (__FreeBSD__) || defined (__DragonFly__)
 #include <sys/consio.h>
 
 static const char*
@@ -66,7 +66,7 @@ open_vt (int vtno)
 
 #if defined (__linux__)
 	vtname = g_strdup_printf ("/dev/tty%d", vtno);
-#elif defined (__FreeBSD__) || defined(__DragonFly__)
+#elif defined (__FreeBSD__) || defined (__DragonFly__)
 	vtname = g_strdup_printf ("/dev/ttyv%s", __itovty(vtno - 1));
 #endif
 	do {
@@ -125,7 +125,7 @@ get_free_vt_linux (int *vtfd)
 	return vtno;
 }
 
-#elif defined (__FreeBSD__) || defined(__DragonFly__)
+#elif defined (__FreeBSD__) || defined (__DragonFly__)
 
 static int
 get_free_vt_freebsd_dragonfly (int *vtfd)
@@ -199,9 +199,9 @@ gdm_get_empty_vt_argument (int *fd, int *vt)
 		return NULL;
 	}
 
-#if defined(__linux__)
+#if defined (__linux__)
 	*vt = get_free_vt_linux (fd);
-#elif defined(__FreeBSD__) || defined(__DragonFly__)
+#elif defined (__FreeBSD__) || defined (__DragonFly__)
 	*vt = get_free_vt_freebsd_dragonfly (fd);
 #endif
 
@@ -241,7 +241,7 @@ gdm_get_cur_vt (void)
 {
 #if defined (__linux__)
 	struct vt_stat s;
-#elif defined (__FreeBSD__) || defined(__DragonFly__)
+#elif defined (__FreeBSD__) || defined (__DragonFly__)
 	int vtno;
 #endif
 	int fd;
@@ -267,7 +267,7 @@ gdm_get_cur_vt (void)
 	*/
 
 	return s.v_active;
-#elif defined (__FreeBSD__) || defined(__DragonFly__)
+#elif defined (__FreeBSD__) || defined (__DragonFly__)
 	if (ioctl (fd, VT_GETACTIVE, &vtno) == -1) {
 		VE_IGNORE_EINTR (close (fd));
 		return -1;
