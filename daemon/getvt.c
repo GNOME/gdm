@@ -81,6 +81,8 @@ open_vt (int vtno)
 	return fd;
 }
 
+#if defined (__linux__)
+
 static int 
 get_free_vt_linux (int *vtfd)
 {
@@ -122,6 +124,8 @@ get_free_vt_linux (int *vtfd)
 	*vtfd = fdv;
 	return vtno;
 }
+
+#elif defined (__FreeBSD__) || defined(__DragonFly__)
 
 static int
 get_free_vt_freebsd_dragonfly (int *vtfd)
@@ -184,6 +188,8 @@ cleanup:
 	}
 	return vtno;
 }
+
+#endif
 
 char *
 gdm_get_empty_vt_argument (int *fd, int *vt)
