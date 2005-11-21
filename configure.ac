@@ -968,7 +968,7 @@ elif test -x /opt/X11R6/bin/X; then
    X_SERVER="/opt/X11R6/bin/X"
    GDM_USER_PATH="$GDM_USER_PATH:/opt/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"   
-elif -x /usr/bin/X; then
+elif test -x /usr/bin/X; then
    X_PATH="/usr/bin"
    X_SERVER_PATH="/usr/bin"
    X_SERVER="/usr/bin/X"
