@@ -20,15 +20,16 @@
  * support other XAuth types and possibly DECnet... */
 
 #include <config.h>
-#include <glib/gi18n.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <netdb.h> 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <X11/Xauth.h>
+#include <glib/gi18n.h>
 
 #include <vicious.h>
 

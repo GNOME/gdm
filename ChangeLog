@@ -1,7 +1,14 @@
-2005-11-21  Jürg Billeter  <j@bitron.ch>
+2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-	* configure.in: Check for X server in prefix /usr.
-	  Fixes bug #320104.
+	Fixes bug #322083, suggestions from dmacks@netspace.org.
+
+	* daemon/auth.c, vicious-extensions/glade-helper.c:
+	  Include stdlib.h to avoid warnings.
+	* gui/gdmchooser.c, gui/greeter/greeter.c: Remove
+	  gdm_kill_thingies reference since it is unused.
+	* gui/gdmsetup.c: Add missing "static void" to
+	  include_all_toggle function.
+	* vicious-extensions/glade-helper.c
 
 2005-11-16  Brian Cameron <Brian.Cameron@sun.com>
 

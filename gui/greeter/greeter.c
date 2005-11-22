@@ -1158,14 +1158,6 @@ reap_flexiserver (gpointer data)
 	return TRUE;
 }
 
-
-static void
-gdm_kill_thingies (void)
-{
-	/* Empty kill thingies */
-	return;
-}
-
 static gboolean
 gdm_event (GSignalInvocationHint *ihint,
            guint                n_param_values,

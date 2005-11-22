@@ -174,11 +174,6 @@ static gchar *GdmMulticastAddr;
 /* */  gchar *GdmSoundProgram;
 /* */  gboolean GdmSoundOnLoginReady;
 /* */  gchar *GdmSoundOnLoginReadyFile;
-/* */  void
-/* */  gdm_kill_thingies (void)
-/* */  {
-/* */	  ; /* nothing */
-/* */  }
 
 
 enum {

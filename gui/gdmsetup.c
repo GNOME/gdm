@@ -1466,6 +1466,7 @@ greeter_toggle_toggled (GtkWidget *toggle)
 	run_timeout (toggle, 500, greeter_toggle_timeout);
 }
 
+static void
 include_all_toggle (GtkWidget *toggle)
 {
 	if (GTK_TOGGLE_BUTTON (toggle)->active)
