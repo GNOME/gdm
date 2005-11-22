@@ -128,6 +128,10 @@ AC_CHECK_TYPE(socklen_t,,
 #endif
 )
 
+dnl checks needed for Darwin compatibility to linux **environ.
+AC_CHECK_HEADERS(crt_externs.h)
+AC_CHECK_FUNCS(_NSGetEnviron)
+
 AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 
 GNOME_COMPILE_WARNINGS
