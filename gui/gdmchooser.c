@@ -95,7 +95,7 @@ static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 /* Exported for glade */
-void gdm_chooser_cancel (void);
+void gdm_chooser_cancel (/*void*/);
 void gdm_chooser_add_host (void);
 void gdm_chooser_add_entry_changed (void);
 void gdm_chooser_manage (GtkButton *button, gpointer data);
@@ -486,7 +486,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	    if (! XdmcpReadARRAY8 (&buf, &stat))
 		    goto done;
 
-	    status = g_strndup (stat.data, MIN (stat.length, 256));
+	    status = g_strndup ((char *) stat.data, MIN (stat.length, 256));
     } else if (header.opcode == UNWILLING) {
 	    /* immaterial, will not be shown */
 	    status = NULL;
@@ -1513,7 +1513,7 @@ gdm_chooser_add_entry_changed (void)
 }
 
 void
-gdm_chooser_cancel (void)
+gdm_chooser_cancel (/*void*/)
 {
     if (scan_time_handler > 0) {
 	    g_source_remove (scan_time_handler);
@@ -1835,7 +1835,7 @@ gdm_chooser_signals_init (void)
     sigemptyset(&hup.sa_mask);
     sigaddset (&hup.sa_mask, SIGCHLD);
 
-    term.sa_handler = (void *) gdm_chooser_cancel;
+    term.sa_handler = gdm_chooser_cancel;
     term.sa_flags = 0;
     sigemptyset (&term.sa_mask);
 
@@ -1906,6 +1906,7 @@ main (int argc, char *argv[])
     int nextopt;
     const char *gdm_version;
     int i;
+    guint sid;
 
     stored_argv = g_new0 (char *, argc + 1);
     for (i = 0; i < argc; i++)
@@ -2033,7 +2034,7 @@ main (int argc, char *argv[])
     gdm_chooser_xdmcp_init (hosts);
     poptFreeContext (ctx);
 
-    guint sid = g_signal_lookup ("event",
+    sid = g_signal_lookup ("event",
 				 GTK_TYPE_WIDGET);
     g_signal_add_emission_hook (sid,
 				0 /* detail */,

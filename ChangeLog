@@ -1,5 +1,17 @@
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
+	* daemon/cookie.c, daemon/gdm.c, daemon/xdmcp.c,	
+	  gui/gdmchooser.c, gui/greeter/greeter_events.c,
+	  gui/greeter/greeter_item_ulist.c,
+	  gui/greeter/greeter_parser.[ch],
+	  gui/modules/dwellmouselistener.c,
+	  gui/modules/keymouselistener.c: Fix
+          compiler warnings.  Fixes bug #322053.
+          Patch provided by Frederic Crozat.  Patch
+	  required some work to apply to CVS head.
+
+2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
+
         * gui/gdmlogin.c: Now use GDK_RGB_DITHER_MAX
           so that GDM always displays a nice background
           regardless of X configuration (X in 16bpp mode).

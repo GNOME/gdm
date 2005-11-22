@@ -104,11 +104,11 @@ parse_id (xmlNodePtr node,
 {
   xmlChar *prop;
   
-  prop = xmlGetProp (node, "id");
+  prop = xmlGetProp (node, (const xmlChar *) "id");
   
   if (prop)
     {
-      info->id = g_strdup (prop);
+      info->id = g_strdup ((char *) prop);
       g_hash_table_insert (item_hash, info, info);
       xmlFree (prop);
     }
@@ -121,14 +121,14 @@ parse_button (xmlNodePtr node,
 {
   xmlChar *prop;
   
-  prop = xmlGetProp (node, "button");
+  prop = xmlGetProp (node,(const xmlChar *) "button");
   if (prop)
     {
-      if (strcmp (prop, "true") == 0)
+      if (strcmp ((char *) prop, "true") == 0)
 	{
 	  info->button = TRUE;
 	}
-      else if (strcmp (prop, "false") == 0)
+      else if (strcmp ((char *) prop, "false") == 0)
 	{
 	  info->button = FALSE;
 	}
@@ -158,28 +158,28 @@ parse_pos (xmlNodePtr       node,
   xmlChar *prop;
   char *p;
   
-  prop = xmlGetProp (node, "anchor");
+  prop = xmlGetProp (node, (const xmlChar *) "anchor");
   if (prop)
     {
-      if (strcmp (prop, "center") == 0)
+      if (strcmp ((char *) prop, "center") == 0)
 	info->anchor = GTK_ANCHOR_CENTER;
-      else if (strcmp (prop, "c") == 0)
+      else if (strcmp ((char *) prop, "c") == 0)
 	info->anchor = GTK_ANCHOR_CENTER;
-      else if (strcmp (prop, "nw") == 0)
+      else if (strcmp ((char *) prop, "nw") == 0)
 	info->anchor = GTK_ANCHOR_NW;
-      else if (strcmp (prop, "n") == 0)
+      else if (strcmp ((char *) prop, "n") == 0)
 	info->anchor = GTK_ANCHOR_N;
-      else if (strcmp (prop, "ne") == 0)
+      else if (strcmp ((char *) prop, "ne") == 0)
 	info->anchor = GTK_ANCHOR_NE;
-      else if (strcmp (prop, "w") == 0)
+      else if (strcmp ((char *) prop, "w") == 0)
 	info->anchor = GTK_ANCHOR_W;
-      else if (strcmp (prop, "e") == 0)
+      else if (strcmp ((char *) prop, "e") == 0)
 	info->anchor = GTK_ANCHOR_E;
-      else if (strcmp (prop, "sw") == 0)
+      else if (strcmp ((char *) prop, "sw") == 0)
 	info->anchor = GTK_ANCHOR_SW;
-      else if (strcmp (prop, "s") == 0)
+      else if (strcmp ((char *) prop, "s") == 0)
 	info->anchor = GTK_ANCHOR_S;
-      else if (strcmp (prop, "se") == 0)
+      else if (strcmp ((char *) prop, "se") == 0)
 	info->anchor = GTK_ANCHOR_SE;
       else
 	{
@@ -194,10 +194,10 @@ parse_pos (xmlNodePtr       node,
     }
   
    
-  prop = xmlGetProp (node, "x");
+  prop = xmlGetProp (node,(const xmlChar *) "x");
   if (prop)
     {
-      info->x = g_ascii_strtod (prop, &p);
+      info->x = g_ascii_strtod ((char *) prop, &p);
 
       if ((char *)prop == p)
 	{
@@ -214,17 +214,17 @@ parse_pos (xmlNodePtr       node,
       else
         info->x_negative = FALSE;
       
-      if (strchr (prop, '%') != NULL)
+      if (strchr ((char *) prop, '%') != NULL)
 	info->x_type = GREETER_ITEM_POS_RELATIVE;
       else 
 	info->x_type = GREETER_ITEM_POS_ABSOLUTE;
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "y");
+  prop = xmlGetProp (node,(const xmlChar *) "y");
   if (prop)
     {
-      info->y = g_ascii_strtod (prop, &p);
+      info->y = g_ascii_strtod ((char *) prop, &p);
       
       if ((char *)prop == p)
 	{
@@ -241,23 +241,23 @@ parse_pos (xmlNodePtr       node,
       else
         info->y_negative = FALSE;
       
-      if (strchr (prop, '%') != NULL)
+      if (strchr ((char *) prop, '%') != NULL)
 	info->y_type = GREETER_ITEM_POS_RELATIVE;
       else 
 	info->y_type = GREETER_ITEM_POS_ABSOLUTE;
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "width");
+  prop = xmlGetProp (node,(const xmlChar *) "width");
   if (prop)
     {
-      if (strcmp (prop, "box") == 0)
+      if (strcmp ((char *) prop, "box") == 0)
 	info->width_type = GREETER_ITEM_SIZE_BOX;
-      else if (strcmp (prop, "scale") == 0)
+      else if (strcmp ((char *) prop, "scale") == 0)
        info->width_type = GREETER_ITEM_SIZE_SCALE;
       else
 	{
-	  info->width = g_ascii_strtod (prop, &p);
+	  info->width = g_ascii_strtod ((char *) prop, &p);
 
 	  if ((char *)prop == p)
 	    {
@@ -269,7 +269,7 @@ parse_pos (xmlNodePtr       node,
 	      return FALSE;
 	    }
       
-	  if (strchr (prop, '%') != NULL)
+	  if (strchr ((char *) prop, '%') != NULL)
 	    info->width_type = GREETER_ITEM_SIZE_RELATIVE;
 	  else 
 	    info->width_type = GREETER_ITEM_SIZE_ABSOLUTE;
@@ -277,16 +277,16 @@ parse_pos (xmlNodePtr       node,
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "height");
+  prop = xmlGetProp (node,(const xmlChar *) "height");
   if (prop)
     {
-      if (strcmp (prop, "box") == 0)
+      if (strcmp ((char *) prop, "box") == 0)
 	info->height_type = GREETER_ITEM_SIZE_BOX;
-      else if (strcmp (prop, "scale") == 0)
+      else if (strcmp ((char *) prop, "scale") == 0)
        info->height_type = GREETER_ITEM_SIZE_SCALE;
       else
 	{
-	  info->height = g_ascii_strtod (prop, &p);
+	  info->height = g_ascii_strtod ((char *) prop, &p);
       
 	  if ((char *)prop == p)
 	    {
@@ -298,7 +298,7 @@ parse_pos (xmlNodePtr       node,
 	      return FALSE;
 	    }
       
-	  if (strchr (prop, '%') != NULL)
+	  if (strchr ((char *) prop, '%') != NULL)
 	    info->height_type = GREETER_ITEM_SIZE_RELATIVE;
 	  else 
 	    info->height_type = GREETER_ITEM_SIZE_ABSOLUTE;
@@ -306,14 +306,14 @@ parse_pos (xmlNodePtr       node,
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "expand");
+  prop = xmlGetProp (node,(const xmlChar *) "expand");
   if (prop)
     {
-      if (strcmp (prop, "true") == 0)
+      if (strcmp ((char *) prop, "true") == 0)
 	{
 	  info->expand = TRUE;
 	}
-      else if (strcmp (prop, "false") == 0)
+      else if (strcmp ((char *) prop, "false") == 0)
 	{
 	  info->expand = FALSE;
 	}
@@ -342,16 +342,16 @@ parse_show (xmlNodePtr       node,
   char **argv = NULL;
   int i;
 
-  prop = xmlGetProp (node, "type");
+  prop = xmlGetProp (node,(const xmlChar *) "type");
   if (prop != NULL)
     {
       g_free (info->show_type);
-      info->show_type = g_strdup (prop);
+      info->show_type = g_strdup ((char *) prop);
       xmlFree (prop);
     }
 
   /* Note: subtype is deprecated, use type only */
-  prop = xmlGetProp (node, "subtype");
+  prop = xmlGetProp (node,(const xmlChar *) "subtype");
   if G_UNLIKELY (prop != NULL)
     {
       /* code for legacy uses of subtype only, are there any such
@@ -360,28 +360,28 @@ parse_show (xmlNodePtr       node,
       if (info->show_type == NULL ||
 	  strcmp (info->show_type, "system") == 0) {
 	      g_free (info->show_type);
-	      info->show_type = g_strdup (prop);
+	      info->show_type = g_strdup ((char *) prop);
       }
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "modes");
+  prop = xmlGetProp (node,(const xmlChar *) "modes");
   if (prop != NULL)
     {
-      if (strcmp (prop, "everywhere") == 0)
+      if (strcmp ((char *) prop, "everywhere") == 0)
         {
 	  info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
 	  xmlFree (prop);
 	  return TRUE;
 	}
-      else if (strcmp (prop, "nowhere") == 0)
+      else if (strcmp ((char *) prop, "nowhere") == 0)
         {
 	  info->show_modes = GREETER_ITEM_SHOW_NOWHERE;
 	  xmlFree (prop);
 	  return TRUE;
 	}
 
-      argv = g_strsplit (prop, ",", 0);
+      argv = g_strsplit ((char *) prop, ",", 0);
       xmlFree (prop);
     }
   else
@@ -445,14 +445,14 @@ parse_box (xmlNodePtr       node,
   xmlChar *prop;
   char *p;
   
-  prop = xmlGetProp (node, "orientation");
+  prop = xmlGetProp (node,(const xmlChar *) "orientation");
   if (prop)
     {
-      if (strcmp (prop, "horizontal") == 0)
+      if (strcmp ((char *) prop, "horizontal") == 0)
 	{
 	  info->box_orientation = GTK_ORIENTATION_HORIZONTAL;
 	}
-      else if (strcmp (prop, "vertical") == 0)
+      else if (strcmp ((char *) prop, "vertical") == 0)
 	{
 	  info->box_orientation = GTK_ORIENTATION_VERTICAL;
 	}
@@ -469,14 +469,14 @@ parse_box (xmlNodePtr       node,
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "homogeneous");
+  prop = xmlGetProp (node,(const xmlChar *) "homogeneous");
   if (prop)
     {
-      if (strcmp (prop, "true") == 0)
+      if (strcmp ((char *) prop, "true") == 0)
 	{
 	  info->box_homogeneous = TRUE;
 	}
-      else if (strcmp (prop, "false") == 0)
+      else if (strcmp ((char *) prop, "false") == 0)
 	{
 	  info->box_homogeneous = FALSE;
 	}
@@ -494,10 +494,10 @@ parse_box (xmlNodePtr       node,
     }
 
 
-  prop = xmlGetProp (node, "xpadding");
+  prop = xmlGetProp (node,(const xmlChar *) "xpadding");
   if (prop)
     {
-      info->box_x_padding = g_ascii_strtod (prop, &p);
+      info->box_x_padding = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -511,10 +511,10 @@ parse_box (xmlNodePtr       node,
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "ypadding");
+  prop = xmlGetProp (node,(const xmlChar *) "ypadding");
   if (prop)
     {
-      info->box_y_padding = g_ascii_strtod (prop, &p);
+      info->box_y_padding = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -528,10 +528,10 @@ parse_box (xmlNodePtr       node,
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "min-width");
+  prop = xmlGetProp (node,(const xmlChar *) "min-width");
   if (prop)
     {
-      info->box_min_width = g_ascii_strtod (prop, &p);
+      info->box_min_width = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -545,10 +545,10 @@ parse_box (xmlNodePtr       node,
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "min-height");
+  prop = xmlGetProp (node,(const xmlChar *) "min-height");
   if (prop)
     {
-      info->box_min_height = g_ascii_strtod (prop, &p);
+      info->box_min_height = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -562,10 +562,10 @@ parse_box (xmlNodePtr       node,
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "spacing");
+  prop = xmlGetProp (node,(const xmlChar *) "spacing");
   if (prop)
     {
-      info->box_spacing = g_ascii_strtod (prop, &p);
+      info->box_spacing = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -632,32 +632,32 @@ parse_state_file_pixmap (xmlNodePtr node,
 
   info->have_state |= (1<<state);
   
-  prop = xmlGetProp (node, "file");
+  prop = xmlGetProp (node,(const xmlChar *) "file");
   if (prop)
     {
-      if (g_path_is_absolute (prop))
-	info->data.pixmap.files[state] = g_strdup (prop);
+      if (g_path_is_absolute ((char *) prop))
+	info->data.pixmap.files[state] = g_strdup ((char *) prop);
       else
 	info->data.pixmap.files[state] = g_build_filename (file_search_path,
-					       prop,
+					       (char *) prop,
 					       NULL);
 	
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "tint");
+  prop = xmlGetProp (node,(const xmlChar *) "tint");
   if (prop)
     {
-      if (!parse_color (prop, &info->data.pixmap.tints[state], error))
+      if (!parse_color ((char *) prop, &info->data.pixmap.tints[state], error))
 	return FALSE;
       info->data.pixmap.have_tint |= (1<<state);
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "alpha");
+  prop = xmlGetProp (node,(const xmlChar *) "alpha");
   if (prop)
     {
-      double alpha = g_ascii_strtod (prop, &p);
+      double alpha = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -692,19 +692,19 @@ parse_state_color_rect (xmlNodePtr node,
 
   info->have_state |= (1<<state);
   
-  prop = xmlGetProp (node, "color");
+  prop = xmlGetProp (node,(const xmlChar *) "color");
   if (prop)
     {
-      if G_UNLIKELY (!parse_color (prop, &info->data.rect.colors[state], error))
+      if G_UNLIKELY (!parse_color ((char *) prop, &info->data.rect.colors[state], error))
 	return FALSE;
       info->data.rect.have_color |= (1<<state);
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "alpha");
+  prop = xmlGetProp (node,(const xmlChar *) "alpha");
   if (prop)
     {
-      double alpha = g_ascii_strtod (prop, &p);
+      double alpha = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -734,30 +734,29 @@ parse_color_list (xmlNodePtr node,
 		      GError         **error)
 {
   xmlChar *prop;
-  char *p;
   guint32 color;
 
-  prop = xmlGetProp (node, "iconcolor");
+  prop = xmlGetProp (node,(const xmlChar *) "iconcolor");
   if (prop)
     {
-      if G_UNLIKELY (!parse_color (prop, &color, error)) {
+      if G_UNLIKELY (!parse_color ((char *) prop, &color, error)) {
         info->data.list.icon_color = NULL;
 	return FALSE;
       } else {
-        info->data.list.icon_color = g_strdup (prop);
+        info->data.list.icon_color = g_strdup ((char *) prop);
       }
 
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "labelcolor");
+  prop = xmlGetProp (node,(const xmlChar *) "labelcolor");
   if (prop)
     {
-      if G_UNLIKELY (!parse_color (prop, &color, error)) {
+      if G_UNLIKELY (!parse_color ((char *) prop, &color, error)) {
         info->data.list.label_color = NULL;
 	return FALSE;
       } else {
-        info->data.list.label_color = g_strdup (prop);
+        info->data.list.label_color = g_strdup ((char *) prop);
       }
 
       xmlFree (prop);
@@ -779,37 +778,37 @@ parse_pixmap (xmlNodePtr        node,
 
   while (child)
     {
-      if (strcmp (child->name, "normal") == 0)
+      if (strcmp ((char *) child->name, "normal") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_file_pixmap (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "prelight") == 0)
+      else if (strcmp ((char *) child->name, "prelight") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_file_pixmap (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "active") == 0)
+      else if (strcmp ((char *) child->name, "active") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_file_pixmap (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "pos") == 0)
+      else if (strcmp ((char *) child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "fixed") == 0)
+      else if (strcmp ((char *) child->name, "fixed") == 0)
 	{
 	  if G_UNLIKELY (!parse_fixed (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "box") == 0)
+      else if (strcmp ((char *) child->name, "box") == 0)
 	{
 	  if G_UNLIKELY (!parse_box (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "show") == 0)
+      else if (strcmp ((char *) child->name, "show") == 0)
 	{
 	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
@@ -858,37 +857,37 @@ parse_rect (xmlNodePtr node,
   
   while (child)
     {
-      if (strcmp (child->name, "normal") == 0)
+      if (strcmp ((char *) child->name, "normal") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_color_rect (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "prelight") == 0)
+      else if (strcmp ((char *) child->name, "prelight") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_color_rect (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "active") == 0)
+      else if (strcmp ((char *) child->name, "active") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_color_rect (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "pos") == 0)
+      else if (strcmp ((char *) child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "fixed") == 0)
+      else if (strcmp ((char *) child->name, "fixed") == 0)
 	{
 	  if G_UNLIKELY (!parse_fixed (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "box") == 0)
+      else if (strcmp ((char *) child->name, "box") == 0)
 	{
 	  if G_UNLIKELY (!parse_box (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "show") == 0)
+      else if (strcmp ((char *) child->name, "show") == 0)
 	{
 	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
@@ -920,10 +919,10 @@ parse_state_text (xmlNodePtr node,
 
   info->have_state |= (1<<state);
 
-  prop = xmlGetProp (node, "font");
+  prop = xmlGetProp (node,(const xmlChar *) "font");
   if (prop)
     {
-      info->data.text.fonts[state] = pango_font_description_from_string (prop);
+      info->data.text.fonts[state] = pango_font_description_from_string ((char *) prop);
       if G_UNLIKELY (info->data.text.fonts[state] == NULL)
 	{
 	  g_set_error (error,
@@ -936,19 +935,19 @@ parse_state_text (xmlNodePtr node,
       xmlFree (prop);
     }
   
-  prop = xmlGetProp (node, "color");
+  prop = xmlGetProp (node,(const xmlChar *) "color");
   if (prop)
     {
-      if G_UNLIKELY (!parse_color (prop, &info->data.text.colors[state], error))
+      if G_UNLIKELY (!parse_color ((char *) prop, &info->data.text.colors[state], error))
 	return FALSE;
       info->data.text.have_color |= (1<<state);
       xmlFree (prop);
    }
 
-  prop = xmlGetProp (node, "alpha");
+  prop = xmlGetProp (node,(const xmlChar *) "alpha");
   if (prop)
     {
-      double alpha = g_ascii_strtod (prop, &p);
+      double alpha = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -1002,7 +1001,7 @@ parse_translated_text (xmlNodePtr node,
   prop = xmlNodeGetLang (node);
   if (prop)
     {
-      score = is_current_locale (prop);
+      score = is_current_locale ((char *) prop);
       xmlFree (prop);
     } else
       score = 999;
@@ -1025,7 +1024,7 @@ parse_translated_text (xmlNodePtr node,
   *translation_score = score;
   if (*translated_text)
     g_free (*translated_text);
-  *translated_text = g_strdup (text);
+  *translated_text = g_strdup ((char *) text);
   
   xmlFree (text);
   
@@ -1043,65 +1042,65 @@ parse_stock (xmlNodePtr node,
 {
   xmlChar *prop;
   
-  prop = xmlGetProp (node, "type");
+  prop = xmlGetProp (node,(const xmlChar *) "type");
   if (prop)
     {
-      if (g_ascii_strcasecmp (prop, "language") == 0)
+      if (g_ascii_strcasecmp ((char *) prop, "language") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Language"));
 	}
-      else if (g_ascii_strcasecmp (prop, "session") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "session") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Session"));
 	}
-      else if (g_ascii_strcasecmp (prop, "system") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "system") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Actions"));
 	}
-      else if (g_ascii_strcasecmp (prop, "disconnect") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "disconnect") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("D_isconnect"));
 	}
-      else if (g_ascii_strcasecmp (prop, "quit") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "quit") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Quit"));
 	}
-      else if (g_ascii_strcasecmp (prop, "halt") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "halt") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("Shut _Down"));
 	}
-      else if (g_ascii_strcasecmp (prop, "suspend") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "suspend") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("Sus_pend"));
 	}
-      else if (g_ascii_strcasecmp (prop, "reboot") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "reboot") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Reboot"));
 	}
-      else if (g_ascii_strcasecmp (prop, "chooser") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "chooser") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_XDMCP Chooser"));
 	}
-      else if (g_ascii_strcasecmp (prop, "config") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "config") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Configure"));
 	}
-      else if (g_ascii_strcasecmp (prop, "caps-lock-warning") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "caps-lock-warning") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("You've got capslock on!"));
 	}
-      else if (g_ascii_strcasecmp (prop, "timed-label") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "timed-label") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (ngettext ("User %s will login in %d "
@@ -1110,7 +1109,7 @@ parse_stock (xmlNodePtr node,
 						 "seconds",
 						 1));
 	}
-      else if (g_ascii_strcasecmp (prop, "welcome-label") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "welcome-label") == 0)
         {
 	  /* FIXME: hack */
 	  welcome_string_info = info;
@@ -1119,17 +1118,17 @@ parse_stock (xmlNodePtr node,
 	  *translated_text = gdm_get_welcomemsg ();
 	}
       /* FIXME: is this actually needed? */
-      else if (g_ascii_strcasecmp (prop, "username-label") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "username-label") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("Username:"));
 	}
-      else if (g_ascii_strcasecmp (prop, "ok") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "ok") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_OK"));
 	}
-      else if (g_ascii_strcasecmp (prop, "cancel") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "cancel") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Cancel"));
@@ -1195,10 +1194,10 @@ parse_label_pos_extras (xmlNodePtr       node,
   xmlChar *prop;
   char *p;
   
-  prop = xmlGetProp (node, "max-width");
+  prop = xmlGetProp (node,(const xmlChar *) "max-width");
   if (prop)
     {
-      info->data.text.max_width = g_ascii_strtod (prop, &p);
+      info->data.text.max_width = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -1212,10 +1211,10 @@ parse_label_pos_extras (xmlNodePtr       node,
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "max-screen-percent-width");
+  prop = xmlGetProp (node,(const xmlChar *) "max-screen-percent-width");
   if (prop)
     {
-      info->data.text.max_screen_percent_width = g_ascii_strtod (prop, &p);
+      info->data.text.max_screen_percent_width = g_ascii_strtod ((char *) prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
@@ -1248,22 +1247,22 @@ parse_label (xmlNodePtr        node,
   child = node->children;
   while (child)
     {
-      if (strcmp (child->name, "normal") == 0)
+      if (strcmp ((char *) child->name, "normal") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "prelight") == 0)
+      else if (strcmp ((char *) child->name, "prelight") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "active") == 0)
+      else if (strcmp ((char *) child->name, "active") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "pos") == 0)
+      else if (strcmp ((char *) child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
@@ -1271,24 +1270,24 @@ parse_label (xmlNodePtr        node,
 	    return FALSE;
 	}
       else if (child->type == XML_ELEMENT_NODE &&
-	       strcmp (child->name, "text") == 0)
+	       strcmp ((char *) child->name, "text") == 0)
 	{
 	  if G_UNLIKELY (!parse_translated_text (child, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
       else if (child->type == XML_ELEMENT_NODE &&
-	       strcmp (child->name, "stock") == 0)
+	       strcmp ((char *) child->name, "stock") == 0)
 	{
 	  if G_UNLIKELY (!parse_stock (child, info, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "show") == 0)
+      else if (strcmp ((char *) child->name, "show") == 0)
 	{
 	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "fixed") == 0 ||
-	       strcmp (child->name, "box") == 0)
+      else if (strcmp ((char *) child->name, "fixed") == 0 ||
+	       strcmp ((char *) child->name, "box") == 0)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -1346,12 +1345,12 @@ parse_listitem (xmlNodePtr        node,
   xmlChar *prop;
   GreeterItemListItem *li;
   
-  prop = xmlGetProp (node, "id");
+  prop = xmlGetProp (node,(const xmlChar *) "id");
   
   if G_LIKELY (prop)
     {
       li = g_new0 (GreeterItemListItem, 1);
-      li->id = g_strdup (prop);
+      li->id = g_strdup ((char *) prop);
       xmlFree (prop);
     }
   else
@@ -1367,7 +1366,7 @@ parse_listitem (xmlNodePtr        node,
   while (child)
     {
       if (child->type == XML_ELEMENT_NODE &&
-	  strcmp (child->name, "text") == 0)
+	  strcmp ((char *) child->name, "text") == 0)
 	{
 	  if G_UNLIKELY ( ! parse_translated_text (child, &translated_text, &translation_score, error))
 	    {
@@ -1407,28 +1406,28 @@ parse_list (xmlNodePtr        node,
   child = node->children;
   while (child)
     {
-      if (strcmp (child->name, "color") == 0)
+      if (strcmp ((char *) child->name, "color") == 0)
 	{
 	  if G_UNLIKELY (!parse_color_list (child, info, error))
 	    return FALSE;
 	}
-      if (strcmp (child->name, "pos") == 0)
+      if (strcmp ((char *) child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "show") == 0)
+      else if (strcmp ((char *) child->name, "show") == 0)
 	{
 	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "listitem") == 0)
+      else if (strcmp ((char *) child->name, "listitem") == 0)
 	{
 	  if G_UNLIKELY ( ! parse_listitem (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "fixed") == 0 ||
-	       strcmp (child->name, "box") == 0)
+      else if (strcmp ((char *) child->name, "fixed") == 0 ||
+	       strcmp ((char *) child->name, "box") == 0)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -1464,23 +1463,23 @@ parse_entry (xmlNodePtr        node,
   child = node->children;
   while (child)
     {
-      if (strcmp (child->name, "normal") == 0)
+      if (strcmp ((char *) child->name, "normal") == 0)
 	{
 	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "pos") == 0)
+      else if (strcmp ((char *) child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "show") == 0)
+      else if (strcmp ((char *) child->name, "show") == 0)
 	{
 	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "fixed") == 0 ||
-	       strcmp (child->name, "box") == 0)
+      else if (strcmp ((char *) child->name, "fixed") == 0 ||
+	       strcmp ((char *) child->name, "box") == 0)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -1519,7 +1518,7 @@ parse_items (xmlNodePtr  node,
       {
 	if (child->type == XML_ELEMENT_NODE)
 	  {
-	    if G_UNLIKELY (strcmp (child->name, "item") != 0)
+	    if G_UNLIKELY (strcmp ((char *) child->name, "item") != 0)
 	      {
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
@@ -1528,7 +1527,7 @@ parse_items (xmlNodePtr  node,
 		return FALSE;
 	      }
 	    
-	    type = xmlGetProp (child, "type");
+	    type = xmlGetProp (child, (const xmlChar *) "type");
 	    if G_UNLIKELY (!type)
 	      {
 		g_set_error (error,
@@ -1538,17 +1537,17 @@ parse_items (xmlNodePtr  node,
 		return FALSE;
 	      }
 
-	    if (strcmp (type, "svg") == 0)
+	    if (strcmp ((char *) type, "svg") == 0)
 	      item_type = GREETER_ITEM_TYPE_SVG;
-	    else if (strcmp (type, "pixmap") == 0)
+	    else if (strcmp ((char *) type, "pixmap") == 0)
 	      item_type = GREETER_ITEM_TYPE_PIXMAP;
-	    else if (strcmp (type, "rect") == 0)
+	    else if (strcmp ((char *) type, "rect") == 0)
 	      item_type = GREETER_ITEM_TYPE_RECT;
-	    else if (strcmp (type, "label") == 0)
+	    else if (strcmp ((char *) type, "label") == 0)
 	      item_type = GREETER_ITEM_TYPE_LABEL;
-	    else if (strcmp (type, "entry") == 0)
+	    else if (strcmp ((char *) type, "entry") == 0)
 	      item_type = GREETER_ITEM_TYPE_ENTRY;
-	    else if (strcmp (type, "list") == 0)
+	    else if (strcmp ((char *) type, "list") == 0)
 	      item_type = GREETER_ITEM_TYPE_LIST;
 	    else
 	      {
@@ -1674,7 +1673,7 @@ greeter_parse (const char *file, const char *datadir,
       return NULL;
     }
   
-  if G_UNLIKELY (strcmp (node->name, "greeter") != 0)
+  if G_UNLIKELY (strcmp ((char *) node->name, "greeter") != 0)
     {
       xmlFreeDoc (doc);
       g_set_error (error,

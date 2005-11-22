@@ -115,7 +115,7 @@ is_ext_device (XID id)
 			return TRUE;
 
 	if (debug_gestures)
-		syslog (LOG_WARNING, "is-ext-device failed for %d", id);
+		syslog (LOG_WARNING, "is-ext-device failed for %d", (int) id);
 
 	return FALSE;
 }
@@ -665,7 +665,7 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 				g_timeout_add (2000, change_cursor_back, NULL);
 				latch_core_pointer = FALSE;
 				/* once we've recognized a gesture, we need to *
-				/* leave the pointer alone */
+				 * leave the pointer alone */
 			}
 		}
 	}
@@ -741,7 +741,7 @@ void gtk_module_init (int *argc, char* argv[])
 
 	if (debug_gestures) {
 		/* If not running under GDM, then need to openlog ourselves */
-		if (!g_getenv ("RUNNING_UNDER_GDM") != NULL)
+		if (g_getenv ("RUNNING_UNDER_GDM") == NULL)
 			openlog ("gesturelistener", LOG_PID, LOG_DAEMON);
 
 		syslog (LOG_WARNING, "dwellmouselistener loaded.");

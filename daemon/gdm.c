@@ -3049,8 +3049,6 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_free (retval);
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;
-		GSList *li;
-		const char *sep = " ";
 
 		msg = g_string_new ("OK");
 		g_string_append (msg, "\n");

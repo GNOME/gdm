@@ -190,7 +190,7 @@ gdm_cookie_generate (GdmDisplay *d)
     gdm_md5_update (&ctx, old_cookie, 16);
 
     /* use some uninitialized stack space */
-    gdm_md5_update (&ctx, cookie, sizeof (cookie));
+    gdm_md5_update (&ctx, (unsigned char *) cookie, sizeof (cookie));
 
     pid = getppid();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
@@ -242,7 +242,7 @@ gdm_cookie_generate (GdmDisplay *d)
 	    VE_IGNORE_EINTR (close (fd));
 
 	    if G_LIKELY (r >= rngs[i].length &&
-			 data_seems_random (buf, r)) 
+			 data_seems_random ((char *) buf, r)) 
 		break;
 	}
     }
