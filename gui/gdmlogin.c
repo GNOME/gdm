@@ -3247,17 +3247,21 @@ static void
 set_root (GdkPixbuf *pb)
 {
 	GdkPixmap *pm;
+	gint width, height;
 
 	g_return_if_fail (pb != NULL);
 
-	gdk_pixbuf_render_pixmap_and_mask (pb,
-					   &pm,
-					   NULL /* mask_return */,
-					   0 /* alpha_threshold */);
+	gdk_drawable_get_size (gdk_get_default_root_window (), &width, &height);
+	pm = gdk_pixmap_new (gdk_get_default_root_window (), 
+			width, height, -1);
+
 
 	/* paranoia */
 	if (pm == NULL)
 		return;
+
+	gdk_draw_pixbuf (pm, NULL, pb, 0, 0, 0, 0, -1, -1, 
+			GDK_RGB_DITHER_MAX, 0, 0);
 
 	gdk_error_trap_push ();
 
