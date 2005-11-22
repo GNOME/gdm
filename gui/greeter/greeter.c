@@ -257,9 +257,9 @@ greeter_parse_config (void)
     GdmDefaultWelcomeBacktest = ve_config_get_bool (config, greeter_DefaultWelcomeBacktest_key);
     if (GdmDefaultWelcomeBacktest == FALSE) {
             if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
-                GdmDefaultWelcome == TRUE;
+                GdmDefaultWelcome = TRUE;
             else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
-                GdmDefaultWelcome == TRUE;
+                GdmDefaultWelcome = TRUE;
             else
                 GdmDefaultWelcome = FALSE;
     }
@@ -1006,9 +1006,9 @@ greeter_reread_config (int sig, gpointer data)
                  */
                 if (GdmDefaultWelcomeBacktest == FALSE) {
                         if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
-                                GdmDefaultWelcome == TRUE;
+                                GdmDefaultWelcome = TRUE;
                         else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTEWELCOME_MSG) == 0)
-                                GdmDefaultWelcome == TRUE;
+                                GdmDefaultWelcome = TRUE;
                         else
                                 GdmDefaultWelcome = FALSE;
                 }
