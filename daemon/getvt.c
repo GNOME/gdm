@@ -111,7 +111,7 @@ get_free_vt_linux (int *vtfd)
 		return -1;
 	}
 
-	for (vtno = GdmFirstVT, vtmask = 1 << (vtno-1);
+	for (vtno = GdmFirstVT, vtmask = 1 << vtno;
 			vtstat.v_state & vtmask; vtno++, vtmask <<= 1);
 	if (!vtmask) {
 		VE_IGNORE_EINTR (close (fd));
