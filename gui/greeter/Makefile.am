@@ -8,7 +8,6 @@ INCLUDES = \
 	-I$(top_srcdir)/vicious-extensions		\
 	-DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\" 	\
 	$(GUI_CFLAGS)					\
 	$(GREETER_CFLAGS)
 

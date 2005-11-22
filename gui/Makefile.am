@@ -69,6 +69,8 @@ libgdmcommon_a_SOURCES = \
 	misc.h			\
 	gdmcomm.c		\
 	gdmcomm.h		\
+	gdmconfig.c		\
+	gdmconfig.h		\
 	gdmcommon.c		\
 	gdmcommon.h
 

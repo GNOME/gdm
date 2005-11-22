@@ -33,11 +33,11 @@
 #include <gtk/gtk.h>
 #include <libgnome/libgnome.h>
 #include <librsvg/rsvg.h>
-#include "vicious.h"
 
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "gdmcomm.h"
+#include "gdmconfig.h"
 #include "gdmuser.h"
 #include "greeter.h"
 #include "greeter_item_ulist.h"
@@ -111,13 +111,13 @@ gdm_greeter_users_init (void)
 	time_t time_started;
 
 	defface = gdm_common_get_face (NULL,
-				       GdmDefaultFace,
-				       GdmIconMaxWidth,
-				       GdmIconMaxHeight);
+				       gdm_config_get_string (GDM_KEY_DEFAULT_FACE),
+				       gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH),
+				       gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT));
 	if (! defface) {
 		syslog (LOG_WARNING,
 			_("Can't open DefaultImage: %s!"),
-			GdmDefaultFace);
+			gdm_config_get_string (GDM_KEY_DEFAULT_FACE));
 	}
 
 	gdm_users_init (&users, &users_string, NULL, defface,

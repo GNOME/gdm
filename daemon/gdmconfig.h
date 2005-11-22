@@ -33,7 +33,7 @@ void           gdm_set_value_bool       (gchar *key,
 void           gdm_set_value_int        (gchar *key,
                                          gint value);
 gboolean       gdm_config_to_string     (gchar *key,
-                                         gchar *retval);
+                                         gchar **retval);
 gboolean       gdm_update_config        (gchar *key);
 void           gdm_config_init          (void);
 void           gdm_config_parse         (void);
@@ -45,6 +45,7 @@ uid_t          gdm_get_gdmgid           (void);
 gint           gdm_get_high_display_num (void);
 void           gdm_set_high_display_num (gint val);
 void           gdm_print_all_config     (void);
+gboolean       gdm_is_valid_key         (gchar *key);
 gboolean       gdm_signal_terminthup_was_notified  (void);
 
 gchar*         gdm_get_facefile_from_home
@@ -58,11 +59,11 @@ void           gdm_get_user_session_lang
                                          char **usrlang,
                                          const char *homedir,
                                          gboolean *savesess);
-void           gdm_set_user_session     (gboolean savesess,
-                                         gboolean savelang,
-                                         const char *homedir,
-                                         const char *save_session,
-                                         const char *save_language);
+void		gdm_set_user_session_lang (gboolean savesess,
+					 gboolean savelang,
+					 const char *home_dir,
+					 const char *save_session,
+					 const char *save_language);
 char*          gdm_get_session_exec     (const char *session_name,
                                          gboolean check_try_exec);
 

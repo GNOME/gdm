@@ -22,8 +22,6 @@
 #ifndef GDM_COMMON_H
 #define GDM_COMMON_H
 
-#include <vicious.h>
-
 #include "misc.h"
 
 void    gdm_common_show_info_msg        (const gchar *msg_file,
@@ -43,13 +41,6 @@ gint	gdm_common_warn 		(const gchar *primary_message,
 					 const char *negbutton,
 					 gboolean has_cancel);
 
-gboolean gdm_common_string_same		(VeConfig *config,
-					 const char *cur, const char *key);
-gboolean gdm_common_bool_same		(VeConfig *config,
-					 gboolean cur, const char *key);
-gboolean gdm_common_int_same		(VeConfig *config,
-					 int cur, const char *key);
-
 void    gdm_common_login_sound          (const gchar *GdmSoundProgram,
                                          const gchar *GdmSoundOnLoginReadyFile,
                                          gboolean     GdmSoundOnLoginReady);
@@ -62,9 +53,8 @@ GdkPixbuf *gdm_common_get_face          (const char *filename,
                                          guint       max_width,
                                          guint       max_height);
 gchar*	gdm_common_get_config_file	(void);
-
-gboolean gdm_common_select_time_format	(VeConfig *config);
-
-void setup_background_color (gchar *bg_color);
+gboolean gdm_common_select_time_format	(void);
+void	setup_background_color		(gchar *bg_color);
+gchar*	gdm_get_welcomemsg		(void);
 
 #endif /* GDM_COMMON_H */

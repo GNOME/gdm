@@ -23,15 +23,16 @@
 
 #include <unistd.h>
 #include <dirent.h>
-#include <vicious.h>
 #include <syslog.h>
 
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 
+#include "vicious.h"
+
 #include "gdm.h"
 #include "gdmsession.h"
-#include "gdmwm.h"
+#include "gdmconfig.h"
 
 GHashTable *sessnames        = NULL;
 gchar *default_session       = NULL;
@@ -42,19 +43,14 @@ GList *sessions              = NULL;
  * in some way or another */
 gboolean session_dir_whacked_out = FALSE;
 
-extern gchar *GdmDefaultSession;
-extern gboolean GdmShowGnomeFailsafeSession;
-extern gboolean GdmShowXtermFailsafeSession;
-extern gchar *GdmSessionDir;
-
 gint
 gdm_session_sort_func (const char *a, const char *b)
 {
         /* Put default and GNOME sessions at the top */
-        if (strcmp (a, ve_sure_string (GdmDefaultSession)) == 0)
+        if (strcmp (a, ve_sure_string (gdm_config_get_string (GDM_KEY_DEFAULT_SESSION))) == 0)
                 return -1;
 
-        if (strcmp (b, ve_sure_string (GdmDefaultSession)) == 0)
+        if (strcmp (b, ve_sure_string (gdm_config_get_string (GDM_KEY_DEFAULT_SESSION))) == 0)
                 return 1;
 
         if (strcmp (a, "default.desktop") == 0)
@@ -116,6 +112,7 @@ gdm_session_list_init ()
     GdmSession *session = NULL;
     gboolean some_dir_exists = FALSE;
     gboolean searching_for_default = TRUE;
+    gboolean show_xterm_failsafe;
     struct dirent *dent;
     char **vec;
     char *name;
@@ -124,7 +121,7 @@ gdm_session_list_init ()
 
     sessnames = g_hash_table_new (g_str_hash, g_str_equal);
 
-    if (GdmShowGnomeFailsafeSession) {
+    if (gdm_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE)) {
 	session = g_new0 (GdmSession, 1);
 	session->name = g_strdup (_("Failsafe _GNOME"));
 	session->comment = g_strdup (_("This is a failsafe session that will log you "
@@ -135,7 +132,7 @@ gdm_session_list_init ()
 	g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_GNOME), session);
     }
 
-    if (GdmShowXtermFailsafeSession) {
+    if (gdm_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE)) {
 	session = g_new0 (GdmSession, 1);
 	session->name = g_strdup (_("Failsafe _Terminal"));
 	session->comment = g_strdup (_("This is a failsafe session that will log you "
@@ -143,10 +140,12 @@ gdm_session_list_init ()
 		"and it is only to be used when you can't log "
 		"in otherwise.  To exit the terminal, "
 		"type 'exit'."));
-	g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_XTERM), session);
+	g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_XTERM),
+		session);
     }
 
-    vec = g_strsplit (GdmSessionDir, ":", -1);
+    vec = g_strsplit (gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR),
+	 ":", -1);
     for (i = 0; vec != NULL && vec[i] != NULL; i++) {
 	    const char *dir = vec[i];
 
@@ -234,8 +233,8 @@ gdm_session_list_init ()
 		    }
 
 		    /* if we found the default session */
-		    if ( ! ve_string_empty (GdmDefaultSession) &&
-			 strcmp (dent->d_name, GdmDefaultSession) == 0) {
+		    if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_DEFAULT_SESSION)) &&
+			 strcmp (dent->d_name, gdm_config_get_string (GDM_KEY_DEFAULT_SESSION)) == 0) {
 			    g_free (default_session);
 			    default_session = g_strdup (dent->d_name);
 			    searching_for_default = FALSE;
@@ -275,19 +274,23 @@ gdm_session_list_init ()
     /* Check that session dir is readable */
     if G_UNLIKELY ( ! some_dir_exists) {
 	syslog (LOG_ERR, _("%s: Session directory %s not found!"),
-		"gdm_login_session_init", ve_sure_string (GdmSessionDir));
-	GdmShowXtermFailsafeSession = TRUE;
+		"gdm_login_session_init", ve_sure_string
+		 (gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR)));
+	show_xterm_failsafe = TRUE;
 	session_dir_whacked_out = TRUE;
     }
 
     if G_UNLIKELY (g_hash_table_size (sessnames) == 0) {
 	    syslog (LOG_WARNING, _("Yikes, nothing found in the session directory."));
 	    session_dir_whacked_out = TRUE;
-	    GdmShowXtermFailsafeSession = TRUE;
+	    show_xterm_failsafe = TRUE;
 	    default_session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
     }
 
-    if (GdmShowGnomeFailsafeSession) {
+    if (gdm_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE))
+	    show_xterm_failsafe = TRUE;
+
+    if (show_xterm_failsafe) {
 	    session = g_new0 (GdmSession, 1);
 	    session->name = g_strdup (_("Failsafe _GNOME"));
 	    session->comment = g_strdup (_("This is a failsafe session that will log you "
@@ -298,7 +301,7 @@ gdm_session_list_init ()
 	    g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_GNOME), session);
     }
 
-    if (GdmShowXtermFailsafeSession) {
+    if (show_xterm_failsafe) {
 	    session = g_new0 (GdmSession, 1);
 	    session->name = g_strdup (_("Failsafe _Terminal"));
 	    session->comment = g_strdup (_("This is a failsafe session that will log you "

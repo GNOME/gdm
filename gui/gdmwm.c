@@ -19,9 +19,7 @@
  */
 
 #include "config.h"
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
-#include <gdk/gdkx.h>
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -33,11 +31,15 @@
 #include <pwd.h>
 #include <unistd.h>
 #include <syslog.h>
+
+#include <gdk/gdkx.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
+
 #include "gdmwm.h"
 #include "gdm.h"
 #include "gdmcommon.h"
-#include "vicious.h"
-#include "ve-miscui.h"
+#include "gdmconfig.h"
 
 typedef struct _GdmWindow GdmWindow;
 struct _GdmWindow {
@@ -1417,7 +1419,7 @@ gdm_wm_save_wm_order (void)
 			&size)) {
 		int i;
 		Atom atom;
-		data = g_new0 (long, size);
+		data = g_new0 (unsigned long, size);
 
 		for (i = 0; i < size; i++) {
 			GdmWindow *gw = find_window (children[i], TRUE);

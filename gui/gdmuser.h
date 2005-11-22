@@ -19,14 +19,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <vicious.h>
-
 #include "misc.h"
 
 #ifndef GDM_USER_H
 #define GDM_USER_H
-
-#include <vicious.h>
 
 typedef struct _GdmUser GdmUser;
 struct _GdmUser {

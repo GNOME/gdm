@@ -21,9 +21,8 @@
 #include <libgnomeui/libgnomeui.h>
 #include <glade/glade.h>
 
-#include <vicious.h>
-
 #include "misc.h"
+#include "gdmconfig.h"
 
 #define INDEX_FILE1 "index.theme"
 #define INDEX_FILE2 "index.theme.disabled"

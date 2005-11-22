@@ -32,13 +32,12 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-#include <libgnome/libgnome.h> /* for gnome_config */
 #include <libgnomeui/libgnomeui.h>
-
-#include <viciousui.h>
 
 #include "gdm.h"
 #include "gdmcommon.h"
+#include "gdmconfig.h"
+#include "ve-miscui.h"
 
 static GladeXML *xml;
 static char	*photofile;
@@ -322,31 +321,6 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 	gtk_widget_show (file_dialog);
 }
 
-static void
-maybe_migrate_old_config (void)
-{
-	char *name;
-
-	/* Note, change access to g_access after GTK 2.8 is released */
-	if (photofile && access (photofile, R_OK) == 0)
-		return;
-
-	/* if we don't have a face then look for old one */
-	name = gnome_config_get_string ("/gdmphotosetup/last/picture");
-	if (name && access (name, R_OK) != 0) {
-		GdkPixbuf *pixbuf;
-
-		pixbuf = gdk_pixbuf_new_from_file (name, NULL);
-		if (pixbuf) {
-			gdk_pixbuf_save (pixbuf, photofile, "png", NULL, NULL);
-		}
-
-		g_object_unref (pixbuf);
-	}
-
-	g_free (name);
-}
-
 static GtkTreeModel *
 create_model (void)
 {
@@ -383,7 +357,6 @@ fill_model (GtkTreeModel *model)
 		}
 
 		gtk_list_store_prepend (store, &iter);
-
 		gtk_list_store_set (store, &iter,
 				    0, pixbuf,
 				    1, path,
@@ -461,7 +434,6 @@ main (int argc, char *argv[])
 	GtkWidget  *face_image;
 	GtkWidget  *iconview;
 	gboolean    face_browser;
-	gchar	   *config_file, *config_prefix;
 	char	   *greeter;
 	int	    max_size;
 
@@ -476,28 +448,12 @@ main (int argc, char *argv[])
 
 	photofile = g_build_filename (g_get_home_dir (), ".face", NULL);
 
-	maybe_migrate_old_config ();
-
-	config_file = gdm_common_get_config_file ();
-	if (config_file == NULL) {
-		g_print (_("Could not access GDM configuration file.\n"));
-		exit (EXIT_FAILURE);
-	}
-
-	config_prefix = g_strdup_printf ("=%s=/", config_file);
-	g_free (config_file);
-
-	gnome_config_push_prefix (config_prefix);
-	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
-	max_size = gnome_config_get_int (GDM_KEY_USER_MAX_FILE);
-	max_width = gnome_config_get_int (GDM_KEY_ICON_WIDTH);
-	max_height = gnome_config_get_int (GDM_KEY_ICON_HEIGHT);
-	greeter = gnome_config_get_string (GDM_KEY_GREETER);
-
-	facedir = gnome_config_get_string (GDM_KEY_FACE_DIR);
-	gnome_config_pop_prefix ();
-
-	g_free (config_prefix);
+	face_browser = gdm_config_get_bool (GDM_KEY_BROWSER);
+	max_size     = gdm_config_get_int (GDM_KEY_USER_MAX_FILE);
+	max_width    = gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH);
+	max_height   = gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
+	greeter      = gdm_config_get_string (GDM_KEY_GREETER);
+	facedir      = gdm_config_get_string (GDM_KEY_GLOBAL_FACE_DIR);
 
 	gtk_window_set_default_icon_name ("stock_person");
 

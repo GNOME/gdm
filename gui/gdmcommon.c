@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <locale.h>
 #include <string.h>
@@ -31,14 +32,10 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <vicious.h>
-#include "viciousui.h"
-
 #include "gdm.h"
-
-#include "gdmwm.h"
 #include "gdmcommon.h"
 #include "gdmcomm.h"
+#include "gdmconfig.h"
 
 void
 gdm_common_abort (const gchar *format, ...)
@@ -68,41 +65,6 @@ gdm_common_setup_cursor (GdkCursorType type)
 	GdkCursor *cursor = gdk_cursor_new (type);
 	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
 	gdk_cursor_unref (cursor);
-}
-
-gboolean
-gdm_common_string_same (VeConfig *config, const char *cur, const char *key)
-{
-	char *val = ve_config_get_string (config, key);
-	if (strcmp (ve_sure_string (cur), ve_sure_string (val)) == 0) {
-		g_free (val);
-		return TRUE;
-	} else {
-		g_free (val);
-		return FALSE;
-	}
-}
-
-gboolean
-gdm_common_bool_same (VeConfig *config, gboolean cur, const char *key)
-{
-	gboolean val = ve_config_get_bool (config, key);
-	if (ve_bool_equal (cur, val)) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
-gboolean
-gdm_common_int_same (VeConfig *config, int cur, const char *key)
-{
-	int val = ve_config_get_int (config, key);
-	if (cur == val) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
 }
 
 void
@@ -309,13 +271,9 @@ gdm_common_get_config_file (void)
 }
 
 gboolean
-gdm_common_select_time_format (VeConfig *config)
+gdm_common_select_time_format (void)
 {
-	gchar *val;
-
-	g_return_val_if_fail (config != NULL, FALSE);
-
-	val = ve_config_get_string (config, GDM_KEY_USE_24_CLOCK);
+	gchar *val = gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 
 	if (val != NULL &&
 	    (val[0] == 'T' ||
@@ -323,19 +281,16 @@ gdm_common_select_time_format (VeConfig *config)
 	     val[0] == 'Y' ||
 	     val[0] == 'y' ||
 	     atoi (val) != 0)) {
-		g_free (val);
 		return TRUE;
 	} else if (val != NULL &&
 	    (val[0] == 'F' ||
 	     val[0] == 'f' ||
 	     val[0] == 'N' ||
 	     val[0] == 'n')) {
-		g_free (val);
 		return FALSE;
 	} else {
 		/* Value is "auto" (default), thus select according to
 		   "locale" settings. */
-		g_free(val);
 
 		/* Translators: Translate this to '12-hour', or
 		   '24-hour'. Meaning of the translation is the
@@ -380,5 +335,27 @@ setup_background_color (gchar *bg_color)
       gdk_flush ();
       gdk_error_trap_pop ();
     }
+}
+
+gchar *
+gdm_get_welcomemsg (void)
+{
+        char *welcomemsg;
+
+        if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+                if (gdm_config_get_bool (GDM_KEY_DEFAULT_REMOTE_WELCOME))
+                        welcomemsg = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
+                else
+                        welcomemsg = g_strdup
+			   (gdm_config_get_translated_string (GDM_KEY_REMOTE_WELCOME));
+        } else {
+                if (gdm_config_get_bool (GDM_KEY_DEFAULT_WELCOME))
+                        welcomemsg = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+                else
+                        welcomemsg = g_strdup (
+			  gdm_config_get_translated_string (GDM_KEY_WELCOME));
+        }
+
+	return welcomemsg;
 }
 

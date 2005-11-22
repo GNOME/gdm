@@ -25,10 +25,8 @@
 #include <gdk/gdkx.h>
 #include <X11/XKBlib.h>
 
-#include "vicious.h"
 #include "greeter_parser.h"
 #include "greeter_item_capslock.h"
-
 
 static gboolean caps_lock_state = FALSE;
 

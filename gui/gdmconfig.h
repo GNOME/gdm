@@ -20,22 +20,28 @@
  * 
  */
 
-#ifndef GDMCOMM_H
-#define GDMCOMM_H
+#ifndef GDMCONFIG_H
+#define GDMCONFIG_H
 
-void		gdmcomm_set_debug (gboolean enable);
-char *		gdmcomm_call_gdm (const char *command,
-				  const char *auth_cookie,
-				  const char *min_version,
-				  int tries);
-const char *	gdmcomm_get_display (void);
-/* This just gets a cookie of MIT-MAGIC-COOKIE-1 type */
-char *		gdmcomm_get_a_cookie (gboolean binary);
-/* get the gdm auth cookie */
-char *		gdmcomm_get_auth_cookie (void);
+#include "ve-misc.h"
+#include "ve-miscui.h"
 
-gboolean	gdmcomm_check (gboolean show_dialog);
-const char *	gdmcomm_get_error_message (const char *ret,
-					   gboolean use_xnest);
+void		gdm_openlog				(const char *ident,
+							 int logopt,
+							 int facility);
 
-#endif /* GDMCOMM_H */
+gchar *		gdm_config_get_string			(gchar *key);
+gchar *		gdm_config_get_translated_string	(gchar *key);
+gint		gdm_config_get_int     			(gchar *key);
+gboolean	gdm_config_get_bool			(gchar *key);
+gboolean	gdm_config_reload_string		(gchar *key);
+gboolean	gdm_config_reload_int			(gchar *key);
+gboolean	gdm_config_reload_bool			(gchar *key);
+
+void		gdm_set_servauth			(gchar *file,
+							 gchar *key,
+							 gchar *id);
+char *		gdm_get_theme_greeter			(gchar *file,
+							 const char *fallback);
+
+#endif /* GDMCONFIG_H */

@@ -1,3 +1,89 @@
+2005-11-21  Brian Cameron <Brian.Cameron@sun.com>
+
+	This further improves GDM configuration so that
+	now only the GDM daemon parses and manages the
+	configuration file.  Most client programs use
+	the GET_CONFIG command to access needed data.
+	This simplifies the configuration logic and 
+	puts all configuration parsing in one place
+	and gets rid of a lot of global variables that
+	were making the code look messy.  This also
+	gets rid of several places where gnome_config 
+	deprecated functions were being used.  I have
+	cleaned up the code so that the vicious-extensions
+	code is more localized in gui/gdmconfig.[ch].
+	Some work is left to do:  gdmflexiserver still
+	uses gnome_config functions and gdmconfig should
+	use the new functions for reading from the
+	configuration file.  Some compile issues fixed
+	as highlghted by dmacks@netspace.org to fix
+	bug #322083.
+
+	* NEWS: Fixed comment.
+	* daemon/gdm.h: Further cleanup of #define's so
+	  that they better match the names of the config
+	  keys.
+	* daemon/gdm.c: Now GET_CONFIG returns "OK" if
+	  the key is valid but has no value when it 
+	  is a string.  Now free return value from
+	  gdm_config_to_string.
+	* daemon/Makefile.am, gui/greeter/Makefile.am:
+	  Now the daemon validates the greeter's theme
+	  directory, so pass the default value into the
+	  daemon and not the greeter.
+	* daemon/gdmconfig.h: Added gdm_is_valid_key
+	  and corrected prototype for
+	  gdm_set_user_session_lang.
+	* daemon/slave.c: Fix warning and compile errors.
+	* daemon/gdmconfig.c: Further fleshed out.
+	  Now it supports a few additional keys I 
+	  overlooked.  It now validates all keys used
+	  by the slaves.  Now handles translated string.
+	  Further refactored the code.  
+	* gui/Makefile.am: Added gdmconfig.[ch] to 
+	  common library.
+	* gui/gdmconfig.[ch]: New functions for 
+	  accessing configuration data for slaves.
+	* gui/gdmXnestchooser.c, gui/gdmlanguages.c,
+	  gui/gdmsession.h, gui/gdmuser.h, gui/gdmwm.c,
+	  gui/misc.c, gui/greeter/greeter_item_capslock.c:
+	  gui/greeter/greeter_item_pam.c: No longer include
+	  vicious.h/viciousui.h, instead gdmconfig.h.
+	* gui/gdmcomm.c: Fix gdm_check_comm to no
+	  longer require passing in the config file
+	  name.
+	* gui/gdmcommon.[ch]: Get rid of old 
+	  gdm_common_*_same functions that are
+	  replaced with new gui/gdmconfig logic.
+	  Now functions that access config data
+	  use the new functions.
+	* gui/gdmflexiserver.c: Now displays the
+	  localized string when you use GET_CONFIG
+	  to access a translatable string.
+	* gui/gdmconfig.c: Now calls update_key in
+	  addition to update_greeters when updating
+	  greeter config data, since the daemon needs
+	  to update the values now when they change.
+	* gui/gdmchooser.c, gui/gdmdynamic.c,
+	  gui/gdmlogin.c, gui/gdmphotosetup.c,
+	  gui/gdmsession.c, gui/gdmuser.c,
+	  gui/gdm/gdmXnestchooser.c,
+	  gui/greeter/greeter.c,
+	  gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_canvas_item.c,
+	  gui/greeter/greeter_item.c,
+	  gui/greeter/greeter_item_customlist.c,
+	  gui/greeter/greeter_item_timed.c,
+	  gui/greeter/greeter_item_list.c,
+	  gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_session.c,
+	  gui/greeter/greeter_system.c:  Updated to
+	  use new configuration functions.
+	* vicious-extensions/glade-helper.c: Now
+	  include stdlib.h to avoid compiler warnings.
+	* gui/greeter/greeter.c: Remove unused 
+	  gdm_kill_thingies function.
+
 2005-11-19  Jürg Billeter  <j@bitron.ch>
 
 	* configure.ac: Really check for X server in prefix /usr

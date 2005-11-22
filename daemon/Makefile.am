@@ -12,7 +12,8 @@ INCLUDES = \
 	$(GUI_CFLAGS)					\
 	$(DAEMON_CFLAGS)				\
 	-DPAM_PREFIX=\"$(PAM_PREFIX)\"			\
-	$(GNOME_INCLUDEDIR)
+	$(GNOME_INCLUDEDIR)				\
+	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\"
 
 #
 #	-DG_DISABLE_DEPRECATED				\

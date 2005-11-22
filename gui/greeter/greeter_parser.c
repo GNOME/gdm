@@ -28,9 +28,9 @@
 #include <locale.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <vicious.h>
-
 #include "gdmwm.h"
+#include "gdmcommon.h"
+#include "gdmconfig.h"
 #include "greeter_configuration.h"
 #include "greeter_parser.h"
 #include "greeter_events.h"
@@ -1116,7 +1116,7 @@ parse_stock (xmlNodePtr node,
 	  welcome_string_info = info;
 
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (GdmWelcome);
+	  *translated_text = gdm_get_welcomemsg ();
 	}
       /* FIXME: is this actually needed? */
       else if (g_ascii_strcasecmp (prop, "username-label") == 0)

@@ -23,10 +23,10 @@
 #include <gtk/gtk.h>
 #include <libgnome/libgnome.h>
 #include <librsvg/rsvg.h>
-#include "vicious.h"
 
 #include "gdm.h"
 #include "gdmcommon.h"
+#include "gdmconfig.h"
 #include "greeter.h"
 #include "greeter_item.h"
 #include "greeter_events.h"
@@ -363,9 +363,9 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     entry = gtk_entry_new ();
     gtk_widget_set_name (entry, "user-pw-entry");
     gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
-    if (GdmUseInvisibleInEntry)
+    if (gdm_config_get_bool (GDM_KEY_ENTRY_INVISIBLE))
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
-    else if (GdmUseCirclesInEntry)
+    else if (gdm_config_get_bool (GDM_KEY_ENTRY_CIRCLES))
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
     gtk_widget_modify_font (entry, item->data.text.fonts[GREETER_ITEM_STATE_NORMAL]);
 

@@ -35,13 +35,15 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#include <viciousui.h>
+#include "vicious.h"
+#include "viciousui.h"
 
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "misc.h"
 #include "gdmcomm.h"
 #include "gdmuser.h"
+#include "gdmconfig.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
@@ -201,7 +203,7 @@ update_greeters (void)
 	gboolean have_error = FALSE;
 
 	/* recheck for gdm */
-	gdm_running = gdmcomm_check (config_file, FALSE /* gui_bitching */);
+	gdm_running = gdmcomm_check (FALSE);
 
 	if ( ! gdm_running)
 		return;
@@ -305,7 +307,7 @@ update_key (const char *notify_key)
 	       return;
 
 	/* recheck for gdm */
-	gdm_running = gdmcomm_check (config_file, FALSE /* gui_bitching */);
+	gdm_running = gdmcomm_check (FALSE);
 
 	if (gdm_running) {
 		char *ret;
@@ -360,6 +362,7 @@ logo_toggle_timeout (GtkWidget *toggle)
 		ve_config_set_string (config, key, "");
 		ve_config_save (config, FALSE);
 
+		update_key (key);
 		update_greeters ();
 	}
 	else if (filename != NULL) {
@@ -367,6 +370,7 @@ logo_toggle_timeout (GtkWidget *toggle)
 		ve_config_set_string (config, key, filename);
 		ve_config_save (config, FALSE);
 	
+		update_key (key);
 		update_greeters ();
 	}
 	g_free (filename);
@@ -820,11 +824,14 @@ combobox_timeout (GtkWidget *combo_box)
 			ve_config_set_string (config, key, new_key_val);
 		    	ve_config_set_bool (config, GDM_KEY_BROWSER, browser_val);
 			ve_config_save (config, FALSE);
+			update_key (GDM_KEY_BROWSER);
 			update_key (key);
+			update_greeters ();
 		}
 		else {
 			ve_config_set_bool (config, GDM_KEY_BROWSER, browser_val);
 			ve_config_save (config, FALSE);		
+			update_key (GDM_KEY_BROWSER);
 			update_greeters ();
 		}
 		
@@ -838,6 +845,7 @@ combobox_timeout (GtkWidget *combo_box)
 		if (selected == REMOTE_DISABLED) {
 			ve_config_set_bool (config, GDM_KEY_XDMCP, FALSE);		
 			ve_config_save (config, FALSE);
+			update_key (key);
 			update_greeters ();
 					
 			return FALSE;
@@ -1883,6 +1891,7 @@ browser_apply (GtkWidget *button, gpointer data)
 		ve_config_set_string (config, GDM_KEY_INCLUDE, userlist->str);
 		ve_config_save (config, FALSE /* force */);
 
+		update_key (GDM_KEY_INCLUDE);
 		update_greet = TRUE;
 	}
 
@@ -1910,6 +1919,7 @@ browser_apply (GtkWidget *button, gpointer data)
 		ve_config_set_string (config, GDM_KEY_EXCLUDE, userlist->str);
 		ve_config_save (config, FALSE /* force */);
 
+		update_key (GDM_KEY_EXCLUDE);
 		update_greet = TRUE;
 	}
 
@@ -2144,6 +2154,7 @@ greeter_toggle_timeout (GtkWidget *toggle)
 
 		ve_config_save (config, FALSE /* force */);
 
+		update_key (key);
 		update_greeters ();
 	}
 
@@ -2230,6 +2241,7 @@ local_background_type_toggle_timeout (GtkWidget *toggle)
 	}
 		
 	ve_config_save (config, FALSE);
+	update_key (GDM_KEY_BACKGROUND_TYPE);
 	update_greeters ();
 
 	return FALSE;
@@ -2448,6 +2460,7 @@ greeter_color_timeout (GtkWidget *picker)
 
 		ve_config_save (config, FALSE /* force */);
 
+		update_key (key);
 		update_greeters ();
 	}
 
@@ -2518,6 +2531,7 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 
 	ve_config_save (config, FALSE /* force */);
 
+	update_key (key);
 	update_greeters ();
 
 	return FALSE;
@@ -2920,6 +2934,7 @@ sound_response (GtkWidget *file_chooser, gpointer data)
 		ve_config_set_string (config, sound_key,
 	    	                      ve_sure_string (file_name));
 		ve_config_save (config, FALSE);
+		update_key (sound_key);
 		update_greeters ();
 	}
 	g_free (value);
@@ -2991,7 +3006,7 @@ setup_accessibility_tab (void)
 	setup_greeter_toggle ("acc_theme",
 	                      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
 	setup_greeter_toggle ("acc_sound_ready", 
-	                      GDM_KEY_SOUND_ON_LOGIN_READY);
+	                      GDM_KEY_SOUND_ON_LOGIN);
 	setup_greeter_toggle ("acc_sound_success",
 	                      GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
 	setup_greeter_toggle ("acc_sound_failure",
@@ -3035,7 +3050,7 @@ setup_accessibility_tab (void)
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (access_sound_failure_file_chooser), all_sounds_filter);
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (access_sound_failure_file_chooser), all_files_filter);
 		
-	value = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+	value = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
 
 	if (value != NULL && *value != '\0') {
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (access_sound_ready_file_chooser), 
@@ -3074,7 +3089,7 @@ setup_accessibility_tab (void)
 	
 	g_free (value);
 
-	gdm_key_sound_ready = g_strdup (GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
+	gdm_key_sound_ready = g_strdup (GDM_KEY_SOUND_ON_LOGIN_FILE);
 	
 	g_object_set_data (G_OBJECT (access_sound_ready_file_chooser), "key",
 	                   gdm_key_sound_ready);
@@ -3335,13 +3350,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 
 		theme_file = ve_config_new (n);
 
-		file = ve_config_get_translated_string
-			(theme_file, "GdmGreeterTheme/Greeter");
-		if (ve_string_empty (file)) {
-			g_free (file);
-			file = g_strconcat (dent->d_name, ".xml", NULL);
-		}
-
+		file = gdm_get_theme_greeter (n, dent->d_name);
 		full = g_strconcat (theme_dir, "/", dent->d_name,
 				    "/", file, NULL);
 		if (access (full, R_OK) != 0) {
@@ -3455,17 +3464,25 @@ greeter_theme_timeout (GtkWidget *toggle)
 		selected_themes = "";
 
 	/* If themes have changed from the config file, update it. */
-	if ((strcmp (ve_sure_string (theme),
-		ve_sure_string (selected_theme)) != 0) ||
-	    (strcmp (ve_sure_string (themes),
-		ve_sure_string (selected_themes)) != 0)) {
+	if (strcmp (ve_sure_string (theme),
+		ve_sure_string (selected_theme)) != 0) {
 
 		ve_config_set_string (config, GDM_KEY_GRAPHICAL_THEME,
 			selected_theme);
+
+		ve_config_save (config, FALSE /* force */);
+		update_key (GDM_KEY_GRAPHICAL_THEME);
+		update_greeters ();
+	}
+
+	if (strcmp (ve_sure_string (themes),
+		ve_sure_string (selected_themes)) != 0) {
+
 		ve_config_set_string (config, GDM_KEY_GRAPHICAL_THEMES,
 			selected_themes);
 
 		ve_config_save (config, FALSE /* force */);
+		update_key (GDM_KEY_GRAPHICAL_THEMES);
 		update_greeters ();
 	}
 
@@ -5322,6 +5339,7 @@ image_filechooser_response (GtkWidget *file_chooser, gpointer data)
 		ve_config_set_string (config, key,
 	    	                      ve_sure_string (file_name));
 		ve_config_save (config, FALSE);
+		update_key (key);
 		update_greeters ();
 	}
 	g_free (value);
@@ -5370,6 +5388,7 @@ logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 				ve_config_set_string (config, key,
 	    	                                      ve_sure_string (file_name));
 				ve_config_save (config, FALSE);
+				update_key (key);
 				update_greeters ();
 			}
 		}
@@ -5399,6 +5418,7 @@ logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 				ve_config_set_string (config, key,
 	    	                                      ve_sure_string (file_name));
 				ve_config_save (config, FALSE);
+				update_key (key);
 				update_greeters ();
 			}
 		}
@@ -6427,7 +6447,7 @@ main (int argc, char *argv[])
 		}
 	}
 
-	gdm_running = gdmcomm_check (config_file, FALSE /* gui_bitching */);
+	gdm_running = gdmcomm_check (FALSE);
 
 	if (RUNNING_UNDER_GDM) {
 		char *gtkrc;
@@ -6482,9 +6502,9 @@ main (int argc, char *argv[])
 	/* XXX: the setup proggie using a greeter config var for it's
 	 * ui?  Say it ain't so.  Our config sections are SUCH A MESS */
 	GdmIconMaxHeight = ve_config_get_int (ve_config_get (config_file),
-					   GDM_KEY_ICON_HEIGHT);
+					   GDM_KEY_MAX_ICON_HEIGHT);
 	GdmIconMaxWidth = ve_config_get_int (ve_config_get (config_file),
-					   GDM_KEY_ICON_WIDTH);
+					   GDM_KEY_MAX_ICON_WIDTH);
 	GdmMinimalUID = ve_config_get_int (ve_config_get (config_file),
 					   GDM_KEY_MINIMAL_UID);
 	GdmIncludeAll = ve_config_get_bool (ve_config_get (config_file),

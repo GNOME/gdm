@@ -36,11 +36,12 @@
 #include <gdk/gdkkeysyms.h>
 #include <libgnomecanvas/libgnomecanvas.h>
 
+#include "vicious.h"
+
 #include "gdm.h"
 #include "gdmwm.h"
 #include "gdmcommon.h"
-#include "vicious.h"
-#include "viciousui.h"
+#include "gdmconfig.h"
 
 #include "greeter.h"
 #include "greeter_configuration.h"
@@ -58,71 +59,12 @@
 #include "greeter_system.h"
 
 gboolean DOING_GDM_DEVELOPMENT = FALSE;
-static char *greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
-static char *greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_WELCOME_BACKTEST;
-static char *greeter_Welcome_key = GDM_KEY_WELCOME;
 
 GtkWidget *window;
 GtkWidget *canvas;
 
 gboolean GDM_IS_LOCAL = FALSE;
-char *GdmGraphicalTheme = NULL;
-char *GdmGraphicalThemes = NULL;
-char *GdmGraphicalThemeDir = NULL;
-gboolean GdmGraphicalThemeRand = FALSE;
-int GdmXineramaScreen = 0;
-gboolean GdmShowGnomeFailsafeSession = FALSE;
-gboolean GdmShowXtermFailsafeSession = FALSE;
-gboolean GdmShowLastSession = FALSE;
-gchar *GdmSessionDir = NULL;
-gchar *GdmDefaultSession = NULL;
-gchar *GdmLocaleFile = NULL;
-gchar *GdmHalt = NULL;
-gchar *GdmReboot = NULL;
-gchar *GdmSuspend = NULL;
-gchar *GdmConfigurator = NULL;
-gboolean GdmHaltFound = FALSE;
-gboolean GdmRebootFound = FALSE;
-gboolean GdmSuspendFound = FALSE;
-gboolean GdmConfiguratorFound = FALSE;
-gboolean GdmSystemMenu = TRUE;
-gboolean GdmConfigAvailable = TRUE;
-gboolean GdmChooserButton = TRUE;
-gboolean GdmTimedLoginEnable;
-gboolean GdmUse24Clock;
-gchar *GdmGlobalFaceDir;
-gchar *GdmDefaultFace;
-gint  GdmIconMaxHeight;
-gint  GdmIconMaxWidth;
-gchar *GdmTimedLogin;
-gchar *GdmGtkRC;
-gchar *GdmGtkTheme;
-gint GdmTimedLoginDelay;
-int GdmMinimalUID;
-gchar *GdmInclude = NULL;
-gchar *GdmExclude = NULL;
-gboolean GdmIncludeAll;
-gboolean GdmAllowRoot;
-gboolean GdmAllowRemoteRoot;
-static gboolean GdmDefaultWelcome;
-static gboolean GdmDefaultWelcomeBacktest;
-gchar *GdmWelcome;
-gchar *GdmServAuthDir;
-gchar *GdmInfoMsgFile;
-gchar *GdmInfoMsgFont;
-gint GdmFlexiReapDelayMinutes;
-gboolean GdmSoundOnLoginReady;
-gboolean GdmSoundOnLoginSuccess;
-gboolean GdmSoundOnLoginFailure;
-gchar *GdmSoundOnLoginReadyFile;
-gchar *GdmSoundOnLoginSuccessFile;
-gchar *GdmSoundOnLoginFailureFile;
-gchar *GdmSoundProgram;
-gboolean GdmUseCirclesInEntry = FALSE;
-gboolean GdmUseInvisibleInEntry = FALSE;
 
-static gchar *config_file;
-static gboolean used_defaults = FALSE;
 gint greeter_current_delay = 0;
 static gboolean ignore_buttons = FALSE;
 
@@ -150,8 +92,7 @@ get_random_theme ()
     int size;
 	int i;
 
-    VeConfig *config = ve_config_get (config_file);
-	themes_list = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEMES);
+    themes_list = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEMES);
 
     if (ve_string_empty (themes_list))
         return NULL;
@@ -170,176 +111,6 @@ get_random_theme ()
     g_strfreev (vec);
 
     return theme;
-}
-
-static void 
-greeter_parse_config (void)
-{
-    VeConfig *config;
-
-    if (!g_file_test (config_file, G_FILE_TEST_EXISTS))
-      {
-	syslog (LOG_ERR, _("%s: No configuration file: %s. Using defaults."), 
-		"greeter_parse_config", config_file);
-	used_defaults = TRUE;
-      }
-
-    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-	    greeter_Welcome_key = GDM_KEY_REMOTE_WELCOME;
-	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_REMOTE_WELCOME;
-            greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_REMOTE_WELCOME_BACKTEST;
-    } else {
-	    greeter_Welcome_key = GDM_KEY_WELCOME;
-	    greeter_DefaultWelcome_key = GDM_KEY_DEFAULT_WELCOME;
-            greeter_DefaultWelcomeBacktest_key = GDM_KEY_DEFAULT_WELCOME_BACKTEST;
-    }
-
-    config = ve_config_get (config_file);
-
-	GdmGraphicalThemeRand = ve_config_get_bool (config,
-	                                            GDM_KEY_GRAPHICAL_THEME_RAND);
-
-	if (GdmGraphicalThemeRand)
-		GdmGraphicalTheme = get_random_theme(); 
-	else
-		GdmGraphicalTheme = ve_config_get_string (config,
-		                                          GDM_KEY_GRAPHICAL_THEME);
-
-	if (GdmGraphicalTheme == NULL || GdmGraphicalTheme[0] == '\0')
-	{
-		g_free (GdmGraphicalTheme);
-		GdmGraphicalTheme = g_strdup ("circles");
-	}
-
-
-    GdmGraphicalThemeDir = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_DIR);
-    if (GdmGraphicalThemeDir == NULL ||
-	! g_file_test (GdmGraphicalThemeDir, G_FILE_TEST_IS_DIR))
-      {
-        g_free (GdmGraphicalThemeDir);
-        GdmGraphicalThemeDir = g_strdup (GREETERTHEMEDIR);
-      }
-    GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMA_SCREEN);
-    GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
-    GdmUseInvisibleInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_INVISIBLE);
-
-    GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
-    GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
-    GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
-    GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSION_DESKTOP_DIR);
-    GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULT_SESSION);
-    GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCALE_FILE);
-    GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSTEM_MENU);
-    GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
-    GdmChooserButton = ve_config_get_bool (config, GDM_KEY_CHOOSER_BUTTON);
-    GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
-    GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
-    GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
-    GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
-    GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
-    GdmGtkTheme = ve_config_get_string (config, GDM_KEY_GTK_THEME);
-    GdmServAuthDir = ve_config_get_string (config, GDM_KEY_SERV_AUTHDIR);
-    GdmInfoMsgFile = ve_config_get_string (config, GDM_KEY_INFO_MSG_FILE);
-    GdmInfoMsgFont = ve_config_get_string (config, GDM_KEY_INFO_MSG_FONT);
-
-    GdmHaltFound = gdm_working_command_exists (GdmHalt);
-    GdmRebootFound = gdm_working_command_exists (GdmReboot);
-    GdmSuspendFound = gdm_working_command_exists (GdmSuspend);
-    GdmConfiguratorFound = gdm_working_command_exists (GdmConfigurator);
-
-    GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
-    GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
-
-    /*
-     * For backwards compatibility.  If DefaultWelcome isn't in config file, then
-     * assume GdmDefaultWelcome is FALSE unless the string matches the default
-     */
-    GdmDefaultWelcomeBacktest = ve_config_get_bool (config, greeter_DefaultWelcomeBacktest_key);
-    if (GdmDefaultWelcomeBacktest == FALSE) {
-            if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
-                GdmDefaultWelcome == TRUE;
-            else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
-                GdmDefaultWelcome == TRUE;
-            else
-                GdmDefaultWelcome = FALSE;
-    }
-
-    /* Replace default welcome message with one specified in the config file, if
-     * use default is set to no */
-    if (GdmDefaultWelcome && strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
-	    g_free (GdmWelcome);
-	    GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
-    } else if (GdmDefaultWelcome && strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
-	    g_free (GdmWelcome);
-	    GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
-    }
-
-    GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
-    GdmIncludeAll = ve_config_get_bool (config, GDM_KEY_INCLUDE_ALL);
-    GdmInclude = ve_config_get_string (config, GDM_KEY_INCLUDE);
-    GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
-    GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMAL_UID);
-    GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOW_ROOT);
-    GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOW_REMOTE_ROOT);
-    GdmTimedLoginDelay = ve_config_get_int (config, GDM_KEY_TIMED_LOGIN_DELAY);
-
-    /* Note: TimedLogin here is not gotten out of the config
-     * but from the daemon since it's been munged on by the daemon a bit
-     * already maybe */
-    if (GdmTimedLoginEnable)
-      {
-        GdmTimedLogin = g_strdup (g_getenv("GDM_TIMED_LOGIN_OK"));
-	if (ve_string_empty (GdmTimedLogin))
-	  {
-	    g_free (GdmTimedLogin);
-	    GdmTimedLogin = NULL;
-	  }
-
-	if (GdmTimedLoginDelay < 5)
-	  {
-	    syslog (LOG_WARNING,
-		    _("TimedLoginDelay was less than 5.  I'll just use 5."));
-	    GdmTimedLoginDelay = 5;
-	  }
-      }
-    else
-      {
-        GdmTimedLogin = NULL;
-      }
-    greeter_current_delay = GdmTimedLoginDelay;
-
-    GdmFlexiReapDelayMinutes = ve_config_get_int (config, GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
-
-    GdmUse24Clock = gdm_common_select_time_format (config);
-
-    GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICON_WIDTH);
-    GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICON_HEIGHT);
-    GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACE_DIR);
-    GdmDefaultFace = ve_config_get_string (config, GDM_KEY_FACE);
-
-    GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
-    GdmSoundOnLoginReady = ve_config_get_bool (config,
-	                       GDM_KEY_SOUND_ON_LOGIN_READY);
-    GdmSoundOnLoginSuccess = ve_config_get_bool (config,
-	                         GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
-    GdmSoundOnLoginFailure = ve_config_get_bool (config,
-	                         GDM_KEY_SOUND_ON_LOGIN_FAILURE);
-    GdmSoundOnLoginReadyFile = ve_config_get_string (config,
-	                           GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
-    GdmSoundOnLoginSuccessFile = ve_config_get_string (config,
-	                      GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
-    GdmSoundOnLoginFailureFile = ve_config_get_string (config,
-	                      GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
-
-    if (GdmXineramaScreen < 0)
-      GdmXineramaScreen = 0;
-    if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
-    if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
-    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-	    GDM_IS_LOCAL = FALSE;
-    } else {
-	    GDM_IS_LOCAL = TRUE;
-    }
 }
 
 static gboolean
@@ -395,9 +166,9 @@ greeter_ctrl_handler (GIOChannel *source,
 
 	tmp = ve_locale_to_utf8 (buf);
 	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0) {
-		gdm_common_login_sound (GdmSoundProgram,
-					GdmSoundOnLoginReadyFile,
-					GdmSoundOnLoginReady);
+		gdm_common_login_sound (gdm_config_get_string (GDM_KEY_SOUND_PROGRAM),
+					gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE),
+					gdm_config_get_bool (GDM_KEY_SOUND_ON_LOGIN));
 		greeter_probably_login_prompt = TRUE;
 	} else {
 		greeter_probably_login_prompt = FALSE;
@@ -926,53 +697,50 @@ verify_gdm_version (void)
   return 0;
 }
 
+static void
+gdm_set_welcomemsg (void)
+{
+	char *welcomemsg = gdm_get_welcomemsg ();
+
+	if (welcome_string_info->data.text.orig_text != NULL)
+		g_free (welcome_string_info->data.text.orig_text);
+
+	welcome_string_info->data.text.orig_text = welcomemsg;
+	greeter_item_update_text (welcome_string_info);
+}
+
+
 static gboolean
 greeter_reread_config (int sig, gpointer data)
 {
-	VeConfig *config = ve_config_get (config_file);
-	char *theme, *theme_dir;
-	char *str;
-
-	theme = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
-	if (ve_string_empty (theme)) {
-		g_free (theme);
-		theme = g_strdup ("circles");
-	}
-	theme_dir = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_DIR);
-	if (theme_dir == NULL ||
-	    ! g_file_test (theme_dir, G_FILE_TEST_IS_DIR)) {
-		g_free (theme_dir);
-		theme_dir = g_strdup (GREETERTHEMEDIR);
-	}
-
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
-	if (strcmp (theme, GdmGraphicalTheme) != 0 ||
-	    strcmp (theme_dir, GdmGraphicalThemeDir) != 0 ||
-	     ! gdm_common_string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
-	     ! gdm_common_string_same (config, GdmGtkTheme, GDM_KEY_GTK_THEME) ||
-	     ! gdm_common_int_same (config, GdmXineramaScreen, GDM_KEY_XINERAMA_SCREEN) ||
-	     ! gdm_common_bool_same (config, GdmUseCirclesInEntry, GDM_KEY_ENTRY_CIRCLES) ||
-	     ! gdm_common_bool_same (config, GdmUseInvisibleInEntry, GDM_KEY_ENTRY_INVISIBLE) ||
-	     ! gdm_common_bool_same (config, GdmShowXtermFailsafeSession, GDM_KEY_SHOW_XTERM_FAILSAFE) ||
-	     ! gdm_common_bool_same (config, GdmShowGnomeFailsafeSession, GDM_KEY_SHOW_GNOME_FAILSAFE) ||
-	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDE_ALL) ||
-	     ! gdm_common_string_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
-	     ! gdm_common_string_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
-	     ! gdm_common_string_same (config, GdmSessionDir, GDM_KEY_SESSION_DESKTOP_DIR) ||
-	     ! gdm_common_string_same (config, GdmLocaleFile, GDM_KEY_LOCALE_FILE) ||
-	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSTEM_MENU) ||
-	     ! gdm_common_string_same (config, GdmHalt, GDM_KEY_HALT) ||
-	     ! gdm_common_string_same (config, GdmReboot, GDM_KEY_REBOOT) ||
-	     ! gdm_common_string_same (config, GdmSuspend, GDM_KEY_SUSPEND) ||
-	     ! gdm_common_string_same (config, GdmConfigurator, GDM_KEY_CONFIGURATOR) ||
-	     ! gdm_common_string_same (config, GdmInfoMsgFile, GDM_KEY_INFO_MSG_FILE) ||
-	     ! gdm_common_string_same (config, GdmInfoMsgFont, GDM_KEY_INFO_MSG_FONT) ||
-	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
-	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
-	     ! gdm_common_bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE) ||
-	     ! gdm_common_int_same (config, GdmTimedLoginDelay, GDM_KEY_TIMED_LOGIN_DELAY)) {
+	if (gdm_config_reload_string (GDM_KEY_GRAPHICAL_THEME) ||
+	    gdm_config_reload_string (GDM_KEY_GRAPHICAL_THEME_DIR) ||
+	    gdm_config_reload_string (GDM_KEY_GTKRC) ||
+	    gdm_config_reload_string (GDM_KEY_GTK_THEME) ||
+	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
+	    gdm_config_reload_bool   (GDM_KEY_ENTRY_CIRCLES) ||
+	    gdm_config_reload_bool   (GDM_KEY_ENTRY_INVISIBLE) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE) ||
+	    gdm_config_reload_bool   (GDM_KEY_INCLUDE_ALL) ||
+	    gdm_config_reload_string (GDM_KEY_INCLUDE) ||
+	    gdm_config_reload_string (GDM_KEY_EXCLUDE) ||
+	    gdm_config_reload_string (GDM_KEY_SESSION_DESKTOP_DIR) ||
+	    gdm_config_reload_string (GDM_KEY_LOCALE_FILE) ||
+	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
+	    gdm_config_reload_string (GDM_KEY_HALT) ||
+	    gdm_config_reload_string (GDM_KEY_REBOOT) ||
+	    gdm_config_reload_string (GDM_KEY_SUSPEND) ||
+	    gdm_config_reload_string (GDM_KEY_CONFIGURATOR) ||
+	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FILE) ||
+	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FONT) ||
+	    gdm_config_reload_bool   (GDM_KEY_CONFIG_AVAILABLE) ||
+	    gdm_config_reload_bool   (GDM_KEY_CHOOSER_BUTTON) ||
+	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE) ||
+	    gdm_config_reload_int    (GDM_KEY_TIMED_LOGIN_DELAY)) {
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
@@ -982,74 +750,21 @@ greeter_reread_config (int sig, gpointer data)
 		_exit (DISPLAY_RESTARTGREETER);
 	}
 
-	GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
-	GdmSoundOnLoginReady = ve_config_get_bool (config,
-	                  GDM_KEY_SOUND_ON_LOGIN_READY);
-	GdmSoundOnLoginSuccess = ve_config_get_bool (config,
-	                  GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
-	GdmSoundOnLoginFailure = ve_config_get_bool (config,
-	                  GDM_KEY_SOUND_ON_LOGIN_FAILURE);
-	GdmSoundOnLoginReadyFile = ve_config_get_string (config,
-	                             GDM_KEY_SOUND_ON_LOGIN_READY_FILE);
-	GdmSoundOnLoginSuccessFile = ve_config_get_string (config,
-	                             GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
-	GdmSoundOnLoginFailureFile = ve_config_get_string (config,
-	                             GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
+	gdm_config_reload_string (GDM_KEY_SOUND_PROGRAM);
+        gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN);
+        gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
+        gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN_FAILURE);
+        gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_FILE);
+        gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+        gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
+	gdm_config_reload_string (GDM_KEY_USE_24_CLOCK);
 
-	if ( gdm_common_select_time_format (config) != GdmUse24Clock) {
-		GdmUse24Clock = gdm_common_select_time_format (config);
-		greeter_item_clock_update ();
-	}
+	if (gdm_config_reload_string (GDM_KEY_WELCOME) ||
+	    gdm_config_reload_bool   (GDM_KEY_DEFAULT_WELCOME) ||
+	    gdm_config_reload_string (GDM_KEY_REMOTE_WELCOME) ||
+	    gdm_config_reload_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME)) {
 
-        if (! gdm_common_bool_same (config, GdmDefaultWelcome, greeter_DefaultWelcome_key) ||
-	   (!GdmDefaultWelcome && 
-	    ! gdm_common_string_same (config, GdmWelcome, greeter_Welcome_key))) {
-
-		GdmWelcome = ve_config_get_string (config, greeter_Welcome_key);
-		GdmDefaultWelcome = ve_config_get_bool (config, greeter_DefaultWelcome_key);
-                GdmDefaultWelcomeBacktest = ve_config_get_bool (config, greeter_DefaultWelcomeBacktest_key);
-
-                /*
-                 * For backwards compatibility.  If DefaultWelcome isn't in config file, then
-                 * assume GdmDefaultWelcome is FALSE unless the string matches the default
-                 */
-                if (GdmDefaultWelcomeBacktest == FALSE) {
-                        if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_WELCOME_MSG) == 0)
-                                GdmDefaultWelcome == TRUE;
-                        else if (strcmp (ve_sure_string (GdmWelcome), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
-                                GdmDefaultWelcome == TRUE;
-                        else
-                                GdmDefaultWelcome = FALSE;
-                }
-
-		if (GdmDefaultWelcome) {
-			if (strcmp (greeter_Welcome_key, GDM_KEY_WELCOME) == 0) {
-				g_free (GdmWelcome);
-				GdmWelcome = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
-			} else if (strcmp (greeter_Welcome_key, GDM_KEY_REMOTE_WELCOME) == 0) {
-				g_free (GdmWelcome);
-				GdmWelcome = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
-			}
-
-			if (welcome_string_info != NULL) {
-				g_free (welcome_string_info->data.text.orig_text);
-				welcome_string_info->data.text.orig_text = g_strdup (GdmWelcome);
-				greeter_item_update_text (welcome_string_info);
-			}
-
-		} else {
-			str = ve_config_get_translated_string (config, greeter_Welcome_key);
-
-			if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != 0 && 
-			    welcome_string_info != NULL) {
-					g_free (welcome_string_info->data.text.orig_text);
-					welcome_string_info->data.text.orig_text = g_strdup (GdmWelcome);
-					greeter_item_update_text (welcome_string_info);
-			
-			} else {
-				g_free (str);
-			}
-		}
+		gdm_set_welcomemsg ();
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
@@ -1058,10 +773,6 @@ greeter_reread_config (int sig, gpointer data)
 
 		_exit (DISPLAY_RESTARTGREETER);
 	}
-
-
-	g_free (theme);
-	g_free (theme_dir);
 
 	return TRUE;
 }
@@ -1077,7 +788,6 @@ static char *
 get_theme_file (const char *in, char **theme_dir)
 {
   char *file, *dir, *info, *s;
-  VeConfig *config;
 
   if (in == NULL)
     in = "circles";
@@ -1108,7 +818,7 @@ get_theme_file (const char *in, char **theme_dir)
 	    }
 	}
       if (dir == NULL)
-        dir = g_build_filename (GdmGraphicalThemeDir, in, NULL);
+        dir = g_build_filename (gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR), in, NULL);
     }
 
   *theme_dir = dir;
@@ -1129,17 +839,10 @@ get_theme_file (const char *in, char **theme_dir)
       return file;
     }
 
-  config = ve_config_new (info);
-  g_free (info);
-
-  s = ve_config_get_translated_string (config, "GdmGreeterTheme/Greeter");
-  if (s == NULL || s[0] == '\0')
-    {
-      g_free (s);
-      s = g_strdup_printf ("%s.xml", in);
-    }
-
+  s    = gdm_get_theme_greeter (info, in);
   file = g_build_filename (dir, s, NULL);
+
+  g_free (info);
   g_free (s);
 
   return file;
@@ -1161,19 +864,13 @@ delay_reaping (GSignalInvocationHint *ihint,
 static gboolean
 reap_flexiserver (gpointer data)
 {
-	if (GdmFlexiReapDelayMinutes > 0 &&
-	    ((time (NULL) - last_reap_delay) / 60) > GdmFlexiReapDelayMinutes) {
+	int reapminutes = gdm_config_get_int (GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
+
+	if (reapminutes > 0 &&
+	    ((time (NULL) - last_reap_delay) / 60) > reapminutes) {
 		_exit (DISPLAY_REMANAGE);
 	}
 	return TRUE;
-}
-
-
-static void
-gdm_kill_thingies (void)
-{
-	/* Empty kill thingies */
-	return;
 }
 
 static gboolean
@@ -1223,7 +920,6 @@ gdm_event (GSignalInvocationHint *ihint,
 int
 main (int argc, char *argv[])
 {
-  VeConfig *config;
   char *bg_color;
   struct sigaction hup;
   struct sigaction term;
@@ -1231,8 +927,10 @@ main (int argc, char *argv[])
   GIOChannel *ctrlch;
   GError *error;
   GreeterItemInfo *root;
+  const gchar *theme_name;
   char *theme_file;
   char *theme_dir;
+  gchar *gdm_graphical_theme;
   const char *gdm_gtk_theme;
   guint sid;
   int r;
@@ -1248,31 +946,28 @@ main (int argc, char *argv[])
 
   setlocale (LC_ALL, "");
 
-  config_file = gdm_common_get_config_file ();
-  if (config_file == NULL) {
-	   g_print (_("Could not access GDM configuration file.\n"));
-	   exit (EXIT_FAILURE);
-  }
-
-  greeter_parse_config ();
+  if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
+	   GDM_IS_LOCAL = FALSE;
+  else
+	   GDM_IS_LOCAL = TRUE;
 
   gtk_init (&argc, &argv);
 
   /* Should be a watch already, but anyway */
   gdm_common_setup_cursor (GDK_WATCH);
 
-  if( ! ve_string_empty (GdmGtkRC))
-	  gtk_rc_parse (GdmGtkRC);
+  if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_GTKRC)))
+	  gtk_rc_parse (gdm_config_get_string (GDM_KEY_GTKRC));
 
   gdm_gtk_theme = g_getenv ("GDM_GTK_THEME");
   if (ve_string_empty (gdm_gtk_theme))
-	  gdm_gtk_theme = GdmGtkTheme;
+	  gdm_gtk_theme = gdm_config_get_string (GDM_KEY_GTK_THEME);
 
   if ( ! ve_string_empty (gdm_gtk_theme)) {
 	  gdm_set_theme (gdm_gtk_theme);
   }
 
-  gdm_wm_screen_init (GdmXineramaScreen);
+  gdm_wm_screen_init (gdm_config_get_int (GDM_KEY_XINERAMA_SCREEN));
   
   r = verify_gdm_version ();
   if (r != 0)
@@ -1281,11 +976,10 @@ main (int argc, char *argv[])
   /* Load the background as early as possible so GDM does not leave  */
   /* the background unfilled.   The cursor should be a watch already */
   /* but just in case */
-  config   = ve_config_get (config_file);
-  bg_color = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_COLOR);
+  bg_color = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME_COLOR);
   /* If a graphical theme color does not exist fallback to the plain color */
   if (ve_string_empty (bg_color)) {
-    bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUND_COLOR);
+    bg_color = gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
   }
   setup_background_color (bg_color);
   greeter_session_init ();
@@ -1356,18 +1050,13 @@ main (int argc, char *argv[])
   gtk_container_add (GTK_CONTAINER (window), canvas);
 
   if (g_getenv ("GDM_THEME") != NULL)
-    {
-      g_free (GdmGraphicalTheme);
-      GdmGraphicalTheme = g_strdup (g_getenv ("GDM_THEME"));
-    }
-  if (DOING_GDM_DEVELOPMENT &&
-      g_getenv ("GDM_FAKE_TIMED") != NULL)
-    {
-      g_free (GdmTimedLogin);
-      GdmTimedLogin = g_strdup ("fake");
-    }
+     gdm_graphical_theme = g_strdup (g_getenv ("GDM_THEME"));
+  else if (gdm_config_get_bool (GDM_KEY_GRAPHICAL_THEME_RAND))
+     gdm_graphical_theme = get_random_theme ();
+  else
+     gdm_graphical_theme = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME);
 
-  theme_file = get_theme_file (GdmGraphicalTheme, &theme_dir);
+  theme_file = get_theme_file (gdm_graphical_theme, &theme_dir);
   
   error = NULL;
   root = greeter_parse (theme_file, theme_dir,
@@ -1385,7 +1074,7 @@ main (int argc, char *argv[])
         gdm_wm_init (0);
         gdm_wm_focus_new_windows (TRUE);
     
-	tmp = ve_filename_to_utf8 (ve_sure_string (GdmGraphicalTheme));
+	tmp = ve_filename_to_utf8 (ve_sure_string (gdm_graphical_theme));
 	s = g_strdup_printf (_("There was an error loading the "
 			       "theme %s"), tmp);
 	g_free (tmp);
@@ -1583,36 +1272,8 @@ main (int argc, char *argv[])
       gdm_wm_no_login_focus_pop ();
   }
 
-  /* There was no config file */
-  if G_UNLIKELY (used_defaults)
-    {
-      GtkWidget *dialog;
-
-      gdm_wm_focus_new_windows (TRUE);
-
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK,
-				  _("No configuration was found"),
-				  _("The configuration was not found.  GDM is using "
-				    "defaults to run this session.  You should log in "
-				    "and create a configuration file with the GDM "
-				    "configuration application."));
-
-      gtk_widget_show_all (dialog);
-      gdm_wm_center_window (GTK_WINDOW (dialog));
-
-      gdm_common_setup_cursor (GDK_LEFT_PTR);
-
-      gdm_wm_no_login_focus_push ();
-      gtk_dialog_run (GTK_DIALOG (dialog));
-      gtk_widget_destroy (dialog);
-      gdm_wm_no_login_focus_pop ();
-    }
-
-    /* if a flexiserver, reap self after some time */
-  if (GdmFlexiReapDelayMinutes > 0 &&
+  /* if a flexiserver, reap self after some time */
+  if (gdm_config_get_int (GDM_KEY_FLEXI_REAP_DELAY_MINUTES) > 0 &&
       ! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER")) &&
       /* but don't reap Xnest flexis */
       ve_string_empty (g_getenv ("GDM_PARENT_DISPLAY")))
@@ -1655,10 +1316,10 @@ main (int argc, char *argv[])
 
   gdm_wm_restore_wm_order ();
 
-  gdm_common_show_info_msg (GdmInfoMsgFile, GdmInfoMsgFont);
+  gdm_common_show_info_msg (gdm_config_get_string (GDM_KEY_INFO_MSG_FILE),
+     gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
 
   gdm_common_setup_cursor (GDK_LEFT_PTR);
-
   gtk_main ();
 
   return 0;

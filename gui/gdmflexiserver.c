@@ -39,11 +39,11 @@
 #include <libgnome/libgnome.h> /* for gnome_config */
 #include <libgnomeui/libgnomeui.h> /* for gnome_program */
 
-#include <viciousui.h>
-
 #include "gdm.h"
 #include "gdmcomm.h"
 #include "gdmcommon.h"
+#include "gdmconfig.h"
+#include "gdmconfig.h"
 
 static GSList *xservers = NULL;
 static gboolean got_standard = FALSE;
@@ -672,6 +672,42 @@ choose_server (void)
 	return NULL;
 }
 
+/**
+ * is_key
+ *
+ * Since GDM keys sometimes have default values defined in the gdm.h header
+ * file (e.g. key=value), this function strips off the "=value" from both
+ * keys passed in to do a comparison.
+ */
+static gboolean
+is_key (const gchar *key1, const gchar *key2)
+{
+   gchar *key1d, *key2d, *p;
+
+   key1d = g_strdup (key1);
+   key2d = g_strdup (key2);
+
+   g_strstrip (key1d);
+   p = strchr (key1d, '=');
+   if (p != NULL)
+      *p = '\0';
+
+   g_strstrip (key2d);
+   p = strchr (key2d, '=');
+   if (p != NULL)
+      *p = '\0';
+
+   if (strcmp (key1d, key2d) == 0) {
+      g_free (key1d);
+      g_free (key2d);
+      return TRUE;
+   } else {
+      g_free (key1d);
+      g_free (key2d);
+      return FALSE;
+   }
+}
+
 static void
 calc_pi (void)
 {
@@ -740,22 +776,46 @@ main (int argc, char *argv[])
 	if (args != NULL && args[0] != NULL)
 		server = args[0];
 
+	if ( ! gdmcomm_check (TRUE)) {
+		return 1;
+	}
+
 	config_file = gdm_common_get_config_file ();
 	if (config_file == NULL) {
 		g_print (_("Could not access GDM configuration file.\n"));
 		exit (0);
 	}
 
-	if ( ! gdmcomm_check (config_file, TRUE /* gui_bitching */)) {
-		g_free (config_file);
-		return 1;
-	}
-
 	if (send_command != NULL) {
 		if (authenticate)
 			auth_cookie = gdmcomm_get_auth_cookie ();
-		ret = gdmcomm_call_gdm (send_command, auth_cookie,
-					"2.2.4.0", 5);
+
+		/*
+		 * If asking for a translatable config value, then try to get
+		 * the translated value first.  If this fails, then go ahead
+		 * and call the normal sockets command.
+		 */
+		if (strncmp (send_command, GDM_SUP_GET_CONFIG " ",
+		    strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
+			gchar *value = NULL;
+			const char *key = &send_command[strlen (GDM_SUP_GET_CONFIG " ")];
+
+			if (is_key (GDM_KEY_WELCOME, key) ||
+			    is_key (GDM_KEY_REMOTE_WELCOME, key)) {
+				value = gdm_config_get_translated_string ((gchar *)key);
+				if (value != NULL) {
+					ret = g_strdup_printf ("OK %s", value);
+					g_free (value);
+				}
+			}
+			if (value == NULL)
+				ret = gdmcomm_call_gdm (send_command, auth_cookie,
+							"2.2.4.0", 5);
+		} else {
+			ret = gdmcomm_call_gdm (send_command, auth_cookie,
+						"2.2.4.0", 5);
+		}
+
 		if (ret != NULL) {
 			g_print ("%s\n", ret);
 			g_free (config_file);

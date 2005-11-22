@@ -3028,20 +3028,25 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
 		char *val;
 
-		if (! gdm_update_config (key))
+		if (! gdm_update_config ((gchar *)key))
 			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
 		else
 			gdm_connection_write (conn, "OK\n");
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
 		const char *key = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
-		char *retval;
+		gchar *retval;
 
-                gdm_config_to_string (key, &retval);
+                gdm_config_to_string ((gchar *)key, &retval);
 		if (retval != NULL)
-			gdm_connection_printf (conn, "OK %s", retval);
-		else 
-                	gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
+			gdm_connection_printf (conn, "OK %s\n", retval);
+		else {
+			if (gdm_is_valid_key ((gchar *)key))
+				gdm_connection_printf (conn, "OK \n");
+			else
+                		gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
+		}
+		g_free (retval);
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;
 		GSList *li;

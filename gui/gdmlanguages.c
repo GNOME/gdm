@@ -24,9 +24,8 @@
 #include <libgnomeui/libgnomeui.h>
 #include <string.h>
 
-#include <vicious.h>
-
 #include "gdmlanguages.h"
+#include "gdmconfig.h"
 
 typedef struct _Language Language;
 struct _Language {

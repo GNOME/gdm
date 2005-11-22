@@ -54,6 +54,7 @@
 #include "misc.h"
 #include "server.h"
 #include "filecheck.h"
+#include "slave.h"
 
 gchar *config_file = NULL;
 static time_t config_file_mtime = 0;
@@ -72,11 +73,12 @@ typedef enum {
 	CONFIG_STRING
 } GdmConfigType;
 
-static GHashTable    *type_hash   = NULL;
-static GHashTable    *val_hash    = NULL;
-static GdmConfigType  bool_type   = CONFIG_BOOL;
-static GdmConfigType  int_type    = CONFIG_INT;
-static GdmConfigType  string_type = CONFIG_STRING;
+static GHashTable    *type_hash    = NULL;
+static GHashTable    *val_hash     = NULL;
+static GHashTable    *realkey_hash = NULL;
+static GdmConfigType  bool_type    = CONFIG_BOOL;
+static GdmConfigType  int_type     = CONFIG_INT;
+static GdmConfigType  string_type  = CONFIG_STRING;
 
 static uid_t GdmUserId;   /* Userid  under which gdm should run */
 static gid_t GdmGroupId;  /* Gruopid under which gdm should run */
@@ -125,7 +127,7 @@ static gchar *GdmTimedLogin = NULL;
 static gchar *GdmStandardXserver = NULL;
 static gchar *GdmXnest = NULL;
 static gchar *GdmSoundProgram = NULL;
-static gchar *GdmSoundOnLoginReadyFile = NULL;
+static gchar *GdmSoundOnLoginFile = NULL;
 static gchar *GdmSoundOnLoginSuccessFile = NULL;
 static gchar *GdmSoundOnLoginFailureFile = NULL;
 static gchar *GdmConsoleCannotHandle = NULL;
@@ -180,6 +182,7 @@ static gboolean GdmTimedLoginEnable = FALSE;
 static gboolean GdmDynamicXservers = FALSE;
 static gboolean GdmVTAllocation = TRUE;
 static gboolean GdmDisallowTcp = TRUE;
+static gboolean GdmSoundOnLogin = TRUE;
 static gboolean GdmSoundOnLoginSuccess = FALSE;
 static gboolean GdmSoundOnLoginFailure = FALSE;
 static gboolean GdmConsoleNotify = TRUE;
@@ -187,12 +190,11 @@ static gboolean GdmConsoleNotify = TRUE;
 /* Config options used by slave */
 /* ---------------------------- */
 static gchar *GdmInitDir;
-static gchar *GdmFaceDir;
 static gchar *GdmGtkRc;
 static gchar *GdmGtkThemesToAllow;
 static gchar *GdmInclude;
 static gchar *GdmExclude;
-static gchar *GdmFace;
+static gchar *GdmDefaultFace;
 static gchar *GdmLocaleFile;
 static gchar *GdmLogo;
 static gchar *GdmChooserButtonLogo;
@@ -214,11 +216,12 @@ static gchar *GdmGraphicalThemes;
 static gint GdmPositionX;
 static gint GdmPositionY;
 static gint GdmMinimalUid;
-static gint GdmIconWidth;
-static gint GdmIconHeight;
+static gint GdmMaxIconWidth;
+static gint GdmMaxIconHeight;
 static gint GdmBackgroundType;
 static gint GdmScanTime;
 static gint GdmMaxWait;
+static gint GdmFlexiReapDelayMinutes;
 
 static gboolean GdmAllowGtkThemeChange;
 static gboolean GdmTitleBar;
@@ -242,295 +245,277 @@ static gboolean GdmBroadcast;
 static gboolean GdmAllowAdd;
 
 /**
+ * gdm_config_add_hash
+ *
+ * Add config value to the val_hash and type_hash.  Strip the key so
+ * it doesn't contain a default value.  This function assumes the
+ * val_hash, type_hash, and realkey_hash have been initialized.
+ */
+static void
+gdm_config_add_hash (gchar *key, gpointer value, GdmConfigType *type)
+{
+   gchar *p;
+   gchar *newkey = g_strdup (key);
+
+   g_strstrip (newkey);
+   p = strchr (newkey, '=');
+   if (p != NULL)
+      *p = '\0';
+
+   g_hash_table_insert (val_hash, newkey, value);
+   g_hash_table_insert (type_hash, newkey, type);
+   g_hash_table_insert (realkey_hash, newkey, key);
+}
+
+/**
+ * gdm_config_hash_lookup
+ *
+ * Accesses hash with key, stripping it so it doesn't contain a default
+ * value.
+ */
+static gpointer
+gdm_config_hash_lookup (GHashTable *hash, gchar *key)
+{
+   gchar *p;
+   gpointer *ret;
+   gchar *newkey = g_strdup (key);
+
+   g_strstrip (newkey);
+   p = strchr (newkey, '=');
+   if (p != NULL)
+      *p = '\0';
+
+   ret = g_hash_table_lookup (hash, newkey);
+   g_free (newkey);
+   return (ret);
+}
+
+/**
+ * is_key
+ *
+ * Since GDM keys sometimes have default values defined in the gdm.h header
+ * file (e.g. key=value), this function strips off the "=value" from both 
+ * keys passed and compares them, returning TRUE if they are the same, 
+ * FALSE otherwise.
+ */
+static gboolean
+is_key (const gchar *key1, const gchar *key2)
+{
+   gchar *key1d, *key2d, *p;
+
+   key1d = g_strdup (key1);
+   key2d = g_strdup (key2);
+
+   g_strstrip (key1d);
+   p = strchr (key1d, '=');
+   if (p != NULL)
+      *p = '\0';
+
+   g_strstrip (key2d);
+   p = strchr (key2d, '=');
+   if (p != NULL)
+      *p = '\0';
+
+   if (strcmp (ve_sure_string (key1d), ve_sure_string (key2d)) == 0) {
+      g_free (key1d);
+      g_free (key2d);
+      return TRUE;
+   } else {
+      g_free (key1d);
+      g_free (key2d);
+      return FALSE;
+   }
+}
+
+/**
  * gdm_config_init
  * 
  * Sets up initial hashes used by configuration routines.
  */ 
-void 
+static void 
 gdm_config_init (void)
 {
-   type_hash = g_hash_table_new (g_str_hash, g_str_equal);
-   val_hash  = g_hash_table_new (g_str_hash, g_str_equal);
-
-   g_hash_table_insert (type_hash, GDM_KEY_ALLOW_REMOTE_ROOT, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ALLOW_ROOT, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ALLOW_REMOTE_AUTOLOGIN, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_PASSWORD_REQUIRED, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_AUTOMATIC_LOGIN_ENABLE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ALWAYS_RESTART_SERVER, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ADD_GTK_MODULES, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DOUBLE_LOGIN_WARNING, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DISPLAY_LAST_LOGIN, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_KILL_INIT_CLIENTS, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CONFIG_AVAILABLE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SYSTEM_MENU, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CHOOSER_BUTTON, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BROWSER, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MULTICAST, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CONSOLE_NOTIFY, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_TIMED_LOGIN_ENABLE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ALLOW_ROOT, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CHECK_DIR_OWNER, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_XDMCP, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_INDIRECT, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_XDMCP_PROXY, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DYNAMIC_XSERVERS, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_VT_ALLOCATION, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DISALLOW_TCP, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SOUND_ON_LOGIN_SUCCESS, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SOUND_ON_LOGIN_FAILURE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DEBUG, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DEBUG_GESTURES, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ALLOW_GTK_THEME_CHANGE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_TITLE_BAR, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_INCLUDE_ALL, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DEFAULT_WELCOME, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DEFAULT_REMOTE_WELCOME, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_LOCK_POSITION, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BACKGROUND_SCALE_TO_FIT, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SET_POSITION, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_QUIVER, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SHOW_GNOME_FAILSAFE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SHOW_XTERM_FAILSAFE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SHOW_LAST_SESSION, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_USE_24_CLOCK, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ENTRY_CIRCLES, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ENTRY_INVISIBLE, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GRAPHICAL_THEME_RAND, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BROADCAST, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ALLOW_ADD, &bool_type);
-   g_hash_table_insert (type_hash, GDM_KEY_PATH, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ROOT_PATH, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CONSOLE_CANNOT_HANDLE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CHOOSER, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GREETER, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CONFIGURATOR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_POSTLOGIN, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_PRESESSION, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_POSTSESSION, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_FAILSAFE_XSERVER, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_X_KEEPS_CRASHING, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BASE_XSESSION, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_REMOTE_GREETER, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DISPLAY_INIT_DIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_AUTOMATIC_LOGIN, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GTK_MODULES_LIST, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_REBOOT, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_HALT, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SUSPEND, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_LOG_DIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_PID_FILE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_FACE_DIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SERV_AUTHDIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_USER_AUTHDIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_USER_AUTHFILE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_USER_AUTHDIR_FALLBACK, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SESSION_DESKTOP_DIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DEFAULT_SESSION, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MULTICAST_ADDR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_USER, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GROUP, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GTKRC, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GTK_THEME, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_TIMED_LOGIN, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_WILLING, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_XDMCP_PROXY_XSERVER, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_XDMCP_PROXY_RECONNECT, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_STANDARD_XSERVER, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_XNEST, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SOUND_PROGRAM, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SOUND_ON_LOGIN_READY_FILE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GTK_THEMES_TO_ALLOW, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_INCLUDE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_EXCLUDE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_FACE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_LOCALE_FILE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_LOGO, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_CHOOSER_BUTTON_LOGO, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_WELCOME, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_REMOTE_WELCOME, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BACKGROUND_PROGRAM, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BACKGROUND_IMAGE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BACKGROUND_COLOR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GRAPHICAL_THEME, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GRAPHICAL_THEME_DIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GRAPHICAL_THEMES, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_GRAPHICAL_THEME_COLOR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_INFO_MSG_FILE, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_INFO_MSG_FONT, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DEFAULT_HOST_IMG, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_HOST_IMAGE_DIR, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_HOSTS, &string_type);
-   g_hash_table_insert (type_hash, GDM_KEY_XINERAMA_SCREEN, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_RETRY_DELAY, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_TIMED_LOGIN_DELAY, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_RELAX_PERM, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_USER_MAX_FILE, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_DISPLAYS_PER_HOST, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MAX_PENDING, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MAX_WAIT, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MAX_SESSIONS, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_UDP_PORT, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MAX_INDIRECT, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MAX_WAIT_INDIRECT, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_PING_INTERVAL, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_FLEXIBLE_XSERVERS, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_FIRST_VT, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_POSITION_X, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_POSITION_Y, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_MINIMAL_UID, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ICON_WIDTH, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_ICON_HEIGHT, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_BACKGROUND_TYPE, &int_type);
-   g_hash_table_insert (type_hash, GDM_KEY_SCAN_TIME, &int_type);
+   type_hash    = g_hash_table_new (g_str_hash, g_str_equal);
+   val_hash     = g_hash_table_new (g_str_hash, g_str_equal);
+   realkey_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
    /* boolean values */
-   g_hash_table_insert (val_hash, GDM_KEY_ALLOW_REMOTE_ROOT, &GdmAllowRemoteRoot);
-   g_hash_table_insert (val_hash, GDM_KEY_ALLOW_ROOT, &GdmAllowRoot);
-   g_hash_table_insert (val_hash, GDM_KEY_ALLOW_REMOTE_AUTOLOGIN, &GdmAllowRemoteAutoLogin);
-   g_hash_table_insert (val_hash, GDM_KEY_PASSWORD_REQUIRED, &GdmPasswordRequired);
-   g_hash_table_insert (val_hash, GDM_KEY_AUTOMATIC_LOGIN_ENABLE, &GdmAutomaticLoginEnable);
-   g_hash_table_insert (val_hash, GDM_KEY_ALWAYS_RESTART_SERVER, &GdmAlwaysRestartServer);
-   g_hash_table_insert (val_hash, GDM_KEY_ADD_GTK_MODULES, &GdmAddGtkModules);
-   g_hash_table_insert (val_hash, GDM_KEY_DOUBLE_LOGIN_WARNING, &GdmDoubleLoginWarning);
-   g_hash_table_insert (val_hash, GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION, &GdmAlwaysLoginCurrentSession);
-   g_hash_table_insert (val_hash, GDM_KEY_DISPLAY_LAST_LOGIN, &GdmDisplayLastLogin);
-   g_hash_table_insert (val_hash, GDM_KEY_KILL_INIT_CLIENTS, &GdmKillInitClients);
-   g_hash_table_insert (val_hash, GDM_KEY_CONFIG_AVAILABLE, &GdmConfigAvailable);
-   g_hash_table_insert (val_hash, GDM_KEY_SYSTEM_MENU, &GdmSystemMenu);
-   g_hash_table_insert (val_hash, GDM_KEY_CHOOSER_BUTTON, &GdmChooserButton);
-   g_hash_table_insert (val_hash, GDM_KEY_BROWSER, &GdmBrowser);
-   g_hash_table_insert (val_hash, GDM_KEY_MULTICAST, &GdmMulticast);
-   g_hash_table_insert (val_hash, GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS, &GdmNeverPlaceCookiesOnNfs);
-   g_hash_table_insert (val_hash, GDM_KEY_CONSOLE_NOTIFY, &GdmConsoleNotify);
-   g_hash_table_insert (val_hash, GDM_KEY_TIMED_LOGIN_ENABLE, &GdmTimedLoginEnable);
-   g_hash_table_insert (val_hash, GDM_KEY_CHECK_DIR_OWNER, &GdmCheckDirOwner);
-   g_hash_table_insert (val_hash, GDM_KEY_XDMCP, &GdmXdmcp);
-   g_hash_table_insert (val_hash, GDM_KEY_INDIRECT, &GdmIndirect);
-   g_hash_table_insert (val_hash, GDM_KEY_XDMCP_PROXY, &GdmXdmcpProxy);
-   g_hash_table_insert (val_hash, GDM_KEY_DYNAMIC_XSERVERS, &GdmDynamicXservers);
-   g_hash_table_insert (val_hash, GDM_KEY_VT_ALLOCATION, &GdmVTAllocation);
-   g_hash_table_insert (val_hash, GDM_KEY_DISALLOW_TCP, &GdmDisallowTcp);
-   g_hash_table_insert (val_hash, GDM_KEY_SOUND_ON_LOGIN_SUCCESS, &GdmSoundOnLoginSuccess);
-   g_hash_table_insert (val_hash, GDM_KEY_SOUND_ON_LOGIN_FAILURE, &GdmSoundOnLoginFailure);
-   g_hash_table_insert (val_hash, GDM_KEY_DEBUG, &GdmDebug);
-   g_hash_table_insert (val_hash, GDM_KEY_DEBUG_GESTURES, &GdmDebugGestures);
-   g_hash_table_insert (val_hash, GDM_KEY_ALLOW_GTK_THEME_CHANGE, &GdmAllowGtkThemeChange);
-   g_hash_table_insert (val_hash, GDM_KEY_TITLE_BAR, &GdmTitleBar);
-   g_hash_table_insert (val_hash, GDM_KEY_INCLUDE_ALL, &GdmIncludeAll);
-   g_hash_table_insert (val_hash, GDM_KEY_DEFAULT_WELCOME, &GdmDefaultWelcome);
-   g_hash_table_insert (val_hash, GDM_KEY_DEFAULT_REMOTE_WELCOME, &GdmDefaultRemoteWelcome);
-   g_hash_table_insert (val_hash, GDM_KEY_LOCK_POSITION, &GdmLockPosition);
-   g_hash_table_insert (val_hash, GDM_KEY_BACKGROUND_SCALE_TO_FIT, &GdmBackgroundScaleToFit);
-   g_hash_table_insert (val_hash, GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR, &GdmBackgroundRemoteOnlyColor);
-   g_hash_table_insert (val_hash, GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS, &GdmRunBackgroundProgramAlways);
-   g_hash_table_insert (val_hash, GDM_KEY_SET_POSITION, &GdmSetPosition);
-   g_hash_table_insert (val_hash, GDM_KEY_QUIVER, &GdmQuiver);
-   g_hash_table_insert (val_hash, GDM_KEY_SHOW_GNOME_FAILSAFE, &GdmShowGnomeFailsafe);
-   g_hash_table_insert (val_hash, GDM_KEY_SHOW_XTERM_FAILSAFE, &GdmShowXtermFailsafe);
-   g_hash_table_insert (val_hash, GDM_KEY_SHOW_LAST_SESSION, &GdmShowLastSession);
-   g_hash_table_insert (val_hash, GDM_KEY_USE_24_CLOCK, &GdmUse24Clock);
-   g_hash_table_insert (val_hash, GDM_KEY_ENTRY_CIRCLES, &GdmEntryCircles);
-   g_hash_table_insert (val_hash, GDM_KEY_ENTRY_INVISIBLE, &GdmEntryInvisible);
-   g_hash_table_insert (val_hash, GDM_KEY_GRAPHICAL_THEME_RAND, &GdmGraphicalThemeRand);
-   g_hash_table_insert (val_hash, GDM_KEY_BROADCAST, &GdmBroadcast);
-   g_hash_table_insert (val_hash, GDM_KEY_ALLOW_ADD, &GdmAllowAdd);
+   gdm_config_add_hash (GDM_KEY_ALLOW_REMOTE_ROOT, &GdmAllowRemoteRoot, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ALLOW_ROOT, &GdmAllowRoot, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN,
+      &GdmAllowRemoteAutoLogin, &bool_type);
+   gdm_config_add_hash (GDM_KEY_PASSWORD_REQUIRED, &GdmPasswordRequired, &bool_type);
+   gdm_config_add_hash (GDM_KEY_AUTOMATIC_LOGIN_ENABLE,
+      &GdmAutomaticLoginEnable, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ALWAYS_RESTART_SERVER,
+      &GdmAlwaysRestartServer, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ADD_GTK_MODULES, &GdmAddGtkModules, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DOUBLE_LOGIN_WARNING,
+      &GdmDoubleLoginWarning, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION,
+      &GdmAlwaysLoginCurrentSession, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DISPLAY_LAST_LOGIN, &GdmDisplayLastLogin, &bool_type);
+   gdm_config_add_hash (GDM_KEY_KILL_INIT_CLIENTS, &GdmKillInitClients, &bool_type);
+   gdm_config_add_hash (GDM_KEY_CONFIG_AVAILABLE, &GdmConfigAvailable, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SYSTEM_MENU, &GdmSystemMenu, &bool_type);
+   gdm_config_add_hash (GDM_KEY_CHOOSER_BUTTON, &GdmChooserButton, &bool_type);
+   gdm_config_add_hash (GDM_KEY_BROWSER, &GdmBrowser, &bool_type);
+   gdm_config_add_hash (GDM_KEY_MULTICAST, &GdmMulticast, &bool_type);
+   gdm_config_add_hash (GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS,
+      &GdmNeverPlaceCookiesOnNfs, &bool_type);
+   gdm_config_add_hash (GDM_KEY_CONSOLE_NOTIFY, &GdmConsoleNotify, &bool_type);
+   gdm_config_add_hash (GDM_KEY_TIMED_LOGIN_ENABLE, &GdmTimedLoginEnable, &bool_type);
+   gdm_config_add_hash (GDM_KEY_CHECK_DIR_OWNER, &GdmCheckDirOwner, &bool_type);
+   gdm_config_add_hash (GDM_KEY_XDMCP, &GdmXdmcp, &bool_type);
+   gdm_config_add_hash (GDM_KEY_INDIRECT, &GdmIndirect, &bool_type);
+   gdm_config_add_hash (GDM_KEY_XDMCP_PROXY, &GdmXdmcpProxy, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DYNAMIC_XSERVERS, &GdmDynamicXservers, &bool_type);
+   gdm_config_add_hash (GDM_KEY_VT_ALLOCATION, &GdmVTAllocation, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DISALLOW_TCP, &GdmDisallowTcp, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN_SUCCESS,
+      &GdmSoundOnLoginSuccess, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN_FAILURE,
+      &GdmSoundOnLoginFailure, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DEBUG, &GdmDebug, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DEBUG_GESTURES, &GdmDebugGestures, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ALLOW_GTK_THEME_CHANGE,
+      &GdmAllowGtkThemeChange, &bool_type);
+   gdm_config_add_hash (GDM_KEY_TITLE_BAR, &GdmTitleBar, &bool_type);
+   gdm_config_add_hash (GDM_KEY_INCLUDE_ALL, &GdmIncludeAll, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DEFAULT_WELCOME, &GdmDefaultWelcome, &bool_type);
+   gdm_config_add_hash (GDM_KEY_DEFAULT_REMOTE_WELCOME,
+      &GdmDefaultRemoteWelcome, &bool_type);
+   gdm_config_add_hash (GDM_KEY_LOCK_POSITION, &GdmLockPosition, &bool_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_SCALE_TO_FIT,
+      &GdmBackgroundScaleToFit, &bool_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR,
+      &GdmBackgroundRemoteOnlyColor, &bool_type);
+   gdm_config_add_hash (GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS,
+      &GdmRunBackgroundProgramAlways, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SET_POSITION, &GdmSetPosition, &bool_type);
+   gdm_config_add_hash (GDM_KEY_QUIVER, &GdmQuiver, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SHOW_GNOME_FAILSAFE,
+      &GdmShowGnomeFailsafe, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SHOW_XTERM_FAILSAFE,
+      &GdmShowXtermFailsafe, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SHOW_LAST_SESSION,
+      &GdmShowLastSession, &bool_type);
+   gdm_config_add_hash (GDM_KEY_USE_24_CLOCK, &GdmUse24Clock, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ENTRY_CIRCLES, &GdmEntryCircles, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ENTRY_INVISIBLE, &GdmEntryInvisible, &bool_type);
+   gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEME_RAND,
+      &GdmGraphicalThemeRand, &bool_type);
+   gdm_config_add_hash (GDM_KEY_BROADCAST, &GdmBroadcast, &bool_type);
+   gdm_config_add_hash (GDM_KEY_ALLOW_ADD, &GdmAllowAdd, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN, &GdmSoundOnLogin, &bool_type);
 
    /* string values */
-   g_hash_table_insert (val_hash, GDM_KEY_PATH, &GdmPath);
-   g_hash_table_insert (val_hash, GDM_KEY_ROOT_PATH, &GdmRootPath);
-   g_hash_table_insert (val_hash, GDM_KEY_CONSOLE_CANNOT_HANDLE, &GdmConsoleCannotHandle);
-   g_hash_table_insert (val_hash, GDM_KEY_CHOOSER, &GdmChooser);
-   g_hash_table_insert (val_hash, GDM_KEY_GREETER, &GdmGreeter);
-   g_hash_table_insert (val_hash, GDM_KEY_CONFIGURATOR, &GdmConfigurator);
-   g_hash_table_insert (val_hash, GDM_KEY_POSTLOGIN, &GdmPostLogin);
-   g_hash_table_insert (val_hash, GDM_KEY_PRESESSION, &GdmPreSession);
-   g_hash_table_insert (val_hash, GDM_KEY_POSTSESSION, &GdmPostSession);
-   g_hash_table_insert (val_hash, GDM_KEY_FAILSAFE_XSERVER, &GdmFailsafeXserver);
-   g_hash_table_insert (val_hash, GDM_KEY_X_KEEPS_CRASHING, &GdmXKeepsCrashing);
-   g_hash_table_insert (val_hash, GDM_KEY_BASE_XSESSION, &GdmBaseXsession);
-   g_hash_table_insert (val_hash, GDM_KEY_REMOTE_GREETER, &GdmRemoteGreeter);
-   g_hash_table_insert (val_hash, GDM_KEY_DISPLAY_INIT_DIR, &GdmInitDir);
-   g_hash_table_insert (val_hash, GDM_KEY_AUTOMATIC_LOGIN, &GdmAutomaticLogin);
-   g_hash_table_insert (val_hash, GDM_KEY_GTK_MODULES_LIST, &GdmGtkModulesList);
-   g_hash_table_insert (val_hash, GDM_KEY_REBOOT, &GdmReboot);
-   g_hash_table_insert (val_hash, GDM_KEY_HALT, &GdmHalt);
-   g_hash_table_insert (val_hash, GDM_KEY_SUSPEND, &GdmSuspend);
-   g_hash_table_insert (val_hash, GDM_KEY_LOG_DIR, &GdmLogDir);
-   g_hash_table_insert (val_hash, GDM_KEY_PID_FILE, &GdmPidFile);
-   g_hash_table_insert (val_hash, GDM_KEY_FACE_DIR, &GdmFaceDir);
-   g_hash_table_insert (val_hash, GDM_KEY_SERV_AUTHDIR, &GdmServAuthDir);
-   g_hash_table_insert (val_hash, GDM_KEY_USER_AUTHDIR, &GdmUserAuthDir);
-   g_hash_table_insert (val_hash, GDM_KEY_USER_AUTHFILE, &GdmUserAuthFile);
-   g_hash_table_insert (val_hash, GDM_KEY_USER_AUTHDIR_FALLBACK, &GdmUserAuthFallback);
-   g_hash_table_insert (val_hash, GDM_KEY_SESSION_DESKTOP_DIR, &GdmSessDir);
-   g_hash_table_insert (val_hash, GDM_KEY_DEFAULT_SESSION, &GdmDefaultSession);
-   g_hash_table_insert (val_hash, GDM_KEY_MULTICAST_ADDR, &GdmMulticastAddr);
-   g_hash_table_insert (val_hash, GDM_KEY_USER, &GdmUser);
-   g_hash_table_insert (val_hash, GDM_KEY_GROUP, &GdmGroup);
-   g_hash_table_insert (val_hash, GDM_KEY_GTKRC, &GdmGtkRc);
-   g_hash_table_insert (val_hash, GDM_KEY_GTK_THEME, &GdmGtkTheme);
-   g_hash_table_insert (val_hash, GDM_KEY_TIMED_LOGIN, &GdmTimedLogin);
-   g_hash_table_insert (val_hash, GDM_KEY_WILLING, &GdmWilling);
-   g_hash_table_insert (val_hash, GDM_KEY_XDMCP_PROXY_XSERVER, &GdmXdmcpProxyXserver);
-   g_hash_table_insert (val_hash, GDM_KEY_XDMCP_PROXY_RECONNECT, &GdmXdmcpProxyReconnect);
-   g_hash_table_insert (val_hash, GDM_KEY_STANDARD_XSERVER, &GdmStandardXserver);
-   g_hash_table_insert (val_hash, GDM_KEY_XNEST, &GdmXnest);
-   g_hash_table_insert (val_hash, GDM_KEY_SOUND_PROGRAM, &GdmSoundProgram);
-   g_hash_table_insert (val_hash, GDM_KEY_SOUND_ON_LOGIN_READY_FILE, &GdmSoundOnLoginReadyFile);
-   g_hash_table_insert (val_hash, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE, &GdmSoundOnLoginSuccessFile);
-   g_hash_table_insert (val_hash, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE, &GdmSoundOnLoginFailureFile);
-   g_hash_table_insert (val_hash, GDM_KEY_GTK_THEMES_TO_ALLOW, &GdmGtkThemesToAllow);
-   g_hash_table_insert (val_hash, GDM_KEY_INCLUDE, &GdmInclude);
-   g_hash_table_insert (val_hash, GDM_KEY_EXCLUDE, &GdmExclude);
-   g_hash_table_insert (val_hash, GDM_KEY_FACE, &GdmFace);
-   g_hash_table_insert (val_hash, GDM_KEY_LOCALE_FILE, &GdmLocaleFile);
-   g_hash_table_insert (val_hash, GDM_KEY_LOGO, &GdmLogo);
-   g_hash_table_insert (val_hash, GDM_KEY_CHOOSER_BUTTON_LOGO, &GdmChooserButtonLogo);
-   g_hash_table_insert (val_hash, GDM_KEY_WELCOME, &GdmWelcome);
-   g_hash_table_insert (val_hash, GDM_KEY_REMOTE_WELCOME, &GdmRemoteWelcome);
-   g_hash_table_insert (val_hash, GDM_KEY_BACKGROUND_PROGRAM, &GdmBackgroundProgram);
-   g_hash_table_insert (val_hash, GDM_KEY_BACKGROUND_IMAGE, &GdmBackgroundImage);
-   g_hash_table_insert (val_hash, GDM_KEY_BACKGROUND_COLOR, &GdmBackgroundColor);
-   g_hash_table_insert (val_hash, GDM_KEY_GRAPHICAL_THEME, &GdmGraphicalTheme);
-   g_hash_table_insert (val_hash, GDM_KEY_GRAPHICAL_THEME_DIR, &GdmGraphicalThemeDir);
-   g_hash_table_insert (val_hash, GDM_KEY_GRAPHICAL_THEMES, &GdmGraphicalThemes);
-   g_hash_table_insert (val_hash, GDM_KEY_GRAPHICAL_THEME_COLOR, &GdmGraphicalThemeColor);
-   g_hash_table_insert (val_hash, GDM_KEY_INFO_MSG_FILE, &GdmInfoMsgFile);
-   g_hash_table_insert (val_hash, GDM_KEY_INFO_MSG_FONT, &GdmInfoMsgFont);
-   g_hash_table_insert (val_hash, GDM_KEY_DEFAULT_HOST_IMG, &GdmHost);
-   g_hash_table_insert (val_hash, GDM_KEY_HOST_IMAGE_DIR, &GdmHostImageDir);
-   g_hash_table_insert (val_hash, GDM_KEY_HOSTS, &GdmHosts);
+   gdm_config_add_hash (GDM_KEY_PATH, &GdmPath, &string_type);
+   gdm_config_add_hash (GDM_KEY_ROOT_PATH, &GdmRootPath, &string_type);
+   gdm_config_add_hash (GDM_KEY_CONSOLE_CANNOT_HANDLE,
+      &GdmConsoleCannotHandle, &string_type);
+   gdm_config_add_hash (GDM_KEY_CHOOSER, &GdmChooser, &string_type);
+   gdm_config_add_hash (GDM_KEY_GREETER, &GdmGreeter, &string_type);
+   gdm_config_add_hash (GDM_KEY_CONFIGURATOR, &GdmConfigurator, &string_type);
+   gdm_config_add_hash (GDM_KEY_POSTLOGIN, &GdmPostLogin, &string_type);
+   gdm_config_add_hash (GDM_KEY_PRESESSION, &GdmPreSession, &string_type);
+   gdm_config_add_hash (GDM_KEY_POSTSESSION, &GdmPostSession, &string_type);
+   gdm_config_add_hash (GDM_KEY_FAILSAFE_XSERVER, &GdmFailsafeXserver, &string_type);
+   gdm_config_add_hash (GDM_KEY_X_KEEPS_CRASHING, &GdmXKeepsCrashing, &string_type);
+   gdm_config_add_hash (GDM_KEY_BASE_XSESSION, &GdmBaseXsession, &string_type);
+   gdm_config_add_hash (GDM_KEY_REMOTE_GREETER, &GdmRemoteGreeter, &string_type);
+   gdm_config_add_hash (GDM_KEY_DISPLAY_INIT_DIR, &GdmInitDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_AUTOMATIC_LOGIN, &GdmAutomaticLogin, &string_type);
+   gdm_config_add_hash (GDM_KEY_GTK_MODULES_LIST, &GdmGtkModulesList, &string_type);
+   gdm_config_add_hash (GDM_KEY_REBOOT, &GdmReboot, &string_type);
+   gdm_config_add_hash (GDM_KEY_HALT, &GdmHalt, &string_type);
+   gdm_config_add_hash (GDM_KEY_SUSPEND, &GdmSuspend, &string_type);
+   gdm_config_add_hash (GDM_KEY_LOG_DIR, &GdmLogDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_PID_FILE, &GdmPidFile, &string_type);
+   gdm_config_add_hash (GDM_KEY_GLOBAL_FACE_DIR, &GdmGlobalFaceDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_SERV_AUTHDIR, &GdmServAuthDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_USER_AUTHDIR, &GdmUserAuthDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_USER_AUTHFILE, &GdmUserAuthFile, &string_type);
+   gdm_config_add_hash (GDM_KEY_USER_AUTHDIR_FALLBACK,
+      &GdmUserAuthFallback, &string_type);
+   gdm_config_add_hash (GDM_KEY_SESSION_DESKTOP_DIR, &GdmSessDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_DEFAULT_SESSION, &GdmDefaultSession, &string_type);
+   gdm_config_add_hash (GDM_KEY_MULTICAST_ADDR, &GdmMulticastAddr, &string_type);
+   gdm_config_add_hash (GDM_KEY_USER, &GdmUser, &string_type);
+   gdm_config_add_hash (GDM_KEY_GROUP, &GdmGroup, &string_type);
+   gdm_config_add_hash (GDM_KEY_GTKRC, &GdmGtkRc, &string_type);
+   gdm_config_add_hash (GDM_KEY_GTK_THEME, &GdmGtkTheme, &string_type);
+   gdm_config_add_hash (GDM_KEY_TIMED_LOGIN, &GdmTimedLogin, &string_type);
+   gdm_config_add_hash (GDM_KEY_WILLING, &GdmWilling, &string_type);
+   gdm_config_add_hash (GDM_KEY_XDMCP_PROXY_XSERVER,
+      &GdmXdmcpProxyXserver, &string_type);
+   gdm_config_add_hash (GDM_KEY_XDMCP_PROXY_RECONNECT,
+      &GdmXdmcpProxyReconnect, &string_type);
+   gdm_config_add_hash (GDM_KEY_STANDARD_XSERVER, &GdmStandardXserver, &string_type);
+   gdm_config_add_hash (GDM_KEY_XNEST, &GdmXnest, &string_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_PROGRAM, &GdmSoundProgram, &string_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN_FILE,
+      &GdmSoundOnLoginFile, &string_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE,
+      &GdmSoundOnLoginSuccessFile, &string_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE,
+      &GdmSoundOnLoginFailureFile, &string_type);
+   gdm_config_add_hash (GDM_KEY_GTK_THEMES_TO_ALLOW,
+      &GdmGtkThemesToAllow, &string_type);
+   gdm_config_add_hash (GDM_KEY_INCLUDE, &GdmInclude, &string_type);
+   gdm_config_add_hash (GDM_KEY_EXCLUDE, &GdmExclude, &string_type);
+   gdm_config_add_hash (GDM_KEY_DEFAULT_FACE, &GdmDefaultFace, &string_type);
+   gdm_config_add_hash (GDM_KEY_LOCALE_FILE, &GdmLocaleFile, &string_type);
+   gdm_config_add_hash (GDM_KEY_LOGO, &GdmLogo, &string_type);
+   gdm_config_add_hash (GDM_KEY_CHOOSER_BUTTON_LOGO,
+      &GdmChooserButtonLogo, &string_type);
+   gdm_config_add_hash (GDM_KEY_WELCOME, &GdmWelcome, &string_type);
+   gdm_config_add_hash (GDM_KEY_REMOTE_WELCOME, &GdmRemoteWelcome, &string_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_PROGRAM,
+      &GdmBackgroundProgram, &string_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_IMAGE,
+      &GdmBackgroundImage, &string_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_COLOR,
+      &GdmBackgroundColor, &string_type);
+   gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEME,
+      &GdmGraphicalTheme, &string_type);
+   gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEME_DIR,
+      &GdmGraphicalThemeDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEMES,
+      &GdmGraphicalThemes, &string_type);
+   gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEME_COLOR,
+      &GdmGraphicalThemeColor, &string_type);
+   gdm_config_add_hash (GDM_KEY_INFO_MSG_FILE, &GdmInfoMsgFile, &string_type);
+   gdm_config_add_hash (GDM_KEY_INFO_MSG_FONT, &GdmInfoMsgFont, &string_type);
+   gdm_config_add_hash (GDM_KEY_DEFAULT_HOST_IMG, &GdmHost, &string_type);
+   gdm_config_add_hash (GDM_KEY_HOST_IMAGE_DIR, &GdmHostImageDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_HOSTS, &GdmHosts, &string_type);
 
    /* int values */
-   g_hash_table_insert (val_hash, GDM_KEY_XINERAMA_SCREEN, &GdmXineramaScreen);
-   g_hash_table_insert (val_hash, GDM_KEY_RETRY_DELAY, &GdmRetryDelay);
-   g_hash_table_insert (val_hash, GDM_KEY_TIMED_LOGIN_DELAY, &GdmTimedLoginDelay);
-   g_hash_table_insert (val_hash, GDM_KEY_RELAX_PERM, &GdmRelaxPerm);
-   g_hash_table_insert (val_hash, GDM_KEY_USER_MAX_FILE, &GdmUserMaxFile);
-   g_hash_table_insert (val_hash, GDM_KEY_DISPLAYS_PER_HOST, &GdmDisplaysPerHost);
-   g_hash_table_insert (val_hash, GDM_KEY_MAX_PENDING, &GdmMaxPending);
-   g_hash_table_insert (val_hash, GDM_KEY_MAX_WAIT, &GdmMaxWait);
-   g_hash_table_insert (val_hash, GDM_KEY_MAX_SESSIONS, &GdmMaxSessions);
-   g_hash_table_insert (val_hash, GDM_KEY_UDP_PORT, &GdmUdpPort);
-   g_hash_table_insert (val_hash, GDM_KEY_MAX_INDIRECT, &GdmMaxIndirect);
-   g_hash_table_insert (val_hash, GDM_KEY_MAX_WAIT_INDIRECT, &GdmMaxWaitIndirect);
-   g_hash_table_insert (val_hash, GDM_KEY_PING_INTERVAL, &GdmPingInterval);
-   g_hash_table_insert (val_hash, GDM_KEY_FLEXIBLE_XSERVERS, &GdmFlexibleXservers);
-   g_hash_table_insert (val_hash, GDM_KEY_FIRST_VT, &GdmFirstVt);
-   g_hash_table_insert (val_hash, GDM_KEY_POSITION_X, &GdmPositionX);
-   g_hash_table_insert (val_hash, GDM_KEY_POSITION_Y, &GdmPositionY);
-   g_hash_table_insert (val_hash, GDM_KEY_MINIMAL_UID, &GdmMinimalUid);
-   g_hash_table_insert (val_hash, GDM_KEY_ICON_WIDTH, &GdmIconWidth);
-   g_hash_table_insert (val_hash, GDM_KEY_ICON_HEIGHT, &GdmIconHeight);
-   g_hash_table_insert (val_hash, GDM_KEY_BACKGROUND_TYPE, &GdmBackgroundType);
-   g_hash_table_insert (val_hash, GDM_KEY_SCAN_TIME, &GdmScanTime);
+   gdm_config_add_hash (GDM_KEY_XINERAMA_SCREEN, &GdmXineramaScreen, &int_type);
+   gdm_config_add_hash (GDM_KEY_RETRY_DELAY, &GdmRetryDelay, &int_type);
+   gdm_config_add_hash (GDM_KEY_TIMED_LOGIN_DELAY, &GdmTimedLoginDelay, &int_type);
+   gdm_config_add_hash (GDM_KEY_RELAX_PERM, &GdmRelaxPerm, &int_type);
+   gdm_config_add_hash (GDM_KEY_USER_MAX_FILE, &GdmUserMaxFile, &int_type);
+   gdm_config_add_hash (GDM_KEY_DISPLAYS_PER_HOST, &GdmDisplaysPerHost, &int_type);
+   gdm_config_add_hash (GDM_KEY_MAX_PENDING, &GdmMaxPending, &int_type);
+   gdm_config_add_hash (GDM_KEY_MAX_WAIT, &GdmMaxWait, &int_type);
+   gdm_config_add_hash (GDM_KEY_MAX_SESSIONS, &GdmMaxSessions, &int_type);
+   gdm_config_add_hash (GDM_KEY_UDP_PORT, &GdmUdpPort, &int_type);
+   gdm_config_add_hash (GDM_KEY_MAX_INDIRECT, &GdmMaxIndirect, &int_type);
+   gdm_config_add_hash (GDM_KEY_MAX_WAIT_INDIRECT, &GdmMaxWaitIndirect, &int_type);
+   gdm_config_add_hash (GDM_KEY_PING_INTERVAL, &GdmPingInterval, &int_type);
+   gdm_config_add_hash (GDM_KEY_FLEXIBLE_XSERVERS, &GdmFlexibleXservers, &int_type);
+   gdm_config_add_hash (GDM_KEY_FIRST_VT, &GdmFirstVt, &int_type);
+   gdm_config_add_hash (GDM_KEY_POSITION_X, &GdmPositionX, &int_type);
+   gdm_config_add_hash (GDM_KEY_POSITION_Y, &GdmPositionY, &int_type);
+   gdm_config_add_hash (GDM_KEY_MINIMAL_UID, &GdmMinimalUid, &int_type);
+   gdm_config_add_hash (GDM_KEY_MAX_ICON_WIDTH, &GdmMaxIconWidth, &int_type);
+   gdm_config_add_hash (GDM_KEY_MAX_ICON_HEIGHT, &GdmMaxIconHeight, &int_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_TYPE, &GdmBackgroundType, &int_type);
+   gdm_config_add_hash (GDM_KEY_SCAN_TIME, &GdmScanTime, &int_type);
+   gdm_config_add_hash (GDM_KEY_FLEXI_REAP_DELAY_MINUTES,
+      &GdmFlexiReapDelayMinutes, &int_type);
 }
 
 /**
@@ -568,8 +553,8 @@ gdm_get_config (struct stat *statbuf)
 gint
 gdm_get_value_int (char *key)
 {
-   GdmConfigType *type = g_hash_table_lookup (type_hash, key);
-   gpointer val = g_hash_table_lookup (val_hash, key);
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
+   gpointer val        = gdm_config_hash_lookup (val_hash, key);
 
    if (type == NULL || val == NULL) {
       gdm_error ("Request for invalid configuration key %s", key);
@@ -592,8 +577,8 @@ gdm_get_value_int (char *key)
 gchar *
 gdm_get_value_string (char *key)
 {
-   GdmConfigType *type = g_hash_table_lookup (type_hash, key);
-   gpointer val = g_hash_table_lookup (val_hash, key);
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
+   gpointer val        = gdm_config_hash_lookup (val_hash, key);
 
    if (type == NULL || val == NULL) {
       gdm_error ("Request for invalid configuration key %s", key);
@@ -616,8 +601,8 @@ gdm_get_value_string (char *key)
 gboolean
 gdm_get_value_bool (char *key)
 {
-   GdmConfigType *type = g_hash_table_lookup (type_hash, key);
-   gpointer val = g_hash_table_lookup (val_hash, key);
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
+   gpointer val        = gdm_config_hash_lookup (val_hash, key);
 
    if (type == NULL || val == NULL) {
       gdm_error ("Request for invalid configuration key %s", key);
@@ -640,7 +625,7 @@ gdm_get_value_bool (char *key)
 void
 gdm_config_to_string (gchar *key, gchar **retval)
 {
-   GdmConfigType *type = g_hash_table_lookup (type_hash, key);
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
 
    *retval = NULL;
 
@@ -666,42 +651,6 @@ gdm_config_to_string (gchar *key, gchar **retval)
 
    gdm_debug ("Error returning config key %s\n", key);
    return;
-}
-
-/**
- * is_key
- *
- * Since GDM keys sometimes have default values defined in the gdm.h header
- * file (e.g. key=value), this function strips off the "=value" from both 
- * keys passed in to do a comparison.
- */
-static gboolean
-is_key (const gchar *key1, const gchar *key2)
-{
-   gchar *key1d, *key2d, *p;
-
-   key1d = g_strdup (key1);
-   key2d = g_strdup (key2);
-
-   g_strstrip (key1d);
-   p = strchr (key1d, '=');
-   if (p != NULL)
-      *p = '\0';
-
-   g_strstrip (key2d);
-   p = strchr (key2d, '=');
-   if (p != NULL)
-      *p = '\0';
-
-   if (strcmp (key1d, key2d) == 0) {
-      g_free (key1d);
-      g_free (key2d);
-      return TRUE;
-   } else {
-      g_free (key1d);
-      g_free (key2d);
-      return FALSE;
-   }
 }
 
 /**
@@ -750,26 +699,6 @@ notify_displays_int (const gchar *key, int val)
    }
 }
 
-/* If id == NULL, then get the first X server */
-GdmXserver *
-gdm_find_x_server (const gchar *id)
-{
-   GSList *li;
-
-   if (xservers == NULL)
-      return NULL;
-
-   if (id == NULL)
-      return xservers->data;
-
-   for (li = xservers; li != NULL; li = li->next) {
-      GdmXserver *svr = li->data;
-      if (strcmp (svr->id, id) == 0)
-         return svr;
-   }
-   return NULL;
-}
-
 static void
 notify_displays_string (const gchar *key, const gchar *val)
 {
@@ -788,79 +717,101 @@ notify_displays_string (const gchar *key, const gchar *val)
 /* TODO - Need to fix so notification happens for TIMED_LOGIN */
 
 /**
- * gdm_set_value_string
- * gdm_set_value_bool
- * gdm_set_value_int
+ * _gdm_set_value_string
+ * _gdm_set_value_bool
+ * _gdm_set_value_int
  *
- * The following interfaces are used to set values.  The private
- * static interfaces have a "doing_update" boolean argument which is
- * only set when GDM_UPDATE_CONFIG is called.  If doing_update is
- * TRUE, then a notify is sent to slaves.  When loading values
- * at other times (such as when first loading configuration options)
- * there is no need to notify the slaves.  If there is a desire to
- * send a notify to the slaves, the gdm_update_config function
- * should be used.
+ * The following interfaces are used to set values.  The "doing_update"
+ * boolean argument which is only set when GDM_UPDATE_CONFIG is called.
+ * If doing_update is TRUE, then a notify is sent to slaves.  When
+ * loading values at other times (such as when first loading
+ * configuration options) there is no need to notify the slaves.  If
+ * there is a desire to send a notify to the slaves, the
+ * gdm_update_config function should be used instead of calling these
+ * functions directly.
  */
 static void
-_gdm_set_value_string (gchar *key, gchar *value, gboolean doing_update)
+_gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
 {
-   gchar **setting = g_hash_table_lookup (val_hash, key);
-   gchar *setting_copy;
+   gchar **setting = gdm_config_hash_lookup (val_hash, key);
+   gchar *setting_copy = NULL;
    gchar *temp_string;
+   gchar *value;
+
+   if (! ve_string_empty (value_in))
+      value = value_in;
+   else
+      value = NULL;
 
    if (setting == NULL) {
       gdm_error ("Failure setting key %s to %s", key, value);
       return;
    }
 
-   setting_copy = g_strdup (*setting);
-   g_free (*setting);
+   if (*setting != NULL) {
+      /* Free old value */
+      setting_copy = g_strdup (*setting);
+      g_free (*setting);
+   }
 
+   /* User PATH */
    if (is_key (key, GDM_KEY_PATH)) {
 
       temp_string = gdm_read_default ("PATH=");
       if (temp_string != NULL)
          *setting = temp_string;                
-      else if (value == NULL)
-         *setting = NULL;
-      else
+      else if (value != NULL)
          *setting = g_strdup (value);
+      else
+         *setting = NULL;
 
+   /* Root user PATH */
    } else if (is_key (key, GDM_KEY_ROOT_PATH)) {
 
       temp_string = gdm_read_default ("SUPATH=");
       if (temp_string != NULL)
          *setting = temp_string;                
-      else if (value == NULL)
-         *setting = NULL;
-      else
+      else if (value != NULL)
          *setting = g_strdup (value);
+      else
+         *setting = NULL;
 
+    /* Location of Xsession script */
     } else if (is_key (key, GDM_KEY_BASE_XSESSION)) {
-       if (! ve_string_empty (value)) {
+       if (value != NULL) {
           *setting = g_strdup (value);
        } else {
           gdm_info (_("%s: BaseXsession empty; using %s/gdm/Xsession"),
                       "gdm_config_parse",
                       EXPANDED_SYSCONFDIR);
-          *setting = g_build_filename (EXPANDED_SYSCONFDIR, "gdm", "Xsession", NULL);
+          *setting = g_build_filename (EXPANDED_SYSCONFDIR,
+                                       "gdm", "Xsession", NULL);
        }
+
+   /* Halt, Reboot, and Suspend commands */
    } else if (is_key (key, GDM_KEY_HALT) ||
               is_key (key, GDM_KEY_REBOOT) ||
               is_key (key, GDM_KEY_SUSPEND)) {
-       if (value == NULL)
+       if (value != NULL)
+          *setting = ve_get_first_working_command (value, FALSE);
+       else
           *setting = NULL;
-       else
-          *setting = g_strdup (value);
+
+   /* Console cannot handle these languages */
    } else if (is_key (key, GDM_KEY_CONSOLE_CANNOT_HANDLE)) {
-       if (value == NULL)
-          *setting = "";
-       else
+       if (value != NULL)
           *setting = g_strdup (value);
+       else
+          *setting = "";
        gdm_ok_console_language ();
+
+   /* Location of Xserver */
    } else if (is_key (key, GDM_KEY_STANDARD_XSERVER)) {
-      gchar *bin;
-      bin = ve_first_word (value);
+      gchar *bin = NULL;
+
+      if (value != NULL)
+         bin = ve_first_word (value);
+
       if G_UNLIKELY (ve_string_empty (bin) ||
                      access (bin, X_OK) != 0) {
          gdm_info (_("%s: Standard X server not found; trying alternatives"),
@@ -869,13 +820,54 @@ _gdm_set_value_string (gchar *key, gchar *value, gboolean doing_update)
             *setting = g_strdup ("/usr/X11R6/bin/X");
          } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
             *setting = g_strdup ("/opt/X11R6/bin/X");
-         } else if (ve_string_empty (GdmStandardXserver)) {
+         } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
             *setting = g_strdup ("/usr/bin/X11/X");
          } else
             *setting = g_strdup (value);
+      } else {
+         *setting = g_strdup (value);
       }
+
+   /* Graphical Theme Directory */
+   } else if (is_key (key, GDM_KEY_GRAPHICAL_THEME_DIR)) {
+      if (value == NULL ||
+          ! g_file_test (value, G_FILE_TEST_IS_DIR))
+      {
+         *setting = g_strdup (GREETERTHEMEDIR);
+      } else {
+         *setting = g_strdup (value);
+      }
+
+   /* Graphical Theme */
+   } else if (is_key (key, GDM_KEY_GRAPHICAL_THEME)) {
+     if (value == NULL)
+        *setting = g_strdup ("circles");
+     else
+        *setting = g_strdup (value);
+ 
+   /* Default Welcome Message */
+   } else if (is_key (key, GDM_KEY_WELCOME)) {
+      if (value != NULL)
+         if (strcmp (ve_sure_string (value), GDM_DEFAULT_WELCOME_MSG) == 0)
+            *setting = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+         else
+            *setting = g_strdup (value);
+      else
+         *setting = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+
+   /* Default Remote Welcome Message */
+   } else if (is_key (key, GDM_KEY_REMOTE_WELCOME)) {
+      if (value != NULL)
+         if (strcmp (ve_sure_string (value), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
+            *setting = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
+         else
+            *setting = g_strdup (value);
+      else
+         *setting = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
+
+   /* All others */
    } else {
-       if (! ve_string_empty (value))
+       if (value != NULL)
           *setting = g_strdup (value);
        else {
           if (is_key (key, GDM_KEY_GREETER))
@@ -889,21 +881,27 @@ _gdm_set_value_string (gchar *key, gchar *value, gboolean doing_update)
        }
    }
 
-   if (doing_update == TRUE && strcmp (*setting, setting_copy) != 0) {
+   /* Handle update */
+   if (doing_update == TRUE && 
+       strcmp (ve_sure_string (*setting),
+               ve_sure_string (setting_copy)) != 0) {
+
       if (is_key (key, GDM_KEY_GREETER))
          notify_displays_string (GDM_NOTIFY_GREETER, *setting);
       else if (is_key (key, GDM_KEY_REMOTE_GREETER))
          notify_displays_string (GDM_NOTIFY_REMOTE_GREETER, *setting);
-      else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_READY_FILE))
-         notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE, *setting);
+      else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_FILE))
+         notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FILE, *setting);
       else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE))
          notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE, *setting);
       else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE))
          notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE, *setting);
       else if (is_key (key, GDM_KEY_GTK_MODULES_LIST))
          notify_displays_string (GDM_NOTIFY_GTK_MODULES_LIST, *setting);
-   }
+}
+
    g_free (setting_copy);
+
    if (*setting == NULL)
       gdm_debug ("set config key %s to string <NULL>", key);
    else
@@ -911,15 +909,15 @@ _gdm_set_value_string (gchar *key, gchar *value, gboolean doing_update)
 }
 
 void
-gdm_set_value_string (gchar *key, gchar *value)
+gdm_set_value_string (gchar *key, gchar *value_in)
 {
-   _gdm_set_value_string (key, value, FALSE);
+   _gdm_set_value_string (key, value_in, TRUE);
 }
 
 static void
 _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
 {
-   gboolean *setting     = g_hash_table_lookup (val_hash, key);
+   gboolean *setting     = gdm_config_hash_lookup (val_hash, key);
    gboolean setting_copy = *setting;
    gchar *temp_string;
 
@@ -931,6 +929,7 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
       return;
    }
 
+   /* Password Required */
    if (is_key (key, GDM_KEY_PASSWORD_REQUIRED)) {
       temp_string = gdm_read_default ("PASSREQ=");
       if (temp_string == NULL)
@@ -940,6 +939,8 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
       else
          *setting = FALSE;
       g_free (temp_string);
+
+   /* Allow root login */
    } else if (is_key (key, GDM_KEY_ALLOW_REMOTE_ROOT)) {
       temp_string = gdm_read_default ("CONSOLE=");
 
@@ -950,6 +951,8 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
       else
          *setting = FALSE;
       g_free (temp_string);
+
+   /* XDMCP */
 #ifndef HAVE_LIBXDMCP
    } else if (is_key (key, GDM_KEY_XMDCP)) {
       if (value) {
@@ -961,6 +964,7 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
       *setting = value;
    }
 
+   /* Handle update */
    if (doing_update == TRUE && *setting != setting_copy) {
      if (is_key (key, GDM_KEY_ALLOW_ROOT))
         notify_displays_int (GDM_NOTIFY_ALLOW_ROOT, *setting);
@@ -989,13 +993,13 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
 void
 gdm_set_value_bool (gchar *key, gboolean value)
 {
-   _gdm_set_value_bool (key, value, FALSE);
+   _gdm_set_value_bool (key, value, TRUE);
 }
 
 void
 _gdm_set_value_int (gchar *key, gint value, gboolean doing_update)
 {
-   gint *setting     = g_hash_table_lookup (val_hash, key);
+   gint *setting     = gdm_config_hash_lookup (val_hash, key);
    gint setting_copy = *setting;
 
    if (setting == NULL) {
@@ -1003,21 +1007,35 @@ _gdm_set_value_int (gchar *key, gint value, gboolean doing_update)
       return;
    }
 
-   if (is_key (key, GDM_KEY_TIMED_LOGIN_DELAY)) {
+   if (is_key (key, GDM_KEY_MAX_INDIRECT) ||
+       is_key (key, GDM_KEY_XINERAMA_SCREEN)) {
+      if (value < 0)
+         *setting = 0;
+      else
+         *setting = value;
+   } else if (is_key (key, GDM_KEY_TIMED_LOGIN_DELAY)) {
       if (value < 5) {
          gdm_info (_("%s: TimedLoginDelay is less than 5, defaulting to 5."), "gdm_config_parse");
          *setting = 5;
       } else
          *setting = value;
-   } else if (is_key (key, GDM_KEY_MAX_INDIRECT)) {
+   } else if (is_key (key, GDM_KEY_MAX_ICON_WIDTH) ||
+              is_key (key, GDM_KEY_MAX_ICON_HEIGHT)) {
       if (value < 0)
-         *setting = 0;
+         *setting = 128;
       else
          *setting = value;
-   } else {
+   } else if (is_key (key, GDM_KEY_SCAN_TIME)) {
+      if (value < 1)
+         *setting = 1;
+      else
+         *setting = value;
+   }
+ else {
       *setting = value;
    }
  
+   /* Handle update */
    if (doing_update == TRUE && *setting != setting_copy) {
       if (is_key (key, GDM_KEY_RETRY_DELAY))
          notify_displays_int (GDM_NOTIFY_RETRY_DELAY, *setting);
@@ -1031,7 +1049,86 @@ _gdm_set_value_int (gchar *key, gint value, gboolean doing_update)
 void
 gdm_set_value_int (gchar *key, gint value)
 {
-   _gdm_set_value_int (key, value, FALSE);
+   _gdm_set_value_int (key, value, TRUE);
+}
+
+/**
+ * gdm_set_value
+ *
+ * This functon is used to set the config values in the hash.  This is called
+ * at initial config load time or when gdm_update_config is called to reload
+ * them.   It adds translated strings to the hash with their proper keys
+ * (greeter/Welcome[cs] for example).
+ */
+static gboolean
+gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_update) 
+{
+   gchar * realkey = gdm_config_hash_lookup (realkey_hash, key);
+   if (realkey == NULL)
+      return FALSE;
+
+   if (*type == CONFIG_BOOL) {
+       gboolean value = ve_config_get_bool (cfg, realkey);
+       _gdm_set_value_bool (key, value, doing_update);
+       return TRUE;
+   } else if (*type == CONFIG_INT) {
+       gint value = ve_config_get_int (cfg, realkey);
+       _gdm_set_value_int (key, value, doing_update);
+       return TRUE;
+   } else if (*type == CONFIG_STRING) {
+
+       /* Process translated strings */
+       if (is_key (key, GDM_KEY_WELCOME) ||
+           is_key (key, GDM_KEY_REMOTE_WELCOME)) {
+
+          GList *list = ve_config_get_keys (cfg, "greeter");
+          gchar *prefix, *basekey;
+
+          if (is_key (key, GDM_KEY_WELCOME)) {
+             basekey = g_strdup ("Welcome");
+             prefix  = g_strdup ("Welcome[");
+          } else {
+             basekey = g_strdup ("RemoteWelcome");
+             prefix  = g_strdup ("RemoteWelcome[");
+          }
+
+          /*
+           * Loop over translated keys and put all values into the hash
+           * Probably should loop through the hashs and delete any old values,
+           * but this just means that if a translation is deleted from the
+           * config, GDM won't forget about it until restart.  I don't think
+           * this will happen, or be a real problem if it does.
+           */
+          while (list != NULL) {
+             if (g_str_has_prefix ((char *)list->data, prefix) &&
+                 g_str_has_suffix ((char *)list->data, "]")) {
+
+                /* Build or reuse hash entry for each translated string */
+                gchar *transkey = g_strdup_printf ("greeter/%s", (char *)list->data);
+                gpointer transvalueptr = gdm_config_hash_lookup (val_hash, transkey);
+                gchar *transvalue;
+
+                if (transvalueptr == NULL) {
+                   transvalueptr = g_new0 (gpointer, 1);
+                   gdm_config_add_hash (transkey, transvalueptr, &string_type);
+                }
+                transvalue = ve_config_get_string (cfg, transkey);
+                _gdm_set_value_string (transkey, transvalue, TRUE);
+             }
+             list = list->next;
+          }
+          g_free (basekey);
+          g_free (prefix);
+
+       }
+
+       /* Handle non-translated strings as normal */
+       gchar *value = ve_config_get_string (cfg, realkey);
+       _gdm_set_value_string (key, value, doing_update);
+       return TRUE;
+   }
+   
+   return FALSE;
 }
 
 /**
@@ -1051,7 +1148,7 @@ gdm_set_value_int (gchar *key, gint value)
 gboolean
 gdm_update_config (gchar* key)
 {
-   GdmConfigType *type = g_hash_table_lookup (type_hash, key);
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
    struct stat statbuf;
    VeConfig* cfg;
    int r;
@@ -1100,28 +1197,20 @@ gdm_update_config (gchar* key)
 
    cfg = ve_config_new (config_file);
 
-   if (*type == CONFIG_BOOL) {
-      gboolean value = ve_config_get_bool (cfg, key);
-      _gdm_set_value_bool (key, value, TRUE);
-   } else if (*type == CONFIG_INT) {
-      gint value = ve_config_get_int (cfg, key);
-      _gdm_set_value_int (key, value, TRUE);
-   } else if (*type == CONFIG_STRING) {
-      gchar *value = ve_config_get_string (cfg, key);
-      _gdm_set_value_string (key, value, TRUE);
-   } else {
-      ve_config_destroy (cfg);
-      return FALSE;
-   }
+   if (gdm_set_value (cfg, type, key, TRUE))
+      rc = TRUE;
+   else
+      rc = FALSE;
 
    ve_config_destroy (cfg);
-   return TRUE;
+   return rc;
 }
 
 /**
  * check_logdir
  * check_servauthdir
  * display_exists
+ * gdm_find_x_server
  *
  * Support functions for gdm_config_parse.
  */
@@ -1190,6 +1279,26 @@ display_exists (int num)
         return FALSE;
 }
 
+/* If id == NULL, then get the first X server */
+GdmXserver *
+gdm_find_x_server (const gchar *id)
+{
+   GSList *li;
+
+   if (xservers == NULL)
+      return NULL;
+
+   if (id == NULL)
+      return xservers->data;
+
+   for (li = xservers; li != NULL; li = li->next) {
+      GdmXserver *svr = li->data;
+      if (strcmp (ve_sure_string (svr->id), ve_sure_string (id)) == 0)
+         return svr;
+   }
+   return NULL;
+}
+
 /**
  * gdm_load_config_option
  *
@@ -1203,19 +1312,8 @@ gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
    VeConfig *cfg = (VeConfig *)data;
 
    if (type != NULL) {
-      if (type != NULL && *type == CONFIG_BOOL) {
-          gboolean value = ve_config_get_bool (cfg, key);
-          gdm_set_value_bool (key, value);
-          return;
-      } else if (type != NULL && *type == CONFIG_INT) {
-          gint value = ve_config_get_int (cfg, key);
-          gdm_set_value_int (key, value);
-          return;
-      } else if (type != NULL && *type == CONFIG_STRING) {
-          gchar *value = ve_config_get_string (cfg, key);
-          gdm_set_value_string (key, value);
-          return;
-      }
+      if (gdm_set_value (cfg, type, key, FALSE))
+         return;
    }
 
    gdm_error ("Cannot set config option %s", key); 
@@ -1615,6 +1713,21 @@ gdm_print_all_config (void)
 }
 
 /**
+ * gdm_is_valid_key
+ *
+ * Returns TRUE if the key is a valid key, FALSE otherwise.
+ */
+gboolean
+gdm_is_valid_key (gchar *key)
+{
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
+   if (type == NULL)
+      return FALSE;
+
+   return TRUE;
+}
+
+/**
  * gdm_signal_terminthup_was_notified
  *
  * returns TRUE if signal SIGTERM, SIGINT, or SIGHUP was received.
@@ -1784,11 +1897,11 @@ path_is_local (const char *path)
 
                 if (stat (path, &statbuf) == 0) {
                         char *type = filesystem_type ((char *)path, (char *)path, &statbuf);
-                        gboolean is_local = ((strcmp (type, "nfs") != 0) &&
-                                             (strcmp (type, "afs") != 0) &&
-                                             (strcmp (type, "autofs") != 0) &&
-                                             (strcmp (type, "unknown") != 0) &&
-                                             (strcmp (type, "ncpfs") != 0));
+                        gboolean is_local = ((strcmp (ve_sure_string (type), "nfs") != 0) &&
+                                             (strcmp (ve_sure_string (type), "afs") != 0) &&
+                                             (strcmp (ve_sure_string (type), "autofs") != 0) &&
+                                             (strcmp (ve_sure_string (type), "unknown") != 0) &&
+                                             (strcmp (ve_sure_string (type), "ncpfs") != 0));
                         local = GINT_TO_POINTER (is_local ? 1 : -1);
                         g_hash_table_insert (fstype_hash, g_strdup (path), local);
                 }
@@ -1874,7 +1987,7 @@ gdm_get_facefile_from_global (const char *username,
                               guint       uid)
 {
    char *picfile = NULL;
-   char *facedir = gdm_get_value_string (GDM_KEY_FACE_DIR);
+   char *facedir = gdm_get_value_string (GDM_KEY_GLOBAL_FACE_DIR);
 
    /* Try the global face directory */
 
@@ -1919,7 +2032,7 @@ gdm_get_session_exec (const char *session_name, gboolean check_try_exec)
       return NULL;
    }
 
-   if (cached != NULL && strcmp (session_name, cached) == 0)
+   if (cached != NULL && strcmp (ve_sure_string (session_name), ve_sure_string (cached)) == 0)
       return g_strdup (exec);
 
    g_free (exec);
@@ -2038,8 +2151,8 @@ gdm_get_user_session_lang (char **usrsess, char **usrlang,
    }
 
    /* ugly workaround for migration */
-   if ((strcmp (*usrsess, "Default.desktop") == 0 ||
-        strcmp (*usrsess, "Default") == 0) &&
+   if ((strcmp (ve_sure_string (*usrsess), "Default.desktop") == 0 ||
+        strcmp (ve_sure_string (*usrsess), "Default") == 0) &&
        ! ve_is_prog_in_path ("Default.desktop",
             gdm_get_value_string (GDM_KEY_SESSION_DESKTOP_DIR))) {
            g_free (*usrsess);

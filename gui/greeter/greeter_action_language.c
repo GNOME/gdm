@@ -22,8 +22,10 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+#include "gdm.h"
 #include "gdmwm.h"
 #include "gdmcommon.h"
+#include "gdmconfig.h"
 #include "gdmlanguages.h"
 #include "greeter.h"
 #include "greeter_configuration.h"
@@ -52,7 +54,7 @@ greeter_langauge_initialize_model (void)
   GList *list, *li;
   GtkTreeIter iter;
 
-  list = gdm_lang_read_locale_file (GdmLocaleFile);
+  list = gdm_lang_read_locale_file (gdm_config_get_string (GDM_KEY_LOCALE_FILE));
 
   lang_model = gtk_list_store_new (NUM_COLUMNS,
 				   G_TYPE_STRING,

@@ -19,7 +19,9 @@
 #include "config.h"
 
 #include <gtk/gtk.h>
-#include <vicious.h>
+
+#include "gdm.h"
+#include "gdmconfig.h"
 
 #include "greeter_item.h"
 #include "greeter_configuration.h"
@@ -39,7 +41,6 @@ row_selected (GtkTreeSelection *selection, gpointer data)
   GtkTreeIter iter = {0};
   GreeterItemInfo *item = data;
   char *id = NULL;
-  VeConfig *cfg;
   char *file;
 
   if (DOING_GDM_DEVELOPMENT)
@@ -55,12 +56,10 @@ row_selected (GtkTreeSelection *selection, gpointer data)
     }
 
   file = g_strdup_printf ("%s/%s.GreeterInfo",
-			  ve_sure_string (GdmServAuthDir),
+			  ve_sure_string (gdm_config_get_string (GDM_KEY_SERV_AUTHDIR)),
 			  ve_sure_string (g_getenv ("DISPLAY")));
-  cfg = ve_config_get (file);
-  g_free (file);
-  ve_config_set_string (cfg, item->id, ve_sure_string (id));
-  ve_config_save (cfg, FALSE);
+
+  gdm_set_servauth (file, item->id, id);
 }
 
 static void

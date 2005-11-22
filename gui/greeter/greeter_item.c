@@ -26,9 +26,13 @@
 #include <unistd.h>
 #include <sys/utsname.h>
 
+#include "gdm.h"
+#include "gdmconfig.h"
+#include "gdmcommon.h"
+#include "misc.h"
+
 #include "greeter_item.h"
 #include "greeter_configuration.h"
-#include "vicious.h"
 
 extern gint greeter_current_delay;
 
@@ -147,19 +151,27 @@ static char *
 get_clock (void)
 {
   struct tm *the_tm;
+  char *str;
   time_t the_time;
 
   time (&the_time);
   the_tm = localtime (&the_time);
 
-  if (GdmUse24Clock) 
+  if (gdm_common_select_time_format()) 
     {
-      return ve_strftime (the_tm, _("%a %b %d, %H:%M"));
+      str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
     } 
   else 
     {
-      return ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
+      /* Translators: You should translate time part as
+         %H:%M if your language does not have AM and PM
+         equivalent.  Note: %l is a strftime option for
+         12-hour clock format */
+
+      str = ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
     }
+
+  return str;
 }
 
 
@@ -245,7 +257,7 @@ greeter_item_expand_text (const char *text)
 				      greeter_current_delay);
 	      break;
 	    case 's':
-	      g_string_append (str, ve_sure_string (GdmTimedLogin));
+	      g_string_append (str, ve_sure_string (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)));
 	      break;
 	    case 'c':
 	      clock = get_clock ();
@@ -291,6 +303,7 @@ greeter_item_is_visible (GreeterItemInfo *info)
   static gboolean checked = FALSE;
   static gboolean GDM_IS_LOCAL = FALSE;
   static gboolean GDM_FLEXI_SERVER = FALSE;
+  gboolean sysmenu = FALSE;
 
   if ( ! checked)
     {
@@ -313,35 +326,42 @@ greeter_item_is_visible (GreeterItemInfo *info)
       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
     return FALSE;
 
-  if (( ! GdmConfigAvailable || ! GdmSystemMenu || ! GdmConfiguratorFound) &&
-      info->show_type != NULL &&
-      strcmp (info->show_type, "config") == 0)
+  sysmenu = gdm_config_get_bool (GDM_KEY_SYSTEM_MENU);
+
+  if (( ! gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) ||
+        ! sysmenu ||
+        ! gdm_working_command_exists (GDM_KEY_CONFIGURATOR)) &&
+        info->show_type != NULL &&
+        strcmp (info->show_type, "config") == 0)
 	  return FALSE;
 
-  if (( ! GdmChooserButton || ! GdmSystemMenu) &&
+  if (( ! gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON) || ! sysmenu) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "chooser") == 0)
 	  return FALSE;
 
-  if ( ! GdmSystemMenu &&
+  if ( ! sysmenu &&
       info->show_type != NULL &&
       strcmp (info->show_type, "system") == 0)
 	  return FALSE;
 
-  if (( ! GdmSystemMenu || ! GdmHaltFound) &&
-      info->show_type != NULL &&
-      strcmp (info->show_type, "halt") == 0)
+  if (( ! sysmenu ||
+        ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT))) &&
+        info->show_type != NULL &&
+        strcmp (info->show_type, "halt") == 0)
 	  return FALSE;
-  if (( ! GdmSystemMenu || ! GdmRebootFound) &&
-      info->show_type != NULL &&
-      strcmp (info->show_type, "reboot") == 0)
+  if (( ! sysmenu ||
+        ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT))) &&
+        info->show_type != NULL &&
+        strcmp (info->show_type, "reboot") == 0)
 	  return FALSE;
-  if (( ! GdmSystemMenu || ! GdmSuspendFound) &&
-      info->show_type != NULL &&
-      strcmp (info->show_type, "suspend") == 0)
+  if (( ! sysmenu ||
+        ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND))) &&
+        info->show_type != NULL &&
+        strcmp (info->show_type, "suspend") == 0)
 	  return FALSE;
 
-  if (ve_string_empty (GdmTimedLogin) &&
+  if (ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "timed") == 0)
 	  return FALSE;

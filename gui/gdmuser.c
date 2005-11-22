@@ -26,26 +26,15 @@
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 #include <string.h>
-#include <syslog.h>
-
-#include <vicious.h>
-#include "viciousui.h"
 
 #include <pwd.h>
 
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "gdmuser.h"
+#include "gdmconfig.h"
 
 static time_t time_started;
-extern gint  GdmIconMaxHeight;
-extern gint  GdmIconMaxWidth;
-extern gint  GdmMinimalUID;
-extern gchar *GdmInclude;
-extern gchar *GdmExclude;
-extern gboolean GdmIncludeAll;
-extern gboolean GdmAllowRoot;
-extern gboolean GdmAllowRemoteRoot;
 
 static GdmUser * 
 gdm_user_alloc (const gchar *logname,
@@ -158,8 +147,8 @@ gdm_user_alloc (const gchar *logname,
 	} else if (access (&buf[1], R_OK) == 0) {
 		img = gdm_common_get_face (&buf[1],
 					   NULL,
-					   GdmIconMaxWidth,
-					   GdmIconMaxHeight);
+					   gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH),
+					   gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT));
 	} else {
 		img = NULL;
 	}
@@ -184,13 +173,13 @@ gdm_check_exclude (struct passwd *pwent, char **excludes, gboolean is_local)
 	const char * const lockout_passes[] = { "!!", NULL };
 	gint i;
 
-        if ( ! GdmAllowRoot && pwent->pw_uid == 0)
+        if ( ! gdm_config_get_bool (GDM_KEY_ALLOW_ROOT) && pwent->pw_uid == 0)
                 return TRUE;
 
-        if ( ! GdmAllowRemoteRoot && ! is_local && pwent->pw_uid == 0)
+        if ( ! gdm_config_get_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! is_local && pwent->pw_uid == 0)
                 return TRUE;
 
-	if (pwent->pw_uid < GdmMinimalUID)
+	if (pwent->pw_uid < gdm_config_get_int (GDM_KEY_MINIMAL_UID))
 		return TRUE;
 
 	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
@@ -278,7 +267,7 @@ setup_user (struct passwd *pwent,
 			*size_of_users +=
 				gdk_pixbuf_get_height (user->picture) + 2;
 		} else {
-			*size_of_users += GdmIconMaxHeight;
+			*size_of_users += gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
 		}
 	    }
 
@@ -322,18 +311,18 @@ gdm_users_init (GList **users,
 
     time_started = time (NULL);
 	
-    includes = g_strsplit (GdmInclude, ",", 0);
+    includes = g_strsplit (gdm_config_get_string (GDM_KEY_INCLUDE), ",", 0);
     for (i=0 ; includes != NULL && includes[i] != NULL ; i++) {
 	g_strstrip (includes[i]);
         if (includes[i] != NULL)
            found_include = TRUE;
     }
 
-    excludes = g_strsplit (GdmExclude, ",", 0);
+    excludes = g_strsplit (gdm_config_get_string (GDM_KEY_EXCLUDE), ",", 0);
     for (i=0 ; excludes != NULL && excludes[i] != NULL ; i++)
 	g_strstrip (excludes[i]);
 
-    if (GdmIncludeAll == TRUE) {
+    if (gdm_config_get_bool (GDM_KEY_INCLUDE_ALL) == TRUE) {
 	    setpwent ();
 	    pwent = getpwent();
 	    while (pwent != NULL) {

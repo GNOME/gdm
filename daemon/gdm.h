@@ -139,8 +139,7 @@ enum {
 /*
  * The following section contains keys used by the gdm.conf configuration file.
  * Options exposed in this file are Stable, and should not change in ways that
- * are not backwards incompatible.   Note how GDM_KEY_DEFAULTWELCOME_BACKTEST
- * works to see how backwards compatibility can be handled.
+ * are not backwards incompatible.
  * 
  * Developers who add new configuration options should ensure that they do the
  * following:
@@ -291,8 +290,8 @@ enum {
 
 #define GDM_KEY_GTK_THEME "gui/GtkTheme=Default"
 #define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk-2.0/gtkrc"
-#define GDM_KEY_ICON_WIDTH "gui/MaxIconWidth=128"
-#define GDM_KEY_ICON_HEIGHT "gui/MaxIconHeight=128"
+#define GDM_KEY_MAX_ICON_WIDTH "gui/MaxIconWidth=128"
+#define GDM_KEY_MAX_ICON_HEIGHT "gui/MaxIconHeight=128"
 
 #define GDM_KEY_ALLOW_GTK_THEME_CHANGE "gui/AllowGtkThemeChange=true"
 #define GDM_KEY_GTK_THEMES_TO_ALLOW "gui/GtkThemesToAllow=all"
@@ -302,8 +301,8 @@ enum {
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm,nfsnobody,pcap"
 #define GDM_KEY_INCLUDE_ALL "greeter/IncludeAll=false"
 #define GDM_KEY_MINIMAL_UID "greeter/MinimalUID=100"
-#define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "/nobody.png"
-#define GDM_KEY_FACE_DIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
+#define GDM_KEY_DEFAULT_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "/nobody.png"
+#define GDM_KEY_GLOBAL_FACE_DIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
 #define GDM_KEY_LOCALE_FILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
 #define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
 #define GDM_KEY_CHOOSER_BUTTON_LOGO "greeter/ChooserButtonLogo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
@@ -313,10 +312,20 @@ enum {
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_CHOOSER_BUTTON "greeter/ChooserButton=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
-#define GDM_KEY_DEFAULT_WELCOME "greeter/DefaultWelcome=true"
-#define GDM_KEY_DEFAULT_WELCOME_BACKTEST "greeter/DefaultWelcome="
-#define GDM_KEY_DEFAULT_REMOTE_WELCOME "greeter/DefaultRemoteWelcome=true"
-#define GDM_KEY_DEFAULT_REMOTE_WELCOME_BACKTEST "greeter/DefaultRemoteWelcome="
+
+/*
+ * For backwards compatibility, do not set values for DEFAULT_WELCOME or 
+ * DEFAULT_REMOTEWELCOME.  This will cause these values to always be 
+ * read from the config file, and will cause them to return FALSE if
+ * no value is set in the config file.  If Welcome or RemoteWelcome are
+ * not set in the config file, then GDM will set them back to the default 
+ * value.  Note the reason we don't specify the default value in the
+ * config file anymore is because it is easier to maintain the l10n
+ * strings when the string is compiled into the source code instaed of
+ * supplied in the configuration file.
+ */
+#define GDM_KEY_DEFAULT_WELCOME "greeter/DefaultWelcome="
+#define GDM_KEY_DEFAULT_REMOTE_WELCOME "greeter/DefaultRemoteWelcome="
 #define GDM_KEY_WELCOME "greeter/Welcome="
 #define GDM_KEY_REMOTE_WELCOME "greeter/RemoteWelcome="
 #define GDM_KEY_XINERAMA_SCREEN "greeter/XineramaScreen=0"
@@ -346,10 +355,10 @@ enum {
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
 #define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="
 
-#define GDM_KEY_SOUND_ON_LOGIN_READY "greeter/SoundOnLogin=true"
+#define GDM_KEY_SOUND_ON_LOGIN "greeter/SoundOnLogin=true"
 #define GDM_KEY_SOUND_ON_LOGIN_SUCCESS "greeter/SoundOnLoginSuccess=false"
 #define GDM_KEY_SOUND_ON_LOGIN_FAILURE "greeter/SoundOnLoginFailure=false"
-#define GDM_KEY_SOUND_ON_LOGIN_READY_FILE "greeter/SoundOnLoginFile="
+#define GDM_KEY_SOUND_ON_LOGIN_FILE "greeter/SoundOnLoginFile="
 #define GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE "greeter/SoundOnLoginSuccessFile="
 #define GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE "greeter/SoundOnLoginFailureFile="
 #define GDM_KEY_SOUND_PROGRAM "daemon/SoundProgram=" SOUND_PROGRAM
@@ -682,7 +691,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
 #define GDM_NOTIFY_DISALLOW_TCP "DisallowTCP" /* <true/false as int> */
-#define GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE "SoundOnLoginFile" /* <sound file> */
+#define GDM_NOTIFY_SOUND_ON_LOGIN_FILE "SoundOnLoginFile" /* <sound file> */
 #define GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE "SoundOnLoginSuccessFile" /* <sound file> */
 #define GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE "SoundOnLoginFailureFile" /* <sound file> */
 #define GDM_NOTIFY_ADD_GTK_MODULES "AddGtkModules" /* <true/false as int> */

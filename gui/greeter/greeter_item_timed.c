@@ -22,7 +22,7 @@
 #include <libgnome/libgnome.h>
 
 #include "gdm.h"
-#include "vicious.h"
+#include "gdmconfig.h"
 
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
@@ -63,9 +63,8 @@ gdm_timer (gpointer data)
 }
 
 /*
- * Timed Login: On GTK events, increase delay to
- * at least 30 seconds. Or the TimedLoginDelay,
- * whichever is higher
+ * Timed Login: On GTK events, increase delay to at least 30
+ * seconds. Or the GDM_KEY_TIMED_LOGIN_DELAY, whichever is higher
  */
 
 static gboolean
@@ -74,19 +73,21 @@ gdm_timer_up_delay (GSignalInvocationHint *ihint,
 		    const GValue	  *param_values,
 		    gpointer		   data)
 {
+  int timeddelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+
   if (greeter_current_delay < 30)
     greeter_current_delay = 30;
-  if (greeter_current_delay < GdmTimedLoginDelay)
-    greeter_current_delay = GdmTimedLoginDelay;
+  if (greeter_current_delay < timeddelay)
+    greeter_current_delay = timeddelay;
   return TRUE;
 }      
 
 gboolean
 greeter_item_timed_setup (void)
 {
-  /* if in timed mode, delay timeout on keyboard or menu
-   * activity */
-  if ( ! ve_string_empty (GdmTimedLogin))
+
+  /* if in timed mode, delay timeout on keyboard or menu activity */
+  if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)))
     {
       guint sid;
 
@@ -122,13 +123,14 @@ greeter_item_timed_setup (void)
 void
 greeter_item_timed_start (void)
 {
+  int timeddelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+
   if (timed_handler_id == 0 &&
-      ! ve_string_empty (GdmTimedLogin) &&
-      GdmTimedLoginDelay > 0)
+      ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) &&
+      timeddelay > 0)
     {
-      greeter_current_delay = GdmTimedLoginDelay;
-      timed_handler_id = g_timeout_add (1000,
-					gdm_timer, NULL);
+      greeter_current_delay = timeddelay;
+      timed_handler_id = g_timeout_add (1000, gdm_timer, NULL);
     }
 }
 

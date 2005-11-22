@@ -22,7 +22,6 @@
 #ifndef GDM_SESSION_H
 #define GDM_SESSION_H
 
-#include <vicious.h>
 #include "misc.h"
 
 typedef struct {

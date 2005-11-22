@@ -35,10 +35,11 @@
 #include <sys/un.h>
 #include <errno.h>
 
-#include <viciousui.h>
+#include "vicious.h"
 
 #include "gdm.h"
 #include "gdmcomm.h"
+#include "gdmconfig.h"
 
 static gboolean debug = FALSE;
 
@@ -368,7 +369,7 @@ gdmcomm_get_auth_cookie (void)
 }
 
 gboolean
-gdmcomm_check (gchar *config_file, gboolean gui_bitching)
+gdmcomm_check (gboolean show_dialog)
 {
 	GtkWidget *dialog;
 	FILE *fp = NULL;
@@ -377,11 +378,7 @@ gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 	struct stat s;
 	int statret;
 
-	if (config_file == NULL)
-		return FALSE;
-
-	pidfile = ve_config_get_string (ve_config_get (config_file),
-					GDM_KEY_PID_FILE);
+	pidfile = gdm_config_get_string (GDM_KEY_PID_FILE);
 
 	pid = 0;
 	if (pidfile != NULL)
@@ -394,13 +391,11 @@ gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 			pid = 0;
 	}
 
-	g_free (pidfile);
-
 	errno = 0;
 	if (pid <= 1 ||
 	    (kill (pid, 0) < 0 &&
 	     errno != EPERM)) {
-		if (gui_bitching) {
+		if (show_dialog) {
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
@@ -426,7 +421,7 @@ gdmcomm_check (gchar *config_file, gboolean gui_bitching)
 	if (statret < 0 ||
 	    s.st_uid != 0 ||
 	    access (GDM_SUP_SOCKET, R_OK|W_OK) != 0) {
-		if (gui_bitching) {
+		if (show_dialog) {
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,

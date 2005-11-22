@@ -4741,7 +4741,7 @@ check_for_interruption (const char *msg)
 			return TRUE;
 		case GDM_INTERRUPT_LOGIN_SOUND:
 			if (d->attached &&
-			    ! play_login_sound (gdm_get_value_string (GDM_KEY_SOUND_ON_LOGIN_READY_FILE))) {
+			    ! play_login_sound (gdm_get_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE))) {
 				gdm_error (_("Login sound requested on non-local display or the play software "
 					     "cannot be run or the sound does not exist"));
 			}
@@ -5309,7 +5309,7 @@ gdm_slave_handle_notify (const char *msg)
 		remanage_asap = TRUE;
 	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",
 			    strlen (GDM_NOTIFY_GREETER) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_GREETER, (&msg[strlen (GDM_NOTIFY_GREETER) + 1]));
+		gdm_set_value_string (GDM_KEY_GREETER, ((gchar *)&msg[strlen (GDM_NOTIFY_GREETER) + 1]));
 
 		if (d->attached) {
 			do_restart_greeter = TRUE;
@@ -5328,7 +5328,7 @@ gdm_slave_handle_notify (const char *msg)
 	} else if (strncmp (msg, GDM_NOTIFY_REMOTE_GREETER " ",
 			    strlen (GDM_NOTIFY_REMOTE_GREETER) + 1) == 0) {
 		gdm_set_value_string (GDM_KEY_REMOTE_GREETER,
-			(&msg[strlen (GDM_NOTIFY_REMOTE_GREETER) + 1]));
+			(gchar *)(&msg[strlen (GDM_NOTIFY_REMOTE_GREETER) + 1]));
 		if ( ! d->attached) {
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
@@ -5359,28 +5359,28 @@ gdm_slave_handle_notify (const char *msg)
 		gdm_set_value_int (GDM_KEY_TIMED_LOGIN_DELAY, val);
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
-	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE " ",
-			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_READY_FILE,
-			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_READY_FILE) + 1]));
+	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FILE " ",
+			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1) == 0) {
+		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE,
+			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1) == 0) {
 		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE,
-			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1]));
+			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1) == 0) {
 		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE,
-			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1]));
+			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_GTK_MODULES_LIST " ",
 			    strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1) == 0) {
 		gdm_set_value_string (GDM_KEY_GTK_MODULES_LIST,
-			(&msg[strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1]));
+			(gchar *)(&msg[strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1]));
 
 		if (gdm_get_value_bool (GDM_KEY_ADD_GTK_MODULES)) {
 			do_restart_greeter = TRUE;

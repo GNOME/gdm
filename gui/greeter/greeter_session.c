@@ -28,11 +28,10 @@
 #include <gtk/gtk.h>
 #include <libgnome/libgnome.h>
 
-#include "vicious.h"
-
 #include "gdm.h"
 #include "gdmwm.h"
 #include "gdmcommon.h"
+#include "gdmconfig.h"
 #include "gdmsession.h"
 
 #include "greeter.h"
@@ -146,7 +145,7 @@ greeter_session_lookup (const char *saved_session)
 	  gchar *firstmsg = NULL;
 	  gchar *secondmsg = NULL;
 	  
-	  if (GdmShowLastSession)
+	  if (gdm_config_get_bool (GDM_KEY_SHOW_LAST_SESSION))
 	    {
 	      firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
 	                                    "future sessions?"),
@@ -162,10 +161,10 @@ greeter_session_lookup (const char *saved_session)
 		   strcmp (session, saved_session) != 0 &&
 		   strcmp (session, LAST_SESSION) != 0)
 	    {
-	      /* if !GdmShowLastSession then our saved session is
-	       * irrelevant, we are in "switchdesk mode"
-	       * and the relevant thing is the saved session
-	       * in .Xclients
+	      /*
+	       * If (! GDM_KEY_SHOW_LAST_SESSION) then our saved session is
+	       * irrelevant, we are in "switchdesk mode" and the relevant
+	       * thing is the saved session in .Xclients
 	       */
 	      if (access ("/usr/bin/switchdesk", F_OK) == 0)
 	        {
@@ -263,7 +262,7 @@ greeter_session_init (void)
   vbox = gtk_vbox_new (FALSE, 6);
   /* we will pack this later depending on size */
 
-  if (GdmShowLastSession)
+  if (gdm_config_get_bool (GDM_KEY_SHOW_LAST_SESSION))
     {
       current_session = g_strdup (LAST_SESSION);
 

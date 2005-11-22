@@ -35,14 +35,12 @@
 #include <sys/un.h>
 #include <errno.h>
 
-#include <viciousui.h>
-
 #include "gdm.h"
 #include "gdmcomm.h"
 #include "gdmcommon.h"
+#include "gdmconfig.h"
 
 static char *myname = NULL;  /* name of this program */
-
 
 static void
 usage()
@@ -68,7 +66,6 @@ main (int argc, char *argv[])
     int background = 0;
     gboolean error = TRUE;
     char *cookie = NULL;
-    gchar *config_file;
 
     myname = basename(argv[0]);
     argv[0] = myname;
@@ -152,15 +149,7 @@ main (int argc, char *argv[])
         FILE  *fp;
         char  buf[BUFSIZ];
 
-	config_file = gdm_common_get_config_file ();
-	if (config_file == NULL) {
-		g_print (_("Could not access GDM configuration file.\n"));
-		exit (1);
-	}
-
-        GdmServAuthDir = ve_config_get_string (ve_config_get (config_file),
-                                               GDM_KEY_SERV_AUTHDIR);
-	g_free (config_file);
+        GdmServAuthDir = gdm_config_get_string (GDM_KEY_SERV_AUTHDIR);
         filename = g_build_filename (GdmServAuthDir, ".cookie", NULL);
 
         VE_IGNORE_EINTR (fp = fopen (filename, "r"));

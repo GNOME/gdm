@@ -18,9 +18,13 @@
 
 #include "config.h"
 
+#include <string.h>
 #include <gtk/gtk.h>
 #include <libgnome/libgnome.h>
 #include <gdk/gdkkeysyms.h>
+
+#include "viciousui.h"
+
 #include "greeter.h"
 #include "greeter_item_pam.h"
 #include "greeter_item_ulist.h"
@@ -31,9 +35,6 @@
 #include "gdm.h"
 #include "gdmwm.h"
 #include "gdmcommon.h"
-#include "vicious.h"
-#include "viciousui.h"
-#include <string.h>
 
 static gboolean messages_to_give = FALSE;
 static gboolean replace_msg = TRUE;
