@@ -108,7 +108,6 @@ static void
 gdm_greeter_users_init (void)
 {
 	gint   size_of_users = 0;
-	time_t time_started;
 
 	defface = gdm_common_get_face (NULL,
 				       GdmDefaultFace,

@@ -237,8 +237,6 @@ gboolean GdmConsoleNotify = TRUE;
 char **stored_argv = NULL;
 int stored_argc = 0;
 
-static VeConfig *cfg;
-
 static gchar *config_file = NULL;
 static time_t config_file_mtime = 0;
 
@@ -4328,8 +4326,6 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;
-		GSList *li;
-		const char *sep = " ";
 
 		msg = g_string_new ("OK");
 		g_string_append (msg, "\n");

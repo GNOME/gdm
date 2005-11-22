@@ -379,8 +379,8 @@ gdm_xdmcp_init (void)
 	    uname (&name);
 	    sysid = g_strconcat (name.sysname, " ", name.release, NULL);
 
-	    servhost.data = g_strdup (hostbuf);
-	    servhost.length = strlen (servhost.data);
+	    servhost.data = (CARD8 *) g_strdup (hostbuf);
+	    servhost.length = strlen ((char *) servhost.data);
 	    
 	    initted = TRUE;
     }
@@ -696,7 +696,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     /* Crude checksumming */
     for (i = 0 ; i < clnt_authlist.length ; i++) {
 	    if G_UNLIKELY (GdmDebug) {
-		    char *s = g_strndup (clnt_authlist.data[i].data, clnt_authlist.length);
+		    char *s = g_strndup ((char *) clnt_authlist.data[i].data, clnt_authlist.length);
 		    gdm_debug ("gdm_xdmcp_handle_query: authlist: %s", ve_sure_string (s));
 		    g_free (s);
 	    }
@@ -888,7 +888,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 
 	/* we depend on this being 2 elsewhere as well */
 	port.length = 2;
-	port.data = g_new (char, 2);
+	port.data = (CARD8 *) g_new (char, 2);
 	memcpy (port.data, &(clnt_sa->sin_port), 2);
 
 	address.length = sizeof (struct in_addr);
@@ -1145,7 +1145,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     for (i = 0 ; i < clnt_authlist.length ; i++) {
 	    if G_UNLIKELY (GdmDebug) {
-		    char *s = g_strndup (clnt_authlist.data[i].data, clnt_authlist.length);
+		    char *s = g_strndup ((char *) clnt_authlist.data[i].data, clnt_authlist.length);
 		    gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", ve_sure_string (s));
 		    g_free (s);
 	    }
@@ -1320,13 +1320,13 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 	    gdm_xdmcp_displays_from_host (clnt_sa) >= GdmDispPerHost) {
 		/* Don't translate, this goes over the wire to servers where we
 		 * don't know the charset or language, so it must be ascii */
-		status.data = g_strdup_printf ("%s (Server is busy)", last_status);
+		status.data = (CARD8 *) g_strdup_printf ("%s (Server is busy)", last_status);
 	} else {
-		status.data = g_strdup (last_status);
+		status.data = (CARD8 *) g_strdup (last_status);
 	}
     }
 
-    status.length = strlen (status.data);
+    status.length = strlen ((char *) status.data);
     
     header.opcode = (CARD16) WILLING;
     header.length = 6 + serv_authlist.authentication.length;
@@ -1383,8 +1383,8 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     
     /* Don't translate, this goes over the wire to servers where we
      * don't know the charset or language, so it must be ascii */
-    status.data = "Display not authorized to connect";
-    status.length = strlen (status.data);
+    status.data = (CARD8 *) "Display not authorized to connect";
+    status.length = strlen ((char *) status.data);
     
     header.opcode = (CARD16) UNWILLING;
     header.length = 4 + servhost.length + status.length;
@@ -1676,7 +1676,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     /* libXdmcp doesn't terminate strings properly so we cheat and use strncmp() */
     for (i = 0 ; i < clnt_authorization.length ; i++)
 	if (clnt_authorization.data[i].length == 18 &&
-	    strncmp (clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18) == 0)
+	    strncmp ((char *) clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18) == 0)
 	    mitauth = TRUE;
     
     /* Manufacturer ID */
@@ -1729,7 +1729,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     }
 
     if G_UNLIKELY (GdmDebug) {
-	    char *s = g_strndup (clnt_manufacturer.data, clnt_manufacturer.length);
+	    char *s = g_strndup ((char *) clnt_manufacturer.data, clnt_manufacturer.length);
 	    gdm_debug ("gdm_xdmcp_handle_request: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d, ManufacturerID=%s",
 		       xdmcp_pending, GdmMaxPending, xdmcp_sessions, GdmMaxSessions, ve_sure_string (s));
 	    g_free (s);
@@ -1826,10 +1826,10 @@ gdm_xdmcp_send_accept (GdmHostent *he /* eaten and freed */,
     authendata.data = (CARD8 *) 0;
     authendata.length = (CARD16) 0;
     
-    authname.data = "MIT-MAGIC-COOKIE-1";
-    authname.length = strlen (authname.data);
+    authname.data = (CARD8 *) "MIT-MAGIC-COOKIE-1";
+    authname.length = strlen ((char *) authname.data);
     
-    authdata.data = d->bcookie;
+    authdata.data = (CARD8 *) d->bcookie;
     authdata.length = 16;
     
     header.version = XDM_PROTOCOL_VERSION;
@@ -1903,8 +1903,8 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason)
     authendata.data = (CARD8 *) 0;
     authendata.length = (CARD16) 0;
     
-    status.data = (char *)reason;
-    status.length = strlen (status.data);
+    status.data = (CARD8 *) reason;
+    status.length = strlen ((char *) status.data);
     
     header.version = XDM_PROTOCOL_VERSION;
     header.opcode = (CARD16) DECLINE;
@@ -2009,7 +2009,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     }
 
     if G_UNLIKELY (GdmDebug) {
-	    char *s = g_strndup (clnt_dspclass.data, clnt_dspclass.length);
+	    char *s = g_strndup ((char *) clnt_dspclass.data, clnt_dspclass.length);
 
 #ifdef ENABLE_IPV6
 	    if (clnt_sa->ss_family == AF_INET6)
@@ -2338,8 +2338,8 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
     
     /* Don't translate, this goes over the wire to servers where we
      * don't know the charset or language, so it must be ascii */
-    status.data = "Failed to start session";
-    status.length = strlen (status.data);
+    status.data = (CARD8 *) "Failed to start session";
+    status.length = strlen ((char *) status.data);
     
     header.version = XDM_PROTOCOL_VERSION;
     header.opcode = (CARD16) FAILED;

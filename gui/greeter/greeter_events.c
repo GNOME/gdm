@@ -84,9 +84,9 @@ propagate_state (GreeterItemInfo *info,
   state_run (info, old_state);
 
   g_list_foreach (info->fixed_children, propagate_state_foreach,
-		  GINT_TO_POINTER (info->state));
+		  GINT_TO_POINTER ((int) info->state));
   g_list_foreach (info->box_children, propagate_state_foreach,
-		  GINT_TO_POINTER (info->state));
+		  GINT_TO_POINTER ((int) info->state));
 }
 
 static void propagate_reset_state (GreeterItemInfo *info,

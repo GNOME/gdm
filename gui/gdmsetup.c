@@ -1339,8 +1339,6 @@ sensitivity_toggled (GtkWidget *toggle, gpointer data)
 static void
 setup_face (void)
 {
-	GtkWidget *fb_browser = glade_helper_get (xml, "fb_browser", GTK_TYPE_WIDGET);
-	GtkWidget *face_frame = glade_helper_get (xml, "face_frame", GTK_TYPE_WIDGET);
 	static FaceCommon fc;
 	static FaceData fd_include;
 	static FaceData fd_exclude;
@@ -1676,7 +1674,7 @@ browse_button_cb (GtkWidget *widget, gpointer data)
                 gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
                         EXPANDED_DATADIR "/pixmaps");
 
-	gtk_file_chooser_set_show_hidden (file_dialog, TRUE);
+	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (file_dialog), TRUE);
         filter = gtk_file_filter_new ();
         gtk_file_filter_set_name (filter, _("PNG and JPEG"));
         gtk_file_filter_add_mime_type (filter, "image/jpeg");
@@ -2298,7 +2296,7 @@ browse_sound_cb (GtkWidget *widget, gpointer data)
 					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 					NULL);
 
-	gtk_file_chooser_set_show_hidden (file_dialog, TRUE);
+	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (file_dialog), TRUE);
         filter = gtk_file_filter_new ();
         gtk_file_filter_set_name (filter, _("All files"));
 	gtk_file_filter_add_pattern(filter, "*");
@@ -3400,7 +3398,7 @@ install_new_theme (GtkWidget *button, gpointer data)
 					       _("_Install"), GTK_RESPONSE_OK,
 					       NULL);
 	
-	gtk_file_chooser_set_show_hidden (chooser, TRUE);
+	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (chooser), TRUE);
 	g_signal_connect (G_OBJECT (chooser), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &chooser);
 	g_signal_connect (G_OBJECT (chooser), "response",
@@ -3787,6 +3785,7 @@ xserver_add(gpointer data)
    section modifications) */
 /* Create a server definition (not the same as removing a server
  * from the list of servers to start) */
+#if 0
 static void
 xserver_create(gpointer data)
 {
@@ -3857,6 +3856,7 @@ xserver_create(gpointer data)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (modify_combobox), i);
 	}
 }
+#endif 
 
 static void
 xserver_init_definitions()

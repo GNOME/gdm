@@ -1417,7 +1417,7 @@ gdm_wm_save_wm_order (void)
 			&size)) {
 		int i;
 		Atom atom;
-		data = g_new0 (long, size);
+		data = g_new0 (unsigned long, size);
 
 		for (i = 0; i < size; i++) {
 			GdmWindow *gw = find_window (children[i], TRUE);

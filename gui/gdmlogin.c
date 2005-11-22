@@ -220,7 +220,7 @@ static guint timed_handler_id = 0;
 
 #if FIXME
 static char *selected_browser_user = NULL;
-#endif FIXME
+#endif /*FIXME*/
 static gboolean selecting_user = TRUE;
 
 extern GList *sessions;
@@ -872,7 +872,6 @@ gdm_theme_handler (GtkWidget *widget, gpointer data)
 static void 
 gdm_login_parse_config (void)
 {
-    GList *list, *li;
     struct stat unused;
     VeConfig *config;
 	
@@ -2398,34 +2397,6 @@ gdm_login_browser_populate (void)
 				-1);
 	    g_free (label);
     }
-}
-
-static gboolean
-resize_in_time (gpointer data)
-{
-	login_window_resize (FALSE /* force */);
-	return FALSE;
-}
-
-static int
-get_double_click_time (void)
-{
-	/* FIXME: what about multihead? */
-	GtkSettings *settings = gtk_settings_get_default ();
-	int t;
-
-	g_object_get (G_OBJECT (settings),
-		      "gtk-double-click-time",
-		      &t,
-		      NULL);
-
-	/* sanity */
-	if (t < 100)
-		t = 100;
-	if (t > 1500)
-		t = 1500;
-
-	return t;
 }
 
 static void
