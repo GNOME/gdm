@@ -110,6 +110,89 @@ Ahh news...
   Priit Laes, Chao-Hsiung Liao, Ignacio Casal Quinteiro,
   Vincent van Adrighem, Funda Wang, Adam Weinberger)
 
+2.8.0.6 stuff:
+
+- Fix problem with PostSession script not always
+  getting executed when user kills the Xserver
+  with ctrl-alt-backspace.  This is caused because
+  an xioerror is generated when the clients are
+  killed and this needs to be ignored for the
+  PostSession script to be processed.  This problem
+  tended not to manifest in GDM 2.6 since the
+  call to kill the clients was made earlier.
+  However, it was still a race condition in 2.6
+  and this fix ensures that the slave will never
+  exit too early.  (Jerry G. DeLapp)
+
+- The "OK" and "Cancel" buttons in gdmlogin and
+  gdmgreeter now work consistantly.  Now the gdmlogin
+  "Cancel" button is active when the Username is
+  requested and pressing it just clears the field, so
+  it works like gdmgreeter.  Also fixed a bug in
+  gdmgreeter where a user could corrupt gdmgreeter's
+  memory by hitting cancel after authentication, which
+  could only happen if the PostLogin script caused a
+  long enough delay to allow this to happen.
+  (Brian Cameron)
+
+- No longer set tooltips for menu items in gdmlogin.
+  They are distracting and do not work with
+  accessibility.  No GNOME programs use menu tooltips
+  and it is not recommend.  (Brian Cameron)
+
+- If slave does not respond to a SIGTERM, try a
+  SIGKILL the second time.  This resolves a problem
+  where GDM sometimes stops managing a display
+  because it just keeps waiting for the slave to
+  die.  See bug #113902.  (Vaclav Smilauer).
+
+- GDM now uses VT_GETSTATE for peeking VT freeness
+
+- Now GDM warns correctly about caps lock if an
+  alternate keymap is enabled.  kbGetState is used
+  instead of XkbGetIndicator State.
+  (Sebastien Bacher)
+
+- Now set cursor and watch as soon as GTK+ is
+  initialized and the configure file read, which
+  shortens the amount of time the backgrounds is
+  Xserver default grey.  Cleaned up the code so
+  that all programs use a common function to set the
+  background.  (Brian Cameron)
+
+- Fix reading of config file in gdmflexiserver so
+  it properly reads in the available servers.
+  (Christiaan Welvaart)
+
+- Fixed race condition where a variable used by
+  the signal handlers was not being set until after
+  the signal handlers were setup.  Now it is set
+  before avoiding a race.  (Simon Bowden/Brian
+  Cameron)
+
+- Define SoundProgram to be /usr/bin/autoplay on
+  Solaris instead of /usr/bin/play, since
+  /usr/bin/play doesn't exist on Solaris.
+
+- Check for XInput fixed in configure and add a
+  check for libgen.h to avoid compiler warnings.
+  (Brian Cameron)
+
+- Updated check in configure for socklen_t so it
+  includes sys/socket.h to better support BSD
+  platforms that define socklen_t there.
+  (dmacks@netspace.org)
+
+- No longer link vicious-extensions with the gesture
+  listeners, since they don't use vicious-extensions.
+
+- Translation updates (Takeshi AIHANA, Runa Bhattacharjee,
+  Dan Damian, Maxim Dziumanenko, Laurent Dhima,
+  Theppitak Karoonboonyanan, Priit Laes, Inaki Larranaga,
+  Roozbeh Pournader, Ignacio Casal Quinteiro, Christian
+  Rose, Ivar Smolin, Marcel Telka, Ilkka Tuohela, Miloslav
+  Trmac)
+
 2.8.0.5 stuff:
 
 - gdmflexiserver supports --startnew option so that
