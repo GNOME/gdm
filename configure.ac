@@ -133,6 +133,10 @@ AC_CHECK_TYPE(socklen_t,,
 
 AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 
+dnl checks needed for Darwin compatibility to linux **environ.
+AC_CHECK_HEADERS(crt_externs.h)
+AC_CHECK_FUNCS(_NSGetEnviron)
+
 GNOME_COMPILE_WARNINGS
 CFLAGS="$CFLAGS $WARN_CFLAGS"
 
@@ -453,7 +457,6 @@ if test x$can_use_setpenv = xyes ; then
 	AC_DEFINE(CAN_USE_SETPENV,,[Define this variable if the code to use
 		the setpenv function can be compiled and used])
 fi
-
 
 #
 # Can we use BSD's setusercontext
