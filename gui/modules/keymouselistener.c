@@ -24,10 +24,6 @@
 #include <string.h>
 #include <syslog.h>
 
-#ifdef HAVE_CRT_EXTERNS_H
-#include <crt_externs.h>
-#endif
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
@@ -100,11 +96,7 @@ typedef struct {
 
 static int xinput_types[N_INPUT_TYPES];
 
-#ifdef HAVE__NSGETENVIRON
-#define environ (*_NSGetEnviron())
-#else
 extern char **environ;
-#endif
 
 static gboolean debug_gestures = FALSE;
 static GSList   *gesture_list  = NULL;
