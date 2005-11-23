@@ -23,6 +23,10 @@
 #include <syslog.h>
 #include <math.h>
 
+#ifdef HAVE_CRT_EXTERNS_H
+#include <crt_externs.h>
+#endif
+
 #include <glib.h>
 #include <gmodule.h>
 #include <gdk/gdk.h>
@@ -83,7 +87,13 @@ typedef struct {
 
 static int lineno = 0;
 static GSList *binding_list = NULL;
+
+#ifdef HAVE__NSGETENVIRON
+#define environ (*_NSGetEnviron())
+#else
 extern char **environ;
+#endif
+
 static guint enter_signal_id = 0;
 static guint leave_signal_id = 0;
 static int xinput_type_motion = 0;
