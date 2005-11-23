@@ -340,20 +340,37 @@ setup_background_color (gchar *bg_color)
 gchar *
 gdm_get_welcomemsg (void)
 {
-        char *welcomemsg;
+        gchar *welcomemsg;
+	gchar *tempstr;
 
+	/*
+	 * Translate the welcome msg in the client program since it is running as the
+	 * user and therefore has the appropriate language environment set.
+	 */
         if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
                 if (gdm_config_get_bool (GDM_KEY_DEFAULT_REMOTE_WELCOME))
                         welcomemsg = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
-                else
-                        welcomemsg = g_strdup
-			   (gdm_config_get_translated_string (GDM_KEY_REMOTE_WELCOME));
+                else {
+			tempstr = gdm_config_get_translated_string (GDM_KEY_REMOTE_WELCOME);
+
+			if (tempstr == NULL ||
+			    strcmp (ve_sure_string (tempstr), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
+				welcomemsg = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
+			else
+				welcomemsg = g_strdup (tempstr);
+		}
         } else {
                 if (gdm_config_get_bool (GDM_KEY_DEFAULT_WELCOME))
                         welcomemsg = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
-                else
-                        welcomemsg = g_strdup (
-			  gdm_config_get_translated_string (GDM_KEY_WELCOME));
+                else {
+                        tempstr = gdm_config_get_translated_string (GDM_KEY_WELCOME);
+
+			if (tempstr == NULL ||
+			    strcmp (ve_sure_string (tempstr), GDM_DEFAULT_WELCOME_MSG) == 0)
+				welcomemsg = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+			else
+				welcomemsg = g_strdup (tempstr);
+		}
         }
 
 	return welcomemsg;

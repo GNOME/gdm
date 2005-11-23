@@ -845,25 +845,27 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
      else
         *setting = g_strdup (value);
  
-   /* Default Welcome Message */
+   /*
+    * Default Welcome Message.  Don't translate here since the
+    * GDM user may not be running with the same language as the user.
+    * The slave programs will translate the string.
+    */
    } else if (is_key (key, GDM_KEY_WELCOME)) {
       if (value != NULL)
-         if (strcmp (ve_sure_string (value), GDM_DEFAULT_WELCOME_MSG) == 0)
-            *setting = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
-         else
-            *setting = g_strdup (value);
+         *setting = g_strdup (value);
       else
-         *setting = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+         *setting = g_strdup (GDM_DEFAULT_WELCOME_MSG);
 
-   /* Default Remote Welcome Message */
+   /*
+    * Default Remote Welcome Message.  Don't translate here since the 
+    * GDM user may not be running with the same language as the user.
+    * The slave programs will translate the string.
+    */
    } else if (is_key (key, GDM_KEY_REMOTE_WELCOME)) {
       if (value != NULL)
-         if (strcmp (ve_sure_string (value), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
-            *setting = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
-         else
-            *setting = g_strdup (value);
+         *setting = g_strdup (value);
       else
-         *setting = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
+         *setting = g_strdup (GDM_DEFAULT_REMOTE_WELCOME_MSG);
 
    /* All others */
    } else {
@@ -1113,7 +1115,7 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
                    gdm_config_add_hash (transkey, transvalueptr, &string_type);
                 }
                 transvalue = ve_config_get_string (cfg, transkey);
-                _gdm_set_value_string (transkey, transvalue, TRUE);
+                _gdm_set_value_string (transkey, transvalue, doing_update);
              }
              list = list->next;
           }
