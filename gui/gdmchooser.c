@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* gdmchooser discovers hosts running XDMCP on the local network(s),
+/* gdmchooser discovers hosts running XDMCP on the local network (s),
  * presents a list of them and allows the user to choose one. The
  * selected hostname will be printed on stdout. */
 
@@ -510,7 +510,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
         if ( ! is_loopback_addr ((gchar *) &clnt6_sa.sin6_addr, AF_INET6)) {
 	    clnt6_sa.sin6_scope_id = 0;
 	
-	    getnameinfo ((struct sockaddr *)&clnt6_sa, sizeof (struct sockaddr_in6), hbuf, sizeof(hbuf), NULL, 0, 0);
+	    getnameinfo ((struct sockaddr *)&clnt6_sa, sizeof (struct sockaddr_in6), hbuf, sizeof (hbuf), NULL, 0, 0);
 
 	    hostname = hbuf;
 
@@ -691,7 +691,7 @@ gdm_chooser_find_bcaddr (void)
 	}
 
 	ifr = ifc.ifc_req;
-	num = ifc.ifc_len / sizeof(struct ifreq);
+	num = ifc.ifc_len / sizeof (struct ifreq);
 	for (i = 0 ; i < num ; i++) {
 		if ( ! ve_string_empty (ifr[i].ifr_name)) {
 			struct ifreq ifreq;
@@ -832,7 +832,7 @@ do_ping (gboolean full)
 		    char tmpaddr[30];
 		    struct in6_addr in6;
 
-		    sprintf (tmpaddr, "::ffff:%s", inet_ntoa(((struct sockaddr_in *)(ia))->sin_addr));
+		    sprintf (tmpaddr, "::ffff:%s", inet_ntoa (((struct sockaddr_in *)(ia))->sin_addr));
 		    inet_pton (AF_INET6, tmpaddr, &in6);
 		    memcpy (sock6.sin6_addr.s6_addr, in6.s6_addr, sizeof (struct in6_addr));
 		    XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock6, (int) sizeof (struct sockaddr_in6));
@@ -863,7 +863,7 @@ do_ping (gboolean full)
 		    char tmpaddr[30];
 		    struct in6_addr in6;
 
-		    sprintf (tmpaddr, "::ffff:%s", inet_ntoa(((struct sockaddr_in *)(ia))->sin_addr));
+		    sprintf (tmpaddr, "::ffff:%s", inet_ntoa (((struct sockaddr_in *)(ia))->sin_addr));
 		    inet_pton (AF_INET6, tmpaddr, &in6);
 
 		    if (full || ! gdm_host_known ((char *)&((struct sockaddr_in6 *)ia)->sin6_addr, AF_INET6)) {
@@ -961,11 +961,11 @@ from_hex (const char *s, char *d, int len)
     {
       if (!ishexdigit(*s))
  return 1;
-      t = HexChar (*s) << 4;
+      t = HexChar(*s) << 4;
       s++;
       if (!ishexdigit(*s))
  return 1;
-      t += HexChar (*s);
+      t += HexChar(*s);
       s++;
       *d++ = t;
       len -= 2;
@@ -1105,7 +1105,7 @@ gdm_chooser_xdmcp_init (char **hosts)
 #endif
     if ( ! have_ipv6) {
 	if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) == -1) {
-	    gdm_chooser_abort ("Could not create socket()!");
+	    gdm_chooser_abort ("Could not create socket ()!");
 	}
     }
 
@@ -1137,7 +1137,7 @@ gdm_chooser_xdmcp_init (char **hosts)
 			GINT_TO_POINTER (sockfd), NULL);
     g_io_channel_unref (channel);
 
-    gdm_chooser_xdmcp_discover();
+    gdm_chooser_xdmcp_discover ();
 }
 
 static void
@@ -1353,7 +1353,7 @@ gdm_chooser_add_host (void)
 				char tmpaddr [30];
 
 				sprintf (tmpaddr, "::ffff:%s",
-				  inet_ntoa(((struct sockaddr_in *)result->ai_addr)->sin_addr));
+				  inet_ntoa (((struct sockaddr_in *)result->ai_addr)->sin_addr));
 				inet_pton (AF_INET6, tmpaddr, &qa6->sin6_addr);
 			}
 		}
@@ -1538,7 +1538,7 @@ gdm_chooser_manage (GtkButton *button, gpointer data)
     if (curhost)
       gdm_chooser_choose_host (curhost->name);
    
-    closelog();
+    closelog ();
 
     /* exit rather gtk_main_quit, it's just safer this way we don't
        have to worry about random whackiness happening */
@@ -1832,7 +1832,7 @@ gdm_chooser_signals_init (void)
 
     hup.sa_handler = ve_signal_notify;
     hup.sa_flags = 0;
-    sigemptyset(&hup.sa_mask);
+    sigemptyset (&hup.sa_mask);
     sigaddset (&hup.sa_mask, SIGCHLD);
 
     term.sa_handler = gdm_chooser_cancel;
@@ -1938,7 +1938,7 @@ main (int argc, char *argv[])
 	    exit (1);
     }
 
-    glade_init();
+    glade_init ();
 
     config_file = gdm_common_get_config_file ();
     if (config_file == NULL) {
@@ -2018,8 +2018,8 @@ main (int argc, char *argv[])
     
     gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-xnest.png", NULL);
 
-    gdm_chooser_gui_init();
-    gdm_chooser_signals_init();
+    gdm_chooser_gui_init ();
+    gdm_chooser_signals_init ();
 
     hosts = (char **)poptGetArgs (ctx);
     /* when no hosts on the command line, take them from the config */
@@ -2069,10 +2069,9 @@ main (int argc, char *argv[])
 	    gdm_common_setup_cursor (GDK_LEFT_PTR);
     }
 
-    gtk_main();
+    gtk_main ();
 
     exit (EXIT_SUCCESS);
 }
-
 
 /* EOF */

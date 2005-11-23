@@ -293,7 +293,7 @@ try_again:
 		try_again_attempts = 0;
 	}
 
-	memset(&addr, 0, sizeof(addr));
+	memset (&addr, 0, sizeof (addr));
 	strcpy (addr.sun_path, sockname);
 	addr.sun_family = AF_UNIX;
 	if G_UNLIKELY (bind (fd,

@@ -537,7 +537,7 @@ gdm_lang_read_locale_file (const char *locale_file)
 			p = strchr (name, '(');
 			if (p != NULL && p > name && *(p-1) != ' ') {
 			  *p = 0;
-			  language->name= g_strconcat(name, " (", p+1, NULL);
+			  language->name= g_strconcat (name, " (", p+1, NULL);
 			} else
 			  language->name = g_strdup (name);
  			/* only store the "lang_country" part of the locale code, so that we notice

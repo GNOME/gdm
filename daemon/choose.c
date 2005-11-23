@@ -41,6 +41,7 @@
 #include "misc.h"
 #include "choose.h"
 #include "xdmcp.h"
+#include "gdmconfig.h"
 
 static gint ipending = 0;
 static GSList *indirect = NULL;

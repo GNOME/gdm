@@ -20,7 +20,7 @@
  */
 
 #include "config.h"
-#include <string.h>		/* for memcpy() */
+#include <string.h>		/* for memcpy () */
 #include <glib.h>
 
 #ifdef __LINUX__
@@ -95,7 +95,7 @@ gdm_md5_update (struct GdmMD5Context *ctx, unsigned char const *buf, unsigned le
 	    return;
 	}
 	memcpy (p, buf, t);
-	byteReverse (ctx->in, 16);
+	byteReverse(ctx->in, 16);
 	gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
 	buf += t;
 	len -= t;
@@ -105,7 +105,7 @@ gdm_md5_update (struct GdmMD5Context *ctx, unsigned char const *buf, unsigned le
 
     while (len >= 64) {
 	memcpy (ctx->in, buf, 64);
-	byteReverse (ctx->in, 16);
+	byteReverse(ctx->in, 16);
 	gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
 	buf += 64;
 	len -= 64;
@@ -113,7 +113,7 @@ gdm_md5_update (struct GdmMD5Context *ctx, unsigned char const *buf, unsigned le
 
     /* Handle any remaining bytes of data. */
 
-    memcpy(ctx->in, buf, len);
+    memcpy (ctx->in, buf, len);
 }
 
 /*
@@ -141,14 +141,14 @@ gdm_md5_final (unsigned char digest[16], struct GdmMD5Context *ctx)
     if (count < 8) {
 	/* Two lots of padding:  Pad the first block to 64 bytes */
 	memset (p, 0, count);
-	byteReverse (ctx->in, 16);
+	byteReverse(ctx->in, 16);
 	gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
 
 	/* Now fill the next block with 56 bytes */
-	memset(ctx->in, 0, 56);
+	memset (ctx->in, 0, 56);
     } else {
 	/* Pad block to 56 bytes */
-	memset(p, 0, count - 8);
+	memset (p, 0, count - 8);
     }
     byteReverse(ctx->in, 14);
 
@@ -157,9 +157,9 @@ gdm_md5_final (unsigned char digest[16], struct GdmMD5Context *ctx)
     ((guint32 *) ctx->in)[15] = ctx->bits[1];
 
     gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
-    byteReverse ((unsigned char *) ctx->buf, 4);
+    byteReverse((unsigned char *) ctx->buf, 4);
     memcpy (digest, ctx->buf, 16);
-    memset (ctx, 0, sizeof(ctx));	/* In case it's sensitive */
+    memset (ctx, 0, sizeof (ctx));	/* In case it's sensitive */
 }
 
 

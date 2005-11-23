@@ -62,7 +62,7 @@ query_greeter_restart_handler (void)
 {
 	if (gdm_common_warn (_("Are you sure you want to restart the computer?"), "",
 			     _("_Reboot"), NULL, TRUE) == GTK_RESPONSE_YES) {
-		closelog();
+		closelog ();
 		
 		_exit (DISPLAY_REBOOT);
 	}
@@ -74,7 +74,7 @@ query_greeter_halt_handler (void)
 {
 	if (gdm_common_warn (_("Are you sure you want to shut down the computer?"), "",
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
-		closelog();
+		closelog ();
 
 		_exit (DISPLAY_HALT);
 	}
@@ -94,7 +94,7 @@ query_greeter_suspend_handler (void)
 static void
 greeter_restart_handler (void)
 {
-	closelog();
+	closelog ();
 	_exit (DISPLAY_REBOOT);
 }
 
@@ -102,7 +102,7 @@ greeter_restart_handler (void)
 static void
 greeter_halt_handler (void)
 {
-	closelog();
+	closelog ();
 	_exit (DISPLAY_HALT);
 }
 
@@ -127,7 +127,7 @@ greeter_config_handler (void)
 static void
 greeter_chooser_handler (void)
 {
-	closelog();
+	closelog ();
 	_exit (DISPLAY_RUN_CHOOSER);
 }
 
@@ -231,7 +231,7 @@ radio_button_press_event (GtkWidget *widget,
 			  gpointer data)
 {
     if (event->type == GDK_2BUTTON_PRESS) {
-        gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+        gtk_dialog_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
     }
     return FALSE;
 }
@@ -316,8 +316,8 @@ greeter_system_handler (GreeterItemInfo *info,
 				_("Shut down your computer so that "
 				  "you may turn it off."),
 				NULL);
-	  g_signal_connect(G_OBJECT(halt_radio), "button_press_event",
-			   G_CALLBACK(radio_button_press_event), NULL);
+	  g_signal_connect (G_OBJECT(halt_radio), "button_press_event",
+			    G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
 			      halt_radio,
 			      FALSE, FALSE, 4);
@@ -333,8 +333,8 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (restart_radio),
 				_("Reboot your computer"),
 				NULL);
-	  g_signal_connect(G_OBJECT(restart_radio), "button_press_event",
-			   G_CALLBACK(radio_button_press_event), NULL);
+	  g_signal_connect (G_OBJECT(restart_radio), "button_press_event",
+			    G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
 			      restart_radio,
 			      FALSE, FALSE, 4);
@@ -350,8 +350,8 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (suspend_radio),
 				_("Suspend your computer"),
 				NULL);
-	  g_signal_connect(G_OBJECT(suspend_radio), "button_press_event",
-			   G_CALLBACK(radio_button_press_event), NULL);
+	  g_signal_connect (G_OBJECT(suspend_radio), "button_press_event",
+			    G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
 			      suspend_radio,
 			      FALSE, FALSE, 4);
@@ -369,8 +369,8 @@ greeter_system_handler (GreeterItemInfo *info,
 				  "you to log into available remote "
 				  "computers, if there are any."),
 				NULL);
-	  g_signal_connect(G_OBJECT(chooser_radio), "button_press_event",
-			   G_CALLBACK(radio_button_press_event), NULL);
+	  g_signal_connect (G_OBJECT(chooser_radio), "button_press_event",
+			    G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
 			      chooser_radio,
 			      FALSE, FALSE, 4);
@@ -388,8 +388,8 @@ greeter_system_handler (GreeterItemInfo *info,
 				_("Configure GDM (this login manager). "
 				  "This will require the root password."),
 				NULL);
-	  g_signal_connect(G_OBJECT(config_radio), "button_press_event",
-			   G_CALLBACK(radio_button_press_event), NULL);
+	  g_signal_connect (G_OBJECT(config_radio), "button_press_event",
+			    G_CALLBACK(radio_button_press_event), NULL);
 	  gtk_box_pack_start (GTK_BOX (vbox),
 			      config_radio,
 			      FALSE, FALSE, 4);
@@ -421,7 +421,7 @@ greeter_system_handler (GreeterItemInfo *info,
     }
 
   if (halt_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (halt_radio)))
-    greeter_halt_handler();
+    greeter_halt_handler ();
   else if (restart_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (restart_radio)))
     greeter_restart_handler ();
   else if (suspend_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (suspend_radio)))

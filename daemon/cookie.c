@@ -58,7 +58,7 @@ struct rngs {
    { "/proc/interrupts", MAXBUFFERSIZE,	0 },
    { "/proc/loadavg", MAXBUFFERSIZE,	0 },
    { "/proc/meminfo", MAXBUFFERSIZE,	0 },
-#if defined(__i386__) || defined(__386__) || defined(_M_IX86)
+#if defined (__i386__) || defined (__386__) || defined (_M_IX86)
    /* On i386, we should not read the first 16megs */
    { "/dev/mem",      MAXBUFFERSIZE,	0x100000 },
 #else
@@ -192,9 +192,9 @@ gdm_cookie_generate (GdmDisplay *d)
     /* use some uninitialized stack space */
     gdm_md5_update (&ctx, (unsigned char *) cookie, sizeof (cookie));
 
-    pid = getppid();
+    pid = getppid ();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
-    pid = getpid();
+    pid = getpid ();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
         
     for (i = 0; i < RNGS; i++) {

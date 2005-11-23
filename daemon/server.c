@@ -130,7 +130,7 @@ jumpback_xioerror_handler (Display *disp)
 #define FBCONSOLE "/usr/openwin/bin/fbconsole"
 
 static void
-gdm_exec_fbconsole(GdmDisplay *disp)
+gdm_exec_fbconsole (GdmDisplay *disp)
 {
         pid_t pid;
         char *argv[6];
@@ -235,7 +235,7 @@ gdm_server_reinit (GdmDisplay *disp)
 
 	if (d->servstat == SERVER_RUNNING) {
 #ifdef HAVE_FBCONSOLE
-		gdm_exec_fbconsole(d);
+		gdm_exec_fbconsole (d);
 #endif
 		return TRUE;
         } else {
@@ -601,7 +601,7 @@ do_server_wait (GdmDisplay *d)
 			    struct timeval tv;
 
 			    /* Wait up to SERVER_WAIT_ALARM seconds. */
-			    tv.tv_sec = MAX (1, SERVER_WAIT_ALARM - (time(NULL) - t));
+			    tv.tv_sec = MAX (1, SERVER_WAIT_ALARM - (time (NULL) - t));
 			    tv.tv_usec = 0;
 
 			    FD_ZERO (&rfds);
@@ -736,7 +736,7 @@ gdm_server_start (GdmDisplay *disp,
     if (SERVER_IS_FLEXI (d) ||
 	treat_as_flexi) {
 	    flexi_disp = gdm_get_free_display
-		    (MAX (gdm_get_high_display_num() + 1, min_flexi_disp) /* start */,
+		    (MAX (gdm_get_high_display_num () + 1, min_flexi_disp) /* start */,
 		     d->server_uid /* server uid */);
 
 	    g_free (d->name);
@@ -808,7 +808,7 @@ gdm_server_start (GdmDisplay *disp,
 	    }
 
 #ifdef HAVE_FBCONSOLE
-            gdm_exec_fbconsole(d);
+            gdm_exec_fbconsole (d);
 #endif
 
 	    return TRUE;
@@ -869,7 +869,7 @@ gdm_server_start (GdmDisplay *disp,
 			    return gdm_server_start (d,
 						     FALSE /*try_again_if_busy */,
 						     TRUE /* treat as flexi */,
-						     gdm_get_high_display_num() + 1,
+						     gdm_get_high_display_num () + 1,
 						     flexi_retries - 1);
 		    }
 		    _exit (DISPLAY_REMANAGE);
@@ -1258,7 +1258,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		}
 
 		if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
-			gdm_error (_("%s: initgroups() failed for %s"),
+			gdm_error (_("%s: initgroups () failed for %s"),
 				   "gdm_server_spawn", pwent->pw_name);
 			_exit (SERVER_ABORT);
 		}

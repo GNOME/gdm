@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <popt.h>
 #include <unistd.h>
-#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 #include <sched.h>
 #endif
 #include <sys/types.h>
@@ -215,11 +215,11 @@ gdm_daemonify (void)
     gdm_main_pid = getpid ();
 
     if G_UNLIKELY (pid < 0) 
-	gdm_fail (_("%s: fork() failed!"), "gdm_daemonify");
+	gdm_fail (_("%s: fork () failed!"), "gdm_daemonify");
 
-    if G_UNLIKELY (setsid() < 0)
-	gdm_fail (_("%s: setsid() failed: %s!"), "gdm_daemonify",
-		  strerror(errno));
+    if G_UNLIKELY (setsid () < 0)
+	gdm_fail (_("%s: setsid () failed: %s!"), "gdm_daemonify",
+		  strerror (errno));
 
     VE_IGNORE_EINTR (chdir (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)));
     umask (022);
@@ -384,7 +384,7 @@ gdm_final_cleanup (void)
 		unixconn = NULL;
 	}
 
-	closelog();
+	closelog ();
 
 	pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
 	if (pidfile != NULL) {
@@ -392,7 +392,7 @@ gdm_final_cleanup (void)
 	}
 
 #ifdef  HAVE_LOGINDEVPERM
-    (void) di_devperm_logout("/dev/console");
+    (void) di_devperm_logout ("/dev/console");
 #endif  /* HAVE_LOGINDEVPERM */
 }
 
@@ -508,7 +508,7 @@ deal_with_x_crashes (GdmDisplay *d)
 				    errno = 0;
 				    ret = waitpid (extra_process, &status, WNOHANG);
 				    storeerrno = errno;
-				    if ((ret <= 0) && gdm_signal_terminthup_was_notified()) {
+				    if ((ret <= 0) && gdm_signal_terminthup_was_notified ()) {
 					    kill (-(extra_process), killsignal);
 					    killsignal = SIGKILL;
 				    }
@@ -1337,8 +1337,8 @@ gdm_make_global_cookie (void)
 
 	gdm_cookie_generate (&faked);
 
-	gdm_global_cookie = faked.cookie;
-	gdm_global_bcookie = faked.bcookie;
+	gdm_global_cookie = (unsigned char *) faked.cookie;
+	gdm_global_bcookie = (unsigned char *) faked.bcookie;
 
 	file = g_build_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), ".cookie", NULL);
 	VE_IGNORE_EINTR (unlink (file));
@@ -1454,7 +1454,7 @@ main (int argc, char *argv[])
     gdm_root_user ();
 
     /* Parse configuration file */
-    gdm_config_parse();
+    gdm_config_parse ();
 
     pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
 
@@ -1482,13 +1482,13 @@ main (int argc, char *argv[])
     }
 
     /* Become daemon unless started in -nodaemon mode or child of init */
-    if (no_daemon || getppid() == 1) {
+    if (no_daemon || getppid () == 1) {
 
 	/* Write pid to pidfile */
 	errno = 0;
 	if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
 	    errno = 0;
-	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)getpid()));
+	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)getpid ()));
 	    VE_IGNORE_EINTR (fclose (pf));
 	    if (errno != 0) {
 		    /* FIXME: how to handle this? */
@@ -1511,7 +1511,7 @@ main (int argc, char *argv[])
 	umask (022);
     }
     else
-	gdm_daemonify();
+	gdm_daemonify ();
 
 #ifdef sun
     unlink (SDTLOGIN_DIR);
@@ -1611,12 +1611,12 @@ main (int argc, char *argv[])
     gdm_debug ("gdm_main: Here we go...");
 
 #ifdef  HAVE_LOGINDEVPERM
-    di_devperm_login("/dev/console", gdm_get_gdmuid(), gdm_get_gdmgid(), NULL);
+    di_devperm_login ("/dev/console", gdm_get_gdmuid (), gdm_get_gdmgid (), NULL);
 #endif  /* HAVE_LOGINDEVPERM */
 
     /* Init XDMCP if applicable */
     if (gdm_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go)
-	gdm_xdmcp_init();
+	gdm_xdmcp_init ();
 
     create_connections ();
 
@@ -1633,10 +1633,10 @@ main (int argc, char *argv[])
     /* Accept remote connections */
     if (gdm_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
 	gdm_debug ("Accepting XDMCP connections...");
-	gdm_xdmcp_run();
+	gdm_xdmcp_run ();
     }
 
-    /* We always exit via exit(), and sadly we need to g_main_quit()
+    /* We always exit via exit (), and sadly we need to g_main_quit ()
      * at times not knowing if it's this main or a recursive one we're
      * quitting.
      */
@@ -1750,7 +1750,7 @@ send_slave_ack (GdmDisplay *d, const char *resp)
 		kill (d->slavepid, SIGUSR2);
 		/* now yield the CPU as the other process has more
 		   useful work to do then we do */
-#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 		sched_yield ();
 #endif
 	}
@@ -1770,7 +1770,7 @@ send_slave_command (GdmDisplay *d, const char *command)
 		kill (d->slavepid, SIGUSR2);
 		/* now yield the CPU as the other process has more
 		   useful work to do then we do */
-#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 		sched_yield ();
 #endif
 	}
@@ -2268,9 +2268,9 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 		/* Init XDMCP if applicable */
 		if (old_wait && gdm_get_value_bool (GDM_KEY_XDMCP)) {
-			if (gdm_xdmcp_init()) {
+			if (gdm_xdmcp_init ()) {
 				gdm_debug ("Accepting XDMCP connections...");
-				gdm_xdmcp_run();
+				gdm_xdmcp_run ();
 			}
 		}
 	} else if (strncmp (msg, GDM_SOP_WRITE_X_SERVERS " ",
@@ -2327,7 +2327,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 			send_slave_ack (d, NULL);
 		}
-	} else if (strcmp(msg, GDM_SOP_FLEXI_XSERVER) == 0) {
+	} else if (strcmp (msg, GDM_SOP_FLEXI_XSERVER) == 0) {
 		handle_flexi_server (NULL, TYPE_FLEXI, gdm_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
@@ -2575,7 +2575,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		NEVER_FAILS_seteuid (0);
 
 		if (setegid (pw->pw_gid) < 0)
-			NEVER_FAILS_setegid (gdm_get_gdmgid);
+			NEVER_FAILS_setegid (gdm_get_gdmgid ());
 
 		if (seteuid (xnest_uid) < 0) {
 			if (conn != NULL)
@@ -2726,7 +2726,7 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
             return;
         }
 
-        full = strchr(key, '=');
+        full = strchr (key, '=');
         if (full == NULL || *(full+1) == 0) {
             gdm_connection_write (conn, "ERROR 3 No server string\n");
             return;
@@ -2746,7 +2746,7 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
         disp->dispstat = DISPLAY_CONFIG;
         disp->removeconf = FALSE;
 
-        if (disp_num > gdm_get_high_display_num())
+        if (disp_num > gdm_get_high_display_num ())
             gdm_set_high_display_num (disp_num);
 
         gdm_connection_write (conn, "OK\n");
@@ -2786,7 +2786,7 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
                 disp->dispstat = DISPLAY_UNBORN;
 
                 if ( ! gdm_display_manage (disp)) {
-                    gdm_display_unmanage(disp);
+                    gdm_display_unmanage (disp);
                 }
             }
         }
@@ -2838,7 +2838,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 
 		if (gdm_global_cookie != NULL &&
-		    g_ascii_strcasecmp (gdm_global_cookie, cookie) == 0) {
+		    g_ascii_strcasecmp ((char *) gdm_global_cookie, cookie) == 0) {
 			g_free (cookie);
 			GDM_CONNECTION_SET_USER_FLAG
 				(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
@@ -2947,9 +2947,9 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_free (dispname);
 		g_free (xauthfile);
 	} else if ((strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
-	                     strlen(GDM_SUP_ATTACHED_SERVERS)) == 0) ||
+	                     strlen (GDM_SUP_ATTACHED_SERVERS)) == 0) ||
 	           (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
-	                     strlen(GDM_SUP_CONSOLE_SERVERS)) == 0)) {
+	                     strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)) {
 		GString *retMsg;
 		GSList  *li;
 		const char *sep = " ";
@@ -2957,10 +2957,10 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		int     msgLen=0;
 
 		if (strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
-		             strlen(GDM_SUP_ATTACHED_SERVERS)) == 0)
+		             strlen (GDM_SUP_ATTACHED_SERVERS)) == 0)
 			msgLen = strlen (GDM_SUP_ATTACHED_SERVERS);
 		else if (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
-						  strlen(GDM_SUP_CONSOLE_SERVERS)) == 0)
+						  strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)
 			msgLen = strlen (GDM_SUP_CONSOLE_SERVERS);
 
 		key = g_strdup (&msg[msgLen]);
@@ -2972,7 +2972,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 			if ( ! disp->attached)
 				continue;
-			if (!(strlen(key)) || (g_pattern_match_simple(key, disp->command))) {
+			if (!(strlen (key)) || (g_pattern_match_simple (key, disp->command))) {
 				g_string_append_printf (retMsg, "%s%s,%s,", sep,
 				                        ve_sure_string (disp->name),
 				                        ve_sure_string (disp->login));
@@ -2987,7 +2987,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		g_string_append (retMsg, "\n");
 		gdm_connection_write (conn, retMsg->str);
-		g_free(key);
+		g_free (key);
 		g_string_free (retMsg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_ALL_SERVERS) == 0) {
 		GString *msg;
@@ -3026,7 +3026,6 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		     strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
 		const char *key = 
 			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
-		char *val;
 
 		if (! gdm_update_config ((gchar *)key))
 			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
@@ -3217,7 +3216,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		}
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
 		gdm_connection_printf (conn, "OK %d\n", gdm_get_cur_vt ());
 #else
 		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
@@ -3243,7 +3242,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		}
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
 		gdm_change_vt (vt);
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
@@ -3263,9 +3262,9 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
         key = g_strdup (&msg[strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")]);
         g_strstrip (key);
 
-        handle_dynamic_server(conn, DYNAMIC_ADD, key);
+        handle_dynamic_server (conn, DYNAMIC_ADD, key);
 
-        g_free(key);
+        g_free (key);
 
     } else if (strncmp (msg, GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ",
                         strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")) == 0) {
@@ -3274,21 +3273,21 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
         key = g_strdup (&msg[strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")]);
         g_strstrip (key);
 
-        handle_dynamic_server(conn, DYNAMIC_REMOVE, key);
+        handle_dynamic_server (conn, DYNAMIC_REMOVE, key);
 
-        g_free(key);
+        g_free (key);
 
     } else if (strncmp (msg, GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ",
-                        strlen(GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
+                        strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
 
         char *key;
 
         key = g_strdup (&msg[strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")]);
         g_strstrip (key);
 
-        handle_dynamic_server(conn, DYNAMIC_RELEASE, key);
+        handle_dynamic_server (conn, DYNAMIC_RELEASE, key);
 
-        g_free(key);
+        g_free (key);
 
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");

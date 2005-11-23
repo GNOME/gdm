@@ -90,7 +90,7 @@ get_free_display (void)
 			serv6_addr.sin6_addr =  in6addr_loopback;
 			serv6_addr.sin6_port = htons (6000 + i);
 
-			if (connect (sock, (struct sockaddr *)&serv6_addr, sizeof(serv6_addr)) >= 0 ||  errno != ECONNREFUSED) {
+			if (connect (sock, (struct sockaddr *)&serv6_addr, sizeof (serv6_addr)) >= 0 ||  errno != ECONNREFUSED) {
 				VE_IGNORE_EINTR (close (sock));
 				continue;
 			      }
@@ -265,7 +265,7 @@ make_us_an_exec_vector (const char *xnest)
 	gboolean got_font_path = FALSE;
 	char *font_path = NULL;
 
-	if( ! ve_string_empty (xnest_binary))
+	if ( ! ve_string_empty (xnest_binary))
 		xnest = xnest_binary;
 
 	if (ve_string_empty (xnest))
@@ -468,7 +468,6 @@ main (int argc, char *argv[])
 	const char **args;
 	char *xnest;
 	char **execvec;
-	gchar *config_file, *config_prefix;
 	struct sigaction term;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);

@@ -105,8 +105,8 @@ get_random_theme ()
     for (size = 0; vec[size] != NULL; size++) {}
 
 	/* Get Random Theme from list */
-	srand ( time(NULL) );
-	i = rand() % size;
+	srand (time (NULL));
+	i = rand () % size;
 	theme = g_strdup (vec[i]);
     g_strfreev (vec);
 
@@ -245,7 +245,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	session = greeter_session_lookup (tmp);
 	g_free (tmp);
 
-	if (greeter_save_session() == GTK_RESPONSE_CANCEL) {
+	if (greeter_save_session () == GTK_RESPONSE_CANCEL) {
 	     printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
 	} else {
 	    tmp = ve_locale_from_utf8 (session);
@@ -260,7 +260,7 @@ greeter_ctrl_handler (GIOChannel *source,
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	buf[len-1] = '\0';
 	language = greeter_language_get_language (buf);
-	if (greeter_language_get_save_language() == GTK_RESPONSE_CANCEL)
+	if (greeter_language_get_save_language () == GTK_RESPONSE_CANCEL)
 	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
 	else
 	    printf ("%c%s\n", STX, language);
@@ -271,7 +271,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SSESS:
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (greeter_save_session() == GTK_RESPONSE_YES)
+	if (greeter_save_session () == GTK_RESPONSE_YES)
 	  printf ("%cY\n", STX);
 	else
 	  printf ("%c\n", STX);
@@ -282,7 +282,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SLANG:
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (greeter_language_get_save_language() == GTK_RESPONSE_YES)
+	if (greeter_language_get_save_language () == GTK_RESPONSE_YES)
 	    printf ("%cY\n", STX);
 	else
 	    printf ("%c\n", STX);
@@ -988,7 +988,7 @@ main (int argc, char *argv[])
 
   hup.sa_handler = ve_signal_notify;
   hup.sa_flags = 0;
-  sigemptyset(&hup.sa_mask);
+  sigemptyset (&hup.sa_mask);
   sigaddset (&hup.sa_mask, SIGCHLD);
   
   if (sigaction (SIGHUP, &hup, NULL) < 0) 
@@ -996,7 +996,7 @@ main (int argc, char *argv[])
 
   term.sa_handler = greeter_done;
   term.sa_flags = 0;
-  sigemptyset(&term.sa_mask);
+  sigemptyset (&term.sa_mask);
   sigaddset (&term.sa_mask, SIGCHLD);
   
   if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) 

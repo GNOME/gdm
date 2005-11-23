@@ -73,7 +73,7 @@ static	adt_session_data_t      *adt_ah = NULL;    /* audit session handle */
 /*
  * audit_success_login - audit successful login
  *
- *	Entry	process audit context established -- i.e., pam_setcred()
+ *	Entry	process audit context established -- i.e., pam_setcred ()
  *			called.
  *		pw_change == PW_TRUE, if successful password change audit
  *				      required.
@@ -82,7 +82,7 @@ static	adt_session_data_t      *adt_ah = NULL;    /* audit session handle */
  *	Exit	ADT_login (ADT_SUCCESS) audit record written
  *		pw_change == PW_TRUE, ADT_passwd (ADT_SUCCESS) audit
  *			record written.
- *		adt_ah = audit session established for audit_logout();
+ *		adt_ah = audit session established for audit_logout ();
  *	
  */
 static void
@@ -93,7 +93,7 @@ audit_success_login (int pw_change, struct passwd *pwent)
 	if (adt_start_session (&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_start_session(ADT_login): %m");
+		    "adt_start_session (ADT_login): %m");
 		return;
 	}
 
@@ -101,15 +101,15 @@ audit_success_login (int pw_change, struct passwd *pwent)
 	    pwent->pw_uid, pwent->pw_gid, NULL, ADT_USER) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_set_user(ADT_login, %s): %m", pwent->pw_name);
+		    "adt_set_user (ADT_login, %s): %m", pwent->pw_name);
 	}
 	if ((event = adt_alloc_event (adt_ah, ADT_login)) == NULL) {
 
-		syslog (LOG_AUTH | LOG_ALERT, "adt_alloc_event(ADT_login): %m");
-	} else if (adt_put_event(event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
+		syslog (LOG_AUTH | LOG_ALERT, "adt_alloc_event (ADT_login): %m");
+	} else if (adt_put_event (event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_put_event(ADT_login, ADT_SUCCESS): %m");
+		    "adt_put_event (ADT_login, ADT_SUCCESS): %m");
 	}
 
 	if (pw_change == PW_TRUE) {
@@ -119,7 +119,7 @@ audit_success_login (int pw_change, struct passwd *pwent)
 		if ((event = adt_alloc_event (adt_ah, ADT_passwd)) == NULL) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_alloc_event(ADT_passwd): %m");
+			    "adt_alloc_event (ADT_passwd): %m");
 		} else if (adt_put_event (event, ADT_SUCCESS,
 		    ADT_SUCCESS) != 0) {
 
@@ -162,15 +162,15 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 	if (did_setcred == TRUE) {
 		if (adt_start_session (&ah, NULL, ADT_USE_PROC_DATA) != 0) {
 
-			syslog(LOG_AUTH | LOG_ALERT,
-			    "adt_start_session(ADT_login, ADT_FAILURE): %m");
+			syslog (LOG_AUTH | LOG_ALERT,
+			    "adt_start_session (ADT_login, ADT_FAILURE): %m");
 			return;
 		}
 	} else {
 		if (adt_start_session (&ah, NULL, 0) != 0) {
 		
-			syslog(LOG_AUTH | LOG_ALERT,
-			    "adt_start_session(ADT_login, ADT_FAILURE): %m");
+			syslog (LOG_AUTH | LOG_ALERT,
+			    "adt_start_session (ADT_login, ADT_FAILURE): %m");
 			return;
 		}
 		if (d->attached) {
@@ -178,14 +178,14 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 			if (adt_load_ttyname ("/dev/console", &tid) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_loadhostname(localhost): %m");
+				    "adt_loadhostname (localhost): %m");
 			}
 		} else {
 			/* login from a remote host */
 			if (adt_load_hostname (d->hostname, &tid) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_loadhostname(%s): %m", d->hostname);
+				    "adt_loadhostname (%s): %m", d->hostname);
 			}
 		}
 		if (adt_set_user (ah,
@@ -196,7 +196,7 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		    tid, ADT_NEW) != 0) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_set_user(%s): %m",
+			    "adt_set_user (%s): %m",
 			    pwent ? pwent->pw_name : "ADT_NO_ATTRIB");
 		}
 	}
@@ -205,11 +205,11 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		syslog (LOG_AUTH | LOG_ALERT,
 		    "adt_alloc_event (ADT_login, ADT_FAILURE): %m");
 		goto done;
-	} else if (adt_put_event(event, ADT_FAILURE,
+	} else if (adt_put_event (event, ADT_FAILURE,
 	    ADT_FAIL_PAM + pamerr) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_put_event(ADT_login(ADT_FAIL, %s): %m",
+		    "adt_put_event (ADT_login (ADT_FAIL, %s): %m",
 		    pam_strerror (pamh, pamerr));
 	}
 	if (pw_change != PW_FALSE) {
@@ -219,7 +219,7 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		if ((event = adt_alloc_event (ah, ADT_passwd)) == NULL) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_alloc_event(ADT_passwd): %m");
+			    "adt_alloc_event (ADT_passwd): %m");
 			goto done;
 		}
 		if (pw_change == PW_TRUE) {
@@ -227,7 +227,7 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 			    ADT_SUCCESS) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_put_event(ADT_passwd, ADT_SUCCESS): "
+				    "adt_put_event (ADT_passwd, ADT_SUCCESS): "
 				    "%m");
 			}
 		} else if (pw_change == PW_FAILED) {
@@ -235,7 +235,7 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 			    ADT_FAIL_PAM + pamerr) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_put_event(ADT_passwd, ADT_FAILURE): "
+				    "adt_put_event (ADT_passwd, ADT_FAILURE): "
 				    "%m");
 			}
 		}
@@ -250,7 +250,7 @@ done:
 	    (adt_set_proc (ah) != 0)) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_put_event(ADT_login(ADT_FAILURE reset, %m)");
+		    "adt_put_event (ADT_login (ADT_FAILURE reset, %m)");
 	}
 	(void) adt_end_session (ah);
 }
@@ -260,7 +260,7 @@ done:
  * audit_logout - audit user logout
  *
  *	Entry	adt_ah = audit session handle established by
- *			 audit_success_login().
+ *			 audit_success_login ().
  *
  *	Exit	ADT_logout (ADT_SUCCESS) audit record written
  *		process audit state reset.  (this process is reused for
@@ -274,14 +274,14 @@ audit_logout (void)
 
 	if ((event = adt_alloc_event (adt_ah, ADT_logout)) == NULL) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
-		    "adt_alloc_event(ADT_logout): %m");
-	} else if (adt_put_event(event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
+		syslog (LOG_AUTH | LOG_ALERT,
+		    "adt_alloc_event (ADT_logout): %m");
+	} else if (adt_put_event (event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
 
-		syslog(LOG_AUTH | LOG_ALERT,
-		    "adt_put_event(ADT_logout, ADT_SUCCESS): %m");
+		syslog (LOG_AUTH | LOG_ALERT,
+		    "adt_put_event (ADT_logout, ADT_SUCCESS): %m");
 	}
-	adt_free_event(event);
+	adt_free_event (event);
 
 	/* reset process audit state. this process is being reused.*/
 
@@ -290,7 +290,7 @@ audit_logout (void)
 	    (adt_set_proc (adt_ah) != 0)) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_set_proc(ADT_logout reset): %m");
+		    "adt_set_proc (ADT_logout reset): %m");
 	}
 	(void) adt_end_session (adt_ah);
 }
@@ -346,7 +346,7 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
             gdm_debug ("solaris_xserver_cred: could not open %s\n", pipe);
 	    return;
 	}
-        if ( fstat(fd, &statbuf) == 0 ) {
+        if (fstat (fd, &statbuf) == 0 ) {
 	   if ( ! statbuf.st_mode & S_IFIFO) {
 	      close (fd);
 	      gdm_debug ("solaris_xserver_cred: %s is not a pipe\n", pipe);
@@ -365,26 +365,26 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
 	if (initgroups (login, pwent->pw_gid) == -1) {
 	    ngroups = 0;
 	} else {
-	    ngroups = getgroups( NGROUPS_UMAX, groups);
+	    ngroups = getgroups (NGROUPS_UMAX, groups);
 	}
 
         for (i=0; i < ngroups; i++) {
             sprintf (info, "G_LIST_ID=\"%u\" ", groups[i]);
-	    nb = write (fd, info, strlen(info));
+	    nb = write (fd, info, strlen (info));
             gdm_debug ("solaris_xserver_cred: %s\n", info);
 	}
 
 	if (ngroups > 0) {
             sprintf (info, ";");
-	    write (fd, info, strlen(info));
+	    write (fd, info, strlen (info));
 	}
 	
         sprintf (info, " HOME=\"%s\" ", pwent->pw_dir);
-	nb = write (fd, info, strlen(info));
+	nb = write (fd, info, strlen (info));
         gdm_debug ("solaris_xserver_cred: %s\n", info);
 
         sprintf (info, " UID=\"%d\" EOF=\"\";", pwent->pw_uid);
-	nb = write (fd, info, strlen(info));
+	nb = write (fd, info, strlen (info));
         gdm_debug ("solaris_xserver_cred: %s\n", info);
 
 	/*
@@ -508,7 +508,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	/* PAM requested textual input with echo on */
 	case PAM_PROMPT_ECHO_ON:
- 	    if (strcmp(m, _("Username:")) == 0) {
+ 	    if (strcmp (m, _("Username:")) == 0) {
 		    if ( ! ve_string_empty (selected_user)) {
 			    /* Sometimes we are just completely on crack,
 			       and pam asks for the username even if we
@@ -973,7 +973,7 @@ authenticate_again:
 
 #ifdef  HAVE_ADT
 	   /*
-	    * map console login not allowed as a pam_acct_mgmt() failure
+	    * map console login not allowed as a pam_acct_mgmt () failure
 	    * indeed that's where these checks should be made.
 	    */
 	    pamerr = PAM_PERM_DENIED;
@@ -1032,7 +1032,7 @@ authenticate_again:
 					    "Please contact your system administrator."));
 #ifdef  HAVE_ADT
 	    /*
-	     * map group setup error as a pam_setcred() failure
+	     * map group setup error as a pam_setcred () failure
 	     * indeed that's where this should be done.
 	     */
 	    pamerr = PAM_SYSTEM_ERR;
@@ -1315,7 +1315,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 			     "Please contact your system administrator."));
 #ifdef  HAVE_ADT
 	    /*
-	     * map group setup error as a pam_setcred() failure
+	     * map group setup error as a pam_setcred () failure
 	     * indeed that's where this should be done.
 	     */
 	    pamerr = PAM_SYSTEM_ERR;
@@ -1473,8 +1473,8 @@ gdm_verify_cleanup (GdmDisplay *d)
 		if (old_opened_session && old_did_setcred && d->attached) {
 			(void) di_devperm_logout ("/dev/console");
 			/* give it back to gdm user */
-			(void) di_devperm_login ("/dev/console", gdm_get_gdmuid(),
-				gdm_get_gdmgid(), NULL);
+			(void) di_devperm_login ("/dev/console", gdm_get_gdmuid (),
+				gdm_get_gdmgid (), NULL);
 		}
 #endif  /* HAVE_LOGINDEVPERM */
 

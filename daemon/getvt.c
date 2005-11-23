@@ -44,7 +44,7 @@
 #include <sys/consio.h>
 
 static const char*
-__itovty(int val)
+__itovty (int val)
 {
 	static char str[8];
 	char* next = str + sizeof (str) - 1;
@@ -67,7 +67,7 @@ open_vt (int vtno)
 #if defined (__linux__)
 	vtname = g_strdup_printf ("/dev/tty%d", vtno);
 #elif defined (__FreeBSD__) || defined (__DragonFly__)
-	vtname = g_strdup_printf ("/dev/ttyv%s", __itovty(vtno - 1));
+	vtname = g_strdup_printf ("/dev/ttyv%s", __itovty (vtno - 1));
 #endif
 	do {
 		errno = 0;
@@ -147,7 +147,7 @@ get_free_vt_freebsd_dragonfly (int *vtfd)
 	if (fd < 0)
 		return -1;
 
-	if ((ioctl(fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
+	if ((ioctl (fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
 		VE_IGNORE_EINTR (close (fd));
 		return -1;
 	}
@@ -163,7 +163,7 @@ get_free_vt_freebsd_dragonfly (int *vtfd)
 		to_close_vts = g_list_prepend (to_close_vts,
 					       GINT_TO_POINTER (fdv));
 
-		if (ioctl(fd, VT_OPENQRY, &vtno) == -1) {
+		if (ioctl (fd, VT_OPENQRY, &vtno) == -1) {
 			vtno = -1;
 			goto cleanup;
 		}

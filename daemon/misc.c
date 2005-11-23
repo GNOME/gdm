@@ -79,52 +79,49 @@ have_ipv6_solaris (void)
           struct lifreq *ifr;   
           char          *ifreqs;
           
-          /* First, try the <AB>classic<BB> way
-           */
+          /* First, try the <AB>classic<BB> way */
           s = socket (AF_INET6, SOCK_DGRAM, 0);
           if (s < 0) return FALSE;
-          close(s);
+          close (s);
 
           s = socket (AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
 
-          /* Ok, the system is able to create IPv6 sockets, so
+          /*
+           * Ok, the system is able to create IPv6 sockets, so
            * lets check if IPv6 is configured in the machine
            */
           ln.lifn_family=AF_UNSPEC;
           ln.lifn_flags=ln.lifn_count=0; 
 
-          ret = ioctl(s, SIOCGLIFNUM, &ln);
+          ret = ioctl (s, SIOCGLIFNUM, &ln);
           if (ret == -1) {
-                        perror("ioctl SIOCGLIFNUM");
+                        perror ("ioctl SIOCGLIFNUM");
                         return FALSE;
           }
 
-          /* Alloc the memory and get the configuration
-           */
+          /* Alloc the memory and get the configuration */
           ifc.lifc_flags  = 0; 
           ifc.lifc_family = AF_UNSPEC;
-          ifc.lifc_len    = ln.lifn_count * sizeof(struct lifreq);
+          ifc.lifc_len    = ln.lifn_count * sizeof (struct lifreq);
 
           ifreqs = (char *) malloc (ifc.lifc_len);
           ifc.lifc_buf = ifreqs;
 
           if (ioctl (s, SIOCGLIFCONF, &ifc) < 0) {
-                        perror("ioctl SIOCGLIFCONF");
+                        perror ("ioctl SIOCGLIFCONF");
                         return FALSE;
           }
 
-          /* Check each interface
-           */
+          /* Check each interface */
           ifr  = ifc.lifc_req;
           ret  = FALSE;
 
           for (i = ifc.lifc_len/sizeof (struct lifreq); --i >= 0; ifr++) {
                 struct sockaddr_in *sin;
 
-                        /* Check the address
-                         */
+                        /* Check the address */
                         if (ioctl (s, SIOCGLIFFLAGS, ifr) < 0) {
-                                   // perror("ioctl SIOCGLIFADDR");
+                                   /* perror ("ioctl SIOCGLIFADDR"); */
                                    continue;
                         }
 
@@ -135,10 +132,9 @@ have_ipv6_solaris (void)
                                    break;
                         }
 
-                        /* Check the interface flags
-                         */
+                        /* Check the interface flags */
                         if (ioctl (s, SIOCGLIFFLAGS, (char *) ifr) < 0) {
-                                   // perror("ioctl SIOCGLIFFLAGS");
+                                   /* perror ("ioctl SIOCGLIFFLAGS"); */
                                    continue;
                         }
 
@@ -148,10 +144,9 @@ have_ipv6_solaris (void)
                         }
           }
           
-          /* Clean up
-           */
+          /* Clean up */
           free (ifreqs);
-          close(s);
+          close (s);
 
           return ret;
 }
@@ -163,7 +158,7 @@ static gboolean have_ipv6 (void)
         static gboolean has_ipv6 = -1;
 
 #ifdef sun
-        has_ipv6 = have_ipv6_solaris();
+        has_ipv6 = have_ipv6_solaris ();
 #else
         if (has_ipv6 != -1) return has_ipv6;
 
@@ -202,7 +197,6 @@ do_syslog (int type, const char *s)
  * Logs fatal error condition and aborts master daemon.  Also sleeps
  * for 30 seconds to avoid looping if gdm is started by init.  
  */
-
 void 
 gdm_fail (const gchar *format, ...)
 {
@@ -229,8 +223,7 @@ gdm_fail (const gchar *format, ...)
 	    /* FIXME: is this all fine? */
 	    gdm_sigchld_block_push ();
 	    if (extra_process > 1 && extra_process != getpid ()) {
-		    /* we sigterm extra processes, and we
-		     * don't wait */
+		    /* we sigterm extra processes, and we don't wait */
 		    kill (-(extra_process), SIGTERM);
 		    extra_process = 0;
 	    }
@@ -240,7 +233,7 @@ gdm_fail (const gchar *format, ...)
     closelog ();
 
     /* Slow down respawning if we're started from init */
-    if (getppid() == 1)
+    if (getppid () == 1)
 	sleep (30);
 
     exit (EXIT_FAILURE);
@@ -254,7 +247,6 @@ gdm_fail (const gchar *format, ...)
  *
  * Log non-fatal information to syslog
  */
-
 void 
 gdm_info (const gchar *format, ...)
 {
@@ -270,7 +262,6 @@ gdm_info (const gchar *format, ...)
     g_free (s);
 }
 
-
 /**
  * gdm_error:
  * @format: printf style format string
@@ -278,7 +269,6 @@ gdm_info (const gchar *format, ...)
  *
  * Log non-fatal error condition to syslog
  */
-
 void 
 gdm_error (const gchar *format, ...)
 {
@@ -294,7 +284,6 @@ gdm_error (const gchar *format, ...)
     g_free (s);
 }
 
-
 /**
  * gdm_debug:
  * @format: printf style format string
@@ -302,7 +291,6 @@ gdm_error (const gchar *format, ...)
  *
  * Log debug information to syslog if debugging is enabled.
  */
-
 void 
 gdm_debug (const gchar *format, ...)
 {
@@ -353,9 +341,11 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 	g_free (s);
 }
 
-/* clear environment, but keep the i18n ones,
+/*
+ * Clear environment, but keep the i18n ones,
  * note that this leaks memory so only use before exec
- * (keep LD_* if preserve_ld_vars is true) */
+ * (keep LD_* if preserve_ld_vars is true)
+ */
 void
 gdm_clearenv_no_lang (void)
 {
@@ -382,9 +372,11 @@ gdm_clearenv_no_lang (void)
 	g_list_free (envs);
 }
 
-/* clear environment completely
+/*
+ * Clear environment completely
  * note that this leaks memory so only use before exec
- * (keep LD_* if preserve_ld_vars is true) */
+ * (keep LD_* if preserve_ld_vars is true)
+ */
 void
 gdm_clearenv (void)
 {
@@ -466,8 +458,10 @@ gdm_get_free_display (int start, uid_t server_uid)
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
 
-	/* Cap this at 3000, I'm not sure we can ever seriously
-	 * go that far */
+	/*
+         * Cap this at 3000, I'm not sure we can ever seriously
+	 * go that far
+         */
 	for (i = start; i < 3000; i ++) {
 		GSList *li;
 		struct stat s;
@@ -523,8 +517,10 @@ gdm_get_free_display (int start, uid_t server_uid)
 		VE_IGNORE_EINTR (r = stat (buf, &s));
 		if (r == 0 &&
 		    ! S_ISREG (s.st_mode)) {
-			/* Eeeek! not a regular file?  Perhaps someone
-			   is trying to play tricks on us */
+			/*
+                         * Eeeek! not a regular file?  Perhaps someone
+			 * is trying to play tricks on us
+                         */
 			continue;
 		}
 		VE_IGNORE_EINTR (fp = fopen (buf, "r"));
@@ -547,7 +543,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 			VE_IGNORE_EINTR (unlink (buf));
 		}
 
-		/* if starting as root, we'll be able to overwrite any
+		/* If starting as root, we'll be able to overwrite any
 		 * stale sockets or lock files, but a user may not be
 		 * able to */
 		if (server_uid > 0) {
@@ -577,7 +573,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 gboolean
 gdm_text_message_dialog (const char *msg)
 {
-	char *dialog; /* do we have dialog?*/
+	char *dialog; /* do we have dialog? */
 	char *msg_quoted;
 
     if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
@@ -616,7 +612,7 @@ gdm_text_message_dialog (const char *msg)
 					   dialog, msg_quoted);
 		argv[5] = NULL;
 
-		/* make sure gdialog wouldn't get confused */
+		/* Make sure gdialog wouldn't get confused */
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
 			g_free (dialog);
@@ -655,7 +651,7 @@ gdm_text_message_dialog (const char *msg)
 gboolean
 gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 {
-	char *dialog; /* do we have dialog?*/
+	char *dialog; /* do we have dialog? */
 	char *msg_quoted;
 
     if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
@@ -698,8 +694,10 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 					   dialog, msg_quoted);
 		argv[5] = NULL;
 
-		/* will unset DISPLAY and XAUTHORITY if they exist
-		 * so that gdialog (if used) doesn't get confused */
+		/*
+                 * Will unset DISPLAY and XAUTHORITY if they exist
+		 * so that gdialog (if used) doesn't get confused
+                 */
 		retint = gdm_exec_wait (argv, TRUE /* no display */,
 					TRUE /* de_setuid */);
 		if (retint < 0) {
@@ -792,11 +790,13 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 
 		gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
+		/*
+                 * No error checking here - if it's messed the best response
+		 * is to ignore & try to continue
+                 */
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+		gdm_open_dev_null (O_RDWR);   /* open stdout - fd 1 */
+		gdm_open_dev_null (O_RDWR);   /* open stderr - fd 2 */
 
 		if (de_setuid) {
 			gdm_desetuid ();
@@ -853,7 +853,7 @@ gdm_sigchld_block_pop (void)
 	sigchld_blocked --;
 
 	if (sigchld_blocked == 0) {
-		/* reset signal mask back */
+		/* Reset signal mask back */
 		sigprocmask (SIG_SETMASK, &sigchldblock_oldmask, NULL);
 	}
 }
@@ -879,7 +879,7 @@ gdm_sigterm_block_pop (void)
 	sigterm_blocked --;
 
 	if (sigterm_blocked == 0) {
-		/* reset signal mask back */
+		/* Reset signal mask back */
 		sigprocmask (SIG_SETMASK, &sigtermblock_oldmask, NULL);
 	}
 }
@@ -903,7 +903,7 @@ gdm_sigusr2_block_pop (void)
 	sigusr2_blocked --;
 
 	if (sigusr2_blocked == 0) {
-		/* reset signal mask back */
+		/* Reset signal mask back */
 		sigprocmask (SIG_SETMASK, &sigusr2block_oldmask, NULL);
 	}
 }
@@ -920,22 +920,28 @@ gdm_fork_extra (void)
 	if (pid < 0)
 		extra_process = 0;
 	else if (pid == 0)
-		/* unset signals here, and yet again
-		   later as the block_pop will whack
-		   our signal mask*/
+		/*
+                 * Unset signals here, and yet again
+		 * later as the block_pop will whack
+		 * our signal mask
+                 */
 		gdm_unset_signals ();
 
 	gdm_sigterm_block_pop ();
 	gdm_sigchld_block_pop ();
 
 	if (pid == 0) {
-		/* In the child setup empty mask and set all signals to
-		 * default values */
+		/*
+                 * In the child setup empty mask and set all signals to
+		 * default values
+                 */
 		gdm_unset_signals ();
 
-		/* Also make a new process group so that we may use
+		/*
+                 * Also make a new process group so that we may use
 		 * kill -(extra_process) to kill extra process and all it's
-		 * possible children */
+		 * possible children
+                 */
 		setsid ();
 
 		/* Harmless in children, but in case we'd run
@@ -969,15 +975,19 @@ ensure_tmp_socket_dir (const char *dir)
 {
 	mode_t old_umask;
 
-	/* The /tmp/.ICE-unix / .X11-unix check, note that we do
+	/*
+         * The /tmp/.ICE-unix / .X11-unix check, note that we do
 	 * ignore errors, since it's not deadly to run
-	 * if we can't perform this task :) */
+	 * if we can't perform this task :)
+         */
 	old_umask = umask (0);
 
         if G_UNLIKELY (mkdir (dir, 01777) != 0) {
-		/* if we can't create it, perhaps it
-		   already exists, in which case ensure the
-		   correct permissions */
+		/*
+                 * If we can't create it, perhaps it
+		 * already exists, in which case ensure the
+		 * correct permissions
+                 */
 		struct stat s;
 		int r;
 		VE_IGNORE_EINTR (r = lstat (dir, &s));
@@ -986,8 +996,10 @@ ensure_tmp_socket_dir (const char *dir)
 			VE_IGNORE_EINTR (chown (dir, 0, 0));
 			VE_IGNORE_EINTR (chmod (dir, 01777));
 		} else {
-			/* There is a file/link/whatever of the same name?
-			   whack and try mkdir */
+			/*
+                         * There is a file/link/whatever of the same name?
+			 * whack and try mkdir
+                         */
 			VE_IGNORE_EINTR (unlink (dir));
 			mkdir (dir, 01777);
 		}
@@ -996,10 +1008,12 @@ ensure_tmp_socket_dir (const char *dir)
 	umask (old_umask);
 }
 
-/* done on startup and when running display_manage
+/*
+ * Done on startup and when running display_manage
  * This can do some sanity ensuring, one of the things it does now is make
  * sure /tmp/.ICE-unix and /tmp/.X11-unix exist and have the correct
- * permissions */
+ * permissions
+ */
 void
 gdm_ensure_sanity (void)
 {
@@ -1040,7 +1054,7 @@ gdm_peek_local_address_list (void)
 #endif
 #endif
 
-	/* don't check more then every 5 seconds */
+	/* Don't check more then every 5 seconds */
 	if (last_time + 5 > time (NULL))
 		return the_list;
 
@@ -1092,7 +1106,7 @@ gdm_peek_local_address_list (void)
 #else  /* ENABLE_IPV6 */
 
 #ifdef SIOCGIFCONF
-/* Create an IPv4 socket to pick IPv4 addresses */
+        /* Create an IPv4 socket to pick IPv4 addresses */
 	sockfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
 
 #ifdef SIOCGIFNUM
@@ -1103,7 +1117,7 @@ gdm_peek_local_address_list (void)
 	num = 64;
 #endif
 
-	ifc.ifc_len = sizeof(struct ifreq) * num;
+	ifc.ifc_len = sizeof (struct ifreq) * num;
 	ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
 	if G_UNLIKELY (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
 		gdm_error (_("%s: Cannot get local addresses!"),
@@ -1117,7 +1131,7 @@ gdm_peek_local_address_list (void)
 	}
 
 	ifr = ifc.ifc_req;
-	num = ifc.ifc_len / sizeof(struct ifreq);
+	num = ifc.ifc_len / sizeof (struct ifreq);
 	for (; num-- > 0; ifr++) {
 		struct sockaddr_in *addr;
 
@@ -1255,15 +1269,17 @@ gdm_is_loopback_addr (struct in_addr *ia)
 gboolean
 gdm_setup_gids (const char *login, gid_t gid)
 {
-	/* FIXME: perhaps for *BSD there should be setusercontext
-	 * stuff here */
+	/*
+         * FIXME: perhaps for *BSD there should be setusercontext
+	 * stuff here
+         */
 	if G_UNLIKELY (setgid (gid) < 0)  {
 		gdm_error (_("Could not setgid %d. Aborting."), (int)gid);
 		return FALSE;
 	}
 
 	if G_UNLIKELY (initgroups (login, gid) < 0) {
-		gdm_error (_("initgroups() failed for %s. Aborting."), login);
+		gdm_error (_("initgroups () failed for %s. Aborting."), login);
 		return FALSE;
 	}
 
@@ -1278,8 +1294,8 @@ gdm_desetuid (void)
 
 #ifdef HAVE_SETRESUID
 	{
-		int setresuid(uid_t ruid, uid_t euid, uid_t suid);
-		int setresgid(gid_t rgid, gid_t egid, gid_t sgid);
+		int setresuid (uid_t ruid, uid_t euid, uid_t suid);
+		int setresgid (gid_t rgid, gid_t egid, gid_t sgid);
 		setresgid (gid, gid, gid);
 		setresuid (uid, uid, uid);
 	}
@@ -1306,7 +1322,7 @@ gdm_test_opt (const char *cmd, const char *help, const char *option)
 		char end;
 		if (p == NULL)
 			return FALSE;
-		/* must be a full word */
+		/* Must be a full word */
 		end = *(p + strlen (option));
 		if ((end >= 'a' && end <= 'z') ||
 		    (end >= 'A' && end <= 'Z') ||
@@ -1348,7 +1364,7 @@ gdm_test_opt (const char *cmd, const char *help, const char *option)
 		p = strstr (buf, option);
 		if (p == NULL)
 			continue;
-		/* must be a full word */
+		/* Must be a full word */
 		end = *(p + strlen (option));
 		if ((end >= 'a' && end <= 'z') ||
 		    (end >= 'A' && end <= 'Z') ||
@@ -1407,9 +1423,11 @@ gdm_close_all_descriptors (int from, int except, int except2)
 	struct dirent *ent;
 	GSList *openfds = NULL;
 
-	/* evil, but less evil then going to _SC_OPEN_MAX
-	   which can be very VERY large */
-	dir = opendir ("/proc/self/fd/"); /* This is the Linux dir */
+	/*
+         * Evil, but less evil then going to _SC_OPEN_MAX
+	 * which can be very VERY large
+         */
+	dir = opendir ("/proc/self/fd/");   /* This is the Linux dir */
 	if (dir == NULL)
 		dir = opendir ("/dev/fd/"); /* This is the FreeBSD dir */
 	if G_LIKELY (dir != NULL) {
@@ -1425,26 +1443,30 @@ gdm_close_all_descriptors (int from, int except, int except2)
 		closedir (dir);
 		for (li = openfds; li != NULL; li = li->next) {
 			int fd = GPOINTER_TO_INT (li->data); 
-			VE_IGNORE_EINTR (close(fd));
+			VE_IGNORE_EINTR (close (fd));
 		}
 		g_slist_free (openfds);
 	} else {
 		int i;
 		int max = sysconf (_SC_OPEN_MAX);
-		/* don't go higher then this.  This is
+		/*
+                 * Don't go higher then this.  This is
 		 * a safety measure to not hang on crazy
-		 * systems */
+		 * systems
+                 */
 		if G_UNLIKELY (max > 4096) {
 			/* FIXME: warn about this perhaps */
-			/* try an open, in case we're really
-			   leaking fds somewhere badly, this
-			   should be very high */
+			/*
+                         * Try an open, in case we're really
+			 * leaking fds somewhere badly, this
+			 * should be very high
+                         */
 			i = gdm_open_dev_null (O_RDONLY);
 			max = MAX (i+1, 4096);
 		}
 		for (i = from; i < max; i++) {
 			if G_LIKELY (i != except && i != except2)
-				VE_IGNORE_EINTR (close(i));
+				VE_IGNORE_EINTR (close (i));
 		}
 	}
 }
@@ -1455,8 +1477,10 @@ gdm_open_dev_null (mode_t mode)
 	int ret;
 	VE_IGNORE_EINTR (ret = open ("/dev/null", mode));
 	if G_UNLIKELY (ret < 0) {
-		/* never output anything, we're likely in some
-		 * strange state right now */
+		/*
+                 * Never output anything, we're likely in some
+		 * strange state right now
+                 */
 		gdm_signal_ignore (SIGPIPE);
 		VE_IGNORE_EINTR (close (2));
 		gdm_fail ("Cannot open /dev/null, system on crack!");
@@ -1651,9 +1675,11 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 		strcpy (he->hostname, he->hostname + 7);
 	}
 #else
-	/* Sometimes if we can't look things up, we could end
-	   up with a dot in the name field which would screw
-	   us up.  Weird but apparently possible */
+	/*
+         * Sometimes if we can't look things up, we could end
+	 * up with a dot in the name field which would screw
+	 * us up.  Weird but apparently possible
+         */
 	if (he_ != NULL &&
 	    he_->h_name != NULL &&
 	    he_->h_name[0] != '\0' &&
@@ -1664,7 +1690,7 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 		he->not_found = TRUE;
 		if (name != NULL)
 			he->hostname = g_strdup (name);
-		else /* either ia or name is set */
+		else /* Either ia or name is set */
 			he->hostname = g_strdup (inet_ntoa (*ia));
 	}
 
@@ -1695,10 +1721,12 @@ static struct sigaction oldterm, oldint, oldhup;
 static void
 jumpback_sighandler (int signal)
 {
-	/* this avoids a race see Note below.
-	   We want to jump back only on the first
-	   signal invocation, even if the signal
-	   handler didn't return. */
+	/*
+         * This avoids a race see Note below.
+	 * We want to jump back only on the first
+	 * signal invocation, even if the signal
+	 * handler didn't return.
+         */
 	gboolean old_do_jumpback = do_jumpback;
 	do_jumpback = FALSE;
 
@@ -1708,7 +1736,7 @@ jumpback_sighandler (int signal)
 		oldint.sa_handler (signal);
 	else if (signal == SIGHUP)
 		oldint.sa_handler (signal);
-	/* no others should be set up */
+	/* No others should be set up */
 
 	/* Note that we may not get here since
 	   the SIGTERM handler in slave.c
@@ -1777,7 +1805,7 @@ gdm_gethostbyname (const char *name)
 #endif
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
-	/* the cached address */
+	/* The cached address */
 	static GdmHostent *he = NULL;
 	static time_t last_time = 0;
 	static char *cached_hostname = NULL;
@@ -1788,7 +1816,7 @@ gdm_gethostbyname (const char *name)
 
 	if (cached_hostname != NULL &&
 	    strcmp (cached_hostname, name) == 0) {
-		/* don't check more then every 60 seconds */
+		/* Don't check more then every 60 seconds */
 		if (last_time + 60 > time (NULL))
 			return gdm_hostent_copy (he);
 	}
@@ -1811,14 +1839,14 @@ gdm_gethostbyname (const char *name)
 		getaddrinfo (name, NULL, &hints, &result);
 		do_jumpback = FALSE;
 	} else {
-               /* here we got interrupted */
+               /* Here we got interrupted */
 		result = NULL;
 	}
 #else
 		he_ = gethostbyname (name);
 		do_jumpback = FALSE;
 	} else {
-		/* here we got interrupted */
+		/* Here we got interrupted */
 		he_ = NULL;
 	}
 #endif
@@ -1859,7 +1887,7 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 #endif
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
-	/* the cached address */
+	/* The cached address */
 	static GdmHostent *he = NULL;
 	static time_t last_time = 0;
 	static struct in_addr cached_addr;
@@ -1871,14 +1899,14 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 	if (last_time != 0) {
 #ifdef ENABLE_IPV6
 		if ((ia->ss_family == AF_INET6) && (memcmp (cached_addr6.s6_addr, ((struct sockaddr_in6 *) ia)->sin6_addr.s6_addr, sizeof (struct in6_addr)) == 0)) {
-			/* don't check more then every 60 seconds */
+			/* Don't check more then every 60 seconds */
 			if (last_time + 60 > time (NULL))
 				return gdm_hostent_copy (he);
 		} else if (ia->ss_family == AF_INET)
 #endif
 		{
 			if (memcmp (&cached_addr, &(((struct sockaddr_in *)ia)->sin_addr), sizeof (struct in_addr)) == 0) {
-				/* don't check more then every 60 seconds */
+				/* Don't check more then every 60 seconds */
 				if (last_time + 60 > time (NULL))
 					return gdm_hostent_copy (he);
 			}
@@ -1906,7 +1934,10 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 
 			inet_ntop (AF_INET6, &((struct sockaddr_in6 *)ia)->sin6_addr, buffer6, sizeof (buffer6));
 
-			/* In the case of IPv6 mapped address strip the ::ffff: and lookup as an IPv4 address */
+			/*
+                         * In the case of IPv6 mapped address strip the
+                         * ::ffff: and lookup as an IPv4 address
+                         */
 			if (strncmp (buffer6, "::ffff:", 7) == 0) {
 				char *temp= (buffer6 + 7);
 				strcpy (buffer6, temp);
@@ -1923,7 +1954,7 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 
 		do_jumpback = FALSE;
 	} else {
-		/* here we got interrupted */
+		/* Here we got interrupted */
 		result = NULL;
 	}
 #else
@@ -1931,7 +1962,7 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 		he_ = gethostbyaddr ((gchar *) &(ia->sin_addr), sizeof (struct in_addr), AF_INET);
 		do_jumpback = FALSE;
 	} else {
-		/* here we got interrupted */
+		/* Here we got interrupted */
 		he_ = NULL;
 	}
 #endif
@@ -2003,7 +2034,7 @@ gdm_hostent_free (GdmHostent *he)
 	g_free (he);
 }
 
-/* like fopen with "w" */
+/* Like fopen with "w" */
 FILE *
 gdm_safe_fopen_w (const char *file)
 {
@@ -2027,7 +2058,7 @@ gdm_safe_fopen_w (const char *file)
 	return ret;
 }
 
-/* like fopen with "a+" */
+/* Like fopen with "a+" */
 FILE *
 gdm_safe_fopen_ap (const char *file)
 {
@@ -2047,7 +2078,7 @@ gdm_safe_fopen_ap (const char *file)
 				  );
 		} while G_UNLIKELY (errno == EINTR);
 	} else {
-		/* doesn't exist, open with O_EXCL */
+		/* Doesn't exist, open with O_EXCL */
 		do {
 			errno = 0;
 			fd = open (file, O_EXCL|O_CREAT|O_RDWR
@@ -2074,7 +2105,7 @@ gdm_safe_fopen_ap (const char *file)
 #endif /* RLIMIT_NLIMITS */
 #endif /* RLIM_NLIMITS */
 
-/* if we can count limits then the reset code is simple */ 
+/* If we can count limits then the reset code is simple */ 
 #ifdef NUM_OF_LIMITS
 
 static struct rlimit limits[NUM_OF_LIMITS];
@@ -2085,10 +2116,10 @@ gdm_get_initial_limits (void)
 	int i;
 
 	for (i = 0; i < NUM_OF_LIMITS; i++) {
-		/* some sane defaults */
+		/* Some sane defaults */
 		limits[i].rlim_cur = RLIM_INFINITY;
 		limits[i].rlim_max = RLIM_INFINITY;
-		/* get the limits */
+		/* Get the limits */
 		getrlimit (i, &(limits[i]));
 	}
 }
@@ -2099,13 +2130,13 @@ gdm_reset_limits (void)
 	int i;
 
 	for (i = 0; i < NUM_OF_LIMITS; i++) {
-		/* get the limits */
+		/* Get the limits */
 		setrlimit (i, &(limits[i]));
 	}
 }
 
 #else /* ! NUM_OF_LIMITS */
-/* we have to go one by one here */
+/* We have to go one by one here */
 
 #ifdef RLIMIT_CPU
 static struct rlimit limit_cpu = { RLIM_INFINITY, RLIM_INFINITY };
@@ -2279,7 +2310,7 @@ gdm_sleep_no_signal (int secs)
 		tv.tv_sec = secs;
 		tv.tv_usec = 0;
 		select (0, NULL, NULL, NULL, &tv);
-		/* don't want to use sleep since we're using alarm
+		/* Don't want to use sleep since we're using alarm
 		   for pinging */
 		secs = endtime - time (NULL);
 	}
@@ -2430,7 +2461,7 @@ gdm_ok_console_language (void)
 	if (cached)
 		return is_ok;
 
-	/* so far we should be paranoid, we're not set yet */
+	/* So far we should be paranoid, we're not set yet */
 	if (consolecannothandle == NULL)
 		return FALSE;
 

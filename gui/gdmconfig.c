@@ -104,7 +104,7 @@ gdm_config_get_result (gchar *key)
 {
 	gchar *p;
 	gchar *newkey  = g_strdup (key);
-	gchar *command = NULL;;
+	gchar *command = NULL;
 	gchar *result  = NULL;
 
 	g_strstrip (newkey);
@@ -131,7 +131,6 @@ static gchar *
 _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean show_error)
 {
 	gchar **hashretval = NULL;
-	gboolean *valueset = NULL;
 	gchar *result = NULL;
 	gchar *temp;
 
@@ -208,7 +207,6 @@ _gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *change
         const GList *li;
         char *dkey;
         char *def;
-        char *ret;
 
 	/* Strip key */
         dkey = g_strdup (key);

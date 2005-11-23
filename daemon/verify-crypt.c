@@ -24,7 +24,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#if defined(CAN_CLEAR_ADMCHG) && defined(HAVE_USERSEC_H)
+#if defined (CAN_CLEAR_ADMCHG) && defined (HAVE_USERSEC_H)
 #  include <usersec.h>
 #endif /* CAN_CLEAR_ADMCHG && HAVE_USERSEC_H */
 
@@ -37,12 +37,7 @@
 #include "slave.h"
 #include "verify.h"
 #include "errorgui.h"
-
-/* Configuration option variables */
-extern gboolean GdmAllowRoot;
-extern gboolean GdmAllowRemoteRoot;
-extern gint GdmRetryDelay;
-extern gboolean GdmDisplayLastLogin;
+#include "gdmconfig.h"
 
 static char *selected_user = NULL;
 
@@ -105,11 +100,11 @@ gdm_verify_user (GdmDisplay *d,
 {
     gchar *login, *passwd, *ppasswd;
     struct passwd *pwent;
-#if defined(HAVE_PASSWDEXPIRED) && defined(HAVE_CHPASS) \
-    || defined(HAVE_LOGINRESTRICTIONS)
+#if defined (HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS) \
+    || defined (HAVE_LOGINRESTRICTIONS)
     gchar *message = NULL;
 #endif
-#if defined(HAVE_PASSWDEXPIRED) && defined(HAVE_CHPASS)
+#if defined (HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS)
     gchar *info_msg = NULL, *response = NULL;
     gint reEnter, ret;
 #endif
@@ -140,7 +135,7 @@ authenticate_again:
 	    }
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
 
-	    if (GdmDisplayLastLogin) {
+	    if (gdm_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
 		    char *info = gdm_get_last_info (login);
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
 		    g_free (info);
@@ -177,7 +172,7 @@ authenticate_again:
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
     if (pwent == NULL) {
-	    gdm_sleep_no_signal (GdmRetryDelay);
+	    gdm_sleep_no_signal (gdm_get_value_int (GDM_KEY_RETRY_DELAY));
 	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
 
 	    print_cant_auth_errbox ();
@@ -191,7 +186,7 @@ authenticate_again:
     /* Check whether password is valid */
     if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
-	    gdm_sleep_no_signal (GdmRetryDelay);
+	    gdm_sleep_no_signal (gdm_get_value_int (GDM_KEY_RETRY_DELAY));
 	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
 
 	    print_cant_auth_errbox ();
@@ -202,8 +197,8 @@ authenticate_again:
 	    return NULL;
     }
 
-    if ( ( ! GdmAllowRoot ||
-	  ( ! GdmAllowRemoteRoot && ! local) ) &&
+    if ( ( ! gdm_get_value_bool (GDM_KEY_ALLOW_ROOT)||
+	  ( ! gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"), display);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
@@ -281,7 +276,7 @@ authenticate_again:
 	    return NULL;
     }
     
-#if defined(HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS)
+#if defined (HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS)
 
     switch (passwdexpired (login, &info_msg)) {
     case 1 :
@@ -309,7 +304,7 @@ authenticate_again:
 			    }
 		    }
 
-		    g_free(message);
+		    g_free (message);
 		    message = NULL;
 
 	    } while ( ((reEnter != 0) && (ret == 0))
@@ -322,7 +317,7 @@ authenticate_again:
 		    return NULL;
 	    }
 
-#if defined(CAN_CLEAR_ADMCHG)
+#if defined (CAN_CLEAR_ADMCHG)
 	    /* The password is changed by root, clear the ADM_CHG
 	       flag in the passwd file */
 	    ret = setpwdb (S_READ | S_WRITE);

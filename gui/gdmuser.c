@@ -250,16 +250,16 @@ setup_user (struct passwd *pwent,
 	(exclude_user == NULL ||
 	strcmp (ve_sure_string (exclude_user), pwent->pw_name)) != 0) {
 
-	    user = gdm_user_alloc(pwent->pw_name,
-				  pwent->pw_uid,
-				  pwent->pw_dir,
-				  ve_sure_string (pwent->pw_gecos),
-				  defface, read_faces);
+	    user = gdm_user_alloc (pwent->pw_name,
+				   pwent->pw_uid,
+				   pwent->pw_dir,
+				   ve_sure_string (pwent->pw_gecos),
+				   defface, read_faces);
 
 	    if ((user) &&
 		(! g_list_find_custom (*users, user, (GCompareFunc) gdm_sort_func))) {
 		cnt++;
-		*users = g_list_insert_sorted(*users, user,
+		*users = g_list_insert_sorted (*users, user,
 		     (GCompareFunc) gdm_sort_func);
 		*users_string = g_list_prepend (*users_string, g_strdup (pwent->pw_name));
 
@@ -287,7 +287,7 @@ gboolean
 gdm_is_user_valid (const char *username)
 {
     struct passwd *pwent;
-    pwent = getpwnam(username);
+    pwent = getpwnam (username);
     if (pwent != NULL)
 	return TRUE;
 
@@ -324,24 +324,24 @@ gdm_users_init (GList **users,
 
     if (gdm_config_get_bool (GDM_KEY_INCLUDE_ALL) == TRUE) {
 	    setpwent ();
-	    pwent = getpwent();
+	    pwent = getpwent ();
 	    while (pwent != NULL) {
 
-		if (! setup_user(pwent, users, users_string, excludes,
+		if (! setup_user (pwent, users, users_string, excludes,
 			exclude_user, defface, size_of_users, is_local,
 			read_faces))
 			break;
 
-		pwent = getpwent();
+		pwent = getpwent ();
 	}
 	endpwent ();
 
     } else if (found_include == TRUE) {
 	for (i=0 ; includes != NULL && includes[i] != NULL ; i++) {
-		pwent = getpwnam(includes[i]);
+		pwent = getpwnam (includes[i]);
 
 		if (pwent != NULL) {
-			if (!setup_user(pwent, users, users_string, excludes,
+			if (!setup_user (pwent, users, users_string, excludes,
 			    exclude_user, defface, size_of_users, is_local,
 			    read_faces))
 			break;

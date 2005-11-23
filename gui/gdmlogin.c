@@ -648,7 +648,7 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
     GString *str;
 
     if (s == NULL)
-	return(NULL);
+	return (NULL);
 
     hostbuf[sizeof (hostbuf) - 1] = '\0';
     if (gethostname (hostbuf, sizeof (hostbuf) - 1) < 0)
@@ -751,7 +751,7 @@ gdm_login_restart_handler (void)
 {
 	if (gdm_common_warn (_("Are you sure you want to restart the computer?"), "",
 			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
-		closelog();
+		closelog ();
 
 		gdm_kill_thingies ();
 		_exit (DISPLAY_REBOOT);
@@ -764,7 +764,7 @@ gdm_login_halt_handler (void)
 {
 	if (gdm_common_warn (_("Are you sure you want to shut down the computer?"), "",
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
-		closelog();
+		closelog ();
 
 		gdm_kill_thingies ();
 		_exit (DISPLAY_HALT);
@@ -774,7 +774,7 @@ gdm_login_halt_handler (void)
 static void
 gdm_login_use_chooser_handler (void)
 {
-	closelog();
+	closelog ();
 
 	gdm_kill_thingies ();
 	_exit (DISPLAY_RUN_CHOOSER);
@@ -1216,7 +1216,7 @@ gdm_login_session_init (GtkWidget *menu)
 			      G_CALLBACK (gdm_login_session_handler),
 			      NULL);
             gtk_widget_show (GTK_WIDGET (item));
-            item = gtk_menu_item_new();
+            item = gtk_menu_item_new ();
             gtk_widget_set_sensitive (item, FALSE);
             gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
             gtk_widget_show (GTK_WIDGET (item));
@@ -1346,7 +1346,7 @@ gdm_login_language_menu_new (void)
 		       "Language",
 		       DEFAULT_LANGUAGE);
 
-    item = gtk_menu_item_new();
+    item = gtk_menu_item_new ();
     gtk_widget_set_sensitive (item, FALSE);
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
@@ -1354,7 +1354,7 @@ gdm_login_language_menu_new (void)
     menulabel = g_strdup_printf ("_1. %s", gdm_lang_group1());
     item = gtk_menu_item_new_with_mnemonic (menulabel);
     g_free (menulabel);
-    ammenu = gtk_menu_new();
+    ammenu = gtk_menu_new ();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (ammenu));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
@@ -1362,13 +1362,13 @@ gdm_login_language_menu_new (void)
     menulabel = g_strdup_printf ("_2. %s", gdm_lang_group2());
     item = gtk_menu_item_new_with_mnemonic (menulabel);
     g_free (menulabel);
-    nzmenu = gtk_menu_new();
+    nzmenu = gtk_menu_new ();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), nzmenu);
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-    gtk_widget_show(GTK_WIDGET (item));
+    gtk_widget_show (GTK_WIDGET (item));
 
     other_menu = item = gtk_menu_item_new_with_mnemonic (_("_Other"));
-    omenu = gtk_menu_new();
+    omenu = gtk_menu_new ();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), omenu);
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
@@ -2351,7 +2351,7 @@ update_clock (gpointer data)
 	time (&the_time);
 	the_tm = localtime (&the_time);
 
-	if (gdm_common_select_time_format()) {
+	if (gdm_common_select_time_format ()) {
 		str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
 	} else {
 		/* Translators: You should translate time part as
@@ -2496,7 +2496,6 @@ gdm_login_gui_init (void)
     GtkWidget *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
     GtkWidget /**help_button,*/ *button_box;
-    gchar *greeting;
     gint rows;
     GdkPixbuf *pb;
     GtkWidget *frame;
@@ -2539,7 +2538,7 @@ gdm_login_gui_init (void)
     gtk_widget_ref (GTK_WIDGET (frame1));
     gtk_widget_show (GTK_WIDGET (frame1));
 
-    frame2 = gtk_frame_new(NULL);
+    frame2 = gtk_frame_new (NULL);
     gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
     gtk_container_set_border_width (GTK_CONTAINER (frame2), 2);
     gtk_container_add (GTK_CONTAINER (frame1), frame2);
@@ -2560,11 +2559,11 @@ gdm_login_gui_init (void)
 	    gtk_box_pack_start (GTK_BOX (mbox), handle, FALSE, FALSE, 0);
     }
 
-    menubar = gtk_menu_bar_new();
+    menubar = gtk_menu_bar_new ();
     gtk_widget_ref (GTK_WIDGET (menubar));
     gtk_box_pack_start (GTK_BOX (mbox), menubar, FALSE, FALSE, 0);
 
-    menu = gtk_menu_new();
+    menu = gtk_menu_new ();
     gdm_login_session_init (menu);
     sessmenu = gtk_menu_item_new_with_mnemonic (_("_Session"));
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), sessmenu);
@@ -2584,7 +2583,7 @@ gdm_login_gui_init (void)
 
         gboolean got_anything = FALSE;
 
-	menu = gtk_menu_new();
+	menu = gtk_menu_new ();
 
 	if (gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON)) {
 		item = gtk_menu_item_new_with_mnemonic (_("_XDMCP Chooser..."));
@@ -2888,7 +2887,7 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
 
     msg = gtk_label_new (_("Please enter your username"));
-    gtk_widget_set_name(msg, "Message");
+    gtk_widget_set_name (msg, "Message");
     gtk_label_set_line_wrap (GTK_LABEL (msg), TRUE);
     gtk_label_set_justify (GTK_LABEL (msg), GTK_JUSTIFY_LEFT);
     gtk_table_attach (GTK_TABLE (stack), msg, 0, 1, 6, 7,
@@ -2902,7 +2901,7 @@ gdm_login_gui_init (void)
     gtk_widget_show (msg);
 
     auto_timed_msg = gtk_label_new ("");
-    gtk_widget_set_name(auto_timed_msg, "Message");
+    gtk_widget_set_name (auto_timed_msg, "Message");
     gtk_label_set_line_wrap (GTK_LABEL (auto_timed_msg), TRUE);
     gtk_label_set_justify (GTK_LABEL (auto_timed_msg), GTK_JUSTIFY_LEFT);
     gtk_table_attach (GTK_TABLE (stack), auto_timed_msg, 0, 1, 7, 8,
@@ -3284,7 +3283,7 @@ else
             gdm_config_reload_string (GDM_KEY_REMOTE_WELCOME) ||
             gdm_config_reload_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME)) {
 
-		gdm_set_welcomemsg();
+		gdm_set_welcomemsg ();
 	}
 
 	if (resize)
@@ -3501,7 +3500,7 @@ main (int argc, char *argv[])
 
     hup.sa_handler = ve_signal_notify;
     hup.sa_flags = 0;
-    sigemptyset(&hup.sa_mask);
+    sigemptyset (&hup.sa_mask);
     sigaddset (&hup.sa_mask, SIGCHLD);
 
     if G_UNLIKELY (sigaction (SIGHUP, &hup, NULL) < 0) {
@@ -3511,7 +3510,7 @@ main (int argc, char *argv[])
 
     term.sa_handler = gdm_login_done;
     term.sa_flags = 0;
-    sigemptyset(&term.sa_mask);
+    sigemptyset (&term.sa_mask);
     sigaddset (&term.sa_mask, SIGCHLD);
 
     if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) {

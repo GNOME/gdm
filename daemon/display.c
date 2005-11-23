@@ -200,7 +200,7 @@ wait_again:
 		    /* rekill the slave to tell it to
 		       hurry up and die if we're getting
 		       killed ourselves */
-		    if ((gdm_signal_terminthup_was_notified()) ||
+		    if ((gdm_signal_terminthup_was_notified ()) ||
 			(t + 10 <= time (NULL))) {
 			    gdm_debug ("whack_old_slave: GOT ANOTHER SIGTERM (or it was 10 secs already), killing slave again with SIGKILL");
 			    t = time (NULL);

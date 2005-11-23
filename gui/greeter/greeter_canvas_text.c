@@ -25,7 +25,7 @@ static void greeter_canvas_text_get_property (GObject            *object,
                                               GValue             *value,
                                               GParamSpec         *pspec);
 
-G_DEFINE_TYPE (GreeterCanvasText, greeter_canvas_text, GNOME_TYPE_CANVAS_TEXT);
+G_DEFINE_TYPE (GreeterCanvasText, greeter_canvas_text, GNOME_TYPE_CANVAS_TEXT)
 
 static void
 greeter_canvas_text_class_init (GreeterCanvasTextClass *greeter_class)

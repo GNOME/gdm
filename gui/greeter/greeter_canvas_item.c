@@ -131,14 +131,14 @@ static GtkWidget *
 make_menubar (void)
 {
 	GtkWidget *w, *menu;
-	GtkWidget *menubar = gtk_menu_bar_new();
+	GtkWidget *menubar = gtk_menu_bar_new ();
 
 	/* FIXME: add translatable string here */
 	w = gtk_menu_item_new_with_label ("Menu");
 	gtk_menu_shell_append (GTK_MENU_SHELL (menubar), w);
 	gtk_widget_show (GTK_WIDGET (w));
 
-	menu = gtk_menu_new();
+	menu = gtk_menu_new ();
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (w), menu);
 
 	w = gtk_menu_item_new_with_mnemonic (_("Select _Language..."));

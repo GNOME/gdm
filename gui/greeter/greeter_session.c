@@ -279,7 +279,7 @@ greeter_session_init (void)
       gtk_widget_show (radio);
     }
 
-    gdm_session_list_init();
+    gdm_session_list_init ();
 
     for (tmp = sessions; tmp != NULL; tmp = tmp->next)
       {

@@ -157,7 +157,7 @@ get_clock (void)
   time (&the_time);
   the_tm = localtime (&the_time);
 
-  if (gdm_common_select_time_format()) 
+  if (gdm_common_select_time_format ()) 
     {
       str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
     } 
@@ -237,16 +237,16 @@ greeter_item_expand_text (const char *text)
 	      g_string_append (str, name.nodename);
 	      break;
 	    case 'h':
-	      buf[sizeof(buf) - 1] = '\0';
-	      r = gethostname (buf, sizeof(buf) - 1);
+	      buf[sizeof (buf) - 1] = '\0';
+	      r = gethostname (buf, sizeof (buf) - 1);
 	      if (r)
 		g_string_append (str, "localhost");
 	      else
 		g_string_append (str, buf);
 	      break;
 	    case 'o':
-	      buf[sizeof(buf) - 1] = '\0';
-	      r = getdomainname (buf, sizeof(buf) - 1);
+	      buf[sizeof (buf) - 1] = '\0';
+	      r = getdomainname (buf, sizeof (buf) - 1);
 	      if (r)
 		g_string_append (str, "localdomain");
 	      else

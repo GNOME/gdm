@@ -1335,7 +1335,6 @@ gdm_config_parse (void)
    struct stat statbuf;
    gchar *bin;
    GList *list, *li;
-   int r;
 
    gdm_config_init ();
 
@@ -1691,7 +1690,6 @@ gdm_print_config_option (gpointer key_in, gpointer value_in, gpointer data)
 {
    gchar *key = (gchar *)key_in;
    gchar *retval;
-   GdmConfigType *type = (GdmConfigType *)value_in;
 
    gdm_config_to_string (key, &retval);
    if (retval != NULL) {
@@ -1709,7 +1707,7 @@ gdm_print_config_option (gpointer key_in, gpointer value_in, gpointer data)
 void
 gdm_print_all_config (void)
 {
-   gdm_config_parse();
+   gdm_config_parse ();
 
    g_hash_table_foreach (type_hash, gdm_print_config_option, NULL);
 }

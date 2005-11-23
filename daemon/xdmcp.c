@@ -414,7 +414,7 @@ gdm_xdmcp_init (void)
 	    ifc.ifc_buf = buf = malloc (ifc.ifc_len);
 	    if (ioctl (socktemp, SIOCGIFCONF, &ifc) >= 0) {
 		ifr = ifc.ifc_req;
-		num = ifc.ifc_len / sizeof(struct ifreq); /* No of interfaces */
+		num = ifc.ifc_len / sizeof (struct ifreq); /* No of interfaces */
 
 		/* Joining multicast group with all interfaces*/
 		for (i = 0 ; i < num ; i++) {
@@ -440,7 +440,7 @@ gdm_xdmcp_init (void)
 
 		    mreq.ipv6mr_interface = ifindex;
 		    inet_pton (AF_INET6, gdm_get_value_string (GDM_KEY_MULTICAST_ADDR), &mreq.ipv6mr_multiaddr);
-		    setsockopt (gdm_xdmcpfd, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq, sizeof(mreq));
+		    setsockopt (gdm_xdmcpfd, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq, sizeof (mreq));
 		} 
            }
            g_free (buf);
@@ -1150,8 +1150,8 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr.s_addr, clnt_addr.data, 4);
 
 		char * ipv4_addr = inet_ntoa (((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr);
-		strcpy(buffer6, "::ffff:");
-		strncat(buffer6, ipv4_addr, INET_ADDRSTRLEN);
+		strcpy (buffer6, "::ffff:");
+		strncat (buffer6, ipv4_addr, INET_ADDRSTRLEN);
 
 		inet_pton (AF_INET6, buffer6, &ipv6_addr);
 		ipv6_addr_ptr = &ipv6_addr;
@@ -1597,7 +1597,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
 
-    gdm_xdmcp_displays_check(); /* Purge pending displays */
+    gdm_xdmcp_displays_check (); /* Purge pending displays */
     
     /* Remote display number */
     if G_UNLIKELY (! XdmcpReadCARD16 (&buf, &clnt_dspnum)) {
@@ -1651,7 +1651,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
     
-    /* libXdmcp doesn't terminate strings properly so we cheat and use strncmp() */
+    /* libXdmcp doesn't terminate strings properly so we cheat and use strncmp () */
     for (i = 0 ; i < clnt_authorization.length ; i++)
 	if (clnt_authorization.data[i].length == 18 &&
 	    strncmp ((char *) clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18) == 0)
@@ -2414,7 +2414,7 @@ gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD16 dspnum, CARD32 sessid)
     
     d = gdm_xdmcp_display_lookup (sessid);
     if (d == NULL)
-	    d = gdm_xdmcp_display_lookup_by_host(clnt_sa, dspnum);
+	    d = gdm_xdmcp_display_lookup_by_host (clnt_sa, dspnum);
 
     if (d != NULL) {
 	    send_sessid = d->sessionid;
@@ -2600,7 +2600,7 @@ gdm_xdmcp_display_alloc (
 	    d->name = g_strdup (":-1");
 	    d->dispnum = -1;
 
-	    d->server_uid = gdm_get_gdmuid();
+	    d->server_uid = gdm_get_gdmuid ();
 
 	    d->parent_auth_file = d->authfile;
 	    d->authfile = NULL;
@@ -2623,7 +2623,7 @@ gdm_xdmcp_display_lookup (CARD32 sessid)
     GSList *dlist = displays;
     GdmDisplay *d;
     
-    if(!sessid)
+    if (!sessid)
 	return (NULL);
 
     while (dlist) {

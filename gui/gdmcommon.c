@@ -295,7 +295,7 @@ gdm_common_select_time_format (void)
 		/* Translators: Translate this to '12-hour', or
 		   '24-hour'. Meaning of the translation is the
 		   default time format in your locale. */
-		return strcmp("12-hour", _("24-hour")) != 0;
+		return strcmp ("12-hour", _("24-hour")) != 0;
 		/* Logic is that if translator does not understand the
 		   comment, then 24 hour format is selected. */
 	}

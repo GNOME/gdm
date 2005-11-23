@@ -28,7 +28,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <utime.h>
-#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 #include <sched.h>
 #endif
 #ifdef HAVE_LOGINCAP
@@ -53,7 +53,7 @@
 #include <X11/extensions/xinerama.h>
 #endif
 
-#if defined(CAN_USE_SETPENV) && defined(HAVE_USERSEC_H)
+#if defined (CAN_USE_SETPENV) && defined (HAVE_USERSEC_H)
 #include <usersec.h>
 #endif
 
@@ -282,7 +282,7 @@ run_session_output (gboolean read_until_eof)
 
 	/* the fd is non-blocking */
 	for (;;) {
-		VE_IGNORE_EINTR (r = read (d->session_output_fd, buf, sizeof(buf)));
+		VE_IGNORE_EINTR (r = read (d->session_output_fd, buf, sizeof (buf)));
 
 		/* EOF */
 		if G_UNLIKELY (r == 0) {
@@ -1559,7 +1559,7 @@ focus_first_x_window (const char *class_res_name)
 			tv.tv_sec = 2;
 			tv.tv_usec = 0;
 
-			select(p[0]+1, &rfds, NULL, NULL, &tv);
+			select (p[0]+1, &rfds, NULL, NULL, &tv);
 
 			VE_IGNORE_EINTR (close (p[0]));
 		}
@@ -2061,7 +2061,7 @@ gdm_slave_wait_for_login (void)
 		login = NULL;
 		/* timed login is automatic, thus no need for greeter,
 		 * we'll take default values */
-		gdm_slave_whack_greeter();
+		gdm_slave_whack_greeter ();
 
 		gdm_debug ("gdm_slave_wait_for_login: Timed Login");
 	}
@@ -2118,7 +2118,7 @@ run_pictures (void)
 		NEVER_FAILS_seteuid (0);
 		if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
 			       seteuid (pwent->pw_uid) != 0) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
 		}
@@ -2129,14 +2129,14 @@ run_pictures (void)
 			picfile = gdm_get_facefile_from_global (pwent->pw_name, pwent->pw_uid);
 
 		if (! picfile) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
 		}
 
 		VE_IGNORE_EINTR (r = stat (picfile, &s));
 		if G_UNLIKELY (r < 0 || s.st_size > gdm_get_value_int (GDM_KEY_USER_MAX_FILE)) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2145,7 +2145,7 @@ run_pictures (void)
 		VE_IGNORE_EINTR (fp = fopen (picfile, "r"));
 		g_free (picfile);
 		if G_UNLIKELY (fp == NULL) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2159,7 +2159,7 @@ run_pictures (void)
 			VE_IGNORE_EINTR (fclose (fp));
 			g_free (ret);
 
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 
 			continue;
 		}
@@ -2237,7 +2237,7 @@ run_pictures (void)
 			
 		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "done");
 
-		NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+		NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 	}
 	g_free (response); /* not reached */
 }
@@ -2256,7 +2256,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	int cnt;
 
 	NEVER_FAILS_seteuid (0);
-	NEVER_FAILS_setegid (gdm_get_gdmgid());
+	NEVER_FAILS_setegid (gdm_get_gdmgid ());
 
 	if G_UNLIKELY (seteuid (fromuid) != 0) {
 		NEVER_FAILS_root_set_euid_egid (old, oldg);
@@ -2444,21 +2444,21 @@ gdm_slave_greeter (void)
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
-	if G_UNLIKELY (setgid (gdm_get_gdmgid()) < 0) 
+	if G_UNLIKELY (setgid (gdm_get_gdmgid ()) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: Couldn't set groupid to %d"),
-			    "gdm_slave_greeter", gdm_get_gdmgid());
+			    "gdm_slave_greeter", gdm_get_gdmgid ());
 
 	gdmuser = gdm_get_value_string (GDM_KEY_USER);
-	if G_UNLIKELY (initgroups (gdmuser, gdm_get_gdmgid()) < 0)
+	if G_UNLIKELY (initgroups (gdmuser, gdm_get_gdmgid ()) < 0)
             gdm_child_exit (DISPLAY_ABORT,
-			    _("%s: initgroups() failed for %s"),
+			    _("%s: initgroups () failed for %s"),
 			    "gdm_slave_greeter", gdmuser);
 	
-	if G_UNLIKELY (setuid (gdm_get_gdmuid()) < 0) 
+	if G_UNLIKELY (setuid (gdm_get_gdmuid ()) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: Couldn't set userid to %d"),
-			    "gdm_slave_greeter", gdm_get_gdmuid());
+			    "gdm_slave_greeter", gdm_get_gdmuid ());
 
 	gdm_restoreenv ();
 	
@@ -2520,7 +2520,7 @@ gdm_slave_greeter (void)
 	/* this is again informal only, if the greeter does time out it will
 	 * not actually login a user if it's not enabled for this display */
 	if (d->timed_login_ok) {
-		if(ParsedTimedLogin == NULL)
+		if (ParsedTimedLogin == NULL)
 			g_setenv ("GDM_TIMED_LOGIN_OK", " ", TRUE);
 		else
 			g_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin, TRUE);
@@ -2715,7 +2715,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		VE_IGNORE_EINTR (close (fd));
 	}
 
-#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 	if (wait_for_ack && ! gdm_got_ack) {
 		/* let the other process do its stuff */
 		sched_yield ();
@@ -2915,21 +2915,21 @@ gdm_slave_chooser (void)
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		if G_UNLIKELY (setgid (gdm_get_gdmgid()) < 0) 
+		if G_UNLIKELY (setgid (gdm_get_gdmgid ()) < 0) 
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set groupid to %d"),
-					"gdm_slave_chooser", gdm_get_gdmgid());
+					"gdm_slave_chooser", gdm_get_gdmgid ());
 
 		gdmuser = gdm_get_value_string (GDM_KEY_USER);
-		if G_UNLIKELY (initgroups (gdmuser, gdm_get_gdmgid()) < 0)
+		if G_UNLIKELY (initgroups (gdmuser, gdm_get_gdmgid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
-					_("%s: initgroups() failed for %s"),
+					_("%s: initgroups () failed for %s"),
 					"gdm_slave_chooser", gdmuser);
 
-		if G_UNLIKELY (setuid (gdm_get_gdmuid()) < 0) 
+		if G_UNLIKELY (setuid (gdm_get_gdmuid ()) < 0) 
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set userid to %d"),
-					"gdm_slave_chooser", gdm_get_gdmuid());
+					"gdm_slave_chooser", gdm_get_gdmuid ());
 
 		gdm_restoreenv ();
 
@@ -3270,7 +3270,7 @@ gdm_selinux_setup (const char *login)
 	if ( ! is_selinux_enabled ())
 		return TRUE;
 
-	if (get_default_context((char*) login,0, &scontext) < 0) {
+	if (get_default_context ((char*) login,0, &scontext) < 0) {
 		gdm_error ("SELinux gdm login: unable to obtain default security context for %s.", login);
 		/* note that this will be run when the .xsession-errors
 		   is already being logged, so we can use stderr */
@@ -3319,10 +3319,10 @@ session_child_run (struct passwd *pwent,
 #endif
 
 	gdm_unset_signals ();
-	if G_UNLIKELY (setsid() < 0)
+	if G_UNLIKELY (setsid () < 0)
 		/* should never happen */
-		gdm_error (_("%s: setsid() failed: %s!"),
-			   "session_child_run", strerror(errno));
+		gdm_error (_("%s: setsid () failed: %s!"),
+			   "session_child_run", strerror (errno));
 
 	g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
@@ -3483,7 +3483,7 @@ session_child_run (struct passwd *pwent,
 			    LOGIN_SETUMASK | LOGIN_SETUSER |
 			    LOGIN_SETENV) < 0)
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: setusercontext() failed for %s. "
+				_("%s: setusercontext () failed for %s. "
 				  "Aborting."), "session_child_run",
 				login);
 #else
@@ -3744,9 +3744,9 @@ gdm_slave_session_start (void)
     if G_UNLIKELY (pwent == NULL)  {
 	    /* This is sort of an "assert", this should NEVER happen */
 	    if (greet)
-		    gdm_slave_whack_greeter();
+		    gdm_slave_whack_greeter ();
 	    gdm_slave_exit (DISPLAY_REMANAGE,
-			    _("%s: User passed auth but getpwnam(%s) failed!"), "gdm_slave_session_start", login);
+			    _("%s: User passed auth but getpwnam (%s) failed!"), "gdm_slave_session_start", login);
     }
 
     logged_in_uid = uid = pwent->pw_uid;
@@ -3791,7 +3791,7 @@ gdm_slave_session_start (void)
 
 	    /* Set euid, egid to root:gdm to manage user interaction */
             seteuid (0);
-            setegid (gdm_get_gdmgid());
+            setegid (gdm_get_gdmgid ());
 
 	    gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
 		       "gdm_slave_session_start",
@@ -3853,7 +3853,7 @@ gdm_slave_session_start (void)
 	usrlang = g_strdup ("");
     }
 
-    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 
     if (greet) {
 	    tmp = gdm_ensure_extension (usrsess, ".desktop");
@@ -3964,7 +3964,7 @@ gdm_slave_session_start (void)
 	    }
     }
 
-    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
     
     if G_UNLIKELY ( ! authok) {
 	    gdm_debug ("gdm_slave_session_start: Auth not OK");
@@ -4084,7 +4084,7 @@ gdm_slave_session_start (void)
     }
 
     /* We must be root for this, and we are, but just to make sure */
-    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid());
+    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
     /* Reset all the process limits, pam may have set some up for our process and that
        is quite evil.  But pam is generally evil, so this is to be expected. */
     gdm_reset_limits ();
@@ -4208,7 +4208,7 @@ gdm_slave_session_stop (gboolean run_post_session,
        /* Here means we saw an xioerror and ignored it. */
        /* xioerror will cause this to drop back into whack_clients, but I think
           that is okay because I haven't seen it do so more than once */
-       gdm_debug("gdm_slave_session_stop: back here from xioerror");
+       gdm_debug ("gdm_slave_session_stop: back here from xioerror");
        break;
     }
 
@@ -4217,7 +4217,7 @@ gdm_slave_session_stop (gboolean run_post_session,
     /* Now we should care about xioerror once again??? */
     XSetIOErrorHandler (gdm_slave_xioerror_handler);
 
-#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
     /* let the other processes die perhaps or whatnot */
     sched_yield ();
 #endif
@@ -4644,7 +4644,7 @@ static gint
 gdm_slave_ignore_xioerror_handler (Display *disp)
 {
     gdm_debug ("Fatal X error detected.  Ignoring same during session shutdown.");
-    Longjmp(ignore_xioerror_jmp, 1);
+    Longjmp (ignore_xioerror_jmp, 1);
 }
 
 /* We usually respond to fatal errors by restarting the display */
@@ -4792,7 +4792,7 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 	    gdm_fdprintf (greeter_fd_out, "%c%c\n", STX, cmd);
     }
 
-#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
     /* let the other process (greeter) do its stuff */
     sched_yield ();
 #endif
@@ -4946,7 +4946,7 @@ create_temp_auth_file (void)
 		g_free (d->parent_temp_auth_file);
 		d->parent_temp_auth_file =
 			copy_auth_file (d->server_uid,
-					gdm_get_gdmuid(),
+					gdm_get_gdmuid (),
 					d->parent_auth_file);
 	}
 }
@@ -5159,7 +5159,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
     pid_t pid;
 
     if (s == NULL)
-	return(NULL);
+	return (NULL);
 
     str = g_string_new (NULL);
 
@@ -5197,8 +5197,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
        login name based on the display/host by ending the name with the
        pipe symbol '|'. */
 
-    if(str->len > 0 && str->str[str->len - 1] == '|') {
-      g_string_truncate(str, str->len - 1);
+    if (str->len > 0 && str->str[str->len - 1] == '|') {
+      g_string_truncate (str, str->len - 1);
       if G_UNLIKELY (pipe (pipe1) < 0) {
         gdm_error (_("%s: Failed creating pipe"),
 		   "gdm_parse_enriched_login");
@@ -5257,17 +5257,17 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
             g_string_truncate (str, 0);
 	    do {
 		    VE_IGNORE_EINTR (in_buffer_len = read (pipe1[0], in_buffer,
-							sizeof(in_buffer) - 1));
+							sizeof (in_buffer) - 1));
 		    if (in_buffer_len > 0) {
 			    in_buffer[in_buffer_len] = '\0';
 			    g_string_append (str, in_buffer);
 		    }
             } while (in_buffer_len > 0);
 
-            if(str->len > 0 && str->str[str->len - 1] == '\n')
-              g_string_truncate(str, str->len - 1);
+            if (str->len > 0 && str->str[str->len - 1] == '\n')
+              g_string_truncate (str, str->len - 1);
 
-            VE_IGNORE_EINTR (close(pipe1[0]));
+            VE_IGNORE_EINTR (close (pipe1[0]));
 
 	    gdm_wait_for_extra (NULL);
         }

@@ -43,13 +43,13 @@
 static char *myname = NULL;  /* name of this program */
 
 static void
-usage()
+usage ()
 {
-    fprintf(stderr, "Usage: %s [-b][-v] and one of the following:\n", myname);
-    fprintf(stderr, "\t-a display\n");
-    fprintf(stderr, "\t-r display\n");
-    fprintf(stderr, "\t-d display\n");
-    fprintf(stderr, "\t-l [server_name]\n");
+    fprintf (stderr, "Usage: %s [-b][-v] and one of the following:\n", myname);
+    fprintf (stderr, "\t-a display\n");
+    fprintf (stderr, "\t-r display\n");
+    fprintf (stderr, "\t-d display\n");
+    fprintf (stderr, "\t-l [server_name]\n");
 }
 
 
@@ -67,12 +67,12 @@ main (int argc, char *argv[])
     gboolean error = TRUE;
     char *cookie = NULL;
 
-    myname = basename(argv[0]);
+    myname = basename (argv[0]);
     argv[0] = myname;
 
     version = "2.8.0.0";
 
-    while ((optc = getopt(argc, argv, "a:d:r:blv")) != EOF) {
+    while ((optc = getopt (argc, argv, "a:d:r:blv")) != EOF) {
         switch (optc) {
         case 'a':
             if (command == NULL)
@@ -115,8 +115,8 @@ main (int argc, char *argv[])
     }
 
     if (error) {
-        usage();
-        exit(1);
+        usage ();
+        exit (1);
     }
 
     /* process remaining option arguments for -l */
@@ -127,23 +127,23 @@ main (int argc, char *argv[])
     /* handle background option by forking and exiting the parent */
 
     if (background) {
-        if ((background = fork()) != 0)  {
+        if ((background = fork ()) != 0)  {
             if (background < 0)
-                exit(1);
+                exit (1);
             else
-                exit(0);
+                exit (0);
         }
     }
 
     gdmcomm_set_debug (verbose);
 
-    if (params && strlen(params))
+    if (params && strlen (params))
         cstr = g_strdup_printf ("%s %s", command, params);
     else
-        cstr = g_strdup(command);
+        cstr = g_strdup (command);
 
     /* All other commands besides LIST need root cookie */
-    if (strcmp(command, GDM_SUP_ATTACHED_SERVERS) != 0) {
+    if (strcmp (command, GDM_SUP_ATTACHED_SERVERS) != 0) {
         char  *filename;
         gchar *GdmServAuthDir = NULL;
         FILE  *fp;
@@ -154,8 +154,8 @@ main (int argc, char *argv[])
 
         VE_IGNORE_EINTR (fp = fopen (filename, "r"));
         if (fp != NULL) {
-            fgets(buf, sizeof(buf), fp);
-            cookie = g_strdup(buf);
+            fgets (buf, sizeof (buf), fp);
+            cookie = g_strdup (buf);
             VE_IGNORE_EINTR (fclose (fp));
         }
 	g_free (filename);
@@ -163,21 +163,21 @@ main (int argc, char *argv[])
 
     ret = gdmcomm_call_gdm (cstr, cookie, version, 5);
 
-    g_free(cstr);
+    g_free (cstr);
     if (cookie)
-        g_free(cookie);
+        g_free (cookie);
 
     if (verbose && ret != NULL)
-        fprintf(stderr,"%s\n", ret);
+        fprintf (stderr,"%s\n", ret);
 
     if (ret != NULL &&
         strncmp (ret, "OK", 2) == 0) {
 
-        if (strcmp(command, GDM_SUP_ATTACHED_SERVERS) == 0) {
+        if (strcmp (command, GDM_SUP_ATTACHED_SERVERS) == 0) {
             ret += 2;
-            if(strlen(ret)) {
+            if (strlen (ret)) {
                 ret++;   /* skip over space char */
-                printf("%s\n", ret);
+                printf ("%s\n", ret);
             }
         }
 

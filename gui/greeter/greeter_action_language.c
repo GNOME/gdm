@@ -292,7 +292,7 @@ greeter_action_language (GreeterItemInfo *info,
 			"changed",
 			(GCallback) selection_changed,
 			NULL);
-      g_signal_connect(G_OBJECT (view),
+      g_signal_connect (G_OBJECT (view),
                         "row_activated",
                         (GCallback) tree_row_activated,
                         NULL);
@@ -310,7 +310,7 @@ greeter_action_language (GreeterItemInfo *info,
 			       GTK_TREE_MODEL (lang_model));
       selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
       if (selection != NULL)
-	gtk_tree_selection_select_path (selection, gtk_tree_path_new_first());
+	gtk_tree_selection_select_path (selection, gtk_tree_path_new_first ());
     }
   switch (gtk_dialog_run (GTK_DIALOG (dialog)))
     {

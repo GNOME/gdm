@@ -202,9 +202,9 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 	if (set_gdm_ids) {
-		setgid (gdm_get_gdmgid());
-		initgroups (gdm_get_value_string (GDM_KEY_USER), gdm_get_gdmgid());
-		setuid (gdm_get_gdmuid());
+		setgid (gdm_get_gdmgid ());
+		initgroups (gdm_get_value_string (GDM_KEY_USER), gdm_get_gdmgid ());
+		setuid (gdm_get_gdmuid ());
 		pw = NULL;
 	} else {
 		pw = getpwuid (uid);
@@ -386,7 +386,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		}
 
 		setup_dialog (d, "gtk-error-box", -1,
-			      (uid == 0 || uid == gdm_get_gdmuid()) /* set_gdm_ids */,
+			      (uid == 0 || uid == gdm_get_gdmuid ()) /* set_gdm_ids */,
 			      uid);
 
 		loc = gdm_locale_to_utf8 (error);
