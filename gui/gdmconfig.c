@@ -36,9 +36,6 @@
 static GHashTable *int_hash       = NULL;
 static GHashTable *bool_hash      = NULL;
 static GHashTable *string_hash    = NULL;
-static GHashTable *value_set_hash = NULL;
-
-static gboolean value_set = TRUE;
 
 /*
  * Hack to keep track if config functions should be printing error messages
@@ -140,18 +137,10 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 
         if (string_hash == NULL)
 		string_hash = g_hash_table_new (g_str_hash, g_str_equal);
-	if (value_set_hash == NULL)
-		value_set_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
 	hashretval = gdm_config_hash_lookup (string_hash, key);
 
-	/*
-	 * In the case of strings, the value can be NULL, so check the
-	 * value_set_hash to see if the value has already been set.
-	 */
- 	valueset = gdm_config_hash_lookup (value_set_hash, key);
-
-	if (reload == FALSE && valueset != NULL && hashretval != NULL)
+	if (reload == FALSE && hashretval != NULL)
 		return *hashretval;
 
 	result = gdm_config_get_result (key);
@@ -179,7 +168,6 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 		gchar** charval = g_new0 (gchar *, 1);
 		*charval = temp;
 		gdm_config_add_hash (string_hash, key, charval);
-		gdm_config_add_hash (value_set_hash, key, &value_set);
 
 		if (changed != NULL)
 			*changed = TRUE;
