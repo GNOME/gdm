@@ -38,7 +38,7 @@
 
 #if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
 
-#ifdef (__linux__)
+#if defined (__linux__)
 #include <sys/vt.h>
 #elif defined (__FreeBSD__) || defined (__DragonFly__)
 #include <sys/consio.h>
