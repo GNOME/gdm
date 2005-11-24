@@ -97,18 +97,6 @@ scale_pixbuf (GdkPixbuf *pixbuf)
 	return scaled;
 }
 
-static void
-set_preview_pixbuf (GtkImage  *image,
-		    GdkPixbuf *pixbuf)
-{
-	GdkPixbuf *preview_pixbuf;
-
-	preview_pixbuf = scale_pixbuf (pixbuf);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (image), preview_pixbuf);
-
-	gdk_pixbuf_unref (preview_pixbuf);
-}
-
 static GdkPixbuf *
 create_preview_pixbuf (const gchar *uri) 
 {
@@ -296,8 +284,6 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 
 	add_preview_widget (file_dialog);
 
-	g_signal_connect (G_OBJECT (file_dialog), "destroy",
-			  G_CALLBACK (gtk_widget_destroyed), &file_dialog);
 	g_signal_connect (G_OBJECT (file_dialog), "response",
 			  G_CALLBACK (install_response), NULL);
 
