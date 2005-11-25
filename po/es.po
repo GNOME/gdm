@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-23 20:11+0100\n"
-"PO-Revision-Date: 2005-11-23 21:07+0100\n"
+"POT-Creation-Date: 2005-11-25 17:14+0100\n"
+"PO-Revision-Date: 2005-11-25 17:15+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,9 @@ msgstr ""
 msgid ""
 "Would you like me to try to run the X configuration program?  Note that you "
 "will need the root password for this."
-msgstr "¿Quiere que intente ejecutar el programa de configuración de X? Necesitará la contraseña del administrador para esto."
+msgstr ""
+"¿Quiere que intente ejecutar el programa de configuración de X? Necesitará "
+"la contraseña del administrador para esto."
 
 #: ../config/gettextfoo.h:5
 msgid "Please type in the root (privileged user) password."
@@ -104,7 +106,9 @@ msgstr ""
 msgid ""
 "Would you like me to try to run the mouse configuration program?  Note that "
 "you will need the root password for this."
-msgstr "¿Quiere intentar ejecutar el programa de configuración del ratón? Necesitará la contraseña del administrador para esto."
+msgstr ""
+"¿Quiere intentar ejecutar el programa de configuración del ratón? Necesitará "
+"la contraseña del administrador para esto."
 
 #: ../config/gettextfoo.h:13
 msgid ""
@@ -681,7 +685,10 @@ msgstr "%s: No se puede encontrar el usuario de GDM (%s). Se aborta."
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
-msgstr "Se ha configurado el usuario de GDM para que sea root, esto no está permitido ya que es un riesgo de seguridad. Corrija la configuración de GDM y reinicie."
+msgstr ""
+"Se ha configurado el usuario de GDM para que sea root, esto no está "
+"permitido ya que es un riesgo de seguridad. Corrija la configuración de GDM "
+"y reinicie."
 
 #: ../daemon/gdmconfig.c:1520
 #, c-format
@@ -1544,7 +1551,8 @@ msgstr "Debe cambiar la contraseña inmediatamente (contraseña caducada)"
 
 #: ../daemon/verify-pam.c:430
 msgid "You are required to change your password immediately (root enforced)"
-msgstr "Debe cambiar la contraseña inmediatamente (forzado por el administrador)"
+msgstr ""
+"Debe cambiar la contraseña inmediatamente (forzado por el administrador)"
 
 #: ../daemon/verify-pam.c:431
 msgid "Your account has expired; please contact your system administrator"
@@ -3078,28 +3086,28 @@ msgstr ""
 "diálogo de entrada, se ejecutará el comando predeterminado. Corrija su "
 "configuración."
 
-#: ../gui/gdmphotosetup.c:163
+#: ../gui/gdmphotosetup.c:187
 #, c-format
 msgid "File %s cannot be opened for writing."
 msgstr "El archivo %s no se puede abrir para escritura."
 
-#: ../gui/gdmphotosetup.c:170
+#: ../gui/gdmphotosetup.c:194
 msgid "Cannot open file"
 msgstr "No se puede abrir el archivo"
 
-#: ../gui/gdmphotosetup.c:235
-msgid "Select Image"
-msgstr "Seleccione una imagen"
+#: ../gui/gdmphotosetup.c:248
+msgid "Select User Image"
+msgstr "Seleccione la imagen del usuario"
 
-#: ../gui/gdmphotosetup.c:258
-msgid "All Images"
-msgstr "Todas las imágenes"
+#: ../gui/gdmphotosetup.c:272 ../gui/gdmsetup.c:5595 ../gui/gdmsetup.c:5664
+#: ../gui/gdmsetup.c:5892 ../gui/gdmsetup.c:5961
+msgid "Images"
+msgstr "Imágenes"
 
-#. Filter name: First description then file extension, eg. "The PNG-Format (*.png)".
-#: ../gui/gdmphotosetup.c:278
-#, c-format
-msgid "%s (*.%s)"
-msgstr "%s (*.%s)"
+#: ../gui/gdmphotosetup.c:277 ../gui/gdmsetup.c:3041 ../gui/gdmsetup.c:5600
+#: ../gui/gdmsetup.c:5669 ../gui/gdmsetup.c:5897 ../gui/gdmsetup.c:5966
+msgid "All Files"
+msgstr "Todos los archivos"
 
 #: ../gui/gdmphotosetup.desktop.in.h:1
 msgid ""
@@ -3112,25 +3120,13 @@ msgstr ""
 msgid "Login Photo"
 msgstr "Foto de entrada"
 
-#: ../gui/gdmphotosetup.glade.h:1 ../gui/gdmsetup.glade.h:1
-msgid "    "
-msgstr "    "
-
-#: ../gui/gdmphotosetup.glade.h:2
-msgid "<b>Selection</b>"
-msgstr "<b>Selección</b>"
-
-#: ../gui/gdmphotosetup.glade.h:3
+#: ../gui/gdmphotosetup.glade.h:1
 msgid "<b>User Image</b>"
 msgstr "<b>Imagen del usuario</b>"
 
-#: ../gui/gdmphotosetup.glade.h:4
-msgid "User Image"
-msgstr "Imagen del usuario"
-
-#: ../gui/gdmphotosetup.glade.h:5
-msgid "_Browse"
-msgstr "_Examinar"
+#: ../gui/gdmphotosetup.glade.h:2
+msgid "Login Photo Preferences"
+msgstr "Preferencias de la foto de inicio"
 
 #: ../gui/gdmsession.c:126 ../gui/gdmsession.c:295
 msgid "Failsafe _GNOME"
@@ -3225,11 +3221,6 @@ msgstr "El usuario «%s» no existe."
 #: ../gui/gdmsetup.c:3036 ../gui/gdmsetup.glade.h:74
 msgid "Sounds"
 msgstr "Sonidos"
-
-#: ../gui/gdmsetup.c:3041 ../gui/gdmsetup.c:5600 ../gui/gdmsetup.c:5669
-#: ../gui/gdmsetup.c:5897 ../gui/gdmsetup.c:5966
-msgid "All Files"
-msgstr "Todos los archivos"
 
 #: ../gui/gdmsetup.c:3251 ../gui/gdmsetup.c:3309
 msgid "None"
@@ -3337,11 +3328,6 @@ msgstr ""
 "Para más información acuda a la categoría «Escritorio» del navegador de "
 "ayuda de Gnome."
 
-#: ../gui/gdmsetup.c:5595 ../gui/gdmsetup.c:5664 ../gui/gdmsetup.c:5892
-#: ../gui/gdmsetup.c:5961
-msgid "Images"
-msgstr "Imágenes"
-
 #: ../gui/gdmsetup.c:6384
 msgid "Apply the changes to users before closing?"
 msgstr "¿Desea aplicar los cambios a los usuarios antes de cerrar?"
@@ -3371,6 +3357,10 @@ msgstr "Ventana de entrada"
 #: ../gui/gdmsetup.desktop.in.h:3 ../gui/gdmsetup.glade.h:39
 msgid "Login Window Preferences"
 msgstr "Preferencias de la ventana de entrada"
+
+#: ../gui/gdmsetup.glade.h:1
+msgid "    "
+msgstr "    "
 
 #: ../gui/gdmsetup.glade.h:3
 #, no-c-format
@@ -3944,7 +3934,9 @@ msgstr ""
 #: ../gui/greeter/greeter_system.c:172 ../gui/greeter/greeter_system.c:388
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
-msgstr "Configurar GDM (este gestor de entrada). Requiere la contraseña de administrador."
+msgstr ""
+"Configurar GDM (este gestor de entrada). Requiere la contraseña de "
+"administrador."
 
 #: ../gui/greeter/greeter_system.c:198 ../gui/greeter/greeter_system.c:334
 msgid "Reboot your computer"
@@ -4198,6 +4190,21 @@ msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr ""
 "Demasiados niveles de alias para una configuración regional, puede indicar "
 "un bucle"
+
+#~ msgid "All Images"
+#~ msgstr "Todas las imágenes"
+
+#~ msgid "%s (*.%s)"
+#~ msgstr "%s (*.%s)"
+
+#~ msgid "<b>Selection</b>"
+#~ msgstr "<b>Selección</b>"
+
+#~ msgid "User Image"
+#~ msgstr "Imagen del usuario"
+
+#~ msgid "_Browse"
+#~ msgstr "_Examinar"
 
 #~ msgid "%s: No configuration file: %s. Using defaults."
 #~ msgstr ""
