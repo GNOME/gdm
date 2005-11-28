@@ -107,6 +107,7 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop I
 		cp -f $(DESTDIR)$(bisessdir)/default.desktop $(DESTDIR)$(bisessdir)/default.desktop.orig; \
 	fi
 	$(INSTALL_SCRIPT) default.desktop $(DESTDIR)$(bisessdir)/default.desktop
+	chmod 644 $(DESTDIR)$(bisessdir)/default.desktop
 
 	-if test -f $(DESTDIR)$(bisessdir)/gnome.desktop; then \
 		mv -f $(DESTDIR)$(bisessdir)/gnome.desktop $(DESTDIR)$(bisessdir)/gnome.desktop.orig; \
@@ -115,6 +116,7 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop I
 		cp -f $(DESTDIR)$(instsessdir)/gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop.orig; \
 	fi
 	$(INSTALL_SCRIPT) gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop
+	chmod 644 $(DESTDIR)$(instsessdir)/gnome.desktop
 
 	-if test -f /usr/dt/bin/Xsession; then \
 	   if test -f $(DESTDIR)$(bisessdir)/CDE.desktop; then \

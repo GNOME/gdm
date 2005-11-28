@@ -956,7 +956,7 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
 
    /* XDMCP */
 #ifndef HAVE_LIBXDMCP
-   } else if (is_key (key, GDM_KEY_XMDCP)) {
+   } else if (is_key (key, GDM_KEY_XDMCP)) {
       if (value) {
          gdm_info (_("%s: XDMCP was enabled while there is no XDMCP support; turning it off"), "gdm_config_parse");
       }
