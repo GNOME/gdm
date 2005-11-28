@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.13.0.1"> 
-    <!ENTITY date "11/14/2005"> 
+    <!ENTITY version "2.13.0.2"> 
+    <!ENTITY date "11/28/2005"> 
 ]>
 
 <article id="index" lang="en">
@@ -3841,7 +3841,12 @@ Answers:
 GET_CONFIG:  Get configuration value for key.  Useful so
              that other applications can request configuration
              information from GDM.  Any key defined as GDM_KEY_*
-             in gdm.h is supported.
+             in gdm.h is supported.  Starting with version 2.13.0.2
+             translated keys (such as "greeter/GdmWelcome[cs]" are
+             supported via GET_CONFIG.  Also starting with version
+             2.13.0.2 it is no longer necessary to include the
+             default value (i.e. you can use key "greeter/IncludeAll"
+             instead of having to use "greeter/IncludeAll=false".  
 Supported since: 2.6.0.9
 Arguments:  &lt;key&gt;
 Answers:

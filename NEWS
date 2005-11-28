@@ -1,5 +1,55 @@
 Ahh news...
 
+2.13.0.2 stuff:
+
+- Further redesign of configuration parsing logic.
+  Now all GDM slaves (except gdmsetup) use the
+  GET_CONFIG socket command to access configuration
+  data.  This means all configuration parsing is now
+  handled in one place, the daemon.  Improvements
+  to the daemon configuration parsing so it
+  correctly parses and validates all parameters used
+  by the slave programs.  Also fix some compile
+  issues that were causing problems with certain
+  configurations.  (Brian Cameron)
+
+- Improved the GET_CONFIG command so that you don't
+  have to include the default value (you can use
+  "greeter/IncludeAll" instead of having to use
+  "greeter/IncludeAll=false".   Also you can 
+  access keys that contain translatable strings
+  (e.g. "greeter/Welcome[cs]") via the GET_CONFIG
+  command.  (Brian Cameron)
+  
+- Changes to peeking VT freeness in 2.13.0.1 broke
+  virtual terminal support on BSD.  This release
+  corrects this problem.  (Brian Cameron)
+
+- Correct Linux get VT logic so it returns the
+  correct VT.  (Frederic Crozat)
+
+- Now gdmlogin always uses GDK_RGB_DITHER_MAX
+  when painting the background to ensure a nice
+  background regardless of X configuration
+  (e.g. X in 16bpp mode).  (Frederic Crozat)
+
+- Now check for Xserver in prefix /usr.
+  (J\303\274rg Billeter)
+
+- Fix configure for Darwin. (dmacks@netspace.org)
+
+- Fix compiler warnings. (Frederic Crozat, 
+  dmacks@netspace.org, Brian Cameron)
+
+- Ensure gnome.desktop and default.desktop have
+  644 perms.  (Andrew Benton)
+
+- Translation updates (Takeshi AIHANA,
+  \305\275ygimantas Beru\304\215ka, Theppitak
+  Karoonboonyanan, Priit Laes, Ignacio Casal
+  Quinteiro, Alexander Shopov, Francisco Javier F.
+  Serrador, Marcel Telka, Funda Wang, Adam Weinberger)
+
 2.13.0.1 stuff:
 
 - Complete redesign of gdmsetup so it follows
@@ -109,6 +159,36 @@ Ahh news...
 - Translation updates (Takeshi AIHANA, Runa Bhattacharjee,
   Priit Laes, Chao-Hsiung Liao, Ignacio Casal Quinteiro,
   Vincent van Adrighem, Funda Wang, Adam Weinberger)
+
+2.8.0.7 stuff:
+
+- Changes to peeking VT freeness in 2.13.0.1 broke
+  virtual terminal support on BSD.  This release
+  corrects this problem.  (Brian Cameron)
+
+- Correct Linux get VT logic so it returns the
+  correct VT.  (Frederic Crozat)
+
+- Now gdmlogin always uses GDK_RGB_DITHER_MAX
+  when painting the background to ensure a nice
+  background regardless of X configuration
+  (e.g. X in 16bpp mode).  (Frederic Crozat)
+
+- Now check for Xserver in prefix /usr.
+  (J\303\274rg Billeter)
+
+- Fix configure for Darwin.  (dmacks@netspace.org)
+
+- Fix compiler warnings. (Frederic Crozat,
+  dmacks@netspace.org, Brian Cameron)
+
+- Ensure gnome.desktop and default.desktop have
+  644 perms.  (Andrew Benton)
+
+- Translation updates (Takeshi AIHANA, Runa Bhattacharjee,
+  Dan Damian, Theppitak Karoonboonyanan, Inaki Larranaga,
+  Priit Laes, Roozbeh Pournader, Alexander Shopov, Marcel
+  Telka, Miloslav Trmac)
 
 2.8.0.6 stuff:
 
