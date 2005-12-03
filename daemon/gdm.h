@@ -138,8 +138,9 @@ enum {
 
 /*
  * The following section contains keys used by the gdm.conf configuration file.
- * Options exposed in this file are Stable, and should not change in ways that
- * are not backwards incompatible.
+ * The key/value pairs defined in the %{sysconfdir}/gdm/gdm.conf file is
+ * considered a "stable" interface and should only change in ways that are
+ * backwards compatible.
  * 
  * Developers who add new configuration options should ensure that they do the
  * following:
@@ -1049,7 +1050,7 @@ void		gdm_final_cleanup	(void);
 
 #define GDM_SUP_ADD_DYNAMIC_DISPLAY	"ADD_DYNAMIC_DISPLAY" 
 /*
- * ADD_X_SERVER: Add a dynamic display configuration.
+ * ADD_DYNAMIC_DISPLAY: Add a dynamic display configuration.
  *   Configures a dynamic X server to run on the specified display
  *   leaving it in DISPLAY_CONFIG state.
  * Supported since: 2.8.0.0
@@ -1060,6 +1061,11 @@ void		gdm_final_cleanup	(void);
  *  OK
  *  ERROR
  *     0 = Not implemented
+ *     2 = Existing display
+ *     3 = No server string
+ *     4 = Display startup failure
+ *     100 = Not authenticated
+ *     200 = Dynamic Displays not allowed
  *     999 = Unknown error
  */
 #define GDM_SUP_REMOVE_DYNAMIC_DISPLAY	"REMOVE_DYNAMIC_DISPLAY" 
