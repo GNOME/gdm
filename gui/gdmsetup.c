@@ -3413,7 +3413,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			}
 		}			   
 					   
-		markup = g_strdup_printf ("<b>%s</b>\n%s", name, desc);
+		markup = g_strdup_printf ("<b>%s</b>\n<small>%s</small>", name, desc);
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter,
 				    THEME_COLUMN_SELECTED, sel_theme,
@@ -4862,6 +4862,7 @@ static void
 xserver_button_clicked (void)
 {
 	static GtkWidget *dialog = NULL;
+	int response;
 
 	if (dialog == NULL) {
 
@@ -4890,7 +4891,14 @@ xserver_button_clicked (void)
 
 		setup_xserver_support (xml_xservers);
 	}
-	gtk_dialog_run (GTK_DIALOG (dialog));
+
+	do {
+		response = gtk_dialog_run (GTK_DIALOG (dialog));
+		if (response == GTK_RESPONSE_HELP) {
+			gnome_help_display_uri ("ghelp:gdm", NULL);
+		}
+	} while (response != GTK_RESPONSE_CLOSE);
+
 	gtk_widget_hide (dialog);
 }
 
@@ -5073,6 +5081,9 @@ setup_local_themed_settings (void)
 	GtkTreeSelection *selection;
 	GtkTreeIter *select_iter = NULL;
 	GtkWidget *color_colorbutton;
+	GtkWidget *style_label;
+	GtkWidget *theme_label;
+	GtkSizeGroup *size_group;
 	
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
 						  GTK_TYPE_TREE_VIEW);
@@ -5083,6 +5094,12 @@ setup_local_themed_settings (void)
 	GtkWidget *mode_combobox = glade_helper_get (xml, "gg_mode_combobox",
 						     GTK_TYPE_COMBO_BOX);
 
+	style_label = glade_helper_get (xml, "local_stylelabel", GTK_TYPE_LABEL);
+	theme_label = glade_helper_get (xml, "local_theme_label", GTK_TYPE_LABEL);
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	gtk_size_group_add_widget (size_group, style_label);
+	gtk_size_group_add_widget (size_group, theme_label);
+	
 	color_colorbutton = glade_helper_get (xml, 
 	                                      "local_background_theme_colorbutton",
 	                                      GTK_TYPE_COLOR_BUTTON);
@@ -6061,6 +6078,9 @@ setup_remote_themed_settings (void)
 	GtkTreeSelection *selection;
 	GtkTreeIter *select_iter = NULL;
 	GtkWidget *color_colorbutton;
+	GtkWidget *style_label;
+	GtkWidget *theme_label;
+	GtkSizeGroup *size_group;
 	
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list_remote",
 						  GTK_TYPE_TREE_VIEW);
@@ -6072,6 +6092,12 @@ setup_remote_themed_settings (void)
 						  GTK_TYPE_BUTTON);
 	GtkWidget *mode_combobox = glade_helper_get (xml, "gg_mode_combobox_remote",
 						     GTK_TYPE_COMBO_BOX);
+
+	style_label = glade_helper_get (xml, "remote_stylelabel", GTK_TYPE_LABEL);
+	theme_label = glade_helper_get (xml, "remote_theme_label", GTK_TYPE_LABEL);
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	gtk_size_group_add_widget (size_group, style_label);
+	gtk_size_group_add_widget (size_group, theme_label);
 
 	color_colorbutton = glade_helper_get (xml, 
 	                                      "remote_background_theme_colorbutton",
@@ -6221,7 +6247,6 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "local_welcome_message_label", "b");
 	glade_helper_tagify_label (xml, "label_welcome_note", "i");
 	glade_helper_tagify_label (xml, "label_welcome_note", "small");
-	glade_helper_tagify_label (xml, "local_theme_backgroud_label", "b");
 	glade_helper_tagify_label (xml, "gg_author_label", "b");
 	glade_helper_tagify_label (xml, "gg_author_label", "small");
 	glade_helper_tagify_label (xml, "gg_copyright_label", "b");
@@ -6229,7 +6254,6 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "remote_plain_background_label", "b");
 	glade_helper_tagify_label (xml, "remote_logo_label", "b");
 	glade_helper_tagify_label (xml, "remote_welcome_message_label", "b");
-	glade_helper_tagify_label (xml, "remote_theme_background_label", "b");
 	glade_helper_tagify_label (xml, "label_welcomeremote_note", "i");
 	glade_helper_tagify_label (xml, "label_welcomeremote_note", "small");
 	glade_helper_tagify_label (xml, "autologin", "b");
