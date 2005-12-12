@@ -20,6 +20,7 @@
 
 #include <syslog.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <dirent.h>
 #include <signal.h>
 #include <string.h>
@@ -48,7 +49,7 @@
 
 #include <X11/Xlib.h>
 
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 
 #include "gdm.h"
 #include "misc.h"

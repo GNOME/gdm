@@ -23,6 +23,7 @@
 #define GDM_COMMON_H
 
 #include "misc.h"
+#include <gtk/gtk.h> 
 
 void    gdm_common_show_info_msg        (const gchar *msg_file,
                                          const gchar *msg_font);

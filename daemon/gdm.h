@@ -857,6 +857,8 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
+#define GDM_SUP_GET_SERVER_LIST "GET_SERVER_LIST" /* None */
+#define GDM_SUP_GET_SERVER_DETAILS "GET_SERVER_DETAILS" /* <server> */
 #define GDM_SUP_GET_CONFIG "GET_CONFIG" /* <key> */
 /* GET_CONFIG:  Get configuration value for key.  Useful so
  * that other programs can request configuration information
@@ -1050,7 +1052,7 @@ void		gdm_final_cleanup	(void);
 
 #define GDM_SUP_ADD_DYNAMIC_DISPLAY	"ADD_DYNAMIC_DISPLAY" 
 /*
- * ADD_DYNAMIC_DISPLAY: Add a dynamic display configuration.
+ * ADD_X_SERVER: Add a dynamic display configuration.
  *   Configures a dynamic X server to run on the specified display
  *   leaving it in DISPLAY_CONFIG state.
  * Supported since: 2.8.0.0
@@ -1064,8 +1066,6 @@ void		gdm_final_cleanup	(void);
  *     2 = Existing display
  *     3 = No server string
  *     4 = Display startup failure
- *     100 = Not authenticated
- *     200 = Dynamic Displays not allowed
  *     999 = Unknown error
  */
 #define GDM_SUP_REMOVE_DYNAMIC_DISPLAY	"REMOVE_DYNAMIC_DISPLAY" 

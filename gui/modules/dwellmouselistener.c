@@ -20,6 +20,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 #include <syslog.h>
 #include <math.h>
 
@@ -28,7 +29,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <gnome.h>
+#include <glib/gi18n.h>
 
 #include <X11/Xlib.h>
 #include <config.h>

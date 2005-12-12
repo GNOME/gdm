@@ -19,10 +19,11 @@
  */
 
 #include "config.h"
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
 #include <locale.h>
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "gdmlanguages.h"
 #include "gdmconfig.h"

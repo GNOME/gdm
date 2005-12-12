@@ -18,7 +18,7 @@
 
 #include "config.h"
 
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>

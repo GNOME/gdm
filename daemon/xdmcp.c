@@ -89,7 +89,7 @@
 #endif
 #endif /* HAVE_LIBXDMCP */
 
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 
 #ifdef HAVE_LIBXDMCP
 #include "gdm.h"

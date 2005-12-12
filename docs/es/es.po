@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-22 21:37-0600\n"
+"POT-Creation-Date: 2005-11-28 14:54-0600\n"
 "PO-Revision-Date: 2005-10-30 18:01+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -220,8 +220,8 @@ msgstr ""
 #: ../C/gdm.xml:62 (releaseinfo) ../C/gdm.xml:72 (para)
 #, fuzzy
 msgid ""
-"This manual describes version 2.13.0.1 of the GNOME Display Manager. It was "
-"last updated on 11/14/2005."
+"This manual describes version 2.13.0.2 of the GNOME Display Manager. It was "
+"last updated on 11/28/2005."
 msgstr ""
 "Este manual describe la versión  2.13.0.0 del Gestor de Pantallas de Gnome. "
 "Se actualizó por última vez en 26/10/2005."
@@ -4863,7 +4863,12 @@ msgid ""
 "GET_CONFIG:  Get configuration value for key.  Useful so\n"
 "             that other applications can request configuration\n"
 "             information from GDM.  Any key defined as GDM_KEY_*\n"
-"             in gdm.h is supported.\n"
+"             in gdm.h is supported.  Starting with version 2.13.0.2\n"
+"             translated keys (such as \"greeter/GdmWelcome[cs]\" are\n"
+"             supported via GET_CONFIG.  Also starting with version\n"
+"             2.13.0.2 it is no longer necessary to include the\n"
+"             default value (i.e. you can use key \"greeter/IncludeAll\"\n"
+"             instead of having to use \"greeter/IncludeAll=false\".  \n"
 "Supported since: 2.6.0.9\n"
 "Arguments:  &lt;key&gt;\n"
 "Answers:\n"
@@ -4876,11 +4881,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:3858 (title)
+#: ../C/gdm.xml:3863 (title)
 msgid "GET_CONFIG_FILE"
 msgstr "GET_CONFIG_FILE"
 
-#: ../C/gdm.xml:3859 (screen)
+#: ../C/gdm.xml:3864 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -4897,11 +4902,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:3874 (title)
+#: ../C/gdm.xml:3879 (title)
 msgid "UPDATE_CONFIG"
 msgstr "UPDATE_CONFIG"
 
-#: ../C/gdm.xml:3875 (screen)
+#: ../C/gdm.xml:3880 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -4973,11 +4978,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:3945 (title)
+#: ../C/gdm.xml:3950 (title)
 msgid "GREETERPIDS"
 msgstr "GREETERPIDS"
 
-#: ../C/gdm.xml:3946 (screen)
+#: ../C/gdm.xml:3951 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -4995,11 +5000,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:3962 (title)
+#: ../C/gdm.xml:3967 (title)
 msgid "QUERY_LOGOUT_ACTION"
 msgstr "QUERY_LOGOUT_ACTION"
 
-#: ../C/gdm.xml:3963 (screen)
+#: ../C/gdm.xml:3968 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -5022,11 +5027,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:3984 (title)
+#: ../C/gdm.xml:3989 (title)
 msgid "SET_LOGOUT_ACTION"
 msgstr ""
 
-#: ../C/gdm.xml:3985 (screen)
+#: ../C/gdm.xml:3990 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -5051,11 +5056,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:4008 (title)
+#: ../C/gdm.xml:4013 (title)
 msgid "SET_SAFE_LOGOUT_ACTION"
 msgstr "SET_SAFE_LOGOUT_ACTION"
 
-#: ../C/gdm.xml:4009 (screen)
+#: ../C/gdm.xml:4014 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -5088,11 +5093,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:4040 (title)
+#: ../C/gdm.xml:4045 (title)
 msgid "QUERY_VT"
 msgstr "QUERY_VT"
 
-#: ../C/gdm.xml:4041 (screen)
+#: ../C/gdm.xml:4046 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -5117,11 +5122,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:4064 (title)
+#: ../C/gdm.xml:4069 (title)
 msgid "SET_VT"
 msgstr "SET_VT"
 
-#: ../C/gdm.xml:4065 (screen)
+#: ../C/gdm.xml:4070 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -5144,11 +5149,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:4086 (title)
+#: ../C/gdm.xml:4091 (title)
 msgid "CLOSE"
 msgstr "CLOSE"
 
-#: ../C/gdm.xml:4087 (screen)
+#: ../C/gdm.xml:4092 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -5157,27 +5162,27 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:4098 (title)
+#: ../C/gdm.xml:4103 (title)
 msgid "GDM Commands"
 msgstr ""
 
-#: ../C/gdm.xml:4101 (title)
+#: ../C/gdm.xml:4106 (title)
 msgid "GDM User Commands"
 msgstr ""
 
-#: ../C/gdm.xml:4103 (para)
+#: ../C/gdm.xml:4108 (para)
 msgid ""
 "The GDM package provides the following different commands in EXPANDED_BINDIR "
 "intended to be used by the end-user:"
 msgstr ""
 
-#: ../C/gdm.xml:4109 (title)
+#: ../C/gdm.xml:4114 (title)
 msgid ""
 "<command>gdmXnestchooser</command> and <command>gdmXnest</command> Command "
 "Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4112 (para)
+#: ../C/gdm.xml:4117 (para)
 msgid ""
 "The <command>gdmXnestchooser</command> command automatically gets the "
 "correct display number, sets up access, and runs <command>Xnest</command> "
@@ -5190,78 +5195,78 @@ msgid ""
 "this command also supports standard GNOME options."
 msgstr ""
 
-#: ../C/gdm.xml:4127 (title)
+#: ../C/gdm.xml:4132 (title)
 msgid "<command>gdmXnestchooser</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4130 (term)
+#: ../C/gdm.xml:4135 (term)
 msgid "-x, --xnest=STRING"
 msgstr ""
 
-#: ../C/gdm.xml:4132 (para)
+#: ../C/gdm.xml:4137 (para)
 msgid "Xnest command line, default is \"Xnest\""
 msgstr ""
 
-#: ../C/gdm.xml:4139 (term)
+#: ../C/gdm.xml:4144 (term)
 msgid "-o, --xnest-extra-options=OPTIONS"
 msgstr ""
 
-#: ../C/gdm.xml:4141 (para)
+#: ../C/gdm.xml:4146 (para)
 msgid "Extra options for Xnest, default is no options."
 msgstr ""
 
-#: ../C/gdm.xml:4148 (term)
+#: ../C/gdm.xml:4153 (term)
 msgid "-n, --no-query"
 msgstr ""
 
-#: ../C/gdm.xml:4150 (para)
+#: ../C/gdm.xml:4155 (para)
 msgid "Just run Xnest, no query (no chooser)"
 msgstr ""
 
-#: ../C/gdm.xml:4157 (term)
+#: ../C/gdm.xml:4162 (term)
 msgid "-d, --direct"
 msgstr ""
 
-#: ../C/gdm.xml:4159 (para)
+#: ../C/gdm.xml:4164 (para)
 msgid "Do direct query instead of indirect (chooser)"
 msgstr ""
 
-#: ../C/gdm.xml:4166 (term)
+#: ../C/gdm.xml:4171 (term)
 msgid "-B, --broadcast"
 msgstr ""
 
-#: ../C/gdm.xml:4168 (para)
+#: ../C/gdm.xml:4173 (para)
 msgid "Run broadcast instead of indirect (chooser)"
 msgstr ""
 
-#: ../C/gdm.xml:4175 (term)
+#: ../C/gdm.xml:4180 (term)
 msgid "-b, --background"
 msgstr ""
 
-#: ../C/gdm.xml:4177 (para)
+#: ../C/gdm.xml:4182 (para)
 msgid "Run in background"
 msgstr ""
 
-#: ../C/gdm.xml:4184 (term)
+#: ../C/gdm.xml:4189 (term)
 msgid "--no-gdm-check"
 msgstr ""
 
-#: ../C/gdm.xml:4186 (para)
+#: ../C/gdm.xml:4191 (para)
 msgid "Don't check for running GDM"
 msgstr ""
 
-#: ../C/gdm.xml:4195 (title) ../C/gdm.xml:4239
+#: ../C/gdm.xml:4200 (title) ../C/gdm.xml:4244
 msgid "<command>gdmflexichooser</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4197 (para)
+#: ../C/gdm.xml:4202 (para)
 msgid ""
 "The <command>gdmflexiserver</command> command provides three features. It "
 "can be used to run flexible (on demand) X servers, to run a flexible server "
 "via Xnest, and to send commands to the GDM daemon process."
 msgstr ""
 
-#: ../C/gdm.xml:4204 (para)
+#: ../C/gdm.xml:4209 (para)
 msgid ""
 "Starting a flexible X servers will normally lock the current session with a "
 "screensaver and will redisplay the GDM login screen so a second user can log "
@@ -5275,7 +5280,7 @@ msgid ""
 "have to enter the password to unlock the screen."
 msgstr ""
 
-#: ../C/gdm.xml:4218 (para)
+#: ../C/gdm.xml:4223 (para)
 msgid ""
 "Flexible servers started via Xnest works on systems that do not support "
 "virtual terminals. This option starts a flexible server in a window in the "
@@ -5283,48 +5288,48 @@ msgid ""
 "as a flexible server started via virtual terminals."
 msgstr ""
 
-#: ../C/gdm.xml:4226 (para)
+#: ../C/gdm.xml:4231 (para)
 msgid ""
 "The <command>gdmflexiserver --command</command> option provides a way to "
 "send commands to the GDM daemon and can be used to debug problems or to "
 "change the GDM configuration."
 msgstr ""
 
-#: ../C/gdm.xml:4232 (para)
+#: ../C/gdm.xml:4237 (para)
 msgid ""
 "In addition to the following options, <command>gdmflexiserver</command> also "
 "supports standard GNOME options."
 msgstr ""
 
-#: ../C/gdm.xml:4242 (term)
+#: ../C/gdm.xml:4247 (term)
 msgid "-c, --command=COMMAND"
 msgstr ""
 
-#: ../C/gdm.xml:4244 (para)
+#: ../C/gdm.xml:4249 (para)
 msgid "Send the specified protocol command to GDM"
 msgstr "Enviar el comando de protocolo especificado a GDM"
 
-#: ../C/gdm.xml:4251 (term)
+#: ../C/gdm.xml:4256 (term)
 msgid "-n, --xnest"
 msgstr "-n, --xnest"
 
-#: ../C/gdm.xml:4253 (para)
+#: ../C/gdm.xml:4258 (para)
 msgid "Start a flexible X server in Xnest mode"
 msgstr ""
 
-#: ../C/gdm.xml:4260 (term)
+#: ../C/gdm.xml:4265 (term)
 msgid "-l, --no-lock"
 msgstr "-l, --no-lock"
 
-#: ../C/gdm.xml:4262 (para)
+#: ../C/gdm.xml:4267 (para)
 msgid "Do not lock current screen"
 msgstr "No bloquear la pantalla actual"
 
-#: ../C/gdm.xml:4269 (term)
+#: ../C/gdm.xml:4274 (term)
 msgid "-d, --debug"
 msgstr "-d, --debug"
 
-#: ../C/gdm.xml:4271 (para)
+#: ../C/gdm.xml:4276 (para)
 msgid ""
 "Turns on debugging output which gets sent to syslog. Same as turning on "
 "debug in the configuration file."
@@ -5332,19 +5337,19 @@ msgstr ""
 "Activar salida de depuración para enviarla a syslog. Lo mismo que cuadno se "
 "activa la depuración en el archivo de configuración."
 
-#: ../C/gdm.xml:4279 (term)
+#: ../C/gdm.xml:4284 (term)
 msgid "-a, --authenticate"
 msgstr "-a, --authenticate"
 
-#: ../C/gdm.xml:4281 (para)
+#: ../C/gdm.xml:4286 (para)
 msgid "Authenticate before running --command"
 msgstr "Autenticar antes de ejecutar --command"
 
-#: ../C/gdm.xml:4288 (term)
+#: ../C/gdm.xml:4293 (term)
 msgid "-s, --startnew"
 msgstr "-s, --startnew"
 
-#: ../C/gdm.xml:4290 (para)
+#: ../C/gdm.xml:4295 (para)
 msgid ""
 "Starts a new flexible server without displaying a dialog asking the user if "
 "they wish to continue any existing sessions."
@@ -5352,17 +5357,17 @@ msgstr ""
 "Inicia un servidor flexible nuevo sin mostrar un diálogo preguntando al "
 "usuario si quiere continuar cualquier sesión existente."
 
-#: ../C/gdm.xml:4301 (title) ../C/gdm.xml:4319
+#: ../C/gdm.xml:4306 (title) ../C/gdm.xml:4324
 msgid "<command>gdmdynamic</command> Command Line Options"
 msgstr "Opciones de línea de comandos de <command>gdmdynamic</command>"
 
-#: ../C/gdm.xml:4303 (para)
+#: ../C/gdm.xml:4308 (para)
 msgid ""
 "The <command>gdmdynamic</command> command which creates, runs, and removes "
 "displays (X servers) on demand."
 msgstr ""
 
-#: ../C/gdm.xml:4308 (para)
+#: ../C/gdm.xml:4313 (para)
 msgid ""
 "Some environments need the ability to tell GDM to create and manage new "
 "displays on the fly, where it is not possible to list the possible displays "
@@ -5372,44 +5377,44 @@ msgid ""
 "list all attached displays, or only attached displays that match a pattern."
 msgstr ""
 
-#: ../C/gdm.xml:4324 (emphasis)
+#: ../C/gdm.xml:4329 (emphasis)
 msgid "One of the following options can be used per instance:"
 msgstr "Una de las siguientes opciones pueden usarse por instancia:"
 
-#: ../C/gdm.xml:4331 (term)
+#: ../C/gdm.xml:4336 (term)
 msgid "-a display=server"
 msgstr ""
 
-#: ../C/gdm.xml:4333 (para)
+#: ../C/gdm.xml:4338 (para)
 msgid ""
 "Add a new display configuration. For example, <command>\"-a "
 "2=StandardServerTwo\"</command><command>\"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"
 "\"</command>"
 msgstr ""
 
-#: ../C/gdm.xml:4342 (term)
+#: ../C/gdm.xml:4347 (term)
 msgid "-r"
 msgstr ""
 
-#: ../C/gdm.xml:4344 (para)
+#: ../C/gdm.xml:4349 (para)
 msgid "Release (run) all displays waiting in the DISPLAY_CONFIG state."
 msgstr ""
 
-#: ../C/gdm.xml:4351 (term)
+#: ../C/gdm.xml:4356 (term)
 msgid "-d display"
 msgstr ""
 
-#: ../C/gdm.xml:4353 (para)
+#: ../C/gdm.xml:4358 (para)
 msgid ""
 "Delete a display, killing the X server and purging the display "
 "configuration. For example, \"-d 3\"."
 msgstr ""
 
-#: ../C/gdm.xml:4361 (term)
+#: ../C/gdm.xml:4366 (term)
 msgid "-l [pattern]"
 msgstr ""
 
-#: ../C/gdm.xml:4363 (para)
+#: ../C/gdm.xml:4368 (para)
 msgid ""
 "List displays via the ATTACHED_SERVERS command. Without a pattern lists all "
 "attached displays. With a pattern will match using glob characters '*', '?', "
@@ -5417,42 +5422,42 @@ msgid ""
 "*Xorg*\"</command>"
 msgstr ""
 
-#: ../C/gdm.xml:4376 (emphasis)
+#: ../C/gdm.xml:4381 (emphasis)
 msgid "These options can be added to the above:"
 msgstr ""
 
-#: ../C/gdm.xml:4383 (term)
+#: ../C/gdm.xml:4388 (term)
 msgid "-v"
 msgstr ""
 
-#: ../C/gdm.xml:4385 (para)
+#: ../C/gdm.xml:4390 (para)
 msgid "Verbose mode. Prinr diagnostic messages about each message sent to GDM."
 msgstr ""
 
-#: ../C/gdm.xml:4393 (term)
+#: ../C/gdm.xml:4398 (term)
 msgid "-b"
 msgstr ""
 
-#: ../C/gdm.xml:4395 (para)
+#: ../C/gdm.xml:4400 (para)
 msgid "Background mode. Fork child to do the work and return immediately."
 msgstr ""
 
-#: ../C/gdm.xml:4404 (title)
+#: ../C/gdm.xml:4409 (title)
 msgid "<command>gdmphotosetup</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4406 (para)
+#: ../C/gdm.xml:4411 (para)
 msgid ""
 "Allows the user to select an image that will be used as the user's photo by "
 "GDM's face browser, if enabled by GDM. The selected file is stored as ~/."
 "face. This command accepts standard GNOME options."
 msgstr ""
 
-#: ../C/gdm.xml:4414 (title)
+#: ../C/gdm.xml:4419 (title)
 msgid "<command>gdmthemetester</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4416 (para)
+#: ../C/gdm.xml:4421 (para)
 msgid ""
 "<command>gdmthemetester</command> takes two parameters. The first parameter "
 "specifies the environment and the second parameter specifies the path name "
@@ -5471,22 +5476,22 @@ msgid ""
 "         </screen>"
 msgstr ""
 
-#: ../C/gdm.xml:4442 (title)
+#: ../C/gdm.xml:4447 (title)
 msgid "GDM Root User Commands"
 msgstr ""
 
-#: ../C/gdm.xml:4444 (para)
+#: ../C/gdm.xml:4449 (para)
 msgid ""
 "The GDM package provides the following different commands in "
 "EXPANDED_SBINDIR intended to be used by the root user:"
 msgstr ""
 
-#: ../C/gdm.xml:4450 (title) ../C/gdm.xml:4466
+#: ../C/gdm.xml:4455 (title) ../C/gdm.xml:4471
 msgid ""
 "<command>gdm</command> and <command>gdm-binary</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4453 (para)
+#: ../C/gdm.xml:4458 (para)
 msgid ""
 "The <command>gdm</command> command is really just a script which runs the "
 "<command>gdm-binary</command>, passing along any options. Before launching "
@@ -5498,30 +5503,30 @@ msgid ""
 "environment before launching GDM, you can do so in this script."
 msgstr ""
 
-#: ../C/gdm.xml:4470 (term)
+#: ../C/gdm.xml:4475 (term)
 msgid "--help"
 msgstr "--help"
 
-#: ../C/gdm.xml:4472 (para)
+#: ../C/gdm.xml:4477 (para)
 msgid "Gives a brief overview of the command line options."
 msgstr ""
 
-#: ../C/gdm.xml:4479 (term)
+#: ../C/gdm.xml:4484 (term)
 msgid "-nodaemon"
 msgstr "-nodaemon"
 
-#: ../C/gdm.xml:4481 (para)
+#: ../C/gdm.xml:4486 (para)
 msgid ""
 "If this option is specified, then GDM does not fork into the background when "
 "run. You can use just a single dash with this option to preserve "
 "compatibility with XDM."
 msgstr ""
 
-#: ../C/gdm.xml:4490 (term)
+#: ../C/gdm.xml:4495 (term)
 msgid "--no-console"
 msgstr "--no-console"
 
-#: ../C/gdm.xml:4492 (para)
+#: ../C/gdm.xml:4497 (para)
 msgid ""
 "Tell the daemon that it should not run anything on the console. This means "
 "that none of the local servers from the <filename>[servers]</filename> "
@@ -5530,37 +5535,37 @@ msgid ""
 "automatically implies this option."
 msgstr ""
 
-#: ../C/gdm.xml:4504 (term) ../C/gdm.xml:4568
+#: ../C/gdm.xml:4509 (term) ../C/gdm.xml:4573
 msgid "--config=CONFIGFILE"
 msgstr "--config=CONFIGFILE"
 
-#: ../C/gdm.xml:4506 (para)
+#: ../C/gdm.xml:4511 (para)
 msgid "Specify an alternative configuration file."
 msgstr ""
 
-#: ../C/gdm.xml:4513 (term)
+#: ../C/gdm.xml:4518 (term)
 msgid "--preserve-ld-vars"
 msgstr "--preserve-ld-vars"
 
-#: ../C/gdm.xml:4515 (para)
+#: ../C/gdm.xml:4520 (para)
 msgid ""
 "When clearing the environment internally, preserve all variables starting "
 "with LD_. This is mostly for debugging purposes."
 msgstr ""
 
-#: ../C/gdm.xml:4523 (term)
+#: ../C/gdm.xml:4528 (term)
 msgid "--version"
 msgstr "--version"
 
-#: ../C/gdm.xml:4525 (para)
+#: ../C/gdm.xml:4530 (para)
 msgid "Print the version of the GDM daemon."
 msgstr ""
 
-#: ../C/gdm.xml:4532 (term)
+#: ../C/gdm.xml:4537 (term)
 msgid "--wait-for-go"
 msgstr "--wait-for-go"
 
-#: ../C/gdm.xml:4534 (para)
+#: ../C/gdm.xml:4539 (para)
 msgid ""
 "If started with this option, gdm will init, but only start the first local "
 "display and then wait for a GO message in the fifo protocol. No greeter will "
@@ -5572,11 +5577,11 @@ msgid ""
 "added in version 2.5.90.0."
 msgstr ""
 
-#: ../C/gdm.xml:4552 (title) ../C/gdm.xml:4565
+#: ../C/gdm.xml:4557 (title) ../C/gdm.xml:4570
 msgid "<command>gdmsetup</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4554 (para)
+#: ../C/gdm.xml:4559 (para)
 msgid ""
 "<command>gdmsetup</command> runs a graphical application for modifying the "
 "GDM configuration file, gdm.conf. Normally on systems that support the PAM "
@@ -5586,60 +5591,60 @@ msgid ""
 "application supports standard GNOME options."
 msgstr ""
 
-#: ../C/gdm.xml:4570 (para)
+#: ../C/gdm.xml:4575 (para)
 msgid ""
 "Specify an alternative configuration file. By default, <command>gdmsetup</"
 "command> will edit the same configuration file being used by the GDM daemon."
 msgstr ""
 
-#: ../C/gdm.xml:4581 (title)
+#: ../C/gdm.xml:4586 (title)
 msgid "<command>gdm-restart</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4583 (para)
+#: ../C/gdm.xml:4588 (para)
 msgid ""
 "<command>gdm-restart</command> stops and restarts GDM by sending the GDM "
 "daemon a HUP signal. This command will immediately terminate all sessions "
 "and log out users currently logged in with GDM."
 msgstr ""
 
-#: ../C/gdm.xml:4591 (title)
+#: ../C/gdm.xml:4596 (title)
 msgid "<command>gdm-safe-restart</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4593 (para)
+#: ../C/gdm.xml:4598 (para)
 msgid ""
 "<command>gdm-safe-restart</command> stops and restarts GDM by sending the "
 "GDM daemon a USR1 signal. GDM will be restarted as soon as all users log out."
 msgstr ""
 
-#: ../C/gdm.xml:4601 (title)
+#: ../C/gdm.xml:4606 (title)
 msgid "<command>gdm-stop</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4603 (para)
+#: ../C/gdm.xml:4608 (para)
 msgid ""
 "<command>gdm-stop</command> stops GDM by sending the GDM daemon a TERM "
 "signal."
 msgstr ""
 
-#: ../C/gdm.xml:4611 (title)
+#: ../C/gdm.xml:4616 (title)
 msgid "GDM Internal Commands"
 msgstr "Comandos internos de GDM"
 
-#: ../C/gdm.xml:4613 (para)
+#: ../C/gdm.xml:4618 (para)
 msgid ""
 "The GDM package provides the following different commands in "
 "EXPANDED_LIBEXECDIR intended to be used by the gdm daemon process."
 msgstr ""
 
-#: ../C/gdm.xml:4619 (title)
+#: ../C/gdm.xml:4624 (title)
 msgid ""
 "<command>gdmchooser</command> and <command>gdmlogin</command> Command Line "
 "Options"
 msgstr ""
 
-#: ../C/gdm.xml:4622 (para)
+#: ../C/gdm.xml:4627 (para)
 msgid ""
 "The <command>gdmgreeter</command> and <command>gdmlogin</command> are two "
 "different login applications, either can be used by GDM. "
@@ -5649,11 +5654,11 @@ msgid ""
 "GNOME options."
 msgstr ""
 
-#: ../C/gdm.xml:4633 (title) ../C/gdm.xml:4644
+#: ../C/gdm.xml:4638 (title) ../C/gdm.xml:4649
 msgid "<command>gdmchooser</command> Command Line Options"
 msgstr ""
 
-#: ../C/gdm.xml:4635 (para)
+#: ../C/gdm.xml:4640 (para)
 msgid ""
 "The <command>gdmchooser</command> is the XDMCP chooser application. The "
 "<command>gdmchooser</command> is normally executed by the GDM daemon. It "
@@ -5661,39 +5666,39 @@ msgid ""
 "standard GNOME options and is found in support standard GNOME options."
 msgstr ""
 
-#: ../C/gdm.xml:4647 (term)
+#: ../C/gdm.xml:4652 (term)
 msgid "-xdmaddress=SOCKET"
 msgstr "-xdmaddress=SOCKET"
 
-#: ../C/gdm.xml:4649 (para)
+#: ../C/gdm.xml:4654 (para)
 msgid "Socket for XDM communication."
 msgstr ""
 
-#: ../C/gdm.xml:4656 (term)
+#: ../C/gdm.xml:4661 (term)
 msgid "--clientaddress=ADDRESS"
 msgstr "--clientaddress=ADDRESS"
 
-#: ../C/gdm.xml:4658 (para)
+#: ../C/gdm.xml:4663 (para)
 msgid ""
 "Client address to return in response to XDM. This option is for running "
 "gdmchooser with XDM, and is not used within GDM."
 msgstr ""
 
-#: ../C/gdm.xml:4666 (term)
+#: ../C/gdm.xml:4671 (term)
 msgid "-connectionType=TYPE"
 msgstr "-connectionType=TYPE"
 
-#: ../C/gdm.xml:4668 (para)
+#: ../C/gdm.xml:4673 (para)
 msgid ""
 "Connection type to return in response to XDM. This option is for running "
 "gdmchooser with XDM, and is not used within GDM."
 msgstr ""
 
-#: ../C/gdm.xml:4682 (title)
+#: ../C/gdm.xml:4687 (title)
 msgid "Themed Greeter"
 msgstr "Interfaz con temas"
 
-#: ../C/gdm.xml:4684 (para)
+#: ../C/gdm.xml:4689 (para)
 msgid ""
 "This section describes the creation of themes for the Themed Greeter. For "
 "examples including screenshots, see the standard installed themes and the "
@@ -5701,11 +5706,11 @@ msgid ""
 "gdm_greeter/\"> the theme website</ulink>."
 msgstr ""
 
-#: ../C/gdm.xml:4693 (title)
+#: ../C/gdm.xml:4698 (title)
 msgid "Theme Overview"
 msgstr "Descripción de los temas"
 
-#: ../C/gdm.xml:4695 (para)
+#: ../C/gdm.xml:4700 (para)
 msgid ""
 "GDM Themes can be created by creating an XML file that follows the "
 "specification in gui/greeter/greeter.dtd. Theme files are stored in the "
@@ -5715,7 +5720,7 @@ msgid ""
 "filename> which has similar format to other .desktop files and looks like:"
 msgstr ""
 
-#: ../C/gdm.xml:4706 (screen)
+#: ../C/gdm.xml:4711 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -5730,7 +5735,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../C/gdm.xml:4717 (para)
+#: ../C/gdm.xml:4722 (para)
 msgid ""
 "The Name, Description, Author and Copyright fields can be translated just "
 "like the other <filename>.desktop</filename>files. All the files that are "
@@ -5741,7 +5746,7 @@ msgid ""
 "description will be given later."
 msgstr ""
 
-#: ../C/gdm.xml:4727 (para)
+#: ../C/gdm.xml:4732 (para)
 msgid ""
 "Once you have theme ready and installed you can test it with the installed "
 "<command>gdmthemetester</command> script. This script assumes that you also "
@@ -5756,11 +5761,11 @@ msgid ""
 "would run:"
 msgstr ""
 
-#: ../C/gdm.xml:4741 (command)
+#: ../C/gdm.xml:4746 (command)
 msgid "gdmthemetester xdmcp circles"
 msgstr ""
 
-#: ../C/gdm.xml:4743 (para)
+#: ../C/gdm.xml:4748 (para)
 msgid ""
 "Be sure to test all the environments with your theme, and make sure to test "
 "how the caps lock warning looks by pressing caps lock. This is also a good "
@@ -5769,7 +5774,7 @@ msgid ""
 "PrintScreen."
 msgstr ""
 
-#: ../C/gdm.xml:4751 (para)
+#: ../C/gdm.xml:4756 (para)
 msgid ""
 "Once you have all this done, then make a tarball that contains the directory "
 "name (so that you could just untar it in the <filename>/usr/share/gdm/"
@@ -5781,15 +5786,15 @@ msgid ""
 "      </screen>"
 msgstr ""
 
-#: ../C/gdm.xml:4766 (title)
+#: ../C/gdm.xml:4771 (title)
 msgid "Detailed Description of Theme XML format"
 msgstr ""
 
-#: ../C/gdm.xml:4769 (title)
+#: ../C/gdm.xml:4774 (title)
 msgid "Box Nodes"
 msgstr ""
 
-#: ../C/gdm.xml:4771 (para)
+#: ../C/gdm.xml:4776 (para)
 msgid ""
 "Box nodes are container nodes for item nodes. Box nodes are specified as "
 "follows: <screen>\n"
@@ -5801,23 +5806,23 @@ msgid ""
 "of \"homogeneous\", and \"vertical\" for the orientation."
 msgstr ""
 
-#: ../C/gdm.xml:4784 (para)
+#: ../C/gdm.xml:4789 (para)
 msgid ""
 "If the box is homogeneous then the children are allocated equal amount of "
 "space."
 msgstr ""
 
-#: ../C/gdm.xml:4789 (para)
+#: ../C/gdm.xml:4794 (para)
 msgid ""
 "The \"min-width\" must be specified in pixels. Obviously there is also a "
 "corresponding \"min-height\" property as well."
 msgstr ""
 
-#: ../C/gdm.xml:4796 (title)
+#: ../C/gdm.xml:4801 (title)
 msgid "Fixed Nodes"
 msgstr ""
 
-#: ../C/gdm.xml:4798 (para)
+#: ../C/gdm.xml:4803 (para)
 msgid ""
 "Fixed is a container that has its children scattered about laid out with "
 "precise coordinates. The size of this container is the biggest rectangle "
@@ -5826,71 +5831,71 @@ msgid ""
 "proper position nodes inside this."
 msgstr ""
 
-#: ../C/gdm.xml:4807 (para)
+#: ../C/gdm.xml:4812 (para)
 msgid "The \"toplevel\" node is really just like a fixed node."
 msgstr ""
 
-#: ../C/gdm.xml:4813 (title)
+#: ../C/gdm.xml:4818 (title)
 msgid "Item Nodes"
 msgstr ""
 
-#: ../C/gdm.xml:4815 (para)
+#: ../C/gdm.xml:4820 (para)
 msgid ""
 "A GDM Theme is created by specifying a hierarchy of item and box nodes. Item "
 "nodes can have the following value for \"type\":"
 msgstr ""
 
-#: ../C/gdm.xml:4822 (term)
+#: ../C/gdm.xml:4827 (term)
 msgid "entry"
 msgstr "entrada"
 
-#: ../C/gdm.xml:4824 (para)
+#: ../C/gdm.xml:4829 (para)
 msgid "Text entry field."
 msgstr "Campo de entrada de texto."
 
-#: ../C/gdm.xml:4831 (term)
+#: ../C/gdm.xml:4836 (term)
 msgid "list"
 msgstr "lista"
 
-#: ../C/gdm.xml:4833 (para)
+#: ../C/gdm.xml:4838 (para)
 msgid "A list widget."
 msgstr "Un widget de lista"
 
-#: ../C/gdm.xml:4840 (term)
+#: ../C/gdm.xml:4845 (term)
 msgid "label"
 msgstr "etiqueta"
 
-#: ../C/gdm.xml:4842 (para)
+#: ../C/gdm.xml:4847 (para)
 msgid "A text label. Must have a \"text\" node to specify the text."
 msgstr ""
 
-#: ../C/gdm.xml:4849 (term)
+#: ../C/gdm.xml:4854 (term)
 msgid "pixmap"
 msgstr "imagen"
 
-#: ../C/gdm.xml:4851 (para)
+#: ../C/gdm.xml:4856 (para)
 msgid ""
 "An pixmap image in a format that gdk-pixbuf supports like PNG, JPEG, Tiff, "
 "etc...)"
 msgstr ""
 
-#: ../C/gdm.xml:4859 (term)
+#: ../C/gdm.xml:4864 (term)
 msgid "rect"
 msgstr "rect"
 
-#: ../C/gdm.xml:4861 (para)
+#: ../C/gdm.xml:4866 (para)
 msgid "Rectangle."
 msgstr "Rectángulo."
 
-#: ../C/gdm.xml:4868 (term)
+#: ../C/gdm.xml:4873 (term)
 msgid "svg"
 msgstr "svg"
 
-#: ../C/gdm.xml:4870 (para)
+#: ../C/gdm.xml:4875 (para)
 msgid "Scaled Vector Graphic image."
 msgstr "Imagen Scaled Vector Graphic"
 
-#: ../C/gdm.xml:4877 (para)
+#: ../C/gdm.xml:4882 (para)
 msgid ""
 "For example: <screen>&lt;item type=\"label\"&gt;</screen> Items can specify "
 "ID values which gives them a specific look and feel or formatting. "
@@ -5898,184 +5903,184 @@ msgid ""
 "with custom id's for some items (currently only the list item)"
 msgstr ""
 
-#: ../C/gdm.xml:4886 (para)
+#: ../C/gdm.xml:4891 (para)
 msgid "Entry items can have id values as follows:"
 msgstr ""
 
-#: ../C/gdm.xml:4892 (term)
+#: ../C/gdm.xml:4897 (term)
 msgid "user-pw-entry"
 msgstr ""
 
-#: ../C/gdm.xml:4894 (para)
+#: ../C/gdm.xml:4899 (para)
 msgid ""
 "Entry field for userid and password entry. This is the field used for "
 "responses for the PAM/GDM questions (Username, Password, etc..)."
 msgstr ""
 
-#: ../C/gdm.xml:4904 (para)
+#: ../C/gdm.xml:4909 (para)
 msgid "List items can have id values as follows:"
 msgstr ""
 
-#: ../C/gdm.xml:4910 (term)
+#: ../C/gdm.xml:4915 (term)
 msgid "userlist"
 msgstr "lista de usuarios"
 
-#: ../C/gdm.xml:4912 (para)
+#: ../C/gdm.xml:4917 (para)
 msgid ""
 "A Face Browser list, so that users can pick their username by clicking on "
 "this instead of typing."
 msgstr ""
 
-#: ../C/gdm.xml:4921 (para)
+#: ../C/gdm.xml:4926 (para)
 msgid ""
 "Furthermore, you can have an arbitrary id (I'd recommend starting the id "
 "with 'custom' not to conflict with future additions to this spec) and ask "
 "extra information of the user. See the section 'Custom Widgetry'"
 msgstr ""
 
-#: ../C/gdm.xml:4928 (para)
+#: ../C/gdm.xml:4933 (para)
 msgid "Label items can have id values as follows:"
 msgstr ""
 
-#: ../C/gdm.xml:4934 (term)
+#: ../C/gdm.xml:4939 (term)
 msgid "clock"
 msgstr "reloj"
 
-#: ../C/gdm.xml:4936 (para)
+#: ../C/gdm.xml:4941 (para)
 msgid "Label the displays the date and time."
 msgstr "Etiqueta que muesta la fecha y la hora."
 
-#: ../C/gdm.xml:4943 (term)
+#: ../C/gdm.xml:4948 (term)
 msgid "pam-prompt"
 msgstr ""
 
-#: ../C/gdm.xml:4945 (para)
+#: ../C/gdm.xml:4950 (para)
 msgid ""
 "Label the displays PAM prompt. This is the prompt that PAM uses to ask for "
 "username, password, etc..."
 msgstr ""
 
-#: ../C/gdm.xml:4953 (term)
+#: ../C/gdm.xml:4958 (term)
 msgid "pam-error"
 msgstr ""
 
-#: ../C/gdm.xml:4955 (para)
+#: ../C/gdm.xml:4960 (para)
 msgid ""
 "Label the displays PAM/GDM error messages. Such as when user can't log in."
 msgstr ""
 
-#: ../C/gdm.xml:4963 (term)
+#: ../C/gdm.xml:4968 (term)
 msgid "pam-message"
 msgstr ""
 
-#: ../C/gdm.xml:4965 (para)
+#: ../C/gdm.xml:4970 (para)
 msgid ""
 "Label the displays PAM message. These are messages that PAM/GDM gives about "
 "state of the account, help about the prompts and other information."
 msgstr ""
 
-#: ../C/gdm.xml:4974 (term)
+#: ../C/gdm.xml:4979 (term)
 msgid "timed-label"
 msgstr ""
 
-#: ../C/gdm.xml:4976 (para)
+#: ../C/gdm.xml:4981 (para)
 msgid "Label that displays timed login information."
 msgstr "Etiqueta que muestra la información de la entrada temporizada."
 
-#: ../C/gdm.xml:4983 (para)
+#: ../C/gdm.xml:4988 (para)
 msgid "Rectangles can have id values as follows:"
 msgstr ""
 
-#: ../C/gdm.xml:4989 (term)
+#: ../C/gdm.xml:4994 (term)
 msgid "caps-lock-warning"
 msgstr ""
 
-#: ../C/gdm.xml:4991 (para)
+#: ../C/gdm.xml:4996 (para)
 msgid ""
 "Displays an icon that shows if the CAPS LOCK key is depressed. This "
 "rectangle will be hidden/shown appropriately"
 msgstr ""
 
-#: ../C/gdm.xml:5000 (para)
+#: ../C/gdm.xml:5005 (para)
 msgid ""
 "If an item is of type rect, the item can be a button. Buttons must also "
 "include a \"button\" value as follows: <screen>&lt;item type=\"rect\" id="
 "\"disconnect_button\" button=\"true\"&gt;.</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5006 (para)
+#: ../C/gdm.xml:5011 (para)
 msgid "Possible values for button ids are as follows:"
 msgstr ""
 
-#: ../C/gdm.xml:5012 (term)
+#: ../C/gdm.xml:5017 (term)
 msgid "chooser_button"
 msgstr ""
 
-#: ../C/gdm.xml:5014 (para)
+#: ../C/gdm.xml:5019 (para)
 msgid "Runs the XDMCP chooser."
 msgstr ""
 
-#: ../C/gdm.xml:5021 (term)
+#: ../C/gdm.xml:5026 (term)
 msgid "config_button"
 msgstr ""
 
-#: ../C/gdm.xml:5023 (para)
+#: ../C/gdm.xml:5028 (para)
 msgid "Runs the GDM configuration application."
 msgstr "Ejecuta la aplicación de configuración de GDM."
 
-#: ../C/gdm.xml:5030 (term)
+#: ../C/gdm.xml:5035 (term)
 msgid "disconnect_button"
 msgstr ""
 
-#: ../C/gdm.xml:5032 (para)
+#: ../C/gdm.xml:5037 (para)
 msgid "Disconnect from remote session."
 msgstr "Desconectar de una sesión remota."
 
-#: ../C/gdm.xml:5039 (term)
+#: ../C/gdm.xml:5044 (term)
 msgid "language_button"
 msgstr "botón_idioma"
 
-#: ../C/gdm.xml:5041 (para)
+#: ../C/gdm.xml:5046 (para)
 msgid "Displays the language selection dialog."
 msgstr "Muestra el diálogo de selección del idioma."
 
-#: ../C/gdm.xml:5048 (term)
+#: ../C/gdm.xml:5053 (term)
 msgid "halt_button"
 msgstr "botón_detener"
 
-#: ../C/gdm.xml:5050 (para)
+#: ../C/gdm.xml:5055 (para)
 msgid "Halt (shuts down) the system."
 msgstr ""
 
-#: ../C/gdm.xml:5057 (term)
+#: ../C/gdm.xml:5062 (term)
 msgid "reboot_button"
 msgstr "botón reiniciar"
 
-#: ../C/gdm.xml:5059 (para)
+#: ../C/gdm.xml:5064 (para)
 msgid "Reboot the system."
 msgstr "Reiniciar el sistema"
 
-#: ../C/gdm.xml:5066 (term)
+#: ../C/gdm.xml:5071 (term)
 msgid "session_button"
 msgstr "botón_sesión"
 
-#: ../C/gdm.xml:5068 (para)
+#: ../C/gdm.xml:5073 (para)
 msgid "List and select from available sessions."
 msgstr ""
 
-#: ../C/gdm.xml:5075 (term)
+#: ../C/gdm.xml:5080 (term)
 msgid "suspend_button"
 msgstr "botón_suspender"
 
-#: ../C/gdm.xml:5077 (para)
+#: ../C/gdm.xml:5082 (para)
 msgid "Suspend the system."
 msgstr "Suspender el sistema"
 
-#: ../C/gdm.xml:5084 (term)
+#: ../C/gdm.xml:5089 (term)
 msgid "system_button"
 msgstr "botón_sistema"
 
-#: ../C/gdm.xml:5086 (para)
+#: ../C/gdm.xml:5091 (para)
 msgid ""
 "Perform halt/reboot/suspend/etc. options (if allowed by GDM configuration). "
 "Also allows user to run configurator if user enters root password (again if "
@@ -6083,25 +6088,25 @@ msgid ""
 "referred to as the Actions menu."
 msgstr ""
 
-#: ../C/gdm.xml:5100 (title)
+#: ../C/gdm.xml:5105 (title)
 msgid "Position Node"
 msgstr ""
 
-#: ../C/gdm.xml:5102 (para)
+#: ../C/gdm.xml:5107 (para)
 msgid ""
 "Each item can specify its position and size via the \"pos\" node. For "
 "example: <screen>&lt;pos x=\"0\" y=\"4\" width=\"100%\" height=\"100%\"/&gt;"
 "</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5108 (para)
+#: ../C/gdm.xml:5113 (para)
 msgid ""
 "Both position and size can be given in percent and it will be taken as the "
 "percentage of the size of the current container. For toplevel items it's the "
 "percentage of the whole screen."
 msgstr ""
 
-#: ../C/gdm.xml:5114 (para)
+#: ../C/gdm.xml:5119 (para)
 msgid ""
 "For x and y, you can also specify a negative position which means position "
 "from the right or bottom edge. But this only applies with absolute "
@@ -6109,7 +6114,7 @@ msgid ""
 "be still from the same edge."
 msgstr ""
 
-#: ../C/gdm.xml:5121 (para)
+#: ../C/gdm.xml:5126 (para)
 msgid ""
 "The position also specifies the anchor of the item, this can be \"n\", \"ne"
 "\", \"e\", \"se\", \"s\", \"sw\", \"w\" and \"nw\" or \"center\" which stand "
@@ -6118,28 +6123,28 @@ msgid ""
 "&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5128 (para)
+#: ../C/gdm.xml:5133 (para)
 msgid ""
 "If the item contains a box, you can specify width and height to be \"box\" "
 "to mean that they are supposed to be the width and height of the box, that "
 "is the items in the box plus the padding."
 msgstr ""
 
-#: ../C/gdm.xml:5134 (para)
+#: ../C/gdm.xml:5139 (para)
 msgid ""
 "If the item contains an SVG image, you can specify width and height to be "
 "\"scale\" to mean that the SVG image should be scaled to fit the requested "
 "area."
 msgstr ""
 
-#: ../C/gdm.xml:5140 (para)
+#: ../C/gdm.xml:5145 (para)
 msgid ""
 "You can also specify an \"expand\" property to either be \"true\" or false. "
 "If true then the child will be expanded in the box as much as possible (that "
 "is it will be given more space if available)."
 msgstr ""
 
-#: ../C/gdm.xml:5146 (para)
+#: ../C/gdm.xml:5151 (para)
 msgid ""
 "There are two extra properties you can specify (as of 2.4.4.3) for labels "
 "(and labels only). The first is \"max-width\" which will specify the maximum "
@@ -6152,182 +6157,182 @@ msgid ""
 "          </screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5162 (title)
+#: ../C/gdm.xml:5167 (title)
 msgid "Show Node"
 msgstr "Mostrar nodo."
 
-#: ../C/gdm.xml:5164 (para)
+#: ../C/gdm.xml:5169 (para)
 msgid ""
 "Some items may only display in certain modes, like when doing a remote "
 "display. Multiple values can be specified and must be separated with commas. "
 "The following values are possible:"
 msgstr ""
 
-#: ../C/gdm.xml:5170 (para)
+#: ../C/gdm.xml:5175 (para)
 msgid "<filename>console</filename> - In console mode."
 msgstr ""
 
-#: ../C/gdm.xml:5173 (para)
+#: ../C/gdm.xml:5178 (para)
 msgid "<filename>console-fixed</filename> - In console non-flexi mode."
 msgstr ""
 
-#: ../C/gdm.xml:5176 (para)
+#: ../C/gdm.xml:5181 (para)
 msgid "<filename>console-flexi</filename> - In console &amp; flexi mode."
 msgstr ""
 
-#: ../C/gdm.xml:5179 (para)
+#: ../C/gdm.xml:5184 (para)
 msgid "<filename>flexi</filename> - In flexi mode."
 msgstr ""
 
-#: ../C/gdm.xml:5182 (para)
+#: ../C/gdm.xml:5187 (para)
 msgid "<filename>remote</filename> - In remote mode."
 msgstr ""
 
-#: ../C/gdm.xml:5185 (para)
+#: ../C/gdm.xml:5190 (para)
 msgid "<filename>remote-flexi</filename> - In remote &amp; flexi mode."
 msgstr ""
 
-#: ../C/gdm.xml:5189 (para)
+#: ../C/gdm.xml:5194 (para)
 msgid "For example: <screen>&lt;show modes=\"flexi,remote\"/&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5194 (para)
+#: ../C/gdm.xml:5199 (para)
 msgid ""
 "You can also specify the \"type\" value to indicate that certain items "
 "should only be displayed if the type is true. Valid values include the "
 "following:"
 msgstr ""
 
-#: ../C/gdm.xml:5200 (para)
+#: ../C/gdm.xml:5205 (para)
 msgid ""
 "<filename>chooser</filename>, if ChooserButton is set to \"true\" in "
 "<filename>gdm.conf</filename> file."
 msgstr ""
 
-#: ../C/gdm.xml:5204 (para)
+#: ../C/gdm.xml:5209 (para)
 msgid ""
 "<filename>config</filename>, if ConfigAvailable is set to \"true\" in "
 "<filename>gdm.conf</filename> file."
 msgstr ""
 
-#: ../C/gdm.xml:5208 (para)
+#: ../C/gdm.xml:5213 (para)
 msgid ""
 "<filename>halt</filename>, if HaltDaemon is specified in <filename>gdm.conf</"
 "filename> file."
 msgstr ""
 
-#: ../C/gdm.xml:5212 (para)
+#: ../C/gdm.xml:5217 (para)
 msgid ""
 "<filename>reboot</filename>, if RebootCommand is specified in <filename>gdm."
 "conf</filename> file."
 msgstr ""
 
-#: ../C/gdm.xml:5216 (para)
+#: ../C/gdm.xml:5221 (para)
 msgid ""
 "<filename>suspend</filename>, if SuspendCommand is specified in "
 "<filename>gdm.conf</filename> file."
 msgstr ""
 
-#: ../C/gdm.xml:5220 (para)
+#: ../C/gdm.xml:5225 (para)
 msgid ""
 "<filename>system</filename>, if SystemMenu is specified in <filename>gdm."
 "conf</filename> file"
 msgstr ""
 
-#: ../C/gdm.xml:5224 (para)
+#: ../C/gdm.xml:5229 (para)
 msgid ""
 "<filename>timed</filename>, if TimedLoginEnabled is set to \"true\" in "
 "<filename>gdm.conf</filename> file."
 msgstr ""
 
-#: ../C/gdm.xml:5229 (para)
+#: ../C/gdm.xml:5234 (para)
 msgid ""
 "For example: <screen>&lt;show modes=\"console\" type=\"system\"/&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5234 (para)
+#: ../C/gdm.xml:5239 (para)
 msgid ""
 "Note that if SystemMenu is off then all of halt, reboot, suspend, chooser "
 "and config will not show, so this is a global toggle for them all. See some "
 "of the standard themes for how the show modes are used."
 msgstr ""
 
-#: ../C/gdm.xml:5243 (title)
+#: ../C/gdm.xml:5248 (title)
 msgid "Normal/Active/Prelight Nodes"
 msgstr ""
 
-#: ../C/gdm.xml:5245 (para)
+#: ../C/gdm.xml:5250 (para)
 msgid ""
 "Depending on the item type (except for userlist - refer to Color node "
 "below), it can specify its color, font, or image via the following tags:"
 msgstr ""
 
-#: ../C/gdm.xml:5250 (para)
+#: ../C/gdm.xml:5255 (para)
 msgid "<filename>normal</filename> - normal state."
 msgstr ""
 
-#: ../C/gdm.xml:5253 (para)
+#: ../C/gdm.xml:5258 (para)
 msgid "<filename>active</filename> - when the item has active focus."
 msgstr ""
 
-#: ../C/gdm.xml:5256 (para)
+#: ../C/gdm.xml:5261 (para)
 msgid ""
 "<filename>prelight</filename> - when the mouse is hovering over the item."
 msgstr ""
 
-#: ../C/gdm.xml:5261 (para)
+#: ../C/gdm.xml:5266 (para)
 msgid ""
 "When item is \"rect\" (alpha can be omitted and defaults to 0.0): "
 "<screen>&lt;normal color=\"#ffffff\" alpha=\"0.0\"&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5266 (para)
+#: ../C/gdm.xml:5271 (para)
 msgid ""
 "When item is \"label\": <screen>&lt;normal color=\"#ffffff\" font=\"Sans 14"
 "\"/&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5271 (para)
+#: ../C/gdm.xml:5276 (para)
 msgid ""
 "When the item type is \"pixmap\" or \"SVG\", then the normal, active, and "
 "prelight tags specify the images to use as follows: <screen>&lt;normal file="
 "\"picture.png\" tint=\"#dddddd\"/&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5277 (para)
+#: ../C/gdm.xml:5282 (para)
 msgid ""
 "Note that relative pathnames are assumed to be in the same directory as the "
 "theme <filename>.xml</filename> file in <filename>&lt;share&gt;/gdm/themes/"
 "&lt;theme_name&gt;</filename>."
 msgstr ""
 
-#: ../C/gdm.xml:5285 (title)
+#: ../C/gdm.xml:5290 (title)
 msgid "Face Browser Icon/Label Color Nodes"
 msgstr ""
 
-#: ../C/gdm.xml:5287 (para)
+#: ../C/gdm.xml:5292 (para)
 msgid ""
 "If the item type is of userlist, then the background color for the icon and "
 "label can be set separately via the the following tag:"
 msgstr ""
 
-#: ../C/gdm.xml:5293 (screen)
+#: ../C/gdm.xml:5298 (screen)
 #, no-wrap
 msgid "&lt;color iconcolor=\"#dddddd\" labelcolor=\"#ffffff\"/&gt;"
 msgstr ""
 
-#: ../C/gdm.xml:5298 (title)
+#: ../C/gdm.xml:5303 (title)
 msgid "Text Node"
 msgstr ""
 
-#: ../C/gdm.xml:5300 (para)
+#: ../C/gdm.xml:5305 (para)
 msgid ""
 "Text tags are used by labels. They can be used to display localized text as "
 "follows (if the \"xml:lang\" attribute is omitted, the C locale is assumed): "
 "<screen>&lt;text xml:lang=\"fr\"&gt;Option&lt;/text&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5307 (para)
+#: ../C/gdm.xml:5312 (para)
 msgid ""
 "You can include pango markup in the text nodes for labels, however you must "
 "encode it. So for example to have the label of \"foo&lt;sup&gt;bar&lt;/"
@@ -6335,11 +6340,11 @@ msgid ""
 "bar&amp;lt;/sup&amp;gt;&lt;/text&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5317 (title)
+#: ../C/gdm.xml:5322 (title)
 msgid "Stock"
 msgstr "Stock"
 
-#: ../C/gdm.xml:5319 (para)
+#: ../C/gdm.xml:5324 (para)
 msgid ""
 "Certain common localized labels can be specified via the stock tags. The "
 "\"text\" tag is ignored if the \"stock\" tag is used. You should really use "
@@ -6348,76 +6353,76 @@ msgid ""
 "following values are valid:"
 msgstr ""
 
-#: ../C/gdm.xml:5327 (para)
+#: ../C/gdm.xml:5332 (para)
 msgid "<filename>cancel</filename>, _(\"_Cancel\")"
 msgstr ""
 
-#: ../C/gdm.xml:5330 (para)
+#: ../C/gdm.xml:5335 (para)
 msgid "<filename>caps-lock-warning</filename>, _(\"You've got capslock on!\")"
 msgstr ""
 
-#: ../C/gdm.xml:5333 (para)
+#: ../C/gdm.xml:5338 (para)
 msgid "<filename>chooser</filename>, _(\"_XDMCP Chooser\")"
 msgstr ""
 
-#: ../C/gdm.xml:5336 (para)
+#: ../C/gdm.xml:5341 (para)
 msgid "<filename>disconnect</filename>, _(\"D_isconnect\")"
 msgstr ""
 
-#: ../C/gdm.xml:5339 (para)
+#: ../C/gdm.xml:5344 (para)
 msgid "<filename>halt</filename>, _(\"Shut_down\")"
 msgstr ""
 
-#: ../C/gdm.xml:5342 (para)
+#: ../C/gdm.xml:5347 (para)
 msgid "<filename>language</filename>, _(\"_Language\")"
 msgstr ""
 
-#: ../C/gdm.xml:5345 (para)
+#: ../C/gdm.xml:5350 (para)
 msgid "<filename>ok</filename>, _(\"_OK\")"
 msgstr ""
 
-#: ../C/gdm.xml:5348 (para)
+#: ../C/gdm.xml:5353 (para)
 msgid "<filename>quit</filename>, _(\"_Quit\")"
 msgstr ""
 
-#: ../C/gdm.xml:5351 (para)
+#: ../C/gdm.xml:5356 (para)
 msgid "<filename>reboot</filename>, _(\"_Reboot\")"
 msgstr ""
 
-#: ../C/gdm.xml:5354 (para)
+#: ../C/gdm.xml:5359 (para)
 msgid "<filename>session</filename>, _(\"_Session\")"
 msgstr ""
 
-#: ../C/gdm.xml:5357 (para)
+#: ../C/gdm.xml:5362 (para)
 msgid "<filename>suspend</filename>, _(\"Sus_pend\")"
 msgstr ""
 
-#: ../C/gdm.xml:5360 (para)
+#: ../C/gdm.xml:5365 (para)
 msgid "<filename>system</filename>, _(\"_Actions\") (Formerly \"S_ystem\")"
 msgstr ""
 
-#: ../C/gdm.xml:5363 (para)
+#: ../C/gdm.xml:5368 (para)
 msgid ""
 "<filename>timed-label</filename>, _(\"User %s will login in %d seconds\")"
 msgstr ""
 
-#: ../C/gdm.xml:5367 (para)
+#: ../C/gdm.xml:5372 (para)
 msgid "<filename>username-label</filename>, _(\"Username:\")"
 msgstr ""
 
-#: ../C/gdm.xml:5370 (para)
+#: ../C/gdm.xml:5375 (para)
 msgid "<filename>welcome-label</filename>, _(\"Welcome to %h\")"
 msgstr ""
 
-#: ../C/gdm.xml:5374 (para)
+#: ../C/gdm.xml:5379 (para)
 msgid "For example: <screen>&lt;stock type=\"welcome-label\"/&gt;</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5381 (title)
+#: ../C/gdm.xml:5386 (title)
 msgid "Custom Widgetry"
 msgstr ""
 
-#: ../C/gdm.xml:5383 (para)
+#: ../C/gdm.xml:5388 (para)
 msgid ""
 "Currently there is one item which can be customizable and this is the list "
 "item. If you need to ask the user extra things, such as to pick from a list "
@@ -6428,14 +6433,14 @@ msgid ""
 "<filename>&lt;list id&gt;=&lt;listitem id&gt;</filename>."
 msgstr ""
 
-#: ../C/gdm.xml:5394 (para)
+#: ../C/gdm.xml:5399 (para)
 msgid ""
 "For example suppose we are on display :0, <filename>ServAuthDir</filename> "
 "is <filename>&lt;var&gt;/gdm</filename> and we have the following in the "
 "theme:"
 msgstr ""
 
-#: ../C/gdm.xml:5400 (screen)
+#: ../C/gdm.xml:5405 (screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -6451,17 +6456,17 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../C/gdm.xml:5412 (para)
+#: ../C/gdm.xml:5417 (para)
 msgid ""
 "Then if the user chooses 'Foo' then <filename>&lt;var&gt;/gdm/:0."
 "GreeterInfo</filename> will contain: <screen>custom-config=foo</screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5422 (title)
+#: ../C/gdm.xml:5427 (title)
 msgid "Accessibility"
 msgstr "Accesibilidad"
 
-#: ../C/gdm.xml:5423 (para)
+#: ../C/gdm.xml:5428 (para)
 msgid ""
 "GDM supports \"Accessible Login\" to allow users to log in to their desktop "
 "session even if they cannot easily use the screen, mouse, or keyboard in the "
@@ -6475,11 +6480,11 @@ msgid ""
 "Greeter \"gdmlogin\"."
 msgstr ""
 
-#: ../C/gdm.xml:5438 (title)
+#: ../C/gdm.xml:5443 (title)
 msgid "Accessibility Configuration"
 msgstr "Configuración de accesibilidad"
 
-#: ../C/gdm.xml:5439 (para)
+#: ../C/gdm.xml:5444 (para)
 msgid ""
 "In order to enable Accessible Login, the system administrator must make some "
 "changes to the default login configuration by manually modifying three human-"
@@ -6487,26 +6492,26 @@ msgid ""
 "AccessDwellMouseEvents."
 msgstr ""
 
-#: ../C/gdm.xml:5446 (para)
+#: ../C/gdm.xml:5451 (para)
 msgid ""
 "In order to allow users to change the color and contrast scheme of the login "
 "dialog, make sure the \"AllowThemeChange\" parameter in gdm.conf is set to "
 "\"true\"."
 msgstr ""
 
-#: ../C/gdm.xml:5452 (para)
+#: ../C/gdm.xml:5457 (para)
 msgid ""
 "To restrict user changes to the visual appearance to a subset of available "
 "themes, the \"GtkThemesToAllow\" parameter in gdm.conf can be set to a list "
 "of acceptable themes separated by commas. For example:"
 msgstr ""
 
-#: ../C/gdm.xml:5459 (screen)
+#: ../C/gdm.xml:5464 (screen)
 #, no-wrap
 msgid "GtkThemesToAllow=HighContrast,HighContrastInverse"
 msgstr ""
 
-#: ../C/gdm.xml:5461 (para)
+#: ../C/gdm.xml:5466 (para)
 msgid ""
 "To enable the use of assistive technologies such as the Onscreen Keyboard, "
 "Screen Reader, or Magnifier, the \"AddGtkModules\" parameter in gdm.conf "
@@ -6514,12 +6519,12 @@ msgid ""
 "parameter must be uncommented and set as follows:"
 msgstr ""
 
-#: ../C/gdm.xml:5469 (screen)
+#: ../C/gdm.xml:5474 (screen)
 #, no-wrap
 msgid "GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener"
 msgstr ""
 
-#: ../C/gdm.xml:5471 (para)
+#: ../C/gdm.xml:5476 (para)
 msgid ""
 "System administrators may wish to load only the minimum subset of these "
 "modules which is required to support their user base. Depending on the end-"
@@ -6534,7 +6539,7 @@ msgid ""
 "optimum accessibility we recommend including gail and atk-bridge."
 msgstr ""
 
-#: ../C/gdm.xml:5487 (para)
+#: ../C/gdm.xml:5492 (para)
 msgid ""
 "Once \"keymouselistener\" and/or \"dwellmouselistener\" have been added to "
 "the GtkModules loaded by GDM, you can assign end-user actions with the "
@@ -6543,7 +6548,7 @@ msgid ""
 "respectively. The gesture format is described in the two configuration files."
 msgstr ""
 
-#: ../C/gdm.xml:5496 (para)
+#: ../C/gdm.xml:5501 (para)
 msgid ""
 "The AccessKeyMouseEvents file controls the keymouselistener Gesture Listener "
 "and is used to define key-press, mouse button, or XInput device sequences "
@@ -6552,7 +6557,7 @@ msgid ""
 "associated with multiple switch presses and/or minimum durations."
 msgstr ""
 
-#: ../C/gdm.xml:5505 (para)
+#: ../C/gdm.xml:5510 (para)
 msgid ""
 "The DwellKeyMouseEvents file controls the dwellmouselistner and supports "
 "gestures that involve only motion of a pointing device such as the system "
@@ -6562,7 +6567,7 @@ msgid ""
 "alternate input device."
 msgstr ""
 
-#: ../C/gdm.xml:5515 (para)
+#: ../C/gdm.xml:5520 (para)
 msgid ""
 "Motion gestures are defined as \"crossing events\" into and out of the login "
 "dialog window. If the 'dwellmouselistener' GtkModule is loaded, alternative "
@@ -6570,14 +6575,14 @@ msgid ""
 "motion from alternative devices results in movement of the onscreen pointer."
 msgstr ""
 
-#: ../C/gdm.xml:5523 (para)
+#: ../C/gdm.xml:5528 (para)
 msgid ""
 "In order to use text-to-speech services at login time (for instance, when "
 "using the Screen Reader in speech mode) on some operating systems, the GDM "
 "user must be made a member of the \"audio\" group"
 msgstr ""
 
-#: ../C/gdm.xml:5530 (para)
+#: ../C/gdm.xml:5535 (para)
 msgid ""
 "There are some issues that cause some users to have problems getting the "
 "gesture listeners to work. It is recommended that people use GDM version "
@@ -6593,11 +6598,11 @@ msgid ""
 "recognize them."
 msgstr ""
 
-#: ../C/gdm.xml:5548 (title)
+#: ../C/gdm.xml:5553 (title)
 msgid "Accessibility Login Sound Configuration"
 msgstr ""
 
-#: ../C/gdm.xml:5549 (para)
+#: ../C/gdm.xml:5554 (para)
 msgid ""
 "By default, gdm requires a media application such as \"sox\" to be present "
 "to play login sounds. GDM defaults the location of this application to "
@@ -6606,22 +6611,22 @@ msgid ""
 "option in <filename>gdm.conf</filename>."
 msgstr ""
 
-#: ../C/gdm.xml:5561 (title)
+#: ../C/gdm.xml:5566 (title)
 msgid "Solaris Specific Features"
 msgstr "Características específicas de Solaris"
 
-#: ../C/gdm.xml:5563 (para)
+#: ../C/gdm.xml:5568 (para)
 msgid "GDM supports a few features specific to Solaris, as follows:"
 msgstr ""
 "GDM soporta unas pocas características específicas a Solaris, como las "
 "siguientes:"
 
-#: ../C/gdm.xml:5567 (para)
+#: ../C/gdm.xml:5572 (para)
 msgid "GDM supports Solaris Auditing if running on Solaris 10 or higher."
 msgstr ""
 "GDM soporta Solaris Auditing si se ejecuta sobre Solaris 10 o superior."
 
-#: ../C/gdm.xml:5571 (para)
+#: ../C/gdm.xml:5576 (para)
 msgid ""
 "GDM supports a security feature which causes the Xserver to run as the user "
 "instead of as the root user. GDM must be using PAM for this feature to be "
@@ -6630,7 +6635,7 @@ msgid ""
 "disables the AlwaysRestartServer gdm.conf configuration option."
 msgstr ""
 
-#: ../C/gdm.xml:5580 (para)
+#: ../C/gdm.xml:5585 (para)
 msgid ""
 "Solaris supports the <filename>/etc/default/login</filename> interface, "
 "which affects the <filename>DefaultPath</filename>, <filename>RootPath</"
@@ -6639,11 +6644,11 @@ msgid ""
 "Configuration section."
 msgstr ""
 
-#: ../C/gdm.xml:5592 (title)
+#: ../C/gdm.xml:5597 (title)
 msgid "Example Configurations"
 msgstr "Configuraciones de ejemplo"
 
-#: ../C/gdm.xml:5594 (para)
+#: ../C/gdm.xml:5599 (para)
 msgid ""
 "This section has some example configurations that are useful for various "
 "setups."
@@ -6651,18 +6656,18 @@ msgstr ""
 "Esta sección tiene algunas configuraciones de ejemplo que son útiles para "
 "varias configuraciones."
 
-#: ../C/gdm.xml:5600 (title)
+#: ../C/gdm.xml:5605 (title)
 msgid "Terminal Lab With One Server"
 msgstr ""
 
-#: ../C/gdm.xml:5602 (para)
+#: ../C/gdm.xml:5607 (para)
 msgid ""
 "Suppose you want to make a lab full of X terminals that all connect to one "
 "main server. So let's call one X terminal <filename>xterminal</filename> and "
 "lets call the server <filename>appserver</filename>. You install GDM on both."
 msgstr ""
 
-#: ../C/gdm.xml:5609 (para)
+#: ../C/gdm.xml:5614 (para)
 msgid ""
 "On <filename>appserver</filename> you enable XDMCP, so you have <screen>\n"
 "[xdmcp]\n"
@@ -6671,7 +6676,7 @@ msgid ""
 "<filename>[servers]</filename> section empty."
 msgstr ""
 
-#: ../C/gdm.xml:5619 (para)
+#: ../C/gdm.xml:5624 (para)
 msgid ""
 "On the <filename>xterminal</filename> you disable XDMCP (you don't want "
 "anyone to connect to the xterminal really). You will add a server type "
@@ -6693,11 +6698,11 @@ msgid ""
 "<filename>appserver</filename>."
 msgstr ""
 
-#: ../C/gdm.xml:5647 (title)
+#: ../C/gdm.xml:5652 (title)
 msgid "Terminal Lab With Two Or More Servers"
 msgstr ""
 
-#: ../C/gdm.xml:5649 (para)
+#: ../C/gdm.xml:5654 (para)
 msgid ""
 "Suppose you want to make a lab full of X terminals that all connect to some "
 "choice of servers. For now let's make it <filename>appserverone</filename> "
@@ -6708,7 +6713,7 @@ msgid ""
 "choosers locally on the X terminals."
 msgstr ""
 
-#: ../C/gdm.xml:5660 (para)
+#: ../C/gdm.xml:5665 (para)
 msgid ""
 "So on the <filename>xterminal</filename> you again disable XDMCP. You will "
 "add a server type perhaps called <filename>Chooser</filename> as follows: "
@@ -6728,7 +6733,7 @@ msgid ""
 "        </screen>"
 msgstr ""
 
-#: ../C/gdm.xml:5682 (para)
+#: ../C/gdm.xml:5687 (para)
 msgid ""
 "The XDMCP chooser on the X terminal will normally give a broadcast query to "
 "see which servers exist on the network. If the two servers are not reachable "
@@ -6738,7 +6743,7 @@ msgid ""
 "wish the users to be able to connect to."
 msgstr ""
 
-#: ../C/gdm.xml:5692 (para)
+#: ../C/gdm.xml:5697 (para)
 msgid ""
 "Sometimes you may want to run the chooser on the server side however. Then "
 "what you want to do is to run a configuration similar to the previous "
@@ -6756,11 +6761,11 @@ msgid ""
 "terminals."
 msgstr ""
 
-#: ../C/gdm.xml:5716 (title)
+#: ../C/gdm.xml:5721 (title)
 msgid "License"
 msgstr ""
 
-#: ../C/gdm.xml:5717 (para)
+#: ../C/gdm.xml:5722 (para)
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the <ulink type=\"help\" url=\"gnome-help:gpl"
@@ -6769,7 +6774,7 @@ msgid ""
 "option) any later version."
 msgstr ""
 
-#: ../C/gdm.xml:5725 (para)
+#: ../C/gdm.xml:5730 (para)
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -6777,7 +6782,7 @@ msgid ""
 "License</citetitle> for more details."
 msgstr ""
 
-#: ../C/gdm.xml:5731 (para)
+#: ../C/gdm.xml:5736 (para)
 msgid ""
 "A copy of the <citetitle>GNU General Public License</citetitle> is included "
 "as an appendix to the <citetitle>GNOME Users Guide</citetitle>. You may also "

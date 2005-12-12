@@ -19,7 +19,7 @@
 #include "config.h"
 
 #include <gtk/gtk.h>
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <string.h>
 #include <gdk/gdkx.h>

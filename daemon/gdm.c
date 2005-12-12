@@ -3005,6 +3005,27 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_string_append (msg, "\n");
 		gdm_connection_write (conn, msg->str);
 		g_string_free (msg, TRUE);
+	} else if (strcmp (msg, GDM_SUP_GET_SERVER_LIST) == 0) {
+		gchar *retval = gdm_get_x_servers ();
+
+		if (retval != NULL) {
+			gdm_connection_printf (conn, "OK %s\n", retval);
+			g_free (retval);
+		} else {
+               		gdm_connection_printf (conn, "ERROR 1 No servers found\n");
+		}
+ 
+	} else if (strncmp (msg, GDM_SUP_GET_SERVER_DETAILS " ",
+		     strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
+		const char *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
+		gchar *retval = gdm_get_x_server_details (server);
+		if (retval != NULL) {
+			gdm_connection_printf (conn, "OK %s\n", retval);
+			g_free (retval);
+		} else {
+               		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
+		}
+ 
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
 		GString *msg;
 		GSList *li;
@@ -3037,15 +3058,15 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		gchar *retval;
 
                 gdm_config_to_string ((gchar *)key, &retval);
-		if (retval != NULL)
+		if (retval != NULL) {
 			gdm_connection_printf (conn, "OK %s\n", retval);
-		else {
+			g_free (retval);
+		} else {
 			if (gdm_is_valid_key ((gchar *)key))
 				gdm_connection_printf (conn, "OK \n");
 			else
                 		gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
 		}
-		g_free (retval);
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;
 

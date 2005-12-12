@@ -33,8 +33,6 @@
 #include <syslog.h>
 
 #include <gdk/gdkx.h>
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
 
 #include "gdmwm.h"
 #include "gdm.h"

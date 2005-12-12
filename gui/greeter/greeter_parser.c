@@ -26,7 +26,7 @@
 #include <math.h>
 #include <gdk/gdkx.h>
 #include <locale.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 
 #include "gdmwm.h"
 #include "gdmcommon.h"

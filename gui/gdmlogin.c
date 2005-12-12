@@ -20,8 +20,6 @@
 
 #include <config.h>
 
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,7 +34,9 @@
 #include <signal.h>
 #include <dirent.h>
 #include <locale.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
@@ -2325,12 +2325,10 @@ create_handle (void)
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (title_box), hbox);
-
 	w = gtk_label_new (_("GNOME Desktop Manager"));
-	gtk_misc_set_padding (GTK_MISC (w),
-			      GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_misc_set_padding (GTK_MISC (w), 4, 4);
 	gtk_box_pack_start (GTK_BOX (hbox), w,
-			    TRUE, TRUE, GNOME_PAD_SMALL);
+			    TRUE, TRUE, 4);
 	
 	gtk_widget_show_all (title_box);
 

@@ -20,11 +20,11 @@
  */
 
 #include "config.h"
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <glib/gi18n.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <popt.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
@@ -469,33 +469,22 @@ main (int argc, char *argv[])
 	char *xnest;
 	char **execvec;
 	struct sigaction term;
+	int nextopt;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
 	if (strcmp (base (argv[0]), "gdmXnest") == 0) {
-		GnomeProgram *program = gnome_program_init
-			("gdmXnest", VERSION, 
-			 LIBGNOMEUI_MODULE /* module_info */,
-			 argc, argv,
-			 GNOME_PARAM_POPT_TABLE, xnest_only_options,
-			 NULL);
-		g_object_get (G_OBJECT (program),
-			      GNOME_PARAM_POPT_CONTEXT, &ctx,
-			      NULL);	
+		gtk_init(&argc, &argv);
+		ctx = poptGetContext(NULL, argc, (const char**)argv, xnest_only_options, 0);
+		while ((nextopt = poptGetNextOpt(ctx)) > 0 || nextopt == POPT_ERROR_BADOPT);
 		no_query = TRUE;
 		no_gdm_check = TRUE;
 	} else {
-		GnomeProgram *program = gnome_program_init
-			("gdmXnestchooser", VERSION, 
-			 LIBGNOMEUI_MODULE /* module_info */,
-			 argc, argv,
-			 GNOME_PARAM_POPT_TABLE, options,
-			 NULL);
-		g_object_get (G_OBJECT (program),
-			      GNOME_PARAM_POPT_CONTEXT, &ctx,
-			      NULL);	
+		gtk_init(&argc, &argv);
+		ctx = poptGetContext(NULL, argc, (const char**)argv, options, 0);
+		while ((nextopt = poptGetNextOpt(ctx)) > 0 || nextopt == POPT_ERROR_BADOPT);
 	}
 
 	args = poptGetArgs (ctx);

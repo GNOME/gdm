@@ -27,6 +27,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <unistd.h>
+#include <popt.h>
 #include <ctype.h>
 #include <gdk/gdkx.h>
 #include <X11/Xmd.h>
@@ -46,8 +47,7 @@
 #include <sys/sockio.h>
 #endif
 
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <glib/gi18n.h>
 #include <glade/glade.h>
 
 #include "gdm.h"

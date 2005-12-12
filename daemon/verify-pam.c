@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <syslog.h>
 #include <security/pam_appl.h>
 #include <pwd.h>
@@ -29,7 +30,7 @@
 #include <fcntl.h>
 #endif
 
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 
 #include "gdm.h"
 #include "misc.h"

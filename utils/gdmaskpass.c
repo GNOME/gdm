@@ -1,7 +1,7 @@
 /* Simple pam thingie to ask the root password, for use in XKeepsCrashing
  * script. */
 #include "config.h"
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 #include <stdio.h>
 #include <locale.h>
 #include <unistd.h>

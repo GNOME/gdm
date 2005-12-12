@@ -19,7 +19,7 @@
  */
 
 #include "config.h"
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xauth.h>
@@ -111,44 +111,52 @@ version_ok_p (const char *version, const char *min_version)
 char *
 gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min_version, int tries)
 {
-	struct sockaddr_un addr;
-	int fd;
+	static int fd = 0;
 	char *ret;
 
 	if (tries <= 0)
 		return NULL;
 
-	fd = socket (AF_UNIX, SOCK_STREAM, 0);
-	if (fd < 0) {
-		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
-	}
+	if (fd <= 0) {
+		struct sockaddr_un addr;
+		strcpy (addr.sun_path, GDM_SUP_SOCKET);
+		addr.sun_family = AF_UNIX;
 
-	strcpy (addr.sun_path, GDM_SUP_SOCKET);
-	addr.sun_family = AF_UNIX;
+		fd = socket (AF_UNIX, SOCK_STREAM, 0);
+		if (fd < 0) {
+			return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
+		}
 
-	if (connect (fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
-		VE_IGNORE_EINTR (close (fd));
-		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
-	}
+		if (connect (fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
+			VE_IGNORE_EINTR (close (fd));
+			fd = 0;
+			return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
+		}
 
-	/* Version check first */
-	ret = do_command (fd, GDM_SUP_VERSION, TRUE /* get_response */);
-	if (ret == NULL) {
-		VE_IGNORE_EINTR (close (fd));
-		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
-	}
-	if (strncmp (ret, "GDM ", strlen ("GDM ")) != 0) {
+		/* Version check first - only check first time */
+		ret = do_command (fd, GDM_SUP_VERSION, TRUE /* get_response */);
+		if (ret == NULL) {
+			VE_IGNORE_EINTR (close (fd));
+			fd = 0;
+			return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
+		}
+		if (strncmp (ret, "GDM ", strlen ("GDM ")) != 0) {
+			g_free (ret);
+			VE_IGNORE_EINTR (close (fd));
+			fd = 0;
+			return NULL;
+		}
+		if ( ! version_ok_p (&ret[4], min_version)) {
+			g_free (ret);
+/*
+			do_command (fd, GDM_SUP_CLOSE, FALSE);
+*/
+			VE_IGNORE_EINTR (close (fd));
+			fd = 0;
+			return NULL;
+		}
 		g_free (ret);
-		VE_IGNORE_EINTR (close (fd));
-		return NULL;
 	}
-	if ( ! version_ok_p (&ret[4], min_version)) {
-		g_free (ret);
-		do_command (fd, GDM_SUP_CLOSE, FALSE /* get_response */);
-		VE_IGNORE_EINTR (close (fd));
-		return NULL;
-	}
-	g_free (ret);
 
 	/* require authentication */
 	if (auth_cookie != NULL)  {
@@ -158,14 +166,18 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 		g_free (auth_cmd);
 		if (ret == NULL) {
 			VE_IGNORE_EINTR (close (fd));
+			fd = 0;
 			return gdmcomm_call_gdm (command, auth_cookie,
 						 min_version, tries - 1);
 		}
 		/* not auth'ed */
 		if (strcmp (ret, "OK") != 0) {
+/*
 			do_command (fd, GDM_SUP_CLOSE,
-				    FALSE /* get_response */);
+				    FALSE);
+*/
 			VE_IGNORE_EINTR (close (fd));
+			fd = 0;
 			/* returns the error */
 			return ret;
 		}
@@ -175,12 +187,13 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 	ret = do_command (fd, command, TRUE /* get_response */);
 	if (ret == NULL) {
 		VE_IGNORE_EINTR (close (fd));
+		fd = 0;
 		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 
-	do_command (fd, GDM_SUP_CLOSE, FALSE /* get_response */);
-
-	VE_IGNORE_EINTR (close (fd));
+/*
+	do_command (fd, GDM_SUP_CLOSE, FALSE);
+*/
 
 	return ret;
 }

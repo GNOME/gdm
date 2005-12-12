@@ -32,6 +32,7 @@
 #define PW_ENTRY_SIZE GDM_MAX_PASS
 #endif
 
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <libgnomecanvas/libgnomecanvas.h>

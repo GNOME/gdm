@@ -26,7 +26,6 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/dmxext.h>
 
-#include <ve-misc.h>
 
 static char *to_display = NULL;
 static char *backend_display = NULL;

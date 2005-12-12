@@ -26,7 +26,7 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 
 #include "gdm.h"
 #include "gdmwm.h"

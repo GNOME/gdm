@@ -23,9 +23,9 @@
 
 #include "config.h"
 #include <locale.h>
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <glib/gi18n.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <pwd.h>
 

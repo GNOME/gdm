@@ -24,9 +24,8 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <syslog.h>
-
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
 
 #include "vicious.h"
 

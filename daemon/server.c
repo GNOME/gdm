@@ -19,7 +19,7 @@
 /* This file contains functions for controlling local X servers */
 
 #include <config.h>
-#include <libgnome/libgnome.h>
+#include <glib/gi18n.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>

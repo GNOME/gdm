@@ -21,7 +21,7 @@
 #ifndef GDM_WM_H
 #define GDM_WM_H
 
-#include <libgnome/libgnome.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>

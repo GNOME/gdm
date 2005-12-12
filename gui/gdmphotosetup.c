@@ -26,13 +26,13 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-#include <libgnomeui/libgnomeui.h>
 
 #include "gdm.h"
 #include "gdmcommon.h"
@@ -303,12 +303,7 @@ main (int argc, char *argv[])
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
-
-	gnome_program_init ("gdmphotosetup", VERSION, 
-			    LIBGNOMEUI_MODULE /* module_info */,
-			    argc, argv,
-			    NULL);
-
+	gtk_init(&argc, &argv);
 	photofile = g_build_filename (g_get_home_dir (), ".face", NULL);
 
 	face_browser = gdm_config_get_bool (GDM_KEY_BROWSER);
