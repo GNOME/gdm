@@ -3005,6 +3005,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_string_append (msg, "\n");
 		gdm_connection_write (conn, msg->str);
 		g_string_free (msg, TRUE);
+/*
 	} else if (strcmp (msg, GDM_SUP_GET_SERVER_LIST) == 0) {
 		gchar *retval = gdm_get_x_servers ();
 
@@ -3026,6 +3027,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
                		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
 		}
  
+*/
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
 		GString *msg;
 		GSList *li;

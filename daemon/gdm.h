@@ -857,8 +857,6 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
-#define GDM_SUP_GET_SERVER_LIST "GET_SERVER_LIST" /* None */
-#define GDM_SUP_GET_SERVER_DETAILS "GET_SERVER_DETAILS" /* <server> */
 #define GDM_SUP_GET_CONFIG "GET_CONFIG" /* <key> */
 /* GET_CONFIG:  Get configuration value for key.  Useful so
  * that other programs can request configuration information
