@@ -85,6 +85,11 @@ gdmlogin_SOURCES = \
 gdmsetup_SOURCES = \
 	gdmsetup.c
 
+# Many GUI programs still require LIBGNOME because they need
+# gnome_program_locate_file which is in the ve_find_file ()
+# interface in vicious-extensions/ve-gnome.c.  Fixing this
+# function should remove libgnome as a GDM dependency.
+#
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	$(EXTRA_CHOOSER_LIBS)	\
@@ -119,10 +124,13 @@ gdmlogin_LDADD = \
 	$(GDK_LIBS)		\
 	$(PANGO_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(LIBGNOME_LIBS)	\
-	$(LIBGNOMEUI_LIBS)	\
 	$(top_builddir)/vicious-extensions/libviciousui-minimal.a
 
+# LIBGNOMEUI should be removed from gdmsetup at some point.
+# It is needed because it uses gnome_help_display_uri(), which
+# should be replaced at some point.
+#
+gdmsetup_CFLAGS = $(LIBGNOMEUI_CFLAGS)
 gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
 	libgdmcommon.a		\
@@ -135,9 +143,8 @@ gdmsetup_LDADD = \
 	$(PANGO_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(LIBGNOME_LIBS)	\
-	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_SETUP_LIBS)	\
+        $(LIBGNOMEUI_LIBS)      \
 	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmphotosetup_LDADD = \
@@ -148,9 +155,8 @@ gdmphotosetup_LDADD = \
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(LIBGNOME_LIBS)	\
-	$(LIBGNOMEUI_LIBS)	\
 	$(INTLLIBS)		\
+	$(LIBGNOME_LIBS)	\
 	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmXnestchooser_LDADD = \
@@ -158,26 +164,26 @@ gdmXnestchooser_LDADD = \
 	$(GUI_LIBS)		\
 	-lXau			\
 	-lX11			\
+	-lpopt			\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
-	$(LIBGNOME_LIBS)	\
-	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_XNEST_LIBS)	\
+	$(LIBGNOME_LIBS)	\
 	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmflexiserver_LDADD = \
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	-lXau			\
+	-lpopt			\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
-	$(LIBGNOME_LIBS)	\
-	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_FLEXI_LIBS)	\
+	$(LIBGNOME_LIBS)	\
 	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 gdmdynamic_LDADD = 		\
@@ -188,9 +194,8 @@ gdmdynamic_LDADD = 		\
 	$(GLIB_LIBS) 		\
 	$(GOBJECT_LIBS) 	\
 	$(GDK_LIBS) 		\
-	$(LIBGNOME_LIBS) 	\
-	$(LIBGNOMEUI_LIBS)	\
 	$(EXTRA_DYNAMIC_LIBS)	\
+	$(LIBGNOME_LIBS)	\
 	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
 
 Settingsdir = $(datadir)/applications

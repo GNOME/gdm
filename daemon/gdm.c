@@ -2802,7 +2802,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	gdm_debug ("Handling user message: '%s'", msg);
 
-	if (gdm_connection_get_message_count (conn) > 20) {
+	if (gdm_connection_get_message_count (conn) > GDM_SUP_MAX_CONNECTIONS) {
 		gdm_connection_write (conn, "ERROR 200 Too many messages\n");
 		gdm_connection_close (conn);
 		return;
@@ -3005,7 +3005,6 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_string_append (msg, "\n");
 		gdm_connection_write (conn, msg->str);
 		g_string_free (msg, TRUE);
-/*
 	} else if (strcmp (msg, GDM_SUP_GET_SERVER_LIST) == 0) {
 		gchar *retval = gdm_get_x_servers ();
 
@@ -3019,15 +3018,46 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strncmp (msg, GDM_SUP_GET_SERVER_DETAILS " ",
 		     strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
 		const char *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
-		gchar *retval = gdm_get_x_server_details (server);
-		if (retval != NULL) {
-			gdm_connection_printf (conn, "OK %s\n", retval);
-			g_free (retval);
+		gchar   **splitstr = g_strsplit (server, " ", 2);
+		GdmXserver  *svr   = gdm_find_x_server ((char *)splitstr[0]);
+
+		if (svr != NULL) {
+			if (g_strncasecmp (splitstr[1], "NAME", 4) == 0)
+			   gdm_connection_printf (conn, "OK %s\n", svr->name);
+			else if (g_strncasecmp (splitstr[1], "COMMAND", 7) == 0) 
+			   gdm_connection_printf (conn, "OK %s\n", svr->command);
+			else if (g_strncasecmp (splitstr[1], "FLEXIBLE", 8) == 0 &&
+                                 svr->flexible)
+			   gdm_connection_printf (conn, "OK true\n");
+			else if (g_strncasecmp (splitstr[1], "FLEXIBLE", 8) == 0 &&
+                                 !svr->flexible)
+			   gdm_connection_printf (conn, "OK FALSE\n");
+			else if (g_strncasecmp (splitstr[1], "CHOOSABLE", 9) == 0 &&
+                                 svr->choosable)
+			   gdm_connection_printf (conn, "OK true\n");
+			else if (g_strncasecmp (splitstr[1], "CHOOSABLE", 9) == 0 &&
+                                 !svr->choosable)
+			   gdm_connection_printf (conn, "OK FALSE\n");
+			else if (g_strncasecmp (splitstr[1], "HANDLED", 7) == 0 &&
+                                 svr->handled)
+			   gdm_connection_printf (conn, "OK true\n");
+			else if (g_strncasecmp (splitstr[1], "HANDLED", 7) == 0 &&
+                                 !svr->handled)
+			   gdm_connection_printf (conn, "OK FALSE\n");
+			else if (g_strncasecmp (splitstr[1], "CHOOSER", 7) == 0 &&
+                                 svr->chooser)
+			   gdm_connection_printf (conn, "OK true\n");
+			else if (g_strncasecmp (splitstr[1], "CHOOSER", 7) == 0 &&
+                                 !svr->chooser)
+			   gdm_connection_printf (conn, "OK FALSE\n");
+			else
+			   gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
+
+			g_strfreev (splitstr);
 		} else {
                		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
 		}
  
-*/
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
 		GString *msg;
 		GSList *li;
@@ -3278,39 +3308,33 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 #else
 		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
 #endif
-    } else if (strncmp (msg, GDM_SUP_ADD_DYNAMIC_DISPLAY " ",
-                 strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")) == 0) {
-        char *key;
+	} else if (strncmp (msg, GDM_SUP_ADD_DYNAMIC_DISPLAY " ",
+		   strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")) == 0) {
+		char *key;
 
-        key = g_strdup (&msg[strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")]);
-        g_strstrip (key);
+		key = g_strdup (&msg[strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")]);
+		g_strstrip (key);
+		handle_dynamic_server (conn, DYNAMIC_ADD, key);
+		g_free (key);
 
-        handle_dynamic_server (conn, DYNAMIC_ADD, key);
+	} else if (strncmp (msg, GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ",
+		   strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")) == 0) {
+		char *key;
 
-        g_free (key);
+		key = g_strdup (&msg[strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")]);
+		g_strstrip (key);
+		handle_dynamic_server (conn, DYNAMIC_REMOVE, key);
+		g_free (key);
 
-    } else if (strncmp (msg, GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ",
-                        strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")) == 0) {
-        char *key;
+	} else if (strncmp (msg, GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ",
+		   strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
 
-        key = g_strdup (&msg[strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")]);
-        g_strstrip (key);
+		char *key;
 
-        handle_dynamic_server (conn, DYNAMIC_REMOVE, key);
-
-        g_free (key);
-
-    } else if (strncmp (msg, GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ",
-                        strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
-
-        char *key;
-
-        key = g_strdup (&msg[strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")]);
-        g_strstrip (key);
-
-        handle_dynamic_server (conn, DYNAMIC_RELEASE, key);
-
-        g_free (key);
+		key = g_strdup (&msg[strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")]);
+		g_strstrip (key);
+		handle_dynamic_server (conn, DYNAMIC_RELEASE, key);
+		g_free (key);
 
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");

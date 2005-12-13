@@ -116,8 +116,129 @@ gdm_config_get_result (gchar *key)
 	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
 		"2.13.0.1", 5);
 
+	g_free (command);
 	g_free (newkey);
 	return result;
+}
+
+
+/**
+ * gdm_config_get_xserver_details
+ *
+ * Calls daemon to get details for an xserver config.
+ */
+static gchar *
+gdm_config_get_xserver_details (gchar *xserver, gchar *key)
+{
+	gchar *command = NULL;
+	gchar *result  = NULL;
+	gchar *temp;
+
+	command = g_strdup_printf ("GET_SERVER_DETAILS %s %s", xserver, key);
+	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
+		"2.13.0.1", 5);
+
+	g_free (command);
+
+	if (! result || ve_string_empty (result) ||
+	    strncmp (result, "OK ", 3) != 0) {
+
+		if (using_syslog)
+			syslog (LOG_ERR, "Could not access xserver configuration");
+		else
+			printf ("Could not access xserver configuration");
+
+		if (result)
+			g_free (result);
+		return NULL;
+	}
+
+	/* skip the "OK " */
+	temp = g_strdup (result + 3);
+	g_free (result);
+
+	return temp;
+}
+
+/**
+ * gdm_config_get_xservers
+ *
+ * Calls daemon to get xserver config.
+ */
+GSList *
+gdm_config_get_xservers (gboolean flexible)
+{
+	GSList *xservers = NULL;
+	gchar *p;
+        gchar **splitstr, **sec;
+	gchar *command = NULL;
+	gchar *result  = NULL;
+	gchar *temp;
+	gboolean tempbool;
+
+	command = g_strdup_printf ("GET_SERVER_LIST");
+	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
+		"2.13.0.1", 5);
+
+	g_free (command);
+
+	if (! result || ve_string_empty (result) ||
+	    strncmp (result, "OK ", 3) != 0) {
+
+		if (using_syslog)
+			syslog (LOG_ERR, "Could not access xserver configuration");
+		else
+			printf ("Could not access xserver configuration");
+
+		if (result)
+			g_free (result);
+		return NULL;
+	}
+
+	/* skip the "OK " */
+        splitstr = g_strsplit (result + 3, ";", 0);
+	sec = splitstr;
+	g_free (result);
+
+        while (*sec != NULL) {
+		GdmXserver *svr = g_new0 (GdmXserver, 1);
+
+		svr->name    = gdm_config_get_xserver_details (*sec, "NAME");
+		svr->id      = g_strdup_printf ("server-%s", *sec);
+		svr->command = gdm_config_get_xserver_details (*sec, "COMMAND");
+
+		temp = gdm_config_get_xserver_details (*sec, "FLEXIBLE");
+		if (g_strncasecmp (temp, "true", 4) == 0)
+			svr->flexible = TRUE;
+		else
+			svr->flexible = FALSE;
+		temp = gdm_config_get_xserver_details (*sec, "CHOOSABLE");
+		if (g_strncasecmp (temp, "true", 4) == 0)
+			svr->choosable = TRUE;
+		else
+			svr->choosable = FALSE;
+		temp = gdm_config_get_xserver_details (*sec, "HANDLED");
+		if (g_strncasecmp (temp, "true", 4) == 0)
+			svr->handled = TRUE;
+		else
+			svr->handled = FALSE;
+		temp = gdm_config_get_xserver_details (*sec, "CHOOSER");
+		if (g_strncasecmp (temp, "true", 4) == 0)
+			svr->chooser = TRUE;
+		else
+			svr->chooser = FALSE;
+
+		sec++;
+
+		/* If only flexible was requested, then skip if not flexible */
+		if (flexible && !svr->flexible)
+			continue;
+
+		xservers = g_slist_append (xservers, svr);
+	}
+
+	g_strfreev (splitstr);
+	return xservers;
 }
 
 /**

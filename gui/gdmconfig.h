@@ -43,5 +43,6 @@ void		gdm_set_servauth			(gchar *file,
 							 gchar *id);
 char *		gdm_get_theme_greeter			(gchar *file,
 							 const char *fallback);
+GSList *	gdm_config_get_xservers			(gboolean flexible);
 
 #endif /* GDMCONFIG_H */

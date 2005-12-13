@@ -712,6 +712,11 @@ void		gdm_final_cleanup	(void);
 /* notify a command */
 #define GDM_SLAVE_NOTIFY_COMMAND '#'
 
+/*
+ * Maximum number of connections allowed at once.  Might be useful to
+ * try and tune this.  GDM would be faster if the value is larger.
+ */
+#define GDM_SUP_MAX_CONNECTIONS 20
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 
 /*
@@ -839,7 +844,7 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_ALL_SERVERS  "ALL_SERVERS" /* None */
-/* ALL_SERVERS: List all servers, including attached, remote, xnest.  This
+/* ALL_SERVERS: List all displays, including attached, remote, xnest.  This
  * Can for example be useful to figure out if the server you are on is managed
  * by the gdm daemon, by seeing if it is in the list.  It is also somewhat
  * like the 'w' command but for graphical sessions.
@@ -854,6 +859,41 @@ void		gdm_final_cleanup	(void);
  *
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_GET_SERVER_LIST "GET_SERVER_LIST" /* None */
+/* GET_SERVER_LIST:  Get a list of the server sections from
+ * the configuration file. 
+ * Supported since: 2.13.0.4
+ * Arguments:  None 
+ * Answers:
+ *   OK <value>;<value>;...
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      1 = No servers found
+ *      50 = Unsupported key
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_GET_SERVER_DETAILS "GET_SERVER_DETAILS" /* <server> <key> */
+/* GET_SERVER_DETAILS:  Get detail information for a specific
+ * server.  Key values include:
+ *    NAME      - Returns the server name
+ *    COMMAND   - Returns the server command
+ *    FLEXIBLE  - Returns "true" if flexible, "false" otherwise
+ *    CHOOSABLE - Returns "true" if choosable, "false" otherwise
+ *    HANDLED   - Returns "true" if handled, "false" otherwise
+ *    CHOOSER   - Returns "true" if chooser, "false" otherwise
+ * Supported since: 2.13.0.4
+ * Arguments: <server> <key>
+ * Answers: 
+ *   OK <value>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      1 = Server not found
+ *      2 = Key not valid
+ *      50 = Unsupported key
  *      200 = Too many messages
  *      999 = Unknown error
  */

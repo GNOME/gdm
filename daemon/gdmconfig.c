@@ -1321,41 +1321,6 @@ gdm_get_x_servers (void)
    return retval;
 }
 
-gchar *
-gdm_get_x_server_details (gchar *id)
-{
-   GdmXserver *svr = gdm_find_x_server (id);
-   gchar *retval;
-
-   if (svr == NULL)
-      return NULL;
-
-   retval = g_strdup (svr->name);
-   retval = g_strconcat (retval, ";", svr->command, NULL);
-   
-   if (svr->flexible)
-      retval = g_strconcat (retval, ";true", NULL);
-   else
-      retval = g_strconcat (retval, ";false", NULL);
-
-   if (svr->choosable)
-      retval = g_strconcat (retval, ";true", NULL);
-   else
-      retval = g_strconcat (retval, ";false", NULL);
-
-   if (svr->handled)
-      retval = g_strconcat (retval, ";true", NULL);
-   else
-      retval = g_strconcat (retval, ";false", NULL);
-
-   if (svr->chooser)
-      retval = g_strconcat (retval, ";true", NULL);
-   else
-      retval = g_strconcat (retval, ";false", NULL);
-
-   return retval;
-}
-
 /**
  * gdm_load_config_option
  *

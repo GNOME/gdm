@@ -1,5 +1,32 @@
 2005-12-12  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm.[ch], daemongdmconfig.[ch]: Add
+	  GET_SERVER_LIST and GET_SERVER_DETAILS 
+	  sockets functions so that gdmflexiserver and
+	  gdmconfig do not need to access the config
+	  file for these, instead using the sockets
+	  protocol.
+	* docs/C/gdm.xml: Add docs for new sockets
+	  commands.
+	* configure.ac, gui/Makefile.am: Remove some
+	  libgnome/libgnomeui dependencies.
+	* gui/gdmcomm.c: Now close sockets connection
+	  after 20 messages since the daemon gets mad
+	  if you send more.
+	* gui/gdmconfig.[ch]: New client functions for
+	  getting server information via sockets.
+	* gui/gdmflexiserver.c: Remove libgnome 
+	  dependencies and now use new config 
+	  mechanism for getting server info.
+	* gui/gdmsetup.c: Now use new config
+	  mechanism for reading from config file and
+	  remove libgnome dependencies.  Cleaned up
+	  the code a bit.  Now we don't call 
+	  ve_config_get all over the place, which 
+	  seems to speed up the start time.
+
+2005-12-12  Brian Cameron  <brian.cameron@sun.com>
+
 	* Release 2.13.0.3: 
 	* NEWS, configure.ac: Updated
 	* docs/C/gdm.xml: Updated version/date.

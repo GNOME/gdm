@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <popt.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/socket.h>
@@ -36,8 +37,6 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <libgnome/libgnome.h> /* for gnome_config */
-#include <libgnomeui/libgnomeui.h> /* for gnome_program */
 
 #include "gdm.h"
 #include "gdmcomm.h"
@@ -533,60 +532,19 @@ check_for_users (void)
 static void
 read_servers (gchar *config_file)
 {
-	gpointer iter;
-	gchar *config_sections;
-	char *k;
+	GSList *li;
 
-	/* Find server definitions */
-	config_sections = g_strdup_printf ("=%s=/", config_file);
-	iter = gnome_config_init_iterator_sections (config_sections);
-	iter = gnome_config_iterator_next (iter, &k, NULL);
+        xservers = gdm_config_get_xservers (TRUE);
 
-	while (iter) {
-		if (strncmp (k, "server-", strlen ("server-")) == 0) {
-			char *section;
-			GdmXserver *svr;
+	for (li = xservers; li != NULL; li = li->next) {
+		GdmXserver *svr = li->data;
 
-			section = g_strdup_printf ("=%s=/%s/", config_file, k);
-			gnome_config_push_prefix (section);
+		if (strcmp (svr->id, GDM_STANDARD) == 0)
+			got_standard = TRUE;
 
-			if ( ! gnome_config_get_bool
-			     (GDM_KEY_SERVER_FLEXIBLE)) {
-				gnome_config_pop_prefix ();
-				g_free (section);
-				g_free (k);
-				iter = gnome_config_iterator_next (iter,
-								   &k, NULL);
-				continue;
-			}
-
-			svr = g_new0 (GdmXserver, 1);
-
-			svr->id = g_strdup (k + strlen ("server-"));
-			svr->name = gnome_config_get_string
-				(GDM_KEY_SERVER_NAME);
-			svr->command = gnome_config_get_string
-				(GDM_KEY_SERVER_COMMAND);
-			svr->flexible = TRUE;
-			svr->choosable = gnome_config_get_bool
-				(GDM_KEY_SERVER_CHOOSABLE);
-
-			g_free (section);
-			gnome_config_pop_prefix ();
-
-			if (strcmp (svr->id, GDM_STANDARD) == 0)
-				got_standard = TRUE;
-
-			if (server != NULL &&
-			    strcmp (svr->id, server) == 0)
-				chosen_server = g_strdup (svr->id);
-
-			xservers = g_slist_append (xservers, svr);
-		}
-
-		g_free (k);
-
-		iter = gnome_config_iterator_next (iter, &k, NULL);
+		if (server != NULL &&
+		    strcmp (svr->id, server) == 0)
+			chosen_server = g_strdup (svr->id);
 	}
 }
 
@@ -750,20 +708,15 @@ main (int argc, char *argv[])
 	const char *message;
 	poptContext ctx;
 	const char **args;
-	GnomeProgram *program;
+	int nextopt;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	program = gnome_program_init ("gdmflexiserver", VERSION, 
-				      LIBGNOMEUI_MODULE /* module_info */,
-				      argc, argv,
-				      GNOME_PARAM_POPT_TABLE, options,
-				      NULL);
-	g_object_get (G_OBJECT (program),
-		      GNOME_PARAM_POPT_CONTEXT, &ctx,
-		      NULL);	
+	gtk_init(&argc, &argv);
+	ctx = poptGetContext(NULL, argc, (const char**)argv, options, 0);
+	while ((nextopt = poptGetNextOpt(ctx)) > 0 || nextopt == POPT_ERROR_BADOPT);
 
 	if (monte_carlo_pi) {
 		calc_pi ();

@@ -112,7 +112,17 @@ char *
 gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min_version, int tries)
 {
 	static int fd = 0;
+	static int num_cmds = 0;
 	char *ret;
+
+	if (num_cmds == (GDM_SUP_MAX_CONNECTIONS - 1)) {
+	   do_command (fd, GDM_SUP_CLOSE, FALSE);
+	   VE_IGNORE_EINTR (close (fd));
+	   fd       = 0;
+	   num_cmds = 0;
+	}
+
+	num_cmds++;
 
 	if (tries <= 0)
 		return NULL;
@@ -148,9 +158,6 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 		}
 		if ( ! version_ok_p (&ret[4], min_version)) {
 			g_free (ret);
-/*
-			do_command (fd, GDM_SUP_CLOSE, FALSE);
-*/
 			VE_IGNORE_EINTR (close (fd));
 			fd = 0;
 			return NULL;
@@ -172,10 +179,6 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 		}
 		/* not auth'ed */
 		if (strcmp (ret, "OK") != 0) {
-/*
-			do_command (fd, GDM_SUP_CLOSE,
-				    FALSE);
-*/
 			VE_IGNORE_EINTR (close (fd));
 			fd = 0;
 			/* returns the error */
@@ -190,10 +193,6 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 		fd = 0;
 		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
-
-/*
-	do_command (fd, GDM_SUP_CLOSE, FALSE);
-*/
 
 	return ret;
 }

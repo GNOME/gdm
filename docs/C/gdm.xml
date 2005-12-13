@@ -3603,6 +3603,8 @@ FLEXI_XSERVER
 FLEXI_XNEST
 ATTACHED_SERVERS
 ALL_SERVERS
+GET_SERVER_LIST
+GET_SERVER_DETAILS
 GET_CONFIG
 GET_CONFIG_FILE
 UPDATE_CONFIG
@@ -3814,7 +3816,7 @@ Answers:
       <sect3 id="allservers">
       <title>ALL_SERVERS</title>
       <screen>
-ALL_SERVERS: List all servers, including console, remote, xnest.
+ALL_SERVERS: List all displays, including console, remote, xnest.
              This can, for example, be useful to figure out if
              the server you are on is managed by the gdm daemon,
              by seeing if it is in the list.  It is also somewhat
@@ -3835,6 +3837,49 @@ Answers:
       </screen>
       </sect3>
       
+      <sect3 id="getserverlist">
+      <title>GET_SERVER_LIST</title>
+      <screen>
+GET_SERVER_LIST:  Get a list of the server sections from
+                  the configuration file.
+Supported since: 2.13.0.4
+Arguments:  None
+Answers:
+  OK &lt;value&gt;;&lt;value&gt;;...
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     1 = No servers found
+     50 = Unsupported key
+     200 = Too many messages
+     999 = Unknown error
+      </screen>
+      </sect3>
+
+      <sect3 id="getserverdetails">
+      <title>GET_SERVER_DETAILS</title>
+      <screen>
+GET_SERVER_DETAILS:  Get detail information for a specific
+                     server.  Key values include:
+    NAME      - Returns the server name
+    COMMAND   - Returns the server command
+    FLEXIBLE  - Returns "true" if flexible, "false" otherwise
+    CHOOSABLE - Returns "true" if choosable, "false" otherwise
+    HANDLED   - Returns "true" if handled, "false" otherwise
+    CHOOSER   - Returns "true" if chooser, "false" otherwise
+Supported since: 2.13.0.4
+Arguments: &lt;server&gt; &lt;key&gt;
+Answers:
+  OK &lt;value&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     1 = Server not found
+     2 = Key not valid
+     50 = Unsupported key
+     200 = Too many messages
+     999 = Unknown error
+      </screen>
+      </sect3>
+
       <sect3 id="getconfig">
       <title>GET_CONFIG</title> 
       <screen>
