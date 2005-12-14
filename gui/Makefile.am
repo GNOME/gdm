@@ -85,11 +85,6 @@ gdmlogin_SOURCES = \
 gdmsetup_SOURCES = \
 	gdmsetup.c
 
-# Many GUI programs still require LIBGNOME because they need
-# gnome_program_locate_file which is in the ve_find_file ()
-# interface in vicious-extensions/ve-gnome.c.  Fixing this
-# function should remove libgnome as a GDM dependency.
-#
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	$(EXTRA_CHOOSER_LIBS)	\
@@ -144,8 +139,8 @@ gdmsetup_LDADD = \
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
 	$(EXTRA_SETUP_LIBS)	\
-        $(LIBGNOMEUI_LIBS)      \
-	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
+	$(LIBGNOMEUI_LIBS)	\
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 gdmphotosetup_LDADD = \
 	libgdmcommon.a		\
@@ -156,8 +151,7 @@ gdmphotosetup_LDADD = \
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
 	$(INTLLIBS)		\
-	$(LIBGNOME_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 gdmXnestchooser_LDADD = \
 	libgdmcommon.a		\
@@ -170,8 +164,7 @@ gdmXnestchooser_LDADD = \
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(EXTRA_XNEST_LIBS)	\
-	$(LIBGNOME_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 gdmflexiserver_LDADD = \
 	libgdmcommon.a		\
@@ -183,8 +176,7 @@ gdmflexiserver_LDADD = \
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(EXTRA_FLEXI_LIBS)	\
-	$(LIBGNOME_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 gdmdynamic_LDADD = 		\
 	libgdmcommon.a		\
@@ -195,8 +187,7 @@ gdmdynamic_LDADD = 		\
 	$(GOBJECT_LIBS) 	\
 	$(GDK_LIBS) 		\
 	$(EXTRA_DYNAMIC_LIBS)	\
-	$(LIBGNOME_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui-gnome.a
+	$(top_builddir)/vicious-extensions/libviciousui.a
 
 Settingsdir = $(datadir)/applications
 Settings_files = gdmphotosetup.desktop

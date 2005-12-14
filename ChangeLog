@@ -1,5 +1,14 @@
 2005-12-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/Makefile.am: Fix Makefile so that 
+	  libviciousui.a is used instead of 
+	  libviciousui-gnome.a.  This allows all
+	  GDM GUI programs to not require libgnome
+	  anymore.  Only gdmsetup still requires
+	  libgnomeui.
+
+2005-12-13  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm.c, daemon/slave.c, daemon/verify-pam.c,
 	  gui/gdmXnestchooser.c, gui/gdmchooser.c,
 	  gui/gdmcomm.c, gui/gdmflexiserver.c, 
