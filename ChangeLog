@@ -1,5 +1,13 @@
 2005-12-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmsetup.c: Fix bug I introduced into
+	  gdmsetup when I made it use the new 
+	  gdmconfig functions.  Still need to use
+	  ve_config functions when accessing the
+	  server-foo sections.
+
+2005-12-13  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/Makefile.am: Fix Makefile so that 
 	  libviciousui.a is used instead of 
 	  libviciousui-gnome.a.  This allows all

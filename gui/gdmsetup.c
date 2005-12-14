@@ -902,6 +902,7 @@ combobox_timeout (GtkWidget *combo_box)
 	/* Style combobox */
 	else if (strcmp (key, GDM_KEY_SERVER_CHOOSER) == 0) {
 
+		VeConfig *cfg = ve_config_get (config_file);
 		GtkWidget *mod_combobox;
 		GtkWidget *style_combobox;
 		gboolean val_new;
@@ -918,13 +919,11 @@ combobox_timeout (GtkWidget *combo_box)
 		section = g_strconcat(GDM_KEY_SERVER_PREFIX, section, "/", NULL);
 		section = g_strconcat(section, GDM_KEY_SERVER_CHOOSER, NULL);
 
-		val_old = gdm_config_get_bool (section);
+		val_old = ve_config_get_bool (cfg, section);
 		val_new = (gtk_combo_box_get_active (GTK_COMBO_BOX (style_combobox)) != 0);
 
 		/* Update this servers configuration */
 		if (! ve_bool_equal (val_old, val_new)) {
-			VeConfig *cfg = ve_config_get (config_file);
-
 			ve_config_set_bool (cfg, section, val_new);
 			ve_config_save (cfg, FALSE /* force */);
 		}
@@ -4270,6 +4269,7 @@ xserver_entry_timeout (GtkWidget *entry)
 static gboolean
 xserver_toggle_timeout (GtkWidget *toggle)
 {
+	VeConfig *cfg = ve_config_get (config_file);
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	gboolean val;
 
@@ -4287,11 +4287,10 @@ xserver_toggle_timeout (GtkWidget *toggle)
 		section = g_strconcat(section, GDM_KEY_SERVER_CHOOSER, NULL);
 
 	/* Locate this server's section */
-	val = gdm_config_get_bool (section);
+	val = ve_config_get_bool (cfg, section);
 
 	/* Update this servers configuration */
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
-		VeConfig *cfg = ve_config_get (config_file);
 		ve_config_set_bool (cfg, section,
 				    GTK_TOGGLE_BUTTON (toggle)->active);
 		ve_config_save (cfg, FALSE /* force */);
