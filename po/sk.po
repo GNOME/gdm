@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-06 00:17+0100\n"
-"PO-Revision-Date: 2005-12-06 00:20+0100\n"
+"POT-Creation-Date: 2005-12-14 19:36+0100\n"
+"PO-Revision-Date: 2005-12-14 20:07+0100\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -443,11 +443,11 @@ msgstr "Nevytvárať nové procesy na pozadí"
 msgid "No console (static) servers to be run"
 msgstr "Nie sú k dispozícii konzolové (statické) servery, ktoré by mohli bežať"
 
-#: ../daemon/gdm.c:1237 ../gui/gdmsetup.c:6390
+#: ../daemon/gdm.c:1237 ../gui/gdmsetup.c:6320
 msgid "Alternative configuration file"
 msgstr "Alternatívny konfiguračný súbor"
 
-#: ../daemon/gdm.c:1237 ../gui/gdmsetup.c:6390
+#: ../daemon/gdm.c:1237 ../gui/gdmsetup.c:6320
 msgid "CONFIGFILE"
 msgstr "KONFIGURAČNÝ SÚBOR"
 
@@ -482,27 +482,27 @@ msgstr ""
 
 #. make sure the pid file doesn't get wiped
 #: ../daemon/gdm.c:1430
-msgid "Only root wants to run gdm\n"
-msgstr "Len root môže spúšťať gdm\n"
+msgid "Only root wants to run GDM\n"
+msgstr "Len správca môže spúšťať GDM\n"
 
 #: ../daemon/gdm.c:1446 ../daemon/gdm.c:1450 ../daemon/gdm.c:1533
 #: ../daemon/gdm.c:1537 ../daemon/gdm.c:1541 ../daemon/gdm.c:1545
 #: ../daemon/gdm.c:1555 ../daemon/gdm.c:1561 ../daemon/gdm.c:1572
-#: ../daemon/misc.c:1769 ../daemon/misc.c:1773 ../daemon/misc.c:1777
-#: ../daemon/misc.c:1784 ../daemon/misc.c:1788 ../daemon/misc.c:1792
+#: ../daemon/misc.c:1770 ../daemon/misc.c:1774 ../daemon/misc.c:1778
+#: ../daemon/misc.c:1785 ../daemon/misc.c:1789 ../daemon/misc.c:1793
 #: ../daemon/server.c:521 ../daemon/server.c:534 ../daemon/slave.c:780
 #: ../daemon/slave.c:794 ../daemon/slave.c:804 ../daemon/slave.c:814
 #: ../daemon/slave.c:826 ../gui/gdmchooser.c:1843 ../gui/gdmchooser.c:1846
-#: ../gui/gdmchooser.c:1849 ../gui/gdmlogin.c:3508 ../gui/gdmlogin.c:3518
-#: ../gui/gdmlogin.c:3523 ../gui/greeter/greeter.c:995
-#: ../gui/greeter/greeter.c:1003 ../gui/greeter/greeter.c:1006
+#: ../gui/gdmchooser.c:1849 ../gui/gdmlogin.c:3506 ../gui/gdmlogin.c:3516
+#: ../gui/gdmlogin.c:3521 ../gui/greeter/greeter.c:996
+#: ../gui/greeter/greeter.c:1004 ../gui/greeter/greeter.c:1007
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Chyba pri nastavovaní ovládača signálu %s: %s"
 
 #: ../daemon/gdm.c:1477
-msgid "gdm already running. Aborting!"
-msgstr "gdm už beží. Končím!"
+msgid "GDM already running. Aborting!"
+msgstr "GDM už beží. Končím!"
 
 #: ../daemon/gdm.c:1581
 #, c-format
@@ -513,9 +513,9 @@ msgstr "%s: Chyba pri nastavovaní ovládača signálu CHLD"
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "Požiadavka DYNAMIC odmietnutá: Neoverená totožnosť"
 
-#: ../daemon/gdm.c:2860 ../daemon/gdm.c:2878 ../daemon/gdm.c:3068
-#: ../daemon/gdm.c:3119 ../daemon/gdm.c:3171 ../daemon/gdm.c:3212
-#: ../daemon/gdm.c:3238
+#: ../daemon/gdm.c:2860 ../daemon/gdm.c:2878 ../daemon/gdm.c:3121
+#: ../daemon/gdm.c:3172 ../daemon/gdm.c:3224 ../daemon/gdm.c:3265
+#: ../daemon/gdm.c:3291
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "Požiadavka %s odmietnutá: Neoverená totožnosť"
@@ -611,29 +611,29 @@ msgstr ""
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Priečinok pre overovanie %s nie je priečinok. Končím."
 
-#: ../daemon/gdmconfig.c:1372
+#: ../daemon/gdmconfig.c:1392
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Prázdny príkaz servera; použijem štandardný príkaz."
 
-#: ../daemon/gdmconfig.c:1414
+#: ../daemon/gdmconfig.c:1434
 #, c-format
 msgid "%s: Display number %d in use!  Defaulting to %d"
 msgstr "%s: Číslo displeja %d sa už používa!  Použijem %d"
 
-#: ../daemon/gdmconfig.c:1431
+#: ../daemon/gdmconfig.c:1451
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Neplatný riadok so serverom v konfiguračnom súbore. Ignorujem!"
 
-#: ../daemon/gdmconfig.c:1442 ../daemon/gdmconfig.c:1480
+#: ../daemon/gdmconfig.c:1462 ../daemon/gdmconfig.c:1500
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr "%s: XDMCP zakázané a nedefinovaný žiadny statický server. Končím!"
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1460
+#: ../daemon/gdmconfig.c:1480
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -642,7 +642,7 @@ msgstr ""
 "%s: XDMCP zakázané a nedefinovaný žiadny statický server. Pridávam %s na :%d "
 "na umožnenie nastavenia!"
 
-#: ../daemon/gdmconfig.c:1472
+#: ../daemon/gdmconfig.c:1492
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -650,7 +650,7 @@ msgstr ""
 "XDMCP je zakázané a GDM nenašiel žiadny statický server, ktorý by bolo možné "
 "spustiť. Končím! Prosím, opravte konfiguráciu a reštartujte GDM."
 
-#: ../daemon/gdmconfig.c:1497
+#: ../daemon/gdmconfig.c:1517
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -659,12 +659,12 @@ msgstr ""
 "GMD Používateľ '%s' neexistuje. Prosím, opravte konfiguráciu GDM a "
 "reštartujte GDM."
 
-#: ../daemon/gdmconfig.c:1505
+#: ../daemon/gdmconfig.c:1525
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: Nemôžem nájsť GDM používateľa gdm '%s'. Končím!"
 
-#: ../daemon/gdmconfig.c:1511
+#: ../daemon/gdmconfig.c:1531
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -672,12 +672,12 @@ msgstr ""
 "Používateľ GDM je nastavený ako správca, ale to nie je z bezpečnostných "
 "dôvodov povolené. Prosím, opravte konfiguráciu GDM a reštartujte GDM."
 
-#: ../daemon/gdmconfig.c:1520
+#: ../daemon/gdmconfig.c:1540
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: Používateľ GDM by nemal byť správca. Končím!"
 
-#: ../daemon/gdmconfig.c:1526
+#: ../daemon/gdmconfig.c:1546
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -686,12 +686,12 @@ msgstr ""
 "GDM skupina '%s' neexistuje. Prosím, opravte konfiguráciu GDM a reštartujte "
 "GDM."
 
-#: ../daemon/gdmconfig.c:1533
+#: ../daemon/gdmconfig.c:1553
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: Nemôžem nájsť GDM skupinu '%s'. Končím!"
 
-#: ../daemon/gdmconfig.c:1539
+#: ../daemon/gdmconfig.c:1559
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -699,39 +699,39 @@ msgstr ""
 "Skupina GDM je nastavená ako správca, ale to nie je z bezpečnostných dôvodov "
 "povolené. Prosím, opravte konfiguráciu GDM a reštartujte GDM."
 
-#: ../daemon/gdmconfig.c:1548
+#: ../daemon/gdmconfig.c:1568
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: Skupina GDM by nemala byť správca. Končím!"
 
-#: ../daemon/gdmconfig.c:1557
+#: ../daemon/gdmconfig.c:1577
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Privítanie nenájdené alebo ho nie je možné spustiť pod používateľom GDM"
 
-#: ../daemon/gdmconfig.c:1563
+#: ../daemon/gdmconfig.c:1583
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Privítanie pre vzdialených klientov nenájdené alebo ho nie je možné "
 "spustiť pod používateľom GDM"
 
-#: ../daemon/gdmconfig.c:1571
+#: ../daemon/gdmconfig.c:1591
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr "%s: Výber nenájdený alebo ho nie je možné spustiť pod používateľom GDM"
 
-#: ../daemon/gdmconfig.c:1580
+#: ../daemon/gdmconfig.c:1600
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "V konfiguračnom súbore GDM nie je uvedený daemon/ServAuthDir"
 
-#: ../daemon/gdmconfig.c:1582
+#: ../daemon/gdmconfig.c:1602
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Neuvedený daemon/ServAuthDir."
 
-#: ../daemon/gdmconfig.c:1605
+#: ../daemon/gdmconfig.c:1625
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -742,14 +742,14 @@ msgstr ""
 "nevlastní ho používateľ %s a skupina %s. Prosím, opravte vlastníka alebo "
 "konfiguráciu GDN a reštartujte GDM."
 
-#: ../daemon/gdmconfig.c:1615
+#: ../daemon/gdmconfig.c:1635
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Priečinok pre overovanie %s nie je vlastnený používateľom %s, skupinou %"
 "s. Končím."
 
-#: ../daemon/gdmconfig.c:1620
+#: ../daemon/gdmconfig.c:1640
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -760,37 +760,37 @@ msgstr ""
 "má nesprávne práva, ktoré majú byť %o. Prosím, opravte práva alebo "
 "konfiguráciu GDM a reštartujte GDM."
 
-#: ../daemon/gdmconfig.c:1632
+#: ../daemon/gdmconfig.c:1652
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: Overovací priečinok %s má nesprávne práva %o. Majú byť %o. Končím."
 
 #. Translators, don't translate the 'y' and 'n'
-#: ../daemon/misc.c:743
+#: ../daemon/misc.c:744
 msgid "y = Yes or n = No? >"
 msgstr "y = Áno alebo n = Nie? >"
 
-#: ../daemon/misc.c:1123
+#: ../daemon/misc.c:1124
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: Nepodarilo sa získať lokálne adresy!"
 
-#: ../daemon/misc.c:1277
+#: ../daemon/misc.c:1278
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "Nepodarilo sa nastaviť setgid %d. Končím."
 
-#: ../daemon/misc.c:1282
+#: ../daemon/misc.c:1283
 #, c-format
 msgid "initgroups () failed for %s. Aborting."
 msgstr "initgroups () zlyhalo pre %s. Končím."
 
-#: ../daemon/misc.c:1527 ../daemon/misc.c:1541
+#: ../daemon/misc.c:1528 ../daemon/misc.c:1542
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: Chyba pri nastavovaní ovládača signálu %d na %s"
 
-#: ../daemon/misc.c:2441
+#: ../daemon/misc.c:2442
 #, c-format
 msgid ""
 "Last login:\n"
@@ -955,7 +955,7 @@ msgid ""
 "Please contact your system administrator\n"
 "or check your syslog to diagnose.\n"
 "In the meantime this display will be\n"
-"disabled.  Please restart gdm when\n"
+"disabled.  Please restart GDM when\n"
 "the problem is corrected."
 msgstr ""
 "Nepodarilo sa spustiť X server\n"
@@ -1356,7 +1356,7 @@ msgstr "%s: Nie je možné vytvoriť rúru"
 msgid "%s: Failed executing: %s"
 msgstr "%s: Zlyhalo spustenie: %s"
 
-#: ../daemon/verify-crypt.c:67 ../daemon/verify-pam.c:1118
+#: ../daemon/verify-crypt.c:67 ../daemon/verify-pam.c:1119
 #: ../daemon/verify-shadow.c:68
 msgid ""
 "\n"
@@ -1365,28 +1365,28 @@ msgstr ""
 "\n"
 "Neplatné meno alebo heslo. Veľkosť písmen sa rozlišuje."
 
-#: ../daemon/verify-crypt.c:72 ../daemon/verify-pam.c:1128
+#: ../daemon/verify-crypt.c:72 ../daemon/verify-pam.c:1129
 #: ../daemon/verify-shadow.c:73
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Skontrolujte, že nemáte zapnutý Caps Lock."
 
-#: ../daemon/verify-crypt.c:119 ../daemon/verify-pam.c:524
-#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:2889
+#: ../daemon/verify-crypt.c:119 ../daemon/verify-pam.c:525
+#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:2887
 msgid "Please enter your username"
 msgstr "Prosím, zadajte vaše používateľské meno"
 
 #. login: is whacked always translate to Username:
-#: ../daemon/verify-crypt.c:120 ../daemon/verify-pam.c:424
-#: ../daemon/verify-pam.c:425 ../daemon/verify-pam.c:426
-#: ../daemon/verify-pam.c:511 ../daemon/verify-pam.c:853
+#: ../daemon/verify-crypt.c:120 ../daemon/verify-pam.c:425
+#: ../daemon/verify-pam.c:426 ../daemon/verify-pam.c:427
+#: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:854
 #: ../daemon/verify-shadow.c:119 ../gui/gdmlogin.c:1099 ../gui/gdmlogin.c:1113
-#: ../gui/gdmlogin.c:1727 ../gui/gdmlogin.c:2207 ../gui/greeter/greeter.c:168
+#: ../gui/gdmlogin.c:1727 ../gui/gdmlogin.c:2207 ../gui/greeter/greeter.c:169
 #: ../gui/greeter/greeter_parser.c:1124
 msgid "Username:"
 msgstr "Používateľské meno:"
 
-#: ../daemon/verify-crypt.c:158 ../daemon/verify-pam.c:427
-#: ../daemon/verify-pam.c:428 ../daemon/verify-pam.c:572
+#: ../daemon/verify-crypt.c:158 ../daemon/verify-pam.c:428
+#: ../daemon/verify-pam.c:429 ../daemon/verify-pam.c:573
 #: ../daemon/verify-shadow.c:176 ../gui/gdmlogin.c:1762
 msgid "Password:"
 msgstr "Heslo:"
@@ -1397,7 +1397,7 @@ msgstr "Heslo:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Nemôžem overiť používateľa \"%s\""
 
-#: ../daemon/verify-crypt.c:203 ../daemon/verify-pam.c:964
+#: ../daemon/verify-crypt.c:203 ../daemon/verify-pam.c:965
 #: ../daemon/verify-shadow.c:221
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1414,7 +1414,7 @@ msgid "User %s not allowed to log in"
 msgstr "Používateľ %s nemá dovolené prihlásiť sa"
 
 #: ../daemon/verify-crypt.c:223 ../daemon/verify-crypt.c:247
-#: ../daemon/verify-pam.c:1010 ../daemon/verify-pam.c:1293
+#: ../daemon/verify-pam.c:1011 ../daemon/verify-pam.c:1294
 #: ../daemon/verify-shadow.c:241 ../daemon/verify-shadow.c:265
 msgid ""
 "\n"
@@ -1424,14 +1424,14 @@ msgstr ""
 "Administrátor systému vám zakázal použitie tohto účtu."
 
 #: ../daemon/verify-crypt.c:270 ../daemon/verify-crypt.c:408
-#: ../daemon/verify-pam.c:1028 ../daemon/verify-pam.c:1310
+#: ../daemon/verify-pam.c:1029 ../daemon/verify-pam.c:1311
 #: ../daemon/verify-shadow.c:288 ../daemon/verify-shadow.c:426
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Nepodarilo sa nastaviť skupinu pre %s"
 
 #: ../daemon/verify-crypt.c:272 ../daemon/verify-crypt.c:411
-#: ../daemon/verify-pam.c:1030 ../daemon/verify-pam.c:1313
+#: ../daemon/verify-pam.c:1031 ../daemon/verify-pam.c:1314
 #: ../daemon/verify-shadow.c:290 ../daemon/verify-shadow.c:429
 msgid ""
 "\n"
@@ -1500,78 +1500,78 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "Nepodarilo sa získať štruktúru passwd pre %s"
 
-#: ../daemon/verify-pam.c:429
+#: ../daemon/verify-pam.c:430
 msgid "You are required to change your password immediately (password aged)"
 msgstr "Musíte si okamžite zmeniť heslo (je príliš staré)"
 
-#: ../daemon/verify-pam.c:430
+#: ../daemon/verify-pam.c:431
 msgid "You are required to change your password immediately (root enforced)"
 msgstr "Musíte si okamžite zmeniť heslo (vynútená zmena administrátorom)"
 
-#: ../daemon/verify-pam.c:431
+#: ../daemon/verify-pam.c:432
 msgid "Your account has expired; please contact your system administrator"
 msgstr ""
 "Platnosť vášho účtu vypršala. Prosím, kontaktujte administrátora systému."
 
-#: ../daemon/verify-pam.c:432
+#: ../daemon/verify-pam.c:433
 msgid "No password supplied"
 msgstr "Nezadané heslo"
 
-#: ../daemon/verify-pam.c:433
+#: ../daemon/verify-pam.c:434
 msgid "Password unchanged"
 msgstr "Heslo nezmenené"
 
-#: ../daemon/verify-pam.c:434
+#: ../daemon/verify-pam.c:435
 msgid "Can not get username"
 msgstr "Nie je možné zistiť používateľské meno"
 
-#: ../daemon/verify-pam.c:435
+#: ../daemon/verify-pam.c:436
 msgid "Retype new UNIX password:"
 msgstr "Zadajte znovu heslo:"
 
-#: ../daemon/verify-pam.c:436
+#: ../daemon/verify-pam.c:437
 msgid "Enter new UNIX password:"
 msgstr "Zadajte nové heslo:"
 
-#: ../daemon/verify-pam.c:437
+#: ../daemon/verify-pam.c:438
 msgid "(current) UNIX password:"
 msgstr "(Aktuálne) heslo:"
 
-#: ../daemon/verify-pam.c:438
+#: ../daemon/verify-pam.c:439
 msgid "Error while changing NIS password."
 msgstr "Chyba pri zmene hesla NIS."
 
-#: ../daemon/verify-pam.c:439
+#: ../daemon/verify-pam.c:440
 msgid "You must choose a longer password"
 msgstr "Musíte vybrať dlhšie heslo"
 
-#: ../daemon/verify-pam.c:440
+#: ../daemon/verify-pam.c:441
 msgid "Password has been already used. Choose another."
 msgstr "Toto heslo ste už použili. Vyberte iné."
 
-#: ../daemon/verify-pam.c:441
+#: ../daemon/verify-pam.c:442
 msgid "You must wait longer to change your password"
 msgstr "Pred zmenou hesla musíte počkať dlhšie"
 
-#: ../daemon/verify-pam.c:442
+#: ../daemon/verify-pam.c:443
 msgid "Sorry, passwords do not match"
 msgstr "Ľutujem, heslá nie sú rovnaké"
 
-#: ../daemon/verify-pam.c:736
+#: ../daemon/verify-pam.c:737
 msgid "Cannot setup pam handle with null display"
 msgstr "Nepodarilo sa nastaviť pam s displejom null"
 
-#: ../daemon/verify-pam.c:753
+#: ../daemon/verify-pam.c:754
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "Nepodarilo sa vytvoriť službu %s: %s\n"
 
-#: ../daemon/verify-pam.c:766
+#: ../daemon/verify-pam.c:767
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nemôžem nastaviť PAM_TTY=%s"
 
-#: ../daemon/verify-pam.c:776
+#: ../daemon/verify-pam.c:777
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Nemôžem nastaviť PAM_RHOST=%s"
@@ -1581,12 +1581,12 @@ msgstr "Nemôžem nastaviť PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:914 ../daemon/verify-pam.c:932
-#: ../daemon/verify-pam.c:1232 ../daemon/verify-pam.c:1244
+#: ../daemon/verify-pam.c:915 ../daemon/verify-pam.c:933
+#: ../daemon/verify-pam.c:1233 ../daemon/verify-pam.c:1245
 msgid "Couldn't authenticate user"
 msgstr "Nemôžem prihlásiť používateľa"
 
-#: ../daemon/verify-pam.c:967
+#: ../daemon/verify-pam.c:968
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1594,12 +1594,12 @@ msgstr ""
 "\n"
 "Administrátor systému vám zakázal prihlásenie z tejto obrazovky."
 
-#: ../daemon/verify-pam.c:991 ../daemon/verify-pam.c:1274
+#: ../daemon/verify-pam.c:992 ../daemon/verify-pam.c:1275
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Zmena overovacieho tokenu zlyhala pre používateľa %s"
 
-#: ../daemon/verify-pam.c:993 ../daemon/verify-pam.c:1277
+#: ../daemon/verify-pam.c:994 ../daemon/verify-pam.c:1278
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1609,17 +1609,17 @@ msgstr ""
 "Zmena overovacieho tokenu zlyhala. Prosím, skúste to neskôr alebo sa spojte "
 "s vašim administrátorom."
 
-#: ../daemon/verify-pam.c:1008 ../daemon/verify-pam.c:1290
+#: ../daemon/verify-pam.c:1009 ../daemon/verify-pam.c:1291
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Používateľ %s už nemá povolený prístup k systému"
 
-#: ../daemon/verify-pam.c:1014 ../daemon/verify-pam.c:1296
+#: ../daemon/verify-pam.c:1015 ../daemon/verify-pam.c:1297
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Používateľ %s nemá momentálne povolený prístup"
 
-#: ../daemon/verify-pam.c:1016
+#: ../daemon/verify-pam.c:1017
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1627,22 +1627,22 @@ msgstr ""
 "\n"
 "Administrátor systému vám dočasne zakázal použitie tohto účtu."
 
-#: ../daemon/verify-pam.c:1021 ../daemon/verify-pam.c:1303
+#: ../daemon/verify-pam.c:1022 ../daemon/verify-pam.c:1304
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Nemôžem nastaviť acct. mgmt pre %s"
 
-#: ../daemon/verify-pam.c:1054 ../daemon/verify-pam.c:1337
+#: ../daemon/verify-pam.c:1055 ../daemon/verify-pam.c:1338
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Nemôžem nastaviť poverenia pre %s"
 
-#: ../daemon/verify-pam.c:1068 ../daemon/verify-pam.c:1353
+#: ../daemon/verify-pam.c:1069 ../daemon/verify-pam.c:1354
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nemôžem otvoriť sedenie pre %s"
 
-#: ../daemon/verify-pam.c:1122
+#: ../daemon/verify-pam.c:1123
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1650,16 +1650,16 @@ msgstr ""
 "\n"
 "Overenie zlyhalo. Veľkosť písmen sa rozlišuje."
 
-#: ../daemon/verify-pam.c:1138 ../daemon/verify-pam.c:1235
-#: ../daemon/verify-pam.c:1247
+#: ../daemon/verify-pam.c:1139 ../daemon/verify-pam.c:1236
+#: ../daemon/verify-pam.c:1248
 msgid "Authentication failed"
 msgstr "Overenie zlyhalo"
 
-#: ../daemon/verify-pam.c:1211
+#: ../daemon/verify-pam.c:1212
 msgid "Automatic login"
 msgstr "Automatické prihlásenie"
 
-#: ../daemon/verify-pam.c:1299
+#: ../daemon/verify-pam.c:1300
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporarily."
@@ -1667,9 +1667,9 @@ msgstr ""
 "\n"
 "Správca systému vám dočasne zakázal prístup k systému."
 
-#: ../daemon/verify-pam.c:1520 ../daemon/verify-pam.c:1522
-msgid "Can't find PAM configuration for gdm."
-msgstr "Nepodarilo sa nájsť konfiguračný súbor PAM pre gdm."
+#: ../daemon/verify-pam.c:1521 ../daemon/verify-pam.c:1523
+msgid "Can't find PAM configuration for GDM."
+msgstr "Nepodarilo sa nájsť konfiguračný súbor PAM pre GDM."
 
 #: ../daemon/xdmcp.c:350
 #, c-format
@@ -1855,39 +1855,39 @@ msgid "Run broadcast instead of indirect (chooser)"
 msgstr "Spustiť broadcast namiesto nepriamej otázky (výber)"
 
 #: ../gui/gdmXnestchooser.c:180
-msgid "Don't check for running gdm"
-msgstr "Nekontrolovať na bežiace gdm"
+msgid "Don't check for running GDM"
+msgstr "Nekontrolovať na bežiace GDM"
 
-#: ../gui/gdmXnestchooser.c:520
+#: ../gui/gdmXnestchooser.c:509
 msgid "Xnest doesn't exist."
 msgstr "Xnest neexistuje."
 
-#: ../gui/gdmXnestchooser.c:521
+#: ../gui/gdmXnestchooser.c:510
 msgid "Please ask your system administrator to install it."
 msgstr "Prosím, požiadajte administrátora, aby ho nainštaloval."
 
-#: ../gui/gdmXnestchooser.c:546
+#: ../gui/gdmXnestchooser.c:535
 msgid "Indirect XDMCP is not enabled"
 msgstr "Nepriame XDMCP nie je povolené"
 
-#: ../gui/gdmXnestchooser.c:547 ../gui/gdmXnestchooser.c:565
+#: ../gui/gdmXnestchooser.c:536 ../gui/gdmXnestchooser.c:554
 msgid "Please ask your system administrator to enable this feature."
 msgstr ""
 "Prosím, požiadajte vášho správcu systému, aby aktivoval túto funkcionalitu."
 
-#: ../gui/gdmXnestchooser.c:564
+#: ../gui/gdmXnestchooser.c:553
 msgid "XDMCP is not enabled"
 msgstr "XDMCP nie je povolené"
 
-#: ../gui/gdmXnestchooser.c:596
+#: ../gui/gdmXnestchooser.c:585
 msgid "GDM is not running"
 msgstr "GDM nebeží."
 
-#: ../gui/gdmXnestchooser.c:597
+#: ../gui/gdmXnestchooser.c:586
 msgid "Please ask your system administrator to start it."
 msgstr "Prosím, požiadajte administrátora, aby ho spustil."
 
-#: ../gui/gdmXnestchooser.c:613
+#: ../gui/gdmXnestchooser.c:602
 msgid "Could not find a free display number"
 msgstr "Nie je možné nájsť voľné číslo displeja"
 
@@ -1961,8 +1961,8 @@ msgstr ""
 msgid "Can't open default host icon: %s"
 msgstr "Nemôžem otvoriť štandardnú ikonu hostiteľa: %s"
 
-#: ../gui/gdmchooser.c:1857 ../gui/gdmlogin.c:3533
-#: ../gui/greeter/greeter.c:1014 ../gui/greeter/greeter.c:1021
+#: ../gui/gdmchooser.c:1857 ../gui/gdmlogin.c:3531
+#: ../gui/greeter/greeter.c:1015 ../gui/greeter/greeter.c:1022
 msgid "Could not set signal mask!"
 msgstr "Nemôžem nastaviť masku signálov!"
 
@@ -1990,7 +1990,7 @@ msgstr "Typ spojenia vrátený ako odpoveď xdm"
 msgid "TYPE"
 msgstr "TYP"
 
-#: ../gui/gdmchooser.c:1945 ../gui/gdmflexiserver.c:785 ../gui/gdmsetup.c:6469
+#: ../gui/gdmchooser.c:1945 ../gui/gdmflexiserver.c:738 ../gui/gdmsetup.c:6392
 msgid "Could not access GDM configuration file.\n"
 msgstr "Nepodaril sa prístup ku konfiguračnému súboru GDM.\n"
 
@@ -1998,10 +1998,10 @@ msgstr "Nepodaril sa prístup ku konfiguračnému súboru GDM.\n"
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+"probably just upgraded GDM.  Please restart the GDM daemon or the computer."
 msgstr ""
 "Verzia výberu sedenia (%s) neodpovedá verzii démona (%s). Asi ste práve "
-"aktualizovali gdm. Prosím, reštartujte démona gdm alebo celý počítač."
+"aktualizovali GDM. Prosím, reštartujte démona GDM alebo celý počítač."
 
 #: ../gui/gdmchooser.c:2005
 msgid "Cannot run chooser"
@@ -2048,11 +2048,11 @@ msgstr "Stav"
 msgid "_Add"
 msgstr "_Pridať"
 
-#: ../gui/gdmcomm.c:404
+#: ../gui/gdmcomm.c:416
 msgid "GDM (The GNOME Display Manager) is not running."
 msgstr "GDM (Správca displeja GNOME) nebeží."
 
-#: ../gui/gdmcomm.c:406
+#: ../gui/gdmcomm.c:418
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm. If you still wish to use this feature, either start "
@@ -2062,35 +2062,35 @@ msgstr ""
 "KDE) alebo xdm. Ak ešte stále chcete použiť túto funkciu, buď si sami "
 "spustite GDM alebo požiadajte správcu vášho systému, aby spustil GDM."
 
-#: ../gui/gdmcomm.c:430 ../gui/gdmflexiserver.c:829
+#: ../gui/gdmcomm.c:442 ../gui/gdmflexiserver.c:782
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Komunikácia s GDM (Správca displeja GNOME) nie je možná."
 
-#: ../gui/gdmcomm.c:432 ../gui/gdmflexiserver.c:831
+#: ../gui/gdmcomm.c:444 ../gui/gdmflexiserver.c:784
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Možno používate starú verziu."
 
-#: ../gui/gdmcomm.c:449 ../gui/gdmcomm.c:452
-msgid "Cannot communicate with gdm. Perhaps you have an old version running."
-msgstr "Komunikácia s gdm nie je možná. Asi máte spustenú starú verziu."
+#: ../gui/gdmcomm.c:461 ../gui/gdmcomm.c:464
+msgid "Cannot communicate with GDM. Perhaps you have an old version running."
+msgstr "Komunikácia s GDM nie je možná. Asi máte spustenú starú verziu."
 
-#: ../gui/gdmcomm.c:455
+#: ../gui/gdmcomm.c:467
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Dosiahnutý povolený limit flexibilných X serverov."
 
-#: ../gui/gdmcomm.c:457
+#: ../gui/gdmcomm.c:469
 msgid "There were errors trying to start the X server."
 msgstr "Nastali chyby pri pokuse o spustenie X serveru."
 
-#: ../gui/gdmcomm.c:459
+#: ../gui/gdmcomm.c:471
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "X server zlyhal. Možno nie je správne nastavený."
 
-#: ../gui/gdmcomm.c:462
+#: ../gui/gdmcomm.c:474
 msgid "Too many X sessions running."
 msgstr "Príliš veľa bežiacich sedení."
 
-#: ../gui/gdmcomm.c:464
+#: ../gui/gdmcomm.c:476
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
@@ -2098,20 +2098,20 @@ msgstr ""
 "Vnorený X server (Xnest) sa nemôže spojiť s vaších aktuálnym X serverom. "
 "Možno chýba prihlasovací súbor X."
 
-#: ../gui/gdmcomm.c:469
+#: ../gui/gdmcomm.c:481
 msgid ""
-"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
+"The nested X server (Xnest) is not available, or GDM is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
 "Vnorený X server (Xnest) nie je k dispozícii, alebo nie je správne nastavený "
-"gdm.\n"
+"GDM.\n"
 "Prosím, nainštalujte balík Xnset, aby ste mohli používať vnorené prihlásenie."
 
-#: ../gui/gdmcomm.c:474
+#: ../gui/gdmcomm.c:486
 msgid "The X server is not available. GDM may be misconfigured."
 msgstr "X server nie je dostupný. GDM je asi zle nastavený."
 
-#: ../gui/gdmcomm.c:477
+#: ../gui/gdmcomm.c:489
 msgid ""
 "Trying to set an unknown logout action, or trying to set a logout action "
 "which is not available."
@@ -2119,19 +2119,19 @@ msgstr ""
 "Pokus o nastavenie neznámej akcie odhlásenia alebo o akcie, ktorá nie je k "
 "dispozícii."
 
-#: ../gui/gdmcomm.c:480
+#: ../gui/gdmcomm.c:492
 msgid "Virtual terminals not supported."
 msgstr "Virtuálne terminály nie sú podporované."
 
-#: ../gui/gdmcomm.c:482
+#: ../gui/gdmcomm.c:494
 msgid "Trying to change to an invalid virtual terminal number."
 msgstr "Pokus o prechod na neplatné číslo virtuálneho terminálu."
 
-#: ../gui/gdmcomm.c:484
+#: ../gui/gdmcomm.c:496
 msgid "Trying to update an unsupported configuration key."
 msgstr "Pokus o aktualizáciu nepodporovaného kľúča nastavenia."
 
-#: ../gui/gdmcomm.c:486
+#: ../gui/gdmcomm.c:498
 msgid ""
 "You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -2139,11 +2139,11 @@ msgstr ""
 "Vyzerá to, že nemáte potrebné oprávnenie pre túto operáciu. Možno nemáte "
 "správne nastavený súbor .Xauthority."
 
-#: ../gui/gdmcomm.c:490
-msgid "Too many messages were sent to gdm and it hung upon us."
-msgstr "Príliš veľa správ poslaných gdm a potom nastalo zavesenie."
+#: ../gui/gdmcomm.c:502
+msgid "Too many messages were sent to GDM and it hung up on us."
+msgstr "Príliš veľa správ poslaných GDM a potom nastalo zavesenie."
 
-#: ../gui/gdmcomm.c:493
+#: ../gui/gdmcomm.c:505
 msgid "Unknown error occurred."
 msgstr "Nastala neznáma chyba."
 
@@ -2164,48 +2164,48 @@ msgstr "Prihlásenie ako iný používateľ vo vnorenom okne"
 msgid "New Login in a Nested Window"
 msgstr "Nové prihlásenie vo vnorenom okne"
 
-#: ../gui/gdmflexiserver.c:104
+#: ../gui/gdmflexiserver.c:103
 msgid "Cannot change display"
 msgstr "Nie je možné zmeniť displej"
 
-#: ../gui/gdmflexiserver.c:181
+#: ../gui/gdmflexiserver.c:180
 msgid "Nobody"
 msgstr "Nikto"
 
-#: ../gui/gdmflexiserver.c:216
+#: ../gui/gdmflexiserver.c:215
 #, c-format
 msgid "Display %s on virtual terminal %d"
 msgstr "Displej %s na virtuálnom termináli %d"
 
-#: ../gui/gdmflexiserver.c:221
+#: ../gui/gdmflexiserver.c:220
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Vnorený displej %s na virtuálnom termináli %d"
 
-#: ../gui/gdmflexiserver.c:251 ../gui/gdmlogin.c:2737
+#: ../gui/gdmflexiserver.c:250 ../gui/gdmlogin.c:2735
 #: ../gui/greeter/greeter_item_ulist.c:245
 msgid "Username"
 msgstr "Používateľské meno"
 
-#: ../gui/gdmflexiserver.c:260
+#: ../gui/gdmflexiserver.c:259
 msgid "Display"
 msgstr "Displej"
 
-#: ../gui/gdmflexiserver.c:374
+#: ../gui/gdmflexiserver.c:373
 msgid "Open Displays"
 msgstr "Otvorené displeje"
 
 #. parent
 #. flags
-#: ../gui/gdmflexiserver.c:377
+#: ../gui/gdmflexiserver.c:376
 msgid "_Open New Display"
 msgstr "_Otvoriť nový displej"
 
-#: ../gui/gdmflexiserver.c:379
+#: ../gui/gdmflexiserver.c:378
 msgid "Change to _Existing Display"
 msgstr "Prejsť na _existujúci displej"
 
-#: ../gui/gdmflexiserver.c:387
+#: ../gui/gdmflexiserver.c:386
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
@@ -2213,63 +2213,63 @@ msgstr ""
 "Niektoré displeje už sú otvorené. Musíte si jeden z nich vybrať zo zoznamu "
 "alebo otvoriť nový."
 
-#: ../gui/gdmflexiserver.c:611
+#: ../gui/gdmflexiserver.c:569
 msgid "Choose server"
 msgstr "Výber serveru"
 
-#: ../gui/gdmflexiserver.c:622
+#: ../gui/gdmflexiserver.c:580
 msgid "Choose the X server to start"
 msgstr "Vyberte X server, ktorý sa má spustiť"
 
-#: ../gui/gdmflexiserver.c:628
+#: ../gui/gdmflexiserver.c:586
 msgid "Standard server"
 msgstr "Štandardný server"
 
-#: ../gui/gdmflexiserver.c:730
-msgid "Send the specified protocol command to gdm"
-msgstr "Poslať gdm zadaný príkaz protokolu"
+#: ../gui/gdmflexiserver.c:688
+msgid "Send the specified protocol command to GDM"
+msgstr "Poslať GDM zadaný príkaz protokolu"
 
-#: ../gui/gdmflexiserver.c:730
+#: ../gui/gdmflexiserver.c:688
 msgid "COMMAND"
 msgstr "PRÍKAZ"
 
-#: ../gui/gdmflexiserver.c:731
+#: ../gui/gdmflexiserver.c:689
 msgid "Xnest mode"
 msgstr "Mód Xnest"
 
-#: ../gui/gdmflexiserver.c:732
+#: ../gui/gdmflexiserver.c:690
 msgid "Do not lock current screen"
 msgstr "Nezamykať aktuálnu obrazovku"
 
-#: ../gui/gdmflexiserver.c:733
+#: ../gui/gdmflexiserver.c:691
 msgid "Debugging output"
 msgstr "Ladiaci výstup"
 
-#: ../gui/gdmflexiserver.c:734
+#: ../gui/gdmflexiserver.c:692
 msgid "Authenticate before running --command"
 msgstr "Prihlásiť pred spustením --command"
 
-#: ../gui/gdmflexiserver.c:735
+#: ../gui/gdmflexiserver.c:693
 msgid "Start new flexible session; do not show popup"
 msgstr "Spustiť nové flexibilné sedenie; nezobraziť vyskakovacie okno"
 
-#: ../gui/gdmflexiserver.c:856
+#: ../gui/gdmflexiserver.c:809
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Vyzerá to, že nemáte potrebné práva pre túto operáciu."
 
-#: ../gui/gdmflexiserver.c:859
+#: ../gui/gdmflexiserver.c:812
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Možno nemáte správne nastavený súbor .Xauthority."
 
-#: ../gui/gdmflexiserver.c:883
+#: ../gui/gdmflexiserver.c:836
 msgid "You do not seem to be logged in on the console"
 msgstr "Vyzerá to, že nie ste prihlásený na konzoli"
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:838
 msgid "Starting a new login only works correctly on the console."
 msgstr "Spustenie nového prihlásenia funguje správne iba na konzoli."
 
-#: ../gui/gdmflexiserver.c:931
+#: ../gui/gdmflexiserver.c:884
 msgid "Cannot start new display"
 msgstr "Nie je možné spustiť nový displej"
 
@@ -2282,464 +2282,464 @@ msgid "New Login"
 msgstr "Nové prihlásenie"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:52
+#: ../gui/gdmlanguages.c:53
 msgid "A-M|Afrikaans"
 msgstr "A-M|Juhoafricky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:54
+#: ../gui/gdmlanguages.c:55
 msgid "A-M|Albanian"
 msgstr "A-M|Albánsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:56
+#: ../gui/gdmlanguages.c:57
 msgid "A-M|Amharic"
 msgstr "A-M|Amharský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:58
+#: ../gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Egypt)"
 msgstr "A-M|Arabský (Egypt)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:60
+#: ../gui/gdmlanguages.c:61
 msgid "A-M|Arabic (Lebanon)"
 msgstr "A-M|Arabský (Libanon)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:62
+#: ../gui/gdmlanguages.c:63
 msgid "A-M|Armenian"
 msgstr "A-M|Arménsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:64
+#: ../gui/gdmlanguages.c:65
 msgid "A-M|Azerbaijani"
 msgstr "A-M|Ázerbajdžánsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:66
+#: ../gui/gdmlanguages.c:67
 msgid "A-M|Basque"
 msgstr "A-M|Baskitský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:68
+#: ../gui/gdmlanguages.c:69
 msgid "A-M|Belarusian"
 msgstr "A-M|Bieloruský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:70
+#: ../gui/gdmlanguages.c:71
 msgid "A-M|Bengali"
 msgstr "A-M|Bengálsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:72
+#: ../gui/gdmlanguages.c:73
 msgid "A-M|Bengali (India)"
 msgstr "A-M|Bengálsky (India)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:74
+#: ../gui/gdmlanguages.c:75
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bulharský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:76
+#: ../gui/gdmlanguages.c:77
 msgid "A-M|Bosnian"
 msgstr "A-M|Bosenský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:78
+#: ../gui/gdmlanguages.c:79
 msgid "A-M|Catalan"
 msgstr "A-M|Katalánsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:80
+#: ../gui/gdmlanguages.c:81
 msgid "A-M|Chinese (China Mainland)"
 msgstr "A-M|Čínsky (Čínska pevnina)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:82
+#: ../gui/gdmlanguages.c:83
 msgid "A-M|Chinese (Hong Kong)"
 msgstr "A-M|Čínsky (Hongkong)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:84
+#: ../gui/gdmlanguages.c:85
 msgid "A-M|Chinese (Singapore)"
 msgstr "A-M|Čínsky (Singapur)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:86
+#: ../gui/gdmlanguages.c:87
 msgid "A-M|Chinese (Taiwan)"
 msgstr "A-M|Čínsky (Taiwan)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:88
+#: ../gui/gdmlanguages.c:89
 msgid "A-M|Croatian"
 msgstr "A-M|Chorvátsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:90
+#: ../gui/gdmlanguages.c:91
 msgid "A-M|Czech"
 msgstr "A-M|Český"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:92
+#: ../gui/gdmlanguages.c:93
 msgid "A-M|Danish"
 msgstr "A-M|Dánsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:94
+#: ../gui/gdmlanguages.c:95
 msgid "A-M|Dutch"
 msgstr "A-M|Holandský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:96
+#: ../gui/gdmlanguages.c:97
 msgid "A-M|English (USA)"
 msgstr "A-M|Anglický (USA)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:98
+#: ../gui/gdmlanguages.c:99
 msgid "A-M|English (Australia)"
 msgstr "A-M|Anglický (Austrália)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:100
+#: ../gui/gdmlanguages.c:101
 msgid "A-M|English (UK)"
 msgstr "A-M|Anglický (UK)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:102
+#: ../gui/gdmlanguages.c:103
 msgid "A-M|English (Canada)"
 msgstr "A-M|Anglický (Kanada)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:104
+#: ../gui/gdmlanguages.c:105
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Anglický (Írsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:106
+#: ../gui/gdmlanguages.c:107
 msgid "A-M|English (Denmark)"
 msgstr "A-M|Anglický (Dánsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:108
+#: ../gui/gdmlanguages.c:109
 msgid "A-M|English (South Africa)"
 msgstr "A-M|Anglický (Južná Afrika)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:110
+#: ../gui/gdmlanguages.c:111
 msgid "A-M|Estonian"
 msgstr "A-M|Estónsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:112
+#: ../gui/gdmlanguages.c:113
 msgid "A-M|Finnish"
 msgstr "A-M|Fínsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:114
+#: ../gui/gdmlanguages.c:115
 msgid "A-M|French"
 msgstr "A-M|Francúzsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:116
+#: ../gui/gdmlanguages.c:117
 msgid "A-M|French (Belgium)"
 msgstr "A-M|Francúzsky (Belgicko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:118
+#: ../gui/gdmlanguages.c:119
 msgid "A-M|French (Switzerland)"
 msgstr "A-M|Francúzsky (Švajčiarsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:120
+#: ../gui/gdmlanguages.c:121
 msgid "A-M|Galician"
 msgstr "A-M|Galský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:122
+#: ../gui/gdmlanguages.c:123
 msgid "A-M|German"
 msgstr "N-Z|Nemecký"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:124
+#: ../gui/gdmlanguages.c:125
 msgid "A-M|German (Austria)"
 msgstr "A-M|Nemecký (Rakúsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:126
+#: ../gui/gdmlanguages.c:127
 msgid "A-M|German (Switzerland)"
 msgstr "A-M|Nemecký (Švajčiarsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:128
+#: ../gui/gdmlanguages.c:129
 msgid "A-M|Greek"
 msgstr "A-M|Grécky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:130
+#: ../gui/gdmlanguages.c:131
 msgid "A-M|Gujarati"
 msgstr "A-M|Gujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:132 ../gui/gdmlanguages.c:134
+#: ../gui/gdmlanguages.c:133 ../gui/gdmlanguages.c:135
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebrejský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:136
+#: ../gui/gdmlanguages.c:137
 msgid "A-M|Hindi"
 msgstr "A-M|Hindský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:138
+#: ../gui/gdmlanguages.c:139
 msgid "A-M|Hungarian"
 msgstr "A-M|Maďarský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:140
+#: ../gui/gdmlanguages.c:141
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:142
+#: ../gui/gdmlanguages.c:143
 msgid "A-M|Indonesian"
 msgstr "A-M|Indonézsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:144
+#: ../gui/gdmlanguages.c:145
 msgid "A-M|Interlingua"
 msgstr "A-M|Interlingua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:146
+#: ../gui/gdmlanguages.c:147
 msgid "A-M|Irish"
 msgstr "A-M|Írsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:148
+#: ../gui/gdmlanguages.c:149
 msgid "A-M|Italian"
 msgstr "N-Z|Taliansky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:150
+#: ../gui/gdmlanguages.c:151
 msgid "A-M|Japanese"
 msgstr "A-M|Japonský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:152
+#: ../gui/gdmlanguages.c:153
 msgid "A-M|Kannada"
 msgstr "A-M|Kannada"
 
 #. Note translate the A-M to the A-M you used in the group label
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:155
+#: ../gui/gdmlanguages.c:156
 msgid "A-M|Kinyarwanda"
 msgstr "A-M|Kinyarwanda"
 
-#: ../gui/gdmlanguages.c:156
+#: ../gui/gdmlanguages.c:157
 msgid "A-M|Korean"
 msgstr "A-M|Kórejský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:158
+#: ../gui/gdmlanguages.c:159
 msgid "A-M|Latvian"
 msgstr "A-M|Lotyšský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:160
+#: ../gui/gdmlanguages.c:161
 msgid "A-M|Lithuanian"
 msgstr "A-M|Litovský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:162
+#: ../gui/gdmlanguages.c:163
 msgid "A-M|Macedonian"
 msgstr "A-M|Makedonský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:164
+#: ../gui/gdmlanguages.c:165
 msgid "A-M|Malay"
 msgstr "A-M|Malajský"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:166
+#: ../gui/gdmlanguages.c:167
 msgid "A-M|Malayalam"
 msgstr "A-M|Malayalam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:168
+#: ../gui/gdmlanguages.c:169
 msgid "A-M|Marathi"
 msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: ../gui/gdmlanguages.c:170
+#: ../gui/gdmlanguages.c:171
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongolský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:172
+#: ../gui/gdmlanguages.c:173
 msgid "N-Z|Northern Sotho"
 msgstr "N-Z|Severné Sotho"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:174
+#: ../gui/gdmlanguages.c:175
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Nórsky (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:176
+#: ../gui/gdmlanguages.c:177
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Nórsky (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:178
+#: ../gui/gdmlanguages.c:179
 msgid "N-Z|Oriya"
 msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:180
+#: ../gui/gdmlanguages.c:181
 msgid "N-Z|Panjabi"
 msgstr "N-Z|Pandžábsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:182
+#: ../gui/gdmlanguages.c:183
 msgid "N-Z|Persian"
 msgstr "N-Z|Perský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:184
+#: ../gui/gdmlanguages.c:185
 msgid "N-Z|Polish"
 msgstr "N-Z|Poľský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:186
+#: ../gui/gdmlanguages.c:187
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugalský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:188
+#: ../gui/gdmlanguages.c:189
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugalský (Brazília)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:190
+#: ../gui/gdmlanguages.c:191
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumunský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:192
+#: ../gui/gdmlanguages.c:193
 msgid "N-Z|Russian"
 msgstr "N-Z|Ruský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:194 ../gui/gdmlanguages.c:196
+#: ../gui/gdmlanguages.c:195 ../gui/gdmlanguages.c:197
 msgid "N-Z|Serbian"
 msgstr "N-Z|Srbský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:198
+#: ../gui/gdmlanguages.c:199
 msgid "N-Z|Serbian (Latin)"
 msgstr "N-Z|Srbský (Latinka)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:200
+#: ../gui/gdmlanguages.c:201
 msgid "N-Z|Serbian (Jekavian)"
 msgstr "N-Z|Srbský (Jekavský)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:202
+#: ../gui/gdmlanguages.c:203
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovenský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:204
+#: ../gui/gdmlanguages.c:205
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovinský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:206
+#: ../gui/gdmlanguages.c:207
 msgid "N-Z|Spanish"
 msgstr "N-Z|Španielsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:208
+#: ../gui/gdmlanguages.c:209
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Španielsky (Mexiko)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:210
+#: ../gui/gdmlanguages.c:211
 msgid "N-Z|Swedish"
 msgstr "N-Z|Švédsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:212
+#: ../gui/gdmlanguages.c:213
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Švédsky (Fínsko)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:214
+#: ../gui/gdmlanguages.c:215
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamilský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:216
+#: ../gui/gdmlanguages.c:217
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:218
+#: ../gui/gdmlanguages.c:219
 msgid "N-Z|Thai"
 msgstr "N-Z|Thajský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:220
+#: ../gui/gdmlanguages.c:221
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turecký"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:222
+#: ../gui/gdmlanguages.c:223
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrajinský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:224
+#: ../gui/gdmlanguages.c:225
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:226
+#: ../gui/gdmlanguages.c:227
 msgid "N-Z|Walloon"
 msgstr "N-Z|Valónsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:228
+#: ../gui/gdmlanguages.c:229
 msgid "N-Z|Welsh"
 msgstr "N-Z|Welšský"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:230
+#: ../gui/gdmlanguages.c:231
 msgid "N-Z|Yiddish"
 msgstr "N-Z|Jidiš"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: ../gui/gdmlanguages.c:232
+#: ../gui/gdmlanguages.c:233
 msgid "N-Z|Zulu"
 msgstr "N-Z|Zulu"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: ../gui/gdmlanguages.c:234
+#: ../gui/gdmlanguages.c:235
 msgid "Other|POSIX/C English"
 msgstr "Iný|POSIX/C angličtina"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: ../gui/gdmlanguages.c:418
+#: ../gui/gdmlanguages.c:419
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: ../gui/gdmlanguages.c:426
+#: ../gui/gdmlanguages.c:427
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2779,7 +2779,7 @@ msgstr "%sVíta vás %s%s"
 msgid "Are you sure you want to restart the computer?"
 msgstr "Ste si istý, že chcete reštartovať počítač?"
 
-#: ../gui/gdmlogin.c:753 ../gui/gdmlogin.c:2610
+#: ../gui/gdmlogin.c:753 ../gui/gdmlogin.c:2608
 msgid "_Restart"
 msgstr "_Reštartovať"
 
@@ -2787,7 +2787,7 @@ msgstr "_Reštartovať"
 msgid "Are you sure you want to shut down the computer?"
 msgstr "Ste si istý, že chcete vypnúť počítač?"
 
-#: ../gui/gdmlogin.c:766 ../gui/gdmlogin.c:2620
+#: ../gui/gdmlogin.c:766 ../gui/gdmlogin.c:2618
 #: ../gui/greeter/greeter_parser.c:1076 ../gui/greeter/greeter_system.c:76
 #: ../gui/greeter/greeter_system.c:203
 msgid "Shut _Down"
@@ -2797,7 +2797,7 @@ msgstr "_Vypnúť"
 msgid "Are you sure you want to suspend the computer?"
 msgstr "Ste si istý, že chcete uspať počítač?"
 
-#: ../gui/gdmlogin.c:787 ../gui/gdmlogin.c:2630
+#: ../gui/gdmlogin.c:787 ../gui/gdmlogin.c:2628
 #: ../gui/greeter/greeter_system.c:87
 msgid "_Suspend"
 msgstr "_Uspať"
@@ -2865,7 +2865,7 @@ msgid "System Default"
 msgstr "Štandard systému"
 
 #: ../gui/gdmlogin.c:1100 ../gui/gdmlogin.c:1114 ../gui/gdmlogin.c:1731
-#: ../gui/gdmlogin.c:2208 ../gui/gdmlogin.c:2842
+#: ../gui/gdmlogin.c:2208 ../gui/gdmlogin.c:2840
 msgid "_Username:"
 msgstr "_Používateľské meno:"
 
@@ -2901,15 +2901,15 @@ msgstr "_Heslo:"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:1994 ../gui/greeter/greeter.c:331
+#: ../gui/gdmlogin.c:1994 ../gui/greeter/greeter.c:332
 msgid "Please insert 25 cents to log in."
 msgstr "Prosím, vložte 10 Sk pre prihlásenie."
 
-#: ../gui/gdmlogin.c:2329
+#: ../gui/gdmlogin.c:2328
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Správca prihlásenia"
 
-#: ../gui/gdmlogin.c:2355 ../gui/greeter/greeter_item.c:162
+#: ../gui/gdmlogin.c:2353 ../gui/greeter/greeter_item.c:162
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
@@ -2917,115 +2917,115 @@ msgstr "%a %b %d, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmlogin.c:2361 ../gui/greeter/greeter_item.c:171
+#: ../gui/gdmlogin.c:2359 ../gui/greeter/greeter_item.c:171
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %b %d, %l:%M %p"
 
-#: ../gui/gdmlogin.c:2410
+#: ../gui/gdmlogin.c:2408
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2525
+#: ../gui/gdmlogin.c:2523
 msgid "GDM Login"
 msgstr "GDM prihlásenie"
 
-#: ../gui/gdmlogin.c:2568 ../gui/greeter/greeter_parser.c:1056
+#: ../gui/gdmlogin.c:2566 ../gui/greeter/greeter_parser.c:1056
 msgid "_Session"
 msgstr "_Sedenie"
 
-#: ../gui/gdmlogin.c:2575 ../gui/greeter/greeter_parser.c:1051
+#: ../gui/gdmlogin.c:2573 ../gui/greeter/greeter_parser.c:1051
 msgid "_Language"
 msgstr "_Jazyk"
 
-#: ../gui/gdmlogin.c:2589 ../gui/greeter/greeter_system.c:150
+#: ../gui/gdmlogin.c:2587 ../gui/greeter/greeter_system.c:150
 msgid "_XDMCP Chooser..."
 msgstr "Výber hostiteľa _XDMCP.."
 
-#: ../gui/gdmlogin.c:2600 ../gui/greeter/greeter_system.c:165
+#: ../gui/gdmlogin.c:2598 ../gui/greeter/greeter_system.c:165
 msgid "_Configure Login Manager..."
 msgstr "Nas_taviť správcu prihlásenia..."
 
-#: ../gui/gdmlogin.c:2640 ../gui/greeter/greeter_parser.c:1061
+#: ../gui/gdmlogin.c:2638 ../gui/greeter/greeter_parser.c:1061
 msgid "_Actions"
 msgstr "_Akcie"
 
-#: ../gui/gdmlogin.c:2649
+#: ../gui/gdmlogin.c:2647
 msgid "_Theme"
 msgstr "_Téma"
 
-#: ../gui/gdmlogin.c:2660 ../gui/greeter/greeter_canvas_item.c:165
+#: ../gui/gdmlogin.c:2658 ../gui/greeter/greeter_canvas_item.c:165
 #: ../gui/greeter/greeter_parser.c:1071
 msgid "_Quit"
 msgstr "_Koniec"
 
-#: ../gui/gdmlogin.c:2662 ../gui/greeter/greeter_canvas_item.c:167
+#: ../gui/gdmlogin.c:2660 ../gui/greeter/greeter_canvas_item.c:167
 #: ../gui/greeter/greeter_parser.c:1066
 msgid "D_isconnect"
 msgstr "_Odpojiť"
 
-#: ../gui/gdmlogin.c:2730 ../gui/greeter/greeter_item_ulist.c:239
+#: ../gui/gdmlogin.c:2728 ../gui/greeter/greeter_item_ulist.c:239
 msgid "Icon"
 msgstr "Ikona"
 
-#: ../gui/gdmlogin.c:3351 ../gui/gdmlogin.c:3385 ../gui/greeter/greeter.c:568
+#: ../gui/gdmlogin.c:3349 ../gui/gdmlogin.c:3383 ../gui/greeter/greeter.c:569
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+"probably just upgraded GDM.  Please restart the GDM daemon or the computer."
 msgstr ""
 "Verzia privítania (%s) nezodpovedá verzii démona. Asi ste práve "
-"aktualizovali gdm. Prosím, reštartujte démona gdm alebo celý počítač."
+"aktualizovali GDM. Prosím, reštartujte démona GDM alebo celý počítač."
 
-#: ../gui/gdmlogin.c:3361 ../gui/gdmlogin.c:3395 ../gui/gdmlogin.c:3443
-#: ../gui/greeter/greeter.c:578 ../gui/greeter/greeter.c:613
-#: ../gui/greeter/greeter.c:662
+#: ../gui/gdmlogin.c:3359 ../gui/gdmlogin.c:3393 ../gui/gdmlogin.c:3441
+#: ../gui/greeter/greeter.c:579 ../gui/greeter/greeter.c:614
+#: ../gui/greeter/greeter.c:663
 msgid "Cannot start the greeter"
 msgstr "Nie je možné spustiť dialóg prihlásenia"
 
-#: ../gui/gdmlogin.c:3400 ../gui/greeter/greeter.c:667
+#: ../gui/gdmlogin.c:3398 ../gui/greeter/greeter.c:668
 msgid "Restart"
 msgstr "Reštartovať gdm"
 
-#: ../gui/gdmlogin.c:3433 ../gui/greeter/greeter.c:652
+#: ../gui/gdmlogin.c:3431 ../gui/greeter/greeter.c:653
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
-"probably just upgraded gdm.  Please restart the gdm daemon or the computer."
+"probably just upgraded GDM.  Please restart the GDM daemon or the computer."
 msgstr ""
 "Verzia privítania (%s) nezodpovedá verzii démona (%s). Asi ste práve "
-"aktualizovali gdm. Prosím, reštartujte démona gdm alebo celý počítač."
+"aktualizovali GDM. Prosím, reštartujte démona GDM alebo celý počítač."
+
+#: ../gui/gdmlogin.c:3446
+msgid "Restart GDM"
+msgstr "Reštartovať GDM"
 
 #: ../gui/gdmlogin.c:3448
-msgid "Restart gdm"
-msgstr "Reštartovať gdm"
-
-#: ../gui/gdmlogin.c:3450
 msgid "Restart computer"
 msgstr "Reštartovať počítač"
 
-#: ../gui/gdmlogin.c:3485
+#: ../gui/gdmlogin.c:3483
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Nemôžem otvoriť DefaultImage: %s. Vypínam prehliadač vzhľadu!"
 
-#: ../gui/gdmlogin.c:3647 ../gui/greeter/greeter.c:1234
+#: ../gui/gdmlogin.c:3645 ../gui/greeter/greeter.c:1235
 msgid "Session directory is missing"
 msgstr "Chýba priečinok so sedeniami"
 
-#: ../gui/gdmlogin.c:3648 ../gui/greeter/greeter.c:1235
+#: ../gui/gdmlogin.c:3646
 msgid ""
 "Your session directory is missing or empty!  There are two available "
-"sessions you can use, but you should log in and correct the gdm "
+"sessions you can use, but you should log in and correct the GDM "
 "configuration."
 msgstr ""
 "Váš priečinok sedenia buď chýba alebo je prázdny! K dispozícii sú tieto dve "
-"sedenia, ale mali by ste sa prihlásiť a problém konfigurácie vyriešiť."
+"sedenia, ale mali by ste sa prihlásiť a problém konfigurácie GDM vyriešiť."
 
-#: ../gui/gdmlogin.c:3671 ../gui/greeter/greeter.c:1259
+#: ../gui/gdmlogin.c:3669 ../gui/greeter/greeter.c:1260
 msgid "Configuration is not correct"
 msgstr "Konfigurácia neplatná"
 
-#: ../gui/gdmlogin.c:3672 ../gui/greeter/greeter.c:1260
+#: ../gui/gdmlogin.c:3670 ../gui/greeter/greeter.c:1261
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3046,13 +3046,13 @@ msgstr "Nepodarilo sa otvoriť súbor"
 msgid "Select User Image"
 msgstr "Vybrať obrázok používateľa"
 
-#: ../gui/gdmphotosetup.c:272 ../gui/gdmsetup.c:5612 ../gui/gdmsetup.c:5681
-#: ../gui/gdmsetup.c:5909 ../gui/gdmsetup.c:5978
+#: ../gui/gdmphotosetup.c:272 ../gui/gdmsetup.c:5549 ../gui/gdmsetup.c:5618
+#: ../gui/gdmsetup.c:5842 ../gui/gdmsetup.c:5911
 msgid "Images"
 msgstr "Obrázky"
 
-#: ../gui/gdmphotosetup.c:277 ../gui/gdmsetup.c:3041 ../gui/gdmsetup.c:5617
-#: ../gui/gdmsetup.c:5686 ../gui/gdmsetup.c:5914 ../gui/gdmsetup.c:5983
+#: ../gui/gdmphotosetup.c:277 ../gui/gdmsetup.c:2997 ../gui/gdmsetup.c:5554
+#: ../gui/gdmsetup.c:5623 ../gui/gdmsetup.c:5847 ../gui/gdmsetup.c:5916
 msgid "All Files"
 msgstr "Všetky súbory"
 
@@ -3074,11 +3074,11 @@ msgstr "<b>Obrázok používateľa</b>"
 msgid "Login Photo Preferences"
 msgstr "Predvoľby prihlasovacej fotky"
 
-#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:295
+#: ../gui/gdmsession.c:125 ../gui/gdmsession.c:294
 msgid "Failsafe _GNOME"
 msgstr "Záchranné _GNOME"
 
-#: ../gui/gdmsession.c:127 ../gui/gdmsession.c:296
+#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:295
 msgid ""
 "This is a failsafe session that will log you into GNOME. No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3088,11 +3088,11 @@ msgstr ""
 "žiadne štartovacie skripty a mali by ste ho používať iba v prípade, že sa "
 "inak nemôžete prihlásiť. Bude použité 'Štandardné' sedenie GNOME."
 
-#: ../gui/gdmsession.c:137 ../gui/gdmsession.c:306
+#: ../gui/gdmsession.c:136 ../gui/gdmsession.c:305
 msgid "Failsafe _Terminal"
 msgstr "Záchranný _terminál"
 
-#: ../gui/gdmsession.c:138 ../gui/gdmsession.c:307
+#: ../gui/gdmsession.c:137 ../gui/gdmsession.c:306
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3102,21 +3102,21 @@ msgstr ""
 "žiadne skripty a toto sedenie by malo byť použité iba v prípade, že žiadne "
 "iné nefunguje. Pre ukončenie terminálu použite príkaz 'exit'."
 
-#: ../gui/gdmsession.c:276
+#: ../gui/gdmsession.c:275
 #, c-format
 msgid "%s: Session directory %s not found!"
 msgstr "%s: Priečinok so sedeniami %s nenájdený."
 
-#: ../gui/gdmsession.c:284
+#: ../gui/gdmsession.c:283
 msgid "Yikes, nothing found in the session directory."
 msgstr "Fíha, v priečinku sedení nič nie je."
 
-#: ../gui/gdmsession.c:323
+#: ../gui/gdmsession.c:322
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Nenájdený odkaz na štandardné sedenie. Použijem záchranné sedenie GNOME.\n"
 
-#: ../gui/gdmsetup.c:254
+#: ../gui/gdmsetup.c:262
 msgid ""
 "An error occurred while trying to contact the login screens.  Not all "
 "updates may have taken effect."
@@ -3124,130 +3124,130 @@ msgstr ""
 "Počas pokusu o kontakt s prihlasovacím dialógom nastala chyba. Môže sa stať, "
 "že niektoré aktualizácie sa neprejavia."
 
-#: ../gui/gdmsetup.c:724 ../gui/gdmsetup.c:742 ../gui/gdmsetup.c:868
-#: ../gui/gdmsetup.c:1117
+#: ../gui/gdmsetup.c:694 ../gui/gdmsetup.c:712 ../gui/gdmsetup.c:837
+#: ../gui/gdmsetup.c:1087
 msgid "Themed"
 msgstr "S témou"
 
-#: ../gui/gdmsetup.c:727 ../gui/gdmsetup.c:758
+#: ../gui/gdmsetup.c:697 ../gui/gdmsetup.c:728
 msgid "Plain"
 msgstr "Jednoduché"
 
-#: ../gui/gdmsetup.c:728 ../gui/gdmsetup.c:759
+#: ../gui/gdmsetup.c:698 ../gui/gdmsetup.c:729
 msgid "Plain with face browser"
 msgstr "Jednoduché s prehliadačom tvárí"
 
-#: ../gui/gdmsetup.c:1478
+#: ../gui/gdmsetup.c:1446
 msgid "Autologin or timed login to the root account is not allowed."
 msgstr ""
 "Automatické alebo časované prihlásenie na administrátorský účet nie je možné."
 
-#: ../gui/gdmsetup.c:1711
+#: ../gui/gdmsetup.c:1676
 #, c-format
 msgid "The \"%s\" user already exists in the include list."
 msgstr "Používateľ \"%s\" už existuje v zozname pre zahrnutie."
 
-#: ../gui/gdmsetup.c:1721 ../gui/gdmsetup.c:1751 ../gui/gdmsetup.c:1788
+#: ../gui/gdmsetup.c:1686 ../gui/gdmsetup.c:1716 ../gui/gdmsetup.c:1753
 msgid "Cannot add user"
 msgstr "Nie je možné pridať používateľa"
 
-#: ../gui/gdmsetup.c:1741
+#: ../gui/gdmsetup.c:1706
 #, c-format
 msgid "The \"%s\" user already exists in the exclude list."
 msgstr "Používateľ \"%s\" už existuje v zozname pre vynechanie."
 
-#: ../gui/gdmsetup.c:1778
+#: ../gui/gdmsetup.c:1743
 #, c-format
 msgid "The \"%s\" user does not exist."
 msgstr "Používateľ \"%s\" neexistuje."
 
-#: ../gui/gdmsetup.c:3036 ../gui/gdmsetup.glade.h:75
+#: ../gui/gdmsetup.c:2992 ../gui/gdmsetup.glade.h:74
 msgid "Sounds"
 msgstr "Zvuky"
 
-#: ../gui/gdmsetup.c:3251 ../gui/gdmsetup.c:3309
+#: ../gui/gdmsetup.c:3205 ../gui/gdmsetup.c:3263
 msgid "None"
 msgstr "Nič"
 
-#: ../gui/gdmsetup.c:3751
+#: ../gui/gdmsetup.c:3705
 msgid "Archive is not of a subdirectory"
 msgstr "Archív nie je podpriečinok"
 
-#: ../gui/gdmsetup.c:3759
+#: ../gui/gdmsetup.c:3713
 msgid "Archive is not of a single subdirectory"
 msgstr "Archív nie je jediný podpriečinok"
 
-#: ../gui/gdmsetup.c:3783 ../gui/gdmsetup.c:3861
+#: ../gui/gdmsetup.c:3737 ../gui/gdmsetup.c:3815
 msgid "File not a tar.gz or tar archive"
 msgstr "Súor nie je archív tar.gz alebo tar"
 
-#: ../gui/gdmsetup.c:3785
+#: ../gui/gdmsetup.c:3739
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "Archív neobsahuje súbor GdmGreeterTheme.info"
 
-#: ../gui/gdmsetup.c:3807
+#: ../gui/gdmsetup.c:3761
 msgid "File does not exist"
 msgstr "Súbor neexistuje."
 
-#: ../gui/gdmsetup.c:3927
+#: ../gui/gdmsetup.c:3881
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../gui/gdmsetup.c:3934
+#: ../gui/gdmsetup.c:3888
 msgid "Not a theme archive"
 msgstr "Toto nie je archív s témou."
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:3956
+#: ../gui/gdmsetup.c:3910
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr ""
 "Priečinok témy '%s' už je asi nainštalovaný. Chcete aj tak inštalovať znovu?"
 
-#: ../gui/gdmsetup.c:4048
+#: ../gui/gdmsetup.c:4002
 msgid "Some error occurred when installing the theme"
 msgstr "Počas inštalácie témy nastala nejaká chyba"
 
-#: ../gui/gdmsetup.c:4104
+#: ../gui/gdmsetup.c:4058
 msgid "No file selected"
 msgstr "Nevybraný žiadny súbor"
 
-#: ../gui/gdmsetup.c:4125
+#: ../gui/gdmsetup.c:4079
 msgid "Select Theme Archive"
 msgstr "Vybrať archív tém"
 
-#: ../gui/gdmsetup.c:4129 ../gui/gdmsetup.c:5061
+#: ../gui/gdmsetup.c:4083 ../gui/gdmsetup.c:5007
 msgid "_Install"
 msgstr "_Inštalovať"
 
-#: ../gui/gdmsetup.c:4221
+#: ../gui/gdmsetup.c:4174
 #, c-format
 msgid "Remove the \"%s\" theme?"
 msgstr "Odstrániť tému \"%s\"?"
 
-#: ../gui/gdmsetup.c:4230
+#: ../gui/gdmsetup.c:4183
 msgid "If you choose to remove the theme, it will be permanently lost."
 msgstr "Ak si zvolíte odstránenie témy, bude trvale stratená."
 
-#: ../gui/gdmsetup.c:4238
+#: ../gui/gdmsetup.c:4191
 msgid "_Remove Theme"
 msgstr "_Odstrániť tému"
 
-#: ../gui/gdmsetup.c:5050
+#: ../gui/gdmsetup.c:4996
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "Inštalovať tému z '%s'?"
 
-#: ../gui/gdmsetup.c:5051
+#: ../gui/gdmsetup.c:4997
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "Zvoľte inštaláciu, aby ste pridali tému zo súboru '%s'."
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:5282
+#: ../gui/gdmsetup.c:5224
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3269,22 +3269,22 @@ msgstr ""
 "Úplnú dokumentáciu si prečítajte v GNOME Pomocníkovi v časti \"Pracovná "
 "plocha\"."
 
-#: ../gui/gdmsetup.c:6408
+#: ../gui/gdmsetup.c:6338
 msgid "Apply the changes to users before closing?"
 msgstr "Použiť zmeny používateľov pred zatvorením?"
 
-#: ../gui/gdmsetup.c:6409
+#: ../gui/gdmsetup.c:6339
 msgid ""
 "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr ""
 "Ak zmeny nepoužijete, budú všetky zmeny na záložke Používatelia nebrané v "
 "úvahu."
 
-#: ../gui/gdmsetup.c:6412
+#: ../gui/gdmsetup.c:6342
 msgid "Close _without Applying"
 msgstr "Zatvoriť _bez použitia"
 
-#: ../gui/gdmsetup.c:6518
+#: ../gui/gdmsetup.c:6439
 msgid "You must be the root user to configure GDM."
 msgstr "Musíte byť správca pre nastavenie GDM."
 
@@ -3324,12 +3324,12 @@ msgstr ""
 #: ../gui/gdmsetup.glade.h:5
 msgid ""
 "<b>Warning:</b>  Incorrect settings could prevent the X server from "
-"restarting.  Changes to these settings will not take effect until gdm is "
+"restarting.  Changes to these settings will not take effect until GDM is "
 "restarted."
 msgstr ""
 "<b>Upozornenie:</b> Nesprávne nastavenia môžu zabrániť X serveru v "
-"reštartovaní. Zmeny v týchto nastaveniach sa neprejavia, kým nebude "
-"gdm reštartované."
+"reštartovaní. Zmeny v týchto nastaveniach sa neprejavia, kým nebude GDM "
+"reštartované."
 
 #: ../gui/gdmsetup.glade.h:6
 msgid "A_llow remote system administrator login"
@@ -3558,22 +3558,18 @@ msgid "Security"
 msgstr "Bezpečnosť"
 
 #: ../gui/gdmsetup.glade.h:64
-msgid "Select Backgroud Image"
-msgstr "Vybrať obrázok pozadia"
-
-#: ../gui/gdmsetup.glade.h:65
 msgid "Select Background Image"
 msgstr "Vybrať obrázok pozadia"
 
-#: ../gui/gdmsetup.glade.h:66
+#: ../gui/gdmsetup.glade.h:65
 msgid "Select Logo Image"
 msgstr "Vybrať obrázok loga"
 
-#: ../gui/gdmsetup.glade.h:67
+#: ../gui/gdmsetup.glade.h:66
 msgid "Select Sound File"
 msgstr "Vybrať zvukový súbor"
 
-#: ../gui/gdmsetup.glade.h:68
+#: ../gui/gdmsetup.glade.h:67
 msgid ""
 "Selected only\n"
 "Random from selected\n"
@@ -3581,136 +3577,136 @@ msgstr ""
 "Len vybrané\n"
 "Náhodné z vybraných\n"
 
-#: ../gui/gdmsetup.glade.h:71
+#: ../gui/gdmsetup.glade.h:70
 msgid "Server Settings"
 msgstr "Nastavenia servera"
 
-#: ../gui/gdmsetup.glade.h:72
+#: ../gui/gdmsetup.glade.h:71
 msgid "Server _name:"
 msgstr "_Názov servera:"
 
-#: ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.glade.h:72
 msgid "Servers To Start"
 msgstr "Servery, ktoré spustiť"
 
-#: ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.glade.h:73
 msgid "Sho_w Actions menu"
 msgstr "Zobraziť menu _akcií"
 
-#: ../gui/gdmsetup.glade.h:76
+#: ../gui/gdmsetup.glade.h:75
 msgid "Themes"
 msgstr "Témy"
 
-#: ../gui/gdmsetup.glade.h:77
+#: ../gui/gdmsetup.glade.h:76
 msgid "U_ser:"
 msgstr "P_oužívateľ:"
 
-#: ../gui/gdmsetup.glade.h:78
+#: ../gui/gdmsetup.glade.h:77
 msgid "Users"
 msgstr "Používatelia"
 
-#: ../gui/gdmsetup.glade.h:79
+#: ../gui/gdmsetup.glade.h:78
 msgid "Welcome Message"
 msgstr "Uvítacia správa"
 
-#: ../gui/gdmsetup.glade.h:80
+#: ../gui/gdmsetup.glade.h:79
 msgid "X Server Login Window Preferences"
 msgstr "Predvoľby prihlasovacieho okna X Server"
 
-#: ../gui/gdmsetup.glade.h:81
-msgid "XDMCP Login WIndow Preferences"
+#: ../gui/gdmsetup.glade.h:80
+msgid "XDMCP Login Window Preferences"
 msgstr "Predvoľby prihlasovacieho okna XDMCP"
 
-#: ../gui/gdmsetup.glade.h:82
+#: ../gui/gdmsetup.glade.h:81
 msgid "_Add/Modify..."
 msgstr "_Pridať/upraviť..."
 
-#: ../gui/gdmsetup.glade.h:83
+#: ../gui/gdmsetup.glade.h:82
 msgid "_Allow local system administrator login"
 msgstr "_Povoliť prihlásenie správcovi lokálneho systému"
 
-#: ../gui/gdmsetup.glade.h:84
+#: ../gui/gdmsetup.glade.h:83
 msgid "_Allow users to change fonts and colors of plain greeter"
 msgstr "_Povoliť používateľom zmeniť písma a farby obyčajného privítania"
 
-#: ../gui/gdmsetup.glade.h:86
+#: ../gui/gdmsetup.glade.h:85
 #, no-c-format
 msgid "_Default: \"Welcome to %n\""
 msgstr "_Predvolené: \"Víta vás %n\""
 
-#: ../gui/gdmsetup.glade.h:87
+#: ../gui/gdmsetup.glade.h:86
 msgid "_Default: \"Welcome\""
 msgstr "_Predvolené: \"Vitajte\""
 
-#: ../gui/gdmsetup.glade.h:88
+#: ../gui/gdmsetup.glade.h:87
 msgid "_Deny TCP connections to Xserver"
 msgstr "_Odmietnuť TCP spojenia na Xserver"
 
-#: ../gui/gdmsetup.glade.h:89
+#: ../gui/gdmsetup.glade.h:88
 msgid "_Enable Automatic Login"
 msgstr "_Povoliť automatické prihlásenie"
 
-#: ../gui/gdmsetup.glade.h:90
+#: ../gui/gdmsetup.glade.h:89
 msgid "_Enable accessible login"
 msgstr "_Povoliť prístupné prihlásenie"
 
-#: ../gui/gdmsetup.glade.h:91
+#: ../gui/gdmsetup.glade.h:90
 msgid "_Flexible (on demand)"
 msgstr "_Flexibilné (na požiadanie)"
 
-#: ../gui/gdmsetup.glade.h:92
+#: ../gui/gdmsetup.glade.h:91
 msgid "_Image:"
 msgstr "_Obrázok:"
 
-#: ../gui/gdmsetup.glade.h:93
+#: ../gui/gdmsetup.glade.h:92
 msgid "_Include all users from /etc/passwd (not for NIS)"
 msgstr "_Zahrnúť všetkých používateľov z /etc/passwd (nie pre NIS)"
 
-#: ../gui/gdmsetup.glade.h:94
+#: ../gui/gdmsetup.glade.h:93
 msgid "_Login screen ready:"
 msgstr "Obrazovka _prihlásenia pripravená:"
 
-#: ../gui/gdmsetup.glade.h:95
+#: ../gui/gdmsetup.glade.h:94
 msgid "_Logins are handled by this computer"
 msgstr "_Prihlásenia sú obsluhované týmto počítačom"
 
-#: ../gui/gdmsetup.glade.h:96
+#: ../gui/gdmsetup.glade.h:95
 msgid "_Pause before login:"
 msgstr "_Pauza pred prihlásením:"
 
-#: ../gui/gdmsetup.glade.h:97
+#: ../gui/gdmsetup.glade.h:96
 msgid "_Remove"
 msgstr "_Odstrániť"
 
-#: ../gui/gdmsetup.glade.h:98
+#: ../gui/gdmsetup.glade.h:97
 msgid "_Server:"
 msgstr "_Server:"
 
-#: ../gui/gdmsetup.glade.h:99
+#: ../gui/gdmsetup.glade.h:98
 msgid "_Servers:"
 msgstr "_Servery:"
 
-#: ../gui/gdmsetup.glade.h:100
+#: ../gui/gdmsetup.glade.h:99
 msgid "_Style:"
 msgstr "Š_týl:"
 
-#: ../gui/gdmsetup.glade.h:101
+#: ../gui/gdmsetup.glade.h:100
 msgid "_Theme:"
 msgstr "_Téma:"
 
-#: ../gui/gdmsetup.glade.h:102
+#: ../gui/gdmsetup.glade.h:101
 msgid "_User:"
 msgstr "_Používateľ:"
 
-#: ../gui/gdmsetup.glade.h:103
+#: ../gui/gdmsetup.glade.h:102
 msgid "_VT:"
 msgstr "_VT:"
 
-#: ../gui/gdmsetup.glade.h:104
+#: ../gui/gdmsetup.glade.h:103
 msgid "dummy"
 msgstr "prázdne"
 
-#: ../gui/gdmsetup.glade.h:105
+#: ../gui/gdmsetup.glade.h:104
 msgid "seconds"
 msgstr "sekúnd"
 
@@ -3718,29 +3714,29 @@ msgstr "sekúnd"
 msgid "Too many users to list here..."
 msgstr "Príliš dlhý zoznam používateľov..."
 
-#: ../gui/greeter/greeter.c:603
+#: ../gui/greeter/greeter.c:604
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version. You have "
-"probably just upgraded gdm. Please restart the gdm daemon or the computer."
+"probably just upgraded GDM. Please restart the GDM daemon or the computer."
 msgstr ""
 "Verzia privítania (%s) nezodpovedá verzii démona. Asi ste práve "
-"aktualizovali gdm. Prosím, reštartujte démona gdm alebo počítač."
+"aktualizovali GDM. Prosím, reštartujte démona GDM alebo počítač."
 
-#: ../gui/greeter/greeter.c:618 ../gui/greeter/greeter.c:669
+#: ../gui/greeter/greeter.c:619 ../gui/greeter/greeter.c:670
 msgid "Reboot"
 msgstr "Reštartovať"
 
-#: ../gui/greeter/greeter.c:1078
+#: ../gui/greeter/greeter.c:1079
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Pri načítavaní témy %s nastala chyba"
 
-#: ../gui/greeter/greeter.c:1130
+#: ../gui/greeter/greeter.c:1131
 msgid "The greeter theme is corrupt"
 msgstr "Téma grafického prihlásenia je poškodená"
 
-#: ../gui/greeter/greeter.c:1131
+#: ../gui/greeter/greeter.c:1132
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
@@ -3748,7 +3744,7 @@ msgstr ""
 "Téma pre okno prihlásenia neobsahuje definíciu prvku pre zadanie používateľa/"
 "hesla."
 
-#: ../gui/greeter/greeter.c:1164
+#: ../gui/greeter/greeter.c:1165
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
@@ -3756,13 +3752,22 @@ msgstr ""
 "Pri načítaní témy nastala chyba a nepodarilo sa načítať štandardnú tému. "
 "Preto sa pokúsim spustiť štandardné privítanie."
 
-#: ../gui/greeter/greeter.c:1186
+#: ../gui/greeter/greeter.c:1187
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
-"have to login another way and fix the installation of gdm"
+"have to login another way and fix the installation of GDM"
 msgstr ""
 "Nepodarilo sa spustiť privítanie GTK+. Tento displej sa ukončí a môžete sa "
-"pokúsiť o prihlásenie iným spôsobom a opraviť inštaláciu gdm."
+"pokúsiť o prihlásenie iným spôsobom a opraviť inštaláciu GDM."
+
+#: ../gui/greeter/greeter.c:1236
+msgid ""
+"Your session directory is missing or empty!  There are two available "
+"sessions you can use, but you should log in and correct the gdm "
+"configuration."
+msgstr ""
+"Váš priečinok sedenia buď chýba alebo je prázdny! K dispozícii sú tieto dve "
+"sedenia, ale mali by ste sa prihlásiť a problém konfigurácie vyriešiť."
 
 #: ../gui/greeter/greeter_action_language.c:66
 msgid "Last Language"
@@ -3959,7 +3964,7 @@ msgstr "GNOME Variácia na kruhy"
 msgid "Happy GNOME"
 msgstr "Šťastné GNOME"
 
-#: ../gui/modules/dwellmouselistener.c:654
+#: ../gui/modules/dwellmouselistener.c:655
 #: ../gui/modules/keymouselistener.c:926
 #, c-format
 msgid ""
@@ -3974,55 +3979,55 @@ msgstr ""
 msgid "Cannot open gestures file: %s"
 msgstr "Nepodarilo sa otvoriť súbor gest: %s"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:39
+#: ../utils/gdm-dmx-reconnect-proxy.c:38
 msgid "DMX display to migrate to"
 msgstr "DMX displej, na ktorý prejsť"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:40 ../utils/gdm-dmx-reconnect-proxy.c:45
+#: ../utils/gdm-dmx-reconnect-proxy.c:39 ../utils/gdm-dmx-reconnect-proxy.c:44
 msgid "DISPLAY"
 msgstr "DISPLEJ"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:44
+#: ../utils/gdm-dmx-reconnect-proxy.c:43
 msgid "Backend display name"
 msgstr "Názov displeja pozadia"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:49
+#: ../utils/gdm-dmx-reconnect-proxy.c:48
 msgid "Xauthority file for destination display"
 msgstr "Súbor Xauthority pre cieľový displej"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:50 ../utils/gdm-dmx-reconnect-proxy.c:55
+#: ../utils/gdm-dmx-reconnect-proxy.c:49 ../utils/gdm-dmx-reconnect-proxy.c:54
 msgid "AUTHFILE"
 msgstr "AUTHFILE"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:54
+#: ../utils/gdm-dmx-reconnect-proxy.c:53
 msgid "Xauthority file for backend display"
 msgstr "Súbor Xauthority pre displej pozadia"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:72
+#: ../utils/gdm-dmx-reconnect-proxy.c:71
 #, c-format
 msgid "Failed to open display \"%s\"\n"
 msgstr "Zlyhalo otvorenie displeja \"%s\"\n"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:76
+#: ../utils/gdm-dmx-reconnect-proxy.c:75
 #, c-format
 msgid "DMX extension not present on \"%s\"\n"
 msgstr "Rozšírenie DMX nie je prítomné na \"%s\"\n"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:99
+#: ../utils/gdm-dmx-reconnect-proxy.c:98
 msgid "- migrate a backend display from one DMX display to another"
 msgstr "- prejsť s displejom pozadia z jedného DMX displeja na iný"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:105
+#: ../utils/gdm-dmx-reconnect-proxy.c:104
 #, c-format
 msgid "You must specify a destination DMX display using %s\n"
 msgstr "Musíte zadať cieľový DMX displej pomocou %s\n"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:110
+#: ../utils/gdm-dmx-reconnect-proxy.c:109
 #, c-format
 msgid "You must specify a backend display by using %s\n"
 msgstr "Musíte zadať displej pozadia pomocou %s\n"
 
-#: ../utils/gdm-dmx-reconnect-proxy.c:125
+#: ../utils/gdm-dmx-reconnect-proxy.c:124
 #, c-format
 msgid "DMXAddScreen \"%s\" failed on \"%s\"\n"
 msgstr "DMXAddScreen \"%s\" zlyhal na \"%s\"\n"
