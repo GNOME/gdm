@@ -1994,8 +1994,8 @@ main (int argc, char *argv[])
 
 	    msg = g_strdup_printf (_("The chooser version (%s) does not match the daemon "
 	                             "version (%s).  "
-	                             "You have probably just upgraded gdm.  "
-	                             "Please restart the gdm daemon or the computer."),
+	                             "You have probably just upgraded GDM.  "
+	                             "Please restart the GDM daemon or the computer."),
 	                           VERSION, gdm_version);
 
 	    dialog = ve_hig_dialog_new (NULL /* parent */,

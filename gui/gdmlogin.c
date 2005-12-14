@@ -3348,8 +3348,8 @@ main (int argc, char *argv[])
 	    
 	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
 				     "version.  "
-				     "You have probably just upgraded gdm.  "
-				     "Please restart the gdm daemon or the computer."),
+				     "You have probably just upgraded GDM.  "
+				     "Please restart the GDM daemon or the computer."),
 				   VERSION);
 
 	    dialog = ve_hig_dialog_new (NULL /* parent */,
@@ -3382,8 +3382,8 @@ main (int argc, char *argv[])
 	    
 	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
 	                             "version.  "
-	                             "You have probably just upgraded gdm.  "
-	                             "Please restart the gdm daemon or the computer."),
+	                             "You have probably just upgraded GDM.  "
+	                             "Please restart the GDM daemon or the computer."),
 	                           VERSION);
 
 	    dialog = ve_hig_dialog_new (NULL /* parent */,
@@ -3430,8 +3430,8 @@ main (int argc, char *argv[])
 	    
 	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
 	                             "version (%s).  "
-	                             "You have probably just upgraded gdm.  "
-	                             "Please restart the gdm daemon or the computer."),
+	                             "You have probably just upgraded GDM.  "
+	                             "Please restart the GDM daemon or the computer."),
 	                           VERSION, gdm_version);
 
 	    dialog = ve_hig_dialog_new (NULL /* parent */,
@@ -3443,7 +3443,7 @@ main (int argc, char *argv[])
 	    g_free (msg);
 
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				    _("Restart gdm"),
+				    _("Restart GDM"),
 				    RESPONSE_RESTART,
 				    _("Restart computer"),
 				    RESPONSE_REBOOT,
@@ -3645,7 +3645,7 @@ main (int argc, char *argv[])
 					_("Session directory is missing"),
 					_("Your session directory is missing or empty!  "
 					  "There are two available sessions you can use, but "
-					  "you should log in and correct the gdm configuration."));
+					  "you should log in and correct the GDM configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 

@@ -568,8 +568,8 @@ verify_gdm_version (void)
     
       msg =  g_strdup_printf (_("The greeter version (%s) does not match the daemon "
                                 "version.  "
-                                "You have probably just upgraded gdm.  "
-                                "Please restart the gdm daemon or the computer."),
+                                "You have probably just upgraded GDM.  "
+                                "Please restart the GDM daemon or the computer."),
                               VERSION);
     
       dialog = ve_hig_dialog_new (NULL /* parent */,
@@ -603,8 +603,8 @@ verify_gdm_version (void)
     
       msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
                                "version. "
-                               "You have probably just upgraded gdm. "
-                               "Please restart the gdm daemon or the computer."),
+                               "You have probably just upgraded GDM. "
+                               "Please restart the GDM daemon or the computer."),
                              VERSION);
     
       dialog = ve_hig_dialog_new (NULL /* parent */,
@@ -652,8 +652,8 @@ verify_gdm_version (void)
     
       msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
                                "version (%s).  "
-                               "You have probably just upgraded gdm.  "
-                               "Please restart the gdm daemon or the computer."),
+                               "You have probably just upgraded GDM.  "
+                               "Please restart the GDM daemon or the computer."),
                              VERSION, gdm_version);
     
       dialog = ve_hig_dialog_new (NULL /* parent */,
@@ -1187,7 +1187,7 @@ main (int argc, char *argv[])
 				  _("The GTK+ greeter could not be started.  "
 				    "This display will abort and you may "
 				    "have to login another way and fix the "
-				    "installation of gdm"),
+				    "installation of GDM"),
 				  "");
     
       gtk_widget_show_all (dialog);

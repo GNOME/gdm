@@ -1518,9 +1518,9 @@ gdm_verify_check (void)
 
         if (gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 			gdm_text_message_dialog
-				(C_(N_("Can't find PAM configuration for gdm.")));
+				(C_(N_("Can't find PAM configuration for GDM.")));
 		gdm_fail ("gdm_verify_check: %s",
-			  _("Can't find PAM configuration for gdm."));
+			  _("Can't find PAM configuration for GDM."));
 	}
 
 	if (ph != NULL)

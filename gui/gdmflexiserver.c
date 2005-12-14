@@ -685,7 +685,7 @@ calc_pi (void)
 }
 
 struct poptOption options [] = {
-	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to gdm"), N_("COMMAND") },
+	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to GDM"), N_("COMMAND") },
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
 	{ "no-lock", 'l', POPT_ARG_NONE, &no_lock, 0, N_("Do not lock current screen"), NULL },
 	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },

@@ -1294,7 +1294,7 @@ gdm_slave_run (GdmDisplay *display)
 				   "Please contact your system administrator\n"
 				   "or check your syslog to diagnose.\n"
 				   "In the meantime this display will be\n"
-				   "disabled.  Please restart gdm when\n"
+				   "disabled.  Please restart GDM when\n"
 				   "the problem is corrected.")));
 		    gdm_slave_quick_exit (DISPLAY_ABORT);
 	    }

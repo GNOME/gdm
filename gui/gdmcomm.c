@@ -458,10 +458,10 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 {
 	/* These need a bit more refinement */
 	if (ret == NULL) {
-		return _("Cannot communicate with gdm. Perhaps "
+		return _("Cannot communicate with GDM. Perhaps "
 			 "you have an old version running.");
 	} else if (strncmp (ret, "ERROR 0 ", strlen ("ERROR 0 ")) == 0) {
-		return _("Cannot communicate with gdm. Perhaps "
+		return _("Cannot communicate with GDM. Perhaps "
 			 "you have an old version running.");
 	} else if (strncmp (ret, "ERROR 1 ", strlen ("ERROR 1 ")) == 0) {
 		return _("The allowed limit of flexible X servers reached.");
@@ -479,7 +479,7 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 	} else if (strncmp (ret, "ERROR 6 ", strlen ("ERROR 6 ")) == 0) {
 		if (use_xnest)
 			return _("The nested X server (Xnest) is not "
-				 "available, or gdm is badly configured.\n"
+				 "available, or GDM is badly configured.\n"
 				 "Please install the Xnest package in "
 				 "order to use the nested login.");
 		else
@@ -499,7 +499,7 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 			 "for this operation.  Perhaps your .Xauthority "
 			 "file is not set up correctly.");
 	} else if (strncmp (ret, "ERROR 200 ", strlen ("ERROR 200 ")) == 0) {
-		return _("Too many messages were sent to gdm and it hung up"
+		return _("Too many messages were sent to GDM and it hung up "
 			 "on us.");
 	} else {
 		return _("Unknown error occurred.");

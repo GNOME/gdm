@@ -1427,7 +1427,7 @@ main (int argc, char *argv[])
     /* XDM compliant error message */
     if G_UNLIKELY (getuid () != 0) {
 	    /* make sure the pid file doesn't get wiped */
-	    gdm_fail (_("Only root wants to run gdm\n"));
+	    gdm_fail (_("Only root wants to run GDM\n"));
     }
 
     main_loop = g_main_loop_new (NULL, FALSE);
@@ -1474,7 +1474,7 @@ main (int argc, char *argv[])
 		gdm_set_value_string (GDM_KEY_PID_FILE, NULL);
 		pidfile = NULL;
 		VE_IGNORE_EINTR (fclose (pf));
-		gdm_fail (_("gdm already running. Aborting!"));
+		gdm_fail (_("GDM already running. Aborting!"));
 	}
 
 	if (pf != NULL)

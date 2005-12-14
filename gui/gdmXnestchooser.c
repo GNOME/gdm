@@ -177,7 +177,7 @@ static const struct poptOption options[] = {
 	{ "direct", 'd', POPT_ARG_NONE, &do_direct, 0, N_("Do direct query instead of indirect (chooser)"), NULL },
 	{ "broadcast", 'B', POPT_ARG_NONE, &do_broadcast, 0, N_("Run broadcast instead of indirect (chooser)"), NULL },
 	{ "background", 'b', POPT_ARG_NONE, &background, 0, N_("Run in background"), NULL },
-	{ "no-gdm-check", '\0', POPT_ARG_NONE, &no_gdm_check, 0, N_("Don't check for running gdm"), NULL },
+	{ "no-gdm-check", '\0', POPT_ARG_NONE, &no_gdm_check, 0, N_("Don't check for running GDM"), NULL },
 	{ NULL } 
 };
 
