@@ -58,8 +58,6 @@
 
 #include "viciousui.h"
 
-static gchar *config_file;
-
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
 enum {
@@ -1940,12 +1938,6 @@ main (int argc, char *argv[])
 
     glade_init ();
 
-    config_file = gdm_common_get_config_file ();
-    if (config_file == NULL) {
-	    g_print (_("Could not access GDM configuration file.\n"));
-	    exit (EXIT_FAILURE);
-    }
-        
     /* if broadcasting, then append BROADCAST to hosts */
     if (gdm_config_get_bool (GDM_KEY_BROADCAST)) {
 	    gchar *hosts = gdm_config_get_string (GDM_KEY_HOSTS);

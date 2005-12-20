@@ -37,8 +37,8 @@ gboolean       gdm_config_to_string     (gchar *key,
 gboolean       gdm_update_config        (gchar *key);
 void           gdm_config_init          (void);
 void           gdm_config_parse         (void);
-GdmXserver*    gdm_find_x_server        (const gchar *id);
-gchar*         gdm_get_x_servers        (void);
+GdmXserver*    gdm_find_xserver         (const gchar *id);
+gchar*         gdm_get_xservers         (void);
 int            gdm_compare_displays     (gconstpointer a,
                                          gconstpointer b);
 uid_t          gdm_get_gdmuid           (void);

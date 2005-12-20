@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.13.0.3"> 
-    <!ENTITY date "12/12/2005"> 
+    <!ENTITY version "2.13.0.4"> 
+    <!ENTITY date "12/21/2005"> 
 ]>
 
 <article id="index" lang="en">
@@ -154,13 +154,19 @@
       </para>
       
       <para> 
-        Upon startup the <command>gdm</command> daemon parses its config file
-        <command>gdm.conf</command>.  For each of the local displays
-        <command>gdm</command> forks an Xserver and a slave process.  The
-        main <command>gdm</command> process will then listen to XDMCP
-        requests, if so configured, from remote displays and monitor the local
-        display sessions.  The main daemon process will also allow starting of
-        on new local Xservers on demand using the
+        Upon startup the <command>gdm</command> daemon parses the 
+        <filename>gdm.conf</filename> and <filename>gdm.conf-custom</filename>
+        configuration files.  Configuration choices specified in 
+        <filename>gdm.conf-custom</filename> override values specified in
+        the main <filename>gdm.conf</filename> file.
+      </para>
+
+      <para>
+        For each of the local displays <command>gdm</command> forks an Xserver
+        and a slave process.  The main <command>gdm</command> process will
+        then listen to XDMCP requests, if so configured, from remote displays
+        and monitor the local display sessions.  The main daemon process will
+        also allow starting of on new local Xservers on demand using the
         <command>gdmflexiserver</command> command.
       </para>
       
@@ -498,13 +504,13 @@
         load face images from remote home directories.  Furthermore, GDM will
         give up loading face images after 5 seconds of activity and will
         only display the users whose pictures it has gotten so far.  The
-        <filename>gdm.conf</filename> <filename>Include</filename> option
-        can be used to specify a set of users who should appear on the
-        face browser.  As long as the users to include is of a reasonable
-        size, there should not be a problem with GDM being unable to access
-        the face images.  To work around these problems, it is recommended
-        to place face images in the directory specified by the
-        <filename>GlobalFaceDir</filename> configuration option.
+        <filename>Include</filename> configuration option can be used to
+        specify a set of users who should appear on the face browser.  As
+        long as the users to include is of a reasonable size, there should
+        not be a problem with GDM being unable to access the face images.
+        To work around these problems, it is recommended to place face images
+        in the directory specified by the <filename>GlobalFaceDir</filename>
+        configuration option.
       </para>
 
       <para>
@@ -749,46 +755,49 @@
 
     <para> 
       This section will cover the configuration of GDM and the format of the
-      configuration file.  However you can use the
-      <command>gdmsetup</command> command to configure GDM from a graphical
-      environment.  The configuration application does not let you configure every
-      aspect of GDM, so if the configuration application does not cover your needs
-      you may find information in this section.
+      GDM configuration files.  You can use the <command>gdmsetup</command>
+      command to configure GDM, but the configuration application does not
+      let you configure every aspect of GDM.  The information in this
+      section explains how to further configure GDM.
     </para>
 
     <para>
       The configuration files (especially the <filename>gdm.conf</filename>
-      file) contain lots of useful comments and examples, so also read this
-      for more information about changing your setup.
+      and <filename>gdm.conf-custom</filename> files) contains useful
+      comments and examples, so read this for more information about
+      changing your setup.
     </para>
 
     <para>
       Some keys in the configuration file as shipped are commented out while
       others are set.  This is done so that defaults can be easily changed in
-      the future for some keys.  If you wish to set such a key you must first
-      remove the leading hash mark that marks it as a comment.
+      the future for some keys.  GDM considers lines that start with the "#"
+      character a comment, and these lines will be ignored by GDM.
     </para>
 
     <para> 
-      The <filename>gdm.conf</filename> file contains the main configuration
-      choices for GDM.
+      The <filename>gdm.conf</filename> file contains the default
+      configuration choices for GDM, and should not be modified by the
+      user.  The <filename>gdm.conf-custom</filename> file is where users
+      may specify their custom configuration choices.  Configuration options
+      specified in the <filename>gdm.conf-custom</filename> file override
+      the values in the main <filename>gdm.conf</filename> file.   Running 
+      the <command>gdmsetup</command> command will cause the
+      <filename>gdm.conf-custom</filename> to be modified with the
+      user's configuration choices and will cause any running GDM GUI 
+      programs to automatically update.  Previous to version 2.13.0.4
+      GDM only supported the <filename>gdm.conf</filename> file, so if
+      using an older version of GDM just edit that file directly.
     </para>
 
     <para>
-      GDM may be configured to support both system-wide configuration if
+      GDM may be configured to support system-wide configuration if
       built with the <command>--with-configdir</command> option.  This
       allows the gdm.conf file to be installed to a directory that can
-      be mounted across multiple-systems.  Regardless of whether this
-      option is used, GDM will first look for the gdm.conf file in the
-      <filename>&lt;etc&gt;/gdm</filename> directory.  This way 
-      machine-specific configuration always overrides the system-wide
-      defaults.  The gdm --config option may also be used to specify the 
-      configuration file location.  All GDM utilities (such as
-      <command>gdmchooser</command>, <command>gdmsetup</command>, etc.)
-      query the GDM daemon process and will use the same configuration
-      file as being used by the daemon.  The GDM2 daemon must be restarted
-      to change the configuration file being used.  GDM 2.8.0.1 and earlier
-      only supported machine-specific configuration.
+      be mounted across multiple-systems.  The GDM --config option may
+      also be used to specify the configuration file location.  The GDM2
+      daemon must be restarted to change the configuration file being
+      used.
     </para>
 
     <para> 
@@ -837,7 +846,13 @@ XKeepsCrashing
 
     <para> 
       <filename>Xsession</filename> is a script which sets up a user session
-      and then executes the users choice of session.
+      and then executes the users choice of session.  Note that the session
+      script is typically started via the <filename>desktop</filename>
+      file associated with the session the user has picked.  Some 
+      sessions may start the user's session via a different mechanism than
+      the <filename>Xsession</filename> script, so please check the
+      appropriate <filename>desktop</filename> before assuming a session
+      startup issue is being caused by this file.
     </para>
 
     <para> 
@@ -846,12 +861,6 @@ XKeepsCrashing
       script will work with most Linux distributions and can run the X
       configuration application provided the person on the console knows the root
       password.
-    </para>
-
-    <para>
-      <filename>gdm.conf</filename> configuration settings are used by most
-      GDM applications since a number of configuration settings are used by
-      each program.
     </para>
 
     <para>
@@ -924,8 +933,8 @@ XKeepsCrashing
       <para> 
         It is up to the sysadmin to decide whether clients started by the Init
         script should be killed before starting the user session. This is
-        controlled with the <filename>KillInitClients</filename> option in
-        <filename>gdm.conf</filename>.
+        controlled with the <filename>KillInitClients</filename> configuration
+        option.
       </para>
 
       <para>
@@ -1027,36 +1036,60 @@ XKeepsCrashing
     </sect2>
 
     <sect2 id="configfile">
-      <title>The Configuration File - <filename>gdm.conf</filename></title>
+      <title>The Configuration File - <filename>gdm.conf</filename> and
+             <filename>gdm.conf-custom</filename></title>
       
       <para>
-        The daemon and the accompanying utilities use a common
-        configuration file: <filename>gdm.conf</filename>.  GDM may be
-        configured to support both system-wide configuration if
+        GDM uses two configuration files: <filename>gdm.conf</filename>
+        and <filename>gdm.conf-custom</filename>.  The
+        <filename>gdm.conf</filename> file contains the default
+        configuration choices for GDM, and should not be modified by the
+        user.  The <filename>gdm.conf-custom</filename> file is where
+        users may specify their custom configuration choices.  
+        Configuration options specified in the
+        <filename>gdm.conf-custom</filename> file override the values in
+        the main <filename>gdm.conf</filename> file.  If a configuration
+        option is not defined in either file, GDM will default to the
+        value described in the comments in the
+        <filename>gdm.conf</filename> file.
+      </para>
+
+      <para>
+        Running the <command>gdmsetup</command> command will cause the 
+        <filename>gdm.conf-custom</filename> to be modified with the
+        user's configuration choices.
+      </para>
+
+      <para>
+        Previous to GDM 2.13.0.4 only the <filename>gdm.conf</filename>
+        existed.  If upgrading to the new version of GDM, install will
+        check to see if your <filename>gdm.conf</filename> file is
+        different than your <filename>factory-gdm.conf</filename> file.
+        If so, your <filename>gdm.conf</filename> file will be 
+        automatically copied to <filename>gdm.conf-custom</filename>
+        to preserve your configuration changes.
+      </para>
+        
+      <para>
+        GDM may be configured to support system-wide configuration if
         built with the <command>--with-configdir</command> option.  This
-        allows the gdm.conf file to be installed to a directory that can
-        be mounted across multiple-systems.  Regardless of whether this
-        option is used, GDM will first look for the gdm.conf file in the
-        <filename>&lt;etc&gt;/gdm</filename> directory.  This way 
-        machine-specific configuration always overrides the system-wide
-        defaults.  The gdm --config option may instead be used to specify
-        a configuration file installed to another location.  All GDM
-        utilities (such as All GDM utilities (such as
-        <command>gdmchooser</command>, <command>gdmsetup</command>, etc.)
-        query the GDM daemon process and will use the same configuration
-        file as being used by the daemon.  The GDM2 daemon must be
-        restarted to change the configuration file being used.  GDM 2.8.0.1
-        and earlier only supported machine-specific configuration.
+        allows the <filename>gdm.conf</filename> file to be installed to
+        a directory that can be mounted across multiple-systems.  The
+        GDM --config option may instead be used to specify a configuration
+        file installed to another location.  The GDM2 daemon must be
+        restarted to change the configuration file being used.
       </para>
 
       <para>
-        The configuration file is divided into sections each containing
+        Both configuration files are divided into sections each containing
         variables that define the behavior for a specific part of the GDM
-        suite.  The file is fairly well commented as well.
+        suite.  Refer to the comments in the <filename>gdm.conf</filename>
+        file for additional information about each configuration setting.
       </para>
 
       <para>
-        <filename>gdm.conf</filename> follows the standard
+        The <filename>gdm.conf</filename> and
+        <filename>gdm.conf-custom</filename> files follow the standard
         <filename>.ini</filename> style configuration file syntax.  Keywords
         in brackets define sections, strings before an equal sign (=) are
         variables and the data after equal sign represents their value.  Empty
@@ -1260,7 +1293,8 @@ XKeepsCrashing
                 This value will be overridden with the value from
                 /etc/default/login if it contains "ROOT=&lt;pathname&gt;".  If
                 the /etc/default/login file exists, but contains no value for
-                ROOT, the gdm.conf value will be used.
+                ROOT, the value as defined in the GDM configuration will be
+                be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1564,7 +1598,8 @@ XKeepsCrashing
                 executed by GDM.  This value will be overridden with the value
                 from /etc/default/login if it contains "SUROOT=&lt;pathname&gt;".
                 If the /etc/default/login file exists, but contains no value
-                for SUROOT, the gdm.conf value will be used.
+                for SUROOT, the value as defined in the GDM configuration will
+                be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1944,7 +1979,7 @@ XKeepsCrashing
                 overridden with the value from /etc/default/login if it
                 contains "PASSREQ=[YES|NO]".  If the /etc/default/login
                 file exists, but contains no value for PASSREQ, the
-                gdm.conf value will be used.
+                value as defined in the GDM configuration will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -2756,10 +2791,11 @@ XKeepsCrashing
             <listitem>
               <synopsis>ChooserButtonLogo=&lt;share&gt;/pixmaps/gnome-logo-large.png</synopsis>
               <para>
-                Image file to display in the file chooser button in gdmsetup.
-                This key is modified by gdmsetup and should not be manually
-                modified by the user.
-                This only affects the Login Window Preferences (gdmsetup).
+                Image file to display in the file chooser button in
+                <command>gdmsetup</command>.  This key is modified by
+                <command>gdmsetup</command> and should not be manually
+                modified by the user.  This only affects the Login Window
+                Preferences (<command>gdmsetup</command>).
               </para>
             </listitem>
           </varlistentry>
@@ -3323,9 +3359,16 @@ XKeepsCrashing
         <para>
           Servers are defined by sections named <filename>server-</filename>
           followed by the identifier of this server.  This should be a simple
-          ASCII string with no spaces.  If you use the GUI configurator, it
-          will use random words for these.  These will not be user visible,
-          they are just needed to uniquely identify the server.
+          ASCII string with no spaces.  The GUI configuration program allows
+          users to edit the servers defined in the GDM configuration files
+          but currently does not allow adding or deleting entries.  Like
+          normal configuration options, <filename>server-</filename>
+          sections in the <filename>gdm.conf-custom</filename> file 
+          override values in the <filename>gdm.conf</filename> file.  In
+          other words, if a <filename>server-Standard</filename> section is
+          defined in <filename>gdm.conf-custom</filename>, then that will
+          be used and the section in the <filename>gdm.conf</filename>
+          file will be ignored.
         </para>
         
         <variablelist>
@@ -3374,10 +3417,10 @@ XKeepsCrashing
                 useful to run an X terminal using GDM.  When this is done you
                 should normally also add <filename>-terminate</filename> to the
                 command line of the server to make the server terminate after
-                each session.  otherwise the control of the slave will never
-                come back to GDM and for example soft restarts won't work,
-                since GDM assumes there is a login in progress for the entire
-                time this server is active.
+                each session.  Otherwise the control of the slave will never
+                come back to GDM and, for example, soft restarts won't work.
+                This is because GDM assumes there is a login in progress for
+                the entire time this server is active.
               </para>
             </listitem>
           </varlistentry>
@@ -3393,23 +3436,35 @@ XKeepsCrashing
               </para>
             </listitem>
           </varlistentry>
-          
         </variablelist>
 
       </sect3>
 
       <sect3 id="localservers">
 
-        <title>Local Static X Server Configuration</title>
+        <title>Local Static X Display Configuration</title>
 
         <para>
-          The static X servers are servers that are always running, when the
-          server ever dies, it is restarted.  You can have as many local static
-          servers as you wish.  Each key in the <filename>[servers]</filename>
-          section corresponds to the display number of the server to run.  For
-          example normally there is only one key, which is the key
-          <filename>0</filename>, which corresponds to the display
-          <filename>:0</filename>.
+          The static display configuration specifies what displays should be
+          always managed by GDM.  GDM will restart the Xserver on the display
+          if it dies, for example.  There may be as many static displays that
+          are managed as you wish, although typically each display is 
+          associated with a real display.  For example, if a machine has two
+          displays (say display ":0" and display ":1"), then this section can
+          be used to specify that a separate login screen be managed for each
+          screen.  Each key in the <filename>[servers]</filename> section
+          corresponds to the display number to be managed.  Normally there is
+          only one key, which is the key <filename>0<filename>, which 
+          corresponds to the display <filename>:0</filename>.
+        </para>
+
+        <para>
+          The GUI configuration program allows users to edit the static
+          display configuration defined in the GDM configuration files 
+          and allows the user to add or delete entries.  Like normal
+          configuration options, the <filename>[servers]</filename>
+          section in the <filename>gdm.conf-custom</filename> file 
+          overrides values in the <filename>gdm.conf</filename> file.
         </para>
 
         <variablelist>
@@ -3429,13 +3484,12 @@ XKeepsCrashing
                 The command can either be a path to an X executable, or a name
                 of one of the server definitions.  This can be followed by some
                 arguments that should be passed to the X server when executed.
-              </para>
-
-              <para>
-                The gdm daemon doesn't enforce the numbers to be in
-                order or for them to be "packed".  However when you use
-                the GUI configurator, the servers will always start from
-                0 and go up by 1.  That is, leaving no holes.
+                The gdm daemon doesn't enforce the numbers to be in order or
+                for them to be "packed".  They keyword "inactive" can be used
+                instead of a command to specify that the display should be
+                not managed.  This can be used in the
+                <filename>gdm.conf-custom</filename> to turn off a display
+                that is defined in the <filename>gdm.conf</filename> file.
               </para>
               
               <para>
@@ -3450,9 +3504,8 @@ XKeepsCrashing
                 virtual consoles to run the X server.  In this case,
                 (if running XFree86) add "vt7" to the command line for example
                 to run on virtual console 7.  However on Linux and
-                FreeBSD this is normally
-                done automatically if <filename>VTAllocation</filename> key
-                is set.
+                FreeBSD this is normally done automatically if the
+                <filename>VTAllocation</filename> key is set.
               </para>
 
               <para>
@@ -3475,17 +3528,34 @@ XKeepsCrashing
 
       <para>
         There are some per user configuration settings that control how GDM
-        behaves.  Firstly there is the <filename>~/.dmrc</filename> file.  In
+        behaves.  GDM is picky about the file ownership and permissions of 
+        the user files it will access, and will ignore files if they are not
+        owned by the user or files that have group/world write permission.
+        It will also ignore the user if the user's $HOME directory is not
+        owned by the user or if the user's $HOME directory has group/world
+        write permission.  files must also be smaller than the
+        <filename>UserMaxFile</filename> value as defined in the GDM
+        configuration.  If it seems that GDM is not properly accessing 
+        user configuration settings, the problem is most likely 
+        caused by one of these checks failing.
+      </para>
+
+      <para>
+        First there is the <filename>~/.dmrc</filename> file.  In
         theory this file should be shared between GDM and KDM, so users only
         have to configure things once.  This is a standard
         <filename>.ini</filename> style configuration file.  It has one section
-        called <filename>[Desktop]</filename> and can have two keys,
-        <filename>Session</filename>, which is the basename of the session
+        called <filename>[Desktop]</filename> which has two keys:
+        <filename>Session</filename> and <filename>Language</filename>.
+      </para>
+
+      <para>
+        The <filename>Session</filename> key specifies the basename of the session
         <filename>.desktop</filename> file that the user wishes to normally use
-        (but without the <filename>.desktop</filename> extension)
-        and a <filename>Language</filename> key that is the language that the
-        user wishes to use.  If either of these keys is missing, the system
-        default is used.  The file would normally look as follows:
+        (without the <filename>.desktop</filename> extension, in other words).
+        The <filename>Language</filename> key specifies the language that the
+        user wishes to use by default.  If either of these keys is missing, the
+        system default is used.  The file would normally look as follows:
       </para>
 
       <screen>
@@ -3495,19 +3565,32 @@ Language=cs_CZ.UTF-8
       </screen>
 
       <para>
-        The user can also configure a face image for the face browser.  This is
-        done by copying an image into a file called
-        <filename>~/.face</filename>.  This should be a standard image that
-        GTK+ can read, such as PNG.
+        Normally GDM will write this file when the user logs in for the first
+        time, and rewrite it if the user chooses to change their default values
+        on a subsequent login. 
+      </para>
+
+      <para>
+        If the GDM Face Browser is turned, then the file
+        <filename>$HOME/.face</filename> is accessed.  This file should be a 
+        standard image that GTK+ can read, such as PNG or JPEG.  It also must
+        be smaller than the <filename>MaxIconWidth</filename> and 
+        <filename>MaxIconHeight</filename> values defined in the GDM
+        configuration or it will be ignored.  Users can run the
+        <command>gdmphotosetup</command> program to specify a face image
+        and it will copy the file to the $HOME/.face location and scale it
+        so its longest dimension is not larger than the 
+        <filename>MaxIconWidth</filename> or <filename>MaxIconHeight</filename>
+        values.  <command>gdmphotosetup</command> takes care to not change
+        the aspect ratio of the image.
       </para>
 
       <para>
         Face images can also be placed in the global face directory, which is
-        normally <filename>&lt;share&gt;/pixmaps/faces/</filename>
-        (though this can be configured with the
-        <filename>GlobalFaceDir</filename> configuration option) and the
-        filename should be the name of the user, optionally with a
-        <filename>.png</filename> appended.
+        specified by the <filename>GlobalFaceDir</filename> configuration 
+        option ( normally <filename>&lt;share&gt;/pixmaps/faces/</filename>)
+        and the filename should be the name of the user, optionally with a
+        <filename>.png</filename>, <filename>.jpg</filename>, etc. appended.
       </para>
     </sect2>
     
@@ -3625,9 +3708,9 @@ CLOSE
       <sect3 id="queryversion">
       <title>VERSION</title>
       <screen>
-VERSION: Query version
+VERSION: Query GDM version
 Supported since: 2.2.4.0
-Arguments:  None
+Arguments: None
 Answers:
   GDM &lt;gdm version&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3649,8 +3732,13 @@ AUTH_LOCAL: Setup this connection as authenticated for
 Note:       The AUTH LOCAL command requires the
             --authenticate option, although only
             FLEXI XSERVER uses this currently.
+Note:       Since 2.6.0.6 you can also use a global
+            &lt;ServAuthDir&gt;/.cookie, which works for all
+            authentication except for SET_LOGOUT_ACTION and
+            QUERY_LOGOUT_ACTION and SET_SAFE_LOGOUT_ACTION
+            which require a logged in display.
 Supported since: 2.2.4.0
-Arguments:  &lt;xauth cookie&gt;
+Arguments: &lt;xauth cookie&gt;
   &lt;xauth cookie&gt; is in hex form with no 0x prefix
 Answers:
   OK
@@ -3665,10 +3753,10 @@ Answers:
       <sect3 id="flexixserver">
       <title>FLEXI_XSERVER</title>
       <screen>
-FLEXI_XSERVER: Start a new X flexible server
-Only supported on connection that passed AUTH_LOCAL
+FLEXI_XSERVER: Start a new X flexible server.  Only supported on
+               connection that passed AUTH_LOCAL
 Supported since: 2.2.4.0
-Arguments:  &lt;xserver type&gt;
+Arguments: &lt;xserver type&gt;
   If no arguments, starts the standard x server
 Answers:
   OK &lt;display&gt;
@@ -3688,8 +3776,8 @@ Answers:
       <sect3 id="flexixnest">
       <title>FLEXI_XNEST</title>
       <screen>
-FLEXI_XNEXT: Start a new flexible Xnest server
-Note:        Supported an older version from 2.2.4.0, later
+FLEXI_XNEXT: Start a new flexible Xnest server.
+Note:        Supported on older version from 2.2.4.0, later
              2.2.4.2, but since 2.3.90.4 you must supply 4
              arguments or ERROR 100 will be returned.  This
              will start Xnest using the XAUTHORITY file
@@ -3706,8 +3794,8 @@ Note:        The cookie should be the MIT-MAGIC-COOKIE-1,
              use you should generate one first.  The cookie
              should be in hex form.
 Supported since: 2.3.90.4
-Arguments:  &lt;display to run on&gt; &lt;uid of requesting user&gt;
-            &lt;xauth cookie for the display&gt; &lt;xauth file&gt;
+Arguments: &lt;display to run on&gt; &lt;uid of requesting user&gt;
+           &lt;xauth cookie for the display&gt; &lt;xauth file&gt;
 Answers:
   OK &lt;display&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3727,12 +3815,13 @@ Answers:
       <sect3 id="adddynamic">
       <title>ADD_DYNAMIC_DISPLAY</title>
       <screen>
-ADD_DYNAMIC_DISPLAY: Create a new server definition that will run on the
-                     specified display leaving, it in DISPLAY_CONFIG state.
+ADD_DYNAMIC_DISPLAY: Create a new server definition that will
+                     run on the specified display leaving, it
+                     in DISPLAY_CONFIG state.
 Supported since: 2.8.0.0
-Arguments:  &lt;display to run on&gt;=&lt;server&gt;
-  Where &lt;server&gt; is either a configuration named in gdm.conf or
-  a literal command name.
+Arguments: &lt;display to run on&gt;=&lt;server&gt;
+  Where &lt;server&gt; is either a configuration named in the
+  GDM configuration or a literal command name.
 Answers:
   OK &lt;display&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3749,10 +3838,10 @@ Answers:
       <sect3 id="releasedynamic">
       <title>RELEASE_DYNAMIC_DISPLAYS</title>
       <screen>
-RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in DISPLAY_CONFIG
-                          state
+RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in 
+                          DISPLAY_CONFIG state
 Supported since: 2.8.0.0
-Arguments:  None
+Arguments: None
 Answers:
   OK &lt;display&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3766,10 +3855,10 @@ Answers:
       <sect3 id="removedynamic">
       <title>REMOVE_DYNAMIC_DISPLAY</title>
       <screen>
-REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server and purging
-                        the display configuration
+REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server
+                        and purging the display configuration
 Supported since: 2.8.0.0
-Arguments:  &lt;display to remove&gt;
+Arguments: &lt;display to remove&gt;
 Answers:
   OK &lt;display&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3784,13 +3873,14 @@ Answers:
       <sect3 id="attachedservers">
       <title>ATTACHED_SERVERS</title>
       <screen>
-ATTACHED_SERVERS: List all attached servers.  Doesn't list XDMCP and xnest
-                  non-attached servers
+ATTACHED_SERVERS: List all attached servers.  Doesn't list XDMCP
+                  and xnest non-attached servers
+Note:             This command used to be named CONSOLE_SERVERS,
+                  which is still recognized for backwards
+                  compatibility. The optional pattern argument
+                  is supported as of version 2.8.0.0.
 Supported since: 2.2.4.0
-Note: This command used to be named CONSOLE_SERVERS, which is still recognized
-      for backwards compatibility. The optional pattern argument is supported
-      as of version 2.8.0.0.
-Arguments:  &lt;pattern&gt; (optional)
+Arguments: &lt;pattern&gt; (optional)
   With no argument, all attached displays are returned. The optional
   &lt;pattern&gt; is a string that may contain glob characters '*', '?', and
   '[]'. Only displays that match the pattern will be returned.
@@ -3822,7 +3912,7 @@ ALL_SERVERS: List all displays, including console, remote, xnest.
              by seeing if it is in the list.  It is also somewhat
              like the 'w' command but for graphical sessions.
 Supported since: 2.4.2.96
-Arguments:  None
+Arguments: None
 Answers:
   OK &lt;server&gt;;&lt;server&gt;;...
 
@@ -3843,7 +3933,7 @@ Answers:
 GET_SERVER_LIST:  Get a list of the server sections from
                   the configuration file.
 Supported since: 2.13.0.4
-Arguments:  None
+Arguments: None
 Answers:
   OK &lt;value&gt;;&lt;value&gt;;...
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3858,16 +3948,16 @@ Answers:
       <sect3 id="getserverdetails">
       <title>GET_SERVER_DETAILS</title>
       <screen>
-GET_SERVER_DETAILS:  Get detail information for a specific
-                     server.  Key values include:
+GET_SERVER_DETAILS:  Get detail information for a specific server.
+Supported since: 2.13.0.4
+Arguments: &lt;server&gt; &lt;key&gt;
+  Key values include:
     NAME      - Returns the server name
     COMMAND   - Returns the server command
     FLEXIBLE  - Returns "true" if flexible, "false" otherwise
     CHOOSABLE - Returns "true" if choosable, "false" otherwise
     HANDLED   - Returns "true" if handled, "false" otherwise
     CHOOSER   - Returns "true" if chooser, "false" otherwise
-Supported since: 2.13.0.4
-Arguments: &lt;server&gt; &lt;key&gt;
 Answers:
   OK &lt;value&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3893,7 +3983,7 @@ GET_CONFIG:  Get configuration value for key.  Useful so
              default value (i.e. you can use key "greeter/IncludeAll"
              instead of having to use "greeter/IncludeAll=false".  
 Supported since: 2.6.0.9
-Arguments:  &lt;key&gt;
+Arguments: &lt;key&gt;
 Answers:
   OK &lt;value&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3908,9 +3998,11 @@ Answers:
       <title>GET_CONFIG_FILE</title> 
       <screen>
 GET_CONFIG_FILE:  Get config file location being used by
-                  the daemon.
+                  the daemon.  If the GDM daemon was started
+                  with the --config option, it will return
+                  the value passed in via the argument.
 Supported since: 2.8.0.2
-Arguments:  None
+Arguments: None
 Answers:
   OK &lt;full path to GDM configuration file&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3924,61 +4016,67 @@ Answers:
       <title>UPDATE_CONFIG</title> 
       <screen>
 UPDATE_CONFIG: Tell the daemon to re-read a key from the 
-               gdm.conf configuration file.   Any user can
-               request that values are re-read but the daemon
-               will only do so if the file has been modified
-               since the last time it was read.  Only users
-               who can change the gdm.conf file (normally
-               writable only by the root user) can actually
-               modify the GDM configuration.  This command
-               is useful to cause the GDM to update itself
-               to recognize a change made to the gdm.conf
-               file by the root user.
+               GDM configuration file.   Any user can request
+               that values are re-read but the daemon will
+               only do so if the file has been modified
+               since GDM first read the file.  Only users
+               who can change the GDM configuration file
+               (normally writable only by the root user) can
+               actually modify the GDM configuration.  This
+               command is useful to cause the GDM to update
+               itself to recognize a change made to the GDM
+               configuration file by the root user.
 
-               Starting with version 2.13, all GDM keys are
+               Starting with version 2.13.0.0, all GDM keys are
                supported except for the following:
 
-  daemon/PidFile
-  daemon/ConsoleNotify
-  daemon/User
-  daemon/Group
-  daemon/LogDir
-  daemon/ServAuthDir
-  daemon/UserAuthDir
-  daemon/UserAuthFile
-  daemon/UserAuthFBDir
+                      daemon/PidFile
+                      daemon/ConsoleNotify
+                      daemon/User
+                      daemon/Group
+                      daemon/LogDir
+                      daemon/ServAuthDir
+                      daemon/UserAuthDir
+                      daemon/UserAuthFile
+                      daemon/UserAuthFBDir
 
-Supported keys for previous versions of GDM:
+               GDM also supports the following Psuedokeys:
 
-  security/AllowRoot (2.3.90.2)
-  security/AllowRemoteRoot (2.3.90.2)
-  security/AllowRemoteAutoLogin (2.3.90.2)
-  security/RetryDelay (2.3.90.2)
-  security/DisallowTCP (2.4.2.0)
-  daemon/Greeter (2.3.90.2)
-  daemon/RemoteGreeter (2.3.90.2)
-  xdmcp/Enable (2.3.90.2)
-  xdmcp/Port (2.3.90.2)
-  xdmcp/PARAMETERS (2.3.90.2) (pseudokey, all the parameters)
-         xdmcp/MaxPending
-         xdmcp/MaxSessions
-         xdmcp/MaxWait
-         xdmcp/DisplaysPerHost
-         xdmcp/HonorIndirect
-         xdmcp/MaxPendingIndirect
-         xdmcp/MaxWaitIndirect
-         xdmcp/PingIntervalSeconds (only affects new connections)
-  daemon/TimedLogin (2.3.90.3)
-  daemon/TimedLoginEnable (2.3.90.3)
-  daemon/TimedLoginDelay (2.3.90.3)
-  greeter/SystemMenu (2.3.90.3)
-  greeter/ConfigAvailable (2.3.90.3)
-  greeter/ChooserButton (2.4.2.0)
-  greeter/SoundOnLoginFile (2.5.90.0)
-  daemon/AddGtkModules (2.5.90.0)
-  daemon/GtkModulesList (2.5.90.0)
+               xdmcp/PARAMETERS (2.3.90.2) updates the following:
+                      xdmcp/MaxPending
+                      xdmcp/MaxSessions
+                      xdmcp/MaxWait
+                      xdmcp/DisplaysPerHost
+                      xdmcp/HonorIndirect
+                      xdmcp/MaxPendingIndirect
+                      xdmcp/MaxWaitIndirect
+                      xdmcp/PingIntervalSeconds (only affects new connections)
+
+                xservers/PARAMETERS (2.13.0.4) updates the following:
+                      all [server-foo] sections.
+
+                Supported keys for previous versions of GDM:
+
+                      security/AllowRoot (2.3.90.2)
+                      security/AllowRemoteRoot (2.3.90.2)
+                      security/AllowRemoteAutoLogin (2.3.90.2)
+                      security/RetryDelay (2.3.90.2)
+                      security/DisallowTCP (2.4.2.0)
+                      daemon/Greeter (2.3.90.2)
+                      daemon/RemoteGreeter (2.3.90.2)
+                      xdmcp/Enable (2.3.90.2)
+                      xdmcp/Port (2.3.90.2)
+                      daemon/TimedLogin (2.3.90.3)
+                      daemon/TimedLoginEnable (2.3.90.3)
+                      daemon/TimedLoginDelay (2.3.90.3)
+                      greeter/SystemMenu (2.3.90.3)
+                      greeter/ConfigAvailable (2.3.90.3)
+                      greeter/ChooserButton (2.4.2.0)
+                      greeter/SoundOnLoginFile (2.5.90.0)
+                      daemon/AddGtkModules (2.5.90.0)
+                      daemon/GtkModulesList (2.5.90.0)
 Supported since: 2.3.90.2
-Arguments:  &lt;key&gt;
+Arguments: &lt;key&gt;
   &lt;key&gt; is just the base part of the key such as
   "security/AllowRemoteRoot"
 Answers:
@@ -3998,7 +4096,7 @@ GREETERPIDS: List all greeter pids so that one can send HUP
              to them for config rereading.  Of course one
              must be root to do that.
 Supported since: 2.3.90.2
-Arguments:  None
+Arguments: None
 Answers:
   OK &lt;pid&gt;;&lt;pid&gt;;...
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -4012,7 +4110,8 @@ Answers:
       <title>QUERY_LOGOUT_ACTION</title>
       <screen>
 QUERY_LOGOUT_ACTION: Query which logout actions are possible
-Only supported on connections that passed AUTH_LOCAL.
+                     Only supported on connections that passed
+                     AUTH_LOCAL.
 Supported since: 2.5.90.0
 Answers:
   OK &lt;action&gt;;&lt;action&gt;;...
@@ -4033,16 +4132,15 @@ Answers:
       <sect3 id="setlogoutaction">
       <title>SET_LOGOUT_ACTION</title>
       <screen>
-SET_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend
-                    after slave process exits. 
-Only supported on connections that passed AUTH_LOCAL.
+SET_LOGOUT_ACTION: Tell the daemon to halt/reboot/suspend after
+                   slave process exits.  Only supported on
+                   connections that passed AUTH_LOCAL.
 Supported since: 2.5.90.0
-Arguments:  &lt;action&gt;
+Arguments: &lt;action&gt;
   NONE           Set exit action to 'none'
   HALT           Set exit action to 'halt'
   REBOOT         Set exit action to 'reboot'
   SUSPEND        Set exit action to 'suspend'
-
 Answers:
   OK
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -4058,23 +4156,21 @@ Answers:
       <title>SET_SAFE_LOGOUT_ACTION</title>
       <screen>
 SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend
-                         after everybody logs out.  If only
-                         one person logs out, then this is
-                         obviously the same as the
-                         SET_LOGOUT_ACTION.  Note that
-                         SET_LOGOUT_ACTION has precedence over
-                         SET_SAFE_LOGOUT_ACTION if it is set to
-                         something other then NONE.  If no one
-                         is logged in, then the action takes
-                         effect immediately.
-Only supported on connections that passed AUTH_LOCAL.
+                         after everybody logs out.  If only one
+                         person logs out, then this is obviously
+                         the same as the SET_LOGOUT_ACTION.  Note
+                         that SET_LOGOUT_ACTION has precedence
+                         over SET_SAFE_LOGOUT_ACTION if it is set
+                         to something other then NONE.  If no one
+                         is logged in, then the action takes effect
+                         effect immediately.  Only supported on
+                         connections that passed AUTH_LOCAL.
 Supported since: 2.5.90.0
-Arguments:  &lt;action&gt;
+Arguments: &lt;action&gt;
   NONE           Set exit action to 'none'
   HALT           Set exit action to 'halt'
   REBOOT         Set exit action to 'reboot'
   SUSPEND        Set exit action to 'suspend'
-
 Answers:
   OK
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -4095,10 +4191,10 @@ QUERY_VT:  Ask the daemon about which VT we are currently on.
            supported on Linux currently, other places will
            just get ERROR 8.  This is also the way to query
            if VT support is available in the daemon in the
-           first place.
-Only supported on connections that passed AUTH_LOCAL.
+           first place.  Only supported on connections that
+           passed AUTH_LOCAL.
 Supported since: 2.5.90.0
-Arguments:  None
+Arguments: None
 Answers:
   OK &lt;vt number&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -4117,9 +4213,9 @@ SET_VT:  Change to the specified virtual terminal.
          This is useful for logins which don't own /dev/console
          but are still console logins.  Only supported on Linux
          currently, other places will just get ERROR 8.
-Only supported on connections that passed AUTH_LOCAL.
+         Only supported on connections that passed AUTH_LOCAL.
 Supported since: 2.5.90.0
-Arguments:  &lt;vt&gt;
+Arguments: &lt;vt&gt;
 Answers:
   OK
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -4135,8 +4231,10 @@ Answers:
       <sect3 id="close">
       <title>CLOSE</title>
       <screen>
-CLOSE Answers: None
+CLOSE: Close sockets connection
 Supported since: 2.2.4.0
+Arguments: None
+Answers: None
       </screen>
       </sect3>
     </sect2>
@@ -4358,11 +4456,11 @@ Supported since: 2.2.4.0
         <para>
         Some environments need the ability to tell GDM to create and manage new
         displays on the fly, where it is not possible to list the possible
-        displays in gdm.conf. The <command>gdmdynamic</command> command can be
-        used to create a new display on a particular display number, run all
-        newly created displays, or remove a display. The gdmdynamic command
-        can also be used to list all attached displays, or only attached
-        displays that match a pattern.
+        displays in GDM configuration files. The <command>gdmdynamic</command>
+        command can be used to create a new display on a particular display
+        number, run all newly created displays, or remove a display. The
+        <command>gdmdynamic</command> command can also be used to list all
+        attached displays, or only attached displays that match a pattern.
         </para>
 
         <variablelist>
@@ -4603,28 +4701,13 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
 
         <para>
          <command>gdmsetup</command> runs a graphical application for modifying
-         the GDM configuration file, gdm.conf.  Normally on systems that support
+         the GDM configuration file.  Normally on systems that support
          the PAM userhelper, this is setup such that when you run
          <command>gdmsetup</command> as an ordinary user, it will first
          ask you for your root password before starting.  Otherwise, this
          application may only be run as root.  This application supports
          standard GNOME options.
         </para>
-
-        <variablelist>
-          <title><command>gdmsetup</command> Command Line Options</title>
-
-          <varlistentry>
-            <term>--config=CONFIGFILE</term>
-            <listitem>
-              <para>
-                Specify an alternative configuration file.  By default, 
-                <command>gdmsetup</command> will edit the same configuration
-                file being used by the GDM daemon. 
-              </para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
       </sect3>
 
       <sect3 id="gdmrestartcommandline">
@@ -5249,31 +5332,31 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
 
         <para>
           <filename>chooser</filename>, if ChooserButton is set to "true" in
-          <filename>gdm.conf</filename> file.
+          the GDM configuration.
         </para>
         <para>
           <filename>config</filename>, if ConfigAvailable is set to "true" in
-          <filename>gdm.conf</filename> file.
+          the GDM configuration.
         </para>
         <para>
           <filename>halt</filename>, if HaltDaemon is specified in
-          <filename>gdm.conf</filename> file.
+          the GDM configuration.
         </para>
         <para>
           <filename>reboot</filename>, if RebootCommand is specified in
-          <filename>gdm.conf</filename> file.
+          the GDM configuration.
         </para>
         <para>
           <filename>suspend</filename>, if SuspendCommand is specified in
-          <filename>gdm.conf</filename> file.
+          the GDM configuration.
         </para>
         <para>
           <filename>system</filename>, if SystemMenu is specified in
-          <filename>gdm.conf</filename> file
+          the GDM configuration.
         </para>
         <para>
           <filename>timed</filename>, if TimedLoginEnabled is set to "true" in
-          <filename>gdm.conf</filename> file.
+          the GDM configuration.
         </para>
 
         <para>
@@ -5480,8 +5563,8 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
        allows the user to change the visual appearance of the login UI
        before logging in, for instance to use a higher-contrast color
        scheme for better visibility.  GDM only supports accessibility with
-       the GTK+ Greeter, so the "Greeter" parameter in gdm.conf must be
-       set to the GTK+ Greeter "gdmlogin".
+       the GTK+ Greeter, so the "Greeter" parameter in the GDM configuration
+       must be set to the GTK+ Greeter "gdmlogin".
        </para>
 
        <sect2 id="accessibilityconfig">
@@ -5490,20 +5573,21 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              In order to enable Accessible Login, the system administrator must
              make some changes to the default login configuration by manually
              modifying three human-readable configuration files, stored in
-             gdm.conf, AccessKeyMouseEvents and AccessDwellMouseEvents.
+             the GDM configuration, AccessKeyMouseEvents and
+             AccessDwellMouseEvents.
              </para>
 
              <para>
              In order to allow users to change the color and contrast scheme of
              the login dialog, make sure the "AllowThemeChange" parameter in
-             gdm.conf is set to "true".
+             the GDM configuration is set to "true".
              </para>
 
              <para>
              To restrict user changes to the visual appearance to a subset of
-             available themes, the "GtkThemesToAllow" parameter in gdm.conf can
-             be set to a list of acceptable themes separated by commas.  For
-             example:
+             available themes, the "GtkThemesToAllow" parameter in the GDM
+             configuration can be set to a list of acceptable themes separated
+             by commas.  For example:
              </para>
 
              <screen>GtkThemesToAllow=HighContrast,HighContrastInverse</screen>
@@ -5511,9 +5595,9 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              <para>
              To enable the use of assistive technologies such as the Onscreen
              Keyboard, Screen Reader, or Magnifier, the "AddGtkModules"
-             parameter in gdm.conf must be uncommented and set to "true".  Also
-             the "GtkModulesList" parameter must be uncommented and set as
-             follows:
+             parameter in the GDM configuration must be uncommented and set to
+             "true".  Also the "GtkModulesList" parameter must be uncommented
+             and set as follows:
              </para>
 
              <screen>GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener</screen>
@@ -5578,6 +5662,17 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              </para>
 
              <para>
+             Currently GDM does not remember what accessible technology
+             programs have been started when switching applications.  So
+             if the user switches between the login program and the 
+             chooser, for example, then it is necessary for the user to
+             redo the gesture.  Users may need to also set up their default
+             session so that the assistive technologies required are
+             started automatically (or have appropriate key-bindings 
+             defined to start them) after the user session has started.
+             </para>
+
+             <para>
              There are some issues that cause some users to have problems
              getting the gesture listeners to work.  It is recommended that
              people use GDM version 2.8.0.5 or later for best results.  
@@ -5587,7 +5682,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
              with a duration greater than 0 to always fail.  A workaround
              is to simply redefine all key gestures so they have zero length
              duration.  Some versions of GOK and gnopernicus will not launch
-             unless the gdm user has a writable home directory.  If you
+             unless the "gdm" user has a writable home directory.  If you
              see an hourglass cursor when you complete a gesture but the
              program does not start, then you are likely having this problem.
              Also note that some input devices require Xserver configuration
@@ -5597,12 +5692,14 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
        <sect2 id="accessibilitysound">
           <title>Accessibility Login Sound Configuration</title>
              <para>
-             By default, gdm requires a media application such as "sox" to be 
-             present to play login sounds.  GDM defaults the location of this
-             application to <filename>/usr/bin/play</filename> (or 
+             By default, GDM requires a media application such as "sox" to be 
+             present to play sounds for successful or failed login.  GDM defaults
+             the location of this application to
+             <filename>/usr/bin/play</filename> (or
              <filename>/usr/bin/audioplay</filename> on Solaris.  This can
-             be changed via the SoundProgram configuration option in
-             <filename>gdm.conf</filename>.  
+             be changed via the SoundProgram GDM configuration option.  
+             Typically most text-to-speech programs (such as ORCA or 
+             Gnopernicus) use a separate mechanism to play audio.
              </para>
      </sect2>
   </sect1>
@@ -5624,7 +5721,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
         this feature to be enabled, which is the normal case for Solaris.
         This second feature has the side-effect of causing the Xserver to
         always restart between sessions, which disables the
-        AlwaysRestartServer gdm.conf configuration option.  
+        AlwaysRestartServer configuration option.  
     </para>
 
     <para>

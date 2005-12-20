@@ -951,7 +951,7 @@ gdm_server_resolve (GdmDisplay *disp)
 
 	bin = ve_first_word (disp->command);
 	if (bin != NULL && bin[0] != '/') {
-		svr = gdm_find_x_server (bin);
+		svr = gdm_find_xserver (bin);
 	}
 	g_free (bin);
 	return svr;
@@ -975,7 +975,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		gdm_error (_("Invalid server command '%s'"), disp->command);
 		argv = ve_split (gdm_get_value_string (GDM_KEY_STANDARD_XSERVER));
 	} else if (bin[0] != '/') {
-		GdmXserver *svr = gdm_find_x_server (bin);
+		GdmXserver *svr = gdm_find_xserver (bin);
 		if (svr == NULL) {
 			gdm_error (_("Server name '%s' not found; "
 				     "using standard server"), bin);

@@ -56,29 +56,33 @@
 #include "filecheck.h"
 #include "slave.h"
 
-gchar *config_file = NULL;
-static time_t config_file_mtime = 0;
+gchar *config_file                     = NULL;
+gchar *custom_config_file              = NULL;
+static time_t config_file_mtime        = 0;
+static time_t custom_config_file_mtime = 0;
 
 extern gboolean no_console;
 extern gboolean gdm_emergency_server;
 
-GSList *displays = NULL;
-GSList *xservers = NULL;
+GSList *displays          = NULL;
+GSList *displays_inactive = NULL;
+GSList *xservers          = NULL;
 
 gint high_display_num = 0;
 
 typedef enum {
-	CONFIG_BOOL,
-	CONFIG_INT,
-	CONFIG_STRING
+        CONFIG_BOOL,
+        CONFIG_INT,
+        CONFIG_STRING
 } GdmConfigType;
 
-static GHashTable    *type_hash    = NULL;
-static GHashTable    *val_hash     = NULL;
-static GHashTable    *realkey_hash = NULL;
-static GdmConfigType  bool_type    = CONFIG_BOOL;
-static GdmConfigType  int_type     = CONFIG_INT;
-static GdmConfigType  string_type  = CONFIG_STRING;
+static GHashTable    *type_hash       = NULL;
+static GHashTable    *val_hash        = NULL;
+static GHashTable    *translated_hash = NULL;
+static GHashTable    *realkey_hash    = NULL;
+static GdmConfigType  bool_type       = CONFIG_BOOL;
+static GdmConfigType  int_type        = CONFIG_INT;
+static GdmConfigType  string_type     = CONFIG_STRING;
 
 static uid_t GdmUserId;   /* Userid  under which gdm should run */
 static gid_t GdmGroupId;  /* Gruopid under which gdm should run */
@@ -526,22 +530,50 @@ gdm_config_init (void)
 static VeConfig *
 gdm_get_config (struct stat *statbuf)
 {
-    int r;
+   int r;
 
-    /* Not NULL if config_file was set by command-line option. */
-    if (config_file != NULL) {
-       VE_IGNORE_EINTR (r = stat (config_file, statbuf));
-    } else {
-       /* First check sysconfdir */
-       VE_IGNORE_EINTR (r = stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
-       if (r < 0) {
-          gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
-                       "gdm_config_parse", GDM_SYSCONFDIR_CONFIG_FILE);
-       } else {
-               config_file = GDM_SYSCONFDIR_CONFIG_FILE;
-       }
-    }
-    return ve_config_new (config_file);
+   /* Not NULL if config_file was set by command-line option. */
+   if (config_file != NULL) {
+      VE_IGNORE_EINTR (r = stat (config_file, statbuf));
+      if (r < 0) {
+         gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
+                      "gdm_config_parse", config_file);
+         return NULL;
+      }
+   } else {
+      VE_IGNORE_EINTR (r = stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
+      if (r < 0) {
+         gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
+                      "gdm_config_parse", GDM_SYSCONFDIR_CONFIG_FILE);
+         return NULL;
+      } else {
+              config_file = GDM_SYSCONFDIR_CONFIG_FILE;
+      }
+   }
+
+   return ve_config_new (config_file);
+}
+
+/**
+ * gdm_get_custom_config:
+ *
+ * Get the custom config file where gdmsetup saves its changes and
+ * where users are encouraged to make modifications.
+ */
+static VeConfig *
+gdm_get_custom_config (struct stat *statbuf)
+{
+   VeConfig *retval;
+   gchar *file = g_strdup_printf ("%s-custom", GDM_SYSCONFDIR_CONFIG_FILE);
+   int r;
+
+   VE_IGNORE_EINTR (r = stat (file, statbuf));
+   if (r >= 0) {
+      custom_config_file = file;
+      return ve_config_new (custom_config_file);
+   } else {
+      return NULL;
+   }
 }
 
 /**
@@ -577,8 +609,20 @@ gdm_get_value_int (char *key)
 gchar *
 gdm_get_value_string (char *key)
 {
-   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
-   gpointer val        = gdm_config_hash_lookup (val_hash, key);
+   GdmConfigType *type;
+   gpointer val;
+
+   /* First look in translated_hash */
+   if (translated_hash != NULL) {
+      val = gdm_config_hash_lookup (translated_hash, key);
+      if (val) {
+         gchar **charval = (char **)val;
+         return *charval;
+      }
+   }
+
+   type = gdm_config_hash_lookup (type_hash, key);
+   val  = gdm_config_hash_lookup (val_hash, key);
 
    if (type == NULL || val == NULL) {
       gdm_error ("Request for invalid configuration key %s", key);
@@ -625,8 +669,19 @@ gdm_get_value_bool (char *key)
 void
 gdm_config_to_string (gchar *key, gchar **retval)
 {
-   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
+   GdmConfigType *type;
 
+   /* First look in translated_hash */
+   if (translated_hash != NULL) {
+      gpointer val = gdm_config_hash_lookup (translated_hash, key);
+      if (val) {
+         gchar *charval = (char *)val;
+         *retval = g_strdup (val);
+         return;
+      }
+   }
+
+   type   = gdm_config_hash_lookup (type_hash, key);
    *retval = NULL;
 
    if (type != NULL) {
@@ -706,8 +761,13 @@ notify_displays_string (const gchar *key, const gchar *val)
    for (li = displays; li != NULL; li = li->next) {
       GdmDisplay *disp = li->data;
       if (disp->master_notify_fd >= 0) {
-         gdm_fdprintf (disp->master_notify_fd, "%c%s %s\n",
-                       GDM_SLAVE_NOTIFY_KEY, key, val);
+         if (val == NULL) {
+            gdm_fdprintf (disp->master_notify_fd, "%c%s \n",
+                          GDM_SLAVE_NOTIFY_KEY, key);
+         } else {
+            gdm_fdprintf (disp->master_notify_fd, "%c%s %s\n",
+                          GDM_SLAVE_NOTIFY_KEY, key, val);
+         }
          if (disp != NULL && disp->slavepid > 1)
             kill (disp->slavepid, SIGUSR2);
       }
@@ -900,9 +960,10 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
          notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE, *setting);
       else if (is_key (key, GDM_KEY_GTK_MODULES_LIST))
          notify_displays_string (GDM_NOTIFY_GTK_MODULES_LIST, *setting);
-}
+   }
 
-   g_free (setting_copy);
+   if (setting_copy != NULL)
+      g_free (setting_copy);
 
    if (*setting == NULL)
       gdm_debug ("set config key %s to string <NULL>", key);
@@ -1066,8 +1127,9 @@ static gboolean
 gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_update) 
 {
    gchar * realkey = gdm_config_hash_lookup (realkey_hash, key);
-   if (realkey == NULL)
+   if (realkey == NULL) {
       return FALSE;
+   }
 
    if (*type == CONFIG_BOOL) {
        gboolean value = ve_config_get_bool (cfg, realkey);
@@ -1105,23 +1167,26 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
              if (g_str_has_prefix ((char *)list->data, prefix) &&
                  g_str_has_suffix ((char *)list->data, "]")) {
 
-                /* Build or reuse hash entry for each translated string */
-                gchar *transkey = g_strdup_printf ("greeter/%s", (char *)list->data);
-                gpointer transvalueptr = gdm_config_hash_lookup (val_hash, transkey);
-                gchar *transvalue;
+                if (translated_hash == NULL)
+                   translated_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-                if (transvalueptr == NULL) {
-                   transvalueptr = g_new0 (gpointer, 1);
-                   gdm_config_add_hash (transkey, transvalueptr, &string_type);
-                }
-                transvalue = ve_config_get_string (cfg, transkey);
-                _gdm_set_value_string (transkey, transvalue, doing_update);
+                gchar    *transkey     = g_strdup_printf ("greeter/%s", (char *)list->data);
+                gchar    *transvalue   = ve_config_get_string (cfg, transkey);
+
+                g_hash_table_remove (translated_hash, transkey);
+
+               /*
+                * Store translated values in a separate hash.  Note that we load
+                * the initial values via a g_hash_table_foreach function, so if
+                * we add these to the same hash, we would end up loading these
+                * values in again a second time.
+                */
+                g_hash_table_insert (translated_hash, transkey, transvalue);
              }
              list = list->next;
           }
           g_free (basekey);
           g_free (prefix);
-
        }
 
        /* Handle non-translated strings as normal */
@@ -1134,6 +1199,160 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
 }
 
 /**
+ * gdm_find_xserver
+ *
+ * Return an xserver with a given ID, or NULL if not found.
+ */
+GdmXserver *
+gdm_find_xserver (const gchar *id)
+{
+   GSList *li;
+
+   if (xservers == NULL)
+      return NULL;
+
+   if (id == NULL)
+      return xservers->data;
+
+   for (li = xservers; li != NULL; li = li->next) {
+      GdmXserver *svr = li->data;
+      if (strcmp (ve_sure_string (svr->id), ve_sure_string (id)) == 0)
+         return svr;
+   }
+   return NULL;
+}
+
+/**
+ * gdm_get_xservers
+ *
+ * Prepare a string to be returned for the GET_SERVER_LIST
+ * sockets command.
+ */
+gchar *
+gdm_get_xservers (void)
+{
+   GSList *li;
+   gchar *retval = NULL;
+
+   if (xservers == NULL)
+      return NULL;
+
+   for (li = xservers; li != NULL; li = li->next) {
+      GdmXserver *svr = li->data;
+      if (retval != NULL)
+         retval = g_strconcat (retval, ";", svr->id, NULL);
+      else
+         retval = g_strdup (svr->id);
+   }
+
+   return retval;
+}
+
+/**
+ * gdm_load_xservers
+ *
+ * Load [server-foo] sections from a configuration file.
+ */
+static void
+gdm_load_xservers (VeConfig *cfg)
+{
+   GList *list, *li;
+   GSList *xli;
+
+   /* Find server definitions */
+   list = ve_config_get_sections (cfg);
+   for (li = list; li != NULL; li = li->next) {
+      const gchar *sec = li->data;
+
+      if (strncmp (sec, "server-", strlen ("server-")) == 0) {
+         gchar *id;
+
+         id = g_strdup (sec + strlen ("server-"));
+
+         /*
+          * See if we already loaded a server with this id, skip if
+          * one already exists.
+          */
+         if (gdm_find_xserver (id) != NULL) {
+            g_free (id);
+         } else {
+            GdmXserver *svr = g_new0 (GdmXserver, 1);
+            gchar buf[256];
+
+            svr->id = id;
+
+            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_NAME, sec);
+            svr->name = ve_config_get_string (cfg, buf);
+            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_COMMAND, sec);
+            svr->command = ve_config_get_string (cfg, buf);
+            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_FLEXIBLE, sec);
+            svr->flexible = ve_config_get_bool (cfg, buf);
+            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSABLE, sec);
+            svr->choosable = ve_config_get_bool (cfg, buf);
+            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_HANDLED, sec);
+            svr->handled = ve_config_get_bool (cfg, buf);
+            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
+            svr->chooser = ve_config_get_bool (cfg, buf);
+
+            if (ve_string_empty (svr->command)) {
+               gdm_error (_("%s: Empty server command; "
+                            "using standard command."), "gdm_config_parse");
+               g_free (svr->command);
+               svr->command = g_strdup (GdmStandardXserver);
+            }
+
+            xservers = g_slist_append (xservers, svr);
+         }
+      }
+   }
+  ve_config_free_list_of_strings (list);
+}
+
+/**
+ * gdm_update_xservers
+ *
+ * Reload [server-foo] sections from the configuration files.
+ */
+static void
+gdm_update_xservers (VeConfig *cfg, VeConfig *custom_cfg)
+{
+   GSList *xli;
+
+   /* Free list if already loaded */
+   if (xservers != NULL) {
+      for (xli = xservers; xli != NULL; xli = xli->next) {
+         GdmXserver *xsvr = xli->data;
+
+         g_free (xsvr->id);
+         g_free (xsvr->name);
+         g_free (xsvr->command);
+      }
+      g_slist_free (xservers);
+      xservers = NULL;
+   }
+
+   /* Reload first from custom_cfg then from cfg. */
+   if (custom_cfg != NULL)
+      gdm_load_xservers (custom_cfg);
+
+   if (cfg != NULL)
+      gdm_load_xservers (cfg);
+
+   /* If no "Standard" server was created, then add it */
+   if (xservers == NULL || gdm_find_xserver (GDM_STANDARD) == NULL) {
+      GdmXserver *svr = g_new0 (GdmXserver, 1);
+
+      svr->id        = g_strdup (GDM_STANDARD);
+      svr->name      = g_strdup ("Standard server");
+      svr->command   = g_strdup (GdmStandardXserver);
+      svr->flexible  = TRUE;
+      svr->choosable = TRUE;
+      svr->handled   = TRUE;
+      xservers       = g_slist_append (xservers, svr);
+   }
+}
+
+/**
  * gdm_update_config
  * 
  * Will cause a the GDM daemon to re-read the key from the configuration
@@ -1141,7 +1360,8 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
  * specified key, if appropriate.  Only specific keys defined in the
  * gdm_set_value functions above are associated with such notification.
  * Obviously notification is not needed for configuration options only
- * used by the daemon.
+ * used by the daemon.  This function is called when the UPDDATE_CONFIG
+ * sockets command is called.
  *
  * To add a new notification, a GDM_NOTIFY_* argument will need to be
  * defined in gdm.h, supporting logic placed in the gdm_set_value
@@ -1150,10 +1370,10 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
 gboolean
 gdm_update_config (gchar* key)
 {
-   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
-   struct stat statbuf;
-   VeConfig* cfg;
-   int r;
+   GdmConfigType *type;
+   struct stat statbuf, custom_statbuf;
+   VeConfig *cfg;
+   VeConfig *custom_cfg = NULL;
    gboolean rc;
 
    /*
@@ -1161,8 +1381,7 @@ gdm_update_config (gchar* key)
     * additional work, or at least heavy testing, to make these keys
     * flexible enough to be changed at runtime.
     */ 
-   if (type == NULL ||
-       is_key (key, GDM_KEY_PID_FILE) ||
+   if (is_key (key, GDM_KEY_PID_FILE) ||
        is_key (key, GDM_KEY_CONSOLE_NOTIFY) ||
        is_key (key, GDM_KEY_USER) ||
        is_key (key, GDM_KEY_GROUP) ||
@@ -1174,6 +1393,25 @@ gdm_update_config (gchar* key)
       return FALSE;
    }
 
+   /* See if custom file is now there */
+   if (custom_config_file == NULL) {
+      custom_cfg = gdm_get_custom_config (&statbuf);
+   }
+
+   /* Don't bother re-reading configuration if files have not changed */
+   VE_IGNORE_EINTR (stat (config_file, &statbuf));
+   VE_IGNORE_EINTR (stat (custom_config_file, &custom_statbuf));
+
+  /*
+   * Do not reset mtime to the latest values since there is no
+   * guarantee that only one key was modified since last write.
+   * This check simply avoids re-reading the files if neither
+   * has changed since GDM was started.
+   */
+   if (config_file_mtime        == statbuf.st_mtime &&
+       custom_config_file_mtime == custom_statbuf.st_mtime)
+      return TRUE;
+
    /* Shortcut for updating all XDMCP parameters */
    if (is_key (key, "xdmcp/PARAMETERS")) {
       gdm_update_config (GDM_KEY_DISPLAYS_PER_HOST);
@@ -1184,35 +1422,65 @@ gdm_update_config (gchar* key)
       gdm_update_config (GDM_KEY_MAX_INDIRECT);
       gdm_update_config (GDM_KEY_MAX_WAIT_INDIRECT);
       gdm_update_config (GDM_KEY_PING_INTERVAL);
+      return TRUE;
    }
 
-   VE_IGNORE_EINTR (r = stat (config_file, &statbuf));
-   if G_UNLIKELY (r < 0) {
-      /* if the file didn't exist before either */
-      if (config_file_mtime == 0)
-         return TRUE;
-   } else {
-     if (config_file_mtime == statbuf.st_mtime)
-         return TRUE;
-      config_file_mtime = statbuf.st_mtime;
+   if (custom_config_file != NULL)
+      custom_cfg = ve_config_new (custom_config_file);
+
+   if (is_key (key, "xservers/PARAMETERS")) {
+      cfg = ve_config_new (config_file);
+      gdm_update_xservers (cfg, custom_cfg);
+      ve_config_destroy (cfg);
+      if (custom_cfg != NULL)
+         ve_config_destroy (custom_cfg);
+      return rc;
    }
 
+   type = gdm_config_hash_lookup (type_hash, key);
+   if (type == NULL)
+      return FALSE;
+
+   /* First check the custom file */
+   if (custom_cfg != NULL) {
+       gchar **splitstr = g_strsplit (key, "/", 2);
+
+       if (splitstr[0] != NULL) {
+          GList *list = ve_config_get_keys (custom_cfg, splitstr[0]);
+
+          while (list != NULL) {
+             gchar *custom_key     = (char *)list->data;
+             gchar *custom_fullkey = g_strdup_printf ("%s/%s", splitstr[0], custom_key);
+
+             if (is_key (key, custom_fullkey)) {
+                rc = gdm_set_value (custom_cfg, type, key, TRUE);
+                
+                g_free (custom_fullkey);
+                g_strfreev (splitstr);
+                ve_config_destroy (custom_cfg);
+                return (rc);
+             }
+
+             g_free (custom_fullkey);
+             list = list->next;
+          }
+       }
+       g_strfreev (splitstr);
+   }
+
+   /* If not in the custom file, check main config file */
    cfg = ve_config_new (config_file);
-
-   if (gdm_set_value (cfg, type, key, TRUE))
-      rc = TRUE;
-   else
-      rc = FALSE;
+   rc  = gdm_set_value (cfg, type, key, TRUE);
 
    ve_config_destroy (cfg);
+   if (custom_cfg != NULL)
+      ve_config_destroy (custom_cfg);
    return rc;
 }
 
 /**
  * check_logdir
  * check_servauthdir
- * display_exists
- * gdm_find_x_server
  *
  * Support functions for gdm_config_parse.
  */
@@ -1268,57 +1536,78 @@ check_servauthdir (struct stat *statbuf)
     }
 }
 
-static gboolean
-display_exists (int num)
+typedef struct _GdmConfigFiles {
+   VeConfig *cfg;
+   VeConfig *custom_cfg;
+} GdmConfigFiles;
+
+/**
+ * gdm_load_displays
+ *
+ * Load the displays section of the config file
+ */
+static void
+gdm_load_displays (VeConfig *cfg, GList *list )
 {
-        GSList *li;
+   GList *li;
+   GSList *li2;
 
-        for (li = displays; li != NULL; li = li->next) {
-                GdmDisplay *disp = li->data;
-                if (disp->dispnum == num)
-                        return TRUE;
-        }
-        return FALSE;
-}
+   for (li = list; li != NULL; li = li->next) {
+      const gchar *key = li->data;
 
-/* If id == NULL, then get the first X server */
-GdmXserver *
-gdm_find_x_server (const gchar *id)
-{
-   GSList *li;
+      if (isdigit (*key)) {
+         gchar *fullkey;
+         gchar *dispval;
+         int keynum = atoi (key);
+         gboolean skip_entry = FALSE;
 
-   if (xservers == NULL)
-      return NULL;
+         fullkey  = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
+         dispval  = ve_config_get_string (cfg, fullkey);
+         g_free (fullkey);
 
-   if (id == NULL)
-      return xservers->data;
+         /* Do not add if already in the list */
+         for (li2 = displays; li2 != NULL; li2 = li2->next) {
+            GdmDisplay *disp = li2->data;
+            if (disp->dispnum == keynum) {
+               skip_entry = TRUE;
+               break;
+            }
+         }
 
-   for (li = xservers; li != NULL; li = li->next) {
-      GdmXserver *svr = li->data;
-      if (strcmp (ve_sure_string (svr->id), ve_sure_string (id)) == 0)
-         return svr;
+         /* Do not add if this display was marked as inactive already */
+         for (li2 = displays_inactive; li2 != NULL; li2 = li2->next) {
+            gchar *disp = li2->data;
+            if (atoi (disp) == keynum) {
+               skip_entry = TRUE;
+               break;
+            }
+         }
+
+         if (skip_entry == TRUE) {
+            g_free (dispval);
+            continue;
+         }
+
+         if (g_ascii_strcasecmp (ve_sure_string (dispval), "inactive") == 0) {
+            gdm_debug ("display %s is inactive", key);
+            displays_inactive = g_slist_append (displays_inactive, g_strdup (key));
+         } else {
+            GdmDisplay *disp = gdm_server_alloc (keynum, dispval);
+
+            if (disp == NULL)
+               continue;
+
+            displays = g_slist_insert_sorted (displays, disp, gdm_compare_displays);
+            if (keynum > high_display_num)
+               high_display_num = keynum;
+         }
+
+         g_free (dispval);
+
+      } else {
+        gdm_info (_("%s: Invalid server line in config file. Ignoring!"), "gdm_config_parse");
+      }
    }
-   return NULL;
-}
-
-gchar *
-gdm_get_x_servers (void)
-{
-   GSList *li;
-   gchar *retval = NULL;
-
-   if (xservers == NULL)
-      return NULL;
-
-   for (li = xservers; li != NULL; li = li->next) {
-      GdmXserver *svr = li->data;
-      if (retval != NULL)
-         retval = g_strconcat (retval, ";", svr->id, NULL);
-      else
-         retval = g_strdup (svr->id);
-   }
-
-   return retval;
 }
 
 /**
@@ -1329,12 +1618,39 @@ gdm_get_x_servers (void)
 void
 gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
 {
-   gchar *key = (gchar *)key_in;
-   GdmConfigType *type = (GdmConfigType *)value_in;
-   VeConfig *cfg = (VeConfig *)data;
+   gchar *key               = (gchar *)key_in;
+   GdmConfigType *type      = (GdmConfigType *)value_in;
+   GdmConfigFiles *cfgfiles = (GdmConfigFiles *)data;
+   gboolean retval;
+   gboolean custom_retval;
 
    if (type != NULL) {
-      if (gdm_set_value (cfg, type, key, FALSE))
+      /* First check the custom file */
+      if (cfgfiles->custom_cfg != NULL) {
+          gchar **splitstr = g_strsplit (key_in, "/", 2);
+          if (splitstr[0] != NULL) {
+             GList *list = ve_config_get_keys (cfgfiles->custom_cfg, splitstr[0]);
+
+             while (list != NULL) {
+                gchar *custom_key     = (char *)list->data;
+                gchar *custom_fullkey = g_strdup_printf ("%s/%s", splitstr[0], custom_key);
+
+                if (is_key (key_in, custom_fullkey)) {
+                   custom_retval = gdm_set_value (cfgfiles->custom_cfg, type, key, FALSE);
+                   g_free (custom_fullkey);
+                   g_strfreev (splitstr);
+                   return;
+                }
+
+                g_free (custom_fullkey);
+                list = list->next;
+             }
+          }
+          g_strfreev (splitstr);
+      }
+
+      /* If not in the custom file, check main config file */
+      if (gdm_set_value (cfgfiles->cfg, type, key, FALSE))
          return;
    }
 
@@ -1349,295 +1665,248 @@ gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
 void
 gdm_config_parse (void)
 {
-   VeConfig* cfg;
+   GdmConfigFiles cfgfiles;
+   VeConfig *cfg, *custom_cfg;
    struct passwd *pwent;
    struct group *grent;
    struct stat statbuf;
    gchar *bin;
-   GList *list, *li;
 
+   /* Init structures for configuration data */
    gdm_config_init ();
 
    displays          = NULL;
    high_display_num  = 0;
-   cfg               = gdm_get_config (&statbuf);
-   config_file_mtime = statbuf.st_mtime;
+
+   /*
+    * It is okay if the custom_cfg file is missing, then just use
+    * main configuration file.  If cfg is missing, then GDM will 
+    * use the built-in defaults found in gdm.h.
+    */
+   cfg                      = gdm_get_config (&statbuf);
+   config_file_mtime        = statbuf.st_mtime;
+   custom_cfg               = gdm_get_custom_config (&statbuf);
+   custom_config_file_mtime = statbuf.st_mtime;
+   cfgfiles.cfg             = cfg;
+   cfgfiles.custom_cfg      = custom_cfg;
 
    /* Loop over all configuration options and load them */
-   g_hash_table_foreach (type_hash, gdm_load_config_option, cfg);
+   g_hash_table_foreach (type_hash, gdm_load_config_option, &cfgfiles);
 
-   /* Find server definitions */
-   list = ve_config_get_sections (cfg);
-   for (li = list; li != NULL; li = li->next) {
-      const gchar *sec = li->data;
-      if (strncmp (sec, "server-", strlen ("server-")) == 0) {
-         GdmXserver *svr = g_new0 (GdmXserver, 1);
-         gchar buf[256];
+   /* Load server-foo sections */
+   gdm_update_xservers (cfg, custom_cfg);
 
-         svr->id = g_strdup (sec + strlen ("server-"));
-         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_NAME, sec);
-         svr->name = ve_config_get_string (cfg, buf);
-         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_COMMAND, sec);
-         svr->command = ve_config_get_string (cfg, buf);
-         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_FLEXIBLE, sec);
-         svr->flexible = ve_config_get_bool (cfg, buf);
-         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSABLE, sec);
-         svr->choosable = ve_config_get_bool (cfg, buf);
-         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_HANDLED, sec);
-         svr->handled = ve_config_get_bool (cfg, buf);
-         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
-         svr->chooser = ve_config_get_bool (cfg, buf);
+   /* Only read the list if no_console is FALSE at this stage */
+   if ( !no_console) {
+      GList *list;
+      GSList *li2;
 
-         if (ve_string_empty (svr->command)) {
-            gdm_error (_("%s: Empty server command; "
-                         "using standard command."), "gdm_config_parse");
-            g_free (svr->command);
-            svr->command = g_strdup (GdmStandardXserver);
-         }
+      /* Find static X server definitions */
+      if (custom_cfg) {
+         list = ve_config_get_keys (custom_cfg, GDM_KEY_SECTION_SERVERS);
+         gdm_load_displays (custom_cfg, list);
+         ve_config_free_list_of_strings (list);
+      }
 
-         xservers = g_slist_append (xservers, svr);
+      list = ve_config_get_keys (cfg, GDM_KEY_SECTION_SERVERS);
+      gdm_load_displays (cfg, list);
+      ve_config_free_list_of_strings (list);
+
+      /* Free list of inactive, not needed anymore */
+      for (li2 = displays_inactive; li2 != NULL; li2 = li2->next) {
+         gchar *disp = li2->data;
+         g_free (disp);
+      }
+      g_slist_free (displays_inactive);
+   }
+
+   if G_UNLIKELY ((displays == NULL) && (! GdmXdmcp) && (!GdmDynamicXservers)) {
+      gchar *server = NULL;
+
+      /*
+       * If we requested no static servers (there is no console),
+       * then don't display errors in console messages
+       */
+      if (no_console) {
+         gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
+      }
+
+      bin = ve_first_word (GdmStandardXserver);
+      if G_LIKELY (access (bin, X_OK) == 0) {
+         server = GdmStandardXserver;
+      } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
+         server = "/usr/bin/X11/X";
+      } else if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
+         server = "/usr/X11R6/bin/X";
+      } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
+         server = "/opt/X11R6/bin/X";
+      }
+      g_free (bin);
+
+      /* yay, we can add a backup emergency server */
+      if (server != NULL) {
+         int num = gdm_get_free_display (0 /* start */, 0 /* server uid */);
+         gdm_error (_("%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"),
+                      "gdm_config_parse", server, num);
+
+         gdm_emergency_server = TRUE;
+         displays = g_slist_append (displays, gdm_server_alloc (num, server));
+         /* ALWAYS run the greeter and don't log anyone in,
+          * this is just an emergency session */
+         g_free (GdmAutomaticLogin);
+         g_free (GdmTimedLogin);
+         GdmAutomaticLogin = NULL;
+         GdmTimedLogin     = NULL;
+      } else {
+         gchar *s = g_strdup_printf (C_(N_("XDMCP is disabled and GDM "
+                                   "cannot find any static server "
+                                   "to start.  Aborting!  Please "
+                                   "correct the configuration "
+                                   "and restart GDM.")));
+         gdm_text_message_dialog (s);
+         GdmPidFile = NULL;
+         g_free (s);
+         gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
       }
    }
-  ve_config_free_list_of_strings (list);
 
-  if (xservers == NULL ||
-     gdm_find_x_server (GDM_STANDARD) == NULL) {
-        GdmXserver *svr = g_new0 (GdmXserver, 1);
+   /* If no displays were found, then obviously
+      we're in a no console mode */
+   if (displays == NULL)
+      no_console = TRUE;
 
-        svr->id = g_strdup (GDM_STANDARD);
-        svr->name = g_strdup ("Standard server");
-        svr->command = g_strdup (GdmStandardXserver);
-        svr->flexible = TRUE;
-        svr->choosable = TRUE;
-        svr->handled = TRUE;
+   if (no_console)
+      GdmConsoleNotify = FALSE;
 
-        xservers = g_slist_append (xservers, svr);
-  }
+   /* Lookup user and groupid for the GDM user */
+   pwent = getpwnam (GdmUser);
 
-  /* Find static X server definitions */
-  list = ve_config_get_keys (cfg, GDM_KEY_SECTION_SERVERS);
-  /* only read the list if no_console is FALSE
-     at this stage */
-  for (li = list; ! no_console && li != NULL; li = li->next) {
-     const gchar *key = li->data;
-     if (isdigit (*key)) {
-        gchar *full;
-        gchar *val;
-        int disp_num = atoi (key);
-        GdmDisplay *disp;
-
-        while (display_exists (disp_num)) {
-           disp_num++;
-        }
-
-        if (disp_num != atoi (key)) {
-           gdm_error (_("%s: Display number %d in use!  Defaulting to %d"),
-                        "gdm_config_parse", atoi (key), disp_num);
-        }
-
-        full = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
-        val  = ve_config_get_string (cfg, full);
-        g_free (full);
-
-        disp = gdm_server_alloc (disp_num, val);
-        g_free (val);
-
-        if (disp == NULL)
-           continue;
-        displays = g_slist_insert_sorted (displays, disp, gdm_compare_displays);
-        if (disp_num > high_display_num)
-           high_display_num = disp_num;
-        } else {
-          gdm_info (_("%s: Invalid server line in config file. Ignoring!"), "gdm_config_parse");
-        }
-    }
-    ve_config_free_list_of_strings (list);
-
-    if G_UNLIKELY ((displays == NULL) && (! GdmXdmcp) && (!GdmDynamicXservers)) {
-       gchar *server = NULL;
-
-       /* if we requested no static servers (there is no console),
-          then don't display errors in console messages */
-       if (no_console) {
-          gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
-       }
-
-       bin = ve_first_word (GdmStandardXserver);
-       if G_LIKELY (access (bin, X_OK) == 0) {
-          server = GdmStandardXserver;
-       } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
-          server = "/usr/bin/X11/X";
-       } else if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
-          server = "/usr/X11R6/bin/X";
-       } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
-          server = "/opt/X11R6/bin/X";
-       }
-       g_free (bin);
-
-       /* yay, we can add a backup emergency server */
-       if (server != NULL) {
-          int num = gdm_get_free_display (0 /* start */, 0 /* server uid */);
-          gdm_error (_("%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"),
-                       "gdm_config_parse", server, num);
-
-          gdm_emergency_server = TRUE;
-          displays = g_slist_append (displays, gdm_server_alloc (num, server));
-          /* ALWAYS run the greeter and don't log anyone in,
-           * this is just an emergency session */
-          g_free (GdmAutomaticLogin);
-          GdmAutomaticLogin = NULL;
-          g_free (GdmTimedLogin);
-          GdmTimedLogin = NULL;
-       } else {
-          gchar *s = g_strdup_printf (C_(N_("XDMCP is disabled and GDM "
-                                    "cannot find any static server "
-                                    "to start.  Aborting!  Please "
-                                    "correct the configuration "
-                                    "and restart GDM.")));
-          gdm_text_message_dialog (s);
-          GdmPidFile = NULL;
-          g_free (s);
-          gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
-       }
-    }
-
-    /* If no displays were found, then obviously
-       we're in a no console mode */
-    if (displays == NULL)
-       no_console = TRUE;
-
-    if (no_console)
-       GdmConsoleNotify = FALSE;
-
-    /* Lookup user and groupid for the GDM user */
-    pwent = getpwnam (GdmUser);
-
-    /* Set GdmUserId and GdmGroupId */
-    if G_UNLIKELY (pwent == NULL) {
-       gchar *s = g_strdup_printf (C_(N_("The GDM user '%s' does not exist. "
+   /* Set GdmUserId and GdmGroupId */
+   if G_UNLIKELY (pwent == NULL) {
+      gchar *s = g_strdup_printf (C_(N_("The GDM user '%s' does not exist. "
                                         "Please correct GDM configuration "
                                         "and restart GDM.")), GdmUser);
-       if (GdmConsoleNotify)
-          gdm_text_message_dialog (s);
+      if (GdmConsoleNotify)
+         gdm_text_message_dialog (s);
 
-       GdmPidFile = NULL;
-       g_free (s);
-       gdm_fail (_("%s: Can't find the GDM user '%s'. Aborting!"), "gdm_config_parse", GdmUser);
-    } else {
-       GdmUserId = pwent->pw_uid;
-    }
+      GdmPidFile = NULL;
+      g_free (s);
+      gdm_fail (_("%s: Can't find the GDM user '%s'. Aborting!"), "gdm_config_parse", GdmUser);
+   } else {
+      GdmUserId = pwent->pw_uid;
+   }
 
-    if G_UNLIKELY (GdmUserId == 0) {
-       gchar *s = g_strdup_printf (C_(N_("The GDM user is set to be root, but "
+   if G_UNLIKELY (GdmUserId == 0) {
+      gchar *s = g_strdup_printf (C_(N_("The GDM user is set to be root, but "
                                         "this is not allowed since it can "
                                         "pose a security risk.  Please "
                                         "correct GDM configuration and "
                                         "restart GDM.")));
-       if (GdmConsoleNotify)
-          gdm_text_message_dialog (s);
-       GdmPidFile = NULL;
-       g_free (s);
-       gdm_fail (_("%s: The GDM user should not be root. Aborting!"), "gdm_config_parse");
-    }
+      if (GdmConsoleNotify)
+         gdm_text_message_dialog (s);
+      GdmPidFile = NULL;
+      g_free (s);
+      gdm_fail (_("%s: The GDM user should not be root. Aborting!"), "gdm_config_parse");
+   }
 
-    grent = getgrnam (GdmGroup);
+   grent = getgrnam (GdmGroup);
 
-    if G_UNLIKELY (grent == NULL) {
-       gchar *s = g_strdup_printf (C_(N_("The GDM group '%s' does not exist. "
+   if G_UNLIKELY (grent == NULL) {
+      gchar *s = g_strdup_printf (C_(N_("The GDM group '%s' does not exist. "
                                         "Please correct GDM configuration "
                                         "and restart GDM.")), GdmGroup);
-       if (GdmConsoleNotify)
-          gdm_text_message_dialog (s);
-       GdmPidFile = NULL;
-       g_free (s);
-       gdm_fail (_("%s: Can't find the GDM group '%s'. Aborting!"), "gdm_config_parse", GdmGroup);
-    } else  {
-       GdmGroupId = grent->gr_gid;   
-    }
+      if (GdmConsoleNotify)
+         gdm_text_message_dialog (s);
+      GdmPidFile = NULL;
+      g_free (s);
+      gdm_fail (_("%s: Can't find the GDM group '%s'. Aborting!"), "gdm_config_parse", GdmGroup);
+   } else  {
+      GdmGroupId = grent->gr_gid;   
+   }
 
-    if G_UNLIKELY (GdmGroupId == 0) {
-       gchar *s = g_strdup_printf (C_(N_("The GDM group is set to be root, but "
+   if G_UNLIKELY (GdmGroupId == 0) {
+      gchar *s = g_strdup_printf (C_(N_("The GDM group is set to be root, but "
                                         "this is not allowed since it can "
                                         "pose a security risk. Please "
                                         "correct GDM configuration and "
                                         "restart GDM.")));
-       if (GdmConsoleNotify)
-          gdm_text_message_dialog (s);
-       GdmPidFile = NULL;
-       g_free (s);
-       gdm_fail (_("%s: The GDM group should not be root. Aborting!"), "gdm_config_parse");
-    }
+      if (GdmConsoleNotify)
+         gdm_text_message_dialog (s);
+      GdmPidFile = NULL;
+      g_free (s);
+      gdm_fail (_("%s: The GDM group should not be root. Aborting!"), "gdm_config_parse");
+   }
 
-    /* gid remains `gdm' */
-    NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
+   /* gid remains `gdm' */
+   NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
 
-    /* Check that the greeter can be executed */
-    bin = ve_first_word (GdmGreeter);
-    if G_UNLIKELY (ve_string_empty (bin) || access (bin, X_OK) != 0) {
-       gdm_error (_("%s: Greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
-    }
-    g_free (bin);
+   /* Check that the greeter can be executed */
+   bin = ve_first_word (GdmGreeter);
+   if G_UNLIKELY (ve_string_empty (bin) || access (bin, X_OK) != 0) {
+      gdm_error (_("%s: Greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
+   }
+   g_free (bin);
 
-    bin = ve_first_word (GdmRemoteGreeter);
-    if G_UNLIKELY (ve_string_empty (bin) || access (bin, X_OK) != 0) {
-       gdm_error (_("%s: Remote greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
-    }
-    g_free (bin);
+   bin = ve_first_word (GdmRemoteGreeter);
+   if G_UNLIKELY (ve_string_empty (bin) || access (bin, X_OK) != 0) {
+      gdm_error (_("%s: Remote greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
+   }
+   g_free (bin);
 
-    /* Check that chooser can be executed */
-    bin = ve_first_word (GdmChooser);
+   /* Check that chooser can be executed */
+   bin = ve_first_word (GdmChooser);
 
-    if G_UNLIKELY (GdmIndirect && (ve_string_empty (bin) || access (bin, X_OK) != 0)) {
-       gdm_error (_("%s: Chooser not found or it can't be executed by the GDM user"), "gdm_config_parse");
-    }
+   if G_UNLIKELY (GdmIndirect && (ve_string_empty (bin) || access (bin, X_OK) != 0)) {
+      gdm_error (_("%s: Chooser not found or it can't be executed by the GDM user"), "gdm_config_parse");
+   }
     
-    g_free (bin);
+   g_free (bin);
 
-    /* Check the serv auth and log dirs */
-    if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
-        if (GdmConsoleNotify)
-           gdm_text_message_dialog
-              (C_(N_("No daemon/ServAuthDir specified in the GDM configuration file")));
-        GdmPidFile = NULL;
-        gdm_fail (_("%s: No daemon/ServAuthDir specified."), "gdm_config_parse");
-    }
+   /* Check the serv auth and log dirs */
+   if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
+       if (GdmConsoleNotify)
+          gdm_text_message_dialog
+             (C_(N_("No daemon/ServAuthDir specified in the GDM configuration file")));
+       GdmPidFile = NULL;
+       gdm_fail (_("%s: No daemon/ServAuthDir specified."), "gdm_config_parse");
+   }
 
-    if (ve_string_empty (GdmLogDir)) {
-       g_free (GdmLogDir);
-       GdmLogDir = g_strdup (GdmServAuthDir);
-    }
+   if (ve_string_empty (GdmLogDir)) {
+      g_free (GdmLogDir);
+      GdmLogDir = g_strdup (GdmServAuthDir);
+   }
 
-    /* Enter paranoia mode */
-    check_servauthdir (&statbuf);
+   /* Enter paranoia mode */
+   check_servauthdir (&statbuf);
 
-    NEVER_FAILS_root_set_euid_egid (0, 0);
+   NEVER_FAILS_root_set_euid_egid (0, 0);
 
-    /* Now set things up for us as  */
-    chown (GdmServAuthDir, 0, GdmGroupId);
-    chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
+   /* Now set things up for us as  */
+   chown (GdmServAuthDir, 0, GdmGroupId);
+   chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
 
-    NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
+   NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
 
-    /* again paranoid */
-    check_servauthdir (&statbuf);
+   /* Again paranoid */
+   check_servauthdir (&statbuf);
 
-    if G_UNLIKELY (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
-       gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
+   if G_UNLIKELY (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
+      gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
                                         "(daemon/ServAuthDir) is set to %s "
                                         "but is not owned by user %s and group "
                                         "%s. Please correct the ownership or "
                                         "GDM configuration and restart "
                                         "GDM.")), GdmServAuthDir, GdmUser, GdmGroup);
-        if (GdmConsoleNotify)
-           gdm_text_message_dialog (s);
-           GdmPidFile = NULL;
-           g_free (s);
-           gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."),
-              "gdm_config_parse", GdmServAuthDir, gdm_root_user (), GdmGroup);
-    }
+      if (GdmConsoleNotify)
+         gdm_text_message_dialog (s);
+         GdmPidFile = NULL;
+         g_free (s);
+         gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."),
+                     "gdm_config_parse", GdmServAuthDir, gdm_root_user (), GdmGroup);
+   }
 
-    if G_UNLIKELY (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
-       gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
+   if G_UNLIKELY (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
+      gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
                                  "(daemon/ServAuthDir) is set to %s "
                                  "but has the wrong permissions: it "
                                  "should have permissions of %o. "
@@ -1645,22 +1914,24 @@ gdm_config_parse (void)
                                  "the GDM configuration and "
                                  "restart GDM.")), GdmServAuthDir,
                                  (S_IRWXU|S_IRWXG|S_ISVTX));
-       if (GdmConsoleNotify)
-          gdm_text_message_dialog (s);
-       GdmPidFile = NULL;
-       g_free (s);
-       gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
-                GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
-    }
+      if (GdmConsoleNotify)
+         gdm_text_message_dialog (s);
+      GdmPidFile = NULL;
+      g_free (s);
+      gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
+                  GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
+   }
 
-    NEVER_FAILS_root_set_euid_egid (0, 0);
+   NEVER_FAILS_root_set_euid_egid (0, 0);
 
-    check_logdir ();
+   check_logdir ();
 
-    /* Check that user authentication is properly configured */
-    gdm_verify_check ();
+   /* Check that user authentication is properly configured */
+   gdm_verify_check ();
 
-    ve_config_destroy (cfg);
+   if (custom_cfg)
+      ve_config_destroy (custom_cfg);
+   ve_config_destroy (cfg);
 }
 
 /** 
@@ -1949,11 +2220,10 @@ gdm_get_facefile_from_home (const char *homedir,
       is_local = path_is_local (homedir);
    }
 
-   /* only look at local home directories so we don't try to
+   /* Only look at local home directories so we don't try to
       read from remote (e.g. NFS) volumes */
    if (! is_local)
       return NULL;
-
 
    picfile = g_build_filename (homedir, ".face", NULL);
 

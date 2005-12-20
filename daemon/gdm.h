@@ -33,7 +33,7 @@
 #define BEL 0x7			/* Bell, used to interrupt login for
 				 * say timed login or something similar */
 
-#define TYPE_STATIC 1		/* X server defined in gdm.conf */
+#define TYPE_STATIC 1		/* X server defined in GDM configuration */
 #define TYPE_XDMCP 2		/* Remote display/Xserver */
 #define TYPE_FLEXI 3		/* Local Flexi X server */
 #define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
@@ -137,10 +137,10 @@ enum {
 #define PIPE_SIZE 4096
 
 /*
- * The following section contains keys used by the gdm.conf configuration file.
- * The key/value pairs defined in the %{sysconfdir}/gdm/gdm.conf file is
- * considered a "stable" interface and should only change in ways that are
- * backwards compatible.
+ * The following section contains keys used by the GDM configuration files.
+ * The key/value pairs defined in the GDM configuration files are considered
+ * "stable" interface and should only change in ways that are backwards
+ * compatible.
  * 
  * Developers who add new configuration options should ensure that they do the
  * following:
@@ -318,17 +318,21 @@ enum {
  * For backwards compatibility, do not set values for DEFAULT_WELCOME or 
  * DEFAULT_REMOTEWELCOME.  This will cause these values to always be 
  * read from the config file, and will cause them to return FALSE if
- * no value is set in the config file.  If Welcome or RemoteWelcome are
- * not set in the config file, then GDM will set them back to the default 
- * value.  Note the reason we don't specify the default value in the
- * config file anymore is because it is easier to maintain the l10n
- * strings when the string is compiled into the source code instaed of
- * supplied in the configuration file.
+ * no value is set in the config file.  We want the value "FALSE" if
+ * the values don't exist in the config file.  The daemon will compare
+ * the Welcome/RemoveWelcome value with the default string and 
+ * automatically translate the text if the string is the same as the
+ * default string.  We set the default values of GDM_KEY_WELCOME and
+ * GDM_KEY_REMOTEWELCOME so that the default value is returned when
+ * you run GET_CONFIG on these keys.
  */
-#define GDM_KEY_DEFAULT_WELCOME "greeter/DefaultWelcome="
-#define GDM_KEY_DEFAULT_REMOTE_WELCOME "greeter/DefaultRemoteWelcome="
-#define GDM_KEY_WELCOME "greeter/Welcome="
-#define GDM_KEY_REMOTE_WELCOME "greeter/RemoteWelcome="
+#define GDM_DEFAULT_WELCOME_MSG "Welcome"
+#define GDM_DEFAULT_REMOTE_WELCOME_MSG "Welcome to %n"
+
+#define GDM_KEY_DEFAULT_WELCOME "greeter/DefaultWelcome=" 
+#define GDM_KEY_DEFAULT_REMOTE_WELCOME "greeter/DefaultRemoteWelcome=" 
+#define GDM_KEY_WELCOME "greeter/Welcome=" GDM_DEFAULT_WELCOME_MSG
+#define GDM_KEY_REMOTE_WELCOME "greeter/RemoteWelcome=" GDM_DEFAULT_REMOTE_WELCOME_MSG
 #define GDM_KEY_XINERAMA_SCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUND_PROGRAM "greeter/BackgroundProgram="
 #define GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS "greeter/RunBackgroundProgramAlways=false"
@@ -392,9 +396,6 @@ enum {
 #define GDM_SESSION_FAILSAFE "failsafe"
 
 #define GDM_STANDARD "Standard"
-
-#define GDM_DEFAULT_WELCOME_MSG "Welcome"
-#define GDM_DEFAULT_REMOTE_WELCOME_MSG "Welcome to %n"
 
 #define GDM_RESPONSE_CANCEL "GDM_RESPONSE_CANCEL"
 
@@ -734,9 +735,9 @@ void		gdm_final_cleanup	(void);
 /* The user protocol, using /tmp/.gdm_socket */
 
 #define GDM_SUP_VERSION "VERSION" /* no arguments */
-/* VERSION: Query version
+/* VERSION: Query GDM version
  * Supported since: 2.2.4.0
- * Arguments:  None
+ * Arguments: None
  * Answers:
  *   GDM <gdm version>
  *   ERROR <err number> <english error description>
@@ -750,13 +751,15 @@ void		gdm_final_cleanup	(void);
  *             only users logged in from gdm.  They must pass the xauth
  *             MIT-MAGIC-COOKIE-1 that they were passed before the
  *             connection is authenticated.
- *             Note that since 2.6.0.6 you can also use a global
+ * Note:       The AUTH LOCAL command requires the --authenticate option,
+ *             although only FLEXI XSERVER uses this currently.
+ * Note:       Since 2.6.0.6 you can also use a global
  *             <ServAuthDir>/.cookie, which works for all authentication
  *             except for SET_LOGOUT_ACTION and QUERY_LOGOUT_ACTION
  *             and SET_SAFE_LOGOUT_ACTION which require a logged in
- *             display
+ *             display.
  * Supported since: 2.2.4.0
- * Arguments:  <xauth cookie>
+ * Arguments: <xauth cookie>
  *   <xauth cookie> is in hex form with no 0x prefix
  * Answers:
  *   OK
@@ -767,10 +770,10 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* <xserver type> */
-/* FLEXI_XSERVER: Start a new X flexible server
- *   Only supported on connection that passed AUTH_LOCAL
+/* FLEXI_XSERVER: Start a new X flexible server.  Only supported on
+ *                connection that passed AUTH_LOCAL
  * Supported since: 2.2.4.0
- * Arguments:  <xserver type>
+ * Arguments: <xserver type>
  *   If no arguments, starts the standard x server
  * Answers:
  *   OK <display>
@@ -786,20 +789,26 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <uid> <xauth cookie> <xauth file> */
-/* FLEXI_XNEXT: Start a new flexible Xnest server
+/* FLEXI_XNEXT: Start a new flexible Xnest server.
+ * Note:        Supported on older versions from 2.2.4.0, later
+ *              2.2.4.2, but since 2.3.90.4 you must supply 4 
+ *              arguments or ERROR 100 will be returned.  This
+ *              will start Xnest using the XAUTHORITY file
+ *              supplied and as the uid same as the owner of
+ *              that file (and same as you supply).  You must
+ *              also supply the cookie as the third argument
+ *              for this display, to prove that you indeed are
+ *              this user.  Also this file must be readable
+ *              ONLY by this user, that is have a mode of 0600.
+ *              If this all is not met, ERROR 100 is returned.
+ * Note:        The cookie should be the MIT-MAGIC-COOKIE-1,
+ *              the first one gdm can find in the XAUTHORITY
+ *              file for this display.  If that's not what you
+ *              use you should generate one first.  The cookie
+ *              should be in hex form.
  * Supported since: 2.3.90.4
- *   Note: supported an older version from 2.2.4.0, later 2.2.4.2, but
- *   since 2.3.90.4 you must supply 4 arguments or ERROR 100 will be returned.
- *   This will start Xnest  using the XAUTHORITY file supplied and as the
- *   uid same as the owner of that file (and same as you supply).  You must
- *   also supply the cookie as the third argument for this
- *   display, to prove that you indeed are this user.  Also this file must be
- *   readable ONLY by this user, that is have a mode of 0600.  If this all is
- *   not met, ERROR 100 is returned.
- *   Note: The cookie should be the MIT-MAGIC-COOKIE-1, the first one gdm
- *   can find in the XAUTHORITY file for this display.  If that's not what you
- *   use you should generate one first.  The cookie should be in hex form.
- * Arguments:  <display to run on> <uid of requesting user> <xauth cookie for the display> <xauth file>
+ * Arguments: <display to run on> <uid of requesting user>
+ *            <xauth cookie for the display> <xauth file>
  * Answers:
  *   OK <display>
  *   ERROR <err number> <english error description>
@@ -814,16 +823,64 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
+#define GDM_SUP_ADD_DYNAMIC_DISPLAY	"ADD_DYNAMIC_DISPLAY" 
+/*
+ * ADD_DYNAMIC_DISPLAY: Create a new server definition that will
+ *                      run on the specified display leaving, it
+ *                      in DISPLAY_CONFIG state.
+ * Supported since: 2.8.0.0
+ * Arguments: <display to run on>=<server>
+ *   Where <server> is either a configuration named in the
+ *   GDM configuration a literal command name.
+ * Answers:
+ *  OK
+ *  ERROR
+ *     0 = Not implemented
+ *     2 = Existing display
+ *     3 = No server string
+ *     4 = Display startup failure
+ *     100 = Not authenticated
+ *     200 - Dynamic Displays not allowed
+ *     999 = Unknown error
+ */
+#define GDM_SUP_RELEASE_DYNAMIC_DISPLAYS	"RELEASE_DYNAMIC_DISPLAYS"
+/*
+ * RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in
+ *                           DISPLAY_CONFIG state
+ * Supported since: 2.8.0.0
+ * Arguments: None
+ * Answers:
+ *  OK
+ *  ERROR
+ *     0 = Not implemented
+ *     100 = Not authenticated
+ *     200 = Dynamic Displays not allowed
+ *     999 = Unknown error
+ */
+#define GDM_SUP_REMOVE_DYNAMIC_DISPLAY	"REMOVE_DYNAMIC_DISPLAY" 
+/*
+ * REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server
+ *                         and purging the display configuration
+ * Supported since: 2.8.0.0
+ * Arguments: <display to remove>
+ * Answers:
+ *  OK
+ *  ERROR
+ *     0 = Not implemented
+ *     100 = Not authenticated
+ *     200 = Dynamic Displays not allowed
+ *     999 = Unknown error
+ */
 #define GDM_SUP_ATTACHED_SERVERS "ATTACHED_SERVERS" /* None */
 #define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS"  /* None */
-/* ATTACHED_SERVERS: List all attached servers, useful for Linux mostly
- *   Doesn't list XDMCP and xnest non-attached servers
- * CONSOLE_SERVERS supported, but deprecated due to terminology
+/* ATTACHED_SERVERS: List all attached servers.  Doesn't list XDMCP
+ *                   and xnest non-attached servers
+ * Note:             This command used to be named CONSOLE_SERVERS,
+ *                   which is still recognized for backwards
+ *                   compatibility.  The optional pattern argument
+ *                   is supported as of version 2.8.0.0.
  * Supported since: 2.2.4.0
- * Note: This command used to be named CONSOLE_SERVERS, which is still recognized
- *       for backwards compatibility.  The optional pattern argument is supported
- *       as of version 2.8.0.0.
- * Arguments:  <pattern> (optional)
+ * Arguments: <pattern> (optional)
  *   With no argument, all dynamic displays are returned. The optional
  *   <pattern> is a string that may contain glob characters '*', '?', and
  *   '[]'. Only displays that match the pattern will be returned.
@@ -844,12 +901,13 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_ALL_SERVERS  "ALL_SERVERS" /* None */
-/* ALL_SERVERS: List all displays, including attached, remote, xnest.  This
- * Can for example be useful to figure out if the server you are on is managed
- * by the gdm daemon, by seeing if it is in the list.  It is also somewhat
- * like the 'w' command but for graphical sessions.
+/* ALL_SERVERS: List all displays, including attached, remote, xnest.
+ *              This can for example be useful to figure out if
+ *              the server you are on is managed by the gdm daemon,
+ *              by seeing if it is in the list.  It is also somewhat
+ *              like the 'w' command but for graphical sessions.
  * Supported since: 2.4.2.96
- * Arguments:  None
+ * Arguments: None
  * Answers:
  *   OK <server>;<server>;...
  *
@@ -864,9 +922,9 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_GET_SERVER_LIST "GET_SERVER_LIST" /* None */
 /* GET_SERVER_LIST:  Get a list of the server sections from
- * the configuration file. 
+ *                   the configuration file. 
  * Supported since: 2.13.0.4
- * Arguments:  None 
+ * Arguments: None 
  * Answers:
  *   OK <value>;<value>;...
  *   ERROR <err number> <english error description>
@@ -877,16 +935,17 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_GET_SERVER_DETAILS "GET_SERVER_DETAILS" /* <server> <key> */
-/* GET_SERVER_DETAILS:  Get detail information for a specific
- * server.  Key values include:
- *    NAME      - Returns the server name
- *    COMMAND   - Returns the server command
- *    FLEXIBLE  - Returns "true" if flexible, "false" otherwise
- *    CHOOSABLE - Returns "true" if choosable, "false" otherwise
- *    HANDLED   - Returns "true" if handled, "false" otherwise
- *    CHOOSER   - Returns "true" if chooser, "false" otherwise
+/* GET_SERVER_DETAILS:  Get detail information for a specific server.
  * Supported since: 2.13.0.4
  * Arguments: <server> <key>
+ *   Key values include:
+ *     ID        - Returns the server id
+ *     NAME      - Returns the server name
+ *     COMMAND   - Returns the server command
+ *     FLEXIBLE  - Returns "true" if flexible, "false" otherwise
+ *     CHOOSABLE - Returns "true" if choosable, "false" otherwise
+ *     HANDLED   - Returns "true" if handled, "false" otherwise
+ *     CHOOSER   - Returns "true" if chooser, "false" otherwise
  * Answers: 
  *   OK <value>
  *   ERROR <err number> <english error description>
@@ -899,11 +958,16 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_GET_CONFIG "GET_CONFIG" /* <key> */
 /* GET_CONFIG:  Get configuration value for key.  Useful so
- * that other programs can request configuration information
- * from GDM.  Any key defined as GDM_KEY_* in gdm.h is 
- * supported.
+ *              that other applications can request configuration
+ *              information from GDM.  Any key defined as GDM_KEY_*
+ *              in gdm.h is * supported.  Starting with version 2.13.0.2
+ *              translated keys (such as "greeter/GdmWelcome[cs]" are
+ *              supported via GET_CONFIG.  Also starting with version
+ *              2.13.0.2 it is no longer necessary to include the
+ *              default value (i.e. you can use key "greeter/IncludeAll"
+ *              instead of having to use "greeter/IncludeAll=false".
  * Supported since: 2.6.0.9
- * Arguments:   <key>
+ * Arguments: <key>
  * Answers:
  *   OK <value>
  *   ERROR <err number> <english error description>
@@ -914,9 +978,11 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_GET_CONFIG_FILE  "GET_CONFIG_FILE" /* None */
 /* GET_CONFIG_FILE: Get config file location being used by
- # the daemon.
+ #                  the daemon.   If the GDM daemon was started
+ *                  with the --config option, it will return
+ *                  the value passed in via that argument.
  * Supported since: 2.8.0.2
- * Arguments:  None
+ * Arguments: None
  * Answers:
  *   OK <full path to GDM configuration file>
  *   ERROR <err number> <english error description>
@@ -925,40 +991,68 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_UPDATE_CONFIG "UPDATE_CONFIG" /* <key> */
-/* UPDATE_CONFIG: Tell the daemon to update config of some key.  Any user
- *             can really request that values are re-read but the daemon
- *             caches the last date of the config file so a user can't
- *             actually change any values unless they can write the
- *             config file.  The keys that are currently supported are:
- *   		 security/AllowRoot (2.3.90.2)
- *   		 security/AllowRemoteRoot (2.3.90.2)
- *   		 security/AllowRemoteAutoLogin (2.3.90.2)
- *   		 security/RetryDelay (2.3.90.2)
- *   		 security/DisallowTCP (2.4.2.0)
- *   		 daemon/Greeter (2.3.90.2)
- *   		 daemon/RemoteGreeter (2.3.90.2)
- *   		 xdmcp/Enable (2.3.90.2)
- *   		 xdmcp/Port (2.3.90.2)
- *   		 xdmcp/PARAMETERS (2.3.90.2) (pseudokey, all the parameters)
- *			xdmcp/MaxPending
- *			xdmcp/MaxSessions
- *			xdmcp/MaxWait
- *			xdmcp/DisplaysPerHost
- *			xdmcp/HonorIndirect
- *			xdmcp/MaxPendingIndirect
- *			xdmcp/MaxWaitIndirect
- *			xdmcp/PingIntervalSeconds (only affects new connections)
- *   		 daemon/TimedLogin (2.3.90.3)
- *   		 daemon/TimedLoginEnable (2.3.90.3)
- *   		 daemon/TimedLoginDelay (2.3.90.3)
- *   		 greeter/SystemMenu (2.3.90.3)
- *   		 greeter/ConfigAvailable (2.3.90.3)
- *   		 greeter/ChooserButton (2.4.2.0)
- *               greeter/SoundOnLoginFile (2.5.90.0)
- *               daemon/AddGtkModules (2.5.90.0)
- *               daemon/GtkModulesList (2.5.90.0)
+/* UPDATE_CONFIG: Tell the daemon to re-read a key from the
+ *                GDM configuration file.   Any user can request
+ *                that values are re-read but the daemon will
+ *                only do so if the file has been modified
+ *                since GDM first read the file.  Only users
+ *                who can change the GDM configuration file
+ *                (normally writable only by the root user) can
+ *                actually modify the GDM configuration.  This
+ *                command is useful to cause the GDM to update
+ *                itself to recognize a change made to the GDM
+ *                configuration file by the root user.
+ *
+ *                Starting with version 2.13.0.0, all GDM keys are
+ *                supported except for the following:
+ *
+ *                    daemon/PidFile
+ *                    daemon/ConsoleNotify
+ *                    daemon/User
+ *                    daemon/Group
+ *                    daemon/LogDir
+ *                    daemon/ServAuthDir
+ *                    daemon/UserAuthDir
+ *                    daemon/UserAuthFile
+ *                    daemon/UserAuthFBDir
+ *
+ *                GDM also supports the following Psuedokeys:
+ *
+ *                xdmcp/PARAMETERS (2.3.90.2) updates the following:
+ *                    xdmcp/MaxPending
+ *                    xdmcp/MaxSessions
+ *                    xdmcp/MaxWait
+ *                    xdmcp/DisplaysPerHost
+ *                    xdmcp/HonorIndirect
+ *                    xdmcp/MaxPendingIndirect
+ *                    xdmcp/MaxWaitIndirect
+ *                    xdmcp/PingIntervalSeconds (only affects new connections)
+ *
+ *                 xservers/PARAMETERS (2.13.0.4) updates the following:
+ *                    all [server-foo] sections.
+ *
+ *                 Supported keys for previous versions of GDM:
+ *
+ *                    security/AllowRoot (2.3.90.2)
+ *                    security/AllowRemoteRoot (2.3.90.2)
+ *                    security/AllowRemoteAutoLogin (2.3.90.2)
+ *                    security/RetryDelay (2.3.90.2)
+ *                    security/DisallowTCP (2.4.2.0)
+ *                    daemon/Greeter (2.3.90.2)
+ *                    daemon/RemoteGreeter (2.3.90.2)
+ *                    xdmcp/Enable (2.3.90.2)
+ *                    xdmcp/Port (2.3.90.2)
+ *                    daemon/TimedLogin (2.3.90.3)
+ *                    daemon/TimedLoginEnable (2.3.90.3)
+ *                    daemon/TimedLoginDelay (2.3.90.3)
+ *                    greeter/SystemMenu (2.3.90.3)
+ *                    greeter/ConfigAvailable (2.3.90.3)
+ *                    greeter/ChooserButton (2.4.2.0)
+ *                    greeter/SoundOnLoginFile (2.5.90.0)
+ *                    daemon/AddGtkModules (2.5.90.0)
+ *                    daemon/GtkModulesList (2.5.90.0)
  * Supported since: 2.3.90.2
- * Arguments:  <key>
+ * Arguments: <key>
  *   <key> is just the base part of the key such as "security/AllowRemoteRoot"
  * Answers:
  *   OK
@@ -969,10 +1063,11 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_GREETERPIDS  "GREETERPIDS" /* None */
-/* GREETERPIDS: List all greeter pids so that one can send HUP to them
- * for config rereading.  Of course one must be root to do that.
+/* GREETERPIDS: List all greeter pids so that one can send HUP
+ *              to them for config rereading.  Of course one
+ *              must be root to do that.
  * Supported since: 2.3.90.2
- * Arguments:  None
+ * Arguments: None
  * Answers:
  *   OK <pid>;<pid>;...
  *   ERROR <err number> <english error description>
@@ -982,7 +1077,8 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_QUERY_LOGOUT_ACTION "QUERY_LOGOUT_ACTION" /* None */
 /* QUERY_LOGOUT_ACTION: Query which logout actions are possible
- * Only supported on connections that passed AUTH_LOCAL.
+ *                      Only supported on connections that passed
+ *                      AUTH_LOCAL.
  * Supported since: 2.5.90.0
  * Answers:
  *   OK <action>;<action>;...
@@ -998,16 +1094,15 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_SET_LOGOUT_ACTION "SET_LOGOUT_ACTION" /* <action> */
-/* SET_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend after slave
- * process exits. 
- * Only supported on connections that passed AUTH_LOCAL.
+/* SET_LOGOUT_ACTION: Tell the daemon to halt/reboot/suspend after
+ *                    slave process exits.  Only supported on
+ *                    connections that passed AUTH_LOCAL.
  * Supported since: 2.5.90.0
- * Arguments:  <action>
+ * Arguments: <action>
  *   NONE           Set exit action to 'none'
  *   HALT           Set exit action to 'halt'
  *   REBOOT         Set exit action to 'reboot'
  *   SUSPEND        Set exit action to 'suspend'
- *
  * Answers:
  *   OK
  *   ERROR <err number> <english error description>
@@ -1018,15 +1113,18 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_SET_SAFE_LOGOUT_ACTION "SET_SAFE_LOGOUT_ACTION" /* <action> */
-/* SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend after
- * everybody logs out.  If only one person logs out, then this is obviously
- * the same as the SET_LOGOUT_ACTION.  Note that SET_LOGOUT_ACTION has
- * precendence over SET_SAFE_LOGOUT_ACTION if it is set to something other
- * then NONE.  If no one is logged in, then the action takes effect
- * immedeately.
- * Only supported on connections that passed AUTH_LOCAL.
+/* SET_SAFE_LOGOUT_ACTION: Tell the daemon to halt/reboot/suspend
+ *                         after everybody logs out.  If only one
+ *                         person logs out, then this is obviously
+ *                         the same as the SET_LOGOUT_ACTION.  Note
+ *                         that SET_LOGOUT_ACTION has precendence
+ *                         over SET_SAFE_LOGOUT_ACTION if it is set
+ *                         to something other then NONE.  If no one
+ *                         is logged in, then the action takes effect
+ *                         immedeately.  Only supported on connections
+ *                         that passed AUTH_LOCAL.
  * Supported since: 2.5.90.0
- * Arguments:  <action>
+ * Arguments: <action>
  *   NONE           Set exit action to 'none'
  *   HALT           Set exit action to 'halt'
  *   REBOOT         Set exit action to 'reboot'
@@ -1049,13 +1147,15 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_QUERY_VT "QUERY_VT" /* None */
 /* QUERY_VT:  Ask the daemon about which VT we are currently on.
- * This is useful for logins which don't own /dev/console but are
- * still console logins.  Only supported on Linux currently, other places
- * will just get ERROR 8.  This is also the way to query if VT
- * support is available in the daemon in the first place.
- * Only supported on connections that passed AUTH_LOCAL.
+ *            This is useful for logins which don't own
+ *            /dev/console but are still console logins.  Only
+ *            supported on Linux currently, other places will
+ *            just get ERROR 8.  This is also the way to query
+ *            if VT support is available in the daemon in the
+ *            first place.  Only supported on connections that
+ *            passed AUTH_LOCAL.
  * Supported since: 2.5.90.0
- * Arguments:  None
+ * Arguments: None
  * Answers:
  *   OK <vt number>
  *   ERROR <err number> <english error description>
@@ -1067,12 +1167,12 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_SET_VT "SET_VT" /* <vt> */
 /* SET_VT:  Change to the specified virtual terminal.
- * This is useful for logins which don't own /dev/console but are
- * still console logins.  Only supported on Linux currently, other places
- * will just get ERROR 8.
- * Only supported on connections that passed AUTH_LOCAL.
+ *          This is useful for logins which don't own /dev/console
+ *          but are still console logins.  Only supported on Linux
+ *          currently, other places will just get ERROR 8.
+ *          Only supported on connections that passed AUTH_LOCAL.
  * Supported since: 2.5.90.0
- * Arguments:  None
+ * Arguments: None
  * Answers:
  *   OK
  *   ERROR <err number> <english error description>
@@ -1084,51 +1184,10 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_CLOSE        "CLOSE" /* None */
-/* CLOSE Answers: None
+/* CLOSE: Close sockets connection
  * Supported since: 2.2.4.0
- */
-
-#define GDM_SUP_ADD_DYNAMIC_DISPLAY	"ADD_DYNAMIC_DISPLAY" 
-/*
- * ADD_X_SERVER: Add a dynamic display configuration.
- *   Configures a dynamic X server to run on the specified display
- *   leaving it in DISPLAY_CONFIG state.
- * Supported since: 2.8.0.0
- * Arguments:  <display to run on>=<server>
- *   Where <server> is either a configuration named in gdm.conf or
- *   a literal command name.
- * Answers:
- *  OK
- *  ERROR
- *     0 = Not implemented
- *     2 = Existing display
- *     3 = No server string
- *     4 = Display startup failure
- *     999 = Unknown error
- */
-#define GDM_SUP_REMOVE_DYNAMIC_DISPLAY	"REMOVE_DYNAMIC_DISPLAY" 
-/*
- * REMOVE_X_SERVER: Remove a dynamic display
- *   Removes a dynamic display, killing the server and purging
- *   the display configuration
- * Supported since: 2.8.0.0
- * Arguments:  <display to remove>
- * Answers:
- *  OK
- *  ERROR
- *     0 = Not implemented
- *     999 = Unknown error
- */
-#define GDM_SUP_RELEASE_DYNAMIC_DISPLAYS	"RELEASE_DYNAMIC_DISPLAYS"
-/*
- * RELEASE_SERVERS: Release dynamic displays currently in PAUSED state
- * Supported since: 2.8.0.0
  * Arguments: None
- * Answers:
- *  OK
- *  ERROR
- *     0 = Not implemented
- *     999 = Unknown error
+ * Answers: None
  */
 
 /* User flags for the SUP protocol */

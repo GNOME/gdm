@@ -13,7 +13,7 @@ postdir = $(sysconfdir)/gdm/PostSession
 predir = $(sysconfdir)/gdm/PreSession
 postlogindir = $(sysconfdir)/gdm/PostLogin
 
-noinst_DATA = gdm.conf
+noinst_DATA = gdm.conf gdm.conf-custom
 
 DESKTOP_FILES = default.desktop CDE.desktop gnome.desktop
 
@@ -51,6 +51,7 @@ uninstall-hook:
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/CDE.desktop \
 	$(DESTDIR)$(gdmconfdir)/gdm.conf \
+	$(DESTDIR)$(gdmconfdir)/gdm.conf-custom \
 	$(DESTDIR)$(gdmconfdir)/factory-gdm.conf \
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
@@ -73,12 +74,19 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop I
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
 	fi
-	-if cmp -s $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
-		cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf.orig; \
+	-if ! cmp -s $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
+		if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; then \
+			cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
+		else \
+			cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf.org; \
+		fi; \
 		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf; \
 	fi
 	if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf; then \
 		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf; \
+	fi
+	if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; then \
+		$(INSTALL_DATA) gdm.conf-custom $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
 	fi
 	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf
 

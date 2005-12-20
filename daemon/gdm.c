@@ -2889,7 +2889,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			name = g_strdup (GDM_STANDARD);
 		}
 
-		svr = gdm_find_x_server (name);
+		svr = gdm_find_xserver (name);
 		if G_UNLIKELY (svr == NULL) {
 			/* Don't print the name to syslog as it might be
 			 * long and dangerous */
@@ -3006,7 +3006,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		gdm_connection_write (conn, msg->str);
 		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_GET_SERVER_LIST) == 0) {
-		gchar *retval = gdm_get_x_servers ();
+		gchar *retval = gdm_get_xservers ();
 
 		if (retval != NULL) {
 			gdm_connection_printf (conn, "OK %s\n", retval);
@@ -3019,10 +3019,12 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		     strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
 		const char *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
 		gchar   **splitstr = g_strsplit (server, " ", 2);
-		GdmXserver  *svr   = gdm_find_x_server ((char *)splitstr[0]);
+		GdmXserver  *svr   = gdm_find_xserver ((char *)splitstr[0]);
 
 		if (svr != NULL) {
-			if (g_strncasecmp (splitstr[1], "NAME", 4) == 0)
+			if (g_strncasecmp (splitstr[1], "ID", 4) == 0)
+			   gdm_connection_printf (conn, "OK %s\n", svr->id);
+			else if (g_strncasecmp (splitstr[1], "NAME", 4) == 0)
 			   gdm_connection_printf (conn, "OK %s\n", svr->name);
 			else if (g_strncasecmp (splitstr[1], "COMMAND", 7) == 0) 
 			   gdm_connection_printf (conn, "OK %s\n", svr->command);
@@ -3031,25 +3033,25 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			   gdm_connection_printf (conn, "OK true\n");
 			else if (g_strncasecmp (splitstr[1], "FLEXIBLE", 8) == 0 &&
                                  !svr->flexible)
-			   gdm_connection_printf (conn, "OK FALSE\n");
+			   gdm_connection_printf (conn, "OK false\n");
 			else if (g_strncasecmp (splitstr[1], "CHOOSABLE", 9) == 0 &&
                                  svr->choosable)
 			   gdm_connection_printf (conn, "OK true\n");
 			else if (g_strncasecmp (splitstr[1], "CHOOSABLE", 9) == 0 &&
                                  !svr->choosable)
-			   gdm_connection_printf (conn, "OK FALSE\n");
+			   gdm_connection_printf (conn, "OK false\n");
 			else if (g_strncasecmp (splitstr[1], "HANDLED", 7) == 0 &&
                                  svr->handled)
 			   gdm_connection_printf (conn, "OK true\n");
 			else if (g_strncasecmp (splitstr[1], "HANDLED", 7) == 0 &&
                                  !svr->handled)
-			   gdm_connection_printf (conn, "OK FALSE\n");
+			   gdm_connection_printf (conn, "OK false\n");
 			else if (g_strncasecmp (splitstr[1], "CHOOSER", 7) == 0 &&
                                  svr->chooser)
 			   gdm_connection_printf (conn, "OK true\n");
 			else if (g_strncasecmp (splitstr[1], "CHOOSER", 7) == 0 &&
                                  !svr->chooser)
-			   gdm_connection_printf (conn, "OK FALSE\n");
+			   gdm_connection_printf (conn, "OK false\n");
 			else
 			   gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
 

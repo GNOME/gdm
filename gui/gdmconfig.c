@@ -36,6 +36,7 @@
 static GHashTable *int_hash       = NULL;
 static GHashTable *bool_hash      = NULL;
 static GHashTable *string_hash    = NULL;
+static gboolean gdm_never_cache   = FALSE;
 
 /*
  * Hack to keep track if config functions should be printing error messages
@@ -48,6 +49,24 @@ gdm_openlog (const char *ident, int logopt, int facility)
 {
    openlog (ident, logopt, facility);
    using_syslog = TRUE;
+}
+
+/**
+ * gdm_config_never_cache
+ *
+ * Most programs want config data to be cached to avoid constantly
+ * grabbing the information over the wire and are happy calling 
+ * gdm_update_config to update a key value.  However, gdmsetup
+ * really does want the latest value each time it accesses a 
+ * config option.  To avoid needing to call update_config 
+ * for each key to be retrieved, just calling this function will
+ * let the config system know to always get the value via the
+ * sockets connection.
+ */
+void
+gdm_config_never_cache (gboolean never_cache)
+{
+   gdm_never_cache = never_cache;
 }
 
 /**
@@ -203,8 +222,8 @@ gdm_config_get_xservers (gboolean flexible)
         while (*sec != NULL) {
 		GdmXserver *svr = g_new0 (GdmXserver, 1);
 
+		svr->id      = gdm_config_get_xserver_details (*sec, "ID");
 		svr->name    = gdm_config_get_xserver_details (*sec, "NAME");
-		svr->id      = g_strdup_printf ("server-%s", *sec);
 		svr->command = gdm_config_get_xserver_details (*sec, "COMMAND");
 
 		temp = gdm_config_get_xserver_details (*sec, "FLEXIBLE");
@@ -285,7 +304,7 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 	g_free (result);
 
 	if (hashretval == NULL) {
-		gchar** charval = g_new0 (gchar *, 1);
+		gchar **charval = g_new0 (gchar *, 1);
 		*charval = temp;
 		gdm_config_add_hash (string_hash, key, charval);
 
@@ -309,7 +328,10 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 gchar *
 gdm_config_get_string (gchar *key)
 {
-   return _gdm_config_get_string (key, FALSE, NULL, TRUE);
+   if (gdm_never_cache == TRUE)
+      return _gdm_config_get_string (key, TRUE, NULL, TRUE);
+   else
+      return _gdm_config_get_string (key, FALSE, NULL, TRUE);
 }
 
 /**
@@ -359,7 +381,10 @@ _gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *change
 gchar *
 gdm_config_get_translated_string (gchar *key)
 {
-   return _gdm_config_get_translated_string (key, FALSE, NULL);
+   if (gdm_never_cache == TRUE)
+      return _gdm_config_get_translated_string (key, TRUE, NULL);
+   else
+      return _gdm_config_get_translated_string (key, FALSE, NULL);
 }
 
 /**
@@ -427,7 +452,10 @@ _gdm_config_get_int (gchar *key, gboolean reload, gboolean *changed)
 gint
 gdm_config_get_int (gchar *key)
 {
-   return _gdm_config_get_int (key, FALSE, NULL);
+   if (gdm_never_cache == TRUE)
+      return _gdm_config_get_int (key, TRUE, NULL);
+   else
+      return _gdm_config_get_int (key, FALSE, NULL);
 }
 
 /**
@@ -498,7 +526,10 @@ _gdm_config_get_bool (gchar *key, gboolean reload, gboolean *changed)
 gboolean
 gdm_config_get_bool (gchar *key)
 {
-   return _gdm_config_get_bool (key, FALSE, NULL);
+   if (gdm_never_cache == TRUE)
+      return _gdm_config_get_bool (key, TRUE, NULL);
+   else
+      return _gdm_config_get_bool (key, FALSE, NULL);
 }
 
 /**

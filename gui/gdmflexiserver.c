@@ -530,7 +530,7 @@ check_for_users (void)
 }
 
 static void
-read_servers (gchar *config_file)
+read_servers (void)
 {
 	GSList *li;
 
@@ -701,7 +701,6 @@ int
 main (int argc, char *argv[])
 {
 	GtkWidget *dialog;
-	gchar *config_file;
 	char *command;
 	char *version;
 	char *ret;
@@ -731,12 +730,6 @@ main (int argc, char *argv[])
 
 	if ( ! gdmcomm_check (TRUE)) {
 		return 1;
-	}
-
-	config_file = gdm_common_get_config_file ();
-	if (config_file == NULL) {
-		g_print (_("Could not access GDM configuration file.\n"));
-		exit (0);
 	}
 
 	if (send_command != NULL) {
@@ -771,7 +764,6 @@ main (int argc, char *argv[])
 
 		if (ret != NULL) {
 			g_print ("%s\n", ret);
-			g_free (config_file);
 			return 0;
 		} else {
 			dialog = ve_hig_dialog_new
@@ -786,7 +778,6 @@ main (int argc, char *argv[])
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
-			g_free (config_file);
 			return 1;
 		}
 	}
@@ -815,7 +806,6 @@ main (int argc, char *argv[])
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
-			g_free (config_file);
 			return 1;
 		}
 		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST " %s %d %s %s",
@@ -842,11 +832,10 @@ main (int argc, char *argv[])
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
-			g_free (config_file);
 			return 1;
 		}
 
-		read_servers (config_file);
+		read_servers ();
 		server = choose_server ();
 		if (server == NULL)
 			command = g_strdup (GDM_SUP_FLEXI_XSERVER);
@@ -855,8 +844,6 @@ main (int argc, char *argv[])
 						   server);
 		version = "2.2.4.0";
 	}
-
-	g_free (config_file);
 
 	ret = gdmcomm_call_gdm (command, auth_cookie, version, 5);
 	g_free (command);
