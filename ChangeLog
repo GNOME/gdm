@@ -1,20 +1,82 @@
+2005-12-21  Brian Cameron  <brian.cameron@sun.com>
+
+	After two months, the redesign of GDM's internal configuration is
+	finally reaching a close.  Now GDM users are instructed to not modify
+	the gdm.conf file directly and instead put any cutomizations in a
+	separate file called gdm.conf-custom (read the comments in both files).
+	gdmsetup now modifies the gdm.conf-custom file.  The GDM daemon will
+	now use values in gdm.conf-custom first and the default values in
+	gdm.conf if no value is defined in gdm.conf-custom.  Benefits:
+
+	1) Now GDM truly supports system-wide and machine-specific config.
+	   System wide configuration is when the sysadmin wants to share the
+	   main gdm.conf file across multiple systems on a shared file system
+	   (possible by building GDM with the --with-configdir option or by
+	   running GDM with the --config option).  Specific systems can
+	   override defaults by modifying the gdm.conf-custom file.
+	2) Distros can stomp the main gdm.conf file on upgrade knowing that any
+	   user changes are stored in a separate file.  For best backwards
+	   compatibility, distros will need to move the gdm.conf file to
+	   gdm.conf-custom if the gdm.conf file exists on the system but the
+	   gdm.conf-custom file does not.
+	3) Making this work required a lot of cleanup in the way GDM manages
+	   its configuration files.  For example, now config options are
+	   managed via access functions, and do not depend on non-static
+	   globals being shared across files.  The GET_CONFIG and UPDATE_CONFIG
+	   commands work better and do not require special tweaking when adding
+	   new config options.  Vicious-extensions is now only included in a
+	   few files that need to know how to access the config files directly.
+
+	This makes GDM support a popular feature in CDE which works similarly.
+	(config files in /etc/dt/config take precidence over the ones in
+	/usr/dt/config).
+
+	* daemon/gdmconfig.[ch]: Now supports reading configuration values
+	  (including "servers" and "server-foo" sections from gdm.conf-custom
+	  and then from gdm.conf if not found in the custom file.  Now store
+	  translated strings in a separate hash since this improves
+	  performance.  Fix GET_SERVER_DETAILS so it works better and
+	  update config can now update server-foo sections via the
+	  "xservers/PARMAETERS" key.
+	* gui/gdmsetup.c: Now only writes to the gdm.conf-custom file and isa
+	  smart enough to just delete the key if the value will be the same as
+	  in the gdm.conf file.  Fixed some core dumping issues caused by my
+	  change to make gdmsetup use the new gdmconfig functions for getting
+	  configuration data from the server.  This work cleaned up the code
+	  quite a bit.  Removed the "--config" option from gdmsetup since this
+	  change makes it edit the configuration of the running GDM daemon
+	  instead of a program that edits a particular configuration file.
+	* daemon/gdm.h, doc/C/gdm.xml: Updated docs with info about how
+	  configuration works nwo.  Now sockets protocol info is the same
+	  in both documents.
+	* daemon/gdm.c: Fix GET_SERVER_DETAILS to support "ID" and some
+	  cleanup.
+	* gui/Makefile.am, daemon/Makefile.am: Support --with-configdir option
+	  which got broken.
+	* config/gdm.conf.in: Updated comments to mention that this file is not
+	  to be edited.	Cleaned up the file so it is more readible.
+	* config/Makefile.am: Install gdm.conf-custom and move gdm.conf to
+	  gdm.conf-custom if it is modified and gdm.conf-custom is not already
+	  installed.  If it is changed and gdm.conf-custom already exists, move
+	  it to gdm.conf.org.
+	* gui/gdmchooser.c, gui/gdmflexiserver.c: Remove unused getting of the
+	  configuration file.
+	* gui/gdmconfig.[ch]: Add function to tell config to never_cache, which
+	  is needed by gdmsetup.
+	* config/gdm.conf-custom: Added template file.
+
 2005-12-13  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmsetup.c: Fix bug I introduced into
-	  gdmsetup when I made it use the new 
-	  gdmconfig functions.  Still need to use
-	  ve_config functions when accessing the
-	  server-foo sections.  Patch provided by 
+	* gui/gdmsetup.c: Fix bug I introduced into gdmsetup when I made it
+	  use the new gdmconfig functions.  Still need to use ve_config
+	  functions when accessing the server-foo sections.  Patch provided by 
 	  Jani Monoses on gdm-list@gnome.org.
 
 2005-12-13  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/Makefile.am: Fix Makefile so that 
-	  libviciousui.a is used instead of 
-	  libviciousui-gnome.a.  This allows all
-	  GDM GUI programs to not require libgnome
-	  anymore.  Only gdmsetup still requires
-	  libgnomeui.
+	* gui/Makefile.am: Fix Makefile so that libviciousui.a is used instead
+	  of libviciousui-gnome.a.  This allows all GDM GUI programs to not
+	  require libgnome anymore.  Only gdmsetup still requires libgnomeui.
 
 2005-12-13  Brian Cameron  <brian.cameron@sun.com>
 
@@ -22,18 +84,15 @@
 	  gui/gdmXnestchooser.c, gui/gdmchooser.c,
 	  gui/gdmcomm.c, gui/gdmflexiserver.c, 
 	  gui/gdmlogin.c, gui/gdmsetup.glade,
-	  gui/greeter/greeter.c:  Now consistantly use
-	  "GDM" in strings instead of "gdm".  Fixes bug
-	  #323221.  Thanks to Adam Weinberger
+	  gui/greeter/greeter.c:  Now consistantly use "GDM" in strings
+	  instead of "gdm".  Fixes bug #323221.  Thanks to Adam Weinberger
 	  <adamw@gnome.org> for pointing this out.
 
 2005-12-12  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmsetup.glade: Correct two typos.
-	  "Backgroud" to "Background" and "WIndow" to
-	  "Window".  Thanks to Asmund Skjaeveland
-	  <aasmunds@fys.uio.no> for pointing this
-	  out on gdm-list@gnome.org.
+	* gui/gdmsetup.glade: Correct two typos.  "Backgroud" to "Background"
+	  and "WIndow" to "Window".  Thanks to Asmund Skjaeveland
+	  <aasmunds@fys.uio.no> for pointing this out on gdm-list@gnome.org.
 
 2005-12-12  Brian Cameron  <brian.cameron@sun.com>
 
@@ -67,9 +126,9 @@
 	* Release 2.13.0.3: 
 	* NEWS, configure.ac: Updated
 	* docs/C/gdm.xml: Updated version/date.
-	* daemon/gdm.[ch]: Comment out new protocol commands
-	  I am adding to get rid of the need to use gnome
-	  config.  This will be in the next release.
+	* daemon/gdm.[ch]: Comment out new protocol commands I am adding to
+	  get rid of the need to use gnome config.  This will be in the next
+	  release.
 
 2005-12-12  Brian Cameron  <brian.cameron@sun.com>
 
@@ -148,11 +207,9 @@
 	  daemon/misc.c, daemon/slave.c,
 	  daemon/xdmcp.c, gui/gdmXnestchooser.c,
 	  gui/gdmconfig.c, gui/gdmlogin.c,
-	  gui/greeter/greeter_canvas_textm.c:  Fix
-	  compiler warnings.  Patch provided by
-          Frederic Crozat on gdm-list@gnome.org.
-	  Also make sure that all functions have
-	  a space before the "(" to better follow
+	  gui/greeter/greeter_canvas_textm.c:  Fix compiler warnings.  Patch
+	  provided by Frederic Crozat on gdm-list@gnome.org.  Also make sure
+	  that all functions have a space before the "(" to better follow
 	  coding style guide.
 
 	* daemon/cookie.c, daemon/display.c,
@@ -165,10 +222,8 @@
 	  gui/greeter/greeter_action_language.c,
 	  gui/greeter/greeter_action_canvas_item.c,
 	  gui/greeter/greeter_session.c,
-	  gui/greeter/greeter_system.c:  Make
-	  sure that all functions have a space
-	  before the "(" to better follow coding
-	  style guide.
+	  gui/greeter/greeter_system.c:  Make sure that all functions have a
+	  space before the "(" to better follow coding style guide.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -177,29 +232,26 @@
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
         * gui/modules/keymouselistener.c,
-          gui/modules/dwellmouselistener.c:  
-	  Backing out this fix.  It is not needed.
+          gui/modules/dwellmouselistener.c:  Backing out this fix.  It is not
+	  needed.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
         * gui/modules/keymouselistener.c,
-          gui/modules/dwellmouselistener.c:  
-          Fix build on Darwin.  Fixes bug #322085.
-          Patch provided by dmacks@netspace.org.
+          gui/modules/dwellmouselistener.c:  Fix build on Darwin.  Fixes bug
+	  #322085.  Patch provided by dmacks@netspace.org.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-	* gui/gdmconfig.c: Remove value_set_hash
-	  since it isn't really needed.  Further
-	  cleanup.
+	* gui/gdmconfig.c: Remove value_set_hash since it isn't really needed.
+	  Further cleanup.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-	* daemon/gdmconfig.c, gui/gdmconfig.c: Minor
-	  tweaks.  Honor doing_update when doing
-	  translations and don't translate Welcome
-	  or RemoteWelcome in the daemon since it
-	  does not make sense to do this here.
+	* daemon/gdmconfig.c, gui/gdmconfig.c: Minor tweaks.  Honor
+	  doing_update when doing translations and don't translate Welcome or
+	  RemoteWelcome in the daemon since it does not make sense to do this
+	  here.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -208,24 +260,20 @@
 	  gui/greeter/greeter_item_ulist.c,
 	  gui/greeter/greeter_parser.[ch],
 	  gui/modules/dwellmouselistener.c,
-	  gui/modules/keymouselistener.c: Fix
-          compiler warnings.  Fixes bug #322053.
-          Patch provided by Frederic Crozat.  Patch
-	  required some work to apply to CVS head.
+	  gui/modules/keymouselistener.c: Fix compiler warnings.  Fixes bug
+	  #322053.  Patch provided by Frederic Crozat.  Patch required some
+	  work to apply to CVS head.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/gdmlogin.c: Now use GDK_RGB_DITHER_MAX
-          so that GDM always displays a nice background
-          regardless of X configuration (X in 16bpp mode).
-          Fixes bug #322029.  Patch provided by Frederic
-          Crozat.
+        * gui/gdmlogin.c: Now use GDK_RGB_DITHER_MAX so that GDM always
+	  displays a nice background regardless of X configuration (X in 16bpp
+	  mode).  Fixes bug #322029.  Patch provided by Frederic Crozat.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-	* configure.in, vicious-extensions/ve-misc.c:
-	  Fix build on Darwin.  Fixes bug #322085.
-	  Patch provided by dmacks@netspace.org.
+	* configure.in, vicious-extensions/ve-misc.c: Fix build on Darwin.
+	  Fixes bug #322085.  Patch provided by dmacks@netspace.org.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -239,75 +287,56 @@
 
 2005-11-21  Brian Cameron <Brian.Cameron@sun.com>
 
-	This further improves GDM configuration so that
-	now only the GDM daemon parses and manages the
-	configuration file.  Most client programs use
-	the GET_CONFIG command to access needed data.
-	This simplifies the configuration logic and 
-	puts all configuration parsing in one place
-	and gets rid of a lot of global variables that
-	were making the code look messy.  This also
-	gets rid of several places where gnome_config 
-	deprecated functions were being used.  I have
-	cleaned up the code so that the vicious-extensions
-	code is more localized in gui/gdmconfig.[ch].
-	Some work is left to do:  gdmflexiserver still
-	uses gnome_config functions and gdmconfig should
-	use the new functions for reading from the
-	configuration file.  Some compile issues fixed
-	as highlghted by dmacks@netspace.org to fix
+	This further improves GDM configuration so that now only the GDM
+	daemon parses and manages the configuration file.  Most client
+	programs use the GET_CONFIG command to access needed data.  This
+	simplifies the configuration logic and puts all configuration parsing
+	in one place and gets rid of a lot of global variables that were
+	making the code look messy.  This also gets rid of several places
+	where gnome_config deprecated functions were being used.  I have
+	cleaned up the code so that the vicious-extensions code is more
+	localized in gui/gdmconfig.[ch].  Some work is left to do:
+	gdmflexiserver still uses gnome_config functions and gdmconfig should
+	use the new functions for reading from the configuration file.  Some
+	compile issues fixed as highlghted by dmacks@netspace.org to fix
 	bug #322083.
 
 	* NEWS: Fixed comment.
-	* daemon/gdm.h: Further cleanup of #define's so
-	  that they better match the names of the config
-	  keys.
-	* daemon/gdm.c: Now GET_CONFIG returns "OK" if
-	  the key is valid but has no value when it 
-	  is a string.  Now free return value from
+	* daemon/gdm.h: Further cleanup of #define's so that they better match
+	  the names of the config keys.
+	* daemon/gdm.c: Now GET_CONFIG returns "OK" if the key is valid but has
+	  no value when it is a string.  Now free return value from
 	  gdm_config_to_string.
-	* daemon/Makefile.am, gui/greeter/Makefile.am:
-	  Now the daemon validates the greeter's theme
-	  directory, so pass the default value into the
+	* daemon/Makefile.am, gui/greeter/Makefile.am: Now the daemon validates
+	  the greeter's theme directory, so pass the default value into the
 	  daemon and not the greeter.
-	* daemon/gdmconfig.h: Added gdm_is_valid_key
-	  and corrected prototype for
-	  gdm_set_user_session_lang.
+	* daemon/gdmconfig.h: Added gdm_is_valid_key and corrected prototype
+	  for gdm_set_user_session_lang.
 	* daemon/slave.c: Fix warning and compile errors.
-	* daemon/gdmconfig.c: Further fleshed out.
-	  Now it supports a few additional keys I 
-	  overlooked.  It now validates all keys used
-	  by the slaves.  Now handles translated string.
-	  Further refactored the code.  
-	* gui/Makefile.am: Added gdmconfig.[ch] to 
-	  common library.
-	* gui/gdmconfig.[ch]: New functions for 
-	  accessing configuration data for slaves.
+	* daemon/gdmconfig.c: Further fleshed out.  Now it supports a few
+	  additional keys I overlooked.  It now validates all keys used by the
+	  slaves.  Now handles translated string.  Further refactored the code.
+	* gui/Makefile.am: Added gdmconfig.[ch] to common library.
+	* gui/gdmconfig.[ch]: New functions for accessing configuration data
+ 	  for slaves.
 	* gui/gdmXnestchooser.c, gui/gdmlanguages.c,
 	  gui/gdmsession.h, gui/gdmuser.h, gui/gdmwm.c,
 	  gui/misc.c, gui/greeter/greeter_item_capslock.c:
 	  gui/greeter/greeter_item_pam.c: No longer include
 	  vicious.h/viciousui.h, instead gdmconfig.h.
-	* gui/gdmcomm.c: Fix gdm_check_comm to no
-	  longer require passing in the config file
-	  name.
-	* gui/gdmcommon.[ch]: Get rid of old 
-	  gdm_common_*_same functions that are
-	  replaced with new gui/gdmconfig logic.
-	  Now functions that access config data
-	  use the new functions.
-	* gui/gdmflexiserver.c: Now displays the
-	  localized string when you use GET_CONFIG
-	  to access a translatable string.
-	* gui/gdmconfig.c: Now calls update_key in
-	  addition to update_greeters when updating
-	  greeter config data, since the daemon needs
-	  to update the values now when they change.
-	* gui/gdmchooser.c, gui/gdmdynamic.c,
-	  gui/gdmlogin.c, gui/gdmphotosetup.c,
-	  gui/gdmsession.c, gui/gdmuser.c,
-	  gui/gdm/gdmXnestchooser.c,
-	  gui/greeter/greeter.c,
+	* gui/gdmcomm.c: Fix gdm_check_comm to no longer require passing in
+	  the config file name.
+	* gui/gdmcommon.[ch]: Get rid of old gdm_common_*_same functions that
+	  are replaced with new gui/gdmconfig logic.  Now functions that access
+	  config data use the new functions.
+	* gui/gdmflexiserver.c: Now displays the localized string when you use
+	  GET_CONFIG to access a translatable string.
+	* gui/gdmconfig.c: Now calls update_key in addition to update_greeters
+	  when updating greeter config data, since the daemon needs to update
+	  the values now when they change.
+	* gui/gdmchooser.c, gui/gdmdynamic.c, gui/gdmlogin.c,
+	  gui/gdmphotosetup.c, gui/gdmsession.c, gui/gdmuser.c,
+	  gui/gdm/gdmXnestchooser.c, gui/greeter/greeter.c,
 	  gui/greeter/greeter_action_language.c,
 	  gui/greeter/greeter_canvas_item.c,
 	  gui/greeter/greeter_item.c,
@@ -316,12 +345,11 @@
 	  gui/greeter/greeter_item_list.c,
 	  gui/greeter/greeter_parser.c,
 	  gui/greeter/greeter_session.c,
-	  gui/greeter/greeter_system.c:  Updated to
-	  use new configuration functions.
-	* vicious-extensions/glade-helper.c: Now
-	  include stdlib.h to avoid compiler warnings.
-	* gui/greeter/greeter.c: Remove unused 
-	  gdm_kill_thingies function.
+	  gui/greeter/greeter_system.c:  Updated to use new configuration
+	  functions.
+	* vicious-extensions/glade-helper.c: Now include stdlib.h to avoid
+	  compiler warnings.
+	* gui/greeter/greeter.c: Remove unused gdm_kill_thingies function.
 
 2005-11-19  Jürg Billeter  <j@bitron.ch>
 
@@ -333,10 +361,9 @@
 
 2005-11-15  Brian Cameron <Brian.Cameron@sun.com>
 
-	* daemon/getvt.c: Change made on 11/03 to make
-	  GDM use VT_GETSTATE for peeking VT freeness broke
-	  BSD builds.  Put back code for BSD.  Linux will
-	  continue to use VT_GETSTATE.  Fixes bug #321493.
+	* daemon/getvt.c: Change made on 11/03 to make GDM use VT_GETSTATE for
+	  peeking VT freeness broke BSD builds.  Put back code for BSD.  Linux
+	  will continue to use VT_GETSTATE.  Fixes bug #321493.
 
 2005-11-14  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -354,9 +381,8 @@
 
 2005-11-11  Brian Cameron  <brian.cameron@sun.com>
 
-        * configure.ac: Update check for socklen_t so it
-          includes sys/socket.h.  Some BSD platforms define
-          socklen_t there.  Patch provided by
+        * configure.ac: Update check for socklen_t so it includes sys/socket.h.
+	  Some BSD platforms define socklen_t there.  Patch provided by
           dmacks@netspace.org.  Fixes bug #320930.
 
 2005-11-09  Brian Cameron  <brian.cameron@sun.com>
@@ -365,44 +391,41 @@
 
 2005-11-08  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/getvt.[ch]: Fix reading of
-	  GDM_KEY_FIRST_VT and GDM_KEY_VT_ALLOCATION
-	  from config.
+	* daemon/getvt.[ch]: Fix reading of GDM_KEY_FIRST_VT and
+	  GDM_KEY_VT_ALLOCATION from config.
 
 2005-11-08  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/getvt.c daemon/slave.c: Add errno.h and
-	  gdmconfig.h to getvt.h.  Fix Xinerama key in
-	  slave.c so code comiles when Xinerama is enabled.
+	* daemon/getvt.c daemon/slave.c: Add errno.h and gdmconfig.h to
+	  getvt.h.  Fix Xinerama key in slave.c so code comiles when Xinerama
+	  is enabled.
 
 2005-11-07  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/gdm.h, gui/gdmchooser.c: No longer 
-	  #ifdef the reading of the Multicast config 
-	  data.  It's okay if these values are read in
-	  even if IPv6 isn't being used.
+	* daemon/gdm.h, gui/gdmchooser.c: No longer #ifdef the reading of the
+	  Multicast config data.  It's okay if these values are read in even if
+	  IPv6 isn't being used.
 
 2005-11-04  Brian Cameron  <brian.cameron@sun.com>
 
-	* configure.ac: Fix check for XInput and add a check
-	  for libgen.h.  Fixes bugs #320580 and #320581.
+	* configure.ac: Fix check for XInput and add a check for libgen.h.
+	  Fixes bugs #320580 and #320581.
 
 2005-11-03  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/modules/Makefile.am:  No longer link against
-	  libvicious since it isn't used by the gestures
-	  listeners.
+	* gui/modules/Makefile.am:  No longer link against libvicious since it
+	  isn't used by the gestures listeners.
 
 2005-11-03  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/getvt.c: Patch to make GDM use VT_GETSTATE for
-	  peeking VT freeness.  Patch provided by Samuel Thibault
+	* daemon/getvt.c: Patch to make GDM use VT_GETSTATE for peeking VT
+	  freeness.  Patch provided by Samuel Thibault
 	  <samuel.thibault@ens-lyon.org>.  Fixes bug #315313.
 
 2005-11-03  Brian Cameron  <brian.cameron@sun.com>
 
-	* config/gdm.conf: Updated UPDATE_CONFIG section
-	  of docs to reflect changes made to GDM configuration.
+	* config/gdm.conf: Updated UPDATE_CONFIG section of docs to reflect
+	  changes made to GDM configuration.
 
 2005-11-03  Dennis Cranston  <dennis_cranston@yahoo.com>
 
@@ -411,10 +434,10 @@
 
 2005-11-03  Dennis Cranston  <dennis_cranston@yahoo.com>
 
-	* gui/gdmsetup.desktop.in:  Update Name, GenericName & Comment
-	  to "Login Window" preferences.  Change the category from
-	  Applications->System Tools to Desktop->Administration.
-	  Updates bug #314685.
+	* gui/gdmsetup.desktop.in:  Update Name, GenericName & Comment to
+	  "Login Window" preferences.  Change the category from
+	  Applications->System Tools to Desktop->Administration.  Updates bug
+	  #314685.
 
 2005-11-03  Dennis Cranston  <dennis_cranston@yahoo.com>
 
@@ -424,20 +447,19 @@
 
 2005-11-03  Brian Cameron  <brian.cameron@sun.com>
 
-	Redesign of daemon configuraton.  Now all vicious-extensions
-	logic is in gdmconfig.[ch].  This greatly simplifies how the
-	UPDATE_CONFIG, and GET_CONFIG commands work and makes it
-	easier to update the way GDM handles configuration.  Changed
-	ve_setenv/ve_unsetenv to g_setenv/g_unsetenv since GDM requires
-	a newer version of GLIB than could possibly cause the old
-	ve versions to get used.
+	Redesign of daemon configuraton.  Now all vicious-extensions logic is
+	in gdmconfig.[ch].  This greatly simplifies how the UPDATE_CONFIG, and
+	GET_CONFIG commands work and makes it easier to update the way GDM
+	handles configuration.  Changed ve_setenv/ve_unsetenv to
+	g_setenv/g_unsetenv since GDM requires a newer version of GLIB than
+	could possibly cause the old ve versions to get used.
 
 	* daemon/gdmconfig.[ch]: New logic for interacting with
 	  vicious-extensions.
-	* daemon/gdm.h: Updated comments and changed the #define
-	  for many configuration options so the naming is more
-	  consistant.  Now the #defines more closely match the
-	  keys in gdm.conf and more consistantly use the underscore.
+	* daemon/gdm.h: Updated comments and changed the #define for many
+	  configuration options so the naming is more consistant.  Now the
+	  #defines more closely match the keys in gdm.conf and more
+	  consistantly use the underscore.
 	* daemon/auth.c, daemon/choose.c, daemon/cookie.c,
 	  daemon/display.c, daemon/errorgui.c, daemon/gdm-net.c,
 	  daemon/gdm.c, daemon/getvt.c, daemon/misc.c,
@@ -448,15 +470,15 @@
 	  daemon/errorgui.h, daemon/filecheck.h, daemon/gdm-net.h,
 	  daemon/getvt.h, daemon/misc.h, daemon/server.h,
 	  daemon/slave.h, daemon/verify.h, daemon/xdmcp.h:
-	  Now include gdmconfig.h instead of vicious.h and changed
-	  "Gnome" to "GNOME" in comment.
+	  Now include gdmconfig.h instead of vicious.h and changed "Gnome" to
+	  "GNOME" in comment.
 	* daemon/Makefile.am: Added new gdmconfig.[ch]
 	* gui/gdmXnestChooser.c, gui/gdmchooser.c, gui/gdmcomm.c,
 	  gui/gdmdynamic.c, gui/gdmflexiserver.c, gui/gdmlogin.c,
 	  gui/gdmphotosetup.c, gui/gdmsetup.c, gui/greeter/greeter.c, 
 	  gui/greeter/greeter_item_capslock.c,
-	  utils/gdm-dmx-reconnect-proxy.c: Updated to reflect the
-	  new configuration #defines.
+	  utils/gdm-dmx-reconnect-proxy.c: Updated to reflect the new
+	  configuration #defines.
 
 2005-10-27  Dennis Cranston  <dennis_cranston@yahoo.com>
 
@@ -518,26 +540,20 @@
 
 2005-10-28  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/display.c: If the slave doesn't
-          respond to a SIGTERM, try SIGKILL the second
-          time.  GDM has a problem where it will
-          sometimes stop managing a display because
-          it just keeps waiting for a slave to die
-          after sending it a SIGTERM.  Some users
-          have found that this patch works around
-          the problem of a child ignoring SIGTERM.
-          Patch provided by Vaclav Smilauer
-          <eudoxos@arcig.cz>.  Fixes bug #113902.
+        * daemon/display.c: If the slave doesn't respond to a SIGTERM, try
+	  SIGKILL the second time.  GDM has a problem where it will sometimes
+	  stop managing a display because it just keeps waiting for a slave to
+	  die after sending it a SIGTERM.  Some users have found that this
+	  patch works around the problem of a child ignoring SIGTERM.  Patch
+	  provided by Vaclav Smilauer <eudoxos@arcig.cz>.  Fixes bug #113902.
 
 2005-10-28  Brian Cameron  <brian.cameron@sun.com.
 
         * gui/gdmlogin.c,
-          gui/greeter/greeter_item_capslock.c: Patch to
-          make GDM warn correctly about caps lock if an
-          alternative keymap is enabled.  Now use
-          kbGetState instead of XkbGetIndicatorState.
-          Fixes bug #317732.  Patch provided by
-          Sebastien Bacher <seb128@debian.org>.
+          gui/greeter/greeter_item_capslock.c: Patch to make GDM warn correctly
+	  about caps lock if an alternative keymap is enabled.  Now use
+          kbGetState instead of XkbGetIndicatorState.  Fixes bug #317732.
+	  Patch provided by Sebastien Bacher <seb128@debian.org>.
 
 2005-10-28  Jürg Billeter  <j@bitron.ch>
 
@@ -545,12 +561,10 @@
 
 2005-10-27  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/slave.c: Fix race condition where the d
-	  variable wasn't being set until after the signal
-	  handlers, and the signal handlers make use of
-	  this variable.  Now set it before to ensure it
-	  is set whenever a signal might be received.
-	  Issue pointed out by Simon Bowden on
+	* daemon/slave.c: Fix race condition where the d variable wasn't being
+	  set until after the signal handlers, and the signal handlers make use
+	  of this variable.  Now set it before to ensure it is set whenever a
+	  signal might be received.  Issue pointed out by Simon Bowden on
 	  gdm-list@gnome.org
 
 2005-10-27  Erdal Ronahi  <erdal.ronahi@gmail.com>
@@ -559,94 +573,74 @@
 
 2005-10-26  Brian Cameron <Brian.Cameron@sun.com>
 
-	* Release 2.13.0.0:  Bumping minor version
-	  to match GNOME release schedule.
-	* NEWS, configure.ac, autogen.sh: Updated.
-	  Renamed configure.in to configure.ac.  
-	* docs/C/gdm.xml: Updated to include more
-	  workaround info for accessibility.
+	* Release 2.13.0.0:  Bumping minor version to match GNOME release
+	  schedule.
+	* NEWS, configure.ac, autogen.sh: Updated.  Renamed configure.in to
+	  configure.ac.  
+	* docs/C/gdm.xml: Updated to include more workaround info for
+	  accessibility.
 
 2005-10-14  Brian Cameron <Brian.Cameron@sun.com>
 
-	* gui/gdmlogin.c: No longer set tooltips for menu 
-	  items in gdmlogin.  These are distracting, and 
-	  do not work with accessibility.  After talking 
-	  with Owen Taylor at the GNOME Boston Summit, he
-	  said no GNOME programs do this, and it is not
-	  recommended.  Fix for bug #144869.
-	* gui/gdmchooser.c:  Now use gdm_common_setup_cursor
-	  instead of its own copy of the same function.
-	* gui/gdmcommon.[ch]: gdmlogin, gdmgreeter and gdmchooser
-	  were all using their own functions to set the background
-	  color.  Now they use a common function in gdmcommon.
-	* gui/gdmlogin.c, gui/gdmchooser.c, gui/greeter/greeter.c:
-	  Now sets background color and sets cursor to 
-	  a watch as soon as GTK is initialized and the
-	  configure file read.  This shortens the amount of time
-	  the background is Xserver default gray.
+	* gui/gdmlogin.c: No longer set tooltips for menu items in gdmlogin.
+	  These are distracting, and do not work with accessibility.  After
+	  talking with Owen Taylor at the GNOME Boston Summit, he said no GNOME
+	  programs do this, and it is not recommended.  Fix for bug #144869.
+	* gui/gdmchooser.c:  Now use gdm_common_setup_cursor instead of its own
+	  copy of the same function.
+	* gui/gdmcommon.[ch]: gdmlogin, gdmgreeter and gdmchooser were all
+	  using their own functions to set the background color.  Now they use
+	  a common function in gdmcommon.
+	* gui/gdmlogin.c, gui/gdmchooser.c, gui/greeter/greeter.c: Now sets
+	  background color and sets cursor to a watch as soon as GTK is
+	  initialized and the configure file read.  This shortens the amount of
+	  time the background is Xserver default gray.
 
 2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
 
-	* docs/C/gdm.xml: Add some information about
-	  using GlobalFaceDir when home directories
-	  are mounted via NFS/NIS, etc.
+	* docs/C/gdm.xml: Add some information about using GlobalFaceDir when
+	  home directories are mounted via NFS/NIS, etc.
 
 2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter.c,
-	  gui/greeter/greeter_item_pam.c:  Change
-	  the way the "OK" and "Cancel" buttons work
-	  so that they are consistant.  Now the
-	  "Cancel" button in gdmlogin is active 
-	  when the Username is requested and
-	  pressing it just clears the field.  This
-	  makes gdmlogin work like gdmgreeter.  This
-	  is easier than changing gdmgreeter 
-	  because the greeter themes don't support
-	  changing buttons sensitivity.  Also it
-	  is somewhat useful for Cancel to work
-	  this way.  Now make the buttons
-	  insensitive when ok/enter/tab is pressed
-	  and make them sensitive again when the
-	  greeter wants entry.  This fixes bug
-	  #318017 where users could corrupt 
-	  gdmgreeter's memory by hitting cancel
-	  after authentication (which would only
-	  happen if the PostLogin script caused
-	  a long enough delay to allow this (or
-	  perhaps on a real slow machine).
+	  gui/greeter/greeter_item_pam.c:  Change the way the "OK" and "Cancel"
+	  buttons work so that they are consistant.  Now the "Cancel" button in
+	  gdmlogin is active when the Username is requested and pressing it
+	  just clears the field.  This makes gdmlogin work like gdmgreeter.
+	  This is easier than changing gdmgreeter because the greeter themes
+	  don't support changing buttons sensitivity.  Also it is somewhat
+	  useful for Cancel to work this way.  Now make the buttons insensitive
+	  when ok/enter/tab is pressed and make them sensitive again when the
+	  greeter wants entry.  This fixes bug #318017 where users could
+	  corrupt gdmgreeter's memory by hitting cancel after authentication
+	  (which would only happen if the PostLogin script caused a long enough
+	  delay to allow this (or perhaps on a real slow machine).
 	  
 2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
 
-	* daemon/slave.c: Fix problem with PostSession
-	  script not always getting executed when user
-	  kills the Xserver with ctl-alt-backspace.  
-	  This is caused because an xioerror is generated
-	  by whack clients and this xioerror needs to be
-	  ignored for PostSession to be processed.  This
-	  problem tended not to manifest in GDM 2.6
-	  because the introduction of the whack clients
-	  call made the xioerror get generated earlier.
-	  However, it was still a race condition and 
-	  this fix ensures that the xioerror will not
-	  cause the slave to ever exit too early.
-	  Fixes bug #152906.  Patch provided by Jerry
-	  G. DeLapp <jgd@lanl.gov>
+	* daemon/slave.c: Fix problem with PostSession script not always
+	  getting executed when user kills the Xserver with ctl-alt-backspace.  
+	  This is caused because an xioerror is generated by whack clients and
+	  this xioerror needs to be ignored for PostSession to be processed.
+	  This problem tended not to manifest in GDM 2.6 because the
+	  introduction of the whack clients call made the xioerror get
+	  generated earlier.  However, it was still a race condition and this
+	  fix ensures that the xioerror will not cause the slave to ever exit
+	  too early.  Fixes bug #152906.  Patch provided by Jerry G. DeLapp
+	  <jgd@lanl.gov>
 	* AUTHORS: Update file.
 
 2005-10-05  Brian Cameron <Brian.Cameron@sun.com>
 
 	* acconfig.h, configure.in, config/gdm.conf.in,
-	  daemon/gdm.h, Define SoundProgram to be
-	  /usr/bin/audioplay instead of /usr/bin/play
-	  on Solaris.  /usr/bin/play doesn't exist on
-	  Solaris.
+	  daemon/gdm.h, Define SoundProgram to be /usr/bin/audioplay instead of
+	  /usr/bin/play on Solaris.  /usr/bin/play doesn't exist on Solaris.
 
 2005-10-04  Brian Cameron <Brian.Cameron@sun.com>
 
-	* gui/gdmflexiserver.c: Correct reading of
-	  config file.  Fixes bug #313701.  Patch
-	  provided by Christiaan Welvaart
+	* gui/gdmflexiserver.c: Correct reading of config file.  Fixes bug
+	  #313701.  Patch provided by Christiaan Welvaart
  	  <cjw@daneel.dyndns.org>.
 
 2005-10-03  Brian Cameron <Brian.Cameron@sun.com>
@@ -660,42 +654,38 @@
 
 2005-10-03  Brian Cameron <Brian.Cameron@sun.com>
 
-	* gui/gdmsetup.glade: Fix label to remove unwanted
-	  "\n" characters.  Fixes bug #317820.
+	* gui/gdmsetup.glade: Fix label to remove unwanted "\n" characters.
+	  Fixes bug #317820.
 
 2005-09-30  Brian Cameron <Brian.Cameron@sun.com>
 
-	* gui/gdmchooser, gui/gdmcomm.c:  Fix messages.  Thanks
-	  to Adam Weinberger <adamw@gnome.org> for patches.
+	* gui/gdmchooser, gui/gdmcomm.c:  Fix messages.  Thanks to Adam
+	  Weinberger <adamw@gnome.org> for patches.
 
 2005-09-29  Brian Cameron <Brian.Cameron@sun.com>
 
-	* daemon/verify-pam.c: Remove syslog() test that causes
-	  needless syslog message when Solaris auditing is turned
-	  off.
-	* gui/gdmflexiserver.c, gui/greeter/greeter_item_ulist.c:
-	  Correct grammar.  Corrects bug #317479, thanks to 
-	  adamw@gnome.org (Adam Weinberger).
+	* daemon/verify-pam.c: Remove syslog() test that causes needless
+	  syslog message when Solaris auditing is turned off.
+	* gui/gdmflexiserver.c, gui/greeter/greeter_item_ulist.c: Correct
+	  grammar.  Corrects bug #317479, thanks to adamw@gnome.org
+	  (Adam Weinberger).
 
 2005-09-28  William Jon McCann  <mccann@jhu.edu>
 
         * gui/gdmflexiserver.c (is_program_in_path, maybe_lock_screen)
-        (run_logged_in_dialogue, main): Consolidate screensaver
-        activation code.  Don't use deprecated gnome-exec.
-        Fixes #311497.
+        (run_logged_in_dialogue, main): Consolidate screensaver activation
+	code.  Don't use deprecated gnome-exec.  Fixes #311497.
 
 2005-09-27  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/greeter/greeter_item_ulist.c: Now print syslog
-          warning if GDM theme has ulist but does not have
-          pam-message.
+        * gui/greeter/greeter_item_ulist.c: Now print syslog warning if GDM
+	  theme has ulist but does not have pam-message.
 
 2005-09-26  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/gdmsetup.c, gui/gdmphotosetup.c:  Only set right/left
-          mouse buttons to map to button1 when RUNNING_UNDER_GDM
-          and now show hidden files by default in file dialogs.
-          Fixes bug #317152.
+        * gui/gdmsetup.c, gui/gdmphotosetup.c:  Only set right/left mouse
+	  buttons to map to button1 when RUNNING_UNDER_GDM and now show hidden
+	  files by default in file dialogs.  Fixes bug #317152.
 	* gui/gdmflexiserver.c: Cleaned up startnew option.
 	* gui/modules/keymouselistener.c, gui/modules/dwellmouselistener.c:
 	  Remove needless include.
@@ -714,24 +704,20 @@
 
 2005-09-20  Brian Cameron <Brian.Cameron@sun.com>
 
-	* README.install, pam_allow.c: Add documentation
-	  regarding how to set up Automatic Login on 
-	  Solaris.
+	* README.install, pam_allow.c: Add documentation regarding how to set
+	  up Automatic Login on Solaris.
 	* daemon/Makefile.am, gui/Makefile.am, 
 	  gui/greeter/Makefile.am, gui/modules/Makefile.am,
-	  vicious-extensions/Makefile.am:  Remove
-	  illegal reference to build directory in installed
-	  .la files.  Fixes bug #316793, patch provided by
-	  Stanislav Brabec <sbrabec@suse.cz>.
-	* gui/gdmlogin.c: Fix comment for translators to
-	  make it more clear that %l is a strftime option
-	  for 12 hour format.  Fixes bug #316773.
+	  vicious-extensions/Makefile.am:  Remove illegal reference to build
+	  directory in installed .la files.  Fixes bug #316793, patch provided
+	  by Stanislav Brabec <sbrabec@suse.cz>.
+	* gui/gdmlogin.c: Fix comment for translators to make it more clear
+	  that %l is a strftime option for 12 hour format.  Fixes bug #316773.
 	  
 2005-09-14  Brian Cameron <Brian.Cameron@sun.com>
 
-	* daemon/slave.c:  Made error message about dmrc
-	  file being ignored more clear.  Fixes bug
-	  #316242.
+	* daemon/slave.c:  Made error message about dmrc file being ignored
+	  more clear.  Fixes bug #316242.
 
 2005-09-14  Bastien Nocera  <hadess@hadess.net>
 
@@ -743,31 +729,26 @@
 2005-09-14  Brian Cameron <Brian.Cameron@sun.com>
 
 	* daemon/gdm.[ch], daemon/slave.c,
-	  config/gdm.conf.in:  Added debug/gestures
-	  key so that you can turn on debugging 
-	  for the gesture listeners separately from
-	  general debug.  Gesture listener debug
-	  output is too verbose to include in
-	  general debug.
-	* docs/C/gdm.xml: Docs had very little information
-	  about debug, so added info.
+	  config/gdm.conf.in:  Added debug/gestures key so that you can turn on
+	  debugging for the gesture listeners separately from general debug.
+	  Gesture listener debug output is too verbose to include in general
+	  debug.
+	* docs/C/gdm.xml: Docs had very little information about debug, so
+	  added info.
 
 2005-09-14  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/gdmsetup.c: Fix gdmsetup so that when
-          user modifies Include/Exclude list, it also
-          updates automatic/timed login dropdown
+        * gui/gdmsetup.c: Fix gdmsetup so that when user modifies
+	  Include/Exclude list, it also updates automatic/timed login dropdown
           immediately.
-	* gui/modules/keymouselistener.c: Remove 
-	  incorrect comment.
+	* gui/modules/keymouselistener.c: Remove incorrect comment.
 
 2005-09-13  Brian Cameron <Brian.Cameron@sun.com>
 
 	* daemon/slave.c, gui/modules/dwellmouselistener.c,
-	  gui/modules/keymouselistener.c:  Now turn on gesture
-	  debug when GDM debug is on.  Fix bug in
-	  dwellmouselistener that was causing gestures to 
-	  not be recognized.
+	  gui/modules/keymouselistener.c:  Now turn on gesture debug when GDM
+	  debug is on.  Fix bug in dwellmouselistener that was causing
+	  gestures to not be recognized.
 
 2005-09-06  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -779,11 +760,10 @@
 	  gui/greeter/greeter_session.c, 
 	  gui/modules/keymouselistener.c,
 	  utils/gdm-dmx-reconnect-proxy.c,
-	  vicious-extensions/vc-misc.c:  Correct memory leaks.
-	  Fixes bug #315388, patch by Steve Grubb with minor
-	  tweaks by myself.
-	* gui/gdmphotosetup.c: Corrected definition of void
-	  function to avoid compiler warning.
+	  vicious-extensions/vc-misc.c:  Correct memory leaks.  Fixes bug
+	  #315388, patch by Steve Grubb with minor tweaks by myself.
+	* gui/gdmphotosetup.c: Corrected definition of void function to avoid
+	  compiler warning.
 
 2005-09-06  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -849,21 +829,19 @@
 
 2005-08-20  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/gdm.c, daemon/slave.c: Honor Default Session
-	  gdm.conf setting when using autologin.  Fixes bug
-	  #313996.  Patch by HansPetter Jansson <hpj@novell.com>
+	* daemon/gdm.c, daemon/slave.c: Honor Default Session gdm.conf setting
+	  when using autologin.  Fixes bug #313996.  Patch by HansPetter
+	  Jansson <hpj@novell.com>
 
 2005-08-18  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmflexiserver.c: Fix reading of configuration
-	  file so it works.
+	* gui/gdmflexiserver.c: Fix reading of configuration file so it works.
 
 2005-08-18  Frederic Crozat  <fcrozat@mandriva.com>
 
-	* config/locale.alias: Remove spaces in locale name,
-	it causes gdm to discard those locales. No string
-	freeze was broken, these strings are not displayed.
-	Fix bug #313735.
+	* config/locale.alias: Remove spaces in locale name, it causes gdm to
+	  discard those locales. No string freeze was broken, these strings
+	  are not displayed.  Fix bug #313735.
 
 2005-08-17  Rodrigo Moya <rodrigo@novell.com>
 
@@ -872,29 +850,25 @@
 
 2005-08-16  Brian Cameron  <brian.cameron@sun.com>
 
-	* README: Add info about the gdm-list@gnome.org and
-	  location of archives.
+	* README: Add info about the gdm-list@gnome.org and location of
+	  archives.
 
 2005-08-15  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/Makefile.am:  Change installation location of
-	  gdmphotosetup.desktop from /usr/share/gnome/capplets
-	  to /usr/share/applications since the older directory
-	  is deprecated since GNOME 2.10 and is not menu-spec
-	  compliant.  Fixes bug #313205.
-	* docs/C/gdm.xml: Updated Face Browser docs to better
-          explain how things work now that bug #310906 has been
-          fixed, and to clarify that the Face Browser can be
-	  used with the Themed Greeter.
+	  gdmphotosetup.desktop from /usr/share/gnome/capplets to
+	  /usr/share/applications since the older directory is deprecated since
+	  GNOME 2.10 and is not menu-spec compliant.  Fixes bug #313205.
+	* docs/C/gdm.xml: Updated Face Browser docs to better explain how
+	  things work now that bug #310906 has been fixed, and to clarify that
+	  the Face Browser can be used with the Themed Greeter.
 
 2005-08-15  Brian Cameron  <brian.cameron@sun.com>
 
-	* README.install, config/gdm.conf.in, docs/C/gdm.xml:
-	  Updated links to point to the new
-	  http://www.gnome.org/projects/gdm/ for the
-	  project page.  Updated Commands section of the
-	  docs so they look better.  Fixed art.gnome.org
-	  link.
+	* README.install, config/gdm.conf.in, docs/C/gdm.xml: Updated links to
+	  point to the new http://www.gnome.org/projects/gdm/ for the project
+	  page.  Updated Commands section of the docs so they look better.
+	  Fixed art.gnome.org link.
 	* gui/gdmflexiserver.c: Fix bug #313197.
 	* gui/gdm.conf.in: Added docs to better explain how
 	  AlwaysRestartServer works.
@@ -906,65 +880,55 @@
 2005-08-11  Brian Cameron  <brian.cameron@sun.com>
 
 	* NEWS: updated to be a bit more clear.
-	* daemon/gdm.[ch], daemon/slave.c, daemon/verify-pam.c:
-	  Now support Solaris SDTLOGIN mechanism which will
-	  cause the Xserver to be started as the user instead
-	  of as root for extra security.
-	* gui/gdmflexiserver.c: Add a new option --startnew
-	  (or -s) to start a new flexible server without 
-	  displaying a dialog asking the user if they wish
-	  to continue an existing session.  This is useful for
-	  starting gdmflexiserver from the screensaver where
-	  the user cannot respond to a dialog.
-	* docs/C/gdm.xml:  Updated gdmflexiserver docs
-	  so they are more clear and added info about the
-	  SDTLOGIN mechanism.  Add info about new gdmflexiserver
-	  option.
+	* daemon/gdm.[ch], daemon/slave.c, daemon/verify-pam.c: Now support
+	  Solaris SDTLOGIN mechanism which will cause the Xserver to be started
+	  as the user instead of as root for extra security.
+	* gui/gdmflexiserver.c: Add a new option --startnew (or -s) to start a
+	  new flexible server without displaying a dialog asking the user if
+	  they wish to continue an existing session.  This is useful for
+	  starting gdmflexiserver from the screensaver where the user cannot
+	  respond to a dialog.
+	* docs/C/gdm.xml:  Updated gdmflexiserver docs so they are more clear
+	  and added info about the SDTLOGIN mechanism.  Add info about new
+	  gdmflexiserver option.
 
 2005-08-09  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmsession.c: Correct use-after-free issue
-	  with the dynamic session in the sessions list.
-	  Patch by Joe Marcus Clarke, fixes bug #312974.
+	* gui/gdmsession.c: Correct use-after-free issue with the dynamic
+	  session in the sessions list.  Patch by Joe Marcus Clarke, fixes bug
+	  #312974.
 
 2005-08-08  Brian Cameron  <brian.cameron@sun.com>
 
 	* NEWS: Updated for 2.8.0.2 release.
-	* gui/gdmsetup.glade:  Fixed strings, refer to bugs
-	  #312956, 312959, and 312960.
-	* daemon/gdm.c: Fixed Multicast compile issue when
-	  IPv6 is not set.
-	* configure.in, config/Makefile.am: Fixed
-	  "make distcheck" issue.
+	* gui/gdmsetup.glade:  Fixed strings, refer to bugs #312956, 312959,
+	  and 312960.
+	* daemon/gdm.c: Fixed Multicast compile issue when IPv6 is not set.
+	* configure.in, config/Makefile.am: Fixed "make distcheck" issue.
 
 2005-08-04  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/server.c: Fix malformed string.
-	* daemon/gdm.c, daemon/gdm.h: Fixed GET_CONFIG command so
-	  it works.  Before it only printed out the value if
-	  it had a value defined in the gdm.conf file.  Now
-	  it prints out the runtime value.  For values that
-	  are only used by other programs, it prints out the
-	  compiled-in default if no value exists in gdm.conf.
-	  Added comments to gdm.h to make it clear what work
-	  developers should do when adding new configuration
-	  options.
-	* gui/gdm.h, config/gdm.conf.in: Fixed default value
-	  for GtkRC so it's %datadir%/themes/Default/gtk-2.0/gtkrc
-	  instead of Default/gtk/gtkrc.
+	* daemon/gdm.c, daemon/gdm.h: Fixed GET_CONFIG command so it works.
+	  Before it only printed out the value if it had a value defined in the
+	  gdm.conf file.  Now it prints out the runtime value.  For values that
+	  are only used by other programs, it prints out the compiled-in
+	  default if no value exists in gdm.conf.  Added comments to gdm.h to
+	  make it clear what work developers should do when adding new
+	  configuration options.
+	* gui/gdm.h, config/gdm.conf.in: Fixed default value for GtkRC so it's
+	  %datadir%/themes/Default/gtk-2.0/gtkrc instead of Default/gtk/gtkrc.
 
 2005-08-03  Brian Cameron  <brian.cameron@sun.com>
 
 	* docs/C/gdm.xml: Made XML conformant.
-	* gui/gdmlogin.c, gui/greeter/greeter.c:  Now
-	  GDM is more backwards compatible.  The change
-	  to add DefaultWelcome and DefaultRemoteWelcome
-	  to the config file would cause old configuration
-	  files to ignore the setting.  Now if the gdm.conf
-	  file is missing the DefaultWelcome or 
-	  DefaultRemoteWelcome key it goes ahead and uses
-	  the message in gdm.conf (unless the message is
-	  the same as the default anyway).
+	* gui/gdmlogin.c, gui/greeter/greeter.c:  Now GDM is more backwards
+	  compatible.  The change to add DefaultWelcome and
+	  DefaultRemoteWelcome to the config file would cause old configuration
+	  files to ignore the setting.  Now if the gdm.conf file is missing the
+	  DefaultWelcome or DefaultRemoteWelcome key it goes ahead and uses the
+	  message in gdm.conf (unless the message is the same as the default
+	  anyway).
 
 2005-08-03  Brian Cameron  <brian.cameron@sun.com>
 
@@ -973,56 +937,49 @@
 
 2005-08-03  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/gdm.[ch], gui/gdmsetup.c : Change GDM_KEY_SERVERS
-	  to GDM_KEY_SECTION_SERVER and added GDM_KEY_SECTION_GREETER.
-	  There already is a GDM_KEY_GREETER, so for section 
-	  #defines it's better to include "SECTION" in it.
+	* daemon/gdm.[ch], gui/gdmsetup.c : Change GDM_KEY_SERVERS to
+	  GDM_KEY_SECTION_SERVER and added GDM_KEY_SECTION_GREETER.  There
+	  already is a GDM_KEY_GREETER, so for section #defines it's better to
+	  include "SECTION" in it.
 	* gui/gdmsetup.c, gui/gdmsetup.glade:  Made a number of UI
-	  improvements.  Calum Benson is doing a UI review of 
-	  gdmsetup and I made the following fixes based on his
-	  recommendations.  No longer have mnemonics on the tabs
-	  since this is against HIG rules, changes "Face Browser"
-	  tab to "Users" since the Include/Exclude list really
-	  also affects Automatic/Timed login and not just the
-	  Face Browser.  Added label to the Users tab to explain
-	  what the tab does, since it wasn't too clear before.
-	  Improved description of "Disallow TCP connections" on
-	  the security tab so it is more clear what this does
-	  (and highlight it doesn't affect XDMCP).  I also fixed
-	  the sensitivities when "Include All Users" is checked.
-	  Previously it was making both the Include and Exclude
-	  list insensitive - it really should just make the
-	  Include list and buttons to move between Incude/Exclude
-	  insensitive.  This is now working.
+	  improvements.  Calum Benson is doing a UI review of gdmsetup and I
+	  made the following fixes based on his recommendations.  No longer
+	  have mnemonics on the tabs since this is against HIG rules, changes
+	  "Face Browser" tab to "Users" since the Include/Exclude list really
+	  also affects Automatic/Timed login and not just the Face Browser.
+ 	  Added label to the Users tab to explain what the tab does, since it
+	  wasn't too clear before.  Improved description of "Disallow TCP
+	  connections" on the security tab so it is more clear what this does
+	  (and highlight it doesn't affect XDMCP).  I also fixed the
+	  sensitivities when "Include All Users" is checked.  Previously it
+	  was making both the Include and Exclude list insensitive - it really
+	  should just make the Include list and buttons to move between
+	  Incude/Exclude insensitive.  This is now working.
 	
 2005-08-03  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.[ch], daemon/misc.[ch], daemon/verify-pam.c,
 	  config/gdm.conf.in, docs/C/gdm.xml, config/Makefile.am,
-	  daemon/Makefile.am: Provide better 
-	  support for /etc/default/login.  Previously it 
-	  supported only PASSREQ.  Now it supports PATH, SUPATH,
-	  and CONSOLE.  Added new PasswordRequired gdm.conf 
-	  setting to control whether NULL_PASSWORDS are allowed
-	  when using PAM.
-	* config/gdm.conf.in: Changed default for AllowRemoteRoot
-	  to false and ConfigAvailable.  This makes GDM more secure
-	  by default.  Some distros may want to change the default
-	  back to true.  If people complain about this change, I'll
-	  make it possible to set these via the configure script.
+	  daemon/Makefile.am: Provide better support for /etc/default/login.
+	  Previously it supported only PASSREQ.  Now it supports PATH, SUPATH,
+	  and CONSOLE.  Added new PasswordRequired gdm.conf setting to control
+	  whether NULL_PASSWORDS are allowed when using PAM.
+	* config/gdm.conf.in: Changed default for AllowRemoteRoot to false and
+	  ConfigAvailable.  This makes GDM more secure by default.  Some
+	  distros may want to change the default back to true.  If people
+	  complain about this change, I'll make it possible to set these via
+	  the configure script.
 
 2005-08-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* acconfig.h, configure.in, daemon/Makefile.am, daemon/gdm.c,
-	  Change to the way the patch introduced on 07/22 works.
-	  Now GDM continues to install the default gdm.conf file in 
-	  %sysconfdir%/gdm unless the user runs configure with the
-	  --with-configdir option.  The daemon will now first look
-	  in this location and then look in the %sysconfdir%/gdm
-	  directory for the config file.  This allows GDM to better
-	  support system-wide configuration, but leaves the config
-	  file in %sysconfdir% for systems that do not need this
-	  feature.
+	  Change to the way the patch introduced on 07/22 works.  Now GDM
+	  continues to install the default gdm.conf file in %sysconfdir%/gdm
+	  unless the user runs configure with the --with-configdir option.
+	  The daemon will now first look in this location and then look in the
+	  %sysconfdir%/gdm directory for the config file.  This allows GDM to
+	  better support system-wide configuration, but leaves the config file
+	  in %sysconfdir% for systems that do not need this feature.
 	* docs/C/gdm.xml: Updated docs.
 	* README.install: Updated text to include information about
 	  HaltCommand and RebootCommand.
@@ -1056,34 +1013,30 @@
 
 2005-07-25  Brian Cameron  <brian.cameron@sun.com>
 
-	* config/Makefile.am:  Now installs gdm.conf to
-	  /usr/share/gdm.  Fixed "make distcheck".
+	* config/Makefile.am:  Now installs gdm.conf to /usr/share/gdm.  Fixed
+	  "make distcheck".
 
 2005-07-25  William Jon McCann  <mccann@jhu.edu>
 
 	* .cvsignore: Added depcomp and stamp-h1
-
 	* daemon/slave.c (ask_migrate) 
 	(gdm_slave_check_user_wants_to_log_in):
 	* daemon/gdm.[ch] (gdm_config_parse): 
-	* config/gdm.conf.in:
-	Add a configuration option AlwaysLoginCurrentSession
-	that will automatically switch the user back to their
-	previous session without asking.  This is off by
-	default for now.  Fixes bug #311415.
+	* config/gdm.conf.in: Add a configuration option
+	  AlwaysLoginCurrentSession that will automatically switch the user
+	  back to their previous session without asking.  This is off by
+	  default for now.  Fixes bug #311415.
 
 2005-07-25  William Jon McCann  <mccann@jhu.edu>
 
-	* gui/gdmcommon.c (gdm_common_get_config_file): Don't return
-	a pointer into the middle of a string that must be freed.
-	Fixes bug #311499.
-
+	* gui/gdmcommon.c (gdm_common_get_config_file): Don't return a pointer
+	  into the middle of a string that must be freed.  Fixes bug #311499.
 	* gui/gdmphotosetup.c (main): Free config file string again.
 
 2005-07-25  William Jon McCann  <mccann@jhu.edu>
 
-	* daemon/gdm.c: Fix build by only using GDM_KEY_MULTICAST
-	when IPV6 is enabled.
+	* daemon/gdm.c: Fix build by only using GDM_KEY_MULTICAST when IPV6 is
+	  enabled.
 
 2005-07-25  William Jon McCann  <mccann@jhu.edu>
 
@@ -1153,82 +1106,67 @@
 	  gui/gdmcommon.[ch], gdm/gdmdynamic.c, 
 	  gui/gdmflexiserver.c, gui/gdmlogin.c, 
 	  gui/gdmphotosetup.c, gui/gdmsetup.c, 
-	  gui/greeter/greeter.c:  If /etc/gdm/gdm.conf
-	  does not exist, then GDM will look in 
-	  /usr/share/gdm/gdm.conf.  Since /usr/share can be
-          shared across multiple systems, this makes it easier
-          for sysadmins to configure sitewide settings for GDM2
-	  instead of having to customize /etc/gdm/gdm.conf on
-	  all the machines separately.  Now GDM installs the 
-	  gdm.conf and factory-gdm.conf files in the 
-	  /usr/share/gdm location.  The gdm daemon needs to be
-	  restarted to use a different configuration file.
-	  All applications that use the config file now use
-	  the new GET_CONFIG_FILE gdmflexiserver command to get
-	  the configuration file to use.  This way the
-	  applications don't get confused if, say, the sysadmin
-	  creates an /etc/gdm/gdm.conf file after the server
-	  was started using one in /usr/share/gdm.  Both
-	  the gdm daemon and gdmsetup now allow a --config
-	  option so the sysadmin can specify their own 
-	  location for the config file.  
+	  gui/greeter/greeter.c:  If /etc/gdm/gdm.conf does not exist, then GDM
+	  will look in /usr/share/gdm/gdm.conf.  Since /usr/share can be shared
+	  across multiple systems, this makes it easier for sysadmins to
+	  configure sitewide settings for GDM2 instead of having to customize
+	  /etc/gdm/gdm.conf on all the machines separately.  Now GDM installs
+	  the gdm.conf and factory-gdm.conf files in the /usr/share/gdm
+	  location.  The gdm daemon needs to be restarted to use a different
+	  configuration file.  All applications that use the config file now
+	  use the new GET_CONFIG_FILE gdmflexiserver command to get the
+	  configuration file to use.  This way the applications don't get
+	  confused if, say, the sysadmin creates an /etc/gdm/gdm.conf file
+	  after the server was started using one in /usr/share/gdm.  Both the
+	  gdm daemon and gdmsetup now allow a --config option so the sysadmin
+	  can specify their own location for the config file.  
 
-	  Moved GdmMulticast and GdmMulticastAddr to
-	  gdm.c so we don't access the config file a
-	  second time in xdmcp.c.  Corrected grammar
-	  for some messages.  Changed g_access() to
-	  access() in gdmphotosetup.c since this is a
-	  new 2.7 usntable function.  I will change it 
-	  back when 2.8 is released.
-	* config/Makefile.am: Changed install location
-	  of gdm.conf and factory-gdm.conf to
-	  %datadir%/gdm
+	  Moved GdmMulticast and GdmMulticastAddr to gdm.c so we don't access
+	  the config file a second time in xdmcp.c.  Corrected grammar for some
+	  messages.  Changed g_access() to access() in gdmphotosetup.c since
+	  this is a new 2.7 usntable function.  I will change it back when 2.8
+	  is released.
+	* config/Makefile.am: Changed install location of gdm.conf and
+	  factory-gdm.conf to %datadir%/gdm
 
 2005-07-21  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/gdmphotosetup.glade: New file.
 	* gui/Makefile.am: Add glade file.
-	* gui/gdmphotosetup.c: Rewritten to be more HIG
-	compliant, use GtkIconView, include preview
-	in file selector, and be instant apply.
+	* gui/gdmphotosetup.c: Rewritten to be more HIG compliant, use
+	  GtkIconView, include preview in file selector, and be instant apply.
 
 2005-07-21  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmsetup.c:  C89 compliance patch provided
-	  by Jens Granseuer.  Fixes bug #311097.
+	* gui/gdmsetup.c:  C89 compliance patch provided by Jens Granseuer.
+ 	  Fixes bug #311097.
 
 2005-07-21  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/verify-crypt.c, daemon/verify-pam.c,
-	  daemon/verify-shadow.c:  Remove unused
-	  gtkmessagedialog.h header file.
+	* daemon/verify-crypt.c, daemon/verify-pam.c, daemon/verify-shadow.c:
+	  Remove unused gtkmessagedialog.h header file.
 	* gui/gdmchooser-strings.c, gui/gdmchooser.gladep,
-	  gui/gdmsetup-strings.c, gui/gdmsetup.gladep:
-	  Removing these files from the module since they
-	  are not needed.  The *.glade files are now
+	  gui/gdmsetup-strings.c, gui/gdmsetup.gladep: Removing these files
+	  from the module since they are not needed.  The *.glade files are now
 	  translated directly.  This fixes bug #310857.
 
 2005-07-20  William Jon McCann  <mccann@jhu.edu>
 
-	* gui/greeter/themes/happygnome-list/happygnome.xml:
-	Tweak the colors in the user list.  Make the background
-	translucent behind the user list.
-
-	* gui/greeter/greeter_item_ulist.c (greeter_populate_user_list):
-	Make real name bold if it is available.  Design for humans.
-	(force_no_tree_separators): Set treeview style so that we don't
-	get strange lines between tree rows when we set a userlist
-	color in the theme.
-	(greeter_item_ulist_setup): Only shrink the size of the user
-	list.  Set the default widget style.
-
+	* gui/greeter/themes/happygnome-list/happygnome.xml: Tweak the colors
+	  in the user list.  Make the background translucent behind the user
+	  list.
+	* gui/greeter/greeter_item_ulist.c (greeter_populate_user_list): Make
+	  real name bold if it is available.  Design for humans.
+	  (force_no_tree_separators): Set treeview style so that we don't get
+	  strange lines between tree rows when we set a userlist color in the
+	  theme.  (greeter_item_ulist_setup): Only shrink the size of the user
+	  list.  Set the default widget style.
 	* gui/greeter/greeter_canvas_item.c (greeter_item_create_canvas_item):
-	Don't set rules hint for userlist treeview.
+	  Don't set rules hint for userlist treeview.
 
 2005-07-20  Brian Cameron  <Brian.Cameron@sun.com>
 
-	* utils/gdm-dmx-reconnect-proxy.c: Fixed grammar,
-	  fixing bug #310958.
+	* utils/gdm-dmx-reconnect-proxy.c: Fixed grammar, fixing bug #310958.
 
 2005-07-20  Brian Cameron  <Brian.Cameron@sun.com>
 
@@ -1236,23 +1174,20 @@
 
 2005-07-20  Brian Cameron  <Brian.Cameron@sun.com>
 
-	* gui/Makefile.am, gui/gdmcommon.c, gdmwm.c:
-	  Moved gdm_common_show_info_msg, gdm_common_msg
-	  and gdm_common_query from gdmcommon.c to gdmwm.c.
-	  Now no longer include gdmwm.[ch] in libgdmcommon.a
-	  since these are in libgdmwm.a:  This is cleaner
-	  since these 3 functions reference gdmwm functions.
-	  This fixes a link problem on Solaris caused because
-	  the Xinerama functions were getting referenced in
-	  gdmsetup even though they are unused.  
-	* gui/gdmphotosetup.c: Now use chmod instead of 
-	  g_chmod.
+	* gui/Makefile.am, gui/gdmcommon.c, gdmwm.c: Moved
+	  gdm_common_show_info_msg, gdm_common_msg and gdm_common_query from
+	  gdmcommon.c to gdmwm.c.  Now no longer include gdmwm.[ch] in
+	  libgdmcommon.a since these are in libgdmwm.a:  This is cleaner since
+	  these 3 functions reference gdmwm functions.  This fixes a link
+	  problem on Solaris caused because the Xinerama functions were getting
+	  referenced in gdmsetup even though they are unused.  
+	* gui/gdmphotosetup.c: Now use chmod instead of g_chmod.
 
 2005-07-19  Brian Cameron  <Brian.Cameron@sun.com>
 
-	* gui/gdmphotosetup.c: Backed out calls to g_chmod since gdm2
-	  should not depend on glib functions only available in an
-	  unstable build (2.7).
+	* gui/gdmphotosetup.c: Backed out calls to g_chmod since gdm2 should
+	  not depend on glib functions only available in an unstable build
+	  (2.7).
 
 2005-07-19  William Jon McCann  <mccann@jhu.edu>
 
@@ -1297,7 +1232,7 @@
 2005-07-19  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/gdmlogin.c (gdm_login_gui_init):
-	Use HIG style button layout.  Fixes #310549.
+	  Use HIG style button layout.  Fixes #310549.
 
 2005-07-19  Tommi Vainikainen  <thv@iki.fi>
 
@@ -1339,98 +1274,82 @@
 
 2005-06-30  Brian Cameron  <brian.cameron@sun.com>
 
-	* docs/C/gdm.xml: Corrected grammar.  Thanks
-	  to Martin Petersen for noticing this.
-	* gui/gdmlogin.c, gui/gdmsetup.c:  No longer
-	  use C99 features that do not work with gcc
-	  2.95, specifically do not declare variables
-	  except at the beginning of a block.  Fixes
-	  bug #309110, patch provied by Jens
-	  Granseuer.
-	* autgogen.sh: Add back USE_GNOME_MACROS2=1
-	  It doesn't do anything if using GNOME 2.10
-	  or later, but allows people using older
+	* docs/C/gdm.xml: Corrected grammar.  Thanks to Martin Petersen for
+	  noticing this.
+	* gui/gdmlogin.c, gui/gdmsetup.c:  No longer use C99 features that do
+	  not work with gcc 2.95, specifically do not declare variables except
+	  at the beginning of a block.  Fixes bug #309110, patch provied by
+	  Jens Granseuer.
+	* autgogen.sh: Add back USE_GNOME_MACROS2=1 It doesn't do anything if
+	  using GNOME 2.10 or later, but allows people using older
 	  gnome-autogen.sh to build.
 
 2005-06-22  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.in, vicious-extensions/Makefile.am,
 	  daemon/Makefile.am, gui/Makefile.am, 
-	  gui/greeter/Makefile.am: Upgrading to 
-	  pkgconfig 0.17.2 broke the Solaris build 
-	  because it no longer allows the linker to
-	  pull in libraries that are implicitely
-	  included.  Now explicitely specify the
-	  dependant libraries and ensure they are
-	  included in the link statements for each
-	  binary.
-	* verify-pam.c: Minor correction to Solaris
-	  audit logic provided by Gary Winiger.
-	  <Gary.Winiger@sun.com>
+	  gui/greeter/Makefile.am: Upgrading to pkgconfig 0.17.2 broke the
+	  Solaris build because it no longer allows the linker to pull in
+	  libraries that are implicitely included.  Now explicitely specify the
+	  dependant libraries and ensure they are included in the link
+	  statements for each binary.
+	* verify-pam.c: Minor correction to Solaris audit logic provided by
+	  Gary Winiger.  <Gary.Winiger@sun.com>
 
 2005-06-20  Brian Cameron  <brian.cameron@sun.com>
 
-	* autogen.sh: Updated REQUIRED_AUTOMAKE_VERSION
-	  from 1.4 to 1.5 since it no longer requires 1.4
-	  and gnome-autogen.sh would complain if you had
-	  a newer version of automake.  Fixes bug 
-	  #307543.
+	* autogen.sh: Updated REQUIRED_AUTOMAKE_VERSION from 1.4 to 1.5 since
+	  it no longer requires 1.4 and gnome-autogen.sh would complain if you
+	  had a newer version of automake.  Fixes bug #307543.
 
-	* daemon/slave.c: On 04/25, a change was made
-	  to move seteuid/setegid to before checking
-	  the existance of the user's $HOME id to fix
-	  bug #301821.  That patch added new seteuid/setegid
-	  calls before the check, but didn't remove the
-	  calls after the check.  Calling these functions
-	  twice is needless and was causing problems on
-	  NetBSD (refer to bug #301821), so now fixing
-	  the logic so it doesn't needlessly call the
-	  function twice.  This fixes bug #301821.  Patch
-	  provided by Julio M. Merino Vidal.  This fixes
-	  bug #301821.
+	* daemon/slave.c: On 04/25, a change was made to move seteuid/setegid
+	  to before checking the existance of the user's $HOME id to fix bug
+	  #301821.  That patch added new seteuid/setegid calls before the
+	  check, but didn't remove the calls after the check.  Calling these
+	  functions twice is needless and was causing problems on NetBSD
+	  (refer to bug #301821), so now fixing the logic so it doesn't
+	  needlessly call the function twice.  This fixes bug #301821.  Patch
+	  provided by Julio M. Merino Vidal.  This fixes bug #301821.
 
 2005-06-17  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmsetup.c:  Fix Delete button sensitivity.
-	  Fixes part of bug #302354.  Patch by Andrew Case.
+	* gui/gdmsetup.c:  Fix Delete button sensitivity.  Fixes part of bug
+	  #302354.  Patch by Andrew Case.
 
 2005-06-17  Julio M. Merino Vidal <jmmv84@gmail.com>
 
-	* docs/C/gdm.xml: Fix duplicate entity ID so that the
-	  document validates correctly.  Fixes bug #308048.
+	* docs/C/gdm.xml: Fix duplicate entity ID so that the document
+	  validates correctly.  Fixes bug #308048.
 
 2005-06-15  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmXnestchooser.c, gui/gdmcomm.c, 
 	  gui/gdmflexiserver.c, gui/gdmphotosetup.c, 
-	  gui/gdmwm.c:  Fix leaks.  Addresses bug 
-	  #307482.  Patch provided by Kjartan Maraas.
+	  gui/gdmwm.c:  Fix leaks.  Addresses bug #307482.  Patch provided by
+	  Kjartan Maraas.
 	* gui/modules/dwellmouselistener.c, 
-	  gui/modules/keymouselistener.c:  Remove
-	  needless "\n" from syslog calls.
+	  gui/modules/keymouselistener.c:  Remove needless "\n" from syslog
+	  calls.
 
 2005-06-15  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/modules/dwellmouselistener.c, 
-	  gui/modules/keymouselistener.c:  Now log messages to 
-	  syslog since you can't see messages printed to
-	  stdout/stderr when running under gdm2.  Now only 
-	  print messages if GDM_DEBUG_GESTURES environment
-	  variable is set to TRUE.  Cleaned up the code so it
-	  is more readible.  No longer modify PATH since
-	  gdm2 now puts full path to executables in the
-	  gesture listener config files.  More secure.
+	* gui/modules/dwellmouselistener.c, gui/modules/keymouselistener.c:
+	  Now log messages to syslog since you can't see messages printed to
+	  stdout/stderr when running under gdm2.  Now only print messages if
+	  GDM_DEBUG_GESTURES environment variable is set to TRUE.  Cleaned up
+	  the code so it is more readible.  No longer modify PATH since gdm2
+	  now puts full path to executables in the gesture listener config
+	  files.  More secure.
 
 2005-06-13  Brian Cameron  <brian.cameron@sun.com>
 
-	* vicious-extensions/ve-gnome.c:  Remove reference
-	  to libgnome.  The daemon should not depend on libgnome.
-	  Patch provided by Andrew Case.  Fix for bug #117889.
+	* vicious-extensions/ve-gnome.c:  Remove reference to libgnome.  The
+	  daemon should not depend on libgnome.  Patch provided by Andrew Case.
+	  Fix for bug #117889.
 
 2005-06-11  Juerg Billeter  <j@bitron.ch>
 
-	* configure.in: Use ksh on solaris only.  Fixes bug
-	  #307250.
+	* configure.in: Use ksh on solaris only.  Fixes bug #307250.
 
 2005-06-10  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1438,45 +1357,39 @@
 	* configure.in: Updated version
 	* NEWS: Updated
 	* gui/Makefile.am: Fixed so faces subdir gets distributed.
-	* gui/faces/Makefile.am: Fixed so faces subdir builds with
-	  distcheck.
+	* gui/faces/Makefile.am: Fixed so faces subdir builds with distcheck.
 
 2005-06-10  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmsetup-strings.c, gui/gdmsetup.c, 
-	  gui/gdmsetup.glade:  Removed "No Image" button
-	  for setting the background since it is redundant.
-	  You can also say "no background" on the radio
-	  button list.
+	* gui/gdmsetup-strings.c, gui/gdmsetup.c, gui/gdmsetup.glade:  Removed
+	  "No Image" button for setting the background since it is redundant.
+	   You can also say "no background" on the radio button list.
 
 2005-06-10  Brian Cameron  <brian.cameron@sun.com>
 
-	* config/gdm.conf.in: Updated setting for gdmsetup,
-	  gdmlogin, and gdmchooser so they point to the new
-	  installation locations.  Fixes bug #306464.
-	* configure.in: Fix enable-ipv6 so it works.  Fixes
-	  bug #306558.  Patch provided by foser@gentoo.org.
+	* config/gdm.conf.in: Updated setting for gdmsetup, gdmlogin, and
+	  gdmchooser so they point to the new installation locations.  Fixes
+	  bug #306464.
+	* configure.in: Fix enable-ipv6 so it works.  Fixes bug #306558.  Patch
+	  provided by foser@gentoo.org.
 	* gui/gdmsetup-strings.c, gui/gdmsetup.c, gui/gdmsetup.glade,
-	  config/gdm.h, daemon/gdm.h:  Add Xserver configuration
-	  tab to gdmsetup.  Minor cleanup of gdmsetup.c and
-	  better documentation.  Fixes bug #89421.
-	* gui/gdmsetup.c, gui/gdmsetup.glade: Now "Turn on
-	  Face Browser" is on Security tab, which makes more
-	  sense.  Face Browser tab is now insensitive if not
-	  turned on.  Rearranged tabs so they seem a bit more
-	  clean.
+	  config/gdm.h, daemon/gdm.h:  Add Xserver configuration tab to
+	  gdmsetup.  Minor cleanup of gdmsetup.c and better documentation.
+	  Fixes bug #89421.
+	* gui/gdmsetup.c, gui/gdmsetup.glade: Now "Turn on Face Browser" is on
+	  Security tab, which makes more sense.  Face Browser tab is now
+	  insensitive if not turned on.  Rearranged tabs so they seem a bit
+	  more clean.
 
 2005-06-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmchooser.c, gui/gdmlogin.c, gui/gdmsetup.glade,
 	  gui/greeter/greeter.c, gui/greeter/greeter_system.c:
-	  Change "reboot" to "restart".  Changed function names
-	  and variables from reboot to restart.  It's still
-	  "reboot_button" in the GDM2 theme XML files since 
-	  changing this would break backwards compatibility.
-	  Fixes bug #305939.  Patch for gdmlogin by Nicholas
-	  Skehin.  I updated the patch so it also applies to
-	  gdmgreeter.
+	  Change "reboot" to "restart".  Changed function names and variables
+	  from reboot to restart.  It's still "reboot_button" in the GDM2 theme
+	  XML files since changing this would break backwards compatibility.
+	  Fixes bug #305939.  Patch for gdmlogin by Nicholas Skehin.  I updated
+	  the patch so it also applies to gdmgreeter.
 	  
 2005-06-02  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1485,20 +1398,19 @@
 2005-05-25  Brian Cameron  <brian.cameron@sun.com>
 
 	* acconfig.h, configure.in, config/gdm.conf.in,
-	  config/Xsession.in, README.install: Now allow xevie to
-	  be turned on for server-Standard.  This is for better
-	  a11y support.  Now use /bin/ksh for Xsession shell if
-	  on Solaris instead of /bin/sh.  This is needed to
-	  support Solaris users who are using ksh or bash as
-	  their $HOME shell.
+	  config/Xsession.in, README.install: Now allow xevie to be turned on
+	  for server-Standard.  This is for better a11y support.  Now use
+	  /bin/ksh for Xsession shell if on Solaris instead of /bin/sh.  This
+	  is needed to support Solaris users who are using ksh or bash as their
+	  $HOME shell.
 
 2005-05-17  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.[ch], daemon/misc.c, daemon/verify-pam.c,
 	  docs/C/gdm.xml, gui/Makefile.am, gui/gdmdynamic.c,
-	  config/gdm.conf.in: Added support for dynamic Xservers.
-	  Fixes enhancement request #168219.  Patch provided by
-	  Bob Terek <Robert.Terek@sun.com>.
+	  config/gdm.conf.in: Added support for dynamic Xservers.  Fixes
+	  enhancement request #168219.  Patch provided by Bob Terek
+	  <Robert.Terek@sun.com>.
 
 2005-05-16  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1506,136 +1418,115 @@
 
 2005-05-16  Brian Cameron  <brian.cameron@sun.com>
 
-	* Now use gi18n.h instead of libgnome header files to get
-	  access to translation code.  libgnome is still used in
-	  vicious-extensions, so this still needs to be cleaned up
-	  before bug #117889 is fully fixed.  Patch provided by
-	  Christian - Manny Calavera - Neumair.
-	* configure.in:  Backed out adding zh_HK to
-	  ALL_LINGUAS since it breaks the build.
+	* Now use gi18n.h instead of libgnome header files to get access to
+	  translation code.  libgnome is still used in vicious-extensions, so
+	  this still needs to be cleaned up before bug #117889 is fully fixed.
+	  Patch provided by Christian - Manny Calavera - Neumair.
+	* configure.in:  Backed out adding zh_HK to ALL_LINGUAS since it breaks
+	  the build.
 	
 2005-05-16  Danilo \305\240egan  <dsegan@gmx.net>
 
        * gui/gdmsetup-strings.c: Removed.
        * gui/gdmchooser-strings.c: Removed.
 
-       * gui/Makefile.am: Remove gdmchooser-strings.c and
-       gdmsetup-strings.c, as well as duplicate entries for glade files
-       from EXTRA_DIST.  Fixes bug #55635
+       * gui/Makefile.am: Remove gdmchooser-strings.c and gdmsetup-strings.c,
+	 as well as duplicate entries for glade files from EXTRA_DIST.  Fixes
+	 bug #55635
 
 2005-05-16  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/greeter/greeter.c:  Fix broken messages.
-	  Fixes bug #304377.  Thanks to Leena Gunda.
+	* gui/greeter/greeter.c:  Fix broken messages.  Fixes bug #304377.
+	  Thanks to Leena Gunda.
 	* configure.in: Added zh_HK to ALL_LINGUAS.
 
 2005-05-13  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/gdm-net.c: Fix gdm2 so it works better
-	  on BSD and MacOS.  Upon getting EOF on a socket/pipe/etc.
-	  G_IO_IN is always set and G_IO_HUP may not be set.
-	  Therefore, the 0 return from read() is important.  If
-	  we get a length <= 0 from read() we force the socket
-	  to be closed.  This prevents gdm-binary from causing
-	  high CPU-load after logout.  Fixes bug #172491.
-	  Fix posted by Joe Marcus Clarke.
+	* daemon/gdm-net.c: Fix gdm2 so it works better on BSD and MacOS.  Upon
+	  getting EOF on a socket/pipe/etc.  G_IO_IN is always set and G_IO_HUP
+	  may not be set.  Therefore, the 0 return from read() is important.
+	  If we get a length <= 0 from read() we force the socket to be closed.
+	  This prevents gdm-binary from causing high CPU-load after logout.
+	  Fixes bug #172491.  Fix posted by Joe Marcus Clarke.
 
 2005-05-13  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/greeter/greeter.c: No longer set default
-	  font size.  Thanks to Erwann Chenede for catching
-	  this.
+	* gui/greeter/greeter.c: No longer set default font size.  Thanks to
+	  Erwann Chenede for catching this.
 
 2005-05-10  Leena Gunda  <leena.gunda@wipro.com>
 
-	* daemon/server.c (do_server_wait): Check if a host 
-	  has been selected from XDMCP chooser and change 
-	  servstat accordingly. Fixes bug where Xnest session
-	  quits when a host is selected from XDMCP chooser.
+	* daemon/server.c (do_server_wait): Check if a host has been selected
+	  from XDMCP chooser and change servstat accordingly. Fixes bug where
+	  Xnest session quits when a host is selected from XDMCP chooser.
 
 2005-05-06  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/auth.c, daemon/display.c, daemon/gdm.[ch],
 	  daemon/server.c, daemon/slave.c, daemon/verify-pam.c,
-	  daemon/xdmcp.c, AUTHORS:  Rename console and
-	  TYPE_LOCAL in preparation for adding the dynamic
-	  Xserver patch.  This is part of the fix for bug
-	  #168219.  Patch provided by Bob Terek.
+	  daemon/xdmcp.c, AUTHORS:  Rename console and TYPE_LOCAL in
+	  preparation for adding the dynamic Xserver patch.  This is part of
+	  the fix for bug #168219.  Patch provided by Bob Terek.
 
 2005-05-04  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmcommon.[ch], gui/gdmlogin.c, 
-	  gui/greeter/greeter_session.c:  Refactored
-	  the code so session menu setup code is no
-	  longer duplicated in gdmlogin adn gdmgreeter.
+	* gui/gdmcommon.[ch], gui/gdmlogin.c, gui/greeter/greeter_session.c:
+	  Refactored the code so session menu setup code is no longer
+	  duplicated in gdmlogin adn gdmgreeter.
 	  
 2005-05-03  Brian Cameron  <brian.cameron@sun.com>
 
-	* Makefile.am: Correct Makefile so that if 
-	  CONSOLE_HELPER is set, we don't try to create
-	  an /sbin/gdmsetup symlink to gdmsetup.  Now
-	  gdmsetup is already installed to /sbin always.
-	  Fixes #302319.
-	* gui/gdmsetup.c: Fix sensitivity of the 
-	  "Delete Theme" button.  Fixes bug #302342.
-	* daemon/gdm.h, gui/gdmlogin.c, gui/greeter/greeter.c:
-	  Now only set user/password entry to PAM_MAX_RESP_SIZE
-	  if HAVE_PAM is defined, otherwise set it to 
-	  GDM_MAX_PASS set to 256 in daemon/gdm.h.  This 
-	  allows gdm to be used on systems that do not have
-	  PAM.  Fixes #302228.  Patch by Ali Akcaagac.
+	* Makefile.am: Correct Makefile so that if CONSOLE_HELPER is set, we
+	  don't try to create an /sbin/gdmsetup symlink to gdmsetup.  Now
+	  gdmsetup is already installed to /sbin always.  Fixes #302319.
+	* gui/gdmsetup.c: Fix sensitivity of the "Delete Theme" button.  Fixes
+	  bug #302342.
+	* daemon/gdm.h, gui/gdmlogin.c, gui/greeter/greeter.c: Now only set
+	  user/password entry to PAM_MAX_RESP_SIZE if HAVE_PAM is defined,
+	  otherwise set it to GDM_MAX_PASS set to 256 in daemon/gdm.h.  This 
+	  allows gdm to be used on systems that do not have PAM.  Fixes
+	  #302228.  Patch by Ali Akcaagac.
 	* daemon/gdm.h, docs/C/gdm.xml, gui/gdmsetup.c,
 	  gui/greeter/greeter.c, gui/gdmsetup.glade, 
-	  gui/gdmsetup-strings.c, config/gdm.conf.in:
-	  Now support random theme.  Fixes #302354.
-	  Patch by Andrew Case.
+	  gui/gdmsetup-strings.c, config/gdm.conf.in: Now support random
+	  theme.  Fixes #302354.  Patch by Andrew Case.
 	* gui/gdmcommon.c, gui/gdmlogin.c,
 	  gui/greeter/greeter_session.c, gui/Makefile.am,
-	  added gui/gdmsession.[ch]:  Support better
-	  sorting for session names.  Fixes #301818.
-	  Patch by Ray Strode.
+	  added gui/gdmsession.[ch]:  Support better sorting for session names.
+	  Fixes #301818.  Patch by Ray Strode.
 
 2005-04-26  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/modules/AccessKeyMouseEvents.in:  Now use more
-	  sensible arguments for starting magnifier,
-	  recommended by Bill Haneman.  
+	* gui/modules/AccessKeyMouseEvents.in:  Now use more sensible arguments
+	  for starting magnifier, recommended by Bill Haneman.  
 
 2005-04-25  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.c, daemon/slave.c, daemon-verify-pam.c,
 	  gui/gdmcomm.c, gui/gdmlogin.c, gui/gdmsetup.c,
-	  vicious-extensions/glade-helper.c:  Fix typos
-	  in strings.  Fixes bug 301694.  Patch provided
-	  by Kjartan Maraas.
-	* daemon/slave.c: To support when one username can be
-	  mapped to another canonical username, we use the
-	  loginname that pwent returns instead of the one
-	  that was typed in.  Fixes bug #301820.  Patch
-	  provided by Mike Patnode.  Now use seteuid before
-	  checking existance of user's home directory since
-	  root doesn't always have access and fails otherwise.
-	  Fixes bug #301821.  Patch provided by Ray Strode.
+	  vicious-extensions/glade-helper.c:  Fix typos in strings.  Fixes bug
+	  #301694.  Patch provided by Kjartan Maraas.
+	* daemon/slave.c: To support when one username can be mapped to another
+	  canonical username, we use the loginname that pwent returns instead
+	  of the one that was typed in.  Fixes bug #301820.  Patch provided by
+	  Mike Patnode.  Now use seteuid before checking existance of user's
+	  home directory since root doesn't always have access and fails
+	  otherwise.  Fixes bug #301821.  Patch provided by Ray Strode.
 	* gui/greeter/Makefile.am,
 	  gui/greeter/greeter_canvas_item.c:
-	  Added:  gui/greeter/canvas_text.[ch]: 
-	  No longer rely on Xserver physical screen geometry
-	  which sometimes causes text to be too big or too
-	  small.  Now use gdk/pango functions to get root
-	  window resources.  Fixes bug #301824.  Patch 
-	  provided by Ray Strode.
-	* config/gdm.conf.in, daemon/gdm.h, docs/C/gdm.xml,
-	  gui/gdmlogin.c:  Now support background programs
-	  that are started after a timedelay and can be
-	  restarted after a delay.  Useful for running a
-	  screensaver at login time.  Fixes bug #301528.
-	  Patch provided by Laurent Birtz.
+	  Added:  gui/greeter/canvas_text.[ch]: No longer rely on Xserver
+	  physical screen geometry which sometimes causes text to be too big or
+	  too small.  Now use gdk/pango functions to get root window resources.
+	  Fixes bug #301824.  Patch provided by Ray Strode.
+	* config/gdm.conf.in, daemon/gdm.h, docs/C/gdm.xml, gui/gdmlogin.c:
+	  Now support background programs that are started after a timedelay
+	  and can be restarted after a delay.  Useful for running a screensaver
+	  at login time.  Fixes bug #301528.  Patch provided by Laurent Birtz.
 
 2005-04-22  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/modules/keymouselistner.c: Corrected broken
-	  if test pointed out by meissner@suse.de.
-	  Fixes bug 301565.
+	* gui/modules/keymouselistner.c: Corrected broken if test pointed out
+	  by meissner@suse.de.  Fixes bug #301565.
 
 2005-04-22  Mark McLoughlin  <mark@skynet.ie>
 
@@ -1689,10 +1580,9 @@
 	
 2005-04-21  Mark McLoughlin  <mark@skynet.ie>
 
-	Don't use gdm_debug() from signal handlers - the message
-	formatting and the syslog() both involve malloc() which
-	isn't safe in signal handlers. Fixes random lockups with
-	debugging enabled.
+	Don't use gdm_debug() from signal handlers - the message formatting and
+	the syslog() both involve malloc() which isn't safe in signal
+	handlers. Fixes random lockups with debugging enabled.
 
 	* daemon/server.c:
 	(gdm_server_usr1_handler),
@@ -1704,57 +1594,45 @@
 
 2005-04-20  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmlanguages.c: For Danish-English use
-	  en_DK instead of en_IE.
-	* gui/gdmsetup: Fix sensitivities of new Login
-	  Sounds feature.  Further fix for #300136. 
-	  Provided by Andrew Case.
+	* gui/gdmlanguages.c: For Danish-English use en_DK instead of en_IE.
+	* gui/gdmsetup: Fix sensitivities of new Login Sounds feature.  Further
+	  fix for #300136. Provided by Andrew Case.
 	* HACKING: Made less out-of-date.
 
 2005-04-19  Brian Cameron  <brian.cameron@sun.com>
 
 	* config/gdm.conf.in, daemon/gdm.[ch], daemon/slave.c,
-	  gui/gdmchooser.c, giu/gdmlogin.c:  Cleanup for
-	  login success/failure sounds.  Patch provided by
-	  Mark McLoughlin.  Refer to bug #300136.
-	* daemon/gdm.c: Fix FlexiServer commands so that all
-	  output for a single command is sent as a single call
-	  to gdm_connection_write or gdm_connection_printf
-	  rather than building commands and sending them out
-	  in pieces.  Also use gdm_connection_printf rather
-	  than building so many temporary strings.  Patch
-	  provided by for GDM_SUP_QUERY_LOGOUT_ACTION, but
-	  I reworked the patch so the same technique is used
-	  for all gdmflexiserver commands.  Fixes bug 
-	  #158799.  Patch based on one provided by Raffaele
-	  Sandrini <rasa@gmx.ch>
-	* gui/greeter/greeter_geometry.c,
-	  gui/greeter/greeter_item.h,
-	  gui/greeter/greeter_parser.c, docs/C/gdm.xml:  Now
-	  support ratio scaling of SVG images.  Docs weren't
-	  provided with the patch so I added some.  Patch
-	  provided by.  Fixes bug 159524.  Patch provided by
+	  gui/gdmchooser.c, giu/gdmlogin.c:  Cleanup for login success/failure
+	  sounds.  Patch provided by Mark McLoughlin.  Refer to bug #300136.
+	* daemon/gdm.c: Fix FlexiServer commands so that all output for a
+	  single command is sent as a single call to gdm_connection_write or
+	  gdm_connection_printf rather than building commands and sending them
+	  out in pieces.  Also use gdm_connection_printf rather than building
+	  so many temporary strings.  Patch provided by for
+	  GDM_SUP_QUERY_LOGOUT_ACTION, but I reworked the patch so the same
+	  technique is used for all gdmflexiserver commands.  Fixes bug
+	  #158799.  Patch based on one provided by Raffaele Sandrini
+	  <rasa@gmx.ch>
+	* gui/greeter/greeter_geometry.c, gui/greeter/greeter_item.h,
+	  gui/greeter/greeter_parser.c, docs/C/gdm.xml:  Now support ratio
+	  scaling of SVG images.  Docs weren't provided with the patch so I
+	  added some.  Patch provided by.  Fixes bug 159524.  Patch provided by
 	  Vincent Untz <vincent@vuntz.net>.
-	* gui/gdmlogin.c: Rearrange how the widgets are
-	  organized to make it look a bit better now that
-	  the message fields have sizes defined to avoid gdm2
-	  resizing.  Bit more of a fix for bug #117779.
-	* README.install: Spell corrections and minor updates,
-	  now mention that running configure with the option
-	  --with-post-path=/usr/openwin/bin is recommended
-	  on Solaris.
-	* MAINTAINERS, AUTHORS, NEWS, docs/C/gdm.xml, 
-	  daemon/gdm.h: Fixed spelling,	added contributors
-	  to AUTHORS file for patches made in the past
-	  few months.
-	* docs/C/gdm.xml: Fixed bug 300138 by providing
-	  better sound docs in the a11y section.  Fixes
-	  bug #300138.  Patch provided by Andrew Case.
-	* gui/gdmsetup.glade, gui/gdmsetup-strings.c: Removed
-	  strings "sdfg" and "asdf" since they can't be
-	  translated.  Fixes bug #301211.
+	* gui/gdmlogin.c: Rearrange how the widgets are organized to make it
+	  look a bit better now that the message fields have sizes defined to
+	  avoid gdm2 resizing.  Bit more of a fix for bug #117779.
+	* README.install: Spell corrections and minor updates, now mention that
+	  running configure with the option --with-post-path=/usr/openwin/bin
+	  is recommended on Solaris.
+	* MAINTAINERS, AUTHORS, NEWS, docs/C/gdm.xml, daemon/gdm.h: Fixed
+	  spelling, added contributors to AUTHORS file for patches made in the
+	  past few months.
+	* docs/C/gdm.xml: Fixed bug 300138 by providing better sound docs in
+	  the a11y section.  Fixes bug #300138.  Patch provided by Andrew Case.
+	* gui/gdmsetup.glade, gui/gdmsetup-strings.c: Removed strings "sdfg"
+	  and "asdf" since they can't be translated.  Fixes bug #301211.
 	* gui/gdmchooser.c: Removed needless comment.
-	* config/Init: Removed generated file from CVS.
+ 	* config/Init: Removed generated file from CVS.
 
 2005-04-18  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1762,21 +1640,17 @@
 	  gui/gdmchooser.c, gui/gdmcommon.c, gui/gdmlogin.c, 
 	  gui/gdmsetup-strings.c, gui/gdmsetup.c,
 	  gui/gdmsetup.glade, gui/greeter/greeter.c,
-	  gui/greeter/greeter_configuration.h:  Add login
-	  success/failure sounds.  Patch provided by Andrew
-	  Case.  Refer to bug #300136.
+	  gui/greeter/greeter_configuration.h:  Add login success/failure
+	  sounds.  Patch provided by Andrew Case.  Refer to bug #300136.
 
 2005-04-18  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c:
-	  I noticed that double clicking in the Face Browser
-	  was causing the focus to be taken away from the 
-	  username/password entry field.  I added a
-	  button-release-event listener that returns the
-	  focus back to the entry field when the user clicks
-	  on the Face Browser.  This ensures that the focus
-	  is always kept on the entry field where it should
-	  be.
+	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c: I noticed that
+	  double clicking in the Face Browser was causing the focus to be taken
+	  away from the username/password entry field.  I added a
+	  button-release-event listener that returns the focus back to the
+	  entry field when the user clicks on the Face Browser.  This ensures
+	  that the focus is always kept on the entry field where it should be.
 
 2005-04-15  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1787,23 +1661,19 @@
 	  cause the default strings to be used.  This allows
 	  us to better translate the string in gdmsetup for
 	  display and fixes bug #300304.
-	* gui/greeter/greeter_item_ulist.c,
-	  gui/greeter/greeter_parser.c,
-	  gui/greeter/themes/happygnome-list/happygnome.xml:
-	  Now allow theming of background colors in the Face
-	  Browser.  Also shrink the FaceBrowser so it is the
-	  same size as the treeview, so a big white space is
-	  not displayed under the FaceBrowser.  I probably 
-	  did not pick good default colors in the xml file,
-	  but perhaps someone with a better design eye can
-	  give me a recommendation for better colors.
+	* gui/greeter/greeter_item_ulist.c, gui/greeter/greeter_parser.c,
+	  gui/greeter/themes/happygnome-list/happygnome.xml: Now allow theming
+	  of background colors in the Face Browser.  Also shrink the
+	  FaceBrowser so it is the same size as the treeview, so a big white
+	  space is not displayed under the FaceBrowser.  I probably did not
+	  pick good default colors in the xml file, but perhaps someone with a
+	  better design eye can give me a recommendation for better colors.
 	  Fixes bug #140312.
-	* docs/C/gdm.xml: Added docs for above two
-	  features.
-	* gui/gdmlogin.c: Moved auto_timed_msg label after 
-	  msg label since that looks better.
-	* gui/gdmsetup.c: Moved call to g_signal_lookup so it
-	  happens when the call works.
+	* docs/C/gdm.xml: Added docs for above two features.
+	* gui/gdmlogin.c: Moved auto_timed_msg label after msg label since that
+	  looks better.
+	* gui/gdmsetup.c: Moved call to g_signal_lookup so it happens when the
+	  call works.
 
 2005-04-12  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1813,58 +1683,45 @@
 
 2005-04-12  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/slave.c: Display an error dialog
-	  if the user's $HOME/.dmrc can't be accessed
-	  for permissions reasons.  Fixes bug 141126.
-	* gui/gdmlogin.c, gui/greeter/greeter_item_pam.c:
-	  Now tab acts like enter.  Fixes bug #127339.
-	* gui/gdmsetup.c: Fixed theme installer so it
-	  remembers where the last theme was installed
-	  from and opens the file browser in that 
-	  location.  Fixes bug #164785.  Also fixed a
-	  bug which was causing only *tar.gz files to
-	  be installable.  Now it works for *.tar files
-	  on my system.
+	* daemon/slave.c: Display an error dialog if the user's $HOME/.dmrc
+	  can't be accessed for permissions reasons.  Fixes bug 141126.
+	* gui/gdmlogin.c, gui/greeter/greeter_item_pam.c: Now tab acts like
+	  enter.  Fixes bug #127339.  * gui/gdmsetup.c: Fixed theme installer
+	  so it remembers where the last theme was installed from and opens the
+	  file browser in that location.  Fixes bug #164785.  Also fixed a
+	  bug which was causing only *tar.gz files to be installable.  Now it
+	  works for *.tar files on my system.
 
 2005-04-11  Brian Cameron  <brian.cameron@sun.com>
 
-	* config/locale.alias:  Patched locale.alias to 
-	  include missing languages.  Patch provided by
-	  Ray Dassen.
-	* gui/gdmchooser.c: Make button 3 always act like
-	  button1 for the chooser as well, further fixes
-	  bug #155142.
-	* gui/gdmlogin.c, gui/greeter/greeter.c: Support
-	  Control-U for blanking the username/password
-	  entry.  Fixes bug #103498.  Also removed 
+	* config/locale.alias:  Patched locale.alias to include missing
+	  languages.  Patch provided by Ray Dassen.
+	* gui/gdmchooser.c: Make button 3 always act like button1 for the
+	  chooser as well, further fixes bug #155142.
+	* gui/gdmlogin.c, gui/greeter/greeter.c: Support Control-U for blanking
+	  the username/password entry.  Fixes bug #103498.  Also removed 
 	  needless ";" from include lines.
-	* gdm/gdmsetup.c: Now clicking "No Logo" or 
-	  "No background" image causes gdmlogin to update
-	  itself immediately.  Also fixed "Timed Login"
-	  enable checkbox so it takes effect immediately
-	  when changed.
+	* gdm/gdmsetup.c: Now clicking "No Logo" or "No background" image
+	  causes gdmlogin to update itself immediately.  Also fixed "Timed
+	  Login" enable checkbox so it takes effect immediately when changed.
 
 2005-04-08  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmlogin.c, gui/gdmsetup.c, gui/greeter/greeter.c:
-	  Now make button3 always act like button 1 for better
-	  left-hand support.  No longer just set this for the
-	  login/setup programs when RUNNING_UNDER_GDM is
-	  set since gdmsetup can be run from console and 
-	  so can gdmlogin (for development).  gdmgreet needs
-	  this so the Actions and Languages pop-up dialogs
-	  work with the left mouse.  Aside from such pop-ups
-	  the logic in greeter_events was taking care of this.
-	  Fixes bug #155142.
-	  Also increased the max size of the username password
-	  field to PAM_MAX_RESP_SIZE to fix bug #144809.  I
-	  talked with the PAM expert here at Sun and he 
-	  recommended using this value.
-	  Lastly, fixed a bug I introduced on the 6th so now
-	  I really fixed bug #67647.
-	* daemon/gdm.c: Now the GDM daemon recognizes if the
-	  user changed the "Enable debug" value in gdmsetup.
-	  I added the checkbox to gdmsetup on the 4th.
+	* gui/gdmlogin.c, gui/gdmsetup.c, gui/greeter/greeter.c: Now make
+	  button3 always act like button 1 for better left-hand support.  No
+	  longer just set this for the login/setup programs when
+	  RUNNING_UNDER_GDM is set since gdmsetup can be run from console and 
+	  so can gdmlogin (for development).  gdmgreet needs this so the
+	  Actions and Languages pop-up dialogs work with the left mouse.  Aside
+	  from such pop-ups the logic in greeter_events was taking care of
+	  this.  Fixes bug #155142.
+	  Also increased the max size of the username password field to
+	  PAM_MAX_RESP_SIZE to fix bug #144809.  I talked with the PAM expert
+	  here at Sun and he recommended using this value.  Lastly, fixed a bug
+	  I introduced on the 6th so now I really fixed bug #67647.
+	* daemon/gdm.c: Now the GDM daemon recognizes if the user changed the
+	  "Enable debug" value in gdmsetup.  I added the checkbox to gdmsetup
+	  on the 4th.
 
 2005-04-07  Gareth Owen  <gowen72@yahoo.com>
 
@@ -1872,13 +1729,12 @@
 
 2005-04-06  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/gdmlogin.c: Set size requests for text labels in 
-	  gdmlogin so that they are initialized with a big enough
-	  size to avoid container resizing.  Fixes bug #117779.
-	  Also no longer place the "msg" label in the button box,
-	  instead placing it above.  This label can get too big to
-	  really fit in the button box without resizing or 
-	  otherwise making the GUI look weird.
+	* gui/gdmlogin.c: Set size requests for text labels in gdmlogin so that
+	  they are initialized with a big enough size to avoid container
+	  resizing.  Fixes bug #117779.  Also no longer place the "msg" label
+	  in the button box, instead placing it above.  This label can get too
+	  big to really fit in the button box without resizing or otherwise
+	  making the GUI look weird.
  
 2005-04-06  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1913,19 +1769,15 @@
 	* gui/gdmcommon.c, gui/gdmcommon.h, gui/gdmlogin.c,
 	  gui/greeter/greeter.c, gui/greeter/greeter_session.c,
 	  gui/greeter/greeter_action_language.[ch],
-	  gui/greeter/greeter_system.c:  Fixed dialogs that
-	  ask user if they want to change their default
-	  language/session so they have a Cancel button that
-	  returns the user to the login screen without having
-	  to login/logout to change their session/language
-	  session.  Also added mnemonics to the Languages
-	  menu in gdmlogin.c.  Fixed minor bug where gdmlogin
-	  and gdmgreeter were checking Include and Exclude 
-	  list as booleans rather than strings.  Fixes bugs
-	  #117776 and #168118.
-	* gui/gdmsetup-strings.c, gui/gdmsetup.c,
-	  gui/gdmsetup.glade: Now allow user to turn on/off
-	  debug on the Security tab.  Minor cleanup.
+	  gui/greeter/greeter_system.c:  Fixed dialogs that ask user if they
+	  want to change their default language/session so they have a Cancel
+	  button that returns the user to the login screen without having to
+ 	  login/logout to change their session/language session.  Also added
+	  mnemonics to the Languages menu in gdmlogin.c.  Fixed minor bug
+	  where gdmlogin and gdmgreeter were checking Include and Exclude list
+	  as booleans rather than strings.  Fixes bugs #117776 and #168118.
+	* gui/gdmsetup-strings.c, gui/gdmsetup.c, gui/gdmsetup.glade: Now allow
+	  user to turn on/off debug on the Security tab.  Minor cleanup.
 
 2005-04-01  Pawan Chitrakar  <pawan@nplinux.org>
 
@@ -1937,63 +1789,56 @@
 
 2005-04-01  Brian Cameron  <Brian.Cameron@sun.com>
 
-	* configure.in: Change Solaris HaltCommand from "init 0"
-	  to "init 5" as Sun's ARC has informed me.
+	* configure.in: Change Solaris HaltCommand from "init 0" to "init 5" as
+	  Sun's ARC has informed me.
 
 2005-04-01  Brian Cameron  <Brian.Cameron@sun.com>
 
 	* gui/gdmlogin.c, gui/gdmsetup.c, gui/gdmsetup-strings.c,
-	  gui/gdmsetup.glade: Revamped gdmsetup so that it uses the
-	  new file browser everywhere, uses GtkComboBox and
-	  GtkComboBoxEntry instead of GtkEntry and GtkOptionMenu
-	  since they are deprecated.  This fixed bug 171558.
-	  Improved Remote Welcome label to fix bug 105156.
-	  Now Remote Greeter option in the Greeter tab reads
-	  "Disabled" if XDMCP is disabled.  It returns to the
-	  real choice if XDMCP is enabled again.  This fixes
-	  bug 117888.  Also changed glade widget names for the
-	  face browser to have the "fb" prefix rather than "sg".
-	  Some other minor cleanup of the glade file.  Also
-	  added ability to turn on/off Theme menu choice from the
-	  Accessibility tab in gdmsetup.
-	* gui/gdmphotosetup.c: On March 10th I fixed gdmphotosetup so
-	  it uses the new file browser.  I noticed that the code had
-	  a bug which was causing an assert, now fixed.  Now make the
-	  file browser work more like the ones gdmsetup.c
-	* gui/gdmsetup.desktop.in: Make GNOME in all-caps to fix
-	  bug 167054.
+	  gui/gdmsetup.glade: Revamped gdmsetup so that it uses the new file
+	  browser everywhere, uses GtkComboBox and GtkComboBoxEntry instead of
+	  GtkEntry and GtkOptionMenu since they are deprecated.  This fixed bug
+	  #171558.  Improved Remote Welcome label to fix bug 105156.  Now
+	  Remote Greeter option in the Greeter tab reads "Disabled" if XDMCP
+	  is disabled.  It returns to the real choice if XDMCP is enabled
+	  again.  This fixes bug 117888.  Also changed glade widget names for
+	  the face browser to have the "fb" prefix rather than "sg".  Some
+	  other minor cleanup of the glade file.  Also added ability to turn
+	  on/off Theme menu choice from the Accessibility tab in gdmsetup.
+	* gui/gdmphotosetup.c: On March 10th I fixed gdmphotosetup so it uses
+	  the new file browser.  I noticed that the code had a bug which was
+	  causing an assert, now fixed.  Now make the file browser work more
+	  like the ones gdmsetup.c
+	* gui/gdmsetup.desktop.in: Make GNOME in all-caps to fix bug #167054.
 	  
 2005-03-29  Brian Cameron  <Brian.Cameron@sun.com>
 
-	* gui/gdmlanguages.c: Correct inconsistant spacing in 
-	  languages list.  Patch by Seb Wills.  Fixes bug
-	  171519.  Also corrected the fix made on March 4th
-	  to remove span tags properly.  
+	* gui/gdmlanguages.c: Correct inconsistant spacing in languages list.
+	  Patch by Seb Wills.  Fixes bug 171519.  Also corrected the fix made
+	  on March 4th to remove span tags properly.  
 
 2005-03-25  Abel Cheung  <maddog@linuxhall.org>
 
-	* gui/gdmlanguages.c, config/locale.alias: Add Hong Kong
-	  and Singapore locale.
+	* gui/gdmlanguages.c, config/locale.alias: Add Hong Kong and Singapore
+	  locale.
 
 2005-03-23  Brian Cameron  <Brian.Cameron@sun.com>
 
 	* gui/gdmsetup.c, gui/gdmsetup.glade, gui/gdmlogin.c
 	  gui/gdmuser.[ch], gui/greeter/greeter.c,
-	  gui/gdmsetup-strings.c, docs/C/gdm.xml:  Add face
-	  browser tab for configuring the face browser with
-	  the Exclude options and the new Include and IncludeAll
-	  configuration options.  Cleaned up the gdmsetup glade
-	  file a bit.  Now tabs have mnemonics
-	* daemon/slave.c, gui/gdmphotosetup.c,
-	  gui/greeter/gdmthemetester.c:  Changed name of 
-	  "Graphical Greeter" to "Themed Greeter" and "Standard
-	  Greeter" to "GTK+ Greeter".
+	  gui/gdmsetup-strings.c, docs/C/gdm.xml:  Add face browser tab for
+	  configuring the face browser with the Exclude options and the new
+	  Include and IncludeAll configuration options.  Cleaned up the
+	  gdmsetup glade file a bit.  Now tabs have mnemonics
+	* daemon/slave.c, gui/gdmphotosetup.c, gui/greeter/gdmthemetester.c:
+	  Changed name of "Graphical Greeter" to "Themed Greeter" and
+	  "Standard Greeter" to "GTK+ Greeter".
 
 2005-03-21  Brian Cameron   <Brian.Cameron@sun.com>
 
-	* gui/gdmlanguages.c: Remove "en" from language list since
-	  it causes all English languages to appear with the same
-	  "English" tag instead of "English (India)", etc.
+	* gui/gdmlanguages.c: Remove "en" from language list since it causes
+	  all English languages to appear with the same "English" tag instead
+	  of "English (India)", etc.
 
 2005-03-19  Adam Weinberger  <adamw@gnome.org>
 
@@ -2001,10 +1846,9 @@
 	  daemon/slave.c, daemon/verify-crypt.c,
 	  daemon/verify-pam.c, daemon/verify-shadow.c,
 	  gui/gdmchooser.c, gui/gdmcomm.c, gui/gdmsetup.c,
-	  gui/greeter/greeter.c,
-	  vicious-extensions/glade-helper.c,
-	  vicious-extensions/ve-nongnome.c: Fix a number of
-	  run-on sentences. Fixes bug 170532.
+	  gui/greeter/greeter.c, vicious-extensions/glade-helper.c,
+	  vicious-extensions/ve-nongnome.c: Fix a number of run-on sentences.
+	  Fixes bug 170532.
 
 Fri Mar 18 21:45:0000 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
@@ -2013,114 +1857,102 @@ Fri Mar 18 21:45:0000 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  gui/gdmphotosetup.c, gui/gdmsetup.c,
 	  vicious-extensions/glade-helper.c:
 	  Fixed messages - fixes bug 170531.
-	* gui/gdmlogin.c: Now use ve_locale_from_utf in
-	  the gdm_login_enter function since it's used
-	  everywhere else and in the same logic in the
+	* gui/gdmlogin.c: Now use ve_locale_from_utf in the gdm_login_enter
+	  function since it's used everywhere else and in the same logic in the
 	  greeter.
 	* gui/greeter/greeter.c, gui/greeter_item_pam.[hc],
 	  gui/greeter_greeter_parser.c, 
 	  gui/greeter/themes/circles/circles.xml,
 	  gui/greeter/themes/happygnome/happygnome.xml,
 	  gui/greeter/themes/happygnome-list/happygnome.xml,
-	  docs/C/gdm.xml:  Added OK button to greeter so GDM
-	  now properly follows the Sun HCI recommendations.
-	  Fixes bug 98470.
+	  docs/C/gdm.xml:  Added OK button to greeter so GDM now properly
+	  follows the Sun HCI recommendations.  Fixes bug #98470.
 
 Thu Mar 17 2:30:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* config/extract-shell.sh: Made comment nicer.
-	* gui/gdmlanguages.c:   Fix for bug 132629, it disambiguates
-	  the otherwise identical entries described in the bug report
-	  by showing their encoding.  Adding Hong Kong to table.
-	  Patch by Seb Wills.  Also added Hong Kong to table.
-	* gui/modules/keymouselistener.c:  Fix message as per
-	  bug 167649.
-	* README.intall: Added more security information and
-	  information about installing on Solaris.
+	* gui/gdmlanguages.c:   Fix for bug 132629, it disambiguates the
+	  otherwise identical entries described in the bug report by showing
+	  their encoding.  Adding Hong Kong to table.  Patch by Seb Wills.
+	   Also added Hong Kong to table.
+	* gui/modules/keymouselistener.c:  Fix message as per bug #167649.
+	* README.intall: Added more security information and information about
+	  installing on Solaris.
 
 Thu Mar 17 2:06:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* configure.in, gui/greeter/gdmthemetester.in (added),
-	  gui/greeter/gdmthemetester (removed):  Fixed so
-	  it recognizes gdmgreeter is installed to LIBEXEC and
-	  now uses gdmwhich instead of which (same logic that the
-	  Init, PreSession, etc. scripts) so it works better on
-	  Solaris.
+	  gui/greeter/gdmthemetester (removed):  Fixed so it recognizes
+	  gdmgreeter is installed to LIBEXEC and now uses gdmwhich instead of
+	  which (same logic that the Init, PreSession, etc. scripts) so it
+	  works better on Solaris.
 	* daemon/gdm.h, daemon/slave.c, gui/gdmlogin.c, 
 	  gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c,
 	  docs/C/gdm.xml, gui/greeter/greeter_parser.c,
 	  gui/greeter/themes/circles/circles.xml,
 	  gui/greeter/themes/happygnome/happygnome.xml,
-	  gui/greeter/themes/happygnome-list/happygnome.xml:  Made
-	  face browser much less braindead.  The facebrowser is
-	  no longer insensitive when entering the password so
-	  you can change the selected user without having to
-	  enter an invalid password.  Also added a cancel 
-	  button which allows user to reselect a different
-	  username without having to enter an invalid password.
-	  Removed the stupid double-click requirement to select
-	  a user with the face browser.  Now just clicking on
-	  a user takes you to password entry.  Clicking the
-	  cancel button unselects all users in the face browser
-	  and takes the user back to the Username prompt.
+	  gui/greeter/themes/happygnome-list/happygnome.xml:  Made face browser
+	  much less braindead.  The facebrowser is no longer insensitive when
+	  entering the password so you can change the selected user without
+	  having to enter an invalid password.  Also added a cancel button
+	  which allows user to reselect a different username without having to
+	  enter an invalid password.  Removed the stupid double-click
+	  requirement to select a user with the face browser.  Now just
+	  clicking on a user takes you to password entry.  Clicking the cancel
+	  button unselects all users in the face browser and takes the user
+	  back to the Username prompt.
 
 Mon Mar 14 12:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/gdm.h, gui/Makefile.am, gui/gdmlogin.c,
 	  gui/gdmsetup.c, gui/gdmuser.h, gui/gdmuser.c, 
 	  gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c,
-	  docs/C/gdm.xml:  Added Include and IncludeAll gdm config
-	  options to better control what users are displayed in
-	  the face browser.  Consolidated the almost identical
-	  logic from gdmlogin.c, gdmsetup.c and greeter_item_ulist.c
-	  into gdm_user.[ch].
-	* daemon/gdm.h: Correct setting of HALT_COMMAND, which
-	  got fat-fingered when I moved the setup of this to
-	  the configure file.
+	  docs/C/gdm.xml:  Added Include and IncludeAll gdm config options to
+	  better control what users are displayed in the face browser.
+	  Consolidated the almost identical logic from gdmlogin.c, gdmsetup.c
+	  and greeter_item_ulist.c into gdm_user.[ch].
+	* daemon/gdm.h: Correct setting of HALT_COMMAND, which got fat-fingered
+	  when I moved the setup of this to the configure file.
 	* gui/gdmphotosetup.c: Mark strings for translation.
 
 Thu Mar 10 17:50:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* daemon/gdm.h, config/gdm.conf.in: Changed default face
-	  directory to EXPANDED_DATADIR/pixmaps/faces since putting
-	  the faces subdirectory in pixmaps simply makes more
-	  sense.
+	* daemon/gdm.h, config/gdm.conf.in: Changed default face directory to
+	  EXPANDED_DATADIR/pixmaps/faces since putting the faces subdirectory
+	  in pixmaps simply makes more sense.
 	* Makefile.am, acconfig.h, configure.in, gdmsetup-security.in,
 	  daemon/Makefile.am, daemon/gdm.h, daemon/gdm.in, daemon/slave.c,
 	  gui/Makefile.am, gui/gdmsetup.c, gui/greeter/Makefile.am,
-	  gui/greeter/greeter.c: Changed the way GDM files are installed.
-	  Now all programs intended to be run by root are in
-	  EXPANDED_SBINDIR (gdm/gdm-binary/gdmsetup), all programs
-	  that are not intended to be run by end-users are in 
-	  EXPANDED_LIBEXEC (gdmchooser/gdmgreeter/gdmlogin).  Removed
-	  gdmconfig wrapper script and gdmXnest symlink since they
-	  only serve to clutter the filesystem.  I announced this 
-	  change in the 2.6.0.8 release notes and will be bumping
-	  the next release to 2.6 because of this change and the 
-	  change to the default face directory.
-	* configure.in, gui/faces/*: Add default faces.  Images
-	  provided by Jaap A. Haitsma.  Refer to bugzilla bug
-	  #149838.
-	* gui/gdmphotosetup.c: Now browser will look in the system
-	  face directory first, in EXPANDED_DATADIR/pixmaps if the
-	  default face directory does not exist.
-	* config/Makefile.am: Changed name of Default to Init since
-	  that follows the naming standard used by the other scripts.
-	  Fixes bug 118278.
-	* docs/C/gdm.xml: Updated docs with information about
-	  the changes in today's commits.
+	  gui/greeter/greeter.c: Changed the way GDM files are installed.  Now
+	  all programs intended to be run by root are in EXPANDED_SBINDIR
+	  (gdm/gdm-binary/gdmsetup), all programs that are not intended to be
+	  run by end-users are in EXPANDED_LIBEXEC
+	  (gdmchooser/gdmgreeter/gdmlogin).  Removed gdmconfig wrapper script
+	  and gdmXnest symlink since they only serve to clutter the filesystem.
+	  I announced this change in the 2.6.0.8 release notes and will be
+	  bumping the next release to 2.6 because of this change and the change
+	  to the default face directory.
+	* configure.in, gui/faces/*: Add default faces.  Images provided by
+	  Jaap A. Haitsma.  Refer to bugzilla bug #149838.
+	* gui/gdmphotosetup.c: Now browser will look in the system face
+	  directory first, in EXPANDED_DATADIR/pixmaps if the default face
+	  directory does not exist.
+	* config/Makefile.am: Changed name of Default to Init since that
+	  follows the naming standard used by the other scripts.  Fixes bug
+	  #118278.
+	* docs/C/gdm.xml: Updated docs with information about the changes in
+	  today's commits.
 	  
 Thu Mar 10 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* daemon/gdm.h, daemon/gdm.c:  Added GET_CONFIG gdmflexiserver
-	  command, so that other programs can access the GDM configuration
-	  data in a stable way.  This is useful for progrmas that might
-	  want to know what the system suspend command is, or what the
-	  max icon size is for creating face images.
-	* gui/gdmphotosetup.c: Fix bugs 126796, 143618, and 159025
-	  since it no longer crashes, uses the new file chooser, and
-	  now automatically scales images down to the max icon
-	  height/width.
+	* daemon/gdm.h, daemon/gdm.c:  Added GET_CONFIG gdmflexiserver command,
+	  so that other programs can access the GDM configuration data in a
+	  stable way.  This is useful for progrmas that might want to know what
+	  the system suspend command is, or what the max icon size is for
+	  creating face images.
+	* gui/gdmphotosetup.c: Fix bugs 126796, 143618, and 159025 since it no
+	  longer crashes, uses the new file chooser, and now automatically
+	  scales images down to the max icon height/width.
 
 Thu Mar 10 14:16:00 2005  Adi Attar  <aattar@cvs.gnome.org>
 
@@ -2128,126 +1960,113 @@ Thu Mar 10 14:16:00 2005  Adi Attar  <aattar@cvs.gnome.org>
 
 Tue Mar 08 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-        * gui/modules/AccessKeyMouseEvents.in: Added -u when
-          launching magnifier so it is launched in horizontal
-          split mode which works better.
+        * gui/modules/AccessKeyMouseEvents.in: Added -u when launching
+	  magnifier so it is launched in horizontal split mode which works
+	  better.
 	* acconfig.h, configure.in, AccessDwellMouseEvents.in,
-	  AccessKeyMouseEvents.in: Now use full path to AT
-	  programs so gesture listeners do not depend on the
-	  PATH environment variable to run.  By default gdm
-	  with use EXPANDED_BINDIR, but this can be overridden
-	  via the --with-at-bindir configure option.
+	  AccessKeyMouseEvents.in: Now use full path to AT programs so gesture
+	  listeners do not depend on the PATH environment variable to run.  By
+	  default gdm with use EXPANDED_BINDIR, but this can be overridden via
+	  the --with-at-bindir configure option.
 
 Mon Mar 07 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* Release 2.6.0.8
 	* configure.in: Updated version.
-	* NEWS, ChangeLog, README, README.install, HACKING,
-	  TODO, daemon/auth.c daemon/errorgui.c, daemon/gdm.c
-	  daemon/slave.c, daemon/verify-pam.c, daemon/xdmcp.c,
-	  gui/gdmcomm.c, gui/gdmlogin.c, gui/gdmsetup.c,
-	  gui/greeter/greeter_action_language.c: Corrected
+	* NEWS, ChangeLog, README, README.install, HACKING, TODO,
+	  daemon/auth.c daemon/errorgui.c, daemon/gdm.c daemon/slave.c,
+	  daemon/verify-pam.c, daemon/xdmcp.c, gui/gdmcomm.c, gui/gdmlogin.c,
+	  gui/gdmsetup.c, gui/greeter/greeter_action_language.c: Corrected
 	  spelling and use better english.
 
 Mon Mar 07 12:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* gdmlanguages.c: Removed zh_HK since it is not appropriate
-	  to make this change in the string freeze. 
+	* gdmlanguages.c: Removed zh_HK since it is not appropriate to make
+	  this change in the string freeze. 
 	 
 Fri Mar 04 12:50:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* gui/greeter/greeter.c: Set default font size to Sans 12.
-	  Can make the default configurable if people want.
-	  (Patch by Erwann Chenede)
-	* gui/greeter/greeter_greeter_canvas_item: Set name of
-	  password entry for more friendly a11y.  (Patch by
-	  Erwann Chenede)
-	* gui/gdmsetup.c: Mark "Remove Theme" for translation.
-	  (Patch by Balamurali Viswanathan).
-	* gui/gdmlanguages.c: Add zh_HK and remove <span> tags
-	  in language display since they were causing formatting
-	  problems for some users.  (Patch by Glynn Foster)
-	* daemon/gdm.in: Ensure LC_MESSAGES is set so the user's
-	  default language can be displayed.  (Patch by
-	  Hidetoshi Tajima).
-	* daemon/misc.c, daemon/xdmcp.c: Fix XDMCP for IPv6.
-	  Now properly handle IPv4 requests when received 
-	  when the code is built with --enable-ipv6=true and
-	  fix IPv6 identification on Solaris.
-	  (Patch by Leena Gunda and Brian Cameron).
-	* configure.in: Fix --enable-ipv6 help line when
-	  you run "configure --help".  (Patch by Brian
-	  Cameron)
+	* gui/greeter/greeter.c: Set default font size to Sans 12.  Can make
+	  the default configurable if people want.  (Patch by Erwann Chenede)
+	* gui/greeter/greeter_greeter_canvas_item: Set name of password entry
+	  for more friendly a11y.  (Patch by Erwann Chenede)
+	* gui/gdmsetup.c: Mark "Remove Theme" for translation.  (Patch by
+	  Balamurali Viswanathan).
+	* gui/gdmlanguages.c: Add zh_HK and remove <span> tags in language
+	  display since they were causing formatting problems for some users.
+	  (Patch by Glynn Foster)
+	* daemon/gdm.in: Ensure LC_MESSAGES is set so the user's default
+	  language can be displayed.  (Patch by Hidetoshi Tajima).
+	* daemon/misc.c, daemon/xdmcp.c: Fix XDMCP for IPv6.  Now properly
+	  handle IPv4 requests when received when the code is built with
+	  --enable-ipv6=true and fix IPv6 identification on Solaris.  (Patch by
+	  Leena Gunda and Brian Cameron).
+	* configure.in: Fix --enable-ipv6 help line when you run "configure
+	  --help".  (Patch by Brian Cameron)
 
 Fri Feb 25 14:44:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* configure.in:  Corrected setting of Xnest command so
-	  it works on Linux.  Broken by my Feb 02 patch.
+	* configure.in:  Corrected setting of Xnest command so it works on
+	  Linux.  Broken by my Feb 02 patch.
 
 Wed Feb 16 11:00:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* gui/greeter/themes/circles/circles.xml,
 	  gui/greeter/themes/happygnome/happygnome.xml,
-	  gui/greeter/themes/happygnome-list/happygnome.xml:
-	  Specify font for username/password entry field for
-	  the gdm2 supplied themes.  Fixes bug #164822.  Patch
-	  provided by Alexander Kirillov.
+	  gui/greeter/themes/happygnome-list/happygnome.xml: Specify font for
+	  username/password entry field for the gdm2 supplied themes.  Fixes
+	  bug #164822.  Patch provided by Alexander Kirillov.
 
 Tue Feb 15 14:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init):
-	  Make the default face obey the MaxIconWidth and MaxIconHeight
-	  configuration settings.  Fixes bug #151784.  Patch provided
-	  by Diego Gonzalez.
+	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init): Make the
+	  default face obey the MaxIconWidth and MaxIconHeight configuration
+	  settings.  Fixes bug #151784.  Patch provided by Diego Gonzalez.
 
 Mon Feb 14 18:15:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* daemon/gdm.c:  Restart the slave process if XDMCP chooser
-	  is selected from flexi server.  Patch to fix bug #156420.
-	  Patch provided by Leena Gunda.
+	* daemon/gdm.c:  Restart the slave process if XDMCP chooser is selected
+	  from flexi server.  Patch to fix bug #156420.  Patch provided by
+	  Leena Gunda.
 
 Mon Feb 14 17:37:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* gui/gdmlanguages.c:  Fix for bug 165880.  Adds Armenian
-	  to the language selection menu.  Patch provided by
-	  petrosyan@gmail.com.
+	* gui/gdmlanguages.c:  Fix for bug 165880.  Adds Armenian to the
+	  language selection menu.  Patch provided by petrosyan@gmail.com.
 
 Mon Feb 14 17:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* gui/greeter/greeter_geometry.c:  Fix for bug 136856.
-	  Fixed width of "user name entry" to shrink to fit its
-	  parent widget so the text doesn't run out of bounds.
-	  Patch provided by Chookij Vanatham.
+	* gui/greeter/greeter_geometry.c:  Fix for bug 136856.  Fixed width of
+	  "user name entry" to shrink to fit its parent widget so the text
+	  doesn't run out of bounds.  Patch provided by Chookij Vanatham.
 
 Mon Feb 14 17:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/display.c, daemon/gdm.h, daemon/server.c,
-	  daemon/slave.c:  Fix for bug #160068.  Removes some
-	  redundant/unused code.  Patch provided by Mark
-	  McLoughlin.  
+	  daemon/slave.c:  Fix for bug #160068.  Removes some redundant/unused
+	  code.  Patch provided by Mark McLoughlin.  
 
 Mon Feb 14 17:00:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* config/locale.alias, gui/gdmlanguages.c:  Fix for
-	  bug #155778.  Add Kinyarwanda to language list for
-	  gdm2.  Patch provided by Steve Murphy.
+	* config/locale.alias, gui/gdmlanguages.c:  Fix for bug #155778.  Add
+	  Kinyarwanda to language list for gdm2.  Patch provided by Steve
+	  Murphy.
 
 Mon Feb 14 16:52:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/server.c, gui/gdmXnestchooser.c, gui/gdmlogin.c, 
 	  gui/modules/dwellmouselistener.c,
-	  gui/modules/keymouselistener.c: Cleanup patch by
-	  Kjartan Marass, bug #151668.
+	  gui/modules/keymouselistener.c: Cleanup patch by Kjartan Marass, bug
+	  #151668.
 	  
 Mon Feb 14 16:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* config/gdm.conf.in, daemon/gdm.h, docs/C/gdm.xml,
 	  gui/gdmlogin.c, gui/greeter/greeter.c, 
 	  gui/greeter/greeter_canvas_item.c, 
-	  gui/greeter/greeter_configuration.h:
-	  Fixes bug #151018.   Adds configuration option to
-	  disallow visible feedback in password entry.  Patch
-	  provided by John Martinsson.
+	  gui/greeter/greeter_configuration.h: Fixes bug #151018.  Adds
+	  configuration option to disallow visible feedback in password entry.
+	  Patch provided by John Martinsson.
 
 Mon Feb 14 16:25:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
@@ -2269,19 +2088,19 @@ Mon Feb 14 16:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* acconfig.h, gui/modules/Makefile.am, 
 	  gui/modules/dwellmouselistener.c,
-	  gui/modules/keymouselistener.c:  Updated files to 
-	  also integrate patch for bug #142834.  A second patch to
-	  support XInput devices with the gesture listeners.  Patch
-	  provided by Bill Haneman.
+	  gui/modules/keymouselistener.c:  Updated files to also integrate
+	  patch for bug #142834.  A second patch to support XInput devices with
+	  the gesture listeners.  Patch provided by Bill Haneman
+	  <Bill.Haneman@Sun.com>.
 	
 Mon Feb 14 15:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* configure.in, gui/modules/AccessKeyMouseEvents.in,
 	  gui/modules/Makefile.am, gui/modules/dwellmouselistener.c,
-	  gui/modules/keymouselistener.c: Update gesture 
-	  listeners so that they listen for XInput events.  Also
-	  adds better default gestures for gok and gnopernicus.
-	  Fixes bug #142833.  Patch provided by Bill Haneman.
+	  gui/modules/keymouselistener.c: Update gesture listeners so that they
+	  listen for XInput events.  Also adds better default gestures for gok
+	  and gnopernicus.  Fixes bug #142833.  Patch provided by Bill Haneman
+	  <Bill.Haneman@Sun.com>.
 
 Mon Feb 07 21:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
@@ -2290,16 +2109,15 @@ Mon Feb 07 21:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 Thu Feb 02 16:40:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* config/Default.in, config/PostSession., config/XKeepsCrashing
-	  config/Xsession.in:  Fixed bug #155154, the Alt and Meta
-	  keys are swapped on Solaris.  Also fixes the usage of IFS
-	  so it works on Solaris.  Patch by Leena Gunda.
+	  config/Xsession.in:  Fixed bug #155154, the Alt and Meta keys are
+	  swapped on Solaris.  Also fixes the usage of IFS so it works on
+	  Solaris.  Patch by Leena Gunda.
 	* gui/gdmsetup.desktop.in:  Fixed bug 161346.  
 
 Thu Feb 02 15:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* daemon/slave.c: Fixed bug 135401.  Now support 
-	  /etc/environment.  (Patch by Vincent Berger,
-	  vincent.berger@ext.bull.net)
+	* daemon/slave.c: Fixed bug 135401.  Now support /etc/environment.
+	  (Patch by Vincent Berger, vincent.berger@ext.bull.net)
 
 Thu Feb 02 14:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
@@ -2343,23 +2161,23 @@ Tue Jan 28 15:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 Tue Jan 25 17:18:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* daemon/slave.c: Fixed grammar.  Then backed out fix
-	  since just realized we are in a string freeze.
+	* daemon/slave.c: Fixed grammar.  Then backed out fix since just
+	  realized we are in a string freeze.
 
 Tue Jan 25 17:13:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* configure.in: Correct Solaris audit configure to
-	  include -lbsm when needed.
+	* configure.in: Correct Solaris audit configure to include -lbsm when
+	  needed.
 
 Mon Jan 24 17:15:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* gui/gdmsetup.c: Corrected g_strconcat call.  Patch 
-	  provided by meissner@suse.de
+	* gui/gdmsetup.c: Corrected g_strconcat call.  Patch provided by
+	  meissner@suse.de
 
 Thu Jan 19 18:25:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-	* NEWS, MAINTAINERS: Added myself.  George has asked me
-	  to assist with maintainership duties.
+	* NEWS, MAINTAINERS: Added myself.  George has asked me to assist with
+	  maintainership duties.
 
 Thu Jan 13 17:59:05 2005  George Lebl <jirka@5z.com>
 
