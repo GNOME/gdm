@@ -1,5 +1,25 @@
 2005-12-21  Brian Cameron  <brian.cameron@sun.com>
 
+	Patch by Padraig O'Briain <Padraig.OBriain@sun.com>, modified by myself
+	so it also works with gdmlogin and not just gdmgreeter.  Also I
+	integrated his gdmprefetch.c utility into the configure/Makefile system
+	with the --with-prefetch option.
+
+	* configure.ac:  Now support --with-prefetch
+	* daemon/gdm.h, daemon/gdmconfig.c, config/gdm.conf.in:  Support
+	  new PostDisplayProgram key.
+	* gui/gdmcommon.[ch], gui/gdmlogin.c, gui/greeter/greeter.c:  Now
+	  support new PostDisplayProgram key.
+	* docs/C/gdm.xml: Add docs for new key.
+	* utils/Makefile.am, utils/gdmprefetch.c: Add new
+	  gdmprefetch utility.
+	* config/Makefile.am: Now install gdm.conf file with 444
+	  permissions and always write over the installed gdm.conf 
+	  after first moving aside the user's gdm.conf file if
+	  necessary.
+
+2005-12-21  Brian Cameron  <brian.cameron@sun.com>
+
 	After two months, the redesign of GDM's internal configuration is
 	finally reaching a close.  Now GDM users are instructed to not modify
 	the gdm.conf file directly and instead put any cutomizations in a

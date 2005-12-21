@@ -57,5 +57,6 @@ gchar*	gdm_common_get_config_file	(void);
 gboolean gdm_common_select_time_format	(void);
 void	setup_background_color		(gchar *bg_color);
 gchar*	gdm_get_welcomemsg		(void);
+void	gdm_post_display_launch		(void);
 
 #endif /* GDM_COMMON_H */

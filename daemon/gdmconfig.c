@@ -216,6 +216,7 @@ static gchar *GdmHosts;
 static gchar *GdmGraphicalThemeColor;
 static gchar *GdmGraphicalThemeDir;
 static gchar *GdmGraphicalThemes;
+static gchar *GdmPostDisplayProgram;
 
 static gint GdmPositionX;
 static gint GdmPositionY;
@@ -494,6 +495,8 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_DEFAULT_HOST_IMG, &GdmHost, &string_type);
    gdm_config_add_hash (GDM_KEY_HOST_IMAGE_DIR, &GdmHostImageDir, &string_type);
    gdm_config_add_hash (GDM_KEY_HOSTS, &GdmHosts, &string_type);
+   gdm_config_add_hash (GDM_KEY_POST_DISPLAY_PROGRAM,
+      &GdmPostDisplayProgram, &string_type);
 
    /* int values */
    gdm_config_add_hash (GDM_KEY_XINERAMA_SCREEN, &GdmXineramaScreen, &int_type);

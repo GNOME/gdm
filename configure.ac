@@ -858,6 +858,15 @@ fi
 AC_SUBST(GDM_CONFIGDIR)
 AC_DEFINE_UNQUOTED(GDM_CONFIGDIR,"$GDM_CONFIGDIR")
 
+AC_ARG_WITH(prefetch,
+  [  --with-prefetch=[yes/no]  Install GDM library prefetch utility [default=no]],,
+  with_prefetch=no)
+
+if test x$with_prefetch != xno ; then
+	GDMPREFETCH="gdmprefetch"
+fi
+AC_SUBST(GDMPREFETCH)
+
 AC_ARG_WITH(xevie,
   [  --with-xevie=[yes/no]  Add XEvIE Xserver extension support [default=no]],,
   with_xevie=no)
@@ -1175,7 +1184,7 @@ dnl <= Authentication scheme =>
 echo "Authentication scheme                 : $VRFY"
 
 dnl <= Utils built =>
-echo "Extra utilities built                 : "`echo $GDMOPEN $GDMASKPASS`
+echo "Extra utilities built                 : "`echo $GDMOPEN $GDMASKPASS $GDMPREFETCH`
 
 echo ""
 dnl <= End of configuration summary =>

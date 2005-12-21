@@ -80,13 +80,12 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop I
 		else \
 			cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf.org; \
 		fi; \
-		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf; \
 	fi
-	if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf; then \
-		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf; \
-	fi
+	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf
+	chmod 444 $(DESTDIR)$(gdmconfdir)/gdm.conf
 	if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; then \
 		$(INSTALL_DATA) gdm.conf-custom $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
+		chmod 644 $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
 	fi
 	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf
 

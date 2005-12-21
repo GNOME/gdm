@@ -376,3 +376,51 @@ gdm_get_welcomemsg (void)
 	return welcomemsg;
 }
 
+static gchar *
+post_display_prog_get_path (void)
+{
+	gchar *postdisplayprog;
+
+	postdisplayprog = gdm_config_get_string (GDM_KEY_POST_DISPLAY_PROGRAM);
+	if  (! ve_string_empty (postdisplayprog)) {
+		return postdisplayprog;
+	} else
+		return NULL;
+}
+
+static gboolean
+post_display_run (gpointer data)
+{
+	GPid pid = -1;
+	GError *error = NULL;
+	char *command = NULL;
+	gchar **post_display_prog_argv =  NULL;
+
+	command = post_display_prog_get_path ();
+
+	if (! command)
+		return FALSE;
+
+	post_display_prog_argv = ve_split (command);
+
+	g_spawn_async (".",
+		       post_display_prog_argv,
+		       NULL,
+		       (GSpawnFlags) (G_SPAWN_SEARCH_PATH),
+		       NULL,
+		       NULL,
+		       &pid,
+		       &error);
+
+	return FALSE;
+}
+
+void
+gdm_post_display_launch (void)
+{
+	if (! post_display_prog_get_path ())
+		return;
+
+	g_idle_add (post_display_run, NULL);
+}
+

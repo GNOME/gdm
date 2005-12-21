@@ -1526,6 +1526,19 @@ XKeepsCrashing
           </varlistentry>
 
           <varlistentry>
+            <term>PostDisplayProgram</term>
+            <listitem>
+              <synopsis>PostDisplayProgram=command</synopsis>
+              <para>
+                Program to be run by the GDM greeter/login program
+                when the initial screen is displayed.  The initial
+                purpose is to provide a hook where libraries can be
+                preloaded to speed performance for the user.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>PostLoginScriptDir</term>
             <listitem>
               <synopsis>PostLoginScriptDir=&lt;etc&gt;/gdm/PostLogin</synopsis>
@@ -3454,7 +3467,7 @@ XKeepsCrashing
           be used to specify that a separate login screen be managed for each
           screen.  Each key in the <filename>[servers]</filename> section
           corresponds to the display number to be managed.  Normally there is
-          only one key, which is the key <filename>0<filename>, which 
+          only one key, which is the key <filename>0</filename>, which 
           corresponds to the display <filename>:0</filename>.
         </para>
 

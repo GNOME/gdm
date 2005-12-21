@@ -360,6 +360,8 @@ enum {
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
 #define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="
 
+#define GDM_KEY_POST_DISPLAY_PROGRAM "greeter/PostDisplayProgram="
+
 #define GDM_KEY_SOUND_ON_LOGIN "greeter/SoundOnLogin=true"
 #define GDM_KEY_SOUND_ON_LOGIN_SUCCESS "greeter/SoundOnLoginSuccess=false"
 #define GDM_KEY_SOUND_ON_LOGIN_FAILURE "greeter/SoundOnLoginFailure=false"

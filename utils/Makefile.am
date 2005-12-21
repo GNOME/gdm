@@ -14,7 +14,8 @@ INCLUDES = \
 libexec_PROGRAMS = \
 	@GDMASKPASS@	\
 	@GDMOPEN@	\
-	gdmtranslate
+	@GDMPREFETCH@	\
+	gdmtranslate	
 
 # This is not useful anymore
 # bin_PROGRAMS = \
@@ -24,7 +25,7 @@ if DMX_SUPPORT
 bin_PROGRAMS = gdm-dmx-reconnect-proxy
 endif
 
-EXTRA_PROGRAMS = gdmaskpass gdmopen
+EXTRA_PROGRAMS = gdmaskpass gdmopen gdmprefetch
 
 gdmaskpass_SOURCES = \
 	gdmaskpass.c
@@ -34,6 +35,9 @@ gdmtranslate_SOURCES = \
 
 gdmopen_SOURCES = \
 	gdmopen.c
+
+gdmprefetch_SOURCES = \
+	gdmprefetch.c
 
 #gdmmktemp_SOURCES = \
 #	gdmmktemp.c
