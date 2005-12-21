@@ -1251,6 +1251,16 @@ gdm_get_xservers (void)
    return retval;
 }
 
+/* PRIO_MIN and PRIO_MAX are not defined on Solaris, but are -20 and 20 */
+#if sun
+#ifndef PRIO_MIN
+#define PRIO_MIN -20
+#endif
+#ifndef PRIO_MAX
+#define PRIO_MAX 20
+#endif
+#endif
+
 /**
  * gdm_load_xservers
  *
@@ -1281,6 +1291,7 @@ gdm_load_xservers (VeConfig *cfg)
          } else {
             GdmXserver *svr = g_new0 (GdmXserver, 1);
             gchar buf[256];
+            int n;
 
             svr->id = id;
 
@@ -1296,6 +1307,20 @@ gdm_load_xservers (VeConfig *cfg)
             svr->handled = ve_config_get_bool (cfg, buf);
             g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
             svr->chooser = ve_config_get_bool (cfg, buf);
+            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_PRIORITY, sec);
+            svr->priority = ve_config_get_int (cfg, buf);
+
+            /* do some bounds checking */
+             n = svr->priority;
+             if (n < PRIO_MIN)
+                n = PRIO_MIN;
+             else if (n > PRIO_MAX)
+                n = PRIO_MAX;
+             if (n != svr->priority) {
+                gdm_error (_("%s: Priority out of bounds; changed to %d"),
+                             "gdm_config_parse", n);
+                svr->priority = n;
+             }
 
             if (ve_string_empty (svr->command)) {
                gdm_error (_("%s: Empty server command; "
@@ -1351,6 +1376,7 @@ gdm_update_xservers (VeConfig *cfg, VeConfig *custom_cfg)
       svr->flexible  = TRUE;
       svr->choosable = TRUE;
       svr->handled   = TRUE;
+      svr->priority  = 0;
       xservers       = g_slist_append (xservers, svr);
    }
 }

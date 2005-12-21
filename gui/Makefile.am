@@ -130,6 +130,7 @@ gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
+	$(X_LIBS)		\
 	-lXau			\
 	-lX11			\
 	$(INTLLIBS)		\
@@ -156,6 +157,7 @@ gdmphotosetup_LDADD = \
 gdmXnestchooser_LDADD = \
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
+	$(X_LIBS)		\
 	-lXau			\
 	-lX11			\
 	-lpopt			\
@@ -169,6 +171,7 @@ gdmXnestchooser_LDADD = \
 gdmflexiserver_LDADD = \
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
+	$(X_LIBS)		\
 	-lXau			\
 	-lpopt			\
 	$(INTLLIBS)		\
@@ -181,6 +184,7 @@ gdmflexiserver_LDADD = \
 gdmdynamic_LDADD = 		\
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
+	$(X_LIBS)		\
 	-lXau			\
 	$(INTLLIBS) 		\
 	$(GLIB_LIBS) 		\

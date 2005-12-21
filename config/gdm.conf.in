@@ -511,6 +511,13 @@ Gestures=false
 name=Standard server
 command=@X_SERVER@ @X_CONFIG_OPTIONS@ @XEVIE_OPTION@
 flexible=true
+# Indicates that the X server should be started at a different process
+# priority.  Values can be any integer value accepted by the setpriority C
+# library function (normally between -20 and 20) with 0 being the default. For
+# highly interactive applications, -5 yields good responsiveness. The default
+# value is 0 and the setpriority function is not called if the value is 0.
+
+#priority=0
 
 # To use this server type you should add -query host or -indirect host to the
 # command line.

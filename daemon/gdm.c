@@ -3022,34 +3022,39 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		GdmXserver  *svr   = gdm_find_xserver ((char *)splitstr[0]);
 
 		if (svr != NULL) {
-			if (g_strncasecmp (splitstr[1], "ID", 4) == 0)
+			if (g_strcasecmp (splitstr[1], "ID") == 0)
 			   gdm_connection_printf (conn, "OK %s\n", svr->id);
-			else if (g_strncasecmp (splitstr[1], "NAME", 4) == 0)
+			else if (g_strcasecmp (splitstr[1], "NAME") == 0)
 			   gdm_connection_printf (conn, "OK %s\n", svr->name);
-			else if (g_strncasecmp (splitstr[1], "COMMAND", 7) == 0) 
+			else if (g_strcasecmp (splitstr[1], "COMMAND") == 0) 
 			   gdm_connection_printf (conn, "OK %s\n", svr->command);
-			else if (g_strncasecmp (splitstr[1], "FLEXIBLE", 8) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "PRIORITY") == 0)
+			   gdm_connection_printf (conn, "OK %d\n", svr->priority);
+			else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
                                  svr->flexible)
 			   gdm_connection_printf (conn, "OK true\n");
-			else if (g_strncasecmp (splitstr[1], "FLEXIBLE", 8) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
                                  !svr->flexible)
 			   gdm_connection_printf (conn, "OK false\n");
-			else if (g_strncasecmp (splitstr[1], "CHOOSABLE", 9) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
                                  svr->choosable)
 			   gdm_connection_printf (conn, "OK true\n");
-			else if (g_strncasecmp (splitstr[1], "CHOOSABLE", 9) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
                                  !svr->choosable)
 			   gdm_connection_printf (conn, "OK false\n");
-			else if (g_strncasecmp (splitstr[1], "HANDLED", 7) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
                                  svr->handled)
 			   gdm_connection_printf (conn, "OK true\n");
-			else if (g_strncasecmp (splitstr[1], "HANDLED", 7) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
                                  !svr->handled)
 			   gdm_connection_printf (conn, "OK false\n");
-			else if (g_strncasecmp (splitstr[1], "CHOOSER", 7) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
                                  svr->chooser)
 			   gdm_connection_printf (conn, "OK true\n");
-			else if (g_strncasecmp (splitstr[1], "CHOOSER", 7) == 0 &&
+			else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
+                                 !svr->chooser)
+			   gdm_connection_printf (conn, "OK false\n");
+			else if (g_strcasecmp (splitstr[1], "PRIORITY") == 0 &&
                                  !svr->chooser)
 			   gdm_connection_printf (conn, "OK false\n");
 			else

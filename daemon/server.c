@@ -1003,6 +1003,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 				   us by the master */
 				if (svr->chooser)
 					disp->use_chooser = TRUE;
+				disp->priority = svr->priority;
 			}
 		}
 	} else {
@@ -1041,6 +1042,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		disp->handled = FALSE;
 		/* never ever ever use chooser here */
 		disp->use_chooser = FALSE;
+		disp->priority = 0;
 		/* run just one session */
 		argv[len++] = g_strdup ("-terminate");
 		argv[len++] = g_strdup ("-query");
@@ -1231,6 +1233,14 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
 	gdm_debug ("gdm_server_spawn: '%s'", command);
 	
+	if (d->priority != 0) {
+		if (setpriority (PRIO_PROCESS, 0, d->priority)) {
+			gdm_error (_("%s: Server priority couldn't be set to %d: %s"),
+				   "gdm_server_spawn", d->priority,
+				   strerror (errno));
+		}
+	}
+
 	setpgid (0, 0);
 
 	if (d->server_uid != 0) {
@@ -1417,6 +1427,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d->handled = TRUE;
     d->tcp_disallowed = FALSE;
 
+    d->priority = 0;
     d->vt = -1;
 
     d->x_servers_order = -1;

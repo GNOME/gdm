@@ -1,5 +1,16 @@
 2005-12-21  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm.[ch], daemon/gdmconfig.c, daemon/server.c:  Add new
+	  priority configuration option for setting xserver priority.
+	* config/gdm.conf.in, docs/C/gdm.xml: Updated docs with information
+	  about the new priority [server-foo] configuration option.
+	* configure.ac, gdm.spec.in: Fix gtk dependency so 2.6.0
+	  is listed as the requirement.
+	* gui/Makefile.am: Add X_LIBS when building GUI programs.
+	* gui/misc.c: Add needed stdio.h include.
+
+2005-12-21  Brian Cameron  <brian.cameron@sun.com>
+
 	Patch by Padraig O'Briain <Padraig.OBriain@sun.com>, modified by myself
 	so it also works with gdmlogin and not just gdmgreeter.  Also I
 	integrated his gdmprefetch.c utility into the configure/Makefile system

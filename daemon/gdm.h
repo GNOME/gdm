@@ -260,6 +260,8 @@ enum {
 #define GDM_KEY_SERVER_HANDLED "handled=true"
 /* Instead of the greeter run the chooser */
 #define GDM_KEY_SERVER_CHOOSER "chooser=false"
+/* select a nice level to run the X server at */
+#define GDM_KEY_SERVER_PRIORITY "priority=0"
 
 #define GDM_KEY_ALLOW_ROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOW_REMOTE_ROOT "security/AllowRemoteRoot=true"
@@ -479,6 +481,7 @@ struct _GdmDisplay {
     gboolean handled;
     gboolean tcp_disallowed;
 
+    int priority;
     int vt;
 
     gboolean busy_display;
@@ -553,6 +556,7 @@ struct _GdmXserver {
 	gboolean choosable; /* not implemented yet */
 	gboolean chooser; /* instead of greeter, run chooser */
 	gboolean handled;
+	int priority;
 };
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
@@ -948,6 +952,7 @@ void		gdm_final_cleanup	(void);
  *     CHOOSABLE - Returns "true" if choosable, "false" otherwise
  *     HANDLED   - Returns "true" if handled, "false" otherwise
  *     CHOOSER   - Returns "true" if chooser, "false" otherwise
+ *     PRIORITY  - Returns process priority
  * Answers: 
  *   OK <value>
  *   ERROR <err number> <english error description>

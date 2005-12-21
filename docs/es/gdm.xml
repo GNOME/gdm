@@ -1719,6 +1719,14 @@ XKeepsCrashing
             </listitem>
           </varlistentry>
           
+          <varlistentry>
+            <term>priority</term>
+            <listitem>
+              <synopsis>priority=-5</synopsis>
+              <para>Indicates that the X server should be started at a different process priority. This value can be between -20 and 20, with 0 being the default. For highly interactive applications, -5 yields good responsiveness.</para>
+            </listitem>
+          </varlistentry>
+          
         </variablelist>
 
       </sect3>
@@ -2053,6 +2061,7 @@ Arguments: &lt;server&gt; &lt;key&gt;
     CHOOSABLE - Returns "true" if choosable, "false" otherwise
     HANDLED   - Returns "true" if handled, "false" otherwise
     CHOOSER   - Returns "true" if chooser, "false" otherwise
+    PRIORITY  - Returns process priority
 Answers:
   OK &lt;value&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;

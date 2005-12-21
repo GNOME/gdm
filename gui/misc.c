@@ -20,6 +20,7 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "misc.h"
 #include "gdmconfig.h"
