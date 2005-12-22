@@ -916,7 +916,7 @@ gdm_login_session_lookup (const gchar* savedsess)
                          * irrelevant, we are in "switchdesk mode" and the relevant
                          * thing is the saved session in .Xclients
                          */
-			if (access ("/usr/bin/switchdesk", F_OK) == 0) {
+			if (g_access ("/usr/bin/switchdesk", F_OK) == 0) {
 				firstmsg = g_strdup_printf (_("You have chosen %s for this "
 				                              "session."),
 				                            gdm_session_name (session));
@@ -2383,7 +2383,7 @@ bin_exists (const char *command)
 	/* Note, check only for existence, not for executability */
 	bin = ve_first_word (command);
 	if (bin != NULL &&
-	    access (bin, F_OK) == 0) {
+	    g_access (bin, F_OK) == 0) {
 		g_free (bin);
 		return TRUE;
 	} else {

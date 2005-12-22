@@ -1,3 +1,17 @@
+2005-12-22  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/auth.c, daemon/display.c, daemon/errorgui.c,
+	  daemon/filecheck.c, daemon/fstype.c, daemon/gdm-net.c,
+	  daemon/gdm.[ch], daemon/gdmconfig.c, daemon/misc.c,
+	  daemon/server.c, daemon/slave.c, daemon/verify-pam.c,
+	  daemon/xdmcp.c, gui/gdmXnestchooser.c, gui/gdmchooser.c,
+	  gui/gdmcommon.c, gui/gdmlogin.c, gui/gdmphotosetup.c,
+	  gui/gdmsetup.c, gui/gdmuser.c, utils/gdmprefetch.c,
+	  vicious-extensions/ve-config.c, vicious-extensions/ve-gnome.c,
+	  vicious-extensions/ve-misc.[ch], vicious-extensions/ve-nongnome.c:
+	  Now use g_ stdio function like g_chmod instead of chmod.
+	  Fixes bug #310229.
+
 2005-12-21  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.[ch], daemon/gdmconfig.c, daemon/server.c:  Add new

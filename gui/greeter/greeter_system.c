@@ -48,7 +48,7 @@ bin_exists (const char *command)
 	/* Note, check only for existance, not for executability */
 	bin = ve_first_word (command);
 	if (bin != NULL &&
-	    access (bin, F_OK) == 0) {
+	    g_access (bin, F_OK) == 0) {
 		g_free (bin);
 		return TRUE;
 	} else {

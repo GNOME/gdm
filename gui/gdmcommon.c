@@ -78,8 +78,8 @@ gdm_common_login_sound (const gchar *GdmSoundProgram,
 	if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")) ||
 	    ve_string_empty (GdmSoundProgram) ||
 	    ve_string_empty (GdmSoundOnLoginReadyFile) ||
-	    access (GdmSoundProgram, F_OK) != 0 ||
-	    access (GdmSoundOnLoginReadyFile, F_OK) != 0) {
+	    g_access (GdmSoundProgram, F_OK) != 0 ||
+	    g_access (GdmSoundOnLoginReadyFile, F_OK) != 0) {
 		gdk_beep ();
 	} else {
 		/* login sound interruption */

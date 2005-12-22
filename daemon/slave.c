@@ -1725,15 +1725,15 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		VE_IGNORE_EINTR (chdir (pwent->pw_dir));
+		VE_IGNORE_EINTR (g_chdir (pwent->pw_dir));
 		if G_UNLIKELY (errno != 0)
-			VE_IGNORE_EINTR (chdir ("/"));
+			VE_IGNORE_EINTR (g_chdir ("/"));
 
 		/* exec the configurator */
 		argv = ve_split (gdm_get_value_string (GDM_KEY_CONFIGURATOR));
 		if G_LIKELY (argv != NULL &&
 			     argv[0] != NULL &&
-			     access (argv[0], X_OK) == 0)
+			     g_access (argv[0], X_OK) == 0)
 			VE_IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
@@ -1747,7 +1747,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		argv = ve_split
 			(EXPANDED_LIBEXECDIR
 			 "/gdmsetup --disable-sound --disable-crash-dialog");
-		if (access (argv[0], X_OK) == 0)
+		if (g_access (argv[0], X_OK) == 0)
 			VE_IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
@@ -1828,8 +1828,8 @@ play_login_sound (const char *sound_file)
 
 	if (ve_string_empty (soundprogram) ||
 	    ve_string_empty (sound_file) ||
-	    access (soundprogram, X_OK) != 0 ||
-	    access (sound_file, F_OK) != 0)
+	    g_access (soundprogram, X_OK) != 0 ||
+	    g_access (sound_file, F_OK) != 0)
 		return FALSE;
 
 	gdm_sigchld_block_push ();
@@ -2134,7 +2134,7 @@ run_pictures (void)
 			continue;
 		}
 
-		VE_IGNORE_EINTR (r = stat (picfile, &s));
+		VE_IGNORE_EINTR (r = g_stat (picfile, &s));
 		if G_UNLIKELY (r < 0 || s.st_size > gdm_get_value_int (GDM_KEY_USER_MAX_FILE)) {
 			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
 
@@ -2291,7 +2291,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	name = gdm_make_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR),
 		d->name, ".XnestAuth");
 
-	VE_IGNORE_EINTR (unlink (name));
+	VE_IGNORE_EINTR (g_unlink (name));
 	VE_IGNORE_EINTR (authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600));
 
 	if G_UNLIKELY (authfd < 0) {
@@ -2361,7 +2361,7 @@ exec_command (const char *command, const char *extra_arg)
 	    ve_string_empty (argv[0]))
 		return;
 
-	if (access (argv[0], X_OK) != 0)
+	if (g_access (argv[0], X_OK) != 0)
 		return;
 
 	if (extra_arg != NULL) {
@@ -3124,13 +3124,13 @@ find_prog (const char *name)
 
 	path = g_find_program_in_path (name);
 	if (path != NULL &&
-	    access (path, X_OK) == 0) {
+	    g_access (path, X_OK) == 0) {
 		return path;
 	}
 	g_free (path);
 	for (i = 0; try[i] != NULL; i++) {
 		path = g_strconcat (try[i], name, NULL);
-		if (access (path, X_OK) == 0) {
+		if (g_access (path, X_OK) == 0) {
 			return path;
 		}
 		g_free (path);
@@ -3160,9 +3160,9 @@ wipe_xsession_errors (struct passwd *pwent,
 		char *filename = g_build_filename (home_dir,
 						   ".xsession-errors",
 						   NULL);
-		if (access (filename, F_OK) == 0) {
+		if (g_access (filename, F_OK) == 0) {
 			wiped_something = TRUE;
-			VE_IGNORE_EINTR (unlink (filename));
+			VE_IGNORE_EINTR (g_unlink (filename));
 		}
 		g_free (filename);
 	}
@@ -3177,7 +3177,7 @@ wipe_xsession_errors (struct passwd *pwent,
 				char *filename = g_strdup_printf ("/tmp/%s",
 								  ent->d_name);
 				wiped_something = TRUE;
-				VE_IGNORE_EINTR (unlink (filename));
+				VE_IGNORE_EINTR (g_unlink (filename));
 				g_free (filename);
 			}
 			VE_IGNORE_EINTR (ent = readdir (dir));
@@ -3216,7 +3216,7 @@ open_xsession_errors (struct passwd *pwent,
 		if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
 			     seteuid (pwent->pw_uid) == 0) {
 			/* unlink to be anal */
-			VE_IGNORE_EINTR (unlink (filename));
+			VE_IGNORE_EINTR (g_unlink (filename));
 			VE_IGNORE_EINTR (logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644));
 		}
 		NEVER_FAILS_root_set_euid_egid (old, oldg);
@@ -3427,7 +3427,7 @@ session_child_run (struct passwd *pwent,
 
 	/* Now still as root make the system authfile not readable by others,
 	   and therefore not by the gdm user */
-	VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+	VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0640));
 
 	setpgid (0, 0);
 	
@@ -3445,18 +3445,18 @@ session_child_run (struct passwd *pwent,
 	 * ok to gdm_fail here */
 	NEVER_FAILS_setegid (pwent->pw_gid);
 
-	VE_IGNORE_EINTR (chdir (home_dir));
+	VE_IGNORE_EINTR (g_chdir (home_dir));
 	if G_UNLIKELY (errno != 0) {
-		VE_IGNORE_EINTR (chdir ("/"));
+		VE_IGNORE_EINTR (g_chdir ("/"));
 	} else if (pwent->pw_uid != 0) {
 		if (seteuid (pwent->pw_uid) == 0 &&
-		    access (".ICEauthority", F_OK) == 0) {
+		    g_access (".ICEauthority", F_OK) == 0) {
 			/* sanitize .ICEauthority to be of the correct
 			 * permissions, if it exists */
 			struct stat s;
-			if (stat (home_dir, &s) == 0 &&
+			if (g_stat (home_dir, &s) == 0 &&
 			    s.st_uid == pwent->pw_uid &&
-			    stat (".ICEauthority", &s) &&
+			    g_stat (".ICEauthority", &s) &&
 			    S_ISREG (s.st_mode) &&
 			    (s.st_uid != pwent->pw_uid ||
 			     s.st_gid != pwent->pw_gid ||
@@ -3470,7 +3470,7 @@ session_child_run (struct passwd *pwent,
 				chown (".ICEauthority",
 				       pwent->pw_uid,
 				       pwent->pw_gid);
-				chmod (".ICEauthority", S_IRUSR | S_IWUSR);
+				g_chmod (".ICEauthority", S_IRUSR | S_IWUSR);
 			}
 		}
 		seteuid (0);
@@ -3501,7 +3501,7 @@ session_child_run (struct passwd *pwent,
 	}
 
 	/* just in case there is some weirdness going on */
-	VE_IGNORE_EINTR (chdir (home_dir));
+	VE_IGNORE_EINTR (g_chdir (home_dir));
 	
         if (usrcfgok && home_dir_ok)
 		gdm_set_user_session_lang (savesess, savelang, home_dir, save_session, language);
@@ -3544,7 +3544,7 @@ session_child_run (struct passwd *pwent,
 		char *basexsession = gdm_get_value_string (GDM_KEY_BASE_XSESSION);
 
 		/* cannot be possibly failsafe */
-		if G_UNLIKELY (access (basexsession, X_OK) != 0) {
+		if G_UNLIKELY (g_access (basexsession, X_OK) != 0) {
 			gdm_error (_("%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe session instead."),
 				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_GNOME;
@@ -4109,7 +4109,7 @@ gdm_slave_session_start (void)
 
     /* Now still as root make the system authfile readable by others,
        and therefore by the gdm user */
-    VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+    VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0644));
 
     end_time = time (NULL);
 
@@ -4176,7 +4176,7 @@ gdm_slave_session_stop (gboolean run_post_session,
     /* Now still as root make the system authfile not readable by others,
        and therefore not by the gdm user */
     if (GDM_AUTHFILE (d) != NULL) {
-	    VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+	    VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0640));
     }
 
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
@@ -4240,7 +4240,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 				   FALSE /* pass_stdout */);
     }
 
-    VE_IGNORE_EINTR (unlink (x_servers_file));
+    VE_IGNORE_EINTR (g_unlink (x_servers_file));
     g_free (x_servers_file);
 
     g_free (local_login);
@@ -4289,7 +4289,7 @@ gdm_slave_session_stop (gboolean run_post_session,
        user will wait for a few moments. */
     if ( ! need_to_quit_after_session_stop &&
 	 ! no_shutdown_check &&
-	access ("/sbin/runlevel", X_OK) == 0) {
+	g_access ("/sbin/runlevel", X_OK) == 0) {
 	    char ign;
 	    int rnl;
 	    FILE *fp = popen ("/sbin/runlevel", "r");
@@ -4927,7 +4927,7 @@ gdm_slave_whack_temp_auth_file (void)
 	if (old != 0)
 		seteuid (0);
 	if (d->parent_temp_auth_file != NULL) {
-		VE_IGNORE_EINTR (unlink (d->parent_temp_auth_file));
+		VE_IGNORE_EINTR (g_unlink (d->parent_temp_auth_file));
 	}
 	g_free (d->parent_temp_auth_file);
 	d->parent_temp_auth_file = NULL;
@@ -4941,7 +4941,7 @@ create_temp_auth_file (void)
 	if (d->type == TYPE_FLEXI_XNEST &&
 	    d->parent_auth_file != NULL) {
 		if (d->parent_temp_auth_file != NULL) {
-			VE_IGNORE_EINTR (unlink (d->parent_temp_auth_file));
+			VE_IGNORE_EINTR (g_unlink (d->parent_temp_auth_file));
 		}
 		g_free (d->parent_temp_auth_file);
 		d->parent_temp_auth_file =
@@ -4979,14 +4979,14 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	return EXIT_SUCCESS;
 
     script = g_build_filename (dir, d->name, NULL);
-    if (access (script, R_OK|X_OK) != 0) {
+    if (g_access (script, R_OK|X_OK) != 0) {
 	    g_free (script);
 	    script = NULL;
     }
     if (script == NULL &&
 	! ve_string_empty (d->hostname)) {
 	    script = g_build_filename (dir, d->hostname, NULL);
-	    if (access (script, R_OK|X_OK) != 0) {
+	    if (g_access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
 	    }
@@ -4994,7 +4994,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     if (script == NULL &&
 	SERVER_IS_XDMCP (d)) {
 	    script = g_build_filename (dir, "XDMCP", NULL);
-	    if (access (script, R_OK|X_OK) != 0) {
+	    if (g_access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
 	    }
@@ -5002,14 +5002,14 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     if (script == NULL &&
 	SERVER_IS_FLEXI (d)) {
 	    script = g_build_filename (dir, "Flexi", NULL);
-	    if (access (script, R_OK|X_OK) != 0) {
+	    if (g_access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
 	    }
     }
     if (script == NULL) {
 	    script = g_build_filename (dir, "Default", NULL);
-	    if (access (script, R_OK|X_OK) != 0) {
+	    if (g_access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
 	    }
@@ -5058,13 +5058,13 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		if (ve_string_empty (pwent->pw_dir)) {
 			g_setenv ("HOME", "/", TRUE);
 			g_setenv ("PWD", "/", TRUE);
-			VE_IGNORE_EINTR (chdir ("/"));
+			VE_IGNORE_EINTR (g_chdir ("/"));
 		} else {
 			g_setenv ("HOME", pwent->pw_dir, TRUE);
 			g_setenv ("PWD", pwent->pw_dir, TRUE);
-			VE_IGNORE_EINTR (chdir (pwent->pw_dir));
+			VE_IGNORE_EINTR (g_chdir (pwent->pw_dir));
 			if (errno != 0) {
-				VE_IGNORE_EINTR (chdir ("/"));
+				VE_IGNORE_EINTR (g_chdir ("/"));
 				g_setenv ("PWD", "/", TRUE);
 			}
 		}
@@ -5072,7 +5072,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         } else {
 	        g_setenv ("HOME", "/", TRUE);
 		g_setenv ("PWD", "/", TRUE);
-		VE_IGNORE_EINTR (chdir ("/"));
+		VE_IGNORE_EINTR (g_chdir ("/"));
 	        g_setenv ("SHELL", "/bin/sh", TRUE);
         }
 

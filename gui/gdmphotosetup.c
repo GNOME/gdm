@@ -201,7 +201,7 @@ set_face_from_filename (const char *filename)
 		g_free (msg);
 	} else {
 		/* Change to g_chmod after glib 2.8 release */
-		chmod (photofile, 0644);
+		g_chmod (photofile, 0644);
 	}
 
 	gtk_image_set_from_file (GTK_IMAGE (image), photofile);
@@ -324,7 +324,7 @@ main (int argc, char *argv[])
 
 	gtk_widget_set_size_request (browse_button, MAX (max_width, 230), MAX (max_height, 130));
 
-	if (access (photofile, R_OK) == 0) {
+	if (g_access (photofile, R_OK) == 0) {
 		gtk_image_set_from_file (GTK_IMAGE (face_image),
 					 photofile);
 	} else {

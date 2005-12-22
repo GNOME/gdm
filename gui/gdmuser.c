@@ -144,7 +144,7 @@ gdm_user_alloc (const gchar *logname,
 
 		/* read the "done" bit, but don't check */
 		read (STDIN_FILENO, buf, sizeof (buf));
-	} else if (access (&buf[1], R_OK) == 0) {
+	} else if (g_access (&buf[1], R_OK) == 0) {
 		img = gdm_common_get_face (&buf[1],
 					   NULL,
 					   gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH),

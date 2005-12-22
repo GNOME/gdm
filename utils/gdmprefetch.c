@@ -38,45 +38,43 @@ doout(char *s)
 	void *map;
 	struct stat buf;
 
-	if (((fd = open(s, O_RDONLY)) < 0) ||
-	    (fstat(fd, &buf) < 0) ||
-	    ((map = mmap(NULL, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) ==
+	if (((fd = open (s, O_RDONLY)) < 0) ||
+	    (fstat (fd, &buf) < 0) ||
+	    ((map = mmap (NULL, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) ==
 	    MAP_FAILED)) {
 		(void)close(fd);
 		return (-1);
 	}
 
-	(void)close(fd);
-	(void)msync(map, buf.st_size, MS_INVALIDATE);
-	(void)munmap(map, buf.st_size);
+	(void)close (fd);
+	(void)msync (map, buf.st_size, MS_INVALIDATE);
+	(void)munmap (map, buf.st_size);
 	return (0);
 }
 
 #define SIZE 1024*128
 
 int
-doin(char *s)
+doin (char *s)
 {
 	int fd;
 	char buffer[SIZE];
 	
 	if ((fd = open(s, O_RDONLY)) < 0) {
-		fprintf(stderr, "fopen: %s %s\n", strerror(errno), s);
+		fprintf (stderr, "fopen: %s %s\n", strerror(errno), s);
 		return (-1);
 	}
 
-	while (read(fd, buffer, SIZE) != 0)
+	while (read (fd, buffer, SIZE) != 0)
 		;
 
-	(void)close(fd);
+	(void)close (fd);
 
 	return (0);
 }
 
-
-
 int
-main(int argc, char *argv[])
+main (int argc, char *argv[])
 {
 	FILE *fp = 0;
 	int c, errflg = 0;
@@ -84,8 +82,8 @@ main(int argc, char *argv[])
 	extern char *optarg;
 	int i;
 
-	while ((c = getopt(argc, argv, "o:")) != -1) {
-		switch(c) {
+	while ((c = getopt (argc, argv, "o:")) != -1) {
+		switch (c) {
 
 		case 'o':
 			out = 1;
@@ -98,27 +96,27 @@ main(int argc, char *argv[])
 	}
 
 	if (errflg) {
-		fprintf(stderr, "usage: %s [-o] filename [filename]\n",
+		fprintf (stderr, "usage: %s [-o] filename [filename]\n",
 			argv[0]);
-		exit(1);
+		exit (1);
 	}
 
 
 	for (; optind < argc; optind++) {
-		if ((argv[optind][0] == '@') && ((fp = fopen(argv[optind], "r")) == 0)) {
+		if ((argv[optind][0] == '@') && ((fp = fopen (argv[optind], "r")) == 0)) {
 			char path[1024];
 
-			if ((fp = fopen(&(argv[optind][1]), "r")) == 0) {
-				fprintf(stderr, "fopen: %s %s\n", strerror(errno), &argv[optind][1]);
+			if ((fp = fopen (&(argv[optind][1]), "r")) == 0) {
+				fprintf (stderr, "fopen: %s %s\n", strerror (errno), &argv[optind][1]);
 				continue;
 			}
-			while (fgets(path, sizeof(path), fp) != 0) {
+			while (fgets (path, sizeof (path), fp) != 0) {
 				path[strlen(path) -1] = '\0';
 
 				if (!out) {
-					doin(path);
+					doin (path);
 				} else {
-					doout(path);
+					doout (path);
 				}
 			}
 			fclose (fp);
@@ -131,12 +129,12 @@ main(int argc, char *argv[])
 			}
 
 			if (!out) {
-				doin(argv[optind]);
+				doin (argv[optind]);
 			} else {
-				doout(argv[optind]);
+				doout (argv[optind]);
 			}
 		}
 	}
-	exit(0);
+	exit (0);
 }
 

@@ -804,14 +804,14 @@ get_theme_file (const char *in, char **theme_dir)
       dir = NULL;
       if (DOING_GDM_DEVELOPMENT)
         {
-	  if (access (in, F_OK) == 0)
+	  if (g_access (in, F_OK) == 0)
 	    {
 	      dir = g_strdup (in);
 	    }
 	  else
 	    {
               dir = g_build_filename ("themes", in, NULL);
-	      if (access (dir, F_OK) != 0)
+	      if (g_access (dir, F_OK) != 0)
 	        {
 	          g_free (dir);
 	          dir = NULL;
@@ -825,11 +825,11 @@ get_theme_file (const char *in, char **theme_dir)
   *theme_dir = dir;
 
   info = g_build_filename (dir, "GdmGreeterTheme.desktop", NULL);
-  if (access (info, F_OK) != 0) {
+  if (g_access (info, F_OK) != 0) {
 	  g_free (info);
 	  info = g_build_filename (dir, "GdmGreeterTheme.info", NULL);
   }
-  if (access (info, F_OK) != 0)
+  if (g_access (info, F_OK) != 0)
     {
       char *base = g_path_get_basename (in);
       /* just guess the name, we have no info about the theme at

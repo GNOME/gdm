@@ -429,10 +429,10 @@ gdmcomm_check (gboolean show_dialog)
 		return FALSE;
 	}
 
-	VE_IGNORE_EINTR (statret = stat (GDM_SUP_SOCKET, &s));
+	VE_IGNORE_EINTR (statret = g_stat (GDM_SUP_SOCKET, &s));
 	if (statret < 0 ||
 	    s.st_uid != 0 ||
-	    access (GDM_SUP_SOCKET, R_OK|W_OK) != 0) {
+	    g_access (GDM_SUP_SOCKET, R_OK|W_OK) != 0) {
 		if (show_dialog) {
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,

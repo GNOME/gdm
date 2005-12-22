@@ -616,7 +616,7 @@ try_user_add_again:
 	    d->userauth = g_build_filename (authdir, userauthfile, NULL);
 
     user_auth_exists = (d->userauth != NULL &&
-			access (d->userauth, F_OK) == 0);
+			g_access (d->userauth, F_OK) == 0);
 
     /* Find out if the Xauthority file passes the paranoia check */
     /* Note that this is not very efficient, we stat the files over
@@ -648,7 +648,7 @@ try_user_add_again:
 	    was of wrong permissions, but more likely this is
 	    file on NFS dir with root-squashing enabled) */
         if ( ! user_auth_exists && d->userauth != NULL)
-		unlink (d->userauth);
+		g_unlink (d->userauth);
 
 	/* No go. Let's create a fallback file in GDM_KEY_USER_AUTHDIR_FALLBACK (/tmp)
 	 * or perhaps userauthfile directory (usually would be /tmp) */
@@ -814,14 +814,14 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     /* If we are using the fallback cookie location, simply nuke the
      * cookie file */
     if (d->authfb) {
-	VE_IGNORE_EINTR (unlink (d->userauth));
+	VE_IGNORE_EINTR (g_unlink (d->userauth));
 	g_free (d->userauth);
 	d->userauth = NULL;
 	return;
     }
 
     /* if the file doesn't exist, oh well, just ignore this then */
-    if G_UNLIKELY (access (d->userauth, F_OK) != 0) {
+    if G_UNLIKELY (g_access (d->userauth, F_OK) != 0) {
 	g_free (d->userauth);
 	d->userauth = NULL;
 	return;
@@ -990,7 +990,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 
     if (remove_when_empty &&
 	keep == NULL) {
-	    VE_IGNORE_EINTR (unlink (d->userauth));
+	    VE_IGNORE_EINTR (g_unlink (d->userauth));
 	    return NULL;
     }
 

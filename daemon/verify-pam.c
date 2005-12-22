@@ -312,7 +312,7 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
 	if (!d->attached)
 	    return;
 
-	if (access (pwent->pw_dir, F_OK) != 0) {
+	if (g_access (pwent->pw_dir, F_OK) != 0) {
 	    gdm_debug ("solaris_xserver_cred: no HOME dir access\n");
 	    return;
 	}
@@ -328,7 +328,7 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
 
         sprintf (pipe, "%s/%d", SDTLOGIN_DIR, displayNumber);
 
-        if ( stat (SDTLOGIN_DIR, &statbuf) == 0) {
+        if (g_stat (SDTLOGIN_DIR, &statbuf) == 0) {
 	    if (! statbuf.st_mode & S_IFDIR) {
 		gdm_debug ("solaris_xserver_cred: %s is not a directory\n",
 		       SDTLOGIN_DIR);
@@ -341,7 +341,7 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
 	}
 
 	fd = open (pipe, O_RDWR);
-	unlink (pipe);
+	g_unlink (pipe);
 
 	if (fd < 0) {
             gdm_debug ("solaris_xserver_cred: could not open %s\n", pipe);

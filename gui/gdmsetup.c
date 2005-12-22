@@ -2965,7 +2965,7 @@ test_sound (GtkWidget *button, gpointer data)
 	const char *file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (acc_sound_file_chooser));
 	const char *argv[3];
 
-	if ((file == NULL) || access (file, R_OK) != 0 ||
+	if ((file == NULL) || g_access (file, R_OK) != 0 ||
 	    ve_string_empty (GdmSoundProgram))
 	       return;
 
@@ -3180,7 +3180,7 @@ get_theme_dir (void)
 
 	if (theme_dir == NULL ||
 	    theme_dir[0] == '\0' ||
-	    access (theme_dir, R_OK) != 0) {
+	    g_access (theme_dir, R_OK) != 0) {
 		g_free (theme_dir);
 		theme_dir = g_strdup (EXPANDED_DATADIR "/gdm/themes/");
 	}
@@ -3387,12 +3387,12 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			continue;
 		n = g_strconcat (theme_dir, "/", dent->d_name,
 				 "/GdmGreeterTheme.desktop", NULL);
-		if (access (n, R_OK) != 0) {
+		if (g_access (n, R_OK) != 0) {
 			g_free (n);
 			n = g_strconcat (theme_dir, "/", dent->d_name,
 					 "/GdmGreeterTheme.info", NULL);
 		}
-		if (access (n, R_OK) != 0) {
+		if (g_access (n, R_OK) != 0) {
 			g_free (n);
 			continue;
 		}
@@ -3402,7 +3402,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 		file = gdm_get_theme_greeter (n, dent->d_name);
 		full = g_strconcat (theme_dir, "/", dent->d_name,
 				    "/", file, NULL);
-		if (access (full, R_OK) != 0) {
+		if (g_access (full, R_OK) != 0) {
 			g_free (file);
 			g_free (full);
 			g_free (n);
@@ -3447,7 +3447,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			full = NULL;
 
 		if ( ! ve_string_empty (full) &&
-		    access (full, R_OK) == 0) {
+		    g_access (full, R_OK) == 0) {
 
 			pb = gdk_pixbuf_new_from_file (full, NULL);
 			if (pb != NULL) {
@@ -3666,7 +3666,7 @@ find_unzip (const char *filename)
 			return prog;
 
 		for (i = 0; tryb[i] != NULL; i++) {
-			if (access (tryb[i], X_OK) == 0)
+			if (g_access (tryb[i], X_OK) == 0)
 				return g_strdup (tryb[i]);
 		}
 	}
@@ -3676,7 +3676,7 @@ find_unzip (const char *filename)
 		return prog;
 
 	for (i = 0; tryg[i] != NULL; i++) {
-		if (access (tryg[i], X_OK) == 0)
+		if (g_access (tryg[i], X_OK) == 0)
 			return g_strdup (tryg[i]);
 	}
 	/* Hmmm, fallback */
@@ -3704,7 +3704,7 @@ find_tar (void)
 		return tar_prog;
 
 	for (i = 0; try[i] != NULL; i++) {
-		if (access (try[i], X_OK) == 0)
+		if (g_access (try[i], X_OK) == 0)
 			return g_strdup (try[i]);
 	}
 	/* Hmmm, fallback */
@@ -3728,7 +3728,7 @@ find_chmod (void)
 		return chmod_prog;
 
 	for (i = 0; try[i] != NULL; i++) {
-		if (access (try[i], X_OK) == 0)
+		if (g_access (try[i], X_OK) == 0)
 			return g_strdup (try[i]);
 	}
 	/* Hmmm, fallback */
@@ -3752,7 +3752,7 @@ find_chown (void)
 		return chown_prog;
 
 	for (i = 0; try[i] != NULL; i++) {
-		if (access (try[i], X_OK) == 0)
+		if (g_access (try[i], X_OK) == 0)
 			return g_strdup (try[i]);
 	}
 	/* Hmmm, fallback */
@@ -3843,7 +3843,7 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 
 	*error = NULL;
 
-	if (access (filename, F_OK) != 0) {
+	if (g_access (filename, F_OK) != 0) {
 		*error = _("File does not exist");
 		return NULL;
 	}
@@ -4035,7 +4035,7 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 
 	g_assert (untar_cmd != NULL);
 
-	if (chdir (theme_dir) == 0 &&
+	if (g_chdir (theme_dir) == 0 &&
 	    /* this is a security sanity check */
 	    strchr (dir, '/') == NULL &&
 	    system (untar_cmd) == 0) {
@@ -4285,7 +4285,7 @@ delete_theme (GtkWidget *button, gpointer data)
 	if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES) {
 		char *theme_dir = get_theme_dir ();
 		char *cwd = g_get_current_dir ();
-		if (chdir (theme_dir) == 0 &&
+		if (g_chdir (theme_dir) == 0 &&
 		    /* this is a security sanity check, since we're doing rm -fR */
 		    strchr (dir, '/') == NULL) {
 			/* HACK! */
@@ -4316,7 +4316,7 @@ delete_theme (GtkWidget *button, gpointer data)
 			}
 
 		}
-		chdir (cwd);
+		g_chdir (cwd);
 		g_free (cwd);
 		g_free (theme_dir);
 	}
@@ -6601,7 +6601,7 @@ main (int argc, char *argv[])
 	GdmAllowRemoteRoot = gdm_config_get_bool (GDM_KEY_ALLOW_REMOTE_ROOT);
 
 	if (ve_string_empty (GdmSoundProgram) ||
-            access (GdmSoundProgram, X_OK) != 0) {
+            g_access (GdmSoundProgram, X_OK) != 0) {
 		GdmSoundProgram = NULL;
 	}
 

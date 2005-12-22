@@ -233,12 +233,12 @@ gdm_chooser_host_alloc (const char *hostname,
 
     hostimgdir = gdm_config_get_string (GDM_KEY_HOST_IMAGE_DIR); 
     hostimg    = g_strconcat (hostimgdir, "/", hostname, NULL);
-    if (access (hostimg, R_OK) != 0) {
+    if (g_access (hostimg, R_OK) != 0) {
 	    g_free (hostimg);
 	    hostimg = g_strconcat (hostimgdir, "/", hostname, ".png", NULL);
     }
 
-    if (access (hostimg, R_OK) == 0 &&
+    if (g_access (hostimg, R_OK) == 0 &&
 	(img = gdk_pixbuf_new_from_file (hostimg, NULL)) != NULL) {
 	gint w, h, maxw, maxh;
 
@@ -1661,7 +1661,7 @@ gdm_chooser_gui_init (void)
     defaulthosticon = gdm_config_get_string (GDM_KEY_DEFAULT_HOST_IMG);
 
     /* Load default host image */
-    if (access (defaulthosticon, R_OK) != 0) {
+    if (g_access (defaulthosticon, R_OK) != 0) {
 	gdm_chooser_warn (_("Can't open default host icon: %s"), defaulthosticon);
 	/* bogus image */
 	defhostimg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,

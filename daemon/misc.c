@@ -153,7 +153,8 @@ have_ipv6_solaris (void)
 }
 #endif
 
-static gboolean have_ipv6 (void)
+static gboolean
+have_ipv6 (void)
 {
 	int s;
         static gboolean has_ipv6 = -1;
@@ -515,7 +516,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 
 		/* if lock file exists and the process exists */
 		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
-		VE_IGNORE_EINTR (r = stat (buf, &s));
+		VE_IGNORE_EINTR (r = g_stat (buf, &s));
 		if (r == 0 &&
 		    ! S_ISREG (s.st_mode)) {
 			/*
@@ -541,7 +542,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 			VE_IGNORE_EINTR (fclose (fp));
 
 			/* whack the file, it's a stale lock file */
-			VE_IGNORE_EINTR (unlink (buf));
+			VE_IGNORE_EINTR (g_unlink (buf));
 		}
 
 		/* If starting as root, we'll be able to overwrite any
@@ -550,7 +551,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 		if (server_uid > 0) {
 			g_snprintf (buf, sizeof (buf),
 				    "/tmp/.X11-unix/X%d", i);
-			VE_IGNORE_EINTR (r = stat (buf, &s));
+			VE_IGNORE_EINTR (r = g_stat (buf, &s));
 			if (r == 0 &&
 			    s.st_uid != server_uid) {
 				continue;
@@ -558,7 +559,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 
 			g_snprintf (buf, sizeof (buf),
 				    "/tmp/.X%d-lock", i);
-			VE_IGNORE_EINTR (r = stat (buf, &s));
+			VE_IGNORE_EINTR (r = g_stat (buf, &s));
 			if (r == 0 &&
 			    s.st_uid != server_uid) {
 				continue;
@@ -580,7 +581,7 @@ gdm_text_message_dialog (const char *msg)
     if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 		return FALSE;
 
-	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
+	if (g_access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
 	if (msg[0] == '-') {
@@ -658,7 +659,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
     if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 		return FALSE;
 	
-	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
+	if (g_access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
 	if (ret != NULL)
@@ -766,7 +767,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			}
 		}
 
-		VE_IGNORE_EINTR (unlink (tempname));
+		VE_IGNORE_EINTR (g_unlink (tempname));
 
 		g_free (msg_quoted);
 		return TRUE;
@@ -782,7 +783,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 
 	if (argv == NULL ||
 	    argv[0] == NULL ||
-	    access (argv[0], X_OK) != 0)
+	    g_access (argv[0], X_OK) != 0)
 		return -1;
 
 	pid = gdm_fork_extra ();
@@ -983,7 +984,7 @@ ensure_tmp_socket_dir (const char *dir)
          */
 	old_umask = umask (0);
 
-        if G_UNLIKELY (mkdir (dir, 01777) != 0) {
+        if G_UNLIKELY (g_mkdir (dir, 01777) != 0) {
 		/*
                  * If we can't create it, perhaps it
 		 * already exists, in which case ensure the
@@ -991,18 +992,18 @@ ensure_tmp_socket_dir (const char *dir)
                  */
 		struct stat s;
 		int r;
-		VE_IGNORE_EINTR (r = lstat (dir, &s));
+		VE_IGNORE_EINTR (r = g_lstat (dir, &s));
 		if G_LIKELY (r == 0 && S_ISDIR (s.st_mode)) {
 			/* Make sure it is root and sticky */
 			VE_IGNORE_EINTR (chown (dir, 0, 0));
-			VE_IGNORE_EINTR (chmod (dir, 01777));
+			VE_IGNORE_EINTR (g_chmod (dir, 01777));
 		} else {
 			/*
                          * There is a file/link/whatever of the same name?
 			 * whack and try mkdir
                          */
-			VE_IGNORE_EINTR (unlink (dir));
-			mkdir (dir, 01777);
+			VE_IGNORE_EINTR (g_unlink (dir));
+			g_mkdir (dir, 01777);
 		}
 	}
 
@@ -2041,7 +2042,7 @@ gdm_safe_fopen_w (const char *file)
 {
 	int fd;
 	FILE *ret;
-	VE_IGNORE_EINTR (unlink (file));
+	VE_IGNORE_EINTR (g_unlink (file));
 	do {
 		errno = 0;
 		fd = open (file, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY
@@ -2066,7 +2067,7 @@ gdm_safe_fopen_ap (const char *file)
 	int fd;
 	FILE *ret;
 
-	if (access (file, F_OK) == 0) {
+	if (g_access (file, F_OK) == 0) {
 		do {
 			errno = 0;
 			fd = open (file, O_APPEND|O_RDWR
@@ -2415,9 +2416,9 @@ gdm_get_last_info (const char *username)
 	char *info = NULL;
 	const char *cmd = NULL;
 
-	if G_LIKELY (access ("/usr/bin/last", X_OK) == 0)
+	if G_LIKELY (g_access ("/usr/bin/last", X_OK) == 0)
 		cmd = "/usr/bin/last";
-	else if (access ("/bin/last", X_OK) == 0)
+	else if (g_access ("/bin/last", X_OK) == 0)
 		cmd = "/bin/last";
 
 	if G_LIKELY (cmd != NULL) {

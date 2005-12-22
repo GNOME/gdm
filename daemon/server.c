@@ -86,12 +86,12 @@ gdm_server_whack_lockfile (GdmDisplay *disp)
 
 	    /* if lock file exists and it is our process, whack it! */
 	    g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", disp->dispnum);
-	    VE_IGNORE_EINTR (unlink (buf));
+	    VE_IGNORE_EINTR (g_unlink (buf));
 
 	    /* whack the unix socket as well */
 	    g_snprintf (buf, sizeof (buf),
 			"/tmp/.X11-unix/X%d", disp->dispnum);
-	    VE_IGNORE_EINTR (unlink (buf));
+	    VE_IGNORE_EINTR (g_unlink (buf));
 }
 
 
@@ -100,12 +100,12 @@ void
 gdm_server_wipe_cookies (GdmDisplay *disp)
 {
 	if ( ! ve_string_empty (disp->authfile)) {
-		VE_IGNORE_EINTR (unlink (disp->authfile));
+		VE_IGNORE_EINTR (g_unlink (disp->authfile));
 	}
 	g_free (disp->authfile);
 	disp->authfile = NULL;
 	if ( ! ve_string_empty (disp->authfile_gdm)) {
-		VE_IGNORE_EINTR (unlink (disp->authfile_gdm));
+		VE_IGNORE_EINTR (g_unlink (disp->authfile_gdm));
 	}
 	g_free (disp->authfile_gdm);
 	disp->authfile_gdm = NULL;
@@ -335,7 +335,7 @@ static gboolean
 busy_ask_user (GdmDisplay *disp)
 {
     /* if we have "open" we can talk to the user */
-    if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
+    if (g_access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
 	    char *error = g_strdup_printf
 		    (C_(N_("There already appears to be an X server "
 			   "running on display %s.  Should another "
@@ -905,16 +905,16 @@ safer_rename (const char *a, const char *b)
 	errno = 0;
 	if (link (a, b) < 0) {
 		if (errno == EEXIST) {
-			VE_IGNORE_EINTR (unlink (a));
+			VE_IGNORE_EINTR (g_unlink (a));
 			return;
 		} 
-		VE_IGNORE_EINTR (unlink (b));
+		VE_IGNORE_EINTR (g_unlink (b));
 		/* likely this system doesn't support hard links */
-		rename (a, b);
-		VE_IGNORE_EINTR (unlink (a));
+		g_rename (a, b);
+		VE_IGNORE_EINTR (g_unlink (a));
 		return;
 	}
-	VE_IGNORE_EINTR (unlink (a));
+	VE_IGNORE_EINTR (g_unlink (a));
 }
 
 static void
@@ -930,7 +930,7 @@ rotate_logs (const char *dname)
 	char *fname = gdm_make_filename (logdir, dname, ".log");
 
 	/* Rotate the logs (keep 4 last) */
-	VE_IGNORE_EINTR (unlink (fname4));
+	VE_IGNORE_EINTR (g_unlink (fname4));
 	safer_rename (fname3, fname4);
 	safer_rename (fname2, fname3);
 	safer_rename (fname1, fname2);
@@ -1148,7 +1148,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
         /* Log all output from spawned programs to a file */
 	logfile = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
-	VE_IGNORE_EINTR (unlink (logfile));
+	VE_IGNORE_EINTR (g_unlink (logfile));
 	VE_IGNORE_EINTR (logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 
 	if (logfd != -1) {
@@ -1296,7 +1296,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
         char old_pipe[MAXPATHLEN];
 
         sprintf (old_pipe, "%s/%d", SDTLOGIN_DIR, d->name);
-        unlink (old_pipe);
+        g_unlink (old_pipe);
     }
 #endif
 

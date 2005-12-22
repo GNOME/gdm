@@ -54,7 +54,7 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 	    return FALSE;
 
     /* Stat directory */
-    VE_IGNORE_EINTR (r = stat (dir, &statbuf));
+    VE_IGNORE_EINTR (r = g_stat (dir, &statbuf));
     if (r < 0) {
 	    if ( ! absentdirok)
 		 syslog (LOG_WARNING, _("%s: Directory %s does not exist."),
@@ -88,7 +88,7 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     fullpath = g_build_filename (dir, file, NULL);
 
     /* Stat file */
-    VE_IGNORE_EINTR (r = stat (fullpath, &statbuf));
+    VE_IGNORE_EINTR (r = g_stat (fullpath, &statbuf));
     if (r < 0) {
         /* Return true if file does not exist and that is ok */
 	if (absentok) { 
@@ -156,7 +156,7 @@ gdm_auth_file_check (const gchar *caller, uid_t user, const gchar *authfile, gbo
 	    return FALSE;
 
     /* Stat file */
-    VE_IGNORE_EINTR (r = lstat (authfile, &statbuf));
+    VE_IGNORE_EINTR (r = g_lstat (authfile, &statbuf));
     if (s != NULL)
 	    *s = statbuf;
     if (r < 0) {

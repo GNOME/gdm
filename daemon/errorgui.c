@@ -257,7 +257,7 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
                 gchar *gtkrc = gdm_get_value_string (GDM_KEY_GTKRC);
 
 		if ( ! ve_string_empty (gtkrc) &&
-		     access (gtkrc, R_OK) == 0)
+		     g_access (gtkrc, R_OK) == 0)
 			gtk_rc_parse (gtkrc);
 
 		theme_name = d->theme_name;
@@ -269,7 +269,7 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 			g_free (theme_dir);
 
 			if ( ! ve_string_empty (theme) &&
-			     access (theme, R_OK) == 0)
+			     g_access (theme, R_OK) == 0)
 				gtk_rc_parse (theme);
 
 			g_free (theme);
@@ -338,7 +338,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			GString *gs = g_string_new (NULL);
 
 			fp = NULL;
-			VE_IGNORE_EINTR (r = lstat (details_file, &s));
+			VE_IGNORE_EINTR (r = g_lstat (details_file, &s));
 			if (r == 0) {
 				if (S_ISREG (s.st_mode)) {
 					VE_IGNORE_EINTR (fp = fopen (details_file, "r"));

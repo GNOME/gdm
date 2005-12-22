@@ -274,7 +274,7 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 
 try_again:
 	/* this is all for creating sockets in /tmp/ safely */
-	VE_IGNORE_EINTR (unlink (sockname));
+	VE_IGNORE_EINTR (g_unlink (sockname));
 	if G_UNLIKELY (errno == EISDIR ||
 		       errno == EPERM) {
 		/* likely a directory, someone's playing tricks on us */
@@ -284,8 +284,8 @@ try_again:
 			newname = g_strdup_printf ("%s-renamed-%u",
 						   sockname,
 						   (guint)g_random_int ());
-		} while (access (newname, F_OK) == 0);
-		VE_IGNORE_EINTR (rename (sockname, newname));
+		} while (g_access (newname, F_OK) == 0);
+		VE_IGNORE_EINTR (g_rename (sockname, newname));
 		if G_UNLIKELY (errno != 0)
 			try_again_attempts = 0;
 		g_free (newname);
@@ -308,7 +308,7 @@ try_again:
 		return NULL;
 	}
 
-	VE_IGNORE_EINTR (chmod (sockname, mode));
+	VE_IGNORE_EINTR (g_chmod (sockname, mode));
 
 	conn = g_new0 (GdmConnection, 1);
 	conn->disp = NULL;
@@ -381,7 +381,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	GdmConnection *conn;
 	int fd;
 
-	VE_IGNORE_EINTR (unlink (fifo));
+	VE_IGNORE_EINTR (g_unlink (fifo));
 
 	if G_UNLIKELY (mkfifo (fifo, 0660) < 0) {
 		gdm_error (_("%s: Could not make FIFO"),
@@ -397,7 +397,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 		return NULL;
 	}
 
-	VE_IGNORE_EINTR (chmod (fifo, mode));
+	VE_IGNORE_EINTR (g_chmod (fifo, mode));
 
 	conn = g_new0 (GdmConnection, 1);
 	conn->disp = NULL;

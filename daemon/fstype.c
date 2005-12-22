@@ -295,7 +295,7 @@ filesystem_type_uncached (char *path, char *relpath, struct stat *statp)
       else
 #endif /* not hpux */
 	{
-	  if (stat (mnt->mnt_dir, &disk_stats) == -1) {
+	  if (g_stat (mnt->mnt_dir, &disk_stats) == -1) {
 	    if (errno == EACCES)
 	      continue;
 	    else

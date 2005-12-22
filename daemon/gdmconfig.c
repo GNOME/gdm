@@ -537,14 +537,14 @@ gdm_get_config (struct stat *statbuf)
 
    /* Not NULL if config_file was set by command-line option. */
    if (config_file != NULL) {
-      VE_IGNORE_EINTR (r = stat (config_file, statbuf));
+      VE_IGNORE_EINTR (r = g_stat (config_file, statbuf));
       if (r < 0) {
          gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
                       "gdm_config_parse", config_file);
          return NULL;
       }
    } else {
-      VE_IGNORE_EINTR (r = stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
+      VE_IGNORE_EINTR (r = g_stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
       if (r < 0) {
          gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
                       "gdm_config_parse", GDM_SYSCONFDIR_CONFIG_FILE);
@@ -570,7 +570,7 @@ gdm_get_custom_config (struct stat *statbuf)
    gchar *file = g_strdup_printf ("%s-custom", GDM_SYSCONFDIR_CONFIG_FILE);
    int r;
 
-   VE_IGNORE_EINTR (r = stat (file, statbuf));
+   VE_IGNORE_EINTR (r = g_stat (file, statbuf));
    if (r >= 0) {
       custom_config_file = file;
       return ve_config_new (custom_config_file);
@@ -876,14 +876,14 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
          bin = ve_first_word (value);
 
       if G_UNLIKELY (ve_string_empty (bin) ||
-                     access (bin, X_OK) != 0) {
+                     g_access (bin, X_OK) != 0) {
          gdm_info (_("%s: Standard X server not found; trying alternatives"),
                      "gdm_config_parse");
-         if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
+         if (g_access ("/usr/X11R6/bin/X", X_OK) == 0) {
             *setting = g_strdup ("/usr/X11R6/bin/X");
-         } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
+         } else if (g_access ("/opt/X11R6/bin/X", X_OK) == 0) {
             *setting = g_strdup ("/opt/X11R6/bin/X");
-         } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
+         } else if (g_access ("/usr/bin/X11/X", X_OK) == 0) {
             *setting = g_strdup ("/usr/bin/X11/X");
          } else
             *setting = g_strdup (value);
@@ -1428,8 +1428,8 @@ gdm_update_config (gchar* key)
    }
 
    /* Don't bother re-reading configuration if files have not changed */
-   VE_IGNORE_EINTR (stat (config_file, &statbuf));
-   VE_IGNORE_EINTR (stat (custom_config_file, &custom_statbuf));
+   VE_IGNORE_EINTR (g_stat (config_file, &statbuf));
+   VE_IGNORE_EINTR (g_stat (custom_config_file, &custom_statbuf));
 
   /*
    * Do not reset mtime to the latest values since there is no
@@ -1519,7 +1519,7 @@ check_logdir (void)
         struct stat statbuf;
         int r;
 
-        VE_IGNORE_EINTR (r = stat (GdmLogDir, &statbuf));
+        VE_IGNORE_EINTR (r = g_stat (GdmLogDir, &statbuf));
         if (r < 0 ||
             ! S_ISDIR (statbuf.st_mode))  {
                 gdm_error (_("%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."), "gdm_config_parse",
@@ -1535,7 +1535,7 @@ check_servauthdir (struct stat *statbuf)
     int r;
 
     /* Enter paranoia mode */
-    VE_IGNORE_EINTR (r = stat (GdmServAuthDir, statbuf));
+    VE_IGNORE_EINTR (r = g_stat (GdmServAuthDir, statbuf));
     if G_UNLIKELY (r < 0) {
             gchar *s = g_strdup_printf
                     (C_(N_("Server Authorization directory "
@@ -1761,13 +1761,13 @@ gdm_config_parse (void)
       }
 
       bin = ve_first_word (GdmStandardXserver);
-      if G_LIKELY (access (bin, X_OK) == 0) {
+      if G_LIKELY (g_access (bin, X_OK) == 0) {
          server = GdmStandardXserver;
-      } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
+      } else if (g_access ("/usr/bin/X11/X", X_OK) == 0) {
          server = "/usr/bin/X11/X";
-      } else if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
+      } else if (g_access ("/usr/X11R6/bin/X", X_OK) == 0) {
          server = "/usr/X11R6/bin/X";
-      } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
+      } else if (g_access ("/opt/X11R6/bin/X", X_OK) == 0) {
          server = "/opt/X11R6/bin/X";
       }
       g_free (bin);
@@ -1871,13 +1871,13 @@ gdm_config_parse (void)
 
    /* Check that the greeter can be executed */
    bin = ve_first_word (GdmGreeter);
-   if G_UNLIKELY (ve_string_empty (bin) || access (bin, X_OK) != 0) {
+   if G_UNLIKELY (ve_string_empty (bin) || g_access (bin, X_OK) != 0) {
       gdm_error (_("%s: Greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
    }
    g_free (bin);
 
    bin = ve_first_word (GdmRemoteGreeter);
-   if G_UNLIKELY (ve_string_empty (bin) || access (bin, X_OK) != 0) {
+   if G_UNLIKELY (ve_string_empty (bin) || g_access (bin, X_OK) != 0) {
       gdm_error (_("%s: Remote greeter not found or can't be executed by the GDM user"), "gdm_config_parse");
    }
    g_free (bin);
@@ -1885,7 +1885,7 @@ gdm_config_parse (void)
    /* Check that chooser can be executed */
    bin = ve_first_word (GdmChooser);
 
-   if G_UNLIKELY (GdmIndirect && (ve_string_empty (bin) || access (bin, X_OK) != 0)) {
+   if G_UNLIKELY (GdmIndirect && (ve_string_empty (bin) || g_access (bin, X_OK) != 0)) {
       gdm_error (_("%s: Chooser not found or it can't be executed by the GDM user"), "gdm_config_parse");
    }
     
@@ -1912,7 +1912,7 @@ gdm_config_parse (void)
 
    /* Now set things up for us as  */
    chown (GdmServAuthDir, 0, GdmGroupId);
-   chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
+   g_chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
 
    NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
 
@@ -2089,7 +2089,7 @@ check_user_file (const char *path,
         if (path == NULL)
                 return FALSE;
 
-        if (access (path, R_OK) != 0)
+        if (g_access (path, R_OK) != 0)
                 return FALSE;
 
         dir = g_path_get_dirname (path);
@@ -2115,7 +2115,7 @@ check_global_file (const char *path,
         if (path == NULL)
                 return FALSE;
 
-        if (access (path, R_OK) != 0)
+        if (g_access (path, R_OK) != 0)
                 return FALSE;
 
         return TRUE;
@@ -2160,7 +2160,7 @@ get_facefile_from_gnome2_dir_config (const char *homedir,
       if G_UNLIKELY (picfile != NULL &&
                      (picfile[0] != '/' ||
                       /* this catches readability by user */
-                      access (picfile, R_OK) != 0)) {
+                      g_access (picfile, R_OK) != 0)) {
          g_free (picfile);
          picfile = NULL;
       }
@@ -2215,7 +2215,7 @@ path_is_local (const char *path)
         if (local == NULL) {
                 struct stat statbuf;
 
-                if (stat (path, &statbuf) == 0) {
+                if (g_stat (path, &statbuf) == 0) {
                         char *type = filesystem_type ((char *)path, (char *)path, &statbuf);
                         gboolean is_local = ((strcmp (ve_sure_string (type), "nfs") != 0) &&
                                              (strcmp (ve_sure_string (type), "afs") != 0) &&
@@ -2374,7 +2374,7 @@ gdm_get_session_exec (const char *session_name, gboolean check_try_exec)
       g_free (file);
    }
 
-   if (ve_string_empty (full) || access (full, R_OK) != 0) {
+   if (ve_string_empty (full) || g_access (full, R_OK) != 0) {
       g_free (full);
       if (gdm_is_session_magic (session_name)) {
          exec = g_strdup (session_name);

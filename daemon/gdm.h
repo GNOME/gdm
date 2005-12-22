@@ -20,6 +20,7 @@
 #define GDM_H
 
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
 #include <X11/Xauth.h>

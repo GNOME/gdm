@@ -44,7 +44,8 @@
 static pid_t xnest_pid = 0;
 
 #ifdef ENABLE_IPV6
-static gboolean have_ipv6 () {
+static gboolean
+have_ipv6 () {
 	gint s;
 
 	s = socket (AF_INET6, SOCK_STREAM, 0);
@@ -132,13 +133,13 @@ get_free_display (void)
 		}
 
 		g_snprintf (buf, sizeof (buf), "/tmp/.X11-unix/X%d", i);
-		if (stat (buf, &s) == 0 &&
+		if (g_stat (buf, &s) == 0 &&
 		    s.st_uid != getuid ()) {
 			continue;
 		}
 
 		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
-		if (stat (buf, &s) == 0 &&
+		if (g_stat (buf, &s) == 0 &&
 		    s.st_uid != getuid ()) {
 			continue;
 		}
@@ -658,7 +659,7 @@ main (int argc, char *argv[])
 	xnest_pid = 0;
 
 	socket = g_strdup_printf ("/tmp/.X11-unix/X%d", display);
-	unlink (socket);
+	g_unlink (socket);
 	g_free (socket);
 
 	if (no_query)

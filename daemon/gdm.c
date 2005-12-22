@@ -221,7 +221,7 @@ gdm_daemonify (void)
 	gdm_fail (_("%s: setsid () failed: %s!"), "gdm_daemonify",
 		  strerror (errno));
 
-    VE_IGNORE_EINTR (chdir (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)));
+    VE_IGNORE_EINTR (g_chdir (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)));
     umask (022);
 
     VE_IGNORE_EINTR (close (0));
@@ -363,7 +363,7 @@ gdm_final_cleanup (void)
 		char *path;
 		gdm_connection_close (fifoconn);
 		path = g_build_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), ".gdmfifo", NULL);
-		VE_IGNORE_EINTR (unlink (path));
+		VE_IGNORE_EINTR (g_unlink (path));
 		g_free (path);
 		fifoconn = NULL;
 	}
@@ -380,7 +380,7 @@ gdm_final_cleanup (void)
 
 	if (unixconn != NULL) {
 		gdm_connection_close (unixconn);
-		VE_IGNORE_EINTR (unlink (GDM_SUP_SOCKET));
+		VE_IGNORE_EINTR (g_unlink (GDM_SUP_SOCKET));
 		unixconn = NULL;
 	}
 
@@ -388,7 +388,7 @@ gdm_final_cleanup (void)
 
 	pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
 	if (pidfile != NULL) {
-		VE_IGNORE_EINTR (unlink (pidfile));
+		VE_IGNORE_EINTR (g_unlink (pidfile));
 	}
 
 #ifdef  HAVE_LOGINDEVPERM
@@ -408,7 +408,7 @@ deal_with_x_crashes (GdmDisplay *d)
 	    char *bin = ve_first_word (failsafe);
 	    /* Yay we have a failsafe */
 	    if ( ! ve_string_empty (bin) &&
-		access (bin, X_OK) == 0) {
+		g_access (bin, X_OK) == 0) {
 		    gdm_info (_("%s: Trying failsafe X "
 				"server %s"), 
 			      "deal_with_x_crashes",
@@ -424,7 +424,7 @@ deal_with_x_crashes (GdmDisplay *d)
 
     /* Eeek X keeps crashing, let's try the XKeepsCrashing script */
     if ( ! ve_string_empty (keepscrashing) &&
-	access (keepscrashing, X_OK|R_OK) == 0) {
+	g_access (keepscrashing, X_OK|R_OK) == 0) {
 	    pid_t pid;
 
 	    gdm_info (_("%s: Running the "
@@ -539,7 +539,7 @@ deal_with_x_crashes (GdmDisplay *d)
     /* if we have "open" we can talk to the user, not as user
      * friendly as the above script, but getting there */
     if ( ! just_abort &&
-	access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
+	g_access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
 	    /* Shit if we knew what the program was to tell the user,
 	     * the above script would have been defined and we'd run
 	     * it for them */
@@ -584,7 +584,7 @@ suspend_machine (void)
 		/* Also make a new process group */
 		setsid ();
 
-		VE_IGNORE_EINTR (chdir ("/"));
+		VE_IGNORE_EINTR (g_chdir ("/"));
 
 		/* short sleep to give some processing time to master */
 		usleep (1000);
@@ -612,7 +612,7 @@ change_to_first_and_clear (gboolean reboot)
 	g_setenv ("TERM", "linux", TRUE);
 
 	/* evil hack that will get the fonts right */
-	if (access ("/bin/bash", X_OK) == 0)
+	if (g_access ("/bin/bash", X_OK) == 0)
 		system ("/bin/bash -l -c /bin/true");
 
 	/* clear screen and set to red */
@@ -635,7 +635,7 @@ halt_machine (void)
 	gdm_info (_("Master halting..."));
 
 	gdm_final_cleanup ();
-	VE_IGNORE_EINTR (chdir ("/"));
+	VE_IGNORE_EINTR (g_chdir ("/"));
 
 #ifdef __linux__
 	change_to_first_and_clear (FALSE /* reboot */);
@@ -657,7 +657,7 @@ reboot_machine (void)
 	gdm_info (_("Master rebooting..."));
 
 	gdm_final_cleanup ();
-	VE_IGNORE_EINTR (chdir ("/"));
+	VE_IGNORE_EINTR (g_chdir ("/"));
 
 #ifdef __linux__
 	change_to_first_and_clear (TRUE /* reboot */);
@@ -1298,7 +1298,7 @@ gdm_get_our_runlevel (void)
 #ifdef __linux__
 	/* on linux we get our current runlevel, for use later
 	 * to detect a shutdown going on, and not mess up. */
-	if (access ("/sbin/runlevel", X_OK) == 0) {
+	if (g_access ("/sbin/runlevel", X_OK) == 0) {
 		char ign;
 		int rnl;
 		FILE *fp = popen ("/sbin/runlevel", "r");
@@ -1341,7 +1341,7 @@ gdm_make_global_cookie (void)
 	gdm_global_bcookie = (unsigned char *) faked.bcookie;
 
 	file = g_build_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR), ".cookie", NULL);
-	VE_IGNORE_EINTR (unlink (file));
+	VE_IGNORE_EINTR (g_unlink (file));
 
 	oldmode = umask (077);
 	fp = gdm_safe_fopen_w (file);
@@ -1459,7 +1459,7 @@ main (int argc, char *argv[])
     pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
 
     /* Check if another gdm process is already running */
-    if (access (pidfile, R_OK) == 0) {
+    if (g_access (pidfile, R_OK) == 0) {
 
         /* Check if the existing process is still alive. */
         gint pidv;
@@ -1507,15 +1507,15 @@ main (int argc, char *argv[])
 
 	}
 
-	VE_IGNORE_EINTR (chdir (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)));
+	VE_IGNORE_EINTR (g_chdir (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)));
 	umask (022);
     }
     else
 	gdm_daemonify ();
 
 #ifdef sun
-    unlink (SDTLOGIN_DIR);
-    mkdir (SDTLOGIN_DIR, 0700);
+    g_unlink (SDTLOGIN_DIR);
+    g_mkdir (SDTLOGIN_DIR, 0700);
 #endif
 
     /* Signal handling */
@@ -2623,7 +2623,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 
 	bin = ve_first_word (server);
 	if (ve_string_empty (server) ||
-	    access (bin, X_OK) != 0) {
+	    g_access (bin, X_OK) != 0) {
 		g_free (bin);
 		if (conn != NULL)
 			gdm_connection_write (conn,
@@ -3052,9 +3052,6 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
                                  svr->chooser)
 			   gdm_connection_printf (conn, "OK true\n");
 			else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
-                                 !svr->chooser)
-			   gdm_connection_printf (conn, "OK false\n");
-			else if (g_strcasecmp (splitstr[1], "PRIORITY") == 0 &&
                                  !svr->chooser)
 			   gdm_connection_printf (conn, "OK false\n");
 			else

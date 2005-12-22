@@ -166,7 +166,7 @@ greeter_session_lookup (const char *saved_session)
 	       * irrelevant, we are in "switchdesk mode" and the relevant
 	       * thing is the saved session in .Xclients
 	       */
-	      if (access ("/usr/bin/switchdesk", F_OK) == 0)
+	      if (g_access ("/usr/bin/switchdesk", F_OK) == 0)
 	        {
 	          firstmsg = g_strdup_printf (_("You have chosen %s for this "
 	                                        "session"),

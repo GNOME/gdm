@@ -1259,7 +1259,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 	    char statusBuf[256] = "";
 	    bin = ve_first_word (willing);
 	    if ( ! ve_string_empty (bin) &&
-		 access (bin, X_OK) == 0 &&
+		 g_access (bin, X_OK) == 0 &&
 		 (fd = popen (willing, "r")) != NULL) {
 		    if (fgets (statusBuf, sizeof (statusBuf), fd) != NULL &&
 			! ve_string_empty (g_strstrip (statusBuf))) {
