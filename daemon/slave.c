@@ -1670,10 +1670,10 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 	gdm_sigchld_block_pop ();
 
 	if G_UNLIKELY (pid < 0) {
-		/* return left pointer */
+		/* Return left pointer */
 		Cursor xcursor;
 
-		/* can't fork, damnit */
+		/* Can't fork */
 		display->sesspid = 0;
 	       
 		xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
@@ -1951,18 +1951,18 @@ gdm_slave_wait_for_login (void)
 
 			check_notifies_now ();
 
-			/* the wanker can't remember his password */
+			/* The wanker can't remember his password */
 			if (login == NULL) {
 				gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
 			}
 
-			/* wipe the login */
+			/* Wipe the login */
 			g_free (login);
 			login = NULL;
 
-			/* note that this can still fall through to
+			/* Note that this can still fall through to
 			 * the timed login if the user doesn't type in the
 			 * password fast enough and there is timed login
 			 * enabled */
@@ -1970,20 +1970,20 @@ gdm_slave_wait_for_login (void)
 				break;
 			}
 
-			/* the user is a wanker */
+			/* The user is a wanker */
 			if G_UNLIKELY (do_configurator) {
 				do_configurator = FALSE;
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
 			}
 
-			/* okey dokey, we're root */
+			/* Now running as root */
 
-			/* get the root pwent */
+			/* Get the root pwent */
 			pwent = getpwuid (0);
 
 			if G_UNLIKELY (pwent == NULL) {
-				/* what? no "root" ??, this is not possible
+				/* What?  No "root" ??  This is not possible
 				 * since we logged in, but I'm paranoid */
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
@@ -1996,12 +1996,12 @@ gdm_slave_wait_for_login (void)
 			/* Note: nobody really logged in */
 			gdm_slave_send_string (GDM_SOP_LOGIN, "");
 
-			/* disable the login screen, we don't want people to
+			/* Disable the login screen, we don't want people to
 			 * log in in the meantime */
 			gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
 			greeter_disabled = TRUE;
 
-			/* make the login screen not focusable */
+			/* Make the login screen not focusable */
 			gdm_slave_greeter_ctl_no_ret (GDM_NOFOCUS, "");
 			greeter_no_focus = TRUE;
 
@@ -2034,7 +2034,7 @@ gdm_slave_wait_for_login (void)
 			continue;
 		}
 
-		/* the user timed out into a timed login during the
+		/* The user timed out into a timed login during the
 		 * conversation */
 		if (do_timed_login) {
 			break;
@@ -2056,8 +2056,7 @@ gdm_slave_wait_for_login (void)
 		}
 	}
 
-	/* the user timed out into a timed login during the
-	 * conversation */
+	/* The user timed out into a timed login during the conversation */
 	if (do_timed_login) {
 		g_free (login);
 		login = NULL;

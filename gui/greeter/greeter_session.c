@@ -20,7 +20,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <syslog.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <string.h>

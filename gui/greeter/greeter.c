@@ -181,8 +181,11 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_NOECHO:
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
-
 	tmp = ve_locale_to_utf8 (buf);
+
+	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0)
+		greeter_probably_login_prompt = FALSE;
+
 	greeter_ignore_buttons (FALSE);
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, FALSE);
 	g_free (tmp);

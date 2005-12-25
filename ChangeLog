@@ -1,5 +1,25 @@
 2005-12-24  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/greeter/greeter.c: Now set greeter_probably_login_prompt to
+	  FALSE if we get a Password request as a GDM_NOECHO message.  This
+	  makes GDM smarter about when it is at the Username prompt and
+	  fixes bug #320738, which was causing GDM to just login as the
+	  timed user when the password was requested - which it should not
+	  do.  It should only log in immediately as the timed user if ENTER
+	  is hit from the login screen without actually typing in a username.
+	* gui/gdmlogin.c: Removed some syslog debug messages I accidently
+	  left there.
+	* docs/C/gdm.xml: Now mention that if the user hits just ENTER
+	  when TimedLoginEnable is on, that GDM will just login immediately
+	  as the timed user.  This is how GDM has always behaved, just was
+	  not documented.
+	* gui/greeter/greeter_session.c, gui/greeter/greeter_system.c:
+	  Removed syslog.h include since it isn't used in these files.
+	* daemon/server.c: Fixed comments.
+	* daemon/slave.c: Fixed comments.
+
+2005-12-24  Brian Cameron  <brian.cameron@sun.com>
+
 	Happy holidays.  Some bug fixes.
 
 	* daemon/gdm.h, daemon/gdmconfig.c, daemon/slave.c,
@@ -2684,8 +2704,8 @@ Tue May 04 09:47:21 2004  George Lebl <jirka@5z.com>
 
 Fri Apr 16 16:02:53 2004  George Lebl <jirka@5z.com>
 
-	* docs/C/gdm.xml: update version information, no changes.  Damnit
-	  I should have done this before the release.
+	* docs/C/gdm.xml: update version information, no changes.  I should
+	  have done this before the release.
 
 Fri Apr 16 16:00:50 2004  George Lebl <jirka@5z.com>
 
@@ -3072,8 +3092,7 @@ Thu Jan 01 10:39:00 2004  Ray Strode <halfline@hawaii.rr.com>
 
 Wed Dec 31 09:57:18 2003  George Lebl <jirka@5z.com>
 
-	* Makefile.am: add the damn OrigTree.pm file here to make intltool
-	  happy
+	* Makefile.am: add the OrigTree.pm file here to make intltool happy
 
 Tue Dec 30 15:34:59 2003  George Lebl <jirka@5z.com>
 
@@ -3993,8 +4012,8 @@ Fri Aug 15 18:32:54 2003  George Lebl <jirka@5z.com>
 	* daemon/auth.c, daemon/gdm.c: Correctly handle out of diskspace
 	  errors on auth files and on the PID file
 
-	* daemon/slave.c, daemon/gdm.c: fix the runlevel checking code,
-	  damnit, it's popen, not fopen.  DOH!
+	* daemon/slave.c, daemon/gdm.c: fix the runlevel checking code.
+	  It's popen, not fopen.  DOH!
 
 	* daemon/misc.c: use 16 lines of output for text dialogs, since
 	  some of the strings we use are quite long.
@@ -4270,8 +4289,7 @@ Fri Aug 01 11:06:37 2003  George Lebl <jirka@5z.com>
 
 Fri Aug  1 01:51:50 2003  Jordi Mallach <jordi@sindominio.net>
 
-	* gui/gdmcomm.c, gui/gdmphotosetup.c: fix typo. Missed the damn
-	release...
+	* gui/gdmcomm.c, gui/gdmphotosetup.c: fix typo. Missed the release...
 
 Thu Jul 31 15:26:41 2003  George Lebl <jirka@5z.com>
 
@@ -4743,7 +4761,7 @@ Mon Jul 21 15:36:48 2003  George Lebl <jirka@5z.com>
 
 Mon Jul 21 13:45:31 2003  George Lebl <jirka@5z.com>
 
-	* docs/C/gdm-C.omf: add, damnit, I forgot to add this to CVS :)
+	* docs/C/gdm-C.omf: add.  I forgot to add this to CVS :)
 
 Mon Jul 21 12:24:01 2003  George Lebl <jirka@5z.com>
 
@@ -5619,8 +5637,8 @@ Thu May 29 17:38:56 2003  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter_system.c: Fix the second SUSPEND exit status
 	  usage to the suspend interrupt.  Add toolips to the system menu
-	  radiobuttons (damnit these should not be radiobuttons! but I'm
-	  too lazy to change that now), also add mnemonics here
+	  radiobuttons (these should not be radiobuttons! but I'm too lazy to
+	  change that now), also add mnemonics here
 
 Wed May 28  Brian Cameron <Brian.Cameron@Sun.COM>
 
@@ -6605,8 +6623,8 @@ Mon Jul 29 17:45:59 2002  George Lebl <jirka@5z.com>
 	  gui/greeter/greeter_item_clock.[ch]: use the ve_signal routines
 	  for the HUP signal to avoid possible crashes/races/hangs if the
 	  signal handler comes in a bad time.  Also don't reset the graphical
-	  on every damn change, just the ones we care about, and update clock
-	  on the fly instead of restarting.
+	  on every change, just the ones we care about, and update clock on the
+	  fly instead of restarting.
 
 	* gui/gdmchooser.c: make glade_helper not use the gnome_program
 	  thingie, since we never init it here.
@@ -7343,7 +7361,7 @@ Wed May 15 22:55:58 2002  Christophe Merlet  <christophe@merlet.net>
 
 Tue May 14 17:13:33 2002  George Lebl <jirka@5z.com>
 
-	* gui/gdmphotosetup.c: fixed crash, damnit I'm such an idiot, oh well
+	* gui/gdmphotosetup.c: fixed crash, I'm such an idiot, oh well
 	  fortunately the crash would happen only after things finished so
 	  most users would only notice a new corefile being created on exit :)
 
@@ -7391,8 +7409,8 @@ Tue May 14 12:08:25 2002  George Lebl <jirka@5z.com>
 Tue May 14 02:26:01 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c, daemon/gdm.c: a bit of debug info for the slave
-	  notifications which are utterly broken damnit.  Will need
-	  a signal or some such.
+	  notifications which are utterly broken.  Will need a signal or some
+	  such.
 
 	* gui/greeter/greeter.c, gui/greeter/greeter_item_pam.c:  do all
 	  the right utf8/locale conversions just like gdmlogin
@@ -7671,8 +7689,8 @@ Tue Apr 23 15:07:17 2002  George Lebl <jirka@5z.com>
 	  Add Xinerama support, init the gdmwm so that we actually do
 	  have focus management, do all the cool gdmwm type stuff with
 	  all the dialogs/windows.  Add all the warnings that gdmlogin
-	  can give.  Damn this still needs a LOT of love before it's
-	  a viable replacement of gdmlogin.
+	  can give.  This still needs a LOT of love before it's a viable
+	  replacement of gdmlogin.
 
 Mon Apr 22 19:00:14 2002  George Lebl <jirka@5z.com>
 
@@ -8268,7 +8286,7 @@ Thu Dec 20 16:49:52 2001  George Lebl <jirka@5z.com>
 	  order (Which actually makes sense) is setcred/open_session.
 	  This is apparently the 'official' word from the linux-pam
 	  people.  Though not everybody agrees.  Well screw this,
-	  this makes sense, so this is the way it will be damnit :)
+	  this makes sense, so this is the way it will be.
 
 	* gui/gdmconfig.c: fix saving of server definitions
 

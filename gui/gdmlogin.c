@@ -997,7 +997,7 @@ gdm_login_enter (GtkWidget *entry)
 	     strcmp (str, _("_Username:")) == 0) &&
 	    /* If in timed login mode, and if this is the login
 	     * entry.  Then an enter by itself is sort of like I want to
-	     * log in as the timed user "damn it".  */
+	     * log in as the timed user, really.  */
 	    ve_string_empty (login_string) &&
 	    timed_handler_id != 0) {
 		/* timed interruption */
@@ -3055,12 +3055,6 @@ static gboolean
 gdm_reread_config (int sig, gpointer data)
 {
 	gboolean resize = FALSE;
-
-syslog (LOG_WARNING, "in reread config");
-if (gdm_config_reload_bool   (GDM_KEY_BROWSER))
-   syslog (LOG_WARNING, "its a new value!");
-else
-   syslog (LOG_WARNING, "its NOT a new value!");
 
 	/* reparse config stuff here.  At least the ones we care about */
 	/*

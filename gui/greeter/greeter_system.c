@@ -25,7 +25,6 @@
 #include "greeter_system.h"
 #include "greeter_item.h"
 
-#include <syslog.h>
 #include <unistd.h>
 
 #include "gdm.h"

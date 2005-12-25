@@ -922,7 +922,7 @@ rotate_logs (const char *dname)
 {
 	gchar *logdir = gdm_get_value_string (GDM_KEY_LOG_DIR);
 
-	/* I'm too lazy to write a loop damnit */
+	/* I'm too lazy to write a loop */
 	char *fname4 = gdm_make_filename (logdir, dname, ".log.4");
 	char *fname3 = gdm_make_filename (logdir, dname, ".log.3");
 	char *fname2 = gdm_make_filename (logdir, dname, ".log.2");

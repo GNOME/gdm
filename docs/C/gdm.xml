@@ -1708,8 +1708,13 @@ XKeepsCrashing
                 perhaps even home use.  If the user uses the keyboard or
                 browses the menus, the timeout will be reset to 
                 <filename>TimedLoginDelay</filename> or 30 seconds, whichever 
-                is higher.  Note that no password will be asked for this user
-                so you should be careful.
+                is higher.   If the user does not enter a username but just
+                hits the ENTER key while the login program is requesting the
+                username, then GDM will assume the user wants to login
+                immediately as the timed user.  Note that no password will be
+                asked for this user so you should be careful, although if using
+                PAM it can be configured to require password entry before
+                allowing login.
               </para>
             </listitem>
           </varlistentry>
