@@ -1103,11 +1103,7 @@ parse_stock (xmlNodePtr node,
       else if (g_ascii_strcasecmp ((char *) prop, "timed-label") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (ngettext ("User %s will login in %d "
-				  		 "second",
-						 "User %s will login in %d "
-						 "seconds",
-						 1));
+	  *translated_text = g_strdup (_("User %u will login in %t"));
 	}
       else if (g_ascii_strcasecmp ((char *) prop, "welcome-label") == 0)
         {
@@ -1115,7 +1111,7 @@ parse_stock (xmlNodePtr node,
 	  welcome_string_info = info;
 
 	  g_free (*translated_text);
-	  *translated_text = gdm_get_welcomemsg ();
+	  *translated_text = gdm_common_get_welcomemsg ();
 	}
       /* FIXME: is this actually needed? */
       else if (g_ascii_strcasecmp ((char *) prop, "username-label") == 0)

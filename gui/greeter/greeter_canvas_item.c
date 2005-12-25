@@ -297,7 +297,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					  NULL);
     break;
   case GREETER_ITEM_TYPE_LABEL:
-    text = greeter_item_expand_text (item->data.text.orig_text);
+    text = gdm_common_expand_text (item->data.text.orig_text);
 
     /* Justification is taken from the anchor */
     if (item->anchor == GTK_ANCHOR_NORTH_WEST ||

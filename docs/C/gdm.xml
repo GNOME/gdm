@@ -2871,7 +2871,9 @@ XKeepsCrashing
                 <filename>RemoteWelcome</filename>.  This value is translated
                 into the appropriate language for the user.  If set to false,
                 the <filename>RemoteWelcome</filename> setting is used.
-                false, the <filename>Welcome</filename> setting is used.
+                This string can use the same special character sequences as
+                explained in the "Text Node" section of the "Themed Greeter"
+                chapter.  This explains the meaning of "%n".
               </para>
             </listitem>
           </varlistentry>
@@ -2884,6 +2886,9 @@ XKeepsCrashing
                 Controls which text to display next to the logo image in the
                 greeter for remote XDMCP sessions.  The same expansion is
                 done here as in the <filename>Welcome</filename> string.
+                This string can use the same special character sequences as
+                explained in the "Text Node" section of the "Themed Greeter"
+                chapter.
               </para>
             </listitem>
           </varlistentry>
@@ -5097,7 +5102,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             <term>clock</term>
             <listitem>
               <para>
-                Label the displays the date and time.
+                Label that displays the date and time.
               </para>
             </listitem>
           </varlistentry>
@@ -5106,7 +5111,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             <term>pam-prompt</term>
             <listitem>
               <para>
-                Label the displays PAM prompt.  This is the prompt that PAM
+                Label that displays the PAM prompt.  This is the prompt that PAM
                 uses to ask for username, password, etc...
               </para>
             </listitem>
@@ -5116,7 +5121,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             <term>pam-error</term>
             <listitem>
               <para>
-                Label the displays PAM/GDM error messages.  Such as when user
+                Label that displayst PAM/GDM error messages.  Such as when user
                 can't log in.
               </para>
             </listitem>
@@ -5126,7 +5131,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             <term>pam-message</term>
             <listitem>
               <para>
-                Label the displays PAM message.  These are messages that
+                Label that displays the PAM message.  These are messages that
                 PAM/GDM gives about state of the account, help about the
                 prompts and other information.
               </para>
@@ -5142,7 +5147,7 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
             </listitem>
           </varlistentry>
         </variablelist>
-                     
+
         <para>
           Rectangles can have id values as follows:
         </para>
@@ -5474,6 +5479,61 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
         <screen>&lt;text"&gt;foo&amp;lt;sup&amp;gt;bar&amp;lt;/sup&amp;gt;&lt;/text&gt;</screen>
         </para>
 
+        <para>
+          Text nodes can contain the following special character sequences which
+          will be translated as follows:
+        </para>
+
+        <para>
+          %% - A literal % character
+        </para>
+        <para>
+          %c - Clock time.  Only labels with the "clock" id will update 
+          automatically every second.  Other labels will contain a static
+          timestamp.
+        </para>
+        <para>
+          %d - Display name (DISPLAY environment variable)
+        </para>
+        <para>
+          %h - Hostname (gethostname output)
+        </para>
+        <para>
+          %m - Machine name (uname.machine output)
+        </para>
+        <para>
+          %n - Node name (uname.nodename output)
+        </para>
+        <para>
+          %o - Domain name (getdomainname output)
+        </para>
+        <para>
+          %r - Release name (uname.release output)
+        </para>
+        <para>
+          %s - System name (uname.sysname output)
+        </para>
+        <para>
+          %t - Current timed delay value from configuration file (0 if off)
+          followed by the word "seconds" if value is greater than 1 or
+          the word "second" if the value is 1.  This character sequence is
+          intended to be only used internally to display the "timed-label"
+          message, which is automatically updated every second.
+        </para>
+        <para>
+          %u - Timed username value from configuration file (empty if off)
+          This character sequence is intended to be only used internally to
+          display the "timed-label" message, which is automatically updated
+          every second.
+        </para>
+        <para>
+          \n - Carriage return
+        </para>
+        <para>
+          _ - An underscore causes the following character to be underlined.
+          If it precedes a % character sequence, the string that replaces the
+          character sequence is underlined.
+        </para>
       </sect3>
 
       <sect3 id="stocklabels">
@@ -5524,14 +5584,13 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
           <filename>system</filename>, _("_Actions")  (Formerly "S_ystem")
         </para>
         <para>
-          <filename>timed-label</filename>,
-          _("User %s will login in %d seconds")
+          <filename>timed-label</filename>, _("User %u will login in %t")
         </para>
         <para>
           <filename>username-label</filename>, _("Username:")
         </para>
         <para>
-          <filename>welcome-label</filename>, _("Welcome to %h")
+          <filename>welcome-label</filename>, _("Welcome to %n")
         </para>
 
         <para>

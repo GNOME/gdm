@@ -1812,7 +1812,7 @@ gdm_reread_config (int sig, gpointer data)
 	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_TYPE)) {
 
 		if (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE) != GDM_BACKGROUND_NONE)
-			setup_background_color (gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR));
+			gdm_common_setup_background_color (gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR));
 	}
 
 	return TRUE;
@@ -1969,7 +1969,7 @@ main (int argc, char *argv[])
     /* but just in case */
     if (RUNNING_UNDER_GDM) {
 	if (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE) != GDM_BACKGROUND_NONE)
-		setup_background_color (gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR));
+		gdm_common_setup_background_color (gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR));
 
 	gdm_common_setup_cursor (GDK_WATCH);
     }

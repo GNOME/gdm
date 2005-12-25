@@ -41,7 +41,6 @@
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include <pwd.h>
-#include <sys/utsname.h>
 
 #if HAVE_PAM
 #include <security/pam_appl.h>
@@ -128,7 +127,6 @@ static const gchar *curlang = NULL;
 static gchar *curuser = NULL;
 static gchar *session = NULL;
 static gchar *language = NULL;
-static gint curdelay = 0;
 
 static gint savesess = GTK_RESPONSE_NO;
 static gint savelang = GTK_RESPONSE_NO;
@@ -161,6 +159,7 @@ extern GHashTable *sessnames;
 extern gchar *default_session;
 extern const gchar *current_session;
 extern gboolean session_dir_whacked_out;
+extern gint gdm_timed_delay;
 
 static void login_window_resize (gboolean force);
 
@@ -413,35 +412,31 @@ back_prog_stop (void)
 	}
 }
 
-
 /*
  * Timed Login: Timer
  */
-
 static gboolean
 gdm_timer (gpointer data)
 {
-	curdelay --;
-	if ( curdelay <= 0 ) {
+	if (gdm_timed_delay <= 0) {
 		/* timed interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
 		fflush (stdout);
 	} else {
 		gchar *autologin_msg;
 
-		if (curdelay > 1)
-			autologin_msg = g_strdup_printf (
-				_("User %s will login in %d seconds"),
-				gdm_config_get_string (GDM_KEY_TIMED_LOGIN), curdelay);
-		else
-			autologin_msg = g_strdup_printf (
-				_("User %s will login in %d second"),
-				gdm_config_get_string (GDM_KEY_TIMED_LOGIN), curdelay);
+		/* Note that this message is not handled the same way as in
+		 * the greeter, we don't parse it through the enriched text.
+		 */
+		autologin_msg = gdm_common_expand_text (
+			_("User %u will login in %t"));
 		gtk_label_set_text (GTK_LABEL (auto_timed_msg), autologin_msg);
 		gtk_widget_show (GTK_WIDGET (auto_timed_msg));
 		g_free (autologin_msg);
 		login_window_resize (FALSE /* force */);
 	}
+
+	gdm_timed_delay--;
 	return TRUE;
 }
 
@@ -455,10 +450,10 @@ gdm_timer_up_delay (GSignalInvocationHint *ihint,
 		    const GValue	  *param_values,
 		    gpointer		   data)
 {
-	if (curdelay < 30)
-		curdelay = 30;
-	if (curdelay < gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY))
-		curdelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+	if (gdm_timed_delay < 30)
+		gdm_timed_delay = 30;
+	if (gdm_timed_delay < gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY))
+		gdm_timed_delay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 	return TRUE;
 }
 
@@ -635,104 +630,6 @@ set_screen_to_pos (int x, int y)
 			}
 		}
 	}
-}
-
-
-/* I *really* need to rewrite this */
-static gchar *
-gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
-{
-    gchar hostbuf[1023] = "";
-    gchar *hostname, *display;
-    struct utsname name;
-    GString *str;
-
-    if (s == NULL)
-	return (NULL);
-
-    hostbuf[sizeof (hostbuf) - 1] = '\0';
-    if (gethostname (hostbuf, sizeof (hostbuf) - 1) < 0)
-	    hostname = g_strdup ("GNOME");
-    else
-	    hostname = g_strdup (hostbuf);
-
-    display = g_strdup (g_getenv ("DISPLAY"));
-
-    uname (&name);
-
-    if (strlen (s) > 2048) {
-	    char *buffer;
-	    syslog (LOG_ERR, _("%s: String too long!"), "gdm_parse_enriched_string");
-	    g_free (display);
-	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
-				      pre, name.nodename, post);
-	    g_free (hostname);
-	    return buffer;
-    }
-
-    str = g_string_new (pre);
-
-    while (s[0] != '\0') {
-	/* Backslash commands */
-	if (s[0] == '\\' && s[1] != '\0') {
-		char cmd = s[1];
-		s++;
-		switch (cmd) {
-		case 'n':
-			g_string_append_c (str, '\n');
-			break;
-		default:
-			g_string_append_c (str, cmd);
-		}
-	/* Percent commands */
-	} else if (s[0] == '%' && s[1] != 0) {
-		char cmd = s[1];
-		s++;
-
-		switch (cmd) {
-		case 'h': 
-			g_string_append (str, hostname);
-			break;
-
-		case 'n':
-			g_string_append (str, name.nodename);
-			break;
-
-		case 'd': 
-			g_string_append (str, ve_sure_string (display));
-			break;
-
-		case 's':
-			g_string_append (str, name.sysname);
-			break;
-
-		case 'r':
-			g_string_append (str, name.release);
-			break;
-
-		case 'm':
-			g_string_append (str, name.machine);
-			break;
-
-		case '%':
-			g_string_append_c (str, '%');
-			break;
-
-		default:
-			break;
-		};
-	} else {
-		g_string_append_c (str, *s);
-	}
-	s++;
-    }
-
-    g_string_append (str, post);
-
-    g_free (display);
-    g_free (hostname);
-
-    return g_string_free (str, FALSE);
 }
 
 static void
@@ -2049,11 +1946,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	 */
 
 	if (timed_handler_id == 0 &&
+	    gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
 	    ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) &&
 	    gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY) > 0) {
-		curdelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
-		timed_handler_id = g_timeout_add (1000,
-						  gdm_timer, NULL);
+		gdm_timed_delay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+		timed_handler_id  = g_timeout_add (1000, gdm_timer, NULL);
 	}
 	printf ("%c\n", STX);
 	fflush (stdout);
@@ -2336,29 +2233,16 @@ create_handle (void)
 }
 
 static gboolean
-update_clock (gpointer data)
+update_clock (void)
 {
-	struct tm *the_tm;
-	char *str;
-	time_t the_time;
-	gint time_til_next_min;
+        struct tm *the_tm;
+	gchar *str;
+        gint time_til_next_min;
 
 	if (clock_label == NULL)
 		return FALSE;
 
-	time (&the_time);
-	the_tm = localtime (&the_time);
-
-	if (gdm_common_select_time_format ()) {
-		str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
-	} else {
-		/* Translators: You should translate time part as
-		   %H:%M if your language does not have AM and PM
-		   equivalent.  Note: %l is a strftime option for
-		   12-hour clock format */
-		str = ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
-  	}
-
+	str = gdm_common_get_clock (&the_tm);
 	gtk_label_set_text (GTK_LABEL (clock_label), str);
 	g_free (str);
 
@@ -2367,7 +2251,6 @@ update_clock (gpointer data)
 	time_til_next_min = (time_til_next_min>=0?time_til_next_min:0);
 
 	g_timeout_add (time_til_next_min*1000, update_clock, NULL);
-	
 	return FALSE;
 }
 
@@ -2477,11 +2360,14 @@ static void
 gdm_set_welcomemsg (void)
 {
 	gchar *greeting;
-	gchar *welcomemsg = gdm_get_welcomemsg ();
+	gchar *welcomemsg     = gdm_common_get_welcomemsg ();
+	gchar *fullwelcomemsg = g_strdup_printf (
+		"<big><big><big>%s</big></big></big>", welcomemsg);
 
-	greeting   = gdm_parse_enriched_string ("<big><big><big>", welcomemsg,
-		"</big></big></big>");    
+	greeting = gdm_common_expand_text (fullwelcomemsg);
 	gtk_label_set_markup (GTK_LABEL (welcome), greeting);
+
+	g_free (fullwelcomemsg);
 	g_free (welcomemsg);
 	g_free (greeting);
 }
@@ -2682,7 +2568,7 @@ gdm_login_gui_init (void)
 		      G_CALLBACK (gtk_widget_destroyed),
 		      &clock_label);
 
-    update_clock (NULL); 
+    update_clock (); 
 
     if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER))
 	rows = 2;
@@ -3151,11 +3037,11 @@ setup_background (void)
 	/* Load background color */
 	} else if (bg_type != GDM_BACKGROUND_NONE &&
 	           bg_type != GDM_BACKGROUND_IMAGE) {
-		setup_background_color (bg_color);
+		gdm_common_setup_background_color (bg_color);
 	/* Load default background */
 	} else {
 		gchar *blank_color = g_strdup ("#000000");
-		setup_background_color (blank_color);
+		gdm_common_setup_background_color (blank_color);
 	}
 }
 
@@ -3195,7 +3081,9 @@ else
 	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FONT) ||
 	    gdm_config_reload_string (GDM_KEY_INCLUDE) ||
 	    gdm_config_reload_string (GDM_KEY_EXCLUDE) ||
+	    gdm_config_reload_string (GDM_KEY_TIMED_LOGIN) ||
 	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
+	    gdm_config_reload_int    (GDM_KEY_TIMED_LOGIN_DELAY) ||
 	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
 	    gdm_config_reload_bool   (GDM_KEY_BROWSER) ||
 	    gdm_config_reload_bool   (GDM_KEY_INCLUDE_ALL) ||
@@ -3228,7 +3116,7 @@ else
 	gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN);
 	gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_FILE);
 	gdm_config_reload_string (GDM_KEY_USE_24_CLOCK);
-	update_clock (NULL);
+	update_clock ();
 
 	if (gdm_config_reload_string (GDM_KEY_LOGO)) {
 		GdkPixbuf *pb;
@@ -3547,7 +3435,8 @@ main (int argc, char *argv[])
 
     /* if in timed mode, delay timeout on keyboard or menu
      * activity */
-    if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN))) {
+    if (gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
+        ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN))) {
 	    sid = g_signal_lookup ("activate",
 				   GTK_TYPE_MENU_ITEM);
 	    g_signal_add_emission_hook (sid,
@@ -3689,7 +3578,7 @@ main (int argc, char *argv[])
     /* Only setup the cursor now since it will be a WATCH from before */
     gdm_common_setup_cursor (GDK_LEFT_PTR);
 
-    gdm_post_display_launch ();
+    gdm_common_post_display_launch ();
     gtk_main ();
 
     gdm_kill_thingies ();

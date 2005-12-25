@@ -20,6 +20,7 @@
 
 #include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
+#include "gdmcommon.h"
 #include "gdmwm.h"
 #include "greeter_geometry.h"
 #include "greeter_canvas_item.h"
@@ -517,8 +518,7 @@ greeter_item_size_request (GreeterItemInfo *item,
        * You can go about your business.
        * Move Along
        */
-      text = greeter_item_expand_text (item->data.text.orig_text);
-
+      text = gdm_common_expand_text (item->data.text.orig_text);
 
       if (set_width > 0)
 	      max_width = set_width;

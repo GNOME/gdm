@@ -1317,13 +1317,15 @@ gdm_slave_run (GdmDisplay *display)
 	    char *automaticlogin = gdm_get_value_string (GDM_KEY_AUTOMATIC_LOGIN);
 	    char *timedlogin     = gdm_get_value_string (GDM_KEY_TIMED_LOGIN);
 
-	    if ( ! ve_string_empty (automaticlogin)) {
+	    if (gdm_get_value_bool (GDM_KEY_AUTOMATIC_LOGIN_ENABLE) && 
+		! ve_string_empty (automaticlogin)) {
 		    g_free (ParsedAutomaticLogin);
 		    ParsedAutomaticLogin = gdm_parse_enriched_login (automaticlogin,
 								     display);
 	    }
 
-	    if ( ! ve_string_empty (timedlogin)) {
+	    if (gdm_get_value_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
+		! ve_string_empty (timedlogin)) {
 		    g_free (ParsedTimedLogin);
 		    ParsedTimedLogin = gdm_parse_enriched_login (timedlogin,
 								 display);
@@ -5343,10 +5345,14 @@ gdm_slave_handle_notify (const char *msg)
 				}
 			}
 		}
-	} else if (strncmp (msg, GDM_NOTIFY_TIMED_LOGIN " ",
-			    strlen (GDM_NOTIFY_TIMED_LOGIN) + 1) == 0) {
+	} else if ((strncmp (msg, GDM_NOTIFY_TIMED_LOGIN " ",
+			     strlen (GDM_NOTIFY_TIMED_LOGIN) + 1) == 0) ||
+	           (strncmp (msg, GDM_NOTIFY_TIMED_LOGIN_DELAY " ",
+			     strlen (GDM_NOTIFY_TIMED_LOGIN_DELAY) + 1) == 0) ||
+	           (strncmp (msg, GDM_NOTIFY_TIMED_LOGIN_ENABLE " ",
+			     strlen (GDM_NOTIFY_TIMED_LOGIN_ENABLE) + 1) == 0)) {
 		do_restart_greeter = TRUE;
-		/* FIXME: this is fairly nasty, we should handle this nicer */
+		/* FIXME: this is fairly nasty, we should handle this nicer   */
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (d->type == TYPE_STATIC || d->type == TYPE_XDMCP) {
 			if ( ! d->logged_in) {
@@ -5355,10 +5361,6 @@ gdm_slave_handle_notify (const char *msg)
 				remanage_asap = TRUE;
 			}
 		}
-	} else if (sscanf (msg, GDM_NOTIFY_TIMED_LOGIN_DELAY " %d", &val) == 1) {
-		gdm_set_value_int (GDM_KEY_TIMED_LOGIN_DELAY, val);
-		if (d->greetpid > 1)
-			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1) == 0) {
 		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE,

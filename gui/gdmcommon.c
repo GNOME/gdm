@@ -28,6 +28,7 @@
 #include <locale.h>
 #include <string.h>
 #include <syslog.h>
+#include <sys/utsname.h>
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -36,6 +37,8 @@
 #include "gdmcommon.h"
 #include "gdmcomm.h"
 #include "gdmconfig.h"
+
+gint gdm_timed_delay = 0;
 
 void
 gdm_common_abort (const gchar *format, ...)
@@ -305,7 +308,7 @@ gdm_common_select_time_format (void)
 
 /* Not to look too shaby on Xinerama setups */
 void
-setup_background_color (gchar *bg_color)
+gdm_common_setup_background_color (gchar *bg_color)
 {
   GdkColormap *colormap;
   GdkColor color;
@@ -338,7 +341,7 @@ setup_background_color (gchar *bg_color)
 }
 
 gchar *
-gdm_get_welcomemsg (void)
+gdm_common_get_welcomemsg (void)
 {
         gchar *welcomemsg;
 	gchar *tempstr;
@@ -416,11 +419,187 @@ post_display_run (gpointer data)
 }
 
 void
-gdm_post_display_launch (void)
+gdm_common_post_display_launch (void)
 {
 	if (! post_display_prog_get_path ())
 		return;
 
 	g_idle_add (post_display_run, NULL);
+}
+
+/*
+ * Returns the string version of the time that the user
+ * will need to free.  Requires the user pass in the
+ * the_tm structure to be used.  This way the caller
+ * has access to the time data as well.
+ */
+gchar *
+gdm_common_get_clock (struct tm **the_tm)
+{
+        char *str;
+        time_t the_time;
+
+        time (&the_time);
+        *the_tm = localtime (&the_time);
+
+        if (gdm_common_select_time_format ()) {
+                str = ve_strftime (*the_tm, _("%a %b %d, %H:%M"));
+        } else {
+                /* Translators: You should translate time part as
+                   %H:%M if your language does not have AM and PM
+                   equivalent.  Note: %l is a strftime option for
+                   12-hour clock format */
+                str = ve_strftime (*the_tm, _("%a %b %d, %l:%M %p"));
+        }
+
+        return str;
+}
+
+char *
+gdm_common_expand_text (const gchar *text)
+{
+  GString *str;
+  const char *p;
+  gchar *clock, *display;
+  int r, i, n_chars;
+  gboolean underline = FALSE;
+  gchar buf[256];
+  struct utsname name;
+  struct tm *the_tm;
+
+  str = g_string_sized_new (strlen (text));
+
+  p = text;
+  n_chars = g_utf8_strlen (text, -1);
+  i = 0;
+  
+  while (i < n_chars)
+    {
+      gunichar ch;
+
+      ch = g_utf8_get_char (p);
+
+      /* Backslash commands */
+      if (ch == '\\')
+        {
+	  p = g_utf8_next_char (p);
+	  i++;
+	  ch = g_utf8_get_char (p);
+
+	  if (i >= n_chars || ch == '\0')
+	    {
+	      g_warning ("Unescaped \\ at end of text\n");
+	      goto bail;
+	    }
+	  else if (ch == 'n')
+	    g_string_append_unichar (str, '\n');
+	  else
+	    g_string_append_unichar (str, ch);
+	}
+      else if (ch == '%')
+	{
+	  p = g_utf8_next_char (p);
+	  i++;
+	  ch = g_utf8_get_char (p);
+
+	  if (i >= n_chars || ch == '\0')
+	    {
+	      g_warning ("Unescaped %% at end of text\n");
+	      goto bail;
+	    }
+
+	  switch (ch)
+	    {
+	    case '%':
+	      g_string_append (str, "%");
+	      break;
+	    case 'c':
+	      clock = gdm_common_get_clock (&the_tm);
+	      g_string_append (str, clock);
+	      g_free (clock);
+	      break;
+	    case 'd':
+	      display = g_strdup (g_getenv ("DISPLAY"));
+	      g_string_append (str, display);
+	      break;
+	    case 'h':
+	      buf[sizeof (buf) - 1] = '\0';
+	      r = gethostname (buf, sizeof (buf) - 1);
+	      if (r)
+		g_string_append (str, "localhost");
+	      else
+		g_string_append (str, buf);
+	      break;
+	    case 'm':
+	      uname (&name);
+	      g_string_append (str, name.machine);
+	      break;
+	    case 'n':
+	      uname (&name);
+	      g_string_append (str, name.nodename);
+	      break;
+	    case 'o':
+	      buf[sizeof (buf) - 1] = '\0';
+	      r = getdomainname (buf, sizeof (buf) - 1);
+	      if (r)
+		g_string_append (str, "localdomain");
+	      else
+		g_string_append (str, buf);
+	      break;
+	    case 'r':
+	      uname (&name);
+	      g_string_append (str, name.release);
+	      break;
+	    case 's':
+	      uname (&name);
+	      g_string_append (str, name.sysname);
+	      break;
+	    case 't':
+	      g_string_append_printf (str, "%d", gdm_timed_delay);
+              if (gdm_timed_delay != 1)
+		g_string_append (str, _(" seconds"));
+              else
+		g_string_append (str, _(" second"));
+	      break;
+	    case 'u':
+	      g_string_append (str, ve_sure_string (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)));
+	      break;
+	    default:
+	      if (ch < 127)
+	        g_warning ("unknown escape code %%%c in text\n", (char)ch);
+	      else
+		g_warning ("unknown escape code %%(U%x) in text\n", (int)ch);
+	    }
+	}
+      else if (ch == '_')
+        {
+          /*
+           * Could be true if an underscore was put right before a special
+           * character like % or /
+           */
+          if (underline == FALSE) {
+            underline = TRUE;
+	    g_string_append (str, "<u>");
+	  }
+	}
+      else
+	{
+	  g_string_append_unichar (str, ch);
+	  if (underline)
+	    {
+	      underline = FALSE;
+	      g_string_append (str, "</u>");
+	    }
+	}
+      p = g_utf8_next_char (p);
+      i++;
+    }
+  
+ bail:
+
+  if (underline)
+    g_string_append (str, "</u>");
+
+  return g_string_free (str, FALSE);
 }
 

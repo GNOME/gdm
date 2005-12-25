@@ -180,10 +180,7 @@ enum {
 
 /* Configuration constants */
 #define GDM_KEY_CHOOSER "daemon/Chooser=" EXPANDED_LIBEXECDIR "/gdmchooser"
-/* This defaults to true for backward compatibility,
- * it will not actually do automatic login since the AutomaticLogin defaults
- * to nothing */
-#define GDM_KEY_AUTOMATIC_LOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
+#define GDM_KEY_AUTOMATIC_LOGIN_ENABLE "daemon/AutomaticLoginEnable=false"
 #define GDM_KEY_AUTOMATIC_LOGIN "daemon/AutomaticLogin="
 /* The SDTLOGIN feature is Solaris specific, and causes the Xserver to be
  * run with user permissionsinstead of as root, which adds security but
@@ -229,10 +226,7 @@ enum {
 
 #define GDM_KEY_DISPLAY_LAST_LOGIN "daemon/DisplayLastLogin=false"
 
-/* This defaults to true for backward compatibility,
- * it will not actually do timed login since the TimedLogin defaults
- * to nothing */
-#define GDM_KEY_TIMED_LOGIN_ENABLE "daemon/TimedLoginEnable=true"
+#define GDM_KEY_TIMED_LOGIN_ENABLE "daemon/TimedLoginEnable=false"
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
@@ -699,6 +693,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_REMOTE_GREETER "RemoteGreeter" /* <greeter binary> */
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
+#define GDM_NOTIFY_TIMED_LOGIN_ENABLE "TimedLoginEnable" /* <true/false as int> */
 #define GDM_NOTIFY_DISALLOW_TCP "DisallowTCP" /* <true/false as int> */
 #define GDM_NOTIFY_SOUND_ON_LOGIN_FILE "SoundOnLoginFile" /* <sound file> */
 #define GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE "SoundOnLoginSuccessFile" /* <sound file> */

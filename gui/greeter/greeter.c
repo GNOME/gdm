@@ -64,9 +64,7 @@ gboolean DOING_GDM_DEVELOPMENT = FALSE;
 GtkWidget *window;
 GtkWidget *canvas;
 
-gboolean GDM_IS_LOCAL = FALSE;
-
-gint greeter_current_delay = 0;
+gboolean GDM_IS_LOCAL          = FALSE;
 static gboolean ignore_buttons = FALSE;
 
 /* FIXME: hack */
@@ -74,6 +72,7 @@ GreeterItemInfo *welcome_string_info = NULL;
 
 extern gboolean session_dir_whacked_out;
 extern gboolean require_quarter;
+extern gint gdm_timed_delay;
 
 gboolean greeter_probably_login_prompt = FALSE;
 
@@ -701,7 +700,7 @@ verify_gdm_version (void)
 static void
 gdm_set_welcomemsg (void)
 {
-	char *welcomemsg = gdm_get_welcomemsg ();
+	char *welcomemsg = gdm_common_get_welcomemsg ();
 
 	if (welcome_string_info->data.text.orig_text != NULL)
 		g_free (welcome_string_info->data.text.orig_text);
@@ -721,27 +720,28 @@ greeter_reread_config (int sig, gpointer data)
 	    gdm_config_reload_string (GDM_KEY_GRAPHICAL_THEME_DIR) ||
 	    gdm_config_reload_string (GDM_KEY_GTKRC) ||
 	    gdm_config_reload_string (GDM_KEY_GTK_THEME) ||
-	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
-	    gdm_config_reload_bool   (GDM_KEY_ENTRY_CIRCLES) ||
-	    gdm_config_reload_bool   (GDM_KEY_ENTRY_INVISIBLE) ||
-	    gdm_config_reload_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE) ||
-	    gdm_config_reload_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE) ||
-	    gdm_config_reload_bool   (GDM_KEY_INCLUDE_ALL) ||
 	    gdm_config_reload_string (GDM_KEY_INCLUDE) ||
 	    gdm_config_reload_string (GDM_KEY_EXCLUDE) ||
 	    gdm_config_reload_string (GDM_KEY_SESSION_DESKTOP_DIR) ||
 	    gdm_config_reload_string (GDM_KEY_LOCALE_FILE) ||
-	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
 	    gdm_config_reload_string (GDM_KEY_HALT) ||
 	    gdm_config_reload_string (GDM_KEY_REBOOT) ||
 	    gdm_config_reload_string (GDM_KEY_SUSPEND) ||
 	    gdm_config_reload_string (GDM_KEY_CONFIGURATOR) ||
 	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FILE) ||
 	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FONT) ||
+	    gdm_config_reload_string (GDM_KEY_TIMED_LOGIN) ||
+	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
+	    gdm_config_reload_int    (GDM_KEY_TIMED_LOGIN_DELAY) ||
+	    gdm_config_reload_bool   (GDM_KEY_ENTRY_CIRCLES) ||
+	    gdm_config_reload_bool   (GDM_KEY_ENTRY_INVISIBLE) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE) ||
+	    gdm_config_reload_bool   (GDM_KEY_INCLUDE_ALL) ||
+	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
 	    gdm_config_reload_bool   (GDM_KEY_CONFIG_AVAILABLE) ||
 	    gdm_config_reload_bool   (GDM_KEY_CHOOSER_BUTTON) ||
-	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE) ||
-	    gdm_config_reload_int    (GDM_KEY_TIMED_LOGIN_DELAY)) {
+	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE)) {
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
@@ -982,7 +982,7 @@ main (int argc, char *argv[])
   if (ve_string_empty (bg_color)) {
     bg_color = gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
   }
-  setup_background_color (bg_color);
+  gdm_common_setup_background_color (bg_color);
   greeter_session_init ();
 
   ve_signal_add (SIGHUP, greeter_reread_config, NULL);
@@ -1049,6 +1049,12 @@ main (int argc, char *argv[])
 			       gdm_wm_screen.width, 
 			       gdm_wm_screen.height);
   gtk_container_add (GTK_CONTAINER (window), canvas);
+
+ /*
+  * Initialize the value with the default value so the first time it
+  * is displayed it doesn't show as 0.
+  */
+  gdm_timed_delay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 
   if (g_getenv ("GDM_THEME") != NULL)
      gdm_graphical_theme = g_strdup (g_getenv ("GDM_THEME"));
@@ -1321,7 +1327,7 @@ main (int argc, char *argv[])
      gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
 
   gdm_common_setup_cursor (GDK_LEFT_PTR);
-  gdm_post_display_launch ();
+  gdm_common_post_display_launch ();
   gtk_main ();
 
   return 0;

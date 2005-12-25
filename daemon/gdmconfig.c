@@ -777,8 +777,6 @@ notify_displays_string (const gchar *key, const gchar *val)
    }
 }
 
-/* TODO - Need to fix so notification happens for TIMED_LOGIN */
-
 /**
  * _gdm_set_value_string
  * _gdm_set_value_bool
@@ -963,6 +961,8 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
          notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE, *setting);
       else if (is_key (key, GDM_KEY_GTK_MODULES_LIST))
          notify_displays_string (GDM_NOTIFY_GTK_MODULES_LIST, *setting);
+      else if (is_key (key, GDM_KEY_TIMED_LOGIN))
+         notify_displays_string (GDM_NOTIFY_TIMED_LOGIN, *setting);
    }
 
    if (setting_copy != NULL)
@@ -1048,6 +1048,8 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
         notify_displays_int (GDM_NOTIFY_DISALLOW_TCP, *setting);
      else if (is_key (key, GDM_KEY_ADD_GTK_MODULES))
         notify_displays_int (GDM_NOTIFY_ADD_GTK_MODULES, *setting);
+     else if (is_key (key, GDM_KEY_TIMED_LOGIN_ENABLE))
+        notify_displays_int (GDM_NOTIFY_TIMED_LOGIN_ENABLE, *setting);
    }
 
    if (*setting)

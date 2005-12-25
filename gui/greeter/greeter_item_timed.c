@@ -28,7 +28,7 @@
 #include "greeter_configuration.h"
 #include "greeter_item_timed.h"
 
-extern gint greeter_current_delay;
+extern gint gdm_timed_delay;
 
 static guint timed_handler_id = 0;
 
@@ -52,8 +52,8 @@ static gboolean
 gdm_timer (gpointer data)
 {
   greeter_item_timed_update ();
-  greeter_current_delay --;
-  if ( greeter_current_delay <= 0 )
+  gdm_timed_delay--;
+  if (gdm_timed_delay <= 0)
     {
       /* timed interruption */
       printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
@@ -75,10 +75,10 @@ gdm_timer_up_delay (GSignalInvocationHint *ihint,
 {
   int timeddelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 
-  if (greeter_current_delay < 30)
-    greeter_current_delay = 30;
-  if (greeter_current_delay < timeddelay)
-    greeter_current_delay = timeddelay;
+  if (gdm_timed_delay < 30)
+    gdm_timed_delay = 30;
+  if (gdm_timed_delay < timeddelay)
+    gdm_timed_delay = timeddelay;
   return TRUE;
 }      
 
@@ -126,10 +126,11 @@ greeter_item_timed_start (void)
   int timeddelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 
   if (timed_handler_id == 0 &&
+      gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
       ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) &&
       timeddelay > 0)
     {
-      greeter_current_delay = timeddelay;
+      gdm_timed_delay  = timeddelay;
       timed_handler_id = g_timeout_add (1000, gdm_timer, NULL);
     }
 }

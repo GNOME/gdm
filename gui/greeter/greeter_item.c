@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/utsname.h>
 
 #include "gdm.h"
 #include "gdmconfig.h"
@@ -33,8 +32,6 @@
 
 #include "greeter_item.h"
 #include "greeter_configuration.h"
-
-extern gint greeter_current_delay;
 
 GreeterItemInfo *
 greeter_item_info_new (GreeterItemInfo *parent,
@@ -135,7 +132,7 @@ greeter_item_update_text (GreeterItemInfo *info)
       GNOME_IS_CANVAS_TEXT (info->item) &&
       GREETER_ITEM_TYPE_IS_TEXT (info))
     {
-      text = greeter_item_expand_text (info->data.text.orig_text);
+      text = gdm_common_expand_text (info->data.text.orig_text);
 
       g_object_set (G_OBJECT (info->item),
 		    "markup", text,
@@ -144,157 +141,6 @@ greeter_item_update_text (GreeterItemInfo *info)
       g_free (text);
     }
 
-}
-
-
-static char *
-get_clock (void)
-{
-  struct tm *the_tm;
-  char *str;
-  time_t the_time;
-
-  time (&the_time);
-  the_tm = localtime (&the_time);
-
-  if (gdm_common_select_time_format ()) 
-    {
-      str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
-    } 
-  else 
-    {
-      /* Translators: You should translate time part as
-         %H:%M if your language does not have AM and PM
-         equivalent.  Note: %l is a strftime option for
-         12-hour clock format */
-
-      str = ve_strftime (the_tm, _("%a %b %d, %l:%M %p"));
-    }
-
-  return str;
-}
-
-
-char *
-greeter_item_expand_text (const char *text)
-{
-  GString *str;
-  const char *p;
-  char *clock;
-  int r, i, n_chars;
-  gboolean underline = FALSE;
-  char buf[256];
-  struct utsname name;
-
-  str = g_string_sized_new (strlen (text));
-
-  p = text;
-  n_chars = g_utf8_strlen (text, -1);
-  i = 0;
-  
-  while (i < n_chars)
-    {
-      gunichar ch;
-
-      ch = g_utf8_get_char (p);
-
-      /* Backslash commands */
-      if (ch == '\\')
-        {
-	  p = g_utf8_next_char (p);
-	  i++;
-	  ch = g_utf8_get_char (p);
-
-	  if (i >= n_chars || ch == '\0')
-	    {
-	      g_warning ("Unescaped \\ at end of text\n");
-	      goto bail;
-	    }
-	  else if (ch == 'n')
-	    g_string_append_unichar (str, '\n');
-	  else
-	    g_string_append_unichar (str, ch);
-	}
-      else if (ch == '%')
-	{
-	  p = g_utf8_next_char (p);
-	  i++;
-	  ch = g_utf8_get_char (p);
-
-	  if (i >= n_chars || ch == '\0')
-	    {
-	      g_warning ("Unescaped %% at end of text\n");
-	      goto bail;
-	    }
-
-	  switch (ch)
-	    {
-	    case '%':
-	      g_string_append (str, "%");
-	      break;
-	    case 'n':
-	      uname (&name);
-	      g_string_append (str, name.nodename);
-	      break;
-	    case 'h':
-	      buf[sizeof (buf) - 1] = '\0';
-	      r = gethostname (buf, sizeof (buf) - 1);
-	      if (r)
-		g_string_append (str, "localhost");
-	      else
-		g_string_append (str, buf);
-	      break;
-	    case 'o':
-	      buf[sizeof (buf) - 1] = '\0';
-	      r = getdomainname (buf, sizeof (buf) - 1);
-	      if (r)
-		g_string_append (str, "localdomain");
-	      else
-		g_string_append (str, buf);
-	      break;
-	    case 'd':
-	      g_string_append_printf (str, "%d",
-				      greeter_current_delay);
-	      break;
-	    case 's':
-	      g_string_append (str, ve_sure_string (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)));
-	      break;
-	    case 'c':
-	      clock = get_clock ();
-	      g_string_append (str, clock);
-	      g_free (clock);
-	      break;
-	    default:
-	      if (ch < 127)
-	        g_warning ("unknown escape code %%%c in text\n", (char)ch);
-	      else
-		g_warning ("unknown escape code %%(U%x) in text\n", (int)ch);
-	    }
-	}
-      else if (ch == '_')
-        {
-	  underline = TRUE;
-	  g_string_append (str, "<u>");
-	}
-      else
-	{
-	  g_string_append_unichar (str, ch);
-	  if (underline)
-	    {
-	      underline = FALSE;
-	      g_string_append (str, "</u>");
-	    }
-	}
-      p = g_utf8_next_char (p);
-      i++;
-    }
-  
- bail:
-
-  if (underline)
-    g_string_append (str, "</u>");
-
-  return g_string_free (str, FALSE);
 }
 
 gboolean
@@ -320,10 +166,10 @@ greeter_item_is_visible (GreeterItemInfo *info)
       ! (info->show_modes & GREETER_ITEM_SHOW_CONSOLE_FLEXI))
     return FALSE;
   if ( ! GDM_IS_LOCAL && GDM_FLEXI_SERVER &&
-      ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE_FLEXI))
+       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE_FLEXI))
     return FALSE;
   if ( ! GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
-      ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
+       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
     return FALSE;
 
   sysmenu = gdm_config_get_bool (GDM_KEY_SYSTEM_MENU);
@@ -331,39 +177,39 @@ greeter_item_is_visible (GreeterItemInfo *info)
   if (( ! gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) ||
         ! sysmenu ||
         ! gdm_working_command_exists (GDM_KEY_CONFIGURATOR)) &&
-        info->show_type != NULL &&
-        strcmp (info->show_type, "config") == 0)
+      (info->show_type != NULL &&
+       strcmp (info->show_type, "config") == 0))
 	  return FALSE;
 
   if (( ! gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON) || ! sysmenu) &&
-      info->show_type != NULL &&
-      strcmp (info->show_type, "chooser") == 0)
+      (info->show_type != NULL &&
+       strcmp (info->show_type, "chooser") == 0))
 	  return FALSE;
 
-  if ( ! sysmenu &&
-      info->show_type != NULL &&
+  if ( ! sysmenu && info->show_type != NULL &&
       strcmp (info->show_type, "system") == 0)
 	  return FALSE;
 
   if (( ! sysmenu ||
         ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT))) &&
-        info->show_type != NULL &&
-        strcmp (info->show_type, "halt") == 0)
+      (info->show_type != NULL &&
+       strcmp (info->show_type, "halt") == 0))
 	  return FALSE;
   if (( ! sysmenu ||
         ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT))) &&
-        info->show_type != NULL &&
-        strcmp (info->show_type, "reboot") == 0)
+      (info->show_type != NULL &&
+       strcmp (info->show_type, "reboot") == 0))
 	  return FALSE;
   if (( ! sysmenu ||
         ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND))) &&
-        info->show_type != NULL &&
-        strcmp (info->show_type, "suspend") == 0)
+      (info->show_type != NULL &&
+       strcmp (info->show_type, "suspend") == 0))
 	  return FALSE;
 
-  if (ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) &&
-      info->show_type != NULL &&
-      strcmp (info->show_type, "timed") == 0)
+  if (( ! gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) ||
+          ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN))) &&
+      (info->show_type != NULL &&
+       strcmp (info->show_type, "timed") == 0))
 	  return FALSE;
 
   return TRUE;

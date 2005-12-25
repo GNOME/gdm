@@ -1,3 +1,23 @@
+2005-12-24  Brian Cameron  <brian.cameron@sun.com>
+
+	Happy holidays.  Some bug fixes.
+
+	* daemon/gdm.h, daemon/gdmconfig.c, daemon/slave.c,
+	  gui/gdmlogin.c, gui/greeter/greeter_item_timed.c:
+	  Fix so that timed/automatic enable is checked and 
+	  automatic/timed login is only turned on if they are
+	  enabled.  Fix so greeters restart if timed login is
+	  changed in gdmsetup.  Fixes bug #324337.
+	* gui/gdmcommon.c, gui/gdmlogin.c, gui/greeter/greeter.c,
+	  gui/greeter/greeter_item.c, gui/greeter/greeter_parser.c:
+	  Now gdmlogin and gdmcommon use the same character sequences
+	  with Welcome/RemoteWelcome messages.  Fixes bug #322711.
+	* docs/C/gdm.xml: Document how character sequences work with text
+	  labels and Welcome/RemoteWelcome messages.
+	* gui/gdmcommon.[ch], gui/gdmchooser.c,
+	  gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_geometry.c:
+	  Rename functions so all common functions have prefix gdm_common.
+
 2005-12-22  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/auth.c, daemon/display.c, daemon/errorgui.c,
