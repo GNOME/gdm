@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-14 06:05+0100\n"
-"PO-Revision-Date: 2005-12-14 19:26+0530\n"
+"POT-Creation-Date: 2005-12-26 05:50+0100\n"
+"PO-Revision-Date: 2005-12-26 17:14+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -310,7 +311,7 @@ msgid "%s: fork () failed!"
 msgstr "%s: fork () નિષ્ફ્ળ!"
 
 #. should never happen
-#: ../daemon/gdm.c:221 ../daemon/slave.c:3324
+#: ../daemon/gdm.c:221 ../daemon/slave.c:3325
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: setsid () નિષ્ફ્ળ: %s!"
@@ -418,11 +419,11 @@ msgstr "પાશ્વ ભાગમાં fork થઇ શક્યુ નહિ
 msgid "No console (static) servers to be run"
 msgstr "ચલાવવા માટે કોઈ કોન્સોલ (સ્થાનિક) સર્વરો નથી"
 
-#: ../daemon/gdm.c:1237 ../gui/gdmsetup.c:6320
+#: ../daemon/gdm.c:1237
 msgid "Alternative configuration file"
 msgstr "વૈકલ્પિક રૂપરેખાંકન ફાઈલ"
 
-#: ../daemon/gdm.c:1237 ../gui/gdmsetup.c:6320
+#: ../daemon/gdm.c:1237
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
@@ -443,7 +444,7 @@ msgstr "X સર્વર શરુ કરો પરંતુ જ્યાં �
 msgid "Can't open %s for writing"
 msgstr "%s માટે કોઈ સત્ર ખોલી શકાયુ નહિ"
 
-#: ../daemon/gdm.c:1408 ../gui/gdmchooser.c:1934
+#: ../daemon/gdm.c:1408 ../gui/gdmchooser.c:1932
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -460,14 +461,14 @@ msgstr "માત્ર રુટ GDM ચલાવવા ઇચ્છે છે\
 #: ../daemon/gdm.c:1446 ../daemon/gdm.c:1450 ../daemon/gdm.c:1533
 #: ../daemon/gdm.c:1537 ../daemon/gdm.c:1541 ../daemon/gdm.c:1545
 #: ../daemon/gdm.c:1555 ../daemon/gdm.c:1561 ../daemon/gdm.c:1572
-#: ../daemon/misc.c:1770 ../daemon/misc.c:1774 ../daemon/misc.c:1778
-#: ../daemon/misc.c:1785 ../daemon/misc.c:1789 ../daemon/misc.c:1793
+#: ../daemon/misc.c:1771 ../daemon/misc.c:1775 ../daemon/misc.c:1779
+#: ../daemon/misc.c:1786 ../daemon/misc.c:1790 ../daemon/misc.c:1794
 #: ../daemon/server.c:521 ../daemon/server.c:534 ../daemon/slave.c:780
 #: ../daemon/slave.c:794 ../daemon/slave.c:804 ../daemon/slave.c:814
-#: ../daemon/slave.c:826 ../gui/gdmchooser.c:1843 ../gui/gdmchooser.c:1846
-#: ../gui/gdmchooser.c:1849 ../gui/gdmlogin.c:3506 ../gui/gdmlogin.c:3516
-#: ../gui/gdmlogin.c:3521 ../gui/greeter/greeter.c:996
-#: ../gui/greeter/greeter.c:1004 ../gui/greeter/greeter.c:1007
+#: ../daemon/slave.c:826 ../gui/gdmchooser.c:1841 ../gui/gdmchooser.c:1844
+#: ../gui/gdmchooser.c:1847 ../gui/gdmlogin.c:3388 ../gui/gdmlogin.c:3398
+#: ../gui/gdmlogin.c:3403 ../gui/greeter/greeter.c:999
+#: ../gui/greeter/greeter.c:1007 ../gui/greeter/greeter.c:1010
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: %s સંકેતનુ ધ્યાન રાખનારને સુયોજિત કરવામાં ભૂલ: %s"
@@ -485,9 +486,9 @@ msgstr "%s: CHLD સંકેત ધ્યાન રાખનારને સુ
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC અરજી નામંજૂર થઈ: સત્તાધિકારીત નથી"
 
-#: ../daemon/gdm.c:2860 ../daemon/gdm.c:2878 ../daemon/gdm.c:3121
-#: ../daemon/gdm.c:3172 ../daemon/gdm.c:3224 ../daemon/gdm.c:3265
-#: ../daemon/gdm.c:3291
+#: ../daemon/gdm.c:2860 ../daemon/gdm.c:2878 ../daemon/gdm.c:3125
+#: ../daemon/gdm.c:3176 ../daemon/gdm.c:3228 ../daemon/gdm.c:3269
+#: ../daemon/gdm.c:3295
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s અરજી નામંજૂર થઈ: સત્તાધિકારીત થયેલ નથી"
@@ -507,54 +508,64 @@ msgstr ""
 "પ્રમાણભૂત સર્વરનો ઉપયોગ કરીને, સહેલાઇથી બદલી શકાતા સર્વર માટે વિનંતી કરેલ સર્વર %s ના "
 "ઉપયોગની પરવાનગી નથી."
 
-#: ../daemon/gdmconfig.c:538
+#: ../daemon/gdmconfig.c:542 ../daemon/gdmconfig.c:549
 #, c-format
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: કોઈ GDM રૂપરેખાંકન ફાઈલ નથી: %s. મૂળભૂતો વાપરી રહ્યા છીએ."
 
-#: ../daemon/gdmconfig.c:784
+#: ../daemon/gdmconfig.c:845
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession ખાલી; %s/gdm/Xsession વાપરીને"
 
-#: ../daemon/gdmconfig.c:817
+#: ../daemon/gdmconfig.c:878
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: પ્રમાણભૂત X સર્વર મળ્યું નથી; વિકલ્પોનો પ્રયત્ન કરી રહ્યા છીએ"
 
-#: ../daemon/gdmconfig.c:876
+#: ../daemon/gdmconfig.c:937
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: કોઇ આવકારનાર સ્પષ્ટ કરાયો નથી."
 
-#: ../daemon/gdmconfig.c:878
+#: ../daemon/gdmconfig.c:939
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: કોઇ દૂરસ્થ આવકારનાર સ્પષ્ટ કરાયો નથી."
 
-#: ../daemon/gdmconfig.c:880
+#: ../daemon/gdmconfig.c:941
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: સત્ર માટેની ડિરેક્ટરી સ્પષ્ટ કરાઇ નથી."
 
-#: ../daemon/gdmconfig.c:961
+#: ../daemon/gdmconfig.c:1025
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s: XDMCP સક્રિય કરાયું પણ XDMCP માટે કોઇ આધાર નથી; તેને બંધ કરી રહ્યા છે"
 
-#: ../daemon/gdmconfig.c:1020
+#: ../daemon/gdmconfig.c:1086
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: TimedLoginDelay એ ૫ કરતાં ઓછો છે, ૫ મૂળભૂતમાં ફેરવી રહ્યા છીએ."
 
-#: ../daemon/gdmconfig.c:1228
+#: ../daemon/gdmconfig.c:1322
+#, c-format
+msgid "%s: Priority out of bounds; changed to %d"
+msgstr "%s: પ્રાધાન્ય વિસ્તારની બહાર છે; તે %d માં બદલાઈ ગઈ છે"
+
+#: ../daemon/gdmconfig.c:1328
+#, c-format
+msgid "%s: Empty server command; using standard command."
+msgstr "%s: ખાલી સર્વર આદેશ, મૂળભૂત આદેશ વાપરી રહ્યા છે."
+
+#: ../daemon/gdmconfig.c:1527
 #, c-format
 msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: Logdir %s એ અસ્તિત્વ ધરાવતી નથી અથવા તે ડિરેક્ટરી નથી. ServAuthDir %s વાપરી "
 "રહ્યા છીએ."
 
-#: ../daemon/gdmconfig.c:1244
+#: ../daemon/gdmconfig.c:1543
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -563,12 +574,12 @@ msgstr ""
 "સત્તા આપવા માટેની સર્વરની ડિરેક્ટરી (daemon/ServAuthDir) %s પર સુયોજિત છે પણ તે "
 "અસ્તિત્વ ધરાવતી નથી. મહેરબાની કરીને GDM રૂપરેખા સુધારો અને GDM ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1253
+#: ../daemon/gdmconfig.c:1552
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s અસ્તિત્વ ધરાવતી નથી. અડધેથી છોડી રહ્યા છે."
 
-#: ../daemon/gdmconfig.c:1258
+#: ../daemon/gdmconfig.c:1557
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -577,34 +588,24 @@ msgstr ""
 "સત્તા આપવા માટેની સર્વરની ડિરેક્ટરી (daemon/ServAuthDir) %s પર સુયોજિત છે પણ તે "
 "ડિરેક્ટરી નથી. મહેરબાની કરીને GDM રૂપરેખા સુધારો અને GDM ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1267
+#: ../daemon/gdmconfig.c:1566
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s ડિરેક્ટરી નથી. અડધેથી છોડી રહ્યા છે."
 
-#: ../daemon/gdmconfig.c:1392
-#, c-format
-msgid "%s: Empty server command; using standard command."
-msgstr "%s: ખાલી સર્વર આદેશ, મૂળભૂત આદેશ વાપરી રહ્યા છે."
-
-#: ../daemon/gdmconfig.c:1434
-#, c-format
-msgid "%s: Display number %d in use!  Defaulting to %d"
-msgstr "%s: ડિસ્પ્લે નંબર %d વપરાશમાં છે! %d ને મૂળભૂત બનાવી રહ્યા છીએ"
-
-#: ../daemon/gdmconfig.c:1451
+#: ../daemon/gdmconfig.c:1639
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: રૂપરેખાની ફાઇલમાં અયોગ્ય સર્વરની લીટી. અવગણી રહ્યા છે!"
 
-#: ../daemon/gdmconfig.c:1462 ../daemon/gdmconfig.c:1500
+#: ../daemon/gdmconfig.c:1762 ../daemon/gdmconfig.c:1800
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr "%s: XDMCP નિષ્ક્રિય કરાયું છે અને કોઈ સ્થાનિક સર્વર વ્યાખ્યાયિત નથી. અડધેથી બંધ રહ્યા છીએ!"
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1480
+#: ../daemon/gdmconfig.c:1780
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -613,7 +614,7 @@ msgstr ""
 "%s: XDMCP નિષ્ક્રિય કરાયું છે અને કોઈ સ્થાનિક સર્વરો વ્યાખ્યાયિત નથી. %s ને આના ઉપર "
 "ઉમેરી રહ્યા છીએ :%d પર રૂપરેખાંકનને પરવાનગી આપવા માટે!"
 
-#: ../daemon/gdmconfig.c:1492
+#: ../daemon/gdmconfig.c:1792
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -621,7 +622,7 @@ msgstr ""
 "XDMCP નિષ્ક્રિય કરાયું છે અને GDM ને શરુ કરવા માટે કોઇપણ સ્થાનિક સર્વર મળતુ નથી. બંધ થઇ "
 "રહ્યુ છે. મહેરબાની કરીને રૂપરેખાંકન સુધારો અને GDM ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1517
+#: ../daemon/gdmconfig.c:1817
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -630,12 +631,12 @@ msgstr ""
 "GDM વપરાશકર્તા %s અસ્તિત્વ ધરાવતો નથી. મહેરબાની કરીને GDM રૂપરેખા સુધારો અને GDM "
 "ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1525
+#: ../daemon/gdmconfig.c:1825
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: GDM વપરાશકર્તા '%s' શોધી શકતા નથી. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/gdmconfig.c:1531
+#: ../daemon/gdmconfig.c:1831
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -643,24 +644,24 @@ msgstr ""
 "GDM વપરાશકર્તા રુટ તરીકે સુયોજિત થયેલો છે. પરંતુ આની પરવાનગી નથી કારણકે તે સુરક્ષા માટે "
 "ખતરો છે. મહેરબાની કરીને GDM રૂપરેખા સુધારો અને GDM ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1540
+#: ../daemon/gdmconfig.c:1840
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: GDM વપરાશકર્તા રુટ હોવો જોઈએ નહિં. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/gdmconfig.c:1546
+#: ../daemon/gdmconfig.c:1846
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
 "restart GDM."
 msgstr "GDM જૂથ %s અસ્તિત્વ ધરાવતુ નથી. મહેરબાની કરીને GDM રૂપરેખા સુધારો અને GDM ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1553
+#: ../daemon/gdmconfig.c:1853
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: GDM જૂથ '%s' શોધી શકતા નથી. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/gdmconfig.c:1559
+#: ../daemon/gdmconfig.c:1859
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -668,36 +669,36 @@ msgstr ""
 "GDM જૂથ રુટ તરીકે સુયોજિત છે, પરંતુ આની પરવાનગી નથી કારણકે તે સુરક્ષા માટે ખતરો છે. "
 "મહેરબાની કરીને GDM રૂપરેખા સુધારો અને GDM ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1568
+#: ../daemon/gdmconfig.c:1868
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: GDM જૂથ રુટ હોવું જોઈએ નહિં. અડધેથી બંધ કરી રહ્યા છીએ!"
 
-#: ../daemon/gdmconfig.c:1577
+#: ../daemon/gdmconfig.c:1877
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr "%s: આવકાર મળ્યો નહિં અથવા GDM વપરાશકર્તા દ્વારા ચલાવી શકાય નહિં"
 
-#: ../daemon/gdmconfig.c:1583
+#: ../daemon/gdmconfig.c:1883
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr "%s: દૂરસ્થ આવકાર મળ્યો નહિં અથવા GDM વપરાશકર્તા દ્વારા ચલાવી શકાય નહિં"
 
-#: ../daemon/gdmconfig.c:1591
+#: ../daemon/gdmconfig.c:1891
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr "%s: પસંદકર્તા મળ્યો નહિ અથવા GDM વપરાશકર્તા દ્વારા ચલાવી શકાય નહિં"
 
-#: ../daemon/gdmconfig.c:1600
+#: ../daemon/gdmconfig.c:1900
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "કોઈ daemon/Serv/AuthDir એ GDM રૂપરેખા ફાઈલમાં સ્પષ્ટ કરાઇ નથી"
 
-#: ../daemon/gdmconfig.c:1602
+#: ../daemon/gdmconfig.c:1902
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: કોઇ daemon/ServAuthDir સ્પષ્ટ કરાઇ નથી."
 
-#: ../daemon/gdmconfig.c:1625
+#: ../daemon/gdmconfig.c:1925
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -708,14 +709,14 @@ msgstr ""
 "વપરાશકર્તા %s અને સમુહ %s ની માલિકીમાં નથી. મહેરબાની કરીને GDM રૂપરેખા સુધારો અને GDM "
 "ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1635
+#: ../daemon/gdmconfig.c:1935
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: વપરાશકર્તા %s જૂથ %s પાસે Authdir %s ની માલિકી નથી. અડધેથી અડધેથી બંધ કરી રહ્યા "
 "છે."
 
-#: ../daemon/gdmconfig.c:1640
+#: ../daemon/gdmconfig.c:1940
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -726,37 +727,37 @@ msgstr ""
 "પરવાનગી છે એની પાસે %o ની પરવાનગી હોવી જોઇએ. મહેરબાની કરીને પરવાનગીઓ અથવા GDM "
 "રૂપરેખા સુધારો અને GDM ફરીથી શરુ કરો."
 
-#: ../daemon/gdmconfig.c:1652
+#: ../daemon/gdmconfig.c:1952
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: Authdir %s ખોટી %o પરવાનગી છે, એ %o હોવી જોઇએ. અડધેથી બંધ કરી રહ્યા છે."
 
 #. Translators, don't translate the 'y' and 'n'
-#: ../daemon/misc.c:744
+#: ../daemon/misc.c:745
 msgid "y = Yes or n = No? >"
 msgstr "y =  હા અથવા n = ના? >"
 
-#: ../daemon/misc.c:1124
+#: ../daemon/misc.c:1125
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: સ્થાનિક સરનામાઓ મેળવી શકાતા નથી!"
 
-#: ../daemon/misc.c:1278
+#: ../daemon/misc.c:1279
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "gid %d સુયોજિત કરી શકાયું નહિં, અડધેથી અડધેથી બંધ કરી રહ્યા છે."
 
-#: ../daemon/misc.c:1283
+#: ../daemon/misc.c:1284
 #, c-format
 msgid "initgroups () failed for %s. Aborting."
 msgstr "%s માટે initgroups () નિષ્ફળ. અડધેથી બંધ કરી રહ્યા છે."
 
-#: ../daemon/misc.c:1528 ../daemon/misc.c:1542
+#: ../daemon/misc.c:1529 ../daemon/misc.c:1543
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: સંકેત %d ને %s પર સુયોજિત કરવામાં ભૂલ"
 
-#: ../daemon/misc.c:2442
+#: ../daemon/misc.c:2443
 #, c-format
 msgid ""
 "Last login:\n"
@@ -829,52 +830,57 @@ msgstr "અયોગ્ય સર્વર આદેશ '%s'"
 msgid "Server name '%s' not found; using standard server"
 msgstr "સર્વર નામ '%s' મળ્યું નથી; પ્રમાણભૂત સર્વરની મદદથી"
 
-#: ../daemon/server.c:1157
+#: ../daemon/server.c:1159
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: ડિસ્પ્લે %s માટે નોંધપત્ર ફાઇલ ખોલી શકાઇ નહિં!"
 
-#: ../daemon/server.c:1169 ../daemon/server.c:1175 ../daemon/server.c:1180
+#: ../daemon/server.c:1171 ../daemon/server.c:1177 ../daemon/server.c:1182
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ને %s પર સુયોજિત કરવામાં ભૂલ"
 
-#: ../daemon/server.c:1226
+#: ../daemon/server.c:1228
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: ડિસ્પ્લે %s માટે ખાલી સર્વર આદેશ"
 
-#: ../daemon/server.c:1240
+#: ../daemon/server.c:1238
+#, c-format
+msgid "%s: Server priority couldn't be set to %d: %s"
+msgstr "%s: સર્વર પ્રાધાન્ય %d માં સુયોજિત કરી શકાઈ નહિં: %s"
+
+#: ../daemon/server.c:1250
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: સર્વર uid %d દ્વારા ઊત્પન્ન કરવાનું હતું પરંતુ તે વપરાશકર્તા અસ્તિત્વ ધરાવતો નથી"
 
-#: ../daemon/server.c:1255 ../daemon/slave.c:2449 ../daemon/slave.c:2920
+#: ../daemon/server.c:1265 ../daemon/slave.c:2450 ../daemon/slave.c:2921
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: જૂથના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નહિં"
 
-#: ../daemon/server.c:1261 ../daemon/slave.c:2455 ../daemon/slave.c:2926
+#: ../daemon/server.c:1271 ../daemon/slave.c:2456 ../daemon/slave.c:2927
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s: %s માટે initgroups () નિષ્ફળ"
 
-#: ../daemon/server.c:1267 ../daemon/slave.c:2460 ../daemon/slave.c:2931
+#: ../daemon/server.c:1277 ../daemon/slave.c:2461 ../daemon/slave.c:2932
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: વપરાશકર્તાના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નથી"
 
-#: ../daemon/server.c:1274
+#: ../daemon/server.c:1284
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: જૂથ ઓળખક્રમાંકને ૦ પર સુયોજિત કરી શકાયુ નથી"
 
-#: ../daemon/server.c:1301
+#: ../daemon/server.c:1311
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: X સર્વર મળ્યુ નહિં: %s"
 
-#: ../daemon/server.c:1309
+#: ../daemon/server.c:1319
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: X સર્વરની પ્રક્રિયાને fork કરી શકાશે નહિં!"
@@ -933,17 +939,17 @@ msgstr ""
 "થઇ જશે.  મહેરબાની કરીને જ્યારે સમસ્યાનો હલ આવી જાય\n"
 "ત્યારે GDM ફરીથી શરુ કરો."
 
-#: ../daemon/slave.c:1543
+#: ../daemon/slave.c:1545
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: fork થઇ શકતુ નથી"
 
-#: ../daemon/slave.c:1590
+#: ../daemon/slave.c:1592
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: ડિસ્પ્લૅ %s ખૂલી શકતુ નથી"
 
-#: ../daemon/slave.c:1741
+#: ../daemon/slave.c:1743
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file.  Attempting to start it from the "
@@ -952,7 +958,7 @@ msgstr ""
 "રૂપરેખાંકન કાર્યક્રમ ચલાવી શકાયો નહિં.  ખાતરી કરો કે તેનો રસ્તો રૂપરેખા માટેની ફાઇલમાં "
 "યોગ્ય રીતે સુયોજિત કરેલો છે.  મૂળભૂત જગ્યા પરથી શરૂ કરવાનો પ્રયત્ન કરી રહ્યા છીએ."
 
-#: ../daemon/slave.c:1755
+#: ../daemon/slave.c:1757
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file."
@@ -960,11 +966,11 @@ msgstr ""
 "રૂપરેખાંકન કાર્યક્રમ ચલાવી શક્યા નહિં.  ખાતરી કરો કે તેનો પથ રૂપરેખા માટેની ફાઇલમાં યોગ્ય "
 "રીતે સુયોજિત કરેલો છે."
 
-#: ../daemon/slave.c:1919
+#: ../daemon/slave.c:1921
 msgid "You must authenticate as root to run configuration."
 msgstr "રૂપરેખા ચલાવવા માટે તમારે રુટ તરીકે સત્તાધિકરણ નોંધાવવું જ પડશે."
 
-#: ../daemon/slave.c:2051 ../daemon/slave.c:2075
+#: ../daemon/slave.c:2053 ../daemon/slave.c:2076
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist."
@@ -972,12 +978,12 @@ msgstr ""
 "બિન-સ્થાનિક ડિસ્પ્લે પર અરજી થયેલ પ્રવેશ ધ્વનિ અથવા વગાડવાનું સોફ્ટવેર ચલાવી શકાતું નથી "
 "અથવા ધ્વનિ અસ્તિત્વમાં નથી."
 
-#: ../daemon/slave.c:2403 ../daemon/slave.c:2408
+#: ../daemon/slave.c:2404 ../daemon/slave.c:2409
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: પાઇપને gdmgreeter માં શરુ કરી શકાતી નથી"
 
-#: ../daemon/slave.c:2540
+#: ../daemon/slave.c:2541
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  GDM has started a single server for "
@@ -989,7 +995,7 @@ msgstr ""
 "જોઈએ અને રૂપરેખાંકન ચોક્કસ કરવું જોઈએ.  નોંધ કરો કે આપોઆપ અને સમયસમર પ્રવેશો હવે નિષ્ક્રિય "
 "કરેલ છે."
 
-#: ../daemon/slave.c:2554
+#: ../daemon/slave.c:2555
 msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -998,14 +1004,14 @@ msgstr ""
 "નિયમિત X સર્વર (તમારું ગ્રાફિકવાળું પર્યાવરણ) શરૂ કરી શક્યા નહિં અને તેથી આ failsafe X "
 "સર્વર છે.  તમારે પ્રવેશ કરવો જોઈએ અને યોગ્ય રીતે X સર્વર રૂપરેખાંકિત કરવું જોઈએ."
 
-#: ../daemon/slave.c:2563
+#: ../daemon/slave.c:2564
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr "સ્પષ્ટ કરેલ ડિસ્પ્લૅ ક્રમાંક વ્યસ્ત હતો, તેથી આ સર્વર ડિસ્પ્લે %s પર ચાલુ થયુ હતું."
 
-#: ../daemon/slave.c:2583
+#: ../daemon/slave.c:2584
 msgid ""
 "The greeter application appears to be crashing.\n"
 "Attempting to use a different one."
@@ -1014,17 +1020,17 @@ msgstr ""
 "અલગ વાપરવાનો પ્રયત્ન કરી રહ્યા છીએ."
 
 #. Something went wrong
-#: ../daemon/slave.c:2606
+#: ../daemon/slave.c:2607
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr "%s આવકારનારને gtk મોડ્યુલ સાથે શરુ કરી શકાય નહિં: %s. મોડ્યુલ સિવાય પ્રયત્ન કરા રહ્યા છે"
 
-#: ../daemon/slave.c:2613
+#: ../daemon/slave.c:2614
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: મૂળભૂતનો પ્રયત્ન કરીને આવકારનાર ચાલુ કરી શકાયુ નહિં: %s"
 
-#: ../daemon/slave.c:2625
+#: ../daemon/slave.c:2626
 msgid ""
 "Cannot start the greeter application; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1035,27 +1041,27 @@ msgstr ""
 "કરવાનો પ્રયત્ન કરો"
 
 #. If no greeter we really have to disable the display
-#: ../daemon/slave.c:2632
+#: ../daemon/slave.c:2633
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: ડિસ્પ્લે %s પર આવકારનારને ચાલુ કરવામાં ભૂલ"
 
-#: ../daemon/slave.c:2636
+#: ../daemon/slave.c:2637
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: gdm આવકારનારની પ્રક્રિયાને fork કરી શકાયુ નહિં"
 
-#: ../daemon/slave.c:2708
+#: ../daemon/slave.c:2709
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: fifo ખોલી શકાયુ નહિં!"
 
-#: ../daemon/slave.c:2880
+#: ../daemon/slave.c:2881
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: પાઇપને gdm પસંદગીમાં શરુ કરી શકાતુ નથી"
 
-#: ../daemon/slave.c:2985
+#: ../daemon/slave.c:2986
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
@@ -1063,62 +1069,62 @@ msgstr ""
 "પસંદગકારક કાર્યક્રમ શરૂ કરી શકતા નથી. તમે કદાચ પ્રવેશ કરવા સમર્થ હશો નહિં.  મહેરબાની "
 "કરીને તમારા સિસ્ટમ સંચાલકનો સંપર્ક કરો."
 
-#: ../daemon/slave.c:2989
+#: ../daemon/slave.c:2990
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: ડિસ્પ્લે %s પર પસંદગી માટેનો કાર્યક્રમ ચાલુ કરવામાં ભૂલ"
 
-#: ../daemon/slave.c:2992
+#: ../daemon/slave.c:2993
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: gdm પસંદગીની પ્રક્રિયા fork કરી શકાતી નથી"
 
-#: ../daemon/slave.c:3225
+#: ../daemon/slave.c:3226
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: ~/.xsession-errors ખોલી શકાઈ નહિં"
 
-#: ../daemon/slave.c:3377
+#: ../daemon/slave.c:3378
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: સત્ર પહેલાની લિપિ ચાલ્યા પછી > ૦ પાછું મોકલ્યુ હતું. અડધેથી બંધ કરી રહ્યા છે."
 
-#: ../daemon/slave.c:3421
+#: ../daemon/slave.c:3422
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "ભાષા %s અસ્તત્વમાં નથી; %s વાપરીને"
 
-#: ../daemon/slave.c:3422
+#: ../daemon/slave.c:3423
 msgid "System default"
 msgstr "સિસ્ટમનુ મૂળભૂત"
 
-#: ../daemon/slave.c:3439
+#: ../daemon/slave.c:3440
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: %s માટે પર્યાવરણ સુયોજિત કરી શકાયુ નહિં. અડધેથી અડધેથી બંધ કરી રહ્યા છે."
 
-#: ../daemon/slave.c:3486
+#: ../daemon/slave.c:3487
 #, c-format
 msgid "%s: setusercontext () failed for %s. Aborting."
 msgstr "%s: %s માટે setusercontext () નિષ્ફળ ગયું. અડધેથી બંધ કરી રહ્યા છે."
 
-#: ../daemon/slave.c:3492
+#: ../daemon/slave.c:3493
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: %s બની શકાયુ નહિં. અડધેથી બંધ કરી રહ્યા છે."
 
-#: ../daemon/slave.c:3526
+#: ../daemon/slave.c:3527
 #, c-format
 msgid "%s: No Exec line in the session file: %s. Starting failsafe GNOME"
 msgstr "%s: સત્ર ફાઈલમાં કોઈ એક્ઝેક વાક્ય નથી: %s. failsafe GNOME શરૂ કરી રહ્યા છીએ"
 
-#: ../daemon/slave.c:3532
+#: ../daemon/slave.c:3533
 msgid ""
 "The session you selected does not look valid.  Running the GNOME failsafe "
 "session instead."
 msgstr "તમે પસંદ કરેલ સત્ર માન્ય લાગતો નથી.  સત્રની જગ્યાએ GNOME failsafe ચલાવી રહ્યા છીએ."
 
-#: ../daemon/slave.c:3548
+#: ../daemon/slave.c:3549
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
@@ -1127,7 +1133,7 @@ msgstr ""
 "%s: આધાર Xsession સ્ક્રિપ્ટ શોધી અથવા ચલાવી શકતા નથી.  તેની જગ્યાએ GNOME failsafe "
 "સત્ર ચલાવી રહ્યા છીએ."
 
-#: ../daemon/slave.c:3554
+#: ../daemon/slave.c:3555
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
@@ -1136,20 +1142,20 @@ msgstr ""
 "ચલાવી રહ્યા છીએ."
 
 #. yaikes
-#: ../daemon/slave.c:3569
+#: ../daemon/slave.c:3570
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
 msgstr ""
 "%s: gnome-session એ failsafe GNOME સત્ર માટે મળ્યો નથી; xterm નો પ્રયાસ કરી રહ્યા "
 "છીએ"
 
-#: ../daemon/slave.c:3574
+#: ../daemon/slave.c:3575
 msgid ""
 "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
 "session instead."
 msgstr "જીનોમ સ્થાપન શોધી શક્યા નથી.  તેની જગ્યાએ \"Failsafe xterm\" સત્ર ચલાવી રહ્યા છીએ."
 
-#: ../daemon/slave.c:3582
+#: ../daemon/slave.c:3583
 msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
@@ -1158,11 +1164,11 @@ msgstr ""
 "આ Failsafe GNOME સત્ર છે.  તમે શરૂઆત સ્ક્રિપ્ટો ચલાવ્યા વિના જીનોમના 'મૂળભૂત' સત્રમાં "
 "પ્રવેશી શકશો.  આ તમારા સ્થાપનમાં સમસ્યાઓ ચોક્કસ કરવા માટે વપરાવું જોઈએ."
 
-#: ../daemon/slave.c:3597
+#: ../daemon/slave.c:3598
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "નિષ્ફળ નહિ જાય એવુ સત્ર શરુ કરવા માટે \"xterm\" શોધી શકાયુ નહિં."
 
-#: ../daemon/slave.c:3610
+#: ../daemon/slave.c:3611
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1172,41 +1178,41 @@ msgstr ""
 "કરીને જો તમે બીજી કોઇ રીતે પ્રવેશ મેળવી શકતા ન હોય તો તમે તમારી સિસ્ટમને સરખી કરી "
 "શકો. ટર્મિનલ ઇમ્યૂલૅટરમાંથી બહાર નીકળવા માટે 'exit' છાપો અને વિન્ડોમાં પ્રવેશ મેળવો."
 
-#: ../daemon/slave.c:3637
+#: ../daemon/slave.c:3638
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: વપરાશકર્તાને પ્રવેશ માટે પરવાનગી મળી નહિં"
 
-#: ../daemon/slave.c:3640
+#: ../daemon/slave.c:3641
 msgid "The system administrator has disabled your account."
 msgstr "સિસ્ટમ સંચાલકે તમારુ ખાતુ નિષ્ક્રિય કરી દીધુ છે."
 
-#: ../daemon/slave.c:3671
+#: ../daemon/slave.c:3672
 msgid "Error! Unable to set executable context."
 msgstr "ભૂલ! ચલાવી શકાય તેવો સંદર્ભ સુયોજિત કરી શકાય એમ નથી."
 
 #. will go to .xsession-errors
-#: ../daemon/slave.c:3679 ../daemon/slave.c:3684
+#: ../daemon/slave.c:3680 ../daemon/slave.c:3685
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s : %s %s %s ને ચલાવી શકાયુ નહિ"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:3695
+#: ../daemon/slave.c:3696
 msgid "Cannot start the session due to some internal error."
 msgstr "કોઇક આંતરિક ભૂલને લાધે સત્ર ચાલુ કરી શકાયુ નહિ."
 
-#: ../daemon/slave.c:3749
+#: ../daemon/slave.c:3750
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr "%s: વપરાશકર્તાને સત્તાધિકાર મળી ગયા પરંતુ getpwnam (%s) નિષ્ફળ ગયું!"
 
-#: ../daemon/slave.c:3762
+#: ../daemon/slave.c:3763
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: પ્રવેશ પ્રક્રિયા પછીની લીપીએ ચાલ્યા પછી > ૦ પાછું મોકલ્યુ હતું. અડધેથી બંધ કરી રહ્યા છે."
 
-#: ../daemon/slave.c:3784
+#: ../daemon/slave.c:3785
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1220,20 +1226,24 @@ msgstr ""
 "નથી. શું તમે રુટ ડિરૅક્ટરીને તમારી ઘર ડિરૅક્ટરી રાખીને પ્રવેશ કરવા માગો છો? જ્યાં સુધી તમે "
 "નિષ્ફળ નહિ જાય તેવુ સત્ર નહિ વાપરો ત્યાં સુધી કંઇપણ બરાબર થાય તેવી શક્યતા નથી."
 
-#: ../daemon/slave.c:3796
+#: ../daemon/slave.c:3797
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: %s માટેની ઘર ડિરૅક્ટરી અસ્તિત્વ ધરાવતી નથી: '%s' અસ્તિત્વ ધરાવતુ નથી!"
 
-#: ../daemon/slave.c:3845
+#: ../daemon/slave.c:3846
 msgid ""
 "User's $HOME/.dmrc file is being ignored.  This prevents the default session "
 "and language from being saved.  File should be owned by user and have 644 "
 "permissions.  User's $HOME directory must be owned by user and not writable "
 "by other users."
-msgstr "વપરાશકર્તાની $HOME/.dmrc ફાઈલ અવગણાયેલ છે.  આ મૂળભૂત સત્ર અને ભાષાને સંગ્રહ કરવાથી બચાવે છે.  ફાઈલ વપરાશકર્તાની માલિકીની હોવી જોઈએ અને તેને 644 પરવાનગીઓ હોવી જોઈએ.  વપરાશકર્તાની $HOME ડિરેક્ટરી વપરાશકર્તાની માલિકીની હોવી જ જોઈએ અને અન્ય વપરાશકર્તાઓ દ્વારા લખી શકાય નહિં તેવી હોવી જોઈએ."
+msgstr ""
+"વપરાશકર્તાની $HOME/.dmrc ફાઈલ અવગણાયેલ છે.  આ મૂળભૂત સત્ર અને ભાષાને સંગ્રહ કરવાથી "
+"બચાવે છે.  ફાઈલ વપરાશકર્તાની માલિકીની હોવી જોઈએ અને તેને 644 પરવાનગીઓ હોવી જોઈએ.  "
+"વપરાશકર્તાની $HOME ડિરેક્ટરી વપરાશકર્તાની માલિકીની હોવી જ જોઈએ અને અન્ય વપરાશકર્તાઓ "
+"દ્વારા લખી શકાય નહિં તેવી હોવી જોઈએ."
 
-#: ../daemon/slave.c:3974
+#: ../daemon/slave.c:3975
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1244,12 +1254,12 @@ msgstr ""
 "ડિસ્કની જગ્યા ખૂટી ગઇ છે અથવા તમારી ઘર ડિરૅક્ટરી ખોલી શકાતી નથી. કોઇપણ સંજોગોમાં "
 "પ્રવેશ શક્ય નથી. મહેરબાની કરીને તમારા સિસ્ટમ સંચાલકનો સંપર્ક કરો"
 
-#: ../daemon/slave.c:4050
+#: ../daemon/slave.c:4051
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: વપરાશકર્તાના સત્રને fork કરવામાં નિષ્ફળ"
 
-#: ../daemon/slave.c:4131
+#: ../daemon/slave.c:4132
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1260,25 +1270,25 @@ msgstr ""
 "શકે કે સ્થાપનામાં ભૂલ હતી અથવા તમારી ડિસ્કની જગ્યા ખૂટી ગઇ હશે. તમે આ સમસ્યા સુધારી શકો "
 "છો કે નહિ તે જોવા માટે નિષ્ફળ ન જાય તેવા સત્ર વડે પ્રવેશ કરી જુઓ."
 
-#: ../daemon/slave.c:4139
+#: ../daemon/slave.c:4140
 msgid "View details (~/.xsession-errors file)"
 msgstr "વિગતો જુઓ (~/.xsession-errors ફાઈલ)"
 
-#: ../daemon/slave.c:4303
+#: ../daemon/slave.c:4304
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDMને બંધ કરવાની અથવા ફરીથી બુટ કરવાની પ્રક્રિયા ચાલતી દેખાઇ."
 
-#: ../daemon/slave.c:4397
+#: ../daemon/slave.c:4398
 #, c-format
 msgid "Ping to %s failed; whacking display!"
 msgstr "%s ને પીંગ કરવામાં નિષ્ફળ; વ્હેકીંગ ડિસ્પ્લે!"
 
-#: ../daemon/slave.c:4676
+#: ../daemon/slave.c:4677
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: ઘાતક X ભૂલ - %s ફરીથી શરુ કરી રહ્યા છે"
 
-#: ../daemon/slave.c:4745
+#: ../daemon/slave.c:4746
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1286,22 +1296,22 @@ msgstr ""
 "બિન-સ્થાનિક ડિસ્પ્લે પર પ્રવેશ ધ્વનિની વિનંતિ થઈ અથવા વગાડવાનુ સોફ્ટવેર ચાલી શકે એમ નથી "
 "અથવા ધ્વનિ અસ્તિત્વમાં નથી"
 
-#: ../daemon/slave.c:5102
+#: ../daemon/slave.c:5103
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s શરુ કરવામાં નિષ્ફળ: %s"
 
-#: ../daemon/slave.c:5109 ../daemon/slave.c:5248
+#: ../daemon/slave.c:5110 ../daemon/slave.c:5249
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: લિપિ માટેની પ્રક્રિયાને fork કરી શકાઈ નહિ!"
 
-#: ../daemon/slave.c:5203
+#: ../daemon/slave.c:5204
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: પાઇપ બનાવવામાં નિષ્ફળ"
 
-#: ../daemon/slave.c:5242
+#: ../daemon/slave.c:5243
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: ચલાવવામાં નિષ્ફળ: %s"
@@ -1321,7 +1331,7 @@ msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "મહેરબાની કરીને ખાતરી કરો કે Caps Lock કી સક્રિય નથી."
 
 #: ../daemon/verify-crypt.c:119 ../daemon/verify-pam.c:525
-#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:2887
+#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:2773
 msgid "Please enter your username"
 msgstr "મહેરબાની કરીને વપરાશકર્તાનું નામ લખો"
 
@@ -1329,15 +1339,16 @@ msgstr "મહેરબાની કરીને વપરાશકર્તા�
 #: ../daemon/verify-crypt.c:120 ../daemon/verify-pam.c:425
 #: ../daemon/verify-pam.c:426 ../daemon/verify-pam.c:427
 #: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:854
-#: ../daemon/verify-shadow.c:119 ../gui/gdmlogin.c:1099 ../gui/gdmlogin.c:1113
-#: ../gui/gdmlogin.c:1727 ../gui/gdmlogin.c:2207 ../gui/greeter/greeter.c:169
-#: ../gui/greeter/greeter_parser.c:1124
+#: ../daemon/verify-shadow.c:119 ../gui/gdmlogin.c:996 ../gui/gdmlogin.c:1010
+#: ../gui/gdmlogin.c:1624 ../gui/gdmlogin.c:2104 ../gui/greeter/greeter.c:168
+#: ../gui/greeter/greeter_parser.c:1120
 msgid "Username:"
 msgstr "વપરાશકર્તાનું નામ:"
 
 #: ../daemon/verify-crypt.c:158 ../daemon/verify-pam.c:428
 #: ../daemon/verify-pam.c:429 ../daemon/verify-pam.c:573
-#: ../daemon/verify-shadow.c:176 ../gui/gdmlogin.c:1762
+#: ../daemon/verify-shadow.c:176 ../gui/gdmlogin.c:1659
+#: ../gui/greeter/greeter.c:186
 msgid "Password:"
 msgstr "પાસવર્ડ:"
 
@@ -1772,87 +1783,87 @@ msgstr ""
 msgid "%s: No XDMCP support"
 msgstr "%s: કોઈ XDMCP નો આધાર નથી"
 
-#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
 msgid "Xnest command line"
 msgstr "Xnest આદેશ વાક્ય"
 
-#: ../gui/gdmXnestchooser.c:167 ../gui/gdmXnestchooser.c:174
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
 msgid "STRING"
 msgstr "શબ્દમાળા"
 
-#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
+#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:176
 msgid "Extra options for Xnest"
 msgstr "Xnest માટે વધારાના વિકલ્પો"
 
-#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
+#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:176
 msgid "OPTIONS"
 msgstr "વિકલ્પો"
 
-#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:179
+#: ../gui/gdmXnestchooser.c:170 ../gui/gdmXnestchooser.c:180
 msgid "Run in background"
 msgstr "પાશ્વ ભાગમાં ચલાવો"
 
-#: ../gui/gdmXnestchooser.c:176
+#: ../gui/gdmXnestchooser.c:177
 msgid "Just run Xnest, no query (no chooser)"
 msgstr "ફક્ત Xnest ચલાવો, કોઈ પ્રશ્ન નહિ (કોઈ પસંદગીકાર નથી)"
 
-#: ../gui/gdmXnestchooser.c:177
+#: ../gui/gdmXnestchooser.c:178
 msgid "Do direct query instead of indirect (chooser)"
 msgstr "પરોક્ષ રીતની બદલે પ્રત્યક્ષ રીતે પ્રશ્ન કરો (પસંદગીકાર)"
 
-#: ../gui/gdmXnestchooser.c:178
+#: ../gui/gdmXnestchooser.c:179
 msgid "Run broadcast instead of indirect (chooser)"
 msgstr "પરોક્ષ રીતની બદલે પ્રસારણ કરો (પસંદગીકાર)"
 
-#: ../gui/gdmXnestchooser.c:180
+#: ../gui/gdmXnestchooser.c:181
 msgid "Don't check for running GDM"
 msgstr "ચાલી રહેલા GDM માટે ચકાસો નહિં"
 
-#: ../gui/gdmXnestchooser.c:509
+#: ../gui/gdmXnestchooser.c:510
 msgid "Xnest doesn't exist."
 msgstr "Xnest અસ્તિત્વ ધરાવતુ નથી."
 
-#: ../gui/gdmXnestchooser.c:510
+#: ../gui/gdmXnestchooser.c:511
 msgid "Please ask your system administrator to install it."
 msgstr "મહેરબાની કરીને તમારે સિસ્ટમ સંચાલકને તેની સ્થાપના કરવા કહો."
 
-#: ../gui/gdmXnestchooser.c:535
+#: ../gui/gdmXnestchooser.c:536
 msgid "Indirect XDMCP is not enabled"
 msgstr "પરોક્ષ XDMCP સક્રિય નથી"
 
-#: ../gui/gdmXnestchooser.c:536 ../gui/gdmXnestchooser.c:554
+#: ../gui/gdmXnestchooser.c:537 ../gui/gdmXnestchooser.c:555
 msgid "Please ask your system administrator to enable this feature."
 msgstr "આ લક્ષણ સક્રિય કરવા માટે મહેરબાની કરીને તમારા સિસ્ટમ સંચાલકને પૂછો."
 
-#: ../gui/gdmXnestchooser.c:553
+#: ../gui/gdmXnestchooser.c:554
 msgid "XDMCP is not enabled"
 msgstr "XDMCP સક્રિય નથી"
 
-#: ../gui/gdmXnestchooser.c:585
+#: ../gui/gdmXnestchooser.c:586
 msgid "GDM is not running"
 msgstr "GDM ચાલી રહ્યુ છે"
 
-#: ../gui/gdmXnestchooser.c:586
+#: ../gui/gdmXnestchooser.c:587
 msgid "Please ask your system administrator to start it."
 msgstr "મહેરબાની કરીને તમારા સિસ્ટમ સંચાલકને એને શરુ કરવા કહો."
 
-#: ../gui/gdmXnestchooser.c:602
+#: ../gui/gdmXnestchooser.c:603
 msgid "Could not find a free display number"
 msgstr "મુક્ત ડિસ્પ્લે ક્રમાંક શોધી શકાયો નહિ"
 
-#: ../gui/gdmchooser.c:85
+#: ../gui/gdmchooser.c:83
 msgid "Please wait: scanning local network..."
 msgstr "મહેરબાની કરીને રાહ જુઓ: સ્થાનિક નૅટવર્ક જોઇ રહ્યા છે..."
 
-#: ../gui/gdmchooser.c:86
+#: ../gui/gdmchooser.c:84
 msgid "No serving hosts were found."
 msgstr "સેવા આપતા કોઈ યજમાન મળ્યા નહિ."
 
-#: ../gui/gdmchooser.c:87
+#: ../gui/gdmchooser.c:85
 msgid "Choose a ho_st to connect to:"
 msgstr "જોડવા માટે યજમાન પસંદ કરો (_s):"
 
-#: ../gui/gdmchooser.c:623
+#: ../gui/gdmchooser.c:621
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
@@ -1861,11 +1872,11 @@ msgstr ""
 "યજમાન \"%s\" પ્રવેશ સત્રને અત્યારે આધાર આપવા ઇચ્છતો નથી. મહેરબાની કરીને ફરીથી પ્રયત્ન "
 "કરો."
 
-#: ../gui/gdmchooser.c:633
+#: ../gui/gdmchooser.c:631
 msgid "Cannot connect to remote server"
 msgstr "દૂરસ્થ યજમાન સાથે જોડી શકાશે નહિ"
 
-#: ../gui/gdmchooser.c:1255
+#: ../gui/gdmchooser.c:1253
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1875,20 +1886,20 @@ msgstr ""
 "\"%s\" યજમાન પાસેથી %d સેકન્ડમાં કોઇ જવાબ મળ્યો નહિ કદાચ એ યજમાન સક્રિય નથી અથવા "
 "આધાર આપવા ઇચ્છતો નથી. મહેરબાની કરીને થોડી વાર પછી પ્રયત્ન કરો."
 
-#: ../gui/gdmchooser.c:1268
+#: ../gui/gdmchooser.c:1266
 msgid "Did not receive response from server"
 msgstr "સર્વર પાસેથી જવાબ મળ્યો નહિ"
 
-#: ../gui/gdmchooser.c:1370
+#: ../gui/gdmchooser.c:1368
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
 msgstr "યજમાન \"%s\" શોધી શકતા નથી. કદાચ તમે તેને ખોટી રીતે લખ્યું હશે."
 
-#: ../gui/gdmchooser.c:1379
+#: ../gui/gdmchooser.c:1377
 msgid "Cannot find host"
 msgstr "યજમાન શોધી શકાશે નહિ"
 
-#: ../gui/gdmchooser.c:1617
+#: ../gui/gdmchooser.c:1615
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1905,52 +1916,50 @@ msgstr ""
 "જ્યારે તમે યજમાન પસંદ કરી લીધો હોય ત્યારે \"જોડો\" પર ક્લિક કરીને એ યંત્ર સાથે નવું સત્ર "
 "શરુ કરી શકો છો."
 
-#: ../gui/gdmchooser.c:1667
+#: ../gui/gdmchooser.c:1665
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "મૂળભૂત યજમાન ચિહ્ન ખોલી શકાયુ નહિ: %s"
 
-#: ../gui/gdmchooser.c:1857 ../gui/gdmlogin.c:3531
-#: ../gui/greeter/greeter.c:1015 ../gui/greeter/greeter.c:1022
+#: ../gui/gdmchooser.c:1855 ../gui/gdmlogin.c:3413
+#: ../gui/greeter/greeter.c:1018 ../gui/greeter/greeter.c:1025
 msgid "Could not set signal mask!"
 msgstr "સંકેત માટેનુ આવરણ સુયોજિત કરી શકાયુ નહિ!"
 
-#: ../gui/gdmchooser.c:1863
+#: ../gui/gdmchooser.c:1861
 msgid "Socket for xdm communication"
 msgstr "xdm સંદાશાવ્યવહાર માટેનો સોકેટ"
 
-#: ../gui/gdmchooser.c:1863
+#: ../gui/gdmchooser.c:1861
 msgid "SOCKET"
 msgstr "સોકેટ"
 
-#: ../gui/gdmchooser.c:1866
+#: ../gui/gdmchooser.c:1864
 msgid "Client address to return in response to xdm"
 msgstr "xdm ના જવાબમાં મોકલવા માટેનુ ક્લાઇન્ટ સરનામું"
 
-#: ../gui/gdmchooser.c:1866
+#: ../gui/gdmchooser.c:1864
 msgid "ADDRESS"
 msgstr "સરનામું"
 
-#: ../gui/gdmchooser.c:1869
+#: ../gui/gdmchooser.c:1867
 msgid "Connection type to return in response to xdm"
 msgstr "xdm ના જવાબમાં મોકલવા માટેનો સંપર્કનો પ્રકાર"
 
-#: ../gui/gdmchooser.c:1869
+#: ../gui/gdmchooser.c:1867
 msgid "TYPE"
 msgstr "પ્રકાર"
 
-#: ../gui/gdmchooser.c:1945 ../gui/gdmflexiserver.c:738 ../gui/gdmsetup.c:6392
-msgid "Could not access GDM configuration file.\n"
-msgstr "GDM રૂપરેખાંકન ફાઈલ વાપરી શક્યા નહિં.\n"
-
-#: ../gui/gdmchooser.c:1995
+#: ../gui/gdmchooser.c:1987
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded GDM.  Please restart the GDM daemon or the computer."
-msgstr "પસંદગીકારની આવૃત્તિ (%s) ડિમન આવૃત્તિ (%s) સાથે બંધબેસતી નથી.  તમે કદાચ હમણાં જ GDM ને સુધાર્યુ હોય.  મહેરબાની કરીને GDM ડિમનને ફરી શરુ કરો અથવા કમ્પ્યૂટરને ફરીથી બુટ કરો."
+msgstr ""
+"પસંદગીકારની આવૃત્તિ (%s) ડિમન આવૃત્તિ (%s) સાથે બંધબેસતી નથી.  તમે કદાચ હમણાં જ GDM ને "
+"સુધાર્યુ હોય.  મહેરબાની કરીને GDM ડિમનને ફરી શરુ કરો અથવા કમ્પ્યૂટરને ફરીથી બુટ કરો."
 
-#: ../gui/gdmchooser.c:2005
+#: ../gui/gdmchooser.c:1997
 msgid "Cannot run chooser"
 msgstr "પસંદગીકાર ચલાવી શકાયો નહિ"
 
@@ -2004,13 +2013,16 @@ msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm. If you still wish to use this feature, either start "
 "GDM yourself or ask your system administrator to start GDM."
-msgstr "વાસ્તવમાં તમે કદાચ અલગ ડિસ્પ્લે વ્યવસ્થાપક વાપરી રહ્યા હશો, જેમ કે KDM (KDE ડિસ્પ્લે વ્યવસ્થાપક) અથવા xdm. જો તમે હજુ પણ આ લક્ષણ વાપરવા ઈચ્છો, તો ક્યાં તો તમારી જાતે GDM શરૂ કરો અથવા GDM શરૂ કરવા માટે તમારા સિસ્ટમ સંચાલકને પૂછો."
+msgstr ""
+"વાસ્તવમાં તમે કદાચ અલગ ડિસ્પ્લે વ્યવસ્થાપક વાપરી રહ્યા હશો, જેમ કે KDM (KDE ડિસ્પ્લે "
+"વ્યવસ્થાપક) અથવા xdm. જો તમે હજુ પણ આ લક્ષણ વાપરવા ઈચ્છો, તો ક્યાં તો તમારી જાતે GDM "
+"શરૂ કરો અથવા GDM શરૂ કરવા માટે તમારા સિસ્ટમ સંચાલકને પૂછો."
 
-#: ../gui/gdmcomm.c:442 ../gui/gdmflexiserver.c:782
+#: ../gui/gdmcomm.c:442 ../gui/gdmflexiserver.c:774
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "GDM સાથે સંપર્ક કરી શકાતો નથી (જીનોમ ડિસ્પ્લે વ્યવસ્થાપક)"
 
-#: ../gui/gdmcomm.c:444 ../gui/gdmflexiserver.c:784
+#: ../gui/gdmcomm.c:444 ../gui/gdmflexiserver.c:776
 msgid "Perhaps you have an old version of GDM running."
 msgstr "કદાચ તમારે GDM ની જૂની આવૃત્તિ ચાલે છે."
 
@@ -2095,9 +2107,29 @@ msgstr "અજ્ઞાત ભૂલ ઉદભવી."
 #. Translators: Translate this to '12-hour', or
 #. '24-hour'. Meaning of the translation is the
 #. default time format in your locale.
-#: ../gui/gdmcommon.c:298
+#: ../gui/gdmcommon.c:301
 msgid "24-hour"
 msgstr "૨૪-કલાક"
+
+#: ../gui/gdmcommon.c:446
+msgid "%a %b %d, %H:%M"
+msgstr "%a %b %d, %H:%M"
+
+#. Translators: You should translate time part as
+#. %H:%M if your language does not have AM and PM
+#. equivalent.  Note: %l is a strftime option for
+#. 12-hour clock format
+#: ../gui/gdmcommon.c:452
+msgid "%a %b %d, %l:%M %p"
+msgstr "%a %b %d, %I:%M %p"
+
+#: ../gui/gdmcommon.c:560
+msgid " seconds"
+msgstr " સેકન્ડો"
+
+#: ../gui/gdmcommon.c:562
+msgid " second"
+msgstr " સેકન્ડ"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
@@ -2125,7 +2157,7 @@ msgstr "ડિસ્પ્લે %s આભાસી ટર્મિનલ %d પ
 msgid "Nested display %s on virtual terminal %d"
 msgstr "પુનરાવર્તિત ડિસ્પ્લે %s આભાસી ટર્મિનલ %d પર"
 
-#: ../gui/gdmflexiserver.c:250 ../gui/gdmlogin.c:2735
+#: ../gui/gdmflexiserver.c:250 ../gui/gdmlogin.c:2621
 #: ../gui/greeter/greeter_item_ulist.c:245
 msgid "Username"
 msgstr "વપરાશકર્તાનુ નામ"
@@ -2194,23 +2226,23 @@ msgstr "આદેશ ચલાવતા પહેલા તેની સત્�
 msgid "Start new flexible session; do not show popup"
 msgstr "નવું રાહતમય સત્ર શરૂ કરો; પોપઅપ બતાવો નહિં"
 
-#: ../gui/gdmflexiserver.c:809
+#: ../gui/gdmflexiserver.c:800
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "એવુ લાગે છે કે આ ક્રિયા માટે તમારી પાસે જરુરી સત્તા નથી"
 
-#: ../gui/gdmflexiserver.c:812
+#: ../gui/gdmflexiserver.c:803
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "કદાત તમારી .Xauthority ફાઇલ બરાબર સુયોજિત કરાઇ નથી."
 
-#: ../gui/gdmflexiserver.c:836
+#: ../gui/gdmflexiserver.c:826
 msgid "You do not seem to be logged in on the console"
 msgstr "એવુ લાગે છે કે તમે કોન્સોલમાં પ્રવેશ મેળવ્યો નથી"
 
-#: ../gui/gdmflexiserver.c:838
+#: ../gui/gdmflexiserver.c:828
 msgid "Starting a new login only works correctly on the console."
 msgstr "નવી પ્રવેશ પ્રક્રિયા કોન્સોલ પર જ બરાબર કામ કરશે."
 
-#: ../gui/gdmflexiserver.c:884
+#: ../gui/gdmflexiserver.c:871
 msgid "Cannot start new display"
 msgstr "નવો ડિસ્પ્લે શરુ કરી શકાયો નહિ"
 
@@ -2684,62 +2716,44 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: ../gui/gdmlogin.c:351
+#: ../gui/gdmlogin.c:350
 #, c-format
 msgid "Cannot run command '%s': %s."
 msgstr "આદેશ '%s' ચલાવી શકતા નથી: %s."
 
-#: ../gui/gdmlogin.c:359
+#: ../gui/gdmlogin.c:358
 msgid "Cannot start background application"
 msgstr "પાશ્વ ભાગમાં કાર્યક્રમ શરૂ કરી શકતા નથી"
 
-#: ../gui/gdmlogin.c:434
-#, c-format
-msgid "User %s will login in %d seconds"
-msgstr "%s વપરાશકર્તા %d સેકન્ડમાં પ્રવેશ મેળવશે"
+#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1106
+msgid "User %u will login in %t"
+msgstr "વપરાશકર્તા %u એ %t માં પ્રવેશસે"
 
-#: ../gui/gdmlogin.c:438 ../gui/greeter/greeter_parser.c:1106
-#, c-format
-msgid "User %s will login in %d second"
-msgid_plural "User %s will login in %d seconds"
-msgstr[0] "વપરાશકર્તા %s %d સેકન્ડમાં પ્રવેશ મેળવશે"
-msgstr[1] "%s વપરાશકર્તા %d સેકન્ડમાં પ્રવેશ મેળવશે"
-
-#: ../gui/gdmlogin.c:665
-#, c-format
-msgid "%s: String too long!"
-msgstr "%s: શબ્દમાળા બહુ લાંબી છે!"
-
-#: ../gui/gdmlogin.c:667
-#, c-format
-msgid "%sWelcome to %s%s"
-msgstr "%s %s માં પધારો%s"
-
-#: ../gui/gdmlogin.c:752 ../gui/greeter/greeter_system.c:63
+#: ../gui/gdmlogin.c:649 ../gui/greeter/greeter_system.c:62
 msgid "Are you sure you want to restart the computer?"
 msgstr "શું તમે ખરેખર કમ્પ્યૂટર ફરીથી બુટ કરવા માંગો છો?"
 
 # gnome-session/session-properties.c:173
-#: ../gui/gdmlogin.c:753 ../gui/gdmlogin.c:2608
+#: ../gui/gdmlogin.c:650 ../gui/gdmlogin.c:2494
 msgid "_Restart"
 msgstr "ફરીથી શરુ કરો (_R)"
 
-#: ../gui/gdmlogin.c:765 ../gui/greeter/greeter_system.c:75
+#: ../gui/gdmlogin.c:662 ../gui/greeter/greeter_system.c:74
 msgid "Are you sure you want to shut down the computer?"
 msgstr "શું તમે ખરેખર કમ્પ્યૂટર બંધ કરવા માંગો છો?"
 
-#: ../gui/gdmlogin.c:766 ../gui/gdmlogin.c:2618
-#: ../gui/greeter/greeter_parser.c:1076 ../gui/greeter/greeter_system.c:76
-#: ../gui/greeter/greeter_system.c:203
+#: ../gui/gdmlogin.c:663 ../gui/gdmlogin.c:2504
+#: ../gui/greeter/greeter_parser.c:1076 ../gui/greeter/greeter_system.c:75
+#: ../gui/greeter/greeter_system.c:202
 msgid "Shut _Down"
 msgstr "બંધ કરો (_D)"
 
-#: ../gui/gdmlogin.c:786 ../gui/greeter/greeter_system.c:86
+#: ../gui/gdmlogin.c:683 ../gui/greeter/greeter_system.c:85
 msgid "Are you sure you want to suspend the computer?"
 msgstr "શું તમે ખરેખર કમ્પ્યૂટર અટકાવવા માંગો છો?"
 
-#: ../gui/gdmlogin.c:787 ../gui/gdmlogin.c:2628
-#: ../gui/greeter/greeter_system.c:87
+#: ../gui/gdmlogin.c:684 ../gui/gdmlogin.c:2514
+#: ../gui/greeter/greeter_system.c:86
 msgid "_Suspend"
 msgstr "સ્થગિત (_S)"
 
@@ -2747,71 +2761,73 @@ msgstr "સ્થગિત (_S)"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:870 ../gui/gdmlogin.c:899 ../gui/gdmlogin.c:982
+#: ../gui/gdmlogin.c:767 ../gui/gdmlogin.c:796 ../gui/gdmlogin.c:879
 #: ../gui/greeter/greeter_action_language.c:158
-#: ../gui/greeter/greeter_session.c:120 ../gui/greeter/greeter_session.c:150
+#: ../gui/greeter/greeter_session.c:119 ../gui/greeter/greeter_session.c:149
 #, c-format
 msgid "Do you wish to make %s the default for future sessions?"
 msgstr "શું તમે ભવિષ્યના સત્ર માટે %s ને મૂળભુત બનાવવા ઇચ્છો છો?"
 
-#: ../gui/gdmlogin.c:873 ../gui/greeter/greeter_session.c:123
+#: ../gui/gdmlogin.c:770 ../gui/greeter/greeter_session.c:122
 #, c-format
 msgid "Your preferred session type %s is not installed on this computer."
 msgstr "તમારુ પસંદિત સત્ર %s પ્રકાર આ કમ્પ્યૂટર પર સ્થાપિત નથી."
 
-#: ../gui/gdmlogin.c:878 ../gui/gdmlogin.c:909 ../gui/gdmlogin.c:989
+#: ../gui/gdmlogin.c:775 ../gui/gdmlogin.c:806 ../gui/gdmlogin.c:886
 #: ../gui/greeter/greeter_action_language.c:165
-#: ../gui/greeter/greeter_session.c:126 ../gui/greeter/greeter_session.c:158
+#: ../gui/greeter/greeter_session.c:125 ../gui/greeter/greeter_session.c:157
 msgid "Make _Default"
 msgstr "મૂળભુત બનાવો (_D)"
 
-#: ../gui/gdmlogin.c:878 ../gui/greeter/greeter_session.c:126
+#: ../gui/gdmlogin.c:775 ../gui/greeter/greeter_session.c:125
 msgid "Just _Log In"
 msgstr "હમણાં જ પ્રવેશ્યો (_L)"
 
-#: ../gui/gdmlogin.c:903 ../gui/gdmlogin.c:984
+#: ../gui/gdmlogin.c:800 ../gui/gdmlogin.c:881
 #: ../gui/greeter/greeter_action_language.c:160
-#: ../gui/greeter/greeter_session.c:153
+#: ../gui/greeter/greeter_session.c:152
 #, c-format
 msgid "You have chosen %s for this session, but your default setting is %s."
 msgstr "તમે આ સત્ર માટે %s પસંદ કર્યું છે, પરંતુ તમારુ મૂળભુત સુયોજન %s છે."
 
-#: ../gui/gdmlogin.c:909 ../gui/gdmlogin.c:989
+#: ../gui/gdmlogin.c:806 ../gui/gdmlogin.c:886
 #: ../gui/greeter/greeter_action_language.c:165
-#: ../gui/greeter/greeter_session.c:158
+#: ../gui/greeter/greeter_session.c:157
 msgid "Just For _This Session"
 msgstr "ફક્ત આ સત્ર માટે (_T)"
 
-#: ../gui/gdmlogin.c:920
+#: ../gui/gdmlogin.c:817
 #, c-format
 msgid "You have chosen %s for this session."
 msgstr "આ સત્ર માટે તમે %s પસંદ કરેલ છે."
 
-#: ../gui/gdmlogin.c:923
+#: ../gui/gdmlogin.c:820
 #, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
 "utility (System Tools->Desktop Switching Tool from the main menu)."
-msgstr "જો તમે ભવિષ્યના સત્ર માટે %s ને મૂળભૂત બનાવવા ઇય્છો, તો 'switchdesk' ઉપયોગીતા (સિસ્ટમ સાધનો-> ડેસ્કટોપ બદલવા માટેનુ સાધનને મુખ્ય મેનુમાંથી) ચલાવો."
+msgstr ""
+"જો તમે ભવિષ્યના સત્ર માટે %s ને મૂળભૂત બનાવવા ઇય્છો, તો 'switchdesk' ઉપયોગીતા (સિસ્ટમ "
+"સાધનો-> ડેસ્કટોપ બદલવા માટેનુ સાધનને મુખ્ય મેનુમાંથી) ચલાવો."
 
-#: ../gui/gdmlogin.c:964 ../gui/gdmlogin.c:973
+#: ../gui/gdmlogin.c:861 ../gui/gdmlogin.c:870
 #: ../gui/greeter/greeter_action_language.c:73
 #: ../gui/greeter/greeter_action_language.c:142
 #: ../gui/greeter/greeter_action_language.c:150
 msgid "System Default"
 msgstr "સિસ્ટમ મૂળભૂત"
 
-#: ../gui/gdmlogin.c:1100 ../gui/gdmlogin.c:1114 ../gui/gdmlogin.c:1731
-#: ../gui/gdmlogin.c:2208 ../gui/gdmlogin.c:2840
+#: ../gui/gdmlogin.c:997 ../gui/gdmlogin.c:1011 ../gui/gdmlogin.c:1628
+#: ../gui/gdmlogin.c:2105 ../gui/gdmlogin.c:2726
 msgid "_Username:"
 msgstr "વપરાશકર્તાનુ નામ (_U):"
 
-#: ../gui/gdmlogin.c:1188
+#: ../gui/gdmlogin.c:1085
 #, c-format
 msgid "%s session selected"
 msgstr "%s સત્ર પસંદ કરાયેલ છે"
 
-#: ../gui/gdmlogin.c:1209 ../gui/gdmlogin.c:1327
+#: ../gui/gdmlogin.c:1106 ../gui/gdmlogin.c:1224
 msgid "_Last"
 msgstr "છેલ્લુ (_L)"
 
@@ -2819,146 +2835,140 @@ msgstr "છેલ્લુ (_L)"
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1292
+#: ../gui/gdmlogin.c:1189
 #, c-format
 msgid "%s language selected"
 msgstr "%s ભાષા પસંદ કરેલ છે"
 
-#: ../gui/gdmlogin.c:1338
+#: ../gui/gdmlogin.c:1235
 msgid "_System Default"
 msgstr "સિસ્ટમનુ મૂળભૂત (_S)"
 
-#: ../gui/gdmlogin.c:1370
+#: ../gui/gdmlogin.c:1267
 msgid "_Other"
 msgstr "બીજું (_O)"
 
-#: ../gui/gdmlogin.c:1763
+#: ../gui/gdmlogin.c:1660
 msgid "_Password:"
 msgstr "પાસવર્ડ (_P):"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:1994 ../gui/greeter/greeter.c:332
+#: ../gui/gdmlogin.c:1891 ../gui/greeter/greeter.c:334
 msgid "Please insert 25 cents to log in."
 msgstr "મહેરબાની કરીને પ્રવેશ મેળવવા માટે ૨૫ સૅન્ટ નાખો."
 
-#: ../gui/gdmlogin.c:2328
+#: ../gui/gdmlogin.c:2225
 msgid "GNOME Desktop Manager"
 msgstr "જીનોમ ડેસ્કટોપ વ્યવસ્થાપક"
 
-#: ../gui/gdmlogin.c:2353 ../gui/greeter/greeter_item.c:162
-msgid "%a %b %d, %H:%M"
-msgstr "%a %b %d, %H:%M"
-
-#. Translators: You should translate time part as
-#. %H:%M if your language does not have AM and PM
-#. equivalent.  Note: %l is a strftime option for
-#. 12-hour clock format
-#: ../gui/gdmlogin.c:2359 ../gui/greeter/greeter_item.c:171
-msgid "%a %b %d, %l:%M %p"
-msgstr "%a %b %d, %I:%M %p"
-
-#: ../gui/gdmlogin.c:2408
+#: ../gui/gdmlogin.c:2291
 msgid "Finger"
 msgstr "આંગળી"
 
-#: ../gui/gdmlogin.c:2523
+#: ../gui/gdmlogin.c:2409
 msgid "GDM Login"
 msgstr "GDM પ્રવેશ"
 
-#: ../gui/gdmlogin.c:2566 ../gui/greeter/greeter_parser.c:1056
+#: ../gui/gdmlogin.c:2452 ../gui/greeter/greeter_parser.c:1056
 msgid "_Session"
 msgstr "સત્ર (_S)"
 
-#: ../gui/gdmlogin.c:2573 ../gui/greeter/greeter_parser.c:1051
+#: ../gui/gdmlogin.c:2459 ../gui/greeter/greeter_parser.c:1051
 msgid "_Language"
 msgstr "ભાષા (_L)"
 
-#: ../gui/gdmlogin.c:2587 ../gui/greeter/greeter_system.c:150
+#: ../gui/gdmlogin.c:2473 ../gui/greeter/greeter_system.c:149
 msgid "_XDMCP Chooser..."
 msgstr "XDMCP પસંદગીકાર (_X)..."
 
-#: ../gui/gdmlogin.c:2598 ../gui/greeter/greeter_system.c:165
+#: ../gui/gdmlogin.c:2484 ../gui/greeter/greeter_system.c:164
 msgid "_Configure Login Manager..."
 msgstr "પ્રવેશ પ્રક્રિયા માટેના સંચાલકને રુપરેખાંકિત કરો (_C)..."
 
-#: ../gui/gdmlogin.c:2638 ../gui/greeter/greeter_parser.c:1061
+#: ../gui/gdmlogin.c:2524 ../gui/greeter/greeter_parser.c:1061
 msgid "_Actions"
 msgstr "ક્રિયાઓ (_A)"
 
-#: ../gui/gdmlogin.c:2647
+#: ../gui/gdmlogin.c:2533
 msgid "_Theme"
 msgstr "થીમો (_T)"
 
-#: ../gui/gdmlogin.c:2658 ../gui/greeter/greeter_canvas_item.c:165
+#: ../gui/gdmlogin.c:2544 ../gui/greeter/greeter_canvas_item.c:165
 #: ../gui/greeter/greeter_parser.c:1071
 msgid "_Quit"
 msgstr "બહાર નીકળો (_Q)"
 
-#: ../gui/gdmlogin.c:2660 ../gui/greeter/greeter_canvas_item.c:167
+#: ../gui/gdmlogin.c:2546 ../gui/greeter/greeter_canvas_item.c:167
 #: ../gui/greeter/greeter_parser.c:1066
 msgid "D_isconnect"
 msgstr "સંપર્ક તોડવો (_i)"
 
-#: ../gui/gdmlogin.c:2728 ../gui/greeter/greeter_item_ulist.c:239
+#: ../gui/gdmlogin.c:2614 ../gui/greeter/greeter_item_ulist.c:239
 msgid "Icon"
 msgstr "ચિહ્ન"
 
-#: ../gui/gdmlogin.c:3349 ../gui/gdmlogin.c:3383 ../gui/greeter/greeter.c:569
+#: ../gui/gdmlogin.c:3231 ../gui/gdmlogin.c:3265 ../gui/greeter/greeter.c:571
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
 "probably just upgraded GDM.  Please restart the GDM daemon or the computer."
-msgstr "આવકારનાર આવૃત્તિ (%s) ડિમન આવૃત્તિ સાથે બંધબેસતી નથી.  કદાચ તમે હમણાં જ GDM બદલ્યુ છે.  મહેરબાની કરીને કમ્પ્યૂટર અથવા GDM ડિમન ફરી શરૂ કરો."
+msgstr ""
+"આવકારનાર આવૃત્તિ (%s) ડિમન આવૃત્તિ સાથે બંધબેસતી નથી.  કદાચ તમે હમણાં જ GDM બદલ્યુ છે.  "
+"મહેરબાની કરીને કમ્પ્યૂટર અથવા GDM ડિમન ફરી શરૂ કરો."
 
-#: ../gui/gdmlogin.c:3359 ../gui/gdmlogin.c:3393 ../gui/gdmlogin.c:3441
-#: ../gui/greeter/greeter.c:579 ../gui/greeter/greeter.c:614
-#: ../gui/greeter/greeter.c:663
+#: ../gui/gdmlogin.c:3241 ../gui/gdmlogin.c:3275 ../gui/gdmlogin.c:3323
+#: ../gui/greeter/greeter.c:581 ../gui/greeter/greeter.c:616
+#: ../gui/greeter/greeter.c:665
 msgid "Cannot start the greeter"
 msgstr "આવકારનાર શરુ થઇ શકશે નહિ"
 
 # gnome-session/session-properties.c:173
-#: ../gui/gdmlogin.c:3398 ../gui/greeter/greeter.c:668
+#: ../gui/gdmlogin.c:3280 ../gui/greeter/greeter.c:670
 msgid "Restart"
 msgstr "ફરીથી શરુ કરો"
 
-#: ../gui/gdmlogin.c:3431 ../gui/greeter/greeter.c:653
+#: ../gui/gdmlogin.c:3313 ../gui/greeter/greeter.c:655
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded GDM.  Please restart the GDM daemon or the computer."
-msgstr "આવકારનાર આવૃત્તિ (%s) ડિમન આવૃત્તિ (%s) સાથે બંધબેસતી નથી.  કદાચ તમે હમણાં જ GDM સુધાર્યું છે.  મહેરબાની કરીને GDM ડિમન અથવા કમ્પ્યૂટર ફરીથી શરૂ કરો."
+msgstr ""
+"આવકારનાર આવૃત્તિ (%s) ડિમન આવૃત્તિ (%s) સાથે બંધબેસતી નથી.  કદાચ તમે હમણાં જ GDM "
+"સુધાર્યું છે.  મહેરબાની કરીને GDM ડિમન અથવા કમ્પ્યૂટર ફરીથી શરૂ કરો."
 
 # gnome-session/session-properties.c:173
-#: ../gui/gdmlogin.c:3446
+#: ../gui/gdmlogin.c:3328
 msgid "Restart GDM"
 msgstr "GDM ફરીથી શરુ કરો"
 
-#: ../gui/gdmlogin.c:3448
+#: ../gui/gdmlogin.c:3330
 msgid "Restart computer"
 msgstr "કમ્પ્યુટર ફરીથી શરૂ કરો"
 
-#: ../gui/gdmlogin.c:3483
+#: ../gui/gdmlogin.c:3365
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "મૂળભુત ચિત્ર %s ખોલી શકાયુ નહિ. ફેસ બ્રાઉઝર અટકાવી રહ્યુ છે!"
 
-#: ../gui/gdmlogin.c:3645 ../gui/greeter/greeter.c:1235
+#: ../gui/gdmlogin.c:3528 ../gui/greeter/greeter.c:1244
 msgid "Session directory is missing"
 msgstr "સત્રની ડિરેક્ટરી ખોવાઈ છે"
 
-#: ../gui/gdmlogin.c:3646
+#: ../gui/gdmlogin.c:3529
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the GDM "
 "configuration."
-msgstr "તમારા સત્રની ડિરેક્ટરી ખાલી છે અથવા ખોવાઈ છે!  તમારી પાસે વાપરી શકાય તેવા બે સત્ર છે, પરંતુ તમારે પ્રવેશ કરીને GDM રૂપરેખાંકન સુધારવું પડશે."
+msgstr ""
+"તમારા સત્રની ડિરેક્ટરી ખાલી છે અથવા ખોવાઈ છે!  તમારી પાસે વાપરી શકાય તેવા બે સત્ર છે, "
+"પરંતુ તમારે પ્રવેશ કરીને GDM રૂપરેખાંકન સુધારવું પડશે."
 
-#: ../gui/gdmlogin.c:3669 ../gui/greeter/greeter.c:1260
+#: ../gui/gdmlogin.c:3552 ../gui/greeter/greeter.c:1269
 msgid "Configuration is not correct"
 msgstr "રૂપરેખા સાચી નથી"
 
-#: ../gui/gdmlogin.c:3670 ../gui/greeter/greeter.c:1261
+#: ../gui/gdmlogin.c:3553 ../gui/greeter/greeter.c:1270
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -2979,13 +2989,13 @@ msgstr "ફાઇલ ખોલી શકાશે નહિ"
 msgid "Select User Image"
 msgstr "વપરાશકર્તા ચિત્ર પસંદ કરો"
 
-#: ../gui/gdmphotosetup.c:272 ../gui/gdmsetup.c:5549 ../gui/gdmsetup.c:5618
-#: ../gui/gdmsetup.c:5842 ../gui/gdmsetup.c:5911
+#: ../gui/gdmphotosetup.c:272 ../gui/gdmsetup.c:5706 ../gui/gdmsetup.c:5775
+#: ../gui/gdmsetup.c:5996 ../gui/gdmsetup.c:6065
 msgid "Images"
 msgstr "ચિત્રો"
 
-#: ../gui/gdmphotosetup.c:277 ../gui/gdmsetup.c:2997 ../gui/gdmsetup.c:5554
-#: ../gui/gdmsetup.c:5623 ../gui/gdmsetup.c:5847 ../gui/gdmsetup.c:5916
+#: ../gui/gdmphotosetup.c:277 ../gui/gdmsetup.c:3098 ../gui/gdmsetup.c:5711
+#: ../gui/gdmsetup.c:5780 ../gui/gdmsetup.c:6001 ../gui/gdmsetup.c:6070
 msgid "All Files"
 msgstr "બધી ફાઈલો"
 
@@ -3046,133 +3056,133 @@ msgstr "અરે નહિ, સત્ર ડિરેક્ટરીમાં �
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "મૂળભુત સત્ર માટેની કોઇ જ કડી મળી નહિ. નિષ્ફળ ન જાય તેવુ જીનોમ સત્ર વાપરી રહ્યા છે.\n"
 
-#: ../gui/gdmsetup.c:262
+#: ../gui/gdmsetup.c:265
 msgid ""
 "An error occurred while trying to contact the login screens.  Not all "
 "updates may have taken effect."
 msgstr "પ્રવેશ સ્ક્રીનનો સંપર્ક કરતી વખતે ભૂલ થઇ હતી.  બધા જ બદલાવોની અસર થઇ નહિ હોય."
 
-#: ../gui/gdmsetup.c:694 ../gui/gdmsetup.c:712 ../gui/gdmsetup.c:837
-#: ../gui/gdmsetup.c:1087
+#: ../gui/gdmsetup.c:816 ../gui/gdmsetup.c:834 ../gui/gdmsetup.c:990
+#: ../gui/gdmsetup.c:1234
 msgid "Themed"
 msgstr "થીમો"
 
-#: ../gui/gdmsetup.c:697 ../gui/gdmsetup.c:728
+#: ../gui/gdmsetup.c:819 ../gui/gdmsetup.c:850
 msgid "Plain"
 msgstr "સાદું"
 
-#: ../gui/gdmsetup.c:698 ../gui/gdmsetup.c:729
+#: ../gui/gdmsetup.c:820 ../gui/gdmsetup.c:851
 msgid "Plain with face browser"
 msgstr "ફેસ બ્રાઉઝર સાથે સાદું"
 
-#: ../gui/gdmsetup.c:1446
+#: ../gui/gdmsetup.c:1593
 msgid "Autologin or timed login to the root account is not allowed."
 msgstr "રુટ ખાતાને આપોઆપ અથવા સમયને આધીન પ્રવેશની પરવાનગી નથી."
 
-#: ../gui/gdmsetup.c:1676
+#: ../gui/gdmsetup.c:1822
 #, c-format
 msgid "The \"%s\" user already exists in the include list."
 msgstr "\"%s\" વપરાશકર્તા પહેલાથી જ સમાવિષ્ટ યાદીમાં હાજર છે."
 
-#: ../gui/gdmsetup.c:1686 ../gui/gdmsetup.c:1716 ../gui/gdmsetup.c:1753
+#: ../gui/gdmsetup.c:1832 ../gui/gdmsetup.c:1862 ../gui/gdmsetup.c:1899
 msgid "Cannot add user"
 msgstr "વપરાશકર્તા ઉમેરી શકતા નથી"
 
-#: ../gui/gdmsetup.c:1706
+#: ../gui/gdmsetup.c:1852
 #, c-format
 msgid "The \"%s\" user already exists in the exclude list."
 msgstr "\"%s\" વપરાશકર્તા પહેલાથી જ નહિં સમાવવાની યાદીમાં છે."
 
-#: ../gui/gdmsetup.c:1743
+#: ../gui/gdmsetup.c:1889
 #, c-format
 msgid "The \"%s\" user does not exist."
 msgstr "\"%s\" વપરાશકર્તા અસ્તિત્વમાં નથી."
 
-#: ../gui/gdmsetup.c:2992 ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.c:3093 ../gui/gdmsetup.glade.h:74
 msgid "Sounds"
 msgstr "ધ્વનિઓ"
 
-#: ../gui/gdmsetup.c:3205 ../gui/gdmsetup.c:3263
+#: ../gui/gdmsetup.c:3300 ../gui/gdmsetup.c:3358
 msgid "None"
 msgstr "કંઈ નહિં"
 
-#: ../gui/gdmsetup.c:3705
+#: ../gui/gdmsetup.c:3791
 msgid "Archive is not of a subdirectory"
 msgstr "આ કોઈ ગૌણ ડિરેક્ટરીની પેટી નથી"
 
-#: ../gui/gdmsetup.c:3713
+#: ../gui/gdmsetup.c:3799
 msgid "Archive is not of a single subdirectory"
 msgstr "આ કોઈ એક ગૌણ ડિરેક્ટરીની પેટી નથી"
 
-#: ../gui/gdmsetup.c:3737 ../gui/gdmsetup.c:3815
+#: ../gui/gdmsetup.c:3823 ../gui/gdmsetup.c:3901
 msgid "File not a tar.gz or tar archive"
 msgstr "ફાઇલ tar.gz અથવા tar માટેની પેટી નથી"
 
-#: ../gui/gdmsetup.c:3739
+#: ../gui/gdmsetup.c:3825
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "પેટામાં GdmGreeterTheme.info ફાઇલનો સમાવેશ થતો નથી"
 
-#: ../gui/gdmsetup.c:3761
+#: ../gui/gdmsetup.c:3847
 msgid "File does not exist"
 msgstr "ફાઇલ અસ્તિત્વ ધરાવતી નથી"
 
-#: ../gui/gdmsetup.c:3881
+#: ../gui/gdmsetup.c:3967
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../gui/gdmsetup.c:3888
+#: ../gui/gdmsetup.c:3974
 msgid "Not a theme archive"
 msgstr "થીમ પ્રકારની પેટી નથી"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:3910
+#: ../gui/gdmsetup.c:3996
 #, c-format
 msgid "Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr "એવુ લાગે છે કે થીમ ડિરેક્ટરી '%s' પહેલેથી જ સ્થાપિત છે. કોઈ પણ રીતે ફરી સ્થાપિત કરવી?"
 
-#: ../gui/gdmsetup.c:4002
+#: ../gui/gdmsetup.c:4088
 msgid "Some error occurred when installing the theme"
 msgstr "થીમ સ્થાપિત કરતી વખતે કોઇક ભૂલ આવી"
 
-#: ../gui/gdmsetup.c:4058
+#: ../gui/gdmsetup.c:4144
 msgid "No file selected"
 msgstr "કાઇ ફાઇલ પસંદ કરેલ નથી"
 
-#: ../gui/gdmsetup.c:4079
+#: ../gui/gdmsetup.c:4165
 msgid "Select Theme Archive"
 msgstr "થીમ પેટી પસંદ કરો"
 
-#: ../gui/gdmsetup.c:4083 ../gui/gdmsetup.c:5007
+#: ../gui/gdmsetup.c:4169 ../gui/gdmsetup.c:5175
 msgid "_Install"
 msgstr "સ્થાપિત કરો (_I)"
 
-#: ../gui/gdmsetup.c:4174
+#: ../gui/gdmsetup.c:4260
 #, c-format
 msgid "Remove the \"%s\" theme?"
 msgstr "શું \"%s\" થીમ દૂર કરવી છે?"
 
-#: ../gui/gdmsetup.c:4183
+#: ../gui/gdmsetup.c:4269
 msgid "If you choose to remove the theme, it will be permanently lost."
 msgstr "જો તમે થીમ દૂર કરવાનું પસંદ કરો, તો તે કાયમ માટે નષ્ટ થઈ જશે."
 
-#: ../gui/gdmsetup.c:4191
+#: ../gui/gdmsetup.c:4277
 msgid "_Remove Theme"
 msgstr "થીમ દૂર કરો (_R)"
 
-#: ../gui/gdmsetup.c:4996
+#: ../gui/gdmsetup.c:5164
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "શું થીમ '%s' માંથી સ્થાપિત કરવી છે?"
 
-#: ../gui/gdmsetup.c:4997
+#: ../gui/gdmsetup.c:5165
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "ફાઈલ '%s' માંથી ઉમેરવા માટે સ્થાપન પસંદ કરો."
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:5224
+#: ../gui/gdmsetup.c:5392
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3193,19 +3203,23 @@ msgstr ""
 "\n"
 "સંપૂર્ણ દસ્તાવેજીકરણ માટે \"ડેસ્કટોપ\" વર્ગ હેઠળ જીનોમ મદદ બ્રાઉઝર જુઓ."
 
-#: ../gui/gdmsetup.c:6338
+#: ../gui/gdmsetup.c:6485
 msgid "Apply the changes to users before closing?"
 msgstr "શું બંધ કરવા પહેલાં વપરાશકર્તાઓમાંના ફેરફારો લાગુ કરવા છે?"
 
-#: ../gui/gdmsetup.c:6339
+#: ../gui/gdmsetup.c:6486
 msgid "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr "જો તમે લાગુ કરો નહિં, તો વપરાશકર્તાઓ ટેબમાં કરેલ ફેરફારોનો સંદર્ભ લેવાશે નહિં."
 
-#: ../gui/gdmsetup.c:6342
+#: ../gui/gdmsetup.c:6489
 msgid "Close _without Applying"
 msgstr "લાગુ કર્યા વિના બંધ કરો (_w)"
 
-#: ../gui/gdmsetup.c:6439
+#: ../gui/gdmsetup.c:6537
+msgid "Could not access GDM configuration file.\n"
+msgstr "GDM રૂપરેખાંકન ફાઈલ વાપરી શક્યા નહિં.\n"
+
+#: ../gui/gdmsetup.c:6581
 msgid "You must be the root user to configure GDM."
 msgstr "GDM રુપરેખાંકિત કરવા માટે તમે રુટ હોવા જ જોઇએ."
 
@@ -3236,14 +3250,19 @@ msgid ""
 "<b>Note:</b>  Users in the Include list will appear in the face browser if "
 "enabled and will appear in the user drop-down lists for automatic and timed "
 "logins on the Security tab.  Users in the Exclude list will not appear."
-msgstr "<b>નોંધ:</b>  સમાવિષ્ટ યાદીમાં વપરાશકર્તાઓ જો સક્રિય કરેલ હોય તો ફેસ બ્રાઉઝરમાં દેખાશે અને નીચે-આવતી વપરાશકર્તા યાદીઓમાં આપોઆપ દેખાશે અને સામયિક પ્રવેશો સુરક્ષા ટેબ પર.  નહિં સમાવવાની યાદીમાં વપરાશકર્તાઓ દેખાશે નહિં."
+msgstr ""
+"<b>નોંધ:</b>  સમાવિષ્ટ યાદીમાં વપરાશકર્તાઓ જો સક્રિય કરેલ હોય તો ફેસ બ્રાઉઝરમાં દેખાશે "
+"અને નીચે-આવતી વપરાશકર્તા યાદીઓમાં આપોઆપ દેખાશે અને સામયિક પ્રવેશો સુરક્ષા ટેબ પર.  નહિં "
+"સમાવવાની યાદીમાં વપરાશકર્તાઓ દેખાશે નહિં."
 
 #: ../gui/gdmsetup.glade.h:5
 msgid ""
 "<b>Warning:</b>  Incorrect settings could prevent the X server from "
 "restarting.  Changes to these settings will not take effect until GDM is "
 "restarted."
-msgstr "<b>ચેતવણી:</b>  અયોગ્ય સુયોજનો X સર્વરને પુનઃશરૂ થવાથી બચાવશે.  આ સુયોજનોના ફેરફારો જ્યાં સુધી GDM પુનઃશરૂ થાય નહિં ત્યાં સુધી અસર કરશે નહિં."
+msgstr ""
+"<b>ચેતવણી:</b>  અયોગ્ય સુયોજનો X સર્વરને પુનઃશરૂ થવાથી બચાવશે.  આ સુયોજનોના ફેરફારો "
+"જ્યાં સુધી GDM પુનઃશરૂ થાય નહિં ત્યાં સુધી અસર કરશે નહિં."
 
 #: ../gui/gdmsetup.glade.h:6
 msgid "A_llow remote system administrator login"
@@ -3629,34 +3648,36 @@ msgstr "સેકન્ડો"
 msgid "Too many users to list here..."
 msgstr "યાદી માટે અહીં ધણાબધા વપરાશકર્તાઓ છે..."
 
-#: ../gui/greeter/greeter.c:604
+#: ../gui/greeter/greeter.c:606
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version. You have "
 "probably just upgraded GDM. Please restart the GDM daemon or the computer."
-msgstr "આવકારનાર આવૃત્તિ (%s) ડિમન આવૃત્તિ સાથે બંધબેસતી નથી.  કદાચ તમે હમણાં જ GDM બદલ્યુ છે.  મહેરબાની કરીને કમ્પ્યૂટર અથવા GDM ડિમન ફરી શરૂ કરો."
+msgstr ""
+"આવકારનાર આવૃત્તિ (%s) ડિમન આવૃત્તિ સાથે બંધબેસતી નથી.  કદાચ તમે હમણાં જ GDM બદલ્યુ છે.  "
+"મહેરબાની કરીને કમ્પ્યૂટર અથવા GDM ડિમન ફરી શરૂ કરો."
 
 # gnome-session/logout.c:280
-#: ../gui/greeter/greeter.c:619 ../gui/greeter/greeter.c:670
+#: ../gui/greeter/greeter.c:621 ../gui/greeter/greeter.c:672
 msgid "Reboot"
 msgstr "ફરીથી બુટ કરો"
 
-#: ../gui/greeter/greeter.c:1079
+#: ../gui/greeter/greeter.c:1088
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "%s થીમ ખોલવામાં ભૂલ હતી"
 
-#: ../gui/greeter/greeter.c:1131
+#: ../gui/greeter/greeter.c:1140
 msgid "The greeter theme is corrupt"
 msgstr "આવકારનાર થીમ બગડેલી છે"
 
-#: ../gui/greeter/greeter.c:1132
+#: ../gui/greeter/greeter.c:1141
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "થીમમાં વપરાશકર્તાના નામ/પાસવર્ડના પ્રવેશ માટેની કોઇ વ્યાખ્યા નથી."
 
-#: ../gui/greeter/greeter.c:1165
+#: ../gui/greeter/greeter.c:1174
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
@@ -3664,13 +3685,15 @@ msgstr ""
 "થીમ લોડ કરવામાં ભૂલ હતી, અને મૂળભુત થીમ લાવી શકાઈ નહિં. પ્રમાણભૂત આવકારનાર શરૂ કરવાનું "
 "કરી રહ્યા છીએ"
 
-#: ../gui/greeter/greeter.c:1187
+#: ../gui/greeter/greeter.c:1196
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of GDM"
-msgstr "GTK+ આવકારનાર શરૂ કરી શકાયું નહિં.  આ ડિસ્પ્લે અડધેથી બંધ થઈ જશે અને તમારે કદાચ અન્ય રીતે પ્રવેશ કરવો પડશે અને GDM નું સ્થાપન ચોક્કસ કરવું પડશે"
+msgstr ""
+"GTK+ આવકારનાર શરૂ કરી શકાયું નહિં.  આ ડિસ્પ્લે અડધેથી બંધ થઈ જશે અને તમારે કદાચ અન્ય રીતે "
+"પ્રવેશ કરવો પડશે અને GDM નું સ્થાપન ચોક્કસ કરવું પડશે"
 
-#: ../gui/greeter/greeter.c:1236
+#: ../gui/greeter/greeter.c:1245
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3720,13 +3743,13 @@ msgstr "પહેલાથી જ પ્રવેશેલ છે"
 msgid "Theme broken: must have pam-message label!"
 msgstr "થીમ ભાંગી ગયેલ: pam-સંદેશો લેબલ હોવું જ જોઈએ!"
 
-#: ../gui/greeter/greeter_parser.c:1081 ../gui/greeter/greeter_system.c:216
+#: ../gui/greeter/greeter_parser.c:1081 ../gui/greeter/greeter_system.c:215
 msgid "Sus_pend"
 msgstr "સ્થગિત કરો (_p)"
 
 # gnome-session/logout.c:280
-#: ../gui/greeter/greeter_parser.c:1086 ../gui/greeter/greeter_system.c:64
-#: ../gui/greeter/greeter_system.c:191
+#: ../gui/greeter/greeter_parser.c:1086 ../gui/greeter/greeter_system.c:63
+#: ../gui/greeter/greeter_system.c:190
 msgid "_Reboot"
 msgstr "ફરીથી બુટ કરો (_R)"
 
@@ -3742,89 +3765,91 @@ msgstr "રૂપરેખાંકન કરો (_C)"
 msgid "You've got capslock on!"
 msgstr "તમારુ capslock ચાલુ છે!"
 
-#: ../gui/greeter/greeter_parser.c:1129
+#: ../gui/greeter/greeter_parser.c:1125
 msgid "_OK"
 msgstr "બરાબર (_O)"
 
-#: ../gui/greeter/greeter_parser.c:1134
+#: ../gui/greeter/greeter_parser.c:1130
 msgid "_Cancel"
 msgstr "રદ કરો (_C)"
 
-#: ../gui/greeter/greeter_session.c:171
+#: ../gui/greeter/greeter_session.c:170
 #, c-format
 msgid "You have chosen %s for this session"
 msgstr "તમે આ સત્ર માટે %s પસંદ કરેલ છે"
 
-#: ../gui/greeter/greeter_session.c:174
+#: ../gui/greeter/greeter_session.c:173
 #, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
 "utility (System->Desktop Switching Tool from the panel menu)."
-msgstr "જો તમે ભવિષ્યના સત્ર માટે %s ને મૂળભુત બનાવવા ઇય્છો, તો 'switchdesk' ઉપયોગીતા ચલાવો. (સિસ્ટમ->પેનલની મેનુમાંથી ડેસ્કટોપ બદલવા માટેનુ સાધન)."
+msgstr ""
+"જો તમે ભવિષ્યના સત્ર માટે %s ને મૂળભુત બનાવવા ઇય્છો, તો 'switchdesk' ઉપયોગીતા ચલાવો. "
+"(સિસ્ટમ->પેનલની મેનુમાંથી ડેસ્કટોપ બદલવા માટેનુ સાધન)."
 
-#: ../gui/greeter/greeter_session.c:227
+#: ../gui/greeter/greeter_session.c:226
 msgid "Change _Session"
 msgstr "સત્ર બદલો (_S)"
 
-#: ../gui/greeter/greeter_session.c:249
+#: ../gui/greeter/greeter_session.c:248
 msgid "Sessions"
 msgstr "સત્રો"
 
-#: ../gui/greeter/greeter_session.c:269
+#: ../gui/greeter/greeter_session.c:268
 msgid "_Last session"
 msgstr "છેલ્લો સત્ર (_L)"
 
-#: ../gui/greeter/greeter_session.c:275
+#: ../gui/greeter/greeter_session.c:274
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "તમે છેલ્લી વખત જે સત્ર વાપરીને પ્રવેશ કર્યો હતો તે સત્ર વાપરીને પ્રવેશ કરો"
 
-#: ../gui/greeter/greeter_system.c:157 ../gui/greeter/greeter_system.c:368
+#: ../gui/greeter/greeter_system.c:156 ../gui/greeter/greeter_system.c:367
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
 msgstr "XDMCP પસંદગીકાર ચલાવો જે તમને પ્રાપ્ત દૂરસ્થ કમ્પ્યૂટરોમાં પ્રવેશ કરવા દેશે, જો કોઇ હશે તો."
 
-#: ../gui/greeter/greeter_system.c:172 ../gui/greeter/greeter_system.c:388
+#: ../gui/greeter/greeter_system.c:171 ../gui/greeter/greeter_system.c:387
 msgid "Configure GDM (this login manager). This will require the root password."
 msgstr "જીડીએમ રુપરેખાંકિત કરો (આ પ્રવેશ પ્રક્રિયા સંચાલક). આ માટે પાસવર્ડની જરુર પડશે."
 
-#: ../gui/greeter/greeter_system.c:198 ../gui/greeter/greeter_system.c:334
+#: ../gui/greeter/greeter_system.c:197 ../gui/greeter/greeter_system.c:333
 msgid "Reboot your computer"
 msgstr "તમારુ કોમ્પ્યુટર ફરીથી બુટ કરો"
 
-#: ../gui/greeter/greeter_system.c:210
+#: ../gui/greeter/greeter_system.c:209
 msgid "Shut down the system so that you may safely turn off the computer."
 msgstr "સિસ્ટમ બંધ કરો જેથી સુરક્ષિત રીતે તમે કોમ્પ્યુટર બંધ કરી શકો."
 
-#: ../gui/greeter/greeter_system.c:223 ../gui/greeter/greeter_system.c:351
+#: ../gui/greeter/greeter_system.c:222 ../gui/greeter/greeter_system.c:350
 msgid "Suspend your computer"
 msgstr "તમારા કોમ્પ્યુટરને સ્થગિત કરો"
 
-#: ../gui/greeter/greeter_system.c:284
+#: ../gui/greeter/greeter_system.c:283
 msgid "Choose an Action"
 msgstr "ક્રિયા પસંદ કરો"
 
-#: ../gui/greeter/greeter_system.c:313
+#: ../gui/greeter/greeter_system.c:312
 msgid "Shut _down the computer"
 msgstr "કમ્પ્યુટર બંધ કરો (_d)"
 
-#: ../gui/greeter/greeter_system.c:316
+#: ../gui/greeter/greeter_system.c:315
 msgid "Shut down your computer so that you may turn it off."
 msgstr "કમ્પ્યુટર બંધ કરો કે જેથી તમે એની ક્રિયાઓ બંધ કરી શકો."
 
-#: ../gui/greeter/greeter_system.c:331
+#: ../gui/greeter/greeter_system.c:330
 msgid "_Reboot the computer"
 msgstr "કમ્પ્યુટર ફરીથી બુટ કરો (_R)"
 
-#: ../gui/greeter/greeter_system.c:348
+#: ../gui/greeter/greeter_system.c:347
 msgid "Sus_pend the computer"
 msgstr "કમ્પ્યુટર સ્થગિત કરો (_p)"
 
-#: ../gui/greeter/greeter_system.c:365
+#: ../gui/greeter/greeter_system.c:364
 msgid "Run _XDMCP chooser"
 msgstr "XDMCP પસંદગીકાર ચલાવો (_X)"
 
-#: ../gui/greeter/greeter_system.c:385
+#: ../gui/greeter/greeter_system.c:384
 msgid "Confi_gure the login manager"
 msgstr "પ્રવેશ વ્યવસ્થાપકને રુપરેખાંકિત કરો (_g)"
 
