@@ -1,723 +1,662 @@
 Ahh news...
 
-2.13.0.3 stuff:
+2.13.0.4 stuff:
 
-- Minor UI improvements to gdmsetup (Dennis Cranston,
-  Calum Benson)
+Interface Changes:
 
-- Removed libgnome dependencies for all GDM programs
-  except gdmflexiserver and gdmsetup.  These should be
-  fixed for the next release.  (Jani Monoses,
-  Brian Cameron)
+- This version of GDM handles its configuration files slighly differently.
+  Now users are not recommended to modify the installed gdm.conf file and
+  are instead encouraged to make changes to gdm.conf-custom.  The gdmsetup
+  program now saves user configuration changes to the gdm.conf-custom file.
+  Configuration options specified in gdm.conf-custom file override the values
+  in the main gdm.conf file.  
 
-- Now communications protocol used by client does not
-  shut down after each call, improves performance.
+  This allows distributions to overwrite the gdm.conf file without worry
+  that the file contains any user customizations.  When running "make install"
+  GDM now compares the installed gdm.conf with the factory-gdm.conf file and
+  if they are different moves the gdm.conf file to gdm.conf-custom to 
+  preserve user changes.  If gdm.conf-custom already exists it is renamed to
+  gdm.conf.org.  Distributions should do something similar when upgrading GDM.
+
+  Note that this change is backwards compatible.  GDM will still work as
+  it did before even if no gdm.conf-custom file exists on the system.
   (Brian Cameron)
 
-- More clear stability information about gdm.conf file
-  in README (Brian Cameron)
+- gdmconfig no longer supports the --config command line option since it
+  now accesses the configuration data over the sockets protocol rather
+  than reading the configuration files directly.
 
-- Translation updates (Takeshi AIHANA,
-  \305\275ygimantas Beru\304\215ka,
-  Theppitak Karoonboonyanan, Kjartan Maraas,
-  Christophe Merlet, Francisco Javier F. Serrador,
-  \303\205smund Skj\303\246veland, Alexander Shopov,
-  Marcel Telka, Miloslav Trmac, Ignacio Casal Quinteiro,
-  Adam Weinberger)
+- Added PostDisplayProgram and the --with-prefetch configuration option
+  to support GDM running a prefetch script to preload libraries when it
+  firsts starts the greeter program, which has been shown to improve first
+  time login time.  (Padraig O'Briain, Brian Cameron)
+
+- Add new prioity configuration option for servers defined in the 
+  [server-foo] section of the configuration files.  This can be set from
+  -20 to +20 in order to specify the priority value given to the Xserver
+  on startup.  (Philip Prindeville)
+
+Other Changes:
+
+- This release completes the internal redesign of GDM's configuration
+  system.  Now all configuration information is read by the daemon and
+  accessed via the GDM sockets protocol.  The GET_SERVER_LIST and
+  GET_SERVER_DETAILS sockets commands were added to support accessing the
+  [server-foo] sections of the configuration file via the sockets protocol.
+  (Brian Cameron)
+
+- Merged code for parsing character sequences in gdmgreeter labels and
+  the Welcome/RemoteWelcome keys, so now they are handled the same by both
+  gdmlogin and gdmgreeter.  Now %d is used for display number and %s is the
+  system name (uname.sysname).  The previously undocumented sequences are now
+  explained in the documentation.  (Brian Cameron)
+
+- Fixed bug that caused TimedLogin/AutomaticLogin to be turned on if it had a
+  username value but TimedLoginEnable/AutomaticLoginEnable had a "false" 
+  value.  (Brian Cameron)
+
+- Fixed bug that caused the TimedLogin user to be logged in if the user
+  hit the "ENTER" key without entering a password.  Mention in the GDM
+  documentation that if the user does not enter a username but just hits
+  the ENTER key while the login program is requesting the username, then 
+  GDM will just login as the timed user.  (Brian Cameron)
+
+- Removed libgnome as a GDM dependency and removed most libgnomeui 
+  dependencies.  Redesigning GDM's configuration allowed GDM to stop using
+  deprecated gnome_config interfaces, for example.  (Brian Cameron)
+
+- Fixed a bug with keeping the sockets protocol open for multiple commands
+  that was included in the last release, and fixed memory handling issues
+  that was causing core dumping with gdmsetup in the previous release.
+  (Brian Cameron)
+
+- Fixed bug with the --with-configdir configure option, which was not 
+  working properly.  (Brian Cameron)
+
+- Now use glib stdio functions like g_chmod instead of chmod. 
+  (Brian Cameron)
+
+- Corrected typos and grammar (Brian Cameron, Asmund Skjaeveland, Adam
+  Weinberger)
+
+- Translation updates (Takeshi AIHANA, \305\275ygimantas Beru\304\215ka,
+  Theppitak Karoonboonyanan, Kostas Papadimas, Ankit Patel, Ignacio Casal
+  Quinteiro, Francisco Javier F. Serrador, Clytie Siddall, Marcel Telka, Ilkka
+  tuohela, Funda Wang, Adam Weinberger)
+
+2.13.0.3 stuff:
+
+- Minor UI improvements to gdmsetup (Dennis Cranston, Calum Benson)
+
+- Removed libgnome dependencies for all GDM programs except gdmflexiserver and
+  gdmsetup.  These should be fixed for the next release.  (Jani Monoses, Brian
+  Cameron)
+
+- Now communications protocol used by client does not shut down after each
+  call, improves performance.  (Brian Cameron)
+
+- More clear stability information about gdm.conf file in README (Brian
+  Cameron)
+
+- Translation updates (Takeshi AIHANA, \305\275ygimantas Beru\304\215ka,
+  Theppitak Karoonboonyanan, Kjartan Maraas, Christophe Merlet, Francisco
+  Javier F. Serrador, \303\205smund Skj\303\246veland, Alexander Shopov, Marcel
+  Telka, Miloslav Trmac, Ignacio Casal Quinteiro, Adam Weinberger)
 
 2.13.0.2 stuff:
 
-- Further redesign of configuration parsing logic.
-  Now all GDM slaves (except gdmsetup) use the
-  GET_CONFIG socket command to access configuration
-  data.  This means all configuration parsing is now
-  handled in one place, the daemon.  Improvements
-  to the daemon configuration parsing so it
-  correctly parses and validates all parameters used
-  by the slave programs.  Also fix some compile
-  issues that were causing problems with certain
-  configurations.  (Brian Cameron)
+- Further redesign of configuration parsing logic.  Now all GDM slaves (except
+  gdmsetup) use the GET_CONFIG socket command to access configuration data.
+  This means all configuration parsing is now handled in one place, the daemon.
+  Improvements to the daemon configuration parsing so it correctly parses and
+  validates all parameters used by the slave programs.  Also fix some compile
+  issues that were causing problems with certain configurations.  (Brian
+  Cameron)
 
-- Improved the GET_CONFIG command so that you don't
-  have to include the default value (you can use
-  "greeter/IncludeAll" instead of having to use
-  "greeter/IncludeAll=false".   Also you can 
-  access keys that contain translatable strings
-  (e.g. "greeter/Welcome[cs]") via the GET_CONFIG
-  command.  (Brian Cameron)
+- Improved the GET_CONFIG command so that you don't have to include the default
+  value (you can use "greeter/IncludeAll" instead of having to use
+  "greeter/IncludeAll=false".   Also you can access keys that contain
+  translatable strings (e.g. "greeter/Welcome[cs]") via the GET_CONFIG command.
+  (Brian Cameron)
   
-- Changes to peeking VT freeness in 2.13.0.1 broke
-  virtual terminal support on BSD.  This release
-  corrects this problem.  (Brian Cameron)
+- Changes to peeking VT freeness in 2.13.0.1 broke virtual terminal support on
+  BSD.  This release corrects this problem.  (Brian Cameron)
 
-- Correct Linux get VT logic so it returns the
-  correct VT.  (Frederic Crozat)
+- Correct Linux get VT logic so it returns the correct VT.  (Frederic Crozat)
 
-- Now gdmlogin always uses GDK_RGB_DITHER_MAX
-  when painting the background to ensure a nice
-  background regardless of X configuration
-  (e.g. X in 16bpp mode).  (Frederic Crozat)
+- Now gdmlogin always uses GDK_RGB_DITHER_MAX when painting the background to
+  ensure a nice background regardless of X configuration (e.g. X in 16bpp
+  mode).  (Frederic Crozat)
 
-- Now check for Xserver in prefix /usr.
-  (J\303\274rg Billeter)
+- Now check for Xserver in prefix /usr.  (J\303\274rg Billeter)
 
 - Fix configure for Darwin. (dmacks@netspace.org)
 
-- Fix compiler warnings. (Frederic Crozat, 
-  dmacks@netspace.org, Brian Cameron)
+- Fix compiler warnings. (Frederic Crozat, dmacks@netspace.org, Brian Cameron)
 
-- Ensure gnome.desktop and default.desktop have
-  644 perms.  (Andrew Benton)
+- Ensure gnome.desktop and default.desktop have 644 perms.  (Andrew Benton)
 
-- Translation updates (Takeshi AIHANA,
-  \305\275ygimantas Beru\304\215ka, Theppitak
-  Karoonboonyanan, Priit Laes, Ignacio Casal
-  Quinteiro, Alexander Shopov, Francisco Javier F.
-  Serrador, Marcel Telka, Funda Wang, Adam Weinberger)
+- Translation updates (Takeshi AIHANA, \305\275ygimantas Beru\304\215ka,
+  Theppitak Karoonboonyanan, Priit Laes, Ignacio Casal Quinteiro, Alexander
+  Shopov, Francisco Javier F.  Serrador, Marcel Telka, Funda Wang,
+  Adam Weinberger)
 
 2.13.0.1 stuff:
 
-- Complete redesign of gdmsetup so it follows
-  usability recommendation mockups by Calum
-  Benson.  (Dennis Cranston, Calum Benson)
+- Complete redesign of gdmsetup so it follows usability recommendation mockups
+  by Calum Benson.  (Dennis Cranston, Calum Benson)
 
-- gdmsetup now supports drag-and-drop for new
-  themes.  (Dennis Cranston)
+- gdmsetup now supports drag-and-drop for new themes.  (Dennis Cranston)
 
-- The chooser GUI has been HIGified. (Dennis
-  Cranston)
+- The chooser GUI has been HIGified. (Dennis Cranston)
 
-- Redesign of configuration parsing logic in
-  the GDM daemon which simplifies how the
-  UPDATE_CONFIG and GET_CONFIG commands work,
-  better encapsulates the vicious-extensions
-  logic, and cleans up the code.  (Brian
-  Cameron)
+- Redesign of configuration parsing logic in the GDM daemon which simplifies
+  how the UPDATE_CONFIG and GET_CONFIG commands work, better encapsulates the
+  vicious-extensions logic, and cleans up the code.  (Brian Cameron)
 
-- If slave does not respond to a SIGTERM, try a
-  SIGKILL the second time.  This resolves a problem
-  where GDM sometimes stops managing a display
-  because it just keeps waiting for the slave to
-  die.  See bug #113902.  (Vaclav Smilauer).
+- If slave does not respond to a SIGTERM, try a SIGKILL the second time.  This
+  resolves a problem where GDM sometimes stops managing a display because it
+  just keeps waiting for the slave to die.  See bug #113902.  (Vaclav Smilauer)
 
-- GDM now uses VT_GETSTATE for peeking VT freeness
-  (Samuel Thibault)
+- GDM now uses VT_GETSTATE for peeking VT freeness (Samuel Thibault)
 
-- Now GDM warns correctly about caps lock if an
-  alternate keymap is enabled.  kbGetState is used
-  instead of XkbGetIndicator State. 
-  (Sebastien Bacher)
+- Now GDM warns correctly about caps lock if an alternate keymap is enabled.
+  kbGetState is used instead of XkbGetIndicator State. (Sebastien Bacher)
 
-- Fixed race condition where a variable used by
-  the signal handlers was not being set until after
-  the signal handlers were setup.  Now it is set
-  before avoiding a race.  (Simon Bowden/Brian
-  Cameron)
+- Fixed race condition where a variable used by the signal handlers was not
+  being set until after the signal handlers were setup.  Now it is set before
+  avoiding a race.  (Simon Bowden/Brian Cameron)
 
-- Now check for X server in prefix /usr.
-  (J\303\274rg Billeter)   
+- Now check for X server in prefix /usr.  (J\303\274rg Billeter)   
 
-- Check for XInput fixed in configure and add a
-  check for libgen.h to avoid compiler warnings.
-  (Brian Cameron)
+- Check for XInput fixed in configure and add a check for libgen.h to avoid
+  compiler warnings.  (Brian Cameron)
 
-- Updated check in configure for socklen_t so it
-  includes sys/socket.h to better support BSD
-  platforms that define socklen_t there.
+- Updated check in configure for socklen_t so it includes sys/socket.h to
+  better support BSD platforms that define socklen_t there.
   (dmacks@netspace.org)
 
 - Kurdish added to ALL_LINGUAS. (Erdal Ronahi)
 
-- Translation updates (Takeshi AIHANA, Dan Damian,
-  Theppitak Karoonboonyanan, Priit Laes, Chao-Hsiung
-  Liao, Roozbeh Pournader, Erdal Ronahi, Francisco
-  Javier F. Serrador, Marcel Telka, Funda Wang, Adam
-  Weinberger)
+- Translation updates (Takeshi AIHANA, Dan Damian, Theppitak Karoonboonyanan,
+  Priit Laes, Chao-Hsiung Liao, Roozbeh Pournader, Erdal Ronahi, Francisco
+  Javier F. Serrador, Marcel Telka, Funda Wang, Adam Weinberger)
 
 2.13.0.0 stuff:
 
-- Fix problem with PostSession script not always being
-  executed when user kills the Xserver with
-  ctrl-alt-backspace.  Fixes bug #152906. 
-  (Jerry G. DeLapp)
+- Fix problem with PostSession script not always being executed when user kills
+  the Xserver with ctrl-alt-backspace.  Fixes bug #152906. (Jerry G. DeLapp)
 
-- No longer set tooltips for menu items in gdmlogin.  
-  These do not work with accessibility and no GNOME
-  programs use menu tooltips, it is not recommended.
+- No longer set tooltips for menu items in gdmlogin.  These do not work with
+  accessibility and no GNOME programs use menu tooltips, it is not recommended.
   (Brian Cameron)
 
-- Change the way the "OK" and "Cancel" buttons work
-  so they are consistant.  Now the "Cancel" button
-  in gdmlogin is active when the Username is requested
-  and just clears the field.  This makes gdmlogin work
-  like gdmgreeter.  Now make the buttons insensitive
-  when the ok/enter/tab is pressed and make them
-  sensitive again when the greeter wants entry.  This
-  fixes a bug where the greeter's memory could get
-  corrupted by pressing "Cancel" after authentication
-  (which would only happen if the PostLogin script
-  caused a long enough delay to allow this to happen
-  or perhaps on a really slow machine).  (Brian
-  Cameron)
+- Change the way the "OK" and "Cancel" buttons work so they are consistant.
+  Now the "Cancel" button in gdmlogin is active when the Username is requested
+  and just clears the field.  This makes gdmlogin work like gdmgreeter.  Now
+  make the buttons insensitive when the ok/enter/tab is pressed and make them
+  sensitive again when the greeter wants entry.  This fixes a bug where the
+  greeter's memory could get corrupted by pressing "Cancel" after
+  authentication (which would only happen if the PostLogin script caused a long
+  enough delay to allow this to happen or perhaps on a really slow machine).
+  (Brian Cameron)
 
-- Correct reading of config file in gdmflexiserver.
-  (Christiaan Welvaart)
+- Correct reading of config file in gdmflexiserver.  (Christiaan Welvaart)
 
-- GNOME HIG fixes for the Language, Session, and 
-  Message dialogs.  (Dennis Cranston)
+- GNOME HIG fixes for the Language, Session, and Message dialogs.  (Dennis
+  Cranston)
 
-- Define SoundProgram to be /usr/bin/audioplay instead
-  of /usr/bin/play on Solaris.  /usr/bin/play does not
-  exist on Solaris.
+- Define SoundProgram to be /usr/bin/audioplay instead of /usr/bin/play on
+  Solaris.  /usr/bin/play does not exist on Solaris.
 
-- Better /etc/default/login support on Solaris.  Previously
-  it supported only PASSREQ.  Now it supports PATH, SUPATH
-  and CONSOLE (the same ones CDE login supports).  Added 
-  new PasswordRequired gdm.conf setting so that PASSREQ
-  can be controlled via gdm.conf as well.
+- Better /etc/default/login support on Solaris.  Previously it supported only
+  PASSREQ.  Now it supports PATH, SUPATH and CONSOLE (the same ones CDE login
+  supports).  Added new PasswordRequired gdm.conf setting so that PASSREQ can
+  be controlled via gdm.conf as well.
 
 - Memory leaks fixed.  (Steve Grubb/Brian Cameron)
 
-- Improvements to strings and docs (Adam Weinberger,
-  Brian Cameron)
+- Improvements to strings and docs (Adam Weinberger, Brian Cameron)
 
-- Translation updates (Takeshi AIHANA, Runa Bhattacharjee,
-  Priit Laes, Chao-Hsiung Liao, Ignacio Casal Quinteiro,
-  Vincent van Adrighem, Funda Wang, Adam Weinberger)
+- Translation updates (Takeshi AIHANA, Runa Bhattacharjee, Priit Laes,
+  Chao-Hsiung Liao, Ignacio Casal Quinteiro, Vincent van Adrighem, Funda Wang,
+  Adam Weinberger)
 
 2.8.0.7 stuff:
 
-- Changes to peeking VT freeness in 2.13.0.1 broke
-  virtual terminal support on BSD.  This release
-  corrects this problem.  (Brian Cameron)
+- Changes to peeking VT freeness in 2.13.0.1 broke virtual terminal support on
+  BSD.  This release corrects this problem.  (Brian Cameron)
 
-- Correct Linux get VT logic so it returns the
-  correct VT.  (Frederic Crozat)
+- Correct Linux get VT logic so it returns the correct VT.  (Frederic Crozat)
 
-- Now gdmlogin always uses GDK_RGB_DITHER_MAX
-  when painting the background to ensure a nice
-  background regardless of X configuration
-  (e.g. X in 16bpp mode).  (Frederic Crozat)
+- Now gdmlogin always uses GDK_RGB_DITHER_MAX when painting the background to
+  ensure a nice background regardless of X configuration (e.g. X in 16bpp
+  mode).  (Frederic Crozat)
 
-- Now check for Xserver in prefix /usr.
-  (J\303\274rg Billeter)
+- Now check for Xserver in prefix /usr.  (J\303\274rg Billeter)
 
 - Fix configure for Darwin.  (dmacks@netspace.org)
 
-- Fix compiler warnings. (Frederic Crozat,
-  dmacks@netspace.org, Brian Cameron)
+- Fix compiler warnings. (Frederic Crozat, dmacks@netspace.org, Brian Cameron)
 
-- Ensure gnome.desktop and default.desktop have
-  644 perms.  (Andrew Benton)
+- Ensure gnome.desktop and default.desktop have 644 perms.  (Andrew Benton)
 
-- Translation updates (Takeshi AIHANA, Runa Bhattacharjee,
-  Dan Damian, Theppitak Karoonboonyanan, Inaki Larranaga,
-  Priit Laes, Roozbeh Pournader, Alexander Shopov, Marcel
-  Telka, Miloslav Trmac)
+- Translation updates (Takeshi AIHANA, Runa Bhattacharjee, Dan Damian,
+  Theppitak Karoonboonyanan, Inaki Larranaga, Priit Laes, Roozbeh Pournader,
+  Alexander Shopov, Marcel Telka, Miloslav Trmac)
 
 2.8.0.6 stuff:
 
-- Fix problem with PostSession script not always
-  getting executed when user kills the Xserver
-  with ctrl-alt-backspace.  This is caused because
-  an xioerror is generated when the clients are
-  killed and this needs to be ignored for the
-  PostSession script to be processed.  This problem
-  tended not to manifest in GDM 2.6 since the
-  call to kill the clients was made earlier.
-  However, it was still a race condition in 2.6
-  and this fix ensures that the slave will never
-  exit too early.  (Jerry G. DeLapp)
+- Fix problem with PostSession script not always getting executed when user
+  kills the Xserver with ctrl-alt-backspace.  This is caused because an
+  xioerror is generated when the clients are killed and this needs to be
+  ignored for the PostSession script to be processed.  This problem tended not
+  to manifest in GDM 2.6 since the call to kill the clients was made earlier.
+  However, it was still a race condition in 2.6 and this fix ensures that the
+  slave will never exit too early.  (Jerry G. DeLapp)
 
-- The "OK" and "Cancel" buttons in gdmlogin and
-  gdmgreeter now work consistantly.  Now the gdmlogin
-  "Cancel" button is active when the Username is
-  requested and pressing it just clears the field, so
-  it works like gdmgreeter.  Also fixed a bug in
-  gdmgreeter where a user could corrupt gdmgreeter's
-  memory by hitting cancel after authentication, which
-  could only happen if the PostLogin script caused a
-  long enough delay to allow this to happen.
-  (Brian Cameron)
+- The "OK" and "Cancel" buttons in gdmlogin and gdmgreeter now work
+  consistantly.  Now the gdmlogin "Cancel" button is active when the Username
+  is requested and pressing it just clears the field, so it works like
+  gdmgreeter.  Also fixed a bug in gdmgreeter where a user could corrupt
+  gdmgreeter's memory by hitting cancel after authentication, which could only
+  happen if the PostLogin script caused a long enough delay to allow this to
+  happen.  (Brian Cameron)
 
-- No longer set tooltips for menu items in gdmlogin.
-  They are distracting and do not work with
-  accessibility.  No GNOME programs use menu tooltips
-  and it is not recommend.  (Brian Cameron)
+- No longer set tooltips for menu items in gdmlogin.  They are distracting and
+  do not work with accessibility.  No GNOME programs use menu tooltips and it
+  is not recommend.  (Brian Cameron)
 
-- If slave does not respond to a SIGTERM, try a
-  SIGKILL the second time.  This resolves a problem
-  where GDM sometimes stops managing a display
-  because it just keeps waiting for the slave to
-  die.  See bug #113902.  (Vaclav Smilauer).
+- If slave does not respond to a SIGTERM, try a SIGKILL the second time.  This
+  resolves a problem where GDM sometimes stops managing a display because it
+  just keeps waiting for the slave to die.  See bug #113902.  (Vaclav Smilauer)
 
 - GDM now uses VT_GETSTATE for peeking VT freeness
 
-- Now GDM warns correctly about caps lock if an
-  alternate keymap is enabled.  kbGetState is used
-  instead of XkbGetIndicator State.
-  (Sebastien Bacher)
+- Now GDM warns correctly about caps lock if an alternate keymap is enabled.
+  kbGetState is used instead of XkbGetIndicator State.  (Sebastien Bacher)
 
-- Now set cursor and watch as soon as GTK+ is
-  initialized and the configure file read, which
-  shortens the amount of time the backgrounds is
-  Xserver default grey.  Cleaned up the code so
-  that all programs use a common function to set the
-  background.  (Brian Cameron)
+- Now set cursor and watch as soon as GTK+ is initialized and the configure
+  file read, which shortens the amount of time the backgrounds is Xserver
+  default grey.  Cleaned up the code so that all programs use a common
+  function to set the background.  (Brian Cameron)
 
-- Fix reading of config file in gdmflexiserver so
-  it properly reads in the available servers.
-  (Christiaan Welvaart)
+- Fix reading of config file in gdmflexiserver so it properly reads in the
+  available servers.  (Christiaan Welvaart)
 
-- Fixed race condition where a variable used by
-  the signal handlers was not being set until after
-  the signal handlers were setup.  Now it is set
-  before avoiding a race.  (Simon Bowden/Brian
-  Cameron)
+- Fixed race condition where a variable used by the signal handlers was not
+  being set until after the signal handlers were setup.  Now it is set before
+  avoiding a race.  (Simon Bowden/Brian Cameron)
 
-- Define SoundProgram to be /usr/bin/autoplay on
-  Solaris instead of /usr/bin/play, since
-  /usr/bin/play doesn't exist on Solaris.
+- Define SoundProgram to be /usr/bin/autoplay on Solaris instead of
+  /usr/bin/play, since /usr/bin/play doesn't exist on Solaris.
 
-- Check for XInput fixed in configure and add a
-  check for libgen.h to avoid compiler warnings.
-  (Brian Cameron)
+- Check for XInput fixed in configure and add a check for libgen.h to avoid
+  compiler warnings.  (Brian Cameron)
 
-- Updated check in configure for socklen_t so it
-  includes sys/socket.h to better support BSD
-  platforms that define socklen_t there.
+- Updated check in configure for socklen_t so it includes sys/socket.h to
+  better support BSD platforms that define socklen_t there.
   (dmacks@netspace.org)
 
-- No longer link vicious-extensions with the gesture
-  listeners, since they don't use vicious-extensions.
+- No longer link vicious-extensions with the gesture listeners, since they
+  do not use vicious-extensions.
 
-- Translation updates (Takeshi AIHANA, Runa Bhattacharjee,
-  Dan Damian, Maxim Dziumanenko, Laurent Dhima,
-  Theppitak Karoonboonyanan, Priit Laes, Inaki Larranaga,
-  Roozbeh Pournader, Ignacio Casal Quinteiro, Christian
-  Rose, Ivar Smolin, Marcel Telka, Ilkka Tuohela, Miloslav
-  Trmac)
+- Translation updates (Takeshi AIHANA, Runa Bhattacharjee, Dan Damian, Maxim
+  Dziumanenko, Laurent Dhima, Theppitak Karoonboonyanan, Priit Laes, Inaki
+  Larranaga, Roozbeh Pournader, Ignacio Casal Quinteiro, Christian Rose, Ivar
+  Smolin, Marcel Telka, Ilkka Tuohela, Miloslav Trmac)
 
 2.8.0.5 stuff:
 
-- gdmflexiserver supports --startnew option so that
-  gdmflexiserver can be told to not pop-up the dialog
-  asking if the user wants to start a current session.
-  With this option it just always starts a new session.
-  This allows running gdmflexiserver from the 
-  screensaver, where the pop-up can't be interacted
-  with due to the nature of the screensaver.
-  (Brian Cameron)
+- gdmflexiserver supports --startnew option so that gdmflexiserver can be told
+  to not pop-up the dialog asking if the user wants to start a current session.
+  With this option it just always starts a new session.  This allows running
+  gdmflexiserver from the screensaver, where the pop-up can't be interacted
+  with due to the nature of the screensaver.  (Brian Cameron)
 
-- Now gdmflexiserver supports gnome-screensaver if
-  available, then defaults to xscreensaver. 
-  (William Jon McCann)
+- Now gdmflexiserver supports gnome-screensaver if available, then defaults to
+  xscreensaver. (William Jon McCann)
 
-- Bug corrected in dwellmouselistener which caused it
-  to always fail to recognize gestures.  (Brian
+- Bug corrected in dwellmouselistener which caused it to always fail to
+  recognize gestures.  (Brian Cameron)
+
+- Added warning message if gdmgreeter theme supports face browser but does not
+  have pam-message defined.  (Brian Cameron)
+
+- gdmsetup and gdmphotosetup now only map right/left mouse buttons to button1
+  when running under GDM.  When running as user, honor user defaults.  (Brian
   Cameron)
 
-- Added warning message if gdmgreeter theme supports
-  face browser but does not have pam-message defined.
-  (Brian Cameron)
-
-- gdmsetup and gdmphotosetup now only map right/left
-  mouse buttons to button1 when running under GDM.
-  When running as user, honor user defaults.  
-  (Brian Cameron)
-
-- XdmcpFill() failure is now logged as debug, since
-  this happens when the client disconnects from the
-  XDMCP server before the session was setup.
+- XdmcpFill() failure is now logged as debug, since this happens when the
+  client disconnects from the XDMCP server before the session was setup.
   (Bastien Nocera)
 
-- gdmsetup fixed so when user modifies Include/Exclude
-  list, the automatic/timed dropdown lists are updated
-  immediately instead of having to stop and restart
-  gdmsetup to see the users in the list. (Brian
-  Cameron)
+- gdmsetup fixed so when user modifies Include/Exclude list, the
+  automatic/timed dropdown lists are updated immediately instead of having to
+  stop and restart gdmsetup to see the users in the list. (Brian Cameron)
 
-- Correct illegal reference to build directory in 
-  installed .la files. (Stanislav Brabec)
+- Correct illegal reference to build directory in installed .la files.
+  (Stanislav Brabec)
 
-- Removed test that causes needless syslog() message
-  on Solaris when auditing is turned off.  New docs
-  explaining how to setup autologin on Solaris.
+- Removed test that causes needless syslog() message on Solaris when auditing
+  is turned off.  New docs explaining how to setup autologin on Solaris.
   (Brian Cameron)
 
-- Translation updates (Gabor Kelemen, Priit Laes, Kjartan
-  Maraas, Ankit Patel, Ignacio Casal Quinteiro, Hendrick
-  Richter, Erdal Ronahi, Satoru SATOH, Francisco Javier F.
-  Serrador, Alexander Shopov, Clytie Siddall, Tommi
-  Vainikainen, Funda Wang, Vincent van Adrighem,
-  Adam Weinberger)
+- Translation updates (Gabor Kelemen, Priit Laes, Kjartan Maraas, Ankit Patel,
+  Ignacio Casal Quinteiro, Hendrick Richter, Erdal Ronahi, Satoru SATOH,
+  Francisco Javier F.  Serrador, Alexander Shopov, Clytie Siddall, Tommi
+  Vainikainen, Funda Wang, Vincent van Adrighem, Adam Weinberger)
 
 2.8.0.4 stuff:
 
-- Corrected syslog debugging so it works better.
-  (Brian Cameron)
+- Corrected syslog debugging so it works better.  (Brian Cameron)
 
-- Minor fix for clean 64 bit compilation.  (Brian 
-  Cameron)
+- Minor fix for clean 64 bit compilation.  (Brian Cameron)
 	
 - Fix address of website in README (Tommi Vainikainen)
 
-- Translation updates (\305\275ygimantas Beru\304\215ka,
-   Hendrik Brandt, Baris Cicek, Maxim Dziumanenko, Artur
-   Flinta, Raphael Higino, Gabor Kelemen, Priit Laes,
-   Chao-Hsiung Liao, Duarte Loreto, Jordi Mallach,
-   Christophe Merlet, Ankit Patel, Changwoo Ryu, Francisco
-   Javier F. Serrador, Nickolay V. Shmyrev, Clytie Siddall,
-   Slobodan D. Sredojevic, Mugurel Tudor, Miloslav Trmac,
-   Vincent van Adrighem)
+- Translation updates (\305\275ygimantas Beru\304\215ka, Hendrik Brandt, Baris
+  Cicek, Maxim Dziumanenko, Artur Flinta, Raphael Higino, Gabor Kelemen, Priit
+  Laes, Chao-Hsiung Liao, Duarte Loreto, Jordi Mallach, Christophe Merlet,
+  Ankit Patel, Changwoo Ryu, Francisco Javier F. Serrador, Nickolay V. Shmyrev,
+  Clytie Siddall, Slobodan D. Sredojevic, Mugurel Tudor, Miloslav Trmac,
+  Vincent van Adrighem)
 
 2.8.0.3 stuff:
 
 - The GDM website has moved to a new location
-  http://www.gnome.org/projects/gdm/, and the GDM
-  mail alias has moved from gdm@sunsite.dk to 
-  gdm-list@gnome.org.  README, and GDM docs updated
-  with the new information and corrected broken link
-  to the GDM Theme section at http://art.gnome.org/
-  (Brian Cameron)
+  http://www.gnome.org/projects/gdm/, and the GDM mail alias has moved from
+  gdm@sunsite.dk to gdm-list@gnome.org.  README, and GDM docs updated with the
+  new information and corrected broken link to the GDM Theme section at
+  http://art.gnome.org/ (Brian Cameron)
 
-- Installation location of gdmphotosetup.desktop 
-  has moved from the deprecated /usr/share/gnome/capplets
-  to /usr/share/applications (Mark McLoughlin/Brian
+- Installation location of gdmphotosetup.desktop has moved from the deprecated
+  /usr/share/gnome/capplets to /usr/share/applications (Mark McLoughlin, Brian
   Cameron)
 
-- Honor default session when logging in via autologin.
-  (Hans Petter Jansson).
+- Honor default session when logging in via autologin.  (Hans Petter Jansson)
 
-- Removed spaces in locale name since it caused GDM
-  to discard the locales.  (Frederic Crozat)
+- Removed spaces in locale name since it caused GDM to discard the locales.
+  (Frederic Crozat)
 
 - Added missing tooltips (Rodrigo Moya)
 
-- Corrected reading of configuration file in
-  gdmflexiserver so it works.  Fixes corrupted 
-  Session selection dialog presented to user.
-  (Brian Cameron)
+- Corrected reading of configuration file in gdmflexiserver so it works.  Fixes
+  corrupted Session selection dialog presented to user.  (Brian Cameron)
 
-- Correct use-after-free with the dynamic session in 
-  the sessions list, corrects tooltip corruption.
-  (Joe Marcus Clarke)
+- Correct use-after-free with the dynamic session in the sessions list,
+  corrects tooltip corruption.  (Joe Marcus Clarke)
 
-- Translation updates (Laurent Dhima, Raphael Higino,
-  Rhys Jones, Gabor Kelemen, Priit Laes, Kjartan Maraas,
-  Kostas Papadimas, Ignacio Casal Quinteiro, Francisco
-  Javier F. Serrador, Alexander Shopov, Terance Sola,
+- Translation updates (Laurent Dhima, Raphael Higino, Rhys Jones, Gabor
+  Kelemen, Priit Laes, Kjartan Maraas, Kostas Papadimas, Ignacio Casal
+  Quinteiro, Francisco Javier F. Serrador, Alexander Shopov, Terance Sola,
   Marcel Telka, Mugurel Tudor, Funda Wang 
 
 2.8.0.2 stuff:
 
-- GDM now supports more dynamic configuration.  The
-  gdm daemon supports the --config option which allows
-  an alternative configuration file to be supported. 
-  The --with-configdir configure option may also be
-  used to specify a system-wide configuration location
-  so the gdm.conf file can be located on a mounted
-  directory.  To support machine-specific configuration,
-  an existing %sysconfdir/gdm configuration file will
-  override a system-wide configuration file.  Refer
-  to the GDM documentation for more information.
-  (Brian Cameron)
+- GDM now supports more dynamic configuration.  The gdm daemon supports the
+  --config option which allows an alternative configuration file to be
+  supported. The --with-configdir configure option may also be used to specify
+  a system-wide configuration location so the gdm.conf file can be located on a
+  mounted directory.  To support machine-specific configuration, an existing
+  %sysconfdir/gdm configuration file will override a system-wide configuration
+  file.  Refer to the GDM documentation for more information.  (Brian Cameron)
 
-- New configuration option AlwaysLoginCurrentSession
-  which will automatically switch the user to their
-  previous session without asking.  This feature is
+- New configuration option AlwaysLoginCurrentSession which will automatically
+  switch the user to their previous session without asking.  This feature is
   turned off by default. (William Jon McCann)
 
-- Now Use24Clock setting support "auto" which will
-  use the system default for date/time formatting.
-  (Tommi Vainikainen)
+- Now Use24Clock setting support "auto" which will use the system default for
+  date/time formatting.  (Tommi Vainikainen)
 
-- Better backwards compatibility support for Welcome
-  and RemoteWelcome.  If using an old gdm.conf (older
-  than 2.8.0.0) file that does not have settings for
-  DefaultWelcome and/or DefaultRemoteWelcome, GDM will
-  now continue to work as it did before 2.8.0.0.
-  (Brian Cameron)
+- Better backwards compatibility support for Welcome and RemoteWelcome.  If
+  using an old gdm.conf (older than 2.8.0.0) file that does not have settings
+  for DefaultWelcome and/or DefaultRemoteWelcome, GDM will now continue to work
+  as it did before 2.8.0.0.  (Brian Cameron)
 
-- Usability improvements to gdmsetup.  "Face Browser"
-  tab renamed to "User".  Now tabs no longer have
-  mnemonics, since this violates HIG.  Fixed broken
-  sensitivity on the "Users" tab.  Improved labels.
-  (Brian Cameron)
+- Usability improvements to gdmsetup.  "Face Browser" tab renamed to "User".
+  Now tabs no longer have mnemonics, since this violates HIG.  Fixed broken
+  sensitivity on the "Users" tab.  Improved labels.  (Brian Cameron)
 
-- Support HIG style button layout in gdmlogin.
+- Support HIG style button layout in gdmlogin.  (William Jon McCann)
+
+- Use GTK+ themed icon stock_person before falling back to the DefaultFace.
   (William Jon McCann)
 
-- Use GTK+ themed icon stock_person before falling
-  back to the DefaultFace.  (William Jon McCann)
+- Usability improvements to the face browser when using gdmgreeter, now the
+  background behind the userlist translucent.  (William Jon McCann)
 
-- Usability improvements to the face browser when using
-  gdmgreeter, now the background behind the userlist
-  translucent.  (William Jon McCann)
+- Usability improvements to gdmphotosetup, and now better follows HIG.
+  (William Jon McCann)
 
-- Usability improvements to gdmphotosetup, and now 
-  better follows HIG.   (William Jon McCann)
+- New selection of face browser images.  (William Jon McCann) 
 
-- New selection of face browser images.  (William
-  Jon McCann) 
+- No longer stat or read face images from remote home directories.  (William
+  Jon McCann)
 
-- No longer stat or read face images from remote home
-  directories.  (William Jon McCann)
+- New gdmflexiserver command "GET_CONFIG_FILE" which will return the location
+  of the configuration file being used by the daemon.  (Brian Cameron)
 
-- New gdmflexiserver command "GET_CONFIG_FILE" which
-  will return the location of the configuration file
-  being used by the daemon.  (Brian Cameron)
-
-- Now gdmflexiserver command "GET_CONFIG" works.
-  Previously it only returned a value if the value
-  was set in the gdm.conf file.  Now it returns
-  compiled-in default values if gdm.conf has no
-  setting.  (Brian Cameron)
+- Now gdmflexiserver command "GET_CONFIG" works.  Previously it only returned a
+  value if the value was set in the gdm.conf file.  Now it returns compiled-in
+  default values if gdm.conf has no setting.  (Brian Cameron)
 
 - Support DragonFly VT. (Joerg Sonnenberger)
 
-- GDM configure script now Supports TCP Wrappers on Solaris.
-  (Brian Cameron)
+- GDM configure script now Supports TCP Wrappers on Solaris.  (Brian Cameron)
 
-- Many string/grammar improvements. (Tommi Vainikainen,
-  Brian Cameron)
+- Many string/grammar improvements. (Tommi Vainikainen, Brian Cameron)
 
 - Better C89 compiler support.  (Jens Granseuer)
 
-- Translation updates (Hendrik Brandt, Nikos Charonitakis,
-  Pawan Chitrakar, Laurent Dhima, Raphael Higino, Theppitak
-  Karoonboonyanan, Gabor Kelemen, Priit Laes, Chao-Hsiung Liao,
-  Kjartan Maraas, William Jon McCann, Ankit Patel, Hendrik Richter,
-  Francisco Javier F. Serrador, Alexander Shopov, Clytie Siddall,
-  Terance Sola, Marcel Telka, Miloslav Trmac, Tommi Vainikainen,
-  Funda Wang, Adam Weinberger, \305\275ygimantas Beru\304\215ka 
+- Translation updates (Hendrik Brandt, Nikos Charonitakis, Pawan Chitrakar,
+  Laurent Dhima, Raphael Higino, Theppitak Karoonboonyanan, Gabor Kelemen,
+  Priit Laes, Chao-Hsiung Liao, Kjartan Maraas, William Jon McCann, Ankit
+  Patel, Hendrik Richter, Francisco Javier F. Serrador, Alexander Shopov,
+  Clytie Siddall, Terance Sola, Marcel Telka, Miloslav Trmac, Tommi
+  Vainikainen, Funda Wang, Adam Weinberger, \305\275ygimantas Beru\304\215ka 
 
 2.8.0.1 stuff:
 
-- This release fixes a nasty bug which was causing the
-  /etc/gdm/Xsession file to always use /bin/ksh.  This
-  caused problems on Linux, where it should be /bin/sh.
-  It now is only /bin/ksh on Solaris builds.  (Brian
-  Cameron)
+- This release fixes a nasty bug which was causing the /etc/gdm/Xsession file
+  to always use /bin/ksh.  This caused problems on Linux, where it should be
+  /bin/sh.  It now is only /bin/ksh on Solaris builds.  (Brian Cameron)
 
-- seteuid/setegid logic in the GDM slave logic has been
-  made more sane.  This was causing problems running GDM2
-  on NetBSD (refer to bug #301821).  (Julio M. Merino Vidal)
+- seteuid/setegid logic in the GDM slave logic has been made more sane.  This
+  was causing problems running GDM2 on NetBSD (refer to bug #301821).  (Julio
+  M. Merino Vidal)
 
-- Correct "Delete Theme" button sensitivity in gdmsetup.
-  (Andrew Case)
+- Correct "Delete Theme" button sensitivity in gdmsetup.  (Andrew Case)
 
 - Minor correction to Solaris audit logic.  (Gary Winiger)
 
 - Updated autogen.sh so it now works with automake > 1.4.
 
-- No longer use C99 features that do not work with gcc 2.95,
-  specifically do not declare variables except at the
-  beginning of a block.  (Jens Granseuer)
+- No longer use C99 features that do not work with gcc 2.95, specifically do
+  not declare variables except at the beginning of a block.  (Jens Granseuer)
 
-- Corrected configure script so it works with pkgconfig
-  0.17.2.  The new pkgconfig broke the build on Solaris
-  since it no longer allows the linker to pull in libraries
-  that are implicitely included.  Now all libraries are
+- Corrected configure script so it works with pkgconfig 0.17.2.  The new
+  pkgconfig broke the build on Solaris since it no longer allows the linker to
+  pull in libraries that are implicitely included.  Now all libraries are
   explicit.
 
-- References to libgnome removed from vicious-extensions,
-  so it no longer depends on libgnome.  It now depends
-  directly on i18n libraries.  (Andrew Case)
+- References to libgnome removed from vicious-extensions, so it no longer
+  depends on libgnome.  It now depends directly on i18n libraries.  (Andrew
+  Case)
 
-- The gesture listeners now log debug messages to syslog
-  instead of stdout, and debug can now be turned on by
-  setting the GDM_DEBUG_GESTURES environment variable
-  rather than needing to recompile with debug.  This makes
-  it much easier to debug issues.  (Brian Cameron)
+- The gesture listeners now log debug messages to syslog instead of stdout, and
+  debug can now be turned on by setting the GDM_DEBUG_GESTURES environment
+  variable rather than needing to recompile with debug.  This makes it much
+  easier to debug issues.  (Brian Cameron)
 
 - Leaks fixed (Kjartan Maraas)
 
 - Corrections to docs (Andrew Case, Martin Petersen)
 
-- Translation updates (Kjartan Maraas, Miloslav Trmac,
-  Ignacio Casal Quinteiro, Vincent van Adrighem, Francisco
-  Javier F. Serrador, Gabor Kelemen, Theppitak Karoonboonyanan,
-  Martin Willemoes Hansen, Priit Laes, Adam Awinberger,
-  Clytie Siddall, Abel Cheung
+- Translation updates (Kjartan Maraas, Miloslav Trmac, Ignacio Casal Quinteiro,
+  Vincent van Adrighem, Francisco Javier F. Serrador, Gabor Kelemen, Theppitak
+  Karoonboonyanan, Martin Willemoes Hansen, Priit Laes, Adam Awinberger, Clytie
+  Siddall, Abel Cheung
 
 2.8.0.0 stuff:
 
 Interface Changes:
 
-- Now gdm, gdm-binary, gdmsetup are installed to /sbin and 
-  gdmchooser, gdmgreeter, gdmlogin are installed to /libexec.
-  This better conforms to UNIX recommend installation locations.
-  The gdmconfig and gdmXnest symlinks have been removed since
-  they were redundant.  Distributions will need to modify the
-  way GDM programs are launched to reflect these changes.
-  (Brian Cameron)
+- Now gdm, gdm-binary, gdmsetup are installed to /sbin and gdmchooser,
+  gdmgreeter, gdmlogin are installed to /libexec.  This better conforms to UNIX
+  recommend installation locations.  The gdmconfig and gdmXnest symlinks have
+  been removed since they were redundant.  Distributions will need to modify
+  the way GDM programs are launched to reflect these changes.  (Brian Cameron)
 
-- gdm.conf and GdmSetup now use the DefaultWelcome and
-  DefaultRemoteWelcome keys to specify if the default message should
-  be used.  Now the Welcome and RemoteWelcome keys are empty 
-  by default.  This is to avoid putting strings that are translated
-  in the gdm.conf file.  Users that want to use a non-default 
-  welcome string will need to ensure that DefaultWelcome and/or
+- gdm.conf and GdmSetup now use the DefaultWelcome and DefaultRemoteWelcome
+  keys to specify if the default message should be used.  Now the Welcome and
+  RemoteWelcome keys are empty by default.  This is to avoid putting strings
+  that are translated in the gdm.conf file.  Users that want to use a
+  non-default welcome string will need to ensure that DefaultWelcome and/or
   DefaultRemoteWelcome are set to false.  (Brian Cameron)
 
-- Now users to be included in the face browser need to be 
-  identified using the gdm.conf "Include" configure option or the
-  "Face Browser" tab in gdmsetup.  Previously, GDM parsed the 
-  system's password file for a complete list of users and excluded
-  userid's listed in the gdm.conf "Exclude" configure option.  
-  This behavior did not work well on systems that use NIS for
-  storing passwords.  This previous behavior may be turned back
-  on by setting the gdm.conf "IncludeAll" configure option to
-  "true".  (Brian Cameron)
+- Now users to be included in the face browser need to be identified using the
+  gdm.conf "Include" configure option or the "Face Browser" tab in gdmsetup.
+  Previously, GDM parsed the system's password file for a complete list of
+  users and excluded userid's listed in the gdm.conf "Exclude" configure
+  option.  This behavior did not work well on systems that use NIS for storing
+  passwords.  This previous behavior may be turned back on by setting the
+  gdm.conf "IncludeAll" configure option to "true".  (Brian Cameron)
 
-- xevie Xserver extension is now turned on by default on Linux for
-  better a11y support.
+- xevie Xserver extension is now turned on by default on Linux for better a11y
+  support.
 
-- /bin/ksh is used in the GDM2 Xsession script on Solaris.  Since
-  this script sources the user's $HOME/.profile, ksh works better
-  if the profile has bash/ksh style syntax.  (Brian Cameron)
+- /bin/ksh is used in the GDM2 Xsession script on Solaris.  Since this script
+  sources the user's $HOME/.profile, ksh works better if the profile has
+  bash/ksh style syntax.  (Brian Cameron)
 
 Other Changes:
 
 - Fix so GDM works better on BSD and MacOS.  Upon getting EOF on
-  socket/pipe/etc. G_IO_IN is always set and G_IO_HUP may not be
-  set.  Therefore, if a length <= 0 is returned from read(), the
-  socket is closed.   This prevents gdm2 from causing high CPU-load
-  after logout.  (Joe Marcus Clarke)
+  socket/pipe/etc. G_IO_IN is always set and G_IO_HUP may not be set.
+  Therefore, if a length <= 0 is returned from read(), the socket is closed.
+  This prevents gdm2 from causing high CPU-load after logout.  (Joe Marcus
+  Clarke)
 
-- Now support "session migration" using DMX.  Refer to docs.
-  (Mark McLoughlin)
+- Now support "session migration" using DMX.  Refer to docs.  (Mark McLoughlin)
 
 - Now support "Dynamic Xservers".  Refer to docs.  (Bob Terek)
 
-- The background colors used in gdmgreeter's Face Browser in can now
-  be themed using the <color iconcolor="" "labelcolor=""> syntax.
-  The Face Browser now shrinks so it is the same size as the treeview
-  so extra white space isn't shown.  (Brian Cameron)
+- The background colors used in gdmgreeter's Face Browser in can now be themed
+  using the <color iconcolor="" "labelcolor=""> syntax.  The Face Browser now
+  shrinks so it is the same size as the treeview so extra white space isn't
+  shown.  (Brian Cameron)
 
-- To better conform to the Usability Guide, gdmlogin and gdmgreeter
-  now supports an "OK" button which functions the same as hitting
-  <Return> and a Cancel button which allows the user to go back to
-  the "Username" prompt without having to enter an invalid password.
-  (Brian Cameron)
+- To better conform to the Usability Guide, gdmlogin and gdmgreeter now
+  supports an "OK" button which functions the same as hitting <Return> and a
+  Cancel button which allows the user to go back to the "Username" prompt
+  without having to enter an invalid password.  (Brian Cameron)
   
-- The Face Browser usability has been improved.  Now the user can
-  select a different face without having to enter an invalid
-  password.  Single-clicking on the face takes the user to Password
-  entry.  The cancel button can be used to get back to "Username"
-  entry.  (Brian Cameron)
+- The Face Browser usability has been improved.  Now the user can select a
+  different face without having to enter an invalid password.  Single-clicking
+  on the face takes the user to Password entry.  The cancel button can be used
+  to get back to "Username" entry.  (Brian Cameron)
 
 - GDM now ships with a collection of default faces installed to
   datadir/pixmaps/faces.  (Jaap A. Haitsma)
 
 - Support for ratio scaling of SVG images.  (Vincent Untz)
 
-- Better left-handed support.  Now right and left mouse buttons can
-  be used in all GDM windows/dialogs/etc.  (Brian Cameron)
+- Better left-handed support.  Now right and left mouse buttons can be used in
+  all GDM windows/dialogs/etc.  (Brian Cameron)
 
 - Now can use XDMCP from Xnest session.  (Leena Gunda)
 
-- Now login success/failure sounds can be selected in gdm.conf or
-  in the Accessibility tab of gdmsetup.  (Andrew Case,
-  Mark McLoughlin)
+- Now login success/failure sounds can be selected in gdm.conf or in the
+  Accessibility tab of gdmsetup.  (Andrew Case, Mark McLoughlin)
 
-- Now "random theme" can be selected in the gdm.conf file or 
-  gdmsetup to allow a different theme to be used for each login.
-  (Andrew Case)
+- Now "random theme" can be selected in the gdm.conf file or gdmsetup to allow
+  a different theme to be used for each login.  (Andrew Case)
 
-- Now support background programs that are started after a timedelay
-  and can be restarted after a delay.  Useful for running a
-  screensaver at login time.  (Laurent Birtz)
+- Now support background programs that are started after a timedelay and can be
+  restarted after a delay.  Useful for running a screensaver at login time.
+  (Laurent Birtz)
 
-- gdmphotosetup has been improved so it now scales the face image
-  to GDM's max icon size before saving it.  By default it looks
-  in datadir/pixmaps/faces to find face images.  (Brian Cameron)
+- gdmphotosetup has been improved so it now scales the face image to GDM's max
+  icon size before saving it.  By default it looks in datadir/pixmaps/faces to
+  find face images.  (Brian Cameron)
   
-- <Control>-U may now be used to clear the entry field.  Now <Tab>
-  works like <Enter> in the login screen.  (Brian Cameron)
+- <Control>-U may now be used to clear the entry field.  Now <Tab> works like
+  <Enter> in the login screen.  (Brian Cameron)
 
-- gdmflexiserver now supports the GET_CONFIG command, so that other
-  programs can access the GDM configuration data in a stable fashion.
-  This is useful for other programs that might want to know what the
-  system suspend/halt/reboot command is or what the max icon size for
-  creating gdm2 face images, etc.  (Brian Cameron)
+- gdmflexiserver now supports the GET_CONFIG command, so that other programs
+  can access the GDM configuration data in a stable fashion.  This is useful
+  for other programs that might want to know what the system
+  suspend/halt/reboot command is or what the max icon size for creating gdm2
+  face images, etc.  (Brian Cameron)
 
-- Flexiserver commands are now sent as a single call to
-  gdm_connection_write or gdm_connection_printf rather than building
-  commands and sending them in pieces.   Fixes bug #158799.
-  (Brian Cameron)
+- Flexiserver commands are now sent as a single call to gdm_connection_write or
+  gdm_connection_printf rather than building commands and sending them in
+  pieces.  Fixes bug #158799.  (Brian Cameron)
 
-- Now gesture listener configuration files specify AT programs by
-  full PATH (default EXPANDED_BINDIR).  This can be overridden via
-  the --with-at-bindir configure option.  Since AT programs are 
-  launched as user gdm2, it is more secure to not depend on PATH.
-  (Brian Cameron)
+- Now gesture listener configuration files specify AT programs by full PATH
+  (default EXPANDED_BINDIR).  This can be overridden via the --with-at-bindir
+  configure option.  Since AT programs are launched as user gdm2, it is more
+  secure to not depend on PATH.  (Brian Cameron)
 
-- Now use more sensible arguments for starting magnifier.
-  (Bill Haneman)
+- Now use more sensible arguments for starting magnifier.  (Bill Haneman)
 
-- gdmsetup Now has a separate tab for configuring the Face Browser,
-  and for configuring the Xserver.  Now the checkboxes for turning
-  on the Face Browser and XDMCP are on the Security tab.  The
-  Face Browser and XDMCP tabs are insenitive if they are not
-  enabled.  Now users can turn on/off Theme menu choice for gdmlogin
-  in the Accessibility tab.  Can turn on/off debug in the Security
-  tab.  RemoteWelcome is insensitive if XDMCP is not enabled.
-  Better mnemonics.  (Brian Cameron, Andrew Case)
+- gdmsetup Now has a separate tab for configuring the Face Browser, and for
+  configuring the Xserver.  Now the checkboxes for turning on the Face Browser
+  and XDMCP are on the Security tab.  The Face Browser and XDMCP tabs are
+  insensitive if they are not enabled.  Now users can turn on/off Theme menu
+  choice for gdmlogin in the Accessibility tab.  Can turn on/off debug in the
+  Security tab.  RemoteWelcome is insensitive if XDMCP is not enabled.  Better
+  mnemonics.  (Brian Cameron, Andrew Case)
 
-- GDM now no longer uses deprecated widgets.  The new file selection
-  widget is used (which no longer core dumps if you click on the
-  sidebars).  GtkComboBox and GtkComboBoxEntry are used instead
-  of GtkEntry and GtkOptionMenu (Brian Cameron)
+- GDM now no longer uses deprecated widgets.  The new file selection widget is
+  used (which no longer core dumps if you click on the sidebars).  GtkComboBox
+  and GtkComboBoxEntry are used instead of GtkEntry and GtkOptionMenu (Brian
+  Cameron)
 
-- gdmthemetester now uses gdmwhich instead of which, so it works
-  better on Solaris.  (Brian Cameron)
+- gdmthemetester now uses gdmwhich instead of which, so it works better on
+  Solaris.  (Brian Cameron)
 
-- Timed login message is displayed in a separate label on gdmlogin
-  which avoids problems caused because different things were trying
-  to use the same label for status messages.  Reorganized gdmlogin
-  screen so it no longer should resize as it is being used.
-  (Brian Cameron)
+- Timed login message is displayed in a separate label on gdmlogin which avoids
+  problems caused because different things were trying to use the same label
+  for status messages.  Reorganized gdmlogin screen so it no longer should
+  resize as it is being used.  (Brian Cameron)
 
-- The max size of the username/password entry is now set to 
-  PAM_MAX_RESP_SIZE to allow long username/password entry.  If
-  PAM is not set, it is defaulted to 256.  (Brian Cameron,
-  Ali Akcaagac)
+- The max size of the username/password entry is now set to PAM_MAX_RESP_SIZE
+  to allow long username/password entry.  If PAM is not set, it is defaulted to
+  256.  (Brian Cameron, Ali Akcaagac)
 
 - Now dialogs that ask the user if they want to change their default
-  language/session have a Cancel button so the user can return to
-  the login screen.  (Brian Cameron)
+  language/session have a Cancel button so the user can return to the login
+  screen.  (Brian Cameron)
 
-- Theme save remembers where the last theme was installed and opens
-  to that location.  Also fixed bug which was causing *.tar theme
-  files to not install properly.  (Brian Cameron)
+- Theme save remembers where the last theme was installed and opens to that
+  location.  Also fixed bug which was causing *.tar theme files to not install
+  properly.  (Brian Cameron)
 
-- No longer rely on Xserver physical screen geometry which sometimes
-  causes text to be too big or too small.  Now use gdk/pango functions
-  to get root window resources.  (Ray Strode)
+- No longer rely on Xserver physical screen geometry which sometimes causes
+  text to be too big or too small.  Now use gdk/pango functions to get root
+  window resources.  (Ray Strode)
 
 - Better sorting of session names in the Session menu.  (Ray Strode)
 
-- Remove gdm_debug from signal handlers since they aren't safe in
-  signal handlers (Mark McLoughlin)
+- Remove gdm_debug from signal handlers since they aren't safe in signal
+  handlers (Mark McLoughlin)
 
-- Many strings, docs, README's have been improved.  Better wording,
-  better grammar.  (Brian Cameron, Seb Wills, Adam Weinberger, Abel
-  Cheung, Kjartan Maraas, Danilo \305\240egan, Nicholas Skehin)
+- Many strings, docs, README's have been improved.  Better wording, better
+  grammar.  (Brian Cameron, Seb Wills, Adam Weinberger, Abel Cheung, Kjartan
+  Maraas, Danilo \305\240egan, Nicholas Skehin)
 
-- Many translation improvements.  Entries in the language list
-  now show their encoding so you no longer see what appear to be
-  identical entries in the language list.  (Nikos Charonitakis,
-  Theppitak Karoonboonyanan, Priit Laes, David Lodge, Jordi Mallach,
-  Kjartan Maraas, Gareth Owen, Ahmad Riza H Nst, Kostas Papadimas,
-  Francisco Javier F. Serrador, Danilo \305\240egan,
-  Alexander Shopov, \303\205smund Skj\303\246veland,
-  Clytie Siddall, Miloslav Trmac, Tommi Vainikainen, Funda Wang,
-  Adam Weinberger)
+- Many translation improvements.  Entries in the language list now show their
+  encoding so you no longer see what appear to be identical entries in the
+  language list.  (Nikos Charonitakis, Theppitak Karoonboonyanan, Priit Laes,
+  David Lodge, Jordi Mallach, Kjartan Maraas, Gareth Owen, Ahmad Riza H Nst,
+  Kostas Papadimas, Francisco Javier F. Serrador, Danilo \305\240egan,
+  Alexander Shopov, \303\205smund Skj\303\246veland, Clytie Siddall, Miloslav
+  Trmac, Tommi Vainikainen, Funda Wang, Adam Weinberger)
 
-- gi18n.h is used instead of libgnome header files.
-  (Christian - Manny Calavera - Neumair)
+- gi18n.h is used instead of libgnome header files.  (Christian - Manny
+  Calavera - Neumair)
 
 - Some cleanup (Brian Cameron, Mark McLoughlin)
 
@@ -1594,7 +1533,7 @@ Major changes in 2.4.4.x since 2.4.1.x:
   the info in a PreSession script or whatnot.
 
 - The graphical greeter now scales down fonts on screens
-  800x600 and less, and scalles down fonts even more
+  800x600 and less, and scales down fonts even more
   on screens 640x480 and less.
 
 - Remove the iconification of Standard greeter feature,

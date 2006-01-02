@@ -1,3 +1,9 @@
+2006-01-02  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.4: 
+	* NEWS, configure.ac: Updated
+	* docs/C/gdm.xml: Updated version/date.
+
 2005-12-24  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/greeter/greeter.c: Now set greeter_probably_login_prompt to
@@ -56,6 +62,8 @@
 
 	* daemon/gdm.[ch], daemon/gdmconfig.c, daemon/server.c:  Add new
 	  priority configuration option for setting xserver priority.
+	  Patch provided by Philip Prindeville (philipp@redfish-solutions.com).
+	  Fixes bug #323346.
 	* config/gdm.conf.in, docs/C/gdm.xml: Updated docs with information
 	  about the new priority [server-foo] configuration option.
 	* configure.ac, gdm.spec.in: Fix gtk dependency so 2.6.0
@@ -123,7 +131,7 @@
 	  performance.  Fix GET_SERVER_DETAILS so it works better and
 	  update config can now update server-foo sections via the
 	  "xservers/PARMAETERS" key.
-	* gui/gdmsetup.c: Now only writes to the gdm.conf-custom file and isa
+	* gui/gdmsetup.c: Now only writes to the gdm.conf-custom file and is
 	  smart enough to just delete the key if the value will be the same as
 	  in the gdm.conf file.  Fixed some core dumping issues caused by my
 	  change to make gdmsetup use the new gdmconfig functions for getting
@@ -181,30 +189,23 @@
 
 2005-12-12  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/gdm.[ch], daemongdmconfig.[ch]: Add
-	  GET_SERVER_LIST and GET_SERVER_DETAILS 
-	  sockets functions so that gdmflexiserver and
-	  gdmconfig do not need to access the config
-	  file for these, instead using the sockets
-	  protocol.
-	* docs/C/gdm.xml: Add docs for new sockets
-	  commands.
-	* configure.ac, gui/Makefile.am: Remove some
-	  libgnome/libgnomeui dependencies.
-	* gui/gdmcomm.c: Now close sockets connection
-	  after 20 messages since the daemon gets mad
-	  if you send more.
-	* gui/gdmconfig.[ch]: New client functions for
-	  getting server information via sockets.
-	* gui/gdmflexiserver.c: Remove libgnome 
-	  dependencies and now use new config 
-	  mechanism for getting server info.
-	* gui/gdmsetup.c: Now use new config
-	  mechanism for reading from config file and
-	  remove libgnome dependencies.  Cleaned up
-	  the code a bit.  Now we don't call 
-	  ve_config_get all over the place, which 
-	  seems to speed up the start time.
+	* daemon/gdm.[ch], daemongdmconfig.[ch]: Add GET_SERVER_LIST and
+	  GET_SERVER_DETAILS sockets functions so that gdmflexiserver and
+	  gdmconfig do not need to access the config file for these, instead
+	  using the sockets protocol.
+	* docs/C/gdm.xml: Add docs for new sockets commands.
+	* configure.ac, gui/Makefile.am: Remove some libgnome/libgnomeui
+	  dependencies.
+	* gui/gdmcomm.c: Now close sockets connection after 20 messages since
+	  the daemon gets mad if you send more.
+	* gui/gdmconfig.[ch]: New client functions for getting server
+	  information via sockets.
+	* gui/gdmflexiserver.c: Remove libgnome dependencies and now use new
+	  config mechanism for getting server info.
+	* gui/gdmsetup.c: Now use new config mechanism for reading from config
+	  file and remove libgnome dependencies.  Cleaned up the code a bit.
+	  Now we don't call ve_config_get all over the place, which seems to
+	  speed up the start time.
 
 2005-12-12  Brian Cameron  <brian.cameron@sun.com>
 
@@ -11081,7 +11082,7 @@ Thu Feb 01 04:49:11 2001  George Lebl <jirka@5z.com>
 	  from the system one.   And add a way to sort of get from codes to
 	  langauge names.  Remove tolower ugly hack.
 
-2001-01-31  Gediminas Paulasukas <menesis@delfi.lt>
+2001-01-31  Gediminas Paulauskas <menesis@delfi.lt>
 
 	* gui/gdmconfig-strings.c, gui/gdmconfig.glade: fix some mistakes in
 	strings.
