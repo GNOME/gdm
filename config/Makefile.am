@@ -13,12 +13,13 @@ postdir = $(sysconfdir)/gdm/PostSession
 predir = $(sysconfdir)/gdm/PreSession
 postlogindir = $(sysconfdir)/gdm/PostLogin
 
-noinst_DATA = gdm.conf gdm.conf-custom
+noinst_DATA = gdm.conf
 
 DESKTOP_FILES = default.desktop CDE.desktop gnome.desktop
 
 EXTRA_DIST = \
 	gdm.conf.in \
+	gdm.conf-custom \
 	$(DESKTOP_FILES) \
 	default.desktop.in \
 	gnome.desktop.in \
@@ -61,7 +62,7 @@ uninstall-hook:
 	$(DESTDIR)$(predir)/Default \
 	$(DESTDIR)$(postdir)/Default
 
-install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop Init PostSession PreSession
+install-data-hook: gdm.conf gdm.conf-custom Xsession gnome.desktop default.desktop CDE.desktop Init PostSession PreSession
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
@@ -74,17 +75,19 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop I
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
 	fi
-	-if ! cmp -s $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
+	if test -f $(DESTDIR)$(gdmconfdir)/gdm.conf; then \
+	   if ! cmp -s $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
 		if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; then \
 			cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
 		else \
 			cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf.org; \
 		fi; \
+	   fi; \
 	fi
 	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf
 	chmod 444 $(DESTDIR)$(gdmconfdir)/gdm.conf
 	if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; then \
-		$(INSTALL_DATA) gdm.conf-custom $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
+		$(INSTALL_DATA) $(srcdir)/gdm.conf-custom $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
 		chmod 644 $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
 	fi
 	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf
