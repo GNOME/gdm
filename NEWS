@@ -13,10 +13,11 @@ Interface Changes:
 
   This allows distributions to overwrite the gdm.conf file without worry
   that the file contains any user customizations.  When running "make install"
-  GDM now compares the installed gdm.conf with the factory-gdm.conf file and
-  if they are different moves the gdm.conf file to gdm.conf-custom to 
-  preserve user changes.  If gdm.conf-custom already exists it is renamed to
-  gdm.conf.org.  Distributions should do something similar when upgrading GDM.
+  GDM now compares the already installed gdm.conf with the already installed
+  factory-gdm.conf file and if they both exist and are not the same, then
+  gdm.conf file is moved to gdm.conf-custom to preserve user changes.  If the
+  gdm.conf-custom file already exists it is renamed to gdm.conf.org.
+  Distributions should do the same when upgrading GDM.
 
   Note that this change is backwards compatible.  GDM will still work as
   it did before even if no gdm.conf-custom file exists on the system.
@@ -24,14 +25,15 @@ Interface Changes:
 
 - gdmconfig no longer supports the --config command line option since it
   now accesses the configuration data over the sockets protocol rather
-  than reading the configuration files directly.
+  than reading the configuration files directly.  Note the GDM daemon still
+  supports the --config command line option.
 
 - Added PostDisplayProgram and the --with-prefetch configuration option
   to support GDM running a prefetch script to preload libraries when it
   firsts starts the greeter program, which has been shown to improve first
   time login time.  (Padraig O'Briain, Brian Cameron)
 
-- Add new prioity configuration option for servers defined in the 
+- Add new priority configuration option for servers defined in the 
   [server-foo] section of the configuration files.  This can be set from
   -20 to +20 in order to specify the priority value given to the Xserver
   on startup.  (Philip Prindeville)
@@ -70,8 +72,7 @@ Other Changes:
   that was causing core dumping with gdmsetup in the previous release.
   (Brian Cameron)
 
-- Fixed bug with the --with-configdir configure option, which was not 
-  working properly.  (Brian Cameron)
+- Fixed bug with the --with-configdir configure option.  (Brian Cameron)
 
 - Now use glib stdio functions like g_chmod instead of chmod. 
   (Brian Cameron)
