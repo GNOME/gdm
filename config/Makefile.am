@@ -207,5 +207,5 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession gnome.desktop default.deskt
 	   fi; \
 	fi
 	if test "x$(GDMPREFETCHLIST)" != "x"; then \
-	   $(INSTALL_SCRIPT) loginpreloadlist $(DESTDIR)$(confdir)/gdmprefetchlist; \
+	   $(INSTALL_SCRIPT) gdmprefetchlist $(DESTDIR)$(confdir)/gdmprefetchlist; \
 	fi

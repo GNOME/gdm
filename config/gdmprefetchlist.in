@@ -1,8 +1,15 @@
+# If GDM is built with the --with-prefetch option, then this file
+# is installed on the system, and the gdm.conf PreFetchProgram
+# value should be set properly to cause the first login program 
+# managed to preload this list of libraries.  It has been shown that
+# preloading these libraries improves first-time login performance
+# for the GNOME desktop.
+#
 # This list of libraries has been optimized for a GNOME session running
 # on Solaris.  People who want to contribute alternative lists of
-# libraries that can be installed with GDM can contribute them to
-# http://bugzilla.gnome.org/ and GDM can be enhanced to install
-# different preload files based on configure options. 
+# libraries for other distributions or desktop environments can 
+# contribute them to the "gdm" category in http://bugzilla.gnome.org/,
+# and these can be made available in future releases of GDM.
 #
 /usr/share/icons/hicolor/icon-theme.cache
 /usr/share/icons/blueprint/icon-theme.cache
