@@ -44,18 +44,18 @@
 #include "gdmconfig.h"
 #include "gdmconfig.h"
 
-static GSList *xservers = NULL;
-static gboolean got_standard = FALSE;
-static gboolean use_xnest = FALSE;
-static gboolean authenticate = FALSE;
-static gboolean no_lock = FALSE;
-static gboolean monte_carlo_pi = FALSE;
-static const char *send_command = NULL;
-static const char *server = NULL;
+static GSList *xservers          = NULL;
+static const char *send_command  = NULL;
+static const char *server        = NULL;
 static const char *chosen_server = NULL;
-static gboolean debug = FALSE;
-static gboolean startnew = FALSE;
-static char *auth_cookie = NULL;
+static char *auth_cookie         = NULL;
+static gboolean got_standard     = FALSE;
+static gboolean use_xnest        = FALSE;
+static gboolean debug_in         = FALSE;
+static gboolean authenticate     = FALSE;
+static gboolean no_lock          = FALSE;
+static gboolean monte_carlo_pi   = FALSE;
+static gboolean startnew         = FALSE;
 
 static int
 get_cur_vt (void)
@@ -688,7 +688,7 @@ struct poptOption options [] = {
 	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to GDM"), N_("COMMAND") },
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
 	{ "no-lock", 'l', POPT_ARG_NONE, &no_lock, 0, N_("Do not lock current screen"), NULL },
-	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },
+	{ "debug", 'd', POPT_ARG_NONE, &debug_in, 0, N_("Debugging output"), NULL },
 	{ "authenticate", 'a', POPT_ARG_NONE, &authenticate, 0, N_("Authenticate before running --command"), NULL },
 	{ "startnew", 's', POPT_ARG_NONE, &startnew, 0, N_("Start new flexible session; do not show popup"), NULL },
 	{ "monte-carlo-pi", 0, POPT_ARG_NONE, &monte_carlo_pi, 0, NULL, NULL },
@@ -722,7 +722,7 @@ main (int argc, char *argv[])
 		return 0;
 	}
 
-	gdmcomm_set_debug (debug);
+	gdmcomm_set_debug (debug_in);
 
 	args = poptGetArgs (ctx);
 	if (args != NULL && args[0] != NULL)

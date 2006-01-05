@@ -17,10 +17,6 @@ libexec_PROGRAMS = \
 	@GDMPREFETCH@	\
 	gdmtranslate	
 
-# This is not useful anymore
-# bin_PROGRAMS = \
-#	gdmmktemp
-
 if DMX_SUPPORT
 bin_PROGRAMS = gdm-dmx-reconnect-proxy
 endif
@@ -39,9 +35,6 @@ gdmopen_SOURCES = \
 gdmprefetch_SOURCES = \
 	gdmprefetch.c
 
-#gdmmktemp_SOURCES = \
-#	gdmmktemp.c
-
 gdmaskpass_LDADD = \
 	$(INTLLIBS)		\
 	-lpam			\
@@ -52,9 +45,6 @@ gdmopen_LDADD = \
 
 gdmtranslate_LDADD = \
 	$(INTLLIBS)
-
-#gdmmktemp_LDADD = \
-#	$(INTLLIBS)
 
 if DMX_SUPPORT
 gdm_dmx_reconnect_proxy_SOURCES = \

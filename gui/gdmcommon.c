@@ -380,34 +380,34 @@ gdm_common_get_welcomemsg (void)
 }
 
 static gchar *
-post_display_prog_get_path (void)
+pre_fetch_prog_get_path (void)
 {
-	gchar *postdisplayprog;
+	gchar *prefetchprog;
 
-	postdisplayprog = gdm_config_get_string (GDM_KEY_POST_DISPLAY_PROGRAM);
-	if  (! ve_string_empty (postdisplayprog)) {
-		return postdisplayprog;
+	prefetchprog = gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);
+	if  (! ve_string_empty (prefetchprog)) {
+		return prefetchprog;
 	} else
 		return NULL;
 }
 
 static gboolean
-post_display_run (gpointer data)
+pre_fetch_run (gpointer data)
 {
 	GPid pid = -1;
 	GError *error = NULL;
 	char *command = NULL;
-	gchar **post_display_prog_argv =  NULL;
+	gchar **pre_fetch_prog_argv =  NULL;
 
-	command = post_display_prog_get_path ();
+	command = pre_fetch_prog_get_path ();
 
 	if (! command)
 		return FALSE;
 
-	post_display_prog_argv = ve_split (command);
+	pre_fetch_prog_argv = ve_split (command);
 
 	g_spawn_async (".",
-		       post_display_prog_argv,
+		       pre_fetch_prog_argv,
 		       NULL,
 		       (GSpawnFlags) (G_SPAWN_SEARCH_PATH),
 		       NULL,
@@ -419,12 +419,12 @@ post_display_run (gpointer data)
 }
 
 void
-gdm_common_post_display_launch (void)
+gdm_common_pre_fetch_launch (void)
 {
-	if (! post_display_prog_get_path ())
+	if (! pre_fetch_prog_get_path ())
 		return;
 
-	g_idle_add (post_display_run, NULL);
+	g_idle_add (pre_fetch_run, NULL);
 }
 
 /*

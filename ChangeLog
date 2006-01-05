@@ -1,3 +1,24 @@
+2006-01-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmcommon.c: Fix problem with client not properly counting
+	  the number of connections, and make logic more robust so when
+	  it receives an "ERROR 200 Too many messages" it will close and
+	  reopen the connection and try again rather than just fail.
+	* configure.ac, configure/Makefile.am: Add loginpreloadlist
+	* utils/prefetch.c: Now handle comments that start with "#" in
+	  the preloadlist file.
+	* daemon/gdm.h, daemon/gdmconfig.c, config/gdm.conf, gui/gdmlogin.c,
+	  gui/gdmcommon.[ch], gui/greeter/greeter.c: Now PostDisplayProgram is
+	  PreFetchProgram.  Fixed some comments in gdm.h.
+	* daemon/gdm.c: Now KEY_PRE_FETCH_PROGRAM is only returned to the
+	  first slave that asks for the value, ensuring the prefetch only
+	  happens the first time a greeter is displayed.
+	* docs/C/gdm.xml: Rewrote the Introduction section so it is more
+	  clear, made improvements to the Accessibility section, and fixed
+	  a number of formatting issues.  Now a separate Security section.
+	  Updated docs to reflect PreFetchProgram change.
+	* gui/gdmflexiserver.c: Clean up the code a little.
+
 2006-01-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac:  Update glib required to 2.8 since we now use g_access. 

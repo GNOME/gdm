@@ -3092,6 +3092,19 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
 		const char *key = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
 		gchar *retval;
+		static gboolean done_prefetch = FALSE;
+
+		/*
+		 * If key is for prefetch do it only once
+		 */
+		if (strcmp(key, GDM_KEY_PRE_FETCH_PROGRAM) == 0) {
+			if (done_prefetch) {
+				gdm_connection_printf (conn, "OK \n");
+				return;
+			} else {
+				done_prefetch = TRUE;
+			}
+		}
 
                 gdm_config_to_string ((gchar *)key, &retval);
 		if (retval != NULL) {

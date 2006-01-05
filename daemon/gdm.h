@@ -357,7 +357,7 @@ enum {
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
 #define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="
 
-#define GDM_KEY_POST_DISPLAY_PROGRAM "greeter/PostDisplayProgram="
+#define GDM_KEY_PRE_FETCH_PROGRAM "greeter/PreFetchProgram="
 
 #define GDM_KEY_SOUND_ON_LOGIN "greeter/SoundOnLogin=true"
 #define GDM_KEY_SOUND_ON_LOGIN_SUCCESS "greeter/SoundOnLoginSuccess=false"
@@ -747,8 +747,8 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_AUTH_LOCAL "AUTH_LOCAL" /* <xauth cookie> */
-/* AUTH_LOCAL: Setup this connection as authenticated for FLEXI_SERVER
- *             Because all full blown (non-Xnest) servers can be started
+/* AUTH_LOCAL: Setup this connection as authenticated for FLEXI_SERVER.
+ *             Because all full blown (non-Xnest) displays can be started
  *             only from users logged in locally, and here gdm assumes
  *             only users logged in from gdm.  They must pass the xauth
  *             MIT-MAGIC-COOKIE-1 that they were passed before the
@@ -772,11 +772,11 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* <xserver type> */
-/* FLEXI_XSERVER: Start a new X flexible server.  Only supported on
+/* FLEXI_XSERVER: Start a new X flexible display.  Only supported on
  *                connection that passed AUTH_LOCAL
  * Supported since: 2.2.4.0
  * Arguments: <xserver type>
- *   If no arguments, starts the standard x server
+ *   If no arguments, starts the standard X server
  * Answers:
  *   OK <display>
  *   ERROR <err number> <english error description>
@@ -791,7 +791,7 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <uid> <xauth cookie> <xauth file> */
-/* FLEXI_XNEXT: Start a new flexible Xnest server.
+/* FLEXI_XNEXT: Start a new flexible Xnest display.
  * Note:        Supported on older versions from 2.2.4.0, later
  *              2.2.4.2, but since 2.3.90.4 you must supply 4 
  *              arguments or ERROR 100 will be returned.  This
@@ -875,8 +875,8 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_ATTACHED_SERVERS "ATTACHED_SERVERS" /* None */
 #define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS"  /* None */
-/* ATTACHED_SERVERS: List all attached servers.  Doesn't list XDMCP
- *                   and xnest non-attached servers
+/* ATTACHED_SERVERS: List all attached displays.  Doesn't list XDMCP
+ *                   and xnest non-attached displays.
  * Note:             This command used to be named CONSOLE_SERVERS,
  *                   which is still recognized for backwards
  *                   compatibility.  The optional pattern argument
@@ -905,7 +905,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_SUP_ALL_SERVERS  "ALL_SERVERS" /* None */
 /* ALL_SERVERS: List all displays, including attached, remote, xnest.
  *              This can for example be useful to figure out if
- *              the server you are on is managed by the gdm daemon,
+ *              the display you are on is managed by the gdm daemon,
  *              by seeing if it is in the list.  It is also somewhat
  *              like the 'w' command but for graphical sessions.
  * Supported since: 2.4.2.96
@@ -1097,7 +1097,7 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_SET_LOGOUT_ACTION "SET_LOGOUT_ACTION" /* <action> */
-/* SET_LOGOUT_ACTION: Tell the daemon to halt/reboot/suspend after
+/* SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after
  *                    slave process exits.  Only supported on
  *                    connections that passed AUTH_LOCAL.
  * Supported since: 2.5.90.0
@@ -1116,7 +1116,7 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_SET_SAFE_LOGOUT_ACTION "SET_SAFE_LOGOUT_ACTION" /* <action> */
-/* SET_SAFE_LOGOUT_ACTION: Tell the daemon to halt/reboot/suspend
+/* SET_SAFE_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend
  *                         after everybody logs out.  If only one
  *                         person logs out, then this is obviously
  *                         the same as the SET_LOGOUT_ACTION.  Note

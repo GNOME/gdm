@@ -3572,7 +3572,7 @@ main (int argc, char *argv[])
     /* Only setup the cursor now since it will be a WATCH from before */
     gdm_common_setup_cursor (GDK_LEFT_PTR);
 
-    gdm_common_post_display_launch ();
+    gdm_common_pre_fetch_launch ();
     gtk_main ();
 
     gdm_kill_thingies ();

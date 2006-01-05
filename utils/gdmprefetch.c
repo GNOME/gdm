@@ -113,6 +113,10 @@ main (int argc, char *argv[])
 			while (fgets (path, sizeof (path), fp) != 0) {
 				path[strlen(path) -1] = '\0';
 
+				if (path[0] == '#') {
+					continue;
+				}
+
 				if (!out) {
 					doin (path);
 				} else {

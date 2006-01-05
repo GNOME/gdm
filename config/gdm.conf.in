@@ -439,9 +439,10 @@ GraphicalThemedColor=#76848F
 #SoundOnLoginFailure=false
 #SoundOnLoginFailureFile=
 # Specifies a program to be called by the greeter/login program when the
-# initial screen is displayed.  The initial purpose is to provide a hook
-# where libraries can be preloaded to speed performance for the user.
-#PostDisplayProgram=
+# initial screen is displayed.  The purpose is to provide a hook
+# where files used after login can be preloaded to speed performance for 
+# the user. The program will only be called once.
+PreFetchProgram=@GDMPREFETCHCMD@
 
 # The chooser is what's displayed when a user wants an indirect XDMCP session,
 # or selects Run XDMCP chooser from the system menu

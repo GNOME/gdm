@@ -34,6 +34,7 @@ EXTRA_DIST = \
 	PostLogin \
 	XKeepsCrashing \
 	gettextfoo.h \
+	gdmprefetchlist.in \
 	extract-shell.sh
 
 gettextfoo.h: XKeepsCrashing Xsession.in
@@ -56,13 +57,14 @@ uninstall-hook:
 	$(DESTDIR)$(gdmconfdir)/factory-gdm.conf \
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
+	$(DESTDIR)$(confdir)/gdmprefetchlist \
 	$(DESTDIR)$(localedir)/locale.alias \
 	$(DESTDIR)$(initdir)/Default \
 	$(DESTDIR)$(postlogindir)/Default.sample \
 	$(DESTDIR)$(predir)/Default \
 	$(DESTDIR)$(postdir)/Default
 
-install-data-hook: gdm.conf gdm.conf-custom Xsession gnome.desktop default.desktop CDE.desktop Init PostSession PreSession
+install-data-hook: gdm.conf gdm.conf-custom Xsession gnome.desktop default.desktop CDE.desktop Init PostSession PreSession $(GDMPREFETCHLIST)
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
@@ -143,7 +145,7 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession gnome.desktop default.deskt
 		chmod 755 $(DESTDIR)$(initdir); \
 	fi
 	-if test -f $(DESTDIR)$(initdir)/Default; then \
-		cp -f $(DESTDIR)$(initdir)/Init $(DESTDIR)$(initdir)/Default.orig; \
+		cp -f $(DESTDIR)$(initdir)/Default $(DESTDIR)$(initdir)/Default.orig; \
 	fi
 	$(INSTALL_SCRIPT) Init $(DESTDIR)$(initdir)/Default
 
@@ -203,4 +205,7 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession gnome.desktop default.deskt
 	   if test $$system = SunOS; then \
 		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
+	fi
+	if test "x$(GDMPREFETCHLIST)" != "x"; then \
+	   $(INSTALL_SCRIPT) loginpreloadlist $(DESTDIR)$(confdir)/gdmprefetchlist; \
 	fi

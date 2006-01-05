@@ -864,8 +864,12 @@ AC_ARG_WITH(prefetch,
 
 if test x$with_prefetch != xno ; then
 	GDMPREFETCH="gdmprefetch"
+        GDMPREFETCHLIST="gdmprefetchlist"
+        GDMPREFETCHCMD="$EXPANDED_LIBDIR/gdmprefetch $EXPANDED_SYSCONFDIR/gdm/gdmprefetchlist"
 fi
 AC_SUBST(GDMPREFETCH)
+AC_SUBST(GDMPREFETCHLIST)
+AC_SUBST(GDMPREFETCHCMD)
 
 AC_ARG_WITH(xevie,
   [  --with-xevie=[yes/no]  Add XEvIE Xserver extension support [default=no]],,
@@ -880,7 +884,7 @@ fi
 AC_SUBST(XEVIE_OPTION)
 AC_DEFINE_UNQUOTED(XEVIE_OPTION,"$XEVIE_OPTION")
 
-AC_MSG_CHECKING(for fbconsole (for Solaris))
+AC_MSG_CHECKING(for Solaris fbconsole)
 if test -x /usr/openwin/bin/fbconsole; then
    AC_DEFINE(HAVE_FBCONSOLE)
    AC_MSG_RESULT(yes)
@@ -1103,6 +1107,7 @@ config/Xsession
 config/Init
 config/PreSession
 config/PostSession
+config/gdmprefetchlist
 daemon/gdm
 gdm-stop
 gdm-restart

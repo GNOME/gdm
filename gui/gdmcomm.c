@@ -42,6 +42,7 @@
 #include "gdmconfig.h"
 
 static gboolean debug = FALSE;
+static int num_cmds   = 0;
 
 static char *
 do_command (int fd, const char *command, gboolean get_response)
@@ -68,6 +69,10 @@ do_command (int fd, const char *command, gboolean get_response)
 #endif
 	g_free (cstr);
 
+	num_cmds++;
+	if (debug)
+		g_print ("Incrementing num_cmds to %d\n", num_cmds);
+
 	if (ret < 0)
 		return NULL;
 
@@ -85,6 +90,12 @@ do_command (int fd, const char *command, gboolean get_response)
 
 	cstr = str->str;
 	g_string_free (str, FALSE);
+
+	if (strcmp (ve_sure_string (cstr), "ERROR 200 Too many messages") == 0) { 
+		g_free (cstr);
+		return NULL;
+	}
+
 	return cstr;
 }
 
@@ -112,17 +123,14 @@ char *
 gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min_version, int tries)
 {
 	static int fd = 0;
-	static int num_cmds = 0;
 	char *ret;
 
-	if (num_cmds == (GDM_SUP_MAX_CONNECTIONS - 1)) {
+	if (num_cmds == (GDM_SUP_MAX_CONNECTIONS)) {
 	   do_command (fd, GDM_SUP_CLOSE, FALSE);
 	   VE_IGNORE_EINTR (close (fd));
 	   fd       = 0;
 	   num_cmds = 0;
 	}
-
-	num_cmds++;
 
 	if (tries <= 0)
 		return NULL;
@@ -178,7 +186,7 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 						 min_version, tries - 1);
 		}
 		/* not auth'ed */
-		if (strcmp (ret, "OK") != 0) {
+		if (strcmp (ve_sure_string (ret), "OK") != 0) {
 			VE_IGNORE_EINTR (close (fd));
 			fd = 0;
 			/* returns the error */
@@ -367,7 +375,7 @@ gdmcomm_get_auth_cookie (void)
 		ret = gdmcomm_call_gdm (cmd, NULL /* auth cookie */, "2.2.4.0", 5);
 		g_free (cmd);
 		if (ret != NULL &&
-		    strcmp (ret, "OK") == 0) {
+		    strcmp (ve_sure_string (ret), "OK") == 0) {
 			g_free (ret);
 			cookie = g_strdup (buffer);
 			break;

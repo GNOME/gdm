@@ -1330,7 +1330,7 @@ main (int argc, char *argv[])
      gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
 
   gdm_common_setup_cursor (GDK_LEFT_PTR);
-  gdm_common_post_display_launch ();
+  gdm_common_pre_fetch_launch ();
   gtk_main ();
 
   return 0;
