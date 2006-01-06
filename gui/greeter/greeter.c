@@ -66,6 +66,10 @@ GtkWidget *canvas;
 
 gboolean GDM_IS_LOCAL          = FALSE;
 static gboolean ignore_buttons = FALSE;
+gboolean GdmHaltFound          = FALSE;
+gboolean GdmRebootFound        = FALSE;
+gboolean GdmSuspendFound       = FALSE;
+gboolean GdmConfiguratorFound  = FALSE;
 
 /* FIXME: hack */
 GreeterItemInfo *welcome_string_info = NULL;
@@ -1037,9 +1041,10 @@ main (int argc, char *argv[])
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-  if G_UNLIKELY (DOING_GDM_DEVELOPMENT)
-    g_signal_connect (G_OBJECT (window), "key_press_event",
-		      G_CALLBACK (key_press_event), NULL);
+  if G_UNLIKELY (DOING_GDM_DEVELOPMENT) {
+     g_signal_connect (G_OBJECT (window), "key_press_event",
+		       G_CALLBACK (key_press_event), NULL);
+  }
   
   canvas = gnome_canvas_new_aa ();
   GTK_WIDGET_UNSET_FLAGS (canvas, GTK_CAN_FOCUS);
@@ -1055,9 +1060,15 @@ main (int argc, char *argv[])
 
  /*
   * Initialize the value with the default value so the first time it
-  * is displayed it doesn't show as 0.
+  * is displayed it doesn't show as 0.  Also determine if the Halt,
+  * Reboot, Suspend and Configurator commands work.
   */
-  gdm_timed_delay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+  gdm_timed_delay      = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+  GdmHaltFound         = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT));
+  GdmRebootFound       = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT));
+  GdmSuspendFound      = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND));
+  GdmConfiguratorFound = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR));
+
 
   if (g_getenv ("GDM_THEME") != NULL)
      gdm_graphical_theme = g_strdup (g_getenv ("GDM_THEME"));

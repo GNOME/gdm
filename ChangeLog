@@ -1,3 +1,18 @@
+2006-01-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac, docs/C/gdm.xml, config/gdm.conf.in: Fix 
+	  Prefetch command so that there is a needed "@" before the
+	  argument to gdmprefetch.  Padraid O'Briain pointed out this
+	  oversight.  Made docs a bit more clear to highlight the usage
+	  of this "@" character.
+	* gui/greeter.c, gui/greeter/greeter_item.c,
+	  gui/greeter/greeter_system.c: Now call gdm_working_command_exists
+	  for halt/reboot/suspend/configurator once at startup and cache 
+	  the values in globals so we don't have to keep calling this 
+	  function over and over while gdmgreeter runs.  Padraig noticed
+	  that this function causes a large number of calls to stat which
+	  are easily avoided by caching.
+
 2006-01-03  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmsetup.c:  Fix problem where gdmsetup does not remember

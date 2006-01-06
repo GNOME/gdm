@@ -1577,15 +1577,20 @@ PostSession/
           </varlistentry>
 
           <varlistentry>
-            <term>PrefetchProgram</term>
+            <term>PreFetchProgram</term>
             <listitem>
-              <synopsis>PrefetchProgram=command</synopsis>
+              <synopsis>PreFetchProgram=command</synopsis>
               <para>
-                Program to be run by the GDM greeter/login program
-                when the initial screen is displayed.  The  purpose
-                is to provide a hook where files which will be used 
-                after login can be preloaded to speed performance for 
-                the user. The program will be called once only.
+                Program to be run by the GDM greeter/login program when the
+                initial screen is displayed.  The  purpose is to provide a hook
+                where files which will be used after login can be preloaded to
+                speed performance for the user.  The program will be called
+                once only, the first time a greeter is displayed.  The
+                gdmprefetch command may be used.  This utility will load any
+                libraries passed in on the command line, or if the argument
+                starts with a "@" character, it will process the file assuming
+                it is an ASCII file containing a list of libraries, one per
+                line, and load each library in the file.
               </para>
             </listitem>
           </varlistentry>

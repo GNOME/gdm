@@ -865,7 +865,7 @@ AC_ARG_WITH(prefetch,
 if test x$with_prefetch != xno ; then
 	GDMPREFETCH="gdmprefetch"
         GDMPREFETCHLIST="gdmprefetchlist"
-        GDMPREFETCHCMD="$EXPANDED_LIBDIR/gdmprefetch $EXPANDED_SYSCONFDIR/gdm/gdmprefetchlist"
+        GDMPREFETCHCMD="$EXPANDED_LIBDIR/gdmprefetch @$EXPANDED_SYSCONFDIR/gdm/gdmprefetchlist"
 fi
 AC_SUBST(GDMPREFETCH)
 AC_SUBST(GDMPREFETCHLIST)

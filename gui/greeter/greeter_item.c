@@ -33,6 +33,11 @@
 #include "greeter_item.h"
 #include "greeter_configuration.h"
 
+extern gboolean GdmHaltFound;
+extern gboolean GdmRebootFound;
+extern gboolean GdmSuspendFound;
+extern gboolean GdmConfiguratorFound;
+
 GreeterItemInfo *
 greeter_item_info_new (GreeterItemInfo *parent,
 		       GreeterItemType  type)
@@ -176,7 +181,7 @@ greeter_item_is_visible (GreeterItemInfo *info)
 
   if (( ! gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) ||
         ! sysmenu ||
-        ! gdm_working_command_exists (GDM_KEY_CONFIGURATOR)) &&
+        ! GdmConfiguratorFound) &&
       (info->show_type != NULL &&
        strcmp (info->show_type, "config") == 0))
 	  return FALSE;
@@ -190,18 +195,15 @@ greeter_item_is_visible (GreeterItemInfo *info)
       strcmp (info->show_type, "system") == 0)
 	  return FALSE;
 
-  if (( ! sysmenu ||
-        ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT))) &&
+  if (( ! sysmenu || ! GdmHaltFound) &&
       (info->show_type != NULL &&
        strcmp (info->show_type, "halt") == 0))
 	  return FALSE;
-  if (( ! sysmenu ||
-        ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT))) &&
+  if (( ! sysmenu || ! GdmRebootFound) &&
       (info->show_type != NULL &&
        strcmp (info->show_type, "reboot") == 0))
 	  return FALSE;
-  if (( ! sysmenu ||
-        ! gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND))) &&
+  if (( ! sysmenu || ! GdmSuspendFound) &&
       (info->show_type != NULL &&
        strcmp (info->show_type, "suspend") == 0))
 	  return FALSE;

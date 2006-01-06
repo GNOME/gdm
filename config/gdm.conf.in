@@ -439,9 +439,13 @@ GraphicalThemedColor=#76848F
 #SoundOnLoginFailure=false
 #SoundOnLoginFailureFile=
 # Specifies a program to be called by the greeter/login program when the
-# initial screen is displayed.  The purpose is to provide a hook
-# where files used after login can be preloaded to speed performance for 
-# the user. The program will only be called once.
+# initial screen is displayed.  The purpose is to provide a hook where files
+# used after login can be preloaded to speed performance for the user. The
+# program will only be called once only, the first time a greeter is displayed.
+# The gdmprefetch command may be used.  This utility will load any libraries
+# passed in on the command line, or if the argument starts with a "@"
+# character, it will process the file assuming it is an ASCII file containing a
+# list of libraries, one per line, and load each library in the file.
 PreFetchProgram=@GDMPREFETCHCMD@
 
 # The chooser is what's displayed when a user wants an indirect XDMCP session,

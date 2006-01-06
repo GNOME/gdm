@@ -18,15 +18,16 @@
 
 #include "config.h"
 
+#include <unistd.h>
+#include <syslog.h>
+
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+
 #include "greeter.h"
 #include "greeter_configuration.h"
 #include "greeter_system.h"
 #include "greeter_item.h"
-
-#include <unistd.h>
-
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
@@ -34,6 +35,10 @@
 #include "misc.h"
 
 GtkWidget *dialog;
+extern gboolean GdmHaltFound;
+extern gboolean GdmRebootFound;
+extern gboolean GdmSuspendFound;
+extern gboolean GdmConfiguratorFound;
 
 /* doesn't check for executability, just for existance */
 static gboolean
@@ -135,7 +140,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 {
 	GtkWidget *w, *sep;
 	static GtkTooltips *tooltips = NULL;
-	gboolean reboot_cmd, halt_cmd, suspend_cmd;
 
 	/* should never be allowed by the UI */
 	if ( ! gdm_config_get_bool (GDM_KEY_SYSTEM_MENU) ||
@@ -173,20 +177,13 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      NULL);
 	}
 
-	reboot_cmd  = gdm_working_command_exists
-	   (gdm_config_get_string (GDM_KEY_REBOOT));
-	halt_cmd    = gdm_working_command_exists
-	   (gdm_config_get_string (GDM_KEY_HALT));
-	suspend_cmd = gdm_working_command_exists
-	   (gdm_config_get_string (GDM_KEY_SUSPEND));
-
-	if (reboot_cmd || halt_cmd || suspend_cmd) {
+	if (GdmRebootFound || GdmHaltFound || GdmSuspendFound) {
 		sep = gtk_separator_menu_item_new ();
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), sep);
 		gtk_widget_show (sep);
 	}
 
-	if (reboot_cmd) {
+	if (GdmRebootFound) {
 		w = gtk_menu_item_new_with_mnemonic (_("_Reboot"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -198,7 +195,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      NULL);
 	}
 
-	if (halt_cmd) {
+	if (GdmHaltFound) {
 		w = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -211,7 +208,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      NULL);
 	}
 
-	if (suspend_cmd) {
+	if (GdmSuspendFound) {
 		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -250,7 +247,6 @@ greeter_system_handler (GreeterItemInfo *info,
   GtkWidget *restart_radio = NULL;
   GtkWidget *config_radio = NULL;
   GtkWidget *chooser_radio = NULL;
-  gboolean reboot_cmd, halt_cmd, suspend_cmd;
   gchar *s;
   int ret;
   GSList *radio_group = NULL;
@@ -298,14 +294,7 @@ greeter_system_handler (GreeterItemInfo *info,
 		      vbox,
 		      TRUE, TRUE, 0);
 
-  reboot_cmd  = gdm_working_command_exists
-     (gdm_config_get_string (GDM_KEY_REBOOT));
-  halt_cmd    = gdm_working_command_exists
-     (gdm_config_get_string (GDM_KEY_HALT));
-  suspend_cmd = gdm_working_command_exists
-     (gdm_config_get_string (GDM_KEY_SUSPEND));
-
-  if (halt_cmd) {
+  if (GdmHaltFound) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  halt_radio = gtk_radio_button_new_with_mnemonic (radio_group,
@@ -323,7 +312,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (halt_radio);
   }
 
-  if (reboot_cmd) {
+  if (GdmRebootFound) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  restart_radio = gtk_radio_button_new_with_mnemonic (radio_group,
@@ -340,7 +329,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (restart_radio);
   }
 
-  if (suspend_cmd) {
+  if (GdmSuspendFound) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
