@@ -1,5 +1,16 @@
 2006-01-03  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmsetup.c:  Fix problem where gdmsetup does not remember
+	  that Automatic Login checkbox has been changed.  Fixes bug
+	  #325910.
+
+2006-01-03  Brian Cameron  <brian.cameron@sun.com>
+
+	The PreFetch part of this patch was provided by Padraig O'Briain
+	with some modifications by myself to better integrate into the
+	configure/Makefile build.   The rest of this work was done by
+	myself.
+
 	* gui/gdmcommon.c: Fix problem with client not properly counting
 	  the number of connections, and make logic more robust so when
 	  it receives an "ERROR 200 Too many messages" it will close and

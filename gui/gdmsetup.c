@@ -312,9 +312,9 @@ run_timeout (GtkWidget *widget, guint tm, gboolean (*func) (GtkWidget *))
 }
 
 static void
-update_key (const char *notify_key)
+update_key (const char *key)
 {
-	if (notify_key == NULL)
+	if (key == NULL)
 	       return;
 
 	/* recheck for gdm */
@@ -323,7 +323,7 @@ update_key (const char *notify_key)
 	if (gdm_running) {
 		char *ret;
 		char *s = g_strdup_printf ("%s %s", GDM_SUP_UPDATE_CONFIG,
-					   notify_key);
+					   key);
 		ret = gdmcomm_call_gdm (s,
 					NULL /* auth_cookie */,
 					"2.3.90.2",
@@ -334,7 +334,7 @@ update_key (const char *notify_key)
 }
 
 void 
-gdm_setup_config_set_bool (const char *key, const char *notify_key, gboolean val)
+gdm_setup_config_set_bool (const char *key, gboolean val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
 	VeConfig *custom_cfg = ve_config_get (custom_config_file);
@@ -348,12 +348,11 @@ gdm_setup_config_set_bool (const char *key, const char *notify_key, gboolean val
 
 	ve_config_save (custom_cfg, FALSE /* force */);
 
-	if (notify_key)
-		update_key (notify_key);
+	update_key (key);
 }
 
 void 
-gdm_setup_config_set_int (const char *key, const char *notify_key, int val)
+gdm_setup_config_set_int (const char *key, int val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
 	VeConfig *custom_cfg = ve_config_get (custom_config_file);
@@ -367,12 +366,11 @@ gdm_setup_config_set_int (const char *key, const char *notify_key, int val)
 
 	ve_config_save (custom_cfg, FALSE /* force */);
 
-	if (notify_key)
-		update_key (notify_key);
+	update_key (key);
 }
 
 void 
-gdm_setup_config_set_string (const char *key, const char *notify_key, gchar *val)
+gdm_setup_config_set_string (const char *key, gchar *val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
 	VeConfig *custom_cfg = ve_config_get (custom_config_file);
@@ -390,20 +388,17 @@ gdm_setup_config_set_string (const char *key, const char *notify_key, gchar *val
 
 	ve_config_save (custom_cfg, FALSE /* force */);
 
-	if (notify_key)
-		update_key (notify_key);
+	update_key (key);
 }
 
 static gboolean
 toggle_timeout (GtkWidget *toggle)
 {
 	const char *key        = g_object_get_data (G_OBJECT (toggle), "key");
-	const char *notify_key = g_object_get_data (G_OBJECT (toggle),
-	                                            "notify_key");
 	gboolean val = gdm_config_get_bool ((gchar *)key);
 
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
-		gdm_setup_config_set_bool (key, notify_key, GTK_TOGGLE_BUTTON (toggle)->active);
+		gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
 	}
 
 	return FALSE;
@@ -422,15 +417,13 @@ logo_toggle_timeout (GtkWidget *toggle)
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooserbutton));
 	
  	if ((GTK_TOGGLE_BUTTON (toggle)->active) == FALSE) {
-		gdm_setup_config_set_string (GDM_KEY_CHOOSER_BUTTON_LOGO,
-			GDM_KEY_CHOOSER_BUTTON_LOGO, filename);	
-		gdm_setup_config_set_string (key, key, "");
+		gdm_setup_config_set_string (GDM_KEY_CHOOSER_BUTTON_LOGO, filename);	
+		gdm_setup_config_set_string (key, "");
 		update_greeters ();
 	}
 	else if (filename != NULL) {
-		gdm_setup_config_set_string (GDM_KEY_CHOOSER_BUTTON_LOGO,
-			GDM_KEY_CHOOSER_BUTTON_LOGO, filename);
-		gdm_setup_config_set_string (key, key, filename);
+		gdm_setup_config_set_string (GDM_KEY_CHOOSER_BUTTON_LOGO, filename);
+		gdm_setup_config_set_string (key, filename);
 		update_greeters ();
 	}
 	g_free (filename);
@@ -480,15 +473,13 @@ static gboolean
 intspin_timeout (GtkWidget *spin)
 {
 	const char *key = g_object_get_data (G_OBJECT (spin), "key");
-	const char *notify_key = g_object_get_data (G_OBJECT (spin),
-						    "notify_key");
 	int new_val = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spin));
 	int val;
 
 	val = gdm_config_get_int ((gchar *)key);
 
 	if (val != new_val)
-		gdm_setup_config_set_int (key, key, new_val);
+		gdm_setup_config_set_int (key, new_val);
 
 	return FALSE;
 }
@@ -949,12 +940,12 @@ combobox_timeout (GtkWidget *combo_box)
 		if (new_key_val && 
 		    strcmp (ve_sure_string (old_key_val), ve_sure_string (new_key_val)) != 0) {	
 		    
-			gdm_setup_config_set_string (key, key, new_key_val);
-			gdm_setup_config_set_bool (GDM_KEY_BROWSER, GDM_KEY_BROWSER, browser_val);
+			gdm_setup_config_set_string (key, new_key_val);
+			gdm_setup_config_set_bool (GDM_KEY_BROWSER, browser_val);
 			update_greeters ();
 		}
 		else {
-			gdm_setup_config_set_bool (GDM_KEY_BROWSER, GDM_KEY_BROWSER, browser_val);
+			gdm_setup_config_set_bool (GDM_KEY_BROWSER, browser_val);
 			update_greeters ();
 		}
 		
@@ -965,7 +956,7 @@ combobox_timeout (GtkWidget *combo_box)
 	else if (strcmp (ve_sure_string (key), GDM_KEY_REMOTE_GREETER) == 0) {
 		
 		if (selected == REMOTE_DISABLED) {
-			gdm_setup_config_set_bool (GDM_KEY_XDMCP, GDM_KEY_XDMCP, FALSE);		
+			gdm_setup_config_set_bool (GDM_KEY_XDMCP, FALSE);		
 			update_greeters ();
 					
 			return FALSE;
@@ -980,7 +971,7 @@ combobox_timeout (GtkWidget *combo_box)
 			}
 			else if (selected == REMOTE_PLAIN_WITH_FACE) {
 				new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
-				gdm_setup_config_set_bool (GDM_KEY_BROWSER, GDM_KEY_BROWSER, TRUE);
+				gdm_setup_config_set_bool (GDM_KEY_BROWSER, TRUE);
 			}
 			else {
 				gchar *selected_text;
@@ -992,13 +983,13 @@ combobox_timeout (GtkWidget *combo_box)
 				}
 				else {
 					new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
-					gdm_setup_config_set_bool (GDM_KEY_BROWSER, GDM_KEY_BROWSER, FALSE);
+					gdm_setup_config_set_bool (GDM_KEY_BROWSER, FALSE);
 				}
 				g_free (selected_text);
 			}			
 			
-			gdm_setup_config_set_string (key, key, new_key_val);
-			gdm_setup_config_set_bool (GDM_KEY_XDMCP, GDM_KEY_XDMCP, TRUE);
+			gdm_setup_config_set_string (key, new_key_val);
+			gdm_setup_config_set_bool (GDM_KEY_XDMCP, TRUE);
 			if (free_new_val)
 				g_free (new_key_val);
 			return FALSE;
@@ -1022,7 +1013,7 @@ combobox_timeout (GtkWidget *combo_box)
 		if (new_val &&
 		    strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
 
-			gdm_setup_config_set_string (key, key, new_val);
+			gdm_setup_config_set_string (key, new_val);
 		}
 		g_free (new_val);
 	} 
@@ -1042,7 +1033,7 @@ combobox_timeout (GtkWidget *combo_box)
 
 		/* Update config */
 		if (new_val != old_val)
-			gdm_setup_config_set_bool (key, key, new_val);
+			gdm_setup_config_set_bool (key, new_val);
 	}
 	/* Style combobox */
 	else if (strcmp (ve_sure_string (key), GDM_KEY_SERVER_CHOOSER) == 0) {
@@ -1408,8 +1399,7 @@ timedlogin_allow_remote_toggled (GtkWidget *toggle, GtkWidget *depend)
 
 static void
 setup_notify_toggle (const char *name,
-		     const char *key,
-		     const char *notify_key)
+		     const char *key)
 {
 	GtkWidget *toggle;
 	gboolean val;
@@ -1421,9 +1411,6 @@ setup_notify_toggle (const char *name,
 
 	g_object_set_data_full (G_OBJECT (toggle),
 	                        "key", g_strdup (key),
-	                        (GDestroyNotify) g_free);
-	g_object_set_data_full (G_OBJECT (toggle),
-	                        "notify_key", g_strdup (notify_key),
 	                        (GDestroyNotify) g_free);
 
 	if (strcmp (ve_sure_string (name), "sysmenu") == 0) {
@@ -1526,8 +1513,7 @@ setup_notify_toggle (const char *name,
 
 static void
 setup_xdmcp_notify_toggle (const char *name,
-                           const char *key,
-                           const char *notify_key)
+                           const char *key)
 {
 	GtkWidget *toggle;
 	gboolean val;
@@ -1540,9 +1526,6 @@ setup_xdmcp_notify_toggle (const char *name,
 
 	g_object_set_data_full (G_OBJECT (toggle),
 	                        "key", g_strdup (key),
-	                        (GDestroyNotify) g_free);
-	g_object_set_data_full (G_OBJECT (toggle),
-	                        "notify_key", g_strdup (notify_key),
 	                        (GDestroyNotify) g_free);
 
 	g_signal_connect (G_OBJECT (toggle), "toggled",
@@ -1679,8 +1662,7 @@ setup_user_combobox (const char *name, const char *key)
 
 static void
 setup_intspin (const char *name,
-	       const char *key,
-	       const char *notify_key)
+	       const char *key)
 {
 	GtkWidget *spin = glade_helper_get (xml, name,
 					    GTK_TYPE_SPIN_BUTTON);
@@ -1688,9 +1670,6 @@ setup_intspin (const char *name,
 
 	g_object_set_data_full (G_OBJECT (spin),
 				"key", g_strdup (key),
-				(GDestroyNotify) g_free);
-	g_object_set_data_full (G_OBJECT (spin),
-				"notify_key", g_strdup (notify_key),
 				(GDestroyNotify) g_free);
 
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), val);
@@ -1701,8 +1680,7 @@ setup_intspin (const char *name,
 
 static void
 setup_xdmcp_intspin (const const char *name,
-	             const char *key,
-	             const char *notify_key)
+	             const char *key)
 {
 	GtkWidget *spin;
 	int val = gdm_config_get_int ((gchar *)key);
@@ -1714,9 +1692,6 @@ setup_xdmcp_intspin (const const char *name,
 
 	g_object_set_data_full (G_OBJECT (spin),
 				"key", g_strdup (key),
-				(GDestroyNotify) g_free);
-	g_object_set_data_full (G_OBJECT (spin),
-				"notify_key", g_strdup (notify_key),
 				(GDestroyNotify) g_free);
 
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), val);
@@ -1998,7 +1973,7 @@ browser_apply (GtkWidget *button, gpointer data)
 
 	if (strcmp (ve_sure_string (val),
 		    ve_sure_string (userlist->str)) != 0) {
-		gdm_setup_config_set_string (GDM_KEY_INCLUDE, GDM_KEY_INCLUDE, userlist->str);
+		gdm_setup_config_set_string (GDM_KEY_INCLUDE, userlist->str);
 		update_greet = TRUE;
 	}
 
@@ -2022,7 +1997,7 @@ browser_apply (GtkWidget *button, gpointer data)
 
 	if (strcmp (ve_sure_string (val),
 		    ve_sure_string (userlist->str)) != 0) {
-		gdm_setup_config_set_string (GDM_KEY_EXCLUDE, GDM_KEY_EXCLUDE, userlist->str);
+		gdm_setup_config_set_string (GDM_KEY_EXCLUDE, userlist->str);
 		update_greet = TRUE;
 	}
 
@@ -2248,7 +2223,7 @@ greeter_toggle_timeout (GtkWidget *toggle)
 				                              GTK_TOGGLE_BUTTON (toggle)->active);	
 			}
 		}
-		gdm_setup_config_set_bool (key, key, GTK_TOGGLE_BUTTON (toggle)->active);
+		gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
 		update_greeters ();
 	}
 
@@ -2316,19 +2291,19 @@ local_background_type_toggle_timeout (GtkWidget *toggle)
 		
 	if (image_value == TRUE && color_value == TRUE) {		
 		/* Image & color */
-                gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, GDM_KEY_BACKGROUND_TYPE, 1);
+                gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, 1);
 	}
 	else if (image_value == FALSE && color_value == TRUE) {
 		/* Color only */
-		gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, GDM_KEY_BACKGROUND_TYPE, 2);
+		gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, 2);
 	}
 	else if (image_value == TRUE && color_value == FALSE) {
 		/* Image only*/
-		gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, GDM_KEY_BACKGROUND_TYPE, 3);
+		gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, 3);
 	}
 	else {
 		/* No Background */
-		gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, GDM_KEY_BACKGROUND_TYPE, 0);
+		gdm_setup_config_set_int (GDM_KEY_BACKGROUND_TYPE, 0);
 	}
 		
 	update_greeters ();
@@ -2543,7 +2518,7 @@ greeter_color_timeout (GtkWidget *picker)
 	val = gdm_config_get_string ((gchar *)key);
 
 	if (strcmp (ve_sure_string (val), ve_sure_string (color)) != 0) {
-		gdm_setup_config_set_string (key, key, ve_sure_string (color));
+		gdm_setup_config_set_string (key, ve_sure_string (color));
 		update_greeters ();
 	}
 
@@ -2610,7 +2585,7 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	ve_config_delete_translations (custom_cfg, key);
-	gdm_setup_config_set_string (key, key, (char *)ve_sure_string (text));
+	gdm_setup_config_set_string (key, (char *)ve_sure_string (text));
 	update_greeters ();
 
 	return FALSE;
@@ -2664,41 +2639,15 @@ xdmcp_button_clicked (void)
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 
-		setup_xdmcp_notify_toggle ("honour_indirect",
-				           GDM_KEY_INDIRECT,
-				           "xdmcp/PARAMETERS");
-
-		setup_xdmcp_intspin ("udpport",
-			             GDM_KEY_UDP_PORT,
-			             GDM_KEY_UDP_PORT);
-
-		setup_xdmcp_intspin ("maxpending",
-		                     GDM_KEY_MAX_PENDING,
-		                     "xdmcp/PARAMETERS");
-
-		setup_xdmcp_intspin ("maxpendingindirect",
-		                     GDM_KEY_MAX_INDIRECT,
-		                     "xdmcp/PARAMETERS");
-
-		setup_xdmcp_intspin ("maxremotesessions",
-			             GDM_KEY_MAX_SESSIONS,
-			             "xdmcp/PARAMETERS");
-
-		setup_xdmcp_intspin ("maxwait",
-			             GDM_KEY_MAX_WAIT,
-			             "xdmcp/PARAMETERS");
-
-		setup_xdmcp_intspin ("maxwaitindirect",
-			             GDM_KEY_MAX_WAIT_INDIRECT,
-			             "xdmcp/PARAMETERS");
-
-		setup_xdmcp_intspin ("displaysperhost",
-			             GDM_KEY_DISPLAYS_PER_HOST,
-			             "xdmcp/PARAMETERS");
-
-		setup_xdmcp_intspin ("pinginterval",
-			             GDM_KEY_PING_INTERVAL,
-			             "xdmcp/PARAMETERS");
+		setup_xdmcp_notify_toggle ("honour_indirect", GDM_KEY_INDIRECT);
+		setup_xdmcp_intspin ("udpport", GDM_KEY_UDP_PORT);
+		setup_xdmcp_intspin ("maxpending", GDM_KEY_MAX_PENDING);
+		setup_xdmcp_intspin ("maxpendingindirect", GDM_KEY_MAX_INDIRECT);
+		setup_xdmcp_intspin ("maxremotesessions", GDM_KEY_MAX_SESSIONS);
+		setup_xdmcp_intspin ("maxwait", GDM_KEY_MAX_WAIT);
+		setup_xdmcp_intspin ("maxwaitindirect", GDM_KEY_MAX_WAIT_INDIRECT);
+		setup_xdmcp_intspin ("displaysperhost", GDM_KEY_DISPLAYS_PER_HOST);
+		setup_xdmcp_intspin ("pinginterval", GDM_KEY_PING_INTERVAL);
 	}
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_hide (dialog);
@@ -2952,9 +2901,9 @@ acc_modules_toggled (GtkWidget *toggle, gpointer data)
 	if (ve_string_empty (modules_list))
 		add_gtk_modules = FALSE;
 
-	gdm_setup_config_set_string (GDM_KEY_GTK_MODULES_LIST, GDM_KEY_GTK_MODULES_LIST,
+	gdm_setup_config_set_string (GDM_KEY_GTK_MODULES_LIST,
 	                      ve_sure_string (modules_list));
-	gdm_setup_config_set_bool (GDM_KEY_ADD_GTK_MODULES, GDM_KEY_ADD_GTK_MODULES,
+	gdm_setup_config_set_bool (GDM_KEY_ADD_GTK_MODULES,
 	                    add_gtk_modules);
 }
 
@@ -2995,7 +2944,7 @@ sound_response (GtkWidget *file_chooser, gpointer data)
 	value     = gdm_config_get_string (sound_key);
 	
 	if (strcmp (ve_sure_string (value), ve_sure_string (file_name)) != 0) {
-		gdm_setup_config_set_string (sound_key, sound_key,
+		gdm_setup_config_set_string (sound_key,
 			(char *)ve_sure_string (file_name));
 		update_greeters ();
 	}
@@ -3516,7 +3465,7 @@ greeter_theme_timeout (GtkWidget *toggle)
 		ve_sure_string (selected_theme)) != 0) {
 
 		gdm_setup_config_set_string (GDM_KEY_GRAPHICAL_THEME,
-			GDM_KEY_GRAPHICAL_THEME, selected_theme);
+			selected_theme);
 		update_greeters ();
 	}
 
@@ -3524,7 +3473,7 @@ greeter_theme_timeout (GtkWidget *toggle)
 		ve_sure_string (selected_themes)) != 0) {
 
 		gdm_setup_config_set_string (GDM_KEY_GRAPHICAL_THEMES,
-			GDM_KEY_GRAPHICAL_THEMES, selected_themes);
+			selected_themes);
 		update_greeters ();
 	}
 
@@ -5024,29 +4973,19 @@ setup_security_tab (void)
 	GtkWidget *XDMCPbutton;
 
 	/* Setup Local administrator login setttings */
-	setup_notify_toggle ("allowroot",
-			     GDM_KEY_ALLOW_ROOT,
-			     GDM_KEY_ALLOW_ROOT);
+	setup_notify_toggle ("allowroot", GDM_KEY_ALLOW_ROOT);
 
 	/* Setup Remote administrator login setttings */
-	setup_notify_toggle ("allowremoteroot",
-			     GDM_KEY_ALLOW_REMOTE_ROOT,
-			     GDM_KEY_ALLOW_REMOTE_ROOT);
+	setup_notify_toggle ("allowremoteroot", GDM_KEY_ALLOW_REMOTE_ROOT);
 
 	/* Setup Enable debug message to system log */
-	setup_notify_toggle ("enable_debug",
-			     GDM_KEY_DEBUG,
-			     GDM_KEY_DEBUG);
+	setup_notify_toggle ("enable_debug", GDM_KEY_DEBUG);
 
 	/* Setup Deny TCP connections to Xserver */
-	setup_notify_toggle ("disallow_tcp",
-			     GDM_KEY_DISALLOW_TCP,
-			     GDM_KEY_DISALLOW_TCP);
+	setup_notify_toggle ("disallow_tcp", GDM_KEY_DISALLOW_TCP);
 
 	/* Setup Retry delay */
-	setup_intspin ("retry_delay",
-		       GDM_KEY_RETRY_DELAY,
-		       GDM_KEY_RETRY_DELAY);
+	setup_intspin ("retry_delay", GDM_KEY_RETRY_DELAY);
 
 	/* Bold the Enable automatic login label */
 	checkbox = glade_helper_get (xml, "autologin",
@@ -5063,24 +5002,16 @@ setup_security_tab (void)
 	/* Setup Enable automatic login */
  	setup_user_combobox ("autologin_combo",
 			     GDM_KEY_AUTOMATIC_LOGIN);
-	setup_notify_toggle ("autologin",
-			     GDM_KEY_AUTOMATIC_LOGIN_ENABLE,
-			     NULL);
+	setup_notify_toggle ("autologin", GDM_KEY_AUTOMATIC_LOGIN_ENABLE);
 
 	/* Setup Enable timed login */
  	setup_user_combobox ("timedlogin_combo",
 			     GDM_KEY_TIMED_LOGIN);
-	setup_intspin ("timedlogin_seconds",
-		       GDM_KEY_TIMED_LOGIN_DELAY,
-		       GDM_KEY_TIMED_LOGIN_DELAY);
-	setup_notify_toggle ("timedlogin",
-			     GDM_KEY_TIMED_LOGIN_ENABLE,
-			     GDM_KEY_TIMED_LOGIN_ENABLE);
+	setup_intspin ("timedlogin_seconds", GDM_KEY_TIMED_LOGIN_DELAY);
+	setup_notify_toggle ("timedlogin", GDM_KEY_TIMED_LOGIN_ENABLE);
 
 	/* Setup Allow remote timed logins */
-	setup_notify_toggle ("allowremoteauto",
-			     GDM_KEY_ALLOW_REMOTE_AUTOLOGIN,
-			     GDM_KEY_ALLOW_REMOTE_AUTOLOGIN);
+	setup_notify_toggle ("allowremoteauto", GDM_KEY_ALLOW_REMOTE_AUTOLOGIN);
 
 	/* Setup Configure XDMCP button */
 	XDMCPbutton = glade_helper_get (xml, "config_xserverbutton",
@@ -5460,7 +5391,7 @@ image_filechooser_response (GtkWidget *file_chooser, gpointer data)
 		                          G_CALLBACK (image_filechooser_response), image_filechooser);
 		}
 
-		gdm_setup_config_set_string (key, key, (char *)ve_sure_string (file_name));
+		gdm_setup_config_set_string (key, (char *)ve_sure_string (file_name));
 		update_greeters ();
 	}
 }
@@ -5503,7 +5434,7 @@ logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 		                          G_CALLBACK (logo_filechooser_response), image_filechooser);
 
 			if (GTK_TOGGLE_BUTTON (image_toggle)->active == TRUE) {
-				gdm_setup_config_set_string (key, key,
+				gdm_setup_config_set_string (key,
 					(char *)ve_sure_string (file_name));
 				update_greeters ();
 			}
@@ -5531,7 +5462,7 @@ logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 		                          G_CALLBACK (logo_filechooser_response), image_filechooser);;
 		
 			if (GTK_TOGGLE_BUTTON (image_toggle)->active == TRUE) {
-				gdm_setup_config_set_string (key, key,
+				gdm_setup_config_set_string (key,
 	    	                                      (char *)ve_sure_string (file_name));
 				update_greeters ();
 			}
@@ -5830,15 +5761,9 @@ static void
 setup_plain_menubar (void)
 {
 	/* Initialize and hookup callbacks for plain menu bar settings */
-	setup_notify_toggle ("sysmenu",
-			     GDM_KEY_SYSTEM_MENU,
-			     GDM_KEY_SYSTEM_MENU /* notify_key */);
-	setup_notify_toggle ("config_available",
-			     GDM_KEY_CONFIG_AVAILABLE,
-			     GDM_KEY_CONFIG_AVAILABLE /* notify_key */);
-	setup_notify_toggle ("chooser_button",
-			     GDM_KEY_CHOOSER_BUTTON,
-			     GDM_KEY_CHOOSER_BUTTON /* notify_key */);
+	setup_notify_toggle ("sysmenu", GDM_KEY_SYSTEM_MENU);
+	setup_notify_toggle ("config_available", GDM_KEY_CONFIG_AVAILABLE);
+	setup_notify_toggle ("chooser_button", GDM_KEY_CHOOSER_BUTTON);
 }
 
 
@@ -5846,22 +5771,16 @@ static void
 setup_local_welcome_message (void)	
 {
 	/* Initialize and hookup callbacks for local welcome message settings */ 
-	setup_greeter_toggle ("sg_defaultwelcome",
-	                      GDM_KEY_DEFAULT_WELCOME);
-
- 	setup_greeter_untranslate_entry ("welcome",
-	                                 GDM_KEY_WELCOME);
+	setup_greeter_toggle ("sg_defaultwelcome", GDM_KEY_DEFAULT_WELCOME);
+ 	setup_greeter_untranslate_entry ("welcome", GDM_KEY_WELCOME);
 }
 
 static void
 setup_remote_welcome_message (void)	
 {
 	/* Initialize and hookup callbacks for local welcome message settings */ 
-	setup_greeter_toggle ("sg_defaultwelcomeremote",
-	                      GDM_KEY_DEFAULT_REMOTE_WELCOME);
-
- 	setup_greeter_untranslate_entry ("welcomeremote",
-	                                 GDM_KEY_REMOTE_WELCOME);
+	setup_greeter_toggle ("sg_defaultwelcomeremote", GDM_KEY_DEFAULT_REMOTE_WELCOME);
+ 	setup_greeter_untranslate_entry ("welcomeremote", GDM_KEY_REMOTE_WELCOME);
 }
 
 static void
