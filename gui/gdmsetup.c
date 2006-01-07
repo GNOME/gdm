@@ -37,12 +37,6 @@
 #include <gdk/gdkx.h>
 #include <glade/glade.h>
 #include <glib/gi18n.h>
-/*
- * libgnomeui is needed for gnome_help_display_uri (), once we find a way
- * to replace this function, we can completely get rid of libgnomeui from
- * GDM
- */
-#include <libgnomeui-2.0/gnome.h>
 
 #include "vicious.h"
 #include "viciousui.h"
@@ -559,7 +553,7 @@ xservers_get_displays (GtkListStore *store)
 	VeConfig *cfg        = ve_config_get (config_file);
 	GList *list;
 	GSList *li;
-	gchar *server, *options, *cpy;
+	gchar *server, *options;
 
 	/* Fill list with all the active displays */
 	if (custom_cfg) {
@@ -4958,7 +4952,8 @@ xserver_button_clicked (void)
 	do {
 		response = gtk_dialog_run (GTK_DIALOG (dialog));
 		if (response == GTK_RESPONSE_HELP) {
-			gnome_help_display_uri ("ghelp:gdm", NULL);
+			g_spawn_command_line_sync ("gnome-open ghelp:gdm", NULL, NULL,
+							NULL, NULL);
 		}
 	} while (response != GTK_RESPONSE_CLOSE);
 
@@ -5293,7 +5288,6 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 		timeout_remove_all ();
 		gtk_main_quit ();
 	} else if (response == GTK_RESPONSE_HELP) {
-		GError *error = NULL;
 		GtkWidget *setup_dialog = glade_helper_get
 			(xml, "setup_dialog", GTK_TYPE_WINDOW);
 		static GtkWidget *dlg = NULL;
@@ -5304,11 +5298,10 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 		}
 
 		if ( ! RUNNING_UNDER_GDM) {
-			gnome_help_display_uri ("ghelp:gdm", &error);
-			/* FIXME: handle errors nicer */
-			if (error == NULL)
+			gint exit_status;
+			if (g_spawn_command_line_sync ("gnome-open ghelp:gdm", NULL, NULL,
+							&exit_status, NULL) && exit_status == 0)
 				return;
-			g_error_free (error);
 		}
 
 		/* fallback help dialogue */
