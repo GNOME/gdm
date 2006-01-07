@@ -64,7 +64,7 @@ uninstall-hook:
 	$(DESTDIR)$(predir)/Default \
 	$(DESTDIR)$(postdir)/Default
 
-install-data-hook: gdm.conf gdm.conf-custom Xsession gnome.desktop default.desktop CDE.desktop Init PostSession PreSession $(GDMPREFETCHLIST)
+install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession $(DESKTOP_FILES) $(GDMPREFETCHLIST)
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
