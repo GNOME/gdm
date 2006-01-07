@@ -148,7 +148,9 @@
       <para>
         For further information about GDM, see the
         <ulink type="http" url="http://www.gnome.org/projects/gdm/">
-        the GDM project website</ulink>.
+        the GDM project website</ulink>.  Please submit any bug reports or
+        enhancement requests to the &quot;gdm&quot; category in
+        <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>.
       </para>
     </sect2>
 
@@ -613,6 +615,32 @@
         off the face browser for performance reasons.  Looking up icons in
         home directories, scaling and rendering face icons can take a long
         time.
+      </para>
+    </sect2>
+
+    <sect2 id="performance">
+      <title>GDM Performance</title>
+
+      <para>
+        To speed performance it is possible to build GDM so that it will
+        preload libraries when GDM first displays a greeter program.  This
+        has been shown to speed first time login since these libraries can
+        be loaded into memory while the user types in their username and
+        password.
+      </para>
+
+      <para>
+        To use this feature, configure GDM with the --with-prefetch option.
+        This will cause GDM to install the gdmprefetch program to the
+        EXPANDED_LIBEXEC directory, install the gdmprefetchlist to the
+        &lt;etc&gt;/gdm directory, and set the PreFetchProgram configuration
+        variable so that the gdmprefetch program is called with the default
+        gdmprefetchlist file.  The default gdmprefetchlist file was optimized
+        for a GNOME desktop running on Solaris, so may need fine-tuning on
+        other systems.  Alternative prefetchlist files can be contributed
+        to the &quot;gdm&quot; category in
+        <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>,
+        so that they can be included in future GDM releases.
       </para>
     </sect2>
   </sect1>
