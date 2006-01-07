@@ -3522,21 +3522,24 @@ session_child_run (struct passwd *pwent,
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
 	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
 		exec = gdm_get_session_exec (session,
-					 FALSE /* check_try_exec */);
+			FALSE /* check_try_exec */);
+
 		if G_UNLIKELY (exec == NULL) {
-			gdm_error (_("%s: No Exec line in the session file: %s. Starting failsafe GNOME"),
-				   "session_child_run",
-				   session);
+			gchar *msg = g_strdup_printf (
+				_("No Exec line in the session file: %s.  Running the GNOME failsafe session instead"),
+				session);
+
+			gdm_error (_("%s: %s"), "session_child_run", msg);
+			gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
+			g_free (msg);
+
 			session = GDM_SESSION_FAILSAFE_GNOME;
-			gdm_error_box
-				(d, GTK_MESSAGE_ERROR,
-				 _("The session you selected does not look valid.  Running the GNOME failsafe session instead."));
 		} else {
 			/* HACK!, if failsafe, we really wish to run the
 			   internal one */
 			if (strcmp (exec, "failsafe") == 0) {
 				session = GDM_SESSION_FAILSAFE_XTERM;
-				exec = NULL;
+				exec    = NULL;
 			}
 		}
 	}

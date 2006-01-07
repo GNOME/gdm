@@ -1,5 +1,19 @@
 2006-01-04  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c: Make error message more clear when session file
+	  is invalid.  Now it says what session file had the problem.
+	  This fixes bug #322699.
+	* gui/gdmconfig.c: Now the gdm_config_get_xserver_details
+	  function is more robust, and handles NULL return values 
+	  better and supports PRIORITY.
+	* gui/gdmsetup.c: Now that gdmconfig reads in the priority value,
+	  gdmsetup will write it back out if that server is modified.
+	  However, gdmsetup still doesn't allow you to modify the
+	  priority value.  Probably should add a spinbutton to the
+	  dialog.
+
+2006-01-04  Brian Cameron  <brian.cameron@sun.com>
+
 	* configure.ac, gui/gdmsetup.c, vicious-extensions/Makefile.am: No
 	  longer require libgnome or libgnomeui at all in GDM2.  Patch
 	  provided by Jani Monoses.

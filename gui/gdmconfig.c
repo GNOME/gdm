@@ -193,7 +193,6 @@ gdm_config_get_xservers (gboolean flexible)
 	gchar *command = NULL;
 	gchar *result  = NULL;
 	gchar *temp;
-	gboolean tempbool;
 
 	command = g_strdup_printf ("GET_SERVER_LIST");
 	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
@@ -221,37 +220,78 @@ gdm_config_get_xservers (gboolean flexible)
 
         while (*sec != NULL) {
 		GdmXserver *svr = g_new0 (GdmXserver, 1);
+		gchar *temp;
 
-		svr->id      = gdm_config_get_xserver_details (*sec, "ID");
-		svr->name    = gdm_config_get_xserver_details (*sec, "NAME");
-		svr->command = gdm_config_get_xserver_details (*sec, "COMMAND");
+		temp = gdm_config_get_xserver_details (*sec, "ID");
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		}
+		svr->id = temp;
+		temp = gdm_config_get_xserver_details (*sec, "NAME");
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		}
+		svr->name = temp;
+		temp = gdm_config_get_xserver_details (*sec, "COMMAND");
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		}
+		svr->command = temp;
 
 		temp = gdm_config_get_xserver_details (*sec, "FLEXIBLE");
-		if (g_strncasecmp (temp, "true", 4) == 0)
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		} else if (g_strncasecmp (ve_sure_string (temp), "true", 4) == 0)
 			svr->flexible = TRUE;
 		else
 			svr->flexible = FALSE;
+
 		temp = gdm_config_get_xserver_details (*sec, "CHOOSABLE");
-		if (g_strncasecmp (temp, "true", 4) == 0)
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		} else if (g_strncasecmp (temp, "true", 4) == 0)
 			svr->choosable = TRUE;
 		else
 			svr->choosable = FALSE;
+
 		temp = gdm_config_get_xserver_details (*sec, "HANDLED");
-		if (g_strncasecmp (temp, "true", 4) == 0)
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		} else if (g_strncasecmp (temp, "true", 4) == 0)
 			svr->handled = TRUE;
 		else
 			svr->handled = FALSE;
+
 		temp = gdm_config_get_xserver_details (*sec, "CHOOSER");
-		if (g_strncasecmp (temp, "true", 4) == 0)
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		} else if (g_strncasecmp (temp, "true", 4) == 0)
 			svr->chooser = TRUE;
 		else
 			svr->chooser = FALSE;
 
+		temp = gdm_config_get_xserver_details (*sec, "PRIORITY");
+		if (temp == NULL) {
+			g_free (svr);
+			continue;
+		} else {
+			svr->priority = atoi (temp);
+		}
+
 		sec++;
 
 		/* If only flexible was requested, then skip if not flexible */
-		if (flexible && !svr->flexible)
+		if (flexible && !svr->flexible) {
+			g_free (svr);
 			continue;
+		}
 
 		xservers = g_slist_append (xservers, svr);
 	}

@@ -896,6 +896,10 @@ update_xserver (gchar *section, GdmXserver *svr)
 	ve_config_set_bool (custom_cfg, key, svr->flexible);
 	g_free (key);
 
+	key = g_strconcat (real_section, "/" GDM_KEY_SERVER_PRIORITY, NULL);
+	ve_config_set_int (custom_cfg, key, svr->priority);
+	g_free (key);
+
         g_free (real_section);
 	ve_config_save (custom_cfg, FALSE);
 
