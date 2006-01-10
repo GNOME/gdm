@@ -5114,6 +5114,38 @@ theme_list_drag_data_received  (GtkWidget        *widget,
 	}
 }
 
+static gboolean
+theme_list_equal_func (GtkTreeModel * model,
+                       gint column,
+                       const gchar * key,
+                       GtkTreeIter * iter,
+                       gpointer search_data)
+{
+	gboolean results = TRUE;
+	gchar *name;
+
+	gtk_tree_model_get (model, iter, THEME_COLUMN_MARKUP, &name, -1);
+
+	if (name != NULL) {
+		gchar * casefold_key;
+		gchar * casefold_name;
+	
+		casefold_key = g_utf8_casefold (key, -1);
+		casefold_name = g_utf8_casefold (name, -1);
+
+		if ((casefold_key != NULL) &&
+		    (casefold_name != NULL) && 
+		    (strstr (casefold_name, casefold_key) != NULL)) {
+			results = FALSE;
+		}
+		g_free (casefold_key);
+		g_free (casefold_name);
+		g_free (name);
+	}
+	return results;
+}
+
+
 static void
 setup_local_themed_settings (void)
 {
@@ -5247,15 +5279,19 @@ setup_local_themed_settings (void)
         gtk_tree_view_column_set_attributes (column, renderer,
                                              "pixbuf", THEME_COLUMN_SCREENSHOT,
                                              NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
-
 	/* The markup column */
-	column   = gtk_tree_view_column_new ();
 	renderer = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_set_attributes (column, renderer,
 		"markup", THEME_COLUMN_MARKUP, NULL);
+	gtk_tree_view_column_set_spacing (column, 6);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
+
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store),
+	                                      THEME_COLUMN_MARKUP, GTK_SORT_ASCENDING);
+
+	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (theme_list),
+	                                     theme_list_equal_func, NULL, NULL);
 
 	/* Selection setup */
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
@@ -6166,15 +6202,20 @@ setup_remote_themed_settings (void)
 	gtk_tree_view_column_set_attributes (column, renderer,
                                              "pixbuf", THEME_COLUMN_SCREENSHOT,
                                              NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
 
 	/* The markup column */
-	column   = gtk_tree_view_column_new ();
 	renderer = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_set_attributes (column, renderer,
 	                                     "markup", THEME_COLUMN_MARKUP, NULL);
+     	gtk_tree_view_column_set_spacing (column, 6);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
+
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store),
+	                                      THEME_COLUMN_MARKUP, GTK_SORT_ASCENDING);
+
+	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (theme_list),
+	                                     theme_list_equal_func, NULL, NULL);
 
 	/* Selection setup */
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
