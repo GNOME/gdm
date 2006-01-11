@@ -303,6 +303,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		    const char *details_label, const char *details_file,
 		    uid_t uid, gid_t gid)
 {
+	GdkDisplay *gdk_display;
 	pid_t pid;
 
 	pid = gdm_fork_extra ();
@@ -441,9 +442,11 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		gtk_widget_show_now (dlg);
 
+		gdk_display = gdk_display_get_default ();
+
 		if (dlg->window != NULL) {
 			gdk_error_trap_push ();
-			XSetInputFocus (GDK_DISPLAY (),
+			XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 					GDK_WINDOW_XWINDOW (dlg->window),
 					RevertToPointerRoot,
 					CurrentTime);
@@ -455,7 +458,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		gtk_dialog_run (GTK_DIALOG (dlg));
 
-		XSetInputFocus (GDK_DISPLAY (),
+		XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 				PointerRoot,
 				RevertToPointerRoot,
 				CurrentTime);
@@ -507,6 +510,7 @@ gdm_failsafe_question (GdmDisplay *d,
 		       const char *question,
 		       gboolean echo)
 {
+	GdkDisplay *gdk_display;
 	pid_t pid;
 	int p[2];
 
@@ -560,9 +564,11 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		gtk_widget_show_now (dlg);
 
+		gdk_display = gdk_display_get_default ();
+
 		if (dlg->window != NULL) {
 			gdk_error_trap_push ();
-			XSetInputFocus (GDK_DISPLAY (),
+			XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 					GDK_WINDOW_XWINDOW (dlg->window),
 					RevertToPointerRoot,
 					CurrentTime);
@@ -580,7 +586,7 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		gdm_fdprintf (p[1], "%s", ve_sure_string (loc));
 
-		XSetInputFocus (GDK_DISPLAY (),
+		XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 				PointerRoot,
 				RevertToPointerRoot,
 				CurrentTime);
@@ -632,6 +638,7 @@ gboolean
 gdm_failsafe_yesno (GdmDisplay *d,
 		    const char *question)
 {
+	GdkDisplay *gdk_display;
 	pid_t pid;
 	int p[2];
 
@@ -669,9 +676,11 @@ gdm_failsafe_yesno (GdmDisplay *d,
 
 		gtk_widget_show_now (dlg);
 
+		gdk_display = gdk_display_get_default ();
+
 		if (dlg->window != NULL) {
 			gdk_error_trap_push ();
-			XSetInputFocus (GDK_DISPLAY (),
+			XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 					GDK_WINDOW_XWINDOW (dlg->window),
 					RevertToPointerRoot,
 					CurrentTime);
@@ -686,7 +695,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		else
 			gdm_fdprintf (p[1], "no\n");
 
-		XSetInputFocus (GDK_DISPLAY (),
+		XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 				PointerRoot,
 				RevertToPointerRoot,
 				CurrentTime);
@@ -741,6 +750,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 			  const char *question,
 			  char **but)
 {
+	GdkDisplay *gdk_display;
 	pid_t pid;
 	int p[2];
 
@@ -787,9 +797,11 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 
 		gtk_widget_show_now (dlg);
 
+		gdk_display = gdk_display_get_default ();
+
 		if (dlg->window != NULL) {
 			gdk_error_trap_push ();
-			XSetInputFocus (GDK_DISPLAY (),
+			XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 					GDK_WINDOW_XWINDOW (dlg->window),
 					RevertToPointerRoot,
 					CurrentTime);
@@ -802,7 +814,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 		i = gtk_dialog_run (GTK_DIALOG (dlg));
 		gdm_fdprintf (p[1], "%d\n", i);
 
-		XSetInputFocus (GDK_DISPLAY (),
+		XSetInputFocus (GDK_DISPLAY_XDISPLAY (gdk_display),
 				PointerRoot,
 				RevertToPointerRoot,
 				CurrentTime);

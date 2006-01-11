@@ -1,3 +1,14 @@
+2006-01-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/errorgui.c:  Now use GDK_DISPLAY_XDISPLAY 
+	  instead of GDK_DISPLAY since the GDK_DISPLAY macro
+	  causes the GDM daemon to require the gdk_display
+	  extern global variable from the libgdk-x11 library
+	  and always causes this library to get loaded into
+	  memory even though normally the GDM daemon does 
+	  not make calls to GDK.  Using GDK_DISPLAY_XDISPLAY
+          makes lazy loading work better.
+
 2006-01-09  Dennis Cranston  <dennis_cranston@yahoo.com>
 
 	* gui/gdmsetup.c: (theme_list_equal_func): New function.
