@@ -1126,9 +1126,7 @@ authenticate_again:
 		    }
 		    if (is_capslock) {
 			    msg = g_strconcat (basemsg, "  ",
-					       _("Please make sure the "
-						 "Caps Lock key is not "
-						 "enabled."),
+					       _("Caps Lock is on."),
 					       NULL);
 		    } else {
 			    msg = g_strdup (basemsg);

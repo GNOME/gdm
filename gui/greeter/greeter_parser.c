@@ -1098,7 +1098,7 @@ parse_stock (xmlNodePtr node,
       else if (g_ascii_strcasecmp ((char *) prop, "caps-lock-warning") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("Please make sure the Caps Lock key is not enabled."));
+	  *translated_text = g_strdup (_("Caps Lock is on."));
 	}
       else if (g_ascii_strcasecmp ((char *) prop, "timed-label") == 0)
         {
