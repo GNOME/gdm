@@ -349,7 +349,7 @@
       <para>
         The menu bar in the top of the greeter enables the user to select the
         requested session type/desktop environment, select an appropriate
-        locale/language, shutdown/restart/suspend the computer, configure GDM
+        locale/language, halt/restart/suspend the computer, configure GDM
         (given the user knows the root password), change the GTK+ theme, or
         start an XDMCP chooser.
       </para>
@@ -382,7 +382,7 @@
         only thing that must always be present is the text entry field as
         described above in the GTK+ Greeter.  The theme can include buttons
         that allow the user to select an appropriate locale/language,
-        shutdown/restart/suspend the computer, configure GDM (given the user
+        halt/restart/suspend the computer, configure GDM (given the user
         knows the root password), or start an XDMCP chooser.
       </para>
 
@@ -1564,8 +1564,8 @@ PostSession/
                 Full path and arguments to command to be executed when user
                 selects Shutdown from the Actions menu.  This can be a ';'
                 separated list of commands to try.  If a value is missing, the
-                shutdown command is not available.  Note that the default for
-                this value is not empty so to disable shutdown you must set
+                shut down command is not available.  Note that the default for
+                this value is not empty so to disable shut down you must set
                 this explicitly to an empty value.
               </para>
             </listitem>
@@ -5664,16 +5664,19 @@ homogeneous=&quot;bool&quot;&gt;
           <filename>cancel</filename>, _(&quot;_Cancel&quot;
         </para>
         <para>
-          <filename>caps-lock-warning</filename>, _(&quot;You've got capslock on!&quot; 
+          <filename>caps-lock-warning</filename>, _(&quot;Please make sure the Caps Lock key is not enabled.&quot; 
         </para>
         <para>
           <filename>chooser</filename>, _(&quot;_XDMCP Chooser&quot;
         </para>
         <para>
+          <filename>config</filename>, _(&quot;_Configure&quot;
+        </para>
+        <para>
           <filename>disconnect</filename>, _(&quot;D_isconnect&quot;
         </para>
         <para>
-          <filename>halt</filename>, _(&quot;Shut_down&quot;
+          <filename>halt</filename>, _(&quot;Shut _Down&quot;
         </para>
         <para>
           <filename>language</filename>, _(&quot;_Language&quot;

@@ -154,7 +154,7 @@
 
       <para>El campo de entrada de texto se usa para introducir nombres de usuario, contraseñas, etc. <command>gdmlogin</command> está controlado por un demonio por debajo que es básicamente sin estado. El demonio controla el interfaz a través de un protocolo simple donde puede predir al interfaz una cadena de texto con eco activado o desactivado. Similarmente, el demonio puede cambiar la etiqueta sobre la entrada de texto para corresponder con el valor que el sistema de autenticación quiere que el usuario introduzca.</para>
 
-      <para>La barra de menú en la parte superior del interfaz permite al usuario seleccionar el tipo/escritorio de entorno de sesión, seleccionar una configuración regional/idioma adecuado, apagar/reiniciar/suspender el equipo, configurar GDM (siempre que el usuario conozca la contraseña de administrador), cambiar el tema GTK+ o iniciar un selector XDMCP.</para>
+      <para>The menu bar in the top of the greeter enables the user to select the requested session type/desktop environment, select an appropriate locale/language, halt/restart/suspend the computer, configure GDM (given the user knows the root password), change the GTK+ theme, or start an XDMCP chooser.</para>
 
       <para>El interfaz de entrada puede mostrar opcionalmente un logotipo en la ventana de entrada. La imagen debe estar en un formato legible por la biblioteca gdk-pixbuf (GIF, JPG, PNG, TIFF, XPM y posiblemente otros), y debe tener permiso de lectura para el usuario de GDM. Vea la opción <filename>Logotipo</filename> en la sección de referencia inferior para los detalles.</para>
     </sect2>
@@ -164,7 +164,7 @@
 
       <para>The Themed Greeter is a greeter interface that takes up the whole screen and is very themable. Themes can be selected and new themes can be installed by the configuration application or by setting the <filename>GraphicalTheme</filename> configuration key. The Themed Greeter is much like the GTK+ Greeter in that it is controlled by the underlying daeon, is stateless, and is controlled by the daemon using the same simple protocol.</para>
 
-      <para>The look and feel of this greeter is really controlled by the theme and so the user interface elements that are present may be different. The only thing that must always be present is the text entry field as described above in the GTK+ Greeter. The theme can include buttons that allow the user to select an appropriate locale/language, shutdown/restart/suspend the computer, configure GDM (given the user knows the root password), or start an XDMCP chooser.</para>
+      <para>The look and feel of this greeter is really controlled by the theme and so the user interface elements that are present may be different. The only thing that must always be present is the text entry field as described above in the GTK+ Greeter. The theme can include buttons that allow the user to select an appropriate locale/language, halt/restart/suspend the computer, configure GDM (given the user knows the root password), or start an XDMCP chooser.</para>
 
       <para>Puede obtener siempre un menú de las acciones disponibles pulsando la tecla F10. Esto puede ser útil si el tema no proporciona ciertos botones cuando realmente quiere hacer alguna acción.</para>
     </sect2>
@@ -581,7 +581,7 @@ PostSession/
             <term>HaltCommand</term>
             <listitem>
               <synopsis>HaltCommand=/sbin/shutdown -h now</synopsis>
-              <para>Full path and arguments to command to be executed when user selects Shutdown from the Actions menu. This can be a ';' separated list of commands to try. If a value is missing, the shutdown command is not available. Note that the default for this value is not empty so to disable shutdown you must set this explicitly to an empty value.</para>
+              <para>Full path and arguments to command to be executed when user selects Shutdown from the Actions menu. This can be a ';' separated list of commands to try. If a value is missing, the shut down command is not available. Note that the default for this value is not empty so to disable shut down you must set this explicitly to an empty value.</para>
             </listitem>
           </varlistentry>
           
@@ -3088,10 +3088,11 @@ homogeneous="bool"&gt;
         <para>Certain common localized labels can be specified via the stock tags. The "text" tag is ignored if the "stock" tag is used. You should really use the stock labels rather then just putting all the translations into the themes. This gives faster load times and likely better translations. The following values are valid:</para>
 
         <para><filename>cancel</filename>, _("_Cancel"</para>
-        <para><filename>caps-lock-warning</filename>, _("You've got capslock on!"</para>
+        <para><filename>caps-lock-warning</filename>, _("Please make sure the Caps Lock key is not enabled."</para>
         <para><filename>chooser</filename>, _("_XDMCP Chooser"</para>
+        <para><filename>config</filename>, _("_Configure"</para>
         <para><filename>disconnect</filename>, _("D_isconnect"</para>
-        <para><filename>halt</filename>, _("Shut_down"</para>
+        <para><filename>halt</filename>, _("Shut _Down"</para>
         <para><filename>language</filename>, _("_Language"</para>
         <para><filename>ok</filename>, _("_OK"</para>
         <para><filename>quit</filename>, _("_Quit"</para>

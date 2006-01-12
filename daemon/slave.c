@@ -4283,7 +4283,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 #ifdef __linux__
     /* If on linux and the runlevel is 0 or 6 and not the runlevel that
        we were started in, then we are rebooting or halting.
-       Probably the user selected shutdown or reboot from the logout
+       Probably the user selected halt or reboot from the logout
        menu.  In this case we can really just sleep for a few seconds and
        basically wait to be killed.  I'll set the default for 30 seconds
        and let people yell at me if this breaks something.  It shouldn't.
@@ -4304,7 +4304,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 		    /* this is a stupid loop, but we may be getting signals,
 		       so we don't want to just do sleep (30) */
 		    time_t c = time (NULL);
-		    gdm_info (_("GDM detected a shutdown or reboot "
+		    gdm_info (_("GDM detected a halt or reboot "
 				"in progress."));
 		    pclose (fp);
 		    while (c + 30 >= time (NULL)) {
@@ -4647,7 +4647,7 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 static gint
 gdm_slave_ignore_xioerror_handler (Display *disp)
 {
-    gdm_debug ("Fatal X error detected.  Ignoring same during session shutdown.");
+    gdm_debug ("Fatal X error detected.  Ignoring same during session shut down.");
     Longjmp (ignore_xioerror_jmp, 1);
 }
 
