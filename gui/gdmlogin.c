@@ -659,7 +659,7 @@ gdm_login_restart_handler (void)
 static void
 gdm_login_halt_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to shut down the computer?"), "",
+	if (gdm_common_warn (_("Are you sure you want to Shut Down the computer?"), "",
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog ();
 

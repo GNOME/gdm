@@ -76,7 +76,7 @@ query_greeter_restart_handler (void)
 static void
 query_greeter_halt_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to shut down the computer?"), "",
+	if (gdm_common_warn (_("Are you sure you want to Shut Down the computer?"), "",
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog ();
 
@@ -203,7 +203,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				  G_CALLBACK (query_greeter_halt_handler),
 				  NULL);
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Shut down the system so that "
+				      _("Shut Down the system so that "
 					"you may safely turn off the computer."),
 				      NULL);
 	}
@@ -301,7 +301,7 @@ greeter_system_handler (GreeterItemInfo *info,
 							   _("Shut _down the computer"));
 	  group_radio = halt_radio;
 	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (halt_radio),
-				_("Shut down your computer so that "
+				_("Shut Down your computer so that "
 				  "you may turn it off."),
 				NULL);
 	  g_signal_connect (G_OBJECT(halt_radio), "button_press_event",
