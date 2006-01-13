@@ -860,6 +860,32 @@ AC_SUBST(GDMPREFETCH)
 AC_SUBST(GDMPREFETCHLIST)
 AC_SUBST(GDMPREFETCHCMD)
 
+AC_ARG_ENABLE(secureremote,
+  [  --enable-secureremote=[yes/no]  Enable to offer a secure X connection through ssh  [default=no]],,
+  enable_secureremote=no)
+
+AC_PATH_PROG(ZENITY,zenity,no)
+if test "x$ZENITY" = "xno" ; then
+  if test "x$enable_secureremote" = "xyes" ; then
+    AC_MSG_ERROR(Secure remote connection requested but zenity binary not found)
+  fi
+  # if it was no, nothing happens, if it was auto, well then we're out of luck
+  enable_console_helper=no
+else
+  if test ! "x$enable_secureremote" = "xno" ; then
+    enable_secureremote=yes
+  fi
+fi
+
+if test x$enable_secureremote != xno ; then
+       SSHDESKTOP="ssh.desktop"
+        GDMSSHSESSION="gdm-ssh-session"
+        GDMSSHSESSIONCMD="$EXPANDED_LIBEXECDIR/gdm-ssh-session"
+fi
+AC_SUBST(SSHDESKTOP)
+AC_SUBST(GDMSSHSESSION)
+AC_SUBST(GDMSSHSESSIONCMD)
+
 AC_ARG_WITH(xevie,
   [  --with-xevie=[yes/no]  Add XEvIE Xserver extension support [default=no]],,
   with_xevie=no)
@@ -1097,6 +1123,7 @@ config/Init
 config/PreSession
 config/PostSession
 config/gdmprefetchlist
+config/ssh.desktop
 daemon/gdm
 gdm-stop
 gdm-restart
@@ -1152,6 +1179,14 @@ else
 	echo "XDMCP (remote login) support          : NO"
 fi
 
+dnl <= Secure remote connection =>
+if test x"$enable_secureremote" = xyes ; then
+	echo "Secure remote connection              : YES"
+else
+	echo "Secure remote connection              : NO"
+fi
+
+
 dnl <= DMX =>
 if test x"$DMX_SUPPORT" = xyes ; then
 	echo "DMX (Distributed Multihead X) support : YES"
@@ -1178,7 +1213,7 @@ dnl <= Authentication scheme =>
 echo "Authentication scheme                 : $VRFY"
 
 dnl <= Utils built =>
-echo "Extra utilities built                 : "`echo $GDMOPEN $GDMASKPASS $GDMPREFETCH`
+echo "Extra utilities built                 : "`echo $GDMOPEN $GDMASKPASS $GDMPREFETCH $GDMSSHSESSION`
 
 echo ""
 dnl <= End of configuration summary =>

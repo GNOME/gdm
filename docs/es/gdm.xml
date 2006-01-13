@@ -581,7 +581,7 @@ PostSession/
             <term>HaltCommand</term>
             <listitem>
               <synopsis>HaltCommand=/sbin/shutdown -h now</synopsis>
-              <para>Full path and arguments to command to be executed when user selects Shutdown from the Actions menu. This can be a ';' separated list of commands to try. If a value is missing, the shut down command is not available. Note that the default for this value is not empty so to disable shut down you must set this explicitly to an empty value.</para>
+              <para>Full path and arguments to command to be executed when user selects "Shut Down" from the Actions menu. This can be a ';' separated list of commands to try. If a value is missing, the shut down command is not available. Note that the default for this value is not empty, so to disable "Shut Down" it must be set to an empty value.</para>
             </listitem>
           </varlistentry>
           
@@ -2714,6 +2714,13 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           </varlistentry>
         </variablelist>
       </sect3>
+
+      <sect3 id="gdm-ssh-session">
+        <title><command>gdm-ssh-session</command></title>
+
+        <para>The <command>gdm-ssh-session</command> is normally executed by the GDM daemon when starting a securte remote connection through ssh. It does not take any options.</para>
+      </sect3>
+
     </sect2>
   </sect1>
 
@@ -3088,7 +3095,7 @@ homogeneous="bool"&gt;
         <para>Certain common localized labels can be specified via the stock tags. The "text" tag is ignored if the "stock" tag is used. You should really use the stock labels rather then just putting all the translations into the themes. This gives faster load times and likely better translations. The following values are valid:</para>
 
         <para><filename>cancel</filename>, _("_Cancel"</para>
-        <para><filename>caps-lock-warning</filename>, _("Please make sure the Caps Lock key is not enabled."</para>
+        <para><filename>caps-lock-warning</filename>, _("Caps Lock key is on."</para>
         <para><filename>chooser</filename>, _("_XDMCP Chooser"</para>
         <para><filename>config</filename>, _("_Configure"</para>
         <para><filename>disconnect</filename>, _("D_isconnect"</para>

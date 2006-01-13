@@ -15,7 +15,7 @@ postlogindir = $(sysconfdir)/gdm/PostLogin
 
 noinst_DATA = gdm.conf
 
-DESKTOP_FILES = default.desktop CDE.desktop gnome.desktop
+DESKTOP_FILES = default.desktop CDE.desktop gnome.desktop @SSHDESKTOP@
 
 EXTRA_DIST = \
 	gdm.conf.in \
@@ -24,6 +24,7 @@ EXTRA_DIST = \
 	default.desktop.in \
 	gnome.desktop.in \
 	CDE.desktop.in \
+	ssh.desktop.in \
 	Xsession.in \
 	gdm \
 	gdm-autologin \
@@ -44,13 +45,14 @@ gettextfoo.h: XKeepsCrashing Xsession.in
 
 clean-local:
 	rm -f $(DESKTOP_FILES)
- 
+
 uninstall-hook:
 	rm -f $(DESTDIR)$(bisessdir)/gnome.desktop \
 	$(DESTDIR)$(bisessdir)/default.desktop \
 	$(DESTDIR)$(bisessdir)/CDE.desktop \
 	$(DESTDIR)$(instsessdir)/gnome.desktop \
 	$(DESTDIR)$(instsessdir)/default.desktop \
+	$(DESTDIR)$(instsessdir)/ssh.desktop \
 	$(DESTDIR)$(instsessdir)/CDE.desktop \
 	$(DESTDIR)$(gdmconfdir)/gdm.conf \
 	$(DESTDIR)$(gdmconfdir)/gdm.conf-custom \
@@ -118,7 +120,7 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	-if test -f $(DESTDIR)$(bisessdir)/default.desktop; then \
 		cp -f $(DESTDIR)$(bisessdir)/default.desktop $(DESTDIR)$(bisessdir)/default.desktop.orig; \
 	fi
-	$(INSTALL_SCRIPT) default.desktop $(DESTDIR)$(bisessdir)/default.desktop
+	$(INSTALL_DATA) default.desktop $(DESTDIR)$(bisessdir)/default.desktop
 	chmod 644 $(DESTDIR)$(bisessdir)/default.desktop
 
 	-if test -f $(DESTDIR)$(bisessdir)/gnome.desktop; then \
@@ -127,7 +129,7 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	-if test -f $(DESTDIR)$(instsessdir)/gnome.desktop; then \
 		cp -f $(DESTDIR)$(instsessdir)/gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop.orig; \
 	fi
-	$(INSTALL_SCRIPT) gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop
+	$(INSTALL_DATA) gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop
 	chmod 644 $(DESTDIR)$(instsessdir)/gnome.desktop
 
 	-if test -f /usr/dt/bin/Xsession; then \
@@ -137,7 +139,7 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	   if test -f $(DESTDIR)$(instsessdir)/CDE.desktop; then \
 		cp -f $(DESTDIR)$(instsessdir)/CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop.orig; \
 	   fi; \
-	   $(INSTALL_SCRIPT) CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop; \
+	   $(INSTALL_DATA) CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(initdir); then \
@@ -206,6 +208,16 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
 	fi
+
 	if test "x$(GDMPREFETCHLIST)" != "x"; then \
-	   $(INSTALL_SCRIPT) gdmprefetchlist $(DESTDIR)$(confdir)/gdmprefetchlist; \
+	   $(INSTALL_DATA) gdmprefetchlist $(DESTDIR)$(confdir)/gdmprefetchlist; \
 	fi
+
+	if test "x$(SSHDESKTOP)" != "x"; then \
+	   if test -f $(DESTDIR)$(instsessdir)/ssh.desktop; then \
+		cp -f $(DESTDIR)$(instsessdir)/ssh.desktop $(DESTDIR)$(instsessdir)/ssh.desktop.orig; \
+	   fi; \
+	   $(INSTALL_SCRIPT) ssh.desktop $(DESTDIR)$(instsessdir)/ssh.desktop; \
+	   chmod 644 $(DESTDIR)$(instsessdir)/ssh.desktop; \
+	fi
+

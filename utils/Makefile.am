@@ -15,6 +15,7 @@ libexec_PROGRAMS = \
 	@GDMASKPASS@	\
 	@GDMOPEN@	\
 	@GDMPREFETCH@	\
+	@GDMSSHSESSION@	\
 	gdmtranslate	
 
 if DMX_SUPPORT
