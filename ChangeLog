@@ -1,5 +1,11 @@
 2006-01-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c: Patch provided by Dan Walsch to fix SELinux
+	  logic so that GDM doesn't setexeccon if is_selinux_enabled 
+	  returns -1.  In this case, the issue is logged to syslog.
+
+2006-01-13  Brian Cameron  <brian.cameron@sun.com>
+
 	Enhancement patch provided by Dominique Hazael-Massieux 
 	<dominique.hazael-massieux@centraliens.net> with some help from me
 	getting the configure/Makefile stuff working.

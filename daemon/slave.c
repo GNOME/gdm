@@ -3266,17 +3266,23 @@ static gboolean
 gdm_selinux_setup (const char *login)
 {
 	security_context_t scontext;
-
+	int ret=-1;
+	char *seuser=NULL;
+	char *level=NULL;
+ 
 	/* If selinux is not enabled, then we don't do anything */
-	if ( ! is_selinux_enabled ())
+	if (is_selinux_enabled () <= 0)
 		return TRUE;
 
-	if (get_default_context ((char*) login,0, &scontext) < 0) {
+	if (getseuserbyname(login, &seuser, &level) == 0)
+		ret=get_default_context_with_level(seuser, level, 0, &scontext);
+
+	if (ret < 0) {
 		gdm_error ("SELinux gdm login: unable to obtain default security context for %s.", login);
 		/* note that this will be run when the .xsession-errors
 		   is already being logged, so we can use stderr */
 		gdm_fdprintf (2, "SELinux gdm login: unable to obtain default security context for %s.", login);
-		return FALSE;
+ 		return (security_getenforce()==0);
 	}
 
 	gdm_assert (scontext != NULL);
@@ -3286,7 +3292,8 @@ gdm_selinux_setup (const char *login)
 			  (char *)scontext);
 		gdm_fdprintf (2, "SELinux gdm login: unable to set executable context %s.",
 			      (char *)scontext);
-		return FALSE;
+		freecon (scontext);
+		return (security_getenforce()==0);
 	}
 
 	freecon (scontext);
