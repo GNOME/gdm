@@ -131,7 +131,7 @@ gdm_config_get_result (gchar *key)
 	if (p != NULL)
 		*p = '\0';
 
-	command = g_strdup_printf ("GET_CONFIG %s", key);
+	command = g_strdup_printf ("GET_CONFIG %s", newkey);
 	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
 		"2.13.0.1", 5);
 

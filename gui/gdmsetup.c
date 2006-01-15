@@ -388,8 +388,8 @@ gdm_setup_config_set_string (const char *key, gchar *val)
 static gboolean
 toggle_timeout (GtkWidget *toggle)
 {
-	const char *key        = g_object_get_data (G_OBJECT (toggle), "key");
-	gboolean val = gdm_config_get_bool ((gchar *)key);
+	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
+	gboolean    val = gdm_config_get_bool ((gchar *)key);
 
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 		gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
@@ -413,13 +413,12 @@ logo_toggle_timeout (GtkWidget *toggle)
  	if ((GTK_TOGGLE_BUTTON (toggle)->active) == FALSE) {
 		gdm_setup_config_set_string (GDM_KEY_CHOOSER_BUTTON_LOGO, filename);	
 		gdm_setup_config_set_string (key, "");
-		update_greeters ();
 	}
 	else if (filename != NULL) {
 		gdm_setup_config_set_string (GDM_KEY_CHOOSER_BUTTON_LOGO, filename);
 		gdm_setup_config_set_string (key, filename);
-		update_greeters ();
 	}
+	update_greeters ();
 	g_free (filename);
 	return FALSE;
 }
@@ -503,8 +502,8 @@ gdm_load_displays (VeConfig *cfg, GList *list )
          int keynum = atoi (key);
          gboolean skip_entry = FALSE;
 
-         fullkey  = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
-         dispval  = ve_config_get_string (cfg, fullkey);
+         fullkey = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
+         dispval = ve_config_get_string (cfg, fullkey);
          g_free (fullkey);
 
          /* Do not add if already in the list */
@@ -940,12 +939,11 @@ combobox_timeout (GtkWidget *combo_box)
 		    
 			gdm_setup_config_set_string (key, new_key_val);
 			gdm_setup_config_set_bool (GDM_KEY_BROWSER, browser_val);
-			update_greeters ();
 		}
 		else {
 			gdm_setup_config_set_bool (GDM_KEY_BROWSER, browser_val);
-			update_greeters ();
 		}
+		update_greeters ();
 		
 		refresh_remote_tab ();
 		g_free (new_key_val);
@@ -955,16 +953,12 @@ combobox_timeout (GtkWidget *combo_box)
 		
 		if (selected == REMOTE_DISABLED) {
 			gdm_setup_config_set_bool (GDM_KEY_XDMCP, FALSE);		
-			update_greeters ();
-					
-			return FALSE;
-		}
-		else {
+		} else {
 			gchar    *new_key_val = NULL;
 			gboolean free_new_val = TRUE;
 						
 			if (selected == REMOTE_SAME_AS_LOCAL) {
-				new_key_val = gdm_config_get_string (GDM_KEY_GREETER);
+				new_key_val  = gdm_config_get_string (GDM_KEY_GREETER);
 				free_new_val = FALSE;
 			}
 			else if (selected == REMOTE_PLAIN_WITH_FACE) {
@@ -990,8 +984,10 @@ combobox_timeout (GtkWidget *combo_box)
 			gdm_setup_config_set_bool (GDM_KEY_XDMCP, TRUE);
 			if (free_new_val)
 				g_free (new_key_val);
-			return FALSE;
 		}
+		update_greeters ();
+		return FALSE;
+
 	/* Automatic Login Combobox */
 	} else if (strcmp (ve_sure_string (key), GDM_KEY_AUTOMATIC_LOGIN) == 0 ||
 	           strcmp (ve_sure_string (key), GDM_KEY_TIMED_LOGIN) == 0) {
@@ -2538,9 +2534,7 @@ setup_greeter_color (const char *name,
 {
 	GtkWidget *picker = glade_helper_get (xml, name,
 					      GTK_TYPE_COLOR_BUTTON);
-	char *val;
-
-	val = gdm_config_get_string ((gchar *)key);
+	char *val = gdm_config_get_string ((gchar *)key);
 
 	g_object_set_data_full (G_OBJECT (picker),
 				"key", g_strdup (key),
@@ -2664,20 +2658,19 @@ setup_greeter_combobox (const char *name,
                         const char *key)
 {
 	GtkWidget *combobox = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX);
-	char *val;
+	char *greetval      = g_strdup (gdm_config_get_string ((gchar *)key));
 
-	val = gdm_config_get_string ((gchar *)key);
-
-	if (val != NULL &&
-	    strcmp (ve_sure_string (val),
+	if (greetval != NULL &&
+	    strcmp (ve_sure_string (greetval),
 	    EXPANDED_LIBEXECDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
-		g_free (val);
-		val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
+		g_free (greetval);
+		greetval = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
 	}
+
 	/* Set initial state of local style combo box. */
 	if (strcmp (ve_sure_string (key), GDM_KEY_GREETER) == 0) {
 
-		if (strstr (val, "/gdmlogin") != NULL) {
+		if (strstr (greetval, "/gdmlogin") != NULL) {
 	
 			GtkWidget *local_plain_vbox;
 			GtkWidget *local_themed_vbox;
@@ -2699,7 +2692,7 @@ setup_greeter_combobox (const char *name,
 			gtk_widget_show (local_plain_vbox);
 			gtk_widget_hide (local_themed_vbox);
 		}
-		else if (strstr (val, "/gdmgreeter") != NULL) {
+		else if (strstr (greetval, "/gdmgreeter") != NULL) {
 		
 			GtkWidget *local_plain_vbox;
 			GtkWidget *local_themed_vbox;
@@ -2723,6 +2716,8 @@ setup_greeter_combobox (const char *name,
 	                        g_strdup (key), (GDestroyNotify) g_free);
 	g_signal_connect (G_OBJECT (combobox), "changed",
 	                  G_CALLBACK (combobox_changed), NULL);
+
+	g_free (greetval);
 }
 
 static void
@@ -2869,7 +2864,7 @@ static void
 acc_modules_toggled (GtkWidget *toggle, gpointer data)
 {
 	gboolean add_gtk_modules = gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
-	char *modules_list       = gdm_config_get_string (GDM_KEY_GTK_MODULES_LIST);
+	char *modules_list       = g_strdup (gdm_config_get_string (GDM_KEY_GTK_MODULES_LIST));
 
 	/* first whack the modules from the list */
 	modules_list = modules_list_remove (modules_list, "gail");
@@ -2903,21 +2898,23 @@ acc_modules_toggled (GtkWidget *toggle, gpointer data)
 	                      ve_sure_string (modules_list));
 	gdm_setup_config_set_bool (GDM_KEY_ADD_GTK_MODULES,
 	                    add_gtk_modules);
+
+	g_free (modules_list);
 }
 
 static void
 test_sound (GtkWidget *button, gpointer data)
 {
 	GtkWidget *acc_sound_file_chooser = data;
-	const char *file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (acc_sound_file_chooser));
+	gchar *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (acc_sound_file_chooser));
 	const char *argv[3];
 
-	if ((file == NULL) || g_access (file, R_OK) != 0 ||
+	if ((filename == NULL) || g_access (filename, R_OK) != 0 ||
 	    ve_string_empty (GdmSoundProgram))
 	       return;
 
 	argv[0] = GdmSoundProgram;
-	argv[1] = file;
+	argv[1] = filename;
 	argv[2] = NULL;
 
 	g_spawn_async ("/" /* working directory */,
@@ -2928,24 +2925,27 @@ test_sound (GtkWidget *button, gpointer data)
 		       NULL /* user data */,
 		       NULL /* child pid */,
 		       NULL /* error */);
+
+	g_free (filename);
 }
 
 static void
 sound_response (GtkWidget *file_chooser, gpointer data)
 {
-	const char *file_name;
-	char *sound_key;
-	char *value;
+	gchar *filename;
+	gchar *sound_key;
+	gchar *value;
 		
-	file_name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+	filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
 	sound_key = g_object_get_data (G_OBJECT (file_chooser), "key");	
 	value     = gdm_config_get_string (sound_key);
 	
-	if (strcmp (ve_sure_string (value), ve_sure_string (file_name)) != 0) {
+	if (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0) {
 		gdm_setup_config_set_string (sound_key,
-			(char *)ve_sure_string (file_name));
+			(char *)ve_sure_string (filename));
 		update_greeters ();
 	}
+	g_free (filename);
 }
 
 static void
@@ -3121,14 +3121,11 @@ setup_accessibility_tab (void)
 static char *
 get_theme_dir (void)
 {
-	char *theme_dir;
-
-	theme_dir = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR);
+	char *theme_dir = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR);
 
 	if (theme_dir == NULL ||
 	    theme_dir[0] == '\0' ||
 	    g_access (theme_dir, R_OK) != 0) {
-		g_free (theme_dir);
 		theme_dir = g_strdup (EXPANDED_DATADIR "/gdm/themes/");
 	}
 
@@ -3483,7 +3480,7 @@ selected_toggled (GtkCellRendererToggle *cell,
 		  char                  *path_str,
 		  gpointer               data)
 {
-	gchar *theme_name = NULL;
+	gchar *theme_name   = NULL;
 	GtkTreeModel *model = GTK_TREE_MODEL (data);
 	GtkTreeIter selected_iter;
 	GtkTreeIter iter;
@@ -3578,7 +3575,7 @@ selected_toggled (GtkCellRendererToggle *cell,
 }
 
 static gboolean
-is_ext (const char *filename, const char *ext)
+is_ext (gchar *filename, const char *ext)
 {
 	const char *dot;
 
@@ -3594,7 +3591,7 @@ is_ext (const char *filename, const char *ext)
 
 /* sense the right unzip program */
 static char *
-find_unzip (const char *filename)
+find_unzip (gchar *filename)
 {
 	char *prog;
 	char *tryg[] = {
@@ -3777,7 +3774,7 @@ get_the_dir (FILE *fp, char **error)
 }
 
 static char *
-get_archive_dir (const char *filename, char **untar_cmd, char **error)
+get_archive_dir (gchar *filename, char **untar_cmd, char **error)
 {
 	char *quoted;
 	char *tar;
@@ -5035,26 +5032,26 @@ get_file_list_from_uri_list (gchar *uri_list)
 	
 	for (index = 0; uris[index] != NULL; index++) {
 		
-		gchar *file;
+		gchar *filename;
 
 		if (g_path_is_absolute (uris[index]) == TRUE) {
-			file = g_strdup (uris[index]);
+			filename = g_strdup (uris[index]);
 		}
 		else {
 			gchar *host = NULL;
 			
-			file = g_filename_from_uri (uris[index], &host, NULL);
+			filename = g_filename_from_uri (uris[index], &host, NULL);
 			
 			/* Sorry, we can only accept local files. */
 			if (host != NULL) {
-				g_free (file);
+				g_free (filename);
 				g_free (host);
-				file = NULL;
+				filename = NULL;
 			}
 		}
 
-		if (file != NULL) {
-			list = g_list_prepend (list, file);
+		if (filename != NULL) {
+			list = g_list_prepend (list, filename);
 		}
 	}
 	g_strfreev (uris);
@@ -5375,132 +5372,102 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 }
 
 static void
-image_filechooser_response (GtkWidget *file_chooser, gpointer data)
+background_filechooser_response (GtkWidget *file_chooser, gpointer data)
 {
-	const char *file_name;
-	char *key;
-	char *value;
+	gchar *filename = NULL;
+	gchar *key;
+	gchar *value;
 				     		
-	file_name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
-	key       = g_object_get_data (G_OBJECT (file_chooser), "key");	
-	value     = gdm_config_get_string (key);
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+	key      = g_object_get_data (G_OBJECT (file_chooser), "key");	
+	value    = gdm_config_get_string (key);
 
-	if (strcmp (ve_sure_string (value), ve_sure_string (file_name)) != 0) {
+	/*
+	 * File_name should never be NULL, but something about this GUI causes
+	 * this function to get called on startup and filename=NULL even
+	 * though we set the filename in hookup_*_background.  Resetting the
+	 * value to the default in this case seems to work around this.
+	 */
+	if (filename == NULL && !ve_string_empty (value))
+		filename = value;
 
-		if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
-			/* Local tab */
-			GtkWidget *image_filechooser;
-
-			image_filechooser = glade_helper_get (xml, 
-		                                      "remote_background_image_chooserbutton",
-		                                      GTK_TYPE_FILE_CHOOSER_BUTTON);
+	if (filename != NULL &&
+	   (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0)) {
+		g_signal_handlers_disconnect_by_func (file_chooser,
+			(gpointer) background_filechooser_response,
+			file_chooser);
 						      
-			g_signal_handlers_disconnect_by_func (image_filechooser,
-							      (gpointer) image_filechooser_response,
-							      image_filechooser);
-						      
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
-			                               file_name);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_chooser),
+			filename);
 
-			g_signal_connect (G_OBJECT (image_filechooser), "selection-changed", 
-		                          G_CALLBACK (image_filechooser_response), image_filechooser);
+		g_signal_connect (G_OBJECT (file_chooser), "selection-changed", 
+			G_CALLBACK (background_filechooser_response), file_chooser);
+
+		if (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0) {
+			gdm_setup_config_set_string (key, (char *)ve_sure_string (filename));
+			update_greeters ();
 		}
-		else {
-			/* Remote tab */
-			GtkWidget *image_filechooser;
-		
-			image_filechooser = glade_helper_get (xml, 
-		                                      "local_background_image_chooserbutton",
-		                                      GTK_TYPE_FILE_CHOOSER_BUTTON);
-
-			g_signal_handlers_disconnect_by_func (image_filechooser,
-							      (gpointer) image_filechooser_response,
-							      image_filechooser);
-
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
-			                               file_name);	
-
-			g_signal_connect (G_OBJECT (image_filechooser), "selection-changed", 
-		                          G_CALLBACK (image_filechooser_response), image_filechooser);
-		}
-
-		gdm_setup_config_set_string (key, (char *)ve_sure_string (file_name));
-		update_greeters ();
 	}
+	g_free (filename);
 }
 
 static void
 logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 {
-	const char *file_name;
-	char *key;
-	char *value;
+	GtkWidget *image_toggle;
+	gchar *filename;
+	gchar *key;
+	gchar *value;
 	
-	file_name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+	key      = g_object_get_data (G_OBJECT (file_chooser), "key");	
+	value    = gdm_config_get_string (key);
 	
-	key   = g_object_get_data (G_OBJECT (file_chooser), "key");	
-	value = gdm_config_get_string (key);
-	
-	if (strcmp (ve_sure_string (value), ve_sure_string (file_name)) != 0) {
+	/*
+	 * File_name should never be NULL, but something about this GUI causes
+	 * this function to get called on startup and filename=NULL even
+	 * though we set the filename in hookup_*_background.  Resetting the
+	 * value to the default in this case seems to work around this.
+	 */
+	if (filename == NULL && !ve_string_empty (value))
+		filename = value;
 
-		if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
+	if (filename == NULL) {
+		value    = gdm_config_get_string (GDM_KEY_CHOOSER_BUTTON_LOGO);
+		if (!ve_string_empty (value))
+			filename = value;
+	}
 
-			GtkWidget *image_filechooser;
-			GtkWidget *image_toggle;
+	if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
+		image_toggle = glade_helper_get (xml, 
+		                                 "remote_logo_image_checkbutton",
+		                                 GTK_TYPE_CHECK_BUTTON);
+	      
+	} else {
+		image_toggle = glade_helper_get (xml, 
+		                                 "remote_logo_image_checkbutton",
+		                                 GTK_TYPE_CHECK_BUTTON);
+	}
 
-			image_filechooser = glade_helper_get (xml, 
-		                                              "remote_logo_image_chooserbutton",
-		                                              GTK_TYPE_FILE_CHOOSER_BUTTON);
+	if (filename != NULL &&
+	   (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0)) {
+		g_signal_handlers_disconnect_by_func (file_chooser,
+						      (gpointer) logo_filechooser_response,
+						      file_chooser);
 						      
-			image_toggle = glade_helper_get (xml, 
-			                                 "remote_logo_image_checkbutton",
-			                                 GTK_TYPE_CHECK_BUTTON);
-							      
-			g_signal_handlers_disconnect_by_func (image_filechooser,
-							      (gpointer) logo_filechooser_response,
-							      image_filechooser);
-						      
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
-			                               file_name);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_chooser),
+		                               filename);
 
-			g_signal_connect (G_OBJECT (image_filechooser), "selection-changed", 
-		                          G_CALLBACK (logo_filechooser_response), image_filechooser);
+		g_signal_connect (G_OBJECT (file_chooser), "selection-changed", 
+       	                   G_CALLBACK (logo_filechooser_response), file_chooser);
 
-			if (GTK_TOGGLE_BUTTON (image_toggle)->active == TRUE) {
-				gdm_setup_config_set_string (key,
-					(char *)ve_sure_string (file_name));
-				update_greeters ();
-			}
-		}
-		else {
-			GtkWidget *image_filechooser;
-			GtkWidget *image_toggle;
-		
-			image_filechooser = glade_helper_get (xml, 
-		                                              "local_logo_image_chooserbutton",
-		                                              GTK_TYPE_FILE_CHOOSER_BUTTON);
-
-			image_toggle = glade_helper_get (xml, 
-			                                 "remote_logo_image_checkbutton",
-			                                 GTK_TYPE_CHECK_BUTTON);
-							      
-			g_signal_handlers_disconnect_by_func (image_filechooser,
-							      (gpointer) logo_filechooser_response,
-							      image_filechooser);
-
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
-			                               file_name);	
-
-			g_signal_connect (G_OBJECT (image_filechooser), "selection-changed", 
-		                          G_CALLBACK (logo_filechooser_response), image_filechooser);;
-		
-			if (GTK_TOGGLE_BUTTON (image_toggle)->active == TRUE) {
-				gdm_setup_config_set_string (key,
-	    	                                      (char *)ve_sure_string (file_name));
-				update_greeters ();
-			}
+		if (GTK_TOGGLE_BUTTON (image_toggle)->active == TRUE) {
+			gdm_setup_config_set_string (key,
+    	                                      (char *)ve_sure_string (filename));
+			update_greeters ();
 		}
 	}
+	g_free (filename);
 }
 
 static GdkPixbuf *
@@ -5610,9 +5577,25 @@ hookup_plain_background (void)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (image_scale_to_fit), 
 	                              gdm_config_get_bool (GDM_KEY_BACKGROUND_SCALE_TO_FIT));
 	
+        filter = gtk_file_filter_new ();
+        gtk_file_filter_set_name (filter, _("Images"));
+        gtk_file_filter_add_pixbuf_formats (filter);
+        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
+
+        filter = gtk_file_filter_new ();
+        gtk_file_filter_set_name (filter, _("All Files"));
+        gtk_file_filter_add_pattern(filter, "*");
+        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
+
 	background_filename = gdm_config_get_string (GDM_KEY_BACKGROUND_IMAGE);
-	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
-	                               background_filename);
+
+        if (ve_string_empty (background_filename)) {
+                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (image_filechooser),
+                        EXPANDED_PIXMAPDIR);
+	} else {
+                gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
+			background_filename);
+	}
 
 	switch (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE)) {
 	
@@ -5659,53 +5642,40 @@ hookup_plain_background (void)
 	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (image_filechooser),
 					        FALSE);
 	image_preview = gtk_image_new ();
-	gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
-	                           create_preview_pixbuf (background_filename));
+	if (!ve_string_empty (background_filename)) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
+			create_preview_pixbuf (background_filename));
+	}
 	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (image_filechooser),
 	                                     image_preview);
 	gtk_widget_set_size_request (image_preview, 128, -1);  
 	gtk_widget_show (image_preview); 
 
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("Images"));
-	gtk_file_filter_add_pixbuf_formats (filter);
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
-
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("All Files"));
-	gtk_file_filter_add_pattern(filter, "*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
-
 	g_object_set_data (G_OBJECT (color_radiobutton), "key",
 	                   GDM_KEY_BACKGROUND_TYPE);
-
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
 	                   GDM_KEY_BACKGROUND_COLOR);
-
 	g_object_set_data (G_OBJECT (image_radiobutton), "key",
 	                   GDM_KEY_BACKGROUND_TYPE);
-			   
 	g_object_set_data (G_OBJECT (image_filechooser), "key",
 	                   GDM_KEY_BACKGROUND_IMAGE);			   
-
 	g_object_set_data (G_OBJECT (image_scale_to_fit), "key",
 	                   GDM_KEY_BACKGROUND_SCALE_TO_FIT);
 
-	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
+	g_signal_connect (G_OBJECT (color_radiobutton), "toggled",
 	                  G_CALLBACK (local_background_type_toggled), NULL);
 	g_signal_connect (G_OBJECT (color_radiobutton), "toggled",
+	                  G_CALLBACK (toggle_toggled_sensitivity_positive), color_colorbutton);
+	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (local_background_type_toggled), NULL);
 	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (toggle_toggled_sensitivity_positive), image_filechooser);
 	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (toggle_toggled_sensitivity_positive), image_scale_to_fit);
-	g_signal_connect (G_OBJECT (color_radiobutton), "toggled",
-	                  G_CALLBACK (toggle_toggled_sensitivity_positive), color_colorbutton);
-	g_signal_connect (G_OBJECT (image_filechooser), "selection-changed", 
-                          G_CALLBACK (image_filechooser_response), image_filechooser);
-	g_signal_connect (image_filechooser, "update-preview",
-		    G_CALLBACK (update_image_preview), NULL); 
-		    
+        g_signal_connect (G_OBJECT (image_filechooser), "selection-changed",
+                          G_CALLBACK (background_filechooser_response), image_filechooser);
+        g_signal_connect (G_OBJECT (image_filechooser), "update-preview",
+			  G_CALLBACK (update_image_preview), NULL);
 }
 
 static void
@@ -5729,12 +5699,6 @@ hookup_plain_logo (void)
 	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (logo_button),
 					        FALSE);
 
-	image_preview = gtk_image_new ();
-	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (logo_button), 
-	                                     image_preview);
-	gtk_widget_set_size_request (image_preview, 128, -1);  
-	gtk_widget_show (image_preview); 
-
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Images"));
 	gtk_file_filter_add_pixbuf_formats (filter);
@@ -5748,46 +5712,46 @@ hookup_plain_logo (void)
 	logo_filename = gdm_config_get_string (GDM_KEY_LOGO);
 
 	if (ve_string_empty (logo_filename)) {
-		gchar *previous_logo_filename;
-		
-		previous_logo_filename = gdm_config_get_string (GDM_KEY_CHOOSER_BUTTON_LOGO);
+		logo_filename = gdm_config_get_string (GDM_KEY_CHOOSER_BUTTON_LOGO);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (logo_checkbutton), 
 		                              FALSE);
 		gtk_widget_set_sensitive (logo_button, FALSE);
-
-		if (ve_string_empty (previous_logo_filename)) {
-			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (logo_button), 
-			                                     EXPANDED_PIXMAPDIR);
-		}
-		else {	
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button),
-			                               previous_logo_filename);
-			gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
-			                           create_preview_pixbuf (previous_logo_filename));
-		}
 	}
 	else {
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button),
-		                               logo_filename);
-		gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
-		                           create_preview_pixbuf (logo_filename));
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (logo_checkbutton), 
 		                              TRUE);
 		gtk_widget_set_sensitive (logo_button, TRUE);
 	}
-	
-	g_object_set_data (G_OBJECT (logo_button), "key", GDM_KEY_LOGO);
 
+	if (ve_string_empty (logo_filename)) {
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (logo_button),
+			EXPANDED_PIXMAPDIR);
+	} else {
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button),
+			logo_filename);
+	}
+
+	image_preview = gtk_image_new ();
+	if (!ve_string_empty (logo_filename)) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
+			create_preview_pixbuf (logo_filename));
+	}
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (logo_button), 
+	                                     image_preview);
+	gtk_widget_set_size_request (image_preview, 128, -1);  
+	gtk_widget_show (image_preview); 
+
+	g_object_set_data (G_OBJECT (logo_button), "key", GDM_KEY_LOGO);
 	g_object_set_data (G_OBJECT (logo_checkbutton), "key", GDM_KEY_LOGO);
 
-	g_signal_connect (G_OBJECT (logo_button), "selection-changed",
-	                  G_CALLBACK (logo_filechooser_response), logo_button);
 	g_signal_connect (G_OBJECT (logo_checkbutton), "toggled", 
 	                  G_CALLBACK (logo_toggle_toggled), NULL);
 	g_signal_connect (G_OBJECT (logo_checkbutton), "toggled",
 	                  G_CALLBACK (toggle_toggled_sensitivity_positive), logo_button);
-	g_signal_connect (logo_button, "update-preview",
-		          G_CALLBACK (update_image_preview), NULL); 
+        g_signal_connect (G_OBJECT (logo_button), "selection-changed",
+                          G_CALLBACK (logo_filechooser_response), logo_button);
+        g_signal_connect (G_OBJECT (logo_button), "update-preview",
+                          G_CALLBACK (update_image_preview), NULL);
 }
 
 static void
@@ -5888,9 +5852,25 @@ hookup_remote_plain_background (void)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (image_scale_to_fit), 
 	                              gdm_config_get_bool (GDM_KEY_BACKGROUND_SCALE_TO_FIT));
 	
+        filter = gtk_file_filter_new ();
+        gtk_file_filter_set_name (filter, _("Images"));
+        gtk_file_filter_add_pixbuf_formats (filter);
+        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
+
+        filter = gtk_file_filter_new ();
+        gtk_file_filter_set_name (filter, _("All Files"));
+        gtk_file_filter_add_pattern(filter, "*");
+        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
+
 	background_filename = gdm_config_get_string (GDM_KEY_BACKGROUND_IMAGE);
-	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
-	                               background_filename);
+
+        if (ve_string_empty (background_filename)) {
+                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (image_filechooser),
+                        EXPANDED_PIXMAPDIR);
+        } else {
+                gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
+			background_filename);
+	}
 
 	switch (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE)) {
 	
@@ -5937,53 +5917,40 @@ hookup_remote_plain_background (void)
 	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (image_filechooser),
 					        FALSE);
 	image_preview = gtk_image_new ();
+	if (!ve_string_empty (background_filename)) {
 	gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
-	                           create_preview_pixbuf (background_filename));
-	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (image_filechooser),
+		create_preview_pixbuf (background_filename));
+	}
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (image_filechooser), 
 	                                     image_preview);
 	gtk_widget_set_size_request (image_preview, 128, -1);  
 	gtk_widget_show (image_preview); 
 
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("Images"));
-	gtk_file_filter_add_pixbuf_formats (filter);
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
-
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("All Files"));
-	gtk_file_filter_add_pattern(filter, "*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (image_filechooser), filter);
-
 	g_object_set_data (G_OBJECT (color_radiobutton), "key",
 	                   GDM_KEY_BACKGROUND_TYPE);
-
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
 	                   GDM_KEY_BACKGROUND_COLOR);
-
 	g_object_set_data (G_OBJECT (image_radiobutton), "key",
 	                   GDM_KEY_BACKGROUND_TYPE);
-			   
 	g_object_set_data (G_OBJECT (image_filechooser), "key",
 	                   GDM_KEY_BACKGROUND_IMAGE);			   
-
 	g_object_set_data (G_OBJECT (image_scale_to_fit), "key",
 	                   GDM_KEY_BACKGROUND_SCALE_TO_FIT);
 
-	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
+	g_signal_connect (G_OBJECT (color_radiobutton), "toggled",
 	                  G_CALLBACK (local_background_type_toggled), NULL);
 	g_signal_connect (G_OBJECT (color_radiobutton), "toggled",
+	                  G_CALLBACK (toggle_toggled_sensitivity_positive), color_colorbutton);
+	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (local_background_type_toggled), NULL);
 	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (toggle_toggled_sensitivity_positive), image_filechooser);
 	g_signal_connect (G_OBJECT (image_radiobutton), "toggled",
 	                  G_CALLBACK (toggle_toggled_sensitivity_positive), image_scale_to_fit);
-	g_signal_connect (G_OBJECT (color_radiobutton), "toggled",
-	                  G_CALLBACK (toggle_toggled_sensitivity_positive), color_colorbutton);
-	g_signal_connect (G_OBJECT (image_filechooser), "selection-changed", 
-                          G_CALLBACK (image_filechooser_response), image_filechooser);
-	g_signal_connect (image_filechooser, "update-preview",
-		    G_CALLBACK (update_image_preview), NULL); 
-		    
+        g_signal_connect (G_OBJECT (image_filechooser), "selection-changed",
+                          G_CALLBACK (background_filechooser_response), image_filechooser);
+        g_signal_connect (G_OBJECT (image_filechooser), "update-preview",
+                          G_CALLBACK (update_image_preview), NULL);
 }
 
 static void
@@ -6007,12 +5974,6 @@ hookup_remote_plain_logo (void)
 	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (logo_button),
 					        FALSE);
 
-	image_preview = gtk_image_new ();
-	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (logo_button), 
-	                                     image_preview);
-	gtk_widget_set_size_request (image_preview, 128, -1);  
-	gtk_widget_show (image_preview); 
-
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Images"));
 	gtk_file_filter_add_pixbuf_formats (filter);
@@ -6026,51 +5987,47 @@ hookup_remote_plain_logo (void)
 	logo_filename = gdm_config_get_string (GDM_KEY_LOGO);
 
 	if (ve_string_empty (logo_filename)) {
-		gchar *previous_logo_filename;
-		
-		previous_logo_filename = gdm_config_get_string (GDM_KEY_CHOOSER_BUTTON_LOGO);
+		logo_filename = gdm_config_get_string (GDM_KEY_CHOOSER_BUTTON_LOGO);
+
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (logo_checkbutton), 
 		                              FALSE);
 		gtk_widget_set_sensitive (logo_button, FALSE);
-
-		if (ve_string_empty (previous_logo_filename)) {
-			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (logo_button), 
-			                                     EXPANDED_PIXMAPDIR);
-		}
-		else {	
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button),
-			                               previous_logo_filename);
-			gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
-			                           create_preview_pixbuf (previous_logo_filename));
-		}
 	}
 	else {
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button),
-		                               logo_filename);
-       		gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
-		                           create_preview_pixbuf (logo_filename));
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (logo_checkbutton), 
 		                              TRUE);
 		gtk_widget_set_sensitive (logo_button, TRUE);
 	}
 		
+        if (ve_string_empty (logo_filename))
+                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (logo_button),
+                        EXPANDED_PIXMAPDIR);
+        else
+                gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button), logo_filename);
+
+	image_preview = gtk_image_new ();
+	if (!ve_string_empty (logo_filename)) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image_preview),
+			create_preview_pixbuf (logo_filename));
+	}
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (logo_button), 
+	                                     image_preview);
+	gtk_widget_set_size_request (image_preview, 128, -1);  
+	gtk_widget_show (image_preview); 
+
 	g_object_set_data (G_OBJECT (logo_button), "key",
 	                   GDM_KEY_LOGO);
-
 	g_object_set_data (G_OBJECT (logo_checkbutton), "key",
 	                   GDM_KEY_LOGO);
 
-	g_signal_connect (G_OBJECT (logo_button), "selection-changed", 
-	                  G_CALLBACK (logo_filechooser_response), logo_button);
-
 	g_signal_connect (G_OBJECT (logo_checkbutton), "toggled", 
 	                  G_CALLBACK (logo_toggle_toggled), NULL);
-		
 	g_signal_connect (G_OBJECT (logo_checkbutton), "toggled",
 	                  G_CALLBACK (toggle_toggled_sensitivity_positive), logo_button);
-
-	g_signal_connect (logo_button, "update-preview",
-		          G_CALLBACK (update_image_preview), NULL); 
+        g_signal_connect (G_OBJECT (logo_button), "selection-changed",
+                          G_CALLBACK (logo_filechooser_response), logo_button);
+        g_signal_connect (G_OBJECT (logo_button), "update-preview",
+                          G_CALLBACK (update_image_preview), NULL);
 }
 
 static void
