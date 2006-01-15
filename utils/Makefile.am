@@ -15,14 +15,14 @@ libexec_PROGRAMS = \
 	@GDMASKPASS@	\
 	@GDMOPEN@	\
 	@GDMPREFETCH@	\
-	@GDMSSHSESSION@	\
 	gdmtranslate	
 
 if DMX_SUPPORT
 bin_PROGRAMS = gdm-dmx-reconnect-proxy
 endif
 
-EXTRA_PROGRAMS = gdmaskpass gdmopen gdmprefetch
+EXTRA_DIST = @GDMSSHSESSION@
+EXTRA_PROGRAMS = gdmaskpass gdmopen gdmprefetch 
 
 gdmaskpass_SOURCES = \
 	gdmaskpass.c
