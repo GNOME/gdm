@@ -1,5 +1,51 @@
 Ahh news...
 
+2.13.0.5 stuff:
+
+Note: Some users have been complaining that GDM 2.13.0.4 core dumps when the
+      IncludeAll feature is turned on, and the face browser is also being used.
+      I can not recreate this problem on my machine, so this issue may still
+      exist on some platforms.
+
+- GDM now supports secure remote login which can be enabled by using
+  --enable-securelogin at configure time.  (Dominique Hazael-Massieux)
+  
+- Fixed gdmsetup so the Logo/Background file chooser does not generate assert
+  warnings and no longer will reset your logo/background to NULL.  I think this
+  problem was causing occasional core dumping issues.  Also cleaned up memory
+  management in gdmsetup a bit.  (Brian Cameron)
+
+- Now SELinux initialization logic does not use setexeccon if 
+  is_selinux_enabled returns -1.  (Dan Walsh)
+
+- The prefetch logic that is enabled by using --with-prefetch was improved
+  and GDM will now install a default librarylist if the feature is enabled.
+  Now GDM will only launch the gdm_prefetch program the first time that a
+  greeter is displayed.  Since this behavior is very specific to the needs
+  of prefetching libraries, the gdm.conf key changed from PostDisplayProgram
+  to PreFetchProgram.  (Padraig O'Briain/Brian Cameron)
+
+- GDM no longer requires libgnome or libgnomeui at all.  This should improve
+  GDM performance and make GDM more lightweight.  (Jani Monoses)
+
+- GDM Daemon now uses the GDK_DISPLAY_XDISPLAY macro instead of the 
+  GDK_DISPLAY macro since the GDK_DISPLAY macro causes the GDM daemon to
+  require the libgdk-x11 library to always be loaded into memory.  Now it can
+  lazyload this library only when needed (when GDM daemon displays error GUI's
+  which only happens when GDM can't start up properly).  This should improve
+  performance and make GDM more lightweight for the normal case where GDM does
+  start up.  (Brian Cameron)
+
+- Minor cleanup of gdmsetup.  (Dennis Cranston)
+
+- Caps lock and Shut down messages changed to be more consistant between
+  gdmlogin and gdmgreeter.  Error message provided when session file is 
+  invalid now tells you the name of the offending file.  (Brian Cameron)
+
+- GDM docs given some attention, new "Security" and "Performance" sections and
+  a good bit of information added to the "Introduction" and "Accessibility"
+  sections.  (Brian Cameron)
+
 2.13.0.4 stuff:
 
 Interface Changes:
