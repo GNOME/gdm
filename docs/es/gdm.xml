@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY version "2.13.0.4">
-<!ENTITY date "01/05/2006">
+<!ENTITY version "2.13.0.5">
+<!ENTITY date "01/15/2006">
 ]>
 <article id="index" lang="es">
   <articleinfo>
@@ -64,14 +64,14 @@
 
 
 
-    <releaseinfo>Este manual describe la versión  2.13.0.4 del Gestor de Pantallas de Gnome. Se actualizó por última vez en 01/05/2006.</releaseinfo>  
+    <releaseinfo>This manual describes version 2.13.0.5 of the GNOME Display Manager. It was last updated on 01/15/2006.</releaseinfo>  
  
   </articleinfo>
 
   <sect1 id="preface">
     <title>Términos y convenciones usados en este manual</title>
 
-    <para>Este manual describe la versión  2.13.0.4 del Gestor de Pantallas de Gnome. Se actualizó por última vez en 01/05/2006.</para>  
+    <para>This manual describes version 2.13.0.5 of the GNOME Display Manager. It was last updated on 01/15/2006.</para>  
 
     <para>Selector- Un programa usado para seleccionar un host remoto para gestionar una pantalla remotamente en la pantalla local (<command>gdmchooser</command>).</para>
 
@@ -102,19 +102,19 @@
 
       <para>GDM es un reemplazo de XDM, el gestor de pantallas de X, a diferencia de sus competidores, (X3DM, KDM, WDM), GDM se escribió desde cero y no contiene nada de código de XDM /X Consortium.</para>
 
-      <para>For further information about GDM, see the <ulink type="http" url="http://www.gnome.org/projects/gdm/"> the GDM project website</ulink>. Please submit any bug reports or enhancement requests to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>.</para>
+      <para>Para más información acerca de GDM, vea  <ulink type="http" url="http://www.gnome.org/projects/gdm/"> el sitio web del proyecto GDM</ulink>. Por favor envíe cualquier informe de fallos o solicitud de mejoras a la categoría «gdm» en <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>.</para>
     </sect2>
 
     <sect2 id="daemonov">
       <title>El demonio GDM</title>
       
-      <para>The GDM daemon is responsible for managing displays on the system. This includes authenticating users, starting the user session, and terminating the user session. GDM is configurable and the ways it can be configured are described in the "Configuring GDM" section of this document. The <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename>, and <filename>PostSession</filename> scripts discussed below are discussed in this "Configuring GDM section".</para>
+      <para>El demonio GDM responsable de gestionar las pantallas en el sistema. Esto incluye la autenticación de usuarios, iniciar la sesión del usuario, y terminal la sesión del usuario. GDM es configurable y las formas en que puede ser configurado se describen en la sección «Configurar GDM» de este documento. Los scrpts de <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename>, y <filename>PostSession</filename> discutidos abajo se discuten en esta sección de «Configurar GDM».</para>
 
-      <para>The GDM daemon supports a UNIX domain socket protocol which can be used to control aspects of its behavior and to query information. This protocol is described in the "Controlling GDM" section of this document.</para>
+      <para>El demonio GDM soporta un protocolo de socket de dominio UNIX que puede usarse para controlar aspectos de su comportamiento y para solicitarle información. Este protocolo se describe en la sección «Controlar GDM» de este documento.</para>
 
-      <para>GDM can be asked to manage a display a number of ways. Local displays are always managed when GDM starts and will be restarted when a user's session is finished. Displays can also be requested via XDMCP and flexible displays can be requested by running the <command>gdmflexiserver</command> command, and such displays are not restarted on session exit. These display types are discussed in the next section.</para>
+      <para>A GDM se le puede pedir que gestione una pantalla de varias formas. Las pantallas locales se gestionan siempre cuando GDM se inicia y serán reiniciadas cuando la sesión de un usuario termine. Las pantallas pueden además solicitarse por medio de XDMCP y las pantallas flexibles pueden solicitarse ejecutando el comando <command>gdmflexiserver</command>, y dichas pantallas no serán reiniciadas al salir de la sesión. Estos tipos de pantalla se tratan en la siguiente sección.</para>
         
-      <para>When the GDM daemon is asked to manage a display, it will fork an X server process, then run the <filename>Init</filename> script as the root user, and start the login GUI dialog as a slave process on the display. GDM can be configured to use either <command>gdmgreeter</command> (the default) or <command>gdmlogin</command> as the GUI dialog program. The <command>gdmlogin</command> program supports accessibility while the <command>gdmgreeter</command> program supports greater themeability. The GUI dialog is run as an unpriviledged user/group which is described in the "Security" section below. The GUI dialog communicates with the daemon via a sockets protocol and via standard input/output. The slave, for example passes the username and password information to the GDM daemon via standard input/output so the daemon can handle the actual authentication.</para>
+      <para>Cuando el demonio GDM se le pude que gestione una pantalla, bifurcará un proceso servidor de X, después ejecutará el script <filename>Init</filename> como usuario root, e iniciará el diálogo del GUI para la entrada como un proceso esclavo en la pantalla. GDM puede configurarse para usar cualquiera de los <command>gdmgreeter</command> (el predeterminado) o <command>gdmlogin</command> como el programa de diálogo del GUI. El programa <command>gdmlogin</command> soporta accesibilidad mientras que el programa <command>gdmgreeter</command> soporta mayor temabilidad. El diálogo del GUI se ejecuta como un usuario/grupo nsin privilegiosque se describe en la sección «Seguridad» más abajo. El diálogo del GUI se comunica con el demonio por medio un protocolo de sockets y mediante la entrada/salida estándar. El esclavo, por ejemplo pasa la información del usuario y contraseña al demonio GDM por medio de la entrada/salida estándar así que el demonio puede manipular la autenticación actual.</para>
 
       <para>The login GUI dialog screen allows the user to select which session they wish to start and which language they wish to use. Sessions are defined by files that end in the .desktop extension and more information about these files can be found in the "Configuration" section. The user enters their name and password and if these successfully authenticate, GDM will start the requested session for the user. It is possible to configure GDM to avoid the authentication process by turning on the Automatic or Timed Login features in the GDM configuration. The login GUI can also be configured to provide additional features to the user, such as the Face Browser; the ability to halt, restart, or suspend the system; and/or edit the login configuration (after entering the root password).</para>
 
@@ -122,7 +122,7 @@
     </sect2>
 
     <sect2 id="displaytypes">
-      <title>Tipos de pantalla diferentes</title>
+      <title>Tipos de pantallas diferentes</title>
 
       <para>GDM supports three different display types: static (local) displays, flexible (on-demand) displays, and XDMCP (remote) displays. The "X Server Definitions" and the "Local Static X Display Configuration" subsections of the "Configuration" section explains how these various types of displays are defined in the GDM configuration file.</para>
 

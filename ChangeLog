@@ -1,9 +1,15 @@
+2006-01-17  Brian Cameron  <brian.cameron@sun.com>
+
+	* docs/C/gdm.xml: Added docs for "secure remote" feature.  Patch
+	  provided by Dominique Hazael-Massieux.
+
 2006-01-15  Brian Cameron  <brian.cameron@sun.com>
 
 	* Release 2.13.0.5: 
 	* NEWS, configure.ac: Updated
 	* docs/C/gdm.xml: Updated version/date.
-	* utils/Makefile.am: Fix Makefile so "make clean" doesn't delete gdm-ssh-session.
+	* utils/Makefile.am: Fix Makefile so "make clean" doesn't delete
+	  gdm-ssh-session.
 
 2006-01-15  Brian Cameron  <brian.cameron@sun.com>
 
@@ -24,9 +30,10 @@
 
 2006-01-13  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/slave.c: Patch provided by Dan Walsch to fix SELinux
-	  logic so that GDM doesn't setexeccon if is_selinux_enabled 
-	  returns -1.  In this case, the issue is logged to syslog.
+	* daemon/slave.c: Patch provided by Dan Walsh <dwalsh@redhat.com> to
+	  fix SELinux logic so that GDM doesn't setexeccon if
+	  is_selinux_enabled returns -1.  In this case, the issue is logged to
+	  syslog.
 
 2006-01-13  Brian Cameron  <brian.cameron@sun.com>
 
@@ -111,7 +118,7 @@
 
 	* configure.ac, gui/gdmsetup.c, vicious-extensions/Makefile.am: No
 	  longer require libgnome or libgnomeui at all in GDM2.  Patch
-	  provided by Jani Monoses.
+	  provided by Jani Monoses <jani.monoses@gmail.com>.
 
 2006-01-04  Brian Cameron  <brian.cameron@sun.com>
 
@@ -331,7 +338,7 @@
 	* gui/gdmsetup.c: Fix bug I introduced into gdmsetup when I made it
 	  use the new gdmconfig functions.  Still need to use ve_config
 	  functions when accessing the server-foo sections.  Patch provided by 
-	  Jani Monoses on gdm-list@gnome.org.
+	  Jani Monoses <jani.monoses@gmail.com>.
 
 2005-12-13  Brian Cameron  <brian.cameron@sun.com>
 
@@ -407,7 +414,7 @@
 	  utils/gdm-dmx-reconnect-proxy.c,
 	  utils/gdmaskpass.c:  Remove libgnome dependencies except
  	  in gdmflexiserver.c and gdmsetup.c.  Patch provided by 
-	  Jani Monoses on gdm-list@gnome.org.
+	  Jani Monoses <jani.monoses@gmail.com>
 
 2005-12-03  Dennis Cranston  <dennis_cranston@yahoo.com>
 

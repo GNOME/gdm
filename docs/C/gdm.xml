@@ -327,6 +327,33 @@
       </para>
     </sect2>
 
+    <sect2 id="secureremote">
+      <title>
+        Securing Remote Connection Through SSH
+      </title>
+      <para>
+        As explained in the &quot;Security&quot; section, XDMCP does not use
+        any kind of encryption and as such is inherently insecure.  As XDMCP
+        uses UDP as a network transport layer, it is not possible to simply
+        secure it through an SSH tunnel.
+      </para>
+
+      <para>
+        To remedy this problem, gdm can be configured at compilation-time with
+        the option --enable-secureremote, in which case gdm proposes as a
+        built-in session a session called "Secure Remote Connection".  Starting
+        such a session allows the user to enter the name or the address of the
+        host on which to connect; provided the said host runs an SSH server,
+        the user then gets connected to the server on which the default X
+        session is started and displayed on the local host.
+      </para>
+      
+      <para>
+        Using this session allows a much more secure network connection and
+        only necessitates to have an SSH server running on the remote host.
+      </para>
+    </sect2>
+
     <sect2 id="gtkgreeter">
       <title>The GTK+ Greeter</title>
 
@@ -799,6 +826,10 @@
         &quot;Firewall Security&quot; also contain important information about
         using XDMCP securely.  The next section also discusses how to set up
         XDMCP access control.
+      </para>
+
+      <para>
+        To workaround the inherent insecurity of XDMCP, gdm proposes a default built-in session that uses SSH to encrypt the remote connection. See the section &quot;Securing remote connection through SSH&quot; above.
       </para>
     </sect2>
 
