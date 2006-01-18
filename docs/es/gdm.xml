@@ -147,6 +147,15 @@
       <para>Refer to the "Security" section for information about security concerns when using XDMCP.</para>
     </sect2>
 
+    <sect2 id="secureremote">
+      <title>Securing Remote Connection Through SSH</title>
+      <para>As explained in the "Security" section, XDMCP does not use any kind of encryption and as such is inherently insecure. As XDMCP uses UDP as a network transport layer, it is not possible to simply secure it through an SSH tunnel.</para>
+
+      <para>To remedy this problem, gdm can be configured at compilation-time with the option --enable-secureremote, in which case gdm proposes as a built-in session a session called "Secure Remote Connection". Starting such a session allows the user to enter the name or the address of the host on which to connect; provided the said host runs an SSH server, the user then gets connected to the server on which the default X session is started and displayed on the local host.</para>
+      
+      <para>Using this session allows a much more secure network connection and only necessitates to have an SSH server running on the remote host.</para>
+    </sect2>
+
     <sect2 id="gtkgreeter">
       <title>El interfaz GTK+</title>
 
@@ -279,6 +288,8 @@
       <para>XDMCP is primarily useful for running thin clients such as in terminal labs. Those thin clients will only ever need the network to access the server, and so it seems like the best security policy to have those thin clients on a separate network that cannot be accessed by the outside world, and can only connect to the server. The only point from which you need to access outside is the server.</para>
 
       <para>The above sections "X Server Authentication Scheme" and "Firewall Security" also contain important information about using XDMCP securely. The next section also discusses how to set up XDMCP access control.</para>
+
+      <para>To workaround the inherent insecurity of XDMCP, gdm proposes a default built-in session that uses SSH to encrypt the remote connection. See the section "Securing remote connection through SSH" above.</para>
     </sect2>
 
     <sect2 id="xdmcpaccess">
@@ -417,11 +428,11 @@ PostSession/
 
               <para>Los siguientes caracteres de control se reconocen dentro del nombre especificado:</para>
 
-              <para>the `' character</para>
+              <para>&percnt;&percnt;&mdash; the `&percnt;' character</para>
 
-              <para>d nombre del display</para>
+              <para>&percnt;d &mdash; display's name</para>
 
-              <para>h nombre de host del display</para>
+              <para>&percnt;h &mdash; display's hostname</para>
 
               <para>Alternatively, the name may end with a vertical bar |, the pipe symbol. The name is then used as a application to execute which returns the desired username on standard output. If an empty or otherwise invalid username is returned, automatic login is not performed. This feature is typically used when several remote displays are used as internet kiosks, with a specific user to automatically login for each display.</para>
             </listitem>
@@ -1375,7 +1386,7 @@ PostSession/
           <varlistentry>
             <term>RemoteWelcome</term>
             <listitem>
-              <synopsis>RemoteWelcome=Welcome to n</synopsis>
+              <synopsis>RemoteWelcome=Welcome to &percnt;n</synopsis>
               <para>Controls which text to display next to the logo image in the greeter for remote XDMCP sessions. The same expansion is done here as in the <filename>Welcome</filename> string. This string can use the same special character sequences as explained in the "Text Node" section of the "Themed Greeter" chapter. chapter.</para>
             </listitem>
           </varlistentry>
@@ -1525,19 +1536,19 @@ PostSession/
               <synopsis>Welcome=Welcome</synopsis>
               <para>Controls which text to display next to the logo image in the standard greeter. The following control chars are supported:</para>
               
-              <para>the `' character</para>
+              <para>&percnt;&percnt;&mdash; the `&percnt;' character</para>
               
-              <para>d display's hostname</para>
+              <para>&percnt;d &mdash; display's hostname</para>
               
-              <para>h Fully qualified hostname</para>
+              <para>&percnt;h &mdash; Fully qualified hostname</para>
 
-              <para>m machine (processor type)</para>
+              <para>&percnt;m &mdash; machine (processor type)</para>
 
-              <para>n Nodename (i.e. hostname without .domain)</para>
+              <para>&percnt;n &mdash; Nodename (i.e. hostname without .domain)</para>
               
-              <para>r release (OS version)</para>
+              <para>&percnt;r &mdash; release (OS version)</para>
               
-              <para>s sysname (i.e. OS)</para>
+              <para>&percnt;s &mdash; sysname (i.e. OS)</para>
 
               <para>This string is only used for local logins. For remote XDMCP logins we use <filename>RemoteWelcome</filename>.</para>
 

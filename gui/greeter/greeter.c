@@ -622,7 +622,7 @@ verify_gdm_version (void)
       g_free (msg);
 			  
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-			      _("Reboot"),
+			      _("Restart Machine"),
 			      RESPONSE_REBOOT,
 			      GTK_STOCK_CLOSE,
 			      RESPONSE_CLOSE,
@@ -671,9 +671,9 @@ verify_gdm_version (void)
       g_free (msg);
 
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-			      _("Restart"),
+			      _("Restart GDM"),
 			      RESPONSE_RESTART,
-			      _("Reboot"),
+			      _("Restart Machine"),
 			      RESPONSE_REBOOT,
 			      GTK_STOCK_CLOSE,
 			      RESPONSE_CLOSE,

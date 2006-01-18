@@ -599,7 +599,7 @@ suspend_machine (void)
 
 #ifdef __linux__
 static void
-change_to_first_and_clear (gboolean reboot)
+change_to_first_and_clear (gboolean restart)
 {
 	gdm_change_vt (1);
 	VE_IGNORE_EINTR (close (0));
@@ -618,8 +618,8 @@ change_to_first_and_clear (gboolean reboot)
 	/* clear screen and set to red */
 	printf ("\033[H\033[J\n\n\033[1m---\n\033[1;31m ");
 
-	if (reboot)
-		printf (_("System is rebooting, please wait ..."));
+	if (restart)
+		printf (_("System is restarting, please wait ..."));
 	else
 		printf (_("System is shutting down, please wait ..."));
 	/* set to black */
@@ -638,7 +638,7 @@ halt_machine (void)
 	VE_IGNORE_EINTR (g_chdir ("/"));
 
 #ifdef __linux__
-	change_to_first_and_clear (FALSE /* reboot */);
+	change_to_first_and_clear (FALSE);
 #endif /* __linux */
 
 	argv = ve_split (gdm_get_value_string (GDM_KEY_HALT));
@@ -650,24 +650,24 @@ halt_machine (void)
 }
 
 static void
-reboot_machine (void)
+restart_machine (void)
 {
 	char **argv;
 
-	gdm_info (_("Master rebooting..."));
+	gdm_info (_("Restarting computer..."));
 
 	gdm_final_cleanup ();
 	VE_IGNORE_EINTR (g_chdir ("/"));
 
 #ifdef __linux__
-	change_to_first_and_clear (TRUE /* reboot */);
+	change_to_first_and_clear (TRUE);
 #endif /* __linux */
 
 	argv = ve_split (gdm_get_value_string (GDM_KEY_REBOOT));
 	if (argv != NULL && argv[0] != NULL)
 		VE_IGNORE_EINTR (execv (argv[0], argv));
 
-	gdm_error (_("%s: Reboot failed: %s"), 
+	gdm_error (_("%s: Restart failed: %s"), 
 		   "gdm_child_action", strerror (errno));
 }
 
@@ -768,7 +768,7 @@ gdm_cleanup_children (void)
 	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_SUSPEND ||
 	 status == DISPLAY_HALT)) {
-	    gdm_info (_("Reboot or Halt request when there is no system menu from display %s"), d->name);
+	    gdm_info (_("Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu from display %s"), d->name);
 	    status = DISPLAY_REMANAGE;
     }
 
@@ -777,7 +777,7 @@ gdm_cleanup_children (void)
 	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_SUSPEND ||
 	 status == DISPLAY_HALT)) {
-	    gdm_info (_("Restart, Reboot or Halt request from a non-static display %s"), d->name);
+	    gdm_info (_("Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"), d->name);
 	    status = DISPLAY_REMANAGE;
     }
 
@@ -855,8 +855,8 @@ start_autopsy:
 	gdm_start_first_unborn_local (3 /* delay */);
 	break;
 	
-    case DISPLAY_REBOOT:	/* Reboot machine */
-	reboot_machine ();
+    case DISPLAY_REBOOT:	/* Restart machine */
+	restart_machine ();
 
 	status = DISPLAY_REMANAGE;
 	goto start_autopsy;
@@ -1029,7 +1029,7 @@ gdm_do_logout_action (GdmLogoutAction logout_action)
 		break;
 
 	case GDM_LOGOUT_ACTION_REBOOT:
-		reboot_machine ();
+		restart_machine ();
 		break;
 
 	case GDM_LOGOUT_ACTION_SUSPEND:

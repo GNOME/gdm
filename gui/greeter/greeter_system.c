@@ -65,7 +65,7 @@ static void
 query_greeter_restart_handler (void)
 {
 	if (gdm_common_warn (_("Are you sure you want to restart the computer?"), "",
-			     _("_Reboot"), NULL, TRUE) == GTK_RESPONSE_YES) {
+			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog ();
 		
 		_exit (DISPLAY_REBOOT);
@@ -184,14 +184,14 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmRebootFound) {
-		w = gtk_menu_item_new_with_mnemonic (_("_Reboot"));
+		w = gtk_menu_item_new_with_mnemonic (_("_Restart"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
 				  G_CALLBACK (query_greeter_restart_handler),
 				  NULL);
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Reboot your computer"),
+				      _("Restart your computer"),
 				      NULL);
 	}
 
@@ -316,10 +316,10 @@ greeter_system_handler (GreeterItemInfo *info,
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  restart_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-							     _("_Reboot the computer"));
+							     _("_Restart the computer"));
 	  group_radio = restart_radio;
 	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (restart_radio),
-				_("Reboot your computer"),
+				_("Restart your computer"),
 				NULL);
 	  g_signal_connect (G_OBJECT(restart_radio), "button_press_event",
 			    G_CALLBACK(radio_button_press_event), NULL);

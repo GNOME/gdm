@@ -4288,11 +4288,11 @@ gdm_slave_session_stop (gboolean run_post_session,
     }
 
 #ifdef __linux__
-    /* If on linux and the runlevel is 0 or 6 and not the runlevel that
-       we were started in, then we are rebooting or halting.
-       Probably the user selected halt or reboot from the logout
+    /* If on Linux and the runlevel is 0 or 6 and not the runlevel that
+       we were started in, then we are restarting or halting the machine.
+       Probably the user selected halt or restart from the logout
        menu.  In this case we can really just sleep for a few seconds and
-       basically wait to be killed.  I'll set the default for 30 seconds
+       basically wait to be killed.  I will set the default for 30 seconds
        and let people yell at me if this breaks something.  It shouldn't.
        In fact it should fix things so that the login screen is not brought
        up again and then whacked.  Waiting is safer then DISPLAY_ABORT,
@@ -4311,7 +4311,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 		    /* this is a stupid loop, but we may be getting signals,
 		       so we don't want to just do sleep (30) */
 		    time_t c = time (NULL);
-		    gdm_info (_("GDM detected a halt or reboot "
+		    gdm_info (_("GDM detected a halt or restart "
 				"in progress."));
 		    pclose (fp);
 		    while (c + 30 >= time (NULL)) {
