@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -34,8 +36,6 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <config.h>
 
 #ifdef HAVE_XINPUT
 #include <X11/extensions/XInput.h>

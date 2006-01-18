@@ -1,5 +1,25 @@
 2006-01-18  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/auth.c, daemon/choose.c, daemon/cookie.c, daemon/display.c,
+	  daemon/errorgui.c, daemon/filecheck.c, daemon/fstype.c, daemon/gdm.c,
+	  daemon/gdmconfig.c, daemon/server.c, daemon/slave.c,
+	  daemon/verify-crypt.c, daemon/verify-pam.c, daemon/verify-shadow.c,
+	  daemon/xdmcp.c, gui/gdmchooser.c, gui/gdmlogin.c, gui/gdmsession.c,
+	  gui/gdmsetup.c, gui/misc.c, gui/modules/dwellmouselistener.c,
+	  gui/modules/keymouselistener.c, utils/gdm-dmx-reconnect-proxy.c,
+	  vicious-extensions/glade-helper.c,
+	  vicious-extensions/test-ve-config.c, vicious-extensions/ve-config.c,
+	  vicious-extensions/ve-gnome.c, vicious-extensions/ve-misc.c,
+	  vicious-extensions/ve-miscui.c, vicious-extensions/ve-nongnome.c,
+	  vicious-extensions/ve-signal.c:  Add needed glib/gstdio.h include
+	  to daemon/fstype.c which fixes a wierd core dumping problem on
+	  Ubuntu.  Fixes bug #326819.  Patch provided by Sebastien Bacher
+	  <seb128@debian.org>.  Also fixed all the source so that the includes
+	  are more consistant with config.h in quotes instead of in "<>" and
+	  glib/gtk includes are always listed after system includes.
+
+2006-01-18  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm.c, daemon/slave.c, gui/greeter/greeter.c, gui/greeter/greeter_system.c:
 	  Use "reboot" instead of "restart".  Fixes bug #327583.
 

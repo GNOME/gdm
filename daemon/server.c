@@ -18,7 +18,8 @@
 
 /* This file contains functions for controlling local X servers */
 
-#include <config.h>
+#include "config.h"
+
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <unistd.h>

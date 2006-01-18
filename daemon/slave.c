@@ -21,7 +21,7 @@
 /* This is the gdm slave process. gdmslave runs the chooser, greeter
  * and the user's session scripts. */
 
-#include <config.h>
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>

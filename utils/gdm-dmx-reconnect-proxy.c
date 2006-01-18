@@ -17,7 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <stdlib.h>
 #include <glib.h>
@@ -25,7 +25,6 @@
 
 #include <X11/Xlib.h>
 #include <X11/extensions/dmxext.h>
-
 
 static char *to_display = NULL;
 static char *backend_display = NULL;

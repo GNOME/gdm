@@ -54,7 +54,7 @@
  * 
  */
 
-#include <config.h> 
+#include "config.h"
 
 #ifdef HAVE_LIBXDMCP
 #include <stdio.h>

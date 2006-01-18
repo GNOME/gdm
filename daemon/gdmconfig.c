@@ -31,7 +31,7 @@
  * placed in the _gdm_set_value_string, _gdm_set_value_int, or
  * _gdm_set_value_bool functions.
  */
-#include <config.h>
+#include "config.h"
 
 #include <stdlib.h>
 #include <unistd.h>

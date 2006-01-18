@@ -19,7 +19,8 @@
 /* Code for cookie handling. This really needs to be modularized to
  * support other XAuth types and possibly DECnet... */
 
-#include <config.h>
+#include "config.h"
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>

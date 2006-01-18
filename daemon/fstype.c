@@ -34,7 +34,8 @@
  */
 /* Written by David MacKenzie <djm@gnu.ai.mit.edu>. */
 
-#include <config.h>
+#include "config.h"
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -45,7 +46,6 @@
 extern int errno;
 #endif
 #include <string.h>
-#include <glib.h>
 #ifdef HAVE_LIBGEN_H
 #include <libgen.h>
 #endif
@@ -191,6 +191,9 @@ fstype_to_string (t)
 /* AFS on Solaris 2.3 doesn't get this definition.  */
 #include <sys/ioccom.h>
 #endif
+
+#include <glib.h>
+#include <glib/gstdio.h>
 
 static int
 in_afs (path)

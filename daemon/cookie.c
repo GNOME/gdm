@@ -27,7 +27,8 @@
  * Thus being more secure on systems without /dev/random and friends.
  */
 
-#include <config.h>
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>

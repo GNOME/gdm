@@ -20,7 +20,7 @@
  * presents a list of them and allows the user to choose one. The
  * selected hostname will be printed on stdout. */
 
-#include <config.h>
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
