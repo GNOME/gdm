@@ -192,9 +192,6 @@ fstype_to_string (t)
 #include <sys/ioccom.h>
 #endif
 
-#include <glib.h>
-#include <glib/gstdio.h>
-
 static int
 in_afs (path)
      char *path;
@@ -212,6 +209,9 @@ in_afs (path)
   return 1;
 }
 #endif /* AFS */
+
+#include <glib.h>
+#include <glib/gstdio.h>
 
 /* Nonzero if the current filesystem's type is known.  */
 static int fstype_known = 0;
