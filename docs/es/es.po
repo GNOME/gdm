@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-21 22:21+0100\n"
-"PO-Revision-Date: 2006-01-22 00:24+0100\n"
+"PO-Revision-Date: 2006-01-22 13:10+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1057,7 +1057,6 @@ msgstr ""
 "directorio debería ser propiedad y escribible sólo por el usuario root."
 
 #: ../C/gdm.xml:736(para)
-#, fuzzy
 msgid ""
 "GDM only supports the MIT-MAGIC-COOKIE-1 X server authentication scheme. "
 "Normally little is gained from the other schemes, and no effort has been "
@@ -1072,14 +1071,11 @@ msgid ""
 msgstr ""
 "GDM sólo soporta el sistema de autenticación MIT-MAGIC-COOKIE-1. Normalmente "
 "se gana poco de otros esquemas, no se ha hecho ningún esfuerzo en "
-"implementarlos hasta ahora. Debido a esto las cookies van sobre el cable "
-"como texto en claro, y entonces debe ser cuidadoso acerca de a través de "
-"donde va su conexión XDMCP. Note que obviamente si el espionaje es posible, "
-"entonces el atacante podría tan sólo espiar su contraseña mientras inicia "
-"sesion, así que una autenticación XDMCP mejor no ayudaría mucho de todas "
-"formas. Si el espionaje es posible y poco deseable, entonces tendrá que "
-"crear un túnel a través de ssh para la conexión X en vez de usar el XDMCP de "
-"GDM. Podría pensar en XDMCP como una clase de telnet gráfico que tiene los "
+"implementarlos hasta ahora. Dea especialmente cuidadoso acerca de usar XDMCP porque las "
+"cookies de autenticación van sobre el cable como texto en claro."
+"Obviamente si el espionaje es posible, entonces el atacante podría tan sólo espiar su contraseña de autenticación mientras usted inicia una sesion, con independencia del esquema de autenticación que "
+"se esté usando. Si el espionaje es posible y poco deseable, entonces tendrá que "
+"crear un túnel a través de ssh para la conexión X en vez de usar XDMCP. Podría pensar en XDMCP como una clase de telnet gráfico que tiene los "
 "mismos problemas de seguridad."
 
 #: ../C/gdm.xml:749(para)
@@ -1195,13 +1191,15 @@ msgid ""
 "\" also contain important information about using XDMCP securely. The next "
 "section also discusses how to set up XDMCP access control."
 msgstr ""
+"Las secciones de arriba «Esquema de autenticación del servidor X» y «Seguridad con cortafuegos» también contienen información importante acerca de usario XDMCP de forma segura. La siguiente sección también "
+"discute cómo configurar el control de acceso de XDMCP."
 
 #: ../C/gdm.xml:831(para)
 msgid ""
 "To workaround the inherent insecurity of XDMCP, gdm proposes a default built-"
 "in session that uses SSH to encrypt the remote connection. See the section "
 "\"Securing remote connection through SSH\" above."
-msgstr ""
+msgstr "Para solucionar la seguridad inherente de XDMCP, gdm propone una sesión predeterminada integrada que usa ssh para encriptar la conexión remota. Vea la sección «Securizar una conexión remota con ssh» arriba."
 
 #: ../C/gdm.xml:837(title)
 msgid "XDMCP Access Control"
@@ -1446,7 +1444,7 @@ msgid ""
 "given in the files with <filename>factory</filename> in their name, and "
 "those files are not read, they are just there for you so you can always "
 "revert to default config."
-msgstr ""
+msgstr "Los módulos de accesibilidad se configuran en el subdirectorio <filename>modules/</filename>, y son un tema aparte. Lea los archivos predeterminados provistos, tienen documentación adecuada. De nuevo normalmente la instalación predeterminada se da en archivos con <filename>factory</filename> en su nombre, y dichos archivos no se leen, están solo ahí para que usted pueda volver siempre a la configuración predeterminada."
 
 #: ../C/gdm.xml:983(para)
 msgid ""
@@ -1469,6 +1467,8 @@ msgid ""
 "is deprecated as of 2.5.90.0. Note that prior to version 2.4.4.2 only the "
 "<filename>&lt;etc&gt;/dm/Sessions/</filename> was being read."
 msgstr ""
+"Los archivos que describen las sesiones GDM disponibles siguen la especificación de archivos desktop de freedesktop y son archivos de estilo <filename>.desktop</filename> que se instalan en  <filename>&lt;etc&gt;/X11/sessions/</filename>. Este directorio también lo lee el gestor de pantallas de KDE para una configuración común. El siguiente directorio <filename>&lt;share&gt;/gdm/BuiltInSessions/</filename> se lee para las sesiónes integradas específicas de GDM (KDM las lleva en el propio código cuando se escribió este manual). Por último la configuración predeterminada también lee <filename>&lt;share&gt;/xsessions/</filename> (que debería ser  <filename>/usr/share/xsessions/</filename> si realmente quiere cooperar con KDM) donde los paquetes del escritorio pueden instalar sus propios archivos de sesión. Los directorios bajo <filename>&lt;"
+"etc&gt;</filename> deberían estar reservados para la configuración. La aproximación de la especificación de archivos de escritorio hace fácil para los sistemas de gestión de paquetes instalarr gestores de ventanas y diferentes tipos de sesiones sin requerir que el administrador del sistema edita los archivos. Vea la clave de configuración <filename>SessionDesktopDir</filename> para cambiar las rutas.Solía ocurrir que GDM almacenaba sus sesiones integradas en <filename>&lt;etc&gt;/dm/Sessions/</filename> pero esto fue obsoleto a partir de 2.5.90.0 Note que antes de la versión 2.4.4.2 sólo se leía <filename>&lt;etc&gt;/dm/Sessions/</filename>."
 
 #: ../C/gdm.xml:1006(para)
 msgid ""
@@ -1478,6 +1478,9 @@ msgid ""
 "<filename>&lt;etc&gt;/X11/sessions</filename>) and using "
 "<filename>Hidden=true</filename> in that file."
 msgstr ""
+"Puede desactivarse una sesión (si fue instalada en <filename>/usr/share/"
+"xsessions/</filename>) añadiendo un <filename>.desktop</"
+"filename> nombrado identicamente a uno de los directorio anteriores en la ruta (como <filename>&lt;etc&gt;/X11/sessions</filename>) y usando <filename>Hidden=true</filename> en ese archivo."
 
 #: ../C/gdm.xml:1015(title)
 msgid "The Script Directories"
@@ -1508,6 +1511,8 @@ msgid ""
 "alongside with the GDM login window. xconsole for instance. Commands to set "
 "the background etc. goes in this file too."
 msgstr ""
+"Cuando el servidor X se haya iniciado con éxito, GDM intentará ejecutar el script llamado <filename>Init/&lt;displayname&gt;</filename>. Ej: <filename>Init/:0</filename> para la primera pantalla local. Si este archivo no se encuentra, GDM intentará ejecutar <filename>Init/&lt;hostname&gt;</"
+"filename>. Ej: <filename>Init/somehost</filename>. Si esto aún no se encuentra, GDM intentará <filename>Init/XDMCP</filename> para todas las entradas XDMCP o <filename>Init/Flexi</filename> para todas las pantallas bajo demanda. Si no se encuentra ninguno de los anteriores, GDM ejecutará <filename>Init/Default</filename>. El script se ejecutará como root y GDM se bloquea hasta que termina. Use el script <filename>Init/*</filename> para las aplicaciones que se suponen que se ejecutan junto con la ventana de entrada de GDM. xconsole por ejemplo. Los comandos para poner el fondo de pantalla, etc. van también en este archivo."
 
 #: ../C/gdm.xml:1041(para)
 msgid ""
@@ -4221,14 +4226,12 @@ msgid "&percnt;n &mdash; Nodename (i.e. hostname without .domain)"
 msgstr "&percnt;n &mdash; Nombre de nodo (ej. nombre del host sin .dominio)"
 
 #: ../C/gdm.xml:3293(para)
-#, fuzzy
 msgid "&percnt;r &mdash; release (OS version)"
-msgstr "r release (OS version)"
+msgstr "&percnt;r &mdash; release (OS version)"
 
 #: ../C/gdm.xml:3297(para)
-#, fuzzy
 msgid "&percnt;s &mdash; sysname (i.e. OS)"
-msgstr "s sysname (i.e. OS)"
+msgstr "&percnt;s &mdash; sysname (i.e. OS)"
 
 #: ../C/gdm.xml:3301(para)
 msgid ""
@@ -4958,7 +4961,7 @@ msgid "AUTH_LOCAL"
 msgstr "AUTH_LOCAL"
 
 #: ../C/gdm.xml:3884(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "AUTH_LOCAL: Setup this connection as authenticated for\n"
@@ -4988,40 +4991,13 @@ msgid ""
 "     999 = Unknown error\n"
 "      "
 msgstr ""
-"\n"
-"AUTH_LOCAL: Setup this connection as authenticated for\n"
-"            FLEXI_SERVER Because all full blown (non-Xnest)\n"
-"            servers can be started only from users logged in\n"
-"            locally, and here GDM assumes only users logged\n"
-"            in from GDM.  They must pass the xauth\n"
-"            MIT-MAGIC-COOKIE-1 that they were passed before\n"
-"            the connection is authenticated.\n"
-"Note:       The AUTH LOCAL command requires the\n"
-"            --authenticate option, although only\n"
-"            FLEXI XSERVER uses this currently.\n"
-"Note:       Since 2.6.0.6 you can also use a global\n"
-"            &lt;ServAuthDir&gt;/.cookie, which works for all\n"
-"            authentication except for SET_LOGOUT_ACTION and\n"
-"            QUERY_LOGOUT_ACTION and SET_SAFE_LOGOUT_ACTION\n"
-"            which require a logged in display.\n"
-"Supported since: 2.2.4.0\n"
-"Arguments: &lt;xauth cookie&gt;\n"
-"  &lt;xauth cookie&gt; is in hex form with no 0x prefix\n"
-"Answers:\n"
-"  OK\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     100 = Not authenticated\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:3914(title)
 msgid "FLEXI_XSERVER"
 msgstr "FLEXI_XSERVER"
 
 #: ../C/gdm.xml:3915(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "FLEXI_XSERVER: Start a new X flexible display.  Only supported on\n"
@@ -5043,32 +5019,13 @@ msgid ""
 "     999 = Unknown error\n"
 "      "
 msgstr ""
-"\n"
-"FLEXI_XSERVER: Start a new X flexible server.  Only supported on\n"
-"               connection that passed AUTH_LOCAL\n"
-"Supported since: 2.2.4.0\n"
-"Arguments: &lt;xserver type&gt;\n"
-"  If no arguments, starts the standard x server\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = No more flexi servers\n"
-"     2 = Startup errors\n"
-"     3 = X failed\n"
-"     4 = X too busy\n"
-"     6 = No server binary\n"
-"     100 = Not authenticated\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:3937(title)
 msgid "FLEXI_XNEST"
 msgstr "FLEXI_XNEST"
 
 #: ../C/gdm.xml:3938(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "FLEXI_XNEXT: Start a new flexible Xnest display.\n"
@@ -5106,41 +5063,6 @@ msgid ""
 "     999 = Unknown error\n"
 "      "
 msgstr ""
-"\n"
-"FLEXI_XNEXT: Start a new flexible Xnest server.\n"
-"Note:        Supported on older version from 2.2.4.0, later\n"
-"             2.2.4.2, but since 2.3.90.4 you must supply 4\n"
-"             arguments or ERROR 100 will be returned.  This\n"
-"             will start Xnest using the XAUTHORITY file\n"
-"             supplied and as the uid same as the owner of\n"
-"             that file (and same as you supply).  You must\n"
-"             also supply the cookie as the third argument\n"
-"             for this display, to prove that you indeed are\n"
-"             this user.  Also this file must be readable\n"
-"             ONLY by this user, that is have a mode of 0600.\n"
-"             If this all is not met, ERROR 100 is returned.\n"
-"Note:        The cookie should be the MIT-MAGIC-COOKIE-1,\n"
-"             the first one GDM can find in the XAUTHORITY\n"
-"             file for this display.  If that's not what you\n"
-"             use you should generate one first.  The cookie\n"
-"             should be in hex form.\n"
-"Supported since: 2.3.90.4\n"
-"Arguments: &lt;display to run on&gt; &lt;uid of requesting user&gt;\n"
-"           &lt;xauth cookie for the display&gt; &lt;xauth file&gt;\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = No more flexi servers\n"
-"     2 = Startup errors\n"
-"     3 = X failed\n"
-"     4 = X too busy\n"
-"     5 = Xnest can't connect\n"
-"     6 = No server binary\n"
-"     100 = Not authenticated\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:3976(title)
 msgid "ADD_DYNAMIC_DISPLAY"
@@ -5266,7 +5188,7 @@ msgid "ATTACHED_SERVERS"
 msgstr "ATTACHED_SERVERS"
 
 #: ../C/gdm.xml:4035(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "ATTACHED_SERVERS: List all attached displays.  Doesn't list XDMCP\n"
@@ -5298,35 +5220,6 @@ msgid ""
 "     999 = Unknown error\n"
 "      "
 msgstr ""
-"\n"
-"ATTACHED_SERVERS: List all attached servers.  Doesn't list XDMCP\n"
-"                  and xnest non-attached servers\n"
-"Note:             This command used to be named CONSOLE_SERVERS,\n"
-"                  which is still recognized for backwards\n"
-"                  compatibility. The optional pattern argument\n"
-"                  is supported as of version 2.8.0.0.\n"
-"Supported since: 2.2.4.0\n"
-"Arguments: &lt;pattern&gt; (optional)\n"
-"  With no argument, all attached displays are returned. The optional\n"
-"  &lt;pattern&gt; is a string that may contain glob characters '*', '?', and\n"
-"  '[]'. Only displays that match the pattern will be returned.\n"
-"Answers:\n"
-"  OK &lt;server&gt;;&lt;server&gt;;...\n"
-"\n"
-"  &lt;server&gt; is &lt;display&gt;,&lt;logged in user&gt;,&lt;vt or xnest display&gt;\n"
-"\n"
-"  &lt;logged in user&gt; can be empty in case no one logged\n"
-"  in yet, and &lt;vt&gt; can be -1 if it's not known or not\n"
-"  supported (on non-Linux for example).  If the display is an\n"
-"  xnest display and is a console one (that is, it is an xnest\n"
-"  inside another console display) it is listed and instead of\n"
-"  vt, it lists the parent display in standard form.\n"
-"\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     1 = Not implemented\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4067(title)
 msgid "ALL_SERVERS"
@@ -5604,7 +5497,7 @@ msgid "SET_LOGOUT_ACTION"
 msgstr "SET_LOGOUT_ACTION"
 
 #: ../C/gdm.xml:4299(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after\n"
@@ -5626,25 +5519,6 @@ msgid ""
 "     999 = Unknown error\n"
 "      "
 msgstr ""
-"\n"
-"FLEXI_XSERVER: Start a new X flexible server.  Only supported on\n"
-"               connection that passed AUTH_LOCAL\n"
-"Supported since: 2.2.4.0\n"
-"Arguments: &lt;xserver type&gt;\n"
-"  If no arguments, starts the standard x server\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = No more flexi servers\n"
-"     2 = Startup errors\n"
-"     3 = X failed\n"
-"     4 = X too busy\n"
-"     6 = No server binary\n"
-"     100 = Not authenticated\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4321(title)
 msgid "SET_SAFE_LOGOUT_ACTION"
@@ -5942,7 +5816,6 @@ msgid "-s, --startnew"
 msgstr "-s, --startnew"
 
 #: ../C/gdm.xml:4603(para)
-#, fuzzy
 msgid ""
 "Starts a new flexible display without displaying a dialog asking the user if "
 "they wish to continue any existing sessions."
@@ -6648,7 +6521,7 @@ msgstr ""
 
 #: ../C/gdm.xml:5321(para)
 msgid "Possible values for button ids are as follows:"
-msgstr ""
+msgstr "Los valores posibles para los ids de los botones son los siguientes:"
 
 #: ../C/gdm.xml:5327(term)
 msgid "chooser_button"
@@ -6656,7 +6529,7 @@ msgstr "chooser_button"
 
 #: ../C/gdm.xml:5329(para)
 msgid "Runs the XDMCP chooser."
-msgstr ""
+msgstr "Ejecuta el selector XDMCP."
 
 #: ../C/gdm.xml:5336(term)
 msgid "config_button"
@@ -6695,7 +6568,6 @@ msgid "reboot_button"
 msgstr "reboot_button"
 
 #: ../C/gdm.xml:5374(para)
-#, fuzzy
 msgid "Restart the system."
 msgstr "Reinicia el sistema."
 
@@ -6720,7 +6592,6 @@ msgid "system_button"
 msgstr "system_button"
 
 #: ../C/gdm.xml:5401(para)
-#, fuzzy
 msgid ""
 "Perform halt/restart/suspend/etc. options (if allowed by GDM configuration). "
 "Also allows user to run configurator if user enters root password (again if "
@@ -6743,13 +6614,15 @@ msgid ""
 "example: <screen>&lt;pos x=\"0\" y=\"4\" width=\"100%\" height=\"100%\"/&gt;"
 "</screen>"
 msgstr ""
+"Cada elemento puede especificar su posición  y tamaño por medio del nodo \"pos\". Por ejemplo <screen>&lt;pos x=\"0\" y=\"4\" width=\"100%\" height=\"100%\"/&gt;"
+"</screen>"
 
 #: ../C/gdm.xml:5423(para)
 msgid ""
 "Both position and size can be given in percent and it will be taken as the "
 "percentage of the size of the current container. For toplevel items it's the "
 "percentage of the whole screen."
-msgstr ""
+msgstr "Tanto la posición como el tamaño pueden darse en porcentaje y se tomará como el porcentaje del tamaño del contenedor actual. Para los elementos de nivel superior su porcentaje es respecto de la pantalla completa."
 
 #: ../C/gdm.xml:5429(para)
 msgid ""
