@@ -151,6 +151,9 @@
         the GDM project website</ulink>.  Please submit any bug reports or
         enhancement requests to the &quot;gdm&quot; category in
         <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>.
+        You can also send a message to the 
+        <address><email>gdm-list@gnome.org</email></address> mail alias to
+        discuss any issues or concerns with the GDM program.
       </para>
     </sect2>
 
@@ -1534,7 +1537,7 @@ PostSession/
                 After how many minutes of inactivity at the login screen
                 should a flexi display be reaped.  This is only in effect before
                 a user logs in.  Also it does not affect the Xnest
-                flexiservers.  To turn off this behaviour set this value to 0.
+                flexiservers.  To turn off this behavior set this value to 0.
                 This was added in version 2.5.90.0.
               </para>
             </listitem>
@@ -6111,6 +6114,90 @@ chooser=true
         and not all of them have to be on all the time.  You could also have
         one of the X terminals handle indirect XDMCP queries and serve up the
         chooser to the other X terminals.
+      </para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="troubleshooting">
+    <title>Troubleshooting</title>
+
+    <para>
+      This section discusses helpful tips for getting GDM working.  In general,
+      if you have a problem using GDM, you can submit a bug to the
+      &quot;gdm&quot; category in
+      <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>
+      or send an email to the
+      <address><email>gdm-list@gnome.org</email></address> mail alias.  If GDM
+      is failing to work properly, it is always a good idea to include debug
+      information.  Use the <command>gdmsetup</command> command to turn on
+      debug (&quot;Enable debug messages to system log&quot; checkbox in the
+      &quot;Security&quot; tab), then use GDM to the point where it fails, and
+      include the GDM output sent to your system log
+      (<filename>/var/log/messages</filename> or
+      <filename>/var/adm/messages</filename> depending on your operating
+      system).  Since the system log can be large, please only include the GDM
+      debug information and do not sent the entire file.
+    </para>
+
+    <sect2 id="wontstart">
+      <title>GDM Will Not Start</title>
+
+      <para>
+         There are a many problems that can cause GDM to fail to start, but
+         this section will discuss a few common problems and how to approach
+         tracking down a problem with GDM starting.   Some problems will 
+         cause GDM to respond with an error message or dialog when it tries
+         to start, but it can be difficult to track down problems when GDM
+         fails silently.
+      </para>
+
+      <para>
+         First make sure that the Xserver is configured properly.  The 
+         GDM configuration file contains a command in the [server-Standard]
+         section that is used for starting the Xserver.  Verify that this
+         command works on your system.  Running this command from the 
+         console should start the Xserver.  If it fails, then the problem
+         is likely with your Xserver configuration.  Refer to your Xserver
+         error log for an idea of what the problem may be.  The problem may
+         also be that your Xserver requires different command-line options.
+         If so, then modify the Xserver command in the GDM configuration file
+         so that it is correct for your system.
+      </para>
+
+      <para>
+         Another common problem is that the GDM greeter program is having
+         trouble starting.  This can happen, for example, if GDM cannot find
+         a needed library or other resource.  Try starting the Xserver and
+         a terminal program, set the shell environment variable 
+         DOING_GDM_DEVELOPMENT=1 and run <command>/usr/lib/gdmlogin</command>
+         or <command>/usr/lib/gdmgreeter</command>.  Any error messages
+         echoed to the terminal will likely highlight the problem.  Also,
+         turning on debug and checking the output sent to the system log 
+         will often highlight the problem.
+      </para>
+
+      <para>
+         Also make sure that the <filename>/tmp</filename> directory has
+         reasonable ownership and permissions, and that the machine's file
+         system is not full.  These problems will cause GDM to fail to start.
+      </para>
+    </sect2>
+
+    <sect2 id="notaccessfile">
+      <title>GDM Will Not Access User Settings</title>
+
+      <para>
+         GDM saves user settings, such as your default session and default
+         language, in the <filename>~/.dmrc</filename>.  Other files, such
+         as the user's <filename>~/.Xauthority</filename> file will also
+         affect login.  GDM, by default, is strict about how it tries to
+         access files in the users home directory, and will ignore the file if
+         they do not conform to certain rules.  You can use the 
+         <filename>RelaxPermissions</filename> configuration option to
+         make GDM less strict about how it accesses files in the user's
+         home directory, or correct the permissions issues that cause GDM
+         to ignore the file.  This is discussed in detail described in the
+         &quot;File Access&quot; section of the &quot;Overview&quot;. 
       </para>
     </sect2>
   </sect1>
