@@ -1,5 +1,19 @@
 2006-01-27  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm.h, daemon/gdmconfig.c, gui/gdmcommon.c:  Add better
+	  logic for grabbing the time for the user's locale if 
+	  Use24HourClock is set to auto.  No longer depend on translaters
+	  providing a hacky translation of "24-hour" to determine this.
+	  Instead just rely on localtime.  Fixes bug #328904.  Patch
+	  provided by Christopher Aillon <caillon@gmail.com>.
+	* config/gdm.conf.in: Add better comments for certain keys and
+	  group them so that similar keys are closer together.
+	* gui/gdmsetup.c, gui/greeter/greeter.c: rename
+	  GDM_KEY_GRAPHICAL_THEME_COLOR to GDM_KEY_GRAPHICAL_THEMED_COLOR to
+	  match the key.
+
+2006-01-27  Brian Cameron  <brian.cameron@sun.com>
+
 	* docs/C/gdm.xml, gui/gdmlogin.c, gui/greeter/greeter_parser.c,
 	  gui/greeter/greeter_system.c: Change "XDMCP Chooser" to 
 	  "Remote login via XDMCP".  Fixing bug #328857.

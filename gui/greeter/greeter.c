@@ -984,7 +984,7 @@ main (int argc, char *argv[])
   /* Load the background as early as possible so GDM does not leave  */
   /* the background unfilled.   The cursor should be a watch already */
   /* but just in case */
-  bg_color = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME_COLOR);
+  bg_color = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEMED_COLOR);
   /* If a graphical theme color does not exist fallback to the plain color */
   if (ve_string_empty (bg_color)) {
     bg_color = gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);

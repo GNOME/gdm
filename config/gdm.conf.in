@@ -94,12 +94,14 @@ TimedLoginDelay=30
 # permissions and access to ony the gdm directories and files.
 User=gdm
 Group=gdm
+
 # To try to kill all clients started at greeter time or in the Init script.
 # does not always work, only if those clients have a window of their own.
 #KillInitClients=true
 LogDir=@EXPANDED_LOGDIR@
 # You should probably never change this value unless you have a weird setup.
 PidFile=/var/run/gdm.pid
+
 # Note that a post login script is run before a PreSession script.  It is run
 # after the login is successful and before any setup is run on behalf of the
 # user.
@@ -296,12 +298,29 @@ Enable=false
 #MaxIconHeight=128
 
 [greeter]
-# Greeter has a nice title bar that the user can move.
+# The following options for setting titlebar and setting window position are
+# only useful for the standard login (gdmlogin) and are not used by the
+# themed login (gdmgreeter).
+#
+# The standard login has a title bar that the user can move.
 #TitleBar=true
-# Configuration is available from the system menu of the greeter.
-#ConfigAvailable=false
-# Face browser is enabled.  This only works currently for the standard greeter
-# as it is not yet enabled in the graphical greeter.
+# Don't allow user to move the standard login window.  Only makes sense if
+# TitleBar is on.
+#LockPosition=false
+# Set a position for the standard login window rather then just centering the
+# window.  If you enter negative values for the position it is taken as an
+# offset from the right or bottom edge.
+#SetPosition=false
+#PositionX=0
+#PositionY=0
+
+# Enable the Face browser.  Note that the Browser key is only used by the
+# standard login (gdmlogin) program.  The Face Browser is enabled in 
+# the Graphical greeter by selecting a theme that includes the Face
+# Browser, such as happygnome-list.  The other configuration values that
+# affect the Face Browser (MinimalUID, DefaultFace, Include, Exclude,
+# IncludeAll, GlobalFaceDir) are used by both the Standard and Themed
+# greeter.
 Browser=false
 # The default picture in the browser.
 #DefaultFace=@EXPANDED_PIXMAPDIR@/nobody.png
@@ -328,6 +347,7 @@ Browser=false
 #IncludeAll=false
 # If user or user.png exists in this dir it will be used as his picture.
 #GlobalFaceDir=@EXPANDED_DATADIR@/pixmaps/faces/
+
 # File which contains the locale we show to the user.  Likely you want to use
 # the one shipped with GDM and edit it.  It is not a standard locale.alias
 # file, although GDM will be able to read a standard locale.alias file as well.
@@ -339,16 +359,20 @@ Browser=false
 # The standard greeter should shake if a user entered the wrong username or
 # password.  Kind of cool looking
 #Quiver=true
+
 # The Actions menu (formerly system menu) is shown in the greeter, this is the
 # menu that contains reboot, shutdown, suspend, config and chooser.  None of
 # these is available if this is off.  They can be turned off individually
 # however.
 #SystemMenu=true
+# Configuration is available from the system menu of the greeter.
+#ConfigAvailable=false
 # Should the chooser button be shown.  If this is shown, GDM can drop into
 # chooser mode which will run the xdmcp chooser locally and allow the user to
 # connect to some remote host.  Local XDMCP does not need to be enabled,
 # however.
 #ChooserButton=true
+
 # Welcome is for all console logins and RemoteWelcome is for remote logins
 # (through XDMCP).
 # DefaultWelcome and DefaultRemoteWelcome set the string for Welcome to
@@ -364,15 +388,7 @@ DefaultWelcome=true
 DefaultRemoteWelcome=true
 #Welcome=Welcome
 #RemoteWelcome=Welcome to %n
-# Don't allow user to move the standard greeter window.  Only makes sense if
-# TitleBar is on.
-#LockPosition=false
-# Set a position rather then just centering the window.  If you enter negative
-# values for the position it is taken as an offset from the right or bottom
-# edge.
-#SetPosition=false
-#PositionX=0
-#PositionY=0
+
 # Xinerama screen we use to display the greeter on.  Not for true multihead,
 # currently only works for Xinerama.
 #XineramaScreen=0
@@ -381,16 +397,22 @@ DefaultRemoteWelcome=true
 #BackgroundType=2
 #BackgroundImage=
 #BackgroundScaleToFit=true
-#BackgroundColor=#76848F
+# The Standard greeter (gdmlogin) uses BackgroundColor as the background
+# color, while the themed greeter (gdmgreeter) uses GraphicalThemedColor
+# as the background color.
+BackgroundColor=#76848F
+GraphicalThemedColor=#76848F
 # XDMCP session should only get a color, this is the sanest setting since you
 # don't want to take up too much bandwidth
 #BackgroundRemoteOnlyColor=true
+
 # Program to run to draw the background in the standard greeter.  Perhaps
 # something like an xscreensaver hack or some such.
 #BackgroundProgram=
 # if this is true then the background program is run always, otherwise it is
 # only run when the BackgroundType is 0 (None).
 #RunBackgroundProgramAlways=false
+
 # Show the Failsafe sessions.  These are much MUCH nicer (focus for xterm for
 # example) and more failsafe then those supplied by scripts so distros should
 # use this rather then just running an xterm from a script.
@@ -401,29 +423,31 @@ DefaultRemoteWelcome=true
 # where the session saving stuff is disabled in GDM
 #ShowLastSession=true
 # Always use 24 hour clock no matter what the locale.
-#Use24Clock=false
+#Use24Clock=auto
 # Use circles in the password field.  Looks kind of cool actually, but only
 # works with certain fonts.
 #UseCirclesInEntry=false
 # Do not show any visible feedback in the password field. This is standard for
 # instance in console, xdm and ssh.
 #UseInvisibleInEntry=false
-# These two keys are for the new greeter.  Circles is the standard shipped
-# theme.  If you want GDM to select a random theme from a list then provide a
-# list that is delimited by /: to the GraphicalThemes key and set
-# GraphicalThemeRand to true.  Otherwise use GraphicalTheme and specify just
-# one theme.
+
+# These two keys are for the themed greeter (gdmgreeter).  Circles is the
+# standard shipped theme.  If you want GDM to select a random theme from a
+# list then provide a list that is delimited by /: to the GraphicalThemes
+# key and set GraphicalThemeRand to true.  Otherwise use GraphicalTheme
+# and specify just one theme.
 #GraphicalTheme=circles
 #GraphicalThemes=circles/:happygnome
 GraphicalThemeDir=@EXPANDED_DATADIR@/gdm/themes/
 GraphicalThemeRand=false
-GraphicalThemedColor=#76848F
+
 # If InfoMsgFile points to a file, the greeter will display the contents of the
 # file in a modal dialog box before the user is allowed to log in.
 #InfoMsgFile=
 # If InfoMsgFile is present then InfoMsgFont can be used to specify the font to
 # be used when displaying the contents of the file.
 #InfoMsgFont=Sans 24
+
 # If SoundOnLogin is true, then the greeter will beep when login is ready for
 # user input.  If SoundOnLogin is a file and the greeter finds the 'play'
 # executable (see daemon/SoundProgram) it will play that file instead of just
@@ -438,6 +462,7 @@ GraphicalThemedColor=#76848F
 # user fails to log in.
 #SoundOnLoginFailure=false
 #SoundOnLoginFailureFile=
+
 # Specifies a program to be called by the greeter/login program when the
 # initial screen is displayed.  The purpose is to provide a hook where files
 # used after login can be preloaded to speed performance for the user. The

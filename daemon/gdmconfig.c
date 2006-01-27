@@ -242,7 +242,7 @@ static gboolean GdmQuiver;
 static gboolean GdmShowGnomeFailsafe;
 static gboolean GdmShowXtermFailsafe;
 static gboolean GdmShowLastSession;
-static gboolean GdmUse24Clock;
+static gchar * GdmUse24Clock;
 static gboolean GdmEntryCircles;
 static gboolean GdmEntryInvisible;
 static gboolean GdmGraphicalThemeRand;
@@ -405,7 +405,7 @@ gdm_config_init (void)
       &GdmShowXtermFailsafe, &bool_type);
    gdm_config_add_hash (GDM_KEY_SHOW_LAST_SESSION,
       &GdmShowLastSession, &bool_type);
-   gdm_config_add_hash (GDM_KEY_USE_24_CLOCK, &GdmUse24Clock, &bool_type);
+   gdm_config_add_hash (GDM_KEY_USE_24_CLOCK, &GdmUse24Clock, &string_type);
    gdm_config_add_hash (GDM_KEY_ENTRY_CIRCLES, &GdmEntryCircles, &bool_type);
    gdm_config_add_hash (GDM_KEY_ENTRY_INVISIBLE, &GdmEntryInvisible, &bool_type);
    gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEME_RAND,
@@ -488,7 +488,7 @@ gdm_config_init (void)
       &GdmGraphicalThemeDir, &string_type);
    gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEMES,
       &GdmGraphicalThemes, &string_type);
-   gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEME_COLOR,
+   gdm_config_add_hash (GDM_KEY_GRAPHICAL_THEMED_COLOR,
       &GdmGraphicalThemeColor, &string_type);
    gdm_config_add_hash (GDM_KEY_INFO_MSG_FILE, &GdmInfoMsgFile, &string_type);
    gdm_config_add_hash (GDM_KEY_INFO_MSG_FONT, &GdmInfoMsgFont, &string_type);

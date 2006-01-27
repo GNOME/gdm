@@ -2481,7 +2481,7 @@ greeter_color_timeout (GtkWidget *picker)
 
 		GtkWidget *colorbutton;
 		
-		if (strcmp (GDM_KEY_GRAPHICAL_THEME_COLOR, ve_sure_string (key)) == 0) {
+		if (strcmp (GDM_KEY_GRAPHICAL_THEMED_COLOR, ve_sure_string (key)) == 0) {
 			colorbutton = glade_helper_get (xml, "remote_background_theme_colorbutton",
 	       		                                GTK_TYPE_COLOR_BUTTON);
 		}
@@ -2494,7 +2494,7 @@ greeter_color_timeout (GtkWidget *picker)
 	else {
 		GtkWidget *colorbutton;
 
-		if (strcmp (GDM_KEY_GRAPHICAL_THEME_COLOR, ve_sure_string (key)) == 0) {
+		if (strcmp (GDM_KEY_GRAPHICAL_THEMED_COLOR, ve_sure_string (key)) == 0) {
 			colorbutton = glade_helper_get (xml, "local_background_theme_colorbutton",
 	       		                                GTK_TYPE_COLOR_BUTTON);
 		}
@@ -5179,10 +5179,10 @@ setup_local_themed_settings (void)
 	                                      GTK_TYPE_COLOR_BUTTON);
 
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
-	                   GDM_KEY_GRAPHICAL_THEME_COLOR);
+	                   GDM_KEY_GRAPHICAL_THEMED_COLOR);
 
 	setup_greeter_color ("local_background_theme_colorbutton", 
-	                     GDM_KEY_GRAPHICAL_THEME_COLOR);
+	                     GDM_KEY_GRAPHICAL_THEMED_COLOR);
 
 	char *theme_dir = get_theme_dir ();
 
@@ -6097,10 +6097,10 @@ setup_remote_themed_settings (void)
 	                                      GTK_TYPE_COLOR_BUTTON);
 
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
-	                   GDM_KEY_GRAPHICAL_THEME_COLOR);
+	                   GDM_KEY_GRAPHICAL_THEMED_COLOR);
 
 	setup_greeter_color ("remote_background_theme_colorbutton", 
-	                     GDM_KEY_GRAPHICAL_THEME_COLOR);
+	                     GDM_KEY_GRAPHICAL_THEMED_COLOR);
 
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (theme_list), TRUE);
 

@@ -28,6 +28,7 @@
 #include <locale.h>
 #include <string.h>
 #include <syslog.h>
+#include <time.h>
 #include <sys/utsname.h>
 
 #include <glib/gi18n.h>
@@ -294,13 +295,15 @@ gdm_common_select_time_format (void)
 	} else {
 		/* Value is "auto" (default), thus select according to
 		   "locale" settings. */
+		char outstr[20];
+		time_t t;
+		struct tm *tmp;
 
-		/* Translators: Translate this to '12-hour', or
-		   '24-hour'. Meaning of the translation is the
-		   default time format in your locale. */
-		return strcmp ("12-hour", _("24-hour")) != 0;
-		/* Logic is that if translator does not understand the
-		   comment, then 24 hour format is selected. */
+		t = time(NULL);
+		tmp = localtime (&t);
+
+		/* if the locale does not have an AM/PM string, use 24h time */
+		return (strftime (outstr, sizeof(outstr), "%p", tmp) == 0);
 	}
 	/* NOTREACHED */
 	return TRUE;
