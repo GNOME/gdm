@@ -1088,7 +1088,7 @@ parse_stock (xmlNodePtr node,
       else if (g_ascii_strcasecmp ((char *) prop, "chooser") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("_XDMCP Chooser"));
+	  *translated_text = g_strdup (_("Remote login via _XDMCP"));
 	}
       else if (g_ascii_strcasecmp ((char *) prop, "config") == 0)
         {

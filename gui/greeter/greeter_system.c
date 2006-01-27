@@ -150,7 +150,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		tooltips = gtk_tooltips_new ();
 
 	if (gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON)) {
-		w = gtk_menu_item_new_with_mnemonic (_("_XDMCP Chooser..."));
+		w = gtk_menu_item_new_with_mnemonic (_("Remote login via _XDMCP..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",

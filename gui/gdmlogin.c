@@ -2470,7 +2470,7 @@ gdm_login_gui_init (void)
 	menu = gtk_menu_new ();
 
 	if (gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON)) {
-		item = gtk_menu_item_new_with_mnemonic (_("_XDMCP Chooser..."));
+		item = gtk_menu_item_new_with_mnemonic (_("Remote login via _XDMCP..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_use_chooser_handler),
