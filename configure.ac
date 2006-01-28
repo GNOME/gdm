@@ -988,10 +988,12 @@ elif test -x /usr/X11/bin/X; then
    GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/openwin/bin/Xsun; then
+   # Do not add /usr/openwin/bin here because on Solaris you need 
+   # /usr/openwin/bin in your PATH even if you are using the Xorg
+   # Xserver.  We add this to the path below.
    X_PATH="/usr/openwin/bin"
    X_SERVER_PATH="/usr/openwin/bin"
    X_SERVER="/usr/openwin/bin/Xsun"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/openwin/bin"
    X_CONFIG_OPTIONS="-audit 0 -nobanner"
 elif test -x /opt/X11R6/bin/X; then
    X_PATH="/opt/X11R6/bin"
@@ -1015,12 +1017,9 @@ else
 fi
 
 # Don't add EXPANDED_BINDIR to GDM_USER_PATH if it is already in the PATH.
+# If it is /usr/bin, for example.
 if test "x$EXPANDED_BINDIR" != "x/bin" -a "x$EXPANDED_BINDIR" != "x/usr/bin"; then
    GDM_USER_PATH="$GDM_USER_PATH:$EXPANDED_BINDIR"
-fi
-
-if test "x$USER_POST_PATH" != "x"; then
-   GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
 fi
 
 # On Solaris, Xnest is only shipped in /usr/openwin/, so set path
@@ -1028,10 +1027,14 @@ fi
 # argument so it can be run as the user.  Note that you can have
 # both the X.org and Xsun Xservers on the same system (but X.org on
 # Solaris doesn't ship with Xnest), so this makes Solaris work
-# properly when the X.org Xserver is included.
+# properly when the X.org Xserver is included.  Also add needed
+# /usr/openwin/bin to PATH so that GDM's PreSession/PostSession
+# scripts can find sessreg and other programs it requires, and so
+# users have programs like xterm in their PATH.
 #
 case "$host" in
 *solaris*)
+   	GDM_USER_PATH="$GDM_USER_PATH:/usr/openwin/bin"
         X_XNEST_PATH="/usr/openwin/bin"
         X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
         ;;
@@ -1040,6 +1043,10 @@ case "$host" in
         X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
         ;;
 esac
+
+if test "x$USER_POST_PATH" != "x"; then
+   GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
+fi
 
 AC_SUBST(HALT_COMMAND)
 AC_DEFINE_UNQUOTED(HALT_COMMAND,"$HALT_COMMAND")

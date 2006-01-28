@@ -1,5 +1,14 @@
 2006-01-27  Brian Cameron  <brian.cameron@sun.com>
 
+	* configure.in: Make sure /usr/openwin/bin is in the PATH on 
+	  Solaris so that GDM's PreSession/PostSession scripts can find
+	  sessreg and other needed X programs.  Also this makes sure
+	  that users have xterm and other such programs in their PATH.
+	  Before we were only adding it if the Xserver was Xsun, but
+	  it is also needed if using the Xorg Xserver on Solaris.
+
+2006-01-27  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm.h, daemon/gdmconfig.c, gui/gdmcommon.c:  Add better
 	  logic for grabbing the time for the user's locale if 
 	  Use24HourClock is set to auto.  No longer depend on translaters
