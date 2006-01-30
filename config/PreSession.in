@@ -25,21 +25,42 @@ gdmwhich () {
   echo "$OUTPUT"
 }
 
+# Set background color
 XSETROOT=`gdmwhich xsetroot`
 if [ "x$XSETROOT" != "x" ] ; then
-	# Try to snarf either the plain or themed background color from the config file
-	if [ "x$GDM_GREETER_TYPE" = "xPLAIN" ]; then
-		# Background type can be 0=None, 1=Image & Color, 2=Color, or 3=Image 
-		BACKTYPE=`grep '^BackgroundType' @EXPANDED_SYSCONFDIR@/gdm/gdm.conf | sed 's/^.*=\(.*\)$/\1/'`
 
-		# Skip if background type does not include a color
-		if [ "x$BACKTYPE" != "x0" ] && [ "x$BACKTYPE" != "x3" ]; then
-			BACKCOLOR=`grep '^BackgroundColor' @EXPANDED_SYSCONFDIR@/gdm/gdm.conf | sed 's/^.*=\(.*\)$/\1/'`
+	CHECKBACKCOLOR="OK"
+	if [ "x$GDM_GREETER_TYPE" = "xTHEMED" ]; then
+		BACKCOLOR=`gdmflexiserver --command="GET_CONFIG greeter/GraphicalThemedColor"`
+
+		CHECKBACKCOLOR=`echo $BACKCOLOR | sed 's/^\([^ ]*\) .*$/\1/'`
+		if [ "x$CHECKBACKCOLOR" = "xOK" ]; then
+			BACKCOLOR=`echo $BACKCOLOR | sed 's/^.* \(.*\)$/\1/'`
+		else
+			BACKCOLOR=""
 		fi
-	elif [ "x$GDM_GREETER_TYPE" = "xTHEMED" ]; then
-		BACKCOLOR=`grep '^GraphicalThemedColor' @EXPANDED_SYSCONFDIR@/gdm/gdm.conf | sed 's/^.*=\(.*\)$/\1/'`	
 	fi
 
+	# If we tried to load the themed backgroundcolor, but failed, then try loading plain color
+	if [ "x$CHECKBACKCOLOR" != "xOK" ] || [ "x$GDM_GREETER_TYPE" = "xPLAIN" ]; then
+
+		# Background type can be 0=None, 1=Image & Color, 2=Color, or 3=Image 
+		BACKTYPE=`gdmflexiserver --command="GET_CONFIG greeter/BackgroundType"`
+
+		# Skip if background type does not include a color
+		if [ "x$BACKTYPE" = "xOK 1" ] || [ "x$BACKTYPE" = "xOK 2" ]; then
+			BACKCOLOR=`gdmflexiserver --command="GET_CONFIG greeter/BackgroundColor"`
+
+			CHECKBACKCOLOR=`echo $BACKCOLOR | sed 's/^\([^ ]*\) .*$/\1/'`
+			if [ "x$CHECKBACKCOLOR" = "xOK" ]; then
+				BACKCOLOR=`echo $BACKCOLOR | sed 's/^.* \(.*\)$/\1/'`
+			else
+				BACKCOLOR=""
+			fi
+		fi
+	fi
+
+	# Default value
  	if [ "x$BACKCOLOR" = "x" ]; then
  		BACKCOLOR="#76848F"
  	fi

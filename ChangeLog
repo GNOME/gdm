@@ -1,5 +1,13 @@
 2006-01-30  Brian Cameron  <brian.cameron@sun.com>
 
+	* config/PreSession.in:  Fix so it no longer tries to access
+	  the config file via grep/sed.  Now it calls
+	  'gdmflexiserver --command="GET_CONFIG"', which is a much 
+	  cleaner way to get the info in needs to set the background	
+	  color.
+
+2006-01-30  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/greeter/themes/happygnome/options.png,
 	  gui/greeter/themes/happygnome-list/options.png:
 	  Adding back the previous sessions.png as
@@ -106,8 +114,9 @@
 
 2006-01-18  Brian Cameron  <brian.cameron@sun.com>
 
-	* daemon/gdm.c, daemon/slave.c, gui/greeter/greeter.c, gui/greeter/greeter_system.c:
-	  Use "reboot" instead of "restart".  Fixes bug #327583.
+	* daemon/gdm.c, daemon/slave.c, gui/greeter/greeter.c,
+	  gui/greeter/greeter_system.c: Use "reboot" instead of "restart".  Fixes
+	  bug #327583.
 
 2006-01-17  Brian Cameron  <brian.cameron@sun.com>
 
