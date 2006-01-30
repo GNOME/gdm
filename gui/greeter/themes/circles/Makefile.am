@@ -16,4 +16,4 @@ circles_in_files = \
 EXTRA_DIST = $(circles_DATA) $(circles_in_files)
 
 clean-local:
-	rm -f GdmGreeterTheme.desktop
+	/bin/rm -f GdmGreeterTheme.desktop

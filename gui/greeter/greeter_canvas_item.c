@@ -193,6 +193,31 @@ get_gdk_color_from_rgb (GdkColor *c, guint32 rgb)
 	c->pixel = 0;
 }
 
+static void
+menu_position_func (GtkMenu           *menu,
+                    int               *x,
+                    int               *y,
+                    gboolean          *push_in,
+                    GreeterItemInfo *item)
+{
+	GtkAllocation rect;
+	GtkRequisition  requisition;
+
+	rect = item->allocation; 
+	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
+	*x = rect.x;
+	*y = rect.y - requisition.height;
+	*push_in = TRUE;
+ }
+
+ static void
+ greeter_options_handler (GreeterItemInfo *item, GtkWidget *menubar)
+ {
+	 gtk_menu_popup (GTK_MENU(gtk_menu_item_get_submenu(gtk_container_get_children(GTK_CONTAINER(menubar))->data)), 
+			 NULL, NULL, (GtkMenuPositionFunc)menu_position_func, 
+			 item, 0, gtk_get_current_event_time());
+ }
+
 void
 greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
@@ -387,7 +412,11 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 				   "height", (double)rect.height,
 				   "width", (double)rect.width,
 				   NULL);
-
+	    
+	    greeter_item_register_action_callback ("options_button",
+						   (ActionFunc)greeter_options_handler,
+						   menubar);
+	    
 	    /* Here add a tooltip, so that the user knows about F10 */
 	    tooltips = gtk_tooltips_new ();
 	    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (entry),

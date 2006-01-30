@@ -150,7 +150,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		tooltips = gtk_tooltips_new ();
 
 	if (gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON)) {
-		w = gtk_menu_item_new_with_mnemonic (_("Remote login via _XDMCP..."));
+		w = gtk_menu_item_new_with_mnemonic (_("Remote Login via _XDMCP..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -165,7 +165,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 
 	if (gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) &&
 	    bin_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR))) {
-		w = gtk_menu_item_new_with_mnemonic (_("_Configure Login Manager..."));
+		w = gtk_menu_item_new_with_mnemonic (_("Confi_gure Login Manager..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",

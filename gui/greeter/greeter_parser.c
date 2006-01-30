@@ -1088,12 +1088,17 @@ parse_stock (xmlNodePtr node,
       else if (g_ascii_strcasecmp ((char *) prop, "chooser") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("Remote login via _XDMCP"));
+	  *translated_text = g_strdup (_("Remote Login via _XDMCP"));
 	}
       else if (g_ascii_strcasecmp ((char *) prop, "config") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("_Configure"));
+	  *translated_text = g_strdup (_("Confi_gure"));
+	}
+      else if (g_ascii_strcasecmp ((char *) prop, "options") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("Op_tions"));
 	}
       else if (g_ascii_strcasecmp ((char *) prop, "caps-lock-warning") == 0)
         {
