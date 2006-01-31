@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-30 18:02+0100\n"
-"PO-Revision-Date: 2006-01-30 18:23+0100\n"
+"POT-Creation-Date: 2006-01-31 11:20+0100\n"
+"PO-Revision-Date: 2006-01-31 11:29+0100\n"
 "Last-Translator: Слободан Д. Средојевић <slobo@akrep.be>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -391,6 +391,7 @@ msgid "Master suspending..."
 msgstr "Главна суспензија..."
 
 #: ../daemon/gdm.c:622
+#, c-format
 msgid "System is restarting, please wait ..."
 msgstr "Систем се поново покреће, молим сачекајте..."
 
@@ -413,10 +414,12 @@ msgid "Restarting computer..."
 msgstr "_Поново покретање рачунара је у току..."
 
 #: ../daemon/gdm.c:670
+#, c-format
 msgid "%s: Restart failed: %s"
 msgstr "%s: Неуспешно поновно покретање: %s"
 
 #: ../daemon/gdm.c:771
+#, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
 "system menu from display %s"
@@ -425,6 +428,7 @@ msgstr ""
 "заустављање или гашење када не постоји системски мени са екрана %s"
 
 #: ../daemon/gdm.c:780
+#, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
 "display %s"
@@ -1424,7 +1428,7 @@ msgstr ""
 "Неисправно корисничко име или лозинка. Разликују се мала и велика слова."
 
 #: ../daemon/verify-crypt.c:73 ../daemon/verify-pam.c:1129
-#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:1101
+#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:1106
 msgid "Caps Lock is on."
 msgstr "Упаљен је тастер за сва велика слова"
 
@@ -1439,7 +1443,7 @@ msgstr "Молим унесите ваше корисничко име"
 #: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:854
 #: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:996 ../gui/gdmlogin.c:1010
 #: ../gui/gdmlogin.c:1624 ../gui/gdmlogin.c:2104 ../gui/greeter/greeter.c:172
-#: ../gui/greeter/greeter_parser.c:1120
+#: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "Корисничко име:"
 
@@ -2827,7 +2831,7 @@ msgstr "Не могу да извршим наредбу „%s“: %s"
 msgid "Cannot start background application"
 msgstr "Не могу да покренем позадински програм"
 
-#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1106
+#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1111
 msgid "User %u will login in %t"
 msgstr "Корисник %s ће бити пријављен у %t"
 
@@ -2984,10 +2988,10 @@ msgid "_Language"
 msgstr "_Језик"
 
 #: ../gui/gdmlogin.c:2473 ../gui/greeter/greeter_system.c:153
-msgid "Remote login via _XDMCP..."
+msgid "Remote Login via _XDMCP..."
 msgstr "Удаљена пријава к_роз XDMCP..."
 
-#: ../gui/gdmlogin.c:2484 ../gui/greeter/greeter_system.c:168
+#: ../gui/gdmlogin.c:2484
 msgid "_Configure Login Manager..."
 msgstr "_Подесите управника пријаве..."
 
@@ -3858,7 +3862,7 @@ msgstr "Изаберите _језик..."
 msgid "Select _Session..."
 msgstr "Изаберите _сесију..."
 
-#: ../gui/greeter/greeter_canvas_item.c:394
+#: ../gui/greeter/greeter_canvas_item.c:423
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Одговорите на ова питања и притисните Ентер када завршите. За мени, "
@@ -3882,18 +3886,22 @@ msgid "Sus_pend"
 msgstr "П_ривремено заустави"
 
 #: ../gui/greeter/greeter_parser.c:1091
-msgid "Remote login via _XDMCP"
+msgid "Remote Login via _XDMCP"
 msgstr "Удаљена при_јава кроз XDMCP"
 
 #: ../gui/greeter/greeter_parser.c:1096
-msgid "_Configure"
+msgid "Confi_gure"
 msgstr "_Подеси"
 
-#: ../gui/greeter/greeter_parser.c:1125
+#: ../gui/greeter/greeter_parser.c:1101
+msgid "Op_tions"
+msgstr "Могућнос_ти"
+
+#: ../gui/greeter/greeter_parser.c:1130
 msgid "_OK"
 msgstr "_У реду"
 
-#: ../gui/greeter/greeter_parser.c:1130
+#: ../gui/greeter/greeter_parser.c:1135
 msgid "_Cancel"
 msgstr "_Поништи"
 
@@ -3937,6 +3945,10 @@ msgid ""
 msgstr ""
 "Покрени XDMCP изборник који омогућава да се пријавите на доступне удаљене "
 "рачунаре, ако уопште таквих има."
+
+#: ../gui/greeter/greeter_system.c:168
+msgid "Confi_gure Login Manager..."
+msgstr "_Подесите управника пријаве..."
 
 #: ../gui/greeter/greeter_system.c:175 ../gui/greeter/greeter_system.c:376
 msgid ""
