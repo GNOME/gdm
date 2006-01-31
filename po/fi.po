@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-20 07:19+0200\n"
-"PO-Revision-Date: 2006-01-20 07:25+0200\n"
+"POT-Creation-Date: 2006-01-31 21:22+0200\n"
+"PO-Revision-Date: 2006-01-31 21:25+0200\n"
 "Last-Translator: Hile Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -402,8 +402,8 @@ msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
 "system menu from display %s"
 msgstr ""
-"Uudelleenkäynnistys-, sammutus- tai GDM:n uudelleenkäynnistyspyyntö, "
-"vaikka näytöllä %s ei ole järjestelmävalikkoa."
+"Uudelleenkäynnistys-, sammutus- tai GDM:n uudelleenkäynnistyspyyntö, vaikka "
+"näytöllä %s ei ole järjestelmävalikkoa."
 
 #: ../daemon/gdm.c:780
 #, c-format
@@ -1387,7 +1387,7 @@ msgstr ""
 "Väärä käyttäjätunnus tai salasana. Kirjainkoon täytyy olla oikein."
 
 #: ../daemon/verify-crypt.c:73 ../daemon/verify-pam.c:1129
-#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:1101
+#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:1106
 msgid "Caps Lock is on."
 msgstr "CapsLock on päällä."
 
@@ -1402,7 +1402,7 @@ msgstr "Syötä käyttäjätunnus"
 #: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:854
 #: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:996 ../gui/gdmlogin.c:1010
 #: ../gui/gdmlogin.c:1624 ../gui/gdmlogin.c:2104 ../gui/greeter/greeter.c:172
-#: ../gui/greeter/greeter_parser.c:1120
+#: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
@@ -2165,16 +2165,7 @@ msgstr "GDM:lle lähetettiin liian monta viestiä ja se katkaisi yhteyden."
 msgid "Unknown error occurred."
 msgstr "Tuntematon virhe."
 
-#. Value is "auto" (default), thus select according to
-#. "locale" settings.
-#. Translators: Translate this to '12-hour', or
-#. '24-hour'. Meaning of the translation is the
-#. default time format in your locale.
-#: ../gui/gdmcommon.c:301
-msgid "24-hour"
-msgstr "24-hour"
-
-#: ../gui/gdmcommon.c:446
+#: ../gui/gdmcommon.c:449
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d. %Bta, %H:%M"
 
@@ -2182,15 +2173,15 @@ msgstr "%a %d. %Bta, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:452
+#: ../gui/gdmcommon.c:455
 msgid "%a %b %d, %l:%M %p"
-msgstr "%a %d. %Bta, %I:%M"
+msgstr "%a %-d. %Bta, %H:%M"
 
-#: ../gui/gdmcommon.c:560
+#: ../gui/gdmcommon.c:563
 msgid " seconds"
 msgstr " sekuntia"
 
-#: ../gui/gdmcommon.c:562
+#: ../gui/gdmcommon.c:565
 msgid " second"
 msgstr " sekunti"
 
@@ -2790,7 +2781,7 @@ msgstr "Ei voitu suorittaa komento \"%s\": %s."
 msgid "Cannot start background application"
 msgstr "Taustaohjelmaa ei voi käynnistää"
 
-#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1106
+#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1111
 msgid "User %u will login in %t"
 msgstr "Käyttäjä %s kirjautuu viiveellä %t"
 
@@ -2946,10 +2937,10 @@ msgid "_Language"
 msgstr "_Kieli"
 
 #: ../gui/gdmlogin.c:2473 ../gui/greeter/greeter_system.c:153
-msgid "_XDMCP Chooser..."
-msgstr "_XDMCP-valitsin..."
+msgid "Remote Login via _XDMCP..."
+msgstr "Etäkirjautuminen _XDMCPllä..."
 
-#: ../gui/gdmlogin.c:2484 ../gui/greeter/greeter_system.c:168
+#: ../gui/gdmlogin.c:2484
 msgid "_Configure Login Manager..."
 msgstr "Sisäänkirjautumisen _asetukset..."
 
@@ -3812,7 +3803,7 @@ msgstr "Valitse _kieli..."
 msgid "Select _Session..."
 msgstr "Valitse _istunto..."
 
-#: ../gui/greeter/greeter_canvas_item.c:394
+#: ../gui/greeter/greeter_canvas_item.c:423
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Vastaa kysymyksiin tässä ja paina Enter kun olet valmis. Valikon saat "
@@ -3836,18 +3827,22 @@ msgid "Sus_pend"
 msgstr "_Virransäästötila"
 
 #: ../gui/greeter/greeter_parser.c:1091
-msgid "_XDMCP Chooser"
-msgstr "_XDMCP-valitsin"
+msgid "Remote Login via _XDMCP"
+msgstr "Etäkirjautuminen _XDMCPllä"
 
 #: ../gui/greeter/greeter_parser.c:1096
-msgid "_Configure"
+msgid "Confi_gure"
 msgstr "_Asetukset"
 
-#: ../gui/greeter/greeter_parser.c:1125
+#: ../gui/greeter/greeter_parser.c:1101
+msgid "Op_tions"
+msgstr "_Vaihtehdot"
+
+#: ../gui/greeter/greeter_parser.c:1130
 msgid "_OK"
 msgstr "_OK"
 
-#: ../gui/greeter/greeter_parser.c:1130
+#: ../gui/greeter/greeter_parser.c:1135
 msgid "_Cancel"
 msgstr "_Peru"
 
@@ -3889,6 +3884,10 @@ msgid ""
 msgstr ""
 "Suorita XDMCP-valitsin, joka mahdollistaa sisäänkirjautumisen saatavilla "
 "oleviin etäkoneisiin, jos sellaisia on."
+
+#: ../gui/greeter/greeter_system.c:168
+msgid "Confi_gure Login Manager..."
+msgstr "Sisäänkirjautumisen _asetukset..."
 
 #: ../gui/greeter/greeter_system.c:175 ../gui/greeter/greeter_system.c:376
 msgid ""
@@ -4143,6 +4142,15 @@ msgstr ""
 #: ../vicious-extensions/ve-nongnome.c:135
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "Maa-asetustolla on liian monta aliastasoa, tämä voi olla silmukka"
+
+#~ msgid "24-hour"
+#~ msgstr "24-hour"
+
+#~ msgid "_XDMCP Chooser..."
+#~ msgstr "_XDMCP-valitsin..."
+
+#~ msgid "_XDMCP Chooser"
+#~ msgstr "_XDMCP-valitsin"
 
 #~ msgid "Master rebooting..."
 #~ msgstr "Isäntä käynnistetään uudelleen..."
