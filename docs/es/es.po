@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-30 13:59-0800\n"
+"POT-Creation-Date: 2006-02-02 17:04-0800\n"
 "PO-Revision-Date: 2006-01-22 13:10+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -7558,10 +7558,12 @@ msgid ""
 "and is used to define key-press, mouse button, or XInput device sequences "
 "that can be used to launch applications needed for accessibility. In order "
 "to reduce the likelihood of unintentional launch, these \"gestures\" may be "
-"associated with multiple switch presses and/or minimum durations."
+"associated with multiple switch presses and/or minimum durations. Note that "
+"the XKB extension is needed for key gestures to work, so you may need to add "
+"+xkb to your Xserver command line for gestures to work properly."
 msgstr ""
 
-#: ../C/gdm.xml:5894 (para)
+#: ../C/gdm.xml:5897 (para)
 msgid ""
 "The DwellKeyMouseEvents file controls the dwellmouselistner and supports "
 "gestures that involve only motion of a pointing device such as the system "
@@ -7571,7 +7573,7 @@ msgid ""
 "alternate input device."
 msgstr ""
 
-#: ../C/gdm.xml:5904 (para)
+#: ../C/gdm.xml:5907 (para)
 msgid ""
 "Motion gestures are defined as \"crossing events\" into and out of the login "
 "dialog window. If the \"dwellmouselistener\" GtkModule is loaded, "
@@ -7580,14 +7582,14 @@ msgid ""
 "the onscreen pointer."
 msgstr ""
 
-#: ../C/gdm.xml:5913 (para)
+#: ../C/gdm.xml:5916 (para)
 msgid ""
 "In order to use text-to-speech services at login time (for instance, when "
 "using the Screen Reader in speech mode) on some operating systems, the GDM "
 "user must be made a member of the \"audio\" group"
 msgstr ""
 
-#: ../C/gdm.xml:5920 (para)
+#: ../C/gdm.xml:5923 (para)
 msgid ""
 "Currently GDM does not remember what accessible technology programs have "
 "been started when switching applications. So if the user switches between "
@@ -7598,7 +7600,7 @@ msgid ""
 "the user session has started."
 msgstr ""
 
-#: ../C/gdm.xml:5931 (para)
+#: ../C/gdm.xml:5934 (para)
 msgid ""
 "There are some issues that cause users to have problems getting the gesture "
 "listeners to work. It is recommended that people use GDM version 2.8.0.5 or "
@@ -7616,11 +7618,11 @@ msgid ""
 "before GDM will recognize them."
 msgstr ""
 
-#: ../C/gdm.xml:5952 (title)
+#: ../C/gdm.xml:5955 (title)
 msgid "Accessibility Login Sound Configuration"
 msgstr "Configuración de sonido de accesibilidad en la entrada"
 
-#: ../C/gdm.xml:5953 (para)
+#: ../C/gdm.xml:5956 (para)
 msgid ""
 "By default, GDM requires a media application such as \"sox\" to be present "
 "to play sounds for successful or failed login. GDM defaults the location of "
@@ -7631,22 +7633,22 @@ msgid ""
 "audio."
 msgstr ""
 
-#: ../C/gdm.xml:5968 (title)
+#: ../C/gdm.xml:5971 (title)
 msgid "Solaris Specific Features"
 msgstr "Características específicas de Solaris"
 
-#: ../C/gdm.xml:5970 (para)
+#: ../C/gdm.xml:5973 (para)
 msgid "GDM supports a few features specific to Solaris, as follows:"
 msgstr ""
 "GDM soporta unas pocas características específicas a Solaris, como las "
 "siguientes:"
 
-#: ../C/gdm.xml:5974 (para)
+#: ../C/gdm.xml:5977 (para)
 msgid "GDM supports Solaris Auditing if running on Solaris 10 or higher."
 msgstr ""
 "GDM soporta Solaris Auditing si se ejecuta sobre Solaris 10 o superior."
 
-#: ../C/gdm.xml:5978 (para)
+#: ../C/gdm.xml:5981 (para)
 msgid ""
 "GDM supports a security feature which causes the X server to run as the user "
 "instead of as the root user. GDM must be using PAM for this feature to be "
@@ -7655,7 +7657,7 @@ msgid ""
 "which disables the AlwaysRestartServer configuration option."
 msgstr ""
 
-#: ../C/gdm.xml:5987 (para)
+#: ../C/gdm.xml:5990 (para)
 msgid ""
 "Solaris supports the <filename>/etc/default/login</filename> interface, "
 "which affects the <filename>DefaultPath</filename>, <filename>RootPath</"
@@ -7664,11 +7666,11 @@ msgid ""
 "Configuration section."
 msgstr ""
 
-#: ../C/gdm.xml:5999 (title)
+#: ../C/gdm.xml:6002 (title)
 msgid "Example Configurations"
 msgstr "Configuraciones de ejemplo"
 
-#: ../C/gdm.xml:6001 (para)
+#: ../C/gdm.xml:6004 (para)
 msgid ""
 "This section has some example configurations that are useful for various "
 "setups."
@@ -7676,11 +7678,11 @@ msgstr ""
 "Esta sección tiene algunas configuraciones de ejemplo que son útiles para "
 "varias configuraciones."
 
-#: ../C/gdm.xml:6007 (title)
+#: ../C/gdm.xml:6010 (title)
 msgid "Terminal Lab With One Server"
 msgstr ""
 
-#: ../C/gdm.xml:6009 (para)
+#: ../C/gdm.xml:6012 (para)
 msgid ""
 "Suppose you want to make a lab full of X terminals that all connect to one "
 "server machine. So let's call one X terminal <filename>xterminal</filename> "
@@ -7688,7 +7690,7 @@ msgid ""
 "install GDM on both."
 msgstr ""
 
-#: ../C/gdm.xml:6016 (para)
+#: ../C/gdm.xml:6019 (para)
 msgid ""
 "On <filename>appserver</filename> you enable XDMCP, so you have <screen>\n"
 "[xdmcp]\n"
@@ -7697,7 +7699,7 @@ msgid ""
 "<filename>[servers]</filename> section empty."
 msgstr ""
 
-#: ../C/gdm.xml:6026 (para)
+#: ../C/gdm.xml:6029 (para)
 msgid ""
 "On the <filename>xterminal</filename> you disable XDMCP (you don't want "
 "anyone to connect to the xterminal really). You will add a server type "
@@ -7719,11 +7721,11 @@ msgid ""
 "<filename>appserver</filename>."
 msgstr ""
 
-#: ../C/gdm.xml:6054 (title)
+#: ../C/gdm.xml:6057 (title)
 msgid "Terminal Lab With Two Or More Servers"
 msgstr "Laboratorio con terminales con dos o más servidores"
 
-#: ../C/gdm.xml:6056 (para)
+#: ../C/gdm.xml:6059 (para)
 msgid ""
 "Suppose you want to make a lab full of X terminals that all connect to some "
 "choice of servers. For now let's make it <filename>appserverone</filename> "
@@ -7742,7 +7744,7 @@ msgstr ""
 "las consultas indirectas en el servidor debido a que ejecutamos los "
 "selectores localmente en las terminales X."
 
-#: ../C/gdm.xml:6067 (para)
+#: ../C/gdm.xml:6070 (para)
 msgid ""
 "So on the <filename>xterminal</filename> you again disable XDMCP. You will "
 "add a server type perhaps called <filename>Chooser</filename> as follows: "
@@ -7762,7 +7764,7 @@ msgid ""
 "        </screen>"
 msgstr ""
 
-#: ../C/gdm.xml:6090 (para)
+#: ../C/gdm.xml:6093 (para)
 msgid ""
 "The XDMCP chooser on the X terminal will normally give a broadcast query to "
 "see which servers exist on the network. If the two servers are not reachable "
@@ -7772,7 +7774,7 @@ msgid ""
 "wish the users to be able to connect to."
 msgstr ""
 
-#: ../C/gdm.xml:6100 (para)
+#: ../C/gdm.xml:6103 (para)
 msgid ""
 "Sometimes you may want to run the chooser on the server side however. Then "
 "what you want to do is to run a configuration similar to the previous "
@@ -7790,11 +7792,11 @@ msgid ""
 "terminals."
 msgstr ""
 
-#: ../C/gdm.xml:6122 (title)
+#: ../C/gdm.xml:6125 (title)
 msgid "Troubleshooting"
 msgstr ""
 
-#: ../C/gdm.xml:6124 (para)
+#: ../C/gdm.xml:6127 (para)
 msgid ""
 "This section discusses helpful tips for getting GDM working. In general, if "
 "you have a problem using GDM, you can submit a bug to the \"gdm\" category "
@@ -7810,11 +7812,11 @@ msgid ""
 "include the GDM debug information and do not sent the entire file."
 msgstr ""
 
-#: ../C/gdm.xml:6143 (title)
+#: ../C/gdm.xml:6146 (title)
 msgid "GDM Will Not Start"
 msgstr ""
 
-#: ../C/gdm.xml:6145 (para)
+#: ../C/gdm.xml:6148 (para)
 msgid ""
 "There are a many problems that can cause GDM to fail to start, but this "
 "section will discuss a few common problems and how to approach tracking down "
@@ -7823,7 +7825,7 @@ msgid ""
 "track down problems when GDM fails silently."
 msgstr ""
 
-#: ../C/gdm.xml:6154 (para)
+#: ../C/gdm.xml:6157 (para)
 msgid ""
 "First make sure that the Xserver is configured properly. The GDM "
 "configuration file contains a command in the [server-Standard] section that "
@@ -7836,7 +7838,7 @@ msgid ""
 "file so that it is correct for your system."
 msgstr ""
 
-#: ../C/gdm.xml:6167 (para)
+#: ../C/gdm.xml:6170 (para)
 msgid ""
 "Another common problem is that the GDM greeter program is having trouble "
 "starting. This can happen, for example, if GDM cannot find a needed library "
@@ -7848,18 +7850,18 @@ msgid ""
 "highlight the problem."
 msgstr ""
 
-#: ../C/gdm.xml:6179 (para)
+#: ../C/gdm.xml:6182 (para)
 msgid ""
 "Also make sure that the <filename>/tmp</filename> directory has reasonable "
 "ownership and permissions, and that the machine's file system is not full. "
 "These problems will cause GDM to fail to start."
 msgstr ""
 
-#: ../C/gdm.xml:6187 (title)
+#: ../C/gdm.xml:6190 (title)
 msgid "GDM Will Not Access User Settings"
 msgstr ""
 
-#: ../C/gdm.xml:6189 (para)
+#: ../C/gdm.xml:6192 (para)
 msgid ""
 "GDM saves user settings, such as your default session and default language, "
 "in the <filename>~/.dmrc</filename>. Other files, such as the user's "
@@ -7873,11 +7875,11 @@ msgid ""
 "of the \"Overview\"."
 msgstr ""
 
-#: ../C/gdm.xml:6208 (title)
+#: ../C/gdm.xml:6211 (title)
 msgid "License"
 msgstr "Licencia"
 
-#: ../C/gdm.xml:6209 (para)
+#: ../C/gdm.xml:6212 (para)
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the <ulink type=\"help\" url=\"gnome-help:gpl"
@@ -7886,7 +7888,7 @@ msgid ""
 "option) any later version."
 msgstr ""
 
-#: ../C/gdm.xml:6217 (para)
+#: ../C/gdm.xml:6220 (para)
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -7894,7 +7896,7 @@ msgid ""
 "License</citetitle> for more details."
 msgstr ""
 
-#: ../C/gdm.xml:6223 (para)
+#: ../C/gdm.xml:6226 (para)
 msgid ""
 "A copy of the <citetitle>GNU General Public License</citetitle> is included "
 "as an appendix to the <citetitle>GNOME Users Guide</citetitle>. You may also "

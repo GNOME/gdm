@@ -239,7 +239,7 @@
     </sect2>
   </sect1>
 
-  <sect1 id="Security">
+  <sect1 id="security">
     <title>Seguridad</title>
 
     <sect2 id="gdmuser">
@@ -3171,7 +3171,7 @@ homogeneous="bool"&gt;
 
              <para>Once "keymouselistener" and/or "dwellmouselistener" have been added to the GtkModules loaded by GDM, you can assign end-user actions with the launching of specific assistive technologies. These gesture associations are contained in files AccessKeyMouseEvents and AccessDwellMouseEvents, respectively. Both files are located in the &lt;etc&gt;/gdm/modules directory. The gesture format is described in the two configuration files.</para>
 
-             <para>The AccessKeyMouseEvents file controls the keymouselistener Gesture Listener and is used to define key-press, mouse button, or XInput device sequences that can be used to launch applications needed for accessibility. In order to reduce the likelihood of unintentional launch, these "gestures" may be associated with multiple switch presses and/or minimum durations.</para>
+             <para>The AccessKeyMouseEvents file controls the keymouselistener Gesture Listener and is used to define key-press, mouse button, or XInput device sequences that can be used to launch applications needed for accessibility. In order to reduce the likelihood of unintentional launch, these "gestures" may be associated with multiple switch presses and/or minimum durations. Note that the XKB extension is needed for key gestures to work, so you may need to add +xkb to your Xserver command line for gestures to work properly.</para>
 
              <para>The DwellKeyMouseEvents file controls the dwellmouselistner and supports gestures that involve only motion of a pointing device such as the system mouse of an alternative pointing device such as a head pointer or trackball may also be defined. All gestures are specified by the same syntax; that is, there is no distinction between a "core mouse" gesture and motion from an alternate input device.</para>
 
