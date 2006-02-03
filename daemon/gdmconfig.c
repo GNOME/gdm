@@ -43,7 +43,7 @@
 #include <pwd.h>
 #include <grp.h>
 
-#include <glib-2.0/glib.h>
+#include <glib.h>
 #include <glib/gi18n.h>
 
 #include "vicious.h"
