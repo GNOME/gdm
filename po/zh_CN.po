@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-23 06:32+0100\n"
-"PO-Revision-Date: 2006-01-23 14:57+0800\n"
+"POT-Creation-Date: 2006-02-04 22:38+0100\n"
+"PO-Revision-Date: 2006-02-05 11:51+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -1291,7 +1291,7 @@ msgstr ""
 "用户名或密码不正确。字母必须以正确的大小写输入。"
 
 #: ../daemon/verify-crypt.c:73 ../daemon/verify-pam.c:1129
-#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:1101
+#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:1106
 msgid "Caps Lock is on."
 msgstr "Caps Lock 为开。"
 
@@ -1306,7 +1306,7 @@ msgstr "请输入您的用户名"
 #: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:854
 #: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:996 ../gui/gdmlogin.c:1010
 #: ../gui/gdmlogin.c:1624 ../gui/gdmlogin.c:2104 ../gui/greeter/greeter.c:172
-#: ../gui/greeter/greeter_parser.c:1120
+#: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "用户名："
 
@@ -2054,16 +2054,7 @@ msgstr "发送给 GDM 的消息太多，系统挂起。"
 msgid "Unknown error occurred."
 msgstr "发生未知错误。"
 
-#. Value is "auto" (default), thus select according to
-#. "locale" settings.
-#. Translators: Translate this to '12-hour', or
-#. '24-hour'. Meaning of the translation is the
-#. default time format in your locale.
-#: ../gui/gdmcommon.c:301
-msgid "24-hour"
-msgstr "24-hour"
-
-#: ../gui/gdmcommon.c:446
+#: ../gui/gdmcommon.c:449
 msgid "%a %b %d, %H:%M"
 msgstr "%-m月%-d日%A，%H:%M"
 
@@ -2071,15 +2062,15 @@ msgstr "%-m月%-d日%A，%H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:452
+#: ../gui/gdmcommon.c:455
 msgid "%a %b %d, %l:%M %p"
 msgstr "%-m月%-d日%A，%H:%M"
 
-#: ../gui/gdmcommon.c:560
+#: ../gui/gdmcommon.c:563
 msgid " seconds"
 msgstr " 秒"
 
-#: ../gui/gdmcommon.c:562
+#: ../gui/gdmcommon.c:565
 msgid " second"
 msgstr " 秒"
 
@@ -2677,7 +2668,7 @@ msgstr "无法运行命令“%s”：%s。"
 msgid "Cannot start background application"
 msgstr "无法启动背景应用程序"
 
-#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1106
+#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1111
 msgid "User %u will login in %t"
 msgstr "用户 %u 将在 %t 秒后登录"
 
@@ -2832,10 +2823,10 @@ msgid "_Language"
 msgstr "语言(_L)"
 
 #: ../gui/gdmlogin.c:2473 ../gui/greeter/greeter_system.c:153
-msgid "_XDMCP Chooser..."
-msgstr "_XDMCP 选择程序..."
+msgid "Remote Login via _XDMCP..."
+msgstr "通过 XDMCP 远程登录(_X)..."
 
-#: ../gui/gdmlogin.c:2484 ../gui/greeter/greeter_system.c:168
+#: ../gui/gdmlogin.c:2484
 msgid "_Configure Login Manager..."
 msgstr "配置登录管理器(_C)..."
 
@@ -3669,7 +3660,7 @@ msgstr "选择语言(_L)..."
 msgid "Select _Session..."
 msgstr "选择会话(_S)..."
 
-#: ../gui/greeter/greeter_canvas_item.c:394
+#: ../gui/greeter/greeter_canvas_item.c:423
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr "在此回答问题，完成后按 Enter。要查看菜单，请按 F10。"
 
@@ -3691,18 +3682,22 @@ msgid "Sus_pend"
 msgstr "挂起(_S)"
 
 #: ../gui/greeter/greeter_parser.c:1091
-msgid "_XDMCP Chooser"
-msgstr "_XDMCP 选择程序"
+msgid "Remote Login via _XDMCP"
+msgstr "通过 XDMCP 远程登录(_X)"
 
 #: ../gui/greeter/greeter_parser.c:1096
-msgid "_Configure"
-msgstr "配置(_C)"
+msgid "Confi_gure"
+msgstr "配置(_G)"
 
-#: ../gui/greeter/greeter_parser.c:1125
+#: ../gui/greeter/greeter_parser.c:1101
+msgid "Op_tions"
+msgstr "选项(_T)"
+
+#: ../gui/greeter/greeter_parser.c:1130
 msgid "_OK"
 msgstr "确定(_O)"
 
-#: ../gui/greeter/greeter_parser.c:1130
+#: ../gui/greeter/greeter_parser.c:1135
 msgid "_Cancel"
 msgstr "取消(_C)"
 
@@ -3741,6 +3736,10 @@ msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
 msgstr "运行 XDMCP 选择程序将允许您登录到可用的远程计算机，如果有的话。"
+
+#: ../gui/greeter/greeter_system.c:168
+msgid "Confi_gure Login Manager..."
+msgstr "配置登录管理器(_G)..."
 
 #: ../gui/greeter/greeter_system.c:175 ../gui/greeter/greeter_system.c:376
 msgid ""
