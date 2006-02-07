@@ -161,6 +161,9 @@ main (int argc, char *argv[])
 
     ret = gdmcomm_call_gdm (cstr, cookie, version, 5);
 
+    /* At this point we are done using the socket, so close it */
+    gdmcomm_comm_close ();
+
     g_free (cstr);
     if (cookie)
         g_free (cookie);

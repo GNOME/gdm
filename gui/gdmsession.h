@@ -35,6 +35,9 @@ const char *	gdm_session_name 		(const char *name);
 void		gdm_session_list_from_hash_table_func (const char *key,
 						const char *value,
 						GList **sessions);
+gint		gdm_session_sort_func		(const char *a,
+						 const char *b);
+
 
 
 #endif /* GDM_SESSION_H */

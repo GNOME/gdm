@@ -155,7 +155,7 @@ gdm_display_check_loop (GdmDisplay *disp)
       disp->last_start_time = now;
     }
 
-  disp->retry_count ++;
+  disp->retry_count++;
 
   return TRUE;
 }
@@ -409,12 +409,12 @@ count_session_limits (void)
 		GdmDisplay *d = li->data;
 		if (SERVER_IS_XDMCP (d)) {
 			if (d->dispstat == XDMCP_MANAGED)
-				xdmcp_sessions ++;
+				xdmcp_sessions++;
 			else if (d->dispstat == XDMCP_PENDING)
-				xdmcp_pending ++;
+				xdmcp_pending++;
 		}
 		if (SERVER_IS_FLEXI (d)) {
-			flexi_servers ++;
+			flexi_servers++;
 		}
 	}
 }

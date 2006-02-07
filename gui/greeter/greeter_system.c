@@ -64,7 +64,7 @@ bin_exists (const char *command)
 static void
 query_greeter_restart_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to restart the computer?"), "",
+	if (gdm_wm_warn_dialog (_("Are you sure you want to restart the computer?"), "",
 			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog ();
 		
@@ -76,7 +76,7 @@ query_greeter_restart_handler (void)
 static void
 query_greeter_halt_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to Shut Down the computer?"), "",
+	if (gdm_wm_warn_dialog (_("Are you sure you want to Shut Down the computer?"), "",
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog ();
 
@@ -87,7 +87,7 @@ query_greeter_halt_handler (void)
 static void
 query_greeter_suspend_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to suspend the computer?"), "",
+	if (gdm_wm_warn_dialog (_("Are you sure you want to suspend the computer?"), "",
 			     _("_Suspend"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);

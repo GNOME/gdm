@@ -162,7 +162,8 @@ greeter_language_get_language (const char *old_language)
 	  g_free (current_name);
 	  g_free (saved_name);
 
-	  savelang = gdm_common_query (primary_message, secondary_message, _("Make _Default"), _("Just For _This Session"), TRUE);
+	  savelang = gdm_wm_query_dialog (primary_message, secondary_message,
+		_("Make _Default"), _("Just For _This Session"), TRUE);
 	  g_free (primary_message);
 	  g_free (secondary_message);
 	}

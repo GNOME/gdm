@@ -30,7 +30,6 @@
 #endif
 #include <pwd.h>
 #include <unistd.h>
-#include <syslog.h>
 
 #include <gdk/gdkx.h>
 
@@ -119,7 +118,7 @@ gdm_wm_screen_init (int cur_screen_num)
 
 		if (screen_num <= 0) {
 			/* should NEVER EVER happen */
-			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
+			gdm_common_error ("Xinerama active, but <= 0 screens?");
 			gdm_wm_screen.x = 0;
 			gdm_wm_screen.y = 0;
 			gdm_wm_screen.width = gdk_screen_width ();
@@ -181,7 +180,7 @@ gdm_wm_screen_init (int cur_screen_num)
 
 		if (result <= 0) {
 			/* should NEVER EVER happen */
-			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
+			gdm_common_error ("Xinerama active, but <= 0 screens?");
 			gdm_wm_screen.x = 0;
 			gdm_wm_screen.y = 0;
 			gdm_wm_screen.width = gdk_screen_width ();
@@ -258,7 +257,7 @@ gdm_wm_center_window (GtkWindow *cw)
 static void
 trap_push (void)
 {
-	trap_depth ++;
+	trap_depth++;
 	gdk_error_trap_push ();
 }
 
@@ -1313,7 +1312,7 @@ gdm_wm_no_login_focus_push (void)
 {
 	/* it makes not sense for this to be false then */
 	focus_new_windows = TRUE;
-	no_focus_login ++;
+	no_focus_login++;
 }
 
 void
@@ -1526,8 +1525,8 @@ gdm_wm_restore_wm_order (void)
 }
 
 void
-gdm_common_show_info_msg (const gchar *msg_file,
-			  const gchar *msg_font)
+gdm_wm_show_info_msg_dialog (const gchar *msg_file,
+			     const gchar *msg_font)
 {
 	GtkWidget *dialog, *label;
 	gchar *InfoMsg;
@@ -1574,8 +1573,8 @@ gdm_common_show_info_msg (const gchar *msg_file,
 }
 
 void
-gdm_common_message (const gchar *primary_message, 
-                    const gchar *secondary_message)
+gdm_wm_message_dialog (const gchar *primary_message, 
+		       const gchar *secondary_message)
 {
 	GtkWidget *req = NULL;
 
@@ -1598,11 +1597,11 @@ gdm_common_message (const gchar *primary_message,
 }
 
 gint
-gdm_common_query (const gchar *primary_message,
-		  const gchar *secondary_message,
-		  const char *posbutton,
-		  const char *negbutton,
-		  gboolean has_cancel)
+gdm_wm_query_dialog (const gchar *primary_message,
+		     const gchar *secondary_message,
+		     const char *posbutton,
+		     const char *negbutton,
+		     gboolean has_cancel)
 {
 	int ret;
 	GtkWidget *req;
@@ -1657,11 +1656,11 @@ gdm_common_query (const gchar *primary_message,
 }
 
 gint
-gdm_common_warn (const gchar *primary_message,
-                 const gchar *secondary_message,
-                 const char *posbutton,
-                 const char *negbutton,
-                 gboolean has_cancel)
+gdm_wm_warn_dialog (const gchar *primary_message,
+                    const gchar *secondary_message,
+                    const char *posbutton,
+                    const char *negbutton,
+                    gboolean has_cancel)
 {
 	int ret;
 	GtkWidget *req;

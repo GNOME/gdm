@@ -141,38 +141,44 @@ enum {
  * The following section contains keys used by the GDM configuration files.
  * The key/value pairs defined in the GDM configuration files are considered
  * "stable" interface and should only change in ways that are backwards
- * compatible.
+ * compatible.  Please keep this in mind when changing GDM configuration.
  * 
  * Developers who add new configuration options should ensure that they do the
  * following:
  * 
  * + Specify the same default in this file as in the config/gdm.conf.in file.
  *
- * + Update the val_hash and type_hash settings in gdm_config_init function
- *   in daemon/gdmconfig.c to add the new options.
+ * + Update the gdm_config_init function in daemon/gdmconfig.c to add the
+ *   new key.
  *
  * + Add any validation to the _gdm_set_value_string, _gdm_set_value_int,
- *   and/or _gdm_set_value_bool functions in gdmconfig.c, if needed.
- *
- * + The gui/gdmsetup.c program should be updated to support the new option
- *   unless there's a good reason not to.
+ *   and/or _gdm_set_value_bool functions (depending on the type of the new
+ *   key) in gdmconfig.c, if validation is needed.
  *
  * + If GDM_UPDATE_CONFIG should not respond to this configuration setting,
  *   update the update_config function in gdmconfig.c to return FALSE for
  *   this key.  Examples include changing the PidFile, ServAuthDir, or
- *   other values that GDM shouldn't change until it is restarted.  If 
+ *   other values that GDM should not change until it is restarted.  If 
  *   this is true, the next bullet can be ignored.
  *
  * + If the option should cause the greeter (gdmlogin/gdmgreeter) program to
  *   be updated immediately, make sure to update the appropriate 
- *   _gdm_set_value_* function in gdmconfig.c to cause a call to
- *   notify_displays_*() when this value is changed.  Supporting logic will
+ *   _gdm_set_value_* function in gdmconfig.c causes a call to
+ *   notify_displays_* when this value is changed.  Supporting logic will
  *   also be needed in the gdm_slave_handle_notify function in slave.c.
  *   It should be simple to see how to do this from the other examples.
+ *
+ * + Add the key to the gdm_read_config and gdm_reread_config functions in 
+ *   gui/gdmlogin.c, gui/gdmchooser.c, and gui/greeter/greeter.c
+ *   if the key is used by those programs.
+ *
+ * + The gui/gdmsetup.c program should be updated to support the new option
+ *   unless there's a good reason not to.
  *
  * + Update the docs/C/gdm.xml file to include information about the new
  *   option.  Include information about any other interfaces (such as 
  *   ENVIRONMENT variables) that may affect the configuration option.
+ *   Patches without documentation will not be accepted.
  *
  * Please do this work *before* submitting an patch.  Patches that are not
  * complete will not likely be accepted.
@@ -716,10 +722,12 @@ void		gdm_final_cleanup	(void);
 #define GDM_SLAVE_NOTIFY_COMMAND '#'
 
 /*
- * Maximum number of connections allowed at once.  Might be useful to
- * try and tune this.  GDM would be faster if the value is larger.
+ * Maximum number of messages allowed over the sockets protocol.  This
+ * is set to 80 since the gdmlogin/gdmgreeter programs have ~60 config
+ * values that are pulled over the socket connection so it allows them
+ * all to be grabbed in one pull.
  */
-#define GDM_SUP_MAX_CONNECTIONS 20
+#define GDM_SUP_MAX_MESSAGES 80
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 
 /*

@@ -286,12 +286,12 @@ gdm_xdmcp_displays_from_host (struct sockaddr_in *addr)
 #ifdef ENABLE_IPV6
 		    if (disp->addrtype == AF_INET6 &&
 			memcmp (&disp->addr6, &((struct sockaddr_in6 *)addr)->sin6_addr, sizeof (struct in6_addr)) == 0)
-			count ++;
+			count++;
 		    else
 #endif
 		    if (disp->addrtype == AF_INET &&
 		    memcmp (&disp->addr, &((struct sockaddr_in *)addr)->sin_addr, sizeof (struct in_addr)) == 0)
-			count ++;
+			count++;
 		}
 	}
 
@@ -1445,7 +1445,7 @@ managed_forward_handler (gpointer data)
 	if (gdm_xdmcpfd > 0)
 		gdm_xdmcp_really_send_managed_forward (&(mf->manager),
 						       &(mf->origin));
-	mf->times ++;
+	mf->times++;
 	if (gdm_xdmcpfd <= 0 || mf->times >= 2) {
 		managed_forwards = g_slist_remove (managed_forwards, mf);
 		mf->handler = 0;

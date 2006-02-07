@@ -437,7 +437,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					NULL);
 
     /* cursor blinking is evil on remote displays, don't do it forever */
-    gdm_setup_blinking_entry (entry);
+    gdm_common_setup_blinking_entry (entry);
 
     break;
 
@@ -636,7 +636,7 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 			while (i < n_chars) {
 				g_string_append_unichar (word, ch);
 				p = g_utf8_next_char (p);
-				i ++;
+				i++;
 
 				if (ch == '>') {
 					ch = g_utf8_get_char (p);
@@ -654,12 +654,12 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 				in_current_row = 0;
 		}
 
-		in_current_row ++;
+		in_current_row++;
 		g_string_append_unichar (word, ch);
 
 		p = g_utf8_next_char (p);
-		i ++;
-		ia ++;
+		i++;
+		ia++;
 
 		/* eeek! */
 		if (ia >= n_attrs) {
@@ -667,7 +667,7 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 				ch = g_utf8_get_char (p);
 				g_string_append_unichar (word, ch);
 				p = g_utf8_next_char (p);
-				i ++;
+				i++;
 			}
 			break;
 		}

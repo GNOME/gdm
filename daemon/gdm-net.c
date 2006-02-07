@@ -83,7 +83,12 @@ close_if_needed (GdmConnection *conn, GIOCondition cond, gboolean error)
 
 	if (cond & G_IO_ERR ||
 	    cond & G_IO_HUP || error) {
-		gdm_debug ("close_if_needed: Got HUP/ERR on %d", conn->fd);
+	        if (cond & G_IO_ERR)
+			gdm_debug ("close_if_needed: Got G_IO_ERR on %d", conn->fd);
+	        if (cond & G_IO_HUP)
+			gdm_debug ("close_if_needed: Got G_IO_HUP on %d", conn->fd);
+		if (error)
+			gdm_debug ("close_if_needed: Got error on %d", conn->fd);
 		conn->source = 0;
 		gdm_connection_close (conn);
 		return FALSE;
@@ -101,13 +106,12 @@ gdm_connection_handler (GIOChannel *source,
 	char *p;
 	size_t len;
 
-	if ( ! (cond & G_IO_IN)) 
+	if ( ! (cond & G_IO_IN))
 		return close_if_needed (conn, cond, FALSE);
 
 	VE_IGNORE_EINTR (len = read (conn->fd, buf, sizeof (buf) -1));
-	if (len <= 0) {
+	if (len <= 0)
 		return close_if_needed (conn, cond, TRUE);
-	}
 
 	buf[len] = '\0';
 
@@ -124,7 +128,7 @@ gdm_connection_handler (GIOChannel *source,
 		    /* cut lines short at 4096 to prevent DoS attacks */
 		    conn->buffer->len > 4096) {
 			conn->close_level = 1;
-			conn->message_count ++;
+			conn->message_count++;
 			conn->handler (conn, conn->buffer->str,
 				       conn->data);
 			if (conn->close_level == 2) {
@@ -203,7 +207,7 @@ gdm_socket_handler (GIOChannel *source,
 	struct sockaddr_un addr;
 	socklen_t addr_size = sizeof (addr);
 
-	if ( ! (cond & G_IO_IN)) 
+	if ( ! (cond & G_IO_IN))
 		return TRUE;
 
 	VE_IGNORE_EINTR (fd = accept (conn->fd,
@@ -235,8 +239,9 @@ gdm_socket_handler (GIOChannel *source,
 					   parent connection */
 
 	conn->subconnections = g_list_append (conn->subconnections, newconn);
-	conn->n_subconnections ++;
+	conn->n_subconnections++;
 	if (conn->n_subconnections > MAX_CONNECTIONS) {
+		gdm_debug ("Closing connection, %d subconnections reached", MAX_CONNECTIONS);
 		GdmConnection *old = conn->subconnections->data;
 		conn->subconnections =
 			g_list_remove (conn->subconnections, old);

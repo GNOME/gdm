@@ -26,10 +26,6 @@
 #include "ve-misc.h"
 #include "ve-miscui.h"
 
-void		gdm_openlog				(const char *ident,
-							 int logopt,
-							 int facility);
-
 void		gdm_config_never_cache			(gboolean never_cache);
 gchar *		gdm_config_get_string			(gchar *key);
 gchar *		gdm_config_get_translated_string	(gchar *key);

@@ -217,6 +217,7 @@ static gchar *GdmGraphicalThemeColor;
 static gchar *GdmGraphicalThemeDir;
 static gchar *GdmGraphicalThemes;
 static gchar *GdmPreFetchProgram;
+static gchar *GdmUse24Clock;
 
 static gint GdmPositionX;
 static gint GdmPositionY;
@@ -227,6 +228,8 @@ static gint GdmBackgroundType;
 static gint GdmScanTime;
 static gint GdmMaxWait;
 static gint GdmFlexiReapDelayMinutes;
+static gint GdmBackgroundProgramInitialDelay = 30;
+static gint GdmBackgroundProgramRestartDelay = 30;
 
 static gboolean GdmAllowGtkThemeChange;
 static gboolean GdmTitleBar;
@@ -242,12 +245,12 @@ static gboolean GdmQuiver;
 static gboolean GdmShowGnomeFailsafe;
 static gboolean GdmShowXtermFailsafe;
 static gboolean GdmShowLastSession;
-static gchar * GdmUse24Clock;
 static gboolean GdmEntryCircles;
 static gboolean GdmEntryInvisible;
 static gboolean GdmGraphicalThemeRand;
 static gboolean GdmBroadcast;
 static gboolean GdmAllowAdd;
+static gboolean GdmRestartBackgroundProgram;
 
 /**
  * gdm_config_add_hash
@@ -413,6 +416,8 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_BROADCAST, &GdmBroadcast, &bool_type);
    gdm_config_add_hash (GDM_KEY_ALLOW_ADD, &GdmAllowAdd, &bool_type);
    gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN, &GdmSoundOnLogin, &bool_type);
+   gdm_config_add_hash (GDM_KEY_RESTART_BACKGROUND_PROGRAM,
+      &GdmRestartBackgroundProgram, &bool_type);
 
    /* string values */
    gdm_config_add_hash (GDM_KEY_PATH, &GdmPath, &string_type);
@@ -523,6 +528,10 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_SCAN_TIME, &GdmScanTime, &int_type);
    gdm_config_add_hash (GDM_KEY_FLEXI_REAP_DELAY_MINUTES,
       &GdmFlexiReapDelayMinutes, &int_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY,
+      &GdmBackgroundProgramInitialDelay, &int_type);
+   gdm_config_add_hash (GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY,
+      &GdmBackgroundProgramRestartDelay, &int_type);
 }
 
 /**

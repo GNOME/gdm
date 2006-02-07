@@ -247,7 +247,7 @@ gdm_lang_init (void)
 
 	lang_names = g_hash_table_new (g_str_hash, g_str_equal);
 
-	for (i = 0; languages[i].name != NULL; i ++) {
+	for (i = 0; languages[i].name != NULL; i++) {
 		g_hash_table_insert (lang_names,
 				     languages[i].code,
 				     &languages[i]);
@@ -442,7 +442,7 @@ lang_collate (gconstpointer a, gconstpointer b)
 		const char *name;
 		name = strchr (_(l1->name), '|');
 		if (name != NULL)
-			name ++;
+			name++;
 		else
 			name = _(l1->name);
 		l1->collate_key = g_utf8_collate_key (name, -1);
@@ -452,7 +452,7 @@ lang_collate (gconstpointer a, gconstpointer b)
 		const char *name;
 		name = strchr (_(l2->name), '|');
 		if (name != NULL)
-			name ++;
+			name++;
 		else
 			name = _(l2->name);
 		l2->collate_key = g_utf8_collate_key (name, -1);

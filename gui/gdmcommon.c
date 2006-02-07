@@ -41,26 +41,119 @@
 
 gint gdm_timed_delay = 0;
 
+/*
+ * Some slaves want to send output to syslog and others (such as 
+ * gdmflexiserver and gdmdynamic send error messages to stdout.  
+ * Calling gdm_common_openlog to open the syslog sets the
+ * using_syslog flag so that calls to gdm_common_fail, 
+ * gdm_common_info, gdm_common_error, and gdm_common_debug sends 
+ * output to the syslog if the syslog has been opened, otherwise
+ * send to stdout.
+ */
+static gboolean using_syslog = FALSE;
+
 void
-gdm_common_abort (const gchar *format, ...)
+gdm_common_openlog (const char *ident, int logopt, int facility)
+{
+   openlog (ident, logopt, facility);
+   using_syslog = TRUE;
+}
+
+void
+gdm_common_fail (int exitstatus, const gchar *format, ...)
 {
     va_list args;
     gchar *s;
 
     if (!format) {
-	_exit (DISPLAY_GREETERFAILED);
+	_exit (exitstatus);
     }
 
     va_start (args, format);
     s = g_strdup_vprintf (format, args);
     va_end (args);
     
-    syslog (LOG_ERR, "%s", s);
-    closelog ();
+    if (using_syslog) {
+        syslog (LOG_ERR, "%s", s);
+        closelog ();
+    } else
+        g_printf ("%s\n", s);
 
     g_free (s);
 
-    _exit (DISPLAY_GREETERFAILED);
+    _exit (exitstatus);
+}
+
+void
+gdm_common_info (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+
+    if (using_syslog)
+        syslog (LOG_INFO, "%s", s);
+    else
+        g_printf ("%s\n", s);
+ 
+    g_free (s);
+}
+
+void
+gdm_common_error (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+
+    if (using_syslog)
+        syslog (LOG_ERR, "%s", s);
+    else
+        g_printf ("%s\n", s);
+    
+    g_free (s);
+}
+
+void
+gdm_common_warning (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+
+    if (using_syslog)
+        syslog (LOG_WARNING, "%s", s);
+    else
+        g_printf ("%s\n", s);
+    
+    g_free (s);
+}
+
+void
+gdm_common_debug (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    if G_LIKELY (! gdm_config_get_bool (GDM_KEY_DEBUG))
+        return;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+
+    syslog (LOG_ERR, "%s", s);
+    closelog ();
+    g_free (s);
 }
 
 void
@@ -142,7 +235,7 @@ delay_noblink (GSignalInvocationHint *ihint,
 
 
 void
-gdm_setup_blinking (void)
+gdm_common_setup_blinking (void)
 {
 	guint sid;
 
@@ -178,7 +271,7 @@ gdm_setup_blinking (void)
 }
 
 void
-gdm_setup_blinking_entry (GtkWidget *entry)
+gdm_common_setup_blinking_entry (GtkWidget *entry)
 {
 	EntryBlink *eb;
 	GtkSettings *settings;

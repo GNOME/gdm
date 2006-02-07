@@ -848,7 +848,7 @@ gdm_slave_start (GdmDisplay *display)
 
 		the_time = time (NULL);
 
-		death_count ++;
+		death_count++;
 
 		if ((the_time - first_time) <= 0 ||
 		    (the_time - first_time) > 60) {
@@ -3099,7 +3099,7 @@ find_a_session (void)
 	else
 		session = NULL;
 
-	for (i = 0; try[i] != NULL && session == NULL; i ++) {
+	for (i = 0; try[i] != NULL && session == NULL; i++) {
 		if (is_session_ok (try[i]))
 			session = g_strdup (try[i]);
 	}
@@ -4169,7 +4169,7 @@ gdm_slave_session_stop (gboolean run_post_session,
     char *x_servers_file;
     char *local_login;
 
-    in_session_stop ++;
+    in_session_stop++;
 
     session_started = FALSE;
 

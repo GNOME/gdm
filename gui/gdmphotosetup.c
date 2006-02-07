@@ -35,6 +35,7 @@
 #include <glade/glade.h>
 
 #include "gdm.h"
+#include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 #include "ve-miscui.h"
@@ -312,6 +313,8 @@ main (int argc, char *argv[])
 	max_height   = gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
 	greeter      = gdm_config_get_string (GDM_KEY_GREETER);
 	facedir      = gdm_config_get_string (GDM_KEY_GLOBAL_FACE_DIR);
+	/* At this point we are done using the socket, so close it */
+	gdmcomm_comm_close ();
 	imagename    = NULL;
 
 	gtk_window_set_default_icon_name ("stock_person");

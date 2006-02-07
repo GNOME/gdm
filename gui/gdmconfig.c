@@ -22,7 +22,6 @@
  */
 
 #include <stdlib.h>
-#include <syslog.h>
 #include <gtk/gtk.h>
 
 #include "config.h"
@@ -37,19 +36,6 @@ static GHashTable *int_hash       = NULL;
 static GHashTable *bool_hash      = NULL;
 static GHashTable *string_hash    = NULL;
 static gboolean gdm_never_cache   = FALSE;
-
-/*
- * Hack to keep track if config functions should be printing error messages
- * to syslog or stdout
- */
-static gboolean using_syslog = FALSE;
-
-void
-gdm_openlog (const char *ident, int logopt, int facility)
-{
-   openlog (ident, logopt, facility);
-   using_syslog = TRUE;
-}
 
 /**
  * gdm_config_never_cache
@@ -140,7 +126,6 @@ gdm_config_get_result (gchar *key)
 	return result;
 }
 
-
 /**
  * gdm_config_get_xserver_details
  *
@@ -162,10 +147,7 @@ gdm_config_get_xserver_details (gchar *xserver, gchar *key)
 	if (! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		if (using_syslog)
-			syslog (LOG_ERR, "Could not access xserver configuration");
-		else
-			printf ("Could not access xserver configuration");
+		gdm_common_info ("Could not access xserver configuration");
 
 		if (result)
 			g_free (result);
@@ -203,10 +185,7 @@ gdm_config_get_xservers (gboolean flexible)
 	if (! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		if (using_syslog)
-			syslog (LOG_ERR, "Could not access xserver configuration");
-		else
-			printf ("Could not access xserver configuration");
+		gdm_common_info ("Could not access xserver configuration");
 
 		if (result)
 			g_free (result);
@@ -327,11 +306,9 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 	if (! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
+		/* No need to show error for failed translated strings */
 		if (show_error) {
-			if (using_syslog)
-				syslog (LOG_ERR, "Could not access configuration key %s", key);
-			else
-				printf ("Could not access configuration key %s\n", key);
+			gdm_common_info ("Could not access configuration key %s", key);
 		}
 
 		if (result)
@@ -360,6 +337,7 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 				*changed = FALSE;
 		}
 
+		g_free (*hashretval);
 		*hashretval = temp;
 		return *hashretval;
 	}
@@ -453,10 +431,7 @@ _gdm_config_get_int (gchar *key, gboolean reload, gboolean *changed)
 	if (! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		if (using_syslog)
-			syslog (LOG_ERR, "Could not access configuration key %s", key);
-		else
-			printf ("Could not access configuration key %s\n", key);
+		gdm_common_info ("Could not access configuration key %s", key);
 
 		if (result)
 			g_free (result);
@@ -524,10 +499,7 @@ _gdm_config_get_bool (gchar *key, gboolean reload, gboolean *changed)
 	if (! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		if (using_syslog)
-			syslog (LOG_ERR, "Could not access configuration key %s", key);
-		else
-			printf ("Could not access configuration key %s\n", key);
+		gdm_common_info ("Could not access configuration key %s", key);
 
 		if (result)
 			g_free (result);

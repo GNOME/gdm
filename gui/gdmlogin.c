@@ -24,23 +24,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <syslog.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <syslog.h>
 #include <ctype.h>
 #include <signal.h>
 #include <dirent.h>
 #include <locale.h>
-#include <glib/gi18n.h>
-#include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
+#include <pwd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
-#include <pwd.h>
+
+#include <glib/gi18n.h>
+#include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
 
 #if HAVE_PAM
 #include <security/pam_appl.h>
@@ -53,11 +55,11 @@
 
 #include "gdm.h"
 #include "gdmuser.h"
+#include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmsession.h"
 #include "gdmwm.h"
 #include "gdmlanguages.h"
-#include "gdmcommon.h"
 #include "gdmconfig.h"
 #include "misc.h"
 
@@ -646,8 +648,10 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 static void
 gdm_login_restart_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to restart the computer?"), "",
-			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
+	if (gdm_wm_warn_dialog (
+	    _("Are you sure you want to restart the computer?"), "",
+	    _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
+
 		closelog ();
 
 		gdm_kill_thingies ();
@@ -659,8 +663,10 @@ gdm_login_restart_handler (void)
 static void
 gdm_login_halt_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to Shut Down the computer?"), "",
-			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
+	if (gdm_wm_warn_dialog (
+	    _("Are you sure you want to Shut Down the computer?"), "",
+	    _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
+
 		closelog ();
 
 		gdm_kill_thingies ();
@@ -680,8 +686,10 @@ gdm_login_use_chooser_handler (void)
 static void
 gdm_login_suspend_handler (void)
 {
-	if (gdm_common_warn (_("Are you sure you want to suspend the computer?"), "",
-			     _("_Suspend"), NULL, TRUE) == GTK_RESPONSE_YES) {
+	if (gdm_wm_warn_dialog (
+	    _("Are you sure you want to suspend the computer?"), "",
+	    _("_Suspend"), NULL, TRUE) == GTK_RESPONSE_YES) {
+
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
 		fflush (stdout);
@@ -765,13 +773,13 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    g_free (session);
 	    session = g_strdup (default_session);
 	    firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
-	                                  "future sessions?"),
+	                                "future sessions?"),
 	                                gdm_session_name (default_session));	   
 	    secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
-	                                   "installed on this computer."),
+	                                 "installed on this computer."),
 	                                 gdm_session_name (savedsess));
 
-	    savesess = gdm_common_query (firstmsg, secondmsg,
+	    savesess = gdm_wm_query_dialog (firstmsg, secondmsg,
 		 _("Make _Default"), _("Just _Log In"), TRUE);
 	    g_free (firstmsg);
 	    g_free (secondmsg);
@@ -802,7 +810,7 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                       "setting is %s."),
                                                      gdm_session_name (session),
                                                      gdm_session_name (savedsess));					       
-                        savesess = gdm_common_query (firstmsg, secondmsg,
+                        savesess = gdm_wm_query_dialog (firstmsg, secondmsg,
 				_("Make _Default"), _("Just For _This Session"), TRUE);
                 } else if (strcmp (session, default_session) != 0 &&
 			   strcmp (session, savedsess) != 0 &&
@@ -823,7 +831,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 				                              "(System Tools->Desktop Switching Tool from "
 				                              "the main menu)."),
 				                             gdm_session_name (session));
-				gdm_common_message (firstmsg, secondmsg);
+				gdm_wm_message_dialog (firstmsg, secondmsg);
 			}
 			savesess = GTK_RESPONSE_NO;
                 }
@@ -883,7 +891,8 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    g_free (curname);
 	    g_free (savedname);
 
-	    savelang = gdm_common_query (firstmsg, secondmsg, _("Make _Default"), _("Just For _This Session"), TRUE);
+	    savelang = gdm_wm_query_dialog (firstmsg, secondmsg,
+		_("Make _Default"), _("Just For _This Session"), TRUE);
 	    g_free (firstmsg);
 	    g_free (secondmsg);
 	}
@@ -1134,7 +1143,7 @@ gdm_login_session_init (GtkWidget *menu)
 		    label = g_strdup_printf ("_%d. %s", num, session->name);
 	    else
 		    label = g_strdup (session->name);
-	    num ++;
+	    num++;
 
 	    item = gtk_radio_menu_item_new_with_mnemonic (sessgrp, label);
 	    g_free (label);
@@ -1453,7 +1462,7 @@ gdm_login_theme_menu_new (void)
 						  _(theme_name));
 	else
 		menu_item_name = g_strdup (theme_name);
-	num ++;
+	num++;
 
 	item = gtk_menu_item_new_with_mnemonic (menu_item_name);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -2042,7 +2051,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	
     default:
 	gdm_kill_thingies ();
-	gdm_common_abort ("Unexpected greeter command received: '%c'", buf[0]);
+	gdm_common_fail (DISPLAY_GREETERFAILED,
+		"Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
 
@@ -2758,8 +2768,8 @@ gdm_login_gui_init (void)
 		      NULL);
 
     /* cursor blinking is evil on remote displays, don't do it forever */
-    gdm_setup_blinking ();
-    gdm_setup_blinking_entry (entry);
+    gdm_common_setup_blinking ();
+    gdm_common_setup_blinking_entry (entry);
     
     hline2 = gtk_hseparator_new ();
     gtk_widget_ref (hline2);
@@ -3051,10 +3061,101 @@ enum {
 	RESPONSE_CLOSE
 };
 
+/* 
+ * If new configuration keys are added to this program, make sure to add the
+ * key to the gdm_read_config and gdm_reread_config functions.  Note if the
+ * number of configuration values used by gdmlogin is greater than 
+ * GDM_SUP_MAX_MESSAGES defined in daemon/gdm.h (currently defined to be 80),
+ * consider bumping that number so that all the config can be read in one
+ * socket connection.
+ */
+static void
+gdm_read_config (void)
+{
+	gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
+
+	/*
+	 * Read all the keys at once and close sockets connection so we do
+	 * not have to keep the socket open. 
+	 */
+	gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
+	gdm_config_get_string (GDM_KEY_BACKGROUND_IMAGE);
+	gdm_config_get_string (GDM_KEY_BACKGROUND_PROGRAM);
+        gdm_config_get_string (GDM_KEY_CONFIGURATOR);
+        gdm_config_get_string (GDM_KEY_DEFAULT_FACE);
+	gdm_config_get_string (GDM_KEY_DEFAULT_SESSION);
+	gdm_config_get_string (GDM_KEY_EXCLUDE);
+	gdm_config_get_string (GDM_KEY_GTK_THEME);
+        gdm_config_get_string (GDM_KEY_GTK_THEMES_TO_ALLOW);
+	gdm_config_get_string (GDM_KEY_GTKRC);
+        gdm_config_get_string (GDM_KEY_HALT);
+	gdm_config_get_string (GDM_KEY_INCLUDE);
+	gdm_config_get_string (GDM_KEY_INFO_MSG_FILE);
+	gdm_config_get_string (GDM_KEY_INFO_MSG_FONT);
+        gdm_config_get_string (GDM_KEY_LOCALE_FILE);
+	gdm_config_get_string (GDM_KEY_LOGO);
+        gdm_config_get_string (GDM_KEY_REBOOT);
+        gdm_config_get_string (GDM_KEY_REMOTE_WELCOME);
+	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
+	gdm_config_get_string (GDM_KEY_SOUND_PROGRAM);
+	gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE);
+        gdm_config_get_string (GDM_KEY_SUSPEND);
+	gdm_config_get_string (GDM_KEY_TIMED_LOGIN);
+	gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
+	gdm_config_get_string (GDM_KEY_WELCOME);
+
+	gdm_config_get_int    (GDM_KEY_BACKGROUND_TYPE);
+	gdm_config_get_int    (GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY);
+	gdm_config_get_int    (GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY);
+	gdm_config_get_int    (GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
+	gdm_config_get_int    (GDM_KEY_MAX_ICON_HEIGHT);
+	gdm_config_get_int    (GDM_KEY_MAX_ICON_WIDTH);
+	gdm_config_get_int    (GDM_KEY_MINIMAL_UID);
+	gdm_config_get_int    (GDM_KEY_TIMED_LOGIN_DELAY);
+	gdm_config_get_int    (GDM_KEY_XINERAMA_SCREEN);
+
+	gdm_config_get_bool   (GDM_KEY_ALLOW_GTK_THEME_CHANGE);
+        gdm_config_get_bool   (GDM_KEY_ALLOW_REMOTE_ROOT);
+        gdm_config_get_bool   (GDM_KEY_ALLOW_ROOT);
+	gdm_config_get_bool   (GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR);
+	gdm_config_get_bool   (GDM_KEY_BACKGROUND_SCALE_TO_FIT);
+	gdm_config_get_bool   (GDM_KEY_BROWSER);
+	gdm_config_get_bool   (GDM_KEY_CHOOSER_BUTTON);
+	gdm_config_get_bool   (GDM_KEY_CONFIG_AVAILABLE);
+        gdm_config_get_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME);
+        gdm_config_get_bool   (GDM_KEY_DEFAULT_WELCOME);
+        gdm_config_get_bool   (GDM_KEY_ENTRY_CIRCLES);
+        gdm_config_get_bool   (GDM_KEY_ENTRY_INVISIBLE);
+	gdm_config_get_bool   (GDM_KEY_INCLUDE_ALL);
+        gdm_config_get_bool   (GDM_KEY_QUIVER);
+        gdm_config_get_bool   (GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS);
+        gdm_config_get_bool   (GDM_KEY_RESTART_BACKGROUND_PROGRAM);
+        gdm_config_get_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE);
+	gdm_config_get_bool   (GDM_KEY_SHOW_LAST_SESSION);
+        gdm_config_get_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE);
+	gdm_config_get_bool   (GDM_KEY_SOUND_ON_LOGIN);
+	gdm_config_get_bool   (GDM_KEY_SYSTEM_MENU);
+	gdm_config_get_bool   (GDM_KEY_TIMED_LOGIN_ENABLE);
+        gdm_config_get_bool   (GDM_KEY_TITLE_BAR);
+
+	/* Keys not to include in reread_config */
+	gdm_config_get_bool   (GDM_KEY_LOCK_POSITION);
+	gdm_config_get_string (GDM_KEY_PID_FILE);
+	gdm_config_get_int    (GDM_KEY_POSITION_X);
+	gdm_config_get_int    (GDM_KEY_POSITION_Y);
+	gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);
+	gdm_config_get_bool   (GDM_KEY_SET_POSITION);
+
+	gdmcomm_comm_close ();
+}
+
 static gboolean
 gdm_reread_config (int sig, gpointer data)
 {
 	gboolean resize = FALSE;
+
+	if (gdm_config_reload_bool (GDM_KEY_DEBUG))
+		gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
 	/* reparse config stuff here.  At least the ones we care about */
 	/*
@@ -3069,28 +3170,59 @@ gdm_reread_config (int sig, gpointer data)
 	/* FIXME: We should update these on the fly rather than just
          * restarting */
 	/* Also we may not need to check ALL those keys but just a few */
-	if (gdm_config_reload_string (GDM_KEY_GTKRC) ||
+
+	if (gdm_config_reload_string (GDM_KEY_BACKGROUND_PROGRAM) ||
+	    gdm_config_reload_string (GDM_KEY_CONFIGURATOR) ||
+	    gdm_config_reload_string (GDM_KEY_DEFAULT_FACE) ||
+	    gdm_config_reload_string (GDM_KEY_DEFAULT_SESSION) ||
+	    gdm_config_reload_string (GDM_KEY_EXCLUDE) ||
+	    gdm_config_reload_string (GDM_KEY_GTKRC) ||
 	    gdm_config_reload_string (GDM_KEY_GTK_THEME) ||
+	    gdm_config_reload_string (GDM_KEY_GTK_THEMES_TO_ALLOW) ||
+	    gdm_config_reload_string (GDM_KEY_HALT) ||
+	    gdm_config_reload_string (GDM_KEY_INCLUDE) ||
 	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FILE) ||
 	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FONT) ||
-	    gdm_config_reload_string (GDM_KEY_INCLUDE) ||
-	    gdm_config_reload_string (GDM_KEY_EXCLUDE) ||
+	    gdm_config_reload_string (GDM_KEY_LOCALE_FILE) ||
+	    gdm_config_reload_string (GDM_KEY_REBOOT) ||
+	    gdm_config_reload_string (GDM_KEY_SESSION_DESKTOP_DIR) ||
+	    gdm_config_reload_string (GDM_KEY_SUSPEND) ||
 	    gdm_config_reload_string (GDM_KEY_TIMED_LOGIN) ||
-	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
+
+	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY) ||
+	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY) ||
+	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_WIDTH) ||
+	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_HEIGHT) ||
+	    gdm_config_reload_int    (GDM_KEY_MINIMAL_UID) ||
 	    gdm_config_reload_int    (GDM_KEY_TIMED_LOGIN_DELAY) ||
-	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
-	    gdm_config_reload_bool   (GDM_KEY_BROWSER) ||
-	    gdm_config_reload_bool   (GDM_KEY_INCLUDE_ALL) ||
-	    gdm_config_reload_bool   (GDM_KEY_CONFIG_AVAILABLE) ||
-	    gdm_config_reload_bool   (GDM_KEY_CHOOSER_BUTTON) ||
+	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
+
 	    gdm_config_reload_bool   (GDM_KEY_ALLOW_GTK_THEME_CHANGE) ||
-	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE)) {
+	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ROOT) ||
+	    gdm_config_reload_bool   (GDM_KEY_ALLOW_REMOTE_ROOT) ||
+	    gdm_config_reload_bool   (GDM_KEY_BROWSER) ||
+	    gdm_config_reload_bool   (GDM_KEY_CHOOSER_BUTTON) ||
+	    gdm_config_reload_bool   (GDM_KEY_CONFIG_AVAILABLE) ||
+	    gdm_config_reload_bool   (GDM_KEY_ENTRY_CIRCLES) ||
+	    gdm_config_reload_bool   (GDM_KEY_ENTRY_INVISIBLE) ||
+	    gdm_config_reload_bool   (GDM_KEY_INCLUDE_ALL) ||
+	    gdm_config_reload_bool   (GDM_KEY_QUIVER) ||
+	    gdm_config_reload_bool   (GDM_KEY_RESTART_BACKGROUND_PROGRAM) ||
+	    gdm_config_reload_bool   (GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_LAST_SESSION) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE) ||
+	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
+	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE) ||
+	    gdm_config_reload_bool   (GDM_KEY_TITLE_BAR)) {
+
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
 
 		gdm_wm_save_wm_order ();
-
 		gdm_kill_thingies ();
+		gdmcomm_comm_close ();
+
 		_exit (DISPLAY_RESTARTGREETER);
 		return TRUE;
 	}
@@ -3169,6 +3301,8 @@ gdm_reread_config (int sig, gpointer data)
 	if (resize)
 		login_window_resize (TRUE /* force */);
 
+	gdmcomm_comm_close();
+
 	return TRUE;
 }
 
@@ -3186,7 +3320,7 @@ main (int argc, char *argv[])
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
 
-    gdm_openlog ("gdmlogin", LOG_PID, LOG_DAEMON);
+    gdm_common_openlog ("gdmlogin", LOG_PID, LOG_DAEMON);
 
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -3197,10 +3331,13 @@ main (int argc, char *argv[])
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
 	disable_sys_config_chooser_buttons = TRUE;
 
+    /* Read all configuration at once, so the values get cached */
+    gdm_read_config ();
+
     GdmLockPosition = gdm_config_get_bool (GDM_KEY_LOCK_POSITION);
     GdmSetPosition  = gdm_config_get_bool (GDM_KEY_SET_POSITION);
-    GdmPositionX    = gdm_config_get_int (GDM_KEY_POSITION_X);
-    GdmPositionY    = gdm_config_get_int (GDM_KEY_POSITION_Y);
+    GdmPositionX    = gdm_config_get_int  (GDM_KEY_POSITION_X);
+    GdmPositionY    = gdm_config_get_int  (GDM_KEY_POSITION_Y);
     setlocale (LC_ALL, "");
 
     gdm_wm_screen_init (gdm_config_get_int (GDM_KEY_XINERAMA_SCREEN));
@@ -3361,8 +3498,7 @@ main (int argc, char *argv[])
 					   gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT));
 
 	    if (! defface) {
-		    syslog (LOG_WARNING,
-			    _("Can't open DefaultImage: %s. Suspending face browser!"),
+		    gdm_common_warning ("Could not open DefaultImage: %s.  Suspending face browser!",
 			    gdm_config_get_string (GDM_KEY_DEFAULT_FACE));
 		    browser_ok = FALSE;
 	    } else  {
@@ -3385,7 +3521,9 @@ main (int argc, char *argv[])
 
     if G_UNLIKELY (sigaction (SIGHUP, &hup, NULL) < 0) {
 	    gdm_kill_thingies ();
-	    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
+	    gdm_common_fail (DISPLAY_GREETERFAILED,
+		_("%s: Error setting up %s signal handler: %s"), "main",
+		"HUP", strerror (errno));
     }
 
     term.sa_handler = gdm_login_done;
@@ -3395,12 +3533,16 @@ main (int argc, char *argv[])
 
     if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) {
 	    gdm_kill_thingies ();
-	    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
+	    gdm_common_fail (DISPLAY_GREETERFAILED,
+		_("%s: Error setting up %s signal handler: %s"), "main",
+		"INT", strerror (errno));
     }
 
     if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) {
 	    gdm_kill_thingies ();
-	    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
+	    gdm_common_fail (DISPLAY_GREETERFAILED,
+		_("%s: Error setting up %s signal handler: %s"), "main",
+		"TERM", strerror (errno));
     }
 
     sigemptyset (&mask);
@@ -3410,7 +3552,8 @@ main (int argc, char *argv[])
     
     if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) {
 	    gdm_kill_thingies ();
-	    gdm_common_abort (_("Could not set signal mask!"));
+	    gdm_common_fail (DISPLAY_GREETERFAILED,
+		_("Could not set signal mask!"));
     }
 
     g_atexit (gdm_kill_thingies);
@@ -3566,7 +3709,7 @@ main (int argc, char *argv[])
 
     gdm_wm_restore_wm_order ();
 
-    gdm_common_show_info_msg (gdm_config_get_string (GDM_KEY_INFO_MSG_FILE),
+    gdm_wm_show_info_msg_dialog (gdm_config_get_string (GDM_KEY_INFO_MSG_FILE),
        gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
 
     /* Only setup the cursor now since it will be a WATCH from before */

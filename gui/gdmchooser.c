@@ -27,32 +27,34 @@
 #include <dirent.h>
 #include <string.h>
 #include <unistd.h>
+#include <syslog.h>
 #include <popt.h>
 #include <ctype.h>
-#include <gdk/gdkx.h>
-#include <X11/Xmd.h>
-#include <X11/Xdmcp.h>
-#include <syslog.h>
+#include <fcntl.h>
 #include <signal.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <netdb.h>
+#include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
 
+#include <X11/Xmd.h>
+#include <X11/Xdmcp.h>
+
+#include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 #include <glade/glade.h>
 
 #include "gdm.h"
 #include "misc.h"
 #include "gdmwm.h"
+#include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 
@@ -88,9 +90,6 @@ static const gchar *active_network = N_("Choose a ho_st to connect to:");
 static gchar *xdm_address = NULL;
 static gchar *client_address = NULL;
 static gint connection_type = 0;
-
-static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 /* Exported for glade */
 void gdm_chooser_cancel (/*void*/);
@@ -683,7 +682,7 @@ gdm_chooser_find_bcaddr (void)
 	ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
 	if (ioctl (sock, SIOCGIFCONF, &ifc) < 0) {
 		g_free (buf);
-		gdm_chooser_warn ("Cannot get local addresses!");
+		gdm_common_error ("Could not get local addresses!");
 		close (sock);
 		return;
 	}
@@ -704,7 +703,7 @@ gdm_chooser_find_bcaddr (void)
 			ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
 			if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0) 
-				gdm_chooser_warn ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
+				gdm_common_error ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
 
 			if ((ifreq.ifr_flags & IFF_UP) == 0 ||
 			    (ifreq.ifr_flags & IFF_BROADCAST) == 0 ||
@@ -750,7 +749,7 @@ gdm_chooser_find_mcaddr (void)
 	ifc.ifc_buf = buf = malloc (ifc.ifc_len);
 
 	if (setsockopt (sock, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, &loop, sizeof (loop)) < 0)
-		gdm_chooser_warn ("setsockopt: Can't disable loopback interface for multicasting\n");
+		gdm_common_error ("setsockopt: Could not disable loopback interface for multicasting\n");
 
 	if (ioctl (sock, SIOCGIFCONF, &ifc) >= 0)
 		ifr = ifc.ifc_req;
@@ -764,7 +763,7 @@ gdm_chooser_find_mcaddr (void)
 			ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
 			if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0)
-				gdm_chooser_warn ("Could not get interface flags for %s\n", ifr[i].ifr_name); 
+				gdm_common_error ("Could not get interface flags for %s\n", ifr[i].ifr_name); 
 			ifindex = if_nametoindex (ifr[i].ifr_name);
                                                             
 			if ((!(ifreq.ifr_flags & IFF_UP) || (!(ifreq.ifr_flags & IFF_MULTICAST))) || (ifindex == 0 )) {
@@ -1103,12 +1102,14 @@ gdm_chooser_xdmcp_init (char **hosts)
 #endif
     if ( ! have_ipv6) {
 	if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) == -1) {
-	    gdm_chooser_abort ("Could not create socket ()!");
+	    gdm_common_fail (EXIT_FAILURE, "Could not create socket!");
 	}
     }
 
-    if (setsockopt (sockfd, SOL_SOCKET, SO_BROADCAST, (char *) &sockopts, sizeof (sockopts)) < 0)
-	gdm_chooser_abort ("Could not set socket options!");
+    if (setsockopt (sockfd, SOL_SOCKET, SO_BROADCAST,
+        (char *) &sockopts, sizeof (sockopts)) < 0) {
+	gdm_common_fail (EXIT_FAILURE, "Could not set socket options!");
+    }
 
     /* Assemble XDMCP BROADCAST_QUERY packet in static buffer */
     header.opcode  = (CARD16) BROADCAST_QUERY;
@@ -1163,46 +1164,75 @@ gdm_chooser_choose_host (const char *hostname)
       long family, port, addr;
 
       if (strlen (xdm_address) > 64 ||
-	  from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid xdm address.");
+	  from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0) {
+	      gdm_common_fail (EXIT_FAILURE,
+		  "gdm_chooser_chooser_host: Invalid xdm address.");
+      }
 
       family = (xdm_addr[0] << 8) | xdm_addr[1];
       port = (xdm_addr[2] << 8) | xdm_addr[3];
 
 #ifdef ENABLE_IPV6
       if (family == AF_INET6) {
-	      memset (&in6_addr, 0, sizeof (in6_addr));
-	      in6_addr.sin6_port = htons (port);
-	      in6_addr.sin6_family = AF_INET6;
-	      memcpy (&in6_addr.sin6_addr, &xdm_address[4], 16);
-	      if ((fd = socket (PF_INET6, SOCK_STREAM, 0)) == -1)
-		      gdm_chooser_abort ("gdm_chooser_choose_host: Couldn't create response socket.");
-	      if (connect (fd, (struct sockaddr *) &in6_addr, sizeof (in6_addr)) == -1)
-		      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+	  memset (&in6_addr, 0, sizeof (in6_addr));
+
+	  in6_addr.sin6_port   = htons (port);
+	  in6_addr.sin6_family = AF_INET6;
+
+	  memcpy (&in6_addr.sin6_addr, &xdm_address[4], 16);
+
+	  if ((fd = socket (PF_INET6, SOCK_STREAM, 0)) == -1) {
+	      gdm_common_fail (EXIT_FAILURE,
+		  "gdm_chooser_choose_host: Could not create response socket.");
+	  }
+
+	  if (connect (fd, (struct sockaddr *) &in6_addr,
+              sizeof (in6_addr)) == -1) {
+
+	      gdm_common_fail (EXIT_FAILURE,
+		  "gdm_chooser_chooser_host: Could not connect to xdm.");
+	  }
       } else
 #endif
       {
-	      addr = (xdm_addr[4] << 24) | (xdm_addr[5] << 16) | (xdm_addr[6] << 8) | xdm_addr[7];
-	      in_addr.sin_family = AF_INET;
-	      in_addr.sin_port = htons (port);
-	      in_addr.sin_addr.s_addr = htonl (addr);
-	      if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
-		      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
+	  addr = (xdm_addr[4] << 24) | (xdm_addr[5] << 16) |
+                 (xdm_addr[6] << 8)  | xdm_addr[7];
 
-	      if (connect (fd, (struct sockaddr *) &in_addr, sizeof (in_addr)) == -1)
-		      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+	  in_addr.sin_family      = AF_INET;
+	  in_addr.sin_port        = htons (port);
+	  in_addr.sin_addr.s_addr = htonl (addr);
+
+	  if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1) {
+	      gdm_common_fail (EXIT_FAILURE,
+	          "gdm_chooser_chooser_host: Could not create response socket.");
+	  }
+
+	  if (connect (fd, (struct sockaddr *) &in_addr,
+              sizeof (in_addr)) == -1) {
+
+	      gdm_common_fail (EXIT_FAILURE,
+		  "gdm_chooser_chooser_host: Could not connect to xdm.");
+	  }
       }
+
       buffer.data = (BYTE *) buf;
       buffer.size = sizeof (buf);
       buffer.pointer = 0;
       buffer.count = 0;
 
-      if (strlen (client_address) > 64 || from_hex (client_address, client_addr, strlen (client_address)) != 0)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid client address.");
-      tmparr.data = (BYTE *) client_addr;
+      if (strlen (client_address) > 64 || from_hex (client_address,
+          client_addr, strlen (client_address)) != 0) {
+
+	   gdm_common_fail (EXIT_FAILURE,
+	      "gdm_chooser_chooser_host: Invalid client address.");
+      }
+
+      tmparr.data   = (BYTE *) client_addr;
       tmparr.length = strlen (client_address) / 2;
+
       XdmcpWriteARRAY8 (&buffer, &tmparr);
       XdmcpWriteCARD16 (&buffer, (CARD16) connection_type);
+
 #ifdef ENABLE_IPV6
       result = NULL;
       memset (&hints, 0, sizeof (hints));
@@ -1210,20 +1240,27 @@ gdm_chooser_choose_host (const char *hostname)
 
       status = getaddrinfo (hostname, NULL, &hints, &result);
 
-      if (status != 0)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
+      if (status != 0) {
+	   gdm_common_fail (EXIT_FAILURE,
+	       "gdm_chooser_chooser_host: Could not get host entry for %s",
+	       hostname);
+      }
 
       if (result->ai_family == AF_INET6)
-	      tmparr.length = 16;
+	  tmparr.length = 16;
       if (result->ai_family == AF_INET)
-	      tmparr.length = 4;
+	  tmparr.length = 4;
       tmparr.data = (BYTE *) result->ai_addr;
 #else
       hentry = gethostbyname (hostname);
-      if (!hentry)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
 
-      tmparr.data = (BYTE *) hentry->h_addr_list[0]; /* XXX */
+      if (!hentry) {
+	  gdm_common_fail (EXIT_FAILURE,
+	     "gdm_chooser_chooser_host: Could not get host entry for %s",
+	     hostname);
+      }
+
+      tmparr.data   = (BYTE *) hentry->h_addr_list[0]; /* XXX */
       tmparr.length = 4;
 
 #endif
@@ -1543,39 +1580,6 @@ gdm_chooser_manage (GtkButton *button, gpointer data)
     exit (EXIT_SUCCESS);
 }
 
-
-static void
-gdm_chooser_abort (const gchar *format, ...)
-{
-    va_list args;
-    gchar *s;
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-
-    syslog (LOG_ERR, "%s", s);
-    closelog ();
-    g_free (s);
-
-    exit (EXIT_FAILURE);
-}
-
-static void
-gdm_chooser_warn (const gchar *format, ...)
-{
-    va_list args;
-    gchar *s;
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-
-    syslog (LOG_ERR, "%s", s);
-    closelog ();
-    g_free (s);
-}
-
 static void
 host_selected (GtkTreeSelection *selection, gpointer data)
 {
@@ -1662,7 +1666,7 @@ gdm_chooser_gui_init (void)
 
     /* Load default host image */
     if (g_access (defaulthosticon, R_OK) != 0) {
-	gdm_chooser_warn (_("Can't open default host icon: %s"), defaulthosticon);
+	gdm_common_error ("Could not open default host icon: %s", defaulthosticon);
 	/* bogus image */
 	defhostimg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
 				     FALSE /* has_alpha */,
@@ -1764,8 +1768,8 @@ gdm_chooser_gui_init (void)
 
 
     /* cursor blinking is evil on remote displays, don't do it forever */
-    gdm_setup_blinking ();
-    gdm_setup_blinking_entry (add_entry);
+    gdm_common_setup_blinking ();
+    gdm_common_setup_blinking_entry (add_entry);
 
     if (RUNNING_UNDER_GDM) {
 	    gtk_widget_show_now (chooser);
@@ -1773,27 +1777,62 @@ gdm_chooser_gui_init (void)
     }
 }
 
+/* 
+ * If new configuration keys are added to this program, make sure to add the
+ * key to the gdm_read_config and gdm_reread_config functions.
+ */
+static gboolean
+gdm_read_config (void)
+{
+	gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
+
+	/*
+	 * Read all the keys at once and close sockets connection so we do
+	 * not have to keep the socket open.  
+	 */
+	gdm_config_get_string (GDM_KEY_HOSTS);
+	gdm_config_get_string (GDM_KEY_GTKRC);
+	gdm_config_get_string (GDM_KEY_GTK_THEME);
+	gdm_config_get_string (GDM_KEY_DEFAULT_HOST_IMG);
+	gdm_config_get_string (GDM_KEY_HOST_IMAGE_DIR);
+	gdm_config_get_string (GDM_KEY_MULTICAST_ADDR);
+	gdm_config_get_string (GDM_KEY_BROADCAST);
+	gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
+	gdm_config_get_int    (GDM_KEY_XINERAMA_SCREEN);
+	gdm_config_get_int    (GDM_KEY_MAX_ICON_WIDTH);
+	gdm_config_get_int    (GDM_KEY_MAX_ICON_HEIGHT);
+	gdm_config_get_int    (GDM_KEY_SCAN_TIME);
+	gdm_config_get_int    (GDM_KEY_BACKGROUND_TYPE);
+	gdm_config_get_bool   (GDM_KEY_ALLOW_ADD);
+	gdm_config_get_bool   (GDM_KEY_MULTICAST);
+
+	gdmcomm_comm_close();
+}
+
 static gboolean
 gdm_reread_config (int sig, gpointer data)
 {
 	/* reparse config stuff here.  At least ones we care about */
+
+	if (gdm_config_reload_bool (GDM_KEY_DEBUG))
+		gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
 	if (gdm_config_reload_string (GDM_KEY_HOSTS) ||
 	    gdm_config_reload_string (GDM_KEY_GTKRC) ||
-            gdm_config_reload_string (GDM_KEY_GTK_THEME) ||
+	    gdm_config_reload_string (GDM_KEY_GTK_THEME) ||
 	    gdm_config_reload_string (GDM_KEY_DEFAULT_HOST_IMG) ||
-            gdm_config_reload_string (GDM_KEY_HOST_IMAGE_DIR) ||
-            gdm_config_reload_string (GDM_KEY_MULTICAST_ADDR) ||
-            gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
-            gdm_config_reload_int    (GDM_KEY_MAX_ICON_WIDTH) ||
-            gdm_config_reload_int    (GDM_KEY_MAX_ICON_HEIGHT) ||
+	    gdm_config_reload_string (GDM_KEY_HOST_IMAGE_DIR) ||
+	    gdm_config_reload_string (GDM_KEY_MULTICAST_ADDR) ||
+	    gdm_config_reload_string (GDM_KEY_BROADCAST) ||
+	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
+	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_WIDTH) ||
+	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_HEIGHT) ||
 	    gdm_config_reload_int    (GDM_KEY_SCAN_TIME) ||
-            gdm_config_reload_bool   (GDM_KEY_ALLOW_ADD) ||
-            gdm_config_reload_bool   (GDM_KEY_MULTICAST) ||
-            gdm_config_reload_bool   (GDM_KEY_DEBUG)) {
+	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ADD) ||
+	    gdm_config_reload_bool   (GDM_KEY_MULTICAST)) {
 
 		if (RUNNING_UNDER_GDM) {
 			/* Set busy cursor */
@@ -1814,6 +1853,8 @@ gdm_reread_config (int sig, gpointer data)
 		if (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE) != GDM_BACKGROUND_NONE)
 			gdm_common_setup_background_color (gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR));
 	}
+
+	gdmcomm_comm_close();
 
 	return TRUE;
 }
@@ -1837,14 +1878,23 @@ gdm_chooser_signals_init (void)
     term.sa_flags = 0;
     sigemptyset (&term.sa_mask);
 
-    if (sigaction (SIGHUP, &hup, NULL) < 0) 
-        gdm_chooser_abort (_("%s: Error setting up %s signal handler: %s"), "gdm_signals_init", "HUP", strerror (errno));
+    if (sigaction (SIGHUP, &hup, NULL) < 0) {
+        gdm_common_fail (EXIT_FAILURE,
+	    _("%s: Error setting up %s signal handler: %s"),
+	    "gdm_signals_init", "HUP", strerror (errno));
+    }
 
-    if (sigaction (SIGINT, &term, NULL) < 0) 
-        gdm_chooser_abort (_("%s: Error setting up %s signal handler: %s"), "gdm_signals_init", "INT", strerror (errno));
+    if (sigaction (SIGINT, &term, NULL) < 0) {
+        gdm_common_fail (EXIT_FAILURE,
+	   _("%s: Error setting up %s signal handler: %s"),
+           "gdm_signals_init", "INT", strerror (errno));
+    }
 
-    if (sigaction (SIGTERM, &term, NULL) < 0) 
-        gdm_chooser_abort (_("%s: Error setting up %s signal handler: %s"), "gdm_signals_init", "TERM", strerror (errno));
+    if (sigaction (SIGTERM, &term, NULL) < 0) {
+        gdm_common_fail (EXIT_FAILURE,
+	   _("%s: Error setting up %s signal handler: %s"),
+           "gdm_signals_init", "TERM", strerror (errno));
+    }
 
     sigfillset (&mask);
     sigdelset (&mask, SIGTERM);
@@ -1852,7 +1902,7 @@ gdm_chooser_signals_init (void)
     sigdelset (&mask, SIGINT);
     
     if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
-	gdm_chooser_abort (_("Could not set signal mask!"));
+	gdm_common_fail (EXIT_FAILURE, _("Could not set signal mask!"));
 }
 
 struct poptOption xdm_options [] = {
@@ -1915,7 +1965,7 @@ main (int argc, char *argv[])
     if (g_getenv ("RUNNING_UNDER_GDM") != NULL)
 	    RUNNING_UNDER_GDM = TRUE;
 
-    gdm_openlog ("gdmchooser", LOG_PID, LOG_DAEMON);
+    gdm_common_openlog ("gdmchooser", LOG_PID, LOG_DAEMON);
 
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -1937,6 +1987,9 @@ main (int argc, char *argv[])
     }
 
     glade_init ();
+
+    /* Read all configuration at once, so the values get cached */
+    gdm_read_config ();
 
     /* if broadcasting, then append BROADCAST to hosts */
     if (gdm_config_get_bool (GDM_KEY_BROADCAST)) {

@@ -44,6 +44,19 @@
 static gboolean debug = FALSE;
 static int num_cmds   = 0;
 
+/*
+ * Note, we have to call gdm_common_info instead of gdm_common_debug,
+ * since gdm_common_debug accesses the GDM_KEY_DEBUG which can cause
+ * this function to be called again, causing an infinite loop.  This
+ * is why clients must call the gdmcomm_set_debug function to turn
+ * on debug for these functions.
+ */
+void
+gdmcomm_set_debug (gboolean enable)
+{
+	debug = enable;
+}
+
 static char *
 do_command (int fd, const char *command, gboolean get_response)
 {
@@ -55,8 +68,9 @@ do_command (int fd, const char *command, gboolean get_response)
 	void (*old_handler)(int);
 #endif
 
-	if (debug)
-		g_print ("Sending command: '%s'\n", command);
+	if (debug) {
+		gdm_common_info ("Sending command: '%s'", command);
+	}
 
 	cstr = g_strdup_printf ("%s\n", command);
 
@@ -70,12 +84,14 @@ do_command (int fd, const char *command, gboolean get_response)
 	g_free (cstr);
 
 	num_cmds++;
-	if (debug)
-		g_print ("Incrementing num_cmds to %d\n", num_cmds);
 
-	if (ret < 0)
+	if (ret < 0) {
+		if (debug)
+			gdm_common_info ("Command failed, no data returned");
 		return NULL;
+	}
 
+	/* No need to print debug, this is only used when closing */
 	if ( ! get_response)
 		return NULL;
 
@@ -86,12 +102,14 @@ do_command (int fd, const char *command, gboolean get_response)
 	}
 
 	if (debug)
-		g_print ("  Got response: '%s'\n", str->str);
+		gdm_common_info ("  Got response: '%s'", str->str);
 
 	cstr = str->str;
 	g_string_free (str, FALSE);
 
 	if (strcmp (ve_sure_string (cstr), "ERROR 200 Too many messages") == 0) { 
+		if (debug)
+			gdm_common_info ("Command failed, daemon busy.");
 		g_free (cstr);
 		return NULL;
 	}
@@ -119,55 +137,114 @@ version_ok_p (const char *version, const char *min_version)
 		return FALSE;
 }
 
-char *
-gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min_version, int tries)
+static gboolean did_sleep_on_failure = FALSE;
+static gboolean allow_sleep          = TRUE;
+static int comm_fd = 0;
+
+static char *
+gdmcomm_call_gdm_real (const char *command,
+		       const char *auth_cookie,
+		       const char *min_version,
+		       int tries,
+		       int try_start)
 {
-	static int fd = 0;
 	char *ret;
 
-	if (num_cmds == (GDM_SUP_MAX_CONNECTIONS)) {
-	   do_command (fd, GDM_SUP_CLOSE, FALSE);
-	   VE_IGNORE_EINTR (close (fd));
-	   fd       = 0;
+	/*
+         * If already sent the max number of commands, close the connection
+         * and reopen
+         */
+	if (num_cmds == (GDM_SUP_MAX_MESSAGES)) {
+	   if (debug)
+		gdm_common_info ("  Closing and reopening connection.");
+	   do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
+	   VE_IGNORE_EINTR (close (comm_fd));
+	   comm_fd  = 0;
 	   num_cmds = 0;
 	}
 
-	if (tries <= 0)
+	if (tries <= 0) {
+		if (debug)
+			gdm_common_info ("  Command failed %d times, aborting.", try_start);
 		return NULL;
+	}
 
-	if (fd <= 0) {
+	if (debug && tries != try_start) {
+		gdm_common_info ("  Trying failed command again.  Retry %d of %d.",
+			(try_start - tries), try_start);
+	}
+
+	if (comm_fd <= 0) {
 		struct sockaddr_un addr;
 		strcpy (addr.sun_path, GDM_SUP_SOCKET);
 		addr.sun_family = AF_UNIX;
 
-		fd = socket (AF_UNIX, SOCK_STREAM, 0);
-		if (fd < 0) {
-			return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
+		comm_fd = socket (AF_UNIX, SOCK_STREAM, 0);
+		if (comm_fd < 0) {
+			if (debug)
+				gdm_common_info ("  Failed to open socket");
+
+			return gdmcomm_call_gdm_real (command, auth_cookie, min_version, tries - 1, try_start);
 		}
 
-		if (connect (fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
-			VE_IGNORE_EINTR (close (fd));
-			fd = 0;
-			return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
+		if (connect (comm_fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
+
+			if (debug)
+				gdm_common_info ("  Failed to connect to socket");
+
+			/*
+			 * If there is a failure on connect, there are probably
+                         * other clients fighting for the connection, so sleep
+                         * for 1 second before retry to avoid failing over and
+                         * over in a tight loop.
+                         *
+                         * Only do this if allow_sleep is true.  allow_sleep
+                         * will get set to FALSE if the first call to this 
+                         * function fails all retries.
+			 */
+			if ((allow_sleep == TRUE) && (tries > 1)) {
+				did_sleep_on_failure = TRUE;
+				sleep (1);
+			}
+			VE_IGNORE_EINTR (close (comm_fd));
+			comm_fd = 0;
+			return gdmcomm_call_gdm_real (command, auth_cookie,
+				min_version, tries - 1, try_start);
 		}
+
+		/*
+                 * If we get this far, then even if we did sleep in the past,
+		 * we did get a connection, so no need to prevent future
+		 * sleeps if required.
+                 */
+		allow_sleep          = TRUE;
+                did_sleep_on_failure = FALSE;
 
 		/* Version check first - only check first time */
-		ret = do_command (fd, GDM_SUP_VERSION, TRUE /* get_response */);
+		ret = do_command (comm_fd, GDM_SUP_VERSION, TRUE);
 		if (ret == NULL) {
-			VE_IGNORE_EINTR (close (fd));
-			fd = 0;
-			return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
+			if (debug)
+				gdm_common_info ("  Version check failed");
+			VE_IGNORE_EINTR (close (comm_fd));
+			comm_fd = 0;
+			return gdmcomm_call_gdm_real (command, auth_cookie,
+				min_version, tries - 1, try_start);
 		}
 		if (strncmp (ret, "GDM ", strlen ("GDM ")) != 0) {
+			if (debug)
+				gdm_common_info ("  Version check failed, bad name");
+
 			g_free (ret);
-			VE_IGNORE_EINTR (close (fd));
-			fd = 0;
+			VE_IGNORE_EINTR (close (comm_fd));
+			comm_fd = 0;
 			return NULL;
 		}
 		if ( ! version_ok_p (&ret[4], min_version)) {
+			if (debug)
+				gdm_common_info ("  Version check failed, bad version");
 			g_free (ret);
-			VE_IGNORE_EINTR (close (fd));
-			fd = 0;
+			VE_IGNORE_EINTR (close (comm_fd));
+			comm_fd = 0;
 			return NULL;
 		}
 		g_free (ret);
@@ -177,32 +254,67 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 	if (auth_cookie != NULL)  {
 		char *auth_cmd = g_strdup_printf
 			(GDM_SUP_AUTH_LOCAL " %s", auth_cookie);
-		ret = do_command (fd, auth_cmd, TRUE /* get_response */);
+		ret = do_command (comm_fd, auth_cmd, TRUE);
 		g_free (auth_cmd);
 		if (ret == NULL) {
-			VE_IGNORE_EINTR (close (fd));
-			fd = 0;
-			return gdmcomm_call_gdm (command, auth_cookie,
-						 min_version, tries - 1);
+			VE_IGNORE_EINTR (close (comm_fd));
+			comm_fd = 0;
+			return gdmcomm_call_gdm_real (command, auth_cookie,
+				min_version, tries - 1, try_start);
 		}
 		/* not auth'ed */
 		if (strcmp (ve_sure_string (ret), "OK") != 0) {
-			VE_IGNORE_EINTR (close (fd));
-			fd = 0;
+			if (debug)
+				gdm_common_info ("  Error, auth check failed");
+			VE_IGNORE_EINTR (close (comm_fd));
+			comm_fd = 0;
 			/* returns the error */
 			return ret;
 		}
 		g_free (ret);
 	}
 
-	ret = do_command (fd, command, TRUE /* get_response */);
+	ret = do_command (comm_fd, command, TRUE);
 	if (ret == NULL) {
-		VE_IGNORE_EINTR (close (fd));
-		fd = 0;
-		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
+		VE_IGNORE_EINTR (close (comm_fd));
+		comm_fd = 0;
+		return gdmcomm_call_gdm_real (command, auth_cookie,
+			min_version, tries - 1, try_start);
 	}
 
 	return ret;
+}
+
+char *
+gdmcomm_call_gdm (const char *command, const char * auth_cookie,
+	const char *min_version, int tries)
+{
+
+	char *retstr;
+
+	retstr = gdmcomm_call_gdm_real (command, auth_cookie, min_version,
+		tries, tries);
+
+	/*
+	 * Disallow sleeping on future calls if it failed to connect.
+         * did_sleep_on_failure will only be TRUE if the function returned
+	 * without ever connecting.
+	 */
+	if (did_sleep_on_failure == TRUE)
+		allow_sleep = FALSE;
+
+	return (retstr);
+}
+
+void
+gdmcomm_comm_close (void)
+{
+	if (comm_fd > 0) {
+		do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
+		VE_IGNORE_EINTR (close (comm_fd));
+	}
+	comm_fd  = 0;
+	num_cmds = 0;
 }
 
 const char *
@@ -514,8 +626,3 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 	}
 }
 
-void
-gdmcomm_set_debug (gboolean enable)
-{
-	debug = enable;
-}

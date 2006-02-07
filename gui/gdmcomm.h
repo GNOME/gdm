@@ -28,9 +28,12 @@ char *		gdmcomm_call_gdm (const char *command,
 				  const char *auth_cookie,
 				  const char *min_version,
 				  int tries);
+void		gdmcomm_comm_close (void);
 const char *	gdmcomm_get_display (void);
+
 /* This just gets a cookie of MIT-MAGIC-COOKIE-1 type */
 char *		gdmcomm_get_a_cookie (gboolean binary);
+
 /* get the gdm auth cookie */
 char *		gdmcomm_get_auth_cookie (void);
 

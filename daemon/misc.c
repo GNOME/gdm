@@ -464,7 +464,7 @@ gdm_get_free_display (int start, uid_t server_uid)
          * Cap this at 3000, I'm not sure we can ever seriously
 	 * go that far
          */
-	for (i = start; i < 3000; i ++) {
+	for (i = start; i < 3000; i++) {
 		GSList *li;
 		struct stat s;
 		char buf[256];
@@ -839,7 +839,7 @@ static sigset_t sigusr2block_mask, sigusr2block_oldmask;
 void
 gdm_sigchld_block_push (void)
 {
-	sigchld_blocked ++;
+	sigchld_blocked++;
 
 	if (sigchld_blocked == 1) {
 		/* Set signal mask */
@@ -863,7 +863,7 @@ gdm_sigchld_block_pop (void)
 void
 gdm_sigterm_block_push (void)
 {
-	sigterm_blocked ++;
+	sigterm_blocked++;
 
 	if (sigterm_blocked == 1) {
 		/* Set signal mask */
@@ -889,7 +889,7 @@ gdm_sigterm_block_pop (void)
 void
 gdm_sigusr2_block_push (void)
 {
-	sigusr2_blocked ++;
+	sigusr2_blocked++;
 
 	if (sigusr2_blocked == 1) {
 		/* Set signal mask */
@@ -1412,7 +1412,7 @@ gdm_fdgets (int fd)
 				return g_string_free (gs, FALSE);
 			}
 		} else {
-			bytes ++;
+			bytes++;
 			g_string_append_c (gs, c);
 		}
 	}
@@ -1653,7 +1653,7 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 	tempaddrinfo = res;
 
 	while (res != NULL) {
-		addr_count ++;
+		addr_count++;
 		res = res->ai_next;
 	}
 

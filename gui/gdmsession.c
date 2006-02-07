@@ -23,7 +23,6 @@
 
 #include <unistd.h>
 #include <dirent.h>
-#include <syslog.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
@@ -272,54 +271,59 @@ gdm_session_list_init ()
 
     /* Check that session dir is readable */
     if G_UNLIKELY ( ! some_dir_exists) {
-	syslog (LOG_ERR, _("%s: Session directory %s not found!"),
+	gdm_common_error ("%s: Session directory <%s> not found!",
 		"gdm_login_session_init", ve_sure_string
 		 (gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR)));
-	show_xterm_failsafe = TRUE;
+	show_xterm_failsafe     = TRUE;
 	session_dir_whacked_out = TRUE;
     }
 
     if G_UNLIKELY (g_hash_table_size (sessnames) == 0) {
-	    syslog (LOG_WARNING, _("Yikes, nothing found in the session directory."));
+	    gdm_common_warning ("Error, no sessions found in the session directory <%s>.",
+		ve_sure_string (gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR)));
+
 	    session_dir_whacked_out = TRUE;
-	    show_xterm_failsafe = TRUE;
-	    default_session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
+	    show_xterm_failsafe     = TRUE;
+	    default_session         = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
     }
 
     if (gdm_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE))
 	    show_xterm_failsafe = TRUE;
 
     if (show_xterm_failsafe) {
-	    session = g_new0 (GdmSession, 1);
-	    session->name = g_strdup (_("Failsafe _GNOME"));
+	    session          = g_new0 (GdmSession, 1);
+	    session->name    = g_strdup (_("Failsafe _GNOME"));
 	    session->comment = g_strdup (_("This is a failsafe session that will log you "
 				    "into GNOME. No startup scripts will be read "
                                     "and it is only to be used when you can't log "
                                     "in otherwise.  GNOME will use the 'Default' "
 				    "session."));
-	    g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_GNOME), session);
+	    g_hash_table_insert (sessnames,
+		g_strdup (GDM_SESSION_FAILSAFE_GNOME), session);
     }
 
     if (show_xterm_failsafe) {
-	    session = g_new0 (GdmSession, 1);
-	    session->name = g_strdup (_("Failsafe _Terminal"));
+	    session          = g_new0 (GdmSession, 1);
+	    session->name    = g_strdup (_("Failsafe _Terminal"));
 	    session->comment = g_strdup (_("This is a failsafe session that will log you "
 				    "into a terminal.  No startup scripts will be read "
 				    "and it is only to be used when you can't log "
 				    "in otherwise.  To exit the terminal, "
 				    "type 'exit'."));
-	    g_hash_table_insert (sessnames, g_strdup (GDM_SESSION_FAILSAFE_XTERM), session);
+	    g_hash_table_insert (sessnames,
+		g_strdup (GDM_SESSION_FAILSAFE_XTERM), session);
     }
 
     /* Convert to list (which is unsorted) */
-    g_hash_table_foreach (sessnames, (GHFunc) gdm_session_list_from_hash_table_func, &sessions);
+    g_hash_table_foreach (sessnames,
+	(GHFunc) gdm_session_list_from_hash_table_func, &sessions);
 
     /* Prioritize and sort the list */
     sessions = g_list_sort (sessions, (GCompareFunc) gdm_session_sort_func);
 
     if G_UNLIKELY (default_session == NULL) {
 	    default_session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
-	    syslog (LOG_WARNING, _("No default session link found. Using Failsafe GNOME.\n"));
+	    gdm_common_warning ("No default session link found. Using Failsafe GNOME.");
     }
     
     if (current_session == NULL)

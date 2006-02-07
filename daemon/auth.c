@@ -982,7 +982,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 		keep = g_slist_append (keep, xa);
 
 	/* just being ultra anal */
-	cnt ++;
+	cnt++;
 	if (cnt > 500)
 		break;
     }

@@ -20,7 +20,6 @@
 
 #include "config.h"
 
-#include <syslog.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -114,8 +113,7 @@ gdm_greeter_users_init (void)
 				       gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH),
 				       gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT));
 	if (! defface) {
-		syslog (LOG_WARNING,
-			_("Can't open DefaultImage: %s!"),
+		gdm_common_warning ("Can't open DefaultImage: %s!",
 			gdm_config_get_string (GDM_KEY_DEFAULT_FACE));
 	}
 
@@ -191,8 +189,7 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 					GDM_INTERRUPT_SELECT_USER, login);
 				fflush (stdout);
 			} else {
-				syslog (LOG_WARNING,
-					_("Theme broken: must have pam-message label!"));
+				gdm_common_warning ("Theme broken: must have pam-message label!");
 			}
 		}
 	}

@@ -21,9 +21,9 @@
 #include <libintl.h>
 #include <locale.h>
 #include <string.h>
-#include <syslog.h>
 #include <unistd.h>
 #include <signal.h>
+#include <syslog.h>
 
 #if HAVE_PAM
 #include <security/pam_appl.h>
@@ -41,6 +41,7 @@
 
 #include "gdm.h"
 #include "gdmwm.h"
+#include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 
@@ -461,7 +462,8 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 	
     default:
-	gdm_common_abort ("Unexpected greeter command received: '%c'", buf[0]);
+	gdm_common_fail (DISPLAY_GREETERFAILED,
+		"Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
 
@@ -716,14 +718,90 @@ gdm_set_welcomemsg (void)
 	greeter_item_update_text (welcome_string_info);
 }
 
+/*
+ * If new configuration keys are added to this program, make sure to add the
+ * key to the gdm_read_config and gdm_reread_config functions.  Note if the
+ * number of configuration values used by gdmlogin is greater than 
+ * GDM_SUP_MAX_MESSAGES defined in daemon/gdm.h (currently defined to be 80),
+ * consider bumping that number so that all the config can be read in one
+ * socket connection.
+ */
+static void
+gdm_read_config (void)
+{
+	gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
+
+	/*
+	 * Read all the keys at once and close sockets connection so we do
+	 * not have to keep the socket open.
+	 */
+	gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME);
+	gdm_config_get_string (GDM_KEY_GRAPHICAL_THEMES);
+	gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR);
+	gdm_config_get_string (GDM_KEY_GTKRC);
+	gdm_config_get_string (GDM_KEY_GTK_THEME);
+	gdm_config_get_string (GDM_KEY_INCLUDE);
+	gdm_config_get_string (GDM_KEY_EXCLUDE);
+	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
+	gdm_config_get_string (GDM_KEY_LOCALE_FILE);
+	gdm_config_get_string (GDM_KEY_HALT);
+	gdm_config_get_string (GDM_KEY_REBOOT);
+	gdm_config_get_string (GDM_KEY_SUSPEND);
+	gdm_config_get_string (GDM_KEY_CONFIGURATOR);
+	gdm_config_get_string (GDM_KEY_INFO_MSG_FILE);
+	gdm_config_get_string (GDM_KEY_INFO_MSG_FONT);
+	gdm_config_get_string (GDM_KEY_TIMED_LOGIN);
+	gdm_config_get_string (GDM_KEY_GRAPHICAL_THEMED_COLOR);
+	gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
+	gdm_config_get_string (GDM_KEY_DEFAULT_FACE);
+	gdm_config_get_string (GDM_KEY_DEFAULT_SESSION);
+	gdm_config_get_string (GDM_KEY_SOUND_PROGRAM);
+	gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE);
+	gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
+	gdm_config_get_string (GDM_KEY_WELCOME);
+	gdm_config_get_string (GDM_KEY_REMOTE_WELCOME);
+	gdm_config_get_int    (GDM_KEY_XINERAMA_SCREEN);
+	gdm_config_get_int    (GDM_KEY_TIMED_LOGIN_DELAY);
+	gdm_config_get_int    (GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
+	gdm_config_get_int    (GDM_KEY_MAX_ICON_HEIGHT);
+	gdm_config_get_int    (GDM_KEY_MAX_ICON_WIDTH);
+	gdm_config_get_int    (GDM_KEY_MINIMAL_UID);
+	gdm_config_get_bool   (GDM_KEY_ENTRY_CIRCLES);
+	gdm_config_get_bool   (GDM_KEY_ENTRY_INVISIBLE);
+	gdm_config_get_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE);
+	gdm_config_get_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE);
+	gdm_config_get_bool   (GDM_KEY_INCLUDE_ALL);
+	gdm_config_get_bool   (GDM_KEY_SYSTEM_MENU);
+	gdm_config_get_bool   (GDM_KEY_CONFIG_AVAILABLE);
+	gdm_config_get_bool   (GDM_KEY_CHOOSER_BUTTON);
+	gdm_config_get_bool   (GDM_KEY_TIMED_LOGIN_ENABLE);
+	gdm_config_get_bool   (GDM_KEY_GRAPHICAL_THEME_RAND);
+	gdm_config_get_bool   (GDM_KEY_SHOW_LAST_SESSION);
+	gdm_config_get_bool   (GDM_KEY_ALLOW_ROOT);
+	gdm_config_get_bool   (GDM_KEY_ALLOW_REMOTE_ROOT);
+	gdm_config_get_bool   (GDM_KEY_SOUND_ON_LOGIN);
+	gdm_config_get_bool   (GDM_KEY_DEFAULT_WELCOME);
+	gdm_config_get_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME);
+
+	/* Keys not to include in reread_config */
+	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
+	gdm_config_get_string (GDM_KEY_PID_FILE);
+	gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);
+
+	gdmcomm_comm_close ();
+}
 
 static gboolean
 greeter_reread_config (int sig, gpointer data)
 {
+	if (gdm_config_reload_bool (GDM_KEY_DEBUG))
+		gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
+
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
 	if (gdm_config_reload_string (GDM_KEY_GRAPHICAL_THEME) ||
+	    gdm_config_reload_string (GDM_KEY_GRAPHICAL_THEMES) ||
 	    gdm_config_reload_string (GDM_KEY_GRAPHICAL_THEME_DIR) ||
 	    gdm_config_reload_string (GDM_KEY_GTKRC) ||
 	    gdm_config_reload_string (GDM_KEY_GTK_THEME) ||
@@ -738,8 +816,16 @@ greeter_reread_config (int sig, gpointer data)
 	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FILE) ||
 	    gdm_config_reload_string (GDM_KEY_INFO_MSG_FONT) ||
 	    gdm_config_reload_string (GDM_KEY_TIMED_LOGIN) ||
+	    gdm_config_reload_string (GDM_KEY_GRAPHICAL_THEMED_COLOR) ||
+	    gdm_config_reload_string (GDM_KEY_BACKGROUND_COLOR) ||
+	    gdm_config_reload_string (GDM_KEY_DEFAULT_FACE) ||
+	    gdm_config_reload_string (GDM_KEY_DEFAULT_SESSION) ||
 	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
 	    gdm_config_reload_int    (GDM_KEY_TIMED_LOGIN_DELAY) ||
+	    gdm_config_reload_int    (GDM_KEY_FLEXI_REAP_DELAY_MINUTES) ||
+	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_HEIGHT) ||
+	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_WIDTH) ||
+	    gdm_config_reload_int    (GDM_KEY_MINIMAL_UID) ||
 	    gdm_config_reload_bool   (GDM_KEY_ENTRY_CIRCLES) ||
 	    gdm_config_reload_bool   (GDM_KEY_ENTRY_INVISIBLE) ||
 	    gdm_config_reload_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE) ||
@@ -748,23 +834,24 @@ greeter_reread_config (int sig, gpointer data)
 	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
 	    gdm_config_reload_bool   (GDM_KEY_CONFIG_AVAILABLE) ||
 	    gdm_config_reload_bool   (GDM_KEY_CHOOSER_BUTTON) ||
-	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE)) {
+	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE) ||
+	    gdm_config_reload_bool   (GDM_KEY_GRAPHICAL_THEME_RAND) ||
+	    gdm_config_reload_bool   (GDM_KEY_SHOW_LAST_SESSION) ||
+	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ROOT) ||
+	    gdm_config_reload_bool   (GDM_KEY_ALLOW_REMOTE_ROOT)) {
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
 
 		gdm_wm_save_wm_order ();
+		gdmcomm_comm_close ();
 
 		_exit (DISPLAY_RESTARTGREETER);
 	}
 
 	gdm_config_reload_string (GDM_KEY_SOUND_PROGRAM);
-        gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN);
-        gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN_SUCCESS);
-        gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN_FAILURE);
-        gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_FILE);
-        gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
-        gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
+	gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN);
+	gdm_config_reload_string (GDM_KEY_SOUND_ON_LOGIN_FILE);
 	gdm_config_reload_string (GDM_KEY_USE_24_CLOCK);
 
 	if (gdm_config_reload_string (GDM_KEY_WELCOME) ||
@@ -778,9 +865,12 @@ greeter_reread_config (int sig, gpointer data)
 		gdm_common_setup_cursor (GDK_WATCH);
 
 		gdm_wm_save_wm_order ();
+		gdmcomm_comm_close ();
 
 		_exit (DISPLAY_RESTARTGREETER);
 	}
+
+	gdmcomm_comm_close ();
 
 	return TRUE;
 }
@@ -946,7 +1036,7 @@ main (int argc, char *argv[])
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
     DOING_GDM_DEVELOPMENT = TRUE;
 
-  openlog ("gdmgreeter", LOG_PID, LOG_DAEMON);
+  gdm_common_openlog ("gdmgreeter", LOG_PID, LOG_DAEMON);
 
   bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -963,6 +1053,9 @@ main (int argc, char *argv[])
 
   /* Should be a watch already, but anyway */
   gdm_common_setup_cursor (GDK_WATCH);
+
+  /* Read all configuration at once, so the values get cached */
+  gdm_read_config ();
 
   if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_GTKRC)))
 	  gtk_rc_parse (gdm_config_get_string (GDM_KEY_GTKRC));
@@ -999,34 +1092,47 @@ main (int argc, char *argv[])
   sigemptyset (&hup.sa_mask);
   sigaddset (&hup.sa_mask, SIGCHLD);
   
-  if (sigaction (SIGHUP, &hup, NULL) < 0) 
-    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
+  if (sigaction (SIGHUP, &hup, NULL) < 0) {
+    gdm_common_fail (DISPLAY_GREETERFAILED,
+		_("%s: Error setting up %s signal handler: %s"), "main",
+		"HUP", strerror (errno));
+  }
 
   term.sa_handler = greeter_done;
   term.sa_flags = 0;
   sigemptyset (&term.sa_mask);
   sigaddset (&term.sa_mask, SIGCHLD);
   
-  if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) 
-    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
+  if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) {
+    gdm_common_fail (DISPLAY_GREETERFAILED,
+	_("%s: Error setting up %s signal handler: %s"), "main",
+	"INT", strerror (errno));
+  }
   
-  if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) 
-    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
+  if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) {
+    gdm_common_fail (DISPLAY_GREETERFAILED,
+	_("%s: Error setting up %s signal handler: %s"), "main",
+	"TERM", strerror (errno));
+  }
   
   sigemptyset (&mask);
   sigaddset (&mask, SIGTERM);
   sigaddset (&mask, SIGHUP);
   sigaddset (&mask, SIGINT);
 
-  if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) 
-	  gdm_common_abort (_("Could not set signal mask!"));
+  if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) {
+	  gdm_common_fail (DISPLAY_GREETERFAILED,
+		_("Could not set signal mask!"));
+  }
 
   /* ignore SIGCHLD */
   sigemptyset (&mask);
   sigaddset (&mask, SIGCHLD);
 
-  if G_UNLIKELY (sigprocmask (SIG_BLOCK, &mask, NULL) == -1) 
-	  gdm_common_abort (_("Could not set signal mask!"));
+  if G_UNLIKELY (sigprocmask (SIG_BLOCK, &mask, NULL) == -1) {
+	  gdm_common_fail (DISPLAY_GREETERFAILED,
+		_("Could not set signal mask!"));
+  }
   
   if G_LIKELY (! DOING_GDM_DEVELOPMENT) {
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
@@ -1225,7 +1331,7 @@ main (int argc, char *argv[])
   
   greeter_setup_items ();
 
-  gdm_setup_blinking ();
+  gdm_common_setup_blinking ();
 
   gtk_widget_show_all (window);
   gtk_window_move (GTK_WINDOW (window), gdm_wm_screen.x, gdm_wm_screen.y);
@@ -1337,7 +1443,7 @@ main (int argc, char *argv[])
 
   gdm_wm_restore_wm_order ();
 
-  gdm_common_show_info_msg (gdm_config_get_string (GDM_KEY_INFO_MSG_FILE),
+  gdm_wm_show_info_msg_dialog (gdm_config_get_string (GDM_KEY_INFO_MSG_FILE),
      gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
 
   gdm_common_setup_cursor (GDK_LEFT_PTR);

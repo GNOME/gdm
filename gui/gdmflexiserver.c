@@ -513,7 +513,7 @@ check_for_users (void)
 		if (strcmp (rvec[0], gdmcomm_get_display ()) != 0 &&
 		    vt >= 0) {
 			/* this is not the current display */
-			extra ++;
+			extra++;
 		}
 
 		g_strfreev (rvec);
@@ -751,9 +751,13 @@ main (int argc, char *argv[])
 				value = gdm_config_get_translated_string ((gchar *)key);
 				if (value != NULL) {
 					ret = g_strdup_printf ("OK %s", value);
-					g_free (value);
 				}
 			}
+
+			/*
+			 * If the above didn't return a value, then must be a
+			 * different key, so call gdmcomm_call_gdm.
+			 */
 			if (value == NULL)
 				ret = gdmcomm_call_gdm (send_command, auth_cookie,
 							"2.2.4.0", 5);
@@ -761,6 +765,9 @@ main (int argc, char *argv[])
 			ret = gdmcomm_call_gdm (send_command, auth_cookie,
 						"2.2.4.0", 5);
 		}
+
+		/* At this point we are done using the socket, so close it */
+		gdmcomm_comm_close ();
 
 		if (ret != NULL) {
 			g_print ("%s\n", ret);
@@ -792,6 +799,9 @@ main (int argc, char *argv[])
 	if (use_xnest) {
 		char *cookie = gdmcomm_get_a_cookie (FALSE /* binary */);
 		if (cookie == NULL) {
+			/* At this point we are done using the socket, so close it */
+			gdmcomm_comm_close ();
+
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
@@ -818,6 +828,9 @@ main (int argc, char *argv[])
 		auth_cookie = NULL;
 	} else {
 		if (auth_cookie == NULL) {
+			/* At this point we are done using the socket, so close it */
+			gdmcomm_comm_close ();
+
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
@@ -847,6 +860,9 @@ main (int argc, char *argv[])
 
 	ret = gdmcomm_call_gdm (command, auth_cookie, version, 5);
 	g_free (command);
+
+	/* At this point we are done using the socket, so close it */
+	gdmcomm_comm_close ();
 
 	if (ret != NULL &&
 	    strncmp (ret, "OK ", 3) == 0) {
@@ -910,7 +926,7 @@ torture (void)
 		int len = rand () % 5000;
 		char *buf = g_new (char, len);
 		int ii;
-		for (ii = 0; ii < len; ii ++)
+		for (ii = 0; ii < len; ii++)
 			buf[ii] = rand () % 256;
 		write (fd, buf, len); 
 		g_free (buf);
@@ -927,7 +943,7 @@ torture_test (void)
 
 	srand (getpid () * time (NULL));
 
-	for (i = 0; i < 500; i ++) {
+	for (i = 0; i < 500; i++) {
 		if (fork () == 0) {
 			torture ();
 			_exit (0);

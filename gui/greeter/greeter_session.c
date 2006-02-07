@@ -122,7 +122,8 @@ greeter_session_lookup (const char *saved_session)
 	  secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
 	                                 "installed on this computer."),
 	                               gdm_session_name (default_session));
-	  save_session = gdm_common_query (firstmsg, secondmsg, _("Make _Default"), _("Just _Log In"), TRUE);
+	  save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+		_("Make _Default"), _("Just _Log In"), TRUE);
 	  g_free (firstmsg);
 	  g_free (secondmsg);
 	}
@@ -154,7 +155,8 @@ greeter_session_lookup (const char *saved_session)
 	                                     "setting is %s."),
 	                                   gdm_session_name (session),
 	                                   gdm_session_name (saved_session));
-	      save_session = gdm_common_query (firstmsg, secondmsg, _("Make _Default"), _("Just For _This Session"), TRUE);
+	      save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+			_("Make _Default"), _("Just For _This Session"), TRUE);
 	    }
 	  else if (strcmp (session, default_session) != 0 &&
 		   strcmp (session, saved_session) != 0 &&
@@ -176,7 +178,7 @@ greeter_session_lookup (const char *saved_session)
 	                                         "(System->Desktop Switching Tool from "
 	                                         "the panel menu)."),
 	                                       gdm_session_name (session));			 
-		  gdm_common_message (firstmsg, secondmsg);
+		  gdm_wm_message_dialog (firstmsg, secondmsg);
 		}
 	      save_session = GTK_RESPONSE_NO;
 	    }
@@ -294,7 +296,7 @@ greeter_session_init (void)
 		label = g_strdup_printf ("_%d. %s", num, session->name);
 	else
 		label = g_strdup (session->name);
-	num ++;
+	num++;
  
 	radio = gtk_radio_button_new_with_mnemonic (session_group, label);
 	g_free (label);

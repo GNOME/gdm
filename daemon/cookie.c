@@ -133,7 +133,7 @@ gdm_random_tick (void)
 	/* probably unneeded, to guess above
 	   the number of invocation is likely needed
 	   anyway */
-	randnums[3] ++;
+	randnums[3]++;
 
 	/* also hope that other places call
 	   g_random_int.  Note that on systems

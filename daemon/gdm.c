@@ -898,7 +898,7 @@ start_autopsy:
 	/* in remote/flexi case just drop to _REMANAGE */
 	if (d->type == TYPE_STATIC) {
 		time_t now = time (NULL);
-		d->x_faileds ++;
+		d->x_faileds++;
 		/* This really is likely the first time if it's been,
 		   some time, say 5 minutes */
 		if (now - d->last_x_failed > (5*60)) {
@@ -1513,7 +1513,7 @@ main (int argc, char *argv[])
     else
 	gdm_daemonify ();
 
-#ifdef sun
+#ifdef __sun
     g_unlink (SDTLOGIN_DIR);
     g_mkdir (SDTLOGIN_DIR, 0700);
 #endif
@@ -1521,8 +1521,8 @@ main (int argc, char *argv[])
     /* Signal handling */
     ve_signal_add (SIGCHLD, mainloop_sig_callback, NULL);
     ve_signal_add (SIGTERM, mainloop_sig_callback, NULL);
-    ve_signal_add (SIGINT, mainloop_sig_callback, NULL);
-    ve_signal_add (SIGHUP, mainloop_sig_callback, NULL);
+    ve_signal_add (SIGINT,  mainloop_sig_callback, NULL);
+    ve_signal_add (SIGHUP,  mainloop_sig_callback, NULL);
     ve_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
 
     sig.sa_handler = ve_signal_notify;
@@ -2524,7 +2524,7 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 		XauDisposeAuth (xa);
 
 		/* just being ultra anal */
-		cnt ++;
+		cnt++;
 		if (cnt > 500)
 			break;
 	}
@@ -2673,7 +2673,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		display->server_uid = server_uid;
 	}
 
-	flexi_servers ++;
+	flexi_servers++;
 
 	display->type = type;
 	display->socket_conn = conn;
@@ -2802,7 +2802,8 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	gdm_debug ("Handling user message: '%s'", msg);
 
-	if (gdm_connection_get_message_count (conn) > GDM_SUP_MAX_CONNECTIONS) {
+	if (gdm_connection_get_message_count (conn) > GDM_SUP_MAX_MESSAGES) {
+		gdm_debug ("Closing connection, %d messages reached");
 		gdm_connection_write (conn, "ERROR 200 Too many messages\n");
 		gdm_connection_close (conn);
 		return;

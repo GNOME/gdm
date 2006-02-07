@@ -1,3 +1,50 @@
+2006-02-07  Brian Cameron  <brian.cameron@sun.com>
+
+	This patch resolves some performance issues that I noticed when
+	testing GDM with the gdmdynamic command.  I notice that waiting for
+	the sockets to timeout made gdmdynamic slower so now all the clients
+	load all the configuration data in one quick pass and close the 
+	socket.  Since the gdm_config_get functions cache the data, the slaves
+	will not go over the socket to get the data again unless asked to
+	reread.  Bump the maximum messages over the socket from 20 to 80 
+	because gdmlogin pulls about 65 configuration parms over and this 
+	allows all data to be accessed in one connection (and gives a little
+	room for growth).  Improved the way GDM slaves deal with syslog so all
+	slaves use the same interfaces.  Added three missing keys to the daemon
+	configuration handling code.
+
+	* daemon/gdmconfig.c: Add three keys that were missing for background
+	  program support.
+	* gui/gdmcomm.[ch]: Now if there is a failure connecting to the daemon,
+	  the slave will sleep 1 second before retry (normally retries 5
+	  times).  If all retries fail, it will not try sleeping on subsequent
+	  calls to the daemon.  This greatly improves performance when the 
+          daemon is flooded with slave requests.  In normal usage, this will 
+	  likely not happen, but it is good for GDM to not fail so easily.
+	  Added better debug.  Added gdm_comm_close function so that slaves
+	  can ask to close the socket when done reading config.  Now uses
+	  common syslog functions.
+	* daemon/gdm.h: Add better comments, rename GDM_SUP_MAX_CONNECTIONS
+	  to GDM_SUP_MAX_MESSAGES which is more accurate, and bump the max
+	  number to 80.
+	* gui/gdmcommon.h, gui/gdmwm.h, gui/gdmsession.h: Added common syslog
+	  functions to gdmcommon.h and moved some functions that were in
+	  gdmcommon.h to gdmwm.h and gdmsession.h since the implementations
+	  were in those c-files.  Renamed functions to make naming consistant.
+	* gui/gdmXnestchooser, gui/gdmchooser.c, gui/gdmcommon.c,
+	  gui/gdmconfig.c, gui/gdmdynamic.c, gui/gdmflexiserver.c,
+	  gui/gdmlogin.c, gui/gdmphotosetup.c, gui/gdmsession.c, gui/gdmwm.c,
+	  gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c, 
+	  gui/greeter/greeter_session.c, gui/greeter/greeter_system.c:  Slaves
+	  close sockets connection when done reading config.  Now slaves use
+	  common syslog functions.  Naming changes to reflect renaming of
+	  functions in gdmcommon.h/gdmwm.h/gdmsession.h.  Better debug.
+	* daemon/auth.c, daemon/cookie.c, daemon/display.c, daemon/gdm.c,
+	  daemon/gdm-net.c, daemon/misc.c, daemon/slave.c, daemon/xdmcp.c,
+	  gui/gdmlanguages.c, gui/greeter/greeter_canvas_item.c,
+	  gui/gdmsetup.c, vicious-extensions/ve-config.c: Make spacing around
+	  "++" more consistant.  Add better debug in some functions
+
 2006-02-03  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdmconfig.c: Fix glib.h include so it compiles under LFS.
