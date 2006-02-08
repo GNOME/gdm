@@ -30,6 +30,7 @@
 
 #include "gdm.h"
 #include "gdmsession.h"
+#include "gdmcommon.h"
 #include "gdmconfig.h"
 
 GHashTable *sessnames        = NULL;

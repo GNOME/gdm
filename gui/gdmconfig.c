@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include "gdm.h"
+#include "gdmcommon.h"
 #include "gdmcomm.h"
 #include "gdmconfig.h"
 
@@ -147,7 +148,7 @@ gdm_config_get_xserver_details (gchar *xserver, gchar *key)
 	if (! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		gdm_common_info ("Could not access xserver configuration");
+		gdm_common_error ("Could not access xserver configuration");
 
 		if (result)
 			g_free (result);
@@ -185,7 +186,7 @@ gdm_config_get_xservers (gboolean flexible)
 	if (! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		gdm_common_info ("Could not access xserver configuration");
+		gdm_common_error ("Could not access xserver configuration");
 
 		if (result)
 			g_free (result);
@@ -287,7 +288,7 @@ gdm_config_get_xservers (gboolean flexible)
  * access is faster.
  */
 static gchar *
-_gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean show_error)
+_gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean doing_translated)
 {
 	gchar **hashretval = NULL;
 	gchar *result = NULL;
@@ -303,22 +304,39 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 
 	result = gdm_config_get_result (key);
 
-	if (! result || ve_string_empty (result) ||
+	if ( ! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		/* No need to show error for failed translated strings */
-		if (show_error) {
-			gdm_common_info ("Could not access configuration key %s", key);
+		gchar *getdefault;
+
+		/*
+		 * If looking for a translated string, and not found, just return
+		 * NULL.
+		 */
+		if (doing_translated) {
+			if (result)
+				g_free (result);
+			return NULL;
 		}
 
-		if (result)
-			g_free (result);
-		return NULL;
+		gdm_common_error ("Could not access configuration key <%s>", key);
+
+		/* Return the compiled in value associated with the key, if available. */
+		getdefault = strchr (key, '=');
+		if (getdefault != NULL)
+			getdefault++;
+
+		temp = g_strdup (getdefault);
+
+		gdm_common_error ("Using compiled in value <%s> for <%s>", temp, key);
+	} else {
+
+		/* skip the "OK " */
+		temp = g_strdup (result + 3);
 	}
 
-	/* skip the "OK " */
-	temp = g_strdup (result + 3);
-	g_free (result);
+	if (result)
+		g_free (result);
 
 	if (hashretval == NULL) {
 		gchar **charval = g_new0 (gchar *, 1);
@@ -347,9 +365,9 @@ gchar *
 gdm_config_get_string (gchar *key)
 {
    if (gdm_never_cache == TRUE)
-      return _gdm_config_get_string (key, TRUE, NULL, TRUE);
+      return _gdm_config_get_string (key, TRUE, NULL, FALSE);
    else
-      return _gdm_config_get_string (key, FALSE, NULL, TRUE);
+      return _gdm_config_get_string (key, FALSE, NULL, FALSE);
 }
 
 /**
@@ -386,14 +404,14 @@ _gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *change
 		 * Pass FALSE for last argument so it doesn't print errors for
 		 * failing to find the key, since this is expected
 		 */
-	        gchar *val = _gdm_config_get_string (full, reload, changed, FALSE);
+	        gchar *val = _gdm_config_get_string (full, reload, changed, TRUE);
 
                 if (val != NULL)
 			return val;
         }
 
 	/* Print error if it fails this time */
-	return _gdm_config_get_string (key, reload, changed, TRUE);
+	return _gdm_config_get_string (key, reload, changed, FALSE);
 }
 
 gchar *
@@ -428,19 +446,30 @@ _gdm_config_get_int (gchar *key, gboolean reload, gboolean *changed)
 
 	result = gdm_config_get_result (key);
 
-	if (! result || ve_string_empty (result) ||
+	if ( ! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		gdm_common_info ("Could not access configuration key %s", key);
+		gchar *getdefault;
 
-		if (result)
-			g_free (result);
-		return 0;
+		gdm_common_error ("Could not access configuration key <%s>", key);
+
+		/* Return the compiled in value associated with the key, if available. */
+		getdefault = strchr (key, '=');
+		if (getdefault != NULL)
+			getdefault++;
+
+		temp = atoi (getdefault);
+
+		gdm_common_error ("Using compiled in value <%d> for <%s>", temp, key);
+
+	} else {
+
+		/* skip the "OK " */
+		temp = atoi (result + 3);
 	}
 
-	/* skip the "OK " */
-	temp = atoi (result + 3);
-	g_free (result);
+	if (result)
+		g_free (result);
 
 	if (hashretval == NULL) {
 		gint *intval = g_new0 (gint, 1);
@@ -496,22 +525,42 @@ _gdm_config_get_bool (gchar *key, gboolean reload, gboolean *changed)
 
 	result = gdm_config_get_result (key);
 
-	if (! result || ve_string_empty (result) ||
+	if ( ! result || ve_string_empty (result) ||
 	    strncmp (result, "OK ", 3) != 0) {
 
-		gdm_common_info ("Could not access configuration key %s", key);
+		gchar *getdefault;
 
-		if (result)
-			g_free (result);
-		return FALSE;
+		gdm_common_error ("Could not access configuration key <%s>", key);
+
+		/* Return the compiled in value associated with the key, if available. */
+		getdefault = strchr (key, '=');
+		if (getdefault != NULL)
+			getdefault++;
+
+		/* Same logic as used in ve_config_get_bool */
+		if (getdefault != NULL &&
+		   (getdefault[0] == 'T' ||
+		    getdefault[0] == 't' ||
+		    getdefault[0] == 'Y' ||
+		    getdefault[0] == 'y' ||
+		    atoi (getdefault) != 0)) {
+			temp = TRUE;
+			gdm_common_error ("Using compiled in value <TRUE> for <%s>", key);
+		} else {
+			temp = FALSE;
+			gdm_common_error ("Using compiled in value <FALSE> for <%s>", key);
+		}
+	} else {
+
+		/* skip the "OK " */
+		if (strcmp (ve_sure_string (result + 3), "true") == 0)
+			temp = TRUE;
+		else
+			temp = FALSE;
 	}
 
-	/* skip the "OK " */
-	if (strcmp (ve_sure_string (result + 3), "true") == 0)
-		temp = TRUE;
-	else
-		temp = FALSE;
-	g_free (result);
+	if (result)
+		g_free (result);
 
 	if (hashretval == NULL) {
 		gboolean *boolval = g_new0 (gboolean, 1);
@@ -557,7 +606,7 @@ gboolean
 gdm_config_reload_string (gchar *key)
 {
 	gboolean changed;
-	_gdm_config_get_string (key, TRUE, &changed, TRUE);
+	_gdm_config_get_string (key, TRUE, &changed, FALSE);
 	return changed;
 }
 

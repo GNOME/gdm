@@ -1,5 +1,14 @@
 2006-02-07  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmconfig.c: Return compiled in value if slave fails
+	  to get a value back from the daemon.
+	* gui/gdmcomm.c:, gui/gdmconfig.c:  Use gdm_common_error
+	  instead of gdm_common_info so message really go to log.
+	* gui/gdmsession.c: Include needed gdmcommon.h.  Missed this
+	  in my previous putback earlier today.
+
+2006-02-07  Brian Cameron  <brian.cameron@sun.com>
+
 	* gdm-restart.in, gdm-safe-restart.in, gdm-stop.in, gdm.spec.in:
 	  Now use gdmflexiserver to get the PidFile instead of grepping the
 	  config file directly since this is a safer/better way to get

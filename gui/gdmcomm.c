@@ -38,6 +38,7 @@
 #include "vicious.h"
 
 #include "gdm.h"
+#include "gdmcommon.h"
 #include "gdmcomm.h"
 #include "gdmconfig.h"
 
@@ -45,11 +46,12 @@ static gboolean debug = FALSE;
 static int num_cmds   = 0;
 
 /*
- * Note, we have to call gdm_common_info instead of gdm_common_debug,
+ * Note, we have to call gdm_common_error instead of gdm_common_debug,
  * since gdm_common_debug accesses the GDM_KEY_DEBUG which can cause
  * this function to be called again, causing an infinite loop.  This
  * is why clients must call the gdmcomm_set_debug function to turn
- * on debug for these functions.
+ * on debug for these functions.  We use gdm_common_error instead
+ * of gdm_common_info so the messages really go to the syslog.
  */
 void
 gdmcomm_set_debug (gboolean enable)
@@ -69,7 +71,7 @@ do_command (int fd, const char *command, gboolean get_response)
 #endif
 
 	if (debug) {
-		gdm_common_info ("Sending command: '%s'", command);
+		gdm_common_error ("Sending command: '%s'", command);
 	}
 
 	cstr = g_strdup_printf ("%s\n", command);
@@ -87,7 +89,7 @@ do_command (int fd, const char *command, gboolean get_response)
 
 	if (ret < 0) {
 		if (debug)
-			gdm_common_info ("Command failed, no data returned");
+			gdm_common_error ("Command failed, no data returned");
 		return NULL;
 	}
 
@@ -102,14 +104,14 @@ do_command (int fd, const char *command, gboolean get_response)
 	}
 
 	if (debug)
-		gdm_common_info ("  Got response: '%s'", str->str);
+		gdm_common_error ("  Got response: '%s'", str->str);
 
 	cstr = str->str;
 	g_string_free (str, FALSE);
 
 	if (strcmp (ve_sure_string (cstr), "ERROR 200 Too many messages") == 0) { 
 		if (debug)
-			gdm_common_info ("Command failed, daemon busy.");
+			gdm_common_error ("Command failed, daemon busy.");
 		g_free (cstr);
 		return NULL;
 	}
@@ -156,7 +158,7 @@ gdmcomm_call_gdm_real (const char *command,
          */
 	if (num_cmds == (GDM_SUP_MAX_MESSAGES)) {
 	   if (debug)
-		gdm_common_info ("  Closing and reopening connection.");
+		gdm_common_error ("  Closing and reopening connection.");
 	   do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
 	   VE_IGNORE_EINTR (close (comm_fd));
 	   comm_fd  = 0;
@@ -165,12 +167,12 @@ gdmcomm_call_gdm_real (const char *command,
 
 	if (tries <= 0) {
 		if (debug)
-			gdm_common_info ("  Command failed %d times, aborting.", try_start);
+			gdm_common_error ("  Command failed %d times, aborting.", try_start);
 		return NULL;
 	}
 
 	if (debug && tries != try_start) {
-		gdm_common_info ("  Trying failed command again.  Retry %d of %d.",
+		gdm_common_error ("  Trying failed command again.  Retry %d of %d.",
 			(try_start - tries), try_start);
 	}
 
@@ -182,7 +184,7 @@ gdmcomm_call_gdm_real (const char *command,
 		comm_fd = socket (AF_UNIX, SOCK_STREAM, 0);
 		if (comm_fd < 0) {
 			if (debug)
-				gdm_common_info ("  Failed to open socket");
+				gdm_common_error ("  Failed to open socket");
 
 			return gdmcomm_call_gdm_real (command, auth_cookie, min_version, tries - 1, try_start);
 		}
@@ -190,7 +192,7 @@ gdmcomm_call_gdm_real (const char *command,
 		if (connect (comm_fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
 
 			if (debug)
-				gdm_common_info ("  Failed to connect to socket");
+				gdm_common_error ("  Failed to connect to socket");
 
 			/*
 			 * If there is a failure on connect, there are probably
@@ -224,7 +226,7 @@ gdmcomm_call_gdm_real (const char *command,
 		ret = do_command (comm_fd, GDM_SUP_VERSION, TRUE);
 		if (ret == NULL) {
 			if (debug)
-				gdm_common_info ("  Version check failed");
+				gdm_common_error ("  Version check failed");
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
 			return gdmcomm_call_gdm_real (command, auth_cookie,
@@ -232,7 +234,7 @@ gdmcomm_call_gdm_real (const char *command,
 		}
 		if (strncmp (ret, "GDM ", strlen ("GDM ")) != 0) {
 			if (debug)
-				gdm_common_info ("  Version check failed, bad name");
+				gdm_common_error ("  Version check failed, bad name");
 
 			g_free (ret);
 			VE_IGNORE_EINTR (close (comm_fd));
@@ -241,7 +243,7 @@ gdmcomm_call_gdm_real (const char *command,
 		}
 		if ( ! version_ok_p (&ret[4], min_version)) {
 			if (debug)
-				gdm_common_info ("  Version check failed, bad version");
+				gdm_common_error ("  Version check failed, bad version");
 			g_free (ret);
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
@@ -265,7 +267,7 @@ gdmcomm_call_gdm_real (const char *command,
 		/* not auth'ed */
 		if (strcmp (ve_sure_string (ret), "OK") != 0) {
 			if (debug)
-				gdm_common_info ("  Error, auth check failed");
+				gdm_common_error ("  Error, auth check failed");
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
 			/* returns the error */
