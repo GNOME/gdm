@@ -86,7 +86,15 @@ if test x$FIFOFILE = x ; then
 else
 	FIFOFILE="$FIFOFILE"/.gdmfifo
 fi
-PIDFILE=`grep '^PidFile=' %{sysconfdir}/X11/gdm/gdm.conf | sed -e 's/^PidFile=//'`
+
+PIDFILE=`gdmflexiserver --command="GET_CONFIG daemon/PidFile"`
+CHECKPIDFILE=`echo $PIDFILE | sed 's/^\([^ ]*\) .*$/\1/'`
+if [ "x$CHECKPIDFILE" = "xOK" ]; then
+	PIDFILE=`echo $PIDFILE | sed 's/^.* \(.*\)$/\1/'`
+else
+	PIDFILE=""
+fi
+
 if test x$PIDFILE = x ; then
 	PIDFILE=/var/run/gdm.pid
 fi

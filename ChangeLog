@@ -1,5 +1,12 @@
 2006-02-07  Brian Cameron  <brian.cameron@sun.com>
 
+	* gdm-restart.in, gdm-safe-restart.in, gdm-stop.in, gdm.spec.in:
+	  Now use gdmflexiserver to get the PidFile instead of grepping the
+	  config file directly since this is a safer/better way to get
+	  configuration date.
+
+2006-02-07  Brian Cameron  <brian.cameron@sun.com>
+
 	This patch resolves some performance issues that I noticed when
 	testing GDM with the gdmdynamic command.  I notice that waiting for
 	the sockets to timeout made gdmdynamic slower so now all the clients

@@ -1,5 +1,13 @@
 #!/bin/sh
-PIDFILE=`grep '^PidFile=' @EXPANDED_SYSCONFDIR@/gdm/gdm.conf | sed -e 's/^PidFile=//'`
+
+PIDFILE=`gdmflexiserver --command="GET_CONFIG daemon/PidFile"`
+CHECKPIDFILE=`echo $PIDFILE | sed 's/^\([^ ]*\) .*$/\1/'`
+if [ "x$CHECKPIDFILE" = "xOK" ]; then
+	PIDFILE=`echo $PIDFILE | sed 's/^.* \(.*\)$/\1/'`
+else
+	PIDFILE=""
+fi
+
 if test x$PIDFILE = x ; then
 	echo "Can't find the PID file in the configuration file, going to try:"
 	echo "/var/run/gdm.pid"
