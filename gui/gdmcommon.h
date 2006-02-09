@@ -30,8 +30,9 @@
 void      gdm_common_openlog                (const char *ident,
                                              int logopt,
                                              int facility);
-void	  gdm_common_fail		    (int exitstatus,
-					     const gchar *format, ...)
+void	  gdm_common_fail_exit		    (const gchar *format, ...)
+					     G_GNUC_PRINTF (1, 2);
+void	  gdm_common_fail_greeter	    (const gchar *format, ...)
 					     G_GNUC_PRINTF (1, 2);
 void	  gdm_common_info		    (const gchar *format, ...)
 					     G_GNUC_PRINTF (1, 2);

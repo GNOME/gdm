@@ -76,16 +76,17 @@ void		gdm_connection_set_user_flags (GdmConnection *conn,
 			gdm_connection_set_user_flags (conn, _flags);		\
 		}
 
-GdmDisplay *	gdm_connection_get_display   (GdmConnection *conn);
-void		gdm_connection_set_display   (GdmConnection *conn,
-					      GdmDisplay *disp);
-void		gdm_kill_subconnections_with_display (GdmConnection *conn,
-						      GdmDisplay *disp);
+GdmDisplay *	gdm_connection_get_display            (GdmConnection *conn);
+void		gdm_connection_set_display            (GdmConnection *conn,
+					               GdmDisplay *disp);
+int		gdm_connection_is_server_busy         (GdmConnection *conn);
+void		gdm_kill_subconnections_with_display  (GdmConnection *conn,
+						       GdmDisplay *disp);
 
-int		gdm_connection_get_message_count (GdmConnection *conn);
+int		gdm_connection_get_message_count      (GdmConnection *conn);
 
 
-void		gdm_connection_close (GdmConnection *conn);
+void		gdm_connection_close                  (GdmConnection *conn);
 
 #endif /* GDM_NET_H */
 

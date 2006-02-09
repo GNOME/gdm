@@ -60,13 +60,13 @@ gdm_common_openlog (const char *ident, int logopt, int facility)
 }
 
 void
-gdm_common_fail (int exitstatus, const gchar *format, ...)
+gdm_common_fail_exit (const gchar *format, ...)
 {
     va_list args;
     gchar *s;
 
     if (!format) {
-	_exit (exitstatus);
+	_exit (EXIT_FAILURE);
     }
 
     va_start (args, format);
@@ -81,7 +81,32 @@ gdm_common_fail (int exitstatus, const gchar *format, ...)
 
     g_free (s);
 
-    _exit (exitstatus);
+    _exit (EXIT_FAILURE);
+}
+
+void
+gdm_common_fail_greeter (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    if (!format) {
+	_exit (DISPLAY_GREETERFAILED);
+    }
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+    
+    if (using_syslog) {
+        syslog (LOG_ERR, "%s", s);
+        closelog ();
+    } else
+        g_printf ("%s\n", s);
+
+    g_free (s);
+
+    _exit (DISPLAY_GREETERFAILED);
 }
 
 void

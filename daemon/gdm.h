@@ -1194,6 +1194,20 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
+#define GDM_SUP_SERVER_BUSY "SERVER_BUSY" /* None */
+/* SERVER_BUSY:  Returns true if half or more of the daemon's sockets are
+ *               busy, false otherwise.  Used by slave programs which want
+ *               to ensure they do not overhwelm the server.
+ * Supported since: 2.13.0.8
+ * Arguments: None 
+ * Answers:
+ *   OK <value>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_GET_SERVER_DETAILS "GET_SERVER_DETAILS" /* <server> <key> */
 #define GDM_SUP_CLOSE        "CLOSE" /* None */
 /* CLOSE: Close sockets connection
  * Supported since: 2.2.4.0

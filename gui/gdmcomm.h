@@ -24,10 +24,13 @@
 #define GDMCOMM_H
 
 void		gdmcomm_set_debug (gboolean enable);
+void		gdmcomm_set_quiet_errors (gboolean enable);
 char *		gdmcomm_call_gdm (const char *command,
 				  const char *auth_cookie,
 				  const char *min_version,
 				  int tries);
+gboolean	gdmcomm_did_connection_fail (void);
+void		gdmcomm_set_allow_sleeping (void);
 void		gdmcomm_comm_close (void);
 const char *	gdmcomm_get_display (void);
 

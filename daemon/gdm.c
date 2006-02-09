@@ -76,10 +76,10 @@ extern GSList *displays;
 
 /* Local functions */
 static void gdm_handle_message (GdmConnection *conn,
-				const char *msg,
+				const gchar *msg,
 				gpointer data);
 static void gdm_handle_user_message (GdmConnection *conn,
-				     const char *msg,
+				     const gchar *msg,
 				     gpointer data);
 static void gdm_daemonify (void);
 static void gdm_safe_restart (void);
@@ -87,13 +87,13 @@ static void gdm_try_logout_action (GdmDisplay *disp);
 static void gdm_restart_now (void);
 static void handle_flexi_server (GdmConnection *conn,
 				 int type, 
-				 const char *server,
+				 const gchar *server,
 				 gboolean handled,
 				 gboolean chooser,
-				 const char *xnest_disp, 
+				 const gchar *xnest_disp, 
 				 uid_t xnest_uid,
-				 const char *xnest_auth_file,
-				 const char *xnest_cookie);
+				 const gchar *xnest_auth_file,
+				 const gchar *xnest_cookie);
 
 /* Global vars */
 gint xdmcp_sessions = 0;	/* Number of remote sessions */
@@ -118,10 +118,10 @@ GdmConnection *pipeconn = NULL; /* slavepipe (handled just like Fifo for compati
 GdmConnection *unixconn = NULL; /* UNIX Socket connection */
 int slave_fifo_pipe_fd = -1; /* the slavepipe connection */
 
-unsigned char *gdm_global_cookie = NULL;
+unsigned char *gdm_global_cookie  = NULL;
 unsigned char *gdm_global_bcookie = NULL;
 
-char *gdm_charset = NULL;
+gchar *gdm_charset = NULL;
 
 int gdm_normal_runlevel = -1; /* runlevel on linux that gdm was started in */
 
@@ -141,7 +141,7 @@ gboolean gdm_in_final_cleanup = FALSE;
 GdmLogoutAction safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 
 /* set in the main function */
-char **stored_argv = NULL;
+gchar **stored_argv = NULL;
 int stored_argc = 0;
 
 extern gchar *config_file;
@@ -741,8 +741,11 @@ gdm_cleanup_children (void)
 	    if (d->servpid > 1)
 		    kill (d->servpid, SIGTERM);
 	    d->servpid = 0;
-        if (gdm_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS))  /* XXX - This needs to be handled better */
-            gdm_server_whack_lockfile (d);
+
+            if (gdm_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS)) {
+		/* XXX - This needs to be handled better */
+		gdm_server_whack_lockfile (d);
+	    }
 
 	    /* race avoider */
 	    gdm_sleep_no_signal (1);
@@ -2487,11 +2490,11 @@ dehex_cookie (const char *cookie, int *len)
 
 /* This runs as the user who owns the file */
 static gboolean
-check_cookie (const char *file, const char *disp, const char *cookie)
+check_cookie (const gchar *file, const gchar *disp, const gchar *cookie)
 {
 	Xauth *xa;
-	char *number;
-	char *bcookie;
+	gchar *number;
+	gchar *bcookie;
 	int cookielen;
 	gboolean ret = FALSE;
 	int cnt = 0;
@@ -2538,15 +2541,15 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 }
 
 static void
-handle_flexi_server (GdmConnection *conn, int type, const char *server,
+handle_flexi_server (GdmConnection *conn, int type, const gchar *server,
 		     gboolean handled,
 		     gboolean chooser,
-		     const char *xnest_disp, uid_t xnest_uid,
-		     const char *xnest_auth_file,
-		     const char *xnest_cookie)
+		     const gchar *xnest_disp, uid_t xnest_uid,
+		     const gchar *xnest_auth_file,
+		     const gchar *xnest_cookie)
 {
 	GdmDisplay *display;
-	char *bin;
+	gchar *bin;
 	uid_t server_uid = 0;
 
 	gdm_debug ("server: '%s'", server);
@@ -2648,7 +2651,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 
 	if (type == TYPE_FLEXI_XNEST) {
 		GdmDisplay *parent;
-		char *disp, *p;
+		gchar *disp, *p;
 		gdm_assert (xnest_disp != NULL);
 
 		disp = g_strdup (xnest_disp);
@@ -2693,12 +2696,13 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 }
 
 static void
-handle_dynamic_server (GdmConnection *conn, int type, char *key)
+handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
 {
     GdmDisplay *disp;
     int disp_num;
-    char *full;
-    char *val;
+    gchar *msg;
+    gchar *full;
+    gchar *val;
 
     if (!(gdm_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS))) {
         gdm_connection_write (conn, "ERROR 200 Dynamic Displays not allowed\n");
@@ -2711,8 +2715,13 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
         return;
     }
 
-    if ((key == NULL) || (!(isdigit (*key)))) {
-        gdm_connection_write (conn, "ERROR 1 Bad display number\n");
+    if (key == NULL) {
+        gdm_connection_write (conn, "ERROR 1 Bad display number <NULL>\n");
+        return;
+    } else if ( !(isdigit (*key))) {
+	msg = g_strdup_printf ("ERROR 1 Bad display number <%s>\n", key);
+        gdm_connection_write (conn, msg);
+	g_free (msg);
         return;
     }
     disp_num = atoi (key);
@@ -2749,7 +2758,7 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
         if (disp_num > gdm_get_high_display_num ())
             gdm_set_high_display_num (disp_num);
 
-        gdm_connection_write (conn, "OK\n");
+	gdm_connection_write (conn, "OK\n");
         return;
     }
 
@@ -2769,7 +2778,8 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
             }
         }
 
-        gdm_connection_write (conn, "ERROR 1 Bad display number\n");
+	msg = g_strdup_printf ("ERROR 1 Bad display number <%d>\n", disp_num);
+        gdm_connection_write (conn, msg);
         return;
     }
 
@@ -2777,6 +2787,7 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
         /* cause the newly configured X servers to actually run */
         GSList *li;
         GSList *nli;
+	gboolean found = FALSE;
 
         for (li = displays; li != NULL; li = nli) {
             GdmDisplay *disp = li->data;
@@ -2788,17 +2799,24 @@ handle_dynamic_server (GdmConnection *conn, int type, char *key)
                 if ( ! gdm_display_manage (disp)) {
                     gdm_display_unmanage (disp);
                 }
+		found = TRUE;
             }
         }
 
-        gdm_connection_write (conn, "OK\n");
+	if (found)
+	        gdm_connection_write (conn, "OK\n");
+	else {
+		msg = g_strdup_printf ("ERROR 1 Bad display number <%d>\n", disp_num);
+	        gdm_connection_write (conn, msg);
+	}
+
         /* Now we wait for the server to start up (or not) */
         return;
     }
 }
 
 static void
-gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
+gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 {
 	gdm_debug ("Handling user message: '%s'", msg);
 
@@ -2812,7 +2830,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	if (strncmp (msg, GDM_SUP_AUTH_LOCAL " ",
 		     strlen (GDM_SUP_AUTH_LOCAL " ")) == 0) {
 		GSList *li;
-		char *cookie = g_strdup
+		gchar *cookie = g_strdup
 			(&msg[strlen (GDM_SUP_AUTH_LOCAL " ")]);
 		g_strstrip (cookie);
 		if (strlen (cookie) != 16*2) /* 16 bytes in hex form */ {
@@ -2839,7 +2857,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 
 		if (gdm_global_cookie != NULL &&
-		    g_ascii_strcasecmp ((char *) gdm_global_cookie, cookie) == 0) {
+		    g_ascii_strcasecmp ((gchar *) gdm_global_cookie, cookie) == 0) {
 			g_free (cookie);
 			GDM_CONNECTION_SET_USER_FLAG
 				(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
@@ -2870,8 +2888,8 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
-		char *name;
-		const char *command = NULL;
+		gchar *name;
+		const gchar *command = NULL;
 		GdmXserver *svr;
 
 		/* Only allow locally authenticated connections */
@@ -2916,7 +2934,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
-		char *dispname = NULL, *xauthfile = NULL, *cookie = NULL;
+		gchar *dispname = NULL, *xauthfile = NULL, *cookie = NULL;
 		uid_t uid;
 
 		extract_dispname_uid_xauthfile_cookie (msg, &dispname, &uid,
@@ -2953,7 +2971,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	                     strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)) {
 		GString *retMsg;
 		GSList  *li;
-		const char *sep = " ";
+		const gchar *sep = " ";
 		char    *key;
 		int     msgLen=0;
 
@@ -2993,7 +3011,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SUP_ALL_SERVERS) == 0) {
 		GString *msg;
 		GSList *li;
-		const char *sep = " ";
+		const gchar *sep = " ";
 
 		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
@@ -3018,9 +3036,9 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
  
 	} else if (strncmp (msg, GDM_SUP_GET_SERVER_DETAILS " ",
 		     strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
-		const char *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
+		const gchar *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
 		gchar   **splitstr = g_strsplit (server, " ", 2);
-		GdmXserver  *svr   = gdm_find_xserver ((char *)splitstr[0]);
+		GdmXserver  *svr   = gdm_find_xserver ((gchar *)splitstr[0]);
 
 		if (svr != NULL) {
 			if (g_strcasecmp (splitstr[1], "ID") == 0)
@@ -3066,7 +3084,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
 		GString *msg;
 		GSList *li;
-		const char *sep = " ";
+		const gchar *sep = " ";
 
 		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
@@ -3082,7 +3100,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_UPDATE_CONFIG " ",
 		     strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
-		const char *key = 
+		const gchar *key = 
 			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
 
 		if (! gdm_update_config ((gchar *)key))
@@ -3091,7 +3109,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_connection_write (conn, "OK\n");
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
-		const char *key = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
+		const gchar *key = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
 		gchar *retval;
 		static gboolean done_prefetch = FALSE;
 
@@ -3125,7 +3143,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		gdm_connection_printf (conn, "OK %s\n", config_file);
 		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
-		const char *sep = " ";
+		const gchar *sep = " ";
 		GdmDisplay *disp;
 		GdmLogoutAction logout_action;
 		GString *msg;
@@ -3175,7 +3193,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_SET_LOGOUT_ACTION " ",
 		     strlen (GDM_SUP_SET_LOGOUT_ACTION " ")) == 0) {
-		const char *action = 
+		const gchar *action = 
 			&msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
@@ -3227,7 +3245,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 	} else if (strncmp (msg, GDM_SUP_SET_SAFE_LOGOUT_ACTION " ",
 		     strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")) == 0) {
-		const char *action = 
+		const gchar *action = 
 			&msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
@@ -3328,7 +3346,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 #endif
 	} else if (strncmp (msg, GDM_SUP_ADD_DYNAMIC_DISPLAY " ",
 		   strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")) == 0) {
-		char *key;
+		gchar *key;
 
 		key = g_strdup (&msg[strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")]);
 		g_strstrip (key);
@@ -3337,7 +3355,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 	} else if (strncmp (msg, GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ",
 		   strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")) == 0) {
-		char *key;
+		gchar *key;
 
 		key = g_strdup (&msg[strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")]);
 		g_strstrip (key);
@@ -3347,7 +3365,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strncmp (msg, GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ",
 		   strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
 
-		char *key;
+		gchar *key;
 
 		key = g_strdup (&msg[strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")]);
 		g_strstrip (key);
@@ -3356,6 +3374,11 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");
+	} else if (strcmp (msg, GDM_SUP_SERVER_BUSY) == 0) {
+		if (gdm_connection_is_server_busy (unixconn))
+	        	gdm_connection_write (conn, "OK true\n");
+		else
+	        	gdm_connection_write (conn, "OK false\n");
 	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {
 		gdm_connection_close (conn);
 	} else {

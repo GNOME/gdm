@@ -37,6 +37,7 @@ static GHashTable *int_hash       = NULL;
 static GHashTable *bool_hash      = NULL;
 static GHashTable *string_hash    = NULL;
 static gboolean gdm_never_cache   = FALSE;
+static int comm_tries             = 5;
 
 /**
  * gdm_config_never_cache
@@ -54,6 +55,18 @@ void
 gdm_config_never_cache (gboolean never_cache)
 {
    gdm_never_cache = never_cache;
+}
+
+/**
+ * gdm_config_set_comm_retries
+ *
+ * If a client wants to specify how many times it will retry to
+ * get a config value, this function can be used.
+ */
+void
+gdm_config_set_comm_retries (int tries)
+{
+    comm_tries = tries;
 }
 
 /**
@@ -120,7 +133,7 @@ gdm_config_get_result (gchar *key)
 
 	command = g_strdup_printf ("GET_CONFIG %s", newkey);
 	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
-		"2.13.0.1", 5);
+		"2.13.0.1", comm_tries);
 
 	g_free (command);
 	g_free (newkey);
@@ -141,7 +154,7 @@ gdm_config_get_xserver_details (gchar *xserver, gchar *key)
 
 	command = g_strdup_printf ("GET_SERVER_DETAILS %s %s", xserver, key);
 	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
-		"2.13.0.1", 5);
+		"2.13.0.1", comm_tries);
 
 	g_free (command);
 
@@ -179,7 +192,7 @@ gdm_config_get_xservers (gboolean flexible)
 
 	command = g_strdup_printf ("GET_SERVER_LIST");
 	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
-		"2.13.0.1", 5);
+		"2.13.0.1", comm_tries);
 
 	g_free (command);
 

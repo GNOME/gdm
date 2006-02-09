@@ -1102,13 +1102,13 @@ gdm_chooser_xdmcp_init (char **hosts)
 #endif
     if ( ! have_ipv6) {
 	if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) == -1) {
-	    gdm_common_fail (EXIT_FAILURE, "Could not create socket!");
+	    gdm_common_fail_exit ("Could not create socket!");
 	}
     }
 
     if (setsockopt (sockfd, SOL_SOCKET, SO_BROADCAST,
         (char *) &sockopts, sizeof (sockopts)) < 0) {
-	gdm_common_fail (EXIT_FAILURE, "Could not set socket options!");
+	gdm_common_fail_exit ("Could not set socket options!");
     }
 
     /* Assemble XDMCP BROADCAST_QUERY packet in static buffer */
@@ -1165,8 +1165,7 @@ gdm_chooser_choose_host (const char *hostname)
 
       if (strlen (xdm_address) > 64 ||
 	  from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0) {
-	      gdm_common_fail (EXIT_FAILURE,
-		  "gdm_chooser_chooser_host: Invalid xdm address.");
+	      gdm_common_fail_exit ("gdm_chooser_chooser_host: Invalid xdm address.");
       }
 
       family = (xdm_addr[0] << 8) | xdm_addr[1];
@@ -1182,15 +1181,13 @@ gdm_chooser_choose_host (const char *hostname)
 	  memcpy (&in6_addr.sin6_addr, &xdm_address[4], 16);
 
 	  if ((fd = socket (PF_INET6, SOCK_STREAM, 0)) == -1) {
-	      gdm_common_fail (EXIT_FAILURE,
-		  "gdm_chooser_choose_host: Could not create response socket.");
+	      gdm_common_fail_exit ("gdm_chooser_choose_host: Could not create response socket.");
 	  }
 
 	  if (connect (fd, (struct sockaddr *) &in6_addr,
               sizeof (in6_addr)) == -1) {
 
-	      gdm_common_fail (EXIT_FAILURE,
-		  "gdm_chooser_chooser_host: Could not connect to xdm.");
+	      gdm_common_fail_exit ("gdm_chooser_chooser_host: Could not connect to xdm.");
 	  }
       } else
 #endif
@@ -1203,15 +1200,13 @@ gdm_chooser_choose_host (const char *hostname)
 	  in_addr.sin_addr.s_addr = htonl (addr);
 
 	  if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1) {
-	      gdm_common_fail (EXIT_FAILURE,
-	          "gdm_chooser_chooser_host: Could not create response socket.");
+	      gdm_common_fail_exit ("gdm_chooser_chooser_host: Could not create response socket.");
 	  }
 
 	  if (connect (fd, (struct sockaddr *) &in_addr,
               sizeof (in_addr)) == -1) {
 
-	      gdm_common_fail (EXIT_FAILURE,
-		  "gdm_chooser_chooser_host: Could not connect to xdm.");
+	      gdm_common_fail_exit ("gdm_chooser_chooser_host: Could not connect to xdm.");
 	  }
       }
 
@@ -1223,8 +1218,7 @@ gdm_chooser_choose_host (const char *hostname)
       if (strlen (client_address) > 64 || from_hex (client_address,
           client_addr, strlen (client_address)) != 0) {
 
-	   gdm_common_fail (EXIT_FAILURE,
-	      "gdm_chooser_chooser_host: Invalid client address.");
+	   gdm_common_fail_exit ("gdm_chooser_chooser_host: Invalid client address.");
       }
 
       tmparr.data   = (BYTE *) client_addr;
@@ -1241,8 +1235,7 @@ gdm_chooser_choose_host (const char *hostname)
       status = getaddrinfo (hostname, NULL, &hints, &result);
 
       if (status != 0) {
-	   gdm_common_fail (EXIT_FAILURE,
-	       "gdm_chooser_chooser_host: Could not get host entry for %s",
+	   gdm_common_fail_exit ("gdm_chooser_chooser_host: Could not get host entry for %s",
 	       hostname);
       }
 
@@ -1255,8 +1248,7 @@ gdm_chooser_choose_host (const char *hostname)
       hentry = gethostbyname (hostname);
 
       if (!hentry) {
-	  gdm_common_fail (EXIT_FAILURE,
-	     "gdm_chooser_chooser_host: Could not get host entry for %s",
+	  gdm_common_fail_exit ("gdm_chooser_chooser_host: Could not get host entry for %s",
 	     hostname);
       }
 
@@ -1879,20 +1871,17 @@ gdm_chooser_signals_init (void)
     sigemptyset (&term.sa_mask);
 
     if (sigaction (SIGHUP, &hup, NULL) < 0) {
-        gdm_common_fail (EXIT_FAILURE,
-	    _("%s: Error setting up %s signal handler: %s"),
+        gdm_common_fail_exit ("%s: Error setting up %s signal handler: %s",
 	    "gdm_signals_init", "HUP", strerror (errno));
     }
 
     if (sigaction (SIGINT, &term, NULL) < 0) {
-        gdm_common_fail (EXIT_FAILURE,
-	   _("%s: Error setting up %s signal handler: %s"),
+        gdm_common_fail_exit ("%s: Error setting up %s signal handler: %s",
            "gdm_signals_init", "INT", strerror (errno));
     }
 
     if (sigaction (SIGTERM, &term, NULL) < 0) {
-        gdm_common_fail (EXIT_FAILURE,
-	   _("%s: Error setting up %s signal handler: %s"),
+        gdm_common_fail_exit ("%s: Error setting up %s signal handler: %s",
            "gdm_signals_init", "TERM", strerror (errno));
     }
 
@@ -1902,7 +1891,7 @@ gdm_chooser_signals_init (void)
     sigdelset (&mask, SIGINT);
     
     if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
-	gdm_common_fail (EXIT_FAILURE, _("Could not set signal mask!"));
+	gdm_common_fail_exit ("Could not set signal mask!");
 }
 
 struct poptOption xdm_options [] = {

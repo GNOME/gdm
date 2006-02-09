@@ -1,3 +1,46 @@
+2006-02-09  Brian Cameron  <brian.cameron@sun.com>
+
+	A known issue with gdmdynamic is that when a display connects to
+	the server it generates the gdmdynamic "ADD" and "RELEASE" commands.
+	On startup, hundreds of displays could send these commands at once
+	and cause the server too be flooded with sockets requests.  Hammering
+	the socket like this caused me to find and fix a number of problems
+	that improve socket reliability for general GDM use.  I also enhanced
+	gdmdynamic so it is more sensitive to the socket being busy and no
+	longer overloads it, instead sleeping and retrying if necessary.  This
+	allows gdmdynamic to work if there are hundreds of displays instead of
+	just a dozen or so.
+
+	* daemon/gdm.[ch]: Added new "SERVER_BUSY" sockets command so that
+	  gdmdynamic can sleep before starting new slaves if the daemon is
+	  already busy.
+	* daemon/gdm-net.[ch]: Bump up MAX_CONNECTIONS from 10 to 15.  I notice
+	  that this improves performance significantly when hammering the
+	  daemon with connections.  Added better comments for this logic and
+	  now debug logs when a subconnection is thrown away.  New
+	  gdm_connection_is_server_busy function
+	* daemon/display.c: Correct DYNAMIC_REMOVE so it works and fixes bug
+	  #326796.  Before it wasn't really removing the displays.
+	* gui/gdmdynamic.c: Quite a bit of work to make gdmdynamic avoid
+	  flooding the server with sockets requests.  Now it sets sockets
+	  retries to 1 and manages sleeping and retries itself.  
+	* gui/gdmconfig.c: Added gdm_config_set_comm_retries so that slaves can
+	  specify how many retries they want the comm logic to use.
+	* gui/gdmcomm.c: Now do_command returns NULL when it gets back "",
+	  which happens when a subconnection was dropped by the daemon.  This
+	  lets the slave try the connection again.   Now error messages are
+	  always logged, not just when debug is turned on.  Added
+	  gdmcomm_did_connection_fail and gdmcomm_set_allow_sleep so 
+	  gdmdynamic can control the behavior of how the connection works.
+	* gui/gdmcommon.c, gui/gdmchooser.c, gui/gdmlogin.c, gui/greeter/greeter.c:
+	  Fix gdm_common_fail so it doesn't generate compile errors when building
+	  with GCC.  Fixes bug #330480.
+	* docs/C/gdm.xml: Cleaned up section that explains sockets commands so
+	  that they are in alphabetical order, added info about SERVER_BUSY
+	  and new gdmdynamic -s and -t options.
+	* config/gdm.conf: Better description of how debug works, perhaps
+	  I just didn't like the word "spew".
+
 2006-02-07  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmconfig.c: Return compiled in value if slave fails

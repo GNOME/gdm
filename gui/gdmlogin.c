@@ -2051,8 +2051,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	
     default:
 	gdm_kill_thingies ();
-	gdm_common_fail (DISPLAY_GREETERFAILED,
-		"Unexpected greeter command received: '%c'", buf[0]);
+	gdm_common_fail_greeter ("Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
 
@@ -3521,8 +3520,7 @@ main (int argc, char *argv[])
 
     if G_UNLIKELY (sigaction (SIGHUP, &hup, NULL) < 0) {
 	    gdm_kill_thingies ();
-	    gdm_common_fail (DISPLAY_GREETERFAILED,
-		_("%s: Error setting up %s signal handler: %s"), "main",
+	    gdm_common_fail_greeter (_("%s: Error setting up %s signal handler: %s"), "main",
 		"HUP", strerror (errno));
     }
 
@@ -3533,15 +3531,13 @@ main (int argc, char *argv[])
 
     if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) {
 	    gdm_kill_thingies ();
-	    gdm_common_fail (DISPLAY_GREETERFAILED,
-		_("%s: Error setting up %s signal handler: %s"), "main",
+	    gdm_common_fail_greeter (_("%s: Error setting up %s signal handler: %s"), "main",
 		"INT", strerror (errno));
     }
 
     if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) {
 	    gdm_kill_thingies ();
-	    gdm_common_fail (DISPLAY_GREETERFAILED,
-		_("%s: Error setting up %s signal handler: %s"), "main",
+	    gdm_common_fail_greeter (_("%s: Error setting up %s signal handler: %s"), "main",
 		"TERM", strerror (errno));
     }
 
@@ -3552,8 +3548,7 @@ main (int argc, char *argv[])
     
     if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) {
 	    gdm_kill_thingies ();
-	    gdm_common_fail (DISPLAY_GREETERFAILED,
-		_("Could not set signal mask!"));
+	    gdm_common_fail_greeter (_("Could not set signal mask!"));
     }
 
     g_atexit (gdm_kill_thingies);

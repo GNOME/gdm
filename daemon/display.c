@@ -368,7 +368,6 @@ gdm_display_manage (GdmDisplay *d)
  *
  * Stop services for a display
  */
-
 void
 gdm_display_unmanage (GdmDisplay *d)
 {
@@ -387,7 +386,7 @@ gdm_display_unmanage (GdmDisplay *d)
     whack_old_slave (d, TRUE /* kill_connection */);
     
     d->dispstat = DISPLAY_DEAD;
-    if (d->type != TYPE_STATIC)
+    if (d->type != TYPE_STATIC || d->removeconf)
 	gdm_display_dispose (d);
 
     gdm_debug ("gdm_display_unmanage: Display stopped");

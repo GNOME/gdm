@@ -37,8 +37,38 @@
 #include "gdm-net.h"
 #include "gdmconfig.h"
 
-/* Kind of a weird setup, new connections whack old connections */
-#define MAX_CONNECTIONS 10
+/*
+ * Kind of a weird setup, new connections whack old connections.
+ *
+ * We may want to allow tuning of the max connections, since
+ * this number means that only a certain number of slaves can
+ * talk to the daemon at once.  Note that since new connections
+ * whack old connections, this tends to cause traffic problems
+ * if the daemon is really being hammered.
+ *
+ * This is because the slaves retry a failed connection 5 times,
+ * though they are at least smart enough to sleep 1 second
+ * between retries if the connection failed on the connect()
+ * call.  But, this means that throwing off a connection causes
+ * that slave to come back in another second and try to
+ * connect again.  So if the daemon is really being hammered,
+ * this just causes more traffic problems.  It's really faster
+ * to let each connection finish.
+ *
+ * This may cause problems for some setups (perhaps terminal
+ * servers) where lots of connections may hit the server at once
+ * and 15 connections may not be enough (especially since the
+ * console login screen may also be using one of them).  Perhaps
+ * this number should be in gdm.conf so it can be tuned by the
+ * end user?
+ *
+ * If, when you turn on debug, you notice messages like this
+ * in the log, "Closing connection, x subconnections reached"
+ * and some slaves are not working properly, then bumping this
+ * number up is probably a reasonable fix if you can't simply
+ * reduce the socket load the daemon must handle.
+ */
+#define MAX_CONNECTIONS 15
 
 struct _GdmConnection {
 	int fd;
@@ -73,6 +103,21 @@ struct _GdmConnection {
 
 	GdmDisplay *disp;
 };
+
+int 
+gdm_connection_is_server_busy (GdmConnection *conn) {
+	int max_connections = MAX_CONNECTIONS;
+
+	if (conn->n_subconnections >= (max_connections / 2)) {
+		gdm_debug ("Connections is %d, max is %d, busy TRUE",
+			conn->n_subconnections, max_connections);
+		return TRUE;
+	} else {
+		gdm_debug ("Connections is %d, max is %d, busy FALSE",
+			conn->n_subconnections, max_connections);
+		return FALSE;
+	}
+}
 
 static gboolean
 close_if_needed (GdmConnection *conn, GIOCondition cond, gboolean error)
@@ -200,12 +245,13 @@ gdm_socket_handler (GIOChannel *source,
 		    GIOCondition cond,
 		    gpointer data)
 {
-	int fd;
 	GIOChannel *unixchan;
 	GdmConnection *conn = data;
 	GdmConnection *newconn;
 	struct sockaddr_un addr;
 	socklen_t addr_size = sizeof (addr);
+	int fd;
+	int max_connections;
 
 	if ( ! (cond & G_IO_IN))
 		return TRUE;
@@ -240,8 +286,18 @@ gdm_socket_handler (GIOChannel *source,
 
 	conn->subconnections = g_list_append (conn->subconnections, newconn);
 	conn->n_subconnections++;
-	if (conn->n_subconnections > MAX_CONNECTIONS) {
-		gdm_debug ("Closing connection, %d subconnections reached", MAX_CONNECTIONS);
+
+	/*
+	 * When dynamix servers is turned on, the daemon can be flooded with
+	 * requests and closing a subconnection will typically make the client
+	 * just try and connect again, and worsen the flooding problem.  When
+	 * using dynamic servers, allow more clients to connect at once.  
+	 */
+	max_connections = MAX_CONNECTIONS;
+             
+	if (conn->n_subconnections > max_connections) {
+		gdm_debug ("Closing connection, %d subconnections reached",
+			max_connections);
 		GdmConnection *old = conn->subconnections->data;
 		conn->subconnections =
 			g_list_remove (conn->subconnections, old);

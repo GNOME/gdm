@@ -43,20 +43,31 @@
 #include "gdmconfig.h"
 
 static gboolean debug = FALSE;
+static gboolean quiet = FALSE;
 static int num_cmds   = 0;
 
 /*
- * Note, we have to call gdm_common_error instead of gdm_common_debug,
- * since gdm_common_debug accesses the GDM_KEY_DEBUG which can cause
- * this function to be called again, causing an infinite loop.  This
- * is why clients must call the gdmcomm_set_debug function to turn
- * on debug for these functions.  We use gdm_common_error instead
- * of gdm_common_info so the messages really go to the syslog.
+ * Note, in this function we have to call gdm_common_error instead
+ * of gdm_common_debug, since gdm_common_debug accesses the
+ * GDM_KEY_DEBUG which can cause a sockets connection to get the
+ * config data, causing an infinite loop.  This is why clients must
+ * call the gdmcomm_set_debug function to turn on debug for these
+ * functions.  
  */
 void
 gdmcomm_set_debug (gboolean enable)
 {
 	debug = enable;
+}
+
+/*
+ * Normally errors are printed.  Setting quiet to TRUE turns off
+ * display of error messages.
+ */
+void
+gdmcomm_set_quiet_errors (gboolean enable)
+{
+	quiet = enable;
 }
 
 static char *
@@ -88,7 +99,7 @@ do_command (int fd, const char *command, gboolean get_response)
 	num_cmds++;
 
 	if (ret < 0) {
-		if (debug)
+		if ( !quiet)
 			gdm_common_error ("Command failed, no data returned");
 		return NULL;
 	}
@@ -109,8 +120,19 @@ do_command (int fd, const char *command, gboolean get_response)
 	cstr = str->str;
 	g_string_free (str, FALSE);
 
-	if (strcmp (ve_sure_string (cstr), "ERROR 200 Too many messages") == 0) { 
-		if (debug)
+	/*
+	 * If string is empty, then the daemon likely closed the connection 
+	 * because of too many subconnections.  At any rate the daemon should
+	 * not return an empty string.  All return values should start with
+	 * "OK" or "ERROR".  Daemon should never complain about too many
+	 * messages since the slave keeps track of the number of commands sent
+	 * and should not send too many, but it does not hurt to check and
+	 * manage it if it somehow happens.  In either case return NULL
+	 * instead so the caller can try again.
+	 */
+	if (ve_string_empty (cstr) ||
+	    strcmp (ve_sure_string (cstr), "ERROR 200 Too many messages") == 0) {
+		if ( !quiet)
 			gdm_common_error ("Command failed, daemon busy.");
 		g_free (cstr);
 		return NULL;
@@ -139,9 +161,9 @@ version_ok_p (const char *version, const char *min_version)
 		return FALSE;
 }
 
-static gboolean did_sleep_on_failure = FALSE;
 static gboolean allow_sleep          = TRUE;
-static int comm_fd = 0;
+static gboolean did_sleep_on_failure = FALSE;
+static int comm_fd                   = 0;
 
 static char *
 gdmcomm_call_gdm_real (const char *command,
@@ -166,24 +188,23 @@ gdmcomm_call_gdm_real (const char *command,
 	}
 
 	if (tries <= 0) {
-		if (debug)
+		if ( !quiet)
 			gdm_common_error ("  Command failed %d times, aborting.", try_start);
 		return NULL;
 	}
 
-	if (debug && tries != try_start) {
-		gdm_common_error ("  Trying failed command again.  Retry %d of %d.",
-			(try_start - tries), try_start);
+	if (!quiet && tries != try_start) {
+		gdm_common_error ("  Trying failed command again.  Try %d of %d.",
+			(try_start - tries + 1), try_start);
 	}
 
 	if (comm_fd <= 0) {
 		struct sockaddr_un addr;
 		strcpy (addr.sun_path, GDM_SUP_SOCKET);
 		addr.sun_family = AF_UNIX;
-
 		comm_fd = socket (AF_UNIX, SOCK_STREAM, 0);
 		if (comm_fd < 0) {
-			if (debug)
+			if ( !quiet)
 				gdm_common_error ("  Failed to open socket");
 
 			return gdmcomm_call_gdm_real (command, auth_cookie, min_version, tries - 1, try_start);
@@ -191,8 +212,6 @@ gdmcomm_call_gdm_real (const char *command,
 
 		if (connect (comm_fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
 
-			if (debug)
-				gdm_common_error ("  Failed to connect to socket");
 
 			/*
 			 * If there is a failure on connect, there are probably
@@ -204,9 +223,22 @@ gdmcomm_call_gdm_real (const char *command,
                          * will get set to FALSE if the first call to this 
                          * function fails all retries.
 			 */
-			if ((allow_sleep == TRUE) && (tries > 1)) {
+			if (allow_sleep == TRUE) {
+
 				did_sleep_on_failure = TRUE;
-				sleep (1);
+
+				/*
+				 * Only actualy sleep if we are going to try
+				 * again.
+				 */
+				if (tries > 1) {
+					if ( !quiet)
+						gdm_common_error ("  Failed to connect to socket, sleep 1 second and retry");
+					sleep (1);
+				}
+			} else {
+				if ( !quiet)
+					gdm_common_error ("  Failed to connect to socket, not sleeping");
 			}
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
@@ -225,7 +257,7 @@ gdmcomm_call_gdm_real (const char *command,
 		/* Version check first - only check first time */
 		ret = do_command (comm_fd, GDM_SUP_VERSION, TRUE);
 		if (ret == NULL) {
-			if (debug)
+			if ( !quiet)
 				gdm_common_error ("  Version check failed");
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
@@ -233,7 +265,7 @@ gdmcomm_call_gdm_real (const char *command,
 				min_version, tries - 1, try_start);
 		}
 		if (strncmp (ret, "GDM ", strlen ("GDM ")) != 0) {
-			if (debug)
+			if ( !quiet)
 				gdm_common_error ("  Version check failed, bad name");
 
 			g_free (ret);
@@ -242,7 +274,7 @@ gdmcomm_call_gdm_real (const char *command,
 			return NULL;
 		}
 		if ( ! version_ok_p (&ret[4], min_version)) {
-			if (debug)
+			if ( !quiet)
 				gdm_common_error ("  Version check failed, bad version");
 			g_free (ret);
 			VE_IGNORE_EINTR (close (comm_fd));
@@ -266,7 +298,7 @@ gdmcomm_call_gdm_real (const char *command,
 		}
 		/* not auth'ed */
 		if (strcmp (ve_sure_string (ret), "OK") != 0) {
-			if (debug)
+			if ( !quiet)
 				gdm_common_error ("  Error, auth check failed");
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
@@ -306,6 +338,26 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie,
 		allow_sleep = FALSE;
 
 	return (retstr);
+}
+
+/**
+ * gdmcomm_did_connection_fail
+ *
+ * If allow_sleep is TRUE, then connection was able to go through.
+ * so the client can call this function after calling to see if
+ * the failure was due to the connection being too busy.  This is
+ * useful for gdmdynamic.
+ */
+gboolean
+gdmcomm_did_connection_fail (void)
+{
+	return !allow_sleep;
+}
+
+void
+gdmcomm_set_allow_sleep (gboolean val)
+{
+	allow_sleep = val;
 }
 
 void

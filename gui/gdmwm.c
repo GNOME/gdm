@@ -31,8 +31,6 @@
 #include <pwd.h>
 #include <unistd.h>
 
-#include <gdk/gdkx.h>
-
 #include "gdmwm.h"
 #include "gdm.h"
 #include "gdmcommon.h"

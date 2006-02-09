@@ -27,6 +27,7 @@
 #include "ve-miscui.h"
 
 void		gdm_config_never_cache			(gboolean never_cache);
+void		gdm_config_set_comm_retries		(int tries);
 gchar *		gdm_config_get_string			(gchar *key);
 gchar *		gdm_config_get_translated_string	(gchar *key);
 gint		gdm_config_get_int     			(gchar *key);
@@ -34,12 +35,12 @@ gboolean	gdm_config_get_bool			(gchar *key);
 gboolean	gdm_config_reload_string		(gchar *key);
 gboolean	gdm_config_reload_int			(gchar *key);
 gboolean	gdm_config_reload_bool			(gchar *key);
+GSList *	gdm_config_get_xservers			(gboolean flexible);
 
 void		gdm_set_servauth			(gchar *file,
 							 gchar *key,
 							 gchar *id);
 char *		gdm_get_theme_greeter			(gchar *file,
 							 const char *fallback);
-GSList *	gdm_config_get_xservers			(gboolean flexible);
 
 #endif /* GDMCONFIG_H */
