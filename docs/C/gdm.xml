@@ -152,7 +152,7 @@
         enhancement requests to the &quot;gdm&quot; category in
         <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>.
         You can also send a message to the 
-        <address><email>gdm-list@gnome.org</email></address> mail alias to
+        <address><email>gdm-list@gnome.org</email></address> mail list to
         discuss any issues or concerns with the GDM program.
       </para>
     </sect2>
@@ -163,16 +163,16 @@
       </title>
 
       <para>
-        The key/value pairs defined in the GDM configuration file and
-        considered &quot;stable&quot; interfaces and should only change in ways
-        that are backwards compatible.  Note that this includes functionaity
-        like the GDM scripts (Init, PreSession, PostSession, PostLogin,
-        XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile,
-        etc.), system applications (SoundProgram), etc.  Some values
-        depend on OS interfaces may need to be modified to work on a given
-        OS.  Typical examples are HaltCommand, RebootCommand, SuspendCommand,
-        StandardXServer, Xnest, SoundProgram, and the &quot;command&quot;
-        value for each &quot;server-foo&quot;.
+        The key/value pairs defined in the GDM configuration files and
+        the location of these files are considered &quot;stable&quot; interfaces
+        and should only change in ways that are backwards compatible.  Note that
+        this includes functionaity like the GDM scripts (Init, PreSession,
+        PostSession, PostLogin, XKeepsCrashing, etc.); directory locations
+        (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc.
+        Some values depend on OS interfaces may need to be modified to work on
+        a given OS.  Typical examples are HaltCommand, RebootCommand,
+        SuspendCommand, StandardXServer, Xnest, SoundProgram, and the
+        &quot;command&quot; value for each &quot;server-foo&quot;.
       </para>
 
       <para>
@@ -756,6 +756,16 @@
         default behavior, conservative settings are recommended and probably
         shipped with your distro.
       </para>
+
+      <para>
+        If you wish to make GDM work with other types of authentication 
+        mechanisms, such as SmartCards, you should implement this via
+        writing a PAM module rather than by trying to modify the GDM
+        code.  Refer to the PAM documentation on your system and this
+        issue has been discussed on the 
+        <address><email>gdm-list@gnome.org</email></address> mail list,
+        so you can refer to the archives for more information.
+      </para>
     </sect2>
 
     <sect2 id="gdmuser">
@@ -953,7 +963,9 @@
       </para>
 
       <para>
-        To workaround the inherent insecurity of XDMCP, gdm proposes a default built-in session that uses SSH to encrypt the remote connection. See the section &quot;Securing remote connection through SSH&quot; above.
+        To workaround the inherent insecurity of XDMCP, gdm proposes a default
+        built-in session that uses SSH to encrypt the remote connection.  See
+        the section &quot;Securing remote connection through SSH&quot; above.
       </para>
     </sect2>
 
@@ -2388,7 +2400,8 @@ PostSession/
 <screen>
 gdm:.my.domain
 </screen>
-                to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending                 on your TCP Wrappers configuration.  See the
+                to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending
+                on your TCP Wrappers configuration.  See the
                 <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink>
                 man page for details.
               </para>
@@ -6475,7 +6488,7 @@ Hosts=appserverone,appservertwo
       <ulink type="http"
        url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>
       or send an email to the
-      <address><email>gdm-list@gnome.org</email></address> mail alias.
+      <address><email>gdm-list@gnome.org</email></address> mail list.
     </para>
 
     <para>
