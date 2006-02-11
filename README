@@ -13,40 +13,40 @@
  -----------------------------------------------------------
 
 The Gnome Display Manager is a re-implementation of the well known xdm
-program.  GDM 2.4 implements all significant features required for managing
+program.  GDM implements all significant features required for managing
 local and remote displays.
-
-Configuration Stability:
-
-The key/value pairs defined in the %{sysconfdir}/gdm/gdm.conf file is
-considered a "stable" interface and should only change in ways that are
-backwards compatible.
 
 gdm daemon:
 
  o X Authentication
- o Default and per-display initialization scripts
- o Pre and post session scripts
+ o XDMCP (Remote login) including TCP Wrappers for access
+   control
+ o machine-specific and system-wide configuration support.
+ o Default and per-display initialization scripts.
+ o PreSession, PostSession, Init, and PostLogin scripts.
  o Pluggable Authentication Modules (PAM)
- o XDMCP (Remote login)
- o TCP Wrappers for access control (for XDMCP)
  o IPv6 support (optional, use --enable-ipv6=yes to get this)
- o Autologin for single user workstations
- o Timed login for kiosks and public terminals
- o On demand local servers
+ o Autologin for single user workstations (off by default)
+ o Timed login for kiosks and public terminals (off by
+   default)
+ o On demand local servers (gdmflexiserver)
+ o SunRay (SRSS) support via gdmdynamic.
  o Can manage X servers without a login window
    (Such as for XDMCP terminal client machines)
  o Many other features ...
+
+gdmlogin and gdmgreeter:
+ o Can launch the XDMCP chooser program (remote login)
+ o Can launch the Setup program (off by default)
+ o Can Halt, reboot, or suspend the machine (off by
+   default)
+ o Session selection support
+ o Language selection support
 
 gdmlogin:
 
  o Logo image
  o Background image/color
- o Halt, reboot, suspend
- o Can launch the XDMCP chooser
- o Can launch the Setup program
- o Session selection support
- o Language selection support
  o Face browser
  o Background program support
  o Xinerama support
@@ -54,13 +54,8 @@ gdmlogin:
 gdmgreeter:
 
  o Fully themable
- o Halt, reboot, suspend
- o Can launch the XDMCP chooser
- o Can launch the Setup program
- o Session selection support
- o Language selection support
- o Face browser (if in the theme)
  o Xinerama support
+ o Face browser (if in the theme)
 
 gdmchooser:
 
@@ -71,37 +66,46 @@ gdmchooser:
 
 gdmsetup:
 
- o GUI way to configure the more important aspects of GDM, the rest
-   is configured by editing the config file
-
-Most features can be turned on and off in the configuration file by
-the sysadmin.
+ o GUI to edit the GDM configuration.  Refer to the documentation
+   for more information about how to configure GDM.
 
 Availability:
 
    ftp://ftp.gnome.org/pub/GNOME/sources/gdm/
 
+Reporting Bugs:
 
-Please consult README.install for instructions on how to configure and
-install gdm.
+  When reporting bugs you should first turn on debugging in
+  gdm.conf.  This causes debug messages to be sent to the system
+  log (/var/log/messages or /var/adm/messages) and include the
+  output sent to syslog.
 
-The GDM mail alias is gdm-list@gnome.org.  Archives can be found here:
+  You should not have to configure syslog for this to work, but if
+  you don't see GDM messages in your syslog you may need to
+  configure it.
+
+  You should not leave "debug" on after collecting data.  It will
+  clutter your syslog and slow system performance.
+
+Installation:
+
+  Please consult README.install for instructions on how to
+  configure and install gdm.
+
+Contact:
+
+  The GDM mail alias is gdm-list@gnome.org.  Archives can be found here:
 
    http://mail.gnome.org/archives/
 
-Report bugs in gdm2 at http://bugzilla.gnome.org under the product "gdm".
-Or mail Brian Cameron <Brian.Cameron@Sun.Com> or George <jirka@5z.com>
-with suggestions or other such things.
-
-George
-(based on original README by Martin K. Petersen)
+Martin, George, and then Brian
 
 -------------------------------------------------------------------------
 Note:
 
 Originally I started maintaining gdm2 because martin didn't yet finish gdm3 and
 was in general busy and we needed a working gdm for 1.4.  The move to gdm3 is
-very unlikely to happen nowdays as gdm3 has been pretty dead for quite
+very unlikely to happen now that gdm3 has been pretty dead for quite
 a while.  Do not send gdm2 patches to martin (well you can but he'll likely
 ignore them:), send them to me instead and I'll integrate them for you.
 
@@ -109,8 +113,8 @@ ignore them:), send them to me instead and I'll integrate them for you.
 -------------------------------------------------------------------------
 Note:
 
-In January of 2005 George asked me to take over maintainership duties for
-gdm2, so send patches to me and I will get them integrated.
+Starting January, 2005 I have been acting as maintainer.  Send patches to
+me and I will work with you to get them integrated.
 
 -Brian Cameron <Brian.Cameron@Sun.Com>
 -------------------------------------------------------------------------

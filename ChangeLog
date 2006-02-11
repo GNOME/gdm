@@ -1,3 +1,20 @@
+2006-02-10  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmflexiserver.c: Fix bug that was causing gdmflexiserver
+	  to fail.  Because we were calling gtk-init when the --command
+	  option was being used, and this breaks gdmflexiserver since it
+	  is sometimes run with the --command option when there is no 
+	  display.
+	* README, README.install: Updated with some new features and moved some
+          info to docs/C/gdm.xml where the info is more useful.
+	* TODO: Updated.
+	* configure.ac: Fixed the mess about /usr/opensolaris/bin
+	* gui/greeter/greeter_system.c: Do not put tooltips on menus.  They are
+          a bad idea and their use is discouraged by the HIG because they break
+          a11y.
+	* docs/C/gdm.xml: Updated docs with a bunch of information from the 
+	  README and README.install file that really belonged in the docs.
+
 2006-02-09  Brian Cameron  <brian.cameron@sun.com>
 
 	A known issue with gdmdynamic is that when a display connects to

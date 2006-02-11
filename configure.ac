@@ -70,6 +70,20 @@ AC_ARG_WITH(dmx,
 
 AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
 
+# On Solaris, Xnest is only shipped in /usr/openwin/, but your
+# should use "--with-post-path=/usr/openwin/bin" for full
+# Xserver support (such as access to Xnest and other X executables
+# that are only in /usr/openwin/bin and not yet in /usr/X11/bin).
+# Someday the Xserver team at Sun may fix this, then you don't
+# have to do this anymore.
+#
+# For other platforms it may be useful to add stuff you want to the
+# end of the default path, if your distribution provider has
+# specific directories for branded applications or whatever or
+# clever directories like /usr/sfw/bin or whatever that OpenView
+# binary directory is for those OpenView users forced to use GDM.
+# OpenView users like to recompile code anyway.
+#
 withval=""
 AC_ARG_WITH(post-path,
 [  --with-post-path=<PATH>   add PATH to end of user's PATH when logging in],[
@@ -1012,7 +1026,7 @@ else
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin:/usr/openwin/bin"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"
 fi
 
@@ -1022,19 +1036,11 @@ if test "x$EXPANDED_BINDIR" != "x/bin" -a "x$EXPANDED_BINDIR" != "x/usr/bin"; th
    GDM_USER_PATH="$GDM_USER_PATH:$EXPANDED_BINDIR"
 fi
 
-# On Solaris, Xnest is only shipped in /usr/openwin/, so set path
-# properly.  The Xsun version of Xnest also requires the -pn
-# argument so it can be run as the user.  Note that you can have
-# both the X.org and Xsun Xservers on the same system (but X.org on
-# Solaris doesn't ship with Xnest), so this makes Solaris work
-# properly when the X.org Xserver is included.  Also add needed
-# /usr/openwin/bin to PATH so that GDM's PreSession/PostSession
-# scripts can find sessreg and other programs it requires, and so
-# users have programs like xterm in their PATH.
+# You have to use /usr/openwin/bin/Xnest even if you are using the
+# Xorg Xserver on Solaris x86.
 #
 case "$host" in
 *solaris*)
-   	GDM_USER_PATH="$GDM_USER_PATH:/usr/openwin/bin"
         X_XNEST_PATH="/usr/openwin/bin"
         X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
         ;;
@@ -1044,6 +1050,10 @@ case "$host" in
         ;;
 esac
 
+# Set POST_PATH after doing system specific case above just in case
+# any platforms want to update the PATH for a specific OS or distro.
+# None currently, but might be useful.
+#
 if test "x$USER_POST_PATH" != "x"; then
    GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
 fi

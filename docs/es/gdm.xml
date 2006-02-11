@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY version "2.13.0.7">
-<!ENTITY date "02/02/2006">
+<!ENTITY version "2.13.0.8">
+<!ENTITY date "02/10/2006">
 ]>
 <article id="index" lang="es">
   <articleinfo>
@@ -64,14 +64,14 @@
 
 
 
-    <releaseinfo>This manual describes version 2.13.0.7 of the GNOME Display Manager. It was last updated on 02/02/2006.</releaseinfo>  
+    <releaseinfo>This manual describes version 2.13.0.8 of the GNOME Display Manager. It was last updated on 02/10/2006.</releaseinfo>  
  
   </articleinfo>
 
   <sect1 id="preface">
     <title>Términos y convenciones usados en este manual</title>
 
-    <para>This manual describes version 2.13.0.7 of the GNOME Display Manager. It was last updated on 02/02/2006.</para>  
+    <para>This manual describes version 2.13.0.8 of the GNOME Display Manager. It was last updated on 02/10/2006.</para>  
 
     <para>Selector - Un programa que se usa para seleccionar un equipo remoto para gestionar una pantalla remotamente en la pantalla local (<command>gdmchooser</command>).</para>
 
@@ -91,7 +91,7 @@
 
     <para>XDMCP - X Display Manage Protocol</para>
 
-    <para>Las rutas que comienzan con una palabra entre los símbolos &lt; y &gt; son relativas al prefijo de instalación. Ej: <filename>&lt;share&gt;/pixmaps/</filename> se refiere a <filename>/usr/share/pixmaps</filename> si GDM se ha configurado con  <command>--prefix=/usr</command>. Normalmente también denota que GDM está instalado con <command>--sysconfigdir=/etc/X11</command>, que quiere decir que cualquier ruta a la que se refiera como  <filename>&lt;etc&gt;/gdm/PreSession</filename> usualmente significa <filename>&lt;etc/X11&gt;/gdm/PreSession</filename>. note que para interoperatibilidad se recomienda que use un prefijo de <filename>/usr</filename> y un directorio de configuración del sistema (--sysconfdir) <filename>/etc/X11</filename>.</para>
+    <para>Paths that start with a word in angle brackets are relative to the installation prefix. I.e. <filename>&lt;share&gt;/pixmaps/</filename> refers to <filename>&lt;share&gt;/pixmaps</filename> if GDM was configured with <command>--prefix=/usr</command>. Normally also note that GDM is installed with <command>--sysconfigdir=&lt;etc&gt;/X11</command>, meaning any path to which we refer to as <filename>&lt;etc&gt;/gdm/PreSession</filename> usually means <filename>&lt;etc/X11&gt;/gdm/PreSession</filename>. Note that for interoperability it is recommended that you use a --prefix of <filename>/usr</filename> and a --sysconfdir of <filename>&lt;etc&gt;/X11</filename>.</para>
   </sect1>
 
   <sect1 id="overview">
@@ -103,6 +103,16 @@
       <para>GDm se ha escrito con simplicidad y seguridad en mente. GDM es un reemplazo de XDM, el gestor de pantallas de X, A diferencia de sus competidores, (X3DM, KDM, WDM), GSM se escribió desde cero y no contiene nada de código de XDM / X Consortium.</para>
 
       <para>For further information about GDM, see the <ulink type="http" url="http://www.gnome.org/projects/gdm/"> the GDM project website</ulink>. Please submit any bug reports or enhancement requests to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>. You can also send a message to the <address><email>gdm-list@gnome.org</email></address> mail alias to discuss any issues or concerns with the GDM program.</para>
+    </sect2>
+
+    <sect2 id="stability">
+      <title>Interface Stability</title>
+
+      <para>The key/value pairs defined in the GDM configuration file and considered "stable" interfaces and should only change in ways that are backwards compatible. Note that this includes functionaity like the GDM scripts (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc. Some values depend on OS interfaces may need to be modified to work on a given OS. Typical examples are HaltCommand, RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram, and the "command" value for each "server-foo".</para>
+
+      <para>Note: distributions often change the default values of keys to support their platform. Command-line interfaces for programs installed to <filename>lt;bin&gt;</filename> are considered stable. Refer to your distribution configuration to see if there are any distribution-specific changes from the default GDM configuration and for information for what support exists for these options.</para>
+
+      <para>If issues are discovered that break compatibility, please file a bug with an "urgent" priority.</para>
     </sect2>
 
     <sect2 id="daemonov">
@@ -191,7 +201,7 @@
         
       <para>GDM primero buscará la imagen de la cara del usuario en <filename>~/.face</filename>. Si no la encuentra, intentará con <filename>~/.face.icon</filename>. Si aún no la encuentra, usará el valor definido para "face/picture=" en el archivo <filename>~/.gnome2/gdm</filename>. Por último intentará con <filename>~/.gnome2/photo</filename> y <filename>~/.gnome/photo</filename> los cuales están obsoletos y se soportan por compatibilidad hacia atrás.</para>
 
-      <para>If a user has no defined face image, GDM will use the "stock_person" icon defined in the current GTK+ theme. If no such image is defined, it will fallback to the image specified in the <filename>DefaultFace</filename> configuration option, normally /usr/share/pixmaps/nobody.png.</para>
+      <para>If a user has no defined face image, GDM will use the "stock_person" icon defined in the current GTK+ theme. If no such image is defined, it will fallback to the image specified in the <filename>DefaultFace</filename> configuration option, normally <filename>&lt;share&gt;/pixmaps/nobody.png</filename>.</para>
       
       <para>Note que cargar y escalar los iconos de rostros situados en los directorios personales de los usuarios puede ser una tarea que consuma mucho tiempo. Debido a que no es práctico cargar imágenes sobre NIS o NFS, GDM no intenta cargar imágenes de rostros desde directorios personales remotos. Además, GDM parará de cargar imágenes de rostros después de 5 segundos de actividad y sólo mostrará los usuarios cuyas imágenes haya obtenido hasta entonces. La opción <filename>Include</filename> de <filename>gdm.conf</filename> puede usarse para especificar un conjunto de usuarios que deberían aparecer en el visor de rostros. Mientras los usuarios a incluir tengan un tamaño razonable, no debería haber ningún problema con GDM siendo incapaz de acceder a las imágenes de rostros. Para evitar estos problemas, se recomienda situar las imágenes de rostros en el directorio especificado por la opción de configuración <filename>GlobalFaceDir</filename>.</para>
 
@@ -223,9 +233,9 @@
     <sect2 id="fileaccess">
       <title>Acceder a archivos</title>
 
-      <para>En general GDM es muy reluctante respecto a leer/escribir archivos del usuario (como ~/.dmrc, ~/.face, ~/.xsession-errors, y ~/.Xauthority files). Por ejemplo, se niega a acceder a cualquier cosa que no sean archivos regulares. Los enlaces, sockets y dispositivos se ignoran. El valor del parámetro <filename>RelaxPermissions</filename> determina si GDM debe aceptar archivos escribibles por el grupo del usuario u otros. Éstos se ignoran por omisión.</para>
+      <para>In general GDM is very reluctant regarding reading/writing of user files (such as the <filename>~/.dmrc</filename>, <filename>~/.face</filename>, <filename>~/.xsession-errors</filename>, and <filename>~/.Xauthority</filename> files). For instance it refuses to access anything but regular files. Links, sockets and devices are ignored. The value of the <filename>RelaxPermissions</filename> parameter determines whether GDM should accept files writable by the user's group or others. These are ignored by default.</para>
 
-      <para>Todas las operaciones en los archivos de usuario se realizan con el id efectivo del usuario. Si el control de sanidad falla en el archivo <filename>.Xauthority</filename> del usuario, se crea una cookie de resguardo en el directorio especificado por la opción de configuración <filename>UserAuthFBDir</filename> (/tmp por omisión).</para>
+      <para>All operations on user files are done with the effective user id of the user. If the sanity check fails on the user's <filename>.Xauthority</filename> file, a fallback cookie is created in the directory specified by the <filename>UserAuthFBDir</filename> configuration setting (<filename>/tmp</filename> by default).</para>
 
       <para>Finalmente, el administrador del sistema puede especificar el tamaño máximo del archivo que GDM debería aceptar y, en el caso de que el visor de rostros esté activado, se fuerza un tamaño máximo del icono. En sistemas grandes se avisa además que desactive el visor de rostros por razones de rendimiento. Mirar iconos en directorios personales, escalarlos y renderizarlos puede llevar mucho tiempo.</para>
     </sect2>
@@ -235,21 +245,42 @@
 
       <para>Para acelerar el rendimiento es posible construir GDM para que precargue las bibliotecas cuando el GDM muestre un programa de entrada por primera vez. Esto se ha mostrado para acelerar el primer inicio de sesión debido a que estas bibliotecas pueden cargarse en memoria mientras el usuario teclea su nombre y contraseña.</para>
 
-      <para>Para usar esta característica, configura GDM con la opción --with-prefetch. Esto causará que GDM instale el programa gdmprefetch en el directorio EXPANDED_LIBEXEC, instale gdmprefetchlist en el directorio &lt;etc&gt;/gdm, y establezca la variable de configuración PreFetchProgram para que se llame a gdmprefetch con el archivo predeterminado gdmprefetchlist. El archivo predeterminado gdmprefetchlist se optimizó para un escritorio GNOME ejecutandose en Solaris, así que quizá necesite algo de ajuste fino en otros sistemas. Los archivos alternativos de prefetchlist se pueden encontrar contribuidos en la categoría «gdm» en <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>, así que podrian ser incluidos en futuros lanzamientos de GDM.</para>
+      <para>To use this feature, configure GDM with the <command>--with-prefetch</command> option. This will cause GDM to install the <command>gdmprefetch</command> program to the EXPANDED_LIBEXEC directory, install the <filename>gdmprefetchlist</filename> to the <filename>&lt;etc&gt;/gdm</filename> directory, and set the <filename>PreFetchProgram</filename> configuration variable so that the <command>gdmprefetch</command> program is called with the default <filename>gdmprefetchlist</filename> file. The default <filename>gdmprefetchlist</filename> file was optimized for a GNOME desktop running on Solaris, so may need fine-tuning on other systems. Alternative prefetchlist files can be contributed to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>, so that they can be included in future GDM releases.</para>
     </sect2>
   </sect1>
 
   <sect1 id="security">
     <title>Seguridad</title>
 
+    <sect2 id="PAM">
+      <title>PAM</title>
+      <para>GDM uses PAM for username/authentication, though if your machine does not support PAM you can build GDM to work with shadow passwords and crypt. Refer to the next section for more information about PAM.</para>
+
+      <para>PAM stands for Pluggable Authentication Module, and is used by most programs that request username/password authentication on your computer. It allows the user to configure different behavior for different programs. Since PAM affects security, you should be comfortable with with the pam.</para>
+
+      <para>GDM uses PAM and some GDM features, like turning on automatic login may require that you update your PAM configuration. PAM has different, but similar, interfaces on differnt operating systems, so check your pam.d or pam.conf man page for details about how to configure it.</para>
+
+      <para>PAM allows the system administrator to have control about how different programs which require password access work, so GDM and ssh and other programs can have configurable behavior.</para>
+
+      <para>If there is no entry for GDM in the <filename>&lt;etc&gt;/pam.conf</filename> file, then automatic login will probably not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distro.</para>
+    </sect2>
+
     <sect2 id="gdmuser">
       <title>El usuario GDM</title>
 
+      <para>For security reasons a dedicated user and group id are required for proper operation! The need to be able to write Xauth files is why user "nobody" is not appropriate for gdm.</para>
+
       <para>El demonio GDM normalmente se ejecuta como root, y hace de esclavo. Sin embargo GDM debería también tener un id de usuario y un id de grupo dedicado que se usa para sus interfaces gráficas <filename>gdmgreeter</filename> y <command>gdmlogin</command>. Puede elegir el nombre de este usuario y grupo en la sección <filename>[daemon]</filename> del archivo de configuración.</para>
 
-      <para>El usuario y el grupo GDM, que son normalmente <command>gdm</command> no deberían tener ningún privilegio. La razón para usarlos es tener el interfaz de usuario ejecutándose como un usuario sin privilegios para que en el improbable caso de que alguien encuentre una debilidad en el IGU, no puedan acceder como root a la computadora.</para>
+      <para>This userid is used to run the GDM GUI programs required for login. All functionality that requires root authority is done by the GDM daemon process. This design ensures that if the GUI programs are somehow exploited, only the dedicated user privileges are available. By default GDM assumes the user and the group are called `gdm'. These are configured via the User and Group configuration options in the gdm.conf file. The user and group should be created before running "make install"</para>
 
       <para>Debería notarse sin embargo que el usuario GDM y el grupo tienen algunos privilegios que los hacen de alguna manera peligrosos. Por una parte tienen acceso al directorio de autorización del servidor (el <filename>ServAuthDir</filename>), que contiene todos los archivos de autorización del servidor X y otra información privada. Esto significa que alguien que gana los privilegios de usuario / grupo gdm puede entonces conectarse a cualquier sesión. No debería bajo ninguna circunstancia, hacer este usuario/grupo alguno fácil de obtener acceso, como el usuario <filename>nobody</filename>.</para>
+
+      <para>Distributions and system administrators using GDM are expected to setup the dedicated user properly. It is recommended that this userid be configured to disallow login and to not have a default shell. Distributions and system administrators should set up the filesystem to ensure that the GDM user does not have read or write access to sensitive files.</para>
+
+      <para>The necessity for a gdm userid/group is because the GDM user does require certain special permissions. It must be able to read and write Xauth keys to <filename>&lt;var&gt;/lib/gdm</filename>. This directory should have root:gdm ownership and 1770 permissions. Running "make install" will set this directory to these values. You will need to modify the configure/Makefile if you want to use a different group than "gdm". The GDM daemon process will reset this directory to proper ownership/permissions if it is somehow not set properly.</para>
+
+      <para>If the gdm user is set up properly and gdm user access is somehow exploited, this means that the GDM user should only be able to maliciously modify the Xauth keys causing potential Denial-Of-Service attacks. If a person gains the ability to run programs as the user gdm, it would be possible to snoop on running GDM processes, including usernames and passwords as they are being typed in. Therefore it is important to ensure that the gdm user is disallowed login and has no default shell.</para>
     </sect2>
 
     <sect2 id="xauth">
@@ -277,7 +308,7 @@
     <sect2 id="nfssecurity">
       <title>Seguridad de GDM con NFS</title>
 
-      <para>Note que el tráfico NFS realmente va "sobre el cable" y puede verse. Cuando se acceda al archivo de autorización X del usuario (~/.Xauthority), GDM intentará abrir el archivo para leerlo como root. Si falla, GDM concluirá que se ha montado por NFS y usará automáticamente  <filename>UserAuthFBDir</filename>, que usualmente está en <filename>/tmp</filename>. Este comportamiento puede cambiarse poniendo a «false» <filename>NeverPlaceCookiesOnNFS</filename> en la sección <filename>[security]</filename>.</para>
+      <para>Note that NFS traffic really goes "over the wire" and thus can be snooped. When accessing the user's X authorization file (<filename>~/.Xauthority</filename>), GDM will try to open the file for reading as root. If it fails, GDM will conclude that it is on an NFS mount and it will automatically use <filename>UserAuthFBDir</filename>, which by default is set to <filename>/tmp</filename>. This behavior can be changed by setting the <filename>NeverPlaceCookiesOnNFS</filename> in the <filename>[security]</filename> section to false.</para>
     </sect2>
 
     <sect2 id="xdmcpsecurity">
@@ -297,10 +328,14 @@
 
       <para>El control de acceso XDMCP se realiza usando TCP wrappers. Es posible compilar GDM sin TCP wrappers sin embargo, así que debería comprobar su configuración y verificar que funciona.</para>
 
-      <para>Debería usar el nombre del demonio <command>gdm</command> en el archivo <filename>&lt;etc&gt;/hosts.allow</filename> y en el archivo <filename>&lt;etc&gt;hosts.deny</filename>. Por ejemplo para denegar la entrada a equipos de <filename>.evil.domain</filename> , añada</para>
-      <screen>gdm: .dominio.maligno</screen>
+      <para>You should use the daemon name <command>gdm</command> in the <filename>&lt;etc&gt;/hosts.allow</filename> and <filename>&lt;etc&gt;/hosts.deny</filename> files. For example to deny computers from <filename>.evil.domain</filename> from logging in, then add</para>
+<screen>
+gdm: .evil.domain
+</screen>
       <para>a <filename>&lt;etc&gt;/hosts.deny</filename>. También necesitará añadir </para>
-      <screen>gdm: .su.dominio</screen>
+<screen>
+gdm: .your.domain
+</screen>
       <para>a su <filename>&lt;etc&gt;/hosts.allow</filename> si normalmente no permite todos los servicios desde todos los equipos. Vea la página del manual <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink> para más detalles.</para>
     </sect2>
   </sect1>
@@ -308,7 +343,18 @@
   <sect1 id="configuration">
     <title>Configuración</title>
 
-    <para>Esta sección cubrirá la configuración de GDM y el formato de los archivos de configuración de GDM. Puede usar el comando <command>gdmsetup</command> para configurar GDM, pero la aplicación de configuración no le deja configurar cada aspecto de GDM. La información de esta sección le explica en profundidad cómo configurar GDM.</para>
+    <para>This section will cover the configuration of GDM and the format of the GDM configuration files. You can use the <command>gdmsetup</command> command to configure GDM, but the configuration application does not let you configure every aspect of GDM.</para>
+
+    <para>You can either run <command>gdmsetup</command> as root or turn on the GDM configuration feature that allows you to run <command>gdmsetup</command> from the login screen (where it will run as root). If you believe running root owned GUI's is a security risk, then you would want to edit the files by hand.</para>
+
+    <para>If you are a distro and want to set machine defaults, you should make the proper edits in the <filename>gdm.conf-custom</filename> file rather than editing the <filename>gdm.conf</filename> file.</para>
+
+    <para>If you want to change configuration by hand, edit the <filename>&lt;etc&gt;/X11/gdm/gdm.conf-custom</filename> file and make sure the keyname=value pair you want is included in the appropriate section. For example, to change the "Greeter" key in the "daemon" section, make sure the daemon section of the <filename>gdm.conf-custom</filename> file has the value like in this example. The modified option does not have to come anywhere in the section. The <command>gdmsetup</command> program manages editing these files for you.</para>
+
+<screen>
+[daemon]
+Greeter=/usr/lib/gdmgreeter
+</screen>
 
     <para>Los archivos de configuración (especialmente <filename>gdm.conf</filename> y <filename>gdm.conf-custom</filename>) contienen comentarios útiles y ejemplos, así que léalos para más información acerca de cambiar su configuración.</para>
 
@@ -324,7 +370,7 @@
 
     <para>Esta es una lista de los contenidos del directorio de configuración:</para>
 
-    <screen>
+<screen>
 locale.alias
 Xsession
 XKeepsCrashing
@@ -333,7 +379,7 @@ Init/
 PostLogin/
 PreSession/
 PostSession/
-    </screen>
+</screen>
 
     <para><filename>locale.alias</filename> es un archivo que se parece mucho al archivo de alias reginoales del sistema pero no es el mismo. Éstos son los idiomas que están disponibles en su sitema. Todos los idiomas además se prueban para ver si actualmente existen antes de presentárselos al usuario.</para>
 
@@ -343,9 +389,9 @@ PostSession/
 
     <para>Los módulos de accesibilidad se configuran en el subdirectorio <filename>modules/</filename>, y son un tema aparte. Lea los archivos predeterminados provistos, tienen documentación adecuada. De nuevo normalmente la instalación predeterminada se da en archivos con <filename>factory</filename> en su nombre, y dichos archivos no se leen, están solo ahí para que usted pueda volver siempre a la configuración predeterminada.</para>
 
-    <para>Los archivos que describen las sesiones GDM disponibles siguen la especificación de archivos desktop de freedesktop y son archivos de estilo <filename>.desktop</filename> que se instalan en  <filename>&lt;etc&gt;/X11/sessions/</filename>. Este directorio también lo lee el gestor de pantallas de KDE para una configuración común. El siguiente directorio <filename>&lt;share&gt;/gdm/BuiltInSessions/</filename> se lee para las sesiónes integradas específicas de GDM (KDM las lleva en el propio código cuando se escribió este manual). Por último la configuración predeterminada también lee <filename>&lt;share&gt;/xsessions/</filename> (que debería ser  <filename>/usr/share/xsessions/</filename> si realmente quiere cooperar con KDM) donde los paquetes del escritorio pueden instalar sus propios archivos de sesión. Los directorios bajo <filename>&lt;etc&gt;</filename> deberían estar reservados para la configuración. La aproximación de la especificación de archivos de escritorio hace fácil para los sistemas de gestión de paquetes instalarr gestores de ventanas y diferentes tipos de sesiones sin requerir que el administrador del sistema edita los archivos. Vea la clave de configuración <filename>SessionDesktopDir</filename> para cambiar las rutas.Solía ocurrir que GDM almacenaba sus sesiones integradas en <filename>&lt;etc&gt;/dm/Sessions/</filename> pero esto fue obsoleto a partir de 2.5.90.0 Note que antes de la versión 2.4.4.2 sólo se leía <filename>&lt;etc&gt;/dm/Sessions/</filename>.</para>
+    <para>Files describing available GDM session follow the freedesktop.org desktop file specification and are <filename>.desktop</filename>-style files are installed to <filename>&lt;etc&gt;/X11/sessions/</filename>. This directory is also read by the KDE desktop manager (KDM) for common configuration. Next the directory <filename>&lt;share&gt;/gdm/BuiltInSessions/</filename> is read for GDM specific built-in sessions (KDM hardcodes these at time of this writing). Lastly the default setup will also read <filename>&lt;share&gt;/xsessions/</filename> (which should be <filename>&lt;share&gt;/xsessions/</filename> if you really wish to cooperate with KDM) where desktop packages can install their session files. The directories under the <filename>&lt;etc&gt;</filename> should be reserved for configuration. The desktop file specification approach makes it easy for package management systems to install window managers and different session types without requiring the sysadmin to edit files. See the <filename>SessionDesktopDir</filename> configuration key for changing the paths. It used to be that GDM stored its built in sessions in <filename>&lt;etc&gt;/dm/Sessions/</filename> but this is deprecated as of 2.5.90.0. Note that prior to version 2.4.4.2 only the <filename>&lt;etc&gt;/dm/Sessions/</filename> was being read.</para>
 
-    <para>Puede desactivarse una sesión (si fue instalada en <filename>/usr/share/xsessions/</filename>) añadiendo un <filename>.desktop</filename> nombrado identicamente a uno de los directorio anteriores en la ruta (como <filename>&lt;etc&gt;/X11/sessions</filename>) y usando <filename>Hidden=true</filename> en ese archivo.</para>
+    <para>A session can be disabled (if it was installed in <filename>&lt;share&gt;/xsessions/</filename>) by adding an identically named <filename>.desktop</filename> to one of the directories earlier in the path (likely <filename>&lt;etc&gt;/X11/sessions</filename>) and using <filename>Hidden=true</filename> in that file.</para>
 
     <sect2 id="scriptdirs">
       <title>Los directorio de script</title>
@@ -371,7 +417,6 @@ PostSession/
       <para>Except for the <filename>Xsession</filename> script all of these scripts will also have the environment variable <filename>$RUNNING_UNDER_GDM</filename> set to <filename>yes</filename>, so that you could perhaps use similar scripts for different display managers. The <filename>Xsession</filename> will always have the <filename>$GDMSESSION</filename> set to the basename of the session that the user chose to run without the <filename>.desktop</filename> extension. In addition <filename>$DESKTOP_SESSION</filename> is also set to the same value and in fact this will also be set by KDM in future versions.</para>
 
       <para>Neither of the <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename> or <filename>PostSession</filename> scripts are necessary and can be left out. The <filename>Xsession</filename> script is however required as well as at least one session <filename>.desktop</filename> file.</para>
-
     </sect2>
 
     <sect2 id="configfile">
@@ -397,7 +442,7 @@ PostSession/
 
           <varlistentry>
             <term>AddGtkModules</term>
-                <listitem>
+            <listitem>
               <synopsis>AddGtkModules=false</synopsis>
               <para>Si es true, entonces activa <command>gdmgreeter</command> o <command>gdmlogin</command> para que se lancen con módulos GTK+ adicionales. esto es útil cuando se requieren características extra como un inicio sesión accesible. Note que sólo deberían usarse los módulos «confiables» para minimizar las cuestiones de seguridad.</para>
               <para>Usualmente esto se usa para los módulos de accesibilidad. Los módulos que se cargan se especifican con la clave <filename>GtkModulesList</filename>.</para>
@@ -485,8 +530,8 @@ PostSession/
           <varlistentry>
             <term>DefaultPath</term>
             <listitem>
-              <synopsis>DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
-              <para>Specifies the path which will be set in the user's session. This value will be overridden with the value from /etc/default/login if it contains "ROOT=&lt;pathname&gt;". If the /etc/default/login file exists, but contains no value for ROOT, the value as defined in the GDM configuration will be be used.</para>
+              <synopsis>DefaultPath=defaultpath (value set by configure)</synopsis>
+              <para>Specifies the path which will be set in the user's session. This value will be overridden with the value from <filename>/etc/default/login</filename> if it contains "ROOT=&lt;pathname&gt;". If the <filename>/etc/default/login</filename> file exists, but contains no value for ROOT, the value as defined in the GDM configuration will be be used.</para>
             </listitem>
           </varlistentry>
 
@@ -591,7 +636,7 @@ PostSession/
           <varlistentry>
             <term>HaltCommand</term>
             <listitem>
-              <synopsis>HaltCommand=/sbin/shutdown -h now</synopsis>
+              <synopsis>HaltCommand=&lt;sbin&gt;/shutdown -h now</synopsis>
               <para>Full path and arguments to command to be executed when user selects "Shut Down" from the Actions menu. This can be a ';' separated list of commands to try. If a value is missing, the shut down command is not available. Note that the default for this value is not empty, so to disable "Shut Down" it must be set to an empty value.</para>
             </listitem>
           </varlistentry>
@@ -655,7 +700,7 @@ PostSession/
           <varlistentry>
             <term>RebootCommand</term>
             <listitem>
-              <synopsis>RebootCommand=/sbin/shutdown -r now</synopsis>
+              <synopsis>RebootCommand=&lt;sbin&gt;/shutdown -r now</synopsis>
               <para>Full path and optional arguments to the command to be executed when user selects Restart from the Actions menu. This can be a ';' separated list of commands to try. If missing, the restart command is not available. Note that the default for this value is not empty so to disable restart you must set this explicitly to an empty value.</para>
             </listitem>
           </varlistentry>
@@ -671,8 +716,8 @@ PostSession/
           <varlistentry>
             <term>RootPath</term>
             <listitem>
-              <synopsis>RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
-              <para>Specifies the path which will be set in the root's session and the {Init,PostLogin,PreSession,PostSession} scripts executed by GDM. This value will be overridden with the value from /etc/default/login if it contains "SUROOT=&lt;pathname&gt;". If the /etc/default/login file exists, but contains no value for SUROOT, the value as defined in the GDM configuration will be used.</para>
+              <synopsis>RootPath=defaultpath (value set by configure)</synopsis>
+              <para>Specifies the path which will be set in the root's session and the {Init,PostLogin,PreSession,PostSession} scripts executed by GDM. This value will be overridden with the value from <filename>/etc/default/login</filename> if it contains "SUROOT=&lt;pathname&gt;". If the <filename>/etc/default/login</filename> file exists, but contains no value for SUROOT, the value as defined in the GDM configuration will be used.</para>
             </listitem>
           </varlistentry>
           
@@ -687,7 +732,7 @@ PostSession/
           <varlistentry>
             <term>SessionDesktopDir</term>
             <listitem>
-              <synopsis>SessionDesktopDir=&lt;etc&gt;/X11/sessions/:&lt;etc&gt;/dm/Sessions/:&lt;/usr/share&gt;/xsessions/</synopsis>
+              <synopsis>SessionDesktopDir=&lt;etc&gt;/X11/sessions/:&lt;etc&gt;/dm/Sessions/:&lt;share&gt;/xsessions/</synopsis>
               <para>Directory containing the <filename>.desktop</filename> files which are the available sessions on the system. Since 2.4.4.2 this is treated like a PATH type variable and the first file found is used.</para>
             </listitem>
           </varlistentry>
@@ -695,7 +740,7 @@ PostSession/
           <varlistentry>
             <term>SoundProgram</term>
             <listitem>
-              <synopsis>SoundProgram=/usr/bin/play</synopsis>
+              <synopsis>SoundProgram=<filename>&lt;bin&gt;/play</filename> (or <filename>%lt;bin&gt;/audioplay</filename> on Solaris)</synopsis>
               <para>Application to use when playing a sound. Currently used for playing the login sound, see the <filename>SoundOnLoginFile</filename> key. Supported since 2.5.90.0.</para>
             </listitem>
           </varlistentry>
@@ -703,7 +748,7 @@ PostSession/
           <varlistentry>
             <term>StandardXServer</term>
             <listitem>
-              <synopsis>StandardXServer=/usr/X11R6/bin/X</synopsis>
+              <synopsis>StandardXServer=/dir/to/X (value assigned by configuration file)</synopsis>
               <para>Full path and arguments to the standard X server command. This is used when gdm cannot find any other definition, and it's used as the default and failsafe fallback in a number of places. This should be able to run some sort of X server.</para>
             </listitem>
           </varlistentry>
@@ -796,12 +841,11 @@ PostSession/
           <varlistentry>
             <term>Xnest</term>
             <listitem>
-              <synopsis>Xnest=/usr/bin/X11/Xnest (/usr/openwin/bin/Xnest on Solaris)</synopsis>
+              <synopsis>Xnest=&lt;bin&gt;/X11/Xnest (/usr/openwin/bin/Xnest on Solaris)</synopsis>
               <para>The full path and arguments to the Xnest command. This is used for the flexible Xnest displays. This way the user can start new login screens in a nested window. Of course you must have the Xnest display from your X server packages installed for this to work.</para>
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="securitysection">
@@ -825,7 +869,7 @@ PostSession/
               <synopsis>AllowRemoteRoot=false</synopsis>
               <para>Allow root (privileged user) to log in remotely through GDM. This value should be set to true to allow such logins. Remote logins are any logins that come in through the XDMCP.</para>
               <para>On systems that support PAM, this parameter is not as useful since you can use PAM to do the same thing, and do even more.</para>
-              <para>This value will be overridden and set to false if the /etc/default/login file exists and contains "CONSOLE=/dev/login", and set to true if the /etc/default/login file exists and contains any other value or no value for CONSOLE.</para>
+              <para>This value will be overridden and set to false if the <filename>/etc/default/login</filename> file exists and contains "CONSOLE=/dev/login", and set to true if the <filename>/etc/default/login</filename> file exists and contains any other value or no value for CONSOLE.</para>
             </listitem>
           </varlistentry>
 
@@ -866,7 +910,7 @@ PostSession/
             <term>PasswordRequired</term>
             <listitem>
               <synopsis>PasswordRequired=false</synopsis>
-              <para>If true, this will cause PAM_DISALLOW_NULL_AUTHTOK to be passed as a flag to pam_authenticate and pam_acct_mgmt, disallowing NULL password. This setting will only take effect if PAM is being used by GDM. This value will be overridden with the value from /etc/default/login if it contains "PASSREQ=[YES|NO]". If the /etc/default/login file exists, but contains no value for PASSREQ, the value as defined in the GDM configuration will be used.</para>
+              <para>If true, this will cause PAM_DISALLOW_NULL_AUTHTOK to be passed as a flag to pam_authenticate and pam_acct_mgmt, disallowing NULL password. This setting will only take effect if PAM is being used by GDM. This value will be overridden with the value from <filename>/etc/default/login</filename> if it contains "PASSREQ=[YES|NO]". If the <filename>/etc/default/login</filename> file exists, but contains no value for PASSREQ, the value as defined in the GDM configuration will be used.</para>
             </listitem>
           </varlistentry>
           
@@ -902,7 +946,6 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="xdmcpsection">
@@ -931,7 +974,9 @@ PostSession/
               
               <para>If GDM is compiled to support it, access from remote displays can be controlled using the TCP Wrappers library. The service name is <filename>gdm</filename></para>
               
-              <para>Debería añadir <screen>gdm:.my.domain</screen> a su <filename>/etc/hosts.allow</filename>, dependiendo de su configuración de TCP Wrappers. Vea la página del manual <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink> para más detalles.</para>
+              <para>You should add <screen>
+gdm:.my.domain
+</screen> to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending on your TCP Wrappers configuration. See the <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink> man page for details.</para>
               
               <para>Note que XDMCP no es un protocolo particularmente seguro y que es una buena idea bloquear el puerto UDP 177 en su cortafuegos a no ser que realmente lo necesite.</para>
             </listitem>
@@ -1045,7 +1090,6 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="commonguioptions">
@@ -1102,11 +1146,9 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
         
       <sect3 id="greetersection">
-
         <title>Configuración del interfaz</title>
 
         <variablelist>
@@ -1155,7 +1197,7 @@ PostSession/
           <varlistentry>
             <term>BackgroundProgram</term>
             <listitem>
-              <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
+              <synopsis>BackgroundProgram=&lt;bin&gt;/xeyes</synopsis>
               <para>If set this command will be run in the background while the login window is being displayed. Note that not all applications will run this way, since GDM does not usually have a home directory. You could set up home directory for the GDM user if you wish to run applications which require it. This only affects the GTK+ Greeter.</para>
             </listitem>
           </varlistentry>        
@@ -1564,13 +1606,10 @@ PostSession/
               <para>If the Xinerama extension is active the login window will be centered on this physical screen (use 0 for the first screen, 1 for the second...).</para>
             </listitem>
           </varlistentry>        
-
         </variablelist>
-
       </sect3>
 
       <sect3 id="choosersection">
-
         <title>Opciones del selector XDCMP</title>
 
         <variablelist>
@@ -1643,11 +1682,9 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="debugsection">
-
         <title>Depurar configuración</title>
 
         <variablelist>
@@ -1669,11 +1706,9 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="serverdefs">
-
         <title>Definiciones del servidor X</title>
 
         <para>To set up X servers, you need to provide GDM with information about the installed X servers. You can have as many different definitions as you wish, each identified with a unique name. The name <filename>Standard</filename> is required. If you do not specify this server, GDM will assume default values for a 'Standard' server and the path given by <filename>daemon/StandardXServer</filename>. <filename>Standard</filename> is used as the default, in situations when no other server has been defined.</para>
@@ -1694,7 +1729,7 @@ PostSession/
           <varlistentry>
             <term>command</term>
             <listitem>
-              <synopsis>command=/usr/bin/X11/X</synopsis>
+              <synopsis>command=/path/to/X</synopsis>
               <para>El comando a ejecutar, con ruta completa al binario del servidor X, y cualesquier argumentos adicionales necesitados.</para>
             </listitem>
           </varlistentry>
@@ -1723,11 +1758,9 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-
       </sect3>
 
       <sect3 id="localservers">
-
         <title>Configuración de la pantalla X local estática</title>
 
         <para>The static display configuration specifies what displays should be always managed by GDM. GDM will restart the X server on the display if it dies, for example. There may be as many static displays that are managed as you wish, although typically each display is associated with a real display. For example, if a machine has two displays (say display ":0" and display ":1"), then this section can be used to specify that a separate login screen be managed for each screen. Each key in the <filename>[servers]</filename> section corresponds to the display number to be managed. Normally there is only one key, which is the key <filename>0</filename>, which corresponds to the display <filename>:0</filename>.</para>
@@ -1773,19 +1806,18 @@ PostSession/
 
       <para>La clave <filename>Session</filename> especifica el nombre base del archivo <filename>.desktop</filename> de sesión que el usuario quiere usar normalmente (sin la extensión <filename>.desktop</filename>, en otras palabras). La clave <filename>Language</filename> especifica el idioma que el usuario quiere usar por omisión. Si cualquiera de estas dos claves falta, se usa el predeterminado del sistema. El archivo normalmente tiene la apariencia siguiente:</para>
 
-      <screen>
+<screen>
 [Desktop]
 Session=gnome
-Language=es_ES.UTF-8
-      </screen>
+Language=cs_CZ.UTF-8
+</screen>
 
       <para>Normalmente GDM escribirá este archivo cuando el usuario entre por primera vez, y lo reescribirá si el usuario escoge cambiar su valor predeterminado en una entrada subsiguiente.</para>
 
-      <para>Si está activada la visualización de rostros, entonces se accede al archivo <filename>$HOME/.face</filename>. Este archivo debería ser una imagen estándar que GTK+ pueda leer, como PNG o JPEG. Además debe ser más pequeña que los valores <filename>MaxIconWidth</filename> y <filename>MaxIconHeight</filename> definidos en la configuración de GDM o será ignorada. Los usuarios pueden ejecutar el comando <command>gdmphotosetup</command> para especificar una imagen para el rostro y se copiará el archivo al lugar $HOME/.face escalándose para que su dimensión más larga no sea mayor que los valores <filename>MaxIconWidth</filename> o <filename>MaxIconHeight</filename>. <command>gdmphotosetup</command> tiene cuidado de no cambiar las proporciones de la imagen.</para>
+      <para>If the GDM Face Browser is turned, then the file <filename>$HOME/.face</filename> is accessed. This file should be a standard image that GTK+ can read, such as PNG or JPEG. It also must be smaller than the <filename>MaxIconWidth</filename> and <filename>MaxIconHeight</filename> values defined in the GDM configuration or it will be ignored. Users can run the <command>gdmphotosetup</command> program to specify a face image and it will copy the file to the <filename>$HOME/.face</filename> location and scale it so its longest dimension is not larger than the <filename>MaxIconWidth</filename> or <filename>MaxIconHeight</filename> values. <command>gdmphotosetup</command> takes care to not change the aspect ratio of the image.</para>
 
       <para>Las imágenes de rostros pueden colocarse en el directorio global de rostros, que se especifica por la opción de configuración <filename>GlobalFaceDir</filename> (normalmente <filename>&lt;share&gt;/pixmaps/faces/</filename>) y el nombre del archivo debería ser el nombre del usuario, opcionalmente con un <filename>.png</filename>, etc. agregado. </para>
     </sect2>
-    
   </sect1>
 
   <sect1 id="controlling">
@@ -1816,7 +1848,7 @@ Language=es_ES.UTF-8
 
       <para>gdmflexiserver accepts the following commands with the --command option:</para>
 
-      <screen>
+<screen>
 ADD_DYNAMIC_DISPLAY
 ALL_SERVERS
 ATTACHED_SERVERS
@@ -1839,13 +1871,13 @@ SET_SAFE_LOGOUT_ACTION
 SET_VT
 UPDATE_CONFIG
 VERSION
-      </screen>
+</screen>
 
       <para>These are described in detail below, including required arguments, response format, and return codes.</para>
 
       <sect3 id="adddynamic">
       <title>ADD_DYNAMIC_DISPLAY</title>
-      <screen>
+<screen>
 ADD_DYNAMIC_DISPLAY: Create a new server definition that will
                      run on the specified display leaving, it
                      in DISPLAY_CONFIG state.
@@ -1863,12 +1895,12 @@ Answers:
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="allservers">
       <title>ALL_SERVERS</title>
-      <screen>
+<screen>
 ALL_SERVERS: List all displays, including console, remote, xnest.
              This can, for example, be useful to figure out if
              the display you are on is managed by the gdm daemon,
@@ -1887,12 +1919,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="attachedservers">
       <title>ATTACHED_SERVERS</title>
-      <screen>
+<screen>
 ATTACHED_SERVERS: List all attached displays.  Doesn't list XDMCP
                   and xnest non-attached displays.
 Note:             This command used to be named CONSOLE_SERVERS,
@@ -1920,12 +1952,12 @@ Answers:
      1 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
      
       <sect3 id="authlocal">
       <title>AUTH_LOCAL</title>
-      <screen>
+<screen>
 AUTH_LOCAL: Setup this connection as authenticated for
             FLEXI_SERVER.  Because all full blown (non-Xnest)
             displays can be started only from users logged in
@@ -1951,22 +1983,22 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="close">
       <title>CLOSE</title>
-      <screen>
+<screen>
 CLOSE: Close sockets connection
 Supported since: 2.2.4.0
 Arguments: None
 Answers: None
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="flexixnest">
       <title>FLEXI_XNEST</title>
-      <screen>
+<screen>
 FLEXI_XNEXT: Start a new flexible Xnest display.
 Note:        Supported on older version from 2.2.4.0, later
              2.2.4.2, but since 2.3.90.4 you must supply 4
@@ -2000,12 +2032,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="flexixserver">
       <title>FLEXI_XSERVER</title>
-      <screen>
+<screen>
 FLEXI_XSERVER: Start a new X flexible display.  Only supported on
                connection that passed AUTH_LOCAL
 Supported since: 2.2.4.0
@@ -2023,12 +2055,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="getconfig">
       <title>GET_CONFIG</title> 
-      <screen>
+<screen>
 GET_CONFIG:  Get configuration value for key.  Useful so
              that other applications can request configuration
              information from GDM.  Any key defined as GDM_KEY_*
@@ -2047,12 +2079,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="getconfigfile">
       <title>GET_CONFIG_FILE</title> 
-      <screen>
+<screen>
 GET_CONFIG_FILE:  Get config file location being used by
                   the daemon.  If the GDM daemon was started
                   with the --config option, it will return
@@ -2065,12 +2097,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="getserverdetails">
       <title>GET_SERVER_DETAILS</title>
-      <screen>
+<screen>
 GET_SERVER_DETAILS:  Get detail information for a specific server.
 Supported since: 2.13.0.4
 Arguments: &lt;server&gt; &lt;key&gt;
@@ -2095,12 +2127,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="getserverlist">
       <title>GET_SERVER_LIST</title>
-      <screen>
+<screen>
 GET_SERVER_LIST:  Get a list of the server sections from
                   the configuration file.
 Supported since: 2.13.0.4
@@ -2113,12 +2145,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="greeterpids">
       <title>GREETERPIDS</title>
-      <screen>
+<screen>
 GREETERPIDS: List all greeter pids so that one can send HUP
              to them for config rereading.  Of course one
              must be root to do that.
@@ -2130,12 +2162,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="querylogoutaction">
       <title>QUERY_LOGOUT_ACTION</title>
-      <screen>
+<screen>
 QUERY_LOGOUT_ACTION: Query which logout actions are possible
                      Only supported on connections that passed
                      AUTH_LOCAL.
@@ -2153,12 +2185,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="queryvt">
       <title>QUERY_VT</title>
-      <screen>
+<screen>
 QUERY_VT:  Ask the daemon about which VT we are currently on.
            This is useful for logins which don't own
            /dev/console but are still console logins.  Only
@@ -2177,12 +2209,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="releasedynamic">
       <title>RELEASE_DYNAMIC_DISPLAYS</title>
-      <screen>
+<screen>
 RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in 
                           DISPLAY_CONFIG state
 Supported since: 2.8.0.0
@@ -2194,12 +2226,12 @@ Answers:
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="removedynamic">
       <title>REMOVE_DYNAMIC_DISPLAY</title>
-      <screen>
+<screen>
 REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server
                         and purging the display configuration
 Supported since: 2.8.0.0
@@ -2212,12 +2244,12 @@ Answers:
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="serverbusy">
       <title>SERVER_BUSY</title>
-      <screen>
+<screen>
 SERVER_BUSY:  Returns true if half or more of the daemon's sockets
               are busy, false otherwise.  Used by slave programs
               which want to ensure they do not overwhelm the 
@@ -2230,12 +2262,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="setlogoutaction">
       <title>SET_LOGOUT_ACTION</title>
-      <screen>
+<screen>
 SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after
                    slave process exits.  Only supported on
                    connections that passed AUTH_LOCAL.
@@ -2253,12 +2285,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="setsafelogoutaction">
       <title>SET_SAFE_LOGOUT_ACTION</title>
-      <screen>
+<screen>
 SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/restart/suspend
                          after everybody logs out.  If only one
                          person logs out, then this is obviously
@@ -2283,12 +2315,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="setvt">
       <title>SET_VT</title>
-      <screen>
+<screen>
 SET_VT:  Change to the specified virtual terminal.
          This is useful for logins which don't own /dev/console
          but are still console logins.  Only supported on Linux
@@ -2305,12 +2337,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="updateconfig">
       <title>UPDATE_CONFIG</title> 
-      <screen>
+<screen>
 UPDATE_CONFIG: Tell the daemon to re-read a key from the 
                GDM configuration file.   Any user can request
                that values are re-read but the daemon will
@@ -2382,12 +2414,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="queryversion">
       <title>VERSION</title>
-      <screen>
+<screen>
 VERSION: Query GDM version
 Supported since: 2.2.4.0
 Arguments: None
@@ -2396,9 +2428,8 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
-
     </sect2>
   </sect1>
 
@@ -2617,7 +2648,7 @@ Answers:
       <sect3 id="gdmphotosetupcommandline">
         <title>Opciones de línea de comandos de <command>gdmphotosetup</command></title>
 
-        <para>Allows the user to select an image that will be used as the user's photo by GDM's face browser, if enabled by GDM. The selected file is stored as ~/.face. This command accepts standard GNOME options.</para>
+        <para>Allows the user to select an image that will be used as the user's photo by GDM's face browser, if enabled by GDM. The selected file is stored as <filename>~/.face</filename>. This command accepts standard GNOME options.</para>
       </sect3>
 
       <sect3 id="gdmthemetestercommandline">
@@ -2629,7 +2660,7 @@ console-timed - In console non-flexi mode.
 flexi         - In flexi mode.
 xdmcp         - In remote (XDMCP) mode.
 remote-flexi  - In remote (XDMCP) &amp; flexi mode.
-         </screen></para>
+</screen></para>
       </sect3>
     </sect2>
 
@@ -2769,7 +2800,6 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
 
         <para>The <command>gdm-ssh-session</command> is normally executed by the GDM daemon when starting a secure remote connection through ssh. It does not take any options.</para>
       </sect3>
-
     </sect2>
   </sect1>
 
@@ -2785,7 +2815,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
 
       <para>GDM Themes can be created by creating an XML file that follows the specification in gui/greeter/greeter.dtd. Theme files are stored in the directory <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>. Usually this would be under <filename>/usr/share</filename>. The theme directory should contain a file called <filename>GdmGreeterTheme.desktop</filename> which has similar format to other .desktop files and looks like:</para>
 
-      <screen>
+<screen>
 [GdmGreeterTheme]
 Encoding=UTF-8
 Greeter=circles.xml
@@ -2794,21 +2824,22 @@ Description=Theme with blue circles
 Author=Bond, James Bond
 Copyright=(c) 2002 Bond, James Bond
 Screenshot=screenshot.png
-      </screen>
+</screen>
 
       <para>Los campos del nombre, descripción, autor y copyright pueden traducirse como otros archivos <filename>.desktop</filename>. Todos los archivos que se mencionan deberían estar en el propio directorio de temas. El campo Screenshot apunta a un archivo que debería ser una captura de 200x150 del tema en acción (está bien no tener una, pero lo hace más agradable al usuario). El campo Greeter apunta a un archivo xml que contiene descripciones del tema. La descripción se dará más tarde.</para>
 
       <para>Once you have theme ready and installed you can test it with the installed <command>gdmthemetester</command> script. This script assumes that the X server supports Xnest. This command takes two arguments, first the environment that should be used. This is one of console, console-timed, flexi, remote-flexi, xdmcp. Where console is a standard console login, console-timed is a console login with a timed login going on, flexi is for any local flexible display, remote-flexi is for flexi displays that are not local (such as an Xnest flexiserver run from a remote display) and xdmcp is for remote XDMCP connections. The second argument is the theme name. So for example to test how things look in the XDMCP mode with the circles theme you would run:</para>
 
-        <screen><command>gdmthemetester xdmcp circles</command></screen>
+<screen>
+<command>gdmthemetester xdmcp circles</command>
+</screen>
 
       <para>Be sure to test all the environments with your theme, and make sure to test how the caps lock warning looks by pressing caps lock. This is also a good way to take screenshots, just take a screenshot of the Xnest window. This can be done in GNOME by focusing the Xnest window and pressing Alt-PrintScreen.</para>
 
-      <para>Once you have all this done, then make a tarball that contains the directory name (so that you could just untar it in the <filename>/usr/share/gdm/themes</filename> directory). And this is the tarball you distribute and people can install from the graphical configuration application. You can do this with the commands: <screen>
-cd /usr/share/gdm/themes
+      <para>Once you have all this done, then make a tarball that contains the directory name (so that you could just untar it in the <filename>&lt;share&gt;/gdm/themes</filename> directory). And this is the tarball you distribute and people can install from the graphical configuration application. You can do this with the commands: <screen>
+cd &lt;share&gt;/gdm/themes
 tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
-      </screen></para>
-
+</screen></para>
     </sect2>
 
     <sect2 id="descofthemeformat">
@@ -2821,7 +2852,7 @@ tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
 &lt;box orientation="alignment" min-width="num"
 xpadding="num" ypadding="num" spacing="num"
 homogeneous="bool"&gt;
-      </screen> Where "num" means number and bool means either "true" or "false" The alignment value can be either "horizontal" or "vertical". If you leave any property off it will default to zero or "false" in case of "homogeneous" and "vertical" for the orientation.</para>
+</screen> Where "num" means number and bool means either "true" or "false" The alignment value can be either "horizontal" or "vertical". If you leave any property off it will default to zero or "false" in case of "homogeneous" and "vertical" for the orientation.</para>
 
         <para>Si la caja es homogénea entonces los hijos se les reserver la misma cantidad de espacio.</para>
 
@@ -2831,7 +2862,9 @@ homogeneous="bool"&gt;
       <sect3 id="fixednodes">
         <title>Nodos fijos</title>
 
-        <para>Fixed is a container that has its children scattered about laid out with precise coordinates. The size of this container is the biggest rectangle that contains all the children. Fixed has no extra properties and so you just use: <screen>&lt;fixed&gt;</screen> Then you put other items with proper position nodes inside this.</para>
+        <para>Fixed is a container that has its children scattered about laid out with precise coordinates. The size of this container is the biggest rectangle that contains all the children. Fixed has no extra properties and so you just use: <screen>
+&lt;fixed&gt;
+</screen> Then you put other items with proper position nodes inside this.</para>
 
         <para>The "toplevel" node is really just like a fixed node.</para>
       </sect3>
@@ -2885,7 +2918,9 @@ homogeneous="bool"&gt;
           </varlistentry>
         </variablelist>
 
-        <para>For example: <screen>&lt;item type="label"&gt;</screen> Items can specify ID values which gives them a specific look and feel or formatting. Furthermore you can customize the login process by adding custom widgets with custom id's for some items (currently only the list item)</para>
+        <para>For example: <screen>
+&lt;item type="label"&gt;
+</screen> Items can specify ID values which gives them a specific look and feel or formatting. Furthermore you can customize the login process by adding custom widgets with custom id's for some items (currently only the list item)</para>
 
         <para>Los elementos de entradas pueden tener valores id como siguen:</para>
 
@@ -2962,7 +2997,9 @@ homogeneous="bool"&gt;
           </varlistentry>
         </variablelist>
 
-        <para>If an item is of type rect, the item can be a button. Buttons must also include a "button" value as follows: <screen>&lt;item type="rect" id="disconnect_button" button="true"&gt;.</screen></para>
+        <para>If an item is of type rect, the item can be a button. Buttons must also include a "button" value as follows: <screen>
+&lt;item type="rect" id="disconnect_button" button="true"&gt;.
+</screen></para>
 
         <para>Los valores posibles para los ids de los botones son los siguientes:</para>
 
@@ -3029,20 +3066,23 @@ homogeneous="bool"&gt;
               <para>Realiza las opciones detener/reiniciar/suspender/etc (si están permitidas por la configuración de GSM). Además permite al usuario ejecutar el configurador si el usuario introduce la contraseña de root (otra vez si lo permite la configuración de GDM). Esto está normalmente ahora etiquetado como Acciones, y referido como el menú de Acciones.</para>
             </listitem>
           </varlistentry>
-
         </variablelist>
       </sect3>
 
       <sect3 id="positionnodes">
         <title>Nodo de posición</title>
 
-        <para>Cada elemento puede especificar su posición  y tamaño por medio del nodo "pos". Por ejemplo <screen>&lt;pos x="0" y="4" width="100%" height="100%"/&gt;</screen></para>
+        <para>Each item can specify its position and size via the "pos" node. For example: <screen>
+&lt;pos x="0" y="4" width="100%" height="100%"/&gt;
+</screen></para>
 
         <para>Tanto la posición como el tamaño pueden darse en porcentaje y se tomará como el porcentaje del tamaño del contenedor actual. Para los elementos de nivel superior su porcentaje es respecto de la pantalla completa.</para>
 
         <para>For x and y, you can also specify a negative position which means position from the right or bottom edge. But this only applies with absolute coordinates. With percentage you can specify negative position and it will be still from the same edge.</para>
 
-        <para>The position also specifies the anchor of the item, this can be "n" "ne" "e" "se" "s" "sw" "w" and "nw" or "center" which stand for the different edges/corners or "center" for center. For example: <screen>&lt;pos x="10%" y="50%" anchor="w" width="80%" height="95"/&gt;</screen></para>
+        <para>The position also specifies the anchor of the item, this can be "n" "ne" "e" "se" "s" "sw" "w" and "nw" or "center" which stand for the different edges/corners or "center" for center. For example: <screen>
+&lt;pos x="10%" y="50%" anchor="w" width="80%" height="95"/&gt;
+</screen></para>
 
         <para>If the item contains a box, you can specify width and height to be "box" to mean that they are supposed to be the width and height of the box, that is the items in the box plus the padding.</para>
 
@@ -3053,8 +3093,7 @@ homogeneous="bool"&gt;
         <para>There are two extra properties you can specify (as of 2.4.4.3) for labels (and labels only). The first is "max-width" which will specify the maximum width of the label in pixels. And the second is "max-screen-percent-width" which specifies the maximum percentage of the screen width that the label can occupy. By default no label will occupy more then 90% of the screen by width. An example may be: <screen>
 &lt;item type="label"&gt;
 &lt;pos x="10%" max-screen-percent-width="50%"/&gt;
-          </screen></para>
-
+</screen></para>
       </sect3>
 
       <sect3 id="shownodes">
@@ -3069,7 +3108,9 @@ homogeneous="bool"&gt;
         <para><filename>remote</filename> - In remote mode.</para>
         <para><filename>remote-flexi</filename> - In remote &amp; flexi mode.</para>
 
-        <para>For example: <screen>&lt;show modes="flexi,remote"/&gt;</screen></para>
+        <para>For example: <screen>
+&lt;show modes="flexi,remote"/&gt;
+</screen></para>
 
         <para>You can also specify the "type" value to indicate that certain items should only be displayed if the type is true. Valid values include the following:</para>
 
@@ -3081,7 +3122,9 @@ homogeneous="bool"&gt;
         <para><filename>system</filename>, si SystemMenu está especificado en la configuración de GDM.</para>
         <para><filename>timed</filename>, si TimedLoginEnabled está puesto a "true" en la configuración de GDM.</para>
 
-        <para>Por ejemplo: <screen>&lt;show modes="console" type="system"/&gt;</screen></para>
+        <para>For example: <screen>
+&lt;show modes="console" type="system"/&gt;
+</screen></para>
 
         <para>Note that if SystemMenu is off then the halt, restart, suspend, chooser and config choices will not be shown, so this is a global toggle for them all. See some of the standard themes for how the show modes are used.</para>
       </sect3>
@@ -3095,11 +3138,17 @@ homogeneous="bool"&gt;
         <para><filename>active</filename> - when the item has active focus.</para>
         <para><filename>prelight</filename> - when the mouse is hovering over the item.</para>
 
-        <para>When item is "rect" (alpha can be omitted and defaults to 0.0): <screen>&lt;normal color="#ffffff" alpha="0.0"&gt;</screen></para>
+        <para>When item is "rect" (alpha can be omitted and defaults to 0.0): <screen>
+&lt;normal color="#ffffff" alpha="0.0"&gt;
+</screen></para>
 
-        <para>When item is "label" <screen>&lt;normal color="#ffffff" font="Sans 14"/&gt;</screen></para>
+        <para>When item is "label" <screen>
+&lt;normal color="#ffffff" font="Sans 14"/&gt;
+</screen></para>
 
-        <para>When the item type is "pixmap" or "SVG", then the normal, active, and prelight tags specify the images to use as follows: <screen>&lt;normal file="picture.png" tint="#dddddd"/&gt;</screen></para>
+        <para>When the item type is "pixmap" or "SVG", then the normal, active, and prelight tags specify the images to use as follows: <screen>
+&lt;normal file="picture.png" tint="#dddddd"/&gt;
+</screen></para>
 
         <para>Note that relative pathnames are assumed to be in the same directory as the theme <filename>.xml</filename> file in <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>.</para>
       </sect3>
@@ -3110,16 +3159,22 @@ homogeneous="bool"&gt;
         <para>If the item type is of userlist, then the background color for the icon and label can be set separately via the the following tag:</para>
 
         <para>
-        <screen>&lt;color iconcolor="#dddddd" labelcolor="#ffffff"/&gt;</screen>
+<screen>
+&lt;color iconcolor="#dddddd" labelcolor="#ffffff"/&gt;
+</screen>
         </para>
       </sect3>
 
       <sect3 id="textnodes">
         <title>Nodo de texto</title>
 
-        <para>Text tags are used by labels. They can be used to display localized text as follows (if the "xml:lang" attribute is omitted, the C locale is assumed): <screen>&lt;text xml:lang="fr"&gt;Option&lt;/text&gt;</screen></para>
+        <para>Text tags are used by labels. They can be used to display localized text as follows (if the "xml:lang" attribute is omitted, the C locale is assumed): <screen>
+&lt;text xml:lang="fr"&gt;Option&lt;/text&gt;
+</screen></para>
 
-        <para>You can include pango markup in the text nodes for labels, however you must encode it. So for example to have the label of "foo&lt;sup&gt;bar&lt;/sup&gt;", you must type: <screen>&lt;text"&gt;foo&amp;lt;sup&amp;&gt;bar&amp;lt;/sup&amp;&gt;&lt;/text&gt;</screen></para>
+        <para>You can include pango markup in the text nodes for labels, however you must encode it. So for example to have the label of "foo&lt;sup&gt;bar&lt;/sup&gt;", you must type: <screen>
+&lt;text"&gt;foo&amp;lt;sup&amp;&gt;bar&amp;lt;/sup&amp;&gt;&lt;/text&gt;
+</screen></para>
 
         <para>Text nodes can contain the following special character sequences which will be translated as follows:</para>
 
@@ -3160,7 +3215,9 @@ homogeneous="bool"&gt;
         <para><filename>username-label</filename>, _("Usuario:"</para>
         <para><filename>welcome-label</filename>, _("Bienvenido a %n"</para>
 
-        <para>Por ejemplo: <screen>&lt;stock type="welcome-label"&gt;</screen></para>
+        <para>For example: <screen>
+&lt;stock type="welcome-label"&gt;
+</screen></para>
       </sect3>
 
       <sect3 id="customwidgetry">
@@ -3170,7 +3227,7 @@ homogeneous="bool"&gt;
 
         <para>Por ejemplo suponga que estamos en la pantalla 0, <filename>ServAuthDir</filename>  es  <filename>/var/gdm</filename> y necesitamos tener lo siguiente en el tema:</para>
 
-        <screen>
+<screen>
 &lt;item type="list" id="custom-config"&gt;
 &lt;pos anchor="nw" x="1" y="1" height="200" width="100"&gt;
 &lt;listitem id="foo"&gt;
@@ -3180,9 +3237,11 @@ homogeneous="bool"&gt;
 &lt;text&gt;Bar&lt;/text&gt;
 &lt;/listitem&gt;
 &lt;/item&gt;
-        </screen>
+</screen>
 
-        <para>Entonces si el usuario elije «Foo» entonces <filename>&lt;var&gt;/gdm/:0.GreeterInfo</filename> contendrá <screen>custom-config=foo</screen></para>
+        <para>Then if the user chooses 'Foo' then <filename>&lt;var&gt;/gdm/:0.GreeterInfo</filename> will contain: <screen>
+custom-config=foo
+</screen></para>
       </sect3>
     </sect2>
   </sect1>
@@ -3199,11 +3258,15 @@ homogeneous="bool"&gt;
 
              <para>Para restringir los cambios del usuario a la apariencia visual a un subconjunto de los temas disponibles, el parámetro <filename>GtkThemesToAllow</filename> en la configuración de GDM puede establecerse a una lista de temas aceptables separados por comas. Por ejemplo:</para>
 
-             <screen>GtkThemesToAllow=HighContrast,HighContrastInverse</screen>
+<screen>
+GtkThemesToAllow=HighContrast,HighContrastInverse
+</screen>
 
              <para>Para activar el uso de tecnologías de asistencia como el teclado en pantalla, el lector de pantalla o la Lupa, el parámetro <filename>AddGtkModules</filename> en la configuración de GDM debe descomentarse y establecerse a «true». Además el parámetro <filename>GtkModulesList</filename> debe ser descomentado y establecido como sigue:</para>
 
-             <screen>GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener</screen>
+<screen>
+GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
+</screen>
 
              <para>Los administradores de sistema quizá deseen cargar sólo un subconjunto mínimo de estos módulos que se requieren para soportar su base de usuarios. Dependiendo de las necesidades de los usuarios finales, no todos los GtkModules necesitan ser cargados. Si sus usuarios finales necesitan el lector de pantalla integrado y la lupa, debe incuir  «gail» y «atk-bridge». Si sus usuarios finales estarán usando un dispositivo apuntador sin botones o interruptores, incluya «dwellmouselistener». si algunos de sus usuarios usarán dispositivos apuntadores con interruptores, alternativos a teclados físicos o despositivos de botones, incluya «keymouselistener». Incluir los cuatro es apropiado para la mayoría de las configuraciones del sistema. El teclado en pantalla puede funcionar singail o  atk-bridge, pero con un conjunto de características reducido; paa accesibilidad optima recomendamos incluir tanto gail como atk-bridge.</para>
 
@@ -3220,24 +3283,73 @@ homogeneous="bool"&gt;
              <para>Currently GDM does not remember what accessible technology programs have been started when switching applications. So if the user switches between the login program and the chooser, for example, then it is necessary for the user to redo the gesture. Users may need to also set up their default session so that the assistive technologies required are started automatically (or have appropriate key-bindings defined to start them) after the user session has started.</para>
 
              <para>There are some issues that cause users to have problems getting the gesture listeners to work. It is recommended that people use GDM version 2.8.0.5 or later for best results. Some X servers have a bug which causes detectable autorepeat to fail when XEVIE is enabled (which happens when atk-bridge is included as a GTK Module). This bug causes key gestures with a duration greater than 0 to always fail. A workaround is to simply redefine all key gestures so they have zero length duration. Some versions of GOK and gnopernicus will not launch unless the "gdm" user has a writable home directory. If you see an hourglass cursor when you complete a gesture but the program does not start, then you are likely having this problem. It should be considered a bug for AT programs to require having a writable home directory, so please file a bug with the AT program if you encounter this problem. Also note that some input devices require X server configuration before GDM will recognize them.</para>
-     </sect2>
+       </sect2>
        <sect2 id="accessibilitysound">
           <title>Configuración de sonido de accesibilidad en la entrada</title>
-             <para>By default, GDM requires a media application such as "sox" to be present to play sounds for successful or failed login. GDM defaults the location of this application to <filename>/usr/bin/play</filename> (or <filename>/usr/bin/audioplay</filename> on Solaris. This can be changed via the SoundProgram GDM configuration option. Typically most text-to-speech programs (such as ORCA or Gnopernicus) use a separate mechanism to play audio.</para>
-     </sect2>
+             <para>By default, GDM requires a media application such as "sox" to be present to play sounds for successful or failed login. GDM defaults the location of this application to <filename>&lt;bin&gt;/play</filename> (or <filename>&lt;bin&gt;/audioplay</filename> on Solaris. This can be changed via the SoundProgram GDM configuration option. Typically most text-to-speech programs (such as ORCA or Gnopernicus) use a separate mechanism to play audio.</para>
+        </sect2>
   </sect1>
 
   <sect1 id="solaris">
     <title>Características específicas de Solaris</title>
 
-    <para>GDM soporta unas pocas características específicas a Solaris, como las siguientes:</para>
+       <sect2 id="solarisconfiguration">
+          <title>Solaris Configuration</title>
+             <para>On Solaris, the following configuration is recommended. This turns on IPv6 and also turns on PreFetch for performance benefit. <screen>
+./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
+   --libexecdir=/usr/lib --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
+   --with-prefetch --with-post-path=/usr/openwin/bin
+</screen></para>
 
-    <para>GDM soporta Solaris Auditing si se ejecuta sobre Solaris 10 o superior.</para>
+             <para>Configuring GDM with the "--with-post-path=/usr/openwin/bin" on Solaris is recommended. See comments in configure.ac file.</para>
+       </sect2>
 
-    <para>GDM supports a security feature which causes the X server to run as the user instead of as the root user. GDM must be using PAM for this feature to be enabled, which is the normal case for Solaris. This second feature has the side-effect of causing the X server to always restart between sessions, which disables the AlwaysRestartServer configuration option.</para>
+       <sect2 id="solarislogindevperm">
+          <title>Solaris /etc/logindevperm</title>
+             <para>GDM supports /etc/logindevperm, but only on Solaris 10 and higher. Refer to the logindevperm.4 man page for more information.</para>
 
-    <para>Solaris supports the <filename>/etc/default/login</filename> interface, which affects the <filename>DefaultPath</filename>, <filename>RootPath</filename>, <filename>PasswordRequired</filename>, and <filename>AllowRemoteRoot</filename> options as described in the Configuration section.</para>
+             <para>To make /etc/logindevperm functionality work on Solaris 9 or earlier you would have to hack the GDM PreSession and PostSession script to chmod the device permissions directly. In other words, if /etc/logindevperm had a listing like this:</para>
 
+<screen>
+/dev/console    0600    /dev/sound/*            # audio devices
+</screen>
+     
+             <para>In the PreSession scriptchown /dev/console to the user:group who is logging into the console and ensure whatever permissions is specified in /etc/logindevperm (0600 for the line above). Then in the PostSession script chmod them back to root:root and ensure 0600 this time (don't use the value in the /etc/logindevperm file). Linux uses a different mechanism for managing device permissions.</para>
+       </sect2>
+
+       <sect2 id="solarisautomaticlogin">
+          <title>Solaris Automatic Login</title>
+             <para>By default, automatic login is not enabled by GDM, so you would only notice this problem if you try to make use of it. Turning this feature on causes your computer to login to a specified username on startup without asking for username and password. This is an unsecure way to set up your computer. Make sure to read the PAM documentation (e.g. pam.d/pam.conf man page) and be comfortable with the security settings before modifying your configuration.</para>
+
+             <para>To turn on automatic login on Solaris, refer to the PAM section above. If using Solaris 10 or lower, then you also need to compile the pam_allow.c code and install it to /usr/lib/security (or anywhere and provide the full path in /etc/pam.conf) and ensure it is owned by uid 0 and not group or world writable. Now see automatic login work. Wasn't it worth it! I believe these settings will be added someday, though Sun isn't quite sure Automatic login is such a secure feature so we will probably debate it further.</para>
+
+             <para>The following are reasonable pam.conf values for turning on automatic login in GDM.</para>
+
+<screen>
+       gdm-autologin auth  required    pam_unix_cred.so.1
+       gdm-autologin auth  sufficient  pam_allow.so.1
+       gdm-autologin account  sufficient  pam_allow.so.1
+       gdm-autologin session  sufficient  pam_allow.so.1
+       gdm-autologin password  sufficient  pam_allow.so.1
+</screen>
+
+             <para>The above setup will cause no lastlog entry to be generated. If a lastlog entry is desired, then use the following for session:</para>
+
+<screen>
+       gdm-autologin session required pam_unix_session.so.1
+</screen>
+       </sect2>
+
+       <sect2 id="solarisother">
+          <title>Other Solaris Features</title>
+             <para>GDM soporta unas pocas características específicas a Solaris, como las siguientes:</para>
+
+             <para>GDM supports Solaris Auditing if running on Solaris 10 or higher. GDM should not be used if auditing is needed and running Solaris 9 or older.</para>
+
+            <para>GDM supports a security feature which causes the X server to run as the user instead of as the root user. GDM must be using PAM for this feature to be enabled, which is the normal case for Solaris. This second feature has the side-effect of causing the X server to always restart between sessions, which disables the AlwaysRestartServer configuration option.</para>
+
+            <para>Solaris supports the <filename>/etc/default/login</filename> interface, which affects the <filename>DefaultPath</filename>, <filename>RootPath</filename>, <filename>PasswordRequired</filename>, and <filename>AllowRemoteRoot</filename> options as described in the Configuration section.</para>
+       </sect2>
   </sect1>
 
   <sect1 id="exampleconf">
@@ -3253,18 +3365,18 @@ homogeneous="bool"&gt;
       <para>On <filename>appserver</filename> you enable XDMCP, so you have <screen>
 [xdmcp]
 Enable=true
-        </screen> If you want no local screens here, you can then make the <filename>[servers]</filename> section empty.</para>
+</screen> If you want no local screens here, you can then make the <filename>[servers]</filename> section empty.</para>
 
       <para>On the <filename>xterminal</filename> you disable XDMCP (you don't want anyone to connect to the xterminal really). You will add a server type perhaps called <filename>Terminal</filename> as follows: <screen>
 [server-Terminal]
 name=Terminal server
-command=/usr/X11R6/bin/X -terminate
+command=/path/to/X -terminate
 flexible=false
 handled=false
-        </screen> This definition should in fact be included in the standard configuration file. Notice that we made the <filename>handled</filename> key false since we don't want GDM to handle this server localy. Also note that we have not yet added the <filename>-query</filename> argument, you can add that here, or in the <filename>[servers]</filename> section. We'll define our local servers as follows: <screen>
+</screen> This definition should in fact be included in the standard configuration file. Notice that we made the <filename>handled</filename> key false since we don't want GDM to handle this server localy. Also note that we have not yet added the <filename>-query</filename> argument, you can add that here, or in the <filename>[servers]</filename> section. We'll define our local servers as follows: <screen>
 [servers]
 0=Terminal -query appserver
-        </screen> This will run a direct XDMCP query to the server named <filename>appserver</filename>.</para>
+</screen> This will run a direct XDMCP query to the server named <filename>appserver</filename>.</para>
     </sect2>
 
     <sect2 id="terminallabtwo">
@@ -3275,27 +3387,33 @@ handled=false
       <para>So on the <filename>xterminal</filename> you again disable XDMCP. You will add a server type perhaps called <filename>Chooser</filename> as follows: <screen>
 [server-Chooser]
 name=Chooser server
-command=/usr/X11R6/bin/X
+command=/path/to/X
 flexible=false
 chooser=true
-        </screen> And again this definition should in fact be included in the standard configuration file. Notice that we made the <filename>chooser</filename> key true here. This will run the XDMCP chooser for this server, and when the user chooses a host GDM will run a query for that host. Then we will define our local servers as follows: <screen>
+</screen> And again this definition should in fact be included in the standard configuration file. Notice that we made the <filename>chooser</filename> key true here. This will run the XDMCP chooser for this server, and when the user chooses a host GDM will run a query for that host. Then we will define our local servers as follows: <screen>
 [servers]
 0=Chooser
-        </screen></para>
+</screen></para>
 
-      <para>The XDMCP chooser on the X terminal will normally give a broadcast query to see which servers exist on the network. If the two servers are not reachable by a broadcast query, you must add them by hand to the configuration file. So in the <filename>[chooser]</filename> section you would have: <screen>Hosts=appserverone,appservertwo</screen> and any other servers you wish the users to be able to connect to.</para>
+      <para>The XDMCP chooser on the X terminal will normally give a broadcast query to see which servers exist on the network. If the two servers are not reachable by a broadcast query, you must add them by hand to the configuration file. So in the <filename>[chooser]</filename> section you would have: <screen>
+Hosts=appserverone,appservertwo
+</screen> and any other servers you wish the users to be able to connect to.</para>
 
       <para>Sometimes you may want to run the chooser on the server side however. Then what you want to do is to run a configuration similar to the previous section about the one server configuration with XDMCP indirect queries enabled on <filename>appserver</filename> and on the X terminals you'd have <screen>
 [servers]
 0=Terminal -indirect appserver
-        </screen> This way for example you only have to maintain one <filename>Hosts</filename> entry. However as a disadvantage then, the <filename>appserver</filename> must then always be available. So it's not good for situations where you want to have serveral servers and not all of them have to be on all the time. You could also have one of the X terminals handle indirect XDMCP queries and serve up the chooser to the other X terminals.</para>
+</screen> This way for example you only have to maintain one <filename>Hosts</filename> entry. However as a disadvantage then, the <filename>appserver</filename> must then always be available. So it's not good for situations where you want to have several servers and not all of them have to be on all the time. You could also have one of the X terminals handle indirect XDMCP queries and serve up the chooser to the other X terminals.</para>
     </sect2>
   </sect1>
 
   <sect1 id="troubleshooting">
     <title>Troubleshooting</title>
 
-    <para>This section discusses helpful tips for getting GDM working. In general, if you have a problem using GDM, you can submit a bug to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink> or send an email to the <address><email>gdm-list@gnome.org</email></address> mail alias. If GDM is failing to work properly, it is always a good idea to include debug information. Use the <command>gdmsetup</command> command to turn on debug ("Enable debug messages to system log" checkbox in the "Security" tab), then use GDM to the point where it fails, and include the GDM output sent to your system log (<filename>/var/log/messages</filename> or <filename>/var/adm/messages</filename> depending on your operating system). Since the system log can be large, please only include the GDM debug information and do not sent the entire file.</para>
+    <para>This section discusses helpful tips for getting GDM working. In general, if you have a problem using GDM, you can submit a bug to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink> or send an email to the <address><email>gdm-list@gnome.org</email></address> mail alias.</para>
+
+    <para>If GDM is failing to work properly, it is always a good idea to include debug information. Use the <command>gdmsetup</command> command to turn on debug ("Enable debug messages to system log" checkbox in the "Security" tab), then use GDM to the point where it fails, and include the GDM output sent to your system log (<filename>&lt;var&gt;/log/messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> depending on your operating system). Since the system log can be large, please only include the GDM debug information and do not sent the entire file. If you do not see any GDM syslog output, you may need to configure syslog (see syslog.3c man page).</para>
+
+    <para>You should not leave debug on after collecting data. It will clutter your syslog and slow system performance.</para>
 
     <sect2 id="wontstart">
       <title>GDM Will Not Start</title>
@@ -3304,7 +3422,7 @@ chooser=true
 
       <para>First make sure that the Xserver is configured properly. The GDM configuration file contains a command in the [server-Standard] section that is used for starting the Xserver. Verify that this command works on your system. Running this command from the console should start the Xserver. If it fails, then the problem is likely with your Xserver configuration. Refer to your Xserver error log for an idea of what the problem may be. The problem may also be that your Xserver requires different command-line options. If so, then modify the Xserver command in the GDM configuration file so that it is correct for your system.</para>
 
-      <para>Another common problem is that the GDM greeter program is having trouble starting. This can happen, for example, if GDM cannot find a needed library or other resource. Try starting the Xserver and a terminal program, set the shell environment variable DOING_GDM_DEVELOPMENT=1 and run <command>/usr/lib/gdmlogin</command> or <command>/usr/lib/gdmgreeter</command>. Any error messages echoed to the terminal will likely highlight the problem. Also, turning on debug and checking the output sent to the system log will often highlight the problem.</para>
+      <para>Another common problem is that the GDM greeter program is having trouble starting. This can happen, for example, if GDM cannot find a needed library or other resource. Try starting the Xserver and a terminal program, set the shell environment variable DOING_GDM_DEVELOPMENT=1 and run <command>&lt;lib&gt;/gdmlogin</command> or <command>&lt;lib&gt;/gdmgreeter</command>. Any error messages echoed to the terminal will likely highlight the problem. Also, turning on debug and checking the output sent to the system log will often highlight the problem.</para>
 
       <para>Also make sure that the <filename>/tmp</filename> directory has reasonable ownership and permissions, and that the machine's file system is not full. These problems will cause GDM to fail to start.</para>
     </sect2>

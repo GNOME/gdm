@@ -713,7 +713,8 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	gtk_init(&argc, &argv);
+	/* Option parsing */
+
 	ctx = poptGetContext(NULL, argc, (const char**)argv, options, 0);
 	while ((nextopt = poptGetNextOpt(ctx)) > 0 || nextopt == POPT_ERROR_BADOPT);
 
@@ -731,6 +732,8 @@ main (int argc, char *argv[])
 	if ( ! gdmcomm_check (TRUE)) {
 		return 1;
 	}
+
+	/* Process --command option */
 
 	if (send_command != NULL) {
 		if (authenticate)
@@ -788,6 +791,24 @@ main (int argc, char *argv[])
 			return 1;
 		}
 	}
+
+	/*
+	 * The --command argument does not display anything, so avoid running 
+	 * gtk_init until it finishes.  Sometimes the --command argument is
+	 * used when there is no display so it will fail and cause the 
+	 * program to exit, complaining about "no display".  
+	 *
+	 * Now process what gdmflexiserver is more used to do, start a
+	 * VT virtual terminal sesions - at least on systems where it
+	 * works.  On systems where it doesn't work VT stands for
+	 * "Very Tight" and will mess up your display if you try to
+	 * use it.  Tight!  So don't use it.  I'd accept a patch to
+	 * disable it, but its easy to avoid not using it as long
+	 * as your distro doesn't put the menu choice in the 
+	 * application launch button on the panel (don't ship the
+	 * desktop file).
+	 */
+	gtk_init(&argc, &argv);
 
 	/* always attempt to get cookie and authenticate.  On remote
 	servers */

@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.13.0.7"> 
-    <!ENTITY date "02/02/2006"> 
+    <!ENTITY version "2.13.0.8"> 
+    <!ENTITY date "02/10/2006"> 
 ]>
 
 <article id="index" lang="en">
@@ -118,15 +118,15 @@
     <para>
       Paths that start with a word in angle brackets are relative to the
       installation prefix. I.e. <filename>&lt;share&gt;/pixmaps/</filename>
-      refers to <filename>/usr/share/pixmaps</filename> if GDM was configured
+      refers to <filename>&lt;share&gt;/pixmaps</filename> if GDM was configured
       with <command>--prefix=/usr</command>.  Normally also note that
-      GDM is installed with <command>--sysconfigdir=/etc/X11</command>,
+      GDM is installed with <command>--sysconfigdir=&lt;etc&gt;/X11</command>,
       meaning any path to which we refer to as
       <filename>&lt;etc&gt;/gdm/PreSession</filename> usually means
       <filename>&lt;etc/X11&gt;/gdm/PreSession</filename>.  Note that for
       interoperability it is recommended that you use a --prefix of
       <filename>/usr</filename> and a --sysconfdir of
-      <filename>/etc/X11</filename>.
+      <filename>&lt;etc&gt;/X11</filename>.
     </para>
   </sect1>
 
@@ -154,6 +154,39 @@
         You can also send a message to the 
         <address><email>gdm-list@gnome.org</email></address> mail alias to
         discuss any issues or concerns with the GDM program.
+      </para>
+    </sect2>
+
+    <sect2 id="stability">
+      <title>
+        Interface Stability
+      </title>
+
+      <para>
+        The key/value pairs defined in the GDM configuration file and
+        considered &quot;stable&quot; interfaces and should only change in ways
+        that are backwards compatible.  Note that this includes functionaity
+        like the GDM scripts (Init, PreSession, PostSession, PostLogin,
+        XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile,
+        etc.), system applications (SoundProgram), etc.  Some values
+        depend on OS interfaces may need to be modified to work on a given
+        OS.  Typical examples are HaltCommand, RebootCommand, SuspendCommand,
+        StandardXServer, Xnest, SoundProgram, and the &quot;command&quot;
+        value for each &quot;server-foo&quot;.
+      </para>
+
+      <para>
+        Note: distributions often change the default values of keys to support
+        their platform.  Command-line interfaces for programs installed to
+        <filename>lt;bin&gt;</filename> are considered stable.  Refer to your
+        distribution configuration to see if there are any
+        distribution-specific changes from the default GDM configuration and
+        for information for what support exists for these options.
+      </para>
+
+      <para>
+        If issues are discovered that break compatibility, please file a bug
+        with an &quot;urgent&quot; priority.
       </para>
     </sect2>
 
@@ -344,11 +377,11 @@
       <para>
         To remedy this problem, gdm can be configured at compilation-time with
         the option --enable-secureremote, in which case gdm proposes as a
-        built-in session a session called "Secure Remote Connection".  Starting
-        such a session allows the user to enter the name or the address of the
-        host on which to connect; provided the said host runs an SSH server,
-        the user then gets connected to the server on which the default X
-        session is started and displayed on the local host.
+        built-in session a session called &quot;Secure Remote Connection&quot;.
+        Starting such a session allows the user to enter the name or the
+        address of the host on which to connect; provided the said host runs an
+        SSH server, the user then gets connected to the server on which the
+        default X session is started and displayed on the local host.
       </para>
       
       <para>
@@ -486,7 +519,7 @@
         &quot;stock_person&quot; icon defined in the current GTK+ theme.  If no
         such image is defined, it will fallback to the image specified in the
         <filename>DefaultFace</filename> configuration option, normally
-        /usr/share/pixmaps/nobody.png.
+        <filename>&lt;share&gt;/pixmaps/nobody.png</filename>.
       </para>
       
       <para>
@@ -622,12 +655,14 @@
 
       <para>
         In general GDM is very reluctant regarding reading/writing of user
-        files (such as the ~/.dmrc, ~/.face, ~/.xsession-errors, and
-        ~/.Xauthority files).  For instance it refuses to access anything but
-        regular files.  Links, sockets and devices are ignored.  The value of
-        the <filename>RelaxPermissions</filename> parameter determines whether
-        GDM should accept files writable by the user's group or others.  These
-        are ignored by default.
+        files (such as the <filename>~/.dmrc</filename>,
+        <filename>~/.face</filename>,
+        <filename>~/.xsession-errors</filename>, and
+        <filename>~/.Xauthority</filename> files).  For instance it refuses to
+        access anything but regular files.  Links, sockets and devices are
+        ignored.  The value of the <filename>RelaxPermissions</filename>
+        parameter determines whether GDM should accept files writable by the
+        user's group or others.  These are ignored by default.
       </para>
 
       <para>
@@ -635,7 +670,7 @@
         user.  If the sanity check fails on the user's
         <filename>.Xauthority</filename> file, a fallback cookie is created in
         the directory specified by the <filename>UserAuthFBDir</filename>
-        configuration setting (/tmp by default).
+        configuration setting (<filename>/tmp</filename> by default).
       </para>
 
       <para>
@@ -660,12 +695,16 @@
       </para>
 
       <para>
-        To use this feature, configure GDM with the --with-prefetch option.
-        This will cause GDM to install the gdmprefetch program to the
-        EXPANDED_LIBEXEC directory, install the gdmprefetchlist to the
-        &lt;etc&gt;/gdm directory, and set the PreFetchProgram configuration
-        variable so that the gdmprefetch program is called with the default
-        gdmprefetchlist file.  The default gdmprefetchlist file was optimized
+        To use this feature, configure GDM with the
+        <command>--with-prefetch</command> option.  This will cause GDM to
+        install the <command>gdmprefetch</command> program to the
+        EXPANDED_LIBEXEC directory, install the
+        <filename>gdmprefetchlist</filename> to the
+        <filename>&lt;etc&gt;/gdm</filename> directory, and set the
+        <filename>PreFetchProgram</filename> configuration variable so that the
+        <command>gdmprefetch</command> program is called with the default
+        <filename>gdmprefetchlist</filename> file.  The default
+        <filename>gdmprefetchlist</filename> file was optimized
         for a GNOME desktop running on Solaris, so may need fine-tuning on
         other systems.  Alternative prefetchlist files can be contributed
         to the &quot;gdm&quot; category in
@@ -678,8 +717,55 @@
   <sect1 id="security">
     <title>Security</title>
 
+    <sect2 id="PAM">
+      <title>
+        PAM
+      </title>
+      <para>
+        GDM uses PAM for username/authentication, though if your machine
+        does not support PAM you can build GDM to work with shadow
+        passwords and crypt.  Refer to the next section for more information
+        about PAM.
+      </para>
+
+      <para>
+        PAM stands for Pluggable Authentication Module, and is used by
+        most programs that request username/password authentication on
+        your computer.  It allows the user to configure different
+        behavior for different programs.  Since PAM affects security,
+        you should be comfortable with with the pam.
+      </para>
+
+      <para>
+        GDM uses PAM and some GDM features, like turning on automatic login
+        may require that you update your PAM configuration.  PAM has different,
+        but similar, interfaces on differnt operating systems, so check your
+        pam.d or pam.conf man page for details about how to configure it.
+      </para>
+
+      <para>
+        PAM allows the system administrator to have control about how different
+        programs which require password access work, so GDM and ssh and other
+        programs can have configurable behavior.
+      </para>
+
+      <para>
+        If there is no entry for GDM in the
+        <filename>&lt;etc&gt;/pam.conf</filename> file, then automatic login
+        will probably not work.  Not having an entry will causes GDM to use
+        default behavior, conservative settings are recommended and probably
+        shipped with your distro.
+      </para>
+    </sect2>
+
     <sect2 id="gdmuser">
       <title>The GDM User</title>
+
+      <para>
+        For security reasons a dedicated user and group id are required for
+        proper operation!  The need to be able to write Xauth files is why
+        user &quot;nobody&quot; is not appropriate for gdm.
+      </para>
 
       <para>
         The GDM daemon normally runs as root, as does the slave.  However GDM
@@ -691,12 +777,14 @@
       </para>
 
       <para>
-        The GDM user, and group, which are normally just
-        <command>gdm</command> should not be user or group of any particular
-        privilege.  The reason for using them is to have the user interface
-        run as a user without privileges so that in the unlikely case that
-        someone finds a weakness in the GUI, they cannot access root on the
-        computer.
+        This userid is used to run the GDM GUI programs required for login.
+        All functionality that requires root authority is done by the GDM
+        daemon process.  This design ensures that if the GUI programs are
+        somehow exploited, only the dedicated user privileges are available.
+        By default GDM assumes the user and the group are called `gdm'.
+        These are configured via the User and Group configuration options in
+        the gdm.conf file.  The user and group should be created before
+        running &quot;make install&quot;
       </para>
 
       <para>
@@ -709,6 +797,38 @@
         any session.  So you should not, under any circumstances, make this
         some user/group which may be easy to get access to, such as the
         user <filename>nobody</filename>.
+      </para>
+
+      <para>
+        Distributions and system administrators using GDM are expected to
+        setup the dedicated user properly.  It is recommended that this
+        userid be configured to disallow login and to not have a default
+        shell.  Distributions and system administrators should set up
+        the filesystem to ensure that the GDM user does not have read or
+        write access to sensitive files.
+      </para>
+
+      <para>
+        The necessity for a gdm userid/group is because the GDM user does
+        require certain special permissions.  It must be able to read and
+        write Xauth keys to <filename>&lt;var&gt;/lib/gdm</filename>.  This
+        directory should have root:gdm ownership and 1770 permissions.  Running
+        &quot;make install&quot; will set this directory to these values.  You
+        will need to modify the configure/Makefile if you want to use a
+        different group than &quot;gdm&quot;.  The GDM daemon process will
+        reset this directory to proper ownership/permissions if it is somehow
+        not set properly.
+      </para>
+
+      <para>
+        If the gdm user is set up properly and gdm user access is somehow
+        exploited, this means that the GDM user should only be able to
+        maliciously modify the Xauth keys causing potential
+        Denial-Of-Service attacks.  If a person gains the ability to run
+        programs as the user gdm, it would be possible to snoop on running
+        GDM processes, including usernames and passwords as they are
+        being typed in.  Therefore it is important to ensure that
+        the gdm user is disallowed login and has no default shell.
       </para>
     </sect2>
 
@@ -797,11 +917,12 @@
       <para>
         Note that NFS traffic really goes &quot;over the wire&quot; and thus
         can be snooped.  When accessing the user's X authorization file
-        (~/.Xauthority), GDM will try to open the file for reading as root.
-        If it fails, GDM will conclude that it is on an NFS mount and it will
-        automatically use <filename>UserAuthFBDir</filename>, which by default
-        is set to <filename>/tmp</filename>.  This behavior can be changed by
-        setting the <filename>NeverPlaceCookiesOnNFS</filename> in the
+        (<filename>~/.Xauthority</filename>), GDM will try to open the file
+        for reading as root.  If it fails, GDM will conclude that it is on an
+        NFS mount and it will automatically use
+        <filename>UserAuthFBDir</filename>, which by default is set to
+        <filename>/tmp</filename>.  This behavior can be changed by setting the
+        <filename>NeverPlaceCookiesOnNFS</filename> in the
         <filename>[security]</filename> section to false.
       </para>
     </sect2>
@@ -848,16 +969,20 @@
       <para>
         You should use the daemon name <command>gdm</command> in the
         <filename>&lt;etc&gt;/hosts.allow</filename> and
-        <filename>&lt;etc&gt;hosts.deny</filename> files.  For example to 
+        <filename>&lt;etc&gt;/hosts.deny</filename> files.  For example to 
         deny computers from <filename>.evil.domain</filename> from logging in,
         then add
       </para>
-      <screen>gdm: .evil.domain</screen>
+<screen>
+gdm: .evil.domain
+</screen>
       <para>
         to <filename>&lt;etc&gt;/hosts.deny</filename>.  You may also need
         to add
       </para>
-      <screen>gdm: .your.domain</screen>
+<screen>
+gdm: .your.domain
+</screen>
       <para>
         to your <filename>&lt;etc&gt;/hosts.allow</filename> if you normally
         disallow all services from all hosts.  See the
@@ -874,9 +999,39 @@
       This section will cover the configuration of GDM and the format of the
       GDM configuration files.  You can use the <command>gdmsetup</command>
       command to configure GDM, but the configuration application does not
-      let you configure every aspect of GDM.  The information in this
-      section explains how to further configure GDM.
+      let you configure every aspect of GDM.  
     </para>
+
+    <para>
+      You can either run <command>gdmsetup</command> as root or turn on the GDM
+      configuration feature that allows you to run <command>gdmsetup</command>
+      from the login screen (where it will run as root).  If you believe
+      running root owned GUI's is a security risk, then you would want to edit
+      the files by hand.
+    </para>
+
+    <para>
+      If you are a distro and want to set machine defaults, you should 
+      make the proper edits in the <filename>gdm.conf-custom</filename> file
+      rather than editing the <filename>gdm.conf</filename> file.
+    </para>
+
+    <para>
+      If you want to change configuration by hand, edit the
+      <filename>&lt;etc&gt;/X11/gdm/gdm.conf-custom</filename> file and make sure the
+      keyname=value pair you want is included in the appropriate section.  For
+      example, to change the &quot;Greeter&quot; key in the &quot;daemon&quot;
+      section, make sure the daemon section of the
+      <filename>gdm.conf-custom</filename> file has the value like in this
+      example.  The modified option does not have to come anywhere in the
+      section.  The <command>gdmsetup</command> program manages editing these
+      files for you.
+    </para>
+
+<screen>
+[daemon]
+Greeter=/usr/lib/gdmgreeter
+</screen>
 
     <para>
       The configuration files (especially the <filename>gdm.conf</filename>
@@ -936,7 +1091,7 @@
       This is a listing of the config directory contents:
     </para>
 
-    <screen>
+<screen>
 locale.alias
 Xsession
 XKeepsCrashing
@@ -945,7 +1100,7 @@ Init/
 PostLogin/
 PreSession/
 PostSession/
-    </screen>
+</screen>
 
     <para> 
       <filename>locale.alias</filename> is a file which looks much like the
@@ -993,7 +1148,7 @@ PostSession/
       GDM specific built-in sessions (KDM hardcodes these at time of
       this writing).  Lastly the default setup will also read
       <filename>&lt;share&gt;/xsessions/</filename> (which should be
-      <filename>/usr/share/xsessions/</filename> if you really wish to
+      <filename>&lt;share&gt;/xsessions/</filename> if you really wish to
       cooperate with KDM) where desktop packages can install their session
       files.  The directories under the <filename>&lt;etc&gt;</filename> should
       be reserved for configuration.  The desktop file specification approach
@@ -1008,7 +1163,7 @@ PostSession/
 
     <para>
       A session can be disabled (if it was installed in
-      <filename>/usr/share/xsessions/</filename>) by adding an identically
+      <filename>&lt;share&gt;/xsessions/</filename>) by adding an identically
       named <filename>.desktop</filename> to one of the directories earlier in
       the path (likely <filename>&lt;etc&gt;/X11/sessions</filename>) and using
       <filename>Hidden=true</filename> in that file.
@@ -1143,7 +1298,6 @@ PostSession/
         out.  The <filename>Xsession</filename> script is however required as
         well as at least one session <filename>.desktop</filename> file.
       </para>
-
     </sect2>
 
     <sect2 id="configfile">
@@ -1218,7 +1372,7 @@ PostSession/
 
           <varlistentry>
             <term>AddGtkModules</term>
-                <listitem>
+            <listitem>
               <synopsis>AddGtkModules=false</synopsis>
               <para>
                 If true, then enables <command>gdmgreeter</command> or
@@ -1399,14 +1553,15 @@ PostSession/
           <varlistentry>
             <term>DefaultPath</term>
             <listitem>
-              <synopsis>DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
+              <synopsis>DefaultPath=defaultpath (value set by configure)</synopsis>
               <para>
                 Specifies the path which will be set in the user's session.
                 This value will be overridden with the value from
-                /etc/default/login if it contains
-                &quot;ROOT=&lt;pathname&gt;&quot;.  If the /etc/default/login
-                file exists, but contains no value for ROOT, the value as
-                defined in the GDM configuration will be be used.
+                <filename>/etc/default/login</filename> if it contains
+                &quot;ROOT=&lt;pathname&gt;&quot;.  If the
+                <filename>/etc/default/login</filename> file exists, but
+                contains no value for ROOT, the value as defined in the GDM
+                configuration will be be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1593,13 +1748,14 @@ PostSession/
           <varlistentry>
             <term>HaltCommand</term>
             <listitem>
-              <synopsis>HaltCommand=/sbin/shutdown -h now</synopsis>
+              <synopsis>HaltCommand=&lt;sbin&gt;/shutdown -h now</synopsis>
               <para>
                 Full path and arguments to command to be executed when user
-                selects "Shut Down" from the Actions menu.  This can be a ';'
-                separated list of commands to try.  If a value is missing, the
-                shut down command is not available.  Note that the default for
-                this value is not empty, so to disable "Shut Down" it must be
+                selects &quot;Shut Down&quot; from the Actions menu.  This can
+                be a ';' separated list of commands to try.  If a value is
+                missing, the shut down command is not available.  Note that the
+                default for this value is not empty, so to disable
+                &quot;Shut Down&quot; it must be
 		set to an empty value.
               </para>
             </listitem>
@@ -1650,7 +1806,7 @@ PostSession/
                 once only, the first time a greeter is displayed.  The
                 gdmprefetch command may be used.  This utility will load any
                 libraries passed in on the command line, or if the argument
-                starts with a "@" character, it will process the file assuming
+                starts with a &quot;@&quot; character, it will process the file assuming
                 it is an ASCII file containing a list of libraries, one per
                 line, and load each library in the file.
               </para>
@@ -1694,7 +1850,7 @@ PostSession/
           <varlistentry>
             <term>RebootCommand</term>
             <listitem>
-              <synopsis>RebootCommand=/sbin/shutdown -r now</synopsis>
+              <synopsis>RebootCommand=&lt;sbin&gt;/shutdown -r now</synopsis>
               <para>
                 Full path and optional arguments to the command to be
                 executed when user selects Restart from the Actions menu.  This
@@ -1723,16 +1879,16 @@ PostSession/
           <varlistentry>
             <term>RootPath</term>
             <listitem>
-              <synopsis>RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
+              <synopsis>RootPath=defaultpath (value set by configure)</synopsis>
               <para>
                 Specifies the path which will be set in the root's
                 session and the {Init,PostLogin,PreSession,PostSession} scripts
                 executed by GDM.  This value will be overridden with the value
-                from /etc/default/login if it contains
-                &quot;SUROOT=&lt;pathname&gt;&quot;.  If the /etc/default/login
-                file exists, but contains no value for SUROOT, the value as
-                defined in the GDM configuration will
-                be used.
+                from <filename>/etc/default/login</filename> if it
+                contains &quot;SUROOT=&lt;pathname&gt;&quot;.  If the
+                <filename>/etc/default/login</filename> file exists, but
+                contains no value for SUROOT, the value as defined in the GDM
+                configuration will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -1765,7 +1921,7 @@ PostSession/
           <varlistentry>
             <term>SessionDesktopDir</term>
             <listitem>
-              <synopsis>SessionDesktopDir=&lt;etc&gt;/X11/sessions/:&lt;etc&gt;/dm/Sessions/:&lt;/usr/share&gt;/xsessions/</synopsis>
+              <synopsis>SessionDesktopDir=&lt;etc&gt;/X11/sessions/:&lt;etc&gt;/dm/Sessions/:&lt;share&gt;/xsessions/</synopsis>
               <para>
                 Directory containing the <filename>.desktop</filename> files
                 which are the available sessions on the system.  Since 2.4.4.2
@@ -1778,7 +1934,7 @@ PostSession/
           <varlistentry>
             <term>SoundProgram</term>
             <listitem>
-              <synopsis>SoundProgram=/usr/bin/play</synopsis>
+              <synopsis>SoundProgram=<filename>&lt;bin&gt;/play</filename> (or <filename>%lt;bin&gt;/audioplay</filename> on Solaris)</synopsis>
               <para>
                 Application to use when playing a sound.  Currently used for
                 playing the login sound, see the
@@ -1791,7 +1947,7 @@ PostSession/
           <varlistentry>
             <term>StandardXServer</term>
             <listitem>
-              <synopsis>StandardXServer=/usr/X11R6/bin/X</synopsis>
+              <synopsis>StandardXServer=/dir/to/X (value assigned by configuration file)</synopsis>
               <para>
                 Full path and arguments to the standard X server command.
                 This is used when gdm cannot find any other definition,
@@ -1977,7 +2133,7 @@ PostSession/
           <varlistentry>
             <term>Xnest</term>
             <listitem>
-              <synopsis>Xnest=/usr/bin/X11/Xnest (/usr/openwin/bin/Xnest on Solaris)</synopsis>
+              <synopsis>Xnest=&lt;bin&gt;/X11/Xnest (/usr/openwin/bin/Xnest on Solaris)</synopsis>
               <para>
                 The full path and arguments to the Xnest command.  This is used
                 for the flexible Xnest displays.  This way the user can start
@@ -1988,7 +2144,6 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="securitysection">
@@ -2030,10 +2185,10 @@ PostSession/
               </para>
               <para>
                 This value will be overridden and set to false if the
-                /etc/default/login file exists and contains
-                &quot;CONSOLE=/dev/login&quot;, and set to true if the
-                /etc/default/login file exists and contains any other
-                value or no value for CONSOLE.
+                <filename>/etc/default/login</filename> file exists and
+                contains &quot;CONSOLE=/dev/login&quot;, and set to true if the
+                <filename>/etc/default/login</filename> file exists and
+                contains any other value or no value for CONSOLE.
               </para>
             </listitem>
           </varlistentry>
@@ -2114,11 +2269,12 @@ PostSession/
                 passed as a flag to pam_authenticate and pam_acct_mgmt,
                 disallowing NULL password.  This setting will only take
                 effect if PAM is being used by GDM.  This value will be
-                overridden with the value from /etc/default/login if it
-                contains &quot;PASSREQ=[YES|NO]&quot;.  If the
-                /etc/default/login file exists, but contains no value for
-                PASSREQ, the value as defined in the GDM configuration will be
-                used.
+                overridden with the value from
+                <filename>/etc/default/login</filename> if it contains
+                &quot;PASSREQ=[YES|NO]&quot;.  If the
+                <filename>/etc/default/login</filename> file exists, but
+                contains no value for PASSREQ, the value as defined in the GDM
+                configuration will be used.
               </para>
             </listitem>
           </varlistentry>
@@ -2180,7 +2336,6 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="xdmcpsection">
@@ -2230,9 +2385,10 @@ PostSession/
               
               <para>
                 You should add 
-              <screen>gdm:.my.domain</screen>
-                to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending on your
-                TCP Wrappers configuration.  See the
+<screen>
+gdm:.my.domain
+</screen>
+                to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending                 on your TCP Wrappers configuration.  See the
                 <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink>
                 man page for details.
               </para>
@@ -2454,7 +2610,6 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="commonguioptions">
@@ -2541,11 +2696,9 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
         
       <sect3 id="greetersection">
-
         <title>Greeter Configuration</title>
 
         <variablelist>
@@ -2570,8 +2723,8 @@ PostSession/
             <listitem>
               <synopsis>BackgroundProgramInitialDelay=30</synopsis>
               <para>
-                The background application will be started after at least that many 
-                seconds of inactivity.
+                The background application will be started after at least that
+                many seconds of inactivity.
               </para>
             </listitem>
           </varlistentry>
@@ -2615,7 +2768,7 @@ PostSession/
           <varlistentry>
             <term>BackgroundProgram</term>
             <listitem>
-              <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
+              <synopsis>BackgroundProgram=&lt;bin&gt;/xeyes</synopsis>
               <para>
                 If set this command will be run in the background while
                 the login window is being displayed.  Note that not all
@@ -2724,8 +2877,8 @@ PostSession/
               <synopsis>Include=</synopsis>
               <para>
                 Comma separated list of users to be included in the face
-                browser and in the <command>gdmsetup</command> selection list for
-                Automatic/Timed login. 
+                browser and in the <command>gdmsetup</command> selection list
+                for Automatic/Timed login. 
                 See also <filename>Exclude</filename>,
                 <filename>IncludeAll</filename>, and
                 <filename>MinimalUID</filename>.
@@ -2866,10 +3019,10 @@ PostSession/
               <synopsis>InfoMsgFile=/path/to/infofile</synopsis>
               <para>
                 If present and /path/to/infofile specifies an existing and
-                readable text file (e.g. &lt;etc&gt;/infomsg.txt) the contents of the
-                file will be displayed in a modal dialog box before the user
-                is allowed to login.
-                This works both with the standard and the themable greeters.
+                readable text file (e.g. &lt;etc&gt;/infomsg.txt) the contents
+                of the file will be displayed in a modal dialog box before the
+                user is allowed to login.  This works both with the standard
+                and the themable greeters.
               </para>
             </listitem>
           </varlistentry>
@@ -3127,12 +3280,13 @@ PostSession/
             <listitem>
               <synopsis>SoundOnLoginFile=/path/to/sound.wav</synopsis>
               <para>
-                The file that will be played using the specified sound application
-                (by default that is <filename>/usr/bin/play</filename>) instead
-                of a beep when the greeter is ready for a login.  See also the
+                The file that will be played using the specified sound
+                application (by default that is
+                <filename>/usr/bin/play</filename>) instead of a beep when the
+                greeter is ready for a login.  See also the
                 <filename>SoundOnLogin</filename> key and the
-                <filename>SoundProgram</filename> key.
-                Supported since 2.5.90.0.
+                <filename>SoundProgram</filename> key.  Supported since
+                2.5.90.0.
               </para>
             </listitem>
           </varlistentry>
@@ -3142,11 +3296,11 @@ PostSession/
             <listitem>
               <synopsis>SoundOnLoginSuccessFile=/path/to/sound.wav</synopsis>
               <para>
-                The file that will be played using the specified sound application
-                (by default that is <filename>/usr/bin/play</filename>) after
-                a successful login attempt.  See also the
-                <filename>SoundOnLoginSuccess</filename> key and the
-                <filename>SoundProgram</filename> key.
+                The file that will be played using the specified sound
+                application (by default that is
+                <filename>/usr/bin/play</filename>) after a successful login
+                attempt.  See also the <filename>SoundOnLoginSuccess</filename>
+                key and the <filename>SoundProgram</filename> key.
               </para>
             </listitem>
           </varlistentry>
@@ -3156,11 +3310,11 @@ PostSession/
             <listitem>
               <synopsis>SoundOnLoginFailureFile=/path/to/sound.wav</synopsis>
               <para>
-                The file that will be played using the specified sound application
-                (by default that is <filename>/usr/bin/play</filename>) after
-                a failed login attempt.  See also the
-                <filename>SoundOnLoginFailure</filename> key and the
-                <filename>SoundProgram</filename> key.
+                The file that will be played using the specified sound
+                application (by default that is
+                <filename>/usr/bin/play</filename>) after a failed login 
+                attempt.  See also the <filename>SoundOnLoginFailure</filename>
+                key and the <filename>SoundProgram</filename> key.
               </para>
             </listitem>
           </varlistentry>
@@ -3326,13 +3480,10 @@ PostSession/
               </para>
             </listitem>
           </varlistentry>        
-
         </variablelist>
-
       </sect3>
 
       <sect3 id="choosersection">
-
         <title>XDCMP Chooser Options</title>
 
         <variablelist>
@@ -3450,11 +3601,9 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="debugsection">
-
         <title>Debug Configuration</title>
 
         <variablelist>
@@ -3479,18 +3628,17 @@ PostSession/
               <synopsis>Gestures=false</synopsis>
               <para>
                 Setting to true sends debug ouput concerning the accessibility
-                gesture listeners to the syslog.  This can be useful for tracking
-                down problems with them not working properly.  This output tends
-                to be verbose so should not be turned on for general use.
+                gesture listeners to the syslog.  This can be useful for
+                tracking down problems with them not working properly.  This
+                output tends to be verbose so should not be turned on for
+                general use.
               </para>
             </listitem>
           </varlistentry>
         </variablelist>
-        
       </sect3>
 
       <sect3 id="serverdefs">
-
         <title>X Server Definitions</title>
 
         <para>
@@ -3535,7 +3683,7 @@ PostSession/
           <varlistentry>
             <term>command</term>
             <listitem>
-              <synopsis>command=/usr/bin/X11/X</synopsis>
+              <synopsis>command=/path/to/X</synopsis>
               <para>
                 The command to execute, with full path to the binary of the X
                 server, and any extra arguments needed.
@@ -3585,11 +3733,9 @@ PostSession/
             </listitem>
           </varlistentry>
         </variablelist>
-
       </sect3>
 
       <sect3 id="localservers">
-
         <title>Local Static X Display Configuration</title>
 
         <para>
@@ -3713,19 +3859,20 @@ PostSession/
       </para>
 
       <para>
-        The <filename>Session</filename> key specifies the basename of the session
-        <filename>.desktop</filename> file that the user wishes to normally use
-        (without the <filename>.desktop</filename> extension, in other words).
-        The <filename>Language</filename> key specifies the language that the
-        user wishes to use by default.  If either of these keys is missing, the
-        system default is used.  The file would normally look as follows:
+        The <filename>Session</filename> key specifies the basename of the
+        session <filename>.desktop</filename> file that the user wishes to
+        normally use (without the <filename>.desktop</filename> extension, in
+        other words).  The <filename>Language</filename> key specifies the
+        language that the user wishes to use by default.  If either of these
+        keys is missing, the system default is used.  The file would normally
+        look as follows:
       </para>
 
-      <screen>
+<screen>
 [Desktop]
 Session=gnome
 Language=cs_CZ.UTF-8
-      </screen>
+</screen>
 
       <para>
         Normally GDM will write this file when the user logs in for the first
@@ -3741,8 +3888,8 @@ Language=cs_CZ.UTF-8
         <filename>MaxIconHeight</filename> values defined in the GDM
         configuration or it will be ignored.  Users can run the
         <command>gdmphotosetup</command> program to specify a face image
-        and it will copy the file to the $HOME/.face location and scale it
-        so its longest dimension is not larger than the 
+        and it will copy the file to the <filename>$HOME/.face</filename>
+        location and scale it so its longest dimension is not larger than the 
         <filename>MaxIconWidth</filename> or <filename>MaxIconHeight</filename>
         values.  <command>gdmphotosetup</command> takes care to not change
         the aspect ratio of the image.
@@ -3756,7 +3903,6 @@ Language=cs_CZ.UTF-8
         <filename>.png</filename>, <filename>.jpg</filename>, etc. appended.
       </para>
     </sect2>
-    
   </sect1>
 
   <sect1 id="controlling">
@@ -3842,7 +3988,7 @@ Language=cs_CZ.UTF-8
         option:
       </para>
 
-      <screen>
+<screen>
 ADD_DYNAMIC_DISPLAY
 ALL_SERVERS
 ATTACHED_SERVERS
@@ -3865,7 +4011,7 @@ SET_SAFE_LOGOUT_ACTION
 SET_VT
 UPDATE_CONFIG
 VERSION
-      </screen>
+</screen>
 
       <para>
        These are described in detail below, including required arguments,
@@ -3874,7 +4020,7 @@ VERSION
 
       <sect3 id="adddynamic">
       <title>ADD_DYNAMIC_DISPLAY</title>
-      <screen>
+<screen>
 ADD_DYNAMIC_DISPLAY: Create a new server definition that will
                      run on the specified display leaving, it
                      in DISPLAY_CONFIG state.
@@ -3892,12 +4038,12 @@ Answers:
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="allservers">
       <title>ALL_SERVERS</title>
-      <screen>
+<screen>
 ALL_SERVERS: List all displays, including console, remote, xnest.
              This can, for example, be useful to figure out if
              the display you are on is managed by the gdm daemon,
@@ -3916,12 +4062,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="attachedservers">
       <title>ATTACHED_SERVERS</title>
-      <screen>
+<screen>
 ATTACHED_SERVERS: List all attached displays.  Doesn't list XDMCP
                   and xnest non-attached displays.
 Note:             This command used to be named CONSOLE_SERVERS,
@@ -3949,12 +4095,12 @@ Answers:
      1 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
      
       <sect3 id="authlocal">
       <title>AUTH_LOCAL</title>
-      <screen>
+<screen>
 AUTH_LOCAL: Setup this connection as authenticated for
             FLEXI_SERVER.  Because all full blown (non-Xnest)
             displays can be started only from users logged in
@@ -3980,22 +4126,22 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="close">
       <title>CLOSE</title>
-      <screen>
+<screen>
 CLOSE: Close sockets connection
 Supported since: 2.2.4.0
 Arguments: None
 Answers: None
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="flexixnest">
       <title>FLEXI_XNEST</title>
-      <screen>
+<screen>
 FLEXI_XNEXT: Start a new flexible Xnest display.
 Note:        Supported on older version from 2.2.4.0, later
              2.2.4.2, but since 2.3.90.4 you must supply 4
@@ -4029,12 +4175,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="flexixserver">
       <title>FLEXI_XSERVER</title>
-      <screen>
+<screen>
 FLEXI_XSERVER: Start a new X flexible display.  Only supported on
                connection that passed AUTH_LOCAL
 Supported since: 2.2.4.0
@@ -4052,12 +4198,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="getconfig">
       <title>GET_CONFIG</title> 
-      <screen>
+<screen>
 GET_CONFIG:  Get configuration value for key.  Useful so
              that other applications can request configuration
              information from GDM.  Any key defined as GDM_KEY_*
@@ -4076,12 +4222,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="getconfigfile">
       <title>GET_CONFIG_FILE</title> 
-      <screen>
+<screen>
 GET_CONFIG_FILE:  Get config file location being used by
                   the daemon.  If the GDM daemon was started
                   with the --config option, it will return
@@ -4094,12 +4240,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="getserverdetails">
       <title>GET_SERVER_DETAILS</title>
-      <screen>
+<screen>
 GET_SERVER_DETAILS:  Get detail information for a specific server.
 Supported since: 2.13.0.4
 Arguments: &lt;server&gt; &lt;key&gt;
@@ -4124,12 +4270,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="getserverlist">
       <title>GET_SERVER_LIST</title>
-      <screen>
+<screen>
 GET_SERVER_LIST:  Get a list of the server sections from
                   the configuration file.
 Supported since: 2.13.0.4
@@ -4142,12 +4288,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="greeterpids">
       <title>GREETERPIDS</title>
-      <screen>
+<screen>
 GREETERPIDS: List all greeter pids so that one can send HUP
              to them for config rereading.  Of course one
              must be root to do that.
@@ -4159,12 +4305,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="querylogoutaction">
       <title>QUERY_LOGOUT_ACTION</title>
-      <screen>
+<screen>
 QUERY_LOGOUT_ACTION: Query which logout actions are possible
                      Only supported on connections that passed
                      AUTH_LOCAL.
@@ -4182,12 +4328,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="queryvt">
       <title>QUERY_VT</title>
-      <screen>
+<screen>
 QUERY_VT:  Ask the daemon about which VT we are currently on.
            This is useful for logins which don't own
            /dev/console but are still console logins.  Only
@@ -4206,12 +4352,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="releasedynamic">
       <title>RELEASE_DYNAMIC_DISPLAYS</title>
-      <screen>
+<screen>
 RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in 
                           DISPLAY_CONFIG state
 Supported since: 2.8.0.0
@@ -4223,12 +4369,12 @@ Answers:
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="removedynamic">
       <title>REMOVE_DYNAMIC_DISPLAY</title>
-      <screen>
+<screen>
 REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server
                         and purging the display configuration
 Supported since: 2.8.0.0
@@ -4241,12 +4387,12 @@ Answers:
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
 
       <sect3 id="serverbusy">
       <title>SERVER_BUSY</title>
-      <screen>
+<screen>
 SERVER_BUSY:  Returns true if half or more of the daemon's sockets
               are busy, false otherwise.  Used by slave programs
               which want to ensure they do not overwhelm the 
@@ -4259,12 +4405,12 @@ Answers:
      0 = Not implemented
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="setlogoutaction">
       <title>SET_LOGOUT_ACTION</title>
-      <screen>
+<screen>
 SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after
                    slave process exits.  Only supported on
                    connections that passed AUTH_LOCAL.
@@ -4282,12 +4428,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="setsafelogoutaction">
       <title>SET_SAFE_LOGOUT_ACTION</title>
-      <screen>
+<screen>
 SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/restart/suspend
                          after everybody logs out.  If only one
                          person logs out, then this is obviously
@@ -4312,12 +4458,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="setvt">
       <title>SET_VT</title>
-      <screen>
+<screen>
 SET_VT:  Change to the specified virtual terminal.
          This is useful for logins which don't own /dev/console
          but are still console logins.  Only supported on Linux
@@ -4334,12 +4480,12 @@ Answers:
      100 = Not authenticated
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="updateconfig">
       <title>UPDATE_CONFIG</title> 
-      <screen>
+<screen>
 UPDATE_CONFIG: Tell the daemon to re-read a key from the 
                GDM configuration file.   Any user can request
                that values are re-read but the daemon will
@@ -4411,12 +4557,12 @@ Answers:
      50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
       
       <sect3 id="queryversion">
       <title>VERSION</title>
-      <screen>
+<screen>
 VERSION: Query GDM version
 Supported since: 2.2.4.0
 Arguments: None
@@ -4425,9 +4571,8 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      200 = Too many messages
      999 = Unknown error
-      </screen>
+</screen>
       </sect3>
-
     </sect2>
   </sect1>
 
@@ -4608,8 +4753,8 @@ Answers:
             <term>-d, --debug</term>
             <listitem>
               <para>
-                Turns on debugging output which gets sent to syslog.  Same as turning
-                on debug in the configuration file.
+                Turns on debugging output which gets sent to syslog.  Same as
+                turning on debug in the configuration file.
               </para>
             </listitem>
           </varlistentry>
@@ -4779,7 +4924,8 @@ Answers:
         <para>
          Allows the user to select an image that will be used as the user's
          photo by GDM's face browser, if enabled by GDM.  The selected file
-         is stored as ~/.face.  This command accepts standard GNOME options.
+         is stored as <filename>~/.face</filename>.  This command accepts
+         standard GNOME options.
         </para>
       </sect3>
 
@@ -4800,13 +4946,13 @@ Answers:
          viewing the themes in different modes via the environment option.
          Valid environment values and their meanings follow:
 
-         <screen>
+<screen>
 console       - In console mode.
 console-timed - In console non-flexi mode.
 flexi         - In flexi mode.
 xdmcp         - In remote (XDMCP) mode.
 remote-flexi  - In remote (XDMCP) &amp; flexi mode.
-         </screen>
+</screen>
         </para>
       </sect3>
     </sect2>
@@ -5041,7 +5187,6 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           It does not take any options.
         </para>
       </sect3>
-
     </sect2>
   </sect1>
 
@@ -5072,7 +5217,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
         to other .desktop files and looks like:
       </para>
 
-      <screen>
+<screen>
 [GdmGreeterTheme]
 Encoding=UTF-8
 Greeter=circles.xml
@@ -5081,7 +5226,7 @@ Description=Theme with blue circles
 Author=Bond, James Bond
 Copyright=(c) 2002 Bond, James Bond
 Screenshot=screenshot.png
-      </screen>
+</screen>
 
       <para>
         The Name, Description, Author and Copyright fields can be translated
@@ -5107,7 +5252,9 @@ Screenshot=screenshot.png
         things look in the XDMCP mode with the circles theme you would run:
       </para>
 
-        <screen><command>gdmthemetester xdmcp circles</command></screen>
+<screen>
+<command>gdmthemetester xdmcp circles</command>
+</screen>
 
       <para>
         Be sure to test all the environments with your theme, and make sure to
@@ -5120,15 +5267,14 @@ Screenshot=screenshot.png
       <para>
         Once you have all this done, then make a tarball that contains the
         directory name (so that you could just untar it in the
-        <filename>/usr/share/gdm/themes</filename> directory).  And this is the
-        tarball you distribute and people can install from the graphical configuration
-        application.  You can do this with the commands:
-      <screen>
-cd /usr/share/gdm/themes
+        <filename>&lt;share&gt;/gdm/themes</filename> directory).  And this is
+        the tarball you distribute and people can install from the graphical
+        configuration application.  You can do this with the commands:
+<screen>
+cd &lt;share&gt;/gdm/themes
 tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
-      </screen>
+</screen>
       </para>
-
     </sect2>
 
     <sect2 id="descofthemeformat">
@@ -5140,11 +5286,11 @@ tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
         <para>
           Box nodes are container nodes for item nodes.  Box nodes are
           specified as follows:
-      <screen>
+<screen>
 &lt;box orientation=&quot;alignment&quot; min-width=&quot;num&quot;
 xpadding=&quot;num&quot; ypadding=&quot;num&quot; spacing=&quot;num&quot;
 homogeneous=&quot;bool&quot;&gt;
-      </screen>
+</screen>
           Where &quot;num&quot; means number and bool means either
           &quot;true&quot; or &quot;false&quot; The alignment value can be
           either &quot;horizontal&quot; or &quot;vertical&quot;.  If you leave
@@ -5173,7 +5319,9 @@ homogeneous=&quot;bool&quot;&gt;
           laid out with precise coordinates.  The size of this container
           is the biggest rectangle that contains all the children.  Fixed
           has no extra properties and so you just use:
-          <screen>&lt;fixed&gt;</screen>
+<screen>
+&lt;fixed&gt;
+</screen>
           Then you put other items with proper position nodes inside this.
         </para>
 
@@ -5251,7 +5399,9 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           For example: 
-        <screen>&lt;item type=&quot;label&quot;&gt;</screen>
+<screen>
+&lt;item type=&quot;label&quot;&gt;
+</screen>
           Items can specify ID values which gives them a specific look and feel
           or formatting.  Furthermore you can customize the login process by
           adding custom widgets with custom id's for some items (currently only
@@ -5375,7 +5525,9 @@ homogeneous=&quot;bool&quot;&gt;
         <para>
           If an item is of type rect, the item can be a button.  Buttons
           must also include a &quot;button&quot; value as follows:
-          <screen>&lt;item type=&quot;rect&quot; id=&quot;disconnect_button&quot; button=&quot;true&quot;&gt;.</screen>
+<screen>
+&lt;item type=&quot;rect&quot; id=&quot;disconnect_button&quot; button=&quot;true&quot;&gt;.
+</screen>
         </para>
 
         <para>
@@ -5467,7 +5619,6 @@ homogeneous=&quot;bool&quot;&gt;
               </para>
             </listitem>
           </varlistentry>
-
         </variablelist>
       </sect3>
 
@@ -5477,7 +5628,9 @@ homogeneous=&quot;bool&quot;&gt;
         <para>
           Each item can specify its position and size via the &quot;pos&quot;
           node.  For example:
-          <screen>&lt;pos x=&quot;0&quot; y=&quot;4&quot; width=&quot;100%&quot; height=&quot;100%&quot;/&gt;</screen>
+<screen>
+&lt;pos x=&quot;0&quot; y=&quot;4&quot; width=&quot;100%&quot; height=&quot;100%&quot;/&gt;
+</screen>
         </para>
 
         <para>
@@ -5499,7 +5652,9 @@ homogeneous=&quot;bool&quot;&gt;
           &quot;s&quot; &quot;sw&quot; &quot;w&quot; and &quot;nw&quot; or
           &quot;center&quot; which stand for the different edges/corners or
           &quot;center&quot; for center.  For example:
-          <screen>&lt;pos x=&quot;10%&quot; y=&quot;50%&quot; anchor=&quot;w&quot; width=&quot;80%&quot; height=&quot;95&quot;/&gt;</screen>
+<screen>
+&lt;pos x=&quot;10%&quot; y=&quot;50%&quot; anchor=&quot;w&quot; width=&quot;80%&quot; height=&quot;95&quot;/&gt;
+</screen>
         </para>
 
         <para>
@@ -5529,12 +5684,11 @@ homogeneous=&quot;bool&quot;&gt;
           maximum percentage of the screen width that the label can occupy.
           By default no label will occupy more then 90% of the screen by width.
           An example may be:
-          <screen>
+<screen>
 &lt;item type=&quot;label&quot;&gt;
 &lt;pos x="10%" max-screen-percent-width="50%"/&gt;
-          </screen>
+</screen>
         </para>
-
       </sect3>
 
       <sect3 id="shownodes">
@@ -5567,7 +5721,9 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           For example:
-        <screen>&lt;show modes=&quot;flexi,remote&quot;/&gt;</screen>
+<screen>
+&lt;show modes=&quot;flexi,remote&quot;/&gt;
+</screen>
         </para>
 
         <para>
@@ -5607,7 +5763,9 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           For example:
-        <screen>&lt;show modes=&quot;console&quot; type=&quot;system&quot;/&gt;</screen>
+<screen>
+&lt;show modes=&quot;console&quot; type=&quot;system&quot;/&gt;
+</screen>
         </para>
 
         <para>
@@ -5622,8 +5780,9 @@ homogeneous=&quot;bool&quot;&gt;
         <title>Normal/Active/Prelight Nodes</title>
 
         <para>
-          Depending on the item type (except for userlist - refer to Color node below),
-          it can specify its color, font, or image via the following tags:
+          Depending on the item type (except for userlist - refer to Color node
+          below), it can specify its color, font, or image via the following
+          tags:
         </para>
 
         <para>
@@ -5640,19 +5799,25 @@ homogeneous=&quot;bool&quot;&gt;
         <para>
             When item is &quot;rect&quot; (alpha can be omitted and defaults to
             0.0):
-        <screen>&lt;normal color=&quot;#ffffff&quot; alpha=&quot;0.0&quot;&gt;</screen>
+<screen>
+&lt;normal color=&quot;#ffffff&quot; alpha=&quot;0.0&quot;&gt;
+</screen>
         </para>
 
         <para>
           When item is &quot;label&quot;
-        <screen>&lt;normal color=&quot;#ffffff&quot; font=&quot;Sans 14&quot;/&gt;</screen>
+<screen>
+&lt;normal color=&quot;#ffffff&quot; font=&quot;Sans 14&quot;/&gt;
+</screen>
         </para>
 
         <para>
           When the item type is &quot;pixmap&quot; or &quot;SVG&quot;, then the
           normal, active, and prelight tags specify the images to use as
           follows:
-        <screen>&lt;normal file=&quot;picture.png&quot; tint=&quot;#dddddd&quot;/&gt;</screen>
+<screen>
+&lt;normal file=&quot;picture.png&quot; tint=&quot;#dddddd&quot;/&gt;
+</screen>
         </para>
 
         <para>
@@ -5671,7 +5836,9 @@ homogeneous=&quot;bool&quot;&gt;
         </para>
 
         <para>
-        <screen>&lt;color iconcolor=&quot;#dddddd&quot; labelcolor=&quot;#ffffff&quot;/&gt;</screen>
+<screen>
+&lt;color iconcolor=&quot;#dddddd&quot; labelcolor=&quot;#ffffff&quot;/&gt;
+</screen>
         </para>
       </sect3>
 
@@ -5682,14 +5849,18 @@ homogeneous=&quot;bool&quot;&gt;
           Text tags are used by labels.   They can be used to display
           localized text as follows (if the &quot;xml:lang&quot; attribute is
           omitted, the C locale is assumed):
-        <screen>&lt;text xml:lang=&quot;fr&quot;&gt;Option&lt;/text&gt;</screen>
+<screen>
+&lt;text xml:lang=&quot;fr&quot;&gt;Option&lt;/text&gt;
+</screen>
         </para>
 
         <para>
           You can include pango markup in the text nodes for labels, however
           you must encode it.  So for example to have the label of
           &quot;foo&lt;sup&gt;bar&lt;/sup&gt;&quot;, you must type:
-        <screen>&lt;text&quot;&gt;foo&amp;lt;sup&amp;&gt;bar&amp;lt;/sup&amp;&gt;&lt;/text&gt;</screen>
+<screen>
+&lt;text&quot;&gt;foo&amp;lt;sup&amp;&gt;bar&amp;lt;/sup&amp;&gt;&lt;/text&gt;
+</screen>
         </para>
 
         <para>
@@ -5766,7 +5937,8 @@ homogeneous=&quot;bool&quot;&gt;
           <filename>cancel</filename>, _(&quot;_Cancel&quot;
         </para>
         <para>
-          <filename>caps-lock-warning</filename>, _(&quot;Caps Lock key is on.&quot; 
+          <filename>caps-lock-warning</filename>,
+          _(&quot;Caps Lock key is on.&quot; 
         </para>
         <para>
           <filename>chooser</filename>, _(&quot;Remote Login via _XDMCP&quot;
@@ -5799,10 +5971,12 @@ homogeneous=&quot;bool&quot;&gt;
           <filename>suspend</filename>, _(&quot;Sus_pend&quot;
         </para>
         <para>
-          <filename>system</filename>, _(&quot;_Actions&quot;  (Formerly &quot;S_ystem&quot;
+          <filename>system</filename>, _(&quot;_Actions&quot;
+          (Formerly &quot;S_ystem&quot;
         </para>
         <para>
-          <filename>timed-label</filename>, _(&quot;User %u will login in %t&quot;
+          <filename>timed-label</filename>,
+          _(&quot;User %u will login in %t&quot;
         </para>
         <para>
           <filename>username-label</filename>, _(&quot;Username:&quot;
@@ -5813,7 +5987,9 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           For example:
-        <screen>&lt;stock type=&quot;welcome-label&quot;&gt;</screen>
+<screen>
+&lt;stock type=&quot;welcome-label&quot;&gt;
+</screen>
         </para>
       </sect3>
 
@@ -5833,11 +6009,12 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           For example suppose we are on display :0,
-          <filename>ServAuthDir</filename> is <filename>&lt;var&gt;/gdm</filename>
-          and we have the following in the theme:
+          <filename>ServAuthDir</filename> is
+          <filename>&lt;var&gt;/gdm</filename> and we have the following in the
+          theme:
         </para>
 
-        <screen>
+<screen>
 &lt;item type=&quot;list&quot; id=&quot;custom-config&quot;&gt;
 &lt;pos anchor=&quot;nw&quot; x=&quot;1&quot; y=&quot;1&quot; height=&quot;200&quot; width=&quot;100&quot;&gt;
 &lt;listitem id=&quot;foo&quot;&gt;
@@ -5847,12 +6024,14 @@ homogeneous=&quot;bool&quot;&gt;
 &lt;text&gt;Bar&lt;/text&gt;
 &lt;/listitem&gt;
 &lt;/item&gt;
-        </screen>
+</screen>
 
         <para>
           Then if the user chooses 'Foo' then 
           <filename>&lt;var&gt;/gdm/:0.GreeterInfo</filename> will contain:
-          <screen>custom-config=foo</screen>
+<screen>
+custom-config=foo
+</screen>
         </para>
       </sect3>
     </sect2>
@@ -5898,7 +6077,9 @@ homogeneous=&quot;bool&quot;&gt;
              acceptable themes separated by commas.  For example:
              </para>
 
-             <screen>GtkThemesToAllow=HighContrast,HighContrastInverse</screen>
+<screen>
+GtkThemesToAllow=HighContrast,HighContrastInverse
+</screen>
 
              <para>
              To enable the use of assistive technologies such as the Onscreen
@@ -5909,7 +6090,9 @@ homogeneous=&quot;bool&quot;&gt;
              uncommented and set as follows:
              </para>
 
-             <screen>GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener</screen>
+<screen>
+GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
+</screen>
 
              <para>
              System administrators may wish to load only the minimum subset of
@@ -6007,7 +6190,7 @@ homogeneous=&quot;bool&quot;&gt;
              devices require X server configuration before GDM will recognize
              them.
              </para>
-     </sect2>
+       </sect2>
        <sect2 id="accessibilitysound">
           <title>Accessibility Login Sound Configuration</title>
              <para>
@@ -6015,44 +6198,146 @@ homogeneous=&quot;bool&quot;&gt;
              &quot;sox&quot; to be present to play sounds for successful or
              failed login.  GDM defaults
              the location of this application to
-             <filename>/usr/bin/play</filename> (or
-             <filename>/usr/bin/audioplay</filename> on Solaris.  This can
+             <filename>&lt;bin&gt;/play</filename> (or
+             <filename>&lt;bin&gt;/audioplay</filename> on Solaris.  This can
              be changed via the SoundProgram GDM configuration option.  
              Typically most text-to-speech programs (such as ORCA or 
              Gnopernicus) use a separate mechanism to play audio.
              </para>
-     </sect2>
+        </sect2>
   </sect1>
 
   <sect1 id="solaris">
     <title>Solaris Specific Features</title>
 
-    <para>
-        GDM supports a few features specific to Solaris, as follows:
-    </para>
+       <sect2 id="solarisconfiguration">
+          <title>Solaris Configuration</title>
+             <para>
+               On Solaris, the following configuration is recommended.
+               This turns on IPv6 and also turns on PreFetch for
+               performance benefit.
 
-    <para>
-        GDM supports Solaris Auditing if running on Solaris 10 or higher.
-    </para>
+<screen>
+./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
+   --libexecdir=/usr/lib --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
+   --with-prefetch --with-post-path=/usr/openwin/bin
+</screen>
+             </para>
 
-    <para>
-        GDM supports a security feature which causes the X server to run as
-        the user instead of as the root user.  GDM must be using PAM for
-        this feature to be enabled, which is the normal case for Solaris.
-        This second feature has the side-effect of causing the X server to
-        always restart between sessions, which disables the
-        AlwaysRestartServer configuration option.  
-    </para>
+             <para>
+               Configuring GDM with the
+               &quot;--with-post-path=/usr/openwin/bin&quot; on Solaris is
+               recommended.  See comments in configure.ac file.
+             </para>
+       </sect2>
 
-    <para>
-        Solaris supports the <filename>/etc/default/login</filename>
-        interface, which affects the <filename>DefaultPath</filename>,
-        <filename>RootPath</filename>,
-        <filename>PasswordRequired</filename>, and
-        <filename>AllowRemoteRoot</filename> options as described in the
-        Configuration section.
-    </para>
+       <sect2 id="solarislogindevperm">
+          <title>Solaris /etc/logindevperm</title>
+             <para>
+               GDM supports /etc/logindevperm, but only on Solaris 10 and higher.
+               Refer to the logindevperm.4 man page for more information.
+             </para>
 
+             <para>
+               To make /etc/logindevperm functionality work on Solaris 9 or
+               earlier you would have to hack the GDM PreSession and
+               PostSession script to chmod the device permissions directly.  In
+               other words, if /etc/logindevperm had a listing like this:
+             </para>
+
+<screen>
+/dev/console    0600    /dev/sound/*            # audio devices
+</screen>
+     
+             <para>
+               In the PreSession scriptchown /dev/console to the user:group who
+               is logging into the console and ensure whatever permissions is
+               specified in /etc/logindevperm (0600 for the line above).  Then
+               in the PostSession script chmod them back to root:root and
+               ensure 0600 this time (don't use the value in the
+               /etc/logindevperm file).  Linux uses a different mechanism for
+               managing device permissions.
+             </para>
+       </sect2>
+
+       <sect2 id="solarisautomaticlogin">
+          <title>Solaris Automatic Login</title>
+             <para>
+               By default, automatic login is not enabled by GDM, so you would
+               only notice this problem if you try to make use of it.  Turning
+               this feature on causes your computer to login to a specified
+               username on startup without asking for username and password.
+               This is an unsecure way to set up your computer.   Make sure to
+               read the PAM documentation (e.g. pam.d/pam.conf man page) and be
+               comfortable with the security settings before modifying your
+               configuration.
+             </para>
+
+             <para>
+               To turn on automatic login on Solaris, refer to the PAM section
+               above.  If using Solaris 10 or lower, then you also need to
+               compile the pam_allow.c code and install it to /usr/lib/security
+               (or anywhere and provide the full path in /etc/pam.conf) and
+               ensure it is owned by uid 0 and not group or world writable.
+               Now see automatic login work.  Wasn't it worth it!  I believe
+               these settings will be added someday, though Sun isn't quite
+               sure Automatic login is such a secure feature so we will
+               probably debate it further.
+             </para>
+
+             <para>
+               The following are reasonable pam.conf values for turning on
+               automatic login in GDM.
+             </para>
+
+<screen>
+       gdm-autologin auth  required    pam_unix_cred.so.1
+       gdm-autologin auth  sufficient  pam_allow.so.1
+       gdm-autologin account  sufficient  pam_allow.so.1
+       gdm-autologin session  sufficient  pam_allow.so.1
+       gdm-autologin password  sufficient  pam_allow.so.1
+</screen>
+
+             <para>
+               The above setup will cause no lastlog entry to be generated.  If
+               a lastlog entry is desired, then use the following for session:
+             </para>
+
+<screen>
+       gdm-autologin session required pam_unix_session.so.1
+</screen>
+       </sect2>
+
+       <sect2 id="solarisother">
+          <title>Other Solaris Features</title>
+             <para>
+               GDM supports a few features specific to Solaris, as follows:
+             </para>
+
+             <para>
+               GDM supports Solaris Auditing if running on Solaris 10 or
+               higher.  GDM should not be used if auditing is needed and
+               running Solaris 9 or older.
+            </para>
+
+            <para>
+                GDM supports a security feature which causes the X server to
+                run as the user instead of as the root user.  GDM must be using
+                PAM for this feature to be enabled, which is the normal case
+                for Solaris.  This second feature has the side-effect of
+                causing the X server to always restart between sessions, which
+                disables the AlwaysRestartServer configuration option.  
+            </para>
+
+            <para>
+                Solaris supports the <filename>/etc/default/login</filename>
+                interface, which affects the <filename>DefaultPath</filename>,
+                <filename>RootPath</filename>,
+                <filename>PasswordRequired</filename>, and
+                <filename>AllowRemoteRoot</filename> options as described in the
+                Configuration section.
+            </para>
+       </sect2>
   </sect1>
 
   <sect1 id="exampleconf">
@@ -6075,10 +6360,10 @@ homogeneous=&quot;bool&quot;&gt;
 
       <para>
         On <filename>appserver</filename> you enable XDMCP, so you have
-        <screen>
+<screen>
 [xdmcp]
 Enable=true
-        </screen>
+</screen>
         If you want no local screens here, you can then
         make the <filename>[servers]</filename> section empty.
       </para>
@@ -6087,13 +6372,13 @@ Enable=true
         On the <filename>xterminal</filename> you disable XDMCP (you don't
         want anyone to connect to the xterminal really).  You will add a
         server type perhaps called <filename>Terminal</filename> as follows:
-        <screen>
+<screen>
 [server-Terminal]
 name=Terminal server
-command=/usr/X11R6/bin/X -terminate
+command=/path/to/X -terminate
 flexible=false
 handled=false
-        </screen>
+</screen>
         This definition should in fact be included in the standard
         configuration file.  Notice that we made the
         <filename>handled</filename> key false since we don't want GDM to
@@ -6101,10 +6386,10 @@ handled=false
         <filename>-query</filename> argument, you can add that here, or in the
         <filename>[servers]</filename> section.  We'll define our local
         servers as follows:
-        <screen>
+<screen>
 [servers]
 0=Terminal -query appserver
-        </screen>
+</screen>
         This will run a direct XDMCP query to the server named
         <filename>appserver</filename>.
       </para>
@@ -6128,23 +6413,23 @@ handled=false
         So on the <filename>xterminal</filename> you again disable XDMCP.
         You will add a server type perhaps called <filename>Chooser</filename>
         as follows:
-        <screen>
+<screen>
 [server-Chooser]
 name=Chooser server
-command=/usr/X11R6/bin/X
+command=/path/to/X
 flexible=false
 chooser=true
-        </screen>
+</screen>
         And again this definition should in fact be included in the standard
         configuration file.  Notice that we made the
         <filename>chooser</filename> key true here.  This will run the XDMCP
         chooser for this server, and when the user chooses a host GDM will run
         a query for that host.  Then we will define our local servers as
         follows:
-        <screen>
+<screen>
 [servers]
 0=Chooser
-        </screen>
+</screen>
       </para>
 
       <para>
@@ -6153,7 +6438,9 @@ chooser=true
         are not reachable by a broadcast query, you must add them by hand to
         the configuration file.  So in the <filename>[chooser]</filename>
         section you would have:
-        <screen>Hosts=appserverone,appservertwo</screen>
+<screen>
+Hosts=appserverone,appservertwo
+</screen>
         and any other servers you wish the users to be able to connect to.
       </para>
 
@@ -6163,14 +6450,14 @@ chooser=true
         previous section about the one server configuration with XDMCP
         indirect queries enabled on <filename>appserver</filename> and on the
         X terminals you'd have
-        <screen>
+<screen>
 [servers]
 0=Terminal -indirect appserver
-        </screen>
+</screen>
         This way for example you only have to maintain one
         <filename>Hosts</filename> entry.  However as a disadvantage then,
         the <filename>appserver</filename> must then always be available.  So
-        it's not good for situations where you want to have serveral servers
+        it's not good for situations where you want to have several servers
         and not all of them have to be on all the time.  You could also have
         one of the X terminals handle indirect XDMCP queries and serve up the
         chooser to the other X terminals.
@@ -6185,18 +6472,29 @@ chooser=true
       This section discusses helpful tips for getting GDM working.  In general,
       if you have a problem using GDM, you can submit a bug to the
       &quot;gdm&quot; category in
-      <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>
+      <ulink type="http"
+       url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>
       or send an email to the
-      <address><email>gdm-list@gnome.org</email></address> mail alias.  If GDM
-      is failing to work properly, it is always a good idea to include debug
-      information.  Use the <command>gdmsetup</command> command to turn on
-      debug (&quot;Enable debug messages to system log&quot; checkbox in the
+      <address><email>gdm-list@gnome.org</email></address> mail alias.
+    </para>
+
+    <para>
+      If GDM is failing to work properly, it is always a good idea to include
+      debug information.  Use the <command>gdmsetup</command> command to turn
+      on debug (&quot;Enable debug messages to system log&quot; checkbox in the
       &quot;Security&quot; tab), then use GDM to the point where it fails, and
       include the GDM output sent to your system log
-      (<filename>/var/log/messages</filename> or
-      <filename>/var/adm/messages</filename> depending on your operating
+      (<filename>&lt;var&gt;/log/messages</filename> or
+      <filename>&lt;var&gt;/adm/messages</filename> depending on your operating
       system).  Since the system log can be large, please only include the GDM
-      debug information and do not sent the entire file.
+      debug information and do not sent the entire file.  If you do not see any
+      GDM syslog output, you may need to configure syslog (see syslog.3c man
+      page).
+    </para>
+
+    <para>
+      You should not leave debug on after collecting data.  It will clutter your
+      syslog and slow system performance.
     </para>
 
     <sect2 id="wontstart">
@@ -6229,8 +6527,9 @@ chooser=true
          trouble starting.  This can happen, for example, if GDM cannot find
          a needed library or other resource.  Try starting the Xserver and
          a terminal program, set the shell environment variable 
-         DOING_GDM_DEVELOPMENT=1 and run <command>/usr/lib/gdmlogin</command>
-         or <command>/usr/lib/gdmgreeter</command>.  Any error messages
+         DOING_GDM_DEVELOPMENT=1 and run
+         <command>&lt;lib&gt;/gdmlogin</command>
+         or <command>&lt;lib&gt;/gdmgreeter</command>.  Any error messages
          echoed to the terminal will likely highlight the problem.  Also,
          turning on debug and checking the output sent to the system log 
          will often highlight the problem.

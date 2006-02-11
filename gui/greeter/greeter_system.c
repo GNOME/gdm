@@ -139,15 +139,11 @@ void
 greeter_system_append_system_menu (GtkWidget *menu)
 {
 	GtkWidget *w, *sep;
-	static GtkTooltips *tooltips = NULL;
 
 	/* should never be allowed by the UI */
 	if ( ! gdm_config_get_bool (GDM_KEY_SYSTEM_MENU) ||
 	    ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
 		return;
-
-	if (tooltips == NULL)
-		tooltips = gtk_tooltips_new ();
 
 	if (gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON)) {
 		w = gtk_menu_item_new_with_mnemonic (_("Remote Login via _XDMCP..."));
@@ -156,11 +152,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		g_signal_connect (G_OBJECT (w), "activate",
 				  G_CALLBACK (greeter_chooser_handler),
 				  NULL);
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Run an XDMCP chooser which will allow "
-					"you to log into available remote "
-					"computers, if there are any."),
-				      NULL);
 	}
 
 	if (gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) &&
@@ -171,10 +162,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		g_signal_connect (G_OBJECT (w), "activate",
 				  G_CALLBACK (greeter_config_handler),
 				  NULL);
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Configure GDM (this login manager). "
-					"This will require the root password."),
-				      NULL);
 	}
 
 	if (GdmRebootFound || GdmHaltFound || GdmSuspendFound) {
@@ -190,9 +177,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		g_signal_connect (G_OBJECT (w), "activate",
 				  G_CALLBACK (query_greeter_restart_handler),
 				  NULL);
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Restart your computer"),
-				      NULL);
 	}
 
 	if (GdmHaltFound) {
@@ -202,10 +186,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		g_signal_connect (G_OBJECT (w), "activate",
 				  G_CALLBACK (query_greeter_halt_handler),
 				  NULL);
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Shut Down the system so that "
-					"you may safely turn off the computer."),
-				      NULL);
 	}
 
 	if (GdmSuspendFound) {
@@ -215,9 +195,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		g_signal_connect (G_OBJECT (w), "activate",
 				  G_CALLBACK (query_greeter_suspend_handler),
 				  NULL);
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Suspend your computer"),
-				      NULL);
 	}
 }
 
