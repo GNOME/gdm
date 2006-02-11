@@ -340,6 +340,10 @@ greeter_session_init (void)
    }
 }
 
+/* 
+ * The button with this handler appears in the F10 menu, so it
+ * cannot depend on callback data being passed in.
+ */
 static void
 greeter_session_handler (GreeterItemInfo *info,
 			 gpointer         user_data)

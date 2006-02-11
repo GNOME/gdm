@@ -482,9 +482,13 @@ key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
   return FALSE;
 }
 
+/*
+ * The buttons with these handlers never appear in the F10 menu,
+ * so they can make use of callback data.
+ */
 static void
-greeter_action_ok (GreeterItemInfo *info,
-                       gpointer         user_data)
+greeter_ok_handler (GreeterItemInfo *info,
+                    gpointer         user_data)
 {
    if (ignore_buttons == FALSE)
      {
@@ -502,8 +506,8 @@ greeter_action_ok (GreeterItemInfo *info,
 }
 
 static void
-greeter_action_cancel (GreeterItemInfo *info,
-                       gpointer         user_data)
+greeter_cancel_handler (GreeterItemInfo *info,
+                        gpointer         user_data)
 {
    if (ignore_buttons == FALSE)
      {
@@ -526,14 +530,14 @@ greeter_setup_items (void)
   greeter_item_capslock_setup (window);
   greeter_item_timed_setup ();
   greeter_item_register_action_callback ("ok_button",
-					 greeter_action_ok,
+					 greeter_ok_handler,
 					 window);
   greeter_item_register_action_callback ("cancel_button",
-					 greeter_action_cancel,
+					 greeter_cancel_handler,
 					 window);
   greeter_item_register_action_callback ("language_button",
-					 greeter_action_language,
-					 window);
+					 greeter_language_handler,
+					 NULL);
   greeter_item_register_action_callback ("disconnect_button",
 					 (ActionFunc)gtk_main_quit,
 					 NULL);

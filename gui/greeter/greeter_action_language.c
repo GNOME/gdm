@@ -206,9 +206,12 @@ tree_row_activated (GtkTreeView         *view,
   }
 }
 
+/*
+ * The button with this handler appears in the F10 menu, so it
+ * cannot depend on callback data being passed in.
+ */
 void
-greeter_action_language (GreeterItemInfo *info,
-			 gpointer         user_data)
+greeter_language_handler (void)
 {
   GtkWidget *view = NULL;
 

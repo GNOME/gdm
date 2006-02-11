@@ -125,14 +125,10 @@ greeter_item_run_action_callback (const char *id)
   if G_UNLIKELY (callback_hash == NULL)
     return;
 
-  info = greeter_lookup_id (id);
-  if G_UNLIKELY (info == NULL)
-    return;
+  info    = greeter_lookup_id (id);
+  cb_info = g_hash_table_lookup (callback_hash, id);
 
-  cb_info = g_hash_table_lookup (callback_hash, info->id);
-
-  if G_LIKELY (cb_info)
-    (*cb_info->func) (info, cb_info->user_data);
+  (*cb_info->func) (info, cb_info->user_data);
 }
 
 gint

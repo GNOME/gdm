@@ -61,6 +61,10 @@ bin_exists (const char *command)
 	}
 }
 
+/*
+ * The buttons with these handlers appear in the F10 menu, so they
+ * cannot depend on callback data being passed in.
+ */
 static void
 query_greeter_restart_handler (void)
 {

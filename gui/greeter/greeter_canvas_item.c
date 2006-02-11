@@ -210,13 +210,18 @@ menu_position_func (GtkMenu           *menu,
 	*push_in = TRUE;
  }
 
- static void
- greeter_options_handler (GreeterItemInfo *item, GtkWidget *menubar)
- {
-	 gtk_menu_popup (GTK_MENU(gtk_menu_item_get_submenu(gtk_container_get_children(GTK_CONTAINER(menubar))->data)), 
-			 NULL, NULL, (GtkMenuPositionFunc)menu_position_func, 
-			 item, 0, gtk_get_current_event_time());
- }
+/*
+ * The button with this handler never appears in the F10 menu, so
+ * it can make use of callback data.
+ */
+static void
+greeter_options_handler (GreeterItemInfo *item, GtkWidget *menubar)
+{
+	gtk_menu_popup (GTK_MENU(gtk_menu_item_get_submenu(
+		        gtk_container_get_children(GTK_CONTAINER(menubar))->data)), 
+			NULL, NULL, (GtkMenuPositionFunc)menu_position_func, 
+			item, 0, gtk_get_current_event_time());
+}
 
 void
 greeter_item_create_canvas_item (GreeterItemInfo *item)

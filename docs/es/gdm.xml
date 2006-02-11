@@ -102,13 +102,13 @@
 
       <para>GDm se ha escrito con simplicidad y seguridad en mente. GDM es un reemplazo de XDM, el gestor de pantallas de X, A diferencia de sus competidores, (X3DM, KDM, WDM), GSM se escribió desde cero y no contiene nada de código de XDM / X Consortium.</para>
 
-      <para>For further information about GDM, see the <ulink type="http" url="http://www.gnome.org/projects/gdm/"> the GDM project website</ulink>. Please submit any bug reports or enhancement requests to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>. You can also send a message to the <address><email>gdm-list@gnome.org</email></address> mail alias to discuss any issues or concerns with the GDM program.</para>
+      <para>For further information about GDM, see the <ulink type="http" url="http://www.gnome.org/projects/gdm/"> the GDM project website</ulink>. Please submit any bug reports or enhancement requests to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>. You can also send a message to the <address><email>gdm-list@gnome.org</email></address> mail list to discuss any issues or concerns with the GDM program.</para>
     </sect2>
 
     <sect2 id="stability">
       <title>Interface Stability</title>
 
-      <para>The key/value pairs defined in the GDM configuration file and considered "stable" interfaces and should only change in ways that are backwards compatible. Note that this includes functionaity like the GDM scripts (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc. Some values depend on OS interfaces may need to be modified to work on a given OS. Typical examples are HaltCommand, RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram, and the "command" value for each "server-foo".</para>
+      <para>The key/value pairs defined in the GDM configuration files and the location of these files are considered "stable" interfaces and should only change in ways that are backwards compatible. Note that this includes functionaity like the GDM scripts (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc. Some values depend on OS interfaces may need to be modified to work on a given OS. Typical examples are HaltCommand, RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram, and the "command" value for each "server-foo".</para>
 
       <para>Note: distributions often change the default values of keys to support their platform. Command-line interfaces for programs installed to <filename>lt;bin&gt;</filename> are considered stable. Refer to your distribution configuration to see if there are any distribution-specific changes from the default GDM configuration and for information for what support exists for these options.</para>
 
@@ -263,6 +263,8 @@
       <para>PAM allows the system administrator to have control about how different programs which require password access work, so GDM and ssh and other programs can have configurable behavior.</para>
 
       <para>If there is no entry for GDM in the <filename>&lt;etc&gt;/pam.conf</filename> file, then automatic login will probably not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distro.</para>
+
+      <para>If you wish to make GDM work with other types of authentication mechanisms, such as SmartCards, you should implement this via writing a PAM module rather than by trying to modify the GDM code. Refer to the PAM documentation on your system and this issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the archives for more information.</para>
     </sect2>
 
     <sect2 id="gdmuser">
@@ -3409,7 +3411,7 @@ Hosts=appserverone,appservertwo
   <sect1 id="troubleshooting">
     <title>Troubleshooting</title>
 
-    <para>This section discusses helpful tips for getting GDM working. In general, if you have a problem using GDM, you can submit a bug to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink> or send an email to the <address><email>gdm-list@gnome.org</email></address> mail alias.</para>
+    <para>This section discusses helpful tips for getting GDM working. In general, if you have a problem using GDM, you can submit a bug to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink> or send an email to the <address><email>gdm-list@gnome.org</email></address> mail list.</para>
 
     <para>If GDM is failing to work properly, it is always a good idea to include debug information. Use the <command>gdmsetup</command> command to turn on debug ("Enable debug messages to system log" checkbox in the "Security" tab), then use GDM to the point where it fails, and include the GDM output sent to your system log (<filename>&lt;var&gt;/log/messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> depending on your operating system). Since the system log can be large, please only include the GDM debug information and do not sent the entire file. If you do not see any GDM syslog output, you may need to configure syslog (see syslog.3c man page).</para>
 

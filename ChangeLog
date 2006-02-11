@@ -1,5 +1,15 @@
 2006-02-10  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/greeter/greeter.c, gui/greeter/greeter_action_language.[ch],
+	  gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_events.c,
+	  gui/greeter/greeter_session.c, gui/greeter/greeter_system.c:
+	  Fix problem with options button and F10 menu not working if the
+          button is not in the theme.  This only affects buttons that can
+	  be in the F10 button but may not be in the theme (language, 
+	  system, session, halt, reboot, shutdown).  Fixes bug #330343.
+
+2006-02-10  Brian Cameron  <brian.cameron@sun.com>
+
 	* README, docs/C/gdm.xml: Few more updates worth adding.
 
 2006-02-10  Brian Cameron  <brian.cameron@sun.com>
