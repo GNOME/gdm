@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-31 21:22+0200\n"
-"PO-Revision-Date: 2006-01-31 21:25+0200\n"
+"POT-Creation-Date: 2006-02-12 09:29+0200\n"
+"PO-Revision-Date: 2006-02-12 09:35+0200\n"
 "Last-Translator: Hile Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr "%s: Evästeen kirjoitus epäonnistui"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Epäilyttävän näköinen evästetiedosto %s ohitetaan"
 
-#: ../daemon/auth.c:895 ../daemon/gdm.c:1361 ../daemon/gdm.c:1725
+#: ../daemon/auth.c:895 ../daemon/gdm.c:1364 ../daemon/gdm.c:1728
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Ei voi kirjoittaa %s: %s"
@@ -285,36 +285,36 @@ msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
 "%s: %s on suurempi kuin järjestelmän ylläpitäjän määrittelemä enimmäiskoko."
 
-#: ../daemon/gdm-net.c:270
+#: ../daemon/gdm-net.c:331
 #, c-format
 msgid "%s: Could not make socket"
 msgstr "%s: Pistokkeen luonti epäonnistui"
 
-#: ../daemon/gdm-net.c:301
+#: ../daemon/gdm-net.c:362
 #, c-format
 msgid "%s: Could not bind socket"
 msgstr "%s: Pistokkeen sitominen epäonnistui"
 
-#: ../daemon/gdm-net.c:387
+#: ../daemon/gdm-net.c:448
 #, c-format
 msgid "%s: Could not make FIFO"
 msgstr "%s: FIFO:n luonti epäonnistui"
 
-#: ../daemon/gdm-net.c:395
+#: ../daemon/gdm-net.c:456
 #, c-format
 msgid "%s: Could not open FIFO"
 msgstr "%s: FIFO:n avaaminen epäonnistui"
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:198 ../daemon/gdm.c:206 ../daemon/gdm.c:1495
-#: ../daemon/gdm.c:1503
+#: ../daemon/gdm.c:198 ../daemon/gdm.c:206 ../daemon/gdm.c:1498
+#: ../daemon/gdm.c:1506
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "PID-tiedostoa %s ei voi kirjoittaa: kenties levy on täynnä. Virhe: %s\n"
 
-#: ../daemon/gdm.c:200 ../daemon/gdm.c:208 ../daemon/gdm.c:1497
-#: ../daemon/gdm.c:1505
+#: ../daemon/gdm.c:200 ../daemon/gdm.c:208 ../daemon/gdm.c:1500
+#: ../daemon/gdm.c:1508
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr "PID-tiedostoa %s ei voi kirjoittaa: kenties levy on täynnä. Virhe: %s"
@@ -364,7 +364,7 @@ msgstr ""
 "X:n käynnistäminen epäonnistui useita kertoja lyhyen ajan sisällä; "
 "poistetaan näyttö %s käytöstä."
 
-#: ../daemon/gdm.c:569 ../daemon/gdm.c:2295
+#: ../daemon/gdm.c:569 ../daemon/gdm.c:2298
 msgid "Master suspending..."
 msgstr "Siirrytään virransäästötilaan..."
 
@@ -396,7 +396,7 @@ msgstr "Käynnistetään tietokone uudelleen..."
 msgid "%s: Restart failed: %s"
 msgstr "%s: Uudelleenkäynnistys epäonnistui: %s"
 
-#: ../daemon/gdm.c:771
+#: ../daemon/gdm.c:774
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
@@ -405,7 +405,7 @@ msgstr ""
 "Uudelleenkäynnistys-, sammutus- tai GDM:n uudelleenkäynnistyspyyntö, vaikka "
 "näytöllä %s ei ole järjestelmävalikkoa."
 
-#: ../daemon/gdm.c:780
+#: ../daemon/gdm.c:783
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
@@ -415,60 +415,60 @@ msgstr ""
 "väliaikaiselta näytöltä %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:846
+#: ../daemon/gdm.c:849
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Näyttö %s keskeytetään"
 
-#: ../daemon/gdm.c:997
+#: ../daemon/gdm.c:1000
 msgid "GDM restarting ..."
 msgstr "GDM käynnistyy uudelleen..."
 
-#: ../daemon/gdm.c:1001
+#: ../daemon/gdm.c:1004
 msgid "Failed to restart self"
 msgstr "Itsensä uudelleenkäynnistys epäonnistui"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1075
+#: ../daemon/gdm.c:1078
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr "pääpalvelu: Saatu SIGABRT, jokin meni pieleen. Ajetaan alas!"
 
-#: ../daemon/gdm.c:1233
+#: ../daemon/gdm.c:1236
 msgid "Do not fork into the background"
 msgstr "Ei haaroitusta taustalle"
 
-#: ../daemon/gdm.c:1235
+#: ../daemon/gdm.c:1238
 msgid "No console (static) servers to be run"
 msgstr "Ei päätepalvelimia (pysyviä),joissa palvelimen voisi käynnistää"
 
-#: ../daemon/gdm.c:1237
+#: ../daemon/gdm.c:1240
 msgid "Alternative configuration file"
 msgstr "Vaihtoehtoinen asetustiedosto"
 
-#: ../daemon/gdm.c:1237
+#: ../daemon/gdm.c:1240
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
-#: ../daemon/gdm.c:1239
+#: ../daemon/gdm.c:1242
 msgid "Preserve LD_* variables"
 msgstr "Säilytä LD_*-muuttujat"
 
-#: ../daemon/gdm.c:1241
+#: ../daemon/gdm.c:1244
 msgid "Print GDM version"
 msgstr "Tulosta GDM-versio"
 
-#: ../daemon/gdm.c:1243
+#: ../daemon/gdm.c:1246
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr ""
 "Käynnistä ensimmäinen X-palvelin, mutta pysähdy sen jälkeen kunnes saadaan "
 "MENE-käsky fifo-putkesta"
 
-#: ../daemon/gdm.c:1350 ../daemon/gdm.c:1694
+#: ../daemon/gdm.c:1353 ../daemon/gdm.c:1697
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Tiedostoa %s ei voi avata kirjoittamiseen"
 
-#: ../daemon/gdm.c:1408 ../gui/gdmchooser.c:1932
+#: ../daemon/gdm.c:1411 ../gui/gdmchooser.c:1971
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -480,52 +480,50 @@ msgstr ""
 "valitsimista.\n"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/gdm.c:1430
+#: ../daemon/gdm.c:1433
 msgid "Only root wants to run GDM\n"
 msgstr "Vain pääkäyttäjä voi suorittaa GDMn\n"
 
-#: ../daemon/gdm.c:1446 ../daemon/gdm.c:1450 ../daemon/gdm.c:1533
-#: ../daemon/gdm.c:1537 ../daemon/gdm.c:1541 ../daemon/gdm.c:1545
-#: ../daemon/gdm.c:1555 ../daemon/gdm.c:1561 ../daemon/gdm.c:1572
+#: ../daemon/gdm.c:1449 ../daemon/gdm.c:1453 ../daemon/gdm.c:1536
+#: ../daemon/gdm.c:1540 ../daemon/gdm.c:1544 ../daemon/gdm.c:1548
+#: ../daemon/gdm.c:1558 ../daemon/gdm.c:1564 ../daemon/gdm.c:1575
 #: ../daemon/misc.c:1771 ../daemon/misc.c:1775 ../daemon/misc.c:1779
 #: ../daemon/misc.c:1786 ../daemon/misc.c:1790 ../daemon/misc.c:1794
 #: ../daemon/server.c:522 ../daemon/server.c:535 ../daemon/slave.c:780
 #: ../daemon/slave.c:794 ../daemon/slave.c:804 ../daemon/slave.c:814
-#: ../daemon/slave.c:826 ../gui/gdmchooser.c:1841 ../gui/gdmchooser.c:1844
-#: ../gui/gdmchooser.c:1847 ../gui/gdmlogin.c:3388 ../gui/gdmlogin.c:3398
-#: ../gui/gdmlogin.c:3403 ../gui/greeter/greeter.c:1003
-#: ../gui/greeter/greeter.c:1011 ../gui/greeter/greeter.c:1014
+#: ../daemon/slave.c:826 ../gui/gdmlogin.c:3523 ../gui/gdmlogin.c:3534
+#: ../gui/gdmlogin.c:3540
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Virhe asetettaessa %s-signaalin käsittelijää: %s"
 
-#: ../daemon/gdm.c:1477
+#: ../daemon/gdm.c:1480
 msgid "GDM already running. Aborting!"
 msgstr "GDM on jo käynnissä. Keskeytetään!"
 
-#: ../daemon/gdm.c:1581
+#: ../daemon/gdm.c:1584
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Virhe asetettaessa CHLD-signaalin käsittelijää"
 
-#: ../daemon/gdm.c:2709
+#: ../daemon/gdm.c:2713
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC-pyyntö evätty: Todennus puuttuu"
 
-#: ../daemon/gdm.c:2860 ../daemon/gdm.c:2878 ../daemon/gdm.c:3138
-#: ../daemon/gdm.c:3189 ../daemon/gdm.c:3241 ../daemon/gdm.c:3282
-#: ../daemon/gdm.c:3308
+#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3157
+#: ../daemon/gdm.c:3208 ../daemon/gdm.c:3260 ../daemon/gdm.c:3301
+#: ../daemon/gdm.c:3327
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s-pyyntö evätty: Todennus puuttuu"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:2896
+#: ../daemon/gdm.c:2915
 msgid "Unknown server type requested; using standard server."
 msgstr "Pyydetty tuntematonta palvelintyyppiä, käytetään vakiopalvelinta."
 
-#: ../daemon/gdm.c:2900
+#: ../daemon/gdm.c:2919
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -534,57 +532,57 @@ msgstr ""
 "Pyydetyllä palvelimella %s ei ole lupaa käyttää joustavien palvelinten "
 "kanssa. Käytetään vakiopalvelinta."
 
-#: ../daemon/gdmconfig.c:542 ../daemon/gdmconfig.c:549
+#: ../daemon/gdmconfig.c:551 ../daemon/gdmconfig.c:558
 #, c-format
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: Ei GDM:n asetustiedostoa: %s. Käytetään oletuksia."
 
-#: ../daemon/gdmconfig.c:845
+#: ../daemon/gdmconfig.c:854
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession tyhjä, käytetään tiedostoa %s/gdm/Xsession"
 
-#: ../daemon/gdmconfig.c:878
+#: ../daemon/gdmconfig.c:887
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: Standardia X-palvelinta ei löytynyt, kokeillaan vaihtoehtoja"
 
-#: ../daemon/gdmconfig.c:937
+#: ../daemon/gdmconfig.c:946
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Tervehdintä ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:939
+#: ../daemon/gdmconfig.c:948
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Tervehdintä ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:941
+#: ../daemon/gdmconfig.c:950
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Istuntohakemistoa ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:1025
+#: ../daemon/gdmconfig.c:1034
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s: XDMCP on käytössä vaikka XDMCP-tukea ei ole, tetaan pois käytöstä"
 
-#: ../daemon/gdmconfig.c:1086
+#: ../daemon/gdmconfig.c:1095
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: TimedLoginDelay on pienempi kuin 5, joten käytetään arvoa 5."
 
-#: ../daemon/gdmconfig.c:1322
+#: ../daemon/gdmconfig.c:1331
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: Prioriteetti ylitti sallitut rajat, asetettu arvoon %d"
 
-#: ../daemon/gdmconfig.c:1328
+#: ../daemon/gdmconfig.c:1337
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Tyhjä palvelinkomento, käytetään oletusta."
 
-#: ../daemon/gdmconfig.c:1527
+#: ../daemon/gdmconfig.c:1536
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -592,7 +590,7 @@ msgstr ""
 "%s: Lokihakemistoa %s ei ole olemassa tai se ei ole hakemisto. ServAuthDir:"
 "nä käytetään %s."
 
-#: ../daemon/gdmconfig.c:1543
+#: ../daemon/gdmconfig.c:1552
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -601,12 +599,12 @@ msgstr ""
 "Palvelimen valtuushakemistoksi (daemon/ServAuthDir) on asetettu %s, mutta "
 "sitä ei ole olemassa. Korjaa GDM:n asetukset ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1552
+#: ../daemon/gdmconfig.c:1561
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Valtuushakemistoa %s ei ole olemassa. Keskeytetään."
 
-#: ../daemon/gdmconfig.c:1557
+#: ../daemon/gdmconfig.c:1566
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -615,17 +613,17 @@ msgstr ""
 "Palvelimen valtuushakemistoksi (daemon/ServAuthDir) on asetettu %s, mutta se "
 "ei ole hakemisto. Korjaa GDM:n asetukset ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1566
+#: ../daemon/gdmconfig.c:1575
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Valtuushakemisto %s ei ole hakemisto. Keskeytetään."
 
-#: ../daemon/gdmconfig.c:1639
+#: ../daemon/gdmconfig.c:1648
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Virheellinen palvelinrivi asetustiedostossa. Ei huomioida!"
 
-#: ../daemon/gdmconfig.c:1762 ../daemon/gdmconfig.c:1800
+#: ../daemon/gdmconfig.c:1771 ../daemon/gdmconfig.c:1809
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
@@ -634,7 +632,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1780
+#: ../daemon/gdmconfig.c:1789
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -643,7 +641,7 @@ msgstr ""
 "%s: XDMCP on poissa käytöstä eikä paikallisia palvelimia ole määritelty. "
 "Lisätään %s osoitteeseen :%d, jotta asetusten määrittely olisi mahdollista!"
 
-#: ../daemon/gdmconfig.c:1792
+#: ../daemon/gdmconfig.c:1801
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -651,7 +649,7 @@ msgstr ""
 "XDMCP on poissa käytöstä eikä GDM löydä yhtään paikallista palvelinta "
 "käynnistettäväksi. Keskeytetään! Korjaa asetukset ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1817
+#: ../daemon/gdmconfig.c:1826
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -660,12 +658,12 @@ msgstr ""
 "GDM-käyttäjää \"%s\" ei ole olemassa. Korjaa GDM:n asetukset ja käynnistä "
 "GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1825
+#: ../daemon/gdmconfig.c:1834
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: GDM-käyttäjää \"%s\" ei löydy. Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1831
+#: ../daemon/gdmconfig.c:1840
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -674,12 +672,12 @@ msgstr ""
 "turvallisuusriskien vuoksi. Korjaa GDM:n asetukset ja käynnistä GDM "
 "uudelleen."
 
-#: ../daemon/gdmconfig.c:1840
+#: ../daemon/gdmconfig.c:1849
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: Pääkäyttäjä ei voi olla GDM-käyttäjä. Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1846
+#: ../daemon/gdmconfig.c:1855
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -688,12 +686,12 @@ msgstr ""
 "GDM-käyttäjää \"%s\" ei ole olemassa. Korjaa GDM:n asetukset ja käynnistä "
 "GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1853
+#: ../daemon/gdmconfig.c:1862
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: GDM-ryhmää \"%s\" ei löydy. Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1859
+#: ../daemon/gdmconfig.c:1868
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -702,42 +700,42 @@ msgstr ""
 "turvallisuusriskien vuoksi. Korjaa GDM:n asetukset ja käynnistä GDM "
 "uudelleen."
 
-#: ../daemon/gdmconfig.c:1868
+#: ../daemon/gdmconfig.c:1877
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: GDM-ryhmä ei voi olla \"root\". Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1877
+#: ../daemon/gdmconfig.c:1886
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Tervehdintä ei löytynyt tai GDM-käyttäjällä ei ole oikeutta suorittaa "
 "sitä."
 
-#: ../daemon/gdmconfig.c:1883
+#: ../daemon/gdmconfig.c:1892
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Etätervehdintä ei löytynyt tai GDM-käyttäjällä ei ole oikeutta suorittaa "
 "sitä"
 
-#: ../daemon/gdmconfig.c:1891
+#: ../daemon/gdmconfig.c:1900
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
 "%s: Valitsinta ei löytynyt tai GDM-käyttäjällä ei ole oikeutta suorittaa "
 "sitä."
 
-#: ../daemon/gdmconfig.c:1900
+#: ../daemon/gdmconfig.c:1909
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "Ei määritelty daemon/ServAuthDir:iä GDM:n asetustiedostossa"
 
-#: ../daemon/gdmconfig.c:1902
+#: ../daemon/gdmconfig.c:1911
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: daemon/ServAuthDir ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:1925
+#: ../daemon/gdmconfig.c:1934
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -748,14 +746,14 @@ msgstr ""
 "sitä ei omista käyttäjä %s ja ryhmä %s. Korjaa omistajuus tai GDM:n "
 "asetustiedosto, ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1935
+#: ../daemon/gdmconfig.c:1944
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Valtuushakemisto %s ei ole käyttäjän %s ja ryhmän %s omistuksessa. "
 "Keskeytetään."
 
-#: ../daemon/gdmconfig.c:1940
+#: ../daemon/gdmconfig.c:1949
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -766,7 +764,7 @@ msgstr ""
 "sen oikeustaso on väärä: pitäisi olla %o. Korjaa oikeudet tai GDM:n "
 "asetustiedosto ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1952
+#: ../daemon/gdmconfig.c:1961
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -1392,7 +1390,7 @@ msgid "Caps Lock is on."
 msgstr "CapsLock on päällä."
 
 #: ../daemon/verify-crypt.c:118 ../daemon/verify-pam.c:525
-#: ../daemon/verify-shadow.c:117 ../gui/gdmlogin.c:2773
+#: ../daemon/verify-shadow.c:117 ../gui/gdmlogin.c:2782
 msgid "Please enter your username"
 msgstr "Syötä käyttäjätunnus"
 
@@ -1400,16 +1398,16 @@ msgstr "Syötä käyttäjätunnus"
 #: ../daemon/verify-crypt.c:119 ../daemon/verify-pam.c:425
 #: ../daemon/verify-pam.c:426 ../daemon/verify-pam.c:427
 #: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:854
-#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:996 ../gui/gdmlogin.c:1010
-#: ../gui/gdmlogin.c:1624 ../gui/gdmlogin.c:2104 ../gui/greeter/greeter.c:172
+#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:1005 ../gui/gdmlogin.c:1019
+#: ../gui/gdmlogin.c:1633 ../gui/gdmlogin.c:2113 ../gui/greeter/greeter.c:173
 #: ../gui/greeter/greeter_parser.c:1125
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
 #: ../daemon/verify-crypt.c:157 ../daemon/verify-pam.c:428
 #: ../daemon/verify-pam.c:429 ../daemon/verify-pam.c:573
-#: ../daemon/verify-shadow.c:175 ../gui/gdmlogin.c:1659
-#: ../gui/greeter/greeter.c:190
+#: ../daemon/verify-shadow.c:175 ../gui/gdmlogin.c:1668
+#: ../gui/greeter/greeter.c:191
 msgid "Password:"
 msgstr "Salasana:"
 
@@ -1879,51 +1877,51 @@ msgstr "Käytä yleislähetyst epäsuoran sijaan (valitsin)"
 msgid "Don't check for running GDM"
 msgstr "Älä tarkista onko GDM jo päällä"
 
-#: ../gui/gdmXnestchooser.c:510
+#: ../gui/gdmXnestchooser.c:513
 msgid "Xnest doesn't exist."
 msgstr "Xnest ei ole asennettuna."
 
-#: ../gui/gdmXnestchooser.c:511
+#: ../gui/gdmXnestchooser.c:514
 msgid "Please ask your system administrator to install it."
 msgstr "Pyydä järjestelmän ylläpitäjää asentamaan se."
 
-#: ../gui/gdmXnestchooser.c:536
+#: ../gui/gdmXnestchooser.c:539
 msgid "Indirect XDMCP is not enabled"
 msgstr "Epäsuora XDMCP ei ole käytössä"
 
-#: ../gui/gdmXnestchooser.c:537 ../gui/gdmXnestchooser.c:555
+#: ../gui/gdmXnestchooser.c:540 ../gui/gdmXnestchooser.c:558
 msgid "Please ask your system administrator to enable this feature."
 msgstr "Pyydä järjestelmän ylläpitäjää ottamaan tämä asetus käyttöön."
 
-#: ../gui/gdmXnestchooser.c:554
+#: ../gui/gdmXnestchooser.c:557
 msgid "XDMCP is not enabled"
 msgstr "XDMCP ei ole käytössä"
 
-#: ../gui/gdmXnestchooser.c:586
+#: ../gui/gdmXnestchooser.c:589
 msgid "GDM is not running"
 msgstr "GDM ei ole käynnissä"
 
-#: ../gui/gdmXnestchooser.c:587
+#: ../gui/gdmXnestchooser.c:590
 msgid "Please ask your system administrator to start it."
 msgstr "Pyydä järjestelmän ylläpitäjää käynnistämään se."
 
-#: ../gui/gdmXnestchooser.c:603
+#: ../gui/gdmXnestchooser.c:606
 msgid "Could not find a free display number"
 msgstr "Yhtään vapaata näyttönumeroa ei löytynyt"
 
-#: ../gui/gdmchooser.c:83
+#: ../gui/gdmchooser.c:85
 msgid "Please wait: scanning local network..."
 msgstr "Odota: etsitään paikallisesta verkkoympäristöstä..."
 
-#: ../gui/gdmchooser.c:84
+#: ../gui/gdmchooser.c:86
 msgid "No serving hosts were found."
 msgstr "Isännöiviä palvelimia ei löytynyt."
 
-#: ../gui/gdmchooser.c:85
+#: ../gui/gdmchooser.c:87
 msgid "Choose a ho_st to connect to:"
 msgstr "Valitse palvelin, johon yhdistetään:"
 
-#: ../gui/gdmchooser.c:621
+#: ../gui/gdmchooser.c:620
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
@@ -1932,11 +1930,11 @@ msgstr ""
 "Palvelin \"%s\" ei ole valmiina istuntoon juuri nyt. Yritä myöhemmin "
 "uudelleen."
 
-#: ../gui/gdmchooser.c:631
+#: ../gui/gdmchooser.c:630
 msgid "Cannot connect to remote server"
 msgstr "Etäpalvelimeen ei saada yhteyttä"
 
-#: ../gui/gdmchooser.c:1253
+#: ../gui/gdmchooser.c:1282
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1947,20 +1945,20 @@ msgstr ""
 "sammutettu tai ei ole valmiina istuntoihin juuri nyt. Yritä myöhemmin "
 "uudelleen."
 
-#: ../gui/gdmchooser.c:1266
+#: ../gui/gdmchooser.c:1295
 msgid "Did not receive response from server"
 msgstr "Palvelimelta ei saatu vastausta"
 
-#: ../gui/gdmchooser.c:1368
+#: ../gui/gdmchooser.c:1397
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
 msgstr "Palvelinta \"%s\" ei löydy. Kenties teit kirjoitusvirheen."
 
-#: ../gui/gdmchooser.c:1377
+#: ../gui/gdmchooser.c:1406
 msgid "Cannot find host"
 msgstr "Palvelinta ei löydy"
 
-#: ../gui/gdmchooser.c:1615
+#: ../gui/gdmchooser.c:1611
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1976,41 +1974,31 @@ msgstr ""
 "Verkosta voi etsiä uusia isäntiä painamalla \"Päivitä tiedot\". Valitulle "
 "palvelimelle voidaan avata istunto napsauttamalla \"Yhdistä\"-painiketta."
 
-#: ../gui/gdmchooser.c:1665
-#, c-format
-msgid "Can't open default host icon: %s"
-msgstr "Koneen oletuskuvaketta ei voitu avata: %s"
-
-#: ../gui/gdmchooser.c:1855 ../gui/gdmlogin.c:3413
-#: ../gui/greeter/greeter.c:1022 ../gui/greeter/greeter.c:1029
-msgid "Could not set signal mask!"
-msgstr "Signaalimaskia ei voitu asettaa."
-
-#: ../gui/gdmchooser.c:1861
+#: ../gui/gdmchooser.c:1900
 msgid "Socket for xdm communication"
 msgstr "Pistoke xdm-kommunikaatiolle"
 
-#: ../gui/gdmchooser.c:1861
+#: ../gui/gdmchooser.c:1900
 msgid "SOCKET"
 msgstr "PISTOKE"
 
-#: ../gui/gdmchooser.c:1864
+#: ../gui/gdmchooser.c:1903
 msgid "Client address to return in response to xdm"
 msgstr "xdm:lle vastauksena lähetettävä asiakasosoite"
 
-#: ../gui/gdmchooser.c:1864
+#: ../gui/gdmchooser.c:1903
 msgid "ADDRESS"
 msgstr "OSOITE"
 
-#: ../gui/gdmchooser.c:1867
+#: ../gui/gdmchooser.c:1906
 msgid "Connection type to return in response to xdm"
 msgstr "xdm:lle vastauksena lähetettävä yhteystyyppi"
 
-#: ../gui/gdmchooser.c:1867
+#: ../gui/gdmchooser.c:1906
 msgid "TYPE"
 msgstr "TYYPPI"
 
-#: ../gui/gdmchooser.c:1987
+#: ../gui/gdmchooser.c:2029
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -2020,7 +2008,7 @@ msgstr ""
 "todennäköisesti juuri päivitetty. Käynnistä GDM-palvelin tai koko tietokone "
 "uudelleen."
 
-#: ../gui/gdmchooser.c:1997
+#: ../gui/gdmchooser.c:2039
 msgid "Cannot run chooser"
 msgstr "Valitsinta ei voi suorittaa"
 
@@ -2065,11 +2053,11 @@ msgstr "Tila"
 msgid "_Add"
 msgstr "_Lisää"
 
-#: ../gui/gdmcomm.c:424
+#: ../gui/gdmcomm.c:590
 msgid "GDM (The GNOME Display Manager) is not running."
 msgstr "GDM (Gnomen kirjautumisohjelman) ei ole käynnissä."
 
-#: ../gui/gdmcomm.c:426
+#: ../gui/gdmcomm.c:592
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm. If you still wish to use this feature, either start "
@@ -2080,35 +2068,35 @@ msgstr ""
 "ominaisuutta, käynnistä gdm itse tai pyydä järjestelmän ylläpitäjää "
 "käynnistämään GDM."
 
-#: ../gui/gdmcomm.c:450 ../gui/gdmflexiserver.c:774
+#: ../gui/gdmcomm.c:616 ../gui/gdmflexiserver.c:784
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Kommunikointi GDM:n (Gnomen kirjautumisohjelman) kanssa ei onnistu"
 
-#: ../gui/gdmcomm.c:452 ../gui/gdmflexiserver.c:776
+#: ../gui/gdmcomm.c:618 ../gui/gdmflexiserver.c:786
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Kenties käynnissä on GDM:n vanha versio.."
 
-#: ../gui/gdmcomm.c:469 ../gui/gdmcomm.c:472
+#: ../gui/gdmcomm.c:635 ../gui/gdmcomm.c:638
 msgid "Cannot communicate with GDM. Perhaps you have an old version running."
 msgstr "Kommunikointi GDM:n kanssa ei onnistu. Käytössä on ehkä vanha versio."
 
-#: ../gui/gdmcomm.c:475
+#: ../gui/gdmcomm.c:641
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Joustavien X-palvelinten yläraja saavutettiin."
 
-#: ../gui/gdmcomm.c:477
+#: ../gui/gdmcomm.c:643
 msgid "There were errors trying to start the X server."
 msgstr "X-palvelinta käynnistäessä tuli virheitä."
 
-#: ../gui/gdmcomm.c:479
+#: ../gui/gdmcomm.c:645
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "X-palvelin kaatui. Sitä ei ole ehkä asetettu oikein."
 
-#: ../gui/gdmcomm.c:482
+#: ../gui/gdmcomm.c:648
 msgid "Too many X sessions running."
 msgstr "Liian monta X-istuntoa käynnissä."
 
-#: ../gui/gdmcomm.c:484
+#: ../gui/gdmcomm.c:650
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
@@ -2116,7 +2104,7 @@ msgstr ""
 "Sisäkkäinen X-palvelin (Xnest) ei onnistunut ottamaan yhteyttä X-"
 "palvelimeen. Syynä voi olla puuttuva X-todennustiedosto."
 
-#: ../gui/gdmcomm.c:489
+#: ../gui/gdmcomm.c:655
 msgid ""
 "The nested X server (Xnest) is not available, or GDM is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
@@ -2125,11 +2113,11 @@ msgstr ""
 "ovat väärät\n"
 ". Asenna Xnest-paketti, jos haluat käyttää sisäkkäistä kirjautumista."
 
-#: ../gui/gdmcomm.c:494
+#: ../gui/gdmcomm.c:660
 msgid "The X server is not available. GDM may be misconfigured."
 msgstr "X-palvelinta ei ole saatavilla. GDM on luultavasti väärin asetettu."
 
-#: ../gui/gdmcomm.c:497
+#: ../gui/gdmcomm.c:663
 msgid ""
 "Trying to set an unknown logout action, or trying to set a logout action "
 "which is not available."
@@ -2137,19 +2125,19 @@ msgstr ""
 "Yritetään asettaa tuntematonta uloskirjautumistoimintoa, tai yritetään "
 "asettaa toimintoa, joka ei ole käytettävissä."
 
-#: ../gui/gdmcomm.c:500
+#: ../gui/gdmcomm.c:666
 msgid "Virtual terminals not supported."
 msgstr "Virtuaalipäätteitä ei tueta."
 
-#: ../gui/gdmcomm.c:502
+#: ../gui/gdmcomm.c:668
 msgid "Trying to change to an invalid virtual terminal number."
 msgstr "Yritetään vaihtaa virheellisen numeroiseen virtuaalipäätteeseen."
 
-#: ../gui/gdmcomm.c:504
+#: ../gui/gdmcomm.c:670
 msgid "Trying to update an unsupported configuration key."
 msgstr "Yritetään päivittää ei-tuettua asetusavainta."
 
-#: ../gui/gdmcomm.c:506
+#: ../gui/gdmcomm.c:672
 msgid ""
 "You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -2157,15 +2145,15 @@ msgstr ""
 "Toimintoon tarvittavaa todennusta ei näy olevan. Tiedosto .Xauthority voi "
 "olla väärin asetettu."
 
-#: ../gui/gdmcomm.c:510
+#: ../gui/gdmcomm.c:676
 msgid "Too many messages were sent to GDM and it hung up on us."
 msgstr "GDM:lle lähetettiin liian monta viestiä ja se katkaisi yhteyden."
 
-#: ../gui/gdmcomm.c:513
+#: ../gui/gdmcomm.c:679
 msgid "Unknown error occurred."
 msgstr "Tuntematon virhe."
 
-#: ../gui/gdmcommon.c:449
+#: ../gui/gdmcommon.c:567
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d. %Bta, %H:%M"
 
@@ -2173,17 +2161,68 @@ msgstr "%a %d. %Bta, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:455
+#: ../gui/gdmcommon.c:573
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %-d. %Bta, %H:%M"
 
-#: ../gui/gdmcommon.c:563
+#: ../gui/gdmcommon.c:681
 msgid " seconds"
 msgstr " sekuntia"
 
-#: ../gui/gdmcommon.c:565
+#: ../gui/gdmcommon.c:683
 msgid " second"
 msgstr " sekunti"
+
+#: ../gui/gdmdynamic.c:48
+#, c-format
+msgid "Usage: %s [-b][-v] and one of the following:\n"
+msgstr "Käyttö: %s [-b][-v]  ja yksi seuraavista:\n"
+
+#: ../gui/gdmdynamic.c:49
+#, c-format
+msgid "\t-a display\n"
+msgstr "\t-a näyttö\n"
+
+#: ../gui/gdmdynamic.c:50
+#, c-format
+msgid "\t-r display\n"
+msgstr "\t-r näyttö\n"
+
+#: ../gui/gdmdynamic.c:51
+#, c-format
+msgid "\t-d display\n"
+msgstr "\t-d näyttö\n"
+
+#: ../gui/gdmdynamic.c:52
+#, c-format
+msgid "\t-l [server_name]\n"
+msgstr "\t-l [palvelimen nimi]\n"
+
+#: ../gui/gdmdynamic.c:53
+#, c-format
+msgid "\t-t maximum tries to connect (default 15)\n"
+msgstr "\t-t yritä enintään näin monta kertaa (oletusarvo 15)\n"
+
+#: ../gui/gdmdynamic.c:54
+#, c-format
+msgid "\t-s sleep value (default 8)\n"
+msgstr "\t-s nukkumisaika (oletusarvo 8)\n"
+
+#: ../gui/gdmdynamic.c:217
+msgid "Server busy, will sleep.\n"
+msgstr "Palvelin on kiireinen, odotetaan.\n"
+
+#: ../gui/gdmdynamic.c:304
+#, c-format
+msgid "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
+msgstr "Yhteydenotto palvelinprosessiin epäonnistui, odotetaan %d sekuntia. "
+"Uudelleenyritys %d/%d\n"
+
+#. This is a serious error, so print a message even if verbose is off
+#: ../gui/gdmdynamic.c:327
+#, c-format
+msgid "Failed to connect to server after %d retries\n"
+msgstr "Yhteydenotto palvelimeen ei onnistunut %d yrityksellä\n"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
@@ -2211,8 +2250,8 @@ msgstr "Näyttö %s virtuaalipäätteellä %d"
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Sisäkkäinen näyttö %s virtuaalipäätteellä %d"
 
-#: ../gui/gdmflexiserver.c:250 ../gui/gdmlogin.c:2621
-#: ../gui/greeter/greeter_item_ulist.c:245
+#: ../gui/gdmflexiserver.c:250 ../gui/gdmlogin.c:2630
+#: ../gui/greeter/greeter_item_ulist.c:242
 msgid "Username"
 msgstr "Käyttäjätunnus"
 
@@ -2282,23 +2321,23 @@ msgstr "Todenna ennen --command:in ajamista"
 msgid "Start new flexible session; do not show popup"
 msgstr "Aloita uusi joustava istunto, älä näytä ponnahdusikkunaa"
 
-#: ../gui/gdmflexiserver.c:800
+#: ../gui/gdmflexiserver.c:831
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Toimintoon tarvittavaa todennusta ei näy olevan"
 
-#: ../gui/gdmflexiserver.c:803
+#: ../gui/gdmflexiserver.c:834
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Tiedosto .Xauthority voi olla väärin asetettu."
 
-#: ../gui/gdmflexiserver.c:826
+#: ../gui/gdmflexiserver.c:860
 msgid "You do not seem to be logged in on the console"
 msgstr "Et näytä kirjautuneen sisään konsolissa"
 
-#: ../gui/gdmflexiserver.c:828
+#: ../gui/gdmflexiserver.c:862
 msgid "Starting a new login only works correctly on the console."
 msgstr "Uuden kirjautumisen aloitus toimii oikein vain konsolista."
 
-#: ../gui/gdmflexiserver.c:871
+#: ../gui/gdmflexiserver.c:908
 msgid "Cannot start new display"
 msgstr "Uutta näyttöä ei voi käynnistää"
 
@@ -2772,45 +2811,45 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: ../gui/gdmlogin.c:350
+#: ../gui/gdmlogin.c:352
 #, c-format
 msgid "Cannot run command '%s': %s."
 msgstr "Ei voitu suorittaa komento \"%s\": %s."
 
-#: ../gui/gdmlogin.c:358
+#: ../gui/gdmlogin.c:360
 msgid "Cannot start background application"
 msgstr "Taustaohjelmaa ei voi käynnistää"
 
-#: ../gui/gdmlogin.c:432 ../gui/greeter/greeter_parser.c:1111
+#: ../gui/gdmlogin.c:434 ../gui/greeter/greeter_parser.c:1111
 msgid "User %u will login in %t"
 msgstr "Käyttäjä %s kirjautuu viiveellä %t"
 
-#: ../gui/gdmlogin.c:649 ../gui/greeter/greeter_system.c:67
+#: ../gui/gdmlogin.c:652 ../gui/greeter/greeter_system.c:71
 msgid "Are you sure you want to restart the computer?"
 msgstr "Haluatko varmasti käynnistää tietokoneen uudelleen?"
 
-#: ../gui/gdmlogin.c:650 ../gui/gdmlogin.c:2494
-#: ../gui/greeter/greeter_parser.c:1086 ../gui/greeter/greeter_system.c:68
-#: ../gui/greeter/greeter_system.c:187
+#: ../gui/gdmlogin.c:653 ../gui/gdmlogin.c:2503
+#: ../gui/greeter/greeter_parser.c:1086 ../gui/greeter/greeter_system.c:72
+#: ../gui/greeter/greeter_system.c:178
 msgid "_Restart"
 msgstr "_Uudelleenkäynnistä"
 
-#: ../gui/gdmlogin.c:662 ../gui/greeter/greeter_system.c:79
+#: ../gui/gdmlogin.c:667 ../gui/greeter/greeter_system.c:83
 msgid "Are you sure you want to Shut Down the computer?"
 msgstr "Haluatko varmasti sammuttaa tietokoneen?"
 
-#: ../gui/gdmlogin.c:663 ../gui/gdmlogin.c:2504
-#: ../gui/greeter/greeter_parser.c:1076 ../gui/greeter/greeter_system.c:80
-#: ../gui/greeter/greeter_system.c:199
+#: ../gui/gdmlogin.c:668 ../gui/gdmlogin.c:2513
+#: ../gui/greeter/greeter_parser.c:1076 ../gui/greeter/greeter_system.c:84
+#: ../gui/greeter/greeter_system.c:187
 msgid "Shut _Down"
 msgstr "_Sammuta"
 
-#: ../gui/gdmlogin.c:683 ../gui/greeter/greeter_system.c:90
+#: ../gui/gdmlogin.c:690 ../gui/greeter/greeter_system.c:94
 msgid "Are you sure you want to suspend the computer?"
 msgstr "Haluatko varmasti siirtyä virransäästötilaan?"
 
-#: ../gui/gdmlogin.c:684 ../gui/gdmlogin.c:2514
-#: ../gui/greeter/greeter_system.c:91
+#: ../gui/gdmlogin.c:691 ../gui/gdmlogin.c:2523
+#: ../gui/greeter/greeter_system.c:95
 msgid "_Suspend"
 msgstr "_Virransäästötila"
 
@@ -2818,48 +2857,48 @@ msgstr "_Virransäästötila"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:767 ../gui/gdmlogin.c:796 ../gui/gdmlogin.c:879
+#: ../gui/gdmlogin.c:775 ../gui/gdmlogin.c:804 ../gui/gdmlogin.c:887
 #: ../gui/greeter/greeter_action_language.c:158
-#: ../gui/greeter/greeter_session.c:119 ../gui/greeter/greeter_session.c:149
+#: ../gui/greeter/greeter_session.c:119 ../gui/greeter/greeter_session.c:150
 #, c-format
 msgid "Do you wish to make %s the default for future sessions?"
 msgstr "Haluatko käyttää istuntoa \"%s\" oletuksena uusissa istunnoissa?"
 
-#: ../gui/gdmlogin.c:770 ../gui/greeter/greeter_session.c:122
+#: ../gui/gdmlogin.c:778 ../gui/greeter/greeter_session.c:122
 #, c-format
 msgid "Your preferred session type %s is not installed on this computer."
 msgstr ""
 "Valitsemasi istuntotyyppi \"%s\" ei ole asennettu tähän tietokoneeseen."
 
-#: ../gui/gdmlogin.c:775 ../gui/gdmlogin.c:806 ../gui/gdmlogin.c:886
-#: ../gui/greeter/greeter_action_language.c:165
-#: ../gui/greeter/greeter_session.c:125 ../gui/greeter/greeter_session.c:157
+#: ../gui/gdmlogin.c:783 ../gui/gdmlogin.c:814 ../gui/gdmlogin.c:895
+#: ../gui/greeter/greeter_action_language.c:166
+#: ../gui/greeter/greeter_session.c:126 ../gui/greeter/greeter_session.c:159
 msgid "Make _Default"
 msgstr "Aseta _oletus"
 
-#: ../gui/gdmlogin.c:775 ../gui/greeter/greeter_session.c:125
+#: ../gui/gdmlogin.c:783 ../gui/greeter/greeter_session.c:126
 msgid "Just _Log In"
 msgstr "Kirjaudu vain _sisään"
 
-#: ../gui/gdmlogin.c:800 ../gui/gdmlogin.c:881
+#: ../gui/gdmlogin.c:808 ../gui/gdmlogin.c:889
 #: ../gui/greeter/greeter_action_language.c:160
-#: ../gui/greeter/greeter_session.c:152
+#: ../gui/greeter/greeter_session.c:153
 #, c-format
 msgid "You have chosen %s for this session, but your default setting is %s."
 msgstr "Valitsit istunnon %s, mutta oletuksesi on %s."
 
-#: ../gui/gdmlogin.c:806 ../gui/gdmlogin.c:886
-#: ../gui/greeter/greeter_action_language.c:165
-#: ../gui/greeter/greeter_session.c:157
+#: ../gui/gdmlogin.c:814 ../gui/gdmlogin.c:895
+#: ../gui/greeter/greeter_action_language.c:166
+#: ../gui/greeter/greeter_session.c:159
 msgid "Just For _This Session"
 msgstr "Vain _tämä istunto"
 
-#: ../gui/gdmlogin.c:817
+#: ../gui/gdmlogin.c:825
 #, c-format
 msgid "You have chosen %s for this session."
 msgstr "Valitsit %s tämän istunnon ajaksi."
 
-#: ../gui/gdmlogin.c:820
+#: ../gui/gdmlogin.c:828
 #, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
@@ -2868,24 +2907,24 @@ msgstr ""
 "Jos haluat %sn oletukseksi tuleviin istuntoihisi, käytä \"switchdesk\"-"
 "apuohjelmaa (Järjestelmä->Työpöydänvaihtotyökalu päävalikosta)."
 
-#: ../gui/gdmlogin.c:861 ../gui/gdmlogin.c:870
+#: ../gui/gdmlogin.c:869 ../gui/gdmlogin.c:878
 #: ../gui/greeter/greeter_action_language.c:73
 #: ../gui/greeter/greeter_action_language.c:142
 #: ../gui/greeter/greeter_action_language.c:150
 msgid "System Default"
 msgstr "Järjestelmän oletus"
 
-#: ../gui/gdmlogin.c:997 ../gui/gdmlogin.c:1011 ../gui/gdmlogin.c:1628
-#: ../gui/gdmlogin.c:2105 ../gui/gdmlogin.c:2726
+#: ../gui/gdmlogin.c:1006 ../gui/gdmlogin.c:1020 ../gui/gdmlogin.c:1637
+#: ../gui/gdmlogin.c:2114 ../gui/gdmlogin.c:2735
 msgid "_Username:"
 msgstr "Käyttäjä_tunnus:"
 
-#: ../gui/gdmlogin.c:1085
+#: ../gui/gdmlogin.c:1094
 #, c-format
 msgid "%s session selected"
 msgstr "Istunto %s valittu"
 
-#: ../gui/gdmlogin.c:1106 ../gui/gdmlogin.c:1224
+#: ../gui/gdmlogin.c:1115 ../gui/gdmlogin.c:1233
 msgid "_Last"
 msgstr "_Edellinen"
 
@@ -2893,80 +2932,80 @@ msgstr "_Edellinen"
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1189
+#: ../gui/gdmlogin.c:1198
 #, c-format
 msgid "%s language selected"
 msgstr "Kieleksi valittu %s"
 
-#: ../gui/gdmlogin.c:1235
+#: ../gui/gdmlogin.c:1244
 msgid "_System Default"
 msgstr "_Järjestelmän oletus"
 
-#: ../gui/gdmlogin.c:1267
+#: ../gui/gdmlogin.c:1276
 msgid "_Other"
 msgstr "_Muu"
 
-#: ../gui/gdmlogin.c:1660
+#: ../gui/gdmlogin.c:1669
 msgid "_Password:"
 msgstr "_Salasana:"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:1891 ../gui/greeter/greeter.c:338
+#: ../gui/gdmlogin.c:1900 ../gui/greeter/greeter.c:339
 msgid "Please insert 25 cents to log in."
 msgstr "Kirjautuminen toimii 20 sentin kolikoilla."
 
-#: ../gui/gdmlogin.c:2225
+#: ../gui/gdmlogin.c:2234
 msgid "GNOME Desktop Manager"
 msgstr "Gnome-työpöydänhallinta"
 
-#: ../gui/gdmlogin.c:2291
+#: ../gui/gdmlogin.c:2300
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2409
+#: ../gui/gdmlogin.c:2418
 msgid "GDM Login"
 msgstr "GDM-kirjautuminen"
 
-#: ../gui/gdmlogin.c:2452 ../gui/greeter/greeter_parser.c:1056
+#: ../gui/gdmlogin.c:2461 ../gui/greeter/greeter_parser.c:1056
 msgid "_Session"
 msgstr "_Istunto"
 
-#: ../gui/gdmlogin.c:2459 ../gui/greeter/greeter_parser.c:1051
+#: ../gui/gdmlogin.c:2468 ../gui/greeter/greeter_parser.c:1051
 msgid "_Language"
 msgstr "_Kieli"
 
-#: ../gui/gdmlogin.c:2473 ../gui/greeter/greeter_system.c:153
+#: ../gui/gdmlogin.c:2482 ../gui/greeter/greeter_system.c:153
 msgid "Remote Login via _XDMCP..."
 msgstr "Etäkirjautuminen _XDMCPllä..."
 
-#: ../gui/gdmlogin.c:2484
+#: ../gui/gdmlogin.c:2493
 msgid "_Configure Login Manager..."
 msgstr "Sisäänkirjautumisen _asetukset..."
 
-#: ../gui/gdmlogin.c:2524 ../gui/greeter/greeter_parser.c:1061
+#: ../gui/gdmlogin.c:2533 ../gui/greeter/greeter_parser.c:1061
 msgid "_Actions"
 msgstr "_Toiminnot"
 
-#: ../gui/gdmlogin.c:2533
+#: ../gui/gdmlogin.c:2542
 msgid "_Theme"
 msgstr "T_eema"
 
-#: ../gui/gdmlogin.c:2544 ../gui/greeter/greeter_canvas_item.c:165
+#: ../gui/gdmlogin.c:2553 ../gui/greeter/greeter_canvas_item.c:165
 #: ../gui/greeter/greeter_parser.c:1071
 msgid "_Quit"
 msgstr "_Lopeta"
 
-#: ../gui/gdmlogin.c:2546 ../gui/greeter/greeter_canvas_item.c:167
+#: ../gui/gdmlogin.c:2555 ../gui/greeter/greeter_canvas_item.c:167
 #: ../gui/greeter/greeter_parser.c:1066
 msgid "D_isconnect"
 msgstr "_Katkaise yhteys"
 
-#: ../gui/gdmlogin.c:2614 ../gui/greeter/greeter_item_ulist.c:239
+#: ../gui/gdmlogin.c:2623 ../gui/greeter/greeter_item_ulist.c:236
 msgid "Icon"
 msgstr "Kuvake"
 
-#: ../gui/gdmlogin.c:3231 ../gui/gdmlogin.c:3265 ../gui/greeter/greeter.c:575
+#: ../gui/gdmlogin.c:3367 ../gui/gdmlogin.c:3401 ../gui/greeter/greeter.c:580
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -2976,17 +3015,17 @@ msgstr ""
 "todennäköisesti juuri päivitetty. Käynnistä GDM-palvelin tai koko tietokone "
 "uudelleen."
 
-#: ../gui/gdmlogin.c:3241 ../gui/gdmlogin.c:3275 ../gui/gdmlogin.c:3323
-#: ../gui/greeter/greeter.c:585 ../gui/greeter/greeter.c:620
-#: ../gui/greeter/greeter.c:669
+#: ../gui/gdmlogin.c:3377 ../gui/gdmlogin.c:3411 ../gui/gdmlogin.c:3459
+#: ../gui/greeter/greeter.c:590 ../gui/greeter/greeter.c:625
+#: ../gui/greeter/greeter.c:674
 msgid "Cannot start the greeter"
 msgstr "Tervehdintä ei voi käynnistää"
 
-#: ../gui/gdmlogin.c:3280
+#: ../gui/gdmlogin.c:3416
 msgid "Restart"
 msgstr "Käynnistä GDM uudelleen"
 
-#: ../gui/gdmlogin.c:3313 ../gui/greeter/greeter.c:659
+#: ../gui/gdmlogin.c:3449 ../gui/greeter/greeter.c:664
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -2996,24 +3035,23 @@ msgstr ""
 "todennäköisesti juuri päivitetty. Käynnistä GDM-palvelin tai koko tietokone "
 "uudelleen."
 
-#: ../gui/gdmlogin.c:3328 ../gui/greeter/greeter.c:674
+#: ../gui/gdmlogin.c:3464 ../gui/greeter/greeter.c:679
 msgid "Restart GDM"
 msgstr "Käynnistä GDM uudelleen"
 
-#: ../gui/gdmlogin.c:3330
+#: ../gui/gdmlogin.c:3466
 msgid "Restart computer"
 msgstr "Käynnistä tietokone uudelleen"
 
-#: ../gui/gdmlogin.c:3365
-#, c-format
-msgid "Can't open DefaultImage: %s. Suspending face browser!"
-msgstr "Oletuskuvaa ei voitu avata: %s. Kasvoselain ei ole käytössä!"
+#: ../gui/gdmlogin.c:3551
+msgid "Could not set signal mask!"
+msgstr "Signaalimaskia ei voitu asettaa."
 
-#: ../gui/gdmlogin.c:3528 ../gui/greeter/greeter.c:1255
+#: ../gui/gdmlogin.c:3666 ../gui/greeter/greeter.c:1359
 msgid "Session directory is missing"
 msgstr "Istuntohakemistoa ei ole."
 
-#: ../gui/gdmlogin.c:3529
+#: ../gui/gdmlogin.c:3667
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the GDM "
@@ -3023,11 +3061,11 @@ msgstr ""
 "istuntoa, mutta on suositeltavaa korjata GDM:n asetukset kirjautumisen "
 "jälkeen."
 
-#: ../gui/gdmlogin.c:3552 ../gui/greeter/greeter.c:1280
+#: ../gui/gdmlogin.c:3690 ../gui/greeter/greeter.c:1384
 msgid "Configuration is not correct"
 msgstr "Asetukset ovat rikki"
 
-#: ../gui/gdmlogin.c:3553 ../gui/greeter/greeter.c:1281
+#: ../gui/gdmlogin.c:3691 ../gui/greeter/greeter.c:1385
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3035,25 +3073,25 @@ msgstr ""
 "Asetustiedostossa on virheellinen komentorivi kirjautumiskyselylle, jonka "
 "takia ajettiin oletuskomento. Ole hyvä ja korjaa asetukset."
 
-#: ../gui/gdmphotosetup.c:187
+#: ../gui/gdmphotosetup.c:188
 #, c-format
 msgid "File %s cannot be opened for writing."
 msgstr "Tiedostoa %s ei voida avata kirjoitusta varten."
 
-#: ../gui/gdmphotosetup.c:194
+#: ../gui/gdmphotosetup.c:195
 msgid "Cannot open file"
 msgstr "Tiedostoa ei voi avata"
 
-#: ../gui/gdmphotosetup.c:248
+#: ../gui/gdmphotosetup.c:249
 msgid "Select User Image"
 msgstr "Valitse käyttäjän kuva"
 
-#: ../gui/gdmphotosetup.c:272 ../gui/gdmsetup.c:5582 ../gui/gdmsetup.c:5704
+#: ../gui/gdmphotosetup.c:273 ../gui/gdmsetup.c:5582 ../gui/gdmsetup.c:5704
 #: ../gui/gdmsetup.c:5857 ../gui/gdmsetup.c:5979
 msgid "Images"
 msgstr "Kuvat"
 
-#: ../gui/gdmphotosetup.c:277 ../gui/gdmsetup.c:3046 ../gui/gdmsetup.c:5587
+#: ../gui/gdmphotosetup.c:278 ../gui/gdmsetup.c:3046 ../gui/gdmsetup.c:5587
 #: ../gui/gdmsetup.c:5709 ../gui/gdmsetup.c:5862 ../gui/gdmsetup.c:5984
 msgid "All Files"
 msgstr "Kaikki tiedostot"
@@ -3075,11 +3113,11 @@ msgstr "<b>Käyttäjän kuva</b>"
 msgid "Login Photo Preferences"
 msgstr "Kirjautumiskuvan asetukset"
 
-#: ../gui/gdmsession.c:125 ../gui/gdmsession.c:294
+#: ../gui/gdmsession.c:125 ../gui/gdmsession.c:296
 msgid "Failsafe _GNOME"
 msgstr "Vikasietoinen _Gnome"
 
-#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:295
+#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:297
 msgid ""
 "This is a failsafe session that will log you into GNOME. No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3090,11 +3128,11 @@ msgstr ""
 "jos kirjautuminen ei muulla tavoin onnistu. Gnome käyttää kirjautuessaan "
 "\"Oletus\"-istuntoa."
 
-#: ../gui/gdmsession.c:136 ../gui/gdmsession.c:305
+#: ../gui/gdmsession.c:136 ../gui/gdmsession.c:308
 msgid "Failsafe _Terminal"
 msgstr "Vikasietoinen _pääte"
 
-#: ../gui/gdmsession.c:137 ../gui/gdmsession.c:306
+#: ../gui/gdmsession.c:137 ../gui/gdmsession.c:309
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3104,21 +3142,6 @@ msgstr ""
 "Käynnistyskomentotiedostoja ei lueta, ja istuntoa tuleekin käyttää "
 "ainoastaan, jos muu kirjautuminen ei onnistu. Kirjoita \"exit\" päätteestä "
 "poistumiseksi."
-
-#: ../gui/gdmsession.c:275
-#, c-format
-msgid "%s: Session directory %s not found!"
-msgstr "%s: Istuntohakemistoa %s ei löydy!"
-
-#: ../gui/gdmsession.c:283
-msgid "Yikes, nothing found in the session directory."
-msgstr "Auts, istuntohakemistosta ei löytynyt ainuttakaan istuntoa."
-
-#: ../gui/gdmsession.c:322
-msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr ""
-"Oletusarvoisen istunnon linkkiä ei löytynyt. Käytetään vikasietoista "
-"Gnomea.\n"
 
 #: ../gui/gdmsetup.c:260
 msgid ""
@@ -3724,7 +3747,7 @@ msgstr "sekuntia"
 msgid "Too many users to list here..."
 msgstr "Liian monta käyttäjää lueteltavaksi tässä..."
 
-#: ../gui/greeter/greeter.c:610
+#: ../gui/greeter/greeter.c:615
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version. You have "
@@ -3734,26 +3757,26 @@ msgstr ""
 "todennäköisesti juuri päivitetty. Käynnistä GDM-palvelin tai koko tietokone "
 "uudelleen."
 
-#: ../gui/greeter/greeter.c:625 ../gui/greeter/greeter.c:676
+#: ../gui/greeter/greeter.c:630 ../gui/greeter/greeter.c:681
 msgid "Restart Machine"
 msgstr "Käynnistä tietokonen uudelleen"
 
-#: ../gui/greeter/greeter.c:1099
+#: ../gui/greeter/greeter.c:1203
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Virhe ladattaessa teemaa %s"
 
-#: ../gui/greeter/greeter.c:1151
+#: ../gui/greeter/greeter.c:1255
 msgid "The greeter theme is corrupt"
 msgstr "Tervehtimen teema on rikki"
 
-#: ../gui/greeter/greeter.c:1152
+#: ../gui/greeter/greeter.c:1256
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "Teema ei sisällä määritelmää tunnuksen/salasanansyöttöelementille."
 
-#: ../gui/greeter/greeter.c:1185
+#: ../gui/greeter/greeter.c:1289
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
@@ -3761,7 +3784,7 @@ msgstr ""
 "Tapahtui virhe ladattaessa teemaa, eikä oletusteeman lataaminen onnistunut. "
 "Yritetään käynnistää oletustervehdin"
 
-#: ../gui/greeter/greeter.c:1207
+#: ../gui/greeter/greeter.c:1311
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of GDM"
@@ -3769,7 +3792,7 @@ msgstr ""
 "GTK+-tervehtimen käynnistäminen epäonnistui. Tämä näyttö suljetaan, ja voit "
 "joutua kirjautumaan muuta kautta korjataksesi GDM:n asennuksen"
 
-#: ../gui/greeter/greeter.c:1256
+#: ../gui/greeter/greeter.c:1360
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3783,15 +3806,15 @@ msgstr ""
 msgid "Last Language"
 msgstr "Viimeisin kieli"
 
-#: ../gui/greeter/greeter_action_language.c:223
+#: ../gui/greeter/greeter_action_language.c:227
 msgid "Select a Language"
 msgstr "Valitse kieli"
 
-#: ../gui/greeter/greeter_action_language.c:233
+#: ../gui/greeter/greeter_action_language.c:237
 msgid "Change _Language"
 msgstr "Vaihda kieli"
 
-#: ../gui/greeter/greeter_action_language.c:253
+#: ../gui/greeter/greeter_action_language.c:257
 msgid "_Select the language for your session to use:"
 msgstr "_Valitse istunnossasi käytettävä kieli:"
 
@@ -3803,26 +3826,17 @@ msgstr "Valitse _kieli..."
 msgid "Select _Session..."
 msgstr "Valitse _istunto..."
 
-#: ../gui/greeter/greeter_canvas_item.c:423
+#: ../gui/greeter/greeter_canvas_item.c:428
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Vastaa kysymyksiin tässä ja paina Enter kun olet valmis. Valikon saat "
 "painamalla F10."
 
-#: ../gui/greeter/greeter_item_ulist.c:118
-#, c-format
-msgid "Can't open DefaultImage: %s!"
-msgstr "Koneen oletuskuvaketta ei voitu avata: %s!"
-
-#: ../gui/greeter/greeter_item_ulist.c:152
+#: ../gui/greeter/greeter_item_ulist.c:150
 msgid "Already logged in"
 msgstr "Jo kirjautuneena sisään"
 
-#: ../gui/greeter/greeter_item_ulist.c:195
-msgid "Theme broken: must have pam-message label!"
-msgstr "Teema on rikki, koska siitä ei löydy pam-viestikenttää!"
-
-#: ../gui/greeter/greeter_parser.c:1081 ../gui/greeter/greeter_system.c:212
+#: ../gui/greeter/greeter_parser.c:1081 ../gui/greeter/greeter_system.c:196
 msgid "Sus_pend"
 msgstr "_Virransäästötila"
 
@@ -3846,12 +3860,12 @@ msgstr "_OK"
 msgid "_Cancel"
 msgstr "_Peru"
 
-#: ../gui/greeter/greeter_session.c:170
+#: ../gui/greeter/greeter_session.c:172
 #, c-format
 msgid "You have chosen %s for this session"
 msgstr "Valitsit \"%s\" tämän istunnon ajaksi"
 
-#: ../gui/greeter/greeter_session.c:173
+#: ../gui/greeter/greeter_session.c:175
 #, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
@@ -3861,23 +3875,59 @@ msgstr ""
 "apuohjelmaa\n"
 "(Järjestelmä->Työpöydänvaihtotyökalu paneelivalikosta)."
 
-#: ../gui/greeter/greeter_session.c:226
+#: ../gui/greeter/greeter_session.c:228
 msgid "Change _Session"
 msgstr "Vaihda _istuntoa"
 
-#: ../gui/greeter/greeter_session.c:248
+#: ../gui/greeter/greeter_session.c:250
 msgid "Sessions"
 msgstr "Istunnot"
 
-#: ../gui/greeter/greeter_session.c:268
+#: ../gui/greeter/greeter_session.c:270
 msgid "_Last session"
 msgstr "_Edellinen istunto"
 
-#: ../gui/greeter/greeter_session.c:274
+#: ../gui/greeter/greeter_session.c:276
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Kirjaudu sisään käyttäen samaa istuntoa kuin edelliselläkin kerralla"
 
-#: ../gui/greeter/greeter_system.c:160 ../gui/greeter/greeter_system.c:356
+#: ../gui/greeter/greeter_system.c:163
+msgid "Confi_gure Login Manager..."
+msgstr "Sisäänkirjautumisen _asetukset..."
+
+#: ../gui/greeter/greeter_system.c:260
+msgid "Choose an Action"
+msgstr "Valitse toiminto"
+
+#: ../gui/greeter/greeter_system.c:282
+msgid "Shut _down the computer"
+msgstr "_Sammuta tietokone"
+
+#: ../gui/greeter/greeter_system.c:285
+msgid "Shut Down your computer so that you may turn it off."
+msgstr "Sammuta tietokone, jotta virran pois voi kytkeä pois."
+
+#: ../gui/greeter/greeter_system.c:300
+msgid "_Restart the computer"
+msgstr "_Käynnistä tietokone uudelleen"
+
+#: ../gui/greeter/greeter_system.c:303
+msgid "Restart your computer"
+msgstr "Käynnistä tietokone uudelleen"
+
+#: ../gui/greeter/greeter_system.c:317
+msgid "Sus_pend the computer"
+msgstr "Aseta tietokone _virransäästötilaan"
+
+#: ../gui/greeter/greeter_system.c:320
+msgid "Suspend your computer"
+msgstr "Aseta tietokone virransäästötilaan"
+
+#: ../gui/greeter/greeter_system.c:334
+msgid "Run _XDMCP chooser"
+msgstr "Suorita _XDMCP-valitsin"
+
+#: ../gui/greeter/greeter_system.c:337
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
@@ -3885,56 +3935,16 @@ msgstr ""
 "Suorita XDMCP-valitsin, joka mahdollistaa sisäänkirjautumisen saatavilla "
 "oleviin etäkoneisiin, jos sellaisia on."
 
-#: ../gui/greeter/greeter_system.c:168
-msgid "Confi_gure Login Manager..."
-msgstr "Sisäänkirjautumisen _asetukset..."
+#: ../gui/greeter/greeter_system.c:354
+msgid "Confi_gure the login manager"
+msgstr "Sisäänkirjautumisen _asetukset"
 
-#: ../gui/greeter/greeter_system.c:175 ../gui/greeter/greeter_system.c:376
+#: ../gui/greeter/greeter_system.c:357
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "GDM:n (tämän kirjautumisohjelman) asetukset. Tähän tarvitaan pääkäyttäjän "
 "salasanaa."
-
-#: ../gui/greeter/greeter_system.c:194 ../gui/greeter/greeter_system.c:322
-msgid "Restart your computer"
-msgstr "Käynnistä tietokone uudelleen"
-
-#: ../gui/greeter/greeter_system.c:206
-msgid "Shut Down the system so that you may safely turn off the computer."
-msgstr "Sammuta kone, jotta voit kytkeä virran pois turvallisesti."
-
-#: ../gui/greeter/greeter_system.c:219 ../gui/greeter/greeter_system.c:339
-msgid "Suspend your computer"
-msgstr "Aseta tietokone virransäästötilaan"
-
-#: ../gui/greeter/greeter_system.c:279
-msgid "Choose an Action"
-msgstr "Valitse toiminto"
-
-#: ../gui/greeter/greeter_system.c:301
-msgid "Shut _down the computer"
-msgstr "_Sammuta tietokone"
-
-#: ../gui/greeter/greeter_system.c:304
-msgid "Shut Down your computer so that you may turn it off."
-msgstr "Sammuta tietokone, jotta virran pois voi kytkeä pois."
-
-#: ../gui/greeter/greeter_system.c:319
-msgid "_Restart the computer"
-msgstr "_Käynnistä tietokone uudelleen"
-
-#: ../gui/greeter/greeter_system.c:336
-msgid "Sus_pend the computer"
-msgstr "Aseta tietokone _virransäästötilaan"
-
-#: ../gui/greeter/greeter_system.c:353
-msgid "Run _XDMCP chooser"
-msgstr "Suorita _XDMCP-valitsin"
-
-#: ../gui/greeter/greeter_system.c:373
-msgid "Confi_gure the login manager"
-msgstr "Sisäänkirjautumisen _asetukset"
 
 #: ../gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -4142,6 +4152,32 @@ msgstr ""
 #: ../vicious-extensions/ve-nongnome.c:135
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "Maa-asetustolla on liian monta aliastasoa, tämä voi olla silmukka"
+
+#~ msgid "Can't open default host icon: %s"
+#~ msgstr "Koneen oletuskuvaketta ei voitu avata: %s"
+
+#~ msgid "Can't open DefaultImage: %s. Suspending face browser!"
+#~ msgstr "Oletuskuvaa ei voitu avata: %s. Kasvoselain ei ole käytössä!"
+
+#~ msgid "%s: Session directory %s not found!"
+#~ msgstr "%s: Istuntohakemistoa %s ei löydy!"
+
+#~ msgid "Yikes, nothing found in the session directory."
+#~ msgstr "Auts, istuntohakemistosta ei löytynyt ainuttakaan istuntoa."
+
+#~ msgid "No default session link found. Using Failsafe GNOME.\n"
+#~ msgstr ""
+#~ "Oletusarvoisen istunnon linkkiä ei löytynyt. Käytetään vikasietoista "
+#~ "Gnomea.\n"
+
+#~ msgid "Can't open DefaultImage: %s!"
+#~ msgstr "Koneen oletuskuvaketta ei voitu avata: %s!"
+
+#~ msgid "Theme broken: must have pam-message label!"
+#~ msgstr "Teema on rikki, koska siitä ei löydy pam-viestikenttää!"
+
+#~ msgid "Shut Down the system so that you may safely turn off the computer."
+#~ msgstr "Sammuta kone, jotta voit kytkeä virran pois turvallisesti."
 
 #~ msgid "24-hour"
 #~ msgstr "24-hour"
