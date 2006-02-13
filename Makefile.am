@@ -13,6 +13,7 @@ SUBDIRS = \
 
 EXTRA_DIST = \
 	ChangeLog		\
+	README			\
 	README.install		\
 	gdm.spec		\
 	gdm.spec.in		\
