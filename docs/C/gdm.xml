@@ -742,37 +742,32 @@
         PAM stands for Pluggable Authentication Module, and is used by
         most programs that request username/password authentication on
         your computer.  It allows the user to configure different
-        behavior for different programs.  Since PAM affects security,
-        you should be comfortable with with the pam.
+        authentication behavior for different programs.
       </para>
 
       <para>
-        GDM uses PAM and some GDM features, like turning on automatic login
-        may require that you update your PAM configuration.  PAM has different,
-        but similar, interfaces on differnt operating systems, so check your
-        pam.d or pam.conf man page for details about how to configure it.
+        Some GDM features (like turning on automatic login) may require that
+        you update your PAM configuration.  PAM has different, but similar,
+        interfaces on different operating systems, so check your pam.d or
+        pam.conf man page for details about how to configure it.  Make sure to
+        read the PAM documentation (e.g. pam.d/pam.conf man page) and
+        be comfortable with the security implications of any changes
+        you intend to make to your configuration.
       </para>
 
       <para>
-        PAM allows the system administrator to have control about how different
-        programs which require password access work, so GDM and ssh and other
-        programs can have configurable behavior.
-      </para>
-
-      <para>
-        If there is no entry for GDM in the
-        <filename>&lt;etc&gt;/pam.conf</filename> file, then automatic login
-        will probably not work.  Not having an entry will causes GDM to use
-        default behavior, conservative settings are recommended and probably
-        shipped with your distro.
+        If there is no entry for GDM in your system's PAM configuration
+        file, then features like tomatic login may not work.  Not having an
+        entry will causes GDM to use default behavior, conservative settings
+        are recommended and probably shipped with your distribution.
       </para>
 
       <para>
         If you wish to make GDM work with other types of authentication 
-        mechanisms, such as SmartCards, you should implement this via
+        mechanisms (such as a SmartCard), then you should implement this by
         writing a PAM module rather than by trying to modify the GDM
-        code.  Refer to the PAM documentation on your system.  Also
-        this issue has been discussed on the 
+        code directly.  Refer to the PAM documentation on your system.  This
+        issue has been discussed on the 
         <address><email>gdm-list@gnome.org</email></address> mail list,
         so you can refer to the list archives for more information.
       </para>
