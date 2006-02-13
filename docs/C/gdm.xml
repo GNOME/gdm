@@ -793,9 +793,9 @@
         its graphical interfaces such as <command>gdmgreeter</command> and
         <command>gdmlogin</command>.  These are configured via the
         <filename>User</filename> and <filename>Group</filename>
-        configuration options in the gdm.conf file.  The user and group should
-        be created before running &quot;make install&quot;.  By default GDM
-        assumes the user and the group are called &quot;gdm&quot;. 
+        configuration options in the GDM configuration files.  The user and
+        group should be created before running &quot;make install&quot;.  By
+        default GDM assumes the user and the group are called &quot;gdm&quot;. 
       </para>
 
       <para>
@@ -1022,21 +1022,21 @@ gdm: .your.domain
 
     <para>
       If you are a distribution and want to set machine defaults, you should 
-      edit the <filename>gdm.conf</filename> file rather than editing the
-      <filename>gdm.conf-custom</filename> file, so the distribution changes
-      are preserved as defaults.
+      edit the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file rather
+      than editing the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+      file, so the distribution changes are preserved as defaults.
     </para>
 
     <para>
       If you want to change configuration by hand, edit the
-      <filename>&lt;etc&gt;/X11/gdm/gdm.conf-custom</filename> file and make sure the
-      keyname=value pair you want is included in the appropriate section.  For
-      example, to change the &quot;Greeter&quot; key in the &quot;daemon&quot;
-      section, make sure the daemon section of the
-      <filename>gdm.conf-custom</filename> file has the value like in this
-      example.  The modified option does not have to come anywhere in the
-      section.  The <command>gdmsetup</command> program manages editing these
-      files for you.
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file and make
+      sure the keyname=value pair you want is included in the appropriate
+      section.  For example, to change the &quot;Greeter&quot; key in the
+      &quot;daemon&quot; section, make sure the daemon section of the
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file has the value
+      like in this example.  The modified option does not have to come anywhere
+      in the section.  The <command>gdmsetup</command> program manages editing
+      these files for you.
     </para>
 
 <screen>
@@ -1045,9 +1045,10 @@ Greeter=/usr/lib/gdmgreeter
 </screen>
 
     <para>
-      The configuration files (especially the <filename>gdm.conf</filename>
-      and <filename>gdm.conf-custom</filename> files) contains useful
-      comments and examples, so read these for more information about
+      The configuration files (especially the
+      <filename>&lt;share&gt;/gdm/defaults.conf</filename> and
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename> files) contains
+      useful comments and examples, so read these for more information about
       changing your setup.
     </para>
 
@@ -1060,42 +1061,43 @@ Greeter=/usr/lib/gdmgreeter
     </para>
 
     <para> 
-      The <filename>gdm.conf</filename> file contains the default
-      configuration choices for GDM, and should not be modified by the
-      user.  The <filename>gdm.conf-custom</filename> file is where users
-      may specify their custom configuration choices.  Configuration options
-      specified in the <filename>gdm.conf-custom</filename> file override
-      the values in the main <filename>gdm.conf</filename> file.   Running 
-      the <command>gdmsetup</command> command will cause the
-      <filename>gdm.conf-custom</filename> to be modified with the
-      user's configuration choices and will cause any running GDM GUI 
+      The <filename>&lt;share&gt;/gdm/defaults.conf</filename> file contains
+      the default configuration choices for GDM, and should not be modified by
+      the user.  The <filename>&lt;etc&gt;/gdm/custom.conf</filename> file
+      is where users may specify their custom configuration choices.
+      Configuration options specified in the
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file override the
+      values in the main <filename>&lt;share&gt;/gdm/defaults.conf</filename>
+      file.   Running the <command>gdmsetup</command> command will cause the
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename> to be modified with
+      the user's configuration choices and will cause any running GDM GUI 
       programs to automatically update.  Previous to version 2.13.0.4
-      GDM only supported the <filename>gdm.conf</filename> file, so if
-      using an older version of GDM just edit that file directly.
+      GDM only supported the <filename>&lt;etc&gt;/gdm/gdm.conf</filename>
+      file, so if using an older version of GDM just edit that file directly.
     </para>
 
     <para>
       GDM may be configured to support system-wide configuration if
       built with the <command>--with-defaults-conf</command> option.  This
-      allows the gdm.conf file to be installed to a directory that can
-      be mounted across multiple-systems.  The GDM --config option may
-      also be used to specify the configuration file location.  The GDM2
-      daemon must be restarted to change the configuration file being
-      used.
+      allows the location of the default configuration file directory to be
+      specified.  The GDM daemon --config option may also be used to
+      specify the configuration file location.  The GDM daemon must be
+      restarted to change the configuration file being used.
     </para>
 
     <para> 
-      <filename>factory-gdm.conf</filename> is the configuration file as
-      shipped with the daemon.  This can be useful if you wish to revert to
-      the default configuration.
+      <filename>&lt;share&gt;/gdm/factory-defaults.conf</filename> is the
+      configuration file as shipped with the daemon.  This can be useful for
+      to see if the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file
+      has been changed.
     </para>
 
     <para>
       The other GDM configuration files are located, by default, in the
       <filename>&lt;etc&gt;/gdm/</filename> folder or its subdirectories.
-      However, the location of all configuration files can be defined in 
-      the <filename>gdm.conf</filename> file, so the sysadmin may choose
-      to locate these files in any location. 
+      However, the location of all configuration files are defined in 
+      the GDM configuration files, so the sysadmin may choose to locate these
+      files in any location. 
     </para>
 
     <para>
@@ -1312,64 +1314,67 @@ PostSession/
     </sect2>
 
     <sect2 id="configfile">
-      <title>The Configuration File - <filename>gdm.conf</filename> and
-             <filename>gdm.conf-custom</filename></title>
+      <title>The Configuration Files - <filename>defaults.conf</filename> and
+             <filename>custom.conf</filename></title>
       
       <para>
-        GDM uses two configuration files: <filename>gdm.conf</filename>
-        and <filename>gdm.conf-custom</filename>.  The
-        <filename>gdm.conf</filename> file contains the default
-        configuration choices for GDM, and should not be modified by the
-        user.  The <filename>gdm.conf-custom</filename> file is where
-        users may specify their custom configuration choices.  
+        GDM uses two configuration files:
+        <filename>&lt;share&gt;/gdm/defaults.conf</filename>
+        and <filename>&lt;etc&gt;/gdm/custom.conf</filename>.  The
+        <filename>&lt;share&gt;/gdm/defaults.conf</filename> file contains the
+        default configuration choices for GDM, and should not be modified by
+        the user.  The <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+        file is where users may specify their custom configuration choices.  
         Configuration options specified in the
-        <filename>gdm.conf-custom</filename> file override the values in
-        the main <filename>gdm.conf</filename> file.  If a configuration
-        option is not defined in either file, GDM will default to the
-        value described in the comments in the
-        <filename>gdm.conf</filename> file.
+        <filename>&lt;etc&gt;/gdm/custom.conf</filename> file override the
+        values in the <filename>&lt;share&gt;/gdm/defaults.conf</filename>
+        file.  If a configuration option is not defined in either file, GDM
+        will default to the value described in the comments in the
+        <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.
       </para>
 
       <para>
         Running the <command>gdmsetup</command> command will cause the 
-        <filename>gdm.conf-custom</filename> to be modified with the
-        user's configuration choices.
+        <filename>&lt;etc&gt;/gdm/custom.conf</filename> to be modified
+        with the user's configuration choices.
       </para>
 
       <para>
-        Previous to GDM 2.13.0.4 only the <filename>gdm.conf</filename>
-        existed.  If upgrading to the new version of GDM, install will
-        check to see if your <filename>gdm.conf</filename> file is
-        different than your <filename>factory-gdm.conf</filename> file.
-        If so, your <filename>gdm.conf</filename> file will be 
-        automatically copied to <filename>gdm.conf-custom</filename>
-        to preserve your configuration changes.
+        Previous to GDM 2.13.0.4 only the
+        <filename>&lt;etc&gt;/gdm/gdm.conf</filename> existed.  If upgrading
+        to the new version of GDM, install will check to see if your
+        <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file is different than
+        your <filename>&lt;etc&gt;/gdm/factory-gdm.conf</filename> file.
+        If so, your <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file will be 
+        automatically copied to
+        <filename>&lt;etc&gt;/gdm/custom.conf</filename> to preserve any
+        configuration changes.
       </para>
         
       <para>
         GDM may be configured to support system-wide configuration if
         built with the <command>--with-defaults-conf</command> option.  This
-        allows the <filename>gdm.conf</filename> file to be installed to
-        a directory that can be mounted across multiple-systems.  The
-        GDM --config option may instead be used to specify a configuration
-        file installed to another location.  The GDM2 daemon must be
+        allows the location of the default configuration file directory to be
+        specified.  The GDM daemon --config option may instead be used to
+        specify the configuration file location.  The GDM daemon must be
         restarted to change the configuration file being used.
       </para>
 
       <para>
         Both configuration files are divided into sections each containing
         variables that define the behavior for a specific part of the GDM
-        suite.  Refer to the comments in the <filename>gdm.conf</filename>
-        file for additional information about each configuration setting.
+        suite.  Refer to the comments in the
+        <filename>&lt;share&gt;/gdm/defaults.conf</filename> file for
+        additional information about each configuration setting.
       </para>
 
       <para>
-        The <filename>gdm.conf</filename> and
-        <filename>gdm.conf-custom</filename> files follow the standard
-        <filename>.ini</filename> style configuration file syntax.  Keywords
-        in brackets define sections, strings before an equal sign (=) are
-        variables and the data after equal sign represents their value.  Empty
-        lines or lines starting with the hash mark (#) are ignored.  The
+        The <filename>&lt;share&gt;/gdm/defaults.conf</filename> and
+        <filename>&lt;etc&gt;/gdm/custom.conf</filename> files follow the
+        standard <filename>.ini</filename> style configuration file syntax.
+        Keywords in brackets define sections, strings before an equal sign (=)
+        are variables and the data after equal sign represents their value.
+        Empty lines or lines starting with the hash mark (#) are ignored.  The
         graphical configurator will try to preserve both comments (lines with
         a hash mark) and the overall structure of the file so you can intermix
         using the GUI or hand editing the configuration file.
@@ -3671,12 +3676,14 @@ gdm:.my.domain
           users to edit the servers defined in the GDM configuration files
           but currently does not allow adding or deleting entries.  Like
           normal configuration options, <filename>server-</filename>
-          sections in the <filename>gdm.conf-custom</filename> file 
-          override values in the <filename>gdm.conf</filename> file.  In
-          other words, if a <filename>server-Standard</filename> section is
-          defined in <filename>gdm.conf-custom</filename>, then that will
-          be used and the section in the <filename>gdm.conf</filename>
-          file will be ignored.
+          sections in the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+          file override values in the
+          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.  In other
+          words, if a <filename>server-Standard</filename> section is defined
+          in <filename>&lt;etc&gt;/gdm/custom.conf</filename>, then that
+          will be used and the section in the
+          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file will be
+          ignored.
         </para>
         
         <variablelist>
@@ -3770,8 +3777,9 @@ gdm:.my.domain
           display configuration defined in the GDM configuration files 
           and allows the user to add or delete entries.  Like normal
           configuration options, the <filename>[servers]</filename>
-          section in the <filename>gdm.conf-custom</filename> file 
-          overrides values in the <filename>gdm.conf</filename> file.
+          section in the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+          file overrides values in the
+          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.
         </para>
 
         <variablelist>
@@ -3795,9 +3803,10 @@ gdm:.my.domain
                 for them to be &quot;packed&quot;.  They keyword
                 &quot;inactive&quot; can be used instead of a command to
                 specify that the display should be not managed.  This can be
-                used in the <filename>gdm.conf-custom</filename> to turn off a
-                display that is defined in the <filename>gdm.conf</filename>
-                file.
+                used in the
+                <filename>&lt;etc&gt;/gdm/custom.conf</filename> to turn
+                off a display that is defined in the
+                <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.
               </para>
               
               <para>

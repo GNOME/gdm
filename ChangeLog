@@ -1,5 +1,23 @@
 2006-02-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* Release 2.13.0.8: 
+	* NEWS: Updated.
+	* configure.ac: Update to 2.13.0.8 and use EXPANDED_DATADIR instead
+	  of %{datadir} since that makes it work much better.
+	* README.install, README, docs/C/gdm.xml:  Update docs so that the
+	  change from --with-configdir to --with-defaults-conf and renaming of
+	  default and custom config file is documented.
+	* daemon/gdm-net.c, daemon/gdmconfig.c, gui/gdmsetup.c: Update comments
+	  to no longer mention old name of config file.  Fix gdmsetup to know
+	  new location of custom config file.
+	* config/Makefile.am: Now if upgrading and gdm.conf and
+	  factory-gdm.conf are different, move the gdm.conf file to
+	  custom.conf instead of copy.  This is  because we don't want GDM
+	  to overwrite the custom.conf file every time user upgrades.  Only
+	  first time, then gdm.conf should go away.
+
+2006-02-13  Brian Cameron  <brian.cameron@sun.com>
+
 	* acconfig.h, configure.ac, daemon/Makefile.am, daemon/gdmconfig.c,
 	  docs/C/gdm.xml: Change --with-configdir to --with-defaults-conf
 	  and make it work so that the gdm.conf and gdm.conf-custom file

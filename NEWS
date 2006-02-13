@@ -1,5 +1,62 @@
 Ahh news...
 
+2.13.0.8 stuff:
+
+- Because the main gdm.conf file is now read-only, contains distro
+  defaults and is not to be edited by the user, the file has been
+  moved to ${datadir}/gdm/defaults.conf (also factory-gdm.conf is
+  now %{datadir}/gdm/factory-defaults.conf).  Users can use the
+  --with-defaults-conf to specify the location of this file.
+  Note that this means that distributions who want to preserve GDM 
+  configuration set by those using older versions of GDM should use
+  preinstall/postinstall scripts to move the /etc/gdm/gdm.conf file
+  to /etc/gdm/gdm.conf-custom if the file has been edited (compare
+  against /etc/gdm/factory-gdm.conf to see if it has been modified).
+  "make install" for GDM does this if building from source.  GDM
+  docs updated to reflect this change.
+
+- Lots of performance issues with the GDM sockets connection improved.
+  Now the code deals much better with failures, and better debug is
+  printed to the log.
+
+- Improved debug logic in GDM slaves so they use common functions.
+
+- Fix gdmdynamic so it supports up to hundreds of displays rather than
+  just a dozen or so.  Now gdmdynamic backs off on sending sockets
+  commands to the server if it is being flooded with requests.  Added
+  new "SERVER_BUSY" sockets command to support this feature and new
+  -t and -s command line options so the back-off behavior can be 
+  tuned, if needed.
+
+- The config logic for the slaves will now return the compiled in
+  value if it fails to connect to the server for better behavior.
+
+- gdm-restart, gdm-safe-restart, gdm-stop, and gdm.spec now use
+  gdmflexiserver to get config data rather than trying to grep and 
+  awk the config file directly.  
+
+- Fix Xsession script so zenity calls work.
+
+- Lots of improvements to the GDM docs.  Added section about "PAM" in
+  Security.  Add comment that +xkb is needed for keyboard gesture
+  listeners (accessibility) to work.  Also updated README and 
+  README.install and moved some information that was in these files
+  to the docs.
+
+- Bump MAX_CONNECTIONS from 10 to 15 so that the daemon will accept
+  more connections from slaves.  This improves performance when the
+  daemon is flooded with requests.
+
+- Fix include statement in daemon/gdmconfig.c to fix compile problem
+  on LFS.
+
+- Translation updates (Raphael Higino, Theppitak Karoonboonyanan,
+  Priit Laes, Kjartan Maraas, Lukas Novotny, Ankit Patel,
+  Josep Puigdemont i Casamaj\303\263, Ignacio Casal Quinteiro,
+  Hendrik Richter, Francisco Javier F. Serrador, Clytie Siddall,
+  Slobodan D. Sredojevic, Ilkka Tuohela, Vincent van Adrighem,
+  Funda Wang, Adam Weinberger)
+
 2.13.0.7 stuff:
 
 - Turns out the core dumping issue that was supposed to be fixed in 2.13.0.6

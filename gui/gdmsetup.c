@@ -864,7 +864,7 @@ refresh_remote_tab (void)
 }
 
 /*
- * We probably should check the server definition in the gdm.conf defaults file
+ * We probably should check the server definition in the defaults.conf file
  * and just erase the section if the values are the same, like we do for the
  * displays section and the normal configuration sections.
  */
@@ -4755,17 +4755,19 @@ xserver_init_definitions ()
  * Deletes a server definition (not the same as removing a server
  * from the list of servers to start)
  *
- * NOTE, now that we have the gdm.conf and gdm.conf-custom files, this will
- * need to work like the displays.  So if you want to delete something that
- * is gdm.conf you will need to write a new value to gdm.conf-custom section
- * for this xserver like "inactive=true".  For this to work, daemon/gdmconfig.c
- * will also need to be modified so that it doesn't bother loading xservers
- * that are marked as inactive in the gdm.conf-custom file.  As I said, this
- * is the same way the displays already work so the code should be similar.
- * Or perhaps it makes more sense to just not allow deleting of server-foo
- * sections as defined in the gdm.conf file.  If the user doesn't want to
- * use them, they can always create new server-foo sections in gdm.conf-custom
- * and define their displays to only use the ones they define. 
+ * NOTE, now that we have the %{datadir}/gdm/defaults.conf and
+ * %{etc}/gdm/custom.conf files, this will need to work like the displays.
+ * So if you want to delete something that is defaults.conf you will need
+ * to write a new value to custom.conf section for this xserver like
+ * "inactive=true".  For this to work, daemon/gdmconfig.c will also need
+ * to be modified so that it doesn't bother loading xservers that are
+ * marked as inactive in the custom.conf file.  As I said, this
+ * is the same way the displays already work so the code should be
+ * similar.  Or perhaps it makes more sense to just not allow
+ * deleting of server-foo sections as defined in the defaults.conf
+ * file.  If the user doesn't want to use them, they can always
+ * create new server-foo sections in custom.conf and define their
+ * displays to only use the ones they define. 
  */
 #ifdef GDM_UNUSED_CODE
 static void
@@ -6445,7 +6447,7 @@ main (int argc, char *argv[])
 	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-setup.png", NULL);	
 	glade_gnome_init();
 
-	custom_config_file = g_strdup_printf ("%s-custom", GDM_SYSCONFDIR_CONFIG_FILE);
+	custom_config_file = g_strdup_printf ("%s", GDM_CUSTOM_CONF);
 
 	config_file = gdm_common_get_config_file ();
 	if (config_file == NULL) {

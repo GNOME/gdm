@@ -6,8 +6,6 @@ DEFS = @DEFS@ \
 	-DSYSCONFDIR=\"@sysconfdir@\" \
 	-DDATADIR=\"@datadir@\" \
 	-DLIBDIR=\"@libdir@\" \
-	-DGDM_FACTORY_CONFIG_FILE=\"$(GDM_CONFIGDIR)/factory-gdm.conf\" \
-	-DGDM_SYSCONFDIR_CONFIG_FILE=\"$(GDM_CONFIGDIR)/gdm.conf\" \
 	-DGDM_GLADE_DIR=\"@datadir@/gdm\"
 
 INCLUDES = \

@@ -59,8 +59,8 @@
  * servers) where lots of connections may hit the server at once
  * and 15 connections may not be enough (especially since the
  * console login screen may also be using one of them).  Perhaps
- * this number should be in gdm.conf so it can be tuned by the
- * end user?
+ * this number should be in configuration file so it can be
+ * tuned by the end user?
  *
  * If, when you turn on debug, you notice messages like this
  * in the log, "Closing connection, x subconnections reached"

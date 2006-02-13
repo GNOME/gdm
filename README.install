@@ -59,8 +59,8 @@ GDM: http://www.gnome.org/projects/gdm/
 Reporting Bugs
 --------------
 
-When reporting bugs you should first turn on debugging in
-gdm.conf.  This causes debug messages to be sent to the system
+When reporting bugs you should first turn on debugging as described
+in the README.  This causes debug messages to be sent to the system
 log (/var/log/messages or /var/adm/messages) and include the
 output sent to syslog.
 
@@ -82,19 +82,20 @@ documentation for full information:
 GDM Default Configuration File
 ------------------------------
 
-The GDM configuration file /etc/gdm/gdm.conf may be replaced by
-you distribution on upgrade, so if a user wants to ensure that
-configuration changes persist on upgrade, edit the
-/etc/gdm/gdm.conf-custom file.  You can specify a different
-location for the file via the "--with-defaults-conf=/dir" option.
-This can be useful if you want to put the default file on a
-filesystem shared by multiple machines.
+The GDM configuration file ${datadir}/gdm/default.conf may be
+replaced by your distribution on upgrade, so if a user wants
+to ensure that configuration changes persist on upgrade, edit
+the /etc/gdm/custom.conf file.  You can specify a different
+location for the file via the "--with-defaults-conf=/dir"
+and "--with-custom-conf=/dir" options.  This can be useful if
+you want to put the default file on a filesystem shared by
+multiple machines.
 
 If you wish to change configuration by hand, edit the
-/etc/X11/gdm/gdm.conf-custom file and make sure the keyname=value
-pair you want is included in the appropriate section.  For example,
+/etc/gdm/custom.conf file and make sure the keyname=value pair
+you want is included in the appropriate section.  For example,
 to change the "Greeter" key in the "daemon" section, make sure the
-daemon section of the gdm.conf-custom file has the value like
+daemon section of the custom.conf file has the value like
 in this example.  The modified option does not have to come
 first after the "[daemon]" section heading, but can be placed
 anywhere in the section.
@@ -127,7 +128,7 @@ is appropriate for some uses (e.g. home use).
 
 To assign a default face to a user for the face browser, place a
 (jpg, gif, png, xpm) image to the user's $HOME/.iface directory.
-The gdm.conf DefaultFace configuration option allows the system
+The DefaultFace configuration option allows the system
 administrator to set up a default face image.
 
 Configuring Performance

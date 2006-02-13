@@ -85,9 +85,9 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	if test -f $(DESTDIR)$(confdir)/gdm.conf; then \
 	   if ! cmp -s $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
 		if test '!' -f $(DESTDIR)$(GDM_CUSTOM_CONF); then \
-			cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(GDM_CUSTOM_CONF); \
+			mv -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(GDM_CUSTOM_CONF); \
 		else \
-			cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(GDM_DEFAULTS_CONF).org; \
+			mv -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(GDM_DEFAULTS_CONF).org; \
 		fi; \
 	   fi; \
 	fi

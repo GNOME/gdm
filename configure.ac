@@ -2,7 +2,7 @@ AC_PREREQ(2.52)
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.13.0.7)
+AM_INIT_AUTOMAKE(gdm,2.13.0.8)
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
 
@@ -855,7 +855,7 @@ AC_ARG_WITH(defaults_conf,
 if test x$withval != x; then
 	GDM_DEFAULTS_CONF="$withval"
 else
-	GDM_DEFAULTS_CONF="$datadir/gdm/defaults.conf"
+	GDM_DEFAULTS_CONF="$EXPANDED_DATADIR/gdm/defaults.conf"
 fi
 
 AC_SUBST(GDM_DEFAULTS_CONF)

@@ -722,7 +722,8 @@ gdm_config_to_string (gchar *key, gchar **retval)
 /**
  * gdm_compare_displays
  * 
- * Support function for loading displays from the gdm.conf file
+ * Support function for loading displays from the configuration
+ * file
  */
 int
 gdm_compare_displays (gconstpointer a, gconstpointer b)
