@@ -65,7 +65,6 @@
 
 
     <releaseinfo>This manual describes version 2.13.0.8 of the GNOME Display Manager. It was last updated on 02/10/2006.</releaseinfo>  
- 
   </articleinfo>
 
   <sect1 id="preface">
@@ -100,7 +99,7 @@
     <sect2 id="introduction">
       <title>Introducción</title>
 
-      <para>GDm se ha escrito con simplicidad y seguridad en mente. GDM es un reemplazo de XDM, el gestor de pantallas de X, A diferencia de sus competidores, (X3DM, KDM, WDM), GSM se escribió desde cero y no contiene nada de código de XDM / X Consortium.</para>
+      <para>The Gnome Display Manager (GDM) is a display manager that implements all significant features required for managing local and remote displays. GDM was written from scratch and does not contain any XDM / X Consortium code.</para>
 
       <para>For further information about GDM, see the <ulink type="http" url="http://www.gnome.org/projects/gdm/"> the GDM project website</ulink>. Please submit any bug reports or enhancement requests to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>. You can also send a message to the <address><email>gdm-list@gnome.org</email></address> mail list to discuss any issues or concerns with the GDM program.</para>
     </sect2>
@@ -108,9 +107,9 @@
     <sect2 id="stability">
       <title>Interface Stability</title>
 
-      <para>The key/value pairs defined in the GDM configuration files and the location of these files are considered "stable" interfaces and should only change in ways that are backwards compatible. Note that this includes functionaity like the GDM scripts (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc. Some values depend on OS interfaces may need to be modified to work on a given OS. Typical examples are HaltCommand, RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram, and the "command" value for each "server-foo".</para>
+      <para>The key/value pairs defined in the GDM configuration files and the location of these files are considered "stable" interfaces and should only change in ways that are backwards compatible. Note that this includes functionality like the GDM scripts (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc. Some configuration values depend on OS interfaces may need to be modified to work on a given OS. Typical examples are HaltCommand, RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram, and the "command" value for each "server-foo".</para>
 
-      <para>Note: distributions often change the default values of keys to support their platform. Command-line interfaces for programs installed to <filename>lt;bin&gt;</filename> are considered stable. Refer to your distribution configuration to see if there are any distribution-specific changes from the default GDM configuration and for information for what support exists for these options.</para>
+      <para>Note: distributions often change the default values of keys to support their platform. Command-line interfaces for GDM programs installed to <filename>&lt;bin&gt;</filename> and <filename>&lt;sbin&gt;</filename> are considered stable. Refer to your distribution documentation to see if there are any distribution-specific changes to these GDM interfaces and what support exists for them.</para>
 
       <para>If issues are discovered that break compatibility, please file a bug with an "urgent" priority.</para>
     </sect2>
@@ -122,9 +121,9 @@
 
       <para>El demonio de GDM soporta un protocolo de sockets de dominio UNIX que puede usarse para controlar aspectos de su comportamiento y para solicitarle información. Este protocolo se describe en la sección «Controlar GDM» de este documento.</para>
 
-      <para>A GDM se le puede pedir que gestione una pantalla de varias formas. Las pantallas locales las gestiona siempre gDM cuando se inicia y serán reiniciadas cuando la sesión de un usuario termine. Las pantallas pueden pedirse además por XDMCP y se pueden pedir pantallas flexibles ejecutando el comando <command>gdmflexiserver</command>, y dichas pantallas no se reinician al salir de la sesión. Estos tipos de pantallas se discuten en la sección siguiente.</para>
+      <para>GDM can be asked to manage a display a number of ways. Local displays are always managed when GDM starts and will be restarted when a user's session is finished. Displays can be requested via XDMCP, flexible displays can be requested by running the <command>gdmflexiserver</command> command. Displays that are started on request are not restarted on session exit. GDM also provides the <command>gdmdynamic</command> command to allow easier management of displays on a multi-user server. These display types are discussed further in the next section.</para>
         
-      <para>Cuando se le pide al demonio GDM que gestione una pantalla, bifurcará un proceso servidor de X, después ejecutará el script <filename>Init</filename> como el usuario root, e iniciará el diálogo de entrada como un proceso esclavo en la pantalla. GDM puede configurarse para usar o bien <command>gdmgreeter</command> (predeterminado) o <command>gdmlogin</command> como programa de IGU para la entrada. El programa <command>gdmlogin</command> soporta accesibilidad mientras que el programa <command>gdmgreeter</command> soporta mayor temabilidad. El diálogo de la IGU se ejecuta como un usuario/grupo no provilegiado que se describe en la sección «Seguridad» abajo. El diálogo del IGU se comunica con el demonio por medio de un protocolo de sockets y por medio de la entrada/salida estándar. El esclavo, por ejemplo pasa el nombre del usuario y la contraseña al demonio GDM por medio de la entrada/salida estándar asíq ue el demonio puede manipular la autenticación actual.</para>
+      <para>When the GDM daemon is asked to manage a display, it will fork an X server process, then run the <filename>Init</filename> script as the root user, and start the login GUI dialog as a slave process on the display. GDM can be configured to use either <command>gdmgreeter</command> (the default) or <command>gdmlogin</command> as the GUI dialog program. The <command>gdmlogin</command> program supports accessibility while the <command>gdmgreeter</command> program supports greater themeability. The GUI dialog is run as the unpriviledged "gdm" user/group which is described in the "Security" section below. The GUI dialog communicates with the daemon via a sockets protocol and via standard input/output. The slave, for example passes the username and password information to the GDM daemon via standard input/output so the daemon can handle the actual authentication.</para>
 
       <para>La pantalla del GUI de la entrada permite al usuario seleccionar qué sesión quiere iniciar y qué idioma quiere usar. Las sesiones se definen por archivos que terminan con la extensión .desktop y puede encontrar más información sobre estos archivos en la sección de «Configuración». El usuario ontroduce su nombre y contraseña y si éstos le autentican con éxito, GDM iniciará la sesión solicitada para el usuario. Es posible configurar GDM para evitar el proceso de autenticación activando las características de Entrada automática o Entrada temporizada en la configuración de GDM. El IGU de entrada puede configurarse además para para proporcionar características adicionales al usuario, como un visor de rostros, la capacidad de detener, reiniciar o suspender el sistema; y o editar la configuración de entrada (tras introducir la contraseña de root).</para>
 
@@ -141,6 +140,8 @@
       <para>Flexible, or on demand displays, are started via the socket protocol with the <command>gdmflexiserver</command> command. This feature is only available to users logged in on the console and will display a new login screen. If a flexible display has previously been started on the console, running <command>gdmflexiserver</command> again will display a menu allowing users to switch back to a previous session or start a new flexible session. The <command>gdmflexiserver</command> locks the current session before starting a new flexible display, so the user's password must be entered before returning to an existing session. The <command>gdmflexiserver</command> command can also be used to launch nested <command>Xnest</command> display. These are launched in a window in the user's current session. Nested displays can be started even if not logged into the console and are started by running the <command>gdmflexiserver -n</command> command. Flexible displays are not restarted when the user session ends. Flexible displays require virtual terminal (VT) support in the kernel, and will not be available if not supported (such as on Solaris). Nested displays require that the X server supports Xnest.</para>
 
       <para>El último tipo es la pantalla remota XDMCP que se describe en la siguiente sección. Los equipos remotos pueden conectarse a GDM y presentar la pantalla de entrada si esto está activado. Algunas cosas son diferentes para las sesiones remotas. Por ejemplo, el menú Acciones que permite apagar, reiniciar o configurar GDM no se mostrará.</para>
+
+      <para>Displays started via the <command>gdmdynamic</command> command are treated as local displays, so they are restarted automatically on when the session exits. This command is intended to more effectively manage the displays on a multi-user server (many displays connected to a single server).</para>
     </sect2>
 
     <sect2 id="xdmcp">
@@ -169,7 +170,7 @@
     <sect2 id="gtkgreeter">
       <title>El interfaz GTK+</title>
 
-      <para>El interfaz GTK+ es el interfaz gráfico de usuario que se presenta al usuario. El interfaz contiene un menú en la parte superior, un visor de rostros opcional, un logo opcional y un widget para entrada de texto.</para>
+      <para>The GTK+ Greeter is the default graphical user interface that is presented to the user. The greeter contains a menu at the top, an optional face browser, an optional logo and a text entry widget. This greeter has full accessibility support, and should be used by users with accessibility needs.</para>
 
       <para>El campo de entrada de texto se usa para introducir nombres de usuario, contraseñas, etc. <command>gdmlogin</command> está controlado por un demonio por debajo que es básicamente sin estado. El demonio controla el interfaz a través de un protocolo simple donde puede predir al interfaz una cadena de texto con eco activado o desactivado. Similarmente, el demonio puede cambiar la etiqueta sobre la entrada de texto para corresponder con el valor que el sistema de autenticación quiere que el usuario introduzca.</para>
 
@@ -185,7 +186,7 @@
 
       <para>La apariencia de este interfaz está controlada realmente por el tema y así los elementos del interfaz de usuario que están presentes pueden ser diferentes. La única cosa que debe estar presente siempre es el campo de entrada de texto tal como se describe arriba en el interfaz GTK+. El tema puede incluir botones que permitan al usuario seleccionar la configuración reginal o idioma adecuado, detener/reiniciar/suspender el equipo, configurar GDM (siempre que el susuario conozca la contraseña de root), o iniciar un selector XDMCP.</para>
 
-      <para>Puede obtener siempre un menú de las acciones disponibles pulsando la tecla F10. Esto puede ser útil si el tema no proporciona ciertos botones cuando realmente quiere hacer alguna acción.</para>
+      <para>You can always get a menu of available actions by pressing the F10 key. This can be useful if the theme doesn't provide certain buttons when you wish to do some action allowed by the GDM configuration.</para>
     </sect2>
 
     <sect2 id="facebrowser">
@@ -193,9 +194,9 @@
 
       <para>GDM soporta un visor de rostros que mostrará una lista de usuarios que pueden entrar y un icono para cada usuario. Esta característica puede usarse con el interfaz GTK+ si la opción de configuración <filename>Examinador</filename> está establecida a "true". Esta característica puede usarse con el Interfaz con Temas si usa un tema de GDM que incluya un tipo de elemento "userlist", tal como  "happygnome-list"</para>
 
-      <para>Por omisión, el visor de rostros está desactivado debido a que revelar nombres de usuario en la pantalla de entrada no es apropiado en muchos sistemas por razones de seguridad y debido a que GDM requiere alguna configuración para especificar qué usuarios deberían ser visibles. La configuración puede hacerse en la solapa «Usuarios» en <command>gdmsetup</command>. Esta característica es más práctica de usar en un sistema con un número pequeño de usuarios.</para>
+      <para>By default, the face browser is disabled since revealing usernames on the login screen is not appropriate on many systems for security reasons. Also GDM requires some setup to specify which users should be visible. Setup can be done on the "Users" tab in <command>gdmsetup</command>. This feature is most practical to use on a system with a smaller number of users.</para>
 
-      <para>Los iconos usados por GDM pueden instalarse globalmente por el administrador del sistema o pueden ser colocados en los directorios personales de los usuarios.. Si se instalan globalmente deberían estar en el directorio <filename>&lt;share&gt;/pixmaps/faces/</filename>  (aunque esto puede configurarse con la opción <filename>GlobalFaceDir</filename>) y el nombre del archivo debería ser el nombre del usuario, opcionalmente con un <filename>.png</filename> agregado. Los iconos de caras colocados en el directorio global de caras deben ser leíbles por el usuario GDM. Sin embargo, el demonio, proximiza las fotografías de los usuarios al interfaz y debido a esto no tienen que ser leíbles por el usuario GDM sino por el root.</para>
+      <para>The icons used by GDM can be installed globally by the sysadmin or can be located in the users' home directories. If installed globally they should be in the <filename>&lt;share&gt;/pixmaps/faces/</filename> directory (though this can be configured with the <filename>GlobalFaceDir</filename> configuration option) and the filename should be the name of the user, optionally with a <filename>.png</filename> appended. Face icons placed in the global face directory must be readable to the GDM user. However, the daemon, proxies user pictures to the greeter and thus those do not have be be readable by the "gdm" user, but root.</para>
 
       <para>Los usuarios pueden ejecutar el comando <command>gdmphotosetup</command> para configurar la imagen a usar para su id de usuario. Este programa escala apropiadamente el archivo si es más grande que las opciones de configuración  <filename>MaxIconWidth</filename> o <filename>MaxIconHeight</filename> y coloca al icono en un archivo llamado <filename>~/.face</filename>. Aunque <command>gdmphotosetup</command> escala las imágenes del usuario automáticamente, esto no garantiza que esas imágenes de usuario estén escaladas de forma adecuada así que un usuario puede crear su archivo <filename>~/.face</filename> a mano.</para>
         
@@ -203,11 +204,11 @@
 
       <para>If a user has no defined face image, GDM will use the "stock_person" icon defined in the current GTK+ theme. If no such image is defined, it will fallback to the image specified in the <filename>DefaultFace</filename> configuration option, normally <filename>&lt;share&gt;/pixmaps/nobody.png</filename>.</para>
       
-      <para>Note que cargar y escalar los iconos de rostros situados en los directorios personales de los usuarios puede ser una tarea que consuma mucho tiempo. Debido a que no es práctico cargar imágenes sobre NIS o NFS, GDM no intenta cargar imágenes de rostros desde directorios personales remotos. Además, GDM parará de cargar imágenes de rostros después de 5 segundos de actividad y sólo mostrará los usuarios cuyas imágenes haya obtenido hasta entonces. La opción <filename>Include</filename> de <filename>gdm.conf</filename> puede usarse para especificar un conjunto de usuarios que deberían aparecer en el visor de rostros. Mientras los usuarios a incluir tengan un tamaño razonable, no debería haber ningún problema con GDM siendo incapaz de acceder a las imágenes de rostros. Para evitar estos problemas, se recomienda situar las imágenes de rostros en el directorio especificado por la opción de configuración <filename>GlobalFaceDir</filename>.</para>
+      <para>Please note that loading and scaling face icons located in user home directories can be a very time-consuming task. Since it not practical to load images over NIS or NFS, GDM does not attempt to load face images from remote home directories. Furthermore, GDM will give up loading face images after 5 seconds of activity and will only display the users whose pictures it has gotten so far. The <filename>Include</filename> configuration option can be used to specify a set of users who should appear on the face browser. As long as the users to include is of a reasonable size, there should not be a problem with GDM being unable to access the face images. To work around such problems, it is recommended to place face images in the directory specified by the <filename>GlobalFaceDir</filename> configuration option.</para>
 
       <para>Para controlar qué usuarios se muestran en el examinador de rostros, hay varias opciones de configuración que pueden usarse. Si se establece a true la opción <filename>IncludeAll</filename>, entonces se analizará el archivo de contraseñas y se mostrarán todos los usuarios. Si la opción <filename>IncludeAll</filename> se establece a falso, entonces la opción <filename>Include</filename> debería contener una lista de usuarios separada por comas. Sólo los usuarios especificados se mostrarán. Cualquier usuario listado en la opción <filename>Exclude</filename> y los usuarios cuyo UID sea inferior a <filename>MinimalUID</filename> se filtrarán con independencia de lo que esté establecido en <filename>IncludeAll</filename>. <filename>IncludeAll</filename> no está recomendado para sistemas donde las contraseñas se carguen por mdio de una red (como cuando se usa NIS), debido a que puede ser muy lento cargar más de un pequeño número de usuarios sobre la red.</para>
 
-      <para>Cuando el examinador está activado, los nombres de usuario válidos en el equipo están expuestos inherentemente a un intruso potencial. Esto puede ser una mala idea si no sabe quién puede acceder a una pantalla de entrada. Esto es especialmente cierto si ejecuta XDMCP (desactivado por omisión).</para>
+      <para>When the browser is turned on, valid usernames on the computer are inherently exposed to a potential intruder. This may be a bad idea if you do not know who can get to a login screen. This is especially true if you run XDMCP (turned off by default).</para>
     </sect2>
 
     <sect2 id="logging">
@@ -254,7 +255,7 @@
 
     <sect2 id="PAM">
       <title>PAM</title>
-      <para>GDM uses PAM for username/authentication, though if your machine does not support PAM you can build GDM to work with shadow passwords and crypt. Refer to the next section for more information about PAM.</para>
+      <para>GDM uses PAM for username/authentication, though if your machine does not support PAM you can build GDM to work with shadow passwords and crypt.</para>
 
       <para>PAM stands for Pluggable Authentication Module, and is used by most programs that request username/password authentication on your computer. It allows the user to configure different behavior for different programs. Since PAM affects security, you should be comfortable with with the pam.</para>
 
@@ -264,7 +265,7 @@
 
       <para>If there is no entry for GDM in the <filename>&lt;etc&gt;/pam.conf</filename> file, then automatic login will probably not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distro.</para>
 
-      <para>If you wish to make GDM work with other types of authentication mechanisms, such as SmartCards, you should implement this via writing a PAM module rather than by trying to modify the GDM code. Refer to the PAM documentation on your system and this issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the archives for more information.</para>
+      <para>If you wish to make GDM work with other types of authentication mechanisms, such as SmartCards, you should implement this via writing a PAM module rather than by trying to modify the GDM code. Refer to the PAM documentation on your system. Also this issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the list archives for more information.</para>
     </sect2>
 
     <sect2 id="gdmuser">
@@ -272,17 +273,15 @@
 
       <para>For security reasons a dedicated user and group id are required for proper operation! The need to be able to write Xauth files is why user "nobody" is not appropriate for gdm.</para>
 
-      <para>El demonio GDM normalmente se ejecuta como root, y hace de esclavo. Sin embargo GDM debería también tener un id de usuario y un id de grupo dedicado que se usa para sus interfaces gráficas <filename>gdmgreeter</filename> y <command>gdmlogin</command>. Puede elegir el nombre de este usuario y grupo en la sección <filename>[daemon]</filename> del archivo de configuración.</para>
+      <para>The GDM daemon normally runs as root, as does the slave. However GDM should also have a dedicated user id and a group id which it uses for its graphical interfaces such as <command>gdmgreeter</command> and <command>gdmlogin</command>. These are configured via the <filename>User</filename> and <filename>Group</filename> configuration options in the gdm.conf file. The user and group should be created before running "make install". By default GDM assumes the user and the group are called "gdm".</para>
 
-      <para>This userid is used to run the GDM GUI programs required for login. All functionality that requires root authority is done by the GDM daemon process. This design ensures that if the GUI programs are somehow exploited, only the dedicated user privileges are available. By default GDM assumes the user and the group are called `gdm'. These are configured via the User and Group configuration options in the gdm.conf file. The user and group should be created before running "make install"</para>
+      <para>This userid is used to run the GDM GUI programs required for login. All functionality that requires root authority is done by the GDM daemon process. This design ensures that if the GUI programs are somehow exploited, only the dedicated user privileges are available.</para>
 
-      <para>Debería notarse sin embargo que el usuario GDM y el grupo tienen algunos privilegios que los hacen de alguna manera peligrosos. Por una parte tienen acceso al directorio de autorización del servidor (el <filename>ServAuthDir</filename>), que contiene todos los archivos de autorización del servidor X y otra información privada. Esto significa que alguien que gana los privilegios de usuario / grupo gdm puede entonces conectarse a cualquier sesión. No debería bajo ninguna circunstancia, hacer este usuario/grupo alguno fácil de obtener acceso, como el usuario <filename>nobody</filename>.</para>
+      <para>It should however be noted that the GDM user and group have some privileges that make them somewhat dangerous. For one, they have access to the X server authorization directory. It must be able to read and write Xauth keys to <filename>&lt;var&gt;/lib/gdm</filename>. This directory should have root:gdm ownership and 1770 permissions. Running "make install" will set this directory to these values. The GDM daemon process will reset this directory to proper ownership/permissions if it is somehow not set properly.</para>
+
+      <para>The danger is that someone who gains the GDM user/group privileges can then connect to any session. So you should not, under any circumstances, make this some user/group which may be easy to get access to, such as the user <filename>nobody</filename>. Users who gain access to the "gdm" user could also modify the Xauth keys causing Denial-Of-Service attacks. Also if a person gains the ability to run programs as the user "gdm", it would be possible to snoop on running GDM processes, including usernames and passwords as they are being typed in.</para>
 
       <para>Distributions and system administrators using GDM are expected to setup the dedicated user properly. It is recommended that this userid be configured to disallow login and to not have a default shell. Distributions and system administrators should set up the filesystem to ensure that the GDM user does not have read or write access to sensitive files.</para>
-
-      <para>The necessity for a gdm userid/group is because the GDM user does require certain special permissions. It must be able to read and write Xauth keys to <filename>&lt;var&gt;/lib/gdm</filename>. This directory should have root:gdm ownership and 1770 permissions. Running "make install" will set this directory to these values. You will need to modify the configure/Makefile if you want to use a different group than "gdm". The GDM daemon process will reset this directory to proper ownership/permissions if it is somehow not set properly.</para>
-
-      <para>If the gdm user is set up properly and gdm user access is somehow exploited, this means that the GDM user should only be able to maliciously modify the Xauth keys causing potential Denial-Of-Service attacks. If a person gains the ability to run programs as the user gdm, it would be possible to snoop on running GDM processes, including usernames and passwords as they are being typed in. Therefore it is important to ensure that the gdm user is disallowed login and has no default shell.</para>
     </sect2>
 
     <sect2 id="xauth">
@@ -349,7 +348,7 @@ gdm: .your.domain
 
     <para>You can either run <command>gdmsetup</command> as root or turn on the GDM configuration feature that allows you to run <command>gdmsetup</command> from the login screen (where it will run as root). If you believe running root owned GUI's is a security risk, then you would want to edit the files by hand.</para>
 
-    <para>If you are a distro and want to set machine defaults, you should make the proper edits in the <filename>gdm.conf-custom</filename> file rather than editing the <filename>gdm.conf</filename> file.</para>
+    <para>If you are a distribution and want to set machine defaults, you should edit the <filename>gdm.conf</filename> file rather than editing the <filename>gdm.conf-custom</filename> file, so the distribution changes are preserved as defaults.</para>
 
     <para>If you want to change configuration by hand, edit the <filename>&lt;etc&gt;/X11/gdm/gdm.conf-custom</filename> file and make sure the keyname=value pair you want is included in the appropriate section. For example, to change the "Greeter" key in the "daemon" section, make sure the daemon section of the <filename>gdm.conf-custom</filename> file has the value like in this example. The modified option does not have to come anywhere in the section. The <command>gdmsetup</command> program manages editing these files for you.</para>
 
@@ -358,7 +357,7 @@ gdm: .your.domain
 Greeter=/usr/lib/gdmgreeter
 </screen>
 
-    <para>Los archivos de configuración (especialmente <filename>gdm.conf</filename> y <filename>gdm.conf-custom</filename>) contienen comentarios útiles y ejemplos, así que léalos para más información acerca de cambiar su configuración.</para>
+    <para>The configuration files (especially the <filename>gdm.conf</filename> and <filename>gdm.conf-custom</filename> files) contains useful comments and examples, so read these for more information about changing your setup.</para>
 
     <para>Algunas claves en el archivo de configuración se entregan comentadas mientras que otras están activadas. Esto se hace para que los predeterminados para algunas claves puedan cambiarse fácilmente en el futuro. GDM considera que las líneas que comienzan con el carácter «#» un comentario,  y estas líneas se ignorarán.</para>
 
@@ -742,7 +741,7 @@ PostSession/
           <varlistentry>
             <term>SoundProgram</term>
             <listitem>
-              <synopsis>SoundProgram=<filename>&lt;bin&gt;/play</filename> (or <filename>%lt;bin&gt;/audioplay</filename> on Solaris)</synopsis>
+              <synopsis>SoundProgram=<filename>&lt;bin&gt;/play</filename> (or <filename>&lt;bin&gt;/audioplay</filename> on Solaris)</synopsis>
               <para>Application to use when playing a sound. Currently used for playing the login sound, see the <filename>SoundOnLoginFile</filename> key. Supported since 2.5.90.0.</para>
             </listitem>
           </varlistentry>
@@ -3175,7 +3174,7 @@ homogeneous="bool"&gt;
 </screen></para>
 
         <para>You can include pango markup in the text nodes for labels, however you must encode it. So for example to have the label of "foo&lt;sup&gt;bar&lt;/sup&gt;", you must type: <screen>
-&lt;text"&gt;foo&amp;lt;sup&amp;&gt;bar&amp;lt;/sup&amp;&gt;&lt;/text&gt;
+&lt;text&gt;"foo&lt;sup&gt;bar&lt;/sup&gt;"&lt;/text&gt;
 </screen></para>
 
         <para>Text nodes can contain the following special character sequences which will be translated as follows:</para>
@@ -3250,7 +3249,9 @@ custom-config=foo
 
   <sect1 id="accessibility">
     <title>Accesibilidad</title>
-       <para>GDM soporta «Entrada accesible» para permitir que los usuarios entren en su sesión de escritorio incluso si no pueden usar fácilmente la pantalla, ratón o teclado en una manera usual. Esta característica permite al usuario lanzar tecnologías de asistencia al entrar por medio de «gestos» especiales desde el teclado estándar y desde un teclado, dispositivo apuntador, o conmutador enchufado al puerto USB o del ratón. También permite al usuario cambiar la apariencia visual del IU de entrada antes de entrar, por ejemplo para usar un esquema de color de alto contraste para mejor visibilidad. GDM sólo soporta accesibilidad con el interfaz GTK+, así que el parámetro «Greeter» en la configuración de GDM debe establecerse a «gdmlogin»</para>
+      <para>GDM supports "Accessible Login" to allow users to log in to their desktop session even if they cannot easily use the screen, mouse, or keyboard in the usual way. Only the "Standard Greeter" supports accessibility, so use this login GUI for accessibility support. This is done by specifying the "Standard Greeter" in the "Local" tab for the console display and specifying the "Standard Greeter" in the "Remote" tab for remote displays. Or you can modify the <filename>Greeter</filename> configuration option by hand to be <command>gdmlogin</command>.</para>
+
+      <para>The Standard Greeter supports the ability to launch assistive technologies at login time via configurable "gestures" from the standard keyboard, pointing device, or switch device attached to the USB or PS/2 mouse port. Also the user can change the visual appearance of the login UI before logging in, for instance to use a higher-contrast color scheme for better visibility.</para>
 
        <sect2 id="accessibilityconfig">
           <title>Configuración de accesibilidad</title>
@@ -3303,7 +3304,7 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
    --with-prefetch --with-post-path=/usr/openwin/bin
 </screen></para>
 
-             <para>Configuring GDM with the "--with-post-path=/usr/openwin/bin" on Solaris is recommended. See comments in configure.ac file.</para>
+             <para>Configuring GDM with the "--with-post-path=/usr/openwin/bin" on Solaris is recommended for access to programs like Xnest.</para>
        </sect2>
 
        <sect2 id="solarislogindevperm">
@@ -3316,16 +3317,16 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
 /dev/console    0600    /dev/sound/*            # audio devices
 </screen>
      
-             <para>In the PreSession scriptchown /dev/console to the user:group who is logging into the console and ensure whatever permissions is specified in /etc/logindevperm (0600 for the line above). Then in the PostSession script chmod them back to root:root and ensure 0600 this time (don't use the value in the /etc/logindevperm file). Linux uses a different mechanism for managing device permissions.</para>
+             <para>The PreSession script would need to be modified to chown /dev/console to the user:group who is logging into the console and ensure whatever permissions is specified in /etc/logindevperm (0600 for the line above). Then in the PostSession script chmod the device back to root:root and ensure 0600 this time (do not use the value in the /etc/logindevperm file). Linux uses a different mechanism for managing device permissions, so this extra scripting is not needed.</para>
        </sect2>
 
        <sect2 id="solarisautomaticlogin">
           <title>Solaris Automatic Login</title>
-             <para>By default, automatic login is not enabled by GDM, so you would only notice this problem if you try to make use of it. Turning this feature on causes your computer to login to a specified username on startup without asking for username and password. This is an unsecure way to set up your computer. Make sure to read the PAM documentation (e.g. pam.d/pam.conf man page) and be comfortable with the security settings before modifying your configuration.</para>
+             <para>Automatic login does not work on Solaris because PAM is not configured to support this feature by default. Automatic login is a GDM feature that is not enabled by default, so you would only notice this problem if you try to make use of it. Turning this feature on causes your computer to login to a specified username on startup without asking for username and password. This is an unsecure way to set up your computer.</para>
 
-             <para>To turn on automatic login on Solaris, refer to the PAM section above. If using Solaris 10 or lower, then you also need to compile the pam_allow.c code and install it to /usr/lib/security (or anywhere and provide the full path in /etc/pam.conf) and ensure it is owned by uid 0 and not group or world writable. Now see automatic login work. Wasn't it worth it! I believe these settings will be added someday, though Sun isn't quite sure Automatic login is such a secure feature so we will probably debate it further.</para>
+             <para>If using Solaris 10 or lower, then you need to compile the pam_allow.c code provided with the GDM release and install it to /usr/lib/security (or provide the full path in /etc/pam.conf) and ensure it is owned by uid 0 and not group or world writable.</para>
 
-             <para>The following are reasonable pam.conf values for turning on automatic login in GDM.</para>
+             <para>The following are reasonable pam.conf values for turning on automatic login in GDM. Make sure to read the PAM documentation (e.g. pam.d/pam.conf man page) and be comfortable with the security implications of any changes you intend to make to your configuration.</para>
 
 <screen>
        gdm-autologin auth  required    pam_unix_cred.so.1
@@ -3350,7 +3351,7 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
 
             <para>GDM supports a security feature which causes the X server to run as the user instead of as the root user. GDM must be using PAM for this feature to be enabled, which is the normal case for Solaris. This second feature has the side-effect of causing the X server to always restart between sessions, which disables the AlwaysRestartServer configuration option.</para>
 
-            <para>Solaris supports the <filename>/etc/default/login</filename> interface, which affects the <filename>DefaultPath</filename>, <filename>RootPath</filename>, <filename>PasswordRequired</filename>, and <filename>AllowRemoteRoot</filename> options as described in the Configuration section.</para>
+            <para>Solaris supports the <filename>/etc/default/login</filename> interface, which affects the <filename>DefaultPath</filename>, <filename>RootPath</filename>, <filename>PasswordRequired</filename>, and <filename>AllowRemoteRoot</filename> options as described in the "Configuration" section.</para>
        </sect2>
   </sect1>
 
@@ -3444,7 +3445,6 @@ Hosts=appserverone,appservertwo
     <para>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <citetitle>GNU General Public License</citetitle> for more details.</para>
     <para>A copy of the <citetitle>GNU General Public License</citetitle> is included as an appendix to the <citetitle>GNOME Users Guide</citetitle>. You may also obtain a copy of the <citetitle>GNU General Public License</citetitle> from the Free Software Foundation by visiting <ulink type="http" url="http://www.fsf.org">their Web site</ulink> or by writing to <address> Free Software Foundation, Inc. <street>59 Temple Place</street> - Suite 330 <city>Boston</city>, <state>MA</state><postcode>02111-1307</postcode><country>USA</country></address></para>
   </sect1>
-  
 </article>
 <!-- Keep this comment at the end of the file
 Local variables:

@@ -1,30 +1,22 @@
 QUICK NOTES ON INSTALLATION/USE:
  
-I try to keep this document updated with issues that are brought
-up on gdm-list@gnome.org.  GDM can be sometimes challanging to setup
-and get working.  GDM does things like start up your Xserver, so it
-is sometimes necessary to tweak the GDM configuration to work with
-any given setup.
-
-This document tries to capture the most common problems.  Also
-refer to the "Troubleshooting" section of the GDM dcumentation:
-
-   http://www.gnome.org/projects/gdm/docs.html
-
-You can also look in docs/C/gdm.xml for the raw XML version of the
-docs.
-
 General
 =======
 
-Make sure you are familiar with the "Overview" and "Security"
-sections of the GDM documentation:
+GDM sometimes requires some configuration work for a given setup.
+
+Make sure you are familiar with the "Overview", "Security", 
+"Configuration", and "Troubleshooting" sections of the GDM
+documentation:
 
    http://www.gnome.org/projects/gdm/docs.html
 
+You can also look in the docs subdirectory for the XML version of
+the documentation.
+
 WARNING: "gdm-binary" is a *daemon* -- not a common user application.
 It requires extensive knowledge about your system setup to install and
-configure. gdm does not intend to be Plug and Play.
+configure.  GDM does not intend to be Plug and Play.
 (i.e. ./configure ; make install). 
 
 Building GDM
@@ -33,10 +25,10 @@ Building GDM
 You may need to update your build tools if the autogen.sh command
 complains that it requires a newer version of the build tool.
 
-If you did not compile GNOME yourself, make sure you have the appropriate
--devel packages installed.
+If you did not compile GNOME yourself, make sure you have the
+appropriate -devel packages installed.
 
-Here's a good configure for GDM:
+Here is a recommended configure for GDM:
 
 ./autogen.sh --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
    --with-prefetch --with-post-path=/usr/openwin/bin
@@ -48,8 +40,9 @@ DefaultPath and RootDefaultPath, then use the --with-post-path
 configure option.  Argument value should be a list of directories
 separated by ":" characters (no spaces).
 
-Make sure the --with-pam-prefix points to the prefix where the pam.conf
-file is located (default is sysconfdir or /etc).
+Make sure the --with-pam-prefix points to the prefix where the
+pam.conf file is located if it is not in the default directory
+(sysconfdir or /etc).
 
 If you want accessibility to work and have AT programs like gok and
 gnopernicus installed to a different directory than EXPANDED_BINDIR,
@@ -81,8 +74,8 @@ clutter your syslog and slow system performance.
 Configuration
 =============
 
-Make sure you are familiar with the "Configuring GDM" section of
-the GDM documentation:
+Gain, refer to the "Configuring GDM" section of the GDM
+documentation for full information:
 
    http://www.gnome.org/projects/gdm/docs.html
 
@@ -91,11 +84,11 @@ GDM Default Configuration File
 
 The GDM configuration file /etc/gdm/gdm.conf may be replaced by
 you distribution on upgrade, so if a user wants to ensure that
-configuration changes persist on upgrade, edit the /etc/gdm/gdm.conf-custom 
-file.  You can specify a different location for the file via 
-the "--with-configdir=/dir" option.  This can be useful if you
-want to put the default file on a filesystem shared by multiple
-machines.
+configuration changes persist on upgrade, edit the
+/etc/gdm/gdm.conf-custom file.  You can specify a different
+location for the file via the "--with-configdir=/dir" option.
+This can be useful if you want to put the default file on a
+filesystem shared by multiple machines.
 
 If you wish to change configuration by hand, edit the
 /etc/X11/gdm/gdm.conf-custom file and make sure the keyname=value
@@ -109,8 +102,8 @@ anywhere in the section.
 [daemon]
 Greeter=/usr/lib/gdmgreeter
 
-The default options refer to interfaces that may need to be
-customized for your distribution providor.
+The following interfaces most frequently need to be customized
+for a given setup, since they are OS/machine specific:
 
    HaltCommand
    RebootCommand
@@ -149,14 +142,11 @@ not let your computer load these libraries while the user types
 in their name and password?  
 
 The provided gdmprefetchlist.in was created for Solaris 11 running
-GNOME 2.13 (not a particularly stable configuration but one that will
-likely be what Sun ships in Solaris 11).  If using another OS, then
-you will probably want to modify the config/gdmprefetchlist.in file
-before running configure.  This makes sure the list of libraries to
-preload is suitable for your setup.  The GDM PreFetch will ignore
-libraries it doesn't find on your system but the point with this code
-is to speed up your system so you can do further tuning for your
-environment.
+GNOME 2.13 (not a particularly stable configuration).  If using
+another OS or desktop (such as KDE), then you will probably want
+to modify the config/gdmprefetchlist.in file before running
+configure.  The GDM PreFetch will ignore libraries listed that it
+does not find on your system.
 
 Red Hat
 =======
@@ -192,3 +182,4 @@ documentation for information about specific configuration issues for
 Solaris.
 
    http://www.gnome.org/projects/gdm/docs.html
+

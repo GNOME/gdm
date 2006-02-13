@@ -79,7 +79,8 @@ zenity=`gdmwhich zenity`
 
 if [ x"$command" = xfailsafe ] ; then
   if [ -n "$zenity" ] ; then
-    "$zenity" --info --text `gettextfunc "This is the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window in the upper left corner"`
+    disptext=`gettextfunc "This is the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window in the upper left corner"`
+    "$zenity" --info --text "$disptext"
   else
     echo "$0: Starting the failsafe xterm session."
   fi
@@ -239,7 +240,8 @@ eval exec $command
 echo "$0: Executing $command failed, will run xterm"
 
 if [ -n "$zenity" ] ; then
-	"$zenity" --info --text `gettextfunc "Failed to start the session, so starting a failsafe xterm session.  Windows will have focus only if the mouse pointer is above them.  To get out of this mode type 'exit' in the window in the upper left corner"`
+	disptext=`gettextfunc "Failed to start the session, so starting a failsafe xterm session.  Windows will have focus only if the mouse pointer is above them.  To get out of this mode type 'exit' in the window in the upper left corner"`
+	"$zenity" --info --text "$disptext"
 fi
 
 exec xterm -geometry 80x24+0+0
