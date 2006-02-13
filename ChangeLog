@@ -1,5 +1,13 @@
 2006-02-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* acconfig.h, configure.ac, daemon/Makefile.am, daemon/gdmconfig.c,
+	  docs/C/gdm.xml: Change --with-configdir to --with-defaults-conf
+	  and make it work so that the gdm.conf and gdm.conf-custom file
+	  can be installed to different subdirectories.  Fixes bug 
+	  #330905.  Patch provided by Ray Strode.
+
+2006-02-13  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/Xsession.in: Fix calls to zenity so they work.  Fixes
 	  bug #330892.
 	* README, README.install, docs/C/gdm.xml: Last minute updates

@@ -849,17 +849,32 @@ AC_SUBST(AT_BINDIR)
 AC_DEFINE_UNQUOTED(AT_BINDIR,"$AT_BINDIR")
 
 withval=""
-AC_ARG_WITH(configdir,
-[  --with-configdir=<PATH>   PATH to Install gdm.conf configuration file [default=sysconfdir/gdm]],)
+AC_ARG_WITH(defaults_conf,
+[  --with-defaults-conf=<FILENAME>   FILENAME to give to defaults file [default=DATADIR/gdm/defaults.conf]],)
 
 if test x$withval != x; then
-	GDM_CONFIGDIR="$withval"
+	GDM_DEFAULTS_CONF="$withval"
 else
-	GDM_CONFIGDIR="$sysconfdir/gdm"
+	GDM_DEFAULTS_CONF="$datadir/gdm/defaults.conf"
 fi
 
-AC_SUBST(GDM_CONFIGDIR)
-AC_DEFINE_UNQUOTED(GDM_CONFIGDIR,"$GDM_CONFIGDIR")
+AC_SUBST(GDM_DEFAULTS_CONF)
+AC_DEFINE_UNQUOTED(GDM_DEFAULTS_CONF,"$GDM_DEFAULTS_CONF")
+
+withval=""
+AC_ARG_WITH(custom_conf,
+[  --with-custom-conf=<FILENAME>   FILENAME to give to custom configuration file [default=SYSCONFDIR/gdm/custom.conf]],)
+
+if test x$withval != x; then
+	GDM_CUSTOM_CONF="$withval"
+else
+	GDM_CUSTOM_CONF="$sysconfdir/gdm/custom.conf"
+fi
+
+AC_SUBST(GDM_CUSTOM_CONF)
+AC_DEFINE_UNQUOTED(GDM_CUSTOM_CONF,"$GDM_CUSTOM_CONF")
+
+
 
 AC_ARG_WITH(prefetch,
   [  --with-prefetch=[yes/no]  Install GDM library prefetch utility [default=no]],,

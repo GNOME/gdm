@@ -540,7 +540,7 @@ gdm_config_init (void)
  * Get config file.  
  */
 static VeConfig *
-gdm_get_config (struct stat *statbuf)
+gdm_get_default_config (struct stat *statbuf)
 {
    int r;
 
@@ -553,13 +553,13 @@ gdm_get_config (struct stat *statbuf)
          return NULL;
       }
    } else {
-      VE_IGNORE_EINTR (r = g_stat (GDM_SYSCONFDIR_CONFIG_FILE, statbuf));
+      VE_IGNORE_EINTR (r = g_stat (GDM_DEFAULTS_CONF, statbuf));
       if (r < 0) {
          gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
-                      "gdm_config_parse", GDM_SYSCONFDIR_CONFIG_FILE);
+                      "gdm_config_parse", GDM_DEFAULTS_CONF);
          return NULL;
       } else {
-              config_file = GDM_SYSCONFDIR_CONFIG_FILE;
+              config_file = GDM_DEFAULTS_CONF;
       }
    }
 
@@ -576,12 +576,11 @@ static VeConfig *
 gdm_get_custom_config (struct stat *statbuf)
 {
    VeConfig *retval;
-   gchar *file = g_strdup_printf ("%s-custom", GDM_SYSCONFDIR_CONFIG_FILE);
    int r;
 
-   VE_IGNORE_EINTR (r = g_stat (file, statbuf));
+   VE_IGNORE_EINTR (r = g_stat (GDM_CUSTOM_CONF, statbuf));
    if (r >= 0) {
-      custom_config_file = file;
+      custom_config_file = g_strdup (GDM_CUSTOM_CONF);
       return ve_config_new (custom_config_file);
    } else {
       return NULL;
@@ -1723,7 +1722,7 @@ gdm_config_parse (void)
     * main configuration file.  If cfg is missing, then GDM will 
     * use the built-in defaults found in gdm.h.
     */
-   cfg                      = gdm_get_config (&statbuf);
+   cfg                      = gdm_get_default_config (&statbuf);
    config_file_mtime        = statbuf.st_mtime;
    custom_cfg               = gdm_get_custom_config (&statbuf);
    custom_config_file_mtime = statbuf.st_mtime;

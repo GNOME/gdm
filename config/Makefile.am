@@ -1,6 +1,5 @@
 pixmapdir = $(datadir)/pixmaps
 confdir = $(sysconfdir)/gdm
-gdmconfdir = $(GDM_CONFIGDIR)
 crossconfdir = $(sysconfdir)/dm
 localedir = $(sysconfdir)/gdm
 bisessdir = $(datadir)/gdm/BuiltInSessions
@@ -54,9 +53,9 @@ uninstall-hook:
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/ssh.desktop \
 	$(DESTDIR)$(instsessdir)/CDE.desktop \
-	$(DESTDIR)$(gdmconfdir)/gdm.conf \
-	$(DESTDIR)$(gdmconfdir)/gdm.conf-custom \
-	$(DESTDIR)$(gdmconfdir)/factory-gdm.conf \
+	$(DESTDIR)$(GDM_DEFAULTS_CONF) \
+	$(DESTDIR)$(GDM_CUSTOM_CONF) \
+	`dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`/factory-`basename $(DESTDIR)$(GDM_DEFAULTS_CONF)` \
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
 	$(DESTDIR)$(confdir)/gdmprefetchlist \
@@ -75,26 +74,30 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 		$(mkinstalldirs) $(DESTDIR)$(crossconfdir); \
 		chmod 755 $(DESTDIR)$(crossconfdir); \
 	fi
-	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
-		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
-		chmod 755 $(DESTDIR)$(gdmconfdir); \
+	if test '!' -d `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`; then \
+		$(mkinstalldirs) `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`; \
+		chmod 755 `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`; \
 	fi
-	if test -f $(DESTDIR)$(gdmconfdir)/gdm.conf; then \
-	   if ! cmp -s $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
-		if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; then \
-			cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
+	if test '!' -d `dirname $(DESTDIR)$(GDM_CUSTOM_CONF)`; then \
+		$(mkinstalldirs) `dirname $(DESTDIR)$(GDM_CUSTOM_CONF)`; \
+		chmod 755 `dirname $(DESTDIR)$(GDM_CUSTOM_CONF)`; \
+	fi
+	if test -f $(DESTDIR)$(confdir)/gdm.conf; then \
+	   if ! cmp -s $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
+		if test '!' -f $(DESTDIR)$(GDM_CUSTOM_CONF); then \
+			cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(GDM_CUSTOM_CONF); \
 		else \
-			cp -f $(DESTDIR)$(gdmconfdir)/gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf.org; \
+			cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(GDM_DEFAULTS_CONF).org; \
 		fi; \
 	   fi; \
 	fi
-	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/gdm.conf
-	chmod 444 $(DESTDIR)$(gdmconfdir)/gdm.conf
-	if test '!' -f $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; then \
-		$(INSTALL_DATA) $(srcdir)/gdm.conf-custom $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
-		chmod 644 $(DESTDIR)$(gdmconfdir)/gdm.conf-custom; \
+	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(GDM_DEFAULTS_CONF)
+	chmod 444 $(DESTDIR)$(GDM_DEFAULTS_CONF)
+	if test '!' -f $(DESTDIR)$(GDM_CUSTOM_CONF); then \
+		$(INSTALL_DATA) $(srcdir)/gdm.conf-custom $(DESTDIR)$(GDM_CUSTOM_CONF); \
+		chmod 644 $(DESTDIR)$(GDM_CUSTOM_CONF); \
 	fi
-	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(gdmconfdir)/factory-gdm.conf
+	$(INSTALL_DATA) gdm.conf `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`/factory-`basename $(DESTDIR)$(GDM_DEFAULTS_CONF)`
 
 	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
 	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(confdir)/Xsession
