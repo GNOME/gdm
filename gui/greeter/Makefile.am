@@ -65,17 +65,17 @@ gdmgreeter_LDADD = \
 	-lgdmwm			\
 	-lgdmcommon		\
 	$(top_builddir)/vicious-extensions/libviciousui-minimal.a \
-	$(X_LIBS)		\
-	-lX11			\
-	$(XINERAMA_LIBS)	\
-	$(X_EXTRA_LIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(PANGO_LIBS)		\
 	$(PANGOFT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(GREETER_LIBS)
+	$(GREETER_LIBS)		\
+	$(X_EXTRA_LIBS)		\
+	$(XINERAMA_LIBS)	\
+	$(X_LIBS)		\
+	-lX11
 
 EXTRA_DIST = \
 	gdmthemetester \

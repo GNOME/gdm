@@ -1,4 +1,12 @@
-2006-02-13  Brian Cameron  <brian.cameron@sun.com>
+2006-02-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* Makefile.am, gui/Makefile.am, gui/greeter/Makefile.am, 
+	  utils/gdm-dmx-reconnect-proxy.c: Reorganize libraries so that
+	  it is easier to build GDM against a test Xserver.  Fixes bug
+	  #331226.  Patch provided by Sylvain Bertrand
+	  <sylvain.bertrand@gmail.com>.
+
+2006-02-15  Brian Cameron  <brian.cameron@sun.com>
 
 	* config/Xsession.in: Now start dbus-launch in GDM's Xsession
 	  script if dbus-launch is available on the system.  Fixes

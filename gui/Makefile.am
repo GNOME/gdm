@@ -89,35 +89,35 @@ gdmchooser_LDADD = \
 	libgdmwm.a		\
 	libgdmcommon.a		\
 	$(GUIGLADE_LIBS)	\
-	$(X_LIBS)		\
-	$(XDMCP_LIBS)		\
-	-lpopt			\
-	-lX11			\
-	$(XINERAMA_LIBS)	\
-	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(PANGO_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(top_builddir)/vicious-extensions/libviciousui.a \
+	$(X_EXTRA_LIBS)		\
+	$(XINERAMA_LIBS)	\
+	$(X_LIBS)		\
+	$(XDMCP_LIBS)		\
+	-lX11			\
+	-lpopt
 
 gdmlogin_LDADD = \
 	libgdmwm.a		\
 	libgdmcommon.a		\
 	$(GUING_LIBS)		\
-	$(X_LIBS)		\
-	-lX11			\
-	$(XINERAMA_LIBS)	\
-	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(PANGO_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui-minimal.a
+	$(top_builddir)/vicious-extensions/libviciousui-minimal.a \
+	$(X_EXTRA_LIBS)		\
+	$(XINERAMA_LIBS)	\
+	$(X_LIBS)		\
+	-lX11
 
 # LIBGNOMEUI should be removed from gdmsetup at some point.
 # It is needed because it uses gnome_help_display_uri(), which
@@ -128,9 +128,6 @@ gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
-	$(X_LIBS)		\
-	-lXau			\
-	-lX11			\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
@@ -139,7 +136,10 @@ gdmsetup_LDADD = \
 	$(GDKPIXBUF_LIBS)	\
 	$(EXTRA_SETUP_LIBS)	\
 	$(LIBGNOMEUI_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(top_builddir)/vicious-extensions/libviciousui.a \
+	$(X_LIBS)		\
+	-lXau			\
+	-lX11
 
 gdmphotosetup_LDADD = \
 	libgdmcommon.a		\
@@ -155,41 +155,41 @@ gdmphotosetup_LDADD = \
 gdmXnestchooser_LDADD = \
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
-	$(X_LIBS)		\
-	-lXau			\
-	-lX11			\
-	-lpopt			\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
+	$(top_builddir)/vicious-extensions/libviciousui.a \
 	$(EXTRA_XNEST_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(X_LIBS)		\
+	-lXau			\
+	-lX11			\
+	-lpopt
 
 gdmflexiserver_LDADD = \
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
-	$(X_LIBS)		\
-	-lXau			\
-	-lpopt			\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
+	$(top_builddir)/vicious-extensions/libviciousui.a \
 	$(EXTRA_FLEXI_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(X_LIBS)		\
+	-lXau			\
+	-lpopt
 
 gdmdynamic_LDADD = 		\
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
-	$(X_LIBS)		\
-	-lXau			\
 	$(INTLLIBS) 		\
 	$(GLIB_LIBS) 		\
 	$(GOBJECT_LIBS) 	\
 	$(GDK_LIBS) 		\
+	$(top_builddir)/vicious-extensions/libviciousui.a \
 	$(EXTRA_DYNAMIC_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(X_LIBS)		\
+	-lXau
 
 Settingsdir = $(datadir)/applications
 Settings_files = gdmphotosetup.desktop

@@ -68,18 +68,18 @@ gdm_binary_LDFLAGS = \
 
 gdm_binary_LDADD = \
 	$(DAEMON_LIBS)				\
-	$(X_LIBS)				\
-	$(XDMCP_LIBS)				\
-	-lXau					\
-	-lX11					\
-	-lXext					\
-	-lpopt					\
-	$(XINERAMA_LIBS)			\
 	$(INTLLIBS)				\
 	$(GLIB_LIBS)				\
 	$(GOBJECT_LIBS)				\
 	$(GDK_LIBS)				\
-	$(top_builddir)/vicious-extensions/libvicious.a
+	$(top_builddir)/vicious-extensions/libvicious.a \
+	$(X_LIBS)				\
+	$(XINERAMA_LIBS)			\
+	$(XDMCP_LIBS)				\
+	-lXau					\
+	-lX11					\
+	-lXext					\
+	-lpopt
 
 sbin_SCRIPTS = gdm
 
