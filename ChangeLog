@@ -1,5 +1,11 @@
 2006-02-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* config/Xsession.in: Now start dbus-launch in GDM's Xsession
+	  script if dbus-launch is available on the system.  Fixes
+	  bug #331104.  Patch provided by delgarde@ihug.co.nz.
+
+2006-02-13  Brian Cameron  <brian.cameron@sun.com>
+
 	* Makefile.am: Distribute the README file.
 
 2006-02-13  Brian Cameron  <brian.cameron@sun.com>
@@ -100,9 +106,9 @@
 	  always logged, not just when debug is turned on.  Added
 	  gdmcomm_did_connection_fail and gdmcomm_set_allow_sleep so 
 	  gdmdynamic can control the behavior of how the connection works.
-	* gui/gdmcommon.c, gui/gdmchooser.c, gui/gdmlogin.c, gui/greeter/greeter.c:
-	  Fix gdm_common_fail so it doesn't generate compile errors when building
-	  with GCC.  Fixes bug #330480.
+	* gui/gdmcommon.c, gui/gdmchooser.c, gui/gdmlogin.c,
+	  gui/greeter/greeter.c: Fix gdm_common_fail so it doesn't generate
+	  compile errors when building with GCC.  Fixes bug #330480.
 	* docs/C/gdm.xml: Cleaned up section that explains sockets commands so
 	  that they are in alphabetical order, added info about SERVER_BUSY
 	  and new gdmdynamic -s and -t options.

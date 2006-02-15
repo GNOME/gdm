@@ -257,15 +257,13 @@
       <title>PAM</title>
       <para>GDM uses PAM for username/authentication, though if your machine does not support PAM you can build GDM to work with shadow passwords and crypt.</para>
 
-      <para>PAM stands for Pluggable Authentication Module, and is used by most programs that request username/password authentication on your computer. It allows the user to configure different behavior for different programs. Since PAM affects security, you should be comfortable with with the pam.</para>
+      <para>PAM stands for Pluggable Authentication Module, and is used by most programs that request username/password authentication on your computer. It allows the user to configure different authentication behavior for different programs.</para>
 
-      <para>GDM uses PAM and some GDM features, like turning on automatic login may require that you update your PAM configuration. PAM has different, but similar, interfaces on differnt operating systems, so check your pam.d or pam.conf man page for details about how to configure it.</para>
+      <para>Some GDM features (like turning on automatic login) may require that you update your PAM configuration. PAM has different, but similar, interfaces on different operating systems, so check your pam.d or pam.conf man page for details about how to configure it. Make sure to read the PAM documentation (e.g. pam.d/pam.conf man page) and be comfortable with the security implications of any changes you intend to make to your configuration.</para>
 
-      <para>PAM allows the system administrator to have control about how different programs which require password access work, so GDM and ssh and other programs can have configurable behavior.</para>
+      <para>If there is no entry for GDM in your system's PAM configuration file, then features like tomatic login may not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distribution.</para>
 
-      <para>If there is no entry for GDM in the <filename>&lt;etc&gt;/pam.conf</filename> file, then automatic login will probably not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distro.</para>
-
-      <para>If you wish to make GDM work with other types of authentication mechanisms, such as SmartCards, you should implement this via writing a PAM module rather than by trying to modify the GDM code. Refer to the PAM documentation on your system. Also this issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the list archives for more information.</para>
+      <para>If you wish to make GDM work with other types of authentication mechanisms (such as a SmartCard), then you should implement this by writing a PAM module rather than by trying to modify the GDM code directly. Refer to the PAM documentation on your system. This issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the list archives for more information.</para>
     </sect2>
 
     <sect2 id="gdmuser">
@@ -363,7 +361,7 @@ Greeter=/usr/lib/gdmgreeter
 
     <para>The <filename>&lt;share&gt;/gdm/defaults.conf</filename> file contains the default configuration choices for GDM, and should not be modified by the user. The <filename>&lt;etc&gt;/gdm/custom.conf</filename> file is where users may specify their custom configuration choices. Configuration options specified in the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file override the values in the main <filename>&lt;share&gt;/gdm/defaults.conf</filename> file. Running the <command>gdmsetup</command> command will cause the <filename>&lt;etc&gt;/gdm/custom.conf</filename> to be modified with the user's configuration choices and will cause any running GDM GUI programs to automatically update. Previous to version 2.13.0.4 GDM only supported the <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file, so if using an older version of GDM just edit that file directly.</para>
 
-    <para>GDM may be configured to support system-wide configuration if built with the <command>--with-defaults-conf</command> option. This allows the location of the default configuration file directory to be specified. The GDM daemon --config option may also be used to specify the configuration file location. The GDM daemon must be restarted to change the configuration file being used.</para>
+    <para>The location of the configuration files may be controlled via the <command>--with-defaults-conf</command> and <command>--with-custom-conf</command> configuration options. The GDM daemon --config option may also be used to specify the configuration file location. The GDM daemon must be restarted to change the configuration file being used.</para>
 
     <para><filename>&lt;share&gt;/gdm/factory-defaults.conf</filename> is the configuration file as shipped with the daemon. This can be useful for to see if the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file has been changed.</para>
 
@@ -429,7 +427,7 @@ PostSession/
 
       <para>Previous to GDM 2.13.0.4 only the <filename>&lt;etc&gt;/gdm/gdm.conf</filename> existed. If upgrading to the new version of GDM, install will check to see if your <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file is different than your <filename>&lt;etc&gt;/gdm/factory-gdm.conf</filename> file. If so, your <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file will be automatically copied to <filename>&lt;etc&gt;/gdm/custom.conf</filename> to preserve any configuration changes.</para>
         
-      <para>GDM may be configured to support system-wide configuration if built with the <command>--with-defaults-conf</command> option. This allows the location of the default configuration file directory to be specified. The GDM daemon --config option may instead be used to specify the configuration file location. The GDM daemon must be restarted to change the configuration file being used.</para>
+      <para>The location of the configuration files may be controlled via the <command>--with-defaults-conf</command> and <command>--with-custom-conf</command> configuration options. The GDM daemon --config option may instead be used to specify the configuration file location. The GDM daemon must be restarted to change the configuration file being used.</para>
 
       <para>Both configuration files are divided into sections each containing variables that define the behavior for a specific part of the GDM suite. Refer to the comments in the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file for additional information about each configuration setting.</para>
 
