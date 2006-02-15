@@ -3888,7 +3888,6 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 	theme_list = glade_helper_get (xml, "gg_theme_list", GTK_TYPE_TREE_VIEW);
 
 	cwd = g_get_current_dir ();
-	theme_dir = get_theme_dir ();
 
 	if ( !g_path_is_absolute (filename)) {
 
@@ -3920,14 +3919,13 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 					    msg);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
-		g_free (theme_dir);
 		g_free (untar_cmd);
 		g_free (cwd);
 		g_free (msg);
 		return;
 	}
 
-	if (dir_exists (theme_dir, dir)) {
+	if (dir_exists (get_theme_dir (), dir)) {
 
 		GtkWidget *button;
 		GtkWidget *dialog;
@@ -3969,7 +3967,6 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 
 		if (gtk_dialog_run (GTK_DIALOG (dialog)) != GTK_RESPONSE_YES) {
 			gtk_widget_destroy (dialog);
-			g_free (theme_dir);
 			g_free (untar_cmd);
 			g_free (cwd);
 			g_free (dir);
@@ -3980,7 +3977,7 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 
 	g_assert (untar_cmd != NULL);
 
-	if (g_chdir (theme_dir) == 0 &&
+	if (g_chdir (get_theme_dir ()) == 0 &&
 	    /* this is a security sanity check */
 	    strchr (dir, '/') == NULL &&
 	    system (untar_cmd) == 0) {
@@ -4039,10 +4036,10 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 
 	gtk_list_store_clear (store);
 
-	dp = opendir (theme_dir);
+	dp = opendir (get_theme_dir ());
 
 	if (dp != NULL) {
-		select_iter = read_themes (store, theme_dir, dp, dir);
+		select_iter = read_themes (store, get_theme_dir (), dp, dir);
 		closedir (dp);
 	}
 
@@ -4054,7 +4051,6 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 	}
 	
 	g_free (untar_cmd);
-	g_free (theme_dir);
 	g_free (dir);
 	g_free (cwd);
 }
@@ -4228,9 +4224,8 @@ delete_theme (GtkWidget *button, gpointer data)
 					 GTK_RESPONSE_YES);
 
 	if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES) {
-		char *theme_dir = get_theme_dir ();
 		char *cwd = g_get_current_dir ();
-		if (g_chdir (theme_dir) == 0 &&
+		if (g_chdir (get_theme_dir ()) == 0 &&
 		    /* this is a security sanity check, since we're doing rm -fR */
 		    strchr (dir, '/') == NULL) {
 			/* HACK! */
@@ -4247,10 +4242,10 @@ delete_theme (GtkWidget *button, gpointer data)
 			/* Update the list */
 			gtk_list_store_clear (store);
 
-			dp = opendir (theme_dir);
+			dp = opendir (get_theme_dir ());
 
 			if (dp != NULL) {
-				select_iter = read_themes (store, theme_dir, dp, 
+				select_iter = read_themes (store, get_theme_dir (), dp, 
 							   selected_theme);
 				closedir (dp);
 			}
@@ -4263,7 +4258,6 @@ delete_theme (GtkWidget *button, gpointer data)
 		}
 		g_chdir (cwd);
 		g_free (cwd);
-		g_free (theme_dir);
 	}
 	gtk_widget_destroy (dlg);
 
@@ -5186,8 +5180,6 @@ setup_local_themed_settings (void)
 	setup_greeter_color ("local_background_theme_colorbutton", 
 	                     GDM_KEY_GRAPHICAL_THEMED_COLOR);
 
-	char *theme_dir = get_theme_dir ();
-
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (theme_list), TRUE);
 
 	selected_theme  = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEME);
@@ -5236,13 +5228,12 @@ setup_local_themed_settings (void)
 		GdmGraphicalThemeRand);
 
 	/* Read all Themes from directory and store in tree */
-	dir = opendir (theme_dir);
+	dir = opendir (get_theme_dir ());
 	if (dir != NULL) {
-		select_iter = read_themes (store, theme_dir, dir,
+		select_iter = read_themes (store, get_theme_dir (), dir,
 					   selected_theme);
 		closedir (dir);
 	}
-	g_free (theme_dir);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (theme_list), 
 				 GTK_TREE_MODEL (store));
 
