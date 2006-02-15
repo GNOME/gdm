@@ -3433,7 +3433,6 @@ session_child_run (struct passwd *pwent,
 		g_free (msg);
 	}
 
-START 1
 	/* Now still as root make the system authfile not readable by others,
 	   and therefore not by the gdm user */
 	VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0640));
@@ -3500,8 +3499,6 @@ START 1
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not become %s. Aborting."), "session_child_run", login);
 #endif
-
-END 1
 
 	/* Only force GDM_LANG to something if there is other then
 	 * system default selected.  Else let the session do whatever it
@@ -3631,8 +3628,6 @@ END 1
 		}
 		failsafe = TRUE;
 	} 
-
-MOVE TO HERE
 
 	gdm_debug ("Running %s %s %s for %s on %s",
 		   argv[0],
