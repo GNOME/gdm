@@ -352,14 +352,11 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 		g_free (result);
 
 	if (hashretval == NULL) {
-		gchar **charval = g_new0 (gchar *, 1);
-		*charval = temp;
-		gdm_config_add_hash (string_hash, key, charval);
 
 		if (changed != NULL)
 			*changed = TRUE;
 
-		return *charval;
+		gdm_config_add_hash (string_hash, key, temp);
 	} else {
 		if (changed != NULL) {
 			if (strcmp (ve_sure_string (*hashretval), temp) != 0)
@@ -367,11 +364,9 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 			else
 				*changed = FALSE;
 		}
-
-		g_free (*hashretval);
-		*hashretval = temp;
-		return *hashretval;
+		g_hash_table_replace (string_hash, key, temp);
 	}
+	return temp;
 }
 
 gchar *
@@ -414,7 +409,7 @@ _gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *change
                 gchar *full = g_strdup_printf ("%s[%s]", dkey, (char *)li->data);
 
 		/*
-		 * Pass FALSE for last argument so it doesn't print errors for
+		 * Pass TRUE for last argument so it doesn't print errors for
 		 * failing to find the key, since this is expected
 		 */
 	        gchar *val = _gdm_config_get_string (full, reload, changed, TRUE);
@@ -486,7 +481,7 @@ _gdm_config_get_int (gchar *key, gboolean reload, gboolean *changed)
 
 	if (hashretval == NULL) {
 		gint *intval = g_new0 (gint, 1);
-		*intval = temp;
+		*intval      = temp;
 		gdm_config_add_hash (int_hash, key, intval);
 
 		if (changed != NULL)
@@ -577,7 +572,7 @@ _gdm_config_get_bool (gchar *key, gboolean reload, gboolean *changed)
 
 	if (hashretval == NULL) {
 		gboolean *boolval = g_new0 (gboolean, 1);
-		*boolval = temp;
+		*boolval          = temp;
 		gdm_config_add_hash (bool_hash, key, boolval);
 
 		if (changed != NULL)

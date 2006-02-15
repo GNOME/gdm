@@ -1,5 +1,11 @@
 2006-02-15  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmconfig.c: Use g_hash_table_replace instead of freeing
+	  the string value in the hash.  This corrects a core dumping
+	  problem with gdmsetup.
+
+2006-02-15  Brian Cameron  <brian.cameron@sun.com>
+
 	* Makefile.am, gui/Makefile.am, gui/greeter/Makefile.am, 
 	  utils/gdm-dmx-reconnect-proxy.c: Reorganize libraries so that
 	  it is easier to build GDM against a test Xserver.  Fixes bug
