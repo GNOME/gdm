@@ -303,7 +303,7 @@ gdm_config_get_xservers (gboolean flexible)
 static gchar *
 _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean doing_translated)
 {
-	gchar **hashretval = NULL;
+	gchar *hashretval = NULL;
 	gchar *result = NULL;
 	gchar *temp;
 
@@ -313,7 +313,7 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 	hashretval = gdm_config_hash_lookup (string_hash, key);
 
 	if (reload == FALSE && hashretval != NULL)
-		return *hashretval;
+		return hashretval;
 
 	result = gdm_config_get_result (key);
 
@@ -359,7 +359,7 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 		gdm_config_add_hash (string_hash, key, temp);
 	} else {
 		if (changed != NULL) {
-			if (strcmp (ve_sure_string (*hashretval), temp) != 0)
+			if (strcmp (ve_sure_string (hashretval), temp) != 0)
 				*changed = TRUE;
 			else
 				*changed = FALSE;
