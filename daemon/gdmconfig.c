@@ -575,7 +575,6 @@ gdm_get_default_config (struct stat *statbuf)
 static VeConfig *
 gdm_get_custom_config (struct stat *statbuf)
 {
-   VeConfig *retval;
    int r;
 
    VE_IGNORE_EINTR (r = g_stat (GDM_CUSTOM_CONF, statbuf));
@@ -686,7 +685,6 @@ gdm_config_to_string (gchar *key, gchar **retval)
    if (translated_hash != NULL) {
       gpointer val = gdm_config_hash_lookup (translated_hash, key);
       if (val) {
-         gchar *charval = (char *)val;
          *retval = g_strdup (val);
          return;
       }
@@ -1141,6 +1139,8 @@ static gboolean
 gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_update) 
 {
    gchar * realkey = gdm_config_hash_lookup (realkey_hash, key);
+   gchar *value;
+
    if (realkey == NULL) {
       return FALSE;
    }
@@ -1180,12 +1180,13 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
           while (list != NULL) {
              if (g_str_has_prefix ((char *)list->data, prefix) &&
                  g_str_has_suffix ((char *)list->data, "]")) {
+                gchar *transkey, *transvalue;
 
                 if (translated_hash == NULL)
                    translated_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-                gchar    *transkey     = g_strdup_printf ("greeter/%s", (char *)list->data);
-                gchar    *transvalue   = ve_config_get_string (cfg, transkey);
+                transkey   = g_strdup_printf ("greeter/%s", (char *)list->data);
+                transvalue = ve_config_get_string (cfg, transkey);
 
                 g_hash_table_remove (translated_hash, transkey);
 
@@ -1204,7 +1205,7 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
        }
 
        /* Handle non-translated strings as normal */
-       gchar *value = ve_config_get_string (cfg, realkey);
+       value = ve_config_get_string (cfg, realkey);
        _gdm_set_value_string (key, value, doing_update);
        return TRUE;
    }
@@ -1281,7 +1282,6 @@ static void
 gdm_load_xservers (VeConfig *cfg)
 {
    GList *list, *li;
-   GSList *xli;
 
    /* Find server definitions */
    list = ve_config_get_sections (cfg);
@@ -1661,7 +1661,6 @@ gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
    gchar *key               = (gchar *)key_in;
    GdmConfigType *type      = (GdmConfigType *)value_in;
    GdmConfigFiles *cfgfiles = (GdmConfigFiles *)data;
-   gboolean retval;
    gboolean custom_retval;
 
    if (type != NULL) {

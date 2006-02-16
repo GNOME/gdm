@@ -296,9 +296,10 @@ gdm_socket_handler (GIOChannel *source,
 	max_connections = MAX_CONNECTIONS;
              
 	if (conn->n_subconnections > max_connections) {
+		GdmConnection *old;
 		gdm_debug ("Closing connection, %d subconnections reached",
 			max_connections);
-		GdmConnection *old = conn->subconnections->data;
+		old = conn->subconnections->data;
 		conn->subconnections =
 			g_list_remove (conn->subconnections, old);
 		gdm_connection_close (old);

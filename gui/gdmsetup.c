@@ -1674,7 +1674,7 @@ setup_intspin (const char *name,
 }
 
 static void
-setup_xdmcp_intspin (const const char *name,
+setup_xdmcp_intspin (const char *name,
 	             const char *key)
 {
 	GtkWidget *spin;
@@ -5165,6 +5165,7 @@ setup_local_themed_settings (void)
 	GtkWidget *style_label;
 	GtkWidget *theme_label;
 	GtkSizeGroup *size_group;
+	char *theme_dir;
 	
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
 						  GTK_TYPE_TREE_VIEW);
@@ -5191,7 +5192,7 @@ setup_local_themed_settings (void)
 	setup_greeter_color ("local_background_theme_colorbutton", 
 	                     GDM_KEY_GRAPHICAL_THEMED_COLOR);
 
-	char *theme_dir = get_theme_dir ();
+	theme_dir = get_theme_dir ();
 
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (theme_list), TRUE);
 
