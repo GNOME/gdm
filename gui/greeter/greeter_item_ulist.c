@@ -183,7 +183,7 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 			}
 			if (selecting_user) {
 				GreeterItemInfo *pamlabel = greeter_lookup_id ("pam-message");
-				if (pamlabel != NULL) {
+				if (pamlabel == NULL) {
 					gdm_common_warning ("Theme broken: must have pam-message label!");
 				}
 				printf ("%c%c%c%s\n", STX, BEL,
