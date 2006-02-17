@@ -1,5 +1,16 @@
 2006-02-16  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c: Fix
+	  face browser so it works better.  Sometimes we get PROMPT calls
+	  for displaying username so we want to enable the face browser
+	  in this case.  We only want to disable it when the cancel 
+	  button is pressed (until the next time the daemon prompts us
+	  for username/password entry).  Also fix "theme broken" message
+	  so it doesn't display the message when the pam-message label is
+	  in the theme.
+
+2006-02-16  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdmconfig.c, daemon/gdm-net.c, gui/gdmsetup.c:
 	  Fix some GCC C-99 compile issues.  Fixes bug #331450.
 	  Patch provided by Jens Granseur.

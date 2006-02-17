@@ -179,6 +179,7 @@ greeter_ctrl_handler (GIOChannel *source,
 		greeter_probably_login_prompt = FALSE;
 	}
 	greeter_ignore_buttons (FALSE);
+	greeter_item_ulist_enable ();
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, TRUE);
 	g_free (tmp);
 	break;

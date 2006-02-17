@@ -178,18 +178,17 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 		gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
 				    &login, -1);
 		if (login != NULL) {
-			GreeterItemInfo *pamlabel;
-
 			if (selecting_user && greeter_probably_login_prompt) {
 				gtk_entry_set_text (GTK_ENTRY (pam_entry), login);
 			}
-			pamlabel = greeter_lookup_id ("pam-message");
-			if (selecting_user && pamlabel != NULL) {
+			if (selecting_user) {
+				GreeterItemInfo *pamlabel = greeter_lookup_id ("pam-message");
+				if (pamlabel != NULL) {
+					gdm_common_warning ("Theme broken: must have pam-message label!");
+				}
 				printf ("%c%c%c%s\n", STX, BEL,
 					GDM_INTERRUPT_SELECT_USER, login);
 				fflush (stdout);
-			} else {
-				gdm_common_warning ("Theme broken: must have pam-message label!");
 			}
 		}
 	}
