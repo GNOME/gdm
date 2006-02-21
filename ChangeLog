@@ -1,3 +1,13 @@
+2006-02-21  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/greeter/greeter_parser.c:  Add new "gtk-theme" property
+          to <greeter> tag theme xml format, so the theme can specify a
+	  GtkTheme to be used for gdmgreeter.  This allows theming of
+	  the "Options" menu and the entry field, and any other GTK+
+	  widgets used by gdmgreeter.  This also makes it possible to
+	  create a11y themes (HighContrast, LowContrast, etc.) themes
+	  for gdmgreeter.
+
 2006-02-16  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c: Fix

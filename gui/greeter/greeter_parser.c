@@ -1636,9 +1636,10 @@ greeter_parse (const char *file, const char *datadir,
   GreeterItemInfo *root;
   xmlDocPtr doc;
   xmlNodePtr node;
+  xmlChar *prop;
   gboolean res;
   GList *items;
-
+  
   /* FIXME: EVIL! GLOBAL! */
   g_free (file_search_path);
   file_search_path = g_strdup (datadir);
@@ -1684,6 +1685,26 @@ greeter_parse (const char *file, const char *datadir,
       return NULL;
     }
 
+  /*
+   * The gtk-theme property specifies a theme specific gtk-theme to use
+   */
+  prop = xmlGetProp (node, (const xmlChar *) "gtk-theme");
+  if (prop)
+    {
+      gchar *theme_dir;
+
+      /*
+       * It might be nice if we allowed this property to also supply a gtkrc file
+       * that could be included in the theme.  Perhaps we should check first in
+       * the theme directory for a gtkrc file by the provided name and use that
+       * if found.
+       */
+      theme_dir = g_strdup_printf ("%s/%s", gtk_rc_get_theme_dir (), (char *) prop);
+      if (g_file_test (theme_dir, G_FILE_TEST_IS_DIR))
+         gdm_set_theme ((char *) prop);
+
+      xmlFree (prop);
+    }
 
   item_hash = g_hash_table_new ((GHashFunc)greeter_info_id_hash,
 				(GEqualFunc)greeter_info_id_equal);
