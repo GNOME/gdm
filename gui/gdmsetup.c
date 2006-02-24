@@ -49,16 +49,16 @@
 #include "gdmuser.h"
 #include "gdmconfig.h"
 
-static char *GdmSoundProgram = NULL;
-gchar       *GdmExclude      = NULL;
-gchar       *GdmInclude      = NULL;
-gint         GdmMinimalUID   = 100;
-gint         GdmIconMaxHeight;
-gint         GdmIconMaxWidth;
-gboolean     GdmIncludeAll;
-gboolean     GdmAllowRoot;
-gboolean     GdmAllowRemoteRoot;
-gboolean     GdmUserChangesUnsaved;
+static char     *GdmSoundProgram = NULL;
+static gchar    *GdmExclude      = NULL;
+static gchar    *GdmInclude      = NULL;
+static gint      GdmMinimalUID   = 100;
+static gint      GdmIconMaxHeight;
+static gint      GdmIconMaxWidth;
+static gboolean  GdmIncludeAll;
+static gboolean  GdmAllowRoot;
+static gboolean  GdmAllowRemoteRoot;
+static gboolean  GdmUserChangesUnsaved;
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
@@ -1718,9 +1718,11 @@ setup_include_exclude (GtkWidget *treeview, const char *key)
 	gtk_tree_view_set_model (GTK_TREE_VIEW(treeview),
 		(GTK_TREE_MODEL (face_store)));
 
-	if (strcmp (ve_sure_string (key), GDM_KEY_INCLUDE) == 0)
+	if ((! ve_string_empty (GdmInclude)) && 
+            (strcmp (ve_sure_string (key), GDM_KEY_INCLUDE) == 0))
 		list = g_strsplit (GdmInclude, ",", 0);
-	else if (strcmp (ve_sure_string (key), GDM_KEY_EXCLUDE) == 0)
+	else if ((! ve_string_empty (GdmExclude)) &&
+                 (strcmp (ve_sure_string (key), GDM_KEY_EXCLUDE) == 0))
 		list = g_strsplit (GdmExclude, ",", 0);
 	else
 		list = NULL;

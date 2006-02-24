@@ -109,6 +109,7 @@ gdm_config_add_hash (GHashTable *hash, gchar *key, gpointer value)
 	if (p != NULL)
 		*p = '\0';
 
+	/* Do not free the newkey since it is going into the hash. */
 	g_hash_table_insert (hash, newkey, value);
 }
 
@@ -392,31 +393,35 @@ static gchar *
 _gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *changed)
 {
         const GList *li;
-        char *dkey;
+        char *newkey;
         char *def;
 
 	/* Strip key */
-        dkey = g_strdup (key);
-        def = strchr (dkey, '=');
-        if (def != NULL) {
-                *def = '\0';
-                def++;
-        }
+	newkey = g_strdup (key);
+	def    = strchr (newkey, '=');
+	if (def != NULL)
+		*def = '\0';
 
-        for (li = ve_i18n_get_language_list ("LC_MESSAGES");
-             li != NULL;
-             li = li->next) {
-                gchar *full = g_strdup_printf ("%s[%s]", dkey, (char *)li->data);
+	for (li = ve_i18n_get_language_list ("LC_MESSAGES");
+	     li != NULL;
+	     li = li->next) {
+                gchar *full = g_strdup_printf ("%s[%s]", newkey, (char *)li->data);
 
 		/*
 		 * Pass TRUE for last argument so it doesn't print errors for
 		 * failing to find the key, since this is expected
 		 */
-	        gchar *val = _gdm_config_get_string (full, reload, changed, TRUE);
+		gchar *val = _gdm_config_get_string (full, reload, changed, TRUE);
 
-                if (val != NULL)
+		g_free (full);
+
+                if (val != NULL) {
+			g_free (newkey);
 			return val;
+		}
         }
+
+	g_free (newkey);
 
 	/* Print error if it fails this time */
 	return _gdm_config_get_string (key, reload, changed, FALSE);
