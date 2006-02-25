@@ -1548,30 +1548,36 @@ check_servauthdir (struct stat *statbuf)
     /* Enter paranoia mode */
     VE_IGNORE_EINTR (r = g_stat (GdmServAuthDir, statbuf));
     if G_UNLIKELY (r < 0) {
-            gchar *s = g_strdup_printf
-                    (C_(N_("Server Authorization directory "
-                           "(daemon/ServAuthDir) is set to %s "
-                           "but this does not exist. Please "
-                           "correct GDM configuration and "
-                           "restart GDM.")), GdmServAuthDir);
-        if (GdmConsoleNotify)
-                    gdm_text_message_dialog (s);
+            if (GdmConsoleNotify) {
+               gchar *s = g_strdup_printf
+                       (C_(N_("Server Authorization directory "
+                              "(daemon/ServAuthDir) is set to %s "
+                              "but this does not exist. Please "
+                              "correct GDM configuration and "
+                              "restart GDM.")), GdmServAuthDir);
+
+               gdm_text_message_dialog (s);
+               g_free (s);
+            }
+
             GdmPidFile = NULL;
-            g_free (s);
             gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 
     if G_UNLIKELY (! S_ISDIR (statbuf->st_mode)) {
-            gchar *s = g_strdup_printf
-                    (C_(N_("Server Authorization directory "
-                           "(daemon/ServAuthDir) is set to %s "
-                           "but this is not a directory. Please "
-                           "correct GDM configuration and "
-                           "restart GDM.")), GdmServAuthDir);
-        if (GdmConsoleNotify)
-                    gdm_text_message_dialog (s);
+            if (GdmConsoleNotify) {
+               gchar *s = g_strdup_printf
+                       (C_(N_("Server Authorization directory "
+                              "(daemon/ServAuthDir) is set to %s "
+                              "but this is not a directory. Please "
+                              "correct GDM configuration and "
+                              "restart GDM.")), GdmServAuthDir);
+
+                gdm_text_message_dialog (s);
+                g_free (s);
+            }
+
             GdmPidFile = NULL;
-            g_free (s);
             gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 }
@@ -1797,14 +1803,17 @@ gdm_config_parse (void)
          GdmAutomaticLogin = NULL;
          GdmTimedLogin     = NULL;
       } else {
-         gchar *s = g_strdup_printf (C_(N_("XDMCP is disabled and GDM "
-                                   "cannot find any static server "
-                                   "to start.  Aborting!  Please "
-                                   "correct the configuration "
-                                   "and restart GDM.")));
-         gdm_text_message_dialog (s);
+         if (GdmConsoleNotify) {
+            gchar *s = g_strdup_printf (C_(N_("XDMCP is disabled and GDM "
+                                      "cannot find any static server "
+                                      "to start.  Aborting!  Please "
+                                      "correct the configuration "
+                                      "and restart GDM.")));
+            gdm_text_message_dialog (s);
+            g_free (s);
+         }
+
          GdmPidFile = NULL;
-         g_free (s);
          gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
       }
    }
@@ -1822,57 +1831,66 @@ gdm_config_parse (void)
 
    /* Set GdmUserId and GdmGroupId */
    if G_UNLIKELY (pwent == NULL) {
-      gchar *s = g_strdup_printf (C_(N_("The GDM user '%s' does not exist. "
-                                        "Please correct GDM configuration "
-                                        "and restart GDM.")), GdmUser);
-      if (GdmConsoleNotify)
+
+      if (GdmConsoleNotify) {
+         gchar *s = g_strdup_printf (C_(N_("The GDM user '%s' does not exist. "
+                                           "Please correct GDM configuration "
+                                           "and restart GDM.")), GdmUser);
          gdm_text_message_dialog (s);
+         g_free (s);
+      }
 
       GdmPidFile = NULL;
-      g_free (s);
       gdm_fail (_("%s: Can't find the GDM user '%s'. Aborting!"), "gdm_config_parse", GdmUser);
    } else {
       GdmUserId = pwent->pw_uid;
    }
 
    if G_UNLIKELY (GdmUserId == 0) {
-      gchar *s = g_strdup_printf (C_(N_("The GDM user is set to be root, but "
-                                        "this is not allowed since it can "
-                                        "pose a security risk.  Please "
-                                        "correct GDM configuration and "
-                                        "restart GDM.")));
-      if (GdmConsoleNotify)
+      if (GdmConsoleNotify) {
+         gchar *s = g_strdup_printf (C_(N_("The GDM user is set to be root, but "
+                                           "this is not allowed since it can "
+                                           "pose a security risk.  Please "
+                                           "correct GDM configuration and "
+                                           "restart GDM.")));
+
          gdm_text_message_dialog (s);
+         g_free (s);
+      }
+
       GdmPidFile = NULL;
-      g_free (s);
       gdm_fail (_("%s: The GDM user should not be root. Aborting!"), "gdm_config_parse");
    }
 
    grent = getgrnam (GdmGroup);
 
    if G_UNLIKELY (grent == NULL) {
-      gchar *s = g_strdup_printf (C_(N_("The GDM group '%s' does not exist. "
-                                        "Please correct GDM configuration "
-                                        "and restart GDM.")), GdmGroup);
-      if (GdmConsoleNotify)
+      if (GdmConsoleNotify) {
+         gchar *s = g_strdup_printf (C_(N_("The GDM group '%s' does not exist. "
+                                           "Please correct GDM configuration "
+                                           "and restart GDM.")), GdmGroup);
          gdm_text_message_dialog (s);
+         g_free (s);
+      }
+
       GdmPidFile = NULL;
-      g_free (s);
       gdm_fail (_("%s: Can't find the GDM group '%s'. Aborting!"), "gdm_config_parse", GdmGroup);
    } else  {
       GdmGroupId = grent->gr_gid;   
    }
 
    if G_UNLIKELY (GdmGroupId == 0) {
-      gchar *s = g_strdup_printf (C_(N_("The GDM group is set to be root, but "
-                                        "this is not allowed since it can "
-                                        "pose a security risk. Please "
-                                        "correct GDM configuration and "
-                                        "restart GDM.")));
-      if (GdmConsoleNotify)
+      if (GdmConsoleNotify) {
+         gchar *s = g_strdup_printf (C_(N_("The GDM group is set to be root, but "
+                                           "this is not allowed since it can "
+                                           "pose a security risk. Please "
+                                           "correct GDM configuration and "
+                                           "restart GDM.")));
          gdm_text_message_dialog (s);
+         g_free (s);
+      }
+
       GdmPidFile = NULL;
-      g_free (s);
       gdm_fail (_("%s: The GDM group should not be root. Aborting!"), "gdm_config_parse");
    }
 
@@ -1903,9 +1921,10 @@ gdm_config_parse (void)
 
    /* Check the serv auth and log dirs */
    if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
-       if (GdmConsoleNotify)
+       if (GdmConsoleNotify) {
           gdm_text_message_dialog
              (C_(N_("No daemon/ServAuthDir specified in the GDM configuration file")));
+       }
        GdmPidFile = NULL;
        gdm_fail (_("%s: No daemon/ServAuthDir specified."), "gdm_config_parse");
    }
@@ -1930,33 +1949,38 @@ gdm_config_parse (void)
    check_servauthdir (&statbuf);
 
    if G_UNLIKELY (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
-      gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
-                                        "(daemon/ServAuthDir) is set to %s "
-                                        "but is not owned by user %s and group "
-                                        "%s. Please correct the ownership or "
-                                        "GDM configuration and restart "
-                                        "GDM.")), GdmServAuthDir, GdmUser, GdmGroup);
-      if (GdmConsoleNotify)
+      if (GdmConsoleNotify) {
+         gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
+                                           "(daemon/ServAuthDir) is set to %s "
+                                           "but is not owned by user %s and group "
+                                           "%s. Please correct the ownership or "
+                                           "GDM configuration and restart "
+                                           "GDM.")), GdmServAuthDir,
+		   			gdm_root_user (), GdmGroup);
          gdm_text_message_dialog (s);
-         GdmPidFile = NULL;
          g_free (s);
-         gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."),
+      }
+
+      GdmPidFile = NULL;
+      gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."),
                      "gdm_config_parse", GdmServAuthDir, gdm_root_user (), GdmGroup);
    }
 
    if G_UNLIKELY (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
-      gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
-                                 "(daemon/ServAuthDir) is set to %s "
-                                 "but has the wrong permissions: it "
-                                 "should have permissions of %o. "
-                                 "Please correct the permissions or "
-                                 "the GDM configuration and "
-                                 "restart GDM.")), GdmServAuthDir,
-                                 (S_IRWXU|S_IRWXG|S_ISVTX));
-      if (GdmConsoleNotify)
+      if (GdmConsoleNotify) {
+         gchar *s = g_strdup_printf (C_(N_("Server Authorization directory "
+                                    "(daemon/ServAuthDir) is set to %s "
+                                    "but has the wrong permissions: it "
+                                    "should have permissions of %o. "
+                                    "Please correct the permissions or "
+                                    "the GDM configuration and "
+                                    "restart GDM.")), GdmServAuthDir,
+                                    (S_IRWXU|S_IRWXG|S_ISVTX));
          gdm_text_message_dialog (s);
+         g_free (s);
+      }
+
       GdmPidFile = NULL;
-      g_free (s);
       gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
                   GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
    }
