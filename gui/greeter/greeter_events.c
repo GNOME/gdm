@@ -128,7 +128,10 @@ greeter_item_run_action_callback (const char *id)
   info    = greeter_lookup_id (id);
   cb_info = g_hash_table_lookup (callback_hash, id);
 
-  (*cb_info->func) (info, cb_info->user_data);
+  if (cb_info)
+     (*cb_info->func) (info, cb_info->user_data);
+  else
+     (*cb_info->func) (info, NULL);
 }
 
 gint
