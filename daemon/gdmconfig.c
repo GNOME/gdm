@@ -577,6 +577,26 @@ gdm_get_custom_config (struct stat *statbuf)
 {
    int r;
 
+   /*
+    * First check to see if the old configuration file name is on
+    * the system.  If so, use that as the custom configuration
+    * file.  "make install" will move this file aside, and 
+    * distros probably can also manage moving this file on
+    * upgrade.   
+    *
+    * In case this file is on the system, then use it as
+    * the custom configuration file until the user moves it
+    * aside.  This will likely mean all the defaults in
+    * defaults.conf will not get used since the old gdm.conf
+    * file has all the keys in it (except new ones).  But
+    * that would be what the user wants.
+    */
+   VE_IGNORE_EINTR (r = g_stat (GDM_OLD_CONF, statbuf));
+   if (r >= 0) {
+      custom_config_file = g_strdup (GDM_OLD_CONF);
+      return ve_config_new (custom_config_file);
+   }
+
    VE_IGNORE_EINTR (r = g_stat (GDM_CUSTOM_CONF, statbuf));
    if (r >= 0) {
       custom_config_file = g_strdup (GDM_CUSTOM_CONF);

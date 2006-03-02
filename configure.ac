@@ -2,7 +2,7 @@ AC_PREREQ(2.52)
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.13.0.9)
+AM_INIT_AUTOMAKE(gdm,2.13.0.10)
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
 
@@ -871,10 +871,12 @@ else
 	GDM_CUSTOM_CONF="$sysconfdir/gdm/custom.conf"
 fi
 
+GDM_OLD_CONF="$sysconfdir/gdm/gdm.conf"
+
 AC_SUBST(GDM_CUSTOM_CONF)
 AC_DEFINE_UNQUOTED(GDM_CUSTOM_CONF,"$GDM_CUSTOM_CONF")
-
-
+AC_SUBST(GDM_OLD_CONF)
+AC_DEFINE_UNQUOTED(GDM_OLD_CONF,"$GDM_OLD_CONF")
 
 AC_ARG_WITH(prefetch,
   [  --with-prefetch=[yes/no]  Install GDM library prefetch utility [default=no]],,

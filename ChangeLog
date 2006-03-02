@@ -1,4 +1,15 @@
-2006-02-27  Brian Cameron  <brian.cameron@sun.com>
+2006-03-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.10: 
+	* NEWS: Updated.
+	* configure.ac, acconfig.h: Update to 2.13.0.9.  Added code to support
+	  the change in gdmconfig.c below.
+	* gui/gdmconfig.c: Fix so that if gdm.conf file exists on the system
+	  this is used instead of custom.conf.  This makes GDM more backwards
+	  compatible and won't break user configuration if the user has an old
+	  config file.  
+
+2006-02-28  Brian Cameron  <brian.cameron@sun.com>
 
 	* Release 2.13.0.9: 
 	* NEWS: Updated.
