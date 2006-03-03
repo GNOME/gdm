@@ -5,7 +5,7 @@ DOC_MODULE = gdm
 DOC_ENTITIES = 
 DOC_INCLUDES = legal.xml
 
-DOC_LINGUAS = es
+DOC_LINGUAS = es uk
 
 # Translations need migration to use gnome-doc-utils.
 # See page http://live.gnome.org/GnomeDocUtilsTranslationMigration
