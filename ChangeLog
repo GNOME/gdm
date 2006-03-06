@@ -1,5 +1,9 @@
 2006-03-05  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/greeter/greeter_canvas_item: Now open Options menu below
+	  the button if possible, and above if there is no room below.
+	  Previously it always showed above, which would break if the
+	  button was placed on the top of the screen.
 	* daemon/slave.c: Fix sound-on-login-success and failure to only
 	  play if they are turned on.  Previously they were playing if
 	  they were defined to have soundfiles, but not turned on.

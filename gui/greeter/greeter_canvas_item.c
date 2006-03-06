@@ -206,9 +206,13 @@ menu_position_func (GtkMenu           *menu,
 	rect = item->allocation; 
 	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
 	*x = rect.x;
-	*y = rect.y - requisition.height;
+	if (requisition.height <= rect.y)
+		*y = rect.y - requisition.height;
+	else
+		*y = rect.y + rect.height;
+
 	*push_in = TRUE;
- }
+}
 
 /*
  * The button with this handler never appears in the F10 menu, so
