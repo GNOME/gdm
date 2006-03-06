@@ -2047,8 +2047,8 @@ gdm_slave_wait_for_login (void)
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 
 			/* Play sounds if specified for a failed login */
-			if (d->attached &&
-			    failuresound &&
+			if (d->attached && failuresound &&
+			    gdm_get_value_bool (GDM_KEY_SOUND_ON_LOGIN_FAILURE) &&
 			    ! play_login_sound (failuresound)) {
 				gdm_error (_("Login sound requested on non-local display or the play "
 					     "software cannot be run or the sound does not exist."));
@@ -2069,9 +2069,9 @@ gdm_slave_wait_for_login (void)
 
 	successsound = gdm_get_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
 	/* Play sounds if specified for a successful login */
-	if (login != NULL &&
+	if (login != NULL && successsound &&
+	    gdm_get_value_bool (GDM_KEY_SOUND_ON_LOGIN_SUCCESS) &&
 	    d->attached &&
-	    successsound &&
 	    ! play_login_sound (successsound)) {
 		gdm_error (_("Login sound requested on non-local display or the play software "
 			     "cannot be run or the sound does not exist."));

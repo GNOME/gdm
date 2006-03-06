@@ -1,3 +1,10 @@
+2006-03-05  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/slave.c: Fix sound-on-login-success and failure to only
+	  play if they are turned on.  Previously they were playing if
+	  they were defined to have soundfiles, but not turned on.
+	  Fixes bug #333435.
+
 2006-03-03  Brian Cameron  <brian.cameron@sun.com>
 
 	* Release 2.13.0.10: 
