@@ -30,7 +30,7 @@ char *		gdmcomm_call_gdm (const char *command,
 				  const char *min_version,
 				  int tries);
 gboolean	gdmcomm_did_connection_fail (void);
-void		gdmcomm_set_allow_sleeping (void);
+void		gdmcomm_set_allow_sleep (gboolean val);
 void		gdmcomm_comm_close (void);
 const char *	gdmcomm_get_display (void);
 
