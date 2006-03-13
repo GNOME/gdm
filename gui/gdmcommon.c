@@ -392,6 +392,31 @@ gdm_common_get_config_file (void)
 	return config_file;
 }
 
+gchar * 
+gdm_common_get_custom_config_file (void)
+{
+	gchar *result;
+	gchar *config_file;
+
+	/* Get config file */
+	result = gdmcomm_call_gdm ("GET_CUSTOM_CONFIG_FILE", NULL /* auth cookie */, "2.8.0.2", 5);
+	if (! result)
+		return NULL;
+
+	if (ve_string_empty (result) ||
+		strncmp (result, "OK ", 3) != 0) {
+		g_free (result);
+		return NULL;
+	}
+
+	/* skip the "OK " */
+	config_file = g_strdup (result + 3);
+
+	g_free (result);
+
+	return config_file;
+}
+
 gboolean
 gdm_common_select_time_format (void)
 {

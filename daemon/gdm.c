@@ -1237,7 +1237,7 @@ struct poptOption options [] = {
 	{ "no-console", '\0', POPT_ARG_NONE,
 	  &no_console, 0, N_("No console (static) servers to be run"), NULL },
 	{ "config", '\0', POPT_ARG_STRING,
-	  &config_file, 0, N_("Alternative configuration file"), N_("CONFIGFILE") },
+	  &config_file, 0, N_("Alternative defaults configuration file"), N_("CONFIGFILE") },
 	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
 	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
 	{ "version", '\0', POPT_ARG_NONE,
@@ -3141,6 +3141,13 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		msg = g_string_new ("OK");
 		g_string_append (msg, "\n");
 		gdm_connection_printf (conn, "OK %s\n", config_file);
+		g_string_free (msg, TRUE);
+	} else if (strcmp (msg, GDM_SUP_GET_CUSTOM_CONFIG_FILE) == 0) {
+		GString *msg;
+
+		msg = g_string_new ("OK");
+		g_string_append (msg, "\n");
+		gdm_connection_printf (conn, "OK %s\n", gdm_get_custom_config_file ());
 		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
 		const gchar *sep = " ";

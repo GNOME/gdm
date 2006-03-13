@@ -988,11 +988,23 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_GET_CONFIG_FILE  "GET_CONFIG_FILE" /* None */
-/* GET_CONFIG_FILE: Get config file location being used by
+/* GET_CONFIG_FILE: Get defaults config file location being used by
  #                  the daemon.   If the GDM daemon was started
  *                  with the --config option, it will return
  *                  the value passed in via that argument.
  * Supported since: 2.8.0.2
+ * Arguments: None
+ * Answers:
+ *   OK <full path to GDM configuration file>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_GET_CUSTOM_CONFIG_FILE  "GET_CUSTOM_CONFIG_FILE" /* None */
+/* GET_CONFIG_FILE: Get custom config file location being used by
+ #                  the daemon. 
+ * Supported since: 2.14.0.0
  * Arguments: None
  * Answers:
  *   OK <full path to GDM configuration file>

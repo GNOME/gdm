@@ -59,6 +59,7 @@ GdkPixbuf *gdm_common_get_face              (const char *filename,
                                              guint       max_height);
 
 gchar*	  gdm_common_get_config_file	    (void);
+gchar*	  gdm_common_get_custom_config_file (void);
 gboolean  gdm_common_select_time_format	    (void);
 void	  gdm_common_setup_background_color (gchar *bg_color);
 gchar*	  gdm_common_get_welcomemsg	    (void);

@@ -6455,9 +6455,12 @@ main (int argc, char *argv[])
 	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-setup.png", NULL);	
 	glade_gnome_init();
 
-	custom_config_file = g_strdup_printf ("%s", GDM_CUSTOM_CONF);
-
 	config_file = gdm_common_get_config_file ();
+	if (config_file == NULL) {
+		g_print (_("Could not access GDM configuration file.\n"));
+		exit (EXIT_FAILURE);
+	}
+	custom_config_file = gdm_common_get_custom_config_file ();
 	if (config_file == NULL) {
 		g_print (_("Could not access GDM configuration file.\n"));
 		exit (EXIT_FAILURE);

@@ -607,6 +607,17 @@ gdm_get_custom_config (struct stat *statbuf)
 }
 
 /**
+ * gdm_get_custom_config_file
+ *
+ * Returns the custom config file being used.
+ */
+gchar *
+gdm_get_custom_config_file (void)
+{
+   return custom_config_file;
+}
+
+/**
  * gdm_get_value_int
  *
  * Gets an integer configuration option by key.  The option must

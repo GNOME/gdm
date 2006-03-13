@@ -23,6 +23,7 @@
 
 #include "ve-misc.h"
 
+gchar*         gdm_get_custom_config_file (void);
 gchar*         gdm_get_value_string     (gchar *key);
 gboolean       gdm_get_value_bool       (gchar *key);
 gint           gdm_get_value_int        (gchar *key);
