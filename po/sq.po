@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-11 06:08+0100\n"
-"PO-Revision-Date: 2006-03-11 09:58+0100\n"
+"POT-Creation-Date: 2006-03-14 14:27+0100\n"
+"PO-Revision-Date: 2006-03-14 16:54+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -449,8 +449,8 @@ msgid "No console (static) servers to be run"
 msgstr "Nuk ka server (statikë) konsole që të ekzekutohen"
 
 #: ../daemon/gdm.c:1240
-msgid "Alternative configuration file"
-msgstr "File konfigurimi alternativ"
+msgid "Alternative defaults configuration file"
+msgstr "File alternativ i konfigurimit të prezgjedhjes"
 
 #: ../daemon/gdm.c:1240
 msgid "CONFIGFILE"
@@ -513,9 +513,9 @@ msgstr "%s: Gabim gjatë aktivimit të kontrolluesit të sinjalit CHLD"
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "Kërkesa DINAMIKE nuk u pranua: I pa identifikuar"
 
-#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3157
-#: ../daemon/gdm.c:3208 ../daemon/gdm.c:3260 ../daemon/gdm.c:3301
-#: ../daemon/gdm.c:3327
+#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3164
+#: ../daemon/gdm.c:3215 ../daemon/gdm.c:3267 ../daemon/gdm.c:3308
+#: ../daemon/gdm.c:3334
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "Kërkesa %s nuk u pranua: I pa identifikuar"
@@ -540,34 +540,34 @@ msgstr ""
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: Mungon file i konfigurimit të GDM: %s. Do të përdoren vlerat standart."
 
-#: ../daemon/gdmconfig.c:872
+#: ../daemon/gdmconfig.c:883
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession është bosh; po përdor %s/GDM/Xsession"
 
-#: ../daemon/gdmconfig.c:905
+#: ../daemon/gdmconfig.c:916
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: Serveri X standart mungon; do të provohen alternativat"
 
-#: ../daemon/gdmconfig.c:964
+#: ../daemon/gdmconfig.c:975
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Asnjë greeter i specifikuar."
 
-#: ../daemon/gdmconfig.c:966
+#: ../daemon/gdmconfig.c:977
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Nuk është specifikuar asnjë greeter remot."
 
 # session=seanca, nuk gjej fjalë më të saktë,
 # që të dyja janë fjalë të huaja
-#: ../daemon/gdmconfig.c:968
+#: ../daemon/gdmconfig.c:979
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Nuk është specifikuar asnjë directory per seancat."
 
-#: ../daemon/gdmconfig.c:1052
+#: ../daemon/gdmconfig.c:1063
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr ""
@@ -576,31 +576,31 @@ msgstr ""
 
 # login i kronometruar do të përdoret derisa
 # të gjejmë një fjalë më të përshtatshme
-#: ../daemon/gdmconfig.c:1113
+#: ../daemon/gdmconfig.c:1124
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr ""
 "%s: Intervali i login të kronometruar është më i shkurtër se 5 sekonda, "
 "sidoqoftë do të kryhet në 5."
 
-#: ../daemon/gdmconfig.c:1351
+#: ../daemon/gdmconfig.c:1362
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: Prioritet jashtë limitit, ndryshohet në %d"
 
-#: ../daemon/gdmconfig.c:1357
+#: ../daemon/gdmconfig.c:1368
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Komandë jo e specifikuar; do të përdoret komanda standart."
 
-#: ../daemon/gdmconfig.c:1556
+#: ../daemon/gdmconfig.c:1567
 #, c-format
 msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: Logdir %s nuk ekziston ose nuk është një directory.  Po përdor "
 "ServAuthDir %s."
 
-#: ../daemon/gdmconfig.c:1573
+#: ../daemon/gdmconfig.c:1584
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -609,12 +609,12 @@ msgstr ""
 "Directory e autorizimit të server (daemon/ServAuthDir) është vendosur në %s "
 "që nuk ekziston. Korrigjo konfigurimin e GDM dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:1584
+#: ../daemon/gdmconfig.c:1595
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s nuk ekziston. Duke dalë!"
 
-#: ../daemon/gdmconfig.c:1590
+#: ../daemon/gdmconfig.c:1601
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -623,17 +623,17 @@ msgstr ""
 "Directory e autorizimit të server (daemon/ServAuthDir) është vendosur në %s "
 "që nuk është një directory. Korrigjo konfigurimin e GDM dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:1601
+#: ../daemon/gdmconfig.c:1612
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s nuk është një directory. Duke dalë!"
 
-#: ../daemon/gdmconfig.c:1674
+#: ../daemon/gdmconfig.c:1685
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Rresht server i pavlefshëm tek file i konfigurimit. Injorohet!"
 
-#: ../daemon/gdmconfig.c:1796 ../daemon/gdmconfig.c:1837
+#: ../daemon/gdmconfig.c:1807 ../daemon/gdmconfig.c:1848
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
@@ -642,7 +642,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1814
+#: ../daemon/gdmconfig.c:1825
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -651,7 +651,7 @@ msgstr ""
 "%s: XDMCP është ç'aktivuar dhe nuk është përcaktuar asnjë server statik. Do "
 "të shtohet %s tek: %d për të mundësuar konfigurimin!"
 
-#: ../daemon/gdmconfig.c:1827
+#: ../daemon/gdmconfig.c:1838
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -659,7 +659,7 @@ msgstr ""
 "XDMCP është ç'aktivuar dhe GDM nuk arrin të gjejë asnjë server statik për të "
 "filluar.  Duke dalë!  Korrigjo konfigurimin dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:1856
+#: ../daemon/gdmconfig.c:1867
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -668,12 +668,12 @@ msgstr ""
 "Përdoruesi '%s' i GDM nuk ekziston.  Korrigjo konfigurimin e GDM dhe rifillo "
 "GDM."
 
-#: ../daemon/gdmconfig.c:1864
+#: ../daemon/gdmconfig.c:1875
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: Nuk arrij të gjej përdoruesin e GDM '%s'. Duke u mbyllur!"
 
-#: ../daemon/gdmconfig.c:1871
+#: ../daemon/gdmconfig.c:1882
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -681,24 +681,24 @@ msgstr ""
 "Është zgjedhur root si përdorues i GDM, por kjo ndalohet pasi sjell rreziqe "
 "sigurie. Korrigjo konfigurimin e GDM dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:1882
+#: ../daemon/gdmconfig.c:1893
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: Përdoruesi i GDM nuk duhet të jetë root. Duke dalë!"
 
-#: ../daemon/gdmconfig.c:1889
+#: ../daemon/gdmconfig.c:1900
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
 "restart GDM."
 msgstr "Grupi '%s' i GDM nuk ekziston. Korrigjo konfigurimin e GDM dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:1897
+#: ../daemon/gdmconfig.c:1908
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: Nuk arrij të gjej grupin e GDM '%s'. Duke dalë!"
 
-#: ../daemon/gdmconfig.c:1904
+#: ../daemon/gdmconfig.c:1915
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -706,38 +706,38 @@ msgstr ""
 "Është zgjedhur root si grup i GDM, por kjo ndalohet pasi sjell rreziqe "
 "sigurie. Korrigjo konfigurimin e GDM dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:1914
+#: ../daemon/gdmconfig.c:1925
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: Grupi i GDM nuk mund të jetë root. Duke dalë!"
 
-#: ../daemon/gdmconfig.c:1923
+#: ../daemon/gdmconfig.c:1934
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr "%s: Greeter nuk u gjet ose është i paekzekutueshëm nga përdoruesi i GDM"
 
 # remot = në distancë,
 # kur do të përdoret?
-#: ../daemon/gdmconfig.c:1929
+#: ../daemon/gdmconfig.c:1940
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr "%s: Greeter remot nuk u gjet ose është i paekzekutueshëm nga përdoruesi i GDM"
 
-#: ../daemon/gdmconfig.c:1937
+#: ../daemon/gdmconfig.c:1948
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr "%s: Chooser nuk u gjet ose është i paekzekutueshëm nga përdoruesi i GDM"
 
-#: ../daemon/gdmconfig.c:1946
+#: ../daemon/gdmconfig.c:1957
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "Asnjë daemon/ServAuthDir është specifikuar tek file i konfigurimit të GDM"
 
-#: ../daemon/gdmconfig.c:1949
+#: ../daemon/gdmconfig.c:1960
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Nuk është specifikuar asnjë demon apo ServAuthDir."
 
-#: ../daemon/gdmconfig.c:1973
+#: ../daemon/gdmconfig.c:1984
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -748,12 +748,12 @@ msgstr ""
 "që nuk i takon as përdoruesit %s dhe as grupit %s. Korrigjo të drejtat ose "
 "konfigurimin e GDM dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:1985
+#: ../daemon/gdmconfig.c:1996
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Authdir %s nuk i takon përdoruesit %s, grupit %s. Duke dalë."
 
-#: ../daemon/gdmconfig.c:1991
+#: ../daemon/gdmconfig.c:2002
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -764,7 +764,7 @@ msgstr ""
 "që ka të drejta të gabuara, duhet të jenë %o. Korrigjo të drejtat ose "
 "konfigurimin e GDM dhe rinis GDM."
 
-#: ../daemon/gdmconfig.c:2004
+#: ../daemon/gdmconfig.c:2015
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: Authdir %s ka të drejta të gabuara %o. Duhet të jenë %o. Duke dalë."
@@ -2163,7 +2163,7 @@ msgstr "Janë dërguar tepër mesazhe drejt GDM dhe ai na i ka përcjellë neve.
 msgid "Unknown error occurred."
 msgstr "Gabim i panjohur."
 
-#: ../gui/gdmcommon.c:567
+#: ../gui/gdmcommon.c:592
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H:%M"
 
@@ -2171,15 +2171,15 @@ msgstr "%a %d %b, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:573
+#: ../gui/gdmcommon.c:598
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d %b, %I:%M %p"
 
-#: ../gui/gdmcommon.c:681
+#: ../gui/gdmcommon.c:706
 msgid " seconds"
 msgstr " sekonda"
 
-#: ../gui/gdmcommon.c:683
+#: ../gui/gdmcommon.c:708
 msgid " second"
 msgstr " sekondë"
 
@@ -3319,11 +3319,11 @@ msgstr ""
 msgid "Close _without Applying"
 msgstr "Mbyll _pa i aplikuar"
 
-#: ../gui/gdmsetup.c:6462
+#: ../gui/gdmsetup.c:6460 ../gui/gdmsetup.c:6465
 msgid "Could not access GDM configuration file.\n"
 msgstr "E pamundur hyrja tek file i konfigurimit të GDM.\n"
 
-#: ../gui/gdmsetup.c:6506
+#: ../gui/gdmsetup.c:6509
 msgid "You must be the root user to configure GDM."
 msgstr "Duhet të jeni përdoruesi root që të konfiguroni GDM."
 
@@ -3786,8 +3786,8 @@ msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
 msgstr ""
-"Gabim gjatë ngarkimit të temës, dhe tema e prezgjedhur nuk arrin "
-"të ngarkohet. Po përpiqem të filloj greeter standart"
+"Gabim gjatë ngarkimit të temës, dhe tema e prezgjedhur nuk arrin të "
+"ngarkohet. Po përpiqem të filloj greeter standart"
 
 #: ../gui/greeter/greeter.c:1312
 msgid ""
@@ -3795,8 +3795,7 @@ msgid ""
 "have to login another way and fix the installation of GDM"
 msgstr ""
 "Nuk arrij të filloj greeter GTK+.  Kjo display do të mbyllet dhe do t'ju "
-"duhet hyni me ndonjë menyrë tjetër dhe të korrigjoni instalimin e "
-"GDM"
+"duhet hyni me ndonjë menyrë tjetër dhe të korrigjoni instalimin e GDM"
 
 #: ../gui/greeter/greeter.c:1361
 msgid ""
@@ -3877,7 +3876,8 @@ msgid ""
 "utility (System->Desktop Switching Tool from the panel menu)."
 msgstr ""
 "Nëse dëshiron të vendosësh «%s» si të prezgjedhur për seancat e ardhëshme, "
-"shfrytëzo instrumentin 'switchdesk' (nga menu e panelit: «Vegla Sistemi» ->«Desktop Switching Tool»)."
+"shfrytëzo instrumentin 'switchdesk' (nga menu e panelit: «Vegla Sistemi» -"
+">«Desktop Switching Tool»)."
 
 #: ../gui/greeter/greeter_session.c:228
 msgid "Change _Session"
@@ -3936,8 +3936,8 @@ msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
 msgstr ""
-"Zbatimi i një zgjedhësi XDMCP do t'ju mundësojë hyrjen në kompjuterët "
-"në distancë, nëse ka ndonjë."
+"Zbatimi i një zgjedhësi XDMCP do t'ju mundësojë hyrjen në kompjuterët në "
+"distancë, nëse ka ndonjë."
 
 #: ../gui/greeter/greeter_system.c:354
 msgid "Confi_gure the login manager"
