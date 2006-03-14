@@ -758,7 +758,7 @@ create_pamh (GdmDisplay *d,
 
 	/* Inform PAM of the user's tty */
 #ifdef	sun
-	if (d->attached == 0)
+	if (d->attached)
 		(void) pam_set_item (pamh, PAM_TTY, "/dev/console");
 	else 
 #endif	/* sun */
