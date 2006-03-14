@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-11 15:43+0200\n"
-"PO-Revision-Date: 2006-03-11 15:43+0200\n"
+"POT-Creation-Date: 2006-03-14 17:54+0200\n"
+"PO-Revision-Date: 2006-03-14 17:54+0200\n"
 "Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -452,8 +452,8 @@ msgid "No console (static) servers to be run"
 msgstr "Няма конзолни (статични) сървъри, които да се стартират"
 
 #: ../daemon/gdm.c:1240
-msgid "Alternative configuration file"
-msgstr "Алтернативен конфигурационен файл"
+msgid "Alternative defaults configuration file"
+msgstr "Алтернативен конфигурационен файл за настройките по подразборане"
 
 #: ../daemon/gdm.c:1240
 msgid "CONFIGFILE"
@@ -519,9 +519,9 @@ msgstr "%s: Грешка при задаване на обработка на с
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "Заявката DYNAMIC е отказана: няма идентификация"
 
-#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3157
-#: ../daemon/gdm.c:3208 ../daemon/gdm.c:3260 ../daemon/gdm.c:3301
-#: ../daemon/gdm.c:3327
+#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3164
+#: ../daemon/gdm.c:3215 ../daemon/gdm.c:3267 ../daemon/gdm.c:3308
+#: ../daemon/gdm.c:3334
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "Заявката %s е отказана: няма идентификация"
@@ -548,55 +548,55 @@ msgstr ""
 "%s: Няма конфигурационен файл за GDM: %s. Използват се настройките по "
 "подразбиране."
 
-#: ../daemon/gdmconfig.c:872
+#: ../daemon/gdmconfig.c:883
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession е празен. Използва се %s/gdm/Xsession"
 
-#: ../daemon/gdmconfig.c:905
+#: ../daemon/gdmconfig.c:916
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: Стандартният X сървър не е намерен, опитват се алтернативните"
 
-#: ../daemon/gdmconfig.c:964
+#: ../daemon/gdmconfig.c:975
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Няма зададена програма за посрещане."
 
-#: ../daemon/gdmconfig.c:966
+#: ../daemon/gdmconfig.c:977
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Няма зададена програма за посрещане при отдалечен достъп."
 
-#: ../daemon/gdmconfig.c:968
+#: ../daemon/gdmconfig.c:979
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Няма зададена папка за сесии."
 
-#: ../daemon/gdmconfig.c:1052
+#: ../daemon/gdmconfig.c:1063
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr ""
 "%s: Ползването на XDMCP е включено, но няма поддръжка за това. XDMCP се "
 "изключва."
 
-#: ../daemon/gdmconfig.c:1113
+#: ../daemon/gdmconfig.c:1124
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: TimedLoginDelay е по-малко от 5, ще се използва 5."
 
-#: ../daemon/gdmconfig.c:1351
+#: ../daemon/gdmconfig.c:1362
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr ""
 "%s: Приоритетът е извън рамките на допустимите стойности. Променен е на %d"
 
-#: ../daemon/gdmconfig.c:1357
+#: ../daemon/gdmconfig.c:1368
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Празна команда към сървър, ползва се стандартна."
 
-#: ../daemon/gdmconfig.c:1556
+#: ../daemon/gdmconfig.c:1567
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -604,7 +604,7 @@ msgstr ""
 "%s: Папката с журналите - %s не съществува или не е папка. Ще се полза "
 "ServAuthDir %s."
 
-#: ../daemon/gdmconfig.c:1573
+#: ../daemon/gdmconfig.c:1584
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -613,12 +613,12 @@ msgstr ""
 "Папката за упълномощаване на сървъра (daemon/ServAuthDir) е зададена като %"
 "s, но тя не съществува. Коригирайте конфигурацията на GDM и го рестартирайте."
 
-#: ../daemon/gdmconfig.c:1584
+#: ../daemon/gdmconfig.c:1595
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Папката за упълномощаване %s не съществува. Спиране на програмата."
 
-#: ../daemon/gdmconfig.c:1590
+#: ../daemon/gdmconfig.c:1601
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -627,17 +627,17 @@ msgstr ""
 "Папката за упълномощаване на сървъра (daemon/ServAuthDir) е зададена като %"
 "s, но това не е папка. Коригирайте настройките на GDM и го рестартирайте."
 
-#: ../daemon/gdmconfig.c:1601
+#: ../daemon/gdmconfig.c:1612
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Папката за упълномощаване %s не е папка. Спиране на програмата."
 
-#: ../daemon/gdmconfig.c:1674
+#: ../daemon/gdmconfig.c:1685
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Грешен ред в конфигурационния файл за сървър. Ще бъде игнориран!"
 
-#: ../daemon/gdmconfig.c:1796 ../daemon/gdmconfig.c:1837
+#: ../daemon/gdmconfig.c:1807 ../daemon/gdmconfig.c:1848
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
@@ -645,7 +645,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1814
+#: ../daemon/gdmconfig.c:1825
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -654,7 +654,7 @@ msgstr ""
 "%s: XDMCP е забранен и не са зададени статични сървъри. Ще се добави %s за :%"
 "d, за да е възможно конфигуриране!"
 
-#: ../daemon/gdmconfig.c:1827
+#: ../daemon/gdmconfig.c:1838
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -662,7 +662,7 @@ msgstr ""
 "XDMCP е забранен и GDM не може да намери статичен сървър за стартиране. "
 "Програмата спира. Коригирайте конфигурацията %s и рестартирайте GDM."
 
-#: ../daemon/gdmconfig.c:1856
+#: ../daemon/gdmconfig.c:1867
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -671,12 +671,12 @@ msgstr ""
 "Потребителят за GDM - „%s“ не съществува. Поправете настройките на GDM и го "
 "рестартирайте."
 
-#: ../daemon/gdmconfig.c:1864
+#: ../daemon/gdmconfig.c:1875
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: Не може да се открие потребителя на GDM - „%s“. Програмата спира!"
 
-#: ../daemon/gdmconfig.c:1871
+#: ../daemon/gdmconfig.c:1882
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -684,12 +684,12 @@ msgstr ""
 "Потребителят на GDM е зададен да бъде администраторът, но това не е "
 "позволено заради сигурността. Коригирайте %s и рестартирайте GDM."
 
-#: ../daemon/gdmconfig.c:1882
+#: ../daemon/gdmconfig.c:1893
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: Потребителят на GDM не трябва да е „root“. Програмата спира!"
 
-#: ../daemon/gdmconfig.c:1889
+#: ../daemon/gdmconfig.c:1900
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -698,12 +698,12 @@ msgstr ""
 "Групата на GDM - „%s“ не съществува. Коригирайте конфигурацията и "
 "рестартирайте GDM."
 
-#: ../daemon/gdmconfig.c:1897
+#: ../daemon/gdmconfig.c:1908
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: Не може да се намери групата на GDM (%s). Програмата спира!"
 
-#: ../daemon/gdmconfig.c:1904
+#: ../daemon/gdmconfig.c:1915
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -711,42 +711,42 @@ msgstr ""
 "Групата на GDM е зададена да бъде администраторската, но това не е позволено "
 "заради сигурността. Коригирайте настройките на GDM и го рестартирайте."
 
-#: ../daemon/gdmconfig.c:1914
+#: ../daemon/gdmconfig.c:1925
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: Групата на GDM не може да е „root“. Програмата спира!"
 
-#: ../daemon/gdmconfig.c:1923
+#: ../daemon/gdmconfig.c:1934
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Програмата за посрещане не е намерена или не може да бъде изпълнена от "
 "потребителя за GDM"
 
-#: ../daemon/gdmconfig.c:1929
+#: ../daemon/gdmconfig.c:1940
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Програмата за посрещане за отдалечен достъп не е намерена или не може да "
 "бъде изпълнена от потребителя за GDM"
 
-#: ../daemon/gdmconfig.c:1937
+#: ../daemon/gdmconfig.c:1948
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
 "%s: Програмата за избор на машини „chooser“ не е намерена или не може да "
 "бъде изпълнена от потребителя за GDM"
 
-#: ../daemon/gdmconfig.c:1946
+#: ../daemon/gdmconfig.c:1957
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "Няма зададен daemon/ServAuthDir в конфигурационния файл на GDM"
 
-#: ../daemon/gdmconfig.c:1949
+#: ../daemon/gdmconfig.c:1960
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Няма зададен daemon/ServAuthDir."
 
-#: ../daemon/gdmconfig.c:1973
+#: ../daemon/gdmconfig.c:1984
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -757,14 +757,14 @@ msgstr ""
 "s, но тя не принадлежи на потребител %s и група %s. Коригирайте "
 "собствениците или конфигурацията на GDM и го рестартирайте."
 
-#: ../daemon/gdmconfig.c:1985
+#: ../daemon/gdmconfig.c:1996
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Папката за упълномощаване %s не принадлежи на потребител %s, група %s. "
 "Програмата спира!"
 
-#: ../daemon/gdmconfig.c:1991
+#: ../daemon/gdmconfig.c:2002
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -775,7 +775,7 @@ msgstr ""
 "s, но тя е с неподходящи права за достъп. Те трябва да са %o. Коригирайте "
 "правата или конфигурацията на GDM и го рестартирайте."
 
-#: ../daemon/gdmconfig.c:2004
+#: ../daemon/gdmconfig.c:2015
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -2182,7 +2182,7 @@ msgstr "Прекалено много съобщения бяха пратени
 msgid "Unknown error occurred."
 msgstr "Появи се неизвестна грешка."
 
-#: ../gui/gdmcommon.c:567
+#: ../gui/gdmcommon.c:592
 msgid "%a %b %d, %H:%M"
 msgstr "%d %b, %a. %H:%M"
 
@@ -2190,15 +2190,15 @@ msgstr "%d %b, %a. %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:573
+#: ../gui/gdmcommon.c:598
 msgid "%a %b %d, %l:%M %p"
 msgstr "%d %b, %a. %H:%M"
 
-#: ../gui/gdmcommon.c:681
+#: ../gui/gdmcommon.c:706
 msgid " seconds"
 msgstr " секунди"
 
-#: ../gui/gdmcommon.c:683
+#: ../gui/gdmcommon.c:708
 msgid " second"
 msgstr " секунда"
 
@@ -3340,11 +3340,11 @@ msgstr ""
 msgid "Close _without Applying"
 msgstr "Затваряне _без прилагане"
 
-#: ../gui/gdmsetup.c:6462
+#: ../gui/gdmsetup.c:6460 ../gui/gdmsetup.c:6465
 msgid "Could not access GDM configuration file.\n"
 msgstr "Конфигурационният файл на GDM не може да бъде достъпен.\n"
 
-#: ../gui/gdmsetup.c:6506
+#: ../gui/gdmsetup.c:6509
 msgid "You must be the root user to configure GDM."
 msgstr ""
 "Трябва да сте идентифицирани като администратор, за да настройвате GDM."
