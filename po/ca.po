@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-02 23:02+0100\n"
+"POT-Creation-Date: 2006-03-14 20:18+0100\n"
 "PO-Revision-Date: 2006-03-02 23:16+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -447,8 +447,8 @@ msgid "No console (static) servers to be run"
 msgstr "No hi ha servidors de consola (estàtics) a executar"
 
 #: ../daemon/gdm.c:1240
-msgid "Alternative configuration file"
-msgstr "Fitxer de configuració alternatiu"
+msgid "Alternative defaults configuration file"
+msgstr "Fitxer de configuració de valors per defecte alternatiu"
 
 #: ../daemon/gdm.c:1240
 msgid "CONFIGFILE"
@@ -514,9 +514,9 @@ msgstr "%s: S'ha produït un error en configurar el gestor del senyal CHLD"
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud DYNAMIC: No s'ha autenticat"
 
-#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3157
-#: ../daemon/gdm.c:3208 ../daemon/gdm.c:3260 ../daemon/gdm.c:3301
-#: ../daemon/gdm.c:3327
+#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3164
+#: ../daemon/gdm.c:3215 ../daemon/gdm.c:3267 ../daemon/gdm.c:3308
+#: ../daemon/gdm.c:3334
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud %s: No s'ha autenticat"
@@ -545,55 +545,55 @@ msgstr ""
 "%s: no existeix el fitxer de configuració del GDM: %s. S'està utilitzant els "
 "valors per defecte."
 
-#: ../daemon/gdmconfig.c:872
+#: ../daemon/gdmconfig.c:883
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession és buit; s'està utilitzant %s/gdm/Xsession"
 
-#: ../daemon/gdmconfig.c:905
+#: ../daemon/gdmconfig.c:916
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr ""
 "%s: No s'ha trobat un servidor d'X estàndard; s'estan provant alternatives"
 
-#: ../daemon/gdmconfig.c:964
+#: ../daemon/gdmconfig.c:975
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: no s'ha especificat el rebedor."
 
-#: ../daemon/gdmconfig.c:966
+#: ../daemon/gdmconfig.c:977
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: no s'ha especificat el rebedor remot."
 
-#: ../daemon/gdmconfig.c:968
+#: ../daemon/gdmconfig.c:979
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: no s'ha especificat el directori de sessions."
 
-#: ../daemon/gdmconfig.c:1052
+#: ../daemon/gdmconfig.c:1063
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr ""
 "%s: S'ha habilitat l'XDMCP encara que l'XDMCP no està suportat; s'està "
 "desactivant"
 
-#: ../daemon/gdmconfig.c:1113
+#: ../daemon/gdmconfig.c:1124
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: timedLoginDelay és menys de 5, per tant s'utilitzarà 5."
 
-#: ../daemon/gdmconfig.c:1351
+#: ../daemon/gdmconfig.c:1362
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: la prioritat està fora dels límits. S'ha canviat a %d"
 
-#: ../daemon/gdmconfig.c:1357
+#: ../daemon/gdmconfig.c:1368
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: ordre de servidor buida; se n'està utilitzant una d'estàndard."
 
-#: ../daemon/gdmconfig.c:1556
+#: ../daemon/gdmconfig.c:1567
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -601,7 +601,7 @@ msgstr ""
 "%s: el directori de registres %s no existeix o no és un directori. S'està "
 "utilitzant ServAuthDir %s."
 
-#: ../daemon/gdmconfig.c:1573
+#: ../daemon/gdmconfig.c:1584
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -610,12 +610,12 @@ msgstr ""
 "El directori d'autorització del servidor (daemon/ServAuthDir) està definit "
 "com a %s, però no existeix. Corregiu la configuració del GDM i reinicieu-lo."
 
-#: ../daemon/gdmconfig.c:1584
+#: ../daemon/gdmconfig.c:1595
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: El directori d'autenticació %s no existeix. S'està avortant."
 
-#: ../daemon/gdmconfig.c:1590
+#: ../daemon/gdmconfig.c:1601
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -625,20 +625,20 @@ msgstr ""
 "com a %s, però no és un directori. Corregiu la configuració del GDM i "
 "reinicieu-lo."
 
-#: ../daemon/gdmconfig.c:1601
+#: ../daemon/gdmconfig.c:1612
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr ""
 "%s: El directori d'autenticació %s no és un directori. S'està avortant."
 
-#: ../daemon/gdmconfig.c:1674
+#: ../daemon/gdmconfig.c:1685
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr ""
 "%s: hi ha una línia del servidor no vàlida en el fitxer de configuració. "
 "S'està ignorant."
 
-#: ../daemon/gdmconfig.c:1796 ../daemon/gdmconfig.c:1837
+#: ../daemon/gdmconfig.c:1807 ../daemon/gdmconfig.c:1848
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
@@ -647,7 +647,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1814
+#: ../daemon/gdmconfig.c:1825
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -656,7 +656,7 @@ msgstr ""
 "%s: L'XDMCP està inhabilitat i no s'han definit servidors locals. S'està "
 "afegint %s a :%d per a permetre la configuració."
 
-#: ../daemon/gdmconfig.c:1827
+#: ../daemon/gdmconfig.c:1838
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -664,7 +664,7 @@ msgstr ""
 "L'XDMCP està inhabilitat i el GDM no pot trobar servidors estàtics per "
 "iniciar-se. S'està avortant. Corregiu la configuració i reinicieu el GDM."
 
-#: ../daemon/gdmconfig.c:1856
+#: ../daemon/gdmconfig.c:1867
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -673,12 +673,12 @@ msgstr ""
 "L'usuari '%s' del gdm no existeix. Corregiu la configuració del GDM i "
 "reinicieu-lo."
 
-#: ../daemon/gdmconfig.c:1864
+#: ../daemon/gdmconfig.c:1875
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: no es pot trobar l'usuari del gdm '%s'. S'està avortant."
 
-#: ../daemon/gdmconfig.c:1871
+#: ../daemon/gdmconfig.c:1882
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -687,12 +687,12 @@ msgstr ""
 "pot ser un risc de seguretat. Corregiu la configuració del gdm i reinicieu-"
 "lo."
 
-#: ../daemon/gdmconfig.c:1882
+#: ../daemon/gdmconfig.c:1893
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: L'usuari GDM no hauria de ser el superusuari. S'està avortant."
 
-#: ../daemon/gdmconfig.c:1889
+#: ../daemon/gdmconfig.c:1900
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -701,12 +701,12 @@ msgstr ""
 "El grup GDM '%s' no existeix. Corregiu la configuració del gdm i reinicieu-"
 "lo."
 
-#: ../daemon/gdmconfig.c:1897
+#: ../daemon/gdmconfig.c:1908
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: no es pot trobar el grup del GDM '%s'. S'està avortant."
 
-#: ../daemon/gdmconfig.c:1904
+#: ../daemon/gdmconfig.c:1915
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -715,41 +715,41 @@ msgstr ""
 "pot ser un risc de seguretat. Corregiu la configuració del GDM i reinicieu-"
 "lo."
 
-#: ../daemon/gdmconfig.c:1914
+#: ../daemon/gdmconfig.c:1925
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr ""
 "%s: el grup del gdm no hauria de ser el del superusuari. S'està avortant."
 
-#: ../daemon/gdmconfig.c:1923
+#: ../daemon/gdmconfig.c:1934
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr "%s: no es troba el rebedor o no pot ser executat per l'usuari GDM"
 
-#: ../daemon/gdmconfig.c:1929
+#: ../daemon/gdmconfig.c:1940
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: no es troba el rebedor remot o no pot ser executat per l'usuari GDM"
 
-#: ../daemon/gdmconfig.c:1937
+#: ../daemon/gdmconfig.c:1948
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
 "%s: no es troba el seleccionador o no pot ser executat per l'usuari GDM"
 
-#: ../daemon/gdmconfig.c:1946
+#: ../daemon/gdmconfig.c:1957
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr ""
 "No s'ha especificat el directori d'autenticació del servidor o del dimoni al "
 "fitxer de configuració del GDM"
 
-#: ../daemon/gdmconfig.c:1949
+#: ../daemon/gdmconfig.c:1960
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: No s'ha especificat daemon/ServAuthDir."
 
-#: ../daemon/gdmconfig.c:1973
+#: ../daemon/gdmconfig.c:1984
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -760,14 +760,14 @@ msgstr ""
 "com a %s, però no és propietat de l'usuari %s ni del grup %s. Corregiu la "
 "propietat o la configuració del GDM i reinicieu-lo."
 
-#: ../daemon/gdmconfig.c:1985
+#: ../daemon/gdmconfig.c:1996
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: El directori d'autenticació %s no és propietat de l'usuari %s ni del "
 "grup %s. S'està avortant."
 
-#: ../daemon/gdmconfig.c:1991
+#: ../daemon/gdmconfig.c:2002
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -778,7 +778,7 @@ msgstr ""
 "com a %s però els permisos són incorrectes: hauria de tenir permisos %o. "
 "Corregiu els permisos o la configuració del GDM i reinicieu-lo."
 
-#: ../daemon/gdmconfig.c:2004
+#: ../daemon/gdmconfig.c:2015
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -2190,7 +2190,7 @@ msgstr "S'ha enviat massa missatges al GDM i s'ha penjat."
 msgid "Unknown error occurred."
 msgstr "Ha ocorregut un error desconegut."
 
-#: ../gui/gdmcommon.c:567
+#: ../gui/gdmcommon.c:592
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d de %b, %H:%M"
 
@@ -2198,15 +2198,15 @@ msgstr "%a %d de %b, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:573
+#: ../gui/gdmcommon.c:598
 msgid "%a %b %d, %l:%M %p"
 msgstr "%A %d de %B, %k:%M"
 
-#: ../gui/gdmcommon.c:681
+#: ../gui/gdmcommon.c:706
 msgid " seconds"
 msgstr " segons"
 
-#: ../gui/gdmcommon.c:683
+#: ../gui/gdmcommon.c:708
 msgid " second"
 msgstr " segon"
 
@@ -2252,7 +2252,8 @@ msgstr "El servidor està ocupat, es farà una pausa.\n"
 #: ../gui/gdmdynamic.c:304
 #, c-format
 msgid "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
-msgstr "Ha fallat la connexió al dimoni, s'esperarà %d segons. Intent %d de %d\n"
+msgstr ""
+"Ha fallat la connexió al dimoni, s'esperarà %d segons. Intent %d de %d\n"
 
 #. This is a serious error, so print a message even if verbose is off
 #: ../gui/gdmdynamic.c:327
@@ -3353,11 +3354,11 @@ msgstr "Si no els apliqueu, els canvis fets als usuaris es perdran."
 msgid "Close _without Applying"
 msgstr "Tanca _sense aplicar"
 
-#: ../gui/gdmsetup.c:6462
+#: ../gui/gdmsetup.c:6460 ../gui/gdmsetup.c:6465
 msgid "Could not access GDM configuration file.\n"
 msgstr "No es pot accedir al fitxer de configuració del GDM.\n"
 
-#: ../gui/gdmsetup.c:6506
+#: ../gui/gdmsetup.c:6509
 msgid "You must be the root user to configure GDM."
 msgstr "Heu de ser el superusuari (root) per configurar el GDM."
 
@@ -3388,7 +3389,11 @@ msgid ""
 "<b>Note:</b>  Users in the Include list will appear in the face browser if "
 "enabled and will appear in the user drop-down lists for automatic and timed "
 "logins on the Security tab.  Users in the Exclude list will not appear."
-msgstr "<b>Nota:</b>  Els usuaris en la llista Inclou apareixeran al navegador de cares si està habilitat i apareixeran a les llistes desplegables d'usuaris per a les entrades automàtiques i temporitzades a la pestanya «Seguretat». Els usuaris a la llista Exclou no apareixeran."
+msgstr ""
+"<b>Nota:</b>  Els usuaris en la llista Inclou apareixeran al navegador de "
+"cares si està habilitat i apareixeran a les llistes desplegables d'usuaris "
+"per a les entrades automàtiques i temporitzades a la pestanya «Seguretat». "
+"Els usuaris a la llista Exclou no apareixeran."
 
 #: ../gui/gdmsetup.glade.h:5
 msgid ""
@@ -3867,7 +3872,7 @@ msgstr "Seleccioneu un _idioma..."
 msgid "Select _Session..."
 msgstr "Seleccioneu una _sessió..."
 
-#: ../gui/greeter/greeter_canvas_item.c:428
+#: ../gui/greeter/greeter_canvas_item.c:432
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Contesteu aquestes preguntes i premeu la tecla de retorn quan hàgiu acabat. "
