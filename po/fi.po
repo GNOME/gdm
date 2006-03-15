@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-24 11:25+0200\n"
-"PO-Revision-Date: 2006-03-07 21:28+0200\n"
+"POT-Creation-Date: 2006-03-15 09:09+0200\n"
+"PO-Revision-Date: 2006-03-15 09:09+0200\n"
 "Last-Translator: Hile Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -442,8 +442,8 @@ msgid "No console (static) servers to be run"
 msgstr "Ei päätepalvelimia (pysyviä),joissa palvelimen voisi käynnistää"
 
 #: ../daemon/gdm.c:1240
-msgid "Alternative configuration file"
-msgstr "Vaihtoehtoinen asetustiedosto"
+msgid "Alternative defaults configuration file"
+msgstr "Vaihtoehtoinen oletusasetustiedosto"
 
 #: ../daemon/gdm.c:1240
 msgid "CONFIGFILE"
@@ -510,9 +510,9 @@ msgstr "%s: Virhe asetettaessa CHLD-signaalin käsittelijää"
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC-pyyntö evätty: Todennus puuttuu"
 
-#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3157
-#: ../daemon/gdm.c:3208 ../daemon/gdm.c:3260 ../daemon/gdm.c:3301
-#: ../daemon/gdm.c:3327
+#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3164
+#: ../daemon/gdm.c:3215 ../daemon/gdm.c:3267 ../daemon/gdm.c:3308
+#: ../daemon/gdm.c:3334
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s-pyyntö evätty: Todennus puuttuu"
@@ -537,52 +537,52 @@ msgstr ""
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: Ei GDM:n asetustiedostoa: %s. Käytetään oletuksia."
 
-#: ../daemon/gdmconfig.c:852
+#: ../daemon/gdmconfig.c:883
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession tyhjä, käytetään tiedostoa %s/gdm/Xsession"
 
-#: ../daemon/gdmconfig.c:885
+#: ../daemon/gdmconfig.c:916
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: Standardia X-palvelinta ei löytynyt, kokeillaan vaihtoehtoja"
 
-#: ../daemon/gdmconfig.c:944
+#: ../daemon/gdmconfig.c:975
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Tervehdintä ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:946
+#: ../daemon/gdmconfig.c:977
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Tervehdintä ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:948
+#: ../daemon/gdmconfig.c:979
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Istuntohakemistoa ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:1032
+#: ../daemon/gdmconfig.c:1063
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s: XDMCP on käytössä vaikka XDMCP-tukea ei ole, tetaan pois käytöstä"
 
-#: ../daemon/gdmconfig.c:1093
+#: ../daemon/gdmconfig.c:1124
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: TimedLoginDelay on pienempi kuin 5, joten käytetään arvoa 5."
 
-#: ../daemon/gdmconfig.c:1331
+#: ../daemon/gdmconfig.c:1362
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: Prioriteetti ylitti sallitut rajat, asetettu arvoon %d"
 
-#: ../daemon/gdmconfig.c:1337
+#: ../daemon/gdmconfig.c:1368
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Tyhjä palvelinkomento, käytetään oletusta."
 
-#: ../daemon/gdmconfig.c:1536
+#: ../daemon/gdmconfig.c:1567
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -590,7 +590,7 @@ msgstr ""
 "%s: Lokihakemistoa %s ei ole olemassa tai se ei ole hakemisto. ServAuthDir:"
 "nä käytetään %s."
 
-#: ../daemon/gdmconfig.c:1552
+#: ../daemon/gdmconfig.c:1584
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -599,12 +599,12 @@ msgstr ""
 "Palvelimen valtuushakemistoksi (daemon/ServAuthDir) on asetettu %s, mutta "
 "sitä ei ole olemassa. Korjaa GDM:n asetukset ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1561
+#: ../daemon/gdmconfig.c:1595
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Valtuushakemistoa %s ei ole olemassa. Keskeytetään."
 
-#: ../daemon/gdmconfig.c:1566
+#: ../daemon/gdmconfig.c:1601
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -613,17 +613,17 @@ msgstr ""
 "Palvelimen valtuushakemistoksi (daemon/ServAuthDir) on asetettu %s, mutta se "
 "ei ole hakemisto. Korjaa GDM:n asetukset ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1575
+#: ../daemon/gdmconfig.c:1612
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Valtuushakemisto %s ei ole hakemisto. Keskeytetään."
 
-#: ../daemon/gdmconfig.c:1648
+#: ../daemon/gdmconfig.c:1685
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Virheellinen palvelinrivi asetustiedostossa. Ei huomioida!"
 
-#: ../daemon/gdmconfig.c:1770 ../daemon/gdmconfig.c:1808
+#: ../daemon/gdmconfig.c:1807 ../daemon/gdmconfig.c:1848
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
@@ -632,7 +632,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1788
+#: ../daemon/gdmconfig.c:1825
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -641,7 +641,7 @@ msgstr ""
 "%s: XDMCP on poissa käytöstä eikä paikallisia palvelimia ole määritelty. "
 "Lisätään %s osoitteeseen :%d, jotta asetusten määrittely olisi mahdollista!"
 
-#: ../daemon/gdmconfig.c:1800
+#: ../daemon/gdmconfig.c:1838
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -649,7 +649,7 @@ msgstr ""
 "XDMCP on poissa käytöstä eikä GDM löydä yhtään paikallista palvelinta "
 "käynnistettäväksi. Keskeytetään! Korjaa asetukset ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1825
+#: ../daemon/gdmconfig.c:1867
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -658,12 +658,12 @@ msgstr ""
 "GDM-käyttäjää \"%s\" ei ole olemassa. Korjaa GDM:n asetukset ja käynnistä "
 "GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1833
+#: ../daemon/gdmconfig.c:1875
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: GDM-käyttäjää \"%s\" ei löydy. Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1839
+#: ../daemon/gdmconfig.c:1882
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -672,12 +672,12 @@ msgstr ""
 "turvallisuusriskien vuoksi. Korjaa GDM:n asetukset ja käynnistä GDM "
 "uudelleen."
 
-#: ../daemon/gdmconfig.c:1848
+#: ../daemon/gdmconfig.c:1893
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: Pääkäyttäjä ei voi olla GDM-käyttäjä. Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1854
+#: ../daemon/gdmconfig.c:1900
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -686,12 +686,12 @@ msgstr ""
 "GDM-käyttäjää \"%s\" ei ole olemassa. Korjaa GDM:n asetukset ja käynnistä "
 "GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1861
+#: ../daemon/gdmconfig.c:1908
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: GDM-ryhmää \"%s\" ei löydy. Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1867
+#: ../daemon/gdmconfig.c:1915
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -700,42 +700,42 @@ msgstr ""
 "turvallisuusriskien vuoksi. Korjaa GDM:n asetukset ja käynnistä GDM "
 "uudelleen."
 
-#: ../daemon/gdmconfig.c:1876
+#: ../daemon/gdmconfig.c:1925
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: GDM-ryhmä ei voi olla \"root\". Keskeytetään!"
 
-#: ../daemon/gdmconfig.c:1885
+#: ../daemon/gdmconfig.c:1934
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Tervehdintä ei löytynyt tai GDM-käyttäjällä ei ole oikeutta suorittaa "
 "sitä."
 
-#: ../daemon/gdmconfig.c:1891
+#: ../daemon/gdmconfig.c:1940
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Etätervehdintä ei löytynyt tai GDM-käyttäjällä ei ole oikeutta suorittaa "
 "sitä"
 
-#: ../daemon/gdmconfig.c:1899
+#: ../daemon/gdmconfig.c:1948
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
 "%s: Valitsinta ei löytynyt tai GDM-käyttäjällä ei ole oikeutta suorittaa "
 "sitä."
 
-#: ../daemon/gdmconfig.c:1908
+#: ../daemon/gdmconfig.c:1957
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "Ei määritelty daemon/ServAuthDir:iä GDM:n asetustiedostossa"
 
-#: ../daemon/gdmconfig.c:1910
+#: ../daemon/gdmconfig.c:1960
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: daemon/ServAuthDir ei ole määritelty."
 
-#: ../daemon/gdmconfig.c:1933
+#: ../daemon/gdmconfig.c:1984
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -746,14 +746,14 @@ msgstr ""
 "sitä ei omista käyttäjä %s ja ryhmä %s. Korjaa omistajuus tai GDM:n "
 "asetustiedosto, ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1943
+#: ../daemon/gdmconfig.c:1996
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Valtuushakemisto %s ei ole käyttäjän %s ja ryhmän %s omistuksessa. "
 "Keskeytetään."
 
-#: ../daemon/gdmconfig.c:1948
+#: ../daemon/gdmconfig.c:2002
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -764,7 +764,7 @@ msgstr ""
 "sen oikeustaso on väärä: pitäisi olla %o. Korjaa oikeudet tai GDM:n "
 "asetustiedosto ja käynnistä GDM uudelleen."
 
-#: ../daemon/gdmconfig.c:1960
+#: ../daemon/gdmconfig.c:2015
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -2153,7 +2153,7 @@ msgstr "GDM:lle lähetettiin liian monta viestiä ja se katkaisi yhteyden."
 msgid "Unknown error occurred."
 msgstr "Tuntematon virhe."
 
-#: ../gui/gdmcommon.c:567
+#: ../gui/gdmcommon.c:592
 msgid "%a %b %d, %H:%M"
 msgstr "%a %-d. %Bta, %H:%M"
 
@@ -2161,15 +2161,15 @@ msgstr "%a %-d. %Bta, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:573
+#: ../gui/gdmcommon.c:598
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %-d. %Bta, %H:%M"
 
-#: ../gui/gdmcommon.c:681
+#: ../gui/gdmcommon.c:706
 msgid " seconds"
 msgstr " sekuntia"
 
-#: ../gui/gdmcommon.c:683
+#: ../gui/gdmcommon.c:708
 msgid " second"
 msgstr " sekunti"
 
@@ -3087,13 +3087,13 @@ msgstr "Tiedostoa ei voi avata"
 msgid "Select User Image"
 msgstr "Valitse käyttäjän kuva"
 
-#: ../gui/gdmphotosetup.c:273 ../gui/gdmsetup.c:5590 ../gui/gdmsetup.c:5712
-#: ../gui/gdmsetup.c:5865 ../gui/gdmsetup.c:5987
+#: ../gui/gdmphotosetup.c:273 ../gui/gdmsetup.c:5592 ../gui/gdmsetup.c:5714
+#: ../gui/gdmsetup.c:5867 ../gui/gdmsetup.c:5989
 msgid "Images"
 msgstr "Kuvat"
 
-#: ../gui/gdmphotosetup.c:278 ../gui/gdmsetup.c:3046 ../gui/gdmsetup.c:5595
-#: ../gui/gdmsetup.c:5717 ../gui/gdmsetup.c:5870 ../gui/gdmsetup.c:5992
+#: ../gui/gdmphotosetup.c:278 ../gui/gdmsetup.c:3048 ../gui/gdmsetup.c:5597
+#: ../gui/gdmsetup.c:5719 ../gui/gdmsetup.c:5872 ../gui/gdmsetup.c:5994
 msgid "All Files"
 msgstr "Kaikki tiedostot"
 
@@ -3171,65 +3171,65 @@ msgstr ""
 "Automaattinen tai ajastettu sisäänkirjautuminen pääkäyttäjätunnukselle "
 "(root) on kielletty."
 
-#: ../gui/gdmsetup.c:1792
+#: ../gui/gdmsetup.c:1794
 #, c-format
 msgid "The \"%s\" user already exists in the include list."
 msgstr "Käyttäjä \"%s\" on jo sisällytettyjen listalla."
 
-#: ../gui/gdmsetup.c:1802 ../gui/gdmsetup.c:1832 ../gui/gdmsetup.c:1869
+#: ../gui/gdmsetup.c:1804 ../gui/gdmsetup.c:1834 ../gui/gdmsetup.c:1871
 msgid "Cannot add user"
 msgstr "Käyttäjää ei voida lisätä"
 
-#: ../gui/gdmsetup.c:1822
+#: ../gui/gdmsetup.c:1824
 #, c-format
 msgid "The \"%s\" user already exists in the exclude list."
 msgstr "Käyttäjä \"%s\" on jo poissuljettujen listalla."
 
-#: ../gui/gdmsetup.c:1859
+#: ../gui/gdmsetup.c:1861
 #, c-format
 msgid "The \"%s\" user does not exist."
 msgstr "Käyttäjä \"%s\" ei ole olemassa."
 
-#: ../gui/gdmsetup.c:3041 ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.c:3043 ../gui/gdmsetup.glade.h:73
 msgid "Sounds"
 msgstr "Äänet"
 
-#: ../gui/gdmsetup.c:3250 ../gui/gdmsetup.c:3308
+#: ../gui/gdmsetup.c:3252 ../gui/gdmsetup.c:3310
 msgid "None"
 msgstr "Ei mitään"
 
-#: ../gui/gdmsetup.c:3741
+#: ../gui/gdmsetup.c:3743
 msgid "Archive is not of a subdirectory"
 msgstr "Arkistossa ei ole alihakemistoa"
 
-#: ../gui/gdmsetup.c:3749
+#: ../gui/gdmsetup.c:3751
 msgid "Archive is not of a single subdirectory"
 msgstr "Arkisto ei koostu yhdestä alihakemistosta"
 
-#: ../gui/gdmsetup.c:3773 ../gui/gdmsetup.c:3851
+#: ../gui/gdmsetup.c:3775 ../gui/gdmsetup.c:3853
 msgid "File not a tar.gz or tar archive"
 msgstr "Tiedosto ei ole tar.gz- eikä tar-muotoinen arkisto"
 
-#: ../gui/gdmsetup.c:3775
+#: ../gui/gdmsetup.c:3777
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "Arkistossa ei ole tiedostoa GdmGreeterTheme.info"
 
-#: ../gui/gdmsetup.c:3797
+#: ../gui/gdmsetup.c:3799
 msgid "File does not exist"
 msgstr "Tiedostoa ei ole olemassa"
 
-#: ../gui/gdmsetup.c:3917
+#: ../gui/gdmsetup.c:3919
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../gui/gdmsetup.c:3924
+#: ../gui/gdmsetup.c:3926
 msgid "Not a theme archive"
 msgstr "Ei teema-arkisto"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:3946
+#: ../gui/gdmsetup.c:3948
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed. Install again anyway?"
@@ -3237,47 +3237,47 @@ msgstr ""
 "Teemahakemisto \"%s\" näyttää olevan jo asennettu. Asennetaanko se silti "
 "uudelleen?"
 
-#: ../gui/gdmsetup.c:4038
+#: ../gui/gdmsetup.c:4040
 msgid "Some error occurred when installing the theme"
 msgstr "Joki virhe tapahtui asennettaessa teemaa"
 
-#: ../gui/gdmsetup.c:4094
+#: ../gui/gdmsetup.c:4096
 msgid "No file selected"
 msgstr "Ei tiedostoa valittuna"
 
-#: ../gui/gdmsetup.c:4115
+#: ../gui/gdmsetup.c:4117
 msgid "Select Theme Archive"
 msgstr "Valitse teema-arkisto"
 
-#: ../gui/gdmsetup.c:4119 ../gui/gdmsetup.c:5110
+#: ../gui/gdmsetup.c:4121 ../gui/gdmsetup.c:5112
 msgid "_Install"
 msgstr "_Asenna"
 
-#: ../gui/gdmsetup.c:4210
+#: ../gui/gdmsetup.c:4212
 #, c-format
 msgid "Remove the \"%s\" theme?"
 msgstr "Poistetaanko teema \"%s\"?"
 
-#: ../gui/gdmsetup.c:4219
+#: ../gui/gdmsetup.c:4221
 msgid "If you choose to remove the theme, it will be permanently lost."
 msgstr "Jos poistat teeman, se poistuu pysyvästi."
 
-#: ../gui/gdmsetup.c:4227
+#: ../gui/gdmsetup.c:4229
 msgid "_Remove Theme"
 msgstr "_Poista teema"
 
-#: ../gui/gdmsetup.c:5099
+#: ../gui/gdmsetup.c:5101
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "Asenna teema tiedostosta \"%s\"?"
 
-#: ../gui/gdmsetup.c:5100
+#: ../gui/gdmsetup.c:5102
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "Valitse \"Asenna\" asentaaksesi teeman tiedostosta \"%s\"."
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:5362
+#: ../gui/gdmsetup.c:5364
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3298,26 +3298,26 @@ msgstr ""
 "\n"
 "Täydellinen ohjeistus löytyy Gnome-ohjeselaimella \"Työpöytä\"-luokasta."
 
-#: ../gui/gdmsetup.c:6408
+#: ../gui/gdmsetup.c:6410
 msgid "Apply the changes to users before closing?"
 msgstr "Toteuta muutokset käyttäjiin ennen sulkemista?"
 
-#: ../gui/gdmsetup.c:6409
+#: ../gui/gdmsetup.c:6411
 msgid ""
 "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr ""
 "Jos et toteuta muutoksia, muutokset käyttäjät-välilehteen jäävät "
 "tapahtumatta."
 
-#: ../gui/gdmsetup.c:6412
+#: ../gui/gdmsetup.c:6414
 msgid "Close _without Applying"
 msgstr "Sulja tote_uttamatta"
 
-#: ../gui/gdmsetup.c:6460
+#: ../gui/gdmsetup.c:6460 ../gui/gdmsetup.c:6465
 msgid "Could not access GDM configuration file.\n"
 msgstr "Ei oikeuksia GDM:n asetustiedostoon.\n"
 
-#: ../gui/gdmsetup.c:6504
+#: ../gui/gdmsetup.c:6509
 msgid "You must be the root user to configure GDM."
 msgstr "Vain pääkäyttäjä voi muuttaa GDM:n asetuksia."
 
@@ -3827,7 +3827,7 @@ msgstr "Valitse _kieli..."
 msgid "Select _Session..."
 msgstr "Valitse _istunto..."
 
-#: ../gui/greeter/greeter_canvas_item.c:428
+#: ../gui/greeter/greeter_canvas_item.c:432
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Vastaa kysymyksiin tässä ja paina Enter kun olet valmis. Valikon saat "
@@ -4153,4 +4153,3 @@ msgstr ""
 #: ../vicious-extensions/ve-nongnome.c:135
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "Maa-asetustolla on liian monta aliastasoa, tämä voi olla silmukka"
-
