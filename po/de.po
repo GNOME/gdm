@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GDM HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-02 20:47+0100\n"
-"PO-Revision-Date: 2006-03-02 20:58+0100\n"
+"POT-Creation-Date: 2006-03-15 21:19+0100\n"
+"PO-Revision-Date: 2006-03-15 21:23+0100\n"
 "Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -456,8 +456,8 @@ msgid "No console (static) servers to be run"
 msgstr "Es sollen keine Konsolen-Server (lokal) ausgeführt werden"
 
 #: ../daemon/gdm.c:1240
-msgid "Alternative configuration file"
-msgstr "Alternative Konfigurationsdatei"
+msgid "Alternative defaults configuration file"
+msgstr "Alternative Standardkonfigurationsdatei"
 
 #: ../daemon/gdm.c:1240
 msgid "CONFIGFILE"
@@ -522,9 +522,9 @@ msgstr "%s: Fehler beim Einrichten des CHLD-Signalhandlers"
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC-Anfrage abgewiesen: Nicht authentifiziert"
 
-#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3157
-#: ../daemon/gdm.c:3208 ../daemon/gdm.c:3260 ../daemon/gdm.c:3301
-#: ../daemon/gdm.c:3327
+#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3164
+#: ../daemon/gdm.c:3215 ../daemon/gdm.c:3267 ../daemon/gdm.c:3308
+#: ../daemon/gdm.c:3334
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s-Anfrage abgewiesen: Nicht legitimiert"
@@ -549,57 +549,57 @@ msgstr ""
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: Keine GDM-Konfigurationsdatei »%s«. Vorgaben werden verwendet."
 
-#: ../daemon/gdmconfig.c:872
+#: ../daemon/gdmconfig.c:883
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession ist leer, %s/gdm/Xsession wird verwendet"
 
-#: ../daemon/gdmconfig.c:905
+#: ../daemon/gdmconfig.c:916
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr ""
 "%s: Der Standard-X-Server wurde nicht gefunden, Alternativen werden versucht"
 
-#: ../daemon/gdmconfig.c:964
+#: ../daemon/gdmconfig.c:975
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Kein Begrüßer angegeben."
 
-#: ../daemon/gdmconfig.c:966
+#: ../daemon/gdmconfig.c:977
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Kein entfernter Begrüßer angegeben."
 
-#: ../daemon/gdmconfig.c:968
+#: ../daemon/gdmconfig.c:979
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Kein Sitzungsverzeichnis angegeben."
 
-#: ../daemon/gdmconfig.c:1052
+#: ../daemon/gdmconfig.c:1063
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr ""
 "%s: XDMCP wurde aktiviert, wird jedoch nicht unterstützt - XDMCP wird "
 "deshalb deaktiviert"
 
-#: ../daemon/gdmconfig.c:1113
+#: ../daemon/gdmconfig.c:1124
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr ""
 "%s: Verzögerung bei zeitgesteuerter Anmeldung ist kleiner als 5. Daher wird "
 "5 verwendet."
 
-#: ../daemon/gdmconfig.c:1351
+#: ../daemon/gdmconfig.c:1362
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: Priorität außerhalb des gültigen Bereichs; neuer Wert: %d"
 
-#: ../daemon/gdmconfig.c:1357
+#: ../daemon/gdmconfig.c:1368
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Leerer Server-Befehl, Standard wird verwendet."
 
-#: ../daemon/gdmconfig.c:1556
+#: ../daemon/gdmconfig.c:1567
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -607,7 +607,7 @@ msgstr ""
 "%s: Protokollverzeichnis %s existiert nicht oder ist kein Verzeichnis "
 "ServAuthDir-Verzeichnis %s wird verwendet."
 
-#: ../daemon/gdmconfig.c:1573
+#: ../daemon/gdmconfig.c:1584
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -617,12 +617,12 @@ msgstr ""
 "festgelegt, dies existiert jedoch nicht. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:1584
+#: ../daemon/gdmconfig.c:1595
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Legitimationsverzeichnis %s existiert nicht. Abbruch."
 
-#: ../daemon/gdmconfig.c:1590
+#: ../daemon/gdmconfig.c:1601
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -632,24 +632,24 @@ msgstr ""
 "festgelegt, dies ist jedoch kein Verzeichnis. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:1601
+#: ../daemon/gdmconfig.c:1612
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Legitimationsverzeichnis %s ist kein Verzeichnis. Abbruch."
 
-#: ../daemon/gdmconfig.c:1674
+#: ../daemon/gdmconfig.c:1685
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Ungültige Server-Zeile in Konfigurationsdatei. Wird ignoriert!"
 
-#: ../daemon/gdmconfig.c:1796 ../daemon/gdmconfig.c:1837
+#: ../daemon/gdmconfig.c:1807 ../daemon/gdmconfig.c:1848
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr "%s: XDMCP deaktiviert und keine statischen Server definiert. Abbruch!"
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1814
+#: ../daemon/gdmconfig.c:1825
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -658,7 +658,7 @@ msgstr ""
 "%s: XDMCP deaktiviert und keine lokalen Server definiert. Um die "
 "Konfiguration zu ermöglichen, wird %s auf :%d hinzugefügt!"
 
-#: ../daemon/gdmconfig.c:1827
+#: ../daemon/gdmconfig.c:1838
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -667,7 +667,7 @@ msgstr ""
 "finden. Abbruch! Bitte korrigieren Sie die Konfiguration %s und starten Sie "
 "GDM neu."
 
-#: ../daemon/gdmconfig.c:1856
+#: ../daemon/gdmconfig.c:1867
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -676,12 +676,12 @@ msgstr ""
 "Der GDM-Benutzer »%s« existiert nicht. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:1864
+#: ../daemon/gdmconfig.c:1875
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: Der GDM-Benutzer »%s« konnte nicht gefunden werden. Abbruch!"
 
-#: ../daemon/gdmconfig.c:1871
+#: ../daemon/gdmconfig.c:1882
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -690,12 +690,12 @@ msgstr ""
 "es ein Sicherheitsrisiko darstellen kann. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:1882
+#: ../daemon/gdmconfig.c:1893
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: Der GDM-Benutzer darf nicht »root« sein. Abbruch!"
 
-#: ../daemon/gdmconfig.c:1889
+#: ../daemon/gdmconfig.c:1900
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -704,12 +704,12 @@ msgstr ""
 "Die GDM-Gruppe »%s« existiert nicht. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:1897
+#: ../daemon/gdmconfig.c:1908
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: Die GDM-Gruppe »%s« konnte nicht gefunden werden. Abbruch!"
 
-#: ../daemon/gdmconfig.c:1904
+#: ../daemon/gdmconfig.c:1915
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -718,42 +718,42 @@ msgstr ""
 "es ein Sicherheitsrisiko darstellen kann. Bitte korrigieren Sie die GDM-"
 "Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:1914
+#: ../daemon/gdmconfig.c:1925
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: Die GDM-Gruppe darf nicht »root« sein. Abbruch!"
 
-#: ../daemon/gdmconfig.c:1923
+#: ../daemon/gdmconfig.c:1934
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Der Begrüßer konnte nicht gefunden oder nicht vom GDM-Benutzer "
 "ausgeführt werden"
 
-#: ../daemon/gdmconfig.c:1929
+#: ../daemon/gdmconfig.c:1940
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Der entfernte Begrüßer konnte nicht gefunden oder nicht vom GDM-Benutzer "
 "ausgeführt werden"
 
-#: ../daemon/gdmconfig.c:1937
+#: ../daemon/gdmconfig.c:1948
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
 "%s: Der Auswähler konnte nicht gefunden oder nicht vom GDM-Benutzer "
 "ausgeführt werden"
 
-#: ../daemon/gdmconfig.c:1946
+#: ../daemon/gdmconfig.c:1957
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "daemon/ServAuthDir ist nicht in der Konfigurationsdatei angegeben"
 
-#: ../daemon/gdmconfig.c:1949
+#: ../daemon/gdmconfig.c:1960
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Kein Daemon/ServAuthDir angegeben."
 
-#: ../daemon/gdmconfig.c:1973
+#: ../daemon/gdmconfig.c:1984
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -765,14 +765,14 @@ msgstr ""
 "korrigieren Sie die Besitzerrechte oder die GDM-Konfiguration und starten "
 "Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:1985
+#: ../daemon/gdmconfig.c:1996
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Authentifizierungsverzeichnis %s gehört nicht Benutzer %s und Gruppe %s. "
 "Abbruch."
 
-#: ../daemon/gdmconfig.c:1991
+#: ../daemon/gdmconfig.c:2002
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -784,7 +784,7 @@ msgstr ""
 "auf %o gesetzt sein sollten. Bitte ändern Sie die Zugriffsrechte oder die "
 "GDM-Konfiguration und starten Sie GDM neu."
 
-#: ../daemon/gdmconfig.c:2004
+#: ../daemon/gdmconfig.c:2015
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -2228,7 +2228,7 @@ msgstr ""
 msgid "Unknown error occurred."
 msgstr "Es ist ein unbekannter Fehler aufgetreten."
 
-#: ../gui/gdmcommon.c:567
+#: ../gui/gdmcommon.c:592
 msgid "%a %b %d, %H:%M"
 msgstr "%a, %d. %b, %H:%M"
 
@@ -2236,15 +2236,15 @@ msgstr "%a, %d. %b, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:573
+#: ../gui/gdmcommon.c:598
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a, %d. %b, %H:%M"
 
-#: ../gui/gdmcommon.c:681
+#: ../gui/gdmcommon.c:706
 msgid " seconds"
 msgstr " Sekunden"
 
-#: ../gui/gdmcommon.c:683
+#: ../gui/gdmcommon.c:708
 msgid " second"
 msgstr " Sekunde"
 
@@ -3402,11 +3402,11 @@ msgstr ""
 msgid "Close _without Applying"
 msgstr "Schließen und Änderungen _verwerfen"
 
-#: ../gui/gdmsetup.c:6462
+#: ../gui/gdmsetup.c:6460 ../gui/gdmsetup.c:6465
 msgid "Could not access GDM configuration file.\n"
 msgstr "Zugriff auf die GDM-Konfigurationsdatei war nicht möglich.\n"
 
-#: ../gui/gdmsetup.c:6506
+#: ../gui/gdmsetup.c:6509
 msgid "You must be the root user to configure GDM."
 msgstr "Sie müssen sich als Benutzer »root« anmelden, um GDM zu konfigurieren."
 
@@ -3921,7 +3921,7 @@ msgstr "_Sitzung wählen..."
 
 # wir lassen den 1. Teil unter den Tisch fallen, die Übersetzung wäre
 # irreführend
-#: ../gui/greeter/greeter_canvas_item.c:428
+#: ../gui/greeter/greeter_canvas_item.c:432
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr "Drücken Sie F10, um zu einem Menü zu gelangen."
 
