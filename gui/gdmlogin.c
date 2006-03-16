@@ -2701,7 +2701,7 @@ gdm_login_gui_init (void)
     /* Welcome msg */
     welcome = gtk_label_new (NULL);
     gdm_set_welcomemsg ();
-    gtk_widget_set_name (welcome, "Welcome");
+    gtk_widget_set_name (welcome, _("Welcome"));
     gtk_widget_ref (welcome);
     g_object_set_data_full (G_OBJECT (login), "welcome", welcome,
 			    (GDestroyNotify) gtk_widget_unref);
