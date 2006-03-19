@@ -128,10 +128,15 @@ greeter_item_run_action_callback (const char *id)
   info    = greeter_lookup_id (id);
   cb_info = g_hash_table_lookup (callback_hash, id);
 
+  /*
+   * If run_action_callback gets called and there is no
+   * callback function registered, don't try to call it.
+   * This can happen because the button_release event
+   * tries calling the callback function for any 
+   * item that has an id (like the Username field).
+   */
   if (cb_info)
      (*cb_info->func) (info, cb_info->user_data);
-  else
-     (*cb_info->func) (info, NULL);
 }
 
 gint
