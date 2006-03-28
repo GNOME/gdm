@@ -493,13 +493,16 @@ main (int argc, char *argv[])
 		host = args[0];
 
 
+	/* Read config data in bulk */
+	gdmcomm_comm_bulk_start ();
+
 	xdmcp_enabled  = gdm_config_get_bool (GDM_KEY_XDMCP);
 	honor_indirect = gdm_config_get_bool (GDM_KEY_INDIRECT);
 	pidfile        = gdm_config_get_string (GDM_KEY_PID_FILE);
 	xnest          = gdm_config_get_string (GDM_KEY_XNEST);
 
 	/* At this point we are done using the socket, so close it */
-	gdmcomm_comm_close ();
+	gdmcomm_comm_bulk_stop ();
 
 	/* complex and wonderous way to get the exec vector */
 	execvec = make_us_an_exec_vector (xnest);

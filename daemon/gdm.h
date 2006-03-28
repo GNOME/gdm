@@ -203,21 +203,21 @@ enum {
 #define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=" HALT_COMMAND
-#define GDM_KEY_DISPLAY_INIT_DIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
+#define GDM_KEY_DISPLAY_INIT_DIR "daemon/DisplayInitDir=" GDMCONFDIR "/Init"
 #define GDM_KEY_KILL_INIT_CLIENTS "daemon/KillInitClients=true"
 #define GDM_KEY_LOG_DIR "daemon/LogDir=" EXPANDED_LOGDIR
 #define GDM_KEY_PATH "daemon/DefaultPath=" GDM_USER_PATH
 #define GDM_KEY_PID_FILE "daemon/PidFile=/var/run/gdm.pid"
-#define GDM_KEY_POSTSESSION "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
-#define GDM_KEY_PRESESSION "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
-#define GDM_KEY_POSTLOGIN "daemon/PostLoginScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
+#define GDM_KEY_POSTSESSION "daemon/PostSessionScriptDir=" GDMCONFDIR "/PostSession/"
+#define GDM_KEY_PRESESSION "daemon/PreSessionScriptDir=" GDMCONFDIR "/PreSession/"
+#define GDM_KEY_POSTLOGIN "daemon/PostLoginScriptDir=" GDMCONFDIR "/PreSession/"
 #define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
-#define GDM_KEY_X_KEEPS_CRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
+#define GDM_KEY_X_KEEPS_CRASHING "daemon/XKeepsCrashing=" GDMCONFDIR "/XKeepsCrashing"
 #define GDM_KEY_REBOOT  "daemon/RebootCommand=" REBOOT_COMMAND
 #define GDM_KEY_ROOT_PATH "daemon/RootPath=/sbin:/usr/sbin:" GDM_USER_PATH
 #define GDM_KEY_SERV_AUTHDIR "daemon/ServAuthDir=" EXPANDED_AUTHDIR
-#define GDM_KEY_SESSION_DESKTOP_DIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_SYSCONFDIR "/dm/Sessions/:" EXPANDED_DATADIR "/gdm/BuiltInSessions/:" EXPANDED_DATADIR "/xsessions/"
-#define GDM_KEY_BASE_XSESSION "daemon/BaseXsession=" EXPANDED_SYSCONFDIR "/gdm/Xsession"
+#define GDM_KEY_SESSION_DESKTOP_DIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_DMCONFDIR "/Sessions/:" EXPANDED_DATADIR "/gdm/BuiltInSessions/:" EXPANDED_DATADIR "/xsessions/"
+#define GDM_KEY_BASE_XSESSION "daemon/BaseXsession=" GDMCONFDIR "/Xsession"
 #define GDM_KEY_DEFAULT_SESSION "daemon/DefaultSession=gnome.desktop"
 #define GDM_KEY_SUSPEND "daemon/SuspendCommand=" SUSPEND_COMMAND
 
@@ -286,7 +286,7 @@ enum {
 #define GDM_KEY_MAX_INDIRECT "xdmcp/MaxPendingIndirect=4"
 #define GDM_KEY_MAX_WAIT_INDIRECT "xdmcp/MaxWaitIndirect=15"
 #define GDM_KEY_PING_INTERVAL "xdmcp/PingIntervalSeconds=15"
-#define GDM_KEY_WILLING "xdmcp/Willing=" EXPANDED_SYSCONFDIR "/gdm/Xwilling"
+#define GDM_KEY_WILLING "xdmcp/Willing=" GDMCONFDIR "/Xwilling"
 
 #define GDM_KEY_XDMCP_PROXY "xdmcp/EnableProxy=false"
 #define GDM_KEY_XDMCP_PROXY_XSERVER "xdmcp/ProxyXServer="
@@ -1010,6 +1010,7 @@ void		gdm_final_cleanup	(void);
  *   OK <full path to GDM configuration file>
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
+ *      1 = File not found
  *      200 = Too many messages
  *      999 = Unknown error
  */

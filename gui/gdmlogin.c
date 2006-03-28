@@ -3071,6 +3071,9 @@ enum {
 static void
 gdm_read_config (void)
 {
+	/* Read config data in bulk */
+	gdmcomm_comm_bulk_start ();
+
 	gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
 	/*
@@ -3145,13 +3148,16 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);
 	gdm_config_get_bool   (GDM_KEY_SET_POSITION);
 
-	gdmcomm_comm_close ();
+	gdmcomm_comm_bulk_stop ();
 }
 
 static gboolean
 gdm_reread_config (int sig, gpointer data)
 {
 	gboolean resize = FALSE;
+
+	/* Read config data in bulk */
+	gdmcomm_comm_bulk_start ();
 
 	if (gdm_config_reload_bool (GDM_KEY_DEBUG))
 		gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
@@ -3220,7 +3226,7 @@ gdm_reread_config (int sig, gpointer data)
 
 		gdm_wm_save_wm_order ();
 		gdm_kill_thingies ();
-		gdmcomm_comm_close ();
+		gdmcomm_comm_bulk_stop ();
 
 		_exit (DISPLAY_RESTARTGREETER);
 		return TRUE;
@@ -3300,7 +3306,7 @@ gdm_reread_config (int sig, gpointer data)
 	if (resize)
 		login_window_resize (TRUE /* force */);
 
-	gdmcomm_comm_close();
+	gdmcomm_comm_bulk_stop ();
 
 	return TRUE;
 }

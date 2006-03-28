@@ -42,9 +42,10 @@
 #include "gdmcomm.h"
 #include "gdmconfig.h"
 
-static gboolean debug = FALSE;
-static gboolean quiet = FALSE;
-static int num_cmds   = 0;
+static gboolean bulk_acs = FALSE;
+static gboolean debug    = FALSE;
+static gboolean quiet    = FALSE;
+static int      num_cmds = 0;
 
 /*
  * Note, in this function we have to call gdm_common_error instead
@@ -176,9 +177,9 @@ gdmcomm_call_gdm_real (const char *command,
 
 	/*
          * If already sent the max number of commands, close the connection
-         * and reopen
+         * and reopen.  Subtract 1 to allow the "CLOSE" to get through.
          */
-	if (num_cmds == (GDM_SUP_MAX_MESSAGES)) {
+	if (num_cmds == (GDM_SUP_MAX_MESSAGES - 1)) {
 	   if (debug)
 		gdm_common_error ("  Closing and reopening connection.");
 	   do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
@@ -269,6 +270,7 @@ gdmcomm_call_gdm_real (const char *command,
 				gdm_common_error ("  Version check failed, bad name");
 
 			g_free (ret);
+			do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
 			return NULL;
@@ -277,6 +279,7 @@ gdmcomm_call_gdm_real (const char *command,
 			if ( !quiet)
 				gdm_common_error ("  Version check failed, bad version");
 			g_free (ret);
+			do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
 			return NULL;
@@ -300,6 +303,7 @@ gdmcomm_call_gdm_real (const char *command,
 		if (strcmp (ve_sure_string (ret), "OK") != 0) {
 			if ( !quiet)
 				gdm_common_error ("  Error, auth check failed");
+			do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
 			VE_IGNORE_EINTR (close (comm_fd));
 			comm_fd = 0;
 			/* returns the error */
@@ -314,6 +318,23 @@ gdmcomm_call_gdm_real (const char *command,
 		comm_fd = 0;
 		return gdmcomm_call_gdm_real (command, auth_cookie,
 			min_version, tries - 1, try_start);
+	}
+
+	/*
+	 * We want to leave the connection open if bulk_acs is set to
+	 * true, so clients can read as much config data in one 
+	 * sockets connection when it is set.  This requires that
+	 * GDM client programs ensure that they call the bulk_start
+	 * and bulk_stop functions around blocks of code that
+	 * need to read data in bulk.  If a client reads config data
+	 * outside of the bulk_start/stop functions, then this
+	 * will just negatively affect performance since an additional
+	 * socket will be opened to read that config data.
+	 */
+	if (bulk_acs == FALSE) {
+		do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
+		VE_IGNORE_EINTR (close (comm_fd));
+		comm_fd = 0;
 	}
 
 	return ret;
@@ -361,14 +382,22 @@ gdmcomm_set_allow_sleep (gboolean val)
 }
 
 void
-gdmcomm_comm_close (void)
+gdmcomm_comm_bulk_start (void)
 {
+	bulk_acs = TRUE;
+}
+
+void
+gdmcomm_comm_bulk_stop (void)
+{
+	/* Close the connection */
 	if (comm_fd > 0) {
 		do_command (comm_fd, GDM_SUP_CLOSE, FALSE);
 		VE_IGNORE_EINTR (close (comm_fd));
 	}
 	comm_fd  = 0;
 	num_cmds = 0;
+	bulk_acs = FALSE;
 }
 
 const char *

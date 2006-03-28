@@ -220,6 +220,9 @@ main (int argc, char *argv[])
 		}
 	}
 
+	/* Start reading config data in bulk */
+	gdmcomm_comm_bulk_start ();
+
 	/*
 	 * All other commands besides LIST need root cookie.  Only bother
          * getting the cookie if we haven't already gotten it since we do
@@ -278,8 +281,8 @@ main (int argc, char *argv[])
 		}
 	}
 
-	/* Close socket now we are done using it. */
-	gdmcomm_comm_close ();
+	/* Done reading config data */
+	gdmcomm_comm_bulk_stop ();
 
 	/*
          * If the connection failed, sleep and try again.  The sleep time is

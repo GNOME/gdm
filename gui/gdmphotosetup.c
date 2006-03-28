@@ -307,6 +307,8 @@ main (int argc, char *argv[])
 	gtk_init(&argc, &argv);
 	photofile = g_build_filename (g_get_home_dir (), ".face", NULL);
 
+	/* Read config data in bulk */
+	gdmcomm_comm_bulk_start ();
 	face_browser = gdm_config_get_bool (GDM_KEY_BROWSER);
 	max_size     = gdm_config_get_int (GDM_KEY_USER_MAX_FILE);
 	max_width    = gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH);
@@ -314,7 +316,7 @@ main (int argc, char *argv[])
 	greeter      = gdm_config_get_string (GDM_KEY_GREETER);
 	facedir      = gdm_config_get_string (GDM_KEY_GLOBAL_FACE_DIR);
 	/* At this point we are done using the socket, so close it */
-	gdmcomm_comm_close ();
+	gdmcomm_comm_bulk_stop ();
 	imagename    = NULL;
 
 	gtk_window_set_default_icon_name ("stock_person");

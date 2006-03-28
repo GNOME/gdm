@@ -6455,13 +6455,20 @@ main (int argc, char *argv[])
 	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-setup.png", NULL);	
 	glade_gnome_init();
 
+	/* Start using socket */
+	gdmcomm_comm_bulk_start ();
+
 	config_file = gdm_common_get_config_file ();
 	if (config_file == NULL) {
+		/* Done using socket */
+		gdmcomm_comm_bulk_stop ();
 		g_print (_("Could not access GDM configuration file.\n"));
 		exit (EXIT_FAILURE);
 	}
 	custom_config_file = gdm_common_get_custom_config_file ();
 	if (config_file == NULL) {
+		/* Done using socket */
+		gdmcomm_comm_bulk_stop ();
 		g_print (_("Could not access GDM configuration file.\n"));
 		exit (EXIT_FAILURE);
 	}
@@ -6501,6 +6508,9 @@ main (int argc, char *argv[])
 
 	if ( ! DOING_GDM_DEVELOPMENT &&
 	     geteuid() != 0) {
+		/* Done using socket */
+		gdmcomm_comm_bulk_stop ();
+
 		GtkWidget *fatal_error = 
 			ve_hig_dialog_new (NULL /* parent */,
 					   GTK_DIALOG_MODAL /* flags */,
@@ -6536,6 +6546,10 @@ main (int argc, char *argv[])
         xservers = gdm_config_get_xservers (FALSE);
 
 	dialog = setup_gui ();
+
+	/* Done using socket */
+	gdmcomm_comm_bulk_stop ();
+
 	g_signal_connect (G_OBJECT (dialog), "response",
 			  G_CALLBACK (apply_user_changes), dialog);
 	gtk_widget_show (dialog);

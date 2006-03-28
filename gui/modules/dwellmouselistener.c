@@ -44,7 +44,7 @@
  * if this module is ever moved outside of gdm.
  */
 
-#define CONFIGFILE EXPANDED_SYSCONFDIR "/gdm/modules/AccessDwellMouseEvents"
+#define CONFIGFILE GDMCONFDIR "/modules/AccessDwellMouseEvents"
 #define iseol(ch)       ((ch) == '\r' || (ch) == '\f' || (ch) == '\0' || \
                         (ch) == '\n')
 

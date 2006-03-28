@@ -1,3 +1,29 @@
+2006-03-27  Brian Cameron  <brian.cameron@sun.com>
+
+	* acconfig.h, configure.ac, config/Makefile.am, config/PostLogin,
+	  config/gdm.conf.in, daemon/Makefile.am, daemon/gdm.[ch],
+	  daemon/gdmconfig.c, gui/Makefile.am, gui/greeter/Makeifle.am,
+	  gui/modules/Makefile.am, gui/modules/dwellmouselistener.c,
+	  gui/modules/keymouselistener.c, utils/Makefile.am: Now support
+	  --with-sysconfsubdir so that GDM can be configured to have
+	  the config files in a directory that isn't hardcoded to have "/gdm"
+	  at the end.  Fixes bug #335957.  Patch provided by Julio M
+	  Merino Vidal <jmmv@NetBSD.org> with minor changes by me to fix
+	  some usage of EXPANDED_GDMCONFDIR that caused breakage on Solaris.
+
+	* gui/gdmXnestchooser, gui/gdmchooser.c, gui/gdmcomm.[ch],
+	  gui/gdmdynamic.c, gui/gdmflexiserver.c, gui/gdmlogin.c,
+	  gui/gdmphotosetup.c, gui/greeter/greeter.c:  Now use
+	  gdmcomm_comm_bulk_start and gdmcomm_comm_bulk_stop to wrap areas of
+	  the code where we want to keep the sockets connection open for
+	  performance.  This makes gdmsetup start faster and better ensures
+ 	  that sockets are not left open.  Now gdmcomm_call_gdm will always
+	  close the socket unless inside such a block, ensuring that if distros
+	  add patches to read new config values at random points in the code,
+	  the socket won't be left open.
+
+	* daemon/gdm.c: Fix gdm_debug message.
+
 2006-03-22  Tommi Vainikainen  <thv@iki.fi>
 
 	* configure.ac (ALL_LINGUAS): Added Dzongkha (dz).

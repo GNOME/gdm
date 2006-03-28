@@ -3,7 +3,6 @@ SUBDIRS = . greeter modules faces
 ## Process this file with automake to produce makefile.in
 DEFS = @DEFS@ \
 	-DPREFIX=\"@prefix@\" \
-	-DSYSCONFDIR=\"@sysconfdir@\" \
 	-DDATADIR=\"@datadir@\" \
 	-DLIBDIR=\"@libdir@\" \
 	-DGDM_GLADE_DIR=\"@datadir@/gdm\"

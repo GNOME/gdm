@@ -882,8 +882,8 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
        } else {
           gdm_info (_("%s: BaseXsession empty; using %s/gdm/Xsession"),
                       "gdm_config_parse",
-                      EXPANDED_SYSCONFDIR);
-          *setting = g_build_filename (EXPANDED_SYSCONFDIR,
+                      GDMCONFDIR);
+          *setting = g_build_filename (GDMCONFDIR,
                                        "gdm", "Xsession", NULL);
        }
 

@@ -69,6 +69,10 @@ check_for_displays (void)
 	char  *auth_cookie = NULL;
 	int    i;
 
+	/*
+	 * Might be nice to move this call into read_config() so that it happens
+	 * on the same socket call as reading the configuration.
+	 */
 	ret = gdmcomm_call_gdm (GDM_SUP_ATTACHED_SERVERS, auth_cookie, "2.2.4.0", 5);
 	if (ve_string_empty (ret) || strncmp (ret, "OK ", 3) != 0) {
 		g_free (ret);

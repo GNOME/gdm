@@ -39,6 +39,25 @@ fi
 old_exec_prefix=$exec_prefix
 exec_prefix=$REAL_EXEC_PREFIX
 
+dnl
+dnl Let the user configure where to look for the configuration files.
+dnl
+
+AC_ARG_WITH(sysconfsubdir, AC_HELP_STRING([--with-sysconfsubdir],
+            [directory name used under sysconfdir, default=gdm]),
+            sysconfsubdir=${withval}, sysconfsubdir=gdm)
+AC_SUBST(sysconfsubdir)
+if test x"${sysconfsubdir}" != x; then
+    gdmconfdir='${sysconfdir}/${sysconfsubdir}'
+else
+    gdmconfdir='${sysconfdir}'
+fi
+AC_SUBST(gdmconfdir)
+
+AC_ARG_WITH(dmconfdir, AC_HELP_STRING([--with-dmconfdir],
+            [directory where Sessions are stored, default=SYSCONFDIR/dm]),
+            dmconfdir=${withval}, dmconfdir=${sysconfdir}/dm)
+AC_SUBST(dmconfdir)
 
 dnl
 dnl Configure arguments
@@ -808,7 +827,7 @@ EXPANDED_LIBDIR=`eval echo $LIBDIR_TMP`
 AC_SUBST(EXPANDED_LIBDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LIBDIR,"$EXPANDED_LIBDIR")
 
-LOCALEDIR_TMP="$sysconfdir/gdm"
+LOCALEDIR_TMP="$gdmconfdir"
 EXPANDED_LOCALEDIR=`eval echo $LOCALEDIR_TMP`
 AC_SUBST(EXPANDED_LOCALEDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LOCALEDIR,"$EXPANDED_LOCALEDIR")
@@ -823,10 +842,15 @@ EXPANDED_LOGDIR=`eval echo $LOGDIR_TMP`
 AC_SUBST(EXPANDED_LOGDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LOGDIR,"$EXPANDED_LOGDIR")
 
-SYSCONFDIR_TMP="$sysconfdir"
-EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`
-AC_SUBST(EXPANDED_SYSCONFDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_SYSCONFDIR,"$EXPANDED_SYSCONFDIR")
+DMCONFDIR_TMP="$dmconfdir"
+EXPANDED_DMCONFDIR=`eval echo $DMCONFDIR_TMP`
+AC_SUBST(EXPANDED_DMCONFDIR)
+AC_DEFINE_UNQUOTED(EXPANDED_DMCONFDIR,"$EXPANDED_DMCONFDIR")
+
+GDMCONFDIR_TMP="$gdmconfdir"
+EXPANDED_GDMCONFDIR=`eval echo $GDMCONFDIR_TMP`
+AC_SUBST(EXPANDED_GDMCONFDIR)
+AC_DEFINE_UNQUOTED(EXPANDED_GDMCONFDIR,"$EXPANDED_GDMCONFDIR")
 
 if test x$DMX_SUPPORT = xyes ; then
 	GDM_RECONNECT_PROXY=$EXPANDED_BINDIR/gdm-dmx-reconnect-proxy
@@ -863,15 +887,15 @@ AC_DEFINE_UNQUOTED(GDM_DEFAULTS_CONF,"$GDM_DEFAULTS_CONF")
 
 withval=""
 AC_ARG_WITH(custom_conf,
-[  --with-custom-conf=<FILENAME>   FILENAME to give to custom configuration file [default=SYSCONFDIR/gdm/custom.conf]],)
+[  --with-custom-conf=<FILENAME>   FILENAME to give to custom configuration file [default=GDMCONFDIR/custom.conf]],)
 
 if test x$withval != x; then
 	GDM_CUSTOM_CONF="$withval"
 else
-	GDM_CUSTOM_CONF="$sysconfdir/gdm/custom.conf"
+	GDM_CUSTOM_CONF="$EXPANDED_GDMCONFDIR/custom.conf"
 fi
 
-GDM_OLD_CONF="$sysconfdir/gdm/gdm.conf"
+GDM_OLD_CONF="$EXPANDED_GDMCONFDIR/gdm.conf"
 
 AC_SUBST(GDM_CUSTOM_CONF)
 AC_DEFINE_UNQUOTED(GDM_CUSTOM_CONF,"$GDM_CUSTOM_CONF")
@@ -885,7 +909,7 @@ AC_ARG_WITH(prefetch,
 if test x$with_prefetch != xno ; then
 	GDMPREFETCH="gdmprefetch"
         GDMPREFETCHLIST="gdmprefetchlist"
-        GDMPREFETCHCMD="$EXPANDED_LIBDIR/gdmprefetch @$EXPANDED_SYSCONFDIR/gdm/gdmprefetchlist"
+        GDMPREFETCHCMD="$EXPANDED_LIBDIR/gdmprefetch @$EXPANDED_GDMCONFDIR/gdmprefetchlist"
 fi
 AC_SUBST(GDMPREFETCH)
 AC_SUBST(GDMPREFETCHLIST)
@@ -1098,7 +1122,7 @@ AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
 AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launching xserver)
 
-SESSDIR_TMP="$sysconfdir/gdm/Sessions"
+SESSDIR_TMP="$EXPANDED_GDMCONFDIR/Sessions"
 EXPANDED_SESSDIR=`eval echo $SESSDIR_TMP`
 AC_SUBST(EXPANDED_SESSDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_SESSDIR,"$EXPANDED_SESSDIR")
@@ -1184,11 +1208,13 @@ echo ""
 
 dnl <= Prefixes =>
 echo "prefix : $prefix"
-echo "sysconf dir : "`eval echo $sysconfdir`
+echo "sysconf "`eval echo $EXPANDED_SYSCONFDIR`
+echo "gdmconf dir : "`eval echo $EXPANDED_GDMCONFDIR`
+echo "dmconf dir : "`eval echo $EXPANDED_DMCONFDIR`
 echo "bin dir : $EXPANDED_BINDIR"
 echo "sbin dir : $EXPANDED_SBINDIR"
 echo "PAM prefix : $PAM_PREFIX"
-echo "data dir : "`eval echo $datadir`
+echo "data dir : "`eval echo $EXPANDED_DATADIR`
 echo "X server : "`eval echo $X_SERVER`
 echo ""
 

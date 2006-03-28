@@ -45,7 +45,7 @@
  * Note that CONFIGFILE will have to be moved to somewhere more generic
  * if this module is ever moved outside of gdm.
  */
-#define CONFIGFILE EXPANDED_SYSCONFDIR "/gdm/modules/AccessKeyMouseEvents"
+#define CONFIGFILE GDMCONFDIR "/modules/AccessKeyMouseEvents"
 #define	iseol(ch)	((ch) == '\r' || (ch) == '\f' || (ch) == '\0' || \
 			(ch) == '\n')
 

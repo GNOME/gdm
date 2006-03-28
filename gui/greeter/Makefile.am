@@ -6,7 +6,7 @@ INCLUDES = \
 	-I$(top_srcdir)/gui				\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
-	-DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
+	-DGDM_CONFIG_FILE=\"$(gdmconfdir)/gdm.conf\"	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(GUI_CFLAGS)					\
 	$(GREETER_CFLAGS)

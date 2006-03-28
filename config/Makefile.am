@@ -1,16 +1,15 @@
 pixmapdir = $(datadir)/pixmaps
-confdir = $(sysconfdir)/gdm
-crossconfdir = $(sysconfdir)/dm
-localedir = $(sysconfdir)/gdm
+confdir = $(gdmconfdir)
+localedir = $(gdmconfdir)
 bisessdir = $(datadir)/gdm/BuiltInSessions
 instsessdir = $(datadir)/xsessions
-initdir = $(sysconfdir)/gdm/Init
+initdir = $(gdmconfdir)/Init
 authdir = $(localstatedir)/gdm
 logdir = $(localstatedir)/log/gdm
-gnomercdir = $(sysconfdir)/gdm
-postdir = $(sysconfdir)/gdm/PostSession
-predir = $(sysconfdir)/gdm/PreSession
-postlogindir = $(sysconfdir)/gdm/PostLogin
+gnomercdir = $(gdmconfdir)
+postdir = $(gdmconfdir)/PostSession
+predir = $(gdmconfdir)/PreSession
+postlogindir = $(gdmconfdir)/PostLogin
 
 noinst_DATA = gdm.conf
 
@@ -70,9 +69,9 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
 	fi
-	if test '!' -d $(DESTDIR)$(crossconfdir); then \
-		$(mkinstalldirs) $(DESTDIR)$(crossconfdir); \
-		chmod 755 $(DESTDIR)$(crossconfdir); \
+	if test '!' -d $(DESTDIR)$(dmconfdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(dmconfdir); \
+		chmod 755 $(DESTDIR)$(dmconfdir); \
 	fi
 	if test '!' -d `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`; then \
 		$(mkinstalldirs) `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`; \

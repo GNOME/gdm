@@ -474,7 +474,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    g_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
 		    g_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
 		    g_setenv ("LIBEXECDIR", EXPANDED_LIBEXECDIR, TRUE);
-		    g_setenv ("SYSCONFDIR", EXPANDED_SYSCONFDIR, TRUE);
+		    g_setenv ("SYSCONFDIR", GDMCONFDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
 		    g_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
@@ -2821,7 +2821,7 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 	gdm_debug ("Handling user message: '%s'", msg);
 
 	if (gdm_connection_get_message_count (conn) > GDM_SUP_MAX_MESSAGES) {
-		gdm_debug ("Closing connection, %d messages reached");
+		gdm_debug ("Closing connection, %d messages reached", GDM_SUP_MAX_MESSAGES);
 		gdm_connection_write (conn, "ERROR 200 Too many messages\n");
 		gdm_connection_close (conn);
 		return;
@@ -3144,10 +3144,16 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_GET_CUSTOM_CONFIG_FILE) == 0) {
 		GString *msg;
+		gchar *ret;
 
 		msg = g_string_new ("OK");
 		g_string_append (msg, "\n");
-		gdm_connection_printf (conn, "OK %s\n", gdm_get_custom_config_file ());
+		ret = gdm_get_custom_config_file ();
+		if (ret)
+			gdm_connection_printf (conn, "OK %s\n", ret);
+		else
+			gdm_connection_write (conn,
+					      "ERROR 1 File not found\n");
 		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
 		const gchar *sep = " ";

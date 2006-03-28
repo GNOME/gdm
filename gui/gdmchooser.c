@@ -1776,6 +1776,9 @@ gdm_chooser_gui_init (void)
 static gboolean
 gdm_read_config (void)
 {
+	/* Read config data in bulk */
+	gdmcomm_comm_bulk_start ();
+
 	gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
 	/*
@@ -1798,13 +1801,16 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_ALLOW_ADD);
 	gdm_config_get_bool   (GDM_KEY_MULTICAST);
 
-	gdmcomm_comm_close();
+	gdmcomm_comm_bulk_stop ();
 }
 
 static gboolean
 gdm_reread_config (int sig, gpointer data)
 {
 	/* reparse config stuff here.  At least ones we care about */
+
+	/* Read config data in bulk */
+	gdmcomm_comm_bulk_start ();
 
 	if (gdm_config_reload_bool (GDM_KEY_DEBUG))
 		gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
@@ -1842,11 +1848,13 @@ gdm_reread_config (int sig, gpointer data)
 	if (gdm_config_reload_string (GDM_KEY_BACKGROUND_COLOR) ||
 	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_TYPE)) {
 
-		if (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE) != GDM_BACKGROUND_NONE)
-			gdm_common_setup_background_color (gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR));
+		if (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE) != GDM_BACKGROUND_NONE) {
+			gdm_common_setup_background_color (gdm_config_get_string
+				(GDM_KEY_BACKGROUND_COLOR));
+		}
 	}
 
-	gdmcomm_comm_close();
+	gdmcomm_comm_bulk_stop ();
 
 	return TRUE;
 }

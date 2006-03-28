@@ -6,6 +6,7 @@ INCLUDES = \
 	-I.						\
 	-I..						\
 	-I$(top_srcdir)/vicious-extensions		\
+	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DLOCALEDIR=\"$(datadir)/locale\"		\
 	$(GUI_CFLAGS)					\

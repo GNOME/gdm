@@ -733,6 +733,9 @@ main (int argc, char *argv[])
 		return 1;
 	}
 
+	/* Start reading config data in bulk */
+	gdmcomm_comm_bulk_start ();
+
 	/* Process --command option */
 
 	if (send_command != NULL) {
@@ -770,7 +773,7 @@ main (int argc, char *argv[])
 		}
 
 		/* At this point we are done using the socket, so close it */
-		gdmcomm_comm_close ();
+		gdmcomm_comm_bulk_stop ();
 
 		if (ret != NULL) {
 			g_print ("%s\n", ret);
@@ -819,9 +822,11 @@ main (int argc, char *argv[])
 
 	if (use_xnest) {
 		char *cookie = gdmcomm_get_a_cookie (FALSE /* binary */);
+
 		if (cookie == NULL) {
+
 			/* At this point we are done using the socket, so close it */
-			gdmcomm_comm_close ();
+			gdmcomm_comm_bulk_stop ();
 
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
@@ -849,8 +854,9 @@ main (int argc, char *argv[])
 		auth_cookie = NULL;
 	} else {
 		if (auth_cookie == NULL) {
+
 			/* At this point we are done using the socket, so close it */
-			gdmcomm_comm_close ();
+			gdmcomm_comm_bulk_stop ();
 
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
@@ -883,7 +889,7 @@ main (int argc, char *argv[])
 	g_free (command);
 
 	/* At this point we are done using the socket, so close it */
-	gdmcomm_comm_close ();
+	gdmcomm_comm_bulk_stop ();
 
 	if (ret != NULL &&
 	    strncmp (ret, "OK ", 3) == 0) {
