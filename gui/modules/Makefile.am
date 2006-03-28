@@ -49,6 +49,16 @@ EXTRA_DIST = \
 	AccessKeyMouseEvents.in \
 	AccessDwellMouseEvents.in
 
+CLEANFILES = AccessKeyMouseEvents AccessDwellMouseEvents
+
+AccessKeyMouseEvents: $(srcdir)/AccessKeyMouseEvents.in
+	sed -e 's,[@]AT_BINDIR[@],$(AT_BINDIR),g' \
+		<$(srcdir)/AccessKeyMouseEvents.in >AccessKeyMouseEvents
+
+AccessDwellMouseEvents: $(srcdir)/AccessDwellMouseEvents.in
+	sed -e 's,[@]AT_BINDIR[@],$(AT_BINDIR),g' \
+		<$(srcdir)/AccessDwellMouseEvents.in >AccessDwellMouseEvents
+
 uninstall-hook: 
 	rm -f $(DESTDIR)$(moduleconfdir)/AccessKeyMouseEvents \
 	$(DESTDIR)$(moduleconfdir)/factory-AccessKeyMouseEvents \

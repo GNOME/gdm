@@ -1,3 +1,29 @@
+2006-03-28  Julio M. Merino Vidal  <jmmv@NetBSD.org>
+
+	* daemon/xdmcp.c: Removed a C99 local variable definition that
+	  breaks the build with gcc 2.95 (e.g. under NetBSD 1.6).  Fixes
+	  bug #336368.
+
+2006-03-28  Julio M. Merino Vidal  <jmmv@NetBSD.org>
+
+	* daemon/gdmconfig.c, daemon/server.c: Include sys/resource.h,
+	  needed to use setpriority(2) and its associated definitions.
+	  Fixes the build under NetBSD, closing bug #336369.
+
+2006-03-28  Julio M. Merino Vidal  <jmmv@NetBSD.org>
+
+	* Makefile.am, README.install, acconfig.h, configure.ac,
+	  gdmsetup-security.in, config/Makefile.am, config/Xsession.in,
+	  config/gdm.conf.in, daemon/Makefile.am, daemon/gdm.c, daemon/gdm.h,
+	  daemon/gdm.in, daemon/gdmconfig.c, daemon/misc.c, daemon/server.c,
+	  daemon/slave.c, docs/C/gdm.xml, gui/Makefile.am, gui/gdmphotosetup.c,
+	  gui/gdmsetup.c, gui/gdmsetup.desktop.in, gui/greeter/Makefile.am,
+	  gui/greeter/gdmthemetester.in, gui/greeter/greeter.c,
+	  gui/modules/Makefile.am: Get rid of all EXPANDED_* variables from
+	  the build procedure.  Directory-related variables must only be
+	  expanded from the Makefiles so that they can be easily overriden
+	  during the installation phase.  Fixes bug #336364.
+
 2006-03-28  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac: One line change to reflect comment #7 in bug

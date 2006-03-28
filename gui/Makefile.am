@@ -3,9 +3,15 @@ SUBDIRS = . greeter modules faces
 ## Process this file with automake to produce makefile.in
 DEFS = @DEFS@ \
 	-DPREFIX=\"@prefix@\" \
+	-DAUTHDIR=\"@authdir@\" \
 	-DDATADIR=\"@datadir@\" \
+	-DDMCONFDIR=\"@dmconfdir@\" \
+	-DGDMLOCALEDIR=\"@gdmlocaledir@\" \
+	-DGDM_GLADE_DIR=\"@datadir@/gdm\" \
 	-DLIBDIR=\"@libdir@\" \
-	-DGDM_GLADE_DIR=\"@datadir@/gdm\"
+	-DLIBEXECDIR=\"@libexecdir@\" \
+	-DPIXMAPDIR=\"@pixmapdir@\" \
+	-DSBINDIR=\"@sbindir@\"
 
 INCLUDES = \
 	-I.						\
@@ -205,6 +211,12 @@ System_in_files = \
 	gdmflexiserver.desktop.in	\
 	gdmflexiserver-xnest.desktop.in
 System_DATA = $(System_in_files:.desktop.in=.desktop)
+
+CLEANFILES = gdmsetup.desktop
+
+gdmsetup.desktop: $(srcdir)/gdmsetup.desktop.in
+	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdmsetup.desktop.in \
+		>gdmsetup.desktop
 
 @INTLTOOL_DESKTOP_RULE@
 

@@ -26,7 +26,7 @@ echo
 
 XNEST=`gdmwhich Xnest`
 GDMXNEST=`gdmwhich gdmXnest`
-GDMGREETER="@EXPANDED_LIBEXECDIR@/gdmgreeter"
+GDMGREETER="@libexecdir@/gdmgreeter"
 
 if [ x$XNEST = x ]; then
 	echo "ERROR: Xnest not found"
@@ -106,4 +106,4 @@ fi
 # This may not be necessary
 sleep 1
 
-@EXPANDED_LIBEXECDIR@/gdmgreeter
+@libexecdir@/gdmgreeter

@@ -6,8 +6,15 @@ INCLUDES = \
 	-I$(top_srcdir)/gui				\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
+	-DAUTHDIR=\""$(authdir)"\"		 	\
+	-DDATADIR=\""$(datadir)"\"		 	\
+	-DDMCONFDIR=\""$(dmconfdir)"\"		 	\
 	-DGDM_CONFIG_FILE=\"$(gdmconfdir)/gdm.conf\"	\
+	-DGDMLOCALEDIR=\""$(gdmlocaledir)"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
+	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
+	-DSBINDIR=\""$(sbindir)"\"		 	\
+	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
 	$(GUI_CFLAGS)					\
 	$(GREETER_CFLAGS)
 
@@ -24,6 +31,12 @@ libexec_PROGRAMS = \
 
 bin_SCRIPTS = \
 	gdmthemetester
+
+CLEANFILES = gdmthemetester
+
+gdmthemetester: $(srcdir)/gdmthemetester.in
+	sed -e 's,[@]libexecdir[@],$(libexecdir),g' \
+		<$(srcdir)/gdmthemetester.in >gdmthemetester
 
 gdmgreeter_SOURCES =  \
 	greeter.c \

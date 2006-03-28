@@ -38,6 +38,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/resource.h>
 #include <sys/stat.h>
 #include <signal.h>
 #include <pwd.h>
@@ -2193,7 +2194,7 @@ static gboolean
 is_in_trusted_pic_dir (const char *path)
 {
         /* our own pixmap dir is trusted */
-        if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
+        if (strncmp (path, PIXMAPDIR, sizeof (PIXMAPDIR)) == 0)
                 return TRUE;
 
         return FALSE;

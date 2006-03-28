@@ -28,6 +28,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <sys/types.h>
+#include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <strings.h>
@@ -336,7 +337,7 @@ static gboolean
 busy_ask_user (GdmDisplay *disp)
 {
     /* if we have "open" we can talk to the user */
-    if (g_access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
+    if (g_access (LIBEXECDIR "/gdmopen", X_OK) == 0) {
 	    char *error = g_strdup_printf
 		    (C_(N_("There already appears to be an X server "
 			   "running on display %s.  Should another "

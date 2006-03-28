@@ -36,6 +36,41 @@ EXTRA_DIST = \
 	gdmprefetchlist.in \
 	extract-shell.sh
 
+CLEANFILES = Xsession gdm.conf ssh.desktop
+
+Xsession: $(srcdir)/Xsession.in
+	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
+		-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		<$(srcdir)/Xsession.in >Xsession
+
+gdm.conf: $(srcdir)/gdm.conf.in
+	sed	-e 's,[@]GDMPREFETCHCMD[@],$(GDMPREFETCHCMD),g' \
+		-e 's,[@]GDM_USER_PATH[@],$(GDM_USER_PATH),g' \
+		-e 's,[@]HALT_COMMAND[@],$(HALT_COMMAND),g' \
+		-e 's,[@]REBOOT_COMMAND[@],$(REBOOT_COMMAND),g' \
+		-e 's,[@]SOUND_PROGRAM[@],$(SOUND_PROGRAM),g' \
+		-e 's,[@]SUSPEND_COMMAND[@],$(SUSPEND_COMMAND),g' \
+		-e 's,[@]XEVIE_OPTION[@],$(XEVIE_OPTION),g' \
+		-e 's,[@]X_CONFIG_OPTIONS[@],$(X_CONFIG_OPTIONS),g' \
+		-e 's,[@]X_SERVER[@],$(X_SERVER),g' \
+		-e 's,[@]X_XNEST_CONFIG_OPTIONS[@],$(X_XNEST_CONFIG_OPTIONS),g' \
+		-e 's,[@]X_XNEST_PATH[@],$(X_XNEST_PATH),g' \
+		-e 's,[@]authdir[@],$(authdir),g' \
+		-e 's,[@]datadir[@],$(datadir),g' \
+		-e 's,[@]dmconfdir[@],$(dmconfdir),g' \
+		-e 's,[@]gdmconfdir[@],$(gdmconfdir),g' \
+		-e 's,[@]libdir[@],$(libdir),g' \
+		-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		-e 's,[@]localedir[@],$(libexecdir),g' \
+		-e 's,[@]logdir[@],$(logdir),g' \
+		-e 's,[@]pixmapdir[@],$(pixmapdir),g' \
+		-e 's,[@]sbindir[@],$(sbindir),g' \
+		<$(srcdir)/gdm.conf.in >gdm.conf
+
+ssh.desktop: $(srcdir)/ssh.desktop.in
+	sed	-e 's,[@]GDMSSHSESSIONCMD[@],$(GDMSSHSESSIONCMD),g' \
+		<$(srcdir)/ssh.desktop.in >ssh.desktop
+
 gettextfoo.h: XKeepsCrashing Xsession.in
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 

@@ -185,7 +185,7 @@ enum {
  */
 
 /* Configuration constants */
-#define GDM_KEY_CHOOSER "daemon/Chooser=" EXPANDED_LIBEXECDIR "/gdmchooser"
+#define GDM_KEY_CHOOSER "daemon/Chooser=" LIBEXECDIR "/gdmchooser"
 #define GDM_KEY_AUTOMATIC_LOGIN_ENABLE "daemon/AutomaticLoginEnable=false"
 #define GDM_KEY_AUTOMATIC_LOGIN "daemon/AutomaticLogin="
 /* The SDTLOGIN feature is Solaris specific, and causes the Xserver to be
@@ -197,15 +197,15 @@ enum {
 #else
 #define GDM_KEY_ALWAYS_RESTART_SERVER "daemon/AlwaysRestartServer=false"
 #endif
-#define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_LIBEXECDIR "/gdmlogin"
-#define GDM_KEY_REMOTE_GREETER "daemon/RemoteGreeter=" EXPANDED_LIBEXECDIR "/gdmlogin"
+#define GDM_KEY_GREETER "daemon/Greeter=" LIBEXECDIR "/gdmlogin"
+#define GDM_KEY_REMOTE_GREETER "daemon/RemoteGreeter=" LIBEXECDIR "/gdmlogin"
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
 #define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=" HALT_COMMAND
 #define GDM_KEY_DISPLAY_INIT_DIR "daemon/DisplayInitDir=" GDMCONFDIR "/Init"
 #define GDM_KEY_KILL_INIT_CLIENTS "daemon/KillInitClients=true"
-#define GDM_KEY_LOG_DIR "daemon/LogDir=" EXPANDED_LOGDIR
+#define GDM_KEY_LOG_DIR "daemon/LogDir=" LOGDIR
 #define GDM_KEY_PATH "daemon/DefaultPath=" GDM_USER_PATH
 #define GDM_KEY_PID_FILE "daemon/PidFile=/var/run/gdm.pid"
 #define GDM_KEY_POSTSESSION "daemon/PostSessionScriptDir=" GDMCONFDIR "/PostSession/"
@@ -215,8 +215,8 @@ enum {
 #define GDM_KEY_X_KEEPS_CRASHING "daemon/XKeepsCrashing=" GDMCONFDIR "/XKeepsCrashing"
 #define GDM_KEY_REBOOT  "daemon/RebootCommand=" REBOOT_COMMAND
 #define GDM_KEY_ROOT_PATH "daemon/RootPath=/sbin:/usr/sbin:" GDM_USER_PATH
-#define GDM_KEY_SERV_AUTHDIR "daemon/ServAuthDir=" EXPANDED_AUTHDIR
-#define GDM_KEY_SESSION_DESKTOP_DIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_DMCONFDIR "/Sessions/:" EXPANDED_DATADIR "/gdm/BuiltInSessions/:" EXPANDED_DATADIR "/xsessions/"
+#define GDM_KEY_SERV_AUTHDIR "daemon/ServAuthDir=" AUTHDIR
+#define GDM_KEY_SESSION_DESKTOP_DIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" DMCONFDIR "/Sessions/:" DATADIR "/gdm/BuiltInSessions/:" DATADIR "/xsessions/"
 #define GDM_KEY_BASE_XSESSION "daemon/BaseXsession=" GDMCONFDIR "/Xsession"
 #define GDM_KEY_DEFAULT_SESSION "daemon/DefaultSession=gnome.desktop"
 #define GDM_KEY_SUSPEND "daemon/SuspendCommand=" SUSPEND_COMMAND
@@ -293,7 +293,7 @@ enum {
 #define GDM_KEY_XDMCP_PROXY_RECONNECT "xdmcp/ProxyReconnect="
 
 #define GDM_KEY_GTK_THEME "gui/GtkTheme=Default"
-#define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk-2.0/gtkrc"
+#define GDM_KEY_GTKRC "gui/GtkRC=" DATADIR "/themes/Default/gtk-2.0/gtkrc"
 #define GDM_KEY_MAX_ICON_WIDTH "gui/MaxIconWidth=128"
 #define GDM_KEY_MAX_ICON_HEIGHT "gui/MaxIconHeight=128"
 
@@ -305,14 +305,14 @@ enum {
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm,nfsnobody,pcap"
 #define GDM_KEY_INCLUDE_ALL "greeter/IncludeAll=false"
 #define GDM_KEY_MINIMAL_UID "greeter/MinimalUID=100"
-#define GDM_KEY_DEFAULT_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "/nobody.png"
-#define GDM_KEY_GLOBAL_FACE_DIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
-#define GDM_KEY_LOCALE_FILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
-#define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
-#define GDM_KEY_CHOOSER_BUTTON_LOGO "greeter/ChooserButtonLogo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
+#define GDM_KEY_DEFAULT_FACE "greeter/DefaultFace=" PIXMAPDIR "/nobody.png"
+#define GDM_KEY_GLOBAL_FACE_DIR "greeter/GlobalFaceDir=" DATADIR "/pixmaps/faces/"
+#define GDM_KEY_LOCALE_FILE "greeter/LocaleFile=" GDMLOCALEDIR "/locale.alias"
+#define GDM_KEY_LOGO "greeter/Logo=" PIXMAPDIR "/gdm-foot-logo.png"
+#define GDM_KEY_CHOOSER_BUTTON_LOGO "greeter/ChooserButtonLogo=" PIXMAPDIR "/gdm-foot-logo.png"
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
 #define GDM_KEY_SYSTEM_MENU "greeter/SystemMenu=true"
-#define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_SBINDIR "/gdmsetup --disable-sound --disable-crash-dialog"
+#define GDM_KEY_CONFIGURATOR "daemon/Configurator=" SBINDIR "/gdmsetup --disable-sound --disable-crash-dialog"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_CHOOSER_BUTTON "greeter/ChooserButton=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
@@ -357,7 +357,7 @@ enum {
 #define GDM_KEY_GRAPHICAL_THEME "greeter/GraphicalTheme=circles"
 #define GDM_KEY_GRAPHICAL_THEMES "greeter/GraphicalThemes=circles"
 #define GDM_KEY_GRAPHICAL_THEME_RAND "greeter/GraphicalThemeRand=false"
-#define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" EXPANDED_DATADIR "/gdm/themes/"
+#define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" DATADIR "/gdm/themes/"
 #define GDM_KEY_GRAPHICAL_THEMED_COLOR "greeter/GraphicalThemedColor=#76848F"
 
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
@@ -374,8 +374,8 @@ enum {
 #define GDM_KEY_SOUND_PROGRAM "daemon/SoundProgram=" SOUND_PROGRAM
 
 #define GDM_KEY_SCAN_TIME "chooser/ScanTime=4"
-#define GDM_KEY_DEFAULT_HOST_IMG "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
-#define GDM_KEY_HOST_IMAGE_DIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
+#define GDM_KEY_DEFAULT_HOST_IMG "chooser/DefaultHostImg=" PIXMAPDIR "/nohost.png"
+#define GDM_KEY_HOST_IMAGE_DIR "chooser/HostImageDir=" DATADIR "/hosts/"
 #define GDM_KEY_HOSTS "chooser/Hosts="
 #define GDM_KEY_MULTICAST "chooser/Multicast=true"
 #define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr=ff02::1"

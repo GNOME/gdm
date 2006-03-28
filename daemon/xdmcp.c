@@ -1142,6 +1142,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 
 	if (clnt_port.length == 2 &&
 	       clnt_addr.length == 4) {
+		char * ipv4_addr;
 
 		/* Convert IPv4 address to IPv6 if needed */
 		struct sockaddr_in tmp_disp_sa = {0};
@@ -1149,7 +1150,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_port, clnt_port.data, 2);
 		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr.s_addr, clnt_addr.data, 4);
 
-		char * ipv4_addr = inet_ntoa (((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr);
+		ipv4_addr = inet_ntoa (((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr);
 		strcpy (buffer6, "::ffff:");
 		strncat (buffer6, ipv4_addr, INET_ADDRSTRLEN);
 

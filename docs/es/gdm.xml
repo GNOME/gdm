@@ -246,7 +246,7 @@
 
       <para>Para acelerar el rendimiento es posible construir GDM para que precargue las bibliotecas cuando el GDM muestre un programa de entrada por primera vez. Esto se ha mostrado para acelerar el primer inicio de sesión debido a que estas bibliotecas pueden cargarse en memoria mientras el usuario teclea su nombre y contraseña.</para>
 
-      <para>Para usar esta característica, configura GDM con la opción <command>--with-prefetch</command>. Esto causará que GDM instale el programa <command>gdmprefetch</command> en el directorio EXPANDED_LIBEXEC, instale <filename>gdmprefetchlist</filename> en el directorio <filename>&lt;etc&gt;/gdm</filename>, y establezca la variable de configuración <filename>PreFetchProgram</filename> para que se llame a <command>gdmprefetch</command> con el archivo predeterminado <filename>gdmprefetchlist</filename>. El archivo predeterminado <filename>gdmprefetchlist</filename> se optimizó para un escritorio GNOME ejecutándose en Solaris, así que quizá necesite algo de ajuste fino en otros sistemas. Pueden contribuirse archivos alternativos de prefetchlist en la categoría «gdm» en <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>, para que puedan ser incluidos en lanzamientos futuros de GDM.</para>
+      <para>To use this feature, configure GDM with the <command>--with-prefetch</command> option. This will cause GDM to install the <command>gdmprefetch</command> program to the <filename>libexecdir</filename> directory, install the <filename>gdmprefetchlist</filename> to the <filename>&lt;etc&gt;/gdm</filename> directory, and set the <filename>PreFetchProgram</filename> configuration variable so that the <command>gdmprefetch</command> program is called with the default <filename>gdmprefetchlist</filename> file. The default <filename>gdmprefetchlist</filename> file was optimized for a GNOME desktop running on Solaris, so may need fine-tuning on other systems. Alternative prefetchlist files can be contributed to the "gdm" category in <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink>, so that they can be included in future GDM releases.</para>
     </sect2>
   </sect1>
 
@@ -2440,7 +2440,7 @@ Answers:
     <sect2 id="bindir_binaries">
       <title>Comandos de usuario de GDM</title>
 
-      <para>The GDM package provides the following different commands in EXPANDED_BINDIR intended to be used by the end-user:</para>
+      <para>The GDM package provides the following different commands in <filename>bindir</filename> intended to be used by the end-user:</para>
 
       <sect3 id="gdmxnestchoosercommandline">
         <title>Opciones de línea de comandos de <command>gdmXnestchooser</command> y <command>gdmXnest</command></title>
@@ -2666,7 +2666,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
     <sect2 id="sbindir_binaries">
       <title>Comandos del administrador de GDM</title>
 
-      <para>The GDM package provides the following different commands in EXPANDED_SBINDIR intended to be used by the root user:</para>
+      <para>The GDM package provides the following different commands in <filename>sbindir</filename> intended to be used by the root user:</para>
 
       <sect3 id="gdmcommandline">
         <title>Opciones de línea de comandos de <command>gdm</command> y <command>gdm-binary</command></title>
@@ -2755,7 +2755,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
     <sect2 id="libexecdir_binaries">
       <title>Comandos internos de GDM</title>
 
-      <para>The GDM package provides the following different commands in EXPANDED_LIBEXECDIR intended to be used by the gdm daemon process.</para>
+      <para>The GDM package provides the following different commands in <filename>libexecdir</filename> intended to be used by the gdm daemon process.</para>
 
       <sect3 id="gdmgreeterlogincommandline">
         <title>Opciones de línea de comandos de <command>gdmchooser</command> y <command>gdmlogin</command></title>

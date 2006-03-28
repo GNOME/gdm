@@ -264,9 +264,9 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 						      facedir, NULL);
 	} else {
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
-						     EXPANDED_DATADIR "/pixmaps");
+						     DATADIR "/pixmaps");
 		gtk_file_chooser_add_shortcut_folder (GTK_FILE_CHOOSER (file_dialog),
-						      EXPANDED_DATADIR "/pixmaps", NULL);
+						      DATADIR "/pixmaps", NULL);
 	}
 
 	filter = gtk_file_filter_new ();

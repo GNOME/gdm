@@ -6,9 +6,22 @@ INCLUDES = \
 	-I.						\
 	-I..						\
 	-I$(top_srcdir)/vicious-extensions		\
+	-DAUTHDIR=\"$(authdir)\"			\
+	-DBINDIR=\"$(bindir)\"				\
+	-DDATADIR=\"$(datadir)\"			\
+	-DDMCONFDIR=\"$(dmconfdir)\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
+	-DGDMLOCALEDIR=\"$(gdmlocaledir)\"		\
+	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
+	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
+	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
+	-DGDM_USER_PATH=\"$(GDM_USER_PATH)\"		\
+	-DLIBDIR=\"$(libdir)\"				\
+	-DLIBEXECDIR=\"$(libexecdir)\"			\
+	-DLOGDIR=\"$(logdir)\"				\
+	-DPIXMAPDIR=\"$(pixmapdir)\"			\
+	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-DLOCALEDIR=\"$(datadir)/locale\"		\
 	$(GUI_CFLAGS)					\
 	$(DAEMON_CFLAGS)				\
 	-DPAM_PREFIX=\"$(PAM_PREFIX)\"			\
@@ -83,5 +96,9 @@ gdm_binary_LDADD = \
 	-lpopt
 
 sbin_SCRIPTS = gdm
+CLEANFILES = gdm
+
+gdm: $(srcdir)/gdm.in
+	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdm.in >gdm
 
 EXTRA_DIST = gdm.in

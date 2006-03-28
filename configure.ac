@@ -20,25 +20,6 @@ LIBXML_REQUIRED=2.4.12
 LIBART_REQUIRED=2.3.11
 SCROLLKEEPER_REQUIRED=0.1.4
 
-# find the actual value for $prefix that we'll end up with
-REAL_PREFIX=
-if test "x$prefix" = "xNONE"; then
-  REAL_PREFIX=$ac_default_prefix
-else
-  REAL_PREFIX=$prefix
-fi
-old_prefix=$prefix
-prefix=$REAL_PREFIX
-
-REAL_EXEC_PREFIX=
-if test "x$exec_prefix" = "xNONE"; then
-  REAL_EXEC_PREFIX=$prefix
-else
-  REAL_EXEC_PREFIX=$exec_prefix
-fi
-old_exec_prefix=$exec_prefix
-exec_prefix=$REAL_EXEC_PREFIX
-
 dnl
 dnl Let the user configure where to look for the configuration files.
 dnl
@@ -124,11 +105,10 @@ if test x$withval != x; then
    AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
 fi])
 if test x$withval != x; then
-	PAM_PREFIX_UNEXPANDED="$withval"
+	PAM_PREFIX="$withval"
 else
-	PAM_PREFIX_UNEXPANDED="$sysconfdir"
+	PAM_PREFIX='${sysconfdir}'
 fi
-PAM_PREFIX=`eval echo $PAM_PREFIX_UNEXPANDED`
 AC_SUBST(PAM_PREFIX)
 
     
@@ -790,88 +770,24 @@ AC_SUBST(EXTRA_DYNAMIC_LIBS)
 AC_SUBST(EXTRA_SETUP_LIBS)
 
 #
-# Configuration file foo, we need to get expanded versions of a bunch of things
-# if you actually know how to code shell then fix this :-) 
-# Stolen mostly from GConf
+# Define some variables to represent the directories we use.
 #
-
-DATADIR_TMP="$datadir"
-EXPANDED_DATADIR=`eval echo $DATADIR_TMP`
-AC_SUBST(EXPANDED_DATADIR)
-AC_DEFINE_UNQUOTED(EXPANDED_DATADIR,"$EXPANDED_DATADIR")
-
-PIXMAPDIR_TMP="$datadir/pixmaps"
-EXPANDED_PIXMAPDIR=`eval echo $PIXMAPDIR_TMP`
-AC_SUBST(EXPANDED_PIXMAPDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_PIXMAPDIR,"$EXPANDED_PIXMAPDIR")
-
-# Only set EXPANDED_BINDIR if it is a value that is not in
-# the path already (/bin or /usr/bin)
-#
-BINDIR_TMP="$bindir"
-EXPANDED_BINDIR=`eval echo $BINDIR_TMP`
-AC_SUBST(EXPANDED_BINDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_BINDIR,"$EXPANDED_BINDIR")
-
-SBINDIR_TMP="$sbindir"
-EXPANDED_SBINDIR=`eval echo $SBINDIR_TMP`
-AC_SUBST(EXPANDED_SBINDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_SBINDIR,"$EXPANDED_SBINDIR")
-
-LIBEXECDIR_TMP="$libexecdir"
-EXPANDED_LIBEXECDIR=`eval echo $LIBEXECDIR_TMP`
-AC_SUBST(EXPANDED_LIBEXECDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_LIBEXECDIR,"$EXPANDED_LIBEXECDIR")
-
-LIBDIR_TMP="$libdir"
-EXPANDED_LIBDIR=`eval echo $LIBDIR_TMP`
-AC_SUBST(EXPANDED_LIBDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_LIBDIR,"$EXPANDED_LIBDIR")
-
-LOCALEDIR_TMP="$gdmconfdir"
-EXPANDED_LOCALEDIR=`eval echo $LOCALEDIR_TMP`
-AC_SUBST(EXPANDED_LOCALEDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_LOCALEDIR,"$EXPANDED_LOCALEDIR")
-
-AUTHDIR_TMP="$localstatedir/gdm"
-EXPANDED_AUTHDIR=`eval echo $AUTHDIR_TMP`
-AC_SUBST(EXPANDED_AUTHDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_AUTHDIR,"$EXPANDED_AUTHDIR")
-
-LOGDIR_TMP="$localstatedir/log/gdm"
-EXPANDED_LOGDIR=`eval echo $LOGDIR_TMP`
-AC_SUBST(EXPANDED_LOGDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_LOGDIR,"$EXPANDED_LOGDIR")
-
-DMCONFDIR_TMP="$dmconfdir"
-EXPANDED_DMCONFDIR=`eval echo $DMCONFDIR_TMP`
-AC_SUBST(EXPANDED_DMCONFDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_DMCONFDIR,"$EXPANDED_DMCONFDIR")
-
-GDMCONFDIR_TMP="$gdmconfdir"
-EXPANDED_GDMCONFDIR=`eval echo $GDMCONFDIR_TMP`
-AC_SUBST(EXPANDED_GDMCONFDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_GDMCONFDIR,"$EXPANDED_GDMCONFDIR")
-
-if test x$DMX_SUPPORT = xyes ; then
-	GDM_RECONNECT_PROXY=$EXPANDED_BINDIR/gdm-dmx-reconnect-proxy
-else
-	GDM_RECONNECT_PROXY=
-fi
-AC_SUBST(GDM_RECONNECT_PROXY)
+AC_SUBST(authdir, ${localstatedir}/gdm)
+AC_SUBST(gdmlocaledir, ${gdmconfdir})
+AC_SUBST(logdir, ${localstatedir}/log/gdm)
+AC_SUBST(pixmapdir, ${datadir}/pixmaps)
 
 withval=""
 AC_ARG_WITH(at-bindir,
-[  --with-at-bindir=<PATH>   PATH to Accessible Technology programs [default=EXPANDED_BINDIR]],)
+[  --with-at-bindir=<PATH>   PATH to Accessible Technology programs [default=BINDIR]],)
 
 if test x$withval != x; then
 	AT_BINDIR="$withval"
 else
-	AT_BINDIR=$EXPANDED_BINDIR
+	AT_BINDIR='${bindir}'
 fi
 
 AC_SUBST(AT_BINDIR)
-AC_DEFINE_UNQUOTED(AT_BINDIR,"$AT_BINDIR")
 
 withval=""
 AC_ARG_WITH(defaults_conf,
@@ -880,11 +796,10 @@ AC_ARG_WITH(defaults_conf,
 if test x$withval != x; then
 	GDM_DEFAULTS_CONF="$withval"
 else
-	GDM_DEFAULTS_CONF="$EXPANDED_DATADIR/gdm/defaults.conf"
+	GDM_DEFAULTS_CONF='${datadir}/gdm/defaults.conf'
 fi
 
 AC_SUBST(GDM_DEFAULTS_CONF)
-AC_DEFINE_UNQUOTED(GDM_DEFAULTS_CONF,"$GDM_DEFAULTS_CONF")
 
 withval=""
 AC_ARG_WITH(custom_conf,
@@ -893,15 +808,11 @@ AC_ARG_WITH(custom_conf,
 if test x$withval != x; then
 	GDM_CUSTOM_CONF="$withval"
 else
-	GDM_CUSTOM_CONF="$EXPANDED_GDMCONFDIR/custom.conf"
+	GDM_CUSTOM_CONF='${gdmconfdir}/custom.conf'
 fi
 
-GDM_OLD_CONF="$EXPANDED_GDMCONFDIR/gdm.conf"
-
 AC_SUBST(GDM_CUSTOM_CONF)
-AC_DEFINE_UNQUOTED(GDM_CUSTOM_CONF,"$GDM_CUSTOM_CONF")
-AC_SUBST(GDM_OLD_CONF)
-AC_DEFINE_UNQUOTED(GDM_OLD_CONF,"$GDM_OLD_CONF")
+AC_SUBST(GDM_OLD_CONF, '${gdmconfdir}/gdm.conf')
 
 AC_ARG_WITH(prefetch,
   [  --with-prefetch=[yes/no]  Install GDM library prefetch utility [default=no]],,
@@ -910,7 +821,7 @@ AC_ARG_WITH(prefetch,
 if test x$with_prefetch != xno ; then
 	GDMPREFETCH="gdmprefetch"
         GDMPREFETCHLIST="gdmprefetchlist"
-        GDMPREFETCHCMD="$EXPANDED_LIBDIR/gdmprefetch @$EXPANDED_GDMCONFDIR/gdmprefetchlist"
+        GDMPREFETCHCMD='${libdir}/gdmprefetch ${gdmconfdir}/gdmprefetchlist'
 fi
 AC_SUBST(GDMPREFETCH)
 AC_SUBST(GDMPREFETCHLIST)
@@ -936,7 +847,7 @@ fi
 if test x$enable_secureremote != xno ; then
        SSHDESKTOP="ssh.desktop"
         GDMSSHSESSION="gdm-ssh-session"
-        GDMSSHSESSIONCMD="$EXPANDED_LIBEXECDIR/gdm-ssh-session"
+        GDMSSHSESSIONCMD='${libexecdir}/gdm-ssh-session'
 fi
 AC_SUBST(SSHDESKTOP)
 AC_SUBST(GDMSSHSESSION)
@@ -1072,10 +983,18 @@ else
    X_CONFIG_OPTIONS="-audit 0"
 fi
 
-# Don't add EXPANDED_BINDIR to GDM_USER_PATH if it is already in the PATH.
+# Don't add bindir to GDM_USER_PATH if it is already in the PATH.
 # If it is /usr/bin, for example.
-if test "x$EXPANDED_BINDIR" != "x/bin" -a "x$EXPANDED_BINDIR" != "x/usr/bin"; then
-   GDM_USER_PATH="$GDM_USER_PATH:$EXPANDED_BINDIR"
+if test "x${bindir}" != 'x${exec_prefix}/bin' -a "x${exec_prefix}" = 'x${prefix}'; then
+    if ${prefix} != / -a ${prefix} != /bin; then
+        GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
+    fi
+elif test "x${bindir}" != 'x${exec_prefix}/bin' -a "x${exec_prefix}" != 'x${prefix}'; then
+    if ${exec_prefix} != / -a ${exec_prefix} != /bin; then
+        GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
+    fi
+elif test "x${bindir}" != 'x/bin'; then
+    GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
 fi
 
 # You have to use /usr/openwin/bin/Xnest even if you are using the
@@ -1109,7 +1028,6 @@ AC_DEFINE_UNQUOTED(SUSPEND_COMMAND,"$SUSPEND_COMMAND")
 AC_SUBST(XSESSION_SHELL)
 AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL")
 AC_SUBST(GDM_USER_PATH)
-AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
 
@@ -1123,11 +1041,6 @@ AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
 AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launching xserver)
 
-SESSDIR_TMP="$EXPANDED_GDMCONFDIR/Sessions"
-EXPANDED_SESSDIR=`eval echo $SESSDIR_TMP`
-AC_SUBST(EXPANDED_SESSDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_SESSDIR,"$EXPANDED_SESSDIR")
-
 ## Stuff for debian/changelog.in
 #if test -e "debian/changelog"; then
 #  DEBIAN_DATESTAMP=`head -1 debian/changelog| sed -e 's/.*cvs.//' -e 's/).*//'`
@@ -1140,9 +1053,6 @@ AC_DEFINE_UNQUOTED(EXPANDED_SESSDIR,"$EXPANDED_SESSDIR")
 #AC_SUBST(DEBIAN_DATESTAMP)
 #AC_SUBST(DEBIAN_DATE)
 
-prefix=$old_prefix
-exec_prefix=$old_exec_prefix
-
 AC_OUTPUT([
 Makefile
 daemon/Makefile
@@ -1153,10 +1063,7 @@ gui/greeter/themes/Makefile
 gui/greeter/themes/circles/Makefile
 gui/greeter/themes/happygnome/Makefile
 gui/greeter/themes/happygnome-list/Makefile
-gui/greeter/gdmthemetester
 gui/modules/Makefile
-gui/modules/AccessKeyMouseEvents
-gui/modules/AccessDwellMouseEvents
 utils/Makefile
 pixmaps/Makefile
 pixmaps/16x16/Makefile
@@ -1176,18 +1083,14 @@ docs/ko/Makefile
 docs/zh_CN/Makefile
 docs/zh_HK/Makefile
 docs/zh_TW/Makefile
-config/gdm.conf
-config/Xsession
 config/Init
 config/PreSession
 config/PostSession
 config/gdmprefetchlist
 config/ssh.desktop
-daemon/gdm
 gdm-stop
 gdm-restart
 gdm-safe-restart
-gdmsetup-security
 gdm.spec
 ])
 
@@ -1209,14 +1112,15 @@ echo ""
 
 dnl <= Prefixes =>
 echo "prefix : $prefix"
-echo "sysconf "`eval echo $EXPANDED_SYSCONFDIR`
-echo "gdmconf dir : "`eval echo $EXPANDED_GDMCONFDIR`
-echo "dmconf dir : "`eval echo $EXPANDED_DMCONFDIR`
-echo "bin dir : $EXPANDED_BINDIR"
-echo "sbin dir : $EXPANDED_SBINDIR"
+echo "sysconf : $sysconfdir"
+echo "sysconfsubdir : $sysconfsubdir"
+echo "gdmconf dir : $gdmconfdir"
+echo "dmconf dir : $dmconfdir"
+echo "bin dir : $bindir"
+echo "sbin dir : $sbindir"
 echo "PAM prefix : $PAM_PREFIX"
-echo "data dir : "`eval echo $EXPANDED_DATADIR`
-echo "X server : "`eval echo $X_SERVER`
+echo "data dir : $datadir"
+echo "X server : $X_SERVER"
 echo ""
 
 dnl <= TCP Wrappers support? =>

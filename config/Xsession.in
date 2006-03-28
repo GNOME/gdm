@@ -42,8 +42,8 @@ test -f /etc/xprofile && . /etc/xprofile
 test -f "$HOME/.xprofile" && . "$HOME/.xprofile"
 
 # Translation stuff
-if [ -x "@EXPANDED_LIBEXECDIR@/gdmtranslate" ] ; then
-  gdmtranslate="@EXPANDED_LIBEXECDIR@/gdmtranslate"
+if [ -x "@libexecdir@/gdmtranslate" ] ; then
+  gdmtranslate="@libexecdir@/gdmtranslate"
 else
   gdmtranslate=
 fi

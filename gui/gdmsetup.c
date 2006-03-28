@@ -923,15 +923,15 @@ combobox_timeout (GtkWidget *combo_box)
 		new_key_val = NULL;
 
 		if (selected == LOCAL_PLAIN_WITH_FACE) {		
-			new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
+			new_key_val = g_strdup (LIBEXECDIR "/gdmlogin");
 			browser_val = TRUE;
 		} 
 		else if (selected == LOCAL_THEMED) {
-			new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmgreeter");
+			new_key_val = g_strdup (LIBEXECDIR "/gdmgreeter");
 			browser_val = gdm_config_get_bool (GDM_KEY_BROWSER);
 		}
 		else {  /* Plain style */
-			new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
+			new_key_val = g_strdup (LIBEXECDIR "/gdmlogin");
 			browser_val = FALSE;
 		}		
 		
@@ -963,7 +963,7 @@ combobox_timeout (GtkWidget *combo_box)
 				free_new_val = FALSE;
 			}
 			else if (selected == REMOTE_PLAIN_WITH_FACE) {
-				new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
+				new_key_val = g_strdup (LIBEXECDIR "/gdmlogin");
 				gdm_setup_config_set_bool (GDM_KEY_BROWSER, TRUE);
 			}
 			else {
@@ -972,10 +972,10 @@ combobox_timeout (GtkWidget *combo_box)
 				selected_text = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
 				
 				if (strcmp (ve_sure_string (selected_text), _("Themed")) == 0) {
-					new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmgreeter");
+					new_key_val = g_strdup (LIBEXECDIR "/gdmgreeter");
 				}
 				else {
-					new_key_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
+					new_key_val = g_strdup (LIBEXECDIR "/gdmlogin");
 					gdm_setup_config_set_bool (GDM_KEY_BROWSER, FALSE);
 				}
 				g_free (selected_text);
@@ -2665,9 +2665,9 @@ setup_greeter_combobox (const char *name,
 
 	if (greetval != NULL &&
 	    strcmp (ve_sure_string (greetval),
-	    EXPANDED_LIBEXECDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
+	    LIBEXECDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
 		g_free (greetval);
-		greetval = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
+		greetval = g_strdup (LIBEXECDIR "/gdmlogin");
 	}
 
 	/* Set initial state of local style combo box. */
@@ -2886,10 +2886,10 @@ acc_modules_toggled (GtkWidget *toggle, gpointer data)
 		modules_list = strings_list_add (modules_list, "atk-bridge",
 			GDM_DELIMITER_MODULES);
 		modules_list = strings_list_add (modules_list,
-			EXPANDED_LIBDIR "/gtk-2.0/modules/libkeymouselistener",
+			LIBDIR "/gtk-2.0/modules/libkeymouselistener",
 			GDM_DELIMITER_MODULES);
 		modules_list = strings_list_add (modules_list,
-			EXPANDED_LIBDIR "/gtk-2.0/modules/libdwellmouselistener",
+			LIBDIR "/gtk-2.0/modules/libdwellmouselistener",
 			GDM_DELIMITER_MODULES);
 		add_gtk_modules = TRUE;
 	}
@@ -3134,7 +3134,7 @@ get_theme_dir (void)
 	if (theme_dir == NULL ||
 	    theme_dir[0] == '\0' ||
 	    g_access (theme_dir, R_OK) != 0) {
-		theme_dir = g_strdup (EXPANDED_DATADIR "/gdm/themes/");
+		theme_dir = g_strdup (DATADIR "/gdm/themes/");
 	}
 
 	return theme_dir;
@@ -5602,7 +5602,7 @@ hookup_plain_background (void)
 
         if (ve_string_empty (background_filename)) {
                 gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (image_filechooser),
-                        EXPANDED_PIXMAPDIR);
+                        PIXMAPDIR);
 	} else {
                 gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
 			background_filename);
@@ -5736,7 +5736,7 @@ hookup_plain_logo (void)
 
 	if (ve_string_empty (logo_filename)) {
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (logo_button),
-			EXPANDED_PIXMAPDIR);
+			PIXMAPDIR);
 	} else {
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button),
 			logo_filename);
@@ -5877,7 +5877,7 @@ hookup_remote_plain_background (void)
 
         if (ve_string_empty (background_filename)) {
                 gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (image_filechooser),
-                        EXPANDED_PIXMAPDIR);
+                        PIXMAPDIR);
         } else {
                 gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (image_filechooser),
 			background_filename);
@@ -6012,7 +6012,7 @@ hookup_remote_plain_logo (void)
 		
         if (ve_string_empty (logo_filename))
                 gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (logo_button),
-                        EXPANDED_PIXMAPDIR);
+                        PIXMAPDIR);
         else
                 gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (logo_button), logo_filename);
 
