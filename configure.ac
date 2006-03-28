@@ -47,7 +47,8 @@ AC_ARG_WITH(sysconfsubdir, AC_HELP_STRING([--with-sysconfsubdir],
             [directory name used under sysconfdir, default=gdm]),
             sysconfsubdir=${withval}, sysconfsubdir=gdm)
 AC_SUBST(sysconfsubdir)
-if test x"${sysconfsubdir}" != x; then
+
+if test x"${sysconfsubdir}" != xno -a x"${sysconfsubdir}" != x; then
     gdmconfdir='${sysconfdir}/${sysconfsubdir}'
 else
     gdmconfdir='${sysconfdir}'
