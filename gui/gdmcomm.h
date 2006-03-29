@@ -32,7 +32,7 @@ char *		gdmcomm_call_gdm (const char *command,
 gboolean	gdmcomm_did_connection_fail (void);
 void		gdmcomm_set_allow_sleep (gboolean val);
 void		gdmcomm_comm_bulk_start (void);
-void		gdmcomm_comm_bulk_finish (void);
+void		gdmcomm_comm_bulk_stop (void);
 const char *	gdmcomm_get_display (void);
 
 /* This just gets a cookie of MIT-MAGIC-COOKIE-1 type */
