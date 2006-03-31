@@ -4,10 +4,10 @@
 # Changwoo Ryu <cwryu@debian.org>, 1999, 2002, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 2.13.0.8\n"
+"Project-Id-Version: gdm 2.14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-26 12:38+0900\n"
-"PO-Revision-Date: 2006-02-26 13:41+0900\n"
+"POT-Creation-Date: 2006-03-18 15:36+0900\n"
+"PO-Revision-Date: 2006-03-18 15:36+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist@gmail.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -425,8 +425,8 @@ msgid "No console (static) servers to be run"
 msgstr "실행할 콘솔(로컬)서버가 없음"
 
 #: ../daemon/gdm.c:1240
-msgid "Alternative configuration file"
-msgstr "다른 설정 파일"
+msgid "Alternative defaults configuration file"
+msgstr "다른 기본 설정 파일"
 
 #: ../daemon/gdm.c:1240
 msgid "CONFIGFILE"
@@ -490,9 +490,9 @@ msgstr "%s: CHLD 시그널 처리기를 설정하는 데 문제 발생"
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "동적 요청이 거부되었습니다: 인증되지 않았습니다"
 
-#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3157
-#: ../daemon/gdm.c:3208 ../daemon/gdm.c:3260 ../daemon/gdm.c:3301
-#: ../daemon/gdm.c:3327
+#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3164
+#: ../daemon/gdm.c:3215 ../daemon/gdm.c:3267 ../daemon/gdm.c:3308
+#: ../daemon/gdm.c:3334
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s 요청이 거부되었습니다: 인증되지 않았습니다"
@@ -517,60 +517,60 @@ msgstr ""
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: GDM 설정 파일이 없습니다: %s. 기본값을 사용합니다."
 
-#: ../daemon/gdmconfig.c:852
+#: ../daemon/gdmconfig.c:883
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession이 비었습니다; %s/gdm/Xsession을 사용합니다"
 
-#: ../daemon/gdmconfig.c:885
+#: ../daemon/gdmconfig.c:916
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: 표준 X 서버를 찾을 수 없습니다; 다른것으로 시도합니다"
 
-#: ../daemon/gdmconfig.c:944
+#: ../daemon/gdmconfig.c:975
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: 환영 프로그램이 지정되어 있지 않았습니다."
 
-#: ../daemon/gdmconfig.c:946
+#: ../daemon/gdmconfig.c:977
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: 환영 프로그램이 지정되어 있지 않았습니다."
 
-#: ../daemon/gdmconfig.c:948
+#: ../daemon/gdmconfig.c:979
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: 세션 디렉토리가 지정되지 않았습니다."
 
-#: ../daemon/gdmconfig.c:1032
+#: ../daemon/gdmconfig.c:1063
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr ""
 "%s: XDMCP 지원이 없는데도 XDMCP가 사용가능하게 되어 있습니다; 끄도록 합니다"
 
-#: ../daemon/gdmconfig.c:1093
+#: ../daemon/gdmconfig.c:1124
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: TimedLoginDelay가 5보다 작습니다, 5을 사용합니다."
 
-#: ../daemon/gdmconfig.c:1331
+#: ../daemon/gdmconfig.c:1362
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: 우선순위 범위 벗어남: %d(으)로 바꿉니다"
 
-#: ../daemon/gdmconfig.c:1337
+#: ../daemon/gdmconfig.c:1368
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: 빈 서버 명령; 표준 서버를 사용합니다."
 
-#: ../daemon/gdmconfig.c:1536
+#: ../daemon/gdmconfig.c:1567
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: Logdir %s(이)가 없거나 디렉토리가 아닙니다. ServAuthDir %s(을)를 씁니다."
 
-#: ../daemon/gdmconfig.c:1553
+#: ../daemon/gdmconfig.c:1584
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -579,12 +579,12 @@ msgstr ""
 "서버 인증 디렉토리(daemon/ServAuthDir)가 %s(으)로 설정되어 있지만 그러한 디렉"
 "토리가 없습니다. GDM 설정을 올바르게 고치고 GDM을 다시 시작하여 주십시오."
 
-#: ../daemon/gdmconfig.c:1564
+#: ../daemon/gdmconfig.c:1595
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s이(가) 없습니다. 중지."
 
-#: ../daemon/gdmconfig.c:1570
+#: ../daemon/gdmconfig.c:1601
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -593,24 +593,24 @@ msgstr ""
 "서버 인증 디렉토리(daemon/ServAuthDir)가 %s(으)로 설정되어 있지만 디렉토리가 "
 "아닙니다. GDM 설정을 올바르게 고치고 GDM을 다시 시작하여 주십시오."
 
-#: ../daemon/gdmconfig.c:1581
+#: ../daemon/gdmconfig.c:1612
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s은(는) 디렉토리가 아닙니다. 중지."
 
-#: ../daemon/gdmconfig.c:1654
+#: ../daemon/gdmconfig.c:1685
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: 설정 파일에 X 서버 줄이 틀렸습니다. 무시!"
 
-#: ../daemon/gdmconfig.c:1776 ../daemon/gdmconfig.c:1817
+#: ../daemon/gdmconfig.c:1807 ../daemon/gdmconfig.c:1848
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr "%s: XDMCP를 사용하지 않고 로컬 서버가 정의되지 않았습니다. 실행 취소!"
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1794
+#: ../daemon/gdmconfig.c:1825
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -619,7 +619,7 @@ msgstr ""
 "%s: XDMCP를 사용하지 않고 로컬 서버가 정의되지 않았습니다.  설정을 할 수 있도"
 "록 %s을(를) :%d에 더합니다!"
 
-#: ../daemon/gdmconfig.c:1807
+#: ../daemon/gdmconfig.c:1838
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -627,7 +627,7 @@ msgstr ""
 "XDMCP을 사용하지 않고 GDM에서 시작 수 있는 로컬 서버를 찾을 수 없습니다.  실"
 "행을 취소합니다! 설정 %s을(를) 올바르게 고치고 GDM을 다시 시작하여 주십시오."
 
-#: ../daemon/gdmconfig.c:1836
+#: ../daemon/gdmconfig.c:1867
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -636,12 +636,12 @@ msgstr ""
 "GDM 사용자 '%s'(이)가 없습니다. GDM 설정을 올바르게 고치고 GDM을 다시 시작하"
 "여주십시오."
 
-#: ../daemon/gdmconfig.c:1844
+#: ../daemon/gdmconfig.c:1875
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: GDM 사용자 '%s'(이)가 없습니다. 중지!"
 
-#: ../daemon/gdmconfig.c:1851
+#: ../daemon/gdmconfig.c:1882
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -649,12 +649,12 @@ msgstr ""
 "GDM사용자가 root로 설정되어 있습니다만, 이것은 보안의 취약성 때문에 허용되지"
 "않습니다. GDM설정 %s을(를) 올바르게 고치고 GDM을 다시 시작하여 주십시오."
 
-#: ../daemon/gdmconfig.c:1862
+#: ../daemon/gdmconfig.c:1893
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: GDM 사용자는 루트이면 안 됩니다. 중지!"
 
-#: ../daemon/gdmconfig.c:1869
+#: ../daemon/gdmconfig.c:1900
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -663,12 +663,12 @@ msgstr ""
 "GDM 그룹 '%s'(이)가 없습니다. GDM설정을 올바르게 고치고 gdm을 다시 시작하여주"
 "십시오."
 
-#: ../daemon/gdmconfig.c:1877
+#: ../daemon/gdmconfig.c:1908
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: GDM 그룹 '%s'(이)가 없습니다. 중지!"
 
-#: ../daemon/gdmconfig.c:1884
+#: ../daemon/gdmconfig.c:1915
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -676,37 +676,37 @@ msgstr ""
 "GDM 그룹이 root로 설정되어 있습니다만, 이것은 보안의 취약성 때문에 허용되지않"
 "습니다. GDM 설정을 올바르게 고치고 다시 시작하여 주십시오."
 
-#: ../daemon/gdmconfig.c:1894
+#: ../daemon/gdmconfig.c:1925
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: GDM 그룹은 루트이면 안 됩니다. 중지!"
 
-#: ../daemon/gdmconfig.c:1903
+#: ../daemon/gdmconfig.c:1934
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr "%s: 환영 프로그램을 찾을 수 없거나 GDM 사용자로 실행할 수 없습니다"
 
-#: ../daemon/gdmconfig.c:1909
+#: ../daemon/gdmconfig.c:1940
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: 원격 환영 프로그램을 찾을 수 없거나 GDM 사용자로 실행할 수 없습니다"
 
-#: ../daemon/gdmconfig.c:1917
+#: ../daemon/gdmconfig.c:1948
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr "%s: 선택 프로그램을 찾을 수 없거나 GDM 사용자로 실행할 수 없습니다"
 
-#: ../daemon/gdmconfig.c:1926
+#: ../daemon/gdmconfig.c:1957
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "GDM 설정파일에서 데몬/서버인증 디렉토리가 지정되어있지 않습니다"
 
-#: ../daemon/gdmconfig.c:1929
+#: ../daemon/gdmconfig.c:1960
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: 데몬/서버 인증 디렉토리가 지정되지 않았습니다."
 
-#: ../daemon/gdmconfig.c:1953
+#: ../daemon/gdmconfig.c:1984
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -717,12 +717,12 @@ msgstr ""
 "그롭 %s의 소유가 아닙니다. 소유권이나 GDM 설정을 올바르게 고치고 GDM을 다시 "
 "시작하여 주십시오."
 
-#: ../daemon/gdmconfig.c:1965
+#: ../daemon/gdmconfig.c:1996
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Authdir %s이(가) 사용자 %s, 그룹 %s의 소유가 아닙니다. 중지."
 
-#: ../daemon/gdmconfig.c:1971
+#: ../daemon/gdmconfig.c:2002
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -733,7 +733,7 @@ msgstr ""
 "못되었습니다. 허가권은 %o이어야 합니다. 허가권 또는 GDM 설정을 올바르게 고치"
 "고 GDM을 다시 시작하여 주십시오."
 
-#: ../daemon/gdmconfig.c:1984
+#: ../daemon/gdmconfig.c:2015
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: Authdir %s의 허가권 %o이(가) 틀렸습니다. %o이어야 합니다. 중지."
@@ -2103,7 +2103,7 @@ msgstr "너무 많은 메세지를 GDM에 보내서 죽었습니다."
 msgid "Unknown error occurred."
 msgstr "알 수 없는 오류가 발생했습니다."
 
-#: ../gui/gdmcommon.c:567
+#: ../gui/gdmcommon.c:592
 msgid "%a %b %d, %H:%M"
 msgstr "%b %e일 (%a), %H:%M"
 
@@ -2111,15 +2111,15 @@ msgstr "%b %e일 (%a), %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:573
+#: ../gui/gdmcommon.c:598
 msgid "%a %b %d, %l:%M %p"
 msgstr "%b %e일 (%a), %p %l:%M"
 
-#: ../gui/gdmcommon.c:681
+#: ../gui/gdmcommon.c:706
 msgid " seconds"
 msgstr "초"
 
-#: ../gui/gdmcommon.c:683
+#: ../gui/gdmcommon.c:708
 msgid " second"
 msgstr "초"
 
@@ -2954,6 +2954,10 @@ msgstr "연결 끊기(_I)"
 msgid "Icon"
 msgstr "아이콘"
 
+#: ../gui/gdmlogin.c:2704
+msgid "Welcome"
+msgstr "환영 메세지"
+
 #: ../gui/gdmlogin.c:3367 ../gui/gdmlogin.c:3401 ../gui/greeter/greeter.c:581
 #, c-format
 msgid ""
@@ -3245,18 +3249,17 @@ msgstr "닫기 전에 사용자에게 바뀐점을 적용하겠습니까?"
 #: ../gui/gdmsetup.c:6411
 msgid ""
 "If you don't apply, the changes made on the Users tab will be disregarded."
-msgstr ""
-"적용하지 않으면, 사용자 탭의 바뀐 점들이 무시됩니다."
+msgstr "적용하지 않으면, 사용자 탭의 바뀐 점들이 무시됩니다."
 
 #: ../gui/gdmsetup.c:6414
 msgid "Close _without Applying"
 msgstr "적용하지 않고 닫기(_W)"
 
-#: ../gui/gdmsetup.c:6462
+#: ../gui/gdmsetup.c:6460 ../gui/gdmsetup.c:6465
 msgid "Could not access GDM configuration file.\n"
 msgstr "GDM 설정 파일에 접근할 수 없습니다.\n"
 
-#: ../gui/gdmsetup.c:6506
+#: ../gui/gdmsetup.c:6509
 msgid "You must be the root user to configure GDM."
 msgstr "GDM을 설정하려면 슈퍼유저(root)이여야만 합니다."
 
@@ -3289,8 +3292,8 @@ msgid ""
 "logins on the Security tab.  Users in the Exclude list will not appear."
 msgstr ""
 "<b>알림:</b> 포함 목록의 사용자는 얼굴 찾아보기에 나타나며 또한 보안 탭에서 "
-"자동 로그인 및 시간 제한 로그인의 사용자 목록에 나타나서 해당 기능을 켤 수 "
-"있습니다. 제외 목록의 사용자는 사용자 목록에 나타나지 않습니다."
+"자동 로그인 및 시간 제한 로그인의 사용자 목록에 나타나서 해당 기능을 켤 수 있"
+"습니다. 제외 목록의 사용자는 사용자 목록에 나타나지 않습니다."
 
 #: ../gui/gdmsetup.glade.h:5
 msgid ""
@@ -3298,8 +3301,8 @@ msgid ""
 "restarting.  Changes to these settings will not take effect until GDM is "
 "restarted."
 msgstr ""
-"<b>주의:</b> 설정을 잘못하면 X서버를 재시작 할 수 없습니다. 또한 "
-"바뀐 설정은 GDM을 재시작 하기전에 적용되지 않습니다."
+"<b>주의:</b> 설정을 잘못하면 X서버를 재시작 할 수 없습니다. 또한 바뀐 설정은 "
+"GDM을 재시작 하기전에 적용되지 않습니다."
 
 # timed login?
 #: ../gui/gdmsetup.glade.h:6
@@ -3765,7 +3768,7 @@ msgstr "언어 선택(_L)..."
 msgid "Select _Session..."
 msgstr "세션 선택(_S)..."
 
-#: ../gui/greeter/greeter_canvas_item.c:428
+#: ../gui/greeter/greeter_canvas_item.c:432
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr "질문에 답하고 엔터를 누르십시오. 메뉴는 F10을 누르십시오."
 
@@ -3808,9 +3811,8 @@ msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
 "utility (System->Desktop Switching Tool from the panel menu)."
 msgstr ""
-"앞으로의 세션에서 %s(을)를 기본 값으로 사용하려면, "
-"'switchdesk' 유틸리티를 실행하십시오"
-"(패널 메뉴에서 시스템->데스크탑 전환 도구)."
+"앞으로의 세션에서 %s(을)를 기본 값으로 사용하려면, 'switchdesk' 유틸리티를 실"
+"행하십시오(패널 메뉴에서 시스템->데스크탑 전환 도구)."
 
 #: ../gui/greeter/greeter_session.c:228
 msgid "Change _Session"
