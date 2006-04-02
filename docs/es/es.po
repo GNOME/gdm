@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-13 14:17-0800\n"
-"PO-Revision-Date: 2006-02-28 20:50+0100\n"
+"PO-Revision-Date: 2006-04-02 23:14+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1245,7 +1245,7 @@ msgid ""
 "disallow login and to not have a default shell. Distributions and system "
 "administrators should set up the filesystem to ensure that the GDM user does "
 "not have read or write access to sensitive files."
-msgstr ""
+msgstr "Se espera que las distribuciones y los administradores de sistemas que usen GDM configuren el usuario dedicado de forma apropiada. Se recomienda que este id de usuario se configure para no permitirle iniciar sesión y no tener un intérprete de comandos predeterminado. Las distribuciones y los administradores del sistema deberían configurar el sistema de archivos para asegurarse de que el usuario GDM no tenga permiso de lectura o escritura a los archivos sensibles."
 
 #: ../C/gdm.xml:839(title)
 msgid "X Server Authentication Scheme"
@@ -1537,7 +1537,7 @@ msgid ""
 "from the login screen (where it will run as root). If you believe running "
 "root owned GUI's is a security risk, then you would want to edit the files "
 "by hand."
-msgstr ""
+msgstr "Puede ejecutar o el comando <command>gdmsetup</command> como root o activar la característica de configuración que le permite ejecutar <command>gdmsetup</command> desde la pantalla de entrada (donde se ejecuta como root). Si cree que ejecutar IGU's como root es un riesgo de seguridad, entonces quizá quiera editar estos archivos a mano."
 
 #: ../C/gdm.xml:1018(para)
 msgid ""
@@ -1545,7 +1545,7 @@ msgid ""
 "the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file rather than "
 "editing the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file, so the "
 "distribution changes are preserved as defaults."
-msgstr ""
+msgstr "Si está preparando una distribución y quiere establecer configuraciones predeterminadas para la máquina, debería editar el archivo <filename>&lt;share&gt;/gdm/defaults.conf</filename> en vez de editar el archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> file, para los cambios de la distribución se preserven como predeterminados."
 
 #: ../C/gdm.xml:1025(para)
 msgid ""
@@ -1558,6 +1558,8 @@ msgid ""
 "section. The <command>gdmsetup</command> program manages editing these files "
 "for you."
 msgstr ""
+"Si quiere cambiar la configuración a mano, edite el archivo <filename>&lt;etc&gt;/"
+"gdm/custom.conf</filename> y asegúrese de que el par clave=valor que quiere está incluido en la sección apropiada. Por ejemplo, para cambiar la clave  \"Greeter\" en la sección \"daemon\" asegúrese de que la sección \"daemon\" del archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> tiene el valor como en el ejemplo. La opción modificada no tiene que venir de en cualquier lugar en la sección. El comando <command>gdmsetup</command> gestiona la edición de estos archivos por usted."
 
 #: ../C/gdm.xml:1037(screen)
 #, no-wrap
@@ -1596,7 +1598,6 @@ msgstr ""
 "comentario,  y estas líneas se ignorarán."
 
 #: ../C/gdm.xml:1058(para)
-#, fuzzy
 msgid ""
 "The <filename>&lt;share&gt;/gdm/defaults.conf</filename> file contains the "
 "default configuration choices for GDM, and should not be modified by the "
@@ -1611,22 +1612,20 @@ msgid ""
 "<filename>&lt;etc&gt;/gdm/gdm.conf</filename> file, so if using an older "
 "version of GDM just edit that file directly."
 msgstr ""
-"EL archivo  <filename>gdm.conf</filename> contiene las opciones de "
+"EL archivo  <filename>&lt;share&gt;/gdm/defaults.conf</filename> contiene las opciones de "
 "configuración predeterminadas para GDM, y no debería ser modificado por el "
-"usuario. El archivo <filename>gdm.conf-custom</filename> es donde los "
+"usuario. El archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> es donde los "
 "usuarios pueden especificar sus opciones de configuración personalizadas. "
-"Las opciones de configuración especificadas en el archivo <filename>gdm.conf-"
-"custom</filename> toman precedencia sobre los valores en el archivo "
-"principal <filename>gdm.conf</filename>. Ejecutar el comando "
-"<command>gdmsetup</command> hará que el archivo <filename>gdm.conf-custom</"
+"Las opciones de configuración especificadas en el archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> toman precedencia sobre los valores en el archivo "
+"principal <filename>&lt;share&gt;/gdm/defaults.conf</filename>. Ejecutar el comando "
+"<command>gdmsetup</command> hará que el archivo <filename>&lt;etc&gt;/gdm/custom.conf</"
 "filename> se modifique con las opciones de configuración del usuario y hará "
 "que cualquier programa del IGU de GDM se actualice automáticamente. "
 "Anteriormente a la versión 2.13.0.4 GDM sólo soportaba el archivo "
-"<filename>gdm.conf</filename>, así que si está usando una versión más "
+"<filename>&lt;etc&gt;/gdm/gdm.conf</filename>, así que si está usando una versión más "
 "antigua de GDM tan sólo edite ese archivo directamente."
 
 #: ../C/gdm.xml:1074(para)
-#, fuzzy
 msgid ""
 "The location of the configuration files may be controlled via the <command>--"
 "with-defaults-conf</command> and <command>--with-custom-conf</command> "
@@ -1634,12 +1633,9 @@ msgid ""
 "specify the configuration file location. The GDM daemon must be restarted to "
 "change the configuration file being used."
 msgstr ""
-"GDM puede configurarse para soportar configuración para todo el sistema si "
-"se compila con la opción <command>--with-configdir</command>. Esto permite "
-"instalar el archivo gdm.conf en un directorio que pueda montarse a través de "
-"múltiples sistemas. La opción --config también podría usarse para "
-"especificar la ubicación del archivo de configuración. El demonio GDM2 debe "
-"reiniciarse para cambiar el archivo de configuración en uso."
+"La ubicación de los archivos de configuración puede controlarse por medio de las "
+"opciones de configuración <command>--"
+"with-defaults-conf</command> y <command>--with-custom-conf</command>. La opción --config del demonio GDM podría usarse también para especificar la ubicación del archivo de configuración. El demonio GDM debe reiniciarse para cambiar el archivo de configuración en uso."
 
 #: ../C/gdm.xml:1083(para)
 msgid ""
@@ -1752,7 +1748,6 @@ msgstr ""
 "predeterminada."
 
 #: ../C/gdm.xml:1149(para)
-#, fuzzy
 msgid ""
 "Files describing available GDM session follow the freedesktop.org desktop "
 "file specification and are <filename>.desktop</filename>-style files are "
@@ -1774,7 +1769,7 @@ msgid ""
 "<filename>&lt;etc&gt;/dm/Sessions/</filename> was being read."
 msgstr ""
 "Los archivos que describen las sesiones GDM disponibles siguen la "
-"especificación de archivos <filename>.desktop</filename> de freedesktop y se instalan en <filename>&lt;etc&gt;/X11/sessions/</filename>. Este directorio también lo lee el gestor de pantallas "
+"especificación de archivos <filename>.desktop</filename> de freedesktop.org y se instalan en <filename>&lt;etc&gt;/X11/sessions/</filename>. Este directorio también lo lee el gestor de pantallas "
 "de KDE para una configuración común. El siguiente directorio <filename>&lt;"
 "share&gt;/gdm/BuiltInSessions/</filename> se lee para las sesiones "
 "integradas específicas de GDM (KDM las lleva en el propio código cuando se "
@@ -1786,15 +1781,14 @@ msgstr ""
 "estar reservados para la configuración. La aproximación de la especificación "
 "de archivos de escritorio hace fácil para los sistemas de gestión de "
 "paquetes instalar gestores de ventanas y diferentes tipos de sesiones sin "
-"requerir que el administrador del sistema edita los archivos. Vea la clave "
+"requerir que el administrador del sistema edite los archivos. Vea la clave "
 "de configuración <filename>SessionDesktopDir</filename> para cambiar las "
-"rutas.Solía ocurrir que GDM almacenaba sus sesiones integradas en "
-"<filename>&lt;etc&gt;/dm/Sessions/</filename> pero esto fue obsoleto a "
+"rutas. Solía ocurrir que GDM almacenaba sus sesiones integradas en "
+"<filename>&lt;etc&gt;/dm/Sessions/</filename> pero esto es obsoleto a "
 "partir de 2.5.90.0 Note que antes de la versión 2.4.4.2 sólo se leía "
 "<filename>&lt;etc&gt;/dm/Sessions/</filename>."
 
 #: ../C/gdm.xml:1172(para)
-#, fuzzy
 msgid ""
 "A session can be disabled (if it was installed in <filename>&lt;share&gt;/"
 "xsessions/</filename>) by adding an identically named <filename>.desktop</"
@@ -1802,15 +1796,15 @@ msgid ""
 "<filename>&lt;etc&gt;/X11/sessions</filename>) and using "
 "<filename>Hidden=true</filename> in that file."
 msgstr ""
-"Puede desactivarse una sesión (si fue instalada en <filename>/usr/share/"
+"Puede desactivarse una sesión (si fue instalada en <filename>&lt;share&gt;"
 "xsessions/</filename>) añadiendo un <filename>.desktop</filename> nombrado "
-"identicamente a uno de los directorio anteriores en la ruta (como "
+"idénticamente a uno de los directorios anteriores en la ruta (como "
 "<filename>&lt;etc&gt;/X11/sessions</filename>) y usando "
 "<filename>Hidden=true</filename> en ese archivo."
 
 #: ../C/gdm.xml:1181(title)
 msgid "The Script Directories"
-msgstr "Los directorio de script"
+msgstr "Los directorio de scripts"
 
 #: ../C/gdm.xml:1183(para)
 msgid ""
@@ -1856,7 +1850,7 @@ msgid ""
 "It is up to the sysadmin to decide whether clients started by the Init "
 "script should be killed before starting the user session. This is controlled "
 "with the <filename>KillInitClients</filename> configuration option."
-msgstr ""
+msgstr "Es responsabilidad del administrador de sistemas decidir si los clientes iniciados por el script Init deben matarse antes de iniciar la sesión del usuario. Esto se controla con la opción de configuración <filename>KillInitClients</filename>"
 
 #: ../C/gdm.xml:1214(para)
 msgid ""
@@ -1966,16 +1960,17 @@ msgstr "DefaultSession"
 
 #: ../C/gdm.xml:1313(filename)
 msgid "custom.conf"
-msgstr ""
+msgstr "custom.conf"
 
 #: ../C/gdm.xml:1312(title)
 msgid ""
 "The Configuration Files - <filename>defaults.conf</filename> and "
 "<filename>custom.conf</filename>"
 msgstr ""
+"Los archivos de configuración - <filename>defaults.conf</filename> y "
+"<filename>custom.conf</filename>"
 
 #: ../C/gdm.xml:1315(para)
-#, fuzzy
 msgid ""
 "GDM uses two configuration files: <filename>&lt;share&gt;/gdm/defaults.conf</"
 "filename> and <filename>&lt;etc&gt;/gdm/custom.conf</filename>. The "
@@ -1989,19 +1984,9 @@ msgid ""
 "will default to the value described in the comments in the <filename>&lt;"
 "share&gt;/gdm/defaults.conf</filename> file."
 msgstr ""
-"EL archivo  <filename>gdm.conf</filename> contiene las opciones de "
-"configuración predeterminadas para GDM, y no debería ser modificado por el "
-"usuario. El archivo <filename>gdm.conf-custom</filename> es donde los "
-"usuarios pueden especificar sus opciones de configuración personalizadas. "
-"Las opciones de configuración especificadas en el archivo <filename>gdm.conf-"
-"custom</filename> toman precedencia sobre los valores en el archivo "
-"principal <filename>gdm.conf</filename>. Ejecutar el comando "
-"<command>gdmsetup</command> hará que el archivo <filename>gdm.conf-custom</"
-"filename> se modifique con las opciones de configuración del usuario y hará "
-"que cualquier programa del IGU de GDM se actualice automáticamente. "
-"Anteriormente a la versión 2.13.0.4 GDM sólo soportaba el archivo "
-"<filename>gdm.conf</filename>, así que si está usando una versión más "
-"antigua de GDM tan sólo edite ese archivo directamente."
+"GDM usa dos archivos de configuración: <filename>&lt;share&gt;/gdm/defaults.conf</"
+"filename> y <filename>&lt;etc&gt;/gdm/custom.conf</filename>. El archivo <filename>&lt;share&gt;/gdm/defaults.conf</filename> contiene las elecciones de configuración predeterminadas para GDM, y no debería modificarse por el usuario. El archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> es donde los usuarios pueden especificar sus elecciones de configuración personales. Las opciones de configuración especificadas en el archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> toman precedencia sobre los valores en el archivo <filename>&lt;share&gt;/gdm/defaults.conf</filename> Si una opción de configuración no está definida en cualquier archivo, GDM usará el valor predeterminado descrito en los comentarios en el archivo <filename>&lt;"
+"share&gt;/gdm/defaults.conf</filename>."
 
 #: ../C/gdm.xml:1331(para)
 msgid ""
@@ -2138,9 +2123,8 @@ msgid "d display's name"
 msgstr "h nombre de host de la pantalla"
 
 #: ../C/gdm.xml:1457(para)
-#, fuzzy
 msgid "h display's hostname"
-msgstr "h nombre de host de la pantalla"
+msgstr "h muestra el nombre del equipo"
 
 #: ../C/gdm.xml:1461(para)
 msgid ""
