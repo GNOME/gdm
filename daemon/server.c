@@ -49,8 +49,6 @@
 #include "getvt.h"
 #include "gdmconfig.h"
 
-#define SERVER_WAIT_ALARM 10
-
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
 static void gdm_server_usr1_handler (gint);
@@ -560,7 +558,7 @@ do_server_wait (GdmDisplay *d)
 		     * just wait a few seconds and hope things just work,
 		     * fortunately there is no such case yet and probably
 		     * never will, but just for code anality's sake */
-		    gdm_sleep_no_signal (5);
+		    gdm_sleep_no_signal (gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT));
 	    } else if (d->server_uid != 0) {
 		    int i;
 
@@ -580,7 +578,7 @@ do_server_wait (GdmDisplay *d)
 		    for (i = 0;
 			 d->dsp == NULL &&
 			 d->servstat == SERVER_PENDING &&
-			 i < SERVER_WAIT_ALARM;
+			 i < gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT);
 			 i++) {
 			    d->dsp = XOpenDisplay (d->name);
 			    if (d->dsp == NULL)
@@ -602,8 +600,9 @@ do_server_wait (GdmDisplay *d)
 			    fd_set rfds;
 			    struct timeval tv;
 
-			    /* Wait up to SERVER_WAIT_ALARM seconds. */
-			    tv.tv_sec = MAX (1, SERVER_WAIT_ALARM - (time (NULL) - t));
+			    /* Wait up to GDM_KEY_XSERVER_TIMEOUT seconds. */
+			    tv.tv_sec = MAX (1, gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT) 
+			    	- (time (NULL) - t));
 			    tv.tv_usec = 0;
 
 			    FD_ZERO (&rfds);
@@ -615,7 +614,7 @@ do_server_wait (GdmDisplay *d)
 				    VE_IGNORE_EINTR (read (server_signal_pipe[0], buf, 4));
 			    }
 			    if ( ! server_signal_notified &&
-				t + SERVER_WAIT_ALARM < time (NULL)) {
+				t + gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT) < time (NULL)) {
 				    gdm_debug ("do_server_wait: Server timeout");
 				    d->servstat = SERVER_TIMEOUT;
 				    server_signal_notified = TRUE;

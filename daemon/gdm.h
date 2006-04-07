@@ -249,6 +249,9 @@ enum {
 
 #define GDM_KEY_CONSOLE_CANNOT_HANDLE "daemon/ConsoleCannotHandle=am,ar,az,bn,el,fa,gu,hi,ja,ko,ml,mr,pa,ta,zh"
 
+/* How long to wait before assuming an Xserver has timed out */
+#define GDM_KEY_XSERVER_TIMEOUT "daemon/GdmXserverTimeout=10"
+
 /* Per server definitions */
 #define GDM_KEY_SERVER_PREFIX "server-"
 #define GDM_KEY_SERVER_NAME "name=Standard server"

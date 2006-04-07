@@ -192,6 +192,10 @@ Xnest=@X_XNEST_PATH@/Xnest @X_XNEST_CONFIG_OPTIONS@
 # This determines whether GDM will send notifications to the console.
 #ConsoleNotify=true
 
+# How long gdm should wait before it assumes a started Xserver is defunct and
+# kills it.  10 seconds should be long enough for X, but Xgl may need 20 or 25. 
+GdmXserverTimeout=10
+
 [security]
 # Allow root to login.  It makes sense to turn this off for kiosk use, when
 # you want to minimize the possibility of break in.

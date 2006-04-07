@@ -151,6 +151,7 @@ static gint GdmRetryDelay = 0;
 static gint GdmTimedLoginDelay = 0;
 static gint GdmFlexibleXservers = 5;
 static gint GdmFirstVt = 7;
+static gint GdmXserverTimeout = 10;
 
 /* The SDTLOGIN feature is Solaris specific, and causes the Xserver to be
  * run with user permissionsinstead of as root, which adds security but
@@ -533,6 +534,7 @@ gdm_config_init (void)
       &GdmBackgroundProgramInitialDelay, &int_type);
    gdm_config_add_hash (GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY,
       &GdmBackgroundProgramRestartDelay, &int_type);
+   gdm_config_add_hash (GDM_KEY_XSERVER_TIMEOUT, &GdmXserverTimeout, &int_type);
 }
 
 /**

@@ -1,3 +1,12 @@
+2006-04-07  Brian Cameron  <brian.cameron@sun.com>
+
+	* config/gdm.conf.in, daemon/gdm.h, daemon/gdmconfig.c,s
+	  daemon/server.c: Add new GdmXserverTimeout configuration
+	  variable so the length of time that GDM waits for the
+	  Xserver to start can be tuned.  This makes it easier
+	  to get GDM working with some Xservers (Xgl).  Fixes
+	  bug #337670.  Patch provided by Emilie (girlblossom@gmail.com).
+
 2006-04-05  Brian Cameron  <brian.cameron@sun.com>
 
 	* .cvsignore, docs/es/.cvsignore, docs/uk/.cvsignore, gui/.cvsignore,
