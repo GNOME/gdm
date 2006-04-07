@@ -736,6 +736,24 @@ AC_SUBST(DMX_LIBS)
 AM_CONDITIONAL(DMX_SUPPORT, test x$DMX_SUPPORT = xyes)
 
 #
+# Solaris Trusted Extensions stuff
+#
+case "$host" in
+*solaris*)
+        AC_CHECK_HEADERS(sys/tsol/label_macro.h,
+                AC_DEFINE(HAVE_TSOL, ,[Building with TSOL support]) found_tsol=yes,)
+        ;;
+*)
+        ;;
+esac
+
+AM_CONDITIONAL(TSOL_DEFINED, test x$found_tsol = xyes)
+if test "x$found_tsol" = "xyes" ; then
+	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsecdb"
+fi
+
+
+#
 # SELinux stuff
 #
 if test "x$with_selinux" = "xyes" ; then
@@ -1173,6 +1191,12 @@ else
 	echo "SELinux support                       : NO"
 fi
 
+dnl <= Solaris Trusted Extensions support =>
+if test "x$found_tsol" = "xyes" ; then
+	echo "Solaris Trusted Extensions support	: YES"
+else
+	echo "Solaris Trusted Extensions support	: NO"
+fi
 
 dnl <= Authentication scheme =>
 echo "Authentication scheme                 : $VRFY"
