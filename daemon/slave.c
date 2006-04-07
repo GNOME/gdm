@@ -3471,7 +3471,8 @@ session_child_run (struct passwd *pwent,
 				/*
                                  * If the .ICEauthority file is fishy, unlink
                                  * it and let the next program that needs it
-                                 * set it up again.  
+                                 * set it up again.  This is to resolve
+                                 * CVE-2006-1057.
                                  */
 				g_unlink (".ICEauthority");
 			}
