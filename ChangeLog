@@ -1,5 +1,10 @@
 2006-04-07  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c: Now logic unlinks .ICEauthority file if it
+	  looks fishy rather than trying to chown/chmod it.
+
+2006-04-07  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/gdm.conf.in, daemon/gdm.h, daemon/gdmconfig.c,s
 	  daemon/server.c: Add new GdmXserverTimeout configuration
 	  variable so the length of time that GDM waits for the

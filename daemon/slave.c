@@ -3453,14 +3453,13 @@ session_child_run (struct passwd *pwent,
 	 * ok to gdm_fail here */
 	NEVER_FAILS_setegid (pwent->pw_gid);
 
+                                seteuid (0);
 	VE_IGNORE_EINTR (g_chdir (home_dir));
 	if G_UNLIKELY (errno != 0) {
 		VE_IGNORE_EINTR (g_chdir ("/"));
 	} else if (pwent->pw_uid != 0) {
 		if (seteuid (pwent->pw_uid) == 0 &&
 		    g_access (".ICEauthority", F_OK) == 0) {
-			/* sanitize .ICEauthority to be of the correct
-			 * permissions, if it exists */
 			struct stat s;
 			if (g_stat (home_dir, &s) == 0 &&
 			    s.st_uid == pwent->pw_uid &&
@@ -3468,17 +3467,13 @@ session_child_run (struct passwd *pwent,
 			    S_ISREG (s.st_mode) &&
 			    (s.st_uid != pwent->pw_uid ||
 			     s.st_gid != pwent->pw_gid ||
-			     (s.st_mode & (S_IRWXG|S_IRWXO)))) {
-				/* This may not work on NFS, but oh well, there
-				 * this is beyond our help, but it's unlikely
-				 * that it got screwed up when NFS was used
-				 * in the first place */
-				seteuid (0);
-				/* only if we own the current directory */
-				chown (".ICEauthority",
-				       pwent->pw_uid,
-				       pwent->pw_gid);
-				g_chmod (".ICEauthority", S_IRUSR | S_IWUSR);
+			    (s.st_mode & (S_IRWXG|S_IRWXO)))) {
+				/*
+                                 * If the .ICEauthority file is fishy, unlink
+                                 * it and let the next program that needs it
+                                 * set it up again.  
+                                 */
+				g_unlink (".ICEauthority");
 			}
 		}
 		seteuid (0);
