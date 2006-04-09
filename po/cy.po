@@ -4,6 +4,7 @@
 # Bryn Salisbury <bryn.salisbury@operamail.com>, 2003.
 # Dafydd Harries <daf@muse.19inch.net>, 2003 2004..
 # Telsa Gwynne <hobbit@aloss.ukuu.org.uk>, 2004.
+# Rhys Jones <rhys@sucs.org>, 2005, 2006.
 #
 # Need to settle on word for suspend: we have crogiannu and
 # gorffwys here.
@@ -12,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-28 13:35+0100\n"
-"PO-Revision-Date: 2006-03-28 13:35+0100\n"
+"POT-Creation-Date: 2006-04-09 13:54+0100\n"
+"PO-Revision-Date: 2006-04-09 13:57+0100\n"
 "Last-Translator: Rhys Jones <rhys@sucs.org>\n"
 "Language-Team: Welsh <gnome-cy@www.linux.org.uk>\n"
 "MIME-Version: 1.0\n"
@@ -334,7 +335,7 @@ msgid "%s: fork () failed!"
 msgstr "%s: fork() wedi methu!"
 
 #. should never happen
-#: ../daemon/gdm.c:221 ../daemon/slave.c:3332
+#: ../daemon/gdm.c:221 ../daemon/slave.c:3371
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: setsid() wedi methu: %s!"
@@ -498,9 +499,9 @@ msgstr "Dim ond root sydd eisiau rhedeg GDM\n"
 #: ../daemon/gdm.c:1558 ../daemon/gdm.c:1564 ../daemon/gdm.c:1575
 #: ../daemon/misc.c:1771 ../daemon/misc.c:1775 ../daemon/misc.c:1779
 #: ../daemon/misc.c:1786 ../daemon/misc.c:1790 ../daemon/misc.c:1794
-#: ../daemon/server.c:522 ../daemon/server.c:535 ../daemon/slave.c:780
-#: ../daemon/slave.c:794 ../daemon/slave.c:804 ../daemon/slave.c:814
-#: ../daemon/slave.c:826 ../gui/gdmlogin.c:3529 ../gui/gdmlogin.c:3540
+#: ../daemon/server.c:521 ../daemon/server.c:534 ../daemon/slave.c:792
+#: ../daemon/slave.c:806 ../daemon/slave.c:816 ../daemon/slave.c:826
+#: ../daemon/slave.c:838 ../gui/gdmlogin.c:3529 ../gui/gdmlogin.c:3540
 #: ../gui/gdmlogin.c:3546
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
@@ -541,60 +542,60 @@ msgstr ""
 "Ni chaniateir y math gweinydd %s, ofynnwyd amdano, ar gyfer gweinyddion "
 "hyblyg; yn defnyddio'r gweinydd safonol."
 
-#: ../daemon/gdmconfig.c:551 ../daemon/gdmconfig.c:558
+#: ../daemon/gdmconfig.c:554 ../daemon/gdmconfig.c:561
 #, c-format
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s: Dim ffeil cyfluniad GDM: %s. Defnyddio'r rhagosodiadau."
 
-#: ../daemon/gdmconfig.c:883
+#: ../daemon/gdmconfig.c:886
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession yn wag; yn defnyddio %s/gdm/Xsession"
 
-#: ../daemon/gdmconfig.c:916
+#: ../daemon/gdmconfig.c:919
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: Heb ganfod y gweinydd X safonol; wrthi'n ceisio rhai eraill"
 
-#: ../daemon/gdmconfig.c:975
+#: ../daemon/gdmconfig.c:978
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Dim cyfarchwr wedi ei benodi."
 
-#: ../daemon/gdmconfig.c:977
+#: ../daemon/gdmconfig.c:980
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Dim cyfarchwr pell wedi ei benodi."
 
-#: ../daemon/gdmconfig.c:979
+#: ../daemon/gdmconfig.c:982
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Dim cyfeiriadur sesiynau wedi ei benodi."
 
-#: ../daemon/gdmconfig.c:1063
+#: ../daemon/gdmconfig.c:1066
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr ""
 "%s: Mi alluogwyd XDMCP pan nad oedd XDMCP yn cael ei gynnal; wrthi'n ei "
 "analluogi."
 
-#: ../daemon/gdmconfig.c:1124
+#: ../daemon/gdmconfig.c:1127
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr ""
 "%s: Mae TimedLoginDelay yn llai na 5, felly'n defnyddio 5 fel rhagosodiad."
 
-#: ../daemon/gdmconfig.c:1362
+#: ../daemon/gdmconfig.c:1365
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: Blaenoriaeth y tu allan i'r terfyn; newidiwyd i %d"
 
-#: ../daemon/gdmconfig.c:1368
+#: ../daemon/gdmconfig.c:1371
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Gorchymyn gweinydd gwag; yn defnyddio'r gorchymyn safonol."
 
-#: ../daemon/gdmconfig.c:1567
+#: ../daemon/gdmconfig.c:1570
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -602,7 +603,7 @@ msgstr ""
 "%s: Nid yw'r cyfeiriadur cofnod %s yn bodoli neu nid cyfeiriadur ydyw. Yn "
 "defnyddio ServAuthDir %s."
 
-#: ../daemon/gdmconfig.c:1584
+#: ../daemon/gdmconfig.c:1587
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -611,12 +612,12 @@ msgstr ""
 "Mae'r cyfeiriadur awdurdodaeth gweinydd (daemon/ServAuthDir) wedi ei osod i %"
 "s ond nid yw hyn yn bodoli. Cywirwch gyfluniad GDM ac ailgychwynnwch GDM."
 
-#: ../daemon/gdmconfig.c:1595
+#: ../daemon/gdmconfig.c:1598
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Nid yw'r cyfeiriadur awdurdodaeth %s yn bodoli. Terfynu."
 
-#: ../daemon/gdmconfig.c:1601
+#: ../daemon/gdmconfig.c:1604
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -626,17 +627,17 @@ msgstr ""
 "s ond nid yw hyn yn gyfeiriadur. Cywirwch gyfluniad GDM ac ailgychwynnwch "
 "GDM."
 
-#: ../daemon/gdmconfig.c:1612
+#: ../daemon/gdmconfig.c:1615
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Nid yw'r cyfeiriadur awdurdodaeth %s yn gyfeiriadur. Terfynu."
 
-#: ../daemon/gdmconfig.c:1685
+#: ../daemon/gdmconfig.c:1688
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Llinell gweinydd annilys yn y ffeil cyfluniad. Yn anwybyddu!"
 
-#: ../daemon/gdmconfig.c:1807 ../daemon/gdmconfig.c:1848
+#: ../daemon/gdmconfig.c:1810 ../daemon/gdmconfig.c:1851
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
@@ -645,7 +646,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1825
+#: ../daemon/gdmconfig.c:1828
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -654,7 +655,7 @@ msgstr ""
 "%s: Mae XDMCP wedi'i analluogi ac nid oes gweinyddion statig wedi'u "
 "diffinio. Yn ychwanegu %s i :%d er mwyn caniatáu cyflunio!"
 
-#: ../daemon/gdmconfig.c:1838
+#: ../daemon/gdmconfig.c:1841
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -662,7 +663,7 @@ msgstr ""
 "Mae XDMCP wedi analluogi ac ni all GDM ganfod unrhyw weinydd statig i'w "
 "gychwyn. Wrthi'n atal! Cywirwch y cyfluniad ac ailgychwynnwch GDM."
 
-#: ../daemon/gdmconfig.c:1867
+#: ../daemon/gdmconfig.c:1870
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
@@ -671,12 +672,12 @@ msgstr ""
 "Nid yw'r defnyddiwr GDM '%s' yn bodoli. Cywirwch gyfluniad GDM ac "
 "ailgychwynnwch GDM."
 
-#: ../daemon/gdmconfig.c:1875
+#: ../daemon/gdmconfig.c:1878
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: Methu canfod y defnyddiwr GDM '%s'. Wrthi'n atal!"
 
-#: ../daemon/gdmconfig.c:1882
+#: ../daemon/gdmconfig.c:1885
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -685,13 +686,13 @@ msgstr ""
 "chaniateir hyn gan ei fod yn berygl i ddiogelwch. Cywirwch y cyfluniad GDM "
 "ac ailgychwynnwch GDM."
 
-#: ../daemon/gdmconfig.c:1893
+#: ../daemon/gdmconfig.c:1896
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr ""
 "%s: Ni ddylai'r defnyddiwr GDM fod yn uwchddefnyddiwr (root). Wrthi'n atal!"
 
-#: ../daemon/gdmconfig.c:1900
+#: ../daemon/gdmconfig.c:1903
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
@@ -700,12 +701,12 @@ msgstr ""
 "Nid yw'r grŵp GDM '%s' yn bodoli. Cywirwch gyfluniad GDM ac ailgychwynnwch "
 "GDM."
 
-#: ../daemon/gdmconfig.c:1908
+#: ../daemon/gdmconfig.c:1911
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: Methu canfod y grŵp GDM '%s'. Wrthi'n atal!"
 
-#: ../daemon/gdmconfig.c:1915
+#: ../daemon/gdmconfig.c:1918
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -714,40 +715,40 @@ msgstr ""
 "hyn gan ei fod yn berygl i ddiogelwch. Cywirwch gyfluniad GDM ac "
 "ailgychwynnwch GDM."
 
-#: ../daemon/gdmconfig.c:1925
+#: ../daemon/gdmconfig.c:1928
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: Ni ddylai'r grŵp GDM fod yn uwchddefnyddiwr (root). Wrthi'n atal!"
 
-#: ../daemon/gdmconfig.c:1934
+#: ../daemon/gdmconfig.c:1937
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Cyfarchwr heb ei ganfod neu ni ellir ei weithredu gan y defnyddiwr GDM"
 
-#: ../daemon/gdmconfig.c:1940
+#: ../daemon/gdmconfig.c:1943
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Cyfarchwr pell heb ei ganfod neu ni ellir ei weithredu gan y defnyddiwr "
 "GDM"
 
-#: ../daemon/gdmconfig.c:1948
+#: ../daemon/gdmconfig.c:1951
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
 "%s: Dewisydd heb ei ganfod neu ni ellir ei weithredu gan y defnyddiwr GDM"
 
-#: ../daemon/gdmconfig.c:1957
+#: ../daemon/gdmconfig.c:1960
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "Dim ellyll/ServAuthDir wedi ei benodi yn y ffeil cyfluniad GDM"
 
-#: ../daemon/gdmconfig.c:1960
+#: ../daemon/gdmconfig.c:1963
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Dim ellyll/ServAuthDir wedi ei benodi."
 
-#: ../daemon/gdmconfig.c:1984
+#: ../daemon/gdmconfig.c:1987
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -758,14 +759,14 @@ msgstr ""
 "i %s ond nid yw'r defnyddiwr %s a'r grŵp %s yn ei berchen ef. Cywirwch y "
 "berchnogaeth neu'r cyfluniad GDM ac ailgychwynnwch GDM."
 
-#: ../daemon/gdmconfig.c:1996
+#: ../daemon/gdmconfig.c:1999
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Nid yw'r cyfeiriadur awdurdodaeth (Authdir) %s wedi ei berchen gan y "
 "defnyddiwr %s a'r grŵp %s. Yn terfynu."
 
-#: ../daemon/gdmconfig.c:2002
+#: ../daemon/gdmconfig.c:2005
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -776,7 +777,7 @@ msgstr ""
 "i %s  ond mae ganddo'r caniatadau anghywir: dylai fod â chaniatadau o %o. "
 "Cywirwch y berchnogaeth neu'r cyfluniad GDM ac ailgychwynnwch GDM."
 
-#: ../daemon/gdmconfig.c:2015
+#: ../daemon/gdmconfig.c:2018
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -818,11 +819,11 @@ msgstr ""
 "Mewngofnodiad diwethaf:\n"
 "%s"
 
-#: ../daemon/server.c:151
+#: ../daemon/server.c:150
 msgid "Can not start fallback console"
 msgstr "Ni ellir cychwyn consol wrth gefn"
 
-#: ../daemon/server.c:341
+#: ../daemon/server.c:340
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should "
@@ -833,7 +834,7 @@ msgstr ""
 "ceisio rhif dangosydd arall?  Os atebwch chi 'na', mi fydd GDM yn ceisio "
 "cychwyn y gweinydd ar %s eto.%s"
 
-#: ../daemon/server.c:349
+#: ../daemon/server.c:348
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -843,17 +844,17 @@ msgstr ""
 "Alt-F7 er mwyn mynd at gonsol 7. Mae gweinyddion X fel arfer yn rhedeg ar "
 "gonsolau 7 ac uwch.)"
 
-#: ../daemon/server.c:395
+#: ../daemon/server.c:394
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Ni allai Xnest agor y dangosydd '%s'"
 
-#: ../daemon/server.c:426
+#: ../daemon/server.c:425
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Y mae dangosydd %s yn brysur. Mae yna weinydd X yn rhedeg yn barod."
 
-#: ../daemon/server.c:510
+#: ../daemon/server.c:509
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Gwall wrth agor pibell: %s"
@@ -911,17 +912,17 @@ msgstr ""
 "%s: Roedd y gweinydd i fod i gael ei gychwyn gan y UID %d ond nid yw'r "
 "defnyddiwr hwnnw'n bodoli"
 
-#: ../daemon/server.c:1266 ../daemon/slave.c:2450 ../daemon/slave.c:2921
+#: ../daemon/server.c:1266 ../daemon/slave.c:2485 ../daemon/slave.c:2956
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Methwyd gosod yr ID grŵp i %d"
 
-#: ../daemon/server.c:1272 ../daemon/slave.c:2456 ../daemon/slave.c:2927
+#: ../daemon/server.c:1272 ../daemon/slave.c:2491 ../daemon/slave.c:2962
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s: initgroups() wedi methu ar gyfer %s"
 
-#: ../daemon/server.c:1278 ../daemon/slave.c:2461 ../daemon/slave.c:2932
+#: ../daemon/server.c:1278 ../daemon/slave.c:2496 ../daemon/slave.c:2967
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Methwyd gosod yr ID defnyddiwr i %d"
@@ -941,20 +942,20 @@ msgstr "%s: Gweinydd X heb ei ganfod: %s"
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Ni ellir fforchio proses gweinydd X!"
 
-#: ../daemon/slave.c:269
+#: ../daemon/slave.c:281
 msgid "Can't set EGID to user GID"
 msgstr "Methwyd gosod EGID at GID y defnyddiwr"
 
-#: ../daemon/slave.c:277
+#: ../daemon/slave.c:289
 msgid "Can't set EUID to user UID"
 msgstr "Methwyd gosod EUID at UID y defnyddiwr"
 
-#: ../daemon/slave.c:1104
+#: ../daemon/slave.c:1133
 msgid "Log in anyway"
 msgstr "Mewngofnodi beth bynnag"
 
 # TRWSIO (.)
-#: ../daemon/slave.c:1106
+#: ../daemon/slave.c:1135
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -962,21 +963,21 @@ msgstr ""
 "Rydych wedi mewngofnodi eisoes. Fe allech fewngofnodi beth bynnag, mynd yn "
 "ôl i'r sesiwn mewngofnodi blaenorol, neu derfynu'r mewngofnodiad hwn"
 
-#: ../daemon/slave.c:1110
+#: ../daemon/slave.c:1139
 msgid "Return to previous login"
 msgstr "Mynd yn ôl i'r mewngofnodiad blaenorol"
 
-#: ../daemon/slave.c:1111 ../daemon/slave.c:1117
+#: ../daemon/slave.c:1140 ../daemon/slave.c:1146
 msgid "Abort login"
 msgstr "Terfynu'r mewngofnodiad"
 
-#: ../daemon/slave.c:1114
+#: ../daemon/slave.c:1143
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 "Rydych yn barod wedi mewngofnodi. Mi allech fewngofnodi beth bynnag, neu "
 "derfynu'r mewngofnodiad hyn"
 
-#: ../daemon/slave.c:1291
+#: ../daemon/slave.c:1320
 msgid ""
 "Could not start the X\n"
 "server (your graphical environment)\n"
@@ -998,17 +999,17 @@ msgstr ""
 "Os gwelwch yn dda, ailgychwynnwch\n"
 "GDM wedi i'r broblem gael ei thrwsio."
 
-#: ../daemon/slave.c:1545
+#: ../daemon/slave.c:1580
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: methu fforchio"
 
-#: ../daemon/slave.c:1592
+#: ../daemon/slave.c:1627
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: wedi methu agor y dangosydd %s"
 
-#: ../daemon/slave.c:1743
+#: ../daemon/slave.c:1778
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file.  Attempting to start it from the "
@@ -1018,7 +1019,7 @@ msgstr ""
 "gywir yn y ffeil cyfluniad. Wrthi'n ceisio ei gychwyn o'r lleoliad "
 "rhagosodedig."
 
-#: ../daemon/slave.c:1757
+#: ../daemon/slave.c:1792
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file."
@@ -1027,12 +1028,12 @@ msgstr ""
 "gywir yn y ffeil cyfluniad."
 
 # TRWSIO (\n?)
-#: ../daemon/slave.c:1921
+#: ../daemon/slave.c:1956
 msgid "You must authenticate as root to run configuration."
 msgstr ""
 "Rhaid i chi ddilysu fel uwchddefnyddiwr (root) i redeg y rhaglen gyflunio."
 
-#: ../daemon/slave.c:2053 ../daemon/slave.c:2076
+#: ../daemon/slave.c:2088 ../daemon/slave.c:2111
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist."
@@ -1040,12 +1041,12 @@ msgstr ""
 "Gofynnwyd am sain mewngofnodi ar ddangosydd sydd ddim yn un lleol, neu ni "
 "ellir rhedeg y meddalwedd chwarae sain, neu nid yw'r sain yn bodoli."
 
-#: ../daemon/slave.c:2404 ../daemon/slave.c:2409
+#: ../daemon/slave.c:2439 ../daemon/slave.c:2444
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Wedi methu ymgychwyn pibell i gdmgreeter"
 
-#: ../daemon/slave.c:2541
+#: ../daemon/slave.c:2576
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  GDM has started a single server for "
@@ -1057,7 +1058,7 @@ msgstr ""
 "gweinydd unigol ar eich cyfer. Fe ddylech chi fewngofnodi a thrwsio'r "
 "cyfluniad. Nodwch fod mewngofnodi awtomatig ac amserol wedi ei analluogi."
 
-#: ../daemon/slave.c:2555
+#: ../daemon/slave.c:2590
 msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1067,7 +1068,7 @@ msgstr ""
 "felly mae hwn yn weinydd X difethiant. Dylech chi fewngofnodi a chyflunio'r "
 "gweinydd X yn gywir."
 
-#: ../daemon/slave.c:2564
+#: ../daemon/slave.c:2599
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1076,7 +1077,7 @@ msgstr ""
 "Roedd y rhif dangosydd a benodwyd yn brysur, felly cychwynnwyd y gweinydd "
 "hwn ar y dangosydd %s."
 
-#: ../daemon/slave.c:2584
+#: ../daemon/slave.c:2619
 msgid ""
 "The greeter application appears to be crashing.\n"
 "Attempting to use a different one."
@@ -1085,19 +1086,19 @@ msgstr ""
 "Yn ceisio defnyddio un wahanol."
 
 #. Something went wrong
-#: ../daemon/slave.c:2607
+#: ../daemon/slave.c:2642
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: Ni ellir cychwyn y cyfarchwr gyda modylau gtk: %s. Yn ceisio heb fodylau."
 
-#: ../daemon/slave.c:2614
+#: ../daemon/slave.c:2649
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Ni ellir cychwyn y cyfarchwr, yn ceisio'r rhagosodiad: %s"
 
 # TRWSIO (.)
-#: ../daemon/slave.c:2626
+#: ../daemon/slave.c:2661
 msgid ""
 "Cannot start the greeter application; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1108,27 +1109,27 @@ msgstr ""
 "gweinyddwr y system os gwelwch yn dda."
 
 #. If no greeter we really have to disable the display
-#: ../daemon/slave.c:2633
+#: ../daemon/slave.c:2668
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Gwall wrth gychwyn cyfarchwr ar y dangosydd %s"
 
-#: ../daemon/slave.c:2637
+#: ../daemon/slave.c:2672
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Wedi methu fforchio'r broses gdmgreeter"
 
-#: ../daemon/slave.c:2709
+#: ../daemon/slave.c:2744
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Ni ellir agor FIFO!"
 
-#: ../daemon/slave.c:2881
+#: ../daemon/slave.c:2916
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Wedi methu ymgychwyn pibell i gdmchooser"
 
-#: ../daemon/slave.c:2986
+#: ../daemon/slave.c:3021
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
@@ -1136,51 +1137,51 @@ msgstr ""
 "Methu cychwyn y rhaglen dewis. Mae'n debyg na fyddwch yn gallu mewngofnodi. "
 "Cysylltwch â gweinyddwr y system os gwelwch yn dda."
 
-#: ../daemon/slave.c:2990
+#: ../daemon/slave.c:3025
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Gwall wrth gychwyn dewisydd ar y dangosydd %s"
 
-#: ../daemon/slave.c:2993
+#: ../daemon/slave.c:3028
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: Wedi methu fforchio'r broses gdmchooser"
 
-#: ../daemon/slave.c:3226
+#: ../daemon/slave.c:3261
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Wedi methu agor ~/.xsession-errors"
 
-#: ../daemon/slave.c:3385
+#: ../daemon/slave.c:3424
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: Dychwelodd gweithrediad sgript PreSession gwerth > 0. Yn terfynu."
 
-#: ../daemon/slave.c:3429
+#: ../daemon/slave.c:3468
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "Iaith %s ddim yn bodoli; yn defnyddio %s"
 
-#: ../daemon/slave.c:3430
+#: ../daemon/slave.c:3469
 msgid "System default"
 msgstr "Rhagosodiad y system"
 
-#: ../daemon/slave.c:3447
+#: ../daemon/slave.c:3486
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Ni allwyd gosod amgylchedd ar gyfer %s. Yn terfynu."
 
-#: ../daemon/slave.c:3494
+#: ../daemon/slave.c:3529
 #, c-format
 msgid "%s: setusercontext () failed for %s. Aborting."
 msgstr "%s: Methodd setusercontext() ar gyfer %s. Yn terfynu."
 
-#: ../daemon/slave.c:3500
+#: ../daemon/slave.c:3535
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Ni allwyd dod yn %s. Yn terfynu."
 
-#: ../daemon/slave.c:3536
+#: ../daemon/slave.c:3576
 #, c-format
 msgid ""
 "No Exec line in the session file: %s.  Running the GNOME failsafe session "
@@ -1189,12 +1190,12 @@ msgstr ""
 "Dim llinell Exec yn y ffeil sesiwn: %s. Yn rhedeg y sesiwn GNOME difethiant "
 "yn lle hynny"
 
-#: ../daemon/slave.c:3539
+#: ../daemon/slave.c:3579
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../daemon/slave.c:3559
+#: ../daemon/slave.c:3599
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
@@ -1203,7 +1204,7 @@ msgstr ""
 "%s: Methu canfod na rhedeg y sgript Xsession sail. Yn rhedeg y sesiwn GNOME "
 "difethiant yn lle hynny."
 
-#: ../daemon/slave.c:3565
+#: ../daemon/slave.c:3605
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
@@ -1212,22 +1213,22 @@ msgstr ""
 "difethiant yn lle hynny"
 
 #. yaikes
-#: ../daemon/slave.c:3580
+#: ../daemon/slave.c:3637
 #, c-format
-msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
+msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: Methwyd canfod gnome-session ar gyfer sesiwn GNOME difethiant; yn ceisio "
 "xterm"
 
-#: ../daemon/slave.c:3585
+#: ../daemon/slave.c:3642
 msgid ""
-"Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
-"session instead."
+"Could not find the GNOME installation, will try running the \"Failsafe xterm"
+"\" session."
 msgstr ""
 "Methwyd canfod y gosodiad GNOME. Ceisio rhedeg y sesiwn \"Xterm difethiant\" "
 "yn lle hynny."
 
-#: ../daemon/slave.c:3593
+#: ../daemon/slave.c:3650 ../daemon/slave.c:3674
 msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
@@ -1237,11 +1238,27 @@ msgstr ""
 "'Rhagosod' GNOME heb y sgriptiau cychwyn yn cael eu rhedeg. Mae hyn ond er "
 "mwyn trwsio problemau yn eich gosodiad."
 
-#: ../daemon/slave.c:3608
+#. yaikes
+#: ../daemon/slave.c:3661
+#, c-format
+msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
+msgstr ""
+"%s: Methwyd canfod gnome-session ar gyfer sesiwn GNOME difethiant; yn ceisio "
+"xterm"
+
+#: ../daemon/slave.c:3666
+msgid ""
+"Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
+"session instead."
+msgstr ""
+"Methwyd canfod y gosodiad GNOME. Ceisio rhedeg y sesiwn \"Xterm difethiant\" "
+"yn lle hynny."
+
+#: ../daemon/slave.c:3692
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Methu canfod \"xterm\" er mwyn dechrau sesiwn difethiant."
 
-#: ../daemon/slave.c:3621
+#: ../daemon/slave.c:3714 ../daemon/slave.c:3760
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1252,42 +1269,68 @@ msgstr ""
 "ddull arall. Er mwyn gadael yr efelychydd terfynell, teipiwch 'exit' ac "
 "Enter i mewn i'r ffenest."
 
-#: ../daemon/slave.c:3648
+#: ../daemon/slave.c:3728
+msgid ""
+"This is the Failsafe xterm session.  You will be logged into a terminal "
+"console and be prompted to enter the password for root so that you may fix "
+"your system if you cannot log in any other way. To exit the terminal "
+"emulator, type 'exit' and an enter into the window."
+msgstr ""
+"Dyma'r sesiwn Xterm difethiant. Fe gewch eich mewngofnodi i gonsol terfynell "
+"a'ch promptio i roi'r cyfrinair gwraidd (\"root\") fel y gallwch chi drwsio "
+"eich system os na fedrwch chi fewngofnodi trwy ryw ddull arall. I adael y "
+"derfynell, teipiwch 'exit' ac Enter o fewn y ffenest."
+
+#: ../daemon/slave.c:3741
+msgid ""
+"The failsafe session is restricted to users who have been assigned the root "
+"role. If you cannot log in any other way please contact your system "
+"administrator"
+msgstr ""
+"Mae'r sesiwn difethiant yn gyfyngedig i ddefnyddwyr a chanddyn nhw rôl yr "
+"uwchddefnyddiwr. Os na fedrwch chi fewngofnodi mewn unrhyw ffordd arall, "
+"cysylltwch â gweinyddwr eich system"
+
+#: ../daemon/slave.c:3798
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Ni chaiff y defnyddiwr fewngofnodi"
 
-#: ../daemon/slave.c:3651
+#: ../daemon/slave.c:3801
 msgid "The system administrator has disabled your account."
 msgstr "Mae gweinyddwr y system wedi analluogi eich cyfrif."
 
-#: ../daemon/slave.c:3682
+#: ../daemon/slave.c:3832
 msgid "Error! Unable to set executable context."
 msgstr "Gwall! Ni ellir gosod y cyd-destun gweithredadwy."
 
-#. will go to .xsession-errors
-#: ../daemon/slave.c:3690 ../daemon/slave.c:3695
+#: ../daemon/slave.c:3841 ../daemon/slave.c:3850
+#, c-format
+msgid "%s: Could not exec %s %s %s %s %s %s"
+msgstr "%s: Methodd exec %s %s %s %s %s %s"
+
+#: ../daemon/slave.c:3859 ../daemon/slave.c:3864
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Methodd exec %s %s %s"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:3706
+#: ../daemon/slave.c:3876
 msgid "Cannot start the session due to some internal error."
 msgstr "Ni ellir cychwyn y sesiwn oherwydd rhyw wall mewnol."
 
 # TRWSIO
-#: ../daemon/slave.c:3760
+#: ../daemon/slave.c:3930
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr "%s: Pasiodd y defnyddiwr y dilysiad ond methodd getpwnam(%s)!"
 
-#: ../daemon/slave.c:3773
+#: ../daemon/slave.c:3943
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Dychwelodd gweithrediad sgript PostLogin gwerth > 0. Yn terfynu."
 
-#: ../daemon/slave.c:3795
+#: ../daemon/slave.c:3965
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1305,12 +1348,12 @@ msgstr ""
 "Mae'n annhebygol na fydd unrhyw beth yn gweithio os nad ydych chi'n "
 "defnyddio sesiwn difethiant."
 
-#: ../daemon/slave.c:3807
+#: ../daemon/slave.c:3977
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Nid yw cyfeiriadur cartref ar gyfer %s: '%s' yn bodoli!"
 
-#: ../daemon/slave.c:3856
+#: ../daemon/slave.c:4026
 msgid ""
 "User's $HOME/.dmrc file is being ignored.  This prevents the default session "
 "and language from being saved.  File should be owned by user and have 644 "
@@ -1323,7 +1366,7 @@ msgstr ""
 "defnyddiwr fod yn berchen ar ei g/chyfeiriadur $HOME ei hun, ac ni ddylai "
 "defnyddwyr eraill fedru ysgrifennu ato."
 
-#: ../daemon/slave.c:3985
+#: ../daemon/slave.c:4155
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1335,12 +1378,12 @@ msgstr ""
 "er mwyn ysgrifennu. Fodd bynnag, nid yw'n bosib mewngofnodi. Os gwelwch yn "
 "dda, cysylltwch â gweinyddwr eich system."
 
-#: ../daemon/slave.c:4061
+#: ../daemon/slave.c:4231
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Gwall wrth fforchio sesiwn defnyddiwr"
 
-#: ../daemon/slave.c:4142
+#: ../daemon/slave.c:4312
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1352,25 +1395,25 @@ msgstr ""
 "lle ar y disg. Ceisiwch fewngofnodi gydag un o'r sesiynau difethiant er mwyn "
 "gweld os gallwch drwsio'r broblem."
 
-#: ../daemon/slave.c:4150
+#: ../daemon/slave.c:4320
 msgid "View details (~/.xsession-errors file)"
 msgstr "Gweld manylion (ffeil ~/.xsession-errors)"
 
-#: ../daemon/slave.c:4314
+#: ../daemon/slave.c:4484
 msgid "GDM detected a halt or restart in progress."
 msgstr "Synhwyrodd GDM fod ataliad neu ailgychwyn yn digwydd."
 
-#: ../daemon/slave.c:4408
+#: ../daemon/slave.c:4578
 #, c-format
 msgid "Ping to %s failed; whacking display!"
 msgstr "Methodd ping i %s; yn bwrw'r dangosydd!"
 
-#: ../daemon/slave.c:4687
+#: ../daemon/slave.c:4857
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s :Gwall X farwol - Ailgychwyn %s"
 
-#: ../daemon/slave.c:4756
+#: ../daemon/slave.c:4926
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1378,22 +1421,22 @@ msgstr ""
 "Gofynnwyd am sain mewngofnodi ar ddangosydd sydd ddim yn lleol, neu ni ellir "
 "rhedeg y meddalwedd chwarae neu nid yw'r sain yn bodoli"
 
-#: ../daemon/slave.c:5113
+#: ../daemon/slave.c:5283
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Methwyd cychwyn: %s"
 
-#: ../daemon/slave.c:5120 ../daemon/slave.c:5259
+#: ../daemon/slave.c:5290 ../daemon/slave.c:5429
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Ni ellir fforchio proses sgript!"
 
-#: ../daemon/slave.c:5214
+#: ../daemon/slave.c:5384
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Methwyd creu piben"
 
-#: ../daemon/slave.c:5253
+#: ../daemon/slave.c:5423
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Methwyd gweithred: %s"
@@ -1776,88 +1819,88 @@ msgstr "%s: Methwyd darllen cyfeiriad dangosydd"
 msgid "%s: Could not read display port number"
 msgstr "%s: Methwyd darllen rhif porth y dangosydd"
 
-#: ../daemon/xdmcp.c:1166 ../daemon/xdmcp.c:1190
+#: ../daemon/xdmcp.c:1167 ../daemon/xdmcp.c:1191
 #, c-format
 msgid "%s: Bad address"
 msgstr "%s: Cyfeiriad gwael"
 
-#: ../daemon/xdmcp.c:1349 ../daemon/xdmcp.c:1356
+#: ../daemon/xdmcp.c:1350 ../daemon/xdmcp.c:1357
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Gwrthodwyd cais XDMCP o'r gweinydd %s"
 
-#: ../daemon/xdmcp.c:1585 ../daemon/xdmcp.c:1592
+#: ../daemon/xdmcp.c:1586 ../daemon/xdmcp.c:1593
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Cafwyd REQUEST o'r gwesteiwr gwaharddedig %s"
 
-#: ../daemon/xdmcp.c:1604 ../daemon/xdmcp.c:1977 ../daemon/xdmcp.c:2387
+#: ../daemon/xdmcp.c:1605 ../daemon/xdmcp.c:1978 ../daemon/xdmcp.c:2388
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Methwyd darllen Rhif Dangosydd"
 
-#: ../daemon/xdmcp.c:1611
+#: ../daemon/xdmcp.c:1612
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Methwyd darllen Math Cysylltiad"
 
-#: ../daemon/xdmcp.c:1618
+#: ../daemon/xdmcp.c:1619
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Methwyd darllen Cyfeiriad Cleient"
 
-#: ../daemon/xdmcp.c:1626
+#: ../daemon/xdmcp.c:1627
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Methwyd darllen Enwau Dilysu"
 
-#: ../daemon/xdmcp.c:1635
+#: ../daemon/xdmcp.c:1636
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Methwyd darllen Data Dilysu"
 
-#: ../daemon/xdmcp.c:1645
+#: ../daemon/xdmcp.c:1646
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Methwyd darllen Rhestr Dilysu"
 
-#: ../daemon/xdmcp.c:1662
+#: ../daemon/xdmcp.c:1663
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Methwyd darllen ID Gwneuthurwr"
 
-#: ../daemon/xdmcp.c:1688 ../daemon/xdmcp.c:1695
+#: ../daemon/xdmcp.c:1689 ../daemon/xdmcp.c:1696
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Methodd swm gwirio o %s"
 
-#: ../daemon/xdmcp.c:1953 ../daemon/xdmcp.c:1960
+#: ../daemon/xdmcp.c:1954 ../daemon/xdmcp.c:1961
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Cafwyd MANAGE o'r gwesteiwr gwaharddedig %s"
 
-#: ../daemon/xdmcp.c:1970 ../daemon/xdmcp.c:2394
+#: ../daemon/xdmcp.c:1971 ../daemon/xdmcp.c:2395
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Methwyd darllen ID Sesiwn"
 
-#: ../daemon/xdmcp.c:1984
+#: ../daemon/xdmcp.c:1985
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Methwyd darllen Dosbarth Dangosydd"
 
-#: ../daemon/xdmcp.c:2105 ../daemon/xdmcp.c:2112 ../daemon/xdmcp.c:2124
-#: ../daemon/xdmcp.c:2234 ../daemon/xdmcp.c:2241 ../daemon/xdmcp.c:2253
+#: ../daemon/xdmcp.c:2106 ../daemon/xdmcp.c:2113 ../daemon/xdmcp.c:2125
+#: ../daemon/xdmcp.c:2235 ../daemon/xdmcp.c:2242 ../daemon/xdmcp.c:2254
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Methwyd darllen cyfeiriad"
 
-#: ../daemon/xdmcp.c:2364 ../daemon/xdmcp.c:2378
+#: ../daemon/xdmcp.c:2365 ../daemon/xdmcp.c:2379
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Cafwyd KEEPALIVE o westeiwr gwaharddedig %s"
 
-#: ../daemon/xdmcp.c:2728
+#: ../daemon/xdmcp.c:2729
 #, c-format
 msgid ""
 "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
@@ -1866,8 +1909,8 @@ msgstr ""
 "%s: Methu rhedeg '%s --display %s --display-authfile %s --to %s --to-"
 "authfile %s': %s"
 
-#: ../daemon/xdmcp.c:2763 ../daemon/xdmcp.c:2770 ../daemon/xdmcp.c:2776
-#: ../daemon/xdmcp.c:2782
+#: ../daemon/xdmcp.c:2764 ../daemon/xdmcp.c:2771 ../daemon/xdmcp.c:2777
+#: ../daemon/xdmcp.c:2783
 #, c-format
 msgid "%s: No XDMCP support"
 msgstr "%s: Dim cynhaliaeth XDMCP"
