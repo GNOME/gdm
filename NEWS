@@ -1,5 +1,56 @@
 Ahh news...
 
+2.14.1 stuff:
+
+- The sockets connection between the slaves and the GDM daemon is now
+  better managed to better ensure that sockets are never left open.
+  (Brian Cameron)
+
+- Corrected bug that causes a core dump when you click on gdmgreeter
+  fields that have an id.  (Brian Cameron)
+
+- Add new GdmXserverTimeout configuration setting so that the length of
+  time GDM waits for the Xserver to start can be tuned, so GDM better
+  works with Xservers that require more than 10 seconds to start.
+  (Emilie)
+
+- The happygnome and happygnome-list gdmgreeter themes now use the
+  official logo.  (Brian Cameron)
+
+- Now GDM configure supports --with-sysconfsubdir so that GDM's 
+  configuration directory can be configured to not have "/gdm" appended
+  to the end.
+
+- Fix for ensuring .ICEauthority file has proper ownership/permissions.
+  Addresses CVE-2006-1057.  (Hans Petter Jansson)
+
+- Fix "Show Actions Menu" section in gdmsetup so it appears when both
+  "Plain" and "Themed" style is chosen.  (Brian Cameron, Dennis
+  Cranston)
+
+- Now use LINGUAS procedure for defining languages.  (Michiel Sikkes)
+
+- Now Xsession script uses "$@" instead of "$1" so it is possible to
+  pass arguments with the command to run.  (Brian Cameron)
+
+- Add Trusted Solraris support.  (Niall Power)
+
+- One line fix to Solaris auditing logic that fixes a bug causing
+  authentication to fail when auditing is turned on.  (Brian Cameron)
+
+- Fixes to compile with C99 and fixes to compile under NetBSD.
+  Remove EXPANDED_* variables from the configure.  (Julio M. Merino
+  Vidal)
+
+- Translation updates (\305\275ygimantas Beru\304\215ka, Beno\303\256t
+  Dejean, Laurent Dhima, Maxim Dziumanenko, Alessio Frusciante, Rhys
+  Jones, Raphael Higino, Theppitak Karoonboonyanan, Gabor Kelmen,
+  Priit Laes, Jordi Mallach, Kjartan Maraas, Daniel Nylander, Kostas
+  Papdimas, Guilherme de S. Pastore, Ankit Patel, Ignacio Casal
+  Quinteiro, Hendrik Richter, Jens Seidel, Francisco Javier F. Serrador,
+  Alexander Shopov, Clytie Siddall, Ilkka Tuohela, Vincent van Adrighem,
+  Tommi Vainikaninen)
+
 2.14.0 stuff:
 
 - Now GDM will update the actual custom configuration file used by
