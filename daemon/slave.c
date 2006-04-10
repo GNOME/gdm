@@ -3487,37 +3487,59 @@ session_child_run (struct passwd *pwent,
 				  "Aborting."),
 				"session_child_run", login);
 
-	/* setup egid to the correct group,
-	 * not to leave the egid around.  It's
-	 * ok to gdm_fail here */
-	NEVER_FAILS_setegid (pwent->pw_gid);
-
-                                seteuid (0);
 	VE_IGNORE_EINTR (g_chdir (home_dir));
 	if G_UNLIKELY (errno != 0) {
 		VE_IGNORE_EINTR (g_chdir ("/"));
 	} else if (pwent->pw_uid != 0) {
-		if (seteuid (pwent->pw_uid) == 0 &&
-		    g_access (".ICEauthority", F_OK) == 0) {
-			struct stat s;
-			if (g_stat (home_dir, &s) == 0 &&
-			    s.st_uid == pwent->pw_uid &&
-			    g_stat (".ICEauthority", &s) &&
-			    S_ISREG (s.st_mode) &&
-			    (s.st_uid != pwent->pw_uid ||
-			     s.st_gid != pwent->pw_gid ||
-			    (s.st_mode & (S_IRWXG|S_IRWXO)))) {
-				/*
-                                 * If the .ICEauthority file is fishy, unlink
-                                 * it and let the next program that needs it
-                                 * set it up again.  This is to resolve
-                                 * CVE-2006-1057.
-                                 */
-				g_unlink (".ICEauthority");
-			}
-		}
-		seteuid (0);
-	}
+                /* sanitize .ICEauthority to be of the correct
+                 * permissions, if it exists */
+                struct stat s0, s1, s2;
+                gint        s0_ret, s1_ret, s2_ret;
+                gint        iceauth_fd;
+ 
+                iceauth_fd = open (".ICEauthority", O_RDONLY);
+ 
+                s0_ret = stat (home_dir, &s0);
+                s1_ret = lstat (".ICEauthority", &s1);
+                s2_ret = fstat (iceauth_fd, &s2);
+ 
+                if (iceauth_fd >= 0 &&
+                    s0_ret == 0 &&
+                    s0.st_uid == pwent->pw_uid &&
+                    s1_ret == 0 &&
+                    s2_ret == 0 &&
+                    S_ISREG (s1.st_mode) &&
+                    s1.st_ino == s2.st_ino &&
+                    s1.st_dev == s2.st_dev &&
+                    s1.st_uid == s2.st_uid &&
+                    s1.st_gid == s2.st_gid &&
+                    s1.st_mode == s2.st_mode &&
+                    (s1.st_uid != pwent->pw_uid ||
+                     s1.st_gid != pwent->pw_gid ||
+                     (s1.st_mode & (S_IRWXG|S_IRWXO)) ||
+                     !(s1.st_mode & S_IRWXU))) {
+                        /* This may not work on NFS, but oh well, there
+                         * this is beyond our help, but it's unlikely
+                         * that it got screwed up when NFS was used
+                         * in the first place */
+                        seteuid (0);
+                        /* only if we own the current directory */
+                        fchown (iceauth_fd,
+                                pwent->pw_uid,
+                                pwent->pw_gid);
+                        fchmod (iceauth_fd, S_IRUSR | S_IWUSR);
+                }
+ 
+                if (iceauth_fd >= 0)
+                        close (iceauth_fd);
+ 
+                seteuid (0);
+        }
+
+        /* setup egid to the correct group,
+         * not to leave the egid around.  It's
+         * ok to gdm_fail here */
+        NEVER_FAILS_setegid (pwent->pw_gid);
 
 #ifdef HAVE_LOGINCAP
 	if (setusercontext (NULL, pwent, pwent->pw_uid,
