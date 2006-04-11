@@ -91,5 +91,5 @@ gdmgreeter_LDADD = \
 	-lX11
 
 EXTRA_DIST = \
-	gdmthemetester \
+	gdmthemetester.in \
 	greeter.dtd
