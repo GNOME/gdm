@@ -1791,7 +1791,6 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_DEFAULT_HOST_IMG);
 	gdm_config_get_string (GDM_KEY_HOST_IMAGE_DIR);
 	gdm_config_get_string (GDM_KEY_MULTICAST_ADDR);
-	gdm_config_get_string (GDM_KEY_BROADCAST);
 	gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
 	gdm_config_get_int    (GDM_KEY_XINERAMA_SCREEN);
 	gdm_config_get_int    (GDM_KEY_MAX_ICON_WIDTH);
@@ -1799,6 +1798,7 @@ gdm_read_config (void)
 	gdm_config_get_int    (GDM_KEY_SCAN_TIME);
 	gdm_config_get_int    (GDM_KEY_BACKGROUND_TYPE);
 	gdm_config_get_bool   (GDM_KEY_ALLOW_ADD);
+	gdm_config_get_bool   (GDM_KEY_BROADCAST);
 	gdm_config_get_bool   (GDM_KEY_MULTICAST);
 
 	gdmcomm_comm_bulk_stop ();
@@ -1824,12 +1824,12 @@ gdm_reread_config (int sig, gpointer data)
 	    gdm_config_reload_string (GDM_KEY_DEFAULT_HOST_IMG) ||
 	    gdm_config_reload_string (GDM_KEY_HOST_IMAGE_DIR) ||
 	    gdm_config_reload_string (GDM_KEY_MULTICAST_ADDR) ||
-	    gdm_config_reload_string (GDM_KEY_BROADCAST) ||
 	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
 	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_WIDTH) ||
 	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_HEIGHT) ||
 	    gdm_config_reload_int    (GDM_KEY_SCAN_TIME) ||
 	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ADD) ||
+	    gdm_config_reload_bool   (GDM_KEY_BROADCAST) ||
 	    gdm_config_reload_bool   (GDM_KEY_MULTICAST)) {
 
 		if (RUNNING_UNDER_GDM) {
