@@ -3354,6 +3354,7 @@ session_child_run (struct passwd *pwent,
 	char *exec;
 	const char *shell = NULL;
 	char *greeter;
+	gint result;
 #ifndef HAVE_TSOL
 	char *argv[4];
 #else
@@ -3487,9 +3488,15 @@ session_child_run (struct passwd *pwent,
 				  "Aborting."),
 				"session_child_run", login);
 
-	VE_IGNORE_EINTR (g_chdir (home_dir));
-	if G_UNLIKELY (errno != 0) {
+        /* setup euid/egid to the correct user,
+         * not to leave the egid around.  It's
+         * ok to gdm_fail here */
+        NEVER_FAILS_root_set_euid_egid (pwent->pw_uid, pwent->pw_gid);
+
+	VE_IGNORE_EINTR (result = g_chdir (home_dir));
+	if G_UNLIKELY (result != 0) {
 		VE_IGNORE_EINTR (g_chdir ("/"));
+		NEVER_FAILS_root_set_euid_egid (0, 0);
 	} else if (pwent->pw_uid != 0) {
                 /* sanitize .ICEauthority to be of the correct
                  * permissions, if it exists */
@@ -3497,6 +3504,8 @@ session_child_run (struct passwd *pwent,
                 gint        s0_ret, s1_ret, s2_ret;
                 gint        iceauth_fd;
  
+		 NEVER_FAILS_root_set_euid_egid (0, 0);
+
                 iceauth_fd = open (".ICEauthority", O_RDONLY);
  
                 s0_ret = stat (home_dir, &s0);
@@ -3522,7 +3531,7 @@ session_child_run (struct passwd *pwent,
                          * this is beyond our help, but it's unlikely
                          * that it got screwed up when NFS was used
                          * in the first place */
-                        seteuid (0);
+
                         /* only if we own the current directory */
                         fchown (iceauth_fd,
                                 pwent->pw_uid,
@@ -3532,14 +3541,7 @@ session_child_run (struct passwd *pwent,
  
                 if (iceauth_fd >= 0)
                         close (iceauth_fd);
- 
-                seteuid (0);
         }
-
-        /* setup egid to the correct group,
-         * not to leave the egid around.  It's
-         * ok to gdm_fail here */
-        NEVER_FAILS_setegid (pwent->pw_gid);
 
 #ifdef HAVE_LOGINCAP
 	if (setusercontext (NULL, pwent, pwent->pw_uid,
