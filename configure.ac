@@ -1003,16 +1003,16 @@ else
 fi
 
 # Don't add bindir to GDM_USER_PATH if it is already in the PATH.
-# If it is /usr/bin, for example.
-if test "x${bindir}" != 'x${exec_prefix}/bin' -a "x${exec_prefix}" = 'x${prefix}'; then
-    if ${prefix} != / -a ${prefix} != /bin; then
-        GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
-    fi
-elif test "x${bindir}" != 'x${exec_prefix}/bin' -a "x${exec_prefix}" != 'x${prefix}'; then
-    if ${exec_prefix} != / -a ${exec_prefix} != /bin; then
-        GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
-    fi
-elif test "x${bindir}" != 'x/bin'; then
+# If it is /bin or /usr/bin, for example.
+if test ${exec_prefix} != "NONE"; then
+   path_to_check=$exec_prefix
+elif test ${prefix} != "NONE"; then
+   path_to_check=$prefix
+else
+   path_to_check=$ac_default_prefix
+fi
+
+if test "x$path_to_check" != "x/" -a "x$path_to_check" != "x/usr"; then
     GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
 fi
 
@@ -1194,9 +1194,9 @@ fi
 
 dnl <= Solaris Trusted Extensions support =>
 if test "x$found_tsol" = "xyes" ; then
-	echo "Solaris Trusted Extensions support	: YES"
+	echo "Solaris Trusted Extensions support    : YES"
 else
-	echo "Solaris Trusted Extensions support	: NO"
+	echo "Solaris Trusted Extensions support    : NO"
 fi
 
 dnl <= Authentication scheme =>
