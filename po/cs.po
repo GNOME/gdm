@@ -1,27 +1,25 @@
 # Czech translation of gdm2.
 # Copyright (C) 2002,2003 Free Software Foundation, Inc.
-# Copyright (C) 2003, 2004, 2005 Miloslav Trmac <mitr@volny.cz>
+# Copyright (C) 2003, 2004, 2005, 2006 Miloslav Trmac <mitr@volny.cz>
 # Copyright (C) 2006 Lukas Novotny <lukasnov@cvs.gnome.org>
 # Copyright (C) 2006 Petr Tomeš <ptomes@gmail.com>
 # George Lebl <jirka@5z.com>, 2000.
 # Michal Bukovjan <bukm@centrum.cz>, 2002-2003
-# Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005
+# Miloslav Trmac <mitr@volny.cz>, 2003 - 2006
 # Lukas Novotny <lukasnov@cvs.gnome.org>, 2006
-# Petr Tomeš <ptomes@gmail.com>, 2006Petr Tomeš <ptomes@gmail.com>, 2006.
-# 
-# 
+# Petr Tomeš <ptomes@gmail.com>, 2006
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-11 13:06+0200\n"
-"PO-Revision-Date: 2006-04-11 21:17+0200\n"
+"POT-Creation-Date: 2006-04-14 20:59+0200\n"
+"PO-Revision-Date: 2006-04-14 21:25+0200\n"
 "Last-Translator: Lukas Novotny <lukasnov@cvs.gnome.org>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -326,7 +324,7 @@ msgid "%s: fork () failed!"
 msgstr "%s: fork () selhal!"
 
 #. should never happen
-#: ../daemon/gdm.c:221 ../daemon/slave.c:3371
+#: ../daemon/gdm.c:221 ../daemon/slave.c:3372
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: setsid () selhal: %s!"
@@ -1119,36 +1117,36 @@ msgstr "%s: Nemohu fork proces gdmchooser"
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Nemohu otevřít ~/.xsession-errors"
 
-#: ../daemon/slave.c:3424
+#: ../daemon/slave.c:3425
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: Spuštění skriptu PreSession vrátilo > 0. Končím."
 
-#: ../daemon/slave.c:3468
+#: ../daemon/slave.c:3469
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "Jazyk %s neexistuje; používám %s"
 
-#: ../daemon/slave.c:3469
+#: ../daemon/slave.c:3470
 msgid "System default"
 msgstr "Systémové nastavení"
 
-#: ../daemon/slave.c:3486
+#: ../daemon/slave.c:3487
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Nemohu nastavit prostředí pro %s. Končím."
 
-#: ../daemon/slave.c:3551
+#: ../daemon/slave.c:3553
 #, c-format
 msgid "%s: setusercontext () failed for %s. Aborting."
 msgstr "%s: setusercontext () selhalo pro %s. Končím."
 
-#: ../daemon/slave.c:3557
+#: ../daemon/slave.c:3559
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Nemohu se stát %s. Končím."
 
-#: ../daemon/slave.c:3598
+#: ../daemon/slave.c:3600
 #, c-format
 msgid ""
 "No Exec line in the session file: %s.  Running the GNOME failsafe session "
@@ -1157,12 +1155,12 @@ msgstr ""
 "Chybí·řádek·Exec·v·souboru·sezení:·%s.  Spouštím místo něj záchranné sezení "
 "GNOME."
 
-#: ../daemon/slave.c:3601
+#: ../daemon/slave.c:3603
 #, c-format
 msgid "%s: %s"
 msgstr "%s:·%s"
 
-#: ../daemon/slave.c:3621
+#: ../daemon/slave.c:3623
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
@@ -1171,7 +1169,7 @@ msgstr ""
 "%s: Nemohu nalézt nebo spustit základní skript Xsession. Spouštím místo toho "
 "záchranné sezení GNOME."
 
-#: ../daemon/slave.c:3627
+#: ../daemon/slave.c:3629
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
@@ -1180,19 +1178,20 @@ msgstr ""
 "záchranné sezení GNOME."
 
 #. yaikes
-#: ../daemon/slave.c:3659
+#: ../daemon/slave.c:3661
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-msgstr "%s: gnome-session pro záchranné sezení GNOME nebylo nalezeno; zkouším xterm"
+msgstr ""
+"%s: gnome-session pro záchranné sezení GNOME nebylo nalezeno; zkouším xterm"
 
-#: ../daemon/slave.c:3664
+#: ../daemon/slave.c:3666
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
 msgstr ""
 "Nemohu najít instalaci GNOME. Zkouším spustit sezení \"Záchranný xterm\"."
 
-#: ../daemon/slave.c:3672 ../daemon/slave.c:3696
+#: ../daemon/slave.c:3674 ../daemon/slave.c:3698
 msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
@@ -1203,24 +1202,24 @@ msgstr ""
 "problémů s vaší instalací."
 
 #. yaikes
-#: ../daemon/slave.c:3683
+#: ../daemon/slave.c:3685
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
 msgstr ""
 "%s: gnome-session pro záchranné sezení GNOME nebylo nalezeno; zkouším xterm"
 
-#: ../daemon/slave.c:3688
+#: ../daemon/slave.c:3690
 msgid ""
 "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
 "session instead."
 msgstr ""
 "Nemohu najít instalaci GNOME. Spouštím místo toho sezení \"Záchranný xterm\"."
 
-#: ../daemon/slave.c:3714
+#: ../daemon/slave.c:3716
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Nemohu najít \"xterm\" ke spuštění záchranného sezení."
 
-#: ../daemon/slave.c:3736 ../daemon/slave.c:3782
+#: ../daemon/slave.c:3738 ../daemon/slave.c:3784
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1231,66 +1230,67 @@ msgstr ""
 "opuštění emulátoru terminálu, napište 'exit' a stiskněte klávesu Enter v "
 "okně terminálu."
 
-#: ../daemon/slave.c:3750
+#: ../daemon/slave.c:3752
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console and be prompted to enter the password for root so that you may fix "
 "your system if you cannot log in any other way. To exit the terminal "
 "emulator, type 'exit' and an enter into the window."
 msgstr ""
-"Toto je záchranné sezení xterm. Budete přihlášeni do konzoly terminálu "
-"a vyzváni k zadání hesla pro uživatele root abyste mohli opravit svůj systém,"
-" pokud se nemůžete přihlásit nijak jinak. K opuštění emulátoru terminálu "
+"Toto je záchranné sezení xterm. Budete přihlášeni do konzoly terminálu a "
+"vyzváni k zadání hesla pro uživatele root abyste mohli opravit svůj systém, "
+"pokud se nemůžete přihlásit nijak jinak. K opuštění emulátoru terminálu "
 "napište 'exit' a stiskněte klávesu Enter v okně terminálu."
 
-#: ../daemon/slave.c:3763
+#: ../daemon/slave.c:3765
 msgid ""
 "The failsafe session is restricted to users who have been assigned the root "
 "role. If you cannot log in any other way please contact your system "
 "administrator"
 msgstr ""
 "Záchranné sezení je omezeno na uživatele s přiřazenými právy uživatele root. "
-"Nemůžete-li se přihlásit jiným způsobem, kontaktujte prosím vašeho správce sítě"
+"Nemůžete-li se přihlásit jiným způsobem, kontaktujte prosím vašeho správce "
+"sítě"
 
-#: ../daemon/slave.c:3820
+#: ../daemon/slave.c:3822
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Uživateli není dovoleno se přihlásit"
 
-#: ../daemon/slave.c:3823
+#: ../daemon/slave.c:3825
 msgid "The system administrator has disabled your account."
 msgstr "Správce systému zakázal váš účet."
 
-#: ../daemon/slave.c:3854
+#: ../daemon/slave.c:3856
 msgid "Error! Unable to set executable context."
 msgstr "Chyba! Nemohu nastavit kontext spustitelného programu."
 
-#: ../daemon/slave.c:3863 ../daemon/slave.c:3872
+#: ../daemon/slave.c:3865 ../daemon/slave.c:3874
 #, c-format
 msgid "%s: Could not exec %s %s %s %s %s %s"
 msgstr "%s: Nemohu spustit %s %s %s·%s·%s·%s"
 
-#: ../daemon/slave.c:3881 ../daemon/slave.c:3886
+#: ../daemon/slave.c:3883 ../daemon/slave.c:3888
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Nemohu spustit %s %s %s"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:3898
+#: ../daemon/slave.c:3900
 msgid "Cannot start the session due to some internal error."
 msgstr "Nemohu spustit sezení kvůli nějaké interní chybě."
 
-#: ../daemon/slave.c:3952
+#: ../daemon/slave.c:3954
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr "%s: Uživatel prošel ověřením, ale getpwnam (%s) selhalo!"
 
-#: ../daemon/slave.c:3965
+#: ../daemon/slave.c:3967
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Spuštění skriptu PreSession vrátilo > 0. Končím."
 
-#: ../daemon/slave.c:3987
+#: ../daemon/slave.c:3989
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1308,12 +1308,12 @@ msgstr ""
 "Je nepravděpodobné, že bude něco fungovat, pokud nepoužijete záchranné "
 "sezení."
 
-#: ../daemon/slave.c:3999
+#: ../daemon/slave.c:4001
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Domácí adresář pro %s: '%s' neexistuje."
 
-#: ../daemon/slave.c:4048
+#: ../daemon/slave.c:4050
 msgid ""
 "User's $HOME/.dmrc file is being ignored.  This prevents the default session "
 "and language from being saved.  File should be owned by user and have 644 "
@@ -1325,7 +1325,7 @@ msgstr ""
 "a mít oprávnění 644.  Adresář·$HOME·musí být vlastněn uživatelem a zakázán "
 "zápis pro ostatní uživatele."
 
-#: ../daemon/slave.c:4177
+#: ../daemon/slave.c:4179
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1337,12 +1337,12 @@ msgstr ""
 "zápis. V každém případě není možné se přihlásit. Kontaktujte prosím svého "
 "správce systému"
 
-#: ../daemon/slave.c:4253
+#: ../daemon/slave.c:4255
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Chyba při fork sezení uživatele"
 
-#: ../daemon/slave.c:4334
+#: ../daemon/slave.c:4336
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1354,25 +1354,25 @@ msgstr ""
 "chcete zkusit tento problém vyřešit, zkuste se přihlásit pod jedním ze "
 "záchranných sezení."
 
-#: ../daemon/slave.c:4342
+#: ../daemon/slave.c:4344
 msgid "View details (~/.xsession-errors file)"
 msgstr "Prohlédnout detaily (soubor ~/.xsession-errors)"
 
-#: ../daemon/slave.c:4506
+#: ../daemon/slave.c:4508
 msgid "GDM detected a halt or restart in progress."
 msgstr "GDM rozpoznal probíhající vypnutí nebo restart."
 
-#: ../daemon/slave.c:4600
+#: ../daemon/slave.c:4602
 #, c-format
 msgid "Ping to %s failed; whacking display!"
 msgstr "Ping na %s selhal; ruším displej!"
 
-#: ../daemon/slave.c:4879
+#: ../daemon/slave.c:4881
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Fatální chyba X - Restartuji %s"
 
-#: ../daemon/slave.c:4948
+#: ../daemon/slave.c:4950
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1380,22 +1380,22 @@ msgstr ""
 "Bylo požádáno o zvuk přihlášení mimo místní displej nebo nemůže být spuštěn "
 "přehrávací software nebo zvuk neexistuje"
 
-#: ../daemon/slave.c:5305
+#: ../daemon/slave.c:5307
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Chyba při spouštění: %s"
 
-#: ../daemon/slave.c:5312 ../daemon/slave.c:5451
+#: ../daemon/slave.c:5314 ../daemon/slave.c:5453
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Nemohu fork proces skriptu!"
 
-#: ../daemon/slave.c:5406
+#: ../daemon/slave.c:5408
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Nemohu vytvořit rouru"
 
-#: ../daemon/slave.c:5445
+#: ../daemon/slave.c:5447
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Chyba při spouštění: %s"
@@ -2238,9 +2238,9 @@ msgid "Server busy, will sleep.\n"
 msgstr "Server je obsazený, spouštím uspání.\n"
 
 #: ../gui/gdmdynamic.c:307
-#, fuzzy, c-format
+#, c-format
 msgid "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
-msgstr "Selhalo spojení s démonem, uspání za %d·sekund.··Pokus·%d·z·%d\n"
+msgstr "Připojení k démonovi selhalo, spím na %d sekund. Pokus %d z %d\n"
 
 #. This is a serious error, so print a message even if verbose is off
 #: ../gui/gdmdynamic.c:330
@@ -3488,9 +3488,8 @@ msgstr ""
 "Výběr"
 
 #: ../gui/gdmsetup.glade.h:30
-#, fuzzy
 msgid "Honor _indirect requests"
-msgstr "Uznávat _nepřímé požadavky"
+msgstr "Odpovídat na _nepřímé požadavky"
 
 #: ../gui/gdmsetup.glade.h:31
 msgid "I_mage:"
@@ -3607,9 +3606,8 @@ msgid "Resolution:"
 msgstr "Rozlišení:"
 
 #: ../gui/gdmsetup.glade.h:61
-#, fuzzy
 msgid "Sc_ale to fit screen"
-msgstr "Případně zobrazit stupňovitě"
+msgstr "Přizpůsobit velikosti obrazovky"
 
 #: ../gui/gdmsetup.glade.h:62
 msgid "Security"
@@ -4031,9 +4029,8 @@ msgid "Cannot open gestures file: %s"
 msgstr "Nemohu otevřít soubor gest: %s"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:38
-#, fuzzy
 msgid "DMX display to migrate to"
-msgstr "Převézt DMX zobrazování z do"
+msgstr "Displej DMX, na který převést"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:39 ../utils/gdm-dmx-reconnect-proxy.c:44
 msgid "DISPLAY"
@@ -4041,7 +4038,7 @@ msgstr "DISPLEJ"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:43
 msgid "Backend display name"
-msgstr "Zobrazit jméno obsluhy"
+msgstr "Název displeje na pozadí"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:48
 msgid "Xauthority file for destination display"
@@ -4053,7 +4050,7 @@ msgstr "AUTHSOUBOR"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:53
 msgid "Xauthority file for backend display"
-msgstr "Xauthority soubor pro zobrazení obsluhy"
+msgstr "Soubor Xauthority pro displej na pozadí"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:71
 #, c-format
@@ -4067,7 +4064,7 @@ msgstr "Rozšíření DMX není přítomno v \"%s\"\n"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:98
 msgid "- migrate a backend display from one DMX display to another"
-msgstr "-·převézt obsluhu zobrazení z DMX na jiný"
+msgstr "- převést displej na pozadí z jednoho displeje DMX na jiný"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:104
 #, c-format
@@ -4077,7 +4074,7 @@ msgstr "Pro použití %s musíte zadat cíl DXM zobrazení\n"
 #: ../utils/gdm-dmx-reconnect-proxy.c:109
 #, c-format
 msgid "You must specify a backend display by using %s\n"
-msgstr "Pro použití %s musíte zadat obsluhu zobrazení\n"
+msgstr "Musíte zadat displej na pozadí použitím %s\n"
 
 #: ../utils/gdm-dmx-reconnect-proxy.c:124
 #, c-format
@@ -4134,7 +4131,8 @@ msgid ""
 "s. CList type widget should have %d column. Possibly the glade interface "
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
-msgid_plural "An error occurred while loading the user interface element %s%s from file %"
+msgid_plural ""
+"An error occurred while loading the user interface element %s%s from file %"
 "s. CList type widget should have %d columns. Possibly the glade interface "
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
@@ -4143,11 +4141,13 @@ msgstr[0] ""
 "Widget typu CList by měl mít %d sloupec. Možná byl popis rozhraní v glade "
 "poškozen. %s nemůže pokračovat a nyní skončí. Měli byste zkontrolovat svou "
 "instalaci %s nebo znovu nainstalovat %s."
-msgstr[1] "Při načítání prvku uživatelského rozhraní %s%s ze souboru %s došlo k chybě.\n"
+msgstr[1] ""
+"Při načítání prvku uživatelského rozhraní %s%s ze souboru %s došlo k chybě.\n"
 "Widget typu CList by měl mít %d sloupce. Možná byl popis rozhraní v glade "
 "poškozen. %s nemůže pokračovat a nyní skončí. Měli byste zkontrolovat svou "
 "instalaci %s nebo znovu nainstalovat %s."
-msgstr[2] "Při načítání prvku uživatelského rozhraní %s%s ze souboru %s došlo k chybě.\n"
+msgstr[2] ""
+"Při načítání prvku uživatelského rozhraní %s%s ze souboru %s došlo k chybě.\n"
 "Widget typu CList by měl mít %d sloupců. Možná byl popis rozhraní v glade "
 "poškozen. %s nemůže pokračovat a nyní skončí. Měli byste zkontrolovat svou "
 "instalaci %s nebo znovu nainstalovat %s."
@@ -4239,10 +4239,6 @@ msgstr "Příliš mnoho úrovní aliasů pro locale; možná to znamená smyčku
 #~ msgid "Restart gdm"
 #~ msgstr "Restartovat gdm"
 
-#, fuzzy
-#~ msgid "Select Backgroud Image"
-#~ msgstr "Vyberte si jazyk"
-
 #~ msgid "Reboot"
 #~ msgstr "Restartovat počítač"
 
@@ -4277,9 +4273,6 @@ msgstr "Příliš mnoho úrovní aliasů pro locale; možná to znamená smyčku
 #~ msgstr ""
 #~ "požádejte prosím svého správce systému, aby jej povolil v programu pro "
 #~ "nastavení GDM."
-
-#~ msgid "*"
-#~ msgstr "*"
 
 #~ msgid ""
 #~ "You might in fact be using a different display manager, such as KDM (KDE "
@@ -4349,12 +4342,6 @@ msgstr "Příliš mnoho úrovní aliasů pro locale; možná to znamená smyčku
 #~ msgid "Do you really wish to remove theme '%s' from the system?"
 #~ msgstr "Opravdu chcete ze systému odstranit motiv '%s'?"
 
-#~ msgid "     "
-#~ msgstr "     "
-
-#~ msgid "<"
-#~ msgstr "<"
-
 #~ msgid "<b>Server Settings</b>"
 #~ msgstr "<b>Nastavení serveru</b>"
 
@@ -4368,9 +4355,6 @@ msgstr "Příliš mnoho úrovní aliasů pro locale; možná to znamená smyčku
 #~ "tohoto oddílu, zastaví\n"
 #~ "restartování vašeho Xserveru (což zabrání spouštění tohoto konfiguračního "
 #~ "programu), BUĎTE OPATRNÍ!"
-
-#~ msgid ">"
-#~ msgstr ">"
 
 #~ msgid "Allow _configuration from the login screen"
 #~ msgstr "Povolit _nastavení z přihlašovací obrazovky"
