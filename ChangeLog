@@ -1,20 +1,29 @@
 2006-04-14  Brian Cameron  <brian.cameron@sun.com>
 
+	* Release 2.14.2: 
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
+	
+2006-04-14  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/slave.c: Further clean up access to ICEAuthority file.  Fixes
 	  bug #338358.  Patch provided by Ray Strode <rstrode@redhat.com>.
 
 2006-04-13  Brian Cameron  <brian.cameron@sun.com>
 
 	* NEWS: Updated NEWS.
-	* gui/gdmchooser.c: Fix references to the BROADCAST key so it
-	  is correctly listed as a bool, not a string.
-	* configure.ac: Fix check for adding /usr/bin to the GDM_USER_PATH
-	  so it doesn't add it twice on Solaris.
+	* gui/gdmchooser.c: Fix references to the BROADCAST key so it is
+	  correctly listed as a bool, not a string.  Kudos to Tiago Vignatti
+	  <tv02@c3sl.ufpr.br>.
+	* configure.ac: Fix check for adding /usr/bin to the GDM_USER_PATH so
+	  it doesn't add it twice.  This used to work, but got broken on the
+	  03-28-2006 patch by Julio M. Merino Vidal to get rid of the EXPANDED
+	  variables.  Working again now.
 
 2006-04-11  Brian Cameron  <brian.cameron@sun.com>
 
-	* gui/greeter/Makefile.am:  Now include gdmthemetester.in
-	  in EXTRA_DIST instead of gdmthemetester.
+	* gui/greeter/Makefile.am:  Now include gdmthemetester.in in
+	  EXTRA_DIST instead of gdmthemetester.
 
 2006-04-10  Brian Cameron  <brian.cameron@sun.com>
 
