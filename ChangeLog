@@ -1,10 +1,20 @@
 2006-04-17  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmchooser.c:  Fix setting of GdmHosts so it should use
+	  the hosts from the config file when when BROADCAST/MULTICAST
+	  is set to false.  Partial fix for #338274.  Thanks to Tiago
+	  Vignatti <tv02@c3sl.ufpr.br> for noticing this.
+
+2006-04-17  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmsetup.desktop.in.in: Added.  This makes gdmsetup.desktop
 	  get properly translated.  Fixes bug #334647.  Patch by Vincent
 	  Fretin <vincent.fretin@gmail.com>
 	* gui/gdmsetup.desktop.in: Removed
 	* gui/Makefile.am: Updated to reflect change.
+	* configure.ac, po/LINGUAS: Updated to reflect latest po/LINGUAS
+	  patch.  Fixes bug #33769.  Patch provided by Przemyslaw Grzegorczyk
+	  <pgrzegorczyk@gmail.com>.
 
 2006-04-14  Brian Cameron  <brian.cameron@sun.com>
 

@@ -153,14 +153,12 @@ enum {
 	GDM_BACKGROUND_COLOR = 2
 };
 
-static gchar *GdmHosts;
-
 static GladeXML *chooser_app;
 static GtkWidget *chooser, *manage, *rescan, *cancel, *add_entry, *add_button;
 static GtkWidget *status_label;
 
 static GIOChannel *channel;
-static GList *hosts = NULL;
+static GList *chooser_hosts = NULL;
 static GdkPixbuf *defhostimg;
 static GtkWidget *browser;
 static GtkTreeModel *browser_model;
@@ -225,7 +223,7 @@ gdm_chooser_host_alloc (const char *hostname,
 	    memcpy (&host->ia, (struct in_addr *)ia, sizeof (struct in_addr));
 
     host->addrtype = family;
-    hosts = g_list_prepend (hosts, host);
+    chooser_hosts = g_list_prepend (chooser_hosts, host);
     
     if ( ! willing)
 	    return host;
@@ -359,7 +357,7 @@ gdm_host_known (char *ia, gint family)
 {
 	GList *li;
 
-	for (li = hosts; li != NULL; li = li->next) {
+	for (li = chooser_hosts; li != NULL; li = li->next) {
 		GdmChooserHost *host = li->data;
 #ifdef ENABLE_IPV6
 		if (family == AF_INET6) {
@@ -789,7 +787,7 @@ chooser_scan_time_update (gpointer data)
 {
 	GList *li;
 	scan_time_handler = 0;
-	for (li = hosts; li != NULL; li = li->next) {
+	for (li = chooser_hosts; li != NULL; li = li->next) {
 		GdmChooserHost *host = (GdmChooserHost *) li->data;
 		if (host->willing)
 			break;
@@ -903,7 +901,7 @@ ping_try (gpointer data)
 void
 gdm_chooser_xdmcp_discover (void)
 {
-    GList *hl = hosts;
+    GList *hl = chooser_hosts;
 
     g_free (added_host);
     added_host = NULL;
@@ -927,9 +925,9 @@ gdm_chooser_xdmcp_discover (void)
 	hl = hl->next;
     }
 
-    g_list_free (hosts);
+    g_list_free (chooser_hosts);
 
-    hosts = NULL;
+    chooser_hosts = NULL;
 
     do_ping (TRUE);
 
@@ -1946,7 +1944,8 @@ gdm_event (GSignalInvocationHint *ihint,
 int 
 main (int argc, char *argv[])
 {
-    char **hosts;
+    gchar *GdmHosts;
+    gchar **hosts_opt;
     poptContext ctx;
     int nextopt;
     const char *gdm_version;
@@ -1988,24 +1987,30 @@ main (int argc, char *argv[])
     /* Read all configuration at once, so the values get cached */
     gdm_read_config ();
 
+    GdmHosts = g_strdup (gdm_config_get_string (GDM_KEY_HOSTS));
+
     /* if broadcasting, then append BROADCAST to hosts */
     if (gdm_config_get_bool (GDM_KEY_BROADCAST)) {
-	    gchar *hosts = gdm_config_get_string (GDM_KEY_HOSTS);
-	    if (ve_string_empty (hosts)) {
-		    GdmHosts = "BROADCAST";
+	    gchar *tmp;
+	    if (ve_string_empty (GdmHosts)) {
+		    tmp = "BROADCAST";
 	    } else {
-		    GdmHosts = g_strconcat (hosts, ",BROADCAST", NULL);
+		    tmp = g_strconcat (GdmHosts, ",BROADCAST", NULL);
 	    }
+	    g_free (GdmHosts);
+	    GdmHosts = tmp;
     }
 
 #ifdef ENABLE_IPV6
     if (gdm_config_get_bool (GDM_KEY_MULTICAST)) {
-	    gchar *hosts = gdm_config_get_string (GDM_KEY_HOSTS);
-	    if (ve_string_empty (hosts)) {
-		    GdmHosts = "MULTICAST";
+	    gchar *tmp;
+	    if (ve_string_empty (GdmHosts)) {
+		    tmp = "MULTICAST";
 	    } else {
-		    GdmHosts = g_strconcat (GdmHosts, ",MULTICAST", NULL);
+		    tmp = g_strconcat (GdmHosts, ",MULTICAST", NULL);
 	    }
+	    g_free (GdmHosts);
+	    GdmHosts = tmp;
     }
 #endif
 
@@ -2063,17 +2068,17 @@ main (int argc, char *argv[])
     gdm_chooser_gui_init ();
     gdm_chooser_signals_init ();
 
-    hosts = (char **)poptGetArgs (ctx);
+    hosts_opt = (char **)poptGetArgs (ctx);
     /* when no hosts on the command line, take them from the config */
-    if (hosts == NULL ||
-	hosts[0] == NULL) {
+    if (hosts_opt == NULL ||
+	hosts_opt[0] == NULL) {
 	    int i;
-	    hosts = g_strsplit (GdmHosts, ",", -1);
-	    for (i = 0; hosts != NULL && hosts[i] != NULL; i++) {
-		    g_strstrip (hosts[i]);
+	    hosts_opt = g_strsplit (GdmHosts, ",", -1);
+	    for (i = 0; hosts_opt != NULL && hosts_opt[i] != NULL; i++) {
+		    g_strstrip (hosts_opt[i]);
 	    }
     }
-    gdm_chooser_xdmcp_init (hosts);
+    gdm_chooser_xdmcp_init (hosts_opt);
     poptFreeContext (ctx);
 
     sid = g_signal_lookup ("event",
