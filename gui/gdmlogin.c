@@ -3371,8 +3371,8 @@ main (int argc, char *argv[])
 	    gdm_wm_focus_new_windows (TRUE);
 	    
 	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
-				     "version.  "
-				     "You have probably just upgraded GDM.  "
+				     "version. "
+				     "You have probably just upgraded GDM. "
 				     "Please restart the GDM daemon or the computer."),
 				   VERSION);
 
@@ -3405,8 +3405,8 @@ main (int argc, char *argv[])
 	    gdm_wm_focus_new_windows (TRUE);
 	    
 	    msg = g_strdup_printf (_("The greeter version (%s) does not match the daemon "
-	                             "version.  "
-	                             "You have probably just upgraded GDM.  "
+	                             "version. "
+	                             "You have probably just upgraded GDM. "
 	                             "Please restart the GDM daemon or the computer."),
 	                           VERSION);
 
