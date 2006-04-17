@@ -1106,7 +1106,6 @@ config/Init
 config/PreSession
 config/PostSession
 config/gdmprefetchlist
-config/ssh.desktop
 gdm-stop
 gdm-restart
 gdm-safe-restart

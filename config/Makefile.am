@@ -28,15 +28,15 @@ EXTRA_DIST = \
 	gdm-autologin \
 	locale.alias \
 	Init.in \
-	PostSession.in \
 	PreSession.in \
+	PostSession.in \
 	PostLogin \
 	XKeepsCrashing \
 	gettextfoo.h \
 	gdmprefetchlist.in \
 	extract-shell.sh
 
-CLEANFILES = Xsession gdm.conf ssh.desktop
+CLEANFILES = Xsession gdm.conf default.desktop gnome.desktop CDE.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \

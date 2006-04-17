@@ -207,16 +207,16 @@ System_files = \
 	gdmflexiserver.desktop	\
 	gdmflexiserver-xnest.desktop
 System_in_files = \
-	gdmsetup.desktop.in		\
+	gdmsetup.desktop.in.in		\
 	gdmflexiserver.desktop.in	\
 	gdmflexiserver-xnest.desktop.in
 System_DATA = $(System_in_files:.desktop.in=.desktop)
 
-CLEANFILES = gdmsetup.desktop
+CLEANFILES = gdmsetup.desktop gdmsetup.desktop.in gdmflexiserver.desktop gdmflexiserver-xnest.desktop gdmphotosetup.desktop
 
-gdmsetup.desktop: $(srcdir)/gdmsetup.desktop.in
-	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdmsetup.desktop.in \
-		>gdmsetup.desktop
+gdmsetup.desktop.in: $(srcdir)/gdmsetup.desktop.in.in
+	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdmsetup.desktop.in.in \
+		>gdmsetup.desktop.in
 
 @INTLTOOL_DESKTOP_RULE@
 
