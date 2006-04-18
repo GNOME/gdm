@@ -6508,10 +6508,12 @@ main (int argc, char *argv[])
 
 	if ( ! DOING_GDM_DEVELOPMENT &&
 	     geteuid() != 0) {
+		GtkWidget *fatal_error;
+
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
 
-		GtkWidget *fatal_error = 
+		fatal_error = 
 			ve_hig_dialog_new (NULL /* parent */,
 					   GTK_DIALOG_MODAL /* flags */,
 					   GTK_MESSAGE_ERROR,

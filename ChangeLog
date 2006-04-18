@@ -1,5 +1,10 @@
 2006-04-17  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmsetup.c: Fix for C89 compilers.  Patch by Jens Granseuer
+	  <jensgr@gmx.net>.
+	
+2006-04-17  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmlogin.c, gui/gdmsetup.glade, gui/greeter/greeter.c:
 	  Fixed strings so that they are marked as translatable.
 	  Fixes bug #338765.  Patch provided by Vincent Fretin
@@ -310,7 +315,7 @@
 
 	* daemon/gdmconfig.c, daemon/gdm-net.c, gui/gdmsetup.c:
 	  Fix some GCC C-99 compile issues.  Fixes bug #331450.
-	  Patch provided by Jens Granseur.
+	  Patch provided by Jens Granseur <jensgr@gmx.net>.
 
 2006-02-15  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2065,7 +2070,7 @@
 2005-07-21  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmsetup.c:  C89 compliance patch provided by Jens Granseuer.
- 	  Fixes bug #311097.
+	  <jensgr@gmx.net>.  Fixes bug #311097.
 
 2005-07-21  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2205,7 +2210,7 @@
 	* gui/gdmlogin.c, gui/gdmsetup.c:  No longer use C99 features that do
 	  not work with gcc 2.95, specifically do not declare variables except
 	  at the beginning of a block.  Fixes bug #309110, patch provied by
-	  Jens Granseuer.
+	  Jens Granseuer <jensgr@gmx.net>.
 	* autgogen.sh: Add back USE_GNOME_MACROS2=1 It doesn't do anything if
 	  using GNOME 2.10 or later, but allows people using older
 	  gnome-autogen.sh to build.

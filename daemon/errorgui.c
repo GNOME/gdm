@@ -387,9 +387,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			details = NULL;
 		}
 
-		setup_dialog (d, "gtk-error-box", -1,
-			      (uid == 0 || uid == gdm_get_gdmuid ()) /* set_gdm_ids */,
-			      uid);
+		setup_dialog (d, "gtk-error-box", -1, TRUE, uid);
 
 		loc = gdm_locale_to_utf8 (error);
 
