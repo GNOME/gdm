@@ -206,11 +206,11 @@ System_files = \
 	gdmsetup.desktop	\
 	gdmflexiserver.desktop	\
 	gdmflexiserver-xnest.desktop
-System_in_files = \
+System_dist_files = \
 	gdmsetup.desktop.in.in		\
 	gdmflexiserver.desktop.in	\
 	gdmflexiserver-xnest.desktop.in
-System_DATA = $(System_in_files:.desktop.in=.desktop)
+System_DATA = $(System_files)
 
 CLEANFILES = gdmsetup.desktop gdmsetup.desktop.in gdmflexiserver.desktop gdmflexiserver-xnest.desktop gdmphotosetup.desktop
 
@@ -236,8 +236,7 @@ EXTRA_DIST = \
 	$(Glade_DATA)		\
 	$(Icons_DATA)		\
 	$(System_DATA)		\
-	$(System_files)		\
-	$(System_in_files)	\
+	$(System_dist_files)	\
 	$(Settings_DATA)	\
 	$(Settings_files)	\
 	$(Settings_in_files)
