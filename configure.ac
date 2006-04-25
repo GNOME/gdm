@@ -2,11 +2,11 @@ AC_PREREQ(2.52)
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.14.3)
+AM_INIT_AUTOMAKE(gdm,2.14.4)
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
 
-IT_PROG_INTLTOOL([0.34.90])
+AC_PROG_INTLTOOL([0.28])
 
 GNOME_DOC_INIT
 
@@ -217,6 +217,8 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 
 dnl ## internationalization support
+ALL_LINGUAS="`grep -v '^#' "$srcdir/po/LINGUAS"`"
+AC_SUBST([CONFIG_STATUS_DEPENDENCIES],['$(top_srcdir)/po/LINGUAS'])
 AM_GLIB_GNU_GETTEXT
 
 EXTRA_DAEMON_LIBS=""
@@ -1104,6 +1106,7 @@ config/Init
 config/PreSession
 config/PostSession
 config/gdmprefetchlist
+config/ssh.desktop
 gdm-stop
 gdm-restart
 gdm-safe-restart
