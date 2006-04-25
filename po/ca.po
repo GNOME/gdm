@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-17 01:19+0200\n"
-"PO-Revision-Date: 2006-04-17 01:22+0200\n"
+"POT-Creation-Date: 2006-04-25 12:17+0200\n"
+"PO-Revision-Date: 2006-04-25 12:18+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -237,8 +237,8 @@ msgstr ""
 msgid "%s could not be opened"
 msgstr "No s'ha pogut obrir %s"
 
-#: ../daemon/errorgui.c:488 ../daemon/errorgui.c:632 ../daemon/errorgui.c:743
-#: ../daemon/errorgui.c:864
+#: ../daemon/errorgui.c:486 ../daemon/errorgui.c:630 ../daemon/errorgui.c:741
+#: ../daemon/errorgui.c:862
 #, c-format
 msgid "%s: Cannot fork to display error/info box"
 msgstr "%s: No s'ha pogut bifurcar per mostrar un quadre d'error o informatiu"
@@ -473,7 +473,7 @@ msgstr ""
 msgid "Can't open %s for writing"
 msgstr "No s'ha pogut obrir %s per escriptura"
 
-#: ../daemon/gdm.c:1411 ../gui/gdmchooser.c:1979
+#: ../daemon/gdm.c:1411 ../gui/gdmchooser.c:1978
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -1996,7 +1996,7 @@ msgstr "No s'ha trobat cap ordinador central servidor."
 msgid "Choose a ho_st to connect to:"
 msgstr "Escolliu un _servidor al qual connectar:"
 
-#: ../gui/gdmchooser.c:620
+#: ../gui/gdmchooser.c:618
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
@@ -2005,11 +2005,11 @@ msgstr ""
 "El servidor «%s» no accepta sessions d'entrada ara mateix. Proveu-ho de nou "
 "més tard."
 
-#: ../gui/gdmchooser.c:630
+#: ../gui/gdmchooser.c:628
 msgid "Cannot connect to remote server"
 msgstr "No es pot connectar al servidor remot"
 
-#: ../gui/gdmchooser.c:1282
+#: ../gui/gdmchooser.c:1280
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -2020,20 +2020,20 @@ msgstr ""
 "servidor no està engegat, o no accepta sessions d'entrada ara mateix. "
 "Intenteu-ho de nou més tard."
 
-#: ../gui/gdmchooser.c:1295
+#: ../gui/gdmchooser.c:1293
 msgid "Did not receive response from server"
 msgstr "No s'ha rebut cap resposta del servidor"
 
-#: ../gui/gdmchooser.c:1397
+#: ../gui/gdmchooser.c:1395
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
 msgstr "No es pot trobar el servidor «%s». Potser l'heu escrit malament."
 
-#: ../gui/gdmchooser.c:1406
+#: ../gui/gdmchooser.c:1404
 msgid "Cannot find host"
 msgstr "No es pot trobar el servidor"
 
-#: ../gui/gdmchooser.c:1611
+#: ../gui/gdmchooser.c:1609
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -2051,31 +2051,31 @@ msgstr ""
 "a «Refresca». Quan hàgiu seleccionat un ordinador central feu clic a "
 "«Connecta» per a obrir una sessió en aquella màquina."
 
-#: ../gui/gdmchooser.c:1908
+#: ../gui/gdmchooser.c:1906
 msgid "Socket for xdm communication"
 msgstr "Sòcol per la comunicació amb l'xdm"
 
-#: ../gui/gdmchooser.c:1908
+#: ../gui/gdmchooser.c:1906
 msgid "SOCKET"
 msgstr "SÒCOL"
 
-#: ../gui/gdmchooser.c:1911
+#: ../gui/gdmchooser.c:1909
 msgid "Client address to return in response to xdm"
 msgstr "Adreça del client que s'ha de tornar en resposta al xdm"
 
-#: ../gui/gdmchooser.c:1911
+#: ../gui/gdmchooser.c:1909
 msgid "ADDRESS"
 msgstr "ADREÇA"
 
-#: ../gui/gdmchooser.c:1914
+#: ../gui/gdmchooser.c:1912
 msgid "Connection type to return in response to xdm"
 msgstr "Tipus de connexió que s'ha de tornar en resposta al xdm"
 
-#: ../gui/gdmchooser.c:1914
+#: ../gui/gdmchooser.c:1912
 msgid "TYPE"
 msgstr "TIPUS"
 
-#: ../gui/gdmchooser.c:2037
+#: ../gui/gdmchooser.c:2042
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -2085,7 +2085,7 @@ msgstr ""
 "s). Probablement acabeu d'actualitzar el GDM. Reinicieu el dimoni del gdm o "
 "l'ordinador."
 
-#: ../gui/gdmchooser.c:2047
+#: ../gui/gdmchooser.c:2052
 msgid "Cannot run chooser"
 msgstr "No es pot executar el seleccionador"
 
@@ -3094,13 +3094,14 @@ msgid "Welcome"
 msgstr "Benvingut/da"
 
 #: ../gui/gdmlogin.c:3373 ../gui/gdmlogin.c:3407 ../gui/greeter/greeter.c:581
+#: ../gui/greeter/greeter.c:616
 #, c-format
 msgid ""
-"The greeter version (%s) does not match the daemon version.  You have "
-"probably just upgraded GDM.  Please restart the GDM daemon or the computer."
+"The greeter version (%s) does not match the daemon version. You have "
+"probably just upgraded GDM. Please restart the GDM daemon or the computer."
 msgstr ""
 "La versió del rebedor (%s) no es correspon amb la del dimoni. Probablement "
-"acabeu d'actualitzar el GDM. Reinicieu el dimoni del GDM o arrenqueu de nou "
+"acabeu d'actualitzar el GDM. Reinicieu el dimoni GDM o arrenqueu de nou "
 "l'ordinador."
 
 #: ../gui/gdmlogin.c:3383 ../gui/gdmlogin.c:3417 ../gui/gdmlogin.c:3465
@@ -3277,7 +3278,7 @@ msgstr "Ja existeix l'usuari «%s» a la llista d'exclusió."
 msgid "The \"%s\" user does not exist."
 msgstr "L'usuari «%s» no existeix."
 
-#: ../gui/gdmsetup.c:3043 ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.c:3043 ../gui/gdmsetup.glade.h:76
 msgid "Sounds"
 msgstr "Sons"
 
@@ -3404,20 +3405,20 @@ msgstr "Tanca _sense aplicar"
 msgid "Could not access GDM configuration file.\n"
 msgstr "No es pot accedir al fitxer de configuració del GDM.\n"
 
-#: ../gui/gdmsetup.c:6519
+#: ../gui/gdmsetup.c:6521
 msgid "You must be the root user to configure GDM."
 msgstr "Heu de ser el superusuari (root) per configurar el GDM."
 
 #. EOF
-#: ../gui/gdmsetup.desktop.in.h:1
+#: ../gui/gdmsetup.desktop.in.in.h:1
 msgid "Configure the login window (GNOME Display Manager)"
 msgstr "Configureu la pantalla d'entrada (el gestor d'entrades del GNOME)"
 
-#: ../gui/gdmsetup.desktop.in.h:2
+#: ../gui/gdmsetup.desktop.in.in.h:2
 msgid "Login Window"
 msgstr "Finestra d'entrada"
 
-#: ../gui/gdmsetup.desktop.in.h:3 ../gui/gdmsetup.glade.h:39
+#: ../gui/gdmsetup.desktop.in.in.h:3 ../gui/gdmsetup.glade.h:41
 msgid "Login Window Preferences"
 msgstr "Preferències de la finestra d'entrada"
 
@@ -3452,94 +3453,102 @@ msgstr ""
 "que no es reiniciï el GDM."
 
 #: ../gui/gdmsetup.glade.h:6
+msgid "A_dd..."
+msgstr "A_fegeix..."
+
+#: ../gui/gdmsetup.glade.h:7
 msgid "A_llow remote system administrator login"
 msgstr "Permet entrades remotes de _l'administrador del sistema"
 
-#: ../gui/gdmsetup.glade.h:7
+#: ../gui/gdmsetup.glade.h:8
+msgid "A_pply User Changes"
+msgstr "A_plica els canvis d'usuari"
+
+#: ../gui/gdmsetup.glade.h:9
 msgid "Accessibility"
 msgstr "Accessibilitat"
 
-#: ../gui/gdmsetup.glade.h:8
+#: ../gui/gdmsetup.glade.h:10
 msgid "Add / Modify Servers To Start"
 msgstr "Afegeix/modifica el servidors a iniciar"
 
-#: ../gui/gdmsetup.glade.h:9
+#: ../gui/gdmsetup.glade.h:11
 msgid "Add S_erver..."
 msgstr "Afegeix un s_ervidor..."
 
-#: ../gui/gdmsetup.glade.h:10
+#: ../gui/gdmsetup.glade.h:12
 msgid "Add User"
 msgstr "Afegeix un usuari"
 
-#: ../gui/gdmsetup.glade.h:11
+#: ../gui/gdmsetup.glade.h:13
 msgid "Allo_w remote timed logins"
 msgstr "Permet entrades remotes _temporitzades"
 
-#: ../gui/gdmsetup.glade.h:12
+#: ../gui/gdmsetup.glade.h:14
 msgid "Author:"
 msgstr "Autor:"
 
-#: ../gui/gdmsetup.glade.h:13
+#: ../gui/gdmsetup.glade.h:15
 msgid "Background"
 msgstr "Fons"
 
-#: ../gui/gdmsetup.glade.h:14
+#: ../gui/gdmsetup.glade.h:16
 msgid "C_ommand:"
 msgstr "_Ordre:"
 
-#: ../gui/gdmsetup.glade.h:15
+#: ../gui/gdmsetup.glade.h:17
 msgid "C_ustom:"
 msgstr "_Personalitzat:"
 
-#: ../gui/gdmsetup.glade.h:16
+#: ../gui/gdmsetup.glade.h:18
 msgid "Co_lor:"
 msgstr "Co_lor:"
 
-#: ../gui/gdmsetup.glade.h:17
+#: ../gui/gdmsetup.glade.h:19
 msgid "Color depth:"
 msgstr "Profunditat de color:"
 
-#: ../gui/gdmsetup.glade.h:18
+#: ../gui/gdmsetup.glade.h:20
 msgid "Configure _X Server..."
 msgstr "Configura el servidor _X..."
 
-#: ../gui/gdmsetup.glade.h:19
+#: ../gui/gdmsetup.glade.h:21
 msgid "Configure _XDMCP..."
 msgstr "Configura l'_XDMCP..."
 
-#: ../gui/gdmsetup.glade.h:20
+#: ../gui/gdmsetup.glade.h:22
 msgid "Copyright:"
 msgstr "Copyright:"
 
-#: ../gui/gdmsetup.glade.h:21
+#: ../gui/gdmsetup.glade.h:23
 msgid "Disables X forwarding, but does not affect XDMCP."
 msgstr "Inhabilita el reenviament X, però no afecta a XDMCP."
 
-#: ../gui/gdmsetup.glade.h:22
+#: ../gui/gdmsetup.glade.h:24
 msgid "Displays per _host:"
 msgstr "Pantalles per _ordinador:"
 
-#: ../gui/gdmsetup.glade.h:23
+#: ../gui/gdmsetup.glade.h:25
 msgid "Do not show image for _remote logins"
 msgstr "No mostris la imatge per a entrades _remotes"
 
-#: ../gui/gdmsetup.glade.h:24
+#: ../gui/gdmsetup.glade.h:26
 msgid "E_nable debug messages to system log"
 msgstr "Habilita els missat_ges de depuració al registre del sistema"
 
-#: ../gui/gdmsetup.glade.h:25
+#: ../gui/gdmsetup.glade.h:27
 msgid "E_xclude:"
 msgstr "E_xclou:"
 
-#: ../gui/gdmsetup.glade.h:26
+#: ../gui/gdmsetup.glade.h:28
 msgid "Enable _Timed Login"
 msgstr "Habilita l'entrada _temporitzada"
 
-#: ../gui/gdmsetup.glade.h:27
+#: ../gui/gdmsetup.glade.h:29
 msgid "Example: /usr/X11R6/bin/X"
 msgstr "Exemple: /usr/X11R6/bin/X"
 
-#: ../gui/gdmsetup.glade.h:28
+#: ../gui/gdmsetup.glade.h:30
 msgid ""
 "Greeter\n"
 "Chooser"
@@ -3547,91 +3556,91 @@ msgstr ""
 "Rebedor\n"
 "Selector"
 
-#: ../gui/gdmsetup.glade.h:30
+#: ../gui/gdmsetup.glade.h:32
 msgid "Honor _indirect requests"
 msgstr "Accepta peticions _indirectes"
 
-#: ../gui/gdmsetup.glade.h:31
+#: ../gui/gdmsetup.glade.h:33
 msgid "I_mage:"
 msgstr "I_matge:"
 
-#: ../gui/gdmsetup.glade.h:32
+#: ../gui/gdmsetup.glade.h:34
 msgid "I_nclude:"
 msgstr "I_nclou:"
 
-#: ../gui/gdmsetup.glade.h:33
+#: ../gui/gdmsetup.glade.h:35
 msgid "Includ_e Hostname Chooser (XDMCP) menu item"
 msgstr "Inclou l'_element de menú selector de nom de màquina (XDMCP)"
 
-#: ../gui/gdmsetup.glade.h:34
+#: ../gui/gdmsetup.glade.h:36
 msgid "Include Con_figure menu item"
 msgstr "Inclou l'element de menú de con_figuració"
 
-#: ../gui/gdmsetup.glade.h:35
+#: ../gui/gdmsetup.glade.h:37
 msgid "L_ogin retry delay:"
 msgstr "Re_tard entre reintents d'entrada:"
 
-#: ../gui/gdmsetup.glade.h:36
+#: ../gui/gdmsetup.glade.h:38
 msgid "La_unch:"
 msgstr "Ll_ança:"
 
-#: ../gui/gdmsetup.glade.h:37
+#: ../gui/gdmsetup.glade.h:39
 msgid "Listen on _UDP port: "
 msgstr "Escolta al port _UDP: "
 
-#: ../gui/gdmsetup.glade.h:38
+#: ../gui/gdmsetup.glade.h:40
 msgid "Local"
 msgstr "Local"
 
-#: ../gui/gdmsetup.glade.h:40
+#: ../gui/gdmsetup.glade.h:42
 msgid "Login _failed:"
 msgstr "Entrada _fallada:"
 
-#: ../gui/gdmsetup.glade.h:41
+#: ../gui/gdmsetup.glade.h:43
 msgid "Login _successful:"
 msgstr "Entrada amb è_xit:"
 
-#: ../gui/gdmsetup.glade.h:42
+#: ../gui/gdmsetup.glade.h:44
 msgid "Logo"
 msgstr "Logotip"
 
-#: ../gui/gdmsetup.glade.h:43
+#: ../gui/gdmsetup.glade.h:45
 msgid "Maximum _pending requests:"
 msgstr "Màxim de _peticions pendents:"
 
-#: ../gui/gdmsetup.glade.h:44
+#: ../gui/gdmsetup.glade.h:46
 msgid "Maximum _remote sessions:"
 msgstr "Màxim de sessions _remotes:"
 
-#: ../gui/gdmsetup.glade.h:45
+#: ../gui/gdmsetup.glade.h:47
 msgid "Maximum _wait time:"
 msgstr "Temps mà_xim d'espera:"
 
-#: ../gui/gdmsetup.glade.h:46
+#: ../gui/gdmsetup.glade.h:48
 msgid "Maximum indirect w_ait time:"
 msgstr "Temps màxim d'esper_a per una petició indirecta:"
 
-#: ../gui/gdmsetup.glade.h:47
+#: ../gui/gdmsetup.glade.h:49
 msgid "Maximum p_ending indirect requests:"
 msgstr "Màxim de p_eticions indirectes pendents:"
 
-#: ../gui/gdmsetup.glade.h:48
+#: ../gui/gdmsetup.glade.h:50
 msgid "Menu Bar"
 msgstr "Barra de menú"
 
-#: ../gui/gdmsetup.glade.h:49
+#: ../gui/gdmsetup.glade.h:51
 msgid "Op_tions:\t"
 msgstr "Op_cions:\t"
 
-#: ../gui/gdmsetup.glade.h:50
+#: ../gui/gdmsetup.glade.h:52
 msgid "Pick Background Color"
 msgstr "Seleccioneu un color de fons"
 
-#: ../gui/gdmsetup.glade.h:51
+#: ../gui/gdmsetup.glade.h:53
 msgid "Pin_g interval:"
 msgstr "Interval de pin_g:"
 
-#: ../gui/gdmsetup.glade.h:52
+#: ../gui/gdmsetup.glade.h:54
 msgid ""
 "Plain\n"
 "Plain with face browser\n"
@@ -3641,19 +3650,23 @@ msgstr ""
 "Simple amb navegador de cares\n"
 "Amb temes"
 
-#: ../gui/gdmsetup.glade.h:55
+#: ../gui/gdmsetup.glade.h:57
+msgid "R_emove"
+msgstr "Sup_rimeix"
+
+#: ../gui/gdmsetup.glade.h:58
 msgid "Re_move Server"
 msgstr "Supri_meix el servidor"
 
-#: ../gui/gdmsetup.glade.h:56
+#: ../gui/gdmsetup.glade.h:59
 msgid "Refresh rate:"
 msgstr "Freqüència d'actualització:"
 
-#: ../gui/gdmsetup.glade.h:57
+#: ../gui/gdmsetup.glade.h:60
 msgid "Remote"
 msgstr "Remot"
 
-#: ../gui/gdmsetup.glade.h:58
+#: ../gui/gdmsetup.glade.h:61
 msgid ""
 "Remote login disabled\n"
 "Same as Local"
@@ -3661,31 +3674,31 @@ msgstr ""
 "Entrada remota inhabilitada\n"
 "Igual que en local"
 
-#: ../gui/gdmsetup.glade.h:60
+#: ../gui/gdmsetup.glade.h:63
 msgid "Resolution:"
 msgstr "Resolució:"
 
-#: ../gui/gdmsetup.glade.h:61
+#: ../gui/gdmsetup.glade.h:64
 msgid "Sc_ale to fit screen"
 msgstr "_Ajusta a la pantalla"
 
-#: ../gui/gdmsetup.glade.h:62
+#: ../gui/gdmsetup.glade.h:65
 msgid "Security"
 msgstr "Seguretat"
 
-#: ../gui/gdmsetup.glade.h:63
+#: ../gui/gdmsetup.glade.h:66
 msgid "Select Background Image"
 msgstr "Seleccioneu una imatge de fons"
 
-#: ../gui/gdmsetup.glade.h:64
+#: ../gui/gdmsetup.glade.h:67
 msgid "Select Logo Image"
 msgstr "Seleccioneu un logotip"
 
-#: ../gui/gdmsetup.glade.h:65
+#: ../gui/gdmsetup.glade.h:68
 msgid "Select Sound File"
 msgstr "Seleccioneu un fitxer de so"
 
-#: ../gui/gdmsetup.glade.h:66
+#: ../gui/gdmsetup.glade.h:69
 msgid ""
 "Selected only\n"
 "Random from selected\n"
@@ -3693,158 +3706,156 @@ msgstr ""
 "Només seleccionat\n"
 "Aleatori de la selecció\n"
 
-#: ../gui/gdmsetup.glade.h:69
+#: ../gui/gdmsetup.glade.h:72
 msgid "Server Settings"
 msgstr "Paràmetres del servidor"
 
-#: ../gui/gdmsetup.glade.h:70
+#: ../gui/gdmsetup.glade.h:73
 msgid "Server _name:"
 msgstr "_Nom del servidor:"
 
-#: ../gui/gdmsetup.glade.h:71
+#: ../gui/gdmsetup.glade.h:74
 msgid "Servers To Start"
 msgstr "Servidors a iniciar"
 
-#: ../gui/gdmsetup.glade.h:72
+#: ../gui/gdmsetup.glade.h:75
 msgid "Sho_w Actions menu"
 msgstr "Mostra el menú d'_accions"
 
-#: ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.glade.h:77
 msgid "Themes"
 msgstr "Temes"
 
-#: ../gui/gdmsetup.glade.h:75
+#: ../gui/gdmsetup.glade.h:78
 msgid "U_ser:"
 msgstr "U_suari:"
 
-#: ../gui/gdmsetup.glade.h:76
+#: ../gui/gdmsetup.glade.h:79
 msgid "Users"
 msgstr "Usuaris"
 
-#: ../gui/gdmsetup.glade.h:77
+#: ../gui/gdmsetup.glade.h:80
 msgid "Welcome Message"
 msgstr "Missatge de benvinguda"
 
-#: ../gui/gdmsetup.glade.h:78
+#: ../gui/gdmsetup.glade.h:81
 msgid "X Server Login Window Preferences"
 msgstr "Preferències de la finestra d'entrada del servidor X"
 
-#: ../gui/gdmsetup.glade.h:79
+#: ../gui/gdmsetup.glade.h:82
 msgid "XDMCP Login Window Preferences"
 msgstr "Preferències de la finestra d'entrada d'XDMCP"
 
-#: ../gui/gdmsetup.glade.h:80
+#: ../gui/gdmsetup.glade.h:83
+msgid "_Add..."
+msgstr "_Afegeix..."
+
+#: ../gui/gdmsetup.glade.h:84
 msgid "_Add/Modify..."
 msgstr "_Afegeix/modifica..."
 
-#: ../gui/gdmsetup.glade.h:81
+#: ../gui/gdmsetup.glade.h:85
 msgid "_Allow local system administrator login"
 msgstr "Permet entrar _a l'administrador de sistema local"
 
-#: ../gui/gdmsetup.glade.h:82
+#: ../gui/gdmsetup.glade.h:86
 msgid "_Allow users to change fonts and colors of plain greeter"
 msgstr ""
 "_Permet que els usuaris canviïn els tipus de lletra i els colors del rebedor "
 "simple"
 
-#: ../gui/gdmsetup.glade.h:83
+#: ../gui/gdmsetup.glade.h:87
 msgid "_Background color:"
 msgstr "Color de _fons:"
 
-#: ../gui/gdmsetup.glade.h:85
+#: ../gui/gdmsetup.glade.h:89
 #, no-c-format
 msgid "_Default: \"Welcome to %n\""
 msgstr "Pre_determinat: «Benvingut a %n»"
 
-#: ../gui/gdmsetup.glade.h:86
+#: ../gui/gdmsetup.glade.h:90
 msgid "_Default: \"Welcome\""
 msgstr "Pre_determinat: «Benvingut»"
 
-#: ../gui/gdmsetup.glade.h:87
+#: ../gui/gdmsetup.glade.h:91
 msgid "_Deny TCP connections to Xserver"
 msgstr "Rebutja les connexions TCP al servi_dor X"
 
-#: ../gui/gdmsetup.glade.h:88
+#: ../gui/gdmsetup.glade.h:92
 msgid "_Enable Automatic Login"
 msgstr "Habilita l'_entrada automàtica"
 
-#: ../gui/gdmsetup.glade.h:89
+#: ../gui/gdmsetup.glade.h:93
 msgid "_Enable accessible login"
 msgstr "Habilita _els mòduls d'accessibilitat"
 
-#: ../gui/gdmsetup.glade.h:90
+#: ../gui/gdmsetup.glade.h:94
 msgid "_Flexible (on demand)"
 msgstr "_Flexible (a petició)"
 
-#: ../gui/gdmsetup.glade.h:91
+#: ../gui/gdmsetup.glade.h:95
 msgid "_Image:"
 msgstr "_Imatge:"
 
-#: ../gui/gdmsetup.glade.h:92
+#: ../gui/gdmsetup.glade.h:96
 msgid "_Include all users from /etc/passwd (not for NIS)"
 msgstr "_Inclou a tots els usuaris de /etc/passwd (no per a NIS)"
 
-#: ../gui/gdmsetup.glade.h:93
+#: ../gui/gdmsetup.glade.h:97
 msgid "_Login screen ready:"
 msgstr "Panta_lla d'entrada preparada:"
 
-#: ../gui/gdmsetup.glade.h:94
+#: ../gui/gdmsetup.glade.h:98
 msgid "_Logins are handled by this computer"
 msgstr "Aquesta màquina gestiona _les entrades"
 
-#: ../gui/gdmsetup.glade.h:95
+#: ../gui/gdmsetup.glade.h:99
 msgid "_Pause before login:"
 msgstr "Fes una _pausa abans d'entrar:"
 
-#: ../gui/gdmsetup.glade.h:96
+#: ../gui/gdmsetup.glade.h:100
 msgid "_Remove"
 msgstr "Sup_rimeix"
 
-#: ../gui/gdmsetup.glade.h:97
+#: ../gui/gdmsetup.glade.h:101
+msgid "_Remove..."
+msgstr "Sup_rimeix..."
+
+#: ../gui/gdmsetup.glade.h:102
 msgid "_Server:"
 msgstr "_Servidor:"
 
-#: ../gui/gdmsetup.glade.h:98
+#: ../gui/gdmsetup.glade.h:103
 msgid "_Servers:"
 msgstr "_Servidors:"
 
-#: ../gui/gdmsetup.glade.h:99
+#: ../gui/gdmsetup.glade.h:104
 msgid "_Style:"
 msgstr "E_stil:"
 
-#: ../gui/gdmsetup.glade.h:100
+#: ../gui/gdmsetup.glade.h:105
 msgid "_Theme:"
 msgstr "_Tema:"
 
-#: ../gui/gdmsetup.glade.h:101
+#: ../gui/gdmsetup.glade.h:106
 msgid "_User:"
 msgstr "_Usuari:"
 
-#: ../gui/gdmsetup.glade.h:102
+#: ../gui/gdmsetup.glade.h:107
 msgid "_VT:"
 msgstr "_Terminal virtual:"
 
-#: ../gui/gdmsetup.glade.h:103
+#: ../gui/gdmsetup.glade.h:108
 msgid "dummy"
 msgstr "de proves"
 
-#: ../gui/gdmsetup.glade.h:104
+#: ../gui/gdmsetup.glade.h:109
 msgid "seconds"
 msgstr "segons"
 
 #: ../gui/gdmuser.c:276 ../gui/gdmuser.c:278
 msgid "Too many users to list here..."
 msgstr "Hi ha massa usuaris per a llistar ací..."
-
-#: ../gui/greeter/greeter.c:616
-#, c-format
-msgid ""
-"The greeter version (%s) does not match the daemon version. You have "
-"probably just upgraded GDM. Please restart the GDM daemon or the computer."
-msgstr ""
-"La versió del rebedor (%s) no es correspon amb la del dimoni. Probablement "
-"acabeu d'actualitzar el GDM. Reinicieu el dimoni GDM o arrenqueu de nou "
-"l'ordinador."
 
 #: ../gui/greeter/greeter.c:631 ../gui/greeter/greeter.c:682
 msgid "Restart Machine"
@@ -4251,6 +4262,15 @@ msgstr "No s'ha pogut carregar cap interfície. Això és incorrecte (fitxer: %s
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr ""
 "Hi ha massa nivells d'àlies per a la localització; pot indicar un bucle"
+
+#~ msgid ""
+#~ "The greeter version (%s) does not match the daemon version.  You have "
+#~ "probably just upgraded GDM.  Please restart the GDM daemon or the "
+#~ "computer."
+#~ msgstr ""
+#~ "La versió del rebedor (%s) no es correspon amb la del dimoni. "
+#~ "Probablement acabeu d'actualitzar el GDM. Reinicieu el dimoni del GDM o "
+#~ "arrenqueu de nou l'ordinador."
 
 #~ msgid "Can't open default host icon: %s"
 #~ msgstr "No es pot obrir la icona predeterminada de l'ordinador central: %s"
