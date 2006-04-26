@@ -732,42 +732,43 @@
       <title>
         PAM
       </title>
+
       <para>
-        GDM uses PAM for username/authentication, though if your machine
-        does not support PAM you can build GDM to work with shadow
-        passwords and crypt.
+        GDM uses PAM for login authentication, though if your machine
+        does not support PAM you can build GDM to work with the password
+        database and the crypt library function.
       </para>
 
       <para>
-        PAM stands for Pluggable Authentication Module, and is used by
-        most programs that request username/password authentication on
-        your computer.  It allows the user to configure different
-        authentication behavior for different programs.
+        PAM stands for Pluggable Authentication Module, and is used by most
+        programs that request authentication on your computer.  It allows the
+        administrator to configure different authentication behavior for
+        different programs.
       </para>
 
       <para>
         Some GDM features (like turning on automatic login) may require that
-        you update your PAM configuration.  PAM has different, but similar,
-        interfaces on different operating systems, so check your pam.d or
-        pam.conf man page for details about how to configure it.  Make sure to
-        read the PAM documentation (e.g. pam.d/pam.conf man page) and
-        be comfortable with the security implications of any changes
-        you intend to make to your configuration.
+        you update your PAM configuration.  PAM configuration has different,
+        but similar, interfaces on different operating systems, so check your
+        pam.d or pam.conf man page for details.  Be sure that you read the
+        PAM documentation (e.g. pam.d/pam.conf man page) and are comfortable
+        with the security implications of any changes you intend to make to
+        your configuration.
       </para>
 
       <para>
-        If there is no entry for GDM in your system's PAM configuration
-        file, then features like tomatic login may not work.  Not having an
-        entry will causes GDM to use default behavior, conservative settings
-        are recommended and probably shipped with your distribution.
+        If there is no entry for GDM in your system's PAM configuration file,
+        then features like tomatic login may not work.  Not having an entry
+        will causes GDM to use default behavior, conservative settings are
+        recommended and probably shipped with your distribution.
       </para>
 
       <para>
-        If you wish to make GDM work with other types of authentication 
+        If you wish to make GDM work with other types of authentication
         mechanisms (such as a SmartCard), then you should implement this by
-        writing a PAM module rather than by trying to modify the GDM
-        code directly.  Refer to the PAM documentation on your system.  This
-        issue has been discussed on the 
+        using a PAM service module for the desired authentication type rather
+        than by trying to modify the GDM code directly.  Refer to the PAM
+        documentation on your system.  This issue has been discussed on the
         <address><email>gdm-list@gnome.org</email></address> mail list,
         so you can refer to the list archives for more information.
       </para>
@@ -1416,6 +1417,21 @@ PostSession/
           </varlistentry>
 
           <varlistentry>
+            <term>AlwaysLoginCurrentSession</term>
+            <listitem>
+              <synopsis>AlwaysLoginCurrentSession=true</synopsis>
+              <para>
+                If true, then when the user logs in and already has an
+                existing session, then they are connected to that session
+                rather than starting a new session.  This only works for
+                session's running on VT's (Virtual Terminals) started with
+                gdmflexiserver, and not with XDMCP.  Note that VT's are not
+                supported on all operating systems.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>AutomaticLoginEnable</term>
             <listitem>
               <synopsis>AutomaticLoginEnable=false</synopsis>
@@ -2026,7 +2042,7 @@ PostSession/
             <listitem>
               <synopsis>TimedLoginDelay=30</synopsis>
               <para>
-                This is the delay before the <filename>TimedLogin</filename>
+                Delay in seconds before the <filename>TimedLogin</filename>
                 user will be logged in.  It must be greater then or equal to 10.
               </para>
             </listitem>
@@ -4259,6 +4275,23 @@ Answers:
 </screen>
       </sect3>
 
+      <sect3 id="getcustomconfigfile">
+      <title>GET_CUSTOM_CONFIG_FILE</title> 
+<screen>
+GET_CUSTOM_CONFIG_FILE:  Get custom config file location being
+                        used by the daemon.
+Supported since: 2.14.0.0
+Arguments: None
+Answers:
+  OK &lt;full path to GDM custom configuration file&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     1 = File not found
+     200 = Too many messages
+     999 = Unknown error
+</screen>
+      </sect3>
+
       <sect3 id="getserverdetails">
       <title>GET_SERVER_DETAILS</title>
 <screen>
@@ -4377,11 +4410,12 @@ Answers:
 RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in 
                           DISPLAY_CONFIG state
 Supported since: 2.8.0.0
-Arguments: None
+Arguments: &lt;display to release&gt;
 Answers:
   OK &lt;display&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
+     1 = Bad display number
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error
