@@ -1,5 +1,11 @@
 2006-04-26  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/verify-pam.c:  Fix pam stack so that for autologin the
+	  GDM PAM stack is "GDM_KEY_PAM_STACK-autogen" so it works like
+	  before.
+
+2006-04-26  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/greeter_item_pam.c: Add pam-error-logo item type.
 	* gui/greeter/greeter_item.h, gui/greeter/greeter_canvas_item.c,
 	  gui/greeter/greeter_geometry, gui/greeter/greeter_parser.c: Add item

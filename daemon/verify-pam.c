@@ -1226,8 +1226,11 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     gdm_config_key_to_string_per_display (
        gdm_get_display_custom_config_file ((gchar *)display),
        GDM_KEY_PAM_STACK, &pam_stack);
-    if (pam_stack == NULL)
-       pam_stack = g_strdup (gdm_get_value_string (GDM_KEY_PAM_STACK));
+
+    if (pam_stack == NULL) {
+       pam_stack = g_strdup_printf ("%s-autologin",
+          gdm_get_value_string (GDM_KEY_PAM_STACK));
+    }
 
     if ( ! create_pamh (d, "gdm-autologin", login, &standalone_pamc,
 			display, &pamerr)) {
