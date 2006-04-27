@@ -239,6 +239,8 @@ CheckDirOwner=true
 # overridden with the value from /etc/default/login if it contains
 # "PASSREQ=[YES|NO]"
 #PasswordRequired=false
+# Specifies the PAM Stack to use, "gdm" by default.
+PamStack=gdm
 
 # XDMCP is the protocol that allows remote login.  If you want to log into GDM
 # remotely (I'd never turn this on on open network, use ssh for such remote
@@ -413,9 +415,15 @@ GraphicalThemedColor=#76848F
 # Program to run to draw the background in the standard greeter.  Perhaps
 # something like an xscreensaver hack or some such.
 #BackgroundProgram=
-# if this is true then the background program is run always, otherwise it is
+# If this is true then the background program is run always, otherwise it is
 # only run when the BackgroundType is 0 (None).
 #RunBackgroundProgramAlways=false
+# Delay before starting background program
+#BackgroundProgramInitialDelay=30
+# Should the background program be restarted if it is exited.
+#RestartBackgroundProgram=true
+# Delay before restarting background program
+#BackgroundProgramRestartDelay=30
 
 # Show the Failsafe sessions.  These are much MUCH nicer (focus for xterm for
 # example) and more failsafe then those supplied by scripts so distros should

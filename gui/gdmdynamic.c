@@ -85,11 +85,20 @@ main (int argc, char *argv[])
     argv[0] = myname;
     version = "2.8.0.0";
 
+    g_type_init ();
+
+    /*
+     * It's an error to use more than one of -a, -r, or -d, so turn
+     * error to FALSE if command is not set, and TRUE if command is
+     * not NULL.
+     */
     while ((optc = getopt (argc, argv, "a:d:r:t:s:blv")) != EOF) {
         switch (optc) {
         case 'a':
             if (command == NULL)
                 error = FALSE;
+            else
+                error = TRUE;
             command = GDM_SUP_ADD_DYNAMIC_DISPLAY;
             params = optarg;
             break;
@@ -101,6 +110,8 @@ main (int argc, char *argv[])
         case 'd':
             if (command == NULL)
                 error = FALSE;
+            else
+                error = TRUE;
             command = GDM_SUP_REMOVE_DYNAMIC_DISPLAY;
             params = optarg;
             break;
@@ -108,6 +119,8 @@ main (int argc, char *argv[])
         case 'l':
             if (command == NULL)
                 error = FALSE;
+            else
+                error = TRUE;
             command = GDM_SUP_ATTACHED_SERVERS;
             break;
 

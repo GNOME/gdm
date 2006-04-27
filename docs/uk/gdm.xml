@@ -255,15 +255,16 @@
 
     <sect2 id="PAM">
       <title>PAM</title>
-      <para>GDM uses PAM for username/authentication, though if your machine does not support PAM you can build GDM to work with shadow passwords and crypt.</para>
 
-      <para>PAM stands for Pluggable Authentication Module, and is used by most programs that request username/password authentication on your computer. It allows the user to configure different authentication behavior for different programs.</para>
+      <para>GDM uses PAM for login authentication, though if your machine does not support PAM you can build GDM to work with the password database and the crypt library function.</para>
 
-      <para>Some GDM features (like turning on automatic login) may require that you update your PAM configuration. PAM has different, but similar, interfaces on different operating systems, so check your pam.d or pam.conf man page for details about how to configure it. Make sure to read the PAM documentation (e.g. pam.d/pam.conf man page) and be comfortable with the security implications of any changes you intend to make to your configuration.</para>
+      <para>PAM stands for Pluggable Authentication Module, and is used by most programs that request authentication on your computer. It allows the administrator to configure different authentication behavior for different programs.</para>
+
+      <para>Some GDM features (like turning on automatic login) may require that you update your PAM configuration. PAM configuration has different, but similar, interfaces on different operating systems, so check your pam.d or pam.conf man page for details. Be sure that you read the PAM documentation (e.g. pam.d/pam.conf man page) and are comfortable with the security implications of any changes you intend to make to your configuration.</para>
 
       <para>If there is no entry for GDM in your system's PAM configuration file, then features like tomatic login may not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distribution.</para>
 
-      <para>If you wish to make GDM work with other types of authentication mechanisms (such as a SmartCard), then you should implement this by writing a PAM module rather than by trying to modify the GDM code directly. Refer to the PAM documentation on your system. This issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the list archives for more information.</para>
+      <para>If you wish to make GDM work with other types of authentication mechanisms (such as a SmartCard), then you should implement this by using a PAM service module for the desired authentication type rather than by trying to modify the GDM code directly. Refer to the PAM documentation on your system. This issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the list archives for more information.</para>
     </sect2>
 
     <sect2 id="gdmuser">
@@ -342,22 +343,20 @@ gdm: .your.domain
   <sect1 id="configuration">
     <title>Налаштовування</title>
 
-    <para>У цьому розділі описується налаштовування GDM та формат конфігураційного файлу. Проте, для налаштовування GDM ви можете скористуватись графічною програмою <command>gdmsetup</command>. Але графічна програма не дозволяє налаштувати кожен аспект GDM.</para>
+    <para>GDM has powerful configuration management. System configuration is stored in <filename>&lt;share&gt;/gdm/defaults.conf</filename> and the intention is that this file can be stored on a shared filesystem so that sysadmins can have a single file to modify to control configuration for multiple machines. Also GDM distributions may patch this file on update to improve usability, improve security, etc. Configuration may be customized for a specific machine by editing the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file to include an override for a specific key. Those parameters in the "gui", "greeter" sections, and the security/PamStack key may be customized per-display by specifying them in a file named <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>. For example, configuration overrides for display ":103" would be stored in the file <filename>&lt;etc&gt;/gdm/custom.conf:0</filename>.</para>
 
-    <para>You can either run <command>gdmsetup</command> as root or turn on the GDM configuration feature that allows you to run <command>gdmsetup</command> from the login screen (where it will run as root). If you believe running root owned GUI's is a security risk, then you would want to edit the files by hand.</para>
+    <para>The <command>gdmsetup</command> is a GUI program you can use to edit the GDM configuration. This program may also be launched directly from the login screen if the greeter/ConfigAvailable key is set to "true" Not all keys in the GDM configuration file are supported in the GUI, so you may need to edit the configuration files by hand to edit these keys. If you believe running root-owned GUI's causes security risk, then you would want to always edit the files by hand. This program does not support setting per-display configuration, so per-display configuration files must be set up by hand.</para>
 
-    <para>If you are a distribution and want to set machine defaults, you should edit the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file rather than editing the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file, so the distribution changes are preserved as defaults.</para>
+    <para>Distributions should edit the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file to establish the default values so these are preserved as defaults and not modified by users modifying their personal configuration file <filename>&lt;etc&gt;/gdm/custom.conf</filename>.</para>
 
-    <para>If you want to change configuration by hand, edit the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file and make sure the keyname=value pair you want is included in the appropriate section. For example, to change the "Greeter" key in the "daemon" section, make sure the daemon section of the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file has the value like in this example. The modified option does not have to come anywhere in the section. The <command>gdmsetup</command> program manages editing these files for you.</para>
+    <para>If you want to change configuration by hand, edit the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file and make sure the keyname=value pair you want is included in the appropriate section. For example, to change the "Greeter" key in the "daemon" section, make sure the daemon section of the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file has the value like in this example.</para>
 
 <screen>
 [daemon]
 Greeter=/usr/lib/gdmgreeter
 </screen>
 
-    <para>У конфігураційних файлах (зокрема <filename>&lt;share&gt;/gdm/defaults.conf</filename> та <filename>&lt;etc&gt;/gdm/custom.conf</filename>), міститься багато корисних коментарів, тож читайте їх, коли будете змінювати параметри.</para>
-
-    <para>Деякі змінні у початковому конфігураційному файлі закоментовані, інші - ні. Це зроблено через те, що типові значення деяких змінних можуть змінитись у майбутньому. GDM вважає коментарями рядки, що починаються зі знаку "#", та ігнорує їх.</para>
+    <para>The configuration files (especially the <filename>&lt;share&gt;/gdm/defaults.conf</filename> and <filename>&lt;etc&gt;/gdm/custom.conf</filename> files) contain useful comments and examples, so read them for more information about changing your configuration. GDM considers lines that start with the "#" character a comment, and these lines will be ignored by GDM. Some keys in the <filename>&lt;share&gt;/gdm/defaults.conf</filename> are commented out while others are set. Commented out values show the default value.</para>
 
     <para>The <filename>&lt;share&gt;/gdm/defaults.conf</filename> file contains the default configuration choices for GDM, and should not be modified by the user. The <filename>&lt;etc&gt;/gdm/custom.conf</filename> file is where users may specify their custom configuration choices. Configuration options specified in the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file override the values in the main <filename>&lt;share&gt;/gdm/defaults.conf</filename> file. Running the <command>gdmsetup</command> command will cause the <filename>&lt;etc&gt;/gdm/custom.conf</filename> to be modified with the user's configuration choices and will cause any running GDM GUI programs to automatically update. Previous to version 2.13.0.4 GDM only supported the <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file, so if using an older version of GDM just edit that file directly.</para>
 
@@ -453,6 +452,14 @@ PostSession/
             <listitem>
               <synopsis>AlwaysRestartServer=false</synopsis>
               <para>Якщо має значення true, то gdm ніколи не намагатиметься повторно використати існуючі X-сервери шляхом їх повторної ініціалізації. Наявні серверні процеси будуть знищуватись та будуть запускатись нові. Зазвичай, повторна ініціалізація більш гарний шлях, але якщо зростає обсяг пам'яті, яку використовує X-сервер, то цей шлях більш безпечний. На Solaris значення завжди true, та цей параметр ігнорується.'</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>AlwaysLoginCurrentSession</term>
+            <listitem>
+              <synopsis>AlwaysLoginCurrentSession=true</synopsis>
+              <para>If true, then when the user logs in and already has an existing session, then they are connected to that session rather than starting a new session. This only works for session's running on VT's (Virtual Terminals) started with gdmflexiserver, and not with XDMCP. Note that VT's are not supported on all operating systems.</para>
             </listitem>
           </varlistentry>
 
@@ -780,7 +787,7 @@ PostSession/
             <term>TimedLoginDelay</term>
             <listitem>
               <synopsis>TimedLoginDelay=30</synopsis>
-              <para>Затримка до початку сеансу користувача, що вказаний у <filename>TimedLogin</filename>. Має бути більше або дорівнювати 10.</para>
+              <para>Delay in seconds before the <filename>TimedLogin</filename> user will be logged in. It must be greater then or equal to 10.</para>
             </listitem>
           </varlistentry>
           
@@ -2098,6 +2105,23 @@ Answers:
 </screen>
       </sect3>
 
+      <sect3 id="getcustomconfigfile">
+      <title>GET_CUSTOM_CONFIG_FILE</title> 
+<screen>
+GET_CUSTOM_CONFIG_FILE:  Get custom config file location being
+                        used by the daemon.
+Supported since: 2.14.0.0
+Arguments: None
+Answers:
+  OK &lt;full path to GDM custom configuration file&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     1 = File not found
+     200 = Too many messages
+     999 = Unknown error
+</screen>
+      </sect3>
+
       <sect3 id="getserverdetails">
       <title>GET_SERVER_DETAILS</title>
 <screen>
@@ -2215,11 +2239,12 @@ Answers:
 RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in 
                           DISPLAY_CONFIG state
 Supported since: 2.8.0.0
-Arguments: None
+Arguments: &lt;display to release&gt;
 Answers:
   OK &lt;display&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
+     1 = Bad display number
      100 = Not authenticated
      200 = Dynamic Displays not allowed
      999 = Unknown error

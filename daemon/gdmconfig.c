@@ -50,6 +50,7 @@
 #include "vicious.h"
 
 #include "gdm.h"
+#include "gdmconfig.h"
 #include "verify.h"
 #include "gdm-net.h"
 #include "misc.h"
@@ -136,6 +137,7 @@ static gchar *GdmSoundOnLoginFile = NULL;
 static gchar *GdmSoundOnLoginSuccessFile = NULL;
 static gchar *GdmSoundOnLoginFailureFile = NULL;
 static gchar *GdmConsoleCannotHandle = NULL;
+static gchar *GdmPamStack = NULL;
 
 static gint GdmXineramaScreen = 0;
 static gint GdmUserMaxFile = 0;
@@ -504,6 +506,7 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_HOSTS, &GdmHosts, &string_type);
    gdm_config_add_hash (GDM_KEY_PRE_FETCH_PROGRAM,
       &GdmPreFetchProgram, &string_type);
+   gdm_config_add_hash (GDM_KEY_PAM_STACK, &GdmPamStack, &string_type);
 
    /* int values */
    gdm_config_add_hash (GDM_KEY_XINERAMA_SCREEN, &GdmXineramaScreen, &int_type);
@@ -610,6 +613,19 @@ gdm_get_custom_config (struct stat *statbuf)
 }
 
 /**
+ * gdm_get_display_custom_config_file
+ *
+ * Returns the per-display config file for a given display
+ * This is always the custom config file name with the display
+ * appended, and never gdm.conf.
+ */
+gchar *
+gdm_get_display_custom_config_file (gchar *display)
+{
+  g_strdup_printf ("%s%s", custom_config_file, display);
+}
+ 
+/**
  * gdm_get_custom_config_file
  *
  * Returns the custom config file being used.
@@ -705,15 +721,111 @@ gdm_get_value_bool (char *key)
 }
 
 /**
+ * gdm_config_key_to_string_per_display
+ *
+ * If the key makes sense to be per-display, return the value,
+ * otherwise return NULL.  Keys that only apply to the daemon
+ * process do not make sense for per-display configuration  
+ * Valid keys include any key in the greeter or gui categories,
+ * and the GDM_KEY_PAM_STACK key.
+ *
+ * If additional keys make sense for per-display usage, make
+ * sure they are added to the if-test below.
+ */
+void
+gdm_config_key_to_string_per_display (gchar *display, gchar *key, gchar **retval)
+{
+   gchar *file = gdm_get_display_custom_config_file (display);
+   gchar **splitstr = g_strsplit (key, "/", 2);
+   *retval = NULL;
+
+   if (display == NULL)
+      return;
+
+   if (strcmp (ve_sure_string (splitstr[0]), "greeter") == 0 ||
+       strcmp (ve_sure_string (splitstr[0]), "gui") == 0 ||
+       strcmp (ve_sure_string (key), GDM_KEY_PAM_STACK) == 0) {
+      gdm_config_key_to_string (file, key, retval);
+   }
+
+   return;
+}
+
+/**
+ * gdm_config_key_to_string
+ *
+ * Returns a specific key from the config file, or NULL if not found.
+ * Note this returns the value in string form, so the caller needs
+ * to parse it properly if it is a bool or int.
+ */
+void
+gdm_config_key_to_string (gchar *file, gchar *key, gchar **retval)
+{
+   VeConfig *cfg = ve_config_get (file);
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
+   gchar **splitstr = g_strsplit (key, "/", 2);
+   *retval = NULL;
+
+   /* Should not fail, all keys should have a category. */
+   if (splitstr[0] == NULL)
+      return;
+
+   /* If file doesn't exist, then just return */
+   if (cfg == NULL)
+      return;
+
+   GList *list = ve_config_get_keys (cfg, splitstr[0]);
+   while (list != NULL) {
+      gchar *display_key     = (char *)list->data;
+      gchar *display_fullkey = g_strdup_printf ("%s/%s", splitstr[0], display_key);
+
+      if (is_key (key, display_fullkey)) {
+         gdm_debug ("Returning value for key <%s>\n", key);
+         if (*type == CONFIG_BOOL) {
+            gboolean value = ve_config_get_bool (cfg, key);
+            if (value)
+               *retval = g_strdup ("true");
+            else
+               *retval = g_strdup ("false");
+            return;
+         } else if (*type == CONFIG_INT) {
+            gint value = ve_config_get_int (cfg, key);
+            *retval = g_strdup_printf ("%d", value);
+            return;
+         } else if (*type == CONFIG_STRING) {
+            gchar *value = ve_config_get_string (cfg, key);
+            if (value != NULL)
+               *retval = g_strdup (value);
+            return;
+         }
+      }
+      g_free (display_fullkey);
+      list = list->next;
+   }
+   return;
+}
+
+/**
  * gdm_config_to_string
  *
  * Returns a configuration option as a string.  Used by GDM's
  * GET_CONFIG socket command.
  */ 
 void
-gdm_config_to_string (gchar *key, gchar **retval)
+gdm_config_to_string (gchar *key, gchar *display, gchar **retval)
 {
-   GdmConfigType *type;
+   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
+   *retval = NULL;
+
+   /*
+    * See if there is a per-display config file, returning that value
+    * if it exists.
+    */
+   if (display) {
+      gdm_config_key_to_string_per_display (display, key, retval);
+      if (*retval != NULL)
+         return;
+   }
 
    /* First look in translated_hash */
    if (translated_hash != NULL) {
@@ -723,9 +835,6 @@ gdm_config_to_string (gchar *key, gchar **retval)
          return;
       }
    }
-
-   type   = gdm_config_hash_lookup (type_hash, key);
-   *retval = NULL;
 
    if (type != NULL) {
       if (*type == CONFIG_BOOL) {
@@ -2065,39 +2174,6 @@ void
 gdm_set_high_display_num (gint val)
 {
    high_display_num = val;
-}
-
-/**
- * gdm_print_config_option
- *
- * Called by gdm_print_all_config in a loop to print each key.
- * 
- */
-void
-gdm_print_config_option (gpointer key_in, gpointer value_in, gpointer data)
-{
-   gchar *key = (gchar *)key_in;
-   gchar *retval;
-
-   gdm_config_to_string (key, &retval);
-   if (retval != NULL) {
-      gdm_debug ("key is %s, value is %s\n", key, retval);
-      g_free (retval);
-   } else
-      gdm_debug ("key is %s, value is <NULL>\n", key);
-}
-
-/**
- * gdm_print_all_config
- *
- * Not used by GDM, but useful for debug purposes.
- */
-void
-gdm_print_all_config (void)
-{
-   gdm_config_parse ();
-
-   g_hash_table_foreach (type_hash, gdm_print_config_option, NULL);
 }
 
 /**

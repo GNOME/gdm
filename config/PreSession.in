@@ -31,7 +31,7 @@ if [ "x$XSETROOT" != "x" ] ; then
 
 	CHECKBACKCOLOR="OK"
 	if [ "x$GDM_GREETER_TYPE" = "xTHEMED" ]; then
-		BACKCOLOR=`gdmflexiserver --command="GET_CONFIG greeter/GraphicalThemedColor"`
+		BACKCOLOR=`gdmflexiserver --command="GET_CONFIG greeter/GraphicalThemedColor $DISPLAY"`
 
 		CHECKBACKCOLOR=`echo $BACKCOLOR | sed 's/^\([^ ]*\) .*$/\1/'`
 		if [ "x$CHECKBACKCOLOR" = "xOK" ]; then
@@ -45,11 +45,11 @@ if [ "x$XSETROOT" != "x" ] ; then
 	if [ "x$CHECKBACKCOLOR" != "xOK" ] || [ "x$GDM_GREETER_TYPE" = "xPLAIN" ]; then
 
 		# Background type can be 0=None, 1=Image & Color, 2=Color, or 3=Image 
-		BACKTYPE=`gdmflexiserver --command="GET_CONFIG greeter/BackgroundType"`
+		BACKTYPE=`gdmflexiserver --command="GET_CONFIG greeter/BackgroundType $DISPLAY"`
 
 		# Skip if background type does not include a color
 		if [ "x$BACKTYPE" = "xOK 1" ] || [ "x$BACKTYPE" = "xOK 2" ]; then
-			BACKCOLOR=`gdmflexiserver --command="GET_CONFIG greeter/BackgroundColor"`
+			BACKCOLOR=`gdmflexiserver --command="GET_CONFIG greeter/BackgroundColor $DISPLAY"`
 
 			CHECKBACKCOLOR=`echo $BACKCOLOR | sed 's/^\([^ ]*\) .*$/\1/'`
 			if [ "x$CHECKBACKCOLOR" = "xOK" ]; then

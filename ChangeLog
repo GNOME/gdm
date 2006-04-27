@@ -1,3 +1,33 @@
+2006-04-26  Brian Cameron  <brian.cameron@sun.com>
+
+	Adding per-display configuration support to GDM.  Now if user has
+	a file named /etc/gdm/custom.conf:<displaynum>, the settings in this
+	file will override the /usr/share/gdm/defaults.conf and
+	/etc/X11/gdm/custom.conf settings.  Only keys that affect the GUI
+	behavior are supported.  These include those in the "gui" and
+	"greeter" sections and the security/PamStack key.
+
+	* daemon/gdm.c: Update GET_CONFIG command so it accepts a display
+	  argument.  It is backwards compatible and will return the per-display
+	  setting if this is passed in, or the non-display value if not
+	  passed in.  Fix bug that caused PreFetch key to not just return
+	  the once as it is supposed to.
+	* daemon/gdmconfig.[ch], jui/gdmconfig.c: Updated to support
+	  per-display configuration.
+	* daemon/gdm.h: Updated documentation for new command.  Corrected some
+	  errors.
+	* daemon/verify-pam.c, daemon/gdmconfig.c config/gdm.conf.in: Add
+	  security/PamStack configuration variable as a per-display setting.
+	  This allows the sysadmin to specify a different PAM stack, if desired
+	  and also allows customization per display.  Also added key info for
+	  some BackgroundProgram keys that were missing.
+	* config/PreSession.in: now requests configuration data per-display.
+	  Will use normal configuration if no per-display config files.
+	* gui/.cvsignore: Add gdmsetup.desktop.in
+	* gui/gdmdynamic.: Improve usage warning.
+	* gui/gdmlogin.c: Add some debug
+	* docs/C/gdm.xml: Updated docs to reflect new per-display config.
+
 2006-04-25  Brian Cameron  <brian.cameron@sun.com>
 
 	* docs/C/gdm.xml.  Add units information to TimedLoginDelay.

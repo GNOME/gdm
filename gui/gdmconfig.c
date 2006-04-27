@@ -126,15 +126,21 @@ gdm_config_get_result (gchar *key)
 	gchar *newkey  = g_strdup (key);
 	gchar *command = NULL;
 	gchar *result  = NULL;
+	static char *display = NULL;
 
 	g_strstrip (newkey);
 	p = strchr (newkey, '=');
 	if (p != NULL)
 		*p = '\0';
 
-	command = g_strdup_printf ("GET_CONFIG %s", newkey);
-	result = gdmcomm_call_gdm (command, NULL /* auth cookie */,
-		"2.13.0.1", comm_tries);
+	display = g_strdup (g_getenv ("DISPLAY"));
+	if (display == NULL)
+		command = g_strdup_printf ("GET_CONFIG %s", newkey);
+	else
+		command = g_strdup_printf ("GET_CONFIG %s %s", newkey, display);
+
+	result  = gdmcomm_call_gdm (command, NULL /* auth cookie */,
+	          "2.13.0.1", comm_tries);
 
 	g_free (command);
 	g_free (newkey);

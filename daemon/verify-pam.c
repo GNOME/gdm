@@ -456,7 +456,7 @@ perhaps_translate_message (const char *msg)
  * authentication system and the actual greeter program */
 
 static gint 
-gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
+gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 		     struct pam_response **resp,
 		     void *appdata_ptr)
 {
@@ -486,7 +486,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     /* Here we set the login if it wasn't already set,
      * this is kind of anal, but this way we guarantee that
      * the greeter always is up to date on the login */
-    if (pam_get_item (pamh, PAM_USER, &p) == PAM_SUCCESS ||
+    if (pam_get_item (pamh, PAM_USER, (void **)&p) == PAM_SUCCESS ||
 	tmp_PAM_USER != NULL) {
 	    login = (const char *)p;
 
@@ -625,7 +625,7 @@ static struct pam_conv pamc = {
 static char *extra_standalone_message = NULL;
 
 static gint 
-gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
+gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 				struct pam_response **resp,
 				void *appdata_ptr)
 {
@@ -806,6 +806,7 @@ gdm_verify_user (GdmDisplay *d,
     struct passwd *pwent = NULL;
     const void *p;
     char *login, *passreq, *consoleonly;
+    char *pam_stack = NULL;
     int null_tok = 0;
     gboolean credentials_set = FALSE;
     gboolean error_msg_given = FALSE;
@@ -845,11 +846,20 @@ authenticate_again:
     tmp_PAM_USER = g_strdup (login);
 
     /* Initialize a PAM session for the user */
-    if ( ! create_pamh (d, "gdm", login, &pamc, display, &pamerr)) {
+    /* First try to get value from a per-display config file, then use default */
+    gdm_config_key_to_string_per_display (
+       gdm_get_display_custom_config_file ((gchar *)display),
+       GDM_KEY_PAM_STACK, &pam_stack);
+    if (pam_stack == NULL)
+       pam_stack = g_strdup (gdm_get_value_string (GDM_KEY_PAM_STACK));
+
+    if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+            g_free (pam_stack);
 	    goto pamerr;
     }
+    g_free (pam_stack);
 
     pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
 
@@ -924,7 +934,7 @@ authenticate_again:
     g_free (login);
     login = NULL;
     
-    if ((pamerr = pam_get_item (pamh, PAM_USER, &p)) != PAM_SUCCESS) {
+    if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
 	    login = NULL;
 	    /* is not really an auth problem, but it will
 	       pretty much look as such, it shouldn't really
@@ -1188,6 +1198,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     struct passwd *pwent = NULL;
     const void *p;
     char *passreq;
+    char *pam_stack = NULL;
     int null_tok = 0;
     gboolean credentials_set;
     const char *after_login;
@@ -1211,10 +1222,19 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 						login);
 
     /* Initialize a PAM session for the user */
+    /* First try to get value from a per-display config file, then use default */
+    gdm_config_key_to_string_per_display (
+       gdm_get_display_custom_config_file ((gchar *)display),
+       GDM_KEY_PAM_STACK, &pam_stack);
+    if (pam_stack == NULL)
+       pam_stack = g_strdup (gdm_get_value_string (GDM_KEY_PAM_STACK));
+
     if ( ! create_pamh (d, "gdm-autologin", login, &standalone_pamc,
 			display, &pamerr)) {
+            g_free (pam_stack);
 	    goto setup_pamerr;
     }
+    g_free (pam_stack);
 
     passreq = gdm_read_default ("PASSREQ=");
     if ((passreq != NULL) &&
@@ -1236,7 +1256,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    goto setup_pamerr;
     }
 
-    if ((pamerr = pam_get_item (pamh, PAM_USER, &p)) != PAM_SUCCESS) {
+    if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
 	    /* is not really an auth problem, but it will
 	       pretty much look as such, it shouldn't really
 	       happen */
@@ -1325,7 +1345,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     did_setcred = TRUE;
 
 #ifdef sun
-    solaris_xserver_cred (login, d, pwent);
+    solaris_xserver_cred ((char *)login, d, pwent);
 #endif
 
     /* Set credentials */
@@ -1508,13 +1528,14 @@ gdm_verify_check (void)
 {
 	pam_handle_t *ph = NULL;
 
-	if (pam_start ("gdm", NULL, &standalone_pamc, &ph) != PAM_SUCCESS) {
+	if (pam_start (gdm_get_value_string (GDM_KEY_PAM_STACK), NULL,
+		&standalone_pamc, &ph) != PAM_SUCCESS) {
 		ph = NULL; /* be anal */
 
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-        if (gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
+		if (gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 			gdm_text_message_dialog
 				(C_(N_("Can't find PAM configuration for GDM.")));
 		gdm_fail ("gdm_verify_check: %s",

@@ -146,10 +146,13 @@ enum {
  * Developers who add new configuration options should ensure that they do the
  * following:
  * 
+ * + Edit the config/gdm.conf file to include the default setting.
+ *
  * + Specify the same default in this file as in the config/gdm.conf.in file.
  *
  * + Update the gdm_config_init function in daemon/gdmconfig.c to add the
- *   new key.
+ *   new key.  Include some documentation about the new key, following the
+ *   style of existing comments.
  *
  * + Add any validation to the _gdm_set_value_string, _gdm_set_value_int,
  *   and/or _gdm_set_value_bool functions (depending on the type of the new
@@ -163,17 +166,34 @@ enum {
  *
  * + If the option should cause the greeter (gdmlogin/gdmgreeter) program to
  *   be updated immediately, make sure to update the appropriate 
- *   _gdm_set_value_* function in gdmconfig.c causes a call to
- *   notify_displays_* when this value is changed.  Supporting logic will
- *   also be needed in the gdm_slave_handle_notify function in slave.c.
- *   It should be simple to see how to do this from the other examples.
+ *   _gdm_set_value_* function in gdmconfig.c.  This function calls the
+ *   notify_displays_* function to call when this value is changed, so you
+ *   will need to add your new config value to the list of values sending
+ *   such notification.  Supporting logic will need to be added to
+ *   gdm_slave_handle_notify function in slave.c to process the notify.
+ *   It should be clear to see how to do this from the existing code.
  *
  * + Add the key to the gdm_read_config and gdm_reread_config functions in 
  *   gui/gdmlogin.c, gui/gdmchooser.c, and gui/greeter/greeter.c
- *   if the key is used by those programs.
+ *   if the key is used by those programs.  Note that all GDM slaves load
+ *   all their configuration data between calls to gdmcomm_comm_bulk_start()
+ *   and gdmcomm_comm_bulk_stop().  This makes sure that the slave only uses
+ *   a single sockets connection to get all configuration data.  If a new
+ *   config value is read by a slave, make sure to load the key in this
+ *   code section for best performance.
  *
  * + The gui/gdmsetup.c program should be updated to support the new option
- *   unless there's a good reason not to.
+ *   unless there's a good reason not to (like it is a configuration value
+ *   that only someone who really knows what they are doing should change
+ *   like GDM_KEY_PID_FILE).
+ * 
+ * + Currently GDM treats any key in the "gui" and "greeter" categories,
+ *   and security/PamStack as available for per-display configuration.  
+ *   If a key is appropriate for per-display configuration, and is not
+ *   in the "gui" or "greeter" categories, then it will need to be added
+ *   to the gdm_config_key_to_string_per_display function.  It may make
+ *   sense for some keys used by the daemon to be per-display so this
+ *   will need to be coded (refer to GDM_KEY_PAM_STACK for an example).
  *
  * + Update the docs/C/gdm.xml file to include information about the new
  *   option.  Include information about any other interfaces (such as 
@@ -275,6 +295,7 @@ enum {
 #define GDM_KEY_CHECK_DIR_OWNER "security/CheckDirOwner=true"
 #define GDM_KEY_RETRY_DELAY "security/RetryDelay=1"
 #define GDM_KEY_DISALLOW_TCP "security/DisallowTCP=true"
+#define GDM_KEY_PAM_STACK "security/PamStack=gdm"
 
 #define GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS "security/NeverPlaceCookiesOnNFS=true"
 #define GDM_KEY_PASSWORD_REQUIRED "security/PasswordRequired=false"
@@ -858,14 +879,15 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_RELEASE_DYNAMIC_DISPLAYS	"RELEASE_DYNAMIC_DISPLAYS"
 /*
- * RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in
- *                           DISPLAY_CONFIG state
+ * RELEASE_DYNAMIC_DISPLAYS: Release and begin managing dynamic displays
+ *                           currently in DISPLAY_CONFIG state
  * Supported since: 2.8.0.0
- * Arguments: None
+ * Arguments: <display to release>
  * Answers:
  *  OK
  *  ERROR
  *     0 = Not implemented
+ *     1 = Bad display number
  *     100 = Not authenticated
  *     200 = Dynamic Displays not allowed
  *     999 = Unknown error
@@ -880,6 +902,7 @@ void		gdm_final_cleanup	(void);
  *  OK
  *  ERROR
  *     0 = Not implemented
+ *     1 = Bad display number
  *     100 = Not authenticated
  *     200 = Dynamic Displays not allowed
  *     999 = Unknown error
@@ -974,14 +997,18 @@ void		gdm_final_cleanup	(void);
 /* GET_CONFIG:  Get configuration value for key.  Useful so
  *              that other applications can request configuration
  *              information from GDM.  Any key defined as GDM_KEY_*
- *              in gdm.h is * supported.  Starting with version 2.13.0.2
+ *              in gdm.h is supported.  Starting with version 2.13.0.2
  *              translated keys (such as "greeter/GdmWelcome[cs]" are
  *              supported via GET_CONFIG.  Also starting with version
  *              2.13.0.2 it is no longer necessary to include the
  *              default value (i.e. you can use key "greeter/IncludeAll"
  *              instead of having to use "greeter/IncludeAll=false".
+ *              Starting with version 2.14.4, GDM supports per-display
+ *              configuration (for GUI slave clients only) and accepts
+ *              the display argument to retrieve per-display value (if
+ *              any.
  * Supported since: 2.6.0.9
- * Arguments: <key>
+ * Arguments: <key> [<display>]
  * Answers:
  *   OK <value>
  *   ERROR <err number> <english error description>
@@ -1010,7 +1037,7 @@ void		gdm_final_cleanup	(void);
  * Supported since: 2.14.0.0
  * Arguments: None
  * Answers:
- *   OK <full path to GDM configuration file>
+ *   OK <full path to GDM custom configuration file>
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      1 = File not found

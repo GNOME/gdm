@@ -1002,25 +1002,40 @@ gdm: .your.domain
     <title>Configuration</title>
 
     <para> 
-      This section will cover the configuration of GDM and the format of the
-      GDM configuration files.  You can use the <command>gdmsetup</command>
-      command to configure GDM, but the configuration application does not
-      let you configure every aspect of GDM.  
+      GDM has powerful configuration management.  System configuration is stored
+      in <filename>&lt;share&gt;/gdm/defaults.conf</filename> and the intention
+      is that this file can be stored on a shared filesystem so that sysadmins
+      can have a single file to modify to control configuration for multiple
+      machines.  Also GDM distributions may patch this file on update to 
+      improve usability, improve security, etc.  Configuration may be customized
+      for a specific machine by editing the
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file to include an
+      override for a specific key.  Those parameters in the &quot;gui&quot;,
+      &quot;greeter&quot; sections, and the security/PamStack key may be
+      customized per-display by specifying them in a file named
+      <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>.
+      For example, configuration overrides for display &quot;:103&quot; would be
+      stored in the file <filename>&lt;etc&gt;/gdm/custom.conf:0</filename>.
     </para>
 
     <para>
-      You can either run <command>gdmsetup</command> as root or turn on the GDM
-      configuration feature that allows you to run <command>gdmsetup</command>
-      from the login screen (where it will run as root).  If you believe
-      running root owned GUI's is a security risk, then you would want to edit
-      the files by hand.
+      The <command>gdmsetup</command> is a GUI program you can use to edit the
+      GDM configuration.  This program may also be launched directly from the
+      login screen if the greeter/ConfigAvailable key is set to &quot;true&quot;
+      Not all keys in the GDM configuration file are supported in the GUI, so
+      you may need to edit the configuration files by hand to edit these keys.
+      If you believe running root-owned GUI's causes security risk, then you
+      would want to always edit the files by hand.  This program does not
+      support setting per-display configuration, so per-display configuration
+      files must be set up by hand.
     </para>
 
     <para>
-      If you are a distribution and want to set machine defaults, you should 
-      edit the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file rather
-      than editing the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
-      file, so the distribution changes are preserved as defaults.
+      Distributions should edit the
+      <filename>&lt;share&gt;/gdm/defaults.conf</filename> file to establish
+      the default values so these are preserved as defaults and not modified
+      by users modifying their personal configuration file
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename>.
     </para>
 
     <para>
@@ -1030,9 +1045,7 @@ gdm: .your.domain
       section.  For example, to change the &quot;Greeter&quot; key in the
       &quot;daemon&quot; section, make sure the daemon section of the
       <filename>&lt;etc&gt;/gdm/custom.conf</filename> file has the value
-      like in this example.  The modified option does not have to come anywhere
-      in the section.  The <command>gdmsetup</command> program manages editing
-      these files for you.
+      like in this example.  
     </para>
 
 <screen>
@@ -1043,17 +1056,13 @@ Greeter=/usr/lib/gdmgreeter
     <para>
       The configuration files (especially the
       <filename>&lt;share&gt;/gdm/defaults.conf</filename> and
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> files) contains
-      useful comments and examples, so read these for more information about
-      changing your setup.
-    </para>
-
-    <para>
-      Some keys in the configuration file as shipped are commented out while
-      others are set.  This is done so that defaults can be easily changed in
-      the future for some keys.  GDM considers lines that start with the
+      <filename>&lt;etc&gt;/gdm/custom.conf</filename> files) contain
+      useful comments and examples, so read them for more information about
+      changing your configuration.  GDM considers lines that start with the
       &quot;#&quot; character a comment, and these lines will be ignored by
-      GDM.
+      GDM.  Some keys in the <filename>&lt;share&gt;/gdm/defaults.conf</filename>
+      are commented out while others are set.  Commented out values show the
+      default value.
     </para>
 
     <para> 
