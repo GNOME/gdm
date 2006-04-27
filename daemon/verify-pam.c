@@ -1232,7 +1232,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
           gdm_get_value_string (GDM_KEY_PAM_STACK));
     }
 
-    if ( ! create_pamh (d, "gdm-autologin", login, &standalone_pamc,
+    if ( ! create_pamh (d, pam_stack, login, &standalone_pamc,
 			display, &pamerr)) {
             g_free (pam_stack);
 	    goto setup_pamerr;
