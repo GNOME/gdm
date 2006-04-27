@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 #include <librsvg/rsvg.h>
 #include "gdmcommon.h"
 #include "gdmwm.h"
@@ -558,6 +559,39 @@ greeter_item_size_request (GreeterItemInfo *item,
       req->width = gdk_pixbuf_get_width (svg);
       req->height = gdk_pixbuf_get_height (svg);
       g_object_unref (svg);
+    }
+
+  if (item->item_type == GREETER_ITEM_TYPE_BUTTON)
+    {
+      PangoLayout *layout;
+      PangoFontDescription *font_desc;
+      int pango_width, pango_height;
+      int pix_width, pix_height;
+      
+      GtkWidget *dummy_w = gtk_button_new ();
+
+      if (strcmp (item->id, "options_button") == 0)
+       layout = gtk_widget_create_pango_layout (dummy_w, _("Select Language..."));
+      else
+     layout = gtk_widget_create_pango_layout (dummy_w, item->data.text.orig_text);
+       
+      pango_layout_get_size (layout, &pango_width, &pango_height);
+      
+      pix_height = PANGO_PIXELS (pango_height);
+      pix_width = PANGO_PIXELS (pango_width);
+
+      if (strcmp (item->id, "options_button") == 0)
+     pix_width += pix_height * 2; /* add padding for combobox */
+
+      if (pix_width > item->parent->box_min_width)
+     req->width = pix_width;
+      else
+     req->width = item->parent->box_min_width;
+
+      if (pix_height > item->parent->box_min_height)
+     req->height = pix_height;
+      else
+     req->height = item->parent->box_min_height;
     }
  
   if (req->width > 0 && req->height > 0)

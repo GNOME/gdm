@@ -12,26 +12,10 @@
       <item type="rect">
         <normal color="#ffffff"/>
         <pos x="0" y="4" width="100%" height="100%"/>
-        <box orientation="horizontal" spacing="10" xpadding="10">
-          <item type="rect" id="options_button" button="true">
-            <normal color="#ffffff"/>
-	    <pos y="50%" anchor="w" width="box" height="box"/>
-            <box orientation="horizontal" spacing="10" xpadding="10">
-	      <item type="pixmap">
-	        <normal file="options.png" tint="#dddddd"/>
-	        <prelight file="options.png"/>
-	        <active file="options.png" tint="#ff0000"/>
-	        <pos y="50%" anchor="w"/>
-	      </item>
-	      <item type="label">
-	        <normal color="#000000" font="Sans 12"/>
-		<prelight color="#666666" font="Sans 12"/>
-		<active color="#ff0000" font="Sans 12"/>
-	        <pos y="50%" anchor="w"/>
-		<!-- Stock label for: _Options -->
-		<stock type="options"/>
-	      </item>
-            </box>
+        <box orientation="horizontal" spacing="10" xpadding="10" ypadding="10">
+          <item type="button" id="options_button">
+            <pos width="100" height="50" />
+            <stock type="options"/>
           </item>
         </box>
       </item>
@@ -100,33 +84,13 @@
 	  </item>
 	</fixed>
       </item>
-      <item type="rect" id="ok_button" button="true">
-        <normal color="#ffffff"/>
-        <pos anchor="n" x="50%" width="50%" height="20"/>
-        <box orientation="vertical" spacing="10" xpadding="10">
-          <item type="label">
-            <normal color="#000000" font="Sans 12"/>
-            <prelight color="#666666" font="Sans 12"/>
-            <active color="#ff0000" font="Sans 12"/>
-            <pos anchor="n" x="50%" height="24" width="50%"/>
-            <!-- Stock label for: _OK -->
-            <stock type="ok"/>
-          </item>
-        </box>
+      <item type="button" id="ok_button">
+        <pos anchor="n" x="50%" height="32" width="50%"/>
+        <stock type="ok"/>
       </item>
-      <item type="rect" id="cancel_button" button="true">
-        <normal color="#ffffff"/>
-        <pos anchor="n" x="50%" width="50%" height="20"/>
-        <box orientation="vertical" spacing="10" xpadding="10">
-          <item type="label">
-            <normal color="#000000" font="Sans 12"/>
-            <prelight color="#666666" font="Sans 12"/>
-            <active color="#ff0000" font="Sans 12"/>
-            <pos anchor="n" x="50%" height="24" width="50%"/>
-            <!-- Stock label for: _Cancel -->
-            <stock type="cancel"/>
-          </item>
-        </box>
+      <item type="button" id="cancel_button">
+        <pos anchor="n" x="50%" height="32" width="50%"/>
+        <stock type="startover"/>
       </item>
       <item type="label" id="pam-message">
         <pos anchor="n" x="50%"/>

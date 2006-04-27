@@ -1,5 +1,24 @@
 2006-04-26  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/greeter_item_pam.c: Add pam-error-logo item type.
+	* gui/greeter/greeter_item.h, gui/greeter/greeter_canvas_item.c,
+	  gui/greeter/greeter_geometry, gui/greeter/greeter_parser.c: Add item
+	  type button to use a real GTK+ button, this better supports
+	  accessibility.  Add "startover" string to stock, this better name
+	  for the "Cancel" button was recommended.
+	* gui/greeter/themes/happygnome/happygnome.xml,
+	  gui/greeter/themes/happygnome/happygnome-list.xml,
+	  gui/greeter/themes/circles/circles.xml: Updated theme to use real
+	  GTK+ buttons.  Now says "Start Over" instead of "Cancel" on the
+	  button.
+	* gui/greeter/greeter_events.c, gui/greeter/greeter_item.c: Code
+	  cleanup.
+	* docs/gdm/gdm.xml: Add docs for new features and the gtk-theme
+	  greeter element feature added in 2.12 but after string-freeze, so
+	  docs couldn't be updated then.
+
+2006-04-26  Brian Cameron  <brian.cameron@sun.com>
+
 	Adding per-display configuration support to GDM.  Now if user has
 	a file named /etc/gdm/custom.conf:<displaynum>, the settings in this
 	file will override the /usr/share/gdm/defaults.conf and

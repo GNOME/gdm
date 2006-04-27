@@ -228,11 +228,18 @@ greeter_options_handler (GreeterItemInfo *item, GtkWidget *menubar)
 }
 
 void
+greeter_item_run_button_action_callback (GtkButton *button, const char *id)
+{
+        greeter_item_run_action_callback (id);
+}
+
+void
 greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
   GnomeCanvasGroup *group;
   GtkJustification just;
   GtkWidget *entry;
+  GtkWidget *gtkbutton;
   GtkWidget *list;
   GtkWidget *swin;
   double x1, y1, x2, y2;
@@ -393,14 +400,34 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     
     break;
     
+  case GREETER_ITEM_TYPE_BUTTON:
+    gtkbutton = gtk_button_new_with_mnemonic (item->data.text.orig_text);
+    gtk_widget_set_name (gtkbutton, item->id);
+    g_signal_connect (G_OBJECT (gtkbutton), "clicked",
+                      G_CALLBACK (greeter_item_run_button_action_callback),
+                      item->id);
+
+    item->item = gnome_canvas_item_new (group,
+					GNOME_TYPE_CANVAS_WIDGET,
+					"widget", gtkbutton,
+					"x", x1,
+					"y", y1,
+					"height", (double)rect.height,
+					"width", (double)rect.width,
+					NULL);
+
+    break;
+
   case GREETER_ITEM_TYPE_ENTRY:
     entry = gtk_entry_new ();
     gtk_widget_set_name (entry, "user-pw-entry");
     gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
+
     if (gdm_config_get_bool (GDM_KEY_ENTRY_INVISIBLE))
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
     else if (gdm_config_get_bool (GDM_KEY_ENTRY_CIRCLES))
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
+
     gtk_widget_modify_font (entry, item->data.text.fonts[GREETER_ITEM_STATE_NORMAL]);
 
     get_gdk_color_from_rgb (&c, item->data.text.colors[GREETER_ITEM_STATE_NORMAL]);

@@ -5340,6 +5340,33 @@ tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
     <sect2 id="descofthemeformat">
       <title>Detailed Description of Theme XML format</title>
 
+      <sect3 id="greetertag">
+        <title>greeter tag</title>
+
+          <para>
+            The GDM theme format is specified in XML format contained
+            within a &lt;greeter&gt; tag.  You may specify a GTK+ theme to
+            be used with this theme by using the gtk-theme element in the
+            greeter tag as in the following example.
+          </para>
+
+<screen>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE greeter SYSTEM "greeter.dtd"&gt;
+&lt;greeter gtk-theme="Crux"&gt;
+[...]
+&lt;/greeter&gt;
+</screen>
+
+          <para>
+            Contained within the greeter tag can be the nodes described
+            in the next sections of this document.  Some of these nodes are
+            containers (box nodes, rect item nodes) which can be used to
+            organize how to display the nodes that the user sees and interacts
+            with (such as button, pixmap and entry item nodes).
+          </para>
+      </sect3>
+
       <sect3 id="boxnodes">
         <title>Box Nodes</title>
 
@@ -5401,19 +5428,24 @@ homogeneous=&quot;bool&quot;&gt;
 
         <variablelist>
           <varlistentry>
-            <term>entry</term>
+            <term>button</term>
             <listitem>
               <para>
-                Text entry field.
+                A button field.  This field uses a GTK+ button.  It is also
+                possible to make a "rect" item act like a button by setting
+                its button element to true.  However it is better to use
+                GTK+ buttons in GDM themes since these are accessible to
+                users with disabilities.  Also, GTK+ buttons can be
+                themed.
               </para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>list</term>
+            <term>entry</term>
             <listitem>
               <para>
-                A list widget.
+                Text entry field.
               </para>
             </listitem>
           </varlistentry>
@@ -5424,6 +5456,16 @@ homogeneous=&quot;bool&quot;&gt;
               <para>
                 A text label.  Must have a &quot;text&quot; node to specify the
                 text.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>list</term>
+            <listitem>
+              <para>
+                 A face browser widget.  Only useful if the face browser is
+                 enabled via the configuration.
               </para>
             </listitem>
           </varlistentry>
@@ -5540,6 +5582,17 @@ homogeneous=&quot;bool&quot;&gt;
               <para>
                 Label that displayst PAM/GDM error messages.  Such as when user
                 can't log in.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>pam-error-logo</term>
+            <listitem>
+              <para>
+                An image that will be displayed only when a pam-error message
+                is being displayed.  This is useful for displaying an
+                &quot;Attention&quot; icon, for example.
               </para>
             </listitem>
           </varlistentry>
@@ -6026,6 +6079,9 @@ homogeneous=&quot;bool&quot;&gt;
         </para>
         <para>
           <filename>session</filename>, _(&quot;_Session&quot;
+        </para>
+        <para>
+          <filename>startover</filename>, _(&quot;_Start Over&quot;
         </para>
         <para>
           <filename>suspend</filename>, _(&quot;Sus_pend&quot;

@@ -2867,6 +2867,22 @@ tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
     <sect2 id="descofthemeformat">
       <title>Докладний опис XML формату тем</title>
 
+      <sect3 id="greetertag">
+        <title>greeter tag</title>
+
+          <para>The GDM theme format is specified in XML format contained within a &lt;greeter&gt; tag. You may specify a GTK+ theme to be used with this theme by using the gtk-theme element in the greeter tag as in the following example.</para>
+
+<screen>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE greeter SYSTEM "greeter.dtd"&gt;
+&lt;greeter gtk-theme="Crux"&gt;
+[...]
+&lt;/greeter&gt;
+</screen>
+
+          <para>Contained within the greeter tag can be the nodes described in the next sections of this document. Some of these nodes are containers (box nodes, rect item nodes) which can be used to organize how to display the nodes that the user sees and interacts with (such as button, pixmap and entry item nodes).</para>
+      </sect3>
+
       <sect3 id="boxnodes">
         <title>Box Nodes</title>
 
@@ -2898,6 +2914,13 @@ homogeneous="bool"&gt;
 
         <variablelist>
           <varlistentry>
+            <term>button</term>
+            <listitem>
+              <para>A button field. This field uses a GTK+ button. It is also possible to make a "rect" item act like a button by setting its button element to true. However it is better to use GTK+ buttons in GDM themes since these are accessible to users with disabilities. Also, GTK+ buttons can be themed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>entry</term>
             <listitem>
               <para>Поле вводу тексту.</para>
@@ -2905,16 +2928,16 @@ homogeneous="bool"&gt;
           </varlistentry>
 
           <varlistentry>
-            <term>list</term>
+            <term>label</term>
             <listitem>
-              <para>Віджет списку.</para>
+              <para>Текстова позначка. Мусить мати вузол "text" для вказування тексту.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>label</term>
+            <term>list</term>
             <listitem>
-              <para>Текстова позначка. Мусить мати вузол "text" для вказування тексту.</para>
+              <para>A face browser widget. Only useful if the face browser is enabled via the configuration.</para>
             </listitem>
           </varlistentry>
 
@@ -2990,6 +3013,13 @@ homogeneous="bool"&gt;
             <term>pam-error</term>
             <listitem>
               <para>Label that displayst PAM/GDM error messages. Such as when user can't log in.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>pam-error-logo</term>
+            <listitem>
+              <para>An image that will be displayed only when a pam-error message is being displayed. This is useful for displaying an "Attention" icon, for example.</para>
             </listitem>
           </varlistentry>
 
@@ -3231,6 +3261,7 @@ homogeneous="bool"&gt;
         <para><filename>quit</filename>, _("_Quit"</para>
         <para><filename>reboot</filename>, _("_Restart"</para>
         <para><filename>session</filename>, _("_Session"</para>
+        <para><filename>startover</filename>, _("_Start Over"</para>
         <para><filename>suspend</filename>, _("Sus_pend"</para>
         <para><filename>system</filename>, _("_Actions" (Formerly "S_ystem"</para>
         <para><filename>timed-label</filename>, _("User %u will login in %t"</para>
