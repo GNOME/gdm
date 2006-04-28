@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY version "2.14.0">
+<!ENTITY version "2.15.0">
 <!ENTITY date "03/20/2006">
 ]>
 <article id="index" lang="uk">
@@ -64,13 +64,13 @@
 
 
 
-    <releaseinfo>This manual describes version 2.14.0 of the GNOME Display Manager. It was last updated on 03/20/2006.</releaseinfo>  
+    <releaseinfo>This manual describes version 2.15.0 of the GNOME Display Manager. It was last updated on 03/20/2006.</releaseinfo>  
   </articleinfo>
 
   <sect1 id="preface">
     <title>Терміни та домовленості використані у цьому посібнику</title>
 
-    <para>This manual describes version 2.14.0 of the GNOME Display Manager. It was last updated on 03/20/2006.</para>  
+    <para>This manual describes version 2.15.0 of the GNOME Display Manager. It was last updated on 03/20/2006.</para>  
 
     <para>Селектор - програма, що використовується для керування дисплеєм віддаленого вузла з локального дисплея (<command>gdmchooser</command>).</para>
 
@@ -182,7 +182,7 @@
     <sect2 id="themedgreeter">
       <title>Програма привітання з темами</title>
 
-      <para>Програма привітання з темами - графічний інтерфейс, який займає весь екран та має підтримку тем зовнішнього вигляду. Теми можна вибирати та встановлювати у програмі налаштовування gdm, або ж можна визначити поточну тему у конфігураційній змінній <filename>GraphicalTheme</filename>. Програма привітання з темами подібна до стандартної програми привітання GTK+ у тому, що вона теж контролюється основним сервером, не має стану та контролюється тип самим простим протоколом.</para>
+      <para>The Themed Greeter is a greeter interface that takes up the whole screen and is very themable. Themes can be selected and new themes can be installed by the configuration application or by setting the <filename>GraphicalTheme</filename> configuration key. The Themed Greeter is much like the GTK+ Greeter in that it is controlled by the underlying daemon, is stateless, and is controlled by the daemon using the same simple protocol.</para>
 
       <para>Зовнішній вигляд вікна привітання залежить від теми, тому елементи інтерфейсу можуть відрізнятись. Єдиний елемент який завжди присутній - це текстове поле, яке описане у розділі <quote>Програма привітання на GTK+</quote>. Тема вожу включати кнопки вибору локалі/мови, зупинення/перезапуску/призупинення комп'ютера, налаштовування GDM (якщо користувач знає пароль адміністратора (root)), чи запуску селектора XDMCP. </para>
 
@@ -262,7 +262,7 @@
 
       <para>Some GDM features (like turning on automatic login) may require that you update your PAM configuration. PAM configuration has different, but similar, interfaces on different operating systems, so check your pam.d or pam.conf man page for details. Be sure that you read the PAM documentation (e.g. pam.d/pam.conf man page) and are comfortable with the security implications of any changes you intend to make to your configuration.</para>
 
-      <para>If there is no entry for GDM in your system's PAM configuration file, then features like tomatic login may not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distribution.</para>
+      <para>If there is no entry for GDM in your system's PAM configuration file, then features like automatic login may not work. Not having an entry will causes GDM to use default behavior, conservative settings are recommended and probably shipped with your distribution.</para>
 
       <para>If you wish to make GDM work with other types of authentication mechanisms (such as a SmartCard), then you should implement this by using a PAM service module for the desired authentication type rather than by trying to modify the GDM code directly. Refer to the PAM documentation on your system. This issue has been discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the list archives for more information.</para>
     </sect2>
@@ -337,6 +337,68 @@ gdm: .evil.domain
 gdm: .your.domain
 </screen>
       <para>у файл <filename>&lt;etc&gt;/hosts.allow</filename>, якщо ви вимикаєте усі служби з усіх вузлів. Докладнішу інформацію дивіться у man-сторінці <ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink>.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="gdmsetupusage">
+    <title>Using gdmsetup To Configure GDM</title>
+
+    <para>The <command>gdmsetup</command> application can be used to configure GDM. If you believe running root-owned GUI's causes security risk, then you would want to always edit the files by hand and not use <command>gdmsetup</command>. Editing the files by hand is explained in the "Configuration" section of this document. Note that <command>gdmsetup</command> does not support changing of all configuration variables, so it may be necessary to edit the files by hand for some configurations.</para>
+
+    <para>The <command>gdmsetup</command> program has five tabs: Local, Remote, Accessibility, Security, and Users, described below. In parenthesis is information about which GDM configuration key is affected by each GUI choice. Refer to the "Configuration" section of this manual and the comments in the &lt;share&gt;/gdm/defaults.conf file for additional details about each key.</para>
+
+    <sect2 id="gdmsetuplocaltab">
+      <title>Local Tab</title>
+     
+      <para>The Local tab is used for controlling the appearance of GDM for local/static displays (non-XDMCP remote connections). The choices available in this tab depend on the setting of the "Style" combobox. This combobox is used to determine whether the "Plain" or "Themed" greeter GUI is used. The differences between these greeter programs are explained in the "Overview" section of this document.</para>
+
+      <para>If the "Style" choice is "Plain", then GDM will use the <command>gdmlogin</command> program as the GUI (daemon/Greeter). When this choice is selected, <command>gdmsetup</command> allows the user to select whether the background is an image or solid color (greeter/BackgroundType). If image is selected, there is a file selection button to pick the image file (greeter/BackgroundImage) and a checkbox to scale the image to fit the screen (greeter/BackgroundImageScaleToFit). If solid color is selected, there is a button available to allow the color selection (greeter/BackgroundColor). Also, the user may select the logo image that appears in gdmlogin (greeter/Logo).</para>
+
+      <para>If the "Style" choice is "Plain with face browser", then the <command>gdmlogin</command> program is used as the GUI (daemon/Greeter) and the face browser is turned on (greeter/Browser). The Face Browser is explained in the Overview section. Otherwise, the choices are the same as when the "Style" choice is "Plain". Additional setup in the Users tab may be necessary to choose which users appear in the Face Browser.</para>
+
+      <para>If the "Style" choice is "Themed", then the <command>gdmgreeter</command> program is used as the GUI (daemon/Greeter). When this choice is selected, <command>gdmsetup</command> allows the user to select the theme to be used (greeter/GraphicalTheme). Note that the checkbox to the left of the theme's name must be checked for a theme to be selected. Clicking on the theme, but not selecting the checkbox will highlight the theme and the "Remove" button can be used to delete the theme. Information about the theme's author and copyright are shown for the highlighted theme. The "Add" button can be used to add new themes to the system. To turn on the Face Browser, a theme which includes a Face Browser must be selected, such as happygnome-list. The "Background color" displayed when GDM starts (and if the theme has transparent elements) can also be selected (greeter/GraphicalThemedColor). The "Theme" combo box may be set to "Random from selected" if you want a random theme to be used for each login (greeter/GraphicalThemeRand and greeter/GraphicalThemes). To use random themes, select each theme that you wish to be used. By default this combobox is set to "Selected only", so that only a single theme can be selected and be used.</para>
+
+      <para>Regardless of the "Style" choice, the user may also select whether the Actions menu is visible (greeter/SystemMenu), whether the Actions menu includes the choice to start <command>gdmsetup</command> (greeter/ConfigAvailable), and whether the Action menu includes the choice to start <command>gdmchooser</command> to run a remote XDMCP login session (greeter/ChooserButton). Note that the root password must be entered to start <command>gdmsetup</command> from the login screen if it is enabled. Also the Welcome message displayed for local sessions may be selected (greeter/DefaultWelcome and greeter/Welcome). The Welcome message can contain the character sequences described in the "Text Node" section of the "Themed Greeter" section of this manual.</para>
+    </sect2>
+
+    <sect2 id="gdmsetupremotetab">
+      <title>Remote Tab</title>
+
+      <para>The Remote tab controls the appearance of the GDM for users logging in via XDMCP. By default XDMCP is disabled, and users should be comfortable with the XDMCP-related sections of the Security section of this document before enabling it. This tab includes a "Style" combobox which can be used to turn on XDMCP and control the appearance of GDM for remote users (gui/RemoteGreeter and xdmcp/Enable). This combobox may be set to "Remote login disabled" or "Same as Local". If the Local tab is set to "Plain" or "Plain with Face Browser", then the user may also select "Themed". If the Local tab is set to "Themed", then the user may also select "Plain" or "Plain with face browser". It is recommended that the "Plain" GUI be used for remote connections since it is more lightweight and tends to have better performance across a network.</para>
+
+      <para>If Remote login is enabled, then the user can specify the remote Welcome Message to be displayed (greeter/DefaultRemoteWelcome and greeter/RemoteWelcome). This welcome message is separate from the Local welcome message and can have a different value. The Welcome message can contain the character sequences described in the "Text Node" section of the "Themed Greeter" section of this manual.</para>
+
+      <para>If the "Style" choice is "Same as Local" and the local selection is "Plain" or "Plain with face browser", then the user may select whether background images should be displayed for remote logins (greeter/BackgroundRemoteOnlyColor).</para>
+
+      <para>If the "Style" choice is enabled and set to a different value than the Local tab, then the user has the same configuration choices as found on the Local tab except that the System Menu choices are not available since this is never available for remote logins for security purposes.</para>
+
+      <para>If Remote login is enabled, there is a "Configure XDMCP" button which displays a dialog allowing the user to set XDMCP configuration, including whether indirect requests are honored (xdmcp/HonorIndirect), UDP port (xdmcp/Port), maximum pending requests (xdmcp/MaxPending), maximum pending indirect requests (xmdcp/MaxPendingIndirect), maximum remote sessions (xdmcp/MaxSessions), maximum wait time (xdmcp/MaxWait), maximum indirect wait time (xdmcp/MaxWaitIndirect), displays per host (xdmcp/DisplaysPerHost), and ping interval (xdmcp/PingIntervalSeconds). The default settings are standard settings and should only be changed by someone who understands the ramifications of the change.</para>
+    </sect2>
+
+    <sect2 id="gdmsetupaccessibilitytab">
+      <title>Accessibility Tab</title>
+
+      <para>The Accessibility tab is used to turn on Accessibility features in GDM. "Enable accessible login" (daemon/AddGtkModules and daemon/GtkModulesList) turns on GDM's gesture listeners which are explained in the "Accessibility" section of this document. There is also a checkbox to allow users to change the theme when using the Plain greeter (gui/AllowGtkThemeChange). This feature allows GDM users to switch the theme to the HighContrast or LowContrast themes if needed. The user may also select whether GDM should play a sound when the login screen is ready, when login is successful and when login has failed. File chooser buttons are used to select the sound file to be played, and the "Play" button can be used to sample the sound.</para>
+    </sect2>
+
+    <sect2 id="gdmsetupsecuritytab">
+      <title>Security Tab</title>
+
+      <para>The Security tab allows the user to turn on Automatic and Timed login, which user is logged in via an automatic or timed login, and the timed login delay (daemon/AutomaticLoginEnable, daemon/AutomaticLogin, daemon/TimedLoginEnable, daemon/TimedLogin, and daemon/TimedLoginDelay). If automatic login is turned on, then the specified user will immediately log in on reboot without GDM asking for username/password. If the user logs out of their session, GDM will start and ask for username and password to log back in. If TimedLogin is turned on, then GDM will log in to the specified user after a specified number of seconds. The user may enable Timed Login for remote (XDMCP) connections by checking the "Allow remote timed logins" checkbox.</para>
+
+      <para>On this tab, the user may select whether the system administrator user can log in, and whether the system administrator user can log in via remote (XDMCP) connections (security/AllowRoot and security/AllowRemoteRoot). The user may turn on GDM debug (debug/Enable) which causes debug messages to be sent to the system log. Debug should only be used when diagnosing a problem and not be left on when not needed. The "Deny TCP connections to Xserver" choice will disable X forwarding if selected (security/DisallowTCP). A login retry delay (security/RetryDelay) can be set to cause GDM to wait a number of seconds after a failed login.</para>  
+
+      <para>The "Configure X Server" button can be used to specify how GDM manages each display. The "Servers" combobox shows what server definitions are available (Standard, Terminal, and Chooser by default). Refer to the "X Server Definitions" section of the "Configuration" section for more information about how to create new Server Definitions.</para>
+
+      <para>For any server type, the user may modify the "Server Name" (server/name), the "Command" (server/command) to be used to launch the Xserver, whether the server type will "Launch" (server/chooser) the greeter or chooser GUI after starting the Xserver, whether GDM handles this type (normally only set to false when logging into a Terminal session type), and whether the session type supports "Flexible" (server/flexible) sessions.</para>
+
+      <para>The "Servers To Start" section shows what server type is displayed for each display on the machine. Users may click on the "Add/Modify" button to add a new display to the list or to modify a selected display. This simply corresponds each physical display with the Server Definition to be used for managing that display. The "Remove" button may be used to remove a display from the list.</para>
+    </sect2>
+
+    <sect2 id="gdmsetupuserstab">
+      <title>Users Tab</title>
+
+      <para>The Users tab controls which users appear in the Face Browser. If the "Include all users from /etc/password" checkbox is selected, then all users (with a userid above greeter/MinimalUID and not in the Exclude list) are displayed. If this checkbox is not selected, then users must be added to the "Include" list. Users in the "Exclude" list are never displayed. The "Add" and "Remove" buttons are used to add a new user to the list or remove a selected user from the list. The "Apply User Changes" button must be pressed after the "Include" and "Exclude" lists have been modified. The left and right arrow buttons between the "Include" and "Exclude" lists can be used to move a selected user from one list to the other.</para>
     </sect2>
   </sect1>
 
