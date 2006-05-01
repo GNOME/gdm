@@ -1,3 +1,9 @@
+2006-05-01  Julio M. Merino Vidal  <jmmv@NetBSD.org>
+
+	* daemon/slave.c: Explicitly adjust the effective GID before
+	  running the child session program.  Otherwise it remains with
+	  high privileges.  The problem was exposed under NetBSD.
+
 2006-05-01  Brian Cameron  <brian.cameron@sun.com>
 
 	* config/gettextfoo.h, config/XKeepsCrashing:  Updated by running
