@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-16 04:56+0200\n"
-"PO-Revision-Date: 2006-04-16 12:55+0800\n"
+"POT-Creation-Date: 2006-05-01 13:03+0200\n"
+"PO-Revision-Date: 2006-05-01 22:23+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -218,8 +218,8 @@ msgstr ""
 msgid "%s could not be opened"
 msgstr "无法打开 %s"
 
-#: ../daemon/errorgui.c:488 ../daemon/errorgui.c:632 ../daemon/errorgui.c:743
-#: ../daemon/errorgui.c:864
+#: ../daemon/errorgui.c:486 ../daemon/errorgui.c:630 ../daemon/errorgui.c:741
+#: ../daemon/errorgui.c:862
 #, c-format
 msgid "%s: Cannot fork to display error/info box"
 msgstr "%s：无法创建子进程以显示错误/信息对话框"
@@ -438,7 +438,7 @@ msgstr "启动第一个 X 服务器，但却挂机了。目前尚未收到 GO �
 msgid "Can't open %s for writing"
 msgstr "无法为写入打开 %s"
 
-#: ../daemon/gdm.c:1411 ../gui/gdmchooser.c:1979
+#: ../daemon/gdm.c:1411 ../gui/gdmchooser.c:1978
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -1170,7 +1170,9 @@ msgid ""
 "The failsafe session is restricted to users who have been assigned the root "
 "role. If you cannot log in any other way please contact your system "
 "administrator"
-msgstr "安全模式会话只为指派了 root 角色的用户所开放。如果您无法登录，请联系您的系统管理员"
+msgstr ""
+"安全模式会话只为指派了 root 角色的用户所开放。如果您无法登录，请联系您的系统"
+"管理员"
 
 #: ../daemon/slave.c:3822
 #, c-format
@@ -1855,18 +1857,18 @@ msgstr "找不到正在服务的主机。"
 msgid "Choose a ho_st to connect to:"
 msgstr "选择要连接的主机(_S)："
 
-#: ../gui/gdmchooser.c:620
+#: ../gui/gdmchooser.c:618
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
 "try again later."
 msgstr "主机“%s”现在不愿意支持登录会话。请稍候再试。"
 
-#: ../gui/gdmchooser.c:630
+#: ../gui/gdmchooser.c:628
 msgid "Cannot connect to remote server"
 msgstr "无法连接到远程服务器"
 
-#: ../gui/gdmchooser.c:1282
+#: ../gui/gdmchooser.c:1280
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1876,20 +1878,20 @@ msgstr ""
 "未在 %2$d 秒内从主机“%1$s”收到任何响应。可能主机未打开，或者现在不愿意支持登"
 "录会话。请稍候再试。"
 
-#: ../gui/gdmchooser.c:1295
+#: ../gui/gdmchooser.c:1293
 msgid "Did not receive response from server"
 msgstr "未从服务器接收响应"
 
-#: ../gui/gdmchooser.c:1397
+#: ../gui/gdmchooser.c:1395
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
 msgstr "我找不到主机“%s”。可能您打错了。"
 
-#: ../gui/gdmchooser.c:1406
+#: ../gui/gdmchooser.c:1404
 msgid "Cannot find host"
 msgstr "找不到主机"
 
-#: ../gui/gdmchooser.c:1611
+#: ../gui/gdmchooser.c:1609
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1904,31 +1906,31 @@ msgstr ""
 "您可以点击“刷新”重新扫描网络以便找到新主机。当您选择了一个主机，点击“连接”以"
 "打开到该计算机的会话。"
 
-#: ../gui/gdmchooser.c:1908
+#: ../gui/gdmchooser.c:1906
 msgid "Socket for xdm communication"
 msgstr "进行 xdm 通讯的套接字"
 
-#: ../gui/gdmchooser.c:1908
+#: ../gui/gdmchooser.c:1906
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: ../gui/gdmchooser.c:1911
+#: ../gui/gdmchooser.c:1909
 msgid "Client address to return in response to xdm"
 msgstr "响应 xdm 时返回的客户端地址"
 
-#: ../gui/gdmchooser.c:1911
+#: ../gui/gdmchooser.c:1909
 msgid "ADDRESS"
 msgstr "地址"
 
-#: ../gui/gdmchooser.c:1914
+#: ../gui/gdmchooser.c:1912
 msgid "Connection type to return in response to xdm"
 msgstr "响应 xdm 时返回的连接类型"
 
-#: ../gui/gdmchooser.c:1914
+#: ../gui/gdmchooser.c:1912
 msgid "TYPE"
 msgstr "类型"
 
-#: ../gui/gdmchooser.c:2037
+#: ../gui/gdmchooser.c:2042
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -1937,7 +1939,7 @@ msgstr ""
 "选择程序版本(%s)与守护程序版本(%s)不匹配。您可能刚刚升级 GDM。请重启 GDM 守护"
 "程序或重新启动计算机。"
 
-#: ../gui/gdmchooser.c:2047
+#: ../gui/gdmchooser.c:2052
 msgid "Cannot run chooser"
 msgstr "无法运行选择程序"
 
@@ -2928,10 +2930,11 @@ msgid "Welcome"
 msgstr "欢迎"
 
 #: ../gui/gdmlogin.c:3373 ../gui/gdmlogin.c:3407 ../gui/greeter/greeter.c:581
+#: ../gui/greeter/greeter.c:616
 #, c-format
 msgid ""
-"The greeter version (%s) does not match the daemon version.  You have "
-"probably just upgraded GDM.  Please restart the GDM daemon or the computer."
+"The greeter version (%s) does not match the daemon version. You have "
+"probably just upgraded GDM. Please restart the GDM daemon or the computer."
 msgstr ""
 "欢迎程序版本(%s)与守护程序版本不匹配。您可能刚刚升级 GDM。请重新启动 GDM 守护"
 "程序或重新启动计算机。"
@@ -3099,7 +3102,7 @@ msgstr "“%s”用户已经位于排除列表中。"
 msgid "The \"%s\" user does not exist."
 msgstr "“%s”用户不存在。"
 
-#: ../gui/gdmsetup.c:3043 ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.c:3043 ../gui/gdmsetup.glade.h:76
 msgid "Sounds"
 msgstr "声音"
 
@@ -3221,20 +3224,20 @@ msgstr "关闭而不应用(_W)"
 msgid "Could not access GDM configuration file.\n"
 msgstr "无法访问 GDM 配置文件。\n"
 
-#: ../gui/gdmsetup.c:6519
+#: ../gui/gdmsetup.c:6521
 msgid "You must be the root user to configure GDM."
 msgstr "只有 root 才能配置 GDM。"
 
 #. EOF
-#: ../gui/gdmsetup.desktop.in.h:1
+#: ../gui/gdmsetup.desktop.in.in.h:1
 msgid "Configure the login window (GNOME Display Manager)"
 msgstr "配置登录窗口(GNOME 显示管理器)"
 
-#: ../gui/gdmsetup.desktop.in.h:2
+#: ../gui/gdmsetup.desktop.in.in.h:2
 msgid "Login Window"
 msgstr "登录窗口"
 
-#: ../gui/gdmsetup.desktop.in.h:3 ../gui/gdmsetup.glade.h:39
+#: ../gui/gdmsetup.desktop.in.in.h:3 ../gui/gdmsetup.glade.h:41
 msgid "Login Window Preferences"
 msgstr "登录窗口首选项"
 
@@ -3266,184 +3269,192 @@ msgstr ""
 "新启动后才会生效。"
 
 #: ../gui/gdmsetup.glade.h:6
+msgid "A_dd..."
+msgstr "添加(_D)..."
+
+#: ../gui/gdmsetup.glade.h:7
 msgid "A_llow remote system administrator login"
 msgstr "允许远程管理员登录(_L)"
 
-#: ../gui/gdmsetup.glade.h:7
+#: ../gui/gdmsetup.glade.h:8
+msgid "A_pply User Changes"
+msgstr "应用用户更改(_P)"
+
+#: ../gui/gdmsetup.glade.h:9
 msgid "Accessibility"
 msgstr "辅助功能"
 
-#: ../gui/gdmsetup.glade.h:8
+#: ../gui/gdmsetup.glade.h:10
 msgid "Add / Modify Servers To Start"
 msgstr "添加/修改要启动的服务器"
 
-#: ../gui/gdmsetup.glade.h:9
+#: ../gui/gdmsetup.glade.h:11
 msgid "Add S_erver..."
 msgstr "添加服务器(_E)..."
 
-#: ../gui/gdmsetup.glade.h:10
+#: ../gui/gdmsetup.glade.h:12
 msgid "Add User"
 msgstr "添加用户"
 
-#: ../gui/gdmsetup.glade.h:11
+#: ../gui/gdmsetup.glade.h:13
 msgid "Allo_w remote timed logins"
 msgstr "允许远程计时登录(_W)"
 
-#: ../gui/gdmsetup.glade.h:12
+#: ../gui/gdmsetup.glade.h:14
 msgid "Author:"
 msgstr "作者："
 
-#: ../gui/gdmsetup.glade.h:13
+#: ../gui/gdmsetup.glade.h:15
 msgid "Background"
 msgstr "背景"
 
-#: ../gui/gdmsetup.glade.h:14
+#: ../gui/gdmsetup.glade.h:16
 msgid "C_ommand:"
 msgstr "命令(_O)："
 
-#: ../gui/gdmsetup.glade.h:15
+#: ../gui/gdmsetup.glade.h:17
 msgid "C_ustom:"
 msgstr "自定义(_U)："
 
-#: ../gui/gdmsetup.glade.h:16
+#: ../gui/gdmsetup.glade.h:18
 msgid "Co_lor:"
 msgstr "颜色(_L)："
 
-#: ../gui/gdmsetup.glade.h:17
+#: ../gui/gdmsetup.glade.h:19
 msgid "Color depth:"
 msgstr "颜色深度："
 
-#: ../gui/gdmsetup.glade.h:18
+#: ../gui/gdmsetup.glade.h:20
 msgid "Configure _X Server..."
 msgstr "配置 _X 服务器..."
 
-#: ../gui/gdmsetup.glade.h:19
+#: ../gui/gdmsetup.glade.h:21
 msgid "Configure _XDMCP..."
 msgstr "配置 _XDMCP..."
 
-#: ../gui/gdmsetup.glade.h:20
+#: ../gui/gdmsetup.glade.h:22
 msgid "Copyright:"
 msgstr "版权："
 
-#: ../gui/gdmsetup.glade.h:21
+#: ../gui/gdmsetup.glade.h:23
 msgid "Disables X forwarding, but does not affect XDMCP."
 msgstr "禁用 X 转发，但不影响 XDMCP。"
 
-#: ../gui/gdmsetup.glade.h:22
+#: ../gui/gdmsetup.glade.h:24
 msgid "Displays per _host:"
 msgstr "每主机显示数(_H)："
 
-#: ../gui/gdmsetup.glade.h:23
+#: ../gui/gdmsetup.glade.h:25
 msgid "Do not show image for _remote logins"
 msgstr "远程登录不显示图像(_R)"
 
-#: ../gui/gdmsetup.glade.h:24
+#: ../gui/gdmsetup.glade.h:26
 msgid "E_nable debug messages to system log"
 msgstr "启用系统日志的调试信息(_N)"
 
-#: ../gui/gdmsetup.glade.h:25
+#: ../gui/gdmsetup.glade.h:27
 msgid "E_xclude:"
 msgstr "排除(_X)："
 
-#: ../gui/gdmsetup.glade.h:26
+#: ../gui/gdmsetup.glade.h:28
 msgid "Enable _Timed Login"
 msgstr "启用计时登录(_T)"
 
-#: ../gui/gdmsetup.glade.h:27
+#: ../gui/gdmsetup.glade.h:29
 msgid "Example: /usr/X11R6/bin/X"
 msgstr "示例：/usr/X11R6/bin/X"
 
-#: ../gui/gdmsetup.glade.h:28
+#: ../gui/gdmsetup.glade.h:30
 msgid ""
 "Greeter\n"
 "Chooser"
 msgstr "欢迎程序选择"
 
-#: ../gui/gdmsetup.glade.h:30
+#: ../gui/gdmsetup.glade.h:32
 msgid "Honor _indirect requests"
 msgstr "遵从非直接请求(_I)"
 
-#: ../gui/gdmsetup.glade.h:31
+#: ../gui/gdmsetup.glade.h:33
 msgid "I_mage:"
 msgstr "图像(_M)："
 
-#: ../gui/gdmsetup.glade.h:32
+#: ../gui/gdmsetup.glade.h:34
 msgid "I_nclude:"
 msgstr "包含(_N)："
 
-#: ../gui/gdmsetup.glade.h:33
+#: ../gui/gdmsetup.glade.h:35
 msgid "Includ_e Hostname Chooser (XDMCP) menu item"
 msgstr "包含主机名选择器(XDMCP)菜单项(_E)"
 
-#: ../gui/gdmsetup.glade.h:34
+#: ../gui/gdmsetup.glade.h:36
 msgid "Include Con_figure menu item"
 msgstr "调用配置菜单项(_F)"
 
-#: ../gui/gdmsetup.glade.h:35
+#: ../gui/gdmsetup.glade.h:37
 msgid "L_ogin retry delay:"
 msgstr "登录重试延迟(_O)："
 
-#: ../gui/gdmsetup.glade.h:36
+#: ../gui/gdmsetup.glade.h:38
 msgid "La_unch:"
 msgstr "调用(_U)："
 
-#: ../gui/gdmsetup.glade.h:37
+#: ../gui/gdmsetup.glade.h:39
 msgid "Listen on _UDP port: "
 msgstr "监听 _UDP 端口："
 
-#: ../gui/gdmsetup.glade.h:38
+#: ../gui/gdmsetup.glade.h:40
 msgid "Local"
 msgstr "本地"
 
-#: ../gui/gdmsetup.glade.h:40
+#: ../gui/gdmsetup.glade.h:42
 msgid "Login _failed:"
 msgstr "登录失败(_F)："
 
-#: ../gui/gdmsetup.glade.h:41
+#: ../gui/gdmsetup.glade.h:43
 msgid "Login _successful:"
 msgstr "登录成功(_S)："
 
-#: ../gui/gdmsetup.glade.h:42
+#: ../gui/gdmsetup.glade.h:44
 msgid "Logo"
 msgstr "徽标"
 
-#: ../gui/gdmsetup.glade.h:43
+#: ../gui/gdmsetup.glade.h:45
 msgid "Maximum _pending requests:"
 msgstr "最大阻塞请求数(_P)："
 
-#: ../gui/gdmsetup.glade.h:44
+#: ../gui/gdmsetup.glade.h:46
 msgid "Maximum _remote sessions:"
 msgstr "最大远程会话数(_R)："
 
-#: ../gui/gdmsetup.glade.h:45
+#: ../gui/gdmsetup.glade.h:47
 msgid "Maximum _wait time:"
 msgstr "最大等待时间(_W)："
 
-#: ../gui/gdmsetup.glade.h:46
+#: ../gui/gdmsetup.glade.h:48
 msgid "Maximum indirect w_ait time:"
 msgstr "最大间接等待时间(_A)："
 
-#: ../gui/gdmsetup.glade.h:47
+#: ../gui/gdmsetup.glade.h:49
 msgid "Maximum p_ending indirect requests:"
 msgstr "最大阻塞间接请求数(_E)："
 
-#: ../gui/gdmsetup.glade.h:48
+#: ../gui/gdmsetup.glade.h:50
 msgid "Menu Bar"
 msgstr "菜单栏"
 
-#: ../gui/gdmsetup.glade.h:49
+#: ../gui/gdmsetup.glade.h:51
 msgid "Op_tions:\t"
 msgstr "选项(_T)：\t"
 
-#: ../gui/gdmsetup.glade.h:50
+#: ../gui/gdmsetup.glade.h:52
 msgid "Pick Background Color"
 msgstr "拾取背景颜色"
 
-#: ../gui/gdmsetup.glade.h:51
+#: ../gui/gdmsetup.glade.h:53
 msgid "Pin_g interval:"
 msgstr "Ping 间隔(_G)："
 
-#: ../gui/gdmsetup.glade.h:52
+#: ../gui/gdmsetup.glade.h:54
 msgid ""
 "Plain\n"
 "Plain with face browser\n"
@@ -3453,19 +3464,23 @@ msgstr ""
 "带头像浏览器的简洁主题\n"
 "主题"
 
-#: ../gui/gdmsetup.glade.h:55
+#: ../gui/gdmsetup.glade.h:57
+msgid "R_emove"
+msgstr "删除(_E)"
+
+#: ../gui/gdmsetup.glade.h:58
 msgid "Re_move Server"
 msgstr "远程服务器(_M)"
 
-#: ../gui/gdmsetup.glade.h:56
+#: ../gui/gdmsetup.glade.h:59
 msgid "Refresh rate:"
 msgstr "刷新率："
 
-#: ../gui/gdmsetup.glade.h:57
+#: ../gui/gdmsetup.glade.h:60
 msgid "Remote"
 msgstr "远程"
 
-#: ../gui/gdmsetup.glade.h:58
+#: ../gui/gdmsetup.glade.h:61
 msgid ""
 "Remote login disabled\n"
 "Same as Local"
@@ -3473,31 +3488,31 @@ msgstr ""
 "禁止远程登录\n"
 "与本地相同"
 
-#: ../gui/gdmsetup.glade.h:60
+#: ../gui/gdmsetup.glade.h:63
 msgid "Resolution:"
 msgstr "分辨率："
 
-#: ../gui/gdmsetup.glade.h:61
+#: ../gui/gdmsetup.glade.h:64
 msgid "Sc_ale to fit screen"
 msgstr "所放到屏幕大小(_A)"
 
-#: ../gui/gdmsetup.glade.h:62
+#: ../gui/gdmsetup.glade.h:65
 msgid "Security"
 msgstr "安全"
 
-#: ../gui/gdmsetup.glade.h:63
+#: ../gui/gdmsetup.glade.h:66
 msgid "Select Background Image"
 msgstr "选择背景图像"
 
-#: ../gui/gdmsetup.glade.h:64
+#: ../gui/gdmsetup.glade.h:67
 msgid "Select Logo Image"
 msgstr "选择标志图像"
 
-#: ../gui/gdmsetup.glade.h:65
+#: ../gui/gdmsetup.glade.h:68
 msgid "Select Sound File"
 msgstr "选择声音文件"
 
-#: ../gui/gdmsetup.glade.h:66
+#: ../gui/gdmsetup.glade.h:69
 msgid ""
 "Selected only\n"
 "Random from selected\n"
@@ -3505,155 +3520,154 @@ msgstr ""
 "仅选中图像\n"
 "随机挑选\n"
 
-#: ../gui/gdmsetup.glade.h:69
+#: ../gui/gdmsetup.glade.h:72
 msgid "Server Settings"
 msgstr "服务器设置"
 
-#: ../gui/gdmsetup.glade.h:70
+#: ../gui/gdmsetup.glade.h:73
 msgid "Server _name:"
 msgstr "服务器名称(_N)："
 
-#: ../gui/gdmsetup.glade.h:71
+#: ../gui/gdmsetup.glade.h:74
 msgid "Servers To Start"
 msgstr "要启动的服务器"
 
-#: ../gui/gdmsetup.glade.h:72
+#: ../gui/gdmsetup.glade.h:75
 msgid "Sho_w Actions menu"
 msgstr "显示动作菜单(_W)"
 
-#: ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.glade.h:77
 msgid "Themes"
 msgstr "主题"
 
-#: ../gui/gdmsetup.glade.h:75
+#: ../gui/gdmsetup.glade.h:78
 msgid "U_ser:"
 msgstr "用户(_S)："
 
-#: ../gui/gdmsetup.glade.h:76
+#: ../gui/gdmsetup.glade.h:79
 msgid "Users"
 msgstr "用户"
 
-#: ../gui/gdmsetup.glade.h:77
+#: ../gui/gdmsetup.glade.h:80
 msgid "Welcome Message"
 msgstr "欢迎消息"
 
-#: ../gui/gdmsetup.glade.h:78
+#: ../gui/gdmsetup.glade.h:81
 msgid "X Server Login Window Preferences"
 msgstr "X 服务器登录窗口首选项"
 
-#: ../gui/gdmsetup.glade.h:79
+#: ../gui/gdmsetup.glade.h:82
 msgid "XDMCP Login Window Preferences"
 msgstr "XDMCP 登录窗口首选项"
 
-#: ../gui/gdmsetup.glade.h:80
+#: ../gui/gdmsetup.glade.h:83
+msgid "_Add..."
+msgstr "添加(_A)..."
+
+#: ../gui/gdmsetup.glade.h:84
 msgid "_Add/Modify..."
 msgstr "添加/修改(_A)..."
 
-#: ../gui/gdmsetup.glade.h:81
+#: ../gui/gdmsetup.glade.h:85
 msgid "_Allow local system administrator login"
 msgstr "允许本地系统管理员登录(_A)"
 
-#: ../gui/gdmsetup.glade.h:82
+#: ../gui/gdmsetup.glade.h:86
 msgid "_Allow users to change fonts and colors of plain greeter"
 msgstr "允许用户更改简洁欢迎程序的字体和颜色(_A)"
 
-#: ../gui/gdmsetup.glade.h:83
+#: ../gui/gdmsetup.glade.h:87
 msgid "_Background color:"
 msgstr "背景颜色(_B)："
 
-#: ../gui/gdmsetup.glade.h:85
+#: ../gui/gdmsetup.glade.h:89
 #, no-c-format
 msgid "_Default: \"Welcome to %n\""
 msgstr "默认：“欢迎来到 %n”(_D)"
 
-#: ../gui/gdmsetup.glade.h:86
+#: ../gui/gdmsetup.glade.h:90
 msgid "_Default: \"Welcome\""
 msgstr "默认：“欢迎”(_D)"
 
-#: ../gui/gdmsetup.glade.h:87
+#: ../gui/gdmsetup.glade.h:91
 msgid "_Deny TCP connections to Xserver"
 msgstr "禁止 TCP 连接到 X 服务器(_D)"
 
-#: ../gui/gdmsetup.glade.h:88
+#: ../gui/gdmsetup.glade.h:92
 msgid "_Enable Automatic Login"
 msgstr "启用自动登录(_E)"
 
-#: ../gui/gdmsetup.glade.h:89
+#: ../gui/gdmsetup.glade.h:93
 msgid "_Enable accessible login"
 msgstr "启用辅助功能登录(_E)"
 
-#: ../gui/gdmsetup.glade.h:90
+#: ../gui/gdmsetup.glade.h:94
 msgid "_Flexible (on demand)"
 msgstr "灵活(按需)(_F)"
 
-#: ../gui/gdmsetup.glade.h:91
+#: ../gui/gdmsetup.glade.h:95
 msgid "_Image:"
 msgstr "图像(_I)："
 
-#: ../gui/gdmsetup.glade.h:92
+#: ../gui/gdmsetup.glade.h:96
 msgid "_Include all users from /etc/passwd (not for NIS)"
 msgstr "包含 /etc/passwd 中的全部用户(不适用于 NIS)(_I)"
 
-#: ../gui/gdmsetup.glade.h:93
+#: ../gui/gdmsetup.glade.h:97
 msgid "_Login screen ready:"
 msgstr "登录屏幕就绪(_L)："
 
-#: ../gui/gdmsetup.glade.h:94
+#: ../gui/gdmsetup.glade.h:98
 msgid "_Logins are handled by this computer"
 msgstr "本机处理登录尝试(_L)"
 
-#: ../gui/gdmsetup.glade.h:95
+#: ../gui/gdmsetup.glade.h:99
 msgid "_Pause before login:"
 msgstr "登录前暂停(_P)："
 
-#: ../gui/gdmsetup.glade.h:96
+#: ../gui/gdmsetup.glade.h:100
 msgid "_Remove"
 msgstr "删除(_R)"
 
-#: ../gui/gdmsetup.glade.h:97
+#: ../gui/gdmsetup.glade.h:101
+msgid "_Remove..."
+msgstr "删除(_R)..."
+
+#: ../gui/gdmsetup.glade.h:102
 msgid "_Server:"
 msgstr "服务器(_S)："
 
-#: ../gui/gdmsetup.glade.h:98
+#: ../gui/gdmsetup.glade.h:103
 msgid "_Servers:"
 msgstr "服务器(_S)："
 
-#: ../gui/gdmsetup.glade.h:99
+#: ../gui/gdmsetup.glade.h:104
 msgid "_Style:"
 msgstr "样式(_S)："
 
-#: ../gui/gdmsetup.glade.h:100
+#: ../gui/gdmsetup.glade.h:105
 msgid "_Theme:"
 msgstr "主题(_T)："
 
-#: ../gui/gdmsetup.glade.h:101
+#: ../gui/gdmsetup.glade.h:106
 msgid "_User:"
 msgstr "用户(_U)："
 
-#: ../gui/gdmsetup.glade.h:102
+#: ../gui/gdmsetup.glade.h:107
 msgid "_VT:"
 msgstr "_VT："
 
-#: ../gui/gdmsetup.glade.h:103
+#: ../gui/gdmsetup.glade.h:108
 msgid "dummy"
 msgstr "哑"
 
-#: ../gui/gdmsetup.glade.h:104
+#: ../gui/gdmsetup.glade.h:109
 msgid "seconds"
 msgstr "秒"
 
 #: ../gui/gdmuser.c:276 ../gui/gdmuser.c:278
 msgid "Too many users to list here..."
 msgstr "要在此列出的用户太多..."
-
-#: ../gui/greeter/greeter.c:616
-#, c-format
-msgid ""
-"The greeter version (%s) does not match the daemon version. You have "
-"probably just upgraded GDM. Please restart the GDM daemon or the computer."
-msgstr ""
-"欢迎程序版本(%s)与守护程序版本不匹配。您可能刚刚升级 GDM。请重新启动 GDM 守护"
-"程序或重新启动计算机。"
 
 #: ../gui/greeter/greeter.c:631 ../gui/greeter/greeter.c:682
 msgid "Restart Machine"
