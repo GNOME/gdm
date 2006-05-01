@@ -3543,6 +3543,7 @@ session_child_run (struct passwd *pwent,
                         close (iceauth_fd);
         }
 
+	NEVER_FAILS_setegid (pwent->pw_gid);
 #ifdef HAVE_LOGINCAP
 	if (setusercontext (NULL, pwent, pwent->pw_uid,
 			    LOGIN_SETLOGIN | LOGIN_SETPATH |

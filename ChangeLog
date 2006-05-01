@@ -1,3 +1,9 @@
+2006-05-01  Julio M. Merino Vidal  <jmmv@NetBSD.org>
+
+	* daemon/slave.c: Explicitly adjust the effective GID before
+	  running the child session program.  Otherwise it remains with
+	  high privileges.  The problem was exposed under NetBSD.
+
 2006-04-21  Brian Cameron  <brian.cameron@sun.com>
 
 	* Release 2.14.4: 
