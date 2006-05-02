@@ -49,5 +49,14 @@
 
 [debug]
 
+# Note that to disable servers defined in the defaults.conf file (such as
+# 0=Standard, you must put a line in this file that says 0=inactive, as
+# described in the Configuration section of the GDM documentation.
+#
 [servers]
 
+# Also note, that if you redefine a [server-foo] section, then GDM will
+# use the definition in this file, not the defaults.conf file.  It is
+# currently not possible to disable a [server-foo] section defined
+# in the defaults.conf file.
+#
