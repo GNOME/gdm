@@ -213,7 +213,7 @@ RelaxPermissions=0
 # Check if directories are owned by logon user.  Set to false, if you have, for
 # example, home directories owned by some other user.
 CheckDirOwner=true
-# Number of seconds to wait after a bad login
+# Number of seconds to wait after a failed login
 #RetryDelay=1
 # Maximum size of a file we wish to read.  This makes it hard for a user to DoS
 # us by using a large file.
@@ -413,9 +413,15 @@ GraphicalThemedColor=#76848F
 # Program to run to draw the background in the standard greeter.  Perhaps
 # something like an xscreensaver hack or some such.
 #BackgroundProgram=
-# if this is true then the background program is run always, otherwise it is
+# If this is true then the background program is run always, otherwise it is
 # only run when the BackgroundType is 0 (None).
 #RunBackgroundProgramAlways=false
+# Delay before starting background program
+#BackgroundProgramInitialDelay=30
+# Should the background program be restarted if it is exited.
+#RestartBackgroundProgram=true
+# Delay before restarting background program
+#BackgroundProgramRestartDelay=30
 
 # Show the Failsafe sessions.  These are much MUCH nicer (focus for xterm for
 # example) and more failsafe then those supplied by scripts so distros should
