@@ -46,7 +46,6 @@ void           gdm_config_to_string     (gchar *key,
                                          gchar *display,
                                          gchar **retval);
 gboolean       gdm_update_config        (gchar *key);
-void           gdm_config_init          (void);
 void           gdm_config_parse         (void);
 GdmXserver*    gdm_find_xserver         (const gchar *id);
 gchar*         gdm_get_xservers         (void);
