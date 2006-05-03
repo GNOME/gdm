@@ -1,9 +1,41 @@
 Ahh news...
 
+2.15.1 stuff:
+
+- Explicitely adjust the effective GID before running the child session
+  program to avoid remaining with high privileges.  Fixes bug #340347.
+  (Julio M. Merino Vidal)
+
+- Now allow the PAM Stack to be specified in the GDM configuration instead
+  of being hardcoded to "gdm".  (Brian Cameron)
+
+- Per-display configuration is now supported.  The user may create 
+  /etc/gdm/custom.conf:<dispnum> files (/etc/gdm/custom.conf:0 for display :0)
+  and GUI related configuration settings in the per-display file will override
+  for that display.  (Brian Cameron)
+
+- Greeter themes now support real GTK+ button types, making gdmgreeter
+  better support a11y and allow GTK themeable buttons.  (Brian Cameron)
+
+- New pam-error-logo greeter type to allow an image to be displayed only
+  when the PAM error message label is showing a message.  (Brian Cameron)
+
+- Updated config/gettextfoo.h to reflect current strings for translation.
+  Fixes bug #340017.  (Brian Cameron)
+
+- Updated comments in GDM configuration files (Brian Cameron)
+
+- GDM now uses the string "Start Over" instead of "Cancel" in the GUI.
+
+- Many updates to documentation.  Explain gtk-theme greeter tag, new button and
+  pam-error-icon, and startover greeter types, and better info about PAM.
+  (Brian Cameron)
+
 2.14.5 stuff:
 
 - Explicitely adjust the effective GID before running the child session
   program to avoid remaining with high privileges.  Fixes bug #340347.
+  (Julio M. Merino Vidal)
 
 - Updated config/gettextfoo.h to reflect current strings for translation.
   Fixes bug #340017.  (Brian Cameron)

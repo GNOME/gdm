@@ -2820,7 +2820,7 @@ gdm_login_gui_init (void)
 		      entry);
     gtk_widget_show (ok_button);
 
-    cancel_button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+    cancel_button = gtk_button_new_with_mnemonic (_("_Start Over"));
     GTK_WIDGET_UNSET_FLAGS (cancel_button, GTK_CAN_FOCUS);
     g_signal_connect (G_OBJECT (cancel_button), "clicked",
 		      G_CALLBACK (gdm_login_cancel_button_press),
