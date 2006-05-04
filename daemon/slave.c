@@ -4759,7 +4759,7 @@ static void
 gdm_slave_handle_usr2_message (void)
 {
 	char buf[256];
-	size_t count;
+	ssize_t count;
 	char **vec;
 	int i;
 
