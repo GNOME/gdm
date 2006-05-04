@@ -889,24 +889,32 @@ gdm_sigterm_block_pop (void)
 void
 gdm_sigusr2_block_push (void)
 {
-	sigusr2_blocked++;
+	sigset_t oldmask;
 
-	if (sigusr2_blocked == 1) {
+	if (sigusr2_blocked == 0) {
 		/* Set signal mask */
 		sigemptyset (&sigusr2block_mask);
 		sigaddset (&sigusr2block_mask, SIGUSR2);
-		sigprocmask (SIG_BLOCK, &sigusr2block_mask, &sigusr2block_oldmask);
+		sigprocmask (SIG_BLOCK, &sigusr2block_mask, &oldmask);
 	}
+
+	sigusr2_blocked++;
+
+	sigusr2_block_oldmask = oldmask;
 }
 
 void
 gdm_sigusr2_block_pop (void)
 {
-	sigusr2_blocked --;
+	sigset_t oldmask;
+
+	oldmask = sigusr2block_oldmask;
+
+	sigusr2_blocked--;
 
 	if (sigusr2_blocked == 0) {
-		/* Reset signal mask back */
-		sigprocmask (SIG_SETMASK, &sigusr2block_oldmask, NULL);
+	        /* Reset signal mask back */
+	        sigprocmask (SIG_SETMASK, &sigusr2block_oldmask, NULL);
 	}
 }
 
