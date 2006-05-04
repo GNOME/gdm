@@ -933,6 +933,14 @@ case "$host" in
         XSESSION_SHELL=/bin/ksh
         SOUND_PROGRAM=/usr/bin/audioplay
         ;;
+*freebsd*)
+	GDM_USER_PATH="/bin:/usr/bin"
+	HALT_COMMAND="/sbin/shutdown -p now;/usr/sbin/shutdown -p now"
+	REBOOT_COMMAND="/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
+	SUSPEND_COMMAND="/usr/sbin/zzz"
+	XSESSION_SHELL=/bin/sh
+	SOUND_PROGRAM=
+	;;
 *)
         GDM_USER_PATH="/bin:/usr/bin"
         HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
