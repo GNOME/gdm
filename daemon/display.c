@@ -317,6 +317,8 @@ gdm_display_manage (GdmDisplay *d)
 
 	d->slave_notify_fd = fds[0];
 
+	fcntl (d->slave_notify_fd, F_SETFL, fcntl (d->slave_notify_fd, F_GETFL) | O_NONBLOCK);
+
 	gdm_slave_start (d);
 	/* should never retern */
 
