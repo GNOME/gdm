@@ -499,11 +499,11 @@ parse_gtkbutton (xmlNodePtr node,
 		    GreeterItemInfo *info,
 		    GError **error)
 {
-  char *translated_text;
-  gint translation_score = 1000;
   xmlNodePtr child;
+  char *translated_text  = NULL;
+  gint translation_score = 1000;
   int i;
-		
+
   child = node->children;
 
   while (child)
@@ -1297,11 +1297,9 @@ parse_label (xmlNodePtr        node,
 {
   xmlNodePtr child;
   int i;
-  char *translated_text;
+  char *translated_text  = NULL;
   gint translation_score = 1000;
   
-  translated_text = NULL;
-
   child = node->children;
   while (child)
     {
@@ -1398,10 +1396,10 @@ parse_listitem (xmlNodePtr        node,
 		GError         **error)
 {
   xmlNodePtr child;
-  char *translated_text = NULL;
-  gint translation_score = 1000;
   xmlChar *prop;
   GreeterItemListItem *li;
+  char *translated_text  = NULL;
+  gint translation_score = 1000;
   
   prop = xmlGetProp (node,(const xmlChar *) "id");
   
