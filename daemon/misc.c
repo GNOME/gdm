@@ -900,7 +900,7 @@ gdm_sigusr2_block_push (void)
 
 	sigusr2_blocked++;
 
-	sigusr2_block_oldmask = oldmask;
+	sigusr2block_oldmask = oldmask;
 }
 
 void
