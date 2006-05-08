@@ -4919,7 +4919,7 @@ check_for_interruption (const char *msg)
 			 * it is allowed for this display (it's only allowed
 			 * for the first local display) and if it's set up
 			 * correctly */
-			if ((d->attached || gdm_get_value_string (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN)) 
+			if ((d->attached || gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN)) 
                             && d->timed_login_ok &&
 			    ! ve_string_empty (ParsedTimedLogin) &&
                             strcmp (ParsedTimedLogin, gdm_root_user ()) != 0 &&
