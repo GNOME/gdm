@@ -67,10 +67,6 @@ gdm.conf: $(srcdir)/gdm.conf.in
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		<$(srcdir)/gdm.conf.in >gdm.conf
 
-ssh.desktop: $(srcdir)/ssh.desktop.in
-	sed	-e 's,[@]GDMSSHSESSIONCMD[@],$(GDMSSHSESSIONCMD),g' \
-		<$(srcdir)/ssh.desktop.in >ssh.desktop
-
 gettextfoo.h: XKeepsCrashing Xsession.in
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 
