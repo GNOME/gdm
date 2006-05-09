@@ -866,7 +866,7 @@ fi
 if test x$enable_secureremote != xno ; then
        SSHDESKTOP="ssh.desktop"
         GDMSSHSESSION="gdm-ssh-session"
-        GDMSSHSESSIONCMD='${libexecdir}/gdm-ssh-session'
+        GDMSSHSESSIONCMD="${libexecdir}/gdm-ssh-session"
 fi
 AC_SUBST(SSHDESKTOP)
 AC_SUBST(GDMSSHSESSION)
