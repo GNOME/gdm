@@ -404,10 +404,10 @@ parse_stock (xmlNodePtr node,
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Cancel"));
 	}
-      else if (g_ascii_strcasecmp ((char *) prop, "startover") == 0)
+      else if (g_ascii_strcasecmp ((char *) prop, "startagain") == 0)
         {
           g_free (*translated_text);
-          *translated_text = g_strdup (_("_Start Over"));
+          *translated_text = g_strdup (_("_Start Again"));
         }
       else
         {
