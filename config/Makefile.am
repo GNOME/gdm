@@ -22,7 +22,7 @@ EXTRA_DIST = \
 	default.desktop.in \
 	gnome.desktop.in \
 	CDE.desktop.in \
-	ssh.desktop.in \
+	ssh.desktop.in.in \
 	Xsession.in \
 	gdm \
 	gdm-autologin \
@@ -36,7 +36,7 @@ EXTRA_DIST = \
 	gdmprefetchlist.in \
 	extract-shell.sh
 
-CLEANFILES = Xsession gdm.conf default.desktop gnome.desktop CDE.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
+CLEANFILES = Xsession gdm.conf default.desktop gnome.desktop CDE.desktop ssh.desktop ssh.desktop.in Init PreSession PostSession gdmprefetchlist
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
