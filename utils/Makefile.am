@@ -11,8 +11,10 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)
 
+libexec_SCRIPTS = \
+	@GDMSSHSESSION@
+
 libexec_PROGRAMS = \
-	@GDMSSHSESSION@	\
 	@GDMASKPASS@	\
 	@GDMOPEN@	\
 	@GDMPREFETCH@	\
@@ -22,7 +24,8 @@ if DMX_SUPPORT
 bin_PROGRAMS = gdm-dmx-reconnect-proxy
 endif
 
-EXTRA_PROGRAMS = gdmaskpass gdmopen gdmprefetch 
+EXTRA_SCRIPTS = gdm-ssh-session
+EXTRA_PROGRAMS = gdmaskpass gdmopen gdmprefetch
 
 gdmaskpass_SOURCES = \
 	gdmaskpass.c
