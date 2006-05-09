@@ -12,6 +12,7 @@ INCLUDES = \
 	$(UTILS_CFLAGS)
 
 libexec_PROGRAMS = \
+	@GDMSSHSESSION@	\
 	@GDMASKPASS@	\
 	@GDMOPEN@	\
 	@GDMPREFETCH@	\
@@ -21,7 +22,6 @@ if DMX_SUPPORT
 bin_PROGRAMS = gdm-dmx-reconnect-proxy
 endif
 
-EXTRA_DIST = @GDMSSHSESSION@
 EXTRA_PROGRAMS = gdmaskpass gdmopen gdmprefetch 
 
 gdmaskpass_SOURCES = \
