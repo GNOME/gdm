@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-04 15:45+0200\n"
-"PO-Revision-Date: 2006-05-04 15:47+0200\n"
+"POT-Creation-Date: 2006-05-10 14:24+0200\n"
+"PO-Revision-Date: 2006-05-10 14:25+0200\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego <trasno@ceu.fi.udc.es>\n"
 "MIME-Version: 1.0\n"
@@ -40,6 +40,22 @@ msgstr "Sesión por defecto do sistema"
 #: ../config/default.desktop.in.h:2
 msgid "This is the default system session"
 msgstr "Esta é a sesión do sistema por defecto"
+
+#: ../config/ssh.desktop.in.in.h:1
+msgid "Secure Remote connection"
+msgstr "Conexión remota segura"
+
+#: ../config/ssh.desktop.in.in.h:2
+msgid "This session logs you into a remote host using ssh"
+msgstr "Esta sesión rexístrao nun servidor remoto usando ssh"
+
+#: ../config/gnome.desktop.in.h:1
+msgid "GNOME"
+msgstr "GNOME"
+
+#: ../config/gnome.desktop.in.h:2
+msgid "This session logs you into GNOME"
+msgstr "Esta sesión entra en GNOME"
 
 #. DO NOT CHANGE HEADER FILE BY HAND! CHANGE THE extract-shell.sh
 #. SCRIPT THIS IS GENERATED.  ADD A CHANGELOG ENTRY IF YOU MODIFY
@@ -106,8 +122,8 @@ msgid ""
 "Would you like to try to configure the mouse?  Note that you will need the "
 "root password for this."
 msgstr ""
-"Quere que se probe a executar o programa de configuración do rato? Advirta que "
-"necesitará o contrasinal de root para iso."
+"Quere que se probe a executar o programa de configuración do rato? Advirta "
+"que necesitará o contrasinal de root para iso."
 
 #: ../config/gettextfoo.h:15
 msgid ""
@@ -129,14 +145,6 @@ msgstr ""
 "a proba de fallas. As fiestras están enfocadas cando está o cursor sobre "
 "elas. Para saír deste modo escriba 'exit' na fiestra da esquina superior "
 "esquerda"
-
-#: ../config/gnome.desktop.in.h:1
-msgid "GNOME"
-msgstr "GNOME"
-
-#: ../config/gnome.desktop.in.h:2
-msgid "This session logs you into GNOME"
-msgstr "Esta sesión entra en GNOME"
 
 #: ../daemon/auth.c:57
 #, c-format
@@ -221,7 +229,7 @@ msgstr ""
 msgid "%s: Cannot create pipe"
 msgstr "%s: Non se puido crear a tubería"
 
-#: ../daemon/display.c:331
+#: ../daemon/display.c:333
 #, c-format
 msgid "%s: Failed forking GDM slave process for %s"
 msgstr "%s: Falla facendo fork do proceso GDM escravo para %s"
@@ -495,9 +503,9 @@ msgstr "Só o root quere executar o GDM\n"
 #: ../daemon/gdm.c:1449 ../daemon/gdm.c:1453 ../daemon/gdm.c:1536
 #: ../daemon/gdm.c:1540 ../daemon/gdm.c:1544 ../daemon/gdm.c:1548
 #: ../daemon/gdm.c:1558 ../daemon/gdm.c:1564 ../daemon/gdm.c:1575
-#: ../daemon/misc.c:1771 ../daemon/misc.c:1775 ../daemon/misc.c:1779
-#: ../daemon/misc.c:1786 ../daemon/misc.c:1790 ../daemon/misc.c:1794
-#: ../daemon/server.c:521 ../daemon/server.c:534 ../daemon/slave.c:792
+#: ../daemon/misc.c:1779 ../daemon/misc.c:1783 ../daemon/misc.c:1787
+#: ../daemon/misc.c:1794 ../daemon/misc.c:1798 ../daemon/misc.c:1802
+#: ../daemon/server.c:522 ../daemon/server.c:535 ../daemon/slave.c:792
 #: ../daemon/slave.c:806 ../daemon/slave.c:816 ../daemon/slave.c:826
 #: ../daemon/slave.c:838 ../gui/gdmlogin.c:3529 ../gui/gdmlogin.c:3540
 #: ../gui/gdmlogin.c:3546
@@ -540,66 +548,66 @@ msgstr ""
 "Non se permite usar o servidor %s pedido para servidores flexibles, usando o "
 "servidor estándar."
 
-#: ../daemon/gdmconfig.c:554 ../daemon/gdmconfig.c:561
+#: ../daemon/gdmconfig.c:555 ../daemon/gdmconfig.c:562
 #, c-format
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr ""
 "%s: Non hai ficheiro de configuración de GDM: %s. Usando os valores "
 "predefinidos."
 
-#: ../daemon/gdmconfig.c:886
+#: ../daemon/gdmconfig.c:887
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s: BaseXsession baleiro, usando %s/gdm/Xsession"
 
-#: ../daemon/gdmconfig.c:919
+#: ../daemon/gdmconfig.c:920
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: Non se atopou o servidor X estándar, tentando coas alternativas"
 
-#: ../daemon/gdmconfig.c:978
+#: ../daemon/gdmconfig.c:979
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Non se indicou un saudador."
 
-#: ../daemon/gdmconfig.c:980
+#: ../daemon/gdmconfig.c:981
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Non se indicou un saudador remoto."
 
-#: ../daemon/gdmconfig.c:982
+#: ../daemon/gdmconfig.c:983
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Non se indicou o directorio de sesións."
 
-#: ../daemon/gdmconfig.c:1066
+#: ../daemon/gdmconfig.c:1067
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s: XDMCP foi habilitado mais non hai soporte para XDMCP, desactivándoo"
 
-#: ../daemon/gdmconfig.c:1127
+#: ../daemon/gdmconfig.c:1128
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
 msgstr "%s: TimedLoginDelay menor que 5, vaise empregar 5."
 
-#: ../daemon/gdmconfig.c:1365
+#: ../daemon/gdmconfig.c:1366
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: Prioridade fora de marxes, cambiada a %d"
 
-#: ../daemon/gdmconfig.c:1371
+#: ../daemon/gdmconfig.c:1372
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: Comando de servidor baleiro, usando un comando estándar."
 
-#: ../daemon/gdmconfig.c:1570
+#: ../daemon/gdmconfig.c:1571
 #, c-format
 msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: O directorio de rexistro %s non existe ou non é un directorio. Vaise "
 "usar o ServAuthDir %s."
 
-#: ../daemon/gdmconfig.c:1587
+#: ../daemon/gdmconfig.c:1588
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -608,12 +616,12 @@ msgstr ""
 "O directorio de autorización do servidor (daemon/ServAuthDir) está posto a %"
 "s mais non existe. Arranxe a configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1598
+#: ../daemon/gdmconfig.c:1599
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: O directorio de autorización %s non existe. Abortando."
 
-#: ../daemon/gdmconfig.c:1604
+#: ../daemon/gdmconfig.c:1605
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -622,17 +630,17 @@ msgstr ""
 "O directorio de autorización do servidor (daemon/ServAuthDir) está posto a %"
 "s mais non é un directorio. Arranxe a configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1615
+#: ../daemon/gdmconfig.c:1616
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: O directorio de autorización %s non é un directorio. Abortando."
 
-#: ../daemon/gdmconfig.c:1688
+#: ../daemon/gdmconfig.c:1689
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Liña de servidor non válida no ficheiro de configuración. Ignorada!"
 
-#: ../daemon/gdmconfig.c:1810 ../daemon/gdmconfig.c:1851
+#: ../daemon/gdmconfig.c:1811 ../daemon/gdmconfig.c:1852
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr ""
@@ -641,7 +649,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1828
+#: ../daemon/gdmconfig.c:1829
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
@@ -650,7 +658,7 @@ msgstr ""
 "%s: XDMCP está desactivado e non hai servidores estáticos definidos. "
 "Engadindo %s en :%d para permitir a configuración!"
 
-#: ../daemon/gdmconfig.c:1841
+#: ../daemon/gdmconfig.c:1842
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
@@ -658,19 +666,19 @@ msgstr ""
 "XDMCP está desactivado e o GDM non pode atopar ningún servidor estático para "
 "arrincar. Abortando! Arranxe a configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1870
+#: ../daemon/gdmconfig.c:1871
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
 "restart GDM."
 msgstr "O usuario '%s' do GDM non existe. Arranxe a configuración de GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1878
+#: ../daemon/gdmconfig.c:1879
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: Non se atopa o usuario '%s' de GDM. Abortando!"
 
-#: ../daemon/gdmconfig.c:1885
+#: ../daemon/gdmconfig.c:1886
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -678,24 +686,24 @@ msgstr ""
 "O usuario do GDM está configurado como root, mais isto non está permitido xa "
 "que supón un risco de seguranza. Arranxe a configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1896
+#: ../daemon/gdmconfig.c:1897
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s: O usuario GDM non debería ser root. Abortando!"
 
-#: ../daemon/gdmconfig.c:1903
+#: ../daemon/gdmconfig.c:1904
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
 "restart GDM."
 msgstr "O grupo '%s' do GDM non existe. Arranxe a configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1911
+#: ../daemon/gdmconfig.c:1912
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: Non se atopa o grupo '%s' do GDM. Abortando!"
 
-#: ../daemon/gdmconfig.c:1918
+#: ../daemon/gdmconfig.c:1919
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -703,38 +711,38 @@ msgstr ""
 "O grupo do GDM está configurado como root, mais isto non está permitido xa "
 "que supón un risco de seguranza. Arranxe a configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1928
+#: ../daemon/gdmconfig.c:1929
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: O grupo do GDM non debería ser root. Abortando!"
 
-#: ../daemon/gdmconfig.c:1937
+#: ../daemon/gdmconfig.c:1938
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr "%s: Non se atopou o saudador ou non se pode executar polo usuario do GDM"
 
-#: ../daemon/gdmconfig.c:1943
+#: ../daemon/gdmconfig.c:1944
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
 "%s: Non se atopou o saudador remoto ou non se pode executar polo usuario do "
 "GDM"
 
-#: ../daemon/gdmconfig.c:1951
+#: ../daemon/gdmconfig.c:1952
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr "%s: Non se atopou o selector ou non se pode executar polo usuario do GDM"
 
-#: ../daemon/gdmconfig.c:1960
+#: ../daemon/gdmconfig.c:1961
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "Non se indicou daemon/ServAuthDir no ficheiro de configuración do GDM"
 
-#: ../daemon/gdmconfig.c:1963
+#: ../daemon/gdmconfig.c:1964
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Non se indicou o daemon/ServAuthDir."
 
-#: ../daemon/gdmconfig.c:1987
+#: ../daemon/gdmconfig.c:1988
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -745,14 +753,14 @@ msgstr ""
 "s mais non pertence ao usuario %s e o grupo %s. Arranxe a pertenza ou a "
 "configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:1999
+#: ../daemon/gdmconfig.c:2000
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: O directorio de autorización %s non pertence ao usuario %s, grupo %s. "
 "Abortando."
 
-#: ../daemon/gdmconfig.c:2005
+#: ../daemon/gdmconfig.c:2006
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -763,7 +771,7 @@ msgstr ""
 "s mais ten permisos erróneos, deberían ser %o. Arranxe os permisos ou a "
 "configuración do GDM e reinícieo."
 
-#: ../daemon/gdmconfig.c:2018
+#: ../daemon/gdmconfig.c:2019
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -775,27 +783,27 @@ msgstr ""
 msgid "y = Yes or n = No? >"
 msgstr "y = Si ou n = Non? >"
 
-#: ../daemon/misc.c:1125
+#: ../daemon/misc.c:1133
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: Non se poden obter os enderezos locais!"
 
-#: ../daemon/misc.c:1279
+#: ../daemon/misc.c:1287
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "Non se puido facer setgid %d. Abortando."
 
-#: ../daemon/misc.c:1284
+#: ../daemon/misc.c:1292
 #, c-format
 msgid "initgroups () failed for %s. Aborting."
 msgstr "fallou o initgroups() para %s. Abortando."
 
-#: ../daemon/misc.c:1529 ../daemon/misc.c:1543
+#: ../daemon/misc.c:1537 ../daemon/misc.c:1551
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: Erro establecendo o sinal %d a %s"
 
-#: ../daemon/misc.c:2443
+#: ../daemon/misc.c:2451
 #, c-format
 msgid ""
 "Last login:\n"
@@ -804,11 +812,11 @@ msgstr ""
 "Última sesión:\n"
 "%s"
 
-#: ../daemon/server.c:150
+#: ../daemon/server.c:151
 msgid "Can not start fallback console"
 msgstr "Non se pode iniciar a consola de último recurso"
 
-#: ../daemon/server.c:340
+#: ../daemon/server.c:341
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should "
@@ -819,7 +827,7 @@ msgstr ""
 "outro número de pantalla? Se a resposta é non, tentaráse iniciar o servidor "
 "de novo en %s.%s"
 
-#: ../daemon/server.c:348
+#: ../daemon/server.c:349
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -829,100 +837,100 @@ msgstr ""
 "como Ctrl-Alt-F7 para ir á consola 7.  Os servidores de X execútanse nas "
 "consolas 7 e superiores.)"
 
-#: ../daemon/server.c:394
+#: ../daemon/server.c:395
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Xnest non pode abrir a pantalla '%s'"
 
-#: ../daemon/server.c:425
+#: ../daemon/server.c:426
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "A pantalla %s está ocupada. Hai xa outro servidor X executándose."
 
-#: ../daemon/server.c:509
+#: ../daemon/server.c:510
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Erro abrindo unha tubería: %s"
 
-#: ../daemon/server.c:698
+#: ../daemon/server.c:699
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: non se pode conectar á pantalla superior '%s'"
 
 #. Send X too busy
-#: ../daemon/server.c:838
+#: ../daemon/server.c:839
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Non se atopa un número de pantalla libre"
 
-#: ../daemon/server.c:865
+#: ../daemon/server.c:866
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Pantalla %s ocupada. Tentando con outro número de pantalla."
 
-#: ../daemon/server.c:976
+#: ../daemon/server.c:977
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Comando de servidor '%s' non válido"
 
-#: ../daemon/server.c:981
+#: ../daemon/server.c:982
 #, c-format
 msgid "Server name '%s' not found; using standard server"
 msgstr "Nome de servidor '%s' non atopado, usando o servidor estándar"
 
-#: ../daemon/server.c:1160
+#: ../daemon/server.c:1161
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Non se puido abrir o ficheiro de rexistro para a pantalla %s!"
 
-#: ../daemon/server.c:1172 ../daemon/server.c:1178 ../daemon/server.c:1183
+#: ../daemon/server.c:1173 ../daemon/server.c:1179 ../daemon/server.c:1184
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Erro establecendo %s a %s"
 
-#: ../daemon/server.c:1229
+#: ../daemon/server.c:1230
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comando de servidor baleiro para a pantalla %s"
 
 # Poño "Xserver" porque seica é o nome do executable
-#: ../daemon/server.c:1239
+#: ../daemon/server.c:1240
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: A prioridade do servidor non está establecida a %d: %s"
 
-#: ../daemon/server.c:1251
+#: ../daemon/server.c:1252
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: O servidor ía ser lanzado co UID %d, mais ese usuario non existe."
 
-#: ../daemon/server.c:1266 ../daemon/slave.c:2485 ../daemon/slave.c:2956
+#: ../daemon/server.c:1267 ../daemon/slave.c:2485 ../daemon/slave.c:2956
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Non se puido establecer o identificador de grupo a %d"
 
-#: ../daemon/server.c:1272 ../daemon/slave.c:2491 ../daemon/slave.c:2962
+#: ../daemon/server.c:1273 ../daemon/slave.c:2491 ../daemon/slave.c:2962
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s: Fallou o initgroups () para %s"
 
-#: ../daemon/server.c:1278 ../daemon/slave.c:2496 ../daemon/slave.c:2967
+#: ../daemon/server.c:1279 ../daemon/slave.c:2496 ../daemon/slave.c:2967
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Non se puido establecer o identificador de usuario a %d"
 
-#: ../daemon/server.c:1285
+#: ../daemon/server.c:1286
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Non se puido establecer o identificador de grupo a 0"
 
 # Poño "Xserver" porque seica é o nome do executable
-#: ../daemon/server.c:1312
+#: ../daemon/server.c:1313
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: Xserver non atopado: %s"
 
-#: ../daemon/server.c:1320
+#: ../daemon/server.c:1321
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Non se pode crear o proceso Xserver!"
