@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-13 14:17-0800\n"
-"PO-Revision-Date: 2006-04-02 23:14+0200\n"
+"PO-Revision-Date: 2006-05-12 01:36+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1865,6 +1865,9 @@ msgid ""
 "success as otherwise the user won't be logged in. This is not true for "
 "failsafe session however."
 msgstr ""
+"Cuando el usuario ha sido autenticado con éxito GDM intenta los scripts en el directorio <filename>PostLogin</filename> de la misma manera que para el directorio <filename>Init</filename>. Esto se hace antes de que cualquier configuración de la sesión se realice, y así que este debería ser el script donde quizá usted desee configurar el directorio personal si necesita hacerlo (aunque debería usar el módulo <filename>pam_mount</"
+"filename> si puede para esto). Tiene las variables de entorno <filename>$USER</"
+"filename> y <filename>$DISPLAY</filename> establecidas para este script, y de nuevo se ejecuta como root. El script debería devolver 0 si tiene éxito y de otra manera el usuario no iniciará sesión. Sin embargo esto no es cierto para la sesión a prueba de fallos."
 
 #: ../C/gdm.xml:1228(para)
 msgid ""
@@ -1879,7 +1882,7 @@ msgid ""
 "<filename>$X_SERVERS</filename> environmental variable is set and this "
 "points to a fake generated X servers file for use with the sessreg "
 "accounting application."
-msgstr ""
+msgstr "Después de que la sesión del usuario haya sido configurada desde el lado de las cosas de GDM, GDM ejecutará los scripts en el directorio de <filename>PreSession</filename>, de nuevo de la misma manera que el directorio <filename>Init</filename>. Use este script para la gestión de sesión local o el material de contabilidad. La variable de entorno <filename>$USER</filename> contiene el nombre de inicio de sesión del usuario autenticado y <filename>$DISPLAY</filename> está establecido al visualizador actual. El script debería devolver 0 si tiene éxito. Cualquier otro valor hará que GDM termine el proceso actual de inicio de sesión. Esto sin embargo no ocurre para la sesión a prueba de fallos. Además la variable de entorno <filename>$X_SERVERS</filename> está establecida y ésta apunta a un archivo falso de servidores X para usarla con la aplicación de contabilidad sessreg."
 
 #: ../C/gdm.xml:1243(para)
 msgid ""
@@ -1893,6 +1896,10 @@ msgid ""
 "is used. The user either picks from these sessions or GDM will look inside "
 "the file <filename>~/.dmrc</filename> for the stored preference."
 msgstr ""
+"Después de esto se ejecuta el script <filename>Xsession</filename> base con el ejecutable de la sesión seleccionada como primer argumento. Esto se ejecuta como el usuario, y realmente esta es la sesión del usuario. Los ejecutables de sesiones disponibles se toman de la línea <filename>Exec=</filename> en los archivos <filename>.desktop</"
+"filename> de la ruta especificada en <filename>SessionDesktopDir</"
+"filename>. Usualmente esta ruta es <filename>&lt;etc&gt;/X11/sessions/:&lt;"
+"etc&gt;/dm/Sessions:/usr/share/xsessions/</filename>. Se usa el primer archivo encontrado. El usuario o escoge de estas sesiones o GDM buscará dentro del archivo <filename>~/.dmrc</filename> la preferencia almacenada."
 
 #: ../C/gdm.xml:1256(para)
 msgid ""
@@ -1904,6 +1911,8 @@ msgid ""
 "user elected to use the system language, then <filename>$GDM_LANG</filename> "
 "is not set."
 msgstr ""
+"Este script debería cargar realmente el perfil de los usuarios y generalmente hacer todo el vudú que se necesita para lanzar una sesión. Debido a que muchos sistemas restablecen las selecciones de idioma realizadas por GDM, GDM también establece la variable <filename>$GDM_LANG</"
+"filename> al idioma seleccionado. Puede usar esto para restaurar las variables de entorno de idiomas tras ejecutar el perfil del usuario. Si el usuario eligió el idioma del sistema, entonces <filename>$GDM_LANG</filename> no se establece."
 
 #: ../C/gdm.xml:1266(para)
 msgid ""
@@ -1919,13 +1928,15 @@ msgid ""
 "points to a fake generated X servers file for use with the sessreg "
 "accounting application."
 msgstr ""
+"Cuando el usuario termina su sesión, se ejecuta el script <filename>PostSession</filename>. De nuevo la operación es similar a <filename>Init</filename>, "
+"<filename>PostLogin</filename> y <filename>PreSession</filename>. De nuevo el script se ejecuta con privilegios de root, el demonio esclavo se bloqueará y la variable de entorno <filename>$USER</filename> contendrá el nombre del usuario que acaba de cerrar sesión y <filename>$DISPLAY</filename> se establecerá al visualizador que el usuario usó, sin embargo note que el servidor X para este visualizador quizá ya esté muerto y así que no debería intentar acceder a él. Además la variable de entorno <filename>$X_SERVERS</filename> está establecida y ésta apunta a un archivo generado falsificado de servidores X para usar con la aplicación de contabilidad sessreg."
 
 #: ../C/gdm.xml:1281(para)
 msgid ""
 "Note that the <filename>PostSession</filename> script will be run even when "
 "the display fails to respond due to an I/O error or similar. Thus, there is "
 "no guarantee that X applications will work during script execution."
-msgstr ""
+msgstr "Note que el script de <filename>PostSession</filename> se ejecutará incluso cuando el visualizador falle al responder debido a un error de E/S o similar. Así que, no hay garantía de que funcionen las aplicaciones X durante la ejecución del script."
 
 #: ../C/gdm.xml:1288(para)
 msgid ""
@@ -1939,24 +1950,22 @@ msgid ""
 "filename> is also set to the same value and in fact this will also be set by "
 "KDM in future versions."
 msgstr ""
+"Excepto para el script <filename>Xsession</filename> todos estos scripts también tendrán la variable de entorno <filename>$RUNNING_UNDER_GDM</filename> establecida a <filename>yes</filename>, así que podría quizás usar scripts similares para distintos gestores de entrada. <filename>Xsession</filename> siempre tendrá <filename>$GDMSESSION</filename> establecido al nombre base de la sesión que el usuario eligió ejecutar sin la extensión <filename>."
+"desktop</filename>. Además <filename>$DESKTOP_SESSION</"
+"filename> también está establecida al mismo valor y de hecho esto también lo establecerá KDM en versiones futuras."
 
 #: ../C/gdm.xml:1302(para)
-#, fuzzy
 msgid ""
 "Neither of the <filename>Init</filename>, <filename>PostLogin</filename>, "
 "<filename>PreSession</filename> or <filename>PostSession</filename> scripts "
 "are necessary and can be left out. The <filename>Xsession</filename> script "
 "is however required as well as at least one session <filename>.desktop</"
 "filename> file."
-msgstr ""
-"En esta sección explicaremos los directorios <filename>Init</filename>, "
-"<filename>PostLogin</filename>, <filename>PreSession</filename> y "
-"<filename>PostSession</filename> ya que son muy similares."
+msgstr "Ninguno de scripts <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename> o <filename>PostSession</filename> son necesarios y se pueden dejar vacíos. El script <filename>Xsession</filename> sin embargo es necesario así como al menos un archivo de sesión <filename>.desktop</filename>."
 
 #: ../C/gdm.xml:1312(filename)
-#, fuzzy
 msgid "defaults.conf"
-msgstr "DefaultSession"
+msgstr "defaults.conf"
 
 #: ../C/gdm.xml:1313(filename)
 msgid "custom.conf"
@@ -1994,6 +2003,8 @@ msgid ""
 "etc&gt;/gdm/custom.conf</filename> to be modified with the user's "
 "configuration choices."
 msgstr ""
+"Ejecutar el comando <command>gdmsetup</command> causará que se modifique <filename>&lt;"
+"etc&gt;/gdm/custom.conf</filename> con las selecciones de configuración del usuario."
 
 #: ../C/gdm.xml:1337(para)
 msgid ""
@@ -2005,9 +2016,10 @@ msgid ""
 "automatically copied to <filename>&lt;etc&gt;/gdm/custom.conf</filename> to "
 "preserve any configuration changes."
 msgstr ""
+"Anterior a GDM 2.13.0.4 sólo existía el archivo <filename>&lt;etc&gt;/gdm/gdm.conf</"
+"filename>. Si actualiza a una versión nueva de GDM, la instalación comprobará para ver si su archivo <filename>&lt;etc&gt;/gdm/gdm.conf</filename> es diferente de su archivo <filename>&lt;etc&gt;/gdm/factory-gdm.conf</filename> . Si lo es, su archivo <filename>&lt;etc&gt;/gdm/gdm.conf</filename> se copiará automáticamente a <filename>&lt;etc&gt;/gdm/custom.conf</filename> para preservar  cualesquiera cambios de configuración."
 
 #: ../C/gdm.xml:1349(para)
-#, fuzzy
 msgid ""
 "The location of the configuration files may be controlled via the <command>--"
 "with-defaults-conf</command> and <command>--with-custom-conf</command> "
@@ -2015,11 +2027,9 @@ msgid ""
 "specify the configuration file location. The GDM daemon must be restarted to "
 "change the configuration file being used."
 msgstr ""
-"GDM puede configurarse para soportar configuración para todo el sistema si "
-"se compila con la opción <command>--with-configdir</command>. Esto permite "
-"instalar el archivo gdm.conf en un directorio que pueda montarse a través de "
-"múltiples sistemas. La opción --config también podría usarse para "
-"especificar la ubicación del archivo de configuración. El demonio GDM2 debe "
+"La ubicación de los archivos de configuración puede controlarse por medio "
+"de las opciones de configuración <command>--with-defaults-conf</command> y <command>--with-custom-conf</command>. La opción --config del demonio GDM podría usarse "
+"en su lugar para especificar la ubicación del archivo de configuración. El demonio GDM debe "
 "reiniciarse para cambiar el archivo de configuración en uso."
 
 #: ../C/gdm.xml:1358(para)
@@ -2028,7 +2038,7 @@ msgid ""
 "that define the behavior for a specific part of the GDM suite. Refer to the "
 "comments in the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file "
 "for additional information about each configuration setting."
-msgstr ""
+msgstr "Ambos archivos de configuración están divididos en secciones cada una conteniendo variables que definen el comportamiento para una parte específica de la suite GDM. Refiérase a los comentarios en el archivo <filename>&lt;share&gt;/gdm/defaults.conf</filename> para información adicional acerca de cada ajuste de configuración."
 
 #: ../C/gdm.xml:1366(para)
 msgid ""
@@ -2041,6 +2051,8 @@ msgid ""
 "both comments (lines with a hash mark) and the overall structure of the file "
 "so you can intermix using the GUI or hand editing the configuration file."
 msgstr ""
+"Los archivos <filename>&lt;share&gt;/gdm/defaults.conf</filename> y <filename>&lt;"
+"etc&gt;/gdm/custom.conf</filename> siguen el estándar de sintaxis de archivo de configuración <filename>.ini</filename>. Las palabras clave entre corchetes definen secciones, las cadenas antes del signo igual (=) son variables y los datos tras el signo igual representan su valor. Las líneas en blanco o las líneas que empiezan con la almohadilla (#) se ignoran. El configurador gráfico intentará preservar tanto los comentario (líneas con una almohadilla) como la estructura completa del archivo así que puede intercambiar usando el IGU o editando a mano el archivo de configuración."
 
 #: ../C/gdm.xml:1379(title)
 msgid "Daemon Configuration"
@@ -2082,7 +2094,7 @@ msgid ""
 "reinitializing is a nicer way to go but if the X server memory usage keeps "
 "growing this may be a safer option. On Solaris, this value is always true, "
 "and this configuration setting is ignored."
-msgstr ""
+msgstr "Si es true, entonces gdm nunca trata de reutilizar servidores X existentes reinicializándolos. Tan sólo mata el servidor X existente y empieza de nuevo. Normalmente , tan sólo reinicializar es una manera mejor pero si el uso de memoria del servidor X continua creciendo esto puede ser una opción más segura. En Solaris, este valor siempre es true, y este ajuste de configuración se ignora."
 
 #: ../C/gdm.xml:1419(term)
 msgid "AutomaticLoginEnable"
@@ -2094,7 +2106,7 @@ msgid ""
 "No password will be asked. This is useful for single user workstations where "
 "local console security is not an issue. Also could be useful for public "
 "terminals, although there see <filename>TimedLogin</filename>."
-msgstr ""
+msgstr "Si el usuario dado en AutomaticLogin debería entrar al primer arranque. No se pedirá ninguna contraseña. Esto es útil para estaciones de trabajo de un sólo usuario donde la seguridad de la consola local no es un problema. Además podría ser útil para terminales públicos, aunque allí vea <filename>TimedLogin</filename>."
 
 #: ../C/gdm.xml:1433(term)
 msgid "AutomaticLogin"
@@ -2106,25 +2118,23 @@ msgid ""
 "AutomaticLoginEnable must be true and this must be a valid user for this to "
 "happen. \"root\" can never be autologged in however and gdm will just refuse "
 "to do it even if you set it up."
-msgstr ""
+msgstr "Este usuario debería iniciar sesión automáticamente al primer arranque. AutomaticLoginEnable debe ser true y esto debe ser un usuario válido para que esto ocurra. Sin embargo \"root\" nunca puede iniciar una sesión automáticamente y gdm se negará a hacerlo incluso si lo configura."
 
 #: ../C/gdm.xml:1444(para)
 msgid "The following control chars are recognized within the specified name:"
-msgstr ""
+msgstr "Se reconocen los siguientes caracteres de control dentro del nombre especificado:"
 
 #: ../C/gdm.xml:1449(para) ../C/gdm.xml:3442(para)
-#, fuzzy
 msgid "the `' character"
-msgstr "%% - Un carácter literal %"
+msgstr "El carácter `' "
 
 #: ../C/gdm.xml:1453(para)
-#, fuzzy
 msgid "d display's name"
-msgstr "h nombre de host de la pantalla"
+msgstr "nombre del visor d"
 
 #: ../C/gdm.xml:1457(para)
 msgid "h display's hostname"
-msgstr "h muestra el nombre del equipo"
+msgstr "h el nombre del equipo del visor"
 
 #: ../C/gdm.xml:1461(para)
 msgid ""
@@ -2134,7 +2144,7 @@ msgid ""
 "returned, automatic login is not performed. This feature is typically used "
 "when several remote displays are used as internet kiosks, with a specific "
 "user to automatically login for each display."
-msgstr ""
+msgstr "Alternativamente, el nombre podría terminar con una barra vertical |, el símbolo de cauce. El nombre se usa entonces como una aplicación a ejecutar que revuelve el nombre de usuario deseado en la salida estándar. Si se devuelve un nombre de usuario vacío o inválido, no se realiza el inicio de sesión automático. Esta característica se usa típicamente cuando se usan varios visores remotos como kioskos de Internet, con un usuario específico para iniciar sesión automáticamente en cada visualizador."
 
 #: ../C/gdm.xml:1474(term)
 msgid "BaseXsession"
@@ -2174,7 +2184,7 @@ msgstr ""
 
 #: ../C/gdm.xml:1515(term)
 msgid "Chooser"
-msgstr "Chooser"
+msgstr "Selector"
 
 #: ../C/gdm.xml:1518(para)
 msgid "Full path and name of the chooser executable followed by optional arguments."
@@ -2903,13 +2913,12 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:2353(title)
-#, fuzzy
 msgid "XDCMP Support"
-msgstr "Seguridad XDMCP"
+msgstr "Soporte XDMCP"
 
 #: ../C/gdm.xml:2359(term)
 msgid "DisplaysPerHost"
-msgstr ""
+msgstr "DisplaysPerHost"
 
 #: ../C/gdm.xml:2362(para)
 msgid ""
@@ -2926,9 +2935,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:2378(term) ../C/gdm.xml:3625(term)
-#, fuzzy
 msgid "Enable"
-msgstr "Enable=false"
+msgstr "Enable"
 
 #: ../C/gdm.xml:2381(para)
 msgid ""
@@ -2950,7 +2958,6 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:2397(para)
-#, fuzzy
 msgid ""
 "You should add <screen>\n"
 "gdm:.my.domain\n"
@@ -2958,9 +2965,7 @@ msgid ""
 "your TCP Wrappers configuration. See the <ulink type=\"help\" url=\"man:"
 "hosts.allow\">hosts.allow(5)</ulink> man page for details."
 msgstr ""
-"Debería añadir <screen>gdm:.my.domain</screen> a su <filename>/etc/hosts."
-"allow</filename>, dependiendo de su configuración de TCP Wrappers. Vea la "
-"página del manual <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow(5)"
+"Debería añadir <screen>gdm:.my.domain</screen> a su <filename>&lt;etc&gt;/hosts.allow</filename>, dependiendo de su configuración de TCP Wrappers. Vea la página del manual <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow(5)"
 "</ulink> para más detalles."
 
 #: ../C/gdm.xml:2408(para)
@@ -2973,9 +2978,8 @@ msgstr ""
 "necesite."
 
 #: ../C/gdm.xml:2417(term)
-#, fuzzy
 msgid "EnableProxy"
-msgstr "EnableProxy=false"
+msgstr "EnableProxy"
 
 #: ../C/gdm.xml:2420(para)
 msgid ""
@@ -3049,9 +3053,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:2495(term)
-#, fuzzy
 msgid "MaxWait"
-msgstr "MaxIconWidth"
+msgstr "MaxWait"
 
 #: ../C/gdm.xml:2498(para)
 msgid ""
@@ -3074,9 +3077,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:2518(term)
-#, fuzzy
 msgid "MaxWaitIndirect"
-msgstr "MaxIconWidth"
+msgstr "MaxWaitIndirect"
 
 #: ../C/gdm.xml:2521(para)
 msgid ""
@@ -3371,9 +3373,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:2857(term)
-#, fuzzy
 msgid "ConfigAvailable"
-msgstr "ConfigAvailable=false"
+msgstr "ConfigAvailable"
 
 #: ../C/gdm.xml:2860(para)
 msgid ""
@@ -3603,11 +3604,10 @@ msgid "LockPosition"
 msgstr "LockPosition"
 
 #: ../C/gdm.xml:3073(para)
-#, fuzzy
 msgid ""
 "If true the position of the login window of the GTK+ Greeter cannot be "
 "changed even if the title bar is turned on."
-msgstr "La posición vertical de la ventana de entrada del interfaz GTK+."
+msgstr "Si es true, la posición de la ventana de entrada del interfaz de entrada GTK+ no se puede cambiar incluso si la barra de título está activada."
 
 #: ../C/gdm.xml:3081(term)
 msgid "Logo"
@@ -3637,17 +3637,11 @@ msgid "MinimalUID"
 msgstr "MinimalUID"
 
 #: ../C/gdm.xml:3112(para)
-#, fuzzy
 msgid ""
 "The minimal UID that GDM should consider a user. All users with a lower UID "
 "will be excluded from the face browser. See also <filename>Include</"
 "filename>, <filename>Exclude</filename>, and <filename>IncludeAll</filename>."
 msgstr ""
-"Lista separada por comas de usuarios que serán incluidos en el visor de "
-"rostros y en la lista de selección de <command>gdmsetup</command> para el "
-"inicio de sesión automático/temporizado. Vea además  <filename>Exclude</"
-"filename>, <filename>IncludeAll</filename>, y <filename>MinimalUID</"
-"filename>."
 
 #: ../C/gdm.xml:3123(term)
 msgid "PositionX"
@@ -3681,7 +3675,6 @@ msgid "DefaultRemoteWelcome"
 msgstr "DefaultRemoteWelcome"
 
 #: ../C/gdm.xml:3161(para)
-#, fuzzy
 msgid ""
 "If set to true, the value \"Welcome to %n\" is used for the "
 "<filename>RemoteWelcome</filename>. This value is translated into the "
@@ -3690,17 +3683,17 @@ msgid ""
 "same special character sequences as explained in the \"Text Node\" section "
 "of the \"Themed Greeter\" chapter. This explains the meaning of \"%n\"."
 msgstr ""
-"Si está establecido a «true» el valor  \"Welcome\" se usa para la "
-"<filename>Welcome</filename>. Este valor está traducido en el idioma "
+"Si está establecido a «true» el valor  \"Welcome to %n\" se usa para "
+"<filename>RemoteWelcome</filename>. Este valor se traduce al idioma "
 "apropiado para el usuario. Si se establece a «false», se usa el ajuste "
-"<filename>Welcome</filename>."
+"<filename>RemoteWelcome</filename>. Esta cadena puede usar las secuencias de caracteres "
+"especiales tal como se explica en la sección \"Nodo de texto\" del capítulo \"Interfaz con temas\". Esto explica el significado de \"%n\"."
 
 #: ../C/gdm.xml:3175(term)
 msgid "RemoteWelcome"
 msgstr "RemoteWelcome"
 
 #: ../C/gdm.xml:3178(para)
-#, fuzzy
 msgid ""
 "Controls which text to display next to the logo image in the greeter for "
 "remote XDMCP sessions. The same expansion is done here as in the "
@@ -3708,10 +3701,9 @@ msgid ""
 "character sequences as explained in the \"Text Node\" section of the "
 "\"Themed Greeter\" chapter. chapter."
 msgstr ""
-"Si está establecido a «true» el valor  \"Welcome\" se usa para la "
-"<filename>Welcome</filename>. Este valor está traducido en el idioma "
-"apropiado para el usuario. Si se establece a «false», se usa el ajuste "
-"<filename>Welcome</filename>."
+"Controla qué texto mostrar al lado de la imagen del logo en el interfaz para las sesiones "
+"XDMCP remotas. Se realiza la misma expansión aquí como en la cadena "
+"<filename>Welcome</filename>. Esta cadena puede usar las mismas secuencias de caracteres especiales tal como se explica en la sección  «Nodo de Texto» del capítulo \"Interfaz con temas\""
 
 #: ../C/gdm.xml:3191(term)
 msgid "RunBackgroundProgramAlways"
@@ -3729,11 +3721,10 @@ msgid "SetPosition"
 msgstr "SetPosition"
 
 #: ../C/gdm.xml:3207(para)
-#, fuzzy
 msgid ""
 "If true the position of the login window of the GTK+ Greeter is determined "
 "by <filename>PositionX</filename> / <filename>PositionY</filename>."
-msgstr "La posición vertical de la ventana de entrada del interfaz GTK+."
+msgstr ""
 
 #: ../C/gdm.xml:3216(term)
 msgid "ShowGnomeFailsafeSession"
@@ -3766,9 +3757,8 @@ msgid "Should the greeter show the Xterm Failsafe session in the sessions list."
 msgstr ""
 
 #: ../C/gdm.xml:3254(term)
-#, fuzzy
 msgid "SoundOnLogin"
-msgstr "SoundOnLogin=true"
+msgstr "SoundOnLogin"
 
 #: ../C/gdm.xml:3257(para)
 msgid ""
@@ -3798,9 +3788,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:3291(term)
-#, fuzzy
 msgid "SoundOnLoginFile"
-msgstr "SoundOnLoginFailure"
+msgstr "SoundOnLoginFile"
 
 #: ../C/gdm.xml:3294(para)
 msgid ""
@@ -3812,9 +3801,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:3307(term)
-#, fuzzy
 msgid "SoundOnLoginSuccessFile"
-msgstr "SoundOnLoginSuccess"
+msgstr "SoundOnLoginSuccessFile"
 
 #: ../C/gdm.xml:3310(para)
 msgid ""
@@ -3825,9 +3813,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:3321(term)
-#, fuzzy
 msgid "SoundOnLoginFailureFile"
-msgstr "SoundOnLoginFailure"
+msgstr "SoundOnLoginFailureFile"
 
 #: ../C/gdm.xml:3324(para)
 msgid ""
@@ -3862,18 +3849,16 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:3362(term)
-#, fuzzy
 msgid "TitleBar"
-msgstr "TitleBar=true"
+msgstr "TitleBar"
 
 #: ../C/gdm.xml:3365(para)
 msgid "Display the title bar in the greeter. This only affects the GTK+ Greeter."
 msgstr ""
 
 #: ../C/gdm.xml:3373(term)
-#, fuzzy
 msgid "Use24Clock"
-msgstr "Use24Clock=auto"
+msgstr "Use24Clock"
 
 #: ../C/gdm.xml:3376(para)
 msgid ""
@@ -3894,9 +3879,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:3397(term)
-#, fuzzy
 msgid "UseCirclesInEntry"
-msgstr "UseInvisibleInEntry"
+msgstr "UseCirclesInEntry"
 
 #: ../C/gdm.xml:3400(para)
 msgid ""
@@ -3947,29 +3931,24 @@ msgid "d display's hostname"
 msgstr "h nombre de host de la pantalla"
 
 #: ../C/gdm.xml:3450(para)
-#, fuzzy
 msgid "h Fully qualified hostname"
-msgstr "&percnt;h &mdash; nombre de host completamente cualificado"
+msgstr "h Nombre completamente cualificado de la máquina"
 
 #: ../C/gdm.xml:3454(para)
-#, fuzzy
 msgid "m machine (processor type)"
-msgstr "&percnt;m &mdash; máquina (tipo de procesador)"
+msgstr "m máquina (tipo de procesador)"
 
 #: ../C/gdm.xml:3458(para)
-#, fuzzy
 msgid "n Nodename (i.e. hostname without .domain)"
-msgstr "&percnt;n &mdash; Nombre de nodo (ej. nombre del host sin .dominio)"
+msgstr "n Nombre de nodo (ej. nombre del host sin .dominio)"
 
 #: ../C/gdm.xml:3462(para)
-#, fuzzy
 msgid "r release (OS version)"
-msgstr "&percnt;r &mdash; release (OS version)"
+msgstr "r lanzamiento (versión del SO)"
 
 #: ../C/gdm.xml:3466(para)
-#, fuzzy
 msgid "s sysname (i.e. OS)"
-msgstr "&percnt;s &mdash; sysname (i.e. OS)"
+msgstr "s sysname (i.e. OS)"
 
 #: ../C/gdm.xml:3470(para)
 msgid ""
@@ -4050,14 +4029,13 @@ msgid "DefaultHostImage"
 msgstr "DefaultHostImage"
 
 #: ../C/gdm.xml:3560(para)
-#, fuzzy
 msgid ""
 "File name for the default host icon. This image will be displayed if no icon "
 "is specified for a given host. The file must be in an gdk-pixbuf supported "
 "format and it must be readable for the GDM user."
 msgstr ""
-"Las imágenes de los rostros deben almacenarse en un formato soportado por "
-"gdk-pixbuf y deben tener permiso de lectura para el usuario GDM."
+"El nombre del archivo para el icono de host predeterminado. Esta imagen debe mostrarse si no hay ningún icono especificado en un host dado. El archivo debe estar en un formato soportado por "
+"gdk-pixbuf y deben tener permiso de lectura para el usuario de GDM."
 
 #: ../C/gdm.xml:3570(term)
 msgid "HostImageDir"
@@ -4070,14 +4048,11 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:3579(para)
-#, fuzzy
 msgid ""
 "The file name must match the fully qualified name (FQDN) for the host. The "
 "icons must be stored in gdk-pixbuf supported formats and they must be "
 "readable to the GDM user."
-msgstr ""
-"Las imágenes de los rostros deben almacenarse en un formato soportado por "
-"gdk-pixbuf y deben tener permiso de lectura para el usuario GDM."
+msgstr "El nombre del archvivo debe coincidir con el nombre completamente cualificado (FQDN) para el host. Los iconos deben almacenarse en un formato soportado por gdk-pixbuf y deben tener permiso de lectura para el usuario de GDM."
 
 #: ../C/gdm.xml:3589(term)
 msgid "Hosts"
@@ -4122,15 +4097,14 @@ msgid "Gestures"
 msgstr "Gestures"
 
 #: ../C/gdm.xml:3641(para)
-#, fuzzy
 msgid ""
 "Setting to true sends debug ouput concerning the accessibility gesture "
 "listeners to the syslog. This can be useful for tracking down problems with "
 "them not working properly. This output tends to be verbose so should not be "
 "turned on for general use."
 msgstr ""
-"Establecer a verdadero envía la salida de depuración al syslog. Esto puede "
-"ser útil para trazar problemas con GDM. Esta salida tiene a ser prolia así "
+"Establecer a verdadero envía la salida de depuración de los listeners de gestos al syslog. Esto puede "
+"ser útil para trazar problemas con ellos cuando no funcionan correctamente. Esta salida tiende a ser prolija así "
 "que no se debería activar para uso general."
 
 #: ../C/gdm.xml:3654(title)
@@ -4367,7 +4341,7 @@ msgstr ""
 "apariencia siguiente:"
 
 #: ../C/gdm.xml:3887(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "[Desktop]\n"
@@ -4378,7 +4352,6 @@ msgstr ""
 "[Desktop]\n"
 "Session=gnome\n"
 "Language=es_ES.UTF-8\n"
-"      "
 
 #: ../C/gdm.xml:3893(para)
 msgid ""
@@ -4531,7 +4504,7 @@ msgid "gdmflexiserver accepts the following commands with the --command option:"
 msgstr ""
 
 #: ../C/gdm.xml:4007(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "ADD_DYNAMIC_DISPLAY\n"
@@ -4558,25 +4531,28 @@ msgid ""
 "VERSION\n"
 msgstr ""
 "\n"
-"VERSION\n"
-"AUTH_LOCAL\n"
-"FLEXI_XSERVER\n"
-"FLEXI_XNEST\n"
-"ATTACHED_SERVERS\n"
+"ADD_DYNAMIC_DISPLAY\n"
 "ALL_SERVERS\n"
-"GET_SERVER_LIST\n"
-"GET_SERVER_DETAILS\n"
+"ATTACHED_SERVERS\n"
+"AUTH_LOCAL\n"
+"CLOSE\n"
+"FLEXI_XNEST\n"
+"FLEXI_XSERVER\n"
 "GET_CONFIG\n"
 "GET_CONFIG_FILE\n"
-"UPDATE_CONFIG\n"
+"GET_SERVER_LIST\n"
+"GET_SERVER_DETAILS\n"
 "GREETERPIDS\n"
 "QUERY_LOGOUT_ACTION\n"
+"QUERY_VT\n"
+"RELEASE_DYNAMIC_DISPLAYS\n"
+"REMOVE_DYNAMIC_DISPLAY\n"
+"SERVER_BUSY\n"
 "SET_LOGOUT_ACTION\n"
 "SET_SAFE_LOGOUT_ACTION\n"
-"QUERY_VT\n"
 "SET_VT\n"
-"CLOSE\n"
-"      "
+"UPDATE_CONFIG\n"
+"VERSION\n"
 
 #: ../C/gdm.xml:4032(para)
 msgid ""
@@ -4589,7 +4565,7 @@ msgid "ADD_DYNAMIC_DISPLAY"
 msgstr "ADD_DYNAMIC_DISPLAY"
 
 #: ../C/gdm.xml:4039(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "ADD_DYNAMIC_DISPLAY: Create a new server definition that will\n"
@@ -4610,32 +4586,13 @@ msgid ""
 "     200 = Dynamic Displays not allowed\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"ADD_DYNAMIC_DISPLAY: Create a new server definition that will\n"
-"                     run on the specified display leaving, it\n"
-"                     in DISPLAY_CONFIG state.\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: &lt;display to run on&gt;=&lt;server&gt;\n"
-"  Where &lt;server&gt; is either a configuration named in the\n"
-"  GDM configuration or a literal command name.\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     2 = Existing display\n"
-"     3 = No server string\n"
-"     4 = Display startup failure\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4061(title)
 msgid "ALL_SERVERS"
 msgstr "ALL_SERVERS"
 
 #: ../C/gdm.xml:4062(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "ALL_SERVERS: List all displays, including console, remote, xnest.\n"
@@ -4657,19 +4614,6 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in \n"
-"                          DISPLAY_CONFIG state\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: None\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4085(title)
 msgid "ATTACHED_SERVERS"
@@ -4805,7 +4749,7 @@ msgid "FLEXI_XSERVER"
 msgstr "FLEXI_XSERVER"
 
 #: ../C/gdm.xml:4199(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "FLEXI_XSERVER: Start a new X flexible display.  Only supported on\n"
@@ -4826,20 +4770,6 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server\n"
-"                        and purging the display configuration\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: &lt;display to remove&gt;\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = Bad display number\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4221(title)
 msgid "GET_CONFIG"
@@ -4874,7 +4804,7 @@ msgid "GET_CONFIG_FILE"
 msgstr "GET_CONFIG_FILE"
 
 #: ../C/gdm.xml:4246(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "GET_CONFIG_FILE:  Get config file location being used by\n"
@@ -4890,19 +4820,6 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in \n"
-"                          DISPLAY_CONFIG state\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: None\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4263(title)
 msgid "GET_SERVER_DETAILS"
@@ -4943,7 +4860,7 @@ msgid "GET_SERVER_LIST"
 msgstr "GET_SERVER_LIST"
 
 #: ../C/gdm.xml:4294(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "GET_SERVER_LIST:  Get a list of the server sections from\n"
@@ -4959,27 +4876,13 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server\n"
-"                        and purging the display configuration\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: &lt;display to remove&gt;\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = Bad display number\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4311(title)
 msgid "GREETERPIDS"
 msgstr "GREETERPIDS"
 
 #: ../C/gdm.xml:4312(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "GREETERPIDS: List all greeter pids so that one can send HUP\n"
@@ -4994,19 +4897,6 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in \n"
-"                          DISPLAY_CONFIG state\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: None\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4328(title)
 msgid "QUERY_LOGOUT_ACTION"
@@ -5068,7 +4958,7 @@ msgid "RELEASE_DYNAMIC_DISPLAYS"
 msgstr "RELEASE_DYNAMIC_DISPLAYS"
 
 #: ../C/gdm.xml:4376(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in \n"
@@ -5083,26 +4973,13 @@ msgid ""
 "     200 = Dynamic Displays not allowed\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in \n"
-"                          DISPLAY_CONFIG state\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: None\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4392(title)
 msgid "REMOVE_DYNAMIC_DISPLAY"
 msgstr "REMOVE_DYNAMIC_DISPLAY"
 
 #: ../C/gdm.xml:4393(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server\n"
@@ -5118,28 +4995,13 @@ msgid ""
 "     200 = Dynamic Displays not allowed\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server\n"
-"                        and purging the display configuration\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: &lt;display to remove&gt;\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = Bad display number\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4410(title)
-#, fuzzy
 msgid "SERVER_BUSY"
-msgstr "ALL_SERVERS"
+msgstr "SERVER_BUSY"
 
 #: ../C/gdm.xml:4411(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "SERVER_BUSY:  Returns true if half or more of the daemon's sockets\n"
@@ -5155,26 +5017,13 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"RELEASE_DYNAMIC_DISPLAYS: Release dynamic displays currently in \n"
-"                          DISPLAY_CONFIG state\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: None\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4428(title)
 msgid "SET_LOGOUT_ACTION"
 msgstr "SET_LOGOUT_ACTION"
 
 #: ../C/gdm.xml:4429(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after\n"
@@ -5195,20 +5044,6 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server\n"
-"                        and purging the display configuration\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: &lt;display to remove&gt;\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = Bad display number\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4451(title)
 msgid "SET_SAFE_LOGOUT_ACTION"
@@ -5249,7 +5084,7 @@ msgid "SET_VT"
 msgstr "SET_VT"
 
 #: ../C/gdm.xml:4482(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "SET_VT:  Change to the specified virtual terminal.\n"
@@ -5269,20 +5104,6 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"REMOVE_DYNAMIC_DISPLAY: Remove a dynamic display, killing the server\n"
-"                        and purging the display configuration\n"
-"Supported since: 2.8.0.0\n"
-"Arguments: &lt;display to remove&gt;\n"
-"Answers:\n"
-"  OK &lt;display&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     0 = Not implemented\n"
-"     1 = Bad display number\n"
-"     100 = Not authenticated\n"
-"     200 = Dynamic Displays not allowed\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4503(title)
 msgid "UPDATE_CONFIG"
@@ -5370,7 +5191,7 @@ msgid "VERSION"
 msgstr "VERSION"
 
 #: ../C/gdm.xml:4581(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "VERSION: Query GDM version\n"
@@ -5382,16 +5203,6 @@ msgid ""
 "     200 = Too many messages\n"
 "     999 = Unknown error\n"
 msgstr ""
-"\n"
-"VERSION: Query GDM version\n"
-"Supported since: 2.2.4.0\n"
-"Arguments: None\n"
-"Answers:\n"
-"  GDM &lt;gdm version&gt;\n"
-"  ERROR &lt;err number&gt; &lt;english error description&gt;\n"
-"     200 = Too many messages\n"
-"     999 = Unknown error\n"
-"      "
 
 #: ../C/gdm.xml:4598(title)
 msgid "GDM Commands"
@@ -5408,14 +5219,12 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:4609(command)
-#, fuzzy
 msgid "gdmXnestchooser"
-msgstr "chooser"
+msgstr "gdmXnestchooser"
 
 #: ../C/gdm.xml:4610(command)
-#, fuzzy
 msgid "gdmXnest"
-msgstr "Xnest"
+msgstr "gdmXnest"
 
 #: ../C/gdm.xml:4609(title)
 msgid ""
@@ -5495,9 +5304,8 @@ msgid "Don't check for running GDM"
 msgstr "No comprueba si hay un GDM funcionando"
 
 #: ../C/gdm.xml:4695(command)
-#, fuzzy
 msgid "gdmflexichooser"
-msgstr "chooser"
+msgstr "gdmflexichooser"
 
 #: ../C/gdm.xml:4695(title)
 msgid "<command>gdmflexichooser</command> Command Line Options"
@@ -5945,9 +5753,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:5139(command) ../C/gdm.xml:5153(command)
-#, fuzzy
 msgid "gdmchooser"
-msgstr "chooser"
+msgstr "gdmchooser"
 
 #: ../C/gdm.xml:5139(command)
 msgid "gdmlogin"
@@ -6053,7 +5860,7 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:5236(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "[GdmGreeterTheme]\n"
@@ -6065,16 +5872,6 @@ msgid ""
 "Copyright=(c) 2002 Bond, James Bond\n"
 "Screenshot=screenshot.png\n"
 msgstr ""
-"\n"
-"[GdmGreeterTheme]\n"
-"Encoding=UTF-8\n"
-"Greeter=circles.xml\n"
-"Name=Circles\n"
-"Description=Theme with blue circles\n"
-"Author=Bond, James Bond\n"
-"Copyright=(c) 2002 Bond, James Bond\n"
-"Screenshot=screenshot.png\n"
-"      "
 
 #: ../C/gdm.xml:5247(para)
 msgid ""
@@ -6297,9 +6094,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:5469(para)
-#, fuzzy
 msgid "Label items can have id values as follows:"
-msgstr "Los elementos de listas pueden tener valores id como siguen:"
+msgstr "Los elementos de etiquetas pueden tener valores id como siguen:"
 
 #: ../C/gdm.xml:5475(term)
 msgid "clock"
@@ -6457,7 +6253,6 @@ msgid "Position Node"
 msgstr "Nodo de posición"
 
 #: ../C/gdm.xml:5644(para)
-#, fuzzy
 msgid ""
 "Each item can specify its position and size via the \"pos\" node. For "
 "example: <screen>\n"
@@ -6465,8 +6260,9 @@ msgid ""
 "</screen>"
 msgstr ""
 "Cada elemento puede especificar su posición  y tamaño por medio del nodo "
-"\"pos\". Por ejemplo <screen>&lt;pos x=\"0\" y=\"4\" width=\"100%\" height="
-"\"100%\"/&gt;</screen>"
+"\"pos\". Por ejemplo <screen>\n"
+"&lt;pos x=\"0\" y=\"4\" width=\"100%\" height=\"100%\"/&gt;\n"
+"</screen>"
 
 #: ../C/gdm.xml:5652(para)
 msgid ""
@@ -6545,37 +6341,34 @@ msgid "<filename>console</filename> - In console mode."
 msgstr "<filename>console</filename> - En modo consola."
 
 #: ../C/gdm.xml:5722(para)
-#, fuzzy
 msgid "<filename>console-fixed</filename> - In console non-flexi mode."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>console-fixed</filename> - En modo consola no-flexible."
 
 #: ../C/gdm.xml:5725(para)
-#, fuzzy
 msgid "<filename>console-flexi</filename> - In console &amp; flexi mode."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>console-flexi</filename> - En modo consola y modo flexible."
 
 #: ../C/gdm.xml:5728(para)
-#, fuzzy
 msgid "<filename>flexi</filename> - In flexi mode."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>flexi</filename> - En modo flexible."
 
 #: ../C/gdm.xml:5731(para)
-#, fuzzy
 msgid "<filename>remote</filename> - In remote mode."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>remote</filename> - En modo remoto."
 
 #: ../C/gdm.xml:5734(para)
-#, fuzzy
 msgid "<filename>remote-flexi</filename> - In remote &amp; flexi mode."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>remote-flexi</filename> - En modo remoto y flexible."
 
 #: ../C/gdm.xml:5738(para)
-#, fuzzy
 msgid ""
 "For example: <screen>\n"
 "&lt;show modes=\"flexi,remote\"/&gt;\n"
 "</screen>"
-msgstr "Por ejemplo: <screen>&lt;show modes=\"console\" type=\"system\"/&gt;</screen>"
+msgstr ""
+"Por ejemplo: <screen>\n"
+"&lt;show modes=\"console\" type=\"system\"/&gt;\n"
+"</screen>"
 
 #: ../C/gdm.xml:5745(para)
 msgid ""
@@ -6641,12 +6434,14 @@ msgstr ""
 "la configuración de GDM."
 
 #: ../C/gdm.xml:5780(para)
-#, fuzzy
 msgid ""
 "For example: <screen>\n"
 "&lt;show modes=\"console\" type=\"system\"/&gt;\n"
 "</screen>"
-msgstr "Por ejemplo: <screen>&lt;show modes=\"console\" type=\"system\"/&gt;</screen>"
+msgstr ""
+"Por ejemplo: <screen>\n"
+"&lt;show modes=\"console\" type=\"system\"/&gt;\n"
+"</screen>"
 
 #: ../C/gdm.xml:5787(para)
 msgid ""
@@ -6666,19 +6461,16 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:5804(para)
-#, fuzzy
 msgid "<filename>normal</filename> - normal state."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>normal</filename> - estado normal."
 
 #: ../C/gdm.xml:5807(para)
-#, fuzzy
 msgid "<filename>active</filename> - when the item has active focus."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>activo</filename> - cuando el elemento tiene foco activo."
 
 #: ../C/gdm.xml:5810(para)
-#, fuzzy
 msgid "<filename>prelight</filename> - when the mouse is hovering over the item."
-msgstr "<filename>console</filename> - En modo consola."
+msgstr "<filename>prelight</filename> - cuando el ratón está sobre el elemento."
 
 #: ../C/gdm.xml:5815(para)
 msgid ""
@@ -6841,9 +6633,8 @@ msgstr ""
 "\""
 
 #: ../C/gdm.xml:5959(para)
-#, fuzzy
 msgid "<filename>chooser</filename>, _(\"Remote Login via _XDMCP\""
-msgstr "<filename>chooser</filename>, _(\"Selector _XDMCP\""
+msgstr "<filename>chooser</filename>, _(\"Entrada remota via _XDMCP\""
 
 #: ../C/gdm.xml:5962(para)
 msgid "<filename>config</filename>, _(\"_Configure\""
@@ -6898,12 +6689,14 @@ msgid "<filename>welcome-label</filename>, _(\"Welcome to %n\""
 msgstr "<filename>welcome-label</filename>, _(\"Bienvenido a %n\""
 
 #: ../C/gdm.xml:6004(para)
-#, fuzzy
 msgid ""
 "For example: <screen>\n"
 "&lt;stock type=\"welcome-label\"&gt;\n"
 "</screen>"
-msgstr "Por ejemplo: <screen>&lt;stock type=\"welcome-label\"&gt;</screen>"
+msgstr ""
+"Por ejemplo: <screen>\n"
+"&lt;stock type=\"welcome-label\"&gt;\n"
+"</screen>"
 
 #: ../C/gdm.xml:6013(title)
 msgid "Custom Widgetry"
@@ -6940,7 +6733,7 @@ msgstr ""
 "siguiente en el tema:"
 
 #: ../C/gdm.xml:6033(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "&lt;item type=\"list\" id=\"custom-config\"&gt;\n"
@@ -6963,10 +6756,8 @@ msgstr ""
 "&lt;text&gt;Bar&lt;/text&gt;\n"
 "&lt;/listitem&gt;\n"
 "&lt;/item&gt;\n"
-"        "
 
 #: ../C/gdm.xml:6045(para)
-#, fuzzy
 msgid ""
 "Then if the user chooses 'Foo' then <filename>&lt;var&gt;/gdm/:0."
 "GreeterInfo</filename> will contain: <screen>\n"
@@ -6974,7 +6765,9 @@ msgid ""
 "</screen>"
 msgstr ""
 "Entonces si el usuario elije «Foo» entonces <filename>&lt;var&gt;/gdm/:0."
-"GreeterInfo</filename> contendrá <screen>custom-config=foo</screen>"
+"GreeterInfo</filename> contendrá <screen>\n"
+"custom-config=foo\n"
+"</screen>"
 
 #: ../C/gdm.xml:6057(title)
 msgid "Accessibility"
@@ -7053,11 +6846,13 @@ msgstr ""
 "ejemplo:"
 
 #: ../C/gdm.xml:6103(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "GtkThemesToAllow=HighContrast,HighContrastInverse\n"
-msgstr "GtkThemesToAllow=HighContrast,HighContrastInverse"
+msgstr ""
+"\n"
+"GtkThemesToAllow=HighContrast,HighContrastInverse\n"
 
 #: ../C/gdm.xml:6107(para)
 msgid ""
@@ -7075,11 +6870,13 @@ msgstr ""
 "sigue:"
 
 #: ../C/gdm.xml:6116(screen)
-#, fuzzy, no-wrap
+#, no-wrap
 msgid ""
 "\n"
 "GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener\n"
-msgstr "GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener"
+msgstr ""
+"\n"
+"GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener\n"
 
 #: ../C/gdm.xml:6120(para)
 msgid ""
@@ -7205,9 +7002,8 @@ msgid "Solaris Specific Features"
 msgstr "Características específicas de Solaris"
 
 #: ../C/gdm.xml:6237(title)
-#, fuzzy
 msgid "Solaris Configuration"
-msgstr "Configuración"
+msgstr "Configuración de Solaris"
 
 #: ../C/gdm.xml:6238(para)
 msgid ""
@@ -7262,9 +7058,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:6288(title)
-#, fuzzy
 msgid "Solaris Automatic Login"
-msgstr "AutomaticLogin"
+msgstr "Inicio de sesión automático en Solaris"
 
 #: ../C/gdm.xml:6289(para)
 msgid ""
@@ -7317,9 +7112,8 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:6335(title)
-#, fuzzy
 msgid "Other Solaris Features"
-msgstr "Características específicas de Solaris"
+msgstr "Otras características de Solaris"
 
 #: ../C/gdm.xml:6336(para)
 msgid "GDM supports a few features specific to Solaris, as follows:"
@@ -7328,11 +7122,10 @@ msgstr ""
 "siguientes:"
 
 #: ../C/gdm.xml:6340(para)
-#, fuzzy
 msgid ""
 "GDM supports Solaris Auditing if running on Solaris 10 or higher. GDM should "
 "not be used if auditing is needed and running Solaris 9 or older."
-msgstr "GDM soporta Solaris Auditing si se ejecuta sobre Solaris 10 o superior."
+msgstr "GDM soporta Solaris Auditing si se ejecuta sobre Solaris 10 o superior. GDM no debería usarse si se necesita auditoría y se está ejecutando Solaris 9 o anterior."
 
 #: ../C/gdm.xml:6346(para)
 msgid ""
@@ -7344,7 +7137,6 @@ msgid ""
 msgstr ""
 
 #: ../C/gdm.xml:6355(para)
-#, fuzzy
 msgid ""
 "Solaris supports the <filename>/etc/default/login</filename> interface, "
 "which affects the <filename>DefaultPath</filename>, <filename>RootPath</"
@@ -7352,9 +7144,6 @@ msgid ""
 "<filename>AllowRemoteRoot</filename> options as described in the "
 "\"Configuration\" section."
 msgstr ""
-"Los scripts <filename>Init</filename>, <filename>PreSession</filename>, "
-"<filename>PostSession</filename>, y <filename>PostLogin</filename> se "
-"describen más tarde en esta sección."
 
 #: ../C/gdm.xml:6367(title)
 msgid "Example Configurations"
@@ -7369,9 +7158,8 @@ msgstr ""
 "varias configuraciones."
 
 #: ../C/gdm.xml:6375(title)
-#, fuzzy
 msgid "Terminal Lab With One Server"
-msgstr "Laboratorio con terminales con dos o más servidores"
+msgstr "Laboratorio con terminales con un servidor"
 
 #: ../C/gdm.xml:6377(para)
 msgid ""
@@ -7485,10 +7273,9 @@ msgstr ""
 
 #: ../C/gdm.xml:6492(title)
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Resolución de problemas"
 
 #: ../C/gdm.xml:6494(para)
-#, fuzzy
 msgid ""
 "This section discusses helpful tips for getting GDM working. In general, if "
 "you have a problem using GDM, you can submit a bug to the \"gdm\" category "
@@ -7496,11 +7283,8 @@ msgid ""
 "org</ulink> or send an email to the <address><email>gdm-list@gnome.org</"
 "email></address> mail list."
 msgstr ""
-"Para más información acerca de GDM, vea  <ulink type=\"http\" url=\"http://"
-"www.gnome.org/projects/gdm/\"> el sitio web del proyecto GDM</ulink>. Por "
-"favor envíe cualquier informe de fallos o peticiones de mejoras a la "
-"categoría «gdm» en <ulink type=\"http\" url=\"http://bugzilla.gnome.org/"
-"\">bugzilla.gnome.org</ulink>."
+"Esta sección hace acerca de consejos útiles para hacer funcionar GDM. En general, si tiene un problema al usar GDM, puede enviar un bug a la categoría «gdm» en <ulink type=\"http\" url=\"http://bugzilla.gnome.org/\">bugzilla.gnome.org</ulink> o enviar un correo-e a la lista de correo <address><email>gdm-list@gnome.org</"
+"email></address>."
 
 #: ../C/gdm.xml:6504(para)
 msgid ""
@@ -7523,7 +7307,7 @@ msgstr ""
 
 #: ../C/gdm.xml:6524(title)
 msgid "GDM Will Not Start"
-msgstr ""
+msgstr "GDM no se inicia"
 
 #: ../C/gdm.xml:6526(para)
 msgid ""
