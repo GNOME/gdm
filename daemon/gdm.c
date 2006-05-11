@@ -2297,7 +2297,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SOP_SUSPEND_MACHINE) == 0) {
 		gdm_info (_("Master suspending..."));
 		if (gdm_get_value_string (GDM_KEY_SUSPEND) != NULL &&
-		    gdm_get_value_string (GDM_KEY_SYSTEM_MENU)) {
+		    gdm_get_value_bool (GDM_KEY_SYSTEM_MENU)) {
 			suspend_machine ();
 		}
 	} else if (strncmp (msg, GDM_SOP_CHOSEN_THEME " ",
