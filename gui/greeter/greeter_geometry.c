@@ -563,35 +563,31 @@ greeter_item_size_request (GreeterItemInfo *item,
 
   if (item->item_type == GREETER_ITEM_TYPE_BUTTON)
     {
+#define ITEM_BUTTON_MIN_RECOMMANDED_WIDTH_OFFSET 15      
+#define ITEM_BUTTON_MIN_RECOMMANDED_HEIGHT_OFFSET 10
       PangoLayout *layout;
       PangoFontDescription *font_desc;
       int pango_width, pango_height;
       int pix_width, pix_height;
       
       GtkWidget *dummy_w = gtk_button_new ();
-
-      if (strcmp (item->id, "options_button") == 0)
-       layout = gtk_widget_create_pango_layout (dummy_w, _("Select Language..."));
-      else
-     layout = gtk_widget_create_pango_layout (dummy_w, item->data.text.orig_text);
+      
+      layout = gtk_widget_create_pango_layout (dummy_w, item->data.text.orig_text);
        
       pango_layout_get_size (layout, &pango_width, &pango_height);
       
-      pix_height = PANGO_PIXELS (pango_height);
-      pix_width = PANGO_PIXELS (pango_width);
-
-      if (strcmp (item->id, "options_button") == 0)
-     pix_width += pix_height * 2; /* add padding for combobox */
+      pix_height = PANGO_PIXELS (pango_height) + ITEM_BUTTON_MIN_RECOMMANDED_HEIGHT_OFFSET;
+      pix_width = PANGO_PIXELS (pango_width) + ITEM_BUTTON_MIN_RECOMMANDED_WIDTH_OFFSET;
 
       if (pix_width > item->parent->box_min_width)
-     req->width = pix_width;
+	req->width = pix_width;
       else
-     req->width = item->parent->box_min_width;
+	req->width = item->parent->box_min_width;
 
       if (pix_height > item->parent->box_min_height)
-     req->height = pix_height;
+	req->height = pix_height;
       else
-     req->height = item->parent->box_min_height;
+	req->height = item->parent->box_min_height;
     }
  
   if (req->width > 0 && req->height > 0)
