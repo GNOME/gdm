@@ -191,7 +191,6 @@ GSList *
 gdm_config_get_xservers (gboolean flexible)
 {
 	GSList *xservers = NULL;
-	gchar *p;
         gchar **splitstr, **sec;
 	gchar *command = NULL;
 	gchar *result  = NULL;
@@ -220,7 +219,6 @@ gdm_config_get_xservers (gboolean flexible)
 
         while (*sec != NULL) {
 		GdmXserver *svr = g_new0 (GdmXserver, 1);
-		gchar *temp;
 
 		temp = gdm_config_get_xserver_details (*sec, "ID");
 		if (temp == NULL) {

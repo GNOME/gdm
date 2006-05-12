@@ -25,7 +25,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <popt.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/socket.h>
@@ -56,6 +55,19 @@ static gboolean authenticate     = FALSE;
 static gboolean no_lock          = FALSE;
 static gboolean monte_carlo_pi   = FALSE;
 static gboolean startnew         = FALSE;
+static gchar **args_remaining    = NULL; 
+
+GOptionEntry options [] = {
+	{ "command", 'c', 0, G_OPTION_ARG_STRING, &send_command, N_("Send the specified protocol command to GDM"), N_("COMMAND") },
+	{ "xnest", 'n', 0, G_OPTION_ARG_NONE, &use_xnest, N_("Xnest mode"), NULL },
+	{ "no-lock", 'l', 0, G_OPTION_ARG_NONE, &no_lock, N_("Do not lock current screen"), NULL },
+	{ "debug", 'd', 0, G_OPTION_ARG_NONE, &debug_in, N_("Debugging output"), NULL },
+	{ "authenticate", 'a', 0, G_OPTION_ARG_NONE, &authenticate, N_("Authenticate before running --command"), NULL },
+	{ "startnew", 's', 0, G_OPTION_ARG_NONE, &startnew, N_("Start new flexible session; do not show popup"), NULL },
+	{ "monte-carlo-pi", 0, 0, G_OPTION_ARG_NONE, &monte_carlo_pi, NULL, NULL },
+	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
+	{ NULL }
+};
 
 static int
 get_cur_vt (void)
@@ -684,18 +696,6 @@ calc_pi (void)
 	}
 }
 
-struct poptOption options [] = {
-	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to GDM"), N_("COMMAND") },
-	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
-	{ "no-lock", 'l', POPT_ARG_NONE, &no_lock, 0, N_("Do not lock current screen"), NULL },
-	{ "debug", 'd', POPT_ARG_NONE, &debug_in, 0, N_("Debugging output"), NULL },
-	{ "authenticate", 'a', POPT_ARG_NONE, &authenticate, 0, N_("Authenticate before running --command"), NULL },
-	{ "startnew", 's', POPT_ARG_NONE, &startnew, 0, N_("Start new flexible session; do not show popup"), NULL },
-	{ "monte-carlo-pi", 0, POPT_ARG_NONE, &monte_carlo_pi, 0, NULL, NULL },
-	POPT_AUTOHELP
-	{ NULL, 0, 0, NULL, 0}
-};
-
 
 int
 main (int argc, char *argv[])
@@ -705,18 +705,17 @@ main (int argc, char *argv[])
 	char *version;
 	char *ret;
 	const char *message;
-	poptContext ctx;
-	const char **args;
-	int nextopt;
+	GOptionContext *ctx;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
 	/* Option parsing */
-
-	ctx = poptGetContext(NULL, argc, (const char**)argv, options, 0);
-	while ((nextopt = poptGetNextOpt(ctx)) > 0 || nextopt == POPT_ERROR_BADOPT);
+	ctx = g_option_context_new("- New gdm login");
+        g_option_context_add_main_entries(ctx, options, _("main options"));
+        g_option_context_parse(ctx, &argc, &argv, NULL);
+        g_option_context_free(ctx);
 
 	if (monte_carlo_pi) {
 		calc_pi ();
@@ -725,9 +724,8 @@ main (int argc, char *argv[])
 
 	gdmcomm_set_debug (debug_in);
 
-	args = poptGetArgs (ctx);
-	if (args != NULL && args[0] != NULL)
-		server = args[0];
+	if (args_remaining != NULL && args_remaining[0] != NULL)
+		server = args_remaining[0];
 
 	if ( ! gdmcomm_check (TRUE)) {
 		return 1;
@@ -887,6 +885,8 @@ main (int argc, char *argv[])
 
 	ret = gdmcomm_call_gdm (command, auth_cookie, version, 5);
 	g_free (command);
+
+	g_strfreev (args_remaining);
 
 	/* At this point we are done using the socket, so close it */
 	gdmcomm_comm_bulk_stop ();

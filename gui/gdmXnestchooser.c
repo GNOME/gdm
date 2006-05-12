@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <popt.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
@@ -41,6 +40,7 @@
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 
+static gchar **args_remaining;
 static pid_t xnest_pid = 0;
 
 #ifdef ENABLE_IPV6
@@ -164,21 +164,23 @@ static char display_num[BUFSIZ] = "";
 static char indirect_host[BUFSIZ] = "";
 
 /* options for Xnest only mode */
-static const struct poptOption xnest_only_options[] = {
-	{ "xnest", 'x', POPT_ARG_STRING, &xnest_binary, 0, N_("Xnest command line"), N_("STRING") },
-	{ "xnest-extra-options", 'o', POPT_ARG_STRING, &xnest_options, 0, N_("Extra options for Xnest"), N_("OPTIONS") },
-	{ "background", 'b', POPT_ARG_NONE, &background, 0, N_("Run in background"), NULL },
+static const GOptionEntry xnest_only_options[] = {
+	{ "xnest", 'x', 0, G_OPTION_ARG_STRING, &xnest_binary, N_("Xnest command line"), N_("STRING") },
+	{ "xnest-extra-options", 'o', 0, G_OPTION_ARG_STRING, &xnest_options, N_("Extra options for Xnest"), N_("OPTIONS") },
+	{ "background", 'b', 0, G_OPTION_ARG_NONE, &background, N_("Run in background"), NULL },
+	{ G_OPTION_REMAINING, NULL, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
 	{ NULL } 
 };
 
-static const struct poptOption options[] = {
-	{ "xnest", 'x', POPT_ARG_STRING, &xnest_binary, 0, N_("Xnest command line"), N_("STRING") },
-	{ "xnest-extra-options", 'o', POPT_ARG_STRING, &xnest_options, 0, N_("Extra options for Xnest"), N_("OPTIONS") },
-	{ "no-query", 'n', POPT_ARG_NONE, &no_query, 0, N_("Just run Xnest, no query (no chooser)"), NULL },
-	{ "direct", 'd', POPT_ARG_NONE, &do_direct, 0, N_("Do direct query instead of indirect (chooser)"), NULL },
-	{ "broadcast", 'B', POPT_ARG_NONE, &do_broadcast, 0, N_("Run broadcast instead of indirect (chooser)"), NULL },
-	{ "background", 'b', POPT_ARG_NONE, &background, 0, N_("Run in background"), NULL },
-	{ "no-gdm-check", '\0', POPT_ARG_NONE, &no_gdm_check, 0, N_("Don't check for running GDM"), NULL },
+static const GOptionEntry options[] = {
+	{ "xnest", 'x', 0, G_OPTION_ARG_STRING, &xnest_binary, N_("Xnest command line"), N_("STRING") },
+	{ "xnest-extra-options", 'o', 0, G_OPTION_ARG_STRING, &xnest_options, N_("Extra options for Xnest"), N_("OPTIONS") },
+	{ "no-query", 'n', 0, G_OPTION_ARG_NONE, &no_query, N_("Just run Xnest, no query (no chooser)"), NULL },
+	{ "direct", 'd', 0, G_OPTION_ARG_NONE, &do_direct, N_("Do direct query instead of indirect (chooser)"), NULL },
+	{ "broadcast", 'B', 0, G_OPTION_ARG_NONE, &do_broadcast, N_("Run broadcast instead of indirect (chooser)"), NULL },
+	{ "background", 'b', 0, G_OPTION_ARG_NONE, &background, N_("Run in background"), NULL },
+	{ "no-gdm-check", '\0', 0, G_OPTION_ARG_NONE, &no_gdm_check, N_("Don't check for running GDM"), NULL },
+	{ G_OPTION_REMAINING, NULL, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
 	{ NULL } 
 };
 
@@ -465,12 +467,10 @@ main (int argc, char *argv[])
 	int display;
 	char *socket;
 	char *pidfile;
-	poptContext ctx;
-	const char **args;
+	GOptionContext *ctx;
 	char *xnest;
 	char **execvec;
 	struct sigaction term;
-	int nextopt;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -478,20 +478,23 @@ main (int argc, char *argv[])
 
 	if (strcmp (base (argv[0]), "gdmXnest") == 0) {
 		gtk_init(&argc, &argv);
-		ctx = poptGetContext(NULL, argc, (const char**)argv, xnest_only_options, 0);
-		while ((nextopt = poptGetNextOpt(ctx)) > 0 || nextopt == POPT_ERROR_BADOPT);
+		ctx = g_option_context_new (_("- Nested gdm login chooser"));
+		g_option_context_add_main_entries (ctx, xnest_only_options, _("main options"));
+		g_option_context_parse (ctx, &argc, &argv, NULL);
+		g_option_context_free (ctx);
 		no_query = TRUE;
 		no_gdm_check = TRUE;
 	} else {
 		gtk_init(&argc, &argv);
-		ctx = poptGetContext(NULL, argc, (const char**)argv, options, 0);
-		while ((nextopt = poptGetNextOpt(ctx)) > 0 || nextopt == POPT_ERROR_BADOPT);
+		ctx = g_option_context_new (_("- Nested gdm login"));
+		g_option_context_add_main_entries (ctx, options, _("main options"));
+		g_option_context_parse (ctx, &argc, &argv, NULL);
+		g_option_context_free (ctx);
 	}
 
-	args = poptGetArgs (ctx);
-	if (args != NULL && args[0] != NULL)
-		host = args[0];
-
+	if (args_remaining != NULL && args_remaining[0] != NULL)
+		host = args_remaining[0];
+	g_strfreev (args_remaining);
 
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();

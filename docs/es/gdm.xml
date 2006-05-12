@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY version "2.15.0">
-<!ENTITY date "03/20/2006">
+<!ENTITY version "2.15.1">
+<!ENTITY date "05/12/2006">
 ]>
 <article id="index" lang="es">
   <articleinfo>
@@ -64,13 +64,13 @@
 
 
 
-    <releaseinfo>This manual describes version 2.15.0 of the GNOME Display Manager. It was last updated on 03/20/2006.</releaseinfo>  
+    <releaseinfo>This manual describes version 2.15.1 of the GNOME Display Manager. It was last updated on 05/12/2006.</releaseinfo>  
   </articleinfo>
 
   <sect1 id="preface">
     <title>Términos y convenciones usados en este manual</title>
 
-    <para>This manual describes version 2.15.0 of the GNOME Display Manager. It was last updated on 03/20/2006.</para>  
+    <para>This manual describes version 2.15.1 of the GNOME Display Manager. It was last updated on 05/12/2006.</para>  
 
     <para>Selector - Un programa que se usa para seleccionar un equipo remoto para gestionar una pantalla remotamente en la pantalla local (<command>gdmchooser</command>).</para>
 
@@ -110,6 +110,8 @@
       <para>Los valores de pares de clave/valor definidos en los archivos de configuración de GDM y la ubicación de estos archivos se consideran «estables» y deberían cambiar sólo de formas compatibles hacia atrás. Note que esto incluye funcionalidad como los scripts de GDM (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc), ubicaciones de directorios (ServAuthDir, PidFile, etc), aplicaciones del sistema (SoundProgram), etc. Algunos valores de configuración dependen de interfaces del SO y quizá necesiten ser modificados para que funcionen en un determinado SO. Los ejemplos típicos son HaltCommand, RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram, y el valor del «comando» para cada «server-tal».</para>
 
       <para>Nota: las distribuciones a menudo cambian los valores predeterminados de las claves para soportar su plataforma. Los interfaces de línea de comandos para los programas GDM instalados en <filename>&lt;bin&gt;</filename> y <filename>&lt;sbin&gt;</filename> se consideran estables. Refiérase a su documentación de la distribución para ver si hay cualquier cambio específico de la distribución a estos interfaces de GDM y qué soporte existe para ellos.</para>
+
+      <para>As of the GDM 2.15 development series one-dash arguments are no longer supported. This includes the "-nodaemon" argument used by <command>gdm</command> and <command>gdm-binary</command>. It also includes the "-xdmaddress", "-clientaddress", and "-connectionType" arguments used by <command>gdmchooser</command>. These arguments have been changed to now use two dashes. GDM previously supported the one-dash arguments to be more similar with the XDM login manager, but one-dash command line arguments is deprecated in the GNOME stack.</para>
 
       <para>Si se descubrieran problemas que rompiesen la compatibilidad, por favor envíe un error con una prioridad «urgente».</para>
     </sect2>
@@ -405,7 +407,7 @@ gdm: .su.dominio
   <sect1 id="configuration">
     <title>Configuración</title>
 
-    <para>GDM has powerful configuration management. System configuration is stored in <filename>&lt;share&gt;/gdm/defaults.conf</filename> and the intention is that this file can be stored on a shared filesystem so that sysadmins can have a single file to modify to control configuration for multiple machines. Also GDM distributions may patch this file on update to improve usability, improve security, etc. Configuration may be customized for a specific machine by editing the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file to include an override for a specific key. Those parameters in the "gui", "greeter" sections, and the security/PamStack key may be customized per-display by specifying them in a file named <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>. For example, configuration overrides for display ":103" would be stored in the file <filename>&lt;etc&gt;/gdm/custom.conf:0</filename>.</para>
+    <para>GDM has powerful configuration management. System configuration is stored in <filename>&lt;share&gt;/gdm/defaults.conf</filename> and the intention is that this file can be stored on a shared filesystem so that sysadmins can have a single file to modify to control configuration for multiple machines. Also GDM distributions may patch this file on update to improve usability, improve security, etc. Configuration may be customized for a specific machine by editing the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file to include an override for a specific key. Those parameters in the "gui", "greeter" sections, and the security/PamStack key may be customized per-display by specifying them in a file named <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>. For example, configuration overrides for display ":103" would be stored in the file <filename>&lt;etc&gt;/gdm/custom.conf:0</filename>. Per-display configuration is supported in GDM 2.14.6 and later.</para>
 
     <para>The <command>gdmsetup</command> is a GUI program you can use to edit the GDM configuration. This program may also be launched directly from the login screen if the greeter/ConfigAvailable key is set to "true" Not all keys in the GDM configuration file are supported in the GUI, so you may need to edit the configuration files by hand to edit these keys. If you believe running root-owned GUI's causes security risk, then you would want to always edit the files by hand. This program does not support setting per-display configuration, so per-display configuration files must be set up by hand.</para>
 
@@ -2771,9 +2773,9 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           </varlistentry>
 
           <varlistentry>
-            <term>-nodaemon</term>
+            <term>--nodaemon</term>
             <listitem>
-              <para>Si se especifica esta opción, entonces GDM no se bifurca a un segundo plano cuando se ejecuta. Puede usar tan sólo un simple guión con esta opción para preservar compatibilidad con XDM.</para>
+              <para>If this option is specified, then GDM does not fork into the background when run. Note that you cannot use the single-dash option any more that e.g. XDM understands.</para>
             </listitem>
           </varlistentry>
 
@@ -2859,7 +2861,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           <title>Opciones de línea de comandos de <command>gdmchooser</command></title>
 
           <varlistentry>
-            <term>-xdmaddress=SOCKET</term>
+            <term>--xdmaddress=SOCKET</term>
             <listitem>
              <para>Socket para comunicación XDM.</para>
             </listitem>
@@ -2873,7 +2875,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           </varlistentry>
 
           <varlistentry>
-            <term>-connectionType=TIPO</term>
+            <term>--connectionType=TYPE</term>
             <listitem>
              <para>Connection type to return in response to XDM. This option is for running gdmchooser with XDM, and is not used within GDM.</para>
             </listitem>
@@ -2980,7 +2982,7 @@ homogeneous="bool"&gt;
           <varlistentry>
             <term>button</term>
             <listitem>
-              <para>A button field. This field uses a GTK+ button. It is also possible to make a "rect" item act like a button by setting its button element to true. However it is better to use GTK+ buttons in GDM themes since these are accessible to users with disabilities. Also, GTK+ buttons can be themed.</para>
+              <para>A button field. This field uses a GTK+ button. It is also possible to make a "rect" item act like a button by setting its button element to true. However it is better to use GTK+ buttons in GDM themes since these are accessible to users with disabilities. Also, GTK+ buttons can be themed. This feature is supported in GDM 2.14.6 and later.</para>
             </listitem>
           </varlistentry>
 
@@ -3083,7 +3085,7 @@ homogeneous="bool"&gt;
           <varlistentry>
             <term>pam-error-logo</term>
             <listitem>
-              <para>An image that will be displayed only when a pam-error message is being displayed. This is useful for displaying an "Attention" icon, for example.</para>
+              <para>An image that will be displayed only when a pam-error message is being displayed. This is useful for displaying an "Attention" icon, for example. This feature is supported in GDM 2.14.6 and later.</para>
             </listitem>
           </varlistentry>
 

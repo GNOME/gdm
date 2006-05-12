@@ -21,7 +21,6 @@
 #include <signal.h>
 #include <limits.h>
 #include <stdlib.h>
-#include <popt.h>
 #include <unistd.h>
 #if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 #include <sched.h>
@@ -1231,23 +1230,22 @@ calc_sqrt2 (void)
 	}
 }
 
-struct poptOption options [] = {
-	{ "nodaemon", '\0', POPT_ARG_NONE | POPT_ARGFLAG_ONEDASH,
-	  &no_daemon, 0, N_("Do not fork into the background"), NULL },
-	{ "no-console", '\0', POPT_ARG_NONE,
-	  &no_console, 0, N_("No console (static) servers to be run"), NULL },
-	{ "config", '\0', POPT_ARG_STRING,
-	  &config_file, 0, N_("Alternative defaults configuration file"), N_("CONFIGFILE") },
-	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
-	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
-	{ "version", '\0', POPT_ARG_NONE,
-	  &print_version, 0, N_("Print GDM version"), NULL },
-	{ "wait-for-go", '\0', POPT_ARG_NONE,
-	  &gdm_wait_for_go, 0, N_("Start the first X server but then halt until we get a GO in the fifo"), NULL },
-	{ "monte-carlo-sqrt2", 0, POPT_ARG_NONE,
-	  &monte_carlo_sqrt2, 0, NULL, NULL },
-        POPT_AUTOHELP
-	{ NULL, 0, 0, NULL, 0}
+GOptionEntry options [] = {
+	{ "nodaemon", '\0', 0, G_OPTION_ARG_NONE,
+	  &no_daemon, N_("Do not fork into the background"), NULL },
+	{ "no-console", '\0', 0, G_OPTION_ARG_NONE,
+	  &no_console, N_("No console (static) servers to be run"), NULL },
+	{ "config", '\0', 0, G_OPTION_ARG_STRING,
+	  &config_file, N_("Alternative defaults configuration file"), N_("CONFIGFILE") },
+	{ "preserve-ld-vars", '\0', 0, G_OPTION_ARG_NONE,
+	  &preserve_ld_vars, N_("Preserve LD_* variables"), NULL },
+	{ "version", '\0', 0, G_OPTION_ARG_NONE,
+	  &print_version, N_("Print GDM version"), NULL },
+	{ "wait-for-go", '\0', 0, G_OPTION_ARG_NONE,
+	  &gdm_wait_for_go, N_("Start the first X server but then halt until we get a GO in the fifo"), NULL },
+	{ "monte-carlo-sqrt2", 0, 0, G_OPTION_ARG_NONE,
+	  &monte_carlo_sqrt2, NULL, NULL },
+	{ NULL }
 };
 
 static gboolean
@@ -1374,9 +1372,8 @@ main (int argc, char *argv[])
     FILE *pf;
     sigset_t mask;
     struct sigaction sig, child, abrt;
-    poptContext ctx;
+    GOptionContext *ctx;
     gchar *pidfile;
-    int nextopt;
     const char *charset;
 
     /* semi init pseudorandomness */
@@ -1401,20 +1398,10 @@ main (int argc, char *argv[])
     /* Initialize runtime environment */
     umask (022);
 
-    ctx = poptGetContext ("gdm", argc, (const char **) argv,
-			  options, 0);
-    while ((nextopt = poptGetNextOpt (ctx)) > 0 || nextopt == POPT_ERROR_BADOPT)
-	/* do nothing */ ;
-
-    if G_UNLIKELY (nextopt != -1) {
-	    fprintf (stderr,
-		     _("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
-		     poptBadOption (ctx, 0),
-		     poptStrerror (nextopt),
-		     argv[0]);
-	    fflush (stderr);
-	    exit (1);
-    }
+    ctx = g_option_context_new (_("- The GNOME login manager"));
+    g_option_context_add_main_entries (ctx, options, _("main options"));
+    g_option_context_parse (ctx, &argc, &argv, NULL);
+    g_option_context_free (ctx);
 
     if (monte_carlo_sqrt2) {
 	    calc_sqrt2 ();

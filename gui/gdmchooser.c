@@ -28,7 +28,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <syslog.h>
-#include <popt.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -926,7 +925,6 @@ gdm_chooser_xdmcp_discover (void)
     }
 
     g_list_free (chooser_hosts);
-
     chooser_hosts = NULL;
 
     do_ping (TRUE);
@@ -1900,19 +1898,17 @@ gdm_chooser_signals_init (void)
 	gdm_common_fail_exit ("Could not set signal mask!");
 }
 
-struct poptOption xdm_options [] = {
-	{ "xdmaddress", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
-	  &xdm_address, 0,
-	  N_("Socket for xdm communication"), N_("SOCKET") },
-        { "clientaddress", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
-	  &client_address, 0,
-	  N_("Client address to return in response to xdm"), N_("ADDRESS") },
-        { "connectionType", '\0', POPT_ARG_INT|POPT_ARGFLAG_ONEDASH,
-	  &connection_type, 0,
-	  N_("Connection type to return in response to xdm"), N_("TYPE") },
-        POPT_AUTOHELP
-	{ NULL, 0, 0, NULL, 0}
-};
+GOptionEntry chooser_options [] = {
+       { "xdmaddress", '\0', 0, G_OPTION_ARG_STRING, &xdm_address,
+          N_("Socket for xdm communication"), N_("SOCKET") },
+       { "clientaddress", '\0', 0, G_OPTION_ARG_STRING, &client_address,
+          N_("Client address to return in response to xdm"), N_("ADDRESS") },
+       { "connectionType", '\0', 0, G_OPTION_ARG_INT, &connection_type,
+          N_("Connection type to return in response to xdm"), N_("TYPE") },
+       { G_OPTION_REMAINING, NULL, 0, G_OPTION_ARG_STRING_ARRAY, &chooser_hosts,
+          NULL, NULL },
+       { NULL }
+ };
 
 static gboolean
 gdm_event (GSignalInvocationHint *ihint,
@@ -1946,8 +1942,7 @@ main (int argc, char *argv[])
 {
     gchar *GdmHosts;
     gchar **hosts_opt;
-    poptContext ctx;
-    int nextopt;
+    GOptionContext *ctx;
     const char *gdm_version;
     int i;
     guint sid;
@@ -1969,18 +1964,10 @@ main (int argc, char *argv[])
 
     gtk_init (&argc, &argv);
 
-    ctx = poptGetContext ("gdm", argc, (const char **) argv,
-			  xdm_options, 0);
-    while ((nextopt = poptGetNextOpt (ctx)) > 0 || nextopt == POPT_ERROR_BADOPT)
-	/* do nothing */ ;
-
-    if (nextopt != -1) {
-	    g_print (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
-		     poptBadOption (ctx, 0),
-		     poptStrerror (nextopt),
-		     argv[0]);
-	    exit (1);
-    }
+    ctx = g_option_context_new (_("- gdm login chooser")); 
+    g_option_context_add_main_entries(ctx, chooser_options, _("main options"));
+    g_option_context_parse(ctx, &argc, &argv, NULL);
+    g_option_context_free(ctx);
 
     glade_init ();
 
@@ -2068,7 +2055,6 @@ main (int argc, char *argv[])
     gdm_chooser_gui_init ();
     gdm_chooser_signals_init ();
 
-    hosts_opt = (char **)poptGetArgs (ctx);
     /* when no hosts on the command line, take them from the config */
     if (hosts_opt == NULL ||
 	hosts_opt[0] == NULL) {
@@ -2079,7 +2065,7 @@ main (int argc, char *argv[])
 	    }
     }
     gdm_chooser_xdmcp_init (hosts_opt);
-    poptFreeContext (ctx);
+    g_strfreev (chooser_hosts);
 
     sid = g_signal_lookup ("event",
 				 GTK_TYPE_WIDGET);

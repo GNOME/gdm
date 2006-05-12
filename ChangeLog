@@ -1,3 +1,16 @@
+2006-05-12  Christian Kirbach  <Christian.Kirbach@siemens.com>
+
+	* daemon/gdm.c, gui/gdmXnestchosser.c, gui/gdmchooser.c,
+	  gui/gdmflexiserver.c: stop using popt in favour of glib's GOption
+	  command line parsing.
+	* docs/C/gdm.xml: -nodaemon command line option has become --nodaemon.
+	  GDM User Commands section has been rewritten accordingly. Also the
+	  interface stability sections reflects the new changes.
+	* daemon/gdm.c (gdm_handle_user_message): Fix compiler warning (too
+	  few arguments).
+	* gui/gdmconfig.c (gdm_config_get_xservers): Remove two obsolete
+	  variable declarations.
+
 2006-05-12  Brian Cameron  <brian.cameron@sun.com>
 
         * Release 2.15.2:

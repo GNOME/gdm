@@ -184,6 +184,18 @@
       </para>
 
       <para>
+        As of the GDM 2.15 development series one-dash arguments are no
+        longer supported.  This includes the &quot;-nodaemon&quot; argument
+        used by <command>gdm</command> and <command>gdm-binary</command>.  It
+        also includes the &quot;-xdmaddress&quot;, &quot;-clientaddress&quot;,
+        and &quot;-connectionType&quot; arguments used by
+        <command>gdmchooser</command>.  These arguments have been changed to
+        now use two dashes.  GDM previously supported the one-dash arguments to
+        be more similar with the XDM login manager, but one-dash command line
+        arguments is deprecated in the GNOME stack.
+      </para>
+
+      <para>
         If issues are discovered that break compatibility, please file a bug
         with an &quot;urgent&quot; priority.
       </para>
@@ -5315,12 +5327,12 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           </varlistentry>
 
           <varlistentry>
-            <term>-nodaemon</term>
+            <term>--nodaemon</term>
             <listitem>
               <para>
                 If this option is specified, then GDM does not fork into the
-                background when run.  You can use just a single dash with this
-                option to preserve compatibility with XDM.
+                background when run. Note that you cannot use the single-dash
+                option any more that e.g. XDM understands.
               </para>
             </listitem>
           </varlistentry>
@@ -5469,7 +5481,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           <title><command>gdmchooser</command> Command Line Options</title>
 
           <varlistentry>
-            <term>-xdmaddress=SOCKET</term>
+            <term>--xdmaddress=SOCKET</term>
             <listitem>
              <para>
                  Socket for XDM communication.
@@ -5488,7 +5500,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           </varlistentry>
 
           <varlistentry>
-            <term>-connectionType=TYPE</term>
+            <term>--connectionType=TYPE</term>
             <listitem>
              <para>
                Connection type to return in response to XDM.  This option is for
