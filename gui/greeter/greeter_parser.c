@@ -114,37 +114,6 @@ parse_id (xmlNodePtr node,
     }
 }
 
-static gboolean
-parse_button (xmlNodePtr node,
-	      GreeterItemInfo *info,
-	      GError **error)
-{
-  xmlChar *prop;
-  
-  prop = xmlGetProp (node,(const xmlChar *) "button");
-  if (prop)
-    {
-      if (strcmp ((char *) prop, "true") == 0)
-	{
-	  info->button = TRUE;
-	}
-      else if (strcmp ((char *) prop, "false") == 0)
-	{
-	  info->button = FALSE;
-	}
-      else
-	{
-	  g_set_error (error,
-		       GREETER_PARSER_ERROR,
-		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "bad button spec %s", prop);
-	  xmlFree (prop);
-	  return FALSE;
-	}
-      xmlFree (prop);
-    }
-  return TRUE;
-}
 
 /* Doesn't set the parts of rect that are not specified.
  * If you want specific default values you need to fill them out
@@ -1129,7 +1098,12 @@ parse_stock (xmlNodePtr node,
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_OK"));
 	}
-      else if (g_ascii_strcasecmp ((char *) prop, "cancel") == 0)
+      /*
+       * Support startagain as cancel for forward compatibility without
+       * string breakage.
+       */
+      else if (g_ascii_strcasecmp ((char *) prop, "cancel") == 0 ||
+               g_ascii_strcasecmp ((char *) prop, "startagain") == 0)
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Cancel"));
@@ -1186,6 +1160,89 @@ do_font_size_reduction (GreeterItemInfo *info)
     }
 }
 
+static gboolean
+parse_canvasbutton (xmlNodePtr node,
+		    GreeterItemInfo *info,
+		    GError **error)
+{
+  xmlChar *prop;
+  
+  prop = xmlGetProp (node,(const xmlChar *) "button");
+  if (prop)
+    {
+      if (strcmp ((char *) prop, "true") == 0)
+	{
+	  info->canvasbutton = TRUE;
+	}
+      else if (strcmp ((char *) prop, "false") == 0)
+	{
+	  info->canvasbutton = FALSE;
+	}
+      else
+	{
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "bad button spec %s", prop);
+	  xmlFree (prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+  return TRUE;
+}
+
+static gboolean
+parse_gtkbutton (xmlNodePtr node,
+		    GreeterItemInfo *info,
+		    GError **error)
+{
+  xmlNodePtr child;
+  char *translated_text  = NULL;
+  gint translation_score = 1000;
+  int i;
+
+  child = node->children;
+
+  while (child)
+    {
+      if (strcmp ((char *) child->name, "pos") == 0)
+	{
+	  if G_UNLIKELY (!parse_pos (child, info, error))
+	    return FALSE;
+	}
+      else if (child->type == XML_ELEMENT_NODE &&
+	       strcmp ((char *) child->name, "stock") == 0)
+	{
+	  if G_UNLIKELY (!parse_stock (child, info, &translated_text, &translation_score, error))
+	    return FALSE;
+	}
+
+      child = child->next;
+    }
+
+  if (translated_text == NULL)
+    {
+      g_set_error (error,
+                   GREETER_PARSER_ERROR,
+                   GREETER_PARSER_ERROR_BAD_SPEC,
+                   "A label must specify the text attribute");
+      return FALSE;
+    }
+
+  /* FIXME: evil hack to use internally translated strings */
+  if (translation_score == 999 &&
+      ! ve_string_empty (translated_text))
+    {
+      char *foo = g_strdup (_(translated_text));
+      g_free (translated_text);
+      translated_text = foo;
+    }
+
+  info->data.text.orig_text = translated_text;
+
+  return TRUE;
+}
 
 static gboolean
 parse_label_pos_extras (xmlNodePtr       node,
@@ -1240,11 +1297,9 @@ parse_label (xmlNodePtr        node,
 {
   xmlNodePtr child;
   int i;
-  char *translated_text;
+  char *translated_text  = NULL;
   gint translation_score = 1000;
   
-  translated_text = NULL;
-
   child = node->children;
   while (child)
     {
@@ -1341,10 +1396,10 @@ parse_listitem (xmlNodePtr        node,
 		GError         **error)
 {
   xmlNodePtr child;
-  char *translated_text = NULL;
-  gint translation_score = 1000;
   xmlChar *prop;
   GreeterItemListItem *li;
+  char *translated_text  = NULL;
+  gint translation_score = 1000;
   
   prop = xmlGetProp (node,(const xmlChar *) "id");
   
@@ -1550,6 +1605,8 @@ parse_items (xmlNodePtr  node,
 	      item_type = GREETER_ITEM_TYPE_ENTRY;
 	    else if (strcmp ((char *) type, "list") == 0)
 	      item_type = GREETER_ITEM_TYPE_LIST;
+	    else if (strcmp ((char *) type, "button") == 0)
+	      item_type = GREETER_ITEM_TYPE_BUTTON;
 	    else
 	      {
 		g_set_error (error,
@@ -1563,12 +1620,12 @@ parse_items (xmlNodePtr  node,
 	    info = greeter_item_info_new (parent, item_type);
 	    
 	    parse_id (child, info);
-	    if G_UNLIKELY ( ! parse_button (child, info, error))
+	    if G_UNLIKELY ( ! parse_canvasbutton (child, info, error))
 	      return FALSE;
 
 	    if (button_stack != NULL)
 	      info->my_button = button_stack->data;
-	    if (info->button)
+	    if (info->canvasbutton)
 	      button_stack = g_list_prepend (button_stack, info);
 
 	    switch (item_type)
@@ -1591,6 +1648,9 @@ parse_items (xmlNodePtr  node,
 	      case GREETER_ITEM_TYPE_LIST:
 		res = parse_list (child, info, error);
 		break;
+	      case GREETER_ITEM_TYPE_BUTTON:
+		res = parse_gtkbutton (child, info, error);
+		break;
 	      default:
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
@@ -1599,7 +1659,7 @@ parse_items (xmlNodePtr  node,
 		res = FALSE;
 	      }
 
-	    if (info->button)
+	    if (info->canvasbutton)
 	      button_stack = g_list_remove (button_stack, info);
 	    
 	    if G_UNLIKELY (!res)

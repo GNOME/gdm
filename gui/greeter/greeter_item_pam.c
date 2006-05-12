@@ -26,6 +26,7 @@
 #include "viciousui.h"
 
 #include "greeter.h"
+#include "greeter_item.h"
 #include "greeter_item_pam.h"
 #include "greeter_item_ulist.h"
 #include "greeter_item_timed.h"
@@ -45,6 +46,30 @@ gchar *greeter_current_user = NULL;
 gboolean require_quarter = FALSE;
 
 extern gboolean greeter_probably_login_prompt;
+
+gboolean
+greeter_item_pam_error_set (gboolean display)
+{
+  GreeterItemInfo *info;
+  GnomeCanvasItem *item;
+
+  info = greeter_lookup_id ("pam-error-logo");
+
+  if (info)
+    {
+      if (info->group_item != NULL)
+        item = GNOME_CANVAS_ITEM (info->group_item);
+      else
+        item = info->item;
+
+      if (display)
+          gnome_canvas_item_show (item);
+      else
+          gnome_canvas_item_hide (item);
+    }
+
+  return TRUE;
+}
 
 void
 greeter_item_pam_set_user (const char *user)
@@ -129,8 +154,10 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
       err_box_clear_handler = 0;
     }
   error_info = greeter_lookup_id ("pam-error");
-  if (error_info)
+  if (error_info) {
+    greeter_item_pam_error_set (FALSE);
     set_text (error_info, "");
+  }
   
   tmp = ve_locale_from_utf8 (str);
   printf ("%c%s\n", STX, tmp);
@@ -165,6 +192,8 @@ greeter_item_pam_setup (void)
 {
   GreeterItemInfo *entry_info;
 
+  greeter_item_pam_error_set (FALSE);
+
   entry_info = greeter_lookup_id ("user-pw-entry");
   if (entry_info && entry_info->item &&
       GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
@@ -191,6 +220,7 @@ greeter_item_pam_setup (void)
       g_signal_connect (G_OBJECT (entry), "key_press_event",
 		        G_CALLBACK (key_press_event), NULL);
     }
+
   return TRUE;
 }
 
@@ -272,10 +302,11 @@ static gboolean
 error_clear (gpointer data)
 {
 	GreeterItemInfo *error_info = data;
+	err_box_clear_handler       = 0;
 
         set_text (error_info, "");
+        greeter_item_pam_error_set (FALSE);
 
-	err_box_clear_handler = 0;
 	return FALSE;
 }
 
@@ -299,12 +330,14 @@ greeter_item_pam_error (const char *message)
       
       if (err_box_clear_handler > 0)
 	g_source_remove (err_box_clear_handler);
+
       if (strlen (message) == 0)
 	err_box_clear_handler = 0;
       else
 	err_box_clear_handler = g_timeout_add (30000,
 					       error_clear,
 					       error_info);
+      greeter_item_pam_error_set (TRUE);
     }
 }
 

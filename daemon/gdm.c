@@ -3109,31 +3109,48 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			gdm_connection_write (conn, "OK\n");
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
-		const gchar *key = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
-		gchar *retval;
+		const gchar *parms = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
+		gchar **splitstr = g_strsplit (parms, " ", 2);
+		gchar *retval = NULL;
 		static gboolean done_prefetch = FALSE;
 
 		/*
-		 * If key is for prefetch do it only once
+		 * If the key is for prefetch do it only once
+		 *
+		 * This key is not managed in per-display fashion, only config 
+		 * values that affect the GUI are.  So okay to process this 
+		 * first.
 		 */
-		if (strcmp(key, GDM_KEY_PRE_FETCH_PROGRAM) == 0) {
+		if (strcmp (splitstr[0], GDM_KEY_PRE_FETCH_PROGRAM) == 0) {
 			if (done_prefetch) {
 				gdm_connection_printf (conn, "OK \n");
-				return;
 			} else {
+                		gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", splitstr[0]);
 				done_prefetch = TRUE;
 			}
+			return;
 		}
 
-                gdm_config_to_string ((gchar *)key, &retval);
-		if (retval != NULL) {
-			gdm_connection_printf (conn, "OK %s\n", retval);
-			g_free (retval);
-		} else {
-			if (gdm_is_valid_key ((gchar *)key))
-				gdm_connection_printf (conn, "OK \n");
-			else
-                		gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
+		if (splitstr[0] != NULL) {
+                       /*
+                        * Note passing in the display is backwards compatible 
+                        * since if it is NULL, it won't try to load the display
+			* value at all.
+                        */
+			gdm_config_to_string (splitstr[0], splitstr[1], &retval);
+
+	   		if (retval != NULL) {
+   				gdm_connection_printf (conn, "OK %s\n", retval);
+   				g_free (retval);
+			} else {
+				if (gdm_is_valid_key ((gchar *)splitstr[0]))
+					gdm_connection_printf (conn, "OK \n");
+				else
+       		         		gdm_connection_printf (conn,
+						"ERROR 50 Unsupported key <%s>\n",
+						splitstr[0]);
+			}
+			g_strfreev (splitstr);
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		GString *msg;

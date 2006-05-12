@@ -23,6 +23,8 @@
 
 #include "ve-misc.h"
 
+gchar*         gdm_get_display_custom_config_file
+                                        (gchar *display);
 gchar*         gdm_get_custom_config_file (void);
 gchar*         gdm_get_value_string     (gchar *key);
 gboolean       gdm_get_value_bool       (gchar *key);
@@ -33,10 +35,17 @@ void           gdm_set_value_bool       (gchar *key,
                                          gboolean value);
 void           gdm_set_value_int        (gchar *key,
                                          gint value);
-gboolean       gdm_config_to_string     (gchar *key,
+void           gdm_config_key_to_string_per_display
+                                        (gchar *file,
+                                         gchar *key,
+                                         gchar **retval);
+void           gdm_config_key_to_string (gchar *file,
+                                         gchar *key,
+                                         gchar **retval);
+void           gdm_config_to_string     (gchar *key,
+                                         gchar *display,
                                          gchar **retval);
 gboolean       gdm_update_config        (gchar *key);
-void           gdm_config_init          (void);
 void           gdm_config_parse         (void);
 GdmXserver*    gdm_find_xserver         (const gchar *id);
 gchar*         gdm_get_xservers         (void);
@@ -46,7 +55,6 @@ uid_t          gdm_get_gdmuid           (void);
 uid_t          gdm_get_gdmgid           (void);
 gint           gdm_get_high_display_num (void);
 void           gdm_set_high_display_num (gint val);
-void           gdm_print_all_config     (void);
 gboolean       gdm_is_valid_key         (gchar *key);
 gboolean       gdm_signal_terminthup_was_notified  (void);
 

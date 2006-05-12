@@ -330,6 +330,8 @@ back_prog_run (void)
 	command = back_prog_get_path ();
 	if (! command)
 		return;
+
+        gdm_common_debug ("Running background program <%s>", command);
 	
 	/* Focus new windows. We want to give focus to the background program. */
 	gdm_wm_focus_new_windows (TRUE);
@@ -349,6 +351,7 @@ back_prog_run (void)
 		GtkWidget *dialog;
 		gchar *msg;
 		
+                gdm_common_debug ("Cannot run background program %s : %s", command, error->message);
 		msg = g_strdup_printf (_("Cannot run command '%s': %s."),
 		                       command,
 		                       error->message);

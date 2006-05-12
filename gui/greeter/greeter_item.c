@@ -73,7 +73,8 @@ greeter_item_info_new (GreeterItemInfo *parent,
 
   info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
 
-  info->button = FALSE;
+  info->canvasbutton = FALSE;
+  info->gtkbutton    = FALSE;
 
   if (GREETER_ITEM_TYPE_IS_TEXT (info))
     {

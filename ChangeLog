@@ -1,3 +1,25 @@
+2006-05-12  Brian Cameron  <brian.cameron@sun.com>
+
+	Backporting some useful features from 2.15 to 2.14.   Per-display
+	configuration and new gdmgreeter theming options (real GTK+ buttons,
+	pam-error-logo, and "startagain" stock label is translated to "cancel".
+	Note that the default themes shipped with GDM 2.14 do not use these
+	features, but this patch means newer themes made with 2.15 should now
+	work with this version of 2.14 and above.
+
+	* AUTHORS: Add Ed Catmur.
+	* gdm.conf.in: Add PamStack configuration choice.
+	* PreSession.in, daemon/gdm.c, daemon/gdmconfig.[ch], gui/gdmconfig.c:
+	  Support per-display configuration.
+	* daemon/gdm.h: Better comments, per-display configuration support..
+	* daemon/verify-pam.c: Support PamStack configuration.  Load PamStack
+	  in per-display fashion, if configured.
+	* gui/gdmdynamic.c, gui/gdmlogin.c: Better error handling.
+	* gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_events.c,
+	  gui/greeter/greeter_geometry.c, gui/greeter/greeter_item.[ch],
+	  gui/greeter/greeter_parser.c: Support GTK+ button type. 
+	* gui/greeter/greeter_item_pam.c: Support pam-error-logo.
+
 2006-05-10  Brian Cameron  <brian.cameron@sun.com>
 
         * daemon/gdm.c: Fix reference to SystemMenu key as a boolean, not

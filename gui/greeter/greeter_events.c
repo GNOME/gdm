@@ -202,7 +202,7 @@ greeter_item_event_handler (GnomeCanvasItem *item,
 
   if (info->state != old_state)
     {
-      if (info->button)
+      if (info->canvasbutton)
         {
           if (info->state == GREETER_ITEM_STATE_NORMAL)
             propagate_reset_state (info, old_state);

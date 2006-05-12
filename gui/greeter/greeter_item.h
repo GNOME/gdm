@@ -46,7 +46,8 @@ enum _GreeterItemType {
   GREETER_ITEM_TYPE_PIXMAP,
   GREETER_ITEM_TYPE_LABEL,
   GREETER_ITEM_TYPE_ENTRY,
-  GREETER_ITEM_TYPE_LIST
+  GREETER_ITEM_TYPE_LIST,
+  GREETER_ITEM_TYPE_BUTTON
 };
 
 /* Make sure to adjust the bitfield in the structure if
@@ -112,8 +113,12 @@ struct _GreeterItemInfo {
   /* box flags */
   guint box_homogeneous:1;
 
-  /* is a button (see my_button comment) */
-  guint button:1;
+  /* is a canvas rectangle that acts like a button */
+  /* (see the my_button comment) */
+  guint canvasbutton:1;
+
+  /* is a real GTK button (not the fake canvas button) */
+  guint gtkbutton:1;
 
   /* geometry handling: */
   guint has_requisition:1;
