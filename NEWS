@@ -1,5 +1,34 @@
 Ahh news...
 
+2.15.1 Stuff:
+
+- Correct double free that was causing a core dump in the last release.
+  (Joe Marcus Clark)
+
+- Improvements to signal handling, fixing problem where GDM slave can
+  hang on read.  Fixes bug #336549.  (Ed Catmur, Brian Cameron)
+
+- "Start Over" string changed to "Start Again" after another round of
+   UI review (Brian Cameron, Calum Benson)
+
+- Better configure support for FreeBSD.  Now the default configuration
+  should be better integrated with kernel/system interfaces.  (Joe
+  Marcus Clark)
+
+- Fix security/AllowRemoteAutoLogin and fix SuspendCommand configuration
+  so it honors SystemMenu.  (Brian Cameron)
+
+- Correct installation of gdm-ssh-session and now the desktop file is
+  translated.  (Brian Cameron)
+
+- Correct invocation of PreFetch, when enabled, so it only executes
+  once.  (Brian Cameron)
+
+- Translation updates (Josep Puigdemont Casamaj\303\263, Beno\303\256t
+  Dejean, Pema Geyleg, Inaki Larranaga, Daniel Nylander, Ignacio Casal
+  Quinteiro, Francisco Javier F. Serrador, Alexander Shopov, Ilkka
+  Tuohela, Funda Wang)
+
 2.15.1 stuff:
 
 - Explicitly adjust the effective GID before running the child session
