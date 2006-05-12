@@ -1,5 +1,36 @@
 Ahh news...
 
+2.14.6 stuff:
+
+- Backporting some useful features from 2.15 to 2.14.   Per-display
+  configuration and new gdmgreeter theming options (real GTK+ buttons,
+  pam-error-logo, and "startagain" stock label is displayed as "Cancel".
+  Note that the default themes shipped with GDM 2.14 do not use these
+  features, but this patch means newer themes made with 2.15 should now
+  work with this version of 2.14 and above. No strings were changed due
+  to this change.  (Brian Cameron, Erwann Chenede)
+
+- Improvements to signal handling, fixing problem where GDM slave can
+  hang on read.  Fixes bug #336549.  (Ed Catmur, Brian Cameron)
+
+- Better configure support for FreeBSD.  Now the default configuration
+  should be better integrated with kernel/system interfaces.  (Joe
+  Marcus Clark)
+
+- Fix security/AllowRemoteAutoLogin and fix SuspendCommand configuration
+  so it honors SystemMenu.  (Brian Cameron)
+
+- Correct installation of gdm-ssh-session and now the desktop file is
+  translated.  (Brian Cameron)
+
+- Correct invocation of PreFetch, when enabled, so it only executes
+  once.  (Brian Cameron)
+
+- Translation updates (Josep Puigdemont Casamaj\303\263, Beno\303\256t
+  Dejean, Pema Geyleg, Inaki Larranaga, Daniel Nylander, Ignacio Casal
+  Quinteiro, Francisco Javier F. Serrador, Alexander Shopov, Ilkka
+  Tuohela, Funda Wang)
+
 2.14.5 stuff:
 
 - Explicitly adjust the effective GID before running the child session
