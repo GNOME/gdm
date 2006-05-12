@@ -11,6 +11,8 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)
 
+EXTRA_DIST = gdm-ssh-session
+
 libexec_SCRIPTS = \
 	@GDMSSHSESSION@
 
