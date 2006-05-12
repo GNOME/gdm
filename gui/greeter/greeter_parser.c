@@ -1649,7 +1649,7 @@ parse_items (xmlNodePtr  node,
 		res = parse_list (child, info, error);
 		break;
 	      case GREETER_ITEM_TYPE_BUTTON:
-                res = parse_gtkbutton (child, info, error);
+		res = parse_gtkbutton (child, info, error);
 		break;
 	      default:
 		g_set_error (error,
