@@ -861,10 +861,23 @@ else
   fi
 fi
 
+if test ${libexecdir} = "\${exec_prefix}/libexec"; then
+   if test ${exec_prefix} != "NONE"; then
+      path_to_check=$exec_prefix
+   elif test ${prefix} != "NONE"; then
+      path_to_check=$prefix
+   else
+      path_to_check=$ac_default_prefix
+   fi
+   ssh_libexec="$path_to_check/libexec"
+else
+   ssh_libexec="${libexecdir}"
+fi
+
 if test x$enable_secureremote != xno ; then
        SSHDESKTOP="ssh.desktop"
         GDMSSHSESSION="gdm-ssh-session"
-        GDMSSHSESSIONCMD="${libexecdir}/gdm-ssh-session"
+        GDMSSHSESSIONCMD="${ssh_libexec}/gdm-ssh-session"
 fi
 AC_SUBST(SSHDESKTOP)
 AC_SUBST(GDMSSHSESSION)
