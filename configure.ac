@@ -861,15 +861,16 @@ else
   fi
 fi
 
+if test ${exec_prefix} != "NONE"; then
+   real_gdm_prefix=$exec_prefix
+elif test ${prefix} != "NONE"; then
+   real_gdm_prefix=$prefix
+else
+   real_gdm_prefix=$ac_default_prefix
+fi
+
 if test ${libexecdir} = "\${exec_prefix}/libexec"; then
-   if test ${exec_prefix} != "NONE"; then
-      path_to_check=$exec_prefix
-   elif test ${prefix} != "NONE"; then
-      path_to_check=$prefix
-   else
-      path_to_check=$ac_default_prefix
-   fi
-   ssh_libexec="$path_to_check/libexec"
+   ssh_libexec="$real_gdm_prefix/libexec"
 else
    ssh_libexec="${libexecdir}"
 fi
@@ -1023,15 +1024,7 @@ fi
 
 # Don't add bindir to GDM_USER_PATH if it is already in the PATH.
 # If it is /bin or /usr/bin, for example.
-if test ${exec_prefix} != "NONE"; then
-   path_to_check=$exec_prefix
-elif test ${prefix} != "NONE"; then
-   path_to_check=$prefix
-else
-   path_to_check=$ac_default_prefix
-fi
-
-if test "x$path_to_check" != "x/" -a "x$path_to_check" != "x/usr"; then
+if test "x$real_gdm_prefix" != "x/" -a "x$real_gdm_prefix" != "x/usr"; then
     GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
 fi
 
