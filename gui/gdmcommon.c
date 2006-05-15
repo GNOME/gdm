@@ -701,12 +701,8 @@ gdm_common_expand_text (const gchar *text)
 	      g_string_append (str, name.sysname);
 	      break;
 	    case 't':
-	      g_string_append_printf (str, "%d", gdm_timed_delay);
-              if (gdm_timed_delay != 1)
-		g_string_append (str, _(" seconds"));
-              else
-		g_string_append (str, _(" second"));
-	      break;
+	      g_string_append_printf (str, ngettext("%d second", "%d seconds", gdm_timed_delay),
+				      gdm_timed_delay);
 	    case 'u':
 	      g_string_append (str, ve_sure_string (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)));
 	      break;
