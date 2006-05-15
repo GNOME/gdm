@@ -1,5 +1,28 @@
 Ahh news...
 
+2.15.3 Stuff:
+
+- No longer use popt in favor of glib's GOption command line parsing.
+  Note that this removes the single-dash options GDM used to support
+  (such as the gdm -nodaemon option which is now --nodaemon) which
+  were originally supported so GDM would be more like XDM.  Users who
+  depend on the single dash options will need to change to use the
+  non-deprecated double-dash options.  (Christian Kirbach)
+
+- Fix bug that was causing ShowGnomeFailsafeSession and 
+  ShowGnomeXtermSession configuration values to not work. (Brian
+  Cameron)
+
+- Now add gdm-ssh-session to distribution tarball, and fix the
+  ssh-session.desktop file so that it sets the right TryExec
+  value even if --libexecdir isn't passed into configure.
+  (Brian Cameron)
+
+- Use ngettext in gui/gdmcommon.c for building the Timed Login
+  message.  (Benoit Dejean)
+
+- Translation updates (Chao-Hsiung Liao, Gora Mohanty, Ankit Patel)
+
 2.15.2 Stuff:
 
 - Correct build to include translation files.
@@ -68,6 +91,37 @@ Ahh news...
 - Many updates to documentation.  Explain gtk-theme greeter tag, new button and
   pam-error-icon, and startover greeter types, and better info about PAM.
   (Brian Cameron)
+
+2.14.6 stuff:
+
+- Backporting some useful features from 2.15 to 2.14.   Per-display
+  configuration and new gdmgreeter theming options (real GTK+ buttons,
+  pam-error-logo, and "startagain" stock label is displayed as "Cancel".
+  Note that the default themes shipped with GDM 2.14 do not use these
+  features, but this patch means newer themes made with 2.15 should now
+  work with this version of 2.14 and above. No strings were changed due
+  to this change.  (Brian Cameron, Erwann Chenede)
+
+- Improvements to signal handling, fixing problem where GDM slave can
+  hang on read.  Fixes bug #336549.  (Ed Catmur, Brian Cameron)
+
+- Better configure support for FreeBSD.  Now the default configuration
+  should be better integrated with kernel/system interfaces.  (Joe
+  Marcus Clark)
+
+- Fix security/AllowRemoteAutoLogin and fix SuspendCommand configuration
+  so it honors SystemMenu.  (Brian Cameron)
+
+- Correct installation of gdm-ssh-session and now the desktop file is
+  translated.  (Brian Cameron)
+
+- Correct invocation of PreFetch, when enabled, so it only executes
+  once.  (Brian Cameron)
+
+- Translation updates (Josep Puigdemont Casamaj\303\263, Beno\303\256t
+  Dejean, Pema Geyleg, Inaki Larranaga, Daniel Nylander, Ignacio Casal
+  Quinteiro, Francisco Javier F. Serrador, Alexander Shopov, Ilkka
+  Tuohela, Funda Wang)
 
 2.14.5 stuff:
 
