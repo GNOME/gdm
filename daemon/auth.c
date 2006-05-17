@@ -723,7 +723,11 @@ try_user_add_again:
 	d->userauth = NULL;
 
 	umask (022);
-
+	/* check if authdir is fallback dir if not try it with the fallback dir */
+	if (strcmp(gdm_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK),authdir) != 0 ){
+		authdir = gdm_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK); 
+		goto try_user_add_again;
+	}
 	if ( ! d->authfb) {
 		automatic_tmp_dir = TRUE;
 		goto try_user_add_again;
