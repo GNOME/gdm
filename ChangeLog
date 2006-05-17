@@ -1,3 +1,10 @@
+2006-05-17  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/auth.c: Check if authdir is the fallback dir.  If not,
+	  and GDM cannot access the user's $HOME directory, then try and
+	  fallback directory.  Fixes bug #342116.  Patch provided
+	  by Arjan Timmerman <arjan@soulfly.nl>.
+
 2006-05-15  Brian Cameron  <brian.cameron@sun.com>
 
         * configure.ac: Fix configure so it builds the path to use for
