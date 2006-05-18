@@ -216,13 +216,13 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	if test '!' -d $(DESTDIR)$(logdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(logdir); \
 		chmod 755 $(DESTDIR)$(logdir); \
-		chown root:root $(DESTDIR)$(logdir); \
+		chown root:root $(DESTDIR)$(logdir) || : ; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(authdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(authdir); \
 		chmod 1770 $(DESTDIR)$(authdir); \
-		chown root:gdm $(DESTDIR)$(authdir); \
+		chown root:gdm $(DESTDIR)$(authdir) || : ; \
 	fi
 
 	system=`uname`; \
