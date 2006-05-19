@@ -679,6 +679,7 @@ gdm_cleanup_children (void)
     gint exitstatus = 0, status;
     GdmDisplay *d = NULL;
     gboolean crashed;
+    gboolean sysmenu;
 
     /* Pid and exit status of slave that died */
     pid = waitpid (-1, &exitstatus, WNOHANG);
@@ -766,7 +767,9 @@ gdm_cleanup_children (void)
     d->slavepid = 0;
     d->dispstat = DISPLAY_DEAD;
 
-    if ( ! gdm_get_value_bool (GDM_KEY_SYSTEM_MENU) &&
+    sysmenu = gdm_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU);
+
+    if ( ! sysmenu &&
 	(status == DISPLAY_RESTARTGDM ||
 	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_SUSPEND ||
@@ -786,8 +789,8 @@ gdm_cleanup_children (void)
 
     if (status == DISPLAY_RUN_CHOOSER) {
 	    /* use the chooser on the next run (but only if allowed) */
-	    if (gdm_get_value_bool (GDM_KEY_SYSTEM_MENU) &&
-		gdm_get_value_bool (GDM_KEY_CHOOSER_BUTTON))
+	    if (sysmenu && 
+		gdm_get_value_bool_per_display (d->name, GDM_KEY_CHOOSER_BUTTON))
 		    d->use_chooser = TRUE;
 	    status = DISPLAY_REMANAGE;
 	    /* go around the display loop detection, these are short
@@ -2295,9 +2298,18 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			send_slave_ack (d, NULL);
 		}
 	} else if (strcmp (msg, GDM_SOP_SUSPEND_MACHINE) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		gboolean sysmenu;
+
+		if (sscanf (msg, GDM_SOP_CHOSEN_THEME " %ld", &slave_pid) != 1)
+			return;
+		d = gdm_display_lookup (slave_pid);
+
 		gdm_info (_("Master suspending..."));
-		if (gdm_get_value_string (GDM_KEY_SUSPEND) != NULL &&
-		    gdm_get_value_bool (GDM_KEY_SYSTEM_MENU)) {
+
+		sysmenu = gdm_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU);
+		if (sysmenu && gdm_get_value_string (GDM_KEY_SUSPEND) != NULL) {
 			suspend_machine ();
 		}
 	} else if (strncmp (msg, GDM_SOP_CHOSEN_THEME " ",
@@ -3115,11 +3127,11 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		static gboolean done_prefetch = FALSE;
 
 		/*
-		 * If the key is for prefetch do it only once
-		 *
-		 * This key is not managed in per-display fashion, only config 
-		 * values that affect the GUI are.  So okay to process this 
-		 * first.
+		 * It is not meaningful to manage this in a per-display 
+		 * fashion since the prefetch program is only run once the
+		 * for the first display that requests the key.  So process
+		 * this first and return "Unsupported key" for requests
+		 * after the first request.
 		 */
 		if (strcmp (splitstr[0], GDM_KEY_PRE_FETCH_PROGRAM) == 0) {
 			if (done_prefetch) {
@@ -3173,16 +3185,17 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 					      "ERROR 1 File not found\n");
 		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
-		const gchar *sep = " ";
-		GdmDisplay *disp;
 		GdmLogoutAction logout_action;
+		GdmDisplay *disp;
 		GString *msg;
-		gboolean sysmenu = gdm_get_value_bool (GDM_KEY_SYSTEM_MENU);
+		const gchar *sep = " ";
+		gboolean sysmenu;
 
 		disp = gdm_connection_get_display (conn);
+		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
 
 		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
+		if ( ! GDM_CONN_AUTHENTICATED (conn) ||
 		     disp == NULL) {
 			gdm_info (_("%s request denied: "
 				    "Not authenticated"), "QUERY_LOGOUT_ACTION");
@@ -3227,9 +3240,10 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			&msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
-		gboolean sysmenu = gdm_get_value_bool (GDM_KEY_SYSTEM_MENU);
+		gboolean sysmenu;
 
 		disp = gdm_connection_get_display (conn);
+		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
 
 		/* Only allow locally authenticated connections */
 		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
@@ -3279,9 +3293,10 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			&msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
-		gboolean sysmenu = gdm_get_value_bool (GDM_KEY_SYSTEM_MENU);
+		gboolean sysmenu;
 
 		disp = gdm_connection_get_display (conn);
+		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
 
 		/* Only allow locally authenticated connections */
 		if ( ! GDM_CONN_AUTHENTICATED(conn) ||

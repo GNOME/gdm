@@ -614,14 +614,14 @@ gdm_get_custom_config (struct stat *statbuf)
 }
 
 /**
- * gdm_get_display_custom_config_file
+ * gdm_get_per_display_custom_config_file
  *
  * Returns the per-display config file for a given display
  * This is always the custom config file name with the display
  * appended, and never gdm.conf.
  */
 gchar *
-gdm_get_display_custom_config_file (gchar *display)
+gdm_get_per_display_custom_config_file (gchar *display)
 {
   g_strdup_printf ("%s%s", custom_config_file, display);
 }
@@ -722,6 +722,82 @@ gdm_get_value_bool (char *key)
 }
 
 /**
+ * Note that some GUI configuration parameters are read by the daemon,
+ * and in order for them to work, it is necessary for the daemon to 
+ * access a few keys in a per-display fashion.  These access functions
+ * allow the daemon to access these keys properly.
+ */
+
+/**
+ * gdm_get_value_int_per_display
+ *
+ * Gets the per-display version  of the configuration, or the default
+ * value if none exists.
+ */
+gint gdm_get_value_int_per_display (gchar *display, gchar *key)
+{
+   gchar *perdispval;
+
+   gdm_config_key_to_string_per_display (display, key, &perdispval);
+
+   if (perdispval != NULL) {
+      gint val = atoi (perdispval);
+      g_free (perdispval);
+      return val;
+   } else {
+      return (gdm_get_value_int (key));
+   }
+}
+ 
+/**
+ * gdm_get_value_bool_per_display
+ *
+ * Gets the per-display version  of the configuration, or the default
+ * value if none exists.
+ */
+gboolean gdm_get_value_bool_per_display (gchar *display, gchar *key)
+{
+   gchar *perdispval;
+
+   gdm_config_key_to_string_per_display (display, key, &perdispval);
+
+   if (perdispval != NULL) {
+      if (perdispval[0] == 'T' ||
+          perdispval[0] == 't' ||
+          perdispval[0] == 'Y' ||
+          perdispval[0] == 'y' ||
+          atoi (perdispval) != 0) {
+		g_free (perdispval);
+		return TRUE;
+       } else {
+		return FALSE;
+       }
+   } else {
+      return (gdm_get_value_bool (key));
+   }
+}
+ 
+/**
+ * gdm_get_value_string_per_display
+ *
+ * Gets the per-display version  of the configuration, or the default
+ * value if none exists.  Note that this value needs to be freed,
+ * unlike the non-per-display version.
+ */
+gchar * gdm_get_value_string_per_display (gchar *display, gchar *key)
+{
+   gchar *perdispval;
+
+   gdm_config_key_to_string_per_display (display, key, &perdispval);
+
+   if (perdispval != NULL) {
+      return perdispval;
+   } else {
+      return (g_strdup (gdm_get_value_string (key)));
+   }
+}
+
+/**
  * gdm_config_key_to_string_per_display
  *
  * If the key makes sense to be per-display, return the value,
@@ -736,18 +812,22 @@ gdm_get_value_bool (char *key)
 void
 gdm_config_key_to_string_per_display (gchar *display, gchar *key, gchar **retval)
 {
-   gchar *file = gdm_get_display_custom_config_file (display);
+   gchar *file;
    gchar **splitstr = g_strsplit (key, "/", 2);
    *retval = NULL;
 
    if (display == NULL)
       return;
 
+   file = gdm_get_per_display_custom_config_file (display);
+
    if (strcmp (ve_sure_string (splitstr[0]), "greeter") == 0 ||
        strcmp (ve_sure_string (splitstr[0]), "gui") == 0 ||
-       strcmp (ve_sure_string (key), GDM_KEY_PAM_STACK) == 0) {
+       is_key (key, GDM_KEY_PAM_STACK)) {
       gdm_config_key_to_string (file, key, retval);
    }
+
+   g_free (file);
 
    return;
 }

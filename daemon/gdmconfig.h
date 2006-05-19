@@ -29,6 +29,12 @@ gchar*         gdm_get_custom_config_file (void);
 gchar*         gdm_get_value_string     (gchar *key);
 gboolean       gdm_get_value_bool       (gchar *key);
 gint           gdm_get_value_int        (gchar *key);
+gchar*         gdm_get_value_string_per_display (gchar *display,
+                                                 gchar *key);
+gboolean       gdm_get_value_bool_per_display   (gchar *display,
+                                                 gchar *key);
+gint           gdm_get_value_int_per_display    (gchar *display,
+                                                 gchar *key);
 void           gdm_set_value_string     (gchar *key,
                                          gchar *value);
 void           gdm_set_value_bool       (gchar *key,
