@@ -845,13 +845,13 @@ authenticate_again:
     g_free (tmp_PAM_USER);
     tmp_PAM_USER = g_strdup (login);
 
-    /* Initialize a PAM session for the user */
-    /* First try to get value from a per-display config file, then use default */
-    gdm_config_key_to_string_per_display (
-       gdm_get_display_custom_config_file ((gchar *)display),
-       GDM_KEY_PAM_STACK, &pam_stack);
-    if (pam_stack == NULL)
-       pam_stack = g_strdup (gdm_get_value_string (GDM_KEY_PAM_STACK));
+    /*
+     * Initialize a PAM session for the user...
+     * Get value per-display so different displays can use different
+     * PAM Stacks, in case one display should use a different 
+     * authentication mechanism than another display.
+     */
+    pam_stack = gdm_get_value_string_per_display (display, GDM_KEY_PAM_STACK);
 
     if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
 	    if (started_timer)
@@ -1221,16 +1221,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 						_("Automatic login"),
 						login);
 
-    /* Initialize a PAM session for the user */
-    /* First try to get value from a per-display config file, then use default */
-    gdm_config_key_to_string_per_display (
-       gdm_get_display_custom_config_file ((gchar *)display),
-       GDM_KEY_PAM_STACK, &pam_stack);
-
-    if (pam_stack == NULL) {
-       pam_stack = g_strdup_printf ("%s-autologin",
-          gdm_get_value_string (GDM_KEY_PAM_STACK));
-    }
+    /*
+     * Initialize a PAM session for the user...
+     * Get value per-display so different displays can use different
+     * PAM Stacks, in case one display should use a different 
+     * authentication mechanism than another display.
+     */
+    pam_stack = gdm_get_value_string_per_display (display, GDM_KEY_PAM_STACK);
 
     if ( ! create_pamh (d, pam_stack, login, &standalone_pamc,
 			display, &pamerr)) {

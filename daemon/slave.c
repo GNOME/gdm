@@ -4929,18 +4929,22 @@ check_for_interruption (const char *msg)
 			break;
 		case GDM_INTERRUPT_CONFIGURE:
 			if (d->attached &&
-			    gdm_get_value_bool (GDM_KEY_CONFIG_AVAILABLE) &&
-			    gdm_get_value_bool (GDM_KEY_SYSTEM_MENU) &&
+			    gdm_get_value_bool_per_display (d->name, GDM_KEY_CONFIG_AVAILABLE) &&
+			    gdm_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
 			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_CONFIGURATOR))) {
 				do_configurator = TRUE;
 			}
 			break;
 		case GDM_INTERRUPT_SUSPEND:
 			if (d->attached &&
-			    gdm_get_value_bool (GDM_KEY_SYSTEM_MENU) &&
+			    gdm_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
 			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_SUSPEND))) {
-				gdm_slave_send (GDM_SOP_SUSPEND_MACHINE,
-						FALSE /* wait_for_ack */);
+			    	gchar *msg = g_strdup_printf ("%s %ld", 
+					GDM_SOP_SUSPEND_MACHINE,
+					(long)getpid ());
+
+				gdm_slave_send (msg, FALSE /* wait_for_ack */);
+				g_free (msg);
 			}
 			/* Not interrupted, continue reading input,
 			 * just proxy this to the master server */
