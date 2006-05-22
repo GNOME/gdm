@@ -182,6 +182,21 @@ greeter_item_event_handler (GnomeCanvasItem *item,
 
     if (info->mouse_over && info->id && callback_hash)
       greeter_item_run_action_callback (info->id);
+
+    /* Make sure entry has focus if a type BUTTON has been pressed. */
+    if (info->item_type == GREETER_ITEM_TYPE_BUTTON) {
+       GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+       GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+
+       if (entry_info && entry_info->item &&
+            GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+            GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
+         {
+           /* Make sure entry has focus after button press */
+           gtk_widget_grab_focus (entry);
+         }
+      }
+
     break;
     
   default:
