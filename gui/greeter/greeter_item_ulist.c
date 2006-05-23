@@ -52,6 +52,7 @@ static GtkWidget  *pam_entry = NULL;
 static GtkWidget  *user_list = NULL;
 
 static gboolean    selecting_user = FALSE;
+static gchar      *selected_user = NULL;
 
 enum
 {
@@ -60,6 +61,20 @@ enum
 	GREETER_ULIST_LOGIN_COLUMN,
 	GREETER_ULIST_ACTIVE_COLUMN
 };
+
+void
+greeter_item_ulist_unset_selected_user (void)
+{
+	if (selected_user != NULL)
+		g_free (selected_user);
+	selected_user = NULL;
+}
+
+gchar *
+greeter_item_ulist_get_selected_user (void)
+{
+	return selected_user;
+}
 
 static void
 check_for_displays (void)
@@ -170,6 +185,15 @@ greeter_populate_user_list (GtkTreeModel *tm)
 	}
 }
 
+void 
+greeter_item_ulist_select_user (gchar *login)
+{
+	printf ("%c%c%c%s\n", STX, BEL,
+		GDM_INTERRUPT_SELECT_USER, login);
+
+	fflush (stdout);
+}
+
 static void
 user_selected (GtkTreeSelection *selection, gpointer data)
 {
@@ -190,9 +214,10 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 				if (pamlabel == NULL) {
 					gdm_common_warning ("Theme broken: must have pam-message label!");
 				}
-				printf ("%c%c%c%s\n", STX, BEL,
-					GDM_INTERRUPT_SELECT_USER, login);
-				fflush (stdout);
+				greeter_item_ulist_select_user (login);
+				if (selected_user != NULL)
+					g_free (selected_user);
+				selected_user = g_strdup (login);
 			}
 		}
 	}

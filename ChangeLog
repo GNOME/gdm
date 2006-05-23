@@ -1,5 +1,16 @@
 2006-05-22  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmlogin.c, gui/greeter/greeter.c, 
+	  gui/greeter/greeter_item_ulist.[ch]: Now when a user is 
+	  selected and a bad password is entered, GDM remembers the
+	  username and just asks for the password again.  You now must
+	  hit the Cancel/Start Again button to unselect the user from
+	  the userlist.
+	* gui/greeter/greeter_action_language.[ch]: Fix prototype
+	  warning.
+
+2006-05-22  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/greeter/greeter_events.c:  Fix so that the entry field 
 	  always has focus after a button press, which wasn't working
 	  if the buttons were GTK+ style.

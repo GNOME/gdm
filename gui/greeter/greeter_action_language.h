@@ -23,7 +23,8 @@
 
 gint      greeter_language_get_save_language (void);
 gchar    *greeter_language_get_language      (const char      *old_language);
-void      greeter_language_handler           (void);
+void      greeter_language_handler           (GreeterItemInfo *info,
+					     gpointer user_data);
 
 #endif
 

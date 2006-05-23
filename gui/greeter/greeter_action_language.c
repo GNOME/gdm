@@ -211,7 +211,7 @@ tree_row_activated (GtkTreeView         *view,
  * cannot depend on callback data being passed in.
  */
 void
-greeter_language_handler (void)
+greeter_language_handler (GreeterItemInfo *info, gpointer user_data)
 {
   GtkWidget *view = NULL;
 

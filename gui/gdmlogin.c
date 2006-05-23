@@ -154,7 +154,8 @@ static guint timed_handler_id = 0;
 #if FIXME
 static char *selected_browser_user = NULL;
 #endif
-static gboolean selecting_user = TRUE;
+static gboolean  selecting_user = TRUE;
+static gchar    *selected_user = NULL;
 
 extern GList *sessions;
 extern GHashTable *sessnames;
@@ -1056,6 +1057,10 @@ gdm_login_cancel_button_press (GtkButton *button, GtkWidget *entry)
 {
 	GtkTreeSelection *selection;
 
+	if (selected_user != NULL)
+		g_free (selected_user);
+	selected_user = NULL;
+
 	if (browser != NULL) {
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
 		gtk_tree_selection_unselect_all (selection);
@@ -1582,6 +1587,15 @@ greeter_is_capslock_on (void)
   return (states.locked_mods & LockMask) != 0;
 }
 
+static void
+face_browser_select_user (gchar *login)
+{
+        printf ("%c%c%c%s\n", STX, BEL,
+                GDM_INTERRUPT_SELECT_USER, login);
+
+        fflush (stdout);
+}
+
 static gboolean
 gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
@@ -1592,6 +1606,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     GtkWidget *dlg;
     static gboolean replace_msg = TRUE;
     static gboolean messages_to_give = FALSE;
+    gboolean greeter_probably_login_prompt = FALSE;
 
     /* If this is not incoming i/o then return */
     if (cond != G_IO_IN) 
@@ -1633,13 +1648,16 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	if (strcmp (tmp, _("Username:")) == 0) {
+	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0) {
 		gdm_common_login_sound (gdm_config_get_string (GDM_KEY_SOUND_PROGRAM),
 					gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE),
 					gdm_config_get_bool   (GDM_KEY_SOUND_ON_LOGIN));
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Username:"));
+		greeter_probably_login_prompt = TRUE;
 	} else {
-		gtk_label_set_text (GTK_LABEL (label), tmp);
+		if (tmp != NULL)
+			gtk_label_set_text (GTK_LABEL (label), tmp);
+		greeter_probably_login_prompt = FALSE;
 	}
 	g_free (tmp);
 
@@ -1661,6 +1679,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	messages_to_give = FALSE;
 
 	login_window_resize (FALSE /* force */);
+
+        if (greeter_probably_login_prompt == TRUE && selected_user != NULL)
+		face_browser_select_user (selected_user);
 	break;
 
     case GDM_NOECHO:
@@ -1668,10 +1689,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	if (strcmp (tmp, _("Password:")) == 0) {
+	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0) {
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Password:"));
 	} else {
-		gtk_label_set_text (GTK_LABEL (label), tmp);
+		if (tmp != NULL)
+			gtk_label_set_text (GTK_LABEL (label), tmp);
 	}
 	g_free (tmp);
 
@@ -2092,7 +2114,6 @@ gdm_login_browser_populate (void)
     }
 }
 
-
 static void
 user_selected (GtkTreeSelection *selection, gpointer data)
 {
@@ -2121,9 +2142,10 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 		selected_browser_user = g_strdup (login);
 #endif
 		if (selecting_user) {
-			printf ("%c%c%c%s\n", STX, BEL,
-				GDM_INTERRUPT_SELECT_USER, login);
-			fflush (stdout);
+			face_browser_select_user (login);
+			if (selected_user != NULL)
+				g_free (selected_user);
+			selected_user = g_strdup (login);
   		}
   	}
   }

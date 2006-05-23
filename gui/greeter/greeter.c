@@ -131,6 +131,7 @@ greeter_ctrl_handler (GIOChannel *source,
     GreeterItemInfo *conversation_info;
     static GnomeCanvasItem *disabled_cover = NULL;
     gchar *language;
+    gchar *selected_user = NULL;
 
     /* If this is not incoming i/o then return */
     if (cond != G_IO_IN) 
@@ -180,8 +181,14 @@ greeter_ctrl_handler (GIOChannel *source,
 	}
 	greeter_ignore_buttons (FALSE);
 	greeter_item_ulist_enable ();
+
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, TRUE);
 	g_free (tmp);
+
+	/* Reselect selected user if any */
+	selected_user = greeter_item_ulist_get_selected_user ();
+	if (greeter_probably_login_prompt == TRUE && selected_user != NULL)
+		greeter_item_ulist_select_user (selected_user);
 	break;
 
     case GDM_NOECHO:
@@ -195,6 +202,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	greeter_ignore_buttons (FALSE);
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, FALSE);
 	g_free (tmp);
+
 	break;
 
     case GDM_MSG:
@@ -512,6 +520,7 @@ greeter_cancel_handler (GreeterItemInfo *info,
 {
    if (ignore_buttons == FALSE)
      {
+       greeter_item_ulist_unset_selected_user ();
        greeter_item_ulist_disable ();
        greeter_ignore_buttons (TRUE);
        printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CANCEL);
