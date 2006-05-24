@@ -1378,6 +1378,7 @@ main (int argc, char *argv[])
     GOptionContext *ctx;
     gchar *pidfile;
     const char *charset;
+    int i;
 
     /* semi init pseudorandomness */
     gdm_random_tick ();
@@ -1403,6 +1404,15 @@ main (int argc, char *argv[])
 
     ctx = g_option_context_new (_("- The GNOME login manager"));
     g_option_context_add_main_entries (ctx, options, _("main options"));
+
+    /* preprocess the arguments to support the xdm style -nodaemon
+     * option
+     */
+    for (i = 0; i < argc; i++) {
+	    if (strcmp (argv[i], "-nodaemon") == 0)
+	      argv[i] = (char *) "--nodaemon";
+    }
+
     g_option_context_parse (ctx, &argc, &argv, NULL);
     g_option_context_free (ctx);
 
