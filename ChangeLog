@@ -1,3 +1,10 @@
+2006-05-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.c: Remove some unused code.
+	* gui/gdmsetup.c: Fix so when you click on the include_all
+	  button, the Automatic/Timed login values update properly.
+	  Fixes bug #343203.
+
 2006-05-23  Brian Cameron  <brian.cameron@sun.com>
 
 	* Release 2.14.7: 
@@ -32,9 +39,9 @@
 
 2006-05-15  Brian Cameron  <brian.cameron@sun.com>
 
-        * configure.ac: Fix configure so it builds the path to use for
-          gdm-ssh-session desktop file properly if --libexecdir isn't
-          passed to configure.
+	* configure.ac: Fix configure so it builds the path to use for
+	  gdm-ssh-session desktop file properly if --libexecdir isn't
+	  passed to configure.
 
 2006-05-12  Brian Cameron  <brian.cameron@sun.com>
 
@@ -46,14 +53,14 @@
 
 2006-05-12  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmsession.c: Fix bug that was causing the
-          ShowGnomeFailsafeSession and ShowGnomeXtermSession configuration
-          values not to work right.
+	* gui/gdmsession.c: Fix bug that was causing the
+	  ShowGnomeFailsafeSession and ShowGnomeXtermSession configuration
+	  values not to work right.
 
 2006-05-12  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_geometry.c: Fix layout of buttons.
-          Patch provided by Erwann Chenede <erwann.chenede@sun.com>.
+	* gui/greeter/greeter_geometry.c: Fix layout of buttons.
+	  Patch provided by Erwann Chenede <erwann.chenede@sun.com>.
 
 2006-05-12  Brian Cameron  <brian.cameron@sun.com>
 
@@ -85,13 +92,13 @@
 
 2006-05-10  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/gdm.c: Fix reference to SystemMenu key as a boolean, not
-          a string, so that SuspendCommand works right.  Fixes bug #341312.
+	* daemon/gdm.c: Fix reference to SystemMenu key as a boolean, not
+	  a string, so that SuspendCommand works right.  Fixes bug #341312.
 
 2006-05-09  Brian Cameron  <brian.cameron@sun.com>
 
-        * config/ssh.desktop.in.in, po/POTFILES.in, utils/Makefile.am:
-          Finally fix bug #340960
+	* config/ssh.desktop.in.in, po/POTFILES.in, utils/Makefile.am:
+	  Finally fix bug #340960
 
 2006-05-09  Brian Cameron  <brian.cameron@sun.com>
 
@@ -102,9 +109,9 @@
 
 2006-05-09  Brian Cameron  <brian.cameron@sun.com>
 
-        * config/ssh.desktop.in.in:  Added new file.
-        * config/ssh.desktop.in: Remove old file.
-        * config/.cvsignore: Added generated ssh.desktop.in file.
+	* config/ssh.desktop.in.in:  Added new file.
+	* config/ssh.desktop.in: Remove old file.
+	* config/.cvsignore: Added generated ssh.desktop.in file.
 
 2006-05-09  Brian Cameron  <brian.cameron@sun.com>
 
@@ -112,42 +119,42 @@
 
 2006-05-09  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_geometry.c: Now be smarter about child
-          allocation width when working with fixed.
+	* gui/greeter/greeter_geometry.c: Now be smarter about child
+	  allocation width when working with fixed.
 
 2006-05-09  Brian Cameron  <brian.cameron@sun.com>
 
-        * configure.ac, config/Makefile.am, utils/Makefile.am: Fix the
-          installation of ssh.desktop and gdm-ssh-session so that the
-          desktop file is translated and gdm-ssh-session is installed
-          to libexecdir.  Fixes bugs #340958 and #340960.
+	* configure.ac, config/Makefile.am, utils/Makefile.am: Fix the
+	  installation of ssh.desktop and gdm-ssh-session so that the
+	  desktop file is translated and gdm-ssh-session is installed
+	  to libexecdir.  Fixes bugs #340958 and #340960.
 
 2006-05-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/slave.c: Fix reference to the security/AllowRemoteAutoLogin
-          so it is accessed as a boolean, not a string.  Fixes remote
-          autologin so it works again.
+	* daemon/slave.c: Fix reference to the security/AllowRemoteAutoLogin
+	  so it is accessed as a boolean, not a string.  Fixes remote
+	  autologin so it works again.
 
 2006-05-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/misc.c: Fix syntax.
+	* daemon/misc.c: Fix syntax.
 
 2006-05-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/display.c, daemon/slave.c, daemon/misc.c: Improvements to
-          signal handling, fixing problem where GDM slave can hang on read.
-          Fixes bug #336549.  Patch provided by Ed Catmur <ed@catmur.co.uk>.
-        * AUTHORS: Added Ed.
+	* daemon/display.c, daemon/slave.c, daemon/misc.c: Improvements to
+	  signal handling, fixing problem where GDM slave can hang on read.
+	  Fixes bug #336549.  Patch provided by Ed Catmur <ed@catmur.co.uk>.
+	* AUTHORS: Added Ed.
 
 2006-05-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * configure.ac: Fix invokation of PreFetch list.
+	* configure.ac: Fix invokation of PreFetch list.
 
 2006-05-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * configure.ac, daemon/gdmconfig.c, daemon/server.c:  Fixes to
-          better support FreeBSD.  Fixes bug #340668.  Patch provided by
-          Joe Marcus Clark <marcus@freebsd.org>.
+	* configure.ac, daemon/gdmconfig.c, daemon/server.c:  Fixes to
+	  better support FreeBSD.  Fixes bug #340668.  Patch provided by
+	  Joe Marcus Clark <marcus@freebsd.org>.
 
 2006-05-02  Brian Cameron  <brian.cameron@sun.com>
 
@@ -157,8 +164,8 @@
 
 2006-05-02  Brian Cameron  <brian.cameron@sun.com>
 
-        * config/gdm.conf-custom: Added comment before [servers] section
-          to address bug #340333.
+	* config/gdm.conf-custom: Added comment before [servers] section
+	  to address bug #340333.
 	* config/gdm.conf.in: Updated comments.
 
 2006-05-02  Brian Cameron  <brian.cameron@sun.com>
@@ -488,7 +495,7 @@
 2006-02-21  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/greeter/greeter_parser.c:  Add new "gtk-theme" property
-          to <greeter> tag theme xml format, so the theme can specify a
+	  to <greeter> tag theme xml format, so the theme can specify a
 	  GtkTheme to be used for gdmgreeter.  This allows theming of
 	  the "Options" menu and the entry field, and any other GTK+
 	  widgets used by gdmgreeter.  This also makes it possible to
@@ -586,7 +593,7 @@
 	  gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_events.c,
 	  gui/greeter/greeter_session.c, gui/greeter/greeter_system.c:
 	  Fix problem with options button and F10 menu not working if the
-          button is not in the theme.  This only affects buttons that can
+	  button is not in the theme.  This only affects buttons that can
 	  be in the F10 button but may not be in the theme (language, 
 	  system, session, halt, reboot, shutdown).  Fixes bug #330343.
 
@@ -602,12 +609,12 @@
 	  is sometimes run with the --command option when there is no 
 	  display.
 	* README, README.install: Updated with some new features and moved some
-          info to docs/C/gdm.xml where the info is more useful.
+	  info to docs/C/gdm.xml where the info is more useful.
 	* TODO: Updated.
 	* configure.ac: Fixed the mess about /usr/opensolaris/bin
 	* gui/greeter/greeter_system.c: Do not put tooltips on menus.  They are
-          a bad idea and their use is discouraged by the HIG because they break
-          a11y.
+	  a bad idea and their use is discouraged by the HIG because they break
+	  a11y.
 	* docs/C/gdm.xml: Updated docs with a bunch of information from the 
 	  README and README.install file that really belonged in the docs.
 
@@ -691,7 +698,7 @@
 	  the slave will sleep 1 second before retry (normally retries 5
 	  times).  If all retries fail, it will not try sleeping on subsequent
 	  calls to the daemon.  This greatly improves performance when the 
-          daemon is flooded with slave requests.  In normal usage, this will 
+	  daemon is flooded with slave requests.  In normal usage, this will 
 	  likely not happen, but it is good for GDM to not fail so easily.
 	  Added better debug.  Added gdm_comm_close function so that slaves
 	  can ask to close the socket when done reading config.  Now uses
@@ -1357,14 +1364,14 @@
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/modules/keymouselistener.c,
-          gui/modules/dwellmouselistener.c:  Backing out this fix.  It is not
+	* gui/modules/keymouselistener.c,
+	  gui/modules/dwellmouselistener.c:  Backing out this fix.  It is not
 	  needed.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/modules/keymouselistener.c,
-          gui/modules/dwellmouselistener.c:  Fix build on Darwin.  Fixes bug
+	* gui/modules/keymouselistener.c,
+	  gui/modules/dwellmouselistener.c:  Fix build on Darwin.  Fixes bug
 	  #322085.  Patch provided by dmacks@netspace.org.
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
@@ -1392,7 +1399,7 @@
 
 2005-11-22  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/gdmlogin.c: Now use GDK_RGB_DITHER_MAX so that GDM always
+	* gui/gdmlogin.c: Now use GDK_RGB_DITHER_MAX so that GDM always
 	  displays a nice background regardless of X configuration (X in 16bpp
 	  mode).  Fixes bug #322029.  Patch provided by Frederic Crozat.
 
@@ -1507,9 +1514,9 @@
 
 2005-11-11  Brian Cameron  <brian.cameron@sun.com>
 
-        * configure.ac: Update check for socklen_t so it includes sys/socket.h.
+	* configure.ac: Update check for socklen_t so it includes sys/socket.h.
 	  Some BSD platforms define socklen_t there.  Patch provided by
-          dmacks@netspace.org.  Fixes bug #320930.
+	  dmacks@netspace.org.  Fixes bug #320930.
 
 2005-11-09  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1666,7 +1673,7 @@
 
 2005-10-28  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/display.c: If the slave doesn't respond to a SIGTERM, try
+	* daemon/display.c: If the slave doesn't respond to a SIGTERM, try
 	  SIGKILL the second time.  GDM has a problem where it will sometimes
 	  stop managing a display because it just keeps waiting for a slave to
 	  die after sending it a SIGTERM.  Some users have found that this
@@ -1675,10 +1682,10 @@
 
 2005-10-28  Brian Cameron  <brian.cameron@sun.com.
 
-        * gui/gdmlogin.c,
-          gui/greeter/greeter_item_capslock.c: Patch to make GDM warn correctly
+	* gui/gdmlogin.c,
+	  gui/greeter/greeter_item_capslock.c: Patch to make GDM warn correctly
 	  about caps lock if an alternative keymap is enabled.  Now use
-          kbGetState instead of XkbGetIndicatorState.  Fixes bug #317732.
+	  kbGetState instead of XkbGetIndicatorState.  Fixes bug #317732.
 	  Patch provided by Michael Hofmann <mh21@piware.de>.
 
 2005-10-28  Jürg Billeter  <j@bitron.ch>
@@ -1772,7 +1779,7 @@
 2005-10-03  Brian Cameron <Brian.Cameron@sun.com>
 
 	* Release 2.8.0.5
-        * configure.in, NEWS, AUTHORS: Updated.
+	* configure.in, NEWS, AUTHORS: Updated.
 
 2005-10-03  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -1798,18 +1805,18 @@
 
 2005-09-28  William Jon McCann  <mccann@jhu.edu>
 
-        * gui/gdmflexiserver.c (is_program_in_path, maybe_lock_screen)
-        (run_logged_in_dialogue, main): Consolidate screensaver activation
+	* gui/gdmflexiserver.c (is_program_in_path, maybe_lock_screen)
+	(run_logged_in_dialogue, main): Consolidate screensaver activation
 	code.  Don't use deprecated gnome-exec.  Fixes #311497.
 
 2005-09-27  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/greeter/greeter_item_ulist.c: Now print syslog warning if GDM
+	* gui/greeter/greeter_item_ulist.c: Now print syslog warning if GDM
 	  theme has ulist but does not have pam-message.
 
 2005-09-26  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/gdmsetup.c, gui/gdmphotosetup.c:  Only set right/left mouse
+	* gui/gdmsetup.c, gui/gdmphotosetup.c:  Only set right/left mouse
 	  buttons to map to button1 when RUNNING_UNDER_GDM and now show hidden
 	  files by default in file dialogs.  Fixes bug #317152.
 	* gui/gdmflexiserver.c: Cleaned up startnew option.
@@ -1864,9 +1871,9 @@
 
 2005-09-14  Brian Cameron <Brian.Cameron@sun.com>
 
-        * gui/gdmsetup.c: Fix gdmsetup so that when user modifies
+	* gui/gdmsetup.c: Fix gdmsetup so that when user modifies
 	  Include/Exclude list, it also updates automatic/timed login dropdown
-          immediately.
+	  immediately.
 	* gui/modules/keymouselistener.c: Remove incorrect comment.
 
 2005-09-13  Brian Cameron <Brian.Cameron@sun.com>
@@ -1893,8 +1900,8 @@
 
 2005-09-06  Brian Cameron <Brian.Cameron@sun.com>
 
-        * Release 2.8.0.4.
-        * configure.in, NEWS: Updated.
+	* Release 2.8.0.4.
+	* configure.in, NEWS: Updated.
 
 2005-08-30  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -1950,8 +1957,8 @@
 
 2005-08-20  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.8.0.3.
-        * configure.in, NEWS: Updated.
+	* Release 2.8.0.3.
+	* configure.in, NEWS: Updated.
 
 2005-08-20  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2187,38 +2194,38 @@
 	* gui/face/sky.jpg: Updated images.
 
 	* gui/face/astronaut.jpg:
-        * gui/face/baseball.png:
-        * gui/face/butterfly.png:
-        * gui/face/cat-eye.jpg:
-        * gui/face/chess.jpg:
-        * gui/face/coffee.jpg:
-        * gui/face/energy-arc.jpg:
-        * gui/face/fish.jpg:
-        * gui/face/flake.jpg:
-        * gui/face/flower.jpg:
-        * gui/face/grapes.jpg:
-        * gui/face/guitar.jpg:
-        * gui/face/launch.jpg:
-        * gui/face/leaf.jpg:
-        * gui/face/lightning.jpg:
-        * gui/face/penguin.jpg:
-        * gui/face/puppy.jpg:
-        * gui/face/soccerball.png:
-        * gui/face/sunflower.jpg:
-        * gui/face/sunset.jpg:
-        * gui/face/tennis-ball.png:
-        * gui/face/yellow-rose.jpg: New images.  All
+	* gui/face/baseball.png:
+	* gui/face/butterfly.png:
+	* gui/face/cat-eye.jpg:
+	* gui/face/chess.jpg:
+	* gui/face/coffee.jpg:
+	* gui/face/energy-arc.jpg:
+	* gui/face/fish.jpg:
+	* gui/face/flake.jpg:
+	* gui/face/flower.jpg:
+	* gui/face/grapes.jpg:
+	* gui/face/guitar.jpg:
+	* gui/face/launch.jpg:
+	* gui/face/leaf.jpg:
+	* gui/face/lightning.jpg:
+	* gui/face/penguin.jpg:
+	* gui/face/puppy.jpg:
+	* gui/face/soccerball.png:
+	* gui/face/sunflower.jpg:
+	* gui/face/sunset.jpg:
+	* gui/face/tennis-ball.png:
+	* gui/face/yellow-rose.jpg: New images.  All
 	derived from images on wikipedia and wikimedia
 	with free licenses.
 
 	* gui/face/bonfire.jpg:
 	* gui/face/cdrom.jpg:
-        * gui/face/clock.jpg:
-        * gui/face/hollyleaf.jpg:
-        * gui/face/lamas.jpg:
-        * gui/face/seal.jpg:
-        * gui/face/skyline.jpg:
-        * gui/face/daisy.jpg: Removed.
+	* gui/face/clock.jpg:
+	* gui/face/hollyleaf.jpg:
+	* gui/face/lamas.jpg:
+	* gui/face/seal.jpg:
+	* gui/face/skyline.jpg:
+	* gui/face/daisy.jpg: Removed.
 	
 2005-07-22  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2553,12 +2560,12 @@
 	
 2005-05-16  Danilo \305\240egan  <dsegan@gmx.net>
 
-       * gui/gdmsetup-strings.c: Removed.
-       * gui/gdmchooser-strings.c: Removed.
+	* gui/gdmsetup-strings.c: Removed.
+	* gui/gdmchooser-strings.c: Removed.
 
-       * gui/Makefile.am: Remove gdmchooser-strings.c and gdmsetup-strings.c,
-	 as well as duplicate entries for glade files from EXTRA_DIST.  Fixes
-	 bug #55635
+	* gui/Makefile.am: Remove gdmchooser-strings.c and gdmsetup-strings.c,
+	  as well as duplicate entries for glade files from EXTRA_DIST.  Fixes
+	  bug #55635
 
 2005-05-16  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2911,7 +2918,7 @@
 
 2005-03-31  Steve Murphy  <murf@e-tools.com>
 
-        * configure.in: Added "rw" to ALL_LINGUAS.
+	* configure.in: Added "rw" to ALL_LINGUAS.
 
 2005-04-01  Brian Cameron  <Brian.Cameron@sun.com>
 
@@ -3086,7 +3093,7 @@ Thu Mar 10 14:16:00 2005  Adi Attar  <aattar@cvs.gnome.org>
 
 Tue Mar 08 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-        * gui/modules/AccessKeyMouseEvents.in: Added -u when launching
+	* gui/modules/AccessKeyMouseEvents.in: Added -u when launching
 	  magnifier so it is launched in horizontal split mode which works
 	  better.
 	* acconfig.h, configure.in, AccessDwellMouseEvents.in,
@@ -3196,17 +3203,17 @@ Mon Feb 14 16:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 Mon Feb 14 16:25:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
-        * gui/gdmwm.c:
-          (add_deco): Add PropertyChangeMask to notify mask.
-          (gdm_wm_update_struts): New, listen for strut changes.
-          (constrain_window): New, make sure a window doesn't overlap
-          struts that it doesn't own.
-          (event_process): Handle PropertyNotify events,
-          and call gdm_wm_update_struts and constrain_all_windows
-          if _NET_WM_STRUT property changes.
-          (constrain_all_windows): New, constrain all windows in the
-          gdmwm list.
-          Fixes bug #143634.  Adds STRUTS support to GDM2's light
+	* gui/gdmwm.c:
+	  (add_deco): Add PropertyChangeMask to notify mask.
+	  (gdm_wm_update_struts): New, listen for strut changes.
+	  (constrain_window): New, make sure a window doesn't overlap
+	  struts that it doesn't own.
+	  (event_process): Handle PropertyNotify events,
+	  and call gdm_wm_update_struts and constrain_all_windows
+	  if _NET_WM_STRUT property changes.
+	  (constrain_all_windows): New, constrain all windows in the
+	  gdmwm list.
+	  Fixes bug #143634.  Adds STRUTS support to GDM2's light
 	  window manager for better a11y support.  Makes gdm2 work
 	  better with gok.  Patch provided by Bill Haneman.
 
@@ -3273,7 +3280,7 @@ Tue Jan 28 15:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  versions of intltool.
 	* omf.make, xmldocs.make:  Fixed errors in "makedist".   I found a
 	  pointer to the fix here:
-    	  mail.gnome.org/archives/desktop-devel-list/2003-December/msg00587.html
+	  mail.gnome.org/archives/desktop-devel-list/2003-December/msg00587.html
 	* gui/Makefile.am, gui/greeter/themes/circles/Makefile.am,
 	  gui/modules/Makefile.am, gui/greeter/themes/happygnome/Makefile.am,
 	  config/Makefile.am, gui/greeter/themes/happygnome-list/Makefile.am:
@@ -3418,7 +3425,7 @@ Tue Sep 14 15:29:22 2004  George Lebl <jirka@5z.com>
 
 2004-08-27  Akagic Amila  <bono@linux.org.ba>
 
-        * configure.in: Added 'bs' to ALL_LINGUAS.
+	* configure.in: Added 'bs' to ALL_LINGUAS.
 
 Thu Aug 26 15:55:00 2004  Brian Cameron  <brian.cameron@sun.com>
 
@@ -3741,7 +3748,7 @@ Tue May 04 09:47:21 2004  George Lebl <jirka@5z.com>
 
 2004-04-09  John C Barstow  <jbowtie@amathaine.com>
 
-        * configure.in: Added "mi" (Maori) to ALL_LINGUAS.
+	* configure.in: Added "mi" (Maori) to ALL_LINGUAS.
 
 Fri Apr 16 16:02:53 2004  George Lebl <jirka@5z.com>
 
@@ -3768,7 +3775,7 @@ Tue Apr 13 11:22:00 2004  George Lebl <jirka@5z.com>
 
 2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
 
-        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
 
 2004-04-08 Vijaykumar Patwari <vijaykumar.patwari@wipro.com>
 
@@ -3799,7 +3806,7 @@ Tue Mar 30 15:47:33 2004  George Lebl <jirka@5z.com>
 
 2004-03-23  Guntupalli Karunakar  <karunakar@freedomink.org>
 
-        * configure.in: Added "mr" for Marathi in ALL_LINGUAS.
+	* configure.in: Added "mr" for Marathi in ALL_LINGUAS.
 
 2004-03-18  Gareth Owen  <gowen72@yahoo.com>
 
@@ -4038,11 +4045,11 @@ Tue Jan 06 16:06:12 2004  George Lebl <jirka@5z.com>
 Tue Jan 06  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* gui/modules/dwellmouselistener.c,
-      gui/modules/keymouselistener.c:  Moved include of vicious.h 
-      before gnome.h because gnome.h causes macros to be defined
-      for dcgettext, dgettext, gettext, textdomain, bindtextdomain.
-      And this causes a conflict with Solaris libintl.h which is
-      included by locale.h which is included by vicious.h.
+	  gui/modules/keymouselistener.c:  Moved include of vicious.h 
+	  before gnome.h because gnome.h causes macros to be defined
+	  for dcgettext, dgettext, gettext, textdomain, bindtextdomain.
+	  And this causes a conflict with Solaris libintl.h which is
+	  included by locale.h which is included by vicious.h.
  
 Tue Jan 06 11:49:29 2004  George Lebl <jirka@5z.com>
 
@@ -4119,7 +4126,7 @@ Fri Jan 02 16:31:34 2004  George Lebl <jirka@5z.com>
 
 2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
 
-        * configure.in: Added "hr" in ALL_LINGUAS.
+	* configure.in: Added "hr" in ALL_LINGUAS.
 
 Thu Jan 01 11:24:30 2004  Ray Strode <halfline@hawaii.rr.com>
 
@@ -4239,7 +4246,7 @@ Fri Dec 12 17:14:41 2003  George Lebl <jirka@5z.com>
 
 Fri Dec 12 09:36:34 2003  George Lebl <jirka@5z.com>
  
-        * gui/gdmcomm.c: check ownership of /tmp/.gdm_socket before using
+	* gui/gdmcomm.c: check ownership of /tmp/.gdm_socket before using
 
 Wed Dec 10 18:40:48 2003  George Lebl <jirka@5z.com>
 
@@ -4259,9 +4266,9 @@ Wed Dec 10 15:44:53 2003  George Lebl <jirka@5z.com>
 
 Wed Dec 10 15:36:31 2003  George Lebl <jirka@5z.com>
 
-        * daemon/display.c: Fix #126465 where xdmcp_sessions would not
-          get decremented on normal logout.  Doh!  Just do a recount of
-          all the limits on display dispose that is just a lot more robust.
+	* daemon/display.c: Fix #126465 where xdmcp_sessions would not
+	  get decremented on normal logout.  Doh!  Just do a recount of
+	  all the limits on display dispose that is just a lot more robust.
 
 	* daemon/xdmcp.c: minor cosmetic cleanup
 
@@ -5196,7 +5203,7 @@ Wed Aug 13  Brian Cameron <Brian.Cameron@Sun.COM>
 	* acconfig.h, configure.in: add check for fbconsole (fallback
 	  (console)
 	* daemon/server.c: add call to start fbconsole (if present)
-          after the Xserver starts.
+	  after the Xserver starts.
 
 Tue Aug 12 17:48:45 2003  George Lebl <jirka@5z.com>
 
@@ -6587,16 +6594,16 @@ Tue Jun 03 13:37:31 2003  George Lebl <jirka@5z.com>
 
 Tue Jun 03 11:11:20 2003  George Lebl <jirka@5z.com>
 
-        * gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c:
-          whack subtype, though read it from "legacy" xml files into "type"
-          (as long as type was "system"), also add a "config" stock label
-          if someone really wanted to do a config button.  If the type
-          is now config, halt, reboot, suspend or chooser, automatically
-          check if SystemMenu is enabled, which avoids the whole subtype
-          nonsense.
+	* gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c:
+	  whack subtype, though read it from "legacy" xml files into "type"
+	  (as long as type was "system"), also add a "config" stock label
+	  if someone really wanted to do a config button.  If the type
+	  is now config, halt, reboot, suspend or chooser, automatically
+	  check if SystemMenu is enabled, which avoids the whole subtype
+	  nonsense.
  
-        * gui/greeter/greeter.dtd:  Update for the above and also add the
-          stock labels for config and chooser
+	* gui/greeter/greeter.dtd:  Update for the above and also add the
+	  stock labels for config and chooser
 
 Tue Jun 03 10:41:03 2003  George Lebl <jirka@5z.com>
 
@@ -6874,13 +6881,13 @@ Mon May 05 13:33:28 2003  George Lebl <jirka@5z.com>
 
 2003-04-30 Niall Power <Niall.Power@Sun.COM>
 
-        * configure.in config/gdm.conf.in gui/Makefile.am gui/gdmlogin.c
-          po/POTFILES.in
-         Added Files: gui/modules/AccessKeyMouseEvents.in, 
-         gui/modules/Makefile.am, gui/modules/keymouselistener.c
+	* configure.in config/gdm.conf.in gui/Makefile.am gui/gdmlogin.c
+	  po/POTFILES.in
+	 Added Files: gui/modules/AccessKeyMouseEvents.in, 
+	 gui/modules/Makefile.am, gui/modules/keymouselistener.c
  	 Added a keyboard/mouse button gesture listener. This is a gtk
-         module that is configurable by editing AccessKeyMouseEvents
-         in ($sysconfdir)/gdm/modules
+	 module that is configurable by editing AccessKeyMouseEvents
+	 in ($sysconfdir)/gdm/modules
 
 2003-04-30  Laurent Dhima <laurenti@alblinux.net>
 
@@ -7080,8 +7087,8 @@ Thu Jan 02 10:53:35 2003  George Lebl <jirka@5z.com>
 Sat Dec 21 14:30:01 2002  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter.c: Fixing #94554, by drawing the BackgroundColor
-          on the background always.  This doesn't make any difference
-          on local displays, but should look less bad on Xinerama displays.
+	  on the background always.  This doesn't make any difference
+	  on local displays, but should look less bad on Xinerama displays.
 
 Sat Dec 21 14:05:40 2002  George Lebl <jirka@5z.com>
 
@@ -7463,7 +7470,7 @@ Tue Aug 13 11:52:28 2002  George Lebl <jirka@5z.com>
 Tue Aug 13 08:27:18 2002  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in: update comment on top to be correct
-          (USR1 vs. HUP) redhat bug 71308
+	  (USR1 vs. HUP) redhat bug 71308
 
 Thu Aug 08 09:36:11 2002  George Lebl <jirka@5z.com>
 
@@ -9069,9 +9076,9 @@ Fri Feb  8 17:33:20 2002  Jonathan Blandford  <jrb@redhat.com>
 
 	* gui/gdmconfig-strings.c: Fixed a typo.
 
-        * config/gettextfoo.h: Fixed a typo.
-        * daemon/verify-pam.c: Ditto.
-        * gui/gdmconfig-strings.c: Ditto.
+	* config/gettextfoo.h: Fixed a typo.
+	* daemon/verify-pam.c: Ditto.
+	* gui/gdmconfig-strings.c: Ditto.
 
 2002-01-30  Alex Larsson  <alexl@redhat.com>
 
@@ -11530,7 +11537,7 @@ Sun Apr 29 18:06:25 2001  George Lebl <jirka@5z.com>
 
 Sun Apr 29 21:40:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
-        * gui/gdmconfig.c, gui/gdmconfig.glade: Add the "run configurator"
+	* gui/gdmconfig.c, gui/gdmconfig.glade: Add the "run configurator"
 	  options and gdmconfig path to gdmconfig itself. (hmmm).
 	
 	* gui/gdmconfig.c, gui/gdmconfig.glade: Add a new notebook tab to
@@ -11581,7 +11588,7 @@ Sat Apr 28 16:01:48 2001  George Lebl <jirka@5z.com>
 
 Sat Apr 28 17:50:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
-        * gui/gdmlogin.c, daemon/gdm.h, config/gdm.conf.in: Add the option
+	* gui/gdmlogin.c, daemon/gdm.h, config/gdm.conf.in: Add the option
 	  (and relevant paths in the config) to run gdmconfig from the system
 	  menu in gdmlogin. Disabled by default for obvious reasons. This
 	  closes bug #53783.
@@ -11842,7 +11849,7 @@ Mon Mar 05 18:17:42 2001  George Lebl <jirka@5z.com>
 
 Mon Mar 05 23:41:40 2001  Lee Mallabone <lee0@callnetuk.com>
 
-        * gui/gdmconfig.[ch]: Fix bug that caused only values of 0 and 1 for
+	* gui/gdmconfig.[ch]: Fix bug that caused only values of 0 and 1 for
 	  RelaxPerms to be used/written.
 
 	* gui/gdmconfig.glade: Change RelaxPerms toggle to 3 radio buttons,
@@ -11850,7 +11857,7 @@ Mon Mar 05 23:41:40 2001  Lee Mallabone <lee0@callnetuk.com>
 
 Mon Mar 05 22:42:54 2001  Lee Mallabone <lee0@callnetuk.com>
 
-        * gui/Makefile.am: Change shared directory for glade files
+	* gui/Makefile.am: Change shared directory for glade files
 	  to allow centralized storage of all gdm .glade files.
 	  Link gdmchooser against libglade.
 	
@@ -11889,7 +11896,7 @@ Sun Mar 04 12:27:50 2001  George Lebl <jirka@5z.com>
 
 Sun Mar  4 16:13:55 2001  Lee Mallabone <lee0@callnetuk.com>
 
-        * docs/gdmconfig/*: Added initial directory structure/files for
+	* docs/gdmconfig/*: Added initial directory structure/files for
 	the gdmconfig user guide. Not installed yet.
 	
 	* docs/gdmconfig/C/gdmconfig.sgml: Initial gdmconfig user guide
@@ -11902,7 +11909,7 @@ Wed Feb 28 19:23:42 2001  George Lebl <jirka@5z.com>
 
 Web Feb 28 18:47:14 2001  Lee Mallabone <lee0@callnetuk.com>
 
-        * gdmconfig-pam, gdmconfig-security: New files to support
+	* gdmconfig-pam, gdmconfig-security: New files to support
 	privileged non-root users running gdmconfig.
 	
 	* Makefile.am, configure.in, gdm.spec.in: Add option to configure
@@ -11916,7 +11923,7 @@ Tue Feb 27 16:44:34 2001  George Lebl <jirka@5z.com>
 
 Tue Feb 27 13:27:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
-        * gui/gdmconfig.c, gui/gdmconfig-strings.c, gui/gdmconfig.glade:
+	* gui/gdmconfig.c, gui/gdmconfig-strings.c, gui/gdmconfig.glade:
 	Fix version number and add bugzilla URL to about box.
 
 2001-02-27  Gediminas Paulauskas <menesis@delfi.lt>
@@ -12095,8 +12102,8 @@ Thu Feb 01 17:05:54 2001  George Lebl <jirka@5z.com>
 	  configuratior (gui/gdmconfig.c) to include the screen option
 
 	* gui/gdmlogin.c, configure.in: added support for Xinerama, 
-          the new key greeter/XineramaScreen selects on which screen the 
-          greeter will be centered
+	  the new key greeter/XineramaScreen selects on which screen the 
+	  greeter will be centered
 
 Thu Feb 01 04:49:11 2001  George Lebl <jirka@5z.com>
 
@@ -12392,7 +12399,7 @@ Tue Jan 09 18:50:51 2001  George Lebl <jirka@5z.com>
 	* daemon/verify.c (gdm_verify_user): Added fix for expired
  	passwords when using PAM (Philip Spencer
  	<pspencer@fields.utoronto.ca>).
-  
+
 1999-11-11    <mkp@mkp.net>
 
 	* daemon/misc.c (gdm_setenv): New function to work around POSIX
@@ -12415,7 +12422,7 @@ Tue Jan 09 18:50:51 2001  George Lebl <jirka@5z.com>
 
 1999-10-21  Sergey Panov <sipan@mit.edu>
 
-        * configure.in (ALL_LINGUAS): Added ru.
+	* configure.in (ALL_LINGUAS): Added ru.
 
 1999-10-03    <mkp@mkp.net>
 
@@ -12492,7 +12499,7 @@ Tue Jan 09 18:50:51 2001  George Lebl <jirka@5z.com>
 
 1999-09-03  Zbigniew Chyla  <chyla@alice.ci.pwr.wroc.pl>
 
-        * configure.in (ALL_LINGUAS): Added pl.
+	* configure.in (ALL_LINGUAS): Added pl.
 
 1999-09-01    <mkp@mkp.net>
 
@@ -13036,7 +13043,7 @@ Tue Jan 09 18:50:51 2001  George Lebl <jirka@5z.com>
  	gdm_slave_windows_kill to hang on second login. The X server takes
  	a while to recover consciousness after a reset. I take this into
  	account by sleeping for a while if XOpenDisplay fails.
-  	Unfortunately, dsp was already initialized in second run
+	Unfortunately, dsp was already initialized in second run
  	(but invalid after the X server reset) causing my retry condition
  	to be ignored. Always check your pointers! *sigh*
 
@@ -13136,7 +13143,7 @@ Tue Jan 09 18:50:51 2001  George Lebl <jirka@5z.com>
 
 	* config/Makefile.am (install-data-hook): Make sure that
  	install-data-hook depends on targets gdm.conf gnomerc and Gnome.
-  	Otherwise they are never built.  Also, if the directories that
+	Otherwise they are never built.  Also, if the directories that
  	these files are supposed to go in don't exist, create them with
  	the proper mode.
 
@@ -13274,7 +13281,7 @@ Thu Sep 24 22:09:39 CEST 1998 Jochen Friedrich <jochen@scram.de>
 
 1998-09-10  Miguel de Icaza  <miguel@nuclecu.unam.mx>
 
-        * src/gdm.c (gdm_config_parse): Simplify as well.
+	* src/gdm.c (gdm_config_parse): Simplify as well.
 
 	* src/gdmgreeter.c (gdm_greeter_user_alloc): Fix my oversimplication
 	from last night.
