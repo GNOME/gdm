@@ -1,5 +1,13 @@
 2006-05-30  Brian Cameron  <brian.cameron@sun.com>
 
+	* vicious-extensions/ve-config.c: Now save in
+	  UTF-8 format to avoid putting non-ASCII values in
+	  the config file, such as with the "Welcome" string.
+	  Fixes bug #335713.  Patch provided by Frederic
+	  Peters <fpeters@entrouvert.com>
+
+2006-05-30  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm.c: Remove some unused code.
 	* gui/gdmsetup.c: Fix so when you click on the include_all
 	  button, the Automatic/Timed login values update properly.
