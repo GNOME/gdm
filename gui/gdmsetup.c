@@ -2190,6 +2190,20 @@ setup_face (void)
 	                  G_CALLBACK (browser_apply), &fc);
 }
 
+static void
+include_all_toggle (GtkWidget *toggle)
+{
+	if (GTK_TOGGLE_BUTTON (toggle)->active)
+		GdmIncludeAll = TRUE;
+	else
+		GdmIncludeAll = FALSE;
+
+	setup_user_combobox_list ("autologin_combo",
+			  GDM_KEY_AUTOMATIC_LOGIN);
+	setup_user_combobox_list ("timedlogin_combo",
+			  GDM_KEY_TIMED_LOGIN);
+}
+
 static gboolean
 greeter_toggle_timeout (GtkWidget *toggle)
 {
@@ -2222,6 +2236,10 @@ greeter_toggle_timeout (GtkWidget *toggle)
 		}
 		gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
 		update_greeters ();
+
+		if (strcmp (ve_sure_string (key), GDM_KEY_INCLUDE_ALL) == 0) {
+			include_all_toggle (toggle);
+		}
 	}
 
 	return FALSE;
@@ -2314,20 +2332,6 @@ local_background_type_toggled (GtkWidget *toggle)
 }
 
 static void
-include_all_toggle (GtkWidget *toggle)
-{
-	if (GTK_TOGGLE_BUTTON (toggle)->active)
-		GdmIncludeAll = TRUE;
-	else
-		GdmIncludeAll = FALSE;
-
-	setup_user_combobox_list ("autologin_combo",
-			  GDM_KEY_AUTOMATIC_LOGIN);
-	setup_user_combobox_list ("timedlogin_combo",
-			  GDM_KEY_TIMED_LOGIN);
-}
-
-static void
 setup_greeter_toggle (const char *name,
 		      const char *key)
 {
@@ -2391,8 +2395,6 @@ setup_greeter_toggle (const char *name,
 			G_CALLBACK (list_selection_toggled), fb_includeremove);
 		g_signal_connect (G_OBJECT (toggle), "toggled",	
 			G_CALLBACK (sensitive_entry_toggled), fb_includelabel);
-		g_signal_connect (G_OBJECT (toggle), "toggled",	
-			G_CALLBACK (include_all_toggle), NULL);
 	}
 	else if (strcmp ("acc_sound_ready", ve_sure_string (name)) == 0) {
 	
@@ -6533,7 +6535,7 @@ main (int argc, char *argv[])
 	GdmIconMaxHeight   = gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
 	GdmIconMaxWidth    = gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH);
 	GdmMinimalUID      = gdm_config_get_int (GDM_KEY_MINIMAL_UID);
-	GdmIncludeAll      = gdm_config_get_bool ( GDM_KEY_INCLUDE_ALL);
+	GdmIncludeAll      = gdm_config_get_bool (GDM_KEY_INCLUDE_ALL);
 	GdmInclude         = gdm_config_get_string (GDM_KEY_INCLUDE);
 	GdmExclude         = gdm_config_get_string (GDM_KEY_EXCLUDE);
 	GdmSoundProgram    = gdm_config_get_string (GDM_KEY_SOUND_PROGRAM);

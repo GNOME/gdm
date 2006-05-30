@@ -111,7 +111,7 @@
 
       <para>Nota: las distribuciones a menudo cambian los valores predeterminados de las claves para soportar su plataforma. Los interfaces de línea de comandos para los programas GDM instalados en <filename>&lt;bin&gt;</filename> y <filename>&lt;sbin&gt;</filename> se consideran estables. Refiérase a su documentación de la distribución para ver si hay cualquier cambio específico de la distribución a estos interfaces de GDM y qué soporte existe para ellos.</para>
 
-      <para>As of the GDM 2.15 development series one-dash arguments are no longer supported. This includes the "-nodaemon" argument used by <command>gdm</command> and <command>gdm-binary</command>. It also includes the "-xdmaddress", "-clientaddress", and "-connectionType" arguments used by <command>gdmchooser</command>. These arguments have been changed to now use two dashes. GDM previously supported the one-dash arguments to be more similar with the XDM login manager, but one-dash command line arguments is deprecated in the GNOME stack.</para>
+      <para>As of the GDM 2.15 development series, some one-dash arguments are no longer supported. This includes the "-xdmaddress", "-clientaddress", and "-connectionType" arguments used by <command>gdmchooser</command>. These arguments have been changed to now use two dashes.</para>
 
       <para>Si se descubrieran problemas que rompiesen la compatibilidad, por favor envíe un error con una prioridad «urgente».</para>
     </sect2>
@@ -2775,7 +2775,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           <varlistentry>
             <term>--nodaemon</term>
             <listitem>
-              <para>If this option is specified, then GDM does not fork into the background when run. Note that you cannot use the single-dash option any more that e.g. XDM understands.</para>
+              <para>If this option is specified, then GDM does not fork into the background when run. You can also use a single-dash version, "-nodaemon" for compatibility with other display managers.</para>
             </listitem>
           </varlistentry>
 

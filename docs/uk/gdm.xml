@@ -111,7 +111,7 @@
 
       <para>Note: distributions often change the default values of keys to support their platform. Command-line interfaces for GDM programs installed to <filename>&lt;bin&gt;</filename> and <filename>&lt;sbin&gt;</filename> are considered stable. Refer to your distribution documentation to see if there are any distribution-specific changes to these GDM interfaces and what support exists for them.</para>
 
-      <para>As of the GDM 2.15 development series one-dash arguments are no longer supported. This includes the "-nodaemon" argument used by <command>gdm</command> and <command>gdm-binary</command>. It also includes the "-xdmaddress", "-clientaddress", and "-connectionType" arguments used by <command>gdmchooser</command>. These arguments have been changed to now use two dashes. GDM previously supported the one-dash arguments to be more similar with the XDM login manager, but one-dash command line arguments is deprecated in the GNOME stack.</para>
+      <para>As of the GDM 2.15 development series, some one-dash arguments are no longer supported. This includes the "-xdmaddress", "-clientaddress", and "-connectionType" arguments used by <command>gdmchooser</command>. These arguments have been changed to now use two dashes.</para>
 
       <para>If issues are discovered that break compatibility, please file a bug with an "urgent" priority.</para>
     </sect2>
@@ -2773,7 +2773,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           <varlistentry>
             <term>--nodaemon</term>
             <listitem>
-              <para>If this option is specified, then GDM does not fork into the background when run. Note that you cannot use the single-dash option any more that e.g. XDM understands.</para>
+              <para>If this option is specified, then GDM does not fork into the background when run. You can also use a single-dash version, "-nodaemon" for compatibility with other display managers.</para>
             </listitem>
           </varlistentry>
 

@@ -3162,25 +3162,16 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			g_strfreev (splitstr);
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
-		GString *msg;
-
-		msg = g_string_new ("OK");
-		g_string_append (msg, "\n");
 		gdm_connection_printf (conn, "OK %s\n", config_file);
-		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_GET_CUSTOM_CONFIG_FILE) == 0) {
-		GString *msg;
 		gchar *ret;
 
-		msg = g_string_new ("OK");
-		g_string_append (msg, "\n");
 		ret = gdm_get_custom_config_file ();
 		if (ret)
 			gdm_connection_printf (conn, "OK %s\n", ret);
 		else
 			gdm_connection_write (conn,
 					      "ERROR 1 File not found\n");
-		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
 		GdmLogoutAction logout_action;
 		GdmDisplay *disp;
