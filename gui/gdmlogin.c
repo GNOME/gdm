@@ -798,6 +798,8 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 static void
 gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 {
+	gtk_widget_set_sensitive (browser, FALSE);
+
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 

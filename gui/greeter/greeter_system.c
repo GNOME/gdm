@@ -119,6 +119,11 @@ greeter_suspend_handler (void)
 static void
 greeter_config_handler (void)
 {
+        greeter_item_ulist_disable ();
+
+        /* Make sure to unselect the user */
+        greeter_item_ulist_unset_selected_user ();
+
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
