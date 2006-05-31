@@ -641,6 +641,13 @@ set_screen_to_pos (int x, int y)
 static void
 gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 {
+	gtk_widget_set_sensitive (browser, FALSE);
+
+	/* Make sure to unselect the user */
+	if (selected_user != NULL)
+		g_free (selected_user);
+	selected_user = NULL;
+
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 

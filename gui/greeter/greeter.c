@@ -161,7 +161,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 	
 	greeter_item_pam_set_user (buf);
-	greeter_item_ulist_enable ();
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
@@ -180,7 +179,6 @@ greeter_ctrl_handler (GIOChannel *source,
 		greeter_probably_login_prompt = FALSE;
 	}
 	greeter_ignore_buttons (FALSE);
-	greeter_item_ulist_enable ();
 
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, TRUE);
 	g_free (tmp);
@@ -328,6 +326,8 @@ greeter_ctrl_handler (GIOChannel *source,
 	printf ("%c\n", STX);
 	fflush (stdout);
 	greeter_ignore_buttons (FALSE);
+        greeter_item_ulist_enable ();
+
 	break;
 
     case GDM_QUIT:
@@ -1350,6 +1350,8 @@ main (int argc, char *argv[])
   gtk_widget_show_all (window);
   gtk_window_move (GTK_WINDOW (window), gdm_wm_screen.x, gdm_wm_screen.y);
   gtk_widget_show_now (window);
+
+  greeter_item_ulist_unset_selected_user ();
 
   /* can it ever happen that it'd be NULL here ??? */
   if G_UNLIKELY (window->window != NULL)

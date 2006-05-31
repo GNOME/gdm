@@ -65,6 +65,10 @@ enum
 void
 greeter_item_ulist_unset_selected_user (void)
 {
+	GtkTreeSelection *selection;
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (user_list));
+	gtk_tree_selection_unselect_all (selection);
+
 	if (selected_user != NULL)
 		g_free (selected_user);
 	selected_user = NULL;
@@ -350,8 +354,6 @@ greeter_item_ulist_setup (void)
 			force_no_tree_separators (user_list);
 
 			greeter_generate_userlist (user_list);
-			if ( ! DOING_GDM_DEVELOPMENT)
-				greeter_item_ulist_disable ();
 
 			/* Reset size of the widget canvas item so it
 			 * is the same size as the userlist.  This
