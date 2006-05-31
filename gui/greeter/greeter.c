@@ -1352,6 +1352,7 @@ main (int argc, char *argv[])
   gtk_widget_show_now (window);
 
   greeter_item_ulist_unset_selected_user ();
+  greeter_item_ulist_enable ();
 
   /* can it ever happen that it'd be NULL here ??? */
   if G_UNLIKELY (window->window != NULL)
