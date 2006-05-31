@@ -25,5 +25,6 @@ gboolean greeter_item_ulist_setup (void);
 void greeter_item_ulist_enable (void);
 void greeter_item_ulist_disable (void);
 void greeter_item_ulist_set_user (const char *user);
+void greeter_item_ulist_unset_selected_user (void);
 
 #endif
