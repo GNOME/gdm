@@ -906,6 +906,9 @@ gestures_filter (GdkXEvent *gdk_xevent,
 
 				envp = get_exec_environment (xevent);
 
+				if (debug_gestures)
+				    syslog (LOG_WARNING, "Action is %s", action);
+
 				retval = g_spawn_async (NULL,
 							argv,
 							envp,

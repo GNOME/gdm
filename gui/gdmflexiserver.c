@@ -729,7 +729,7 @@ main (int argc, char *argv[])
 	if (args != NULL && args[0] != NULL)
 		server = args[0];
 
-	if ( ! gdmcomm_check (TRUE)) {
+	if ( ! gdmcomm_check (FALSE)) {
 		return 1;
 	}
 

@@ -1,3 +1,16 @@
+2006-06-06  Brian Cameron  <brian.cameron@sun.com>
+
+        * gui/gdmflexiserver.c:  Call gdmcomm_check with FALSE so that ti
+          doesn't try to pop-up a GUI.  Sometimes gdmflexiserver is called
+          by processes that do not have access to the display so this causes
+          a crash, and gdmflexiserver prints out errors anyway.
+        * gui/modules/AccessDwellMouseEvents.in: Added gestures so you can
+          run the same commands as in AccessKeyMouseEvents.in with dwell
+          gestures.
+        * gui/modules/AccessKeyMouseEvents.in: Cleanup
+        * gui/modules/keymouselisttener.c, gui/modules/dwellmouselistener.c:
+          Added debug.
+
 2006-05-31  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter.c,
