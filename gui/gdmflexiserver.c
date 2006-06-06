@@ -727,7 +727,7 @@ main (int argc, char *argv[])
 	if (args_remaining != NULL && args_remaining[0] != NULL)
 		server = args_remaining[0];
 
-	if ( ! gdmcomm_check (TRUE)) {
+	if ( ! gdmcomm_check (FALSE)) {
 		return 1;
 	}
 

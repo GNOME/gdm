@@ -643,6 +643,9 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 
 			envp = get_exec_environment (gtk_window_get_screen(window));
 
+			if (debug_gestures)
+				syslog (LOG_WARNING, "Action is %s", action);
+
 			retval = g_spawn_async (NULL, argv, envp,
 				G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
 
