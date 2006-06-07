@@ -1,5 +1,55 @@
 Ahh news...
 
+2.15.4 Stuff:
+
+- Correction for serious security issue where the user can enter the
+  GDM configuration GUI with a user password when the Face Browser
+  is enabled.  Refer to bugzilla.gnome.org bug #343476 and
+  CVE-2006-2452.  (Brian Cameron)
+
+- Fixed bug where when the "Include All" button is modified in the
+  Users tab, the Automatic/Timed login dropdown lists update
+  properly.  (Brian Cameron)
+
+- Now gdmflexiserver calls gdmcomm_check with FALSE so it will not
+  pop up a dialog.  gdmflexiserver can be run with the --command
+  option which can be used when the user does not have permission to
+  a DISPLAY, so trying to show a dialog was causing gdmflexiserver
+  to core dump when the check failed.   (Brian Cameron)
+
+- Added gestures to the AccessKeyMouseEvents configuration file
+  so that users can access more accessibility features using
+  dwell gestures.  (Brian Cameron)
+
+- Now Welcome message is saved in the configuration file in 
+  UTF-8 format for better readibility.  (Frederic Peters)
+
+- The GDM daemon once again supports the -nodaemon option.
+  (Ray Strode)
+
+- Improvements to Face Browser.  Now do not ask the user to
+  re-enter username on password failure.  The cancel button
+  must now be used to unselect a user.  (Brian Cameron)
+
+- Now when GTK+ style buttons are used in gdmgreeter themes, 
+  focus always returns to the entry field after clicking on
+  a button.  (Brian Cameron)
+
+- Now per-display configuration works for greeter/SystemMenu
+  and greeter/ChooserButton keys.  (Brian Cameron)
+
+- "make install" no longer fails if chown fails.  (Brian
+   Cameron)
+
+- If authdir is the fallback dir.  If not, and GDM cannot 
+  access the user's $HOME directory, then try and use the
+  fallback directory.  (Arjan Timmerman)
+
+- Translation updates (Pema Geyleg, Theppitak Karoonboonyanan,
+  Gabor Kelemen, Priit Laes, Kjartan Maraas, Ankit Patel,
+  Ignacio Casal Quinteiro, Francisco Javier F. Serrador,
+  Clytie Siddall, Alexander Shopov, Vincent van Adrighem)
+
 2.15.3 Stuff:
 
 - No longer use popt in favor of glib's GOption command line parsing.
@@ -91,6 +141,31 @@ Ahh news...
 - Many updates to documentation.  Explain gtk-theme greeter tag, new button and
   pam-error-icon, and startover greeter types, and better info about PAM.
   (Brian Cameron)
+
+2.14.8 stuff:
+
+- Correction for serious security issue where the user can enter the
+  GDM configuration GUI with a user password when the Face Browser
+  is enabled.  Refer to bugzilla.gnome.org bug #343476 and
+  CVE-2006-2452.  (Brian Cameron)
+
+- Fixed bug where when the "Include All" button is modified in the
+  Users tab, the Automatic/Timed login dropdown lists update
+  properly.  (Brian Cameron)
+
+- Now gdmflexiserver calls gdmcomm_check with FALSE so it will not
+  pop up a dialog.  gdmflexiserver can be run with the --command
+  option which can be used when the user does not have permission to
+  a DISPLAY, so trying to show a dialog was causing gdmflexiserver
+  to core dump when the check failed.   (Brian Cameron)
+
+- Added gestures to the AccessKeyMouseEvents configuration file
+  so that users can access more accessibility features using
+  dwell gestures.  (Brian Cameron)
+
+- Translation updates (Laurent Dhima, Pema Geyleg, Theppitak
+  Karoonboonyanan, Gabor Kelemen, Ahmad Riza H Nst, Vincent
+  van Adrighem)
 
 2.14.7 stuff:
 
@@ -690,6 +765,17 @@ Other Changes:
 - Translation updates (Takeshi AIHANA, Runa Bhattacharjee, Priit Laes,
   Chao-Hsiung Liao, Ignacio Casal Quinteiro, Vincent van Adrighem, Funda Wang,
   Adam Weinberger)
+
+2.8.0.8 stuff:
+
+- Correction for serious security issue where the user can enter the
+  GDM configuration GUI with a user password when the Face Browser
+  is enabled.  Refer to bugzilla.gnome.org bug #343476 and
+  CVE-2006-2452. (Brian Cameron)
+
+- Translation updates (Stanislav Brabec, Josep Puigdemont i
+  Casamaj\303\263, Abel Cheung, Priit Laes, Christophe Merlet, Clytie
+  Siddall, \303\205smund Skj\303\246veland, Tommi Vainikainen)
 
 2.8.0.7 stuff:
 
