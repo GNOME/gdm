@@ -1,5 +1,30 @@
 Ahh news...
 
+2.14.8 stuff:
+
+- Correction for serious security issue where the user can enter the
+  GDM configuration GUI with a user password when the Face Browser
+  is enabled.  Refer to bugzilla.gnome.org bug #343476 and
+  CVE-2006-2452.  (Brian Cameron)
+
+- Fixed bug where when the "Include All" button is modified in the
+  Users tab, the Automatic/Timed login dropdown lists update 
+  properly.  (Brian Cameron)
+
+- Now gdmflexiserver calls gdmcomm_check with FALSE so it will not
+  pop up a dialog.  gdmflexiserver can be run with the --command
+  option which can be used when the user does not have permission to
+  a DISPLAY, so trying to show a dialog was causing gdmflexiserver
+  to core dump when the check failed.   (Brian Cameron)
+
+- Added gestures to the AccessKeyMouseEvents configuration file
+  so that users can access more accessibility features using
+  dwell gestures.  (Brian Cameron)
+
+- Translation updates (Laurent Dhima, Pema Geyleg, Theppitak
+  Karoonboonyanan, Gabor Kelemen, Ahmad Riza H Nst, Vincent
+  van Adrighem)
+
 2.14.7 stuff:
 
 - Correct build/install issues with gdm-ssh-session and the desktop
