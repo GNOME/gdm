@@ -1200,7 +1200,6 @@ parse_gtkbutton (xmlNodePtr node,
   xmlNodePtr child;
   char *translated_text  = NULL;
   gint translation_score = 1000;
-  int i;
 
   child = node->children;
 

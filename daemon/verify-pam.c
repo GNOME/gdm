@@ -1199,6 +1199,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     const void *p;
     char *passreq;
     char *pam_stack = NULL;
+    char *pam_service_name = NULL;
     int null_tok = 0;
     gboolean credentials_set;
     const char *after_login;
@@ -1228,13 +1229,16 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
      * authentication mechanism than another display.
      */
     pam_stack = gdm_get_value_string_per_display (display, GDM_KEY_PAM_STACK);
+    pam_service_name = g_strdup_printf ("%s-autologin", pam_stack);
 
-    if ( ! create_pamh (d, pam_stack, login, &standalone_pamc,
+    if ( ! create_pamh (d, pam_service_name, login, &standalone_pamc,
 			display, &pamerr)) {
             g_free (pam_stack);
+            g_free (pam_service_name);
 	    goto setup_pamerr;
     }
     g_free (pam_stack);
+    g_free (pam_service_name);
 
     passreq = gdm_read_default ("PASSREQ=");
     if ((passreq != NULL) &&

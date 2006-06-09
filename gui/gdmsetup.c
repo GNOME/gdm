@@ -328,7 +328,7 @@ update_key (const char *key)
 	}
 }
 
-void 
+static void 
 gdm_setup_config_set_bool (const char *key, gboolean val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
@@ -346,7 +346,7 @@ gdm_setup_config_set_bool (const char *key, gboolean val)
 	update_key (key);
 }
 
-void 
+static void 
 gdm_setup_config_set_int (const char *key, int val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
@@ -364,7 +364,7 @@ gdm_setup_config_set_int (const char *key, int val)
 	update_key (key);
 }
 
-void 
+static void 
 gdm_setup_config_set_string (const char *key, gchar *val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
@@ -1506,6 +1506,7 @@ setup_notify_toggle (const char *name,
 	}
 }
 
+#ifdef HAVE_LIBXDMCP
 static void
 setup_xdmcp_notify_toggle (const char *name,
                            const char *key)
@@ -1526,6 +1527,7 @@ setup_xdmcp_notify_toggle (const char *name,
 	g_signal_connect (G_OBJECT (toggle), "toggled",
 		          G_CALLBACK (toggle_toggled), NULL);
 }
+#endif
 
 static const char *
 get_root_user (void)
@@ -1673,6 +1675,7 @@ setup_intspin (const char *name,
 			  G_CALLBACK (intspin_changed), NULL);
 }
 
+#ifdef HAVE_LIBXDMCP
 static void
 setup_xdmcp_intspin (const char *name,
 	             const char *key)
@@ -1694,6 +1697,7 @@ setup_xdmcp_intspin (const char *name,
 	g_signal_connect (G_OBJECT (spin), "value_changed",
 			  G_CALLBACK (intspin_changed), NULL);
 }
+#endif
 
 static GtkListStore *
 setup_include_exclude (GtkWidget *treeview, const char *key)
@@ -2616,6 +2620,7 @@ setup_greeter_untranslate_entry (const char *name,
 	g_free (val);
 }
 
+#ifdef HAVE_LIBXDMCP
 static void
 xdmcp_button_clicked (void)
 {
@@ -2649,6 +2654,7 @@ xdmcp_button_clicked (void)
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_hide (dialog);
 }
+#endif
 
 static void
 vt_spinbutton_activate (GtkWidget * widget,
@@ -4287,7 +4293,7 @@ xserver_entry_timeout (GtkWidget *entry)
 	GSList *li;
 	const char *key  = g_object_get_data (G_OBJECT (entry), "key");
 	const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
-	gchar *string_old;
+	gchar *string_old = NULL;
 	gchar *section;
 
 	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
@@ -4337,7 +4343,7 @@ xserver_toggle_timeout (GtkWidget *toggle)
 	GtkWidget *mod_combobox;
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	GSList     *li;
-	gboolean   val;
+	gboolean   val = FALSE;
 	gchar      *section;
 
 	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",

@@ -21,6 +21,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <fcntl.h>
@@ -31,7 +32,7 @@
 
 int out = 0;
 
-int
+static int
 doout(char *s)
 {
 	int fd;
@@ -54,14 +55,14 @@ doout(char *s)
 
 #define SIZE 1024*128
 
-int
+static int
 doin (char *s)
 {
 	int fd;
 	char buffer[SIZE];
 	
 	if ((fd = open(s, O_RDONLY)) < 0) {
-		fprintf (stderr, "fopen: %s %s\n", strerror(errno), s);
+		fprintf (stderr, "fopen: %s %s\n", strerror (errno), s);
 		return (-1);
 	}
 
@@ -80,7 +81,6 @@ main (int argc, char *argv[])
 	int c, errflg = 0;
 	extern int optind, optopt;
 	extern char *optarg;
-	int i;
 
 	while ((c = getopt (argc, argv, "o:")) != -1) {
 		switch (c) {

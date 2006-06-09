@@ -532,10 +532,10 @@ greeter_setup_items (void)
   greeter_item_timed_setup ();
   greeter_item_register_action_callback ("ok_button",
 					 greeter_ok_handler,
-					 window);
+					 (gpointer) window);
   greeter_item_register_action_callback ("cancel_button",
 					 greeter_cancel_handler,
-					 window);
+					 (gpointer) window);
   greeter_item_register_action_callback ("language_button",
 					 greeter_language_handler,
 					 NULL);
@@ -1035,7 +1035,6 @@ main (int argc, char *argv[])
   GIOChannel *ctrlch;
   GError *error;
   GreeterItemInfo *root;
-  const gchar *theme_name;
   char *theme_file;
   char *theme_dir;
   gchar *gdm_graphical_theme;

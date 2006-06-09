@@ -28,6 +28,7 @@
 #include "greeter_configuration.h"
 #include "greeter_system.h"
 #include "greeter_item.h"
+#include "greeter_item_ulist.h"
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"

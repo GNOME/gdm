@@ -566,7 +566,6 @@ greeter_item_size_request (GreeterItemInfo *item,
 #define ITEM_BUTTON_MIN_RECOMMANDED_WIDTH_OFFSET 15      
 #define ITEM_BUTTON_MIN_RECOMMANDED_HEIGHT_OFFSET 10
       PangoLayout *layout;
-      PangoFontDescription *font_desc;
       int pango_width, pango_height;
       int pix_width, pix_height;
       
