@@ -227,7 +227,7 @@ greeter_options_handler (GreeterItemInfo *item, GtkWidget *menubar)
 			item, 0, gtk_get_current_event_time());
 }
 
-void
+static void
 greeter_item_run_button_action_callback (GtkButton *button, const char *id)
 {
         greeter_item_run_action_callback (id);

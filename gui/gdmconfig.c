@@ -526,7 +526,7 @@ gdm_config_get_int (gchar *key)
  * socket command.  It stores the value in a hash so subsequent
  * access is faster.
  */
-gboolean
+static gboolean
 _gdm_config_get_bool (gchar *key, gboolean reload, gboolean *changed)
 {
 	gboolean *hashretval = NULL;

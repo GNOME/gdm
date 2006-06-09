@@ -107,18 +107,15 @@ static gchar *GdmRemoteGreeter = NULL;
 static gchar *GdmGtkModulesList = NULL;
 static gchar *GdmChooser = NULL;
 static gchar *GdmLogDir = NULL;
-static gchar *GdmDisplayInit = NULL;
+static gchar *GdmDisplayInitDir = NULL;
 static gchar *GdmPostLogin = NULL;
 static gchar *GdmPreSession = NULL;
 static gchar *GdmPostSession = NULL;
 static gchar *GdmFailsafeXserver = NULL;
 static gchar *GdmXKeepsCrashing = NULL;
 static gchar *GdmHalt = NULL;
-static gchar *GdmHaltReal = NULL;
 static gchar *GdmReboot = NULL;
-static gchar *GdmRebootReal = NULL;
 static gchar *GdmSuspend = NULL;
-static gchar *GdmSuspendReal = NULL;
 static gchar *GdmServAuthDir = NULL;
 static gchar *GdmMulticastAddr;
 static gchar *GdmUserAuthDir = NULL;
@@ -198,31 +195,29 @@ static gboolean GdmConsoleNotify = TRUE;
 
 /* Config options used by slave */
 /* ---------------------------- */
-static gchar *GdmInitDir;
-static gchar *GdmGtkRc;
-static gchar *GdmGtkThemesToAllow;
-static gchar *GdmInclude;
-static gchar *GdmExclude;
-static gchar *GdmDefaultFace;
-static gchar *GdmLocaleFile;
-static gchar *GdmLogo;
-static gchar *GdmChooserButtonLogo;
-static gchar *GdmWelcome;
-static gchar *GdmRemoteWelcome;
-static gchar *GdmBackgroundProgram;
-static gchar *GdmBackgroundImage;
-static gchar *GdmBackgroundColor;
-static gchar *GdmGraphicalTheme;
-static gchar *GdmInfoMsgFile;
-static gchar *GdmInfoMsgFont;
-static gchar *GdmHost;
-static gchar *GdmHostImageDir;
-static gchar *GdmHosts;
-static gchar *GdmGraphicalThemeColor;
-static gchar *GdmGraphicalThemeDir;
-static gchar *GdmGraphicalThemes;
-static gchar *GdmPreFetchProgram;
-static gchar *GdmUse24Clock;
+static gchar *GdmGtkThemesToAllow = NULL;
+static gchar *GdmInclude = NULL;
+static gchar *GdmExclude = NULL;
+static gchar *GdmDefaultFace = NULL;
+static gchar *GdmLocaleFile = NULL;
+static gchar *GdmLogo = NULL;
+static gchar *GdmChooserButtonLogo = NULL;
+static gchar *GdmWelcome = NULL;
+static gchar *GdmRemoteWelcome = NULL;
+static gchar *GdmBackgroundProgram = NULL;
+static gchar *GdmBackgroundImage = NULL;
+static gchar *GdmBackgroundColor = NULL;
+static gchar *GdmGraphicalTheme = NULL;
+static gchar *GdmInfoMsgFile = NULL;
+static gchar *GdmInfoMsgFont = NULL;
+static gchar *GdmHost = NULL;
+static gchar *GdmHostImageDir = NULL;
+static gchar *GdmHosts = NULL;
+static gchar *GdmGraphicalThemeColor = NULL;
+static gchar *GdmGraphicalThemeDir = NULL;
+static gchar *GdmGraphicalThemes = NULL;
+static gchar *GdmPreFetchProgram = NULL;
+static gchar *GdmUse24Clock = NULL;
 
 static gint GdmPositionX;
 static gint GdmPositionY;
@@ -439,7 +434,7 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_X_KEEPS_CRASHING, &GdmXKeepsCrashing, &string_type);
    gdm_config_add_hash (GDM_KEY_BASE_XSESSION, &GdmBaseXsession, &string_type);
    gdm_config_add_hash (GDM_KEY_REMOTE_GREETER, &GdmRemoteGreeter, &string_type);
-   gdm_config_add_hash (GDM_KEY_DISPLAY_INIT_DIR, &GdmInitDir, &string_type);
+   gdm_config_add_hash (GDM_KEY_DISPLAY_INIT_DIR, &GdmDisplayInitDir, &string_type);
    gdm_config_add_hash (GDM_KEY_AUTOMATIC_LOGIN, &GdmAutomaticLogin, &string_type);
    gdm_config_add_hash (GDM_KEY_GTK_MODULES_LIST, &GdmGtkModulesList, &string_type);
    gdm_config_add_hash (GDM_KEY_REBOOT, &GdmReboot, &string_type);
@@ -458,7 +453,7 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_MULTICAST_ADDR, &GdmMulticastAddr, &string_type);
    gdm_config_add_hash (GDM_KEY_USER, &GdmUser, &string_type);
    gdm_config_add_hash (GDM_KEY_GROUP, &GdmGroup, &string_type);
-   gdm_config_add_hash (GDM_KEY_GTKRC, &GdmGtkRc, &string_type);
+   gdm_config_add_hash (GDM_KEY_GTKRC, &GdmGtkRC, &string_type);
    gdm_config_add_hash (GDM_KEY_GTK_THEME, &GdmGtkTheme, &string_type);
    gdm_config_add_hash (GDM_KEY_TIMED_LOGIN, &GdmTimedLogin, &string_type);
    gdm_config_add_hash (GDM_KEY_WILLING, &GdmWilling, &string_type);
@@ -620,10 +615,10 @@ gdm_get_custom_config (struct stat *statbuf)
  * This is always the custom config file name with the display
  * appended, and never gdm.conf.
  */
-gchar *
+static gchar *
 gdm_get_per_display_custom_config_file (gchar *display)
 {
-  g_strdup_printf ("%s%s", custom_config_file, display);
+  return g_strdup_printf ("%s%s", custom_config_file, display);
 }
  
 /**
@@ -1295,7 +1290,7 @@ gdm_set_value_bool (gchar *key, gboolean value)
    _gdm_set_value_bool (key, value, TRUE);
 }
 
-void
+static void
 _gdm_set_value_int (gchar *key, gint value, gboolean doing_update)
 {
    gint *setting     = gdm_config_hash_lookup (val_hash, key);
@@ -1638,7 +1633,7 @@ gdm_update_config (gchar* key)
    struct stat statbuf, custom_statbuf;
    VeConfig *cfg;
    VeConfig *custom_cfg = NULL;
-   gboolean rc;
+   gboolean rc = FALSE;
 
    /*
     * Do not allow these keys to be updated, since GDM would need
@@ -1698,7 +1693,7 @@ gdm_update_config (gchar* key)
       ve_config_destroy (cfg);
       if (custom_cfg != NULL)
          ve_config_destroy (custom_cfg);
-      return rc;
+      return TRUE;
    }
 
    type = gdm_config_hash_lookup (type_hash, key);

@@ -47,7 +47,7 @@ gboolean require_quarter = FALSE;
 
 extern gboolean greeter_probably_login_prompt;
 
-gboolean
+static gboolean
 greeter_item_pam_error_set (gboolean display)
 {
   GreeterItemInfo *info;

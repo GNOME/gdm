@@ -79,7 +79,6 @@ main (int argc, char *argv[])
     int background        = 0;
     gboolean error        = TRUE;
     gboolean conn_failed  = FALSE;
-    gboolean gdm_running;
 
     myname  = basename (argv[0]);
     argv[0] = myname;

@@ -328,7 +328,7 @@ update_key (const char *key)
 	}
 }
 
-void 
+static void 
 gdm_setup_config_set_bool (const char *key, gboolean val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
@@ -346,7 +346,7 @@ gdm_setup_config_set_bool (const char *key, gboolean val)
 	update_key (key);
 }
 
-void 
+static void 
 gdm_setup_config_set_int (const char *key, int val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
@@ -364,7 +364,7 @@ gdm_setup_config_set_int (const char *key, int val)
 	update_key (key);
 }
 
-void 
+static void 
 gdm_setup_config_set_string (const char *key, gchar *val)
 {
 	VeConfig *cfg        = ve_config_get (config_file);
@@ -2616,6 +2616,7 @@ setup_greeter_untranslate_entry (const char *name,
 	g_free (val);
 }
 
+#ifdef HAVE_LIBXDMCP
 static void
 xdmcp_button_clicked (void)
 {
@@ -2649,6 +2650,7 @@ xdmcp_button_clicked (void)
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_hide (dialog);
 }
+#endif
 
 static void
 vt_spinbutton_activate (GtkWidget * widget,
@@ -4287,7 +4289,7 @@ xserver_entry_timeout (GtkWidget *entry)
 	GSList *li;
 	const char *key  = g_object_get_data (G_OBJECT (entry), "key");
 	const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
-	gchar *string_old;
+	gchar *string_old = NULL;
 	gchar *section;
 
 	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
@@ -4337,7 +4339,7 @@ xserver_toggle_timeout (GtkWidget *toggle)
 	GtkWidget *mod_combobox;
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	GSList     *li;
-	gboolean   val;
+	gboolean   val = FALSE;
 	gchar      *section;
 
 	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
