@@ -627,7 +627,7 @@ gdm_config_reload_string (gchar *key)
 	return changed;
 }
 
-gboolean
+static gboolean
 gdm_config_reload_translated_string (gchar *key)
 {
 	gboolean changed;

@@ -1880,7 +1880,7 @@ gdm_load_displays (VeConfig *cfg, GList *list )
  *
  * Called by gdm_config_parse in a loop to set each key.
  */
-void
+static void
 gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
 {
    gchar *key               = (gchar *)key_in;

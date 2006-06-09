@@ -1506,6 +1506,7 @@ setup_notify_toggle (const char *name,
 	}
 }
 
+#ifdef HAVE_LIBXDMCP
 static void
 setup_xdmcp_notify_toggle (const char *name,
                            const char *key)
@@ -1526,6 +1527,7 @@ setup_xdmcp_notify_toggle (const char *name,
 	g_signal_connect (G_OBJECT (toggle), "toggled",
 		          G_CALLBACK (toggle_toggled), NULL);
 }
+#endif
 
 static const char *
 get_root_user (void)
@@ -1673,6 +1675,7 @@ setup_intspin (const char *name,
 			  G_CALLBACK (intspin_changed), NULL);
 }
 
+#ifdef HAVE_LIBXDMCP
 static void
 setup_xdmcp_intspin (const char *name,
 	             const char *key)
@@ -1694,6 +1697,7 @@ setup_xdmcp_intspin (const char *name,
 	g_signal_connect (G_OBJECT (spin), "value_changed",
 			  G_CALLBACK (intspin_changed), NULL);
 }
+#endif
 
 static GtkListStore *
 setup_include_exclude (GtkWidget *treeview, const char *key)
