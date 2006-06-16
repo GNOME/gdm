@@ -38,6 +38,7 @@
 #include "greeter_item_pam.h"
 #include "greeter_configuration.h"
 #include "greeter_events.h"
+#include "greeter_parser.h"
 
 #define LAST_SESSION "Last"
 #define LAST_LANGUAGE "Last"
@@ -186,7 +187,7 @@ greeter_session_lookup (const char *saved_session)
 	  g_free (secondmsg);
 	}
     }
-  
+
   return session;
 }
 
@@ -348,6 +349,8 @@ static void
 greeter_session_handler (GreeterItemInfo *info,
 			 gpointer         user_data)
 {
+  GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+  GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
   GSList *tmp;
   int ret;
   
@@ -399,6 +402,7 @@ greeter_session_handler (GreeterItemInfo *info,
 	  tmp = tmp->next;
 	}
     }
+  gtk_widget_grab_focus (entry);
 }
 
 void

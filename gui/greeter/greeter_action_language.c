@@ -213,6 +213,9 @@ tree_row_activated (GtkTreeView         *view,
 void
 greeter_language_handler (void)
 {
+  GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+  GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+
   GtkWidget *view = NULL;
 
   if (dialog == NULL)
@@ -331,5 +334,8 @@ greeter_language_handler (void)
 
   if (dialog)
     gtk_widget_hide (dialog);
+
+  /* Make sure entry has focus after button press */
+  gtk_widget_grab_focus (entry);
 }
 
