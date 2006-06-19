@@ -6474,7 +6474,7 @@ main (int argc, char *argv[])
 		exit (EXIT_FAILURE);
 	}
 	custom_config_file = gdm_common_get_custom_config_file ();
-	if (config_file == NULL) {
+	if (custom_config_file == NULL) {
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
 		g_print (_("Could not access GDM configuration file.\n"));
