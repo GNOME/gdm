@@ -2294,12 +2294,13 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
-	} else if (strcmp (msg, GDM_SOP_SUSPEND_MACHINE) == 0) {
+	} else if (strncmp (msg, GDM_SOP_SUSPEND_MACHINE " ",
+			    strlen (GDM_SOP_SUSPEND_MACHINE " ")) == 0) {
 		GdmDisplay *d;
 		long slave_pid;
 		gboolean sysmenu;
 
-		if (sscanf (msg, GDM_SOP_CHOSEN_THEME " %ld", &slave_pid) != 1)
+		if (sscanf (msg, GDM_SOP_SUSPEND_MACHINE " %ld", &slave_pid) != 1)
 			return;
 		d = gdm_display_lookup (slave_pid);
 
