@@ -318,7 +318,7 @@ get_typed_property_data (Display *xdisplay,
     }
   if (!abort && expected_format && expected_format != format_returned)
     {
-      g_warning (G_GNUC_PRETTY_FUNCTION "(): Expected format (%u) unmatched (%d), programmer was drunk?",
+      g_warning (G_GNUC_PRETTY_FUNCTION "(): Expected format (%u) unmatched (%d)",
 		 expected_format, format_returned);
       abort++;
     }
