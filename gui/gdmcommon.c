@@ -704,7 +704,7 @@ gdm_common_expand_text (const gchar *text)
 	      g_string_append_printf (str, ngettext("%d second", "%d seconds", gdm_timed_delay),
 				      gdm_timed_delay);
 	    case 'u':
-	      g_string_append (str, ve_sure_string (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)));
+	      g_string_append (str, ve_sure_string (g_getenv("GDM_TIMED_LOGIN_OK")));
 	      break;
 	    default:
 	      if (ch < 127)
