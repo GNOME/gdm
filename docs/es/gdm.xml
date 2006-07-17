@@ -53,7 +53,23 @@
       <year>2003</year><year>2004</year><holder>Sun Microsystems, Inc.</holder>
     </copyright><copyright><year>2003, 2006.</year><holder>Francisco Javier F. Serrador (serrador@openshine.com)</holder></copyright>
 
-    &legal;
+      <legalnotice id="legalnotice">
+	<para>Se concede permiso para copiar, distribuir o modificar este documento según las condiciones de la GNU Free Documentation License (GFDL), Versión 1.1 o cualquier versión posterior publicada por la Free Software Foundation sin Secciones invariantes, Textos de portada y Textos de contraportada. Encontrará una copia de la GFDL en este <ulink type="help" url="ghelp:fdl">enlace</ulink> o en el archivo COPYING-DOCS distribuido con este manual.</para>
+         <para>Este manual forma parte de una colección de documentos de GNOME distribuidos según la GFDL. Si desea distribuir este manual de forma independiente de la colección, puede hacerlo agregando una copia de la licencia al documento, según se describe en la sección 6 de la misma.</para>
+
+	<para>Muchos de los nombres utilizados por las empresas para distinguir sus productos y servicios se consideran marcas comerciales. Cuando estos nombres aparezcan en la documentación de GNOME, y siempre que se haya informado a los miembros del Proyecto de documentación de GNOME de dichas marcas comerciales, los nombres aparecerán en mayúsculas o con las iniciales en mayúsculas.</para>
+
+	<para>ESTE DOCUMENTO Y LAS VERSIONES MODIFICADAS DEL MISMO SE OFRECEN SEGÚN LAS CONDICIONES ESTABLECIDAS EN LA LICENCIA DE DOCUMENTACIÓN LIBRE DE GNU (GFDL) Y TENIENDO EN CUENTA QUE: <orderedlist>
+		<listitem>
+		  <para>EL DOCUMENTO SE ENTREGA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, NI EXPLÍCITA NI IMPLÍCITA INCLUYENDO, SIN LIMITACIÓN, GARANTÍA DE QUE EL DOCUMENTO O VERSIÓN MODIFICADA DE ÉSTE CAREZCA DE DEFECTOS EN EL MOMENTO DE SU VENTA, SEA ADECUADO A UN FIN CONCRETO O INCUMPLA ALGUNA NORMATIVA. TODO EL RIESGO RELATIVO A LA CALIDAD, PRECISIÓN Y UTILIDAD DEL DOCUMENTO O SU VERSIÓN MODIFICADA RECAE EN USTED. SI CUALQUIER DOCUMENTO O VERSIÓN MODIFICADA DE AQUÉL RESULTARA DEFECTUOSO EN CUALQUIER ASPECTO, USTED (Y NO EL REDACTOR INICIAL, AUTOR O AUTOR DE APORTACIONES) ASUMIRÁ LOS COSTES DE TODA REPARACIÓN, MANTENIMIENTO O CORRECCIÓN NECESARIOS. ESTA EXENCIÓN DE RESPONSABILIDAD SOBRE LA GARANTÍA ES UNA PARTE ESENCIAL DE ESTA LICENCIA. NO SE AUTORIZA EL USO DE NINGÚN DOCUMENTO NI VERSIÓN MODIFICADA DE ÉSTE POR EL PRESENTE, SALVO DENTRO DEL CUMPLIMIENTO DE LA EXENCIÓN DE RESPONSABILIDAD;Y</para>
+		</listitem>
+		<listitem>
+		  <para>EN NINGUNA CIRCUNSTANCIA NI BAJO NINGUNA TEORÍA LEGAL, SEA POR ERROR (INCLUYENDO NEGLIGENCIA) CONTRATO O DOCUMENTO DE OTRO TIPO, EL AUTOR, EL ESCRITOR INICIAL, EL AUTOR DE APORTACIONES NI NINGÚN DISTRIBUIDOR DEL DOCUMENTO O VERSIÓN MODIFICADA DEL DOCUMENTO, NI NINGÚN PROVEEDOR DE NINGUNA DE ESAS PARTES, SERÁ RESPONSABLE ANTE NINGUNA PERSONA POR NINGÚN DAÑO DIRECTO, INDIRECTO, ESPECIAL, INCIDENTAL O DERIVADO DE NINGÚN TIPO, INCLUYENDO, SIN LIMITACIÓN DAÑOS POR PÉRDIDA DE FONDO DE COMERCIO, PARO TÉCNICO, FALLO INFORMÁTICO O AVERÍA O CUALQUIER OTRO POSIBLE DAÑO O AVERÍA DERIVADO O RELACIONADO CON EL USO DEL DOCUMENTO O SUS VERSIONES MODIFICADAS, AUNQUE DICHA PARTE HAYA SIDO INFORMADA DE LA POSIBILIDAD DE QUE SE PRODUJESEN ESOS DAÑOS.</para>
+		</listitem>
+	  </orderedlist></para>
+  </legalnotice>
+
+
 
     <releaseinfo>Este manual describe la versión 2.15 del Gestor de entrada de Gnome. Se actualizó por última vez en 12/05/2006.</releaseinfo>  
   </articleinfo>
@@ -102,7 +118,13 @@
 
       <para>Nota: las distribuciones a menudo cambian los valores predeterminados de las claves para soportar su plataforma. Los interfaces de línea de comandos para los programas GDM instalados en <filename>&lt;bin&gt;</filename> y <filename>&lt;sbin&gt;</filename> se consideran estables. Refiérase a su documentación de la distribución para ver si hay cualquier cambio específico de la distribución a estos interfaces de GDM y qué soporte existe para ellos.</para>
 
-      <para>En las series de desarrollo 2.15 los argumentos de un solo guión no están soportados más. Esto incluye el argumento «-no-daemon» usado por <command>gdm</command> y <command>gdm-binary</command>. También incluye los argumentos  "-xdmaddress", "-clientaddress", y "-connectionType" usados por <command>gdmchooser</command>. Estos argumentos se han cambiado para que ahora usen dos guiones. GDM anteriormente soportaba los argumentos de un guión para ser más similar al gestor XDM, pero los argumentos de línea de comandos con un guión se han declarado obsoletos en la pila de GNOME.</para>
+      <para>
+        As of the GDM 2.15 development series, some one-dash arguments are no
+        longer supported.  This includes the "-xdmaddress",
+        "-clientaddress", and "-connectionType" arguments
+        used by <command>gdmchooser</command>.  These arguments have been
+        changed to now use two dashes.
+      </para>
 
       <para>Si se descubrieran problemas que rompiesen la compatibilidad, por favor envíe un error con una prioridad «urgente».</para>
     </sect2>
@@ -3838,7 +3860,12 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           <varlistentry>
             <term>--nodaemon</term>
             <listitem>
-              <para>Si se especifica esta opción, entonces GDM no se bifurca a un segundo plano cuando se ejecuta. Note que ya no puede usar la opción de un guión simple más que por ejemplo XDM entendería.</para>
+              <para>
+                If this option is specified, then GDM does not fork into the
+                background when run. You can also use a single-dash version,
+                "-nodaemon" for compatibility with other display
+                managers.
+              </para>
             </listitem>
           </varlistentry>
 
