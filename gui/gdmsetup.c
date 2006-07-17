@@ -5412,15 +5412,13 @@ background_filechooser_response (GtkWidget *file_chooser, gpointer data)
 
 	if (filename != NULL &&
 	   (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0)) {
-		g_signal_handlers_disconnect_by_func (file_chooser,
-			(gpointer) background_filechooser_response,
-			file_chooser);
-						      
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_chooser),
-			filename);
+		gchar *old_filename;
+		old_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
 
-		g_signal_connect (G_OBJECT (file_chooser), "selection-changed", 
-			G_CALLBACK (background_filechooser_response), file_chooser);
+		if (strcmp (old_filename, filename) == 0)
+			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_chooser),
+						       filename);
+		g_free (old_filename);
 
 		if (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0) {
 			gdm_setup_config_set_string (key, (char *)ve_sure_string (filename));
@@ -5449,7 +5447,7 @@ logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 	 * value to the default in this case seems to work around this.
 	 */
 	if (filename == NULL && !ve_string_empty (value))
-		filename = value;
+		filename = g_strdup (value);
 
 	if (filename == NULL) {
 		value    = gdm_config_get_string (GDM_KEY_CHOOSER_BUTTON_LOGO);
@@ -5470,15 +5468,14 @@ logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 
 	if (filename != NULL &&
 	   (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0)) {
-		g_signal_handlers_disconnect_by_func (file_chooser,
-						      (gpointer) logo_filechooser_response,
-						      file_chooser);
+		gchar *old_filename;
 						      
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_chooser),
-		                               filename);
+		old_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
 
-		g_signal_connect (G_OBJECT (file_chooser), "selection-changed", 
-       	                   G_CALLBACK (logo_filechooser_response), file_chooser);
+		if (strcmp (old_filename, filename) != 0)
+			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_chooser),
+						       filename);
+		g_free (old_filename);
 
 		if (GTK_TOGGLE_BUTTON (image_toggle)->active == TRUE) {
 			gdm_setup_config_set_string (key,
