@@ -840,6 +840,7 @@ gdm_config_key_to_string (gchar *file, gchar *key, gchar **retval)
    VeConfig *cfg = ve_config_get (file);
    GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
    gchar **splitstr = g_strsplit (key, "/", 2);
+   GList *list;
    *retval = NULL;
 
    /* Should not fail, all keys should have a category. */
@@ -850,7 +851,7 @@ gdm_config_key_to_string (gchar *file, gchar *key, gchar **retval)
    if (cfg == NULL)
       return;
 
-   GList *list = ve_config_get_keys (cfg, splitstr[0]);
+   list = ve_config_get_keys (cfg, splitstr[0]);
    while (list != NULL) {
       gchar *display_key     = (char *)list->data;
       gchar *display_fullkey = g_strdup_printf ("%s/%s", splitstr[0], display_key);
