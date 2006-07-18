@@ -32,11 +32,14 @@
 #include "gdmsession.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+#include "gdmwm.h"
 
 GHashTable *sessnames        = NULL;
 gchar *default_session       = NULL;
 const gchar *current_session = NULL;
 GList *sessions              = NULL;
+static gint save_session     = GTK_RESPONSE_NO;
+
 
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */
@@ -272,7 +275,7 @@ gdm_session_list_init ()
     /* Check that session dir is readable */
     if G_UNLIKELY ( ! some_dir_exists) {
 	gdm_common_error ("%s: Session directory <%s> not found!",
-		"gdm_login_session_init", ve_sure_string
+		"gdm_session_list_init", ve_sure_string
 		 (gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR)));
 	session_dir_whacked_out = TRUE;
     }
@@ -325,3 +328,152 @@ gdm_session_list_init ()
     if (current_session == NULL)
             current_session = default_session;
 }
+
+static gboolean
+gdm_login_list_lookup (GList *l, const gchar *data)
+{
+    GList *list = l;
+
+    if (list == NULL || data == NULL)
+        return FALSE;
+
+    /* FIXME: Hack, will support these builtin types later */
+    if (strcmp (data, GDM_SESSION_DEFAULT ".desktop") == 0 ||
+        strcmp (data, GDM_SESSION_CUSTOM ".desktop") == 0 ||
+        strcmp (data, GDM_SESSION_FAILSAFE ".desktop") == 0) {
+            return TRUE;
+    }
+
+    while (list) {
+
+        if (strcmp (list->data, data) == 0)
+            return TRUE;
+
+        list = list->next;
+    }
+
+    return FALSE;
+}
+
+char *
+gdm_session_lookup (const char *saved_session)
+{
+  gchar *session = NULL;
+  
+  /* Don't save session unless told otherwise */
+  save_session = GTK_RESPONSE_NO;
+
+  /* Previously saved session not found in ~/.dmrc */
+  if ( ! (saved_session != NULL &&
+	  strcmp ("(null)", saved_session) != 0 &&
+	  saved_session[0] != '\0')) {
+    /* If "Last" is chosen run default,
+     * else run user's current selection */
+    if (current_session == NULL || strcmp (current_session, LAST_SESSION) == 0)
+      session = g_strdup (default_session);
+    else
+      session = g_strdup (current_session);
+    
+    save_session = GTK_RESPONSE_YES;
+    return session;
+  }
+
+  /* If "Last" session is selected */
+  if (current_session == NULL ||
+      strcmp (current_session, LAST_SESSION) == 0)
+    { 
+      session = g_strdup (saved_session);
+      
+      /* Check if user's saved session exists on this box */
+      if (!gdm_login_list_lookup (sessions, session))
+	{
+	  gchar *firstmsg;
+	  gchar *secondmsg;
+	  
+          g_free (session);
+	  session = g_strdup (default_session);
+	  firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
+	                                "future sessions?"),
+	                              gdm_session_name (saved_session));	    
+	  secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
+	                                 "installed on this computer."),
+	                               gdm_session_name (default_session));
+	  save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+		_("Make _Default"), _("Just _Log In"), TRUE);
+	  g_free (firstmsg);
+	  g_free (secondmsg);
+	}
+    }
+  else /* One of the other available session types is selected */
+    { 
+      session = g_strdup (current_session);
+    
+      /* User's saved session is not the chosen one */
+      if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
+	  strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
+	  g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE ".desktop") == 0 ||
+	  g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE) == 0)
+	{
+          /*
+           * Never save failsafe sessions as the default session.
+           * These are intended to be used for debugging or temporary 
+           * purposes.
+           */
+	  save_session = GTK_RESPONSE_NO;
+	}
+      else if (strcmp (saved_session, session) != 0)
+	{
+	  gchar *firstmsg = NULL;
+	  gchar *secondmsg = NULL;
+	  
+	  if (gdm_config_get_bool (GDM_KEY_SHOW_LAST_SESSION))
+	    {
+	      firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
+	                                    "future sessions?"),
+	                                  gdm_session_name (session));
+	      secondmsg = g_strdup_printf (_("You have chosen %s for this "
+	                                     "session, but your default "
+	                                     "setting is %s."),
+	                                   gdm_session_name (session),
+	                                   gdm_session_name (saved_session));
+	      save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+			_("Make _Default"), _("Just For _This Session"), TRUE);
+	    }
+	  else if (strcmp (session, default_session) != 0 &&
+		   strcmp (session, saved_session) != 0 &&
+		   strcmp (session, LAST_SESSION) != 0)
+	    {
+	      /*
+	       * If (! GDM_KEY_SHOW_LAST_SESSION) then our saved session is
+	       * irrelevant, we are in "switchdesk mode" and the relevant
+	       * thing is the saved session in .Xclients
+	       */
+	      if (g_access ("/usr/bin/switchdesk", F_OK) == 0)
+	        {
+	          firstmsg = g_strdup_printf (_("You have chosen %s for this "
+	                                        "session"),
+	                                      gdm_session_name (session));
+	          secondmsg = g_strdup_printf (_("If you wish to make %s "
+	                                         "the default for future sessions, "
+	                                         "run the 'switchdesk' utility "
+	                                         "(System->Desktop Switching Tool from "
+	                                         "the panel menu)."),
+	                                       gdm_session_name (session));			 
+		  gdm_wm_message_dialog (firstmsg, secondmsg);
+		}
+	      save_session = GTK_RESPONSE_NO;
+	    }
+	  g_free (firstmsg);
+	  g_free (secondmsg);
+	}
+    }
+
+  return session;
+}
+
+gint
+gdm_get_save_session (void)
+{
+  return save_session;
+}
+

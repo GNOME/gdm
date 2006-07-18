@@ -257,10 +257,10 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	session = greeter_session_lookup (tmp);
+	session = gdm_session_lookup (tmp);
 	g_free (tmp);
 
-	if (greeter_save_session () == GTK_RESPONSE_CANCEL) {
+	if (gdm_get_save_session () == GTK_RESPONSE_CANCEL) {
 	     printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
 	} else {
 	    tmp = ve_locale_from_utf8 (session);
@@ -286,7 +286,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SSESS:
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (greeter_save_session () == GTK_RESPONSE_YES)
+	if (gdm_get_save_session () == GTK_RESPONSE_YES)
 	  printf ("%cY\n", STX);
 	else
 	  printf ("%c\n", STX);

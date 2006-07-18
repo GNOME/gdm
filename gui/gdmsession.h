@@ -24,6 +24,9 @@
 
 #include "misc.h"
 
+#define LAST_SESSION "Last"
+#define SESSION_NAME "SessionName"
+
 typedef struct {
         char *name;
         char *comment;
@@ -37,7 +40,7 @@ void		gdm_session_list_from_hash_table_func (const char *key,
 						GList **sessions);
 gint		gdm_session_sort_func		(const char *a,
 						 const char *b);
-
-
+char *		gdm_session_lookup 		(const char *saved_session);
+gint		gdm_get_save_session 		(void);
 
 #endif /* GDM_SESSION_H */
