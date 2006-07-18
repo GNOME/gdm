@@ -73,10 +73,8 @@ static gboolean GdmSetPosition = FALSE;
 static gint GdmPositionX;
 static gint GdmPositionY;
 
-#define LAST_SESSION "Last"
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
-#define SESSION_NAME "SessionName"
 #define GTK_KEY "gtk-2.0"
 
 enum {
@@ -130,7 +128,6 @@ static gchar *curuser = NULL;
 static gchar *session = NULL;
 static gchar *language = NULL;
 
-static gint savesess = GTK_RESPONSE_NO;
 static gint savelang = GTK_RESPONSE_NO;
 
 /* back_prog_timeout_event_id: event of the timer.
@@ -715,137 +712,6 @@ gdm_theme_handler (GtkWidget *widget, gpointer data)
     login_window_resize (FALSE);
     gdm_wm_center_window (GTK_WINDOW (login));
 }
-
-static gboolean 
-gdm_login_list_lookup (GList *l, const gchar *data)
-{
-    GList *list = l;
-
-    if (list == NULL || data == NULL)
-	return FALSE;
-
-    /* FIXME: Hack, will support these builtin types later */
-    if (strcmp (data, GDM_SESSION_DEFAULT ".desktop") == 0 ||
-	strcmp (data, GDM_SESSION_CUSTOM ".desktop") == 0 ||
-	strcmp (data, GDM_SESSION_FAILSAFE ".desktop") == 0) {
-	    return TRUE;
-    }
-
-    while (list) {
-
-	if (strcmp (list->data, data) == 0)
-	    return TRUE;
-	
-	list = list->next;
-    }
-
-    return FALSE;
-}
-
-static void
-gdm_login_session_lookup (const gchar* savedsess)
-{
-    /* Don't save session unless told otherwise */
-    savesess = GTK_RESPONSE_NO;
-
-    /* Previously saved session not found in ~user/.gnome2/gdm */
-    if ( ! (savedsess != NULL &&
-	    strcmp ("(null)", savedsess) != 0 &&
-	    savedsess[0] != '\0')) {
-	    /* If "Last" is chosen run Default,
-	     * else run user's current selection */
-	    g_free (session);
-	    if (current_session == NULL || strcmp (current_session, LAST_SESSION) == 0)
-		    session = g_strdup (default_session);
-	    else
-		    session = g_strdup (current_session);
-
-	    savesess = GTK_RESPONSE_YES;
-	    return;
-    }
-
-    /* If "Last" session is selected */
-    if (current_session == NULL ||
-	strcmp (current_session, LAST_SESSION) == 0) { 
-	g_free (session);
-	session = g_strdup (savedsess);
-
-	/* Check if user's saved session exists on this box */
-	if (!gdm_login_list_lookup (sessions, session)) {
-	    gchar *firstmsg;
-	    gchar *secondmsg;
-
-	    g_free (session);
-	    session = g_strdup (default_session);
-	    firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
-	                                "future sessions?"),
-	                                gdm_session_name (default_session));	   
-	    secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
-	                                 "installed on this computer."),
-	                                 gdm_session_name (savedsess));
-
-	    savesess = gdm_wm_query_dialog (firstmsg, secondmsg,
-		 _("Make _Default"), _("Just _Log In"), TRUE);
-	    g_free (firstmsg);
-	    g_free (secondmsg);
-	}
-    }
-    /* One of the other available session types is selected */
-    else { 
-	g_free (session);
-	session = g_strdup (current_session);
-
-	/* User's saved session is not the chosen one */
-	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
-	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-	    g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE ".desktop") == 0 ||
-	    g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE) == 0) {
-		savesess = GTK_RESPONSE_NO;
-	} else if (strcmp (savedsess, session) != 0) {
-		gchar *firstmsg = NULL;
-		gchar *secondmsg = NULL;
-
-                if (gdm_config_get_bool (GDM_KEY_SHOW_LAST_SESSION)) {
-                        firstmsg = g_strdup_printf (_("Do you wish "
-                                                      "to make %s the default for "
-                                                      "future sessions?"),
-                                                    gdm_session_name (session));
-                        secondmsg = g_strdup_printf (_("You have chosen %s for this "
-                                                      "session, but your default "
-                                                      "setting is %s."),
-                                                     gdm_session_name (session),
-                                                     gdm_session_name (savedsess));					       
-                        savesess = gdm_wm_query_dialog (firstmsg, secondmsg,
-				_("Make _Default"), _("Just For _This Session"), TRUE);
-                } else if (strcmp (session, default_session) != 0 &&
-			   strcmp (session, savedsess) != 0 &&
-                           strcmp (session, LAST_SESSION) != 0) {
-
-                        /*
-			 * If ! GDM_KEY_SHOW_LAST_SESSION then our saved session is
-                         * irrelevant, we are in "switchdesk mode" and the relevant
-                         * thing is the saved session in .Xclients
-                         */
-			if (g_access ("/usr/bin/switchdesk", F_OK) == 0) {
-				firstmsg = g_strdup_printf (_("You have chosen %s for this "
-				                              "session."),
-				                            gdm_session_name (session));
-				secondmsg = g_strdup_printf (_("If you wish to make %s "
-				                              "the default for future sessions, "
-				                              "run the 'switchdesk' utility "
-				                              "(System Tools->Desktop Switching Tool from "
-				                              "the main menu)."),
-				                             gdm_session_name (session));
-				gdm_wm_message_dialog (firstmsg, secondmsg);
-			}
-			savesess = GTK_RESPONSE_NO;
-                }
-		g_free (firstmsg);
-		g_free (secondmsg);
-	}
-    }
-}
-
 
 static void
 gdm_login_language_lookup (const gchar* savedlang)
@@ -1790,9 +1656,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	tmp = ve_locale_to_utf8 (buf);
-	gdm_login_session_lookup (tmp);
+	session = gdm_session_lookup (tmp);
 	g_free (tmp);
-	if (savesess == GTK_RESPONSE_CANCEL) {
+	if (gdm_get_save_session () == GTK_RESPONSE_CANCEL) {
 	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
 	} else {
 	    tmp = ve_locale_from_utf8 (session);
@@ -1816,7 +1682,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_SSESS:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (savesess == GTK_RESPONSE_YES)
+	if (gdm_get_save_session () == GTK_RESPONSE_YES)
 	    printf ("%cY\n", STX);
 	else
 	    printf ("%c\n", STX);
