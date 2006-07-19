@@ -44,6 +44,7 @@
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+#include "gdmsession.h"
 
 #include "greeter.h"
 #include "greeter_configuration.h"
@@ -80,6 +81,8 @@ extern gboolean require_quarter;
 extern gint gdm_timed_delay;
 
 gboolean greeter_probably_login_prompt = FALSE;
+
+static void process_operation (guchar opcode, const gchar *args);
 
 void
 greeter_ignore_buttons (gboolean val)
@@ -124,7 +127,42 @@ greeter_ctrl_handler (GIOChannel *source,
 		      gint fd)
 {
     gchar buf[PIPE_SIZE];
+    gchar *p;
     gsize len;
+
+    /* If this is not incoming i/o then return */
+    if (cond != G_IO_IN) 
+      return TRUE;
+
+    /* Read random garbage from i/o channel until first STX is found */
+    do {
+      g_io_channel_read_chars (source, buf, 1, &len, NULL);
+      
+      if (len != 1)
+	return TRUE;
+    } while (buf[0] && buf[0] != STX);
+
+    memset (buf, '\0', sizeof (buf));
+    if (g_io_channel_read_chars (source, buf, sizeof (buf) - 1, &len, NULL) !=
+	G_IO_STATUS_NORMAL)
+      return TRUE;
+
+    p = memchr (buf, STX, len);
+    if (p != NULL) {
+      len = p - buf;
+      g_io_channel_seek_position (source, -(sizeof (buf) - len), G_SEEK_CUR, NULL);
+      memset (buf + len, '\0', sizeof (buf) - len);
+    }
+    buf[len - 1] = '\0';  
+
+    process_operation ((guchar) buf[0], buf + 1);
+    return TRUE;
+}
+
+static void
+process_operation (guchar       op_code,
+		   const gchar *args)
+{
     GtkWidget *dlg;
     char *tmp;
     char *session;
@@ -133,43 +171,20 @@ greeter_ctrl_handler (GIOChannel *source,
     gchar *language;
     gchar *selected_user = NULL;
 
-    /* If this is not incoming i/o then return */
-    if (cond != G_IO_IN) 
-      return TRUE;
-
-    /* Read random garbage from i/o channel until STX is found */
-    do {
-      g_io_channel_read_chars (source, buf, 1, &len, NULL);
-      
-      if (len != 1)
-	return TRUE;
-    }  while (buf[0] && buf[0] != STX);
-
-    /* Read opcode */
-    g_io_channel_read_chars (source, buf, 1, &len, NULL);
-
-    /* If opcode couldn't be read */
-    if (len != 1)
-      return TRUE;
 
     /* Parse opcode */
-    switch (buf[0]) {
+    switch (op_code) {
     case GDM_SETLOGIN:
 	/* somebody is trying to fool us this is the user that
 	 * wants to log in, and well, we are the gullible kind */
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
 	
-	greeter_item_pam_set_user (buf);
+	greeter_item_pam_set_user (args);
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
 
     case GDM_PROMPT:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
-
-	tmp = ve_locale_to_utf8 (buf);
+	tmp = ve_locale_to_utf8 (args);
 	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0) {
 		gdm_common_login_sound (gdm_config_get_string (GDM_KEY_SOUND_PROGRAM),
 					gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE),
@@ -190,9 +205,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_NOECHO:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
-	tmp = ve_locale_to_utf8 (buf);
+	tmp = ve_locale_to_utf8 (args);
 
 	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0)
 		greeter_probably_login_prompt = FALSE;
@@ -204,9 +217,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_MSG:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
-	tmp = ve_locale_to_utf8 (buf);
+	tmp = ve_locale_to_utf8 (args);
 	greeter_item_pam_message (tmp);
 	g_free (tmp);
 	printf ("%c\n", STX);
@@ -214,10 +225,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_ERRBOX:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
-
-	tmp = ve_locale_to_utf8 (buf);
+	tmp = ve_locale_to_utf8 (args);
 	greeter_item_pam_error (tmp);
 	g_free (tmp);
 	
@@ -226,13 +234,10 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_ERRDLG:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
-
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	tmp = ve_locale_to_utf8 (buf);
+	tmp = ve_locale_to_utf8 (args);
 	dlg = ve_hig_dialog_new (NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
@@ -253,10 +258,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SESS:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-	buf[len-1] = '\0';
-
-	tmp = ve_locale_to_utf8 (buf);
+	tmp = ve_locale_to_utf8 (args);
 	session = gdm_session_lookup (tmp);
 	g_free (tmp);
 
@@ -272,9 +274,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_LANG:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-	buf[len-1] = '\0';
-	language = greeter_language_get_language (buf);
+	language = greeter_language_get_language (args);
 	if (greeter_language_get_save_language () == GTK_RESPONSE_CANCEL)
 	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
 	else
@@ -284,8 +284,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SSESS:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	if (gdm_get_save_session () == GTK_RESPONSE_YES)
 	  printf ("%cY\n", STX);
 	else
@@ -295,8 +293,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SLANG:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	if (greeter_language_get_save_language () == GTK_RESPONSE_YES)
 	    printf ("%cY\n", STX);
 	else
@@ -309,14 +305,12 @@ greeter_ctrl_handler (GIOChannel *source,
 	/* fall thru to reset */
 
     case GDM_RESETOK:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-	buf[len-1] = '\0';
 
 	conversation_info = greeter_lookup_id ("pam-conversation");
 	
 	if (conversation_info)
 	  {
-	    tmp = ve_locale_to_utf8 (buf);
+	    tmp = ve_locale_to_utf8 (args);
 	    g_object_set (G_OBJECT (conversation_info->item),
 			  "text", tmp,
 			  NULL);
@@ -331,8 +325,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_QUIT:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	greeter_item_timed_stop ();
 
 	if (require_quarter) {
@@ -368,8 +360,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_STARTTIMER:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	greeter_item_timed_start ();
 	
 	printf ("%c\n", STX);
@@ -377,8 +367,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_STOPTIMER:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	greeter_item_timed_stop ();
 
 	printf ("%c\n", STX);
@@ -386,7 +374,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_DISABLE:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	gtk_widget_set_sensitive (window, FALSE);
 
 	if (disabled_cover == NULL)
@@ -407,7 +394,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_ENABLE:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	gtk_widget_set_sensitive (window, TRUE);
 
 	if (disabled_cover != NULL)
@@ -424,14 +410,11 @@ greeter_ctrl_handler (GIOChannel *source,
      * back a NULL response so that the daemon quits sending them */
     case GDM_NEEDPIC:
     case GDM_READPIC:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
 
     case GDM_NOFOCUS:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	gdm_wm_no_login_focus_push ();
 	
 	printf ("%c\n", STX);
@@ -439,8 +422,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_FOCUS:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	gdm_wm_no_login_focus_pop ();
 	
 	printf ("%c\n", STX);
@@ -448,8 +429,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SAVEDIE:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	/* Set busy cursor */
 	gdm_common_setup_cursor (GDK_WATCH);
 
@@ -460,8 +439,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	_exit (EXIT_SUCCESS);
 
     case GDM_QUERY_CAPSLOCK:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
 	if (greeter_is_capslock_on ())
 	    printf ("%cY\n", STX);
 	else
@@ -471,11 +448,9 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 	
     default:
-	gdm_common_fail_greeter ("Unexpected greeter command received: '%c'", buf[0]);
+	gdm_common_fail_greeter ("Unexpected greeter command received: '%c'", op_code);
 	break;
     }
-
-    return (TRUE);
 }
 
 static gboolean
@@ -1150,7 +1125,10 @@ main (int argc, char *argv[])
   if G_LIKELY (! DOING_GDM_DEVELOPMENT) {
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
     g_io_channel_set_encoding (ctrlch, NULL, NULL);
-    g_io_channel_set_buffered (ctrlch, FALSE);
+    g_io_channel_set_buffered (ctrlch, TRUE);
+    g_io_channel_set_flags (ctrlch, 
+			    g_io_channel_get_flags (ctrlch) | G_IO_FLAG_NONBLOCK,
+			    NULL);
     g_io_add_watch (ctrlch, 
 		    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
 		    (GIOFunc) greeter_ctrl_handler,

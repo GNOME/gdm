@@ -1,5 +1,16 @@
 2006-07-18  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmlogin.c, gui/greeter/greeter.c: This patch attempts
+	  to fix the problem by turning on io channel's internal
+	  buffering feature, searching for the start of the next
+	  message in the read in bytes and seeking backward to the
+	  byte before the start of the next message.   We then
+	  process only one message and return, picking up the next
+	  message next iteration of the main loop.  Patch provided
+	  by Ray Strode <rstrode@redhat.com>.
+
+2006-07-18  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmlogin.c, gui/gdmsession.[ch], gui/greeter/greeter.c,
 	  gui/greeter/greeter_session.[ch]: Fix for bug #341619.  Now
 	  GDM does not save the Failsafe GNOME or Xterm session as the
