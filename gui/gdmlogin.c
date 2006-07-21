@@ -1498,8 +1498,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     p = memchr (buf, STX, len);
     if (p != NULL) {
       len = p - buf;
-      g_io_channel_seek_position (source, -(sizeof (buf) - len), G_SEEK_CUR, NULL);
-      memset (buf + len, '\0', sizeof (buf) - len);
+      g_io_channel_seek_position (source, -((sizeof (buf) - 1) - len), G_SEEK_CUR, NULL);
+      memset (buf + len, '\0', (sizeof (buf) - 1) - len);
     }
     buf[len - 1] = '\0';  
  
