@@ -1108,7 +1108,6 @@ docs/de/Makefile
 docs/es/Makefile
 docs/fr/Makefile
 docs/it/Makefile
-docs/sv/Makefile
 docs/ja/Makefile
 docs/ko/Makefile
 docs/zh_CN/Makefile
