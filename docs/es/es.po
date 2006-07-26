@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-06-17 01:55+0200\n"
-"PO-Revision-Date: 2006-07-02 18:38+0200\n"
-"Last-Translator: Francisco Javier F. Serrador <serrador@tecknolabs.com>\n"
+"PO-Revision-Date: 2006-07-26 16:56+0200\n"
+"Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.1\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: ../C/gdm.xml:11(title)
 msgid "Gnome Display Manager Reference Manual"
-msgstr "Manual de referencia del Gestor de entrada de Gnome"
+msgstr "Manual de referencia del Gestor de entrada de GNOME"
 
 #: ../C/gdm.xml:14(para)
 msgid "GDM is the GNOME Display Manager, a graphical login program."
@@ -118,7 +118,7 @@ msgid ""
 "This manual describes version 2.15.1 of the GNOME Display Manager. It was "
 "last updated on 05/12/2006."
 msgstr ""
-"Este manual describe la versión 2.15 del Gestor de entrada de Gnome. Se "
+"Este manual describe la versión 2.15 del Gestor de entrada de GNOME. Se "
 "actualizó por última vez en 12/05/2006."
 
 #: ../C/gdm.xml:69(title)
@@ -143,7 +143,7 @@ msgid ""
 "GDM - Gnome Display Manager. Used to describe the software package as a "
 "whole. Sometimes also referred to as GDM2."
 msgstr ""
-"GDM - Gestor de entrada de Gnome. Se usa para describir el paquete de "
+"GDM - Gestor de entrada de GNOME. Se usa para describir el paquete de "
 "software como un todo. algunas veces también se refiere a él como GDM2."
 
 #: ../C/gdm.xml:91(para)
@@ -1721,7 +1721,7 @@ msgid ""
 "select each theme that you wish to be used. By default this combobox is set "
 "to \"Selected only\", so that only a single theme can be selected and be "
 "used."
-msgstr "Si la opción de «Estilo» es «Con temas», entonces se usa el programa <command>gdmgreeter</command> como el IGU (daemon/Greeter). Cuando esta opción está seleccionada, <command>gdmsetup</command> permite al usuario seleccionar el tema para que se use (greeter/GraphicalTheme). Note que la casilla en la izquierda del nombre del tema debe marcarse para que ese tema se pueda seleccionar. Pulsar en el tema pero no marcar la casilla resaltará el tema y el botón «Quitar» se puede usar para borrar el tema. Se muestra información acerca del autor del tema y el copyright para el tema seleccionado. Para activar el Visor de rostros, debe seleccionarse un tema que incluya un visor de rostros, como Gnome Feliz. El «Color de fondo» mostrado cuando GDM se inicia (y si el tema tiene elementos transparentes) también se puede seleccionar (greeter(GraphicalThemedColor). La caja combo «Tema» se puede establecer a «Aleatorio de los seleccionados» si quiere que se use un tema aleatorio para cada entrada (greeter/GraphicalThemeRand y greeter/GraphicalThemes). Para usar temas aleatorios, seleccione cada tema que quiera usar. Por omisión esta caja de combinación está establecida a «Sólo seleccionados», para que sólo un único tema pueda seleccionarse y ser usado."
+msgstr "Si la opción de «Estilo» es «Con temas», entonces se usa el programa <command>gdmgreeter</command> como el IGU (daemon/Greeter). Cuando esta opción está seleccionada, <command>gdmsetup</command> permite al usuario seleccionar el tema para que se use (greeter/GraphicalTheme). Note que la casilla en la izquierda del nombre del tema debe marcarse para que ese tema se pueda seleccionar. Pulsar en el tema pero no marcar la casilla resaltará el tema y el botón «Quitar» se puede usar para borrar el tema. Se muestra información acerca del autor del tema y el copyright para el tema seleccionado. Para activar el Visor de rostros, debe seleccionarse un tema que incluya un visor de rostros, como GNOME Feliz. El «Color de fondo» mostrado cuando GDM se inicia (y si el tema tiene elementos transparentes) también se puede seleccionar (greeter(GraphicalThemedColor). La caja combo «Tema» se puede establecer a «Aleatorio de los seleccionados» si quiere que se use un tema aleatorio para cada entrada (greeter/GraphicalThemeRand y greeter/GraphicalThemes). Para usar temas aleatorios, seleccione cada tema que quiera usar. Por omisión esta caja de combinación está establecida a «Sólo seleccionados», para que sólo un único tema pueda seleccionarse y ser usado."
 
 #: ../C/gdm.xml:1095(para)
 msgid ""
@@ -1957,6 +1957,8 @@ msgid ""
 "custom.conf:0</filename>. Per-display configuration is supported in GDM "
 "2.14.6 and later."
 msgstr ""
+"GDM tiene una gestión de configuración potente. La configuración del sistema está almacenada en <filename>&lt;share&gt;/gdm/defaults.conf</filename> y la intención es que este archivo se pueda almacenar en un sistema de archivos compartido de manera que los administradores de sistema sólo tengan que modificar un solo archivo para controlar la configuración de varias máquinas. Además las distribuciones de GDM pueden parchear este archivo al actualizar para mejorar la usabilidad, la seguridad, etc. La configuración podría adaptarse para una máquina específica editando el archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> para incluir una configuración distinta para una clave específica. Aquellos parámetros en las secciones «gui» y «greater», y la clave security/PamStack se pueden personalizar por pantalla especificandolos en un archivo llamado <filename>&lt;etc&gt;/gdm/custom."
+"conf&lt;display num&gt;</filename>. Por ejemplo, los overrides de configuración para la pantalla \":103\" se podrían almacenar en el archivo <filename>&lt;etc&gt;/gdm/custom.conf:103</filename>. La configuración por pantalla está soportada en GDM 2.14.6 y posterior."
 
 #: ../C/gdm.xml:1294(para)
 msgid ""
@@ -1968,7 +1970,7 @@ msgid ""
 "root-owned GUI's causes security risk, then you would want to always edit "
 "the files by hand. This program does not support setting per-display "
 "configuration, so per-display configuration files must be set up by hand."
-msgstr ""
+msgstr "El comando <command>gdmsetup</command> es un programa IGU que puede usar para editar la configuración de GDM. Este programa puede lanzarse directamente desde la pantalla de entrada si la clave greeter/ConfigAvailable está establecida a «true». El GUI no soporta todas las claves de configuración de GDM, así que quizá tenga que editar los archivos de configuración a mano para editar esas claves. Si crees que ejecutar un GUI perteneciente al root es un riesgo de seguridad, entonces podría querer editar siempre estos archivos a mano. Este programa no soporta establecer la configuración por cada pantalla, así que los archivos de configuración por cada pantalla deben configurarse a mano."
 
 #: ../C/gdm.xml:1306(para)
 msgid ""
@@ -2651,7 +2653,7 @@ msgid ""
 "This only works for session's running on VT's (Virtual Terminals) started "
 "with gdmflexiserver, and not with XDMCP. Note that VT's are not supported on "
 "all operating systems."
-msgstr ""
+msgstr "Si es «true», cuando el usuario entra y ya tiene una sesión existente, entonces se concecta a esa sesión en lugar de iniciar una sesión nueva. Esto sólo funciona en sesiones que se ejecutan en VTs (Virtual Terminals) iniciados con gdmflexiserver, y no con XDMCP. Note que los VTs no están soportados en todos los sistemas operativos."
 
 #: ../C/gdm.xml:1717(term)
 msgid "AutomaticLoginEnable"
@@ -2747,6 +2749,8 @@ msgid ""
 "will be the <filename>Exec=</filename> from the <filename>.desktop</"
 "filename> file of the session."
 msgstr ""
+"Este es el archivo base X session. Cuando un usuario entra, este script se ejecuta con la sesión seleccionada como primer argumento. La sesión seleccionada será la indicada por <filename>Exec=</filename> en el archivo de sesión <filename>.desktop</"
+"filename>."
 
 #: ../C/gdm.xml:1783(para)
 msgid ""
@@ -2758,7 +2762,7 @@ msgid ""
 "set for GDM sessions. Previously some scripts were checking for "
 "<filename>GDM_LANG</filename>, but that is only set when the user picks a "
 "non-system default language."
-msgstr ""
+msgstr "Si quiere usar el mismo script para varios gestores de entrada diferentes, y quiere tener algunos de los scripts para que sólo se ejecuten por GDM, entonces puede comprobar por la presencia de la variable de entorno <filename>GDMSESSION</filename>. Esto siempre será establecido al nombre base del archivo <filename>.desktop</filename> (sin la extensión) que se está usando en esta sesión, y sólo estará establecido para las sesiones GDM. Anteriormente algunos scripts estaban comprobando <filename>GDM_LANG</filename>, pero eso sólo se establece cuando el usuario escoge un idioma no predeterminado del sistema."
 
 #: ../C/gdm.xml:1796(para)
 msgid ""
@@ -2771,6 +2775,11 @@ msgid ""
 "change this however. Sometimes users personal setup will be in <filename>~/."
 "bash_profile</filename>, however broken that is."
 msgstr ""
+"Este script debería encargarse de hacer el login para el usuario y por lo tanto debería incluir <filename>&lt;etc&gt;/profile</filename> y demás. El script estándar entregado con GDM incluye los archivos en este orden: <filename>&lt;etc&gt;/profile</filename> después <filename>~/.profile</"
+"filename> después <filename>&lt;etc&gt;/xprofile</filename> y finalmente"
+"<filename>~/.xprofile</filename>. "
+"Note que las diferentes distribuciones podrían cambiar esto. Algunas veces la configuración personal del usuario estará en <filename>~/."
+"bash_profile</filename>, por muy defectuoso que esto sea."
 
 #: ../C/gdm.xml:1813(term)
 msgid "Chooser"
@@ -2803,7 +2812,7 @@ msgid ""
 "binary when somebody chooses Configuration from the Actions menu. Of course "
 "GDM will first ask for root password however. And it will never allow this "
 "to happen from a remote display."
-msgstr ""
+msgstr "La ruta hacia el binario del configurador. Si la opción del interfaz <filename>ConfigAvailable</filename> está puesta a «true» entonces se ejecuta este binario cuando alguien elije Configuración desde el menú de Acciones. Desde luego GDM pedirá primero la contraseña de root. Y nunca permitirá que esto ocurra desde una pantalla remota."
 
 #: ../C/gdm.xml:1839(term)
 msgid "ConsoleCannotHandle"
@@ -2819,7 +2828,7 @@ msgid ""
 "These are the languages that the console cannot handle because of font "
 "issues. Here we mean the text console, not X. This is only used when there "
 "are errors to report and we cannot start X."
-msgstr ""
+msgstr "Éstos son los idiomas que la consola no puede manipular debido a cuestiones de tipografía. Aquí queremos decir la consola de texto, no X. Esto sólo se usa cuando hay errores que informar y no podemos iniciar X."
 
 #: ../C/gdm.xml:1852(term)
 msgid "ConsoleNotify"
@@ -4891,12 +4900,12 @@ msgstr ""
 
 #: ../C/gdm.xml:3514(term)
 msgid "ShowGnomeFailsafeSession"
-msgstr "ShowGnomeFailsafeSession"
+msgstr "ShowGNOMEFailsafeSession"
 
 #: ../C/gdm.xml:3516(synopsis)
 #, no-wrap
 msgid "ShowGnomeFailsafeSession=true"
-msgstr "ShowGnomeFailsafeSession=true"
+msgstr "ShowGNOMEFailsafeSession=true"
 
 #: ../C/gdm.xml:3517(para)
 msgid "Should the greeter show the Gnome Failsafe session in th sessions list."
