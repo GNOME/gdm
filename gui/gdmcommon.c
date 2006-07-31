@@ -270,27 +270,33 @@ gdm_common_setup_blinking (void)
 
 	sid = g_signal_lookup ("activate",
 			       GTK_TYPE_MENU_ITEM);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    delay_noblink,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
+	if (sid != NULL) {
+	   g_signal_add_emission_hook (sid,
+				       0 /* detail */,
+				       delay_noblink,
+				       NULL /* data */,
+				       NULL /* destroy_notify */);
+	}
 
 	sid = g_signal_lookup ("key_press_event",
 			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    delay_noblink,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
+	if (sid != NULL) {
+	   g_signal_add_emission_hook (sid,
+				       0 /* detail */,
+				       delay_noblink,
+				       NULL /* data */,
+				       NULL /* destroy_notify */);
+	}
 
 	sid = g_signal_lookup ("button_press_event",
 			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    delay_noblink,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
+	if (sid != NULL) {
+	   g_signal_add_emission_hook (sid,
+				       0 /* detail */,
+				       delay_noblink,
+				       NULL /* data */,
+				       NULL /* destroy_notify */);
+	}
 
 	noblink_timeout = g_timeout_add (NOBLINK_TIMEOUT, no_blink, NULL);
 }

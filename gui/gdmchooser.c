@@ -1945,7 +1945,7 @@ int
 main (int argc, char *argv[])
 {
     gchar *GdmHosts;
-    gchar **hosts_opt;
+    gchar **hosts_opt = NULL;
     poptContext ctx;
     int nextopt;
     const char *gdm_version;
