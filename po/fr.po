@@ -15,11 +15,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 2.15.6\n"
+"Project-Id-Version: gdm 2.15.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-22 19:45+0200\n"
-"PO-Revision-Date: 2006-07-22 19:45+0200\n"
-"Last-Translator: Jonathan Ernst <jonathan@ernstfamily.ch>\n"
+"POT-Creation-Date: 2006-07-31 14:43+0200\n"
+"PO-Revision-Date: 2006-07-31 14:26+0200\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,10 +68,10 @@ msgid ""
 "it is not set up correctly.  You will need to log in on a console and "
 "reconfigure the X server.  Then restart GDM."
 msgstr ""
-"Impossible de démarrer le serveur X (l'interface graphique) car il n'est "
-"probablement pas configuré correctement. Pour corriger ce problème, "
-"connectez-vous sur une console, reconfigurez le serveur X puis redémarrez "
-"GDM."
+"Le démarrage du serveur X (votre interface graphique) a échoué. Il est "
+"probable qu'il ne soit pas configuré correctement. Pour corriger ce "
+"problème, connectez-vous sur une console, reconfigurez le serveur X puis "
+"redémarrez GDM."
 
 #: ../config/gettextfoo.h:6
 msgid ""
@@ -83,11 +83,11 @@ msgstr ""
 
 #: ../config/gettextfoo.h:7
 msgid "Please type in the root (privileged user) password."
-msgstr "Saisissez le mot de passe du root (administrateur)."
+msgstr "Veuillez saisir le mot de passe du root (administrateur)."
 
 #: ../config/gettextfoo.h:8
 msgid "Trying to restart the X server."
-msgstr "Tentative de redémarrage du serveur X."
+msgstr "Tente de redémarrer le serveur X."
 
 #: ../config/gettextfoo.h:9
 msgid ""
@@ -102,9 +102,9 @@ msgid ""
 "it is not set up correctly.  Would you like to view the X server output to "
 "diagnose the problem?"
 msgstr ""
-"Impossible de démarrer le serveur X (l'interface graphique) car il n'est "
-"probablement pas configuré correctement. Voulez-vous consulter les messages "
-"du serveur X pour déterminer le problème ?"
+"Le démarrage du serveur X (votre interface graphique) a échoué. Il est "
+"probable qu'il ne soit pas configuré correctement. Voulez-vous consulter les "
+"messages du serveur X pour déterminer le problème ?"
 
 #: ../config/gettextfoo.h:11
 msgid "Would you like to view the detailed X server output as well?"
@@ -225,8 +225,8 @@ msgid ""
 "trying again on display %s."
 msgstr ""
 "Le serveur d'affichage a été arrêté prés de 6 fois dans les 90 dernières "
-"secondes, ce comportement est anormal. Une nouvelle tentative sera effectuée "
-"sur le visuel %s après une pause de 2 minutes."
+"secondes. Il est probable que quelque chose se passe mal. Une nouvelle "
+"tentative sera effectuée sur le visuel %s après une pause de 2 minutes."
 
 #: ../daemon/display.c:255
 #, c-format
@@ -356,7 +356,7 @@ msgstr "%s : setsid () a échoué : %s !"
 #: ../daemon/gdm.c:411
 #, c-format
 msgid "%s: Trying failsafe X server %s"
-msgstr "%s : tentative avec le serveur X de secours %s"
+msgstr "%s : tente avec le serveur X de secours %s"
 
 #: ../daemon/gdm.c:429
 #, c-format
@@ -369,10 +369,10 @@ msgid ""
 "that it is not set up correctly.  You will need to log in on a console and "
 "rerun the X configuration application, then restart GDM."
 msgstr ""
-"Impossible de démarrer le serveur X (l'interface graphique). Le serveur X "
-"n'est probablement pas configuré correctement. Pour corriger ce problème, "
-"connectez-vous sur une console, relancez le programme de configuration de X "
-"puis redémarrez GDM."
+"Le serveur X (votre interface graphique) ne peut pas être démarré. Il est "
+"probable qu'il ne soit pas configuré correctement. Pour corriger ce "
+"problème, connectez-vous sur une console, relancez le programme de "
+"configuration de X puis redémarrez GDM."
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -524,7 +524,7 @@ msgstr ""
 
 #: ../daemon/gdm.c:1480
 msgid "GDM already running. Aborting!"
-msgstr "GDM est déjà en cours d'exécution. Abandon !"
+msgstr "GDM est déjà en cours de fonctionnement. Abandon !"
 
 #: ../daemon/gdm.c:1584
 #, c-format
@@ -746,21 +746,21 @@ msgstr "%s : le groupe GDM ne doit pas être root. Abandon !"
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr ""
-"%s : la bannière ne peut être trouvée ou ne peut être exécutée par "
+"%s : la bannière ne peut pas être trouvée ou ne peut pas être exécutée par "
 "l'utilisateur GDM."
 
 #: ../daemon/gdmconfig.c:2129
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr ""
-"%s : la bannière distante ne peut être trouvée ou ne peut être exécutée par "
-"l'utilisateur GDM."
+"%s : la bannière distante ne peut pas être trouvée ou ne peut pas être "
+"exécutée par l'utilisateur GDM."
 
 #: ../daemon/gdmconfig.c:2137
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr ""
-"%s : le sélecteur ne peut être trouvé ou ne peut être exécuté par "
+"%s : le sélecteur ne peut pas être trouvé ou ne peut pas être exécuté par "
 "l'utilisateur GDM."
 
 #: ../daemon/gdmconfig.c:2146
@@ -854,7 +854,7 @@ msgid ""
 "another display number by tried?  Answering no will cause GDM to attempt "
 "starting the server on %s again.%s"
 msgstr ""
-"Un serveur X est déjà en cours d'exécution sur le visuel %s. Un autre "
+"Un serveur X est déjà en cours de fonctionnement sur le visuel %s. Un autre "
 "visuel doit-il être essayé ? Si vous répondez non, GDM tentera de démarrer "
 "le serveur sur %s une nouvelle fois.%s"
 
@@ -871,12 +871,13 @@ msgstr ""
 #: ../daemon/server.c:395
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
-msgstr "Le visuel « %s » ne peut être ouvert par Xnest"
+msgstr "Le visuel « %s » ne peut pas être ouvert par Xnest"
 
 #: ../daemon/server.c:426
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
-msgstr "Le visuel %s est occupé. Un serveur X en déjà en cours d'exécution."
+msgstr ""
+"Le visuel %s est occupé. Un serveur X en déjà en cours de fonctionnement."
 
 #: ../daemon/server.c:510
 #, c-format
@@ -897,7 +898,7 @@ msgstr "%s : impossible de trouver un numéro de visuel libre"
 #: ../daemon/server.c:866
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
-msgstr "%s : visuel %s occupé. Tentative sur un autre numéro de visuel."
+msgstr "%s : visuel %s occupé. Tente sur un autre numéro de visuel."
 
 #: ../daemon/server.c:977
 #, c-format
@@ -929,7 +930,7 @@ msgstr "%s : commande de serveur vide pour le visuel %s"
 #: ../daemon/server.c:1240
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s : la priorité du serveur ne peut être fixée à %d : %s"
+msgstr "%s : la priorité du serveur ne peut pas être fixée à %d : %s"
 
 #: ../daemon/server.c:1252
 #, c-format
@@ -1113,7 +1114,7 @@ msgstr ""
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
-"%s : impossible de démarrer la bannière avec les modules gtk : %s. Tentative "
+"%s : impossible de démarrer la bannière avec les modules gtk : %s. Tente "
 "sans les modules"
 
 #: ../daemon/slave.c:2649
@@ -1213,7 +1214,7 @@ msgid ""
 "No Exec line in the session file: %s.  Running the GNOME failsafe session "
 "instead"
 msgstr ""
-"Pas de ligne Exec dans le fichier de session « %s ». Lancement de la session "
+"Aucune ligne Exec dans le fichier de session « %s ». Lancement de la session "
 "de secours GNOME"
 
 #: ../daemon/slave.c:3604
@@ -1243,8 +1244,8 @@ msgstr ""
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
-"%s : gnome-session non trouvé pour une session de secours GNOME. Tentative "
-"avec xterm"
+"%s : gnome-session non trouvé pour une session de secours GNOME. Tente avec "
+"xterm"
 
 #: ../daemon/slave.c:3667
 msgid ""
@@ -1979,15 +1980,15 @@ msgstr "Effectue des requêtes broadcast au lieu de indirectes (sélecteur)"
 
 #: ../gui/gdmXnestchooser.c:182
 msgid "Don't check for running GDM"
-msgstr "Ne contrôle pas les GDM en cours d'exécution"
+msgstr "Ne contrôle pas les GDM en cours de fonctionnement"
 
 #: ../gui/gdmXnestchooser.c:481
 msgid "- Nested gdm login chooser"
-msgstr "- sélecteur de connexions gdm encapsulé"
+msgstr "- Sélecteur de connexions gdm imbriqué"
 
 #: ../gui/gdmXnestchooser.c:489
 msgid "- Nested gdm login"
-msgstr "- connexion gdm encapsulé"
+msgstr "- Connexion gdm imbriqué"
 
 #: ../gui/gdmXnestchooser.c:519
 msgid "Xnest doesn't exist."
@@ -2013,7 +2014,7 @@ msgstr "XDMCP n'est pas activé"
 
 #: ../gui/gdmXnestchooser.c:595
 msgid "GDM is not running"
-msgstr "GDM n'est pas en cours de d'exécution"
+msgstr "GDM n'est pas en cours de fonctionnement"
 
 #: ../gui/gdmXnestchooser.c:596
 msgid "Please ask your system administrator to start it."
@@ -2056,7 +2057,7 @@ msgid ""
 "now.  Please try again later."
 msgstr ""
 "Ne reçoit aucune réponse de l'hôte « %s » depuis %d secondes. L'hôte n'est "
-"peut être pas activé ou n'est pas prêt à supporter une session de connexion "
+"peut-être pas activé ou n'est pas prêt à supporter une session de connexion "
 "maintenant. Essayez plus tard."
 
 #: ../gui/gdmchooser.c:1291
@@ -2178,7 +2179,8 @@ msgstr "A_jouter"
 #: ../gui/gdmcomm.c:619
 msgid "GDM (The GNOME Display Manager) is not running."
 msgstr ""
-"GDM (le gestionnaire de connexions GNOME) n'est pas en cours d'exécution."
+"GDM (le gestionnaire de connexions GNOME) n'est pas en cours de "
+"fonctionnement."
 
 #: ../gui/gdmcomm.c:621
 msgid ""
@@ -2198,13 +2200,14 @@ msgstr ""
 
 #: ../gui/gdmcomm.c:647 ../gui/gdmflexiserver.c:787
 msgid "Perhaps you have an old version of GDM running."
-msgstr "Peut-être avez-vous une ancienne version de GDM en cours d'exécution."
+msgstr ""
+"Vous avez peut-être une ancienne version de GDM en cours de fonctionnement."
 
 #: ../gui/gdmcomm.c:664 ../gui/gdmcomm.c:667
 msgid "Cannot communicate with GDM. Perhaps you have an old version running."
 msgstr ""
-"Impossible de communiquer avec GDM. Vous avez peut être une ancienne version "
-"de GDM en cours d'exécution."
+"Impossible de communiquer avec GDM. Vous avez peut-être une ancienne version "
+"de GDM en cours de fonctionnement."
 
 #: ../gui/gdmcomm.c:670
 msgid "The allowed limit of flexible X servers reached."
@@ -2216,19 +2219,21 @@ msgstr "Il y a eu des erreurs en essayant de démarrer le serveur X."
 
 #: ../gui/gdmcomm.c:674
 msgid "The X server failed.  Perhaps it is not configured well."
-msgstr "Le serveur X a échoué. Peut-être n'est-il pas bien configuré."
+msgstr ""
+"Le serveur X a échoué. Il est probable qu'il ne soit pas configuré "
+"correctement."
 
 #: ../gui/gdmcomm.c:677
 msgid "Too many X sessions running."
-msgstr "Trop de sessions X en cours."
+msgstr "Trop de sessions X sont en cours de fonctionnement."
 
 #: ../gui/gdmcomm.c:679
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr ""
-"Le serveur X imbriqué (Xnest) ne peut se connecter à votre serveur X en "
-"cours. Il vous manque peut-être un fichier d'autorisation X."
+"Le serveur X imbriqué (Xnest) ne peut pas se connecter à votre serveur X "
+"actuel. Il vous manque peut-être un fichier d'autorisation X."
 
 #: ../gui/gdmcomm.c:684
 msgid ""
@@ -2248,20 +2253,20 @@ msgid ""
 "Trying to set an unknown logout action, or trying to set a logout action "
 "which is not available."
 msgstr ""
-"Tentative de définir une action de déconnexion inconnue, ou tentative de "
-"définir une action de déconnexion qui n'est pas disponible."
+"Tente de définir une action de déconnexion inconnue, ou tente de définir une "
+"action de déconnexion qui n'est pas disponible."
 
 #: ../gui/gdmcomm.c:695
 msgid "Virtual terminals not supported."
-msgstr "Terminaux virtuels non supportés."
+msgstr "Terminaux virtuels non pris en charge."
 
 #: ../gui/gdmcomm.c:697
 msgid "Trying to change to an invalid virtual terminal number."
-msgstr "Tentative de changement vers un numéro de terminal virtuel non valide."
+msgstr "Tente de changer vers un numéro de terminal virtuel non valide."
 
 #: ../gui/gdmcomm.c:699
 msgid "Trying to update an unsupported configuration key."
-msgstr "Tentative de mettre à jour une clé de configuration non supportée."
+msgstr "Tente de mettre à jour une clé de configuration non prise en charge."
 
 #: ../gui/gdmcomm.c:701
 msgid ""
@@ -2269,7 +2274,7 @@ msgid ""
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
 "Vous ne semblez pas correctement authentifié pour pouvoir effectuer cette "
-"opération. Votre fichier « .Xauthority » n'est peut être pas défini de "
+"opération. Votre fichier « .Xauthority » n'est peut-être pas défini de "
 "manière adéquate."
 
 #: ../gui/gdmcomm.c:705
@@ -2404,7 +2409,7 @@ msgstr "Visuel %s sur le terminal virtuel %d"
 #: ../gui/gdmflexiserver.c:232
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
-msgstr "Visuel embarqué %s sur le terminal virtuel %d"
+msgstr "Visuel imbriqué %s sur le terminal virtuel %d"
 
 #: ../gui/gdmflexiserver.c:262 ../gui/gdmlogin.c:2500
 #: ../gui/greeter/greeter_item_ulist.c:274
@@ -3194,7 +3199,7 @@ msgstr ""
 #: ../gui/gdmphotosetup.c:188
 #, c-format
 msgid "File %s cannot be opened for writing."
-msgstr "Le fichier %s ne peut être ouvert en écriture."
+msgstr "Le fichier %s ne peut pas être ouvert en écriture."
 
 #: ../gui/gdmphotosetup.c:195
 msgid "Cannot open file"
@@ -3827,7 +3832,7 @@ msgstr ""
 
 #: ../gui/gdmsetup.glade.h:87
 msgid "_Background color:"
-msgstr "_Couleur d'arrière-plan : "
+msgstr "_Couleur d'arrière-plan :"
 
 #: ../gui/gdmsetup.glade.h:89
 #, no-c-format
