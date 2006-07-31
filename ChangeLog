@@ -1,3 +1,15 @@
+2006-07-31  Brian Cameron  <brian.cameron@sun.com>
+
+	* ui/gdmcommon.c: Fix gdm_common_setup_blinking so it doesn't
+	  try to call g_signal_add_emission_hook if sid is 0.  This fixes
+	  a crash in gdmchooser because we were trying to set the 
+	  emission hook for a type that was not used or initialized in the
+	  gdmchooser GUI.   This fixes bug #349221.
+	* gui/gdmcommon.c: Set hosts_opt to NULL, otherwise processing of
+	  hosts from the command line would not get done if the compiler
+	  put a non-NULL value into its initial value, as it does on 
+	  Solaris.
+
 2006-07-24  Brian Cameron  <brian.cameron@sun.com>
 
         * Release 2.15.7:
