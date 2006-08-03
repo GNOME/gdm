@@ -334,8 +334,5 @@ greeter_language_handler (GreeterItemInfo *info, gpointer user_data)
 
   if (dialog)
     gtk_widget_hide (dialog);
-
-  /* Make sure entry has focus after button press */
-  gtk_widget_grab_focus (entry);
 }
 

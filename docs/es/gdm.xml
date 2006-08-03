@@ -6,7 +6,7 @@
 ]>
 <article id="index" lang="es">
   <articleinfo>
-    <title>Manual de referencia del Gestor de entrada de Gnome</title>
+    <title>Manual de referencia del Gestor de entrada de GNOME</title>
 
     <abstract role="description">
       <para>GDM es el Gestor de entrada de GNOME, un programa gráfico de entrada.</para>
@@ -71,19 +71,19 @@
 
 
 
-    <releaseinfo>Este manual describe la versión 2.15 del Gestor de entrada de Gnome. Se actualizó por última vez en 12/05/2006.</releaseinfo>  
+    <releaseinfo>Este manual describe la versión 2.15 del Gestor de entrada de GNOME. Se actualizó por última vez en 12/05/2006.</releaseinfo>  
   </articleinfo>
 
   <sect1 id="preface">
     <title>Términos y convenciones usados en este manual</title>
 
-    <para>Este manual describe la versión 2.15 del Gestor de entrada de Gnome. Se actualizó por última vez en 12/05/2006.</para>  
+    <para>Este manual describe la versión 2.15 del Gestor de entrada de GNOME. Se actualizó por última vez en 12/05/2006.</para>  
 
     <para>Selector - Un programa que se usa para seleccionar un equipo remoto para gestionar una pantalla remotamente en la pantalla local (<command>gdmchooser</command>).</para>
 
     <para>Configurador - La aplicación de configuración (<command>gdmsetup</command>).</para>
 
-    <para>GDM - Gestor de entrada de Gnome. Se usa para describir el paquete de software como un todo. algunas veces también se refiere a él como GDM2.</para>
+    <para>GDM - Gestor de entrada de GNOME. Se usa para describir el paquete de software como un todo. algunas veces también se refiere a él como GDM2.</para>
 
     <para>gdm - El demonio del gestor de entrada (<command>gdm</command>).</para>
 
@@ -118,13 +118,7 @@
 
       <para>Nota: las distribuciones a menudo cambian los valores predeterminados de las claves para soportar su plataforma. Los interfaces de línea de comandos para los programas GDM instalados en <filename>&lt;bin&gt;</filename> y <filename>&lt;sbin&gt;</filename> se consideran estables. Refiérase a su documentación de la distribución para ver si hay cualquier cambio específico de la distribución a estos interfaces de GDM y qué soporte existe para ellos.</para>
 
-      <para>
-        As of the GDM 2.15 development series, some one-dash arguments are no
-        longer supported.  This includes the "-xdmaddress",
-        "-clientaddress", and "-connectionType" arguments
-        used by <command>gdmchooser</command>.  These arguments have been
-        changed to now use two dashes.
-      </para>
+      <para>En las series de desarrollo 2.15 los argumentos de un solo guión no están soportados más. Esto incluye los argumentos "-xdmaddress", "-clientaddress", y "-connectionType" usados por <command>gdmchooser</command>. Estos argumentos se han cambiado para que ahora usen dos guiones. </para>
 
       <para>Si se descubrieran problemas que rompiesen la compatibilidad, por favor envíe un error con una prioridad «urgente».</para>
     </sect2>
@@ -371,7 +365,7 @@ gdm: .su.dominio
 
       <para>Si la elección de «Estilo» es «Plano con visor de rostros», entonces el programa <command>gdmlogin</command> se usa como el IGU (daemon/Greeter) y el visor de rostros se activa (greeter/Browser). El visor de rostros se explica en la sección Vista general. De todas formas, las elecciones son las mismas que cuando la elección de «Estilo» es «Plana». Puede ser necesaria la configuración adicional en la solapa Usuarios para elegir qué usuarios aparecen en el Visor de rostros.</para>
 
-      <para>Si la opción de «Estilo» es «Con temas», entonces se usa el programa <command>gdmgreeter</command> como el IGU (daemon/Greeter). Cuando esta opción está seleccionada, <command>gdmsetup</command> permite al usuario seleccionar el tema para que se use (greeter/GraphicalTheme). Note que la casilla en la izquierda del nombre del tema debe marcarse para que ese tema se pueda seleccionar. Pulsar en el tema pero no marcar la casilla resaltará el tema y el botón «Quitar» se puede usar para borrar el tema. Se muestra información acerca del autor del tema y el copyright para el tema seleccionado. Para activar el Visor de rostros, debe seleccionarse un tema que incluya un visor de rostros, como Gnome Feliz. El «Color de fondo» mostrado cuando GDM se inicia (y si el tema tiene elementos transparentes) también se puede seleccionar (greeter(GraphicalThemedColor). La caja combo «Tema» se puede establecer a «Aleatorio de los seleccionados» si quiere que se use un tema aleatorio para cada entrada (greeter/GraphicalThemeRand y greeter/GraphicalThemes). Para usar temas aleatorios, seleccione cada tema que quiera usar. Por omisión esta caja de combinación está establecida a «Sólo seleccionados», para que sólo un único tema pueda seleccionarse y ser usado.</para>
+      <para>Si la opción de «Estilo» es «Con temas», entonces se usa el programa <command>gdmgreeter</command> como el IGU (daemon/Greeter). Cuando esta opción está seleccionada, <command>gdmsetup</command> permite al usuario seleccionar el tema para que se use (greeter/GraphicalTheme). Note que la casilla en la izquierda del nombre del tema debe marcarse para que ese tema se pueda seleccionar. Pulsar en el tema pero no marcar la casilla resaltará el tema y el botón «Quitar» se puede usar para borrar el tema. Se muestra información acerca del autor del tema y el copyright para el tema seleccionado. Para activar el Visor de rostros, debe seleccionarse un tema que incluya un visor de rostros, como GNOME Feliz. El «Color de fondo» mostrado cuando GDM se inicia (y si el tema tiene elementos transparentes) también se puede seleccionar (greeter(GraphicalThemedColor). La caja combo «Tema» se puede establecer a «Aleatorio de los seleccionados» si quiere que se use un tema aleatorio para cada entrada (greeter/GraphicalThemeRand y greeter/GraphicalThemes). Para usar temas aleatorios, seleccione cada tema que quiera usar. Por omisión esta caja de combinación está establecida a «Sólo seleccionados», para que sólo un único tema pueda seleccionarse y ser usado.</para>
 
       <para>A pesar de la selección »Estilo», el usuario podría seleccionar si el menú de acciones es visible (greeter/SystemMenu), o so el menú Acciones incluye la elección para iniciar <command>gdmsetup</command> (greeter/ConfigAvailable), y si el menú de Acciones incluye la opción para hacer que <command>gdmchooser</command> ejecute una sesión de entrada remota XDMCP (greeter/ChooseButton). Note que la contraseña de root debe introducirse para iniciar <command>gdmsetup</command> desde la pantalla de entrada si está activado. Además el mensaje de bienvenida mostrado para las sesiones locales se puede seleccionar (greeter/DefaultWelcome y greeter/Welcome). El mensaje de Bienvenida puede contener las secuencias de caracteres descritas en la sección de «Nodos de texto» de la sección de «Interfaz de temas» de este manual.</para>
     </sect2>
@@ -420,35 +414,9 @@ gdm: .su.dominio
   <sect1 id="configuration">
     <title>Configuración</title>
 
-    <para> 
-      GDM has powerful configuration management.  System configuration is stored
-      in <filename>&lt;share&gt;/gdm/defaults.conf</filename> and the intention
-      is that this file can be stored on a shared filesystem so that sysadmins
-      can have a single file to modify to control configuration for multiple
-      machines.  Also GDM distributions may patch this file on update to 
-      improve usability, improve security, etc.  Configuration may be customized
-      for a specific machine by editing the
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file to include an
-      override for a specific key.  Those parameters in the "gui",
-      "greeter" sections, and the security/PamStack key may be
-      customized per-display by specifying them in a file named
-      <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>.
-      For example, configuration overrides for display ":103" would be
-      stored in the file <filename>&lt;etc&gt;/gdm/custom.conf:0</filename>.
-      Per-display configuration is supported in GDM 2.14.6 and later.
-    </para>
+    <para>GDM tiene una gestión de configuración potente. La configuración del sistema está almacenada en <filename>&lt;share&gt;/gdm/defaults.conf</filename> y la intención es que este archivo se pueda almacenar en un sistema de archivos compartido de manera que los administradores de sistema sólo tengan que modificar un solo archivo para controlar la configuración de varias máquinas. Además las distribuciones de GDM pueden parchear este archivo al actualizar para mejorar la usabilidad, la seguridad, etc. La configuración podría adaptarse para una máquina específica editando el archivo <filename>&lt;etc&gt;/gdm/custom.conf</filename> para incluir una configuración distinta para una clave específica. Aquellos parámetros en las secciones «gui» y «greater», y la clave security/PamStack se pueden personalizar por pantalla especificandolos en un archivo llamado <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>. Por ejemplo, los overrides de configuración para la pantalla ":103" se podrían almacenar en el archivo <filename>&lt;etc&gt;/gdm/custom.conf:103</filename>. La configuración por pantalla está soportada en GDM 2.14.6 y posterior.</para>
 
-    <para>
-      The <command>gdmsetup</command> is a GUI program you can use to edit the
-      GDM configuration.  This program may also be launched directly from the
-      login screen if the greeter/ConfigAvailable key is set to "true"
-      Not all keys in the GDM configuration file are supported in the GUI, so
-      you may need to edit the configuration files by hand to edit these keys.
-      If you believe running root-owned GUI's causes security risk, then you
-      would want to always edit the files by hand.  This program does not
-      support setting per-display configuration, so per-display configuration
-      files must be set up by hand.
-    </para>
+    <para>El comando <command>gdmsetup</command> es un programa IGU que puede usar para editar la configuración de GDM. Este programa puede lanzarse directamente desde la pantalla de entrada si la clave greeter/ConfigAvailable está establecida a «true». El GUI no soporta todas las claves de configuración de GDM, así que quizá tenga que editar los archivos de configuración a mano para editar esas claves. Si crees que ejecutar un GUI perteneciente al root es un riesgo de seguridad, entonces podría querer editar siempre estos archivos a mano. Este programa no soporta establecer la configuración por cada pantalla, así que los archivos de configuración por cada pantalla deben configurarse a mano.</para>
 
     <para>Las distribuciones deberían editar el archivo <filename>&gt;&lt;share&gt;/gdm/defaults.conf</filename> para establecer los valores predeterminados para que éstos se preserven como predeterminados y no sean modificados por los usuarios modificando su archivo de configuración personal <filename>&lt;etc&gt;/gdm/custom.conf</filename>.</para>
 
@@ -562,14 +530,7 @@ PostSession/
             <term>AlwaysLoginCurrentSession</term>
             <listitem>
               <synopsis>AlwaysLoginCurrentSession=true</synopsis>
-              <para>
-                If true, then when the user logs in and already has an
-                existing session, then they are connected to that session
-                rather than starting a new session.  This only works for
-                session's running on VT's (Virtual Terminals) started with
-                gdmflexiserver, and not with XDMCP.  Note that VT's are not
-                supported on all operating systems.
-              </para>
+              <para>Si es «true», cuando el usuario entra y ya tiene una sesión existente, entonces se concecta a esa sesión en lugar de iniciar una sesión nueva. Esto sólo funciona en sesiones que se ejecutan en VTs (Virtual Terminals) iniciados con gdmflexiserver, y no con XDMCP. Note que los VTs no están soportados en todos los sistemas operativos.</para>
             </listitem>
           </varlistentry>
 
@@ -589,11 +550,17 @@ PostSession/
 
               <para>Se reconocen los siguientes caracteres de control dentro del nombre especificado:</para>
 
-              <para>&percnt;&percnt;&mdash; el carácter «&percnt;»</para>
+              <para>
+                &percnt;&percnt; &mdash; the `&percnt;' character
+              </para>
 
-              <para>&percnt;d &mdash; nombre de la pantalla</para>
+              <para>
+                &percnt;d &mdash; display's name
+              </para>
 
-              <para>&percnt;h &mdash; nombre de host de la pantalla</para>
+              <para>
+                &percnt;h &mdash; display's hostname
+              </para>
 
               <para>Alternativamente, el nombre podría terminar con una barra vertical |, el símbolo de cauce. El nombre se usa entonces como una aplicación a ejecutar que revuelve el nombre de usuario deseado en la salida estándar. Si se devuelve un nombre de usuario vacío o inválido, no se realiza el inicio de sesión automático. Esta característica se usa típicamente cuando se usan varios visores remotos como kioscos de Internet, con un usuario específico para iniciar sesión automáticamente en cada visualizador.</para>
             </listitem>
@@ -603,40 +570,11 @@ PostSession/
             <term>BaseXsession</term>
             <listitem>
               <synopsis>BaseXsession=&lt;etc&gt;/gdm/Xsession</synopsis>
-              <para>
-                This is the base X session file.  When a user logs in, this
-                script will be run with the selected session as the first
-                argument.  The selected session will be the
-                <filename>Exec=</filename> from the
-                <filename>.desktop</filename> file of the session.
-              </para>
+              <para>Este es el archivo base X session. Cuando un usuario entra, este script se ejecuta con la sesión seleccionada como primer argumento. La sesión seleccionada será la indicada por <filename>Exec=</filename> en el archivo de sesión <filename>.desktop</filename>.</para>
 
-              <para>
-                If you wish to use the same script for several different
-                display managers, and wish to have some of the script run only
-                for GDM, then you can check the presence of the
-                <filename>GDMSESSION</filename> environmental variable.  This
-                will always be set to the basename of
-                <filename>.desktop</filename> (without the extension) file that
-                is being used for this session, and will only be set for GDM
-                sessions.  Previously some scripts were checking for
-                <filename>GDM_LANG</filename>, but that is only set when the
-                user picks a non-system default language.
-              </para>
+              <para>Si quiere usar el mismo script para varios gestores de entrada diferentes, y quiere tener algunos de los scripts para que sólo se ejecuten por GDM, entonces puede comprobar por la presencia de la variable de entorno <filename>GDMSESSION</filename>. Esto siempre será establecido al nombre base del archivo <filename>.desktop</filename> (sin la extensión) que se está usando en esta sesión, y sólo estará establecido para las sesiones GDM. Anteriormente algunos scripts estaban comprobando <filename>GDM_LANG</filename>, pero eso sólo se establece cuando el usuario escoge un idioma no predeterminado del sistema.</para>
 
-              <para>
-                This script should take care of doing the "login" for
-                the user and so it should source the
-                <filename>&lt;etc&gt;/profile</filename> and friends.  The
-                standard script shipped with GDM sources the files in this
-                order: <filename>&lt;etc&gt;/profile</filename> then
-                <filename>~/.profile</filename> then
-                <filename>&lt;etc&gt;/xprofile</filename> and finally
-                <filename>~/.xprofile</filename>.  Note that different
-                distributions may change this however.  Sometimes users
-                personal setup will be in <filename>~/.bash_profile</filename>,
-                however broken that is.
-              </para>
+              <para>Este script debería encargarse de hacer el login para el usuario y por lo tanto debería incluir <filename>&lt;etc&gt;/profile</filename> y demás. El script estándar entregado con GDM incluye los archivos en este orden: <filename>&lt;etc&gt;/profile</filename> después <filename>~/.profile</filename> después <filename>&lt;etc&gt;/xprofile</filename> y finalmente<filename>~/.xprofile</filename>. Note que las diferentes distribuciones podrían cambiar esto. Algunas veces la configuración personal del usuario estará en <filename>~/.bash_profile</filename>, por muy defectuoso que esto sea.</para>
             </listitem>
           </varlistentry>
           
@@ -652,14 +590,7 @@ PostSession/
             <term>Configurator</term>
             <listitem>
               <synopsis>Configurator=&lt;bin&gt;/gdmsetup --disable-sound --disable-crash-dialog</synopsis>
-              <para>
-                The pathname to the configurator binary.  If the greeter
-                <filename>ConfigAvailable</filename> option is set to true then
-                run this binary when somebody chooses Configuration from the
-                Actions menu.  Of course GDM will first ask for root password
-                however.  And it will never allow this to happen from a remote
-                display.
-              </para>
+              <para>La ruta hacia el binario del configurador. Si la opción del interfaz <filename>ConfigAvailable</filename> está puesta a «true» entonces se ejecuta este binario cuando alguien elije Configuración desde el menú de Acciones. Desde luego GDM pedirá primero la contraseña de root. Y nunca permitirá que esto ocurra desde una pantalla remota.</para>
             </listitem>
           </varlistentry>
 
@@ -667,12 +598,7 @@ PostSession/
             <term>ConsoleCannotHandle</term>
             <listitem>
               <synopsis>ConsoleCannotHandle=am,ar,az,bn,el,fa,gu,hi,ja,ko,ml,mr,pa,ta,zh</synopsis>
-              <para>
-                These are the languages that the console cannot handle because
-                of font issues.  Here we mean the text console, not X.  This
-                is only used when there are errors to report and we cannot
-                start X.
-              </para>
+              <para>Éstos son los idiomas que la consola no puede manipular debido a cuestiones de tipografía. Aquí queremos decir la consola de texto, no X. Esto sólo se usa cuando hay errores que informar y no podemos iniciar X.</para>
             </listitem>
           </varlistentry>
 
@@ -688,15 +614,7 @@ PostSession/
             <term>DefaultPath</term>
             <listitem>
               <synopsis>DefaultPath=defaultpath (valor  establecido por la configuración)</synopsis>
-              <para>
-                Specifies the path which will be set in the user's session.
-                This value will be overridden with the value from
-                <filename>/etc/default/login</filename> if it contains
-                "ROOT=&lt;pathname&gt;".  If the
-                <filename>/etc/default/login</filename> file exists, but
-                contains no value for ROOT, the value as defined in the GDM
-                configuration will be be used.
-              </para>
+              <para>Especifica la ruta que debe establecerse en la sesión del usuario. Este valor será sobreescrito por el valor de <filename>/etc/default/login</filename> si contiene "ROOT=&lt;pathname&gt;". Si el archivo <filename>/etc/default/login</filename> existe, pero no contiene ningún valor para ROOT, se usará el el valor tal como esté definido en la configuración de GDM.</para>
             </listitem>
           </varlistentry>
 
@@ -704,12 +622,7 @@ PostSession/
             <term>DefaultSession</term>
             <listitem>
               <synopsis>DefaultSession=gnome.desktop</synopsis>
-              <para>
-                The session that is used by default if the user does not have
-                a saved preference and has picked 'Last' from the list of
-                sessions.  Note that 'Last' need not be displayed, see
-                the <filename>ShowLastSession</filename> key.
-              </para>
+              <para>La sesión que se usará por omisión si el usuario no tiene una preferencia guardada y ha escogido «Última» desde la lista de sesiones. Note que «Última» no necesita mostrarse, vea la clave <filename>ShowLastSession</filename>.</para>
             </listitem>
           </varlistentry>
           
@@ -718,10 +631,7 @@ PostSession/
             <term>DisplayInitDir</term>
             <listitem>
               <synopsis>DisplayInitDir=&lt;etc&gt;/gdm/Init</synopsis>
-              <para>
-                Directory containing the display init scripts. See the
-                ``The Script Directories'' section for more info.
-              </para>
+              <para>Directorio que contiene los script de inicio de la pantalla. Vea la sección «Los directorios de scripts» para más información.</para>
             </listitem>
           </varlistentry>
 
@@ -2191,9 +2101,9 @@ PostSession/
           </varlistentry>        
 
           <varlistentry>
-            <term>ShowGnomeFailsafeSession</term>
+            <term>ShowGNOMEFailsafeSession</term>
             <listitem>
-              <synopsis>ShowGnomeFailsafeSession=true</synopsis>
+              <synopsis>ShowGNOMEFailsafeSession=true</synopsis>
               <para>
                 Should the greeter show the Gnome Failsafe session in th
                 sessions list.
@@ -2409,19 +2319,33 @@ PostSession/
               <synopsis>Welcome=Welcome</synopsis>
               <para>Controla qué texto se muestra junto a la imagen del logotipo en el interfaz estándar. Están soportados los siguientes caracteres de control:</para>
               
-              <para>&percnt;&percnt;&mdash; el carácter «&percnt;»</para>
+              <para>
+                &percnt;&percnt; &mdash; the `&percnt;' character
+              </para>
               
-              <para>&percnt;d &mdash; nombre de host de la pantalla</para>
+              <para>
+                &percnt;d &mdash; display's hostname
+              </para>
               
-              <para>&percnt;h &mdash; Nombre de host completamente cualificado</para>
+              <para>
+                &percnt;h &mdash; Fully qualified hostname
+              </para>
 
-              <para>&percnt;m &mdash; máquina (tipo de procesador)</para>
+              <para>
+                &percnt;m &mdash; machine (processor type)
+              </para>
 
-              <para>&percnt;n &mdash; Nombre de nodo (ej. nombre del host sin .dominio)</para>
+              <para>
+                &percnt;n &mdash; Nodename (i.e. hostname without .domain)
+              </para>
               
-              <para>&percnt;r &mdash; lanzamiento (versión del SO)</para>
+              <para>
+                &percnt;r &mdash; release (OS version)
+              </para>
               
-              <para>&percnt;s &mdash; sysname (i.e. OS)</para>
+              <para>
+                &percnt;s &mdash; sysname (i.e. OS)
+              </para>
 
               <para>Estas cadenas se usan sólo para inicios de sesión locales. Para inicios de sesión remotos XDMCP se usa <filename>RemoteWelcome</filename>.</para>
 
@@ -3751,9 +3675,7 @@ Answers:
           <varlistentry>
             <term>-b</term>
             <listitem>
-              <para>
-              Background mode. Fork child to do the work and return immediately.
-              </para>
+              <para>Modo en segundo plano. Bifurcar un hijo para hacer el trabajo y volver inmediatamente.</para>
             </listitem>
           </varlistentry>
         
@@ -3860,12 +3782,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
           <varlistentry>
             <term>--nodaemon</term>
             <listitem>
-              <para>
-                If this option is specified, then GDM does not fork into the
-                background when run. You can also use a single-dash version,
-                "-nodaemon" for compatibility with other display
-                managers.
-              </para>
+              <para>Si se especifica esta opción, entonces GDM no se bifurca a un segundo plano cuando se ejecuta. Note que ya no puede usar la opción de un guión simple "-nodaemon" para compatibilidad con otros gestores de pantallas.</para>
             </listitem>
           </varlistentry>
 
@@ -3978,13 +3895,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
       <sect3 id="gdmchoosercommandline">
         <title>Opciones de línea de comandos de <command>gdmchooser</command></title>
 
-        <para>
-          The <command>gdmchooser</command> is the XDMCP chooser application.  
-          The <command>gdmchooser</command> is normally executed by the GDM
-          daemon.  It supports the following options for XDM compatibility.
-          This command supports standard GNOME options and is found in
-          support standard GNOME options.
-        </para>
+        <para><command>gdmchooser</command> es la aplicación selectora XDMCP. <command>gdmchooser</command> se ejecuta normalmente por el demonio GDM. Soporta las siguientes opciones para compatibilidad XDM. Este comando soporta las opciones estándar de GNOME y se encuentra dando soporte a opciones estándar de GNOME.</para>
 
         <variablelist>
           <title>Opciones de línea de comandos de <command>gdmchooser</command></title>
@@ -4097,12 +4008,7 @@ tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
       <sect3 id="greetertag">
         <title>etiqueta greeter</title>
 
-          <para>
-            The GDM theme format is specified in XML format contained
-            within a &lt;greeter&gt; tag.  You may specify a GTK+ theme to
-            be used with this theme by using the gtk-theme element in the
-            greeter tag as in the following example.
-          </para>
+          <para>El formato de temas de GDM está especificado en XML contenido dentro de una etiqueta  &lt;greeter&gt;. Puede especificar un tema GTK+ para usarlo con este tema usando el elemento gtk-theme en la etiqueta greeter tal como el siguiente ejemplo:</para>
 
 <screen>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -4112,41 +4018,21 @@ tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
 &lt;/greeter&gt;
 </screen>
 
-          <para>
-            Contained within the greeter tag can be the nodes described
-            in the next sections of this document.  Some of these nodes are
-            containers (box nodes, rect item nodes) which can be used to
-            organize how to display the nodes that the user sees and interacts
-            with (such as button, pixmap and entry item nodes).
-          </para>
+          <para>Contenidos dentro de la etiqueta greeter pueden estar los nodos descritos en las siguientes secciones de este documento. Algunos de estos nodos son contenedores (nodos caja, nodos de elemento rectangular) que se pueden usar para organizar cómo mostrar los nodos con los que el usuario ve e interactura (como nodos de botón, mapa de píxeles y entrada de texto).</para>
       </sect3>
 
       <sect3 id="boxnodes">
-        <title>Nodos contenedores.</title>
+        <title>Nodos caja</title>
 
-        <para>
-          Box nodes are container nodes for item nodes.  Box nodes are
-          specified as follows:
-<screen>
+        <para>Los nodos caja son nodos contenedores para nodos de elementos. Los nodos caja se especifican como sigue: <screen>
 &lt;box orientation="alignment" min-width="num"
 xpadding="num" ypadding="num" spacing="num"
 homogeneous="bool"&gt;
-</screen>
-          Where "num" means number and bool means either
-          "true" or "false" The alignment value can be
-          either "horizontal" or "vertical".  If you leave
-          any property off it will default to zero or "false" in
-          case of "homogeneous" and "vertical" for the
-          orientation.
-        </para>
+</screen> Donde  "num" significa número y bool significa o "true" o "false". El valor de alineación puede ser tanto  "horizontal" como "vertical". Si deja cualquier propiedad desactivada, se establecerá a cero de forma predeterminada o a "false" en caso de "homogeneous" y "vertical" para la orientación.</para>
 
         <para>Si la caja es homogénea entonces los hijos se les reserva la misma cantidad de espacio.</para>
 
-        <para>
-          The "min-width" must be specified in pixels.  Obviously
-          there is also a corresponding "min-height" property as
-          well.
-        </para>
+        <para>El "min-width" debe especificarse en píxeles. Obviamente hay además una propiedad correspondiente "min-height".</para>
       </sect3>
 
       <sect3 id="fixednodes">
@@ -4163,15 +4049,13 @@ homogeneous="bool"&gt;
           Then you put other items with proper position nodes inside this.
         </para>
 
-        <para>
-          The "toplevel" node is really just like a fixed node.
-        </para>
+        <para>El nodo "toplevel" es realmente como un nodo fijo.</para>
       </sect3>
 
       <sect3 id="itemnodes">
         <title>Nodos de elemento</title>
 
-        <para>Un tema GDM se crea especificando una gerarquía de nodos de elementos y cajas. Los nodos de elementos pueden tener el siguiente valor para el tipo:</para>
+        <para>Un tema GDM se crea especificando una jerarquía de nodos de elementos y cajas. Los nodos de elementos pueden tener el siguiente valor para el tipo:</para>
 
         <variablelist>
           <varlistentry>

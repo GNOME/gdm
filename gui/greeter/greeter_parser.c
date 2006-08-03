@@ -1774,8 +1774,10 @@ greeter_parse (const char *file, const char *datadir,
 
   /* Now we can whack the hash, we don't want to keep cached
      pixbufs around anymore */
-  g_hash_table_destroy (pixbuf_hash);
-  pixbuf_hash = NULL;
+  if (pixbuf_hash != NULL) {
+     g_hash_table_destroy (pixbuf_hash);
+     pixbuf_hash = NULL;
+  }
 
   if G_UNLIKELY (!res)
     {

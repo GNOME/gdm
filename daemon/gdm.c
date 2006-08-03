@@ -1430,7 +1430,8 @@ main (int argc, char *argv[])
     /* XDM compliant error message */
     if G_UNLIKELY (getuid () != 0) {
 	    /* make sure the pid file doesn't get wiped */
-	    gdm_fail (_("Only root wants to run GDM\n"));
+	    gdm_error (_("Only root wants to run GDM\n"));
+	    exit (-1);
     }
 
     main_loop = g_main_loop_new (NULL, FALSE);
@@ -1445,6 +1446,13 @@ main (int argc, char *argv[])
     sig.sa_flags = SA_RESTART;
     sigemptyset (&sig.sa_mask);
 
+    /* Parse configuration file */
+    gdm_config_parse ();
+
+    /*
+     * Do not call gdm_fail before calling gdm_config_parse ()
+     * since the gdm_fail function uses config data
+     */
     if G_UNLIKELY (sigaction (SIGTERM, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "TERM", strerror (errno));
@@ -1455,9 +1463,6 @@ main (int argc, char *argv[])
 
     /* get the name of the root user */
     gdm_root_user ();
-
-    /* Parse configuration file */
-    gdm_config_parse ();
 
     pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
 

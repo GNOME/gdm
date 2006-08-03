@@ -1,3 +1,16 @@
+2006-08-02  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.c: Fix error message that gets printed when
+	  you try to run GDM as non-root user.
+	* gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_canvas_item.c,
+	  gui/greeter/greeter_session.c,
+	  gui/greeter/greeter_system.c: I think this time I finally fixed
+	  the focus management in gdmgreeter so that when using the Options
+	  button the focus remains in the entry.
+	* gui/greeter/greeter_parser.c: Only free the hash table if it
+	  is not-NULL.
+
 2006-07-31  Brian Cameron  <brian.cameron@sun.com>
 
 	* NEWS: Updated with 2.14.9 and 2.14.10 info.
