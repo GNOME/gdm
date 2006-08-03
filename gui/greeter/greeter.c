@@ -1122,20 +1122,6 @@ main (int argc, char *argv[])
 	  gdm_common_fail_greeter ("Could not set signal mask!");
   }
   
-  if G_LIKELY (! DOING_GDM_DEVELOPMENT) {
-    ctrlch = g_io_channel_unix_new (STDIN_FILENO);
-    g_io_channel_set_encoding (ctrlch, NULL, NULL);
-    g_io_channel_set_buffered (ctrlch, TRUE);
-    g_io_channel_set_flags (ctrlch, 
-			    g_io_channel_get_flags (ctrlch) | G_IO_FLAG_NONBLOCK,
-			    NULL);
-    g_io_add_watch (ctrlch, 
-		    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
-		    (GIOFunc) greeter_ctrl_handler,
-		    NULL);
-    g_io_channel_unref (ctrlch);
-  }
-
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
   if G_UNLIKELY (DOING_GDM_DEVELOPMENT) {
@@ -1321,6 +1307,20 @@ main (int argc, char *argv[])
   greeter_layout (root, GNOME_CANVAS (canvas));
   
   greeter_setup_items ();
+
+  if G_LIKELY (! DOING_GDM_DEVELOPMENT) {
+    ctrlch = g_io_channel_unix_new (STDIN_FILENO);
+    g_io_channel_set_encoding (ctrlch, NULL, NULL);
+    g_io_channel_set_buffered (ctrlch, TRUE);
+    g_io_channel_set_flags (ctrlch, 
+			    g_io_channel_get_flags (ctrlch) | G_IO_FLAG_NONBLOCK,
+			    NULL);
+    g_io_add_watch (ctrlch, 
+		    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
+		    (GIOFunc) greeter_ctrl_handler,
+		    NULL);
+    g_io_channel_unref (ctrlch);
+  }
 
   gdm_common_setup_blinking ();
 

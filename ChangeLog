@@ -1,3 +1,14 @@
+2006-08-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/greeter/greeter.c: Fix the setup of the iochannel so that
+	  it happens after the face browser is set up.  The recent changes
+	  Ray Strode made to make the message input nonblocking seemed
+	  to break the Face Browser logic.  This patch makes sure that
+	  the face browser is setup before setting up the iochannel.  The
+	  face data is sent from the daemon to the slave along the same
+	  channel, but these messages are not formatted like the other
+	  messages.  Patch provided by Ray Strode <rstrode@redhat.com>.
+
 2006-08-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.c: Fix error message that gets printed when
