@@ -127,6 +127,15 @@ activate_button (GtkWidget *widget, gpointer data)
 		greeter_item_run_action_callback (id);
 }
 
+void 
+menubar_done (GtkMenuShell *menushell, gpointer data)
+{
+	GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+	GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+
+	gtk_widget_grab_focus (entry);
+}
+
 static GtkWidget *
 make_menubar (void)
 {
@@ -181,6 +190,9 @@ make_menubar (void)
 				  G_CALLBACK (gtk_main_quit), NULL);
 	}
 
+	g_signal_connect (G_OBJECT(gtk_menu_item_get_submenu(
+                        gtk_container_get_children(GTK_CONTAINER(menubar))->data)), "selection-done", G_CALLBACK (menubar_done), NULL);
+
 	return menubar;
 }
 
@@ -230,7 +242,11 @@ greeter_options_handler (GreeterItemInfo *item, GtkWidget *menubar)
 static void
 greeter_item_run_button_action_callback (GtkButton *button, const char *id)
 {
+	GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+	GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+
         greeter_item_run_action_callback (id);
+	gtk_widget_grab_focus (entry);
 }
 
 void
@@ -448,7 +464,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 				   "height", (double)rect.height,
 				   "width", (double)rect.width,
 				   NULL);
-	    
+
 	    greeter_item_register_action_callback ("options_button",
 						   (ActionFunc)greeter_options_handler,
 						   menubar);

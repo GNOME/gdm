@@ -254,7 +254,6 @@ greeter_session_handler (GreeterItemInfo *info,
 	  tmp = tmp->next;
 	}
     }
-  gtk_widget_grab_focus (entry);
 }
 
 void
