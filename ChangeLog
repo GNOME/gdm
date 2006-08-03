@@ -1,5 +1,11 @@
 2006-08-03  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c: Remove calls to syslog/malloc that are called
+	  from inside signal handlers, since they are not safe.  Patch
+	  provided by Ray Strode <rstrode@redhat.com>.
+
+2006-08-03  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/gdm.conf.in, config/gdm.conf-custom: Improved comments
 	  to make gdm.conf/custom.conf more clear.
 

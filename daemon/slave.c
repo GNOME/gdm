@@ -4534,8 +4534,6 @@ gdm_slave_term_handler (int sig)
 	gdm_in_signal++;
 	gdm_wait_for_ack = FALSE;
 
-	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
-
 	exit_code_to_use = DISPLAY_ABORT;
 	need_to_quit_after_session_stop = TRUE;
 
@@ -4589,9 +4587,6 @@ gdm_slave_alrm_handler (int sig)
 
 	gdm_in_signal++;
 
-	gdm_debug ("gdm_slave_alrm_handler: %s got ARLM signal, "
-		   "to ping display", d->name);
-
 	if G_UNLIKELY (d->dsp == NULL) {
 		gdm_in_signal --;
 		/* huh? */
@@ -4599,9 +4594,6 @@ gdm_slave_alrm_handler (int sig)
 	}
 
 	if G_UNLIKELY (in_ping) {
-		slave_start_jmp_error_to_print = 
-			g_strdup_printf (_("Ping to %s failed; whacking display!"),
-					 d->name);
 		need_to_quit_after_session_stop = TRUE;
 		exit_code_to_use = DISPLAY_REMANAGE;
 
