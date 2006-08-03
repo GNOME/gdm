@@ -1,19 +1,26 @@
 # GDM Configuration file.
 #
-# You should not update this file by hand.  Since GDM 2.13.0.4, configuration
-# choices in the gdm.conf-custom file will override the default values
-# specified in this file.  This file may be overwritten on upgrade, so to
-# ensure that your configuration choices are not lost, please make sure that
-# your modifications are only made to the gdm.conf-custom file.  If you were
-# using a previous version of GDM and had made changes to your gdm.conf file,
-# this file should have been automatically renamed as gdm.conf-custom to ensure
-# that your previous modifications are preserved.
+# This file should not be updated by hand.  Since GDM 2.13.0.4,
+# configuration choices in the /etc/X11/gdm/gdm.conf-custom file will
+# override the default values specified in this file (installation 
+# locations of the configuration files may vary for different distros).
+# This defaults.conf file may be overwritten on upgrade, so to ensure
+# that your configuration choices are not lost, please make sure that 
+# your changes are made only the the custom.conf file.
+#
+# If you were using an older version of GDM, your system may have the
+# the older gdm.conf configuration file on the system.  If so, then this
+# file is used instead of the custom.conf file for backwards support.
+# If you make changes to the custom.conf file and they seem to not be
+# taking effect, this is likely the problem.  Consider migrating your
+# configuration to the new custom.conf file and removing the gdm.conf
+# file.
 #
 # You can use the gdmsetup program to graphically edit the gdm.conf-custom
 # file.  Note that gdmsetup does not support every option in this file, just
-# the ones that most users want to change.  If you feel that gdmsetup should
-# support additional configuratio options, please file a bug report at
-# http://bugzilla.gnome.org/.
+# the most common ones that users want to change.  If you feel that
+# gdmsetup should support additional configuration options, please file a
+# bug report at http://bugzilla.gnome.org/.
 #
 # If you hand-edit the GDM configuration, you should run the following command
 # to get the GDM daemon to recognize the change.  Any running GDM GUI programs
@@ -21,8 +28,7 @@
 #
 # gdmflexiserver --command="UPDATE_CONFIG <configuration key>"
 #
-# For example, the "Enable" key in the "[debug]" section would be specified by
-# "debug/Enable".
+# e.g, the "Enable" key in the "[debug]" section would be "debug/Enable".
 #
 # You can also run gdm-restart or gdm-safe-restart to cause GDM to restart and
 # re-read the new configuration settings.  You can also restart GDM by sending
@@ -34,7 +40,7 @@
 # GNOME|System category.  You can also find the docs in HTML form on
 # http://www.gnome.org/projects/gdm/
 #
-# NOTE: Some values are commented out but show their default values.  Lines
+# NOTE: Some values are commented out, but show their default values.  Lines
 # that begin with "#" are considered comments.
 #
 # Have fun!

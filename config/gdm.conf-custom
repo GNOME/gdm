@@ -7,10 +7,15 @@
 # options are supported by gdmsetup, so to modify some values it may be
 # necessary to modify this file directly by hand.
 #
+# Older versions of GDM used the "gdm.conf" file for configuration.  If your
+# system has an old gdm.conf file on the system, it will be used instead of
+# this file - so changes made to this file will not take effect.  Consider
+# migrating your configuration to this file and removing the gdm.conf file.
+#
 # To hand-edit this file, simply add or modify the key=value combination in
 # the appropriate section in the template below.  Refer to the comments in the
-# gdm.conf file for information about each option.  Also refer to the reference
-# documentation.
+# /usr/share/gdm/defaults.conf file for information about each option.  Also
+# refer to the reference documentation.
 #
 # If you hand edit a GDM configuration file, you should run the following
 # command to get the GDM daemon to notice the change.  Any running GDM GUI
@@ -18,8 +23,7 @@
 #
 # gdmflexiserver --command="UPDATE_CONFIG <configuration key>"
 #
-# For example, the "Enable" key in the "[debug]" section would be specified by
-# "debug/Enable".
+# e.g, the "Enable" key in the "[debug]" section would be "debug/Enable".
 #
 # You can also run gdm-restart or gdm-safe-restart to cause GDM to restart and
 # re-read the new configuration settings.  You can also restart GDM by sending
