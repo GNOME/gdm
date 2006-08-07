@@ -1,5 +1,29 @@
 Ahh news...
 
+2.15.9 Stuff:
+
+- The iochannel fix in 2.15.8 broke the face browser when using
+  gdmgreeter.  Now fixed.  (Ray Strode)
+
+- Fix so that focus never leaves the user/password entry when using
+  the gdmgreeter Options button.  The previous fixes for this didn't
+  take into account the situation where the user pops up the menu,
+  but doesn't select an option.  (Brian Cameron)
+
+- Fix error message that gets printed when you try to run GDM 
+  daemon as a non-root user.  (Brian Cameron)
+
+- The configure script now supports the Xserver installed in
+  /usr/bin/Xorg.  (Ray Strode)
+
+- Remove calls to syslog/malloc that are called from inside signal 
+  handlers, since they are not safe.  (Ray Strode)
+
+- Improved commands in GDM configuration files.  (Brian Cameron)
+
+- Translation updates (Subhransu Behera, Rahul Bhalerao, Inaki Larranaga,
+  Jovan Naumovski, Ankit Patel, Ani Peter)
+
 2.15.8 Stuff:
 
 - Fix to bugs causing gdmchooser to core dump when started.
