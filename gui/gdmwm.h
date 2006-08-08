@@ -64,6 +64,10 @@ void	gdm_wm_set_screen		(int cur_screen_num);
  */
 void	gdm_wm_center_window		(GtkWindow *cw);
 
+/* Center mouse pointer
+ */
+void gdm_wm_center_cursor (void);
+
 /*
  * Save and restore stacking order, useful for restarting
  * the greeter

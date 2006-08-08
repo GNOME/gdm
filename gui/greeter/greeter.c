@@ -1441,6 +1441,7 @@ main (int argc, char *argv[])
      gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
 
   gdm_common_setup_cursor (GDK_LEFT_PTR);
+  gdm_wm_center_cursor ();
   gdm_common_pre_fetch_launch ();
   gtk_main ();
 

@@ -250,7 +250,13 @@ gdm_wm_center_window (GtkWindow *cw)
  	gtk_window_move (GTK_WINDOW (cw), x, y);	
 }
 
-
+void
+gdm_wm_center_cursor (void)
+{
+    XWarpPointer (wm_disp, None, wm_root, 0, 0, 0, 0, 
+		  gdm_wm_screen.x + gdm_wm_screen.width / 2,
+		  gdm_wm_screen.y + gdm_wm_screen.height / 2);
+}
 
 static void
 trap_push (void)
