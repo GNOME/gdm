@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-04 04:58+0200\n"
+"POT-Creation-Date: 2006-08-09 07:19+0200\n"
 "PO-Revision-Date: 2006-05-04 14:14+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -32,6 +32,23 @@ msgstr "系统默认会话"
 msgid "This is the default system session"
 msgstr "系统默认的会话"
 
+#: ../config/gnome.desktop.in.h:1
+msgid "GNOME"
+msgstr "GNOME"
+
+#: ../config/gnome.desktop.in.h:2
+msgid "This session logs you into GNOME"
+msgstr "此会话使您登录到 GNOME"
+
+#: ../config/ssh.desktop.in.in.h:1
+msgid "Secure Remote connection"
+msgstr ""
+
+#: ../config/ssh.desktop.in.in.h:2
+#, fuzzy
+msgid "This session logs you into a remote host using ssh"
+msgstr "此会话使您登录到 CDE"
+
 #. DO NOT CHANGE HEADER FILE BY HAND! CHANGE THE extract-shell.sh
 #. SCRIPT THIS IS GENERATED.  ADD A CHANGELOG ENTRY IF YOU MODIFY
 #. THIS SCRIPT.
@@ -42,8 +59,8 @@ msgid ""
 "it is not set up correctly.  You will need to log in on a console and "
 "reconfigure the X server.  Then restart GDM."
 msgstr ""
-"启动 X 服务器(您的图形界面)失败。好像是由于没有正确地设置它。您需要从控制"
-"台登录并重新配置 X 服务器。而后重新启动 GDM。"
+"启动 X 服务器(您的图形界面)失败。好像是由于没有正确地设置它。您需要从控制台登"
+"录并重新配置 X 服务器。而后重新启动 GDM。"
 
 #: ../config/gettextfoo.h:6
 msgid ""
@@ -70,8 +87,8 @@ msgid ""
 "it is not set up correctly.  Would you like to view the X server output to "
 "diagnose the problem?"
 msgstr ""
-"启动 X 服务器(您的图形界面)失败。好像是因为没有正确地设置它。您是否希望查"
-"看 X 服务器的输出以检查问题？"
+"启动 X 服务器(您的图形界面)失败。好像是因为没有正确地设置它。您是否希望查看 "
+"X 服务器的输出以检查问题？"
 
 #: ../config/gettextfoo.h:11
 msgid "Would you like to view the detailed X server output as well?"
@@ -83,8 +100,8 @@ msgid ""
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
 "the X server output to diagnose the problem?"
 msgstr ""
-"启动 X 服务器(您的图形界面)失败。好像是因为没有正确地设置指点设备(您的鼠"
-"标)。您是否希望查看 X 服务器的输出以便检查问题？"
+"启动 X 服务器(您的图形界面)失败。好像是因为没有正确地设置指点设备(您的鼠标)。"
+"您是否希望查看 X 服务器的输出以便检查问题？"
 
 #: ../config/gettextfoo.h:13 ../config/gettextfoo.h:14
 msgid ""
@@ -107,16 +124,8 @@ msgid ""
 "will have focus only if the mouse pointer is above them.  To get out of this "
 "mode type 'exit' in the window in the upper left corner"
 msgstr ""
-"启动会话失败，所以我启动了安全模式的 xterm 会话。窗口仅当您当鼠标位于其上"
-"时才会拥有焦点。要退出此模式，请在左上角的窗口处输入“exit”"
-
-#: ../config/gnome.desktop.in.h:1
-msgid "GNOME"
-msgstr "GNOME"
-
-#: ../config/gnome.desktop.in.h:2
-msgid "This session logs you into GNOME"
-msgstr "此会话使您登录到 GNOME"
+"启动会话失败，所以我启动了安全模式的 xterm 会话。窗口仅当您当鼠标位于其上时才"
+"会拥有焦点。要退出此模式，请在左上角的窗口处输入“exit”"
 
 #: ../daemon/auth.c:57
 #, c-format
@@ -166,7 +175,7 @@ msgstr "%s：无法写入 cookie"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s：忽略可疑 cookie 文件 %s"
 
-#: ../daemon/auth.c:895 ../daemon/gdm.c:1364 ../daemon/gdm.c:1728
+#: ../daemon/auth.c:895 ../daemon/gdm.c:1365 ../daemon/gdm.c:1733
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "无法写入 %s：%s"
@@ -196,7 +205,7 @@ msgstr ""
 msgid "%s: Cannot create pipe"
 msgstr "%s：无法创建管道"
 
-#: ../daemon/display.c:331
+#: ../daemon/display.c:333
 #, c-format
 msgid "%s: Failed forking GDM slave process for %s"
 msgstr "%s：为 %s 创建 GDM 从进程失败"
@@ -259,7 +268,7 @@ msgstr "%s：%s 不是一个普通文件。"
 #: ../daemon/filecheck.c:129
 #, c-format
 msgid "%s: %s is writable by group/other."
-msgstr "%s：%s 对同组用户和其它用户可写。"
+msgstr "%s：%s 对同组用户和其他用户可写。"
 
 #: ../daemon/filecheck.c:136 ../daemon/filecheck.c:191
 #, c-format
@@ -287,40 +296,40 @@ msgid "%s: Could not open FIFO"
 msgstr "%s：无法打开 FIFO"
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:198 ../daemon/gdm.c:206 ../daemon/gdm.c:1498
-#: ../daemon/gdm.c:1506
+#: ../daemon/gdm.c:197 ../daemon/gdm.c:205 ../daemon/gdm.c:1503
+#: ../daemon/gdm.c:1511
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr "无法写入 PID 文件 %s：可能磁盘空间不够。错误：%s\n"
 
-#: ../daemon/gdm.c:200 ../daemon/gdm.c:208 ../daemon/gdm.c:1500
-#: ../daemon/gdm.c:1508
+#: ../daemon/gdm.c:199 ../daemon/gdm.c:207 ../daemon/gdm.c:1505
+#: ../daemon/gdm.c:1513
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr "无法写入 PID 文件 %s：可能磁盘空间不够。错误：%s"
 
-#: ../daemon/gdm.c:218
+#: ../daemon/gdm.c:217
 #, c-format
 msgid "%s: fork () failed!"
 msgstr "%s：fork() 失败！"
 
 #. should never happen
-#: ../daemon/gdm.c:221 ../daemon/slave.c:3372
+#: ../daemon/gdm.c:220 ../daemon/slave.c:3372
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s：setsid() 失败：%s！"
 
-#: ../daemon/gdm.c:412
+#: ../daemon/gdm.c:411
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s：正在尝试 failsafe X 服务器 %s"
 
-#: ../daemon/gdm.c:430
+#: ../daemon/gdm.c:429
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s：正在运行 XKeepsCrashing 脚本"
 
-#: ../daemon/gdm.c:547
+#: ../daemon/gdm.c:546
 msgid ""
 "The X server (your graphical interface) cannot be started.  It is likely "
 "that it is not set up correctly.  You will need to log in on a console and "
@@ -334,53 +343,53 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:559
+#: ../daemon/gdm.c:558
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr "在短时间内多次启动 X 服务器失败；禁用显示 %s"
 
-#: ../daemon/gdm.c:569 ../daemon/gdm.c:2298
+#: ../daemon/gdm.c:568 ../daemon/gdm.c:2312
 msgid "Master suspending..."
 msgstr "主人正在挂起..."
 
-#: ../daemon/gdm.c:622
+#: ../daemon/gdm.c:621
 #, c-format
 msgid "System is restarting, please wait ..."
 msgstr "正在重新启动系统，请稍候..."
 
-#: ../daemon/gdm.c:624
+#: ../daemon/gdm.c:623
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "正在关闭系统，请稍候..."
 
-#: ../daemon/gdm.c:635
+#: ../daemon/gdm.c:634
 msgid "Master halting..."
 msgstr "主人正在关机..."
 
-#: ../daemon/gdm.c:648
+#: ../daemon/gdm.c:647
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s：关机失败：%s"
 
-#: ../daemon/gdm.c:657
+#: ../daemon/gdm.c:656
 msgid "Restarting computer..."
 msgstr "正在重启计算机..."
 
-#: ../daemon/gdm.c:670
+#: ../daemon/gdm.c:669
 #, c-format
 msgid "%s: Restart failed: %s"
 msgstr "%s：重新启动失败：%s"
 
-#: ../daemon/gdm.c:774
+#: ../daemon/gdm.c:776
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
 "system menu from display %s"
 msgstr "显示 %s 没有系统菜单时重新启动 GDM、重新启动计算机、挂起或关机的请求"
 
-#: ../daemon/gdm.c:783
+#: ../daemon/gdm.c:785
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
@@ -388,174 +397,177 @@ msgid ""
 msgstr "从非静态显示 %s 发出的重新启动 GDM、重新启动计算机、挂起或关机请求"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:849
+#: ../daemon/gdm.c:851
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s：中止显示 %s"
 
-#: ../daemon/gdm.c:1000
+#: ../daemon/gdm.c:1002
 msgid "GDM restarting ..."
 msgstr "正在重新启动 GDM ..."
 
-#: ../daemon/gdm.c:1004
+#: ../daemon/gdm.c:1006
 msgid "Failed to restart self"
 msgstr "重新启动自身失败"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1078
+#: ../daemon/gdm.c:1080
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
-msgstr "主守护程序：得到 SIGABRT，有什么程序出错了。即将关机！"
+msgstr "主守护程序：得到 SIGABRT，有程序出错了。即将关机！"
 
-#: ../daemon/gdm.c:1236
+#: ../daemon/gdm.c:1238
 msgid "Do not fork into the background"
 msgstr "无法在后台创建子进程"
 
-#: ../daemon/gdm.c:1238
+#: ../daemon/gdm.c:1240
 msgid "No console (static) servers to be run"
 msgstr "没有要运行的控制台(静态)服务器"
 
-#: ../daemon/gdm.c:1240
+#: ../daemon/gdm.c:1242
 msgid "Alternative defaults configuration file"
 msgstr "备选的默认配置文件"
 
-#: ../daemon/gdm.c:1240
+#: ../daemon/gdm.c:1242
 msgid "CONFIGFILE"
 msgstr "配置文件"
 
-#: ../daemon/gdm.c:1242
+#: ../daemon/gdm.c:1244
 msgid "Preserve LD_* variables"
 msgstr "保留 LD_* 变量"
 
-#: ../daemon/gdm.c:1244
+#: ../daemon/gdm.c:1246
 msgid "Print GDM version"
 msgstr "打印 GDM 版本"
 
-#: ../daemon/gdm.c:1246
+#: ../daemon/gdm.c:1248
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "启动第一个 X 服务器，但却挂机了。目前尚未收到 GO 信息"
 
-#: ../daemon/gdm.c:1353 ../daemon/gdm.c:1697
+#: ../daemon/gdm.c:1354 ../daemon/gdm.c:1702
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "无法为写入打开 %s"
 
-#: ../daemon/gdm.c:1411 ../gui/gdmchooser.c:1978
-#, c-format
-msgid ""
-"Error on option %s: %s.\n"
-"Run '%s --help' to see a full list of available command line options.\n"
-msgstr ""
-"错误选项 %s：%s。\n"
-"运行“%s --help”以查阅可用的命令行选项的完整列表。\n"
+#: ../daemon/gdm.c:1405
+#, fuzzy
+msgid "- The GNOME login manager"
+msgstr "配置登录管理器(_G)"
+
+#: ../daemon/gdm.c:1406 ../gui/gdmXnestchooser.c:482
+#: ../gui/gdmXnestchooser.c:490 ../gui/gdmchooser.c:1968
+#: ../gui/gdmflexiserver.c:716
+#, fuzzy
+msgid "main options"
+msgstr "选项(_T)"
 
 #. make sure the pid file doesn't get wiped
 #: ../daemon/gdm.c:1433
 msgid "Only root wants to run GDM\n"
 msgstr "只有 root 需要运行 GDM\n"
 
-#: ../daemon/gdm.c:1449 ../daemon/gdm.c:1453 ../daemon/gdm.c:1536
-#: ../daemon/gdm.c:1540 ../daemon/gdm.c:1544 ../daemon/gdm.c:1548
-#: ../daemon/gdm.c:1558 ../daemon/gdm.c:1564 ../daemon/gdm.c:1575
-#: ../daemon/misc.c:1771 ../daemon/misc.c:1775 ../daemon/misc.c:1779
-#: ../daemon/misc.c:1786 ../daemon/misc.c:1790 ../daemon/misc.c:1794
-#: ../daemon/server.c:521 ../daemon/server.c:534 ../daemon/slave.c:792
+#: ../daemon/gdm.c:1457 ../daemon/gdm.c:1461 ../daemon/gdm.c:1541
+#: ../daemon/gdm.c:1545 ../daemon/gdm.c:1549 ../daemon/gdm.c:1553
+#: ../daemon/gdm.c:1563 ../daemon/gdm.c:1569 ../daemon/gdm.c:1580
+#: ../daemon/misc.c:1779 ../daemon/misc.c:1783 ../daemon/misc.c:1787
+#: ../daemon/misc.c:1794 ../daemon/misc.c:1798 ../daemon/misc.c:1802
+#: ../daemon/server.c:522 ../daemon/server.c:535 ../daemon/slave.c:792
 #: ../daemon/slave.c:806 ../daemon/slave.c:816 ../daemon/slave.c:826
-#: ../daemon/slave.c:838 ../gui/gdmlogin.c:3529 ../gui/gdmlogin.c:3540
-#: ../gui/gdmlogin.c:3546
+#: ../daemon/slave.c:838 ../gui/gdmlogin.c:3399 ../gui/gdmlogin.c:3410
+#: ../gui/gdmlogin.c:3416
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s：设置 %s 信号处理器出错：%s"
 
-#: ../daemon/gdm.c:1480
+#: ../daemon/gdm.c:1485
 msgid "GDM already running. Aborting!"
 msgstr "GDM 已经运行。中止！"
 
-#: ../daemon/gdm.c:1584
+#: ../daemon/gdm.c:1589
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s：设置 CHLD 信号处理器出错"
 
-#: ../daemon/gdm.c:2713
+#: ../daemon/gdm.c:2728
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC 请求被禁止：未通过认证"
 
-#: ../daemon/gdm.c:2879 ../daemon/gdm.c:2897 ../daemon/gdm.c:3170
-#: ../daemon/gdm.c:3221 ../daemon/gdm.c:3273 ../daemon/gdm.c:3314
-#: ../daemon/gdm.c:3340
+#: ../daemon/gdm.c:2894 ../daemon/gdm.c:2912 ../daemon/gdm.c:3194
+#: ../daemon/gdm.c:3246 ../daemon/gdm.c:3299 ../daemon/gdm.c:3340
+#: ../daemon/gdm.c:3366
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s 请求被禁止：未通过认证"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:2915
+#: ../daemon/gdm.c:2930
 msgid "Unknown server type requested; using standard server."
 msgstr "请求未知的服务器类型；使用标准服务器。"
 
-#: ../daemon/gdm.c:2919
+#: ../daemon/gdm.c:2934
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
 "standard server."
 msgstr "请求的服务器 %s 不能被用于便捷服务器；使用标准服务器。"
 
-#: ../daemon/gdmconfig.c:554 ../daemon/gdmconfig.c:561
+#: ../daemon/gdmconfig.c:553 ../daemon/gdmconfig.c:560
 #, c-format
 msgid "%s: No GDM configuration file: %s. Using defaults."
 msgstr "%s：没有 GDM 配置文件：%s。使用默认值。"
 
-#: ../daemon/gdmconfig.c:886
+#: ../daemon/gdmconfig.c:1072
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
 msgstr "%s：BaseXsession 为空；使用 %s/gdm/Xsession"
 
-#: ../daemon/gdmconfig.c:919
+#: ../daemon/gdmconfig.c:1105
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s：找不到标准 X 服务器；正在尝试替代服务器"
 
-#: ../daemon/gdmconfig.c:978
+#: ../daemon/gdmconfig.c:1164
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s：未指定欢迎程序。"
 
-#: ../daemon/gdmconfig.c:980
+#: ../daemon/gdmconfig.c:1166
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s：未指定远程欢迎程序。"
 
-#: ../daemon/gdmconfig.c:982
+#: ../daemon/gdmconfig.c:1168
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s：未指定会话目录。"
 
-#: ../daemon/gdmconfig.c:1066
+#: ../daemon/gdmconfig.c:1252
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s：XDMCP 在 XDMCP 不存在的时候被启用；正在关闭"
 
-#: ../daemon/gdmconfig.c:1127
+#: ../daemon/gdmconfig.c:1313
 #, c-format
 msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
-msgstr "%s：TimedLoginDelay 小于 5，所以我就使用 5。"
+msgstr "%s：TimedLoginDelay 小于 5，换回默认值 5。"
 
-#: ../daemon/gdmconfig.c:1365
+#: ../daemon/gdmconfig.c:1551
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s：优先级超出范围；更改为 %d"
 
-#: ../daemon/gdmconfig.c:1371
+#: ../daemon/gdmconfig.c:1557
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s：服务器命令为空；使用标准命令。"
 
-#: ../daemon/gdmconfig.c:1570
+#: ../daemon/gdmconfig.c:1756
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr "%s：日志目录 %s 不存在或者不是目录。使用 ServAuthDir %s。"
 
-#: ../daemon/gdmconfig.c:1587
+#: ../daemon/gdmconfig.c:1773
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -564,12 +576,12 @@ msgstr ""
 "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它并不存在。请更正 GDM 配置"
 "并重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1598
+#: ../daemon/gdmconfig.c:1784
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s：认证目录 %s 不存在。中止。"
 
-#: ../daemon/gdmconfig.c:1604
+#: ../daemon/gdmconfig.c:1790
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -578,52 +590,52 @@ msgstr ""
 "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它不是一个目录。请更正 GDM "
 "配置并重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1615
+#: ../daemon/gdmconfig.c:1801
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s：认证目录 %s 不是目录。中止。"
 
-#: ../daemon/gdmconfig.c:1688
+#: ../daemon/gdmconfig.c:1874
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s：配置文件中出现非法服务器行。忽略！"
 
-#: ../daemon/gdmconfig.c:1810 ../daemon/gdmconfig.c:1851
+#: ../daemon/gdmconfig.c:1996 ../daemon/gdmconfig.c:2037
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-msgstr "%s：已禁用 XDMCP，而且未定义本地服务器。中止！"
+msgstr "%s：已禁用 XDMCP，而且未定义静态服务器。中止！"
 
 #. start
 #. server uid
-#: ../daemon/gdmconfig.c:1828
+#: ../daemon/gdmconfig.c:2014
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
 "configuration!"
 msgstr ""
-"%1$s：已禁用 XDMCP，而且未定义本地服务器。为 :%3$d 添加 %2$s 以进行配置！"
+"%1$s：已禁用 XDMCP，而且未定义静态服务器。为 :%3$d 添加 %2$s 以进行配置！"
 
-#: ../daemon/gdmconfig.c:1841
+#: ../daemon/gdmconfig.c:2027
 msgid ""
 "XDMCP is disabled and GDM cannot find any static server to start.  "
 "Aborting!  Please correct the configuration and restart GDM."
 msgstr ""
-"XDMCP 已被禁用，而且 GDM 找不到要启动的任何本地服务器。中止！请更正配置并重新"
+"XDMCP 已被禁用，而且 GDM 找不到要启动的任何静态服务器。中止！请更正配置并重新"
 "启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1870
+#: ../daemon/gdmconfig.c:2056
 #, c-format
 msgid ""
 "The GDM user '%s' does not exist. Please correct GDM configuration and "
 "restart GDM."
 msgstr "GDM 用户“%s”不存在。请更正 GDM 配置并重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1878
+#: ../daemon/gdmconfig.c:2064
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s：找不到 GDM 用户 (%s)。中止！"
 
-#: ../daemon/gdmconfig.c:1885
+#: ../daemon/gdmconfig.c:2071
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
@@ -631,24 +643,24 @@ msgstr ""
 "GDM 用户被设置为 root，但由于这会导致安全问题所以是不允许的。请更正 GDM 配置"
 "并重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1896
+#: ../daemon/gdmconfig.c:2082
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s：GDM 用户不能为 root 。中止！"
 
-#: ../daemon/gdmconfig.c:1903
+#: ../daemon/gdmconfig.c:2089
 #, c-format
 msgid ""
 "The GDM group '%s' does not exist. Please correct GDM configuration and "
 "restart GDM."
 msgstr "GDM 组“%s”不存在。请更正 GDM 配置并重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1911
+#: ../daemon/gdmconfig.c:2097
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s：找不到 GDM 组“%s”。中止！"
 
-#: ../daemon/gdmconfig.c:1918
+#: ../daemon/gdmconfig.c:2104
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
@@ -656,36 +668,36 @@ msgstr ""
 "GDM 组被设置为 root，但由于这会导致安全问题所以是不允许的。请更正 GDM 配置并"
 "重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1928
+#: ../daemon/gdmconfig.c:2114
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s：GDM 组不能为 root。中止！"
 
-#: ../daemon/gdmconfig.c:1937
+#: ../daemon/gdmconfig.c:2123
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
 msgstr "%s：GDM 用户找不到或无法执行欢迎程序"
 
-#: ../daemon/gdmconfig.c:1943
+#: ../daemon/gdmconfig.c:2129
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
 msgstr "%s：找不到远程欢迎程序或 GDM 用户无法执行远程欢迎程序"
 
-#: ../daemon/gdmconfig.c:1951
+#: ../daemon/gdmconfig.c:2137
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
 msgstr "%s：GDM 用户找不到或无法执行选择程序"
 
-#: ../daemon/gdmconfig.c:1960
+#: ../daemon/gdmconfig.c:2146
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
 msgstr "在 GDM 配置文件中未指定 daemon/ServAuthDir"
 
-#: ../daemon/gdmconfig.c:1963
+#: ../daemon/gdmconfig.c:2149
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s：未指定 daemon/ServAuthDir。"
 
-#: ../daemon/gdmconfig.c:1987
+#: ../daemon/gdmconfig.c:2173
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -695,12 +707,12 @@ msgstr ""
 "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它并不属于用户 %s 和组 %s。"
 "请更正所有权或更正 GDM 配置并重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:1999
+#: ../daemon/gdmconfig.c:2185
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s：认证目录 %s 不属于用户 %s，组 %s。中止。"
 
-#: ../daemon/gdmconfig.c:2005
+#: ../daemon/gdmconfig.c:2191
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -710,7 +722,7 @@ msgstr ""
 "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但权限不正确：它的权限应为 %"
 "o。请更正权限或更正 GDm 配置并重新启动 GDM。"
 
-#: ../daemon/gdmconfig.c:2018
+#: ../daemon/gdmconfig.c:2204
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s：认证目录 %s 的权限 %o 是错误的。应为 %o。中止。"
@@ -720,27 +732,27 @@ msgstr "%s：认证目录 %s 的权限 %o 是错误的。应为 %o。中止。"
 msgid "y = Yes or n = No? >"
 msgstr "y = 是 或 n = 否？>"
 
-#: ../daemon/misc.c:1125
+#: ../daemon/misc.c:1133
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s：无法获取本地地址！"
 
-#: ../daemon/misc.c:1279
+#: ../daemon/misc.c:1287
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "无法调用 setgid %d。中止。"
 
-#: ../daemon/misc.c:1284
+#: ../daemon/misc.c:1292
 #, c-format
 msgid "initgroups () failed for %s. Aborting."
 msgstr "initgroups() 执行 %s 失败。中止。"
 
-#: ../daemon/misc.c:1529 ../daemon/misc.c:1543
+#: ../daemon/misc.c:1537 ../daemon/misc.c:1551
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s：将信号 %d 设置为 %s 出错"
 
-#: ../daemon/misc.c:2443
+#: ../daemon/misc.c:2451
 #, c-format
 msgid ""
 "Last login:\n"
@@ -749,11 +761,11 @@ msgstr ""
 "上次登录：\n"
 "%s"
 
-#: ../daemon/server.c:150
+#: ../daemon/server.c:151
 msgid "Can not start fallback console"
 msgstr "无法启动回调控制台"
 
-#: ../daemon/server.c:340
+#: ../daemon/server.c:341
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should "
@@ -763,7 +775,7 @@ msgstr ""
 "好像已经有一个 X 服务器运行在显示 %s 上。我是否该尝试其它显示编号？如果您回答"
 "否，我就再次尝试在 %s 上启动服务器。%s"
 
-#: ../daemon/server.c:348
+#: ../daemon/server.c:349
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -772,101 +784,101 @@ msgstr ""
 "  (您可以通过按 Ctrl-Alt 和一个功能键来切换到控制台，例如 Ctrl-Alt-F7 将切换"
 "到控制台 7。X 服务器通常运行在 7 号或更高号码的控制台上。)"
 
-#: ../daemon/server.c:394
+#: ../daemon/server.c:395
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Xnest 无法打开显示“%s”"
 
-#: ../daemon/server.c:425
+#: ../daemon/server.c:426
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "显示 %s 正忙。已有另外一个 X 服务器运行于其上。"
 
-#: ../daemon/server.c:509
+#: ../daemon/server.c:510
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s：打开管道错误：%s"
 
-#: ../daemon/server.c:698
+#: ../daemon/server.c:699
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s：连接到父显示“%s”失败"
 
 #. Send X too busy
-#: ../daemon/server.c:838
+#: ../daemon/server.c:839
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s：找不到空闲的显示编号"
 
-#: ../daemon/server.c:865
+#: ../daemon/server.c:866
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s：显示 %s 正忙。正在尝试其它显示编号。"
 
-#: ../daemon/server.c:976
+#: ../daemon/server.c:977
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "非法服务器命令“%s”"
 
-#: ../daemon/server.c:981
+#: ../daemon/server.c:982
 #, c-format
 msgid "Server name '%s' not found; using standard server"
 msgstr "找不到服务器名“%s”；使用标准服务器"
 
-#: ../daemon/server.c:1160
+#: ../daemon/server.c:1161
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s：无法打开日志文件显示 %s！"
 
-#: ../daemon/server.c:1172 ../daemon/server.c:1178 ../daemon/server.c:1183
+#: ../daemon/server.c:1173 ../daemon/server.c:1179 ../daemon/server.c:1184
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：将 %s 设置为 %s 出错"
 
-#: ../daemon/server.c:1229
+#: ../daemon/server.c:1230
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：显示 %s 的空服务器命令"
 
-#: ../daemon/server.c:1239
+#: ../daemon/server.c:1240
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s：服务器优先级无法设定为 %d：%s"
 
-#: ../daemon/server.c:1251
+#: ../daemon/server.c:1252
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s：服务器是由 uid %d 启动的但那个用户不存在"
 
-#: ../daemon/server.c:1266 ../daemon/slave.c:2485 ../daemon/slave.c:2956
+#: ../daemon/server.c:1267 ../daemon/slave.c:2485 ../daemon/slave.c:2956
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s：无法将组 ID 设置为 %d"
 
-#: ../daemon/server.c:1272 ../daemon/slave.c:2491 ../daemon/slave.c:2962
+#: ../daemon/server.c:1273 ../daemon/slave.c:2491 ../daemon/slave.c:2962
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s：initgroups() 执行 %s 失败"
 
-#: ../daemon/server.c:1278 ../daemon/slave.c:2496 ../daemon/slave.c:2967
+#: ../daemon/server.c:1279 ../daemon/slave.c:2496 ../daemon/slave.c:2967
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s：无法将用户 ID 设置为 %d"
 
-#: ../daemon/server.c:1285
+#: ../daemon/server.c:1286
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s：无法将组 ID 设置为 0"
 
-#: ../daemon/server.c:1312
+#: ../daemon/server.c:1313
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s：找不到 Xserver：%s"
 
-#: ../daemon/server.c:1320
+#: ../daemon/server.c:1321
 #, c-format
 msgid "%s: Can't fork Xserver process!"
-msgstr "%s：无法创建 gdmgreeter 进程"
+msgstr "%s：无法创建 Xserver  进程！"
 
 #: ../daemon/slave.c:281
 msgid "Can't set EGID to user GID"
@@ -885,7 +897,7 @@ msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
 msgstr ""
-"您已经登录了。您仍然可以登录，可选返回到您先前登录的会话，或者终止此登录"
+"您已经登录了。您仍然可以登录，可返回到您先前登录的会话，或者终止本次登录"
 
 #: ../daemon/slave.c:1139
 msgid "Return to previous login"
@@ -897,7 +909,7 @@ msgstr "终止登录"
 
 #: ../daemon/slave.c:1143
 msgid "You are already logged in.  You can log in anyway or abort this login"
-msgstr "您已经登录了。您仍然可以登录，或者终止此登录"
+msgstr "您已经登录了。您仍然可以登录，或者终止本次登录"
 
 #: ../daemon/slave.c:1320
 msgid ""
@@ -967,7 +979,7 @@ msgid ""
 "timed logins are disabled now."
 msgstr ""
 "在配置文件中没有定义服务器并且禁用了 XDMCP。这可能仅仅是配置错误。所以我已经"
-"为您启动了单用户服务器。您应当登录并更正配置。请注意自动和计时登录目前已被禁"
+"为您启动了单用户服务器。您应当登录并更正配置。请注意自动和定时登录目前已被禁"
 "用了。"
 
 #: ../daemon/slave.c:2590
@@ -1049,7 +1061,7 @@ msgstr "%s：在显示 %s 上启动欢迎程序出错"
 #: ../daemon/slave.c:3028
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
-msgstr "%s：无法创建 gdmgreeter 进程"
+msgstr "%s：无法创建 gdmchooser 进程"
 
 #: ../daemon/slave.c:3261
 #, c-format
@@ -1279,75 +1291,70 @@ msgstr "查看细节 (~/.xsession-errors 文件)"
 msgid "GDM detected a halt or restart in progress."
 msgstr "GDM 检测到正在执行关机或重新启动。"
 
-#: ../daemon/slave.c:4603
-#, c-format
-msgid "Ping to %s failed; whacking display!"
-msgstr "Ping %s 失败；启动显示！"
-
-#: ../daemon/slave.c:4882
+#: ../daemon/slave.c:4874
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s：致命的 X 错误 - 正在重新启动 %s"
 
-#: ../daemon/slave.c:4951
+#: ../daemon/slave.c:4947
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
 msgstr "在非本地显示中请求声音，或者是无法运行播放软件，或者是声音不存在"
 
-#: ../daemon/slave.c:5308
+#: ../daemon/slave.c:5304
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s：启动失败：%s"
 
-#: ../daemon/slave.c:5315 ../daemon/slave.c:5454
+#: ../daemon/slave.c:5311 ../daemon/slave.c:5450
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s：无法创建脚本进程！"
 
-#: ../daemon/slave.c:5409
+#: ../daemon/slave.c:5405
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s：创建管道失败"
 
-#: ../daemon/slave.c:5448
+#: ../daemon/slave.c:5444
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s：执行失败：%s"
 
-#: ../daemon/verify-crypt.c:68 ../daemon/verify-pam.c:1119
+#: ../daemon/verify-crypt.c:68 ../daemon/verify-pam.c:1129
 #: ../daemon/verify-shadow.c:69
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
 msgstr ""
 "\n"
-"用户名或密码不正确。字母必须以正确的大小写输入。"
+"用户名或密码不正确。请检查字母大小写是否正确。"
 
-#: ../daemon/verify-crypt.c:73 ../daemon/verify-pam.c:1129
-#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:1106
+#: ../daemon/verify-crypt.c:73 ../daemon/verify-pam.c:1139
+#: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:376
 msgid "Caps Lock is on."
 msgstr "Caps Lock 为开。"
 
 #: ../daemon/verify-crypt.c:118 ../daemon/verify-pam.c:525
-#: ../daemon/verify-shadow.c:117 ../gui/gdmlogin.c:2782
+#: ../daemon/verify-shadow.c:117 ../gui/gdmlogin.c:2652
 msgid "Please enter your username"
 msgstr "请输入您的用户名"
 
 #. login: is whacked always translate to Username:
 #: ../daemon/verify-crypt.c:119 ../daemon/verify-pam.c:425
 #: ../daemon/verify-pam.c:426 ../daemon/verify-pam.c:427
-#: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:854
-#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:1005 ../gui/gdmlogin.c:1019
-#: ../gui/gdmlogin.c:1633 ../gui/gdmlogin.c:2113 ../gui/greeter/greeter.c:173
-#: ../gui/greeter/greeter_parser.c:1125
+#: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:864
+#: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:884 ../gui/gdmlogin.c:898
+#: ../gui/gdmlogin.c:1537 ../gui/gdmlogin.c:1982 ../gui/greeter/greeter.c:188
+#: ../gui/greeter/greeter_parser.c:395
 msgid "Username:"
 msgstr "用户名："
 
 #: ../daemon/verify-crypt.c:157 ../daemon/verify-pam.c:428
 #: ../daemon/verify-pam.c:429 ../daemon/verify-pam.c:573
-#: ../daemon/verify-shadow.c:175 ../gui/gdmlogin.c:1668
-#: ../gui/greeter/greeter.c:192
+#: ../daemon/verify-shadow.c:175 ../gui/gdmlogin.c:1575
+#: ../gui/greeter/greeter.c:210
 msgid "Password:"
 msgstr "密码："
 
@@ -1357,7 +1364,7 @@ msgstr "密码："
 msgid "Couldn't authenticate user \"%s\""
 msgstr "无法认证用户“%s”"
 
-#: ../daemon/verify-crypt.c:202 ../daemon/verify-pam.c:965
+#: ../daemon/verify-crypt.c:202 ../daemon/verify-pam.c:975
 #: ../daemon/verify-shadow.c:220
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1365,7 +1372,7 @@ msgstr "显示“%s”禁止 root 登录"
 
 #: ../daemon/verify-crypt.c:204 ../daemon/verify-shadow.c:222
 msgid "The system administrator is not allowed to login from this screen"
-msgstr "不允许从该屏幕登录系统管理员"
+msgstr "不允许系统管理员从该屏幕登录"
 
 #: ../daemon/verify-crypt.c:220 ../daemon/verify-crypt.c:244
 #: ../daemon/verify-shadow.c:238 ../daemon/verify-shadow.c:262
@@ -1374,7 +1381,7 @@ msgid "User %s not allowed to log in"
 msgstr "不允许用户 %s 登录"
 
 #: ../daemon/verify-crypt.c:222 ../daemon/verify-crypt.c:246
-#: ../daemon/verify-pam.c:1011 ../daemon/verify-pam.c:1292
+#: ../daemon/verify-pam.c:1021 ../daemon/verify-pam.c:1316
 #: ../daemon/verify-shadow.c:240 ../daemon/verify-shadow.c:264
 msgid ""
 "\n"
@@ -1384,14 +1391,14 @@ msgstr ""
 "系统管理员已经禁用您的帐号。"
 
 #: ../daemon/verify-crypt.c:269 ../daemon/verify-crypt.c:407
-#: ../daemon/verify-pam.c:1029 ../daemon/verify-pam.c:1309
+#: ../daemon/verify-pam.c:1039 ../daemon/verify-pam.c:1333
 #: ../daemon/verify-shadow.c:287 ../daemon/verify-shadow.c:425
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "无法为 %s 设置用户组"
 
 #: ../daemon/verify-crypt.c:271 ../daemon/verify-crypt.c:410
-#: ../daemon/verify-pam.c:1031 ../daemon/verify-pam.c:1312
+#: ../daemon/verify-pam.c:1041 ../daemon/verify-pam.c:1336
 #: ../daemon/verify-shadow.c:289 ../daemon/verify-shadow.c:428
 msgid ""
 "\n"
@@ -1422,7 +1429,7 @@ msgid ""
 "again later or contact your system administrator."
 msgstr ""
 "\n"
-"无法更改您的密码；您将无法登录。请稍候再试一次，或联系您的系统管理员。"
+"无法更改您的密码；您将无法登录。请稍后再试一次，或联系您的系统管理员。"
 
 #: ../daemon/verify-crypt.c:338 ../daemon/verify-crypt.c:346
 #: ../daemon/verify-shadow.c:357 ../daemon/verify-shadow.c:365
@@ -1430,7 +1437,7 @@ msgid ""
 "Your password has been changed but you may have to change it again. Please "
 "try again later or contact your system administrator."
 msgstr ""
-"您的密码已经更改，但是可能需要再次更改。请稍候再试一次，或联系您的系统管理"
+"您的密码已经更改，但是可能需要再次更改。请稍后再试一次，或联系您的系统管理"
 "员。"
 
 #: ../daemon/verify-crypt.c:357 ../daemon/verify-shadow.c:376
@@ -1451,7 +1458,7 @@ msgid ""
 "Please try again later or contact your system administrator."
 msgstr ""
 "发生了内部错误，您将无法登录。\n"
-"请稍候再试一次，或联系您的系统管理员。"
+"请稍后再试一次，或联系您的系统管理员。"
 
 #: ../daemon/verify-crypt.c:402 ../daemon/verify-shadow.c:420
 #, c-format
@@ -1460,7 +1467,7 @@ msgstr "无法为 %s 获取 passwd 结构"
 
 #: ../daemon/verify-pam.c:430
 msgid "You are required to change your password immediately (password aged)"
-msgstr "您需要立即更改您的密码(密码时限)"
+msgstr "您需要立即更改您的密码(密码过期)"
 
 #: ../daemon/verify-pam.c:431
 msgid "You are required to change your password immediately (root enforced)"
@@ -1538,12 +1545,12 @@ msgstr "无法设置 PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:915 ../daemon/verify-pam.c:933
-#: ../daemon/verify-pam.c:1231 ../daemon/verify-pam.c:1243
+#: ../daemon/verify-pam.c:925 ../daemon/verify-pam.c:943
+#: ../daemon/verify-pam.c:1255 ../daemon/verify-pam.c:1267
 msgid "Couldn't authenticate user"
 msgstr "无法认证用户"
 
-#: ../daemon/verify-pam.c:968
+#: ../daemon/verify-pam.c:978
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1551,12 +1558,12 @@ msgstr ""
 "\n"
 "不允许从该屏幕登录系统管理员"
 
-#: ../daemon/verify-pam.c:992 ../daemon/verify-pam.c:1273
+#: ../daemon/verify-pam.c:1002 ../daemon/verify-pam.c:1297
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "用户 %s 的认证标记修改失败"
 
-#: ../daemon/verify-pam.c:994 ../daemon/verify-pam.c:1276
+#: ../daemon/verify-pam.c:1004 ../daemon/verify-pam.c:1300
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1565,17 +1572,17 @@ msgstr ""
 "\n"
 "修改认证标记失败。请稍后再试或与系统管理员联系。"
 
-#: ../daemon/verify-pam.c:1009 ../daemon/verify-pam.c:1289
+#: ../daemon/verify-pam.c:1019 ../daemon/verify-pam.c:1313
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "用户 %s 不再被允许访问系统"
 
-#: ../daemon/verify-pam.c:1015 ../daemon/verify-pam.c:1295
+#: ../daemon/verify-pam.c:1025 ../daemon/verify-pam.c:1319
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "此时不允许用户 %s 获得访问权"
 
-#: ../daemon/verify-pam.c:1017
+#: ../daemon/verify-pam.c:1027
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1583,22 +1590,22 @@ msgstr ""
 "\n"
 "系统管理员已经暂时地收回了对系统的访问权。"
 
-#: ../daemon/verify-pam.c:1022 ../daemon/verify-pam.c:1302
+#: ../daemon/verify-pam.c:1032 ../daemon/verify-pam.c:1326
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "无法设置 %s 的帐号管理"
 
-#: ../daemon/verify-pam.c:1055 ../daemon/verify-pam.c:1336
+#: ../daemon/verify-pam.c:1065 ../daemon/verify-pam.c:1360
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "无法为 %s 设置证书"
 
-#: ../daemon/verify-pam.c:1069 ../daemon/verify-pam.c:1352
+#: ../daemon/verify-pam.c:1079 ../daemon/verify-pam.c:1376
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "无法为 %s 打开会话"
 
-#: ../daemon/verify-pam.c:1123
+#: ../daemon/verify-pam.c:1133
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1606,16 +1613,16 @@ msgstr ""
 "\n"
 "认证失败。请检查字母大小写是否正确。"
 
-#: ../daemon/verify-pam.c:1137 ../daemon/verify-pam.c:1234
-#: ../daemon/verify-pam.c:1246
+#: ../daemon/verify-pam.c:1147 ../daemon/verify-pam.c:1258
+#: ../daemon/verify-pam.c:1270
 msgid "Authentication failed"
 msgstr "认证失败"
 
-#: ../daemon/verify-pam.c:1210
+#: ../daemon/verify-pam.c:1222
 msgid "Automatic login"
 msgstr "自动登录"
 
-#: ../daemon/verify-pam.c:1298
+#: ../daemon/verify-pam.c:1322
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporarily."
@@ -1623,14 +1630,14 @@ msgstr ""
 "\n"
 "系统管理员已暂时地禁止您对系统的访问。"
 
-#: ../daemon/verify-pam.c:1519 ../daemon/verify-pam.c:1521
+#: ../daemon/verify-pam.c:1544 ../daemon/verify-pam.c:1546
 msgid "Can't find PAM configuration for GDM."
 msgstr "无法为 GDM 找到 PAM 配置。"
 
 #: ../daemon/xdmcp.c:350
 #, c-format
 msgid "%s: Could not get server hostname: %s!"
-msgstr "%s：找不到服务主机名：%s！"
+msgstr "%s：找不到服务器主机名：%s！"
 
 #: ../daemon/xdmcp.c:375
 #, c-format
@@ -1778,98 +1785,106 @@ msgstr ""
 msgid "%s: No XDMCP support"
 msgstr "%s：不支持 XDMCP"
 
-#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:176
 msgid "Xnest command line"
 msgstr "Xnest 命令行"
 
-#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:175
+#: ../gui/gdmXnestchooser.c:168 ../gui/gdmXnestchooser.c:176
 msgid "STRING"
 msgstr "字符串"
 
-#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:176
+#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:177
 msgid "Extra options for Xnest"
 msgstr "Xnest 的更多选项"
 
-#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:176
+#: ../gui/gdmXnestchooser.c:169 ../gui/gdmXnestchooser.c:177
 msgid "OPTIONS"
 msgstr "选项"
 
-#: ../gui/gdmXnestchooser.c:170 ../gui/gdmXnestchooser.c:180
+#: ../gui/gdmXnestchooser.c:170 ../gui/gdmXnestchooser.c:181
 msgid "Run in background"
 msgstr "在后台中运行"
 
-#: ../gui/gdmXnestchooser.c:177
+#: ../gui/gdmXnestchooser.c:178
 msgid "Just run Xnest, no query (no chooser)"
 msgstr "仅仅运行 Xnest，而不必查询 (无选择程序)"
 
-#: ../gui/gdmXnestchooser.c:178
+#: ../gui/gdmXnestchooser.c:179
 msgid "Do direct query instead of indirect (chooser)"
 msgstr "进行直接查询而不是间接查询 (选择程序)"
 
-#: ../gui/gdmXnestchooser.c:179
+#: ../gui/gdmXnestchooser.c:180
 msgid "Run broadcast instead of indirect (chooser)"
 msgstr "进行广播而不是间接查询 (选择程序)"
 
-#: ../gui/gdmXnestchooser.c:181
+#: ../gui/gdmXnestchooser.c:182
 msgid "Don't check for running GDM"
 msgstr "不要检查运行中的 GDM"
 
-#: ../gui/gdmXnestchooser.c:516
+#: ../gui/gdmXnestchooser.c:481
+msgid "- Nested gdm login chooser"
+msgstr ""
+
+#: ../gui/gdmXnestchooser.c:489
+msgid "- Nested gdm login"
+msgstr ""
+
+#: ../gui/gdmXnestchooser.c:519
 msgid "Xnest doesn't exist."
 msgstr "Xnest 不存在。"
 
-#: ../gui/gdmXnestchooser.c:517
+#: ../gui/gdmXnestchooser.c:520
 msgid "Please ask your system administrator to install it."
 msgstr "请要求您的系统管理员安装它。"
 
-#: ../gui/gdmXnestchooser.c:542
+#: ../gui/gdmXnestchooser.c:545
 msgid "Indirect XDMCP is not enabled"
 msgstr "未启用间接 XDMCP"
 
-#: ../gui/gdmXnestchooser.c:543 ../gui/gdmXnestchooser.c:561
+#: ../gui/gdmXnestchooser.c:546 ../gui/gdmXnestchooser.c:564
 msgid "Please ask your system administrator to enable this feature."
 msgstr "请要求您的系统管理员启用此特性。"
 
-#: ../gui/gdmXnestchooser.c:560
+#: ../gui/gdmXnestchooser.c:563
 msgid "XDMCP is not enabled"
 msgstr "XDMCP 未启用"
 
-#: ../gui/gdmXnestchooser.c:592
+#: ../gui/gdmXnestchooser.c:595
 msgid "GDM is not running"
 msgstr "GDM 未在运行中"
 
-#: ../gui/gdmXnestchooser.c:593
+#: ../gui/gdmXnestchooser.c:596
 msgid "Please ask your system administrator to start it."
 msgstr "请要求您的系统管理员启动它。"
 
-#: ../gui/gdmXnestchooser.c:609
+#: ../gui/gdmXnestchooser.c:612
 msgid "Could not find a free display number"
 msgstr "找不到空闲的显示编号"
 
-#: ../gui/gdmchooser.c:85
+#: ../gui/gdmchooser.c:84
 msgid "Please wait: scanning local network..."
 msgstr "请稍候：正在扫描局域网..."
 
-#: ../gui/gdmchooser.c:86
+#: ../gui/gdmchooser.c:85
 msgid "No serving hosts were found."
 msgstr "找不到正在服务的主机。"
 
-#: ../gui/gdmchooser.c:87
+#: ../gui/gdmchooser.c:86
 msgid "Choose a ho_st to connect to:"
 msgstr "选择要连接的主机(_S)："
 
-#: ../gui/gdmchooser.c:618
+#: ../gui/gdmchooser.c:617
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
 "try again later."
-msgstr "主机“%s”现在不愿意支持登录会话。请稍候再试。"
+msgstr "主机“%s”现在不愿意支持登录会话。请稍后再试。"
 
-#: ../gui/gdmchooser.c:628
+#: ../gui/gdmchooser.c:627
 msgid "Cannot connect to remote server"
 msgstr "无法连接到远程服务器"
 
-#: ../gui/gdmchooser.c:1280
+#: ../gui/gdmchooser.c:1278
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1877,22 +1892,22 @@ msgid ""
 "now.  Please try again later."
 msgstr ""
 "未在 %2$d 秒内从主机“%1$s”收到任何响应。可能主机未打开，或者现在不愿意支持登"
-"录会话。请稍候再试。"
+"录会话。请稍后再试。"
 
-#: ../gui/gdmchooser.c:1293
+#: ../gui/gdmchooser.c:1291
 msgid "Did not receive response from server"
 msgstr "未从服务器接收响应"
 
-#: ../gui/gdmchooser.c:1395
+#: ../gui/gdmchooser.c:1393
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
 msgstr "我找不到主机“%s”。可能您打错了。"
 
-#: ../gui/gdmchooser.c:1404
+#: ../gui/gdmchooser.c:1402
 msgid "Cannot find host"
 msgstr "找不到主机"
 
-#: ../gui/gdmchooser.c:1609
+#: ../gui/gdmchooser.c:1607
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1907,31 +1922,35 @@ msgstr ""
 "您可以点击“刷新”重新扫描网络以便找到新主机。当您选择了一个主机，点击“连接”以"
 "打开到该计算机的会话。"
 
-#: ../gui/gdmchooser.c:1906
+#: ../gui/gdmchooser.c:1903
 msgid "Socket for xdm communication"
 msgstr "进行 xdm 通讯的套接字"
 
-#: ../gui/gdmchooser.c:1906
+#: ../gui/gdmchooser.c:1903
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: ../gui/gdmchooser.c:1909
+#: ../gui/gdmchooser.c:1905
 msgid "Client address to return in response to xdm"
 msgstr "响应 xdm 时返回的客户端地址"
 
-#: ../gui/gdmchooser.c:1909
+#: ../gui/gdmchooser.c:1905
 msgid "ADDRESS"
 msgstr "地址"
 
-#: ../gui/gdmchooser.c:1912
+#: ../gui/gdmchooser.c:1907
 msgid "Connection type to return in response to xdm"
 msgstr "响应 xdm 时返回的连接类型"
 
-#: ../gui/gdmchooser.c:1912
+#: ../gui/gdmchooser.c:1907
 msgid "TYPE"
 msgstr "类型"
 
-#: ../gui/gdmchooser.c:2042
+#: ../gui/gdmchooser.c:1967
+msgid "- gdm login chooser"
+msgstr ""
+
+#: ../gui/gdmchooser.c:2029
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -1940,7 +1959,7 @@ msgstr ""
 "选择程序版本(%s)与守护程序版本(%s)不匹配。您可能刚刚升级 GDM。请重启 GDM 守护"
 "程序或重新启动计算机。"
 
-#: ../gui/gdmchooser.c:2052
+#: ../gui/gdmchooser.c:2039
 msgid "Cannot run chooser"
 msgstr "无法运行选择程序"
 
@@ -1998,11 +2017,11 @@ msgstr ""
 "您可能正在使用不同的显示管理器，比如 KDM(KDE 显示管理器)或 XDM。如果您仍然想"
 "要使用此特性，请您自己启动 GDM，或者要求您的系统管理员启动它。"
 
-#: ../gui/gdmcomm.c:645 ../gui/gdmflexiserver.c:787
+#: ../gui/gdmcomm.c:645 ../gui/gdmflexiserver.c:785
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "无法与 GDM(GNOME 显示器管理器)通讯"
 
-#: ../gui/gdmcomm.c:647 ../gui/gdmflexiserver.c:789
+#: ../gui/gdmcomm.c:647 ../gui/gdmflexiserver.c:787
 msgid "Perhaps you have an old version of GDM running."
 msgstr "可能您正在运行老版本的 gdm。"
 
@@ -2078,7 +2097,7 @@ msgstr "发送给 GDM 的消息太多，系统挂起。"
 msgid "Unknown error occurred."
 msgstr "发生未知错误。"
 
-#: ../gui/gdmcommon.c:592
+#: ../gui/gdmcommon.c:598
 msgid "%a %b %d, %H:%M"
 msgstr "%-m月%-d日%A，%H:%M"
 
@@ -2086,17 +2105,15 @@ msgstr "%-m月%-d日%A，%H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:598
+#: ../gui/gdmcommon.c:604
 msgid "%a %b %d, %l:%M %p"
 msgstr "%-m月%-d日%A，%H:%M"
 
-#: ../gui/gdmcommon.c:706
-msgid " seconds"
-msgstr " 秒"
-
-#: ../gui/gdmcommon.c:708
-msgid " second"
-msgstr " 秒"
+#: ../gui/gdmcommon.c:710
+#, fuzzy, c-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] " 秒"
 
 #: ../gui/gdmdynamic.c:48
 #, c-format
@@ -2126,136 +2143,136 @@ msgstr "\t-l [服务器名称]\n"
 #: ../gui/gdmdynamic.c:53
 #, c-format
 msgid "\t-t maximum tries to connect (default 15)\n"
-msgstr "\t-t 连接的最大尝试次数(默认为 15)\n"
+msgstr "\t-t 尝试连接的最大次数(默认为 15)\n"
 
 #: ../gui/gdmdynamic.c:54
 #, c-format
 msgid "\t-s sleep value (default 8)\n"
 msgstr "\t-s 休眠值(默认为 8)\n"
 
-#: ../gui/gdmdynamic.c:217
+#: ../gui/gdmdynamic.c:229
 msgid "Server busy, will sleep.\n"
 msgstr "服务器忙，将休眠。\n"
 
-#: ../gui/gdmdynamic.c:307
+#: ../gui/gdmdynamic.c:319
 #, c-format
 msgid "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
 msgstr "连接到守护程序失败，休眠 %d 秒。第%d次重试，共%d次重试\n"
 
 #. This is a serious error, so print a message even if verbose is off
-#: ../gui/gdmdynamic.c:330
+#: ../gui/gdmdynamic.c:342
 #, c-format
 msgid "Failed to connect to server after %d retries\n"
 msgstr "%d 次尝试后连接到服务器失败\n"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
-msgstr "在嵌套的窗口中以其它用户登录"
+msgstr "在嵌套的窗口中以其他用户登录"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:2
 msgid "New Login in a Nested Window"
 msgstr "嵌套窗口中的新登录"
 
-#: ../gui/gdmflexiserver.c:103
+#: ../gui/gdmflexiserver.c:61
+msgid "Send the specified protocol command to GDM"
+msgstr "将特定的协议命令发送到 GDM"
+
+#: ../gui/gdmflexiserver.c:61
+msgid "COMMAND"
+msgstr "命令"
+
+#: ../gui/gdmflexiserver.c:62
+msgid "Xnest mode"
+msgstr "Xnest 模式"
+
+#: ../gui/gdmflexiserver.c:63
+msgid "Do not lock current screen"
+msgstr "不要锁定当前屏幕"
+
+#: ../gui/gdmflexiserver.c:64
+msgid "Debugging output"
+msgstr "调试输出"
+
+#: ../gui/gdmflexiserver.c:65
+msgid "Authenticate before running --command"
+msgstr "在运行 --command 前进行认证"
+
+#: ../gui/gdmflexiserver.c:66
+msgid "Start new flexible session; do not show popup"
+msgstr "启动新的便捷会话；不显示弹出窗口"
+
+#: ../gui/gdmflexiserver.c:115
 msgid "Cannot change display"
 msgstr "无法更改显示"
 
-#: ../gui/gdmflexiserver.c:180
+#: ../gui/gdmflexiserver.c:192
 msgid "Nobody"
 msgstr "无人"
 
-#: ../gui/gdmflexiserver.c:215
+#: ../gui/gdmflexiserver.c:227
 #, c-format
 msgid "Display %s on virtual terminal %d"
 msgstr "在虚拟终端 %2$d 上显示 %1$s"
 
-#: ../gui/gdmflexiserver.c:220
+#: ../gui/gdmflexiserver.c:232
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
 msgstr "在虚拟终端 %2$d 上嵌套显示 %1$s"
 
-#: ../gui/gdmflexiserver.c:250 ../gui/gdmlogin.c:2630
-#: ../gui/greeter/greeter_item_ulist.c:245
+#: ../gui/gdmflexiserver.c:262 ../gui/gdmlogin.c:2500
+#: ../gui/greeter/greeter_item_ulist.c:274
 msgid "Username"
 msgstr "用户名"
 
-#: ../gui/gdmflexiserver.c:259
+#: ../gui/gdmflexiserver.c:271
 msgid "Display"
 msgstr "显示"
 
-#: ../gui/gdmflexiserver.c:373
+#: ../gui/gdmflexiserver.c:385
 msgid "Open Displays"
 msgstr "打开显示"
 
 #. parent
 #. flags
-#: ../gui/gdmflexiserver.c:376
+#: ../gui/gdmflexiserver.c:388
 msgid "_Open New Display"
 msgstr "打开新显示(_O)"
 
-#: ../gui/gdmflexiserver.c:378
+#: ../gui/gdmflexiserver.c:390
 msgid "Change to _Existing Display"
 msgstr "更改到已有显示(_E)"
 
-#: ../gui/gdmflexiserver.c:386
+#: ../gui/gdmflexiserver.c:398
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
 msgstr "已经打开了一些显示。您还可以从下面的列表中选择一个或者新开一个。"
 
-#: ../gui/gdmflexiserver.c:569
+#: ../gui/gdmflexiserver.c:581
 msgid "Choose server"
 msgstr "选择服务器"
 
-#: ../gui/gdmflexiserver.c:580
+#: ../gui/gdmflexiserver.c:592
 msgid "Choose the X server to start"
 msgstr "选择启动的 X 服务器"
 
-#: ../gui/gdmflexiserver.c:586
+#: ../gui/gdmflexiserver.c:598
 msgid "Standard server"
 msgstr "标准服务器"
 
-#: ../gui/gdmflexiserver.c:688
-msgid "Send the specified protocol command to GDM"
-msgstr "将特定的协议命令发送到 GDM"
-
-#: ../gui/gdmflexiserver.c:688
-msgid "COMMAND"
-msgstr "命令"
-
-#: ../gui/gdmflexiserver.c:689
-msgid "Xnest mode"
-msgstr "Xnest 模式"
-
-#: ../gui/gdmflexiserver.c:690
-msgid "Do not lock current screen"
-msgstr "不要锁定当前屏幕"
-
-#: ../gui/gdmflexiserver.c:691
-msgid "Debugging output"
-msgstr "调试输出"
-
-#: ../gui/gdmflexiserver.c:692
-msgid "Authenticate before running --command"
-msgstr "在运行 --command 前进行认证"
-
-#: ../gui/gdmflexiserver.c:693
-msgid "Start new flexible session; do not show popup"
-msgstr "启动新的便捷会话；不显示弹出窗口"
-
-#: ../gui/gdmflexiserver.c:836
+#: ../gui/gdmflexiserver.c:834
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "您似乎不具有该操作所必须的认证权限。"
 
-#: ../gui/gdmflexiserver.c:839
+#: ../gui/gdmflexiserver.c:837
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "可能您的 .Xauthority 文件的设置不正确。"
 
-#: ../gui/gdmflexiserver.c:866
+#: ../gui/gdmflexiserver.c:864
 msgid "You do not seem to be logged in on the console"
 msgstr "您似乎不能从控制台登录。"
 
-#: ../gui/gdmflexiserver.c:868
+#: ../gui/gdmflexiserver.c:866
 msgid "Starting a new login only works correctly on the console."
 msgstr "启动一个新的登录只能在控制台上正常工作。"
 
@@ -2733,119 +2750,92 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: ../gui/gdmlogin.c:352
+#: ../gui/gdmlogin.c:355
 #, c-format
 msgid "Cannot run command '%s': %s."
 msgstr "无法运行命令“%s”：%s。"
 
-#: ../gui/gdmlogin.c:360
+#: ../gui/gdmlogin.c:363
 msgid "Cannot start background application"
 msgstr "无法启动背景应用程序"
 
-#: ../gui/gdmlogin.c:434 ../gui/greeter/greeter_parser.c:1111
+#: ../gui/gdmlogin.c:437 ../gui/greeter/greeter_parser.c:381
 msgid "User %u will login in %t"
 msgstr "用户 %u 将在 %t 秒后登录"
 
-#: ../gui/gdmlogin.c:652 ../gui/greeter/greeter_system.c:71
+#: ../gui/gdmlogin.c:662 ../gui/greeter/greeter_system.c:73
 msgid "Are you sure you want to restart the computer?"
 msgstr "您确定想要重新启动计算机吗？"
 
-#: ../gui/gdmlogin.c:653 ../gui/gdmlogin.c:2503
-#: ../gui/greeter/greeter_parser.c:1086 ../gui/greeter/greeter_system.c:72
-#: ../gui/greeter/greeter_system.c:178
+#: ../gui/gdmlogin.c:663 ../gui/gdmlogin.c:2373
+#: ../gui/greeter/greeter_parser.c:356 ../gui/greeter/greeter_system.c:74
+#: ../gui/greeter/greeter_system.c:184
 msgid "_Restart"
 msgstr "重新启动(_R)"
 
-#: ../gui/gdmlogin.c:667 ../gui/greeter/greeter_system.c:83
+#: ../gui/gdmlogin.c:677 ../gui/greeter/greeter_system.c:84
 msgid "Are you sure you want to Shut Down the computer?"
 msgstr "您确定想要关闭计算机吗？"
 
-#: ../gui/gdmlogin.c:668 ../gui/gdmlogin.c:2513
-#: ../gui/greeter/greeter_parser.c:1076 ../gui/greeter/greeter_system.c:84
-#: ../gui/greeter/greeter_system.c:187
+#: ../gui/gdmlogin.c:678 ../gui/gdmlogin.c:2383
+#: ../gui/greeter/greeter_parser.c:346 ../gui/greeter/greeter_system.c:85
+#: ../gui/greeter/greeter_system.c:193
 msgid "Shut _Down"
 msgstr "关机(_D)"
 
-#: ../gui/gdmlogin.c:690 ../gui/greeter/greeter_system.c:94
+#: ../gui/gdmlogin.c:700 ../gui/greeter/greeter_system.c:95
 msgid "Are you sure you want to suspend the computer?"
 msgstr "您确定想要挂起计算机吗？"
 
-#: ../gui/gdmlogin.c:691 ../gui/gdmlogin.c:2523
-#: ../gui/greeter/greeter_system.c:95
+#: ../gui/gdmlogin.c:701 ../gui/gdmlogin.c:2393
+#: ../gui/greeter/greeter_system.c:96
 msgid "_Suspend"
 msgstr "挂起(_S)"
 
-#. never_encoding
-#. no_group
-#. untranslated
-#. markup
-#: ../gui/gdmlogin.c:775 ../gui/gdmlogin.c:804 ../gui/gdmlogin.c:887
-#: ../gui/greeter/greeter_action_language.c:158
-#: ../gui/greeter/greeter_session.c:119 ../gui/greeter/greeter_session.c:150
-#, c-format
-msgid "Do you wish to make %s the default for future sessions?"
-msgstr "您是否希望使 %s 成为以后会话的默认设置？"
-
-#: ../gui/gdmlogin.c:778 ../gui/greeter/greeter_session.c:122
-#, c-format
-msgid "Your preferred session type %s is not installed on this computer."
-msgstr "您首选的会话类型 %s 在此计算机上没有安装。"
-
-#: ../gui/gdmlogin.c:783 ../gui/gdmlogin.c:814 ../gui/gdmlogin.c:895
-#: ../gui/greeter/greeter_action_language.c:166
-#: ../gui/greeter/greeter_session.c:126 ../gui/greeter/greeter_session.c:159
-msgid "Make _Default"
-msgstr "成为默认(_D)"
-
-#: ../gui/gdmlogin.c:783 ../gui/greeter/greeter_session.c:126
-msgid "Just _Log In"
-msgstr "只是登录(_L)"
-
-#: ../gui/gdmlogin.c:808 ../gui/gdmlogin.c:889
-#: ../gui/greeter/greeter_action_language.c:160
-#: ../gui/greeter/greeter_session.c:153
-#, c-format
-msgid "You have chosen %s for this session, but your default setting is %s."
-msgstr "您已为该会话选择了 %s，但默认的设置为 %s。"
-
-#: ../gui/gdmlogin.c:814 ../gui/gdmlogin.c:895
-#: ../gui/greeter/greeter_action_language.c:166
-#: ../gui/greeter/greeter_session.c:159
-msgid "Just For _This Session"
-msgstr "只对此会话(_T)"
-
-#: ../gui/gdmlogin.c:825
-#, c-format
-msgid "You have chosen %s for this session."
-msgstr "您为此会话选择了 %s。"
-
-#: ../gui/gdmlogin.c:828
-#, c-format
-msgid ""
-"If you wish to make %s the default for future sessions, run the 'switchdesk' "
-"utility (System Tools->Desktop Switching Tool from the main menu)."
-msgstr ""
-"如果您希望使 %s 成为未来会话的默认值，请运行工具“switchdesk”(从主菜单选择 系"
-"统工具->桌面切换工具)。"
-
-#: ../gui/gdmlogin.c:869 ../gui/gdmlogin.c:878
+#: ../gui/gdmlogin.c:748 ../gui/gdmlogin.c:757
 #: ../gui/greeter/greeter_action_language.c:73
 #: ../gui/greeter/greeter_action_language.c:142
 #: ../gui/greeter/greeter_action_language.c:150
 msgid "System Default"
 msgstr "系统默认"
 
-#: ../gui/gdmlogin.c:1006 ../gui/gdmlogin.c:1020 ../gui/gdmlogin.c:1637
-#: ../gui/gdmlogin.c:2114 ../gui/gdmlogin.c:2735
+#. never_encoding
+#. no_group
+#. untranslated
+#. markup
+#: ../gui/gdmlogin.c:766 ../gui/gdmsession.c:395 ../gui/gdmsession.c:431
+#: ../gui/greeter/greeter_action_language.c:158
+#, c-format
+msgid "Do you wish to make %s the default for future sessions?"
+msgstr "您是否希望使 %s 成为以后会话的默认设置？"
+
+#: ../gui/gdmlogin.c:768 ../gui/gdmsession.c:434
+#: ../gui/greeter/greeter_action_language.c:160
+#, c-format
+msgid "You have chosen %s for this session, but your default setting is %s."
+msgstr "您已为该会话选择了 %s，但默认的设置为 %s。"
+
+#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:402 ../gui/gdmsession.c:440
+#: ../gui/greeter/greeter_action_language.c:166
+msgid "Make _Default"
+msgstr "成为默认(_D)"
+
+#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:440
+#: ../gui/greeter/greeter_action_language.c:166
+msgid "Just For _This Session"
+msgstr "只对此会话(_T)"
+
+#: ../gui/gdmlogin.c:885 ../gui/gdmlogin.c:899 ../gui/gdmlogin.c:1541
+#: ../gui/gdmlogin.c:1983 ../gui/gdmlogin.c:2605
 msgid "_Username:"
 msgstr "用户名(_U)："
 
-#: ../gui/gdmlogin.c:1094
+#: ../gui/gdmlogin.c:977
 #, c-format
 msgid "%s session selected"
 msgstr "选择了 %s 会话"
 
-#: ../gui/gdmlogin.c:1115 ../gui/gdmlogin.c:1233
+#: ../gui/gdmlogin.c:998 ../gui/gdmlogin.c:1116
 msgid "_Last"
 msgstr "上次(_L)"
 
@@ -2853,85 +2843,89 @@ msgstr "上次(_L)"
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1198
+#: ../gui/gdmlogin.c:1081
 #, c-format
 msgid "%s language selected"
 msgstr "选择了 %s 语言"
 
-#: ../gui/gdmlogin.c:1244
+#: ../gui/gdmlogin.c:1127
 msgid "_System Default"
 msgstr "系统默认(_S)"
 
-#: ../gui/gdmlogin.c:1276
+#: ../gui/gdmlogin.c:1159
 msgid "_Other"
 msgstr "其它(_O)"
 
-#: ../gui/gdmlogin.c:1669
+#: ../gui/gdmlogin.c:1576
 msgid "_Password:"
 msgstr "密码(_P)："
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:1900 ../gui/greeter/greeter.c:340
+#: ../gui/gdmlogin.c:1787 ../gui/greeter/greeter.c:340
 msgid "Please insert 25 cents to log in."
 msgstr "芝麻，开门。"
 
-#: ../gui/gdmlogin.c:2234
+#: ../gui/gdmlogin.c:2104
 msgid "GNOME Desktop Manager"
 msgstr "GNOME 桌面管理器"
 
-#: ../gui/gdmlogin.c:2300
+#: ../gui/gdmlogin.c:2170
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2418
+#: ../gui/gdmlogin.c:2288
 msgid "GDM Login"
 msgstr "GDM 登录"
 
-#: ../gui/gdmlogin.c:2461 ../gui/greeter/greeter_parser.c:1056
+#: ../gui/gdmlogin.c:2331 ../gui/greeter/greeter_parser.c:326
 msgid "_Session"
 msgstr "会话(_S)"
 
-#: ../gui/gdmlogin.c:2468 ../gui/greeter/greeter_parser.c:1051
+#: ../gui/gdmlogin.c:2338 ../gui/greeter/greeter_parser.c:321
 msgid "_Language"
 msgstr "语言(_L)"
 
-#: ../gui/gdmlogin.c:2482 ../gui/greeter/greeter_system.c:153
+#: ../gui/gdmlogin.c:2352 ../gui/greeter/greeter_system.c:159
 msgid "Remote Login via _XDMCP..."
 msgstr "通过 XDMCP 远程登录(_X)..."
 
-#: ../gui/gdmlogin.c:2493
+#: ../gui/gdmlogin.c:2363
 msgid "_Configure Login Manager..."
 msgstr "配置登录管理器(_C)..."
 
-#: ../gui/gdmlogin.c:2533 ../gui/greeter/greeter_parser.c:1061
+#: ../gui/gdmlogin.c:2403 ../gui/greeter/greeter_parser.c:331
 msgid "_Actions"
 msgstr "行动(_A)"
 
-#: ../gui/gdmlogin.c:2542
+#: ../gui/gdmlogin.c:2412
 msgid "_Theme"
 msgstr "主题(_T)"
 
-#: ../gui/gdmlogin.c:2553 ../gui/greeter/greeter_canvas_item.c:165
-#: ../gui/greeter/greeter_parser.c:1071
+#: ../gui/gdmlogin.c:2423 ../gui/greeter/greeter_canvas_item.c:174
+#: ../gui/greeter/greeter_parser.c:341
 msgid "_Quit"
 msgstr "退出(_Q)"
 
-#: ../gui/gdmlogin.c:2555 ../gui/greeter/greeter_canvas_item.c:167
-#: ../gui/greeter/greeter_parser.c:1066
+#: ../gui/gdmlogin.c:2425 ../gui/greeter/greeter_canvas_item.c:176
+#: ../gui/greeter/greeter_parser.c:336
 msgid "D_isconnect"
 msgstr "断开连接(_I)"
 
-#: ../gui/gdmlogin.c:2623 ../gui/greeter/greeter_item_ulist.c:239
+#: ../gui/gdmlogin.c:2493 ../gui/greeter/greeter_item_ulist.c:268
 msgid "Icon"
 msgstr "图标"
 
-#: ../gui/gdmlogin.c:2704
+#: ../gui/gdmlogin.c:2574
 msgid "Welcome"
 msgstr "欢迎"
 
-#: ../gui/gdmlogin.c:3373 ../gui/gdmlogin.c:3407 ../gui/greeter/greeter.c:581
-#: ../gui/greeter/greeter.c:616
+#: ../gui/gdmlogin.c:2690 ../gui/greeter/greeter_parser.c:410
+msgid "_Start Again"
+msgstr ""
+
+#: ../gui/gdmlogin.c:3243 ../gui/gdmlogin.c:3277 ../gui/greeter/greeter.c:565
+#: ../gui/greeter/greeter.c:600
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version. You have "
@@ -2940,17 +2934,17 @@ msgstr ""
 "欢迎程序版本(%s)与守护程序版本不匹配。您可能刚刚升级 GDM。请重新启动 GDM 守护"
 "程序或重新启动计算机。"
 
-#: ../gui/gdmlogin.c:3383 ../gui/gdmlogin.c:3417 ../gui/gdmlogin.c:3465
-#: ../gui/greeter/greeter.c:591 ../gui/greeter/greeter.c:626
-#: ../gui/greeter/greeter.c:675
+#: ../gui/gdmlogin.c:3253 ../gui/gdmlogin.c:3287 ../gui/gdmlogin.c:3335
+#: ../gui/greeter/greeter.c:575 ../gui/greeter/greeter.c:610
+#: ../gui/greeter/greeter.c:659
 msgid "Cannot start the greeter"
 msgstr "无法启动欢迎程序"
 
-#: ../gui/gdmlogin.c:3422
+#: ../gui/gdmlogin.c:3292
 msgid "Restart"
 msgstr "重新启动"
 
-#: ../gui/gdmlogin.c:3455 ../gui/greeter/greeter.c:665
+#: ../gui/gdmlogin.c:3325 ../gui/greeter/greeter.c:649
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -2959,23 +2953,23 @@ msgstr ""
 "欢迎程序版本(%s)与守护程序版本(%s)不匹配。您可能刚刚升级 GDM。请重新启动 GDM "
 "守护程序或重新启动计算机。"
 
-#: ../gui/gdmlogin.c:3470 ../gui/greeter/greeter.c:680
+#: ../gui/gdmlogin.c:3340 ../gui/greeter/greeter.c:664
 msgid "Restart GDM"
 msgstr "重新启动 GDM"
 
-#: ../gui/gdmlogin.c:3472
+#: ../gui/gdmlogin.c:3342
 msgid "Restart computer"
 msgstr "重启计算机"
 
-#: ../gui/gdmlogin.c:3557
+#: ../gui/gdmlogin.c:3427
 msgid "Could not set signal mask!"
 msgstr "无法设置信号屏蔽！"
 
-#: ../gui/gdmlogin.c:3672 ../gui/greeter/greeter.c:1366
+#: ../gui/gdmlogin.c:3545 ../gui/greeter/greeter.c:1355
 msgid "Session directory is missing"
 msgstr "会话目录为空"
 
-#: ../gui/gdmlogin.c:3673
+#: ../gui/gdmlogin.c:3546
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the GDM "
@@ -2984,11 +2978,11 @@ msgstr ""
 "您的会话目录不存在或为空！您现在可以使用两个会话，但您应该登录并修正 GDM 配"
 "置。"
 
-#: ../gui/gdmlogin.c:3696 ../gui/greeter/greeter.c:1391
+#: ../gui/gdmlogin.c:3569 ../gui/greeter/greeter.c:1380
 msgid "Configuration is not correct"
 msgstr "配置不正确"
 
-#: ../gui/gdmlogin.c:3697 ../gui/greeter/greeter.c:1392
+#: ../gui/gdmlogin.c:3570 ../gui/greeter/greeter.c:1381
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3008,13 +3002,13 @@ msgstr "无法打开文件"
 msgid "Select User Image"
 msgstr "选择用户图像"
 
-#: ../gui/gdmphotosetup.c:273 ../gui/gdmsetup.c:5592 ../gui/gdmsetup.c:5714
-#: ../gui/gdmsetup.c:5867 ../gui/gdmsetup.c:5989
+#: ../gui/gdmphotosetup.c:273 ../gui/gdmsetup.c:5597 ../gui/gdmsetup.c:5719
+#: ../gui/gdmsetup.c:5872 ../gui/gdmsetup.c:5994
 msgid "Images"
 msgstr "图像"
 
-#: ../gui/gdmphotosetup.c:278 ../gui/gdmsetup.c:3048 ../gui/gdmsetup.c:5597
-#: ../gui/gdmsetup.c:5719 ../gui/gdmsetup.c:5872 ../gui/gdmsetup.c:5994
+#: ../gui/gdmphotosetup.c:278 ../gui/gdmsetup.c:3056 ../gui/gdmsetup.c:5602
+#: ../gui/gdmsetup.c:5724 ../gui/gdmsetup.c:5877 ../gui/gdmsetup.c:5999
 msgid "All Files"
 msgstr "全部文件"
 
@@ -3035,11 +3029,11 @@ msgstr "<b>用户图像</b>"
 msgid "Login Photo Preferences"
 msgstr "登录照片首选项"
 
-#: ../gui/gdmsession.c:125 ../gui/gdmsession.c:296
+#: ../gui/gdmsession.c:127 ../gui/gdmsession.c:294
 msgid "Failsafe _GNOME"
 msgstr "安全模式 _GNOME"
 
-#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:297
+#: ../gui/gdmsession.c:128 ../gui/gdmsession.c:295
 msgid ""
 "This is a failsafe session that will log you into GNOME. No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3048,11 +3042,11 @@ msgstr ""
 "这是可让您登录到 GNOME 的安全模式会话。此时不会读取启动脚本，所以仅当您无法以"
 "其它方式登录时再使用此会话类型。GNOME 将使用“默认”会话。"
 
-#: ../gui/gdmsession.c:136 ../gui/gdmsession.c:308
+#: ../gui/gdmsession.c:138 ../gui/gdmsession.c:306
 msgid "Failsafe _Terminal"
 msgstr "安全模式终端(_T)"
 
-#: ../gui/gdmsession.c:137 ../gui/gdmsession.c:309
+#: ../gui/gdmsession.c:139 ../gui/gdmsession.c:307
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3060,6 +3054,29 @@ msgid ""
 msgstr ""
 "这是可让您登录到终端的安全模式会话。此时不会读取启动脚本，所以仅当您无法以其"
 "它方式登录时再使用此会话类型。要退出终端，请输入“exit”。"
+
+#: ../gui/gdmsession.c:398
+#, c-format
+msgid "Your preferred session type %s is not installed on this computer."
+msgstr "您首选的会话类型 %s 在此计算机上没有安装。"
+
+#: ../gui/gdmsession.c:402
+msgid "Just _Log In"
+msgstr "只是登录(_L)"
+
+#: ../gui/gdmsession.c:453
+#, c-format
+msgid "You have chosen %s for this session"
+msgstr "您为此会话选择了 %s"
+
+#: ../gui/gdmsession.c:456
+#, c-format
+msgid ""
+"If you wish to make %s the default for future sessions, run the 'switchdesk' "
+"utility (System->Desktop Switching Tool from the panel menu)."
+msgstr ""
+"如果您希望使 %s 成为未来会话的默认值，请运行工具“switchdesk”(从面板菜单选取系"
+"统->桌面切换工具)。"
 
 #: ../gui/gdmsetup.c:260
 msgid ""
@@ -3080,115 +3097,115 @@ msgstr "简洁"
 msgid "Plain with face browser"
 msgstr "带头像浏览器的简洁主题"
 
-#: ../gui/gdmsetup.c:1571
+#: ../gui/gdmsetup.c:1573
 msgid "Autologin or timed login to the root account is not allowed."
-msgstr "不允许自动登录或计时登录到 root 账户。"
+msgstr "不允许自动登录或定时登录到 root 账户。"
 
-#: ../gui/gdmsetup.c:1794
+#: ../gui/gdmsetup.c:1798
 #, c-format
 msgid "The \"%s\" user already exists in the include list."
 msgstr "“%s”用户已经位于包含列表中。"
 
-#: ../gui/gdmsetup.c:1804 ../gui/gdmsetup.c:1834 ../gui/gdmsetup.c:1871
+#: ../gui/gdmsetup.c:1808 ../gui/gdmsetup.c:1838 ../gui/gdmsetup.c:1875
 msgid "Cannot add user"
 msgstr "无法添加用户"
 
-#: ../gui/gdmsetup.c:1824
+#: ../gui/gdmsetup.c:1828
 #, c-format
 msgid "The \"%s\" user already exists in the exclude list."
 msgstr "“%s”用户已经位于排除列表中。"
 
-#: ../gui/gdmsetup.c:1861
+#: ../gui/gdmsetup.c:1865
 #, c-format
 msgid "The \"%s\" user does not exist."
 msgstr "“%s”用户不存在。"
 
-#: ../gui/gdmsetup.c:3043 ../gui/gdmsetup.glade.h:76
+#: ../gui/gdmsetup.c:3051 ../gui/gdmsetup.glade.h:76
 msgid "Sounds"
 msgstr "声音"
 
-#: ../gui/gdmsetup.c:3252 ../gui/gdmsetup.c:3310
+#: ../gui/gdmsetup.c:3260 ../gui/gdmsetup.c:3318
 msgid "None"
 msgstr "无"
 
-#: ../gui/gdmsetup.c:3743
+#: ../gui/gdmsetup.c:3751
 msgid "Archive is not of a subdirectory"
 msgstr "归档内容不是子目录"
 
-#: ../gui/gdmsetup.c:3751
+#: ../gui/gdmsetup.c:3759
 msgid "Archive is not of a single subdirectory"
 msgstr "归档内容不是单个子目录"
 
-#: ../gui/gdmsetup.c:3775 ../gui/gdmsetup.c:3853
+#: ../gui/gdmsetup.c:3783 ../gui/gdmsetup.c:3861
 msgid "File not a tar.gz or tar archive"
 msgstr "文件不是 tar.gz 也不是 tar 归档"
 
-#: ../gui/gdmsetup.c:3777
+#: ../gui/gdmsetup.c:3785
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "归档未包含 GdmGreeterTheme.info 文件"
 
-#: ../gui/gdmsetup.c:3799
+#: ../gui/gdmsetup.c:3807
 msgid "File does not exist"
 msgstr "文件不存在"
 
-#: ../gui/gdmsetup.c:3919
+#: ../gui/gdmsetup.c:3927
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../gui/gdmsetup.c:3926
+#: ../gui/gdmsetup.c:3934
 msgid "Not a theme archive"
 msgstr "不是主题归档"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:3948
+#: ../gui/gdmsetup.c:3956
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr "主题目录“%s”似乎已安装过了.强行重新安装？"
 
-#: ../gui/gdmsetup.c:4040
+#: ../gui/gdmsetup.c:4048
 msgid "Some error occurred when installing the theme"
 msgstr "安装主题时出现错误"
 
-#: ../gui/gdmsetup.c:4096
+#: ../gui/gdmsetup.c:4104
 msgid "No file selected"
 msgstr "没有选择文件"
 
-#: ../gui/gdmsetup.c:4117
+#: ../gui/gdmsetup.c:4125
 msgid "Select Theme Archive"
 msgstr "选择主题归档"
 
-#: ../gui/gdmsetup.c:4121 ../gui/gdmsetup.c:5112
+#: ../gui/gdmsetup.c:4129 ../gui/gdmsetup.c:5120
 msgid "_Install"
 msgstr "安装(_I)"
 
-#: ../gui/gdmsetup.c:4212
+#: ../gui/gdmsetup.c:4220
 #, c-format
 msgid "Remove the \"%s\" theme?"
 msgstr "删除“%s”主题吗？"
 
-#: ../gui/gdmsetup.c:4221
+#: ../gui/gdmsetup.c:4229
 msgid "If you choose to remove the theme, it will be permanently lost."
 msgstr "如果您选择删除主题，该主题将永久丢失。"
 
-#: ../gui/gdmsetup.c:4229
+#: ../gui/gdmsetup.c:4237
 msgid "_Remove Theme"
 msgstr "删除主题(_R)"
 
-#: ../gui/gdmsetup.c:5101
+#: ../gui/gdmsetup.c:5109
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "从“%s”中安装主题吗？"
 
-#: ../gui/gdmsetup.c:5102
+#: ../gui/gdmsetup.c:5110
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "选择安装可添加文件“%s”中的主题。"
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:5364
+#: ../gui/gdmsetup.c:5372
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3208,24 +3225,24 @@ msgstr ""
 "s。\n"
 "要获得完整文档，请参看分类“桌面”下的 GNOME 帮助浏览器。"
 
-#: ../gui/gdmsetup.c:6410
+#: ../gui/gdmsetup.c:6415
 msgid "Apply the changes to users before closing?"
 msgstr "在关闭前将更改应用到用户吗？"
 
-#: ../gui/gdmsetup.c:6411
+#: ../gui/gdmsetup.c:6416
 msgid ""
 "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr "如果您不应用的话，用户标签中所做的更改将被丢弃。"
 
-#: ../gui/gdmsetup.c:6414
+#: ../gui/gdmsetup.c:6419
 msgid "Close _without Applying"
 msgstr "关闭而不应用(_W)"
 
-#: ../gui/gdmsetup.c:6465 ../gui/gdmsetup.c:6472
+#: ../gui/gdmsetup.c:6470 ../gui/gdmsetup.c:6477
 msgid "Could not access GDM configuration file.\n"
 msgstr "无法访问 GDM 配置文件。\n"
 
-#: ../gui/gdmsetup.c:6521
+#: ../gui/gdmsetup.c:6526
 msgid "You must be the root user to configure GDM."
 msgstr "只有 root 才能配置 GDM。"
 
@@ -3258,7 +3275,7 @@ msgid ""
 "logins on the Security tab.  Users in the Exclude list will not appear."
 msgstr ""
 "<b>注意：</b>包含列表中出现的用户将会显示在头像浏览器中，并且会出现在安全标签"
-"中的自动登录和计时登录的用户下拉列表中。排除列表中的用户不会出现。"
+"中的自动登录和定时登录的用户下拉列表中。排除列表中的用户不会出现。"
 
 #: ../gui/gdmsetup.glade.h:5
 msgid ""
@@ -3299,7 +3316,7 @@ msgstr "添加用户"
 
 #: ../gui/gdmsetup.glade.h:13
 msgid "Allo_w remote timed logins"
-msgstr "允许远程计时登录(_W)"
+msgstr "允许远程定时登录(_W)"
 
 #: ../gui/gdmsetup.glade.h:14
 msgid "Author:"
@@ -3359,7 +3376,7 @@ msgstr "排除(_X)："
 
 #: ../gui/gdmsetup.glade.h:28
 msgid "Enable _Timed Login"
-msgstr "启用计时登录(_T)"
+msgstr "启用定时登录(_T)"
 
 #: ../gui/gdmsetup.glade.h:29
 msgid "Example: /usr/X11R6/bin/X"
@@ -3670,32 +3687,32 @@ msgstr "秒"
 msgid "Too many users to list here..."
 msgstr "要在此列出的用户太多..."
 
-#: ../gui/greeter/greeter.c:631 ../gui/greeter/greeter.c:682
+#: ../gui/greeter/greeter.c:615 ../gui/greeter/greeter.c:666
 msgid "Restart Machine"
 msgstr "重新启动计算机"
 
-#: ../gui/greeter/greeter.c:1210
+#: ../gui/greeter/greeter.c:1182
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "装入主题 %s 出错"
 
-#: ../gui/greeter/greeter.c:1262
+#: ../gui/greeter/greeter.c:1234
 msgid "The greeter theme is corrupt"
 msgstr "欢迎程序主题损坏"
 
-#: ../gui/greeter/greeter.c:1263
+#: ../gui/greeter/greeter.c:1235
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "主题不包含用户名/密码输入项元素的定义"
 
-#: ../gui/greeter/greeter.c:1296
+#: ../gui/greeter/greeter.c:1268
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
 msgstr "装入主题时出错，而默认主题也无法装入。我将试图启动标准欢迎程序"
 
-#: ../gui/greeter/greeter.c:1318
+#: ../gui/greeter/greeter.c:1290
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of GDM"
@@ -3703,7 +3720,7 @@ msgstr ""
 "GTK+ 欢迎程序无法启动。将终止该显示，而您可能只好通过其它方式登录并修正 GDM "
 "的安装了"
 
-#: ../gui/greeter/greeter.c:1367
+#: ../gui/greeter/greeter.c:1356
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3716,135 +3733,121 @@ msgstr ""
 msgid "Last Language"
 msgstr "上次语言"
 
-#: ../gui/greeter/greeter_action_language.c:227
+#: ../gui/greeter/greeter_action_language.c:230
 msgid "Select a Language"
 msgstr "选择语言"
 
-#: ../gui/greeter/greeter_action_language.c:237
+#: ../gui/greeter/greeter_action_language.c:240
 msgid "Change _Language"
 msgstr "更改语言(_L)"
 
-#: ../gui/greeter/greeter_action_language.c:257
+#: ../gui/greeter/greeter_action_language.c:260
 msgid "_Select the language for your session to use:"
 msgstr "为您的会话选择一种语言(_S)："
 
-#: ../gui/greeter/greeter_canvas_item.c:144
+#: ../gui/greeter/greeter_canvas_item.c:153
 msgid "Select _Language..."
 msgstr "选择语言(_L)..."
 
-#: ../gui/greeter/greeter_canvas_item.c:151
+#: ../gui/greeter/greeter_canvas_item.c:160
 msgid "Select _Session..."
 msgstr "选择会话(_S)..."
 
-#: ../gui/greeter/greeter_canvas_item.c:432
+#: ../gui/greeter/greeter_canvas_item.c:475
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr "在此回答问题，完成后按 Enter。要查看菜单，请按 F10。"
 
-#: ../gui/greeter/greeter_item_ulist.c:154
+#: ../gui/greeter/greeter_item_ulist.c:173
 msgid "Already logged in"
 msgstr "已登入"
 
-#: ../gui/greeter/greeter_parser.c:1081 ../gui/greeter/greeter_system.c:196
+#: ../gui/greeter/greeter_parser.c:351 ../gui/greeter/greeter_system.c:202
 msgid "Sus_pend"
 msgstr "挂起(_S)"
 
-#: ../gui/greeter/greeter_parser.c:1091
+#: ../gui/greeter/greeter_parser.c:361
 msgid "Remote Login via _XDMCP"
 msgstr "通过 XDMCP 远程登录(_X)"
 
-#: ../gui/greeter/greeter_parser.c:1096
+#: ../gui/greeter/greeter_parser.c:366
 msgid "Confi_gure"
 msgstr "配置(_G)"
 
-#: ../gui/greeter/greeter_parser.c:1101
+#: ../gui/greeter/greeter_parser.c:371
 msgid "Op_tions"
 msgstr "选项(_T)"
 
-#: ../gui/greeter/greeter_parser.c:1130
+#: ../gui/greeter/greeter_parser.c:400
 msgid "_OK"
 msgstr "确定(_O)"
 
-#: ../gui/greeter/greeter_parser.c:1135
+#: ../gui/greeter/greeter_parser.c:405
 msgid "_Cancel"
 msgstr "取消(_C)"
 
-#: ../gui/greeter/greeter_session.c:172
-#, c-format
-msgid "You have chosen %s for this session"
-msgstr "您为此会话选择了 %s"
-
-#: ../gui/greeter/greeter_session.c:175
-#, c-format
-msgid ""
-"If you wish to make %s the default for future sessions, run the 'switchdesk' "
-"utility (System->Desktop Switching Tool from the panel menu)."
-msgstr ""
-"如果您希望使 %s 成为未来会话的默认值，请运行工具“switchdesk”(从面板菜单选取系"
-"统->桌面切换工具)。"
-
-#: ../gui/greeter/greeter_session.c:228
+#: ../gui/greeter/greeter_session.c:81
 msgid "Change _Session"
 msgstr "更改会话(_S)"
 
-#: ../gui/greeter/greeter_session.c:250
+#: ../gui/greeter/greeter_session.c:103
 msgid "Sessions"
 msgstr "会话"
 
-#: ../gui/greeter/greeter_session.c:270
+#: ../gui/greeter/greeter_session.c:123
 msgid "_Last session"
 msgstr "上次会话(_L)"
 
-#: ../gui/greeter/greeter_session.c:276
+#: ../gui/greeter/greeter_session.c:129
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "使用您上次登录的会话登录"
 
-#: ../gui/greeter/greeter_system.c:163
+#: ../gui/greeter/greeter_system.c:169
 msgid "Confi_gure Login Manager..."
 msgstr "配置登录管理器(_G)..."
 
-#: ../gui/greeter/greeter_system.c:260
+#: ../gui/greeter/greeter_system.c:266
 msgid "Choose an Action"
 msgstr "选择动作"
 
-#: ../gui/greeter/greeter_system.c:282
+#: ../gui/greeter/greeter_system.c:288
 msgid "Shut _down the computer"
 msgstr "关闭计算机(_D)"
 
-#: ../gui/greeter/greeter_system.c:285
+#: ../gui/greeter/greeter_system.c:291
 msgid "Shut Down your computer so that you may turn it off."
 msgstr "关闭您的计算机以便您可以切断电源。"
 
-#: ../gui/greeter/greeter_system.c:300
+#: ../gui/greeter/greeter_system.c:306
 msgid "_Restart the computer"
 msgstr "重启计算机(_R)"
 
-#: ../gui/greeter/greeter_system.c:303
+#: ../gui/greeter/greeter_system.c:309
 msgid "Restart your computer"
 msgstr "重新启动您的计算机"
 
-#: ../gui/greeter/greeter_system.c:317
+#: ../gui/greeter/greeter_system.c:323
 msgid "Sus_pend the computer"
 msgstr "挂起计算机(_P)"
 
-#: ../gui/greeter/greeter_system.c:320
+#: ../gui/greeter/greeter_system.c:326
 msgid "Suspend your computer"
 msgstr "挂起您的计算机"
 
-#: ../gui/greeter/greeter_system.c:334
+#: ../gui/greeter/greeter_system.c:340
 msgid "Run _XDMCP chooser"
 msgstr "运行 _XDMCP 选择器"
 
-#: ../gui/greeter/greeter_system.c:337
+#: ../gui/greeter/greeter_system.c:343
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
 msgstr "运行 XDMCP 选择程序将允许您登录到可用的远程计算机，如果有的话。"
 
-#: ../gui/greeter/greeter_system.c:354
+#: ../gui/greeter/greeter_system.c:360
 msgid "Confi_gure the login manager"
 msgstr "配置登录管理器(_G)"
 
-#: ../gui/greeter/greeter_system.c:357
+#: ../gui/greeter/greeter_system.c:363
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr "配置 GDM (该登录管理器)。这将需要 root 密码。"
@@ -3891,8 +3894,8 @@ msgstr "GNOME 艺术的圆环变种"
 msgid "Happy GNOME"
 msgstr "欢乐 GNOME"
 
-#: ../gui/modules/dwellmouselistener.c:656
-#: ../gui/modules/keymouselistener.c:926
+#: ../gui/modules/dwellmouselistener.c:659
+#: ../gui/modules/keymouselistener.c:929
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -4046,3 +4049,26 @@ msgstr "没有可以装入的界面。糟糕！(文件：%s)"
 msgid "Too many alias levels for a locale; may indicate a loop"
 msgstr "一个语系的别名级别太多；可能有无穷循环"
 
+#~ msgid ""
+#~ "Error on option %s: %s.\n"
+#~ "Run '%s --help' to see a full list of available command line options.\n"
+#~ msgstr ""
+#~ "错误选项 %s：%s。\n"
+#~ "运行“%s --help”以查阅可用的命令行选项的完整列表。\n"
+
+#~ msgid "Ping to %s failed; whacking display!"
+#~ msgstr "Ping %s 失败；启动显示！"
+
+#~ msgid " seconds"
+#~ msgstr " 秒"
+
+#~ msgid "You have chosen %s for this session."
+#~ msgstr "您为此会话选择了 %s。"
+
+#~ msgid ""
+#~ "If you wish to make %s the default for future sessions, run the "
+#~ "'switchdesk' utility (System Tools->Desktop Switching Tool from the main "
+#~ "menu)."
+#~ msgstr ""
+#~ "如果您希望使 %s 成为未来会话的默认值，请运行工具“switchdesk”(从主菜单选择 "
+#~ "系统工具->桌面切换工具)。"
