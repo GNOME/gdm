@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-07-27 16:33+0200\n"
-"PO-Revision-Date: 2006-07-27 16:51+0200\n"
+"PO-Revision-Date: 2006-08-15 17:16+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.1\n"
+"X-Generator: KBabel 1.11.2\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: ../C/gdm.xml:11(title)
@@ -3111,7 +3111,7 @@ msgid ""
 "logged in and if it doesn't seem kosher to them, they can just abort the "
 "login and contact the sysadmin (avoids running malicious startup scripts). "
 "This was added in version 2.5.90.0."
-msgstr ""
+msgstr "Si es «true» entonces la última información de entrada se imprime para el usuario antes de pedirle una contraseña. Mientras que esto revela algo de información acerca de qué usuarios están en un sistema, por otra parte debería dar al usuario una idea de cuando entró y si no parece cierta, pueden entonces abortar la entrada y contactar con el administrador del equipo (evitando ejecutar scripts de inicio maliciosos). Esto se añadió en la versión 2.5.90.0"
 
 #: ../C/gdm.xml:1912(para)
 msgid ""
@@ -3121,6 +3121,8 @@ msgid ""
 "radium.ncsc.mil/tpep/library/rainbow/CSC-STD-002-85.html</filename> for more "
 "info."
 msgstr ""
+"Esto es para que GDM sea conforme a CSC-STD-002-85, aunque es puramente teórico ahora. Alguien debería leer esa especificación y asegurarse de que esto actualmente es conforme (en conjunto con otros lugares en GDM). Vea <filename>http://www."
+"radium.ncsc.mil/tpep/library/rainbow/CSC-STD-002-85.html</filename> para más información."
 
 #: ../C/gdm.xml:1924(term)
 msgid "DoubleLoginWarning"
@@ -3137,7 +3139,7 @@ msgid ""
 "virtual terminal. On systems where GDM supports checking the X virtual "
 "terminals, GDM will let the user switch to the previous login virtual "
 "terminal instead of logging in."
-msgstr ""
+msgstr "si es «true», GDM avisará al usuario si ya ha entrado en otro terminal virtual. En sistemas donde GDM soporte comprobar los terminales virtuales X, GDM permitirá al usuario cambiar al terminal de entrada anterior en lugar de entrar."
 
 #: ../C/gdm.xml:1937(term)
 msgid "DynamicXServers"
@@ -3155,7 +3157,7 @@ msgid ""
 "created, started, and deleted with the appropriate commands. The "
 "<filename>gdmdynamic</filename> command is a convenient method to send these "
 "messages."
-msgstr ""
+msgstr "Si es «true», el demonio GDM confiará en las peticiones para gestionar pantallas por medio de una conexión socket en <filename>/tmp/.gdm_socket</filename>. Las pantallas se pueden crear, iniciar y borrar con los comandos apropiados. El comando <filename>gdmdynamic</filename> es un método conveniente para enviar estos mensajes."
 
 #: ../C/gdm.xml:1952(term)
 msgid "FailsafeXServer"
@@ -3172,7 +3174,7 @@ msgid ""
 "probably be some sort of a script that runs an appropriate low resolution X "
 "server that will just work. This is tried before the "
 "<filename>XKeepsCrashing</filename> script is run."
-msgstr ""
+msgstr "Una línea de comandos X en caso de que no podamos iniciar el servidor X normal. Debería ser probablemente alguna clase de script que ejecute un servidor X apropiado a baja resolución que funcione siempre. Esto se intenta antes de que se ejecute el script <filename>XKeepsCrashing</filename>."
 
 #: ../C/gdm.xml:1966(term)
 msgid "FirstVT"
@@ -3188,7 +3190,7 @@ msgid ""
 "On systems where GDM supports automatic VT (virtual terminal) allocation, "
 "this is the first vt to try. Usually standard text logins are run on the "
 "lower vts. See also <filename>VTAllocation</filename>."
-msgstr ""
+msgstr "En sistemas donde GDM soporta la reserva automática de TV (Terminales virtuales), este es el primer tv que probar. Usualmente los inicios de sesión en entrada de texto se ejecutan en los tvs más bajos. Vea además <filename>VTAllocation</filename>."
 
 #: ../C/gdm.xml:1979(term)
 msgid "FlexibleXServers"
@@ -3204,7 +3206,7 @@ msgid ""
 "The maximum number of allowed flexible displays. These are displays that can "
 "be run using the <filename>/tmp/.gdm_socket</filename> socket connection. "
 "This is used for both full flexible displays and for Xnest displays."
-msgstr ""
+msgstr "El número máximo de pantallas flexibles asociadas. Estas son pantallas que pueden ejecutarse usando la conexión socket <filename>/tmp/.gdm_socket</filename>. Esto se usa tanto para pantallas flexibles como para pantallas Xnest."
 
 #: ../C/gdm.xml:1993(term)
 msgid "FlexiReapDelayMinutes"
@@ -3221,7 +3223,7 @@ msgid ""
 "display be reaped. This is only in effect before a user logs in. Also it "
 "does not affect the Xnest flexiservers. To turn off this behavior set this "
 "value to 0. This was added in version 2.5.90.0."
-msgstr ""
+msgstr "Después de cuantos minutos de inactividad en la pantalla de entrada debería desconectarse la pantalla flexible. Esto sólo tiene efecto antes de que un usuario inicie sesión. También no afecta a los servidores flexibles Xnest. Para desactivar este comportamiento establezca este valor a 0. Esto se añadió en la versión 2.5.90.0."
 
 #: ../C/gdm.xml:2007(term)
 msgid "Greeter"
@@ -3237,7 +3239,7 @@ msgid ""
 "Full path and name of the greeter executable followed by optional arguments. "
 "This is the greeter used for all displays except for the XDMCP remote "
 "displays. See also <filename>RemoteGreeter</filename>"
-msgstr ""
+msgstr "Ruta completa al nombre del ejecutable del interfaz de entrada seguido de los argumentos opcionales. Este es el interfaz de entrada usado para todas las pantallas excepto para las pantallas XDMCP remotas. Vea además <filename>RemoteGreeter</filename>"
 
 #: ../C/gdm.xml:2020(term)
 msgid "Group"
@@ -3259,6 +3261,8 @@ msgid ""
 "The ownership and permissions of <filename>ServAuthDir</filename> should be "
 "<filename>root.gdm</filename> and 1770."
 msgstr ""
+"El nombre del grupo bajo el cual <command>gdmlogin</command>, <command>gdmgreeter</"
+"command>, <command>gdmchooser</command> y los diálogos GTK+ internos en caso de fallo se ejecutan. Vea ademas <filename>User</filename>. Este usuario tendrá acceso a todos los archivos de autorización X, y quizás a otros datos internos de GDM y por lo tanto no debería usarlo nadie. El <filename>ServAuthDir</filename> es propiedad de este grupo. La propiedad y permisos de <filename>ServAuthDir</filename> deberia ser <filename>root.gdm</filename> y 1770."
 
 #: ../C/gdm.xml:2040(term)
 msgid "GtkModulesList"
