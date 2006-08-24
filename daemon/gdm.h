@@ -860,7 +860,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_SUP_ADD_DYNAMIC_DISPLAY	"ADD_DYNAMIC_DISPLAY" 
 /*
  * ADD_DYNAMIC_DISPLAY: Create a new server definition that will
- *                      run on the specified display leaving, it
+ *                      run on the specified display leaving it
  *                      in DISPLAY_CONFIG state.
  * Supported since: 2.8.0.0
  * Arguments: <display to run on>=<server>
@@ -932,7 +932,7 @@ void		gdm_final_cleanup	(void);
  *   and instead of vt, it lists the parent display in standard form.
  *
  *   ERROR <err number> <english error description>
- *      1 = Not implemented
+ *      0 = Not implemented
  *      200 = Too many messages
  *      999 = Unknown error
  */
@@ -966,7 +966,6 @@ void		gdm_final_cleanup	(void);
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      1 = No servers found
- *      50 = Unsupported key
  *      200 = Too many messages
  *      999 = Unknown error
  */
