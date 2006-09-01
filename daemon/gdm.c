@@ -40,6 +40,7 @@
 #include <errno.h>
 #include <syslog.h>
 #include <locale.h>
+#include <dirent.h>
 
 /* This should be moved to auth.c I suppose */
 
@@ -394,6 +395,43 @@ gdm_final_cleanup (void)
     (void) di_devperm_logout ("/dev/console");
 #endif  /* HAVE_LOGINDEVPERM */
 }
+
+#ifdef sun
+void
+gdm_rmdir(char *thedir)
+{
+    DIR *odir;
+    struct stat buf;
+    struct dirent *dp;
+    char thefile[FILENAME_MAX];
+
+    if ((stat(thedir, &buf) == -1) || ! S_ISDIR(buf.st_mode))
+      return ;
+
+    if ((rmdir(thedir) == -1) && (errno == EEXIST))
+    {
+      odir = opendir(thedir);
+      do {
+        errno = 0;
+        if ((dp = readdir(odir)) != NULL)
+        {
+          if (strcmp(dp->d_name, ".") == 0 ||
+              strcmp(dp->d_name, "..") == 0)
+                continue ;
+          snprintf(thefile, FILENAME_MAX, "%s/%s", thedir, dp->d_name);
+          if (stat(thefile, &buf) == -1)
+            continue ; 
+          if (S_ISDIR(buf.st_mode))
+            gdm_rmdir(thefile);
+          else
+            g_unlink(thefile);
+        }
+      } while (dp != NULL);
+      closedir(odir);
+      rmdir(thedir);
+    }
+}
+#endif
 
 static gboolean
 deal_with_x_crashes (GdmDisplay *d)
