@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-24 18:38+0200\n"
+"POT-Creation-Date: 2006-09-04 01:53+0200\n"
 "PO-Revision-Date: 2006-08-22 10:27+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -192,7 +192,7 @@ msgstr "%s: no s'ha pogut escriure la galeta"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: s'està descartant el fitxer de galetes sospitós %s."
 
-#: ../daemon/auth.c:895 ../daemon/gdm.c:1365 ../daemon/gdm.c:1733
+#: ../daemon/auth.c:895 ../daemon/gdm.c:1403 ../daemon/gdm.c:1771
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "No s'ha pogut escriure a %s: %s"
@@ -316,44 +316,44 @@ msgid "%s: Could not open FIFO"
 msgstr "%s: No s'ha pogut obrir una FIFO"
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:197 ../daemon/gdm.c:205 ../daemon/gdm.c:1503
-#: ../daemon/gdm.c:1511
+#: ../daemon/gdm.c:198 ../daemon/gdm.c:206 ../daemon/gdm.c:1541
+#: ../daemon/gdm.c:1549
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "No es pot escriure el fitxer de PID %s: és possible que no quedi espai al "
 "disc. Error: %s\n"
 
-#: ../daemon/gdm.c:199 ../daemon/gdm.c:207 ../daemon/gdm.c:1505
-#: ../daemon/gdm.c:1513
+#: ../daemon/gdm.c:200 ../daemon/gdm.c:208 ../daemon/gdm.c:1543
+#: ../daemon/gdm.c:1551
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr ""
 "No es pot escriure el fitxer de PID %s: és possible que no quedi espai al "
 "disc. Error: %s"
 
-#: ../daemon/gdm.c:217
+#: ../daemon/gdm.c:218
 #, c-format
 msgid "%s: fork () failed!"
 msgstr "%s: el fork() ha fallat."
 
 #. should never happen
-#: ../daemon/gdm.c:220 ../daemon/slave.c:3372
+#: ../daemon/gdm.c:221 ../daemon/slave.c:3372
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: el setsid() ha fallat: %s."
 
-#: ../daemon/gdm.c:411
+#: ../daemon/gdm.c:449
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: S'està provant el servidor d'X %s a prova de fallades"
 
-#: ../daemon/gdm.c:429
+#: ../daemon/gdm.c:467
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: S'està executant la seqüència XKeepsCrashing"
 
-#: ../daemon/gdm.c:546
+#: ../daemon/gdm.c:584
 msgid ""
 "The X server (your graphical interface) cannot be started.  It is likely "
 "that it is not set up correctly.  You will need to log in on a console and "
@@ -368,7 +368,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:558
+#: ../daemon/gdm.c:596
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -377,39 +377,39 @@ msgstr ""
 "No s'ha pogut iniciar el servidor d'X diverses vegades en un període curt de "
 "temps; s'està inhabilitant la pantalla %s."
 
-#: ../daemon/gdm.c:568 ../daemon/gdm.c:2312
+#: ../daemon/gdm.c:606 ../daemon/gdm.c:2350
 msgid "Master suspending..."
 msgstr "S'està suspenent el mestre..."
 
-#: ../daemon/gdm.c:621
+#: ../daemon/gdm.c:659
 #, c-format
 msgid "System is restarting, please wait ..."
 msgstr "El sistema s'està reiniciant, espereu..."
 
-#: ../daemon/gdm.c:623
+#: ../daemon/gdm.c:661
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "El sistema s'està aturant, espereu..."
 
-#: ../daemon/gdm.c:634
+#: ../daemon/gdm.c:672
 msgid "Master halting..."
 msgstr "S'està aturant el mestre..."
 
-#: ../daemon/gdm.c:647
+#: ../daemon/gdm.c:685
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: l'aturada ha fallat: %s"
 
-#: ../daemon/gdm.c:656
+#: ../daemon/gdm.c:694
 msgid "Restarting computer..."
 msgstr "S'està reiniciant l'ordinador..."
 
-#: ../daemon/gdm.c:669
+#: ../daemon/gdm.c:707
 #, c-format
 msgid "%s: Restart failed: %s"
 msgstr "%s: no s'ha pogut reiniciar: %s"
 
-#: ../daemon/gdm.c:776
+#: ../daemon/gdm.c:814
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
@@ -418,7 +418,7 @@ msgstr ""
 "Sol·licitud de reinici el GDM, reinici de la màquina, aturada temporal, o "
 "aturada quan no hi ha cap menú del sistema a la pantalla %s"
 
-#: ../daemon/gdm.c:785
+#: ../daemon/gdm.c:823
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
@@ -428,78 +428,78 @@ msgstr ""
 "temporal, o aturar des d'una pantalla no estàtica %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:851
+#: ../daemon/gdm.c:889
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: S'està avortant la pantalla %s"
 
-#: ../daemon/gdm.c:1002
+#: ../daemon/gdm.c:1040
 msgid "GDM restarting ..."
 msgstr "S'està reiniciant el GDM..."
 
-#: ../daemon/gdm.c:1006
+#: ../daemon/gdm.c:1044
 msgid "Failed to restart self"
 msgstr "Ha fallat en reiniciar-se"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1080
+#: ../daemon/gdm.c:1118
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr ""
 "dimoni principal: s'ha rebut SIGABRT. Alguna cosa ha fallat. S'està sortint."
 
-#: ../daemon/gdm.c:1238
+#: ../daemon/gdm.c:1276
 msgid "Do not fork into the background"
 msgstr "No bifurquis al segon pla"
 
-#: ../daemon/gdm.c:1240
+#: ../daemon/gdm.c:1278
 msgid "No console (static) servers to be run"
 msgstr "No hi ha servidors de consola (estàtics) a executar"
 
-#: ../daemon/gdm.c:1242
+#: ../daemon/gdm.c:1280
 msgid "Alternative defaults configuration file"
 msgstr "Fitxer de configuració de valors per defecte alternatiu"
 
-#: ../daemon/gdm.c:1242
+#: ../daemon/gdm.c:1280
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
-#: ../daemon/gdm.c:1244
+#: ../daemon/gdm.c:1282
 msgid "Preserve LD_* variables"
 msgstr "Preserva les variables LD_*"
 
-#: ../daemon/gdm.c:1246
+#: ../daemon/gdm.c:1284
 msgid "Print GDM version"
 msgstr "Mostra la versió del GDM"
 
-#: ../daemon/gdm.c:1248
+#: ../daemon/gdm.c:1286
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr ""
 "Inicia el primer servidor d'X però després atura't fins que es reba un GO al "
 "fifo"
 
-#: ../daemon/gdm.c:1354 ../daemon/gdm.c:1702
+#: ../daemon/gdm.c:1392 ../daemon/gdm.c:1740
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "No s'ha pogut obrir %s per escriptura"
 
-#: ../daemon/gdm.c:1405
+#: ../daemon/gdm.c:1443
 msgid "- The GNOME login manager"
 msgstr "- El gestor d'entrades del GNOME"
 
-#: ../daemon/gdm.c:1406 ../gui/gdmXnestchooser.c:482
+#: ../daemon/gdm.c:1444 ../gui/gdmXnestchooser.c:482
 #: ../gui/gdmXnestchooser.c:490 ../gui/gdmchooser.c:1968
 #: ../gui/gdmflexiserver.c:716
 msgid "main options"
 msgstr "opcions principals"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/gdm.c:1433
+#: ../daemon/gdm.c:1471
 msgid "Only root wants to run GDM\n"
 msgstr "Només el superusuari necessita executar el GDM\n"
 
-#: ../daemon/gdm.c:1457 ../daemon/gdm.c:1461 ../daemon/gdm.c:1541
-#: ../daemon/gdm.c:1545 ../daemon/gdm.c:1549 ../daemon/gdm.c:1553
-#: ../daemon/gdm.c:1563 ../daemon/gdm.c:1569 ../daemon/gdm.c:1580
+#: ../daemon/gdm.c:1495 ../daemon/gdm.c:1499 ../daemon/gdm.c:1579
+#: ../daemon/gdm.c:1583 ../daemon/gdm.c:1587 ../daemon/gdm.c:1591
+#: ../daemon/gdm.c:1601 ../daemon/gdm.c:1607 ../daemon/gdm.c:1618
 #: ../daemon/misc.c:1779 ../daemon/misc.c:1783 ../daemon/misc.c:1787
 #: ../daemon/misc.c:1794 ../daemon/misc.c:1798 ../daemon/misc.c:1802
 #: ../daemon/server.c:522 ../daemon/server.c:535 ../daemon/slave.c:792
@@ -510,34 +510,34 @@ msgstr "Només el superusuari necessita executar el GDM\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: S'ha produït un error en configurar el gestor del senyal %s: %s"
 
-#: ../daemon/gdm.c:1485
+#: ../daemon/gdm.c:1523
 msgid "GDM already running. Aborting!"
 msgstr "El GDM ja s'està executant. S'està avortant."
 
-#: ../daemon/gdm.c:1589
+#: ../daemon/gdm.c:1627
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: S'ha produït un error en configurar el gestor del senyal CHLD"
 
-#: ../daemon/gdm.c:2728
+#: ../daemon/gdm.c:2766
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud DYNAMIC: No s'ha autenticat"
 
-#: ../daemon/gdm.c:2894 ../daemon/gdm.c:2912 ../daemon/gdm.c:3194
-#: ../daemon/gdm.c:3246 ../daemon/gdm.c:3299 ../daemon/gdm.c:3340
-#: ../daemon/gdm.c:3366
+#: ../daemon/gdm.c:2932 ../daemon/gdm.c:2950 ../daemon/gdm.c:3232
+#: ../daemon/gdm.c:3284 ../daemon/gdm.c:3337 ../daemon/gdm.c:3378
+#: ../daemon/gdm.c:3404
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud %s: No s'ha autenticat"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:2930
+#: ../daemon/gdm.c:2968
 msgid "Unknown server type requested; using standard server."
 msgstr ""
 "S'ha sol·licitat un tipus de servidor desconegut, s'utilitzarà l'estàndard."
 
-#: ../daemon/gdm.c:2934
+#: ../daemon/gdm.c:2972
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -3965,7 +3965,7 @@ msgstr "Confi_gura"
 
 #: ../gui/greeter/greeter_parser.c:371
 msgid "Op_tions"
-msgstr "Op_cions:"
+msgstr "Op_cions"
 
 #: ../gui/greeter/greeter_parser.c:400
 msgid "_OK"
