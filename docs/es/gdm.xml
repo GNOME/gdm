@@ -639,23 +639,8 @@ PostSession/
             <term>DisplayLastLogin</term>
             <listitem>
               <synopsis>DisplayLastLogin=true</synopsis>
-              <para>
-                If true then the last login information is printed to the user
-                before being prompted for password.  While this gives away some
-                info on what users are on a system, it on the other hand should
-                give the user an idea of when they logged in and if it doesn't
-                seem kosher to them, they can just abort the login and contact
-                the sysadmin (avoids running malicious startup scripts).
-                This was added in version 2.5.90.0.
-              </para>
-              <para>
-                This is for making GDM conformant to CSC-STD-002-85, although
-                that is purely theoretical now.  Someone should read that spec
-                and ensure that this actually conforms (in addition to other
-                places in GDM).  See
-                <filename>http://www.radium.ncsc.mil/tpep/library/rainbow/CSC-STD-002-85.html</filename>
-                for more info.
-              </para>
+              <para>Si es «true» entonces la última información de entrada se imprime para el usuario antes de pedirle una contraseña. Mientras que esto revela algo de información acerca de qué usuarios están en un sistema, por otra parte debería dar al usuario una idea de cuando entró y si no parece cierta, pueden entonces abortar la entrada y contactar con el administrador del equipo (evitando ejecutar scripts de inicio maliciosos). Esto se añadió en la versión 2.5.90.0</para>
+              <para>Esto es para que GDM sea conforme a CSC-STD-002-85, aunque es puramente teórico ahora. Alguien debería leer esa especificación y asegurarse de que esto actualmente es conforme (en conjunto con otros lugares en GDM). Vea <filename>http://www.radium.ncsc.mil/tpep/library/rainbow/CSC-STD-002-85.html</filename> para más información.</para>
             </listitem>
           </varlistentry>
 
@@ -663,12 +648,7 @@ PostSession/
             <term>DoubleLoginWarning</term>
             <listitem>
               <synopsis>DoubleLoginWarning=true</synopsis>
-              <para>
-                If true, GDM will warn the user if they are already logged in
-                on another virtual terminal.  On systems where GDM supports
-                checking the X virtual terminals, GDM will let the user switch
-                to the previous login virtual terminal instead of logging in.
-              </para>
+              <para>si es «true», GDM avisará al usuario si ya ha entrado en otro terminal virtual. En sistemas donde GDM soporte comprobar los terminales virtuales X, GDM permitirá al usuario cambiar al terminal de entrada anterior en lugar de entrar.</para>
             </listitem>
           </varlistentry>
 
@@ -676,14 +656,7 @@ PostSession/
             <term>DynamicXServers</term>
             <listitem>
               <synopsis>DynamicXServers=false</synopsis>
-              <para>
-                If true, the GDM daemon will honor requests to manage
-                displays via the <filename>/tmp/.gdm_socket</filename>
-                socket connection. Displays can be created, started,
-                and deleted with the appropriate commands. The
-                <filename>gdmdynamic</filename> command is a convenient
-                method to send these messages.
-              </para>
+              <para>Si es «true», el demonio GDM confiará en las peticiones para gestionar pantallas por medio de una conexión socket en <filename>/tmp/.gdm_socket</filename>. Las pantallas se pueden crear, iniciar y borrar con los comandos apropiados. El comando <filename>gdmdynamic</filename> es un método conveniente para enviar estos mensajes.</para>
             </listitem>
           </varlistentry>
 
@@ -691,13 +664,7 @@ PostSession/
             <term>FailsafeXServer</term>
             <listitem>
               <synopsis>FailsafeXServer=</synopsis>
-              <para>
-                An X command line in case we can't start the normal X server.
-                should probably be some sort of a script that runs an
-                appropriate low resolution X server that will just work.
-                This is tried before the <filename>XKeepsCrashing</filename>
-                script is run.
-              </para>
+              <para>Una línea de comandos X en caso de que no podamos iniciar el servidor X normal. Debería ser probablemente alguna clase de script que ejecute un servidor X apropiado a baja resolución que funcione siempre. Esto se intenta antes de que se ejecute el script <filename>XKeepsCrashing</filename>.</para>
             </listitem>
           </varlistentry>
 
@@ -705,12 +672,7 @@ PostSession/
             <term>FirstVT</term>
             <listitem>
               <synopsis>FirstVT=7</synopsis>
-              <para>
-                On systems where GDM supports automatic VT (virtual terminal)
-                allocation, this is the first vt to try.  Usually standard text
-                logins are run on the lower vts.  See also
-                <filename>VTAllocation</filename>.
-              </para>
+              <para>En sistemas donde GDM soporta la reserva automática de TV (Terminales virtuales), este es el primer tv que probar. Usualmente los inicios de sesión en entrada de texto se ejecutan en los tvs más bajos. Vea además <filename>VTAllocation</filename>.</para>
             </listitem>
           </varlistentry>
 
@@ -718,13 +680,7 @@ PostSession/
             <term>FlexibleXServers</term>
             <listitem>
               <synopsis>FlexibleXServers=5</synopsis>
-              <para>
-                The maximum number of allowed flexible displays.  These are
-                displays that can be run using the
-                <filename>/tmp/.gdm_socket</filename> socket connection.
-                This is used for both full flexible displays and for Xnest
-                displays.
-              </para>
+              <para>El número máximo de pantallas flexibles asociadas. Estas son pantallas que pueden ejecutarse usando la conexión socket <filename>/tmp/.gdm_socket</filename>. Esto se usa tanto para pantallas flexibles como para pantallas Xnest.</para>
             </listitem>
           </varlistentry>
 
@@ -732,13 +688,7 @@ PostSession/
             <term>FlexiReapDelayMinutes</term>
             <listitem>
               <synopsis>FlexiReapDelayMinutes=5</synopsis>
-              <para>
-                After how many minutes of inactivity at the login screen
-                should a flexi display be reaped.  This is only in effect before
-                a user logs in.  Also it does not affect the Xnest
-                flexiservers.  To turn off this behavior set this value to 0.
-                This was added in version 2.5.90.0.
-              </para>
+              <para>Después de cuantos minutos de inactividad en la pantalla de entrada debería desconectarse la pantalla flexible. Esto sólo tiene efecto antes de que un usuario inicie sesión. También no afecta a los servidores flexibles Xnest. Para desactivar este comportamiento establezca este valor a 0. Esto se añadió en la versión 2.5.90.0.</para>
             </listitem>
           </varlistentry>
 
@@ -746,12 +696,7 @@ PostSession/
             <term>Greeter</term>
             <listitem>
               <synopsis>Greeter=&lt;bin&gt;/gdmlogin</synopsis>
-              <para>
-                Full path and name of the greeter executable followed by
-                optional arguments.  This is the greeter used for all displays
-                except for the XDMCP remote displays.  See also
-                <filename>RemoteGreeter</filename>
-              </para>
+              <para>Ruta completa al nombre del ejecutable del interfaz de entrada seguido de los argumentos opcionales. Este es el interfaz de entrada usado para todas las pantallas excepto para las pantallas XDMCP remotas. Vea además <filename>RemoteGreeter</filename></para>
             </listitem>
           </varlistentry>
           
@@ -759,19 +704,7 @@ PostSession/
             <term>Group</term>
             <listitem>
               <synopsis>Group=gdm</synopsis>
-              <para>
-                The group name under which <command>gdmlogin</command>,
-                <command>gdmgreeter</command>,
-                <command>gdmchooser</command> and the internal
-                failsafe GTK+ dialogs are run.  Also see
-                <filename>User</filename>.  This user will have access to all
-                the X authorization files, and perhaps to other internal GDM
-                data and it should not therefore be a user such as nobody, but
-                rather a dedicated user.  The <filename>ServAuthDir</filename>
-                is owned by this group.  The ownership and permissions of
-                <filename>ServAuthDir</filename> should be
-                <filename>root.gdm</filename> and 1770.
-              </para>
+              <para>El nombre del grupo bajo el cual <command>gdmlogin</command>, <command>gdmgreeter</command>, <command>gdmchooser</command> y los diálogos GTK+ internos en caso de fallo se ejecutan. Vea ademas <filename>User</filename>. Este usuario tendrá acceso a todos los archivos de autorización X, y quizás a otros datos internos de GDM y por lo tanto no debería usarlo nadie. El <filename>ServAuthDir</filename> es propiedad de este grupo. La propiedad y permisos de <filename>ServAuthDir</filename> deberia ser <filename>root.gdm</filename> y 1770.</para>
             </listitem>
           </varlistentry>
           
@@ -2801,6 +2734,7 @@ FLEXI_XNEST
 FLEXI_XSERVER
 GET_CONFIG
 GET_CONFIG_FILE
+GET_CUSTOM_CONFIG_FILE
 GET_SERVER_LIST
 GET_SERVER_DETAILS
 GREETERPIDS
@@ -2895,7 +2829,7 @@ Answers:
   vt, it lists the parent display in standard form.
 
   ERROR &lt;err number&gt; &lt;english error description&gt;
-     1 = Not implemented
+     0 = Not implemented
      200 = Too many messages
      999 = Unknown error
 </screen>
@@ -3105,7 +3039,6 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      1 = No servers found
-     50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
 </screen>
