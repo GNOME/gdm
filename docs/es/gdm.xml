@@ -2734,6 +2734,7 @@ FLEXI_XNEST
 FLEXI_XSERVER
 GET_CONFIG
 GET_CONFIG_FILE
+GET_CUSTOM_CONFIG_FILE
 GET_SERVER_LIST
 GET_SERVER_DETAILS
 GREETERPIDS
@@ -2828,7 +2829,7 @@ Answers:
   vt, it lists the parent display in standard form.
 
   ERROR &lt;err number&gt; &lt;english error description&gt;
-     1 = Not implemented
+     0 = Not implemented
      200 = Too many messages
      999 = Unknown error
 </screen>
@@ -3038,7 +3039,6 @@ Answers:
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      1 = No servers found
-     50 = Unsupported key
      200 = Too many messages
      999 = Unknown error
 </screen>
@@ -3516,21 +3516,21 @@ Answers:
         </para>
 
         <para>
-        Some environments need the ability to tell GDM to create and manage new
-        displays on the fly, where it is not possible to list the possible
-        displays in GDM configuration files. The <command>gdmdynamic</command>
-        command can be used to create a new display on a particular display
-        number, run all newly created displays, or remove a display. The
-        <command>gdmdynamic</command> command can also be used to list all
-        attached displays, or only attached displays that match a pattern.
+        <command>gdmdynamic</command> allows the management of displays in a
+        dynamic fashion.  It is typically used in environments where it is not
+        possible to list the possible displays in the GDM configuration files.
+        The <command>gdmdynamic</command> command can be used to create a new
+        display on a particular display number, run all newly created displays,
+        or remove a display.  The <command>gdmdynamic</command> command can also
+        be used to list all attached displays, or only attached displays that
+        match a pattern.
+        </para>
+
+        <para>
         This program is designed to manage multiple simultaneous requests and
-        works to avoid flooding the daemon with requests.  If the socket
+        works to avoid flooding the daemon with requests.  If the sockets
         connection is busy, it will sleep and retry a certain number of times
-        that can be tuned with the <command>-t</command> and
-        <command>-s</command> arguments.  <command>gdmdynamic</command>
-        returns 1 on normal failure, and returns 2 if it is unable to 
-        connect to the daemon.  Callers can choose to call again if a
-        return code of 2 is received.
+        that can be tuned with the -s and -t options.
         </para>
 
         <variablelist>
@@ -3547,9 +3547,14 @@ Answers:
             <term>-a display=server</term>
             <listitem>
               <para>
-              Add a new display configuration. For example,
+              Add a new display configuration, leaving it in the DISPLAY_CONFIG
+              state.  For example,
               <command>"-a 2=StandardServerTwo"</command>
               <command>"-a 3=/usr/X11R6/bin/X -dev /dev/fb2"</command>
+              </para>
+              <para>
+              The display will not actually be started until the display is released
+              by calling <command>gdmdynamic</command> again with the -r option.
               </para>
             </listitem>
           </varlistentry>
@@ -3577,9 +3582,9 @@ Answers:
             <term>-l [pattern]</term>
             <listitem>
               <para>
-              List displays via the ATTACHED_SERVERS command. Without a pattern
-              lists all attached displays. With a pattern will match using glob
-              characters '*', '?', and '[]'. For example:
+              List displays via the ATTACHED_SERVERS <command>gdmflexiserver</command>
+              command. Without a pattern lists all attached displays.  With a pattern
+              will match using glob characters '*', '?', and '[]'. For example:
               <command>"-l Standard*"</command>
               <command>"-l *Xorg*"</command>
               </para>

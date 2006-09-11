@@ -3275,7 +3275,6 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		gboolean sysmenu;
 
 		disp = gdm_connection_get_display (conn);
-		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
 
 		/* Only allow locally authenticated connections */
 		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
@@ -3288,6 +3287,7 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			return;
 		}
 
+		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
 		if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
 			disp->logout_action = GDM_LOGOUT_ACTION_NONE;
 			was_ok = TRUE;
@@ -3328,7 +3328,6 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		gboolean sysmenu;
 
 		disp = gdm_connection_get_display (conn);
-		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
 
 		/* Only allow locally authenticated connections */
 		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
@@ -3341,6 +3340,7 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			return;
 		}
 
+		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
 		if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
 			safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 			was_ok = TRUE;
