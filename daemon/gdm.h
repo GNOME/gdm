@@ -293,6 +293,7 @@ enum {
 #define GDM_KEY_USER_MAX_FILE "security/UserMaxFile=65536"
 #define GDM_KEY_RELAX_PERM "security/RelaxPermissions=0"
 #define GDM_KEY_CHECK_DIR_OWNER "security/CheckDirOwner=true"
+#define GDM_KEY_SUPPORT_AUTOMOUNT "security/SupportAutomount=false"
 #define GDM_KEY_RETRY_DELAY "security/RetryDelay=1"
 #define GDM_KEY_DISALLOW_TCP "security/DisallowTCP=true"
 #define GDM_KEY_PAM_STACK "security/PamStack=gdm"

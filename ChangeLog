@@ -1,3 +1,15 @@
+2006-09-22  Brian Cameron  <brian.cameron@sun.com>
+
+	* config/gdm.conf.in, daemon/filecheck.c, daemon/gdm.h
+	  daemon/gdmconfig.c, docs/C/gdm.xml: Now gdm.conf has
+ 	  SupportAutomount option which, when turned on, changes
+	  the way that GDM accessess the user's $HOME/.dmrc file
+	  so that automounted $HOME directories can be configured
+	  to work even with the automounter isn't started with
+	  the --ghost option.  This feature is off by default.
+	  This addresses RFE bug #356869.  Patch by 
+	  Jerzy Borkowski <jubork@ncac.torun.pl>.
+
 2006-09-11  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.c: Move call to get GDM_KEY_SYSTEM_MENU

@@ -2533,6 +2533,21 @@ PostSession/
           </varlistentry>
 
           <varlistentry>
+            <term>SupportAutomount</term>
+            <listitem>
+              <synopsis>SupportAutomount=false</synopsis>
+              <para>
+                By default GDM checks the ownership of the home directories
+                before writing to them, this prevents security issues in case
+                of bad setup.  However, when home directories are managed by
+                automounter, they are often not mounted before they are 
+                accessed. This option works around subtleties of Linux
+                automounter.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>DisallowTCP</term>
             <listitem>
               <synopsis>DisallowTCP=true</synopsis>

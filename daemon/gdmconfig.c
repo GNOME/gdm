@@ -184,6 +184,7 @@ static gboolean GdmAllowRoot = FALSE;
 static gboolean GdmAllowRemoteRoot = FALSE;
 static gboolean GdmAllowRemoteAutoLogin = FALSE;
 static gboolean GdmCheckDirOwner = TRUE;
+static gboolean GdmSupportAutomount = FALSE;
 static gboolean GdmTimedLoginEnable = FALSE;
 static gboolean GdmDynamicXservers = FALSE;
 static gboolean GdmVTAllocation = TRUE;
@@ -374,6 +375,7 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_CONSOLE_NOTIFY, &GdmConsoleNotify, &bool_type);
    gdm_config_add_hash (GDM_KEY_TIMED_LOGIN_ENABLE, &GdmTimedLoginEnable, &bool_type);
    gdm_config_add_hash (GDM_KEY_CHECK_DIR_OWNER, &GdmCheckDirOwner, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SUPPORT_AUTOMOUNT, &GdmSupportAutomount, &bool_type);
    gdm_config_add_hash (GDM_KEY_XDMCP, &GdmXdmcp, &bool_type);
    gdm_config_add_hash (GDM_KEY_INDIRECT, &GdmIndirect, &bool_type);
    gdm_config_add_hash (GDM_KEY_XDMCP_PROXY, &GdmXdmcpProxy, &bool_type);

@@ -48,14 +48,26 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 {
     struct stat statbuf;
     gchar *fullpath;
+    gchar *dirautofs;
     int r;
 
     if (ve_string_empty (dir) ||
 	ve_string_empty (file))
 	    return FALSE;
 
+    /* Stat on automounted directory - append the '/.' to dereference mount point.
+       Do this only if GdmSupportAutomount is true (default is false)
+       2006-09-22, Jerzy Borkowski, CAMK */
+    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_SUPPORT_AUTOMOUNT)) {
+        dirautofs = g_strconcat(dir, "/.", NULL);
+        VE_IGNORE_EINTR (r = stat (dirautofs, &statbuf));
+        g_free(dirautofs);
+    }
     /* Stat directory */
-    VE_IGNORE_EINTR (r = g_stat (dir, &statbuf));
+    else {
+        VE_IGNORE_EINTR (r = stat (dir, &statbuf));
+    }
+            
     if (r < 0) {
 	    if ( ! absentdirok)
 		 syslog (LOG_WARNING, _("%s: Directory %s does not exist."),
