@@ -736,6 +736,8 @@ main (int argc, char *argv[])
 
 	/* Process --command option */
 
+        g_type_init ();
+
 	if (send_command != NULL) {
 		if (authenticate)
 			auth_cookie = gdmcomm_get_auth_cookie ();
