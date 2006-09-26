@@ -286,12 +286,7 @@ setup_user (struct passwd *pwent,
 gboolean
 gdm_is_user_valid (const char *username)
 {
-    struct passwd *pwent;
-    pwent = getpwnam (username);
-    if (pwent != NULL)
-	return TRUE;
-
-    return FALSE;
+    return (NULL != getpwnam (username));
 }
 
 void 

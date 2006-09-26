@@ -1,3 +1,13 @@
+2006-09-26  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/slave.c, daemon/verify-crypt.c, daemon/verify-pam.c,
+	  daemon/verify-shadow.c, gui/gdmcommon.c: Fix so that if 
+	  timed login script returns an invalid user, timed login is
+	  not turned on.  Fixes bug #340148.  Patch by Andrew
+	  (andrewz@springsrescuemission.org).
+	* gui/gdmuser.c: Fix gdm_is_user_valid so it is more simple,
+	  like implemented in daemon/slave.c by Andrew.
+
 2006-09-23  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmflexiserver.c: Add g_type_init() since this is needed

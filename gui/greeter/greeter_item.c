@@ -210,7 +210,8 @@ greeter_item_is_visible (GreeterItemInfo *info)
 	  return FALSE;
 
   if (( ! gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) ||
-          ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN))) &&
+          ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) ||
+          NULL == g_getenv("GDM_TIMED_LOGIN_OK")) &&
       (info->show_type != NULL &&
        strcmp (info->show_type, "timed") == 0))
 	  return FALSE;

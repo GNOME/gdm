@@ -107,7 +107,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
     gint reEnter, ret;
 #endif
 
-    if (local)
+    if (local && d->timed_login_ok)
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 
     if (username == NULL) {
