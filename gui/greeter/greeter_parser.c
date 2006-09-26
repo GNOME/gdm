@@ -1615,7 +1615,9 @@ parse_items (xmlNodePtr  node,
 		xmlFree (type);
 		return FALSE;
 	      }
-	    
+
+	    xmlFree (type);
+
 	    info = greeter_item_info_new (parent, item_type);
 	    
 	    parse_id (child, info);

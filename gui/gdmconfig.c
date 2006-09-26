@@ -142,6 +142,7 @@ gdm_config_get_result (gchar *key)
 	result  = gdmcomm_call_gdm (command, NULL /* auth cookie */,
 	          "2.13.0.1", comm_tries);
 
+	g_free (display);
 	g_free (command);
 	g_free (newkey);
 	return result;

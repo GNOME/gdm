@@ -1,5 +1,11 @@
 2006-09-26  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmconfig.c, gui/greeter/greeter.c, gui/greeter/greeter_parser.c:
+	  Fix memory leaks.  Fixes bug #357879.  Patch provided by Kjartan
+	  Maraas. <kmaraas@gnome.org>.
+
+2006-09-26  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/slave.c, daemon/verify-crypt.c, daemon/verify-pam.c,
 	  daemon/verify-shadow.c, gui/gdmcommon.c: Fix so that if 
 	  timed login script returns an invalid user, timed login is
