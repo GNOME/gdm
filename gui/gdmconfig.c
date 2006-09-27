@@ -248,6 +248,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->flexible = TRUE;
 		else
 			svr->flexible = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "CHOOSABLE");
 		if (temp == NULL) {
@@ -257,6 +258,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->choosable = TRUE;
 		else
 			svr->choosable = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "HANDLED");
 		if (temp == NULL) {
@@ -266,6 +268,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->handled = TRUE;
 		else
 			svr->handled = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "CHOOSER");
 		if (temp == NULL) {
@@ -275,6 +278,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->chooser = TRUE;
 		else
 			svr->chooser = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "PRIORITY");
 		if (temp == NULL) {
@@ -283,6 +287,7 @@ gdm_config_get_xservers (gboolean flexible)
 		} else {
 			svr->priority = atoi (temp);
 		}
+		g_free (temp);
 
 		sec++;
 

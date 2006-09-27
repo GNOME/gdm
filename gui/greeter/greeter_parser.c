@@ -1581,6 +1581,8 @@ parse_items (xmlNodePtr  node,
 			     "Found tag %s when looking for item", child->name);
 		return FALSE;
 	      }
+
+	    xmlFree (type);
 	    
 	    type = xmlGetProp (child, (const xmlChar *) "type");
 	    if G_UNLIKELY (!type)
