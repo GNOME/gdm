@@ -3423,7 +3423,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			}
 		}			   
 					   
-		markup = g_strdup_printf ("<b>%s</b>\n<small>%s</small>", name, desc);
+		markup = g_markup_printf_escaped ("<b>%s</b>\n<small>%s</small>", name, desc);
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter,
 				    THEME_COLUMN_SELECTED, sel_theme,

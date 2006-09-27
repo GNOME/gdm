@@ -1,5 +1,14 @@
 2006-09-27  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmsetup.c: Use g_markup_printf_escaped so gdmsetup better
+	  handles description strings that contains things similar to
+	  a tag like an email address.  Fix bug #357998.  Patch by
+	  Matthias Clasen <mclasen@redhat.com>.
+	* gui/gdmsession.c: Add comment about valgrind complaining that
+	  session is leaked.
+
+2006-09-27  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmconfig.c, gui/greeter/greeter_parser.c:  Fix more
 	  memory leaks.  Fixes bug #357879.  Patch provided by Kjartan
 	  Maraas. <kmaraas@gnome.org>.
