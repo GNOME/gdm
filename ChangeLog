@@ -1,3 +1,10 @@
+2006-09-27  Brian Cameron  <brian.cameron@sun.com>
+
+        * gui/gdmsetup.c: Use g_markup_printf_escaped so gdmsetup better
+          handles description strings that contains things similar to
+          a tag like an email address.  Fix bug #357998.  Patch by
+          Matthias Clasen <mclasen@redhat.com>.
+
 2006-09-23  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmflexiserver.c: Add g_type_init() since this is needed
