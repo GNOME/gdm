@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GDM2 2.16\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-09 07:19+0200\n"
-"PO-Revision-Date: 2006-09-21 23:12+0300\n"
+"PO-Revision-Date: 2006-09-26 17:27+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -64,12 +64,17 @@ msgid ""
 "it is not set up correctly.  You will need to log in on a console and "
 "reconfigure the X server.  Then restart GDM."
 msgstr ""
+"Tõrge X-serveri (sinu graafilise liidese) käivitamisel. Tõenäoliselt pole "
+"see õigesti seadistatud. Sul on vaja konsoolilt sisse logida, X-server ümber "
+"seadistada ja siis GDM taaskäivitada."
 
 #: ../config/gettextfoo.h:6
 msgid ""
 "Would you like to try to configure the X server?  Note that you will need "
 "the root password for this."
 msgstr ""
+"Kas sa soovid proovida X-serverit ümber seadistada? Kui jah, siis läheb "
+"selleks juurkasutaja parooli tarvis."
 
 #: ../config/gettextfoo.h:7
 msgid "Please type in the root (privileged user) password."
@@ -91,6 +96,9 @@ msgid ""
 "it is not set up correctly.  Would you like to view the X server output to "
 "diagnose the problem?"
 msgstr ""
+"Tõrge X-serveri (sinu graafilise liidese) käivitamisel. Tõenäoliselt pole "
+"see õigesti seadistatud. Soovid sa probleemi leidmiseks vaadata X-serveri "
+"väljundit?"
 
 #: ../config/gettextfoo.h:11
 msgid "Would you like to view the detailed X server output as well?"
@@ -102,12 +110,17 @@ msgid ""
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
 "the X server output to diagnose the problem?"
 msgstr ""
+"Tõrge X-serveri (sinu graafilise liidese) käivitamisel. Tõenäoliselt pole "
+"osutusseade (hiir) õigesti seadistatud. Soovid sa probleemi leidmiseks "
+"vaadata X-serveri väljundit?"
 
 #: ../config/gettextfoo.h:13 ../config/gettextfoo.h:14
 msgid ""
 "Would you like to try to configure the mouse?  Note that you will need the "
 "root password for this."
 msgstr ""
+"Kas sa soovid proovida hiirt ümber seadistada? Kui jah, siis läheb selleks "
+"juurkasutaja parooli tarvis."
 
 #: ../config/gettextfoo.h:15
 msgid ""
@@ -147,6 +160,8 @@ msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
 "diskspace.%s%s"
 msgstr ""
+"GDM ei saa uut autoriseerimiskirjet kettale kirjutada.  Võimalik, et ketas "
+"on täis.%s%s"
 
 #: ../daemon/auth.c:195
 #, c-format
@@ -341,6 +356,9 @@ msgid ""
 "that it is not set up correctly.  You will need to log in on a console and "
 "rerun the X configuration application, then restart GDM."
 msgstr ""
+"Tõrge X-serveri (sinu graafilise liidese) käivitamisel. Tõenäoliselt pole "
+"see õigesti seadistatud. Sul on vaja konsoolilt sisse logida, X-i "
+"seadistamise rakendusega uued seadistused teha ja siis GDM taaskäivitada."
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -2025,7 +2043,7 @@ msgstr "GNOME Kuvahalduriga (GDM) pole võimalik suhelda"
 
 #: ../gui/gdmcomm.c:647 ../gui/gdmflexiserver.c:787
 msgid "Perhaps you have an old version of GDM running."
-msgstr "Võibolla töötab sul GDM-i liiga vana versioon."
+msgstr "Arvatavasti on su GDM-i versioon liiga vana."
 
 #: ../gui/gdmcomm.c:664 ../gui/gdmcomm.c:667
 msgid "Cannot communicate with GDM. Perhaps you have an old version running."
@@ -2052,12 +2070,16 @@ msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr ""
+"Pesastatud X-server (Xnest) ei suuda käesoleva X-serveriga ühendust võtta. "
+"Võibolla on sul X'i autoriseerimisfail puudu."
 
 #: ../gui/gdmcomm.c:684
 msgid ""
 "The nested X server (Xnest) is not available, or GDM is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
+"Pesastatud X-server (Xnest) pole saadaval või on GDM halvasti seadistatud.\n"
+"Palun paigalda pesastatud sisselogimiste kasutamiseks Xnest'i pakk."
 
 #: ../gui/gdmcomm.c:689
 msgid "The X server is not available. GDM may be misconfigured."
@@ -2086,6 +2108,8 @@ msgid ""
 "You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
+"Sa ei paista olevat selle toimingu teostamiseks autenditud.  Arvatavasti "
+"pole Su .Xauthority fail korralikult paigaldatud."
 
 #: ../gui/gdmcomm.c:705
 msgid "Too many messages were sent to GDM and it hung up on us."
@@ -3282,15 +3306,15 @@ msgstr ""
 
 #: ../gui/gdmsetup.glade.h:6
 msgid "A_dd..."
-msgstr ""
+msgstr "L_isa..."
 
 #: ../gui/gdmsetup.glade.h:7
 msgid "A_llow remote system administrator login"
-msgstr "Süsteemihal_duril on kauglogimised lubatud"
+msgstr "Süsteemihal_duril on lubatud võrgust sisse logida"
 
 #: ../gui/gdmsetup.glade.h:8
 msgid "A_pply User Changes"
-msgstr ""
+msgstr "_Rakenda kasutajate muutused"
 
 #: ../gui/gdmsetup.glade.h:9
 msgid "Accessibility"
@@ -3625,7 +3649,7 @@ msgstr "_Pilt:"
 
 #: ../gui/gdmsetup.glade.h:96
 msgid "_Include all users from /etc/passwd (not for NIS)"
-msgstr "Kõ_ikide kasutajate kaasamine failist /etc/passwd (mitte NIS-i jaoks)"
+msgstr "Kõiki_de kasutajate kaasamine failist /etc/passwd (mitte NIS-i jaoks)"
 
 #: ../gui/gdmsetup.glade.h:97
 msgid "_Login screen ready:"
