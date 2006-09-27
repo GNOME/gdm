@@ -4974,7 +4974,8 @@ xserver_button_clicked (void)
 			g_spawn_command_line_sync ("gnome-open ghelp:gdm", NULL, NULL,
 							NULL, NULL);
 		}
-	} while (response != GTK_RESPONSE_CLOSE);
+	} while (response != GTK_RESPONSE_CLOSE &&
+                 response != GTK_RESPONSE_DELETE_EVENT);
 
 	gtk_widget_hide (dialog);
 }
