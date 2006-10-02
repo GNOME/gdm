@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GDM2 2.16\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-09 07:19+0200\n"
-"PO-Revision-Date: 2006-09-26 17:27+0300\n"
+"PO-Revision-Date: 2006-10-01 23:39+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -442,6 +442,8 @@ msgstr "Tõrge iseenda taaskäivitamisel"
 #: ../daemon/gdm.c:1080
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr ""
+"peadeemon sai võttis vastu signaali SIGABRT. Midagi on väga valesti läinud. "
+"Töö lõpetatakse!"
 
 #: ../daemon/gdm.c:1238
 msgid "Do not fork into the background"
@@ -596,6 +598,8 @@ msgstr "%s: Tühi serverikäsk, kasutatakse standardset käsku."
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
+"%s: Logikataloogi %s pole olemas või pole see kataloog.  Kasutatakse "
+"ServAuthDir'i %s."
 
 #: ../daemon/gdmconfig.c:1773
 #, c-format
@@ -1009,6 +1013,8 @@ msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist."
 msgstr ""
+"Sisselogimise heli küsiti mittekohalikule kuvale, heli esitamise tarkvara "
+"pole võimalik käivitada või pole helifaili olemas."
 
 #: ../daemon/slave.c:2439 ../daemon/slave.c:2444
 #, c-format
@@ -1288,6 +1294,10 @@ msgid ""
 "permissions.  User's $HOME directory must be owned by user and not writable "
 "by other users."
 msgstr ""
+"Kasutaja faili $HOME/.dmrc eiratakse, see hoiab ära vaikimisi seansi ja "
+"keele salvestamise. Fail peab kuuluma kasutajale ja selle pääsuõigusteks "
+"peab olema määratud 644. Kasutaja kodukataloog ($HOME) peab kuuluma "
+"kasutajale ja teistel kasutajatel ei tohi olla sellesse kirjutamisõigust."
 
 #: ../daemon/slave.c:4180
 msgid ""
@@ -1296,6 +1306,10 @@ msgid ""
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
 msgstr ""
+"GDM ei saa sinu autoriseerimisfaili kirjutada. See võib tähendada, et vaba "
+"kettaruum on otsas või pole võimalik sinu kodukataloogi kirjutamiseks avada. "
+"Selles olukorras pole sisselogimine võimalik. Palun võta ühendust oma "
+"süsteemihalduriga."
 
 #: ../daemon/slave.c:4256
 #, c-format
@@ -1849,11 +1863,11 @@ msgstr "Käivitatud GDM-i kontrolle ei teostata"
 
 #: ../gui/gdmXnestchooser.c:481
 msgid "- Nested gdm login chooser"
-msgstr ""
+msgstr "- Pesastatud GDM-iga sisselogimine koos valijaga"
 
 #: ../gui/gdmXnestchooser.c:489
 msgid "- Nested gdm login"
-msgstr ""
+msgstr "- Pesastatud GDM-iga sisselogimine"
 
 #: ../gui/gdmXnestchooser.c:519
 msgid "Xnest doesn't exist."
@@ -1969,7 +1983,7 @@ msgstr "LIIK"
 
 #: ../gui/gdmchooser.c:1967
 msgid "- gdm login chooser"
-msgstr ""
+msgstr "- GDM-iga sisselogimine koos valijaga"
 
 #: ../gui/gdmchooser.c:2029
 #, c-format
@@ -2190,11 +2204,11 @@ msgstr "Tõrge serveriga ühendumisel peale %d proovimist\n"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
-msgstr ""
+msgstr "Teise kasutaja alt pesastatud aknas sisselogimine"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.h:2
 msgid "New Login in a Nested Window"
-msgstr ""
+msgstr "Uus sisselogimine pesastatud aknas"
 
 #: ../gui/gdmflexiserver.c:61
 msgid "Send the specified protocol command to GDM"
@@ -2240,7 +2254,7 @@ msgstr "Kuva %s virtuaalterminalil %d"
 #: ../gui/gdmflexiserver.c:232
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
-msgstr ""
+msgstr "Pesastatud kuva %s virtuaalterminalil %d"
 
 #: ../gui/gdmflexiserver.c:262 ../gui/gdmlogin.c:2500
 #: ../gui/greeter/greeter_item_ulist.c:274
@@ -3240,15 +3254,23 @@ msgid ""
 "For complete documentation see the GNOME help browser under the \"Desktop\" "
 "category."
 msgstr ""
+"See aken on GNOME graafilise sisselogimise vahendi (GDM deemon) "
+"seadistamiseks. Tehtud muudatused rakenduvad koheselt.\n"
+"\n"
+"Mitte kõik sätete valikud pole siia koondatud. Kui sa ei leia otsitavat "
+"sätet, siis tuleb muuta faili %s.\n"
+"\n"
+"Täieliku dokumentatsiooni on võimalik vaadata GNOME abiteabe sirvija "
+"kategoorias \"Töölaud\"."
 
 #: ../gui/gdmsetup.c:6415
 msgid "Apply the changes to users before closing?"
-msgstr "Rakendada enne sulgemist muudatused kasutajatele?"
+msgstr "Kas rakendada enne sulgemist kasutajatele tehtud muudatused?"
 
 #: ../gui/gdmsetup.c:6416
 msgid ""
 "If you don't apply, the changes made on the Users tab will be disregarded."
-msgstr ""
+msgstr "Rakendamata jättes lähevad kõik kasutajate saki muudatused kaotsi."
 
 #: ../gui/gdmsetup.c:6419
 msgid "Close _without Applying"
