@@ -1,5 +1,26 @@
 Ahh news...
 
+2.16.1 Stuff:
+
+- Use g_markup_printf_escaped so gdmsetup better handles
+  description strings that contains things similar to a tag
+  like an email address.  Fixes bug #357998.  (Matthias
+  Clasen)
+
+- Fix gdmsetup so that the window manager close button works
+  as the Close button in the dialog (Matthias Clasen)
+
+- Fix for bug #352838, avoid crashing by moving call to get
+  GDM_KEY_SYSTEM_MENU until after authentication check.
+  (Frederic Crozat)
+
+- Add g_type_init() to gdmflexiserver since this is needed
+  for -a (authentication) code to work.
+
+- Translation updates (Rahul Bhalerao, Runa Bhattacharjee,
+  Alessio Frusciante, Priit Laes, David Lodge,
+  \303\205smund Skj\303\246veland)
+
 2.16.0 Stuff:
 
 - Minor improvements to SDTLOGIN logic, used on Solaris to drop the
