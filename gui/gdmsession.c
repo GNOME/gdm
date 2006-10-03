@@ -134,6 +134,7 @@ gdm_session_list_init ()
     }
 
     if (gdm_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE)) {
+	/* Valgrind complains that the below is leaked */
 	session = g_new0 (GdmSession, 1);
 	session->name = g_strdup (_("Failsafe _Terminal"));
 	session->comment = g_strdup (_("This is a failsafe session that will log you "

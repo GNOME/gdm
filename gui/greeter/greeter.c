@@ -1220,6 +1220,8 @@ main (int argc, char *argv[])
 			    NULL);
     }
 
+  g_free (theme_file);
+
   if G_UNLIKELY (root != NULL && greeter_lookup_id ("user-pw-entry") == NULL)
     {
       GtkWidget *dialog;

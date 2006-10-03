@@ -142,6 +142,7 @@ gdm_config_get_result (gchar *key)
 	result  = gdmcomm_call_gdm (command, NULL /* auth cookie */,
 	          "2.13.0.1", comm_tries);
 
+	g_free (display);
 	g_free (command);
 	g_free (newkey);
 	return result;
@@ -247,6 +248,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->flexible = TRUE;
 		else
 			svr->flexible = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "CHOOSABLE");
 		if (temp == NULL) {
@@ -256,6 +258,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->choosable = TRUE;
 		else
 			svr->choosable = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "HANDLED");
 		if (temp == NULL) {
@@ -265,6 +268,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->handled = TRUE;
 		else
 			svr->handled = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "CHOOSER");
 		if (temp == NULL) {
@@ -274,6 +278,7 @@ gdm_config_get_xservers (gboolean flexible)
 			svr->chooser = TRUE;
 		else
 			svr->chooser = FALSE;
+		g_free (temp);
 
 		temp = gdm_config_get_xserver_details (*sec, "PRIORITY");
 		if (temp == NULL) {
@@ -282,6 +287,7 @@ gdm_config_get_xservers (gboolean flexible)
 		} else {
 			svr->priority = atoi (temp);
 		}
+		g_free (temp);
 
 		sec++;
 
