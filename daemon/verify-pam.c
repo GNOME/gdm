@@ -827,6 +827,7 @@ verify_user_again:
 
     /* start the timer for timed logins */
     if ( ! ve_string_empty (gdm_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
+	d->timed_login_ok &&
 	(local || gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 	    started_timer = TRUE;

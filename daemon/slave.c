@@ -184,6 +184,8 @@ static void	restart_the_greeter (void);
 static gboolean gdm_can_i_assume_root_role (struct passwd *pwent);
 #endif
 
+gboolean gdm_is_user_valid (const char *username);
+
 /* Yay thread unsafety */
 static gboolean x_error_occurred = FALSE;
 static gboolean gdm_got_ack = FALSE;
@@ -5476,7 +5478,20 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
       }
     }
 
-    return g_string_free (str, FALSE);
+    if (!ve_string_empty(str->str) && gdm_is_user_valid(str->str))
+	    return g_string_free (str, FALSE);
+    else
+    {
+        /* "If an empty or otherwise invalid username is returned [by the script]
+         *  automatic login [and timed login] is not performed." -- GDM manual 
+	 */
+	/* fixme: also turn off automatic login */
+	gdm_set_value_bool(GDM_KEY_TIMED_LOGIN_ENABLE, FALSE);
+	d->timed_login_ok = FALSE;
+	do_timed_login = FALSE;
+	g_string_free(str, TRUE);
+	return NULL;
+    }
 }
 
 static void
@@ -5660,4 +5675,11 @@ gdm_can_i_assume_root_role (struct passwd *pwent)
 }
 #endif /* HAVE_TSOL */
 
+
+/* gdm_is_user_valid() mostly copied from gui/gdmuser.c */
+gboolean
+gdm_is_user_valid (const char *username)
+{
+    return (NULL != getpwnam (username));
+}
 /* EOF */

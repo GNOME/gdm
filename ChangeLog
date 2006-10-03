@@ -1,11 +1,19 @@
-2006-09-04  Brian Cameron  <brian.cameron@sun.com>
+2006-10-02  Brian Cameron  <brian.cameron@sun.com>
+
+        * daemon/slave.c, daemon/verify-crypt.c, daemon/verify-pam.c,
+          daemon/verify-shadow.c, gui/greeter/greeter_item.c: Fix so that
+	  if timed login script returns an invalid user, timed login is
+          not turned on.  Fixes bug #340148.  Patch by Andrew
+          (andrewz@springsrescuemission.org).
+
+2006-10-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmconfig.c, gui/gdmsession.c, gui/greeter/greeter.c,
 	  gui/greeter/greeter_parser.c: Fix leaks.  Fixes bug 
 	  #357879.  Patch proviced by Kjartan Maraas.
 	  <kmaraas@gnome.org>.
 
-2006-09-04  Brian Cameron  <brian.cameron@sun.com>
+2006-10-02  Brian Cameron  <brian.cameron@sun.com>
 
         * Release 2.16.1:
         * NEWS: Updated.
