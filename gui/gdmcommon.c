@@ -32,6 +32,7 @@
 #include <sys/utsname.h>
 
 #include <glib/gi18n.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
 #include "gdm.h"
@@ -40,6 +41,7 @@
 #include "gdmconfig.h"
 
 gint gdm_timed_delay = 0;
+static Atom AT_SPI_IOR;
 
 /*
  * Some slaves want to send output to syslog and others (such as 
@@ -568,6 +570,104 @@ pre_fetch_run (gpointer data)
 		       &error);
 
 	return FALSE;
+}
+
+static gboolean 
+pre_atspi_launch (void){
+	gboolean a11y = gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
+	GPid pid = -1;
+	GError *error = NULL;
+	char *command = NULL;
+	gchar **atspi_prog_argv =  NULL;
+	
+	if (! a11y)
+		return FALSE;
+
+	command = g_strdup (LIBEXECDIR "/at-spi-registryd");
+
+	atspi_prog_argv = ve_split (command);
+	
+	g_spawn_async (".",
+		       atspi_prog_argv,
+		       NULL,
+		       (GSpawnFlags) (G_SPAWN_SEARCH_PATH),
+		       NULL,
+		       NULL,
+		       &pid,
+		       &error);
+
+	if (kill (pid, 0) < 0) {
+		fprintf (stderr, "at-spi-registryd not running: %s\n", error->message);
+		return FALSE;
+	}
+
+	return TRUE;
+
+}
+
+
+static GdkFilterReturn 
+filter_watch (GdkXEvent *xevent, GdkEvent *event, gpointer data){
+     XEvent *xev = (XEvent *)xevent;
+
+     if (xev->xany.type == PropertyNotify &&
+	 xev->xproperty.atom == AT_SPI_IOR){
+	     gtk_main_quit ();
+	  
+	  return GDK_FILTER_REMOVE;
+     }
+
+     return GDK_FILTER_CONTINUE;
+}
+
+
+static void
+error_dialog (void)
+{
+	GtkWidget *dialog = gtk_message_dialog_new (NULL,
+						    GTK_DIALOG_MODAL,
+						    GTK_MESSAGE_ERROR,
+						    GTK_BUTTONS_OK,
+						    _("Assistive technology support has been requested for this session, butthe accessibility registry was not found.  Please ensure that the AT-SPI package is installed. Your session has been started without assistive technology support."));
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+}
+
+
+
+static gboolean
+filter_timeout (gpointer data)
+{
+	error_dialog ();
+
+	gtk_main_quit ();
+
+	return FALSE;
+}
+
+
+void
+gdm_common_atspi_launch (void)
+{
+	GdkWindow *w = gdk_get_default_root_window (); 
+	guint tid;
+ 
+	if ( ! AT_SPI_IOR)
+		AT_SPI_IOR = XInternAtom (GDK_DISPLAY (), "AT_SPI_IOR", False);
+
+	gdk_window_set_events (w,  GDK_PROPERTY_CHANGE_MASK); 
+	
+	if ( ! pre_atspi_launch ()){
+		error_dialog ();
+		
+		return;
+	}
+	gdk_window_add_filter (w, filter_watch, NULL);
+	tid = g_timeout_add (1e3, filter_timeout, NULL);
+
+	gtk_main ();
+
+	g_source_remove (tid);
 }
 
 void

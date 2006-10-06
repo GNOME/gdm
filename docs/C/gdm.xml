@@ -1672,6 +1672,12 @@ PostSession/
                 modules should be used to minimize security issues.
               </para>
               <para>
+                If true, then the registry daemon
+                <command>at-spi-registryd</command>
+                will be launched by <command>gdmgreeter</command> or
+                <command>gdmlogin</command> starting with version GDM 2.17.
+              </para>
+              <para>
                 Usually this is used for accessibility modules.  The modules
                 which are loaded are specified with the
                 <filename>GtkModulesList</filename> key.
@@ -6507,6 +6513,13 @@ GtkThemesToAllow=HighContrast,HighContrastInverse
 <screen>
 GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
 </screen>
+
+             <para>
+             The use of assistive technologies and the atk-bridge module
+             requires the registry daemon, <command>at-spi-registryd</command>,
+             to be running.  This is handled by the GDM GUI starting with
+             version 2.17.
+             </para>
 
              <para>
              System administrators may wish to load only the minimum subset of

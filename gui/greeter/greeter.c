@@ -773,6 +773,7 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_SOUND_ON_LOGIN);
 	gdm_config_get_bool   (GDM_KEY_DEFAULT_WELCOME);
 	gdm_config_get_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME);
+	gdm_config_get_bool   (GDM_KEY_ADD_GTK_MODULES);
 
 	/* Keys not to include in reread_config */
 	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
@@ -832,7 +833,8 @@ greeter_reread_config (int sig, gpointer data)
 	    gdm_config_reload_bool   (GDM_KEY_GRAPHICAL_THEME_RAND) ||
 	    gdm_config_reload_bool   (GDM_KEY_SHOW_LAST_SESSION) ||
 	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ROOT) ||
-	    gdm_config_reload_bool   (GDM_KEY_ALLOW_REMOTE_ROOT)) {
+	    gdm_config_reload_bool   (GDM_KEY_ALLOW_REMOTE_ROOT) ||
+	    gdm_config_reload_bool   (GDM_KEY_ADD_GTK_MODULES)) {
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
@@ -1042,9 +1044,16 @@ main (int argc, char *argv[])
   else
 	   GDM_IS_LOCAL = TRUE;
 
+  /*
+   * gdm_common_atspi_launch () needs gdk initialized.
+   * We cannot start gtk before the registry is running 
+   * because the atk-bridge will crash.
+   */
+  gdk_init (&argc, &argv);
+  gdm_common_atspi_launch ();
+
   gtk_init (&argc, &argv);
 
-  /* Should be a watch already, but anyway */
   gdm_common_setup_cursor (GDK_WATCH);
 
   /* Read all configuration at once, so the values get cached */
@@ -1440,7 +1449,7 @@ main (int argc, char *argv[])
   gdm_wm_restore_wm_order ();
 
   gdm_wm_show_info_msg_dialog (gdm_config_get_string (GDM_KEY_INFO_MSG_FILE),
-     gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
+	gdm_config_get_string (GDM_KEY_INFO_MSG_FONT));
 
   gdm_common_setup_cursor (GDK_LEFT_PTR);
   gdm_wm_center_cursor ();

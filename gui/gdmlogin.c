@@ -2953,25 +2953,25 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
 	gdm_config_get_string (GDM_KEY_BACKGROUND_IMAGE);
 	gdm_config_get_string (GDM_KEY_BACKGROUND_PROGRAM);
-        gdm_config_get_string (GDM_KEY_CONFIGURATOR);
-        gdm_config_get_string (GDM_KEY_DEFAULT_FACE);
+	gdm_config_get_string (GDM_KEY_CONFIGURATOR);
+	gdm_config_get_string (GDM_KEY_DEFAULT_FACE);
 	gdm_config_get_string (GDM_KEY_DEFAULT_SESSION);
 	gdm_config_get_string (GDM_KEY_EXCLUDE);
 	gdm_config_get_string (GDM_KEY_GTK_THEME);
-        gdm_config_get_string (GDM_KEY_GTK_THEMES_TO_ALLOW);
+	gdm_config_get_string (GDM_KEY_GTK_THEMES_TO_ALLOW);
 	gdm_config_get_string (GDM_KEY_GTKRC);
-        gdm_config_get_string (GDM_KEY_HALT);
+	gdm_config_get_string (GDM_KEY_HALT);
 	gdm_config_get_string (GDM_KEY_INCLUDE);
 	gdm_config_get_string (GDM_KEY_INFO_MSG_FILE);
 	gdm_config_get_string (GDM_KEY_INFO_MSG_FONT);
-        gdm_config_get_string (GDM_KEY_LOCALE_FILE);
+	gdm_config_get_string (GDM_KEY_LOCALE_FILE);
 	gdm_config_get_string (GDM_KEY_LOGO);
-        gdm_config_get_string (GDM_KEY_REBOOT);
-        gdm_config_get_string (GDM_KEY_REMOTE_WELCOME);
+	gdm_config_get_string (GDM_KEY_REBOOT);
+	gdm_config_get_string (GDM_KEY_REMOTE_WELCOME);
 	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
 	gdm_config_get_string (GDM_KEY_SOUND_PROGRAM);
 	gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE);
-        gdm_config_get_string (GDM_KEY_SUSPEND);
+	gdm_config_get_string (GDM_KEY_SUSPEND);
 	gdm_config_get_string (GDM_KEY_TIMED_LOGIN);
 	gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 	gdm_config_get_string (GDM_KEY_WELCOME);
@@ -2987,28 +2987,29 @@ gdm_read_config (void)
 	gdm_config_get_int    (GDM_KEY_XINERAMA_SCREEN);
 
 	gdm_config_get_bool   (GDM_KEY_ALLOW_GTK_THEME_CHANGE);
-        gdm_config_get_bool   (GDM_KEY_ALLOW_REMOTE_ROOT);
-        gdm_config_get_bool   (GDM_KEY_ALLOW_ROOT);
+	gdm_config_get_bool   (GDM_KEY_ALLOW_REMOTE_ROOT);
+	gdm_config_get_bool   (GDM_KEY_ALLOW_ROOT);
 	gdm_config_get_bool   (GDM_KEY_BACKGROUND_REMOTE_ONLY_COLOR);
 	gdm_config_get_bool   (GDM_KEY_BACKGROUND_SCALE_TO_FIT);
 	gdm_config_get_bool   (GDM_KEY_BROWSER);
 	gdm_config_get_bool   (GDM_KEY_CHOOSER_BUTTON);
 	gdm_config_get_bool   (GDM_KEY_CONFIG_AVAILABLE);
-        gdm_config_get_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME);
-        gdm_config_get_bool   (GDM_KEY_DEFAULT_WELCOME);
-        gdm_config_get_bool   (GDM_KEY_ENTRY_CIRCLES);
-        gdm_config_get_bool   (GDM_KEY_ENTRY_INVISIBLE);
+	gdm_config_get_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME);
+	gdm_config_get_bool   (GDM_KEY_DEFAULT_WELCOME);
+	gdm_config_get_bool   (GDM_KEY_ENTRY_CIRCLES);
+	gdm_config_get_bool   (GDM_KEY_ENTRY_INVISIBLE);
 	gdm_config_get_bool   (GDM_KEY_INCLUDE_ALL);
-        gdm_config_get_bool   (GDM_KEY_QUIVER);
-        gdm_config_get_bool   (GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS);
-        gdm_config_get_bool   (GDM_KEY_RESTART_BACKGROUND_PROGRAM);
-        gdm_config_get_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE);
+	gdm_config_get_bool   (GDM_KEY_QUIVER);
+	gdm_config_get_bool   (GDM_KEY_RUN_BACKGROUND_PROGRAM_ALWAYS);
+	gdm_config_get_bool   (GDM_KEY_RESTART_BACKGROUND_PROGRAM);
+	gdm_config_get_bool   (GDM_KEY_SHOW_GNOME_FAILSAFE);
 	gdm_config_get_bool   (GDM_KEY_SHOW_LAST_SESSION);
-        gdm_config_get_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE);
+	gdm_config_get_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE);
 	gdm_config_get_bool   (GDM_KEY_SOUND_ON_LOGIN);
 	gdm_config_get_bool   (GDM_KEY_SYSTEM_MENU);
 	gdm_config_get_bool   (GDM_KEY_TIMED_LOGIN_ENABLE);
-        gdm_config_get_bool   (GDM_KEY_TITLE_BAR);
+	gdm_config_get_bool   (GDM_KEY_TITLE_BAR);
+	gdm_config_get_bool   (GDM_KEY_ADD_GTK_MODULES);
 
 	/* Keys not to include in reread_config */
 	gdm_config_get_bool   (GDM_KEY_LOCK_POSITION);
@@ -3089,7 +3090,8 @@ gdm_reread_config (int sig, gpointer data)
 	    gdm_config_reload_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE) ||
 	    gdm_config_reload_bool   (GDM_KEY_SYSTEM_MENU) ||
 	    gdm_config_reload_bool   (GDM_KEY_TIMED_LOGIN_ENABLE) ||
-	    gdm_config_reload_bool   (GDM_KEY_TITLE_BAR)) {
+	    gdm_config_reload_bool   (GDM_KEY_TITLE_BAR) ||
+	    gdm_config_reload_bool   (GDM_KEY_ADD_GTK_MODULES)) {
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
@@ -3200,6 +3202,14 @@ main (int argc, char *argv[])
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
+
+    /*
+     * gdm_common_atspi_launch () needs gdk initialized.
+     * We cannot start gtk before the registry is running 
+     * because the atk-bridge will crash.
+     */
+    gdk_init (&argc, &argv);
+    gdm_common_atspi_launch ();
 
     gtk_init (&argc, &argv);
 
