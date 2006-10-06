@@ -710,7 +710,9 @@ try_user_add_again:
 	af = gdm_safe_fopen_ap (d->userauth);
     }
 
+    /* Set to NULL, because can goto try_user_add_again.
     g_free (authdir);
+    authdir = NULL;
 
     if G_UNLIKELY (af == NULL) {
 	/* Really no need to clean up here - this process is a goner anyway */
