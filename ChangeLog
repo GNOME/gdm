@@ -1,3 +1,9 @@
+2006-10-05  Brian Cameron  <brian.cameron@sun.com>
+
+        * daemon/auth.c: Set authdir to NULL after freeing to avoid accessing
+          an invalid pointer.  Fixes bug #359831.  Patch provided by
+          Amnon Aaronsohn <bla@cs.huji.ac.il>.
+
 2006-10-02  Brian Cameron  <brian.cameron@sun.com>
 
         * daemon/slave.c, daemon/verify-crypt.c, daemon/verify-pam.c,
