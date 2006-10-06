@@ -1,25 +1,22 @@
 2006-10-04  Ariel Rios  <ariel@gnu.org>
 
-	* gui/gdmcommon.h (gdm_commoN_atspi_launch) Header for launching
-	the registry.
-
+	Fixes bug #345434.
+	* gui/gdmcommon.h (gdm_common_atspi_launch) Header for launching
+	  the registry.
 	* gui/gdmcommon.c (pre_atspi_launch): Execute the registry
-	that is supposed to be located on LIBEXECDIR. 
-	(filter_watch):	 Called whenever we get the PropertyNotify 
-	event and the we exit the gtk_main loop we are on and remove 
-	the event from the queue.
-	(filter_timeout): Function launched if after 1 second the registry is
-	not found.
-	(error_dialog): Display message saying no at-spi-registryd was found.
-	(gdm_common_atspi_launch): Launchs the registry, starts checking for
-	property changes on the X root window. If the registry is found we
-	continue executing the GUI.
-
+	  that is supposed to be located on LIBEXECDIR. 
+	  (filter_watch): Called whenever we get the PropertyNotify 
+	  event and the we exit the gtk_main loop we are on and remove 
+	  the event from the queue.
+	  (filter_timeout): Function launched if after 1 second the registry
+	  is not found.
+	  (error_dialog): Display message saying no at-spi-registryd was found.
+	  (gdm_common_atspi_launch): Launchs the registry, starts checking for
+	  property changes on the X root window. If the registry is found we
+	  continue executing the GUI.
 	* gui/gdmlogin.c (main): Launch gdk_init and then lunch the 
-	at-spi-registry if GTK_ADD_MODULES is set on.
-
+	  at-spi-registry if GTK_ADD_MODULES is set on.
 	* gui/greeter/greeter.c (main): Ditto.
-
 	* docs/C/gdm.xml: Add documentation to indicate that the GUI will
 	  now launch the at-spi-registryd if GTK_ADD_MODULES is set to true.
 
