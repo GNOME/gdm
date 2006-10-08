@@ -709,6 +709,7 @@ gdm_common_expand_text (const gchar *text)
 	    case 't':
 	      g_string_append_printf (str, ngettext("%d second", "%d seconds", gdm_timed_delay),
 				      gdm_timed_delay);
+	      break;
 	    case 'u':
 	      g_string_append (str, ve_sure_string (g_getenv("GDM_TIMED_LOGIN_OK")));
 	      break;
