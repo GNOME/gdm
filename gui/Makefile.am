@@ -155,6 +155,7 @@ gdmphotosetup_LDADD = \
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
 	$(INTLLIBS)		\
+	-lX11			\
 	$(top_builddir)/vicious-extensions/libviciousui.a
 
 gdmXnestchooser_LDADD = \
@@ -181,6 +182,7 @@ gdmflexiserver_LDADD = \
 	$(top_builddir)/vicious-extensions/libviciousui.a \
 	$(EXTRA_FLEXI_LIBS)	\
 	$(X_LIBS)		\
+	-lX11			\
 	-lXau			\
 	-lpopt
 
@@ -194,6 +196,7 @@ gdmdynamic_LDADD = 		\
 	$(top_builddir)/vicious-extensions/libviciousui.a \
 	$(EXTRA_DYNAMIC_LIBS)	\
 	$(X_LIBS)		\
+	-lX11			\
 	-lXau
 
 Settingsdir = $(datadir)/applications
