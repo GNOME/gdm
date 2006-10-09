@@ -1,3 +1,13 @@
+2006-10-09  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter.c, 
+	  gui/greeter/greeter_parser.c:  Fix new at-spi code so that if
+	  DOING_GDM_DEVELOPMENT is set it does not try to launch the AT
+	  registry daemon.  Also fix broken string.
+	* gui/greeter/greeter_item_ulist.c:  Fix code to avoid printing
+	  out warnings when DOING_GDM_DEVELOPMENT is set.  Do not process
+	  face browser code when user_list is NULL.
+
 2006-10-08  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/Makefile.am: Add -lX11 to link statements so that the new code

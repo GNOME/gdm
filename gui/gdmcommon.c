@@ -30,6 +30,8 @@
 #include <syslog.h>
 #include <time.h>
 #include <sys/utsname.h>
+#include <sys/types.h>
+#include <signal.h>
 
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
@@ -628,7 +630,7 @@ error_dialog (void)
 						    GTK_DIALOG_MODAL,
 						    GTK_MESSAGE_ERROR,
 						    GTK_BUTTONS_OK,
-						    _("Assistive technology support has been requested for this session, butthe accessibility registry was not found.  Please ensure that the AT-SPI package is installed. Your session has been started without assistive technology support."));
+						    _("Assistive technology support has been requested for this session, but the accessibility registry was not found.  Please ensure that the AT-SPI package is installed. Your session has been started without assistive technology support."));
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 }

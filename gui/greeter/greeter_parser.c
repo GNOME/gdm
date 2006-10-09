@@ -1582,8 +1582,6 @@ parse_items (xmlNodePtr  node,
 		return FALSE;
 	      }
 
-	    xmlFree (type);
-	    
 	    type = xmlGetProp (child, (const xmlChar *) "type");
 	    if G_UNLIKELY (!type)
 	      {

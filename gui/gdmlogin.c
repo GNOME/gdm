@@ -3209,7 +3209,9 @@ main (int argc, char *argv[])
      * because the atk-bridge will crash.
      */
     gdk_init (&argc, &argv);
-    gdm_common_atspi_launch ();
+    if ( ! DOING_GDM_DEVELOPMENT) {
+       gdm_common_atspi_launch ();
+    }
 
     gtk_init (&argc, &argv);
 
