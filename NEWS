@@ -1,5 +1,44 @@
 Ahh news...
 
+2.17.0 Stuff:
+
+- Now when GDM_ADD_MODULES is set, GDM will launch at-spi-registryd.
+  (Ariel Rios)
+
+- New SupportAutomount option which, when turned on, changes the
+  way that GDM accesses the user's $HOME/.dmrc file so that 
+  automounted $HOME directories can be configured to work even
+  when the automounter is not started with the --ghost option. 
+  (Jerzy Borkowski)
+
+- Fix so that if timed login script returns an invalid user,
+  timed login is not turned on.   Fix for bug #340148.
+  (Andrew - andrewz@springsrescuemission.org).
+
+- Fix for bug #352838, avoid crashing by moving call to get
+  GDM_KEY_SYSTEM_MENU until after authentication check.
+  (Frederic Crozat)
+
+- Use g_markup_printf_escaped so gdmsetup better handles
+  description strings that contains things similar to a tag
+  like an email address.  Fixes bug #357998.  (Matthias
+  Clasen)
+
+- Fix gdmsetup so that the window manager close button works
+  as the Close button in the dialog.  (Matthias Clasen)
+
+- Add g_type_init() to gdmflexiserver since this is needed
+  for -a (authentication) code to work.  (Brian Cameron)
+
+- Set authdir to NULL after freeing to avoid accessing an
+  invalid pointer.  Fix for bug #359831.  (Amnon Aaronsohn)
+
+- Memory leaks fixed.  (Kjartan Maraas)
+
+- Translation updates (Abel Cheung, Yair Hershkovitz,
+  Raphael Higino, Priit Laes, \303\205smund Skj\303\246veland,
+  Ivar Smolin)
+
 2.16.1 Stuff:
 
 - Use g_markup_printf_escaped so gdmsetup better handles
@@ -8,14 +47,14 @@ Ahh news...
   Clasen)
 
 - Fix gdmsetup so that the window manager close button works
-  as the Close button in the dialog (Matthias Clasen)
+  as the Close button in the dialog.  (Matthias Clasen)
 
 - Fix for bug #352838, avoid crashing by moving call to get
   GDM_KEY_SYSTEM_MENU until after authentication check.
   (Frederic Crozat)
 
 - Add g_type_init() to gdmflexiserver since this is needed
-  for -a (authentication) code to work.
+  for -a (authentication) code to work.  (Brian Cameron)
 
 - Translation updates (Rahul Bhalerao, Runa Bhattacharjee,
   Alessio Frusciante, Priit Laes, David Lodge,
