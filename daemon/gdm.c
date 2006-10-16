@@ -563,7 +563,7 @@ deal_with_x_crashes (GdmDisplay *d)
 			    /* We couldn't run the script, just drop through */
 			    ;
 		    } else {
-			    /* Things went wrong, or the user's a wanker */
+			    /* Things went wrong. */
 			    just_abort = TRUE;
 		    }
 	    }

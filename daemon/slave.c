@@ -1988,7 +1988,7 @@ gdm_slave_wait_for_login (void)
 
 			check_notifies_now ();
 
-			/* The wanker can't remember his password */
+			/* The user can't remember his password */
 			if (login == NULL) {
 				gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
@@ -2007,7 +2007,6 @@ gdm_slave_wait_for_login (void)
 				break;
 			}
 
-			/* The user is a wanker */
 			if G_UNLIKELY (do_configurator) {
 				do_configurator = FALSE;
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");

@@ -183,7 +183,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    int authfd;
 
 	    /* Note, Xnest can't use the GDM_KEY_SERV_AUTHDIR unless running as
-	     * root, which is rare anyway, unless the user is a wanker */
+	     * root, which is rare anyway. */
 
 	    d->authfile = g_build_filename (gdm_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK), ".gdmXXXXXX", NULL);
 

@@ -1,3 +1,8 @@
+2006-10-16  Brian Cameron  <brian.cameron@sun.com>
+
+	* NEWS, daemon/auth.c, daemon/gdm.c, daemon/slave.c: Clean up
+	  comments.
+
 2006-10-09  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter.c, 
@@ -4173,7 +4178,7 @@ Fri May 28 11:08:51 2004  George Lebl <jirka@5z.com>
 Thu May 27 13:42:39 2004  George Lebl <jirka@5z.com>
 
 	* gui/modules/dwellmouselistener.c, gui/modules/keymouselistener.c:
-	  The screen code was wankered, it wanted HAVE_GTK_MULTIHEAD to be
+	  The screen code was broken, it wanted HAVE_GTK_MULTIHEAD to be
 	  defined to work properly and otherwise it confused bonobo which
 	  is completely moronic (I mean bonobo is moronic) by using slightly
 	  different (but perfectly legal) DISPLAY env var.
@@ -6592,8 +6597,8 @@ Mon Jul 14 12:04:13 2003  George Lebl <jirka@5z.com>
 
 Mon Jul 14 11:24:06 2003  George Lebl <jirka@5z.com>
 
-	* daemon/server.[ch], daemon/slave.c: XFree86 is an wanker and doesn't
-	  wipe it's lockfile sometimes apparently (well obviously it won't if it
+	* daemon/server.[ch], daemon/slave.c: XFree86 does not wipe it's
+	  lockfile sometimes apparently (well obviously it won't if it
 	  crashed or some such), so if we find a stale lock file after we
 	  kill the server, whack the lock file.  Should address #114003 and
 	  redhat #90014
@@ -12733,7 +12738,7 @@ Thu Jan 25 23:04:01 2001  George Lebl <jirka@5z.com>
 	* daemon/slave.[ch]: cleanup
 
 	* daemon/gdm.h, gui/gdmlogin.c, config/gdm.conf.in:  Add options
-	  for setting the initial position to allow xinerama wankers to
+	  for setting the initial position to allow xinerama users to
 	  make their login not suck too much.  Also added an option to
 	  lock the window position and fixed some braindamages.  Fixed the
 	  label style setting as well to work with non default themes.
