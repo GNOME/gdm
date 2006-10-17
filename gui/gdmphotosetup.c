@@ -291,11 +291,19 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 	gtk_widget_show (file_dialog);
 }
 
+static void
+help_button_cb (GtkWidget *widget, gpointer data)
+{
+	g_spawn_command_line_sync ("gnome-open ghelp:gdm", NULL, NULL,
+  				   NULL, NULL);
+}
+
 int
 main (int argc, char *argv[])
 {
 	GtkWidget  *dialog;
 	GtkWidget  *browse_button;
+	GtkWidget  *help_button;
 	GtkWidget  *face_image;
 	gboolean    face_browser;
 	char	   *greeter;
@@ -326,6 +334,7 @@ main (int argc, char *argv[])
 	dialog	      = glade_xml_get_widget (xml, "face_dialog");
 	face_image    = glade_xml_get_widget (xml, "face_image");
 	browse_button = glade_xml_get_widget (xml, "browse_button");
+	help_button   = glade_xml_get_widget (xml, "helpbutton1");
 
 	gtk_widget_set_size_request (browse_button, MAX (max_width, 230), MAX (max_height, 130));
 
@@ -340,6 +349,8 @@ main (int argc, char *argv[])
 
 	g_signal_connect (browse_button, "clicked",
 			  G_CALLBACK (browse_button_cb), dialog);
+	g_signal_connect (help_button, "clicked",
+			  G_CALLBACK (help_button_cb), dialog);
 
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (dialog_response), NULL);
