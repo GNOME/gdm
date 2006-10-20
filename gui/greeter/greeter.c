@@ -1088,6 +1088,7 @@ main (int argc, char *argv[])
   }
   gdm_common_setup_background_color (bg_color);
   greeter_session_init ();
+  greeter_language_initialize_model ();
 
   ve_signal_add (SIGHUP, greeter_reread_config, NULL);
 

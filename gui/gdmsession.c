@@ -107,7 +107,6 @@ gdm_session_list_from_hash_table_func (const char *key, const char *value,
         *sessions = g_list_prepend (*sessions, g_strdup (key));
 }
 
-
 void
 gdm_session_list_init ()
 {
@@ -125,6 +124,7 @@ gdm_session_list_init ()
     if (gdm_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE)) {
 	session = g_new0 (GdmSession, 1);
 	session->name = g_strdup (_("Failsafe _GNOME"));
+	session->clearname = g_strdup (_("Failsafe GNOME"));
 	session->comment = g_strdup (_("This is a failsafe session that will log you "
 		"into GNOME. No startup scripts will be read "
 		"and it is only to be used when you can't log "
@@ -137,6 +137,7 @@ gdm_session_list_init ()
 	/* Valgrind complains that the below is leaked */
 	session = g_new0 (GdmSession, 1);
 	session->name = g_strdup (_("Failsafe _Terminal"));
+	session->clearname = g_strdup (_("Failsafe Terminal"));
 	session->comment = g_strdup (_("This is a failsafe session that will log you "
 		"into a terminal.  No startup scripts will be read "
 		"and it is only to be used when you can't log "
@@ -193,7 +194,8 @@ gdm_session_list_init ()
 
 		    if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false")) {
 			    session = g_new0 (GdmSession, 1);
-			    session->name = "foo";
+			    session->name      = g_strdup (dent->d_name);
+			    session->clearname = NULL;
 			    g_hash_table_insert (sessnames, g_strdup (dent->d_name), session);
 			    ve_config_destroy (cfg);
 			    dent = readdir (sessdir);
@@ -205,7 +207,8 @@ gdm_session_list_init ()
 			    char *full = g_find_program_in_path (tryexec);
 			    if (full == NULL) {
 				    session = g_new0 (GdmSession, 1);
-				    session->name = "foo";
+				    session->name      = g_strdup (dent->d_name);
+				    session->clearname = NULL;
 				    g_hash_table_insert (sessnames, g_strdup (dent->d_name),
 					 session);
 				    g_free (tryexec);
@@ -225,7 +228,8 @@ gdm_session_list_init ()
 
 		    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
 			    session = g_new0 (GdmSession, 1);
-			    session->name = "foo";
+			    session->name      = g_strdup (dent->d_name);
+			    session->clearname = NULL;
 			    g_hash_table_insert (sessnames, g_strdup (dent->d_name), session);
 			    g_free (exec);
 			    g_free (name);
@@ -259,8 +263,9 @@ gdm_session_list_init ()
 		    }
 
 		    session = g_new0 (GdmSession, 1);
-		    session->name = g_strdup (name);
-		    session->comment = g_strdup (comment);
+		    session->name      = g_strdup (name);
+		    session->clearname = NULL;
+		    session->comment   = g_strdup (comment);
 		    g_hash_table_insert (sessnames, g_strdup (dent->d_name), session);
 		    g_free (exec);
 		    g_free (comment);
@@ -291,9 +296,10 @@ gdm_session_list_init ()
 
 
     if (gdm_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE)) {
-	    session          = g_new0 (GdmSession, 1);
-	    session->name    = g_strdup (_("Failsafe _GNOME"));
-	    session->comment = g_strdup (_("This is a failsafe session that will log you "
+	    session            = g_new0 (GdmSession, 1);
+	    session->name      = g_strdup (_("Failsafe _GNOME"));
+	    session->clearname = g_strdup (_("Failsafe GNOME"));
+	    session->comment   = g_strdup (_("This is a failsafe session that will log you "
 				    "into GNOME. No startup scripts will be read "
                                     "and it is only to be used when you can't log "
                                     "in otherwise.  GNOME will use the 'Default' "
@@ -303,9 +309,10 @@ gdm_session_list_init ()
     }
 
     if (gdm_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE)) {
-	    session          = g_new0 (GdmSession, 1);
-	    session->name    = g_strdup (_("Failsafe _Terminal"));
-	    session->comment = g_strdup (_("This is a failsafe session that will log you "
+	    session            = g_new0 (GdmSession, 1);
+	    session->name      = g_strdup (_("Failsafe _Terminal"));
+	    session->clearname = g_strdup (_("Failsafe Terminal"));
+	    session->comment   = g_strdup (_("This is a failsafe session that will log you "
 				    "into a terminal.  No startup scripts will be read "
 				    "and it is only to be used when you can't log "
 				    "in otherwise.  To exit the terminal, "

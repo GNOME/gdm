@@ -27,29 +27,32 @@
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 #include "gdmlanguages.h"
+
 #include "greeter.h"
 #include "greeter_configuration.h"
 #include "greeter_item_pam.h"
 #include "greeter_action_language.h"
+#include "greeter_parser.h"
+#include "greeter_item_customlist.h"
 
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
 
-enum {
-  LOCALE_COLUMN,
-  TRANSLATED_NAME_COLUMN,
-  UNTRANSLATED_NAME_COLUMN,
-  NUM_COLUMNS
-};
+static GtkWidget    *tv                       = NULL;
+static GtkListStore *lang_model               = NULL;
+static GtkWidget    *dialog                   = NULL;
+static gchar        *current_language         = NULL;
+static gchar        *dialog_selected_language = NULL;
+static gint          savelang                 = GTK_RESPONSE_NO;
 
-static GtkListStore *lang_model = NULL;
-static GtkWidget *dialog = NULL;
-static gint savelang = GTK_RESPONSE_NO;
-static gchar *current_language = NULL;
-static gchar *dialog_selected_language = NULL;
+GtkListStore *
+greeter_language_get_model (void)
+{
+   return lang_model;
+}
 
-static void
-greeter_langauge_initialize_model (void)
+void
+greeter_language_initialize_model (void)
 {
   GList *list, *li;
   GtkTreeIter iter;
@@ -63,7 +66,7 @@ greeter_langauge_initialize_model (void)
 
   gtk_list_store_append (lang_model, &iter);
   gtk_list_store_set (lang_model, &iter,
-		      TRANSLATED_NAME_COLUMN, _("Last Language"),
+		      TRANSLATED_NAME_COLUMN, _("Last language"),
 		      UNTRANSLATED_NAME_COLUMN, NULL,
 		      LOCALE_COLUMN, LAST_LANGUAGE,
 		      -1);
@@ -206,18 +209,9 @@ tree_row_activated (GtkTreeView         *view,
   }
 }
 
-/*
- * The button with this handler appears in the F10 menu, so it
- * cannot depend on callback data being passed in.
- */
-void
-greeter_language_handler (GreeterItemInfo *info, gpointer user_data)
+static void
+greeter_language_setup_treeview (void)
 {
-  GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
-  GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
-
-  GtkWidget *view = NULL;
-
   if (dialog == NULL)
     {
       GtkWidget *main_vbox;
@@ -264,20 +258,20 @@ greeter_language_handler (GreeterItemInfo *info, gpointer user_data)
       gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
       gtk_box_pack_start (GTK_BOX (main_vbox),
 			  label, FALSE, FALSE, 0);
-      view = gtk_tree_view_new ();
-      gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (view), TRUE);
-      gtk_label_set_mnemonic_widget (GTK_LABEL (label), view);
+      tv = gtk_tree_view_new ();
+      gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (tv), TRUE);
+      gtk_label_set_mnemonic_widget (GTK_LABEL (label), tv);
       /* FIXME: we should handle this better, but things really look
        * bad if we aren't always LTR */
-      gtk_widget_set_direction (view, GTK_TEXT_DIR_LTR);
-      gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (view), FALSE);
-      gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+      gtk_widget_set_direction (tv, GTK_TEXT_DIR_LTR);
+      gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tv), FALSE);
+      gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tv),
 					       GTK_DIALOG_MODAL,
 					       NULL,
 					       gtk_cell_renderer_text_new (),
 					       "text", TRANSLATED_NAME_COLUMN,
 					       NULL);
-      gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+      gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tv),
 					       GTK_DIALOG_MODAL,
 					       NULL,
 					       gtk_cell_renderer_text_new (),
@@ -289,41 +283,99 @@ greeter_language_handler (GreeterItemInfo *info, gpointer user_data)
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swindow),
 				  GTK_POLICY_AUTOMATIC,
 				  GTK_POLICY_AUTOMATIC);
-      gtk_container_add (GTK_CONTAINER (swindow), view);
+      gtk_container_add (GTK_CONTAINER (swindow), tv);
       gtk_box_pack_start (GTK_BOX (main_vbox),
 			  swindow, TRUE, TRUE, 0);
       gtk_window_set_default_size (GTK_WINDOW (dialog),
 				   MIN (400, gdm_wm_screen.width),
 				   MIN (600, gdm_wm_screen.height));
-      g_signal_connect (G_OBJECT (gtk_tree_view_get_selection (GTK_TREE_VIEW (view))),
+      g_signal_connect (G_OBJECT (gtk_tree_view_get_selection (GTK_TREE_VIEW (tv))),
 			"changed",
 			(GCallback) selection_changed,
 			NULL);
-      g_signal_connect (G_OBJECT (view),
+      g_signal_connect (G_OBJECT (tv),
                         "row_activated",
                         (GCallback) tree_row_activated,
                         NULL);
-      gtk_widget_show_all (dialog);
-      gdm_wm_center_window (GTK_WINDOW (dialog));
+      gtk_tree_view_set_model (GTK_TREE_VIEW (tv),
+			       GTK_TREE_MODEL (lang_model));
     }
+}
+
+void
+greeter_language_set (char *language)
+{
+   char *locale;
+   GtkTreeIter iter = {0};
+
+   g_free (current_language);
+   current_language = g_strdup (language);
+
+   if (dialog == NULL)
+     greeter_language_setup_treeview ();
+
+   if (language == NULL)
+      return;
+ 
+   greeter_custom_set_language (language);
+
+   GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
+   gtk_tree_selection_unselect_all (selection);
+
+   if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (lang_model), &iter)) {
+      do {
+         gtk_tree_model_get (GTK_TREE_MODEL (lang_model), &iter, LOCALE_COLUMN, &locale, -1);
+         if (locale != NULL && strcmp (locale, language) == 0) {
+            GtkTreePath *path = gtk_tree_model_get_path (GTK_TREE_MODEL (lang_model), &iter);
+
+            gtk_tree_selection_select_iter (selection, &iter);
+            gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (tv), path, NULL, FALSE, 0.0, 0.0);
+            gtk_tree_path_free (path);
+            break;
+         }
+      } while (gtk_tree_model_iter_next (GTK_TREE_MODEL (lang_model), &iter));
+   }
+}
+
+/*
+ * The button with this handler appears in the F10 menu, so it
+ * cannot depend on callback data being passed in.
+ */
+void
+greeter_language_handler (GreeterItemInfo *info, gpointer user_data)
+{
+  if (dialog == NULL)
+    greeter_language_setup_treeview ();
+
+  gtk_widget_show_all (dialog);
+  gdm_wm_center_window (GTK_WINDOW (dialog));
+
   gdm_wm_no_login_focus_push ();
-  if (view != NULL)
+  if (tv != NULL)
     {
       GtkTreeSelection *selection;
 	  
       gtk_widget_show_now (dialog);
-      greeter_langauge_initialize_model ();
-      gtk_tree_view_set_model (GTK_TREE_VIEW (view),
-			       GTK_TREE_MODEL (lang_model));
-      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
-      if (selection != NULL)
+      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
+      if (selection == NULL)
 	gtk_tree_selection_select_path (selection, gtk_tree_path_new_first ());
+      else
+        {
+          GtkTreeIter iter;
+          GtkTreePath *path;
+          GtkTreeModel *tm = GTK_TREE_MODEL (lang_model);
+
+          gtk_tree_selection_get_selected (selection, &tm, &iter);
+          path = gtk_tree_model_get_path (GTK_TREE_MODEL (lang_model), &iter);
+          gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (tv), path, NULL, FALSE, 0.0, 0.0);
+          gtk_tree_path_free (path);
+        }
     }
   switch (gtk_dialog_run (GTK_DIALOG (dialog)))
     {
     case GTK_RESPONSE_OK:
       if (dialog_selected_language)
-	current_language = g_strdup (dialog_selected_language);
+        greeter_language_set ((char *) dialog_selected_language);
       break;
     case GTK_RESPONSE_CANCEL:
     default:

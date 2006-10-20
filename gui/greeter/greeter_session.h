@@ -21,5 +21,6 @@
 
 void        greeter_session_init       (void);
 void        greeter_item_session_setup (void);
+void        greeter_set_session        (char *session);
 
 #endif /* __GREETER_SESSION_H__ */

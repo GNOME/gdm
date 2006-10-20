@@ -658,7 +658,7 @@ gdm_config_reload_bool (gchar *key)
 }
 
 void
-gdm_set_servauth (gchar *file, gchar *key, gchar *id)
+gdm_save_customlist_data (gchar *file, gchar *key, gchar *id)
 {
 	VeConfig *cfg;
 	cfg = ve_config_get (file);

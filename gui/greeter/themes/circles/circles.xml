@@ -14,8 +14,14 @@
         <pos x="0" y="4" width="100%" height="100%"/>
         <box orientation="horizontal" spacing="10" xpadding="10" ypadding="10">
           <item type="button" id="options_button" button="true">
-            <pos width="100" height="50"/>
+            <pos y="5" width="80" height="50"/>
             <stock type="options"/>
+          </item>
+          <item type="list" id="language" combo="true">
+            <pos  x="25" y="10" height="40" width="300"/>
+          </item>
+          <item type="list" id="session" combo="true">
+            <pos x="50" y="10" height="40" width="300"/>
           </item>
         </box>
       </item>
@@ -29,19 +35,6 @@
     <normal color="#000000" font="Sans 12"/>
     <pos x="-20" y="-37" anchor="e"/>
     <text>%c</text>
-  </item>
-
-  <item type="rect" id="caps-lock-warning">
-    <normal color="#FFFFFF" alpha="0.5"/>
-    <pos anchor="c" x="50%" y="75%" width="box" height="box"/>
-    <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
-      <item type="label">
-        <normal color="#000000" font="Sans 12"/>
-        <pos x="50%" anchor="n"/>
-	<!-- Stock label for: You've got capslock on! -->
-	<stock type="caps-lock-warning"/>
-      </item>
-    </box>
   </item>
 
   <item type="rect">

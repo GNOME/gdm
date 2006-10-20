@@ -40,14 +40,21 @@
 #include "greeter_events.h"
 #include "greeter_parser.h"
 
-static GtkWidget *session_dialog;
-static GSList *session_group = NULL;
-
-extern GList *sessions;
+static GtkWidget  *session_dialog;
+static GSList     *session_group = NULL;
+extern GList      *sessions;
 extern GHashTable *sessnames;
-extern gchar *default_session;
-extern char *current_session;
-extern gboolean session_dir_whacked_out;
+extern gchar      *default_session;
+extern char       *current_session;
+extern gboolean    session_dir_whacked_out;
+
+void
+greeter_set_session (char *session)
+{
+   g_free (current_session);
+   current_session = g_strdup (session);
+   greeter_custom_set_session (session);
+}
 
 void 
 greeter_session_init (void)
@@ -67,8 +74,7 @@ greeter_session_init (void)
   int num = 1;
   char *label;
 
-  g_free (current_session);
-  current_session = NULL;
+  greeter_set_session (NULL);
   
   session_dialog = dialog = gtk_dialog_new ();
   if (tooltips == NULL)
@@ -118,7 +124,7 @@ greeter_session_init (void)
 
   if (gdm_config_get_bool (GDM_KEY_SHOW_LAST_SESSION))
     {
-      current_session = g_strdup (LAST_SESSION);
+      greeter_set_session (LAST_SESSION);
 
       radio = gtk_radio_button_new_with_mnemonic (session_group, _("_Last session"));
       g_object_set_data (G_OBJECT (radio),
@@ -201,11 +207,9 @@ static void
 greeter_session_handler (GreeterItemInfo *info,
 			 gpointer         user_data)
 {
-  GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
-  GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
   GSList *tmp;
   int ret;
-  
+
   /* Select the proper session */
   tmp = session_group;
   while (tmp != NULL)
@@ -242,12 +246,10 @@ greeter_session_handler (GreeterItemInfo *info,
 	  GtkWidget *w = tmp->data;
 	  const char *n;
 	  
-
 	  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)))
 	    {
 	      n = g_object_get_data (G_OBJECT (w), SESSION_NAME);
-	      g_free (current_session);
-	      current_session = g_strdup (n);
+              greeter_set_session ((char *)n);
 	      break;
 	    }
 	  

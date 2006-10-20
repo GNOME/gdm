@@ -37,7 +37,7 @@ gboolean	gdm_config_reload_int			(gchar *key);
 gboolean	gdm_config_reload_bool			(gchar *key);
 GSList *	gdm_config_get_xservers			(gboolean flexible);
 
-void		gdm_set_servauth			(gchar *file,
+void		gdm_save_customlist_data		(gchar *file,
 							 gchar *key,
 							 gchar *id);
 char *		gdm_get_theme_greeter			(gchar *file,
