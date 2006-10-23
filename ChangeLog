@@ -1,3 +1,19 @@
+2006-10-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* docs/C/gdm.xml, gui/gdmsession.[ch], gui/greeter/greeter.c,
+	  gui/greeter/greeter_action_language.[ch],
+	  gui/greeter/greeter_canvas_item.[ch], gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_item_customlist.[ch],
+	  gui/greeter/greeter_session.[ch],
+	  gui/greeter/themes/*/*xml: Now support "combo" style lists and
+	  support "language" and "session" lists which can be used directly
+	  in the theme rather than having to use the session/language
+	  pop-ups.  Suggestion from Boston GNOME Summit.  The defaul themes
+	  now support these combo boxes.
+	* gui/greeter_item_ulist.c: Cleanup
+	* gui/gdmconfig.[ch]: Renamed function to gdm_save_customlist_data,
+	  so it is more clear what the function does.
+
 2006-10-17  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_system.c:
