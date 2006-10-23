@@ -5823,19 +5823,47 @@ homogeneous=&quot;bool&quot;&gt;
           </varlistentry>
         </variablelist>
 
-
         <para>
-          List items can have id values as follows:
+          List items by default display as lists, but the combo=&quot;true&quot; attribute
+          can be used to specify combo box style.   Some predefined lists may be included
+          in a theme by using the following id values.  Customized lists may also be defined,
+          which are explained below.
         </para>
+
+        <variablelist>
+          <varlistentry>
+            <term>session</term>
+            <listitem>
+              <para>
+                A list of available sessions, which allows the user to pick
+                the session to use.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <variablelist>
+          <varlistentry>
+            <term>language</term>
+            <listitem>
+              <para>
+                A list of available languages, which allows the user to pick
+                the language to use.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
         <variablelist>
           <varlistentry>
             <term>userlist</term>
             <listitem>
               <para>
-                A Face Browser list, so that users can pick
-                their username by clicking on this instead
-                of typing.
+                A Face Browser list, so that users can pick their username
+                by clicking on this instead of typing.  This obviously exposes
+                the usernames to viewers of the login screen, and is not
+                recommended for users who feel that this reduces security.
+                The face browser does not support combo box style.
               </para>
             </listitem>
           </varlistentry>
@@ -6423,7 +6451,7 @@ homogeneous=&quot;bool&quot;&gt;
         <para>
           For example suppose we are on display :0,
           <filename>ServAuthDir</filename> is
-          <filename>&lt;var&gt;/gdm</filename> and we have the following in the
+          <filename>&lt;var&gt;/lib/gdm</filename> and we have the following in the
           theme:
         </para>
 
@@ -6441,7 +6469,7 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           Then if the user chooses 'Foo' then 
-          <filename>&lt;var&gt;/gdm/:0.GreeterInfo</filename> will contain:
+          <filename>&lt;var&gt;/lib/gdm/:0.GreeterInfo</filename> will contain:
 <screen>
 custom-config=foo
 </screen>
