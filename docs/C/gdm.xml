@@ -268,14 +268,14 @@
         on legacy systems.  After authenticating a user, the daemon runs the
         <filename>PostLogin</filename> script as root, and forks a slave
         process to start the requested session.  This slave process runs the
-        <filename>PreSession</filename> script as root, sets up the users
+        <filename>PreSession</filename> script as root, sets up the user's
         environment, and starts the requested session.  GDM keeps track of the
         user's default session and language in the user's
         <filename>~/.dmrc</filename> and will use these defaults if the user
         did not pick a session or language in the login GUI.  On Solaris, GDM
         (since version 2.8.0.3) uses the SDTLOGIN interface after user
         authentication to tell the X server to be restarted as the user instead
-        of as root for added security.  When the users session exits, the GDM
+        of as root for added security.  When the user's session exits, the GDM
         daemon will run the <filename>PostSession</filename> script as root.
       </para>
     </sect2>
@@ -568,7 +568,7 @@
         Any user listed in the <filename>Exclude</filename> option and users
         whose UID's is lower than <filename>MinimalUID</filename> will be
         filtered out regardless of the <filename>IncludeAll</filename>
-        setting.  <filename>IncludeAll</filename> is not is not recommended
+        setting.  <filename>IncludeAll</filename> is not recommended
         for systems where the passwords are loaded over a network (such as
         when NIS is used), since it can be very slow to load more than a
         small number of users over the network..
@@ -632,7 +632,7 @@
         200 kilobytes by GDM to prevent a possible denial of service attack
         on the session.  An app could perhaps on reading some wrong data print
         out warnings or errors on the stderr or stdout.  This could perhaps
-        fill up the users home directory who would then have to log out and
+        fill up the user's home directory who would then have to log out and
         log back in to clear this.  This could be especially nasty if quotas
         are set.  GDM also correctly traps the XFSZ signal and stops writing
         the file, which would lead to killed sessions if the file was
@@ -767,7 +767,7 @@
       <para>
         If there is no entry for GDM in your system's PAM configuration file,
         then features like automatic login may not work.  Not having an entry
-        will causes GDM to use default behavior, conservative settings are
+        will cause GDM to use default behavior, conservative settings are
         recommended and probably shipped with your distribution.
       </para>
 
@@ -1399,7 +1399,7 @@ PostSession/
 
     <para> 
       <filename>Xsession</filename> is a script which sets up a user session
-      and then executes the users choice of session.  Note that the session
+      and then executes the user's choice of session.  Note that the session
       script is typically started via the <filename>desktop</filename>
       file associated with the session the user has picked.  Some 
       sessions may start the user's session via a different mechanism than
@@ -1480,7 +1480,7 @@ PostSession/
         GDM blocks until it terminates. Use the <filename>Init/*</filename>
         script for applications that are supposed to run alongside with the GDM
         login window. xconsole for instance.  Commands to set the background
-        etc. goes in this file too.
+        etc. go in this file too.
       </para>
 
       <para> 
@@ -1533,12 +1533,12 @@ PostSession/
       </para>
 
       <para>
-        This script should really load the users profile and generally do all
+        This script should really load the user's profile and generally do all
         the voodoo that is needed to launch a session.  Since many systems
         reset the language selections done by GDM, GDM will also set the
         <filename>$GDM_LANG</filename> variable to the selected language.  You
         can use this to reset the language environmental variables after you
-        run the users profile.  If the user elected to use the system language,
+        run the user's profile.  If the user elected to use the system language,
         then <filename>$GDM_LANG</filename> is not set. 
       </para>
 
@@ -1708,8 +1708,8 @@ PostSession/
                 If true, then when the user logs in and already has an
                 existing session, then they are connected to that session
                 rather than starting a new session.  This only works for
-                session's running on VT's (Virtual Terminals) started with
-                gdmflexiserver, and not with XDMCP.  Note that VT's are not
+                sessions running on VTs (Virtual Terminals) started with
+                gdmflexiserver, and not with XDMCP.  Note that VTs are not
                 supported on all operating systems.
               </para>
             </listitem>
@@ -2374,7 +2374,7 @@ PostSession/
               </para>
 
               <para>
-                Normally if this is the users home directory GDM will still
+                Normally if this is the user's home directory GDM will still
                 refuse to put cookies there if it thinks it is NFS (by testing
                 root-squashing).  This can be changed by setting
                 <filename>NeverPlaceCookiesOnNFS</filename> in the
@@ -2575,7 +2575,7 @@ PostSession/
               <synopsis>NeverPlaceCookiesOnNFS=true</synopsis>
               <para>
                 Normally if this is true (which is by default), GDM will not
-                place cookies into the users home directory if this directory
+                place cookies into the user's home directory if this directory
                 is on NFS.  Well, GDM will consider any filesystem with
                 root-squashing an NFS filesystem.  Sometimes however the remote
                 file system can have root squashing and be safe (perhaps by
@@ -3192,7 +3192,7 @@ gdm:.my.domain
                 &quot;stock_person&quot; icon defined in the current GTK+
                 theme.  If no such image is defined, the image specified by 
                 <filename>DefaultFace</filename> will be used.  The image must
-                be in an gdk-pixbuf supported format and the file must be
+                be in a gdk-pixbuf supported format and the file must be
                 readable to the GDM user.
               </para>
             </listitem>
@@ -3398,7 +3398,7 @@ gdm:.my.domain
               <synopsis>Logo=&lt;share&gt;/pixmaps/gnome-logo-large.png</synopsis>
               <para>
                 Image file to display in the logo box. The file must be
-                in an gdk-pixbuf supported format and it must be readable by
+                in a gdk-pixbuf supported format and it must be readable by
                 the GDM user. If no file is specified the logo feature
                 is disabled.
                 This only affects the GTK+ Greeter.
@@ -3875,7 +3875,7 @@ gdm:.my.domain
               <para>
                 File name for the default host icon. This image will be
                 displayed if no icon is specified for a given host. The
-                file must be in an gdk-pixbuf supported format and it must be
+                file must be in a gdk-pixbuf supported format and it must be
                 readable for the GDM user.
               </para>
             </listitem>
@@ -5825,9 +5825,9 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           List items by default display as lists, but the combo=&quot;true&quot; attribute
-          can be used to specify combo box style.   Some predefined lists may be included
-          in a theme by using the following id values.  Customized lists may also be defined,
-          which are explained below.
+          can be used to specify combo box style (combo style supported since GDM 2.18).
+          Some predefined lists may be included in a theme by using the following id values.
+          Customized lists may also be defined, which are explained below.
         </para>
 
         <variablelist>
@@ -5836,7 +5836,7 @@ homogeneous=&quot;bool&quot;&gt;
             <listitem>
               <para>
                 A list of available sessions, which allows the user to pick
-                the session to use.
+                the session to use.  Supported since GDM 2.18.
               </para>
             </listitem>
           </varlistentry>
@@ -5848,7 +5848,7 @@ homogeneous=&quot;bool&quot;&gt;
             <listitem>
               <para>
                 A list of available languages, which allows the user to pick
-                the language to use.
+                the language to use.  Supported since GDM 2.18.
               </para>
             </listitem>
           </varlistentry>
@@ -5969,7 +5969,7 @@ homogeneous=&quot;bool&quot;&gt;
         </para>
 
         <para>
-          Possible values for button ids are as follows:
+          Possible values for button ids are as follows.  
         </para>
 
         <variablelist>
@@ -6438,7 +6438,7 @@ homogeneous=&quot;bool&quot;&gt;
         <title>Custom Widgetry</title>
 
         <para>
-          Currently there is one item which can be customizable and this is
+          Currently there is one item which is customizable and this is
           the list item.  If you need to ask the user extra things, such as
           to pick from a list of places to log into, or set of custom login
           sessions you can setup the list item and add listitem children that
@@ -6725,7 +6725,7 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
                would only notice this problem if you try to make use of it.
                Turning this feature on causes your computer to login to a
                specified username on startup without asking for username
-               and password.  This is an unsecure way to set up your
+               and password.  This is an insecure way to set up your
                computer. 
              </para>
 
@@ -7005,7 +7005,7 @@ Hosts=appserverone,appservertwo
          language, in the <filename>~/.dmrc</filename>.  Other files, such
          as the user's <filename>~/.Xauthority</filename> file will also
          affect login.  GDM, by default, is strict about how it tries to
-         access files in the users home directory, and will ignore the file if
+         access files in the user's home directory, and will ignore the file if
          they do not conform to certain rules.  You can use the 
          <filename>RelaxPermissions</filename> configuration option to
          make GDM less strict about how it accesses files in the user's
