@@ -6263,6 +6263,19 @@ homogeneous=&quot;bool&quot;&gt;
           directory as the theme <filename>.xml</filename> file in
           <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>.
         </para>
+
+        <para>
+          Note that alternative image file can be specified using the altfile[n]
+	  property. GDM will use the last valid image filename specified. 
+	  For example:
+<screen>
+&lt;normal file=&quot;picture.png&quot; altfile1=&quot;distribution-blah-image.png&quot; altfile2=&quot;distribution-foo-image.png&quot;/&gt;
+</screen>
+	 If <filename>distribution-foo-image.png</filename> is a valid image 
+	 filename it will be used. Otherwise distribution-blah-image.png will 
+	 be used if valid.
+        </para>
+
       </sect3>
 
       <sect3 id="listcoloronodes">

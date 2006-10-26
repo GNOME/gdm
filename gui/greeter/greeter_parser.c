@@ -843,7 +843,7 @@ parse_state_file_pixmap (xmlNodePtr node,
   char *p;
 
   info->have_state |= (1<<state);
-  
+
   prop = xmlGetProp (node,(const xmlChar *) "file");
   if (prop)
     {
@@ -851,12 +851,43 @@ parse_state_file_pixmap (xmlNodePtr node,
 	info->data.pixmap.files[state] = g_strdup ((char *) prop);
       else
 	info->data.pixmap.files[state] = g_build_filename (file_search_path,
-					       (char *) prop,
-					       NULL);
-	
+							   (char *) prop,
+							   NULL);
+
       xmlFree (prop);
     }
-  
+
+    {
+      int i = 1;
+      char *altfile_prop_name = g_strdup_printf ("altfile%d", i);
+
+      prop = xmlGetProp (node,(const xmlChar *) altfile_prop_name);
+      while (prop) 
+	{
+	  char *filename = NULL;
+	  if (g_path_is_absolute ((char *) prop))
+	    filename = g_strdup ((char *) prop);
+	  else
+	    filename = g_build_filename (file_search_path,
+					 (char *) prop,
+					 NULL);
+
+	  if (g_file_test (filename, G_FILE_TEST_EXISTS))
+	    {
+	      if (info->data.pixmap.files[state])
+		g_free (info->data.pixmap.files[state]);
+	      info->data.pixmap.files[state] = filename;
+	    }
+	  xmlFree (prop);
+	  g_free (altfile_prop_name);
+
+	  i++;
+	  altfile_prop_name = g_strdup_printf ("altfile%d", i);
+	  prop = xmlGetProp (node,(const xmlChar *) altfile_prop_name);
+	}
+      g_free (altfile_prop_name);
+    }
+
   prop = xmlGetProp (node,(const xmlChar *) "tint");
   if (prop)
     {
@@ -870,7 +901,7 @@ parse_state_file_pixmap (xmlNodePtr node,
   if (prop)
     {
       double alpha = g_ascii_strtod ((char *) prop, &p);
-      
+
       if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
@@ -883,13 +914,13 @@ parse_state_file_pixmap (xmlNodePtr node,
       xmlFree (prop);
 
       if (alpha >= 1.0)
-        info->data.pixmap.alphas[state] = 0xff;
+	info->data.pixmap.alphas[state] = 0xff;
       else if (alpha < 0)
-        info->data.pixmap.alphas[state] = 0;
+	info->data.pixmap.alphas[state] = 0;
       else
-        info->data.pixmap.alphas[state] = floor (alpha * 0xff);
+	info->data.pixmap.alphas[state] = floor (alpha * 0xff);
     }
-  
+
   return TRUE;
 }
 
