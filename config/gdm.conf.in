@@ -597,3 +597,70 @@ flexible=false
 # Run the chooser instead of the greeter.  When the user chooses a machine they
 # will get this same server but run with "-terminate -query hostname".
 chooser=true
+
+[customcommand]
+# This section allows you specify up to 10 custom commands. Each of the
+# commands can be defined by the six parameters listed below. In each of the
+# descriptions of the parameters N can take on any values between 0 and 9,
+# i.e. CustomCommand0=,CustomCommand1=,...,CustomCommand9=.  The  numbers
+# can have gaps as long as they fit within predefined set of 10, and their
+# placement order within this section and with respect to each other is
+# not important.
+#
+# CustomCommandN, CustomCommandTextN, CustomCommandLabelN,
+# CustomCommandLRLabelN, CustomCommandTooltipN, and CustomCommandNoRestartN
+# must all be defined for a given integer N, where N can be a number from
+# 0-9.
+
+# Custom command to run.  Multiple commands may be specified separated by 
+# semicolons.  GDM will use the first valid command.  Examples:
+# /sbin/bootwindoze;/usr/bin/bootwindoze, or
+# /sbin/runupdate;/usr/local/sbin/runupdate
+#
+#CustomCommandN=
+
+# Custom command dialog message that will appear on all warning dialogs.
+# This will vary depending on what you want to do. Examples:
+# Are you sure you want to restart system into Windoze?, or
+# Are you sure you want do do this?
+#CustomCommandTextN=
+
+# Custom command label that will appear as stock label on buttons/menu items.
+# Examples:
+# _Windoze, or
+# _Update Me
+#CustomCommandLabelN=
+
+# Custom command label that will appear as stock label on radio buttons/lista
+# items. Examples:
+# Restart into _Windoze, or
+# Perform system _Update
+#CustomCommandLRLabelN=
+
+# Custom command tooltip. Examples
+# Restarts the computer into Windoze
+# Updates the computer software to the most recent version(s)
+#CustomCommandTooltipN=
+
+# Custom command gdm/system restart option. Setting it to true will not
+# restart gdm after command execution.  The default commands (reboot, shut
+# down) all reboot the system by default which is why the default setting
+# is true.
+#CustomCommandNoRestartN=
+#
+# Example layout for more than one command:
+#CustomCommand0=
+#CustomCommandText0=
+#CustomCommandLabel0=
+#CustomCommandLRLabel0=
+#CustomCommandTooltip0=
+#CustomCommandNoRestart0=
+#
+#CustomCommand1=
+#CustomCommandText1=
+#CustomCommandLabel1=
+#CustomCommandLRLabel1=
+#CustomCommandTooltip1=
+#CustomCommandNoRestart1=
+#
+# and so on

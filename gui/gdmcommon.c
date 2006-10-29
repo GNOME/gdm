@@ -622,45 +622,33 @@ filter_watch (GdkXEvent *xevent, GdkEvent *event, gpointer data){
      return GDK_FILTER_CONTINUE;
 }
 
-
-static void
-error_dialog (void)
-{
-	GtkWidget *dialog = gtk_message_dialog_new (NULL,
-						    GTK_DIALOG_MODAL,
-						    GTK_MESSAGE_ERROR,
-						    GTK_BUTTONS_OK,
-						    _("Assistive technology support has been requested for this session, but the accessibility registry was not found.  Please ensure that the AT-SPI package is installed. Your session has been started without assistive technology support."));
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-}
-
-
-
 static gboolean
 filter_timeout (gpointer data)
 {
-	error_dialog ();
+	gdm_common_info (_("The accessibility registry was not found."));
 
 	gtk_main_quit ();
 
 	return FALSE;
 }
 
-
 void
 gdm_common_atspi_launch (void)
 {
 	GdkWindow *w = gdk_get_default_root_window (); 
+	gboolean a11y = gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
 	guint tid;
+
+	if (! a11y)
+		return;
  
 	if ( ! AT_SPI_IOR)
 		AT_SPI_IOR = XInternAtom (GDK_DISPLAY (), "AT_SPI_IOR", False);
 
 	gdk_window_set_events (w,  GDK_PROPERTY_CHANGE_MASK); 
 	
-	if ( ! pre_atspi_launch ()){
-		error_dialog ();
+	if ( ! pre_atspi_launch ()) {
+		gdm_common_info (_("The accessibility registry could not be started."));
 		
 		return;
 	}

@@ -578,7 +578,7 @@ xservers_get_displays (GtkListStore *store)
 				    XSERVER_COLUMN_SERVER, server,
 				    XSERVER_COLUMN_OPTIONS, options,
 				    -1);
-		g_free(server);
+		g_free (server);
 	}
 	for (li = displays; li != NULL; li = li->next) {
 		gchar *disp = li->data;
@@ -3542,7 +3542,7 @@ selected_toggled (GtkCellRendererToggle *cell,
 	} else { /* Checkboxes */
 
 		/* Clear list of all selected themes */
-		g_free(selected_themes);
+		g_free (selected_themes);
 		selected_themes = NULL;
 
 		/* Loop through all checkboxes */
@@ -3576,7 +3576,7 @@ selected_toggled (GtkCellRendererToggle *cell,
 				selected_themes = strings_list_add (selected_themes,
 					theme_name, GDM_DELIMITER_THEMES);
 	
-			g_free(theme_name);
+			g_free (theme_name);
 			gtk_tree_path_next (path);
 		}
 
@@ -4381,7 +4381,7 @@ xserver_toggle_timeout (GtkWidget *toggle)
 			break;
 		}
 	}
-	g_free(section);
+	g_free (section);
 
 	return FALSE;
 }

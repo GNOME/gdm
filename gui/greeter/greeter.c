@@ -70,6 +70,8 @@ gboolean GDM_IS_LOCAL          = FALSE;
 static gboolean ignore_buttons = FALSE;
 gboolean GdmHaltFound          = FALSE;
 gboolean GdmRebootFound        = FALSE;
+gboolean *GdmCustomCmdsFound   = NULL;
+gboolean GdmAnyCustomCmdsFound = FALSE;
 gboolean GdmSuspendFound       = FALSE;
 gboolean GdmConfiguratorFound  = FALSE;
 
@@ -775,6 +777,28 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME);
 	gdm_config_get_bool   (GDM_KEY_ADD_GTK_MODULES);
 
+	/* Keys for custom commands */
+	register int i = 0;
+	gchar * key_string = NULL;	
+	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+		
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+		
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+        
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+	}     
+
+	g_free (key_string);
+
 	/* Keys not to include in reread_config */
 	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
 	gdm_config_get_string (GDM_KEY_PID_FILE);
@@ -843,6 +867,43 @@ greeter_reread_config (int sig, gpointer data)
 		gdmcomm_comm_bulk_stop ();
 
 		_exit (DISPLAY_RESTARTGREETER);
+	}
+
+	register int i = 0;
+	gboolean custom_changed = FALSE;
+	gchar *key_string = NULL;
+	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+  	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+	    if (gdm_config_reload_string (key_string))
+		custom_changed = TRUE;
+	    
+	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+	    if (gdm_config_reload_string (key_string))
+		custom_changed = TRUE;
+	    
+	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+	    if (gdm_config_reload_string (key_string))
+		custom_changed = TRUE;
+	    
+	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+	    if (gdm_config_reload_string (key_string))
+		custom_changed = TRUE;
+	    
+	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+	    if (gdm_config_reload_string (key_string))
+		custom_changed = TRUE;
+	}     
+	
+	g_free (key_string);			
+
+	if(custom_changed){
+	    /* Set busy cursor */
+	    gdm_common_setup_cursor (GDK_WATCH);
+	    
+	    gdm_wm_save_wm_order ();
+	    gdmcomm_comm_bulk_stop ();
+	    
+	    _exit (DISPLAY_RESTARTGREETER);
 	}
 
 	gdm_config_reload_string (GDM_KEY_SOUND_PROGRAM);
@@ -1051,9 +1112,9 @@ main (int argc, char *argv[])
    */
   gdk_init (&argc, &argv);
   if (! DOING_GDM_DEVELOPMENT) {
-     gdm_common_atspi_launch ();
+       gdm_common_atspi_launch ();
   }
-
+  
   gtk_init (&argc, &argv);
 
   gdm_common_setup_cursor (GDK_WATCH);
@@ -1158,12 +1219,23 @@ main (int argc, char *argv[])
   * is displayed it doesn't show as 0.  Also determine if the Halt,
   * Reboot, Suspend and Configurator commands work.
   */
-  gdm_timed_delay      = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
-  GdmHaltFound         = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT));
-  GdmRebootFound       = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT));
-  GdmSuspendFound      = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND));
-  GdmConfiguratorFound = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR));
+  gdm_timed_delay         = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+  GdmHaltFound            = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT));
+  GdmRebootFound          = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT));
+  GdmSuspendFound         = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND));
+  GdmConfiguratorFound    = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR));
 
+  GdmCustomCmdsFound = g_new0 (gboolean, GDM_CUSTOM_COMMAND_MAX);
+  register int i = 0;
+  gchar * key_string = NULL;	
+  for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+      /*  For each possible custom command */      
+      key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+      GdmCustomCmdsFound[i] = gdm_working_command_exists (gdm_config_get_string (key_string));
+      if (GdmCustomCmdsFound[i])
+	  GdmAnyCustomCmdsFound = TRUE;
+  }
+  g_free (key_string);
 
   if (g_getenv ("GDM_THEME") != NULL)
      gdm_graphical_theme = g_strdup (g_getenv ("GDM_THEME"));

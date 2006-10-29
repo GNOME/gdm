@@ -127,6 +127,7 @@ enum {
 #define GDM_INTERRUPT_SELECT_USER 'U'
 #define GDM_INTERRUPT_LOGIN_SOUND 'L'
 #define GDM_INTERRUPT_THEME       'H'
+#define GDM_INTERRUPT_CUSTOM_CMD  'M'
 #define GDM_INTERRUPT_CANCEL      'X'
 
 /* List delimiter for config file lists */
@@ -234,6 +235,12 @@ enum {
 #define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
 #define GDM_KEY_X_KEEPS_CRASHING "daemon/XKeepsCrashing=" GDMCONFDIR "/XKeepsCrashing"
 #define GDM_KEY_REBOOT  "daemon/RebootCommand=" REBOOT_COMMAND
+#define GDM_KEY_CUSTOM_CMD_TEMPLATE "customcommand/CustomCommand"
+#define GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE "customcommand/CustomCommandLabel"
+#define GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE "customcommand/CustomCommandLRLabel"
+#define GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE "customcommand/CustomCommandText"
+#define GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE "customcommand/CustomCommandTooltip"
+#define GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE "customcommand/CustomCommandNoRestart"
 #define GDM_KEY_ROOT_PATH "daemon/RootPath=/sbin:/usr/sbin:" GDM_USER_PATH
 #define GDM_KEY_SERV_AUTHDIR "daemon/ServAuthDir=" AUTHDIR
 #define GDM_KEY_SESSION_DESKTOP_DIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" DMCONFDIR "/Sessions/:" DATADIR "/gdm/BuiltInSessions/:" DATADIR "/xsessions/"
@@ -434,11 +441,30 @@ enum {
 typedef struct _GdmConnection GdmConnection;
 #endif  /* TYPEDEF_GDM_CONNECTION */
 
+#ifndef TYPEDEF_GDM_CUSTOM_CMD
+#define TYPEDEF_GDM_CUSTOM_CMD
+typedef struct _GdmCustomCmd GdmCustomCmd;
+#endif /* TYPEDEF_GDM_CUSTOM_CMD */
+struct _GdmCustomCmd {
+    gchar *command; /* command(s) to execute */
+    gchar *command_label; /* button/menu item label */
+    gchar *command_lr_label; /* radio button/list item label */
+    gchar *command_text; /* warning dialog text */
+    gchar *command_tooltip; /* tooltip string */
+    gboolean command_no_restart; /* no restart flag */
+};
+
+#define GDM_CUSTOM_COMMAND_MAX 10 /* maximum number of supported custom commands */
+
+/* Values between GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST and 
+   GDM_LOGOUT_ACTION_CUSTOM_CMD_LAST are reserved and should not be used */
 typedef enum {
 	GDM_LOGOUT_ACTION_NONE = 0,
 	GDM_LOGOUT_ACTION_HALT,
 	GDM_LOGOUT_ACTION_REBOOT,
 	GDM_LOGOUT_ACTION_SUSPEND,
+	GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST,
+	GDM_LOGOUT_ACTION_CUSTOM_CMD_LAST = GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + GDM_CUSTOM_COMMAND_MAX - 1,
 	GDM_LOGOUT_ACTION_LAST
 } GdmLogoutAction;
 
@@ -708,6 +734,9 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_SUSPEND_MACHINE "SUSPEND_MACHINE"  /* no arguments */
 #define GDM_SOP_CHOSEN_THEME "CHOSEN_THEME"  /* <slave pid> <theme name> */
 
+/*Execute custom cmd*/
+#define GDM_SOP_CUSTOM_CMD "CUSTOM_CMD"  /* <slave pid> <cmd id> */
+
 /* Start a new standard X flexible server */
 #define GDM_SOP_FLEXI_XSERVER "FLEXI_XSERVER" /* no arguments */
 
@@ -731,6 +760,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE "SoundOnLoginFailureFile" /* <sound file> */
 #define GDM_NOTIFY_ADD_GTK_MODULES "AddGtkModules" /* <true/false as int> */
 #define GDM_NOTIFY_GTK_MODULES_LIST "GtkModulesList" /* <modules list> */
+#define GDM_NOTIFY_CUSTOM_CMD_TEMPLATE "CustomCommand" /* <custom command path> */
 
 /* commands, seel GDM_SLAVE_NOTIFY_COMMAND */
 #define GDM_NOTIFY_DIRTY_SERVERS "DIRTY_SERVERS"
@@ -1136,8 +1166,8 @@ void		gdm_final_cleanup	(void);
  * Supported since: 2.5.90.0
  * Answers:
  *   OK <action>;<action>;...
- *      Where action is one of HALT, REBOOT or SUSPEND.  An empty list
- *      can also be returned if no action is possible.  A '!' is appended
+ *      Where action is one of HALT, REBOOT, SUSPEND or CUSTOM_CMDX (where X in [0,GDM_CUSTOM_COMMAND_MAX)).
+ *      An empty list can also be returned if no action is possible.  A '!' is appended
  *      to an action if it was already set with SET_LOGOUT_ACTION or
  *      SET_SAFE_LOGOUT_ACTION.  Note that SET_LOGOUT_ACTION has precedence
  *      over SET_SAFE_LOGOUT_ACTION.
@@ -1157,6 +1187,7 @@ void		gdm_final_cleanup	(void);
  *   HALT           Set exit action to 'halt'
  *   REBOOT         Set exit action to 'reboot'
  *   SUSPEND        Set exit action to 'suspend'
+ *   CUSTOM_CMDX    Set exit action to 'custom command X' where where X in [0,GDM_CUSTOM_COMMAND_MAX)
  * Answers:
  *   OK
  *   ERROR <err number> <english error description>
@@ -1183,6 +1214,7 @@ void		gdm_final_cleanup	(void);
  *   HALT           Set exit action to 'halt'
  *   REBOOT         Set exit action to 'reboot'
  *   SUSPEND        Set exit action to 'suspend'
+ *   CUSTOM_CMDX    Set exit action to 'custom command X' where where X in [0,GDM_CUSTOM_COMMAND_MAX)
  *
  * Answers:
  *   OK
@@ -1193,10 +1225,11 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
-#define GDM_SUP_LOGOUT_ACTION_NONE	"NONE"
-#define GDM_SUP_LOGOUT_ACTION_HALT	"HALT"
-#define GDM_SUP_LOGOUT_ACTION_REBOOT	"REBOOT"
-#define GDM_SUP_LOGOUT_ACTION_SUSPEND	"SUSPEND"
+#define GDM_SUP_LOGOUT_ACTION_NONE	          "NONE"
+#define GDM_SUP_LOGOUT_ACTION_HALT	          "HALT"
+#define GDM_SUP_LOGOUT_ACTION_REBOOT	          "REBOOT"
+#define GDM_SUP_LOGOUT_ACTION_SUSPEND	          "SUSPEND"
+#define GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "CUSTOM_CMD"
 /*
  */
 #define GDM_SUP_QUERY_VT "QUERY_VT" /* None */

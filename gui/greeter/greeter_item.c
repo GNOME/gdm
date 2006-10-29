@@ -35,6 +35,8 @@
 
 extern gboolean GdmHaltFound;
 extern gboolean GdmRebootFound;
+extern gboolean GdmCustomCmdFound;
+extern gboolean *GdmCustomCmdsFound;
 extern gboolean GdmSuspendFound;
 extern gboolean GdmConfiguratorFound;
 
@@ -156,6 +158,8 @@ greeter_item_is_visible (GreeterItemInfo *info)
   static gboolean GDM_IS_LOCAL = FALSE;
   static gboolean GDM_FLEXI_SERVER = FALSE;
   gboolean sysmenu = FALSE;
+  gchar *key_string = NULL;	
+  int i = 0;
 
   if ( ! checked)
     {
@@ -208,6 +212,17 @@ greeter_item_is_visible (GreeterItemInfo *info)
       (info->show_type != NULL &&
        strcmp (info->show_type, "suspend") == 0))
 	  return FALSE;
+
+  for (i=0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+      key_string = g_strdup_printf (_("custom_cmd%d"), i);
+      if (( ! sysmenu || ! GdmCustomCmdsFound[i]) &&
+      (info->show_type != NULL &&
+       strcmp (info->show_type, key_string) == 0)) {
+	      g_free (key_string);
+	      return FALSE;
+	  }
+  }
+  g_free (key_string);
 
   if (( ! gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) ||
           ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) ||

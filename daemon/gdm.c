@@ -94,6 +94,8 @@ static void handle_flexi_server (GdmConnection *conn,
 				 uid_t xnest_uid,
 				 const gchar *xnest_auth_file,
 				 const gchar *xnest_cookie);
+static void custom_cmd_restart (long cmd_id);
+static void custom_cmd_no_restart (long cmd_id);
 
 /* Global vars */
 gint xdmcp_sessions = 0;	/* Number of remote sessions */
@@ -418,8 +420,8 @@ gdm_rmdir(char *thedir)
           if (strcmp(dp->d_name, ".") == 0 ||
               strcmp(dp->d_name, "..") == 0)
                 continue ;
-          snprintf(thefile, FILENAME_MAX, "%s/%s", thedir, dp->d_name);
-          if (stat(thefile, &buf) == -1)
+          snprintf (thefile, FILENAME_MAX, "%s/%s", thedir, dp->d_name);
+          if (stat (thefile, &buf) == -1)
             continue ; 
           if (S_ISDIR(buf.st_mode))
             gdm_rmdir(thefile);
@@ -708,6 +710,93 @@ restart_machine (void)
 		   "gdm_child_action", strerror (errno));
 }
 
+static void
+custom_cmd (long cmd_id)
+{	
+        if (cmd_id < 0 || cmd_id >= GDM_CUSTOM_COMMAND_MAX) {
+	    /* We are just feeling very paranoid */
+	    gdm_error (_("custom_cmd: Custom command index %ld outside permitted range [0,%d)"), 
+		       cmd_id, GDM_CUSTOM_COMMAND_MAX);
+	    return;
+	}
+
+        gchar * key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, cmd_id);
+        if (gdm_get_value_bool (key_string))
+	        custom_cmd_no_restart (cmd_id);
+	else
+	        custom_cmd_restart (cmd_id);
+    
+	g_free(key_string);
+}
+
+static void
+custom_cmd_restart (long cmd_id)
+{	
+
+        gdm_info (_("Executing custom command %ld with restart option..."), cmd_id);
+
+	gdm_final_cleanup ();
+	VE_IGNORE_EINTR (g_chdir ("/"));
+	
+#ifdef __linux__
+	change_to_first_and_clear (TRUE);
+#endif /* __linux */
+	
+	gchar * key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
+	char **argv;
+	argv = ve_split (gdm_get_value_string (key_string));
+	g_free(key_string);
+	if (argv != NULL && argv[0] != NULL)
+	    VE_IGNORE_EINTR (execv (argv[0], argv));
+	
+	g_strfreev (argv);	      
+	
+	gdm_error (_("%s: Execution of custom command failed: %s"), 
+		   "gdm_child_action", strerror (errno));
+}
+
+static void
+custom_cmd_no_restart (long cmd_id)
+{	
+
+        gdm_info (_("Executing custom command %ld with no restart option ..."), cmd_id);
+
+		pid_t pid = fork ();
+	
+	if (pid < 0) {
+	        /*failed fork*/
+	        gdm_error (_("custom_cmd: forking process for custom command %ld failed"), cmd_id);
+		return;
+	}
+	else if (pid == 0) {
+	      /* child */
+	      char **argv;
+	      gchar * key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
+	      argv = ve_split (gdm_get_value_string (key_string));
+	      g_free(key_string);
+	      if (argv != NULL && argv[0] != NULL)
+		      VE_IGNORE_EINTR (execv (argv[0], argv));
+	    
+	      g_strfreev (argv);	      
+	      
+	      gdm_error (_("%s: Execution of custom command failed: %s"), 
+			 "gdm_child_action", strerror (errno));
+	    	    
+	      _exit (0);	    
+	}
+	else {
+	      /* parent */
+	      gint exitstatus = 0, status;
+	      pid_t p_stat = waitpid (1, &exitstatus, WNOHANG);
+	      if(p_stat > 0){
+		  if G_LIKELY (WIFEXITED (exitstatus)){
+		      status = WEXITSTATUS (exitstatus);
+		      gdm_debug (_("custom_cmd: child %d returned %d"), p_stat, status);
+		  }	
+		  return;
+	      }
+	}	
+}
 
 static gboolean 
 gdm_cleanup_children (void)
@@ -1080,6 +1169,11 @@ gdm_do_logout_action (GdmLogoutAction logout_action)
 		break;
 
 	default:
+	        /* This is a bit ugly but its the only place we can
+		   check for the range of values */
+	        if (logout_action >= GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST &&
+		    logout_action <= GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST)		    
+		         custom_cmd (logout_action - GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST);	    
 		break;
 	}
 }
@@ -2383,6 +2477,20 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 			send_slave_ack (d, NULL);
 		}
+	} else if (strncmp (msg, GDM_SOP_CUSTOM_CMD " ",
+		            strlen (GDM_SOP_CUSTOM_CMD " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		long cmd_id;
+
+		if (sscanf (msg, GDM_SOP_CUSTOM_CMD " %ld %ld", &slave_pid, &cmd_id) != 2)
+			return;
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+		        custom_cmd (cmd_id);
+			send_slave_ack (d, NULL);
+		}		
 	} else if (strcmp (msg, GDM_SOP_FLEXI_XSERVER) == 0) {
 		handle_flexi_server (NULL, TYPE_FLEXI, gdm_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
@@ -3255,7 +3363,7 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
 				g_string_append (msg, "!");
 			sep = ";";
-		}
+		}	
 		if (sysmenu && disp->attached &&
 		    ! ve_string_empty (gdm_get_value_string (GDM_KEY_SUSPEND))) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
@@ -3263,6 +3371,21 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 				g_string_append (msg, "!");
 			sep = ";";
 		}
+
+		register int i = 0;
+		for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		     gchar *key_string = NULL; 
+		     key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+		     if (sysmenu && disp->attached &&
+			 ! ve_string_empty (gdm_get_value_string (key_string))) {
+			     g_string_append_printf (msg, "%s%s%d", sep, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, i);
+			     if (logout_action == (GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + i))
+				       g_string_append (msg, "!");
+			     sep = ";";
+		     }
+		     g_free(key_string);		     
+		}
+
 		g_string_append (msg, "\n");
 		gdm_connection_write (conn, msg->str);
 		g_string_free (msg, TRUE);
@@ -3312,6 +3435,21 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 					GDM_LOGOUT_ACTION_SUSPEND;
 				was_ok = TRUE;
 			}
+		}
+		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, 
+				  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
+		       int cmd_index;
+		       if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
+			   gchar *key_string = NULL; 
+			   key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
+			   if (sysmenu && disp->attached &&
+			       ! ve_string_empty (gdm_get_value_string (key_string))) {
+			           disp->logout_action =
+				           GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
+				   was_ok = TRUE;
+			   }
+			   g_free(key_string);		     
+		       }
 		}
 		if (was_ok) {
 			gdm_connection_write (conn, "OK\n");
@@ -3365,6 +3503,21 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 					GDM_LOGOUT_ACTION_SUSPEND;
 				was_ok = TRUE;
 			}
+		}
+		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, 
+				  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
+		       int cmd_index;
+		       if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
+			       gchar *key_string = NULL; 
+			       key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
+			       if (sysmenu && disp->attached &&
+				   ! ve_string_empty (gdm_get_value_string (key_string))) {
+			               safe_logout_action =
+				           GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
+				   was_ok = TRUE;
+			   }
+			   g_free(key_string);		     
+		       }
 		}
 		if (was_ok) {
 			gdm_connection_write (conn, "OK\n");

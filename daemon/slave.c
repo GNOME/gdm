@@ -4955,6 +4955,17 @@ check_for_interruption (const char *msg)
 		case GDM_INTERRUPT_CANCEL:
 			do_cancel = TRUE;
 			break;
+		case GDM_INTERRUPT_CUSTOM_CMD:
+			if (d->attached &&
+			    ! ve_string_empty (&msg[2])) {
+				gchar *message = g_strdup_printf ("%s %ld %s", 
+					GDM_SOP_CUSTOM_CMD,
+					(long)getpid (), &msg[2]);
+
+				gdm_slave_send (message, TRUE);
+				g_free (message);
+			}
+			return TRUE;
 		case GDM_INTERRUPT_THEME:
 			g_free (d->theme_name);
 			d->theme_name = NULL;
@@ -5541,6 +5552,30 @@ gdm_slave_handle_notify (const char *msg)
 				}
 			}
 		}
+	} else if (strncmp (msg, GDM_NOTIFY_CUSTOM_CMD_TEMPLATE,
+			    strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE)) == 0) {
+    	        if (sscanf (msg, GDM_NOTIFY_CUSTOM_CMD_TEMPLATE "%d", &val) == 1) {
+			gchar * key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, val);
+			/* This assumes that the number of commands is < 100, i.e two digits 
+			   if that is not the case then this will fail */
+			gdm_set_value_string (key_string, ((gchar *)&msg[strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE) + 2]));
+			g_free(key_string);
+
+			if (d->attached) {
+				do_restart_greeter = TRUE;
+				if (restart_greeter_now) {
+					; /* will get restarted later */
+				} else if (d->type == TYPE_STATIC) {
+					/* FIXME: can't handle flexi servers like this
+					 * without going all cranky */
+					if ( ! d->logged_in) {
+						gdm_slave_quick_exit (DISPLAY_REMANAGE);
+					} else {
+						remanage_asap = TRUE;
+					}
+				}
+			}
+		}		
 	} else if (strncmp (msg, GDM_NOTIFY_REMOTE_GREETER " ",
 			    strlen (GDM_NOTIFY_REMOTE_GREETER) + 1) == 0) {
 		gdm_set_value_string (GDM_KEY_REMOTE_GREETER,

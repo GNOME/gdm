@@ -34,6 +34,7 @@
 #include "greeter_configuration.h"
 #include "greeter_parser.h"
 #include "greeter_events.h"
+#include "gdm.h"
 
 /* FIXME: hack */
 extern GreeterItemInfo *welcome_string_info;
@@ -354,7 +355,7 @@ parse_stock (xmlNodePtr node,
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Restart"));
-	}
+	}  
       else if (g_ascii_strcasecmp ((char *) prop, "chooser") == 0)
         {
 	  g_free (*translated_text);
@@ -411,12 +412,32 @@ parse_stock (xmlNodePtr node,
         }
       else
         {
-          g_set_error (error,
-		       GREETER_PARSER_ERROR,
-		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad stock label type");
-	  xmlFree (prop);
-	  return FALSE;
+	  gboolean is_error = TRUE;
+	  register int i = 0;
+	    for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar * key_string = NULL;
+		key_string = g_strdup_printf (_("custom_cmd%d"), i);
+		if (g_ascii_strcasecmp ((char *) prop, key_string) == 0) {
+		    g_free (*translated_text);
+		    g_free (key_string);
+		    key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		    *translated_text = g_strdup(gdm_config_get_string (key_string));
+		    g_free (key_string);
+		    is_error = FALSE;
+		    break;
+		}
+		g_free (key_string);
+	    }
+	    
+	    if (is_error)
+	      {
+		g_set_error (error,
+		     GREETER_PARSER_ERROR,
+		     GREETER_PARSER_ERROR_BAD_SPEC,
+		     "Bad stock label type");
+		xmlFree (prop);
+		return FALSE;
+	      }
 	}
 
       /* This is the very very very best "translation" */

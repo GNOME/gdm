@@ -1,3 +1,44 @@
+2006-10-25  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
+
+	Fixes enhancement request #358114.
+	* daemon/gdmconfig.c: Added variables & functions used to read/store 
+	  CustomCommands related values
+	* daemon/gdm.c (custom_cmd): New function that handles 
+	  execution of CustomCommands.
+	* daemon/gdm.c (custom_cmd_restart): New function that handles 
+	  execution of CustomCommand if NoRestart option is set to false
+	* daemon/gdm.c (custom_cmd_no_restart): New function that handles 
+	  execution of CustomCommand if NoRestart option is set to true
+	* daemon/gdm. [ch]: Updated macros and several functions to accomodate 
+	  new CustomCommands functionality
+	* daemon/slave.c: Added Custom command interrupt handler to handle 
+	  the CustomCommands execution.
+	* gui/gdmlogin.c (gdm_custom_cmd_handler): New function that handles 
+	  execution of CustomCommands
+	* gui/gdmlogin.c: Added variables and updated several functions to
+	  accomodate new CustomCommand functionality
+	* gui/greeter/greeter_configuration.h: Added variables used to 
+	  store CustomCommand related values
+	* gui/greeter/greeter.c: Added variables that use/store 
+	  CustomCommand related values
+	* gui/greeter/greeter_item.c: Added visibility check for custom_cmd
+	  related widgets
+	* gui/greeter/greeter_parser.c: Added code for parsing custom_cmd stock
+	  items
+	* gui/greeter/greeter_system.c (greeter_custom_cmd_handler): New
+ 	  function that handles execution of CustomCommand
+	* gui/greeter/greeter_system.c (query_greeter_custom_cmd_handler): New
+	  function that handles execution of CustomCommand (with warn message
+	  query beforehand)
+	* gui/greeter/greeter_system.c: Updated macros and several functions
+	  to accomodate new CustomCommand functionality
+	
+2006-10-26  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmcommon.c, gui/greeter/greeter.c:  Never die if
+	  at-spi-registryd can not be started.  Fixes bug #345434.  Patch by
+	  Ariel Rios  <ariel@gnu.org>.
+
 2006-10-26 Erwann Chenede - <erwann.chenede@sun.com>
 
 	* gui/greeter/greeter_parser.c: introduced altfile[n] property

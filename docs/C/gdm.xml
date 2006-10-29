@@ -141,7 +141,7 @@
         The Gnome Display Manager (GDM) is a display manager that
         implements all significant features required for managing
         local and remote displays.   GDM was written from scratch and
-	does not contain any XDM / X Consortium code.
+        does not contain any XDM / X Consortium code.
       </para>
 
       <para>
@@ -170,8 +170,9 @@
         (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc.
         Some configuration values depend on OS interfaces may need to be
         modified to work on a given OS.  Typical examples are HaltCommand,
-        RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram,
-        and the &quot;command&quot; value for each &quot;server-foo&quot;.
+        RebootCommand, CustomCommands, SuspendCommand, StandardXServer, Xnest,
+        SoundProgram, and the &quot;command&quot; value for each
+        &quot;server-foo&quot;.
       </para>
 
       <para>
@@ -1860,7 +1861,7 @@ PostSession/
               </para>
             </listitem>
           </varlistentry>
-          
+                             
           <varlistentry>
             <term>DefaultPath</term>
             <listitem>
@@ -2067,7 +2068,7 @@ PostSession/
                 missing, the shut down command is not available.  Note that the
                 default for this value is not empty, so to disable
                 &quot;Shut Down&quot; it must be
-		set to an empty value.
+                set to an empty value.
               </para>
             </listitem>
           </varlistentry>
@@ -3965,6 +3966,122 @@ gdm:.my.domain
         </variablelist>
       </sect3>
 
+      <sect3 id="customcmdsection">
+        <title>Custom Commands</title>
+        
+        <para>
+          You can create up to 10 different commands. Gaps between command
+          numbers are allowed and their relative positioning within the
+          section and with respect to each other is not important as long as
+          they conform to the permitted range of [0-9].
+          
+        </para>
+          
+        <variablelist>
+          <title>[customcommand]</title>
+          
+          <varlistentry>
+            <term>CustomCommand[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommand[0-9]=</synopsis>
+              <para>
+                Full path and arguments to command to be executed when user
+                selects <filename>n-th</filename> &quot;Custom Command&quot;
+                from the Actions menu.  This can be a ';' separated list of
+                commands to try.  If the value is empty or missing, then the
+                custom command is not available.  By default this value is not
+                enabled, so to enable &quot;Custom Command&quot; it must be
+                set to a nonempty value.  [0-9] represents the
+                <filename>CustomCommand</filename> suffix and can be an
+                integer between 0 and 9. 
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandLabel[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandLabel[0-9]=</synopsis>
+              <para>
+                Specifies the stock label that will be displayed on the
+                <filename>n-th</filename> &quot;Custom Command&quot;
+                buttons and menu items. If not specified the default value is
+                &quot;_Custom[0-9]&quot;. This option is only valid if
+                corresponding <filename>CustomCommand</filename> is defined. 
+                [0-9] represents <filename>CustomCommand</filename> suffix
+                and can be an integer between 0 and 9.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandLRLabel[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandLRLabel[0-9]=</synopsis>
+              <para>
+                Specifies the stock label that will be displayed on the
+                <filename>n-th</filename> &quot;Custom Command&quot;
+                list items and radio buttons.  If not specified the default
+                value is  &quot;Execute _custom command [0-9]&quot;. This 
+                option is only valid if corresponding
+                <filename>CustomCommand</filename> is defined.  [0-9]
+                represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandNoRestart[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandNoRestart[0-9]=</synopsis>
+              <para>
+                Specifies if gdm will be stopped/restarted once
+                <filename>n-th</filename> &quot;Custom Command&quot;
+                has been executed. If not specified the default value is
+                &quot;false&quot;. This option is only valid if corresponding
+                <filename>CustomCommand</filename> is defined.  [0-9]
+                represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandText[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandText[0-9]=</synopsis>
+              <para>
+                Specifies the message that will be displayed on the warning
+                dialog box once <filename>n-th</filename>
+                &quot;Custom Command&quot; button/menu item/radio button/list
+                item has been activated.  If not specified the default value is
+                &quot;Are you sure?&quot;. This option is only valid if
+                corresponding <filename>CustomCommand</filename> is defined.
+                [0-9] represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandTooltip[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandTooltip[0-9]=</synopsis>
+              <para>
+                Specifies the message that will be displayed on tooltips for
+                <filename>n-th</filename> &quot;Custom Command&quot;
+                entries. If not specified the default value is  &quot;Execute
+                custom command [0-9]&quot;. This option is only valid if
+                corresponding <filename>CustomCommand</filename> is defined.
+                [0-9] represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
+              </para>
+            </listitem>
+          </varlistentry>         
+        </variablelist>
+      </sect3>
+          
       <sect3 id="serverdefs">
         <title>X Server Definitions</title>
 
@@ -4665,8 +4782,8 @@ QUERY_LOGOUT_ACTION: Query which logout actions are possible
 Supported since: 2.5.90.0
 Answers:
   OK &lt;action&gt;;&lt;action&gt;;...
-     Where action is one of HALT, REBOOT or SUSPEND.  An
-     empty list can also be returned if no action is possible.
+     Where action is one of HALT, REBOOT, SUSPEND or CUSTOM_CMD[0-9].
+     An empty list can also be returned if no action is possible.
      A '!' is appended to an action if it was already set with
      SET_LOGOUT_ACTION or SET_SAFE_LOGOUT_ACTION.  Note that
      SET_LOGOUT_ACTION has precedence over
@@ -4765,10 +4882,11 @@ SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after
                    connections that passed AUTH_LOCAL.
 Supported since: 2.5.90.0
 Arguments: &lt;action&gt;
-  NONE           Set exit action to 'none'
-  HALT           Set exit action to 'halt'
-  REBOOT         Set exit action to 'reboot'
-  SUSPEND        Set exit action to 'suspend'
+  NONE               Set exit action to 'none'
+  HALT               Set exit action to 'halt'
+  REBOOT             Set exit action to 'reboot'
+  SUSPEND            Set exit action to 'suspend'
+  CUSTOM_CMD[0-9]    Set exit action to 'custom command [0-9]'
 Answers:
   OK
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -4795,10 +4913,11 @@ SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/restart/suspend
                          connections that passed AUTH_LOCAL.
 Supported since: 2.5.90.0
 Arguments: &lt;action&gt;
-  NONE           Set exit action to 'none'
-  HALT           Set exit action to 'halt'
-  REBOOT         Set exit action to 'reboot'
-  SUSPEND        Set exit action to 'suspend'
+  NONE               Set exit action to 'none'
+  HALT               Set exit action to 'halt'
+  REBOOT             Set exit action to 'reboot'
+  SUSPEND            Set exit action to 'suspend'
+  CUSTOM_CMD[0-9]    Set exit action to 'custom command [0-9]'
 Answers:
   OK
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -5917,7 +6036,7 @@ homogeneous=&quot;bool&quot;&gt;
                 An image that will be displayed only when a pam-error message
                 is being displayed.  This is useful for displaying an
                 &quot;Attention&quot; icon, for example.  This feature is
-		supported in GDM 2.14.6 and later.
+                supported in GDM 2.14.6 and later.
               </para>
             </listitem>
           </varlistentry>
@@ -5991,6 +6110,15 @@ homogeneous=&quot;bool&quot;&gt;
             </listitem>
           </varlistentry>
 
+          <varlistentry>
+            <term>custom_cmd_button[0-9]</term>
+            <listitem>
+              <para>
+                Runs the <filename>n-th</filename> custom command.
+              </para>
+            </listitem>
+          </varlistentry>
+          
           <varlistentry>
             <term>disconnect_button</term>
             <listitem>
@@ -6177,6 +6305,10 @@ homogeneous=&quot;bool&quot;&gt;
         <para>
           <filename>config</filename>, if ConfigAvailable is set to
           &quot;true&quot; in the GDM configuration.
+        </para>
+        <para>
+          <filename>custom_cmd[0-9]</filename>, if <filename>n-th</filename>
+          CustomCommand is specified in the GDM configuration.
         </para>
         <para>
           <filename>halt</filename>, if HaltDaemon is specified in
@@ -6396,6 +6528,9 @@ homogeneous=&quot;bool&quot;&gt;
         </para>
         <para>
           <filename>config</filename>, _(&quot;_Configure&quot;
+        </para>
+        <para>
+          <filename>custom_cmd[0-9]</filename>, _(&quot;_Custom[0-9]&quot;
         </para>
         <para>
           <filename>disconnect</filename>, _(&quot;D_isconnect&quot;
@@ -6929,6 +7064,102 @@ Hosts=appserverone,appservertwo
         and not all of them have to be on all the time.  You could also have
         one of the X terminals handle indirect XDMCP queries and serve up the
         chooser to the other X terminals.
+      </para>
+    </sect2>
+    
+    <sect2 id="customcommand">
+      <title>Defining Custom Commands</title>
+      
+      <para>
+        Suppose you want to add a custom command to the GDM menu that will give
+        you the oportunity to boot into other operating system such as Windoze.
+        Jsut add the following options into the
+        <filename>[customcommand]</filename> section of the GDM configuration
+        file.
+        
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
+          CustomCommandLabel0=_Windoze
+          CustomCommandLRLabel0=Reboot into _Windoze
+          CustomCommandText0=Are you sure you want to restart the computer into Windoze?
+          CustomCommandTooltip0=Restarts the computer into Windoze
+        </screen>
+
+        CustomCommand0 specifies two commands separated by a semicolon:
+        <filename>/sbin/rebootwindoze</filename> and 
+        <filename>/usr/local/sbin/rebootwindoze</filename>.  GDM will use
+        the first valid command in the list.  This allows different 
+        commands for different operating systems to be included.
+      </para>
+      <para>
+        Note, that besides being able to customise this option to reboot into
+        different operating systems you can also use it to define your own
+        custom behaviours that you wish to run from the GDM menu.  Suppose you
+        want to give users the oportunity to run system update scripts from the
+        login screen. Add the following options into the
+        <filename>[customcommand]</filename> section of your GDM configuration
+        file.
+        
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/updatesystem;/usr/local/sbin/updatesystem
+          CustomCommandLabel0=_Update Me
+          CustomCommandLRLabel0=Update the system
+          CustomCommandText0=Are you sure you want to update the system software?
+          CustomCommandTooltip0=Updates the system
+          CustomCommandNoRestart0=true
+        </screen>
+      </para>
+      
+      <para>
+        Both custom commands could be defined as follows.
+
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
+          CustomCommandLabel0=_Windoze
+          CustomCommandLRLabel0=Reboot into _Windoze
+          CustomCommandText0=Are you sure you want to restart the computer into Windoze?
+          CustomCommandTooltip0=Restarts the computer into Windoze
+          
+          CustomCommand1=/sbin/updatesystem;/usr/local/sbin/updatesystem
+          CustomCommandLabel1=_Update Me
+          CustomCommandLRLabel1=Update the system
+          CustomCommandText1=Are you sure you want to update the system software?
+          CustomCommandTooltip1=Updates the system
+          CustomCommandNoRestart1=true
+        </screen>
+        </para>
+      
+      <para>
+        There can be up to 10 custom commands numbered 0-9.
+
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
+          CustomCommandLabel0=_Windoze
+          CustomCommandLRLabel0=Reboot into _Windoze
+          CustomCommandText0=Are you sure you want to restart the computer into Windoze?
+          CustomCommandTooltip0=Restarts the computer into Windoze
+          
+          CustomCommand1=/sbin/updatesystem;/usr/local/sbin/updatesystem
+          CustomCommandLabel1=_Update Me
+          CustomCommandLRLabel1=Update the system
+          CustomCommandText1=Are you sure you want to update the system software?
+          CustomCommandTooltip1=Updates the system
+          CustomCommandNoRestart1=true
+          
+          CustomCommand3=/sbin/do_something
+          .
+          .
+          .
+          
+          CustomCommand4=/sbin/do_something_else
+          .
+          .
+          .
+        </screen>
       </para>
     </sect2>
   </sect1>

@@ -669,6 +669,21 @@ gdm_login_restart_handler (void)
 	}
 }
 
+static void
+gdm_custom_cmd_handler (GtkWidget *widget, gint *cmd_id)
+{	
+	if (cmd_id) {
+	    gchar * key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
+	    if (gdm_wm_warn_dialog (
+		gdm_config_get_string (key_string) , "", GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
+		    
+		    printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, *cmd_id);
+		    fflush (stdout);
+	    }
+
+	    g_free (key_string);		
+	}
+}
 
 static void
 gdm_login_halt_handler (void)
@@ -2379,6 +2394,25 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 	
+	register int i = 0;
+	gchar * key_string = NULL;
+	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		if (gdm_working_command_exists (gdm_config_get_string (key_string))) {
+			gint * cmd_index = g_new0(gint, 1);
+			*cmd_index = i;
+			key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+			item = gtk_menu_item_new_with_mnemonic (gdm_config_get_string (key_string));
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+			g_signal_connect (G_OBJECT (item), "activate",
+					  G_CALLBACK (gdm_custom_cmd_handler), 
+					  cmd_index);
+			gtk_widget_show (GTK_WIDGET (item));
+			got_anything = TRUE;			
+		}
+	}
+	g_free (key_string);	
+
 	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT))) {
 		item = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -2976,6 +3010,27 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 	gdm_config_get_string (GDM_KEY_WELCOME);
 
+	/* String keys for custom commands */
+	register int i = 0;
+	gchar * key_string = NULL;	
+	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+		
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+		
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+        
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+		gdm_config_get_string (key_string);
+	}     
+	g_free (key_string);
+
 	gdm_config_get_int    (GDM_KEY_BACKGROUND_TYPE);
 	gdm_config_get_int    (GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY);
 	gdm_config_get_int    (GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY);
@@ -3104,6 +3159,45 @@ gdm_reread_config (int sig, gpointer data)
 		return TRUE;
 	}
 
+	/* Keys for custom commands */
+	register int i = 0;
+	gboolean custom_changed = FALSE;
+	gchar *key_string = NULL;
+	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		if(gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+		
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		if(gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+		
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+		if(gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+		
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+		if(gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+        
+		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+		if(gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+	}     
+	g_free (key_string);			
+
+	if(custom_changed){
+		/* Set busy cursor */
+		gdm_common_setup_cursor (GDK_WATCH);
+
+		gdm_wm_save_wm_order ();
+		gdm_kill_thingies ();
+		gdmcomm_comm_bulk_stop ();
+
+		_exit (DISPLAY_RESTARTGREETER);
+		return TRUE;		
+	}
+
 	if (gdm_config_reload_string (GDM_KEY_BACKGROUND_IMAGE) ||
 	    gdm_config_reload_string (GDM_KEY_BACKGROUND_COLOR) ||
 	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_TYPE) ||
@@ -3113,7 +3207,7 @@ gdm_reread_config (int sig, gpointer data)
 		gdm_kill_thingies ();
 		setup_background ();
 		back_prog_launch_after_timeout ();
-	}
+	}	
 
 	gdm_config_reload_string (GDM_KEY_SOUND_PROGRAM);
 	gdm_config_reload_bool   (GDM_KEY_SOUND_ON_LOGIN);

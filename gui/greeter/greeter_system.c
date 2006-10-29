@@ -36,11 +36,13 @@
 #include "gdmwm.h"
 #include "misc.h"
 
-GtkWidget *dialog;
-extern gboolean GdmHaltFound;
-extern gboolean GdmRebootFound;
-extern gboolean GdmSuspendFound;
-extern gboolean GdmConfiguratorFound;
+GtkWidget       *dialog;
+extern gboolean  GdmHaltFound;
+extern gboolean  GdmRebootFound;
+extern gboolean *GdmCustomCmdsFound;
+extern gboolean  GdmAnyCustomCmdsFound;
+extern gboolean  GdmSuspendFound;
+extern gboolean  GdmConfiguratorFound;
 
 /* doesn't check for executability, just for existance */
 static gboolean
@@ -79,6 +81,20 @@ query_greeter_restart_handler (void)
 }
 
 static void
+query_greeter_custom_cmd_handler (GtkWidget *widget, gint *cmd_id)
+{
+        if (cmd_id) {
+	        gchar * key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
+		if (gdm_wm_warn_dialog (gdm_config_get_string (key_string) , "", 
+					GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
+		        printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, *cmd_id);
+			fflush (stdout);
+		}
+		g_free (key_string);		
+	}
+}
+
+static void
 query_greeter_halt_handler (void)
 {
 	if (gdm_wm_warn_dialog (_("Are you sure you want to Shut Down the computer?"), "",
@@ -107,6 +123,12 @@ greeter_restart_handler (void)
 	_exit (DISPLAY_REBOOT);
 }
 
+static void
+greeter_custom_cmd_handler (gint cmd_id)
+{
+	printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, cmd_id);
+	fflush (stdout);
+}
 
 static void
 greeter_halt_handler (void)
@@ -174,7 +196,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				  NULL);
 	}
 
-	if (GdmRebootFound || GdmHaltFound || GdmSuspendFound) {
+	if (GdmRebootFound || GdmHaltFound || GdmSuspendFound || GdmAnyCustomCmdsFound) {
 		sep = gtk_separator_menu_item_new ();
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), sep);
 		gtk_widget_show (sep);
@@ -189,6 +211,25 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		g_signal_connect (G_OBJECT (w), "activate",
 				  G_CALLBACK (query_greeter_restart_handler),
 				  NULL);
+	}
+
+	if (GdmAnyCustomCmdsFound) {
+	        register int i = 0;
+		for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		        if (GdmCustomCmdsFound[i]){
+			         gint * cmd_index = g_new0(gint, 1);
+				 *cmd_index = i;
+				 gchar * key_string = NULL;
+				 key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+				 w = gtk_menu_item_new_with_mnemonic (gdm_config_get_string(key_string));
+				 gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+				 gtk_widget_show (GTK_WIDGET (w));
+				 g_signal_connect (G_OBJECT (w), "activate",
+						   G_CALLBACK (query_greeter_custom_cmd_handler),
+						   cmd_index);
+				 g_free (key_string);
+			}
+		}
 	}
 
 	if (GdmHaltFound) {
@@ -238,10 +279,11 @@ greeter_system_handler (GreeterItemInfo *info,
   GtkWidget *halt_radio = NULL;
   GtkWidget *suspend_radio = NULL;
   GtkWidget *restart_radio = NULL;
+  GtkWidget **custom_cmds_radio = NULL;
   GtkWidget *config_radio = NULL;
   GtkWidget *chooser_radio = NULL;
   gchar *s;
-  int ret;
+  int ret, i;
   GSList *radio_group = NULL;
   static GtkTooltips *tooltips = NULL;
 
@@ -320,6 +362,33 @@ greeter_system_handler (GreeterItemInfo *info,
 			      restart_radio,
 			      FALSE, FALSE, 4);
 	  gtk_widget_show (restart_radio);
+  }
+
+  if (GdmAnyCustomCmdsFound) {
+	  custom_cmds_radio = g_new0 (GtkWidget*, GDM_CUSTOM_COMMAND_MAX); 
+	  for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+	          custom_cmds_radio[i] = NULL;
+		  if (GdmCustomCmdsFound[i]){
+		          gchar * key_string = NULL;
+			  key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+			  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
+			  custom_cmds_radio[i] = gtk_radio_button_new_with_mnemonic (radio_group,
+										     gdm_config_get_string(key_string));
+			  group_radio = custom_cmds_radio[i];
+			  g_free (key_string);
+			  key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+			  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (custom_cmds_radio[i]),
+						gdm_config_get_string(key_string),
+						NULL);
+			  g_signal_connect (G_OBJECT(custom_cmds_radio[i]), "button_press_event",
+					    G_CALLBACK(radio_button_press_event), NULL);
+			  gtk_box_pack_start (GTK_BOX (vbox),
+					      custom_cmds_radio[i],
+					      FALSE, FALSE, 4);
+			  gtk_widget_show (custom_cmds_radio[i]);
+			  g_free (key_string);
+		  }
+	  }
   }
 
   if (GdmSuspendFound) {
@@ -411,6 +480,11 @@ greeter_system_handler (GreeterItemInfo *info,
     greeter_config_handler ();
   else if (chooser_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (chooser_radio)))
     greeter_chooser_handler ();
+  else
+    for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+	if (custom_cmds_radio[i] != NULL &&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (custom_cmds_radio[i])))
+	    greeter_custom_cmd_handler (i);
+    }  
 
   gtk_widget_destroy (dialog);
 }
@@ -421,7 +495,7 @@ greeter_item_system_setup (void)
 {
   greeter_item_register_action_callback ("reboot_button",
 					 (ActionFunc)query_greeter_restart_handler,
-					 NULL);
+					 NULL);  
   greeter_item_register_action_callback ("halt_button",
 					 (ActionFunc)query_greeter_halt_handler,
 					 NULL);
@@ -437,4 +511,15 @@ greeter_item_system_setup (void)
   greeter_item_register_action_callback ("chooser_button",
 					 (ActionFunc)greeter_chooser_handler,
 					 NULL);
+
+  register int i = 0;
+  for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+      gint * cmd_index = g_new0(gint, 1);
+      *cmd_index = i;
+      gchar * key_string = g_strdup_printf (_("custom_cmd_button%d"), i);
+      greeter_item_register_action_callback (key_string,
+					     (ActionFunc)query_greeter_custom_cmd_handler,
+					     cmd_index);
+      g_free (key_string);
+  }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY version "2.15.1">
+<!ENTITY version "2.17.0">
 <!ENTITY date "05/12/2006">
 ]>
 <article id="index" lang="es">
@@ -71,13 +71,19 @@
 
 
 
-    <releaseinfo>Este manual describe la versión 2.15 del Gestor de entrada de GNOME. Se actualizó por última vez en 12/05/2006.</releaseinfo>  
+    <releaseinfo>
+       This manual describes version 2.17.0 of the GNOME Display Manager.
+       It was last updated on 05/12/2006.
+    </releaseinfo>  
   </articleinfo>
 
   <sect1 id="preface">
     <title>Términos y convenciones usados en este manual</title>
 
-    <para>Este manual describe la versión 2.15 del Gestor de entrada de GNOME. Se actualizó por última vez en 12/05/2006.</para>  
+    <para>
+      This manual describes version 2.17.0 of the GNOME Display Manager.
+      It was last updated on 05/12/2006.
+    </para>  
 
     <para>Selector - Un programa que se usa para seleccionar un equipo remoto para gestionar una pantalla remotamente en la pantalla local (<command>gdmchooser</command>).</para>
 
@@ -114,7 +120,19 @@
     <sect2 id="stability">
       <title>Estabilidad de interfaces</title>
 
-      <para>Los valores de pares de clave/valor definidos en los archivos de configuración de GDM y la ubicación de estos archivos se consideran «estables» y deberían cambiar sólo de formas compatibles hacia atrás. Note que esto incluye funcionalidad como los scripts de GDM (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc), ubicaciones de directorios (ServAuthDir, PidFile, etc), aplicaciones del sistema (SoundProgram), etc. Algunos valores de configuración dependen de interfaces del SO y quizá necesiten ser modificados para que funcionen en un determinado SO. Los ejemplos típicos son HaltCommand, RebootCommand, SuspendCommand, StandardXServer, Xnest, SoundProgram, y el valor del «comando» para cada «server-tal».</para>
+      <para>
+        The key/value pairs defined in the GDM configuration files and
+        the location of these files are considered "stable" interfaces
+        and should only change in ways that are backwards compatible.  Note that
+        this includes functionality like the GDM scripts (Init, PreSession,
+        PostSession, PostLogin, XKeepsCrashing, etc.); directory locations
+        (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc.
+        Some configuration values depend on OS interfaces may need to be
+        modified to work on a given OS.  Typical examples are HaltCommand,
+        RebootCommand, CustomCommands, SuspendCommand, StandardXServer, Xnest,
+        SoundProgram, and the "command" value for each
+        "server-foo".
+      </para>
 
       <para>Nota: las distribuciones a menudo cambian los valores predeterminados de las claves para soportar su plataforma. Los interfaces de línea de comandos para los programas GDM instalados en <filename>&lt;bin&gt;</filename> y <filename>&lt;sbin&gt;</filename> se consideran estables. Refiérase a su documentación de la distribución para ver si hay cualquier cambio específico de la distribución a estos interfaces de GDM y qué soporte existe para ellos.</para>
 
@@ -136,7 +154,22 @@
 
       <para>La pantalla del IGU de la entrada permite al usuario seleccionar qué sesión quiere iniciar y qué idioma quiere usar. Las sesiones se definen por archivos que terminan con la extensión .desktop y puede encontrar más información sobre estos archivos en la sección de «Configuración». El usuario introduce su nombre y contraseña y si éstos le autentican con éxito, GDM iniciará la sesión solicitada para el usuario. Es posible configurar GDM para evitar el proceso de autenticación activando las características de Entrada automática o Entrada temporizada en la configuración de GDM. El IGU de entrada puede configurarse además para para proporcionar características adicionales al usuario, como un visor de rostros, la capacidad de detener, reiniciar o suspender el sistema; y o editar la configuración de entrada (tras introducir la contraseña de root).</para>
 
-      <para>GDM, por omisión, usará Pluggable Authentication Modules (PAM) para autenticar, pero puede usar además contraseñas crypt y shadow en sistemas legados. Tras autenticar al usuario, el demonio ejecuta el script <filename>PostLogin</filename> como root, y bifurca un proceso esclavo para iniciar la sesión solicitada. Este proceso esclavo ejecuta el script de <filename>PreSession</filename> como root, establece el entorno del usuario e inicia la sesión solicitada. GDM conserva la sesión predeterminada del usuario y el idioma en el archivo <filename>~/.dmrc</filename> del usuario y usará estos predeterminados si el usuario no seleccionó una sesión o idioma en el IGU de entrada. En Solaris, GDM (desde la versión 2.8.0.3) usa el interfaz SDTLOGIN después de autenticar al usuario para decir al servidor X que se reinicie como el usuario en vez de como root para mayor seguridad. Cuando la sesión del usuario sale, el demonio de GDM ejecutará el script <filename>PostSession</filename> como root.</para>
+      <para> 
+        GDM, by default, will use Pluggable Authentication Modules (PAM) for
+        authentication, but can also support regular crypt and shadow passwords
+        on legacy systems.  After authenticating a user, the daemon runs the
+        <filename>PostLogin</filename> script as root, and forks a slave
+        process to start the requested session.  This slave process runs the
+        <filename>PreSession</filename> script as root, sets up the user's
+        environment, and starts the requested session.  GDM keeps track of the
+        user's default session and language in the user's
+        <filename>~/.dmrc</filename> and will use these defaults if the user
+        did not pick a session or language in the login GUI.  On Solaris, GDM
+        (since version 2.8.0.3) uses the SDTLOGIN interface after user
+        authentication to tell the X server to be restarted as the user instead
+        of as root for added security.  When the user's session exits, the GDM
+        daemon will run the <filename>PostSession</filename> script as root.
+      </para>
     </sect2>
 
     <sect2 id="displaytypes">
@@ -215,7 +248,22 @@
       
       <para>Note que cargar y escalar los iconos de rostros situados en los directorios personales de los usuarios puede ser una tarea que consuma mucho tiempo. Debido a que no es práctico cargar imágenes sobre NIS o NFS, GDM no intenta cargar imágenes de rostros desde directorios personales remotos. Además, GDM parará de cargar imágenes de rostros después de 5 segundos de actividad y sólo mostrará los usuarios cuyas imágenes haya obtenido hasta entonces. La opción <filename>Include</filename> de <filename>gdm.conf</filename> puede usarse para especificar un conjunto de usuarios que deberían aparecer en el visor de rostros. Mientras los usuarios a incluir tengan un tamaño razonable, no debería haber ningún problema con GDM siendo incapaz de acceder a las imágenes de rostros. Para evitar estos problemas, se recomienda situar las imágenes de rostros en el directorio especificado por la opción de configuración <filename>GlobalFaceDir</filename>.</para>
 
-      <para>Para controlar qué usuarios se muestran en el examinador de rostros, hay varias opciones de configuración que pueden usarse. Si se establece a true la opción <filename>IncludeAll</filename>, entonces se analizará el archivo de contraseñas y se mostrarán todos los usuarios. Si la opción <filename>IncludeAll</filename> se establece a falso, entonces la opción <filename>Include</filename> debería contener una lista de usuarios separada por comas. Sólo los usuarios especificados se mostrarán. Cualquier usuario listado en la opción <filename>Exclude</filename> y los usuarios cuyo UID sea inferior a <filename>MinimalUID</filename> se filtrarán con independencia de lo que esté establecido en <filename>IncludeAll</filename>. <filename>IncludeAll</filename> no está recomendado para sistemas donde las contraseñas se carguen por medio de una red (como cuando se usa NIS), debido a que puede ser muy lento cargar más de un pequeño número de usuarios sobre la red.</para>
+      <para>
+        To control the users who get displayed in the face browser, there are
+        a number of configuration options that can be used.  If the
+        <filename>IncludeAll</filename> option is set to true, then the
+        password file will be scanned and all users will be displayed.  If
+        <filename>IncludeAll</filename> option is set to false, then the
+        <filename>Include</filename> option should contain a list of users
+        separated by commas.  Only the users specified will be displayed.
+        Any user listed in the <filename>Exclude</filename> option and users
+        whose UID's is lower than <filename>MinimalUID</filename> will be
+        filtered out regardless of the <filename>IncludeAll</filename>
+        setting.  <filename>IncludeAll</filename> is not recommended
+        for systems where the passwords are loaded over a network (such as
+        when NIS is used), since it can be very slow to load more than a
+        small number of users over the network..
+      </para>
 
       <para>Cuando el examinador está activado, los nombres de usuario válidos en el equipo están expuestos inherentemente a un intruso potencial. Esto puede ser una mala idea si no sabe quién puede acceder a una pantalla de entrada. Esto es especialmente cierto si ejecuta XDMCP (desactivado por omisión).</para>
     </sect2>
@@ -231,7 +279,18 @@
 
       <para>Puede suprimir la advertencia de los 10 segundos devolviendo un código 66 desde el script <filename>Xsession</filename> desde el binario de la sesión (el script <filename>Xsession</filename> predeterminado propaga esos códigos hacia atrás). Esto es útil si tiene alguna clase de inicios de sesión especiales para los que no es un error retornar menos de esos 10 segundos después, o si configura la sesión para mostrar algún mensaje de error y el mensaje de GDM podría ser confuso y redundante.</para>
 
-      <para>La salida de la sesión se encauza a través del demonio gdm y así el archivo <filename>~/.xsession-errors</filename> está capado a cerca de 200 Kbytes por GDM para prevenir una posible denegación de servicio en la sesión. Una aplicación podría quizás leer algunos datos erróneos, imprimir advertencias o errores en stderr o stdout. Esto podría quizás llenar el directorio personal del usuario quien tendría que cerrar sesión e iniciar sesión de nuevo para limpiar esto. Esto podría ser especialmente duro si hay cuotas puestas. GDM además atrapa correctamente la señal XFSZ y para de escribir el archivo, lo que podría conducir a sesiones matadas si el archivo fue redirigido en la forma antigua desde el script.</para>
+      <para>
+        The session output is piped through the GDM daemon and so the
+        <filename>~/.xsession-errors</filename> file is capped at about
+        200 kilobytes by GDM to prevent a possible denial of service attack
+        on the session.  An app could perhaps on reading some wrong data print
+        out warnings or errors on the stderr or stdout.  This could perhaps
+        fill up the user's home directory who would then have to log out and
+        log back in to clear this.  This could be especially nasty if quotas
+        are set.  GDM also correctly traps the XFSZ signal and stops writing
+        the file, which would lead to killed sessions if the file was
+        redirected in the old fashioned way from the script.
+      </para>
 
       <para>Note que algunos distribuidores parecen ignorar la redirección de <filename>~/.xsession-errors</filename> y la hacen ellos mismos en su propio script Xsession (establecido por la clave de configuración <filename>BaseXsession</filename>) que significa que GDM no será capaz de atrapar la salida y cubrir este archivo. Puede también perder datos de salida del script <filename>PreSession</filename> lo que puede hacer la depuración mucho más complicada ya que quizás la salida de lo que está equivocado no se imprimirá. Vea la descripción de la clave de configuración <filename>BaseXsession</filename> para más información, especialmente acerca de cómo manejar múltiples gestores de entrada usando el mismo script.</para>
 
@@ -271,7 +330,12 @@
 
       <para>Algunas características de GDM (como activar la entrada automática) quizá requieran que actualice su configuración PAM. PAM tiene interfaces distintos, pero similares, en diferentes sistemas operativos, así que compruebe su página man de pam.d o pam.conf para los detalles acerca de cómo configurarlo. Asegúrese de leer la documentación de PAM (eg: página man de pam.d/pam.conf) y tenga cuidado con las implicaciones de seguridad de cualquier cambio que intente hacer a su configuración.</para>
 
-      <para>Si no hay ninguna entrada para GDM en su archivo de configuración de PAM, entonces las características como la entrada automática quizá no funcionen. No tener una entrada hará que GDM use el comportamiento predeterminado, se recomiendan configuraciones conservadoras y probablemente sean los que se entreguen con su distribución.</para>
+      <para>
+        If there is no entry for GDM in your system's PAM configuration file,
+        then features like automatic login may not work.  Not having an entry
+        will cause GDM to use default behavior, conservative settings are
+        recommended and probably shipped with your distribution.
+      </para>
 
       <para>Si desea que GDM funciona con otros tipos de mecanismos de autenticación (como una SmartCard), entonces debe implementar esto escribiendo un módulo PAM en vez de intentando modificar el código de GDM directamente. Refiérase a la documentación de PAM de su sistema. Esta cuestión se ha discutido en la lista de correo <address><email>gdm-list@gnome.org</email></address>, así que puede referirse a los archivadores de la lista para más información.</para>
     </sect2>
@@ -452,7 +516,16 @@ PostSession/
 
     <para><filename>locale.alias</filename> es un archivo que se parece mucho al archivo de alias regionales del sistema pero no es el mismo. Éstos son los idiomas que están disponibles en su sistema. Todos los idiomas además se prueban para ver si actualmente existen antes de presentárselos al usuario.</para>
 
-    <para><filename>Xsession</filename> es un script que configura una sesión de usuario y después ejecuta la selección de sesión del usuario. Note que el script de sesión se inicia típicamente por el archivo <filename>desktop</filename> asociado con la sesión que el usuario a escogido. Algunas sesiones quizá inicien la sesión del usuario por medio de un mecanismo diferente que el script <filename>Xsession</filename> así que marque el <filename>desktop</filename> apropiado antes de asumir que el problema de inicio está causado por este archivo.</para>
+    <para> 
+      <filename>Xsession</filename> is a script which sets up a user session
+      and then executes the user's choice of session.  Note that the session
+      script is typically started via the <filename>desktop</filename>
+      file associated with the session the user has picked.  Some 
+      sessions may start the user's session via a different mechanism than
+      the <filename>Xsession</filename> script, so please check the
+      appropriate <filename>desktop</filename> before assuming a session
+      startup issue is being caused by this file.
+    </para>
 
     <para><filename>XKeepsCrashing</filename> es un script que se ejecuta cuando el servidor X continúa colgándose y no se puede recuperar. El script predeterminado incluido funcionará con la mayoría de las distribuciones de Linux y puede ejecutar la aplicación de configuración de X siempre que la persona en la consola conozca la contraseña de root.</para>
 
@@ -467,7 +540,23 @@ PostSession/
       
       <para>En esta sección explicaremos los directorios <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename> y <filename>PostSession</filename> ya que son muy similares.</para>
 
-      <para>Cuando el servidor X se haya iniciado con éxito, GDM intentará ejecutar el script llamado <filename>Init/&lt;displayname&gt;</filename>. Ej: <filename>Init/:0</filename> para la primera pantalla local. Si este archivo no se encuentra, GDM intentará ejecutar <filename>Init/&lt;hostname&gt;</filename>. Ej: <filename>Init/somehost</filename>. Si esto aún no se encuentra, GDM intentará <filename>Init/XDMCP</filename> para todas las entradas XDMCP o <filename>Init/Flexi</filename> para todas las pantallas bajo demanda. Si no se encuentra ninguno de los anteriores, GDM ejecutará <filename>Init/Default</filename>. El script se ejecutará como root y GDM se bloquea hasta que termina. Use el script <filename>Init/*</filename> para las aplicaciones que se suponen que se ejecutan junto con la ventana de entrada de GDM. xconsole por ejemplo. Los comandos para poner el fondo de pantalla, etc. van también en este archivo.</para>
+      <para>
+        When the X server has been successfully started, GDM will try to run
+        the script called <filename>Init/&lt;displayname&gt;</filename>. I.e.
+        <filename>Init/:0</filename> for the first local display.  If this file
+        is not found, GDM will attempt to to run
+        <filename>Init/&lt;hostname&gt;</filename>. I.e.
+        <filename>Init/somehost</filename>.
+        If this still is not found, GDM will try
+        <filename>Init/XDMCP</filename> for all XDMCP logins or
+        <filename>Init/Flexi</filename> for all on demand flexible
+        displays.  If none of the above were found, GDM will run
+        <filename>Init/Default</filename>. The script will be run as root and
+        GDM blocks until it terminates. Use the <filename>Init/*</filename>
+        script for applications that are supposed to run alongside with the GDM
+        login window. xconsole for instance.  Commands to set the background
+        etc. go in this file too.
+      </para>
 
       <para>Es responsabilidad del administrador de sistemas decidir si los clientes iniciados por el script Init deben matarse antes de iniciar la sesión del usuario. Esto se controla con la opción de configuración <filename>KillInitClients</filename></para>
 
@@ -477,7 +566,15 @@ PostSession/
 
       <para>Después de esto se ejecuta el script <filename>Xsession</filename> base con el ejecutable de la sesión seleccionada como primer argumento. Esto se ejecuta como el usuario, y realmente esta es la sesión del usuario. Los ejecutables de sesiones disponibles se toman de la línea <filename>Exec=</filename> en los archivos <filename>.desktop</filename> de la ruta especificada en <filename>SessionDesktopDir</filename>. Usualmente esta ruta es <filename>&lt;etc&gt;/X11/sessions/:&lt;etc&gt;/dm/Sessions:/usr/share/xsessions/</filename>. Se usa el primer archivo encontrado. El usuario o escoge de estas sesiones o GDM buscará dentro del archivo <filename>~/.dmrc</filename> la preferencia almacenada.</para>
 
-      <para>Este script debería cargar realmente el perfil de los usuarios y generalmente hacer todo el vudú que se necesita para lanzar una sesión. Debido a que muchos sistemas restablecen las selecciones de idioma realizadas por GDM, GDM también establece la variable <filename>$GDM_LANG</filename> al idioma seleccionado. Puede usar esto para restaurar las variables de entorno de idiomas tras ejecutar el perfil del usuario. Si el usuario eligió el idioma del sistema, entonces <filename>$GDM_LANG</filename> no se establece.</para>
+      <para>
+        This script should really load the user's profile and generally do all
+        the voodoo that is needed to launch a session.  Since many systems
+        reset the language selections done by GDM, GDM will also set the
+        <filename>$GDM_LANG</filename> variable to the selected language.  You
+        can use this to reset the language environmental variables after you
+        run the user's profile.  If the user elected to use the system language,
+        then <filename>$GDM_LANG</filename> is not set. 
+      </para>
 
       <para>Cuando el usuario termina su sesión, se ejecuta el script <filename>PostSession</filename>. De nuevo la operación es similar a <filename>Init</filename>, <filename>PostLogin</filename> y <filename>PreSession</filename>. De nuevo el script se ejecuta con privilegios de root, el demonio esclavo se bloqueará y la variable de entorno <filename>$USER</filename> contendrá el nombre del usuario que acaba de cerrar sesión y <filename>$DISPLAY</filename> se establecerá al visualizador que el usuario usó, sin embargo note que el servidor X para este visualizador quizá ya esté muerto y así que no debería intentar acceder a él. Además la variable de entorno <filename>$X_SERVERS</filename> está establecida y ésta apunta a un archivo generado falsificado de servidores X para usar con la aplicación de contabilidad sessreg.</para>
 
@@ -514,6 +611,12 @@ PostSession/
             <listitem>
               <synopsis>AddGtkModules=false</synopsis>
               <para>Si es true, entonces activa <command>gdmgreeter</command> o <command>gdmlogin</command> para que se lancen con módulos GTK+ adicionales. esto es útil cuando se requieren características extra como un inicio sesión accesible. Note que sólo deberían usarse los módulos «confiables» para minimizar las cuestiones de seguridad.</para>
+              <para>
+                If true, then the registry daemon
+                <command>at-spi-registryd</command>
+                will be launched by <command>gdmgreeter</command> or
+                <command>gdmlogin</command> starting with version GDM 2.17.
+              </para>
               <para>Usualmente esto se usa para los módulos de accesibilidad. Los módulos que se cargan se especifican con la clave <filename>GtkModulesList</filename>.</para>
             </listitem>
           </varlistentry>
@@ -530,7 +633,14 @@ PostSession/
             <term>AlwaysLoginCurrentSession</term>
             <listitem>
               <synopsis>AlwaysLoginCurrentSession=true</synopsis>
-              <para>Si es «true», cuando el usuario entra y ya tiene una sesión existente, entonces se concecta a esa sesión en lugar de iniciar una sesión nueva. Esto sólo funciona en sesiones que se ejecutan en VTs (Virtual Terminals) iniciados con gdmflexiserver, y no con XDMCP. Note que los VTs no están soportados en todos los sistemas operativos.</para>
+              <para>
+                If true, then when the user logs in and already has an
+                existing session, then they are connected to that session
+                rather than starting a new session.  This only works for
+                sessions running on VTs (Virtual Terminals) started with
+                gdmflexiserver, and not with XDMCP.  Note that VTs are not
+                supported on all operating systems.
+              </para>
             </listitem>
           </varlistentry>
 
@@ -550,17 +660,11 @@ PostSession/
 
               <para>Se reconocen los siguientes caracteres de control dentro del nombre especificado:</para>
 
-              <para>
-                &percnt;&percnt; &mdash; the `&percnt;' character
-              </para>
+              <para>&percnt;&percnt;&mdash; carácter `&percnt;'</para>
 
-              <para>
-                &percnt;d &mdash; display's name
-              </para>
+              <para>&percnt;d &mdash; nombre de la pantalla</para>
 
-              <para>
-                &percnt;h &mdash; display's hostname
-              </para>
+              <para>&percnt;h &mdash; nombre de host de la pantalla</para>
 
               <para>Alternativamente, el nombre podría terminar con una barra vertical |, el símbolo de cauce. El nombre se usa entonces como una aplicación a ejecutar que revuelve el nombre de usuario deseado en la salida estándar. Si se devuelve un nombre de usuario vacío o inválido, no se realiza el inicio de sesión automático. Esta característica se usa típicamente cuando se usan varios visores remotos como kioscos de Internet, con un usuario específico para iniciar sesión automáticamente en cada visualizador.</para>
             </listitem>
@@ -609,7 +713,7 @@ PostSession/
               <para>Si es false, gdm no mostrará un diálogo de mensaje en la consola cuando ocurra un error.</para>
             </listitem>
           </varlistentry>
-          
+                             
           <varlistentry>
             <term>DefaultPath</term>
             <listitem>
@@ -712,13 +816,7 @@ PostSession/
             <term>GtkModulesList</term>
             <listitem>
               <synopsis>GtkModulesList=module-1:module-2:...</synopsis>
-              <para>
-                A colon separated list of Gtk+ modules that
-                <command>gdmgreeter</command> or <command>gdmlogin</command>
-                will be invoked with if <filename>AddGtkModules</filename> is
-                true.  The format is the same as the standard Gtk+ module
-                interface.
-              </para>
+              <para>Una lista separada por dos puntos de módulos GTK+ que <command>gdmgreeter</command> o <command>gdmlogin</command> invocar´an si <filename>AddGtkModules</filename> está a true. El formato es el mismo que el interfaz Gtk+ estándar.</para>
             </listitem>
           </varlistentry>
 
@@ -726,15 +824,7 @@ PostSession/
             <term>HaltCommand</term>
             <listitem>
               <synopsis>HaltCommand=&lt;sbin&gt;/shutdown -h now</synopsis>
-              <para>
-                Full path and arguments to command to be executed when user
-                selects "Shut Down" from the Actions menu.  This can
-                be a ';' separated list of commands to try.  If a value is
-                missing, the shut down command is not available.  Note that the
-                default for this value is not empty, so to disable
-                "Shut Down" it must be
-		set to an empty value.
-              </para>
+              <para>ruta completa y argumentos al comando que ejecutar cuando el usuario selecciona «Apagar» desde el menú Acciones. Esto puede ser una lista separada por ";" de comandos a intentar. Si falta un valor, el comando de apagado no estará disponible. Note que lo predeterminado para este valor no está vacío, así que para  desactivar «Apagar» debe establecerse a un valor vacío.</para>
             </listitem>
           </varlistentry>
           
@@ -742,10 +832,7 @@ PostSession/
             <term>KillInitClients</term>
             <listitem>
               <synopsis>KillInitClients=true</synopsis>
-              <para>
-                Determines whether GDM should kill X clients started by the
-                init scripts when the user logs in.
-              </para>
+              <para>Determina si GDM sebe matar los clientes X iniciados por los scripts de inicio cuando el usuario inicia sesión.</para>
             </listitem>
           </varlistentry>
           
@@ -753,10 +840,7 @@ PostSession/
             <term>Directorio de registro</term>
             <listitem>
               <synopsis>LogDir=&lt;var&gt;/log/gdm</synopsis>
-              <para>
-                Directory containing the log files for the individual displays.
-                By default this is the same as the ServAuthDir.
-              </para>
+              <para>Directorio conteniendo los archivos de sucesos para las pantallas individuales. Por omisión éste es el mismo que el de ServAuthDir.</para>
             </listitem>
           </varlistentry>
           
@@ -772,18 +856,7 @@ PostSession/
             <term>PreFetchProgram</term>
             <listitem>
               <synopsis>PreFetchProgram=command</synopsis>
-              <para>
-                Program to be run by the GDM greeter/login program when the
-                initial screen is displayed.  The  purpose is to provide a hook
-                where files which will be used after login can be preloaded to
-                speed performance for the user.  The program will be called
-                once only, the first time a greeter is displayed.  The
-                gdmprefetch command may be used.  This utility will load any
-                libraries passed in on the command line, or if the argument
-                starts with a "@" character, it will process the file assuming
-                it is an ASCII file containing a list of libraries, one per
-                line, and load each library in the file.
-              </para>
+              <para>Programa que se ejecutará por el programa de entrada/interfaz de GDM cuando se muestre la pantalla inicial. El propósito es proporcionar un gancho donde los archivos que se usarán tras la entrada puedan precargarse para mejorar la velocidad para el usuario. El programa se llamará sólo una vez, la primera vez que se muestre la interfaz de entrada. El comando gdmprefetch será usado. Esta utilidad cargará cualquier biblioteca pasada en la línea de comandos, o si el argumento empieza por un carácter «@», procesará el archivo asumiendo que es un archivo ASCII conteniendo una lista de bibliotecas, una por línea, y cargará cada biblioteca en el archivo.</para>
             </listitem>
           </varlistentry>
 
@@ -791,11 +864,7 @@ PostSession/
             <term>PostLoginScriptDir</term>
             <listitem>
               <synopsis>PostLoginScriptDir=&lt;etc&gt;/gdm/PostLogin</synopsis>
-              <para>
-                Directory containing the scripts run right after the user logs
-                in, but before any session setup is done.  See the
-                ``The Script Directories'' section for more info.
-              </para>
+              <para>Directorio que contiene los scripts ejecutados justo después de que el usuario inicie sesión, pero antes de que se realice ninguna configuración de sesión. Vea la sección ``Los directorios de Scripts'' para más información.</para>
             </listitem>
           </varlistentry>
           
@@ -803,10 +872,7 @@ PostSession/
             <term>PostSessionScriptDir</term>
             <listitem>
               <synopsis>PostSessionScriptDir=&lt;etc&gt;/gdm/PostSession</synopsis>
-              <para>
-                Directory containing the scripts run after the user logs out.
-                See the ``The Script Directories'' section for more info.
-              </para>
+              <para>Directorio conteniendo los scripts ejecutados después de que el usuario cierre la sesión. Vea la sección ``Los directorios de Scripts'' para más información.</para>
             </listitem>
           </varlistentry>
           
@@ -814,10 +880,7 @@ PostSession/
             <term>PreSessionScriptDir</term>
             <listitem>
               <synopsis>PreSessionScriptDir=&lt;etc&gt;/gdm/PreSession</synopsis>
-              <para>
-                Directory containing the scripts run before the user logs in.
-                See the ``The Script Directories'' section for more info.
-              </para>
+              <para>Directorio que contiene los scripts ejecutados antes de que el usuario inicie sesión. Vea la sección ``Los directorios de Scripts'' para más información.</para>
             </listitem>
           </varlistentry>
           
@@ -825,14 +888,7 @@ PostSession/
             <term>RebootCommand</term>
             <listitem>
               <synopsis>RebootCommand=&lt;sbin&gt;/shutdown -r now</synopsis>
-              <para>
-                Full path and optional arguments to the command to be
-                executed when user selects Restart from the Actions menu.  This
-                can be a ';' separated list of commands to try.  If missing,
-                the restart command is not available.  Note that the default 
-                for this value is not empty so to disable restart you must set
-                this explicitly to an empty value.
-              </para>
+              <para>Ruta completa y argumentos opcionales para el comando que ejecutar cuando el usuario selecciona Reiniciar desde el menú de Acciones. Esto puede ser una lista separada por «;» de comandos que probar. Si falta, el comandos de reinicio no está disponible. Note que lo predeterminado para este valor es no vacío así que para desactivar el reinicio debe establecerlo explícitamente a un valor vacío.</para>
             </listitem>
           </varlistentry>
 
@@ -1032,7 +1088,7 @@ PostSession/
               </para>
 
               <para>
-                Normally if this is the users home directory GDM will still
+                Normally if this is the user's home directory GDM will still
                 refuse to put cookies there if it thinks it is NFS (by testing
                 root-squashing).  This can be changed by setting
                 <filename>NeverPlaceCookiesOnNFS</filename> in the
@@ -1065,14 +1121,7 @@ PostSession/
             <term>VTAllocation</term>
             <listitem>
               <synopsis>VTAllocation=true</synopsis>
-              <para>
-                On systems where GDM supports automatic VT (virtual terminal)
-                allocation (currently Linux and FreeBSD only), you can have
-                GDM automatically append the vt argument to the X server
-                executable.  This way races that come up from each X server
-                managing it's own vt allocation can be avoided.  See also
-                <filename>FirstVT</filename>.
-              </para>
+              <para>En sistemas donde GDM soporta reserva de TV (terminales virtuales) automáticos (actualmente Linux y FreeBSD sólo), puede hacer que GDM agregue automáticamente el argumento del tv al ejecutable del servidor X. De esta manera las carreras que surjan de cada servidor X gestionando su propia reserva de tv se pueden evitar. Vea además <filename>FirstVT</filename>.</para>
             </listitem>
           </varlistentry>
 
@@ -1219,7 +1268,7 @@ PostSession/
               <synopsis>NeverPlaceCookiesOnNFS=true</synopsis>
               <para>
                 Normally if this is true (which is by default), GDM will not
-                place cookies into the users home directory if this directory
+                place cookies into the user's home directory if this directory
                 is on NFS.  Well, GDM will consider any filesystem with
                 root-squashing an NFS filesystem.  Sometimes however the remote
                 file system can have root squashing and be safe (perhaps by
@@ -1788,7 +1837,14 @@ PostSession/
             <term>DefaultFace</term>
             <listitem>
               <synopsis>DefaultFace=&lt;share&gt;/pixmaps/nophoto.png</synopsis>
-              <para>Si un usuario no tiene una imagen de rostro definida, GDM usará el icono "stock_person" definido en el tema GTK+ actual. Si dicha imagen no está definida, entonces usará la imagen especificada en la opción de configuración <filename>DefaultFace</filename>. La imagen debe estar en un formato soportado por gdk-pixbuf y el archivo debe poderlo leer el usuario de GDM.</para>
+              <para>
+                If a user has no defined face image, GDM will use the
+                "stock_person" icon defined in the current GTK+
+                theme.  If no such image is defined, the image specified by 
+                <filename>DefaultFace</filename> will be used.  The image must
+                be in a gdk-pixbuf supported format and the file must be
+                readable to the GDM user.
+              </para>
             </listitem>
           </varlistentry>
           
@@ -1942,7 +1998,7 @@ PostSession/
               <synopsis>Logo=&lt;share&gt;/pixmaps/gnome-logo-large.png</synopsis>
               <para>
                 Image file to display in the logo box. The file must be
-                in an gdk-pixbuf supported format and it must be readable by
+                in a gdk-pixbuf supported format and it must be readable by
                 the GDM user. If no file is specified the logo feature
                 is disabled.
                 This only affects the GTK+ Greeter.
@@ -2267,33 +2323,19 @@ PostSession/
               <synopsis>Welcome=Welcome</synopsis>
               <para>Controla qué texto se muestra junto a la imagen del logotipo en el interfaz estándar. Están soportados los siguientes caracteres de control:</para>
               
-              <para>
-                &percnt;&percnt; &mdash; the `&percnt;' character
-              </para>
+              <para>&percnt;&percnt;&mdash; carácter `&percnt;'</para>
               
-              <para>
-                &percnt;d &mdash; display's hostname
-              </para>
+              <para>&percnt;d &mdash; nombre de host de la pantalla</para>
               
-              <para>
-                &percnt;h &mdash; Fully qualified hostname
-              </para>
+              <para>&percnt;h &mdash; Nombre de host completamente cualificado</para>
 
-              <para>
-                &percnt;m &mdash; machine (processor type)
-              </para>
+              <para>&percnt;m &mdash; máquina (tipo de procesador)</para>
 
-              <para>
-                &percnt;n &mdash; Nodename (i.e. hostname without .domain)
-              </para>
+              <para>&percnt;n &mdash; Nombre de nodo (ej. nombre del host sin .dominio)</para>
               
-              <para>
-                &percnt;r &mdash; release (OS version)
-              </para>
+              <para>&percnt;r &mdash; lanzamiento (versión del SO)</para>
               
-              <para>
-                &percnt;s &mdash; sysname (i.e. OS)
-              </para>
+              <para>&percnt;s  sysname (i.e. OS)</para>
 
               <para>Estas cadenas se usan sólo para inicios de sesión locales. Para inicios de sesión remotos XDMCP se usa <filename>RemoteWelcome</filename>.</para>
 
@@ -2372,9 +2414,7 @@ PostSession/
             <term>MulticastAddr</term>
             <listitem>
               <synopsis>MulticastAddr=ff02::1</synopsis>
-              <para>
-                This is the Link-local Multicast address and is hardcoded here.
-              </para>
+              <para>Esta es la dirección de enlace local multicast y está codificada aquí.</para>
             </listitem>
           </varlistentry>
           
@@ -2382,7 +2422,12 @@ PostSession/
             <term>DefaultHostImage</term>
             <listitem>
               <synopsis>DefaultHostImage=&lt;share&gt;/pixmaps/nohost.png</synopsis>
-              <para>El nombre del archivo para el icono de host predeterminado. Esta imagen debe mostrarse si no hay ningún icono especificado en un host dado. El archivo debe estar en un formato soportado por gdk-pixbuf y deben tener permiso de lectura para el usuario de GDM.</para>
+              <para>
+                File name for the default host icon. This image will be
+                displayed if no icon is specified for a given host. The
+                file must be in a gdk-pixbuf supported format and it must be
+                readable for the GDM user.
+              </para>
             </listitem>
           </varlistentry>
           
@@ -2396,7 +2441,7 @@ PostSession/
                 <filename>gdmchooser</filename>.
               </para>
               
-              <para>El nombre del archvivo debe coincidir con el nombre completamente cualificado (FQDN) para el host. Los iconos deben almacenarse en un formato soportado por gdk-pixbuf y deben tener permiso de lectura para el usuario de GDM.</para>
+              <para>El nombre del archivo debe coincidir con el nombre completamente cualificado (FQDN) para el host. Los iconos deben almacenarse en un formato soportado por gdk-pixbuf y deben tener permiso de lectura para el usuario de GDM.</para>
               
             </listitem>
           </varlistentry>
@@ -2455,6 +2500,109 @@ PostSession/
         </variablelist>
       </sect3>
 
+      <sect3 id="customcmdsection">
+        <title>Custom Commands</title>
+        
+        <para>
+          You can create up to 10 different commands. Gaps between command
+          numbers are allowed and their relative positioning within the
+          section is not important as long as they conform to the permitted
+          range of [0-9].
+          
+        </para>
+          
+        <variablelist>
+          <title>[customcommand]</title>
+          
+          <varlistentry>
+            <term>CustomCommand[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommand[0-9]=</synopsis>
+              <para>
+                Full path and arguments to command to be executed when user
+                selects n-th "Custom Command" from the Actions menu.
+                This can be a ';' separated list of commands to try.  If the 
+                value is empty or missing, then the custom command is not
+                available.  By default this value is not enabled, so to enable 
+                "Custom Command" it must be set to a nonempty value. 
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandLabel[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandLabel[0-9]=</synopsis>
+              <para>
+                Specifies the stock label that will be displayed on the
+                <filename>n-th</filename> "Custom Command"
+                buttons and menu items. If not specified the default value is
+                "_Custom[0-9]". This option is only valid if
+                corresponding <filename>CustomCommand</filename> is defined. 
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandLRLabel[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandLRLabel[0-9]=</synopsis>
+              <para>
+                Specifies the stock label that will be displayed on the
+                <filename>n-th</filename> "Custom Command"
+                list items and radio buttons.  If not specified the default
+                value is  "Execute _custom command [0-9]". This 
+                option is only valid if corresponding
+                <filename>CustomCommand</filename> is defined.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandNoRestart[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandNoRestart[0-9]=</synopsis>
+              <para>
+                Specifies if gdm will be stopped/restarted once
+                <filename>n-th</filename> "Custom Command"
+                has been executed. If not specified the default value is
+                "false". This option is only valid if corresponding
+                <filename>CustomCommand</filename> is defined.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandText[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandText[0-9]=</synopsis>
+              <para>
+                Specifies the message that will be displayed on the warning
+                dialog box once <filename>n-th</filename>
+                "Custom Command" button/menu item/radio button/list
+                item has been activated.  If not specified the default value is
+                "Are you sure?". This option is only valid if
+                corresponding <filename>CustomCommand</filename> is defined.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>CustomCommandTooltip[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandTooltip[0-9]=</synopsis>
+              <para>
+                Specifies the message that will be displayed on tooltips for
+                <filename>n-th</filename> "Custom Command"
+                entries. If not specified the default value is  "Execute
+                custom command [0-9]". This option is only valid if
+                corresponding <filename>CustomCommand</filename> is defined.
+              </para>
+            </listitem>
+          </varlistentry>         
+        </variablelist>
+      </sect3>
+          
       <sect3 id="serverdefs">
         <title>Definiciones del servidor X</title>
 
@@ -2773,23 +2921,23 @@ VERSION
       <sect3 id="adddynamic">
       <title>ADD_DYNAMIC_DISPLAY</title>
 <screen>
-ADD_DYNAMIC_DISPLAY: Create a new server definition that will
-                     run on the specified display leaving, it
-                     in DISPLAY_CONFIG state.
-Supported since: 2.8.0.0
-Arguments: &lt;display to run on&gt;=&lt;server&gt;
-  Where &lt;server&gt; is either a configuration named in the
-  GDM configuration or a literal command name.
-Answers:
-  OK &lt;display&gt;
-  ERROR &lt;err number&gt; &lt;english error description&gt;
-     0 = Not implemented
-     2 = Existing display
-     3 = No server string
-     4 = Display startup failure
-     100 = Not authenticated
-     200 = Dynamic Displays not allowed
-     999 = Unknown error
+ADD_DYNAMIC_DISPLAY: Creauna nueva definición de servidor que
+                     se ejecutará en el visor especificado,
+                     dejándolo en estado DISPLAY_CONFIG.
+Suportado desde: 2.8.0.0
+Argumentos: &lt;visor en el que ejecutar&gt;=&lt;servidor&gt;
+  Donde &lt;servidor&gt; es o una configuración nombrada en
+  la configuración de GDM o un nombre de comando literal.
+Respuestas:
+  OK &lt;visor&gt;
+  ERROR &lt;número de error&gt; &lt;descripción del error en inglés&gt;
+     0 = No implementado
+     2 = Visor existente
+     3 = Falta la cadena del servidor
+     4 = Fallo al iniciar el visor
+     100 = No autenticado
+     200 = Visores dinámicos no permitidos
+     999 = Error desconocido
 </screen>
       </sect3>
 
@@ -3085,8 +3233,8 @@ QUERY_LOGOUT_ACTION: Query which logout actions are possible
 Supported since: 2.5.90.0
 Answers:
   OK &lt;action&gt;;&lt;action&gt;;...
-     Where action is one of HALT, REBOOT or SUSPEND.  An
-     empty list can also be returned if no action is possible.
+     Where action is one of HALT, REBOOT, SUSPEND or CUSTOM_CMD[0-9].
+     An empty list can also be returned if no action is possible.
      A '!' is appended to an action if it was already set with
      SET_LOGOUT_ACTION or SET_SAFE_LOGOUT_ACTION.  Note that
      SET_LOGOUT_ACTION has precedence over
@@ -3185,10 +3333,11 @@ SET_LOGOUT_ACTION: Tell the daemon to halt/restart/suspend after
                    connections that passed AUTH_LOCAL.
 Supported since: 2.5.90.0
 Arguments: &lt;action&gt;
-  NONE           Set exit action to 'none'
-  HALT           Set exit action to 'halt'
-  REBOOT         Set exit action to 'reboot'
-  SUSPEND        Set exit action to 'suspend'
+  NONE               Set exit action to 'none'
+  HALT               Set exit action to 'halt'
+  REBOOT             Set exit action to 'reboot'
+  SUSPEND            Set exit action to 'suspend'
+  CUSTOM_CMD[0-9]    Set exit action to 'custom command [0-9]'
 Answers:
   OK
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3215,10 +3364,11 @@ SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/restart/suspend
                          connections that passed AUTH_LOCAL.
 Supported since: 2.5.90.0
 Arguments: &lt;action&gt;
-  NONE           Set exit action to 'none'
-  HALT           Set exit action to 'halt'
-  REBOOT         Set exit action to 'reboot'
-  SUSPEND        Set exit action to 'suspend'
+  NONE               Set exit action to 'none'
+  HALT               Set exit action to 'halt'
+  REBOOT             Set exit action to 'reboot'
+  SUSPEND            Set exit action to 'suspend'
+  CUSTOM_CMD[0-9]    Set exit action to 'custom command [0-9]'
 Answers:
   OK
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -4090,17 +4240,47 @@ homogeneous="bool"&gt;
           </varlistentry>
         </variablelist>
 
+        <para>
+          List items by default display as lists, but the combo="true" attribute
+          can be used to specify combo box style (combo style supported since GDM 2.18).
+          Some predefined lists may be included in a theme by using the following id values.
+          Customized lists may also be defined, which are explained below.
+        </para>
 
-        <para>Los elementos de listas pueden tener valores id como siguen:</para>
+        <variablelist>
+          <varlistentry>
+            <term>session</term>
+            <listitem>
+              <para>
+                A list of available sessions, which allows the user to pick
+                the session to use.  Supported since GDM 2.18.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <variablelist>
+          <varlistentry>
+            <term>language</term>
+            <listitem>
+              <para>
+                A list of available languages, which allows the user to pick
+                the language to use.  Supported since GDM 2.18.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
         <variablelist>
           <varlistentry>
             <term>userlist</term>
             <listitem>
               <para>
-                A Face Browser list, so that users can pick
-                their username by clicking on this instead
-                of typing.
+                A Face Browser list, so that users can pick their username
+                by clicking on this instead of typing.  This obviously exposes
+                the usernames to viewers of the login screen, and is not
+                recommended for users who feel that this reduces security.
+                The face browser does not support combo box style.
               </para>
             </listitem>
           </varlistentry>
@@ -4188,7 +4368,9 @@ homogeneous="bool"&gt;
 </screen>
         </para>
 
-        <para>Los valores posibles para los ids de los botones son los siguientes:</para>
+        <para>
+          Possible values for button ids are as follows.  
+        </para>
 
         <variablelist>
           <varlistentry>
@@ -4205,6 +4387,15 @@ homogeneous="bool"&gt;
             </listitem>
           </varlistentry>
 
+          <varlistentry>
+            <term>custom_cmd_button[0-9]</term>
+            <listitem>
+              <para>
+                Runs the <filename>n-th</filename> custom command.
+              </para>
+            </listitem>
+          </varlistentry>
+          
           <varlistentry>
             <term>disconnect_button</term>
             <listitem>
@@ -4345,6 +4536,10 @@ homogeneous="bool"&gt;
 
         <para><filename>chooser</filename>, si ChooserButton está puesto a «true» en la configuración de GDM.</para>
         <para><filename>configurar</filename>, si ConfigAvailable está puesto a «true» en la configuración de GDM.</para>
+        <para>
+          <filename>custom_cmd[0-9]</filename>, if <filename>n-th</filename>
+          CustomCommand is specified in the GDM configuration.
+        </para>
         <para><filename>halt</filename>, si HaltDaemon está especificado en la configuración de GDM.</para>
         <para><filename>reiniciar</filename>, si RebootCommand está especificado en la configuración de GDM.</para>
         <para><filename>suspend</filename>, si SuspendCommand está especificado en la configuración de GDM.</para>
@@ -4481,6 +4676,9 @@ homogeneous="bool"&gt;
         <para><filename>caps-lock-warning</filename>, _("La tecla BloqMayús está activada."</para>
         <para><filename>chooser</filename>, _("Entrada remota via _XDMCP"</para>
         <para><filename>config</filename>, _("_Configurar"</para>
+        <para>
+          <filename>custom_cmd[0-9]</filename>, _("_Custom[0-9]"
+        </para>
         <para><filename>disconnect</filename>, _("D_esconectar"</para>
         <para><filename>halt</filename>, _("_Apagar")</para>
         <para><filename>language</filename>, _("_Idioma"</para>
@@ -4503,9 +4701,23 @@ homogeneous="bool"&gt;
       <sect3 id="customwidgetry">
         <title>Widgets personalizados</title>
 
-        <para>Actualmente hay un elemento que puede ser personalizable y este es el elemento de la lista. Si necesita preguntar al usuario cosas adicionales, como para escoger de una lista o lugares desde donde entrar, o establecer un conjunto de sesiones de entrada personalizadas puede configurar el elemento de la lista y añadir hijos del elemento de la lista que describan las selecciones. Cada elemento de la lista debe tener un id y un texto hijo. La elección será grabada en el archivo <filename>&lt;ServAuthDir&gt;/&lt;display&gt;.GreeterInfo</filename> como <filename>&lt;list id&gt;=&lt;listitem id&gt;</filename>.</para>
+        <para>
+          Currently there is one item which is customizable and this is
+          the list item.  If you need to ask the user extra things, such as
+          to pick from a list of places to log into, or set of custom login
+          sessions you can setup the list item and add listitem children that
+          describe the choices.  Each listitem must have an id and a text
+          child.  The choice will be recorded in the file
+          <filename>&lt;ServAuthDir&gt;/&lt;display&gt;.GreeterInfo</filename>
+          as <filename>&lt;list id&gt;=&lt;listitem id&gt;</filename>.
+        </para>
 
-        <para>Por ejemplo suponga que estamos en la pantalla 0, <filename>ServAuthDir</filename>  es  <filename>/var/gdm</filename> y necesitamos tener lo siguiente en el tema:</para>
+        <para>
+          For example suppose we are on display :0,
+          <filename>ServAuthDir</filename> is
+          <filename>&lt;var&gt;/lib/gdm</filename> and we have the following in the
+          theme:
+        </para>
 
 <screen>
 &lt;item type="list" id="custom-config"&gt;
@@ -4519,9 +4731,13 @@ homogeneous="bool"&gt;
 &lt;/item&gt;
 </screen>
 
-        <para>Entonces si el usuario elije «Foo» entonces <filename>&lt;var&gt;/gdm/:0.GreeterInfo</filename> contendrá <screen>
+        <para>
+          Then if the user chooses 'Foo' then 
+          <filename>&lt;var&gt;/lib/gdm/:0.GreeterInfo</filename> will contain:
+<screen>
 custom-config=foo
-</screen></para>
+</screen>
+        </para>
       </sect3>
     </sect2>
   </sect1>
@@ -4559,6 +4775,13 @@ GtkThemesToAllow=HighContrast,HighContrastInverse
 <screen>
 GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
 </screen>
+
+             <para>
+             The use of assistive technologies and the atk-bridge module
+             requires the registry daemon, <command>at-spi-registryd</command>,
+             to be running.  This is handled by the GDM GUI starting with
+             version 2.17.
+             </para>
 
              <para>Los administradores de sistema quizá deseen cargar sólo un subconjunto mínimo de estos módulos que se requieren para soportar su base de usuarios. Dependiendo de las necesidades de los usuarios finales, no todos los GtkModules necesitan ser cargados. Si sus usuarios finales necesitan el lector de pantalla integrado y la lupa, debe incuir  «gail» y «atk-bridge». Si sus usuarios finales estarán usando un dispositivo apuntador sin botones o interruptores, incluya «dwellmouselistener». si algunos de sus usuarios usarán dispositivos apuntadores con interruptores, alternativos a teclados físicos o despositivos de botones, incluya «keymouselistener». Incluir los cuatro es apropiado para la mayoría de las configuraciones del sistema. El teclado en pantalla puede funcionar singail o  atk-bridge, pero con un conjunto de características reducido; paa accesibilidad optima recomendamos incluir tanto gail como atk-bridge.</para>
 
@@ -4663,53 +4886,26 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
 
        <sect2 id="solarisconfiguration">
           <title>Configuración de Solaris</title>
-             <para>
-               On Solaris, the following configuration is recommended.
-               This turns on IPv6 and also turns on PreFetch for
-               performance benefit.
-
-<screen>
+             <para>En Solaris, la siguiente configuración está recomendada. Esto activa IPv6 y además activa PreFetch para beneficiar el rendimiento. <screen>
 ./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
    --libexecdir=/usr/lib --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
    --with-prefetch --with-post-path=/usr/openwin/bin
-</screen>
-             </para>
+</screen></para>
 
-             <para>
-               Configuring GDM with the
-               "--with-post-path=/usr/openwin/bin" on Solaris is
-               recommended for access to programs like Xnest.
-             </para>
+             <para>Configurar GDM con "--with-post-path=/usr/openwin/bin" en Solaris está recomendado para acceder a programas como Xnest.</para>
        </sect2>
 
        <sect2 id="solarislogindevperm">
           <title>Solaris /etc/logindevperm</title>
-             <para>
-               GDM supports /etc/logindevperm, but only on Solaris 10 and higher.
-               Refer to the logindevperm.4 man page for more information.
-             </para>
+             <para>GDM soporta /etc/logindevperm, pero sólo en Solaris 10 y superiores. Vea la página man logindevperm.4 para más información.</para>
 
-             <para>
-               To make /etc/logindevperm functionality work on Solaris 9 or
-               earlier you would have to hack the GDM PreSession and
-               PostSession script to chmod the device permissions directly.  In
-               other words, if /etc/logindevperm had a listing like this:
-             </para>
+             <para>Para hacer funcionar /etc/logindevperm en Solaris 9 o anteriores, deberá haquear los scripts de GDM PreSession y PostSession para hacer un chmod a los permisos del dispositivo directamente. En otras palabras, si /etc/logindevperm se lista como esto:</para>
 
 <screen>
 /dev/console    0600    /dev/sound/*            # audio devices
 </screen>
      
-             <para>
-               The PreSession script would need to be modified to chown
-               /dev/console to the user:group who is logging into the console
-               and ensure whatever permissions is specified in /etc/logindevperm
-               (0600 for the line above).  Then in the PostSession script chmod
-               the device back to root:root and ensure 0600 this time (do not
-               use the value in the /etc/logindevperm file).  Linux uses a
-               different mechanism for managing device permissions, so this
-               extra scripting is not needed.
-             </para>
+             <para>El script de PreSession debería tener que modificarse para que haga chown de /dev/console al usuario:grupo de quien esté entrando en la consola y asegurarse cualesquiera de los permisos estén especificados en /etc/logindevperm (0600 para la línea de arriba). Después en el script PostSession volver a hacer un chmod del dispositivo a root:root y asegurarse de que los permisos son 0600 esta vez (no usar el valor en el archivo /etc/logindevperm esta vez). Linux usa un mecanismo diferente para gestionar los permisos de dispositivos, así que este script previo no es necesario.</para>
        </sect2>
 
        <sect2 id="solarisautomaticlogin">
@@ -4721,7 +4917,7 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
                would only notice this problem if you try to make use of it.
                Turning this feature on causes your computer to login to a
                specified username on startup without asking for username
-               and password.  This is an unsecure way to set up your
+               and password.  This is an insecure way to set up your
                computer. 
              </para>
 
@@ -4800,15 +4996,10 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
         <filename>appserver</filename>.  You install GDM on both.
       </para>
 
-      <para>
-        On <filename>appserver</filename> you enable XDMCP, so you have
-<screen>
+      <para>En <filename>appserver</filename> activa XDMCP, así que tiene <screen>
 [xdmcp]
 Enable=true
-</screen>
-        If you want no local screens here, you can then
-        make the <filename>[servers]</filename> section empty.
-      </para>
+</screen> Si no quiere pantallas locales aquí, puede dejar vacía la sección <filename>[servers]</filename>.</para>
 
       <para>
         On the <filename>xterminal</filename> you disable XDMCP (you don't
@@ -4840,7 +5031,7 @@ handled=false
     <sect2 id="terminallabtwo">
       <title>Laboratorio con terminales con dos o más servidores</title>
 
-      <para>Suponga que quiere hacer un laboratorio lleno de terminales X que todas se conectan a una selección de servidores. Por ahora  llamémoslos <filename>appserveruno</filename> y<filename>appserverdos</filename>. De nuevo llamamos a nuestro servidor de terminales X <filename>xterminal</filename>. La configuración de ambos servidores es la mismoa que con el caso de un servidor en la sección anterior. No necesita activar explícitamente las consultas indirectas en el servidor debido a que ejecutamos los selectores localmente en las terminales X.</para>
+      <para>Suponga que quiere hacer un laboratorio lleno de terminales X que todas se conectan a una selección de servidores. Por ahora  llamémoslos <filename>appserveruno</filename> y<filename>appserverdos</filename>. De nuevo llamamos a nuestro servidor de terminales X <filename>xterminal</filename>. La configuración de ambos servidores es la misma que con el caso de un servidor en la sección anterior. No necesita activar explícitamente las consultas indirectas en el servidor debido a que ejecutamos los selectores localmente en las terminales X.</para>
 
       <para>
         So on the <filename>xterminal</filename> you again disable XDMCP.
@@ -4894,6 +5085,102 @@ Hosts=appserverone,appservertwo
         and not all of them have to be on all the time.  You could also have
         one of the X terminals handle indirect XDMCP queries and serve up the
         chooser to the other X terminals.
+      </para>
+    </sect2>
+    
+    <sect2 id="customcommand">
+      <title>Defining Custom Commands</title>
+      
+      <para>
+        Suppose you want to add a custom command to the GDM menu that will give
+        you the oportunity to boot into other operating system such as Windoze.
+        Jsut add the following options into the
+        <filename>[customcommand]</filename> section of the GDM configuration
+        file.
+        
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
+          CustomCommandLabel0=_Windoze
+          CustomCommandLRLabel0=Reboot into _Windoze
+          CustomCommandText0=Are you sure you want to restart the computer into Windoze?
+          CustomCommandTooltip0=Restarts the computer into Windoze
+        </screen>
+
+        CustomCommand0 specifies two commands separated by a semicolon:
+        <filename>/sbin/rebootwindoze</filename> and 
+        <filename>/usr/local/sbin/rebootwindoze</filename>.  GDM will use
+        the first valid command in the list.  This allows different 
+        commands for different operating systems to be included.
+      </para>
+      <para>
+        Note, that besides being able to customise this option to reboot into
+        different operating systems you can also use it to define your own
+        custom behaviours that you wish to run from the GDM menu.  Suppose you
+        want to give users the oportunity to run system update scripts from the
+        login screen. Add the following options into the
+        <filename>[customcommand]</filename> section of your GDM configuration
+        file.
+        
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/updatesystem;/usr/local/sbin/updatesystem
+          CustomCommandLabel0=_Update Me
+          CustomCommandLRLabel0=Update the system
+          CustomCommandText0=Are you sure you want to update the system software?
+          CustomCommandTooltip0=Updates the system
+          CustomCommandNoRestart0=true
+        </screen>
+      </para>
+      
+      <para>
+        Both custom commands could be defined as follows.
+
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
+          CustomCommandLabel0=_Windoze
+          CustomCommandLRLabel0=Reboot into _Windoze
+          CustomCommandText0=Are you sure you want to restart the computer into Windoze?
+          CustomCommandTooltip0=Restarts the computer into Windoze
+          
+          CustomCommand1=/sbin/updatesystem;/usr/local/sbin/updatesystem
+          CustomCommandLabel1=_Update Me
+          CustomCommandLRLabel1=Update the system
+          CustomCommandText1=Are you sure you want to update the system software?
+          CustomCommandTooltip1=Updates the system
+          CustomCommandNoRestart1=true
+        </screen>
+        </para>
+      
+      <para>
+        There can be up to 10 custom commands numbered 0-9.
+
+        <screen>
+          [customcommand]
+          CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
+          CustomCommandLabel0=_Windoze
+          CustomCommandLRLabel0=Reboot into _Windoze
+          CustomCommandText0=Are you sure you want to restart the computer into Windoze?
+          CustomCommandTooltip0=Restarts the computer into Windoze
+          
+          CustomCommand1=/sbin/updatesystem;/usr/local/sbin/updatesystem
+          CustomCommandLabel1=_Update Me
+          CustomCommandLRLabel1=Update the system
+          CustomCommandText1=Are you sure you want to update the system software?
+          CustomCommandTooltip1=Updates the system
+          CustomCommandNoRestart1=true
+          
+          CustomCommand3=/sbin/do_something
+          .
+          .
+          .
+          
+          CustomCommand4=/sbin/do_something_else
+          .
+          .
+          .
+        </screen>
       </para>
     </sect2>
   </sect1>
@@ -4975,7 +5262,7 @@ Hosts=appserverone,appservertwo
          language, in the <filename>~/.dmrc</filename>.  Other files, such
          as the user's <filename>~/.Xauthority</filename> file will also
          affect login.  GDM, by default, is strict about how it tries to
-         access files in the users home directory, and will ignore the file if
+         access files in the user's home directory, and will ignore the file if
          they do not conform to certain rules.  You can use the 
          <filename>RelaxPermissions</filename> configuration option to
          make GDM less strict about how it accesses files in the user's

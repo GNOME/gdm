@@ -115,6 +115,7 @@ static gchar *GdmFailsafeXserver = NULL;
 static gchar *GdmXKeepsCrashing = NULL;
 static gchar *GdmHalt = NULL;
 static gchar *GdmReboot = NULL;
+static GdmCustomCmd *GdmCustomCommands = NULL;
 static gchar *GdmSuspend = NULL;
 static gchar *GdmServAuthDir = NULL;
 static gchar *GdmMulticastAddr;
@@ -505,6 +506,37 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_PRE_FETCH_PROGRAM,
       &GdmPreFetchProgram, &string_type);
    gdm_config_add_hash (GDM_KEY_PAM_STACK, &GdmPamStack, &string_type);
+
+   /* custom command string values */
+   GdmCustomCommands = g_new0 (GdmCustomCmd, GDM_CUSTOM_COMMAND_MAX);   
+   register int i = 0;
+   gchar *key_string = NULL; 
+   for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+       /* For each possible custom command */      
+       key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+       GdmCustomCommands[i].command = NULL;
+       gdm_config_add_hash (key_string, &GdmCustomCommands[i].command, &string_type);
+
+       key_string = g_strdup_printf (_("%s%d=_Custom%d"), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i, i); 
+       GdmCustomCommands[i].command_label = NULL;
+       gdm_config_add_hash (key_string, &GdmCustomCommands[i].command_label, &string_type);
+
+       key_string = g_strdup_printf (_("%s%d=Execute _custom command %d"), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i, i);
+       GdmCustomCommands[i].command_lr_label = NULL;
+       gdm_config_add_hash (key_string, &GdmCustomCommands[i].command_lr_label, &string_type);
+
+       key_string = g_strdup_printf (_("%s%d=Are you sure?"), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+       GdmCustomCommands[i].command_text = NULL;
+       gdm_config_add_hash (key_string, &GdmCustomCommands[i].command_text, &string_type);
+        
+       key_string = g_strdup_printf (_("%s%d=Execute custom command %d"), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i, i);
+       GdmCustomCommands[i].command_tooltip = NULL;
+       gdm_config_add_hash (key_string, &GdmCustomCommands[i].command_tooltip, &string_type);
+
+       key_string = g_strdup_printf (_("%s%d=false"), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
+       GdmCustomCommands[i].command_no_restart = FALSE;
+       gdm_config_add_hash (key_string, &GdmCustomCommands[i].command_no_restart, &bool_type);  
+   }   
 
    /* int values */
    gdm_config_add_hash (GDM_KEY_XINERAMA_SCREEN, &GdmXineramaScreen, &int_type);
@@ -1159,6 +1191,23 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
 
    /* All others */
    } else {
+       register int i = 0;
+       gchar * key_string = NULL;
+       for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {	   
+	   /* For each possible custom command */     
+	   key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+	   if(is_key (key, key_string)) {	       
+	       if (value != NULL)
+		  *setting = ve_get_first_working_command (value, FALSE);
+	       else
+		  *setting = NULL;
+
+	       break;
+	   }
+       }
+
+       g_free(key_string);
+
        if (value != NULL)
           *setting = g_strdup (value);
        else {
@@ -1192,6 +1241,19 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
          notify_displays_string (GDM_NOTIFY_GTK_MODULES_LIST, *setting);
       else if (is_key (key, GDM_KEY_TIMED_LOGIN))
          notify_displays_string (GDM_NOTIFY_TIMED_LOGIN, *setting);
+
+      register int i = 0;
+      gchar * key_string = NULL;
+      for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {	   	   
+	  /* For each possible custom command */     
+	   key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+	   if (is_key (key, key_string)) {
+	       g_free(key_string);
+	       key_string = g_strdup_printf (_("%s%d"), GDM_NOTIFY_CUSTOM_CMD_TEMPLATE, i);
+	       notify_displays_string (key_string, *setting);
+	   }
+      }       
+      g_free(key_string);
    }
 
    if (setting_copy != NULL)
