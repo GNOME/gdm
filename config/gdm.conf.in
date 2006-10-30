@@ -1,26 +1,25 @@
 # GDM Configuration file.
 #
-# This file should not be updated by hand.  Since GDM 2.13.0.4,
-# configuration choices in the /etc/X11/gdm/gdm.conf-custom file will
-# override the default values specified in this file (installation 
-# locations of the configuration files may vary for different distros).
-# This defaults.conf file may be overwritten on upgrade, so to ensure
-# that your configuration choices are not lost, please make sure that 
-# your changes are made only the the custom.conf file.
-#
-# If you were using an older version of GDM, your system may have the
-# the older gdm.conf configuration file on the system.  If so, then this
-# file is used instead of the custom.conf file for backwards support.
-# If you make changes to the custom.conf file and they seem to not be
-# taking effect, this is likely the problem.  Consider migrating your
-# configuration to the new custom.conf file and removing the gdm.conf
+# This file should not be updated by hand.  Since GDM 2.13.0.4, configuration
+# choices in the /etc/X11/gdm/gdm.conf-custom file will override the default
+# values specified in this file (installation locations of the configuration
+# files may vary for different distros).  This defaults.conf file may be
+# overwritten on upgrade, so to ensure that your configuration choices are not
+# lost, please make sure that your changes are made only the the custom.conf
 # file.
+#
+# If you were using an older version of GDM, your system may have the the older
+# gdm.conf configuration file on the system.  If so, then this file is used
+# instead of the custom.conf file for backwards support.  If you make changes
+# to the custom.conf file and they seem to not be taking effect, this is likely
+# the problem.  Consider migrating your configuration to the new custom.conf
+# file and removing the gdm.conf file.
 #
 # You can use the gdmsetup program to graphically edit the gdm.conf-custom
 # file.  Note that gdmsetup does not support every option in this file, just
-# the most common ones that users want to change.  If you feel that
-# gdmsetup should support additional configuration options, please file a
-# bug report at http://bugzilla.gnome.org/.
+# the most common ones that users want to change.  If you feel that gdmsetup
+# should support additional configuration options, please file a bug report at
+# http://bugzilla.gnome.org/.
 #
 # If you hand-edit the GDM configuration, you should run the following command
 # to get the GDM daemon to recognize the change.  Any running GDM GUI programs
@@ -600,17 +599,18 @@ chooser=true
 
 [customcommand]
 # This section allows you specify up to 10 custom commands. Each of the
-# commands can be defined by the six parameters listed below. In each of the
+# commands can be defined by the seven parameters listed below. In each of the
 # descriptions of the parameters N can take on any values between 0 and 9,
 # i.e. CustomCommand0=,CustomCommand1=,...,CustomCommand9=.  The  numbers
 # can have gaps as long as they fit within predefined set of 10, and their
 # placement order within this section and with respect to each other is
 # not important.
 #
-# CustomCommandN, CustomCommandTextN, CustomCommandLabelN,
-# CustomCommandLRLabelN, CustomCommandTooltipN, and CustomCommandNoRestartN
-# must all be defined for a given integer N, where N can be a number from
-# 0-9.
+# CustomCommandN, CustomCommandTextN, CustomCommandLabelN, 
+# CustomCommandLRLabelN, CustomCommandTooltipN, CustomCommandIsPersistentN
+# and CustomCommandNoRestartN should all be defined for a given integer N, 
+# where N can be a number from 0-9 (if not the default values will be 
+# assigned except CustomCommandN for which no default exists).
 
 # Custom command to run.  Multiple commands may be specified separated by 
 # semicolons.  GDM will use the first valid command.  Examples:
@@ -626,15 +626,16 @@ chooser=true
 #CustomCommandTextN=
 
 # Custom command label that will appear as stock label on buttons/menu items.
+# This option can't contain any semicolon characters (i.e. ";").
 # Examples:
 # _Windoze, or
 # _Update Me
 #CustomCommandLabelN=
 
-# Custom command label that will appear as stock label on radio buttons/lista
-# items. Examples:
-# Restart into _Windoze, or
-# Perform system _Update
+# Custom command label that will appear as stock label on radio buttons/list
+# items.  The underscore indicates the mnemonic used with this item.  Examples:
+#   Restart into _Windoze
+#   Perform system _Update
 #CustomCommandLRLabelN=
 
 # Custom command tooltip. Examples
@@ -642,10 +643,19 @@ chooser=true
 # Updates the computer software to the most recent version(s)
 #CustomCommandTooltipN=
 
+# Custom command persistence option. Setting it to true will allow this
+# command to appear outside the login manager, e.g. on the desktop through 
+# Log Out/Shut Down dialogs. The default value is false.
+#CustomCommandIsPersistentN=
+
 # Custom command gdm/system restart option. Setting it to true will not
 # restart gdm after command execution.  The default commands (reboot, shut
 # down) all reboot the system by default which is why the default setting
 # is true.
+# In addition when corresponding CustomCommandIsPersistentN option is set to
+# true, setting CustomCommandNoRestartN to false will place CustomCommandN
+# in the Shut Down dialog set of actions, setting it to true will place
+# CustomCommandN in the Log Out dialog set of actions.
 #CustomCommandNoRestartN=
 #
 # Example layout for more than one command:
@@ -654,6 +664,7 @@ chooser=true
 #CustomCommandLabel0=
 #CustomCommandLRLabel0=
 #CustomCommandTooltip0=
+#CustomCommandIsPersistent0=
 #CustomCommandNoRestart0=
 #
 #CustomCommand1=
@@ -661,6 +672,7 @@ chooser=true
 #CustomCommandLabel1=
 #CustomCommandLRLabel1=
 #CustomCommandTooltip1=
+#CustomCommandIsPersistent1=
 #CustomCommandNoRestart1=
 #
 # and so on

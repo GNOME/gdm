@@ -719,6 +719,8 @@ gdm_set_welcomemsg (void)
 static void
 gdm_read_config (void)
 {
+	gint i;
+
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
 
@@ -778,9 +780,8 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_ADD_GTK_MODULES);
 
 	/* Keys for custom commands */
-	register int i = 0;
-	gchar * key_string = NULL;	
-	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar * key_string = NULL;
 		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		gdm_config_get_string (key_string);
 
@@ -795,9 +796,9 @@ gdm_read_config (void)
         
 		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		gdm_config_get_string (key_string);
-	}     
 
-	g_free (key_string);
+		g_free (key_string);
+	}     
 
 	/* Keys not to include in reread_config */
 	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
@@ -810,6 +811,9 @@ gdm_read_config (void)
 static gboolean
 greeter_reread_config (int sig, gpointer data)
 {
+	gint i;
+	gboolean custom_changed = FALSE;
+
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
 
@@ -869,41 +873,39 @@ greeter_reread_config (int sig, gpointer data)
 		_exit (DISPLAY_RESTARTGREETER);
 	}
 
-	register int i = 0;
-	gboolean custom_changed = FALSE;
-	gchar *key_string = NULL;
-	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-  	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-	    if (gdm_config_reload_string (key_string))
-		custom_changed = TRUE;
-	    
-	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
-	    if (gdm_config_reload_string (key_string))
-		custom_changed = TRUE;
-	    
-	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
-	    if (gdm_config_reload_string (key_string))
-		custom_changed = TRUE;
-	    
-	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
-	    if (gdm_config_reload_string (key_string))
-		custom_changed = TRUE;
-	    
-	    key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
-	    if (gdm_config_reload_string (key_string))
-		custom_changed = TRUE;
-	}     
-	
-	g_free (key_string);			
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar *key_string = NULL;
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		if (gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+		
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		if (gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+		
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+		if (gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+		
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+		if (gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
+		
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+		if (gdm_config_reload_string (key_string))
+			custom_changed = TRUE;
 
+		g_free (key_string);
+	}     	
+	
 	if(custom_changed){
-	    /* Set busy cursor */
-	    gdm_common_setup_cursor (GDK_WATCH);
-	    
-	    gdm_wm_save_wm_order ();
-	    gdmcomm_comm_bulk_stop ();
-	    
-	    _exit (DISPLAY_RESTARTGREETER);
+		/* Set busy cursor */
+		gdm_common_setup_cursor (GDK_WATCH);
+		
+		gdm_wm_save_wm_order ();
+		gdmcomm_comm_bulk_stop ();
+		
+		_exit (DISPLAY_RESTARTGREETER);
 	}
 
 	gdm_config_reload_string (GDM_KEY_SOUND_PROGRAM);
@@ -1088,6 +1090,7 @@ main (int argc, char *argv[])
   const char *gdm_gtk_theme;
   guint sid;
   int r;
+  gint i;
 
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
     DOING_GDM_DEVELOPMENT = TRUE;
@@ -1226,17 +1229,17 @@ main (int argc, char *argv[])
   GdmConfiguratorFound    = gdm_working_command_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR));
 
   GdmCustomCmdsFound = g_new0 (gboolean, GDM_CUSTOM_COMMAND_MAX);
-  register int i = 0;
-  gchar * key_string = NULL;	
-  for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-      /*  For each possible custom command */      
-      key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-      GdmCustomCmdsFound[i] = gdm_working_command_exists (gdm_config_get_string (key_string));
-      if (GdmCustomCmdsFound[i])
-	  GdmAnyCustomCmdsFound = TRUE;
-  }
-  g_free (key_string);
+  for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+	  gchar * key_string = NULL;
+	  /*  For each possible custom command */      
+	  key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+	  GdmCustomCmdsFound[i] = gdm_working_command_exists (gdm_config_get_string (key_string));
+	  if (GdmCustomCmdsFound[i])
+		  GdmAnyCustomCmdsFound = TRUE;
 
+	  g_free (key_string);
+  }
+  
   if (g_getenv ("GDM_THEME") != NULL)
      gdm_graphical_theme = g_strdup (g_getenv ("GDM_THEME"));
   else if (gdm_config_get_bool (GDM_KEY_GRAPHICAL_THEME_RAND))

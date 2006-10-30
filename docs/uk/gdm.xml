@@ -2597,8 +2597,8 @@ gdm:.my.domain
         <para>
           You can create up to 10 different commands. Gaps between command
           numbers are allowed and their relative positioning within the
-          section is not important as long as they conform to the permitted
-          range of [0-9].
+          section and with respect to each other is not important as long as
+          they conform to the permitted range of [0-9].
           
         </para>
           
@@ -2611,11 +2611,14 @@ gdm:.my.domain
               <synopsis>CustomCommand[0-9]=</synopsis>
               <para>
                 Full path and arguments to command to be executed when user
-                selects n-th "Custom Command" from the Actions menu.
-                This can be a ';' separated list of commands to try.  If the 
-                value is empty or missing, then the custom command is not
-                available.  By default this value is not enabled, so to enable 
-                "Custom Command" it must be set to a nonempty value. 
+                selects <filename>n-th</filename> "Custom Command"
+                from the Actions menu.  This can be a ';' separated list of
+                commands to try.  If the value is empty or missing, then the
+                custom command is not available.  By default this value is not
+                enabled, so to enable "Custom Command" it must be
+                set to a nonempty value.  [0-9] represents the
+                <filename>CustomCommand</filename> suffix and can be an
+                integer between 0 and 9. 
               </para>
             </listitem>
           </varlistentry>
@@ -2630,6 +2633,8 @@ gdm:.my.domain
                 buttons and menu items. If not specified the default value is
                 "_Custom[0-9]". This option is only valid if
                 corresponding <filename>CustomCommand</filename> is defined. 
+                [0-9] represents <filename>CustomCommand</filename> suffix
+                and can be an integer between 0 and 9.
               </para>
             </listitem>
           </varlistentry>
@@ -2644,7 +2649,9 @@ gdm:.my.domain
                 list items and radio buttons.  If not specified the default
                 value is  "Execute _custom command [0-9]". This 
                 option is only valid if corresponding
-                <filename>CustomCommand</filename> is defined.
+                <filename>CustomCommand</filename> is defined.  [0-9]
+                represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
               </para>
             </listitem>
           </varlistentry>
@@ -2658,7 +2665,9 @@ gdm:.my.domain
                 <filename>n-th</filename> "Custom Command"
                 has been executed. If not specified the default value is
                 "false". This option is only valid if corresponding
-                <filename>CustomCommand</filename> is defined.
+                <filename>CustomCommand</filename> is defined.  [0-9]
+                represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
               </para>
             </listitem>
           </varlistentry>
@@ -2674,6 +2683,8 @@ gdm:.my.domain
                 item has been activated.  If not specified the default value is
                 "Are you sure?". This option is only valid if
                 corresponding <filename>CustomCommand</filename> is defined.
+                [0-9] represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
               </para>
             </listitem>
           </varlistentry>
@@ -2688,6 +2699,8 @@ gdm:.my.domain
                 entries. If not specified the default value is  "Execute
                 custom command [0-9]". This option is only valid if
                 corresponding <filename>CustomCommand</filename> is defined.
+                [0-9] represents <filename>CustomCommand</filename> suffix and
+                can be an integer between 0 and 9.
               </para>
             </listitem>
           </varlistentry>         
@@ -4697,6 +4710,19 @@ homogeneous="bool"&gt;
         </para>
 
         <para>Зауважте, що відносні назви шляхів мають бути у тому самому каталозі, що й <filename>.xml</filename> файл теми у <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>.</para>
+
+        <para>
+          Note that alternative image file can be specified using the altfile[n]
+	  property. GDM will use the last valid image filename specified. 
+	  For example:
+<screen>
+&lt;normal file="picture.png" altfile1="distribution-blah-image.png" altfile2="distribution-foo-image.png"/&gt;
+</screen>
+	 If <filename>distribution-foo-image.png</filename> is a valid image 
+	 filename it will be used. Otherwise distribution-blah-image.png will 
+	 be used if valid.
+        </para>
+
       </sect3>
 
       <sect3 id="listcoloronodes">

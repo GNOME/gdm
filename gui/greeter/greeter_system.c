@@ -81,9 +81,10 @@ query_greeter_restart_handler (void)
 }
 
 static void
-query_greeter_custom_cmd_handler (GtkWidget *widget, gint *cmd_id)
+query_greeter_custom_cmd_handler (GtkWidget *widget, gpointer data)
 {
-        if (cmd_id) {
+        if (data) {
+		gint *cmd_id = (gint*)data;
 	        gchar * key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
 		if (gdm_wm_warn_dialog (gdm_config_get_string (key_string) , "", 
 					GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
@@ -171,6 +172,7 @@ void
 greeter_system_append_system_menu (GtkWidget *menu)
 {
 	GtkWidget *w, *sep;
+	gint i = 0;
 
 	/* should never be allowed by the UI */
 	if ( ! gdm_config_get_bool (GDM_KEY_SYSTEM_MENU) ||
@@ -214,20 +216,19 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmAnyCustomCmdsFound) {
-	        register int i = 0;
-		for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 		        if (GdmCustomCmdsFound[i]){
-			         gint * cmd_index = g_new0(gint, 1);
-				 *cmd_index = i;
-				 gchar * key_string = NULL;
-				 key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
-				 w = gtk_menu_item_new_with_mnemonic (gdm_config_get_string(key_string));
-				 gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
-				 gtk_widget_show (GTK_WIDGET (w));
-				 g_signal_connect (G_OBJECT (w), "activate",
-						   G_CALLBACK (query_greeter_custom_cmd_handler),
-						   cmd_index);
-				 g_free (key_string);
+				gint * cmd_index = g_new0(gint, 1);
+				*cmd_index = i;
+				gchar * key_string = NULL;
+				key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+				w = gtk_menu_item_new_with_mnemonic (gdm_config_get_string(key_string));
+				gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+				gtk_widget_show (GTK_WIDGET (w));
+				g_signal_connect (G_OBJECT (w), "activate",
+						  G_CALLBACK (query_greeter_custom_cmd_handler),
+						  cmd_index);
+				g_free (key_string);
 			}
 		}
 	}
@@ -283,7 +284,8 @@ greeter_system_handler (GreeterItemInfo *info,
   GtkWidget *config_radio = NULL;
   GtkWidget *chooser_radio = NULL;
   gchar *s;
-  int ret, i;
+  int ret;
+  gint i;
   GSList *radio_group = NULL;
   static GtkTooltips *tooltips = NULL;
 
@@ -492,7 +494,9 @@ greeter_system_handler (GreeterItemInfo *info,
 
 void
 greeter_item_system_setup (void)
-{
+{  
+  gint i;
+	
   greeter_item_register_action_callback ("reboot_button",
 					 (ActionFunc)query_greeter_restart_handler,
 					 NULL);  
@@ -512,14 +516,13 @@ greeter_item_system_setup (void)
 					 (ActionFunc)greeter_chooser_handler,
 					 NULL);
 
-  register int i = 0;
-  for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-      gint * cmd_index = g_new0(gint, 1);
-      *cmd_index = i;
-      gchar * key_string = g_strdup_printf (_("custom_cmd_button%d"), i);
-      greeter_item_register_action_callback (key_string,
-					     (ActionFunc)query_greeter_custom_cmd_handler,
-					     cmd_index);
-      g_free (key_string);
+  for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+	  gint * cmd_index = g_new0(gint, 1);
+	  *cmd_index = i;
+	  gchar * key_string = g_strdup_printf (_("custom_cmd_button%d"), i);
+	  greeter_item_register_action_callback (key_string,
+						 (ActionFunc)query_greeter_custom_cmd_handler,
+						 cmd_index);
+	  g_free (key_string);
   }
 }

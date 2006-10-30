@@ -241,6 +241,7 @@ enum {
 #define GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE "customcommand/CustomCommandText"
 #define GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE "customcommand/CustomCommandTooltip"
 #define GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE "customcommand/CustomCommandNoRestart"
+#define GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE "customcommand/CustomCommandIsPersistent"
 #define GDM_KEY_ROOT_PATH "daemon/RootPath=/sbin:/usr/sbin:" GDM_USER_PATH
 #define GDM_KEY_SERV_AUTHDIR "daemon/ServAuthDir=" AUTHDIR
 #define GDM_KEY_SESSION_DESKTOP_DIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" DMCONFDIR "/Sessions/:" DATADIR "/gdm/BuiltInSessions/:" DATADIR "/xsessions/"
@@ -452,6 +453,7 @@ struct _GdmCustomCmd {
     gchar *command_text; /* warning dialog text */
     gchar *command_tooltip; /* tooltip string */
     gboolean command_no_restart; /* no restart flag */
+    gboolean command_is_persistent; /* persistence flag */
 };
 
 #define GDM_CUSTOM_COMMAND_MAX 10 /* maximum number of supported custom commands */
@@ -1171,6 +1173,38 @@ void		gdm_final_cleanup	(void);
  *      to an action if it was already set with SET_LOGOUT_ACTION or
  *      SET_SAFE_LOGOUT_ACTION.  Note that SET_LOGOUT_ACTION has precedence
  *      over SET_SAFE_LOGOUT_ACTION.
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      100 = Not authenticated
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_QUERY_CUSTOM_CMD_LABELS "QUERY_CUSTOM_CMD_LABELS" /* None */
+/* QUERY_CUSTOM_CMD_LABELS: Query labels belonging to exported custom commands
+ *                          Only supported on connections that passed
+ *                          AUTH_LOCAL.
+ * Supported since: 2.5.90.0
+ * Answers:
+ *   OK <label1>;<label2>;...
+ *      Where labelX is one of the labels belonging to CUSTOM_CMDX (where X in [0,GDM_CUSTOM_COMMAND_MAX)).
+ *      An empty list can also be returned if none of the custom commands are 
+ *      exported outside login manager (no CustomCommandIsPersistent options are set to true).  
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      100 = Not authenticated
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_QUERY_CUSTOM_CMD_NO_RESTART_STATUS "QUERY_CUSTOM_CMD_NO_RESTART_STATUS" /* None */
+/* QUERY_CUSTOM_CMD_NO_RESTART_STATUS: Query NoRestart config options for each of custom commands
+ *                                     Only supported on connections that passed
+ *                                     AUTH_LOCAL.
+ * Supported since: 2.5.90.0
+ * Answers:
+ *   OK <status>
+ *      Where each bit of the status represents NoRestart value for each of the custom commands.
+ *      bit on (1):  NoRestart = true, 
+ *      bit off (0): NoRestart = false.
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      100 = Not authenticated

@@ -670,18 +670,19 @@ gdm_login_restart_handler (void)
 }
 
 static void
-gdm_custom_cmd_handler (GtkWidget *widget, gint *cmd_id)
+gdm_custom_cmd_handler (GtkWidget *widget, gpointer data)
 {	
-	if (cmd_id) {
-	    gchar * key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
-	    if (gdm_wm_warn_dialog (
-		gdm_config_get_string (key_string) , "", GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
-		    
-		    printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, *cmd_id);
-		    fflush (stdout);
-	    }
-
-	    g_free (key_string);		
+	if (data) {
+		int *cmd_id = (int*)data;
+		gchar * key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
+		if (gdm_wm_warn_dialog (
+			    gdm_config_get_string (key_string) , "", GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
+			
+			printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, *cmd_id);
+			fflush (stdout);
+		}
+		
+		g_free (key_string);		
 	}
 }
 
@@ -2274,7 +2275,7 @@ gdm_login_gui_init (void)
     GtkWidget *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
     GtkWidget /**help_button,*/ *button_box;
-    gint rows;
+    gint rows, i;
     GdkPixbuf *pb;
     GtkWidget *frame;
     int lw, lh;
@@ -2394,9 +2395,8 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 	
-	register int i = 0;
-	gchar * key_string = NULL;
-	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar * key_string = NULL;
 		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if (gdm_working_command_exists (gdm_config_get_string (key_string))) {
 			gint * cmd_index = g_new0(gint, 1);
@@ -2410,8 +2410,8 @@ gdm_login_gui_init (void)
 			gtk_widget_show (GTK_WIDGET (item));
 			got_anything = TRUE;			
 		}
+		g_free (key_string);
 	}
-	g_free (key_string);	
 
 	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT))) {
 		item = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
@@ -2975,6 +2975,8 @@ enum {
 static void
 gdm_read_config (void)
 {
+	gint i;
+
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
 
@@ -3010,10 +3012,9 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 	gdm_config_get_string (GDM_KEY_WELCOME);
 
-	/* String keys for custom commands */
-	register int i = 0;
-	gchar * key_string = NULL;	
-	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
+	/* String keys for custom commands */	
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
+		gchar * key_string = NULL;
 		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		gdm_config_get_string (key_string);
 
@@ -3028,8 +3029,9 @@ gdm_read_config (void)
         
 		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		gdm_config_get_string (key_string);
+
+		g_free (key_string);
 	}     
-	g_free (key_string);
 
 	gdm_config_get_int    (GDM_KEY_BACKGROUND_TYPE);
 	gdm_config_get_int    (GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY);
@@ -3081,6 +3083,8 @@ static gboolean
 gdm_reread_config (int sig, gpointer data)
 {
 	gboolean resize = FALSE;
+	gboolean custom_changed = FALSE;
+	gint i;
 
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
@@ -3160,10 +3164,8 @@ gdm_reread_config (int sig, gpointer data)
 	}
 
 	/* Keys for custom commands */
-	register int i = 0;
-	gboolean custom_changed = FALSE;
-	gchar *key_string = NULL;
-	for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar *key_string = NULL;
 		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
@@ -3183,8 +3185,9 @@ gdm_reread_config (int sig, gpointer data)
 		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
+
+		g_free (key_string);
 	}     
-	g_free (key_string);			
 
 	if(custom_changed){
 		/* Set busy cursor */
