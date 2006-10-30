@@ -28,5 +28,6 @@ void greeter_item_ulist_set_user (const char *user);
 gchar * greeter_item_ulist_get_selected_user (void);
 void greeter_item_ulist_unset_selected_user (void);
 void greeter_item_ulist_select_user (gchar *login);
+void greeter_item_ulist_check_show_userlist (void);
 
 #endif
