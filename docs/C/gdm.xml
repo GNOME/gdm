@@ -2,7 +2,7 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.17.0"> 
+    <!ENTITY version "2.17.1"> 
     <!ENTITY date "05/12/2006"> 
 ]>
 
@@ -6012,9 +6012,10 @@ homogeneous=&quot;bool&quot;&gt;
         </variablelist>
 
         <para>
-          List items by default display as lists, but the combo=&quot;true&quot; attribute
-          can be used to specify combo box style (combo style supported since GDM 2.18).
-          Some predefined lists may be included in a theme by using the following id values.
+          List items by default display as lists, but the
+          combo=&quot;true&quot; attribute can be used to specify combo box
+          style (combo style supported since GDM 2.16.2).  Some predefined
+          lists may be included in a theme by using the following id values.
           Customized lists may also be defined, which are explained below.
         </para>
 
@@ -6024,7 +6025,7 @@ homogeneous=&quot;bool&quot;&gt;
             <listitem>
               <para>
                 A list of available sessions, which allows the user to pick
-                the session to use.  Supported since GDM 2.18.
+                the session to use.  Supported since GDM 2.16.2.
               </para>
             </listitem>
           </varlistentry>
@@ -6036,7 +6037,7 @@ homogeneous=&quot;bool&quot;&gt;
             <listitem>
               <para>
                 A list of available languages, which allows the user to pick
-                the language to use.  Supported since GDM 2.18.
+                the language to use.  Supported since GDM 2.16.2.
               </para>
             </listitem>
           </varlistentry>
@@ -6062,11 +6063,12 @@ homogeneous=&quot;bool&quot;&gt;
             <term>userlist-rect</term>
             <listitem>
               <para>
-                This id can be specified for the <rect> object containing the
-                userlist and if the userlist is empty then this rectangle will
-                not be shown.  This allows the theme to define something like
-                an area with a different color and/or alpha to surround the
-                userlist, but only if there are users to display.
+                This id can be specified for the &lt;rect&gt; object containing
+                the userlist and if the userlist is empty then this rectangle
+                will not be shown.  This allows the theme to define something
+                like an area with a different color and/or alpha to surround
+                the userlist, but only if there are users to display.
+                Supported since 2.16.2.
               </para>
             </listitem>
           </varlistentry>
@@ -6482,14 +6484,14 @@ homogeneous=&quot;bool&quot;&gt;
 
         <para>
           Note that alternative image file can be specified using the altfile[n]
-	  property. GDM will use the last valid image filename specified. 
-	  For example:
+          property. GDM will use the last valid image filename specified. 
+          For example:
 <screen>
 &lt;normal file=&quot;picture.png&quot; altfile1=&quot;distribution-blah-image.png&quot; altfile2=&quot;distribution-foo-image.png&quot;/&gt;
 </screen>
-	 If <filename>distribution-foo-image.png</filename> is a valid image 
-	 filename it will be used. Otherwise distribution-blah-image.png will 
-	 be used if valid.
+         If <filename>distribution-foo-image.png</filename> is a valid image 
+         filename it will be used. Otherwise distribution-blah-image.png will 
+         be used if valid.
         </para>
 
       </sect3>
