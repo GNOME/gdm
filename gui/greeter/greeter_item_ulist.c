@@ -68,9 +68,6 @@ enum
 void
 greeter_item_ulist_check_show_userlist (void)
 {
-	if (DOING_GDM_DEVELOPMENT)
-		return;
-
 	/*
 	 * If there are no users, then hide the rectangle used to contain the
 	 * userlist.  This id allows a rectangle to be defined with alpha
