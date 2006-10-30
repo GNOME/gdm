@@ -68,6 +68,9 @@ enum
 void
 greeter_item_ulist_check_show_userlist (void)
 {
+	if (DOING_GDM_DEVELOPMENT)
+		return;
+
 	/*
 	 * If there are no users, then hide the rectangle used to contain the
 	 * userlist.  This id allows a rectangle to be defined with alpha
@@ -178,7 +181,6 @@ static void
 greeter_populate_user_list (GtkTreeModel *tm)
 {
 	GList *li;
-	int i=0;
 
 	for (li = users; li != NULL; li = li->next) {
 		GdmUser    *usr = li->data;
@@ -217,7 +219,7 @@ greeter_populate_user_list (GtkTreeModel *tm)
 				    GREETER_ULIST_ACTIVE_COLUMN, active,
 				    -1);
 		g_free (label);
-		i++;
+		num_users++;
 	}
 }
 
