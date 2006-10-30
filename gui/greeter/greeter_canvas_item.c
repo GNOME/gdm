@@ -34,6 +34,7 @@
 #include "greeter_canvas_item.h"
 #include "greeter_configuration.h"
 #include "greeter_canvas_text.h"
+#include "greeter_parser.h"
 
 static void
 apply_tint (GdkPixbuf *pixbuf, guint32 tint_color)
@@ -505,22 +506,37 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     /* Note a list type must be setup later and we will add the list store
      * to it then, depending on the type.  Likely userlist is the
      * only type we support */
-    list = gtk_tree_view_new ();
 
-    swin = gtk_scrolled_window_new (NULL, NULL);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swin),
+    if (item->data.list.combo_type) {
+       list = gtk_combo_box_new_text ();
+
+       item->item = gnome_canvas_item_new (group,
+					   GNOME_TYPE_CANVAS_WIDGET,
+					   "widget", list,
+					   "x", x1,
+					   "y", y1,
+					   "height", (double)rect.height,
+					   "width", (double)rect.width,
+					   NULL);
+    } else {
+       list = gtk_tree_view_new ();
+
+       swin = gtk_scrolled_window_new (NULL, NULL);
+       gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swin),
     					GTK_SHADOW_NONE);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swin),
+       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swin),
     				GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    gtk_container_add (GTK_CONTAINER (swin), list);
-    item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_WIDGET,
-					"widget", swin,
-					"x", x1,
-					"y", y1,
-					"height", (double)rect.height,
-					"width", (double)rect.width,
-					NULL);
+       gtk_container_add (GTK_CONTAINER (swin), list);
+
+       item->item = gnome_canvas_item_new (group,
+					   GNOME_TYPE_CANVAS_WIDGET,
+					   "widget", swin,
+					   "x", x1,
+					   "y", y1,
+					   "height", (double)rect.height,
+					   "width", (double)rect.width,
+					   NULL);
+    }
 
     break;
   }

@@ -21,10 +21,19 @@
 
 #include "greeter_item.h"
 
+enum {
+  LOCALE_COLUMN,
+  TRANSLATED_NAME_COLUMN,
+  UNTRANSLATED_NAME_COLUMN,
+  NUM_COLUMNS
+};
+
+void      greeter_language_initialize_model  (void);
 gint      greeter_language_get_save_language (void);
 gchar    *greeter_language_get_language      (const char      *old_language);
 void      greeter_language_handler           (GreeterItemInfo *info,
-					     gpointer user_data);
-
+					      gpointer user_data);
+GtkListStore *greeter_language_get_model     (void);
+void      greeter_language_set               (char *language);
 #endif
 

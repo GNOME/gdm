@@ -1,3 +1,24 @@
+2006-10-30  Brian Cameron  <brian.cameron@sun.com>
+
+        * gui/gdmconfig.[ch], gdmsession.[ch], greeter/greeter.c,
+          greeter_action_language.[ch], greeter_canvas_item.c,
+          greeter/greeter_item.h, greeter/greeter_item_customlist.[ch],
+          greeter/greeter_item_ulist.c, greeter/greeter_parser.c,
+          greeter_session.[ch]: Now support combo style lists in 2.16.
+          Patch backported from 2.17 without docs or theme changes.  This
+          way these features work in 2.16 but do not break translation.
+
+        * gui/gdmlogin.c: Number of usability fixes for gdmlogin.c.  Now
+          do not bother showing browser userlist widget if there are no
+          users to display.  Now OK and Cancel buttons are set sensitive or
+          insensitive based on context (OK only if something is in the entry
+          field and Cancel if not on "Username" request).  Fixed bug causing
+          face browser to autoselect first user.  I changed the behavior
+          of how key events are listened to.  Now respond on release instead
+          of press for accepting Tab key as Enter, back_prog delay,
+          timed_login reset, and flexiserver reaping.  This made setting the
+          buttons sensitive/insensitive easier.
+
 2006-10-23  Brian Cameron  <brian.cameron@sun.com>
 
         * utils/Makefile.am: Remove X_EXTRA_LIBS and X_LIBS from

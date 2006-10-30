@@ -66,8 +66,10 @@ void
 greeter_item_ulist_unset_selected_user (void)
 {
 	GtkTreeSelection *selection;
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (user_list));
-	gtk_tree_selection_unselect_all (selection);
+        if (user_list != NULL) {
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (user_list));
+		gtk_tree_selection_unselect_all (selection);
+	}
 
 	if (selected_user != NULL)
 		g_free (selected_user);

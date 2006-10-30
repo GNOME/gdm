@@ -145,8 +145,8 @@ struct _GreeterItemInfo {
   GList *fixed_children;
 
   union {
-	  /* Note: we want to have alphas, colors and have_color coincide for all types
-	     that have it */
+	  /* Note: we want to have alphas, colors and have_color coincide for
+           * all types that have it */
 #define GREETER_ITEM_TYPE_IS_TEXT(info) ((info)->item_type == GREETER_ITEM_TYPE_LABEL || (info)->item_type == GREETER_ITEM_TYPE_ENTRY)
 	  struct {
 		  guint8 alphas[GREETER_ITEM_STATE_MAX];
@@ -180,6 +180,7 @@ struct _GreeterItemInfo {
 		  /* If this is a custom list, then these are the items
 		     to pick from */
 		  GList *items;
+		  gboolean combo_type;
 	  } list;
 
 #define GREETER_ITEM_TYPE_IS_RECT(info) ((info)->item_type == GREETER_ITEM_TYPE_RECT)

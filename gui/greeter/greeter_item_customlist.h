@@ -22,5 +22,7 @@
 #include "greeter_item.h"
 
 gboolean greeter_item_customlist_setup (void);
+void     greeter_custom_set_session    (gchar *session);
+void     greeter_custom_set_language   (gchar *language);
 
 #endif

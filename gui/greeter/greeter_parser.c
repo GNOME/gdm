@@ -1457,6 +1457,22 @@ parse_list (xmlNodePtr        node,
 	     GError         **error)
 {
   xmlNodePtr child;
+  xmlChar *prop;
+
+  info->data.list.combo_type = FALSE;
+  prop = xmlGetProp (node,(const xmlChar *) "combo");
+  if (prop)
+    {
+      if (strcmp ((char *) prop, "true") == 0)
+	{
+	  info->data.list.combo_type = TRUE;
+	}
+      else if (strcmp ((char *) prop, "false") == 0)
+	{
+	  info->data.list.combo_type = FALSE;
+	}
+      xmlFree (prop);
+    }
 
   child = node->children;
   while (child)
@@ -1494,14 +1510,27 @@ parse_list (xmlNodePtr        node,
       child = child->next;
     }
 
-  if (info->data.list.items != NULL) {
-    if G_UNLIKELY (strcmp (info->id, "userlist") == 0) {
+  if ((strcmp (info->id, "userlist") == 0) && (info->data.list.combo_type == TRUE)) {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
-		   "List of id userlist cannot have custom list items");
+		   "userlist doest not support combo style");
+      return FALSE;
+  } else if (info->data.list.items != NULL) {
+
+    if G_UNLIKELY (strcmp (info->id, "userlist") == 0 ||
+                   strcmp (info->id, "session")  == 0 ||
+                   strcmp (info->id, "language") == 0) {
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "List of id userlist, session, and language cannot have custom list items");
       return FALSE;
     }
+    custom_items = g_list_append (custom_items, info);
+
+  } else if (strcmp (info->id, "session") == 0 ||
+             strcmp (info->id, "language") == 0) {
     custom_items = g_list_append (custom_items, info);
   }
 

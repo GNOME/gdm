@@ -29,6 +29,7 @@
 
 typedef struct {
         char *name;
+        char *clearname;
         char *comment;
 } GdmSession;
 
