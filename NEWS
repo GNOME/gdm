@@ -1,5 +1,58 @@
 Ahh news...
 
+2.17.1 Stuff:
+
+- No longer crash if at-spi-registryd cannot be started.  
+  (Ariel Rios)
+
+- Now support customcommands in GDM configuration so that sysadmins
+  can specify custom commands to appear in the GDM GUI (in addition
+  to reboot/shutdown/etc.).  Refer to the comments in the GDM
+  configuration file and documentation for details.  Also support
+  new QUERY_CUSTOM_CMD_LABELS and QUERY_CUSTOM_CMD_NO_RESTART_STATUS
+  gdmflexiserver commands.  (Lukasz Zalewski)
+  
+- Now support for "combo" style lists, and id values of "session"
+  and "language" are supported for displaying the session/language
+  lists as drop-down combos.  (Brian Cameron).  For example:
+
+  <item type="list" id="language" combo="true">
+     <pos  x="25" y="10" height="40" width="300"/>
+  </item>
+  <item type="list" id="session" combo="true">
+    <pos x="50" y="10" height="40" width="300"/>
+  </item>
+
+- Now OK/Start Again buttons are sensitive/insensitive in a more
+  sensible way for both gdmlogin and gdmgreeter (if GTK style buttons
+  are used in gdmgreeter).  (Brian Cameron)
+
+- Face Browser widget and background rectangle (for gdmgreeter)
+  is not shown if there are no users to display.  (Brian Cameron)
+
+- Help button now enabled in gdmphotosetup.  (Matthias Clasen)
+
+- Fix so that if timed user script returns an invalid user that
+  timed login is not turned on.  (Andrew)
+
+- Fix bug that was causing %t to be expanded improperly when
+  used in the timed login label.  (Brian Cameron)
+
+- Set authdir to NULL after freeing to avoid accessing an invalid
+  pointer.  Fixes bug #359831.  (Amnon Aaronsohn)
+
+- Introduce altfile[n] property to cater for alternative image file
+  definition in gdmgreeter themes.  (Erwann Chenede)
+
+- Leaks fixed.  (Kjartan Maraas)
+
+- Documentation improvements.  (Malcolm Parsons)
+
+- Build improvements.  (Brian Cameron)
+
+- Translation updates (Dwayne Bailey, Luca Ferretti, Satoru SATOH, Jens Seidel,
+  Ilkka Tuohela)
+
 2.17.0 Stuff:
 
 - Now when GDM_ADD_MODULES is set, GDM will launch at-spi-registryd.
@@ -38,6 +91,41 @@ Ahh news...
 - Translation updates (Abel Cheung, Yair Hershkovitz,
   Raphael Higino, Priit Laes, \303\205smund Skj\303\246veland,
   Ivar Smolin)
+
+2.16.2 Stuff:
+
+- Now support for "combo" style lists, and id values of "session"
+  and "language" are supported for displaying the session/language
+  lists as drop-down combos.  (Brian Cameron).  For example:
+
+  <item type="list" id="language" combo="true">
+     <pos  x="25" y="10" height="40" width="300"/>
+  </item>
+  <item type="list" id="session" combo="true">
+    <pos x="50" y="10" height="40" width="300"/>
+  </item>
+
+- Now OK/Start Again buttons are sensitive/insensitive in a more
+  sensible way for both gdmlogin and gdmgreeter (if GTK style buttons
+  are used in gdmgreeter).  (Brian Cameron)
+
+- Face Browser widget and background rectangle (for gdmgreeter)
+  is not shown if there are no users to display.  (Brian Cameron)
+
+- Help button now enabled in gdmphotosetup.  (Matthias Clasen)
+
+- Fix so that if timed user script returns an invalid user that
+  timed login is not turned on.  (Andrew)
+
+- Fix bug that was causing %t to be expanded improperly when
+  used in the timed login label.  (Brian Cameron)
+
+- Set authdir to NULL after freeing to avoid accessing an invalid
+  pointer.  Fixes bug #359831.  (Amnon Aaronsohn)
+
+- Leaks fixed.  (Kjartan Maraas)
+
+- Translation updates (Abel Cheung, Priit Laes, Daniel Nylander)
 
 2.16.1 Stuff:
 
