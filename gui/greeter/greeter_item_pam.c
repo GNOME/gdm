@@ -46,6 +46,8 @@ gchar *greeter_current_user = NULL;
 gboolean require_quarter = FALSE;
 
 extern gboolean greeter_probably_login_prompt;
+extern GtkButton *gtk_ok_button;
+extern GtkButton *gtk_start_again_button;
 
 static gboolean
 greeter_item_pam_error_set (gboolean display)
@@ -122,6 +124,11 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
   char *tmp;
   GreeterItemInfo *error_info;
 
+  if (gtk_ok_button != NULL)
+     gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+  if (gtk_start_again_button != NULL)
+     gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
+
   greeter_ignore_buttons (TRUE);
 
   str = gtk_entry_get_text (GTK_ENTRY (entry));
@@ -166,24 +173,38 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
 }
 
 static gboolean
-key_press_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
+pam_key_release_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
 {
-  if ((event->keyval == GDK_Tab ||
-       event->keyval == GDK_KP_Tab) &&
-      (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0)
+  GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+
+  if (entry_info && entry_info->item &&
+      GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+      GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
     {
-	GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
-	if (entry_info && entry_info->item &&
-	    GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
-	    GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
-	{
-		GtkWidget *entry;
-		entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+       const char *login_string;
+	GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+
+       if ((event->keyval == GDK_Tab ||
+            event->keyval == GDK_KP_Tab) &&
+           (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0)
+          {
 		greeter_item_pam_login (GTK_ENTRY (entry), entry_info);
 		return TRUE;
-        }
-    }
+           }
 
+       if (gtk_ok_button != NULL)
+          {
+             /*
+              * Set ok button to sensitive only if there are characters in
+              * the entry field
+              */
+             login_string = gtk_entry_get_text (GTK_ENTRY (entry));
+             if (login_string != NULL && login_string[0] != '\0')
+                 gtk_widget_set_sensitive (gtk_ok_button, TRUE);
+             else
+                 gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+          }
+    }
   return FALSE;
 }
 
@@ -217,8 +238,8 @@ greeter_item_pam_setup (void)
 
       g_signal_connect (entry, "activate",
 			G_CALLBACK (greeter_item_pam_login), entry_info);
-      g_signal_connect (G_OBJECT (entry), "key_press_event",
-		        G_CALLBACK (key_press_event), NULL);
+      g_signal_connect (G_OBJECT (entry), "key_release_event",
+		        G_CALLBACK (pam_key_release_event), NULL);
     }
 
   return TRUE;

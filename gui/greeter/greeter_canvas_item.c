@@ -36,6 +36,10 @@
 #include "greeter_canvas_text.h"
 #include "greeter_parser.h"
 
+/* Keep track of buttons so they can be set sensitive/insensitive */
+extern GtkButton *gtk_ok_button = NULL;
+extern GtkButton *gtk_start_again_button = NULL;
+
 static void
 apply_tint (GdkPixbuf *pixbuf, guint32 tint_color)
 {
@@ -428,6 +432,12 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   case GREETER_ITEM_TYPE_BUTTON:
     gtkbutton = gtk_button_new_with_mnemonic (item->data.text.orig_text);
     gtk_widget_set_name (gtkbutton, item->id);
+    if (strcmp (ve_sure_string (item->id), "ok_button") == 0) {
+       gtk_ok_button = GTK_BUTTON (gtkbutton);
+    } else if (strcmp (ve_sure_string (item->id), "cancel_button") == 0) {
+       gtk_start_again_button = GTK_BUTTON (gtkbutton);
+    }
+
     g_signal_connect (G_OBJECT (gtkbutton), "clicked",
                       G_CALLBACK (greeter_item_run_button_action_callback),
                       item->id);

@@ -1,5 +1,20 @@
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
 
+        * gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.[ch],
+          gui/greeter_item_pam.c:  Similar usability fixes for gdmgreeter.
+          OK/Cancel buttons are now sensitive/insensitive (but only if
+          using GTK style buttons), and the userlist now is not shown
+          if there are no users.  Added a new item id "userlist-rect"
+          which can be used to specify the rectangle containing the
+          userlist, so it can also disappear when the userlist is
+          empty.
+        * gui/greeter/themes/happygnome-list/happygnome.xml:  Now use
+          "userlist-rect" so the alpha rectangle goes away when the
+          list is empty.
+	* docs/C/gdm.xml: Add information about userlist-rect id.
+
+2006-10-30  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmlogin.c: Number of usability fixes for gdmlogin.c.  Now
 	  do not bother showing browser userlist widget if there are no
 	  users to display.  Now OK and Cancel buttons are set sensitive or

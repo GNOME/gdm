@@ -81,6 +81,8 @@ GreeterItemInfo *welcome_string_info = NULL;
 extern gboolean session_dir_whacked_out;
 extern gboolean require_quarter;
 extern gint gdm_timed_delay;
+extern GtkButton *gtk_ok_button;
+extern GtkButton *gtk_start_again_button;
 
 gboolean greeter_probably_login_prompt = FALSE;
 
@@ -192,9 +194,16 @@ process_operation (guchar       op_code,
 					gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE),
 					gdm_config_get_bool (GDM_KEY_SOUND_ON_LOGIN));
 		greeter_probably_login_prompt = TRUE;
+		if (gtk_start_again_button != NULL)
+	                gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
 	} else {
 		greeter_probably_login_prompt = FALSE;
+		if (gtk_start_again_button != NULL)
+                	gtk_widget_set_sensitive (gtk_start_again_button, TRUE);
 	}
+	if (gtk_ok_button != NULL)
+                gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+
 	greeter_ignore_buttons (FALSE);
 
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, TRUE);
@@ -209,8 +218,16 @@ process_operation (guchar       op_code,
     case GDM_NOECHO:
 	tmp = ve_locale_to_utf8 (args);
 
-	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0)
+	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0) {
+		if (gtk_start_again_button != NULL)
+                	gtk_widget_set_sensitive (gtk_start_again_button, TRUE);
 		greeter_probably_login_prompt = FALSE;
+	} else {
+		if (gtk_start_again_button != NULL)
+                	gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
+	}
+	if (gtk_ok_button != NULL)
+                gtk_widget_set_sensitive (gtk_ok_button, FALSE);
 
 	greeter_ignore_buttons (FALSE);
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, FALSE);
@@ -307,6 +324,11 @@ process_operation (guchar       op_code,
 	/* fall thru to reset */
 
     case GDM_RESETOK:
+
+	if (gtk_ok_button != NULL)
+                gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+	if (gtk_start_again_button != NULL)
+                gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
 
 	conversation_info = greeter_lookup_id ("pam-conversation");
 	
@@ -1419,6 +1441,7 @@ main (int argc, char *argv[])
 
   greeter_item_ulist_unset_selected_user ();
   greeter_item_ulist_enable ();
+  greeter_item_ulist_check_show_userlist ();
 
   /* can it ever happen that it'd be NULL here ??? */
   if G_UNLIKELY (window->window != NULL)

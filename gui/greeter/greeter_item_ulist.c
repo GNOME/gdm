@@ -38,10 +38,12 @@
 #include "gdmcomm.h"
 #include "gdmconfig.h"
 #include "gdmuser.h"
+
 #include "greeter.h"
 #include "greeter_item_ulist.h"
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
+#include "greeter_item.h"
 
 static GList      *users = NULL;
 static GList      *users_string = NULL;
@@ -50,9 +52,9 @@ static GHashTable *displays_hash = NULL;
 
 static GtkWidget  *pam_entry = NULL;
 static GtkWidget  *user_list = NULL;
-
 static gboolean    selecting_user = FALSE;
 static gchar      *selected_user = NULL;
+static int         num_users = 0;
 
 enum
 {
@@ -61,6 +63,32 @@ enum
 	GREETER_ULIST_LOGIN_COLUMN,
 	GREETER_ULIST_ACTIVE_COLUMN
 };
+
+/* Hide the userlist if there are no users displayed */
+void
+greeter_item_ulist_check_show_userlist (void)
+{
+	/*
+	 * If there are no users, then hide the rectangle used to contain the
+	 * userlist.  This id allows a rectangle to be defined with alpha
+	 * behind the userlist that also goes away when the list is empty.
+	 */
+	if (num_users == 0) {
+		GreeterItemInfo *urinfo = greeter_lookup_id ("userlist-rect");
+		GnomeCanvasItem *item;
+
+		gtk_widget_hide (user_list);
+
+		if (urinfo) {
+			if (urinfo->group_item != NULL)
+				item = GNOME_CANVAS_ITEM (urinfo->group_item);
+			else
+				item = urinfo->item;
+
+			gnome_canvas_item_hide (item);
+		}
+	}
+}
 
 void
 greeter_item_ulist_unset_selected_user (void)
@@ -150,6 +178,7 @@ static void
 greeter_populate_user_list (GtkTreeModel *tm)
 {
 	GList *li;
+	int i=0;
 
 	for (li = users; li != NULL; li = li->next) {
 		GdmUser    *usr = li->data;
@@ -188,6 +217,7 @@ greeter_populate_user_list (GtkTreeModel *tm)
 				    GREETER_ULIST_ACTIVE_COLUMN, active,
 				    -1);
 		g_free (label);
+		i++;
 	}
 }
 
