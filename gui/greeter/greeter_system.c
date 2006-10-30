@@ -181,9 +181,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmRebootFound) {
-		w = gtk_image_menu_item_new_with_mnemonic (_("_Restart"));
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
-					       gtk_image_new_from_icon_name ("gnome-session-reboot", GTK_ICON_SIZE_MENU));
+		w = gtk_menu_item_new_with_mnemonic (_("_Restart"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -192,9 +190,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmHaltFound) {
-		w = gtk_image_menu_item_new_with_mnemonic (_("Shut _Down"));
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w), 
-					       gtk_image_new_from_icon_name ("gnome-session-halt", GTK_ICON_SIZE_MENU));
+		w = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -203,9 +199,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmSuspendFound) {
-		w = gtk_image_menu_item_new_with_mnemonic (_("Sus_pend"));
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
-					       gtk_image_new_from_icon_name ("gnome-session-suspend", GTK_ICON_SIZE_MENU));
+		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",

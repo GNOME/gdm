@@ -155,18 +155,14 @@ make_menubar (void)
 	menu = gtk_menu_new ();
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (w), menu);
 
-	w = gtk_image_menu_item_new_with_mnemonic (_("Select _Language..."));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w), 
-				       gtk_image_new_from_icon_name ("config-language", GTK_ICON_SIZE_MENU));
+	w = gtk_menu_item_new_with_mnemonic (_("Select _Language..."));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 	gtk_widget_show (GTK_WIDGET (w));
 	g_signal_connect (G_OBJECT (w), "activate",
 			  G_CALLBACK (activate_button),
 			  "language_button");
 
-	w = gtk_image_menu_item_new_with_mnemonic (_("Select _Session..."));
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w), 
-				       gtk_image_new_from_icon_name ("gnome-session", GTK_ICON_SIZE_MENU));
+	w = gtk_menu_item_new_with_mnemonic (_("Select _Session..."));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 	gtk_widget_show (GTK_WIDGET (w));
 	g_signal_connect (G_OBJECT (w), "activate",
@@ -180,13 +176,9 @@ make_menubar (void)
 	 * flexi, even if not local (non-local xnest).  and Disconnect
 	 * only for xdmcp */
 	if ( ! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER"))) {
-		w = gtk_image_menu_item_new_with_mnemonic (_("_Quit"));
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w), 
-					       gtk_image_new_from_icon_name ("gnome-logout", GTK_ICON_SIZE_MENU));
+		w = gtk_menu_item_new_with_mnemonic (_("_Quit"));
 	} else if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-		w = gtk_image_menu_item_new_with_mnemonic (_("D_isconnect"));
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w), 
-					       gtk_image_new_from_icon_name ("gnome-logout", GTK_ICON_SIZE_MENU));
+		w = gtk_menu_item_new_with_mnemonic (_("D_isconnect"));
 	} else {
 		w = NULL;
 	}

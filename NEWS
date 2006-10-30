@@ -1,5 +1,40 @@
 Ahh news...
 
+2.16.2 Stuff:
+
+- Now support for "combo" style lists, and id values of "session"
+  and "language" are supported for displaying the session/language
+  lists as drop-down combos.  (Brian Cameron).  For example:
+
+  <item type="list" id="language" combo="true">
+     <pos  x="25" y="10" height="40" width="300"/>
+  </item>
+  <item type="list" id="session" combo="true">
+    <pos x="50" y="10" height="40" width="300"/>
+  </item>
+
+- Now OK/Start Again buttons are sensitive/insensitive in a more
+  sensible way for both gdmlogin and gdmgreeter (if GTK style buttons
+  are used in gdmgreeter).  (Brian Cameron)
+
+- Face Browser widget and background rectangle (for gdmgreeter) 
+  is not shown if there are no users to display.  (Brian Cameron)
+
+- Help button now enabled in gdmphotosetup.  (Matthias Clasen)
+
+- Fix so that if timed user script returns an invalid user that
+  timed login is not turned on.  (Andrew)
+
+- Fix bug that was causing %t to be expanded improperly when
+  used in the timed login label.  (Brian Cameron)
+
+- Set authdir to NULL after freeing to avoid accessing an invalid
+  pointer.  Fixes bug #359831.  (Amnon Aaronsohn)
+
+- Leaks fixed.  (Kjartan Maraas)
+
+- Translation updates (Abel Cheung, Priit Laes, Daniel Nylander)
+
 2.16.1 Stuff:
 
 - Use g_markup_printf_escaped so gdmsetup better handles
