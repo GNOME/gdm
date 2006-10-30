@@ -101,7 +101,7 @@ static GtkWidget *title_box = NULL;
 static GtkWidget *clock_label = NULL;
 static GtkWidget *entry;
 static GtkWidget *ok_button;
-static GtkWidget *cancel_button;
+static GtkWidget *start_again_button;
 static GtkWidget *msg;
 static GtkWidget *auto_timed_msg;
 static GtkWidget *err_box;
@@ -249,7 +249,7 @@ back_prog_watch_events (void)
 	g_signal_add_emission_hook (sid, 0, back_prog_delay_timeout, 
 				    NULL, NULL);
 
-	sid = g_signal_lookup ("key_press_event", GTK_TYPE_WIDGET);
+	sid = g_signal_lookup ("key_release_event", GTK_TYPE_WIDGET);
 	g_signal_add_emission_hook (sid, 0, back_prog_delay_timeout, 
 				    NULL, NULL);
 
@@ -891,7 +891,7 @@ gdm_login_enter (GtkWidget *entry)
 
 	gtk_widget_set_sensitive (entry, FALSE);
 	gtk_widget_set_sensitive (ok_button, FALSE);
-	gtk_widget_set_sensitive (cancel_button, FALSE);
+	gtk_widget_set_sensitive (start_again_button, FALSE);
 
 	login_string = gtk_entry_get_text (GTK_ENTRY (entry));
 
@@ -918,8 +918,6 @@ gdm_login_enter (GtkWidget *entry)
 		/* obviously being 100% reliable is not an issue for
 		   this test */
 		gtk_widget_set_sensitive (entry, TRUE);
-		gtk_widget_set_sensitive (ok_button, TRUE);
-		gtk_widget_set_sensitive (cancel_button, TRUE);
 		gtk_widget_grab_focus (entry);	
 		gtk_window_set_focus (GTK_WINDOW (login), entry);	
 		return;
@@ -944,18 +942,18 @@ gdm_login_ok_button_press (GtkButton *button, GtkWidget *entry)
 }
 
 static void
-gdm_login_cancel_button_press (GtkButton *button, GtkWidget *entry)
+gdm_login_start_again_button_press (GtkButton *button, GtkWidget *entry)
 {
 	GtkTreeSelection *selection;
-
-	if (selected_user != NULL)
-		g_free (selected_user);
-	selected_user = NULL;
 
 	if (browser != NULL) {
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
 		gtk_tree_selection_unselect_all (selection);
 	}
+
+	if (selected_user != NULL)
+		g_free (selected_user);
+	selected_user = NULL;
 
 	printf ("%c%c%c\n", STX, BEL,
 		GDM_INTERRUPT_CANCEL);
@@ -1556,10 +1554,11 @@ process_operation (guchar       op_code,
 					gdm_config_get_bool   (GDM_KEY_SOUND_ON_LOGIN));
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Username:"));
 		greeter_probably_login_prompt = TRUE;
+		gtk_widget_set_sensitive (start_again_button, FALSE);
 	} else {
+		gtk_widget_set_sensitive (start_again_button, TRUE);
 		if (tmp != NULL)
 			gtk_label_set_text (GTK_LABEL (label), tmp);
-		greeter_probably_login_prompt = FALSE;
 	}
 	g_free (tmp);
 
@@ -1568,8 +1567,7 @@ process_operation (guchar       op_code,
 	gtk_entry_set_max_length (GTK_ENTRY (entry), PW_ENTRY_SIZE);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
-	gtk_widget_set_sensitive (ok_button, TRUE);
-	gtk_widget_set_sensitive (cancel_button, TRUE);
+	gtk_widget_set_sensitive (ok_button, FALSE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -1589,8 +1587,10 @@ process_operation (guchar       op_code,
     case GDM_NOECHO:
 	tmp = ve_locale_to_utf8 (args);
 	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0) {
+		gtk_widget_set_sensitive (start_again_button, TRUE);
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Password:"));
 	} else {
+		gtk_widget_set_sensitive (start_again_button, FALSE);
 		if (tmp != NULL)
 			gtk_label_set_text (GTK_LABEL (label), tmp);
 	}
@@ -1601,8 +1601,7 @@ process_operation (guchar       op_code,
 	gtk_entry_set_max_length (GTK_ENTRY (entry), PW_ENTRY_SIZE);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
 	gtk_widget_set_sensitive (entry, TRUE);
-	gtk_widget_set_sensitive (ok_button, TRUE);
-	gtk_widget_set_sensitive (cancel_button, TRUE);
+	gtk_widget_set_sensitive (ok_button, FALSE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -1767,8 +1766,8 @@ process_operation (guchar       op_code,
 	}
 
 	gtk_widget_set_sensitive (entry, TRUE);
-	gtk_widget_set_sensitive (ok_button, TRUE);
-	gtk_widget_set_sensitive (cancel_button, TRUE);
+	gtk_widget_set_sensitive (ok_button, FALSE);
+	gtk_widget_set_sensitive (start_again_button, FALSE);
 
 	if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER))
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
@@ -1945,11 +1944,17 @@ process_operation (guchar       op_code,
 }
 
 
-static void
+static int
 gdm_login_browser_populate (void)
 {
     GList *li;
+    int i = 0;
 
+    /* Create browser_model before calling gdm_login_browser_populate */
+       browser_model = (GtkTreeModel *)gtk_list_store_new (3,
+							   GDK_TYPE_PIXBUF,
+							   G_TYPE_STRING,
+							   G_TYPE_STRING);
     for (li = users; li != NULL; li = li->next) {
 	    GdmUser *usr = li->data;
 	    GtkTreeIter iter = {0};
@@ -1972,7 +1977,9 @@ gdm_login_browser_populate (void)
 				GREETER_ULIST_LABEL_COLUMN, label,
 				-1);
 	    g_free (label);
+	    i++;
     }
+    return (i);
 }
 
 static void
@@ -1987,7 +1994,7 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 #endif
 
   if (gtk_tree_selection_get_selected (selection, &tm, &iter)) {
-	char *login;
+	char *login = NULL;
 	gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
 			      &login, -1);
 	if (login != NULL) {
@@ -2239,14 +2246,26 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 }
 
 static gboolean
-key_press_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
+key_release_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
 {
+	const char *login_string;
+
 	if ((event->keyval == GDK_Tab ||
 	     event->keyval == GDK_KP_Tab) &&
 	    (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0) {
 		gdm_login_enter (entry);
 		return TRUE;
 	}
+
+	/*
+	 * Set ok button to sensitive only if there are characters in
+	 * the entry field
+	 */
+	login_string = gtk_entry_get_text (GTK_ENTRY (entry));
+        if (login_string != NULL && login_string[0] != '\0')
+		gtk_widget_set_sensitive (ok_button, TRUE);
+	else
+		gtk_widget_set_sensitive (ok_button, FALSE);
 
 	return FALSE;
 }
@@ -2270,6 +2289,7 @@ gdm_set_welcomemsg (void)
 static void
 gdm_login_gui_init (void)
 {
+    GtkTreeSelection *selection;
     GtkWidget *frame1, *frame2, *ebox;
     GtkWidget *mbox, *menu, *menubar, *item;
     GtkWidget *stack, *hline1, *hline2, *handle;
@@ -2500,7 +2520,6 @@ gdm_login_gui_init (void)
 
     if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER)) {
 	    int height;
-	    GtkTreeSelection *selection;
 	    GtkTreeViewColumn *column;
 
 	    browser = gtk_tree_view_new ();
@@ -2518,10 +2537,6 @@ gdm_login_gui_init (void)
 			      G_CALLBACK (browser_change_focus),
 			      NULL);
 
-	    browser_model = (GtkTreeModel *)gtk_list_store_new (3,
-								GDK_TYPE_PIXBUF,
-								G_TYPE_STRING,
-								G_TYPE_STRING);
 	    gtk_tree_view_set_model (GTK_TREE_VIEW (browser), browser_model);
 	    column = gtk_tree_view_column_new_with_attributes
 		    (_("Icon"),
@@ -2650,8 +2665,12 @@ gdm_login_gui_init (void)
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     
     entry = gtk_entry_new ();
-    g_signal_connect (G_OBJECT (entry), "key_press_event",
-		      G_CALLBACK (key_press_event), NULL);
+    /*
+     * Connect this on key release so we can make the OK button 
+     * sensitive based on whether the entry field has data.
+     */
+    g_signal_connect (G_OBJECT (entry), "key_release_event",
+		      G_CALLBACK (key_release_event), NULL);
     if (gdm_config_get_bool (GDM_KEY_ENTRY_INVISIBLE))
 	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
     else if (gdm_config_get_bool (GDM_KEY_ENTRY_CIRCLES))
@@ -2721,12 +2740,12 @@ gdm_login_gui_init (void)
 		      entry);
     gtk_widget_show (ok_button);
 
-    cancel_button = gtk_button_new_with_mnemonic (_("_Start Again"));
-    GTK_WIDGET_UNSET_FLAGS (cancel_button, GTK_CAN_FOCUS);
-    g_signal_connect (G_OBJECT (cancel_button), "clicked",
-		      G_CALLBACK (gdm_login_cancel_button_press),
+    start_again_button = gtk_button_new_with_mnemonic (_("_Start Again"));
+    GTK_WIDGET_UNSET_FLAGS (start_again_button, GTK_CAN_FOCUS);
+    g_signal_connect (G_OBJECT (start_again_button), "clicked",
+		      G_CALLBACK (gdm_login_start_again_button_press),
 		      entry);
-    gtk_widget_show (cancel_button);
+    gtk_widget_show (start_again_button);
 
     button_box = gtk_hbutton_box_new ();
     gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box),
@@ -2739,7 +2758,7 @@ gdm_login_gui_init (void)
     gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (button_box), help_button, TRUE);
 #endif
 
-    gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (cancel_button),
+    gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (start_again_button),
 		      FALSE, TRUE, 0);
     gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (ok_button),
 		      FALSE, TRUE, 0);
@@ -2798,13 +2817,22 @@ gdm_login_gui_init (void)
     if ( ! DOING_GDM_DEVELOPMENT) {
 	    gtk_widget_set_sensitive (entry, FALSE);
 	    gtk_widget_set_sensitive (ok_button, FALSE);
-	    gtk_widget_set_sensitive (cancel_button, FALSE);
+	    gtk_widget_set_sensitive (start_again_button, FALSE);
     }
 
     gtk_widget_show_all (GTK_WIDGET (login));
     if ( ! have_logo) {
 	    gtk_table_set_col_spacings (GTK_TABLE (table), 0);
 	    gtk_widget_hide (logo_frame);
+    }
+
+    if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER)) {
+	    /* Make sure userlist has no users selected */
+	    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+	    gtk_tree_selection_unselect_all (selection);
+	    if (selected_user)
+		g_free (selected_user);
+	    selected_user = NULL;
     }
 }
 
@@ -3491,10 +3519,17 @@ main (int argc, char *argv[])
 	    }
     }
 
-    gdm_login_gui_init ();
+    if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER)) {
+	/*
+	 * Do not display face browser widget if no users, check this
+	 * before callign gdm_login_gui_init ()
+	 */
+	int num_users = gdm_login_browser_populate ();
+	if (num_users == 0)
+		browser_ok = FALSE;
+    }
 
-    if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER))
-	gdm_login_browser_populate ();
+    gdm_login_gui_init ();
 
     ve_signal_add (SIGHUP, gdm_reread_config, NULL);
 
@@ -3565,7 +3600,7 @@ main (int argc, char *argv[])
 					NULL /* data */,
 					NULL /* destroy_notify */);
 
-	    sid = g_signal_lookup ("key_press_event",
+	    sid = g_signal_lookup ("key_release_event",
 				   GTK_TYPE_WIDGET);
 	    g_signal_add_emission_hook (sid,
 					0 /* detail */,
@@ -3595,7 +3630,7 @@ main (int argc, char *argv[])
 					NULL /* data */,
 					NULL /* destroy_notify */);
 
-	    sid = g_signal_lookup ("key_press_event",
+	    sid = g_signal_lookup ("key_release_event",
 				   GTK_TYPE_WIDGET);
 	    g_signal_add_emission_hook (sid,
 					0 /* detail */,

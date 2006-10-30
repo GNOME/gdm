@@ -1,5 +1,18 @@
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmlogin.c: Number of usability fixes for gdmlogin.c.  Now
+	  do not bother showing browser userlist widget if there are no
+	  users to display.  Now OK and Cancel buttons are set sensitive or
+	  insensitive based on context (OK only if something is in the entry
+	  field and Cancel if not on "Username" request).  Fixed bug causing
+	  face browser to autoselect first user.  I changed the behavior
+	  of how key events are listened to.  Now respond on release instead
+	  of press for accepting Tab key as Enter, back_prog delay,
+	  timed_login reset, and flexiserver reaping.  This made setting the
+	  buttons sensitive/insensitive easier.
+
+2006-10-30  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/gdm.conf.in, daemon/gdm.c, daemon/gdm.h,
 	  daemon/gdmconfig.c, docs/C/gdm.xml, gui/gdmlogin.c,
 	  gui/greeter/greeter.c, gui/greeter/greeter_item.c,

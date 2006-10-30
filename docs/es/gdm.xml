@@ -2533,6 +2533,23 @@ PostSession/
           </varlistentry>
           
           <varlistentry>
+            <term>CustomCommandIsPersistent[0-9]</term>
+            <listitem>
+              <synopsis>CustomCommandIsPersistent[0-9]=</synopsis>
+              <para>
+                Specifies if <filename>n-th</filename> "Custom
+                Command" will appear outside the login manager, for
+                example on the desktop through the Log Out/Shut Down dialogs.
+                If not specified the default value is "false". This
+                option is only valid if corresponding
+                <filename>CustomCommand</filename> is defined. [0-9] represents
+                <filename>CustomCommand</filename> suffix and can be an integer
+                between 0 and 9.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
             <term>CustomCommandLabel[0-9]</term>
             <listitem>
               <synopsis>CustomCommandLabel[0-9]=</synopsis>
@@ -2540,10 +2557,11 @@ PostSession/
                 Specifies the stock label that will be displayed on the
                 <filename>n-th</filename> "Custom Command"
                 buttons and menu items. If not specified the default value is
-                "_Custom[0-9]". This option is only valid if
+                "Custom_[0-9]". This option is only valid if
                 corresponding <filename>CustomCommand</filename> is defined. 
                 [0-9] represents <filename>CustomCommand</filename> suffix
-                and can be an integer between 0 and 9.
+                and can be an integer between 0 and 9. This option can't contain
+                any semicolon characters (i.e. ";").
               </para>
             </listitem>
           </varlistentry>
@@ -2556,7 +2574,7 @@ PostSession/
                 Specifies the stock label that will be displayed on the
                 <filename>n-th</filename> "Custom Command"
                 list items and radio buttons.  If not specified the default
-                value is  "Execute _custom command [0-9]". This 
+                value is  "Execute custom command _[0-9]". This 
                 option is only valid if corresponding
                 <filename>CustomCommand</filename> is defined.  [0-9]
                 represents <filename>CustomCommand</filename> suffix and
@@ -2576,7 +2594,14 @@ PostSession/
                 "false". This option is only valid if corresponding
                 <filename>CustomCommand</filename> is defined.  [0-9]
                 represents <filename>CustomCommand</filename> suffix and
-                can be an integer between 0 and 9.
+                can be an integer between 0 and 9. In addition when
+                corresponding <filename>CustomCommandIsPersistent</filename> 
+                is set to true,  setting CustomCommandNoRestart to false will
+                place corresponding <filename>CustomCommand</filename> in the 
+                Shut Down dialog set of actions, setting it to true will place
+                corresponding 
+                <filename>CustomCommand</filename> in the Log Out dialog set of
+                actions.
               </para>
             </listitem>
           </varlistentry>
@@ -3252,6 +3277,50 @@ Answers:
      SET_LOGOUT_ACTION or SET_SAFE_LOGOUT_ACTION.  Note that
      SET_LOGOUT_ACTION has precedence over
      SET_SAFE_LOGOUT_ACTION.
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     100 = Not authenticated
+     200 = Too many messages
+     999 = Unknown error
+</screen>
+      </sect3>
+      
+      <sect3 id="querycustomcmdlabels">
+        <title>QUERY_CUSTOM_CMD_LABELS</title>
+<screen>
+ QUERY_CUSTOM_CMD_LABELS: Query labels belonging to exported custom
+                          commands Only supported on connections that
+                          passed AUTH_LOCAL.
+ Supported since: 2.5.90.0
+ Answers:
+   OK &lt;label1&gt;;&lt;label2&gt;;...
+      Where labelX is one of the labels belonging to CUSTOM_CMDX
+      (where X in [0,GDM_CUSTOM_COMMAND_MAX)).  An empty list can
+      also be returned if none of the custom commands are exported
+      outside login manager (no CustomCommandIsPersistent options
+      are set to true).  
+   ERROR &lt;err number&gt; &lt;english error description&gt;
+      0 = Not implemented
+      100 = Not authenticated
+      200 = Too many messages
+      999 = Unknown error
+</screen>
+      </sect3>
+      
+      <sect3 id="querycustomcmdnorestartstatus">
+        <title>QUERY_CUSTOM_CMD_NO_RESTART_STATUS</title>
+<screen>
+QUERY_CUSTOM_CMD_NO_RESTART_STATUS: Query NoRestart config options
+                                    for each of custom commands Only
+                                    supported on connections that
+                                    passed AUTH_LOCAL.
+Supported since: 2.5.90.0
+Answers:
+  OK &lt;status&gt;
+     Where each bit of the status represents NoRestart value for
+     each of the custom commands.
+     bit on (1):  NoRestart = true, 
+     bit off (0): NoRestart = false.
   ERROR &lt;err number&gt; &lt;english error description&gt;
      0 = Not implemented
      100 = Not authenticated
@@ -4703,7 +4772,7 @@ homogeneous="bool"&gt;
         <para><filename>chooser</filename>, _("Entrada remota via _XDMCP"</para>
         <para><filename>config</filename>, _("_Configurar"</para>
         <para>
-          <filename>custom_cmd[0-9]</filename>, _("_Custom[0-9]"
+          <filename>custom_cmd[0-9]</filename>, _("Custom_[0-9]"
         </para>
         <para><filename>disconnect</filename>, _("D_esconectar"</para>
         <para><filename>halt</filename>, _("_Apagar")</para>
@@ -5131,6 +5200,7 @@ Hosts=appserverone,appservertwo
           CustomCommandLRLabel0=Reboot into _Windoze
           CustomCommandText0=Are you sure you want to restart the computer into Windoze?
           CustomCommandTooltip0=Restarts the computer into Windoze
+          CustomCommandIsPersistent0=true
         </screen>
 
         CustomCommand0 specifies two commands separated by a semicolon:
@@ -5169,6 +5239,7 @@ Hosts=appserverone,appservertwo
           CustomCommandLRLabel0=Reboot into _Windoze
           CustomCommandText0=Are you sure you want to restart the computer into Windoze?
           CustomCommandTooltip0=Restarts the computer into Windoze
+          CustomCommandIsPersistent0=true
           
           CustomCommand1=/sbin/updatesystem;/usr/local/sbin/updatesystem
           CustomCommandLabel1=_Update Me
@@ -5189,6 +5260,7 @@ Hosts=appserverone,appservertwo
           CustomCommandLRLabel0=Reboot into _Windoze
           CustomCommandText0=Are you sure you want to restart the computer into Windoze?
           CustomCommandTooltip0=Restarts the computer into Windoze
+          CustomCommandIsPersistent0=true
           
           CustomCommand1=/sbin/updatesystem;/usr/local/sbin/updatesystem
           CustomCommandLabel1=_Update Me
