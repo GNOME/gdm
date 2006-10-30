@@ -178,7 +178,6 @@ static void
 greeter_populate_user_list (GtkTreeModel *tm)
 {
 	GList *li;
-	int i=0;
 
 	for (li = users; li != NULL; li = li->next) {
 		GdmUser    *usr = li->data;
@@ -217,7 +216,7 @@ greeter_populate_user_list (GtkTreeModel *tm)
 				    GREETER_ULIST_ACTIVE_COLUMN, active,
 				    -1);
 		g_free (label);
-		i++;
+		num_users++;
 	}
 }
 
