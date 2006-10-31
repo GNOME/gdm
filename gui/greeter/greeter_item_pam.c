@@ -220,8 +220,7 @@ greeter_item_pam_setup (void)
       GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
       GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
     {
-      GtkWidget *entry;
-      entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+      GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
       gtk_widget_grab_focus (entry);
 
       if ( ! DOING_GDM_DEVELOPMENT)
