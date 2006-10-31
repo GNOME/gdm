@@ -460,6 +460,9 @@ setup_combo_customlist (GtkComboBox *combo, GreeterItemInfo *item)
   g_signal_connect (G_OBJECT (combo), "changed",
                     G_CALLBACK (combo_selected), item);
 
+  /* Make sure that focus never leaves username/password entry */
+  gtk_combo_box_set_focus_on_click (combo, FALSE);
+
   if (strcmp (item->id, "session") == 0)
     {
       populate_session (G_OBJECT (combo));
@@ -532,6 +535,23 @@ list_selected (GtkTreeSelection *selection, GreeterItemInfo *item)
    }
 }
 
+static gboolean custom_list_release_event (GtkWidget *widget,
+                                           GdkEventSelection *event,
+                                           gpointer user_data)
+{
+  GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+
+  /* Make sure that focus never leaves username/password entry */
+  if (entry_info && entry_info->item &&
+      GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+      GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
+    {
+      GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+      gtk_widget_grab_focus (entry);
+    }
+    return FALSE;
+}
+
 /* Setup custom list style */
 static void
 setup_customlist (GtkWidget *tv, GreeterItemInfo *item)
@@ -561,6 +581,10 @@ setup_customlist (GtkWidget *tv, GreeterItemInfo *item)
 	   "text", GREETER_LIST_TEXT,
 	   NULL);
   gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column);
+
+  g_signal_connect (GTK_TREE_VIEW (tv), "button_release_event",
+                    G_CALLBACK (custom_list_release_event),
+                    NULL);
 
   if (strcmp (item->id, "session") == 0)
     {

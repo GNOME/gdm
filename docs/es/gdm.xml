@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY version "2.17.0">
+<!ENTITY version "2.17.1">
 <!ENTITY date "05/12/2006">
 ]>
 <article id="index" lang="es">
@@ -72,7 +72,7 @@
 
 
     <releaseinfo>
-       This manual describes version 2.17.0 of the GNOME Display Manager.
+       This manual describes version 2.17.1 of the GNOME Display Manager.
        It was last updated on 05/12/2006.
     </releaseinfo>  
   </articleinfo>
@@ -81,7 +81,7 @@
     <title>Términos y convenciones usados en este manual</title>
 
     <para>
-      This manual describes version 2.17.0 of the GNOME Display Manager.
+      This manual describes version 2.17.1 of the GNOME Display Manager.
       It was last updated on 05/12/2006.
     </para>  
 
@@ -4323,9 +4323,10 @@ homogeneous="bool"&gt;
         </variablelist>
 
         <para>
-          List items by default display as lists, but the combo="true" attribute
-          can be used to specify combo box style (combo style supported since GDM 2.18).
-          Some predefined lists may be included in a theme by using the following id values.
+          List items by default display as lists, but the
+          combo="true" attribute can be used to specify combo box
+          style (combo style supported since GDM 2.16.2).  Some predefined
+          lists may be included in a theme by using the following id values.
           Customized lists may also be defined, which are explained below.
         </para>
 
@@ -4335,7 +4336,7 @@ homogeneous="bool"&gt;
             <listitem>
               <para>
                 A list of available sessions, which allows the user to pick
-                the session to use.  Supported since GDM 2.18.
+                the session to use.  Supported since GDM 2.16.2.
               </para>
             </listitem>
           </varlistentry>
@@ -4347,7 +4348,7 @@ homogeneous="bool"&gt;
             <listitem>
               <para>
                 A list of available languages, which allows the user to pick
-                the language to use.  Supported since GDM 2.18.
+                the language to use.  Supported since GDM 2.16.2.
               </para>
             </listitem>
           </varlistentry>
@@ -4373,792 +4374,579 @@ homogeneous="bool"&gt;
             <term>userlist-rect</term>
             <listitem>
               <para>
-                This id can be specified for the <rect> object containing the
-                userlist and if the userlist is empty then this rectangle will
-                not be shown.  This allows the theme to define something like
-                an area with a different color and/or alpha to surround the
-                userlist, but only if there are users to display.
-              
-            
-          
-        
+                This id can be specified for the &lt;rect&gt; object containing
+                the userlist and if the userlist is empty then this rectangle
+                will not be shown.  This allows the theme to define something
+                like an area with a different color and/or alpha to surround
+                the userlist, but only if there are users to display.
+                Supported since 2.16.2.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
-        
+        <para>
           Furthermore, you can have an arbitrary id (I'd recommend starting
           the id with 'custom' not to conflict with future additions to this
           spec) and ask extra information of the user.  See the section
           'Custom Widgetry'
-        
+        </para>
 
-        
-          Label items can have id values as follows:
-        
+        <para>Los elementos de etiquetas pueden tener valores id como siguen:</para>
 
-        
-          
-            clock
-            
-              
-                Label that displays the date and time.
-              
-            
-          
+        <variablelist>
+          <varlistentry>
+            <term>clock</term>
+            <listitem>
+              <para>Etiqueta que muesta la fecha y la hora.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            pam-prompt
-            
-              
+          <varlistentry>
+            <term>pam-prompt</term>
+            <listitem>
+              <para>
                 Label that displays the PAM prompt.  This is the prompt that PAM
                 uses to ask for username, password, etc...
-              
-            
-          
+              </para>
+            </listitem>
+          </varlistentry>
 
-          
-            pam-error
-            
-              
+          <varlistentry>
+            <term>pam-error</term>
+            <listitem>
+              <para>
                 Label that displayst PAM/GDM error messages.  Such as when user
                 can't log in.
-              
-            
-          
+              </para>
+            </listitem>
+          </varlistentry>
 
-          
-            pam-error-logo
-            
-              
-                An image that will be displayed only when a pam-error message
-                is being displayed.  This is useful for displaying an
-                Attention icon, for example.  This feature is
-                supported in GDM 2.14.6 and later.
-              
-            
-          
+          <varlistentry>
+            <term>pam-error-logo</term>
+            <listitem>
+              <para>Una imagen que se mostrará sólo cuando un mensaje pam-error se muestre. Esto es útil para mostrar un icono «Atención», por ejemplo. Esta característica está soportada en GDM 2.14.6 y posteriores.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            pam-message
-            
-              
-                Label that displays the PAM message.  These are messages that
-                PAM/GDM gives about state of the account, help about the
-                prompts and other information.
-              
-            
-          
+          <varlistentry>
+            <term>pam-message</term>
+            <listitem>
+              <para>Etiqueta que muestra el mensaje PAM. Éstos son mensajes que PAM/GDM da acerca del estado de la cuenta, ayuda acerca de los prompts y otra información.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            timed-label
-            
-              
-                Label that displays timed login information.
-              
-            
-          
-        
+          <varlistentry>
+            <term>timed-label</term>
+            <listitem>
+              <para>Etiqueta que muestra la información de la entrada temporizada.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
-        
-          Rectangles can have id values as follows:
-        
+        <para>Los rectángulos pueden tener valores id como los siguientes:</para>
 
-        
-          
-            caps-lock-warning
-            
-              
+        <variablelist>
+          <varlistentry>
+            <term>caps-lock-warning</term>
+            <listitem>
+              <para>
                 Displays an icon that shows if the
                 CAPS LOCK key is depressed.  This rectangle
                 will be hidden/shown appropriately
-              
-            
-          
-        
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
-        
+        <para>
           If an item is of type rect, the item can be a button.  Buttons
-          must also include a button value as follows:
+          must also include a "button" value as follows:
+<screen>
+&lt;item type="rect" id="disconnect_button" button="true"&gt;.
+</screen>
+        </para>
 
-item type=rect id=disconnect_button button=true.
-
-        
-
-        
+        <para>
           Possible values for button ids are as follows.  
-        
+        </para>
 
-        
-          
-            chooser_button
-            
-              
-                Runs the XDMCP chooser.
-              
-            
-          
+        <variablelist>
+          <varlistentry>
+            <term>chooser_button</term>
+            <listitem>
+              <para>Ejecuta el selector XDMCP.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            config_button
-            
-              
-                Runs the GDM configuration application.
-              
-            
-          
+          <varlistentry>
+            <term>config_button</term>
+            <listitem>
+              <para>Ejecuta la aplicación de configuración de GDM.</para>
+            </listitem>
+          </varlistentry>
 
+          <varlistentry>
+            <term>custom_cmd_button[0-9]</term>
+            <listitem>
+              <para>
+                Runs the <filename>n-th</filename> custom command.
+              </para>
+            </listitem>
+          </varlistentry>
           
-            custom_cmd_button[0-9]
-            
-              
-                Runs the n-th custom command.
-              
-            
-          
-          
-          
-            disconnect_button
-            
-              
-                Disconnect from remote session.
-              
-            
-          
+          <varlistentry>
+            <term>disconnect_button</term>
+            <listitem>
+              <para>Desconecta de una sesión remota.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            language_button
-            
-              
-                Displays the language selection dialog.
-              
-            
-          
+          <varlistentry>
+            <term>language_button</term>
+            <listitem>
+              <para>Muestra el diálogo de selección del idioma.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            halt_button
-            
-              
-                Halt (shuts down) the system.
-              
-            
-          
+          <varlistentry>
+            <term>halt_button</term>
+            <listitem>
+              <para>Detiene (apaga) el sistema.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            reboot_button
-            
-              
-                Restart the system.
-              
-            
-          
+          <varlistentry>
+            <term>reboot_button</term>
+            <listitem>
+              <para>Reinicia el sistema.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            session_button
-            
-              
-                List and select from available sessions.
-              
-            
-          
+          <varlistentry>
+            <term>session_button</term>
+            <listitem>
+              <para>Lista y selecciona las sesiones disponibles.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            suspend_button
-            
-              
-                Suspend the system.
-              
-            
-          
+          <varlistentry>
+            <term>suspend_button</term>
+            <listitem>
+              <para>Suspender el sistema.</para>
+            </listitem>
+          </varlistentry>
 
-          
-            system_button
-            
-              
-                Perform halt/restart/suspend/etc. options (if allowed by GDM
-                configuration).  Also allows user to run configurator if user
-                enters root password (again if allowed by GDM configuration).
-                This is usually now labeled Actions, and referred to as the
-                Actions menu.
-              
-            
-          
-        
-      
+          <varlistentry>
+            <term>system_button</term>
+            <listitem>
+              <para>Realiza las opciones detener/reiniciar/suspender/etc (si están permitidas por la configuración de GSM). Además permite al usuario ejecutar el configurador si el usuario introduce la contraseña de root (otra vez si lo permite la configuración de GDM). Esto está normalmente ahora etiquetado como Acciones, y referido como el menú de Acciones.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
 
-      
-        Position Node
+      <sect3 id="positionnodes">
+        <title>Nodo de posición</title>
 
-        
-          Each item can specify its position and size via the pos
-          node.  For example:
+        <para>Cada elemento puede especificar su posición  y tamaño por medio del nodo "pos". Por ejemplo <screen>
+&lt;pos x="0" y="4" width="100%" height="100%"/&gt;
+</screen></para>
 
-pos x=0 y=4 width=100% height=100%/
+        <para>Tanto la posición como el tamaño pueden darse en porcentaje y se tomará como el porcentaje del tamaño del contenedor actual. Para los elementos de nivel superior su porcentaje es respecto de la pantalla completa.</para>
 
-        
-
-        
-          Both position and size can be given in percent and it will be taken
-          as the percentage of the size of the current container.  For toplevel
-          items it's the percentage of the whole screen.
-        
-
-        
+        <para>
           For x and y, you can also specify a negative position which means
           position from the right or bottom edge.  But this only applies with
           absolute coordinates.  With percentage you can specify negative
           position and it will be still from the same edge.
-        
+        </para>
 
-        
+        <para>
           The position also specifies the anchor of the item, this can be
-          n ne e se
-          s sw w and nw or
-          center which stand for the different edges/corners or
-          center for center.  For example:
+          "n" "ne" "e" "se"
+          "s" "sw" "w" and "nw" or
+          "center" which stand for the different edges/corners or
+          "center" for center.  For example:
+<screen>
+&lt;pos x="10%" y="50%" anchor="w" width="80%" height="95"/&gt;
+</screen>
+        </para>
 
-pos x=10% y=50% anchor=w width=80% height=95/
-
-        
-
-        
+        <para>
           If the item contains a box, you can specify width and height to be
-          box to mean that they are supposed to be the width and
+          "box" to mean that they are supposed to be the width and
           height of the box, that is the items in the box plus the padding.
-        
+        </para>
 
-        
+        <para>
           If the item contains an SVG image, you can specify width and height
-          to be scale to mean that the SVG image should be scaled
+          to be "scale" to mean that the SVG image should be scaled
           to fit the requested area.
-        
+        </para>
 
-        
-          You can also specify an expand property to either be
-          true or false.  If true then the child will be expanded
+        <para>
+          You can also specify an "expand" property to either be
+          "true" or false.  If true then the child will be expanded
           in the box as much as possible (that is it will be given more space
           if available).
-        
+        </para>
 
-        
+        <para>
           There are two extra properties you can specify (as of 2.4.4.3) for
-          labels (and labels only).  The first is max-width which
+          labels (and labels only).  The first is "max-width" which
           will specify the maximum width of the label in pixels.  And the
-          second is max-screen-percent-width which specifies the
+          second is "max-screen-percent-width" which specifies the
           maximum percentage of the screen width that the label can occupy.
           By default no label will occupy more then 90% of the screen by width.
           An example may be:
+<screen>
+&lt;item type="label"&gt;
+&lt;pos x="10%" max-screen-percent-width="50%"/&gt;
+</screen>
+        </para>
+      </sect3>
 
-item type=label
-pos x="10%" max-screen-percent-width="50%"/
+      <sect3 id="shownodes">
+        <title>Mostrar nodo</title>
 
-        
-      
-
-      
-        Show Node
-
-        
+        <para>
           Some items may only display in certain modes, like when doing a
           remote display.  Multiple values can be specified and must be
           separated with commas.  The following values are possible:
-        
+        </para>
 
-        
-          console - In console mode.
-        
-        
-          console-fixed - In console non-flexi mode.
-        
-        
-          console-flexi - In console  flexi mode.
-        
-        
-          flexi - In flexi mode.
-        
-        
-          remote - In remote mode.
-        
-        
-          remote-flexi - In remote  flexi mode.
-        
+        <para><filename>console</filename> - En modo consola.</para>
+        <para><filename>console-fixed</filename> - En modo consola no-flexible.</para>
+        <para><filename>console-flexi</filename> - En modo consola y modo flexible.</para>
+        <para><filename>flexi</filename> - En modo flexible.</para>
+        <para><filename>remote</filename> - En modo remoto.</para>
+        <para><filename>remote-flexi</filename> - En modo remoto y flexible.</para>
 
-        
-          For example:
+        <para>Por ejemplo: <screen>
+&lt;show modes="console" type="system"/&gt;
+</screen></para>
 
-show modes=flexi,remote/
-
-        
-
-        
-          You can also specify the type value to indicate that
+        <para>
+          You can also specify the "type" value to indicate that
           certain items should only be displayed if the type is true.  Valid
           values include the following:
-        
+        </para>
 
-        
-          chooser, if ChooserButton is set to
-          true in the GDM configuration.
-        
-        
-          config, if ConfigAvailable is set to
-          true in the GDM configuration.
-        
-        
-          custom_cmd[0-9], if n-th
+        <para><filename>chooser</filename>, si ChooserButton está puesto a «true» en la configuración de GDM.</para>
+        <para><filename>configurar</filename>, si ConfigAvailable está puesto a «true» en la configuración de GDM.</para>
+        <para>
+          <filename>custom_cmd[0-9]</filename>, if <filename>n-th</filename>
           CustomCommand is specified in the GDM configuration.
-        
-        
-          halt, if HaltDaemon is specified in
-          the GDM configuration.
-        
-        
-          reboot, if RebootCommand is specified in
-          the GDM configuration.
-        
-        
-          suspend, if SuspendCommand is specified in
-          the GDM configuration.
-        
-        
-          system, if SystemMenu is specified in
-          the GDM configuration.
-        
-        
-          timed, if TimedLoginEnabled is set to
-          true in the GDM configuration.
-        
+        </para>
+        <para><filename>halt</filename>, si HaltDaemon está especificado en la configuración de GDM.</para>
+        <para><filename>reiniciar</filename>, si RebootCommand está especificado en la configuración de GDM.</para>
+        <para><filename>suspend</filename>, si SuspendCommand está especificado en la configuración de GDM.</para>
+        <para><filename>system</filename>, si SystemMenu está especificado en la configuración de GDM.</para>
+        <para><filename>timed</filename>, si TimedLoginEnabled está puesto a "true" en la configuración de GDM.</para>
 
-        
-          For example:
+        <para>Por ejemplo: <screen>
+&lt;show modes="console" type="system"/&gt;
+</screen></para>
 
-show modes=console type=system/
-
-        
-
-        
+        <para>
           Note that if SystemMenu is off then the halt, restart, suspend,
           chooser and config choices will not be shown, so this is a global
           toggle for them all.  See some of the standard themes for how the
           show modes are used.
-        
-      
+        </para>
+      </sect3>
 
-      
-        Normal/Active/Prelight Nodes
+      <sect3 id="noractprenodes">
+        <title>Normal/Active/Prelight Nodes</title>
 
-        
+        <para>
           Depending on the item type (except for userlist - refer to Color node
           below), it can specify its color, font, or image via the following
           tags:
-        
+        </para>
 
-        
-          normal - normal state.
-        
-        
-          active - when the item has active focus.
-        
-        
-          prelight - when the mouse is hovering over the
-          item.
-        
+        <para><filename>normal</filename> - estado normal.</para>
+        <para><filename>activo</filename> - cuando el elemento tiene foco activo.</para>
+        <para><filename>prelight</filename> - cuando el ratón está sobre el elemento.</para>
 
-        
-            When item is rect (alpha can be omitted and defaults to
+        <para>
+            When item is "rect" (alpha can be omitted and defaults to
             0.0):
+<screen>
+&lt;normal color="#ffffff" alpha="0.0"&gt;
+</screen>
+        </para>
 
-normal color=#ffffff alpha=0.0
+        <para>Cuando el elemento es "label" <screen>
+&lt;normal color="#ffffff" font="Sans 14"/&gt;
+</screen></para>
 
-        
-
-        
-          When item is label
-
-normal color=#ffffff font=Sans 14/
-
-        
-
-        
-          When the item type is pixmap or SVG, then the
+        <para>
+          When the item type is "pixmap" or "SVG", then the
           normal, active, and prelight tags specify the images to use as
           follows:
+<screen>
+&lt;normal file="picture.png" tint="#dddddd"/&gt;
+</screen>
+        </para>
 
-normal file=picture.png tint=#dddddd/
-
-        
-
-        
+        <para>
           Note that relative pathnames are assumed to be in the same 
-          directory as the theme .xml file in
-          share/gdm/themes/theme_name.
-        
+          directory as the theme <filename>.xml</filename> file in
+          <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>.
+        </para>
 
-        
+        <para>
           Note that alternative image file can be specified using the altfile[n]
-	  property. GDM will use the last valid image filename specified. 
-	  For example:
+          property. GDM will use the last valid image filename specified. 
+          For example:
+<screen>
+&lt;normal file="picture.png" altfile1="distribution-blah-image.png" altfile2="distribution-foo-image.png"/&gt;
+</screen>
+         If <filename>distribution-foo-image.png</filename> is a valid image 
+         filename it will be used. Otherwise distribution-blah-image.png will 
+         be used if valid.
+        </para>
 
-normal file=picture.png altfile1=distribution-blah-image.png altfile2=distribution-foo-image.png/
+      </sect3>
 
-	 If distribution-foo-image.png is a valid image 
-	 filename it will be used. Otherwise distribution-blah-image.png will 
-	 be used if valid.
-        
+      <sect3 id="listcoloronodes">
+        <title>Icono del visor de rostros/Etiquetas de nodos de color</title>
 
-      
-
-      
-        Face Browser Icon/Label Color Nodes
-
-        
+        <para>
           If the item type is of userlist, then the background color for the
           icon and label can be set separately via the the following tag:
-        
+        </para>
 
-        
+        <para>
+<screen>
+&lt;color iconcolor="#dddddd" labelcolor="#ffffff"/&gt;
+</screen>
+        </para>
+      </sect3>
 
-color iconcolor=#dddddd labelcolor=#ffffff/
+      <sect3 id="textnodes">
+        <title>Nodo de texto</title>
 
-        
-      
-
-      
-        Text Node
-
-        
+        <para>
           Text tags are used by labels.   They can be used to display
-          localized text as follows (if the xml:lang attribute is
+          localized text as follows (if the "xml:lang" attribute is
           omitted, the C locale is assumed):
+<screen>
+&lt;text xml:lang="fr"&gt;Option&lt;/text&gt;
+</screen>
+        </para>
 
-text xml:lang=frOption/text
-
-        
-
-        
+        <para>
           You can include pango markup in the text nodes for labels, however
           you must encode it.  So for example to have the label of
-          foosupbar/sup, you must type:
+          "foo&lt;sup&gt;bar&lt;/sup&gt;", you must type:
+<screen>
+&lt;text&gt;"foo&lt;sup&gt;bar&lt;/sup&gt;"&lt;/text&gt;
+</screen>
+        </para>
 
-textfoosupbar/sup/text
-
-        
-
-        
+        <para>
           Text nodes can contain the following special character sequences
           which will be translated as follows:
-        
+        </para>
 
-        
-          %% - A literal % character
-        
-        
-          %c - Clock time.  Only labels with the clock id will
-          update automatically every second.  Other labels will contain a
-          static timestamp.
-        
-        
-          %d - Display name (DISPLAY environment variable)
-        
-        
-          %h - Hostname (gethostname output)
-        
-        
-          %m - Machine name (uname.machine output)
-        
-        
-          %n - Node name (uname.nodename output)
-        
-        
-          %o - Domain name (getdomainname output)
-        
-        
-          %r - Release name (uname.release output)
-        
-        
-          %s - System name (uname.sysname output)
-        
-        
+        <para>%% - Un carácter literal %</para>
+        <para>%c - Hora del reloj. Sólo las etiquetas con el id "clock" se actualizarán automáticamente cada segundo. Las demás etiquetas contendrán un sello temporal estático.</para>
+        <para>%d - Nombre de la pantalla (variable de entorno DISPLAY)</para>
+        <para>%h - Nombre del host (salida de gethostname)</para>
+        <para>%m - Nombre de la máquina (salida de uname.machine)</para>
+        <para>%n - Nombre del nodo (salida de uname.nodename)</para>
+        <para>%o - Nombre del dominio (salida de getdomainname)</para>
+        <para>%r - Nombre del lanzamiento (salida de uname.release)</para>
+        <para>%s - Nombre del sistema (salida de uname.sysname)</para>
+        <para>
           %t - Current timed delay value from configuration file (0 if off)
-          followed by the word seconds if value is greater than 1
-          or the word second if the value is 1.  This character
+          followed by the word "seconds" if value is greater than 1
+          or the word "second" if the value is 1.  This character
           sequence is intended to be only used internally to display the
-          timed-label message, which is automatically updated every
+          "timed-label" message, which is automatically updated every
           second.
-        
-        
+        </para>
+        <para>
           %u - Timed username value from configuration file (empty if off)
           This character sequence is intended to be only used internally to
-          display the timed-label message, which is automatically
+          display the "timed-label" message, which is automatically
           updated every second.
-        
-        
-          \n - Carriage return
-        
-        
-          _ - An underscore causes the following character to be underlined.
-          If it precedes a % character sequence, the string that replaces the
-          character sequence is underlined.
-        
-      
+        </para>
+        <para>\n - Retorno de carro</para>
+        <para>_ - Un guión bajo hace que el siguiente carácter sea subrayado. Si precede a una secuencia de carácter %, la cadena que reemplace la secuencia de caracteres se subraya.</para>
+      </sect3>
 
-      
-        Stock
+      <sect3 id="stocklabels">
+        <title>Stock</title>
 
-        
-          Certain common localized labels can be specified via the stock
-          tags.  The text tag is ignored if the stock
-          tag is used.   You should really use the stock labels rather then
-          just putting all the translations into the themes.  This gives
-          faster load times and likely better translations.  The following
-          values are valid:
-        
+        <para>Ciertas etiquetas comunes localizadas pueden especificarse por medio de las etiquetas de fábrica. La etiqueta "text" se ignora si se usa la etiqueta "stock". Debería usar las etiquetas de fábrica en vez de poner todas las traducciones en los temas. Esto da tiempos de carga más rápidos y mejores traducciones. Los valores siguientes son válidos:</para>
 
-        
-          cancel, _(_Cancel
-        
-        
-          caps-lock-warning,
-          _(Caps Lock key is on. 
-        
-        
-          chooser, _(Remote Login via _XDMCP
-        
-        
-          config, _(_Configure
-        
-        
-          custom_cmd[0-9], _(Custom_[0-9]
-        
-        
-          disconnect, _(D_isconnect
-        
-        
-          halt, _(Shut _Down
-        
-        
-          language, _(_Language
-        
-        
-          ok, _(_OK
-        
-        
-          quit, _(_Quit
-        
-        
-          reboot, _(_Restart
-        
-        
-          session, _(_Session
-        
-        
-          startover, _(_Start Over
-        
-        
-          suspend, _(Sus_pend
-        
-        
-          system, _(_Actions
-          (Formerly S_ystem
-        
-        
-          timed-label,
-          _(User %u will login in %t
-        
-        
-          username-label, _(Username:
-        
-        
-          welcome-label, _(Welcome to %n
-        
+        <para><filename>cancel</filename>, _("_Cancelar"</para>
+        <para><filename>caps-lock-warning</filename>, _("La tecla BloqMayús está activada."</para>
+        <para><filename>chooser</filename>, _("Entrada remota via _XDMCP"</para>
+        <para><filename>config</filename>, _("_Configurar"</para>
+        <para>
+          <filename>custom_cmd[0-9]</filename>, _("Custom_[0-9]"
+        </para>
+        <para><filename>disconnect</filename>, _("D_esconectar"</para>
+        <para><filename>halt</filename>, _("_Apagar")</para>
+        <para><filename>language</filename>, _("_Idioma"</para>
+        <para><filename>ok</filename>, _("_Aceptar"</para>
+        <para><filename>quit</filename>, _("_Salir"</para>
+        <para><filename>reboot</filename>, _("_Reiniciar"</para>
+        <para><filename>session</filename>, _("_Sesión"</para>
+        <para><filename>startover</filename>, _("_Empezar de nuevo"</para>
+        <para><filename>suspend</filename>, _("Sus_pender"</para>
+        <para><filename>system</filename>, _("_Acciones" (Anteriormente "S_istema"</para>
+        <para><filename>timed-label</filename>, _("El usuario %u entrará en %t"</para>
+        <para><filename>username-label</filename>, _("Usuario:"</para>
+        <para><filename>welcome-label</filename>, _("Bienvenido a %n"</para>
 
-        
-          For example:
+        <para>Por ejemplo: <screen>
+&lt;stock type="welcome-label"&gt;
+</screen></para>
+      </sect3>
 
-stock type=welcome-label
+      <sect3 id="customwidgetry">
+        <title>Widgets personalizados</title>
 
-        
-      
-
-      
-        Custom Widgetry
-
-        
+        <para>
           Currently there is one item which is customizable and this is
           the list item.  If you need to ask the user extra things, such as
           to pick from a list of places to log into, or set of custom login
           sessions you can setup the list item and add listitem children that
           describe the choices.  Each listitem must have an id and a text
           child.  The choice will be recorded in the file
-          ServAuthDir/display.GreeterInfo
-          as list id=listitem id.
-        
+          <filename>&lt;ServAuthDir&gt;/&lt;display&gt;.GreeterInfo</filename>
+          as <filename>&lt;list id&gt;=&lt;listitem id&gt;</filename>.
+        </para>
 
-        
+        <para>
           For example suppose we are on display :0,
-          ServAuthDir is
-          var/lib/gdm and we have the following in the
+          <filename>ServAuthDir</filename> is
+          <filename>&lt;var&gt;/lib/gdm</filename> and we have the following in the
           theme:
-        
+        </para>
 
+<screen>
+&lt;item type="list" id="custom-config"&gt;
+&lt;pos anchor="nw" x="1" y="1" height="200" width="100"&gt;
+&lt;listitem id="foo"&gt;
+&lt;text&gt;Foo&lt;/text&gt;
+&lt;/listitem&gt;
+&lt;listitem id="bar"&gt;
+&lt;text&gt;Bar&lt;/text&gt;
+&lt;/listitem&gt;
+&lt;/item&gt;
+</screen>
 
-item type=list id=custom-config
-pos anchor=nw x=1 y=1 height=200 width=100
-listitem id=foo
-textFoo/text
-/listitem
-listitem id=bar
-textBar/text
-/listitem
-/item
-
-
-        
+        <para>
           Then if the user chooses 'Foo' then 
-          var/lib/gdm/:0.GreeterInfo will contain:
-
+          <filename>&lt;var&gt;/lib/gdm/:0.GreeterInfo</filename> will contain:
+<screen>
 custom-config=foo
+</screen>
+        </para>
+      </sect3>
+    </sect2>
+  </sect1>
 
-        
-      
-    
-  
-
-  
-    Accessibility
-      
-        GDM supports Accessible Login to allow users to log in to
+  <sect1 id="accessibility">
+    <title>Accesibilidad</title>
+      <para>
+        GDM supports "Accessible Login" to allow users to log in to
         their desktop session even if they cannot easily use the screen, mouse,
-        or keyboard in the usual way.  Only the Standard Greeter
+        or keyboard in the usual way.  Only the "Standard Greeter"
         supports accessibility, so use this login GUI for accessibility
-        support.  This is done by specifying the Standard Greeter
-        in the Local tab for the console display and specifying
-        the Standard Greeter in the Remote tab for 
-        remote displays.  Or you can modify the Greeter
-        configuration option by hand to be gdmlogin.
-      
+        support.  This is done by specifying the "Standard Greeter"
+        in the "Local" tab for the console display and specifying
+        the "Standard Greeter" in the "Remote" tab for 
+        remote displays.  Or you can modify the <filename>Greeter</filename>
+        configuration option by hand to be <command>gdmlogin</command>.
+      </para>
 
-      
-        The Standard Greeter supports the ability to launch assistive
-        technologies at login time via configurable gestures from
-        the standard keyboard, pointing device, or switch device attached to
-        the USB or PS/2 mouse port.  Also the user can change the visual
-        appearance of the login UI before logging in, for instance to use a
-        higher-contrast color scheme for better visibility.  
-      
+      <para>El interfaz estándar soporta la capacidad de lanzar tecnologías de asistencias en el momento de la entrada por medio de «gestos» especiales desde el teclado estándar, dispositivo apuntador, o conmutador enchufado al puerto USB o el puerto PS/2 del ratón. También el usuario puede cambiar la apariencia visual del IU de entrada antes de entrar, por ejemplo para usar un esquema de color de alto contraste para mejor visibilidad.</para>
 
-       
-          Accessibility Configuration
-             
-             In order to enable Accessible Login, the system administrator must
-             make some changes to the default login configuration by manually
-             modifying three human-readable configuration files, stored in
-             the GDM configuration, AccessKeyMouseEvents and
-             AccessDwellMouseEvents.
-             
+       <sect2 id="accessibilityconfig">
+          <title>Configuración de accesibilidad</title>
+             <para>Para activar la entrada accesible, el administrador del sistema debe hacer algunos cambios a la configuración predeterminada de entrada modificando manualmente tres archivos de configuración almacenados en la configuración de GDM, AccessKeyMouseEvents y AccessDwellMouseEvents.</para>
 
-             
-             In order to allow users to change the color and contrast scheme of
-             the login dialog, make sure the
-             AllowThemeChange parameter in the GDM
-             configuration is set to true.
-             
+             <para>Para permitir a los usuarios cambiar el color y el contrarte del diálogo de entrada, asegúrese de que el parámetro <filename>AllowThemeChange</filename> en la configuración de GDM está puesto a «true».</para>
 
-             
-             To restrict user changes to the visual appearance to a subset of
-             available themes, the GtkThemesToAllow
-             parameter in the GDM configuration can be set to a list of
-             acceptable themes separated by commas.  For example:
-             
+             <para>Para restringir los cambios del usuario a la apariencia visual a un subconjunto de los temas disponibles, el parámetro <filename>GtkThemesToAllow</filename> en la configuración de GDM puede establecerse a una lista de temas aceptables separados por comas. Por ejemplo:</para>
 
-
+<screen>
 GtkThemesToAllow=HighContrast,HighContrastInverse
+</screen>
 
+             <para>Para activar el uso de tecnologías de asistencia como el teclado en pantalla, el lector de pantalla o la Lupa, el parámetro <filename>AddGtkModules</filename> en la configuración de GDM debe descomentarse y establecerse a «true». Además el parámetro <filename>GtkModulesList</filename> debe ser descomentado y establecido como sigue:</para>
 
-             
-             To enable the use of assistive technologies such as the Onscreen
-             Keyboard, Screen Reader, or Magnifier, the
-             AddGtkModules parameter in the GDM
-             configuration must be uncommented and set to true.
-             Also the GtkModulesList parameter must be
-             uncommented and set as follows:
-             
-
-
+<screen>
 GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
+</screen>
 
-
-             
+             <para>
              The use of assistive technologies and the atk-bridge module
-             requires the registry daemon, at-spi-registryd,
+             requires the registry daemon, <command>at-spi-registryd</command>,
              to be running.  This is handled by the GDM GUI starting with
              version 2.17.
-             
+             </para>
 
-             
-             System administrators may wish to load only the minimum subset of
-             these modules which is required to support their user base.
-             Depending on the end-user needs, not all of the above GtkModules
-             may need to be loaded.  If your end-users need the integrated
-             Screen Reader and Magnifier, you must include gail and
-             atk-bridge.  If your end-users will be using a
-             pointing device without buttons or switches, include
-             dwellmouselistener.  If some of your users will use
-             pointing devices with switches, alternative physical keyboards, or
-             switch/button devices, include keymouselistener.
-             Including all four is suitable for most system configurations.
-             The Onscreen Keyboard can operate without gail and atk-bridge, but
-             with a reduced feature set; for optimum accessibility we recommend
-             including both gail and atk-bridge.
-             
+             <para>Los administradores de sistema quizá deseen cargar sólo un subconjunto mínimo de estos módulos que se requieren para soportar su base de usuarios. Dependiendo de las necesidades de los usuarios finales, no todos los GtkModules necesitan ser cargados. Si sus usuarios finales necesitan el lector de pantalla integrado y la lupa, debe incuir  «gail» y «atk-bridge». Si sus usuarios finales estarán usando un dispositivo apuntador sin botones o interruptores, incluya «dwellmouselistener». si algunos de sus usuarios usarán dispositivos apuntadores con interruptores, alternativos a teclados físicos o despositivos de botones, incluya «keymouselistener». Incluir los cuatro es apropiado para la mayoría de las configuraciones del sistema. El teclado en pantalla puede funcionar singail o  atk-bridge, pero con un conjunto de características reducido; paa accesibilidad optima recomendamos incluir tanto gail como atk-bridge.</para>
 
-             
-             Once keymouselistener and/or
-             dwellmouselistener have been added to the GtkModules
+             <para>
+             Once "keymouselistener" and/or
+             "dwellmouselistener" have been added to the GtkModules
              loaded by GDM, you can assign end-user actions with the launching
              of specific assistive technologies.  These gesture associations
              are contained in files AccessKeyMouseEvents and
              AccessDwellMouseEvents, respectively.  Both files are located in
-             the etc/gdm/modules directory.  The gesture format is
+             the &lt;etc&gt;/gdm/modules directory.  The gesture format is
              described in the two configuration files.
-             
+             </para>
 
-             
+             <para>
              The AccessKeyMouseEvents file controls the keymouselistener
              Gesture Listener and is used to define key-press, mouse button,
              or XInput device sequences that can be used to launch applications
              needed for accessibility.  In order to reduce the likelihood of
-             unintentional launch, these gestures may be associated
+             unintentional launch, these "gestures" may be associated
              with multiple switch presses and/or minimum durations.  Note that
              the XKB extension is needed for key gestures to work, so you may
              need to add +xkb to your Xserver command line for gestures to
              work properly.
-             
+             </para>
 
-             
+             <para>
              The DwellKeyMouseEvents file controls the dwellmouselistner and
              supports gestures that involve only motion of a pointing device
              such as the system mouse of an alternative pointing device such
              as a head pointer or trackball may also be defined.   All gestures
              are specified by the same syntax; that is, there is no distinction
-             between a core mouse gesture and motion from an
+             between a "core mouse" gesture and motion from an
              alternate input device.
-             
+             </para>
 
-             
-             Motion gestures are defined as crossing events into
+             <para>
+             Motion gestures are defined as "crossing events" into
              and out of the login dialog window.  If the
-             dwellmouselistener GtkModule is loaded, alternative
-             pointing devices are temporarily latched to the core
+             "dwellmouselistener" GtkModule is loaded, alternative
+             pointing devices are temporarily "latched" to the core
              pointer, such that motion from alternative devices results in
              movement of the onscreen pointer.
-             
+             </para>
 
-             
+             <para>
              In order to use text-to-speech services at login time (for
              instance, when using the Screen Reader in speech mode) on some
              operating systems, the GDM user must be made a member of the
-             audio group
-             
+             "audio" group
+             </para>
 
-             
+             <para>
              Currently GDM does not remember what accessible technology
              programs have been started when switching applications.  So
              if the user switches between the login program and the 
@@ -5167,9 +4955,9 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
              session so that the assistive technologies required are
              started automatically (or have appropriate key-bindings 
              defined to start them) after the user session has started.
-             
+             </para>
 
-             
+             <para>
              There are some issues that cause users to have problems
              getting the gesture listeners to work.  It is recommended that
              people use GDM version 2.8.0.5 or later for best results.  
@@ -5179,7 +4967,7 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
              with a duration greater than 0 to always fail.  A workaround
              is to simply redefine all key gestures so they have zero length
              duration.  Some versions of GOK and gnopernicus will not launch
-             unless the gdm user has a writable home directory.
+             unless the "gdm" user has a writable home directory.
              If you see an hourglass cursor when you complete a gesture but the
              program does not start, then you are likely having this problem.
              It should be considered a bug for AT programs to require having a
@@ -5187,81 +4975,54 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
              program if you encounter this problem.  Also note that some input
              devices require X server configuration before GDM will recognize
              them.
-             
-       
-       
-          Accessibility Login Sound Configuration
-             
+             </para>
+       </sect2>
+       <sect2 id="accessibilitysound">
+          <title>Configuración de sonido de accesibilidad en la entrada</title>
+             <para>
              By default, GDM requires a media application such as
-             sox to be present to play sounds for successful or
+             "sox" to be present to play sounds for successful or
              failed login.  GDM defaults
              the location of this application to
-             bin/play (or
-             bin/audioplay on Solaris.  This can
+             <filename>&lt;bin&gt;/play</filename> (or
+             <filename>&lt;bin&gt;/audioplay</filename> on Solaris.  This can
              be changed via the SoundProgram GDM configuration option.  
              Typically most text-to-speech programs (such as ORCA or 
              Gnopernicus) use a separate mechanism to play audio.
-             
-        
-  
+             </para>
+        </sect2>
+  </sect1>
 
-  
-    Solaris Specific Features
+  <sect1 id="solaris">
+    <title>Características específicas de Solaris</title>
 
-       
-          Solaris Configuration
-             
-               On Solaris, the following configuration is recommended.
-               This turns on IPv6 and also turns on PreFetch for
-               performance benefit.
-
-
+       <sect2 id="solarisconfiguration">
+          <title>Configuración de Solaris</title>
+             <para>En Solaris, la siguiente configuración está recomendada. Esto activa IPv6 y además activa PreFetch para beneficiar el rendimiento. <screen>
 ./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
    --libexecdir=/usr/lib --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
    --with-prefetch --with-post-path=/usr/openwin/bin
+</screen></para>
 
-             
+             <para>Configurar GDM con "--with-post-path=/usr/openwin/bin" en Solaris está recomendado para acceder a programas como Xnest.</para>
+       </sect2>
 
-             
-               Configuring GDM with the
-               --with-post-path=/usr/openwin/bin on Solaris is
-               recommended for access to programs like Xnest.
-             
-       
+       <sect2 id="solarislogindevperm">
+          <title>Solaris /etc/logindevperm</title>
+             <para>GDM soporta /etc/logindevperm, pero sólo en Solaris 10 y superiores. Vea la página man logindevperm.4 para más información.</para>
 
-       
-          Solaris /etc/logindevperm
-             
-               GDM supports /etc/logindevperm, but only on Solaris 10 and higher.
-               Refer to the logindevperm.4 man page for more information.
-             
+             <para>Para hacer funcionar /etc/logindevperm en Solaris 9 o anteriores, deberá haquear los scripts de GDM PreSession y PostSession para hacer un chmod a los permisos del dispositivo directamente. En otras palabras, si /etc/logindevperm se lista como esto:</para>
 
-             
-               To make /etc/logindevperm functionality work on Solaris 9 or
-               earlier you would have to hack the GDM PreSession and
-               PostSession script to chmod the device permissions directly.  In
-               other words, if /etc/logindevperm had a listing like this:
-             
-
-
+<screen>
 /dev/console    0600    /dev/sound/*            # audio devices
-
+</screen>
      
-             
-               The PreSession script would need to be modified to chown
-               /dev/console to the user:group who is logging into the console
-               and ensure whatever permissions is specified in /etc/logindevperm
-               (0600 for the line above).  Then in the PostSession script chmod
-               the device back to root:root and ensure 0600 this time (do not
-               use the value in the /etc/logindevperm file).  Linux uses a
-               different mechanism for managing device permissions, so this
-               extra scripting is not needed.
-             
-       
+             <para>El script de PreSession debería tener que modificarse para que haga chown de /dev/console al usuario:grupo de quien esté entrando en la consola y asegurarse cualesquiera de los permisos estén especificados en /etc/logindevperm (0600 para la línea de arriba). Después en el script PostSession volver a hacer un chmod del dispositivo a root:root y asegurarse de que los permisos son 0600 esta vez (no usar el valor en el archivo /etc/logindevperm esta vez). Linux usa un mecanismo diferente para gestionar los permisos de dispositivos, así que este script previo no es necesario.</para>
+       </sect2>
 
-       
-          Solaris Automatic Login
-             
+       <sect2 id="solarisautomaticlogin">
+          <title>Inicio de sesión automático en Solaris</title>
+             <para>
                Automatic login does not work on Solaris because PAM is not
                configured to support this feature by default.  Automatic 
                login is a GDM feature that is not enabled by default, so you
@@ -5270,209 +5031,186 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
                specified username on startup without asking for username
                and password.  This is an insecure way to set up your
                computer. 
-             
+             </para>
 
-             
+             <para>
                If using Solaris 10 or lower, then you need to compile
                the pam_allow.c code provided with the GDM release and
                install it to /usr/lib/security (or provide the full path
                in /etc/pam.conf) and ensure it is owned by uid 0 and not
                group or world writable.
-             
+             </para>
 
-             
+             <para>
                The following are reasonable pam.conf values for turning on
                automatic login in GDM.  Make sure to read the PAM documentation
                (e.g. pam.d/pam.conf man page) and be comfortable with the
                security implications of any changes you intend to make to
                your configuration.
-             
+             </para>
 
-
+<screen>
        gdm-autologin auth  required    pam_unix_cred.so.1
        gdm-autologin auth  sufficient  pam_allow.so.1
        gdm-autologin account  sufficient  pam_allow.so.1
        gdm-autologin session  sufficient  pam_allow.so.1
        gdm-autologin password  sufficient  pam_allow.so.1
+</screen>
 
-
-             
+             <para>
                The above setup will cause no lastlog entry to be generated.  If
                a lastlog entry is desired, then use the following for session:
-             
+             </para>
 
-
+<screen>
        gdm-autologin session required pam_unix_session.so.1
+</screen>
+       </sect2>
 
-       
+       <sect2 id="solarisother">
+          <title>Otras características de Solaris</title>
+             <para>GDM soporta unas pocas características específicas a Solaris, como las siguientes:</para>
 
-       
-          Other Solaris Features
-             
-               GDM supports a few features specific to Solaris, as follows:
-             
+             <para>GDM soporta Solaris Auditing si se ejecuta sobre Solaris 10 o superior. GDM no debería usarse si se necesita auditoría y se está ejecutando Solaris 9 o anterior.</para>
 
-             
-               GDM supports Solaris Auditing if running on Solaris 10 or
-               higher.  GDM should not be used if auditing is needed and
-               running Solaris 9 or older.
-            
-
-            
+            <para>
                 GDM supports a security feature which causes the X server to
                 run as the user instead of as the root user.  GDM must be using
                 PAM for this feature to be enabled, which is the normal case
                 for Solaris.  This second feature has the side-effect of
                 causing the X server to always restart between sessions, which
                 disables the AlwaysRestartServer configuration option.  
-            
+            </para>
 
-            
-                Solaris supports the /etc/default/login
-                interface, which affects the DefaultPath,
-                RootPath,
-                PasswordRequired, and
-                AllowRemoteRoot options as described in the
-                Configuration section.
-            
-       
-  
+            <para>
+                Solaris supports the <filename>/etc/default/login</filename>
+                interface, which affects the <filename>DefaultPath</filename>,
+                <filename>RootPath</filename>,
+                <filename>PasswordRequired</filename>, and
+                <filename>AllowRemoteRoot</filename> options as described in the
+                "Configuration" section.
+            </para>
+       </sect2>
+  </sect1>
 
-  
-    Example Configurations
+  <sect1 id="exampleconf">
+    <title>Configuraciones de ejemplo</title>
 
-    
-      This section has some example configurations that are useful for
-      various setups.
-    
+    <para>Esta sección tiene algunas configuraciones de ejemplo que son útiles para varias configuraciones.</para>
 
-    
-      Terminal Lab With One Server
+    <sect2 id="terminallab">
+      <title>Laboratorio con terminales con un servidor</title>
 
-      
+      <para>
         Suppose you want to make a lab full of X terminals that all connect
         to one server machine.  So let's call one X terminal
-        xterminal and let's call the server machine
-        appserver.  You install GDM on both.
-      
+        <filename>xterminal</filename> and let's call the server machine
+        <filename>appserver</filename>.  You install GDM on both.
+      </para>
 
-      
-        On appserver you enable XDMCP, so you have
-
+      <para>En <filename>appserver</filename> activa XDMCP, así que tiene <screen>
 [xdmcp]
 Enable=true
+</screen> Si no quiere pantallas locales aquí, puede dejar vacía la sección <filename>[servers]</filename>.</para>
 
-        If you want no local screens here, you can then
-        make the [servers] section empty.
-      
-
-      
-        On the xterminal you disable XDMCP (you don't
+      <para>
+        On the <filename>xterminal</filename> you disable XDMCP (you don't
         want anyone to connect to the xterminal really).  You will add a
-        server type perhaps called Terminal as follows:
-
+        server type perhaps called <filename>Terminal</filename> as follows:
+<screen>
 [server-Terminal]
 name=Terminal server
 command=/path/to/X -terminate
 flexible=false
 handled=false
-
+</screen>
         This definition should in fact be included in the standard
         configuration file.  Notice that we made the
-        handled key false since we don't want GDM to
+        <filename>handled</filename> key false since we don't want GDM to
         handle this server localy.  Also note that we have not yet added the
-        -query argument, you can add that here, or in the
-        [servers] section.  We'll define our local
+        <filename>-query</filename> argument, you can add that here, or in the
+        <filename>[servers]</filename> section.  We'll define our local
         servers as follows:
-
+<screen>
 [servers]
 0=Terminal -query appserver
-
+</screen>
         This will run a direct XDMCP query to the server named
-        appserver.
-      
-    
+        <filename>appserver</filename>.
+      </para>
+    </sect2>
 
-    
-      Terminal Lab With Two Or More Servers
+    <sect2 id="terminallabtwo">
+      <title>Laboratorio con terminales con dos o más servidores</title>
 
-      
-        Suppose you want to make a lab full of X terminals that all connect
-        to some choice of servers.  For now let's make it
-        appserverone and
-        appservertwo.  Again we'll call our example X
-        terminal server xterminal.  The setup on both
-        servers is the same as with the case of one server in the previous
-        section.  You do not need to explicitly enable indirect queries on the
-        server since we'll run the choosers locally on the X terminals.
-      
+      <para>Suponga que quiere hacer un laboratorio lleno de terminales X que todas se conectan a una selección de servidores. Por ahora  llamémoslos <filename>appserveruno</filename> y<filename>appserverdos</filename>. De nuevo llamamos a nuestro servidor de terminales X <filename>xterminal</filename>. La configuración de ambos servidores es la misma que con el caso de un servidor en la sección anterior. No necesita activar explícitamente las consultas indirectas en el servidor debido a que ejecutamos los selectores localmente en las terminales X.</para>
 
-      
-        So on the xterminal you again disable XDMCP.
-        You will add a server type perhaps called Chooser
+      <para>
+        So on the <filename>xterminal</filename> you again disable XDMCP.
+        You will add a server type perhaps called <filename>Chooser</filename>
         as follows:
-
+<screen>
 [server-Chooser]
 name=Chooser server
 command=/path/to/X
 flexible=false
 chooser=true
-
+</screen>
         And again this definition should in fact be included in the standard
         configuration file.  Notice that we made the
-        chooser key true here.  This will run the XDMCP
+        <filename>chooser</filename> key true here.  This will run the XDMCP
         chooser for this server, and when the user chooses a host GDM will run
         a query for that host.  Then we will define our local servers as
         follows:
-
+<screen>
 [servers]
 0=Chooser
+</screen>
+      </para>
 
-      
-
-      
+      <para>
         The XDMCP chooser on the X terminal will normally give a broadcast
         query to see which servers exist on the network.  If the two servers
         are not reachable by a broadcast query, you must add them by hand to
-        the configuration file.  So in the [chooser]
+        the configuration file.  So in the <filename>[chooser]</filename>
         section you would have:
-
+<screen>
 Hosts=appserverone,appservertwo
-
+</screen>
         and any other servers you wish the users to be able to connect to.
-      
+      </para>
 
-      
+      <para>
         Sometimes you may want to run the chooser on the server side however.
         Then what you want to do is to run a configuration similar to the
         previous section about the one server configuration with XDMCP
-        indirect queries enabled on appserver and on the
+        indirect queries enabled on <filename>appserver</filename> and on the
         X terminals you'd have
-
+<screen>
 [servers]
 0=Terminal -indirect appserver
-
+</screen>
         This way for example you only have to maintain one
-        Hosts entry.  However as a disadvantage then,
-        the appserver must then always be available.  So
+        <filename>Hosts</filename> entry.  However as a disadvantage then,
+        the <filename>appserver</filename> must then always be available.  So
         it's not good for situations where you want to have several servers
         and not all of them have to be on all the time.  You could also have
         one of the X terminals handle indirect XDMCP queries and serve up the
         chooser to the other X terminals.
-      
+      </para>
+    </sect2>
     
-    
-    
-      Defining Custom Commands
+    <sect2 id="customcommand">
+      <title>Defining Custom Commands</title>
       
-      
+      <para>
         Suppose you want to add a custom command to the GDM menu that will give
         you the oportunity to boot into other operating system such as Windoze.
         Jsut add the following options into the
-        [customcommand] section of the GDM configuration
+        <filename>[customcommand]</filename> section of the GDM configuration
         file.
         
-        
+        <screen>
           [customcommand]
           CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
           CustomCommandLabel0=_Windoze
@@ -5480,24 +5218,24 @@ Hosts=appserverone,appservertwo
           CustomCommandText0=Are you sure you want to restart the computer into Windoze?
           CustomCommandTooltip0=Restarts the computer into Windoze
           CustomCommandIsPersistent0=true
-        
+        </screen>
 
         CustomCommand0 specifies two commands separated by a semicolon:
-        /sbin/rebootwindoze and 
-        /usr/local/sbin/rebootwindoze.  GDM will use
+        <filename>/sbin/rebootwindoze</filename> and 
+        <filename>/usr/local/sbin/rebootwindoze</filename>.  GDM will use
         the first valid command in the list.  This allows different 
         commands for different operating systems to be included.
-      
-      
+      </para>
+      <para>
         Note, that besides being able to customise this option to reboot into
         different operating systems you can also use it to define your own
         custom behaviours that you wish to run from the GDM menu.  Suppose you
         want to give users the oportunity to run system update scripts from the
         login screen. Add the following options into the
-        [customcommand] section of your GDM configuration
+        <filename>[customcommand]</filename> section of your GDM configuration
         file.
         
-        
+        <screen>
           [customcommand]
           CustomCommand0=/sbin/updatesystem;/usr/local/sbin/updatesystem
           CustomCommandLabel0=_Update Me
@@ -5505,13 +5243,13 @@ Hosts=appserverone,appservertwo
           CustomCommandText0=Are you sure you want to update the system software?
           CustomCommandTooltip0=Updates the system
           CustomCommandNoRestart0=true
-        
+        </screen>
+      </para>
       
-      
-      
+      <para>
         Both custom commands could be defined as follows.
 
-        
+        <screen>
           [customcommand]
           CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
           CustomCommandLabel0=_Windoze
@@ -5526,13 +5264,13 @@ Hosts=appserverone,appservertwo
           CustomCommandText1=Are you sure you want to update the system software?
           CustomCommandTooltip1=Updates the system
           CustomCommandNoRestart1=true
-        
-        
+        </screen>
+        </para>
       
-      
+      <para>
         There can be up to 10 custom commands numbered 0-9.
 
-        
+        <screen>
           [customcommand]
           CustomCommand0=/sbin/rebootwindoze;/usr/local/sbin/rebootwindoze
           CustomCommandLabel0=_Windoze
@@ -5557,55 +5295,48 @@ Hosts=appserverone,appservertwo
           .
           .
           .
-        
-      
-    
-  
+        </screen>
+      </para>
+    </sect2>
+  </sect1>
 
-  
-    Troubleshooting
+  <sect1 id="troubleshooting">
+    <title>Resolución de problemas</title>
 
-    
-      This section discusses helpful tips for getting GDM working.  In general,
-      if you have a problem using GDM, you can submit a bug to the
-      gdm category in
-      bugzilla.gnome.org
-      or send an email to the
-      gdm-list@gnome.org mail list.
-    
+    <para>Esta sección hace acerca de consejos útiles para hacer funcionar GDM. En general, si tiene un problema al usar GDM, puede enviar un bug a la categoría «gdm» en <ulink type="http" url="http://bugzilla.gnome.org/">bugzilla.gnome.org</ulink> o enviar un correo-e a la lista de correo <address><email>gdm-list@gnome.org</email></address>.</para>
 
-    
+    <para>
       If GDM is failing to work properly, it is always a good idea to include
-      debug information.  Use the gdmsetup command to turn
-      on debug (Enable debug messages to system log checkbox in the
-      Security tab), then use GDM to the point where it fails, and
+      debug information.  Use the <command>gdmsetup</command> command to turn
+      on debug ("Enable debug messages to system log" checkbox in the
+      "Security" tab), then use GDM to the point where it fails, and
       include the GDM output sent to your system log
-      (var/log/messages or
-      var/adm/messages depending on your operating
+      (<filename>&lt;var&gt;/log/messages</filename> or
+      <filename>&lt;var&gt;/adm/messages</filename> depending on your operating
       system).  Since the system log can be large, please only include the GDM
       debug information and do not sent the entire file.  If you do not see any
       GDM syslog output, you may need to configure syslog (see syslog.3c man
       page).
-    
+    </para>
 
-    
+    <para>
       You should not leave debug on after collecting data.  It will clutter your
       syslog and slow system performance.
-    
+    </para>
 
-    
-      GDM Will Not Start
+    <sect2 id="wontstart">
+      <title>GDM no se inicia</title>
 
-      
+      <para>
          There are a many problems that can cause GDM to fail to start, but
          this section will discuss a few common problems and how to approach
          tracking down a problem with GDM starting.   Some problems will 
          cause GDM to respond with an error message or dialog when it tries
          to start, but it can be difficult to track down problems when GDM
          fails silently.
-      
+      </para>
 
-      
+      <para>
          First make sure that the Xserver is configured properly.  The 
          GDM configuration file contains a command in the [server-Standard]
          section that is used for starting the Xserver.  Verify that this
@@ -5616,80 +5347,92 @@ Hosts=appserverone,appservertwo
          also be that your Xserver requires different command-line options.
          If so, then modify the Xserver command in the GDM configuration file
          so that it is correct for your system.
-      
+      </para>
 
-      
+      <para>
          Another common problem is that the GDM greeter program is having
          trouble starting.  This can happen, for example, if GDM cannot find
          a needed library or other resource.  Try starting the Xserver and
          a terminal program, set the shell environment variable 
          DOING_GDM_DEVELOPMENT=1 and run
-         lib/gdmlogin
-         or lib/gdmgreeter.  Any error messages
+         <command>&lt;lib&gt;/gdmlogin</command>
+         or <command>&lt;lib&gt;/gdmgreeter</command>.  Any error messages
          echoed to the terminal will likely highlight the problem.  Also,
          turning on debug and checking the output sent to the system log 
          will often highlight the problem.
-      
+      </para>
 
-      
-         Also make sure that the /tmp directory has
+      <para>
+         Also make sure that the <filename>/tmp</filename> directory has
          reasonable ownership and permissions, and that the machine's file
          system is not full.  These problems will cause GDM to fail to start.
-      
-    
+      </para>
+    </sect2>
 
-    
-      GDM Will Not Access User Settings
+    <sect2 id="notaccessfile">
+      <title>GDM Will Not Access User Settings</title>
 
-      
+      <para>
          GDM saves user settings, such as your default session and default
-         language, in the ~/.dmrc.  Other files, such
-         as the user's ~/.Xauthority file will also
+         language, in the <filename>~/.dmrc</filename>.  Other files, such
+         as the user's <filename>~/.Xauthority</filename> file will also
          affect login.  GDM, by default, is strict about how it tries to
          access files in the user's home directory, and will ignore the file if
          they do not conform to certain rules.  You can use the 
-         RelaxPermissions configuration option to
+         <filename>RelaxPermissions</filename> configuration option to
          make GDM less strict about how it accesses files in the user's
          home directory, or correct the permissions issues that cause GDM
          to ignore the file.  This is discussed in detail described in the
-         File Access section of the Overview. 
-      
-    
-  
+         "File Access" section of the "Overview". 
+      </para>
+    </sect2>
+  </sect1>
 
-  
+  <!-- ============= Application License ============================= -->
 
-  
-    License
-    
+  <sect1 id="license">
+    <title>Licencia</title>
+    <para>
       This program is free software; you can redistribute it and/or
-      modify it under the terms of the  
-      GNU General Public License as
+      modify it under the terms of the  <ulink type="help" url="gnome-help:gpl">
+      <citetitle>GNU General Public License</citetitle></ulink> as
       published by the Free Software Foundation; 
       either version 2 of the License, or (at your option) any later
       version.
-    
-    
+    </para>
+    <para>
       This program is distributed in the hope that it will be useful, but
       WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU General Public License for more details.
-    
-    
-      A copy of the GNU General Public License is
-      included as an appendix to the GNOME Users
-      Guide.  You may also obtain a copy of the
-      GNU General Public License from the Free
-      Software Foundation by visiting their Web site or by writing to
-      
+      <citetitle>GNU General Public License</citetitle> for more details.
+    </para>
+    <para>
+      A copy of the <citetitle>GNU General Public License</citetitle> is
+      included as an appendix to the <citetitle>GNOME Users
+      Guide</citetitle>.  You may also obtain a copy of the
+      <citetitle>GNU General Public License</citetitle> from the Free
+      Software Foundation by visiting <ulink type="http" url="http://www.fsf.org">their Web site</ulink> or by writing to
+      <address>
       Free Software Foundation, Inc.
-      59 Temple Place - Suite 330
-      Boston, MA 02111-1307
-      USA
-      
-    
-  
-
-
-               
-</rect></para></listitem></varlistentry></variablelist></sect3></sect2></sect1></article>
+      <street>59 Temple Place</street> - Suite 330
+      <city>Boston</city>, <state>MA</state> <postcode>02111-1307</postcode>
+      <country>USA</country>
+      </address>
+    </para>
+  </sect1>
+</article>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->
