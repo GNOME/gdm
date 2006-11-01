@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GDM2 2.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-09 07:19+0200\n"
-"PO-Revision-Date: 2006-10-07 23:37+0300\n"
+"POT-Creation-Date: 2006-10-31 06:45+0100\n"
+"PO-Revision-Date: 2006-10-31 13:05+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -168,13 +168,13 @@ msgstr ""
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: kataloogis %s pole võimalik uut küpsisefaili luua"
 
-#: ../daemon/auth.c:219 ../daemon/auth.c:236 ../daemon/auth.c:876
+#: ../daemon/auth.c:219 ../daemon/auth.c:236 ../daemon/auth.c:878
 #, c-format
 msgid "%s: Cannot safely open %s"
 msgstr "%s: %s pole võimalik turvaliselt avada"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: ../daemon/auth.c:675 ../daemon/auth.c:717
+#: ../daemon/auth.c:675 ../daemon/auth.c:719
 #, c-format
 msgid "%s: Could not open cookie file %s"
 msgstr "%s: Küpsisefaili %s pole võimalik avada"
@@ -184,17 +184,17 @@ msgstr "%s: Küpsisefaili %s pole võimalik avada"
 msgid "%s: Could not lock cookie file %s"
 msgstr "%s: Küpsisefaili pole võimalik lukustada %s"
 
-#: ../daemon/auth.c:746 ../daemon/auth.c:768
+#: ../daemon/auth.c:748 ../daemon/auth.c:770
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s: Küpsist pole võimalik kirjutada"
 
-#: ../daemon/auth.c:852
+#: ../daemon/auth.c:854
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Jätan kahtlase väljanägemisega küpsise faili %s vahele"
 
-#: ../daemon/auth.c:895 ../daemon/gdm.c:1365 ../daemon/gdm.c:1733
+#: ../daemon/auth.c:897 ../daemon/gdm.c:1403 ../daemon/gdm.c:1771
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Ei saa kirjutada %s: %s"
@@ -313,44 +313,44 @@ msgid "%s: Could not open FIFO"
 msgstr "%s: Ei saa järjekorda (FIFO) avada"
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:197 ../daemon/gdm.c:205 ../daemon/gdm.c:1503
-#: ../daemon/gdm.c:1511
+#: ../daemon/gdm.c:198 ../daemon/gdm.c:206 ../daemon/gdm.c:1541
+#: ../daemon/gdm.c:1549
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "PID faili %s pole võimalik kirjutada kirjutada, arvatavasti on kettaruum "
 "otsas.  Viga: %s\n"
 
-#: ../daemon/gdm.c:199 ../daemon/gdm.c:207 ../daemon/gdm.c:1505
-#: ../daemon/gdm.c:1513
+#: ../daemon/gdm.c:200 ../daemon/gdm.c:208 ../daemon/gdm.c:1543
+#: ../daemon/gdm.c:1551
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr ""
 "PID faili %s pole võimalik kirjutada kirjutada, arvatavasti on kettaruum "
 "otsas.  Viga: %s"
 
-#: ../daemon/gdm.c:217
+#: ../daemon/gdm.c:218
 #, c-format
 msgid "%s: fork () failed!"
 msgstr "%s: tõrge fork() täitmisel!"
 
 #. should never happen
-#: ../daemon/gdm.c:220 ../daemon/slave.c:3372
+#: ../daemon/gdm.c:221 ../daemon/slave.c:3373
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: tõrge setsid() täitmisel: %s!"
 
-#: ../daemon/gdm.c:411
+#: ../daemon/gdm.c:449
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: Tõrkekindla X-i serveri %s proovimine"
 
-#: ../daemon/gdm.c:429
+#: ../daemon/gdm.c:467
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: XKeepsCrashing skripti käivitamine"
 
-#: ../daemon/gdm.c:546
+#: ../daemon/gdm.c:584
 msgid ""
 "The X server (your graphical interface) cannot be started.  It is likely "
 "that it is not set up correctly.  You will need to log in on a console and "
@@ -365,7 +365,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:558
+#: ../daemon/gdm.c:596
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -374,39 +374,39 @@ msgstr ""
 "Lühikese aja jooksul on X-serveri käivitamisel esinenud mitmeid tõrkeid; "
 "kuva %s on nüüd keelatud"
 
-#: ../daemon/gdm.c:568 ../daemon/gdm.c:2312
+#: ../daemon/gdm.c:606 ../daemon/gdm.c:2350
 msgid "Master suspending..."
 msgstr "Üldine ooterežiimile lülitumine..."
 
-#: ../daemon/gdm.c:621
+#: ../daemon/gdm.c:659
 #, c-format
 msgid "System is restarting, please wait ..."
 msgstr "Süsteemi alglaadimine, palun oota ..."
 
-#: ../daemon/gdm.c:623
+#: ../daemon/gdm.c:661
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "Süsteemi seiskamine, palun oota ..."
 
-#: ../daemon/gdm.c:634
+#: ../daemon/gdm.c:672
 msgid "Master halting..."
 msgstr "Üldine seiskamine..."
 
-#: ../daemon/gdm.c:647
+#: ../daemon/gdm.c:685
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: Tõrge seiskamisel: %s"
 
-#: ../daemon/gdm.c:656
+#: ../daemon/gdm.c:694
 msgid "Restarting computer..."
 msgstr "Arvuti alglaadimine..."
 
-#: ../daemon/gdm.c:669
+#: ../daemon/gdm.c:707
 #, c-format
 msgid "%s: Restart failed: %s"
 msgstr "%s: Tõrge taaskäivitamisel: %s"
 
-#: ../daemon/gdm.c:776
+#: ../daemon/gdm.c:814
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
@@ -415,7 +415,7 @@ msgstr ""
 "GDM-i taaskäivitamise, arvuti alglaadimise, ooterežiimile lülitamise või "
 "peatamise taotlus kuvalt %s, kus pole süsteemset menüüd"
 
-#: ../daemon/gdm.c:785
+#: ../daemon/gdm.c:823
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
@@ -425,114 +425,114 @@ msgstr ""
 "peatamise taotlus mittestaatiliselt kuvalt %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:851
+#: ../daemon/gdm.c:889
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Kuva %s katkestamine"
 
-#: ../daemon/gdm.c:1002
+#: ../daemon/gdm.c:1040
 msgid "GDM restarting ..."
 msgstr "GDM taaskäivitamine ..."
 
-#: ../daemon/gdm.c:1006
+#: ../daemon/gdm.c:1044
 msgid "Failed to restart self"
 msgstr "Tõrge iseenda taaskäivitamisel"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1080
+#: ../daemon/gdm.c:1118
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr ""
 "peadeemon sai võttis vastu signaali SIGABRT. Midagi on väga valesti läinud. "
 "Töö lõpetatakse!"
 
-#: ../daemon/gdm.c:1238
+#: ../daemon/gdm.c:1276
 msgid "Do not fork into the background"
 msgstr "Taustaprotsessiks ei minda"
 
-#: ../daemon/gdm.c:1240
+#: ../daemon/gdm.c:1278
 msgid "No console (static) servers to be run"
 msgstr "Konsooliservereid (staatilisi) ei käivitata"
 
-#: ../daemon/gdm.c:1242
+#: ../daemon/gdm.c:1280
 msgid "Alternative defaults configuration file"
 msgstr "Alternatiivne vaikeseadistuste fail"
 
-#: ../daemon/gdm.c:1242
+#: ../daemon/gdm.c:1280
 msgid "CONFIGFILE"
 msgstr "SEADISTUSFAIL"
 
-#: ../daemon/gdm.c:1244
+#: ../daemon/gdm.c:1282
 msgid "Preserve LD_* variables"
 msgstr "LD_* keskkonnamuutujad hoitakse alles"
 
-#: ../daemon/gdm.c:1246
+#: ../daemon/gdm.c:1284
 msgid "Print GDM version"
 msgstr "GDM versiooni väljastamine"
 
-#: ../daemon/gdm.c:1248
+#: ../daemon/gdm.c:1286
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr ""
 
-#: ../daemon/gdm.c:1354 ../daemon/gdm.c:1702
+#: ../daemon/gdm.c:1392 ../daemon/gdm.c:1740
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "%s avamine kirjutamiseks nurjus"
 
-#: ../daemon/gdm.c:1405
+#: ../daemon/gdm.c:1443
 msgid "- The GNOME login manager"
 msgstr "- GNOME sisselogimishaldur"
 
-#: ../daemon/gdm.c:1406 ../gui/gdmXnestchooser.c:482
+#: ../daemon/gdm.c:1444 ../gui/gdmXnestchooser.c:482
 #: ../gui/gdmXnestchooser.c:490 ../gui/gdmchooser.c:1968
 #: ../gui/gdmflexiserver.c:716
 msgid "main options"
 msgstr "peamised valikud"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/gdm.c:1433
+#: ../daemon/gdm.c:1471
 msgid "Only root wants to run GDM\n"
 msgstr "Ainult juurkasutaja tohib GDM-i käivitada\n"
 
-#: ../daemon/gdm.c:1457 ../daemon/gdm.c:1461 ../daemon/gdm.c:1541
-#: ../daemon/gdm.c:1545 ../daemon/gdm.c:1549 ../daemon/gdm.c:1553
-#: ../daemon/gdm.c:1563 ../daemon/gdm.c:1569 ../daemon/gdm.c:1580
+#: ../daemon/gdm.c:1495 ../daemon/gdm.c:1499 ../daemon/gdm.c:1579
+#: ../daemon/gdm.c:1583 ../daemon/gdm.c:1587 ../daemon/gdm.c:1591
+#: ../daemon/gdm.c:1601 ../daemon/gdm.c:1607 ../daemon/gdm.c:1618
 #: ../daemon/misc.c:1779 ../daemon/misc.c:1783 ../daemon/misc.c:1787
 #: ../daemon/misc.c:1794 ../daemon/misc.c:1798 ../daemon/misc.c:1802
-#: ../daemon/server.c:522 ../daemon/server.c:535 ../daemon/slave.c:792
-#: ../daemon/slave.c:806 ../daemon/slave.c:816 ../daemon/slave.c:826
-#: ../daemon/slave.c:838 ../gui/gdmlogin.c:3399 ../gui/gdmlogin.c:3410
-#: ../gui/gdmlogin.c:3416
+#: ../daemon/server.c:522 ../daemon/server.c:535 ../daemon/slave.c:794
+#: ../daemon/slave.c:808 ../daemon/slave.c:818 ../daemon/slave.c:828
+#: ../daemon/slave.c:840 ../gui/gdmlogin.c:3434 ../gui/gdmlogin.c:3445
+#: ../gui/gdmlogin.c:3451
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Viga signaali %s käsitleja ülesseadmisel: %s"
 
-#: ../daemon/gdm.c:1485
+#: ../daemon/gdm.c:1523
 msgid "GDM already running. Aborting!"
 msgstr "GDM juba töötab. Katkestamine!"
 
-#: ../daemon/gdm.c:1589
+#: ../daemon/gdm.c:1627
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Viga signaali CHLD käsitleja ülesseadmisel"
 
-#: ../daemon/gdm.c:2728
+#: ../daemon/gdm.c:2766
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC küsimine keelatud: Autentimata"
 
-#: ../daemon/gdm.c:2894 ../daemon/gdm.c:2912 ../daemon/gdm.c:3194
-#: ../daemon/gdm.c:3246 ../daemon/gdm.c:3299 ../daemon/gdm.c:3340
-#: ../daemon/gdm.c:3366
+#: ../daemon/gdm.c:2932 ../daemon/gdm.c:2950 ../daemon/gdm.c:3231
+#: ../daemon/gdm.c:3283 ../daemon/gdm.c:3336 ../daemon/gdm.c:3378
+#: ../daemon/gdm.c:3404
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s küsimine keelatud: Autentimata"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:2930
+#: ../daemon/gdm.c:2968
 msgid "Unknown server type requested; using standard server."
 msgstr "Küsiti tundmatut serveritüüpi; kasutatakse standardserverit."
 
-#: ../daemon/gdm.c:2934
+#: ../daemon/gdm.c:2972
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -895,17 +895,17 @@ msgstr "%s: Serveri prioriteeti pole võimalik %d-ks seada: %s"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 
-#: ../daemon/server.c:1267 ../daemon/slave.c:2485 ../daemon/slave.c:2956
+#: ../daemon/server.c:1267 ../daemon/slave.c:2486 ../daemon/slave.c:2957
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Grupi ID'd (groupid) pole võimalik %d-ks seada"
 
-#: ../daemon/server.c:1273 ../daemon/slave.c:2491 ../daemon/slave.c:2962
+#: ../daemon/server.c:1273 ../daemon/slave.c:2492 ../daemon/slave.c:2963
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s: tõrge initgroups() täitmisel %s jaoks"
 
-#: ../daemon/server.c:1279 ../daemon/slave.c:2496 ../daemon/slave.c:2967
+#: ../daemon/server.c:1279 ../daemon/slave.c:2497 ../daemon/slave.c:2968
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Kasutaja ID'd (userid) pole võimalik %d-ks seada"
@@ -925,19 +925,19 @@ msgstr "%s: Ei leia Xserverit: %s"
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Xserver protsessi pole võimalik forkida!"
 
-#: ../daemon/slave.c:281
+#: ../daemon/slave.c:283
 msgid "Can't set EGID to user GID"
 msgstr "EGID'i ei saa muuta kasutaja GID'ks"
 
-#: ../daemon/slave.c:289
+#: ../daemon/slave.c:291
 msgid "Can't set EUID to user UID"
 msgstr "EUID'd ei saa muuta kasutaja UID'ks"
 
-#: ../daemon/slave.c:1133
+#: ../daemon/slave.c:1135
 msgid "Log in anyway"
 msgstr "Logi sisse sellegipoolest"
 
-#: ../daemon/slave.c:1135
+#: ../daemon/slave.c:1137
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -945,21 +945,21 @@ msgstr ""
 "Sa oled juba sisse logitud. Sa võid sellegipoolest sisse logida, naasta oma "
 "olemasolevasse seanssi või katkestada see sisselogimine"
 
-#: ../daemon/slave.c:1139
+#: ../daemon/slave.c:1141
 msgid "Return to previous login"
 msgstr "Naase eelmise sisselogimise juurde"
 
-#: ../daemon/slave.c:1140 ../daemon/slave.c:1146
+#: ../daemon/slave.c:1142 ../daemon/slave.c:1148
 msgid "Abort login"
 msgstr "Katkesta sisselogimine"
 
-#: ../daemon/slave.c:1143
+#: ../daemon/slave.c:1145
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 "Sa oled juba sisselogitud.  Siiski võid sa sisse logida või käesoleva "
 "sisselogimise katkestada"
 
-#: ../daemon/slave.c:1320
+#: ../daemon/slave.c:1322
 msgid ""
 "Could not start the X\n"
 "server (your graphical environment)\n"
@@ -979,17 +979,17 @@ msgstr ""
 "Kui probleemid on kõrvaldatud,\n"
 "siis palun taaskäivita GDM."
 
-#: ../daemon/slave.c:1580
+#: ../daemon/slave.c:1582
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: pole võimalik forkida"
 
-#: ../daemon/slave.c:1627
+#: ../daemon/slave.c:1629
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: kuva %s pole võimalik avada"
 
-#: ../daemon/slave.c:1778
+#: ../daemon/slave.c:1780
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file.  Attempting to start it from the "
@@ -999,7 +999,7 @@ msgstr ""
 "olev rada on õigesti määratud. Rakendust proovitakse käivitada vaikimisi "
 "asukohast."
 
-#: ../daemon/slave.c:1792
+#: ../daemon/slave.c:1794
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file."
@@ -1007,11 +1007,11 @@ msgstr ""
 "Seadistusterakendust pole võimalik käivitada. Veendu, et seadistusfailis "
 "olev rada on õigesti määratud."
 
-#: ../daemon/slave.c:1956
+#: ../daemon/slave.c:1958
 msgid "You must authenticate as root to run configuration."
 msgstr "Sätete muutmiseks peab autentima root kasutajana."
 
-#: ../daemon/slave.c:2088 ../daemon/slave.c:2111
+#: ../daemon/slave.c:2089 ../daemon/slave.c:2112
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist."
@@ -1019,12 +1019,12 @@ msgstr ""
 "Sisselogimise heli küsiti mittekohalikule kuvale, heli esitamise tarkvara "
 "pole võimalik käivitada või pole helifaili olemas."
 
-#: ../daemon/slave.c:2439 ../daemon/slave.c:2444
+#: ../daemon/slave.c:2440 ../daemon/slave.c:2445
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Gdmgreeter-isse pole võimalik toru avada"
 
-#: ../daemon/slave.c:2576
+#: ../daemon/slave.c:2577
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  GDM has started a single server for "
@@ -1032,21 +1032,21 @@ msgid ""
 "timed logins are disabled now."
 msgstr ""
 
-#: ../daemon/slave.c:2590
+#: ../daemon/slave.c:2591
 msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
 "server."
 msgstr ""
 
-#: ../daemon/slave.c:2599
+#: ../daemon/slave.c:2600
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr ""
 
-#: ../daemon/slave.c:2619
+#: ../daemon/slave.c:2620
 msgid ""
 "The greeter application appears to be crashing.\n"
 "Attempting to use a different one."
@@ -1055,19 +1055,19 @@ msgstr ""
 "Proovitakse kasutada mõnda muud."
 
 #. Something went wrong
-#: ../daemon/slave.c:2642
+#: ../daemon/slave.c:2643
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: Tervitajat pole võimalik gtk moodulitega käivitada: %s. Proovitakse ilma "
 "mooduliteta"
 
-#: ../daemon/slave.c:2649
+#: ../daemon/slave.c:2650
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Tervitajat pole võimalik käivitada, vaikimisi proovitakse: %s"
 
-#: ../daemon/slave.c:2661
+#: ../daemon/slave.c:2662
 msgid ""
 "Cannot start the greeter application; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1075,77 +1075,77 @@ msgid ""
 msgstr ""
 
 #. If no greeter we really have to disable the display
-#: ../daemon/slave.c:2668
+#: ../daemon/slave.c:2669
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Viga tervitaja kävitamisel kuval %s"
 
-#: ../daemon/slave.c:2672
+#: ../daemon/slave.c:2673
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Gdmgreeter protsessi pole võimalik forkida"
 
-#: ../daemon/slave.c:2744
+#: ../daemon/slave.c:2745
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Ei saa avada järjekorda!"
 
-#: ../daemon/slave.c:2916
+#: ../daemon/slave.c:2917
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Gdmchooser'isse pole võimalik toru avada"
 
-#: ../daemon/slave.c:3021
+#: ../daemon/slave.c:3022
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
 msgstr ""
 
-#: ../daemon/slave.c:3025
+#: ../daemon/slave.c:3026
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Viga valija kävitamisel kuval %s"
 
-#: ../daemon/slave.c:3028
+#: ../daemon/slave.c:3029
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: Gdmchooser protsessi pole võimalik forkida"
 
-#: ../daemon/slave.c:3261
+#: ../daemon/slave.c:3262
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Faili ~/.xsession-errors pole võimalik avada"
 
-#: ../daemon/slave.c:3425
+#: ../daemon/slave.c:3426
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: PreSession skripti kävitamise tulemus > 0. Katkestan."
 
-#: ../daemon/slave.c:3469
+#: ../daemon/slave.c:3470
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "Keelt %s ei ole olemas; kasutame %s keelt"
 
-#: ../daemon/slave.c:3470
+#: ../daemon/slave.c:3471
 msgid "System default"
 msgstr "Süsteemi vaikeväärtus"
 
-#: ../daemon/slave.c:3487
+#: ../daemon/slave.c:3488
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: %s jaoks pole võimalik keskkonda seadistada. Katkestan."
 
-#: ../daemon/slave.c:3554
+#: ../daemon/slave.c:3555
 #, c-format
 msgid "%s: setusercontext () failed for %s. Aborting."
 msgstr "%s: tõrge setusercontext() täitmisel %s jaoks. Katkestamine."
 
-#: ../daemon/slave.c:3560
+#: ../daemon/slave.c:3561
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Ei saa hakata kasutajaks %s. Katkestan."
 
-#: ../daemon/slave.c:3601
+#: ../daemon/slave.c:3602
 #, c-format
 msgid ""
 "No Exec line in the session file: %s.  Running the GNOME failsafe session "
@@ -1154,12 +1154,12 @@ msgstr ""
 "Seansifailis puudub Exec-rida: %s.  Selle asemel käivitatakse GNOME "
 "tõrkekindel seanss."
 
-#: ../daemon/slave.c:3604
+#: ../daemon/slave.c:3605
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../daemon/slave.c:3624
+#: ../daemon/slave.c:3625
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
@@ -1168,27 +1168,27 @@ msgstr ""
 "%s: Xsession baasskripti pole võimalik leida või käivitada.  Selle asemel "
 "käivitatakse GNOME tõrkekindel seanss."
 
-#: ../daemon/slave.c:3630
+#: ../daemon/slave.c:3631
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
 msgstr ""
 
 #. yaikes
-#: ../daemon/slave.c:3662
+#: ../daemon/slave.c:3663
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: GNOME tõrkekindla seansi jaoks ei leitud gnome-session'i; proovitakse "
 "xterm'i"
 
-#: ../daemon/slave.c:3667
+#: ../daemon/slave.c:3668
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
 msgstr ""
 
-#: ../daemon/slave.c:3675 ../daemon/slave.c:3699
+#: ../daemon/slave.c:3676 ../daemon/slave.c:3700
 msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
@@ -1196,32 +1196,32 @@ msgid ""
 msgstr ""
 
 #. yaikes
-#: ../daemon/slave.c:3686
+#: ../daemon/slave.c:3687
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
 msgstr ""
 "%s: gnome-session'i ei leitud GNOME tõrkekindla seansi jaoks; proovitakse "
 "xterm'i"
 
-#: ../daemon/slave.c:3691
+#: ../daemon/slave.c:3692
 msgid ""
 "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
 "session instead."
 msgstr ""
 
-#: ../daemon/slave.c:3717
+#: ../daemon/slave.c:3718
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr ""
 "\"xterm\" programmi pole võimalik tõrkekindla seansi käivitamiseks leida"
 
-#: ../daemon/slave.c:3739 ../daemon/slave.c:3785
+#: ../daemon/slave.c:3740 ../daemon/slave.c:3786
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
 "To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr ""
 
-#: ../daemon/slave.c:3753
+#: ../daemon/slave.c:3754
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console and be prompted to enter the password for root so that you may fix "
@@ -1229,52 +1229,52 @@ msgid ""
 "emulator, type 'exit' and an enter into the window."
 msgstr ""
 
-#: ../daemon/slave.c:3766
+#: ../daemon/slave.c:3767
 msgid ""
 "The failsafe session is restricted to users who have been assigned the root "
 "role. If you cannot log in any other way please contact your system "
 "administrator"
 msgstr ""
 
-#: ../daemon/slave.c:3823
+#: ../daemon/slave.c:3824
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Kasutajal on sisselogimine keelatud"
 
-#: ../daemon/slave.c:3826
+#: ../daemon/slave.c:3827
 msgid "The system administrator has disabled your account."
 msgstr "Süsteemihaldur on sinu kasutajakonto ära keelanud."
 
-#: ../daemon/slave.c:3857
+#: ../daemon/slave.c:3858
 msgid "Error! Unable to set executable context."
 msgstr "Viga! Käivitatavat konteksti pole võimalik seada."
 
-#: ../daemon/slave.c:3866 ../daemon/slave.c:3875
+#: ../daemon/slave.c:3867 ../daemon/slave.c:3876
 #, c-format
 msgid "%s: Could not exec %s %s %s %s %s %s"
 msgstr "%s: %s %s %s %s %s %s pole võimalik käivitada "
 
-#: ../daemon/slave.c:3884 ../daemon/slave.c:3889
+#: ../daemon/slave.c:3885 ../daemon/slave.c:3890
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: %s %s %s pole võimalik käivitada "
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:3901
+#: ../daemon/slave.c:3902
 msgid "Cannot start the session due to some internal error."
 msgstr "Seanssi pole võimalik sisemiste vigade tõttu alustada."
 
-#: ../daemon/slave.c:3955
+#: ../daemon/slave.c:3956
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr ""
 
-#: ../daemon/slave.c:3968
+#: ../daemon/slave.c:3969
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: PreSession skripti kävitamise tulemus > 0. Katkestan."
 
-#: ../daemon/slave.c:3990
+#: ../daemon/slave.c:3991
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1285,12 +1285,12 @@ msgid ""
 "It is unlikely anything will work unless you use a failsafe session."
 msgstr ""
 
-#: ../daemon/slave.c:4002
+#: ../daemon/slave.c:4003
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Kasutaja %s kodukataloogi '%s' pole olemas!"
 
-#: ../daemon/slave.c:4051
+#: ../daemon/slave.c:4052
 msgid ""
 "User's $HOME/.dmrc file is being ignored.  This prevents the default session "
 "and language from being saved.  File should be owned by user and have 644 "
@@ -1302,7 +1302,7 @@ msgstr ""
 "peab olema määratud 644. Kasutaja kodukataloog ($HOME) peab kuuluma "
 "kasutajale ja teistel kasutajatel ei tohi olla sellesse kirjutamisõigust."
 
-#: ../daemon/slave.c:4180
+#: ../daemon/slave.c:4181
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1314,12 +1314,12 @@ msgstr ""
 "Selles olukorras pole sisselogimine võimalik. Palun võta ühendust oma "
 "süsteemihalduriga."
 
-#: ../daemon/slave.c:4256
+#: ../daemon/slave.c:4257
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Viga kasutaja seansi forkimisel"
 
-#: ../daemon/slave.c:4337
+#: ../daemon/slave.c:4338
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1327,46 +1327,46 @@ msgid ""
 "sessions to see if you can fix this problem."
 msgstr ""
 
-#: ../daemon/slave.c:4345
+#: ../daemon/slave.c:4346
 msgid "View details (~/.xsession-errors file)"
 msgstr "Vaata üksikasju (faili ~/.xsession-errors)"
 
-#: ../daemon/slave.c:4509
+#: ../daemon/slave.c:4510
 msgid "GDM detected a halt or restart in progress."
 msgstr "GDM tuvastas käimasoleva alglaadimise või masina seiskamise."
 
-#: ../daemon/slave.c:4874
+#: ../daemon/slave.c:4875
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Fataalne X viga - taaskäivitame %s"
 
-#: ../daemon/slave.c:4947
+#: ../daemon/slave.c:4948
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
 msgstr ""
 
-#: ../daemon/slave.c:5304
+#: ../daemon/slave.c:5305
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Tõrge käivitumisel: %s"
 
-#: ../daemon/slave.c:5311 ../daemon/slave.c:5450
+#: ../daemon/slave.c:5312 ../daemon/slave.c:5451
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Skriptprotsessi forkimine pole võimalik!"
 
-#: ../daemon/slave.c:5405
+#: ../daemon/slave.c:5406
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Toru pole võimalik luua"
 
-#: ../daemon/slave.c:5444
+#: ../daemon/slave.c:5445
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Tõrge käivitamisel: %s"
 
-#: ../daemon/verify-crypt.c:68 ../daemon/verify-pam.c:1129
+#: ../daemon/verify-crypt.c:68 ../daemon/verify-pam.c:1130
 #: ../daemon/verify-shadow.c:69
 msgid ""
 "\n"
@@ -1375,30 +1375,30 @@ msgstr ""
 "\n"
 "Vale kasutajanimi või parool.  Suur- ja väiketähtedel tehakse vahet."
 
-#: ../daemon/verify-crypt.c:73 ../daemon/verify-pam.c:1139
+#: ../daemon/verify-crypt.c:73 ../daemon/verify-pam.c:1140
 #: ../daemon/verify-shadow.c:74 ../gui/greeter/greeter_parser.c:376
 msgid "Caps Lock is on."
 msgstr "Caps Lock klahv on sisse lülitatud"
 
 #: ../daemon/verify-crypt.c:118 ../daemon/verify-pam.c:525
-#: ../daemon/verify-shadow.c:117 ../gui/gdmlogin.c:2652
+#: ../daemon/verify-shadow.c:117 ../gui/gdmlogin.c:2666
 msgid "Please enter your username"
 msgstr "Palun sisesta oma kasutajanimi"
 
 #. login: is whacked always translate to Username:
 #: ../daemon/verify-crypt.c:119 ../daemon/verify-pam.c:425
 #: ../daemon/verify-pam.c:426 ../daemon/verify-pam.c:427
-#: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:864
+#: ../daemon/verify-pam.c:512 ../daemon/verify-pam.c:865
 #: ../daemon/verify-shadow.c:118 ../gui/gdmlogin.c:884 ../gui/gdmlogin.c:898
-#: ../gui/gdmlogin.c:1537 ../gui/gdmlogin.c:1982 ../gui/greeter/greeter.c:188
+#: ../gui/gdmlogin.c:1535 ../gui/gdmlogin.c:1984 ../gui/greeter/greeter.c:190
 #: ../gui/greeter/greeter_parser.c:395
 msgid "Username:"
 msgstr "Kasutajanimi:"
 
 #: ../daemon/verify-crypt.c:157 ../daemon/verify-pam.c:428
 #: ../daemon/verify-pam.c:429 ../daemon/verify-pam.c:573
-#: ../daemon/verify-shadow.c:175 ../gui/gdmlogin.c:1575
-#: ../gui/greeter/greeter.c:210
+#: ../daemon/verify-shadow.c:175 ../gui/gdmlogin.c:1573
+#: ../gui/greeter/greeter.c:219
 msgid "Password:"
 msgstr "Parool:"
 
@@ -1408,7 +1408,7 @@ msgstr "Parool:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Kasutajat \"%s\" pole võimalik autentida"
 
-#: ../daemon/verify-crypt.c:202 ../daemon/verify-pam.c:975
+#: ../daemon/verify-crypt.c:202 ../daemon/verify-pam.c:976
 #: ../daemon/verify-shadow.c:220
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1425,7 +1425,7 @@ msgid "User %s not allowed to log in"
 msgstr "Kasutajal %s on sisselogimine keelatud"
 
 #: ../daemon/verify-crypt.c:222 ../daemon/verify-crypt.c:246
-#: ../daemon/verify-pam.c:1021 ../daemon/verify-pam.c:1316
+#: ../daemon/verify-pam.c:1022 ../daemon/verify-pam.c:1317
 #: ../daemon/verify-shadow.c:240 ../daemon/verify-shadow.c:264
 msgid ""
 "\n"
@@ -1435,14 +1435,14 @@ msgstr ""
 "Süsteemihaldur on sinu kasutajakonto keelanud."
 
 #: ../daemon/verify-crypt.c:269 ../daemon/verify-crypt.c:407
-#: ../daemon/verify-pam.c:1039 ../daemon/verify-pam.c:1333
+#: ../daemon/verify-pam.c:1040 ../daemon/verify-pam.c:1334
 #: ../daemon/verify-shadow.c:287 ../daemon/verify-shadow.c:425
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "%s jaoks pole kasutajagruppi võimalik määrata"
 
 #: ../daemon/verify-crypt.c:271 ../daemon/verify-crypt.c:410
-#: ../daemon/verify-pam.c:1041 ../daemon/verify-pam.c:1336
+#: ../daemon/verify-pam.c:1042 ../daemon/verify-pam.c:1337
 #: ../daemon/verify-shadow.c:289 ../daemon/verify-shadow.c:428
 msgid ""
 "\n"
@@ -1592,12 +1592,12 @@ msgstr "PAM_RHOST=%s seadmine pole võimalik"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:925 ../daemon/verify-pam.c:943
-#: ../daemon/verify-pam.c:1255 ../daemon/verify-pam.c:1267
+#: ../daemon/verify-pam.c:926 ../daemon/verify-pam.c:944
+#: ../daemon/verify-pam.c:1256 ../daemon/verify-pam.c:1268
 msgid "Couldn't authenticate user"
 msgstr "Kasutajat pole võimalik autentida"
 
-#: ../daemon/verify-pam.c:978
+#: ../daemon/verify-pam.c:979
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1605,29 +1605,29 @@ msgstr ""
 "\n"
 "Süsteemihalduril pole lubatud siit sisse logida"
 
-#: ../daemon/verify-pam.c:1002 ../daemon/verify-pam.c:1297
+#: ../daemon/verify-pam.c:1003 ../daemon/verify-pam.c:1298
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr ""
 
-#: ../daemon/verify-pam.c:1004 ../daemon/verify-pam.c:1300
+#: ../daemon/verify-pam.c:1005 ../daemon/verify-pam.c:1301
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
 "contact the system administrator."
 msgstr ""
 
-#: ../daemon/verify-pam.c:1019 ../daemon/verify-pam.c:1313
+#: ../daemon/verify-pam.c:1020 ../daemon/verify-pam.c:1314
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Kasutajal %s ei ole enam lubatud süsteemi kasutada"
 
-#: ../daemon/verify-pam.c:1025 ../daemon/verify-pam.c:1319
+#: ../daemon/verify-pam.c:1026 ../daemon/verify-pam.c:1320
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Kasutajal %s on ligipääs käesoleval hetkel keeltatud"
 
-#: ../daemon/verify-pam.c:1027
+#: ../daemon/verify-pam.c:1028
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1635,37 +1635,37 @@ msgstr ""
 "\n"
 "Süsteemihaldur on süsteemile ligipääsu ajutiselt keelanud."
 
-#: ../daemon/verify-pam.c:1032 ../daemon/verify-pam.c:1326
+#: ../daemon/verify-pam.c:1033 ../daemon/verify-pam.c:1327
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Ei õnnestunud määrata acct. mgmt %s jaoks"
 
-#: ../daemon/verify-pam.c:1065 ../daemon/verify-pam.c:1360
+#: ../daemon/verify-pam.c:1066 ../daemon/verify-pam.c:1361
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Ei õnnestunud määrata mandaate %s jaoks"
 
-#: ../daemon/verify-pam.c:1079 ../daemon/verify-pam.c:1376
+#: ../daemon/verify-pam.c:1080 ../daemon/verify-pam.c:1377
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Seanssi pole võimalik %s jaoks avada"
 
-#: ../daemon/verify-pam.c:1133
+#: ../daemon/verify-pam.c:1134
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
 msgstr ""
 
-#: ../daemon/verify-pam.c:1147 ../daemon/verify-pam.c:1258
-#: ../daemon/verify-pam.c:1270
+#: ../daemon/verify-pam.c:1148 ../daemon/verify-pam.c:1259
+#: ../daemon/verify-pam.c:1271
 msgid "Authentication failed"
 msgstr "Tõrge autentimisel"
 
-#: ../daemon/verify-pam.c:1222
+#: ../daemon/verify-pam.c:1223
 msgid "Automatic login"
 msgstr "Automaatne sisselogimine"
 
-#: ../daemon/verify-pam.c:1322
+#: ../daemon/verify-pam.c:1323
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporarily."
@@ -1673,7 +1673,7 @@ msgstr ""
 "\n"
 "Süsteemihaldur on ajutiselt keelanud sinu ligipääsu süsteemile."
 
-#: ../daemon/verify-pam.c:1544 ../daemon/verify-pam.c:1546
+#: ../daemon/verify-pam.c:1545 ../daemon/verify-pam.c:1547
 msgid "Can't find PAM configuration for GDM."
 msgstr "PAM-i seadistusi GDM-i jaoks pole võimalik leida."
 
@@ -2057,11 +2057,11 @@ msgstr ""
 "XDM-i. Kui sa ikkagi soovid seda võimalust kasutada, siis peaksid GDM-i ise "
 "käivitama või paluma oma süsteemihaldurit GDM käivitada."
 
-#: ../gui/gdmcomm.c:645 ../gui/gdmflexiserver.c:785
+#: ../gui/gdmcomm.c:645 ../gui/gdmflexiserver.c:787
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "GNOME Kuvahalduriga (GDM) pole võimalik suhelda"
 
-#: ../gui/gdmcomm.c:647 ../gui/gdmflexiserver.c:787
+#: ../gui/gdmcomm.c:647 ../gui/gdmflexiserver.c:789
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Arvatavasti on su GDM-i versioon liiga vana."
 
@@ -2262,8 +2262,8 @@ msgstr "Kuva %s virtuaalterminalil %d"
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Pesastatud kuva %s virtuaalterminalil %d"
 
-#: ../gui/gdmflexiserver.c:262 ../gui/gdmlogin.c:2500
-#: ../gui/greeter/greeter_item_ulist.c:274
+#: ../gui/gdmflexiserver.c:262 ../gui/gdmlogin.c:2510
+#: ../gui/greeter/greeter_item_ulist.c:305
 msgid "Username"
 msgstr "Kasutajanimi"
 
@@ -2305,23 +2305,23 @@ msgstr "Vali X-server mida käivitada"
 msgid "Standard server"
 msgstr "Standardserver"
 
-#: ../gui/gdmflexiserver.c:834
+#: ../gui/gdmflexiserver.c:836
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr ""
 
-#: ../gui/gdmflexiserver.c:837
+#: ../gui/gdmflexiserver.c:839
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Arvatavasti on Su .Xauthority valesti seadistatud."
 
-#: ../gui/gdmflexiserver.c:864
+#: ../gui/gdmflexiserver.c:866
 msgid "You do not seem to be logged in on the console"
 msgstr "Sa ei paista olevat sellelt konsoolilt sisse loginud"
 
-#: ../gui/gdmflexiserver.c:866
+#: ../gui/gdmflexiserver.c:868
 msgid "Starting a new login only works correctly on the console."
 msgstr ""
 
-#: ../gui/gdmflexiserver.c:914
+#: ../gui/gdmflexiserver.c:916
 msgid "Cannot start new display"
 msgstr "Uut kuva pole võimalik käivitada"
 
@@ -2812,7 +2812,7 @@ msgstr "Kasutaja %u logitakse sisse %t möödumisel"
 msgid "Are you sure you want to restart the computer?"
 msgstr "Oled sa kindel, et soovid masinat taaskäivitada?"
 
-#: ../gui/gdmlogin.c:663 ../gui/gdmlogin.c:2373
+#: ../gui/gdmlogin.c:663 ../gui/gdmlogin.c:2388
 #: ../gui/greeter/greeter_parser.c:356 ../gui/greeter/greeter_system.c:74
 #: ../gui/greeter/greeter_system.c:184
 msgid "_Restart"
@@ -2822,7 +2822,7 @@ msgstr "_Taaskäivitamine"
 msgid "Are you sure you want to Shut Down the computer?"
 msgstr "Oled sa kindel, et soovid masinat välja lülitada?"
 
-#: ../gui/gdmlogin.c:678 ../gui/gdmlogin.c:2383
+#: ../gui/gdmlogin.c:678 ../gui/gdmlogin.c:2398
 #: ../gui/greeter/greeter_parser.c:346 ../gui/greeter/greeter_system.c:85
 #: ../gui/greeter/greeter_system.c:193
 msgid "Shut _Down"
@@ -2832,15 +2832,15 @@ msgstr "_Seiska"
 msgid "Are you sure you want to suspend the computer?"
 msgstr "Oled sa kindel, et soovid arvutit ooterežiimile lülitada?"
 
-#: ../gui/gdmlogin.c:701 ../gui/gdmlogin.c:2393
+#: ../gui/gdmlogin.c:701 ../gui/gdmlogin.c:2408
 #: ../gui/greeter/greeter_system.c:96
 msgid "_Suspend"
 msgstr "_Ooterežiim"
 
 #: ../gui/gdmlogin.c:748 ../gui/gdmlogin.c:757
-#: ../gui/greeter/greeter_action_language.c:73
-#: ../gui/greeter/greeter_action_language.c:142
-#: ../gui/greeter/greeter_action_language.c:150
+#: ../gui/greeter/greeter_action_language.c:76
+#: ../gui/greeter/greeter_action_language.c:145
+#: ../gui/greeter/greeter_action_language.c:153
 msgid "System Default"
 msgstr "Süsteemi vaikeväärtus"
 
@@ -2848,40 +2848,40 @@ msgstr "Süsteemi vaikeväärtus"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:766 ../gui/gdmsession.c:395 ../gui/gdmsession.c:431
-#: ../gui/greeter/greeter_action_language.c:158
+#: ../gui/gdmlogin.c:766 ../gui/gdmsession.c:403 ../gui/gdmsession.c:439
+#: ../gui/greeter/greeter_action_language.c:161
 #, c-format
 msgid "Do you wish to make %s the default for future sessions?"
 msgstr "Soovid sa seansi %s muuta edaspidiseks vaikimisi seansiks?"
 
-#: ../gui/gdmlogin.c:768 ../gui/gdmsession.c:434
-#: ../gui/greeter/greeter_action_language.c:160
+#: ../gui/gdmlogin.c:768 ../gui/gdmsession.c:442
+#: ../gui/greeter/greeter_action_language.c:163
 #, c-format
 msgid "You have chosen %s for this session, but your default setting is %s."
 msgstr ""
 "Sa valisid %s selleks seansiks, kuigi su vaikimisi seatud seanss on %s."
 
-#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:402 ../gui/gdmsession.c:440
-#: ../gui/greeter/greeter_action_language.c:166
+#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:410 ../gui/gdmsession.c:448
+#: ../gui/greeter/greeter_action_language.c:169
 msgid "Make _Default"
 msgstr "Määra _vaikimisi"
 
-#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:440
-#: ../gui/greeter/greeter_action_language.c:166
+#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:448
+#: ../gui/greeter/greeter_action_language.c:169
 msgid "Just For _This Session"
 msgstr "_Ainult selleks sessiooniks"
 
-#: ../gui/gdmlogin.c:885 ../gui/gdmlogin.c:899 ../gui/gdmlogin.c:1541
-#: ../gui/gdmlogin.c:1983 ../gui/gdmlogin.c:2605
+#: ../gui/gdmlogin.c:885 ../gui/gdmlogin.c:899 ../gui/gdmlogin.c:1539
+#: ../gui/gdmlogin.c:1985 ../gui/gdmlogin.c:2615
 msgid "_Username:"
 msgstr "_Kasutajanimi:"
 
-#: ../gui/gdmlogin.c:977
+#: ../gui/gdmlogin.c:975
 #, c-format
 msgid "%s session selected"
 msgstr "valitud seanss %s"
 
-#: ../gui/gdmlogin.c:998 ../gui/gdmlogin.c:1116
+#: ../gui/gdmlogin.c:996 ../gui/gdmlogin.c:1114
 msgid "_Last"
 msgstr "_Viimane"
 
@@ -2889,89 +2889,89 @@ msgstr "_Viimane"
 #. no_group
 #. untranslated
 #. makrup
-#: ../gui/gdmlogin.c:1081
+#: ../gui/gdmlogin.c:1079
 #, c-format
 msgid "%s language selected"
 msgstr "valitud keel %s"
 
-#: ../gui/gdmlogin.c:1127
+#: ../gui/gdmlogin.c:1125
 msgid "_System Default"
 msgstr "_Süsteemi vaikeväärtus"
 
-#: ../gui/gdmlogin.c:1159
+#: ../gui/gdmlogin.c:1157
 msgid "_Other"
 msgstr "_Muud"
 
-#: ../gui/gdmlogin.c:1576
+#: ../gui/gdmlogin.c:1575
 msgid "_Password:"
 msgstr "_Parool:"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: ../gui/gdmlogin.c:1787 ../gui/greeter/greeter.c:340
+#: ../gui/gdmlogin.c:1786 ../gui/greeter/greeter.c:362
 msgid "Please insert 25 cents to log in."
 msgstr "Sisselogimiseks sisesta palun 25 senti."
 
-#: ../gui/gdmlogin.c:2104
+#: ../gui/gdmlogin.c:2106
 msgid "GNOME Desktop Manager"
 msgstr "GNOME töölauahaldur"
 
-#: ../gui/gdmlogin.c:2170
+#: ../gui/gdmlogin.c:2172
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2288
+#: ../gui/gdmlogin.c:2303
 msgid "GDM Login"
 msgstr "GDM Login"
 
-#: ../gui/gdmlogin.c:2331 ../gui/greeter/greeter_parser.c:326
+#: ../gui/gdmlogin.c:2346 ../gui/greeter/greeter_parser.c:326
 msgid "_Session"
 msgstr "_Seanss"
 
-#: ../gui/gdmlogin.c:2338 ../gui/greeter/greeter_parser.c:321
+#: ../gui/gdmlogin.c:2353 ../gui/greeter/greeter_parser.c:321
 msgid "_Language"
 msgstr "_Keel"
 
-#: ../gui/gdmlogin.c:2352 ../gui/greeter/greeter_system.c:159
+#: ../gui/gdmlogin.c:2367 ../gui/greeter/greeter_system.c:159
 msgid "Remote Login via _XDMCP..."
 msgstr "Kauglogimine _XDMCP kaudu..."
 
-#: ../gui/gdmlogin.c:2363
+#: ../gui/gdmlogin.c:2378
 msgid "_Configure Login Manager..."
 msgstr "_Seadista logimishaldurit..."
 
-#: ../gui/gdmlogin.c:2403 ../gui/greeter/greeter_parser.c:331
+#: ../gui/gdmlogin.c:2418 ../gui/greeter/greeter_parser.c:331
 msgid "_Actions"
 msgstr "_Tegevused"
 
-#: ../gui/gdmlogin.c:2412
+#: ../gui/gdmlogin.c:2427
 msgid "_Theme"
 msgstr "_Teema"
 
-#: ../gui/gdmlogin.c:2423 ../gui/greeter/greeter_canvas_item.c:174
+#: ../gui/gdmlogin.c:2438 ../gui/greeter/greeter_canvas_item.c:179
 #: ../gui/greeter/greeter_parser.c:341
 msgid "_Quit"
 msgstr "L_õpeta"
 
-#: ../gui/gdmlogin.c:2425 ../gui/greeter/greeter_canvas_item.c:176
+#: ../gui/gdmlogin.c:2440 ../gui/greeter/greeter_canvas_item.c:181
 #: ../gui/greeter/greeter_parser.c:336
 msgid "D_isconnect"
 msgstr "_Lahuta ühendus"
 
-#: ../gui/gdmlogin.c:2493 ../gui/greeter/greeter_item_ulist.c:268
+#: ../gui/gdmlogin.c:2503 ../gui/greeter/greeter_item_ulist.c:299
 msgid "Icon"
 msgstr "Ikoon"
 
-#: ../gui/gdmlogin.c:2574
+#: ../gui/gdmlogin.c:2584
 msgid "Welcome"
 msgstr "Tere tulemast"
 
-#: ../gui/gdmlogin.c:2690 ../gui/greeter/greeter_parser.c:410
+#: ../gui/gdmlogin.c:2704 ../gui/greeter/greeter_parser.c:410
 msgid "_Start Again"
 msgstr "_Alusta uuesti"
 
-#: ../gui/gdmlogin.c:3243 ../gui/gdmlogin.c:3277 ../gui/greeter/greeter.c:565
-#: ../gui/greeter/greeter.c:600
+#: ../gui/gdmlogin.c:3266 ../gui/gdmlogin.c:3300 ../gui/greeter/greeter.c:587
+#: ../gui/greeter/greeter.c:622
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version. You have "
@@ -2980,17 +2980,17 @@ msgstr ""
 "Tervitaja versioon (%s) ei sobi deemoni versiooniga. Sa oled arvatavasti "
 "just värskendanud GDM-i versiooni. Palun taaskäivita arvuti või GDM-deemon."
 
-#: ../gui/gdmlogin.c:3253 ../gui/gdmlogin.c:3287 ../gui/gdmlogin.c:3335
-#: ../gui/greeter/greeter.c:575 ../gui/greeter/greeter.c:610
-#: ../gui/greeter/greeter.c:659
+#: ../gui/gdmlogin.c:3276 ../gui/gdmlogin.c:3310 ../gui/gdmlogin.c:3358
+#: ../gui/greeter/greeter.c:597 ../gui/greeter/greeter.c:632
+#: ../gui/greeter/greeter.c:681
 msgid "Cannot start the greeter"
 msgstr "Tervitajat pole võimalik käivitada"
 
-#: ../gui/gdmlogin.c:3292
+#: ../gui/gdmlogin.c:3315
 msgid "Restart"
 msgstr "Taaskäivitamine"
 
-#: ../gui/gdmlogin.c:3325 ../gui/greeter/greeter.c:649
+#: ../gui/gdmlogin.c:3348 ../gui/greeter/greeter.c:671
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -3000,34 +3000,34 @@ msgstr ""
 "arvatavasti just värskendanud GDM-i versiooni.  Palun taaskäivita GDM-deemon "
 "või tee arvutile alglaadimine."
 
-#: ../gui/gdmlogin.c:3340 ../gui/greeter/greeter.c:664
+#: ../gui/gdmlogin.c:3363 ../gui/greeter/greeter.c:686
 msgid "Restart GDM"
 msgstr "GDM-i taaskäivitamine"
 
-#: ../gui/gdmlogin.c:3342
+#: ../gui/gdmlogin.c:3365
 msgid "Restart computer"
 msgstr "Arvuti alglaadimine"
 
-#: ../gui/gdmlogin.c:3427
+#: ../gui/gdmlogin.c:3462
 msgid "Could not set signal mask!"
 msgstr "Signaalimaski pole võimalik seada!"
 
-#: ../gui/gdmlogin.c:3545 ../gui/greeter/greeter.c:1355
+#: ../gui/gdmlogin.c:3580 ../gui/greeter/greeter.c:1381
 msgid "Session directory is missing"
 msgstr "Seansikataloogi pole määratud."
 
-#: ../gui/gdmlogin.c:3546
+#: ../gui/gdmlogin.c:3581
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the GDM "
 "configuration."
 msgstr ""
 
-#: ../gui/gdmlogin.c:3569 ../gui/greeter/greeter.c:1380
+#: ../gui/gdmlogin.c:3604 ../gui/greeter/greeter.c:1406
 msgid "Configuration is not correct"
 msgstr "Seadistused pole korrektsed"
 
-#: ../gui/gdmlogin.c:3570 ../gui/greeter/greeter.c:1381
+#: ../gui/gdmlogin.c:3605 ../gui/greeter/greeter.c:1407
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3048,13 +3048,13 @@ msgstr "Faili pole võimalik avada"
 msgid "Select User Image"
 msgstr "Kasutaja pildi valimine"
 
-#: ../gui/gdmphotosetup.c:273 ../gui/gdmsetup.c:5597 ../gui/gdmsetup.c:5719
-#: ../gui/gdmsetup.c:5872 ../gui/gdmsetup.c:5994
+#: ../gui/gdmphotosetup.c:273 ../gui/gdmsetup.c:5598 ../gui/gdmsetup.c:5720
+#: ../gui/gdmsetup.c:5873 ../gui/gdmsetup.c:5995
 msgid "Images"
 msgstr "Pildid"
 
-#: ../gui/gdmphotosetup.c:278 ../gui/gdmsetup.c:3056 ../gui/gdmsetup.c:5602
-#: ../gui/gdmsetup.c:5724 ../gui/gdmsetup.c:5877 ../gui/gdmsetup.c:5999
+#: ../gui/gdmphotosetup.c:278 ../gui/gdmsetup.c:3056 ../gui/gdmsetup.c:5603
+#: ../gui/gdmsetup.c:5725 ../gui/gdmsetup.c:5878 ../gui/gdmsetup.c:6000
 msgid "All Files"
 msgstr "Kõik failid"
 
@@ -3075,43 +3075,51 @@ msgstr "<b>Kasutaja pilt<b>"
 msgid "Login Photo Preferences"
 msgstr "Sisselogimisfoto eelistused"
 
-#: ../gui/gdmsession.c:127 ../gui/gdmsession.c:294
+#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:300
 msgid "Failsafe _GNOME"
 msgstr "Tõrkekindel (failsafe) _GNOME"
 
-#: ../gui/gdmsession.c:128 ../gui/gdmsession.c:295
+#: ../gui/gdmsession.c:127 ../gui/gdmsession.c:301
+msgid "Failsafe GNOME"
+msgstr "Tõrkekindel (failsafe) GNOME"
+
+#: ../gui/gdmsession.c:128 ../gui/gdmsession.c:302
 msgid ""
 "This is a failsafe session that will log you into GNOME. No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
 
-#: ../gui/gdmsession.c:138 ../gui/gdmsession.c:306
+#: ../gui/gdmsession.c:139 ../gui/gdmsession.c:313
 msgid "Failsafe _Terminal"
 msgstr "Tõrkekindel (failsafe) _terminal"
 
-#: ../gui/gdmsession.c:139 ../gui/gdmsession.c:307
+#: ../gui/gdmsession.c:140 ../gui/gdmsession.c:314
+msgid "Failsafe Terminal"
+msgstr "Tõrkekindel (failsafe) terminal"
+
+#: ../gui/gdmsession.c:141 ../gui/gdmsession.c:315
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
 
-#: ../gui/gdmsession.c:398
+#: ../gui/gdmsession.c:406
 #, c-format
 msgid "Your preferred session type %s is not installed on this computer."
 msgstr "Sinu lemmikseanssi %s ei ole sellesse masinasse paigaldatud."
 
-#: ../gui/gdmsession.c:402
+#: ../gui/gdmsession.c:410
 msgid "Just _Log In"
 msgstr "_Lihtsalt logi sisse"
 
-#: ../gui/gdmsession.c:453
+#: ../gui/gdmsession.c:461
 #, c-format
 msgid "You have chosen %s for this session"
 msgstr "Sinu valik selle seansi jaoks: %s"
 
-#: ../gui/gdmsession.c:456
+#: ../gui/gdmsession.c:464
 #, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
@@ -3221,7 +3229,7 @@ msgstr "Ühtegi faili pole valitud"
 msgid "Select Theme Archive"
 msgstr "Teemaarhiivi valimine"
 
-#: ../gui/gdmsetup.c:4129 ../gui/gdmsetup.c:5120
+#: ../gui/gdmsetup.c:4129 ../gui/gdmsetup.c:5121
 msgid "_Install"
 msgstr "_Paigalda"
 
@@ -3238,18 +3246,18 @@ msgstr "Kui sa teema eemaldad, siis läheb see jäädavalt kaotsi."
 msgid "_Remove Theme"
 msgstr "_Eemalda teema"
 
-#: ../gui/gdmsetup.c:5109
+#: ../gui/gdmsetup.c:5110
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "Paigaldada uus teema '%s'-sg?"
 
-#: ../gui/gdmsetup.c:5110
+#: ../gui/gdmsetup.c:5111
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "Teema lisamiseks failist '%s' vali paigaldamine."
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:5372
+#: ../gui/gdmsetup.c:5373
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3271,24 +3279,24 @@ msgstr ""
 "Täieliku dokumentatsiooni on võimalik vaadata GNOME abiteabe sirvija "
 "kategoorias \"Töölaud\"."
 
-#: ../gui/gdmsetup.c:6415
+#: ../gui/gdmsetup.c:6416
 msgid "Apply the changes to users before closing?"
 msgstr "Kas rakendada enne sulgemist kasutajatele tehtud muudatused?"
 
-#: ../gui/gdmsetup.c:6416
+#: ../gui/gdmsetup.c:6417
 msgid ""
 "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr "Rakendamata jättes lähevad kõik kasutajate saki muudatused kaotsi."
 
-#: ../gui/gdmsetup.c:6419
+#: ../gui/gdmsetup.c:6420
 msgid "Close _without Applying"
 msgstr "Sulge _ilma rakendamata"
 
-#: ../gui/gdmsetup.c:6470 ../gui/gdmsetup.c:6477
+#: ../gui/gdmsetup.c:6471 ../gui/gdmsetup.c:6478
 msgid "Could not access GDM configuration file.\n"
 msgstr "GDM-i seadistusfailile pole võimalik ligi pääseda.\n"
 
-#: ../gui/gdmsetup.c:6526
+#: ../gui/gdmsetup.c:6527
 msgid "You must be the root user to configure GDM."
 msgstr "GDM'i seadistamiseks pead sa olema root-kasutaja."
 
@@ -3737,32 +3745,32 @@ msgstr "sekundit"
 msgid "Too many users to list here..."
 msgstr "Siin kuvamiseks on liiga palju kasutajaid..."
 
-#: ../gui/greeter/greeter.c:615 ../gui/greeter/greeter.c:666
+#: ../gui/greeter/greeter.c:637 ../gui/greeter/greeter.c:688
 msgid "Restart Machine"
 msgstr "Arvuti alglaadimine"
 
-#: ../gui/greeter/greeter.c:1182
+#: ../gui/greeter/greeter.c:1205
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Viga teema %s laadimisel"
 
-#: ../gui/greeter/greeter.c:1234
+#: ../gui/greeter/greeter.c:1259
 msgid "The greeter theme is corrupt"
 msgstr "Tervitaja teema on vigane"
 
-#: ../gui/greeter/greeter.c:1235
+#: ../gui/greeter/greeter.c:1260
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "Teema ei sisalda kasutajanime/parooli sisestamise elemendi kirjeldust."
 
-#: ../gui/greeter/greeter.c:1268
+#: ../gui/greeter/greeter.c:1293
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
 msgstr ""
 
-#: ../gui/greeter/greeter.c:1290
+#: ../gui/greeter/greeter.c:1315
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of GDM"
@@ -3771,44 +3779,44 @@ msgstr ""
 "ja sul on võib-olla vaja logida arvutisse sisse teiste meetodite abil ning "
 "GDM-i paigalduse ära parandada."
 
-#: ../gui/greeter/greeter.c:1356
+#: ../gui/greeter/greeter.c:1382
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
 "configuration."
 msgstr ""
 
-#: ../gui/greeter/greeter_action_language.c:66
-msgid "Last Language"
+#: ../gui/greeter/greeter_action_language.c:69
+msgid "Last language"
 msgstr "Viimane keel"
 
-#: ../gui/greeter/greeter_action_language.c:230
+#: ../gui/greeter/greeter_action_language.c:224
 msgid "Select a Language"
 msgstr "Keele valimine"
 
-#: ../gui/greeter/greeter_action_language.c:240
+#: ../gui/greeter/greeter_action_language.c:234
 msgid "Change _Language"
 msgstr "Vali _keel"
 
-#: ../gui/greeter/greeter_action_language.c:260
+#: ../gui/greeter/greeter_action_language.c:254
 msgid "_Select the language for your session to use:"
 msgstr "_Seansi jaoks kasutatav keele valimine:"
 
-#: ../gui/greeter/greeter_canvas_item.c:153
+#: ../gui/greeter/greeter_canvas_item.c:158
 msgid "Select _Language..."
 msgstr "Vali _keel..."
 
-#: ../gui/greeter/greeter_canvas_item.c:160
+#: ../gui/greeter/greeter_canvas_item.c:165
 msgid "Select _Session..."
 msgstr "_Vali seanss..."
 
-#: ../gui/greeter/greeter_canvas_item.c:475
+#: ../gui/greeter/greeter_canvas_item.c:486
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 "Küsimuse vastus kirjuta siia kasti ja kui valmis saad, vajuta Enter.  Menüü "
 "jaoks vajuta F10."
 
-#: ../gui/greeter/greeter_item_ulist.c:173
+#: ../gui/greeter/greeter_item_ulist.c:203
 msgid "Already logged in"
 msgstr "Juba sisselogitud"
 
@@ -3836,19 +3844,19 @@ msgstr "_Olgu"
 msgid "_Cancel"
 msgstr "_Katkesta"
 
-#: ../gui/greeter/greeter_session.c:81
+#: ../gui/greeter/greeter_session.c:87
 msgid "Change _Session"
-msgstr "_Seansi valimine"
+msgstr "Muuda _seanss"
 
-#: ../gui/greeter/greeter_session.c:103
+#: ../gui/greeter/greeter_session.c:109
 msgid "Sessions"
 msgstr "Seansid"
 
-#: ../gui/greeter/greeter_session.c:123
+#: ../gui/greeter/greeter_session.c:129
 msgid "_Last session"
 msgstr "_Viimane seanss"
 
-#: ../gui/greeter/greeter_session.c:129
+#: ../gui/greeter/greeter_session.c:135
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Sisselogimine viimati sisselogimisel kasutatud seansiga"
 
