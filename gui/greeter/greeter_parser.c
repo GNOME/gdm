@@ -856,6 +856,37 @@ parse_state_file_pixmap (xmlNodePtr node,
 	
       xmlFree (prop);
     }
+
+    {
+      int i = 1;
+      char *altfile_prop_name = g_strdup_printf ("altfile%d", i);
+
+      prop = xmlGetProp (node,(const xmlChar *) altfile_prop_name);
+      while (prop)
+        {
+          char *filename = NULL;
+          if (g_path_is_absolute ((char *) prop))
+            filename = g_strdup ((char *) prop);
+          else
+            filename = g_build_filename (file_search_path,
+                                         (char *) prop,
+                                         NULL);
+
+          if (g_file_test (filename, G_FILE_TEST_EXISTS))
+            {
+              if (info->data.pixmap.files[state])
+                g_free (info->data.pixmap.files[state]);
+              info->data.pixmap.files[state] = filename;
+            }
+          xmlFree (prop);
+          g_free (altfile_prop_name);
+
+          i++;
+          altfile_prop_name = g_strdup_printf ("altfile%d", i);
+          prop = xmlGetProp (node,(const xmlChar *) altfile_prop_name);
+        }
+      g_free (altfile_prop_name);
+    }
   
   prop = xmlGetProp (node,(const xmlChar *) "tint");
   if (prop)

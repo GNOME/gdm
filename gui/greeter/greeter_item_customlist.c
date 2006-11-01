@@ -582,7 +582,7 @@ setup_customlist (GtkWidget *tv, GreeterItemInfo *item)
 	   NULL);
   gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column);
 
-  g_signal_connect (GTK_TREE_VIEW (tv), "button_release_event",
+  g_signal_connect (tv, "button_release_event",
                     G_CALLBACK (custom_list_release_event),
                     NULL);
 
