@@ -90,6 +90,10 @@
 #include "cookie.h"
 #include "gdmconfig.h"
 
+#ifdef WITH_CONSOLE_KIT
+#include "gdmconsolekit.h"
+#endif
+
 /* Some per slave globals */
 static GdmDisplay *d = 0;
 static gchar *login = NULL;
@@ -1233,6 +1237,10 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 			/* wait for a few seconds to avoid any vt changing race
 			 */
 			gdm_sleep_no_signal (1);
+
+#ifdef WITH_CONSOLE_KIT
+			unlock_ck_session (user, migrate_to);
+#endif
 
 			gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
 			g_free (migrate_to);
@@ -3344,6 +3352,9 @@ session_child_run (struct passwd *pwent,
 		   gboolean failsafe,
 		   const char *home_dir,
 		   gboolean home_dir_ok,
+#ifdef WITH_CONSOLE_KIT
+		   const char *ck_session_cookie,
+#endif
 		   const char *session,
 		   const char *save_session,
 		   const char *language,
@@ -3434,6 +3445,9 @@ session_child_run (struct passwd *pwent,
 	g_setenv ("USER", pwent->pw_name, TRUE);
 	g_setenv ("USERNAME", pwent->pw_name, TRUE);
 	g_setenv ("HOME", home_dir, TRUE);
+#ifdef WITH_CONSOLE_KIT
+	g_setenv ("XDG_SESSION_COOKIE", ck_session_cookie, TRUE);
+#endif
 	g_setenv ("GDMSESSION", session, TRUE);
 	g_setenv ("DESKTOP_SESSION", session, TRUE);
 	g_setenv ("SHELL", pwent->pw_shell, TRUE);
@@ -3580,7 +3594,7 @@ session_child_run (struct passwd *pwent,
 	gdm_close_all_descriptors (3 /* from */, -1 /* except */, -1 /* except2 */);
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
-	
+
 	argv[0] = NULL;
 	argv[1] = NULL;
 	argv[2] = NULL;
@@ -3930,6 +3944,9 @@ gdm_slave_session_start (void)
     const char *home_dir = NULL;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
+#ifdef WITH_CONSOLE_KIT
+    char *ck_session_cookie;
+#endif
     char *tmp;
     gboolean savesess = FALSE, savelang = FALSE;
     gboolean usrcfgok = FALSE, authok = FALSE;
@@ -4242,6 +4259,10 @@ gdm_slave_session_start (void)
      * could reset time or do other crazy things */
     session_start_time = time (NULL);
 
+#ifdef WITH_CONSOLE_KIT
+    ck_session_cookie = open_ck_session (pwent, d, session);
+#endif
+
     /* Start user process */
     gdm_sigchld_block_push ();
     gdm_sigterm_block_push ();
@@ -4266,6 +4287,9 @@ gdm_slave_session_start (void)
 			   failsafe,
 			   home_dir,
 			   home_dir_ok,
+#ifdef WITH_CONSOLE_KIT
+			   ck_session_cookie,
+#endif
 			   session,
 			   save_session,
 			   language,
@@ -4353,6 +4377,11 @@ gdm_slave_session_start (void)
 			    FALSE /* no_shutdown_check */);
 
     gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
+
+#ifdef WITH_CONSOLE_KIT
+    close_ck_session (ck_session_cookie);
+    g_free (ck_session_cookie);
+#endif
 }
 
 

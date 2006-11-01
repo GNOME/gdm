@@ -1005,6 +1005,46 @@ gdm: .your.domain
     </sect2>
   </sect1>
 
+  <sect1 id="consolekit">
+    <title>Support for ConsoleKit</title>
+
+    <para>
+      GDM includes support for publishing user login information with the user and login
+      session accounting framework known as ConsoleKit.  ConsoleKit is able to keep track
+      of all the users currently logged in.  In this respect, it can be used as a replacement
+      for the utmp or utmpx files that are available on most Unix-like operating systems.
+    </para>
+
+    <para>
+      When GDM is about to create a new login process for a user it will call a privileged
+      method of ConsoleKit in order to open a new session for this user.  At this time
+      GDM also provides ConsoleKit with information about this user session such as: the user ID,
+      the X11 Display name that will be associated with the session, the host-name from which the
+      session originates (useful in the case of an XDMCP session), whether or not this session
+      is local, etc.  As the entity that initiates the user process, GDM is in a unique position
+      know and to be trusted to provide these bits of information about the user session.  The use
+      of this privileged method is restricted by the use of D-Bus system message bus security policy.
+    </para>
+
+    <para>
+      In the case where a user with an existing session and has authenticated at GDM and requests to
+      resume that existing session GDM calls a privileged method of ConsoleKit to unlock that
+      session.  The exact details of what happens when the session receives this unlock signal is
+      undefined and session-specific.  However, most sessions will unlock a screensaver in response.
+    </para>
+
+    <para>
+      When the user chooses to log out, or if GDM or the session quit unexpectedly the user session
+      will be unregistered from ConsoleKit.
+    </para>
+
+    <para>
+      If support for ConsoleKit is not desired it can be disabled at build time using the
+      --with-console-kit=no option when running configure.
+    </para>
+
+  </sect1>
+
   <sect1 id="gdmsetupusage">
     <title>Using gdmsetup To Configure GDM</title>
 

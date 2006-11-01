@@ -1,3 +1,17 @@
+2006-10-31  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
+	* daemon/Makefile.am:
+	* daemon/gdm.c: (main):
+	* daemon/gdmconsolekit.c: (add_param_int), (add_param_boolean),
+	(add_param_string), (get_string), (unlock_ck_session),
+	(open_ck_session), (close_ck_session):
+	* daemon/gdmconsolekit.h:
+	* daemon/slave.c: (gdm_slave_check_user_wants_to_log_in),
+	(session_child_run), (gdm_slave_session_start):
+	* docs/C/gdm.xml:
+	Add ConsoleKit support.  Fixes #365375.
+
 2006-10-31  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/greeter/greeter_item_customlist.c: Fix custom lists so

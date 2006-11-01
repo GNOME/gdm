@@ -46,6 +46,7 @@
 
 #include <X11/Xauth.h>
 #include <glib/gi18n.h>
+#include <glib-object.h>
 
 /* Needed for signal handling */
 #include <vicious.h>
@@ -1533,6 +1534,8 @@ main (int argc, char *argv[])
 
     /* Initialize runtime environment */
     umask (022);
+
+    g_type_init ();
 
     ctx = g_option_context_new (_("- The GNOME login manager"));
     g_option_context_add_main_entries (ctx, options, _("main options"));

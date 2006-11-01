@@ -10,6 +10,7 @@ IT_PROG_INTLTOOL([0.35.0])
 
 GNOME_DOC_INIT
 
+DBUS_REQUIRED=0.30
 GLIB_REQUIRED=2.8.0
 GTK_REQUIRED=2.6.0
 PANGO_REQUIRED=1.3.0
@@ -70,6 +71,10 @@ AC_ARG_WITH(dmx,
   with_dmx=auto)
 
 AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
+
+AC_ARG_WITH(console-kit,
+  [  --with-console-kit=[auto/yes/no]  Add ConsoleKit support [default=auto]],,
+  with_console_kit=auto)
 
 # On Solaris, Xnest is only shipped in /usr/openwin/, but your
 # should use "--with-post-path=/usr/openwin/bin" for full
@@ -156,7 +161,7 @@ PKG_CHECK_MODULES(VICIOUS, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_R
 AC_SUBST(VICIOUS_CFLAGS)
 AC_SUBST(VICIOUS_LIBS)
 
-PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED)
+PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED dbus-glib-1 >= $DBUS_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
@@ -777,6 +782,17 @@ if test "x$with_selinux" = "xyes" ; then
 fi
 
 #
+# ConsoleKit support
+#
+use_console_kit=no
+if test "x$with_console_kit" != "xno" ; then
+	use_console_kit=yes
+	AC_DEFINE(WITH_CONSOLE_KIT, 1, [Define to enable ConsoleKit support])
+fi
+AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
+AC_SUBST(WITH_CONSOLE_KIT)
+
+#
 # Subst the extra libs
 #
 AC_SUBST(EXTRA_DAEMON_LIBS)
@@ -1213,6 +1229,13 @@ if test "x$found_tsol" = "xyes" ; then
 	echo "Solaris Trusted Extensions support    : YES"
 else
 	echo "Solaris Trusted Extensions support    : NO"
+fi
+
+dnl <= ConsoleKit support =>
+if test "x$use_console_kit" = "xyes" ; then
+	echo "ConsoleKit support                    : YES"
+else
+	echo "ConsoleKit support                    : NO"
 fi
 
 dnl <= Authentication scheme =>
