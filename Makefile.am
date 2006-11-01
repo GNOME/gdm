@@ -47,6 +47,7 @@ install-data-local:
 endif
 
 DISTCLEANFILES = \
+	gdmsetup		\
 	gnome-doc-utils.make	\
 	intltool-extract	\
 	intltool-merge		\

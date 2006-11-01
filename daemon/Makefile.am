@@ -73,13 +73,17 @@ gdm_binary_SOURCES = \
 	getvt.c \
 	getvt.h
 
-if WITH_CONSOLE_KIT
-gdm_binary_SOURCES += \
+EXTRA_gdm_binary_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
+
+CONSOLE_KIT_SOURCES = \
 	gdmconsolekit.c \
 	gdmconsolekit.h
+
+if WITH_CONSOLE_KIT
+gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
 endif
 
-EXTRA_gdm_binary_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
+EXTRA_gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
 
 # Note that these libs are in LDFLAGS because they should come before
 # everything else on the link line as they may override stuff
