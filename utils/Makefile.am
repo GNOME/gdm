@@ -58,6 +58,8 @@ gdm_dmx_reconnect_proxy_SOURCES = \
 
 gdm_dmx_reconnect_proxy_LDADD = \
 	$(GLIB_LIBS) \
+        $(X_EXTRA_LIBS) \
+        $(X_LIBS) \
 	-lX11 \
 	$(DMX_LIBS)
 endif
