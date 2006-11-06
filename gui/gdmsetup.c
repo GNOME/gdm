@@ -1020,8 +1020,11 @@ combobox_timeout (GtkWidget *combo_box)
 		
 		old_val = gdm_config_get_bool ((gchar *)key);
 
-		/* Choose to display radio or checkbox toggle column */
-		if (selected == RANDOM_THEME)
+		/* Choose to display radio or checkbox toggle column.
+		   We will only set this option to true if there is at least one
+		   item in the selected_themes list otherwise Random from selected
+		   will be disabled */
+		if (selected == RANDOM_THEME && !ve_string_empty (selected_themes))
 			new_val = TRUE;
 		else /* Default to one theme */
 			new_val = FALSE;
@@ -1261,6 +1264,24 @@ combobox_changed (GtkWidget *combobox)
 			mode_combobox = glade_helper_get (xml, "gg_mode_combobox_remote",
 			                                  GTK_TYPE_COMBO_BOX);
 			gtk_combo_box_set_active (GTK_COMBO_BOX (mode_combobox), selected);
+
+			if (mode_combobox != combobox) {
+				/* Display a warning when no themes are selected and the
+				   Random from selected option has been activated. 
+				   This is a bit of a HACK as combo_box handler is 
+				   called multiple times and we want this warning 
+				   to be displayed only once */
+				if (selected == RANDOM_THEME && ve_string_empty (selected_themes)) {
+					GtkWidget *warn_dlg = ve_hig_dialog_new (NULL /* parent */,
+										 GTK_DIALOG_MODAL /* flags */,
+										 GTK_MESSAGE_WARNING,
+										 GTK_BUTTONS_OK,
+										 _("No themes selected!"),
+										 "You need one or more themes selected for the Random from selected option to be valid.");
+					gtk_dialog_run (GTK_DIALOG (warn_dlg));
+					gtk_widget_destroy (warn_dlg);
+				}								
+			}
 		}
 		else {
 			GtkWidget *mode_combobox;
@@ -1320,6 +1341,14 @@ combobox_changed (GtkWidget *combobox)
 			if (GdmGraphicalThemeRand) {
 				gtk_tree_model_get_value (model, &iter,
 				                          THEME_COLUMN_SELECTED_LIST, &value);
+
+				/* Make sure that the theme is not selected in the
+				   single theme mode */
+				if (!g_value_get_boolean (&value)) {
+					g_value_unset (&value);
+					gtk_tree_model_get_value (model, &iter,
+								  THEME_COLUMN_SELECTED, &value);
+				}
 			} else {
 				gtk_tree_model_get_value (model, &iter,
 				                          THEME_COLUMN_SELECTED, &value);
@@ -3238,6 +3267,13 @@ gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 	GdmGraphicalThemeRand = gdm_config_get_bool (GDM_KEY_GRAPHICAL_THEME_RAND);
 	if (GdmGraphicalThemeRand) {
 		gtk_tree_model_get_value (model, &iter, THEME_COLUMN_SELECTED_LIST, &value);
+
+		/* Make sure that the theme is not selected in the
+		   single theme mode */
+		if (!g_value_get_boolean (&value)) {
+			g_value_unset (&value);
+			gtk_tree_model_get_value (model, &iter, THEME_COLUMN_SELECTED, &value);
+		}
 	} else {
 		gtk_tree_model_get_value (model, &iter, THEME_COLUMN_SELECTED, &value);
 	}
@@ -3335,7 +3371,8 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 	GtkTreeIter *select_iter = NULL;
 	GdkPixbuf *pb = NULL;
 	gchar *markup;
-
+	gchar * real_selected_themes = NULL;
+	
 	while ((dent = readdir (dir)) != NULL) {
 		char *n, *file, *name, *desc, *author, *copyright, *ss;
 		char *full;
@@ -3377,8 +3414,13 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			sel_theme = FALSE;
 
 		if (selected_themes != NULL &&
-		    themes_list_contains (selected_themes, dent->d_name))
+		    themes_list_contains (selected_themes, dent->d_name)) {
 			sel_themes = TRUE;
+			/* It might be the case that the config option RandomThemes that 
+			   do not longer exist in the theme dir. Here we rectifying that */
+			real_selected_themes = strings_list_add (real_selected_themes,
+								 dent->d_name, GDM_DELIMITER_THEMES);
+		}
 		else
 			sel_themes = FALSE;
 
@@ -3455,6 +3497,10 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 		g_free (n);
 	}
 
+	g_free (selected_themes);
+	selected_themes = g_strdup (real_selected_themes);
+	g_free (real_selected_themes);
+
 	return select_iter;
 }
 
@@ -3485,6 +3531,20 @@ greeter_theme_timeout (GtkWidget *toggle)
 
 		gdm_setup_config_set_string (GDM_KEY_GRAPHICAL_THEMES,
 			selected_themes);
+
+		/* This should only be executed if we dealing with
+		   random theme setting. If no random themes are present and
+		   the random theme option was set to true we force it to be false.
+		   If there is at least one random theme selected and the random 
+		   theme option was false we force it to be true */		
+		if (ve_string_empty (selected_themes) && 
+		    gdm_config_get_bool (GDM_KEY_GRAPHICAL_THEME_RAND))
+			gdm_setup_config_set_bool (GDM_KEY_GRAPHICAL_THEME_RAND, FALSE);				
+
+		else if (!ve_string_empty (selected_themes) && 
+			 !gdm_config_get_bool (GDM_KEY_GRAPHICAL_THEME_RAND))
+			gdm_setup_config_set_bool (GDM_KEY_GRAPHICAL_THEME_RAND, TRUE);
+	       
 		update_greeters ();
 	}
 
@@ -3548,18 +3608,22 @@ selected_toggled (GtkCellRendererToggle *cell,
 		/* Loop through all checkboxes */
 		while (gtk_tree_model_get_iter (model, &iter, path)) {
 			gboolean selected = FALSE;
+			gboolean other_selected = FALSE;
 
 			/* If this checkbox was just toggled */
 			if (gtk_tree_path_compare (path, sel_path) == 0) {
 
 			gtk_tree_model_get (model, &selected_iter,
-				THEME_COLUMN_DIR, &theme_name, -1);
+					    THEME_COLUMN_DIR, &theme_name,
+					    THEME_COLUMN_SELECTED, &other_selected, -1);
 				if (gtk_cell_renderer_toggle_get_active (cell)) {
 					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 						THEME_COLUMN_SELECTED_LIST,
 						FALSE, -1); /* Toggle OFF */
-					gtk_widget_set_sensitive (del_button, TRUE);
-					gtk_widget_set_sensitive (del_button_remote, TRUE);
+					/* We will only make a theme delete-able if its not the
+					   selected theme from single the theme mode */
+					gtk_widget_set_sensitive (del_button, !other_selected);
+					gtk_widget_set_sensitive (del_button_remote, !other_selected);
 				} else {
 					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 						THEME_COLUMN_SELECTED_LIST,
@@ -3582,6 +3646,20 @@ selected_toggled (GtkCellRendererToggle *cell,
 
 		if (selected_themes == NULL)
 			selected_themes = g_strdup("");
+
+		/* There are no themes selected atm in the Random form selected mode.
+		   We need to inform users that is the case */
+		if (ve_string_empty (selected_themes)) {
+			GtkWidget *dlg = 
+				ve_hig_dialog_new (NULL,
+						   GTK_DIALOG_MODAL,
+						   GTK_MESSAGE_WARNING,
+						   GTK_BUTTONS_OK,
+						   _("No themes selected!"),
+						   "You need one or more themes selected for the Random from selected option to be valid.");
+			gtk_dialog_run (GTK_DIALOG (dlg));
+			gtk_widget_destroy (dlg);
+		}
 	}
 
 	gtk_tree_path_free (path);
@@ -4189,6 +4267,14 @@ delete_theme (GtkWidget *button, gpointer data)
 	if (GdmGraphicalThemeRand) {
 		gtk_tree_model_get_value (model, &iter,
 		                          THEME_COLUMN_SELECTED_LIST, &value);
+
+		/* Make sure that the theme is not selected in the
+		   single theme mode */
+		if (!g_value_get_boolean (&value)) {
+			g_value_unset (&value);
+			gtk_tree_model_get_value (model, &iter,
+						  THEME_COLUMN_SELECTED, &value);
+		}
 	}
 	else {
 		gtk_tree_model_get_value (model, &iter,

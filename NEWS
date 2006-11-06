@@ -1,5 +1,25 @@
 Ahh news...
 
+2.17.2 Stuff:
+
+- Add ConsoleKit support.  This is a new feature and not tested.  If you
+  find that GDM does not allow you to log in, try using the configure 
+  option --with-console-kit=no to turn this feature off.  This feature
+  turns on GDM notification of session open, close and lock events via
+  D-Bus.  (William Jon McCann)
+  
+- Added warnings when no themes are selected in "Random Theme Mode".
+  Disable the delete button on Random theme mode for the theme that
+  is selected in "single theme mode". (Lukasz Zalewski)
+
+- Fix custom lists so that focus does not leave the username/password
+  entry field.  (Brian Cameron)
+
+- Add new languages to the locale list.  (Peter Nugent)
+
+- Translation updates (Priit Laes, Christophe Merlet, Francisco Javier
+  F. Serrador, Alexander Shopov, Ilkka Tuohela)
+
 2.17.1 Stuff:
 
 - No longer crash if at-spi-registryd cannot be started.  
