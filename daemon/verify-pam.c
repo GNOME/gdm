@@ -502,10 +502,10 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
     
     for (replies = 0; replies < num_msg; replies++) {
 	gboolean islogin = FALSE;
-	const char *m = msg[replies]->msg;
+	const char *m = (*msg)[replies].msg;
 	m = perhaps_translate_message (m);
 	
-	switch (msg[replies]->msg_style) {
+	switch ((*msg)[replies].msg_style) {
 	    
 	/* PAM requested textual input with echo on */
 	case PAM_PROMPT_ECHO_ON:
@@ -645,9 +645,9 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 	memset (reply, 0, sizeof (struct pam_response) * num_msg);
 
 	for (replies = 0; replies < num_msg; replies++) {
-		const char *m = msg[replies]->msg;
+		const char *m = (*msg)[replies].msg;
 		m = perhaps_translate_message (m);
-		switch (msg[replies]->msg_style) {
+		switch ((*msg)[replies].msg_style) {
 
 		case PAM_PROMPT_ECHO_ON:
 			if (extra_standalone_message != NULL)
