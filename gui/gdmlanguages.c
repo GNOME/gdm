@@ -168,25 +168,25 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Kannada"), "kn_IN", "﻿ಕನ್ನಡ", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Kinyarwanda"), "rw_RW", "Kinyarwanda", 0 },
+	{ N_("A-M|Kinyarwanda"), "rw_RW", "Kinyarwanda", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Korean"), "ko_KR", "한국어", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Latvian"), "lv_LV", "Latviešu", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Lithuanian"), "lt_LT", "Lietuvių", 0 },
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Macedonian"), "mk_MK", NULL, 0 },
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Malay"), "ms_MY", "Bahasa Melayu", 0 },
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Malayalam"), "ml_IN", "മലയാളം", 0 },
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Maltese"), "mt_MT", NULL, 0 },
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Marathi"), "mr_IN", NULL, 0 },
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Mongolian"), "mn_MN", "Монгол", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Macedonian"), "mk_MK", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Malay"), "ms_MY", "Bahasa Melayu", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Malayalam"), "ml_IN", "മലയാളം", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Maltese"), "mt_MT", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Marathi"), "mr_IN", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Mongolian"), "mn_MN", "Монгол", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Northern Sotho"), "nso_ZA", "Sesotho sa Leboa", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
@@ -212,7 +212,11 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Serbian"), "sr_YU", "српски", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Serbian"), "sr_CS", "српски", 0 },
+	{ N_("N-Z|Serbian (Serbia & Montenegro)"), "sr_CS", "српски", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Serbian (Montenegro)"), "sr_ME", "српски", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Serbian (Serbia)"), "sr_RS", "српски", 0 },	
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Serbian (Latin)"), "sr_CS@Latn", "srpski (latinica)", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
