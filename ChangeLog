@@ -1,5 +1,16 @@
 2006-11-06  Brian Cameron  <brian.cameron@sun.com>
 
+        * daemon/verify-pam.c: Update to make casting more clear.
+          This fixes a problem noticed with the Kerberos PAM module.
+          Kerberos was sending the proper error message but gdm was not
+          accessing it properly.  This message comes as "struct pam_message"
+          and is accesed using a double pointer "**msg".GDM was treating
+          msg as a pointer to an array of "num_msg"s of "struct pam_message"
+          whereas it actually is pointer to a pointer to an array of
+         "num_msg"s of "struct pam_message".
+
+2006-11-06  Brian Cameron  <brian.cameron@sun.com>
+
         * Release 2.17.2:
         * configure.ac: Update to new release version.
         * NEWS: Updated.
