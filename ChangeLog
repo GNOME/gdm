@@ -1,3 +1,16 @@
+2006-11-08  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
+	
+        More changes related to bug #352924.
+	* gui/gdmsetup.c: Made warnings more self-explanatory when no themes 
+	  are selected in "Random from selected" mode. Enabled back the delete 
+	  button on the "Random from selected" view for the currently selected
+	  theme in the single theme view with a slight modification - users can
+	  click on it but get told that they need to first deselect it from
+	  "Single theme" mode first in order to delete it. Also upon closure if
+	  users have activeted "Random form selected" but have not selected any
+	  themes for it, they will be informed that the greeter will default to
+	  single theme mode.
+	
 2006-11-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmlanguages.c, config/locale.alias:  Add 
@@ -28,7 +41,7 @@
 	
         Fixes bug #352924.
 	* gui/gdmsetup.c: Added warnings when no themes are selected in
-	  Random from sleceted mode. Random from selected option can only be 
+	  Random from selected mode. Random from selected option can only be 
 	  enabled only and only if one or more themes are selected. Also 
 	  disabled the delete button on the Random from selected view for 
 	  the currently selected theme in the single theme view mode.
