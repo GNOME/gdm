@@ -1,5 +1,21 @@
 Ahh news...
 
+2.16.3 Stuff:
+
+- Now support altfile[n] propery to cater for alternative 
+  image file definition.
+
+- Fix custom lists so that focus does not ever leave the 
+  username/password entry field.
+
+- Update to make casting more clear in PAM logic.  This fixes a 
+  bug where the Kerberos PAM module was sending multiple error
+  messages and GDM was not processing them properly.
+  (Brian Cameron)
+
+- Add X_EXTRA_LIBS and X_LIBS to utils/Makefile when building 
+  gdm-dmx-reconnect-proxy to fix bug #368808.
+
 2.16.2 Stuff:
 
 - Now support for "combo" style lists, and id values of "session"
