@@ -196,7 +196,7 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Oriya"), "or_IN", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Panjabi"), "pa_IN", NULL, 0 },
+	{ N_("N-Z|Punjabi"), "pa_IN", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Persian"), "fa_IR", "فارسی", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
