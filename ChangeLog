@@ -1,5 +1,15 @@
 2006-11-28  Brian Cameron  <brian.cameron@sun.com>
 
+	* config/Xsession.in config/default.desktop.in:  Since the
+          default.desktop file really just runs the Xclients script
+	  it should have a better name that specifies this is what
+	  it does.   Modify the default fallback program if no
+	  Xclients file exists to xterm since xsm isn't on all 
+	  systems.  This is a safer fallback.  Patch by 
+	  Padraig <Padraig.OBriain@sun.com>, modified by myself.
+
+2006-11-28  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmsession.c: Fix for TryExec check in gdmsession.c so 
 	  that it does not pass arguments into g_find_program_in_path
 	  since it causes it to say it is not executable if arguments

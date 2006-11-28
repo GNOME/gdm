@@ -220,8 +220,7 @@ if [ "x$command" = "xdefault" ] ; then
     command="/etc/X11/Xclients"
   else
     echo "$0: Cannot find Xclients"
-    # FIXME: kind of an evil failsafe
-    command="xsm"
+    command="xterm -geometry 80x24+0+0"
   fi
 fi
 
