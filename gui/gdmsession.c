@@ -204,7 +204,13 @@ gdm_session_list_init ()
 
 		    tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
 		    if ( ! ve_string_empty (tryexec)) {
-			    char *full = g_find_program_in_path (tryexec);
+			    char **tryexecvec = g_strsplit (tryexec, " ", -1);
+			    char *full = NULL;
+
+			    /* Do not pass any arguments to g_find_program_in_path */
+			    if (tryexecvec != NULL)
+				full = g_find_program_in_path (tryexecvec[0]);
+
 			    if (full == NULL) {
 				    session = g_new0 (GdmSession, 1);
 				    session->name      = g_strdup (dent->d_name);
@@ -216,6 +222,7 @@ gdm_session_list_init ()
 				    dent = readdir (sessdir);
 				    continue;
 			    }
+			    g_strfreev (tryexecvec);
 			    g_free (full);
 		    }
 		    g_free (tryexec);
