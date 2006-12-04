@@ -1,5 +1,36 @@
 Ahh news...
 
+2.17.3 Stuff:
+
+- Now all GDM GUI's are run as the gdm user.  This change ensures
+  that all GDM GUI's can talk to the at-spi-registryd that is 
+  running.  This change involved making the forked slave talk
+  to the the GDM daemon so that the dialogs can be displayed.  
+  The response from the dialog can be returned to the slave.
+  There are reports that this bug triggers GDK bug #376315 on
+  Linux when a11y is turned off.  This will need to be fixed
+  before the next GDM stable release.  Workaround is to turn
+  on a11y until this bug is fixed.  (Leena Gunda and Srirama
+  Sharma)
+
+- gdmsetup has a new tooltip suggestion.  (Calum Benson)
+
+- Now "Default System Session" is renamed to "Run Xclient
+  script" which is more accurately what this does.  Use xterm
+  as fallback instead of xsm, since xsm is not available on all
+  Linux.  Now zenity pop-up message is displayed when Xclient
+  script is not found.  (Brian Cameron)
+
+- Fix for TryExec check in gdmsession to make sure that any
+  arguments are not passed to g_find_program_in_path since 
+  this causes the function to say it is not executable.
+  (Brian Cameron)
+
+- Rename Panjabi to Punjabi.  (Brian Cameron)
+
+- Translation updates (Josep Puigdemont i Casamaj\303\263,
+  Daniel Nylander)
+
 2.17.2 Stuff:
 
 - Add ConsoleKit support.  This is a new feature and not tested.  If you
