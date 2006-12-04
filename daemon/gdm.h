@@ -742,6 +742,11 @@ void		gdm_final_cleanup	(void);
 /* Start a new standard X flexible server */
 #define GDM_SOP_FLEXI_XSERVER "FLEXI_XSERVER" /* no arguments */
 
+#define GDM_SOP_SHOW_ERROR_DIALOG "SHOW_ERROR_DIALOG"  /* show the error dialog from daemon */
+#define GDM_SOP_SHOW_YESNO_DIALOG "SHOW_YESNO_DIALOG"  /* show the yesno dialog from daemon */
+#define GDM_SOP_SHOW_QUESTION_DIALOG "SHOW_QUESTION_DIALOG"  /* show the question dialog from daemon */
+#define GDM_SOP_SHOW_ASKBUTTONS_DIALOG "SHOW_ASKBUTTON_DIALOG"  /* show the askbutton dialog from daemon */
+
 /* Notification protocol */
 /* keys */
 #define GDM_NOTIFY_ALLOW_REMOTE_ROOT "AllowRemoteRoot" /* <true/false as int> */
@@ -777,6 +782,16 @@ void		gdm_final_cleanup	(void);
 #define GDM_SLAVE_NOTIFY_KEY '!'
 /* notify a command */
 #define GDM_SLAVE_NOTIFY_COMMAND '#'
+/* send the response */
+#define GDM_SLAVE_NOTIFY_RESPONSE 'R'
+/* send the error dialog response */
+#define GDM_SLAVE_NOTIFY_ERROR_RESPONSE 'E'
+/* send the yesno dialog response */
+#define GDM_SLAVE_NOTIFY_YESNO_RESPONSE 'Y'
+/* send the askbuttons dialog response */
+#define GDM_SLAVE_NOTIFY_ASKBUTTONS_RESPONSE 'B'
+/* send the question dialog response */
+#define GDM_SLAVE_NOTIFY_QUESTION_RESPONSE 'Q'
 
 /*
  * Maximum number of messages allowed over the sockets protocol.  This

@@ -41,6 +41,7 @@
 #include "auth.h"
 #include "gdmconfig.h"
 #include "errorgui.h"
+#include "slave.h"
 
 /* set in the main function */
 extern char **stored_argv;
@@ -225,7 +226,7 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 	g_setenv ("DISPLAY", d->name, TRUE);
 	g_unsetenv ("XAUTHORITY");
 
-	gdm_auth_set_local_auth (d);
+	g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
 	/* sanity env stuff */
 	g_setenv ("SHELL", "/bin/sh", TRUE);
@@ -315,6 +316,17 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		GtkWidget *button;
 		char *loc;
 		char *details;
+
+		if (details_label != NULL) {
+ 			if (strncmp (details_label, "NIL", 3) == 0)
+				g_free (details_label);
+				details_label = NULL;
+		}
+		if (details_file != NULL) {
+			if (strncmp (details_file, "NIL", 3) == 0)
+				g_free (details_file);
+				details_file = NULL;
+		}
 
 		if (uid != 0) {
 			gid_t groups[1] = { gid };
@@ -498,10 +510,14 @@ press_ok (GtkWidget *entry, gpointer data)
 void
 gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 {
-	gdm_error_box_full (d, type, error, NULL, NULL,
-			    /* zero for uid/gid doesn't mean root, but
-			       it means to use the gdm user/group */
-			    0, 0);
+	char *msg;
+	int id = 0;
+
+	msg = g_strdup_printf ("type=%d$$error=%s$$details_label=%s$$details_file=%s$$uid=%d$$gid=%d", type, error, "NIL", "NIL", id, id);
+
+	gdm_slave_send_string (GDM_SOP_SHOW_ERROR_DIALOG, msg);
+
+	g_free (msg);
 }
 
 char *
@@ -775,7 +791,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 					      loc);
 		g_free (loc);
 		gtk_widget_set_events (dlg, GDK_ALL_EVENTS_MASK);
-		for (i = 0; but[i] != NULL; i++) {
+		for (i = 0; but[i] != NULL && strcmp (but[i], "NIL"); i++) {
 			loc = gdm_locale_to_utf8 (but[i]);
 			gtk_dialog_add_button (GTK_DIALOG (dlg),
 					       loc, i);

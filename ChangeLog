@@ -1,3 +1,24 @@
+2006-12-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/errorgui.c, daemon/gdm.[ch], daemon/slave.c,
+	  daemon/verify-pam.c:  Patch that makes the GDM daemon
+	  (rather than the forked slave) cause all dialogs to be
+	  displayed.  This improves accessibility for GDM because
+	  any AT programs (such as GOK, Gnopernicus or Orca) which
+	  are launched from GDM will now better work with such
+	  dialogs.  This is needed because dialogs will show up
+	  running as the user if they appear after authentication
+	  and at this point the at-spi-registryd is running as the
+	  gdm user.  We want all GDM dialogs to run as the gdm
+	  user.  Patch by Leena Gunda <leena.gunda@wipro.com> and
+	  Srirama Sharma <Srirama.Sharma@Sun.COM>.  Note that
+	  there have been some reports that this change triggers
+	  GDK bug #376315 on Linux when a11y is turned off.  This
+	  will probably need to be fixed before the next stable
+	  release.  I think this a11y fix is important enough to
+	  introduce this bug in the development cycle.  Workaround
+	  for now is to turn on a11y.
+
 2006-12-01  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmsetup.desktop.in.in.  Implement the tooltip suggestion

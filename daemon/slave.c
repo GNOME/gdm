@@ -89,6 +89,7 @@
 #include "errorgui.h"
 #include "cookie.h"
 #include "gdmconfig.h"
+#include "display.h"
 
 #ifdef WITH_CONSOLE_KIT
 #include "gdmconsolekit.h"
@@ -194,6 +195,7 @@ gboolean gdm_is_user_valid (const char *username);
 static gboolean x_error_occurred = FALSE;
 static gboolean gdm_got_ack = FALSE;
 static char * gdm_ack_response = NULL;
+char * gdm_ack_question_response = NULL;
 static GList *unhandled_notifies = NULL;
 
 
@@ -1135,6 +1137,7 @@ ask_migrate (const char *migrate_to)
 	int   r;
 	char *msg;
 	char *but[4];
+	char *askbuttons_msg;
 
 	but[0] = _("Log in anyway");
 	if (migrate_to != NULL) {
@@ -1144,19 +1147,29 @@ ask_migrate (const char *migrate_to)
 			"login");
 		but[1] = _("Return to previous login");
 		but[2] = _("Abort login");
-		but[3] = NULL;
+		but[3] = "NIL";
 	} else {
 		msg = _("You are already logged in.  "
 			"You can log in anyway or abort this "
 			"login");
 		but[1] = _("Abort login");
-		but[2] = NULL;
+		but[2] = "NIL";
+		but[3] = "NIL";
 	}
 
 	if (greet)
 		gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
 
-	r = gdm_failsafe_ask_buttons (d, msg, but);
+	askbuttons_msg = g_strdup_printf ("askbuttons_msg=%s$$options_msg1=%s$$options_msg2=%s$$options_msg3=%s$$options_msg4=%s", msg, but[0], but[1], but[2], but[3]);
+
+       
+	gdm_slave_send_string (GDM_SOP_SHOW_ASKBUTTONS_DIALOG, askbuttons_msg);
+
+	r = atoi (gdm_ack_response);
+
+	g_free (askbuttons_msg);
+	g_free (gdm_ack_response);
+	gdm_ack_response = NULL;
 
 	if (greet)
 		gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
@@ -1762,7 +1775,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		closelog ();
 
-		gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
+		gdm_close_all_descriptors (0 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -2483,7 +2496,7 @@ gdm_slave_greeter (void)
 
 	closelog ();
 
-	gdm_close_all_descriptors (2 /* from */, -1 /* except */, -1 /* except2 */);
+	gdm_close_all_descriptors (2 /* from */, slave_fifo_pipe_fd/* except */, d->slave_notify_fd/* except2 */);
 
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
@@ -2625,7 +2638,7 @@ gdm_slave_greeter (void)
 		   something works instead of a flickering screen */
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("The greeter application appears to be crashing.\n"
+			       _("The greeter application appears to be crashing."
 				 "Attempting to use a different one."));
 		if (strstr (command, "gdmlogin") != NULL) {
 			/* in case it is gdmlogin that's crashing
@@ -2720,7 +2733,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	}
 
 	/* ensure this is sent from the actual slave with the pipe always, this is anal I know */
-	if G_LIKELY (d->slavepid == getpid ()) {
+	if (G_LIKELY (d->slavepid == getppid ()) || G_LIKELY (d->slavepid == getpid ())) {
 		fd = slave_fifo_pipe_fd;
 	} else {
 		fd = -1;
@@ -2767,34 +2780,56 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	}
 #endif
 
-	for (i = 0;
-	     wait_for_ack &&
-	     ! gdm_got_ack &&
-	     parent_exists () &&
-	     i < 10;
-	     i++) {
-		if (in_usr2_signal > 0) {
+	/* Wait till you get a response from the daemon */
+	if (strncmp (str, "opcode="GDM_SOP_SHOW_ERROR_DIALOG,
+		     strlen ("opcode="GDM_SOP_SHOW_ERROR_DIALOG)) == 0 ||
+	    strncmp (str, "opcode="GDM_SOP_SHOW_YESNO_DIALOG,
+		     strlen ("opcode="GDM_SOP_SHOW_YESNO_DIALOG)) == 0 ||
+	    strncmp (str, "opcode="GDM_SOP_SHOW_QUESTION_DIALOG,
+		     strlen ("opcode="GDM_SOP_SHOW_QUESTION_DIALOG)) == 0 ||
+	    strncmp (str, "opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG,
+		     strlen ("opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG)) == 0) {
+
+		for (; wait_for_ack && !gdm_got_ack ; ) {
 			fd_set rfds;
-			struct timeval tv;
 
 			FD_ZERO (&rfds);
 			FD_SET (d->slave_notify_fd, &rfds);
 
-			/* Wait up to 1 second. */
-			tv.tv_sec = 1;
-			tv.tv_usec = 0;
-
-			if (select (d->slave_notify_fd+1, &rfds, NULL, NULL, &tv) > 0) {
+			if (select (d->slave_notify_fd+1, &rfds, NULL, NULL, NULL) > 0) {
 				gdm_slave_handle_usr2_message ();
 			}
-		} else {
-			struct timeval tv;
-			/* Wait 1 second. */
-			tv.tv_sec = 1;
-			tv.tv_usec = 0;
-			select (0, NULL, NULL, NULL, &tv);
-			/* don't want to use sleep since we're using alarm
-			   for pinging */
+		}
+        } else {
+		for (i = 0;
+		     wait_for_ack &&
+		     ! gdm_got_ack &&
+		     parent_exists () &&
+		     i < 10;
+		     i++) {
+			if (in_usr2_signal > 0) {
+				fd_set rfds;
+				struct timeval tv;
+
+				FD_ZERO (&rfds);
+				FD_SET (d->slave_notify_fd, &rfds);
+
+				/* Wait up to 1 second. */
+				tv.tv_sec = 1;
+				tv.tv_usec = 0;
+
+				if (select (d->slave_notify_fd+1, &rfds, NULL, NULL, &tv) > 0) {
+					gdm_slave_handle_usr2_message ();
+				}
+			} else {
+				struct timeval tv;
+				/* Wait 1 second. */
+				tv.tv_sec = 1;
+				tv.tv_usec = 0;
+				select (0, NULL, NULL, NULL, &tv);
+				/* don't want to use sleep since we're using alarm
+				for pinging */
+			}
 		}
 	}
 
@@ -2844,8 +2879,16 @@ gdm_slave_send_string (const char *opcode, const char *str)
 			   (long)getpid ());
 	}
 
-	msg = g_strdup_printf ("%s %ld %s", opcode,
-			       (long)getpid (), ve_sure_string (str));
+	if (strcmp (opcode, GDM_SOP_SHOW_ERROR_DIALOG) == 0 ||
+	    strcmp (opcode, GDM_SOP_SHOW_YESNO_DIALOG) == 0 ||
+	    strcmp (opcode, GDM_SOP_SHOW_QUESTION_DIALOG) == 0 ||
+	    strcmp (opcode, GDM_SOP_SHOW_ASKBUTTONS_DIALOG) == 0) {
+		msg = g_strdup_printf ("opcode=%s$$pid=%ld$$%s", opcode,
+				       (long)d->slavepid, ve_sure_string (str));
+	} else {
+		msg = g_strdup_printf ("%s %ld %s", opcode,
+				       (long)getpid (), ve_sure_string (str));
+	}
 
 	gdm_slave_send (msg, TRUE);
 
@@ -2953,7 +2996,7 @@ gdm_slave_chooser (void)
 		closelog ();
 
 		VE_IGNORE_EINTR (close (0));
-		gdm_close_all_descriptors (2 /* from */, -1 /* except */, -1 /* except2 */);
+		gdm_close_all_descriptors (2 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
 
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
@@ -3591,7 +3634,7 @@ session_child_run (struct passwd *pwent,
 	
 	closelog ();
 
-	gdm_close_all_descriptors (3 /* from */, -1 /* except */, -1 /* except2 */);
+	gdm_close_all_descriptors (3 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -4004,11 +4047,12 @@ gdm_slave_session_start (void)
 
     if G_UNLIKELY (pwent->pw_dir == NULL ||
 		   ! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
+	    char *yesno_msg;
 	    char *msg = g_strdup_printf (
-		     _("Your home directory is listed as:\n'%s'\n"
+		     _("Your home directory is listed as:'%s'"
 		       "but it does not appear to exist.  "
 		       "Do you want to log in with the / (root) "
-		       "directory as your home directory?\n\n"
+		       "directory as your home directory?"
 		       "It is unlikely anything will work unless "
 		       "you use a failsafe session."),
 		     ve_sure_string (pwent->pw_dir));
@@ -4023,14 +4067,24 @@ gdm_slave_session_start (void)
 		       ve_sure_string (pwent->pw_dir));
 
 	    /* Check what the user wants to do */
-	    if ( ! gdm_failsafe_yesno (d, msg)) {
-		    g_free (msg);
-		    gdm_verify_cleanup (d);
-		    session_started = FALSE;
-		    return;
-	    }
+           yesno_msg = g_strdup_printf ("yesno_msg=%s", msg);
+           gdm_slave_send_string (GDM_SOP_SHOW_YESNO_DIALOG, yesno_msg);
+
+           g_free (yesno_msg);
+
+           if (strcmp (gdm_ack_response, "no") == 0) {
+               gdm_verify_cleanup (d);
+               session_started = FALSE;
+
+               g_free (msg);
+               g_free (gdm_ack_response);
+               gdm_ack_response = NULL;
+               return;
+            }
 
 	    g_free (msg);
+            g_free (gdm_ack_response);
+            gdm_ack_response = NULL;
 
 	    /* Reset euid, egid back to user */
 	    if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
@@ -4353,24 +4407,31 @@ gdm_slave_session_start (void)
 		   (end_time - 10 <= session_start_time) &&
 		   /* only if the X server still exist! */
 		   d->servpid > 1) {
-	    gdm_debug ("Session less than 10 seconds!");
+	    char *msg_string;
+	    char *error_msg =
+			_("Your session only lasted less than "
+			  "10 seconds.  If you have not logged out "
+			  "yourself, this could mean that there is "
+			  "some installation problem or that you may "
+			  "be out of diskspace.  Try logging in with "
+			  "one of the failsafe sessions to see if you "
+			  "can fix this problem.");
 
 	    /* FIXME: perhaps do some checking to display a better error,
 	     * such as gnome-session missing and such things. */
-	    gdm_error_box_full (d,
-				GTK_MESSAGE_WARNING,
-				_("Your session only lasted less than "
-				  "10 seconds.  If you have not logged out "
-				  "yourself, this could mean that there is "
-				  "some installation problem or that you may "
-				  "be out of diskspace.  Try logging in with "
-				  "one of the failsafe sessions to see if you "
-				  "can fix this problem."),
-				(d->xsession_errors_filename != NULL) ?
-			       	  _("View details (~/.xsession-errors file)") :
-				  NULL,
-				d->xsession_errors_filename,
-				uid, gid);
+	    gdm_debug ("Session less than 10 seconds!");
+	    msg_string = g_strdup_printf ("type=%d$$error_msg=%s$$details_label=%s$$details_file=%s$$uid=%d$$gid=%d",
+					  GTK_MESSAGE_WARNING,error_msg, 
+					  (d->xsession_errors_filename != NULL) ?
+					  _("View details (~/.xsession-errors file)") :
+					  NULL,
+					  d->xsession_errors_filename,
+					  0, 0);
+
+	    gdm_slave_send_string (GDM_SOP_SHOW_ERROR_DIALOG, msg_string);
+
+	    g_free (msg_string);
+
     }
 
     gdm_slave_session_stop (pid != 0 /* run_post_session */,
@@ -4840,6 +4901,28 @@ gdm_slave_handle_usr2_message (void)
 				gdm_wait_for_go = FALSE;
 			} else if (strcmp (&s[1], GDM_NOTIFY_TWIDDLE_POINTER) == 0) {
 				gdm_twiddle_pointer (d);
+			}
+		} else if (s[0] == GDM_SLAVE_NOTIFY_RESPONSE) {
+			gdm_got_ack = TRUE;
+			if (gdm_ack_response)
+				g_free (gdm_ack_response);
+
+			if (s[1] == GDM_SLAVE_NOTIFY_YESNO_RESPONSE) {
+				if (s[2] == '0') {
+					gdm_ack_response =  g_strdup ("no");
+				} else {
+				gdm_ack_response =  g_strdup ("yes");
+				}
+			} else if (s[1] == GDM_SLAVE_NOTIFY_ASKBUTTONS_RESPONSE) {
+				gdm_ack_response = g_strdup (&s[2]);
+			} else if (s[1] == GDM_SLAVE_NOTIFY_QUESTION_RESPONSE) {
+				gdm_ack_question_response = g_strdup (&s[2]);
+			} else if (s[1] == GDM_SLAVE_NOTIFY_ERROR_RESPONSE) {
+				if (s[2] != '\0') {
+					gdm_ack_response = g_strdup (&s[2]);
+				} else {
+					gdm_ack_response = NULL;
+				}
 			}
 		}
 	}

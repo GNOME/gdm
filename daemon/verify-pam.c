@@ -63,6 +63,8 @@ static char *selected_user = NULL;
 static gboolean opened_session = FALSE;
 static gboolean did_setcred = FALSE;
 
+extern char *gdm_ack_question_response;
+
 #ifdef	HAVE_ADT
 #define	PW_FALSE	1	/* no password change */
 #define PW_TRUE		2	/* successful password change */
@@ -631,7 +633,8 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 {
 	int replies = 0;
 	int i;
-	char *s, *text;
+        char *text;
+        char *question_msg;
 	struct pam_response *reply = NULL;
 
 	if (pamh == NULL)
@@ -652,38 +655,53 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 		case PAM_PROMPT_ECHO_ON:
 			if (extra_standalone_message != NULL)
 				text = g_strdup_printf
-					("%s\n%s", extra_standalone_message,
+					("%s%s", extra_standalone_message,
 					 m);
 			else
 				text = g_strdup (m);
 
 			/* PAM requested textual input with echo on */
-			s = gdm_failsafe_question (cur_gdm_disp, text,
-						   TRUE /* echo */);
+			question_msg = g_strdup_printf ("question_msg=%s$$echo=%d", text, TRUE);
+
+			gdm_slave_send_string (GDM_SOP_SHOW_QUESTION_DIALOG, question_msg);
+
+			g_free (question_msg);
 			g_free (text);
 
 			reply[replies].resp_retcode = PAM_SUCCESS;
-			reply[replies].resp = strdup (ve_sure_string (s));
-			g_free (s);
+			if (gdm_ack_question_response) {
+				reply[replies].resp = strdup (ve_sure_string (gdm_ack_question_response));
+				g_free (gdm_ack_question_response);
+				gdm_ack_question_response = NULL;
+			} else
+				reply[replies].resp = NULL;
+
 			break;
 
 		case PAM_PROMPT_ECHO_OFF:
 			if (extra_standalone_message != NULL)
 				text = g_strdup_printf
-					("%s\n%s", extra_standalone_message,
+					("%s%s", extra_standalone_message,
 					 m);
 			else
 				text = g_strdup (m);
 
 			/* PAM requested textual input with echo off */
-			s = gdm_failsafe_question (cur_gdm_disp, text,
-						   FALSE /* echo */);
+			question_msg = g_strdup_printf ("question_msg=%s$$echo=%d", text, TRUE);
 
+			gdm_slave_send_string (GDM_SOP_SHOW_QUESTION_DIALOG, question_msg);
+
+			g_free (question_msg);
 			g_free (text);
 
 			reply[replies].resp_retcode = PAM_SUCCESS;
-			reply[replies].resp = strdup (ve_sure_string (s));
-			g_free (s);
+			if (gdm_ack_question_response) {
+				reply[replies].resp = strdup (ve_sure_string (gdm_ack_question_response));
+				g_free (gdm_ack_question_response);
+				gdm_ack_question_response = NULL;
+			} else
+				reply[replies].resp = NULL;
+
 			break;
 
 		case PAM_ERROR_MSG:
@@ -1314,13 +1332,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	gdm_error (_("User %s no longer permitted to access the system"), login);
 	gdm_error_box (cur_gdm_disp,
 		       GTK_MESSAGE_ERROR,
-		       _("\nThe system administrator has disabled your account."));
+		       _("The system administrator has disabled your account."));
 	goto setup_pamerr;
     case PAM_PERM_DENIED :
 	gdm_error (_("User %s not permitted to gain access at this time"), login);
 	gdm_error_box (cur_gdm_disp,
 		       GTK_MESSAGE_ERROR,
-		       _("\nThe system administrator has disabled your access to the system temporarily."));
+		       _("The system administrator has disabled your access to the system temporarily."));
 	goto setup_pamerr;
     default :
 	if (gdm_slave_action_pending ())
@@ -1334,7 +1352,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    gdm_error (_("Cannot set user group for %s"), login);
 	    gdm_error_box (cur_gdm_disp,
 			   GTK_MESSAGE_ERROR,
-			   _("\nCannot set your user group; "
+			   _("Cannot set your user group; "
 			     "you will not be able to log in. "
 			     "Please contact your system administrator."));
 #ifdef  HAVE_ADT

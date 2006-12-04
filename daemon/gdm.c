@@ -41,6 +41,7 @@
 #include <syslog.h>
 #include <locale.h>
 #include <dirent.h>
+#include <gtk/gtk.h>
 
 /* This should be moved to auth.c I suppose */
 
@@ -64,6 +65,7 @@
 #include "cookie.h"
 #include "filecheck.h"
 #include "gdmconfig.h"
+#include "errorgui.h"
 
 #define DYNAMIC_ADD     0
 #define DYNAMIC_RELEASE 1
@@ -1872,6 +1874,55 @@ write_x_servers (GdmDisplay *d)
 	g_free (file);
 }
 
+ static void
+send_slave_ack_dialog_int (GdmDisplay *d, int type, int response)
+{
+	if (d->master_notify_fd >= 0) {
+		char *not;
+
+		not = g_strdup_printf ("%c%c%d\n", GDM_SLAVE_NOTIFY_RESPONSE, type, response);
+		VE_IGNORE_EINTR (write (d->master_notify_fd, not, strlen (not)));
+
+		g_free (not);
+	}
+	if (d->slavepid > 1) {
+		/* now yield the CPU as the other process has more
+		useful work to do then we do */
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
+		sched_yield ();
+#endif
+	}
+}
+
+static void
+send_slave_ack_dialog_char (GdmDisplay *d, int type, const char *resp)
+{
+	if (d->master_notify_fd >= 0) {
+		if (resp == NULL) {
+			char not[3];
+
+			not[0] = GDM_SLAVE_NOTIFY_RESPONSE;
+			not[1] = type; 
+			not[2] = '\n';
+			VE_IGNORE_EINTR (write (d->master_notify_fd, not, 3));
+		} else {
+			char *not = g_strdup_printf ("%c%c%s\n",
+						     GDM_SLAVE_NOTIFY_RESPONSE,
+						     type,
+						     resp);
+			VE_IGNORE_EINTR (write (d->master_notify_fd, not, strlen (not)));
+			g_free (not);
+		}
+	}
+	if (d->slavepid > 1) {
+		/* now yield the CPU as the other process has more
+		useful work to do then we do */
+#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
+		sched_yield ();
+#endif
+	}
+}
+
 static void
 send_slave_ack (GdmDisplay *d, const char *resp)
 {
@@ -2499,6 +2550,193 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
 				     NULL, 0, NULL, NULL);
+       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ERROR_DIALOG,
+			   strlen ("opcode="GDM_SOP_SHOW_ERROR_DIALOG)) == 0) {
+		GdmDisplay *d;
+		GtkMessageType type;
+		char **list;
+		char *ptr;
+		char *error;
+		char *details_label;
+		char *details_file;
+		long slave_pid;
+		int uid, gid;
+
+		list = g_strsplit (msg, "$$", -1);
+
+		ptr = strchr (list[1], '=');
+		slave_pid = atol (ptr + 1);
+
+		ptr = strchr (list[2], '=');
+		type = atoi (ptr + 1);
+
+		ptr = strchr (list[3], '=');
+		error = g_malloc0 (strlen (ptr));
+		strcpy (error, ptr + 1);
+
+		ptr = strchr (list[4], '=');
+		details_label = g_malloc0 (strlen (ptr));
+		strcpy (details_label, ptr + 1);
+
+		ptr = strchr (list[5], '=');
+		details_file = g_malloc0 (strlen (ptr));
+		strcpy (details_file, ptr + 1);
+
+		ptr = strchr (list[6], '=');
+		uid = atoi (ptr + 1);
+
+		ptr = strchr (list[7], '=');
+		gid = atoi (ptr + 1);
+
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			}
+
+			gdm_error_box_full (d, type, error, details_label, details_file, 0, 0);
+
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+			}
+
+			send_slave_ack_dialog_char (d, GDM_SLAVE_NOTIFY_ERROR_RESPONSE, NULL);
+		}
+
+		g_free (error);
+		g_free (details_label);
+		g_free (details_file);
+		g_strfreev (list);
+       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_YESNO_DIALOG,
+                            strlen ("opcode="GDM_SOP_SHOW_YESNO_DIALOG)) == 0) {
+		GdmDisplay *d;
+		char **list;
+		char *ptr;
+		char *yesno_msg;
+		long slave_pid;
+		gboolean response_yesno;
+
+		list = g_strsplit (msg, "$$", -1);
+
+		ptr = strchr (list [1], '=');
+		slave_pid = atol (ptr + 1);
+
+		ptr = strchr (list [2], '=');
+		yesno_msg = g_malloc0 (strlen (ptr));
+		strcpy (yesno_msg, ptr + 1);
+
+		d = gdm_display_lookup (slave_pid);
+		if (d != NULL) {
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			}
+
+			response_yesno =  gdm_failsafe_yesno (d, yesno_msg);
+
+			send_slave_ack_dialog_int (d, GDM_SLAVE_NOTIFY_YESNO_RESPONSE, response_yesno);
+
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+			}
+		}
+
+		g_free (yesno_msg);
+		g_strfreev (list);
+       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_QUESTION_DIALOG,
+                            strlen ("opcode="GDM_SOP_SHOW_QUESTION_DIALOG)) == 0) {
+		GdmDisplay *d;
+		char **list;
+		char *ptr;
+		char *question_msg;
+		char *response_question;
+		long slave_pid;
+		gboolean echo;
+
+		list = g_strsplit (msg, "$$", -1);
+
+		ptr = strchr (list [1], '=');
+		slave_pid = atol (ptr + 1);
+
+		ptr = strchr (list [2], '=');
+		question_msg = g_malloc0 (strlen (ptr));
+		strcpy (question_msg, ptr + 1);
+
+		ptr = strchr (list [3], '=');
+		echo = atoi (ptr + 1);
+
+		d = gdm_display_lookup (slave_pid);
+		if (d != NULL) {
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			}
+
+			response_question = gdm_failsafe_question (d, question_msg, echo);
+
+			send_slave_ack_dialog_char (d, GDM_SLAVE_NOTIFY_QUESTION_RESPONSE, response_question);
+
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+			}
+		}
+
+		g_free (question_msg);
+		g_strfreev (list);
+       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG,
+                            strlen ("opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG)) == 0) {
+		GdmDisplay *d;
+		char *askbuttons_msg;
+		char **list;
+		char *ptr;
+		char *options[4];
+		long slave_pid;
+		int i;
+		int response_askbuttons;
+
+		list = g_strsplit (msg, "$$", -1);
+
+		ptr = strchr (list [1], '=');
+		slave_pid = atol (ptr + 1);
+
+		ptr = strchr (list [2], '=');
+		askbuttons_msg = g_malloc0 (strlen (ptr));
+		strcpy (askbuttons_msg, ptr + 1);
+
+		ptr = strchr (list [3], '=');
+		options[0] = g_malloc0 (strlen (ptr));
+		strcpy (options[0], ptr + 1);
+
+		ptr = strchr (list [4], '=');
+		options[1] = g_malloc0 (strlen (ptr));
+		strcpy (options[1], ptr + 1);
+
+		ptr = strchr (list [5], '=');
+		options[2] = g_malloc0 (strlen (ptr));
+		strcpy (options[2], ptr + 1);
+
+		ptr = strchr (list [6], '=');
+		options[3] = g_malloc0 (strlen (ptr));
+		strcpy (options[3], ptr + 1);
+
+		d = gdm_display_lookup (slave_pid);
+		if (d != NULL) {
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			}
+
+			response_askbuttons = gdm_failsafe_ask_buttons (d, askbuttons_msg, options);
+
+			send_slave_ack_dialog_int (d, GDM_SLAVE_NOTIFY_ASKBUTTONS_RESPONSE, response_askbuttons);
+			if (GDM_AUTHFILE (d)) {
+				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+			}
+		}
+
+		g_free (askbuttons_msg);
+
+		for (i = 0; i < 3; i ++) 
+			g_free (options[i]);
+		g_strfreev (list);
 	}
 }
 
