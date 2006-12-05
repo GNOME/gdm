@@ -1390,23 +1390,11 @@ gdm_chooser_add_host (void)
 		memmove (&qa->sin_addr, hostent->h_addr, 4);
 	} else {
 		GtkWidget *dialog;
-		gchar **namesplit;
 		gchar *msg;
-		gchar *newname;
 
-		/*
-		 * If user enters "%" replace it with "%%" so output shows
-		 * properly in the dialog.
-		 */
-		namesplit = g_strsplit (name, "%", -1);
-		newname   = g_strjoinv ("%%", namesplit);
-		
 		msg = g_strdup_printf (_("Cannot find the host \"%s\". "
 		                         "Perhaps you have mistyped it."),
-		                         newname);
-
-		g_strfreev (namesplit);
-		g_free (newname);
+		                         name);
 
 		dialog = ve_hig_dialog_new
 		(GTK_WINDOW (chooser) /* parent */,
