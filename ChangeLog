@@ -1,3 +1,34 @@
+2006-12-07  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
+	
+        Fixes bug/feature request #334186.
+	Fixes bug #343206
+	Fixes bug #347101
+	* gui/gdmsession. [ch] (_gdm_session_list_init): Replaces functionality
+	  of gdm_session_list_init
+	* gui/gdmsession. [ch] (gdm_session_list_init): Becomes a wrapper for
+	  _gdm_session_list_init, such that the old functionality within the
+	  code is still preserved but session data can be available through
+	  _gdm_session_list_init
+	* gui/gdmsession.c : Removed gdmwm.h include
+	* gui/gdmsession. [ch] (gdm_session_lookup): Removed all the
+	  gdm_wm_query_dialog calls making the function accessible without need
+	  for gdmwm libraries
+	* gui/gdmsession. [ch] (gdm_set_save_session): Sets save session
+	  variable
+	* gui/gdmsession. [ch] (gdm_get_default_session): Returns default
+	  session
+	* gui/gdmlogin.c (process_operation): Added gdm_wm_query_dialog calls
+	  for processing lookup session results
+	* gui/greeter/greeter.c (process_operation): Added
+	  gdm_wm_query_dialog calls for processing lookup session results
+	* gui/gdmuser. [ch] (gdm_user_uid): Returns uid of a user, or -1 if
+	  user does not exist
+	* gui/gdmuser. [ch] (get_root_user): Moved from gdmsetup.c
+	* gui/gdmsetup.glade: New widgets and tooltips added
+	* gui/gdmsetup.c: Numerous functions added/modifed to make way for new
+	  functionality
+	* gui/gdmsetup.c (combobox_changed): Additional fix for bug #358114	
+		
 2006-12-05  Brian Cameron  <brian.cameron@sun.com>
 
 	* vicious-extensions/ve-miscui.c: Same fix for 

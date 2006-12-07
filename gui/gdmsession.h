@@ -33,7 +33,18 @@ typedef struct {
         char *comment;
 } GdmSession;
 
+enum {
+	SESSION_LOOKUP_SUCCESS,
+	SESSION_LOOKUP_PREFERRED_MISSING,
+	SESSION_LOOKUP_DEFAULT_MISMATCH,
+	SESSION_LOOKUP_USE_SWITCHDESK
+};
+
 void		gdm_session_list_init		(void);
+void		_gdm_session_list_init		(GHashTable **sessnames,
+						 GList **sessions,
+						 gchar **default_session, 
+						 const gchar **current_session);
 gint		gdm_session_sort_func		(const char *a, const char *b);
 const char *	gdm_session_name 		(const char *name);
 void		gdm_session_list_from_hash_table_func (const char *key,
@@ -41,7 +52,12 @@ void		gdm_session_list_from_hash_table_func (const char *key,
 						GList **sessions);
 gint		gdm_session_sort_func		(const char *a,
 						 const char *b);
-char *		gdm_session_lookup 		(const char *saved_session);
+char *		gdm_session_lookup 		(const char *saved_session, gint *lookup_status);
+
 gint		gdm_get_save_session 		(void);
+
+gint		gdm_set_save_session 		(const gint session);
+
+const char *    gdm_get_default_session         (void);
 
 #endif /* GDM_SESSION_H */

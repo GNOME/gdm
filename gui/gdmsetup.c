@@ -47,19 +47,18 @@
 #include "misc.h"
 #include "gdmcomm.h"
 #include "gdmuser.h"
+#include "gdmsession.h"
 #include "gdmconfig.h"
 
 static char     *GdmSoundProgram = NULL;
 static gchar    *GdmExclude      = NULL;
 static gchar    *GdmInclude      = NULL;
-static gint      GdmMinimalUID   = 100;
 static gint      GdmIconMaxHeight;
 static gint      GdmIconMaxWidth;
 static gboolean  GdmIncludeAll;
-static gboolean  GdmAllowRoot;
-static gboolean  GdmAllowRemoteRoot;
 static gboolean  GdmUserChangesUnsaved;
 static gboolean  GdmRandomFromSelectedChangesWarn;
+static gint      last_selected_command;
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
@@ -83,6 +82,13 @@ static char      *selected_theme  = NULL;
 static gchar     *config_file;
 static gchar     *custom_config_file;
 static GSList    *xservers;
+
+/* This is used to store changes made to all
+   possible fields of custom/normal commands */
+static GHashTable  *GdmCommandChangesUnsaved = NULL;
+
+/* Used to store all available sessions */
+static GList *sessions = NULL;
 
 enum {
 	XSERVER_COLUMN_VT,
@@ -116,11 +122,25 @@ enum {
 };
 
 enum {
+	GENERAL_TAB,
 	LOCAL_TAB,
 	REMOTE_TAB,
 	ACCESSIBILITY_TAB,
 	SECURITY_TAB,
 	USERS_TAB
+};
+
+enum {
+	CLOCK_AUTO,
+	CLOCK_YES,
+	CLOCK_NO
+};
+
+enum {
+	HALT_CMD,
+	REBOOT_CMD,
+	SUSPEND_CMD,
+	CUSTOM_CMD
 };
 
 enum {
@@ -388,14 +408,189 @@ gdm_setup_config_set_string (const char *key, gchar *val)
 }
 
 static gboolean
+radiogroup_timeout (GtkWidget *toggle)
+{	
+	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
+	GList *radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (toggle));
+		
+	if (strcmp (ve_sure_string (key), GDM_KEY_RELAX_PERM) == 0) {
+		GList *tmp;
+		gint val;
+		gint selected;
+		gint i = 0;
+		gint list_size;
+		
+		val = gdm_config_get_int ((gchar *)key);
+		list_size = g_slist_length (radio_group) - 1;
+		
+		for (tmp = radio_group; tmp != NULL; tmp = tmp->next, i++) {
+			GtkWidget *radio_button;
+			radio_button = (GtkWidget *) tmp->data;
+			if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (radio_button)))
+				selected = list_size - i;
+		}
+		
+		if (val != selected)
+			gdm_setup_config_set_int (key, selected);
+			
+	}
+	return FALSE;	
+}
+
+static gboolean
 toggle_timeout (GtkWidget *toggle)
 {
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	gboolean    val = gdm_config_get_bool ((gchar *)key);
 
-	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
-		gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
+	if (strcmp (ve_sure_string (key), GDM_KEY_ENTRY_INVISIBLE) == 0) {
+		/* This is a lil bit back to front
+		   true is false and false is true in this case */
+		if ( ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+			gdm_setup_config_set_bool (key, !GTK_TOGGLE_BUTTON (toggle)->active);
+		}
 	}
+	else if (strcmp (ve_sure_string (key), GDM_KEY_GLOBAL_FACE_DIR) == 0) {
+		/* Once enabled write the curently selected item
+		   in the filechooser widget, otherwise disable
+		   the config entry, i.e. write an empty string */
+		if (GTK_TOGGLE_BUTTON (toggle)->active == TRUE) {
+			gchar *filename;
+			GtkWidget *file_chooser;
+
+			file_chooser = glade_helper_get (xml, "global_face_dir_filechooser",
+							 GTK_TYPE_FILE_CHOOSER_BUTTON);
+			filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+			
+			if (strcmp (ve_sure_string (gdm_config_get_string ((char*)key)), 
+				    ve_sure_string (filename)) != 0)				
+				gdm_setup_config_set_string (key, ve_sure_string (filename));
+			
+			g_free (filename);
+		}
+		else
+			gdm_setup_config_set_string (key, "");		    
+	}	
+	else if (strcmp (ve_sure_string (key), GDM_KEY_DEFAULT_FACE) == 0) {
+		/* Once enabled write the curently selected item
+		   in the filechooser widget, otherwise disable
+		   the config entry, i.e. write an empty string */
+		if (GTK_TOGGLE_BUTTON (toggle)->active == TRUE) {
+			gchar *filename;
+			GtkWidget *file_chooser;
+			
+			file_chooser = glade_helper_get (xml, "default_face_filechooser",
+							 GTK_TYPE_FILE_CHOOSER_BUTTON);
+			filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+			
+			if (strcmp (ve_sure_string (gdm_config_get_string ((char*)key)), 
+				    ve_sure_string (filename)) != 0)				
+				gdm_setup_config_set_string (key, ve_sure_string (filename));
+			
+			g_free (filename);
+		}
+		else
+			gdm_setup_config_set_string (key, "");		    
+	}
+	else if (strcmp (ve_sure_string (key), GDM_KEY_GTKRC) == 0) {
+		/* Once enabled write the curently selected item
+		   in the filechooser widget, otherwise disable
+		   the config entry, i.e. write an empty string */
+		if (GTK_TOGGLE_BUTTON (toggle)->active == TRUE) {
+			gchar *filename;
+			GtkWidget *file_chooser;
+			
+			file_chooser = glade_helper_get (xml, "gtkrc_chooserbutton",
+							 GTK_TYPE_FILE_CHOOSER_BUTTON);
+			filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+			
+			if (strcmp (ve_sure_string (gdm_config_get_string ((char*)key)), 
+				    ve_sure_string (filename)) != 0)				
+				gdm_setup_config_set_string (key, ve_sure_string (filename));
+			
+			g_free (filename);
+		}
+		else
+			gdm_setup_config_set_string (key, "");		    
+	}
+	else if (strcmp (ve_sure_string (key), GDM_KEY_DEFAULT_SESSION) == 0) {
+		/* Once enabled write the curently selected item
+		   in the combobox widget, otherwise disable
+		   the config entry, i.e. write an empty string */		
+
+		if (GTK_TOGGLE_BUTTON (toggle)->active == TRUE) {
+			gint selected;
+			gchar *value;
+			gchar *new_val = NULL;			
+			GtkWidget *default_session_combobox;
+			
+			default_session_combobox = glade_helper_get (xml, "default_session_combobox", 
+							     GTK_TYPE_COMBO_BOX);
+
+			selected = gtk_combo_box_get_active (GTK_COMBO_BOX (default_session_combobox));
+			
+			value = gdm_config_get_string ((gchar *)key);
+									
+			new_val = g_strdup ((gchar*) g_slist_nth_data (sessions, selected));					
+			
+			if (strcmp (ve_sure_string (value), ve_sure_string (new_val)) != 0)				
+				gdm_setup_config_set_string (key, ve_sure_string (new_val));
+			
+			g_free (value);
+			g_free (new_val);
+		}
+		else
+			gdm_setup_config_set_string (key, "");		    
+	}	
+	else if (strcmp (ve_sure_string (key), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE) == 0 ||
+		 strcmp (ve_sure_string (key), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE) == 0) {
+		/* This only applies to custom commands
+		   First find which command has been ticked on/off then put the new value 
+		   together with the corresponding key into the command changed hash. 
+		   Enable apply command changes button. If command is equal to the existing
+		   config value remove it from the hash and disable the apply command changes 
+		   button (if applicable) */
+		   
+		gchar *key_string;
+		gboolean old_val = FALSE;
+		GtkWidget *apply_cmd_changes;
+		GtkWidget *command_combobox;
+		gint selected, i;
+		
+		val = GTK_TOGGLE_BUTTON (toggle)->active;
+		apply_cmd_changes = glade_helper_get (xml, "command_apply_button", GTK_TYPE_BUTTON);
+		command_combobox = glade_helper_get (xml, 
+						     "cmd_type_combobox",
+						     GTK_TYPE_COMBO_BOX);
+		
+		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
+		
+		i = selected - CUSTOM_CMD;
+		key_string = g_strdup_printf(_("%s%d="), ve_sure_string (key), i); 
+		old_val = gdm_config_get_bool (key_string);
+	
+		if (val != old_val) {	
+			gboolean *p_val = g_new0 (gboolean, 1);
+			*p_val = val;
+			g_hash_table_insert (GdmCommandChangesUnsaved, g_strdup (key_string), p_val);
+		}
+		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, key_string) != NULL) {
+			g_hash_table_remove (GdmCommandChangesUnsaved, key_string);
+		}
+
+		g_free (key_string);
+	
+		if (g_hash_table_size (GdmCommandChangesUnsaved) == 0)
+			gtk_widget_set_sensitive (apply_cmd_changes, FALSE);
+		else 
+			gtk_widget_set_sensitive (apply_cmd_changes, TRUE);
+	}	
+	else {
+		/* All other cases */
+		if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+			gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
+		}
+	}	
 
 	return FALSE;
 }
@@ -464,17 +659,130 @@ logo_toggle_toggled (GtkWidget *toggle, gpointer data)
 	run_timeout (toggle, 200, logo_toggle_timeout);
 }
 
+/* Forward declarations */
+static void
+setup_user_combobox_list (const char *name, const char *key);
+static char *
+strings_list_add (char *strings_list, const char *string, const char *sep);
+static char *
+strings_list_remove (char *strings_list, const char *string, const char *sep);
+
 static gboolean
 intspin_timeout (GtkWidget *spin)
 {
 	const char *key = g_object_get_data (G_OBJECT (spin), "key");
 	int new_val = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spin));
 	int val;
+	gboolean greeters_need_update = FALSE;
 
 	val = gdm_config_get_int ((gchar *)key);
 
+	if (strcmp (ve_sure_string (key), GDM_KEY_MINIMAL_UID) == 0){
+		/* We have changed MinimalUID, so we need to go through
+		   the list of existing users in the Include list and remove
+		   the entries that do not match the criteria anymore. If there 
+		   are any user is informed about the changes. Auto login and 
+		   timed login comboboxes are adjusted and greeters restarted */
+		char **list;
+		char *removed = NULL;	
+		
+		list = g_strsplit (GdmInclude, ",", 0);
+		int i;
+		for (i=0; list != NULL && list[i] != NULL; i++) {
+			if (gdm_user_uid (list[i]) >= new_val) 
+				continue;					
+			
+			GdmInclude = strings_list_remove (GdmInclude, list[i], ",");
+			removed = strings_list_add(removed, list[i], ",");
+			
+		}
+		g_strfreev (list);
+
+		//Now if there were items to remove then
+		if (removed != NULL) {
+			gboolean  valid;
+			gchar *text;
+			GtkWidget *include_treeview;
+			GtkTreeModel *include_model;			
+			GtkWidget *dlg;	
+			GtkTreeIter iter;			
+
+			//Inform user about the change and its implications
+			dlg = ve_hig_dialog_new (NULL,
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_WARNING,
+						 GTK_BUTTONS_OK,
+						 _("Users include list modification"),
+						 _("Some of the users in the Include list "
+						   "(Users tab) now have uid lower than "
+						   "MinumalUID and will be removed."));
+			gtk_dialog_run (GTK_DIALOG (dlg));
+			gtk_widget_destroy (dlg);						
+
+			include_treeview  = glade_helper_get (xml, "fb_include_treeview",
+							      GTK_TYPE_TREE_VIEW);
+			include_model = gtk_tree_view_get_model (GTK_TREE_VIEW (include_treeview));
+
+			valid = gtk_tree_model_get_iter_first (include_model, &iter);
+			while (valid) {
+				gtk_tree_model_get (include_model, &iter, USERLIST_NAME,
+						    &text, -1);				
+				
+				if (strstr (removed, text) != NULL) {					
+					valid = gtk_list_store_remove (GTK_LIST_STORE (include_model), &iter);	
+				}
+				else {				
+					valid = gtk_tree_model_iter_next (include_model, &iter);
+				}
+			}
+			g_free (text);
+			/* Now we need to save updated list, toggle the 
+			   automatic and timed loggon comboboxes and update greeters */
+			gdm_setup_config_set_string (GDM_KEY_INCLUDE, GdmInclude);				
+			
+			greeters_need_update = TRUE;
+
+		}
+		
+		g_free (removed);
+
+		/* We also need to check if user (if any) in the
+		   autologon/timed logon still match the criteria */
+		gchar *autologon_user;
+		gchar *timedlogon_user;
+		
+		autologon_user = gdm_config_get_string (GDM_KEY_AUTOMATIC_LOGIN);
+		timedlogon_user = gdm_config_get_string (GDM_KEY_TIMED_LOGIN);
+
+		if(!ve_string_empty (autologon_user)) {
+			if (gdm_is_user_valid (autologon_user) && gdm_user_uid (autologon_user) < new_val) {
+				gdm_setup_config_set_string (GDM_KEY_AUTOMATIC_LOGIN, "");			
+				greeters_need_update = TRUE;
+			}
+		}
+
+		if(!ve_string_empty (timedlogon_user)) {
+			if (gdm_is_user_valid (timedlogon_user) && gdm_user_uid (timedlogon_user) < new_val) {
+				gdm_setup_config_set_string (GDM_KEY_TIMED_LOGIN, "");						
+				greeters_need_update = TRUE;
+			}
+		}
+
+		g_free (autologon_user);
+		g_free (timedlogon_user);
+
+	}
+
 	if (val != new_val)
 		gdm_setup_config_set_int (key, new_val);
+
+	if (greeters_need_update) {
+		setup_user_combobox_list ("autologin_combo",
+					  GDM_KEY_AUTOMATIC_LOGIN);
+		setup_user_combobox_list ("timedlogin_combo",
+					  GDM_KEY_TIMED_LOGIN);
+		update_greeters ();
+	}
 
 	return FALSE;
 }
@@ -667,6 +975,7 @@ void init_servers_combobox (int index)
 	GtkWidget *style_combobox;
 	GtkWidget *handled_checkbutton;
 	GtkWidget *flexible_checkbutton;
+	GtkWidget *priority_spinbutton;
 	GtkListStore *store;
 	GdmXserver *xserver;
 
@@ -682,6 +991,8 @@ void init_servers_combobox (int index)
 	                                        GTK_TYPE_CHECK_BUTTON);
 	flexible_checkbutton = glade_helper_get (xml_xservers, "xserver_flexible_checkbutton",
 	                                         GTK_TYPE_CHECK_BUTTON);
+	priority_spinbutton = glade_helper_get(xml_xservers, "xserv_priority_spinbutton",
+					       GTK_TYPE_SPIN_BUTTON);
 
 	/* Get list of servers that are set to start */
 	store = gtk_list_store_new (XSERVER_NUM_COLUMNS,
@@ -703,6 +1014,8 @@ void init_servers_combobox (int index)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (style_combobox), XSERVER_LAUNCH_CHOOSER);
 	}
 	
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (priority_spinbutton), 
+				   xserver->priority);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (handled_checkbutton),
 	                              xserver->handled);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flexible_checkbutton),
@@ -1004,6 +1317,46 @@ combobox_timeout (GtkWidget *combo_box)
 				GTK_COMBO_BOX (combo_box)), &iter,
 				0, &new_val, -1);
 		}
+		else {
+			/* The selection was typed so there are two possibilities
+			   1. The typed value is a user
+			   2. The typed value is a script, garbage, ete (anything but an
+			   existing user)
+			   If its case 1. then we check if the user matches the MinimalUID 
+			   criteria or is not root. If its case 2. we do not do any checking */
+			
+			new_val = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
+			if (gdm_is_user_valid (ve_sure_string (new_val))) {
+				gint user_uid = gdm_user_uid (new_val);
+				gint GdmMinimalUID = gdm_config_get_int (GDM_KEY_MINIMAL_UID);
+				
+				if (user_uid == 0 || user_uid < GdmMinimalUID) {
+					/* we can't accept users that have uid lower
+					   than minimal uid, or uid = 0 (root) */
+					gchar *str;
+					GtkWidget *dialog;
+					
+					if (gdm_user_uid (new_val) == 0)
+						str = g_strdup (_("Autologin or timed login to the root account is forbidden."));
+					else 
+						str = g_strdup_printf (_("The \"%s\" user UID is lower than allowed MinimalUID."), new_val);				
+					
+					dialog = ve_hig_dialog_new (NULL,
+								    GTK_DIALOG_MODAL,
+								    GTK_MESSAGE_ERROR,
+								    GTK_BUTTONS_OK,
+								    _("User not allowed"),
+								    str);
+					gtk_dialog_run (GTK_DIALOG (dialog));
+					gtk_widget_destroy (dialog);
+					g_free (str);
+					
+					gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
+					return TRUE;
+				}
+			}
+		}
+
 
 		val = gdm_config_get_string ((gchar *)key);
 		if (new_val &&
@@ -1067,6 +1420,138 @@ combobox_timeout (GtkWidget *combo_box)
 		}
 		g_free (section);
 	}
+	/* Use 24 clock combobox */
+	else if (strcmp (ve_sure_string (key), GDM_KEY_USE_24_CLOCK) == 0) {		
+		gchar *val;		
+		gchar *new_val;
+		
+		new_val = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
+		val = gdm_config_get_string ((gchar *)key);
+		if (new_val &&
+		    strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {			
+			gdm_setup_config_set_string (key, new_val);
+		}
+		g_free (new_val);
+		g_free (val);
+	}
+	/* Commands combobox */
+	else if (strcmp (ve_sure_string (key), _("command_chooser_combobox")) == 0) {
+		/* We need to set the data according to selected command */
+		GtkWidget *hrs_cmd_entry = NULL;
+		GtkWidget *cust_cmd_entry = NULL;
+		GtkWidget *cust_cmd_label_entry = NULL;
+		GtkWidget *cust_cmd_lrlabel_entry = NULL;
+		GtkWidget *cust_cmd_text_entry = NULL;
+		GtkWidget *cust_cmd_tooltip_entry = NULL;
+		GtkWidget *cust_cmd_persistent_checkbox = NULL;
+		GtkWidget *cust_cmd_norestart_checkbox = NULL;
+		GtkWidget *status_label;
+		gchar *val = NULL;
+		gchar *key_string = NULL;
+		gboolean bool_val = FALSE;		
+		gboolean enabled_command = FALSE;
+		
+		hrs_cmd_entry = glade_helper_get (xml, "hrs_cmd_path_entry",
+						  GTK_TYPE_ENTRY);
+		cust_cmd_entry  = glade_helper_get (xml, "custom_cmd_path_entry",			
+						    GTK_TYPE_ENTRY);
+		status_label = glade_helper_get (xml, "command_status_label", 
+						 GTK_TYPE_LABEL);
+
+		if (selected == HALT_CMD) {
+			val = gdm_config_get_string (GDM_KEY_HALT);		
+			gtk_entry_set_text (GTK_ENTRY (hrs_cmd_entry), ve_sure_string (val));
+			enabled_command = !ve_string_empty (val);
+		}
+		else if (selected == REBOOT_CMD) {
+			val = gdm_config_get_string (GDM_KEY_REBOOT);			
+			gtk_entry_set_text (GTK_ENTRY (hrs_cmd_entry), ve_sure_string (val));
+			enabled_command = !ve_string_empty (val);
+		}
+		else if (selected == SUSPEND_CMD) {
+			val = gdm_config_get_string (GDM_KEY_SUSPEND);			
+			gtk_entry_set_text (GTK_ENTRY (hrs_cmd_entry), ve_sure_string (val));
+			enabled_command = !ve_string_empty (val);
+		}
+		else {
+			gint i = selected - CUSTOM_CMD;
+			/* Here we are going to deal with custom commands */
+			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+			val = gdm_config_get_string (key_string);
+			gtk_entry_set_text (GTK_ENTRY (cust_cmd_entry), ve_sure_string (val));
+			enabled_command = !ve_string_empty (val);
+			g_free (key_string);
+			g_free (val);
+			
+			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+			cust_cmd_label_entry  = glade_helper_get (xml, "custom_cmd_label_entry", 
+								  GTK_TYPE_ENTRY);			
+			val = gdm_config_get_string (key_string);
+			gtk_entry_set_text (GTK_ENTRY (cust_cmd_label_entry), ve_sure_string (val));
+			g_free (key_string);
+			g_free (val);
+
+			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+			cust_cmd_lrlabel_entry  = glade_helper_get (xml, "custom_cmd_lrlabel_entry",
+								    GTK_TYPE_ENTRY);			
+			val = gdm_config_get_string (key_string);
+			gtk_entry_set_text (GTK_ENTRY (cust_cmd_lrlabel_entry), ve_sure_string (val));
+			g_free (key_string);
+			g_free (val);
+
+			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+			cust_cmd_text_entry  = glade_helper_get (xml, "custom_cmd_text_entry",
+								 GTK_TYPE_ENTRY);			
+			val = gdm_config_get_string (key_string);
+			gtk_entry_set_text (GTK_ENTRY (cust_cmd_text_entry), ve_sure_string (val));
+			g_free (key_string);
+			g_free (val);
+			
+			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+			cust_cmd_tooltip_entry  = glade_helper_get (xml, "custom_cmd_tooltip_entry",
+								    GTK_TYPE_ENTRY);			
+			val = gdm_config_get_string (key_string);
+			gtk_entry_set_text (GTK_ENTRY (cust_cmd_tooltip_entry), ve_sure_string (val));
+			g_free (key_string);
+			
+			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
+			cust_cmd_norestart_checkbox  = glade_helper_get (xml, "custom_cmd_norestart_checkbutton",
+								    GTK_TYPE_CHECK_BUTTON);
+			bool_val = gdm_config_get_bool (key_string);
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_norestart_checkbox), bool_val);
+			g_free (key_string);
+			
+			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
+			cust_cmd_persistent_checkbox  = glade_helper_get (xml, "custom_cmd_persistent_checkbutton",
+									 GTK_TYPE_CHECK_BUTTON);
+			bool_val = gdm_config_get_bool (key_string);
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_persistent_checkbox), bool_val);
+
+		}
+		g_free (val);
+		g_free (key_string);
+
+		if (enabled_command)
+			gtk_label_set_text (GTK_LABEL (status_label), _("(Enabled) "));			
+		else 
+			gtk_label_set_text (GTK_LABEL (status_label), _("(Disabled)"));	
+	}
+	/* Default session combobox*/
+	else if (strcmp (ve_sure_string (key), GDM_KEY_DEFAULT_SESSION) == 0) {
+		/* First we get the selected index. Next we lookup the actual
+		   filename in the List of sessions */
+		gchar *val;
+		gchar *new_val = NULL;
+		
+		val = gdm_config_get_string ((gchar *)key);
+		new_val = g_strdup ((gchar*) g_slist_nth_data (sessions, selected));
+		
+		if (strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0)
+			gdm_setup_config_set_string (key,  ve_sure_string (new_val));
+
+		g_free (new_val);
+		g_free (val);		
+	}
 	return FALSE;
 }
 
@@ -1074,6 +1559,12 @@ static void
 toggle_toggled (GtkWidget *toggle)
 {
 	run_timeout (toggle, 200, toggle_timeout);
+}
+
+static void
+radiogroup_toggled (GtkWidget *toggle)
+{
+	run_timeout (toggle, 200, radiogroup_timeout);
 }
 
 static void
@@ -1295,6 +1786,32 @@ combobox_changed (GtkWidget *combobox)
 			mode_combobox = glade_helper_get (xml, "gg_mode_combobox",
 			                                  GTK_TYPE_COMBO_BOX);
 			gtk_combo_box_set_active (GTK_COMBO_BOX (mode_combobox), selected);
+
+			if (mode_combobox != combobox) {
+				/* Display a warning when no themes are selected and the
+				   Random from selected option has been activated. 
+				   This is a bit of a HACK as combo_box handler is 
+				   called multiple times and we want this warning 
+				   to be displayed only once */
+				if (selected == RANDOM_THEME && ve_string_empty (selected_themes)) {
+					GtkWidget *warn_dlg = ve_hig_dialog_new (NULL /* parent */,
+										 GTK_DIALOG_MODAL /* flags */,
+										 GTK_MESSAGE_WARNING,
+										 GTK_BUTTONS_OK,
+										 _("No themes selected!"),
+										 _("You need one or more themes "
+										   "selected for the \"Random from selected\" "
+										   "option to be valid. Failure to do so will "
+										   "force \"Selected only\" mode."));
+					gtk_dialog_run (GTK_DIALOG (warn_dlg));
+					gtk_widget_destroy (warn_dlg);
+					
+					GdmRandomFromSelectedChangesWarn = TRUE;
+				}
+				else if (selected == ONE_THEME) {
+					GdmRandomFromSelectedChangesWarn = FALSE;
+				}
+			}
 		}
 
 		radioColumn = gtk_tree_view_get_column (GTK_TREE_VIEW (theme_list),
@@ -1384,6 +1901,72 @@ combobox_changed (GtkWidget *combobox)
 	}
 	else if (strcmp (ve_sure_string (key), GDM_KEY_SERVER_PREFIX) == 0 ) {
 		init_servers_combobox (gtk_combo_box_get_active (GTK_COMBO_BOX (combobox)));
+	}
+	else if (strcmp (ve_sure_string (key), _("command_chooser_combobox")) == 0) {
+		gint selected;
+		GtkWidget *hrs_cmd_vbox;
+		GtkWidget *custom_cmd_vbox;
+		
+		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combobox));			
+
+		/* First of all we need to check if we had made any changes
+		   to any of the command fields. If so user gets reminded and
+		   given an option to save, or discard */
+		if (g_hash_table_size (GdmCommandChangesUnsaved) != 0) {
+			GtkWidget *prompt;
+			GtkWidget *setup_dialog;
+			GtkWidget *apply_command;
+			gint response;
+			
+			setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+			
+			prompt = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+						    GTK_DIALOG_MODAL |
+						    GTK_DIALOG_DESTROY_WITH_PARENT,
+						    GTK_MESSAGE_WARNING,
+						    GTK_BUTTONS_NONE,
+						    _("Apply changes to the modified command?"),
+						    _("If you don't apply, the changes "
+						      "will be discarded."));
+			
+			gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-cancel", GTK_RESPONSE_CANCEL); 
+			gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-apply", GTK_RESPONSE_APPLY);
+			
+			response = gtk_dialog_run (GTK_DIALOG (prompt));
+			gtk_widget_destroy (prompt);	       
+			
+			apply_command = glade_helper_get (xml, "command_apply_button",
+							  GTK_TYPE_BUTTON);
+			if (response == GTK_RESPONSE_APPLY)				
+				g_signal_emit_by_name (G_OBJECT (apply_command), "clicked");
+			
+			else {
+				g_hash_table_remove_all (GdmCommandChangesUnsaved);				
+				gtk_widget_set_sensitive (apply_command, FALSE);	
+			}
+		}
+		
+		last_selected_command = selected;
+
+		hrs_cmd_vbox = glade_helper_get (xml, "hrs_command_vbox",
+						 GTK_TYPE_VBOX);
+		custom_cmd_vbox = glade_helper_get (xml, "custom_command_vbox",
+						      GTK_TYPE_VBOX);		
+		if (selected > SUSPEND_CMD) {
+			/* We are dealing with custom commands */							
+			gtk_widget_show (custom_cmd_vbox);
+			gtk_widget_hide (hrs_cmd_vbox);					
+		}
+		else {
+			/* We are dealing with hrs (Halt, Reboot, Shutdown) commands */
+			gtk_widget_hide (custom_cmd_vbox);
+			gtk_widget_show (hrs_cmd_vbox);	
+		}
+
+		/* We dont want default timeout for this one so we
+		   are going to bail out now */
+		run_timeout (combobox, 100, combobox_timeout);		
+		return;
 	}
 	run_timeout (combobox, 500, combobox_timeout);
 }
@@ -1546,6 +2129,64 @@ setup_notify_toggle (const char *name,
 		g_signal_connect (G_OBJECT (toggle), "toggled",	
 		                  G_CALLBACK (timedlogin_allow_remote_toggled), timedlogin_allow_remote);
 	}
+	else if (strcmp ("vis_feedback_passwd_checkbox", ve_sure_string (name)) == 0) {
+		/* This one is a lil bit back to front
+		   true is false and false is true */
+		GtkWidget *use_circles_in_passwd;
+		use_circles_in_passwd = glade_helper_get (xml, "use_circles_passwd_checkbox", 
+							  GTK_TYPE_CHECK_BUTTON);
+		
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), !val);
+		gtk_widget_set_sensitive (use_circles_in_passwd, !val);
+		
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled), toggle);	
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), use_circles_in_passwd);
+		
+	}
+	else if (strcmp ("local_set_pos_checkbox", ve_sure_string (name)) == 0) {
+		
+		GtkWidget *posx;
+		GtkWidget *posy;
+
+		posx =  glade_helper_get (xml, "local_posx_spinbutton", 
+					  GTK_TYPE_SPIN_BUTTON);
+		
+		posy =  glade_helper_get (xml, "local_posy_spinbutton", 
+					  GTK_TYPE_SPIN_BUTTON);
+
+		gtk_widget_set_sensitive (posx, val);
+		gtk_widget_set_sensitive (posy, val);
+		
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled), toggle);	
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), posx);
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), posy);
+	}
+	else if (strcmp ("remote_set_pos_checkbox", ve_sure_string (name)) == 0) {
+		
+		GtkWidget *posx;
+		GtkWidget *posy;
+
+		posx =  glade_helper_get (xml, "remote_posx_spinbutton", 
+					  GTK_TYPE_SPIN_BUTTON);
+		
+		posy =  glade_helper_get (xml, "remote_posy_spinbutton", 
+					  GTK_TYPE_SPIN_BUTTON);
+
+		gtk_widget_set_sensitive (posx, val);
+		gtk_widget_set_sensitive (posy, val);
+		
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled), toggle);	
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), posx);
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), posy);
+	}
 	else {
 		g_signal_connect (G_OBJECT (toggle), "toggled",
 		                  G_CALLBACK (toggle_toggled), NULL);
@@ -1574,23 +2215,6 @@ setup_xdmcp_notify_toggle (const char *name,
 		          G_CALLBACK (toggle_toggled), NULL);
 }
 #endif
-
-static const char *
-get_root_user (void)
-{
-	static char *root_user = NULL;
-	struct passwd *pwent;
-
-	if (root_user != NULL)
-		return root_user;
-
-	pwent = getpwuid (0);
-	if (pwent == NULL) /* huh? */
-		root_user = g_strdup ("root");
-	else
-		root_user = g_strdup (pwent->pw_name);
-	return root_user;
-}
 
 static void
 root_not_allowed (GtkWidget *combo_box)
@@ -1893,6 +2517,30 @@ face_add (FaceData *fd)
 		}
 
 		if (fd->type == INCLUDE) {
+			/* Now the user is valid but his/hers UID might be smaller than the MinimalUID */
+			gint user_uid = gdm_user_uid (text);
+			if (user_uid < gdm_config_get_int (GDM_KEY_MINIMAL_UID)) {
+				GtkWidget *setup_dialog;
+				GtkWidget *dialog;
+				gchar *str;
+				
+				str = g_strdup_printf (_("The \"%s\" user UID is lower than allowed MinimalUID."), text); 
+				
+				setup_dialog = glade_helper_get (xml_add_users, "add_user_dialog",
+								 GTK_TYPE_WINDOW);
+				
+				dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+							    GTK_DIALOG_MODAL | 
+							    GTK_DIALOG_DESTROY_WITH_PARENT,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("Cannot add user"),
+							    str);
+				gtk_dialog_run (GTK_DIALOG (dialog));
+				gtk_widget_destroy (dialog);
+				g_free (str);
+				return;
+			}
 			gtk_list_store_append (fd->fc->include_store, &iter);
 			gtk_list_store_set (fd->fc->include_store, &iter,
 				USERLIST_NAME, text, -1);
@@ -1977,6 +2625,30 @@ browser_move (GtkWidget *button, gpointer data)
 	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
 	        gtk_tree_model_get (model, &iter, USERLIST_NAME, &text, -1);
 		if (fd->type == INCLUDE) {
+			/* We cant move the users that have uid smaller that MinimalUID */
+			gint user_uid = gdm_user_uid (text);
+			if (user_uid < gdm_config_get_int (GDM_KEY_MINIMAL_UID)) {
+				GtkWidget *setup_dialog;
+				GtkWidget *dialog;
+				gchar *str;
+				
+				str = g_strdup_printf (_("The \"%s\" user UID is lower than allowed MinimalUID."), text); 
+				
+				setup_dialog = glade_helper_get (xml_add_users, "add_user_dialog",
+								 GTK_TYPE_WINDOW);
+				
+				dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+							    GTK_DIALOG_MODAL | 
+							    GTK_DIALOG_DESTROY_WITH_PARENT,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("Cannot add user"),
+							    str);
+				gtk_dialog_run (GTK_DIALOG (dialog));
+				gtk_widget_destroy (dialog);
+				g_free (str);
+				return;
+			}
 			gtk_list_store_remove (fd->fc->exclude_store, &iter);
 			gtk_list_store_append (fd->fc->include_store, &iter);
 			gtk_list_store_set (fd->fc->include_store, &iter,
@@ -1990,6 +2662,89 @@ browser_move (GtkWidget *button, gpointer data)
 		gtk_widget_set_sensitive (fd->fc->apply, TRUE);
 		GdmUserChangesUnsaved = TRUE;
 	}
+}
+
+/* Hash key happens to be equal to the config entry key,
+   se we save the value under the key and clean up
+*/
+gboolean
+unsaved_data_from_hash_table_func (gpointer key, gpointer value, gpointer user_data)
+{
+	gchar *c_key = key;
+        if (strncmp (c_key, GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, 
+		     strlen (GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE)) == 0 ||
+	    strncmp (c_key, GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE,
+		     strlen (GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE)) == 0) {
+		gboolean *p_val = (gboolean*)value;
+		gdm_setup_config_set_bool (c_key, *p_val);
+	}
+	else
+		gdm_setup_config_set_string (c_key, (gchar*)value);	
+	
+	/* And final cleanup */
+	g_free (value);
+	g_free (key);
+
+	return TRUE;
+}
+
+/* Go thru and remove each of the hash entries
+   then clean the hash (if not already empty)
+   just in case, then de-sensitise the apply 
+   command changes button
+*/
+static void
+command_apply (GtkWidget *button, gpointer data)
+{
+	gchar *command = NULL;
+	GtkWidget *cmd_path_entry = NULL;
+	GtkWidget *command_combobox = (GtkWidget*)data;
+	gboolean command_exists = FALSE;
+	gint selected;
+	
+	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
+	
+	if (last_selected_command < CUSTOM_CMD)
+		cmd_path_entry = glade_helper_get (xml, 
+						   "hrs_cmd_path_entry",
+						   GTK_TYPE_ENTRY);	
+	else
+		cmd_path_entry = glade_helper_get (xml, 
+						   "custom_cmd_path_entry",
+						   GTK_TYPE_ENTRY);	
+	
+	command = gtk_entry_get_text (GTK_ENTRY (cmd_path_entry));
+	
+	command_exists = ve_string_empty (command) || gdm_working_command_exists (command);
+	
+	if(command_exists)
+		g_hash_table_foreach_remove (GdmCommandChangesUnsaved,
+					     (GHRFunc) unsaved_data_from_hash_table_func, NULL);
+	
+	else {
+		GtkWidget *dialog = ve_hig_dialog_new (NULL,
+						       GTK_DIALOG_MODAL,
+						       GTK_MESSAGE_ERROR,
+						       GTK_BUTTONS_OK,
+						       _("Invalid command path"),
+						       _("The path you provided for this "
+							 "command is not valid. The changes "
+							 "will not be saved."));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+	
+	/* Just to make sure */
+	if (g_hash_table_size (GdmCommandChangesUnsaved) != 0)
+		g_hash_table_remove_all (GdmCommandChangesUnsaved);
+
+	gtk_widget_set_sensitive (button, FALSE);
+	
+	if (selected == last_selected_command)
+		g_signal_emit_by_name (G_OBJECT (command_combobox), "changed");
+	
+	if(command_exists)
+		update_greeters ();
 }
 
 static void
@@ -2638,10 +3393,226 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 	return FALSE;
 }
 
+static gboolean
+greeter_command_entry_timeout (GtkWidget *entry)
+{
+	GtkWidget *apply_cmd_changes;
+	GtkWidget *command_combobox;
+	gint selected;
+
+	const char *key = g_object_get_data (G_OBJECT (entry), "key");
+	gchar *val      = gtk_entry_get_text (GTK_ENTRY (entry));
+	
+	apply_cmd_changes = glade_helper_get (xml, "command_apply_button", GTK_TYPE_BUTTON);
+	command_combobox = glade_helper_get (xml, "cmd_type_combobox", GTK_TYPE_COMBO_BOX);
+	
+	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));	
+
+	/* All hrs (Halt, Shutdown, Suspend) commands will fall into this category */
+	if (strcmp ("hrs_custom_cmd", ve_sure_string (key)) == 0) {
+		gchar *old_val;
+		gchar *cmd_key = NULL;
+
+		if (selected == HALT_CMD)
+			cmd_key = g_strdup (GDM_KEY_HALT);			
+		else if (selected == REBOOT_CMD)
+			cmd_key = g_strdup (GDM_KEY_REBOOT);
+		else if (selected == SUSPEND_CMD)
+			cmd_key = g_strdup (GDM_KEY_SUSPEND);
+		
+		old_val = gdm_config_get_string (cmd_key);		
+			
+		if (strcmp (ve_sure_string (val), ve_sure_string (old_val)) != 0) 			
+			g_hash_table_insert (GdmCommandChangesUnsaved, g_strdup (cmd_key), g_strdup (val));
+
+		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, cmd_key) != NULL)			
+			g_hash_table_remove (GdmCommandChangesUnsaved, cmd_key);		
+		
+		g_free (old_val);
+		g_free (cmd_key);
+	}
+	/* All the custom commands will fall into this category */
+	else {
+		gchar *key_string;
+		gchar *old_val;
+		gint i;			
+
+		i = selected - CUSTOM_CMD;
+		key_string = g_strdup_printf(_("%s%d="), ve_sure_string (key), i); 
+		old_val = gdm_config_get_string (key_string);				
+	
+		
+		if (strcmp (ve_sure_string (val), ve_sure_string (old_val)) != 0)
+			g_hash_table_insert (GdmCommandChangesUnsaved, g_strdup (key_string), g_strdup (val));
+		
+		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, key_string) != NULL)
+			g_hash_table_remove (GdmCommandChangesUnsaved, key_string);
+		
+		g_free (old_val);
+		g_free (key_string);
+	}	
+	
+	if (g_hash_table_size (GdmCommandChangesUnsaved) == 0)
+		gtk_widget_set_sensitive (apply_cmd_changes, FALSE);
+	else 
+		gtk_widget_set_sensitive (apply_cmd_changes, TRUE);
+	
+	return FALSE;
+}
+
 static void
 greeter_entry_untranslate_changed (GtkWidget *entry)
 {
 	run_timeout (entry, 500, greeter_entry_untranslate_timeout);
+}
+
+static void
+greeter_command_entry_changed (GtkWidget *entry)
+{
+	run_timeout (entry, 100, greeter_command_entry_timeout);
+}
+
+static void
+command_response (GtkWidget *button, gpointer data)
+{
+
+	GtkWidget *chooser = NULL;
+	GtkWidget *setup_dialog;
+	gint response;
+	gchar *filename;
+	
+	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+	
+	/* first get the file */
+	chooser = gtk_file_chooser_dialog_new (_("Select Command"),
+					       GTK_WINDOW (setup_dialog),
+					       GTK_FILE_CHOOSER_ACTION_OPEN,
+					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					       GTK_STOCK_OK, GTK_RESPONSE_OK,
+					       NULL);	
+
+	response = gtk_dialog_run (GTK_DIALOG (chooser));
+	
+	if (response != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (chooser);
+		return;
+	}
+
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+	gtk_widget_destroy (chooser);
+
+	if (filename == NULL) {
+		
+		GtkWidget *dialog;
+		
+		dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+					    GTK_DIALOG_MODAL | 
+					    GTK_DIALOG_DESTROY_WITH_PARENT,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("No file selected"),
+					    "");
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		return;
+	}
+
+	const gchar *key;
+	gchar *value;
+	GtkWidget *command_combobox;
+	GtkWidget *command_entry = NULL;
+	gint selected;
+	
+	key = g_object_get_data (G_OBJECT (button), "key");	
+	
+	/* Then according to the selected command
+	   append the chosen filepath onto the existing
+	   string */
+	
+	command_combobox = glade_helper_get (xml, 
+					     "cmd_type_combobox",
+					     GTK_TYPE_COMBO_BOX);
+	
+	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
+	
+	if (selected == HALT_CMD)
+		value = gdm_config_get_string (GDM_KEY_HALT);			
+	else if (selected == REBOOT_CMD)
+		value = gdm_config_get_string (GDM_KEY_REBOOT);		
+	else if (selected == SUSPEND_CMD) 
+		value = gdm_config_get_string (GDM_KEY_SUSPEND);
+	else {
+		gchar *key_string;
+		gint i;
+
+		i = selected - CUSTOM_CMD;
+		
+		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+		value = gdm_config_get_string (key_string);		
+		g_free (key_string);
+	}
+	
+	value = strings_list_add (value, filename, ";");
+	
+	if (strcmp (ve_sure_string (key), "add_hrs_cmd_button") == 0)				
+		command_entry = glade_helper_get (xml, "hrs_cmd_path_entry", GTK_TYPE_ENTRY);		
+	
+	else if (strcmp (ve_sure_string (key), "add_custom_cmd_button") == 0)				
+		command_entry = glade_helper_get (xml, "custom_cmd_path_entry", GTK_TYPE_ENTRY);		
+			       
+
+	gtk_entry_set_text (GTK_ENTRY (command_entry), ve_sure_string (value));
+
+	g_free (value);
+	g_free (filename);
+}
+
+static void
+default_filechooser_response (GtkWidget *file_chooser, gpointer data)
+{
+	gchar *filename;
+	gchar *key;
+	gchar *value;
+		
+	filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+	key = g_object_get_data (G_OBJECT (file_chooser), "key");	
+	value     = gdm_config_get_string (key);
+	
+	if (strcmp (ve_sure_string (key), GDM_KEY_GLOBAL_FACE_DIR) == 0) {
+		/* we need to append trailing / so it matches the default
+		   config  values. This is not really necessary but makes
+		   things neater */
+		gchar *corr_filename;
+		
+		corr_filename = g_strdup_printf("%s/", ve_sure_string (filename));
+		
+		if (strcmp (ve_sure_string (value), corr_filename) != 0)
+			gdm_setup_config_set_string (key, corr_filename);	
+		
+		g_free (corr_filename);
+	}
+	else {
+		/* All other cases */
+		if (strcmp (ve_sure_string (value), ve_sure_string (filename)) != 0)
+			gdm_setup_config_set_string (key, ve_sure_string (filename));		
+	}
+	
+	g_free (filename);
+	g_free (value);
+}
+
+static void
+setup_general_command_buttons (const char *name,
+			       const char *key)
+{
+	GtkWidget *button = glade_helper_get (xml, name, GTK_TYPE_BUTTON);
+	
+	g_object_set_data_full (G_OBJECT (button),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (button), "clicked",
+			  G_CALLBACK (command_response),
+			  NULL);
 }
 
 static void
@@ -2917,6 +3888,34 @@ strings_list_add (char *strings_list, const char *string, const char *sep)
 	return n;
 }
 
+/* This function removes *string with the addition of *sep
+   as a postfix deliminator the string from *strings_list, then
+   returns a copy of the new strings_list. */
+static char *
+strings_list_remove (char *strings_list, const char *string, const char *sep)
+{
+    if (ve_string_empty (strings_list))
+        return strings_list;
+    
+    char **actions;   
+    gint i;
+    GString *msg = g_string_new ("");
+    const char *separator = "";
+    
+    actions = g_strsplit (strings_list, sep, -1);
+        for (i = 0; actions[i]; i++) {
+        if (strncmp (actions[i], string, strlen (string)) == 0)
+            continue;
+        g_string_append_printf (msg, "%s%s", separator, actions[i]);
+        separator = sep;
+    }
+    g_strfreev (actions);
+    char *n = g_strdup (msg->str);
+    g_string_free (msg, TRUE);
+    g_free (strings_list);
+    return n;
+}
+
 static void
 acc_modules_toggled (GtkWidget *toggle, gpointer data)
 {
@@ -3008,9 +4007,101 @@ sound_response (GtkWidget *file_chooser, gpointer data)
 static void
 setup_users_tab (void)
 {
+	GtkFileFilter *filter;
+	GtkWidget *default_face_filechooser;
+	GtkWidget *default_face_checkbox;
+	GtkWidget *global_face_dir_filechooser;
+	GtkWidget *global_face_dir_checkbox;
+	gchar *filename;
+
 	setup_greeter_toggle ("fb_allusers",
 			      GDM_KEY_INCLUDE_ALL);
 	setup_face ();
+
+	/* Setup default face */
+	default_face_filechooser = glade_helper_get (xml, 
+						     "default_face_filechooser",
+						     GTK_TYPE_FILE_CHOOSER_BUTTON);
+
+	filter = gtk_file_filter_new ();
+        gtk_file_filter_set_name (filter, _("Images"));
+        gtk_file_filter_add_pixbuf_formats (filter);
+        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (default_face_filechooser), filter);
+
+	filename = gdm_config_get_string (GDM_KEY_DEFAULT_FACE);
+
+	default_face_checkbox = glade_helper_get (xml,
+						  "default_face_checkbutton", 
+						  GTK_TYPE_CHECK_BUTTON);
+	
+
+	if (!ve_string_empty (filename) && access (filename, R_OK|X_OK)) {
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (default_face_filechooser),
+					       filename);
+		
+		gtk_widget_set_sensitive (default_face_filechooser, TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (default_face_checkbox), TRUE);
+		
+	}	
+	else {
+		gtk_widget_set_sensitive (default_face_filechooser, FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (default_face_checkbox), FALSE);
+	}
+	
+	g_object_set_data_full (G_OBJECT (default_face_filechooser),
+				"key", g_strdup (GDM_KEY_DEFAULT_FACE),
+				(GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (default_face_filechooser), "selection-changed",
+			  G_CALLBACK (default_filechooser_response),
+			  NULL);	
+	
+	g_object_set_data_full (G_OBJECT (default_face_checkbox),
+				"key", g_strdup (GDM_KEY_DEFAULT_FACE),
+				(GDestroyNotify) g_free);       	
+	g_signal_connect (G_OBJECT (default_face_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled), default_face_checkbox);	
+	g_signal_connect (G_OBJECT (default_face_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled_sensitivity_positive), default_face_filechooser);			
+	
+	/* Setup global face dir */
+	g_free (filename);		
+	
+	global_face_dir_filechooser = glade_helper_get (xml, 
+							"global_face_dir_filechooser",
+							GTK_TYPE_FILE_CHOOSER_BUTTON);	
+
+	filename = gdm_config_get_string (GDM_KEY_GLOBAL_FACE_DIR);
+
+	global_face_dir_checkbox = glade_helper_get (xml,
+						     "global_face_dir_checkbutton", 
+						     GTK_TYPE_CHECK_BUTTON);
+	
+	if (!ve_string_empty (filename) && access (filename, R_OK|X_OK) == 0) {
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (global_face_dir_filechooser),
+					       filename);
+		gtk_widget_set_sensitive (global_face_dir_filechooser, TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (global_face_dir_checkbox), TRUE);
+	}
+	else {
+		gtk_widget_set_sensitive (global_face_dir_filechooser, FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (global_face_dir_checkbox), FALSE);
+	}
+       
+
+	g_object_set_data_full (G_OBJECT (global_face_dir_filechooser),
+				"key", g_strdup (GDM_KEY_GLOBAL_FACE_DIR),
+				(GDestroyNotify) g_free);		
+	g_signal_connect (G_OBJECT (global_face_dir_filechooser), "selection-changed",
+			  G_CALLBACK (default_filechooser_response), NULL);
+			
+	g_object_set_data_full (G_OBJECT (global_face_dir_checkbox),
+				"key", g_strdup (GDM_KEY_GLOBAL_FACE_DIR),
+				(GDestroyNotify) g_free);       	
+	g_signal_connect (G_OBJECT (global_face_dir_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled), global_face_dir_checkbox);	
+	g_signal_connect (G_OBJECT (global_face_dir_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled_sensitivity_positive), global_face_dir_filechooser);				
+	g_free (filename);
 }
 
 static void
@@ -4481,6 +5572,44 @@ xserver_entry_timeout (GtkWidget *entry)
 }
 
 static gboolean
+xserver_priority_timeout (GtkWidget *entry)
+{
+	GtkWidget *mod_combobox;
+	GSList *li;
+	const char *key  = g_object_get_data (G_OBJECT (entry), "key");
+	gint value = 0;
+	gchar *section;
+	
+	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
+	                                    GTK_TYPE_COMBO_BOX);
+	
+	/* Get xserver section to update */
+	section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (mod_combobox));
+	
+	for (li = xservers; li != NULL; li = li->next) {
+		GdmXserver *svr = li->data;
+		if (strcmp (ve_sure_string (svr->id), ve_sure_string (section)) == 0) {
+		
+			
+			if (strcmp (ve_sure_string (key),
+				    ve_sure_string (GDM_KEY_SERVER_PRIORITY)) == 0)
+				value = svr->priority;
+			
+			/* Update this servers configuration */
+			gint new_value = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (entry));
+			if (new_value != value) {
+				svr->priority = new_value;				
+				update_xserver (section, svr);			
+			}
+			break;
+		}
+	}
+	g_free (section);
+
+	return FALSE;
+}
+
+static gboolean
 xserver_toggle_timeout (GtkWidget *toggle)
 {
 	GtkWidget *mod_combobox;
@@ -4539,6 +5668,12 @@ static void
 xserver_entry_changed (GtkWidget *entry)
 {
 	run_timeout (entry, 500, xserver_entry_timeout);
+}
+
+static void
+xserver_priority_changed (GtkWidget *entry)
+{
+	run_timeout (entry, 500, xserver_priority_timeout);
 }
 
 static void
@@ -4832,6 +5967,7 @@ xserver_create (gpointer data)
 	GtkWidget *handled_check, *flexible_check;
 	GtkWidget *greeter_radio, *chooser_radio;
 	GtkWidget *create_button, *delete_button;
+	GtkWidget *priority_spinbutton;
 
 	/* Get Widgets from glade */
 	frame           = glade_helper_get (xml, "xserver_modify_frame",
@@ -4840,6 +5976,8 @@ xserver_create (gpointer data)
                                         GTK_TYPE_ENTRY);
 	command_entry   = glade_helper_get (xml, "xserver_command_entry",
 	                                    GTK_TYPE_ENTRY);
+	priority_spinbutton = glade_helper_get(xml, "xserv_priority_spinbutton",
+					       GTK_TYPE_SPIN_BUTTON);
 	handled_check   = glade_helper_get (xml, "xserver_handled_checkbutton",
 	                                    GTK_TYPE_CHECK_BUTTON);
 	flexible_check  = glade_helper_get (xml, "xserver_flexible_checkbutton",
@@ -4950,6 +6088,7 @@ static void
 setup_xserver_support (GladeXML *xml_xservers)
 {
 	GtkWidget *command_entry;
+	GtkWidget *priority_spinbutton;
 	GtkWidget *name_entry;
 	GtkWidget *handled_check;
 	GtkWidget *flexible_check;
@@ -4977,6 +6116,8 @@ setup_xserver_support (GladeXML *xml_xservers)
                                             GTK_TYPE_ENTRY);
 	command_entry   = glade_helper_get (xml_xservers, "xserver_command_entry",
 	                                    GTK_TYPE_ENTRY);
+	priority_spinbutton = glade_helper_get(xml_xservers, "xserv_priority_spinbutton",
+					       GTK_TYPE_SPIN_BUTTON);
 	handled_check   = glade_helper_get (xml_xservers, "xserver_handled_checkbutton",
 	                                    GTK_TYPE_CHECK_BUTTON);
 	flexible_check  = glade_helper_get (xml_xservers, "xserver_flexible_checkbutton",
@@ -5050,7 +6191,9 @@ setup_xserver_support (GladeXML *xml_xservers)
 	g_object_set_data_full (G_OBJECT (style_combobox), "key",
 	                        g_strdup (GDM_KEY_SERVER_CHOOSER),
 	                        (GDestroyNotify) g_free);
-		
+	g_object_set_data_full (G_OBJECT (priority_spinbutton), "key",
+				g_strdup (GDM_KEY_SERVER_PRIORITY),
+	                        (GDestroyNotify) g_free);
 	/* Signals Handlers */
     	g_signal_connect (G_OBJECT (name_entry), "changed",
 	                  G_CALLBACK (xserver_entry_changed),NULL);
@@ -5068,7 +6211,9 @@ setup_xserver_support (GladeXML *xml_xservers)
 	                  G_CALLBACK (xserver_remove_display), NULL);
 	g_signal_connect (G_OBJECT (selection), "changed",
 	                  G_CALLBACK (xserver_row_selected), NULL);
-			  
+	g_signal_connect (G_OBJECT (priority_spinbutton), "value_changed",
+	                  G_CALLBACK (xserver_priority_changed), NULL);
+	
 	/* TODO: In the future, allow creation & delection of servers
 	g_signal_connect (create_button, "clicked",
 			  G_CALLBACK (xserver_create), NULL);
@@ -5124,6 +6269,28 @@ xserver_button_clicked (void)
 }
 
 static void
+setup_radio_group (const gchar *name,
+		   const gchar *key, gint position)
+{
+	GtkWidget *radio;
+	gint val;
+	
+	radio = glade_helper_get (xml, name, GTK_TYPE_RADIO_BUTTON);
+	val   = gdm_config_get_int ((gchar *)key);
+	
+	if (val == position)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio), FALSE);
+	
+	g_object_set_data_full (G_OBJECT (radio), "key", g_strdup (key),
+	                        (GDestroyNotify) g_free);
+			
+    	g_signal_connect (G_OBJECT (radio), "toggled",
+			  G_CALLBACK (radiogroup_toggled), NULL);	
+}
+
+static void
 setup_security_tab (void)
 {
 	GtkWidget *checkbox;
@@ -5170,6 +6337,26 @@ setup_security_tab (void)
 
 	/* Setup Allow remote timed logins */
 	setup_notify_toggle ("allowremoteauto", GDM_KEY_ALLOW_REMOTE_AUTOLOGIN);
+
+	/* Setup check dir owner */
+	setup_notify_toggle ("check_dir_owner_checkbutton", GDM_KEY_CHECK_DIR_OWNER);
+
+	/* Setup never place cookies on NFS */
+	setup_notify_toggle ("never_cookies_NFS_checkbutton", GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS);
+	
+	/* Setup Relax permissions */
+	setup_radio_group ("relax_permissions0_radiobutton", GDM_KEY_RELAX_PERM, 0);
+	setup_radio_group ("relax_permissions1_radiobutton", GDM_KEY_RELAX_PERM, 1);
+	setup_radio_group ("relax_permissions2_radiobutton", GDM_KEY_RELAX_PERM, 2);
+	
+	/* Setup MinumalUID */
+	setup_intspin ("minimal_uid_spinbutton", GDM_KEY_MINIMAL_UID);
+
+	/* Setup always login current session */
+	setup_notify_toggle ("a_login_curr_session_checkbutton", GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);
+
+	/* Setup always restart server */
+	setup_notify_toggle ("a_restart_server_checkbutton", GDM_KEY_ALWAYS_RESTART_SERVER);
 
 	/* Setup Configure XDMCP button */
 	XDMCPbutton = glade_helper_get (xml, "config_xserverbutton",
@@ -5839,6 +7026,26 @@ hookup_plain_background (void)
 }
 
 static void
+hookup_plain_behaviour (void)
+{
+	/* Setup qiver */
+	setup_notify_toggle ("local_quiver_checkbox", GDM_KEY_QUIVER);
+	
+	/* Setup lock position */
+	setup_notify_toggle ("local_lock_pos_checkbox", GDM_KEY_LOCK_POSITION);
+
+	/* Setup set position */
+	setup_notify_toggle ("local_set_pos_checkbox", GDM_KEY_SET_POSITION);
+
+	/* Setup positionX */
+	setup_intspin ("local_posx_spinbutton", GDM_KEY_POSITION_X);
+
+	/* Setup positionX */
+	setup_intspin ("local_posy_spinbutton", GDM_KEY_POSITION_Y);
+	
+}
+
+static void
 hookup_plain_logo (void)	
 {
 	/* Initialize and hookup callbacks for plain logo settings */
@@ -5950,6 +7157,9 @@ setup_local_plain_settings (void)
 	/* Plain background settings */
 	hookup_plain_background ();
 
+	/* Plain behaviour settings */
+	hookup_plain_behaviour ();
+
 	/* Plain logo settings */
 	hookup_plain_logo ();	
 	
@@ -5958,6 +7168,289 @@ setup_local_plain_settings (void)
 	
 	/* Local welcome message settings */
 	setup_local_welcome_message  ();
+}
+
+static void
+setup_default_session (void)
+{
+	GtkWidget  *default_session_combobox;
+	GtkWidget  *default_session_checkbox;
+	GHashTable *sessnames        = NULL;
+	GList      *org_sessions     = NULL;
+	GList      *tmp;
+	gint       i = 0;
+	gint       active = 0;
+	gchar      *org_val;
+
+	_gdm_session_list_init (&sessnames, &org_sessions, NULL, NULL);
+	
+	default_session_combobox = glade_helper_get (xml, "default_session_combobox", GTK_TYPE_COMBO_BOX);
+
+	org_val = gdm_config_get_string (GDM_KEY_DEFAULT_SESSION);
+	
+	for (tmp = org_sessions; tmp != NULL; tmp = tmp->next, i++) {
+		GdmSession *session;
+		gchar *file;
+
+		file = (gchar *) tmp->data;
+		if (strcmp (ve_sure_string (org_val), ve_sure_string (file)) == 0)		
+			active = i;
+		
+		session = g_hash_table_lookup (sessnames, file);
+		
+		if (!ve_string_empty (session->clearname)) {
+			gtk_combo_box_append_text (GTK_COMBO_BOX (default_session_combobox), 
+						   session->clearname);
+			sessions = g_slist_prepend (sessions, file);
+		}
+	}
+
+	sessions = g_slist_reverse (sessions);	
+
+	/* some cleanup */
+	g_slist_free (org_sessions);
+	g_hash_table_remove_all (sessnames);
+	
+	gtk_widget_set_sensitive (default_session_combobox, TRUE);
+
+	gtk_combo_box_set_active (GTK_COMBO_BOX (default_session_combobox), active);
+	
+	g_object_set_data_full (G_OBJECT (default_session_combobox), "key",
+	                        g_strdup (GDM_KEY_DEFAULT_SESSION),
+				(GDestroyNotify) g_free);
+	
+	g_signal_connect (default_session_combobox, "changed",
+		          G_CALLBACK (combobox_changed), NULL);
+	
+	default_session_checkbox = glade_helper_get (xml,
+						     "default_session_checkbutton", 
+						     GTK_TYPE_CHECK_BUTTON);
+	
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (default_session_checkbox), !ve_string_empty (org_val));
+	
+	g_object_set_data_full (G_OBJECT (default_session_checkbox),
+				"key", g_strdup (GDM_KEY_DEFAULT_SESSION),
+				(GDestroyNotify) g_free);       
+	
+	g_signal_connect (G_OBJECT (default_session_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled), default_session_checkbox);
+	g_signal_connect (G_OBJECT (default_session_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled_sensitivity_positive), default_session_combobox);
+	
+	g_free (org_val);
+	
+}
+
+static void
+setup_general_tab (void)
+{
+	GtkWidget *gtkrc_filechooser;
+	GtkWidget *gtkrc_checkbox;
+	GtkWidget *clock_type_chooser;
+	GtkWidget *command_chooser;
+	GtkWidget *hrs_cmd_path_entry;
+	GtkWidget *custom_cmd_path_entry;
+	GtkWidget *custom_cmd_label_entry;
+	GtkWidget *custom_cmd_lrlabel_entry;
+	GtkWidget *custom_cmd_text_entry;
+	GtkWidget *custom_cmd_tooltip_entry;
+	GtkWidget *custom_cmd_persistent_checkbutton;
+	GtkWidget *custom_cmd_norestart_checkbutton;
+	GtkWidget *apply_command_changes_button;
+	gchar *gtkrc_filename;
+	gchar *user_24hr_clock;
+
+	
+	/* Setup use visual feedback in the passwotrd entry */
+	setup_notify_toggle ("vis_feedback_passwd_checkbox", GDM_KEY_ENTRY_INVISIBLE);
+
+	/* Setup use circles in the password entry */
+	setup_notify_toggle ("use_circles_passwd_checkbox", GDM_KEY_ENTRY_CIRCLES);
+	
+	/* Setup default session */
+	setup_default_session ();
+	
+	/* Setup GtkRC file path */
+	gtkrc_filechooser = glade_helper_get (xml, 
+					      "gtkrc_chooserbutton",
+					      GTK_TYPE_FILE_CHOOSER_BUTTON);
+
+	gtkrc_filename = gdm_config_get_string (GDM_KEY_GTKRC);
+
+	gtkrc_checkbox = glade_helper_get (xml,
+					   "gtkrc_checkbutton", 
+					   GTK_TYPE_CHECK_BUTTON);		
+	
+	if (!ve_string_empty (gtkrc_filename) && access (gtkrc_filename, R_OK) == 0) {
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (gtkrc_filechooser),
+					       gtkrc_filename);
+		
+		gtk_widget_set_sensitive (gtkrc_filechooser, TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gtkrc_checkbox), TRUE);
+		
+	}
+	else {
+		gtk_widget_set_sensitive (gtkrc_filechooser, FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gtkrc_checkbox), FALSE);	
+	}
+		
+	g_object_set_data_full (G_OBJECT (gtkrc_filechooser),
+				"key", g_strdup (GDM_KEY_GTKRC),
+				(GDestroyNotify) g_free);
+
+	g_signal_connect (G_OBJECT (gtkrc_filechooser), "selection-changed",
+			  G_CALLBACK (default_filechooser_response),
+			  NULL);
+	
+	
+	g_object_set_data_full (G_OBJECT (gtkrc_checkbox),
+				"key", g_strdup (GDM_KEY_GTKRC),
+				(GDestroyNotify) g_free);       
+	
+	g_signal_connect (G_OBJECT (gtkrc_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled), gtkrc_checkbox);	
+	g_signal_connect (G_OBJECT (gtkrc_checkbox), "toggled",
+			  G_CALLBACK (toggle_toggled_sensitivity_positive), gtkrc_filechooser);
+	
+	g_free (gtkrc_filename);
+
+	/* Setup user 24Hr Clock */
+	clock_type_chooser = glade_helper_get (xml, 
+					      "use_24hr_clock_combobox",
+					      GTK_TYPE_COMBO_BOX);	
+	
+	user_24hr_clock = gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
+	if (!ve_string_empty (user_24hr_clock)) {
+		if (strcasecmp (ve_sure_string (user_24hr_clock), _("auto")) == 0) {
+			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_AUTO);
+		}
+		else if (strcasecmp (ve_sure_string (user_24hr_clock), _("yes")) == 0) {
+			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_AUTO);
+		}
+		else if (strcasecmp (ve_sure_string (user_24hr_clock), _("no")) == 0) {	
+			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_NO);
+		}
+	}
+	
+	g_object_set_data_full (G_OBJECT (clock_type_chooser), "key",
+	                        g_strdup (GDM_KEY_USE_24_CLOCK), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (clock_type_chooser), "changed",
+	                  G_CALLBACK (combobox_changed), NULL);		
+
+	
+	/* Set up unsaved changes storage container */
+	GdmCommandChangesUnsaved = g_hash_table_new (g_str_hash, g_str_equal);
+
+	/* Set up Halt, Rebewt, Suspend and Custom command fields */
+	command_chooser = glade_helper_get (xml, 
+					    "cmd_type_combobox",
+					    GTK_TYPE_COMBO_BOX);
+	
+	/* Add halt, rebewt and suspend commands */
+	gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Halt command"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Reboot command"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Suspend command"));
+
+	/* Add all the custom commands */
+	gint i;
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar *label = g_strdup_printf("Custom command %d", i);
+		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), label);
+		g_free (label);
+	}
+	
+	g_object_set_data_full (G_OBJECT (command_chooser), "key",
+	                        _("command_chooser_combobox"), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (command_chooser), "changed",
+	                  G_CALLBACK (combobox_changed), NULL);			
+
+	/* Lets setup handlers for all the entries 
+	   They will be assigned exactly the same key and handler
+	   as their only functionality would be to notify about changes */
+
+	hrs_cmd_path_entry = glade_helper_get (xml, 
+					       "hrs_cmd_path_entry",
+					       GTK_TYPE_ENTRY);	
+	g_object_set_data_full (G_OBJECT (hrs_cmd_path_entry), "key",
+	                        g_strdup ("hrs_custom_cmd"), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (hrs_cmd_path_entry), "changed",
+			  G_CALLBACK (greeter_command_entry_changed), NULL);
+		
+	custom_cmd_path_entry = glade_helper_get (xml, 
+						  "custom_cmd_path_entry",
+						  GTK_TYPE_ENTRY);	
+	g_object_set_data_full (G_OBJECT (custom_cmd_path_entry), "key",
+	                        g_strdup (GDM_KEY_CUSTOM_CMD_TEMPLATE), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (custom_cmd_path_entry), "changed",
+	                  G_CALLBACK (greeter_command_entry_changed), NULL);
+
+	custom_cmd_label_entry = glade_helper_get (xml, 
+						   "custom_cmd_label_entry",
+						   GTK_TYPE_ENTRY);	
+	g_object_set_data_full (G_OBJECT (custom_cmd_label_entry), "key",
+	                        g_strdup (GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (custom_cmd_label_entry), "changed",
+	                  G_CALLBACK (greeter_command_entry_changed), NULL);
+
+	
+	custom_cmd_lrlabel_entry = glade_helper_get (xml, 
+						   "custom_cmd_lrlabel_entry",
+						   GTK_TYPE_ENTRY);	
+	g_object_set_data_full (G_OBJECT (custom_cmd_lrlabel_entry), "key",
+	                        g_strdup (GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (custom_cmd_lrlabel_entry), "changed",
+	                  G_CALLBACK (greeter_command_entry_changed), NULL);
+
+	custom_cmd_text_entry = glade_helper_get (xml, 
+						  "custom_cmd_text_entry",
+						  GTK_TYPE_ENTRY);	
+	g_object_set_data_full (G_OBJECT (custom_cmd_text_entry), "key",
+	                        g_strdup (GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (custom_cmd_text_entry), "changed",
+	                  G_CALLBACK (greeter_command_entry_changed), NULL);
+
+	custom_cmd_tooltip_entry = glade_helper_get (xml, 
+						     "custom_cmd_tooltip_entry",
+						     GTK_TYPE_ENTRY);	
+	g_object_set_data_full (G_OBJECT (custom_cmd_tooltip_entry), "key",
+	                        g_strdup (GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (custom_cmd_tooltip_entry), "changed",
+	                  G_CALLBACK (greeter_command_entry_changed), NULL);
+
+	custom_cmd_persistent_checkbutton = glade_helper_get (xml, 
+							      "custom_cmd_persistent_checkbutton",
+							      GTK_TYPE_CHECK_BUTTON);	
+	g_object_set_data_full (G_OBJECT (custom_cmd_persistent_checkbutton), "key",
+	                        g_strdup (GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (custom_cmd_persistent_checkbutton), "toggled",
+			  G_CALLBACK (toggle_toggled), custom_cmd_persistent_checkbutton);	
+	
+	custom_cmd_norestart_checkbutton = glade_helper_get (xml, 
+							     "custom_cmd_norestart_checkbutton",
+							     GTK_TYPE_CHECK_BUTTON);	
+	g_object_set_data_full (G_OBJECT (custom_cmd_norestart_checkbutton), "key",
+	                        g_strdup (GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (custom_cmd_norestart_checkbutton), "toggled",
+			  G_CALLBACK (toggle_toggled), custom_cmd_norestart_checkbutton);
+
+		
+	/* Set up append command buttons */
+	setup_general_command_buttons("hrs_command_add", "add_hrs_cmd_button");
+	setup_general_command_buttons("custom_command_add", "add_custom_cmd_button");
+	
+	/* set up apply command changes button */
+	apply_command_changes_button = glade_helper_get (xml, 
+							 "command_apply_button",
+							 GTK_TYPE_BUTTON);
+	g_object_set_data_full (G_OBJECT (apply_command_changes_button), "key",
+	                        g_strdup ("apply_command_changes"), (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (apply_command_changes_button), "clicked",
+			  G_CALLBACK (command_apply), command_chooser);
+	
+	gtk_widget_set_sensitive (apply_command_changes_button, FALSE);
+
+	/* Finally lets set our default choice */
+	gtk_combo_box_set_active (GTK_COMBO_BOX (command_chooser), HALT_CMD);       	
 }
 
 static void
@@ -6111,6 +7604,25 @@ hookup_remote_plain_background (void)
                           G_CALLBACK (background_filechooser_response), image_filechooser);
         g_signal_connect (G_OBJECT (image_filechooser), "update-preview",
                           G_CALLBACK (update_image_preview), NULL);
+}
+
+static void
+hookup_remote_plain_behaviour (void)
+{
+	/* Setup qiver */
+	setup_notify_toggle ("remote_quiver_checkbox", GDM_KEY_QUIVER);
+	
+	/* Setup lock position */
+	setup_notify_toggle ("remote_lock_pos_checkbox", GDM_KEY_LOCK_POSITION);
+
+	/* Setup set position */
+	setup_notify_toggle ("remote_set_pos_checkbox", GDM_KEY_SET_POSITION);
+
+	/* Setup positionX */
+	setup_intspin ("remote_posx_spinbutton", GDM_KEY_POSITION_X);
+
+	/* Setup positionX */
+	setup_intspin ("remote_posy_spinbutton", GDM_KEY_POSITION_Y);	
 }
 
 static void
@@ -6398,6 +7910,10 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "themes_label", "b");
 	glade_helper_tagify_label (xml, "sounds_label", "b");
 	glade_helper_tagify_label (xml, "local_background_label", "b");
+	glade_helper_tagify_label (xml, "local_behaviour_label", "b");	
+	glade_helper_tagify_label (xml, "commands_label", "b");
+	glade_helper_tagify_label (xml, "custom_cmd_note_label", "i");
+	glade_helper_tagify_label (xml, "custom_cmd_note_label", "small");
 	glade_helper_tagify_label (xml, "local_logo_label", "b");
 	glade_helper_tagify_label (xml, "local_menubar_label", "b");
 	glade_helper_tagify_label (xml, "local_welcome_message_label", "b");
@@ -6408,6 +7924,7 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "gg_copyright_label", "b");
 	glade_helper_tagify_label (xml, "gg_copyright_label", "small");
 	glade_helper_tagify_label (xml, "remote_plain_background_label", "b");
+	glade_helper_tagify_label (xml, "remote_behaviour_label", "b");
 	glade_helper_tagify_label (xml, "remote_logo_label", "b");
 	glade_helper_tagify_label (xml, "remote_welcome_message_label", "b");
 	glade_helper_tagify_label (xml, "label_welcomeremote_note", "i");
@@ -6421,6 +7938,7 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "fb_informationlabel", "small");
 	
 	/* Setup preference tabs */
+	setup_general_tab ();
 	setup_local_tab (); 
 	setup_remote_tab ();
  	setup_accessibility_tab (); 
@@ -6556,7 +8074,6 @@ apply_user_changes (GObject *object, gint arg1, gpointer user_data)
 	if (GdmRandomFromSelectedChangesWarn == TRUE) {
 		
 		GtkWidget *prompt;
-		gint response;
 		
 		prompt = ve_hig_dialog_new (NULL,
 					    GTK_DIALOG_MODAL,
@@ -6705,13 +8222,26 @@ main (int argc, char *argv[])
          */
 	GdmIconMaxHeight   = gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
 	GdmIconMaxWidth    = gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH);
-	GdmMinimalUID      = gdm_config_get_int (GDM_KEY_MINIMAL_UID);
 	GdmIncludeAll      = gdm_config_get_bool (GDM_KEY_INCLUDE_ALL);
 	GdmInclude         = gdm_config_get_string (GDM_KEY_INCLUDE);
+	
+	/* We need to make sure that the users in the include list exist
+	   and have uid that are higher than MinimalUID. This protects us
+	   from invalid data obtained from the config file */
+	char **list;
+	gint GdmMinimalUID = gdm_config_get_int (GDM_KEY_MINIMAL_UID);
+	list = g_strsplit (GdmInclude, ",", 0);
+	int i;
+	for (i=0; list != NULL && list[i] != NULL; i++) {
+		if (gdm_is_user_valid (list[i]) && gdm_user_uid (list[i]) >= GdmMinimalUID)
+			continue;
+		
+		GdmInclude = strings_list_remove (GdmInclude, list[i], ",");
+	}
+	g_strfreev (list);
+
 	GdmExclude         = gdm_config_get_string (GDM_KEY_EXCLUDE);
 	GdmSoundProgram    = gdm_config_get_string (GDM_KEY_SOUND_PROGRAM);
-	GdmAllowRoot       = gdm_config_get_bool (GDM_KEY_ALLOW_ROOT);
-	GdmAllowRemoteRoot = gdm_config_get_bool (GDM_KEY_ALLOW_REMOTE_ROOT);
 
 	if (ve_string_empty (GdmSoundProgram) ||
             g_access (GdmSoundProgram, X_OK) != 0) {
@@ -6720,10 +8250,15 @@ main (int argc, char *argv[])
 
         xservers = gdm_config_get_xservers (FALSE);
 
-	dialog = setup_gui ();
-
 	/* Done using socket */
 	gdmcomm_comm_bulk_stop ();
+
+	/* Once we corrected the include list we need to save it if
+	   it was modified */
+	if ( strcmp (ve_sure_string (gdm_config_get_string (GDM_KEY_INCLUDE)), ve_sure_string (GdmInclude)) != 0)
+		gdm_setup_config_set_string (GDM_KEY_INCLUDE, GdmInclude);
+	
+	dialog = setup_gui ();
 
 	g_signal_connect (G_OBJECT (dialog), "response",
 			  G_CALLBACK (apply_user_changes), dialog);

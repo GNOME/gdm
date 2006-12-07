@@ -289,6 +289,34 @@ gdm_is_user_valid (const char *username)
     return (NULL != getpwnam (username));
 }
 
+gint
+gdm_user_uid (const char *username)
+{
+    struct passwd *pwent;
+    pwent = getpwnam (username);
+    if (pwent != NULL)
+	    return pwent->pw_uid;
+
+    return -1;
+}
+
+const char *
+get_root_user (void)
+{
+	static char *root_user = NULL;
+	struct passwd *pwent;
+	
+	if (root_user != NULL)
+		return root_user;
+	
+	pwent = getpwuid (0);
+	if (pwent == NULL) /* huh? */
+		root_user = g_strdup ("root");
+	else
+		root_user = g_strdup (pwent->pw_name);
+	return root_user;
+}
+
 void 
 gdm_users_init (GList **users,
 		GList **users_string,

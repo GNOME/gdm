@@ -1532,7 +1532,11 @@ process_operation (guchar       op_code,
     static gboolean replace_msg = TRUE;
     static gboolean messages_to_give = FALSE;
     gboolean greeter_probably_login_prompt = FALSE;
-
+    gint lookup_status = SESSION_LOOKUP_SUCCESS;
+    gchar *firstmsg = NULL;
+    gchar *secondmsg = NULL;
+    gint save_session = GTK_RESPONSE_NO;
+    
     /* Parse opcode */
     switch (op_code) {
     case GDM_SETLOGIN:
@@ -1698,7 +1702,58 @@ process_operation (guchar       op_code,
 
     case GDM_SESS:
 	tmp = ve_locale_to_utf8 (args);
-	session = gdm_session_lookup (tmp);
+	session = gdm_session_lookup (tmp, &lookup_status);
+	if (lookup_status != SESSION_LOOKUP_SUCCESS) {				
+		switch (lookup_status) {
+		case SESSION_LOOKUP_PREFERRED_MISSING:
+			firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
+						      "future sessions?"),
+						    gdm_session_name (tmp));	    
+			secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
+						       "installed on this computer."),
+						     gdm_session_name (gdm_get_default_session ()));
+			save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+							    _("Make _Default"), _("Just _Log In"), TRUE);			
+			g_free (firstmsg);
+			g_free (secondmsg);
+			gdm_set_save_session (save_session);			
+			break;
+			
+		case SESSION_LOOKUP_DEFAULT_MISMATCH:
+			firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
+						      "future sessions?"),
+						    gdm_session_name (session));
+			secondmsg = g_strdup_printf (_("You have chosen %s for this "
+						       "session, but your default "
+						       "setting is %s."),
+						     gdm_session_name (session),
+						     gdm_session_name (tmp));
+			save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+							    _("Make _Default"), _("Just For _This Session"), TRUE);
+			
+			g_free (firstmsg);
+			g_free (secondmsg);
+			gdm_set_save_session (save_session);			
+			break;
+		case SESSION_LOOKUP_USE_SWITCHDESK:
+			firstmsg = g_strdup_printf (_("You have chosen %s for this "
+						      "session"),
+						    gdm_session_name (session));
+			secondmsg = g_strdup_printf (_("If you wish to make %s "
+						       "the default for future sessions, "
+						       "run the 'switchdesk' utility "
+						       "(System->Desktop Switching Tool from "
+						       "the panel menu)."),
+						     gdm_session_name (session));			 
+			gdm_wm_message_dialog (firstmsg, secondmsg);			 
+			g_free (firstmsg);
+			g_free (secondmsg);
+			break;
+			
+		default:
+			break;
+		}	
+	}
 	g_free (tmp);
 	if (gdm_get_save_session () == GTK_RESPONSE_CANCEL) {
 	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
