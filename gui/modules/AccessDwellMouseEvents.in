@@ -30,7 +30,8 @@
 #
 # e.g.
 #
-# <Add>           @AT_BINDIR@/gnome-mag
+# <Add>           @AT_BINDIR@/orca -n -d main-window
+#
 
 # GNOME On-Screen Keyboard - support several different options for different
 # user needs.  Note these gestures all start by moving the mouse into the top
@@ -41,13 +42,18 @@ TLBR I 10000    @AT_BINDIR@/gok --login --access-method=automaticscanning --scan
 TRBL I 10000    @AT_BINDIR@/gok --login --access-method=inversescanning --scan-action=switch1 --select-action=switch2
 TBRL I 10000    @AT_BINDIR@/gok --login  --access-method=automaticscanning --scan-action=switch3 --select-action=switch3
 
-# Gnopernicus.  Note these gestures all start by moving the mouse into the
+# Orca.  Note these gestures all start by moving the mouse into the
 # bottom window border.
 #
 # Speech
-BTRL I 10000    @AT_BINDIR@/srcore --login --enable-speech
+#
+BTRL I 10000    @AT_BINDIR@/orca -n -d main-window
+
 # Magnifier
-BTLR I 10000    @AT_BINDIR@/srcore --login --enable-magnifier --disable-speech --disable-braille
+#
+BTLR I 10000    @AT_BINDIR@/orca -n -d main-window -d speech -e magnifier
+
 # Speech and Magnifier
-BRTL I 10000    @AT_BINDIR@/srcore --login
+#
+BRTL I 10000    @AT_BINDIR@/orca -n -d main-window -e magnifier
 
