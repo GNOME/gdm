@@ -2011,6 +2011,12 @@ toggle_toggled_sensitivity_positive (GtkWidget *toggle, GtkWidget *depend)
 }
 
 static void
+toggle_toggled_sensitivity_negative (GtkWidget *toggle, GtkWidget *depend)
+{
+	gtk_widget_set_sensitive (depend, !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle)));
+}
+
+static void
 timedlogin_allow_remote_toggled (GtkWidget *toggle, GtkWidget *depend)
 {
 	if (gdm_config_get_bool (GDM_KEY_XDMCP) == TRUE) {
@@ -2186,6 +2192,46 @@ setup_notify_toggle (const char *name,
 		                  G_CALLBACK (toggle_toggled_sensitivity_positive), posx);
 		g_signal_connect (G_OBJECT (toggle), "toggled",
 		                  G_CALLBACK (toggle_toggled_sensitivity_positive), posy);
+	}
+	else if (strcmp ("local_title_bar_checkbutton", ve_sure_string (name)) == 0) {
+		GtkWidget *lockpos;
+		
+		lockpos = glade_helper_get (xml, "local_lock_pos_checkbox", 
+					    GTK_TYPE_CHECK_BUTTON);
+		
+		gtk_widget_set_sensitive (lockpos, val);
+		
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled), toggle);	
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), lockpos);
+	}
+	else if (strcmp ("remote_title_bar_checkbutton", ve_sure_string (name)) == 0) {
+		GtkWidget *lockpos;
+		
+		lockpos = glade_helper_get (xml, "remote_lock_pos_checkbox", 
+					    GTK_TYPE_CHECK_BUTTON);
+		
+		gtk_widget_set_sensitive (lockpos, val);
+		
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled), toggle);	
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), lockpos);
+	}
+	else if (strcmp ("disallow_tcp", ve_sure_string (name)) == 0) {
+		GtkWidget *nfs_cookies;
+		
+		nfs_cookies = glade_helper_get (xml, "never_cookies_NFS_checkbutton",
+					    GTK_TYPE_CHECK_BUTTON);
+		
+		gtk_widget_set_sensitive (nfs_cookies, !val);
+
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled), toggle);	
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_negative), nfs_cookies);
+		
 	}
 	else {
 		g_signal_connect (G_OBJECT (toggle), "toggled",
@@ -7031,6 +7077,9 @@ hookup_plain_behaviour (void)
 	/* Setup qiver */
 	setup_notify_toggle ("local_quiver_checkbox", GDM_KEY_QUIVER);
 	
+	/* Setup show title bar */
+	setup_notify_toggle ("local_title_bar_checkbutton", GDM_KEY_TITLE_BAR);
+	
 	/* Setup lock position */
 	setup_notify_toggle ("local_lock_pos_checkbox", GDM_KEY_LOCK_POSITION);
 
@@ -7611,6 +7660,9 @@ hookup_remote_plain_behaviour (void)
 {
 	/* Setup qiver */
 	setup_notify_toggle ("remote_quiver_checkbox", GDM_KEY_QUIVER);
+	
+	/* Setup show title bar */
+	setup_notify_toggle ("remote_title_bar_checkbutton", GDM_KEY_TITLE_BAR);
 	
 	/* Setup lock position */
 	setup_notify_toggle ("remote_lock_pos_checkbox", GDM_KEY_LOCK_POSITION);

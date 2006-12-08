@@ -238,7 +238,7 @@
 			  <child>
 			    <widget class="GtkLabel" id="label348">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">U_se 24 Hour Clock</property>
+			      <property name="label" translatable="yes">Us_e 24 Hour Clock:</property>
 			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -307,8 +307,9 @@ no</property>
 			  <child>
 			    <widget class="GtkCheckButton" id="default_session_checkbutton">
 			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">The session that is used by default if the user does not have a saved preference and has picked 'Last' from the list of sessions.</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">_Default session</property>
+			      <property name="label" translatable="yes">De_fault session:</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -330,7 +331,7 @@ no</property>
 			    <widget class="GtkCheckButton" id="gtkrc_checkbutton">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">_GtkRC file</property>
+			      <property name="label" translatable="yes">_GtkRC file:</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -495,7 +496,7 @@ no</property>
 			  <child>
 			    <widget class="GtkLabel" id="label404">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">_Command type:</property>
+			      <property name="label" translatable="yes">     _Command type:</property>
 			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -581,7 +582,7 @@ no</property>
 
 		  <child>
 		    <widget class="GtkVBox" id="commands_vbox">
-		      <property name="width_request">316</property>
+		      <property name="width_request">320</property>
 		      <property name="height_request">236</property>
 		      <property name="visible">True</property>
 		      <property name="homogeneous">False</property>
@@ -605,7 +606,7 @@ no</property>
 			      <child>
 				<widget class="GtkLabel" id="label439">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">_Path:     </property>
+				  <property name="label" translatable="yes">     _Path:     </property>
 				  <property name="use_underline">True</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -766,7 +767,7 @@ no</property>
 			      <child>
 				<widget class="GtkLabel" id="label441">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Pa_th:</property>
+				  <property name="label" translatable="yes">     Pa_th:</property>
 				  <property name="use_underline">True</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -837,7 +838,7 @@ no</property>
 					  <child>
 					    <widget class="GtkLabel" id="label442">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">_Add...</property>
+					      <property name="label" translatable="yes">A_dd...</property>
 					      <property name="use_underline">True</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -898,7 +899,7 @@ no</property>
 			      <child>
 				<widget class="GtkLabel" id="label443">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">_Label:</property>
+				  <property name="label" translatable="yes">     _Label:</property>
 				  <property name="use_underline">True</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -927,7 +928,7 @@ no</property>
 			      <child>
 				<widget class="GtkLabel" id="label444">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">LRla_bel:</property>
+				  <property name="label" translatable="yes">     LRla_bel:</property>
 				  <property name="use_underline">True</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -956,7 +957,7 @@ no</property>
 			      <child>
 				<widget class="GtkLabel" id="label445">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Te_xt:</property>
+				  <property name="label" translatable="yes">     Te_xt:</property>
 				  <property name="use_underline">True</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -985,7 +986,7 @@ no</property>
 			      <child>
 				<widget class="GtkLabel" id="label446">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">T_ooltip:</property>
+				  <property name="label" translatable="yes">     T_ooltip:</property>
 				  <property name="use_underline">True</property>
 				  <property name="use_markup">False</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1107,42 +1108,118 @@ no</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkCheckButton" id="custom_cmd_persistent_checkbutton">
+			    <widget class="GtkHBox" id="hbox9904">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Specifies if Custom Command will appear outside the login manager, for example on the desktop through the Log Out/Shut Down widgets.</property>
-			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">Pe_rsistent</property>
-			      <property name="use_underline">True</property>
-			      <property name="relief">GTK_RELIEF_NORMAL</property>
-			      <property name="focus_on_click">True</property>
-			      <property name="active">False</property>
-			      <property name="inconsistent">False</property>
-			      <property name="draw_indicator">True</property>
+			      <property name="homogeneous">False</property>
+			      <property name="spacing">0</property>
+
+			      <child>
+				<widget class="GtkLabel" id="label453">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">    </property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">False</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0.5</property>
+				  <property name="yalign">0.5</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+				  <property name="width_chars">-1</property>
+				  <property name="single_line_mode">False</property>
+				  <property name="angle">0</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkCheckButton" id="custom_cmd_persistent_checkbutton">
+				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">Specifies if Custom Command will appear outside the login manager, for example on the desktop through the Log Out/Shut Down widgets.</property>
+				  <property name="can_focus">True</property>
+				  <property name="label" translatable="yes">Pe_rsistent</property>
+				  <property name="use_underline">True</property>
+				  <property name="relief">GTK_RELIEF_NORMAL</property>
+				  <property name="focus_on_click">True</property>
+				  <property name="active">False</property>
+				  <property name="inconsistent">False</property>
+				  <property name="draw_indicator">True</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">False</property>
+			      <property name="expand">True</property>
+			      <property name="fill">True</property>
 			    </packing>
 			  </child>
 
 			  <child>
-			    <widget class="GtkCheckButton" id="custom_cmd_norestart_checkbutton">
+			    <widget class="GtkHBox" id="hbox9905">
 			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Specifies if gdm will be restarted once Custom Command has been executed.</property>
-			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">_No restart required</property>
-			      <property name="use_underline">True</property>
-			      <property name="relief">GTK_RELIEF_NORMAL</property>
-			      <property name="focus_on_click">True</property>
-			      <property name="active">False</property>
-			      <property name="inconsistent">False</property>
-			      <property name="draw_indicator">True</property>
+			      <property name="homogeneous">False</property>
+			      <property name="spacing">0</property>
+
+			      <child>
+				<widget class="GtkLabel" id="label454">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">    </property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">False</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0.5</property>
+				  <property name="yalign">0.5</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+				  <property name="width_chars">-1</property>
+				  <property name="single_line_mode">False</property>
+				  <property name="angle">0</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkCheckButton" id="custom_cmd_norestart_checkbutton">
+				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">Specifies if gdm will be stopped/restarted once Custom Command has been executed.</property>
+				  <property name="can_focus">True</property>
+				  <property name="label" translatable="yes">_No restart required</property>
+				  <property name="use_underline">True</property>
+				  <property name="relief">GTK_RELIEF_NORMAL</property>
+				  <property name="focus_on_click">True</property>
+				  <property name="active">False</property>
+				  <property name="inconsistent">False</property>
+				  <property name="draw_indicator">True</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">False</property>
+			      <property name="expand">True</property>
+			      <property name="fill">True</property>
 			    </packing>
 			  </child>
 			</widget>
@@ -1452,6 +1529,7 @@ Themed</property>
 					  <child>
 					    <widget class="GtkCheckButton" id="local_background_image_checkbutton">
 					      <property name="visible">True</property>
+					      <property name="tooltip" translatable="yes">Displays this image as the background in the greeter.</property>
 					      <property name="can_focus">True</property>
 					      <property name="label" translatable="yes">_Image:</property>
 					      <property name="use_underline">True</property>
@@ -1525,6 +1603,7 @@ Themed</property>
 					      <child>
 						<widget class="GtkCheckButton" id="sg_scale_background">
 						  <property name="visible">True</property>
+						  <property name="tooltip" translatable="yes">Scale background image to fit the screen.</property>
 						  <property name="can_focus">True</property>
 						  <property name="label" translatable="yes">Sc_ale to fit screen</property>
 						  <property name="use_underline">True</property>
@@ -1576,6 +1655,7 @@ Themed</property>
 					      <child>
 						<widget class="GtkCheckButton" id="local_background_color_checkbutton">
 						  <property name="visible">True</property>
+						  <property name="tooltip" translatable="yes">Background color of the greeter.</property>
 						  <property name="can_focus">True</property>
 						  <property name="label" translatable="yes">Co_lor:</property>
 						  <property name="use_underline">True</property>
@@ -1676,8 +1756,67 @@ Themed</property>
 				      <child>
 					<widget class="GtkCheckButton" id="local_quiver_checkbox">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">Shake the display when an incorrect username/password is entered.</property>
 					  <property name="can_focus">True</property>
 					  <property name="label" translatable="yes">_Quiver when incorrect username/password entered</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					  <property name="active">False</property>
+					  <property name="inconsistent">False</property>
+					  <property name="draw_indicator">True</property>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+				    </widget>
+				    <packing>
+				      <property name="padding">0</property>
+				      <property name="expand">True</property>
+				      <property name="fill">True</property>
+				    </packing>
+				  </child>
+
+				  <child>
+				    <widget class="GtkHBox" id="hbox9902">
+				      <property name="visible">True</property>
+				      <property name="homogeneous">False</property>
+				      <property name="spacing">12</property>
+
+				      <child>
+					<widget class="GtkLabel" id="label451">
+					  <property name="visible">True</property>
+					  <property name="label" translatable="yes"> </property>
+					  <property name="use_underline">False</property>
+					  <property name="use_markup">False</property>
+					  <property name="justify">GTK_JUSTIFY_LEFT</property>
+					  <property name="wrap">False</property>
+					  <property name="selectable">False</property>
+					  <property name="xalign">0.5</property>
+					  <property name="yalign">0.5</property>
+					  <property name="xpad">0</property>
+					  <property name="ypad">0</property>
+					  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					  <property name="width_chars">-1</property>
+					  <property name="single_line_mode">False</property>
+					  <property name="angle">0</property>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkCheckButton" id="local_title_bar_checkbutton">
+					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">Display the title bar in the greeter.</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">S_how title bar</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -1708,7 +1847,7 @@ Themed</property>
 				      <child>
 					<widget class="GtkLabel" id="label317">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes"> </property>
+					  <property name="label" translatable="yes">     </property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1733,8 +1872,9 @@ Themed</property>
 				      <child>
 					<widget class="GtkCheckButton" id="local_lock_pos_checkbox">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The position of the login window cannot be changed.</property>
 					  <property name="can_focus">True</property>
-					  <property name="label" translatable="yes">_Lock position</property>
+					  <property name="label" translatable="yes">L_ock position</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -1790,8 +1930,9 @@ Themed</property>
 				      <child>
 					<widget class="GtkCheckButton" id="local_set_pos_checkbox">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The position of the login window is determined by Position X / Position Y.</property>
 					  <property name="can_focus">True</property>
-					  <property name="label" translatable="yes">Se_t position</property>
+					  <property name="label" translatable="yes">Set positio_n</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -1898,6 +2039,7 @@ Themed</property>
 				      <child>
 					<widget class="GtkSpinButton" id="local_posx_spinbutton">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The horizontal position of the login window.</property>
 					  <property name="can_focus">True</property>
 					  <property name="climb_rate">1</property>
 					  <property name="digits">0</property>
@@ -1943,6 +2085,7 @@ Themed</property>
 				      <child>
 					<widget class="GtkSpinButton" id="local_posy_spinbutton">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The vertical position of the login window.</property>
 					  <property name="can_focus">True</property>
 					  <property name="climb_rate">1</property>
 					  <property name="digits">0</property>
@@ -1957,30 +2100,6 @@ Themed</property>
 					  <property name="expand">False</property>
 					  <property name="fill">True</property>
 					</packing>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
 				      </child>
 				    </widget>
 				    <packing>
@@ -2068,6 +2187,7 @@ Themed</property>
 					  <child>
 					    <widget class="GtkCheckButton" id="local_logo_image_checkbutton">
 					      <property name="visible">True</property>
+					      <property name="tooltip" translatable="yes">Image file to display in the logo box. The file must be in an gdk-pixbuf supported format and it must be readable by the GDM user. If no file is specified the logo feature is disabled.</property>
 					      <property name="can_focus">True</property>
 					      <property name="label" translatable="yes">I_mage:</property>
 					      <property name="use_underline">True</property>
@@ -2756,6 +2876,7 @@ Random from selected
 				  <child>
 				    <widget class="GtkCheckButton" id="sysmenu">
 				      <property name="visible">True</property>
+				      <property name="tooltip" translatable="yes">Turns the Actions menu (which used to be called System menu) on or off.  If this is off then one of the actions will be available anywhere.  These actions include Shutdown, Restart, Custom, Configure, XDMCP chooser and such.</property>
 				      <property name="can_focus">True</property>
 				      <property name="label" translatable="yes">Sho_w Actions menu</property>
 				      <property name="use_underline">True</property>
@@ -2806,6 +2927,7 @@ Random from selected
 				      <child>
 					<widget class="GtkCheckButton" id="config_available">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">Allows the configurator to be run from the greeter. Note that the user will need to type in the root password before the configurator will be started.</property>
 					  <property name="can_focus">True</property>
 					  <property name="label" translatable="yes">Include Con_figure menu item</property>
 					  <property name="use_underline">True</property>
@@ -2863,6 +2985,7 @@ Random from selected
 				      <child>
 					<widget class="GtkCheckButton" id="chooser_button">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">Adds a chooser button to the Actions menu that will restart the current X server with a chooser.  XDMCP does not need to be enabled on the local computer for this to work.</property>
 					  <property name="can_focus">True</property>
 					  <property name="label" translatable="yes">Includ_e Hostname Chooser (XDMCP) menu item</property>
 					  <property name="use_underline">True</property>
@@ -3006,6 +3129,7 @@ Random from selected
 				      <child>
 					<widget class="GtkRadioButton" id="sg_customwelcome">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">Controls which text to display next to the logo image in the standard greeter. This string is only used for local logins.</property>
 					  <property name="can_focus">True</property>
 					  <property name="label" translatable="yes">C_ustom:</property>
 					  <property name="use_underline">True</property>
@@ -3581,8 +3705,67 @@ Same as Local</property>
 				      <child>
 					<widget class="GtkCheckButton" id="remote_quiver_checkbox">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">Shake the display when an incorrect username/password is entered.</property>
 					  <property name="can_focus">True</property>
 					  <property name="label" translatable="yes">_Quiver when incorrect username/password entered</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					  <property name="active">False</property>
+					  <property name="inconsistent">False</property>
+					  <property name="draw_indicator">True</property>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+				    </widget>
+				    <packing>
+				      <property name="padding">0</property>
+				      <property name="expand">True</property>
+				      <property name="fill">True</property>
+				    </packing>
+				  </child>
+
+				  <child>
+				    <widget class="GtkHBox" id="hbox9903">
+				      <property name="visible">True</property>
+				      <property name="homogeneous">False</property>
+				      <property name="spacing">12</property>
+
+				      <child>
+					<widget class="GtkLabel" id="label452">
+					  <property name="visible">True</property>
+					  <property name="label" translatable="yes"> </property>
+					  <property name="use_underline">False</property>
+					  <property name="use_markup">False</property>
+					  <property name="justify">GTK_JUSTIFY_LEFT</property>
+					  <property name="wrap">False</property>
+					  <property name="selectable">False</property>
+					  <property name="xalign">0.5</property>
+					  <property name="yalign">0.5</property>
+					  <property name="xpad">0</property>
+					  <property name="ypad">0</property>
+					  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+					  <property name="width_chars">-1</property>
+					  <property name="single_line_mode">False</property>
+					  <property name="angle">0</property>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkCheckButton" id="remote_title_bar_checkbutton">
+					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">Display the title bar in the greeter.</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">S_how title bar</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -3613,7 +3796,7 @@ Same as Local</property>
 				      <child>
 					<widget class="GtkLabel" id="label329">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes"> </property>
+					  <property name="label" translatable="yes">     </property>
 					  <property name="use_underline">False</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3638,8 +3821,9 @@ Same as Local</property>
 				      <child>
 					<widget class="GtkCheckButton" id="remote_lock_pos_checkbox">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The position of the login window cannot be changed.</property>
 					  <property name="can_focus">True</property>
-					  <property name="label" translatable="yes">_Lock position</property>
+					  <property name="label" translatable="yes">L_ock position</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -3695,8 +3879,9 @@ Same as Local</property>
 				      <child>
 					<widget class="GtkCheckButton" id="remote_set_pos_checkbox">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The position of the login window is determined by Position X / Position Y.</property>
 					  <property name="can_focus">True</property>
-					  <property name="label" translatable="yes">Se_t position:</property>
+					  <property name="label" translatable="yes">Set positio_n</property>
 					  <property name="use_underline">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
 					  <property name="focus_on_click">True</property>
@@ -3777,7 +3962,7 @@ Same as Local</property>
 				      <child>
 					<widget class="GtkLabel" id="label333">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Position _X:</property>
+					  <property name="label" translatable="yes">_Position X:</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3803,6 +3988,7 @@ Same as Local</property>
 				      <child>
 					<widget class="GtkSpinButton" id="remote_posx_spinbutton">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The horizontal position of the login window.</property>
 					  <property name="can_focus">True</property>
 					  <property name="climb_rate">1</property>
 					  <property name="digits">0</property>
@@ -3848,6 +4034,7 @@ Same as Local</property>
 				      <child>
 					<widget class="GtkSpinButton" id="remote_posy_spinbutton">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">The vertical position of the login window.</property>
 					  <property name="can_focus">True</property>
 					  <property name="climb_rate">1</property>
 					  <property name="digits">0</property>
@@ -3862,30 +4049,6 @@ Same as Local</property>
 					  <property name="expand">False</property>
 					  <property name="fill">True</property>
 					</packing>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
-				      </child>
-
-				      <child>
-					<placeholder/>
 				      </child>
 				    </widget>
 				    <packing>
@@ -3973,6 +4136,7 @@ Same as Local</property>
 					  <child>
 					    <widget class="GtkCheckButton" id="remote_logo_image_checkbutton">
 					      <property name="visible">True</property>
+					      <property name="tooltip" translatable="yes">Image file to display in the logo box. The file must be in an gdk-pixbuf supported format and it must be readable by the GDM user. If no file is specified the logo feature is disabled.</property>
 					      <property name="can_focus">True</property>
 					      <property name="label" translatable="yes">I_mage:</property>
 					      <property name="use_underline">True</property>
@@ -4694,6 +4858,7 @@ Random from selected
 				  <child>
 				    <widget class="GtkRadioButton" id="sg_customwelcomeremote">
 				      <property name="visible">True</property>
+				      <property name="tooltip" translatable="yes">Controls which text to display next to the logo image in the greeter for remote XDMCP sessions.</property>
 				      <property name="can_focus">True</property>
 				      <property name="label" translatable="yes">C_ustom:</property>
 				      <property name="use_underline">True</property>
@@ -4873,6 +5038,7 @@ Random from selected
 		  <child>
 		    <widget class="GtkCheckButton" id="acc_modules">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Enables greeter to be launched with additional Gtk+ modules. This is useful when extra features are required such as accessible login. Note that only &quot;trusted&quot; modules should be used to minimize security issues.</property>
 		      <property name="can_focus">True</property>
 		      <property name="label" translatable="yes">_Enable accessible login</property>
 		      <property name="use_underline">True</property>
@@ -4954,6 +5120,7 @@ Random from selected
 			  <child>
 			    <widget class="GtkCheckButton" id="acc_theme">
 			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">Allow changing the GTK+ (widget) theme from the greeter. Currently this only affects the standard greeter. The theme will stay in effect on this display until changed and will affect all the other windows that are put up by GDM.</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">_Allow users to change fonts and colors of plain greeter</property>
 			      <property name="use_underline">True</property>
@@ -5058,6 +5225,7 @@ Random from selected
 			      <child>
 				<widget class="GtkCheckButton" id="acc_sound_ready">
 				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">The greeter will play a sound or beep when it is ready for a login.</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">_Login screen ready:</property>
 				  <property name="use_underline">True</property>
@@ -5080,6 +5248,7 @@ Random from selected
 			      <child>
 				<widget class="GtkCheckButton" id="acc_sound_success">
 				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">The greeter will play a sound after a successful login attempt.</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Login _successful:</property>
 				  <property name="use_underline">True</property>
@@ -5102,6 +5271,7 @@ Random from selected
 			      <child>
 				<widget class="GtkCheckButton" id="acc_sound_failure">
 				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">The greeter will play a sound after a failed login attempt.</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Login _failed:</property>
 				  <property name="use_underline">True</property>
@@ -5331,6 +5501,7 @@ Random from selected
 		      <child>
 			<widget class="GtkCheckButton" id="autologin">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Given user should be logged in upon first bootup.  No password will be asked.  This is useful for single user workstations where local console security is not an issue.</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">_Enable Automatic Login</property>
 			  <property name="use_underline">True</property>
@@ -5463,6 +5634,7 @@ Random from selected
 		      <child>
 			<widget class="GtkCheckButton" id="timedlogin">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Given user should be logged in after a number of seconds (set with Pause before login) of inactivity on the login screen.  This is useful for public access terminals or perhaps even home use.</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Enable _Timed Login</property>
 			  <property name="use_underline">True</property>
@@ -5616,14 +5788,15 @@ Random from selected
 					<widget class="GtkSpinButton" id="timedlogin_seconds">
 					  <property name="visible">True</property>
 					  <property name="sensitive">False</property>
+					  <property name="tooltip" translatable="yes">Delay in seconds before the Timed login user will be logged in.</property>
 					  <property name="can_focus">True</property>
 					  <property name="climb_rate">1</property>
 					  <property name="digits">0</property>
-					  <property name="numeric">False</property>
+					  <property name="numeric">True</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 100 1 10 10</property>
+					  <property name="adjustment">0 10 100 1 10 10</property>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -6080,7 +6253,7 @@ Random from selected
 				      <property name="visible">True</property>
 				      <property name="tooltip" translatable="yes">Checks the ownership of the home directories before writing to them. This prevents security issues in case of bad setup.</property>
 				      <property name="can_focus">True</property>
-				      <property name="label" translatable="yes">_Check directory owner</property>
+				      <property name="label" translatable="yes">Chec_k directory owner</property>
 				      <property name="use_underline">True</property>
 				      <property name="relief">GTK_RELIEF_NORMAL</property>
 				      <property name="focus_on_click">True</property>
@@ -6164,7 +6337,7 @@ Random from selected
 				      <child>
 					<widget class="GtkLabel" id="label447">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Permissions:</property>
+					  <property name="label" translatable="yes">Permissions</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7036,6 +7209,7 @@ Random from selected
 			  <child>
 			    <widget class="GtkCheckButton" id="global_face_dir_checkbutton">
 			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">Systemwide directory for face files. The sysadmin can place icons for users here without touching their homedirs. Faces are named after their users' logins. The face images must be stored in gdk-pixbuf supported formats and they must be readable for the GDM user.</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">_Global face dir</property>
 			      <property name="use_underline">True</property>
@@ -7058,8 +7232,9 @@ Random from selected
 			  <child>
 			    <widget class="GtkCheckButton" id="default_face_checkbutton">
 			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">If a user has no defined face image, GDM will use the &quot;stock_person&quot; icon defined in the current GTK+ theme.  If no such image is defined, the image specified by DefaultFace will be used.  The image must be in an gdk-pixbuf supported format and the file must be readable to the GDM user.</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">_Default face</property>
+			      <property name="label" translatable="yes">De_fault face</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -7292,6 +7467,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkCheckButton" id="honour_indirect">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Enables XDMCP INDIRECT choosing (i.e. remote execution of gdmchooser) for X-terminals which don't supply their own display browser.</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">Honor _indirect requests</property>
 	      <property name="use_underline">True</property>
@@ -7546,6 +7722,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkSpinButton" id="udpport">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">The UDP port number gdm should listen to for XDMCP requests. Don't change this unless you know what you are doing.</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
 	      <property name="digits">0</property>
@@ -7568,6 +7745,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkSpinButton" id="maxpending">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">To avoid denial of service attacks, GDM has fixed size queue of pending connections. Please note that this parameter does *not* limit the number of remote displays which can be managed. It only limits the number of displays initiating a connection simultaneously.</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
 	      <property name="digits">0</property>
@@ -7590,6 +7768,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkSpinButton" id="maxpendingindirect">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Number of simultaneously provided displays with host choosers.  If more queries from different hosts come in, the oldest ones will be forgotten.</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
 	      <property name="digits">0</property>
@@ -7612,6 +7791,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkSpinButton" id="maxremotesessions">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Determines the maximum number of remote display connections which will be managed simultaneously. I.e. the total number of remote displays that can use your host.</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
 	      <property name="digits">0</property>
@@ -7634,6 +7814,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkSpinButton" id="maxwait">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">When GDM is ready to manage a display an ACCEPT packet is sent to it containing a unique session id which will be used in future XDMCP conversations. GDM will then place the session id in the pending queue waiting for the display to respond with a MANAGE request. If no response is received within maximum wait time, GDM will declare the display dead and erase it from the pending queue freeing up the slot for other displays.</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
 	      <property name="digits">0</property>
@@ -7656,6 +7837,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkSpinButton" id="maxwaitindirect">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Determines the maximum number of seconds between the time where a user chooses a host and the subsequent indirect query where the user is connected to the host.  When the timeout is exceeded, the information about the chosen host is forgotten and the indirect slot freed up for other displays.</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
 	      <property name="digits">0</property>
@@ -7678,6 +7860,7 @@ Random from selected
 	  <child>
 	    <widget class="GtkSpinButton" id="displaysperhost">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">To prevent attackers from filling up the pending queue, GDM will only allow one connection for each remote computer.  If you want to provide display services to computers with more than one screen, you should increase the this value accordingly.</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
 	      <property name="digits">0</property>
@@ -7706,6 +7889,7 @@ Random from selected
 	      <child>
 		<widget class="GtkSpinButton" id="pinginterval">
 		  <property name="visible">True</property>
+		  <property name="tooltip" translatable="yes">Interval in which to ping the X server in seconds.  If the X server doesn't return before the next time we ping it, the connection is stopped and the session ended.</property>
 		  <property name="can_focus">True</property>
 		  <property name="climb_rate">1</property>
 		  <property name="digits">0</property>
@@ -8381,6 +8565,7 @@ Random from selected
 					  <child>
 					    <widget class="GtkEntry" id="xserver_name_entry">
 					      <property name="visible">True</property>
+					      <property name="tooltip" translatable="yes">The name that will be displayed to the user.</property>
 					      <property name="can_focus">True</property>
 					      <property name="editable">True</property>
 					      <property name="visibility">True</property>
@@ -8431,7 +8616,7 @@ Random from selected
 					  <child>
 					    <widget class="GtkEntry" id="xserver_command_entry">
 					      <property name="visible">True</property>
-					      <property name="tooltip" translatable="yes">Example: /usr/X11R6/bin/X</property>
+					      <property name="tooltip" translatable="yes">The command to execute, with full path to the binary of the X server, and any extra arguments needed. Example: /usr/X11R6/bin/X</property>
 					      <property name="can_focus">True</property>
 					      <property name="editable">True</property>
 					      <property name="visibility">True</property>
@@ -8529,6 +8714,7 @@ Chooser</property>
 					  <child>
 					    <widget class="GtkSpinButton" id="xserv_priority_spinbutton">
 					      <property name="visible">True</property>
+					      <property name="tooltip" translatable="yes">Indicates that the X server should be started at a different process priority.</property>
 					      <property name="can_focus">True</property>
 					      <property name="climb_rate">1</property>
 					      <property name="digits">0</property>
@@ -8557,6 +8743,7 @@ Chooser</property>
 				      <child>
 					<widget class="GtkCheckButton" id="xserver_handled_checkbutton">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">GDM should run the login window on this server and allow a user to log in.  If not selected, then GDM will just run this server and wait for it to terminate.</property>
 					  <property name="can_focus">True</property>
 					  <property name="label" translatable="yes">_Logins are handled by this computer</property>
 					  <property name="use_underline">True</property>
@@ -8576,6 +8763,7 @@ Chooser</property>
 				      <child>
 					<widget class="GtkCheckButton" id="xserver_flexible_checkbutton">
 					  <property name="visible">True</property>
+					  <property name="tooltip" translatable="yes">This server is available as a choice when a user wishes to run a flexible, on demand server.</property>
 					  <property name="can_focus">True</property>
 					  <property name="label" translatable="yes">_Flexible (on demand)</property>
 					  <property name="use_underline">True</property>
