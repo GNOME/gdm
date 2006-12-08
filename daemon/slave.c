@@ -3489,7 +3489,9 @@ session_child_run (struct passwd *pwent,
 	g_setenv ("USERNAME", pwent->pw_name, TRUE);
 	g_setenv ("HOME", home_dir, TRUE);
 #ifdef WITH_CONSOLE_KIT
-	g_setenv ("XDG_SESSION_COOKIE", ck_session_cookie, TRUE);
+	if (ck_session_cookie != NULL) {
+		g_setenv ("XDG_SESSION_COOKIE", ck_session_cookie, TRUE);
+	}
 #endif
 	g_setenv ("GDMSESSION", session, TRUE);
 	g_setenv ("DESKTOP_SESSION", session, TRUE);
@@ -4440,8 +4442,10 @@ gdm_slave_session_start (void)
     gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
 
 #ifdef WITH_CONSOLE_KIT
-    close_ck_session (ck_session_cookie);
-    g_free (ck_session_cookie);
+    if (ck_session_cookie != NULL) {
+	    close_ck_session (ck_session_cookie);
+	    g_free (ck_session_cookie);
+    }
 #endif
 }
 

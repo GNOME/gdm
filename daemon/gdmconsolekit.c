@@ -297,6 +297,8 @@ close_ck_session (const char *cookie)
 	GError		*error;
 	gboolean	 res;
 
+	g_return_if_fail (cookie != NULL);
+
 	error = NULL;
 	connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
 	if (connection == NULL) {
