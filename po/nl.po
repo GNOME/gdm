@@ -13,6 +13,8 @@
 # Authentication      identificatie / aanmeldingscontrole
 # display             scherm
 # face browser        gezichtenlijst/gebruikersfotos
+# greeter             aanmelder
+# remote greeter      aanmelder-op-afstand
 # suspend             pauzeren/pauzestand/pauzeerstand
 # hibernate           slaapstand/slapen
 #
@@ -24,15 +26,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-31 23:59+0100\n"
-"PO-Revision-Date: 2006-10-31 23:59+0100 \n"
-"Last-Translator: Wouter Bolsterlee <uws+gnome@xs4all.nl>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"POT-Creation-Date: 2006-12-08 15:08+0100\n"
+"PO-Revision-Date: 2006-12-11 18:42+0100\n"
+"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
+"Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.2\n"
 
 #: ../config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -52,11 +53,11 @@ msgstr "Dit is de standaardsessie op het systeem"
 
 #: ../config/gnome.desktop.in.h:1
 msgid "GNOME"
-msgstr "GNOME"
+msgstr "Gnome"
 
 #: ../config/gnome.desktop.in.h:2
 msgid "This session logs you into GNOME"
-msgstr "Deze sessie meldt u aan bij GNOME"
+msgstr "Deze sessie meldt u aan bij Gnome"
 
 #: ../config/ssh.desktop.in.in.h:1
 msgid "Secure Remote connection"
@@ -64,7 +65,7 @@ msgstr "Beveiligde verbinding"
 
 #: ../config/ssh.desktop.in.in.h:2
 msgid "This session logs you into a remote host using ssh"
-msgstr "Deze sessie meldt u aan bij op een server via ssh"
+msgstr "Deze sessie meldt u aan bij een server via ssh"
 
 #. DO NOT CHANGE HEADER FILE BY HAND! CHANGE THE extract-shell.sh
 #. SCRIPT THIS IS GENERATED.  ADD A CHANGELOG ENTRY IF YOU MODIFY
@@ -99,18 +100,14 @@ msgstr "Poging de X-server opnieuw te starten."
 #: ../config/gettextfoo.h:9
 msgid ""
 "The X server is now disabled.  Restart GDM when it is configured correctly."
-msgstr ""
-"De X-server is uitgeschakeld. Herstart GDM als de instellingen correct zijn."
+msgstr "De X-server is uitgeschakeld. Herstart GDM wanneer de instellingen correct zijn."
 
 #: ../config/gettextfoo.h:10
 msgid ""
 "Failed to start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  Would you like to view the X server output to "
 "diagnose the problem?"
-msgstr ""
-"Het starten van de X-server (grafische omgeving) is mislukt. Waarschijnlijk "
-"zijn de instellingen niet goed. Wilt u de uitvoer van de X-server bekijken "
-"om zo het probleem te kunnen bepalen?"
+msgstr "Het starten van de X-server (grafische omgeving) is mislukt. Waarschijnlijk zijn de instellingen niet goed. Wilt u de uitvoer van de X-server bekijken om het probleem te onderzoeken?"
 
 #: ../config/gettextfoo.h:11
 msgid "Would you like to view the detailed X server output as well?"
@@ -121,10 +118,7 @@ msgid ""
 "Failed to start the X server (your graphical interface).  It seems that the "
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
 "the X server output to diagnose the problem?"
-msgstr ""
-"Het starten van de X-server (grafische omgeving) is mislukt. Het lijkt erop "
-"dat het aanwijsapparaat (muis) niet goed is ingesteld. Wilt u de uitvoer van "
-"de X-server bekijken om zo het probleem te kunnen bepalen?"
+msgstr "Het starten van de X-server (grafische omgeving) is mislukt. Het lijkt erop dat het aanwijsapparaat (muis) niet goed is ingesteld. Wilt u de uitvoer van de X-server bekijken om het probleem te onderzoeken?"
 
 #: ../config/gettextfoo.h:13 ../config/gettextfoo.h:14
 msgid ""
@@ -157,54 +151,50 @@ msgstr ""
 #: ../daemon/auth.c:57
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
-msgstr "%s: Kan geen nieuwe identificatie-ingang wegschrijven: %s"
+msgstr "%s: Kon geen nieuwe identificatie-regel wegschrijven: %s"
 
 #: ../daemon/auth.c:60
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
-msgstr ""
-"%s: Kon geen nieuwe identificatie-ingang wegschrijven. Waarschijnlijk is er "
-"geen ruimte meer."
+msgstr "%s: Kon geen nieuwe identificatie-regel wegschrijven. Waarschijnlijk is er geen vrije ruimte meer."
 
 #: ../daemon/auth.c:65
 #, c-format
 msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
 "diskspace.%s%s"
-msgstr ""
-"GDM kon geen nieuwe identificatie-ingang wegschrijven. Waarschijnlijk is er "
-"geen ruimte meer.%s%s"
+msgstr "GDM kon geen nieuwe identificatie-regel wegschrijven. Waarschijnlijk is er geen vrije ruimte meer.%s%s"
 
 #: ../daemon/auth.c:195
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
-msgstr "%s: Kan geen nieuw cookiebestand maken in %s"
+msgstr "%s: Kon geen nieuw cookiebestand maken in %s"
 
 #: ../daemon/auth.c:219 ../daemon/auth.c:236 ../daemon/auth.c:878
 #, c-format
 msgid "%s: Cannot safely open %s"
-msgstr "%s: Kan %s niet veilig openen"
+msgstr "%s: Kon %s niet veilig openen"
 
 #. Really no need to clean up here - this process is a goner anyway
 #: ../daemon/auth.c:675 ../daemon/auth.c:719
 #, c-format
 msgid "%s: Could not open cookie file %s"
-msgstr "%s: Kan cookiebestand %s niet openen"
+msgstr "%s: Kon cookiebestand %s niet openen"
 
 #: ../daemon/auth.c:696
 #, c-format
 msgid "%s: Could not lock cookie file %s"
-msgstr "%s: Kan cookiebestand %s niet vergrendelen"
+msgstr "%s: Kon cookiebestand %s niet vergrendelen"
 
 #: ../daemon/auth.c:748 ../daemon/auth.c:770
 #, c-format
 msgid "%s: Could not write cookie"
-msgstr "%s: Kon geen cookie wegschrijven"
+msgstr "%s: Kon cookie niet wegschrijven"
 
 #: ../daemon/auth.c:854
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
-msgstr "%s: Verdacht cookiebestand %s wordt genegeerd"
+msgstr "%s: Verdacht uitziend cookiebestand %s wordt genegeerd"
 
 #: ../daemon/auth.c:897 ../daemon/gdm.c:1403 ../daemon/gdm.c:1771
 #, c-format
@@ -227,20 +217,17 @@ msgid ""
 "The display server has been shut down about 6 times in the last 90 seconds. "
 "It is likely that something bad is going on.  Waiting for 2 minutes before "
 "trying again on display %s."
-msgstr ""
-"De grafische omgeving is ongeveer 6  keer afgesloten in de afgelopen 90 "
-"seconden. Waarschijnlijk is er iets niet in orde. Na 2 minuten wordt de "
-"grafische omgeving nog een keer gestart op scherm %s."
+msgstr "In de afgelopen 90 seconden is de grafische omgeving ongeveer 6 keer afgesloten. Waarschijnlijk is er iets niet in orde. Na 2 minuten wordt de grafische omgeving nog een keer gestart op scherm %s."
 
 #: ../daemon/display.c:255
 #, c-format
 msgid "%s: Cannot create pipe"
-msgstr "%s: Kon pipe niet maken"
+msgstr "%s: Kan pipe niet aanmaken"
 
 #: ../daemon/display.c:333
 #, c-format
 msgid "%s: Failed forking GDM slave process for %s"
-msgstr "%s: Kan GDM-slaafproces niet afsplitsen voor %s"
+msgstr "%s: Kon GDM-subproces niet afsplitsen voor %s"
 
 #: ../daemon/errorgui.c:348
 #, c-format
@@ -251,20 +238,18 @@ msgstr "%s: geen normaal bestand!\n"
 msgid ""
 "\n"
 "... File too long to display ...\n"
-msgstr ""
-"\n"
-"... Bestand te lang om weer te geven ...\n"
+msgstr "\n...Bestand te lang om weer te geven...\n"
 
 #: ../daemon/errorgui.c:374
 #, c-format
 msgid "%s could not be opened"
-msgstr "kon %s niet openen"
+msgstr "Kon %s niet openen"
 
 #: ../daemon/errorgui.c:486 ../daemon/errorgui.c:630 ../daemon/errorgui.c:741
 #: ../daemon/errorgui.c:862
 #, c-format
 msgid "%s: Cannot fork to display error/info box"
-msgstr "%s: Kan niet afsplitsen om foutmelding/info venster weer te geven"
+msgstr "%s: Kan niet afsplitsen om foutmelding/infovenster weer te geven"
 
 #: ../daemon/filecheck.c:61
 #, c-format
@@ -310,12 +295,12 @@ msgstr "%s: %s is groter dan door systeembeheer ingestelde maximumgrootte."
 #: ../daemon/gdm-net.c:332
 #, c-format
 msgid "%s: Could not make socket"
-msgstr "%s: Kan geen socket aanmaken"
+msgstr "%s: Kon geen socket aanmaken"
 
 #: ../daemon/gdm-net.c:363
 #, c-format
 msgid "%s: Could not bind socket"
-msgstr "%s: Kan niet binden aan de socket!"
+msgstr "%s: Kon niet binden aan de socket!"
 
 #: ../daemon/gdm-net.c:449
 #, c-format
@@ -332,17 +317,13 @@ msgstr "%s: Kon de FIFO niet openen"
 #: ../daemon/gdm.c:1549
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-msgstr ""
-"Kan PID-bestand %s niet beschrijven, mogelijkerwijs is er geen vrije "
-"schuifruimte meer.  Fout: %s\n"
+msgstr "Kan PID-bestand %s niet schrijven, mogelijkerwijs is er geen vrije schijfruimte meer.  Fout: %s\n"
 
 #: ../daemon/gdm.c:200 ../daemon/gdm.c:208 ../daemon/gdm.c:1543
 #: ../daemon/gdm.c:1551
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
-msgstr ""
-"Kan PID-bestand %s niet beschrijven, mogelijkerwijs is er geen vrije "
-"schuifruimte meer.  Fout: %s"
+msgstr "Kan PID-bestand %s niet schrijven, mogelijkerwijs is er geen vrije schijfruimte meer.  Fout: %s"
 
 #: ../daemon/gdm.c:218
 #, c-format
@@ -358,12 +339,12 @@ msgstr "%s: setsid() mislukt: %s!"
 #: ../daemon/gdm.c:449
 #, c-format
 msgid "%s: Trying failsafe X server %s"
-msgstr "%s: Ik probeer de failsafe X-server %s"
+msgstr "%s: de failsafe X-server %s proberen"
 
 #: ../daemon/gdm.c:467
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
-msgstr "%s: XKeepsCrashing script wordt uitgevoerd."
+msgstr "%s: script XKeepsCrashing wordt uitgevoerd"
 
 #: ../daemon/gdm.c:584
 msgid ""
@@ -391,17 +372,17 @@ msgstr ""
 
 #: ../daemon/gdm.c:606 ../daemon/gdm.c:2350
 msgid "Master suspending..."
-msgstr "Meester gaat in slaapstand..."
+msgstr "Meester gaat in pauzestand..."
 
 #: ../daemon/gdm.c:659
 #, c-format
 msgid "System is restarting, please wait ..."
-msgstr "Systeem start opnieuw op, een ogenblik geduld alstublieft ..."
+msgstr "Systeem start opnieuw op, een ogenblik geduld..."
 
 #: ../daemon/gdm.c:661
 #, c-format
 msgid "System is shutting down, please wait ..."
-msgstr "Systeem wordt uitgeschakeld, een ogenblik geduld alstublieft ..."
+msgstr "Systeem wordt uitgeschakeld, een ogenblik geduld..."
 
 #: ../daemon/gdm.c:672
 msgid "Master halting..."
@@ -427,9 +408,7 @@ msgstr "%s: Herstart mislukt: %s"
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
 "system menu from display %s"
-msgstr ""
-"Verzoek voor GDM herstart, computer herstart, pauzeren, of afsluiten, "
-"wanneer er geen systeemmeny aanwezig is op scherm %s"
+msgstr "Verzoek voor GDM herstart, computer herstart, pauzeren, of afsluiten, wanneer er geen systeemmenu aanwezig is op scherm %s"
 
 #: ../daemon/gdm.c:823
 #, c-format
@@ -457,17 +436,16 @@ msgstr "Ik kon mezelf niet opnieuw starten"
 #. FIXME: note that this could mean out of memory
 #: ../daemon/gdm.c:1118
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
-msgstr ""
-"hoofdproces: SIGABRT ontvangen. Een fatale fout is opgetreden. Het proces "
-"wordt afgesloten."
+msgstr "hoofdproces: SIGABRT ontvangen. Er is een ernstige fout opgetreden. Het systeem wordt afgesloten."
 
+# opstarten?fork
 #: ../daemon/gdm.c:1276
 msgid "Do not fork into the background"
 msgstr "Niet opstarten in de achtergrond"
 
 #: ../daemon/gdm.c:1278
 msgid "No console (static) servers to be run"
-msgstr "Geen lokale servers te starten."
+msgstr "Geen lokale servers te starten"
 
 #: ../daemon/gdm.c:1280
 msgid "Alternative defaults configuration file"
@@ -579,12 +557,12 @@ msgstr "%s: standaard X-server niet gevonden, alternatieven worden getest"
 #: ../daemon/gdmconfig.c:1164
 #, c-format
 msgid "%s: No greeter specified."
-msgstr "%s: Geen begroeter ingesteld."
+msgstr "%s: Geen aanmelder ingesteld."
 
 #: ../daemon/gdmconfig.c:1166
 #, c-format
 msgid "%s: No remote greeter specified."
-msgstr "%s: Geen tele-begroeter ingesteld."
+msgstr "%s: Geen aanmelder-op-afstand ingesteld."
 
 #: ../daemon/gdmconfig.c:1168
 #, c-format
@@ -739,23 +717,17 @@ msgstr "%s: De GDM-groep mag geen root zijn. Gestopt!"
 #: ../daemon/gdmconfig.c:2123
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the GDM user"
-msgstr ""
-"%s: Groeter is niet gevonden of kan niet worden uitgevoerd door de GDM-"
-"gebruiker"
+msgstr "%s: Aanmelder is niet gevonden of kan niet uitgevoerd worden door de gebruiker van GDM"
 
 #: ../daemon/gdmconfig.c:2129
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the GDM user"
-msgstr ""
-"%s: Tele-groeter is niet gevonden of kan niet worden uitgevoerd door de GDM-"
-"gebruiker"
+msgstr "%s: Aanmelder-op-afstand niet gevonden of kan niet uitgevoerd worden door de gebruiker van GDM"
 
 #: ../daemon/gdmconfig.c:2137
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the GDM user"
-msgstr ""
-"%s: Kiezer is niet gevonden of kan niet worden uitgevoerd door de GDM-"
-"gebruiker"
+msgstr "%s: Kiezer is niet gevonden of kan niet uitgevoerd worden door de GDM-gebruiker"
 
 #: ../daemon/gdmconfig.c:2146
 msgid "No daemon/ServAuthDir specified in the GDM configuration file"
@@ -871,7 +843,7 @@ msgstr "Scherm %s is bezet. Er draait al een andere X-server."
 #: ../daemon/server.c:510
 #, c-format
 msgid "%s: Error opening a pipe: %s"
-msgstr "%s: Fout bij openen van pijp: %s"
+msgstr "%s: Fout bij openen van pijplijn: %s"
 
 #: ../daemon/server.c:699
 #, c-format
@@ -1052,7 +1024,7 @@ msgstr ""
 #: ../daemon/slave.c:2440 ../daemon/slave.c:2445
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
-msgstr "%s: Kan pijp niet binden aan gdmgroeter"
+msgstr "%s: Kan pijplijn niet binden aan gdmgreeter"
 
 #: ../daemon/slave.c:2577
 msgid ""
@@ -1090,20 +1062,19 @@ msgid ""
 "The greeter application appears to be crashing.\n"
 "Attempting to use a different one."
 msgstr ""
-"Het groeterprogramma lijkt niet te werken.\n"
+"Het aanmeldprogramma lijkt niet te werken.\n"
 "Er zal een ander programma worden geprobeerd."
 
 #. Something went wrong
 #: ../daemon/slave.c:2643
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-msgstr ""
-"%s: Kan groeter niet met gtk-modules starten: %s. Ik probeer zonder modules"
+msgstr "%s: Kan aanmelder niet met gtk-modules starten: %s. Zal nu zonder modules geprobeerd worden"
 
 #: ../daemon/slave.c:2650
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
-msgstr "%s: Fout bij starten van groeter. Ik probeer standaard: %s "
+msgstr "%s: Kan de aanmelder niet opstarten, probeer nu standaard: %s "
 
 # u zult zich/ u zult uzelf:
 # Als u onderwerp is en gecombineerd wordt met de persoonsvorm van de
@@ -1115,21 +1086,18 @@ msgid ""
 "Cannot start the greeter application; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
-msgstr ""
-"Kan het groeter-programma niet starten. U zult uzelf niet kunnen aanmelden. "
-"Dit scherm wordt uitgeschakeld. Probeer op een andere manier aan te melden "
-"en pas de configuratie aan."
+msgstr "Kan het aanmeldprogramma niet starten. U zult uzelf niet kunnen aanmelden. Dit scherm wordt uitgeschakeld. Probeer op een andere manier aan te melden en pas de configuratie aan."
 
 #. If no greeter we really have to disable the display
 #: ../daemon/slave.c:2669
 #, c-format
 msgid "%s: Error starting greeter on display %s"
-msgstr "%s: Fout bij het starten van de begroeter op beeld %s "
+msgstr "%s: Fout bij het starten van de aanmelder op scherm %s "
 
 #: ../daemon/slave.c:2673
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
-msgstr "%s: Kan het gdmgroeter proces niet forken"
+msgstr "%s: Kan het gdm-aanmelderproces niet forken"
 
 #: ../daemon/slave.c:2745
 #, c-format
@@ -1139,7 +1107,7 @@ msgstr "%s: Kan de FIFO niet openen!"
 #: ../daemon/slave.c:2917
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
-msgstr "%s: Kan pijp niet binden aan gdmkiezer"
+msgstr "%s: Kan pijplijn niet binden aan gdmkiezer"
 
 #: ../daemon/slave.c:3022
 msgid ""
@@ -2276,8 +2244,8 @@ msgstr "%a %d %b, %l:%M %p"
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] " seconde"
-msgstr[1] " seconden"
+msgstr[0] "%d seconde"
+msgstr[1] "%d seconden"
 
 #: ../gui/gdmdynamic.c:48
 #, c-format
@@ -2969,6 +2937,8 @@ msgid "Are you sure you want to suspend the computer?"
 msgstr "Weet u zeker dat u de computer wilt pauzeren?"
 
 # pauzestand/pauzeren
+# voor consistentie zouden we kunnen kiezen voor pauzeren
+# (herstarten/uitschakelen/pauzeren)
 #: ../gui/gdmlogin.c:701 ../gui/gdmlogin.c:2408
 #: ../gui/greeter/greeter_system.c:96
 msgid "_Suspend"
@@ -2985,24 +2955,24 @@ msgstr "Systeemstandaard"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlogin.c:766 ../gui/gdmsession.c:403 ../gui/gdmsession.c:439
+#: ../gui/gdmlogin.c:766 ../gui/gdmsession.c:410 ../gui/gdmsession.c:446
 #: ../gui/greeter/greeter_action_language.c:161
 #, c-format
 msgid "Do you wish to make %s the default for future sessions?"
 msgstr "Wilt u voor toekomstige sessies, %s het standaardtype maken?"
 
-#: ../gui/gdmlogin.c:768 ../gui/gdmsession.c:442
+#: ../gui/gdmlogin.c:768 ../gui/gdmsession.c:449
 #: ../gui/greeter/greeter_action_language.c:163
 #, c-format
 msgid "You have chosen %s for this session, but your default setting is %s."
 msgstr "Uw heeft %s als sessie gekozen, maar uw standaardsessie is %s."
 
-#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:410 ../gui/gdmsession.c:448
+#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:417 ../gui/gdmsession.c:455
 #: ../gui/greeter/greeter_action_language.c:169
 msgid "Make _Default"
 msgstr "Maak _standaard"
 
-#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:448
+#: ../gui/gdmlogin.c:774 ../gui/gdmsession.c:455
 #: ../gui/greeter/greeter_action_language.c:169
 msgid "Just For _This Session"
 msgstr "Alleen voor _deze sessie"
@@ -3113,16 +3083,13 @@ msgstr "_Opnieuw beginnen"
 msgid ""
 "The greeter version (%s) does not match the daemon version. You have "
 "probably just upgraded GDM. Please restart the GDM daemon or the computer."
-msgstr ""
-"De versie van de groeter (%s) komt niet overeen met de versie van de deamon. "
-"U heeft GDM waarschijnlijk net een versie-upgrade gegeven. Herstart de GDM-"
-"deamon of herstart de computer."
+msgstr "De versie van de aanmelder (%s) komt niet overeen met de versie van de deamon. U heeft GDM waarschijnlijk net een versie-upgrade gegeven. Herstart de GDM-deamon of herstart de computer."
 
 #: ../gui/gdmlogin.c:3276 ../gui/gdmlogin.c:3310 ../gui/gdmlogin.c:3358
 #: ../gui/greeter/greeter.c:597 ../gui/greeter/greeter.c:632
 #: ../gui/greeter/greeter.c:681
 msgid "Cannot start the greeter"
-msgstr "Kan de groeter niet starten"
+msgstr "Kan de aanmelder niet starten"
 
 #: ../gui/gdmlogin.c:3315
 msgid "Restart"
@@ -3133,10 +3100,7 @@ msgstr "Herstarten"
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded GDM.  Please restart the GDM daemon or the computer."
-msgstr ""
-"De versie van de groeter (%s) komt niet overeen met de versie van de deamon "
-"(%s). U heeft GDM waarschijnlijk net een versie-upgrade gegeven. Herstart de "
-"GDM-deamon of herstart de computer."
+msgstr "De versie van de aanmelder (%s) komt niet overeen met de versie van de deamon (%s). U heeft GDM waarschijnlijk net een versie-upgrade gegeven. Herstart de GDM-deamon of herstart de computer."
 
 #: ../gui/gdmlogin.c:3363 ../gui/greeter/greeter.c:686
 msgid "Restart GDM"
@@ -3222,11 +3186,11 @@ msgstr "<b>Gebruikersfoto</b>"
 msgid "Login Photo Preferences"
 msgstr "Aanmeldfoto voorkeuren"
 
-#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:300
+#: ../gui/gdmsession.c:126 ../gui/gdmsession.c:307
 msgid "Failsafe _GNOME"
 msgstr "_GNOME veilige modus"
 
-#: ../gui/gdmsession.c:127 ../gui/gdmsession.c:301
+#: ../gui/gdmsession.c:127 ../gui/gdmsession.c:308
 msgid "Failsafe GNOME"
 msgstr "GNOME in veilige modus"
 
@@ -3234,7 +3198,7 @@ msgstr "GNOME in veilige modus"
 # Als het wederkerend voornaamwoord meteen volgt op het persoonlijk
 # voornaamwoord u, dan kan zichzelf de voorkeur hebben voor wie een
 # opeenvolging van twee keer u, niet goed vindt klinken.
-#: ../gui/gdmsession.c:128 ../gui/gdmsession.c:302
+#: ../gui/gdmsession.c:128 ../gui/gdmsession.c:309
 msgid ""
 "This is a failsafe session that will log you into GNOME. No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3245,15 +3209,15 @@ msgstr ""
 "uzelf op geen andere manier kunt aanmelden. GNOME gebruikt de 'Standaard'-"
 "sessie."
 
-#: ../gui/gdmsession.c:139 ../gui/gdmsession.c:313
+#: ../gui/gdmsession.c:139 ../gui/gdmsession.c:320
 msgid "Failsafe _Terminal"
 msgstr "_Xterm veilige modus"
 
-#: ../gui/gdmsession.c:140 ../gui/gdmsession.c:314
+#: ../gui/gdmsession.c:140 ../gui/gdmsession.c:321
 msgid "Failsafe Terminal"
 msgstr "Terminal in veilige modus"
 
-#: ../gui/gdmsession.c:141 ../gui/gdmsession.c:315
+#: ../gui/gdmsession.c:141 ../gui/gdmsession.c:322
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3263,21 +3227,21 @@ msgstr ""
 "zullen geen opstartscripts gestart worden en wordt alleen gebruikt wanneer u "
 "op geen andere manier kunt aanmelden. Om af te melden tikt u 'exit' in."
 
-#: ../gui/gdmsession.c:406
+#: ../gui/gdmsession.c:413
 #, c-format
 msgid "Your preferred session type %s is not installed on this computer."
 msgstr "Uw gewenste sessietype %s is niet geïnstalleerd op deze machine."
 
-#: ../gui/gdmsession.c:410
+#: ../gui/gdmsession.c:417
 msgid "Just _Log In"
 msgstr "Gewoon _aanmelden"
 
-#: ../gui/gdmsession.c:461
+#: ../gui/gdmsession.c:468
 #, c-format
 msgid "You have chosen %s for this session"
 msgstr "U heeft voor deze sessie voor %s gekozen"
 
-#: ../gui/gdmsession.c:464
+#: ../gui/gdmsession.c:471
 #, c-format
 msgid ""
 "If you wish to make %s the default for future sessions, run the 'switchdesk' "
@@ -3611,12 +3575,13 @@ msgstr "_Tijdsaanmelding gebruiken"
 msgid "Example: /usr/X11R6/bin/X"
 msgstr "Bijvoorbeeld: /usr/X11R6/bin/X"
 
+# je kiest hier een thema voor het aanmeldprogramma?
 #: ../gui/gdmsetup.glade.h:30
 msgid ""
 "Greeter\n"
 "Chooser"
 msgstr ""
-"Groeter\n"
+"Aanmelder\n"
 "kiezen"
 
 #: ../gui/gdmsetup.glade.h:32
@@ -3831,9 +3796,7 @@ msgstr "Aa_nmelding lokaal voor systeembeheer, toestaan"
 
 #: ../gui/gdmsetup.glade.h:86
 msgid "_Allow users to change fonts and colors of plain greeter"
-msgstr ""
-"_Gebruikers toestaan lettertypes en kleuren van de standaardgroeter te "
-"wijzigen"
+msgstr "_Gebruikers toestaan lettertypes en kleuren van de standaardaanmelder te wijzigen"
 
 # _A wordt gebruikt voor _Afbeelding
 #: ../gui/gdmsetup.glade.h:87
@@ -3947,9 +3910,10 @@ msgstr "Computer herstarten"
 msgid "There was an error loading the theme %s"
 msgstr "Er is een fout opgetreden bij het laden van het thema %s"
 
+# beschadigd/gebroken
 #: ../gui/greeter/greeter.c:1259
 msgid "The greeter theme is corrupt"
-msgstr "Het thema voor de grafische groeter is gebroken"
+msgstr "Het thema voor de grafische aanmelder is beschadigd"
 
 #: ../gui/greeter/greeter.c:1260
 msgid ""
@@ -3962,18 +3926,13 @@ msgstr ""
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
-msgstr ""
-"Er is een fout opgetreden bij het laden van het thema, en het standaardthema "
-"kon ook niet geladen worden. De standaardgroeter zal gestart worden"
+msgstr "Er is een fout opgetreden bij het laden van het thema, en het standaardthema kon ook niet geladen worden. De standaardaanmelder zal gestart worden"
 
 #: ../gui/greeter/greeter.c:1315
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of GDM"
-msgstr ""
-"De GTK+-groeter kon niet gestart worden. Dit scherm wordt uitgeschakeld. U "
-"zult u op een andere manier moeten aanmelden en dan de installatie van GDM "
-"moeten repareren."
+msgstr "De GTK+-aanmelder kon niet gestart worden. Dit scherm wordt uitgeschakeld. U zult u op een andere manier moeten aanmelden en dan de installatie van GDM moeten repareren."
 
 #: ../gui/greeter/greeter.c:1382
 msgid ""
