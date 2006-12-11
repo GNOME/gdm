@@ -163,7 +163,7 @@ greeter_custom_set_language (gchar *language)
   GtkListStore *lang_model = greeter_language_get_model ();
   GtkTreeIter iter;
   gboolean valid;
-  char *name, *locale_name;
+  char *locale_name;
   int i=0;
 
   /* Do nothing if there is no language widget */
@@ -254,7 +254,6 @@ populate_session (GObject * object)
     {
       GtkTreeIter loopiter;
       GtkTreeModel *tm = GTK_TREE_MODEL (object);
-      gchar *to_display;
 
       gtk_list_store_append (GTK_LIST_STORE (tm), &loopiter);
 
@@ -389,7 +388,6 @@ combo_session_selected (char *session_val)
 static void
 combo_selected (GtkComboBox *combo, GreeterItemInfo *item)
 {
-  GList *tmp;
   char  *id = NULL;
   char  *file;
   char  *active;

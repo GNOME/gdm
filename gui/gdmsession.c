@@ -347,7 +347,7 @@ _gdm_session_list_init (GHashTable **sessnames, GList **sessions,
 	(GHFunc) gdm_session_list_from_hash_table_func, sessions);
 
     /* Prioritize and sort the list */
-    sessions = g_list_sort (*sessions, (GCompareFunc) gdm_session_sort_func);
+    *sessions = g_list_sort (*sessions, (GCompareFunc) gdm_session_sort_func);
 
     if (default_session != NULL)
 	    if G_UNLIKELY (*default_session == NULL) {
@@ -479,7 +479,7 @@ gdm_get_save_session (void)
   return save_session;
 }
 
-gint
+void
 gdm_set_save_session (const gint session)
 {
 	save_session = session;

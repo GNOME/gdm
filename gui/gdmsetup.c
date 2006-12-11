@@ -411,12 +411,12 @@ static gboolean
 radiogroup_timeout (GtkWidget *toggle)
 {	
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
-	GList *radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (toggle));
+	GSList *radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (toggle));
 		
 	if (strcmp (ve_sure_string (key), GDM_KEY_RELAX_PERM) == 0) {
-		GList *tmp;
+		GSList *tmp;
 		gint val;
-		gint selected;
+		gint selected = 0;
 		gint i = 0;
 		gint list_size;
 		
@@ -531,7 +531,7 @@ toggle_timeout (GtkWidget *toggle)
 			
 			value = gdm_config_get_string ((gchar *)key);
 									
-			new_val = g_strdup ((gchar*) g_slist_nth_data (sessions, selected));					
+			new_val = g_strdup ((gchar*) g_list_nth_data (sessions, selected));					
 			
 			if (strcmp (ve_sure_string (value), ve_sure_string (new_val)) != 0)				
 				gdm_setup_config_set_string (key, ve_sure_string (new_val));
@@ -1544,7 +1544,7 @@ combobox_timeout (GtkWidget *combo_box)
 		gchar *new_val = NULL;
 		
 		val = gdm_config_get_string ((gchar *)key);
-		new_val = g_strdup ((gchar*) g_slist_nth_data (sessions, selected));
+		new_val = g_strdup ((gchar*) g_list_nth_data (sessions, selected));
 		
 		if (strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0)
 			gdm_setup_config_set_string (key,  ve_sure_string (new_val));
@@ -2742,7 +2742,7 @@ unsaved_data_from_hash_table_func (gpointer key, gpointer value, gpointer user_d
 static void
 command_apply (GtkWidget *button, gpointer data)
 {
-	gchar *command = NULL;
+	const gchar *command = NULL;
 	GtkWidget *cmd_path_entry = NULL;
 	GtkWidget *command_combobox = (GtkWidget*)data;
 	gboolean command_exists = FALSE;
@@ -3446,8 +3446,8 @@ greeter_command_entry_timeout (GtkWidget *entry)
 	GtkWidget *command_combobox;
 	gint selected;
 
-	const char *key = g_object_get_data (G_OBJECT (entry), "key");
-	gchar *val      = gtk_entry_get_text (GTK_ENTRY (entry));
+	const char  *key  = g_object_get_data (G_OBJECT (entry), "key");
+	const gchar *val  = gtk_entry_get_text (GTK_ENTRY (entry));
 	
 	apply_cmd_changes = glade_helper_get (xml, "command_apply_button", GTK_TYPE_BUTTON);
 	command_combobox = glade_helper_get (xml, "cmd_type_combobox", GTK_TYPE_COMBO_BOX);
@@ -6355,6 +6355,9 @@ setup_security_tab (void)
 	/* Setup Deny TCP connections to Xserver */
 	setup_notify_toggle ("disallow_tcp", GDM_KEY_DISALLOW_TCP);
 
+	/* Setup never place cookies on NFS */
+	setup_notify_toggle ("never_cookies_NFS_checkbutton", GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS);
+
 	/* Setup Retry delay */
 	setup_intspin ("retry_delay", GDM_KEY_RETRY_DELAY);
 
@@ -6385,10 +6388,7 @@ setup_security_tab (void)
 	setup_notify_toggle ("allowremoteauto", GDM_KEY_ALLOW_REMOTE_AUTOLOGIN);
 
 	/* Setup check dir owner */
-	setup_notify_toggle ("check_dir_owner_checkbutton", GDM_KEY_CHECK_DIR_OWNER);
-
-	/* Setup never place cookies on NFS */
-	setup_notify_toggle ("never_cookies_NFS_checkbutton", GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS);
+	setup_notify_toggle ("check_dir_owner_checkbutton", GDM_KEY_CHECK_DIR_OWNER);	
 	
 	/* Setup Relax permissions */
 	setup_radio_group ("relax_permissions0_radiobutton", GDM_KEY_RELAX_PERM, 0);
@@ -6399,10 +6399,7 @@ setup_security_tab (void)
 	setup_intspin ("minimal_uid_spinbutton", GDM_KEY_MINIMAL_UID);
 
 	/* Setup always login current session */
-	setup_notify_toggle ("a_login_curr_session_checkbutton", GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);
-
-	/* Setup always restart server */
-	setup_notify_toggle ("a_restart_server_checkbutton", GDM_KEY_ALWAYS_RESTART_SERVER);
+	setup_notify_toggle ("a_login_curr_session_checkbutton", GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);	
 
 	/* Setup Configure XDMCP button */
 	XDMCPbutton = glade_helper_get (xml, "config_xserverbutton",
@@ -7250,19 +7247,31 @@ setup_default_session (void)
 		if (!ve_string_empty (session->clearname)) {
 			gtk_combo_box_append_text (GTK_COMBO_BOX (default_session_combobox), 
 						   session->clearname);
-			sessions = g_slist_prepend (sessions, file);
+			sessions = g_list_prepend (sessions, file);
 		}
+		/* This is a sort of safety fallback
+		   if session does not have the clearname defined
+		   we will use name instead*/		
+		else if (!ve_string_empty (session->name)) {
+			gtk_combo_box_append_text (GTK_COMBO_BOX (default_session_combobox), 
+						   session->name);
+			sessions = g_list_prepend (sessions, file);
+		}
+		
 	}
 
-	sessions = g_slist_reverse (sessions);	
+	sessions = g_list_reverse (sessions);	
 
-	/* some cleanup */
-	g_slist_free (org_sessions);
+	/* some cleanup */	
+	g_list_free (org_sessions);
 	g_hash_table_remove_all (sessnames);
 	
-	gtk_widget_set_sensitive (default_session_combobox, TRUE);
-
-	gtk_combo_box_set_active (GTK_COMBO_BOX (default_session_combobox), active);
+	if (!ve_string_empty (org_val)) {
+		gtk_widget_set_sensitive (default_session_combobox, TRUE);		
+		gtk_combo_box_set_active (GTK_COMBO_BOX (default_session_combobox), active);
+	}
+	else
+		gtk_widget_set_sensitive (default_session_combobox, FALSE);
 	
 	g_object_set_data_full (G_OBJECT (default_session_combobox), "key",
 	                        g_strdup (GDM_KEY_DEFAULT_SESSION),
@@ -7315,6 +7324,9 @@ setup_general_tab (void)
 
 	/* Setup use circles in the password entry */
 	setup_notify_toggle ("use_circles_passwd_checkbox", GDM_KEY_ENTRY_CIRCLES);
+
+	/* Setup always restart server */
+	setup_notify_toggle ("a_restart_server_checkbutton", GDM_KEY_ALWAYS_RESTART_SERVER);
 	
 	/* Setup default session */
 	setup_default_session ();
@@ -7777,6 +7789,9 @@ setup_remote_plain_settings (void)
 	/* Plain background settings */
 	hookup_remote_plain_background ();
 
+	/* Plain behaviour settings */
+	hookup_remote_plain_behaviour ();
+	
 	/* Plain logo settings */
 	hookup_remote_plain_logo ();
 
@@ -7984,8 +7999,6 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "autologin", "b");
 	glade_helper_tagify_label (xml, "timedlogin", "b");
 	glade_helper_tagify_label (xml, "security_label", "b");
-	glade_helper_tagify_label (xml, "xforwarding_label", "i");
-	glade_helper_tagify_label (xml, "xforwarding_label", "small");
 	glade_helper_tagify_label (xml, "fb_informationlabel", "i");
 	glade_helper_tagify_label (xml, "fb_informationlabel", "small");
 	

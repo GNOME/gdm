@@ -37,8 +37,8 @@
 #include "greeter_parser.h"
 
 /* Keep track of buttons so they can be set sensitive/insensitive */
-extern GtkButton *gtk_ok_button = NULL;
-extern GtkButton *gtk_start_again_button = NULL;
+GtkButton *gtk_ok_button = NULL;
+GtkButton *gtk_start_again_button = NULL;
 
 static void
 apply_tint (GdkPixbuf *pixbuf, guint32 tint_color)

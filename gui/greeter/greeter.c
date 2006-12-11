@@ -198,14 +198,14 @@ process_operation (guchar       op_code,
 					gdm_config_get_bool (GDM_KEY_SOUND_ON_LOGIN));
 		greeter_probably_login_prompt = TRUE;
 		if (gtk_start_again_button != NULL)
-	                gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
+	                gtk_widget_set_sensitive (GTK_WIDGET (gtk_start_again_button), FALSE);
 	} else {
 		greeter_probably_login_prompt = FALSE;
 		if (gtk_start_again_button != NULL)
-                	gtk_widget_set_sensitive (gtk_start_again_button, TRUE);
+                	gtk_widget_set_sensitive (GTK_WIDGET (gtk_start_again_button), TRUE);
 	}
 	if (gtk_ok_button != NULL)
-                gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+                gtk_widget_set_sensitive (GTK_WIDGET (gtk_ok_button), FALSE);
 
 	greeter_ignore_buttons (FALSE);
 
@@ -223,14 +223,14 @@ process_operation (guchar       op_code,
 
 	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0) {
 		if (gtk_start_again_button != NULL)
-                	gtk_widget_set_sensitive (gtk_start_again_button, TRUE);
+                	gtk_widget_set_sensitive (GTK_WIDGET (gtk_start_again_button), TRUE);
 		greeter_probably_login_prompt = FALSE;
 	} else {
 		if (gtk_start_again_button != NULL)
-                	gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
+                	gtk_widget_set_sensitive (GTK_WIDGET (gtk_start_again_button), FALSE);
 	}
 	if (gtk_ok_button != NULL)
-                gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+                gtk_widget_set_sensitive (GTK_WIDGET (gtk_ok_button), FALSE);
 
 	greeter_ignore_buttons (FALSE);
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, FALSE);
@@ -380,9 +380,9 @@ process_operation (guchar       op_code,
     case GDM_RESETOK:
 
 	if (gtk_ok_button != NULL)
-                gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+                gtk_widget_set_sensitive (GTK_WIDGET (gtk_ok_button), FALSE);
 	if (gtk_start_again_button != NULL)
-                gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
+                gtk_widget_set_sensitive (GTK_WIDGET (gtk_start_again_button), FALSE);
 
 	conversation_info = greeter_lookup_id ("pam-conversation");
 	

@@ -2207,7 +2207,7 @@ update_clock (void)
 	time_til_next_min = 60 - the_tm->tm_sec;
 	time_til_next_min = (time_til_next_min>=0?time_til_next_min:0);
 
-	g_timeout_add (time_til_next_min*1000, update_clock, NULL);
+	g_timeout_add (time_til_next_min*1000, (GSourceFunc)update_clock, NULL);
 	return FALSE;
 }
 

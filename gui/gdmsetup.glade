@@ -202,6 +202,26 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkCheckButton" id="a_restart_server_checkbutton">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Does not reuse existing X servers, but kills them and starts over. Normally, just reinitializing is a nicer way to go but if the X server memory usage keeps growing this may be a safer option.</property>
+		      <property name="can_focus">True</property>
+		      <property name="label" translatable="yes">Always _restart server</property>
+		      <property name="use_underline">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <property name="active">False</property>
+		      <property name="inconsistent">False</property>
+		      <property name="draw_indicator">True</property>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
 		    <widget class="GtkTable" id="table25">
 		      <property name="visible">True</property>
 		      <property name="n_rows">1</property>
@@ -583,7 +603,7 @@ no</property>
 		  <child>
 		    <widget class="GtkVBox" id="commands_vbox">
 		      <property name="width_request">320</property>
-		      <property name="height_request">236</property>
+		      <property name="height_request">206</property>
 		      <property name="visible">True</property>
 		      <property name="homogeneous">False</property>
 		      <property name="spacing">6</property>
@@ -1225,8 +1245,8 @@ no</property>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
-			  <property name="expand">True</property>
-			  <property name="fill">True</property>
+			  <property name="expand">False</property>
+			  <property name="fill">False</property>
 			</packing>
 		      </child>
 		    </widget>
@@ -6020,7 +6040,7 @@ Random from selected
 				  <child>
 				    <widget class="GtkCheckButton" id="disallow_tcp">
 				      <property name="visible">True</property>
-				      <property name="tooltip" translatable="yes">Always append -nolisten tcp to the command line of local X servers, thus disallowing TCP connection.  This is useful if you do not care for allowing remote connections, since the X protocol could really be potentially a security hazard to leave open, even though no known security problems exist.</property>
+				      <property name="tooltip" translatable="yes">Always append -nolisten tcp to the command line of local X servers, thus disallowing TCP connection.  This is useful if you do not care for allowing remote connections, since the X protocol could really be potentially a security hazard to leave open, even though no known security problems exist. Also disables X forwarding, but does not affect XDMCP.</property>
 				      <property name="can_focus">True</property>
 				      <property name="label" translatable="yes">_Deny TCP connections to Xserver</property>
 				      <property name="use_underline">True</property>
@@ -6069,22 +6089,17 @@ Random from selected
 				      </child>
 
 				      <child>
-					<widget class="GtkLabel" id="xforwarding_label">
+					<widget class="GtkCheckButton" id="never_cookies_NFS_checkbutton">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Disables X forwarding, but does not affect XDMCP.</property>
-					  <property name="use_underline">False</property>
-					  <property name="use_markup">True</property>
-					  <property name="justify">GTK_JUSTIFY_LEFT</property>
-					  <property name="wrap">False</property>
-					  <property name="selectable">False</property>
-					  <property name="xalign">0.5</property>
-					  <property name="yalign">0.5</property>
-					  <property name="xpad">0</property>
-					  <property name="ypad">0</property>
-					  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-					  <property name="width_chars">-1</property>
-					  <property name="single_line_mode">False</property>
-					  <property name="angle">0</property>
+					  <property name="tooltip" translatable="yes">Does not place cookies into the users home directory if this directory is on NFS.</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">Ne_ver place cookies on NFS</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					  <property name="active">False</property>
+					  <property name="inconsistent">False</property>
+					  <property name="draw_indicator">True</property>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -6269,51 +6284,11 @@ Random from selected
 				  </child>
 
 				  <child>
-				    <widget class="GtkCheckButton" id="never_cookies_NFS_checkbutton">
-				      <property name="visible">True</property>
-				      <property name="tooltip" translatable="yes">Does not place cookies into the users home directory if this directory is on NFS.</property>
-				      <property name="can_focus">True</property>
-				      <property name="label" translatable="yes">Ne_ver place cookies on NFS</property>
-				      <property name="use_underline">True</property>
-				      <property name="relief">GTK_RELIEF_NORMAL</property>
-				      <property name="focus_on_click">True</property>
-				      <property name="active">False</property>
-				      <property name="inconsistent">False</property>
-				      <property name="draw_indicator">True</property>
-				    </widget>
-				    <packing>
-				      <property name="padding">0</property>
-				      <property name="expand">False</property>
-				      <property name="fill">False</property>
-				    </packing>
-				  </child>
-
-				  <child>
 				    <widget class="GtkCheckButton" id="a_login_curr_session_checkbutton">
 				      <property name="visible">True</property>
 				      <property name="tooltip" translatable="yes">When the user logs in and already has an existing session, they are connected to that session rather than starting a new session.  This only works for session's running on VT's (Virtual Terminals) started with gdmflexiserver, and not with XDMCP.</property>
 				      <property name="can_focus">True</property>
 				      <property name="label" translatable="yes">Disa_ble multiple logins for a single user</property>
-				      <property name="use_underline">True</property>
-				      <property name="relief">GTK_RELIEF_NORMAL</property>
-				      <property name="focus_on_click">True</property>
-				      <property name="active">False</property>
-				      <property name="inconsistent">False</property>
-				      <property name="draw_indicator">True</property>
-				    </widget>
-				    <packing>
-				      <property name="padding">0</property>
-				      <property name="expand">False</property>
-				      <property name="fill">False</property>
-				    </packing>
-				  </child>
-
-				  <child>
-				    <widget class="GtkCheckButton" id="a_restart_server_checkbutton">
-				      <property name="visible">True</property>
-				      <property name="tooltip" translatable="yes">Does not reuse existing X servers, but kills them and starts over. Normally, just reinitializing is a nicer way to go but if the X server memory usage keeps growing this may be a safer option.</property>
-				      <property name="can_focus">True</property>
-				      <property name="label" translatable="yes">Always _restart server</property>
 				      <property name="use_underline">True</property>
 				      <property name="relief">GTK_RELIEF_NORMAL</property>
 				      <property name="focus_on_click">True</property>

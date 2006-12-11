@@ -56,7 +56,7 @@ char *		gdm_session_lookup 		(const char *saved_session, gint *lookup_status);
 
 gint		gdm_get_save_session 		(void);
 
-gint		gdm_set_save_session 		(const gint session);
+void		gdm_set_save_session 		(const gint session);
 
 const char *    gdm_get_default_session         (void);
 

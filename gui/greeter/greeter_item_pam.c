@@ -125,9 +125,9 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
   GreeterItemInfo *error_info;
 
   if (gtk_ok_button != NULL)
-     gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+	  gtk_widget_set_sensitive (GTK_WIDGET (gtk_ok_button), FALSE);
   if (gtk_start_again_button != NULL)
-     gtk_widget_set_sensitive (gtk_start_again_button, FALSE);
+	  gtk_widget_set_sensitive (GTK_WIDGET (gtk_start_again_button), FALSE);
 
   greeter_ignore_buttons (TRUE);
 
@@ -200,9 +200,9 @@ pam_key_release_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
               */
              login_string = gtk_entry_get_text (GTK_ENTRY (entry));
              if (login_string != NULL && login_string[0] != '\0')
-                 gtk_widget_set_sensitive (gtk_ok_button, TRUE);
+		     gtk_widget_set_sensitive (GTK_WIDGET (gtk_ok_button), TRUE);
              else
-                 gtk_widget_set_sensitive (gtk_ok_button, FALSE);
+		     gtk_widget_set_sensitive (GTK_WIDGET (gtk_ok_button), FALSE);
           }
     }
   return FALSE;

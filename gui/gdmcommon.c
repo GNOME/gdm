@@ -274,7 +274,7 @@ gdm_common_setup_blinking (void)
 
 	sid = g_signal_lookup ("activate",
 			       GTK_TYPE_MENU_ITEM);
-	if (sid != NULL) {
+	if (sid != 0) {
 	   g_signal_add_emission_hook (sid,
 				       0 /* detail */,
 				       delay_noblink,
@@ -284,7 +284,7 @@ gdm_common_setup_blinking (void)
 
 	sid = g_signal_lookup ("key_press_event",
 			       GTK_TYPE_WIDGET);
-	if (sid != NULL) {
+	if (sid != 0) {
 	   g_signal_add_emission_hook (sid,
 				       0 /* detail */,
 				       delay_noblink,
@@ -294,7 +294,7 @@ gdm_common_setup_blinking (void)
 
 	sid = g_signal_lookup ("button_press_event",
 			       GTK_TYPE_WIDGET);
-	if (sid != NULL) {
+	if (sid != 0) {
 	   g_signal_add_emission_hook (sid,
 				       0 /* detail */,
 				       delay_noblink,

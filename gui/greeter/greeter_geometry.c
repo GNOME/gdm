@@ -454,7 +454,7 @@ greeter_item_size_request (GreeterItemInfo *item,
 			   GnomeCanvas     *canvas)
 {
   GtkRequisition *req;
-  GtkRequisition box_requisition; 
+  GtkRequisition box_requisition = {0, 0}; 
   int set_width = 0;
   int set_height = 0;
   

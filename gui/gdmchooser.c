@@ -1798,6 +1798,8 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_MULTICAST);
 
 	gdmcomm_comm_bulk_stop ();
+
+	return FALSE;
 }
 
 static gboolean
@@ -2065,7 +2067,7 @@ main (int argc, char *argv[])
 	    }
     }
     gdm_chooser_xdmcp_init (hosts_opt);
-    g_strfreev (chooser_hosts);
+    g_strfreev (hosts_opt);
 
     sid = g_signal_lookup ("event",
 				 GTK_TYPE_WIDGET);
