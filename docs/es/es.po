@@ -1,16 +1,13 @@
-# translation of es.po to Spanish
 # translation of es.po to
-#
-# Francisco Javier F. Serrador <serrador@tecknolabs.com>, 2005, 2006.
-# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2005, 2006.
+# Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: pan2\n"
+"Project-Id-Version: gdm2-doc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-06 09:07+0100\n"
-"PO-Revision-Date: 2006-11-06 10:04+0100\n"
-"Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
-"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"POT-Creation-Date: 2006-12-12 13:23+0100\n"
+"PO-Revision-Date: 2006-12-12 15:22+0100\n"
+"Last-Translator: \n"
+"Language-Team:  Spanish GNOME team <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,11 +112,11 @@ msgstr "Sun Microsystems, Inc."
 
 #: ../C/gdm.xml:62(releaseinfo) ../C/gdm.xml:71(para)
 msgid ""
-"This manual describes version 2.17.1 of the GNOME Display Manager. It was "
-"last updated on 05/12/2006."
+"This manual describes version 2.17.3 of the GNOME Display Manager. It was "
+"last updated on 12/04/2006."
 msgstr ""
-"Este manual describe la versión 2.17.1 del Gestor de entrada de GNOME. Se "
-"actualizó por última vez el 12 de mayo de 2006."
+"Este manual describe la versión 2.17.3 del Gestor de entrada de GNOME. Se "
+"actualizó por última vez el 4 de diciembre de 2006."
 
 #: ../C/gdm.xml:69(title)
 msgid "Terms and Conventions Used in This Manual"
@@ -260,15 +257,15 @@ msgid ""
 msgstr ""
 "Los valores de pares de clave/valor definidos en los archivos de "
 "configuración de GDM y la ubicación de estos archivos se consideran "
-"interfaces «estables» y deberían cambiar sólo de formas compatibles hacia atrás. Note "
-"que esto incluye las funcionalidades como los scripts de GDM (Init, PreSession, "
-"PostSession, PostLogin, XKeepsCrashing, etc), las ubicaciones de directorios "
-"(ServAuthDir, PidFile, etc), las aplicaciones del sistema (SoundProgram), etc. "
-"Algunos valores de configuración dependen de interfaces del SO y quizá "
-"necesiten modificarse para que funcionen en un determinado SO. Los "
-"ejemplos típicos son HaltCommand, RebootCommand, CustomCommands, SuspendCommand, "
-"StandardXServer, Xnest, SoundProgram, y el valor del valor \"command\" para cada "
-"\"server-tal\"."
+"interfaces «estables» y deberían cambiar sólo de formas compatibles hacia "
+"atrás. Note que esto incluye las funcionalidades como los scripts de GDM "
+"(Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc), las "
+"ubicaciones de directorios (ServAuthDir, PidFile, etc), las aplicaciones del "
+"sistema (SoundProgram), etc. Algunos valores de configuración dependen de "
+"interfaces del SO y quizá necesiten modificarse para que funcionen en un "
+"determinado SO. Los ejemplos típicos son HaltCommand, RebootCommand, "
+"CustomCommands, SuspendCommand, StandardXServer, Xnest, SoundProgram, y el "
+"valor del valor \"command\" para cada \"server-tal\"."
 
 #: ../C/gdm.xml:178(para)
 msgid ""
@@ -1039,10 +1036,10 @@ msgstr ""
 "aplicación podría quizás leer algunos datos erróneos, imprimir advertencias "
 "o errores en stderr o stdout. Esto podría quizás llenar el directorio "
 "personal del usuario quien tendría que cerrar sesión e iniciar sesión de "
-"nuevo para limpiar esto. Esto podría ser especialmente desagradable si hay cuotas "
-"habilitadas. GDM además atrapa correctamente la señal XFSZ y para de escribir el "
-"archivo, lo que podría conducir a sesiones matadas si el archivo fue "
-"redirigido en la forma antigua desde el script."
+"nuevo para limpiar esto. Esto podría ser especialmente desagradable si hay "
+"cuotas habilitadas. GDM además atrapa correctamente la señal XFSZ y para de "
+"escribir el archivo, lo que podría conducir a sesiones matadas si el archivo "
+"fue redirigido en la forma antigua desde el script."
 
 #: ../C/gdm.xml:643(para)
 msgid ""
@@ -1648,7 +1645,13 @@ msgid ""
 "to keep track of all the users currently logged in. In this respect, it can "
 "be used as a replacement for the utmp or utmpx files that are available on "
 "most Unix-like operating systems."
-msgstr "GDM incluye soporte para publicar la información de entrada del usuario con el framework de contabilidad de usuarios y sesiones conocido como COnsoleKit. ConsoleKit es capaz de hacer un seguimiento de todos los usuarios actualmente reconocidos. En este respecto, puede usarse como un reemplazo de los archivos utmp y utmpx que están disponibles en la mayoría de los sistemas Unix."
+msgstr ""
+"GDM incluye soporte para publicar la información de entrada del usuario con "
+"el framework de contabilidad de usuarios y sesiones conocido como "
+"COnsoleKit. ConsoleKit es capaz de hacer un seguimiento de todos los "
+"usuarios actualmente reconocidos. En este respecto, puede usarse como un "
+"reemplazo de los archivos utmp y utmpx que están disponibles en la mayoría "
+"de los sistemas Unix."
 
 #: ../C/gdm.xml:1018(para)
 msgid ""
@@ -1662,7 +1665,7 @@ msgid ""
 "unique position know and to be trusted to provide these bits of information "
 "about the user session. The use of this privileged method is restricted by "
 "the use of D-Bus system message bus security policy."
-msgstr ""
+msgstr "Cuando GDM va a crear un proceso de entrada nuevo para un usuario llamará al método privilegiado de ConsoleKit para abrir una sesión nueva para dicho usuario. En este momento GDM también proporciona a ConsoleKit la información acerca de esta sesión de usuario como: el ID de usuario, el nombre de la pantalla X11 que se asociará con la sesión, el nombre de host desde el cual se origina la sesión (útil en caso de una sesión XDMCP), si esta sesión es o no es local, etc. Como la entidad que inicia el proceso de usuario, GDM está en una posición única para conocer y confiar en proporcionar estos bits de información acerca de la sesión de usuario. El uso de este método privilegiado está restringido por el uso de una norma de seguridad del sistema de bus de mensajes D-Bus."
 
 #: ../C/gdm.xml:1029(para)
 msgid ""
@@ -1672,19 +1675,21 @@ msgid ""
 "happens when the session receives this unlock signal is undefined and "
 "session-specific. However, most sessions will unlock a screensaver in "
 "response."
-msgstr ""
+msgstr "En caso donde un usuario con una sesión existente y que se haya autenticado en GDM y pida continuar una sesión existente, GDM llama un proceso privilegiado de ConsoleKit para desbloquear esa sesión. Los detalles exactos de qué ocurre cuando la sesión recibe esta señal de desbloqueo están indefinidos y son específicos de la sesión. Sin embargo la mayoría de las sesiones desbloquearán un salvapantallas en respuesta."
 
 #: ../C/gdm.xml:1036(para)
 msgid ""
 "When the user chooses to log out, or if GDM or the session quit unexpectedly "
 "the user session will be unregistered from ConsoleKit."
-msgstr ""
+msgstr "Cuando el usuario elige salir, o si GDM o la sesión terminan de forma inesperada, la sesión de usuario se desregistra de ConsoleKit."
 
 #: ../C/gdm.xml:1041(para)
 msgid ""
 "If support for ConsoleKit is not desired it can be disabled at build time "
 "using the --with-console-kit=no option when running configure."
-msgstr "Si no se desea el soporte para ConsoleKit se puede deshabilitar en tiempo de compilación usando la opción --with-console-kit=no al ejecutar configure."
+msgstr ""
+"Si no se desea el soporte para ConsoleKit se puede deshabilitar en tiempo de "
+"compilación usando la opción --with-console-kit=no al ejecutar configure."
 
 #: ../C/gdm.xml:1049(title)
 msgid "Using gdmsetup To Configure GDM"
@@ -2821,7 +2826,10 @@ msgid ""
 "If true, then the registry daemon <command>at-spi-registryd</command> will "
 "be launched by <command>gdmgreeter</command> or <command>gdmlogin</command> "
 "starting with version GDM 2.17."
-msgstr "Si es true, entonces el demonio de registro <command>at-spi-registryd</command> se lanzará por <command>gdmgreeter</command> o <command>gdmlogin</command> iniciando con la versión GDM 2.17."
+msgstr ""
+"Si es true, entonces el demonio de registro <command>at-spi-registryd</"
+"command> se lanzará por <command>gdmgreeter</command> o <command>gdmlogin</"
+"command> iniciando con la versión GDM 2.17."
 
 #: ../C/gdm.xml:1721(para)
 msgid ""
@@ -4603,7 +4611,7 @@ msgid ""
 "freed up for other displays. The information may be forgotten earlier if "
 "there are more hosts trying to send indirect queries then "
 "<filename>MaxPendingIndirect</filename>."
-msgstr ""
+msgstr "El parámetro MaxWaitIndirect determina el número máximo de segundos entre el tiempo donde un usuario elije un host y la subsiguiente petición indirecta donde el usuario se conecta al host. Cuando se excede el tiempo establecido, la información acerca del host elegido se olvida y el slot indirecto se libera para otras pantallas. La información se puede olvidar antes si hay más hosts intentando enviar solicitudes que <filename>MaxPendingIndirect</filename>."
 
 #: ../C/gdm.xml:2891(term)
 msgid "Port"
@@ -4637,7 +4645,7 @@ msgid ""
 "return before the next time we ping it, the connection is stopped and the "
 "session ended. This is a combination of the XDM PingInterval and "
 "PingTimeout, but in seconds."
-msgstr ""
+msgstr "Intervalo en el que hacer ping al servidor X en segundos. Si el servidor X no responde antes de la siguiente vez que lanzamos un ping a él, la conexión se detiene y la sesión termina. Esta es una combinación de las opciones de XDM PingInterval y PingTimeout, pero en segundos."
 
 #: ../C/gdm.xml:2914(para)
 msgid ""
@@ -4647,7 +4655,7 @@ msgid ""
 "XDMCP would be used (such as terminal labs), a lag of more than 15 or so "
 "seconds would really mean that the terminal was turned off or restarted and "
 "you would want to end the session."
-msgstr ""
+msgstr "Note que GDM en el pasado usaba una clave de configuración <filename>PingInterval</filename> estaba en minutos. Para la mayoría de los propósitos querría que este ajuste fuera menor que un minuto, sin embargo en la mayoría de casos donde se usaría XDMCP (como terminales de laboratorio), un retraso de más de 15 segundos realmente significaría que el terminal se ha apagado o reiniciado y usted querría terminar la sesión."
 
 #: ../C/gdm.xml:2927(term)
 msgid "ProxyReconnect"
@@ -4676,7 +4684,7 @@ msgid ""
 "another X server. Currently, the Distributed Multihead X (DMX) server "
 "supports this feature to some extent and other projects like NoMachine NX "
 "are busy implementing it."
-msgstr ""
+msgstr "Para usar esta característica, debe tener un servidor X anidado disponible que soporte desconectar de su servidor X padre y reconectar a otro servidor X. Actualmente el servidor Distributed Multihead X (DMX) soporta esta característica hasta cierto punto y otros proyectos como NoMachine NX lo están implementándolo."
 
 #: ../C/gdm.xml:2943(para)
 msgid ""
@@ -4724,7 +4732,7 @@ msgid ""
 "line of it's output is sent (and only the first line). It runs at most once "
 "every 3 seconds to prevent possible denial of service by flooding the "
 "machine with QUERY packets."
-msgstr ""
+msgstr "Cuando la máquina devuelve un paquete WILLING tras un QUERY envía una cadena que da el estado actual del servidor. El mensaje predeterminado es el ID de sistema, pero es posible crear un script que muestre un mensaje personalizado. Si este script no existe o esta clave está vacía se envía el mensaje predeterminado. Si el script tiene éxito y produce alguna salida, se envía la primera línea de la salida (y sólo la primera línea). Se ejecuta como mucho una vez cada 3 segundos para impedir una posible denegación de servicio inundando la máquina de paquetes QUERY."
 
 #: ../C/gdm.xml:2984(title)
 msgid "Common GUI Configuration Options"
@@ -4750,7 +4758,7 @@ msgid ""
 "have this ability. The theme will stay in effect on this display until "
 "changed and will affect all the other windows that are put up by GDM. "
 "Supported since 2.5.90.2."
-msgstr ""
+msgstr "Si se quiere permitir cambiar el tema GTK+ (los widgets) desde el interfaz. Actualmente esto sólo afecta al interfaz estándar debido a que el interfaz gráfico no tiene esta capacidad. El tema tendrá efecto en esta pantalla hasta que se cambie y afectará a todas las demás ventanas que sean gestionadas por GDM. Soportado desde 2.5.90.2."
 
 #: ../C/gdm.xml:3005(term)
 msgid "GtkRC"
@@ -4766,7 +4774,7 @@ msgid ""
 "Path to a <filename>gtkrc</filename> to read when GDM puts up a window. You "
 "should really now use the <filename>GtkTheme</filename> key for just setting "
 "a theme."
-msgstr ""
+msgstr "Ruta al <filename>gtkrc</filename> para leer cuando GDM ponga una ventana. Debería usar realmente la clave <filename>GtkTheme</filename> para establecer un tema."
 
 #: ../C/gdm.xml:3017(term)
 msgid "GtkTheme"
@@ -4802,7 +4810,7 @@ msgid ""
 "themes installed in the standard locations for GTK+ themes. You can also "
 "specify 'all' to allow all installed themes. This is related to the "
 "<filename>AllowGtkThemeChange</filename> key. Supported since 2.5.90.2."
-msgstr ""
+msgstr "Lista separada por comas de temas permitidos. Éstos deben ser los nombres de los temas instalados en los lugares estándar para temas GTK+. Puede además especificar «all» para permitir todos los temas instalados. Esto está relacionado con la clave <filename>AllowGtkThemeChange</filename>. Soportada desde 2.5.90.2."
 
 #: ../C/gdm.xml:3044(term)
 msgid "MaxIconWidth"
@@ -4959,7 +4967,7 @@ msgid ""
 "does not usually have a home directory. You could set up home directory for "
 "the GDM user if you wish to run applications which require it. This only "
 "affects the GTK+ Greeter."
-msgstr ""
+msgstr "Si se establece, este comando se ejecutará en el fondo muentras la pantalla de entrada se muestra. Note que no todas las aplicaciones ejecutarán de esta manera, debido a que GDM no tiene un directorio personal usualmente. Podría configurar el directorio personal del usuario GDM si quiere ejecutar aplicaciones que lo requieren. Esto sólo afecta al interfaz GTK+."
 
 #: ../C/gdm.xml:3152(term)
 msgid "BackgroundRemoteOnlyColor"
@@ -4975,7 +4983,7 @@ msgid ""
 "On remote displays only set the color background. This is to make network "
 "load lighter. The <filename>BackgroundProgram</filename> is also not run. "
 "This only affects the GTK+ Greeter."
-msgstr ""
+msgstr "Establece el color de fondo sólo en las pantallas remotas. Esto es para hacer la carga de red más ligera. El programa <filename>BackgroundProgram</filename> tampoco se ejecuta. Esto sólo afecta al interfaz GTK+"
 
 #: ../C/gdm.xml:3165(term)
 msgid "BackgroundScaleToFit"
@@ -5613,7 +5621,7 @@ msgid ""
 "get the default session (see <filename>DefaultSession</filename>) unless "
 "then pick something else for this session only. So if this is off, this "
 "really circumvents saving of the last session."
-msgstr ""
+msgstr "Indica si el interfaz debe mostrar la última sesión en la lista de sesiones. Si esto se desactiva, entonces GDM está en modo 'cambio de escritorio' que es por ejemplo lo que usa Red Hat. Esto es, los usuarios no pueden escoger la última sesión y obtienen entonces la sesión predeterminada (ver <filename>DefaultSession</filename>) a no ser que escojan otra cosa distinta para esta sesión únicamente. Así si esto está desactivado, esto realmente evita guardar la última sesión."
 
 #: ../C/gdm.xml:3599(term)
 msgid "ShowXtermFailsafeSession"
@@ -6201,8 +6209,13 @@ msgid ""
 "can be an integer between 0 and 9."
 msgstr ""
 "Ruta completa y argumentos al comando que ejecutar cuando el usuario "
-"selecciona <filename>n-th</filename> \"Comando personalizado\" en el menú Acciones. Esto puede ser una lista separada por \";\" de comandos a intentar. Si el valor está vacío o falta, entonces el comando personalizado no estará disponible. Note que de "
-"forma predeterminada este valor no está activado, así que para ctivar el \"Comando personalizado\" debe establecerlo a un valor no vacío. [0-9] representa el sufijo de <filename>CustomCommand</filename> y puede ser un entero entre 0 y 9."
+"selecciona <filename>n-th</filename> \"Comando personalizado\" en el menú "
+"Acciones. Esto puede ser una lista separada por \";\" de comandos a "
+"intentar. Si el valor está vacío o falta, entonces el comando personalizado "
+"no estará disponible. Note que de forma predeterminada este valor no está "
+"activado, así que para ctivar el \"Comando personalizado\" debe establecerlo "
+"a un valor no vacío. [0-9] representa el sufijo de <filename>CustomCommand</"
+"filename> y puede ser un entero entre 0 y 9."
 
 #: ../C/gdm.xml:4042(term)
 msgid "CustomCommandIsPersistent[0-9]"
@@ -6221,7 +6234,13 @@ msgid ""
 "option is only valid if corresponding <filename>CustomCommand</filename> is "
 "defined. [0-9] represents <filename>CustomCommand</filename> suffix and can "
 "be an integer between 0 and 9."
-msgstr "Especifica si <filename>n-th</filename> \"Comando personalizado\" aparecerá fuera del gestor de entrada, por ejemplo en el escritorio a trabés de los diálogos de Salida/Apagado. Si no se especifica el valor predeterminado es «false». Esta opción sólo es válida si el <filename>CustomCommand</filename> correspondiente está definido. [0-9] representa el sufijo <filename>CustomCommand</filename> y puede ser un entero entre 0 y 9."
+msgstr ""
+"Especifica si <filename>n-th</filename> \"Comando personalizado\" aparecerá "
+"fuera del gestor de entrada, por ejemplo en el escritorio a trabés de los "
+"diálogos de Salida/Apagado. Si no se especifica el valor predeterminado es "
+"«false». Esta opción sólo es válida si el <filename>CustomCommand</filename> "
+"correspondiente está definido. [0-9] representa el sufijo "
+"<filename>CustomCommand</filename> y puede ser un entero entre 0 y 9."
 
 #: ../C/gdm.xml:4059(term)
 msgid "CustomCommandLabel[0-9]"
@@ -6241,7 +6260,14 @@ msgid ""
 "represents <filename>CustomCommand</filename> suffix and can be an integer "
 "between 0 and 9. This option can't contain any semicolon characters (i.e. \";"
 "\")."
-msgstr "Especifica la etiqueta de stock que se mostrará en los botones y menús <filename>n-th</filename> del \"Comando personalizado\". Si no se especifica el valor predeterminado, es \"Custom_[0-9\". Esta opción sólo es válida si está definido al correspondiente <filename>CustomCommand</filename>. [0-9] representa el sufijo del <filename>CustomCommand</filename> y puede ser un entero entre 0 y 9. Esta opción no puede contener ningun carácter punto y coma (\";\")."
+msgstr ""
+"Especifica la etiqueta de stock que se mostrará en los botones y menús "
+"<filename>n-th</filename> del \"Comando personalizado\". Si no se especifica "
+"el valor predeterminado, es \"Custom_[0-9\". Esta opción sólo es válida si "
+"está definido al correspondiente <filename>CustomCommand</filename>. [0-9] "
+"representa el sufijo del <filename>CustomCommand</filename> y puede ser un "
+"entero entre 0 y 9. Esta opción no puede contener ningun carácter punto y "
+"coma (\";\")."
 
 #: ../C/gdm.xml:4076(term)
 msgid "CustomCommandLRLabel[0-9]"
@@ -6264,12 +6290,12 @@ msgstr ""
 
 #: ../C/gdm.xml:4093(term)
 msgid "CustomCommandNoRestart[0-9]"
-msgstr ""
+msgstr "CustomCommandNoRestart[0-9]"
 
 #: ../C/gdm.xml:4095(synopsis)
 #, no-wrap
 msgid "CustomCommandNoRestart[0-9]="
-msgstr ""
+msgstr "CustomCommandNoRestart[0-9]="
 
 #: ../C/gdm.xml:4096(para)
 msgid ""
@@ -6287,12 +6313,12 @@ msgstr ""
 
 #: ../C/gdm.xml:4116(term)
 msgid "CustomCommandText[0-9]"
-msgstr ""
+msgstr "CustomCommandText[0-9]"
 
 #: ../C/gdm.xml:4118(synopsis)
 #, no-wrap
 msgid "CustomCommandText[0-9]="
-msgstr ""
+msgstr "CustomCommandText[0-9]="
 
 #: ../C/gdm.xml:4119(para)
 msgid ""
@@ -6307,12 +6333,12 @@ msgstr ""
 
 #: ../C/gdm.xml:4133(term)
 msgid "CustomCommandTooltip[0-9]"
-msgstr ""
+msgstr "CustomCommandTooltip[0-9]"
 
 #: ../C/gdm.xml:4135(synopsis)
 #, no-wrap
 msgid "CustomCommandTooltip[0-9]="
-msgstr ""
+msgstr "CustomCommandTooltip[0-9]="
 
 #: ../C/gdm.xml:4136(para)
 msgid ""
@@ -7272,7 +7298,7 @@ msgstr ""
 
 #: ../C/gdm.xml:4865(title)
 msgid "QUERY_CUSTOM_CMD_LABELS"
-msgstr ""
+msgstr "QUERY_CUSTOM_CMD_LABELS"
 
 #: ../C/gdm.xml:4866(screen)
 #, no-wrap
@@ -7298,7 +7324,7 @@ msgstr ""
 
 #: ../C/gdm.xml:4887(title)
 msgid "QUERY_CUSTOM_CMD_NO_RESTART_STATUS"
-msgstr ""
+msgstr "QUERY_CUSTOM_CMD_NO_RESTART_STATUS"
 
 #: ../C/gdm.xml:4888(screen)
 #, no-wrap
@@ -7746,7 +7772,7 @@ msgstr ""
 msgid ""
 "In addition to the following options, <command>gdmflexiserver</command> also "
 "supports standard GNOME options."
-msgstr ""
+msgstr "Además de las siguientes opciones, <command>gdmflexiserver</command> también soporta las opciones estándar de GNOME."
 
 #: ../C/gdm.xml:5303(term)
 msgid "-c, --command=COMMAND"
@@ -7762,7 +7788,7 @@ msgstr "-n, --xnest"
 
 #: ../C/gdm.xml:5314(para)
 msgid "Start a flexible X display in Xnest mode"
-msgstr ""
+msgstr "Inicia una pantalla flexible X en modo Xnest"
 
 #: ../C/gdm.xml:5321(term)
 msgid "-l, --no-lock"
@@ -7812,7 +7838,7 @@ msgstr "Opciones de línea de comandos de <command>gdmdynamic</command>"
 msgid ""
 "The <command>gdmdynamic</command> command which creates, runs, and removes "
 "displays (X servers) on demand."
-msgstr ""
+msgstr "El comando <command>gdmdynamic</command> crea, ejecuta y quita pantallas (servidores X) bajo demanda."
 
 #: ../C/gdm.xml:5369(para)
 msgid ""
@@ -8981,8 +9007,8 @@ msgid ""
 "<filename>custom_cmd[0-9]</filename>, if <filename>n-th</filename> "
 "CustomCommand is specified in the GDM configuration."
 msgstr ""
-"<filename>comando_personalizado[0-9]</filename>, si el <filename>enésimo</filename> comando personalizado está especificado en la "
-"configuración de GDM."
+"<filename>comando_personalizado[0-9]</filename>, si el <filename>enésimo</"
+"filename> comando personalizado está especificado en la configuración de GDM."
 
 #: ../C/gdm.xml:6439(para)
 msgid ""
@@ -9341,15 +9367,15 @@ msgid ""
 "<filename>&lt;ServAuthDir&gt;/&lt;display&gt;.GreeterInfo</filename> as "
 "<filename>&lt;list id&gt;=&lt;listitem id&gt;</filename>."
 msgstr ""
-"Actualmente hay un elemento que es personalizable y este es el "
-"elemento de la lista. Si necesita preguntar al usuario cosas adicionales, "
-"como para escoger de una lista o lugares desde donde entrar, o establecer un "
-"conjunto de sesiones de entrada personalizadas puede configurar el elemento "
-"de la lista y añadir hijos del elemento de la lista que describan las "
-"selecciones. Cada elemento de la lista debe tener un id y un texto hijo. La "
-"elección será grabada en el archivo <filename>&lt;ServAuthDir&gt;/&lt;"
-"display&gt;.GreeterInfo</filename> como <filename>&lt;list id&gt;=&lt;"
-"listitem id&gt;</filename>."
+"Actualmente hay un elemento que es personalizable y este es el elemento de "
+"la lista. Si necesita preguntar al usuario cosas adicionales, como para "
+"escoger de una lista o lugares desde donde entrar, o establecer un conjunto "
+"de sesiones de entrada personalizadas puede configurar el elemento de la "
+"lista y añadir hijos del elemento de la lista que describan las selecciones. "
+"Cada elemento de la lista debe tener un id y un texto hijo. La elección será "
+"grabada en el archivo <filename>&lt;ServAuthDir&gt;/&lt;display&gt;."
+"GreeterInfo</filename> como <filename>&lt;list id&gt;=&lt;listitem id&gt;</"
+"filename>."
 
 #: ../C/gdm.xml:6725(para)
 msgid ""
@@ -9358,7 +9384,8 @@ msgid ""
 "theme:"
 msgstr ""
 "Por ejemplo suponga que estamos en la pantalla 0, <filename>ServAuthDir</"
-"filename> es <filename>&lt;var&gt;/lib/gdm</filename> y tenemos lo siguiente en el tema:"
+"filename> es <filename>&lt;var&gt;/lib/gdm</filename> y tenemos lo siguiente "
+"en el tema:"
 
 #: ../C/gdm.xml:6732(screen)
 #, no-wrap
@@ -9610,7 +9637,7 @@ msgid ""
 "directory, so please file a bug with the AT program if you encounter this "
 "problem. Also note that some input devices require X server configuration "
 "before GDM will recognize them."
-msgstr ""
+msgstr "Hay algunos problemas que hacen que los usuarios tengan problemas al hacer funcionar los listeners de gestos. Se recomienda usar la versión 2.8.0.5 de GDM o superior para los mejores resultados. Algunos servidores X tienen un bug que hace que falle la detección de la autorepetición cuando XEVIE está activado (lo cual ocurre cuando se incluye como módulo atl-bridge). Este bug causa que los gestos clave con una duración mayor que 0 siempre fallen. Una solución temporal es simplemente redefinir todos los gestos clave para tengan duración cero. Algunas versiones de GOK y gnopernicus no se lanzarán a no ser que el usuario «gdm» tenga un directorio personal escribible. Si ve un cursor con el reloj de arena cuando completa un gesto pero el programa no se inicia, entonces probablemente tenga este problema. Debería considerarse un bug para los programas de tecnologías de asistencia requerir tener un directorio personal con permisos de escritura, así que envíe un informe de errores si encuentra este problema. Además note que algunos dispositivos de entrada requieren configurar el servidor X antes de que GDM lo reconozca."
 
 #: ../C/gdm.xml:6924(title)
 msgid "Accessibility Login Sound Configuration"
@@ -9739,7 +9766,7 @@ msgid ""
 "in GDM. Make sure to read the PAM documentation (e.g. pam.d/pam.conf man "
 "page) and be comfortable with the security implications of any changes you "
 "intend to make to your configuration."
-msgstr ""
+msgstr "Los siguientes son valores razonables para pam.conf para activar la entrada automática en GDM. Asegúrese de leer la documentación de PAM (ej. página man de pam.d/pam.conf) y conocer las implicaciones de seguridad que cualquier cambio que intente hacer a la configuración."
 
 #: ../C/gdm.xml:7022(screen)
 #, no-wrap
@@ -9762,7 +9789,7 @@ msgstr ""
 msgid ""
 "The above setup will cause no lastlog entry to be generated. If a lastlog "
 "entry is desired, then use the following for session:"
-msgstr ""
+msgstr "La configuración anterior hará que no se genere información de «lastlog». Si se desea una entrada de «lastlog», use lo siguiente para la sesión:"
 
 #: ../C/gdm.xml:7035(screen)
 #, no-wrap
@@ -9799,7 +9826,7 @@ msgid ""
 "enabled, which is the normal case for Solaris. This second feature has the "
 "side-effect of causing the X server to always restart between sessions, "
 "which disables the AlwaysRestartServer configuration option."
-msgstr ""
+msgstr "GDM tiene una característica de seguridad que hace que el servidor X funcione como el usuario en lugar del usuario root. GDM debe estar usando PAM para que esta característica esté activada, lo cual es el caso normal en Solaris. Esta segunda característica tiene el efecto colateral de hacer que el servidor X siempre se reinicie entre las sesiones, lo cual desactiva la opción de configuración AlwaysRestartServer."
 
 #: ../C/gdm.xml:7061(para)
 msgid ""
@@ -9809,6 +9836,11 @@ msgid ""
 "<filename>AllowRemoteRoot</filename> options as described in the "
 "\"Configuration\" section."
 msgstr ""
+"Solaris ssoporta el interfaz <filename>/etc/default/login</filename>,"
+"que afecta las opciones <filename>DefaultPath</filename>, <filename>RootPath</"
+"filename>, <filename>PasswordRequired</filename>, y "
+"<filename>AllowRemoteRoot</filename> tal como se describen en la sección"
+"«Configuración» ."
 
 #: ../C/gdm.xml:7073(title)
 msgid "Example Configurations"
@@ -10119,11 +10151,11 @@ msgid ""
 "Also make sure that the <filename>/tmp</filename> directory has reasonable "
 "ownership and permissions, and that the machine's file system is not full. "
 "These problems will cause GDM to fail to start."
-msgstr ""
+msgstr "Asegúrese de que el directorio <filename>/tmp</filename> tiene permisos y propiedad razonables, y que el sistema de archivos de la máquina no está lleno. Estos problemas harán que GDM falle al iniciar."
 
 #: ../C/gdm.xml:7374(title)
 msgid "GDM Will Not Access User Settings"
-msgstr ""
+msgstr "GDM no accede a los ajustes del usuario"
 
 #: ../C/gdm.xml:7376(para)
 msgid ""
@@ -10137,7 +10169,7 @@ msgid ""
 "directory, or correct the permissions issues that cause GDM to ignore the "
 "file. This is discussed in detail described in the \"File Access\" section "
 "of the \"Overview\"."
-msgstr ""
+msgstr "GDM guarda los ajustes del usuario, como su sesión predeterminada y el idioma, en el archivo <filename>~/.dmrc</filename>. Otros archivos, como el archivo <filename>~/.Xauthority</filename> también afectarán a la entrad. GDM, por omisión, es estricto acerca de cómo se intenta acceder a los archivos en el directorio personal del usuario e ignorará el archivo si no está de acuerdo con ciertas reglas. Puede usar la opción de configuración <filename>RelaxPermissions</filename> para hacer que GDM sea menos estricto acerca de cómo accede a los archivos en el directorio personal del usuario, o corregir los problemas de permisos que hacen que DGM ignore el archivo. Esto se trata en detalle en la sección «Acceso a archivos » en la «Vista general»"
 
 #: ../C/gdm.xml:7395(title)
 msgid "License"
@@ -10171,7 +10203,13 @@ msgid ""
 "<city>Boston</city>, <state>MA</state><postcode>02111-1307</"
 "postcode><country>USA</country></address>"
 msgstr ""
-"Se incluye una copia de la <citetitle>Licencia Pública General GNU</citetitle> como un apéndice a la <citetitle>Guía del usuario de GNOME</citetitle>. Quizá quiera obtener una copia de la <citetitle>Licencia Pública General GNU</citetitle> de la Free Software Foundation visitando <ulink type=\"http\" url=\"http://www.fsf.org\">su sitio web</ulink> o escribiendo a <address>Free Software Foundation, Inc<street>59 Temple Place</street> Suite 330<city>Boston</city><state>MA</state><postcode>02111-1307</"
+"Se incluye una copia de la <citetitle>Licencia Pública General GNU</"
+"citetitle> como un apéndice a la <citetitle>Guía del usuario de GNOME</"
+"citetitle>. Quizá quiera obtener una copia de la <citetitle>Licencia Pública "
+"General GNU</citetitle> de la Free Software Foundation visitando <ulink type="
+"\"http\" url=\"http://www.fsf.org\">su sitio web</ulink> o escribiendo a "
+"<address>Free Software Foundation, Inc<street>59 Temple Place</street> Suite "
+"330<city>Boston</city><state>MA</state><postcode>02111-1307</"
 "postcode><country>USA</country></address>"
 
 #: ../C/legal.xml:2(para)
