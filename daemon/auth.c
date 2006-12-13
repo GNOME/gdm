@@ -710,7 +710,7 @@ try_user_add_again:
 	af = gdm_safe_fopen_ap (d->userauth);
     }
 
-    /* Set to NULL, because can goto try_user_add_again.
+    /* Set to NULL, because can goto try_user_add_again. */
     g_free (authdir);
     authdir = NULL;
 
