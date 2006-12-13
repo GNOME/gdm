@@ -1,5 +1,23 @@
 Ahh news...
 
+2.17.4 Stuff:
+
+- Fix for a recently reported security issue that has ID
+  CVE-2006-6105.  This fixes a problem where a user can 
+  enter strings like "%08x" into the gdmchooser "Add"j
+  host button and print out memory.  (Brian Cameron)
+
+- Improvements to gdmsetup, which now supports many new
+  features.  Fixes feature request #334186 and bugs
+  #343206 and #347101.  (Lukasz Zalewski)
+
+- No longer set XDG_SESSION_COOKIE if there is no cookie.
+  Fixes #383866.  (William Jon McCann)
+
+- Now the key and dwell gestures start Orca instead of
+  Gnopernicus.  Must use Orca v2.17.4 or later to work 
+  with GDM.  (Brian Cameron)
+
 2.17.3 Stuff:
 
 - Now all GDM GUI's are run as the gdm user.  This change ensures
