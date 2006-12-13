@@ -164,6 +164,23 @@ Ahh news...
   Raphael Higino, Priit Laes, \303\205smund Skj\303\246veland,
   Ivar Smolin)
 
+2.16.4 Stuff:
+
+- Fix for a recently reported security issue that has ID
+  CVE-2006-6105.  This fixes a problem where a user can
+  enter strings like "%08x" into the gdmchooser "Add"j
+  host button and print out memory.  (Brian Cameron)
+
+- Fix for TryExec check in gdmsession to make sure that any
+  arguments are not passed to g_find_program_in_path since
+  this causes the function to say it is not executable.
+  (Brian Cameron)
+
+- Translation updates (Runa Bhattacharjee, Josep Puigdemont
+  i Casamaj\303\263, Laurent Dhima, I. Felix, David Lodge,
+  Ani Peter, Rajesh Ranjan, Clytie Siddall, Vincent van
+  Adrighem)
+
 2.16.3 Stuff:
 
 - Now support altfile[n] propery to cater for alternative
@@ -499,6 +516,28 @@ Ahh news...
 - Many updates to documentation.  Explain gtk-theme greeter tag, new button and
   pam-error-icon, and startover greeter types, and better info about PAM.
   (Brian Cameron)
+
+2.14.11 stuff:
+
+- Fix for a recently reported security issue that has ID
+  CVE-2006-6105.  This fixes a problem where a user can
+  enter strings like "%08x" into the gdmchooser "Add"j
+  host button and print out memory.  (Brian Cameron)
+
+- Set authdir to NULL after freeing to avoid accessing an invalid
+  pointer.  Fixes bug #359831.  (Amnon Aaronsohn)
+
+- Fix custom lists so that focus does not ever leave the
+  username/password entry field.  (Brian Cameron)
+
+- Remove calls to syslog/malloc that are called from inside signal
+  handlers, since they are not safe.  (Ray Strode)
+
+- The configure script now supports the Xserver installed in
+  /usr/bin/Xorg.  (Ray Strode)
+
+- Fix error message that gets printed when you run GDM
+  as non-root user. (Brian Cameron)
 
 2.14.10 stuff:
 
