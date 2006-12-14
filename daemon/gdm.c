@@ -716,6 +716,8 @@ restart_machine (void)
 static void
 custom_cmd (long cmd_id)
 {	
+        gchar * key_string;
+
         if (cmd_id < 0 || cmd_id >= GDM_CUSTOM_COMMAND_MAX) {
 		/* We are just feeling very paranoid */
 		gdm_error (_("custom_cmd: Custom command index %ld outside permitted range [0,%d)"), 
@@ -723,7 +725,7 @@ custom_cmd (long cmd_id)
 		return;
 	}
 
-        gchar * key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, cmd_id);
+        key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, cmd_id);
         if (gdm_get_value_bool (key_string))
 	        custom_cmd_no_restart (cmd_id);
 	else
@@ -735,6 +737,8 @@ custom_cmd (long cmd_id)
 static void
 custom_cmd_restart (long cmd_id)
 {	
+	gchar * key_string;
+	char **argv;
 
         gdm_info (_("Executing custom command %ld with restart option..."), cmd_id);
 
@@ -745,8 +749,7 @@ custom_cmd_restart (long cmd_id)
 	change_to_first_and_clear (TRUE);
 #endif /* __linux */
 	
-	gchar * key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
-	char **argv;
+	key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
 	argv = ve_split (gdm_get_value_string (key_string));
 	g_free(key_string);
 	if (argv != NULL && argv[0] != NULL)
@@ -761,10 +764,11 @@ custom_cmd_restart (long cmd_id)
 static void
 custom_cmd_no_restart (long cmd_id)
 {	
+        pid_t pid;
 
         gdm_info (_("Executing custom command %ld with no restart option ..."), cmd_id);
 
-		pid_t pid = fork ();
+        pid = fork ();
 	
 	if (pid < 0) {
 	        /*failed fork*/
@@ -3680,6 +3684,7 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		GdmDisplay *disp;
 		GString *msg;
 		gboolean sysmenu;
+		unsigned long no_restart_status_flag = 0; /* we can store up-to 32 commands this way */
 
 		disp = gdm_connection_get_display (conn);
 		sysmenu = gdm_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
@@ -3696,8 +3701,6 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		
 		msg = g_string_new ("OK ");
 
-		unsigned long no_restart_status_flag = 0; /* we can store up-to 32 commands this way */
-		
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 			gchar *key_string = NULL; 
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 

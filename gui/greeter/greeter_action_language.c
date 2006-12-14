@@ -306,6 +306,7 @@ void
 greeter_language_set (char *language)
 {
    char *locale;
+   GtkTreeSelection *selection;
    GtkTreeIter iter = {0};
 
    g_free (current_language);
@@ -319,7 +320,7 @@ greeter_language_set (char *language)
  
    greeter_custom_set_language (language);
 
-   GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
+   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
    gtk_tree_selection_unselect_all (selection);
 
    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (lang_model), &iter)) {

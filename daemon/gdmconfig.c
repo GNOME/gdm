@@ -346,6 +346,7 @@ static void
 gdm_config_init (void)
 {
    gint i;
+   gchar *key_string = NULL; 
 
    type_hash    = g_hash_table_new (g_str_hash, g_str_equal);
    val_hash     = g_hash_table_new (g_str_hash, g_str_equal);
@@ -511,7 +512,6 @@ gdm_config_init (void)
 
    /* custom command string values */
    GdmCustomCommands = g_new0 (GdmCustomCmd, GDM_CUSTOM_COMMAND_MAX);   
-   gchar *key_string = NULL; 
    for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 	   /* For each possible custom command */      
 	   key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 

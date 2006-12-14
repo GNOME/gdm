@@ -685,9 +685,12 @@ intspin_timeout (GtkWidget *spin)
 		   timed login comboboxes are adjusted and greeters restarted */
 		char **list;
 		char *removed = NULL;	
+		int i;
+		gchar *autologon_user;
+		gchar *timedlogon_user;
+		
 		
 		list = g_strsplit (GdmInclude, ",", 0);
-		int i;
 		for (i=0; list != NULL && list[i] != NULL; i++) {
 			if (gdm_user_uid (list[i]) >= new_val) 
 				continue;					
@@ -748,9 +751,6 @@ intspin_timeout (GtkWidget *spin)
 
 		/* We also need to check if user (if any) in the
 		   autologon/timed logon still match the criteria */
-		gchar *autologon_user;
-		gchar *timedlogon_user;
-		
 		autologon_user = gdm_config_get_string (GDM_KEY_AUTOMATIC_LOGIN);
 		timedlogon_user = gdm_config_get_string (GDM_KEY_TIMED_LOGIN);
 
@@ -3527,6 +3527,12 @@ command_response (GtkWidget *button, gpointer data)
 	gint response;
 	gchar *filename;
 	
+	const gchar *key;
+	gchar *value;
+	GtkWidget *command_combobox;
+	GtkWidget *command_entry = NULL;
+	gint selected;
+	
 	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
 	
 	/* first get the file */
@@ -3563,12 +3569,6 @@ command_response (GtkWidget *button, gpointer data)
 		return;
 	}
 
-	const gchar *key;
-	gchar *value;
-	GtkWidget *command_combobox;
-	GtkWidget *command_entry = NULL;
-	gint selected;
-	
 	key = g_object_get_data (G_OBJECT (button), "key");	
 	
 	/* Then according to the selected command
@@ -3940,14 +3940,17 @@ strings_list_add (char *strings_list, const char *string, const char *sep)
 static char *
 strings_list_remove (char *strings_list, const char *string, const char *sep)
 {
+    char **actions;   
+    gint i;
+    GString *msg;
+    const char *separator = "";
+    char *n;
+
     if (ve_string_empty (strings_list))
         return strings_list;
     
-    char **actions;   
-    gint i;
-    GString *msg = g_string_new ("");
-    const char *separator = "";
-    
+    msg = g_string_new ("");
+
     actions = g_strsplit (strings_list, sep, -1);
         for (i = 0; actions[i]; i++) {
         if (strncmp (actions[i], string, strlen (string)) == 0)
@@ -3956,7 +3959,7 @@ strings_list_remove (char *strings_list, const char *string, const char *sep)
         separator = sep;
     }
     g_strfreev (actions);
-    char *n = g_strdup (msg->str);
+    n = g_strdup (msg->str);
     g_string_free (msg, TRUE);
     g_free (strings_list);
     return n;
@@ -5635,14 +5638,14 @@ xserver_priority_timeout (GtkWidget *entry)
 	for (li = xservers; li != NULL; li = li->next) {
 		GdmXserver *svr = li->data;
 		if (strcmp (ve_sure_string (svr->id), ve_sure_string (section)) == 0) {
-		
+			gint new_value;
 			
 			if (strcmp (ve_sure_string (key),
 				    ve_sure_string (GDM_KEY_SERVER_PRIORITY)) == 0)
 				value = svr->priority;
 			
 			/* Update this servers configuration */
-			gint new_value = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (entry));
+			new_value = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (entry));
 			if (new_value != value) {
 				svr->priority = new_value;				
 				update_xserver (section, svr);			
@@ -7317,6 +7320,7 @@ setup_general_tab (void)
 	GtkWidget *apply_command_changes_button;
 	gchar *gtkrc_filename;
 	gchar *user_24hr_clock;
+	gint i;
 
 	
 	/* Setup use visual feedback in the passwotrd entry */
@@ -7413,7 +7417,6 @@ setup_general_tab (void)
 	gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Suspend command"));
 
 	/* Add all the custom commands */
-	gint i;
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 		gchar *label = g_strdup_printf("Custom command %d", i);
 		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), label);
@@ -8193,6 +8196,9 @@ int
 main (int argc, char *argv[])
 {
 	GtkWidget *dialog;
+	char **list;
+	gint GdmMinimalUID;
+	int i;
 
 	gdm_config_never_cache (TRUE);
 
@@ -8293,10 +8299,8 @@ main (int argc, char *argv[])
 	/* We need to make sure that the users in the include list exist
 	   and have uid that are higher than MinimalUID. This protects us
 	   from invalid data obtained from the config file */
-	char **list;
-	gint GdmMinimalUID = gdm_config_get_int (GDM_KEY_MINIMAL_UID);
+	GdmMinimalUID = gdm_config_get_int (GDM_KEY_MINIMAL_UID);
 	list = g_strsplit (GdmInclude, ",", 0);
-	int i;
 	for (i=0; list != NULL && list[i] != NULL; i++) {
 		if (gdm_is_user_valid (list[i]) && gdm_user_uid (list[i]) >= GdmMinimalUID)
 			continue;

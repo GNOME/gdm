@@ -217,8 +217,8 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 		        if (GdmCustomCmdsFound[i]){
 				gint * cmd_index = g_new0(gint, 1);
-				*cmd_index = i;
 				gchar * key_string = NULL;
+				*cmd_index = i;
 				key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 				w = gtk_menu_item_new_with_mnemonic (gdm_config_get_string(key_string));
 				gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
@@ -512,8 +512,9 @@ greeter_item_system_setup (void)
 
   for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 	  gint * cmd_index = g_new0(gint, 1);
+	  gchar * key_string;
 	  *cmd_index = i;
-	  gchar * key_string = g_strdup_printf (_("custom_cmd_button%d"), i);
+	  key_string = g_strdup_printf (_("custom_cmd_button%d"), i);
 	  greeter_item_register_action_callback (key_string,
 						 (ActionFunc)query_greeter_custom_cmd_handler,
 						 cmd_index);
