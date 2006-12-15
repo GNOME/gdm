@@ -195,8 +195,6 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 
 	closelog ();
 
-	gdm_close_all_descriptors (0 /* from */, closefdexcept /* except */, -1 /* except2 */);
-
 	/* No error checking here - if it's messed the best response
 	 * is to ignore & try to continue */
 	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
