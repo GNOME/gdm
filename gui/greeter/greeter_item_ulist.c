@@ -73,7 +73,7 @@ greeter_item_ulist_check_show_userlist (void)
 	 * userlist.  This id allows a rectangle to be defined with alpha
 	 * behind the userlist that also goes away when the list is empty.
 	 */
-	if (num_users == 0) {
+	if (num_users == 0 && user_list != NULL) {
 		GreeterItemInfo *urinfo = greeter_lookup_id ("userlist-rect");
 		GnomeCanvasItem *item;
 
