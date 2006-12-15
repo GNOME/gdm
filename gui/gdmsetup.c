@@ -74,6 +74,7 @@ static GladeXML  *xml_add_users;
 static GladeXML  *xml_add_xservers;
 static GladeXML  *xml_xdmcp;
 static GladeXML  *xml_xservers;
+static GladeXML  *xml_commands;
 static GtkWidget *setup_notebook;
 static GList     *timeout_widgets = NULL;
 static gchar     *last_theme_installed = NULL;
@@ -558,8 +559,8 @@ toggle_timeout (GtkWidget *toggle)
 		gint selected, i;
 		
 		val = GTK_TOGGLE_BUTTON (toggle)->active;
-		apply_cmd_changes = glade_helper_get (xml, "command_apply_button", GTK_TYPE_BUTTON);
-		command_combobox = glade_helper_get (xml, 
+		apply_cmd_changes = glade_helper_get (xml_commands, "command_apply_button", GTK_TYPE_BUTTON);
+		command_combobox = glade_helper_get (xml_commands, 
 						     "cmd_type_combobox",
 						     GTK_TYPE_COMBO_BOX);
 		
@@ -709,10 +710,13 @@ intspin_timeout (GtkWidget *spin)
 			GtkTreeModel *include_model;			
 			GtkWidget *dlg;	
 			GtkTreeIter iter;			
+			GtkWidget *setup_dialog;
+
+			setup_dialog = glade_helper_get(xml, "setup_dialog", GTK_TYPE_WINDOW);
 
 			//Inform user about the change and its implications
-			dlg = ve_hig_dialog_new (NULL,
-						 GTK_DIALOG_MODAL,
+			dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+						 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_WARNING,
 						 GTK_BUTTONS_OK,
 						 _("Users include list modification"),
@@ -1335,14 +1339,16 @@ combobox_timeout (GtkWidget *combo_box)
 					   than minimal uid, or uid = 0 (root) */
 					gchar *str;
 					GtkWidget *dialog;
+					GtkWidget *setup_dialog;
 					
 					if (gdm_user_uid (new_val) == 0)
 						str = g_strdup (_("Autologin or timed login to the root account is forbidden."));
 					else 
 						str = g_strdup_printf (_("The \"%s\" user UID is lower than allowed MinimalUID."), new_val);				
-					
-					dialog = ve_hig_dialog_new (NULL,
-								    GTK_DIALOG_MODAL,
+					setup_dialog = glade_helper_get(xml, "setup_dialog", GTK_TYPE_WINDOW);
+										
+					dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+								    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 								    GTK_MESSAGE_ERROR,
 								    GTK_BUTTONS_OK,
 								    _("User not allowed"),
@@ -1451,11 +1457,11 @@ combobox_timeout (GtkWidget *combo_box)
 		gboolean bool_val = FALSE;		
 		gboolean enabled_command = FALSE;
 		
-		hrs_cmd_entry = glade_helper_get (xml, "hrs_cmd_path_entry",
+		hrs_cmd_entry = glade_helper_get (xml_commands, "hrs_cmd_path_entry",
 						  GTK_TYPE_ENTRY);
-		cust_cmd_entry  = glade_helper_get (xml, "custom_cmd_path_entry",			
+		cust_cmd_entry  = glade_helper_get (xml_commands, "custom_cmd_path_entry",			
 						    GTK_TYPE_ENTRY);
-		status_label = glade_helper_get (xml, "command_status_label", 
+		status_label = glade_helper_get (xml_commands, "command_status_label", 
 						 GTK_TYPE_LABEL);
 
 		if (selected == HALT_CMD) {
@@ -1484,7 +1490,7 @@ combobox_timeout (GtkWidget *combo_box)
 			g_free (val);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
-			cust_cmd_label_entry  = glade_helper_get (xml, "custom_cmd_label_entry", 
+			cust_cmd_label_entry  = glade_helper_get (xml_commands, "custom_cmd_label_entry", 
 								  GTK_TYPE_ENTRY);			
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_label_entry), ve_sure_string (val));
@@ -1492,7 +1498,7 @@ combobox_timeout (GtkWidget *combo_box)
 			g_free (val);
 
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
-			cust_cmd_lrlabel_entry  = glade_helper_get (xml, "custom_cmd_lrlabel_entry",
+			cust_cmd_lrlabel_entry  = glade_helper_get (xml_commands, "custom_cmd_lrlabel_entry",
 								    GTK_TYPE_ENTRY);			
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_lrlabel_entry), ve_sure_string (val));
@@ -1500,7 +1506,7 @@ combobox_timeout (GtkWidget *combo_box)
 			g_free (val);
 
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
-			cust_cmd_text_entry  = glade_helper_get (xml, "custom_cmd_text_entry",
+			cust_cmd_text_entry  = glade_helper_get (xml_commands, "custom_cmd_text_entry",
 								 GTK_TYPE_ENTRY);			
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_text_entry), ve_sure_string (val));
@@ -1508,21 +1514,21 @@ combobox_timeout (GtkWidget *combo_box)
 			g_free (val);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
-			cust_cmd_tooltip_entry  = glade_helper_get (xml, "custom_cmd_tooltip_entry",
+			cust_cmd_tooltip_entry  = glade_helper_get (xml_commands, "custom_cmd_tooltip_entry",
 								    GTK_TYPE_ENTRY);			
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_tooltip_entry), ve_sure_string (val));
 			g_free (key_string);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
-			cust_cmd_norestart_checkbox  = glade_helper_get (xml, "custom_cmd_norestart_checkbutton",
+			cust_cmd_norestart_checkbox  = glade_helper_get (xml_commands, "custom_cmd_norestart_checkbutton",
 								    GTK_TYPE_CHECK_BUTTON);
 			bool_val = gdm_config_get_bool (key_string);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_norestart_checkbox), bool_val);
 			g_free (key_string);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
-			cust_cmd_persistent_checkbox  = glade_helper_get (xml, "custom_cmd_persistent_checkbutton",
+			cust_cmd_persistent_checkbox  = glade_helper_get (xml_commands, "custom_cmd_persistent_checkbutton",
 									 GTK_TYPE_CHECK_BUTTON);
 			bool_val = gdm_config_get_bool (key_string);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_persistent_checkbox), bool_val);
@@ -1765,12 +1771,17 @@ combobox_changed (GtkWidget *combobox)
 				   to be displayed only once */
 				
 				if (selected == RANDOM_THEME && ve_string_empty (selected_themes)) {
-					GtkWidget *warn_dlg = ve_hig_dialog_new (NULL /* parent */,
-										 GTK_DIALOG_MODAL /* flags */,
+					GtkWidget *setup_dialog = glade_helper_get(xml, 
+										   "setup_dialog", GTK_TYPE_WINDOW);
+					
+					GtkWidget *warn_dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
+										 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
 										 GTK_MESSAGE_WARNING,
 										 GTK_BUTTONS_OK,
 										 _("No themes selected!"),
-										 "You need one or more themes selected for the \"Random from selected\" option to be valid. Failure to do so will force \"Selected only\" mode.");
+										 _("You need one or more themes selected for the "
+										   "\"Random from selected\" option to be valid. "
+										   "Failure to do so will force \"Selected only\" mode."));
 					gtk_dialog_run (GTK_DIALOG (warn_dlg));
 					gtk_widget_destroy (warn_dlg);
 					
@@ -1794,8 +1805,11 @@ combobox_changed (GtkWidget *combobox)
 				   called multiple times and we want this warning 
 				   to be displayed only once */
 				if (selected == RANDOM_THEME && ve_string_empty (selected_themes)) {
-					GtkWidget *warn_dlg = ve_hig_dialog_new (NULL /* parent */,
-										 GTK_DIALOG_MODAL /* flags */,
+					GtkWidget *setup_dialog = glade_helper_get(xml, 
+										   "setup_dialog", GTK_TYPE_WINDOW);
+					
+					GtkWidget *warn_dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
+										 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
 										 GTK_MESSAGE_WARNING,
 										 GTK_BUTTONS_OK,
 										 _("No themes selected!"),
@@ -1935,7 +1949,7 @@ combobox_changed (GtkWidget *combobox)
 			response = gtk_dialog_run (GTK_DIALOG (prompt));
 			gtk_widget_destroy (prompt);	       
 			
-			apply_command = glade_helper_get (xml, "command_apply_button",
+			apply_command = glade_helper_get (xml_commands, "command_apply_button",
 							  GTK_TYPE_BUTTON);
 			if (response == GTK_RESPONSE_APPLY)				
 				g_signal_emit_by_name (G_OBJECT (apply_command), "clicked");
@@ -1948,9 +1962,9 @@ combobox_changed (GtkWidget *combobox)
 		
 		last_selected_command = selected;
 
-		hrs_cmd_vbox = glade_helper_get (xml, "hrs_command_vbox",
+		hrs_cmd_vbox = glade_helper_get (xml_commands, "hrs_command_vbox",
 						 GTK_TYPE_VBOX);
-		custom_cmd_vbox = glade_helper_get (xml, "custom_command_vbox",
+		custom_cmd_vbox = glade_helper_get (xml_commands, "custom_command_vbox",
 						      GTK_TYPE_VBOX);		
 		if (selected > SUSPEND_CMD) {
 			/* We are dealing with custom commands */							
@@ -1965,7 +1979,7 @@ combobox_changed (GtkWidget *combobox)
 
 		/* We dont want default timeout for this one so we
 		   are going to bail out now */
-		run_timeout (combobox, 100, combobox_timeout);		
+		run_timeout (combobox, 10, combobox_timeout);		
 		return;
 	}
 	run_timeout (combobox, 500, combobox_timeout);
@@ -2237,6 +2251,111 @@ setup_notify_toggle (const char *name,
 		g_signal_connect (G_OBJECT (toggle), "toggled",
 		                  G_CALLBACK (toggle_toggled), NULL);
 	}
+}
+
+static gboolean
+commands_entry_timeout (GtkWidget *entry)
+{
+	GtkWidget *apply_cmd_changes;
+	GtkWidget *command_combobox;
+	gint selected;
+
+	const char  *key  = g_object_get_data (G_OBJECT (entry), "key");
+	const gchar *val  = gtk_entry_get_text (GTK_ENTRY (entry));
+	
+	apply_cmd_changes = glade_helper_get (xml_commands, "command_apply_button", GTK_TYPE_BUTTON);
+	command_combobox = glade_helper_get (xml_commands, "cmd_type_combobox", GTK_TYPE_COMBO_BOX);
+	
+	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));	
+
+	/* All hrs (Halt, Shutdown, Suspend) commands will fall into this category */
+	if (strcmp ("hrs_custom_cmd", ve_sure_string (key)) == 0) {
+		gchar *old_val;
+		gchar *cmd_key = NULL;
+
+		if (selected == HALT_CMD)
+			cmd_key = g_strdup (GDM_KEY_HALT);			
+		else if (selected == REBOOT_CMD)
+			cmd_key = g_strdup (GDM_KEY_REBOOT);
+		else if (selected == SUSPEND_CMD)
+			cmd_key = g_strdup (GDM_KEY_SUSPEND);
+		
+		old_val = gdm_config_get_string (cmd_key);		
+			
+		if (strcmp (ve_sure_string (val), ve_sure_string (old_val)) != 0) 			
+			g_hash_table_insert (GdmCommandChangesUnsaved, g_strdup (cmd_key), g_strdup (val));
+
+		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, cmd_key) != NULL)			
+			g_hash_table_remove (GdmCommandChangesUnsaved, cmd_key);		
+		
+		g_free (old_val);
+		g_free (cmd_key);
+	}
+	/* All the custom commands will fall into this category */
+	else {
+		gchar *key_string;
+		gchar *old_val;
+		gint i;			
+
+		i = selected - CUSTOM_CMD;
+		key_string = g_strdup_printf(_("%s%d="), ve_sure_string (key), i); 
+		old_val = gdm_config_get_string (key_string);				
+	
+		
+		if (strcmp (ve_sure_string (val), ve_sure_string (old_val)) != 0)
+			g_hash_table_insert (GdmCommandChangesUnsaved, g_strdup (key_string), g_strdup (val));
+		
+		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, key_string) != NULL)
+			g_hash_table_remove (GdmCommandChangesUnsaved, key_string);
+		
+		g_free (old_val);
+		g_free (key_string);
+	}	
+	
+	if (g_hash_table_size (GdmCommandChangesUnsaved) == 0)
+		gtk_widget_set_sensitive (apply_cmd_changes, FALSE);
+	else 
+		gtk_widget_set_sensitive (apply_cmd_changes, TRUE);
+	
+	return FALSE;
+}
+
+static void
+commands_entry_changed (GtkWidget *entry)
+{
+	run_timeout (entry, 100, commands_entry_timeout);
+}
+
+static void
+setup_commands_text_entry (const char *name,
+                           const char *key)
+{
+	GtkWidget *entry;
+
+	entry = glade_helper_get (xml_commands, name, GTK_TYPE_ENTRY);
+	
+	g_object_set_data_full (G_OBJECT (entry),
+	                        "key", g_strdup (key),
+	                        (GDestroyNotify) g_free);
+
+	g_signal_connect (G_OBJECT (entry), "changed",
+		          G_CALLBACK (commands_entry_changed), NULL);
+}
+
+static void
+setup_commands_notify_toggle (const char *name,
+			      const char *key)
+{
+	GtkWidget *toggle;
+	
+	toggle = glade_helper_get (xml_commands, name, GTK_TYPE_TOGGLE_BUTTON);
+	
+	g_object_set_data_full (G_OBJECT (toggle),
+	                        "key", g_strdup (key),
+	                        (GDestroyNotify) g_free);
+	
+	g_signal_connect (G_OBJECT (toggle), "toggled",
+		          G_CALLBACK (toggle_toggled), NULL);
 }
 
 #ifdef HAVE_LIBXDMCP
@@ -2751,11 +2870,11 @@ command_apply (GtkWidget *button, gpointer data)
 	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
 	
 	if (last_selected_command < CUSTOM_CMD)
-		cmd_path_entry = glade_helper_get (xml, 
+		cmd_path_entry = glade_helper_get (xml_commands,
 						   "hrs_cmd_path_entry",
 						   GTK_TYPE_ENTRY);	
 	else
-		cmd_path_entry = glade_helper_get (xml, 
+		cmd_path_entry = glade_helper_get (xml_commands,
 						   "custom_cmd_path_entry",
 						   GTK_TYPE_ENTRY);	
 	
@@ -2768,8 +2887,10 @@ command_apply (GtkWidget *button, gpointer data)
 					     (GHRFunc) unsaved_data_from_hash_table_func, NULL);
 	
 	else {
-		GtkWidget *dialog = ve_hig_dialog_new (NULL,
-						       GTK_DIALOG_MODAL,
+		GtkWidget *parent = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_WINDOW);
+
+		GtkWidget *dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
+						       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 						       GTK_MESSAGE_ERROR,
 						       GTK_BUTTONS_OK,
 						       _("Invalid command path"),
@@ -3439,83 +3560,11 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 	return FALSE;
 }
 
-static gboolean
-greeter_command_entry_timeout (GtkWidget *entry)
-{
-	GtkWidget *apply_cmd_changes;
-	GtkWidget *command_combobox;
-	gint selected;
-
-	const char  *key  = g_object_get_data (G_OBJECT (entry), "key");
-	const gchar *val  = gtk_entry_get_text (GTK_ENTRY (entry));
-	
-	apply_cmd_changes = glade_helper_get (xml, "command_apply_button", GTK_TYPE_BUTTON);
-	command_combobox = glade_helper_get (xml, "cmd_type_combobox", GTK_TYPE_COMBO_BOX);
-	
-	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));	
-
-	/* All hrs (Halt, Shutdown, Suspend) commands will fall into this category */
-	if (strcmp ("hrs_custom_cmd", ve_sure_string (key)) == 0) {
-		gchar *old_val;
-		gchar *cmd_key = NULL;
-
-		if (selected == HALT_CMD)
-			cmd_key = g_strdup (GDM_KEY_HALT);			
-		else if (selected == REBOOT_CMD)
-			cmd_key = g_strdup (GDM_KEY_REBOOT);
-		else if (selected == SUSPEND_CMD)
-			cmd_key = g_strdup (GDM_KEY_SUSPEND);
-		
-		old_val = gdm_config_get_string (cmd_key);		
-			
-		if (strcmp (ve_sure_string (val), ve_sure_string (old_val)) != 0) 			
-			g_hash_table_insert (GdmCommandChangesUnsaved, g_strdup (cmd_key), g_strdup (val));
-
-		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, cmd_key) != NULL)			
-			g_hash_table_remove (GdmCommandChangesUnsaved, cmd_key);		
-		
-		g_free (old_val);
-		g_free (cmd_key);
-	}
-	/* All the custom commands will fall into this category */
-	else {
-		gchar *key_string;
-		gchar *old_val;
-		gint i;			
-
-		i = selected - CUSTOM_CMD;
-		key_string = g_strdup_printf(_("%s%d="), ve_sure_string (key), i); 
-		old_val = gdm_config_get_string (key_string);				
-	
-		
-		if (strcmp (ve_sure_string (val), ve_sure_string (old_val)) != 0)
-			g_hash_table_insert (GdmCommandChangesUnsaved, g_strdup (key_string), g_strdup (val));
-		
-		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, key_string) != NULL)
-			g_hash_table_remove (GdmCommandChangesUnsaved, key_string);
-		
-		g_free (old_val);
-		g_free (key_string);
-	}	
-	
-	if (g_hash_table_size (GdmCommandChangesUnsaved) == 0)
-		gtk_widget_set_sensitive (apply_cmd_changes, FALSE);
-	else 
-		gtk_widget_set_sensitive (apply_cmd_changes, TRUE);
-	
-	return FALSE;
-}
 
 static void
 greeter_entry_untranslate_changed (GtkWidget *entry)
 {
 	run_timeout (entry, 500, greeter_entry_untranslate_timeout);
-}
-
-static void
-greeter_command_entry_changed (GtkWidget *entry)
-{
-	run_timeout (entry, 100, greeter_command_entry_timeout);
 }
 
 static void
@@ -3527,13 +3576,7 @@ command_response (GtkWidget *button, gpointer data)
 	gint response;
 	gchar *filename;
 	
-	const gchar *key;
-	gchar *value;
-	GtkWidget *command_combobox;
-	GtkWidget *command_entry = NULL;
-	gint selected;
-	
-	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+	setup_dialog = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_WINDOW);
 	
 	/* first get the file */
 	chooser = gtk_file_chooser_dialog_new (_("Select Command"),
@@ -3569,13 +3612,19 @@ command_response (GtkWidget *button, gpointer data)
 		return;
 	}
 
+	const gchar *key;
+	gchar *value;
+	GtkWidget *command_combobox;
+	GtkWidget *command_entry = NULL;
+	gint selected;
+	
 	key = g_object_get_data (G_OBJECT (button), "key");	
 	
 	/* Then according to the selected command
 	   append the chosen filepath onto the existing
 	   string */
 	
-	command_combobox = glade_helper_get (xml, 
+	command_combobox = glade_helper_get (xml_commands, 
 					     "cmd_type_combobox",
 					     GTK_TYPE_COMBO_BOX);
 	
@@ -3601,10 +3650,10 @@ command_response (GtkWidget *button, gpointer data)
 	value = strings_list_add (value, filename, ";");
 	
 	if (strcmp (ve_sure_string (key), "add_hrs_cmd_button") == 0)				
-		command_entry = glade_helper_get (xml, "hrs_cmd_path_entry", GTK_TYPE_ENTRY);		
+		command_entry = glade_helper_get (xml_commands, "hrs_cmd_path_entry", GTK_TYPE_ENTRY);		
 	
 	else if (strcmp (ve_sure_string (key), "add_custom_cmd_button") == 0)				
-		command_entry = glade_helper_get (xml, "custom_cmd_path_entry", GTK_TYPE_ENTRY);		
+		command_entry = glade_helper_get (xml_commands, "custom_cmd_path_entry", GTK_TYPE_ENTRY);		
 			       
 
 	gtk_entry_set_text (GTK_ENTRY (command_entry), ve_sure_string (value));
@@ -3651,7 +3700,7 @@ static void
 setup_general_command_buttons (const char *name,
 			       const char *key)
 {
-	GtkWidget *button = glade_helper_get (xml, name, GTK_TYPE_BUTTON);
+	GtkWidget *button = glade_helper_get (xml_commands, name, GTK_TYPE_BUTTON);
 	
 	g_object_set_data_full (G_OBJECT (button),
 				"key", g_strdup (key),
@@ -3718,6 +3767,158 @@ xdmcp_button_clicked (void)
 	gtk_widget_hide (dialog);
 }
 #endif
+
+static void
+apply_command_changes (GObject *object, gint arg1, gpointer command_data)
+{
+	GtkWidget *dialog = command_data;
+	
+	if (g_hash_table_size (GdmCommandChangesUnsaved) != 0) {
+
+		GtkWidget *prompt;
+		gint response;
+
+		prompt = ve_hig_dialog_new (GTK_WINDOW (dialog),
+		                            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		                            GTK_MESSAGE_WARNING,
+		                            GTK_BUTTONS_NONE,
+		                            _("Apply the changes to commands before closing?"),
+		                            _("If you don't apply, the changes made "
+		                              "will be disregarded."));
+		
+		gtk_dialog_add_button (GTK_DIALOG (prompt), _("Close _without Applying"), GTK_RESPONSE_CLOSE);
+		gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-apply", GTK_RESPONSE_APPLY);
+		
+		response = gtk_dialog_run (GTK_DIALOG (prompt));
+		gtk_widget_destroy (prompt);
+		
+		if (response == GTK_RESPONSE_APPLY) {
+			GtkWidget *apply_button;
+
+			apply_button = glade_helper_get (xml_commands, "command_apply_button",
+							 GTK_TYPE_WIDGET);
+			g_signal_emit_by_name (G_OBJECT (apply_button), "clicked");
+		}
+		else {
+			/* Just to make sure */
+			if (g_hash_table_size (GdmCommandChangesUnsaved) != 0)
+				g_hash_table_remove_all (GdmCommandChangesUnsaved);
+		}
+	}
+}
+
+static void
+command_button_clicked (void)
+{
+	static GtkWidget *dialog = NULL;
+	GtkWidget *command_chooser = NULL;
+	gint selected = -1;
+	gint response;
+
+	if (dialog == NULL) {		
+
+		GtkWidget *parent;
+		GtkWidget *apply_command_changes_button;		
+
+		xml_commands = glade_helper_load ("gdmsetup.glade",
+						  "commands_dialog",
+						  GTK_TYPE_DIALOG,
+						  TRUE);
+		
+		command_chooser = glade_helper_get (xml_commands, 
+						    "cmd_type_combobox",
+						    GTK_TYPE_COMBO_BOX);
+
+		glade_helper_tagify_label (xml_commands, "commands_label", "b");
+		glade_helper_tagify_label (xml_commands, "custom_cmd_note_label", "i");
+		glade_helper_tagify_label (xml_commands, "custom_cmd_note_label", "small");
+	
+		parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+		dialog = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_DIALOG);
+		
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
+		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
+
+		/* Set up unsaved changes storage container */
+		GdmCommandChangesUnsaved = g_hash_table_new (g_str_hash, g_str_equal);
+				
+		
+		/* Add halt, rebewt and suspend commands */
+		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Halt command"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Reboot command"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Suspend command"));
+		
+		/* Add all the custom commands */
+		gint i;
+		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+			gchar *label = g_strdup_printf("Custom command %d", i);
+			gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), label);
+			g_free (label);
+		}
+		
+		g_object_set_data_full (G_OBJECT (command_chooser), "key",
+					_("command_chooser_combobox"), (GDestroyNotify) g_free);
+		g_signal_connect (G_OBJECT (command_chooser), "changed",
+				  G_CALLBACK (combobox_changed), NULL);			
+		
+		/* Lets setup handlers for all the entries 
+		   They will be assigned exactly the same key and handler
+		   as their only functionality would be to notify about changes */
+		
+		setup_commands_text_entry ("hrs_cmd_path_entry", "hrs_custom_cmd");
+		setup_commands_text_entry ("custom_cmd_path_entry", GDM_KEY_CUSTOM_CMD_TEMPLATE);
+		setup_commands_text_entry ("custom_cmd_label_entry", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE);
+		setup_commands_text_entry ("custom_cmd_lrlabel_entry", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE);
+		setup_commands_text_entry ("custom_cmd_text_entry", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE);
+		setup_commands_text_entry ("custom_cmd_tooltip_entry", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE);
+		
+		setup_commands_notify_toggle ("custom_cmd_persistent_checkbutton", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE);
+		setup_commands_notify_toggle ("custom_cmd_norestart_checkbutton", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE);	
+		
+		/* Set up append command buttons */
+		setup_general_command_buttons("hrs_command_add", "add_hrs_cmd_button");
+		setup_general_command_buttons("custom_command_add", "add_custom_cmd_button");
+		
+		/* set up apply command changes button */
+		apply_command_changes_button = glade_helper_get (xml_commands, 
+								 "command_apply_button",
+								 GTK_TYPE_BUTTON);
+		g_object_set_data_full (G_OBJECT (apply_command_changes_button), "key",
+					g_strdup ("apply_command_changes"), (GDestroyNotify) g_free);
+		g_signal_connect (G_OBJECT (apply_command_changes_button), "clicked",
+				  G_CALLBACK (command_apply), command_chooser);
+	
+		gtk_widget_set_sensitive (apply_command_changes_button, FALSE);
+		
+						
+		g_signal_connect (G_OBJECT (dialog), "response",
+				  G_CALLBACK (apply_command_changes), dialog);
+	}
+	else {
+		command_chooser = glade_helper_get (xml_commands, 
+						    "cmd_type_combobox",
+						    GTK_TYPE_COMBO_BOX);
+
+		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_chooser));
+		
+	}
+
+	/* Finally lets set our default choice */
+	gtk_combo_box_set_active (GTK_COMBO_BOX (command_chooser), HALT_CMD); 
+	if (selected == last_selected_command)
+		g_signal_emit_by_name (G_OBJECT (command_chooser), "changed");
+
+	do {
+		response = gtk_dialog_run (GTK_DIALOG (dialog));
+		if (response == GTK_RESPONSE_HELP) {
+			g_spawn_command_line_sync ("gnome-open ghelp:gdm", NULL, NULL,
+						   NULL, NULL);
+		}
+	} while (response != GTK_RESPONSE_CLOSE &&
+                 response != GTK_RESPONSE_DELETE_EVENT);
+	
+	gtk_widget_hide (dialog);
+}
 
 static void
 vt_spinbutton_activate (GtkWidget * widget,
@@ -4816,13 +5017,19 @@ selected_toggled (GtkCellRendererToggle *cell,
 		/* There are no themes selected atm in the Random form selected mode.
 		   We need to inform users that is the case */
 		if (ve_string_empty (selected_themes)) {
+			GtkWidget *setup_dialog = glade_helper_get(xml, 
+								   "setup_dialog", GTK_TYPE_WINDOW);
+		
 			GtkWidget *dlg = 
-				ve_hig_dialog_new (NULL,
-						   GTK_DIALOG_MODAL,
+				ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+						   GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 						   GTK_MESSAGE_WARNING,
 						   GTK_BUTTONS_OK,
 						   _("No themes selected!"),
-						   "You need one or more themes selected for the \"Random from selected\" option to be valid. Failure to do so will force \"Selected only\" mode.");
+						   _("You need one or more themes selected for "
+						     "the \"Random from selected\" option to be "
+						     "valid. Failure to do so will force "
+						     "\"Selected only\" mode."));
 			gtk_dialog_run (GTK_DIALOG (dlg));
 			gtk_widget_destroy (dlg);
 		}
@@ -5469,12 +5676,15 @@ delete_theme (GtkWidget *button, gpointer data)
 	   mode is currently in use in the "Selected only" mode 
 	   so lets warn the user about it */
 	if (selected_warning == TRUE) {
-		dlg = ve_hig_dialog_new (NULL /* parent */,
-					 GTK_DIALOG_MODAL /* flags */,
+		dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
+					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
 					 GTK_MESSAGE_WARNING,
 					 GTK_BUTTONS_OK,
 					 _("Theme active in \"Selected only\" mode"),
-					 _("This theme cannot be deleted at this point. If you wish to delete this theme switch to \"Selected only\" mode, and deselect it by choosing a different theme."));
+					 _("This theme cannot be deleted at this point. "
+					   "If you wish to delete this theme switch to "
+					   "\"Selected only\" mode, and deselect it by "
+					   "choosing a different theme."));
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);			    
 	}
@@ -6401,9 +6611,6 @@ setup_security_tab (void)
 	/* Setup MinumalUID */
 	setup_intspin ("minimal_uid_spinbutton", GDM_KEY_MINIMAL_UID);
 
-	/* Setup always login current session */
-	setup_notify_toggle ("a_login_curr_session_checkbutton", GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);	
-
 	/* Setup Configure XDMCP button */
 	XDMCPbutton = glade_helper_get (xml, "config_xserverbutton",
 	                                GTK_TYPE_BUTTON);
@@ -7307,20 +7514,10 @@ setup_general_tab (void)
 {
 	GtkWidget *gtkrc_filechooser;
 	GtkWidget *gtkrc_checkbox;
-	GtkWidget *clock_type_chooser;
-	GtkWidget *command_chooser;
-	GtkWidget *hrs_cmd_path_entry;
-	GtkWidget *custom_cmd_path_entry;
-	GtkWidget *custom_cmd_label_entry;
-	GtkWidget *custom_cmd_lrlabel_entry;
-	GtkWidget *custom_cmd_text_entry;
-	GtkWidget *custom_cmd_tooltip_entry;
-	GtkWidget *custom_cmd_persistent_checkbutton;
-	GtkWidget *custom_cmd_norestart_checkbutton;
-	GtkWidget *apply_command_changes_button;
+	GtkWidget *clock_type_chooser;	
+	GtkWidget *commands_button;
 	gchar *gtkrc_filename;
 	gchar *user_24hr_clock;
-	gint i;
 
 	
 	/* Setup use visual feedback in the passwotrd entry */
@@ -7332,6 +7529,9 @@ setup_general_tab (void)
 	/* Setup always restart server */
 	setup_notify_toggle ("a_restart_server_checkbutton", GDM_KEY_ALWAYS_RESTART_SERVER);
 	
+	/* Setup always login current session */
+	setup_notify_toggle ("a_login_curr_session_checkbutton", GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);
+
 	/* Setup default session */
 	setup_default_session ();
 	
@@ -7400,121 +7600,13 @@ setup_general_tab (void)
 	g_object_set_data_full (G_OBJECT (clock_type_chooser), "key",
 	                        g_strdup (GDM_KEY_USE_24_CLOCK), (GDestroyNotify) g_free);
 	g_signal_connect (G_OBJECT (clock_type_chooser), "changed",
-	                  G_CALLBACK (combobox_changed), NULL);		
-
-	
-	/* Set up unsaved changes storage container */
-	GdmCommandChangesUnsaved = g_hash_table_new (g_str_hash, g_str_equal);
-
-	/* Set up Halt, Rebewt, Suspend and Custom command fields */
-	command_chooser = glade_helper_get (xml, 
-					    "cmd_type_combobox",
-					    GTK_TYPE_COMBO_BOX);
-	
-	/* Add halt, rebewt and suspend commands */
-	gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Halt command"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Reboot command"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Suspend command"));
-
-	/* Add all the custom commands */
-	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar *label = g_strdup_printf("Custom command %d", i);
-		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), label);
-		g_free (label);
-	}
-	
-	g_object_set_data_full (G_OBJECT (command_chooser), "key",
-	                        _("command_chooser_combobox"), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (command_chooser), "changed",
 	                  G_CALLBACK (combobox_changed), NULL);			
-
-	/* Lets setup handlers for all the entries 
-	   They will be assigned exactly the same key and handler
-	   as their only functionality would be to notify about changes */
-
-	hrs_cmd_path_entry = glade_helper_get (xml, 
-					       "hrs_cmd_path_entry",
-					       GTK_TYPE_ENTRY);	
-	g_object_set_data_full (G_OBJECT (hrs_cmd_path_entry), "key",
-	                        g_strdup ("hrs_custom_cmd"), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (hrs_cmd_path_entry), "changed",
-			  G_CALLBACK (greeter_command_entry_changed), NULL);
-		
-	custom_cmd_path_entry = glade_helper_get (xml, 
-						  "custom_cmd_path_entry",
-						  GTK_TYPE_ENTRY);	
-	g_object_set_data_full (G_OBJECT (custom_cmd_path_entry), "key",
-	                        g_strdup (GDM_KEY_CUSTOM_CMD_TEMPLATE), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (custom_cmd_path_entry), "changed",
-	                  G_CALLBACK (greeter_command_entry_changed), NULL);
-
-	custom_cmd_label_entry = glade_helper_get (xml, 
-						   "custom_cmd_label_entry",
-						   GTK_TYPE_ENTRY);	
-	g_object_set_data_full (G_OBJECT (custom_cmd_label_entry), "key",
-	                        g_strdup (GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (custom_cmd_label_entry), "changed",
-	                  G_CALLBACK (greeter_command_entry_changed), NULL);
-
 	
-	custom_cmd_lrlabel_entry = glade_helper_get (xml, 
-						   "custom_cmd_lrlabel_entry",
-						   GTK_TYPE_ENTRY);	
-	g_object_set_data_full (G_OBJECT (custom_cmd_lrlabel_entry), "key",
-	                        g_strdup (GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (custom_cmd_lrlabel_entry), "changed",
-	                  G_CALLBACK (greeter_command_entry_changed), NULL);
-
-	custom_cmd_text_entry = glade_helper_get (xml, 
-						  "custom_cmd_text_entry",
-						  GTK_TYPE_ENTRY);	
-	g_object_set_data_full (G_OBJECT (custom_cmd_text_entry), "key",
-	                        g_strdup (GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (custom_cmd_text_entry), "changed",
-	                  G_CALLBACK (greeter_command_entry_changed), NULL);
-
-	custom_cmd_tooltip_entry = glade_helper_get (xml, 
-						     "custom_cmd_tooltip_entry",
-						     GTK_TYPE_ENTRY);	
-	g_object_set_data_full (G_OBJECT (custom_cmd_tooltip_entry), "key",
-	                        g_strdup (GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (custom_cmd_tooltip_entry), "changed",
-	                  G_CALLBACK (greeter_command_entry_changed), NULL);
-
-	custom_cmd_persistent_checkbutton = glade_helper_get (xml, 
-							      "custom_cmd_persistent_checkbutton",
-							      GTK_TYPE_CHECK_BUTTON);	
-	g_object_set_data_full (G_OBJECT (custom_cmd_persistent_checkbutton), "key",
-	                        g_strdup (GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (custom_cmd_persistent_checkbutton), "toggled",
-			  G_CALLBACK (toggle_toggled), custom_cmd_persistent_checkbutton);	
-	
-	custom_cmd_norestart_checkbutton = glade_helper_get (xml, 
-							     "custom_cmd_norestart_checkbutton",
-							     GTK_TYPE_CHECK_BUTTON);	
-	g_object_set_data_full (G_OBJECT (custom_cmd_norestart_checkbutton), "key",
-	                        g_strdup (GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (custom_cmd_norestart_checkbutton), "toggled",
-			  G_CALLBACK (toggle_toggled), custom_cmd_norestart_checkbutton);
-
-		
-	/* Set up append command buttons */
-	setup_general_command_buttons("hrs_command_add", "add_hrs_cmd_button");
-	setup_general_command_buttons("custom_command_add", "add_custom_cmd_button");
-	
-	/* set up apply command changes button */
-	apply_command_changes_button = glade_helper_get (xml, 
-							 "command_apply_button",
-							 GTK_TYPE_BUTTON);
-	g_object_set_data_full (G_OBJECT (apply_command_changes_button), "key",
-	                        g_strdup ("apply_command_changes"), (GDestroyNotify) g_free);
-	g_signal_connect (G_OBJECT (apply_command_changes_button), "clicked",
-			  G_CALLBACK (command_apply), command_chooser);
-	
-	gtk_widget_set_sensitive (apply_command_changes_button, FALSE);
-
-	/* Finally lets set our default choice */
-	gtk_combo_box_set_active (GTK_COMBO_BOX (command_chooser), HALT_CMD);       	
+	commands_button = glade_helper_get (xml, "configure_commands_button",
+					    GTK_TYPE_BUTTON);
+	g_signal_connect (G_OBJECT (commands_button), "clicked",
+	                  G_CALLBACK (command_button_clicked), NULL);
+      	
 }
 
 static void
@@ -7981,9 +8073,6 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "sounds_label", "b");
 	glade_helper_tagify_label (xml, "local_background_label", "b");
 	glade_helper_tagify_label (xml, "local_behaviour_label", "b");	
-	glade_helper_tagify_label (xml, "commands_label", "b");
-	glade_helper_tagify_label (xml, "custom_cmd_note_label", "i");
-	glade_helper_tagify_label (xml, "custom_cmd_note_label", "small");
 	glade_helper_tagify_label (xml, "local_logo_label", "b");
 	glade_helper_tagify_label (xml, "local_menubar_label", "b");
 	glade_helper_tagify_label (xml, "local_welcome_message_label", "b");
@@ -8143,8 +8232,8 @@ apply_user_changes (GObject *object, gint arg1, gpointer user_data)
 		
 		GtkWidget *prompt;
 		
-		prompt = ve_hig_dialog_new (NULL,
-					    GTK_DIALOG_MODAL,
+		prompt = ve_hig_dialog_new (GTK_WINDOW (dialog),
+					    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					    GTK_MESSAGE_WARNING,
 					    GTK_BUTTONS_OK,
 					    _("Random theme mode change"),
