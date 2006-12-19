@@ -3769,11 +3769,12 @@ xdmcp_button_clicked (void)
 #endif
 
 static void
-apply_command_changes (GObject *object, gint arg1, gpointer command_data)
+apply_command_changes (GObject *object, gint response, gpointer command_data)
 {
 	GtkWidget *dialog = command_data;
 	
-	if (g_hash_table_size (GdmCommandChangesUnsaved) != 0) {
+	if (g_hash_table_size (GdmCommandChangesUnsaved) != 0 && 
+	    response != GTK_RESPONSE_HELP) {
 
 		GtkWidget *prompt;
 		gint response;

@@ -180,7 +180,10 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		return;
 
 	if (gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON)) {
-		w = gtk_menu_item_new_with_mnemonic (_("Remote Login via _XDMCP..."));
+		w = gtk_image_menu_item_new_with_mnemonic (_("Remote Login via _XDMCP..."));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
+			gtk_image_new_from_icon_name ("preferences-desktop-remote-desktop", GTK_ICON_SIZE_MENU));
+
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -190,7 +193,10 @@ greeter_system_append_system_menu (GtkWidget *menu)
 
 	if (gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) &&
 	    bin_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR))) {
-		w = gtk_menu_item_new_with_mnemonic (_("Confi_gure Login Manager..."));
+		w = gtk_image_menu_item_new_with_mnemonic (_("Confi_gure Login Manager..."));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
+			gtk_image_new_from_icon_name ("gdm-setup", GTK_ICON_SIZE_MENU));
+
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -205,7 +211,9 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmRebootFound) {
-		w = gtk_menu_item_new_with_mnemonic (_("_Restart"));
+		w = gtk_image_menu_item_new_with_mnemonic (_("_Restart"));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
+					       gtk_image_new_from_icon_name ("gdm-restart", GTK_ICON_SIZE_MENU));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -232,7 +240,9 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmHaltFound) {
-		w = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
+		w = gtk_image_menu_item_new_with_mnemonic (_("Shut _Down"));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w), 
+					       gtk_image_new_from_icon_name ("gdm-shutdown", GTK_ICON_SIZE_MENU));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -241,7 +251,9 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (GdmSuspendFound) {
-		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend"));
+		w = gtk_image_menu_item_new_with_mnemonic (_("Sus_pend"));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
+					       gtk_image_new_from_icon_name ("gdm-suspend", GTK_ICON_SIZE_MENU));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
