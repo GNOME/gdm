@@ -543,17 +543,33 @@ toggle_timeout (GtkWidget *toggle)
 		else
 			gdm_setup_config_set_string (key, "");		    
 	}	
-	else if (strcmp (ve_sure_string (key), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE) == 0 ||
-		 strcmp (ve_sure_string (key), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE) == 0) {
+	else {
+		/* All other cases */
+		if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+			gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
+		}
+	}	
+
+	return FALSE;
+}
+
+static gboolean
+command_toggle_timeout (GtkWidget *toggle)
+{
+	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
+	
+	if (strcmp (ve_sure_string (key), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE) == 0 ||
+	    strcmp (ve_sure_string (key), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE) == 0) {
 		/* This only applies to custom commands
 		   First find which command has been ticked on/off then put the new value 
 		   together with the corresponding key into the command changed hash. 
 		   Enable apply command changes button. If command is equal to the existing
 		   config value remove it from the hash and disable the apply command changes 
 		   button (if applicable) */
-		   
+		
 		gchar *key_string;
 		gboolean old_val = FALSE;
+		gboolean val;
 		GtkWidget *apply_cmd_changes;
 		GtkWidget *command_combobox;
 		gint selected, i;
@@ -569,7 +585,7 @@ toggle_timeout (GtkWidget *toggle)
 		i = selected - CUSTOM_CMD;
 		key_string = g_strdup_printf(_("%s%d="), ve_sure_string (key), i); 
 		old_val = gdm_config_get_bool (key_string);
-	
+		
 		if (val != old_val) {	
 			gboolean *p_val = g_new0 (gboolean, 1);
 			*p_val = val;
@@ -578,21 +594,15 @@ toggle_timeout (GtkWidget *toggle)
 		else if (g_hash_table_lookup (GdmCommandChangesUnsaved, key_string) != NULL) {
 			g_hash_table_remove (GdmCommandChangesUnsaved, key_string);
 		}
-
+		
 		g_free (key_string);
-	
+		
 		if (g_hash_table_size (GdmCommandChangesUnsaved) == 0)
 			gtk_widget_set_sensitive (apply_cmd_changes, FALSE);
 		else 
 			gtk_widget_set_sensitive (apply_cmd_changes, TRUE);
-	}	
-	else {
-		/* All other cases */
-		if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
-			gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
-		}
-	}	
-
+	}		
+	
 	return FALSE;
 }
 
@@ -1568,6 +1578,12 @@ toggle_toggled (GtkWidget *toggle)
 }
 
 static void
+command_toggle_toggled (GtkWidget *toggle)
+{
+	run_timeout (toggle, 200, command_toggle_timeout);
+}
+
+static void
 radiogroup_toggled (GtkWidget *toggle)
 {
 	run_timeout (toggle, 200, radiogroup_timeout);
@@ -2355,7 +2371,7 @@ setup_commands_notify_toggle (const char *name,
 	                        (GDestroyNotify) g_free);
 	
 	g_signal_connect (G_OBJECT (toggle), "toggled",
-		          G_CALLBACK (toggle_toggled), NULL);
+		          G_CALLBACK (command_toggle_toggled), NULL);
 }
 
 #ifdef HAVE_LIBXDMCP
@@ -3830,9 +3846,25 @@ command_button_clicked (void)
 						    "cmd_type_combobox",
 						    GTK_TYPE_COMBO_BOX);
 
-		glade_helper_tagify_label (xml_commands, "commands_label", "b");
 		glade_helper_tagify_label (xml_commands, "custom_cmd_note_label", "i");
 		glade_helper_tagify_label (xml_commands, "custom_cmd_note_label", "small");
+
+		glade_helper_tagify_label (xml_commands, "hrs_path_label", "i");
+		glade_helper_tagify_label (xml_commands, "hrs_path_label", "small");
+		glade_helper_tagify_label (xml_commands, "custom_path_label", "i");
+		glade_helper_tagify_label (xml_commands, "custom_path_label", "small");
+		glade_helper_tagify_label (xml_commands, "label_label", "i");
+		glade_helper_tagify_label (xml_commands, "label_label", "small");
+		glade_helper_tagify_label (xml_commands, "lrlabel_label", "i");
+		glade_helper_tagify_label (xml_commands, "lrlabel_label", "small");		
+		glade_helper_tagify_label (xml_commands, "text_label", "i");
+		glade_helper_tagify_label (xml_commands, "text_label", "small");
+		glade_helper_tagify_label (xml_commands, "tooltip_label", "i");
+		glade_helper_tagify_label (xml_commands, "tooltip_label", "small");
+		glade_helper_tagify_label (xml_commands, "persistent_label", "i");
+		glade_helper_tagify_label (xml_commands, "persistent_label", "small");
+		glade_helper_tagify_label (xml_commands, "norestart_label", "i");
+		glade_helper_tagify_label (xml_commands, "norestart_label", "small");
 	
 		parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
 		dialog = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_DIALOG);
