@@ -417,7 +417,21 @@ perhaps_translate_message (const char *msg)
 	char *s;
 	const char *ret;
 	static GHashTable *hash = NULL;
+	static char *locale = NULL;
+
+	/* if locale changes out from under us then rebuild hash table
+	 */
+	if ((locale != NULL) &&
+	    (strcmp (locale, setlocale (LC_ALL, NULL)) != 0)) {
+		g_assert (hash != NULL);
+		g_hash_table_destroy (hash);
+		hash = NULL;
+	}
+
 	if (hash == NULL) {
+		g_free (locale);
+		locale = g_strdup (setlocale (LC_ALL, NULL));
+
 		/* Here we come with some fairly standard messages so that
 		   we have as much as possible translated.  Should really be
 		   translated in pam I suppose.  This way we can "change"

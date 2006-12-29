@@ -1,3 +1,19 @@
+2006-12-29  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac, daemon/Makefile.am, daemon/misc.[ch], 
+	  daemon/slave.c, daemon/verify-pam.c:  Now GDM will recognize 
+	  when the system language has changed and when new GUI's are
+	  displayed they will be in the new system language without 
+	  neeting to restart GDM.  By default the /var/sysconfig/i18n
+	  file is assumed to have the language defined in LANG=foo format.
+	  The --with-lang-file configure option may be needed to specify
+	  a different system language configuration file.  On Solaris
+	  it would be /etc/default/init, for example.  Note the change
+	  to verify-pam is done to flush the hash table of pam messages
+	  to useful translations.  This change implements enhancement
+	  request #384603.  Patch by Ray Strode <rstrode@redhat.com>
+	  and Takao Fujiwara <Takao.Fujiwara@sun.com>. 
+
 2006-12-21  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
 
 	* More fixes/changes for bug/feature request #334186.

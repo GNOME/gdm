@@ -142,6 +142,7 @@ FILE * gdm_safe_fopen_ap (const char *file);
    limits */
 void gdm_get_initial_limits (void);
 void gdm_reset_limits (void);
+void gdm_reset_locale (void);
 
 const char *gdm_root_user (void);
 

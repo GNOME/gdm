@@ -116,6 +116,21 @@ else
 fi
 AC_SUBST(PAM_PREFIX)
 
+dnl
+dnl file that sets LANG
+dnl
+withval=""
+AC_ARG_WITH(lang-file,
+    [  --with-lang-file=<filename>   file containing default language setting],[
+if test x$withval != x; then
+AC_MSG_RESULT("System locale will be looked for in file ${withval}.")
+fi])
+if test x$withval != x; then
+	LANG_CONFIG_FILE="$withval"
+else
+	LANG_CONFIG_FILE='${sysconfdir}/sysconfig/i18n'
+fi
+AC_SUBST(LANG_CONFIG_FILE)
     
 AC_PATH_PROG(CONSOLE_HELPER,consolehelper,no)
 if test "x$CONSOLE_HELPER" = "xno" ; then

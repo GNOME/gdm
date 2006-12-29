@@ -2145,6 +2145,90 @@ gdm_reset_limits (void)
 	}
 }
 
+#define CHECK_LC(value, category) \
+    (g_str_has_prefix (line->str, value "=")) \
+      { \
+	character = g_utf8_get_char (line->str + strlen (value "=")); \
+\
+	if ((character == '\'') || (character == '\"')) \
+	  { \
+	    q = g_utf8_find_prev_char (line->str, line->str + line->len); \
+\
+	    if ((q == NULL) || (g_utf8_get_char (q) != character)) \
+	      { \
+		g_string_set_size (line, 0); \
+		continue; \
+	      } \
+\
+	    g_string_set_size (line, line->len - 1); \
+	    g_setenv (value, line->str + strlen (value "=") + 1, TRUE); \
+	    if (category) \
+	      setlocale ((category), line->str + strlen (value "=") + 1); \
+	  } \
+	else \
+	  { \
+	    g_setenv (value, line->str + strlen (value "="), TRUE); \
+	    if (category) \
+	      setlocale ((category), line->str + strlen (value "=")); \
+	  } \
+\
+        g_string_set_size (line, 0); \
+	continue; \
+      }
+
+void
+gdm_reset_locale (void)
+{
+    char *i18n_file_contents;
+    gsize i18n_file_length, i;
+    GString *line;
+    const gchar *p, *q;
+
+    i18n_file_contents = NULL;
+    line = NULL; 
+    p = NULL;
+    if (!g_file_get_contents (LANG_CONFIG_FILE, &i18n_file_contents,
+			      &i18n_file_length, NULL))
+      goto out;
+
+    if (!g_utf8_validate (i18n_file_contents, i18n_file_length, NULL))
+      goto out;
+
+    line = g_string_new ("");
+    p = i18n_file_contents;
+    for (i = 0; i < i18n_file_length; 
+	 p = g_utf8_next_char (p), i = p - i18n_file_contents) 
+      {
+	gunichar character;
+	character = g_utf8_get_char (p);
+
+	if ((character != '\n') && (character != '\0')) 
+	  {
+	    g_string_append_unichar (line, character);
+	    continue;
+	  }
+
+	if CHECK_LC("LC_ALL", LC_ALL)
+	else if CHECK_LC("LC_COLLATE", LC_COLLATE)
+	else if CHECK_LC("LC_MESSAGES", LC_MESSAGES)
+	else if CHECK_LC("LC_MONETARY", LC_MONETARY)
+	else if CHECK_LC("LC_NUMERIC", LC_NUMERIC)
+	else if CHECK_LC("LC_TIME", LC_TIME)
+	else if CHECK_LC("LANG", NULL)
+
+        g_string_set_size (line, 0);
+      }
+
+    g_string_free (line, TRUE);
+
+    setlocale (LC_ALL, "");
+
+  out:
+    g_free (i18n_file_contents);
+}
+
+#undef CHECK_LC(value, category)
+
 #else /* ! NUM_OF_LIMITS */
 /* We have to go one by one here */
 

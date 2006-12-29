@@ -24,6 +24,7 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	$(GUI_CFLAGS)					\
 	$(DAEMON_CFLAGS)				\
+	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
 	-DPAM_PREFIX=\"$(PAM_PREFIX)\"			\
 	$(GNOME_INCLUDEDIR)				\
 	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\"

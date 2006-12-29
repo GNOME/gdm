@@ -1309,6 +1309,8 @@ gdm_slave_run (GdmDisplay *display)
     gint maxtries = 0;
     gint pinginterval = gdm_get_value_int (GDM_KEY_PING_INTERVAL);
     
+    gdm_reset_locale ();
+
     /* Reset d since gdm_slave_run is called in a loop */
     d = display;
 
@@ -1758,6 +1760,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		/* setup environment */
 		gdm_restoreenv ();
+		gdm_reset_locale ();
 
 		/* root here */
 		g_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);
@@ -2519,6 +2522,7 @@ gdm_slave_greeter (void)
 			    "gdm_slave_greeter", gdm_get_gdmuid ());
 
 	gdm_restoreenv ();
+	gdm_reset_locale ();
 	
 	g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 	g_setenv ("DISPLAY", d->name, TRUE);
@@ -3020,6 +3024,7 @@ gdm_slave_chooser (void)
 					"gdm_slave_chooser", gdm_get_gdmuid ());
 
 		gdm_restoreenv ();
+		gdm_reset_locale ();
 
 		g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 		g_setenv ("DISPLAY", d->name, TRUE);
