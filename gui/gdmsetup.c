@@ -1462,8 +1462,7 @@ combobox_timeout (GtkWidget *combo_box)
 		GtkWidget *cust_cmd_persistent_checkbox = NULL;
 		GtkWidget *cust_cmd_norestart_checkbox = NULL;
 		GtkWidget *status_label;
-		gchar *val = NULL;
-		gchar *key_string = NULL;
+		gchar *val = NULL;		
 		gboolean bool_val = FALSE;		
 		gboolean enabled_command = FALSE;
 		
@@ -1490,6 +1489,8 @@ combobox_timeout (GtkWidget *combo_box)
 			enabled_command = !ve_string_empty (val);
 		}
 		else {
+			gchar *key_string = NULL;
+
 			gint i = selected - CUSTOM_CMD;
 			/* Here we are going to deal with custom commands */
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
@@ -1542,10 +1543,10 @@ combobox_timeout (GtkWidget *combo_box)
 									 GTK_TYPE_CHECK_BUTTON);
 			bool_val = gdm_config_get_bool (key_string);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_persistent_checkbox), bool_val);
+			g_free (key_string);
 
 		}
 		g_free (val);
-		g_free (key_string);
 
 		if (enabled_command)
 			gtk_label_set_text (GTK_LABEL (status_label), _("(Enabled) "));			
@@ -2286,7 +2287,7 @@ commands_entry_timeout (GtkWidget *entry)
 
 	/* All hrs (Halt, Shutdown, Suspend) commands will fall into this category */
 	if (strcmp ("hrs_custom_cmd", ve_sure_string (key)) == 0) {
-		gchar *old_val;
+		gchar *old_val = NULL;
 		gchar *cmd_key = NULL;
 
 		if (selected == HALT_CMD)
@@ -2309,8 +2310,8 @@ commands_entry_timeout (GtkWidget *entry)
 	}
 	/* All the custom commands will fall into this category */
 	else {
-		gchar *key_string;
-		gchar *old_val;
+		gchar *key_string = NULL;
+		gchar *old_val = NULL;
 		gint i;			
 
 		i = selected - CUSTOM_CMD;
@@ -2941,17 +2942,50 @@ browser_apply (GtkWidget *button, gpointer data)
 	gboolean valid;
 	gboolean update_greet = FALSE;
 	char *sep = "";
-
+	gint minimalUID = -1;
+	gboolean any_removed = FALSE;
+	
+	minimalUID = gdm_config_get_int (GDM_KEY_MINIMAL_UID);
+	
 	valid = gtk_tree_model_get_iter_first (fc->include_model, &iter);
 	while (valid) {
 		gtk_tree_model_get (fc->include_model, &iter, USERLIST_NAME,
 			 &model_text, -1);
 
-		g_string_append (userlist, sep);
-		sep = ",";
-		g_string_append (userlist, model_text);
+		/* We need to take check that during the time between adding
+		   a user and clicking on the apply button UID has not changed 
+		   If so then the offending users should be removed
+		*/
+		if (gdm_user_uid (model_text) < minimalUID) {
+			valid = gtk_list_store_remove (fc->include_store, &iter);
+			any_removed = TRUE;
+		}
+		else {
+			g_string_append (userlist, sep);
+			sep = ",";
+			g_string_append (userlist, model_text);		
+			valid = gtk_tree_model_iter_next (fc->include_model, &iter);
+		}
+	}
 
-		valid = gtk_tree_model_iter_next (fc->include_model, &iter);
+	if (any_removed) {
+		GtkWidget *setup_dialog;
+		GtkWidget *dlg;
+		
+		setup_dialog = glade_helper_get(xml, "setup_dialog", GTK_TYPE_WINDOW);
+		
+		//Inform user about the change
+		dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
+					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_OK,
+					 _("Users include list modification"),
+					 _("Some of the users had uid lower than "
+					   "MinumalUID (Security tab) and "
+					   "could not be added."));
+		gtk_dialog_run (GTK_DIALOG (dlg));
+		gtk_widget_destroy (dlg);						
+		
 	}
 
 	val = gdm_config_get_string (GDM_KEY_INCLUDE);
@@ -4769,7 +4803,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 	struct dirent *dent;
 	GtkTreeIter *select_iter = NULL;
 	GdkPixbuf *pb = NULL;
-	gchar *markup;
+	gchar *markup = NULL;
 	gchar * real_selected_themes = NULL;
 	
 	while ((dent = readdir (dir)) != NULL) {
@@ -4888,6 +4922,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 
 		g_free (file);
 		g_free (name);
+		g_free (markup);
 		g_free (desc);
 		g_free (author);
 		g_free (copyright);
@@ -7122,7 +7157,7 @@ create_preview_pixbuf (gchar *uri)
 		
 		if (file != NULL) {
 
-			GdkPixbufFormat *info;
+			GdkPixbufFormat *info = NULL;
 			gint width;
 			gint height;
 
