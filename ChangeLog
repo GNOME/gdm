@@ -1,5 +1,12 @@
 2006-01-07  Brian Cameron  <Brian.Cameron@sun.com>
 
+	* gui/gdmchooser.glade, gui/gdmsetup.glade:  No longer hardcode
+	  invisible_char property in glade files, instead rely on GTK+
+	  default.  Patch by Vitaliy Ischenko <betalb@gmail.com>.  Fixes
+	  bug #393904.
+
+2006-01-07  Brian Cameron  <Brian.Cameron@sun.com>
+
 	* gui/gdmcommon.c: Remove filter_watch after it is called for
 	  the first time.  This filter is used to start at_spid_registry
 	  but after it is started there is no need to listen to the propery
