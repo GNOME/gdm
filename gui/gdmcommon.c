@@ -657,6 +657,7 @@ gdm_common_atspi_launch (void)
 
 	gtk_main ();
 
+	gdk_window_remove_filter (w, filter_watch, NULL);
 	g_source_remove (tid);
 }
 

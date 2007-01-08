@@ -1,3 +1,10 @@
+2006-01-07  Brian Cameron  <Brian.Cameron@sun.com>
+
+	* gui/gdmcommon.c: Remove filter_watch after it is called for
+	  the first time.  This filter is used to start at_spid_registry
+	  but after it is started there is no need to listen to the propery
+	  any more.  Patch by Li Yuan <Li.Yuan@Sun.com>.  Fixes bug #393013.
+
 2006-12-29  Brian Cameron  <Brian.Cameron@sun.com>
 
 	* Patch to add revnumber and date to GDM docs.  Patch by 
