@@ -1,5 +1,41 @@
 Ahh news...
 
+2.17.5 Stuff:
+
+- No longer close file descripters in forked process which
+  shows dialog boxes since this causes the dialogs to not
+  display any text.  (Brian Cameron)
+
+- Now GDM will recognize when the system default language
+  has changed and will display new GUI's with the new
+  default language.  By default the /var/sysconfig/i18n
+  file is assumed to have the language defined in LANG=foo
+  format.  The --with-lang-file configure option may be
+  needed to specify a different system language configuration
+  file.  On Solaris, for example, it would be
+  /etc/default/init.  (Ray Strode and Takao Fujiwara)
+
+- Remove filter_watch after it is called for the first time.
+  This filter is used to start the at_spi_registryd, but
+  after it is started there is no need to listen to the
+  propery any more.  (Li Yuan)
+
+- Further improvements to gdmsetup to improve usability.
+  (Lukasz Zalewski)
+
+- No longer hardcode invisible_char property in glade files,
+  instead realy on GTK+ default.  (Vitaliy Ischenko)
+
+- Fix so that the userlist is hidden properly when there
+  are no users.  (Brian Cameron)
+  
+- Fixes for compiling with gcc 2.95. (Jens Granseuer)
+
+- Translation updates (Djihed Afifi, Raivis Dejus,
+  Theppitak Karoonboonyanan, Gabor Kelemen, David Lodge,
+  Jovan Naumovski, Amitakhya Phukan, Danilo \305\240egan,
+  Francisco Javier F. Serrador, Ilkka Tuohela, Matic Zgur)
+
 2.17.4 Stuff:
 
 - Fix for a recently reported security issue that has ID
