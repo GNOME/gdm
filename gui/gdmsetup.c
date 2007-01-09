@@ -2849,7 +2849,7 @@ browser_move (GtkWidget *button, gpointer data)
 /* Hash key happens to be equal to the config entry key,
    se we save the value under the key and clean up
 */
-gboolean
+static gboolean
 unsaved_data_from_hash_table_func (gpointer key, gpointer value, gpointer user_data)
 {
 	gchar *c_key = key;
@@ -3626,6 +3626,12 @@ command_response (GtkWidget *button, gpointer data)
 	gint response;
 	gchar *filename;
 	
+	const gchar *key;
+	gchar *value;
+	GtkWidget *command_combobox;
+	GtkWidget *command_entry = NULL;
+	gint selected;
+	
 	setup_dialog = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_WINDOW);
 	
 	/* first get the file */
@@ -3662,12 +3668,6 @@ command_response (GtkWidget *button, gpointer data)
 		return;
 	}
 
-	const gchar *key;
-	gchar *value;
-	GtkWidget *command_combobox;
-	GtkWidget *command_entry = NULL;
-	gint selected;
-	
 	key = g_object_get_data (G_OBJECT (button), "key");	
 	
 	/* Then according to the selected command
@@ -3870,6 +3870,7 @@ command_button_clicked (void)
 
 		GtkWidget *parent;
 		GtkWidget *apply_command_changes_button;		
+		gint i;
 
 		xml_commands = glade_helper_load ("gdmsetup.glade",
 						  "commands_dialog",
@@ -3916,7 +3917,6 @@ command_button_clicked (void)
 		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Suspend command"));
 		
 		/* Add all the custom commands */
-		gint i;
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 			gchar *label = g_strdup_printf("Custom command %d", i);
 			gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), label);
