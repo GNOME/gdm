@@ -2013,10 +2013,15 @@ gdm_config_parse (void)
 
    /*
     * It is okay if the custom_cfg file is missing, then just use
-    * main configuration file.  If cfg is missing, then GDM will 
-    * use the built-in defaults found in gdm.h.
+    * main configuration file. However if main config file does 
+    * not exist we cannot continue and need to bail out.
     */
+
    cfg                      = gdm_get_default_config (&statbuf);
+
+   if (cfg == NULL)
+	   gdm_fail (_("%s: Main config file (defaults.conf) is missing. Aborting!"), "gdm_config_parse");
+
    config_file_mtime        = statbuf.st_mtime;
    custom_cfg               = gdm_get_custom_config (&statbuf);
    custom_config_file_mtime = statbuf.st_mtime;

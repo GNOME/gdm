@@ -1711,6 +1711,20 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 {
 	pid_t pid;
 
+	/* Lets check if custom.conf exists. If not there 
+	   is no point in launching gdmsetup as it will fail.
+	   We don't need to worry about defaults.conf as
+	   the daemon wont start without it
+	*/
+	if (gdm_get_custom_config_file() == NULL) {
+		gdm_error_box (d,
+			       GTK_MESSAGE_ERROR,
+			       _("Could not access configuration file (custom.conf). "
+				 "Make sure that the file exists before launching "
+				 " login manager config utility."));
+		return;
+	}
+	    
 	/* Set the busy cursor */
 	if (d->dsp != NULL) {
 		Cursor xcursor = XCreateFontCursor (d->dsp, GDK_WATCH);

@@ -1,3 +1,19 @@
+2007-01-21  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
+
+	Fix for bug #352263
+	* gui/gdmsetup.c: Created more verbose warnings when defaults.conf or
+	  custom.conf are missing before terminating. Also all the error
+	  messages are displayed using dialogs rather than stdout. This is
+	  especially useful when gdmsetup is run from within login mamaner as
+	  it doesn't leave users wondering why it didnt start-up. Also check if
+	  gdm daemon is running is made before check for config files. In such
+	  setup appropriate message is displayed rather than config file not
+	  found.
+	* daemon/gdmconfig.c: Daemon will not start if main configuration file
+	  (defaults.conf) is missing
+	* daemon/slave.c: gdmsetup will not be launched if coustom.conf config
+	  file is missing
+	
 2006-01-22  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmsetup.desktop.in.in: Remove GenericName since the 

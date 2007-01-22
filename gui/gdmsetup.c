@@ -8370,28 +8370,50 @@ main (int argc, char *argv[])
 
 	gtk_init (&argc, &argv);
 
+	/* Lets check if gdm daemon is running
+	   if no there is no point in continuing
+	*/
+	gdm_running = gdmcomm_check (TRUE);
+	if (gdm_running == FALSE)
+		exit (EXIT_FAILURE);
+
 	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-setup.png", NULL);	
 	glade_gnome_init();
-
+	
 	/* Start using socket */
 	gdmcomm_comm_bulk_start ();
-
+	
 	config_file = gdm_common_get_config_file ();
 	if (config_file == NULL) {
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
-		g_print (_("Could not access GDM configuration file.\n"));
+		GtkWidget *dialog = ve_hig_dialog_new (NULL /* parent */,
+						       GTK_DIALOG_MODAL /* flags */,
+						       GTK_MESSAGE_ERROR,
+						       GTK_BUTTONS_OK,
+						       _("Could not access configuration file (defaults.conf)"
+							 ""),
+						       _("Make sure that the file exists before launching login manager config utility."));
+		
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
 		exit (EXIT_FAILURE);
 	}
 	custom_config_file = gdm_common_get_custom_config_file ();
 	if (custom_config_file == NULL) {
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
-		g_print (_("Could not access GDM configuration file.\n"));
+		GtkWidget *dialog = ve_hig_dialog_new (NULL /* parent */,
+						       GTK_DIALOG_MODAL /* flags */,
+						       GTK_MESSAGE_ERROR,
+						       GTK_BUTTONS_OK,
+						       _("Could not access configuration file (custom.conf)"
+							 ""),
+						       _("Make sure that the file exists before launching login manager config utility."));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
 		exit (EXIT_FAILURE);
-	}
-
-	gdm_running = gdmcomm_check (FALSE);
+	}	
 
 	if (RUNNING_UNDER_GDM) {
 		char *gtkrc;
