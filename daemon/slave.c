@@ -1407,7 +1407,10 @@ gdm_slave_run (GdmDisplay *display)
 	   openretries < maxtries &&
 	   d->dsp == NULL &&
 	   ( ! SERVER_IS_LOCAL (d) || d->servpid > 1)) {
+
+	gdm_sigchld_block_push ();
 	d->dsp = XOpenDisplay (d->name);
+	gdm_sigchld_block_pop ();
 	
 	if G_UNLIKELY (d->dsp == NULL) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
@@ -1647,7 +1650,9 @@ focus_first_x_window (const char *class_res_name)
 
 	gdm_auth_set_local_auth (d);
 
+	gdm_sigchld_block_push ();
 	disp = XOpenDisplay (d->name);
+	gdm_sigchld_block_pop ();
 	if G_UNLIKELY (disp == NULL) {
 		gdm_error (_("%s: cannot open display %s"),
 			   "focus_first_x_window",

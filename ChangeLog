@@ -1,5 +1,14 @@
 2006-01-22  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c: Avoid catching sigchld when trying to call
+	  XOpenDisplay.  This corrects an issue where GDM catches a
+	  second SIGCHLD when trying to restart.  In this situation
+	  the slave freezes even though the Xserver and the session
+	  are killed.  This causes the display to no longer manage
+	  itself.
+
+2006-01-22  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmsetup.diff:  Patch to fix c99 compiling.  Patch by
 	  Jens Granseuer <jensgr@gmx.net>.  Fixes bug #399486.
 
