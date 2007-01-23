@@ -8385,15 +8385,16 @@ main (int argc, char *argv[])
 	
 	config_file = gdm_common_get_config_file ();
 	if (config_file == NULL) {
+		GtkWidget *dialog;
+
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
-		GtkWidget *dialog = ve_hig_dialog_new (NULL /* parent */,
-						       GTK_DIALOG_MODAL /* flags */,
-						       GTK_MESSAGE_ERROR,
-						       GTK_BUTTONS_OK,
-						       _("Could not access configuration file (defaults.conf)"
-							 ""),
-						       _("Make sure that the file exists before launching login manager config utility."));
+		dialog = ve_hig_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("Could not access configuration file (defaults.conf)"),
+					    _("Make sure that the file exists before launching login manager config utility."));
 		
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
@@ -8401,15 +8402,17 @@ main (int argc, char *argv[])
 	}
 	custom_config_file = gdm_common_get_custom_config_file ();
 	if (custom_config_file == NULL) {
+		GtkWidget *dialog;
+
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
-		GtkWidget *dialog = ve_hig_dialog_new (NULL /* parent */,
-						       GTK_DIALOG_MODAL /* flags */,
-						       GTK_MESSAGE_ERROR,
-						       GTK_BUTTONS_OK,
-						       _("Could not access configuration file (custom.conf)"
-							 ""),
-						       _("Make sure that the file exists before launching login manager config utility."));
+		dialog = ve_hig_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("Could not access configuration file (custom.conf)"),
+					    _("Make sure that the file exists before launching login manager config utility."));
+
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		exit (EXIT_FAILURE);
