@@ -245,6 +245,22 @@
         of as root for added security.  When the user's session exits, the GDM
         daemon will run the <filename>PostSession</filename> script as root.
       </para>
+
+      <para>
+        Note that, by default, GDM uses the "gdm" service name for
+        normal login and the "gdm-autologin" service name for
+        automatic login.  The <filename>PamStack</filename> configuration
+        option can be used to specify a different service name.  For example,
+        if "foo" is specified, then GDM will use the "foo"
+        service name for normal login and "foo-autologin" for
+        automatic login. 
+      </para>
+
+      <para>
+        For those looking at the code, the gdm_verify_user function in 
+        <filename>daemon/verify-pam.c</filename> is used for normal login
+        and the gdm_verify_setup_user function is used for automatic login.
+      </para>
     </sect2>
 
     <sect2 id="displaytypes">

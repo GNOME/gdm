@@ -150,6 +150,22 @@
       <para>La pantalla del IGU de la entrada permite al usuario seleccionar qué sesión quiere iniciar y qué idioma quiere usar. Las sesiones se definen por archivos que terminan con la extensión .desktop y puede encontrar más información sobre estos archivos en la sección de «Configuración». El usuario introduce su nombre y contraseña y si éstos le autentican con éxito, GDM iniciará la sesión solicitada para el usuario. Es posible configurar GDM para evitar el proceso de autenticación activando las características de Entrada automática o Entrada temporizada en la configuración de GDM. El IGU de entrada puede configurarse además para para proporcionar características adicionales al usuario, como un visor de rostros, la capacidad de detener, reiniciar o suspender el sistema; y o editar la configuración de entrada (tras introducir la contraseña de root).</para>
 
       <para>GDM, por omisión, usará Pluggable Authentication Modules (PAM) para autenticar, pero puede usar además contraseñas crypt y shadow en sistemas legados. Tras autenticar al usuario, el demonio ejecuta el script <filename>PostLogin</filename> como root, y bifurca un proceso esclavo para iniciar la sesión solicitada. Este proceso esclavo ejecuta el script de <filename>PreSession</filename> como root, establece el entorno del usuario e inicia la sesión solicitada. GDM conserva la sesión predeterminada del usuario y el idioma en el archivo <filename>~/.dmrc</filename> del usuario y usará estos predeterminados si el usuario no seleccionó una sesión o idioma en el IGU de entrada. En Solaris, GDM (desde la versión 2.8.0.3) usa el interfaz SDTLOGIN después de autenticar al usuario para decir al servidor X que se reinicie como el usuario en vez de como root para mayor seguridad. Cuando la sesión del usuario sale, el demonio de GDM ejecutará el script <filename>PostSession</filename> como root.</para>
+
+      <para>
+        Note that, by default, GDM uses the "gdm" service name for
+        normal login and the "gdm-autologin" service name for
+        automatic login.  The <filename>PamStack</filename> configuration
+        option can be used to specify a different service name.  For example,
+        if "foo" is specified, then GDM will use the "foo"
+        service name for normal login and "foo-autologin" for
+        automatic login. 
+      </para>
+
+      <para>
+        For those looking at the code, the gdm_verify_user function in 
+        <filename>daemon/verify-pam.c</filename> is used for normal login
+        and the gdm_verify_setup_user function is used for automatic login.
+      </para>
     </sect2>
 
     <sect2 id="displaytypes">
