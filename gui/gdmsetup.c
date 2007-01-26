@@ -732,7 +732,7 @@ intspin_timeout (GtkWidget *spin)
 						 _("Users include list modification"),
 						 _("Some of the users in the Include list "
 						   "(Users tab) now have uid lower than "
-						   "MinumalUID and will be removed."));
+						   "MinimalUID and will be removed."));
 			gtk_dialog_run (GTK_DIALOG (dlg));
 			gtk_widget_destroy (dlg);						
 
@@ -2981,7 +2981,7 @@ browser_apply (GtkWidget *button, gpointer data)
 					 GTK_BUTTONS_OK,
 					 _("Users include list modification"),
 					 _("Some of the users had uid lower than "
-					   "MinumalUID (Security tab) and "
+					   "MinimalUID (Security tab) and "
 					   "could not be added."));
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);						
@@ -6676,7 +6676,7 @@ setup_security_tab (void)
 	setup_radio_group ("relax_permissions1_radiobutton", GDM_KEY_RELAX_PERM, 1);
 	setup_radio_group ("relax_permissions2_radiobutton", GDM_KEY_RELAX_PERM, 2);
 	
-	/* Setup MinumalUID */
+	/* Setup MinimalUID */
 	setup_intspin ("minimal_uid_spinbutton", GDM_KEY_MINIMAL_UID);
 
 	/* Setup Configure XDMCP button */
