@@ -1549,7 +1549,7 @@ combobox_timeout (GtkWidget *combo_box)
 		g_free (val);
 
 		if (enabled_command)
-			gtk_label_set_text (GTK_LABEL (status_label), _("(Enabled) "));			
+			gtk_label_set_text (GTK_LABEL (status_label), _("(Enabled)"));			
 		else 
 			gtk_label_set_text (GTK_LABEL (status_label), _("(Disabled)"));	
 	}
@@ -3911,7 +3911,7 @@ command_button_clicked (void)
 		GdmCommandChangesUnsaved = g_hash_table_new (g_str_hash, g_str_equal);
 				
 		
-		/* Add halt, rebewt and suspend commands */
+		/* Add halt, reboot and suspend commands */
 		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Halt command"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Reboot command"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (command_chooser), _("Suspend command"));

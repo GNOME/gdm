@@ -2661,7 +2661,7 @@ gdm_slave_greeter (void)
 		   something works instead of a flickering screen */
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("The greeter application appears to be crashing."
+			       _("The greeter application appears to be crashing. "
 				 "Attempting to use a different one."));
 		if (strstr (command, "gdmlogin") != NULL) {
 			/* in case it is gdmlogin that's crashing
@@ -4075,10 +4075,10 @@ gdm_slave_session_start (void)
 		   ! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
 	    char *yesno_msg;
 	    char *msg = g_strdup_printf (
-		     _("Your home directory is listed as:'%s'"
+		     _("Your home directory is listed as: '%s' "
 		       "but it does not appear to exist.  "
 		       "Do you want to log in with the / (root) "
-		       "directory as your home directory?"
+		       "directory as your home directory? "
 		       "It is unlikely anything will work unless "
 		       "you use a failsafe session."),
 		     ve_sure_string (pwent->pw_dir));
