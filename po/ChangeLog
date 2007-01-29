@@ -1,7 +1,9 @@
 2007-01-29  Brian Cameron  <brian.cameron@sun.com>
 
-        * POTFILES.in: Do not reference desktop.in.in files in POTFILES.in.
-          This makes make distcheck mad.
+	* POTFILES.in, POTFILES.skip:  Fix make distcheck.  This
+	  requires putting *.desktop.in files into POTFILES.skip
+	  for those files where the POTFILES.in file contains a
+	  *.desktop.in.in file.
 
 2006-12-26  Danilo Šegan  <danilo@gnome.org>
 
