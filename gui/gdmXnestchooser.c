@@ -168,7 +168,7 @@ static const GOptionEntry xnest_only_options[] = {
 	{ "xnest", 'x', 0, G_OPTION_ARG_STRING, &xnest_binary, N_("Xnest command line"), N_("STRING") },
 	{ "xnest-extra-options", 'o', 0, G_OPTION_ARG_STRING, &xnest_options, N_("Extra options for Xnest"), N_("OPTIONS") },
 	{ "background", 'b', 0, G_OPTION_ARG_NONE, &background, N_("Run in background"), NULL },
-	{ G_OPTION_REMAINING, NULL, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
+	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
 	{ NULL } 
 };
 
@@ -180,7 +180,7 @@ static const GOptionEntry options[] = {
 	{ "broadcast", 'B', 0, G_OPTION_ARG_NONE, &do_broadcast, N_("Run broadcast instead of indirect (chooser)"), NULL },
 	{ "background", 'b', 0, G_OPTION_ARG_NONE, &background, N_("Run in background"), NULL },
 	{ "no-gdm-check", '\0', 0, G_OPTION_ARG_NONE, &no_gdm_check, N_("Don't check for running GDM"), NULL },
-	{ G_OPTION_REMAINING, NULL, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
+	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
 	{ NULL } 
 };
 

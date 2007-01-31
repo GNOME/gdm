@@ -616,7 +616,7 @@ gdm_get_custom_config (struct stat *statbuf)
  * appended, and never gdm.conf.
  */
 static gchar *
-gdm_get_per_display_custom_config_file (gchar *display)
+gdm_get_per_display_custom_config_file (const gchar *display)
 {
   return g_strdup_printf ("%s%s", custom_config_file, display);
 }
@@ -779,7 +779,7 @@ gboolean gdm_get_value_bool_per_display (gchar *display, gchar *key)
  * value if none exists.  Note that this value needs to be freed,
  * unlike the non-per-display version.
  */
-gchar * gdm_get_value_string_per_display (gchar *display, gchar *key)
+gchar * gdm_get_value_string_per_display (const gchar *display, gchar *key)
 {
    gchar *perdispval;
 
@@ -805,7 +805,7 @@ gchar * gdm_get_value_string_per_display (gchar *display, gchar *key)
  * sure they are added to the if-test below.
  */
 void
-gdm_config_key_to_string_per_display (gchar *display, gchar *key, gchar **retval)
+gdm_config_key_to_string_per_display (const gchar *display, gchar *key, gchar **retval)
 {
    gchar *file;
    gchar **splitstr = g_strsplit (key, "/", 2);

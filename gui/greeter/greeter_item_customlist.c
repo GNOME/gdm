@@ -348,7 +348,7 @@ populate_language (GObject *object)
 }
 
 /* Callback helper function to set session value */
-void
+static void
 combo_session_selected (char *session_val)
 {
   GList *tmp;

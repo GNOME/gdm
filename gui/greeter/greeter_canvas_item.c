@@ -132,7 +132,7 @@ activate_button (GtkWidget *widget, gpointer data)
 		greeter_item_run_action_callback (id);
 }
 
-void 
+static void 
 menubar_done (GtkMenuShell *menushell, gpointer data)
 {
 	GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
