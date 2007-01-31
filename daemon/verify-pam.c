@@ -471,14 +471,14 @@ perhaps_translate_message (const char *msg)
 /* Internal PAM conversation function. Interfaces between the PAM
  * authentication system and the actual greeter program */
 
-static gint 
+static int 
 gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 		     struct pam_response **resp,
 		     void *appdata_ptr)
 {
     int replies = 0;
     int i;
-    char *s;
+    char *s = NULL;
     struct pam_response *reply = NULL;
     const void *p;
     const char *login;
@@ -640,7 +640,7 @@ static struct pam_conv pamc = {
 /* Extra message to give on queries */
 static char *extra_standalone_message = NULL;
 
-static gint 
+static int 
 gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 				struct pam_response **resp,
 				void *appdata_ptr)
@@ -884,7 +884,7 @@ authenticate_again:
      * PAM Stacks, in case one display should use a different 
      * authentication mechanism than another display.
      */
-    pam_stack = gdm_get_value_string_per_display (display, GDM_KEY_PAM_STACK);
+    pam_stack = gdm_get_value_string_per_display ((char *)display, GDM_KEY_PAM_STACK);
 
     if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
 	    if (started_timer)
@@ -1261,7 +1261,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
      * PAM Stacks, in case one display should use a different 
      * authentication mechanism than another display.
      */
-    pam_stack = gdm_get_value_string_per_display (display, GDM_KEY_PAM_STACK);
+    pam_stack = gdm_get_value_string_per_display ((char *)display, GDM_KEY_PAM_STACK);
     pam_service_name = g_strdup_printf ("%s-autologin", pam_stack);
 
     if ( ! create_pamh (d, pam_service_name, login, &standalone_pamc,

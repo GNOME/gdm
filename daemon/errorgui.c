@@ -317,12 +317,10 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		if (details_label != NULL) {
  			if (strncmp (details_label, "NIL", 3) == 0)
-				g_free (details_label);
 				details_label = NULL;
 		}
 		if (details_file != NULL) {
 			if (strncmp (details_file, "NIL", 3) == 0)
-				g_free (details_file);
 				details_file = NULL;
 		}
 

@@ -36,6 +36,7 @@
 #include "greeter.h"
 #include "greeter_session.h"
 #include "greeter_item_pam.h"
+#include "greeter_item_customlist.h"
 #include "greeter_configuration.h"
 #include "greeter_events.h"
 #include "greeter_parser.h"

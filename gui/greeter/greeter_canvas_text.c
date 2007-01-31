@@ -95,7 +95,7 @@ greeter_canvas_text_get_screen_dpi (GreeterCanvasText *text)
                          0, G_MAXINT,
                          FALSE,
                          &type, NULL, &resources_length,
-                         (guchar **) &resources))
+                         (void *) &resources))
     {
       gdk_error_trap_pop ();
       return default_dpi;

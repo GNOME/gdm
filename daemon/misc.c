@@ -2214,7 +2214,7 @@ gdm_reset_locale (void)
 	else if CHECK_LC("LC_MONETARY", LC_MONETARY)
 	else if CHECK_LC("LC_NUMERIC", LC_NUMERIC)
 	else if CHECK_LC("LC_TIME", LC_TIME)
-	else if CHECK_LC("LANG", NULL)
+	else if CHECK_LC("LANG", 0)
 
         g_string_set_size (line, 0);
       }
@@ -2227,7 +2227,7 @@ gdm_reset_locale (void)
     g_free (i18n_file_contents);
 }
 
-#undef CHECK_LC(value, category)
+#undef CHECK_LC
 
 #else /* ! NUM_OF_LIMITS */
 /* We have to go one by one here */

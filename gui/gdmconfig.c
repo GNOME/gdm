@@ -618,7 +618,6 @@ gdm_config_get_bool (gchar *key)
 
 /**
  * gdm_config_reload_string
- * gdm_config_reload_translated_string
  * gdm_config_reload_int
  * gdm_config_reload_bool
  * 
@@ -630,14 +629,6 @@ gdm_config_reload_string (gchar *key)
 {
 	gboolean changed;
 	_gdm_config_get_string (key, TRUE, &changed, FALSE);
-	return changed;
-}
-
-static gboolean
-gdm_config_reload_translated_string (gchar *key)
-{
-	gboolean changed;
-	_gdm_config_get_translated_string (key, TRUE, &changed);
 	return changed;
 }
 

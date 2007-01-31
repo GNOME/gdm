@@ -103,7 +103,8 @@
 #include "cookie.h"
 #include "gdmconfig.h"
 
-#define XDMCP_MULTICAST_ADDRESS "ff02::1"    /*This is to be changed when the Xdmcp Multicast address is decided */
+/*This is to be changed when the Xdmcp Multicast address is decided */
+#define XDMCP_MULTICAST_ADDRESS "ff02::1"
 
 int gdm_xdmcpfd = -1;
 
@@ -128,92 +129,121 @@ extern gint xdmcp_sessions;
 static gboolean gdm_xdmcp_decode_packet (GIOChannel *source,
 					 GIOCondition cond,
 					 gpointer data);
-/*************************** IPv6 specific prototypes *****************************/
+
+/************************ IPv6 specific prototypes **************************/
 
 #ifdef ENABLE_IPV6
-static void gdm_xdmcp_handle_query (struct sockaddr_storage *clnt_sa,
-                                  gint len,
-                                  gint type);
-static void gdm_xdmcp_handle_forward_query (struct sockaddr_storage *clnt_sa, gint len);
-static void gdm_xdmcp_handle_request (struct sockaddr_storage *clnt_sa, gint len);
-static void gdm_xdmcp_handle_manage (struct sockaddr_storage *clnt_sa, gint len);
-static void gdm_xdmcp_handle_managed_forward (struct sockaddr_storage *clnt_sa, gint len);
-static void gdm_xdmcp_handle_got_managed_forward (struct sockaddr_storage *clnt_sa, gint len);
-static void gdm_xdmcp_handle_keepalive (struct sockaddr_storage *clnt_sa, gint len);
-static void gdm_xdmcp_send_willing (struct sockaddr_storage *clnt_sa);
-static void gdm_xdmcp_send_unwilling (struct sockaddr_storage *clnt_sa, gint type);
-static void gdm_xdmcp_send_accept (GdmHostent *he, struct sockaddr_storage *clnt_sa,
-               gint displaynum);
-static void gdm_xdmcp_send_decline (struct sockaddr_storage *clnt_sa, const char *reason);
-static void gdm_xdmcp_send_refuse (struct sockaddr_storage *clnt_sa, CARD32 sessid);
-static void gdm_xdmcp_send_failed (struct sockaddr_storage *clnt_sa, CARD32 sessid);
-static void gdm_xdmcp_send_alive (struct sockaddr_storage *clnt_sa, CARD16 dspnum, CARD32 sessid);
+
+static void gdm_xdmcp_handle_query         (struct sockaddr_storage *clnt_sa,
+                                            gint len,
+                                            gint type);
+static void gdm_xdmcp_handle_forward_query (struct sockaddr_storage *clnt_sa,
+                                            gint len);
+static void gdm_xdmcp_handle_request       (struct sockaddr_storage *clnt_sa,
+                                            gint len);
+static void gdm_xdmcp_handle_manage        (struct sockaddr_storage *clnt_sa,
+                                            gint len);
+static void gdm_xdmcp_handle_managed_forward (struct sockaddr_storage *clnt_sa,
+                                            gint len);
+static void gdm_xdmcp_handle_got_managed_forward (struct sockaddr_storage *clnt_sa,
+                                            gint len);
+static void gdm_xdmcp_handle_keepalive     (struct sockaddr_storage *clnt_sa,
+                                            gint len);
+static void gdm_xdmcp_send_willing         (struct sockaddr_storage *clnt_sa);
+static void gdm_xdmcp_send_unwilling       (struct sockaddr_storage *clnt_sa,
+                                            gint type);
+static void gdm_xdmcp_send_accept          (GdmHostent *he,
+                                            struct sockaddr_storage *clnt_sa,
+                                            gint displaynum);
+static void gdm_xdmcp_send_decline         (struct sockaddr_storage *clnt_sa,
+                                            const char *reason);
+static void gdm_xdmcp_send_refuse          (struct sockaddr_storage *clnt_sa,
+                                            CARD32 sessid);
+static void gdm_xdmcp_send_failed          (struct sockaddr_storage *clnt_sa,
+                                            CARD32 sessid);
+static void gdm_xdmcp_send_alive           (struct sockaddr_storage *clnt_sa,
+                                            CARD16 dspnum, CARD32 sessid);
 static void gdm_xdmcp_send_managed_forward (struct sockaddr_storage *clnt_sa,
-                                                          struct sockaddr_storage *origin);
-static void gdm_xdmcp_send_forward_query6 (GdmIndirectDisplay *id,
-                                                        struct sockaddr_in6 *clnt_sa,
-                                                        struct in6_addr *display_addr,
-                                                         ARRAYofARRAY8Ptr authlist);
-static gboolean gdm_xdmcp_host_allow (struct sockaddr_storage *clnt_sa);
+                                            struct sockaddr_storage *origin);
+static void gdm_xdmcp_send_forward_query6  (GdmIndirectDisplay *id,
+                                            struct sockaddr_in6 *clnt_sa,
+                                            struct in6_addr *display_addr,
+                                            ARRAYofARRAY8Ptr authlist);
+static gboolean gdm_xdmcp_host_allow       (struct sockaddr_storage *clnt_sa);
 static GdmForwardQuery * gdm_forward_query_alloc (struct sockaddr_storage *mgr_sa,
-                                                struct sockaddr_storage *dsp_sa);
+                                            struct sockaddr_storage *dsp_sa);
 static GdmForwardQuery * gdm_forward_query_lookup (struct sockaddr_storage *clnt_sa);
 static void gdm_xdmcp_whack_queued_managed_forwards6 (struct sockaddr_in6 *clnt_sa,
-                                                                   struct in6_addr *origin);
+                                            struct in6_addr *origin);
 static void gdm_xdmcp_send_got_managed_forward6 (struct sockaddr_in6 *clnt_sa,
-                                                              struct in6_addr *origin);
-static int gdm_xdmcp_displays_from_host (struct sockaddr_storage *addr);
-static GdmDisplay *gdm_xdmcp_display_lookup_by_host (struct sockaddr_storage *addr, int dspnum);
-static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_storage *addr, GdmHostent *he, int displaynum);
+                                            struct in6_addr *origin);
+static int gdm_xdmcp_displays_from_host    (struct sockaddr_storage *addr);
+static GdmDisplay *gdm_xdmcp_display_lookup_by_host (struct sockaddr_storage *addr,
+                                            int dspnum);
+static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_storage *addr,
+                                            GdmHostent *he, int displaynum);
 
 #else
+/************************ IPv4 specific prototypes **************************/
 
-static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
-static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa,
-                                  gint len,
-                                  gint type);
- static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
- static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
- static void gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len);
- static void gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len);
- static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
- static void gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa);
- static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
- static void gdm_xdmcp_send_accept (GdmHostent *he /* eaten and freed */,
-                                   struct sockaddr_in *clnt_sa,
-                                   int displaynum);
-static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason);
- static void gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid);
- static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
- static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD16 dspnum, CARD32 sessid);
+static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa,
+                                            gint len);
+static void gdm_xdmcp_handle_query         (struct sockaddr_in *clnt_sa,
+                                            gint len,
+                                            gint type);
+ static void gdm_xdmcp_handle_request      (struct sockaddr_in *clnt_sa,
+                                            gint len);
+ static void gdm_xdmcp_handle_manage       (struct sockaddr_in *clnt_sa,
+                                            gint len);
+ static void gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa,
+                                            gint len);
+ static void gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa,
+                                            gint len);
+ static void gdm_xdmcp_handle_keepalive    (struct sockaddr_in *clnt_sa,
+                                            gint len);
+ static void gdm_xdmcp_send_willing        (struct sockaddr_in *clnt_sa);
+ static void gdm_xdmcp_send_unwilling      (struct sockaddr_in *clnt_sa,
+                                            gint type);
+ static void gdm_xdmcp_send_accept         (GdmHostent *he /* eaten and freed */,
+                                            struct sockaddr_in *clnt_sa,
+                                            int displaynum);
+static void gdm_xdmcp_send_decline         (struct sockaddr_in *clnt_sa,
+                                            const char *reason);
+ static void gdm_xdmcp_send_refuse         (struct sockaddr_in *clnt_sa,
+                                            CARD32 sessid);
+ static void gdm_xdmcp_send_failed         (struct sockaddr_in *clnt_sa,
+                                            CARD32 sessid);
+ static void gdm_xdmcp_send_alive          (struct sockaddr_in *clnt_sa,
+                                            CARD16 dspnum, CARD32 sessid);
  static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
                                             struct sockaddr_in *origin);
- static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa);
+ static gboolean gdm_xdmcp_host_allow      (struct sockaddr_in *clnt_sa);
 static GdmForwardQuery * gdm_forward_query_alloc (struct sockaddr_in *mgr_sa,
-                                                struct sockaddr_in *dsp_sa);
+                                            struct sockaddr_in *dsp_sa);
 static GdmForwardQuery * gdm_forward_query_lookup (struct sockaddr_in *clnt_sa);
-static int gdm_xdmcp_displays_from_host (struct sockaddr_in *addr);
-static GdmDisplay *gdm_xdmcp_display_lookup_by_host (struct sockaddr_in *addr, int dspnum);
-static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_in *addr, GdmHostent *he, int displaynum);
-
+static int gdm_xdmcp_displays_from_host    (struct sockaddr_in *addr);
+static GdmDisplay *gdm_xdmcp_display_lookup_by_host (struct sockaddr_in *addr,
+                                            int dspnum);
+static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_in *addr,
+                                            GdmHostent *he, int displaynum);
 #endif  /*IPv4 / IPv6*/
 
 static void gdm_xdmcp_whack_queued_managed_forwards (struct sockaddr_in *clnt_sa,
-                                                   struct in_addr *origin);
+                                            struct in_addr *origin);
 static void gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
-                                               struct in_addr *origin);
-static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
-                                        struct sockaddr_in *clnt_sa,
-                                        struct in_addr *display_addr,
-                                        ARRAYofARRAY8Ptr authlist);
+                                            struct in_addr *origin);
+static void gdm_xdmcp_send_forward_query   (GdmIndirectDisplay *id,
+                                            struct sockaddr_in *clnt_sa,
+                                            struct in_addr *display_addr,
+                                            ARRAYofARRAY8Ptr authlist);
 static void gdm_xdmcp_whack_queued_managed_forwards (struct sockaddr_in *clnt_sa,
-						     struct in_addr *origin);
+                                            struct in_addr *origin);
 static void gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
-						struct in_addr *origin);
+                                            struct in_addr *origin);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
 static void gdm_xdmcp_display_dispose_check (const gchar *hostname, int dspnum);
-static void gdm_xdmcp_displays_check (void);
-static void gdm_forward_query_dispose (GdmForwardQuery *q);
+static void gdm_xdmcp_displays_check       (void);
+static void gdm_forward_query_dispose      (GdmForwardQuery *q);
 
 static GSList *forward_queries = NULL;
 
@@ -241,8 +271,8 @@ static GSList *managed_forwards = NULL;
  * XDM-AUTHENTICATION-1 which requires a key database with private
  * keys from all X terminals on your LAN. Fun, fun, fun.
  * 
- * Furthermore user passwords go over the wire in cleartext anyway so
- * protecting cookies is not that important. 
+ * Furthermore user passwords go over the wire in cleartext anyway,
+ * so protecting cookies is not that important. 
  */
 
 typedef struct _XdmAuth {
@@ -285,16 +315,19 @@ gdm_xdmcp_displays_from_host (struct sockaddr_in *addr)
 		if (SERVER_IS_XDMCP (disp)) {
 #ifdef ENABLE_IPV6
 		    if (disp->addrtype == AF_INET6 &&
-			memcmp (&disp->addr6, &((struct sockaddr_in6 *)addr)->sin6_addr, sizeof (struct in6_addr)) == 0)
+			memcmp (&disp->addr6,
+                                &((struct sockaddr_in6 *)addr)->sin6_addr,
+                                sizeof (struct in6_addr)) == 0)
 			count++;
 		    else
 #endif
 		    if (disp->addrtype == AF_INET &&
-		    memcmp (&disp->addr, &((struct sockaddr_in *)addr)->sin_addr, sizeof (struct in_addr)) == 0)
+		    memcmp (&disp->addr,
+                            &((struct sockaddr_in *)addr)->sin_addr,
+                            sizeof (struct in_addr)) == 0)
 			count++;
 		}
 	}
-
 	return count;
 }
 
@@ -312,12 +345,18 @@ gdm_xdmcp_display_lookup_by_host (struct sockaddr_in *addr, int dspnum)
 		if (SERVER_IS_XDMCP (disp)) {
 #ifdef ENABLE_IPV6
 		    if (disp->addrtype == AF_INET6) {
-			if ((memcmp (&disp->addr6, &((struct sockaddr_in6 *)addr)->sin6_addr, sizeof (struct in6_addr)) == 0) && disp->xdmcp_dispnum == dspnum)
+			if ((memcmp (&disp->addr6,
+                            &((struct sockaddr_in6 *)addr)->sin6_addr,
+                            sizeof (struct in6_addr)) == 0) &&
+                           disp->xdmcp_dispnum == dspnum)
 			return disp;
 		    }
 		    else
 #endif
-		    if ((memcmp (&disp->addr, &((struct sockaddr_in *)addr)->sin_addr, sizeof (struct in_addr)) == 0) && disp->xdmcp_dispnum == dspnum)
+		    if ((memcmp (&disp->addr,
+                        &((struct sockaddr_in *)addr)->sin_addr,
+                        sizeof (struct in_addr)) == 0) &&
+                       disp->xdmcp_dispnum == dspnum)
 			return disp;
 		}
 	}
@@ -349,17 +388,17 @@ gdm_xdmcp_init (void)
     if G_UNLIKELY (gethostname (hostbuf, 1023) != 0) {
 	gdm_error (_("%s: Could not get server hostname: %s!"), 
 		   "gdm_xdmcp_init", strerror (errno));
-	strcmp (hostbuf, "localhost.localdomain");
+	strcpy (hostbuf, "localhost.localdomain");
     }
 
     if ( ! initted) {
 	    uname (&name);
-	    sysid = g_strconcat (name.sysname, " ", name.release, NULL);
-
-	    servhost.data = (CARD8 *) g_strdup (hostbuf);
+	    sysid           = g_strconcat (name.sysname, " ",
+                                           name.release, NULL);
+	    servhost.data   = (CARD8 *) g_strdup (hostbuf);
 	    servhost.length = strlen ((char *) servhost.data);
 	    
-	    initted = TRUE;
+	    initted         = TRUE;
     }
     
     gdm_debug ("XDMCP: Start up on host %s, port %d", hostbuf, udpport);
@@ -380,13 +419,17 @@ gdm_xdmcp_init (void)
 #ifdef ENABLE_IPV6
     if (have_ipv6 ()) {
 	((struct sockaddr_in6 *)(&serv_sa))->sin6_family = AF_INET6;
-	((struct sockaddr_in6 *)(&serv_sa))->sin6_port = htons (udpport); /* UDP 177 */
-	((struct sockaddr_in6 *)(&serv_sa))->sin6_addr = in6addr_any;
+	((struct sockaddr_in6 *)(&serv_sa))->sin6_port   = htons (udpport); /* UDP 177 */
+	((struct sockaddr_in6 *)(&serv_sa))->sin6_addr   = in6addr_any;
 	addrlen = sizeof (struct sockaddr_in6);
 
 	/* Checking and Setting Multicast options */
 	if (gdm_get_value_bool (GDM_KEY_MULTICAST)) {
-	    int socktemp;       /* temporary socket for getting info about available interfaces*/
+            /*
+             * socktemp is a temporary socket for getting info about
+             * available interfaces
+             */
+	    int socktemp;
 	    int i, num;
 	    char *buf;
 	    struct ipv6_mreq mreq;
@@ -399,7 +442,8 @@ gdm_xdmcp_init (void)
 	    if (ve_string_empty (gdm_get_value_string (GDM_KEY_MULTICAST_ADDR))) {
 
 		/* Stuff it with all-node multicast address */
-		gdm_set_value_string (GDM_KEY_MULTICAST_ADDR, XDMCP_MULTICAST_ADDRESS);
+		gdm_set_value_string (GDM_KEY_MULTICAST_ADDR,
+                                      XDMCP_MULTICAST_ADDRESS);
 	    }
 
 	    socktemp = socket (AF_INET, SOCK_DGRAM, 0);
@@ -412,6 +456,7 @@ gdm_xdmcp_init (void)
 #endif
 	    ifc.ifc_len = sizeof (struct ifreq) * num;
 	    ifc.ifc_buf = buf = malloc (ifc.ifc_len);
+
 	    if (ioctl (socktemp, SIOCGIFCONF, &ifc) >= 0) {
 		ifr = ifc.ifc_req;
 		num = ifc.ifc_len / sizeof (struct ifreq); /* No of interfaces */
@@ -426,8 +471,10 @@ gdm_xdmcp_init (void)
 		    /* paranoia */
 		    ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
-		    if (ioctl (socktemp, SIOCGIFFLAGS, &ifreq) < 0)
-			gdm_debug ("XDMCP: Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
+		    if (ioctl (socktemp, SIOCGIFFLAGS, &ifreq) < 0) {
+			gdm_debug ("XDMCP: Could not get SIOCGIFFLAGS for %s",
+                                   ifr[i].ifr_name);
+                    }
 
 		    ifindex = if_nametoindex (ifr[i].ifr_name);
 
@@ -439,8 +486,11 @@ gdm_xdmcp_init (void)
 			}
 
 		    mreq.ipv6mr_interface = ifindex;
-		    inet_pton (AF_INET6, gdm_get_value_string (GDM_KEY_MULTICAST_ADDR), &mreq.ipv6mr_multiaddr);
-		    setsockopt (gdm_xdmcpfd, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq, sizeof (mreq));
+		    inet_pton (AF_INET6,
+                               gdm_get_value_string (GDM_KEY_MULTICAST_ADDR),
+                               &mreq.ipv6mr_multiaddr);
+		    setsockopt (gdm_xdmcpfd, IPPROTO_IPV6, IPV6_JOIN_GROUP,
+                                &mreq, sizeof (mreq));
 		} 
            }
            g_free (buf);
@@ -466,13 +516,13 @@ gdm_xdmcp_init (void)
     return TRUE;
 }
 
-
 void
 gdm_xdmcp_run (void)
 {
 	GIOChannel *xdmcpchan;
 
 	xdmcpchan = g_io_channel_unix_new (gdm_xdmcpfd);
+
 	g_io_channel_set_encoding (xdmcpchan, NULL, NULL);
 	g_io_channel_set_buffered (xdmcpchan, FALSE);
 
@@ -552,12 +602,18 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	if (clnt_sa.ss_family == AF_INET6) {
 	    char buffer6[INET6_ADDRSTRLEN];
 
-	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", opcode_names[header.opcode], inet_ntop (AF_INET6, &((struct sockaddr_in6 *)(&clnt_sa))->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s",
+                       opcode_names[header.opcode],
+                       inet_ntop (AF_INET6,
+                                  &((struct sockaddr_in6 *)(&clnt_sa))->sin6_addr,
+                                  buffer6, INET6_ADDRSTRLEN));
 	}
 	else
 #endif
 	{
-	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", opcode_names[header.opcode], inet_ntoa (((struct sockaddr_in *)(&clnt_sa))->sin_addr));
+	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s",
+                       opcode_names[header.opcode],
+                       inet_ntoa (((struct sockaddr_in *)(&clnt_sa))->sin_addr));
 	}
     }
 
@@ -568,14 +624,22 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 
 		char buffer6[INET6_ADDRSTRLEN];
 
-		gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", gdm_opcode_names[header.opcode - GDM_XDMCP_FIRST_OPCODE], inet_ntop (AF_INET6, &((struct sockaddr_in6 *)(&clnt_sa))->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+		gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s",
+                           gdm_opcode_names[header.opcode - GDM_XDMCP_FIRST_OPCODE],
+                           inet_ntop (AF_INET6,
+                                      &((struct sockaddr_in6 *)(&clnt_sa))->sin6_addr,
+                                      buffer6, INET6_ADDRSTRLEN));
 	}
 	else
 #endif
 	{
 		char buffer[INET_ADDRSTRLEN];
 
-		gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", gdm_opcode_names[header.opcode - GDM_XDMCP_FIRST_OPCODE], inet_ntop (AF_INET, &((struct sockaddr_in *)(&clnt_sa))->sin_addr, buffer, INET_ADDRSTRLEN));
+		gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s",
+                           gdm_opcode_names[header.opcode - GDM_XDMCP_FIRST_OPCODE],
+                           inet_ntop (AF_INET,
+                                      &((struct sockaddr_in *)(&clnt_sa))->sin_addr,
+                                      buffer, INET_ADDRSTRLEN));
 	}
     }
 
@@ -624,7 +688,9 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 
 		gdm_error (_("%s: Unknown opcode from host %s"),
                           "gdm_xdmcp_decode_packet",
-                          inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)(&clnt_sa))->sin6_addr), buffer6, INET6_ADDRSTRLEN));
+                          inet_ntop (AF_INET6,
+                                     &(((struct sockaddr_in6 *)(&clnt_sa))->sin6_addr),
+                                     buffer6, INET6_ADDRSTRLEN));
 	}
 	else
 #endif
@@ -653,12 +719,16 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     if (clnt_sa->ss_family == AF_INET6) {
 	char buffer6[INET6_ADDRSTRLEN];
 
-	gdm_debug ("gdm_xdmcp_handle_query: Opcode %d from %s", type, inet_ntop (AF_INET6, &((struct sockaddr_in6 *)(clnt_sa))->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+	gdm_debug ("gdm_xdmcp_handle_query: Opcode %d from %s", type,
+                   inet_ntop (AF_INET6,
+                              &((struct sockaddr_in6 *)(clnt_sa))->sin6_addr,
+                              buffer6, INET6_ADDRSTRLEN));
     }
     else
 #endif
     {
-	gdm_debug ("gdm_xdmcp_handle_query: Opcode %d from %s", type, inet_ntoa (((struct sockaddr_in *)(clnt_sa))->sin_addr));
+	gdm_debug ("gdm_xdmcp_handle_query: Opcode %d from %s",
+                   type, inet_ntoa (((struct sockaddr_in *)(clnt_sa))->sin_addr));
     }
  
     /* Extract array of authentication names from Xdmcp packet */
@@ -671,8 +741,10 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     /* Crude checksumming */
     for (i = 0 ; i < clnt_authlist.length ; i++) {
 	    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
-		    char *s = g_strndup ((char *) clnt_authlist.data[i].data, clnt_authlist.length);
-		    gdm_debug ("gdm_xdmcp_handle_query: authlist: %s", ve_sure_string (s));
+		    char *s = g_strndup ((char *) clnt_authlist.data[i].data,
+                                         clnt_authlist.length);
+		    gdm_debug ("gdm_xdmcp_handle_query: authlist: %s",
+                               ve_sure_string (s));
 		    g_free (s);
 	    }
 	    explen += 2+clnt_authlist.data[i].length;
@@ -703,9 +775,11 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 		    (id->chosen_host != NULL)))
 		{
 			/* if user chose us, then just send willing */
-			if ((((struct sockaddr_in *)clnt_sa)->sin_family == AF_INET && gdm_is_local_addr ((struct in_addr *)(id->chosen_host)))
+			if ((((struct sockaddr_in *)clnt_sa)->sin_family == AF_INET &&
+                               gdm_is_local_addr ((struct in_addr *)(id->chosen_host)))
 #ifdef ENABLE_IPV6
-			    || (clnt_sa->ss_family == AF_INET6 && gdm_is_local_addr6 ((struct in6_addr *)(id->chosen_host6)))
+			    || (clnt_sa->ss_family == AF_INET6 &&
+                                gdm_is_local_addr6 ((struct in6_addr *)(id->chosen_host6)))
 #endif
                           ) {
 
@@ -715,9 +789,11 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 				gdm_xdmcp_send_willing (clnt_sa);
 			}
 			else
-			if ((((struct sockaddr_in *)clnt_sa)->sin_family == AF_INET && gdm_is_loopback_addr (&(((struct sockaddr_in *)clnt_sa)->sin_addr)))
+			if ((((struct sockaddr_in *)clnt_sa)->sin_family == AF_INET &&
+                               gdm_is_loopback_addr (&(((struct sockaddr_in *)clnt_sa)->sin_addr)))
 #ifdef ENABLE_IPV6
-			    || (clnt_sa->ss_family == AF_INET6 && gdm_is_loopback_addr6 (&(((struct sockaddr_in6 *)clnt_sa)->sin6_addr)))
+			    || (clnt_sa->ss_family == AF_INET6 &&
+                                gdm_is_loopback_addr6 (&(((struct sockaddr_in6 *)clnt_sa)->sin6_addr)))
 #endif
 			) {
 
@@ -738,7 +814,9 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 						addr6 = &(((struct sockaddr_in6 *)saddr)->sin6_addr);
 						if ( ! gdm_is_loopback_addr6 (addr6)) {
 							/* forward query to * chosen host */
-							gdm_xdmcp_send_forward_query6 (id, (struct sockaddr_in6 *)clnt_sa, addr6, &clnt_authlist);
+							gdm_xdmcp_send_forward_query6 (id,
+                                                           (struct sockaddr_in6 *)clnt_sa,
+                                                            addr6, &clnt_authlist);
 						}
 					}
 					else
@@ -747,7 +825,9 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 						addr = &(((struct sockaddr_in *)saddr)->sin_addr);
 						if ( ! gdm_is_loopback_addr (addr)) {
 							/* forward query to * chosen host */
-							gdm_xdmcp_send_forward_query (id, (struct sockaddr_in *)clnt_sa, addr, &clnt_authlist);
+							gdm_xdmcp_send_forward_query (id,
+                                                            (struct sockaddr_in *)clnt_sa,
+                                                             addr, &clnt_authlist);
 						}
 
 					}
@@ -756,10 +836,22 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 				}
 			} else {
 				/* or send forward query to chosen host */
-				gdm_xdmcp_send_forward_query
-					(id, (struct sockaddr_in *)clnt_sa,
-					 &(((struct sockaddr_in *)clnt_sa)->sin_addr),
-					 &clnt_authlist);
+#ifdef ENABLE_IPV6
+				if (clnt_sa->ss_family == AF_INET6)
+				{
+					gdm_xdmcp_send_forward_query6
+						(id, (struct sockaddr_in6 *)clnt_sa,
+						 &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr),
+						 &clnt_authlist);
+				}
+				else
+#endif
+				{
+					gdm_xdmcp_send_forward_query
+						(id, (struct sockaddr_in *)clnt_sa,
+						 &(((struct sockaddr_in *)clnt_sa)->sin_addr),
+						 &clnt_authlist);
+				}
 			}
 		} else if (id == NULL) {
 			id = gdm_choose_indirect_alloc (clnt_sa);
@@ -784,7 +876,10 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 
 #ifdef ENABLE_IPV6
 static void
-gdm_xdmcp_send_forward_query6 (GdmIndirectDisplay *id, struct sockaddr_in6 *clnt_sa, struct in6_addr *display_addr, ARRAYofARRAY8Ptr authlist)
+gdm_xdmcp_send_forward_query6 (GdmIndirectDisplay *id,
+                               struct sockaddr_in6 *clnt_sa,
+                               struct in6_addr *display_addr,
+                               ARRAYofARRAY8Ptr authlist)
 {
 	struct sockaddr_in6 sock = {0};
 	XdmcpHeader header;
@@ -794,10 +889,14 @@ gdm_xdmcp_send_forward_query6 (GdmIndirectDisplay *id, struct sockaddr_in6 *clnt
 	char buffer6[INET6_ADDRSTRLEN];
 
 	g_assert (id != NULL);
-	g_assert (id->chosen_host != NULL);
+	g_assert (id->chosen_host6 != NULL);
 
-	gdm_debug ("gdm_xdmcp_send_forward_query6: Sending forward query to %s", inet_ntop (AF_INET6, &(id->chosen_host6), buffer6, sizeof (buffer6)));
-	gdm_debug ("gdm_xdmcp_send_forward_query6: Query contains %s:%d", inet_ntop (AF_INET6, display_addr, buffer6, sizeof (buffer6)), (int) ntohs (clnt_sa->sin6_port));
+	gdm_debug ("gdm_xdmcp_send_forward_query6: Sending forward query to %s",
+                   inet_ntop (AF_INET6, &(id->chosen_host6),
+                              buffer6, sizeof (buffer6)));
+	gdm_debug ("gdm_xdmcp_send_forward_query6: Query contains %s:%d",
+                   inet_ntop (AF_INET6, display_addr, buffer6, sizeof (buffer6)),
+                   (int) ntohs (clnt_sa->sin6_port));
 
 	authlen = 1;
 	for (i = 0 ; i < authlist->length ; i++) {
@@ -806,7 +905,7 @@ gdm_xdmcp_send_forward_query6 (GdmIndirectDisplay *id, struct sockaddr_in6 *clnt
 
 	/* we depend on this being 2 elsewhere as well */
 	port.length = 2;
-	port.data = g_new (char, 2);
+	port.data = g_new (unsigned char, 2);
 	memcpy (port.data, &(clnt_sa->sin6_port), 2);
 	address.length = sizeof (struct in6_addr);
 	address.data = (void *)g_new (struct in6_addr, 1);
@@ -828,8 +927,10 @@ gdm_xdmcp_send_forward_query6 (GdmIndirectDisplay *id, struct sockaddr_in6 *clnt
 
 	sock.sin6_family = AF_INET6;
 	sock.sin6_port = htons (XDM_UDP_PORT);
-	memcpy (sock.sin6_addr.s6_addr, id->chosen_host6->s6_addr, sizeof (struct in6_addr));
-	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in6));
+	memcpy (sock.sin6_addr.s6_addr, id->chosen_host6->s6_addr,
+                sizeof (struct in6_addr));
+	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr) &sock,
+                    (int)sizeof (struct sockaddr_in6));
 	g_free (port.data);
 	g_free (address.data);
 }
@@ -969,7 +1070,9 @@ gdm_forward_query_lookup (struct sockaddr_in *clnt_sa)
 			continue;
 #ifdef ENABLE_IPV6
 		if (clnt_sa->ss_family == AF_INET6) {
-			if (memcmp (((struct sockaddr_in6 *)(q->dsp_sa))->sin6_addr.s6_addr, ((struct sockaddr_in6 *)clnt_sa)->sin6_addr.s6_addr, sizeof (struct in6_addr)) == 0) {
+			if (memcmp (((struct sockaddr_in6 *)(q->dsp_sa))->sin6_addr.s6_addr,
+                                    ((struct sockaddr_in6 *)clnt_sa)->sin6_addr.s6_addr,
+                                    sizeof (struct in6_addr)) == 0) {
 				g_slist_free (qlist);
 				return q;
 			}
@@ -977,7 +1080,10 @@ gdm_forward_query_lookup (struct sockaddr_in *clnt_sa)
 			if (q->acctime > 0 &&  curtime > q->acctime + GDM_FORWARD_QUERY_TIMEOUT) {
 				char buffer6[INET6_ADDRSTRLEN];
 
-				gdm_debug ("gdm_forward_query_lookup: Disposing stale forward query from %s", inet_ntop (AF_INET6, &((struct sockaddr_in6 *)q->dsp_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+				gdm_debug ("gdm_forward_query_lookup: Disposing stale forward query from %s",
+                                           inet_ntop (AF_INET6,
+                                                      &((struct sockaddr_in6 *)q->dsp_sa)->sin6_addr,
+                                                      buffer6, INET6_ADDRSTRLEN));
 				gdm_forward_query_dispose (q);
 				continue;
 			}
@@ -985,7 +1091,8 @@ gdm_forward_query_lookup (struct sockaddr_in *clnt_sa)
 		else
 #endif
 		{
-			if (((struct sockaddr_in *)(q->dsp_sa))->sin_addr.s_addr == ((struct sockaddr_in *)clnt_sa)->sin_addr.s_addr) {
+			if (((struct sockaddr_in *)(q->dsp_sa))->sin_addr.s_addr ==
+                            ((struct sockaddr_in *)clnt_sa)->sin_addr.s_addr) {
 				g_slist_free (qlist);
 				return q;
 			}
@@ -1006,7 +1113,10 @@ gdm_forward_query_lookup (struct sockaddr_in *clnt_sa)
 	if (clnt_sa->ss_family == AF_INET6) {
 		char buffer6[INET6_ADDRSTRLEN];
 
-		gdm_debug ("gdm_forward_query_lookup: Host %s not found", inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+		gdm_debug ("gdm_forward_query_lookup: Host %s not found",
+                           inet_ntop (AF_INET6,
+                                      &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                                      buffer6, INET6_ADDRSTRLEN));
 	}
 	else
 #endif
@@ -1033,7 +1143,10 @@ gdm_forward_query_dispose (GdmForwardQuery *q)
 	if (q->dsp_sa->ss_family == AF_INET6) {
 		char buffer6[INET6_ADDRSTRLEN];
 
-		gdm_debug ("gdm_forward_query_dispose: Disposing %s", inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)(q->dsp_sa))->sin6_addr), buffer6, INET6_ADDRSTRLEN));
+		gdm_debug ("gdm_forward_query_dispose: Disposing %s",
+                           inet_ntop (AF_INET6,
+                                      &(((struct sockaddr_in6 *)(q->dsp_sa))->sin6_addr),
+                                      buffer6, INET6_ADDRSTRLEN));
 	}
 	else
 #endif
@@ -1076,7 +1189,9 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 
 		gdm_error ("%s: Got FORWARD_QUERY from banned host %s",
 			   "gdm_xdmcp_handle_forward query",
-			   inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr), buffer6, INET6_ADDRSTRLEN));
+			   inet_ntop (AF_INET6,
+                                      &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr),
+                                      buffer6, INET6_ADDRSTRLEN));
 	    }
 	    else
 #endif
@@ -1120,8 +1235,10 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     for (i = 0 ; i < clnt_authlist.length ; i++) {
 	    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
-		    char *s = g_strndup ((char *) clnt_authlist.data[i].data, clnt_authlist.length);
-		    gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", ve_sure_string (s));
+		    char *s = g_strndup ((char *) clnt_authlist.data[i].data,
+                                         clnt_authlist.length);
+		    gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s",
+                               ve_sure_string (s));
 		    g_free (s);
 	    }
 	    explen += 2+clnt_authlist.data[i].length;
@@ -1147,8 +1264,10 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 		/* Convert IPv4 address to IPv6 if needed */
 		struct sockaddr_in tmp_disp_sa = {0};
 		((struct sockaddr_in *)(&tmp_disp_sa))->sin_family = AF_INET;
-		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_port, clnt_port.data, 2);
-		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr.s_addr, clnt_addr.data, 4);
+		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_port,
+                        clnt_port.data, 2);
+		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr.s_addr,
+                        clnt_addr.data, 4);
 
 		ipv4_addr = inet_ntoa (((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr);
 		strcpy (buffer6, "::ffff:");
@@ -1171,7 +1290,8 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 
 	g_assert (16 == sizeof (struct in6_addr));
 
-	gdm_xdmcp_whack_queued_managed_forwards6 ((struct sockaddr_in6 *)clnt_sa, ipv6_addr_ptr);
+	gdm_xdmcp_whack_queued_managed_forwards6 ((struct sockaddr_in6 *)clnt_sa,
+                                                  ipv6_addr_ptr);
 
 	((struct sockaddr_in6 *)(&disp_sa))->sin6_family = AF_INET6;
 
@@ -1179,9 +1299,14 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 	memcpy (&((struct sockaddr_in6 *)(&disp_sa))->sin6_port, clnt_port.data, 2);
 
 	/* Find client address */
-	memcpy (&((struct sockaddr_in6 *)(&disp_sa))->sin6_addr.s6_addr, ipv6_addr_ptr, 16);
+	memcpy (&((struct sockaddr_in6 *)(&disp_sa))->sin6_addr.s6_addr,
+                ipv6_addr_ptr, 16);
 
-	gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %d", inet_ntop (AF_INET6, &((struct sockaddr_in6 *)(&disp_sa))->sin6_addr, buffer6, INET6_ADDRSTRLEN), ntohs (((struct sockaddr_in6 *)(&disp_sa))->sin6_port));
+	gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %d",
+                   inet_ntop (AF_INET6,
+                              &((struct sockaddr_in6 *)(&disp_sa))->sin6_addr,
+                              buffer6, INET6_ADDRSTRLEN),
+                              ntohs (((struct sockaddr_in6 *)(&disp_sa))->sin6_port));
    }
    else
 #endif
@@ -1194,19 +1319,19 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 	}
 
 	g_assert (4 == sizeof (struct in_addr));
-	gdm_xdmcp_whack_queued_managed_forwards ((struct sockaddr_in *)clnt_sa, (struct in_addr *)clnt_addr.data);
+	gdm_xdmcp_whack_queued_managed_forwards ((struct sockaddr_in *)clnt_sa,
+                                                 (struct in_addr *)clnt_addr.data);
 	((struct sockaddr_in *)(&disp_sa))->sin_family = AF_INET;
 	/* Find client port number */
 	memcpy (&((struct sockaddr_in *)(&disp_sa))->sin_port, clnt_port.data, 2);
 	/* Find client address */
-	memcpy (&((struct sockaddr_in *)(&disp_sa))->sin_addr.s_addr, clnt_addr.data, 4);
-	gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %d", inet_ntoa (((struct sockaddr_in *)(&disp_sa))->sin_addr), ntohs (((struct sockaddr_in *)(&disp_sa))->sin_port));
+	memcpy (&((struct sockaddr_in *)(&disp_sa))->sin_addr.s_addr,
+                clnt_addr.data, 4);
+	gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %d",
+                   inet_ntoa (((struct sockaddr_in *)(&disp_sa))->sin_addr),
+                   ntohs (((struct sockaddr_in *)(&disp_sa))->sin_port));
     }
 
-
-    
-    
-    
     /* Check with tcp_wrappers if display is allowed to access */
     if (gdm_xdmcp_host_allow (&disp_sa)) {
 	    GdmForwardQuery *q;
@@ -1247,21 +1372,27 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     if (clnt_sa->ss_family == AF_INET6) {
 	char buffer6[INET6_ADDRSTRLEN];
 
-	gdm_debug ("gdm_xdmcp_send_willing: Sending WILLING to %s", inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr), buffer6, INET6_ADDRSTRLEN));
+	gdm_debug ("gdm_xdmcp_send_willing: Sending WILLING to %s",
+                   inet_ntop (AF_INET6,
+                              &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr),
+                              buffer6, INET6_ADDRSTRLEN));
     }
     else
 #endif
     {
-	gdm_debug ("gdm_xdmcp_send_willing: Sending WILLING to %s", inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
+	gdm_debug ("gdm_xdmcp_send_willing: Sending WILLING to %s",
+                   inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
     }
 
     if (last_willing == 0 ||
 	time (NULL) - 3 > last_willing) {
 	    char statusBuf[256] = "";
 	    bin = ve_first_word (willing);
+
 	    if ( ! ve_string_empty (bin) &&
 		 g_access (bin, X_OK) == 0 &&
 		 (fd = popen (willing, "r")) != NULL) {
+
 		    if (fgets (statusBuf, sizeof (statusBuf), fd) != NULL &&
 			! ve_string_empty (g_strstrip (statusBuf))) {
 			    g_free (last_status);
@@ -1275,16 +1406,21 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 		    g_free (last_status);
 		    last_status = g_strdup (sysid);
 	    }
+
 	    last_willing = time (NULL);
 	    g_free (bin);
     }
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
+
 	if ( ! gdm_is_local_addr6 (&(((struct sockaddr_in6 *)clnt_sa)->sin6_addr)) &&
 	    gdm_xdmcp_displays_from_host (clnt_sa) >= dispperhost) {
-		/* Don't translate, this goes over the wire to servers where we
-		 * don't know the charset or language, so it must be ascii */
-		status.data = (CARD8 *) g_strdup_printf ("%s (Server is busy)", last_status);
+               /*
+                * Don't translate, this goes over the wire to servers where we
+                * don't know the charset or language, so it must be ascii
+                */
+		status.data = (CARD8 *) g_strdup_printf ("%s (Server is busy)",
+                                                         last_status);
 	} else {
 		status.data = (CARD8 *) g_strdup (last_status);
 	}
@@ -1296,7 +1432,8 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 	    gdm_xdmcp_displays_from_host (clnt_sa) >= dispperhost) {
 		/* Don't translate, this goes over the wire to servers where we
 		 * don't know the charset or language, so it must be ascii */
-		status.data = (CARD8 *) g_strdup_printf ("%s (Server is busy)", last_status);
+		status.data = (CARD8 *) g_strdup_printf ("%s (Server is busy)",
+                                                         last_status);
 	} else {
 		status.data = (CARD8 *) g_strdup (last_status);
 	}
@@ -1304,23 +1441,31 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 
     status.length = strlen ((char *) status.data);
     
-    header.opcode = (CARD16) WILLING;
-    header.length = 6 + serv_authlist.authentication.length;
-    header.length += servhost.length + status.length;
-    header.version = XDM_PROTOCOL_VERSION;
+    header.opcode   = (CARD16) WILLING;
+    header.length   = 6 + serv_authlist.authentication.length;
+    header.length  += servhost.length + status.length;
+    header.version  = XDM_PROTOCOL_VERSION;
     XdmcpWriteHeader (&buf, &header);
     
-    XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication); /* Hardcoded authentication */
+    /* Hardcoded authentication */
+    XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication);
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
+
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
-	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa, (int)sizeof (struct sockaddr_in6));
+	XdmcpFlush (gdm_xdmcpfd,
+                    &buf,
+                    (XdmcpNetaddr)clnt_sa,
+                    (int)sizeof (struct sockaddr_in6));
     }
     else
 #endif
     {
-	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa, (int)sizeof (struct sockaddr_in));
+	XdmcpFlush (gdm_xdmcpfd,
+                    &buf,
+                    (XdmcpNetaddr)clnt_sa,
+                    (int)sizeof (struct sockaddr_in));
     }
 
     g_free (status.data);
@@ -1346,19 +1491,26 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     if (clnt_sa->ss_family == AF_INET6) {
 	char buffer6[INET6_ADDRSTRLEN];
 
-	gdm_debug ("gdm_xdmcp_send_unwilling: Sending UNWILLING to %s", inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr), buffer6, INET6_ADDRSTRLEN));
+	gdm_debug ("gdm_xdmcp_send_unwilling: Sending UNWILLING to %s",
+                   inet_ntop (AF_INET6,
+                              &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr),
+                              buffer6, INET6_ADDRSTRLEN));
 	gdm_error (_("Denied XDMCP query from host %s"), buffer6); 
     }
     else
 #endif
     {
-	gdm_debug ("gdm_xdmcp_send_unwilling: Sending UNWILLING to %s", inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
+	gdm_debug ("gdm_xdmcp_send_unwilling: Sending UNWILLING to %s",
+                   inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
     
-	gdm_error (_("Denied XDMCP query from host %s"), inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));    
+	gdm_error (_("Denied XDMCP query from host %s"),
+                   inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));    
     }
     
-    /* Don't translate, this goes over the wire to servers where we
-     * don't know the charset or language, so it must be ascii */
+   /*
+    * Don't translate, this goes over the wire to servers where we
+    * don't know the charset or language, so it must be ascii
+    */
     status.data = (CARD8 *) "Display not authorized to connect";
     status.length = strlen ((char *) status.data);
     
@@ -1371,12 +1523,18 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     XdmcpWriteARRAY8 (&buf, &status);
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
-	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa, (int)sizeof (struct sockaddr_in6));
+	XdmcpFlush (gdm_xdmcpfd,
+                    &buf,
+                    (XdmcpNetaddr)clnt_sa,
+                    (int)sizeof (struct sockaddr_in6));
     }
     else
 #endif
     {
-	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa, (int)sizeof (struct sockaddr_in));
+	XdmcpFlush (gdm_xdmcpfd,
+                    &buf,
+                    (XdmcpNetaddr)clnt_sa,
+                    (int)sizeof (struct sockaddr_in));
     }
 
     last_time = time (NULL);
@@ -1403,11 +1561,15 @@ gdm_xdmcp_really_send_managed_forward (struct sockaddr_in *clnt_sa,
 
 		gdm_debug ("gdm_xdmcp_really_send_managed_forward: "
                           "Sending MANAGED_FORWARD to %s",
-                          inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr), buffer6, INET6_ADDRSTRLEN));
+                          inet_ntop (AF_INET6,
+                                     &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr),
+                                     buffer6, INET6_ADDRSTRLEN));
 
 		address.length = sizeof (struct in6_addr);
 		address.data = (void *)&addr6;
-		memcpy (address.data, &(((struct sockaddr_in6 *)origin)->sin6_addr), sizeof (struct in6_addr));
+		memcpy (address.data,
+                        &(((struct sockaddr_in6 *)origin)->sin6_addr),
+                        sizeof (struct in6_addr));
 	}
 	else
 #endif
@@ -1418,7 +1580,9 @@ gdm_xdmcp_really_send_managed_forward (struct sockaddr_in *clnt_sa,
 
 		address.length = sizeof (struct in_addr);
 		address.data = (void *)&addr;
-		memcpy (address.data, &(((struct sockaddr_in *)origin)->sin_addr), sizeof (struct in_addr));
+		memcpy (address.data,
+                        &(((struct sockaddr_in *)origin)->sin_addr),
+                        sizeof (struct in_addr));
 	}
 
 	header.opcode = (CARD16) GDM_XDMCP_MANAGED_FORWARD;
@@ -1429,12 +1593,18 @@ gdm_xdmcp_really_send_managed_forward (struct sockaddr_in *clnt_sa,
 	XdmcpWriteARRAY8 (&buf, &address);
 #ifdef ENABLE_IPV6
 	if (clnt_sa->ss_family == AF_INET6) {
-		XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa, (int)sizeof (struct sockaddr_in6));
+		XdmcpFlush (gdm_xdmcpfd,
+                            &buf,
+                            (XdmcpNetaddr)clnt_sa,
+                            (int)sizeof (struct sockaddr_in6));
 	}
 	else
 #endif
 	{
-		XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa, (int)sizeof (struct sockaddr_in));
+		XdmcpFlush (gdm_xdmcpfd,
+                            &buf,
+                            (XdmcpNetaddr)clnt_sa,
+                            (int)sizeof (struct sockaddr_in));
 	}
 
 }
@@ -1499,7 +1669,9 @@ gdm_xdmcp_send_got_managed_forward6 (struct sockaddr_in6 *clnt_sa,
 
 	gdm_debug ("gdm_xdmcp_send_managed_forward: "
                   "Sending GOT_MANAGED_FORWARD to %s",
-                  inet_ntop (AF_INET6, &clnt_sa->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+                  inet_ntop (AF_INET6,
+                             &clnt_sa->sin6_addr,
+                             buffer6, INET6_ADDRSTRLEN));
 
 	address.length = sizeof (struct in6_addr);
 	address.data = (void *)&addr;
@@ -1567,7 +1739,9 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 #ifdef ENABLE_IPV6
     char buffer6[INET6_ADDRSTRLEN];
 
-    inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN);
+    inet_ntop (AF_INET6,
+               &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+               buffer6, INET6_ADDRSTRLEN);
 
     if (clnt_sa->ss_family == AF_INET6) {
 	gdm_debug ("gdm_xdmcp_handle_request: Got REQUEST from %s",buffer6);
@@ -1585,7 +1759,9 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	if (clnt_sa->ss_family == AF_INET6) {
 	    gdm_error (_("%s: Got REQUEST from banned host %s"),
                       "gdm_xdmcp_handle_request",
-                       inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+                       inet_ntop (AF_INET6,
+                                  &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                                  buffer6, INET6_ADDRSTRLEN));
 	}
 	else
 #endif
@@ -1655,7 +1831,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     /* libXdmcp doesn't terminate strings properly so we cheat and use strncmp () */
     for (i = 0 ; i < clnt_authorization.length ; i++)
 	if (clnt_authorization.data[i].length == 18 &&
-	    strncmp ((char *) clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18) == 0)
+	    strncmp ((char *) clnt_authorization.data[i].data,
+                     "MIT-MAGIC-COOKIE-1", 18) == 0)
 	    mitauth = TRUE;
     
     /* Manufacturer ID */
@@ -1688,7 +1865,9 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	if (clnt_sa->ss_family == AF_INET6) {
 	    gdm_error (_("%s: Failed checksum from %s"),
                       "gdm_xdmcp_handle_request",
-                       inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+                       inet_ntop (AF_INET6,
+                                  &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                                  buffer6, INET6_ADDRSTRLEN));
 	}
 	else
 #endif
@@ -1710,7 +1889,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG)) {
 	    char *s = g_strndup ((char *) clnt_manufacturer.data, clnt_manufacturer.length);
 	    gdm_debug ("gdm_xdmcp_handle_request: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d, ManufacturerID=%s",
-		       xdmcp_pending, maxpending, xdmcp_sessions, maxsessions, ve_sure_string (s));
+		       xdmcp_pending, maxpending, xdmcp_sessions,
+                       maxsessions, ve_sure_string (s));
 	    g_free (s);
     }
 
@@ -1719,7 +1899,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     if (clnt_sa->ss_family == AF_INET6) {
 	if (mitauth &&
 	    xdmcp_sessions < maxsessions &&
-	    (gdm_is_local_addr6 (&((struct sockaddr_in6 *)clnt_sa)->sin6_addr) || gdm_xdmcp_displays_from_host (clnt_sa) < dispperhost)) 
+	    (gdm_is_local_addr6 (&((struct sockaddr_in6 *)clnt_sa)->sin6_addr) ||
+             gdm_xdmcp_displays_from_host (clnt_sa) < dispperhost))
 
 		entered = TRUE;
 	} else
@@ -1757,16 +1938,19 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 		    gdm_xdmcp_send_decline (clnt_sa, "Only MIT-MAGIC-COOKIE-1 supported");	
 	    } else if (xdmcp_sessions >= maxsessions) {
 		    gdm_info ("Maximum number of open XDMCP sessions reached");
-		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions reached");	
+		    gdm_xdmcp_send_decline (clnt_sa,
+                                            "Maximum number of open sessions reached");	
 	    } else {
 #ifdef ENABLE_IPV6
 		if (clnt_sa->ss_family == AF_INET6)
-		    gdm_info ("Maximum number of open XDMCP sessions from host %s reached", buffer6);
+		    gdm_info ("Maximum number of open XDMCP sessions from host %s reached",
+                              buffer6);
 		else
 #endif
 		    gdm_info ("Maximum number of open XDMCP sessions from host %s reached",
 			      inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
-		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions from your host reached");	
+		    gdm_xdmcp_send_decline (clnt_sa,
+                                            "Maximum number of open sessions from your host reached");	
 	    }
     }
 
@@ -1799,28 +1983,27 @@ gdm_xdmcp_send_accept (GdmHostent *he /* eaten and freed */,
 				 he /* eaten and freed */,
 				 displaynum);
     
-    authentype.data = (CARD8 *) 0;
-    authentype.length = (CARD16) 0;
+    authentype.data   = (CARD8 *) 0;
+    authentype.length = (CARD16)  0;
     
-    authendata.data = (CARD8 *) 0;
-    authendata.length = (CARD16) 0;
+    authendata.data   = (CARD8 *) 0;
+    authendata.length = (CARD16)  0;
     
-    authname.data = (CARD8 *) "MIT-MAGIC-COOKIE-1";
-    authname.length = strlen ((char *) authname.data);
+    authname.data     = (CARD8 *) "MIT-MAGIC-COOKIE-1";
+    authname.length   = strlen ((char *) authname.data);
     
-    authdata.data = (CARD8 *) d->bcookie;
-    authdata.length = 16;
+    authdata.data     = (CARD8 *) d->bcookie;
+    authdata.length   = 16;
     
-    header.version = XDM_PROTOCOL_VERSION;
-    header.opcode = (CARD16) ACCEPT;
-    header.length = 4;
-    header.length += 2 + authentype.length;
-    header.length += 2 + authendata.length;
-    header.length += 2 + authname.length;
-    header.length += 2 + authdata.length;
+    header.version    = XDM_PROTOCOL_VERSION;
+    header.opcode     = (CARD16) ACCEPT;
+    header.length     = 4;
+    header.length    += 2 + authentype.length;
+    header.length    += 2 + authendata.length;
+    header.length    += 2 + authname.length;
+    header.length    += 2 + authdata.length;
     
     XdmcpWriteHeader (&buf, &header);
-    
     XdmcpWriteCARD32 (&buf, d->sessionid);
     XdmcpWriteARRAY8 (&buf, &authentype);
     XdmcpWriteARRAY8 (&buf, &authendata);
@@ -1833,7 +2016,10 @@ gdm_xdmcp_send_accept (GdmHostent *he /* eaten and freed */,
 	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
                    (int)sizeof (struct sockaddr_in6));
 
-	gdm_debug ("gdm_xdmcp_send_accept: Sending ACCEPT to %s with SessionID=%ld", inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN), (long)d->sessionid);
+	gdm_debug ("gdm_xdmcp_send_accept: Sending ACCEPT to %s with SessionID=%ld",
+                   inet_ntop (AF_INET6,
+                              &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                              buffer6, INET6_ADDRSTRLEN), (long)d->sessionid);
     }
     else
 #endif
@@ -1866,7 +2052,9 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason)
 	char buffer6[INET6_ADDRSTRLEN];
 
 	gdm_debug ("gdm_xdmcp_send_decline: Sending DECLINE to %s",
-                  inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+                  inet_ntop (AF_INET6,
+                             &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                             buffer6, INET6_ADDRSTRLEN));
     }
     else
 #endif
@@ -1876,22 +2064,22 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason)
     }
 
     
-    authentype.data = (CARD8 *) 0;
-    authentype.length = (CARD16) 0;
+    authentype.data   = (CARD8 *) 0;
+    authentype.length = (CARD16)  0;
     
-    authendata.data = (CARD8 *) 0;
-    authendata.length = (CARD16) 0;
+    authendata.data   = (CARD8 *) 0;
+    authendata.length = (CARD16)  0;
     
-    status.data = (CARD8 *) reason;
-    status.length = strlen ((char *) status.data);
+    status.data       = (CARD8 *) reason;
+    status.length     = strlen ((char *) status.data);
     
-    header.version = XDM_PROTOCOL_VERSION;
-    header.opcode = (CARD16) DECLINE;
-    header.length = 2 + status.length;
-    header.length += 2 + authentype.length;
-    header.length += 2 + authendata.length;
+    header.version    = XDM_PROTOCOL_VERSION;
+    header.opcode     = (CARD16) DECLINE;
+    header.length     = 2 + status.length;
+    header.length    += 2 + authentype.length;
+    header.length    += 2 + authendata.length;
+
     XdmcpWriteHeader (&buf, &header);
-    
     XdmcpWriteARRAY8 (&buf, &status);
     XdmcpWriteARRAY8 (&buf, &authentype);
     XdmcpWriteARRAY8 (&buf, &authendata);
@@ -1935,7 +2123,8 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 #ifdef ENABLE_IPV6
     char buffer6[INET6_ADDRSTRLEN];
 
-    inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN);
+    inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+               buffer6, INET6_ADDRSTRLEN);
 
     if (clnt_sa->ss_family == AF_INET6) {
 	gdm_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", buffer6);
@@ -1943,7 +2132,8 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     else
 #endif
     {
-       gdm_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
+       gdm_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s",
+                  inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
     }
 
     
@@ -1992,11 +2182,13 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 
 #ifdef ENABLE_IPV6
 	    if (clnt_sa->ss_family == AF_INET6)
-		gdm_debug ("gdm_xdmcp-handle_manage: Got display=%d, SessionID=%ld Class=%s from %s", (int)clnt_dspnum, (long)clnt_sessid, ve_sure_string (s), buffer6);
+		gdm_debug ("gdm_xdmcp-handle_manage: Got display=%d, SessionID=%ld Class=%s from %s",
+                           (int)clnt_dspnum, (long)clnt_sessid, ve_sure_string (s), buffer6);
 	else
 #endif
 		gdm_debug ("gdm_xdmcp_handle_manage: Got Display=%d, SessionID=%ld Class=%s from %s",
-                       (int)clnt_dspnum, (long)clnt_sessid, ve_sure_string (s), inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
+                       (int)clnt_dspnum, (long)clnt_sessid, ve_sure_string (s),
+                       inet_ntoa (((struct sockaddr_in *)clnt_sa)->sin_addr));
 
 	    g_free (s);
     }
@@ -2073,7 +2265,8 @@ gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 #ifdef ENABLE_IPV6
 	char buffer6[INET6_ADDRSTRLEN];
 
-	inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN);
+	inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                   buffer6, INET6_ADDRSTRLEN);
 
 	if (clnt_sa->ss_family == AF_INET6) {
                gdm_debug ("gdm_xdmcp_handle_managed_forward: "
@@ -2081,7 +2274,8 @@ gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
                           buffer6);
 		/* Check with tcp_wrappers if client is allowed to access */
 		if (! gdm_xdmcp_host_allow (clnt_sa)) {
-			gdm_error ("%s: Got MANAGED_FORWARD from banned host %s", "gdm_xdmcp_handle_request", buffer6);
+			gdm_error ("%s: Got MANAGED_FORWARD from banned host %s",
+                                   "gdm_xdmcp_handle_request", buffer6);
 			return;
 		}
 	}
@@ -2140,12 +2334,14 @@ gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 	 * didn't get through and this was a second managed forward */
 #ifdef ENABLE_IPV6
 	if (clnt_sa->ss_family == AF_INET6) {
-		gdm_xdmcp_send_got_managed_forward6 ((struct sockaddr_in6 *)clnt_sa, (struct in6_addr *)clnt_address.data);
+		gdm_xdmcp_send_got_managed_forward6 ((struct sockaddr_in6 *)clnt_sa,
+                                                     (struct in6_addr *)clnt_address.data);
 	}
 	else
 #endif
 	{
-		gdm_xdmcp_send_got_managed_forward ((struct sockaddr_in *)clnt_sa, (struct in_addr *)clnt_address.data);
+		gdm_xdmcp_send_got_managed_forward ((struct sockaddr_in *)clnt_sa,
+                                                    (struct in_addr *)clnt_address.data);
 	}
 
 	XdmcpDisposeARRAY8 (&clnt_address);
@@ -2161,8 +2357,11 @@ gdm_xdmcp_whack_queued_managed_forwards6 (struct sockaddr_in6 *clnt_sa,
 	for (li = managed_forwards; li != NULL; li = li->next) {
 		ManagedForward *mf = li->data;
 
-		if ((memcmp (((struct sockaddr_in6 *)(&(mf->manager)))->sin6_addr.s6_addr, (clnt_sa->sin6_addr.s6_addr), sizeof (struct in6_addr)) == 0) &&
-		    (memcmp (((struct sockaddr_in6 *)(&(mf->origin)))->sin6_addr.s6_addr, origin->s6_addr, sizeof (struct in6_addr)) == 0)) {
+		if ((memcmp (((struct sockaddr_in6 *)(&(mf->manager)))->sin6_addr.s6_addr,
+                              (clnt_sa->sin6_addr.s6_addr), sizeof (struct in6_addr)) == 0) &&
+		    (memcmp (((struct sockaddr_in6 *)(&(mf->origin)))->sin6_addr.s6_addr,
+                               origin->s6_addr, sizeof (struct in6_addr)) == 0)) {
+
 			managed_forwards = g_slist_remove_link (managed_forwards, li);
 			g_slist_free_1 (li);
 			g_source_remove (mf->handler);
@@ -2208,9 +2407,12 @@ gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 	if (clnt_sa->ss_family == AF_INET6) {
 		gdm_debug ("gdm_xdmcp_handle_got_managed_forward: "
                           "Got MANAGED_FORWARD from %s",
-                          inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN));
+                          inet_ntop (AF_INET6,
+                                     &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                                     buffer6, INET6_ADDRSTRLEN));
 		if (! gdm_xdmcp_host_allow (clnt_sa)) {
-			gdm_error ("%s: Got GOT_MANAGED_FORWARD from banned host %s", "gdm_xdmcp_handle_request", buffer6);
+			gdm_error ("%s: Got GOT_MANAGED_FORWARD from banned host %s",
+                                   "gdm_xdmcp_handle_request", buffer6);
 			return;
 		}
 	}
@@ -2245,7 +2447,8 @@ gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 			return;
 		}
 
-		gdm_xdmcp_whack_queued_managed_forwards6 ((struct sockaddr_in6 *)clnt_sa, (struct in6_addr *)clnt_address.data);
+		gdm_xdmcp_whack_queued_managed_forwards6 ((struct sockaddr_in6 *)clnt_sa,
+                                                          (struct in6_addr *)clnt_address.data);
 	}
 	else
 #endif
@@ -2256,7 +2459,8 @@ gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 			XdmcpDisposeARRAY8 (&clnt_address);
 			return;
 		}
-		gdm_xdmcp_whack_queued_managed_forwards ((struct sockaddr_in *)clnt_sa, (struct in_addr *)clnt_address.data);
+		gdm_xdmcp_whack_queued_managed_forwards ((struct sockaddr_in *)clnt_sa,
+                                                         (struct in_addr *)clnt_address.data);
 	}
 
 	XdmcpDisposeARRAY8 (&clnt_address);
@@ -2273,14 +2477,16 @@ gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpHeader header;
     GdmForwardQuery *fq;
     
-    gdm_debug ("gdm_xdmcp_send_refuse: Sending REFUSE to %ld", (long)sessid);
+    gdm_debug ("gdm_xdmcp_send_refuse: Sending REFUSE to %ld",
+               (long)sessid);
     
     header.version = XDM_PROTOCOL_VERSION;
-    header.opcode= (CARD16) REFUSE;
-    header.length = 4;
+    header.opcode  = (CARD16) REFUSE;
+    header.length  = 4;
     
     XdmcpWriteHeader (&buf, &header);  
     XdmcpWriteCARD32 (&buf, sessid);
+
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
 	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
@@ -2293,8 +2499,10 @@ gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
                    (int)sizeof (struct sockaddr_in));
     }
 
-    /* this was from a forwarded query quite apparently so
-    * send MANAGED_FORWARD */
+   /*
+    * This was from a forwarded query quite apparently so
+    * send MANAGED_FORWARD
+    */
     fq = gdm_forward_query_lookup (clnt_sa);
     if (fq != NULL) {
 	    gdm_xdmcp_send_managed_forward (fq->from_sa, clnt_sa);
@@ -2315,18 +2523,21 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
     
     gdm_debug ("gdm_xdmcp_send_failed: Sending FAILED to %ld", (long)sessid);
     
-    /* Don't translate, this goes over the wire to servers where we
-     * don't know the charset or language, so it must be ascii */
-    status.data = (CARD8 *) "Failed to start session";
-    status.length = strlen ((char *) status.data);
+   /*
+    * Don't translate, this goes over the wire to servers where we
+    * don't know the charset or language, so it must be ascii
+    */
+    status.data    = (CARD8 *) "Failed to start session";
+    status.length  = strlen ((char *) status.data);
     
     header.version = XDM_PROTOCOL_VERSION;
-    header.opcode = (CARD16) FAILED;
-    header.length = 6+status.length;
+    header.opcode  = (CARD16) FAILED;
+    header.length  = 6+status.length;
     
     XdmcpWriteHeader (&buf, &header);
     XdmcpWriteCARD32 (&buf, sessid);
     XdmcpWriteARRAY8 (&buf, &status);
+
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
 	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
@@ -2338,9 +2549,7 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
 	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
                    (int)sizeof (struct sockaddr_in));
     }
-
 }
-
 
 static void
 #ifdef ENABLE_IPV6
@@ -2357,7 +2566,8 @@ gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len)
 
     if (clnt_sa->ss_family == AF_INET6) {
 	gdm_debug ("gdm_xdmcp_handle_keepalive: Got KEEPALIVE from %s",
-                  inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr),
+                  inet_ntop (AF_INET6,
+                             &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr),
 buffer6, INET6_ADDRSTRLEN));
 
 	/* Check with tcp_wrappers if client is allowed to access */
@@ -2403,9 +2613,11 @@ buffer6, INET6_ADDRSTRLEN));
 
 static void
 #ifdef ENABLE_IPV6
-gdm_xdmcp_send_alive (struct sockaddr_storage *clnt_sa, CARD16 dspnum, CARD32 sessid)
+gdm_xdmcp_send_alive (struct sockaddr_storage *clnt_sa,
+                      CARD16 dspnum, CARD32 sessid)
 #else
-gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD16 dspnum, CARD32 sessid)
+gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa,
+                      CARD16 dspnum, CARD32 sessid)
 #endif
 {
     XdmcpHeader header;
@@ -2458,10 +2670,12 @@ gdm_xdmcp_host_allow (
 {
 #ifdef HAVE_TCPWRAPPERS
 	
-    /* avoids a warning, my tcpd.h file doesn't include this prototype, even
+    /*
+     * Avoids a warning, my tcpd.h file doesn't include this prototype, even
      * though the library does include the function and the manpage mentions it
      */
-    extern int hosts_ctl (char *daemon, char *client_name, char *client_addr, char *client_user);
+    extern int hosts_ctl (char *daemon, char *client_name,
+                          char *client_addr, char *client_user);
 
     GdmHostent *client_he;
     char *client;
@@ -2470,19 +2684,23 @@ gdm_xdmcp_host_allow (
     /* Find client hostname */
     client_he = gdm_gethostbyaddr (clnt_sa);
 
-    if (client_he->not_found)
+    if (client_he->not_found) {
 	    client = "unknown";
-    else {
-		gdm_debug ("gdm_xdmcp_host_allow: client->hostname is %s\n", client_he->hostname);
+    } else {
+	    gdm_debug ("gdm_xdmcp_host_allow: client->hostname is %s\n",
+                           client_he->hostname);
 	    client = client_he->hostname;
-	}
+    }
 
     /* Check with tcp_wrappers if client is allowed to access */
 #ifdef ENABLE_IPV6
     if (clnt_sa->ss_family == AF_INET6) {
 	char buffer6[INET6_ADDRSTRLEN];
 
-	ret = (hosts_ctl ("gdm", client, (char *) inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN), ""));
+	ret = (hosts_ctl ("gdm", client,
+                         (char *) inet_ntop (AF_INET6,
+                                             &((struct sockaddr_in6 *)clnt_sa)->sin6_addr,
+                                             buffer6, INET6_ADDRSTRLEN), ""));
     } else
 #endif
     {
@@ -2508,7 +2726,7 @@ gdm_xdmcp_display_alloc (
 			 GdmHostent *he /* eaten and freed */,
 			 int displaynum)
 {
-    GdmDisplay *d = NULL;
+    GdmDisplay *d  = NULL;
     char *proxycmd = gdm_get_value_string (GDM_KEY_XDMCP_PROXY_XSERVER);
     
     d = g_new0 (GdmDisplay, 1);
@@ -2521,35 +2739,34 @@ gdm_xdmcp_display_alloc (
 	    d->type = TYPE_XDMCP;
     }
 
-    d->logout_action = GDM_LOGOUT_ACTION_NONE;
-    d->authfile = NULL;
-    d->auths = NULL;
-    d->userauth = NULL;
-    d->greetpid = 0;
-    d->servpid = 0;
-    d->servstat = 0;
-    d->sesspid = 0;
-    d->slavepid = 0;
-    d->attached = FALSE;
-    d->dispstat = XDMCP_PENDING;
-    d->sessionid = globsessid++;
+    d->logout_action    = GDM_LOGOUT_ACTION_NONE;
+    d->authfile         = NULL;
+    d->auths            = NULL;
+    d->userauth         = NULL;
+    d->greetpid         = 0;
+    d->servpid          = 0;
+    d->servstat         = 0;
+    d->sesspid          = 0;
+    d->slavepid         = 0;
+    d->attached         = FALSE;
+    d->dispstat         = XDMCP_PENDING;
+    d->sessionid        = globsessid++;
+
     if (d->sessionid == 0)
 	    d->sessionid = globsessid++;
-    d->acctime = time (NULL);
-    d->dispnum = displaynum;
-    d->xdmcp_dispnum = displaynum;
 
-    d->handled = TRUE;
-    d->tcp_disallowed = FALSE;
+    d->acctime          = time (NULL);
+    d->dispnum          = displaynum;
+    d->xdmcp_dispnum    = displaynum;
 
-    d->vt = -1;
-
-    d->x_servers_order = -1;
-
-    d->logged_in = FALSE;
-    d->login = NULL;
-
+    d->handled          = TRUE;
+    d->tcp_disallowed   = FALSE;
+    d->vt               = -1;
+    d->x_servers_order  = -1;
+    d->logged_in        = FALSE;
+    d->login            = NULL;
     d->sleep_before_run = 0;
+
     if (gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN) &&
 	! ve_string_empty (gdm_get_value_string (GDM_KEY_TIMED_LOGIN))) {
 	    d->timed_login_ok = TRUE;
@@ -2561,57 +2778,57 @@ gdm_xdmcp_display_alloc (
 			       displaynum);
 #ifdef ENABLE_IPV6
     if (addr->ss_family == AF_INET6) {
-	memcpy (&d->addr6, &((struct sockaddr_in6 *)addr)->sin6_addr, sizeof (struct in6_addr));
+	memcpy (&d->addr6,
+                &((struct sockaddr_in6 *)addr)->sin6_addr,
+                sizeof (struct in6_addr));
 	d->addrtype = AF_INET6;
     }
     else
 #endif
     {
-	memcpy (&d->addr, &((struct sockaddr_in *)addr)->sin_addr, sizeof (struct in_addr));
+	memcpy (&d->addr,
+                &((struct sockaddr_in *)addr)->sin_addr,
+                sizeof (struct in_addr));
 	d->addrtype = AF_INET;
     }
 
-    d->hostname = he->hostname;
-    he->hostname = NULL;
-    d->addrs = he->addrs;
-    he->addrs = NULL;
-    d->addr_count = he->addr_count;
-    he->addr_count = 0;
+    d->hostname              = he->hostname;
+    he->hostname             = NULL;
+    d->addrs                 = he->addrs;
+    he->addrs                = NULL;
+    d->addr_count            = he->addr_count;
+    he->addr_count           = 0;
 
     gdm_hostent_free (he);
 
-    d->slave_notify_fd = -1;
-    d->master_notify_fd = -1;
-
+    d->slave_notify_fd       = -1;
+    d->master_notify_fd      = -1;
     d->xsession_errors_bytes = 0;
-    d->xsession_errors_fd = -1;
-    d->session_output_fd = -1;
-
-    d->chooser_output_fd = -1;
-    d->chooser_last_line = NULL;
-
-    d->theme_name = NULL;
+    d->xsession_errors_fd    = -1;
+    d->session_output_fd     = -1;
+    d->chooser_output_fd     = -1;
+    d->chooser_last_line     = NULL;
+    d->theme_name            = NULL;
 
     /* Secure display with cookie */
     if G_UNLIKELY (! gdm_auth_secure_display (d))
-	gdm_error ("gdm_xdmcp_display_alloc: Error setting up cookies for %s", d->name);
+	gdm_error ("gdm_xdmcp_display_alloc: Error setting up cookies for %s",
+                   d->name);
 
     if (d->type == TYPE_XDMCP_PROXY) {
-	    d->parent_disp = d->name;
-	    d->name = g_strdup (":-1");
-	    d->dispnum = -1;
-
-	    d->server_uid = gdm_get_gdmuid ();
-
+	    d->parent_disp      = d->name;
+	    d->name             = g_strdup (":-1");
+	    d->dispnum          = -1;
+	    d->server_uid       = gdm_get_gdmuid ();
 	    d->parent_auth_file = d->authfile;
-	    d->authfile = NULL;
+	    d->authfile         = NULL;
     }
 
     displays = g_slist_append (displays, d);
     
     xdmcp_pending++;
     
-    gdm_debug ("gdm_xdmcp_display_alloc: display=%s, session id=%ld, xdmcp_pending=%d ",
+    gdm_debug ("gdm_xdmcp_display_alloc: display=%s, session id=%ld, xdmcp_pending=%d",
 	       d->name, (long)d->sessionid, xdmcp_pending);
     
     return d;
@@ -2671,7 +2888,6 @@ gdm_xdmcp_display_dispose_check (const gchar *hostname, int dspnum)
 		}
 	}
 }
-
 
 static void 
 gdm_xdmcp_displays_check (void)
