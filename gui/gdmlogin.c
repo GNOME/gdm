@@ -1999,17 +1999,11 @@ process_operation (guchar       op_code,
 }
 
 
-static int
+static void
 gdm_login_browser_populate (void)
 {
     GList *li;
-    int i = 0;
 
-    /* Create browser_model before calling gdm_login_browser_populate */
-       browser_model = (GtkTreeModel *)gtk_list_store_new (3,
-							   GDK_TYPE_PIXBUF,
-							   G_TYPE_STRING,
-							   G_TYPE_STRING);
     for (li = users; li != NULL; li = li->next) {
 	    GdmUser *usr = li->data;
 	    GtkTreeIter iter = {0};
@@ -2032,9 +2026,8 @@ gdm_login_browser_populate (void)
 				GREETER_ULIST_LABEL_COLUMN, label,
 				-1);
 	    g_free (label);
-	    i++;
     }
-    return (i);
+    return;
 }
 
 static void
@@ -2591,6 +2584,12 @@ gdm_login_gui_init (void)
 	    g_signal_connect (browser, "button_release_event",
 			      G_CALLBACK (browser_change_focus),
 			      NULL);
+
+	    /* Create browser_model before calling gdm_login_browser_populate */
+	   browser_model = (GtkTreeModel *)gtk_list_store_new (3,
+							   GDK_TYPE_PIXBUF,
+							   G_TYPE_STRING,
+							   G_TYPE_STRING);
 
 	    gtk_tree_view_set_model (GTK_TREE_VIEW (browser), browser_model);
 	    column = gtk_tree_view_column_new_with_attributes
@@ -3574,17 +3573,15 @@ main (int argc, char *argv[])
 	    }
     }
 
-    if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER)) {
-	/*
-	 * Do not display face browser widget if no users, check this
-	 * before callign gdm_login_gui_init ()
-	 */
-	int num_users = gdm_login_browser_populate ();
-	if (num_users == 0)
-		browser_ok = FALSE;
-    }
+    /* Do not display face browser widget if no users */
+    if(!users)
+	browser_ok = FALSE;
 
     gdm_login_gui_init ();
+
+    if (browser_ok && gdm_config_get_bool (GDM_KEY_BROWSER)) {
+	gdm_login_browser_populate ();
+    }
 
     ve_signal_add (SIGHUP, gdm_reread_config, NULL);
 
