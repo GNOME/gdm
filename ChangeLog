@@ -1,3 +1,15 @@
+2007-02-05  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdmconsolekit.c: (add_param_int), (add_param_boolean),
+	(add_param_string), (session_get_x11_display), (session_unlock),
+	(get_path_array_from_iter), (get_sessions_for_user),
+	(unlock_ck_session), (open_ck_session), (close_ck_session):
+	Switch from using the dbus-glib bindings to the lower
+	level API.  It just wasn't working out...  Fixes #400793
+	* daemon/slave.c: (gdm_slave_session_start):
+	Move CK session close before post session scripts
+	* gui/greeter/Makefile.am: Build fix
+
 2007-01-31  Brian Cameron  <brian.cameron@sun.com>
 
         * gui/greeter/greeter_item_customlist.c,

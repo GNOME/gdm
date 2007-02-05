@@ -16,6 +16,8 @@ INCLUDES = \
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
 	$(GUI_CFLAGS)					\
+	$(PANGO_CFLAGS)					\
+	$(PANGOFT_CFLAGS)				\
 	$(GREETER_CFLAGS)
 
 #

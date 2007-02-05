@@ -4460,17 +4460,17 @@ gdm_slave_session_start (void)
 
     }
 
-    gdm_slave_session_stop (pid != 0 /* run_post_session */,
-			    FALSE /* no_shutdown_check */);
-
-    gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
-
 #ifdef WITH_CONSOLE_KIT
     if (ck_session_cookie != NULL) {
 	    close_ck_session (ck_session_cookie);
 	    g_free (ck_session_cookie);
     }
 #endif
+
+    gdm_slave_session_stop (pid != 0 /* run_post_session */,
+			    FALSE /* no_shutdown_check */);
+
+    gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
 }
 
 
