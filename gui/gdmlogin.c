@@ -2585,11 +2585,8 @@ gdm_login_gui_init (void)
 			      G_CALLBACK (browser_change_focus),
 			      NULL);
 
-	    /* Create browser_model before calling gdm_login_browser_populate */
-	   browser_model = (GtkTreeModel *)gtk_list_store_new (3,
-							   GDK_TYPE_PIXBUF,
-							   G_TYPE_STRING,
-							   G_TYPE_STRING);
+	    browser_model = (GtkTreeModel *)gtk_list_store_new (3,
+			     GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_STRING);
 
 	    gtk_tree_view_set_model (GTK_TREE_VIEW (browser), browser_model);
 	    column = gtk_tree_view_column_new_with_attributes
@@ -3574,7 +3571,7 @@ main (int argc, char *argv[])
     }
 
     /* Do not display face browser widget if no users */
-    if(!users)
+    if (!users)
 	browser_ok = FALSE;
 
     gdm_login_gui_init ();
