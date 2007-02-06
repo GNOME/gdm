@@ -1583,9 +1583,6 @@ process_operation (guchar       op_code,
 	messages_to_give = FALSE;
 
 	login_window_resize (FALSE /* force */);
-
-        if (greeter_probably_login_prompt == TRUE && selected_user != NULL)
-		face_browser_select_user (selected_user);
 	break;
 
     case GDM_NOECHO:
@@ -2683,7 +2680,6 @@ gdm_login_gui_init (void)
     /* Put in error box here */
     err_box = gtk_label_new (NULL);
     gtk_widget_set_name (err_box, "Error box");
-    gtk_widget_set_size_request (err_box, -1, 40);
     g_signal_connect (G_OBJECT (err_box), "destroy",
 		      G_CALLBACK (gtk_widget_destroyed),
 		      &err_box);
@@ -2753,14 +2749,13 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
 
-    msg = gtk_label_new (_("Please enter your username"));
+    msg = gtk_label_new (NULL);
     gtk_widget_set_name (msg, "Message");
     gtk_label_set_line_wrap (GTK_LABEL (msg), TRUE);
     gtk_label_set_justify (GTK_LABEL (msg), GTK_JUSTIFY_LEFT);
     gtk_table_attach (GTK_TABLE (stack), msg, 0, 1, 6, 7,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
-    gtk_widget_set_size_request (msg, -1, 30);
 
     gtk_widget_ref (msg);
     g_object_set_data_full (G_OBJECT (login), "msg", msg,

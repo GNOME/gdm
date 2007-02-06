@@ -211,11 +211,6 @@ process_operation (guchar       op_code,
 
 	greeter_item_pam_prompt (tmp, PW_ENTRY_SIZE, TRUE);
 	g_free (tmp);
-
-	/* Reselect selected user if any */
-	selected_user = greeter_item_ulist_get_selected_user ();
-	if (greeter_probably_login_prompt == TRUE && selected_user != NULL)
-		greeter_item_ulist_select_user (selected_user);
 	break;
 
     case GDM_NOECHO:

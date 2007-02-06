@@ -52,8 +52,11 @@ static pam_handle_t *pamh = NULL;
 
 static GdmDisplay *cur_gdm_disp = NULL;
 
-/* this is a hack */
-static char *tmp_PAM_USER = NULL;
+/* Hack. Used so user does not need to select username in face
+ * browser again if pw was wrong. Not used if username was typed
+ * manually */
+static char* prev_user;
+static unsigned auth_retries;
 
 /* this is another hack */
 static gboolean did_we_ask_for_password = FALSE;
@@ -489,7 +492,9 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
     /* Should never happen unless PAM is on crack and keeps asking questions
        after we told it to go away.  So tell it to go away again and
        maybe it will listen */
-    if ( ! gdm_slave_action_pending ())
+    /* well, it actually happens if there are multiple pam modules
+     * with conversations */
+    if ( ! gdm_slave_action_pending () || selected_user)
         return PAM_CONV_ERR;
 
     reply = malloc (sizeof (struct pam_response) * num_msg);
@@ -502,13 +507,8 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
     /* Here we set the login if it wasn't already set,
      * this is kind of anal, but this way we guarantee that
      * the greeter always is up to date on the login */
-    if (pam_get_item (pamh, PAM_USER, (void **)&p) == PAM_SUCCESS ||
-	tmp_PAM_USER != NULL) {
+    if (pam_get_item (pamh, PAM_USER, (void **)&p) == PAM_SUCCESS) {
 	    login = (const char *)p;
-
-	    /* FIXME: this is a HACK HACK HACK, for some reason needed */
-	    if (tmp_PAM_USER != NULL)
-		    login = tmp_PAM_USER;
 	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
     }
 
@@ -517,7 +517,6 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
     openlog ("gdm", LOG_PID, LOG_DAEMON);
     
     for (replies = 0; replies < num_msg; replies++) {
-	gboolean islogin = FALSE;
 	const char *m = (*msg)[replies].msg;
 	m = perhaps_translate_message (m);
 	
@@ -526,13 +525,7 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 	/* PAM requested textual input with echo on */
 	case PAM_PROMPT_ECHO_ON:
  	    if (strcmp (m, _("Username:")) == 0) {
-		    if ( ! ve_string_empty (selected_user)) {
-			    /* Sometimes we are just completely on crack,
-			       and pam asks for the username even if we
-			       already gave it.  PAM is on better crack,
-			       then I can afford. */
-			    s = g_strdup (selected_user);
-		    } else {
+		    if ( ve_string_empty (selected_user)) {
 			    /* this is an evil hack, but really there is no way we'll
 			    know this is a username prompt.  However we SHOULD NOT
 			    rely on this working.  The pam modules can set their
@@ -542,7 +535,6 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 			    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
 			    /* this will clear the message */
 			    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
-			    islogin = TRUE;
 		    }
 	    } else {
 		    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
@@ -555,29 +547,6 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 				    free (reply[replies].resp);
 		    free (reply);
 		    return PAM_CONV_ERR;
-	    }
-
-	    if (islogin) {
-		    /* note that we should NOT rely on this for anything
-		       that is REALLY needed.  The reason this is here
-		       is for the face browser to work correctly.  The
-		       best way would really be to ask all questions at
-		       once, but that would 1) need some protocol rethinking,
-		       2) the gdmgreeter program is really not equipped
-		       for this, would need theme format change */
-		    /* Second problem is that pam will not actually set
-		       PAM_USER itself after it asks for it.  This is
-		       pretty evil, evil, evil, evil, but somewhat necessary
-		       then. */
-		    /* FIXME: this is a HACK HACK HACK */
-		    g_free (tmp_PAM_USER);
-		    tmp_PAM_USER = g_strdup (s);
-
-		    if (gdm_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
-			    char *info = gdm_get_last_info (s);
-			    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
-			    g_free (info);
-		    }
 	    }
 
 	    reply[replies].resp_retcode = PAM_SUCCESS;
@@ -874,9 +843,16 @@ verify_user_again:
 
 authenticate_again:
 
-    /* hack */
-    g_free (tmp_PAM_USER);
-    tmp_PAM_USER = g_strdup (login);
+    if (prev_user && !login) {
+	login = g_strdup(prev_user);
+    } else if (login && !prev_user) {
+	prev_user = g_strdup(login);
+	auth_retries = 0;
+    } else if (login && prev_user && strcmp (login, prev_user)) {
+	g_free (prev_user);
+	prev_user = g_strdup (login);
+	auth_retries = 0;
+    }
 
     /*
      * Initialize a PAM session for the user...
@@ -884,7 +860,8 @@ authenticate_again:
      * PAM Stacks, in case one display should use a different 
      * authentication mechanism than another display.
      */
-    pam_stack = gdm_get_value_string_per_display ((char *)display, GDM_KEY_PAM_STACK);
+    pam_stack = gdm_get_value_string_per_display ((char *)display,
+	GDM_KEY_PAM_STACK);
 
     if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
 	    if (started_timer)
@@ -892,7 +869,15 @@ authenticate_again:
             g_free (pam_stack);
 	    goto pamerr;
     }
+
     g_free (pam_stack);
+
+    /*
+     * have to unset login otherwise there is no chance to ever enter
+     * a different user
+     */
+    g_free (login);
+    login = NULL;
 
     pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
 
@@ -934,20 +919,26 @@ authenticate_again:
 		    gdm_sigterm_block_push ();
 		    gdm_sigchld_block_push ();
 		    tmp_pamh = pamh;
-		    pamh = NULL;
+		    pamh     = NULL;
 		    gdm_sigchld_block_pop ();
 		    gdm_sigterm_block_pop ();
 
 		    /* FIXME: what about errors */
 		    /* really this has been a sucess, not a failure */
-		    pam_end (tmp_pamh, PAM_SUCCESS);
+		    pam_end (tmp_pamh, pamerr);
+
+		    g_free (prev_user);
+		    prev_user    = NULL;
+		    auth_retries = 0;
 
 		    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
 
 		    goto authenticate_again;
 	    }
+
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+
 	    if (gdm_slave_action_pending ()) {
 		    /* FIXME: see note above about PAM_FAIL_DELAY */
 /* #ifndef PAM_FAIL_DELAY */
@@ -956,7 +947,33 @@ authenticate_again:
 		    usleep (g_random_int_range (0, 100000));
 /* #endif */ /* PAM_FAIL_DELAY */
 		    gdm_error (_("Couldn't authenticate user"));
+
+		    if (prev_user) {
+
+			unsigned max_auth_retries = 3;
+			char *val = gdm_read_default ("LOGIN_RETRIES=");
+
+			if (val) {
+			    max_auth_retries = atoi (val);
+			    g_free (val);
+			}
+
+			if (pamerr == PAM_MAXTRIES ||
+                            ++auth_retries >= max_auth_retries) {
+
+			    g_free (prev_user);
+			    prev_user    = NULL;
+			    auth_retries = 0;
+			}
+		    }
+	    } else {
+		/* cancel, configurator etc pressed */
+		g_free (prev_user);
+		prev_user    = NULL;
+		auth_retries = 0;
 	    }
+
+
 	    goto pamerr;
     }
 
@@ -966,6 +983,8 @@ authenticate_again:
 
     g_free (login);
     login = NULL;
+    g_free (prev_user);
+    prev_user = NULL;
     
     if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
 	    login = NULL;
@@ -1023,6 +1042,12 @@ authenticate_again:
 	    pamerr = PAM_PERM_DENIED;
 #endif	/* HAVE_ADT */
 	    goto pamerr;
+    }
+
+    if (gdm_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
+	char *info = gdm_get_last_info (login);
+	gdm_slave_greeter_ctl_no_ret (GDM_MSG, info);
+	g_free (info);
     }
 
     /* Check if the user's account is healthy. */
@@ -1119,9 +1144,6 @@ authenticate_again:
 
     cur_gdm_disp = NULL;
 
-    g_free (tmp_PAM_USER);
-    tmp_PAM_USER = NULL;
-
 #ifdef  HAVE_LOGINDEVPERM
     if (d->attached)
 	(void) di_devperm_login ("/dev/console", pwent->pw_uid,
@@ -1206,9 +1228,6 @@ authenticate_again:
 
     g_free (login);
 
-    g_free (tmp_PAM_USER);
-    tmp_PAM_USER = NULL;
-    
     cur_gdm_disp = NULL;
 
     return NULL;

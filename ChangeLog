@@ -1,3 +1,26 @@
+2007-02-06  Brian Cameron  <brian.cameron@sun.com>
+
+	Fixes by Ludwig Nussel <ludwig.nussel@suse.de>.
+	
+	* gui/gdmlogin.c: Do not set size request for Message and error
+	  label widgets so they grow if the message is too big.  Do not
+	  initialize message label to "Please enter your username" since
+	  there is no reason to assume that the first PAM request will ask
+	  for username.  Do not reselect user if chosen from face browser
+	  because now we manage this in daemon/verify-pam.c.
+	* gui/greeter/greeter_item_ulist.[ch], gui/greeter/greeter.c:
+	  Do not reselect user if chosen from face browser because we
+	  now manage this in daemon/verify-pam.c
+	* daemon/verify-pam.c: Fixes to support if there are multiple PAM
+	  modules with conversations.  Remove the tmp_PAM_USER hack.  Now
+	  display lastlog information after successful login.  If a user
+	  in the face browser is selected, manage not asking for username
+	  again here (if 3 password failures in a row then unselect face	
+	  browser).  If a user is selected in the face browser, cancel all
+	  conversations in a pam_authenticate run.   No longer try to be
+	  smart about the username prompt - if PAM asks for a username
+ 	  then also ask the username about it.
+
 2007-02-05  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmlogin.c:  Better fix for not showing the face browser

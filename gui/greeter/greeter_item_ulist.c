@@ -104,12 +104,6 @@ greeter_item_ulist_unset_selected_user (void)
 	selected_user = NULL;
 }
 
-gchar *
-greeter_item_ulist_get_selected_user (void)
-{
-	return selected_user;
-}
-
 static void
 check_for_displays (void)
 {
