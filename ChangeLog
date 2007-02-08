@@ -1,5 +1,12 @@
 2007-02-08  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmlogin.c, gui/greeter/greeter.c: Rework how the "Start
+	  Again" button is made sensitive/insensitive so it better works
+	  with PAM modules.  Better to not make assumptions about whether
+	  PAM is asking for username/password.
+
+2007-02-08  Brian Cameron  <brian.cameron@sun.com>
+
 	* gdm-build.sh: Remove this old script for building GDM.  Not used
 	  anymore.
 	* autogen.sh: Change CVS references to SVN.

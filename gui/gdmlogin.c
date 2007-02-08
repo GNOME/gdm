@@ -161,6 +161,8 @@ extern const gchar *current_session;
 extern gboolean session_dir_whacked_out;
 extern gint gdm_timed_delay;
 
+static gboolean first_prompt = TRUE;
+
 static void login_window_resize (gboolean force);
 
 /* Background program logic */
@@ -1531,7 +1533,6 @@ process_operation (guchar       op_code,
     GtkWidget *dlg;
     static gboolean replace_msg = TRUE;
     static gboolean messages_to_give = FALSE;
-    gboolean greeter_probably_login_prompt = FALSE;
     gint lookup_status = SESSION_LOOKUP_SUCCESS;
     gchar *firstmsg = NULL;
     gchar *secondmsg = NULL;
@@ -1557,14 +1558,14 @@ process_operation (guchar       op_code,
 					gdm_config_get_string (GDM_KEY_SOUND_ON_LOGIN_FILE),
 					gdm_config_get_bool   (GDM_KEY_SOUND_ON_LOGIN));
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Username:"));
-		greeter_probably_login_prompt = TRUE;
-		gtk_widget_set_sensitive (start_again_button, FALSE);
 	} else {
-		gtk_widget_set_sensitive (start_again_button, TRUE);
 		if (tmp != NULL)
 			gtk_label_set_text (GTK_LABEL (label), tmp);
 	}
 	g_free (tmp);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (start_again_button), !first_prompt);
+	first_prompt = FALSE;
 
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
@@ -1588,14 +1589,15 @@ process_operation (guchar       op_code,
     case GDM_NOECHO:
 	tmp = ve_locale_to_utf8 (args);
 	if (tmp != NULL && strcmp (tmp, _("Password:")) == 0) {
-		gtk_widget_set_sensitive (start_again_button, TRUE);
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Password:"));
 	} else {
-		gtk_widget_set_sensitive (start_again_button, FALSE);
 		if (tmp != NULL)
 			gtk_label_set_text (GTK_LABEL (label), tmp);
 	}
 	g_free (tmp);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (start_again_button), !first_prompt);
+	first_prompt = FALSE;
 
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
@@ -1816,6 +1818,8 @@ process_operation (guchar       op_code,
 	    g_free (curuser);
 	    curuser = NULL;
 	}
+
+	first_prompt = TRUE;
 
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, FALSE);
