@@ -1439,6 +1439,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d->retry_count = 0;
     d->sleep_before_run = 0;
     d->login = NULL;
+    d->preset_user = NULL;
 
     d->timed_login_ok = FALSE;
 

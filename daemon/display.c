@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -530,6 +532,9 @@ gdm_display_dispose (GdmDisplay *d)
 
     g_free (d->login);
     d->login = NULL;
+
+    g_free (d->preset_user);
+    d->preset_user = NULL;
 
     g_free (d->xsession_errors_filename);
     d->xsession_errors_filename = NULL;

@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -96,7 +98,8 @@ static void handle_flexi_server (GdmConnection *conn,
 				 const gchar *xnest_disp, 
 				 uid_t xnest_uid,
 				 const gchar *xnest_auth_file,
-				 const gchar *xnest_cookie);
+				 const gchar *xnest_cookie,
+				 const gchar *username);
 static void custom_cmd_restart (long cmd_id);
 static void custom_cmd_no_restart (long cmd_id);
 
@@ -2553,7 +2556,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		handle_flexi_server (NULL, TYPE_FLEXI, gdm_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
-				     NULL, 0, NULL, NULL);
+				     NULL, 0, NULL, NULL, NULL);
        } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ERROR_DIALOG,
 			   strlen ("opcode="GDM_SOP_SHOW_ERROR_DIALOG)) == 0) {
 		GdmDisplay *d;
@@ -2952,7 +2955,8 @@ handle_flexi_server (GdmConnection *conn, int type, const gchar *server,
 		     gboolean chooser,
 		     const gchar *xnest_disp, uid_t xnest_uid,
 		     const gchar *xnest_auth_file,
-		     const gchar *xnest_cookie)
+		     const gchar *xnest_cookie,
+		     const gchar *username)
 {
 	GdmDisplay *display;
 	gchar *bin;
@@ -3084,6 +3088,7 @@ handle_flexi_server (GdmConnection *conn, int type, const gchar *server,
 
 	flexi_servers++;
 
+	display->preset_user = g_strdup (username);
 	display->type = type;
 	display->socket_conn = conn;
 	display->parent_disp = g_strdup (xnest_disp);
@@ -3225,6 +3230,7 @@ static void
 gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 {
 	gint i;
+	gboolean has_user;
 
 	gdm_debug ("Handling user message: '%s'", msg);
 
@@ -3293,12 +3299,16 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		handle_flexi_server (conn, TYPE_FLEXI, gdm_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
-				     NULL, 0, NULL, NULL);
-	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
-		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
+				     NULL, 0, NULL, NULL, NULL);
+	} else if (((has_user = strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ", 
+                                         strlen (GDM_SUP_FLEXI_XSERVER_USER " "))) == 0) ||
+                   (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
+		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0)) {
 		gchar *name;
 		const gchar *command = NULL;
 		GdmXserver *svr;
+		const gchar *rest;
+		gchar *username, *end;
 
 		/* Only allow locally authenticated connections */
 		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
@@ -3309,7 +3319,21 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			return;
 		}
 
-		name = g_strdup (&msg[strlen (GDM_SUP_FLEXI_XSERVER " ")]);
+		if (has_user == 0) {
+			rest = msg + strlen (GDM_SUP_FLEXI_XSERVER_USER " ");
+			end = strchr (rest, ' ');
+			if (end) {
+				username = g_strndup (rest, end - rest);
+				rest = end + 1;
+			} else {
+				username = g_strdup (rest);
+				rest = rest + strlen (rest);
+			}
+		} else {
+			rest = msg + strlen (GDM_SUP_FLEXI_XSERVER " ");
+			username = NULL;
+		}
+		name = g_strdup (rest);
 		g_strstrip (name);
 		if (ve_string_empty (name)) {
 			g_free (name);
@@ -3339,13 +3363,27 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 					oh well, this makes other things simpler */
 				     svr->handled,
 				     svr->chooser,
-				     NULL, 0, NULL, NULL);
-	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
-		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
+				     NULL, 0, NULL, NULL, username);
+		g_free (username);
+	} else if (((has_user = strncmp (msg, GDM_SUP_FLEXI_XNEST_USER " ",
+                                         strlen (GDM_SUP_FLEXI_XNEST_USER " "))) == 0) || 
+                   (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
+		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0)) {
 		gchar *dispname = NULL, *xauthfile = NULL, *cookie = NULL;
 		uid_t uid;
+		const gchar *rest;
+		gchar *username, *end;
 
-		extract_dispname_uid_xauthfile_cookie (msg, &dispname, &uid,
+                if (has_user == 0) {
+			rest = msg + strlen (GDM_SUP_FLEXI_XNEST_USER " ");
+			end = strchr (rest, ' ');
+			username = g_strndup (rest, end - rest);
+		} else {
+			rest = msg;
+			username = NULL;
+		}
+
+		extract_dispname_uid_xauthfile_cookie (rest, &dispname, &uid,
 						       &xauthfile, &cookie);
 
 		if (dispname == NULL) {
@@ -3369,10 +3407,11 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		handle_flexi_server (conn, TYPE_FLEXI_XNEST, gdm_get_value_string (GDM_KEY_XNEST),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
-				     dispname, uid, xauthfile, cookie);
+				     dispname, uid, xauthfile, cookie, username);
 
 		g_free (dispname);
 		g_free (xauthfile);
+		g_free (username);
 	} else if ((strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
 	                     strlen (GDM_SUP_ATTACHED_SERVERS)) == 0) ||
 	           (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,

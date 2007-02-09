@@ -557,6 +557,8 @@ struct _GdmDisplay {
     gboolean logged_in; /* TRUE if someone is logged in */
     char *login;
 
+    char *preset_user;
+
     gboolean timed_login_ok;
 
     int screenx;
@@ -870,6 +872,26 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
+#define GDM_SUP_FLEXI_XSERVER_USER  "FLEXI_XSERVER_USER" /* <username> <xserver type> */
+/* FLEXI_XSERVER_USER: Start a new X flexible display and initialize the 
+ *                greeter with the given username. Only supported on 
+ *                connection that passed AUTH_LOCAL
+ * Supported since: 2.17.7
+ * Arguments: <username> <xserver type>
+ *   If no server type specified, starts the standard X server
+ * Answers:
+ *   OK <display>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      1 = No more flexi servers
+ *      2 = Startup errors
+ *      3 = X failed
+ *      4 = X too busy
+ *      6 = No server binary
+ *      100 = Not authenticated
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
 #define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <uid> <xauth cookie> <xauth file> */
 /* FLEXI_XNEXT: Start a new flexible Xnest display.
  * Note:        Supported on older versions from 2.2.4.0, later
@@ -890,6 +912,31 @@ void		gdm_final_cleanup	(void);
  *              should be in hex form.
  * Supported since: 2.3.90.4
  * Arguments: <display to run on> <uid of requesting user>
+ *            <xauth cookie for the display> <xauth file>
+ * Answers:
+ *   OK <display>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      1 = No more flexi servers
+ *      2 = Startup errors
+ *      3 = X failed
+ *      4 = X too busy
+ *      5 = Xnest can't connect
+ *      6 = No server binary
+ *      100 = Not authenticated
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_FLEXI_XNEST_USER  "FLEXI_XNEST_USER" /* <username> <display> <uid> <xauth cookie> <xauth file> */
+/* FLEXI_XNEXT_USER: Start a new flexible Xnest display and 
+ *              initialize the greeter with the given username
+ * Note:        The cookie should be the MIT-MAGIC-COOKIE-1,
+ *              the first one gdm can find in the XAUTHORITY
+ *              file for this display.  If that's not what you
+ *              use you should generate one first.  The cookie
+ *              should be in hex form.
+ * Supported since: 2.17.7
+ * Arguments: <username> <display to run on> <uid of requesting user>
  *            <xauth cookie for the display> <xauth file>
  * Answers:
  *   OK <display>

@@ -1942,6 +1942,7 @@ static void
 gdm_slave_wait_for_login (void)
 {
 	char *successsound;
+	char *username;
 	g_free (login);
 	login = NULL;
 
@@ -1966,10 +1967,14 @@ gdm_slave_wait_for_login (void)
 		NEVER_FAILS_root_set_euid_egid (0, 0);
 
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
+		username = d->preset_user;
+		d->preset_user = NULL;
 		login = gdm_verify_user (d /* the display */,
-					 NULL /* username*/,
+					 username /* username*/,
 					 d->name /* display name */,
 					 d->attached /* display attached? (bool) */);
+		g_free (username);
+
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
 			   ve_sure_string (login));
 
