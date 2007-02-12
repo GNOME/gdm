@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY version "2.17.4">
-<!ENTITY date "12/13/2006">
+<!ENTITY version "2.17.7">
+<!ENTITY date "02/12/2007">
 ]>
 <article id="index" lang="uk">
   <articleinfo>
@@ -11,7 +11,7 @@
     <revhistory>
       <revision>
         <revnumber>0.0</revnumber>
-        <date>2006-12</date>
+        <date>2007-01</date>
       </revision>
     </revhistory>
 
@@ -79,8 +79,8 @@
 
 
     <releaseinfo>
-       This manual describes version 2.17.4 of the GNOME Display Manager.
-       It was last updated on 12/13/2006.
+       This manual describes version 2.17.7 of the GNOME Display Manager.
+       It was last updated on 02/12/2007.
     </releaseinfo>  
   </articleinfo>
 
@@ -88,8 +88,8 @@
     <title>Терміни та домовленості використані у цьому посібнику</title>
 
     <para>
-      This manual describes version 2.17.4 of the GNOME Display Manager.
-      It was last updated on 12/13/2006.
+      This manual describes version 2.17.7 of the GNOME Display Manager.
+      It was last updated on 02/12/2007.
     </para>  
 
     <para>Селектор - програма, що використовується для керування дисплеєм віддаленого вузла з локального дисплея (<command>gdmchooser</command>).</para>
@@ -3087,7 +3087,9 @@ ATTACHED_SERVERS
 AUTH_LOCAL
 CLOSE
 FLEXI_XNEST
+FLEXI_XNEST_USER
 FLEXI_XSERVER
+FLEXI_XSERVER_USER
 GET_CONFIG
 GET_CONFIG_FILE
 GET_CUSTOM_CONFIG_FILE
@@ -3267,6 +3269,36 @@ Answers:
 </screen>
       </sect3>
       
+      <sect3 id="flexixnestuser">
+      <title>FLEXI_XNEST_USER</title>
+<screen>
+FLEXI_XNEST_USER: Start a new flexible Xnest display and
+                  initialize the greeter with the given username.
+Note:             This is a variant of the FLEXI_XNEST command.
+Note:             The cookie should be the MIT-MAGIC-COOKIE-1,
+                  the first one GDM can find in the XAUTHORITY
+                  file for this display.  If that's not what you
+                  use you should generate one first.  The cookie
+                  should be in hex form.
+Supported since:  2.17.7
+Arguments: &lt;username&gt; &lt;display to run on&gt; &lt;uid of requesting user&gt;
+           &lt;xauth cookie for the display&gt; &lt;xauth file&gt;
+Answers:
+  OK &lt;display&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     1 = No more flexi servers
+     2 = Startup errors
+     3 = X failed
+     4 = X too busy
+     5 = Xnest can't connect
+     6 = No server binary
+     100 = Not authenticated
+     200 = Too many messages
+     999 = Unknown error
+</screen>
+      </sect3>
+
       <sect3 id="flexixserver">
       <title>FLEXI_XSERVER</title>
 <screen>
@@ -3290,6 +3322,30 @@ Answers:
 </screen>
       </sect3>
       
+      <sect3 id="flexixserveruser">
+      <title>FLEXI_XSERVER_USER</title>
+<screen>
+FLEXI_XSERVER_USER: Start a new X flexible display and initialize the
+                    greeter with the given username.  Only supported on
+                    connection that passed AUTH_LOCAL
+Supported since:    2.17.7 
+Arguments: &lt;username&gt; &lt;xserver type&gt;
+  If no server type specified, starts the standard X server
+Answers:
+  OK &lt;display&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     1 = No more flexi servers
+     2 = Startup errors
+     3 = X failed
+     4 = X too busy
+     6 = No server binary
+     100 = Not authenticated
+     200 = Too many messages
+     999 = Unknown error
+</screen>
+      </sect3>
+
       <sect3 id="getconfig">
       <title>GET_CONFIG</title> 
 <screen>

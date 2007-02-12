@@ -1,5 +1,37 @@
 Ahh news...
 
+2.17.7 Stuff:
+
+- New sockets command FLEXI_XNEST_USER and FLEXI_XSERVER_USER.  This is
+  used to start login procedure by programs like gnome-screensaver and the
+  Fast User Switch applet.  (Matthias Clasen)
+
+- Improvements to PAM logic so that it works more generically with PAM
+  modules.  (Ludwig Nussel)
+
+- Better fix for not showing the face browser if the userlist is empty.
+  This avoids a needless selection "changed" signal from getting generated.
+  (Ludwig Nussel)
+
+- Fix so ConsoleKit logic does not use dbus-glib bindings to using the
+  lower level API instead.  Fixes bug #400793.
+
+- Fixes for compiler warnings and for c99 compile issues.  (Ludwig Nussel
+  and Jens Granseuer)
+
+- Avoid catching sigchld when trying to call XOpenDisplay.  This corrects
+  an issue where GDM catches a second SIGCHLD when trying to restart.  
+  This causes the slave to freeze even though the Xserver and the session
+  are killed, causing the display to no longer manage. 
+  (Roberto Tam)
+
+- Improvements to PAM documentation in GDM docs.  (Brian Cameron and
+  Gary Winiger)
+
+- Translation updates (Djihed Afifi, Theppitak Karoonboonyanan, Priit Laes,
+  David Lodge, Duarte Loreto, Daniel Nylander, St\303\251phane Raimbault,
+  Hendrik Richter, Alexander Shopov)
+
 2.17.6 Stuff:
 
 - More verbose error messages from GDM daemon and gdmsetup when custom.config
