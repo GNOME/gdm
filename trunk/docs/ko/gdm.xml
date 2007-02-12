@@ -1,0 +1,382 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+ [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "2.4.2.101" >
+  <!ENTITY manrevision "2.0.1" >
+  <!ENTITY date "2004년 1월" >
+  <!ENTITY app "로그인 화면 설정" >
+  <!ENTITY ug "그놈 데스크탑 사용 설명서" >
+]><!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+--><!-- =============Document Header ============================= --> <article id="index" lang="ko"><!-- please do not change the id; for translations, change lang to --><!-- appropriate code -->
+
+
+  <articleinfo> 
+    <title>로그인 화면 설정 설명서 V&manrevision; </title>       
+
+	 <copyright><year>2004</year> <holder>Sun Microsystems</holder>  </copyright><!-- translators: uncomment this:
+  	 <copyright>
+   		<year>2003</year>
+   		<holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  	 </copyright>
+   	 -->
+	 
+
+    <publisher><publishername> 그놈 문서 프로젝트 </publishername>  </publisher><!-- This file  contains link to license for the documentation (GNU FDL), and 
+        other legal stuff such as "NO WARRANTY" statement. Please do not change 
+	any of this. -->&legal;  <authorgroup> 
+		<author><firstname>Sun</firstname> <surname>그놈 문서 팀</surname>  <affiliation><orgname>Sun Microsystems</orgname>  </affiliation>
+		</author><!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+
+    </authorgroup>
+
+    <revhistory>
+      <revision><revnumber>로그인 화면 설정 설명서 V&manrevision;</revnumber> <date>&date;</date> <revdescription> 
+	  		<para role="author">Sun 그놈 문서 팀 </para>
+	  		<para role="publisher">그놈 문서 프로젝트 </para>
+		</revdescription> 
+      </revision>
+    </revhistory><releaseinfo>이 설명서에서는 &app;의 버전 &appversion;에 대해 설명합니다.</releaseinfo>  <legalnotice> 
+      <title>피드백</title> 
+      <para>&app; 응용프로그램 또는 이 설명서에 대한 버그를 보고하거나 의견을 제시하려면 <ulink url="ghelp:gnome-feedback" type="help">그놈 피드백 페이지</ulink>에 있는 지시 사항을 따르십시오.  </para><!-- Translators may also add here feedback address for translations -->
+
+    </legalnotice> 
+  </articleinfo><!-- ============= Document Body ============================= --><!-- ============= Introduction ============================== --><indexterm> <primary>로그인 화면 설정</primary> </indexterm> <sect1 id="gdm-introduction">
+<title>소개 </title>
+<para>그놈 데스크탑 세션을 시작하려면 사용자가 반드시 로그인하여 신원을 인증해야만 합니다. 로그인 화면은 그놈 데스크탑에 액세스하기 위한 통로입니다. <application>&app;</application> 응용프로그램을 사용하여 사용자가 시스템에 로그인하는 방법을 구성합니다.</para>
+</sect1><!-- =========== Getting Started ============================== -->
+
+
+
+  <sect1 id="gdm-getting-started"> 
+	 <title>시작하기</title>
+
+	 <sect2 id="gdm-to-start"> 
+		<title>&app;을(를) 시작하려면</title>
+		
+		<para>다음 방법으로 <application>&app;</application>을(를) 시작할 수 있습니다. </para>
+		
+		<variablelist>
+			<varlistentry><term>메뉴</term> <listitem>
+			<para>메뉴에서 <application>&app;</application>을(를) 시작하는 방법에 대한 정보는 사용자 플랫폼의 &ug; 최신 버전을 참조하십시오.  </para>
+			</listitem>
+			</varlistentry>
+			<varlistentry><term>명령줄</term> <listitem>
+			<para>다음 명령을 실행합니다. <command>gdmsetup</command></para>
+			</listitem>
+			</varlistentry>
+	</variablelist>
+<note><para>로그인 화면을 구성하려면 시스템 관리자 권한 또는 <literal>root</literal> 액세스 권한이 있어야만 합니다.</para></note>
+	</sect2>
+
+	<sect2 id="gdm-when-you-start">
+	<title>&app; 시작</title>
+
+	<para><application>&app;</application>을(를) 시작하면 다음 대화 상자가 표시됩니다.</para><!-- ==== Figure ==== -->
+	
+		<figure id="gdm_window"> 
+		  <title>&app; 대화 상자</title>
+		  <screenshot> 
+			 <mediaobject> 
+				<imageobject><imagedata fileref="figures/gdm_window.png" format="PNG"/>
+					 </imageobject>
+				<textobject> <phrase>로그인 화면 설정 대화 상자가 표시됩니다. 그래픽에 대한 설명은 해당 컨텍스트를 참조하십시오.</phrase>
+				</textobject> </mediaobject>
+		  </screenshot>
+		</figure><!-- ==== End of Figure ==== -->
+	
+<para><application>&app;</application> 대화 상자에는 다음 탭 섹션이 포함되어 있습니다.</para>
+<itemizedlist>
+<listitem><para><link linkend="gdm-prefs-general"><guilabel>일반</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-standard"><guilabel>표준 환영 프로그램</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-graphical"><guilabel>그래픽 환영 프로그램</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-security"><guilabel>보안</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-xdmcp"><guilabel>XDMCP</guilabel></link></para></listitem>
+</itemizedlist>
+	
+	 </sect2>
+
+
+  </sect1><!-- ============= Customization ============================= -->
+
+
+  
+  <sect1 id="gdm-preferences"> 
+<title>환경 설정</title>
+
+<sect2 id="gdm-prefs-general">
+<title>일반</title>
+<para><guilabel>일반</guilabel> 탭 섹션을 사용하여 로그인 화면에 대한 일반 환경 설정을 지정합니다. </para>
+
+		<variablelist> 
+		  <varlistentry><term><guilabel>로컬</guilabel> </term> <listitem> 
+				<para>사용자가 로컬 시스템에서 로그인할 때 로그인 화면에 사용할 인터페이스 유형을 선택합니다. 드롭다운 목록에서 다음 옵션 중 하나를 선택합니다.</para>
+<itemizedlist>
+<listitem><para><guilabel>그래픽 환영 프로그램</guilabel>: 사용자가 로컬 시스템에서 로그인할 때 그래픽 로그인 화면을 사용하려면 이 옵션을 선택합니다. </para>
+</listitem>
+<listitem><para><guilabel>표준 환영 프로그램</guilabel>: 사용자가 로컬 시스템에서 로그인할 때 표준 그놈 로그인 화면을 사용하려면 이 옵션을 선택합니다.  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term><guilabel>원격</guilabel> </term> <listitem> 
+				<para>사용자가 원격 시스템에서 로그인할 때 로그인 화면에 사용할 인터페이스 유형을 선택합니다. 드롭다운 목록에서 다음 옵션 중 하나를 선택합니다.</para><itemizedlist>
+<listitem><para><guilabel>그래픽 환영 프로그램</guilabel>: 사용자가 원격 시스템에서 로그인할 때 그래픽 로그인 화면을 사용하려면 이 옵션을 선택합니다. </para>
+</listitem>
+<listitem><para><guilabel>표준 환영 프로그램</guilabel>: 사용자가 원격 시스템에서 로그인할 때 표준 그놈 로그인 화면을 사용하려면 이 옵션을 선택합니다.  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>언제나 24시간 시간 유형을 사용</guilabel> </term> <listitem> 
+<para>로그인 화면의 시간을 00.00 - 24.00 시간 유형으로 표시하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>환영 문자열</guilabel> </term> <listitem> 
+<para>사용자가 로컬 시스템에서 로그인할 때 표준 그놈 로그인 화면에 표시할 환영 메시지를 입력합니다.</para><note><para>환영 메시지에 시스템 이름을 표시하려면 이 입력란에 <literal>%n</literal>을(를) 입력합니다.  </para></note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>원격 환영 문자열</guilabel> </term> <listitem> 
+<para>사용자가 원격 시스템에서 로그인할 때 표준 그놈 로그인 화면에 표시할 환영 메시지를 입력합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>처음 시동될 때 자동으로 사용자 로그인</guilabel> </term> <listitem> 
+<para>처음으로 시스템을 부팅할 때 자동으로 사용자를 로그인하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>자동 로그인 사용자 이름</guilabel> </term> <listitem> 
+<para>드롭다운 콤보 상자를 사용하여 자동으로 사용자를 로그인할 때 시스템에서 사용할 사용자 이름을 입력합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>지정한 시간 후 자동으로 사용자로 로그인</guilabel> </term> <listitem> 
+<para>지정한 시간 간격 후에 자동으로 사용자를 로그인하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>시간제한 로그인 사용자 이름</guilabel> </term> <listitem> 
+<para>드롭다운 콤보 상자를 사용하여 지정한 시간 간격 후에 자동으로 사용자를 로그인할 때 시스템에서 사용할 사용자 이름을 입력합니다. </para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term><guilabel>로그인 전 시간(초)</guilabel> </term> <listitem> 
+<para>스핀 상자를 사용하여 자동으로 사용자를 로그인하기 전에 대기할 시간을 지정합니다.</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+</sect2>
+
+<sect2 id="gdm-prefs-standard">
+<title>표준 환영 프로그램</title>
+<para><guilabel>표준 환영 프로그램</guilabel> 탭 섹션을 사용하여 표준 그놈 로그인 화면에 대한 환경 설정을 지정합니다. </para>
+
+
+
+<variablelist>
+		  <varlistentry><term><guilabel>로고</guilabel> </term> <listitem> 
+<para>표준 그놈 로그인 화면에 로고로 표시할 이미지를 선택합니다. 이미지를 선택하려면 드롭다운 콤보 상자에 이미지의 파일 이름을 입력합니다. <guibutton>찾아보기</guibutton> 버튼을 클릭하면 나타나는 대화 상자에서 이미지를 선택할 수도 있습니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>선택할 수 있는 사용자 그림 보기(얼굴 찾아보기)</guilabel> </term> <listitem> 
+<para>표준 그놈 로그인 화면에 사용자 이미지를 표시하려면 이 옵션을 선택합니다. 이 옵션이 선택되어 있으면 사용자가 사용자 이름을 입력하는 대신에 이미지를 선택할 수 있습니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>배경 없음</guilabel> </term> <listitem> 
+<para>표준 그놈 로그인 화면 배경에 이미지 또는 색상을 표시하지 않으려면 이 옵션을 선택합니다.  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>그림</guilabel> </term> <listitem> 
+<para>표준 그놈 로그인 화면 배경에 이미지를 표시하려면 이 옵션을 선택합니다. 이미지를 선택하려면 대화 상자의 오른쪽에 있는 드롭다운 콤보 상자에 이미지 파일 이름을 입력합니다. 대화 상자의 오른쪽에 있는 <guibutton>찾아보기 </guibutton> 버튼을 클릭하면 나타나는 대화 상자에서 이미지를 선택할 수도 있습니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>색상</guilabel> </term> <listitem> 
+<para>표준 그놈 로그인 화면의 배경에 색상을 표시하려면 이 옵션을 선택합니다. <guilabel> 배경 색상</guilabel> 버튼을 사용하여 색상을 지정합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>배경 그림을 맞춰서 확대</guilabel> </term> <listitem> 
+<para><guilabel>그림</guilabel> 옵션을 선택한 경우 배경 이미지 크기를 표준 그놈 로그인 화면의 배경에 맞게 조정하려면 이 옵션을 선택합니다. 이 때 이미지의 가로 세로 비율은 그대로 유지됩니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>원격 디스플레이에서 단색</guilabel> </term> <listitem> 
+<para>사용자가 원격 시스템에서 로그인할 때 표준 그놈 로그인 화면의 배경에 단색만 표시하려면 이 옵션을 선택합니다.  </para>
+			 </listitem>
+		  </varlistentry>
+
+
+		  <varlistentry><term><guilabel>배경 색상</guilabel> </term> <listitem> 
+<para>배경에 <guilabel>색상</guilabel> 옵션 또는 <guilabel>원격 디스플레이에서 단색</guilabel> 옵션을 선택한 경우 이 버튼을 사용하여 색상을 지정합니다. 색상 선택기 버튼을 클릭하여 색상 선택기 대화 상자를 표시합니다. 색상 선택기 대화 상자에서 원하는 색상을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-graphical">
+<title>그래픽 환영 프로그램</title>
+<para><guilabel>그래픽 환영 프로그램</guilabel> 탭 섹션을 사용하여 그래픽 로그인 화면의 환경 설정을 지정합니다.</para>
+
+<variablelist>
+
+		  <varlistentry><term>테마 목록</term> <listitem> 
+<para>그래픽 로그인 화면에 사용할 테마를 선택합니다. 선택한 테마를 미리 보려면 대화 상자의 오른쪽을 봅니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guibutton>새 테마 설치</guibutton> </term> <listitem> 
+<para>사용 가능한 테마 목록에 테마를 추가할 수 있습니다. 새 테마는 tar 및 zip으로 압축된 아카이브 파일이어야 합니다. 즉, 새 테마 파일은 <filename>.tar.gz</filename>여야 합니다.</para><para>새 테마를 설치하려면 다음 단계를 수행합니다.</para>
+<orderedlist>
+<listitem><para><guibutton>새 테마 설치</guibutton> 버튼을 클릭합니다.</para></listitem>
+<listitem><para>대화 상자에서 아카이브 파일을 선택합니다.</para></listitem>
+<listitem><para><guibutton>확인</guibutton>을 클릭합니다. </para></listitem>
+</orderedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guibutton>테마 삭제</guibutton> </term> <listitem> 
+<para>테마를 삭제하려면 테마를 선택한 다음 <guibutton>테마 삭제</guibutton> 버튼을 클릭합니다.</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-security">
+<title>보안</title>
+<para><guilabel>보안</guilabel> 탭 섹션을 사용하여 로그인 보안 환경 설정을 지정합니다. </para>
+
+<variablelist>
+		  <varlistentry><term><guilabel>GDM으로 root 사용자 로그인 허용</guilabel> </term> <listitem> 
+<para>시스템 관리자 권한 또는 <literal>root</literal> 액세스 권한이 있는 사용자가 로컬 시스템에서 로그인하는 데 <application>그놈 디스플레이 관리자</application> (<application>GDM</application>)를 사용하도록 하려면 이 옵션을 선택합니다.</para>
+<note><para>PAM(Pluggable Authentication Module, 장착식 인증 모듈)을 지원하는 시스템에서는 이 옵션이 무시됩니다. PAM 라이브러리에서는 사용자가 로컬 시스템에 있는지 확인합니다.  </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>GDM으로 root 사용자 원격 로그인 허용</guilabel> </term> <listitem> 
+<para>시스템 관리자 권한 또는 <literal>root</literal> 액세스 권한이 있는 사용자가 원격 시스템에서 로그인하는 데 <application>GDM</application>을 사용하도록 하려면 이 옵션을 선택합니다.  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>원격 한시적 로그인 허용</guilabel> </term> <listitem> 
+<para>원격 시스템에서 로그인할 때 지정한 시간 간격 후에 <application>GDM</application>이 자동으로 사용자를 로그인하도록 하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>행동 메뉴 보기</guilabel> </term> <listitem> 
+<para>로그인 화면에서 사용자가 <guimenu>행동</guimenu> 메뉴를 사용하도록 하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>로그인 화면에서 사용자들이 설정기를 실행하도록 허용</guilabel> </term> <listitem> 
+<para>로그인 화면의 <guimenu>행동</guimenu> 메뉴에서 사용자가 <guimenuitem>로그인 관리자 설정</guimenuitem> 항목을 사용하도록 하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>로그인 화면에서 XDMCP 선택기를 실행하도록 허용</guilabel> </term> <listitem> 
+<para>로그인 화면의 <guimenu>행동</guimenu> 메뉴에서 사용자가 <guimenuitem>XDMCP 선택기 실행</guimenuitem> 항목을 사용하도록 하려면 이 옵션을 선택합니다.</para><para><guimenuitem>XDMCP 선택기 실행</guimenuitem> 항목은 디스플레이 관리자 서비스를 제공하는 호스트의 목록을 표시합니다. 사용자가 이 목록을 사용하여 세션을 관리할 호스트를 선택할 수 있습니다.  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>X 서버에 TCP 연결을 항상 허용하지 않음(모든 원격 연결을 사용하지 않음)</guilabel> </term> <listitem> 
+<para>사용자가 원격 시스템에서 X 윈도우 시스템 서버에 연결하지 못하도록 하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>재시도 지연(초)</guilabel> </term> <listitem> 
+<para>이 스핀 상자를 사용하여 로그인 시도 실패 후 로그인 화면의 <guilabel>사용자이름</guilabel> 필드를 다시 활성화하기 전까지 대기할 시간을 지정합니다.</para>
+<note><para>PAM을 지원하는 시스템에서는 이 옵션이 무시됩니다. </para></note>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+
+</sect2>
+<sect2 id="gdm-prefs-xdmcp">
+<title>XDMCP</title>
+<para><guilabel>XDMCP</guilabel> 탭 섹션을 사용하여 XDMCP(X  디스플레이 관리자 제어 프로토콜)에 대한 환경 설정을 지정합니다.  </para>
+
+
+<variablelist>
+		  <varlistentry><term><guilabel>XDMCP 사용</guilabel> </term> <listitem> 
+<para>원격 X 윈도우 시스템 디스플레이에서 이 시스템의 X 윈도우 시스템 세션을 사용할 수 있도록 허용하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>간접 요청 받음</guilabel> </term> <listitem> 
+<para>디스플레이 관리자가 없는 원격 X 윈도우 디스플레이에서 이 시스템의 XDMCP 디스플레이 관리 서비스를 사용할 수 있도록 허용하려면 이 옵션을 선택합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>감시할 UDP 포트</guilabel> </term> <listitem> 
+<para>이 스핀 상자를 사용하여 UDP(사용자 데이터그램 프로토콜) 요청을 수신할 포트 번호를 지정합니다.  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>최대 미정 요청</guilabel> </term> <listitem> 
+<para>이 스핀 상자를 사용하여 시스템 세션에 대기되는 최대 요청 수를 지정합니다.</para><note><para>이 옵션은 서비스 거부 공격을 방지하는 데 유용합니다. 이 옵션은 한 번에 세션을 <emphasis>요청</emphasis>할 수 있는 디스플레이 수를 지정하지만 <application>GDM</application>에서 허용하는 총 원격 세션 수를 지정하지는 않습니다. </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>최대 미정 간접 요청</guilabel> </term> <listitem> 
+<para><application>GDM</application>에서는 시스템의 세션 요청에 대한 대기열이 만들어 집니다. 이 스핀 상자를 사용하면 디스플레이 관리자가 없는 디스플레이에서 대기되는 최대 세션 요청 수를 지정할 수 있습니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>최대 원격 세션</guilabel> </term> <listitem> 
+<para>이 스핀 상자를 사용하여 <application>GDM</application>에서 허용하는 총 원격 세션 수를 지정합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>최대 대기 시간</guilabel> </term> <listitem> 
+<para>이 스핀 상자를 사용하여 <application>GDM</application>의 요청 대기열에서 요청이 제거될 때까지 기다려야할 시간을 지정합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>최대 간접 대기 시간</guilabel> </term> <listitem> 
+<para>이 스핀 상자를 사용하여 세션을 요청한 디스플레이 대기열에서 디스플레이 관리자가 없는 디스플레이를 <application>GDM</application>이 제거하기 전까지  대기해야 할 시간을 지정합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>호스트별 디스플레이</guilabel> </term> <listitem> 
+<para>이 스핀 상자를 사용하여 <application>GDM</application>이 허용하는 호스트의 총 세션 수를 지정합니다. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>ping 간격 (초)</guilabel> </term> <listitem> 
+<para>해당 세션이 아직 활성 상태인지 확인하기 위해 <application>GDM</application>에서  세션을 ping합니다. 이 스핀 상자를 사용하여 <application>GDM</application>의 ping 간격을 지정합니다.</para>
+			 </listitem>
+		  </varlistentry>
+</variablelist>
+
+</sect2>
+
+</sect1>
+</article>

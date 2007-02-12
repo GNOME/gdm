@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ZENITY=`which zenity`
+TARGETHOST=`$ZENITY --title "Host to connect to" --entry --text "Enter the name of the host you want to log in to"`
+# @@@ should probably get a user name too;
+# for now can bet set using the $USERNAME@ convention
+# @@@ should it do an ssh-add so the user doesn't have to enter its passphrase again?
+ssh -A -X -T -n "$TARGETHOST" /etc/X11/Xsession
