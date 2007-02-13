@@ -977,6 +977,7 @@ case "$host" in
         SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
         XSESSION_SHELL=/bin/ksh
         SOUND_PROGRAM=/usr/bin/audioplay
+        GDMGNOMESESSIONCMD=/usr/dt/config/Xsession.jds
         ;;
 *freebsd*)
 	GDM_USER_PATH="/bin:/usr/bin"
@@ -985,6 +986,7 @@ case "$host" in
 	SUSPEND_COMMAND="/usr/sbin/zzz"
 	XSESSION_SHELL=/bin/sh
 	SOUND_PROGRAM=
+        GDMGNOMESESSIONCMD=gnome-session
 	;;
 *)
         GDM_USER_PATH="/bin:/usr/bin"
@@ -993,6 +995,7 @@ case "$host" in
         SUSPEND_COMMAND=""
         XSESSION_SHELL=/bin/sh
         SOUND_PROGRAM=/usr/bin/play
+        GDMGNOMESESSIONCMD=gnome-session
         ;;
 esac
 
@@ -1097,6 +1100,7 @@ AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL")
 AC_SUBST(GDM_USER_PATH)
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
+AC_SUBST(GDMGNOMESESSIONCMD)
 
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
@@ -1153,6 +1157,7 @@ config/Init
 config/PreSession
 config/PostSession
 config/gdmprefetchlist
+config/gnome.desktop.in
 config/ssh.desktop.in
 gdm-stop
 gdm-restart

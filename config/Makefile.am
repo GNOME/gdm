@@ -20,7 +20,7 @@ EXTRA_DIST = \
 	gdm.conf-custom \
 	$(DESKTOP_FILES) \
 	default.desktop.in \
-	gnome.desktop.in \
+	gnome.desktop.in.in \
 	CDE.desktop.in \
 	ssh.desktop.in.in \
 	Xsession.in \
