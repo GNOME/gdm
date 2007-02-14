@@ -153,7 +153,7 @@ main (int argc, char *argv[])
     }
 
     /* process remaining option arguments for -l */
-    if (command == GDM_SUP_ATTACHED_SERVERS)
+    if (command != NULL && strcmp (command, GDM_SUP_ATTACHED_SERVERS) == 0)
         for (; optind<argc; optind++)
             params = argv[optind];
 
