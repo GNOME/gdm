@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-13 20:07+0300\n"
-"PO-Revision-Date: 2007-02-13 20:25+0300\n"
+"POT-Creation-Date: 2007-02-14 06:08+0300\n"
+"PO-Revision-Date: 2007-02-14 06:28+0300\n"
 "Last-Translator: Hile Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -3541,8 +3541,9 @@ msgid ""
 "You need one or more themes selected for the \"Random from selected\" option "
 "to be valid. Failure to do so will force \"Selected only\" mode."
 msgstr ""
-"Yksi tai useampi teema täytyy olla valittuna, jotta \"Satunnainen valituista\""
-"-valinta olisi kelvollinen. Jos näin ei ole, käytetään \"Vain valittu\"-tilaa."
+"Yksi tai useampi teema täytyy olla valittuna, jotta \"Satunnainen valituista"
+"\"-valinta olisi kelvollinen. Jos näin ei ole, käytetään \"Vain valittu\"-"
+"tilaa."
 
 #: ../gui/gdmsetup.c:1959
 msgid "Apply changes to the modified command?"
@@ -3909,7 +3910,7 @@ msgstr "Esteettömyys"
 
 #: ../gui/gdmsetup.glade.h:22
 msgid "Accessible from the outside of the login manager"
-msgstr ""
+msgstr "Käytettävissä kirjautumisohjelman ulkopuolelta"
 
 #: ../gui/gdmsetup.glade.h:23
 msgid "Add / Modify Servers To Start"
@@ -3929,6 +3930,9 @@ msgid ""
 "server with a chooser.  XDMCP does not need to be enabled on the local "
 "computer for this to work."
 msgstr ""
+"Lisää valinnan toimintavalikkoon, joka käynnistää nykyisen X-palvelimen "
+"palvelinvalitsimen kanssa. XDMCP ei tarvitse olla käytössä paikallisella "
+"koneella jotta tämä toimisi."
 
 #: ../gui/gdmsetup.glade.h:27
 msgid ""
@@ -3984,11 +3988,12 @@ msgid ""
 "security hazard to leave open, even though no known security problems exist. "
 "Also disables X forwarding, but does not affect XDMCP."
 msgstr ""
-"Lisää aina -nolisten tcp -valitsin paikallisten X-palvelinten komentoriville, "
-"estäen TCP-yhteydet. Tämä on hyödyllinen valinta, jos et halua sallia suoria "
-"etäyhteyksiä palvelimelle. X-protokolla saattaa myös olla turvallisuusriski, "
-"vaikka tunnettuja haavoittuvuuksia ei olekaan olemassa. Asetus estää myös "
-"X-uudelleenohjauksen mutta ei vaikuta XDMCP-yhteyksiin."
+"Lisää aina -nolisten tcp -valitsin paikallisten X-palvelinten "
+"komentoriville, estäen TCP-yhteydet. Tämä on hyödyllinen valinta, jos et "
+"halua sallia suoria etäyhteyksiä palvelimelle. X-protokolla saattaa myös "
+"olla turvallisuusriski, vaikka tunnettuja haavoittuvuuksia ei olekaan "
+"olemassa. Asetus estää myös X-uudelleenohjauksen mutta ei vaikuta XDMCP-"
+"yhteyksiin."
 
 #: ../gui/gdmsetup.glade.h:36
 msgid "Apply Co_mmand Changes"
@@ -4075,7 +4080,8 @@ msgstr "_Oletusistunto:"
 
 #: ../gui/gdmsetup.glade.h:54
 msgid "Delay in seconds before the Timed login user will be logged in."
-msgstr "Viive sekunteina ennen kuin ajastettu käyttäjän kirjautuminen käynnistyy."
+msgstr ""
+"Viive sekunteina ennen kuin ajastettu käyttäjän kirjautuminen käynnistyy."
 
 #: ../gui/gdmsetup.glade.h:55
 msgid ""
@@ -4083,6 +4089,8 @@ msgid ""
 "managed simultaneously. I.e. the total number of remote displays that can "
 "use your host."
 msgstr ""
+"Määrittää samanaikaisesti hallittujen etäistuntojen enimmäismäärän, eli "
+"kuinka moni samanaikainen etäistunto voi käyttää tietokonetta."
 
 #: ../gui/gdmsetup.glade.h:56
 msgid ""
@@ -4091,6 +4099,10 @@ msgid ""
 "to the host.  When the timeout is exceeded, the information about the chosen "
 "host is forgotten and the indirect slot freed up for other displays."
 msgstr ""
+"Määrittää enimmäisajan sekunteina käyttäjän palvelinvalinnan ja sitä "
+"seuraavan yhteyden avaavan epäsuoran kyselyn välillä. Jos aikaviive "
+"ylitetään, tiedot valitusta palvelimesta unohdetaan ja epäsuora yhteys "
+"vapautetaan muiden näyttöjen käyttöön."
 
 #: ../gui/gdmsetup.glade.h:57
 msgid "Disa_ble multiple logins for a single user"
@@ -4117,6 +4129,8 @@ msgid ""
 "Does not place cookies into the users home directory if this directory is on "
 "NFS."
 msgstr ""
+"Älä laita piparia käyttäjän kotihakemistoon, jos hakemiston on NFS-"
+"palvelimella."
 
 #: ../gui/gdmsetup.glade.h:63
 msgid ""
@@ -4124,6 +4138,9 @@ msgid ""
 "just reinitializing is a nicer way to go but if the X server memory usage "
 "keeps growing this may be a safer option."
 msgstr ""
+"Olemassaolevia X-palvelimia ei käytetä uudestaan, vaan palvelin käynnistetään "
+"uudestaan. Tavallisesti uudelleenalustus on siistimpi tapa tehdä asiat, "
+"mutta jos X-palvelimen muistinkäyttö kasvaa, voi tämä olla parempi valinta."
 
 #: ../gui/gdmsetup.glade.h:64
 msgid "Don't restart the login manager after the execution"
@@ -4150,6 +4167,8 @@ msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of gdmchooser) for X-"
 "terminals which don't supply their own display browser."
 msgstr ""
+"Mahdollistaa XDMCP INDIRECT -valinnan eli gdmchooser-ohjelman etäsuorituksen "
+"X-päätteille, jotka eivät tarjoa oman näyttöselaintaan."
 
 #: ../gui/gdmsetup.glade.h:70
 msgid ""
@@ -4157,16 +4176,22 @@ msgid ""
 "when extra features are required such as accessible login. Note that only "
 "\"trusted\" modules should be used to minimize security issues."
 msgstr ""
+"Mahdollistaa tervehtimen käynnistämisen ylimääräisien GTK+-osien kanssa. "
+"Tämä on hyödyllinen, jos tarvitaan lisäosia kuten esteettömyyttä "
+"kirjautumisessa. Muista, että vain luotettuja lisäosia tulisi käyttää "
+"turvasyistä."
 
 #: ../gui/gdmsetup.glade.h:71
 msgid ""
 "Full path and arguments to command to be executed. If the value is missing, "
 "the command will not available."
-msgstr ""
+msgstr "" 
+"Suoritettavan komennon koko polku ja valitsimet. Jos arvo on tyhjä, ei "
+"komento ole käytettävissä."
 
 #: ../gui/gdmsetup.glade.h:72
 msgid "Full path and arguments to the command to be executed"
-msgstr ""
+msgstr "Suoritettavan komennon koko polku ja valitsimet"
 
 #: ../gui/gdmsetup.glade.h:73
 msgid ""
@@ -4174,6 +4199,9 @@ msgid ""
 "If not selected, then GDM will just run this server and wait for it to "
 "terminate."
 msgstr ""
+"GDM käyninstää kirjautumisikkunan tällä palvelimella ja sallii käyttäjän "
+"sisäänkirjautumisen. Jos tämä ei ole valittu, GDM suorittaa ainoastaan "
+"tämän palvelimen ja odottaa sen sulkeutumista."
 
 #: ../gui/gdmsetup.glade.h:74
 msgid "General"
@@ -4185,6 +4213,9 @@ msgid ""
 "before login) of inactivity on the login screen.  This is useful for public "
 "access terminals or perhaps even home use."
 msgstr ""
+"Annettu käyttäjä kirjautuu sisään sisään tietyn kirjautumisikkunan "
+"joutenoloajan jälkeen automaattisesti. Tämä voi olla hyödyllinen julkisilla "
+"päätteillä sekä myös kotikäytössä."
 
 #: ../gui/gdmsetup.glade.h:76
 msgid ""
@@ -4192,6 +4223,9 @@ msgid ""
 "asked.  This is useful for single user workstations where local console "
 "security is not an issue."
 msgstr ""
+"Annettu käyttäjä kirjatutuu sisään automaattisesti ensimmäisellä "
+"suorituskerralla ilman salasanaa. Tämä on hyödyllinen yhden käyttäjän "
+"työasemilla, joissa konsolin turvallisuus ei ole ongelma."
 
 #: ../gui/gdmsetup.glade.h:77
 msgid ""
@@ -4220,6 +4254,11 @@ msgid ""
 "specified by DefaultFace will be used.  The image must be in an gdk-pixbuf "
 "supported format and the file must be readable to the GDM user."
 msgstr ""
+"Jos käyttäjälle ei ole määritelty kasvokuvaa, GDM käyttää valitussa "
+"GTK+-teemassa määritelty oletushenkilön kuvaketta. Jos kuvaketta ei "
+"ole määritelty, käytetään arvossa DefaultFace määriteltyä kuvaa. Kuvan "
+"tulee olla gdk-pixbuf-kirjaston ymmärtämässä muodossa ja tiedoston täytyy "
+"olla GDM-käyttäjän luettavissa."
 
 #: ../gui/gdmsetup.glade.h:83
 msgid ""
@@ -4227,6 +4266,10 @@ msgid ""
 "supported format and it must be readable by the GDM user. If no file is "
 "specified the logo feature is disabled."
 msgstr ""
+"Logo-laatikossa näytettävä kuvatiedosto.  Kuvan tulee olla gdk-pixbuf-"
+"kirjaston ymmärtämässä muodossa ja tiedoston täytyy olla GDM-käyttäjän "
+"luettavissa. Jos kuvaa ei ole määritelty, ei logoa näytetä lainkaan."
+
 
 #: ../gui/gdmsetup.glade.h:84
 msgid "Includ_e Hostname Chooser (XDMCP) menu item"
@@ -4241,6 +4284,8 @@ msgid ""
 "Indicates that the X server should be started at a different process "
 "priority."
 msgstr ""
+"Määrittää, että X-palvelin tulisi käynnistää muulla prosessin "
+"prioriteetilla."
 
 #: ../gui/gdmsetup.glade.h:87
 msgid ""
@@ -4248,6 +4293,8 @@ msgid ""
 "return before the next time we ping it, the connection is stopped and the "
 "session ended."
 msgstr ""
+"Aikaväli X-palvelimen pingausten välillä. Jos X-palvelin ei vastaa ennen "
+"seuraavaaa pingiä, yhteys katkaistaan ja istunto lopetetaan."
 
 #: ../gui/gdmsetup.glade.h:88
 msgid "La_unch:"
@@ -4318,6 +4365,8 @@ msgid ""
 "Number of simultaneously provided displays with host choosers.  If more "
 "queries from different hosts come in, the oldest ones will be forgotten."
 msgstr ""
+"Kuinka monta samanaikaista näyttöä tarjotaan palvelinvalitsimille. "
+"Jos saadaan useampia kyselyitä eri asiakkailta, unohdetaan vanhimmat."
 
 #: ../gui/gdmsetup.glade.h:105
 msgid "Only allow login i_f user owns their home directory"
@@ -4385,6 +4434,8 @@ msgid ""
 "\" user by letting the login window time out, just like the local user on "
 "the first console."
 msgstr ""
+"XMDCP-etäyhteyksillä sallitaan ajastettu kirjautuminen antamalla "
+"kirjautumisikkunan olla jouten, aivan kuten paikallisilla käyttäjillä."
 
 #: ../gui/gdmsetup.glade.h:121
 msgid ""
@@ -4473,6 +4524,8 @@ msgid ""
 "Show visual feedback is the password entry. Turning this option on can be a "
 "security hazard as the length of your password can be guessed."
 msgstr ""
+"Näytä näkyvää palautetta salasanakentässä. Tämän valinnan käyttö voi olla "
+"turvariski, koska se paljastaa salasanasi pituuden."
 
 #: ../gui/gdmsetup.glade.h:143
 msgid ""
@@ -4576,8 +4629,8 @@ msgid ""
 "The number of seconds that should pass before reactivating the entry field "
 "after a failed login."
 msgstr ""
-"Kuinka monta sekuntia odotetaan, ennen kuin syötekenttä aktivoidaan uudestaan "
-"epäonnistuineen kirjautumisen jälkeen."
+"Kuinka monta sekuntia odotetaan, ennen kuin syötekenttä aktivoidaan "
+"uudestaan epäonnistuineen kirjautumisen jälkeen."
 
 #: ../gui/gdmsetup.glade.h:162
 msgid "The position of the login window cannot be changed."
@@ -4674,6 +4727,10 @@ msgid ""
 "works for session's running on Virtual Terminals started with "
 "gdmflexiserver, and not with XDMCP."
 msgstr ""
+"Kun käyttäjä kirjautuu sisään toiseen kertaan samanaikaisesti, yhdistetään "
+"heidät alkuperäiseen istuntoon uuden istunnon käynnistämisen sijasta. "
+"Tämä toimii ainoastaan gdmflexiserverin käynnistämillä virtuaalipäätteillä, "
+"ei XDMCP-yhteyksillä."
 
 #: ../gui/gdmsetup.glade.h:178
 msgid "X Server Login Window Preferences"
