@@ -24,13 +24,4 @@ if [ "x$SESSREG" != "x" ] ; then
 	"$SESSREG" -d -w /var/log/wtmp -u /var/run/utmp -x "$X_SERVERS" -h "$REMOTE_HOST" -l "$DISPLAY" "$USER"
 fi
 
-# If running on Solaris, run sessionexit script.
-#
-if [ -x "/etc/dt/config/sessionexit" ]; then
-	/etc/dt/config/sessionexit
-fi
-if [ -x "/usr/dt/config/sessionexit" ]; then
-	/usr/dt/config/sessionexit
-fi
-
 exit 0
