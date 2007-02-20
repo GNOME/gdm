@@ -12,6 +12,7 @@ SUBDIRS = \
 # docs omf-install
 
 EXTRA_DIST = \
+	MAINTAINERS		\
 	ChangeLog		\
 	README			\
 	README.install		\
