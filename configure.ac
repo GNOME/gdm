@@ -1145,7 +1145,6 @@ po/Makefile.in
 vicious-extensions/Makefile
 docs/Makefile
 docs/de/Makefile
-docs/en_GB/Makefile
 docs/es/Makefile
 docs/fr/Makefile
 docs/it/Makefile
