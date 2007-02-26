@@ -448,6 +448,14 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     int pipe_buf;
     gboolean host_not_willing = FALSE;
 
+#ifdef PIPE_BUF
+    pipe_buf = PIPE_BUF;
+#else
+    /* apparently Hurd doesn't have PIPE_BUF */
+    pipe_buf = fpathconf (1 /*stdout*/, _PC_PIPE_BUF);
+    /* could return -1 if no limit */
+#endif
+
     if ( ! (condition & G_IO_IN)) 
         return TRUE;
 
@@ -508,7 +516,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 
 	    hostname = hbuf;
 
-	    if (strlen (hostname)+1 > PIPE_BUF)
+	    if (strlen (hostname) + 1 > pipe_buf)
 		goto done;
 	    hostname = g_strdup (hostname);
 
@@ -531,7 +539,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 				AF_INET);
 
 	    hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
-	    if (strlen (hostname)+1 > PIPE_BUF)
+	    if (strlen (hostname) + 1 > pipe_buf)
                    goto done;
 
 	    hostname = g_strdup (hostname);
@@ -543,14 +551,6 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	    }
         }
     }
-
-#ifdef PIPE_BUF
-    pipe_buf = PIPE_BUF;
-#else
-    /* apparently Hurd doesn't have PIPE_BUF */
-    pipe_buf = fpathconf (1 /*stdout*/, _PC_PIPE_BUF);
-    /* could return -1 if no limit */
-#endif
 
     /* We can't pipe hostnames larger than this */
     if (pipe_buf > 0 && strlen (hostname)+1 > pipe_buf) {
@@ -1798,6 +1798,8 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_MULTICAST);
 
 	gdmcomm_comm_bulk_stop ();
+
+	return FALSE;
 }
 
 static gboolean
@@ -2065,7 +2067,7 @@ main (int argc, char *argv[])
 	    }
     }
     gdm_chooser_xdmcp_init (hosts_opt);
-    g_strfreev (chooser_hosts);
+    g_strfreev (hosts_opt);
 
     sid = g_signal_lookup ("event",
 				 GTK_TYPE_WIDGET);
