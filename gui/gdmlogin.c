@@ -2413,7 +2413,7 @@ gdm_login_gui_init (void)
 
     menu = gtk_menu_new ();
     gdm_login_session_init (menu);
-    sessmenu = gtk_menu_item_new_with_mnemonic (_("_Session"));
+    sessmenu = gtk_menu_item_new_with_mnemonic (_("S_ession"));
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), sessmenu);
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (sessmenu), menu);
     gtk_widget_show (GTK_WIDGET (sessmenu));
