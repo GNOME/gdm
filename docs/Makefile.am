@@ -5,11 +5,11 @@ DOC_MODULE = gdm
 DOC_ENTITIES = 
 DOC_INCLUDES = legal.xml
 
-DOC_LINGUAS = en_GB es uk
+DOC_LINGUAS = es uk
 
 # Translations need migration to use gnome-doc-utils.
 # See page http://live.gnome.org/GnomeDocUtilsTranslationMigration
-SUBDIRS = . de en_GB es fr it ja ko zh_CN zh_HK zh_TW
+SUBDIRS = . de es fr it ja ko zh_CN zh_HK zh_TW
 
 man_MANS = gdm.1
 

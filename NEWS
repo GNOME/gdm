@@ -1,5 +1,23 @@
 Ahh news...
 
+2.17.8 Stuff:
+
+- In gdmlogin, change "Session" mnemonic to "e" instead of "s"
+  so it doesn't conflict with the "Start Again" button.
+- Now AlwaysLoginCurrentSession is set to true by default.
+
+- Fix spacing in gdmsetup so it uses less vertical space.  (Lukasz
+  Zalewski)
+
+- Fix gdmchooser so it builds with HURD.
+
+- Fix comparison with string literal in gdmdynamic.  (Hans Petter
+  Jansson)
+
+- On Solaris, gnome.session script calls /usr/dt/config/Xsession.jds
+  instead of gnome.session since Xsession.jds starts D-Bus daemons
+  needed for GNOME to run properly.  (Brian Cameron)
+
 2.17.7 Stuff:
 
 - New sockets command FLEXI_XNEST_USER and FLEXI_XSERVER_USER.  This is

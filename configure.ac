@@ -2,7 +2,7 @@ AC_PREREQ(2.52)
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.17.7)
+AM_INIT_AUTOMAKE(gdm,2.17.8)
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
 
@@ -1145,6 +1145,7 @@ po/Makefile.in
 vicious-extensions/Makefile
 docs/Makefile
 docs/de/Makefile
+docs/en_GB/Makefile
 docs/es/Makefile
 docs/fr/Makefile
 docs/it/Makefile
