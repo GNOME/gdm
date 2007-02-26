@@ -1,3 +1,23 @@
+2007-02-21  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
+
+	* gdmsetup.glade: Changed vertical spacing between
+	  groups of checkboxes/radiobuttons in gdmsetup interface.
+	  Affected were:
+	  Local/Background checkboxes (spacing 3)
+	  Local/Behaviour checkboxes (spacing 3)
+	  Local/Menu checkboxes (spacing 0)
+	  Local/Welcome Message (spacing 3)
+	  Similar changes were made to the Remote tab to keep both
+	  greeter tabs in sync.
+	  Security/Security checkboxes (spacing 2)
+	  Security/Security Permissions (spacing 0)
+	  This fixes bug #403242 (keeps the gdmsetup interface contained
+	  within desktop space in 1024x768 with two 24 pixels panels)
+	  Also moved groups of checkboxes/radiobuttons to their own vbox
+	  containers such that changes in spacing between them does not
+	  affect overall alignment of different elements in the main vbox
+	  container
+
 2007-02-20  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* Makefile.am: Dist MAINTAINERS
