@@ -396,7 +396,7 @@ parse_line(gchar *buf)
 		tmp_binding->timeout = timeout;
 	}
 
-	/* Find servcice. Permit blank space so arguments can be supplied. */
+	/* Find service. Permit blank space so arguments can be supplied. */
 	keyservice = strtok (NULL, "\n\r\f");
 	if (keyservice == NULL) {
 		/* TODO - Add an error message */

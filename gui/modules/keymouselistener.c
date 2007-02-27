@@ -485,7 +485,7 @@ parse_line (gchar *buf)
 	}
 
 	/*
-	 * Find servcice. Permit blank space so arguments can be supplied.
+	 * Find service. Permit blank space so arguments can be supplied.
 	 */
 	keyservice = strtok (NULL, "\n\r\f");
 	if (keyservice == NULL) {
