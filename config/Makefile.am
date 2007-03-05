@@ -1,6 +1,6 @@
 pixmapdir = $(datadir)/pixmaps
 confdir = $(gdmconfdir)
-localedir = $(gdmconfdir)
+gdmlocaledir = $(gdmconfdir)
 bisessdir = $(datadir)/gdm/BuiltInSessions
 instsessdir = $(datadir)/xsessions
 initdir = $(gdmconfdir)/Init
@@ -17,7 +17,7 @@ DESKTOP_FILES = default.desktop CDE.desktop gnome.desktop @SSHDESKTOP@
 
 EXTRA_DIST = \
 	gdm.conf.in \
-	gdm.conf-custom \
+	gdm.conf-custom.in \
 	$(DESKTOP_FILES) \
 	default.desktop.in \
 	gnome.desktop.in.in \
@@ -36,7 +36,7 @@ EXTRA_DIST = \
 	gdmprefetchlist.in \
 	extract-shell.sh
 
-CLEANFILES = Xsession gdm.conf default.desktop gnome.desktop CDE.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
+CLEANFILES = Xsession gdm.conf gdm.conf-custom default.desktop gnome.desktop CDE.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
@@ -45,6 +45,7 @@ Xsession: $(srcdir)/Xsession.in
 
 gdm.conf: $(srcdir)/gdm.conf.in
 	sed	-e 's,[@]GDMPREFETCHCMD[@],$(GDMPREFETCHCMD),g' \
+		-e 's,[@]GDM_CUSTOM_CONF[@],$(GDM_CUSTOM_CONF),g' \
 		-e 's,[@]GDM_USER_PATH[@],$(GDM_USER_PATH),g' \
 		-e 's,[@]HALT_COMMAND[@],$(HALT_COMMAND),g' \
 		-e 's,[@]REBOOT_COMMAND[@],$(REBOOT_COMMAND),g' \
@@ -61,11 +62,15 @@ gdm.conf: $(srcdir)/gdm.conf.in
 		-e 's,[@]gdmconfdir[@],$(gdmconfdir),g' \
 		-e 's,[@]libdir[@],$(libdir),g' \
 		-e 's,[@]libexecdir[@],$(libexecdir),g' \
-		-e 's,[@]localedir[@],$(libexecdir),g' \
+		-e 's,[@]gdmlocaledir[@],$(gdmlocaledir),g' \
 		-e 's,[@]logdir[@],$(logdir),g' \
 		-e 's,[@]pixmapdir[@],$(pixmapdir),g' \
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		<$(srcdir)/gdm.conf.in >gdm.conf
+
+gdm.conf-custom: $(srcdir)/gdm.conf-custom.in
+	sed	-e 's,[@]GDM_DEFAULTS_CONF[@],$(GDM_DEFAULTS_CONF),g' \
+		<$(srcdir)/gdm.conf-custom.in >gdm.conf-custom
 
 gettextfoo.h: XKeepsCrashing Xsession.in
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
@@ -89,7 +94,7 @@ uninstall-hook:
 	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
 	$(DESTDIR)$(confdir)/gdmprefetchlist \
-	$(DESTDIR)$(localedir)/locale.alias \
+	$(DESTDIR)$(gdmlocaledir)/locale.alias \
 	$(DESTDIR)$(initdir)/Default \
 	$(DESTDIR)$(postlogindir)/Default.sample \
 	$(DESTDIR)$(predir)/Default \
@@ -124,7 +129,7 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(GDM_DEFAULTS_CONF)
 	chmod 444 $(DESTDIR)$(GDM_DEFAULTS_CONF)
 	if test '!' -f $(DESTDIR)$(GDM_CUSTOM_CONF); then \
-		$(INSTALL_DATA) $(srcdir)/gdm.conf-custom $(DESTDIR)$(GDM_CUSTOM_CONF); \
+		$(INSTALL_DATA) gdm.conf-custom $(DESTDIR)$(GDM_CUSTOM_CONF); \
 		chmod 644 $(DESTDIR)$(GDM_CUSTOM_CONF); \
 	fi
 	$(INSTALL_DATA) gdm.conf `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`/factory-`basename $(DESTDIR)$(GDM_DEFAULTS_CONF)`
@@ -132,10 +137,10 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
 	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(confdir)/Xsession
 
-	-if test -f $(DESTDIR)$(localedir)/locale.alias; then \
-		cp -f $(DESTDIR)$(localedir)/locale.alias $(DESTDIR)$(localedir)/locale.alias.orig; \
+	-if test -f $(DESTDIR)$(gdmlocaledir)/locale.alias; then \
+		cp -f $(DESTDIR)$(gdmlocaledir)/locale.alias $(DESTDIR)$(gdmlocaledir)/locale.alias.orig; \
 	fi
-	$(INSTALL_DATA) $(srcdir)/locale.alias $(DESTDIR)$(localedir)/locale.alias
+	$(INSTALL_DATA) $(srcdir)/locale.alias $(DESTDIR)$(gdmlocaledir)/locale.alias
 
 	if test '!' -d $(DESTDIR)$(bisessdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(bisessdir); \

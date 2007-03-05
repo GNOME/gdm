@@ -1,3 +1,20 @@
+2006-03-05  Brian Cameron  <brian.cameron@sun.com>
+
+	* config/Makefile.am, config/gdm.conf-custom.in, config/gdm.conf.in:
+	  Now expand the GDM configuration files so that they point to the
+	  correct location of the file (if a non-default location is used).
+          This required renaming gdm.conf-custom to gdm-conf-custom.in.  I
+	  also reworded the comment secction so that the filenames are only
+	  mentioned once and further references are to "GDM System Defaults"
+	  and "GDM Custom Configuration" file since the filenames are
+	  configurable.  Also fix the fact that @gdmlocaledir@ is not being
+	  expanded.  Fixes bugs #414155 and #414175.  Patches provided by
+	  Andreas Hanke <hanke@gmx-topmail.de>.  I also made the comments
+	  a bit more clear.  Note these configuration files are not
+	  translated so modifying the comments in it does not break the
+	  freeze.
+	* config/gdm.conf-custom: Removed.
+
 2006-02-27  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/modules/keymouselisttener.c, gui/modules/dwellmouselistener.c:
