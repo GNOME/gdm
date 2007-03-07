@@ -445,17 +445,17 @@ open_ck_session (struct passwd *pwent,
 
 	add_param_int (&iter_struct, "user", pwent->pw_uid);
 	add_param_string (&iter_struct, "x11-display", d->name);
-	add_param_string (&iter_struct, "host-name", d->hostname);
 	add_param_boolean (&iter_struct, "is-local", d->attached);
-	/* FIXME: this isn't really a reliable value to use */
-	add_param_string (&iter_struct, "session-type", session);
+	if (! d->attached) {
+		add_param_string (&iter_struct, "remote-host-name", d->hostname);
+	}
 
 	if (d->vt > 0) {
 		char *device;
 
 		/* FIXME: how does xorg construct this */
 		device = g_strdup_printf ("/dev/tty%d", d->vt);
-		add_param_string (&iter_struct, "display-device", device);
+		add_param_string (&iter_struct, "x11-display-device", device);
 		g_free (device);
 	}
 
