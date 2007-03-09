@@ -6396,6 +6396,8 @@ xserver_init_definitions ()
 static void
 xserver_delete (gpointer data)
 {
+	gchar temp_string;
+
 	/* Get xserver section to delete */
 	GtkWidget *combobox = glade_helper_get (xml_xservers, "xserver_mod_combobox",
 	                                        GTK_TYPE_COMBO_BOX);
@@ -6403,8 +6405,9 @@ xserver_delete (gpointer data)
 
 	/* Delete xserver section */
 	VeConfig *custom_cfg = ve_config_get (custom_config_file);
-	ve_config_delete_section (custom_cfg, g_strconcat (GDM_KEY_SERVER_PREFIX,
-	                                            section, NULL));
+	temp_string = g_strconcat (GDM_KEY_SERVER_PREFIX, section, NULL);
+	ve_config_delete_section (custom_cfg, temp_string);
+	g_free (temp_string);
 
 	/* Reinitialize definitions */
 	xserver_init_definitions();

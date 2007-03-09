@@ -2584,7 +2584,10 @@ gdm_slave_greeter (void)
 	if (ve_string_empty (g_getenv ("PATH"))) {
 		g_setenv ("PATH", defaultpath, TRUE);
 	} else if ( ! ve_string_empty (defaultpath)) {
-		g_setenv ("PATH", g_strconcat (g_getenv ("PATH"), ":", defaultpath, NULL), TRUE);
+		gchar *temp_string = g_strconcat (g_getenv ("PATH"),
+			":", defaultpath, NULL);
+		g_setenv ("PATH", temp_string, TRUE);
+		g_free (temp_string);
 	}
 	g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	if ( ! ve_string_empty (d->theme_name))
@@ -3082,7 +3085,10 @@ gdm_slave_chooser (void)
 		if (ve_string_empty (g_getenv ("PATH"))) {
 			g_setenv ("PATH", defaultpath, TRUE);
 		} else if ( ! ve_string_empty (defaultpath)) {
-			g_setenv ("PATH", g_strconcat (g_getenv ("PATH"), ":", defaultpath, NULL), TRUE);
+			gchar *temp_string = g_strconcat (g_getenv ("PATH"),
+				":", defaultpath, NULL);
+			g_setenv ("PATH", temp_string, TRUE);
+			g_free (temp_string);
 		}
 		g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 		if ( ! ve_string_empty (d->theme_name))
