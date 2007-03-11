@@ -5,15 +5,15 @@
 # Eglė Girinaitė <eglyte@centras.lt>, 2002.
 # Žygimantas Beručka  <zygis@gnome.org>, 2003-2006.
 # Justina Klingaitė <justina.klingaite@gmail.com>, 2005.
-# Vytautas Liuolia <vytautas.liuolia@gmail.com>, 2007
+# Vytautas Liuolia <vytautas.liuolia@gmail.com>, 2007.
 # 
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-11 17:01+0200\n"
-"PO-Revision-Date: 2007-03-11 03:35+0200\n"
+"POT-Creation-Date: 2007-03-11 22:59+0200\n"
+"PO-Revision-Date: 2007-03-11 20:55+0200\n"
 "Last-Translator: Vytautas Liuolia <vytautas.liuolia@gmail.com>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -415,6 +415,8 @@ msgstr "%s: Perkrauti nepavyko: %s"
 #, c-format
 msgid "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
 msgstr ""
+"custom_cmd: Pasirinktinės komandos indeksas %ld nepatenka į leistinas ribas "
+"[0,%d)"
 
 #: ../daemon/gdm.c:731 ../daemon/gdm.c:755 ../daemon/gdm.c:784
 #, c-format
@@ -424,7 +426,7 @@ msgstr "%s%ld="
 #: ../daemon/gdm.c:746
 #, c-format
 msgid "Executing custom command %ld with restart option..."
-msgstr ""
+msgstr "Vykdoma pasirinktinė komanda %ld su perkrovimo parametru..."
 
 #: ../daemon/gdm.c:763 ../daemon/gdm.c:792
 #, c-format
@@ -434,13 +436,13 @@ msgstr "%s: Nepavyko paleisti pasirinktinės komandos: %s"
 #: ../daemon/gdm.c:772
 #, c-format
 msgid "Executing custom command %ld with no restart option ..."
-msgstr ""
+msgstr "Vykdoma pasirinktinė komanda %ld be perkrovimo parametro ..."
 
 #. failed fork
 #: ../daemon/gdm.c:778
 #, c-format
 msgid "custom_cmd: forking process for custom command %ld failed"
-msgstr ""
+msgstr "custom_cmd: nepavyko atšakoti proceso pasirinktinei komandai %ld"
 
 #: ../daemon/gdm.c:804
 #, c-format
@@ -1290,16 +1292,16 @@ msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
 "session instead."
 msgstr ""
-"%s: Nepavyko rasti ar paleisti Xsession skripto. Vietoje to, paleidžiama "
-"GNOME failsafe sesija."
+"%s: Nepavyko rasti ar paleisti Xsession scenarijaus. Vietoje jo paleidžiama "
+"GNOME atsarginė (failsafe) sesija."
 
 #: ../daemon/slave.c:3719
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
 msgstr ""
-"Nepavyko rasti ar paleisti pagrindinės sesijos skripto. Vietoje to, "
-"paleidžiama GNOME failsafe sesija."
+"Nepavyko rasti ar paleisti pagrindinės sesijos scenarijaus. Vietoje to, "
+"paleidžiama GNOME atsarginė (failsafe) sesija."
 
 #. yaikes
 #: ../daemon/slave.c:3751
@@ -1409,7 +1411,7 @@ msgstr "%s: Naudotojo tapatybė patvirtinta, bet getpwnam(%s) nepavyko!"
 #: ../daemon/slave.c:4060
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
-msgstr "%s: Vykdant PostLogin skriptą, gautas rezultatas > 0. Nutraukiama."
+msgstr "%s: Vykdant PostLogin scenarijų, gautas rezultatas > 0. Nutraukiama."
 
 #: ../daemon/slave.c:4083
 #, c-format
@@ -1419,8 +1421,8 @@ msgid ""
 "unlikely anything will work unless you use a failsafe session."
 msgstr ""
 "Jūsų namų aplankas yra nurodytas kaip: „%s“ bet panašu, kad jis "
-"neegzistuoja.  Ar norite prisijungti su / (root) aplanku  kaip Jūsų namų "
-"aplanku? Vargu ar kas nors veiks, nebent Jūs naudosite atsarginę sesiją."
+"neegzistuoja.  Ar norite prisijungti su / (root) aplanku kaip namų aplanku? "
+"Vargu ar kas nors veiks, nebent naudosite atsarginę sesiją."
 
 #: ../daemon/slave.c:4095
 #, c-format
@@ -1496,7 +1498,7 @@ msgstr "%s: Nepavyko paleisti: %s"
 #: ../daemon/slave.c:5468 ../daemon/slave.c:5607
 #, c-format
 msgid "%s: Can't fork script process!"
-msgstr "%s: Nepavyko atšakoti skripto proceso!"
+msgstr "%s: Nepavyko atšakoti scenarijaus proceso!"
 
 #: ../daemon/slave.c:5562
 #, c-format
@@ -3437,9 +3439,9 @@ msgid ""
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
-"Tai failsafe sesija, kuri prijungs Jus į GNOME. Paleidimo skriptai nebus "
-"nuskaityti, jie turi būti naudojami tiktai tada, kai Jūs negalite "
-"prisijungti. GNOME naudos „Numatytąją“ sesiją."
+"Tai atsarginė (failsafe) sesija, kuri prijungs Jus į GNOME. Paleidimo "
+"scenarijai nebus nuskaityti, ši sesija turi būti naudojama tiktai tada, kai "
+"negalite kitaip prisijungti. GNOME naudos „Numatytąją“ sesiją."
 
 #: ../gui/gdmsession.c:150 ../gui/gdmsession.c:334
 msgid "Failsafe _Terminal"
@@ -3477,7 +3479,7 @@ msgid ""
 "MinimalUID and will be removed."
 msgstr ""
 "Kai kurie naudotojai Įtrauktųjų sąraše (Naudotojų kortelė) dabar turi UID, "
-"mažesnį nei MinimalUID ir bus pašalinti."
+"mažesnį nei MinimalUID, ir bus pašalinti."
 
 #: ../gui/gdmsetup.c:1129 ../gui/gdmsetup.c:1147 ../gui/gdmsetup.c:1302
 #: ../gui/gdmsetup.c:1738
@@ -3527,6 +3529,9 @@ msgid ""
 "You need one or more themes selected for the \"Random from selected\" option "
 "to be valid. Failure to do so will force \"Selected only\" mode."
 msgstr ""
+"Turite pasirinkti vieną ar daugiau temų „Atsitiktinė iš pasirinktų“ "
+"veiksenos galiojimui. Priešingu atveju bus pritaikyta „Tik pasirinkta“ "
+"veiksena."
 
 #: ../gui/gdmsetup.c:1959
 msgid "Apply changes to the modified command?"
@@ -3568,7 +3573,7 @@ msgstr "Neteisingas komandos kelias"
 msgid ""
 "The path you provided for this command is not valid. The changes will not be "
 "saved."
-msgstr ""
+msgstr "Pateiktas netinkamas komandos kelias. Pakeitimai nebus išsaugoti."
 
 #: ../gui/gdmsetup.c:2983
 msgid ""
@@ -3671,7 +3676,7 @@ msgstr "Į_diegti"
 
 #: ../gui/gdmsetup.c:5751
 msgid "Theme active in \"Selected only\" mode"
-msgstr ""
+msgstr "Tema aktyvi „Tik pasirinkta“ veiksenoje"
 
 #: ../gui/gdmsetup.c:5752
 msgid ""
@@ -3679,6 +3684,8 @@ msgid ""
 "switch to \"Selected only\" mode, and deselect it by choosing a different "
 "theme."
 msgstr ""
+"Šiuo metu neįmanoma ištrinti šios temos. Norėdami ištrinti šią temą, "
+"persijunkite į „Tik pasirinkta“ veikseną ir pasirinkite kitą temą."
 
 #: ../gui/gdmsetup.c:5781
 #, c-format
@@ -3740,13 +3747,15 @@ msgstr "ne"
 
 #: ../gui/gdmsetup.c:8307
 msgid "Random theme mode change"
-msgstr ""
+msgstr "Atsitiktinės temos veiksenos keitimas"
 
 #: ../gui/gdmsetup.c:8308
 msgid ""
 "Since no themes were selected in random theme mode switching back to single "
 "theme mode."
 msgstr ""
+"Kadangi nebuvo pasirinkta temų atsitiktinių temų veiksenai, persijungiama "
+"atgal į vienos temos veikseną."
 
 #: ../gui/gdmsetup.c:8325
 msgid "Apply the changes to users before closing?"
@@ -3804,23 +3813,23 @@ msgstr "         "
 
 #: ../gui/gdmsetup.glade.h:5
 msgid "     LRla_bel:"
-msgstr ""
+msgstr "     LRžy_mė:"
 
 #: ../gui/gdmsetup.glade.h:6
 msgid "     Messa_ge:"
-msgstr ""
+msgstr "     Ž_inutė:"
 
 #: ../gui/gdmsetup.glade.h:7
 msgid "     Pa_th:"
-msgstr ""
+msgstr "     K_elias:"
 
 #: ../gui/gdmsetup.glade.h:8
 msgid "     T_ooltip:"
-msgstr ""
+msgstr "     P_aaiškinimas:"
 
 #: ../gui/gdmsetup.glade.h:9
 msgid "     _Label:"
-msgstr ""
+msgstr "     Ž_ymė:"
 
 #: ../gui/gdmsetup.glade.h:10
 msgid "     _Path:       "
@@ -3845,8 +3854,8 @@ msgid ""
 msgstr ""
 "<b>Pastaba:</b> naudotojai esantys įtrauktųjų sąraše bus rodomi veidų "
 "naršyklėje bei kortelėje Saugumas esančiame išskleidžiamame naudotojų sąraše "
-"automatiniams ir uždelstiems prisijungimams. Naudotojai esantys sąraše "
-"Išskirti rodomi nebus."
+"automatiniams ir uždelstiems prisijungimams. Naudotojai, esantys sąraše "
+"„Išskirti“, rodomi nebus."
 
 #: ../gui/gdmsetup.glade.h:16
 msgid ""
@@ -3854,6 +3863,9 @@ msgid ""
 "modify them through relevant fields located below. To save changes press "
 "Apply Command Changes button."
 msgstr ""
+"<b>Pastaba:</b>Galite pasirinkti įvairias komandas iš išskleidžiamojo sąrašo "
+"bei keisti jas naudodamiesi žemiau esančiais atitinkamais laukeliais. "
+"Norėdami išsaugoti pakeitimus, spauskite „Pritaikyti komandų pakeitimus“."
 
 #: ../gui/gdmsetup.glade.h:17
 msgid ""
@@ -3882,7 +3894,7 @@ msgstr "Prieinamumas"
 
 #: ../gui/gdmsetup.glade.h:22
 msgid "Accessible from the outside of the login manager"
-msgstr ""
+msgstr "Prieinamas iš prisijungimo tvarkyklės išorės"
 
 #: ../gui/gdmsetup.glade.h:23
 msgid "Add / Modify Servers To Start"
@@ -3902,6 +3914,9 @@ msgid ""
 "server with a chooser.  XDMCP does not need to be enabled on the local "
 "computer for this to work."
 msgstr ""
+"Papildo veiksmų meniu pasirinkimo mygtuku, kuris perkraus esamą X serverį su "
+"parinkykle. Šiam veiksmui atlikti XDMCP vietiniame kompiuteryje gali būti ir "
+"išjungtas."
 
 #: ../gui/gdmsetup.glade.h:27
 msgid ""
@@ -3921,28 +3936,35 @@ msgid ""
 "affects the standard greeter. The theme will stay in effect on this display "
 "until changed and will affect all the other windows that are put up by GDM."
 msgstr ""
+"Leidžia keisti GTK (valdymo elementų) temą iš pasveikintuvo. Šiuo metu tai "
+"turi įtakos tik standartiniam pasveikintuvui. Tema bus naudojame šiame "
+"ekrane, ir turės įtakos visiems GDM rodomiems langams."
 
 #: ../gui/gdmsetup.glade.h:30
 msgid "Allow group writable files and directories."
-msgstr ""
+msgstr "Leisti visai grupei prieinamus failus ir aplankus."
 
 #: ../gui/gdmsetup.glade.h:31
 msgid "Allow logi_n if group write permissions on user's home directory"
 msgstr ""
+"Leisti prisijungimą, jei grupės nariai gali rašyti į naudotojo namų aplanką"
 
 #: ../gui/gdmsetup.glade.h:32
 msgid "Allow login _if all write permissions on user's home directory"
 msgstr ""
+"Leisti prisijungimą, jei visi turi teisę rašyti į naudotojo namų aplanką"
 
 #: ../gui/gdmsetup.glade.h:33
 msgid "Allow world writable files and directories."
-msgstr ""
+msgstr "Leisti naudoti visiems prieinamus failus ir aplankus."
 
 #: ../gui/gdmsetup.glade.h:34
 msgid ""
 "Allows the configurator to be run from the greeter. Note that the user will "
 "need to type in the root password before the configurator will be started."
 msgstr ""
+"Leidžia paleisti konfigūravimo įrankį iš pasveikintuvo. Norėdamas paleisti "
+"šį įrankį, naudotojas turės įvesti administratoriaus slaptažodį."
 
 #: ../gui/gdmsetup.glade.h:35
 msgid ""
@@ -3952,6 +3974,11 @@ msgid ""
 "security hazard to leave open, even though no known security problems exist. "
 "Also disables X forwarding, but does not affect XDMCP."
 msgstr ""
+"Visada pridėti -nolisten tcp prie vietinio X serverio komandinės eilutės, "
+"taip uždraudžiant TCP prisijungimus.  Tai naudinga, jei jums nerūpi "
+"nuotoliniai prisijungimai, kadangi paliktas atviras, X protokolas gali būti "
+"saugumo spraga, nors iki šiol ir nerasta jokių saugumo problemų. Taip pat "
+"uždraudžia X persiuntimą, bet tai neturi reikšmės XDMCP."
 
 #: ../gui/gdmsetup.glade.h:36
 msgid "Apply Co_mmand Changes"
@@ -3986,6 +4013,8 @@ msgid ""
 "Checks the ownership of the home directories before writing to them. This "
 "prevents security issues in case of bad setup."
 msgstr ""
+"Patikrina, kam priklauso namų aplankai, prieš rašant į juos. Tai užerta "
+"kelią galimoms saugumo spragoms blogų nustatymų atveju."
 
 #: ../gui/gdmsetup.glade.h:44
 msgid "Co_lor:"
@@ -4012,12 +4041,16 @@ msgid ""
 "Controls which text to display next to the logo image in the greeter for "
 "remote XDMCP sessions."
 msgstr ""
+"Kontroliuoja tekstą, rodomą prie logotipo pasveikintuve nuotolinėms XDMCP "
+"sesijoms."
 
 #: ../gui/gdmsetup.glade.h:50
 msgid ""
 "Controls which text to display next to the logo image in the standard "
 "greeter. This string is only used for local logins."
 msgstr ""
+"Kontroliuoja tekstą, rodomą prie logotipo standartiniame pasveikintuve. Šis "
+"tekstas naudojamas tik vietiniams prisijungimams."
 
 #: ../gui/gdmsetup.glade.h:51
 msgid "Copyright:"
@@ -4041,6 +4074,9 @@ msgid ""
 "managed simultaneously. I.e. the total number of remote displays that can "
 "use your host."
 msgstr ""
+"Nusako didžiausią galimą nuotolinių prisijungimų skaičių, tvarkomų vienu "
+"metu, t.y. suminį nuotolinių ekranų, kurie gali naudotis Jūsų kompiuteriu, "
+"skaičių."
 
 #: ../gui/gdmsetup.glade.h:56
 msgid ""
@@ -4049,10 +4085,14 @@ msgid ""
 "to the host.  When the timeout is exceeded, the information about the chosen "
 "host is forgotten and the indirect slot freed up for other displays."
 msgstr ""
+"Nusako didžiausią galimą laiką (sekundėmis) tarp naudotojo hosto pasirinkimo "
+"bei po to sekančios netiesioginės užklausos, kai naudotojas prijungiamas "
+"prie hosto. Kai šis laiko tarpas viršijamas, informacija apie pasirinktą "
+"hostą pamirštama, ir netiesioginis lizdas išlaisvinamas kitiems ekranams."
 
 #: ../gui/gdmsetup.glade.h:57
 msgid "Disa_ble multiple logins for a single user"
-msgstr ""
+msgstr "Už_drausti kelis to paties naudotojo prisijungimus"
 
 #: ../gui/gdmsetup.glade.h:58
 msgid "Display the title bar in the greeter."
@@ -4084,10 +4124,13 @@ msgid ""
 "just reinitializing is a nicer way to go but if the X server memory usage "
 "keeps growing this may be a safer option."
 msgstr ""
+"Nepanaudoja egistuojančių X serverių, bet sustabdo juos ir paleidžia iš "
+"naujo. Paprastai reinicializavimas yra geresnis būdas, bet jei X serverio "
+"atminties naudojimas neribotai auga, tai gali būti saugesnė parinktis."
 
 #: ../gui/gdmsetup.glade.h:64
 msgid "Don't restart the login manager after the execution"
-msgstr ""
+msgstr "Neperkrauti prisijungimo tvarkyklės po įvykdymo"
 
 #: ../gui/gdmsetup.glade.h:65
 msgid "E_dit Commands..."
@@ -4110,6 +4153,8 @@ msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of gdmchooser) for X-"
 "terminals which don't supply their own display browser."
 msgstr ""
+"Leidžia XDMCP INDIRECT pasirinkimą (t.y. nuotolinį gdmchooser vykdymą) X "
+"terminalams, kurie nepalaiko nuosavosios ekrano naršyklės."
 
 #: ../gui/gdmsetup.glade.h:70
 msgid ""
@@ -4117,6 +4162,10 @@ msgid ""
 "when extra features are required such as accessible login. Note that only "
 "\"trusted\" modules should be used to minimize security issues."
 msgstr ""
+"Įgalina paleisti pasveikintuvą su papildomais Gtk+ moduliais. Tai naudinga, "
+"kai reikalingos papildomos galimybės, pvz. neįgaliesiems pritaikytas "
+"prisijungimas. Siekdami išvengti saugumo spragų, naudokit tik „patikimi“ "
+"modulius."
 
 #: ../gui/gdmsetup.glade.h:71
 msgid ""
@@ -4136,6 +4185,9 @@ msgid ""
 "If not selected, then GDM will just run this server and wait for it to "
 "terminate."
 msgstr ""
+"GDM turėtų paleisti prisijungimo langą šiame serveryje ir turėtų leisti "
+"naudotojams prisijungti. Jei nepasirinkta, GDM tiesiog tiesiog lauks, kol "
+"šis serveris baigs darbą."
 
 #: ../gui/gdmsetup.glade.h:74
 msgid "General"
@@ -4147,6 +4199,10 @@ msgid ""
 "before login) of inactivity on the login screen.  This is useful for public "
 "access terminals or perhaps even home use."
 msgstr ""
+"Pateiktas naudotojas turėtų būti prijungiamas po tam tikro prisijungimo "
+"ekrano neaktyvumo periodo sekundėmis (nustatykite su Pauzė prieš "
+"prisijungimą).  Tai naudinga viešiesiems prieigos terminalams ir galbūt "
+"netgi namuose."
 
 #: ../gui/gdmsetup.glade.h:76
 msgid ""
@@ -4154,6 +4210,9 @@ msgid ""
 "asked.  This is useful for single user workstations where local console "
 "security is not an issue."
 msgstr ""
+"Pateiktas naudotojas bus prijungtas paleidus kompiuterį.  Nereikės įvesti "
+"jokio slaptažodžio.  Tai naudinga vieno naudotojo darbo vietai, kur saugumas "
+"nėra taip svarbu."
 
 #: ../gui/gdmsetup.glade.h:77
 msgid ""
@@ -4182,6 +4241,11 @@ msgid ""
 "specified by DefaultFace will be used.  The image must be in an gdk-pixbuf "
 "supported format and the file must be readable to the GDM user."
 msgstr ""
+"Jei naudotojas nepasirinko jokio veido paveikslėlio, GDM naudos "
+"„stock_person“ piktogramą iš dabartinės GTK+ temos.  Jei nepavyks rasti ir "
+"šios piktogramos, bus naudojamas numatytasis standartinio veido "
+"paveikslėlis.  Paveikslėlis turi būti gdk pixbuf palaikomo formato, bei GDM "
+"naudotojas turi turėti šio failo skaitymo teises."
 
 #: ../gui/gdmsetup.glade.h:83
 msgid ""
@@ -4189,6 +4253,9 @@ msgid ""
 "supported format and it must be readable by the GDM user. If no file is "
 "specified the logo feature is disabled."
 msgstr ""
+"Paveikslėlio, rodytino logotipo langelyje, failas. Failas turėtų būti gdk "
+"pixbuf palaikomo formato, bei prieinamas GDM naudotojui. Neradus tinkamo "
+"failo, nurodyta logotipo funkcija išjungiama."
 
 #: ../gui/gdmsetup.glade.h:84
 msgid "Includ_e Hostname Chooser (XDMCP) menu item"
@@ -4203,6 +4270,7 @@ msgid ""
 "Indicates that the X server should be started at a different process "
 "priority."
 msgstr ""
+"Rodo, jog X serveris turėtų būti paleidžiamas su kitokiu proceso prioritetu."
 
 #: ../gui/gdmsetup.glade.h:87
 msgid ""
@@ -4210,6 +4278,8 @@ msgid ""
 "return before the next time we ping it, the connection is stopped and the "
 "session ended."
 msgstr ""
+"X serverio tikrinimo intervalas sekundėmis.  Jei X serveris neatsako iki "
+"kito patikrinimo, susijungimas nutraukiamas ir sesija užbaigiama."
 
 #: ../gui/gdmsetup.glade.h:88
 msgid "La_unch:"
@@ -4280,10 +4350,13 @@ msgid ""
 "Number of simultaneously provided displays with host choosers.  If more "
 "queries from different hosts come in, the oldest ones will be forgotten."
 msgstr ""
+"Vienu metu aptarnaujamas ekranų skaičius su hostų pasirinkimu.  Jei ateina "
+"daugiau užklausų iš skirtingų hostų, senesniosios užmirštamos."
 
 #: ../gui/gdmsetup.glade.h:105
 msgid "Only allow login i_f user owns their home directory"
 msgstr ""
+"Leisti prisijungimą tik tada, jei naudotojui priklauso jo _namų aplankas"
 
 #: ../gui/gdmsetup.glade.h:106
 msgid "Op_tions:\t"
@@ -4292,10 +4365,12 @@ msgstr "Nus_tatymai:\t"
 #: ../gui/gdmsetup.glade.h:107
 msgid "Paranoia option. Only accepts user owned files and directories."
 msgstr ""
+"Paranojiška parinktis. Priimami tik naudotojui priklausantys failai ir "
+"aplankai."
 
 #: ../gui/gdmsetup.glade.h:108
 msgid "Per_sistent"
-msgstr ""
+msgstr "Ilga_laikis"
 
 #: ../gui/gdmsetup.glade.h:109
 msgid "Permissions"
@@ -4329,7 +4404,7 @@ msgstr "_Pašalinti serverį"
 
 #: ../gui/gdmsetup.glade.h:117
 msgid "Reboot, Halt, Suspend and Custom Command Preferences"
-msgstr ""
+msgstr "Perkrovimo, sustabdymo, sulaikymo bei pasirinktinių komandų nustatymai"
 
 #: ../gui/gdmsetup.glade.h:118
 msgid "Refresh rate:"
@@ -4345,6 +4420,8 @@ msgid ""
 "\" user by letting the login window time out, just like the local user on "
 "the first console."
 msgstr ""
+"Leidžiami uždelstieji nuotoliniai prisijungimai per XDMCP, kaip ir vietiniam "
+"naudotojui pirmoje konsolėje."
 
 #: ../gui/gdmsetup.glade.h:121
 msgid ""
@@ -4396,6 +4473,9 @@ msgid ""
 "problems with GDM.  This output tends to be verbose so should not be turned "
 "on for general use."
 msgstr ""
+"Siunčia derinimo informaciją į sistemos žurnalą (syslog).   Tai gali būti "
+"naudinga aptinkant GDM problemas.  Ši informacija gali būti pernelyg išsami "
+"ir neturėtų būti naudojama kasdien."
 
 #: ../gui/gdmsetup.glade.h:134
 msgid "Server Settings"
@@ -4419,7 +4499,7 @@ msgstr "_Rodyti pavadinimo juostą"
 
 #: ../gui/gdmsetup.glade.h:139
 msgid "Shake the display when an incorrect username/password is entered."
-msgstr "Krestelti ekraną, įvedus neteisingus vartotojo vardą bei slaptažodį,"
+msgstr "Krestelėti ekraną, įvedus neteisingus naudotojo vardą bei slaptažodį,"
 
 #: ../gui/gdmsetup.glade.h:140
 msgid "Sho_w Actions menu"
@@ -4439,36 +4519,47 @@ msgid ""
 "Specifies if Custom Command will appear outside the login manager, for "
 "example on the desktop through the Log Out/Shut Down widgets."
 msgstr ""
+"Nurodo, ar pasirinktinė komanda atsidurs prisijungimų tvarkyklės išorėje, "
+"pavyzdžiui darbalaukyje kaip išjungimo valdymo elementas."
 
 #: ../gui/gdmsetup.glade.h:144
 msgid ""
 "Specifies if gdm will be stopped/restarted once Custom Command has been "
 "executed."
 msgstr ""
+"Nurodo, ar GDM turėtų būti sustabdytas/perkrautas po pasirinktinės komandos "
+"įvykdymo."
 
 #: ../gui/gdmsetup.glade.h:145
 msgid ""
 "Specifies the label that will be displayed on the Custom Command buttons and "
 "menu items."
 msgstr ""
+"Nurodo antraštę, kuri bus naudojama Pasirinktinės komandos mygtukams ir "
+"meniu elementams."
 
 #: ../gui/gdmsetup.glade.h:146
 msgid ""
 "Specifies the label that will be displayed on the Custom Command list items "
 "and radio buttons."
 msgstr ""
+"Nurodo tekstą, kuris bus naudojamas Pasirinktinių komandų sąrašo elementams "
+"bei žymimosioms akutėms."
 
 #: ../gui/gdmsetup.glade.h:147
 msgid ""
 "Specifies the message that will be displayed on Custom Command tooltip "
 "entries."
 msgstr ""
+"Nurodo antraštę, kuri bus naudojama Pasirinktinės komandos paaiškinimuose."
 
 #: ../gui/gdmsetup.glade.h:148
 msgid ""
 "Specifies the message that will be displayed on the warning dialog box when "
 "one of the Custom Command widgets is activated."
 msgstr ""
+"Nurodo žinutę, kuri bus rodoma įspėjimo dialoge, kai vienas iš Pasirinktinių "
+"komandų valdymo elementų yra aktyvuotas."
 
 #: ../gui/gdmsetup.glade.h:149
 msgid ""
@@ -4477,6 +4568,10 @@ msgid ""
 "logins. The face images must be stored in gdk-pixbuf supported formats and "
 "they must be readable for the GDM user."
 msgstr ""
+"Sisteminis aplankas veidų failams. Sistemos administratorius gali čia "
+"patalpinti naudotojų piktogramas, neliesdamas jų namų aplankų. Veidai "
+"vadinami pagal naudotojų prisijungimo vardus. Veidų paveikslėliai turi būti "
+"išsaugoti gdk-pixbuf palaikomais formatais bei prieinami GDM naudotojui."
 
 #: ../gui/gdmsetup.glade.h:150
 msgid "Text to appear in the warning pop-up dialogs"
@@ -4484,27 +4579,31 @@ msgstr "Tekstas, kuris turėtų pasirodyti iššokančiuose įspėjimuose"
 
 #: ../gui/gdmsetup.glade.h:151
 msgid "Text to appear on the buttons and menu items"
-msgstr ""
+msgstr "Tekstas mygtukams ir meniu elementams"
 
 #: ../gui/gdmsetup.glade.h:152
 msgid "Text to appear on the radio buttons and list items"
-msgstr ""
+msgstr "Tekstas žymimosioms akutėms ir sąrašo elementams"
 
 #: ../gui/gdmsetup.glade.h:153
 msgid "Text to appear on the tooltips"
-msgstr ""
+msgstr "Tekstas paaiškinimams"
 
 #: ../gui/gdmsetup.glade.h:154
 msgid ""
 "The UDP port number gdm should listen to for XDMCP requests. Don't change "
 "this unless you know what you are doing."
 msgstr ""
+"UDP prievado numeris, kuriuo GDM turėtų laukti XDCMP užklausų. Nekeiskite, "
+"nebent tikrai nusimanote šioje srityje."
 
 #: ../gui/gdmsetup.glade.h:155
 msgid ""
 "The command to execute, with full path to the binary of the X server, and "
 "any extra arguments needed. Example: /usr/X11R6/bin/X"
 msgstr ""
+"Vykdytina komanda, su pilnu keliu iki vykdomojo failo X serveryje, ir su "
+"visais reikalingais parametrais. Pavyzdys: /usr/X11R6/bin/X"
 
 #: ../gui/gdmsetup.glade.h:156
 msgid "The greeter will play a sound after a failed login attempt."
@@ -4533,6 +4632,8 @@ msgid ""
 "The number of seconds that should pass before reactivating the entry field "
 "after a failed login."
 msgstr ""
+"Sekundžių, turinčių praeiti po nesėkmingo prisijungimo, skaičius iki "
+"pakartotinio bandymo"
 
 #: ../gui/gdmsetup.glade.h:162
 msgid "The position of the login window cannot be changed."
@@ -4548,10 +4649,12 @@ msgid ""
 "The session that is used by default if the user does not have a saved "
 "preference and has picked 'Last' from the list of sessions."
 msgstr ""
+"Ši sesija naudojama, jei naudotojas neišsaugojo jokios parinkties ir "
+"pasirinko „Paskutinė“ iš sesijų sąrašo."
 
 #: ../gui/gdmsetup.glade.h:165
 msgid "The vertical position of the login window."
-msgstr ""
+msgstr "Vertikali prisijungimo lango padėtis."
 
 #: ../gui/gdmsetup.glade.h:166
 msgid "Themes"
@@ -4562,6 +4665,8 @@ msgid ""
 "This server is available as a choice when a user wishes to run a flexible, "
 "on demand server."
 msgstr ""
+"Šis serveris prieinamas kaip pasirinkimas tuo atveju, kai naudotojas nori "
+"lankstaus ir prisitaikančio prie poreikių serverio."
 
 #: ../gui/gdmsetup.glade.h:168
 msgid ""
@@ -4570,6 +4675,10 @@ msgid ""
 "remote displays which can be managed. It only limits the number of displays "
 "initiating a connection simultaneously."
 msgstr ""
+"Siekiant išvengti DoS atakų, GDM turi fiksuoto dydžio eilę laukiantiems "
+"prisijungimams. Turėkite omeny, jog šis parametras *neriboja* GDM tvarkomų "
+"nuotolinių ekranų skaičiaus. Jis tik riboja ekranų, besijungiančių vienu "
+"metu, skaičių."
 
 #: ../gui/gdmsetup.glade.h:169
 msgid ""
@@ -4578,6 +4687,10 @@ msgid ""
 "services to computers with more than one screen, you should increase the "
 "this value accordingly."
 msgstr ""
+"Siekiant apsisaugoti nuo įsilaužėlių, kurie gali bandyti užpildyti "
+"laukiančiųjų eilę, GDM leis tik vieną prisijungimą iš vieno nuotolinio "
+"kompiuterio.  Jei norite leisti prisijungti kompiuteriams su keliais "
+"ekranais, turėtumėte atitinkamai padidinti šią reikšmę."
 
 #: ../gui/gdmsetup.glade.h:170
 msgid ""
@@ -4585,6 +4698,9 @@ msgid ""
 "this is off then one of the actions will be available anywhere.  These "
 "actions include Shutdown, Restart, Custom, Configure, XDMCP chooser and such."
 msgstr ""
+"Įjungia arba išjungia Veiksmų meniu.  Jei šis meniu išjungtas, vienas iš "
+"veiksmų bus naudojamas visur.  Šių veiksmų pavyzdžiai yra išjungimas, "
+"perkrovimas, konfigūracija, XDMCP parinkimas ir pan."
 
 #: ../gui/gdmsetup.glade.h:171
 msgid "U_ser:"
@@ -4599,6 +4715,8 @@ msgid ""
 "Use circles instead of asterisks in the password entry. This may not work "
 "with all fonts however."
 msgstr ""
+"Naudoti apskritimus vietoje žvaigždučių slaptažodžio laukelyje. Žinoma, tai "
+"gali veikti ne su visais šriftais."
 
 #: ../gui/gdmsetup.glade.h:174
 msgid "Users"
@@ -4617,6 +4735,12 @@ msgid ""
 "received within maximum wait time, GDM will declare the display dead and "
 "erase it from the pending queue freeing up the slot for other displays."
 msgstr ""
+"Kai GDM yra pasiruošęs tvarkyti ekraną, jam nusiunčiamas ACCEPT paketas, "
+"turintis savyje unikalų sesijos id, kuris naudojamas tolesniam XDMCP "
+"bedravimui. GDM tada padeda sesijos id į laukiančiųjų eilę, ir laukia ekrano "
+"atsakymo į MANAGE užklausą. Jei per didžiausią galimą laukimo laiką "
+"negaunamas joks atsakymas, GDM paskelbia ekraną mirusiu, ir ištriną jį iš "
+"laukiančiųjų eilės, atlaisvindamas lizdą kitiems ekranams."
 
 #: ../gui/gdmsetup.glade.h:177
 msgid ""
@@ -4625,6 +4749,10 @@ msgid ""
 "works for session's running on Virtual Terminals started with "
 "gdmflexiserver, and not with XDMCP."
 msgstr ""
+"Kai naudotojas prisijungia ir jau turi egzistuojančią sesiją, jis "
+"prijungiamas prie tos sesijos užuot atidarius naują.  Tai tinka tik "
+"sesijoms, veikiančioms virtualiuose terminaluose, pradėtuose su "
+"gdmflexiserver, bet ne XDMCP."
 
 #: ../gui/gdmsetup.glade.h:178
 msgid "X Server Login Window Preferences"
@@ -4714,6 +4842,7 @@ msgstr "_Mažiausias galima UID:"
 #: ../gui/gdmsetup.glade.h:200
 msgid "_Only allow login if user's home directory permissions are secure"
 msgstr ""
+"Lei_sti prisijungti tik tada, jei naudotojo namų aplanko leidimai saugūs"
 
 #: ../gui/gdmsetup.glade.h:201
 msgid "_Pause before login:"
@@ -5151,7 +5280,7 @@ msgstr ""
 "failas: %s objektas: %s"
 
 #: ../vicious-extensions/glade-helper.c:246
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occurred while loading the user interface element %s%s from file %"
 "s. CList type widget should have %d column. Possibly the glade interface "
@@ -5163,17 +5292,20 @@ msgid_plural ""
 "description was corrupted. %s cannot continue and will exit now. You should "
 "check your installation of %s or reinstall %s."
 msgstr[0] ""
-"Įkeliant naudotojo sąsajos elementą %s%s iš failo %s įvyko klaida.  Galbūt "
-"glade sąsajos aprašas buvo sugadintas.  %s negali tęsti ir dabar užsidarys.  "
-"Turėtumete patikrinti %s įdiegimą arba įdiegti %s iš naujo."
+"Įkeliant naudotojo sąsajos elementą %s%s iš failo %s įvyko klaida. CList "
+"tipo komponentas turėtų turėti %d stulpelį. Galbūt glade sąsajos aprašas "
+"buvo sugadintas. %s negali tęsti ir dabar užsidarys. Patikrinkite %s "
+"įdiegimą arba įdiekite %s iš naujo."
 msgstr[1] ""
-"Įkeliant naudotojo sąsajos elementą %s%s iš failo %s įvyko klaida.  Galbūt "
-"glade sąsajos aprašas buvo sugadintas.  %s negali tęsti ir dabar užsidarys.  "
-"Turėtumete patikrinti %s įdiegimą arba įdiegti %s iš naujo."
+"Įkeliant naudotojo sąsajos elementą %s%s iš failo %s įvyko klaida. CList "
+"tipo komponentas turėtų turėti %d stulpelius. Galbūt glade sąsajos aprašas "
+"buvo sugadintas. %s negali tęsti ir dabar užsidarys. Patikrinkite %s "
+"įdiegimą arba įdiekite %s iš naujo."
 msgstr[2] ""
-"Įkeliant naudotojo sąsajos elementą %s%s iš failo %s įvyko klaida.  Galbūt "
-"glade sąsajos aprašas buvo sugadintas.  %s negali tęsti ir dabar užsidarys.  "
-"Turėtumete patikrinti %s įdiegimą arba įdiegti %s iš naujo."
+"Įkeliant naudotojo sąsajos elementą %s%s iš failo %s įvyko klaida. CList "
+"tipo komponentas turėtų turėti %d stulpelių. Galbūt glade sąsajos aprašas "
+"buvo sugadintas. %s negali tęsti ir dabar užsidarys. Patikrinkite %s "
+"įdiegimą arba įdiekite %s iš naujo."
 
 #: ../vicious-extensions/glade-helper.c:282
 #, c-format
