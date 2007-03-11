@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "POT-Creation-Date: 2007-01-27 04:04+0000\n"
-"PO-Revision-Date: 2007-02-02 19:30+0100\n"
+"PO-Revision-Date: 2007-03-11 21:41+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -153,27 +153,27 @@ msgstr "Den här handboken beskriver version 2.17.4 av GNOME:s displayhanterare.
 
 #: C/gdm.xml:76(title)
 msgid "Terms and Conventions Used in This Manual"
-msgstr ""
+msgstr "Terminologi och standarder använda i den här handboken"
 
 #: C/gdm.xml:83(para)
 msgid "Chooser - A program used to select a remote host for managing a display remotely on the local display (<command>gdmchooser</command>)."
-msgstr ""
+msgstr "Väljare - Ett program som används för att välja en fjärrvärd för att hantera en fjärrdisplay på lokal display (<command>gdmchooser</command>)."
 
 #: C/gdm.xml:88(para)
 msgid "Configurator - The configuration application (<command>gdmsetup</command>)."
-msgstr ""
+msgstr "Konfigurator - Konfigurationsprogrammet (<command>gdmsetup</command>)."
 
 #: C/gdm.xml:93(para)
 msgid "GDM - Gnome Display Manager. Used to describe the software package as a whole. Sometimes also referred to as GDM2."
-msgstr ""
+msgstr "GDM - Gnome Display Manager. Används för att beskriva programvarupaketet som en helhet. Ibland refereras den till som GDM2."
 
 #: C/gdm.xml:98(para)
 msgid "gdm - The Gnome Display Manager daemon (<command>gdm</command>)."
-msgstr ""
+msgstr "gdm - Gnome Display Manager-demonen (<command>gdm</command>)."
 
 #: C/gdm.xml:102(para)
 msgid "Greeter - The graphical login window (<command>gdmlogin</command> or <command>gdmgreeter</command>)."
-msgstr ""
+msgstr "Hälsare - Det grafiska inloggningsfönstret (<command>gdmlogin</command> eller <command>gdmgreeter</command>)."
 
 #: C/gdm.xml:107(para)
 msgid "GTK+ Greeter - The standard login window (<command>gdmlogin</command>)."
@@ -209,11 +209,11 @@ msgstr ""
 
 #: C/gdm.xml:154(para)
 msgid "For further information about GDM, see the <ulink type=\"http\" url=\"http://www.gnome.org/projects/gdm/\"> the GDM project website</ulink>. Please submit any bug reports or enhancement requests to the \"gdm\" category in <ulink type=\"http\" url=\"http://bugzilla.gnome.org/\">bugzilla.gnome.org</ulink>. You can also send a message to the <address><email>gdm-list@gnome.org</email></address> mail list to discuss any issues or concerns with the GDM program."
-msgstr ""
+msgstr "För ytterligare information om GDM, se <ulink type=\"http\" url=\"http://www.gnome.org/projects/gdm/\"> GDM-projektets webbsida</ulink>. Skicka in eventuella felrapporter eller förslag på förbättringar till \"gdm\"-kategorin på <ulink type=\"http\" url=\"http://bugzilla.gnome.org/\">bugzilla.gnome.org</ulink>. Du kan även skicka ett meddelande till sändlistan <address><email>gdm-list@gnome.org</email></address> för att diskutera tankar eller problem med GDM-programmet."
 
 #: C/gdm.xml:167(title)
 msgid "Interface Stability"
-msgstr ""
+msgstr "Gränssnittsstabilitet"
 
 #: C/gdm.xml:171(para)
 msgid "The key/value pairs defined in the GDM configuration files and the location of these files are considered \"stable\" interfaces and should only change in ways that are backwards compatible. Note that this includes functionality like the GDM scripts (Init, PreSession, PostSession, PostLogin, XKeepsCrashing, etc.); directory locations (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc. Some configuration values depend on OS interfaces may need to be modified to work on a given OS. Typical examples are HaltCommand, RebootCommand, CustomCommands, SuspendCommand, StandardXServer, Xnest, SoundProgram, and the \"command\" value for each \"server-foo\"."
@@ -333,7 +333,7 @@ msgstr ""
 
 #: C/gdm.xml:435(title)
 msgid "The GTK+ Greeter"
-msgstr ""
+msgstr "GTK+-hälsaren"
 
 #: C/gdm.xml:437(para)
 msgid "The GTK+ Greeter is the default graphical user interface that is presented to the user. The greeter contains a menu at the top, an optional face browser, an optional logo and a text entry widget. This greeter has full accessibility support, and should be used by users with accessibility needs."
@@ -445,7 +445,7 @@ msgstr ""
 
 #: C/gdm.xml:697(title)
 msgid "Accessing Files"
-msgstr ""
+msgstr "Komma åt filer"
 
 #: C/gdm.xml:699(para)
 msgid "In general GDM is very reluctant regarding reading/writing of user files (such as the <filename>~/.dmrc</filename>, <filename>~/.face</filename>, <filename>~/.xsession-errors</filename>, and <filename>~/.Xauthority</filename> files). For instance it refuses to access anything but regular files. Links, sockets and devices are ignored. The value of the <filename>RelaxPermissions</filename> parameter determines whether GDM should accept files writable by the user's group or others. These are ignored by default."
@@ -565,7 +565,7 @@ msgstr ""
 
 #: C/gdm.xml:949(title)
 msgid "GDM Security With NFS"
-msgstr ""
+msgstr "GDM-säkerhet med NFS"
 
 #: C/gdm.xml:951(para)
 msgid "Note that NFS traffic really goes \"over the wire\" and thus can be snooped. When accessing the user's X authorization file (<filename>~/.Xauthority</filename>), GDM will try to open the file for reading as root. If it fails, GDM will conclude that it is on an NFS mount and it will automatically use <filename>UserAuthFBDir</filename>, which by default is set to <filename>/tmp</filename>. This behavior can be changed by setting the <filename>NeverPlaceCookiesOnNFS</filename> in the <filename>[security]</filename> section to false."
@@ -667,7 +667,7 @@ msgstr ""
 
 #: C/gdm.xml:1095(title)
 msgid "Local Tab"
-msgstr ""
+msgstr "Fliken Lokal"
 
 #: C/gdm.xml:1097(para)
 msgid "The Local tab is used for controlling the appearance of GDM for local/static displays (non-XDMCP remote connections). The choices available in this tab depend on the setting of the \"Style\" combobox. This combobox is used to determine whether the \"Plain\" or \"Themed\" greeter GUI is used. The differences between these greeter programs are explained in the \"Overview\" section of this document."
@@ -691,7 +691,7 @@ msgstr ""
 
 #: C/gdm.xml:1172(title)
 msgid "Remote Tab"
-msgstr ""
+msgstr "Fliken Fjärr"
 
 #: C/gdm.xml:1174(para)
 msgid "The Remote tab controls the appearance of the GDM for users logging in via XDMCP. By default XDMCP is disabled, and users should be comfortable with the XDMCP-related sections of the Security section of this document before enabling it. This tab includes a \"Style\" combobox which can be used to turn on XDMCP and control the appearance of GDM for remote users (gui/RemoteGreeter and xdmcp/Enable). This combobox may be set to \"Remote login disabled\" or \"Same as Local\". If the Local tab is set to \"Plain\" or \"Plain with Face Browser\", then the user may also select \"Themed\". If the Local tab is set to \"Themed\", then the user may also select \"Plain\" or \"Plain with face browser\". It is recommended that the \"Plain\" GUI be used for remote connections since it is more lightweight and tends to have better performance across a network."
@@ -715,7 +715,7 @@ msgstr ""
 
 #: C/gdm.xml:1234(title)
 msgid "Accessibility Tab"
-msgstr ""
+msgstr "Fliken Tillgänglighet"
 
 #: C/gdm.xml:1236(para)
 msgid "The Accessibility tab is used to turn on Accessibility features in GDM. \"Enable accessible login\" (daemon/AddGtkModules and daemon/GtkModulesList) turns on GDM's gesture listeners which are explained in the \"Accessibility\" section of this document. There is also a checkbox to allow users to change the theme when using the Plain greeter (gui/AllowGtkThemeChange). This feature allows GDM users to switch the theme to the HighContrast or LowContrast themes if needed. The user may also select whether GDM should play a sound when the login screen is ready, when login is successful and when login has failed. File chooser buttons are used to select the sound file to be played, and the \"Play\" button can be used to sample the sound."
@@ -723,7 +723,7 @@ msgstr ""
 
 #: C/gdm.xml:1253(title)
 msgid "Security Tab"
-msgstr ""
+msgstr "Fliken Säkerhet"
 
 #: C/gdm.xml:1255(para)
 msgid "The Security tab allows the user to turn on Automatic and Timed login, which user is logged in via an automatic or timed login, and the timed login delay (daemon/AutomaticLoginEnable, daemon/AutomaticLogin, daemon/TimedLoginEnable, daemon/TimedLogin, and daemon/TimedLoginDelay). If automatic login is turned on, then the specified user will immediately log in on reboot without GDM asking for username/password. If the user logs out of their session, GDM will start and ask for username and password to log back in. If TimedLogin is turned on, then GDM will log in to the specified user after a specified number of seconds. The user may enable Timed Login for remote (XDMCP) connections by checking the \"Allow remote timed logins\" checkbox."
@@ -747,7 +747,7 @@ msgstr ""
 
 #: C/gdm.xml:1314(title)
 msgid "Users Tab"
-msgstr ""
+msgstr "Fliken Användare"
 
 #: C/gdm.xml:1316(para)
 msgid "The Users tab controls which users appear in the Face Browser. If the \"Include all users from /etc/password\" checkbox is selected, then all users (with a userid above greeter/MinimalUID and not in the Exclude list) are displayed. If this checkbox is not selected, then users must be added to the \"Include\" list. Users in the \"Exclude\" list are never displayed. The \"Add\" and \"Remove\" buttons are used to add a new user to the list or remove a selected user from the list. The \"Apply User Changes\" button must be pressed after the \"Include\" and \"Exclude\" lists have been modified. The left and right arrow buttons between the \"Include\" and \"Exclude\" lists can be used to move a selected user from one list to the other."
@@ -933,7 +933,7 @@ msgstr ""
 
 #: C/gdm.xml:1722(title)
 msgid "Daemon Configuration"
-msgstr ""
+msgstr "Konfiguration av demonerna"
 
 #: C/gdm.xml:1725(title)
 msgid "[daemon]"
@@ -1639,7 +1639,7 @@ msgstr ""
 
 #: C/gdm.xml:2525(title)
 msgid "Security Options"
-msgstr ""
+msgstr "Säkerhetsalternativ"
 
 #: C/gdm.xml:2528(title)
 msgid "[security]"
@@ -1826,7 +1826,7 @@ msgstr ""
 
 #: C/gdm.xml:2732(title)
 msgid "XDCMP Support"
-msgstr ""
+msgstr "XDCMP-stöd"
 
 #: C/gdm.xml:2735(title)
 msgid "[xdmcp]"
@@ -4904,7 +4904,7 @@ msgstr "chooser_button"
 
 #: C/gdm.xml:6247(para)
 msgid "Runs the XDMCP chooser."
-msgstr ""
+msgstr "Kör XDMCP-väljaren."
 
 #: C/gdm.xml:6254(term)
 msgid "config_button"
@@ -5473,7 +5473,7 @@ msgstr ""
 
 #: C/gdm.xml:6966(title)
 msgid "Solaris Configuration"
-msgstr ""
+msgstr "Konfiguration för Solaris"
 
 #: C/gdm.xml:6967(para)
 msgid ""
@@ -5490,7 +5490,7 @@ msgstr ""
 
 #: C/gdm.xml:6987(title)
 msgid "Solaris /etc/logindevperm"
-msgstr ""
+msgstr "Solaris /etc/logindevperm"
 
 #: C/gdm.xml:6988(para)
 msgid "GDM supports /etc/logindevperm, but only on Solaris 10 and higher. Refer to the logindevperm.4 man page for more information."
@@ -5556,6 +5556,8 @@ msgid ""
 "\n"
 "       gdm-autologin session required pam_unix_session.so.1\n"
 msgstr ""
+"\n"
+"       gdm-autologin session required pam_unix_session.so.1\n"
 
 #: C/gdm.xml:7064(title)
 msgid "Other Solaris Features"
@@ -5750,7 +5752,7 @@ msgstr ""
 
 #: C/gdm.xml:7352(title)
 msgid "GDM Will Not Start"
-msgstr ""
+msgstr "GDM vill inte starta"
 
 #: C/gdm.xml:7354(para)
 msgid "There are a many problems that can cause GDM to fail to start, but this section will discuss a few common problems and how to approach tracking down a problem with GDM starting. Some problems will cause GDM to respond with an error message or dialog when it tries to start, but it can be difficult to track down problems when GDM fails silently."
