@@ -1,5 +1,13 @@
 2007-03-12  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmsetup.c: Fix definition of gdm_chooser_cancel so it is
+	  not static.  With it being static, it caused the button to be
+	  non-functional so users could never exit the chooser window and
+	  return to the login screen without restarting X.  Fixes bug
+	  #415513.
+
+2007-03-12  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmsetup.desktop.in.in, gui/gdmphotoseutp.desktop.in,
 	  gui/gdmflexiserver.desktop.in,
 	  gui/gdmflexiserver-xnest.desktop.in: Remove "Application" and

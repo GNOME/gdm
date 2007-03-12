@@ -84,7 +84,6 @@ struct _GdmChooserHost {
 static const gchar *scanning_message = N_("Please wait: scanning local network...");
 static const gchar *empty_network = N_("No serving hosts were found.");
 static const gchar *active_network = N_("Choose a ho_st to connect to:");
-static void gdm_chooser_cancel (/*void*/);
 
 /* XDM chooser style stuff */
 static gchar *xdm_address = NULL;
@@ -1535,7 +1534,7 @@ gdm_chooser_add_entry_changed (void)
 	gtk_widget_set_sensitive (add_button, ! ve_string_empty (name));
 }
 
-static void
+void
 gdm_chooser_cancel (int sig)
 {
     if (scan_time_handler > 0) {
