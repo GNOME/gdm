@@ -1,3 +1,13 @@
+2007-03-12  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmsetup.desktop.in.in, gui/gdmphotoseutp.desktop.in,
+	  gui/gdmflexiserver.desktop.in,
+	  gui/gdmflexiserver-xnest.desktop.in: Remove "Application" and
+	  add "GNOME" and "GTK".  In gdmsetup.desktop.in.in, the Exec line
+	  now also calls gdmsetup with the full path since this ensures the
+	  desktop file works if if /usr/sbin is not in the PATH.  This
+	  fixes bug #417350.
+
 2007-03-09  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/slave.c, gui/gdmsetup.c: Free leaked memory when
