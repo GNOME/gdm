@@ -78,10 +78,6 @@ CONSOLE_KIT_SOURCES = \
 	gdmconsolekit.c \
 	gdmconsolekit.h
 
-if WITH_CONSOLE_KIT
-gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
-endif
-
 EXTRA_gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
 
 # Note that these libs are in LDFLAGS because they should come before
@@ -103,6 +99,12 @@ gdm_binary_LDADD = \
 	-lX11					\
 	-lXext					\
 	-lpopt
+
+if WITH_CONSOLE_KIT
+gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
+gdm_binary_LDADD += $(DBUS_LIBS)
+INCLUDES += $(DBUS_CFLAGS)
+endif
 
 sbin_SCRIPTS = gdm
 CLEANFILES = gdm

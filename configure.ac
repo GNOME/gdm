@@ -176,7 +176,7 @@ PKG_CHECK_MODULES(VICIOUS, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_R
 AC_SUBST(VICIOUS_CFLAGS)
 AC_SUBST(VICIOUS_LIBS)
 
-PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED dbus-glib-1 >= $DBUS_REQUIRED)
+PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
@@ -804,10 +804,13 @@ fi
 use_console_kit=no
 if test "x$with_console_kit" != "xno" ; then
 	use_console_kit=yes
+	PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_REQUIRED)
 	AC_DEFINE(WITH_CONSOLE_KIT, 1, [Define to enable ConsoleKit support])
 fi
 AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
 AC_SUBST(WITH_CONSOLE_KIT)
+AC_SUBST(DBUS_CFLAGS)
+AC_SUBST(DBUS_LIBS)
 
 #
 # Subst the extra libs
