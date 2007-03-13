@@ -759,10 +759,12 @@ AM_CONDITIONAL(DMX_SUPPORT, test x$DMX_SUPPORT = xyes)
 #
 case "$host" in
 *solaris*)
+        ALWAYS_RESTART_SERVER="true"
         AC_CHECK_HEADERS(sys/tsol/label_macro.h,
                 AC_DEFINE(HAVE_TSOL, ,[Building with TSOL support]) found_tsol=yes,)
         ;;
 *)
+        ALWAYS_RESTART_SERVER="false"
         ;;
 esac
 
@@ -969,6 +971,8 @@ AC_CHECK_LIB(devinfo, di_devperm_login, [
 # On Solaris/bin is a symlink to /usr/bin, so don't include it in
 # GDM_USER_PATH.
 #
+GDM_USER_PATH=""
+
 case "$host" in
 *solaris*)
         GDM_USER_PATH="/usr/bin"
@@ -1067,19 +1071,32 @@ if test "x$real_gdm_prefix" != "x/" -a "x$real_gdm_prefix" != "x/usr"; then
     GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
 fi
 
-# You have to use /usr/openwin/bin/Xnest even if you are using the
-# Xorg Xserver on Solaris x86.
+# Use Xephyr if it is available.  It works better than Xnest since Xephyr
+# supports the Xserver extensions, even if on a remote machine.
 #
-case "$host" in
-*solaris*)
-        X_XNEST_PATH="/usr/openwin/bin"
+if test -x $X_SERVER_PATH/Xephyr; then
+    X_XNEST_CMD="$X_SERVER_PATH/Xephyr"
+    X_XNEST_CONFIG_OPTIONS="-audit 0"
+    X_XNEST_UNSCALED_FONTPATH="true"
+    X_XNEST_DISPLAY_ARG="false"
+else
+    if test -x /usr/openwin/bin/Xnest; then
+        # If on Solaris, Xnest is only shipped with the Xsun Xserver, so
+        # use this version.
+        #
+        X_XNEST_CMD="/usr/openwin/bin/Xnest"
         X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
-        ;;
-*)
-        X_XNEST_PATH=$X_SERVER_PATH
-        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
-        ;;
-esac
+        X_XNEST_UNSCALED_FONTPATH="false"
+        X_XNEST_DISPLAY_ARG="true"
+    else
+        if test -x $X_SERVER_PATH/Xnest; then
+            X_XNEST_CMD="$X_SERVER_PATH/Xnest"
+            X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
+            X_XNEST_UNSCALED_FONTPATH="true"
+            X_XNEST_DISPLAY_ARG="true"
+        fi
+    fi
+fi
 
 # Set POST_PATH after doing system specific case above just in case
 # any platforms want to update the PATH for a specific OS or distro.
@@ -1089,6 +1106,8 @@ if test "x$USER_POST_PATH" != "x"; then
    GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
 fi
 
+# Set configuration choices.
+#
 AC_SUBST(HALT_COMMAND)
 AC_DEFINE_UNQUOTED(HALT_COMMAND,"$HALT_COMMAND")
 AC_SUBST(REBOOT_COMMAND)
@@ -1098,19 +1117,29 @@ AC_DEFINE_UNQUOTED(SUSPEND_COMMAND,"$SUSPEND_COMMAND")
 AC_SUBST(XSESSION_SHELL)
 AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL")
 AC_SUBST(GDM_USER_PATH)
+AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
 AC_SUBST(GDMGNOMESESSIONCMD)
+AC_SUBST(ALWAYS_RESTART_SERVER)
+AC_DEFINE_UNQUOTED(ALWAYS_RESTART_SERVER,"$ALWAYS_RESTART_SERVER")
 
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
-AC_SUBST(X_XNEST_PATH)
-AC_SUBST(X_XNEST_CONFIG_OPTIONS)
 AC_SUBST(X_CONFIG_OPTIONS)
 AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
 AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launching xserver)
+
+AC_SUBST(X_XNEST_CMD)
+AC_SUBST(X_XNEST_CONFIG_OPTIONS)
+AC_SUBST(X_XNEST_UNSCALED_FONTPATH)
+AC_SUBST(X_XNEST_DISPLAY_ARG)
+AC_DEFINE_UNQUOTED(X_XNEST_CMD,"$X_XNEST_CMD")
+AC_DEFINE_UNQUOTED(X_XNEST_CONFIG_OPTIONS,"$X_XNEST_CONFIG_OPTIONS")
+AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH")
+AC_DEFINE_UNQUOTED(X_XNEST_DISPLAY_ARG,"$X_XNEST_DISPLAY_ARG")
 
 ## Stuff for debian/changelog.in
 #if test -e "debian/changelog"; then

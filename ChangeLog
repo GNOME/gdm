@@ -1,3 +1,29 @@
+2006-03-13  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac, acconfig.h, daemon/Makefile.am, daemon/gdm.h
+	  daemon/server.c, daemon/gdmconfig.c, config/gdm.conf.in,
+	  config/Makefile.am:  Add Xephyr support and fix problem with
+	  using Xsun Xnest with Xorg 7.2.  Xsun doesn't like font path
+	  values that have the ":unscaled" suffix.  This required adding	
+	  two new configuration options XnestDisplayArg and 
+	  XnestUnscaledFontPath so that the user can configure whether
+	  the Xnest command uses the -display argument or the DISPLAY
+	  environment variable, and to specify whether to strip the
+	  ":unscaled" bits from the fontpath.  Modified configure so
+	  that if Xephyr is on the system, it is used as the Xnest
+	  program since it works better than Xnest.
+	* daemon/gdmconfig.h: No longer set default values for the
+	  configuration choices here since default are set in
+	  daemon/gdm.h.
+	* config/gdm.conf.in: Comment now says "true" for ConfigAvailable
+	  since this value has been defaulting to true for some time in
+	  daemon/gdm.h.   So the comment was wrong.
+	* acconfig.h, configure.ac, daemon/gdm.h, daemon/gdmconfig.c: Rework
+	  how ALWAYS_RESTART_SERVER is set to avoid using #ifdef.  Also use
+	  AC_DEFINE for GDM_USER_PATH rather than passing it in as a -D
+	  argument to the compiler, so it works like the other config
+	  choices.
+
 2006-03-12  Brian Cameron  <brian.cameron@sun.com>
 
         * Release 2.18.0:

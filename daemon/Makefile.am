@@ -12,20 +12,18 @@ INCLUDES = \
 	-DDMCONFDIR=\"$(dmconfdir)\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DGDMLOCALEDIR=\"$(gdmlocaledir)\"		\
-	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
-	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
-	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
-	-DGDM_USER_PATH=\"$(GDM_USER_PATH)\"		\
 	-DLIBDIR=\"$(libdir)\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLOGDIR=\"$(logdir)\"				\
 	-DPIXMAPDIR=\"$(pixmapdir)\"			\
 	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
+	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
+	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
 	$(GUI_CFLAGS)					\
 	$(DAEMON_CFLAGS)				\
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
-	-DPAM_PREFIX=\"$(PAM_PREFIX)\"			\
 	$(GNOME_INCLUDEDIR)				\
 	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\"
 

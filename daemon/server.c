@@ -1196,6 +1196,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
 	if (SERVER_IS_PROXY (d)) {
 		int argc = ve_vector_len (argv);
+		gboolean add_display = TRUE;
 
 		g_unsetenv ("DISPLAY");
 		if (d->parent_auth_file != NULL)
@@ -1216,14 +1217,26 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 				command = g_strconcat (command, " -fp ",
 						       font_path, NULL);
 			}
+	        	if (gdm_get_value_bool (GDM_KEY_XNEST_DISPLAY_ARG) == FALSE)
+				add_display = FALSE;
 		}
 
-		argv = g_renew (char *, argv, argc + 3);
-		argv[argc++] = "-display";
-		argv[argc++] = d->parent_disp;
-		argv[argc++] = NULL;
-		command = g_strconcat (command, " -display ",
+		/*
+		 * Xephyr does not support the DISPLAY argument.
+		 * Instead set the DISPLAY environment variable.
+		 */
+		if (add_display == TRUE) {
+			argv = g_renew (char *, argv, argc + 3);
+			argv[argc++] = "-display";
+			argv[argc++] = d->parent_disp;
+			argv[argc++] = NULL;
+			command = g_strconcat (command, " -display ",
 				       d->parent_disp, NULL);
+		} else {
+			argv = g_renew (char *, argv, argc + 1);
+			argv[argc++] = NULL;
+			g_setenv ("DISPLAY", d->parent_disp, TRUE);
+		}
 	}
 
 	if (argv[0] == NULL) {
@@ -1521,7 +1534,32 @@ get_font_path (const char *display)
 	for (i = 0; i < n_fonts; i++) {
 		if (i != 0)
 			g_string_append_c (gs, ',');
-		g_string_append (gs, font_path[i]);
+
+	        if (gdm_get_value_bool (GDM_KEY_XNEST_UNSCALED_FONT_PATH) == TRUE)
+			g_string_append (gs, font_path[i]);
+		else {
+			gchar *unscaled_ptr = NULL;
+
+			/*
+			 * When using Xsun Xnest, it doesn't support the
+			 * ":unscaled" suffix in fontpath entries, so strip it.
+			 */
+			unscaled_ptr = g_strrstr (font_path[i], ":unscaled");
+			if (unscaled_ptr != NULL) {
+				gchar *temp_string;
+
+				temp_string = g_strndup (font_path[i],
+					strlen (font_path[i]) -
+					strlen (":unscaled"));
+
+gdm_debug ("font_path[i] is %s, temp_string is %s", font_path[i], temp_string);
+				g_string_append (gs, temp_string);
+				g_free (temp_string);
+			} else {
+gdm_debug ("font_path[i] is %s", font_path[i]);
+				g_string_append (gs, font_path[i]);
+			}
+		}
 	}
 
 	XFreeFontPath (font_path);

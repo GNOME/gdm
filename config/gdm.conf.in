@@ -94,7 +94,7 @@ TimedLoginDelay=30
 # If you are having trouble with using a single server for a long time and want
 # GDM to kill/restart the server, turn this on.  On Solaris, this value is
 # always true and this configuration setting is ignored.
-#AlwaysRestartServer=false
+#AlwaysRestartServer=@ALWAYS_RESTART_SERVER@
 
 # User and group used for running GDM GUI applicaitons.  By default this is set
 # to user "gdm" and group "gdm".  This user/group should have very limited
@@ -161,8 +161,21 @@ StandardXServer=@X_SERVER@
 # activity and no one logged on.  Set to 0 to turn off the reaping.  Does not
 # affect Xnest flexiservers.
 #FlexiReapDelayMinutes=5
+
 # The X nest command.
-Xnest=@X_XNEST_PATH@/Xnest @X_XNEST_CONFIG_OPTIONS@
+Xnest=@X_XNEST_CMD@ @X_XNEST_CONFIG_OPTIONS@
+# If true, GDM will call the Xnest command with the "-display VALUE" argument
+# (where VALUE is the display to show the window).  If false, Xnest will set
+# the DISPLAY environment before calling the Xnest command.  Xephyr does not
+# support the -display argument, so this should be set to false when using
+# Xephyr.
+XnestDisplayArg=@X_XNEST_DISPLAY_ARG@
+# Xsun Xnest does not support font paths (passed into Xnest -fp argument)
+# that include the ":unscaled" suffix after a path name.  Setting this to
+# false will strip any ":unscaled" suffix from the font path.  If not 
+# using this Xnest, the value should be true.
+XnestUnscaledFontPath=@X_XNEST_UNSCALED_FONTPATH@
+
 # Automatic VT allocation.  Right now only works on Linux.  This way we force
 # X to use specific vts.  turn VTAllocation to false if this is causing
 # problems.
@@ -381,7 +394,7 @@ Browser=false
 # however.
 #SystemMenu=true
 # Configuration is available from the system menu of the greeter.
-#ConfigAvailable=false
+#ConfigAvailable=true
 # Should the chooser button be shown.  If this is shown, GDM can drop into
 # chooser mode which will run the xdmcp chooser locally and allow the user to
 # connect to some remote host.  Local XDMCP does not need to be enabled,

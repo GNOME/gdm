@@ -213,11 +213,7 @@ enum {
  * run with user permissionsinstead of as root, which adds security but
  * disables the AlwaysRestartServer option as highlighted in the gdm
  * documentation */
-#ifdef sun
-#define GDM_KEY_ALWAYS_RESTART_SERVER "daemon/AlwaysRestartServer=true"
-#else
-#define GDM_KEY_ALWAYS_RESTART_SERVER "daemon/AlwaysRestartServer=false"
-#endif
+#define GDM_KEY_ALWAYS_RESTART_SERVER "daemon/AlwaysRestartServer=" ALWAYS_RESTART_SERVER
 #define GDM_KEY_GREETER "daemon/Greeter=" LIBEXECDIR "/gdmlogin"
 #define GDM_KEY_REMOTE_GREETER "daemon/RemoteGreeter=" LIBEXECDIR "/gdmlogin"
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
@@ -269,7 +265,9 @@ enum {
 #define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=" X_SERVER
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
 #define GDM_KEY_DYNAMIC_XSERVERS "daemon/DynamicXServers=false"
-#define GDM_KEY_XNEST "daemon/Xnest=" X_SERVER_PATH "/Xnest -name Xnest"
+#define GDM_KEY_XNEST "daemon/Xnest=" X_XNEST_CMD " " X_XNEST_CONFIG_OPTIONS
+#define GDM_KEY_XNEST_DISPLAY_ARG "daemon/XnestDisplayArg=" X_XNEST_DISPLAY_ARG
+#define GDM_KEY_XNEST_UNSCALED_FONT_PATH "daemon/XnestUnscaledFontPath=" X_XNEST_UNSCALED_FONTPATH
 /* Keys for automatic VT allocation rather then letting it up to the
  * X server */
 #define GDM_KEY_FIRST_VT "daemon/FirstVT=7"
@@ -296,7 +294,7 @@ enum {
 #define GDM_KEY_SERVER_PRIORITY "priority=0"
 
 #define GDM_KEY_ALLOW_ROOT "security/AllowRoot=true"
-#define GDM_KEY_ALLOW_REMOTE_ROOT "security/AllowRemoteRoot=true"
+#define GDM_KEY_ALLOW_REMOTE_ROOT "security/AllowRemoteRoot=false"
 #define GDM_KEY_ALLOW_REMOTE_AUTOLOGIN "security/AllowRemoteAutoLogin=false"
 #define GDM_KEY_USER_MAX_FILE "security/UserMaxFile=65536"
 #define GDM_KEY_RELAX_PERM "security/RelaxPermissions=0"
@@ -388,7 +386,7 @@ enum {
 #define GDM_KEY_ENTRY_CIRCLES "greeter/UseCirclesInEntry=false"
 #define GDM_KEY_ENTRY_INVISIBLE "greeter/UseInvisibleInEntry=false"
 #define GDM_KEY_GRAPHICAL_THEME "greeter/GraphicalTheme=circles"
-#define GDM_KEY_GRAPHICAL_THEMES "greeter/GraphicalThemes=circles"
+#define GDM_KEY_GRAPHICAL_THEMES "greeter/GraphicalThemes=circles/:happygnome"
 #define GDM_KEY_GRAPHICAL_THEME_RAND "greeter/GraphicalThemeRand=false"
 #define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" DATADIR "/gdm/themes/"
 #define GDM_KEY_GRAPHICAL_THEMED_COLOR "greeter/GraphicalThemedColor=#76848F"
@@ -410,7 +408,7 @@ enum {
 #define GDM_KEY_DEFAULT_HOST_IMG "chooser/DefaultHostImg=" PIXMAPDIR "/nohost.png"
 #define GDM_KEY_HOST_IMAGE_DIR "chooser/HostImageDir=" DATADIR "/hosts/"
 #define GDM_KEY_HOSTS "chooser/Hosts="
-#define GDM_KEY_MULTICAST "chooser/Multicast=true"
+#define GDM_KEY_MULTICAST "chooser/Multicast=false"
 #define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr=ff02::1"
 #define GDM_KEY_BROADCAST "chooser/Broadcast=true"
 #define GDM_KEY_ALLOW_ADD "chooser/AllowAdd=true"

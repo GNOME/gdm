@@ -52,10 +52,13 @@ gdm.conf: $(srcdir)/gdm.conf.in
 		-e 's,[@]SOUND_PROGRAM[@],$(SOUND_PROGRAM),g' \
 		-e 's,[@]SUSPEND_COMMAND[@],$(SUSPEND_COMMAND),g' \
 		-e 's,[@]XEVIE_OPTION[@],$(XEVIE_OPTION),g' \
+		-e 's,[@]ALWAYS_RESTART_SERVER[@],$(ALWAYS_RESTART_SERVER),g' \
 		-e 's,[@]X_CONFIG_OPTIONS[@],$(X_CONFIG_OPTIONS),g' \
 		-e 's,[@]X_SERVER[@],$(X_SERVER),g' \
+		-e 's,[@]X_XNEST_CMD[@],$(X_XNEST_CMD),g' \
 		-e 's,[@]X_XNEST_CONFIG_OPTIONS[@],$(X_XNEST_CONFIG_OPTIONS),g' \
-		-e 's,[@]X_XNEST_PATH[@],$(X_XNEST_PATH),g' \
+		-e 's,[@]X_XNEST_DISPLAY_ARG[@],$(X_XNEST_DISPLAY_ARG),g' \
+		-e 's,[@]X_XNEST_UNSCALED_FONTPATH[@],$(X_XNEST_UNSCALED_FONTPATH),g' \
 		-e 's,[@]authdir[@],$(authdir),g' \
 		-e 's,[@]datadir[@],$(datadir),g' \
 		-e 's,[@]dmconfdir[@],$(dmconfdir),g' \

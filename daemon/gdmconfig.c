@@ -154,46 +154,40 @@ static gint GdmFlexibleXservers = 5;
 static gint GdmFirstVt = 7;
 static gint GdmXserverTimeout = 10;
 
-/* The SDTLOGIN feature is Solaris specific, and causes the Xserver to be
- * run with user permissionsinstead of as root, which adds security but
- * disables the AlwaysRestartServer option as highlighted in the gdm
- * documentation */
-#ifdef sun
-gboolean GdmAlwaysRestartServer = TRUE;
-#else
-gboolean GdmAlwaysRestartServer = FALSE;
-#endif
-static gboolean GdmAutomaticLoginEnable = FALSE;
-static gboolean GdmConfigAvailable = FALSE;
-static gboolean GdmSystemMenu = FALSE;
-static gboolean GdmChooserButton = FALSE;
-static gboolean GdmBrowser = FALSE;
-static gboolean GdmAddGtkModules = FALSE;
-static gboolean GdmDoubleLoginWarning = TRUE;
-static gboolean GdmAlwaysLoginCurrentSession = FALSE;
-static gboolean GdmDisplayLastLogin = TRUE;
+gboolean GdmAlwaysRestartServer;
+static gboolean GdmAutomaticLoginEnable;
+static gboolean GdmConfigAvailable;
+static gboolean GdmSystemMenu;
+static gboolean GdmChooserButton;
+static gboolean GdmBrowser;
+static gboolean GdmAddGtkModules;
+static gboolean GdmDoubleLoginWarning;
+static gboolean GdmAlwaysLoginCurrentSession;
+static gboolean GdmDisplayLastLogin;
 static gboolean GdmMulticast;
-static gboolean GdmNeverPlaceCookiesOnNfs = TRUE;
-static gboolean GdmPasswordRequired = FALSE;
-static gboolean GdmKillInitClients = FALSE;
-static gboolean GdmXdmcp = FALSE;
-static gboolean GdmIndirect = FALSE;
-static gboolean GdmXdmcpProxy = FALSE;
-static gboolean GdmDebug = FALSE;
-static gboolean GdmDebugGestures = FALSE;
-static gboolean GdmAllowRoot = FALSE;
-static gboolean GdmAllowRemoteRoot = FALSE;
-static gboolean GdmAllowRemoteAutoLogin = FALSE;
-static gboolean GdmCheckDirOwner = TRUE;
-static gboolean GdmSupportAutomount = FALSE;
-static gboolean GdmTimedLoginEnable = FALSE;
-static gboolean GdmDynamicXservers = FALSE;
-static gboolean GdmVTAllocation = TRUE;
-static gboolean GdmDisallowTcp = TRUE;
-static gboolean GdmSoundOnLogin = TRUE;
-static gboolean GdmSoundOnLoginSuccess = FALSE;
-static gboolean GdmSoundOnLoginFailure = FALSE;
-static gboolean GdmConsoleNotify = TRUE;
+static gboolean GdmNeverPlaceCookiesOnNfs;
+static gboolean GdmPasswordRequired;
+static gboolean GdmKillInitClients;
+static gboolean GdmXdmcp;
+static gboolean GdmIndirect;
+static gboolean GdmXdmcpProxy;
+static gboolean GdmDebug;
+static gboolean GdmDebugGestures;
+static gboolean GdmAllowRoot;
+static gboolean GdmAllowRemoteRoot;
+static gboolean GdmAllowRemoteAutoLogin;
+static gboolean GdmCheckDirOwner;
+static gboolean GdmSupportAutomount;
+static gboolean GdmTimedLoginEnable;
+static gboolean GdmDynamicXservers;
+static gboolean GdmVTAllocation;
+static gboolean GdmDisallowTcp;
+static gboolean GdmSoundOnLogin;
+static gboolean GdmSoundOnLoginSuccess;
+static gboolean GdmSoundOnLoginFailure;
+static gboolean GdmConsoleNotify;
+static gboolean GdmXnestDisplayArg;
+static gboolean GdmXnestUnscaledFontPath;
 
 /* Config options used by slave */
 /* ---------------------------- */
@@ -424,6 +418,11 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN, &GdmSoundOnLogin, &bool_type);
    gdm_config_add_hash (GDM_KEY_RESTART_BACKGROUND_PROGRAM,
       &GdmRestartBackgroundProgram, &bool_type);
+   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN, &GdmSoundOnLogin, &bool_type);
+   gdm_config_add_hash (GDM_KEY_XNEST_DISPLAY_ARG,
+      &GdmXnestDisplayArg, &bool_type);
+   gdm_config_add_hash (GDM_KEY_XNEST_UNSCALED_FONT_PATH,
+      &GdmXnestUnscaledFontPath, &bool_type);
 
    /* string values */
    gdm_config_add_hash (GDM_KEY_PATH, &GdmPath, &string_type);
