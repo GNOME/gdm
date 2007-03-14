@@ -266,7 +266,6 @@ enum {
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
 #define GDM_KEY_DYNAMIC_XSERVERS "daemon/DynamicXServers=false"
 #define GDM_KEY_XNEST "daemon/Xnest=" X_XNEST_CMD " " X_XNEST_CONFIG_OPTIONS
-#define GDM_KEY_XNEST_DISPLAY_ARG "daemon/XnestDisplayArg=" X_XNEST_DISPLAY_ARG
 #define GDM_KEY_XNEST_UNSCALED_FONT_PATH "daemon/XnestUnscaledFontPath=" X_XNEST_UNSCALED_FONTPATH
 /* Keys for automatic VT allocation rather then letting it up to the
  * X server */
