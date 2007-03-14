@@ -164,16 +164,10 @@ StandardXServer=@X_SERVER@
 
 # The X nest command.
 # Examples of valid commands (assuming installed to /usr/X11/bin:
-# Xnest:      /usr/X11/bin/Xnest -audit 0 -name Xnest
-# Xsun Xnest: /usr/openin/bin/Xnest -audit 0 -name Xnest -pn
+# Xorg Xnest: /usr/X11/bin/Xnest -audit 0 -name Xnest
+# Xsun Xnest: /usr/openwin/bin/Xnest -audit 0 -name Xnest -pn
 # Xephyr:     /usr/X11/bin/Xephyr -audit 0
 Xnest=@X_XNEST_CMD@ @X_XNEST_CONFIG_OPTIONS@
-# If true, GDM will call the Xnest command with the "-display VALUE" argument
-# (where VALUE is the display to show the window).  If false, Xnest will set
-# the DISPLAY environment before calling the Xnest command.  Xephyr does not
-# support the -display argument, so this should be set to false when using
-# Xephyr.
-XnestDisplayArg=@X_XNEST_DISPLAY_ARG@
 # Xsun Xnest does not support font paths (passed into Xnest -fp argument)
 # that include the ":unscaled" suffix after a path name.  Setting this to
 # false will strip any ":unscaled" suffix from the font path.  If not 

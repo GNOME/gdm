@@ -57,7 +57,6 @@ gdm.conf: $(srcdir)/gdm.conf.in
 		-e 's,[@]X_SERVER[@],$(X_SERVER),g' \
 		-e 's,[@]X_XNEST_CMD[@],$(X_XNEST_CMD),g' \
 		-e 's,[@]X_XNEST_CONFIG_OPTIONS[@],$(X_XNEST_CONFIG_OPTIONS),g' \
-		-e 's,[@]X_XNEST_DISPLAY_ARG[@],$(X_XNEST_DISPLAY_ARG),g' \
 		-e 's,[@]X_XNEST_UNSCALED_FONTPATH[@],$(X_XNEST_UNSCALED_FONTPATH),g' \
 		-e 's,[@]authdir[@],$(authdir),g' \
 		-e 's,[@]datadir[@],$(datadir),g' \

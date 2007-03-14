@@ -1,5 +1,16 @@
 2006-03-13  Brian Cameron  <brian.cameron@sun.com>
 
+	* configure.ac, daemon/server.c, daemon/gdmconfig.c,
+	  config/gdm.conf.in, config/Makefile.am: Remove 
+	  XnestDisplayArg configuration choice.  In discussion with
+	  Alan Coopersmith <Alan.Coopersmith@sun.com> from the Xserver
+	  team it should be fine to avoid using -display when calling
+	  Xnest/Xephyr all the time and just use the DISPLAY environment
+	  variable.  Better to not add a configuration choice if it is
+	  not needed.
+
+2006-03-13  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/gdm.conf.in: Update comment to show some example
 	  Xnest commands.
 

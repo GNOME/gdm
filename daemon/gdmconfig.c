@@ -186,7 +186,6 @@ static gboolean GdmSoundOnLogin;
 static gboolean GdmSoundOnLoginSuccess;
 static gboolean GdmSoundOnLoginFailure;
 static gboolean GdmConsoleNotify;
-static gboolean GdmXnestDisplayArg;
 static gboolean GdmXnestUnscaledFontPath;
 
 /* Config options used by slave */
@@ -419,8 +418,6 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_RESTART_BACKGROUND_PROGRAM,
       &GdmRestartBackgroundProgram, &bool_type);
    gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN, &GdmSoundOnLogin, &bool_type);
-   gdm_config_add_hash (GDM_KEY_XNEST_DISPLAY_ARG,
-      &GdmXnestDisplayArg, &bool_type);
    gdm_config_add_hash (GDM_KEY_XNEST_UNSCALED_FONT_PATH,
       &GdmXnestUnscaledFontPath, &bool_type);
 

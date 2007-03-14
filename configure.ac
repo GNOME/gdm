@@ -1081,7 +1081,6 @@ if test -x $X_SERVER_PATH/Xephyr; then
     X_XNEST_CMD="$X_SERVER_PATH/Xephyr"
     X_XNEST_CONFIG_OPTIONS="-audit 0"
     X_XNEST_UNSCALED_FONTPATH="true"
-    X_XNEST_DISPLAY_ARG="false"
 else
     if test -x /usr/openwin/bin/Xnest; then
         # If on Solaris, Xnest is only shipped with the Xsun Xserver, so
@@ -1090,13 +1089,11 @@ else
         X_XNEST_CMD="/usr/openwin/bin/Xnest"
         X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
         X_XNEST_UNSCALED_FONTPATH="false"
-        X_XNEST_DISPLAY_ARG="true"
     else
         if test -x $X_SERVER_PATH/Xnest; then
             X_XNEST_CMD="$X_SERVER_PATH/Xnest"
             X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
             X_XNEST_UNSCALED_FONTPATH="true"
-            X_XNEST_DISPLAY_ARG="true"
         fi
     fi
 fi
@@ -1138,11 +1135,9 @@ AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launc
 AC_SUBST(X_XNEST_CMD)
 AC_SUBST(X_XNEST_CONFIG_OPTIONS)
 AC_SUBST(X_XNEST_UNSCALED_FONTPATH)
-AC_SUBST(X_XNEST_DISPLAY_ARG)
 AC_DEFINE_UNQUOTED(X_XNEST_CMD,"$X_XNEST_CMD")
 AC_DEFINE_UNQUOTED(X_XNEST_CONFIG_OPTIONS,"$X_XNEST_CONFIG_OPTIONS")
 AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH")
-AC_DEFINE_UNQUOTED(X_XNEST_DISPLAY_ARG,"$X_XNEST_DISPLAY_ARG")
 
 ## Stuff for debian/changelog.in
 #if test -e "debian/changelog"; then

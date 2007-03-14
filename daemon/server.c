@@ -1217,13 +1217,13 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 				command = g_strconcat (command, " -fp ",
 						       font_path, NULL);
 			}
-	        	if (gdm_get_value_bool (GDM_KEY_XNEST_DISPLAY_ARG) == FALSE)
-				add_display = FALSE;
+			add_display = FALSE;
 		}
 
 		/*
-		 * Xephyr does not support the DISPLAY argument.
-		 * Instead set the DISPLAY environment variable.
+		 * Set the DISPLAY environment variable when calling
+		 * Xnest since some Xnest commands like Xephyr do not
+		 * support the -display argument.
 		 */
 		if (add_display == TRUE) {
 			argv = g_renew (char *, argv, argc + 3);
