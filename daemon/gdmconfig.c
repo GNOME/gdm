@@ -417,7 +417,6 @@ gdm_config_init (void)
    gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN, &GdmSoundOnLogin, &bool_type);
    gdm_config_add_hash (GDM_KEY_RESTART_BACKGROUND_PROGRAM,
       &GdmRestartBackgroundProgram, &bool_type);
-   gdm_config_add_hash (GDM_KEY_SOUND_ON_LOGIN, &GdmSoundOnLogin, &bool_type);
    gdm_config_add_hash (GDM_KEY_XNEST_UNSCALED_FONT_PATH,
       &GdmXnestUnscaledFontPath, &bool_type);
 
