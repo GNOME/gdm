@@ -131,6 +131,8 @@ unsigned char *gdm_global_bcookie = NULL;
 
 gchar *gdm_charset = NULL;
 
+char *gdm_system_locale = NULL;
+
 int gdm_normal_runlevel = -1; /* runlevel on linux that gdm was started in */
 
 /* True if the server that was run was in actuallity not specified in the
@@ -1583,6 +1585,10 @@ main (int argc, char *argv[])
 
     if ( ! g_get_charset (&charset)) {
 	    gdm_charset = g_strdup (charset);
+    }
+
+    if (setlocale (LC_CTYPE, NULL) != NULL) {
+	gdm_system_locale = g_strdup (setlocale (LC_CTYPE, NULL));
     }
 
     /* initial TERM/INT handler */

@@ -192,6 +192,14 @@ if [ -n "$GDM_LANG" ]; then
   fi
 fi
 
+# Normalize all LC_* settings to $LANG
+for var in "LC_ALL" "LC_CTYPE" "LC_NUMERIC" "LC_TIME" "LC_COLLATE" "LC_MONETARY" "LC_MESSAGES" \
+	"LC_PAPER" "LC_NAME" "LC_ADDRESS" "LC_TELEPHONE" "LC_MEASUREMENT" "LC_IDENTIFICATION" ; do
+  if eval "[ -n \"\$$var\" -a \"\$$var\" != \"\$LANG\" ]" ; then
+    unset $var
+  fi
+done
+
 # run all system xinitrc shell scripts.
 if [ -d /etc/X11/xinit/xinitrc.d ]; then
     for i in /etc/X11/xinit/xinitrc.d/* ; do
@@ -199,6 +207,41 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 	    . "$i"
         fi
     done
+fi
+
+#
+# To determine the character set used for filenames with
+# glib's g_filename_to/from_utf8() functions, we set the
+# environment variables G_FILENAME_ENCODING and G_BROKEN_FILENAMES.
+#
+# G_BROKEN_FILENAMES, when set, lets the functions take the 
+# character set for the current locale for filename's encoding.
+#
+# G_FILENAME_ENCODING, which is introduced to glib 2.3.x and later, may be
+# set to a comma-separated list of character set names.
+# The special token "@locale" is taken to mean the character set 
+# for the current locale. The first character set from the list is taken 
+# as the filename encoding. 
+#
+# If G_FILENAME_ENCODING is not set, but G_BROKEN_FILENAMES is, the
+# character set of the current locale is taken as the filename encoding.
+
+G_BROKEN_FILENAMES=yes
+export G_BROKEN_FILENAMES
+# G_FILENAME_ENCODING=@locale
+# export G_FILENAME_ENCODING
+
+#Startup Input methods (IIIM->XIM)
+if [ -f /etc/iiim/xsession ]; then
+	. /etc/iiim/xsession
+fi
+#Startup XIM stuff
+if [ "x$XMODIFIERS" = "x" ]; then
+ if [ -f "$HOME/.xim" ]; then
+	. $HOME/.xim
+ elif [ -f "/etc/skel/.xim" ]; then
+	. /etc/skel/.xim
+ fi
 fi
 
 if [ "x$command" = "xcustom" ] ; then

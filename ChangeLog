@@ -1,8 +1,20 @@
 2006-03-20  Brian Cameron  <brian.cameron@sun.com>
 
+	* config/Xsession.in, daemon/gdm.c, daemon/slave.c,
+	  gui/gdmlanguages.c:  Normalize all LC_* settings to LANG and
+	  starts input methods (IIIM->XIM) and starts up XIM if available.
+	  Avoid calling setlocale() in gdmlanguages and sets locale in
+	  the daemon instead.  Fixes bug #412997.  Patches originally
+	  written by Hidetoshi Tajima <Hidetoshi.Tajima@sun.com> aside
+	  from the gui/gdmlanguages.c modification by Chookij Vanatham
+	  <Chookij.Vanatham@sun.com>.
+
+2006-03-20  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/Init.in: Call xrdb -merge /etc/X11/Xresources in the Init
 	  script so that the GDM GUI is properly configured with xft 
-	  resources.
+	  resources.  Fixes bug #301826.  Patch by Ray Strode
+          <rstrode@redhat.com>.
 	* config/Xsession.in: Minor cleanup.
 
 2006-03-13  Brian Cameron  <brian.cameron@sun.com>

@@ -630,13 +630,6 @@ gdm_lang_read_locale_file (const char *locale_file)
 	if ( ! got_english)
 		langs = g_list_prepend (langs, g_strdup ("en_US"));
 
-	curlocale = setlocale (LC_MESSAGES, NULL);
-	if (curlocale != NULL &&
-	    strcmp (curlocale, "C") != 0 &&
-	    find_lang (curlocale, &clean) == NULL) {
-		langs = g_list_prepend (langs, g_strdup (curlocale));
-	}
-
 	langs = g_list_sort (langs, lang_collate);
 
 	VE_IGNORE_EINTR (fclose (langlist));

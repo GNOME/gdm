@@ -152,38 +152,41 @@ extern int extra_status;
 extern int gdm_in_signal;
 extern int gdm_normal_runlevel;
 
-extern int slave_fifo_pipe_fd; /* the slavepipe (like fifo) connection, this is the write end */
+/* The slavepipe (like fifo) connection, this is the write end */
+extern int slave_fifo_pipe_fd;
 
 /* wait for a GO in the SOP protocol */
 extern gboolean gdm_wait_for_go;
 
+extern char *gdm_system_locale;
+
 /* Local prototypes */
-static gint     gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
-static gint     gdm_slave_xioerror_handler (Display *disp);
-static gint     gdm_slave_ignore_xioerror_handler (Display *disp);
-static void	gdm_slave_run (GdmDisplay *display);
-static void	gdm_slave_wait_for_login (void);
-static void     gdm_slave_greeter (void);
-static void     gdm_slave_chooser (void);
-static void     gdm_slave_session_start (void);
-static void     gdm_slave_session_stop (gboolean run_post_session,
+static gint   gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
+static gint   gdm_slave_xioerror_handler (Display *disp);
+static gint   gdm_slave_ignore_xioerror_handler (Display *disp);
+static void   gdm_slave_run (GdmDisplay *display);
+static void   gdm_slave_wait_for_login (void);
+static void   gdm_slave_greeter (void);
+static void   gdm_slave_chooser (void);
+static void   gdm_slave_session_start (void);
+static void   gdm_slave_session_stop (gboolean run_post_session,
 					gboolean no_shutdown_check);
-static void     gdm_slave_alrm_handler (int sig);
-static void     gdm_slave_term_handler (int sig);
-static void     gdm_slave_usr2_handler (int sig);
-static void     gdm_slave_quick_exit (gint status);
-static void     gdm_slave_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
-static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
-static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
+static void   gdm_slave_alrm_handler (int sig);
+static void   gdm_slave_term_handler (int sig);
+static void   gdm_slave_usr2_handler (int sig);
+static void   gdm_slave_quick_exit (gint status);
+static void   gdm_slave_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+static void   gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+static gint   gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent,
 				       gboolean pass_stdout);
-static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
-static void	gdm_slave_handle_usr2_message (void);
-static void	gdm_slave_handle_notify (const char *msg);
-static void	create_temp_auth_file (void);
-static void	set_xnest_parent_stuff (void);
-static void	check_notifies_now (void);
-static void	restart_the_greeter (void);
+static gchar *gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
+static void   gdm_slave_handle_usr2_message (void);
+static void   gdm_slave_handle_notify (const char *msg);
+static void   create_temp_auth_file (void);
+static void   set_xnest_parent_stuff (void);
+static void   check_notifies_now (void);
+static void   restart_the_greeter (void);
 
 #ifdef HAVE_TSOL
 static gboolean gdm_can_i_assume_root_role (struct passwd *pwent);
@@ -197,7 +200,6 @@ static gboolean gdm_got_ack = FALSE;
 static char * gdm_ack_response = NULL;
 char * gdm_ack_question_response = NULL;
 static GList *unhandled_notifies = NULL;
-
 
 /* for signals that want to exit */
 static Jmp_buf slave_start_jmp;
@@ -225,7 +227,7 @@ enum {
 	}										\
    }
 
-/* notify all waitpids, make waitpids check notifies */
+/* Notify all waitpids, make waitpids check notifies */
 static void
 slave_waitpid_notify (void)
 {
@@ -241,7 +243,7 @@ slave_waitpid_notify (void)
 	gdm_sigchld_block_pop ();
 }
 
-/* make sure to wrap this call with sigchld blocks */
+/* Make sure to wrap this call with sigchld blocks */
 static GdmWaitPid *
 slave_waitpid_setpid (pid_t pid)
 {
@@ -4383,7 +4385,11 @@ gdm_slave_session_start (void)
 #endif
 			   session,
 			   save_session,
-			   language,
+
+			   ((gdm_system_locale != (char *) NULL) &&
+			   ( (language == NULL) ||
+			   ((language != NULL) && (strcmp (language, "") == 0))) == TRUE ?
+			   gdm_system_locale : language),
 			   gnome_session,
 			   usrcfgok,
 			   savesess,
