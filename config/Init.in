@@ -22,6 +22,12 @@ gdmwhich () {
   echo "$OUTPUT"
 }
 
+sysresources=/etc/X11/Xresources
+
+# merge in defaults
+if [ -f "$sysresources" ]; then
+    xrdb -merge "$sysresources"
+fi
 
 sysmodmap=/etc/X11/Xmodmap
 
