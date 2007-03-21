@@ -1,3 +1,29 @@
+2007-03-21  William Jon McCann  <mccann@jhu.edu>
+
+	* common/Makefile.am:
+	* common/gdm-common-config.c: (gdm_common_config_parse_key_string),
+	(gdm_common_config_load), (gdm_common_config_save),
+	(gdm_common_config_get_int),
+	(gdm_common_config_get_translated_string),
+	(gdm_common_config_get_string), (gdm_common_config_get_boolean),
+	(gdm_common_config_set_string), (gdm_common_config_set_boolean),
+	(gdm_common_config_set_int), (gdm_common_config_remove_key):
+	* common/gdm-common-config.h:
+	* common/gdm-common.c: (ve_clearenv), (ve_first_word),
+	(ve_first_word_executable), (ve_get_first_working_command),
+	(ve_rest), (ve_bool_equal), (ve_is_string_in_list),
+	(ve_is_string_in_list_case_no_locale), (ve_find_file_simple),
+	(ve_locale_to_utf8), (ve_locale_from_utf8), (ve_filename_to_utf8),
+	(ve_filename_from_utf8), (ve_strftime), (ve_waitpid_no_signal),
+	(ve_locale_exists), (ve_find_prog_in_path), (ve_is_prog_in_path),
+	(ve_shell_quote_filename):
+	* common/gdm-common.h:
+	* common/ve-signal.c: (ve_signal_prepare), (ve_signal_check),
+	(ve_signal_dispatch), (ve_signal_add), (ve_signal_add_full),
+	(ve_signal_notify), (ve_signal_was_notified), (ve_signal_unnotify):
+	* common/ve-signal.h:
+	Added new files missed from commit for #355425
+
 2006-03-20  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmsetup.desktop.in.in, gui/gdmphotoseutp.desktop.in:
