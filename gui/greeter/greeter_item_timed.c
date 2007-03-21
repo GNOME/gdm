@@ -24,6 +24,8 @@
 #include "gdm.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
 #include "greeter_item_timed.h"

@@ -23,7 +23,7 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "viciousui.h"
+#include "gdm-common.h"
 
 #include "greeter.h"
 #include "greeter_item.h"
@@ -361,6 +361,32 @@ greeter_item_pam_error (const char *message)
     }
 }
 
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
+}
+
 void
 greeter_item_pam_leftover_messages (void)
 {
@@ -385,12 +411,12 @@ greeter_item_pam_leftover_messages (void)
 	  /* we should be now fine for focusing new windows */
 	  gdm_wm_focus_new_windows (TRUE);
 
-	  dlg = ve_hig_dialog_new (NULL /* parent */,
-				   GTK_DIALOG_MODAL /* flags */,
-				   GTK_MESSAGE_INFO,
-				   GTK_BUTTONS_OK,
-				   oldtext,
-				   "");
+	  dlg = hig_dialog_new (NULL /* parent */,
+                                GTK_DIALOG_MODAL /* flags */,
+                                GTK_MESSAGE_INFO,
+                                GTK_BUTTONS_OK,
+                                oldtext,
+                                "");
 	  gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 	  gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 	  gdm_wm_center_window (GTK_WINDOW (dlg));

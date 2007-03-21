@@ -1,12 +1,16 @@
-SUBDIRS = \
-	po \
-	config \
-	pixmaps \
-	vicious-extensions \
-	daemon \
-	gui \
-	utils \
-	docs
+NULL =
+
+SUBDIRS = 			\
+	po 			\
+	config 			\
+	pixmaps 		\
+	common 			\
+	daemon 			\
+	gui 			\
+	utils 			\
+	docs			\
+	$(NULL)
+
 
 # add these when help gets added back
 # docs omf-install

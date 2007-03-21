@@ -34,6 +34,8 @@
 #include "getvt.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 /* Virtual terminals only supported on Linux, FreeBSD, or DragonFly */
 
 #if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)

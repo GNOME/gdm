@@ -41,7 +41,8 @@
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
-#include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 static GSList *xservers          = NULL;
 static const char *send_command  = NULL;
@@ -93,6 +94,32 @@ get_cur_vt (void)
 	return cur_vt;
 }
 
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
+}
+
 /* change to an existing vt */
 static void
 change_vt (int vt)
@@ -107,19 +134,28 @@ change_vt (int vt)
 		GtkWidget *dialog;
 		const char *message = gdmcomm_get_error_message (ret, use_xnest);
 
-		dialog = ve_hig_dialog_new
-			(NULL /* parent */,
-			 GTK_DIALOG_MODAL /* flags */,
-			 GTK_MESSAGE_ERROR,
-			 GTK_BUTTONS_OK,
-			 _("Cannot change display"),
-			 message);
-
+		dialog = hig_dialog_new (NULL /* parent */,
+					 GTK_DIALOG_MODAL /* flags */,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Cannot change display"),
+					 message);
 		gtk_widget_show_all (dialog);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 	}
 	g_free (ret);
+}
+
+static int
+vector_len (char * const *v)
+{
+	int i;
+	if (v == NULL)
+		return 0;
+	for (i = 0; v[i] != NULL; i++)
+		;
+	return i;
 }
 
 static int
@@ -136,8 +172,7 @@ get_vt_num (char **vec, char *vtpart, int depth)
 	for (i = 0; vec[i] != NULL; i++) {
 		char **rvec;
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL ||
-		    ve_vector_len (rvec) != 3)
+		if (rvec == NULL || vector_len (rvec) != 3)
 			continue;
 
 		if (strcmp (rvec[0], vtpart) == 0) {
@@ -177,8 +212,7 @@ create_model (char **vec)
 		char **rvec;
 		int vt;
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL ||
-		    ve_vector_len (rvec) != 3)
+		if (rvec == NULL || vector_len (rvec) != 3)
 			continue;
 
 		vt = get_vt_num (vec, rvec[2], 5);
@@ -380,7 +414,7 @@ run_logged_in_dialogue (char **vec)
 	if (startnew == TRUE) {
 		/* Just return if the user doesn't want to see the dialog */
 		return;
-	} 
+	}
 
 	dialog = gtk_dialog_new_with_buttons (_("Open Displays"),
 					      NULL /* parent */,
@@ -516,8 +550,7 @@ check_for_users (void)
 		char **rvec;
 		int vt;
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL ||
-		    ve_vector_len (rvec) != 3)
+		if (rvec == NULL || vector_len (rvec) != 3)
 			continue;
 
 		vt = get_vt_num (vec, rvec[2], 5);
@@ -779,15 +812,14 @@ main (int argc, char *argv[])
 			g_print ("%s\n", ret);
 			return 0;
 		} else {
-			dialog = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_ERROR,
-				 GTK_BUTTONS_OK,
-				 _("Cannot communicate with GDM "
-				   "(The GNOME Display Manager)"),
-				 _("Perhaps you have an old version "
-				   "of GDM running."));
+			dialog = hig_dialog_new (NULL /* parent */,
+						 GTK_DIALOG_MODAL /* flags */,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_OK,
+						 _("Cannot communicate with GDM "
+						   "(The GNOME Display Manager)"),
+						 _("Perhaps you have an old version "
+						   "of GDM running."));
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -828,17 +860,15 @@ main (int argc, char *argv[])
 			/* At this point we are done using the socket, so close it */
 			gdmcomm_comm_bulk_stop ();
 
-			dialog = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_ERROR,
-				 GTK_BUTTONS_OK,
-				 _("You do not seem to have the "
-				   "authentication needed for this "
-				   "operation"),
-				 _("Perhaps your .Xauthority "
-				   "file is not set up correctly."));
-
+			dialog = hig_dialog_new (NULL /* parent */,
+						 GTK_DIALOG_MODAL /* flags */,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_OK,
+						 _("You do not seem to have the "
+						   "authentication needed for this "
+						   "operation"),
+						 _("Perhaps your .Xauthority "
+						   "file is not set up correctly."));
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -858,15 +888,14 @@ main (int argc, char *argv[])
 			/* At this point we are done using the socket, so close it */
 			gdmcomm_comm_bulk_stop ();
 
-			dialog = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_ERROR,
-				 GTK_BUTTONS_OK,
-				 _("You do not seem to be logged in on the "
-				   "console"),
-				 _("Starting a new login only "
-				   "works correctly on the console."));
+			dialog = hig_dialog_new (NULL /* parent */,
+						 GTK_DIALOG_MODAL /* flags */,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_OK,
+						 _("You do not seem to be logged in on the "
+						   "console"),
+						 _("Starting a new login only "
+						   "works correctly on the console."));
 			gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
 						      FALSE);
 			gtk_widget_show_all (dialog);
@@ -908,13 +937,12 @@ main (int argc, char *argv[])
 
 	message = gdmcomm_get_error_message (ret, use_xnest);
 
-	dialog = ve_hig_dialog_new
-		(NULL /* parent */,
-		 GTK_DIALOG_MODAL /* flags */,
-		 GTK_MESSAGE_ERROR,
-		 GTK_BUTTONS_OK,
-		 _("Cannot start new display"),
-		 message);
+	dialog = hig_dialog_new (NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_ERROR,
+				 GTK_BUTTONS_OK,
+				 _("Cannot start new display"),
+				 message);
 
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));

@@ -1,4 +1,6 @@
-/* GDMSetup
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDMSetup
  * Copyright (C) 2002, George Lebl
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,9 +41,6 @@
 #include <glade/glade.h>
 #include <glib/gi18n.h>
 
-#include "vicious.h"
-#include "viciousui.h"
-
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "misc.h"
@@ -49,6 +48,8 @@
 #include "gdmuser.h"
 #include "gdmsession.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 static char     *GdmSoundProgram = NULL;
 static gchar    *GdmExclude      = NULL;
@@ -197,7 +198,9 @@ simple_spawn_sync (char **argv)
 static void
 setup_cursor (GdkCursorType type)
 {
-	GdkCursor *cursor = gdk_cursor_new (type);
+	GdkCursor *cursor;
+
+	cursor = gdk_cursor_new (type);
 	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
 	gdk_cursor_unref (cursor);
 }
@@ -205,9 +208,11 @@ setup_cursor (GdkCursorType type)
 static void
 setup_window_cursor (GdkCursorType type)
 {
-	GdkCursor *cursor = gdk_cursor_new (type);
-	GtkWidget *setup_dialog = glade_helper_get
-		(xml, "setup_dialog", GTK_TYPE_WINDOW);
+	GdkCursor *cursor;
+	GtkWidget *setup_dialog;
+
+	cursor = gdk_cursor_new (type);
+	setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
 	if (setup_dialog->window)
 		gdk_window_set_cursor (setup_dialog->window, cursor);
 	gdk_cursor_unref (cursor);
@@ -216,10 +221,37 @@ setup_window_cursor (GdkCursorType type)
 static void
 unsetup_window_cursor (void)
 {
-	GtkWidget *setup_dialog = glade_helper_get
-		(xml, "setup_dialog", GTK_TYPE_WINDOW);
+	GtkWidget *setup_dialog;
+
+	setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
 	if (setup_dialog->window)
 		gdk_window_set_cursor (setup_dialog->window, NULL);
+}
+
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
 }
 
 static void
@@ -271,20 +303,20 @@ update_greeters (void)
 
 check_update_error:
 	if ( ! shown_error && have_error) {
-		GtkWidget *setup_dialog = glade_helper_get
-			(xml, "setup_dialog", GTK_TYPE_WINDOW);
-		GtkWidget *dlg =
-			ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-						GTK_DIALOG_MODAL | 
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_OK,
-						_("An error occurred while "
-						  "trying to contact the "
-						  "login screens.  Not all "
-						  "updates may have taken "
-						  "effect."),
-						"");
+		GtkWidget *setup_dialog;
+		GtkWidget *dlg;
+		setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
+		dlg = hig_dialog_new (GTK_WINDOW (setup_dialog),
+				      GTK_DIALOG_MODAL |
+				      GTK_DIALOG_DESTROY_WITH_PARENT,
+				      GTK_MESSAGE_ERROR,
+				      GTK_BUTTONS_OK,
+				      _("An error occurred while "
+					"trying to contact the "
+					"login screens.  Not all "
+					"updates may have taken "
+					"effect."),
+				      "");
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
@@ -350,60 +382,81 @@ update_key (const char *key)
 	}
 }
 
-static void 
+static void
 gdm_setup_config_set_bool (const char *key, gboolean val)
 {
-	VeConfig *cfg        = ve_config_get (config_file);
-	VeConfig *custom_cfg = ve_config_get (custom_config_file);
-        gboolean defaultval  = ve_config_get_bool (cfg, key);
+	GKeyFile *cfg;
+	GKeyFile *custom_cfg;
+        gboolean defaultval;
+
+        cfg = gdm_common_config_load (config_file, NULL);
+	custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+	gdm_common_config_get_boolean (cfg, key, &defaultval, NULL);
 
         if (val == defaultval) {
-		ve_config_delete_key (custom_cfg, key);
+		gdm_common_config_remove_key (custom_cfg, key, NULL);
 	} else {
-		ve_config_set_bool (custom_cfg, key, val);
+		gdm_common_config_set_boolean (custom_cfg, key, val);
 	}
 
-	ve_config_save (custom_cfg, FALSE /* force */);
+	gdm_common_config_save (custom_cfg, custom_config_file, NULL);
+
+	g_key_file_free (cfg);
+	g_key_file_free (custom_cfg);
 
 	update_key (key);
 }
 
-static void 
+static void
 gdm_setup_config_set_int (const char *key, int val)
 {
-	VeConfig *cfg        = ve_config_get (config_file);
-	VeConfig *custom_cfg = ve_config_get (custom_config_file);
-        int defaultval       = ve_config_get_int (cfg, key);
+	GKeyFile *cfg;
+	GKeyFile *custom_cfg;
+        int       defaultval;
+
+        cfg = gdm_common_config_load (config_file, NULL);
+	custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+	gdm_common_config_get_int (cfg, key, &defaultval, NULL);
 
 	if (val == defaultval) {
-		ve_config_delete_key (custom_cfg, key);
+		gdm_common_config_remove_key (custom_cfg, key, NULL);
 	} else {
-		ve_config_set_int (custom_cfg, key, val);
+		gdm_common_config_set_int (custom_cfg, key, val);
 	}
 
-	ve_config_save (custom_cfg, FALSE /* force */);
+	gdm_common_config_save (custom_cfg, custom_config_file, NULL);
+
+	g_key_file_free (cfg);
+	g_key_file_free (custom_cfg);
 
 	update_key (key);
 }
 
-static void 
+static void
 gdm_setup_config_set_string (const char *key, gchar *val)
 {
-	VeConfig *cfg        = ve_config_get (config_file);
-	VeConfig *custom_cfg = ve_config_get (custom_config_file);
-	gchar *defaultval    = ve_config_get_string (cfg, key);
+	GKeyFile *cfg;
+	GKeyFile *custom_cfg;
+        char     *defaultval;
+
+        cfg = gdm_common_config_load (config_file, NULL);
+	custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+	gdm_common_config_get_string (cfg, key, &defaultval, NULL);
 
 	if (defaultval != NULL &&
 	    strcmp (ve_sure_string (val), ve_sure_string (defaultval)) == 0) {
-		ve_config_delete_key (custom_cfg, key);
+		gdm_common_config_remove_key (custom_cfg, key, NULL);
 	} else {
-		ve_config_set_string (custom_cfg, key, val);
+		gdm_common_config_set_string (custom_cfg, key, val);
 	}
 
 	if (defaultval)
 		g_free (defaultval);
 
-	ve_config_save (custom_cfg, FALSE /* force */);
+	gdm_common_config_save (custom_cfg, custom_config_file, NULL);
+
+	g_key_file_free (cfg);
+	g_key_file_free (custom_cfg);
 
 	update_key (key);
 }
@@ -459,14 +512,12 @@ toggle_timeout (GtkWidget *toggle)
 			gchar *filename;
 			GtkWidget *file_chooser;
 
-			file_chooser = glade_helper_get (xml, "global_face_dir_filechooser",
-							 GTK_TYPE_FILE_CHOOSER_BUTTON);
+			file_chooser = glade_xml_get_widget (xml, "global_face_dir_filechooser");
 			filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
-			
-			if (strcmp (ve_sure_string (gdm_config_get_string ((char*)key)), 
-				    ve_sure_string (filename)) != 0)				
+			if (strcmp (ve_sure_string (gdm_config_get_string ((char*)key)),
+				    ve_sure_string (filename)) != 0)
 				gdm_setup_config_set_string (key, ve_sure_string (filename));
-			
+
 			g_free (filename);
 		}
 		else
@@ -480,8 +531,8 @@ toggle_timeout (GtkWidget *toggle)
 			gchar *filename;
 			GtkWidget *file_chooser;
 			
-			file_chooser = glade_helper_get (xml, "default_face_filechooser",
-							 GTK_TYPE_FILE_CHOOSER_BUTTON);
+			file_chooser = glade_xml_get_widget (xml, "default_face_filechooser");
+
 			filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
 			
 			if (strcmp (ve_sure_string (gdm_config_get_string ((char*)key)), 
@@ -501,8 +552,8 @@ toggle_timeout (GtkWidget *toggle)
 			gchar *filename;
 			GtkWidget *file_chooser;
 			
-			file_chooser = glade_helper_get (xml, "gtkrc_chooserbutton",
-							 GTK_TYPE_FILE_CHOOSER_BUTTON);
+			file_chooser = glade_xml_get_widget (xml, "gtkrc_chooserbutton");
+
 			filename  = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
 			
 			if (strcmp (ve_sure_string (gdm_config_get_string ((char*)key)), 
@@ -525,8 +576,7 @@ toggle_timeout (GtkWidget *toggle)
 			gchar *new_val = NULL;			
 			GtkWidget *default_session_combobox;
 			
-			default_session_combobox = glade_helper_get (xml, "default_session_combobox", 
-							     GTK_TYPE_COMBO_BOX);
+			default_session_combobox = glade_xml_get_widget (xml, "default_session_combobox");
 
 			selected = gtk_combo_box_get_active (GTK_COMBO_BOX (default_session_combobox));
 			
@@ -575,10 +625,8 @@ command_toggle_timeout (GtkWidget *toggle)
 		gint selected, i;
 		
 		val = GTK_TOGGLE_BUTTON (toggle)->active;
-		apply_cmd_changes = glade_helper_get (xml_commands, "command_apply_button", GTK_TYPE_BUTTON);
-		command_combobox = glade_helper_get (xml_commands, 
-						     "cmd_type_combobox",
-						     GTK_TYPE_COMBO_BOX);
+		apply_cmd_changes = glade_xml_get_widget (xml_commands, "command_apply_button");
+		command_combobox = glade_xml_get_widget (xml_commands, "cmd_type_combobox");
 		
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
 		
@@ -613,8 +661,7 @@ logo_toggle_timeout (GtkWidget *toggle)
 	GtkWidget  *chooserbutton;
 	gchar      *filename;
 
-	chooserbutton = glade_helper_get (xml, "local_logo_image_chooserbutton",
-	                                  GTK_TYPE_FILE_CHOOSER_BUTTON);
+	chooserbutton = glade_xml_get_widget (xml, "local_logo_image_chooserbutton");
 						
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooserbutton));
 	
@@ -638,8 +685,7 @@ logo_toggle_toggled (GtkWidget *toggle, gpointer data)
 
 		GtkWidget *checkbutton;
 		
-		checkbutton = glade_helper_get (xml, "remote_logo_image_checkbutton",
-		                                GTK_TYPE_CHECK_BUTTON);
+		checkbutton = glade_xml_get_widget (xml, "remote_logo_image_checkbutton");
 
 		g_signal_handlers_disconnect_by_func (checkbutton,
 		                                      (gpointer) logo_toggle_toggled,
@@ -654,8 +700,7 @@ logo_toggle_toggled (GtkWidget *toggle, gpointer data)
 	else {
 		GtkWidget *checkbutton;
 
-		checkbutton = glade_helper_get (xml, "local_logo_image_checkbutton",
-		                                GTK_TYPE_CHECK_BUTTON);
+		checkbutton = glade_xml_get_widget (xml, "local_logo_image_checkbutton");
 
 		g_signal_handlers_disconnect_by_func (checkbutton,
 		                                      (gpointer) logo_toggle_toggled,
@@ -722,22 +767,22 @@ intspin_timeout (GtkWidget *spin)
 			GtkTreeIter iter;			
 			GtkWidget *setup_dialog;
 
-			setup_dialog = glade_helper_get(xml, "setup_dialog", GTK_TYPE_WINDOW);
+			setup_dialog = glade_xml_get_widget(xml, "setup_dialog");
 
 			//Inform user about the change and its implications
-			dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-						 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						 GTK_MESSAGE_WARNING,
-						 GTK_BUTTONS_OK,
-						 _("Users include list modification"),
-						 _("Some of the users in the Include list "
-						   "(Users tab) now have uid lower than "
-						   "MinimalUID and will be removed."));
+			dlg = hig_dialog_new (GTK_WINDOW (setup_dialog),
+					      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					      GTK_MESSAGE_WARNING,
+					      GTK_BUTTONS_OK,
+					      _("Users include list modification"),
+					      _("Some of the users in the Include list "
+						"(Users tab) now have uid lower than "
+						"MinimalUID and will be removed."));
 			gtk_dialog_run (GTK_DIALOG (dlg));
 			gtk_widget_destroy (dlg);						
 
-			include_treeview  = glade_helper_get (xml, "fb_include_treeview",
-							      GTK_TYPE_TREE_VIEW);
+			include_treeview  = glade_xml_get_widget (xml, "fb_include_treeview");
+
 			include_model = gtk_tree_view_get_model (GTK_TREE_VIEW (include_treeview));
 
 			valid = gtk_tree_model_get_iter_first (include_model, &iter);
@@ -812,81 +857,86 @@ static GSList *displays_inactive = NULL;
 static GHashTable *dispval_hash  = NULL;
 
 static void
-gdm_load_displays (VeConfig *cfg, GList *list )
+gdm_load_displays (GKeyFile *cfg,
+		   char    **keys)
 {
-   GList *li;
-   GSList *li2;
+	GSList *li2;
+	int i;
 
-   for (li = list; li != NULL; li = li->next) {
-      const gchar *key = li->data;
+	for (i = 0; keys[i] != NULL; i++) {
+		const gchar *key = keys[i];
 
-      if (isdigit (*key)) {
-         gchar *fullkey;
-         gchar *dispval;
-         int keynum = atoi (key);
-         gboolean skip_entry = FALSE;
+		if (isdigit (*key)) {
+			gchar *fullkey;
+			gchar *dispval;
+			int keynum = atoi (key);
+			gboolean skip_entry = FALSE;
 
-         fullkey = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
-         dispval = ve_config_get_string (cfg, fullkey);
-         g_free (fullkey);
+			fullkey = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
+			gdm_common_config_get_string (cfg, fullkey, &dispval, NULL);
+			g_free (fullkey);
 
-         /* Do not add if already in the list */
-         for (li2 = displays; li2 != NULL; li2 = li2->next) {
-            gchar *disp = li2->data;
-            if (atoi (disp) == keynum) {
-               skip_entry = TRUE;
-               break;
-            }
-         }
+			/* Do not add if already in the list */
+			for (li2 = displays; li2 != NULL; li2 = li2->next) {
+				gchar *disp = li2->data;
+				if (atoi (disp) == keynum) {
+					skip_entry = TRUE;
+					break;
+				}
+			}
 
-         /* Do not add if this display was marked as inactive already */
-         for (li2 = displays_inactive; li2 != NULL; li2 = li2->next) {
-            gchar *disp = li2->data;
-            if (atoi (disp) == keynum) {
-               skip_entry = TRUE;
-               break;
-            }
-         }
+			/* Do not add if this display was marked as inactive already */
+			for (li2 = displays_inactive; li2 != NULL; li2 = li2->next) {
+				gchar *disp = li2->data;
+				if (atoi (disp) == keynum) {
+					skip_entry = TRUE;
+					break;
+				}
+			}
 
-         if (skip_entry == TRUE) {
-            g_free (dispval);
-            continue;
-         }
+			if (skip_entry == TRUE) {
+				g_free (dispval);
+				continue;
+			}
 
-         if (g_ascii_strcasecmp (ve_sure_string (dispval), "inactive") == 0) {
-            displays_inactive = g_slist_append (displays_inactive, g_strdup (key));
-         } else {
-            if (dispval_hash == NULL)
-               dispval_hash = g_hash_table_new (g_str_hash, g_str_equal);            
+			if (g_ascii_strcasecmp (ve_sure_string (dispval), "inactive") == 0) {
+				displays_inactive = g_slist_append (displays_inactive, g_strdup (key));
+			} else {
+				if (dispval_hash == NULL)
+					dispval_hash = g_hash_table_new (g_str_hash, g_str_equal);            
 
-            displays = g_slist_insert_sorted (displays, g_strdup (key), (GCompareFunc) display_sort_func);
-            g_hash_table_insert (dispval_hash, g_strdup (key), g_strdup (dispval));
-         }
+				displays = g_slist_insert_sorted (displays, g_strdup (key), (GCompareFunc) display_sort_func);
+				g_hash_table_insert (dispval_hash, g_strdup (key), g_strdup (dispval));
+			}
 
-         g_free (dispval);
-      }
-   }
+			g_free (dispval);
+		}
+	}
 }
 
-static void 
+static void
 xservers_get_displays (GtkListStore *store)
 {
 	/* Find server definitions */
-	VeConfig *custom_cfg = ve_config_get (custom_config_file);
-	VeConfig *cfg        = ve_config_get (config_file);
-	GList *list;
+	GKeyFile *custom_cfg;
+	GKeyFile *cfg;
+	char    **keys;
 	GSList *li;
 	gchar *server, *options;
 
+	custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+        cfg = gdm_common_config_load (config_file, NULL);
+
 	/* Fill list with all the active displays */
-	if (custom_cfg) {
-		list = ve_config_get_keys (custom_cfg, GDM_KEY_SECTION_SERVERS);
-		gdm_load_displays (custom_cfg, list);
-		ve_config_free_list_of_strings (list);
+	if (custom_cfg != NULL) {
+		keys = g_key_file_get_keys (custom_cfg, GDM_KEY_SECTION_SERVERS, NULL, NULL);
+		gdm_load_displays (custom_cfg, keys);
+		g_strfreev (keys);
 	}
-	list = ve_config_get_keys (cfg, GDM_KEY_SECTION_SERVERS);
-	gdm_load_displays (cfg, list);
-	ve_config_free_list_of_strings (list);
+
+	keys = g_key_file_get_keys (cfg, GDM_KEY_SECTION_SERVERS, NULL, NULL);
+	gdm_load_displays (cfg, keys);
+	g_strfreev (keys);
 
 	for (li = displays; li != NULL; li = li->next) {
 		GtkTreeIter iter;
@@ -933,10 +983,8 @@ xserver_update_delete_sensitivity ()
 	gboolean valid;
 	gint i;
 
-	modify_combobox = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-                                            GTK_TYPE_COMBO_BOX);
-	delete_button   = glade_helper_get (xml_xservers, "xserver_deletebutton",
-                                            GTK_TYPE_BUTTON);
+	modify_combobox = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
+	delete_button   = glade_xml_get_widget (xml_xservers, "xserver_deletebutton");
 
 	/* Get list of servers that are set to start */
 	store = gtk_list_store_new (XSERVER_NUM_COLUMNS,
@@ -993,20 +1041,13 @@ void init_servers_combobox (int index)
 	GtkListStore *store;
 	GdmXserver *xserver;
 
-	mod_combobox = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-	                                 GTK_TYPE_COMBO_BOX);
-	name_entry = glade_helper_get (xml_xservers, "xserver_name_entry",
-	                               GTK_TYPE_ENTRY);
-	command_entry = glade_helper_get (xml_xservers, "xserver_command_entry",
-	                                  GTK_TYPE_ENTRY);
-	style_combobox = glade_helper_get (xml_xservers, "xserver_style_combobox",
-	                                   GTK_TYPE_COMBO_BOX);
-	handled_checkbutton = glade_helper_get (xml_xservers, "xserver_handled_checkbutton",
-	                                        GTK_TYPE_CHECK_BUTTON);
-	flexible_checkbutton = glade_helper_get (xml_xservers, "xserver_flexible_checkbutton",
-	                                         GTK_TYPE_CHECK_BUTTON);
-	priority_spinbutton = glade_helper_get(xml_xservers, "xserv_priority_spinbutton",
-					       GTK_TYPE_SPIN_BUTTON);
+	mod_combobox = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
+	name_entry = glade_xml_get_widget (xml_xservers, "xserver_name_entry");
+	command_entry = glade_xml_get_widget (xml_xservers, "xserver_command_entry");
+	style_combobox = glade_xml_get_widget (xml_xservers, "xserver_style_combobox");
+	handled_checkbutton = glade_xml_get_widget (xml_xservers, "xserver_handled_checkbutton");
+	flexible_checkbutton = glade_xml_get_widget (xml_xservers, "xserver_flexible_checkbutton");
+	priority_spinbutton = glade_xml_get_widget(xml_xservers, "xserv_priority_spinbutton");
 
 	/* Get list of servers that are set to start */
 	store = gtk_list_store_new (XSERVER_NUM_COLUMNS,
@@ -1051,28 +1092,18 @@ update_remote_sensitivity (gboolean value)
 	GtkWidget *remote_theme_mode_hbox;
 	GtkWidget *remote_theme_select_hbox;
 	GtkWidget *sg_scale_background_remote_hbox;
-	
-	remote_background_color_hbox = glade_helper_get (xml, "remote_background_color_hbox",
-	                                                 GTK_TYPE_HBOX);
-	remote_background_image_hhox = glade_helper_get (xml, "remote_background_image_hhox",
-	                                                 GTK_TYPE_HBOX);
-	remote_background_image_checkbutton = glade_helper_get (xml, "remote_background_image_checkbutton",
-	                                                        GTK_TYPE_CHECK_BUTTON);
-	remote_background_image_chooserbutton = glade_helper_get (xml, "remote_background_image_chooserbutton",
-	                                                          GTK_TYPE_FILE_CHOOSER_BUTTON);
-	remote_logo_image_checkbutton = glade_helper_get (xml, "remote_logo_image_checkbutton",
-	                                                  GTK_TYPE_CHECK_BUTTON);
-	remote_plain_logo_hbox = glade_helper_get (xml, "remote_plain_logo_hbox",
-	                                           GTK_TYPE_HBOX);
-	remote_theme_background_hbox = glade_helper_get (xml, "remote_theme_background_hbox",
-	                                                 GTK_TYPE_TABLE);
-	remote_theme_mode_hbox = glade_helper_get (xml, "remote_theme_mode_hbox",
-	                                           GTK_TYPE_HBOX);
-	remote_theme_select_hbox = glade_helper_get (xml, "remote_theme_select_hbox",
-	                                             GTK_TYPE_HBOX);
-	sg_scale_background_remote_hbox = glade_helper_get (xml, "sg_scale_background_remote_hbox",
-	                                                    GTK_TYPE_HBOX);
-	
+
+	remote_background_color_hbox = glade_xml_get_widget (xml, "remote_background_color_hbox");
+	remote_background_image_hhox = glade_xml_get_widget (xml, "remote_background_image_hhox");
+	remote_background_image_checkbutton = glade_xml_get_widget (xml, "remote_background_image_checkbutton");
+	remote_background_image_chooserbutton = glade_xml_get_widget (xml, "remote_background_image_chooserbutton");
+	remote_logo_image_checkbutton = glade_xml_get_widget (xml, "remote_logo_image_checkbutton");
+	remote_plain_logo_hbox = glade_xml_get_widget (xml, "remote_plain_logo_hbox");
+	remote_theme_background_hbox = glade_xml_get_widget (xml, "remote_theme_background_hbox");
+	remote_theme_mode_hbox = glade_xml_get_widget (xml, "remote_theme_mode_hbox");
+	remote_theme_select_hbox = glade_xml_get_widget (xml, "remote_theme_select_hbox");
+	sg_scale_background_remote_hbox = glade_xml_get_widget (xml, "sg_scale_background_remote_hbox");
+
 	gtk_widget_set_sensitive (remote_background_color_hbox, value);
 	gtk_widget_set_sensitive (remote_background_image_hhox, value);
 	gtk_widget_set_sensitive (remote_background_image_checkbutton, value);
@@ -1099,24 +1130,16 @@ refresh_remote_tab (void)
 	gchar *remote_style;
 	gint local_style;
 
-	local_greeter = glade_helper_get (xml, "local_greeter", 
-	                                  GTK_TYPE_COMBO_BOX);
-	remote_greeter = glade_helper_get (xml, "remote_greeter", 
-	                                   GTK_TYPE_COMBO_BOX);
-	remote_plain_vbox = glade_helper_get (xml, "remote_plain_properties_vbox",
-	                                     GTK_TYPE_VBOX);
-	remote_themed_vbox = glade_helper_get (xml, "remote_themed_properties_vbox",
-	                                      GTK_TYPE_VBOX);
-	configure_xdmcp_vbox = glade_helper_get (xml, "remote_configure_xdmcp_vbox",
-	                                         GTK_TYPE_VBOX);
-	welcome_message_vbox = glade_helper_get (xml, "remote_welcome_message_vbox",
-	                                         GTK_TYPE_VBOX);
-	allowremoteroot = glade_helper_get (xml, "allowremoteroot",
-	                                 GTK_TYPE_BUTTON);
-	allowremoteauto = glade_helper_get (xml, "allowremoteauto",
-	                                 GTK_TYPE_CHECK_BUTTON);
+	local_greeter = glade_xml_get_widget (xml, "local_greeter");
+	remote_greeter = glade_xml_get_widget (xml, "remote_greeter");
+	remote_plain_vbox = glade_xml_get_widget (xml, "remote_plain_properties_vbox");
+	remote_themed_vbox = glade_xml_get_widget (xml, "remote_themed_properties_vbox");
+	configure_xdmcp_vbox = glade_xml_get_widget (xml, "remote_configure_xdmcp_vbox");
+	welcome_message_vbox = glade_xml_get_widget (xml, "remote_welcome_message_vbox");
+	allowremoteroot = glade_xml_get_widget (xml, "allowremoteroot");
+	allowremoteauto = glade_xml_get_widget (xml, "allowremoteauto");
 
-	/* Remove previously added items from the combobox */ 
+	/* Remove previously added items from the combobox */
 	gtk_combo_box_remove_text (GTK_COMBO_BOX (remote_greeter), REMOTE_PLAIN_WITH_FACE);
 	gtk_combo_box_remove_text (GTK_COMBO_BOX (remote_greeter), REMOTE_PLAIN);
 	
@@ -1199,37 +1222,41 @@ refresh_remote_tab (void)
 static void
 update_xserver (gchar *section, GdmXserver *svr)
 {
-	VeConfig *custom_cfg = ve_config_get (custom_config_file);
-	gchar *real_section  = g_strdup_printf ("%s%s",
-		GDM_KEY_SERVER_PREFIX, section);
+	GKeyFile *custom_cfg;
+	gchar *real_section;
 	gchar *key;
 
+	custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+	real_section = g_strdup_printf ("%s%s", GDM_KEY_SERVER_PREFIX, section);
+
 	key = g_strconcat (real_section, "/" GDM_KEY_SERVER_NAME, NULL);
-	ve_config_set_string (custom_cfg, key, svr->name);
+	gdm_common_config_set_string (custom_cfg, key, svr->name);
 	g_free (key);
 
 	key = g_strconcat (real_section, "/" GDM_KEY_SERVER_COMMAND, NULL);
-	ve_config_set_string (custom_cfg, key, svr->command);
+	gdm_common_config_set_string (custom_cfg, key, svr->command);
 	g_free (key);
 
 	key = g_strconcat (real_section, "/", GDM_KEY_SERVER_CHOOSER, NULL);
-	ve_config_set_bool (custom_cfg, key, svr->chooser);
+	gdm_common_config_set_boolean (custom_cfg, key, svr->chooser);
 	g_free (key);
 
 	key = g_strconcat (real_section, "/" GDM_KEY_SERVER_HANDLED, NULL);
-	ve_config_set_bool (custom_cfg, key, svr->handled);
+	gdm_common_config_set_boolean (custom_cfg, key, svr->handled);
 	g_free (key);
 
 	key = g_strconcat (real_section, "/" GDM_KEY_SERVER_FLEXIBLE, NULL);
-	ve_config_set_bool (custom_cfg, key, svr->flexible);
+	gdm_common_config_set_boolean (custom_cfg, key, svr->flexible);
 	g_free (key);
 
 	key = g_strconcat (real_section, "/" GDM_KEY_SERVER_PRIORITY, NULL);
-	ve_config_set_int (custom_cfg, key, svr->priority);
+	gdm_common_config_set_int (custom_cfg, key, svr->priority);
 	g_free (key);
 
         g_free (real_section);
-	ve_config_save (custom_cfg, FALSE);
+	gdm_common_config_save (custom_cfg, custom_config_file, NULL);
+
+	g_key_file_free (custom_cfg);
 
 	update_key ("xservers/PARAMETERS");
 }
@@ -1355,14 +1382,14 @@ combobox_timeout (GtkWidget *combo_box)
 						str = g_strdup (_("Autologin or timed login to the root account is forbidden."));
 					else 
 						str = g_strdup_printf (_("The \"%s\" user UID is lower than allowed MinimalUID."), new_val);				
-					setup_dialog = glade_helper_get(xml, "setup_dialog", GTK_TYPE_WINDOW);
+					setup_dialog = glade_xml_get_widget(xml, "setup_dialog");
 										
-					dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-								    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-								    GTK_MESSAGE_ERROR,
-								    GTK_BUTTONS_OK,
-								    _("User not allowed"),
-								    str);
+					dialog = hig_dialog_new (GTK_WINDOW (setup_dialog),
+								 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+								 GTK_MESSAGE_ERROR,
+								 GTK_BUTTONS_OK,
+								 _("User not allowed"),
+								 str);
 					gtk_dialog_run (GTK_DIALOG (dialog));
 					gtk_widget_destroy (dialog);
 					g_free (str);
@@ -1411,10 +1438,8 @@ combobox_timeout (GtkWidget *combo_box)
 		gchar *section;
 		gboolean val_old, val_new;
 
-		mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-		                                    GTK_TYPE_COMBO_BOX);
-		style_combobox  = glade_helper_get (xml_xservers, "xserver_style_combobox",
-		                                    GTK_TYPE_COMBO_BOX);
+		mod_combobox    = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
+		style_combobox  = glade_xml_get_widget (xml_xservers, "xserver_style_combobox");
 
 		/* Get xserver section to update */
 		section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (mod_combobox));
@@ -1466,12 +1491,9 @@ combobox_timeout (GtkWidget *combo_box)
 		gboolean bool_val = FALSE;		
 		gboolean enabled_command = FALSE;
 		
-		hrs_cmd_entry = glade_helper_get (xml_commands, "hrs_cmd_path_entry",
-						  GTK_TYPE_ENTRY);
-		cust_cmd_entry  = glade_helper_get (xml_commands, "custom_cmd_path_entry",			
-						    GTK_TYPE_ENTRY);
-		status_label = glade_helper_get (xml_commands, "command_status_label", 
-						 GTK_TYPE_LABEL);
+		hrs_cmd_entry = glade_xml_get_widget (xml_commands, "hrs_cmd_path_entry");
+		cust_cmd_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_path_entry");
+		status_label = glade_xml_get_widget (xml_commands, "command_status_label");
 
 		if (selected == HALT_CMD) {
 			val = gdm_config_get_string (GDM_KEY_HALT);		
@@ -1501,46 +1523,40 @@ combobox_timeout (GtkWidget *combo_box)
 			g_free (val);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
-			cust_cmd_label_entry  = glade_helper_get (xml_commands, "custom_cmd_label_entry", 
-								  GTK_TYPE_ENTRY);			
+			cust_cmd_label_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_label_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_label_entry), ve_sure_string (val));
 			g_free (key_string);
 			g_free (val);
 
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
-			cust_cmd_lrlabel_entry  = glade_helper_get (xml_commands, "custom_cmd_lrlabel_entry",
-								    GTK_TYPE_ENTRY);			
+			cust_cmd_lrlabel_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_lrlabel_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_lrlabel_entry), ve_sure_string (val));
 			g_free (key_string);
 			g_free (val);
 
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
-			cust_cmd_text_entry  = glade_helper_get (xml_commands, "custom_cmd_text_entry",
-								 GTK_TYPE_ENTRY);			
+			cust_cmd_text_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_text_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_text_entry), ve_sure_string (val));
 			g_free (key_string);
 			g_free (val);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
-			cust_cmd_tooltip_entry  = glade_helper_get (xml_commands, "custom_cmd_tooltip_entry",
-								    GTK_TYPE_ENTRY);			
+			cust_cmd_tooltip_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_tooltip_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_tooltip_entry), ve_sure_string (val));
 			g_free (key_string);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
-			cust_cmd_norestart_checkbox  = glade_helper_get (xml_commands, "custom_cmd_norestart_checkbutton",
-								    GTK_TYPE_CHECK_BUTTON);
+			cust_cmd_norestart_checkbox  = glade_xml_get_widget (xml_commands, "custom_cmd_norestart_checkbutton");
 			bool_val = gdm_config_get_bool (key_string);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_norestart_checkbox), bool_val);
 			g_free (key_string);
 			
 			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
-			cust_cmd_persistent_checkbox  = glade_helper_get (xml_commands, "custom_cmd_persistent_checkbutton",
-									 GTK_TYPE_CHECK_BUTTON);
+			cust_cmd_persistent_checkbox  = glade_xml_get_widget (xml_commands, "custom_cmd_persistent_checkbutton");
 			bool_val = gdm_config_get_bool (key_string);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_persistent_checkbox), bool_val);
 			g_free (key_string);
@@ -1602,8 +1618,7 @@ list_selection_toggled (GtkWidget *toggle, gpointer data)
 
 	val = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle));
 
-	include_treeview  = glade_helper_get (xml, "fb_include_treeview",
-	                                      GTK_TYPE_TREE_VIEW);
+	include_treeview  = glade_xml_get_widget (xml, "fb_include_treeview");
 	include_model = gtk_tree_view_get_model (GTK_TREE_VIEW (include_treeview));
 	
 	selection = gtk_tree_view_get_selection (
@@ -1635,10 +1650,8 @@ combobox_changed (GtkWidget *combobox)
 		GtkWidget *local_themed_vbox;
 		gint selected;
 		
-		local_plain_vbox = glade_helper_get (xml, "local_plain_properties_vbox",
-		                                      GTK_TYPE_VBOX);
-		local_themed_vbox = glade_helper_get (xml, "local_themed_properties_vbox",
-		                                       GTK_TYPE_VBOX);
+		local_plain_vbox = glade_xml_get_widget (xml, "local_plain_properties_vbox");
+		local_themed_vbox = glade_xml_get_widget (xml, "local_themed_properties_vbox");
 
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combobox));
 
@@ -1662,26 +1675,20 @@ combobox_changed (GtkWidget *combobox)
 		GtkWidget *configure_xdmcp_vbox;
 		GtkWidget *welcome_message_vbox;
 		gint selected;
-				
-		remote_plain_vbox = glade_helper_get (xml, "remote_plain_properties_vbox",
-				                      GTK_TYPE_VBOX);
-		remote_themed_vbox = glade_helper_get (xml, "remote_themed_properties_vbox",
-				                       GTK_TYPE_VBOX);
-		configure_xdmcp_vbox = glade_helper_get (xml, "remote_configure_xdmcp_vbox",
-		                                         GTK_TYPE_VBOX);
-		welcome_message_vbox = glade_helper_get (xml, "remote_welcome_message_vbox",
-		                                         GTK_TYPE_VBOX);
-		
+
+		remote_plain_vbox = glade_xml_get_widget (xml, "remote_plain_properties_vbox");
+		remote_themed_vbox = glade_xml_get_widget (xml, "remote_themed_properties_vbox");
+		configure_xdmcp_vbox = glade_xml_get_widget (xml, "remote_configure_xdmcp_vbox");
+		welcome_message_vbox = glade_xml_get_widget (xml, "remote_welcome_message_vbox");
+
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combobox));
 
 		if (selected == REMOTE_DISABLED) {
 			GtkWidget *allowremoteauto;
 			GtkWidget *allowremoteroot;
-			
-			allowremoteauto = glade_helper_get (xml, "allowremoteauto",
-			                                    GTK_TYPE_CHECK_BUTTON);
-			allowremoteroot = glade_helper_get (xml, "allowremoteroot",
-			                                    GTK_TYPE_CHECK_BUTTON);
+
+			allowremoteauto = glade_xml_get_widget (xml, "allowremoteauto");
+			allowremoteroot = glade_xml_get_widget (xml, "allowremoteroot");
 
 			gtk_widget_set_sensitive (allowremoteauto, FALSE);
 			gtk_widget_set_sensitive (allowremoteroot, FALSE);
@@ -1696,12 +1703,9 @@ combobox_changed (GtkWidget *combobox)
 			GtkWidget *allowremoteauto;
 			GtkWidget *allowremoteroot;
 
-			timedlogin = glade_helper_get (xml, "timedlogin",
-			                               GTK_TYPE_CHECK_BUTTON);
-			allowremoteauto = glade_helper_get (xml, "allowremoteauto",
-			                                    GTK_TYPE_CHECK_BUTTON);
-			allowremoteroot = glade_helper_get (xml, "allowremoteroot",
-			                                    GTK_TYPE_CHECK_BUTTON);
+			timedlogin = glade_xml_get_widget (xml, "timedlogin");
+			allowremoteauto = glade_xml_get_widget (xml, "allowremoteauto");
+			allowremoteroot = glade_xml_get_widget (xml, "allowremoteroot");
 
 			gtk_widget_set_sensitive (allowremoteauto, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (timedlogin)));
 			gtk_widget_set_sensitive (allowremoteroot, TRUE);
@@ -1762,22 +1766,17 @@ combobox_changed (GtkWidget *combobox)
 		GtkTreeIter iter;
 		gint selected;
 				
-		theme_list = glade_helper_get (xml, "gg_theme_list",
-		                               GTK_TYPE_TREE_VIEW);
-		theme_list_remote = glade_helper_get (xml, "gg_theme_list_remote",
-		                                      GTK_TYPE_TREE_VIEW);
-		delete_button = glade_helper_get (xml, "gg_delete_theme",
-		                                  GTK_TYPE_BUTTON);
-		delete_button_remote = glade_helper_get (xml, "gg_delete_theme_remote",
-		                                         GTK_TYPE_BUTTON);
+		theme_list = glade_xml_get_widget (xml, "gg_theme_list");
+		theme_list_remote = glade_xml_get_widget (xml, "gg_theme_list_remote");
+		delete_button = glade_xml_get_widget (xml, "gg_delete_theme");
+		delete_button_remote = glade_xml_get_widget (xml, "gg_delete_theme_remote");
 
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combobox));
 
 		if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
 			GtkWidget *mode_combobox;
 			
-			mode_combobox = glade_helper_get (xml, "gg_mode_combobox_remote",
-			                                  GTK_TYPE_COMBO_BOX);
+			mode_combobox = glade_xml_get_widget (xml, "gg_mode_combobox_remote");
 			gtk_combo_box_set_active (GTK_COMBO_BOX (mode_combobox), selected);
 
 			if (mode_combobox != combobox) {
@@ -1788,17 +1787,16 @@ combobox_changed (GtkWidget *combobox)
 				   to be displayed only once */
 				
 				if (selected == RANDOM_THEME && ve_string_empty (selected_themes)) {
-					GtkWidget *setup_dialog = glade_helper_get(xml, 
-										   "setup_dialog", GTK_TYPE_WINDOW);
+					GtkWidget *setup_dialog = glade_xml_get_widget(xml, "setup_dialog");
 					
-					GtkWidget *warn_dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
-										 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
-										 GTK_MESSAGE_WARNING,
-										 GTK_BUTTONS_OK,
-										 _("No themes selected!"),
-										 _("You need one or more themes selected for the "
-										   "\"Random from selected\" option to be valid. "
-										   "Failure to do so will force \"Selected only\" mode."));
+					GtkWidget *warn_dlg = hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
+									      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
+									      GTK_MESSAGE_WARNING,
+									      GTK_BUTTONS_OK,
+									      _("No themes selected!"),
+									      _("You need one or more themes selected for the "
+										"\"Random from selected\" option to be valid. "
+										"Failure to do so will force \"Selected only\" mode."));
 					gtk_dialog_run (GTK_DIALOG (warn_dlg));
 					gtk_widget_destroy (warn_dlg);
 					
@@ -1811,8 +1809,7 @@ combobox_changed (GtkWidget *combobox)
 		else {
 			GtkWidget *mode_combobox;
 			
-			mode_combobox = glade_helper_get (xml, "gg_mode_combobox",
-			                                  GTK_TYPE_COMBO_BOX);
+			mode_combobox = glade_xml_get_widget (xml, "gg_mode_combobox");
 			gtk_combo_box_set_active (GTK_COMBO_BOX (mode_combobox), selected);
 
 			if (mode_combobox != combobox) {
@@ -1822,18 +1819,17 @@ combobox_changed (GtkWidget *combobox)
 				   called multiple times and we want this warning 
 				   to be displayed only once */
 				if (selected == RANDOM_THEME && ve_string_empty (selected_themes)) {
-					GtkWidget *setup_dialog = glade_helper_get(xml, 
-										   "setup_dialog", GTK_TYPE_WINDOW);
+					GtkWidget *setup_dialog = glade_xml_get_widget(xml, "setup_dialog");
 					
-					GtkWidget *warn_dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
-										 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
-										 GTK_MESSAGE_WARNING,
-										 GTK_BUTTONS_OK,
-										 _("No themes selected!"),
-										 _("You need one or more themes "
-										   "selected for the \"Random from selected\" "
-										   "option to be valid. Failure to do so will "
-										   "force \"Selected only\" mode."));
+					GtkWidget *warn_dlg = hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
+									      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
+									      GTK_MESSAGE_WARNING,
+									      GTK_BUTTONS_OK,
+									      _("No themes selected!"),
+									      _("You need one or more themes "
+										"selected for the \"Random from selected\" "
+										"option to be valid. Failure to do so will "
+										"force \"Selected only\" mode."));
 					gtk_dialog_run (GTK_DIALOG (warn_dlg));
 					gtk_widget_destroy (warn_dlg);
 					
@@ -1949,16 +1945,16 @@ combobox_changed (GtkWidget *combobox)
 			GtkWidget *apply_command;
 			gint response;
 			
-			setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+			setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
 			
-			prompt = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-						    GTK_DIALOG_MODAL |
-						    GTK_DIALOG_DESTROY_WITH_PARENT,
-						    GTK_MESSAGE_WARNING,
-						    GTK_BUTTONS_NONE,
-						    _("Apply changes to the modified command?"),
-						    _("If you don't apply, the changes "
-						      "will be discarded."));
+			prompt = hig_dialog_new (GTK_WINDOW (setup_dialog),
+						 GTK_DIALOG_MODAL |
+						 GTK_DIALOG_DESTROY_WITH_PARENT,
+						 GTK_MESSAGE_WARNING,
+						 GTK_BUTTONS_NONE,
+						 _("Apply changes to the modified command?"),
+						 _("If you don't apply, the changes "
+						   "will be discarded."));
 			
 			gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-cancel", GTK_RESPONSE_CANCEL); 
 			gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-apply", GTK_RESPONSE_APPLY);
@@ -1966,8 +1962,7 @@ combobox_changed (GtkWidget *combobox)
 			response = gtk_dialog_run (GTK_DIALOG (prompt));
 			gtk_widget_destroy (prompt);	       
 			
-			apply_command = glade_helper_get (xml_commands, "command_apply_button",
-							  GTK_TYPE_BUTTON);
+			apply_command = glade_xml_get_widget (xml_commands, "command_apply_button");
 			if (response == GTK_RESPONSE_APPLY)				
 				g_signal_emit_by_name (G_OBJECT (apply_command), "clicked");
 			
@@ -1979,10 +1974,8 @@ combobox_changed (GtkWidget *combobox)
 		
 		last_selected_command = selected;
 
-		hrs_cmd_vbox = glade_helper_get (xml_commands, "hrs_command_vbox",
-						 GTK_TYPE_VBOX);
-		custom_cmd_vbox = glade_helper_get (xml_commands, "custom_command_vbox",
-						      GTK_TYPE_VBOX);		
+		hrs_cmd_vbox = glade_xml_get_widget (xml_commands, "hrs_command_vbox");
+		custom_cmd_vbox = glade_xml_get_widget (xml_commands, "custom_command_vbox");
 		if (selected > SUSPEND_CMD) {
 			/* We are dealing with custom commands */							
 			gtk_widget_show (custom_cmd_vbox);
@@ -2065,7 +2058,7 @@ setup_notify_toggle (const char *name,
 	GtkWidget *toggle;
 	gboolean val;
 
-	toggle = glade_helper_get (xml, name, GTK_TYPE_TOGGLE_BUTTON);
+	toggle = glade_xml_get_widget (xml, name);
 	val    = gdm_config_get_bool ((gchar *)key);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
@@ -2079,10 +2072,8 @@ setup_notify_toggle (const char *name,
 		GtkWidget *config_available;
 		GtkWidget *chooser_button;
 		
-		config_available = glade_helper_get (xml, "config_available", 
-		                                     GTK_TYPE_CHECK_BUTTON);
-		chooser_button = glade_helper_get (xml, "chooser_button",
-		                                   GTK_TYPE_CHECK_BUTTON);
+		config_available = glade_xml_get_widget (xml, "config_available");
+		chooser_button = glade_xml_get_widget (xml, "chooser_button");
 
 		gtk_widget_set_sensitive (config_available, val);
 		gtk_widget_set_sensitive (chooser_button, val);
@@ -2099,11 +2090,9 @@ setup_notify_toggle (const char *name,
 		GtkWidget *autologin_label;
 		GtkWidget *autologin_combo;
 
-		autologin_label = glade_helper_get (xml, "autologin_label", 
-		                                    GTK_TYPE_LABEL);
-		autologin_combo = glade_helper_get (xml, "autologin_combo", 
-		                                    GTK_TYPE_COMBO_BOX);
-			
+		autologin_label = glade_xml_get_widget (xml, "autologin_label");
+		autologin_combo = glade_xml_get_widget (xml, "autologin_combo");
+
 		gtk_widget_set_sensitive (autologin_label, val);
 		gtk_widget_set_sensitive (autologin_combo, val);
 
@@ -2125,18 +2114,12 @@ setup_notify_toggle (const char *name,
 		GtkWidget *timedlogin_seconds_units;
 		GtkWidget *timedlogin_allow_remote;
 		
-		timedlogin_label = glade_helper_get (xml, "timed_login_label",
-		                                     GTK_TYPE_LABEL);
-		timedlogin_combo = glade_helper_get (xml, "timedlogin_combo",
-		                                     GTK_TYPE_COMBO_BOX);
-		timedlogin_seconds_label = glade_helper_get (xml, "timedlogin_seconds_label",
-		                                             GTK_TYPE_LABEL);
-		timedlogin_seconds_spin_button = glade_helper_get (xml,"timedlogin_seconds",
-		                                                   GTK_TYPE_SPIN_BUTTON);
-		timedlogin_seconds_units = glade_helper_get (xml,"timedlogin_seconds_units",
-		                                             GTK_TYPE_LABEL);
-		timedlogin_allow_remote = glade_helper_get (xml, "allowremoteauto",
-		                                            GTK_TYPE_CHECK_BUTTON);			
+		timedlogin_label = glade_xml_get_widget (xml, "timed_login_label");
+		timedlogin_combo = glade_xml_get_widget (xml, "timedlogin_combo");
+		timedlogin_seconds_label = glade_xml_get_widget (xml, "timedlogin_seconds_label");
+		timedlogin_seconds_spin_button = glade_xml_get_widget (xml,"timedlogin_seconds");
+		timedlogin_seconds_units = glade_xml_get_widget (xml,"timedlogin_seconds_units");
+		timedlogin_allow_remote = glade_xml_get_widget (xml, "allowremoteauto");
 
 		gtk_widget_set_sensitive (timedlogin_label, val);
 		gtk_widget_set_sensitive (timedlogin_combo, val);
@@ -2170,9 +2153,8 @@ setup_notify_toggle (const char *name,
 		/* This one is a lil bit back to front
 		   true is false and false is true */
 		GtkWidget *use_circles_in_passwd;
-		use_circles_in_passwd = glade_helper_get (xml, "use_circles_passwd_checkbox", 
-							  GTK_TYPE_CHECK_BUTTON);
-		
+		use_circles_in_passwd = glade_xml_get_widget (xml, "use_circles_passwd_checkbox");
+
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), !val);
 		gtk_widget_set_sensitive (use_circles_in_passwd, !val);
 		
@@ -2187,15 +2169,13 @@ setup_notify_toggle (const char *name,
 		GtkWidget *posx;
 		GtkWidget *posy;
 
-		posx =  glade_helper_get (xml, "local_posx_spinbutton", 
-					  GTK_TYPE_SPIN_BUTTON);
-		
-		posy =  glade_helper_get (xml, "local_posy_spinbutton", 
-					  GTK_TYPE_SPIN_BUTTON);
+		posx =  glade_xml_get_widget (xml, "local_posx_spinbutton");
+
+		posy =  glade_xml_get_widget (xml, "local_posy_spinbutton");
 
 		gtk_widget_set_sensitive (posx, val);
 		gtk_widget_set_sensitive (posy, val);
-		
+
 		g_signal_connect (G_OBJECT (toggle), "toggled",
 		                  G_CALLBACK (toggle_toggled), toggle);	
 		g_signal_connect (G_OBJECT (toggle), "toggled",
@@ -2208,11 +2188,8 @@ setup_notify_toggle (const char *name,
 		GtkWidget *posx;
 		GtkWidget *posy;
 
-		posx =  glade_helper_get (xml, "remote_posx_spinbutton", 
-					  GTK_TYPE_SPIN_BUTTON);
-		
-		posy =  glade_helper_get (xml, "remote_posy_spinbutton", 
-					  GTK_TYPE_SPIN_BUTTON);
+		posx =  glade_xml_get_widget (xml, "remote_posx_spinbutton");
+		posy =  glade_xml_get_widget (xml, "remote_posy_spinbutton");
 
 		gtk_widget_set_sensitive (posx, val);
 		gtk_widget_set_sensitive (posy, val);
@@ -2227,9 +2204,8 @@ setup_notify_toggle (const char *name,
 	else if (strcmp ("local_title_bar_checkbutton", ve_sure_string (name)) == 0) {
 		GtkWidget *lockpos;
 		
-		lockpos = glade_helper_get (xml, "local_lock_pos_checkbox", 
-					    GTK_TYPE_CHECK_BUTTON);
-		
+		lockpos = glade_xml_get_widget (xml, "local_lock_pos_checkbox");
+
 		gtk_widget_set_sensitive (lockpos, val);
 		
 		g_signal_connect (G_OBJECT (toggle), "toggled",
@@ -2240,9 +2216,8 @@ setup_notify_toggle (const char *name,
 	else if (strcmp ("remote_title_bar_checkbutton", ve_sure_string (name)) == 0) {
 		GtkWidget *lockpos;
 		
-		lockpos = glade_helper_get (xml, "remote_lock_pos_checkbox", 
-					    GTK_TYPE_CHECK_BUTTON);
-		
+		lockpos = glade_xml_get_widget (xml, "remote_lock_pos_checkbox");
+
 		gtk_widget_set_sensitive (lockpos, val);
 		
 		g_signal_connect (G_OBJECT (toggle), "toggled",
@@ -2253,9 +2228,8 @@ setup_notify_toggle (const char *name,
 	else if (strcmp ("disallow_tcp", ve_sure_string (name)) == 0) {
 		GtkWidget *nfs_cookies;
 		
-		nfs_cookies = glade_helper_get (xml, "never_cookies_NFS_checkbutton",
-					    GTK_TYPE_CHECK_BUTTON);
-		
+		nfs_cookies = glade_xml_get_widget (xml, "never_cookies_NFS_checkbutton");
+
 		gtk_widget_set_sensitive (nfs_cookies, !val);
 
 		g_signal_connect (G_OBJECT (toggle), "toggled",
@@ -2280,8 +2254,8 @@ commands_entry_timeout (GtkWidget *entry)
 	const char  *key  = g_object_get_data (G_OBJECT (entry), "key");
 	const gchar *val  = gtk_entry_get_text (GTK_ENTRY (entry));
 	
-	apply_cmd_changes = glade_helper_get (xml_commands, "command_apply_button", GTK_TYPE_BUTTON);
-	command_combobox = glade_helper_get (xml_commands, "cmd_type_combobox", GTK_TYPE_COMBO_BOX);
+	apply_cmd_changes = glade_xml_get_widget (xml_commands, "command_apply_button");
+	command_combobox = glade_xml_get_widget (xml_commands, "cmd_type_combobox");
 	
 	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));	
 
@@ -2349,7 +2323,7 @@ setup_commands_text_entry (const char *name,
 {
 	GtkWidget *entry;
 
-	entry = glade_helper_get (xml_commands, name, GTK_TYPE_ENTRY);
+	entry = glade_xml_get_widget (xml_commands, name);
 	
 	g_object_set_data_full (G_OBJECT (entry),
 	                        "key", g_strdup (key),
@@ -2365,7 +2339,7 @@ setup_commands_notify_toggle (const char *name,
 {
 	GtkWidget *toggle;
 	
-	toggle = glade_helper_get (xml_commands, name, GTK_TYPE_TOGGLE_BUTTON);
+	toggle = glade_xml_get_widget (xml_commands, name);
 	
 	g_object_set_data_full (G_OBJECT (toggle),
 	                        "key", g_strdup (key),
@@ -2383,7 +2357,7 @@ setup_xdmcp_notify_toggle (const char *name,
 	GtkWidget *toggle;
 	gboolean val;
 
-	toggle = glade_helper_get (xml_xdmcp, name, GTK_TYPE_TOGGLE_BUTTON);
+	toggle = glade_xml_get_widget (xml_xdmcp, name);
 
 	val = gdm_config_get_bool ((gchar *)key);
 
@@ -2417,13 +2391,12 @@ root_not_allowed (GtkWidget *combo_box)
 
 	if ( ! ve_string_empty (text) &&
 	    strcmp (text, get_root_user ()) == 0) {
-		GtkWidget *dlg = 
-			ve_hig_dialog_new (NULL /* parent */,
-					   GTK_DIALOG_MODAL /* flags */,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("Autologin or timed login to the root account is not allowed."),
-					   "");
+		GtkWidget *dlg = hig_dialog_new (NULL /* parent */,
+						 GTK_DIALOG_MODAL /* flags */,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_OK,
+						 _("Autologin or timed login to the root account is not allowed."),
+						 "");
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);
 		gtk_dialog_run (GTK_DIALOG (dlg));
@@ -2444,8 +2417,7 @@ static void
 setup_user_combobox_list (const char *name, const char *key)
 {
 	GtkListStore *combobox_store = NULL;
-	GtkWidget    *combobox_entry = glade_helper_get (xml, name,
-		GTK_TYPE_COMBO_BOX_ENTRY);
+	GtkWidget    *combobox_entry = glade_xml_get_widget (xml, name);
 	GtkTreeIter iter;
 	GList *users = NULL;
 	GList *users_string = NULL;
@@ -2499,7 +2471,7 @@ setup_user_combobox_list (const char *name, const char *key)
 static void
 setup_user_combobox (const char *name, const char *key)
 {
-	GtkWidget *combobox_entry = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX_ENTRY);
+	GtkWidget *combobox_entry = glade_xml_get_widget (xml, name);
 	setup_user_combobox_list (name, key);
 	g_object_set_data_full (G_OBJECT (combobox_entry), "key",
 	                        g_strdup (key), (GDestroyNotify) g_free);
@@ -2513,8 +2485,7 @@ static void
 setup_intspin (const char *name,
 	       const char *key)
 {
-	GtkWidget *spin = glade_helper_get (xml, name,
-					    GTK_TYPE_SPIN_BUTTON);
+	GtkWidget *spin = glade_xml_get_widget (xml, name);
 	int val = gdm_config_get_int ((gchar *)key);
 
 	g_object_set_data_full (G_OBJECT (spin),
@@ -2535,10 +2506,7 @@ setup_xdmcp_intspin (const char *name,
 	GtkWidget *spin;
 	int val = gdm_config_get_int ((gchar *)key);
 
-	spin = glade_helper_get (xml_xdmcp, 
-	                         name,
-	                         GTK_TYPE_SPIN_BUTTON);
-
+	spin = glade_xml_get_widget (xml_xdmcp, name);
 
 	g_object_set_data_full (G_OBJECT (spin),
 				"key", g_strdup (key),
@@ -2633,8 +2601,7 @@ face_add (FaceData *fd)
 	GtkTreeIter iter;
 	gboolean valid;
 
-	user_entry = glade_helper_get (xml_add_users, "fb_addentry",
-	                               GTK_TYPE_ENTRY);
+	user_entry = glade_xml_get_widget (xml_add_users, "fb_addentry");
 	text = gtk_entry_get_text (GTK_ENTRY (user_entry));
 
 	if (gdm_is_user_valid (text)) {
@@ -2649,16 +2616,14 @@ face_add (FaceData *fd)
 				
 				str = g_strdup_printf (_("The \"%s\" user already exists in the include list."), text); 
 				
-				setup_dialog = glade_helper_get (xml_add_users, "add_user_dialog",
-				                                 GTK_TYPE_WINDOW);
-				
-				dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-				                            GTK_DIALOG_MODAL | 
-				                            GTK_DIALOG_DESTROY_WITH_PARENT,
-				                            GTK_MESSAGE_ERROR,
-				                            GTK_BUTTONS_OK,
-				                            _("Cannot add user"),
-				                            str);
+				setup_dialog = glade_xml_get_widget (xml_add_users, "add_user_dialog");
+				dialog = hig_dialog_new (GTK_WINDOW (setup_dialog),
+							 GTK_DIALOG_MODAL | 
+							 GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR,
+							 GTK_BUTTONS_OK,
+							 _("Cannot add user"),
+							 str);
 				gtk_dialog_run (GTK_DIALOG (dialog));
 				gtk_widget_destroy (dialog);
 				g_free (str);				
@@ -2679,16 +2644,14 @@ face_add (FaceData *fd)
 				
 				str = g_strdup_printf (_("The \"%s\" user already exists in the exclude list."), text); 
 				
-				setup_dialog = glade_helper_get (xml_add_users, "add_user_dialog",
-				                                 GTK_TYPE_WINDOW);
-				
-				dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-				                            GTK_DIALOG_MODAL | 
-				                            GTK_DIALOG_DESTROY_WITH_PARENT,
-				                            GTK_MESSAGE_ERROR,
-				                            GTK_BUTTONS_OK,
-				                            _("Cannot add user"),
-				                            str);
+				setup_dialog = glade_xml_get_widget (xml_add_users, "add_user_dialog");
+				dialog = hig_dialog_new (GTK_WINDOW (setup_dialog),
+							 GTK_DIALOG_MODAL | 
+							 GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR,
+							 GTK_BUTTONS_OK,
+							 _("Cannot add user"),
+							 str);
 				gtk_dialog_run (GTK_DIALOG (dialog));
 				gtk_widget_destroy (dialog);
 				g_free (str);	
@@ -2708,16 +2671,14 @@ face_add (FaceData *fd)
 				
 				str = g_strdup_printf (_("The \"%s\" user UID is lower than allowed MinimalUID."), text); 
 				
-				setup_dialog = glade_helper_get (xml_add_users, "add_user_dialog",
-								 GTK_TYPE_WINDOW);
-				
-				dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-							    GTK_DIALOG_MODAL | 
-							    GTK_DIALOG_DESTROY_WITH_PARENT,
-							    GTK_MESSAGE_ERROR,
-							    GTK_BUTTONS_OK,
-							    _("Cannot add user"),
-							    str);
+				setup_dialog = glade_xml_get_widget (xml_add_users, "add_user_dialog");
+				dialog = hig_dialog_new (GTK_WINDOW (setup_dialog),
+							 GTK_DIALOG_MODAL | 
+							 GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR,
+							 GTK_BUTTONS_OK,
+							 _("Cannot add user"),
+							 str);
 				gtk_dialog_run (GTK_DIALOG (dialog));
 				gtk_widget_destroy (dialog);
 				g_free (str);
@@ -2740,16 +2701,14 @@ face_add (FaceData *fd)
 		
 		str = g_strdup_printf (_("The \"%s\" user does not exist."), text); 
 			
-		setup_dialog = glade_helper_get (xml_add_users, "add_user_dialog",
-		                                 GTK_TYPE_WINDOW);
-				
-		dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-		                            GTK_DIALOG_MODAL | 
-		                            GTK_DIALOG_DESTROY_WITH_PARENT,
-		                            GTK_MESSAGE_ERROR,
-		                            GTK_BUTTONS_OK,
-		                            _("Cannot add user"),
-		                            str);
+		setup_dialog = glade_xml_get_widget (xml_add_users, "add_user_dialog");
+		dialog = hig_dialog_new (GTK_WINDOW (setup_dialog),
+					 GTK_DIALOG_MODAL | 
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Cannot add user"),
+					 str);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		g_free (str);
@@ -2816,16 +2775,14 @@ browser_move (GtkWidget *button, gpointer data)
 				
 				str = g_strdup_printf (_("The \"%s\" user UID is lower than allowed MinimalUID."), text); 
 				
-				setup_dialog = glade_helper_get (xml_add_users, "add_user_dialog",
-								 GTK_TYPE_WINDOW);
-				
-				dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-							    GTK_DIALOG_MODAL | 
-							    GTK_DIALOG_DESTROY_WITH_PARENT,
-							    GTK_MESSAGE_ERROR,
-							    GTK_BUTTONS_OK,
-							    _("Cannot add user"),
-							    str);
+				setup_dialog = glade_xml_get_widget (xml_add_users, "add_user_dialog");
+				dialog = hig_dialog_new (GTK_WINDOW (setup_dialog),
+							 GTK_DIALOG_MODAL | 
+							 GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR,
+							 GTK_BUTTONS_OK,
+							 _("Cannot add user"),
+							 str);
 				gtk_dialog_run (GTK_DIALOG (dialog));
 				gtk_widget_destroy (dialog);
 				g_free (str);
@@ -2887,14 +2844,10 @@ command_apply (GtkWidget *button, gpointer data)
 	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
 	
 	if (last_selected_command < CUSTOM_CMD)
-		cmd_path_entry = glade_helper_get (xml_commands,
-						   "hrs_cmd_path_entry",
-						   GTK_TYPE_ENTRY);	
+		cmd_path_entry = glade_xml_get_widget (xml_commands, "hrs_cmd_path_entry");
 	else
-		cmd_path_entry = glade_helper_get (xml_commands,
-						   "custom_cmd_path_entry",
-						   GTK_TYPE_ENTRY);	
-	
+		cmd_path_entry = glade_xml_get_widget (xml_commands, "custom_cmd_path_entry");
+
 	command = gtk_entry_get_text (GTK_ENTRY (cmd_path_entry));
 	
 	command_exists = ve_string_empty (command) || gdm_working_command_exists (command);
@@ -2904,16 +2857,16 @@ command_apply (GtkWidget *button, gpointer data)
 					     (GHRFunc) unsaved_data_from_hash_table_func, NULL);
 	
 	else {
-		GtkWidget *parent = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_WINDOW);
+		GtkWidget *parent = glade_xml_get_widget (xml_commands, "commands_dialog");
 
-		GtkWidget *dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
-						       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						       GTK_MESSAGE_ERROR,
-						       GTK_BUTTONS_OK,
-						       _("Invalid command path"),
-						       _("The path you provided for this "
-							 "command is not valid. The changes "
-							 "will not be saved."));
+		GtkWidget *dialog = hig_dialog_new (GTK_WINDOW (parent),
+						    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+						    GTK_MESSAGE_ERROR,
+						    GTK_BUTTONS_OK,
+						    _("Invalid command path"),
+						    _("The path you provided for this "
+						      "command is not valid. The changes "
+						      "will not be saved."));
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 	}
@@ -2972,17 +2925,17 @@ browser_apply (GtkWidget *button, gpointer data)
 		GtkWidget *setup_dialog;
 		GtkWidget *dlg;
 		
-		setup_dialog = glade_helper_get(xml, "setup_dialog", GTK_TYPE_WINDOW);
+		setup_dialog = glade_xml_get_widget(xml, "setup_dialog");
 		
 		//Inform user about the change
-		dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_OK,
-					 _("Users include list modification"),
-					 _("Some of the users had uid lower than "
-					   "MinimalUID (Security tab) and "
-					   "could not be added."));
+		dlg = hig_dialog_new (GTK_WINDOW (setup_dialog),
+				      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+				      GTK_MESSAGE_WARNING,
+				      GTK_BUTTONS_OK,
+				      _("Users include list modification"),
+				      _("Some of the users had uid lower than "
+					"MinimalUID (Security tab) and "
+					"could not be added."));
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);						
 		
@@ -3099,15 +3052,14 @@ users_add_button_clicked (GtkWidget *button, gpointer data)
 	GtkWidget *parent;
 	
 	if (dialog == NULL) {
-		parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
-		dialog = glade_helper_get (xml_add_users, "add_user_dialog", GTK_TYPE_DIALOG);
+		parent = glade_xml_get_widget (xml, "setup_dialog");
+		dialog = glade_xml_get_widget (xml_add_users, "add_user_dialog");
 
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 	}
 
-	user_entry = glade_helper_get (xml_add_users, "fb_addentry",
-	                               GTK_TYPE_ENTRY); 
+	user_entry = glade_xml_get_widget (xml_add_users, "fb_addentry");
 
 	gtk_widget_grab_focus (user_entry);
 	
@@ -3127,26 +3079,16 @@ setup_face (void)
 
 	GtkTreeSelection *selection;
 
-	fc.include_add       = glade_helper_get (xml, "fb_includeadd",
-	                                         GTK_TYPE_WIDGET);
-	fc.include_del       = glade_helper_get (xml, "fb_includedelete",
-	                                         GTK_TYPE_WIDGET);
-	fc.exclude_add       = glade_helper_get (xml, "fb_excludeadd",
-	                                         GTK_TYPE_WIDGET);
-	fc.exclude_del       = glade_helper_get (xml, "fb_excludedelete",
-	                                         GTK_TYPE_WIDGET);
-	fc.to_include_button = glade_helper_get (xml, "fb_toinclude",
-	                                         GTK_TYPE_WIDGET);
-	fc.to_exclude_button = glade_helper_get (xml, "fb_toexclude",
-	                                         GTK_TYPE_WIDGET);
-	fc.apply             = glade_helper_get (xml, "fb_faceapply",
-	                                         GTK_TYPE_WIDGET);
-	fc.include_treeview  = glade_helper_get (xml, "fb_include_treeview",
-	                                         GTK_TYPE_TREE_VIEW);
-	fc.exclude_treeview  = glade_helper_get (xml, "fb_exclude_treeview",
-	                                         GTK_TYPE_TREE_VIEW);
-	fc.allusers          = glade_helper_get (xml, "fb_allusers",
-	                                         GTK_TYPE_TOGGLE_BUTTON);
+	fc.include_add       = glade_xml_get_widget (xml, "fb_includeadd");
+	fc.include_del       = glade_xml_get_widget (xml, "fb_includedelete");
+	fc.exclude_add       = glade_xml_get_widget (xml, "fb_excludeadd");
+	fc.exclude_del       = glade_xml_get_widget (xml, "fb_excludedelete");
+	fc.to_include_button = glade_xml_get_widget (xml, "fb_toinclude");
+	fc.to_exclude_button = glade_xml_get_widget (xml, "fb_toexclude");
+	fc.apply             = glade_xml_get_widget (xml, "fb_faceapply");
+	fc.include_treeview  = glade_xml_get_widget (xml, "fb_include_treeview");
+	fc.exclude_treeview  = glade_xml_get_widget (xml, "fb_exclude_treeview");
+	fc.allusers          = glade_xml_get_widget (xml, "fb_allusers");
 
 	fc.include_store = setup_include_exclude (fc.include_treeview,
 	                                          GDM_KEY_INCLUDE);
@@ -3173,10 +3115,7 @@ setup_face (void)
 	face_apply.include = &fd_include;
 	face_apply.exclude = &fd_exclude;
 
-	xml_add_users = glade_helper_load ("gdmsetup.glade",
-	                                   "add_user_dialog",
-	                                   GTK_TYPE_DIALOG,
-	                                   TRUE);
+	xml_add_users = glade_xml_new (GDM_GLADE_DIR "/gdmsetup.glade", "add_user_dialog", NULL);
 
 	g_signal_connect (G_OBJECT (fc.include_add), "clicked",
 	                  G_CALLBACK (users_add_button_clicked), &fd_include);
@@ -3240,8 +3179,7 @@ greeter_toggle_timeout (GtkWidget *toggle)
 
 				GtkWidget *checkbutton;
 		
-				checkbutton = glade_helper_get (xml, "sg_scale_background_remote",
-				                                GTK_TYPE_CHECK_BUTTON);	
+				checkbutton = glade_xml_get_widget (xml, "sg_scale_background_remote");
 
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton),
 				                              GTK_TOGGLE_BUTTON (toggle)->active);
@@ -3249,8 +3187,7 @@ greeter_toggle_timeout (GtkWidget *toggle)
 			else {
 				GtkWidget *checkbutton;
 			
-				checkbutton = glade_helper_get (xml, "sg_scale_background", 
-				                               GTK_TYPE_CHECK_BUTTON);
+				checkbutton = glade_xml_get_widget (xml, "sg_scale_background");
 
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton),
 				                              GTK_TOGGLE_BUTTON (toggle)->active);	
@@ -3300,19 +3237,11 @@ local_background_type_toggle_timeout (GtkWidget *toggle)
 	gboolean image_value;
 	gboolean color_value;
 
-	image_radiobutton = glade_helper_get (xml, 
-	                                      "local_background_image_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
-	color_radiobutton = glade_helper_get (xml, 
-	                                      "local_background_color_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
-	image_remote_radiobutton = glade_helper_get (xml, 
-	                                             "remote_background_image_checkbutton",
-	                                             GTK_TYPE_CHECK_BUTTON);
-	color_remote_radiobutton = glade_helper_get (xml, 
-	                                             "remote_background_color_checkbutton",
-	                                             GTK_TYPE_CHECK_BUTTON);
-	
+	image_radiobutton = glade_xml_get_widget (xml, "local_background_image_checkbutton");
+	color_radiobutton = glade_xml_get_widget (xml, "local_background_color_checkbutton");
+	image_remote_radiobutton = glade_xml_get_widget (xml, "remote_background_image_checkbutton");
+	color_remote_radiobutton = glade_xml_get_widget (xml, "remote_background_color_checkbutton");
+
 	if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
 		image_value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (image_radiobutton));
 		color_value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (color_radiobutton));
@@ -3357,8 +3286,7 @@ static void
 setup_greeter_toggle (const char *name,
 		      const char *key)
 {
-	GtkWidget *toggle = glade_helper_get (xml, name,
-	      GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *toggle = glade_xml_get_widget (xml, name);
 	gboolean val = gdm_config_get_bool ((gchar *)key);
 
 	g_object_set_data_full (G_OBJECT (toggle), "key", g_strdup (key),
@@ -3367,10 +3295,8 @@ setup_greeter_toggle (const char *name,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
 
 	if (strcmp ("sg_defaultwelcome", ve_sure_string (name)) == 0) {
-		GtkWidget *welcome = glade_helper_get (xml,
-			"welcome", GTK_TYPE_ENTRY);
-		GtkWidget *custom = glade_helper_get (xml, "sg_customwelcome",
-		                                      GTK_TYPE_RADIO_BUTTON);
+		GtkWidget *welcome = glade_xml_get_widget (xml, "welcome");
+		GtkWidget *custom = glade_xml_get_widget (xml, "sg_customwelcome");
 
 		gtk_widget_set_sensitive (welcome, !val);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (custom), !val);
@@ -3379,10 +3305,8 @@ setup_greeter_toggle (const char *name,
 			G_CALLBACK (sensitive_entry_toggled), welcome);
 
 	} else if (strcmp ("sg_defaultwelcomeremote", ve_sure_string (name)) == 0) {
-		GtkWidget *welcomeremote = glade_helper_get (xml,
-			"welcomeremote", GTK_TYPE_ENTRY);
-		GtkWidget *customremote = glade_helper_get (xml, "sg_customwelcomeremote",
-		                                            GTK_TYPE_RADIO_BUTTON);
+		GtkWidget *welcomeremote = glade_xml_get_widget (xml, "welcomeremote");
+		GtkWidget *customremote = glade_xml_get_widget (xml, "sg_customwelcomeremote");
 
 		gtk_widget_set_sensitive (welcomeremote, !val);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (customremote), !val);
@@ -3392,17 +3316,12 @@ setup_greeter_toggle (const char *name,
 	
 	} else if (strcmp ("fb_allusers", ve_sure_string (name)) == 0) {
 
-		GtkWidget *fb_includetree = glade_helper_get (xml, "fb_include_treeview", 
-		                                              GTK_TYPE_TREE_VIEW);
-		GtkWidget *fb_buttonbox = glade_helper_get (xml, "UsersButtonBox", 
-		                                            GTK_TYPE_VBOX);
-		GtkWidget *fb_includeadd = glade_helper_get (xml, "fb_includeadd",
-		                                             GTK_TYPE_BUTTON);
-		GtkWidget *fb_includeremove = glade_helper_get (xml, "fb_includedelete", 
-		                                                GTK_TYPE_BUTTON);
-		GtkWidget *fb_includelabel = glade_helper_get (xml, "fb_includelabel",
-		                                               GTK_TYPE_LABEL);
-			
+		GtkWidget *fb_includetree = glade_xml_get_widget (xml, "fb_include_treeview");
+		GtkWidget *fb_buttonbox = glade_xml_get_widget (xml, "UsersButtonBox");
+		GtkWidget *fb_includeadd = glade_xml_get_widget (xml, "fb_includeadd");
+		GtkWidget *fb_includeremove = glade_xml_get_widget (xml, "fb_includedelete");
+		GtkWidget *fb_includelabel = glade_xml_get_widget (xml, "fb_includelabel");
+
 		gtk_widget_set_sensitive (fb_buttonbox, !val);
 		gtk_widget_set_sensitive (fb_includetree, !val);
 		gtk_widget_set_sensitive (fb_includelabel, !val);
@@ -3423,13 +3342,9 @@ setup_greeter_toggle (const char *name,
 		GtkWidget *file_chooser;
 		GtkWidget *play_button;
 		
-		file_chooser = glade_helper_get (xml, 
-		                                 "acc_sound_ready_button", 
-				                 GTK_TYPE_FILE_CHOOSER_BUTTON);
-		play_button = glade_helper_get (xml, 
-		                                 "acc_soundtest_ready_button", 
-				                 GTK_TYPE_BUTTON);
-						 
+		file_chooser = glade_xml_get_widget (xml, "acc_sound_ready_button");
+		play_button = glade_xml_get_widget (xml, "acc_soundtest_ready_button");
+
 		gtk_widget_set_sensitive (file_chooser, val);
 		gtk_widget_set_sensitive (play_button, val);
 		
@@ -3441,11 +3356,9 @@ setup_greeter_toggle (const char *name,
 		GtkWidget *file_chooser;
 		GtkWidget *play_button;
 		
-		file_chooser = glade_helper_get (xml, "acc_sound_success_button", 
-				                 GTK_TYPE_FILE_CHOOSER_BUTTON);
-		play_button = glade_helper_get (xml, "acc_soundtest_success_button", 
-				                GTK_TYPE_BUTTON);
-						 
+		file_chooser = glade_xml_get_widget (xml, "acc_sound_success_button");
+		play_button = glade_xml_get_widget (xml, "acc_soundtest_success_button");
+
 		gtk_widget_set_sensitive (file_chooser, val);
 		gtk_widget_set_sensitive (play_button, val);
 		
@@ -3457,11 +3370,9 @@ setup_greeter_toggle (const char *name,
 		GtkWidget *file_chooser;
 		GtkWidget *play_button;
 		
-		file_chooser = glade_helper_get (xml, "acc_sound_failure_button", 
-				                 GTK_TYPE_FILE_CHOOSER_BUTTON);
-		play_button = glade_helper_get (xml, "acc_soundtest_failure_button", 
-				                GTK_TYPE_BUTTON);
-						 
+		file_chooser = glade_xml_get_widget (xml, "acc_sound_failure_button");
+		play_button = glade_xml_get_widget (xml, "acc_soundtest_failure_button");
+
 		gtk_widget_set_sensitive (file_chooser, val);
 		gtk_widget_set_sensitive (play_button, val);
 		
@@ -3474,15 +3385,12 @@ setup_greeter_toggle (const char *name,
 		GtkWidget *file_chooser_remote;
 		GtkWidget *checkbutton;
 		
-		checkbutton = glade_helper_get (xml, "remote_logo_image_checkbutton",
-						GTK_TYPE_CHECK_BUTTON);
-						
-		file_chooser = glade_helper_get (xml, "local_logo_image_chooserbutton", 
-				                 GTK_TYPE_FILE_CHOOSER_BUTTON);
+		checkbutton = glade_xml_get_widget (xml, "remote_logo_image_checkbutton");
 
-		file_chooser_remote = glade_helper_get (xml, "remote_logo_image_chooserbutton", 
-				                        GTK_TYPE_FILE_CHOOSER_BUTTON);
-						 
+		file_chooser = glade_xml_get_widget (xml, "local_logo_image_chooserbutton");
+
+		file_chooser_remote = glade_xml_get_widget (xml, "remote_logo_image_chooserbutton");
+
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), val);
 		gtk_widget_set_sensitive (file_chooser, val);
 
@@ -3508,12 +3416,9 @@ greeter_color_timeout (GtkWidget *picker)
 		GtkWidget *colorbutton;
 		
 		if (strcmp (GDM_KEY_GRAPHICAL_THEMED_COLOR, ve_sure_string (key)) == 0) {
-			colorbutton = glade_helper_get (xml, "remote_background_theme_colorbutton",
-	       		                                GTK_TYPE_COLOR_BUTTON);
-		}
-		else {
-			colorbutton = glade_helper_get (xml, "remote_background_colorbutton",
-	       		                                GTK_TYPE_COLOR_BUTTON);
+			colorbutton = glade_xml_get_widget (xml, "remote_background_theme_colorbutton");
+		} else {
+			colorbutton = glade_xml_get_widget (xml, "remote_background_colorbutton");
 		}
 		gtk_color_button_set_color (GTK_COLOR_BUTTON (colorbutton), &color_val);
 	}
@@ -3521,12 +3426,9 @@ greeter_color_timeout (GtkWidget *picker)
 		GtkWidget *colorbutton;
 
 		if (strcmp (GDM_KEY_GRAPHICAL_THEMED_COLOR, ve_sure_string (key)) == 0) {
-			colorbutton = glade_helper_get (xml, "local_background_theme_colorbutton",
-	       		                                GTK_TYPE_COLOR_BUTTON);
-		}
-		else {
-			colorbutton = glade_helper_get (xml, "local_background_colorbutton",
-	       		                                GTK_TYPE_COLOR_BUTTON);
+			colorbutton = glade_xml_get_widget (xml, "local_background_theme_colorbutton");
+		} else {
+			colorbutton = glade_xml_get_widget (xml, "local_background_colorbutton");
 		}
 		gtk_color_button_set_color (GTK_COLOR_BUTTON (colorbutton), &color_val);
 	}
@@ -3559,8 +3461,7 @@ static void
 setup_greeter_color (const char *name,
 		     const char *key)
 {
-	GtkWidget *picker = glade_helper_get (xml, name,
-					      GTK_TYPE_COLOR_BUTTON);
+	GtkWidget *picker = glade_xml_get_widget (xml, name);
 	char *val = gdm_config_get_string ((gchar *)key);
 
 	g_object_set_data_full (G_OBJECT (picker),
@@ -3569,7 +3470,7 @@ setup_greeter_color (const char *name,
 
         if (val != NULL) {
 		GdkColor color;
-		
+
 		if (gdk_color_parse (val, &color)) {
 			gtk_color_button_set_color (GTK_COLOR_BUTTON (picker), &color);
 		}
@@ -3597,15 +3498,41 @@ typedef struct _ImageData {
 static gboolean
 greeter_entry_untranslate_timeout (GtkWidget *entry)
 {
-	VeConfig   *custom_cfg = ve_config_get (custom_config_file);
-	const char *key        = g_object_get_data (G_OBJECT (entry), "key");
+	GKeyFile   *custom_cfg;
+	const char *key;
 	const char *text;
+	char       *config_group;
+	char       *config_key;
+	int         i;
+	char       *prefix;
+	char      **keys;
+
+	custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+        key = g_object_get_data (G_OBJECT (entry), "key");
 
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
-	ve_config_delete_translations (custom_cfg, key);
+	config_group = config_key = NULL;
+	if (! gdm_common_config_parse_key_string (key, &config_group, &config_key, NULL)) {
+		goto out;
+	}
+
+	prefix = g_strdup_printf ("%s[", config_key);
+	keys = g_key_file_get_keys (custom_cfg, config_group, NULL, NULL);
+	for (i = 0; keys[i] != NULL; i++) {
+		if (g_str_has_prefix (keys[i], prefix)) {
+			g_key_file_remove_key (custom_cfg, config_group, keys[i], NULL);
+		}
+	}
+	g_strfreev (keys);
+
 	gdm_setup_config_set_string (key, (char *)ve_sure_string (text));
 	update_greeters ();
+
+	gdm_common_config_save (custom_cfg, custom_config_file, NULL);
+
+ out:
+	g_key_file_free (custom_cfg);
 
 	return FALSE;
 }
@@ -3632,7 +3559,7 @@ command_response (GtkWidget *button, gpointer data)
 	GtkWidget *command_entry = NULL;
 	gint selected;
 	
-	setup_dialog = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_WINDOW);
+	setup_dialog = glade_xml_get_widget (xml_commands, "commands_dialog");
 	
 	/* first get the file */
 	chooser = gtk_file_chooser_dialog_new (_("Select Command"),
@@ -3656,13 +3583,13 @@ command_response (GtkWidget *button, gpointer data)
 		
 		GtkWidget *dialog;
 		
-		dialog = ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-					    GTK_DIALOG_MODAL | 
-					    GTK_DIALOG_DESTROY_WITH_PARENT,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("No file selected"),
-					    "");
+		dialog = hig_dialog_new (GTK_WINDOW (setup_dialog),
+					 GTK_DIALOG_MODAL | 
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("No file selected"),
+					 "");
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		return;
@@ -3674,10 +3601,8 @@ command_response (GtkWidget *button, gpointer data)
 	   append the chosen filepath onto the existing
 	   string */
 	
-	command_combobox = glade_helper_get (xml_commands, 
-					     "cmd_type_combobox",
-					     GTK_TYPE_COMBO_BOX);
-	
+	command_combobox = glade_xml_get_widget (xml_commands, "cmd_type_combobox");
+
 	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
 	
 	if (selected == HALT_CMD)
@@ -3699,12 +3624,10 @@ command_response (GtkWidget *button, gpointer data)
 	
 	value = strings_list_add (value, filename, ";");
 	
-	if (strcmp (ve_sure_string (key), "add_hrs_cmd_button") == 0)				
-		command_entry = glade_helper_get (xml_commands, "hrs_cmd_path_entry", GTK_TYPE_ENTRY);		
-	
-	else if (strcmp (ve_sure_string (key), "add_custom_cmd_button") == 0)				
-		command_entry = glade_helper_get (xml_commands, "custom_cmd_path_entry", GTK_TYPE_ENTRY);		
-			       
+	if (strcmp (ve_sure_string (key), "add_hrs_cmd_button") == 0)
+		command_entry = glade_xml_get_widget (xml_commands, "hrs_cmd_path_entry");
+	else if (strcmp (ve_sure_string (key), "add_custom_cmd_button") == 0)
+		command_entry = glade_xml_get_widget (xml_commands, "custom_cmd_path_entry");
 
 	gtk_entry_set_text (GTK_ENTRY (command_entry), ve_sure_string (value));
 
@@ -3750,7 +3673,7 @@ static void
 setup_general_command_buttons (const char *name,
 			       const char *key)
 {
-	GtkWidget *button = glade_helper_get (xml_commands, name, GTK_TYPE_BUTTON);
+	GtkWidget *button = glade_xml_get_widget (xml_commands, name);
 	
 	g_object_set_data_full (G_OBJECT (button),
 				"key", g_strdup (key),
@@ -3764,7 +3687,7 @@ static void
 setup_greeter_untranslate_entry (const char *name,
 				 const char *key)
 {
-	GtkWidget *entry = glade_helper_get (xml, name, GTK_TYPE_ENTRY);
+	GtkWidget *entry = glade_xml_get_widget (xml, name);
 	char *val;
 
 	val = gdm_config_get_translated_string ((gchar *)key);
@@ -3792,13 +3715,10 @@ xdmcp_button_clicked (void)
 
 		GtkWidget *parent;
 
-		xml_xdmcp = glade_helper_load ("gdmsetup.glade",
-		                               "xdmcp_dialog",
-		                               GTK_TYPE_DIALOG,
-		                               TRUE);
-	
-		parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
-		dialog = glade_helper_get (xml_xdmcp, "xdmcp_dialog", GTK_TYPE_DIALOG);
+		xml_xdmcp = glade_xml_new (GDM_GLADE_DIR "/gdmsetup.glade", "xdmcp_dialog", NULL);
+
+		parent = glade_xml_get_widget (xml, "setup_dialog");
+		dialog = glade_xml_get_widget (xml_xdmcp, "xdmcp_dialog");
 
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
@@ -3829,13 +3749,13 @@ apply_command_changes (GObject *object, gint response, gpointer command_data)
 		GtkWidget *prompt;
 		gint response;
 
-		prompt = ve_hig_dialog_new (GTK_WINDOW (dialog),
-		                            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-		                            GTK_MESSAGE_WARNING,
-		                            GTK_BUTTONS_NONE,
-		                            _("Apply the changes to commands before closing?"),
-		                            _("If you don't apply, the changes made "
-		                              "will be disregarded."));
+		prompt = hig_dialog_new (GTK_WINDOW (dialog),
+					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_NONE,
+					 _("Apply the changes to commands before closing?"),
+					 _("If you don't apply, the changes made "
+					   "will be disregarded."));
 		
 		gtk_dialog_add_button (GTK_DIALOG (prompt), _("Close _without Applying"), GTK_RESPONSE_CLOSE);
 		gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-apply", GTK_RESPONSE_APPLY);
@@ -3846,8 +3766,7 @@ apply_command_changes (GObject *object, gint response, gpointer command_data)
 		if (response == GTK_RESPONSE_APPLY) {
 			GtkWidget *apply_button;
 
-			apply_button = glade_helper_get (xml_commands, "command_apply_button",
-							 GTK_TYPE_WIDGET);
+			apply_button = glade_xml_get_widget (xml_commands, "command_apply_button");
 			g_signal_emit_by_name (G_OBJECT (apply_button), "clicked");
 		}
 		else {
@@ -3858,6 +3777,28 @@ apply_command_changes (GObject *object, gint response, gpointer command_data)
 	}
 }
 
+/* Make label surrounded by tag (if tag = "tag" add <tag>text</tag>) */
+static void
+glade_helper_tagify_label (GladeXML *xml,
+			   const char *name,
+			   const char *tag)
+{
+	const char *lbl;
+	char *s;
+	GtkWidget *label;
+
+	label = glade_xml_get_widget (xml, name);
+	if (GTK_IS_BUTTON (label)) {
+		label = GTK_BIN(label)->child;
+	}
+
+	lbl = gtk_label_get_label (GTK_LABEL (label));
+	s = g_strdup_printf ("<%s>%s</%s>", tag, lbl, tag);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_label_set_label (GTK_LABEL (label), s);
+	g_free (s);
+}
+
 static void
 command_button_clicked (void)
 {
@@ -3866,20 +3807,15 @@ command_button_clicked (void)
 	gint selected = -1;
 	gint response;
 
-	if (dialog == NULL) {		
+	if (dialog == NULL) {
 
 		GtkWidget *parent;
-		GtkWidget *apply_command_changes_button;		
+		GtkWidget *apply_command_changes_button;
 		gint i;
 
-		xml_commands = glade_helper_load ("gdmsetup.glade",
-						  "commands_dialog",
-						  GTK_TYPE_DIALOG,
-						  TRUE);
-		
-		command_chooser = glade_helper_get (xml_commands, 
-						    "cmd_type_combobox",
-						    GTK_TYPE_COMBO_BOX);
+		xml_commands = glade_xml_new (GDM_GLADE_DIR "/gdmsetup.glade", "commands_dialog", NULL);
+
+		command_chooser = glade_xml_get_widget (xml_commands, "cmd_type_combobox");
 
 		glade_helper_tagify_label (xml_commands, "custom_cmd_note_label", "i");
 		glade_helper_tagify_label (xml_commands, "custom_cmd_note_label", "small");
@@ -3901,8 +3837,8 @@ command_button_clicked (void)
 		glade_helper_tagify_label (xml_commands, "norestart_label", "i");
 		glade_helper_tagify_label (xml_commands, "norestart_label", "small");
 	
-		parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
-		dialog = glade_helper_get (xml_commands, "commands_dialog", GTK_TYPE_DIALOG);
+		parent = glade_xml_get_widget (xml, "setup_dialog");
+		dialog = glade_xml_get_widget (xml_commands, "commands_dialog");
 		
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
@@ -3947,9 +3883,7 @@ command_button_clicked (void)
 		setup_general_command_buttons("custom_command_add", "add_custom_cmd_button");
 		
 		/* set up apply command changes button */
-		apply_command_changes_button = glade_helper_get (xml_commands, 
-								 "command_apply_button",
-								 GTK_TYPE_BUTTON);
+		apply_command_changes_button = glade_xml_get_widget (xml_commands, "command_apply_button");
 		g_object_set_data_full (G_OBJECT (apply_command_changes_button), "key",
 					g_strdup ("apply_command_changes"), (GDestroyNotify) g_free);
 		g_signal_connect (G_OBJECT (apply_command_changes_button), "clicked",
@@ -3962,9 +3896,7 @@ command_button_clicked (void)
 				  G_CALLBACK (apply_command_changes), dialog);
 	}
 	else {
-		command_chooser = glade_helper_get (xml_commands, 
-						    "cmd_type_combobox",
-						    GTK_TYPE_COMBO_BOX);
+		command_chooser = glade_xml_get_widget (xml_commands, "cmd_type_combobox");
 
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_chooser));
 		
@@ -3999,7 +3931,7 @@ static void
 setup_greeter_combobox (const char *name,
                         const char *key)
 {
-	GtkWidget *combobox = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX);
+	GtkWidget *combobox = glade_xml_get_widget (xml, name);
 	char *greetval      = g_strdup (gdm_config_get_string ((gchar *)key));
 
 	if (greetval != NULL &&
@@ -4020,10 +3952,8 @@ setup_greeter_combobox (const char *name,
 			
 			val = gdm_config_get_bool (GDM_KEY_BROWSER);
 
-			local_plain_vbox = glade_helper_get (xml, "local_plain_properties_vbox",
-			                                     GTK_TYPE_VBOX);
-			local_themed_vbox = glade_helper_get (xml, "local_themed_properties_vbox",
-			                                      GTK_TYPE_VBOX);				
+			local_plain_vbox = glade_xml_get_widget (xml, "local_plain_properties_vbox");
+			local_themed_vbox = glade_xml_get_widget (xml, "local_themed_properties_vbox");
 			if (val == FALSE) {
 				gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), LOCAL_PLAIN);
 			}
@@ -4035,15 +3965,12 @@ setup_greeter_combobox (const char *name,
 			gtk_widget_hide (local_themed_vbox);
 		}
 		else if (strstr (greetval, "/gdmgreeter") != NULL) {
-		
 			GtkWidget *local_plain_vbox;
 			GtkWidget *local_themed_vbox;
-			
-			local_plain_vbox = glade_helper_get (xml, "local_plain_properties_vbox",
-		                                             GTK_TYPE_VBOX);
-			local_themed_vbox = glade_helper_get (xml, "local_themed_properties_vbox",
-			                                      GTK_TYPE_VBOX);	
-			
+
+			local_plain_vbox = glade_xml_get_widget (xml, "local_plain_properties_vbox");
+			local_themed_vbox = glade_xml_get_widget (xml, "local_themed_properties_vbox");
+
 			gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), LOCAL_THEMED);
 			gtk_widget_hide (local_plain_vbox);
 			gtk_widget_show (local_themed_vbox);
@@ -4067,8 +3994,7 @@ setup_xdmcp_support (void)
 {
 	GtkWidget *xdmcp_button;
 
-	xdmcp_button = glade_helper_get (xml, "xdmcp_configbutton",
-	                                 GTK_TYPE_BUTTON);
+	xdmcp_button = glade_xml_get_widget (xml, "xdmcp_configbutton");
 #ifndef HAVE_LIBXDMCP
 	/* HAVE_LIBXDMCP */
 	gtk_widget_set_sensitive (xdmcp_button, FALSE);
@@ -4336,9 +4262,7 @@ setup_users_tab (void)
 	setup_face ();
 
 	/* Setup default face */
-	default_face_filechooser = glade_helper_get (xml, 
-						     "default_face_filechooser",
-						     GTK_TYPE_FILE_CHOOSER_BUTTON);
+	default_face_filechooser = glade_xml_get_widget (xml, "default_face_filechooser");
 
 	filter = gtk_file_filter_new ();
         gtk_file_filter_set_name (filter, _("Images"));
@@ -4347,10 +4271,7 @@ setup_users_tab (void)
 
 	filename = gdm_config_get_string (GDM_KEY_DEFAULT_FACE);
 
-	default_face_checkbox = glade_helper_get (xml,
-						  "default_face_checkbutton", 
-						  GTK_TYPE_CHECK_BUTTON);
-	
+	default_face_checkbox = glade_xml_get_widget (xml, "default_face_checkbutton");
 
 	if (!ve_string_empty (filename) && access (filename, R_OK|X_OK)) {
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (default_face_filechooser),
@@ -4383,16 +4304,12 @@ setup_users_tab (void)
 	/* Setup global face dir */
 	g_free (filename);		
 	
-	global_face_dir_filechooser = glade_helper_get (xml, 
-							"global_face_dir_filechooser",
-							GTK_TYPE_FILE_CHOOSER_BUTTON);	
+	global_face_dir_filechooser = glade_xml_get_widget (xml, "global_face_dir_filechooser");
 
 	filename = gdm_config_get_string (GDM_KEY_GLOBAL_FACE_DIR);
 
-	global_face_dir_checkbox = glade_helper_get (xml,
-						     "global_face_dir_checkbutton", 
-						     GTK_TYPE_CHECK_BUTTON);
-	
+	global_face_dir_checkbox = glade_xml_get_widget (xml, "global_face_dir_checkbutton");
+
 	if (!ve_string_empty (filename) && access (filename, R_OK|X_OK) == 0) {
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (global_face_dir_filechooser),
 					       filename);
@@ -4440,40 +4357,19 @@ setup_accessibility_tab (void)
 	gchar *modules_list;
 	gchar *value;
 	
-	enable_accessible_login = 
-		glade_helper_get (xml, 
-	                          "acc_modules",
-	                          GTK_TYPE_CHECK_BUTTON);
+	enable_accessible_login = glade_xml_get_widget (xml, "acc_modules");
 
-	access_sound_ready_file_chooser = 
-		glade_helper_get (xml,
-	                          "acc_sound_ready_button",
-	                          GTK_TYPE_FILE_CHOOSER_BUTTON);
+	access_sound_ready_file_chooser = glade_xml_get_widget (xml, "acc_sound_ready_button");
 
-	access_sound_ready_play_button = 
-		glade_helper_get (xml,
-	                          "acc_soundtest_ready_button",
-	                          GTK_TYPE_BUTTON);
+	access_sound_ready_play_button = glade_xml_get_widget (xml, "acc_soundtest_ready_button");
 
-	access_sound_success_file_chooser = 
-		glade_helper_get (xml,
-	                          "acc_sound_success_button",
-	                          GTK_TYPE_FILE_CHOOSER_BUTTON);
+	access_sound_success_file_chooser = glade_xml_get_widget (xml, "acc_sound_success_button");
 
-	access_sound_success_play_button = 
-		glade_helper_get (xml,
-	                          "acc_soundtest_success_button",
-	                          GTK_TYPE_BUTTON);
+	access_sound_success_play_button = glade_xml_get_widget (xml, "acc_soundtest_success_button");
 
-	access_sound_failure_file_chooser = 
-		glade_helper_get (xml,
-	                          "acc_sound_failure_button",
-	                          GTK_TYPE_FILE_CHOOSER_BUTTON);
+	access_sound_failure_file_chooser = glade_xml_get_widget (xml, "acc_sound_failure_button");
 
-	access_sound_failure_play_button = 
-		glade_helper_get (xml,
-	                          "acc_soundtest_failure_button",
-	                          GTK_TYPE_BUTTON);
+	access_sound_failure_play_button = glade_xml_get_widget (xml, "acc_soundtest_failure_button");
 
 	setup_greeter_toggle ("acc_theme",
 	                      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
@@ -4628,10 +4524,8 @@ gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 	gchar *str;
 	gint selected = -1;
 
-	delete_button = glade_helper_get (xml, "gg_delete_theme",
-	                                  GTK_TYPE_BUTTON);
-	delete_button_remote = glade_helper_get (xml, "gg_delete_theme_remote",
-	                                         GTK_TYPE_BUTTON);
+	delete_button = glade_xml_get_widget (xml, "gg_delete_theme");
+	delete_button_remote = glade_xml_get_widget (xml, "gg_delete_theme_remote");
 
 	if ( !gtk_tree_selection_get_selected (selection, &model, &iter)) {
 		gtk_widget_set_sensitive (delete_button, FALSE);
@@ -4648,13 +4542,11 @@ gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 		GtkTreeModel *model;
 		GtkTreePath *path;
 		
-		theme_list = glade_helper_get (xml, "gg_theme_list_remote",
-		                               GTK_TYPE_TREE_VIEW);
+		theme_list = glade_xml_get_widget (xml, "gg_theme_list_remote");
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
 		model = gtk_tree_view_get_model (GTK_TREE_VIEW (theme_list));
 
-		local_combobox = glade_helper_get (xml, "gg_mode_combobox",
-						   GTK_TYPE_COMBO_BOX);		
+		local_combobox = glade_xml_get_widget (xml, "gg_mode_combobox");
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (local_combobox));
 
 		if (model != NULL) {
@@ -4676,8 +4568,7 @@ gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 		GtkTreeModel *model;
 		GtkTreePath *path;
 		
-		theme_list = glade_helper_get (xml, "gg_theme_list",
-		                               GTK_TYPE_TREE_VIEW);		
+		theme_list = glade_xml_get_widget (xml, "gg_theme_list");
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
 		model = gtk_tree_view_get_model (GTK_TREE_VIEW (theme_list));
 		
@@ -4728,12 +4619,10 @@ gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 	else {
 		str = g_strconcat (_("None"), NULL);
 	}
-	
-	label = glade_helper_get (xml, "gg_author_text_view",
-				  GTK_TYPE_TEXT_VIEW);	
-	label_remote = glade_helper_get (xml, "gg_author_text_view_remote",
-				         GTK_TYPE_TEXT_VIEW);
-	
+
+	label = glade_xml_get_widget (xml, "gg_author_text_view");
+	label_remote = glade_xml_get_widget (xml, "gg_author_text_view_remote");
+
 	textview_set_buffer (GTK_TEXT_VIEW (label), "");
 	textview_set_buffer (GTK_TEXT_VIEW (label_remote), "");
 	
@@ -4760,10 +4649,8 @@ gg_selection_changed (GtkTreeSelection *selection, gpointer data)
 				  THEME_COLUMN_COPYRIGHT,
 				  &value);
 				  
-	label = glade_helper_get (xml, "gg_copyright_text_view",
-	                          GTK_TYPE_TEXT_VIEW);
-	label_remote = glade_helper_get (xml, "gg_copyright_text_view_remote",
-	                                 GTK_TYPE_TEXT_VIEW);
+	label = glade_xml_get_widget (xml, "gg_copyright_text_view");
+	label_remote = glade_xml_get_widget (xml, "gg_copyright_text_view_remote");
 
 	textview_set_buffer (GTK_TEXT_VIEW (label), "");
 	textview_set_buffer (GTK_TEXT_VIEW (label_remote), "");
@@ -4812,7 +4699,8 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 		GtkTreeIter iter;
 		gboolean sel_theme;
 		gboolean sel_themes;
-		VeConfig *theme_file;
+		GKeyFile *theme_file;
+
 		if (dent->d_name[0] == '.')
 			continue;
 		n = g_strconcat (theme_dir, "/", dent->d_name,
@@ -4826,8 +4714,6 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			g_free (n);
 			continue;
 		}
-
-		theme_file = ve_config_new (n);
 
 		file = gdm_get_theme_greeter (n, dent->d_name);
 		full = g_strconcat (theme_dir, "/", dent->d_name,
@@ -4857,23 +4743,21 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 		else
 			sel_themes = FALSE;
 
-		name = ve_config_get_translated_string
-			(theme_file, "GdmGreeterTheme/Name");
+		theme_file = gdm_common_config_load (n, NULL);
+		name = NULL;
+		gdm_common_config_get_translated_string (theme_file, "GdmGreeterTheme/Name", &name, NULL);
 		if (ve_string_empty (name)) {
 			g_free (name);
 			name = g_strdup (dent->d_name);
 		}
 
-		desc      = ve_config_get_translated_string
-			    (theme_file, "GdmGreeterTheme/Description");
-		author    = ve_config_get_translated_string
-			    (theme_file, "GdmGreeterTheme/Author");
-		copyright = ve_config_get_translated_string
-			    (theme_file, "GdmGreeterTheme/Copyright");
-		ss        = ve_config_get_translated_string
-			    (theme_file, "GdmGreeterTheme/Screenshot");
+		desc = author = copyright = ss = NULL;
+		gdm_common_config_get_translated_string (theme_file, "GdmGreeterTheme/Description", &desc, NULL);
+		gdm_common_config_get_translated_string (theme_file, "GdmGreeterTheme/Author", &author, NULL);
+		gdm_common_config_get_translated_string (theme_file, "GdmGreeterTheme/Copyright", &copyright, NULL);
+		gdm_common_config_get_translated_string (theme_file, "GdmGreeterTheme/Screenshot", &ss, NULL);
 
-		ve_config_destroy (theme_file);
+		g_key_file_free (theme_file);
 
 		if (ss != NULL)
 			full = g_strconcat (theme_dir, "/", dent->d_name,
@@ -4999,12 +4883,9 @@ selected_toggled (GtkCellRendererToggle *cell,
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GtkTreePath *sel_path = gtk_tree_path_new_from_string (path_str);
-	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
-						  GTK_TYPE_TREE_VIEW);
-	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
-						  GTK_TYPE_BUTTON);
-	GtkWidget *del_button_remote = glade_helper_get (xml, "gg_delete_theme_remote",
-	                                                 GTK_TYPE_BUTTON);
+	GtkWidget *theme_list = glade_xml_get_widget (xml, "gg_theme_list");
+	GtkWidget *del_button = glade_xml_get_widget (xml, "gg_delete_theme");
+	GtkWidget *del_button_remote = glade_xml_get_widget (xml, "gg_delete_theme_remote");
 	gboolean is_radio;
 
 	gtk_tree_model_get_iter (model, &selected_iter, sel_path);
@@ -5085,19 +4966,17 @@ selected_toggled (GtkCellRendererToggle *cell,
 		/* There are no themes selected atm in the Random form selected mode.
 		   We need to inform users that is the case */
 		if (ve_string_empty (selected_themes)) {
-			GtkWidget *setup_dialog = glade_helper_get(xml, 
-								   "setup_dialog", GTK_TYPE_WINDOW);
+			GtkWidget *setup_dialog = glade_xml_get_widget(xml, "setup_dialog");
 		
-			GtkWidget *dlg = 
-				ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
-						   GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						   GTK_MESSAGE_WARNING,
-						   GTK_BUTTONS_OK,
-						   _("No themes selected!"),
-						   _("You need one or more themes selected for "
-						     "the \"Random from selected\" option to be "
-						     "valid. Failure to do so will force "
-						     "\"Selected only\" mode."));
+			GtkWidget *dlg = hig_dialog_new (GTK_WINDOW (setup_dialog),
+							 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_WARNING,
+							 GTK_BUTTONS_OK,
+							 _("No themes selected!"),
+							 _("You need one or more themes selected for "
+							   "the \"Random from selected\" option to be "
+							   "valid. Failure to do so will force "
+							   "\"Selected only\" mode."));
 			gtk_dialog_run (GTK_DIALOG (dlg));
 			gtk_widget_destroy (dlg);
 		}
@@ -5419,7 +5298,7 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 	gchar *untar_cmd;
 	gboolean success = FALSE;
 
-	theme_list = glade_helper_get (xml, "gg_theme_list", GTK_TYPE_TREE_VIEW);
+	theme_list = glade_xml_get_widget (xml, "gg_theme_list");
 
 	cwd = g_get_current_dir ();
 	theme_dir = get_theme_dir ();
@@ -5445,13 +5324,13 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 
 		msg = g_strdup_printf (_("%s"), error);
 
-		dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
-					    GTK_DIALOG_MODAL | 
-					    GTK_DIALOG_DESTROY_WITH_PARENT,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Not a theme archive"),
-					    msg);
+		dialog = hig_dialog_new (GTK_WINDOW (parent),
+					 GTK_DIALOG_MODAL | 
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Not a theme archive"),
+					 msg);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		g_free (theme_dir);
@@ -5476,13 +5355,13 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 				       "installed. Install again anyway?"),
 				     fname);
 		
-		dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
-		                            GTK_DIALOG_MODAL | 
-		                            GTK_DIALOG_DESTROY_WITH_PARENT,
-		                            GTK_MESSAGE_QUESTION,
-		                            GTK_BUTTONS_NONE,
-		                            s,
-		                            "");
+		dialog = hig_dialog_new (GTK_WINDOW (parent),
+					 GTK_DIALOG_MODAL | 
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_QUESTION,
+					 GTK_BUTTONS_NONE,
+					 s,
+					 "");
 		g_free (fname);
 		g_free (s);
 
@@ -5559,14 +5438,14 @@ install_theme_file (gchar *filename, GtkListStore *store, GtkWindow *parent)
 	
 		GtkWidget *dialog;
 		
-		dialog = ve_hig_dialog_new (GTK_WINDOW (parent),
-					    GTK_DIALOG_MODAL | 
-					    GTK_DIALOG_DESTROY_WITH_PARENT,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Some error occurred when "
-					      "installing the theme"),
-					    "");
+		dialog = hig_dialog_new (GTK_WINDOW (parent),
+					 GTK_DIALOG_MODAL | 
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Some error occurred when "
+					   "installing the theme"),
+					 "");
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 	}
@@ -5615,13 +5494,13 @@ theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 	
 		GtkWidget *dialog;
 
-		dialog = ve_hig_dialog_new (GTK_WINDOW (chooser),
-					    GTK_DIALOG_MODAL | 
-					    GTK_DIALOG_DESTROY_WITH_PARENT,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("No file selected"),
-					    "");
+		dialog = hig_dialog_new (GTK_WINDOW (chooser),
+					 GTK_DIALOG_MODAL | 
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("No file selected"),
+					 "");
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		return;
@@ -5639,7 +5518,7 @@ install_new_theme (GtkWidget *button, gpointer data)
 	static GtkWidget *chooser = NULL;
 	GtkWidget *setup_dialog;
 	
-	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+	setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
 	
 	chooser = gtk_file_chooser_dialog_new (_("Select Theme Archive"),
 					       GTK_WINDOW (setup_dialog),
@@ -5683,18 +5562,13 @@ delete_theme (GtkWidget *button, gpointer data)
 	gboolean selected_warning = FALSE;
 	gint selected = -1;
 
-	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
-	theme_list = glade_helper_get (xml, "gg_theme_list",
-				       GTK_TYPE_TREE_VIEW);
-	theme_list_remote = glade_helper_get (xml, "gg_theme_list_remote",
-	                                      GTK_TYPE_TREE_VIEW);
-	del_button = glade_helper_get (xml, "gg_delete_theme",
-				       GTK_TYPE_BUTTON);
-	del_button_remote = glade_helper_get (xml, "gg_delete_theme_remote",
-	                                      GTK_TYPE_BUTTON);
-	local_combobox = glade_helper_get (xml, "gg_mode_combobox",
-					   GTK_TYPE_COMBO_BOX);
-	
+	setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
+	theme_list = glade_xml_get_widget (xml, "gg_theme_list");
+	theme_list_remote = glade_xml_get_widget (xml, "gg_theme_list_remote");
+	del_button = glade_xml_get_widget (xml, "gg_delete_theme");
+	del_button_remote = glade_xml_get_widget (xml, "gg_delete_theme_remote");
+	local_combobox = glade_xml_get_widget (xml, "gg_mode_combobox");
+
 	if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
 	}
@@ -5744,15 +5618,15 @@ delete_theme (GtkWidget *button, gpointer data)
 	   mode is currently in use in the "Selected only" mode 
 	   so lets warn the user about it */
 	if (selected_warning == TRUE) {
-		dlg = ve_hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
-					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_OK,
-					 _("Theme active in \"Selected only\" mode"),
-					 _("This theme cannot be deleted at this point. "
-					   "If you wish to delete this theme switch to "
-					   "\"Selected only\" mode, and deselect it by "
-					   "choosing a different theme."));
+		dlg = hig_dialog_new (GTK_WINDOW (setup_dialog) /* parent */,
+				      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT /* flags */,
+				      GTK_MESSAGE_WARNING,
+				      GTK_BUTTONS_OK,
+				      _("Theme active in \"Selected only\" mode"),
+				      _("This theme cannot be deleted at this point. "
+					"If you wish to delete this theme switch to "
+					"\"Selected only\" mode, and deselect it by "
+					"choosing a different theme."));
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);			    
 	}
@@ -5780,13 +5654,12 @@ delete_theme (GtkWidget *button, gpointer data)
 
 	s = g_strdup_printf (_("Remove the \"%s\" theme?"),
 			     name);
-	dlg = ve_hig_dialog_new
-		(GTK_WINDOW (setup_dialog),
-		 GTK_DIALOG_MODAL | 
-		 GTK_DIALOG_DESTROY_WITH_PARENT,
-		 GTK_MESSAGE_WARNING,
-		 GTK_BUTTONS_NONE,
-		 s,
+	dlg = hig_dialog_new (GTK_WINDOW (setup_dialog),
+			      GTK_DIALOG_MODAL | 
+			      GTK_DIALOG_DESTROY_WITH_PARENT,
+			      GTK_MESSAGE_WARNING,
+			      GTK_BUTTONS_NONE,
+			      s,
 		 _("If you choose to remove the theme, it will be permanently lost."));
 	g_free (s);
 
@@ -5857,8 +5730,7 @@ xserver_entry_timeout (GtkWidget *entry)
 	gchar *string_old = NULL;
 	gchar *section;
 
-	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
+	mod_combobox    = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
 
 	/* Get xserver section to update */
 	section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (mod_combobox));
@@ -5906,10 +5778,9 @@ xserver_priority_timeout (GtkWidget *entry)
 	const char *key  = g_object_get_data (G_OBJECT (entry), "key");
 	gint value = 0;
 	gchar *section;
-	
-	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
-	
+
+	mod_combobox    = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
+
 	/* Get xserver section to update */
 	section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (mod_combobox));
 	
@@ -5945,8 +5816,7 @@ xserver_toggle_timeout (GtkWidget *toggle)
 	gboolean   val = FALSE;
 	gchar      *section;
 
-	mod_combobox    = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
+	mod_combobox    = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
 
 	/* Get xserver section to update */
 	section = gtk_combo_box_get_active_text (GTK_COMBO_BOX (mod_combobox));
@@ -6031,10 +5901,8 @@ static void
 xserver_init_server_list ()
 {
 	/* Get Widgets from glade */
-	GtkWidget *treeview = glade_helper_get (xml_xservers, "xserver_tree_view",
-	                                        GTK_TYPE_TREE_VIEW);
-	GtkWidget *remove_button = glade_helper_get (xml_xservers, "xserver_remove_button",
-	                                        GTK_TYPE_BUTTON);
+	GtkWidget *treeview = glade_xml_get_widget (xml_xservers, "xserver_tree_view");
+	GtkWidget *remove_button = glade_xml_get_widget (xml_xservers, "xserver_remove_button");
 
 	/* create list store */
 	GtkListStore *store = gtk_list_store_new (XSERVER_NUM_COLUMNS,
@@ -6058,8 +5926,7 @@ xserver_init_servers ()
     /* Init widget states */
     xserver_init_server_list();
 
-    remove_button = glade_helper_get (xml_xservers, "xserver_remove_button",
-                                      GTK_TYPE_BUTTON);
+    remove_button = glade_xml_get_widget (xml_xservers, "xserver_remove_button");
     gtk_widget_set_sensitive (remove_button, FALSE);
 }
 
@@ -6068,8 +5935,7 @@ xserver_row_selected(GtkTreeSelection *selection, gpointer data)
 {
     GtkWidget *remove_button;
     
-    remove_button = glade_helper_get (xml_xservers, "xserver_remove_button",
-                                      GTK_TYPE_BUTTON);
+    remove_button = glade_xml_get_widget (xml_xservers, "xserver_remove_button");
     gtk_widget_set_sensitive (remove_button, TRUE);
 }
 
@@ -6087,20 +5953,20 @@ xserver_remove_display (gpointer data)
 	gint vt;
         char vt_value[3];
 
-        treeview = glade_helper_get (xml_xservers, "xserver_tree_view",
-                                     GTK_TYPE_TREE_VIEW);
+        treeview = glade_xml_get_widget (xml_xservers, "xserver_tree_view");
 
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
 
-	if (gtk_tree_selection_get_selected (selection, &model, &iter))
-	{
-	        VeConfig *cfg        = ve_config_get (config_file);
-		VeConfig *custom_cfg = ve_config_get (custom_config_file);
+	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+	        GKeyFile *cfg;
+		GKeyFile *custom_cfg;
 		gchar *defaultval;
 		gchar *key;
 
-		combo = glade_helper_get (xml_add_xservers, "xserver_server_combobox",
-	                                  GTK_TYPE_COMBO_BOX);
+		cfg = gdm_common_config_load (config_file, NULL);
+		custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+
+		combo = glade_xml_get_widget (xml_add_xservers, "xserver_server_combobox");
 
 		/* Update config */
 		gtk_tree_model_get (model, &iter, XSERVER_COLUMN_VT, &vt, -1);
@@ -6108,50 +5974,52 @@ xserver_remove_display (gpointer data)
 		g_snprintf (vt_value,  sizeof (vt_value), "%d", vt);
 		key = g_strconcat (GDM_KEY_SECTION_SERVERS, "/", vt_value, "=", NULL);
 
-		defaultval = ve_config_get_string (cfg, key);
+		defaultval = NULL;
+		gdm_common_config_get_string (cfg, key, &defaultval, NULL);
 
 		/*
 		 * If the value is in the default config file, set it to inactive in
 		 * the custom config file, else delete it
 		 */
 		if (! ve_string_empty (defaultval)) {
-			ve_config_set_string (custom_cfg, key, "inactive");
+			gdm_common_config_set_string (custom_cfg, key, "inactive");
 		} else {
-			ve_config_delete_key (custom_cfg, key);
+			gdm_common_config_remove_key (custom_cfg, key, NULL);
 		}
 		g_free (defaultval);
 
-		ve_config_save (custom_cfg, FALSE /* force */);
+		gdm_common_config_save (custom_cfg, custom_config_file, NULL);
+		g_key_file_free (custom_cfg);
+		g_key_file_free (cfg);
 
 		/* Update gdmsetup */
 		xserver_init_server_list ();
 		xserver_update_delete_sensitivity ();
 	}
 }
-	
+
 /* Add a display to the list of displays to start */
 static void
 xserver_add_display (gpointer data)
 {
-        VeConfig *cfg        = ve_config_get (config_file);
-        VeConfig *custom_cfg = ve_config_get (custom_config_file);
+        GKeyFile *cfg;
+        GKeyFile *custom_cfg;
 	GtkWidget *spinner, *combo, *entry, *button;
 	gchar *string;
 	gchar *defaultval;
 	char spinner_value[3], *key;
 
+        cfg = gdm_common_config_load (config_file, NULL);
+	custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+
 	/* Get Widgets from glade */
-	spinner  = glade_helper_get (xml_add_xservers, "xserver_spin_button",
-	                             GTK_TYPE_SPIN_BUTTON);
-	entry    = glade_helper_get (xml_add_xservers, "xserver_options_entry",
-	                             GTK_TYPE_ENTRY);
-	combo    = glade_helper_get (xml_add_xservers, "xserver_server_combobox",
-		                     GTK_TYPE_COMBO_BOX);
-	button   = glade_helper_get (xml_xservers, "xserver_add_button",
-		                     GTK_TYPE_BUTTON);
+	spinner  = glade_xml_get_widget (xml_add_xservers, "xserver_spin_button");
+	entry    = glade_xml_get_widget (xml_add_xservers, "xserver_options_entry");
+	combo    = glade_xml_get_widget (xml_add_xservers, "xserver_server_combobox");
+	button   = glade_xml_get_widget (xml_xservers, "xserver_add_button");
 
 	/* String to add to config */
-	g_snprintf (spinner_value,  sizeof (spinner_value), "%d", 
+	g_snprintf (spinner_value,  sizeof (spinner_value), "%d",
 	            gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spinner)));
 
 	key = g_strconcat (GDM_KEY_SECTION_SERVERS, "/", spinner_value, "=", NULL);
@@ -6163,15 +6031,20 @@ xserver_add_display (gpointer data)
 		string = g_strdup (gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo)));
 	}
 
-	defaultval = ve_config_get_string (cfg, key);
+	defaultval = NULL;
+	gdm_common_config_get_string (cfg, key, &defaultval, NULL);
 
 	/* Add to config */
-	if (strcmp (ve_sure_string (defaultval), ve_sure_string (string)) == 0)
-		ve_config_delete_key (custom_cfg, key);
-	else
-		ve_config_set_string (custom_cfg, key, ve_sure_string(string));
+	if (strcmp (ve_sure_string (defaultval), ve_sure_string (string)) == 0) {
+		gdm_common_config_remove_key (custom_cfg, key, NULL);
+	} else {
+		gdm_common_config_set_string (custom_cfg, key, ve_sure_string(string));
+	}
 
-	ve_config_save (custom_cfg, FALSE /* force */);
+	gdm_common_config_save (custom_cfg, custom_config_file, NULL);
+	g_key_file_free (custom_cfg);
+	g_key_file_free (cfg);
+
 	/* Reinitialize gdmsetup */
 	xserver_init_servers ();
 	xserver_update_delete_sensitivity ();
@@ -6198,20 +6071,17 @@ xserver_add_button_clicked (void)
 	gboolean res;
 		
 	if (dialog == NULL) {
-		parent = glade_helper_get (xml_xservers, "xserver_dialog", GTK_TYPE_WINDOW);
-		dialog = glade_helper_get (xml_add_xservers, "add_xserver_dialog", GTK_TYPE_DIALOG);
+		parent = glade_xml_get_widget (xml_xservers, "xserver_dialog");
+		dialog = glade_xml_get_widget (xml_add_xservers, "add_xserver_dialog");
 
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 	}
 
-	vt_spinbutton = glade_helper_get (xml_add_xservers, "xserver_spin_button",
-	                                  GTK_TYPE_SPIN_BUTTON);	
-	server_combobox = glade_helper_get (xml_add_xservers, "xserver_server_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
-	options_entry = glade_helper_get (xml_add_xservers, "xserver_options_entry",
-	                                  GTK_TYPE_ENTRY);
-	
+	vt_spinbutton = glade_xml_get_widget (xml_add_xservers, "xserver_spin_button");
+	server_combobox = glade_xml_get_widget (xml_add_xservers, "xserver_server_combobox");
+	options_entry = glade_xml_get_widget (xml_add_xservers, "xserver_options_entry");
+
 	activate_signal_id = g_signal_connect (G_OBJECT (vt_spinbutton), "activate",
 	                                       G_CALLBACK (vt_spinbutton_activate),
 	                                       (gpointer) dialog);
@@ -6220,8 +6090,7 @@ xserver_add_button_clicked (void)
 	
 	gtk_widget_grab_focus (vt_spinbutton);
 		
-	treeview = glade_helper_get (xml_xservers, "xserver_tree_view",
-	                             GTK_TYPE_TREE_VIEW);
+	treeview = glade_xml_get_widget (xml_xservers, "xserver_tree_view");
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
 
 	/* set default values */
@@ -6297,35 +6166,24 @@ xserver_create (gpointer data)
 	GtkWidget *priority_spinbutton;
 
 	/* Get Widgets from glade */
-	frame           = glade_helper_get (xml, "xserver_modify_frame",
-	                                    GTK_TYPE_FRAME);
-	name_entry      = glade_helper_get (xml, "xserver_name_entry",
-                                        GTK_TYPE_ENTRY);
-	command_entry   = glade_helper_get (xml, "xserver_command_entry",
-	                                    GTK_TYPE_ENTRY);
-	priority_spinbutton = glade_helper_get(xml, "xserv_priority_spinbutton",
-					       GTK_TYPE_SPIN_BUTTON);
-	handled_check   = glade_helper_get (xml, "xserver_handled_checkbutton",
-	                                    GTK_TYPE_CHECK_BUTTON);
-	flexible_check  = glade_helper_get (xml, "xserver_flexible_checkbutton",
-	                                    GTK_TYPE_CHECK_BUTTON);
-	greeter_radio   = glade_helper_get (xml, "xserver_greeter_radiobutton",
-	                                    GTK_TYPE_RADIO_BUTTON);
-	chooser_radio   = glade_helper_get (xml, "xserver_chooser_radiobutton",
-	                                    GTK_TYPE_RADIO_BUTTON);
-	modify_combobox = glade_helper_get (xml, "xserver_mod_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
-	create_button   = glade_helper_get (xml, "xserver_create_button",
-	                                    GTK_TYPE_BUTTON);
-	delete_button   = glade_helper_get (xml, "xserver_delete_button",
-	                                    GTK_TYPE_BUTTON);
+	frame           = glade_xml_get_widget (xml, "xserver_modify_frame");
+	name_entry      = glade_xml_get_widget (xml, "xserver_name_entry");
+	command_entry   = glade_xml_get_widget (xml, "xserver_command_entry");
+	priority_spinbutton = glade_xml_get_widget(xml, "xserv_priority_spinbutton");
+	handled_check   = glade_xml_get_widget (xml, "xserver_handled_checkbutton");
+	flexible_check  = glade_xml_get_widget (xml, "xserver_flexible_checkbutton");
+	greeter_radio   = glade_xml_get_widget (xml, "xserver_greeter_radiobutton");
+	chooser_radio   = glade_xml_get_widget (xml, "xserver_chooser_radiobutton");
+	modify_combobox = glade_xml_get_widget (xml, "xserver_mod_combobox");
+	create_button   = glade_xml_get_widget (xml, "xserver_create_button");
+	delete_button   = glade_xml_get_widget (xml, "xserver_delete_button");
 
 	gtk_combo_box_append_text (GTK_COMBO_BOX (modify_combobox),
 	                           "New Server");
 
 	/* TODO: Create a new section for this server */
 	/* TODO: Write this value to the config and update xservers list */
-	/* cfg = ve_config_get (custom_config_file); */
+	/* cfg = gdm_common_config_load (custom_config_file, NULL); */
 	success = FALSE;
 	/* success = ve_config_add_section (cfg, SECTION_NAME); */
 
@@ -6363,10 +6221,8 @@ xserver_init_definitions ()
 	GtkWidget *style_combobox;
 	GtkWidget *modify_combobox;
 
-	style_combobox  = glade_helper_get (xml_xservers, "xserver_style_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
-	modify_combobox = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
+	style_combobox  = glade_xml_get_widget (xml_xservers, "xserver_style_combobox");
+	modify_combobox = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
 
 	xserver_populate_combobox (GTK_COMBO_BOX (modify_combobox));
 
@@ -6397,14 +6253,16 @@ static void
 xserver_delete (gpointer data)
 {
 	gchar temp_string;
-
 	/* Get xserver section to delete */
-	GtkWidget *combobox = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-	                                        GTK_TYPE_COMBO_BOX);
-	gchar *section = gtk_combo_box_get_active_text ( GTK_COMBO_BOX (combobox));
-
+	GtkWidget *combobox;
+	gchar *section;
 	/* Delete xserver section */
-	VeConfig *custom_cfg = ve_config_get (custom_config_file);
+	VeConfig *custom_cfg;
+
+	combobox = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
+	section = gtk_combo_box_get_active_text ( GTK_COMBO_BOX (combobox));
+	custom_cfg = ve_config_get (custom_config_file);
+
 	temp_string = g_strconcat (GDM_KEY_SERVER_PREFIX, section, NULL);
 	ve_config_delete_section (custom_cfg, temp_string);
 	g_free (temp_string);
@@ -6440,28 +6298,17 @@ setup_xserver_support (GladeXML *xml_xservers)
 	/* setup_xrandr_support (); */
 
 	/* Get Widgets from glade */
-	treeview        = glade_helper_get (xml_xservers, "xserver_tree_view",
-	                                    GTK_TYPE_TREE_VIEW);
-	name_entry      = glade_helper_get (xml_xservers, "xserver_name_entry",
-                                            GTK_TYPE_ENTRY);
-	command_entry   = glade_helper_get (xml_xservers, "xserver_command_entry",
-	                                    GTK_TYPE_ENTRY);
-	priority_spinbutton = glade_helper_get(xml_xservers, "xserv_priority_spinbutton",
-					       GTK_TYPE_SPIN_BUTTON);
-	handled_check   = glade_helper_get (xml_xservers, "xserver_handled_checkbutton",
-	                                    GTK_TYPE_CHECK_BUTTON);
-	flexible_check  = glade_helper_get (xml_xservers, "xserver_flexible_checkbutton",
-	                                    GTK_TYPE_CHECK_BUTTON);
-	style_combobox  = glade_helper_get (xml_xservers, "xserver_style_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
-	servers_combobox = glade_helper_get (xml_xservers, "xserver_mod_combobox",
-	                                    GTK_TYPE_COMBO_BOX);
-	create_button   = glade_helper_get (xml_xservers, "xserver_createbutton",
-	                                    GTK_TYPE_BUTTON);
-	delete_button   = glade_helper_get (xml_xservers, "xserver_deletebutton",
-	                                    GTK_TYPE_BUTTON);
-	remove_button   = glade_helper_get (xml_xservers, "xserver_remove_button",
-	                                    GTK_TYPE_BUTTON);
+	treeview        = glade_xml_get_widget (xml_xservers, "xserver_tree_view");
+	name_entry      = glade_xml_get_widget (xml_xservers, "xserver_name_entry");
+	command_entry   = glade_xml_get_widget (xml_xservers, "xserver_command_entry");
+	priority_spinbutton = glade_xml_get_widget(xml_xservers, "xserv_priority_spinbutton");
+	handled_check   = glade_xml_get_widget (xml_xservers, "xserver_handled_checkbutton");
+	flexible_check  = glade_xml_get_widget (xml_xservers, "xserver_flexible_checkbutton");
+	style_combobox  = glade_xml_get_widget (xml_xservers, "xserver_style_combobox");
+	servers_combobox = glade_xml_get_widget (xml_xservers, "xserver_mod_combobox");
+	create_button   = glade_xml_get_widget (xml_xservers, "xserver_createbutton");
+	delete_button   = glade_xml_get_widget (xml_xservers, "xserver_deletebutton");
+	remove_button   = glade_xml_get_widget (xml_xservers, "xserver_remove_button");
 
 	glade_helper_tagify_label (xml_xservers, "xserver_informationlabel", "i");
 	glade_helper_tagify_label (xml_xservers, "xserver_informationlabel", "small");
@@ -6563,19 +6410,13 @@ xserver_button_clicked (void)
 		GtkWidget *parent;
 		GtkWidget *button;
 	
-		xml_xservers = glade_helper_load ("gdmsetup.glade",
-		                                 "xserver_dialog",
-		                                 GTK_TYPE_DIALOG,
-		                                 TRUE);	
+		xml_xservers = glade_xml_new (GDM_GLADE_DIR "/gdmsetup.glade", "xserver_dialog", NULL);
 
-		xml_add_xservers = glade_helper_load ("gdmsetup.glade",
-		                                     "add_xserver_dialog",
-		                                     GTK_TYPE_DIALOG,
-		                                     TRUE);	
+		xml_add_xservers = glade_xml_new (GDM_GLADE_DIR "/gdmsetup.glade", "add_xserver_dialog", NULL);
 
-		parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
-		dialog = glade_helper_get (xml_xservers, "xserver_dialog", GTK_TYPE_DIALOG);
-		button = glade_helper_get (xml_xservers, "xserver_add_button", GTK_TYPE_BUTTON);
+		parent = glade_xml_get_widget (xml, "setup_dialog");
+		dialog = glade_xml_get_widget (xml_xservers, "xserver_dialog");
+		button = glade_xml_get_widget (xml_xservers, "xserver_add_button");
 
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
@@ -6605,7 +6446,7 @@ setup_radio_group (const gchar *name,
 	GtkWidget *radio;
 	gint val;
 	
-	radio = glade_helper_get (xml, name, GTK_TYPE_RADIO_BUTTON);
+	radio = glade_xml_get_widget (xml, name);
 	val   = gdm_config_get_int ((gchar *)key);
 	
 	if (val == position)
@@ -6646,14 +6487,12 @@ setup_security_tab (void)
 	setup_intspin ("retry_delay", GDM_KEY_RETRY_DELAY);
 
 	/* Bold the Enable automatic login label */
-	checkbox = glade_helper_get (xml, "autologin",
-	                             GTK_TYPE_CHECK_BUTTON);
-	label = gtk_bin_get_child (GTK_BIN (checkbox));	
+	checkbox = glade_xml_get_widget (xml, "autologin");
+	label = gtk_bin_get_child (GTK_BIN (checkbox));
 	g_object_set (G_OBJECT (label), "use_markup", TRUE, NULL);
 
 	/* Bold the Enable timed login label */
-	checkbox = glade_helper_get (xml, "timedlogin",
-	                             GTK_TYPE_CHECK_BUTTON);
+	checkbox = glade_xml_get_widget (xml, "timedlogin");
 	label = gtk_bin_get_child (GTK_BIN (checkbox));
 	g_object_set (G_OBJECT (label), "use_markup", TRUE, NULL);
 
@@ -6683,8 +6522,7 @@ setup_security_tab (void)
 	setup_intspin ("minimal_uid_spinbutton", GDM_KEY_MINIMAL_UID);
 
 	/* Setup Configure XDMCP button */
-	XDMCPbutton = glade_helper_get (xml, "config_xserverbutton",
-	                                GTK_TYPE_BUTTON);
+	XDMCPbutton = glade_xml_get_widget (xml, "config_xserverbutton");
 	setup_xdmcp_support ();
 	g_signal_connect (G_OBJECT (XDMCPbutton), "clicked",
 	                  G_CALLBACK (xserver_button_clicked), NULL);
@@ -6746,8 +6584,8 @@ theme_list_drag_data_received  (GtkWidget        *widget,
 	GtkListStore *store;
 	GList *list;
 	
-	parent = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
-	theme_list = glade_helper_get (xml, "gg_theme_list", GTK_TYPE_TREE_VIEW);
+	parent = glade_xml_get_widget (xml, "setup_dialog");
+	theme_list = glade_xml_get_widget (xml, "gg_theme_list");
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (theme_list)));
 
 	gtk_drag_finish (context, TRUE, FALSE, time);
@@ -6764,12 +6602,12 @@ theme_list_drag_data_received  (GtkWidget        *widget,
 		mesg = g_strdup_printf (_("Install the theme from '%s'?"), base);
 		detail = g_strdup_printf (_("Select install to add the theme from the file '%s'."), (gchar *)list->data); 
 		
-		prompt = ve_hig_dialog_new (GTK_WINDOW (parent),
-		                            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-		                            GTK_MESSAGE_QUESTION,
-		                            GTK_BUTTONS_NONE,
-		                            mesg,
-		                            detail);
+		prompt = hig_dialog_new (GTK_WINDOW (parent),
+					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_QUESTION,
+					 GTK_BUTTONS_NONE,
+					 mesg,
+					 detail);
 
 		gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-cancel", GTK_RESPONSE_CANCEL); 
 		gtk_dialog_add_button (GTK_DIALOG (prompt), _("_Install"), GTK_RESPONSE_OK);
@@ -6832,24 +6670,18 @@ setup_local_themed_settings (void)
 	GtkSizeGroup *size_group;
 	char *theme_dir;
 	
-	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
-						  GTK_TYPE_TREE_VIEW);
-	GtkWidget *button = glade_helper_get (xml, "gg_install_new_theme",
-					      GTK_TYPE_BUTTON);
-	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme",
-						  GTK_TYPE_BUTTON);
-	GtkWidget *mode_combobox = glade_helper_get (xml, "gg_mode_combobox",
-						     GTK_TYPE_COMBO_BOX);
+	GtkWidget *theme_list = glade_xml_get_widget (xml, "gg_theme_list");
+	GtkWidget *button = glade_xml_get_widget (xml, "gg_install_new_theme");
+	GtkWidget *del_button = glade_xml_get_widget (xml, "gg_delete_theme");
+	GtkWidget *mode_combobox = glade_xml_get_widget (xml, "gg_mode_combobox");
 
-	style_label = glade_helper_get (xml, "local_stylelabel", GTK_TYPE_LABEL);
-	theme_label = glade_helper_get (xml, "local_theme_label", GTK_TYPE_LABEL);
+	style_label = glade_xml_get_widget (xml, "local_stylelabel");
+	theme_label = glade_xml_get_widget (xml, "local_theme_label");
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget (size_group, style_label);
 	gtk_size_group_add_widget (size_group, theme_label);
 	
-	color_colorbutton = glade_helper_get (xml, 
-	                                      "local_background_theme_colorbutton",
-	                                      GTK_TYPE_COLOR_BUTTON);
+	color_colorbutton = glade_xml_get_widget (xml, "local_background_theme_colorbutton");
 
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
 	                   GDM_KEY_GRAPHICAL_THEMED_COLOR);
@@ -6999,8 +6831,7 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 		timeout_remove_all ();
 		gtk_main_quit ();
 	} else if (response == GTK_RESPONSE_HELP) {
-		GtkWidget *setup_dialog = glade_helper_get
-			(xml, "setup_dialog", GTK_TYPE_WINDOW);
+		GtkWidget *setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
 		static GtkWidget *dlg = NULL;
 
 		if (dlg != NULL) {
@@ -7111,14 +6942,9 @@ logo_filechooser_response (GtkWidget *file_chooser, gpointer data)
 	}
 
 	if (gtk_notebook_get_current_page (GTK_NOTEBOOK (setup_notebook)) == LOCAL_TAB) {
-		image_toggle = glade_helper_get (xml, 
-		                                 "remote_logo_image_checkbutton",
-		                                 GTK_TYPE_CHECK_BUTTON);
-	      
+		image_toggle = glade_xml_get_widget (xml, "remote_logo_image_checkbutton");
 	} else {
-		image_toggle = glade_helper_get (xml, 
-		                                 "remote_logo_image_checkbutton",
-		                                 GTK_TYPE_CHECK_BUTTON);
+		image_toggle = glade_xml_get_widget (xml, "remote_logo_image_checkbutton");
 	}
 
 	if (filename != NULL &&
@@ -7219,26 +7045,12 @@ hookup_plain_background (void)
 	GtkWidget *image_preview;
 	gchar *background_filename;
 
-	color_radiobutton = glade_helper_get (xml, 
-	                                      "local_background_color_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
+	color_radiobutton = glade_xml_get_widget (xml, "local_background_color_checkbutton");
+	color_colorbutton = glade_xml_get_widget (xml, "local_background_colorbutton");
+	image_radiobutton = glade_xml_get_widget (xml, "local_background_image_checkbutton");
+	image_filechooser = glade_xml_get_widget (xml, "local_background_image_chooserbutton");
+	image_scale_to_fit = glade_xml_get_widget (xml, "sg_scale_background");
 
-	color_colorbutton = glade_helper_get (xml, 
-	                                      "local_background_colorbutton",
-	                                      GTK_TYPE_COLOR_BUTTON);
-
-	image_radiobutton = glade_helper_get (xml, 
-	                                      "local_background_image_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
-	
-	image_filechooser = glade_helper_get (xml, 
-	                                      "local_background_image_chooserbutton",
-	                                      GTK_TYPE_FILE_CHOOSER_BUTTON);
-	
-	image_scale_to_fit = glade_helper_get (xml, 
-	                                       "sg_scale_background", 
-					       GTK_TYPE_CHECK_BUTTON);
-	
 	setup_greeter_color ("local_background_colorbutton", 
 	                     GDM_KEY_BACKGROUND_COLOR);
 
@@ -7382,13 +7194,8 @@ hookup_plain_logo (void)
 	GtkWidget *image_preview;
 	gchar *logo_filename;
 
-	logo_checkbutton = glade_helper_get (xml, 
-	                                     "local_logo_image_checkbutton",
-	                                     GTK_TYPE_CHECK_BUTTON);
-	logo_button = glade_helper_get (xml, 
-	                                "local_logo_image_chooserbutton",
-	                                GTK_TYPE_FILE_CHOOSER_BUTTON);
-		
+	logo_checkbutton = glade_xml_get_widget (xml, "local_logo_image_checkbutton");
+	logo_button = glade_xml_get_widget (xml, "local_logo_image_chooserbutton");
 
 	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (logo_button),
 					        FALSE);
@@ -7511,7 +7318,7 @@ setup_default_session (void)
 
 	_gdm_session_list_init (&sessnames, &org_sessions, NULL, NULL);
 	
-	default_session_combobox = glade_helper_get (xml, "default_session_combobox", GTK_TYPE_COMBO_BOX);
+	default_session_combobox = glade_xml_get_widget (xml, "default_session_combobox");
 
 	org_val = gdm_config_get_string (GDM_KEY_DEFAULT_SESSION);
 	
@@ -7561,10 +7368,8 @@ setup_default_session (void)
 	g_signal_connect (default_session_combobox, "changed",
 		          G_CALLBACK (combobox_changed), NULL);
 	
-	default_session_checkbox = glade_helper_get (xml,
-						     "default_session_checkbutton", 
-						     GTK_TYPE_CHECK_BUTTON);
-	
+	default_session_checkbox = glade_xml_get_widget (xml, "default_session_checkbutton");
+
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (default_session_checkbox), !ve_string_empty (org_val));
 	
 	g_object_set_data_full (G_OBJECT (default_session_checkbox),
@@ -7607,16 +7412,12 @@ setup_general_tab (void)
 	setup_default_session ();
 	
 	/* Setup GtkRC file path */
-	gtkrc_filechooser = glade_helper_get (xml, 
-					      "gtkrc_chooserbutton",
-					      GTK_TYPE_FILE_CHOOSER_BUTTON);
+	gtkrc_filechooser = glade_xml_get_widget (xml, "gtkrc_chooserbutton");
 
 	gtkrc_filename = gdm_config_get_string (GDM_KEY_GTKRC);
 
-	gtkrc_checkbox = glade_helper_get (xml,
-					   "gtkrc_checkbutton", 
-					   GTK_TYPE_CHECK_BUTTON);		
-	
+	gtkrc_checkbox = glade_xml_get_widget (xml, "gtkrc_checkbutton");
+
 	if (!ve_string_empty (gtkrc_filename) && access (gtkrc_filename, R_OK) == 0) {
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (gtkrc_filechooser),
 					       gtkrc_filename);
@@ -7651,10 +7452,8 @@ setup_general_tab (void)
 	g_free (gtkrc_filename);
 
 	/* Setup user 24Hr Clock */
-	clock_type_chooser = glade_helper_get (xml, 
-					      "use_24hr_clock_combobox",
-					      GTK_TYPE_COMBO_BOX);	
-	
+	clock_type_chooser = glade_xml_get_widget (xml, "use_24hr_clock_combobox");
+
 	user_24hr_clock = gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 	if (!ve_string_empty (user_24hr_clock)) {
 		if (strcasecmp (ve_sure_string (user_24hr_clock), _("auto")) == 0) {
@@ -7673,8 +7472,7 @@ setup_general_tab (void)
 	g_signal_connect (G_OBJECT (clock_type_chooser), "changed",
 	                  G_CALLBACK (combobox_changed), NULL);			
 	
-	commands_button = glade_helper_get (xml, "configure_commands_button",
-					    GTK_TYPE_BUTTON);
+	commands_button = glade_xml_get_widget (xml, "configure_commands_button");
 	g_signal_connect (G_OBJECT (commands_button), "clicked",
 	                  G_CALLBACK (command_button_clicked), NULL);
       	
@@ -7700,27 +7498,13 @@ hookup_remote_plain_background (void)
 	GtkWidget *image_preview;
 	gchar *background_filename;
 
-	color_radiobutton = glade_helper_get (xml, 
-	                                      "remote_background_color_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
+	color_radiobutton = glade_xml_get_widget (xml, "remote_background_color_checkbutton");
+	color_colorbutton = glade_xml_get_widget (xml, "remote_background_colorbutton");
+	image_radiobutton = glade_xml_get_widget (xml, "remote_background_image_checkbutton");
+	image_filechooser = glade_xml_get_widget (xml, "remote_background_image_chooserbutton");
+	image_scale_to_fit = glade_xml_get_widget (xml, "sg_scale_background_remote");
 
-	color_colorbutton = glade_helper_get (xml, 
-	                                      "remote_background_colorbutton",
-	                                      GTK_TYPE_COLOR_BUTTON);
-
-	image_radiobutton = glade_helper_get (xml, 
-	                                      "remote_background_image_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
-	
-	image_filechooser = glade_helper_get (xml, 
-	                                      "remote_background_image_chooserbutton",
-	                                      GTK_TYPE_FILE_CHOOSER_BUTTON);
-	
-	image_scale_to_fit = glade_helper_get (xml, 
-	                                       "sg_scale_background_remote", 
-					       GTK_TYPE_CHECK_BUTTON);
-	
-	setup_greeter_color ("remote_background_colorbutton", 
+	setup_greeter_color ("remote_background_colorbutton",
 	                     GDM_KEY_BACKGROUND_COLOR);
 
 	setup_greeter_toggle ("sg_scale_background_remote",
@@ -7865,13 +7649,8 @@ hookup_remote_plain_logo (void)
 	GtkWidget *image_preview;
 	gchar *logo_filename;
 
-	logo_checkbutton = glade_helper_get (xml, 
-	                                     "remote_logo_image_checkbutton",
-	                                     GTK_TYPE_CHECK_BUTTON);
-	logo_button = glade_helper_get (xml, 
-	                                "remote_logo_image_chooserbutton",
-	                                GTK_TYPE_FILE_CHOOSER_BUTTON);
-		
+	logo_checkbutton = glade_xml_get_widget (xml, "remote_logo_image_checkbutton");
+	logo_button = glade_xml_get_widget (xml, "remote_logo_image_chooserbutton");
 
 	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (logo_button),
 					        FALSE);
@@ -7938,11 +7717,9 @@ setup_remote_plain_settings (void)
 	GtkSizeGroup *size_group;
 	GtkWidget *image_checkbutton;
 	GtkWidget *color_checkbutton;
-	
-	image_checkbutton = glade_helper_get (xml, "remote_background_image_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
-	color_checkbutton = glade_helper_get (xml, "remote_background_color_checkbutton",
-	                                      GTK_TYPE_CHECK_BUTTON);
+
+	image_checkbutton = glade_xml_get_widget (xml, "remote_background_image_checkbutton");
+	color_checkbutton = glade_xml_get_widget (xml, "remote_background_color_checkbutton");
 
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget (size_group, image_checkbutton);
@@ -7978,27 +7755,20 @@ setup_remote_themed_settings (void)
 	GtkWidget *style_label;
 	GtkWidget *theme_label;
 	GtkSizeGroup *size_group;
-	
-	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list_remote",
-						  GTK_TYPE_TREE_VIEW);
-	GtkWidget *theme_list_local = glade_helper_get (xml, "gg_theme_list",
-						  GTK_TYPE_TREE_VIEW);					  
-	GtkWidget *button = glade_helper_get (xml, "gg_install_new_theme_remote",
-					      GTK_TYPE_BUTTON);
-	GtkWidget *del_button = glade_helper_get (xml, "gg_delete_theme_remote",
-						  GTK_TYPE_BUTTON);
-	GtkWidget *mode_combobox = glade_helper_get (xml, "gg_mode_combobox_remote",
-						     GTK_TYPE_COMBO_BOX);
 
-	style_label = glade_helper_get (xml, "remote_stylelabel", GTK_TYPE_LABEL);
-	theme_label = glade_helper_get (xml, "remote_theme_label", GTK_TYPE_LABEL);
+	GtkWidget *theme_list = glade_xml_get_widget (xml, "gg_theme_list_remote");
+	GtkWidget *theme_list_local = glade_xml_get_widget (xml, "gg_theme_list");
+	GtkWidget *button = glade_xml_get_widget (xml, "gg_install_new_theme_remote");
+	GtkWidget *del_button = glade_xml_get_widget (xml, "gg_delete_theme_remote");
+	GtkWidget *mode_combobox = glade_xml_get_widget (xml, "gg_mode_combobox_remote");
+
+	style_label = glade_xml_get_widget (xml, "remote_stylelabel");
+	theme_label = glade_xml_get_widget (xml, "remote_theme_label");
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget (size_group, style_label);
 	gtk_size_group_add_widget (size_group, theme_label);
 
-	color_colorbutton = glade_helper_get (xml, 
-	                                      "remote_background_theme_colorbutton",
-	                                      GTK_TYPE_COLOR_BUTTON);
+	color_colorbutton = glade_xml_get_widget (xml, "remote_background_theme_colorbutton");
 
 	g_object_set_data (G_OBJECT (color_colorbutton), "key",
 	                   GDM_KEY_GRAPHICAL_THEMED_COLOR);
@@ -8103,9 +7873,8 @@ static void
 setup_remote_tab (void)
 {
 	GtkWidget *xdmcp_button;
-	
-	xdmcp_button = glade_helper_get (xml, "xdmcp_configbutton",
-	                                 GTK_TYPE_BUTTON);						
+
+	xdmcp_button = glade_xml_get_widget (xml, "xdmcp_configbutton");
 
 #ifndef HAVE_LIBXDMCP
 	gtk_widget_set_sensitive (xdmcp_button, FALSE);
@@ -8124,20 +7893,16 @@ setup_gui (void)
 {
 	GtkWidget *dialog;
 
-	xml = glade_helper_load ("gdmsetup.glade",
-				 "setup_dialog",
-				 GTK_TYPE_DIALOG,
-				 TRUE /* dump_on_destroy */);
+	xml = glade_xml_new (GDM_GLADE_DIR "/gdmsetup.glade", "setup_dialog", NULL);
 
-	dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_DIALOG);
+	dialog = glade_xml_get_widget (xml, "setup_dialog");
 
 	g_signal_connect (G_OBJECT (dialog), "delete_event",
 			  G_CALLBACK (delete_event), NULL);
 	g_signal_connect (G_OBJECT (dialog), "response",
 			  G_CALLBACK (dialog_response), NULL);
 
-	setup_notebook = glade_helper_get (xml, "setup_notebook",
-	                                   GTK_TYPE_NOTEBOOK);
+	setup_notebook = glade_xml_get_widget (xml, "setup_notebook");
 
 	/* Markup glade labels */
 	glade_helper_tagify_label (xml, "themes_label", "b");
@@ -8220,8 +7985,7 @@ static void
 update_sensitivity (void)
 {
 	gboolean sensitive = get_sensitivity ();
-	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
-						    GTK_TYPE_WINDOW);
+	GtkWidget *setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
 	gtk_widget_set_sensitive (setup_dialog, sensitive);
 	if (sensitive)
 		unsetup_window_cursor ();
@@ -8303,13 +8067,13 @@ apply_user_changes (GObject *object, gint arg1, gpointer user_data)
 		
 		GtkWidget *prompt;
 		
-		prompt = ve_hig_dialog_new (GTK_WINDOW (dialog),
-					    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					    GTK_MESSAGE_WARNING,
-					    GTK_BUTTONS_OK,
-					    _("Random theme mode change"),
-					    _("Since no themes were selected in random theme mode"
-					      " switching back to single theme mode."));
+		prompt = hig_dialog_new (GTK_WINDOW (dialog),
+					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_OK,
+					 _("Random theme mode change"),
+					 _("Since no themes were selected in random theme mode"
+					   " switching back to single theme mode."));
 		
 		gtk_dialog_run (GTK_DIALOG (prompt));
 		gtk_widget_destroy (prompt);	
@@ -8321,13 +8085,13 @@ apply_user_changes (GObject *object, gint arg1, gpointer user_data)
 		GtkWidget *prompt;
 		gint response;
 
-		prompt = ve_hig_dialog_new (GTK_WINDOW (dialog),
-		                            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-		                            GTK_MESSAGE_WARNING,
-		                            GTK_BUTTONS_NONE,
-		                            _("Apply the changes to users before closing?"),
-		                            _("If you don't apply, the changes made on "
-		                              "the Users tab will be disregarded."));
+		prompt = hig_dialog_new (GTK_WINDOW (dialog),
+					 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_NONE,
+					 _("Apply the changes to users before closing?"),
+					 _("If you don't apply, the changes made on "
+					   "the Users tab will be disregarded."));
 
 		gtk_dialog_add_button (GTK_DIALOG (prompt), _("Close _without Applying"), GTK_RESPONSE_CLOSE);
 		gtk_dialog_add_button (GTK_DIALOG (prompt), "gtk-cancel", GTK_RESPONSE_CANCEL); 
@@ -8339,8 +8103,7 @@ apply_user_changes (GObject *object, gint arg1, gpointer user_data)
 		if (response == GTK_RESPONSE_APPLY) {
 			GtkWidget *apply_button;
 
-			apply_button = glade_helper_get (xml, "fb_faceapply",
-                                                        GTK_TYPE_WIDGET);
+			apply_button = glade_xml_get_widget (xml, "fb_faceapply");
 			g_signal_emit_by_name (G_OBJECT (apply_button), "clicked");
 		}
 		
@@ -8392,12 +8155,12 @@ main (int argc, char *argv[])
 
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
-		dialog = ve_hig_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Could not access configuration file (defaults.conf)"),
-					    _("Make sure that the file exists before launching login manager config utility."));
+		dialog = hig_dialog_new (NULL /* parent */,
+					 GTK_DIALOG_MODAL /* flags */,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Could not access configuration file (defaults.conf)"),
+					 _("Make sure that the file exists before launching login manager config utility."));
 		
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
@@ -8409,12 +8172,12 @@ main (int argc, char *argv[])
 
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
-		dialog = ve_hig_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Could not access configuration file (custom.conf)"),
-					    _("Make sure that the file exists before launching login manager config utility."));
+		dialog = hig_dialog_new (NULL /* parent */,
+					 GTK_DIALOG_MODAL /* flags */,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Could not access configuration file (custom.conf)"),
+					 _("Make sure that the file exists before launching login manager config utility."));
 
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
@@ -8446,8 +8209,6 @@ main (int argc, char *argv[])
 		g_type_class_ref (GTK_TYPE_WIDGET);	
 	}
 
-	glade_helper_add_glade_directory (GDM_GLADE_DIR);
-
 	/* Make sure the user is root. If not, they shouldn't be messing with 
 	 * GDM's configuration.
 	 */
@@ -8459,13 +8220,12 @@ main (int argc, char *argv[])
 		/* Done using socket */
 		gdmcomm_comm_bulk_stop ();
 
-		fatal_error = 
-			ve_hig_dialog_new (NULL /* parent */,
-					   GTK_DIALOG_MODAL /* flags */,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("You must be the root user to configure GDM."),
-					   "");
+		fatal_error = hig_dialog_new (NULL /* parent */,
+					      GTK_DIALOG_MODAL /* flags */,
+					      GTK_MESSAGE_ERROR,
+					      GTK_BUTTONS_OK,
+					      _("You must be the root user to configure GDM."),
+					      "");
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);
 		gtk_dialog_run (GTK_DIALOG (fatal_error));

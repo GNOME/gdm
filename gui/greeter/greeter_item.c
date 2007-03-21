@@ -30,6 +30,8 @@
 #include "gdmcommon.h"
 #include "misc.h"
 
+#include "gdm-common.h"
+
 #include "greeter_item.h"
 #include "greeter_configuration.h"
 

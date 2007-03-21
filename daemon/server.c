@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -49,6 +51,8 @@
 #include "slave.h"
 #include "getvt.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
@@ -960,42 +964,90 @@ gdm_server_resolve (GdmDisplay *disp)
 }
 
 
-char **
+static char **
+vector_merge (char * const *v1,
+	      int           len1,
+	      char * const *v2,
+	      int           len2)
+{
+	int argc, i;
+	char **argv;
+
+	if (v1 == NULL && v2 == NULL)
+		return NULL;
+
+	argc = len1 + len2;
+
+	argv = g_new (char *, argc + 1);
+	for (i = 0; i < len1; i++)
+		argv[i] = g_strdup (v1[i]);
+	for (; i < argc; i++)
+		argv[i] = g_strdup (v2[i - len1]);
+	argv[i] = NULL;
+
+	return argv;
+}
+
+gboolean
 gdm_server_resolve_command_line (GdmDisplay *disp,
-				 gboolean resolve_flags,
-				 const char *vtarg)
+				 gboolean    resolve_flags,
+				 const char *vtarg,
+				 int        *argcp,
+				 char     ***argvp)
 {
 	char *bin;
+	int    argc;
 	char **argv;
 	int len;
 	int i;
 	gboolean gotvtarg = FALSE;
 	gboolean query_in_arglist = FALSE;
 
+        argv = NULL;
+
 	bin = ve_first_word (disp->command);
 	if (bin == NULL) {
+		const char *str;
+
 		gdm_error (_("Invalid server command '%s'"), disp->command);
-		argv = ve_split (gdm_get_value_string (GDM_KEY_STANDARD_XSERVER));
+		str = gdm_get_value_string (GDM_KEY_STANDARD_XSERVER);
+       		g_shell_parse_argv (str, &argc, &argv, NULL);
 	} else if (bin[0] != '/') {
 		GdmXserver *svr = gdm_find_xserver (bin);
 		if (svr == NULL) {
+			const char *str;
+
 			gdm_error (_("Server name '%s' not found; "
 				     "using standard server"), bin);
-			argv = ve_split (gdm_get_value_string (GDM_KEY_STANDARD_XSERVER));
+			str = gdm_get_value_string (GDM_KEY_STANDARD_XSERVER);
+			g_shell_parse_argv (str, &argc, &argv, NULL);
+
 		} else {
-			char **svr_command =
-				ve_split (ve_sure_string (svr->command));
-			argv = ve_split (disp->command);
+			char **svr_command;
+			const char *str;
+			int svr_argc;
+
+			str = ve_sure_string (svr->command);
+			svr_command = NULL;
+			g_shell_parse_argv (str, &svr_argc, &svr_command, NULL);
+
+			g_shell_parse_argv (disp->command, &argc, &argv, NULL);
+
 			if (argv[0] == NULL || argv[1] == NULL) {
 				g_strfreev (argv);
 				argv = svr_command;
+				argc = svr_argc;
 			} else {
 				char **old_argv = argv;
-				argv = ve_vector_merge (svr_command,
-							&old_argv[1]);
+				argv = vector_merge (svr_command,
+						     svr_argc,
+						     &old_argv[1],
+						     argc);
 				g_strfreev (svr_command);
 				g_strfreev (old_argv);
-			} 
+
+				argc += svr_argc;
+			}
 
 			if (resolve_flags) {
 				/* Setup the handled function */
@@ -1009,7 +1061,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 			}
 		}
 	} else {
-		argv = ve_split (disp->command);
+		g_shell_parse_argv (disp->command, &argc, &argv, NULL);
 	}
 
 	for (len = 0; argv != NULL && argv[len] != NULL; len++) {
@@ -1027,6 +1079,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 	}
 
 	argv = g_renew (char *, argv, len + 10);
+	/* shift args down one */
 	for (i = len - 1; i >= 1; i--) {
 		argv[i+1] = argv[i];
 	}
@@ -1065,9 +1118,12 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 
 	argv[len++] = NULL;
 
+	*argvp = argv;
+	*argcp = len;
+
 	g_free (bin);
 
-	return argv;
+	return TRUE;
 }
 
 /**
@@ -1080,11 +1136,12 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
  * since otherwise the server might not yet be looked up yet.
  */
 
-static void 
+static void
 gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 {
     struct sigaction ign_signal;
     sigset_t mask;
+    int argc;
     gchar **argv = NULL;
     char *logfile;
     int logfd;
@@ -1110,9 +1167,13 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     }
 
     /* Figure out the server command */
-    argv = gdm_server_resolve_command_line (d,
-					    TRUE /* resolve flags */,
-					    vtarg);
+    argv = NULL;
+    argc = 0;
+    gdm_server_resolve_command_line (d,
+				     TRUE /* resolve flags */,
+				     vtarg,
+				     &argc,
+				     &argv);
 
     command = g_strjoinv (" ", argv);
 
@@ -1195,7 +1256,6 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	sigprocmask (SIG_SETMASK, &mask, NULL);
 
 	if (SERVER_IS_PROXY (d)) {
-		int argc = ve_vector_len (argv);
 		gboolean add_display = TRUE;
 
 		g_unsetenv ("DISPLAY");

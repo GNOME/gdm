@@ -43,6 +43,8 @@
 #include "errorgui.h"
 #include "slave.h"
 
+#include "gdm-common.h"
+
 /* set in the main function */
 extern char **stored_argv;
 extern int stored_argc;

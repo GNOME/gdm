@@ -57,6 +57,8 @@
 #include "slave.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 extern char **environ;
 
 extern pid_t extra_process;

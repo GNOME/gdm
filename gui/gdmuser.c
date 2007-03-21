@@ -34,6 +34,8 @@
 #include "gdmuser.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 static time_t time_started;
 
 static GdmUser * 

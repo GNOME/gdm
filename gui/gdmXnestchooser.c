@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (c) 2001 Queen of England
  *    
  * GDMXnestChooser - run X nest with a chooser using xdmcp
@@ -39,6 +41,8 @@
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 static gchar **args_remaining;
 static pid_t xnest_pid = 0;
@@ -260,13 +264,9 @@ get_font_path (const char *display)
 static char **
 make_us_an_exec_vector (const char *xnest)
 {
-	char **vector;
-	int i, ii;
+	char **argv;
 	int argc;
-	char **xnest_vec;
-	char **options_vec = NULL;
-	gboolean got_font_path = FALSE;
-	char *font_path = NULL;
+	GString *command;
 
 	if ( ! ve_string_empty (xnest_binary))
 		xnest = xnest_binary;
@@ -274,62 +274,37 @@ make_us_an_exec_vector (const char *xnest)
 	if (ve_string_empty (xnest))
 		xnest = "Xnest";
 
-	xnest_vec = ve_split (xnest);
-	if (xnest_options != NULL)
-		options_vec = ve_split (xnest_options);
-	else
-		options_vec = NULL;
+	command = g_string_new (xnest);
+	g_string_append_printf (command, " %s", display_num);
 
-	argc = ve_vector_len (xnest_vec) +
-		1 +
-		ve_vector_len (options_vec) +
-		3 +
-		2;
-
-	vector = g_new0 (char *, argc);
-
-	ii = 0;
-
-	/* lots of leaks follow */
-
-	vector[ii++] = xnest_vec[0];
-	vector[ii++] = display_num;
-
-	for (i = 1; xnest_vec[i] != NULL; i++) {
-		vector[ii++] = xnest_vec[i];
-		if (strcmp (xnest_vec[i], "-fp") == 0)
-			got_font_path = TRUE;
-	}
-
-	if (options_vec != NULL) {
-		for (i = 0; options_vec[i] != NULL; i++) {
-			vector[ii++] = options_vec[i];
-			if (strcmp (options_vec[i], "-fp") == 0)
-				got_font_path = TRUE;
-		}
+	if (xnest_options != NULL) {
+		g_string_append_printf (command, " %s", xnest_options);
 	}
 
 	if ( ! no_query) {
 		if (do_broadcast) {
-			vector[ii++] = "-broadcast";
+			g_string_append (command, " -broadcast");
 		} else if (do_direct) {
-			vector[ii++] = "-query";
-			vector[ii++] = indirect_host;
+			g_string_append_printf (command, " -query %s", indirect_host);
 		} else {
-			vector[ii++] = "-indirect";
-			vector[ii++] = indirect_host;
+			g_string_append_printf (command, " -indirect %s", indirect_host);
 		}
 	}
 
-	if ( ! got_font_path)
+	if (g_strrstr (command->str, " -fp ") == NULL) {
+		char *font_path;
 		font_path = get_font_path (NULL);
-
-	if (font_path != NULL) {
-		vector[ii++] = "-fp";
-		vector[ii++] = font_path;
+		g_string_append_printf (command, " -fp %s", font_path);
+		g_free (font_path);
 	}
 
-	return vector;
+	argv = NULL;
+
+	g_shell_parse_argv (command->str, &argc, &argv, NULL);
+
+	g_string_free (command, TRUE);
+
+	return argv;
 }
 
 static const char *
@@ -459,6 +434,32 @@ setup_cookie (int disp)
     XauUnlockAuth (filename);
 }
 
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -512,14 +513,14 @@ main (int argc, char *argv[])
 
 	if (execvec == NULL) {
 		GtkWidget *d;
-		d = ve_hig_dialog_new (NULL /* parent */,
-				       GTK_DIALOG_MODAL /* flags */,
-				       GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK,
-				       _("Xnest doesn't exist."),
-				       _("Please ask your system "
-					 "administrator "
-					 "to install it."));
+		d = hig_dialog_new (NULL /* parent */,
+				    GTK_DIALOG_MODAL /* flags */,
+				    GTK_MESSAGE_ERROR,
+				    GTK_BUTTONS_OK,
+				    _("Xnest doesn't exist."),
+				    _("Please ask your system "
+				      "administrator "
+				      "to install it."));
 		gtk_widget_show_all (d);
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
@@ -537,15 +538,14 @@ main (int argc, char *argv[])
 		      ! honor_indirect) &&
 		    ! do_direct) {
 			GtkWidget *d;
-			d = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_ERROR,
-				 GTK_BUTTONS_OK,
-				 _("Indirect XDMCP is not enabled"),
-				 _("Please ask your "
-				   "system administrator to enable "
-				   "this feature."));
+			d = hig_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("Indirect XDMCP is not enabled"),
+					    _("Please ask your "
+					      "system administrator to enable "
+					      "this feature."));
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -555,15 +555,14 @@ main (int argc, char *argv[])
 		if ( ! xdmcp_enabled &&
 		    do_direct) {
 			GtkWidget *d;
-			d = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_ERROR,
-				 GTK_BUTTONS_OK,
-				 _("XDMCP is not enabled"),
-				 _("Please ask your "
-				   "system administrator to enable "
-				   "this feature."));
+			d = hig_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("XDMCP is not enabled"),
+					    _("Please ask your "
+					      "system administrator to enable "
+					      "this feature."));
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -587,14 +586,13 @@ main (int argc, char *argv[])
 		    (kill (pid, 0) < 0 &&
 		     errno != EPERM)) {
 			GtkWidget *d;
-			d = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_ERROR,
-				 GTK_BUTTONS_OK,
-				 _("GDM is not running"),
-				 _("Please ask your "
-				   "system administrator to start it."));
+			d = hig_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("GDM is not running"),
+					    _("Please ask your "
+					      "system administrator to start it."));
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -605,13 +603,13 @@ main (int argc, char *argv[])
 	display = get_free_display ();
 	if (display < 0) {
 		GtkWidget *d;
-		d = ve_hig_dialog_new (NULL /* parent */,
-				       GTK_DIALOG_MODAL /* flags */,
-				       GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK,
-				       _("Could not find a free "
-					 "display number"),
-				       "");
+		d = hig_dialog_new (NULL /* parent */,
+				    GTK_DIALOG_MODAL /* flags */,
+				    GTK_MESSAGE_ERROR,
+				    GTK_BUTTONS_OK,
+				    _("Could not find a free "
+				      "display number"),
+				    "");
 		gtk_widget_show_all (d);
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);

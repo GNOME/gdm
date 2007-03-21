@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 3 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  * Copyright (C) 2005 Brian Cameron <brian.cameron@sun.com>
  *
@@ -17,15 +19,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* 
- * gdmconfig.c isolates most logic that interacts with vicious-extensions
+/*
+ * gdmconfig.c isolates most logic that interacts with GDM configuration
  * into a single file and provides a mechanism for interacting with GDM
  * configuration optins via access functions for getting/setting values.
  * This logic also ensures that the same configuration validation happens
  * when loading the values initially or setting them via the
  * GDM_UPDATE_CONFIG socket command.
- * 
- * When adding a new configuration option, simply add the new option to 
+ *
+ * When adding a new configuration option, simply add the new option to
  * gdm.h and to the val_hash and type_hash hashes in the gdm_config_init
  * function.  Any validation for the configuration option should be
  * placed in the _gdm_set_value_string, _gdm_set_value_int, or
@@ -48,7 +50,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include "vicious.h"
+#include "gdm-common.h"
 
 #include "gdm.h"
 #include "gdmconfig.h"
@@ -277,7 +279,8 @@ gdm_config_add_hash (gchar *key, gpointer value, GdmConfigType *type)
  * value.
  */
 static gpointer
-gdm_config_hash_lookup (GHashTable *hash, gchar *key)
+gdm_config_hash_lookup (GHashTable *hash,
+                        const gchar *key)
 {
    gchar *p;
    gpointer *ret;
@@ -573,33 +576,39 @@ gdm_config_init (void)
 /**
  * gdm_get_config:
  *
- * Get config file.  
+ * Get config file.
  */
-static VeConfig *
-gdm_get_default_config (struct stat *statbuf)
+static GKeyFile *
+gdm_get_default_config (void)
 {
-   int r;
+   GKeyFile   *config;
+   GError     *error;
+   struct stat statbuf;
+   int         r;
 
    /* Not NULL if config_file was set by command-line option. */
-   if (config_file != NULL) {
-      VE_IGNORE_EINTR (r = g_stat (config_file, statbuf));
-      if (r < 0) {
-         gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
-                      "gdm_config_parse", config_file);
-         return NULL;
-      }
-   } else {
-      VE_IGNORE_EINTR (r = g_stat (GDM_DEFAULTS_CONF, statbuf));
-      if (r < 0) {
-         gdm_error (_("%s: No GDM configuration file: %s. Using defaults."),
-                      "gdm_config_parse", GDM_DEFAULTS_CONF);
-         return NULL;
-      } else {
-              config_file = GDM_DEFAULTS_CONF;
-      }
+   if (config_file == NULL) {
+      config_file = GDM_DEFAULTS_CONF;
    }
 
-   return ve_config_new (config_file);
+   error = NULL;
+   config = gdm_common_config_load (config_file, &error);
+
+   if (config == NULL) {
+      gdm_error (_("%s: Unable to load configuration from %s: %s"),
+                 "gdm_config_parse",
+                 config_file,
+                 error->message);
+      g_error_free (error);
+      return NULL;
+   }
+
+   VE_IGNORE_EINTR (r = g_stat (config_file, &statbuf));
+   if (r >= 0) {
+      config_file_mtime = statbuf.st_mtime;
+   }
+
+   return config;
 }
 
 /**
@@ -608,17 +617,20 @@ gdm_get_default_config (struct stat *statbuf)
  * Get the custom config file where gdmsetup saves its changes and
  * where users are encouraged to make modifications.
  */
-static VeConfig *
-gdm_get_custom_config (struct stat *statbuf)
+static GKeyFile *
+gdm_get_custom_config (void)
 {
-   int r;
+   GKeyFile   *config;
+   GError     *error;
+   struct stat statbuf;
+   int         r;
 
    /*
     * First check to see if the old configuration file name is on
     * the system.  If so, use that as the custom configuration
     * file.  "make install" will move this file aside, and 
     * distros probably can also manage moving this file on
-    * upgrade.   
+    * upgrade.
     *
     * In case this file is on the system, then use it as
     * the custom configuration file until the user moves it
@@ -627,19 +639,28 @@ gdm_get_custom_config (struct stat *statbuf)
     * file has all the keys in it (except new ones).  But
     * that would be what the user wants.
     */
-   VE_IGNORE_EINTR (r = g_stat (GDM_OLD_CONF, statbuf));
-   if (r >= 0) {
+
+   error = NULL;
+   config = gdm_common_config_load (GDM_OLD_CONF, &error);
+   if (config != NULL) {
       custom_config_file = g_strdup (GDM_OLD_CONF);
-      return ve_config_new (custom_config_file);
+   } else {
+      g_error_free (error);
+      error = NULL;
+      config = gdm_common_config_load (GDM_CUSTOM_CONF, &error);
+      if (config != NULL) {
+         custom_config_file = g_strdup (GDM_CUSTOM_CONF);
+      } else {
+         g_error_free (error);
+      }
    }
 
-   VE_IGNORE_EINTR (r = g_stat (GDM_CUSTOM_CONF, statbuf));
+   VE_IGNORE_EINTR (r = g_stat (custom_config_file, &statbuf));
    if (r >= 0) {
-      custom_config_file = g_strdup (GDM_CUSTOM_CONF);
-      return ve_config_new (custom_config_file);
-   } else {
-      return NULL;
+      custom_config_file_mtime = statbuf.st_mtime;
    }
+
+   return config;
 }
 
 /**
@@ -673,7 +694,7 @@ gdm_get_custom_config_file (void)
  * first be loaded, say, by calling gdm_config_parse.
  */
 gint
-gdm_get_value_int (char *key)
+gdm_get_value_int (const char *key)
 {
    GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
    gpointer val        = gdm_config_hash_lookup (val_hash, key);
@@ -697,7 +718,7 @@ gdm_get_value_int (char *key)
  * first be loaded, say, by calling gdm_config_parse.
  */
 gchar *
-gdm_get_value_string (char *key)
+gdm_get_value_string (const char *key)
 {
    GdmConfigType *type;
    gpointer val;
@@ -733,7 +754,7 @@ gdm_get_value_string (char *key)
  * first be loaded, say, by calling gdm_config_parse.
  */
 gboolean
-gdm_get_value_bool (char *key)
+gdm_get_value_bool (const char *key)
 {
    GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
    gpointer val        = gdm_config_hash_lookup (val_hash, key);
@@ -763,7 +784,8 @@ gdm_get_value_bool (char *key)
  * Gets the per-display version  of the configuration, or the default
  * value if none exists.
  */
-gint gdm_get_value_int_per_display (gchar *display, gchar *key)
+gint gdm_get_value_int_per_display (const gchar *display,
+                                    const gchar *key)
 {
    gchar *perdispval;
 
@@ -784,7 +806,8 @@ gint gdm_get_value_int_per_display (gchar *display, gchar *key)
  * Gets the per-display version  of the configuration, or the default
  * value if none exists.
  */
-gboolean gdm_get_value_bool_per_display (gchar *display, gchar *key)
+gboolean gdm_get_value_bool_per_display (const gchar *display,
+                                         const gchar *key)
 {
    gchar *perdispval;
 
@@ -813,7 +836,8 @@ gboolean gdm_get_value_bool_per_display (gchar *display, gchar *key)
  * value if none exists.  Note that this value needs to be freed,
  * unlike the non-per-display version.
  */
-gchar * gdm_get_value_string_per_display (const gchar *display, gchar *key)
+gchar * gdm_get_value_string_per_display (const gchar *display,
+                                          const gchar *key)
 {
    gchar *perdispval;
 
@@ -839,10 +863,13 @@ gchar * gdm_get_value_string_per_display (const gchar *display, gchar *key)
  * sure they are added to the if-test below.
  */
 void
-gdm_config_key_to_string_per_display (const gchar *display, gchar *key, gchar **retval)
+gdm_config_key_to_string_per_display (const gchar *display,
+                                      const gchar *key,
+                                      gchar **retval)
 {
    gchar *file;
    gchar **splitstr = g_strsplit (key, "/", 2);
+
    *retval = NULL;
 
    if (display == NULL)
@@ -869,50 +896,57 @@ gdm_config_key_to_string_per_display (const gchar *display, gchar *key, gchar **
  * to parse it properly if it is a bool or int.
  */
 void
-gdm_config_key_to_string (gchar *file, gchar *key, gchar **retval)
+gdm_config_key_to_string (const gchar *file,
+                          const gchar *keystring,
+                          gchar **retval)
 {
-   VeConfig *cfg = ve_config_get (file);
-   GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
-   gchar **splitstr = g_strsplit (key, "/", 2);
-   GList *list;
-   *retval = NULL;
+   GKeyFile *config;
+   GdmConfigType *type;
 
-   /* Should not fail, all keys should have a category. */
-   if (splitstr[0] == NULL)
-      return;
-
-   /* If file doesn't exist, then just return */
-   if (cfg == NULL)
-      return;
-
-   list = ve_config_get_keys (cfg, splitstr[0]);
-   while (list != NULL) {
-      gchar *display_key     = (char *)list->data;
-      gchar *display_fullkey = g_strdup_printf ("%s/%s", splitstr[0], display_key);
-
-      if (is_key (key, display_fullkey)) {
-         gdm_debug ("Returning value for key <%s>\n", key);
-         if (*type == CONFIG_BOOL) {
-            gboolean value = ve_config_get_bool (cfg, key);
-            if (value)
-               *retval = g_strdup ("true");
-            else
-               *retval = g_strdup ("false");
-            return;
-         } else if (*type == CONFIG_INT) {
-            gint value = ve_config_get_int (cfg, key);
-            *retval = g_strdup_printf ("%d", value);
-            return;
-         } else if (*type == CONFIG_STRING) {
-            gchar *value = ve_config_get_string (cfg, key);
-            if (value != NULL)
-               *retval = g_strdup (value);
-            return;
-         }
-      }
-      g_free (display_fullkey);
-      list = list->next;
+   if (retval != NULL) {
+      *retval = NULL;
    }
+
+   config = gdm_common_config_load (file, NULL);
+   /* If file doesn't exist, then just return */
+   if (config == NULL)
+      return;
+
+   type = gdm_config_hash_lookup (type_hash, keystring);
+
+   gdm_debug ("Returning value for key <%s>\n", keystring);
+
+   switch (*type) {
+   case CONFIG_BOOL:
+      {
+         gboolean value;
+         gdm_common_config_get_boolean (config, keystring, &value, NULL);
+         if (value)
+            *retval = g_strdup ("true");
+         else
+            *retval = g_strdup ("false");
+      }
+      break;
+   case CONFIG_INT:
+      {
+         gint value;
+         gdm_common_config_get_int (config, keystring, &value, NULL);
+         *retval = g_strdup_printf ("%d", value);
+      }
+      break;
+   case CONFIG_STRING:
+      {
+         gchar *value;
+         gdm_common_config_get_string (config, keystring, &value, NULL);
+         *retval = value;
+      }
+      break;
+   default:
+      break;
+   }
+
+   g_key_file_free (config);
+
    return;
 }
 
@@ -921,9 +955,11 @@ gdm_config_key_to_string (gchar *file, gchar *key, gchar **retval)
  *
  * Returns a configuration option as a string.  Used by GDM's
  * GET_CONFIG socket command.
- */ 
+ */
 void
-gdm_config_to_string (gchar *key, gchar *display, gchar **retval)
+gdm_config_to_string (const gchar *key,
+                      const gchar *display,
+                      gchar **retval)
 {
    GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
    *retval = NULL;
@@ -1053,12 +1089,14 @@ notify_displays_string (const gchar *key, const gchar *val)
  * functions directly.
  */
 static void
-_gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
+_gdm_set_value_string (const gchar *key,
+                       const gchar *value_in,
+                       gboolean doing_update)
 {
    gchar **setting = gdm_config_hash_lookup (val_hash, key);
    gchar *setting_copy = NULL;
    gchar *temp_string;
-   gchar *value;
+   const gchar *value;
    gint i;
 
    if (! ve_string_empty (value_in))
@@ -1082,7 +1120,7 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
 
       temp_string = gdm_read_default ("PATH=");
       if (temp_string != NULL)
-         *setting = temp_string;                
+         *setting = temp_string;
       else if (value != NULL)
          *setting = g_strdup (value);
       else
@@ -1093,7 +1131,7 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
 
       temp_string = gdm_read_default ("SUPATH=");
       if (temp_string != NULL)
-         *setting = temp_string;                
+         *setting = temp_string;
       else if (value != NULL)
          *setting = g_strdup (value);
       else
@@ -1167,7 +1205,7 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
         *setting = g_strdup ("circles");
      else
         *setting = g_strdup (value);
- 
+
    /*
     * Default Welcome Message.  Don't translate here since the
     * GDM user may not be running with the same language as the user.
@@ -1192,16 +1230,15 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
 
    /* All others */
    } else {
-       for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {	   
+       for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 	       gchar * key_string = NULL;
-	       /* For each possible custom command */     
+	       /* For each possible custom command */
 	       key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-	       if(is_key (key, key_string)) {	       
+	       if (is_key (key, key_string)) {
 		       if (value != NULL)
 			       *setting = ve_get_first_working_command (value, FALSE);
 		       else
 			       *setting = NULL;
-		       
 		       break;
 	       }
 	       g_free(key_string);
@@ -1265,13 +1302,16 @@ _gdm_set_value_string (gchar *key, gchar *value_in, gboolean doing_update)
 }
 
 void
-gdm_set_value_string (gchar *key, gchar *value_in)
+gdm_set_value_string (const gchar *key,
+                      const gchar *value_in)
 {
    _gdm_set_value_string (key, value_in, TRUE);
 }
 
 static void
-_gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
+_gdm_set_value_bool (const gchar *key,
+                     gboolean value,
+                     gboolean doing_update)
 {
    gboolean *setting     = gdm_config_hash_lookup (val_hash, key);
    gboolean setting_copy = *setting;
@@ -1349,13 +1389,16 @@ _gdm_set_value_bool (gchar *key, gboolean value, gboolean doing_update)
 }
 
 void
-gdm_set_value_bool (gchar *key, gboolean value)
+gdm_set_value_bool (const gchar *key,
+                    gboolean value)
 {
    _gdm_set_value_bool (key, value, TRUE);
 }
 
 static void
-_gdm_set_value_int (gchar *key, gint value, gboolean doing_update)
+_gdm_set_value_int (const gchar *key,
+                    gint value,
+                    gboolean doing_update)
 {
    gint *setting     = gdm_config_hash_lookup (val_hash, key);
    gint setting_copy = *setting;
@@ -1405,10 +1448,13 @@ _gdm_set_value_int (gchar *key, gint value, gboolean doing_update)
 }
 
 void
-gdm_set_value_int (gchar *key, gint value)
+gdm_set_value_int (const gchar *key,
+                   gint value)
 {
    _gdm_set_value_int (key, value, TRUE);
 }
+
+
 
 /**
  * gdm_set_value
@@ -1419,39 +1465,49 @@ gdm_set_value_int (gchar *key, gint value)
  * (greeter/Welcome[cs] for example).
  */
 static gboolean
-gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_update) 
+gdm_set_value (GKeyFile      *config,
+               GdmConfigType *type,
+               const gchar   *fullkey,
+               gboolean       doing_update)
 {
-   gchar * realkey = gdm_config_hash_lookup (realkey_hash, key);
+   gchar * realkey;
    gchar *value;
+
+   realkey = gdm_config_hash_lookup (realkey_hash, fullkey);
 
    if (realkey == NULL) {
       return FALSE;
    }
 
    if (*type == CONFIG_BOOL) {
-       gboolean value = ve_config_get_bool (cfg, realkey);
-       _gdm_set_value_bool (key, value, doing_update);
-       return TRUE;
+      gboolean value;
+      gdm_common_config_get_boolean (config, realkey, &value, NULL);
+      _gdm_set_value_bool (fullkey, value, doing_update);
+      return TRUE;
    } else if (*type == CONFIG_INT) {
-       gint value = ve_config_get_int (cfg, realkey);
-       _gdm_set_value_int (key, value, doing_update);
-       return TRUE;
+      gint value;
+      gdm_common_config_get_int (config, realkey, &value, NULL);
+      _gdm_set_value_int (fullkey, value, doing_update);
+      return TRUE;
    } else if (*type == CONFIG_STRING) {
 
-       /* Process translated strings */
-       if (is_key (key, GDM_KEY_WELCOME) ||
-           is_key (key, GDM_KEY_REMOTE_WELCOME)) {
+      /* Process translated strings */
+      if (is_key (fullkey, GDM_KEY_WELCOME) ||
+          is_key (fullkey, GDM_KEY_REMOTE_WELCOME)) {
+         gchar **keys;
+         gsize   length;
+         gchar  *prefix, *basekey;
+         int     i;
 
-          GList *list = ve_config_get_keys (cfg, "greeter");
-          gchar *prefix, *basekey;
+         keys = g_key_file_get_keys (config, "greeter", &length, NULL);
 
-          if (is_key (key, GDM_KEY_WELCOME)) {
-             basekey = g_strdup ("Welcome");
-             prefix  = g_strdup ("Welcome[");
-          } else {
-             basekey = g_strdup ("RemoteWelcome");
-             prefix  = g_strdup ("RemoteWelcome[");
-          }
+         if (is_key (fullkey, GDM_KEY_WELCOME)) {
+            basekey = g_strdup ("Welcome");
+            prefix  = g_strdup ("Welcome[");
+         } else {
+            basekey = g_strdup ("RemoteWelcome");
+            prefix  = g_strdup ("RemoteWelcome[");
+         }
 
           /*
            * Loop over translated keys and put all values into the hash
@@ -1460,18 +1516,22 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
            * config, GDM won't forget about it until restart.  I don't think
            * this will happen, or be a real problem if it does.
            */
-          while (list != NULL) {
-             if (g_str_has_prefix ((char *)list->data, prefix) &&
-                 g_str_has_suffix ((char *)list->data, "]")) {
-                gchar *transkey, *transvalue;
+         for (i = 0; i < length; i++) {
+            gchar *key;
 
-                if (translated_hash == NULL)
-                   translated_hash = g_hash_table_new (g_str_hash, g_str_equal);
+            key = keys[i];
 
-                transkey   = g_strdup_printf ("greeter/%s", (char *)list->data);
-                transvalue = ve_config_get_string (cfg, transkey);
+            if (g_str_has_prefix (key, prefix) &&
+                g_str_has_suffix (key, "]")) {
+               gchar *transkey, *transvalue;
 
-                g_hash_table_remove (translated_hash, transkey);
+               if (translated_hash == NULL)
+                  translated_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+               transkey = g_strdup_printf ("greeter/%s", key);
+               gdm_common_config_get_string (config, transkey, &transvalue, NULL);
+
+               g_hash_table_remove (translated_hash, transkey);
 
                /*
                 * Store translated values in a separate hash.  Note that we load
@@ -1479,20 +1539,21 @@ gdm_set_value (VeConfig *cfg, GdmConfigType *type, gchar *key, gboolean doing_up
                 * we add these to the same hash, we would end up loading these
                 * values in again a second time.
                 */
-                g_hash_table_insert (translated_hash, transkey, transvalue);
-             }
-             list = list->next;
-          }
-          g_free (basekey);
-          g_free (prefix);
-       }
+               g_hash_table_insert (translated_hash, transkey, transvalue);
+            }
+         }
 
-       /* Handle non-translated strings as normal */
-       value = ve_config_get_string (cfg, realkey);
-       _gdm_set_value_string (key, value, doing_update);
-       return TRUE;
+         g_strfreev (keys);
+         g_free (basekey);
+         g_free (prefix);
+      }
+
+      /* Handle non-translated strings as normal */
+      gdm_common_config_get_string (config, realkey, &value, NULL);
+      _gdm_set_value_string (fullkey, value, doing_update);
+      return TRUE;
    }
-   
+
    return FALSE;
 }
 
@@ -1562,72 +1623,77 @@ gdm_get_xservers (void)
  * Load [server-foo] sections from a configuration file.
  */
 static void
-gdm_load_xservers (VeConfig *cfg)
+gdm_load_xservers (GKeyFile *config)
 {
-   GList *list, *li;
+   int i;
+   gsize length;
+   char **groups;
 
    /* Find server definitions */
-   list = ve_config_get_sections (cfg);
-   for (li = list; li != NULL; li = li->next) {
-      const gchar *sec = li->data;
+   groups = g_key_file_get_groups (config, &length);
 
-      if (strncmp (sec, "server-", strlen ("server-")) == 0) {
-         gchar *id;
+   for (i = 0; i < length; i++) {
+      gchar *id;
+      const char *sec = groups [i];
 
-         id = g_strdup (sec + strlen ("server-"));
+      if (strncmp (sec, "server-", strlen ("server-")) != 0) {
+         continue;
+      }
 
-         /*
-          * See if we already loaded a server with this id, skip if
-          * one already exists.
-          */
-         if (gdm_find_xserver (id) != NULL) {
-            g_free (id);
-         } else {
-            GdmXserver *svr = g_new0 (GdmXserver, 1);
-            gchar buf[256];
-            int n;
+      id = g_strdup (sec + strlen ("server-"));
 
-            svr->id = id;
+      /*
+       * See if we already loaded a server with this id, skip if
+       * one already exists.
+       */
+      if (gdm_find_xserver (id) != NULL) {
+         g_free (id);
+      } else {
+         GdmXserver *svr = g_new0 (GdmXserver, 1);
+         gchar buf[256];
+         int n;
 
-            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_NAME, sec);
-            svr->name = ve_config_get_string (cfg, buf);
-            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_COMMAND, sec);
-            svr->command = ve_config_get_string (cfg, buf);
-            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_FLEXIBLE, sec);
-            svr->flexible = ve_config_get_bool (cfg, buf);
-            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSABLE, sec);
-            svr->choosable = ve_config_get_bool (cfg, buf);
-            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_HANDLED, sec);
-            svr->handled = ve_config_get_bool (cfg, buf);
-            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
-            svr->chooser = ve_config_get_bool (cfg, buf);
-            g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_PRIORITY, sec);
-            svr->priority = ve_config_get_int (cfg, buf);
+         svr->id = id;
 
-            /* do some bounds checking */
-             n = svr->priority;
-             if (n < PRIO_MIN)
-                n = PRIO_MIN;
-             else if (n > PRIO_MAX)
-                n = PRIO_MAX;
-             if (n != svr->priority) {
-                gdm_error (_("%s: Priority out of bounds; changed to %d"),
-                             "gdm_config_parse", n);
-                svr->priority = n;
-             }
+         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_NAME, sec);
+         gdm_common_config_get_string (config, buf, &svr->name, NULL);
+         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_COMMAND, sec);
+         gdm_common_config_get_string (config, buf, &svr->command, NULL);
+         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_FLEXIBLE, sec);
+         gdm_common_config_get_boolean (config, buf, &svr->flexible, NULL);
+         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSABLE, sec);
+         gdm_common_config_get_boolean (config, buf, &svr->choosable, NULL);
+         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_HANDLED, sec);
+         gdm_common_config_get_boolean (config, buf, &svr->handled, NULL);
+         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
+         gdm_common_config_get_boolean (config, buf, &svr->chooser, NULL);
+         g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_PRIORITY, sec);
+         gdm_common_config_get_int (config, buf, &svr->priority, NULL);
 
-            if (ve_string_empty (svr->command)) {
-               gdm_error (_("%s: Empty server command; "
-                            "using standard command."), "gdm_config_parse");
-               g_free (svr->command);
-               svr->command = g_strdup (GdmStandardXserver);
-            }
-
-            xservers = g_slist_append (xservers, svr);
+         /* do some bounds checking */
+         n = svr->priority;
+         if (n < PRIO_MIN)
+            n = PRIO_MIN;
+         else if (n > PRIO_MAX)
+            n = PRIO_MAX;
+         if (n != svr->priority) {
+            gdm_error (_("%s: Priority out of bounds; changed to %d"),
+                       "gdm_config_parse", n);
+            svr->priority = n;
          }
+
+         if (ve_string_empty (svr->command)) {
+            gdm_error (_("%s: Empty server command; "
+                         "using standard command."), "gdm_config_parse");
+            g_free (svr->command);
+            svr->command = g_strdup (GdmStandardXserver);
+         }
+
+         xservers = g_slist_append (xservers, svr);
       }
    }
-  ve_config_free_list_of_strings (list);
+
+   g_strfreev (groups);
 }
 
 /**
@@ -1636,7 +1702,8 @@ gdm_load_xservers (VeConfig *cfg)
  * Reload [server-foo] sections from the configuration files.
  */
 static void
-gdm_update_xservers (VeConfig *cfg, VeConfig *custom_cfg)
+gdm_update_xservers (GKeyFile *cfg,
+                     GKeyFile *custom_cfg)
 {
    GSList *xli;
 
@@ -1677,7 +1744,7 @@ gdm_update_xservers (VeConfig *cfg, VeConfig *custom_cfg)
 
 /**
  * gdm_update_config
- * 
+ *
  * Will cause a the GDM daemon to re-read the key from the configuration
  * file and cause notify signal to be sent to the slaves for the 
  * specified key, if appropriate.  Only specific keys defined in the
@@ -1691,19 +1758,23 @@ gdm_update_xservers (VeConfig *cfg, VeConfig *custom_cfg)
  * functions and in the gdm_slave_handle_notify function in slave.c.
  */
 gboolean
-gdm_update_config (gchar* key)
+gdm_update_config (const gchar *key)
 {
    GdmConfigType *type;
    struct stat statbuf, custom_statbuf;
-   VeConfig *cfg;
-   VeConfig *custom_cfg = NULL;
-   gboolean rc = FALSE;
+   GKeyFile *cfg;
+   GKeyFile *custom_cfg;
+   gboolean rc;
+
+   rc = FALSE;
+   cfg = NULL;
+   custom_cfg = NULL;
 
    /*
     * Do not allow these keys to be updated, since GDM would need
     * additional work, or at least heavy testing, to make these keys
     * flexible enough to be changed at runtime.
-    */ 
+    */
    if (is_key (key, GDM_KEY_PID_FILE) ||
        is_key (key, GDM_KEY_CONSOLE_NOTIFY) ||
        is_key (key, GDM_KEY_USER) ||
@@ -1718,7 +1789,7 @@ gdm_update_config (gchar* key)
 
    /* See if custom file is now there */
    if (custom_config_file == NULL) {
-      custom_cfg = gdm_get_custom_config (&statbuf);
+      custom_cfg = gdm_get_custom_config ();
    }
 
    /* Don't bother re-reading configuration if files have not changed */
@@ -1732,8 +1803,10 @@ gdm_update_config (gchar* key)
    * has changed since GDM was started.
    */
    if (config_file_mtime        == statbuf.st_mtime &&
-       custom_config_file_mtime == custom_statbuf.st_mtime)
-      return TRUE;
+       custom_config_file_mtime == custom_statbuf.st_mtime) {
+      rc = TRUE;
+      goto out;
+   }
 
    /* Shortcut for updating all XDMCP parameters */
    if (is_key (key, "xdmcp/PARAMETERS")) {
@@ -1745,19 +1818,21 @@ gdm_update_config (gchar* key)
       gdm_update_config (GDM_KEY_MAX_INDIRECT);
       gdm_update_config (GDM_KEY_MAX_WAIT_INDIRECT);
       gdm_update_config (GDM_KEY_PING_INTERVAL);
-      return TRUE;
+      rc = TRUE;
+      goto out;
    }
 
-   if (custom_config_file != NULL)
-      custom_cfg = ve_config_new (custom_config_file);
+   if (custom_config_file != NULL) {
+      custom_cfg = gdm_common_config_load (custom_config_file, NULL);
+   }
 
    if (is_key (key, "xservers/PARAMETERS")) {
-      cfg = ve_config_new (config_file);
+      cfg = gdm_common_config_load (config_file, NULL);
+
       gdm_update_xservers (cfg, custom_cfg);
-      ve_config_destroy (cfg);
-      if (custom_cfg != NULL)
-         ve_config_destroy (custom_cfg);
-      return TRUE;
+
+      rc = TRUE;
+      goto out;
    }
 
    type = gdm_config_hash_lookup (type_hash, key);
@@ -1766,38 +1841,38 @@ gdm_update_config (gchar* key)
 
    /* First check the custom file */
    if (custom_cfg != NULL) {
-       gchar **splitstr = g_strsplit (key, "/", 2);
+      char *config_group;
+      char *config_key;
+      gboolean has_key;
 
-       if (splitstr[0] != NULL) {
-          GList *list = ve_config_get_keys (custom_cfg, splitstr[0]);
+      config_group = config_key = NULL;
+      if (! gdm_common_config_parse_key_string (key, &config_group, &config_key, NULL)) {
+         rc = FALSE;
+         goto out;
+      }
 
-          while (list != NULL) {
-             gchar *custom_key     = (char *)list->data;
-             gchar *custom_fullkey = g_strdup_printf ("%s/%s", splitstr[0], custom_key);
+      has_key = g_key_file_has_key (custom_cfg, config_group, config_key, NULL);
+      g_free (config_group);
+      g_free (config_key);
 
-             if (is_key (key, custom_fullkey)) {
-                rc = gdm_set_value (custom_cfg, type, key, TRUE);
-                
-                g_free (custom_fullkey);
-                g_strfreev (splitstr);
-                ve_config_destroy (custom_cfg);
-                return (rc);
-             }
-
-             g_free (custom_fullkey);
-             list = list->next;
-          }
-       }
-       g_strfreev (splitstr);
+      if (has_key) {
+         rc = gdm_set_value (custom_cfg, type, key, TRUE);
+         goto out;
+      }
    }
 
    /* If not in the custom file, check main config file */
-   cfg = ve_config_new (config_file);
-   rc  = gdm_set_value (cfg, type, key, TRUE);
+   cfg = gdm_common_config_load (config_file, NULL);
 
-   ve_config_destroy (cfg);
+   rc = gdm_set_value (cfg, type, key, TRUE);
+
+ out:
+   if (cfg != NULL)
+      g_key_file_free (cfg);
+
    if (custom_cfg != NULL)
-      ve_config_destroy (custom_cfg);
+      g_key_file_free (custom_cfg);
+
    return rc;
 }
 
@@ -1866,8 +1941,8 @@ check_servauthdir (struct stat *statbuf)
 }
 
 typedef struct _GdmConfigFiles {
-   VeConfig *cfg;
-   VeConfig *custom_cfg;
+   GKeyFile *cfg;
+   GKeyFile *custom_cfg;
 } GdmConfigFiles;
 
 /**
@@ -1876,24 +1951,33 @@ typedef struct _GdmConfigFiles {
  * Load the displays section of the config file
  */
 static void
-gdm_load_displays (VeConfig *cfg, GList *list )
+gdm_load_displays (GKeyFile *cfg,
+                   char    **keys)
 {
-   GList *li;
    GSList *li2;
+   int i;
 
-   for (li = list; li != NULL; li = li->next) {
-      const gchar *key = li->data;
+   for (i = 0; keys[i] != NULL; i++) {
+      const gchar *key = keys[i];
 
+      gdm_debug ("Loading display for key '%s'", key);
       if (isdigit (*key)) {
          gchar *fullkey;
          gchar *dispval;
          int keynum = atoi (key);
          gboolean skip_entry = FALSE;
+         GError *error;
 
-         fullkey  = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
-         dispval  = ve_config_get_string (cfg, fullkey);
+         fullkey = g_strdup_printf ("%s/%s", GDM_KEY_SECTION_SERVERS, key);
+         dispval = NULL;
+         error = NULL;
+         gdm_common_config_get_string (cfg, fullkey, &dispval, &error);
+         if (error != NULL) {
+            gdm_error ("Unable to get name for server '%s': %s", fullkey, error->message);
+         }
          g_free (fullkey);
 
+         gdm_debug ("Got name for server: %s", dispval);
          /* Do not add if already in the list */
          for (li2 = displays; li2 != NULL; li2 = li2->next) {
             GdmDisplay *disp = li2->data;
@@ -1955,26 +2039,23 @@ gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
    if (type != NULL) {
       /* First check the custom file */
       if (cfgfiles->custom_cfg != NULL) {
-          gchar **splitstr = g_strsplit (key_in, "/", 2);
-          if (splitstr[0] != NULL) {
-             GList *list = ve_config_get_keys (cfgfiles->custom_cfg, splitstr[0]);
+         gchar *config_group;
+         gchar *config_key;
+         gboolean has_key;
 
-             while (list != NULL) {
-                gchar *custom_key     = (char *)list->data;
-                gchar *custom_fullkey = g_strdup_printf ("%s/%s", splitstr[0], custom_key);
+         config_group = config_key = NULL;
+         if (! gdm_common_config_parse_key_string (key_in, &config_group, &config_key, NULL)) {
+            return;
+         }
 
-                if (is_key (key_in, custom_fullkey)) {
-                   custom_retval = gdm_set_value (cfgfiles->custom_cfg, type, key, FALSE);
-                   g_free (custom_fullkey);
-                   g_strfreev (splitstr);
-                   return;
-                }
+         has_key = g_key_file_has_key (cfgfiles->custom_cfg, config_group, config_key, NULL);
+         g_free (config_group);
+         g_free (config_key);
 
-                g_free (custom_fullkey);
-                list = list->next;
-             }
-          }
-          g_strfreev (splitstr);
+         if (has_key) {
+            custom_retval = gdm_set_value (cfgfiles->custom_cfg, type, key, FALSE);
+            return;
+         }
       }
 
       /* If not in the custom file, check main config file */
@@ -1982,7 +2063,7 @@ gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
          return;
    }
 
-   gdm_error ("Cannot set config option %s", key); 
+   gdm_error ("Cannot set config option %s", key);
 }
 
 /**
@@ -1994,7 +2075,8 @@ void
 gdm_config_parse (void)
 {
    GdmConfigFiles cfgfiles;
-   VeConfig *cfg, *custom_cfg;
+   GKeyFile *cfg;
+   GKeyFile *custom_cfg;
    struct passwd *pwent;
    struct group *grent;
    struct stat statbuf;
@@ -2012,16 +2094,15 @@ gdm_config_parse (void)
     * not exist we cannot continue and need to bail out.
     */
 
-   cfg                      = gdm_get_default_config (&statbuf);
+   cfg = gdm_get_default_config ();
 
    if (cfg == NULL)
 	   gdm_fail (_("%s: Main config file (defaults.conf) is missing. Aborting!"), "gdm_config_parse");
 
-   config_file_mtime        = statbuf.st_mtime;
-   custom_cfg               = gdm_get_custom_config (&statbuf);
-   custom_config_file_mtime = statbuf.st_mtime;
-   cfgfiles.cfg             = cfg;
-   cfgfiles.custom_cfg      = custom_cfg;
+   custom_cfg = gdm_get_custom_config ();
+
+   cfgfiles.cfg = cfg;
+   cfgfiles.custom_cfg = custom_cfg;
 
    /* Loop over all configuration options and load them */
    g_hash_table_foreach (type_hash, gdm_load_config_option, &cfgfiles);
@@ -2030,20 +2111,37 @@ gdm_config_parse (void)
    gdm_update_xservers (cfg, custom_cfg);
 
    /* Only read the list if no_console is FALSE at this stage */
-   if ( !no_console) {
-      GList *list;
+   if (! no_console) {
+      char  **keys;
+      GError *error;
       GSList *li2;
+      gsize   len;
 
       /* Find static X server definitions */
-      if (custom_cfg) {
-         list = ve_config_get_keys (custom_cfg, GDM_KEY_SECTION_SERVERS);
-         gdm_load_displays (custom_cfg, list);
-         ve_config_free_list_of_strings (list);
+      if (custom_cfg != NULL) {
+         error = NULL;
+         keys = g_key_file_get_keys (custom_cfg, GDM_KEY_SECTION_SERVERS, &len, &error);
+         if (error != NULL) {
+            gdm_error ("Unable to load server list: %s", error->message);
+            g_error_free (error);
+         }
+         if (keys != NULL) {
+            gdm_load_displays (custom_cfg, keys);
+         }
+         g_strfreev (keys);
       }
 
-      list = ve_config_get_keys (cfg, GDM_KEY_SECTION_SERVERS);
-      gdm_load_displays (cfg, list);
-      ve_config_free_list_of_strings (list);
+      error = NULL;
+      keys = g_key_file_get_keys (cfg, GDM_KEY_SECTION_SERVERS, &len, &error);
+      if (error != NULL) {
+         gdm_error ("Unable to load server list: %s", error->message);
+         g_error_free (error);
+      }
+      if (keys != NULL) {
+         gdm_load_displays (cfg, keys);
+      }
+
+      g_strfreev (keys);
 
       /* Free list of inactive, not needed anymore */
       for (li2 = displays_inactive; li2 != NULL; li2 = li2->next) {
@@ -2280,9 +2378,9 @@ gdm_config_parse (void)
    /* Check that user authentication is properly configured */
    gdm_verify_check ();
 
-   if (custom_cfg)
-      ve_config_destroy (custom_cfg);
-   ve_config_destroy (cfg);
+   if (custom_cfg != NULL)
+      g_key_file_free (custom_cfg);
+   g_key_file_free (cfg);
 }
 
 /** 
@@ -2327,7 +2425,7 @@ gdm_set_high_display_num (gint val)
  * Returns TRUE if the key is a valid key, FALSE otherwise.
  */
 gboolean
-gdm_is_valid_key (gchar *key)
+gdm_is_valid_key (const gchar *key)
 {
    GdmConfigType *type = gdm_config_hash_lookup (type_hash, key);
    if (type == NULL)
@@ -2433,15 +2531,17 @@ get_facefile_from_gnome2_dir_config (const char *homedir,
    /* Sanity check on ~user/.gnome2/gdm */
    cfgdir = g_build_filename (homedir, ".gnome2", "gdm", NULL);
    if (G_LIKELY (check_user_file (cfgdir, uid))) {
-      VeConfig *cfg;
+      GKeyFile *cfg;
       char *cfgfile;
 
       cfgfile = g_build_filename (homedir, ".gnome2", "gdm", NULL);
-      cfg = ve_config_new (cfgfile);
+      cfg = gdm_common_config_load (cfgfile, NULL);
       g_free (cfgfile);
 
-      picfile = ve_config_get_string (cfg, "face/picture=");
-      ve_config_destroy (cfg);
+      if (cfg != NULL) {
+         gdm_common_config_get_string (cfg, "face/picture=", &picfile, NULL);
+         g_key_file_free (cfg);
+      }
 
       /* must exist and be absolute (note that this check
        * catches empty strings)*/
@@ -2626,10 +2726,13 @@ gdm_get_session_exec (const char *session_name, gboolean check_try_exec)
 {
    char *file;
    char *full = NULL;
-   VeConfig *cfg;
+   GKeyFile *cfg;
    static char *exec;
    static char *cached = NULL;
-   char *tryexec;
+   gboolean hidden;
+   char *ret;
+
+   cfg = NULL;
 
    /* clear cache */
    if (session_name == NULL) {
@@ -2673,24 +2776,43 @@ gdm_get_session_exec (const char *session_name, gboolean check_try_exec)
       }
    }
 
-   cfg = ve_config_get (full);
+   cfg = gdm_common_config_load (full, NULL);
    g_free (full);
-   if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false"))
-      return NULL;
+   if (cfg == NULL) {
+      ret = NULL;
+      goto out;
+   }
+
+   hidden = FALSE;
+   gdm_common_config_get_boolean (cfg, "Desktop Entry/Hidden=false", &hidden, NULL);
+   if (hidden) {
+      ret = NULL;
+      goto out;
+   }
 
    if (check_try_exec) {
-      tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
+      char *tryexec;
+      tryexec = NULL;
+      gdm_common_config_get_string (cfg, "Desktop Entry/TryExec", &tryexec, NULL);
       if ( ! ve_string_empty (tryexec) &&
            ! ve_is_prog_in_path (tryexec, gdm_get_value_string (GDM_KEY_PATH)) &&
            ! ve_is_prog_in_path (tryexec, gdm_saved_getenv ("PATH"))) {
          g_free (tryexec);
-         return NULL;
+         ret = NULL;
+         goto out;
       }
       g_free (tryexec);
    }
 
-   exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
-   return g_strdup (exec);
+   exec = NULL;
+   gdm_common_config_get_string (cfg, "Desktop Entry/Exec", &exec, NULL);
+   ret = g_strdup (exec);
+
+ out:
+
+   g_key_file_free (cfg);
+
+   return ret;
 }
 
 /**
@@ -2701,77 +2823,110 @@ gdm_get_session_exec (const char *session_name, gboolean check_try_exec)
  * $HOME/.dmrc file via vicious-extensions.
  */
 void
-gdm_set_user_session_lang (gboolean savesess, gboolean savelang,
-    const char *home_dir, const char *save_session, const char *save_language)
+gdm_set_user_session_lang (gboolean savesess,
+                           gboolean savelang,
+                           const char *home_dir,
+                           const char *save_session,
+                           const char *save_language)
 {
-   VeConfig *dmrc = NULL;
-   gchar *cfgstr = g_build_filename (home_dir, ".dmrc", NULL);
+   GKeyFile *dmrc;
+   gchar *cfgstr;
+
+   cfgstr = g_build_filename (home_dir, ".dmrc", NULL);
+
+   dmrc = gdm_common_config_load (cfgstr, NULL);
+   if (dmrc == NULL) {
+      return;
+   }
 
    if (savesess) {
-      dmrc = ve_config_new (cfgstr);
-      ve_config_set_string (dmrc, "Desktop/Session",
-         ve_sure_string (save_session));
+      g_key_file_set_string (dmrc, "Desktop", "Session", ve_sure_string (save_session));
    }
 
    if (savelang) {
-      if (dmrc == NULL)
-         dmrc = ve_config_new (cfgstr);
-      if (ve_string_empty (save_language))
+      if (ve_string_empty (save_language)) {
          /* we chose the system default language so wipe the
           * lang key */
-         ve_config_delete_key (dmrc, "Desktop/Language");
-      else
-         ve_config_set_string (dmrc, "Desktop/Language", save_language);
+         g_key_file_remove_key (dmrc, "Desktop", "Language", NULL);
+      } else {
+         g_key_file_set_string (dmrc, "Desktop", "Language", save_language);
+      }
    }
-
-   g_free (cfgstr);
 
    if (dmrc != NULL) {
       mode_t oldmode;
       oldmode = umask (077);
-      ve_config_save (dmrc, FALSE);
-      ve_config_destroy (dmrc);
-      dmrc = NULL;
+      gdm_common_config_save (dmrc, cfgstr, NULL);
       umask (oldmode);
    }
+
+   g_free (cfgstr);
+   g_key_file_free (dmrc);
 }
 
 void
-gdm_get_user_session_lang (char **usrsess, char **usrlang,
-   const char *home_dir, gboolean *savesess)
+gdm_get_user_session_lang (char **usrsess,
+                           char **usrlang,
+                           const char *home_dir,
+                           gboolean *savesess)
 {
    char *p;
-   char *cfgfile = g_build_filename (home_dir, ".dmrc", NULL);
-   VeConfig *cfg = ve_config_new (cfgfile);
+   char *cfgfile;
+   GKeyFile *cfg;
+   char *session;
+   char *lang;
+   gboolean save;
+
+   cfgfile = g_build_filename (home_dir, ".dmrc", NULL);
+   cfg = gdm_common_config_load (cfgfile, NULL);
    g_free (cfgfile);
 
-   *usrsess = ve_config_get_string (cfg, "Desktop/Session");
-   if (*usrsess == NULL)
-      *usrsess = g_strdup ("");
+   save = FALSE;
+   session = NULL;
+
+   gdm_common_config_get_string (cfg, "Desktop/Session", &session, NULL);
+   if (session == NULL) {
+      session = g_strdup ("");
+   }
 
    /* this is just being truly anal about what users give us, and in case
     * it looks like they may have included a path whack it. */
-   p = strrchr (*usrsess, '/');
+   p = strrchr (session, '/');
    if (p != NULL) {
-      char *tmp = g_strdup (p+1);
-      g_free (*usrsess);
-      *usrsess = tmp;
+      char *tmp = g_strdup (p + 1);
+      g_free (session);
+      session = tmp;
    }
 
    /* ugly workaround for migration */
-   if ((strcmp (ve_sure_string (*usrsess), "Default.desktop") == 0 ||
-        strcmp (ve_sure_string (*usrsess), "Default") == 0) &&
+   if ((strcmp (ve_sure_string (session), "Default.desktop") == 0 ||
+        strcmp (ve_sure_string (session), "Default") == 0) &&
        ! ve_is_prog_in_path ("Default.desktop",
             gdm_get_value_string (GDM_KEY_SESSION_DESKTOP_DIR))) {
-           g_free (*usrsess);
-           *usrsess = g_strdup ("default");
-           *savesess = TRUE;
+           g_free (session);
+           session = g_strdup ("default");
+           save = TRUE;
    }
 
-   *usrlang = ve_config_get_string (cfg, "Desktop/Language");
-   if (*usrlang == NULL)
-           *usrlang = g_strdup ("");
+   gdm_common_config_get_string (cfg, "Desktop/Language", &lang, NULL);
+   if (lang == NULL) {
+           lang = g_strdup ("");
+   }
 
-   ve_config_destroy (cfg);
+   if (usrsess != NULL) {
+      *usrsess = g_strdup (session);
+   }
+   g_free (session);
+
+   if (savesess != NULL) {
+      *savesess = save;
+   }
+
+   if (usrlang != NULL) {
+      *usrlang = g_strdup (lang);
+   }
+   g_free (lang);
+
+   g_key_file_free (cfg);
 }
 

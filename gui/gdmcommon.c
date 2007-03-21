@@ -42,6 +42,8 @@
 #include "gdmcomm.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 gint gdm_timed_delay = 0;
 static Atom AT_SPI_IOR;
 
@@ -553,14 +555,15 @@ pre_fetch_run (gpointer data)
 	GPid pid = -1;
 	GError *error = NULL;
 	char *command = NULL;
-	gchar **pre_fetch_prog_argv =  NULL;
+	gchar **pre_fetch_prog_argv;
 
 	command = pre_fetch_prog_get_path ();
 
 	if (! command)
 		return FALSE;
 
-	pre_fetch_prog_argv = ve_split (command);
+	pre_fetch_prog_argv = NULL;
+	g_shell_parse_argv (command, NULL, &pre_fetch_prog_argv, NULL);
 
 	g_spawn_async (".",
 		       pre_fetch_prog_argv,
@@ -570,25 +573,27 @@ pre_fetch_run (gpointer data)
 		       NULL,
 		       &pid,
 		       &error);
+	g_strfreev (pre_fetch_prog_argv);
 
 	return FALSE;
 }
 
-static gboolean 
+static gboolean
 pre_atspi_launch (void){
 	gboolean a11y = gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
 	GPid pid = -1;
 	GError *error = NULL;
 	char *command = NULL;
-	gchar **atspi_prog_argv =  NULL;
-	
+	gchar **atspi_prog_argv;
+
 	if (! a11y)
 		return FALSE;
 
 	command = g_strdup (LIBEXECDIR "/at-spi-registryd");
 
-	atspi_prog_argv = ve_split (command);
-	
+	atspi_prog_argv = NULL;
+	g_shell_parse_argv (command, NULL, &atspi_prog_argv, NULL);
+
 	g_spawn_async (".",
 		       atspi_prog_argv,
 		       NULL,
@@ -597,6 +602,8 @@ pre_atspi_launch (void){
 		       NULL,
 		       &pid,
 		       &error);
+
+	g_strfreev (atspi_prog_argv);
 
 	if (kill (pid, 0) < 0) {
 		fprintf (stderr, "at-spi-registryd not running: %s\n", error->message);

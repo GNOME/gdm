@@ -43,6 +43,8 @@
 #include "cookie.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 #define MAXBUFFERSIZE 1024
 
 struct rngs {

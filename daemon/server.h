@@ -39,9 +39,11 @@ GdmDisplay *	gdm_server_alloc	(gint id,
 void		gdm_server_whack_clients (Display *dsp);
 void		gdm_server_checklog	(GdmDisplay *disp);
 
-char **		gdm_server_resolve_command_line (GdmDisplay *disp,
+gboolean	gdm_server_resolve_command_line (GdmDisplay *disp,
 						 gboolean resolve_flags,
-						 const char *vtarg);
+						 const char *vtarg,
+                                                 int        *argc,
+                                                 char     ***argv);
 GdmXserver *	gdm_server_resolve	(GdmDisplay *disp);
 
 

@@ -5,7 +5,7 @@
 INCLUDES = \
 	-I.						\
 	-I..						\
-	-I$(top_srcdir)/vicious-extensions		\
+	-I$(top_srcdir)/common				\
 	-DAUTHDIR=\"$(authdir)\"			\
 	-DBINDIR=\"$(bindir)\"				\
 	-DDATADIR=\"$(datadir)\"			\
@@ -91,7 +91,7 @@ gdm_binary_LDADD = \
 	$(GLIB_LIBS)				\
 	$(GOBJECT_LIBS)				\
 	$(GDK_LIBS)				\
-	$(top_builddir)/vicious-extensions/libvicious.a \
+	$(top_builddir)/common/libgdmcommon.a	\
 	$(X_LIBS)				\
 	$(XINERAMA_LIBS)			\
 	$(XDMCP_LIBS)				\

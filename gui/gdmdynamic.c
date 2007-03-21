@@ -1,4 +1,5 @@
-/*
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
  *    GDMcommunication routines
  *    (c)2001 Queen of England, (c)2002,2003 George Lebl
  *    
@@ -39,6 +40,8 @@
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 static char *myname = NULL;  /* name of this program */
 

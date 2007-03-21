@@ -25,6 +25,8 @@
 #include "gdmconfig.h"
 #include "gdmsession.h"
 
+#include "gdm-common.h"
+
 #include "greeter_item.h"
 #include "greeter_configuration.h"
 #include "greeter_item_customlist.h"

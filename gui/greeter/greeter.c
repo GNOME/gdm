@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <syslog.h>
+#include <errno.h>
 
 #if HAVE_PAM
 #include <security/pam_appl.h>
@@ -37,7 +38,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <libgnomecanvas/libgnomecanvas.h>
 
-#include "vicious.h"
+#include "gdm-common.h"
 
 #include "gdm.h"
 #include "gdmwm.h"
@@ -164,6 +165,32 @@ greeter_ctrl_handler (GIOChannel *source,
     return TRUE;
 }
 
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
+}
+
 static void
 process_operation (guchar       op_code,
 		   const gchar *args)
@@ -174,7 +201,6 @@ process_operation (guchar       op_code,
     GreeterItemInfo *conversation_info;
     static GnomeCanvasItem *disabled_cover = NULL;
     gchar *language;
-    gchar *selected_user = NULL;
     gint lookup_status = SESSION_LOOKUP_SUCCESS;
     gchar *firstmsg = NULL;
     gchar *secondmsg = NULL;
@@ -254,12 +280,12 @@ process_operation (guchar       op_code,
 	gdm_wm_focus_new_windows (TRUE);
 
 	tmp = ve_locale_to_utf8 (args);
-	dlg = ve_hig_dialog_new (NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_ERROR,
-				 GTK_BUTTONS_OK,
-				 tmp,
-				 "");
+	dlg = hig_dialog_new (NULL /* parent */,
+                              GTK_DIALOG_MODAL /* flags */,
+                              GTK_MESSAGE_ERROR,
+                              GTK_BUTTONS_OK,
+                              tmp,
+                              "");
 	g_free (tmp);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
@@ -405,15 +431,15 @@ process_operation (guchar       op_code,
 		/* we should be now fine for focusing new windows */
 		gdm_wm_focus_new_windows (TRUE);
 
-		dlg = ve_hig_dialog_new (NULL /* parent */,
-					 GTK_DIALOG_MODAL /* flags */,
-					 GTK_MESSAGE_INFO,
-					 GTK_BUTTONS_OK,
-					 /* translators:  This is a nice and evil eggie text, translate
-					  * to your favourite currency */
-					 _("Please insert 25 cents "
-					   "to log in."),
-					 "");
+		dlg = hig_dialog_new (NULL /* parent */,
+                                      GTK_DIALOG_MODAL /* flags */,
+                                      GTK_MESSAGE_INFO,
+                                      GTK_BUTTONS_OK,
+                                      /* translators:  This is a nice and evil eggie text, translate
+                                       * to your favourite currency */
+                                      _("Please insert 25 cents "
+                                        "to log in."),
+                                      "");
 		gdm_wm_center_window (GTK_WINDOW (dlg));
 
 		gdm_wm_no_login_focus_push ();
@@ -642,12 +668,12 @@ verify_gdm_version (void)
                                 "Please restart the GDM daemon or the computer."),
                               VERSION);
     
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK,
-				  _("Cannot start the greeter"),
-				  msg);
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_ERROR,
+                               GTK_BUTTONS_OK,
+                               _("Cannot start the greeter"),
+                               msg);
       g_free (msg);
     
       gtk_widget_show_all (dialog);
@@ -677,12 +703,12 @@ verify_gdm_version (void)
                                "Please restart the GDM daemon or the computer."),
                              VERSION);
     
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_WARNING,
-				  GTK_BUTTONS_NONE,
-				  _("Cannot start the greeter"),
-				  msg);
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_WARNING,
+                               GTK_BUTTONS_NONE,
+                               _("Cannot start the greeter"),
+                               msg);
       g_free (msg);
 			  
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
@@ -726,12 +752,12 @@ verify_gdm_version (void)
                                "Please restart the GDM daemon or the computer."),
                              VERSION, gdm_version);
     
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_WARNING,
-				  GTK_BUTTONS_NONE,
-				  _("Cannot start the greeter"),
-				  msg);
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_WARNING,
+                               GTK_BUTTONS_NONE,
+                               _("Cannot start the greeter"),
+                               msg);
       g_free (msg);
 
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
@@ -1341,12 +1367,12 @@ main (int argc, char *argv[])
 	s = g_strdup_printf (_("There was an error loading the "
 			       "theme %s"), tmp);
 	g_free (tmp);
-        dialog = ve_hig_dialog_new (NULL /* parent */,
-				    GTK_DIALOG_MODAL /* flags */,
-				    GTK_MESSAGE_ERROR,
-				    GTK_BUTTONS_OK,
-				    s,
-				    (error && error->message) ? error->message : "");
+        dialog = hig_dialog_new (NULL /* parent */,
+                                 GTK_DIALOG_MODAL /* flags */,
+                                 GTK_MESSAGE_ERROR,
+                                 GTK_BUTTONS_OK,
+                                 s,
+                                 (error && error->message) ? error->message : "");
 	g_free (s);
     
         gtk_widget_show_all (dialog);
@@ -1388,14 +1414,14 @@ main (int argc, char *argv[])
       gdm_wm_init (0);
       gdm_wm_focus_new_windows (TRUE);
     
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK,
-				  _("The greeter theme is corrupt"),
-				  _("The theme does not contain "
-				    "definition for the username/password "
-				    "entry element."));
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_ERROR,
+                               GTK_BUTTONS_OK,
+                               _("The greeter theme is corrupt"),
+                               _("The theme does not contain "
+                                 "definition for the username/password "
+                                 "entry element."));
 
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1422,16 +1448,16 @@ main (int argc, char *argv[])
       gdm_wm_init (0);
       gdm_wm_focus_new_windows (TRUE);
     
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK,
-				  _("There was an error loading the "
-				    "theme, and the default theme "
-				    "could not be loaded. "
-				    "Attempting to start the "
-				    "standard greeter"),
-				  "");
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_ERROR,
+                               GTK_BUTTONS_OK,
+                               _("There was an error loading the "
+                                 "theme, and the default theme "
+                                 "could not be loaded. "
+                                 "Attempting to start the "
+                                 "standard greeter"),
+                               "");
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1444,15 +1470,15 @@ main (int argc, char *argv[])
       execl (LIBEXECDIR "/gdmlogin", LIBEXECDIR "/gdmlogin", NULL);
       execlp ("gdmlogin", "gdmlogin", NULL);
 
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK,
-				  _("The GTK+ greeter could not be started.  "
-				    "This display will abort and you may "
-				    "have to login another way and fix the "
-				    "installation of GDM"),
-				  "");
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_ERROR,
+                               GTK_BUTTONS_OK,
+                               _("The GTK+ greeter could not be started.  "
+                                 "This display will abort and you may "
+                                 "have to login another way and fix the "
+                                 "installation of GDM"),
+                               "");
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1510,14 +1536,14 @@ main (int argc, char *argv[])
 
       gdm_wm_focus_new_windows (TRUE);
 
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK,
-				  _("Session directory is missing"),
-				  _("Your session directory is missing or empty!  "
-				    "There are two available sessions you can use, but "
-				    "you should log in and correct the gdm configuration."));
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_ERROR,
+                               GTK_BUTTONS_OK,
+                               _("Session directory is missing"),
+                               _("Your session directory is missing or empty!  "
+                                 "There are two available sessions you can use, but "
+                                 "you should log in and correct the gdm configuration."));
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -1535,14 +1561,14 @@ main (int argc, char *argv[])
 
       gdm_wm_focus_new_windows (TRUE);
 
-      dialog = ve_hig_dialog_new (NULL /* parent */,
-				  GTK_DIALOG_MODAL /* flags */,
-				  GTK_MESSAGE_ERROR,
-				  GTK_BUTTONS_OK,
-				  _("Configuration is not correct"),
-				  _("The configuration file contains an invalid command "
-				    "line for the login dialog, so running the "
-				    "default command.  Please fix your configuration."));
+      dialog = hig_dialog_new (NULL /* parent */,
+                               GTK_DIALOG_MODAL /* flags */,
+                               GTK_MESSAGE_ERROR,
+                               GTK_BUTTONS_OK,
+                               _("Configuration is not correct"),
+                               _("The configuration file contains an invalid command "
+                                 "line for the login dialog, so running the "
+                                 "default command.  Please fix your configuration."));
 
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));

@@ -36,6 +36,8 @@
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 typedef struct _GdmWindow GdmWindow;
 struct _GdmWindow {
 	int x, y;
@@ -1576,6 +1578,32 @@ gdm_wm_show_info_msg_dialog (const gchar *msg_file,
 	g_free (InfoMsg);
 }
 
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
+}
+
 void
 gdm_wm_message_dialog (const gchar *primary_message, 
 		       const gchar *secondary_message)
@@ -1585,12 +1613,12 @@ gdm_wm_message_dialog (const gchar *primary_message,
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	req = ve_hig_dialog_new (NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_INFO,
-				 GTK_BUTTONS_OK,
-				 primary_message,
-				 secondary_message);
+	req = hig_dialog_new (NULL /* parent */,
+                              GTK_DIALOG_MODAL /* flags */,
+                              GTK_MESSAGE_INFO,
+                              GTK_BUTTONS_OK,
+                              primary_message,
+                              secondary_message);
 
 	gdm_wm_center_window (GTK_WINDOW (req));
 
@@ -1614,12 +1642,12 @@ gdm_wm_query_dialog (const gchar *primary_message,
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	req = ve_hig_dialog_new (NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_QUESTION,
-				 GTK_BUTTONS_NONE,
-				 primary_message,
-				 secondary_message);
+	req = hig_dialog_new (NULL /* parent */,
+                              GTK_DIALOG_MODAL /* flags */,
+                              GTK_MESSAGE_QUESTION,
+                              GTK_BUTTONS_NONE,
+                              primary_message,
+                              secondary_message);
 
 	if (negbutton != NULL) {
 		button = gtk_button_new_from_stock (negbutton);
@@ -1673,12 +1701,12 @@ gdm_wm_warn_dialog (const gchar *primary_message,
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	req = ve_hig_dialog_new (NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
-				 GTK_BUTTONS_NONE,
-				 primary_message,
-				 secondary_message);
+	req = hig_dialog_new (NULL /* parent */,
+                              GTK_DIALOG_MODAL /* flags */,
+                              GTK_MESSAGE_WARNING,
+                              GTK_BUTTONS_NONE,
+                              primary_message,
+                              secondary_message);
 
 	if (negbutton != NULL) {
 		button = gtk_button_new_from_stock (negbutton);

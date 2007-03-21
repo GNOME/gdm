@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This file Copyright (c) 2001 George Lebl
@@ -27,6 +29,8 @@
 
 #include "gdmlanguages.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 typedef struct _Language Language;
 struct _Language {

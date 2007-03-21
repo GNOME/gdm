@@ -103,6 +103,8 @@
 #include "cookie.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 /*This is to be changed when the Xdmcp Multicast address is decided */
 #define XDMCP_MULTICAST_ADDRESS "ff02::1"
 

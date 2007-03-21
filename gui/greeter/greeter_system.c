@@ -24,17 +24,20 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
+#include "gdm.h"
+#include "gdmcommon.h"
+#include "gdmconfig.h"
+#include "gdmwm.h"
+#include "misc.h"
+
+#include "gdm-common.h"
+
 #include "greeter.h"
 #include "greeter_configuration.h"
 #include "greeter_system.h"
 #include "greeter_item.h"
 #include "greeter_item_ulist.h"
 #include "greeter_parser.h"
-#include "gdm.h"
-#include "gdmcommon.h"
-#include "gdmconfig.h"
-#include "gdmwm.h"
-#include "misc.h"
 
 GtkWidget       *dialog;
 extern gboolean  GdmHaltFound;

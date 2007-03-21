@@ -91,6 +91,8 @@
 #include "gdmconfig.h"
 #include "display.h"
 
+#include "gdm-common.h"
+
 #ifdef WITH_CONSOLE_KIT
 #include "gdmconsolekit.h"
 #endif
@@ -1769,6 +1771,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 	if (pid == 0) {
 		char **argv;
+		const char *s;
+
 		/* child */
 
 		setsid ();
@@ -1814,11 +1818,19 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			VE_IGNORE_EINTR (g_chdir ("/"));
 
 		/* exec the configurator */
-		argv = ve_split (gdm_get_value_string (GDM_KEY_CONFIGURATOR));
+		argv = NULL;
+		s = gdm_get_value_string (GDM_KEY_CONFIGURATOR);
+		if (s != NULL) {
+			g_shell_parse_argv (s, NULL, &argv, NULL);
+		}
+
 		if G_LIKELY (argv != NULL &&
 			     argv[0] != NULL &&
-			     g_access (argv[0], X_OK) == 0)
+			     g_access (argv[0], X_OK) == 0) {
 			VE_IGNORE_EINTR (execv (argv[0], argv));
+		}
+
+		g_strfreev (argv);
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -1828,11 +1840,15 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 				 "Attempting to start it from the default "
 				 "location."));
 
-		argv = ve_split
-			(LIBEXECDIR
-			 "/gdmsetup --disable-sound --disable-crash-dialog");
-		if (g_access (argv[0], X_OK) == 0)
+		s = LIBEXECDIR "/gdmsetup --disable-sound --disable-crash-dialog";
+		argv = NULL;
+		g_shell_parse_argv (s, NULL, &argv, NULL);
+
+		if (g_access (argv[0], X_OK) == 0) {
 			VE_IGNORE_EINTR (execv (argv[0], argv));
+		}
+
+		g_strfreev (argv);
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -2442,7 +2458,12 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 static void
 exec_command (const char *command, const char *extra_arg)
 {
-	char **argv = ve_split (command);
+	char **argv;
+	int argc;
+
+	if (! g_shell_parse_argv (command, &argc, &argv, NULL)) {
+		return;
+	}
 
 	if (argv == NULL ||
 	    ve_string_empty (argv[0]))
@@ -2452,20 +2473,16 @@ exec_command (const char *command, const char *extra_arg)
 		return;
 
 	if (extra_arg != NULL) {
-		char **new_argv;
-		int i;
-		for (i = 0; argv[i] != NULL; i++)
-			;
-		new_argv = g_new0 (char *, i+2);
-		for (i = 0; argv[i] != NULL; i++)
-			new_argv[i] = argv[i];
-		new_argv[i++] = (char *)extra_arg;
-		new_argv[i++] = NULL;
 
-		argv = new_argv;
+		argv = g_renew (char *, argv, argc + 2);
+
+		argv[argc] = g_strdup (extra_arg);
+		argv[argc + 1] = NULL;
 	}
 
 	VE_IGNORE_EINTR (execv (argv[0], argv));
+
+	g_strfreev (argv);
 }
 
 static void
@@ -5468,7 +5485,10 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	if ( ! ve_string_empty (d->theme_name))
 		g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 	g_unsetenv ("MAIL");
-	argv = ve_split (script);
+
+	argv = NULL;
+	g_shell_parse_argv (script, NULL, &argv, NULL);
+
 	VE_IGNORE_EINTR (execv (argv[0], argv));
 	syslog (LOG_ERR, _("%s: Failed starting: %s"), "gdm_slave_exec_script",
 		script);
@@ -5608,20 +5628,22 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 		    g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 	    g_unsetenv ("MAIL");
 
-	    argv = ve_split (str->str);
+	    argv = NULL;
+	    g_shell_parse_argv (str->str, NULL, &argv, NULL);
+
 	    VE_IGNORE_EINTR (execv (argv[0], argv));
 	    gdm_error (_("%s: Failed executing: %s"),
 		       "gdm_parse_enriched_login",
 		       str->str);
 	    _exit (EXIT_SUCCESS);
-	    
+
         case -1:
 	    gdm_error (_("%s: Can't fork script process!"),
 		       "gdm_parse_enriched_login");
             VE_IGNORE_EINTR (close (pipe1[0]));
             VE_IGNORE_EINTR (close (pipe1[1]));
 	    break;
-	
+
         default:
 	    /* The parent reads username from the pipe a chunk at a time */
             VE_IGNORE_EINTR (close (pipe1[1]));

@@ -24,11 +24,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <netdb.h> 
+#include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
+#include <errno.h>
+
 #include <X11/Xauth.h>
 #include <glib/gi18n.h>
 
@@ -38,6 +40,8 @@
 #include "filecheck.h"
 #include "auth.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 /* Ensure we know about FamilyInternetV6 even if what we're compiling
    against doesn't */

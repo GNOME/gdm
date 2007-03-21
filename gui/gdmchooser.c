@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K, Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -57,7 +59,7 @@
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 
-#include "viciousui.h"
+#include "gdm-common.h"
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
@@ -222,7 +224,7 @@ gdm_chooser_host_alloc (const char *hostname,
 
     host->addrtype = family;
     chooser_hosts = g_list_prepend (chooser_hosts, host);
-    
+
     if ( ! willing)
 	    return host;
 
@@ -239,7 +241,7 @@ gdm_chooser_host_alloc (const char *hostname,
 
 	w = gdk_pixbuf_get_width (img);
 	h = gdk_pixbuf_get_height (img);
-	
+
 	maxw = gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH);
 	maxh = gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
 
@@ -424,6 +426,32 @@ gdm_addr_known (char *ia, gint family)
 #endif
 	}
 	return FALSE;
+}
+
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
 }
 
 static gboolean
@@ -618,13 +646,12 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	                             "Please try again later."),
 	                           added_host);
 
-	    dialog = ve_hig_dialog_new
-		    (GTK_WINDOW (chooser) /* parent */,
-		     GTK_DIALOG_MODAL /* flags */,
-		     GTK_MESSAGE_ERROR,
-		     GTK_BUTTONS_OK,
-		     _("Cannot connect to remote server"),
-		     msg);
+	    dialog = hig_dialog_new (GTK_WINDOW (chooser) /* parent */,
+				     GTK_DIALOG_MODAL /* flags */,
+				     GTK_MESSAGE_ERROR,
+				     GTK_BUTTONS_OK,
+				     _("Cannot connect to remote server"),
+				     msg);
 
 	    g_free (msg);
 
@@ -1282,13 +1309,12 @@ add_check (gpointer data)
 		                       added_host,
 		                       ADD_TIMEOUT / 1000);
 
-		dialog = ve_hig_dialog_new
-			(GTK_WINDOW (chooser) /* parent */,
-			 GTK_DIALOG_MODAL /* flags */,
-			 GTK_MESSAGE_ERROR,
-			 GTK_BUTTONS_OK,
-			 _("Did not receive response from server"),
-			 msg);
+		dialog = hig_dialog_new (GTK_WINDOW (chooser) /* parent */,
+					 GTK_DIALOG_MODAL /* flags */,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Did not receive response from server"),
+					 msg);
 
 		g_free (msg);
 
@@ -1393,14 +1419,12 @@ gdm_chooser_add_host (void)
 		                         "Perhaps you have mistyped it."),
 		                         name);
 
-		dialog = ve_hig_dialog_new
-		(GTK_WINDOW (chooser) /* parent */,
-		 GTK_DIALOG_MODAL /* flags */,
-		 GTK_MESSAGE_ERROR,
-		 GTK_BUTTONS_OK,
-		 _("Cannot find host"),
-		 msg);
-		 
+		dialog = hig_dialog_new (GTK_WINDOW (chooser) /* parent */,
+					 GTK_DIALOG_MODAL /* flags */,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Cannot find host"),
+					 msg);
 		g_free (msg);
 
 		if (RUNNING_UNDER_GDM)
@@ -1621,7 +1645,7 @@ display_chooser_information (void)
 	gdm_wm_no_login_focus_pop ();
 }
 
-static void 
+static void
 gdm_chooser_gui_init (void)
 {
 	GtkTreeSelection *selection;
@@ -1630,138 +1654,121 @@ gdm_chooser_gui_init (void)
 	int width;
 	int height;
 
-	glade_helper_add_glade_directory (GDM_GLADE_DIR);
-	glade_helper_search_gnome_dirs (FALSE);
+	/* Enable theme */
+	if (RUNNING_UNDER_GDM) {
+		const char *theme_name;
 
-    /* Enable theme */
-    if (RUNNING_UNDER_GDM) {
-	const char *theme_name;
+		if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_GTKRC)))
+			gtk_rc_parse (gdm_config_get_string (GDM_KEY_GTKRC));
 
-	if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_GTKRC)))
-		gtk_rc_parse (gdm_config_get_string (GDM_KEY_GTKRC));
+		theme_name = g_getenv ("GDM_GTK_THEME");
+		if (ve_string_empty (theme_name))
+			theme_name = gdm_config_get_string (GDM_KEY_GTK_THEME);
 
-	theme_name = g_getenv ("GDM_GTK_THEME");
-	if (ve_string_empty (theme_name))
-		theme_name = gdm_config_get_string (GDM_KEY_GTK_THEME);
-
-	if ( ! ve_string_empty (theme_name)) {
-		gdm_set_theme (theme_name);
+		if ( ! ve_string_empty (theme_name)) {
+			gdm_set_theme (theme_name);
+		}
 	}
-    }
 
-    defaulthosticon = gdm_config_get_string (GDM_KEY_DEFAULT_HOST_IMG);
+	defaulthosticon = gdm_config_get_string (GDM_KEY_DEFAULT_HOST_IMG);
 
-    /* Load default host image */
-    if (g_access (defaulthosticon, R_OK) != 0) {
-	gdm_common_error ("Could not open default host icon: %s", defaulthosticon);
-	/* bogus image */
-	defhostimg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-				     FALSE /* has_alpha */,
-				     8 /* bits_per_sample */,
-				     48 /* width */,
-				     48 /* height */);
-    } else {
-	defhostimg = gdk_pixbuf_new_from_file (defaulthosticon, NULL);
-    }
+	/* Load default host image */
+	if (g_access (defaulthosticon, R_OK) != 0) {
+		gdm_common_error ("Could not open default host icon: %s", defaulthosticon);
+		/* bogus image */
+		defhostimg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+					     FALSE /* has_alpha */,
+					     8 /* bits_per_sample */,
+					     48 /* width */,
+					     48 /* height */);
+	} else {
+		defhostimg = gdk_pixbuf_new_from_file (defaulthosticon, NULL);
+	}
 
-    /* Main window */
-    chooser_app = glade_helper_load ("gdmchooser.glade",
+	/* Main window */
+	chooser_app = glade_xml_new (GDM_GLADE_DIR "gdmchooser.glade",
 				     "gdmchooser_main",
-				     GTK_TYPE_DIALOG,
-				     FALSE /* dump_on_destroy */);
-    glade_xml_signal_autoconnect (chooser_app);
-   
-    chooser = glade_helper_get (chooser_app, "gdmchooser_main",
-				GTK_TYPE_DIALOG);
-    manage = glade_helper_get (chooser_app, "connect_button",
-			       GTK_TYPE_BUTTON);
-    rescan = glade_helper_get (chooser_app, "rescan_button",
-			       GTK_TYPE_BUTTON);
-    cancel = glade_helper_get (chooser_app, "quit_button",
-			       GTK_TYPE_BUTTON);
-    status_label = glade_helper_get (chooser_app, "status_label",
-				     GTK_TYPE_LABEL);
-    add_entry = glade_helper_get (chooser_app, "add_entry",
-				  GTK_TYPE_ENTRY);
-    add_button = glade_helper_get (chooser_app, "add_button",
-				   GTK_TYPE_BUTTON);
+				     NULL);
+	glade_xml_signal_autoconnect (chooser_app);
+	chooser = glade_xml_get_widget (chooser_app, "gdmchooser_main");
+	manage = glade_xml_get_widget (chooser_app, "connect_button");
+	rescan = glade_xml_get_widget (chooser_app, "rescan_button");
+	cancel = glade_xml_get_widget (chooser_app, "quit_button");
+	status_label = glade_xml_get_widget (chooser_app, "status_label");
+	add_entry = glade_xml_get_widget (chooser_app, "add_entry");
+	add_button = glade_xml_get_widget (chooser_app, "add_button");
+	browser = glade_xml_get_widget (chooser_app, "chooser_iconlist");
 
-    browser = glade_helper_get (chooser_app, "chooser_iconlist",
-				GTK_TYPE_TREE_VIEW);
+	gtk_dialog_set_has_separator (GTK_DIALOG (chooser), FALSE);
 
-    gtk_dialog_set_has_separator (GTK_DIALOG (chooser), FALSE);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (browser), TRUE);
 
-    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (browser), TRUE);
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
-    gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+	g_signal_connect (selection, "changed",
+			  G_CALLBACK (host_selected),
+			  NULL);
+	g_signal_connect (browser, "row_activated",
+			  G_CALLBACK (row_activated),
+			  NULL);
 
-    g_signal_connect (selection, "changed",
-		      G_CALLBACK (host_selected),
-		      NULL);
-    g_signal_connect (browser, "row_activated",
-		      G_CALLBACK (row_activated),
-		      NULL);
+	browser_model = (GtkTreeModel *)gtk_list_store_new (3,
+							    GDK_TYPE_PIXBUF,
+							    G_TYPE_STRING,
+							    G_TYPE_POINTER);
+	gtk_tree_view_set_model (GTK_TREE_VIEW (browser), browser_model);
+	column = gtk_tree_view_column_new_with_attributes ("Icon",
+							   gtk_cell_renderer_pixbuf_new (),
+							   "pixbuf", CHOOSER_LIST_ICON_COLUMN,
+							   NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
 
-    browser_model = (GtkTreeModel *)gtk_list_store_new (3,
-							GDK_TYPE_PIXBUF,
-							G_TYPE_STRING,
-							G_TYPE_POINTER);
-    gtk_tree_view_set_model (GTK_TREE_VIEW (browser), browser_model);
-    column = gtk_tree_view_column_new_with_attributes
-	    ("Icon",
-	     gtk_cell_renderer_pixbuf_new (),
-	     "pixbuf", CHOOSER_LIST_ICON_COLUMN,
-	     NULL);
-    gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
+	column = gtk_tree_view_column_new_with_attributes ("Hostname",
+							   gtk_cell_renderer_text_new (),
+							   "markup", CHOOSER_LIST_LABEL_COLUMN,
+							   NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
 
-    column = gtk_tree_view_column_new_with_attributes
-	    ("Hostname",
-	     gtk_cell_renderer_text_new (),
-	     "markup", CHOOSER_LIST_LABEL_COLUMN,
-	     NULL);
-    gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
-
-    gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (browser_model),
-					  CHOOSER_LIST_LABEL_COLUMN,
-					  GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (browser_model),
+					      CHOOSER_LIST_LABEL_COLUMN,
+					      GTK_SORT_ASCENDING);
 
 
-    if ( ! gdm_config_get_bool (GDM_KEY_ALLOW_ADD)) {
-	    GtkWidget *w = glade_helper_get (chooser_app, "add_hbox",
-					     GTK_TYPE_HBOX);
-	    gtk_widget_hide (w);
-    }
+	if ( ! gdm_config_get_bool (GDM_KEY_ALLOW_ADD)) {
+		GtkWidget *w = glade_xml_get_widget (chooser_app, "add_hbox");
+		gtk_widget_hide (w);
+	}
 
-    gtk_window_get_size (GTK_WINDOW (chooser),
-			 &width, &height);
-    if (RUNNING_UNDER_GDM) {
-	    if (width > gdm_wm_screen.width)
-		    width = gdm_wm_screen.width;
-	    if (height > gdm_wm_screen.height)
-		    height = gdm_wm_screen.height;
-    } else {
-	    if (width > gdk_screen_width ())
-		    width = gdk_screen_width ();
-	    if (height > gdk_screen_height ())
-		    height = gdk_screen_height ();
-    }
-    gtk_widget_set_size_request (GTK_WIDGET (chooser), 
-				 width, height);
-    gtk_window_set_default_size (GTK_WINDOW (chooser), 
-				 width, height);
-    gtk_window_resize (GTK_WINDOW (chooser), 
-		       width, height);
+	gtk_window_get_size (GTK_WINDOW (chooser),
+			     &width, &height);
+	if (RUNNING_UNDER_GDM) {
+		if (width > gdm_wm_screen.width)
+			width = gdm_wm_screen.width;
+		if (height > gdm_wm_screen.height)
+			height = gdm_wm_screen.height;
+	} else {
+		if (width > gdk_screen_width ())
+			width = gdk_screen_width ();
+		if (height > gdk_screen_height ())
+			height = gdk_screen_height ();
+	}
+	gtk_widget_set_size_request (GTK_WIDGET (chooser),
+				     width, height);
+	gtk_window_set_default_size (GTK_WINDOW (chooser),
+				     width, height);
+	gtk_window_resize (GTK_WINDOW (chooser),
+			   width, height);
 
 
-    /* cursor blinking is evil on remote displays, don't do it forever */
-    gdm_common_setup_blinking ();
-    gdm_common_setup_blinking_entry (add_entry);
+	/* cursor blinking is evil on remote displays, don't do it forever */
+	gdm_common_setup_blinking ();
+	gdm_common_setup_blinking_entry (add_entry);
 
-    if (RUNNING_UNDER_GDM) {
-	    gtk_widget_show_now (chooser);
-	    gdm_wm_center_window (GTK_WINDOW (chooser));
-    }
+	if (RUNNING_UNDER_GDM) {
+		gtk_widget_show_now (chooser);
+		gdm_wm_center_window (GTK_WINDOW (chooser));
+	}
 }
 
 /* 
@@ -2033,14 +2040,14 @@ main (int argc, char *argv[])
 	                             "Please restart the GDM daemon or the computer."),
 	                           VERSION, gdm_version);
 
-	    dialog = ve_hig_dialog_new (NULL /* parent */,
-					GTK_DIALOG_MODAL /* flags */,
-					GTK_MESSAGE_ERROR,
-					GTK_BUTTONS_OK,
-					_("Cannot run chooser"),
-					msg);
+	    dialog = hig_dialog_new (NULL /* parent */,
+				     GTK_DIALOG_MODAL /* flags */,
+				     GTK_MESSAGE_ERROR,
+				     GTK_BUTTONS_OK,
+				     _("Cannot run chooser"),
+				     msg);
 	    g_free (msg);
-	    
+
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 

@@ -172,9 +172,9 @@ AC_CHECK_FUNCS(_NSGetEnviron)
 GNOME_COMPILE_WARNINGS
 CFLAGS="$CFLAGS $WARN_CFLAGS"
 
-PKG_CHECK_MODULES(VICIOUS, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
-AC_SUBST(VICIOUS_CFLAGS)
-AC_SUBST(VICIOUS_LIBS)
+PKG_CHECK_MODULES(COMMON, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
+AC_SUBST(COMMON_CFLAGS)
+AC_SUBST(COMMON_LIBS)
 
 PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
@@ -268,8 +268,8 @@ AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
 
-VICIOUS_GNOME_LIBS="libviciousui.a  libviciousui-minimal.a "
-AC_SUBST(VICIOUS_GNOME_LIBS)
+COMMON_GNOME_LIBS="libgdmcommon-ui.a"
+AC_SUBST(COMMON_GNOME_LIBS)
 
 dnl *****************************
 dnl     IPv6 specific checks
@@ -1169,7 +1169,7 @@ pixmaps/32x32/Makefile
 pixmaps/48x48/Makefile
 config/Makefile
 po/Makefile.in
-vicious-extensions/Makefile
+common/Makefile
 docs/Makefile
 docs/de/Makefile
 docs/es/Makefile

@@ -26,6 +26,8 @@
 #include "misc.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 #define INDEX_FILE1 "index.theme"
 #define INDEX_FILE2 "index.theme.disabled"
 

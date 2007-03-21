@@ -38,7 +38,6 @@
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
-#include "ve-miscui.h"
 
 static GladeXML *xml;
 static char	*photofile;
@@ -163,6 +162,32 @@ update_preview_cb (GtkFileChooser *chooser)
 	gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
 }
 
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
+}
+
 static void
 set_face_from_filename (const char *filename)
 {
@@ -184,16 +209,16 @@ set_face_from_filename (const char *filename)
 		GtkWidget *d;
 		char	  *tmp = g_filename_to_utf8 (photofile, -1, NULL, NULL, NULL);
 		char      *msg;
-		
+
 		msg = g_strdup_printf (_("File %s cannot be opened for "
 					 "writing."), tmp);
 
-		d = ve_hig_dialog_new (NULL /* parent */,
-				       GTK_DIALOG_MODAL /* flags */,
-				       GTK_MESSAGE_ERROR,
-				       GTK_BUTTONS_OK,
-				       _("Cannot open file"),
-				       msg);
+		d = hig_dialog_new (NULL /* parent */,
+				    GTK_DIALOG_MODAL /* flags */,
+				    GTK_MESSAGE_ERROR,
+				    GTK_BUTTONS_OK,
+				    _("Cannot open file"),
+				    msg);
 
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);

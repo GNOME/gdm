@@ -41,6 +41,8 @@
 #include "gdm-net.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 /* External vars */
 extern gint xdmcp_sessions;
 extern gint flexi_servers;

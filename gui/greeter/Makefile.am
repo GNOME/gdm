@@ -5,7 +5,7 @@ INCLUDES = \
 	-I.						\
 	-I$(top_srcdir)/gui				\
 	-I$(top_srcdir)/daemon				\
-	-I$(top_srcdir)/vicious-extensions		\
+	-I$(top_srcdir)/common				\
 	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"		 	\
@@ -73,13 +73,13 @@ gdmgreeter_SOURCES =  \
 	greeter_session.c \
 	greeter_session.h \
 	greeter_system.c \
-	greeter_system.h 
+	greeter_system.h
 
 gdmgreeter_LDADD = \
 	-L$(top_builddir)/gui	\
 	-lgdmwm			\
 	-lgdmcommon		\
-	$(top_builddir)/vicious-extensions/libviciousui-minimal.a \
+	$(top_builddir)/common/libgdmcommon.a \
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(PANGO_LIBS)		\

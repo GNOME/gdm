@@ -9,13 +9,6 @@ test -z "$srcdir" && srcdir=.
 
 PKG_NAME="GDM"
 
-if test ! -d $srcdir/vicious-extensions; then
-	echo -n "**Error**: vicious-extensions not found, please do a clean "
-	echo "checkout or do:"
-        echo "svn co http://svn.gnome.org/svn/vicious-extensions/trunk vicious-extensions"
-	exit 1
-fi
-
 (test -f $srcdir/configure.ac \
   && test -d $srcdir/daemon \
   && test -f $srcdir/daemon/gdm.h) || {

@@ -24,13 +24,17 @@
 #include <stdlib.h>
 #include <librsvg/rsvg.h>
 #include <math.h>
-#include <gdk/gdkx.h>
 #include <locale.h>
+
 #include <glib/gi18n.h>
+#include <gdk/gdkx.h>
 
 #include "gdmwm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
+
 #include "greeter_configuration.h"
 #include "greeter_parser.h"
 #include "greeter_events.h"
@@ -1238,15 +1242,17 @@ parse_state_text (xmlNodePtr node,
 static gint
 is_current_locale (const char *lang)
 {
-  const GList *l = ve_i18n_get_language_list ("LC_MESSAGES");
+  const char * const *langs;
   int score = 0;
-  
-  while (l != NULL)
+  int i;
+
+  langs = g_get_language_names ();
+
+  for (i = 0; langs[i] != NULL; i++)
     {
-      if (strcmp (l->data, lang) == 0)
+      if (strcmp (langs[i], lang) == 0)
 	return score;
 
-      l = l->next;
       score++;
     }
   return 1000;

@@ -1,5 +1,37 @@
 2006-03-20  Brian Cameron  <brian.cameron@sun.com>
 
+	* configure.ac, autogen.sh, gui/gdmlanguages.c, gui/gdmconfig.h
+	  gui/gdmuser.c, gui/gdmwm.c, gui/gdmdynamic.c, gui/gdmlogin.c,
+	  gui/gdmphotosetup.c, gui/gdmsession.c, gui/gdmXnestchooser.c,
+	  gui/greeter/greeter.c, gui/gdmcommon.c, gui/gdmcomm.c,
+	  gui/gdmflexiserver.c, gui/gdmsetup.c, gui/gdmchooser.c,
+	  gui/misc.c, gui/gdmmconfig.c, gui/Makefile.am
+	  gui/greeter/greeter_item_customlist.c, 
+	  gui/greeter/greeter_canvas_item.c gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_item.c, gui/greeter/greeter_item_ulist.c,
+	  gui/greeter/greeter_item_timed.c, gui/greeter/greeter_session.c,
+	  gui/greeter/greeter_system.c, gui/greeter/greeter_item_pam.c,
+	  gui/greeter/Makefile.am, gui/greeter/themes/Makefile.am,
+	  common/gdm-common.[ch], common/gdm-common-config.[ch], 
+	  common/ve-signal.[ch], common/Makefile.am, daemon/errorgui.c,
+	  daemon/gdmconfig.h, daemon/display.c, daemon/gdm.c, daemon/xdmcp.c,
+	  daemon/filecheck.c, daemon/verify-pam.c, daemon/getvt.c,
+	  daemon/auth.c, daemon/server.c, daemon/cookie.c, daemon/slave.c,
+	  daemon/server.h, daemon/misc.c, daemon/gdm-net.c,
+	  daemon/gdmconfig.c, daemon/Makefile.am:  Phase 1 of removing
+	  vicious-extensions and replacing with a rewrite.  Changes include:
+	  - Create a common directory to build libgdmcommon, used by the
+	    daemon and the GUI's.
+	  - Add a convenience layer over GKeyFile for dealing with compound
+	    keys.
+	  - Replace selected ve functions like ve_split
+	  - Remove glade_helper
+	  - Code improvements and leaks.
+	  Fix by William Jon McCann <mccann@jhu.edu>.  Refer to bug
+	  #355425.
+	  
+2006-03-20  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/Xsession.in, daemon/gdm.c, daemon/slave.c,
 	  gui/gdmlanguages.c:  Normalize all LC_* settings to LANG and
 	  starts input methods (IIIM->XIM) and starts up XIM if available.

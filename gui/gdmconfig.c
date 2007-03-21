@@ -31,7 +31,7 @@
 #include "gdmcomm.h"
 #include "gdmconfig.h"
 
-#include "vicious.h"
+#include "gdm-common.h"
 
 static GHashTable *int_hash       = NULL;
 static GHashTable *bool_hash      = NULL;
@@ -75,8 +75,9 @@ gdm_config_set_comm_retries (int tries)
  * Accesses hash with key, stripping it so it doesn't contain
  * a default value.
  */
-static gpointer 
-gdm_config_hash_lookup (GHashTable *hash, gchar *key)
+static gpointer
+gdm_config_hash_lookup (GHashTable *hash,
+			const gchar *key)
 {
 	gchar *p;
 	gpointer *ret;
@@ -99,7 +100,9 @@ gdm_config_hash_lookup (GHashTable *hash, gchar *key)
  * a default value.
  */
 static void
-gdm_config_add_hash (GHashTable *hash, gchar *key, gpointer value)
+gdm_config_add_hash (GHashTable *hash,
+		     const gchar *key,
+		     gpointer value)
 {
 	gchar *p;
 	gchar *newkey = g_strdup (key);
@@ -120,7 +123,7 @@ gdm_config_add_hash (GHashTable *hash, gchar *key, gpointer value)
  * doesn't contain a default value.
  */
 static gchar *
-gdm_config_get_result (gchar *key)
+gdm_config_get_result (const gchar *key)
 {
 	gchar *p;
 	gchar *newkey  = g_strdup (key);
@@ -154,7 +157,8 @@ gdm_config_get_result (gchar *key)
  * Calls daemon to get details for an xserver config.
  */
 static gchar *
-gdm_config_get_xserver_details (gchar *xserver, gchar *key)
+gdm_config_get_xserver_details (const gchar *xserver,
+				const gchar *key)
 {
 	gchar *command = NULL;
 	gchar *result  = NULL;
@@ -312,7 +316,10 @@ gdm_config_get_xservers (gboolean flexible)
  * access is faster.
  */
 static gchar *
-_gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean doing_translated)
+_gdm_config_get_string (const gchar *key,
+			gboolean reload,
+			gboolean *changed,
+			gboolean doing_translated)
 {
 	gchar *hashretval = NULL;
 	gchar *result = NULL;
@@ -381,7 +388,7 @@ _gdm_config_get_string (gchar *key, gboolean reload, gboolean *changed, gboolean
 }
 
 gchar *
-gdm_config_get_string (gchar *key)
+gdm_config_get_string (const gchar *key)
 {
    if (gdm_never_cache == TRUE)
       return _gdm_config_get_string (key, TRUE, NULL, FALSE);
@@ -400,11 +407,14 @@ gdm_config_get_string (gchar *key)
  * found.
  */ 
 static gchar *
-_gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *changed)
+_gdm_config_get_translated_string (const gchar *key,
+				   gboolean reload,
+				   gboolean *changed)
 {
-        const GList *li;
+	const char * const *langs;
         char *newkey;
         char *def;
+	int   i;
 
 	/* Strip key */
 	newkey = g_strdup (key);
@@ -412,16 +422,18 @@ _gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *change
 	if (def != NULL)
 		*def = '\0';
 
-	for (li = ve_i18n_get_language_list ("LC_MESSAGES");
-	     li != NULL;
-	     li = li->next) {
-                gchar *full = g_strdup_printf ("%s[%s]", newkey, (char *)li->data);
+	langs = g_get_language_names ();
+
+	for (i = 0; langs[i] != NULL; i++) {
+                gchar *full;
+		gchar *val;
 
 		/*
 		 * Pass TRUE for last argument so it doesn't print errors for
 		 * failing to find the key, since this is expected
 		 */
-		gchar *val = _gdm_config_get_string (full, reload, changed, TRUE);
+		full = g_strdup_printf ("%s[%s]", newkey, langs[i]);
+		val = _gdm_config_get_string (full, reload, changed, TRUE);
 
 		g_free (full);
 
@@ -438,7 +450,7 @@ _gdm_config_get_translated_string (gchar *key, gboolean reload, gboolean *change
 }
 
 gchar *
-gdm_config_get_translated_string (gchar *key)
+gdm_config_get_translated_string (const gchar *key)
 {
    if (gdm_never_cache == TRUE)
       return _gdm_config_get_translated_string (key, TRUE, NULL);
@@ -454,7 +466,9 @@ gdm_config_get_translated_string (gchar *key)
  * access is faster.
  */
 static gint
-_gdm_config_get_int (gchar *key, gboolean reload, gboolean *changed)
+_gdm_config_get_int (const gchar *key,
+		     gboolean reload,
+		     gboolean *changed)
 {
 	gint  *hashretval = NULL;
 	gchar *result = NULL;
@@ -517,7 +531,7 @@ _gdm_config_get_int (gchar *key, gboolean reload, gboolean *changed)
 }
 
 gint
-gdm_config_get_int (gchar *key)
+gdm_config_get_int (const gchar *key)
 {
    if (gdm_never_cache == TRUE)
       return _gdm_config_get_int (key, TRUE, NULL);
@@ -533,7 +547,9 @@ gdm_config_get_int (gchar *key)
  * access is faster.
  */
 static gboolean
-_gdm_config_get_bool (gchar *key, gboolean reload, gboolean *changed)
+_gdm_config_get_bool (const gchar *key,
+		      gboolean reload,
+		      gboolean *changed)
 {
 	gboolean *hashretval = NULL;
 	gchar    *result;
@@ -608,7 +624,7 @@ _gdm_config_get_bool (gchar *key, gboolean reload, gboolean *changed)
 }
 
 gboolean
-gdm_config_get_bool (gchar *key)
+gdm_config_get_bool (const gchar *key)
 {
    if (gdm_never_cache == TRUE)
       return _gdm_config_get_bool (key, TRUE, NULL);
@@ -625,7 +641,7 @@ gdm_config_get_bool (gchar *key)
  * otherwise.
  */
 gboolean
-gdm_config_reload_string (gchar *key)
+gdm_config_reload_string (const gchar *key)
 {
 	gboolean changed;
 	_gdm_config_get_string (key, TRUE, &changed, FALSE);
@@ -633,7 +649,7 @@ gdm_config_reload_string (gchar *key)
 }
 
 gboolean
-gdm_config_reload_int (gchar *key)
+gdm_config_reload_int (const gchar *key)
 {
 	gboolean changed;
 	_gdm_config_get_int (key, TRUE, &changed);
@@ -641,7 +657,7 @@ gdm_config_reload_int (gchar *key)
 }
 
 gboolean
-gdm_config_reload_bool (gchar *key)
+gdm_config_reload_bool (const gchar *key)
 {
 	gboolean changed;
 	_gdm_config_get_bool (key, TRUE, &changed);
@@ -649,27 +665,36 @@ gdm_config_reload_bool (gchar *key)
 }
 
 void
-gdm_save_customlist_data (gchar *file, gchar *key, gchar *id)
+gdm_save_customlist_data (const gchar *file,
+			  const gchar *key,
+			  const gchar *id)
 {
-	VeConfig *cfg;
-	cfg = ve_config_get (file);
-	g_free (file);
-	ve_config_set_string (cfg, key, ve_sure_string (id));
-	ve_config_save (cfg, FALSE);
+	GKeyFile *cfg;
+
+	cfg = gdm_common_config_load (file, NULL);
+	gdm_common_config_set_string (cfg, key, ve_sure_string (id));
+	gdm_common_config_save (cfg, file, NULL);
+
+	g_key_file_free (cfg);
 }
 
 gchar *
-gdm_get_theme_greeter (gchar *file, const char *fallback)
+gdm_get_theme_greeter (const gchar *file,
+		       const char *fallback)
 {
-	VeConfig *config = ve_config_new (file);
+	GKeyFile *config;
 	gchar *s;
 
-	s = ve_config_get_translated_string (config, "GdmGreeterTheme/Greeter");
+	config = gdm_common_config_load (file, NULL);
+	s = NULL;
+	gdm_common_config_get_translated_string (config, "GdmGreeterTheme/Greeter", &s, NULL);
 
 	if (s == NULL || s[0] == '\0') {
 		g_free (s);
 		s = g_strdup_printf ("%s.xml", fallback);
 	}
+
+	g_key_file_free (config);
 
 	return s;
 }

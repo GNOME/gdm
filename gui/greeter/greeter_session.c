@@ -33,6 +33,8 @@
 #include "gdmconfig.h"
 #include "gdmsession.h"
 
+#include "gdm-common.h"
+
 #include "greeter.h"
 #include "greeter_session.h"
 #include "greeter_item_pam.h"

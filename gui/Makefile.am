@@ -1,3 +1,5 @@
+NULL =
+
 SUBDIRS = . greeter modules faces
 
 ## Process this file with automake to produce makefile.in
@@ -17,7 +19,7 @@ INCLUDES = \
 	-I.						\
 	-I..						\
 	-I$(top_srcdir)/daemon				\
-	-I$(top_srcdir)/vicious-extensions		\
+	-I$(top_srcdir)/common				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(GUI_CFLAGS)
 
@@ -100,7 +102,7 @@ gdmchooser_LDADD = \
 	$(PANGO_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui.a \
+	$(top_builddir)/common/libgdmcommon.a \
 	$(X_EXTRA_LIBS)		\
 	$(XINERAMA_LIBS)	\
 	$(X_LIBS)		\
@@ -118,7 +120,7 @@ gdmlogin_LDADD = \
 	$(GDK_LIBS)		\
 	$(PANGO_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui-minimal.a \
+	$(top_builddir)/common/libgdmcommon.a \
 	$(X_EXTRA_LIBS)		\
 	$(XINERAMA_LIBS)	\
 	$(X_LIBS)		\
@@ -141,7 +143,7 @@ gdmsetup_LDADD = \
 	$(GDKPIXBUF_LIBS)	\
 	$(EXTRA_SETUP_LIBS)	\
 	$(LIBGNOMEUI_LIBS)	\
-	$(top_builddir)/vicious-extensions/libviciousui.a \
+	$(top_builddir)/common/libgdmcommon.a \
 	$(X_LIBS)		\
 	-lXau			\
 	-lX11
@@ -156,7 +158,8 @@ gdmphotosetup_LDADD = \
 	$(GDKPIXBUF_LIBS)	\
 	$(INTLLIBS)		\
 	-lX11			\
-	$(top_builddir)/vicious-extensions/libviciousui.a
+	$(top_builddir)/common/libgdmcommon.a	\
+	$(NULL)
 
 gdmXnestchooser_LDADD = \
 	libgdmcommon.a		\
@@ -165,7 +168,7 @@ gdmXnestchooser_LDADD = \
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
-	$(top_builddir)/vicious-extensions/libviciousui.a \
+	$(top_builddir)/common/libgdmcommon.a \
 	$(EXTRA_XNEST_LIBS)	\
 	$(X_LIBS)		\
 	-lXau			\
@@ -179,7 +182,7 @@ gdmflexiserver_LDADD = \
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
-	$(top_builddir)/vicious-extensions/libviciousui.a \
+	$(top_builddir)/common/libgdmcommon.a \
 	$(EXTRA_FLEXI_LIBS)	\
 	$(X_LIBS)		\
 	-lX11			\
@@ -193,7 +196,7 @@ gdmdynamic_LDADD = 		\
 	$(GLIB_LIBS) 		\
 	$(GOBJECT_LIBS) 	\
 	$(GDK_LIBS) 		\
-	$(top_builddir)/vicious-extensions/libviciousui.a \
+	$(top_builddir)/common/libgdmcommon.a \
 	$(EXTRA_DYNAMIC_LIBS)	\
 	$(X_LIBS)		\
 	-lX11			\

@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  * Copyright (C) 2005 Brian Cameron <brian.cameron@sun.com>
  *
@@ -16,42 +18,44 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+#ifndef _GDM_CONFIG_H
+#define _GDM_CONFIG_H
+
 #include "gdm.h"
 
-/* To access ve_string_empty(), ve_sure_string(), and
-   VE_IGNORE_EINTR macros ve-misc.h must be included */
+G_BEGIN_DECLS
 
-#include "ve-misc.h"
 
 gchar*         gdm_get_display_custom_config_file
-                                        (gchar *display);
+                                        (const gchar *display);
 gchar*         gdm_get_custom_config_file (void);
-gchar*         gdm_get_value_string     (gchar *key);
-gboolean       gdm_get_value_bool       (gchar *key);
-gint           gdm_get_value_int        (gchar *key);
+gchar*         gdm_get_value_string     (const gchar *key);
+gboolean       gdm_get_value_bool       (const gchar *key);
+gint           gdm_get_value_int        (const gchar *key);
 gchar*         gdm_get_value_string_per_display (const gchar *display,
-                                                 gchar *key);
-gboolean       gdm_get_value_bool_per_display   (gchar *display,
-                                                 gchar *key);
-gint           gdm_get_value_int_per_display    (gchar *display,
-                                                 gchar *key);
-void           gdm_set_value_string     (gchar *key,
-                                         gchar *value);
-void           gdm_set_value_bool       (gchar *key,
+                                                 const gchar *key);
+gboolean       gdm_get_value_bool_per_display   (const gchar *display,
+                                                 const gchar *key);
+gint           gdm_get_value_int_per_display    (const gchar *display,
+                                                 const gchar *key);
+void           gdm_set_value_string     (const gchar *key,
+                                         const gchar *value);
+void           gdm_set_value_bool       (const gchar *key,
                                          gboolean value);
-void           gdm_set_value_int        (gchar *key,
+void           gdm_set_value_int        (const gchar *key,
                                          gint value);
 void           gdm_config_key_to_string_per_display
                                         (const gchar *display,
-                                         gchar *key,
+                                         const gchar *key,
                                          gchar **retval);
-void           gdm_config_key_to_string (gchar *file,
-                                         gchar *key,
+void           gdm_config_key_to_string (const gchar *file,
+                                         const gchar *key,
                                          gchar **retval);
-void           gdm_config_to_string     (gchar *key,
-                                         gchar *display,
+void           gdm_config_to_string     (const gchar *key,
+                                         const gchar *display,
                                          gchar **retval);
-gboolean       gdm_update_config        (gchar *key);
+gboolean       gdm_update_config        (const gchar *key);
 void           gdm_config_parse         (void);
 GdmXserver*    gdm_find_xserver         (const gchar *id);
 gchar*         gdm_get_xservers         (void);
@@ -61,7 +65,7 @@ uid_t          gdm_get_gdmuid           (void);
 uid_t          gdm_get_gdmgid           (void);
 gint           gdm_get_high_display_num (void);
 void           gdm_set_high_display_num (gint val);
-gboolean       gdm_is_valid_key         (gchar *key);
+gboolean       gdm_is_valid_key         (const gchar *key);
 gboolean       gdm_signal_terminthup_was_notified  (void);
 
 gchar*         gdm_get_facefile_from_home
@@ -83,3 +87,7 @@ void		gdm_set_user_session_lang (gboolean savesess,
 char*          gdm_get_session_exec     (const char *session_name,
                                          gboolean check_try_exec);
 
+
+G_END_DECLS
+
+#endif /* _GDM_CONFIG_H */

@@ -27,6 +27,9 @@
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
+
 #include "greeter.h"
 #include "greeter_item.h"
 #include "greeter_events.h"

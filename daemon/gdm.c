@@ -52,7 +52,7 @@
 #include <glib-object.h>
 
 /* Needed for signal handling */
-#include <vicious.h>
+#include <gdm-common.h>
 
 #include "gdm.h"
 #include "misc.h"
@@ -636,10 +636,15 @@ suspend_machine (void)
 		/* short sleep to give some processing time to master */
 		usleep (1000);
 
-		argv = ve_split (suspend);
+		argv = NULL;
+		g_shell_parse_argv (suspend, NULL, &argv, NULL);
+
 		if (argv != NULL && argv[0] != NULL)
 			VE_IGNORE_EINTR (execv (argv[0], argv));
+
 		/* FIXME: what about fail */
+		g_strfreev (argv);
+
 		_exit (1);
 	}
 }
@@ -678,6 +683,7 @@ static void
 halt_machine (void)
 {
 	char **argv;
+	const char *s;
 
 	gdm_info (_("Master halting..."));
 
@@ -688,18 +694,26 @@ halt_machine (void)
 	change_to_first_and_clear (FALSE);
 #endif /* __linux */
 
-	argv = ve_split (gdm_get_value_string (GDM_KEY_HALT));
+	argv = NULL;
+	s = gdm_get_value_string (GDM_KEY_HALT);
+	if (s != NULL) {
+		g_shell_parse_argv (s, NULL, &argv, NULL);
+	}
+
 	if (argv != NULL && argv[0] != NULL)
 		VE_IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error (_("%s: Halt failed: %s"),
 		   "gdm_child_action", strerror (errno));
+
+	g_strfreev (argv);
 }
 
 static void
 restart_machine (void)
 {
 	char **argv;
+	const char *s;
 
 	gdm_info (_("Restarting computer..."));
 
@@ -710,12 +724,19 @@ restart_machine (void)
 	change_to_first_and_clear (TRUE);
 #endif /* __linux */
 
-	argv = ve_split (gdm_get_value_string (GDM_KEY_REBOOT));
+	argv = NULL;
+	s = gdm_get_value_string (GDM_KEY_REBOOT);
+	if (s != NULL) {
+		g_shell_parse_argv (s, NULL, &argv, NULL);
+	}
+
 	if (argv != NULL && argv[0] != NULL)
 		VE_IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error (_("%s: Restart failed: %s"), 
 		   "gdm_child_action", strerror (errno));
+
+	g_strfreev (argv);
 }
 
 static void
@@ -741,28 +762,35 @@ custom_cmd (long cmd_id)
 
 static void
 custom_cmd_restart (long cmd_id)
-{	
+{
 	gchar * key_string;
 	char **argv;
+	const char *s;
 
         gdm_info (_("Executing custom command %ld with restart option..."), cmd_id);
 
 	gdm_final_cleanup ();
 	VE_IGNORE_EINTR (g_chdir ("/"));
-	
+
 #ifdef __linux__
 	change_to_first_and_clear (TRUE);
 #endif /* __linux */
-	
+
 	key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
-	argv = ve_split (gdm_get_value_string (key_string));
-	g_free(key_string);
+
+	argv = NULL;
+	s = gdm_get_value_string (key_string);
+	g_free (key_string);
+	if (s != NULL) {
+		g_shell_parse_argv (s, NULL, &argv, NULL);
+	}
+
 	if (argv != NULL && argv[0] != NULL)
 		VE_IGNORE_EINTR (execv (argv[0], argv));
-	
-	g_strfreev (argv);	      
-	
-	gdm_error (_("%s: Execution of custom command failed: %s"), 
+
+	g_strfreev (argv);
+
+	gdm_error (_("%s: Execution of custom command failed: %s"),
 		   "gdm_child_action", strerror (errno));
 }
 
@@ -774,7 +802,7 @@ custom_cmd_no_restart (long cmd_id)
         gdm_info (_("Executing custom command %ld with no restart option ..."), cmd_id);
 
         pid = fork ();
-	
+
 	if (pid < 0) {
 	        /*failed fork*/
 	        gdm_error (_("custom_cmd: forking process for custom command %ld failed"), cmd_id);
@@ -783,18 +811,26 @@ custom_cmd_no_restart (long cmd_id)
 	else if (pid == 0) {
 		/* child */
 		char **argv;
-		gchar * key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
-		argv = ve_split (gdm_get_value_string (key_string));
-		g_free(key_string);
+		const char *s;
+		gchar *key_string;
+
+		key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
+
+		argv = NULL;
+		s = gdm_get_value_string (key_string);
+		g_free (key_string);
+		if (s != NULL) {
+			g_shell_parse_argv (s, NULL, &argv, NULL);
+		}
+
 		if (argv != NULL && argv[0] != NULL)
 			VE_IGNORE_EINTR (execv (argv[0], argv));
-	    
-		g_strfreev (argv);	      
-		
+
+		g_strfreev (argv);
+
 		gdm_error (_("%s: Execution of custom command failed: %s"), 
 			   "gdm_child_action", strerror (errno));
-		
-		_exit (0);	    
+		_exit (0);
 	}
 	else {
 		/* parent */
@@ -804,10 +840,10 @@ custom_cmd_no_restart (long cmd_id)
 			if G_LIKELY (WIFEXITED (exitstatus)){
 				status = WEXITSTATUS (exitstatus);
 				gdm_debug (_("custom_cmd: child %d returned %d"), p_stat, status);
-			}	
+			}
 			return;
 		}
-	}	
+	}
 }
 
 static gboolean 
@@ -1865,9 +1901,14 @@ write_x_servers (GdmDisplay *d)
 	if (SERVER_IS_LOCAL (d)) {
 		char **argv;
 		char *command;
-		argv = gdm_server_resolve_command_line
-			(d, FALSE /* resolve_flags */,
-			 NULL /* vtarg */);
+		int argc;
+		argc = 0;
+		argv = NULL;
+		gdm_server_resolve_command_line (d,
+						 FALSE, /* resolve_flags */
+						 NULL, /* vtarg */
+						 &argc,
+						 &argv);
 		command = g_strjoinv (" ", argv);
 		g_strfreev (argv);
 		VE_IGNORE_EINTR (fprintf (fp, "%s local %s\n", d->name, command));

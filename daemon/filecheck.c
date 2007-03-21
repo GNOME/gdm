@@ -26,6 +26,8 @@
 #include "filecheck.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 /**
  * gdm_file_check:
  * @caller: String to be prepended to syslog error messages.

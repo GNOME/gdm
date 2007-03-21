@@ -35,12 +35,12 @@
 #include <sys/un.h>
 #include <errno.h>
 
-#include "vicious.h"
-
 #include "gdm.h"
 #include "gdmcommon.h"
 #include "gdmcomm.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 static gboolean bulk_acs = FALSE;
 static gboolean debug    = FALSE;
@@ -583,6 +583,32 @@ gdmcomm_get_auth_cookie (void)
 	return cookie;
 }
 
+static GtkWidget *
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *primary_message,
+		const gchar    *secondary_message)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		                         GTK_DIALOG_DESTROY_WITH_PARENT,
+		                         type,
+		                         buttons,
+		                         "%s", primary_message);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                  "%s", secondary_message);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+  	return dialog;
+}
+
 gboolean
 gdmcomm_check (gboolean show_dialog)
 {
@@ -611,19 +637,18 @@ gdmcomm_check (gboolean show_dialog)
 	    (kill (pid, 0) < 0 &&
 	     errno != EPERM)) {
 		if (show_dialog) {
-			dialog = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
-				 GTK_BUTTONS_OK,
-				 _("GDM (The GNOME Display Manager) "
-				   "is not running."),
-				 _("You might in fact be using a different "
-				   "display manager, such as KDM "
-				   "(KDE Display Manager) or xdm. "
-				   "If you still wish to use this feature, "
-				   "either start GDM yourself or ask your "
-				   "system administrator to start GDM."));
+			dialog = hig_dialog_new (NULL /* parent */,
+                                                 GTK_DIALOG_MODAL /* flags */,
+                                                 GTK_MESSAGE_WARNING,
+                                                 GTK_BUTTONS_OK,
+                                                 _("GDM (The GNOME Display Manager) "
+                                                   "is not running."),
+                                                 _("You might in fact be using a different "
+                                                   "display manager, such as KDM "
+                                                   "(KDE Display Manager) or xdm. "
+                                                   "If you still wish to use this feature, "
+                                                   "either start GDM yourself or ask your "
+                                                   "system administrator to start GDM."));
 
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
@@ -637,15 +662,14 @@ gdmcomm_check (gboolean show_dialog)
 	    s.st_uid != 0 ||
 	    g_access (GDM_SUP_SOCKET, R_OK|W_OK) != 0) {
 		if (show_dialog) {
-			dialog = ve_hig_dialog_new
-				(NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
-				 GTK_BUTTONS_OK,
-				 _("Cannot communicate with GDM "
-				   "(The GNOME Display Manager)"),
-				 _("Perhaps you have an old version "
-				   "of GDM running."));
+			dialog = hig_dialog_new (NULL /* parent */,
+                                                 GTK_DIALOG_MODAL /* flags */,
+                                                 GTK_MESSAGE_WARNING,
+                                                 GTK_BUTTONS_OK,
+                                                 _("Cannot communicate with GDM "
+                                                   "(The GNOME Display Manager)"),
+                                                 _("Perhaps you have an old version "
+                                                   "of GDM running."));
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);

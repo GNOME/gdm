@@ -39,6 +39,8 @@
 #include "gdmconfig.h"
 #include "gdmuser.h"
 
+#include "gdm-common.h"
+
 #include "greeter.h"
 #include "greeter_item_ulist.h"
 #include "greeter_parser.h"
@@ -104,6 +106,17 @@ greeter_item_ulist_unset_selected_user (void)
 	selected_user = NULL;
 }
 
+static int
+vector_len (char * const *v)
+{
+	int i;
+	if (v == NULL)
+		return 0;
+	for (i = 0; v[i] != NULL; i++)
+		;
+	return i;
+}
+
 static void
 check_for_displays (void)
 {
@@ -137,7 +150,7 @@ check_for_displays (void)
 		char **rvec;
 
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL || ve_vector_len (rvec) != 3)
+		if (rvec == NULL || vector_len (rvec) != 3)
 			continue;
 
 		g_hash_table_insert (displays_hash,
@@ -214,7 +227,7 @@ greeter_populate_user_list (GtkTreeModel *tm)
 	}
 }
 
-void 
+void
 greeter_item_ulist_select_user (gchar *login)
 {
 	printf ("%c%c%c%s\n", STX, BEL,

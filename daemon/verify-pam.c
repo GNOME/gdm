@@ -39,6 +39,8 @@
 #include "errorgui.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 #ifdef	HAVE_LOGINDEVPERM
 #include <libdevinfo.h>
 #endif	/* HAVE_LOGINDEVPERM */

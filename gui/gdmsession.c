@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This file Copyright (c) 2003 George Lebl
@@ -26,12 +28,12 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#include "vicious.h"
-
 #include "gdm.h"
 #include "gdmsession.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+
+#include "gdm-common.h"
 
 GHashTable *sessnames        = NULL;
 gchar *default_session       = NULL;
@@ -178,12 +180,13 @@ _gdm_session_list_init (GHashTable **sessnames, GList **sessions,
 		    dent = NULL;
 
 	    while (dent != NULL) {
-		    VeConfig *cfg;
+		    GKeyFile *cfg;
 		    char *exec;
 		    char *comment;
 		    char *s;
 		    char *tryexec;
 		    char *ext;
+		    gboolean hidden;
 
 		    /* ignore everything but the .desktop files */
 		    ext = strstr (dent->d_name, ".desktop");
@@ -200,20 +203,23 @@ _gdm_session_list_init (GHashTable **sessnames, GList **sessions,
 		    }
 
 		    s = g_strconcat (dir, "/", dent->d_name, NULL);
-		    cfg = ve_config_new (s);
+		    cfg = gdm_common_config_load (s, NULL);
 		    g_free (s);
 
-		    if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false")) {
+		    hidden = FALSE;
+		    gdm_common_config_get_boolean (cfg, "Desktop Entry/Hidden=false", &hidden, NULL);
+		    if (hidden) {
 			    session = g_new0 (GdmSession, 1);
 			    session->name      = g_strdup (dent->d_name);
 			    session->clearname = NULL;
 			    g_hash_table_insert (*sessnames, g_strdup (dent->d_name), session);
-			    ve_config_destroy (cfg);
+			    g_key_file_free (cfg);
 			    dent = readdir (sessdir);
 			    continue;
 		    }
 
-		    tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
+		    tryexec = NULL;
+		    gdm_common_config_get_string (cfg, "Desktop Entry/TryExec", &tryexec, NULL);
 		    if ( ! ve_string_empty (tryexec)) {
 			    char **tryexecvec = g_strsplit (tryexec, " ", -1);
 			    char *full = NULL;
@@ -229,7 +235,7 @@ _gdm_session_list_init (GHashTable **sessnames, GList **sessions,
 				    g_hash_table_insert (*sessnames, g_strdup (dent->d_name),
 					 session);
 				    g_free (tryexec);
-				    ve_config_destroy (cfg);
+				    g_key_file_free (cfg);
 				    dent = readdir (sessdir);
 				    continue;
 			    }
@@ -238,11 +244,13 @@ _gdm_session_list_init (GHashTable **sessnames, GList **sessions,
 		    }
 		    g_free (tryexec);
 
-		    exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
-		    name = ve_config_get_translated_string (cfg, "Desktop Entry/Name");
-		    comment = ve_config_get_translated_string (cfg, "Desktop Entry/Comment");
-
-		    ve_config_destroy (cfg);
+		    exec = NULL;
+		    name = NULL;
+		    comment = NULL;
+		    gdm_common_config_get_string (cfg, "Desktop Entry/Exec", &exec, NULL);
+		    gdm_common_config_get_translated_string (cfg, "Desktop Entry/Name", &name, NULL);
+		    gdm_common_config_get_translated_string (cfg, "Desktop Entry/Comment", &comment, NULL);
+		    g_key_file_free (cfg);
 
 		    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
 			    session = g_new0 (GdmSession, 1);

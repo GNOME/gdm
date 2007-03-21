@@ -37,6 +37,8 @@
 #include "gdm-net.h"
 #include "gdmconfig.h"
 
+#include "gdm-common.h"
+
 /*
  * Kind of a weird setup, new connections whack old connections.
  *
