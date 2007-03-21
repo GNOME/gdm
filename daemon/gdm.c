@@ -52,7 +52,7 @@
 #include <glib-object.h>
 
 /* Needed for signal handling */
-#include <gdm-common.h>
+#include "gdm-common.h"
 
 #include "gdm.h"
 #include "misc.h"

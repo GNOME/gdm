@@ -321,6 +321,16 @@ fi
 dnl borrowed from gnu findutils
 dnl and relicensed as LGPL by the FSF
 
+AC_ARG_WITH(prefetch,
+  [  --with-prefetch=[yes/no]  Install GDM library prefetch utility [default=no]],,
+  with_prefetch=no)
+
+if test x$with_prefetch != xno ; then
+	GDMPREFETCH="gdmprefetch"
+        GDMPREFETCHLIST="gdmprefetchlist"
+        GDMPREFETCHCMD='${libdir}/gdmprefetch \@${gdmconfdir}/gdmprefetchlist'
+fi
+
 AC_ARG_WITH(afs,
 [  --with-afs              support -fstype afs],
 [  AC_DEFINE(AFS, [], [Define if you have the Andrew File System])

@@ -26,6 +26,7 @@
 #include <unistd.h>
 
 #include "gdm.h"
+#include "gdmwm.h"
 #include "gdmconfig.h"
 #include "gdmcommon.h"
 #include "misc.h"
@@ -181,6 +182,10 @@ greeter_item_is_visible (GreeterItemInfo *info)
     return FALSE;
   if ( ! GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
        ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
+    return FALSE;
+
+  if ((gdm_wm_screen.width < info->minimum_required_screen_width) ||
+      (gdm_wm_screen.height < info->minimum_required_screen_height))
     return FALSE;
 
   sysmenu = gdm_config_get_bool (GDM_KEY_SYSTEM_MENU);

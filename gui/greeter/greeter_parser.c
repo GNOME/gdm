@@ -25,6 +25,7 @@
 #include <librsvg/rsvg.h>
 #include <math.h>
 #include <locale.h>
+#include <syslog.h>
 
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
@@ -601,7 +602,23 @@ parse_show (xmlNodePtr       node,
       }
       xmlFree (prop);
     }
-  
+
+  prop = xmlGetProp (node,(const xmlChar *) "min-screen-width");
+  if (prop != NULL)
+    {
+          syslog (LOG_ERR, "minimum width is %d", info->minimum_required_screen_height);
+	  info->minimum_required_screen_width = atoi ((char *) prop);
+	  xmlFree (prop);
+    }
+
+  prop = xmlGetProp (node,(const xmlChar *) "min-screen-height");
+  if (prop != NULL)
+    {
+	  info->minimum_required_screen_height = atoi ((char *) prop);
+          syslog (LOG_ERR, "minimum height is %d", info->minimum_required_screen_height);
+	  xmlFree (prop);
+    }
+
   prop = xmlGetProp (node,(const xmlChar *) "modes");
   if (prop != NULL)
     {

@@ -89,6 +89,10 @@ struct _GreeterItemInfo {
   float y;
   float width;
   float height;
+
+  int minimum_required_screen_width;
+  int minimum_required_screen_height;
+
   GreeterItemPosType x_type:2;
   GreeterItemPosType y_type:2;
   GreeterItemSizeType width_type:4;
