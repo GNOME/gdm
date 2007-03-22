@@ -1,5 +1,19 @@
 2006-03-21  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c:  Remove the logic to call whack_clients
+	  when closing the session.  This code was written to address
+	  bug 126071, to ensure that all clients are killed on session
+	  exit.  However, this approach doesn't work well and causes
+	  GDM to fail badly when you kill the Xserver via
+	  control-alt-backspace on some environements.  It would be
+	  better to kill all clients by looping through the 
+	  slave daemons process tree and killing them rather than
+	  using XKillClient, which only kills client programs that
+	  are attached to the Xserver.  This fixes bug #419301.
+	  Patch provided by Cesare Tirabassi <norsetto@alice.it>.
+
+2006-03-21  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmphotosetup.desktop.in: Change Category to 
 	  GNOME;GTK;Settings.  Fixes bug #417350.
 
