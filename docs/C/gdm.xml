@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.18.0"> 
-    <!ENTITY date "03/12/2007"> 
+    <!ENTITY version "2.19.0"> 
+    <!ENTITY date "03/23/2007"> 
 ]>
 
 <article id="index" lang="en">
@@ -152,6 +152,12 @@
       </para>
 
       <para>
+        Note that GDM is highly configurable, and many configuration
+        settings can affect security.  Issues to be aware of are highlighted
+        in this document and in the GDM Configuration files.
+      </para> 
+
+      <para>
         For further information about GDM, see the
         <ulink type="http" url="http://www.gnome.org/projects/gdm/">
         the GDM project website</ulink>.  Please submit any bug reports or
@@ -171,7 +177,7 @@
       <para>
         The key/value pairs defined in the GDM configuration files and
         the location of these files are considered &quot;stable&quot; interfaces
-        and should only change in ways that are backwards compatible.  Note that
+        should only change in ways that are backwards compatible.  Note that
         this includes functionality like the GDM scripts (Init, PreSession,
         PostSession, PostLogin, XKeepsCrashing, etc.); directory locations
         (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc.
@@ -183,8 +189,7 @@
       </para>
 
       <para>
-        Note: distributions often change the default values of keys to support
-        their platform.  Command-line interfaces for GDM programs installed to
+        Command-line interfaces for GDM programs installed to
         <filename>&lt;bin&gt;</filename> and <filename>&lt;sbin&gt;</filename>
         are considered stable.  Refer to your distribution documentation to see
         if there are any distribution-specific changes to these GDM interfaces
@@ -310,38 +315,81 @@
       <para>
         GDM supports three different display types: static (local) displays,
         flexible (on-demand) displays, and XDMCP (remote) displays.  The
-        &quot;X Server Definitions&quot; and the &quot;Local Static X Display
-        Configuration&quot; subsections of the &quot;Configuration&quot;
-        section explains how these various types of displays are defined in
-        the GDM configuration file.
+        &quot;X Server Definitions&quot; subsection of the
+        &quot;Configuration&quot; section explains how the Xserver is
+        configured for different displays.
       </para>
 
       <para>
-        Local static displays are always started by the daemon, and when they
+        Static (local) displays are always started by the daemon, and when they
         die or are killed, they are restarted.  GDM can run as many of these
         as needed.  GDM can also manage displays on which it does not manage a
         GUI login, thus GDM can be used for supporting X terminals.
+        The &quot;Local Static X Display Configuration&quot; subsection of
+        the &quot;Configuration&quot; section describes how Static (local)
+        displays are defined.
       </para>
 
       <para>
-        Flexible, or on demand displays, are started via the socket protocol
-        with the <command>gdmflexiserver</command> command.  This feature is
-        only available to users logged in on the console and will display a new
-        login screen.  If a flexible display has previously been started on
-        the console, running <command>gdmflexiserver</command> again will
-        display a menu allowing users to switch back to a previous session
-        or start a new flexible session.  The <command>gdmflexiserver</command>
-        locks the current session before starting a new flexible display, so
-        the user's password must be entered before returning to an existing
-        session.  The <command>gdmflexiserver</command> command can also be
-        used to launch nested <command>Xnest</command> display.  These are
-        launched in a window in the user's current session.  Nested displays
-        can be started even if not logged into the console and are started by 
-        running the <command>gdmflexiserver -n</command> command.  Flexible
-        displays are not restarted when the user session ends.  Flexible
-        displays require virtual terminal (VT) support in the kernel, and will
-        not be available if not supported (such as on Solaris).  Nested
-        displays require that the X server supports Xnest.
+        Flexible, or on demand displays are only available to users logged
+        in on the console.  Starting a flexible display will lock the current
+        user session and will show a new login screen over the current running
+        session.  If at least one flexible display is already running, and the
+        user requests another, then a dialog will display showing existing
+        flexible displays.  The user can choose to switch back to a previous
+        display or start a new flexible display.  If the user switches back
+        to a previous display, they will need to enter the password in the
+        lock screen program to return to their session.  The GDM configuration
+        file specifies the maximum number of flexible displays allowed on the
+        system.
+      </para>
+
+      <para>
+        Flexible displays may be started by running the
+        <command>gdmflexiserver</command> command, or via calling the GDM
+        socket protocol directly.  Some lock screen programs provide a button
+        to start a new flexible session.  This allows a user to start a new
+        session even if the screen was left locked.  The GNOME Fast User
+        Switch applet also uses the socket protocol to provide an applet
+        interface on the GNOME panel for managing user displays quickly.
+        Flexible displays are not restarted when the user session ends.
+        Flexible displays require virtual terminal (VT) support in the kernel,
+        and will not be available if not supported (such as on Solaris). 
+       </para>
+
+       <para>
+        The <filename>FlexibleXServers</filename>,
+        <filename>FirstVT=7</filename>, <filename>VTAllocation</filename>,
+        and <filename>FlexiReapDelayMinutes</filename> configuration settings
+        are used to configure how flexible displays operate.
+       </para>
+
+       <para>
+        Nested displays are available to users even if not logged in on the
+        console.  Nested displays launch a login screen in a window in the 
+        user's current session.  This can be useful if the user has more
+        than one account on a machine and wishes to login to the other
+        account without disrupting their current session.  Nested displays
+        may be started by running the <command>gdmflexiserver -n</command>
+        command or via calling the GDM socket protocol directly.  Nested
+        displays require that the X server supports a nested Xserver command
+        like Xnest or Xephyr.  The <filename>Xnest</filename> configuration
+        option is used to configure how nested displays operate
+      </para>
+
+      <para>
+        The <command>gdmdynamic</command> is similar to
+        <command>gdmflexiserver</command> in the sense that it allows the
+        user to manage displays dynamically.  However displays started with
+        <command>gdmdynamic</command> are treated as local displays, so 
+        they are restarted automatically when the session exits.  This 
+        command is intended to be used in multi-user server environments
+        (many displays connected to a single server).  In other words,
+        this command allows the displays to be managed without hardcoding
+        the display information in the &quot;Local Static X Display
+        Configuration&quot; section of the configuration file.  This
+        is useful to support the ability of adding new displays to the
+        server without needing to restart GDM, for example.
       </para>
 
       <para>
@@ -352,13 +400,6 @@
         shut down, restart, suspend, or configure GDM are not shown.
       </para>
 
-      <para>
-        Displays started via the <command>gdmdynamic</command> command are
-        treated as local displays, so they are restarted automatically on
-        when the session exits.  This command is intended to more effectively
-        manage the displays on a multi-user server (many displays connected
-        to a single server).
-      </para>
     </sect2>
 
     <sect2 id="xdmcp">
@@ -804,6 +845,19 @@
         <address><email>gdm-list@gnome.org</email></address> mail list,
         so you can refer to the list archives for more information.
       </para>
+
+      <para>
+        For example, an effective way to implement such an exotic
+        authentication mechanism would be to have a daemon running
+        on the server listening to the authentication device (e.g.
+        USB key, fingerprint reader, etc.).  When the device 
+        announces that it has received input, then the daemon can
+        set the <filename>PamStack</filename> configuration value
+        using per-display configuration, and restart the greeter
+        with the PAM stack that works with this device.  This avoids
+        needing to hack the display manager code directly to support
+        the feature.
+      </para>
     </sect2>
 
     <sect2 id="gdmuser">
@@ -1032,38 +1086,44 @@ gdm: .your.domain
     <title>Support for ConsoleKit</title>
 
     <para>
-      GDM includes support for publishing user login information with the user and login
-      session accounting framework known as ConsoleKit.  ConsoleKit is able to keep track
-      of all the users currently logged in.  In this respect, it can be used as a replacement
-      for the utmp or utmpx files that are available on most Unix-like operating systems.
+      GDM includes support for publishing user login information with the user
+      and login session accounting framework known as ConsoleKit.  ConsoleKit
+      is able to keep track of all the users currently logged in.  In this
+      respect, it can be used as a replacement for the utmp or utmpx files that
+      are available on most Unix-like operating systems.
     </para>
 
     <para>
-      When GDM is about to create a new login process for a user it will call a privileged
-      method of ConsoleKit in order to open a new session for this user.  At this time
-      GDM also provides ConsoleKit with information about this user session such as: the user ID,
-      the X11 Display name that will be associated with the session, the host-name from which the
-      session originates (useful in the case of an XDMCP session), whether or not this session
-      is local, etc.  As the entity that initiates the user process, GDM is in a unique position
-      know and to be trusted to provide these bits of information about the user session.  The use
-      of this privileged method is restricted by the use of D-Bus system message bus security policy.
+      When GDM is about to create a new login process for a user it will call
+      a privileged method of ConsoleKit in order to open a new session for this
+      user.  At this time GDM also provides ConsoleKit with information about
+      this user session such as: the user ID, the X11 Display name that will be
+      associated with the session, the host-name from which the session
+      originates (useful in the case of an XDMCP session), whether or not this
+      session is local, etc.  As the entity that initiates the user process,
+      GDM is in a unique position know and to be trusted to provide these bits
+      of information about the user session.  The use of this privileged method
+      is restricted by the use of D-Bus system message bus security policy.
     </para>
 
     <para>
-      In the case where a user with an existing session and has authenticated at GDM and requests to
-      resume that existing session GDM calls a privileged method of ConsoleKit to unlock that
-      session.  The exact details of what happens when the session receives this unlock signal is
-      undefined and session-specific.  However, most sessions will unlock a screensaver in response.
+      In the case where a user with an existing session and has authenticated
+      at GDM and requests to resume that existing session GDM calls a
+      privileged method of ConsoleKit to unlock that session.  The exact
+      details of what happens when the session receives this unlock signal is
+      undefined and session-specific.  However, most sessions will unlock a
+      screensaver in response.
     </para>
 
     <para>
-      When the user chooses to log out, or if GDM or the session quit unexpectedly the user session
-      will be unregistered from ConsoleKit.
+      When the user chooses to log out, or if GDM or the session quit
+      unexpectedly the user session will be unregistered from ConsoleKit.
     </para>
 
     <para>
-      If support for ConsoleKit is not desired it can be disabled at build time using the
-      --with-console-kit=no option when running configure.
+      If support for ConsoleKit is not desired it can be disabled at build
+      time using the &quot;--with-console-kit=no&quot; option when running
+      configure.
     </para>
 
   </sect1>
@@ -1087,7 +1147,7 @@ gdm: .your.domain
       Accessibility, Security, and Users, described below.  In parenthesis is
       information about which GDM configuration key is affected by each GUI
       choice.  Refer to the &quot;Configuration&quot; section of this manual
-      and the comments in the &lt;share&gt;/gdm/defaults.conf file for
+      and the comments in the GDM System Defaults Configuration File for
       additional details about each key.
     </para>
 
@@ -1281,32 +1341,32 @@ gdm: .your.domain
       </para>  
 
       <para>
-         The &quot;Configure X Server&quot; button can be used to specify how
-         GDM manages each display.  The &quot;Servers&quot; combobox shows what
-         server definitions are available (Standard, Terminal, and Chooser by
-         default).  Refer to the &quot;X Server Definitions&quot; section of
-         the &quot;Configuration&quot; section for more information about how 
-         to create new Server Definitions.
+        The &quot;Configure X Server&quot; button can be used to specify how
+        GDM manages each display.  The &quot;Servers&quot; combobox shows what
+        server definitions are available (Standard, Terminal, and Chooser by
+        default).  Refer to the &quot;X Server Definitions&quot; section of
+        the &quot;Configuration&quot; section for more information about how 
+        to create new Server Definitions.
       </para>
 
       <para>
-         For any server type, the user may modify the &quot;Server Name&quot;
-         (server/name), the &quot;Command&quot; (server/command) to be used to
-         launch the Xserver, whether the server type will &quot;Launch&quot;
-         (server/chooser) the greeter or chooser GUI after starting the
-         Xserver, whether GDM handles this type (normally only set to false
-         when logging into a Terminal session type), and whether the session
-         type supports &quot;Flexible&quot; (server/flexible) sessions.
+        For any server type, the user may modify the &quot;Server Name&quot;
+        (server/name), the &quot;Command&quot; (server/command) to be used to
+        launch the Xserver, whether the server type will &quot;Launch&quot;
+        (server/chooser) the greeter or chooser GUI after starting the
+        Xserver, whether GDM handles this type (normally only set to false
+        when logging into a Terminal session type), and whether the session
+        type supports &quot;Flexible&quot; (server/flexible) sessions.
       </para>
 
       <para>
-         The &quot;Servers To Start&quot; section shows what server type is
-         displayed for each display on the machine.  Users may click on the
-         &quot;Add/Modify&quot; button to add a new display to the list or to
-         modify a selected display.  This simply corresponds each physical
-         display with the Server Definition to be used for managing that
-         display.  The &quot;Remove&quot; button may be used to remove a
-         display from the list.
+        The &quot;Servers To Start&quot; section shows what server type is
+        displayed for each display on the machine.  Users may click on the
+        &quot;Add/Modify&quot; button to add a new display to the list or to
+        modify a selected display.  This simply corresponds each physical
+        display with the Server Definition to be used for managing that
+        display.  The &quot;Remove&quot; button may be used to remove a
+        display from the list.
       </para>
     </sect2>
 
@@ -1314,18 +1374,18 @@ gdm: .your.domain
       <title>Users Tab</title>
 
       <para>
-         The Users tab controls which users appear in the Face Browser.  If the
-         &quot;Include all users from /etc/password&quot; checkbox is selected,
-         then all users (with a userid above greeter/MinimalUID and not in the
-         Exclude list) are displayed.  If this checkbox is not selected, then
-         users must be added to the &quot;Include&quot; list.  Users in the
-         &quot;Exclude&quot; list are never displayed.  The &quot;Add&quot; and
-         &quot;Remove&quot; buttons are used to add a new user to the list or
-         remove a selected user from the list.  The &quot;Apply User
-         Changes&quot; button must be pressed after the &quot;Include&quot; and
-         &quot;Exclude&quot; lists have been modified.  The left and right
-         arrow buttons between the &quot;Include&quot; and &quot;Exclude&quot;
-         lists can be used to move a selected user from one list to the other.
+        The Users tab controls which users appear in the Face Browser.  If the
+        &quot;Include all users from /etc/password&quot; checkbox is selected,
+        then all users (with a userid above greeter/MinimalUID and not in the
+        Exclude list) are displayed.  If this checkbox is not selected, then
+        users must be added to the &quot;Include&quot; list.  Users in the
+        &quot;Exclude&quot; list are never displayed.  The &quot;Add&quot; and
+        &quot;Remove&quot; buttons are used to add a new user to the list or
+        remove a selected user from the list.  The &quot;Apply User
+        Changes&quot; button must be pressed after the &quot;Include&quot; and
+        &quot;Exclude&quot; lists have been modified.  The left and right
+        arrow buttons between the &quot;Include&quot; and &quot;Exclude&quot;
+        lists can be used to move a selected user from one list to the other.
       </para>
     </sect2>
   </sect1>
@@ -1334,21 +1394,13 @@ gdm: .your.domain
     <title>Configuration</title>
 
     <para> 
-      GDM has powerful configuration management.  System configuration is stored
-      in <filename>&lt;share&gt;/gdm/defaults.conf</filename> and the intention
-      is that this file can be stored on a shared filesystem so that sysadmins
-      can have a single file to modify to control configuration for multiple
-      machines.  Also GDM distributions may patch this file on update to 
-      improve usability, improve security, etc.  Configuration may be customized
-      for a specific machine by editing the
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file to include an
-      override for a specific key.  Those parameters in the &quot;gui&quot;,
-      &quot;greeter&quot; sections, and the security/PamStack key may be
-      customized per-display by specifying them in a file named
-      <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>.
-      For example, configuration overrides for display &quot;:103&quot; would be
-      stored in the file <filename>&lt;etc&gt;/gdm/custom.conf:0</filename>.
-      Per-display configuration is supported in GDM 2.14.6 and later.
+      GDM has powerful configuration management.  System default configuration
+      is stored in the GDM System Defaults Configuration File and user changes
+      to the default configuration are stored in the GDM Custom Configuration
+      File.  This allows sysadmins to store the GDM System Defaults
+      Configuration File on a shared filesystem, so a single file can be used
+      to control configuration for multiple machines.  GDM also supports
+      per-display configuration for GUI-related keys.
     </para>
 
     <para>
@@ -1364,85 +1416,21 @@ gdm: .your.domain
     </para>
 
     <para>
-      Distributions should edit the
-      <filename>&lt;share&gt;/gdm/defaults.conf</filename> file to establish
-      the default values so these are preserved as defaults and not modified
-      by users modifying their personal configuration file
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename>.
-    </para>
-
-    <para>
-      If you want to change configuration by hand, edit the
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file and make
-      sure the keyname=value pair you want is included in the appropriate
-      section.  For example, to change the &quot;Greeter&quot; key in the
-      &quot;daemon&quot; section, make sure the daemon section of the
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file has the value
-      like in this example.  
-    </para>
-
-<screen>
-[daemon]
-Greeter=/usr/lib/gdmgreeter
-</screen>
-
-    <para>
-      The configuration files (especially the
-      <filename>&lt;share&gt;/gdm/defaults.conf</filename> and
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> files) contain
-      useful comments and examples, so read them for more information about
-      changing your configuration.  GDM considers lines that start with the
-      &quot;#&quot; character a comment, and these lines will be ignored by
-      GDM.  Some keys in the <filename>&lt;share&gt;/gdm/defaults.conf</filename>
-      are commented out while others are set.  Commented out values show the
-      default value.
-    </para>
-
-    <para> 
-      The <filename>&lt;share&gt;/gdm/defaults.conf</filename> file contains
-      the default configuration choices for GDM, and should not be modified by
-      the user.  The <filename>&lt;etc&gt;/gdm/custom.conf</filename> file
-      is where users may specify their custom configuration choices.
-      Configuration options specified in the
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> file override the
-      values in the main <filename>&lt;share&gt;/gdm/defaults.conf</filename>
-      file.   Running the <command>gdmsetup</command> command will cause the
-      <filename>&lt;etc&gt;/gdm/custom.conf</filename> to be modified with
-      the user's configuration choices and will cause any running GDM GUI 
-      programs to automatically update.  Previous to version 2.13.0.4
-      GDM only supported the <filename>&lt;etc&gt;/gdm/gdm.conf</filename>
-      file, so if using an older version of GDM just edit that file directly.
-    </para>
-
-    <para>
-      The location of the configuration files may be controlled via the
-      <command>--with-defaults-conf</command> and
-      <command>--with-custom-conf</command> configuration options.  The GDM
-      daemon --config option may also be used to specify the configuration
-      file location.  The GDM daemon must be restarted to change the
-      configuration file being used.
-    </para>
-
-    <para> 
-      <filename>&lt;share&gt;/gdm/factory-defaults.conf</filename> is the
-      configuration file as shipped with the daemon.  This can be useful for
-      to see if the <filename>&lt;share&gt;/gdm/defaults.conf</filename> file
-      has been changed.
-    </para>
-
-    <para>
-      The other GDM configuration files are located, by default, in the
+      Aside from the GDM System Defaults Configuration File, the other GDM
+      configuration files are located, by default, in the
       <filename>&lt;etc&gt;/gdm/</filename> folder or its subdirectories.
-      However, the location of all configuration files are defined in 
-      the GDM configuration files, so the sysadmin may choose to locate these
-      files in any location. 
+      Note that the location of many configuration files are defined in the
+      GDM configuration files, so check the GDM System Defaults Configuration
+      File and the GDM Custom Configuration File if the files are not in the
+      locations specified in this document.
     </para>
 
     <para>
-      This is a listing of the config directory contents:
+      Listing of the config directory contents:
     </para>
 
 <screen>
+custom.conf
 locale.alias
 Xsession
 XKeepsCrashing
@@ -1455,10 +1443,10 @@ PostSession/
 
     <para> 
       <filename>locale.alias</filename> is a file which looks much like the
-      system locale alias but in fact it is not the same.  These are the
-      languages that are available on your system.  All the languages are
-      still tested to see if they actually exist before presenting them to the
-      user.
+      system locale alias but, in fact, is not the same.  This is a list
+      of all languages that may be on your system.  All languages are
+      checked to see if they exist before displaying them in the Language
+      Selection dialog in the login GUI.  Only those that exist are displayed.
     </para>
 
     <para> 
@@ -1476,8 +1464,8 @@ PostSession/
       <filename>XKeepsCrashing</filename> is a script which gets run when the
       X server keeps crashing and we cannot recover.  The shipped default
       script will work with most Linux distributions and can run the X
-      configuration application provided the person on the console knows the root
-      password.
+      configuration application provided the person on the console knows the
+      root password.
     </para>
 
     <para>
@@ -1491,7 +1479,7 @@ PostSession/
 
     <para>
       Files describing available GDM session follow the freedesktop.org
-      desktop file specification and are <filename>.desktop</filename>-style
+      desktop file specification.  The <filename>.desktop</filename>-style
       files are installed to <filename>&lt;etc&gt;/X11/sessions/</filename>.
       This directory is also read by the KDE desktop manager (KDM) for common
       configuration.  Next the directory
@@ -1652,70 +1640,111 @@ PostSession/
     </sect2>
 
     <sect2 id="configfile">
-      <title>The Configuration Files - <filename>defaults.conf</filename> and
-             <filename>custom.conf</filename></title>
+      <title>The Configuration Files - GDM System Defaults Configuration File
+             and GDM Custom Configuraiton File</title>
       
       <para>
-        GDM uses two configuration files:
-        <filename>&lt;share&gt;/gdm/defaults.conf</filename>
-        and <filename>&lt;etc&gt;/gdm/custom.conf</filename>.  The
-        <filename>&lt;share&gt;/gdm/defaults.conf</filename> file contains the
-        default configuration choices for GDM, and should not be modified by
-        the user.  The <filename>&lt;etc&gt;/gdm/custom.conf</filename>
-        file is where users may specify their custom configuration choices.  
-        Configuration options specified in the
-        <filename>&lt;etc&gt;/gdm/custom.conf</filename> file override the
-        values in the <filename>&lt;share&gt;/gdm/defaults.conf</filename>
-        file.  If a configuration option is not defined in either file, GDM
-        will default to the value described in the comments in the
-        <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.
+        GDM uses two configuration files: the GDM System Defaults Configuration
+        File (<filename>&lt;share&gt;/gdm/defaults.conf</filename>) and the
+        GDM Custom Configuration File
+        (<filename>&lt;etc&gt;/gdm/custom.conf</filename>).  The GDM System
+        Defaults File contains the default configuration choices for GDM, and
+        should not be modified by the user.  The GDM Custom Configuration File
+        is where users may specify their custom configuration choices.  
+        If a configuration option is not defined in either file, GDM will
+        default to the value described in the comments in the GDM System
+        Defaults Configuration File. 
       </para>
 
       <para>
-        Running the <command>gdmsetup</command> command will cause the 
-        <filename>&lt;etc&gt;/gdm/custom.conf</filename> to be modified
-        with the user's configuration choices.
+        Both configuration files are divided into sections each containing
+        variables that define the behavior for a specific part of the GDM
+        suite.  Refer to the comments in the GDM System Defaults Configuration
+        File for additional information about each configuration setting.
+      </para>
+
+      <para>
+        GDM also supports per-display configuration for parameters in the
+        &quot;gui&quot;, &quot;greeter&quot; sections of the configuration file
+        Also the security/PamStack key may be customized per-display.
+        Per-display configuration is specified by creating a file named
+        <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>.
+        In this file the section and keys to use on this display can be 
+        specified.  For example, configuration overrides for display
+        &quot;:103&quot; would be stored in the file
+        <filename>&lt;etc&gt;/gdm/custom.conf:0</filename>.  Per-display
+        configuration is supported in GDM 2.14.6 and later.
+      </para>
+
+      <para>
+        To change configuration by hand, edit the GDM Custom Configuration File
+        or per-display configuration file and make sure the keyname=value
+        pair you want is included in the appropriate section.  For example,
+        to change the value for the &quot;Greeter&quot; key in the
+        &quot;daemon&quot; section, make sure the daemon section of the GDM
+        Custom Configuration File or per-display configuration file includes
+        the &quot;[daemon]&quot; section followed by the key and value 
+        change desired.  As in this example:
+      </para>
+
+<screen>
+[daemon]
+Greeter=/usr/lib/gdmgreeter
+</screen>
+
+      <para>
+        The <command>gdmsetup</command> command can be used to modify the GDM
+        Custom Configuration File.  Note the <command>gdmsetup</command> is
+        intended to be run as root, so users who feel it is insecure to run
+        GUI programs as root should edit the configuration files by hand.
+      </para>
+
+      <para>
+        The GDM daemon <command>--config</command> argument may instead be used
+        to specify a different configuration file location.  The GDM daemon
+        must be restarted to change the configuration file being used.  Also
+        when building GDM, the location of the configuration files may be
+        specified via the <command>--with-defaults-conf</command> and
+        <command>--with-custom-conf</command> configuration options.
       </para>
 
       <para>
         Previous to GDM 2.13.0.4 only the
-        <filename>&lt;etc&gt;/gdm/gdm.conf</filename> existed.  If upgrading
-        to the new version of GDM, install will check to see if your
-        <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file is different than
-        your <filename>&lt;etc&gt;/gdm/factory-gdm.conf</filename> file.
-        If so, your <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file will be 
+        <filename>&lt;etc&gt;/gdm/gdm.conf</filename> existed.  For best
+        backwards compatibility, this file will be used instead of the GDM
+        Custom Configuration File if it exists on your system.  If upgrading
+        to the new version of GDM, &quot;make install&quot; will check to see
+        if the <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file is different
+        than the <filename>&lt;etc&gt;/gdm/factory-gdm.conf</filename> file.
+        If so, the <filename>&lt;etc&gt;/gdm/gdm.conf</filename> file will be 
         automatically copied to
         <filename>&lt;etc&gt;/gdm/custom.conf</filename> to preserve any
         configuration changes.
       </para>
         
       <para>
-        The location of the configuration files may be controlled via the
-        <command>--with-defaults-conf</command> and
-        <command>--with-custom-conf</command> configuration options.  The
-        GDM daemon --config option may instead be used to specify the
-        configuration file location.  The GDM daemon must be restarted to
-        change the configuration file being used.
+        Distributions should edit the GDM System Defaults Configuration File to
+        establish default configuration values, so that they are preserved as
+        defaults and not modified by users modifying the GDM Custom
+        Configuration File.  Note that distributions may modify the GDM System
+        Defaults Configuration File on update to improve usability, security,
+        etc.  So any changes made to this file may be lost.
       </para>
 
       <para>
-        Both configuration files are divided into sections each containing
-        variables that define the behavior for a specific part of the GDM
-        suite.  Refer to the comments in the
-        <filename>&lt;share&gt;/gdm/defaults.conf</filename> file for
-        additional information about each configuration setting.
+        The GDM System Defaults Configuration File and the GDM Custom
+        Configuration File follow the standard <filename>.ini</filename> style
+        configuration file syntax.  Keywords in brackets define sections,
+        strings before an equal sign (=) are variables and the data after
+        equal sign represents their value.  Empty lines or lines starting with
+        the hash mark (#) are ignored.  The graphical configurator will try to
+        preserve both comments (lines with a hash mark) and the overall
+        structure of the file so you can intermix using the GUI or hand
+        editing the configuration file.
       </para>
 
       <para>
-        The <filename>&lt;share&gt;/gdm/defaults.conf</filename> and
-        <filename>&lt;etc&gt;/gdm/custom.conf</filename> files follow the
-        standard <filename>.ini</filename> style configuration file syntax.
-        Keywords in brackets define sections, strings before an equal sign (=)
-        are variables and the data after equal sign represents their value.
-        Empty lines or lines starting with the hash mark (#) are ignored.  The
-        graphical configurator will try to preserve both comments (lines with
-        a hash mark) and the overall structure of the file so you can intermix
-        using the GUI or hand editing the configuration file.
+        The following configuration keys are supported in GDM:
       </para>
 
       <sect3 id="daemonsection">
@@ -2053,8 +2082,9 @@ PostSession/
                 The maximum number of allowed flexible displays.  These are
                 displays that can be run using the
                 <filename>/tmp/.gdm_socket</filename> socket connection.
-                This is used for both full flexible displays and for Xnest
-                displays.
+                This is used for both full flexible displays and for nested
+                displays (refer to the <filename>Xnest</filename> configuration
+                option).
               </para>
             </listitem>
           </varlistentry>
@@ -2065,10 +2095,11 @@ PostSession/
               <synopsis>FlexiReapDelayMinutes=5</synopsis>
               <para>
                 After how many minutes of inactivity at the login screen
-                should a flexi display be reaped.  This is only in effect before
-                a user logs in.  Also it does not affect the Xnest
-                flexiservers.  To turn off this behavior set this value to 0.
-                This was added in version 2.5.90.0.
+                should a flexi display be reaped.  This is only in effect
+                before a user logs in.  Also it does not affect nested displays
+                (refer to the <filename>Xnest</filename> configuration
+                option).  To turn off this behavior set this value to 0.  This
+                was added in version 2.5.90.0.
               </para>
             </listitem>
           </varlistentry>
@@ -2508,13 +2539,31 @@ PostSession/
           <varlistentry>
             <term>Xnest</term>
             <listitem>
-              <synopsis>Xnest=&lt;bin&gt;/X11/Xnest (/usr/openwin/bin/Xnest on Solaris)</synopsis>
+              <synopsis>Xnest=&lt;bin&gt;/X11/Xephyr -audit 0</synopsis>
               <para>
-                The full path and arguments to the Xnest command.  This is used
-                for the flexible Xnest displays.  This way the user can start
-                new login screens in a nested window.  Of course you must have
-                the Xnest display from your X server packages installed for
-                this to work.
+                The full path and arguments to the nested Xserver command, 
+                which can be Xephyr, Xnest, or similar program.  This command
+                is used for starting nested displays allowing the user
+                to start new login screens in a nested window.  Xephyr is
+                recommended since it works best and better supports modern
+                Xserver extensions.  Therefore GDM will set the default
+                configuration to use Xephyr if available.  If Xephyr is not
+                available, then Xnest will be used if it is available.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>XnestUnscaledFontPath</term>
+            <listitem>
+              <synopsis>XnestUnscaledFontPath=true</synopsis>
+              <para>
+                Set to true if the nested Xserver command program supports the
+                ":unscaled" suffix in the FontPath (passed to nested Xserver
+                command via the -fp argument).  Some Xnest (e.g. Xsun Xnest)
+                programs do not, and it is necessary to set this to false for
+                such nested Xserver commands to work with GDM.  Refer to the
+                <filename>Xnest</filename> configuration option.
               </para>
             </listitem>
           </varlistentry>
@@ -2976,8 +3025,8 @@ gdm:.my.domain
             <listitem>
               <synopsis>ProxyXServer=</synopsis>
               <para>
-                The X server command line for a XDMCP proxy. Any nested X server
-                like Xnest, Xephr or Xdmx should work fairly well.
+                The X server command line for a XDMCP proxy. Any nested X
+                server like Xnest, Xephyr or Xdmx should work fairly well.
               </para>
             </listitem>
           </varlistentry>
@@ -4189,16 +4238,13 @@ gdm:.my.domain
           followed by the identifier of this server.  This should be a simple
           ASCII string with no spaces.  The GUI configuration program allows
           users to edit the servers defined in the GDM configuration files
-          but currently does not allow adding or deleting entries.  Like
-          normal configuration options, <filename>server-</filename>
-          sections in the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
-          file override values in the
-          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.  In other
-          words, if a <filename>server-Standard</filename> section is defined
-          in <filename>&lt;etc&gt;/gdm/custom.conf</filename>, then that
-          will be used and the section in the
-          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file will be
-          ignored.
+          but currently does not allow adding or deleting entries.  Like normal
+          configuration options, <filename>server-</filename> sections in the
+          GDM Custom Configuration File override values in the GDM System
+          Defaults Configuration File.  In other words, if a
+          <filename>server-Standard</filename> section is defined in the GDM
+          Custom Configuration File, then that will be used and the section in
+          the GDM System Defaults Configuration File will be ignored.
         </para>
         
         <variablelist>
@@ -4288,13 +4334,12 @@ gdm:.my.domain
         </para>
 
         <para>
-          The GUI configuration program allows users to edit the static
-          display configuration defined in the GDM configuration files 
-          and allows the user to add or delete entries.  Like normal
-          configuration options, the <filename>[servers]</filename>
-          section in the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
-          file overrides values in the
-          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.
+          The GUI configuration program allows users to edit the static display
+          configuration defined in the GDM configuration files and allows the
+          user to add or delete entries.  Like normal configuration options,
+          the <filename>[servers]</filename> section in the GDM Custom
+          Configuration File overrides values in the GDM System Defaults
+          Configuration File.
         </para>
 
         <variablelist>
@@ -4318,10 +4363,9 @@ gdm:.my.domain
                 for them to be &quot;packed&quot;.  They keyword
                 &quot;inactive&quot; can be used instead of a command to
                 specify that the display should be not managed.  This can be
-                used in the
-                <filename>&lt;etc&gt;/gdm/custom.conf</filename> to turn
-                off a display that is defined in the
-                <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.
+                used in the GDM Custom Configuration File to turn off a 
+                display that is defined in the GDM System Defaults
+                Configuration File.
               </para>
               
               <para>
@@ -4641,12 +4685,12 @@ Answers:
       <title>AUTH_LOCAL</title>
 <screen>
 AUTH_LOCAL: Setup this connection as authenticated for
-            FLEXI_SERVER.  Because all full blown (non-Xnest)
-            displays can be started only from users logged in
-            locally, and here GDM assumes only users logged
-            in from GDM.  They must pass the xauth
-            MIT-MAGIC-COOKIE-1 that they were passed before
-            the connection is authenticated.
+            FLEXI_SERVER.  Because all full blown
+            (non-nested) displays can be started only from
+            users logged in locally, and here GDM assumes
+            only users logged in from GDM.  They must pass
+            the xauth MIT-MAGIC-COOKIE-1 that they were passed
+            before the connection is authenticated.
 Note:       The AUTH LOCAL command requires the
             --authenticate option, although only
             FLEXI XSERVER uses this currently.
@@ -4681,18 +4725,19 @@ Answers: None
       <sect3 id="flexixnest">
       <title>FLEXI_XNEST</title>
 <screen>
-FLEXI_XNEXT: Start a new flexible Xnest display.
+FLEXI_XNEXT: Start a new flexible nested display.
 Note:        Supported on older version from 2.2.4.0, later
              2.2.4.2, but since 2.3.90.4 you must supply 4
              arguments or ERROR 100 will be returned.  This
-             will start Xnest using the XAUTHORITY file
-             supplied and as the uid same as the owner of
-             that file (and same as you supply).  You must
-             also supply the cookie as the third argument
-             for this display, to prove that you indeed are
-             this user.  Also this file must be readable
-             ONLY by this user, that is have a mode of 0600.
-             If this all is not met, ERROR 100 is returned.
+             will start the nested Xserver command using
+             the XAUTHORITY file supplied and as the uid
+             same as the owner of that file (and same as
+             you supply).  You must also supply the cookie as
+             the third argument for this display, to prove
+             that you indeed are this user.  Also this file
+             must be readable ONLY by this user, that is
+             have a mode of 0600.  If this all is not met,
+             ERROR 100 is returned.
 Note:        The cookie should be the MIT-MAGIC-COOKIE-1,
              the first one GDM can find in the XAUTHORITY
              file for this display.  If that's not what you
@@ -4720,7 +4765,7 @@ Answers:
       <sect3 id="flexixnestuser">
       <title>FLEXI_XNEST_USER</title>
 <screen>
-FLEXI_XNEST_USER: Start a new flexible Xnest display and
+FLEXI_XNEST_USER: Start a new flexible nested display and
                   initialize the greeter with the given username.
 Note:             This is a variant of the FLEXI_XNEST command.
 Note:             The cookie should be the MIT-MAGIC-COOKIE-1,
@@ -5251,16 +5296,16 @@ Answers:
 
         <para>
           The <command>gdmXnestchooser</command> command automatically gets
-          the correct display number, sets up access, and runs
-          <command>Xnest</command> with -indirect localhost.  This way you
-          get an XDMCP chooser provided by your computer. You can also supply
-          as an argument the hostname whose chooser should be displayed, so
+          the correct display number, sets up access, and runs the nested
+          Xserver command with the &quot;-indirect localhost&quot; argument.
+          This provides an XDMCP chooser program. You can also supply as an
+          argument the hostname whose chooser should be displayed, so
           <command>gdmXnestchooser somehost</command> will run the XDMCP
-          chooser from host <command>somehost</command> inside an Xnest
-          session.  You can make this command do a direct query instead by
-          passing the <command>-d</command> option as well.  In addition to
-          the following options, this command also supports standard GNOME
-          options.
+          chooser from host <command>somehost</command> inside a nested
+          Xserver session.  You can make this command do a direct query
+          instead by passing the <command>-d</command> option as well.  In
+          addition to the following options, this command also supports
+          standard GNOME options.
         </para>
 
         <variablelist>
@@ -5270,7 +5315,8 @@ Answers:
             <term>-x, --xnest=STRING</term>
             <listitem>
               <para>
-                Xnest command line, default is &quot;Xnest&quot;
+                Nested Xserver command line, default is defined by the
+                <filename>Xnest</filename> configuration option.
               </para>
             </listitem>
           </varlistentry>
@@ -5279,7 +5325,7 @@ Answers:
             <term>-o, --xnest-extra-options=OPTIONS</term>
             <listitem>
               <para>
-                Extra options for Xnest, default is no options.
+                Extra options for nested Xserver, default is no options.
               </para>
             </listitem>
           </varlistentry>
@@ -5288,7 +5334,7 @@ Answers:
             <term>-n, --no-query</term>
             <listitem>
               <para>
-                Just run Xnest, no query (no chooser)
+                Just run nested Xserver, no query (no chooser)
               </para>
             </listitem>
           </varlistentry>
@@ -5337,8 +5383,8 @@ Answers:
         <para>
          The <command>gdmflexiserver</command> command provides three 
          features.  It can be used to run flexible (on demand) X displays,
-         to run a flexible display via Xnest, and to send commands to the
-         GDM daemon process.
+         to run a flexible display via nested Xserver, and to send commands to
+         the GDM daemon process.
         </para>
 
         <para>
@@ -5356,11 +5402,10 @@ Answers:
         </para>
 
         <para>
-         Flexible displays started via Xnest works on systems that do not 
-         support virtual terminals.  This option starts a flexible display
-         in a window in the current session.  This does not lock the current
-         session, so is not as secure as a flexible server started via
-         virtual terminals.
+         Nested displays works on systems that do not support virtual 
+         terminals.  This option starts a flexible display in a window in the
+         current session.  This does not lock the current session, so is not
+         as secure as a flexible server started via virtual terminals.
         </para>
 
         <para>
@@ -5391,7 +5436,7 @@ Answers:
             <term>-n, --xnest</term>
             <listitem>
               <para>
-                Start a flexible X display in Xnest mode
+                Start a flexible X display in Nested mode
               </para>
             </listitem>
           </varlistentry>
@@ -5904,15 +5949,16 @@ Screenshot=screenshot.png
       <para>
         Once you have theme ready and installed you can test it with the
         installed <command>gdmthemetester</command> script.  This script
-        assumes that the X server supports Xnest.  This command takes two
-        arguments, first the environment that should be used.  This is one of
-        console, console-timed, flexi, remote-flexi, xdmcp.  Where console is a
-        standard console login, console-timed is a console login with a timed
-        login going on, flexi is for any local flexible display, remote-flexi
-        is for flexi displays that are not local (such as an Xnest flexiserver
-        run from a remote display) and xdmcp is for remote XDMCP connections.
-        The second argument is the theme name.  So for example to test how
-        things look in the XDMCP mode with the circles theme you would run:
+        assumes that the X server supports a nested server command.  This
+        command takes two arguments, first the environment that should be used.
+        This is one of console, console-timed, flexi, remote-flexi, xdmcp.
+        Where console is a standard console login, console-timed is a console
+        login with a timed login going on, flexi is for any local flexible
+        display, remote-flexi is for flexi displays that are not local (such
+        as an Xnest flexiserver run from a remote display) and xdmcp is for
+        remote XDMCP connections.  The second argument is the theme name.  So
+        for example to test how things look in the XDMCP mode with the circles
+        theme you would run:
       </para>
 
 <screen>
@@ -5923,8 +5969,8 @@ Screenshot=screenshot.png
         Be sure to test all the environments with your theme, and make sure to
         test how the caps lock warning looks by pressing caps lock.  This is
         also a good way to take screenshots, just take a screenshot of the
-        Xnest window.  This can be done in GNOME by focusing the Xnest window
-        and pressing Alt-PrintScreen.
+        nested display window.  This can be done in GNOME by focusing the
+        nested login window and pressing Alt-PrintScreen.
       </para>
 
       <para>
@@ -7049,7 +7095,7 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
              <para>
                Configuring GDM with the
                &quot;--with-post-path=/usr/openwin/bin&quot; on Solaris is
-               recommended for access to programs like Xnest.
+               recommended for access Xserver programs.
              </para>
        </sect2>
 

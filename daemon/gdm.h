@@ -37,7 +37,7 @@
 #define TYPE_STATIC 1		/* X server defined in GDM configuration */
 #define TYPE_XDMCP 2		/* Remote display/Xserver */
 #define TYPE_FLEXI 3		/* Local Flexi X server */
-#define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
+#define TYPE_FLEXI_XNEST 4	/* Local Flexi Nested server */
 #define TYPE_XDMCP_PROXY 5	/* Proxy X server for XDMCP */
 
 #define SERVER_IS_LOCAL(d) ((d)->type == TYPE_STATIC || \
@@ -702,7 +702,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_FLEXI_ERR    "FLEXI_ERR" /* <slave pid> <error num> */
 	/* 3 = X failed */
 	/* 4 = X too busy */
-	/* 5 = Xnest can't connect */
+	/* 5 = Nest display can't connect */
 #define GDM_SOP_FLEXI_OK     "FLEXI_OK" /* <slave pid> */
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 #define GDM_SOP_START_NEXT_LOCAL "START_NEXT_LOCAL" /* no arguments */
@@ -827,7 +827,7 @@ void		gdm_final_cleanup	(void);
  */
 #define GDM_SUP_AUTH_LOCAL "AUTH_LOCAL" /* <xauth cookie> */
 /* AUTH_LOCAL: Setup this connection as authenticated for FLEXI_SERVER.
- *             Because all full blown (non-Xnest) displays can be started
+ *             Because all full blown (non-nested) displays can be started
  *             only from users logged in locally, and here gdm assumes
  *             only users logged in from gdm.  They must pass the xauth
  *             MIT-MAGIC-COOKIE-1 that they were passed before the
@@ -890,18 +890,19 @@ void		gdm_final_cleanup	(void);
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <uid> <xauth cookie> <xauth file> */
-/* FLEXI_XNEXT: Start a new flexible Xnest display.
+/* FLEXI_XNEXT: Start a new flexible nested display.
  * Note:        Supported on older versions from 2.2.4.0, later
  *              2.2.4.2, but since 2.3.90.4 you must supply 4 
  *              arguments or ERROR 100 will be returned.  This
- *              will start Xnest using the XAUTHORITY file
- *              supplied and as the uid same as the owner of
- *              that file (and same as you supply).  You must
- *              also supply the cookie as the third argument
- *              for this display, to prove that you indeed are
- *              this user.  Also this file must be readable
- *              ONLY by this user, that is have a mode of 0600.
- *              If this all is not met, ERROR 100 is returned.
+ *              will start the nested Xserver command using the
+ *              XAUTHORITY file supplied and as the uid same as
+ *              the owner of that file (and same as you supply).
+ *              You must also supply the cookie as the third
+ *              argument for this display, to prove that you
+ *              indeed are this user.  Also this file must be
+ *              readable ONLY by this user, that is have a mode
+ *              of 0600.  If this all is not met, ERROR 100 is
+ *              returned.
  * Note:        The cookie should be the MIT-MAGIC-COOKIE-1,
  *              the first one gdm can find in the XAUTHORITY
  *              file for this display.  If that's not what you
@@ -918,14 +919,14 @@ void		gdm_final_cleanup	(void);
  *      2 = Startup errors
  *      3 = X failed
  *      4 = X too busy
- *      5 = Xnest can't connect
+ *      5 = Nested display can't connect
  *      6 = No server binary
  *      100 = Not authenticated
  *      200 = Too many messages
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XNEST_USER  "FLEXI_XNEST_USER" /* <username> <display> <uid> <xauth cookie> <xauth file> */
-/* FLEXI_XNEXT_USER: Start a new flexible Xnest display and 
+/* FLEXI_XNEXT_USER: Start a new flexible nested display and 
  *              initialize the greeter with the given username
  * Note:        The cookie should be the MIT-MAGIC-COOKIE-1,
  *              the first one gdm can find in the XAUTHORITY
@@ -943,7 +944,7 @@ void		gdm_final_cleanup	(void);
  *      2 = Startup errors
  *      3 = X failed
  *      4 = X too busy
- *      5 = Xnest can't connect
+ *      5 = Nested display can't connect
  *      6 = No server binary
  *      100 = Not authenticated
  *      200 = Too many messages

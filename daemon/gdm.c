@@ -2418,7 +2418,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			else if (err == 4)
 				error = "ERROR 4 X too busy\n";
 			else if (err == 5)
-				error = "ERROR 5 Xnest can't connect\n";
+				error = "ERROR 5 Nested display can't connect\n";
 			else
 				error = "ERROR 999 Unknown error\n";
 			if (conn != NULL)

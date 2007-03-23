@@ -1325,8 +1325,11 @@ gdm_slave_run (GdmDisplay *display)
 	    check_notifies_now ();
     }
 
-    /* set it before we run the server, it may be that we're using
-     * the XOpenDisplay to find out if a server is ready (as with Xnest) */
+    /*
+     * Set it before we run the server, it may be that we're using
+     * the XOpenDisplay to find out if a server is ready (as with 
+     * nested display)
+     */
     d->dsp = NULL;
 
     /* if this is local display start a server if one doesn't

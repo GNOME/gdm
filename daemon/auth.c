@@ -186,8 +186,8 @@ gdm_auth_secure_display (GdmDisplay *d)
     if (d->server_uid != 0) {
 	    int authfd;
 
-	    /* Note, Xnest can't use the GDM_KEY_SERV_AUTHDIR unless running as
-	     * root, which is rare anyway. */
+	    /* Note, nested display can't use the GDM_KEY_SERV_AUTHDIR unless 
+	     * running as root, which is rare anyway. */
 
 	    d->authfile = g_build_filename (gdm_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK), ".gdmXXXXXX", NULL);
 
@@ -203,7 +203,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    return FALSE;
 	    }
 
-	    /* Make it owned by the user that Xnest is started as */
+	    /* Make it owned by the user that nested display is started as */
 	    fchown (authfd, d->server_uid, -1);
 
 	    VE_IGNORE_EINTR (af = fdopen (authfd, "w"));

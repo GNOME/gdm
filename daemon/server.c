@@ -396,7 +396,7 @@ display_parent_no_connect (GdmDisplay *disp)
 		 * version 3 specific (I don't have xfree v4 to test this),
 		 * of course additions are welcome to make this more robust */
 		if (strstr (buf, "Unable to open display \"") == buf) {
-			gdm_error (_("Display '%s' cannot be opened by Xnest"),
+			gdm_error (_("Display '%s' cannot be opened by nested display"),
 				   ve_sure_string (disp->parent_disp));
 			VE_IGNORE_EINTR (fclose (fp));
 			return TRUE;
@@ -568,7 +568,7 @@ do_server_wait (GdmDisplay *d)
 		    int i;
 
 		    /* FIXME: This is not likely to work in reinit,
-		       but we never reinit Xnest servers nowdays,
+		       but we never reinit Nested servers nowdays,
 		       so that's fine */
 
 		    /* if we're running the server as a non-root, we can't
@@ -1282,8 +1282,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
 		/*
 		 * Set the DISPLAY environment variable when calling
-		 * Xnest since some Xnest commands like Xephyr do not
-		 * support the -display argument.
+		 * nested server since some Xnest commands like Xephyr 
+		 * do not support the -display argument.
 		 */
 		if (add_display == TRUE) {
 			argv = g_renew (char *, argv, argc + 3);
