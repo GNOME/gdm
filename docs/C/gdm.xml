@@ -6917,11 +6917,17 @@ custom-config=foo
 
       <para>
         The GDM greeter programs support the ability to launch AT's at login
-        time via configurable &quot;gestures&quot.  These gestures can be
+        time via configurable &quot;gestures&quot;.  These gestures can be
         defined to be standard keyboard hotkeys, switch device event, or
         mouse motion events.  When using the &quot;Standard Greeter&quot;, the
         user may also change the visual appearance of the login UI.  For
         example, to use a higher-contrast color scheme for better visibility.  
+      </para>
+
+      <para>
+        Note that <command>gdmsetup</command> does not yet work with
+        accessibility, so that users who require AT programs should only
+        configure GDM by editing the ASCII files directly.
       </para>
 
        <sect2 id="accessibilityconfig">
@@ -7140,6 +7146,58 @@ GtkModulesList=gail:atk-bridge:/usr/lib/gtk-2.0/modules/libdwellmouselistener:/u
 
   <sect1 id="solaris">
     <title>Solaris Specific Features</title>
+
+       <sect2 id="solarisusing">
+          <title>Using GDM on Solaris</title>
+
+          <para>
+             GDM is not yet the default login program on Solaris.  If you wish
+             to switch to using GDM, then you need to turn off CDE login and
+             start the GDM service.  Note that turning off or disabiling CDE
+             login will cause any running sessions to immediately exit, and any
+             unsaved data will be lost.  Only run these commands if you are
+             sure there is no unsaved data in your running sessions.  It would
+             be best to run these commands from console login, or a Failsafe
+             Terminal rather than from a running GUI session.  The first step
+             is to run the following command to see if CDE login is running as
+             an SMF service.
+          </para>
+
+<screen>
+svcs cde-login
+</screen>
+
+          <para> 
+             If the <command>svcs</command> command responds that this 
+             service is enabled, then run this command to disable CDE login:
+          </para>
+
+<screen>
+svcadm disable cde-login
+</screen>
+
+          <para> 
+             If the <command>svcs</command> command responds that this pattern
+             doesn't match any instances, then run these commands to stop
+             CDE login:
+          </para>
+
+<screen>
+/usr/dt/config/dtconfig -d
+Either reboot, or kill any running dtlogin processes.
+</screen>
+
+          <para>
+             At this point you will be presented with a console login.  Login
+             as root, and run the following command.  If on Solaris 10 the
+             servicename is &quot;gdm2-login&quot;, if on Solaris Nevada the
+             servicename is &quot;gdm&quot;.
+          </para>
+
+<screen>
+svcadm enable servicename
+</screen>
+       </sect2>
 
        <sect2 id="solarisconfiguration">
           <title>Solaris Configuration</title>
