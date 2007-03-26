@@ -513,6 +513,8 @@ gdm_daemon_config_to_string (const gchar *keystring,
 
 	result = NULL;
 
+	group = NULL;
+	key = NULL;
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
@@ -522,13 +524,19 @@ gdm_daemon_config_to_string (const gchar *keystring,
 		goto out;
 	}
 
+	if (group == NULL || key == NULL) {
+		gdm_error ("Request for invalid configuration key %s", keystring);
+		goto out;
+	}
+
 	/* Backward Compatibility */
-	if (group != NULL &&
-	    key != NULL &&
-	    (strcmp (group, "daemon") == 0) &&
+	if ((strcmp (group, "daemon") == 0) &&
 	    (strcmp (key, "PidFile") == 0)) {
 		result = g_strdup (GDM_PID_FILE);
 		goto out;
+	} else if ((strcmp (group, "daemon") == 0) &&
+		   (strcmp (key, "AlwaysRestartServer") == 0)) {
+		result = g_strdup ("true");
 	}
 
 	res = gdm_config_get_value (daemon_config,

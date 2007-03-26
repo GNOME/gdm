@@ -49,7 +49,6 @@ typedef enum {
 	GDM_ID_CHOOSER,
 	GDM_ID_AUTOMATIC_LOGIN_ENABLE,
 	GDM_ID_AUTOMATIC_LOGIN,
-	GDM_ID_ALWAYS_RESTART_SERVER,
 	GDM_ID_GREETER,
 	GDM_ID_REMOTE_GREETER,
 	GDM_ID_ADD_GTK_MODULES,
@@ -292,7 +291,6 @@ static const GdmConfigEntry gdm_daemon_config_entries [] = {
 	 * disables the AlwaysRestartServer option as highlighted in the gdm
 	 * documentation */
 
-	{ GDM_CONFIG_GROUP_DAEMON, "AlwaysRestartServer", GDM_CONFIG_VALUE_BOOL, ALWAYS_RESTART_SERVER, GDM_ID_ALWAYS_RESTART_SERVER },
 	{ GDM_CONFIG_GROUP_DAEMON, "Greeter", GDM_CONFIG_VALUE_STRING, LIBEXECDIR "/gdmlogin", GDM_ID_GREETER },
 	{ GDM_CONFIG_GROUP_DAEMON, "RemoteGreeter", GDM_CONFIG_VALUE_STRING, LIBEXECDIR "/gdmlogin", GDM_ID_REMOTE_GREETER },
 	{ GDM_CONFIG_GROUP_DAEMON, "AddGtkModules", GDM_CONFIG_VALUE_BOOL, "false", GDM_ID_ADD_GTK_MODULES },

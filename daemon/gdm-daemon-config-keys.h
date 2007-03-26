@@ -31,7 +31,6 @@ G_BEGIN_DECLS
 #define GDM_KEY_CHOOSER "daemon/Chooser=" LIBEXECDIR "/gdmchooser"
 #define GDM_KEY_AUTOMATIC_LOGIN_ENABLE "daemon/AutomaticLoginEnable=false"
 #define GDM_KEY_AUTOMATIC_LOGIN "daemon/AutomaticLogin="
-#define GDM_KEY_ALWAYS_RESTART_SERVER "daemon/AlwaysRestartServer=" ALWAYS_RESTART_SERVER
 #define GDM_KEY_GREETER "daemon/Greeter=" LIBEXECDIR "/gdmlogin"
 #define GDM_KEY_REMOTE_GREETER "daemon/RemoteGreeter=" LIBEXECDIR "/gdmlogin"
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"

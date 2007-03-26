@@ -881,25 +881,10 @@ gdm_slave_start (GdmDisplay *display)
 
 		gdm_debug ("gdm_slave_start: Reinitializing things");
 
-		if (gdm_daemon_config_get_value_bool (GDM_KEY_ALWAYS_RESTART_SERVER)) {
-			/* Whack the server if we want to restart it next time
-			 * we run gdm_slave_run */
-			gdm_server_stop (display);
-			gdm_slave_send_num (GDM_SOP_XPID, 0);
-		} else {
-			/* OK about to start again so rebake our cookies and reinit
-			 * the server */
-			if G_UNLIKELY ( ! gdm_auth_secure_display (d)) {
-				gdm_slave_quick_exit (DISPLAY_REMANAGE);
-			}
-			gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
-			gdm_slave_send_string (GDM_SOP_AUTHFILE, d->authfile);
-
-			if G_UNLIKELY ( ! gdm_server_reinit (d)) {
-				gdm_error ("Error reinitilizing server");
-				gdm_slave_quick_exit (DISPLAY_REMANAGE);
-			}
-		}
+		/* Whack the server if we want to restart it next time
+		 * we run gdm_slave_run */
+		gdm_server_stop (display);
+		gdm_slave_send_num (GDM_SOP_XPID, 0);
 	}
 	/* very very very evil, should never break, we can't return from
 	   here sanely */

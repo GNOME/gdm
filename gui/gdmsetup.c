@@ -7451,12 +7451,6 @@ setup_general_tab (void)
 	/* Setup use circles in the password entry */
 	setup_notify_toggle ("use_circles_passwd_checkbox", GDM_KEY_ENTRY_CIRCLES);
 
-	/* Setup always restart server */
-	setup_notify_toggle ("a_restart_server_checkbutton", GDM_KEY_ALWAYS_RESTART_SERVER);
-	
-	/* Setup always login current session */
-	setup_notify_toggle ("a_login_curr_session_checkbutton", GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);
-
 	/* Setup default session */
 	setup_default_session ();
 	
