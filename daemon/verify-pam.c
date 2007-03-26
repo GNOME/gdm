@@ -26,7 +26,7 @@
 #include <syslog.h>
 #include <security/pam_appl.h>
 #include <pwd.h>
-#ifdef sun
+#ifdef __sun
 #include <fcntl.h>
 #endif
 
@@ -304,7 +304,7 @@ audit_logout (void)
 }
 #endif	/* HAVE_ADT */
 
-#ifdef sun
+#ifdef __sun
 void
 solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
 {
@@ -760,7 +760,7 @@ create_pamh (GdmDisplay *d,
 	}
 
 	/* Inform PAM of the user's tty */
-#ifdef	sun
+#ifdef __sun
 	if (d->attached)
 		(void) pam_set_item (pamh, PAM_TTY, "/dev/console");
 	else 
@@ -1113,7 +1113,7 @@ authenticate_again:
 
     did_setcred = TRUE;
 
-#ifdef sun
+#ifdef __sun
     solaris_xserver_cred (login, d, pwent);
 #endif
 
@@ -1402,7 +1402,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 
     did_setcred = TRUE;
 
-#ifdef sun
+#ifdef __sun
     solaris_xserver_cred ((char *)login, d, pwent);
 #endif
 

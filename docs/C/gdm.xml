@@ -316,7 +316,7 @@
         GDM supports three different display types: static (local) displays,
         flexible (on-demand) displays, and XDMCP (remote) displays.  The
         &quot;X Server Definitions&quot; subsection of the
-        &quot;Configuration&quot; section explains how the Xserver is
+        &quot;Configuration&quot; section explains how the X server is
         configured for different displays.
       </para>
 
@@ -372,7 +372,7 @@
         account without disrupting their current session.  Nested displays
         may be started by running the <command>gdmflexiserver -n</command>
         command or via calling the GDM socket protocol directly.  Nested
-        displays require that the X server supports a nested Xserver command
+        displays require that the X server supports a nested X server command
         like Xnest or Xephyr.  The <filename>Xnest</filename> configuration
         option is used to configure how nested displays operate
       </para>
@@ -695,13 +695,13 @@
         The session output is piped through the GDM daemon and so the
         <filename>~/.xsession-errors</filename> file is capped at about
         200 kilobytes by GDM to prevent a possible denial of service attack
-        on the session.  An app could perhaps on reading some wrong data print
-        out warnings or errors on the stderr or stdout.  This could perhaps
-        fill up the user's home directory who would then have to log out and
-        log back in to clear this.  This could be especially nasty if quotas
-        are set.  GDM also correctly traps the XFSZ signal and stops writing
-        the file, which would lead to killed sessions if the file was
-        redirected in the old fashioned way from the script.
+        on the session.  An application could perhaps on reading some wrong
+        data print out warnings or errors on the stderr or stdout.  This could
+        perhaps fill up the user's home directory making it necessary to log
+        out and back into their session to clear this.  This could be
+        especially nasty if quotas are set.  GDM also correctly traps the XFSZ
+        signal and stops writing the file, which would lead to killed sessions
+        if the file was redirected in the old fashioned way from the script.
       </para>
 
       <para>
@@ -1321,7 +1321,7 @@ gdm: .your.domain
         immediately log in on reboot without GDM asking for username/password.
         If the user logs out of their session, GDM will start and ask for
         username and password to log back in.  If TimedLogin is turned on, then
-        GDM will log in to the specified user after a specified number of
+        GDM will log into the specified user after a specified number of
         seconds.  The user may enable Timed Login for remote (XDMCP)
         connections by checking the &quot;Allow remote timed logins&quot;
         checkbox.
@@ -1335,7 +1335,7 @@ gdm: .your.domain
         (debug/Enable) which causes debug messages to be sent to the system
         log.  Debug should only be used when diagnosing a problem and not be
         left on when not needed.  The &quot;Deny TCP connections to
-        Xserver&quot; choice will disable X forwarding if selected
+        X server&quot; choice will disable X forwarding if selected
         (security/DisallowTCP).  A login retry delay (security/RetryDelay) can
         be set to cause GDM to wait a number of seconds after a failed login.
       </para>  
@@ -1352,9 +1352,9 @@ gdm: .your.domain
       <para>
         For any server type, the user may modify the &quot;Server Name&quot;
         (server/name), the &quot;Command&quot; (server/command) to be used to
-        launch the Xserver, whether the server type will &quot;Launch&quot;
+        launch the X server, whether the server type will &quot;Launch&quot;
         (server/chooser) the greeter or chooser GUI after starting the
-        Xserver, whether GDM handles this type (normally only set to false
+        X server, whether GDM handles this type (normally only set to false
         when logging into a Terminal session type), and whether the session
         type supports &quot;Flexible&quot; (server/flexible) sessions.
       </para>
@@ -2541,12 +2541,12 @@ Greeter=/usr/lib/gdmgreeter
             <listitem>
               <synopsis>Xnest=&lt;bin&gt;/X11/Xephyr -audit 0</synopsis>
               <para>
-                The full path and arguments to the nested Xserver command, 
+                The full path and arguments to the nested X server command, 
                 which can be Xephyr, Xnest, or similar program.  This command
                 is used for starting nested displays allowing the user
                 to start new login screens in a nested window.  Xephyr is
                 recommended since it works best and better supports modern
-                Xserver extensions.  Therefore GDM will set the default
+                X server extensions.  Therefore GDM will set the default
                 configuration to use Xephyr if available.  If Xephyr is not
                 available, then Xnest will be used if it is available.
               </para>
@@ -2558,11 +2558,11 @@ Greeter=/usr/lib/gdmgreeter
             <listitem>
               <synopsis>XnestUnscaledFontPath=true</synopsis>
               <para>
-                Set to true if the nested Xserver command program supports the
-                ":unscaled" suffix in the FontPath (passed to nested Xserver
+                Set to true if the nested X server command program supports the
+                ":unscaled" suffix in the FontPath (passed to nested X server
                 command via the -fp argument).  Some Xnest (e.g. Xsun Xnest)
                 programs do not, and it is necessary to set this to false for
-                such nested Xserver commands to work with GDM.  Refer to the
+                such nested X server commands to work with GDM.  Refer to the
                 <filename>Xnest</filename> configuration option.
               </para>
             </listitem>
@@ -4729,7 +4729,7 @@ FLEXI_XNEXT: Start a new flexible nested display.
 Note:        Supported on older version from 2.2.4.0, later
              2.2.4.2, but since 2.3.90.4 you must supply 4
              arguments or ERROR 100 will be returned.  This
-             will start the nested Xserver command using
+             will start the nested X server command using
              the XAUTHORITY file supplied and as the uid
              same as the owner of that file (and same as
              you supply).  You must also supply the cookie as
@@ -5297,12 +5297,12 @@ Answers:
         <para>
           The <command>gdmXnestchooser</command> command automatically gets
           the correct display number, sets up access, and runs the nested
-          Xserver command with the &quot;-indirect localhost&quot; argument.
+          X server command with the &quot;-indirect localhost&quot; argument.
           This provides an XDMCP chooser program. You can also supply as an
           argument the hostname whose chooser should be displayed, so
           <command>gdmXnestchooser somehost</command> will run the XDMCP
           chooser from host <command>somehost</command> inside a nested
-          Xserver session.  You can make this command do a direct query
+          X server session.  You can make this command do a direct query
           instead by passing the <command>-d</command> option as well.  In
           addition to the following options, this command also supports
           standard GNOME options.
@@ -5315,7 +5315,7 @@ Answers:
             <term>-x, --xnest=STRING</term>
             <listitem>
               <para>
-                Nested Xserver command line, default is defined by the
+                Nested X server command line, default is defined by the
                 <filename>Xnest</filename> configuration option.
               </para>
             </listitem>
@@ -5325,7 +5325,7 @@ Answers:
             <term>-o, --xnest-extra-options=OPTIONS</term>
             <listitem>
               <para>
-                Extra options for nested Xserver, default is no options.
+                Extra options for nested X server, default is no options.
               </para>
             </listitem>
           </varlistentry>
@@ -5334,7 +5334,7 @@ Answers:
             <term>-n, --no-query</term>
             <listitem>
               <para>
-                Just run nested Xserver, no query (no chooser)
+                Just run nested X server, no query (no chooser)
               </para>
             </listitem>
           </varlistentry>
@@ -5383,7 +5383,7 @@ Answers:
         <para>
          The <command>gdmflexiserver</command> command provides three 
          features.  It can be used to run flexible (on demand) X displays,
-         to run a flexible display via nested Xserver, and to send commands to
+         to run a flexible display via nested X server, and to send commands to
          the GDM daemon process.
         </para>
 
@@ -6894,185 +6894,248 @@ custom-config=foo
   <sect1 id="accessibility">
     <title>Accessibility</title>
       <para>
-        GDM supports &quot;Accessible Login&quot; to allow users to log in to
+        GDM supports &quot;Accessible Login&quot;, allowing users to log into
         their desktop session even if they cannot easily use the screen, mouse,
-        or keyboard in the usual way.  Only the &quot;Standard Greeter&quot;
-        supports accessibility, so use this login GUI for accessibility
-        support.  This is done by specifying the &quot;Standard Greeter&quot;
-        in the &quot;Local&quot; tab for the console display and specifying
-        the &quot;Standard Greeter&quot; in the &quot;Remote&quot; tab for 
-        remote displays.  Or you can modify the <filename>Greeter</filename>
-        configuration option by hand to be <command>gdmlogin</command>.
+        or keyboard in the usual way.  Accessible Technology (AT) programs
+        such as <command>GOK</command> (on-screen keyboard) and
+        <command>orca</command> (magnifier and text-to-speech) are supported.
+        The &quot;Standard Greeter&quot; best supports accessibility, so it is
+        recommended for accessibility support.  The &quot;Themed Greeter&quot;
+        supports some accessibility features and may be usable by some users.
+        But some AT programs, such as <command>GOK</command>, do not yet work
+        with the &quot;Themed Greeter&quot;.
       </para>
 
       <para>
-        The Standard Greeter supports the ability to launch assistive
-        technologies at login time via configurable &quot;gestures&quot; from
-        the standard keyboard, pointing device, or switch device attached to
-        the USB or PS/2 mouse port.  Also the user can change the visual
-        appearance of the login UI before logging in, for instance to use a
-        higher-contrast color scheme for better visibility.  
+        Accessibility is enabled by specifying the &quot;Standard Greeter&quot;
+        in the &quot;Local&quot; tab for the console display and specifying
+        the &quot;Standard Greeter&quot; in the &quot;Remote&quot; tab for 
+        remote displays.  Or you can modify the <filename>Greeter</filename>
+        and <filename>RemoteGreeter</filename> configuration options by hand
+        to be <command>/usr/lib/gdmlogin</command>.
+      </para>
+
+      <para>
+        The GDM greeter programs support the ability to launch AT's at login
+        time via configurable &quot;gestures&quot.  These gestures can be
+        defined to be standard keyboard hotkeys, switch device event, or
+        mouse motion events.  When using the &quot;Standard Greeter&quot;, the
+        user may also change the visual appearance of the login UI.  For
+        example, to use a higher-contrast color scheme for better visibility.  
       </para>
 
        <sect2 id="accessibilityconfig">
           <title>Accessibility Configuration</title>
-             <para>
-             In order to enable Accessible Login, the system administrator must
-             make some changes to the default login configuration by manually
-             modifying three human-readable configuration files, stored in
-             the GDM configuration, AccessKeyMouseEvents and
-             AccessDwellMouseEvents.
-             </para>
 
-             <para>
-             In order to allow users to change the color and contrast scheme of
-             the login dialog, make sure the
-             <filename>AllowThemeChange</filename> parameter in the GDM
-             configuration is set to &quot;true&quot;.
-             </para>
+          <para>
+            In order to enable Accessible Login, the system administrator must
+            make some changes to the default login configuration by manually
+            modifying three human-readable configuration files, stored in
+            the GDM Custom Configuration File, AccessKeyMouseEvents File, and
+            AccessDwellMouseEvents File.  The AccessKeyMouseEvents and
+            AccessDwellMouseEvents contain reasonable default gestures for
+            launching <command>GOK</command> and <command>orca</command>, but
+            some users may require these gestures to be configured to best
+            meet their needs.  For example, shorter or longer duration for
+            holding down a button or hotkey might make the login experience
+            more usable for some users.  Also, additional AT programs may be
+            added to the configuration file if needed.
+          </para>
 
-             <para>
-             To restrict user changes to the visual appearance to a subset of
-             available themes, the <filename>GtkThemesToAllow</filename>
-             parameter in the GDM configuration can be set to a list of
-             acceptable themes separated by commas.  For example:
-             </para>
+          <sect3 id="accessibilitytheming">
+            <title>Accessibile Theming</title>
+
+            <para>
+              If using the &quot;Standard Greeter&quot; users can easily 
+              switch the color and contrast scheme of the dialog.  To do this,
+              ensure the <filename>AllowGtkThemeChange</filename> parameter in
+              the GDM configuration is set to &quot;true&quot;.  This should
+              be the default value.  When true, the &quot;Standard
+              Greeter&quot; contains a menu allowing the user to change to a
+              different GTK+ theme.  The <filename>GtkThemesToAllow</filename>
+              configuration choice can also be used to limit the choices
+              available as desired.  For example:
+            </para>
 
 <screen>
 GtkThemesToAllow=HighContrast,HighContrastInverse
 </screen>
 
-             <para>
-             To enable the use of assistive technologies such as the Onscreen
-             Keyboard, Screen Reader, or Magnifier, the
-             <filename>AddGtkModules</filename> parameter in the GDM
-             configuration must be uncommented and set to &quot;true&quot;.
-             Also the <filename>GtkModulesList</filename> parameter must be
-             uncommented and set as follows:
-             </para>
+            <para>
+              If using the &quot;Themed Greeter&quot; there may be suitable
+              GDM themes available that provide needed color and contrast 
+              schemes, but these are not yet shipped with the GDM program.
+              Some distributions may ship such themes.  There is not yet any
+              mechanism to switch between themes in the &quot;Themed
+              Greeter&quot;, so if an accessible theme is required by one
+              user, then all users would need to use the same theme.
+            </para>
+          </sect3>
+
+          <sect3 id="accessibilityatprograms">
+            <title>AT Program Support</title>
+
+            <para>
+              To enable user to launch AT such as the <command>GOK</command>
+              or <command>orca</command>, the
+              <filename>AddGtkModules</filename> parameter in the GDM
+              configuration must be set to &quot;true&quot;.
+              Also the <filename>GtkModulesList</filename> parameter must be
+              uncommented and set as follows:
+            </para>
 
 <screen>
-GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
+GtkModulesList=gail:atk-bridge:/usr/lib/gtk-2.0/modules/libdwellmouselistener:/usr/lib/gtk-2.0/modules/libkeymouselistener
 </screen>
 
-             <para>
-             The use of assistive technologies and the atk-bridge module
-             requires the registry daemon, <command>at-spi-registryd</command>,
-             to be running.  This is handled by the GDM GUI starting with
-             version 2.17.
-             </para>
+            <para>
+              This causes all GDM GUI programs to be run with the appropriate
+              GTK modules for launching AT programs.  The use of assistive
+              technologies and the atk-bridge module requires the registry
+              daemon, <command>at-spi-registryd</command>, to be running. 
+              This is handled by the GDM GUI starting with version 2.17.
+            </para>
 
-             <para>
-             System administrators may wish to load only the minimum subset of
-             these modules which is required to support their user base.
-             Depending on the end-user needs, not all of the above GtkModules
-             may need to be loaded.  If your end-users need the integrated
-             Screen Reader and Magnifier, you must include &quot;gail&quot; and
-             &quot;atk-bridge&quot;.  If your end-users will be using a
-             pointing device without buttons or switches, include
-             &quot;dwellmouselistener&quot;.  If some of your users will use
-             pointing devices with switches, alternative physical keyboards, or
-             switch/button devices, include &quot;keymouselistener&quot;.
-             Including all four is suitable for most system configurations.
-             The Onscreen Keyboard can operate without gail and atk-bridge, but
-             with a reduced feature set; for optimum accessibility we recommend
-             including both gail and atk-bridge.
-             </para>
+            <para>
+              System administrators may wish to load only the minimum subset
+              of these modules which is required to support their user base.
+              The &quot;libkeymouselistener&quot; provides hotkey and switch
+              gesture support while the &quot;libdwellmouselistener&quot;
+              provides mouse motion gesture support.  If your user base only
+              requires one or the other, it is only necessary to include the
+              gesture listener that is needed.  Also, some AT programs may not
+              require gail or atk-bridge.  If you find the AT programs you
+              need works fine without including these, then they may be
+              omitted.  Note that some AT programs work with a reduced feature
+              set if gail and/or atk-bridge are not present.  However, for
+              general accessibility use, including all four is suitable.
+            </para>
 
-             <para>
-             Once &quot;keymouselistener&quot; and/or
-             &quot;dwellmouselistener&quot; have been added to the GtkModules
-             loaded by GDM, you can assign end-user actions with the launching
-             of specific assistive technologies.  These gesture associations
-             are contained in files AccessKeyMouseEvents and
-             AccessDwellMouseEvents, respectively.  Both files are located in
-             the &lt;etc&gt;/gdm/modules directory.  The gesture format is
-             described in the two configuration files.
-             </para>
+            <para>
+              Once &quot;keymouselistener&quot; and/or
+              &quot;dwellmouselistener&quot; have been added to the
+              <filename>AddGtkModules</filename> loaded by GDM, then you may
+              need to modiify the gesture configurations to meet your user's
+              needs.  Default gestures are provided for launching
+              <command>GOK</command> and <command>orca</command>, but it is
+              recommended to modify these gestures so they work best for your
+              user base.  These gesture associations are contained in files
+              <filename>AccessKeyMouseEvents</filename> and
+              <filename>AccessDwellMouseEvents</filename>, respectively.  Both
+              files are located in the
+              <filename>&lt;etc&gt;/gdm/modules</filename> directory.  The
+              gesture configuration format is described in the comment section
+              of the two configuration files.
+            </para>
 
-             <para>
-             The AccessKeyMouseEvents file controls the keymouselistener
-             Gesture Listener and is used to define key-press, mouse button,
-             or XInput device sequences that can be used to launch applications
-             needed for accessibility.  In order to reduce the likelihood of
-             unintentional launch, these &quot;gestures&quot; may be associated
-             with multiple switch presses and/or minimum durations.  Note that
-             the XKB extension is needed for key gestures to work, so you may
-             need to add +xkb to your Xserver command line for gestures to
-             work properly.
-             </para>
+            <para>
+              The AccessKeyMouseEvents file controls the keymouselistener
+              Gesture Listener and is used to define key-press, mouse button,
+              or XInput device sequences that can be used to launch
+              applications needed for accessibility.  In order to reduce the
+              likelihood of unintentional launch, these &quot;gestures&quot;
+              may be associated with multiple switch presses and/or minimum
+              durations.  Note that the XKB extension is needed for key
+              gestures to work, so you may need to add +xkb to your X server
+              command line for gestures to work properly.  The X server command
+              line is specified in the GDM configuration file in the
+              &quot;server-foo&quot; sections.
+            </para>
 
-             <para>
-             The DwellKeyMouseEvents file controls the dwellmouselistner and
-             supports gestures that involve only motion of a pointing device
-             such as the system mouse of an alternative pointing device such
-             as a head pointer or trackball may also be defined.   All gestures
-             are specified by the same syntax; that is, there is no distinction
-             between a &quot;core mouse&quot; gesture and motion from an
-             alternate input device.
-             </para>
+            <para>
+              The DwellKeyMouseEvents file controls the dwellmouselistner and
+              supports gestures that involve the motion of a pointing device
+              such as the system mouse of an alternative pointing device such
+              as a head pointer or trackball may also be defined.  Motion
+              gestures are defined as &quot;crossing events&quot; into and out
+              of the login dialog window.  If the
+              &quot;dwellmouselistener&quot; gesture listener is loaded, then
+              alternative pointing devices are temporarily &quot;latched&quot;
+              to the core pointer, such that motion from alternative devices
+              results in movement of the onscreen pointer.  All gestures are
+              specified by the same syntax; that is, there is no distinction
+              between a &quot;core mouse&quot; gesture and motion from an
+              alternate input device.
+            </para>
 
-             <para>
-             Motion gestures are defined as &quot;crossing events&quot; into
-             and out of the login dialog window.  If the
-             &quot;dwellmouselistener&quot; GtkModule is loaded, alternative
-             pointing devices are temporarily &quot;latched&quot; to the core
-             pointer, such that motion from alternative devices results in
-             movement of the onscreen pointer.
-             </para>
+            <para>
+              On some operating systems, it is necessary to make sure that the
+              GDM user is a member of the &quot;audio&quot; group for AT
+              programs that require audio output (such as text-to-speech) to
+              be functional.
+            </para>
 
-             <para>
-             In order to use text-to-speech services at login time (for
-             instance, when using the Screen Reader in speech mode) on some
-             operating systems, the GDM user must be made a member of the
-             &quot;audio&quot; group
-             </para>
+            <para>
+              Currently GDM does not remember what accessible technology
+              programs have been started when switching applications.  So if
+              the user switches between the login program and the chooser, for
+              example, then it is necessary for the user to redo the gesture.
+              Users may need to also set up their default session so that the
+              assistive technologies required are started automatically (or
+              have appropriate key-bindings defined to start them) after the
+              user session has started.
+            </para>
+          </sect3>
 
-             <para>
-             Currently GDM does not remember what accessible technology
-             programs have been started when switching applications.  So
-             if the user switches between the login program and the 
-             chooser, for example, then it is necessary for the user to
-             redo the gesture.  Users may need to also set up their default
-             session so that the assistive technologies required are
-             started automatically (or have appropriate key-bindings 
-             defined to start them) after the user session has started.
-             </para>
+          <sect3 id="accessibilitytroubleshooting">
+            <title>AT Troubleshooting</title>
 
-             <para>
-             There are some issues that cause users to have problems
-             getting the gesture listeners to work.  It is recommended that
-             people use GDM version 2.8.0.5 or later for best results.  
-             Some X servers have a bug which causes detectable autorepeat
-             to fail when XEVIE is enabled (which happens when atk-bridge
-             is included as a GTK Module).  This bug causes key gestures
-             with a duration greater than 0 to always fail.  A workaround
-             is to simply redefine all key gestures so they have zero length
-             duration.  Some versions of GOK and gnopernicus will not launch
-             unless the &quot;gdm&quot; user has a writable home directory.
-             If you see an hourglass cursor when you complete a gesture but the
-             program does not start, then you are likely having this problem.
-             It should be considered a bug for AT programs to require having a
-             writable home directory, so please file a bug with the AT
-             program if you encounter this problem.  Also note that some input
-             devices require X server configuration before GDM will recognize
-             them.
-             </para>
+            <para>
+              There are some common issues that cause users to have problems
+              getting the gesture listeners to work.  It is recommended that
+              people use GDM version 2.18.0 or later for best results.
+            </para>
+
+            <para>
+              Some older X servers have a bug which causes detectable
+              autorepeat to fail when XEVIE is enabled (which happens when
+              atk-bridge is included as a GTK Module).  This bug causes key
+              gestures with a duration greater than 0 to always fail.  A
+              workaround is to simply redefine all key gestures so they have
+              zero length duration, or upgrade your X server.
+            </para>
+
+            <para>
+              Some versions of <command>GOK</command> and
+              <command>orca</command> will not launch unless the
+              &quot;gdm&quot; user has a writable home directory.  This has
+              been fixed in GNOME 2.18, but if using an older version of
+              GNOME, then making sure that the GDM user has a writable home
+              directory should make these programs functional.
+            </para>
+
+            <para>
+              If you see an hourglass cursor when you complete a gesture but
+              the program does not start, then this indicates that the gesture 
+              was received, but that there was a problem starting the program.
+              Most likely the issue may be the lack of a writable gdm home
+              directory.
+            </para>
+
+            <para>
+              Also note that some input devices require X server configuration
+              before GDM will recognize them.
+            </para>
+          </sect3>
+
+          <sect3 id="accessibilitysound">
+            <title>Accessibility Login Sound Configuration</title>
+
+            <para>
+              By default, GDM requires a media application such as
+              &quot;play&quot; to be present to play sounds for successful or
+              failed login.  GDM defaults
+              the location of this application to
+              <filename>&lt;bin&gt;/play</filename> (or
+              <filename>&lt;bin&gt;/audioplay</filename> on Solaris.  This can
+              be changed via the <filename>SoundProgram</filename> GDM
+              configuration option.  Typically most text-to-speech programs
+              (such as <command>orca</command>) use a separate mechanism to
+              play audio, so this configuration setting is not needed for
+              them to work.
+            </para>
+          </sect3>
        </sect2>
-       <sect2 id="accessibilitysound">
-          <title>Accessibility Login Sound Configuration</title>
-             <para>
-             By default, GDM requires a media application such as
-             &quot;sox&quot; to be present to play sounds for successful or
-             failed login.  GDM defaults
-             the location of this application to
-             <filename>&lt;bin&gt;/play</filename> (or
-             <filename>&lt;bin&gt;/audioplay</filename> on Solaris.  This can
-             be changed via the SoundProgram GDM configuration option.  
-             Typically most text-to-speech programs (such as ORCA or 
-             Gnopernicus) use a separate mechanism to play audio.
-             </para>
-        </sect2>
   </sect1>
 
   <sect1 id="solaris">
@@ -7088,22 +7151,24 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
 <screen>
 ./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
    --libexecdir=/usr/lib --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
-   --with-prefetch --with-post-path=/usr/openwin/bin
+   --with-prefetch --with-post-path=/usr/openwin/bin --with-pam-prefix=/etc
+   --with-lang-file=/etc/default/init
 </screen>
              </para>
 
              <para>
                Configuring GDM with the
                &quot;--with-post-path=/usr/openwin/bin&quot; on Solaris is
-               recommended for access Xserver programs.
+               recommended for accessing X server programs.
              </para>
        </sect2>
 
        <sect2 id="solarislogindevperm">
           <title>Solaris /etc/logindevperm</title>
              <para>
-               GDM supports /etc/logindevperm, but only on Solaris 10 and higher.
-               Refer to the logindevperm.4 man page for more information.
+               GDM supports /etc/logindevperm, but only on Solaris 10 and
+               higher.  Refer to the logindevperm.4 man page for more
+               information.
              </para>
 
              <para>
@@ -7118,7 +7183,7 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
 </screen>
      
              <para>
-               The PreSession script would need to be modified to chown
+               Then the PreSession script would need to be modified to chown
                /dev/console to the user:group who is logging into the console
                and ensure whatever permissions is specified in /etc/logindevperm
                (0600 for the line above).  Then in the PostSession script chmod
@@ -7132,22 +7197,21 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
        <sect2 id="solarisautomaticlogin">
           <title>Solaris Automatic Login</title>
              <para>
-               Automatic login does not work on Solaris because PAM is not
-               configured to support this feature by default.  Automatic 
-               login is a GDM feature that is not enabled by default, so you
-               would only notice this problem if you try to make use of it.
-               Turning this feature on causes your computer to login to a
+               Automatic login does not work on Solaris 10 and earlier because
+               PAM is not configured to support this feature by default.
+               Automatic login is a GDM feature that is not enabled by default,
+               so you would only notice this problem if you try to make use of
+               it.  Turning this feature on causes your computer to login to a
                specified username on startup without asking for username
                and password.  This is an insecure way to set up your
                computer. 
              </para>
 
              <para>
-               If using Solaris 10 or lower, then you need to compile
-               the pam_allow.c code provided with the GDM release and
-               install it to /usr/lib/security (or provide the full path
-               in /etc/pam.conf) and ensure it is owned by uid 0 and not
-               group or world writable.
+               If using Solaris 10 or lower, then you need to compile the
+               pam_allow.c code provided with the GDM release and install it
+               to /usr/lib/security (or provide the full path in /etc/pam.conf)
+               and ensure it is owned by uid 0 and not group or world writable.
              </para>
 
              <para>
@@ -7189,21 +7253,21 @@ GtkModulesList=gail:atk-bridge:dwellmouselistener:keymouselistener
             </para>
 
             <para>
-                GDM supports a security feature which causes the X server to
-                run as the user instead of as the root user.  GDM must be using
-                PAM for this feature to be enabled, which is the normal case
-                for Solaris.  This second feature has the side-effect of
-                causing the X server to always restart between sessions, which
-                disables the AlwaysRestartServer configuration option.  
+              GDM supports a security feature which causes the X server to
+              run as the user instead of as the root user.  GDM must be using
+              PAM for this feature to be enabled, which is the normal case
+              for Solaris.  This second feature has the side-effect of
+              causing the X server to always restart between sessions, which
+              disables the AlwaysRestartServer configuration option.  
             </para>
 
             <para>
-                Solaris supports the <filename>/etc/default/login</filename>
-                interface, which affects the <filename>DefaultPath</filename>,
-                <filename>RootPath</filename>,
-                <filename>PasswordRequired</filename>, and
-                <filename>AllowRemoteRoot</filename> options as described in the
-                &quot;Configuration&quot; section.
+              Solaris supports the <filename>/etc/default/login</filename>
+              interface, which affects the <filename>DefaultPath</filename>,
+              <filename>RootPath</filename>,
+              <filename>PasswordRequired</filename>, and
+              <filename>AllowRemoteRoot</filename> options as described in the
+              &quot;Configuration&quot; section.
             </para>
        </sect2>
   </sect1>
@@ -7477,22 +7541,22 @@ Hosts=appserverone,appservertwo
       </para>
 
       <para>
-         First make sure that the Xserver is configured properly.  The 
+         First make sure that the X server is configured properly.  The 
          GDM configuration file contains a command in the [server-Standard]
-         section that is used for starting the Xserver.  Verify that this
+         section that is used for starting the X server.  Verify that this
          command works on your system.  Running this command from the 
-         console should start the Xserver.  If it fails, then the problem
-         is likely with your Xserver configuration.  Refer to your Xserver
+         console should start the X server.  If it fails, then the problem
+         is likely with your X server configuration.  Refer to your X server
          error log for an idea of what the problem may be.  The problem may
-         also be that your Xserver requires different command-line options.
-         If so, then modify the Xserver command in the GDM configuration file
+         also be that your X server requires different command-line options.
+         If so, then modify the X server command in the GDM configuration file
          so that it is correct for your system.
       </para>
 
       <para>
          Another common problem is that the GDM greeter program is having
          trouble starting.  This can happen, for example, if GDM cannot find
-         a needed library or other resource.  Try starting the Xserver and
+         a needed library or other resource.  Try starting the X server and
          a terminal program, set the shell environment variable 
          DOING_GDM_DEVELOPMENT=1 and run
          <command>&lt;lib&gt;/gdmlogin</command>

@@ -71,7 +71,7 @@ extern char *gdm_charset;
 
 #ifdef ENABLE_IPV6
 
-#ifdef sun
+#ifdef __sun
 static gboolean 
 have_ipv6_solaris (void)
 {
@@ -161,7 +161,7 @@ have_ipv6 (void)
 	int s;
         static gboolean has_ipv6 = -1;
 
-#ifdef sun
+#ifdef __sun
         has_ipv6 = have_ipv6_solaris ();
 #else
         if (has_ipv6 != -1) return has_ipv6;

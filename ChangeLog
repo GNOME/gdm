@@ -1,5 +1,15 @@
 2006-03-23  Brian Cameron  <brian.cameron@sun.com>
 
+        * docs/C/gdm.xml: Update Accessibility and Solaris sections
+	  of the manual.  The Accessibility section was badly out of
+	  date, and some new information needed to be added (like
+	  that you don't need to create a writable gdm home directory
+	  starting with GNOME 2.18).
+	* daemon/gdm.c, daemon/verify-pam.c, daemon/misc.c:  Use
+	  "#ifdef __sun" instead of "#ifdef sun".
+
+2006-03-23  Brian Cameron  <brian.cameron@sun.com>
+
 	* docs/C/gdm.xml: Add new XnestUnscaledFontPath key to docs.
 	  Fix Configuration section to refer to the configuration
 	  file by name rather than repeating the full path over and

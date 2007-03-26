@@ -406,9 +406,9 @@ gdm_final_cleanup (void)
 #endif  /* HAVE_LOGINDEVPERM */
 }
 
-#ifdef sun
+#ifdef __sun
 void
-gdm_rmdir(char *thedir)
+gdm_rmdir (char *thedir)
 {
     DIR *odir;
     struct stat buf;
@@ -418,27 +418,27 @@ gdm_rmdir(char *thedir)
     if ((stat(thedir, &buf) == -1) || ! S_ISDIR(buf.st_mode))
       return ;
 
-    if ((rmdir(thedir) == -1) && (errno == EEXIST))
+    if ((rmdir (thedir) == -1) && (errno == EEXIST))
     {
-      odir = opendir(thedir);
+      odir = opendir (thedir);
       do {
         errno = 0;
-        if ((dp = readdir(odir)) != NULL)
+        if ((dp = readdir (odir)) != NULL)
         {
-          if (strcmp(dp->d_name, ".") == 0 ||
-              strcmp(dp->d_name, "..") == 0)
+          if (strcmp (dp->d_name, ".") == 0 ||
+              strcmp (dp->d_name, "..") == 0)
                 continue ;
           snprintf (thefile, FILENAME_MAX, "%s/%s", thedir, dp->d_name);
           if (stat (thefile, &buf) == -1)
             continue ; 
           if (S_ISDIR(buf.st_mode))
-            gdm_rmdir(thefile);
+            gdm_rmdir (thefile);
           else
-            g_unlink(thefile);
+            g_unlink (thefile);
         }
       } while (dp != NULL);
-      closedir(odir);
-      rmdir(thedir);
+      closedir (odir);
+      rmdir (thedir);
     }
 }
 #endif
