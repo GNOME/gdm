@@ -180,7 +180,7 @@
         should only change in ways that are backwards compatible.  Note that
         this includes functionality like the GDM scripts (Init, PreSession,
         PostSession, PostLogin, XKeepsCrashing, etc.); directory locations
-        (ServAuthDir, PidFile, etc.), system applications (SoundProgram), etc.
+        (ServAuthDir, etc.), system applications (SoundProgram), etc.
         Some configuration values depend on OS interfaces may need to be
         modified to work on a given OS.  Typical examples are HaltCommand,
         RebootCommand, CustomCommands, SuspendCommand, StandardXServer, Xnest,
@@ -2185,17 +2185,6 @@ Greeter=/usr/lib/gdmgreeter
               <para>
                 Directory containing the log files for the individual displays.
                 By default this is the same as the ServAuthDir.
-              </para>
-            </listitem>
-          </varlistentry>
-          
-          <varlistentry>
-            <term>PidFile</term>
-            <listitem>
-              <synopsis>PidFile=&lt;var&gt;/run/gdm.pid</synopsis>
-              <para>
-                Name of the file containing the <filename>gdm</filename>
-                process id.
               </para>
             </listitem>
           </varlistentry>
