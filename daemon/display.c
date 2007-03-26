@@ -39,9 +39,9 @@
 #include "choose.h"
 #include "auth.h"
 #include "gdm-net.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 /* External vars */
 extern gint xdmcp_sessions;
@@ -205,7 +205,7 @@ wait_again:
 		    /* rekill the slave to tell it to
 		       hurry up and die if we're getting
 		       killed ourselves */
-		    if ((gdm_signal_terminthup_was_notified ()) ||
+		    if ((gdm_daemon_config_signal_terminthup_was_notified ()) ||
 			(t + 10 <= time (NULL))) {
 			    gdm_debug ("whack_old_slave: GOT ANOTHER SIGTERM (or it was 10 secs already), killing slave again with SIGKILL");
 			    t = time (NULL);
@@ -296,7 +296,7 @@ gdm_display_manage (GdmDisplay *d)
 	d->slavepid = getpid ();
 
 	/* Close XDMCP fd in slave process */
-	if (gdm_get_value_bool (GDM_KEY_XDMCP))
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP))
 	    gdm_xdmcp_close ();
 
 	gdm_connection_close (fifoconn);

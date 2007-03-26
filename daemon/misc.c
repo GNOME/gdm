@@ -55,9 +55,9 @@
 #include "misc.h"
 #include "xdmcp.h"
 #include "slave.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 extern char **environ;
 
@@ -301,7 +301,7 @@ gdm_debug (const gchar *format, ...)
     va_list args;
     char *s;
 
-    if G_LIKELY (! gdm_get_value_bool (GDM_KEY_DEBUG)) 
+    if G_LIKELY (! gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG))
 	return;
 
     va_start (args, format);
@@ -314,7 +314,7 @@ gdm_debug (const gchar *format, ...)
     g_free (s);
 }
 
-void 
+void
 gdm_fdprintf (int fd, const gchar *format, ...)
 {
 	va_list args;
@@ -343,37 +343,6 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 	}
 
 	g_free (s);
-}
-
-/*
- * Clear environment, but keep the i18n ones,
- * note that this leaks memory so only use before exec
- * (keep LD_* if preserve_ld_vars is true)
- */
-void
-gdm_clearenv_no_lang (void)
-{
-	int i;
-	GList *li, *envs = NULL;
-
-	for (i = 0; environ[i] != NULL; i++) {
-		char *env = environ[i];
-		if (strncmp (env, "LC_", 3) == 0 ||
-		    strncmp (env, "LANG", 4) == 0 ||
-		    strncmp (env, "LINGUAS", 7) == 0)
-			envs = g_list_prepend (envs, g_strdup (env));
-		if (preserve_ld_vars &&
-		    strncmp (env, "LD_", 3) == 0)
-			envs = g_list_prepend (envs, g_strdup (env));
-	}
-
-	ve_clearenv ();
-
-	for (li = envs; li != NULL; li = li->next) {
-		putenv (li->data);
-	}
-
-	g_list_free (envs);
 }
 
 /*
@@ -580,7 +549,7 @@ gdm_text_message_dialog (const char *msg)
 	char *dialog; /* do we have dialog? */
 	char *msg_quoted;
 
-    if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
+    if ( ! gdm_daemon_config_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 		return FALSE;
 
 	if (g_access (LIBEXECDIR "/gdmopen", X_OK) != 0)
@@ -658,7 +627,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	char *dialog; /* do we have dialog? */
 	char *msg_quoted;
 
-    if ( ! gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
+    if ( ! gdm_daemon_config_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 		return FALSE;
 	
 	if (g_access (LIBEXECDIR "/gdmopen", X_OK) != 0)
@@ -959,7 +928,7 @@ gdm_fork_extra (void)
 		/* Harmless in children, but in case we'd run
 		   extra processes from main daemon would fix
 		   problems ... */
-		if (gdm_get_value_bool (GDM_KEY_XDMCP))
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP))
 			gdm_xdmcp_close ();
 	}
 
@@ -2552,7 +2521,7 @@ gdm_ok_console_language (void)
 	static gboolean cached = FALSE;
 	static gboolean is_ok;
 	const char *loc;
-	char *consolecannothandle = gdm_get_value_string (GDM_KEY_CONSOLE_CANNOT_HANDLE);
+	const char *consolecannothandle = gdm_daemon_config_get_value_string (GDM_KEY_CONSOLE_CANNOT_HANDLE);
 
 	if (cached)
 		return is_ok;

@@ -37,9 +37,9 @@
 #include "slave.h"
 #include "verify.h"
 #include "errorgui.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 #ifdef	HAVE_LOGINDEVPERM
 #include <libdevinfo.h>
@@ -829,9 +829,9 @@ verify_user_again:
     null_tok = 0;
 
     /* start the timer for timed logins */
-    if ( ! ve_string_empty (gdm_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
+    if ( ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
 	d->timed_login_ok &&
-	(local || gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
+	(local || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 	    started_timer = TRUE;
     }
@@ -862,7 +862,7 @@ authenticate_again:
      * PAM Stacks, in case one display should use a different 
      * authentication mechanism than another display.
      */
-    pam_stack = gdm_get_value_string_per_display ((char *)display,
+    pam_stack = gdm_daemon_config_get_value_string_per_display ((char *)display,
 	GDM_KEY_PAM_STACK);
 
     if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
@@ -888,16 +888,16 @@ authenticate_again:
        when running the configurator.  We wish to ourselves cancel logins
        without a delay, so ... evil */
 #ifdef PAM_FAIL_DELAY
-    pam_fail_delay (pamh, gdm_get_value_int (GDM_KEY_RETRY_DELAY) * 1000000);
+    pam_fail_delay (pamh, gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY) * 1000000);
 #endif /* PAM_FAIL_DELAY */
 #endif
 
     passreq = gdm_read_default ("PASSREQ=");
     if ((passreq != NULL) &&
 	g_ascii_strcasecmp (passreq, "YES") == 0)
-	    gdm_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
+	    gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
 
-    if (gdm_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
+    if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
 	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 	    
     gdm_verify_select_user (NULL);
@@ -944,7 +944,7 @@ authenticate_again:
 	    if (gdm_slave_action_pending ()) {
 		    /* FIXME: see note above about PAM_FAIL_DELAY */
 /* #ifndef PAM_FAIL_DELAY */
-		    gdm_sleep_no_signal (gdm_get_value_int (GDM_KEY_RETRY_DELAY));
+		    gdm_sleep_no_signal (gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY));
 		    /* wait up to 100ms randomly */
 		    usleep (g_random_int_range (0, 100000));
 /* #endif */ /* PAM_FAIL_DELAY */
@@ -1019,11 +1019,11 @@ authenticate_again:
     consoleonly = gdm_read_default ("CONSOLE=");
     if ((consoleonly != NULL) &&
 	g_ascii_strcasecmp (consoleonly, "/dev/console") == 0)
-	    gdm_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, FALSE);
+	    gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, FALSE);
 
     pwent = getpwnam (login);
-    if ( ( ! gdm_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
-	  ( ! gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
+    if ( ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
+	  ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
 	pwent != NULL &&
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"),
@@ -1046,7 +1046,7 @@ authenticate_again:
 	    goto pamerr;
     }
 
-    if (gdm_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
+    if (gdm_daemon_config_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
 	char *info = gdm_get_last_info (login);
 	gdm_slave_greeter_ctl_no_ret (GDM_MSG, info);
 	g_free (info);
@@ -1282,7 +1282,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
      * PAM Stacks, in case one display should use a different 
      * authentication mechanism than another display.
      */
-    pam_stack = gdm_get_value_string_per_display ((char *)display, GDM_KEY_PAM_STACK);
+    pam_stack = gdm_daemon_config_get_value_string_per_display ((char *)display, GDM_KEY_PAM_STACK);
     pam_service_name = g_strdup_printf ("%s-autologin", pam_stack);
 
     if ( ! create_pamh (d, pam_service_name, login, &standalone_pamc,
@@ -1297,9 +1297,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     passreq = gdm_read_default ("PASSREQ=");
     if ((passreq != NULL) &&
 	g_ascii_strcasecmp (passreq, "YES") == 0)
-	    gdm_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
+	    gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
 
-    if (gdm_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
+    if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
 	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 
     /* Start authentication session */
@@ -1586,14 +1586,14 @@ gdm_verify_check (void)
 {
 	pam_handle_t *ph = NULL;
 
-	if (pam_start (gdm_get_value_string (GDM_KEY_PAM_STACK), NULL,
+	if (pam_start (gdm_daemon_config_get_value_string (GDM_KEY_PAM_STACK), NULL,
 		&standalone_pamc, &ph) != PAM_SUCCESS) {
 		ph = NULL; /* be anal */
 
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		if (gdm_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 			gdm_text_message_dialog
 				(C_(N_("Can't find PAM configuration for GDM.")));
 		gdm_fail ("gdm_verify_check: %s",

@@ -39,6 +39,7 @@
 #include <libgnomecanvas/libgnomecanvas.h>
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 #include "gdm.h"
 #include "gdmwm.h"

@@ -42,6 +42,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 static char *myname = NULL;  /* name of this program */
 

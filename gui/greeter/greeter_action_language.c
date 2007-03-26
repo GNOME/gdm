@@ -28,6 +28,8 @@
 #include "gdmconfig.h"
 #include "gdmlanguages.h"
 
+#include "gdm-daemon-config-keys.h"
+
 #include "greeter.h"
 #include "greeter_configuration.h"
 #include "greeter_item_pam.h"

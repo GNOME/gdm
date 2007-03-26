@@ -62,6 +62,7 @@
 #include "misc.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you aren't running
  * within the protocol */

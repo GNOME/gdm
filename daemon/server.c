@@ -50,9 +50,9 @@
 #include "auth.h"
 #include "slave.h"
 #include "getvt.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
@@ -375,7 +375,7 @@ busy_ask_user (GdmDisplay *disp)
 static gboolean
 display_parent_no_connect (GdmDisplay *disp)
 {
-	char *logname = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
+	char *logname = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	FILE *fp;
 	char buf[256];
 	char *getsret;
@@ -407,7 +407,7 @@ display_parent_no_connect (GdmDisplay *disp)
 static gboolean
 display_busy (GdmDisplay *disp)
 {
-	char *logname = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
+	char *logname = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	FILE *fp;
 	char buf[256];
 	char *getsret;
@@ -462,7 +462,7 @@ open_another_logfile (char buf[256], FILE **fp)
 static int
 display_vt (GdmDisplay *disp)
 {
-	char *logname = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
+	char *logname = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	FILE *fp;
 	char buf[256];
 	gboolean switched = FALSE;
@@ -563,7 +563,7 @@ do_server_wait (GdmDisplay *d)
 		     * just wait a few seconds and hope things just work,
 		     * fortunately there is no such case yet and probably
 		     * never will, but just for code anality's sake */
-		    gdm_sleep_no_signal (gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT));
+		    gdm_sleep_no_signal (gdm_daemon_config_get_value_int(GDM_KEY_XSERVER_TIMEOUT));
 	    } else if (d->server_uid != 0) {
 		    int i;
 
@@ -583,7 +583,7 @@ do_server_wait (GdmDisplay *d)
 		    for (i = 0;
 			 d->dsp == NULL &&
 			 d->servstat == SERVER_PENDING &&
-			 i < gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT);
+			 i < gdm_daemon_config_get_value_int(GDM_KEY_XSERVER_TIMEOUT);
 			 i++) {
 			    d->dsp = XOpenDisplay (d->name);
 			    if (d->dsp == NULL)
@@ -606,7 +606,7 @@ do_server_wait (GdmDisplay *d)
 			    struct timeval tv;
 
 			    /* Wait up to GDM_KEY_XSERVER_TIMEOUT seconds. */
-			    tv.tv_sec = MAX (1, gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT) 
+			    tv.tv_sec = MAX (1, gdm_daemon_config_get_value_int(GDM_KEY_XSERVER_TIMEOUT) 
 			    	- (time (NULL) - t));
 			    tv.tv_usec = 0;
 
@@ -619,7 +619,7 @@ do_server_wait (GdmDisplay *d)
 				    VE_IGNORE_EINTR (read (server_signal_pipe[0], buf, 4));
 			    }
 			    if ( ! server_signal_notified &&
-				t + gdm_get_value_int(GDM_KEY_XSERVER_TIMEOUT) < time (NULL)) {
+				t + gdm_daemon_config_get_value_int(GDM_KEY_XSERVER_TIMEOUT) < time (NULL)) {
 				    gdm_debug ("do_server_wait: Server timeout");
 				    d->servstat = SERVER_TIMEOUT;
 				    server_signal_notified = TRUE;
@@ -742,7 +742,7 @@ gdm_server_start (GdmDisplay *disp,
     if (SERVER_IS_FLEXI (d) ||
 	treat_as_flexi) {
 	    flexi_disp = gdm_get_free_display
-		    (MAX (gdm_get_high_display_num () + 1, min_flexi_disp) /* start */,
+		    (MAX (gdm_daemon_config_get_high_display_num () + 1, min_flexi_disp) /* start */,
 		     d->server_uid /* server uid */);
 
 	    g_free (d->name);
@@ -875,7 +875,7 @@ gdm_server_start (GdmDisplay *disp,
 			    return gdm_server_start (d,
 						     FALSE /*try_again_if_busy */,
 						     TRUE /* treat as flexi */,
-						     gdm_get_high_display_num () + 1,
+						     gdm_daemon_config_get_high_display_num () + 1,
 						     flexi_retries - 1);
 		    }
 		    _exit (DISPLAY_REMANAGE);
@@ -926,7 +926,7 @@ safer_rename (const char *a, const char *b)
 static void
 rotate_logs (const char *dname)
 {
-	gchar *logdir = gdm_get_value_string (GDM_KEY_LOG_DIR);
+	const gchar *logdir = gdm_daemon_config_get_value_string (GDM_KEY_LOG_DIR);
 
 	/* I'm too lazy to write a loop */
 	char *fname4 = gdm_make_filename (logdir, dname, ".log.4");
@@ -957,7 +957,7 @@ gdm_server_resolve (GdmDisplay *disp)
 
 	bin = ve_first_word (disp->command);
 	if (bin != NULL && bin[0] != '/') {
-		svr = gdm_find_xserver (bin);
+		svr = gdm_daemon_config_find_xserver (bin);
 	}
 	g_free (bin);
 	return svr;
@@ -1010,16 +1010,16 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		const char *str;
 
 		gdm_error (_("Invalid server command '%s'"), disp->command);
-		str = gdm_get_value_string (GDM_KEY_STANDARD_XSERVER);
+		str = gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER);
        		g_shell_parse_argv (str, &argc, &argv, NULL);
 	} else if (bin[0] != '/') {
-		GdmXserver *svr = gdm_find_xserver (bin);
+		GdmXserver *svr = gdm_daemon_config_find_xserver (bin);
 		if (svr == NULL) {
 			const char *str;
 
 			gdm_error (_("Server name '%s' not found; "
 				     "using standard server"), bin);
-			str = gdm_get_value_string (GDM_KEY_STANDARD_XSERVER);
+			str = gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER);
 			g_shell_parse_argv (str, &argc, &argv, NULL);
 
 		} else {
@@ -1105,7 +1105,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		query_in_arglist = TRUE;
 	}
 
-	if (resolve_flags && gdm_get_value_bool (GDM_KEY_DISALLOW_TCP) && ! query_in_arglist) {
+	if (resolve_flags && gdm_daemon_config_get_value_bool (GDM_KEY_DISALLOW_TCP) && ! query_in_arglist) {
 		argv[len++] = g_strdup ("-nolisten");
 		argv[len++] = g_strdup ("tcp");
 		d->tcp_disallowed = TRUE;
@@ -1210,7 +1210,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	rotate_logs (d->name);
 
         /* Log all output from spawned programs to a file */
-	logfile = gdm_make_filename (gdm_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
+	logfile = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 	VE_IGNORE_EINTR (g_unlink (logfile));
 	VE_IGNORE_EINTR (logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 
@@ -1595,7 +1595,7 @@ get_font_path (const char *display)
 		if (i != 0)
 			g_string_append_c (gs, ',');
 
-	        if (gdm_get_value_bool (GDM_KEY_XNEST_UNSCALED_FONT_PATH) == TRUE)
+	        if (gdm_daemon_config_get_value_bool (GDM_KEY_XNEST_UNSCALED_FONT_PATH) == TRUE)
 			g_string_append (gs, font_path[i]);
 		else {
 			gchar *unscaled_ptr = NULL;

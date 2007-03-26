@@ -32,9 +32,9 @@
 #include "gdm.h"
 #include "misc.h"
 #include "getvt.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 /* Virtual terminals only supported on Linux, FreeBSD, or DragonFly */
 
@@ -111,7 +111,7 @@ get_free_vt_linux (int *vtfd)
 		return -1;
 	}
 
-	for (vtno = gdm_get_value_int (GDM_KEY_FIRST_VT), vtmask = 1 << vtno;
+	for (vtno = gdm_daemon_config_get_value_int (GDM_KEY_FIRST_VT), vtmask = 1 << vtno;
 			vtstat.v_state & vtmask; vtno++, vtmask <<= 1);
 	if (!vtmask) {
 		VE_IGNORE_EINTR (close (fd));
@@ -160,7 +160,7 @@ get_free_vt_freebsd_dragonfly (int *vtfd)
 		return -1;
 	}
 
-	while (vtno < gdm_get_value_int (GDM_KEY_FIRST_VT)) {
+	while (vtno < gdm_daemon_config_get_value_int (GDM_KEY_FIRST_VT)) {
 		int oldvt = vtno;
 		to_close_vts = g_list_prepend (to_close_vts,
 					       GINT_TO_POINTER (fdv));
@@ -196,7 +196,7 @@ cleanup:
 char *
 gdm_get_empty_vt_argument (int *fd, int *vt)
 {
-	if ( ! gdm_get_value_bool (GDM_KEY_VT_ALLOCATION)) {
+	if ( ! gdm_daemon_config_get_value_bool (GDM_KEY_VT_ALLOCATION)) {
 		*fd = -1;
 		return NULL;
 	}

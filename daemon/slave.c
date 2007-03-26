@@ -88,10 +88,10 @@
 #include "getvt.h"
 #include "errorgui.h"
 #include "cookie.h"
-#include "gdmconfig.h"
 #include "display.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 #ifdef WITH_CONSOLE_KIT
 #include "gdmconsolekit.h"
@@ -731,7 +731,7 @@ gdm_slave_start (GdmDisplay *display)
 	struct sigaction xfsz;
 #endif /* SIGXFSZ */
 	sigset_t mask;
-	int pinginterval = gdm_get_value_int (GDM_KEY_PING_INTERVAL);
+	int pinginterval = gdm_daemon_config_get_value_int (GDM_KEY_PING_INTERVAL);
 
 	/*
 	 * Set d global to display before setting signal handlers,
@@ -881,7 +881,7 @@ gdm_slave_start (GdmDisplay *display)
 
 		gdm_debug ("gdm_slave_start: Reinitializing things");
 
-		if (gdm_get_value_bool (GDM_KEY_ALWAYS_RESTART_SERVER)) {
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_ALWAYS_RESTART_SERVER)) {
 			/* Whack the server if we want to restart it next time
 			 * we run gdm_slave_run */
 			gdm_server_stop (display);
@@ -918,7 +918,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
-	gdm_slave_exec_script (display, gdm_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
+	gdm_slave_exec_script (display, gdm_daemon_config_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
 			       NULL, NULL, FALSE /* pass_stdout */);
 
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
@@ -984,10 +984,10 @@ gdm_screen_init (GdmDisplay *display)
 		if G_UNLIKELY (screen_num <= 0)
 			gdm_fail ("Xinerama active, but <= 0 screens?");
 
-		if (screen_num <= gdm_get_value_int (GDM_KEY_XINERAMA_SCREEN))
-			gdm_set_value_int (GDM_KEY_XINERAMA_SCREEN, 0);
+		if (screen_num <= gdm_daemon_config_get_value_int (GDM_KEY_XINERAMA_SCREEN))
+			gdm_daemon_config_set_value_int (GDM_KEY_XINERAMA_SCREEN, 0);
 
-		xineramascreen = gdm_get_value_int (GDM_KEY_XINERAMA_SCREEN);
+		xineramascreen = gdm_daemon_config_get_value_int (GDM_KEY_XINERAMA_SCREEN);
 
 		display->screenx = xscreens[xineramascreen].x_org;
 		display->screeny = xscreens[xineramascreen].y_org;
@@ -1033,10 +1033,10 @@ gdm_screen_init (GdmDisplay *display)
 		if G_UNLIKELY (result <= 0)
 			gdm_fail ("Xinerama active, but <= 0 screens?");
 
-		if (n_monitors <= gdm_get_value_int (GDM_KEY_XINERAMA_SCREEN))
-			gdm_set_value_int (GDM_KEY_XINERAMA_SCREEN, 0);
+		if (n_monitors <= gdm_daemon_config_get_value_int (GDM_KEY_XINERAMA_SCREEN))
+			gdm_daemon_config_set_value_int (GDM_KEY_XINERAMA_SCREEN, 0);
 
-		xineramascreen = gdm_get_value_int (GDM_KEY_XINERAMA_SCREEN);
+		xineramascreen = gdm_daemon_config_get_value_int (GDM_KEY_XINERAMA_SCREEN);
 		display->screenx = monitors[xineramascreen].x;
 		display->screeny = monitors[xineramascreen].y;
 		display->screenwidth = monitors[xineramascreen].width;
@@ -1219,12 +1219,12 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 	if (d->type != TYPE_XDMCP_PROXY) {
 		int r;
 
-		if (!gdm_get_value_bool (GDM_KEY_DOUBLE_LOGIN_WARNING)) {
+		if (!gdm_daemon_config_get_value_bool (GDM_KEY_DOUBLE_LOGIN_WARNING)) {
 			g_free (migrate_to);
 			return TRUE;
 		}
 
-		if (gdm_get_value_bool (GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION))
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION))
 			r = 1;
 		else
 			r = ask_migrate (migrate_to);
@@ -1308,7 +1308,7 @@ gdm_slave_run (GdmDisplay *display)
 {  
     gint openretries = 0;
     gint maxtries = 0;
-    gint pinginterval = gdm_get_value_int (GDM_KEY_PING_INTERVAL);
+    gint pinginterval = gdm_daemon_config_get_value_int (GDM_KEY_PING_INTERVAL);
     
     gdm_reset_locale ();
 
@@ -1372,17 +1372,17 @@ gdm_slave_run (GdmDisplay *display)
     if (d->handled) {
 	    /* Now the display name and hostname is final */
 
-	    char *automaticlogin = gdm_get_value_string (GDM_KEY_AUTOMATIC_LOGIN);
-	    char *timedlogin     = gdm_get_value_string (GDM_KEY_TIMED_LOGIN);
+	    const char *automaticlogin = gdm_daemon_config_get_value_string (GDM_KEY_AUTOMATIC_LOGIN);
+	    const char *timedlogin     = gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN);
 
-	    if (gdm_get_value_bool (GDM_KEY_AUTOMATIC_LOGIN_ENABLE) && 
+	    if (gdm_daemon_config_get_value_bool (GDM_KEY_AUTOMATIC_LOGIN_ENABLE) && 
 		! ve_string_empty (automaticlogin)) {
 		    g_free (ParsedAutomaticLogin);
 		    ParsedAutomaticLogin = gdm_parse_enriched_login (automaticlogin,
 								     display);
 	    }
 
-	    if (gdm_get_value_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
+	    if (gdm_daemon_config_get_value_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
 		! ve_string_empty (timedlogin)) {
 		    g_free (ParsedTimedLogin);
 		    ParsedTimedLogin = gdm_parse_enriched_login (timedlogin,
@@ -1725,7 +1725,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 	   We don't need to worry about defaults.conf as
 	   the daemon wont start without it
 	*/
-	if (gdm_get_custom_config_file() == NULL) {
+	if (gdm_daemon_config_get_custom_config_file () == NULL) {
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Could not access configuration file (custom.conf). "
@@ -1795,7 +1795,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		g_setenv ("USERNAME", pwent->pw_name, TRUE);
 		g_setenv ("HOME", pwent->pw_dir, TRUE);
 		g_setenv ("SHELL", pwent->pw_shell, TRUE);
-		g_setenv ("PATH", gdm_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
+		g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
 		g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 		if ( ! ve_string_empty (display->theme_name))
 			g_setenv ("GDM_GTK_THEME", display->theme_name, TRUE);
@@ -1819,7 +1819,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		/* exec the configurator */
 		argv = NULL;
-		s = gdm_get_value_string (GDM_KEY_CONFIGURATOR);
+		s = gdm_daemon_config_get_value_string (GDM_KEY_CONFIGURATOR);
 		if (s != NULL) {
 			g_shell_parse_argv (s, NULL, &argv, NULL);
 		}
@@ -1923,7 +1923,7 @@ restart_the_greeter (void)
 static gboolean
 play_login_sound (const char *sound_file)
 {
-	char *soundprogram = gdm_get_value_string (GDM_KEY_SOUND_PROGRAM);
+	const char *soundprogram = gdm_daemon_config_get_value_string (GDM_KEY_SOUND_PROGRAM);
 	pid_t pid;
 
 	if (ve_string_empty (soundprogram) ||
@@ -1959,7 +1959,7 @@ play_login_sound (const char *sound_file)
 static void
 gdm_slave_wait_for_login (void)
 {
-	char *successsound;
+	const char *successsound;
 	char *username;
 	g_free (login);
 	login = NULL;
@@ -2024,8 +2024,8 @@ gdm_slave_wait_for_login (void)
 				 _("You must authenticate as root to run configuration."));
 
 			/* we always allow root for this */
-			oldAllowRoot = gdm_get_value_bool (GDM_KEY_ALLOW_ROOT);
-			gdm_set_value_bool (GDM_KEY_ALLOW_ROOT, TRUE);
+			oldAllowRoot = gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT);
+			gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_ROOT, TRUE);
 
 			pwent = getpwuid (0);
 			if G_UNLIKELY (pwent == NULL) {
@@ -2039,7 +2039,7 @@ gdm_slave_wait_for_login (void)
 						 pwent->pw_name,
 						 d->name,
 						 d->attached);
-			gdm_set_value_bool (GDM_KEY_ALLOW_ROOT, oldAllowRoot);
+			gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_ROOT, oldAllowRoot);
 
 			/* Clear message */
 			gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
@@ -2143,14 +2143,14 @@ gdm_slave_wait_for_login (void)
 		}
 
 		if (login == NULL) {
-			char *failuresound = gdm_get_value_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
+			const char *failuresound = gdm_daemon_config_get_value_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
 			gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 
 			/* Play sounds if specified for a failed login */
 			if (d->attached && failuresound &&
-			    gdm_get_value_bool (GDM_KEY_SOUND_ON_LOGIN_FAILURE) &&
+			    gdm_daemon_config_get_value_bool (GDM_KEY_SOUND_ON_LOGIN_FAILURE) &&
 			    ! play_login_sound (failuresound)) {
 				gdm_error (_("Login sound requested on non-local display or the play "
 					     "software cannot be run or the sound does not exist."));
@@ -2169,10 +2169,10 @@ gdm_slave_wait_for_login (void)
 		gdm_debug ("gdm_slave_wait_for_login: Timed Login");
 	}
 
-	successsound = gdm_get_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
+	successsound = gdm_daemon_config_get_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
 	/* Play sounds if specified for a successful login */
 	if (login != NULL && successsound &&
-	    gdm_get_value_bool (GDM_KEY_SOUND_ON_LOGIN_SUCCESS) &&
+	    gdm_daemon_config_get_value_bool (GDM_KEY_SOUND_ON_LOGIN_SUCCESS) &&
 	    d->attached &&
 	    ! play_login_sound (successsound)) {
 		gdm_error (_("Login sound requested on non-local display or the play software "
@@ -2221,25 +2221,25 @@ run_pictures (void)
 		NEVER_FAILS_seteuid (0);
 		if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
 			       seteuid (pwent->pw_uid) != 0) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
 		}
 
-		picfile = gdm_get_facefile_from_home (pwent->pw_dir, pwent->pw_uid);
+		picfile = gdm_daemon_config_get_facefile_from_home (pwent->pw_dir, pwent->pw_uid);
 
 		if (! picfile)
-			picfile = gdm_get_facefile_from_global (pwent->pw_name, pwent->pw_uid);
+			picfile = gdm_daemon_config_get_facefile_from_global (pwent->pw_name, pwent->pw_uid);
 
 		if (! picfile) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
 		}
 
 		VE_IGNORE_EINTR (r = g_stat (picfile, &s));
-		if G_UNLIKELY (r < 0 || s.st_size > gdm_get_value_int (GDM_KEY_USER_MAX_FILE)) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+		if G_UNLIKELY (r < 0 || s.st_size > gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE)) {
+			NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2248,7 +2248,7 @@ run_pictures (void)
 		VE_IGNORE_EINTR (fp = fopen (picfile, "r"));
 		g_free (picfile);
 		if G_UNLIKELY (fp == NULL) {
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2262,7 +2262,7 @@ run_pictures (void)
 			VE_IGNORE_EINTR (fclose (fp));
 			g_free (ret);
 
-			NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+			NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 
 			continue;
 		}
@@ -2340,7 +2340,7 @@ run_pictures (void)
 			
 		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "done");
 
-		NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+		NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 	}
 	g_free (response); /* not reached */
 }
@@ -2359,7 +2359,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	int cnt;
 
 	NEVER_FAILS_seteuid (0);
-	NEVER_FAILS_setegid (gdm_get_gdmgid ());
+	NEVER_FAILS_setegid (gdm_daemon_config_get_gdmgid ());
 
 	if G_UNLIKELY (seteuid (fromuid) != 0) {
 		NEVER_FAILS_root_set_euid_egid (old, oldg);
@@ -2391,7 +2391,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	NEVER_FAILS_root_set_euid_egid (0, 0);
 
-	name = gdm_make_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR),
+	name = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
 		d->name, ".XnestAuth");
 
 	VE_IGNORE_EINTR (g_unlink (name));
@@ -2443,7 +2443,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		cnt = cnt + written;
 		/* this should never occur (we check above)
 		   but we're paranoid) */
-		if G_UNLIKELY (cnt > gdm_get_value_int (GDM_KEY_USER_MAX_FILE))
+		if G_UNLIKELY (cnt > gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE))
 			return NULL;
 	}
 
@@ -2491,15 +2491,15 @@ gdm_slave_greeter (void)
     gint pipe1[2], pipe2[2];  
     struct passwd *pwent;
     pid_t pid;
-    char *command;
-    char *defaultpath;
-    char *gdmuser;
-    char *moduleslist;
+    const char *command;
+    const char *defaultpath;
+    const char *gdmuser;
+    const char *moduleslist;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
     /* Run the init script. gdmslave suspends until script has terminated */
-    gdm_slave_exec_script (d, gdm_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
+    gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
 			   NULL, NULL, FALSE /* pass_stdout */);
 
     /* Open a pipe for greeter communications */
@@ -2548,21 +2548,21 @@ gdm_slave_greeter (void)
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
-	if G_UNLIKELY (setgid (gdm_get_gdmgid ()) < 0) 
+	if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: Couldn't set groupid to %d"),
-			    "gdm_slave_greeter", gdm_get_gdmgid ());
+			    "gdm_slave_greeter", gdm_daemon_config_get_gdmgid ());
 
-	gdmuser = gdm_get_value_string (GDM_KEY_USER);
-	if G_UNLIKELY (initgroups (gdmuser, gdm_get_gdmgid ()) < 0)
+	gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
+	if G_UNLIKELY (initgroups (gdmuser, gdm_daemon_config_get_gdmgid ()) < 0)
             gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: initgroups () failed for %s"),
 			    "gdm_slave_greeter", gdmuser);
 	
-	if G_UNLIKELY (setuid (gdm_get_gdmuid ()) < 0) 
+	if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: Couldn't set userid to %d"),
-			    "gdm_slave_greeter", gdm_get_gdmuid ());
+			    "gdm_slave_greeter", gdm_daemon_config_get_gdmuid ());
 
 	gdm_restoreenv ();
 	gdm_reset_locale ();
@@ -2589,17 +2589,17 @@ gdm_slave_greeter (void)
 			g_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
 			g_setenv ("HOME",
-				ve_sure_string (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+				ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
 				TRUE); /* Hack */
 		g_setenv ("SHELL", pwent->pw_shell, TRUE);
 	} else {
 		g_setenv ("HOME",
-			 ve_sure_string (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+			 ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
 			 TRUE); /* Hack */
 		g_setenv ("SHELL", "/bin/sh", TRUE);
 	}
 
-	defaultpath = gdm_get_value_string (GDM_KEY_PATH);
+	defaultpath = gdm_daemon_config_get_value_string (GDM_KEY_PATH);
 	if (ve_string_empty (g_getenv ("PATH"))) {
 		g_setenv ("PATH", defaultpath, TRUE);
 	} else if ( ! ve_string_empty (defaultpath)) {
@@ -2612,7 +2612,7 @@ gdm_slave_greeter (void)
 	if ( ! ve_string_empty (d->theme_name))
 		g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
-	if (gdm_get_value_bool (GDM_KEY_DEBUG_GESTURES)) {
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG_GESTURES)) {
 		g_setenv ("GDM_DEBUG_GESTURES", "true", TRUE);
 	}
 
@@ -2676,9 +2676,9 @@ gdm_slave_greeter (void)
 	}
 
 	if (d->attached)
-		command = gdm_get_value_string (GDM_KEY_GREETER);
+		command = gdm_daemon_config_get_value_string (GDM_KEY_GREETER);
 	else
-		command = gdm_get_value_string (GDM_KEY_REMOTE_GREETER);
+		command = gdm_daemon_config_get_value_string (GDM_KEY_REMOTE_GREETER);
 
 	if G_UNLIKELY (d->try_different_greeter) {
 		/* FIXME: we should also really be able to do standalone failsafe
@@ -2701,9 +2701,9 @@ gdm_slave_greeter (void)
 		}
 	}
 
-	moduleslist = gdm_get_value_string (GDM_KEY_GTK_MODULES_LIST);
+	moduleslist = gdm_daemon_config_get_value_string (GDM_KEY_GTK_MODULES_LIST);
 
-	if (gdm_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
 	    ! ve_string_empty (moduleslist) &&
 	    /* don't add modules if we're trying to prevent crashes,
 	       perhaps it's the modules causing the problem in the first place */
@@ -2795,7 +2795,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		   these functions.  And if the pipe creation failed
 		   in main daemon just abort the main daemon.  */
 		/* Use the fifo as a fallback only now that we have a pipe */
-		fifopath = g_build_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR),
+		fifopath = g_build_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
 			".gdmfifo", NULL);
 		old = geteuid ();
 		if (old != 0)
@@ -2923,7 +2923,7 @@ gdm_slave_send_string (const char *opcode, const char *str)
 {
 	char *msg;
 
-	if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_DEBUG) && gdm_in_signal == 0) {
+	if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG) && gdm_in_signal == 0) {
 		gdm_debug ("Sending %s == <secret> for slave %ld",
 			   opcode,
 			   (long)getpid ());
@@ -3007,9 +3007,9 @@ gdm_slave_chooser (void)
 	struct passwd *pwent;
 	pid_t pid;
 	GdmWaitPid *wp;
-	char *defaultpath;
-	char *gdmuser;
-	char *moduleslist;
+	const char *defaultpath;
+	const char *gdmuser;
+	const char *moduleslist;
 
 	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
 
@@ -3018,7 +3018,7 @@ gdm_slave_chooser (void)
 		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmchooser"), "gdm_slave_chooser");
 
 	/* Run the init script. gdmslave suspends until script has terminated */
-	gdm_slave_exec_script (d, gdm_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
+	gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
 			       NULL, NULL, FALSE /* pass_stdout */);
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
@@ -3053,21 +3053,21 @@ gdm_slave_chooser (void)
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		if G_UNLIKELY (setgid (gdm_get_gdmgid ()) < 0) 
+		if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0) 
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set groupid to %d"),
-					"gdm_slave_chooser", gdm_get_gdmgid ());
+					"gdm_slave_chooser", gdm_daemon_config_get_gdmgid ());
 
-		gdmuser = gdm_get_value_string (GDM_KEY_USER);
-		if G_UNLIKELY (initgroups (gdmuser, gdm_get_gdmgid ()) < 0)
+		gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
+		if G_UNLIKELY (initgroups (gdmuser, gdm_daemon_config_get_gdmgid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: initgroups () failed for %s"),
 					"gdm_slave_chooser", gdmuser);
 
-		if G_UNLIKELY (setuid (gdm_get_gdmuid ()) < 0) 
+		if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0) 
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set userid to %d"),
-					"gdm_slave_chooser", gdm_get_gdmuid ());
+					"gdm_slave_chooser", gdm_daemon_config_get_gdmuid ());
 
 		gdm_restoreenv ();
 		gdm_reset_locale ();
@@ -3090,17 +3090,17 @@ gdm_slave_chooser (void)
 				g_setenv ("HOME", pwent->pw_dir, TRUE);
 			else
 				g_setenv ("HOME",
-					ve_sure_string (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+					ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
 					TRUE); /* Hack */
 			g_setenv ("SHELL", pwent->pw_shell, TRUE);
 		} else {
 			g_setenv ("HOME",
-				ve_sure_string (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+				ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
 				TRUE); /* Hack */
 			g_setenv ("SHELL", "/bin/sh", TRUE);
 		}
 
-		defaultpath = gdm_get_value_string (GDM_KEY_PATH);
+		defaultpath = gdm_daemon_config_get_value_string (GDM_KEY_PATH);
 		if (ve_string_empty (g_getenv ("PATH"))) {
 			g_setenv ("PATH", defaultpath, TRUE);
 		} else if ( ! ve_string_empty (defaultpath)) {
@@ -3113,14 +3113,14 @@ gdm_slave_chooser (void)
 		if ( ! ve_string_empty (d->theme_name))
 			g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
-		moduleslist = gdm_get_value_string (GDM_KEY_GTK_MODULES_LIST);
-		if (gdm_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
+		moduleslist = gdm_daemon_config_get_value_string (GDM_KEY_GTK_MODULES_LIST);
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
 		    ! ve_string_empty (moduleslist)) {
 			char *modules = g_strdup_printf ("--gtk-module=%s", moduleslist);
-			exec_command (gdm_get_value_string (GDM_KEY_CHOOSER), modules);
+			exec_command (gdm_daemon_config_get_value_string (GDM_KEY_CHOOSER), modules);
 		}
 
-		exec_command (gdm_get_value_string (GDM_KEY_CHOOSER), NULL);
+		exec_command (gdm_daemon_config_get_value_string (GDM_KEY_CHOOSER), NULL);
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -3203,10 +3203,10 @@ is_session_ok (const char *session_name)
 	    strcmp (session_name, GDM_SESSION_FAILSAFE_XTERM) == 0)
 		return TRUE;
 
-	if (ve_string_empty (gdm_get_value_string (GDM_KEY_SESSION_DESKTOP_DIR)))
+	if (ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SESSION_DESKTOP_DIR)))
 		return gdm_is_session_magic (session_name);
 
-	exec = gdm_get_session_exec (session_name, TRUE /* check_try_exec */);
+	exec = gdm_daemon_config_get_session_exec (session_name, TRUE /* check_try_exec */);
 	if (exec == NULL)
 		ret = FALSE;
 	g_free (exec);
@@ -3232,7 +3232,7 @@ find_a_session (void)
 	};
 	int i;
 	char *session;
-	char *defaultsession = gdm_get_value_string (GDM_KEY_DEFAULT_SESSION);
+	const char *defaultsession = gdm_daemon_config_get_value_string (GDM_KEY_DEFAULT_SESSION);
 
 	if (!ve_string_empty (defaultsession) &&
 	    is_session_ok (defaultsession))
@@ -3462,7 +3462,7 @@ session_child_run (struct passwd *pwent,
 {
 	char *exec;
 	const char *shell = NULL;
-	char *greeter;
+	const char *greeter;
 	gint result;
 #ifndef HAVE_TSOL
 	char *argv[4];
@@ -3509,9 +3509,9 @@ session_child_run (struct passwd *pwent,
 	/* Determine default greeter type so the PreSession */
 	/* script can set the appropriate background color. */
 	if (d->attached) {
-		greeter = gdm_get_value_string (GDM_KEY_GREETER);
+		greeter = gdm_daemon_config_get_value_string (GDM_KEY_GREETER);
 	} else {
-		greeter = gdm_get_value_string (GDM_KEY_REMOTE_GREETER);		
+		greeter = gdm_daemon_config_get_value_string (GDM_KEY_REMOTE_GREETER);		
 	}
 	
 	if (strstr (greeter, "gdmlogin") != NULL) {
@@ -3524,7 +3524,7 @@ session_child_run (struct passwd *pwent,
 	}
 
 	/* Run the PreSession script */
-	if G_UNLIKELY (gdm_slave_exec_script (d, gdm_get_value_string (GDM_KEY_PRESESSION),
+	if G_UNLIKELY (gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_PRESESSION),
                                               pwent->pw_name, pwent,
 					      TRUE /* pass_stdout */) != EXIT_SUCCESS &&
 		       /* ignore errors in failsafe modes */
@@ -3572,9 +3572,9 @@ session_child_run (struct passwd *pwent,
 
 	/* Special PATH for root */
 	if (pwent->pw_uid == 0)
-		g_setenv ("PATH", gdm_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
+		g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
 	else
-		g_setenv ("PATH", gdm_get_value_string (GDM_KEY_PATH), TRUE);
+		g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_PATH), TRUE);
 
 	/* Eeeeek, this no lookie as a correct language code,
 	 * just use the system default */
@@ -3686,7 +3686,7 @@ session_child_run (struct passwd *pwent,
 	VE_IGNORE_EINTR (g_chdir (home_dir));
 	
         if (usrcfgok && home_dir_ok)
-		gdm_set_user_session_lang (savesess, savelang, home_dir, save_session, language);
+		gdm_daemon_config_set_user_session_lang (savesess, savelang, home_dir, save_session, language);
 	
 	closelog ();
 
@@ -3707,7 +3707,7 @@ session_child_run (struct passwd *pwent,
 	exec = NULL;
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
 	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
-		exec = gdm_get_session_exec (session,
+		exec = gdm_daemon_config_get_session_exec (session,
 			FALSE /* check_try_exec */);
 
 		if G_UNLIKELY (exec == NULL) {
@@ -3731,7 +3731,7 @@ session_child_run (struct passwd *pwent,
 	}
 
 	if (exec != NULL) {
-		char *basexsession = gdm_get_value_string (GDM_KEY_BASE_XSESSION);
+		const char *basexsession = gdm_daemon_config_get_value_string (GDM_KEY_BASE_XSESSION);
 
 		/* cannot be possibly failsafe */
 		if G_UNLIKELY (g_access (basexsession, X_OK) != 0) {
@@ -3748,17 +3748,17 @@ session_child_run (struct passwd *pwent,
 			   exec in just a bit */
 #ifdef HAVE_TSOL
 			if (have_suntsol_extension) {
-				argv[0] = basexsession;
+				argv[0] = g_strdup (basexsession);
 				argv[1] = g_strdup ("/usr/bin/tsoljdslabel");
 				argv[2] = exec;
 				argv[3] = argv[4] = argv[5] = argv[6] = NULL;
 			} else {
 #endif
-			argv[0] = basexsession;
-			argv[1] = exec;
-			argv[2] = NULL;
+				argv[0] = g_strdup (basexsession);
+				argv[1] = exec;
+				argv[2] = NULL;
 #ifdef HAVE_TSOL
-			argv[3] = argv[4] = argv[5] = argv[6] = NULL;
+				argv[3] = argv[4] = argv[5] = argv[6] = NULL;
 			}
 #endif
 		}
@@ -4076,7 +4076,7 @@ gdm_slave_session_start (void)
     logged_in_gid = gid = pwent->pw_gid;
 
     /* Run the PostLogin script */
-    if G_UNLIKELY (gdm_slave_exec_script (d, gdm_get_value_string (GDM_KEY_POSTLOGIN),
+    if G_UNLIKELY (gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_POSTLOGIN),
 					  login, pwent,
 					  TRUE /* pass_stdout */) != EXIT_SUCCESS &&
 		   /* ignore errors in failsafe modes */
@@ -4115,7 +4115,7 @@ gdm_slave_session_start (void)
 
 	    /* Set euid, egid to root:gdm to manage user interaction */
             seteuid (0);
-            setegid (gdm_get_gdmgid ());
+            setegid (gdm_daemon_config_get_gdmgid ());
 
 	    gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
 		       "gdm_slave_session_start",
@@ -4162,14 +4162,14 @@ gdm_slave_session_start (void)
 	    /* Sanity check on ~user/.dmrc */
 	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
 				       home_dir, ".dmrc", TRUE, FALSE,
-				       gdm_get_value_int (GDM_KEY_USER_MAX_FILE),
-				       gdm_get_value_int (GDM_KEY_RELAX_PERM));
+				       gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE),
+				       gdm_daemon_config_get_value_int (GDM_KEY_RELAX_PERM));
     } else {
 	    usrcfgok = FALSE;
     }
 
     if G_LIKELY (usrcfgok) {
-	    gdm_get_user_session_lang (&usrsess, &usrlang, home_dir, &savesess);
+	    gdm_daemon_config_get_user_session_lang (&usrsess, &usrlang, home_dir, &savesess);
     } else {
 	/* This won't get displayed if the .dmrc file simply doesn't
 	 * exist since we pass absentok=TRUE when we call gdm_file_check
@@ -4187,7 +4187,7 @@ gdm_slave_session_start (void)
 	usrlang = g_strdup ("");
     }
 
-    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+    NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 
     if (greet) {
 	    tmp = gdm_ensure_extension (usrsess, ".desktop");
@@ -4260,7 +4260,7 @@ gdm_slave_session_start (void)
 	    gdm_slave_whack_greeter ();
     }
 
-    if (gdm_get_value_bool (GDM_KEY_KILL_INIT_CLIENTS))
+    if (gdm_daemon_config_get_value_bool (GDM_KEY_KILL_INIT_CLIENTS))
 	    gdm_server_whack_clients (d->dsp);
 
     /* Now that we will set up the user authorization we will
@@ -4298,7 +4298,7 @@ gdm_slave_session_start (void)
 	    }
     }
 
-    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+    NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
     
     if G_UNLIKELY ( ! authok) {
 	    gdm_debug ("gdm_slave_session_start: Auth not OK");
@@ -4324,7 +4324,7 @@ gdm_slave_session_start (void)
 	    failsafe = TRUE;
 
     if G_LIKELY ( ! failsafe) {
-	    char *exec = gdm_get_session_exec (session, FALSE /* check_try_exec */);
+	    char *exec = gdm_daemon_config_get_session_exec (session, FALSE /* check_try_exec */);
 	    if ( ! ve_string_empty (exec) &&
 		strcmp (exec, "failsafe") == 0)
 		    failsafe = TRUE;
@@ -4418,7 +4418,7 @@ gdm_slave_session_start (void)
     }
     
     /* this clears internal cache */
-    gdm_get_session_exec (NULL, FALSE);
+    gdm_daemon_config_get_session_exec (NULL, FALSE);
 
     if G_LIKELY (logfilefd >= 0)  {
 	    d->xsession_errors_fd = logfilefd;
@@ -4429,7 +4429,7 @@ gdm_slave_session_start (void)
     }
 
     /* We must be root for this, and we are, but just to make sure */
-    NEVER_FAILS_root_set_euid_egid (0, gdm_get_gdmgid ());
+    NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
     /* Reset all the process limits, pam may have set some up for our process and that
        is quite evil.  But pam is generally evil, so this is to be expected. */
     gdm_reset_limits ();
@@ -4556,14 +4556,14 @@ gdm_slave_session_stop (gboolean run_post_session,
     else
 	    pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
 
-    x_servers_file = gdm_make_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR),
+    x_servers_file = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
 					d->name, ".Xservers");
 
     /* if there was a session that ran, run the PostSession script */
     if (run_post_session) {
 	    /* Execute post session script */
 	    gdm_debug ("gdm_slave_session_stop: Running post session script");
-	    gdm_slave_exec_script (d, gdm_get_value_string (GDM_KEY_POSTSESSION), local_login, pwent,
+	    gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_POSTSESSION), local_login, pwent,
 				   FALSE /* pass_stdout */);
     }
 
@@ -4728,7 +4728,7 @@ gdm_slave_alrm_handler (int sig)
 	in_ping = TRUE;
 
 	/* schedule next alarm */
-	alarm (gdm_get_value_int (GDM_KEY_PING_INTERVAL));
+	alarm (gdm_daemon_config_get_value_int (GDM_KEY_PING_INTERVAL));
 
 	XSync (d->dsp, True);
 
@@ -5046,26 +5046,26 @@ check_for_interruption (const char *msg)
 			 * it is allowed for this display (it's only allowed
 			 * for the first local display) and if it's set up
 			 * correctly */
-			if ((d->attached || gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN)) 
+			if ((d->attached || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN)) 
                             && d->timed_login_ok &&
 			    ! ve_string_empty (ParsedTimedLogin) &&
                             strcmp (ParsedTimedLogin, gdm_root_user ()) != 0 &&
-			    gdm_get_value_int (GDM_KEY_TIMED_LOGIN_DELAY) > 0) {
+			    gdm_daemon_config_get_value_int (GDM_KEY_TIMED_LOGIN_DELAY) > 0) {
 				do_timed_login = TRUE;
 			}
 			break;
 		case GDM_INTERRUPT_CONFIGURE:
 			if (d->attached &&
-			    gdm_get_value_bool_per_display (d->name, GDM_KEY_CONFIG_AVAILABLE) &&
-			    gdm_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
-			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_CONFIGURATOR))) {
+			    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_CONFIG_AVAILABLE) &&
+			    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
+			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_CONFIGURATOR))) {
 				do_configurator = TRUE;
 			}
 			break;
 		case GDM_INTERRUPT_SUSPEND:
 			if (d->attached &&
-			    gdm_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
-			    ! ve_string_empty (gdm_get_value_string (GDM_KEY_SUSPEND))) {
+			    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
+			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
 			    	gchar *msg = g_strdup_printf ("%s %ld", 
 					GDM_SOP_SUSPEND_MACHINE,
 					(long)getpid ());
@@ -5078,7 +5078,7 @@ check_for_interruption (const char *msg)
 			return TRUE;
 		case GDM_INTERRUPT_LOGIN_SOUND:
 			if (d->attached &&
-			    ! play_login_sound (gdm_get_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE))) {
+			    ! play_login_sound (gdm_daemon_config_get_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE))) {
 				gdm_error (_("Login sound requested on non-local display or the play software "
 					     "cannot be run or the sound does not exist"));
 			}
@@ -5294,7 +5294,7 @@ create_temp_auth_file (void)
 		g_free (d->parent_temp_auth_file);
 		d->parent_temp_auth_file =
 			copy_auth_file (d->server_uid,
-					gdm_get_gdmuid (),
+					gdm_daemon_config_get_gdmuid (),
 					d->parent_auth_file);
 	}
 }
@@ -5397,7 +5397,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	        g_setenv ("USER", login, TRUE);
 	        g_setenv ("USERNAME", login, TRUE);
         } else {
-		char *gdmuser = gdm_get_value_string (GDM_KEY_USER);
+		const char *gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
 	        g_setenv ("LOGNAME", gdmuser, TRUE);
 	        g_setenv ("USER", gdmuser, TRUE);
 	        g_setenv ("USERNAME", gdmuser, TRUE);
@@ -5427,7 +5427,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	set_xnest_parent_stuff ();
 
 	/* some env for use with the Pre and Post scripts */
-	x_servers_file = gdm_make_filename (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR),
+	x_servers_file = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
 					    d->name, ".Xservers");
 	g_setenv ("X_SERVERS", x_servers_file, TRUE);
 	g_free (x_servers_file);
@@ -5440,7 +5440,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	else
 		g_unsetenv ("XAUTHORITY");
         g_setenv ("DISPLAY", d->name, TRUE);
-	g_setenv ("PATH", gdm_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
+	g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
 	g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	if ( ! ve_string_empty (d->theme_name))
 		g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
@@ -5581,7 +5581,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    g_setenv ("DISPLAY", display->name, TRUE);
 	    if (SERVER_IS_XDMCP (display))
 		    g_setenv ("REMOTE_HOST", display->hostname, TRUE);
-	    g_setenv ("PATH", gdm_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
+	    g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
 	    g_setenv ("SHELL", "/bin/sh", TRUE);
 	    g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	    if ( ! ve_string_empty (d->theme_name))
@@ -5635,7 +5635,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
          *  automatic login [and timed login] is not performed." -- GDM manual 
 	 */
 	/* fixme: also turn off automatic login */
-	gdm_set_value_bool(GDM_KEY_TIMED_LOGIN_ENABLE, FALSE);
+	gdm_daemon_config_set_value_bool(GDM_KEY_TIMED_LOGIN_ENABLE, FALSE);
 	d->timed_login_ok = FALSE;
 	do_timed_login = FALSE;
 	g_string_free(str, TRUE);
@@ -5651,31 +5651,31 @@ gdm_slave_handle_notify (const char *msg)
 	gdm_debug ("Handling slave notify: '%s'", msg);
 
 	if (sscanf (msg, GDM_NOTIFY_ALLOW_ROOT " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_ALLOW_ROOT, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_ROOT, val);
 	} else if (sscanf (msg, GDM_NOTIFY_ALLOW_REMOTE_ROOT " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, val);
 	} else if (sscanf (msg, GDM_NOTIFY_ALLOW_REMOTE_AUTOLOGIN " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN, val);
 	} else if (sscanf (msg, GDM_NOTIFY_SYSTEM_MENU " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_SYSTEM_MENU, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_SYSTEM_MENU, val);
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_CONFIG_AVAILABLE " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_CONFIG_AVAILABLE, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_CONFIG_AVAILABLE, val);
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_CHOOSER_BUTTON " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_CHOOSER_BUTTON, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_CHOOSER_BUTTON, val);
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_RETRY_DELAY " %d", &val) == 1) {
-		gdm_set_value_int (GDM_KEY_RETRY_DELAY, val);
+		gdm_daemon_config_set_value_int (GDM_KEY_RETRY_DELAY, val);
 	} else if (sscanf (msg, GDM_NOTIFY_DISALLOW_TCP " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_DISALLOW_TCP, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_DISALLOW_TCP, val);
 		remanage_asap = TRUE;
 	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",
 			    strlen (GDM_NOTIFY_GREETER) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_GREETER, ((gchar *)&msg[strlen (GDM_NOTIFY_GREETER) + 1]));
+		gdm_daemon_config_set_value_string (GDM_KEY_GREETER, ((gchar *)&msg[strlen (GDM_NOTIFY_GREETER) + 1]));
 
 		if (d->attached) {
 			do_restart_greeter = TRUE;
@@ -5697,7 +5697,7 @@ gdm_slave_handle_notify (const char *msg)
 			gchar * key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, val);
 			/* This assumes that the number of commands is < 100, i.e two digits 
 			   if that is not the case then this will fail */
-			gdm_set_value_string (key_string, ((gchar *)&msg[strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE) + 2]));
+			gdm_daemon_config_set_value_string (key_string, ((gchar *)&msg[strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE) + 2]));
 			g_free(key_string);
 
 			if (d->attached) {
@@ -5717,7 +5717,7 @@ gdm_slave_handle_notify (const char *msg)
 		}		
 	} else if (strncmp (msg, GDM_NOTIFY_REMOTE_GREETER " ",
 			    strlen (GDM_NOTIFY_REMOTE_GREETER) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_REMOTE_GREETER,
+		gdm_daemon_config_set_value_string (GDM_KEY_REMOTE_GREETER,
 			(gchar *)(&msg[strlen (GDM_NOTIFY_REMOTE_GREETER) + 1]));
 		if ( ! d->attached) {
 			do_restart_greeter = TRUE;
@@ -5751,28 +5751,28 @@ gdm_slave_handle_notify (const char *msg)
 		}
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE,
+		gdm_daemon_config_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE,
 			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE,
+		gdm_daemon_config_set_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE,
 			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE,
+		gdm_daemon_config_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE,
 			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_GTK_MODULES_LIST " ",
 			    strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1) == 0) {
-		gdm_set_value_string (GDM_KEY_GTK_MODULES_LIST,
+		gdm_daemon_config_set_value_string (GDM_KEY_GTK_MODULES_LIST,
 			(gchar *)(&msg[strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1]));
 
-		if (gdm_get_value_bool (GDM_KEY_ADD_GTK_MODULES)) {
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES)) {
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
 				; /* will get restarted later */
@@ -5787,7 +5787,7 @@ gdm_slave_handle_notify (const char *msg)
 			}
 		}
 	} else if (sscanf (msg, GDM_NOTIFY_ADD_GTK_MODULES " %d", &val) == 1) {
-		gdm_set_value_bool (GDM_KEY_ADD_GTK_MODULES, val);
+		gdm_daemon_config_set_value_bool (GDM_KEY_ADD_GTK_MODULES, val);
 
 		do_restart_greeter = TRUE;
 		if (restart_greeter_now) {

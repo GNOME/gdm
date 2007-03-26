@@ -42,7 +42,9 @@
 #include "misc.h"
 #include "choose.h"
 #include "xdmcp.h"
-#include "gdmconfig.h"
+
+#include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 static gint ipending = 0;
 static GSList *indirect = NULL;
@@ -148,7 +150,7 @@ gdm_choose_data (const char *data)
 		GdmIndirectDisplay *idisp = li->data;
 		if (idisp->id == id) {
 			/* whack the oldest if more then allowed */
-			while (ipending >= gdm_get_value_int (GDM_KEY_MAX_INDIRECT) &&
+			while (ipending >= gdm_daemon_config_get_value_int (GDM_KEY_MAX_INDIRECT) &&
 			       remove_oldest_pending ())
 				;
 
@@ -333,7 +335,7 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 		continue;
 
 	if (id->acctime > 0 &&
-	    curtime > id->acctime + gdm_get_value_int (GDM_KEY_MAX_WAIT_INDIRECT)) {
+	    curtime > id->acctime + gdm_daemon_config_get_value_int (GDM_KEY_MAX_WAIT_INDIRECT)) {
 #ifdef ENABLE_IPV6
 	    if (clnt_sa->ss_family == AF_INET6) {
 		char buffer6[INET6_ADDRSTRLEN];

@@ -43,6 +43,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 gint gdm_timed_delay = 0;
 static Atom AT_SPI_IOR;
@@ -675,6 +676,30 @@ gdm_common_pre_fetch_launch (void)
 		return;
 
 	g_idle_add (pre_fetch_run, NULL);
+}
+
+static char *
+ve_strftime (struct tm *the_tm, const char *format)
+{
+	char str[1024];
+	char *loc_format;
+
+	loc_format = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
+	if (loc_format == NULL) {
+		g_warning ("string not in proper utf8 encoding: \"%s\"", format);
+		return NULL;
+	}
+
+	if (strftime (str, sizeof (str)-1, loc_format, the_tm) == 0) {
+		/* according to docs, if the string does not fit, the
+		 * contents of str are undefined, thus just use
+		 * ??? */
+		strcpy (str, "???");
+	}
+	str [sizeof (str)-1] = '\0'; /* just for sanity */
+	g_free (loc_format);
+
+	return g_locale_to_utf8 (str, -1, NULL, NULL, NULL);
 }
 
 /*

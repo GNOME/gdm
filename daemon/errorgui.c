@@ -39,11 +39,11 @@
 #include "gdm.h"
 #include "misc.h"
 #include "auth.h"
-#include "gdmconfig.h"
 #include "errorgui.h"
 #include "slave.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 /* set in the main function */
 extern char **stored_argv;
@@ -204,9 +204,9 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 	if (set_gdm_ids) {
-		setgid (gdm_get_gdmgid ());
-		initgroups (gdm_get_value_string (GDM_KEY_USER), gdm_get_gdmgid ());
-		setuid (gdm_get_gdmuid ());
+		setgid (gdm_daemon_config_get_gdmgid ());
+		initgroups (gdm_daemon_config_get_value_string (GDM_KEY_USER), gdm_daemon_config_get_gdmgid ());
+		setuid (gdm_daemon_config_get_gdmuid ());
 		pw = NULL;
 	} else {
 		pw = getpwuid (uid);
@@ -219,9 +219,9 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-	g_setenv ("LOGNAME", gdm_get_value_string (GDM_KEY_USER), TRUE);
-	g_setenv ("USER", gdm_get_value_string (GDM_KEY_USER), TRUE);
-	g_setenv ("USERNAME", gdm_get_value_string (GDM_KEY_USER), TRUE);
+	g_setenv ("LOGNAME", gdm_daemon_config_get_value_string (GDM_KEY_USER), TRUE);
+	g_setenv ("USER", gdm_daemon_config_get_value_string (GDM_KEY_USER), TRUE);
+	g_setenv ("USERNAME", gdm_daemon_config_get_value_string (GDM_KEY_USER), TRUE);
 
 	g_setenv ("DISPLAY", d->name, TRUE);
 	g_unsetenv ("XAUTHORITY");
@@ -233,7 +233,7 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 	/* set HOME to /, we don't need no stinking HOME anyway */
 	if (pw == NULL ||
 	    ve_string_empty (pw->pw_dir))
-		g_setenv ("HOME", ve_sure_string (gdm_get_value_string (GDM_KEY_SERV_AUTHDIR)), TRUE);
+		g_setenv ("HOME", ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)), TRUE);
 	else
 		g_setenv ("HOME", pw->pw_dir, TRUE);
 
@@ -242,9 +242,9 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 	argc = 1;
 
 	if ( ! inhibit_gtk_modules &&
-	    gdm_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
-	     ! ve_string_empty (gdm_get_value_string (GDM_KEY_GTK_MODULES_LIST))) {
-		argv[1] = g_strdup_printf ("--gtk-module=%s", gdm_get_value_string (GDM_KEY_GTK_MODULES_LIST));
+	    gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
+	     ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_GTK_MODULES_LIST))) {
+		argv[1] = g_strdup_printf ("--gtk-module=%s", gdm_daemon_config_get_value_string (GDM_KEY_GTK_MODULES_LIST));
 		argc = 2;
 	}
 
@@ -256,7 +256,7 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 
 	if ( ! inhibit_gtk_themes) {
 		const char *theme_name;
-                gchar *gtkrc = gdm_get_value_string (GDM_KEY_GTKRC);
+                const gchar *gtkrc = gdm_daemon_config_get_value_string (GDM_KEY_GTKRC);
 
 		if ( ! ve_string_empty (gtkrc) &&
 		     g_access (gtkrc, R_OK) == 0)
@@ -264,7 +264,7 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 
 		theme_name = d->theme_name;
 		if (ve_string_empty (theme_name))
-			theme_name = gdm_get_value_string (GDM_KEY_GTK_THEME);
+			theme_name = gdm_daemon_config_get_value_string (GDM_KEY_GTK_THEME);
 		if ( ! ve_string_empty (theme_name)) {
 			gchar *theme_dir = gtk_rc_get_theme_dir ();
 			char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);

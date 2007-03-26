@@ -43,6 +43,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 static GSList *xservers          = NULL;
 static const char *send_command  = NULL;

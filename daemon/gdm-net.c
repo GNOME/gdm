@@ -35,9 +35,9 @@
 #include "gdm.h"
 #include "misc.h"
 #include "gdm-net.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 /*
  * Kind of a weird setup, new connections whack old connections.

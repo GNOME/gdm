@@ -50,6 +50,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 static char     *GdmSoundProgram = NULL;
 static gchar    *GdmExclude      = NULL;
@@ -492,6 +493,15 @@ radiogroup_timeout (GtkWidget *toggle)
 }
 
 static gboolean
+bool_equal (gboolean a, gboolean b)
+{
+	if ((a && b) || (!a && !b))
+		return TRUE;
+	else
+		return FALSE;
+}
+
+static gboolean
 toggle_timeout (GtkWidget *toggle)
 {
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
@@ -500,7 +510,7 @@ toggle_timeout (GtkWidget *toggle)
 	if (strcmp (ve_sure_string (key), GDM_KEY_ENTRY_INVISIBLE) == 0) {
 		/* This is a lil bit back to front
 		   true is false and false is true in this case */
-		if ( ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+		if ( bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 			gdm_setup_config_set_bool (key, !GTK_TOGGLE_BUTTON (toggle)->active);
 		}
 	}
@@ -595,7 +605,7 @@ toggle_timeout (GtkWidget *toggle)
 	}	
 	else {
 		/* All other cases */
-		if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+		if ( ! bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 			gdm_setup_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
 		}
 	}	
@@ -912,6 +922,46 @@ gdm_load_displays (GKeyFile *cfg,
 			g_free (dispval);
 		}
 	}
+}
+
+static char *
+ve_rest (const char *s)
+{
+	const char *p;
+	gboolean single_quot = FALSE;
+	gboolean double_quot = FALSE;
+	gboolean escape = FALSE;
+
+	if (s == NULL)
+		return NULL;
+
+	for (p = s; *p != '\0'; p++) {
+		if (single_quot) {
+			if (*p == '\'') {
+				single_quot = FALSE;
+			}
+		} else if (escape) {
+			escape = FALSE;
+		} else if (double_quot) {
+			if (*p == '"') {
+				double_quot = FALSE;
+			} else if (*p == '\\') {
+				escape = TRUE;
+			}
+		} else if (*p == '\'') {
+			single_quot = TRUE;
+		} else if (*p == '"') {
+			double_quot = TRUE;
+		} else if (*p == '\\') {
+			escape = TRUE;
+		} else if (*p == ' ' || *p == '\t') {
+			while (*p == ' ' || *p == '\t')
+				p++;
+			return g_strdup (p);
+		}
+	}
+
+	return NULL;
 }
 
 static void
@@ -1452,7 +1502,7 @@ combobox_timeout (GtkWidget *combo_box)
 				val_new = (gtk_combo_box_get_active (GTK_COMBO_BOX (style_combobox)) != 0);
 
 				/* Update this servers configuration */
-				if (! ve_bool_equal (val_old, val_new)) {
+				if (! bool_equal (val_old, val_new)) {
 					svr->chooser = val_new;
 					update_xserver (section, svr);
 				}
@@ -3171,7 +3221,7 @@ greeter_toggle_timeout (GtkWidget *toggle)
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	gboolean val = gdm_config_get_bool ((gchar *)key);
 
-	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+	if ( ! bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 	
 		if (strcmp (ve_sure_string (key), GDM_KEY_BACKGROUND_SCALE_TO_FIT) == 0) {
 	
@@ -5206,8 +5256,7 @@ get_archive_dir (gchar *filename, char **untar_cmd, char **error)
 		return NULL;
 	}
 
-	/* Note that this adds './' In front to avoid troubles */
-	quoted = ve_shell_quote_filename (filename);
+	quoted = g_shell_quote (filename);
 	tar = find_tar ();
 	unzip = find_unzip (filename);
 
@@ -5835,7 +5884,7 @@ xserver_toggle_timeout (GtkWidget *toggle)
 			}
 
 			/* Update this servers configuration */
-			if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+			if ( ! bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
 				gboolean new_val = GTK_TOGGLE_BUTTON (toggle)->active;
 
 				if (strcmp (ve_sure_string (key),

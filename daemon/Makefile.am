@@ -40,8 +40,9 @@ sbin_PROGRAMS = gdm-binary
 gdm_binary_SOURCES = \
 	gdm.c \
 	gdm.h \
-	gdmconfig.c \
-	gdmconfig.h \
+	gdm-daemon-config.c \
+	gdm-daemon-config.h \
+	gdm-daemon-config-entries.h \
 	display.c \
 	display.h \
 	fstype.c \

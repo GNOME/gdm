@@ -6,6 +6,21 @@ INCLUDES = \
 	-I.					\
 	-I..					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DAUTHDIR=\"$(authdir)\"			\
+	-DBINDIR=\"$(bindir)\"				\
+	-DDATADIR=\"$(datadir)\"			\
+	-DDMCONFDIR=\"$(dmconfdir)\"			\
+	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
+	-DGDMLOCALEDIR=\"$(gdmlocaledir)\"		\
+	-DLIBDIR=\"$(libdir)\"				\
+	-DLIBEXECDIR=\"$(libexecdir)\"			\
+	-DLOGDIR=\"$(logdir)\"				\
+	-DPIXMAPDIR=\"$(pixmapdir)\"			\
+	-DSBINDIR=\"$(sbindir)\"			\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
+	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
+	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
 	$(GLIB_CFLAGS)
 
 noinst_LIBRARIES = 		\
@@ -17,14 +32,22 @@ libgdmcommon_a_SOURCES =	\
 	gdm-common.c		\
 	gdm-common-config.h	\
 	gdm-common-config.c	\
+	gdm-config.h		\
+	gdm-config.c		\
 	ve-signal.h		\
 	ve-signal.c		\
 	$(NULL)
 
-libgdmcommon_ui_a_SOURCES = 	\
-	$(libgdmcommon_a_SOURCES) \
-	glade-helper.c		\
-	glade-helper.h		\
-	gdm-common-ui.c		\
-	gdm-common-ui.h		\
+noinst_PROGRAMS = 		\
+	test-config		\
+	$(NULL)
+
+test_config_SOURCES = 		\
+	$(top_builddir)/daemon/gdm-daemon-config-entries.h	\
+	test-config.c	 	\
+	$(NULL)
+
+test_config_LDADD =		\
+	$(top_builddir)/common/libgdmcommon.a	\
+	$(GLIB_LIBS)		\
 	$(NULL)

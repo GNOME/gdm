@@ -4,16 +4,20 @@ SUBDIRS = . greeter modules faces
 
 ## Process this file with automake to produce makefile.in
 DEFS = @DEFS@ \
-	-DPREFIX=\"@prefix@\" \
-	-DAUTHDIR=\"@authdir@\" \
-	-DDATADIR=\"@datadir@\" \
-	-DDMCONFDIR=\"@dmconfdir@\" \
-	-DGDMLOCALEDIR=\"@gdmlocaledir@\" \
-	-DGDM_GLADE_DIR=\"@datadir@/gdm\" \
-	-DLIBDIR=\"@libdir@\" \
-	-DLIBEXECDIR=\"@libexecdir@\" \
-	-DPIXMAPDIR=\"@pixmapdir@\" \
-	-DSBINDIR=\"@sbindir@\"
+	-DPREFIX=\"@prefix@\" 				\
+	-DAUTHDIR=\"@authdir@\" 			\
+	-DBINDIR=\"@bindir@\" 				\
+	-DDATADIR=\"@datadir@\" 			\
+	-DDMCONFDIR=\"@dmconfdir@\" 			\
+	-DGDMCONFDIR=\"@gdmconfdir@\"			\
+	-DGDMLOCALEDIR=\"@gdmlocaledir@\" 		\
+	-DGDM_GLADE_DIR=\"@datadir@/gdm\" 		\
+	-DLIBDIR=\"@libdir@\" 				\
+	-DLIBEXECDIR=\"@libexecdir@\" 			\
+	-DLOGDIR=\"@logdir@\"				\
+	-DPIXMAPDIR=\"@pixmapdir@\" 			\
+	-DSBINDIR=\"@sbindir@\"				\
+	$(NULL)
 
 INCLUDES = \
 	-I.						\

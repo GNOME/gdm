@@ -38,6 +38,7 @@
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
+#include "gdm-daemon-config-keys.h"
 
 static GladeXML *xml;
 static char	*photofile;

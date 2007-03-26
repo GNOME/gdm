@@ -29,6 +29,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 #include "greeter.h"
 #include "greeter_item.h"

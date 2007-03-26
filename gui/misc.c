@@ -106,8 +106,7 @@ gdm_set_theme (const char *theme_name)
 gboolean
 gdm_working_command_exists (const char *commands)
 {
-	char *command = ve_get_first_working_command
-		(commands, TRUE /* only_existance */);
+	char *command = ve_get_first_working_command (commands, TRUE /* only_existance */);
 	if (command == NULL)
 		return FALSE;
 	g_free (command);

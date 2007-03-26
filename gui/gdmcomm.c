@@ -41,6 +41,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 static gboolean bulk_acs = FALSE;
 static gboolean debug    = FALSE;

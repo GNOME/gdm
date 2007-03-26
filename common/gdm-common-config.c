@@ -104,6 +104,41 @@ gdm_common_config_load (const char *filename,
 	return config;
 }
 
+GKeyFile *
+gdm_common_config_load_from_dirs (const char  *filename,
+				  const char **dirs,
+				  GError     **error)
+{
+	GKeyFile *config;
+	int       i;
+
+	config = NULL;
+
+	/* FIXME: hope to have g_key_file_load_from_dirs
+	   see GNOME bug #355334
+	 */
+
+	for (i = 0; dirs[i] != NULL; i++) {
+		char *path;
+
+		path = g_build_filename (dirs[i], filename, NULL);
+		config = gdm_common_config_load (path, NULL);
+		g_free (path);
+		if (config != NULL) {
+			break;
+		}
+	}
+
+	if (config == NULL) {
+		g_set_error (error,
+			     G_KEY_FILE_ERROR,
+			     G_KEY_FILE_ERROR_NOT_FOUND,
+			     "Unable to find file in specified directories");
+	}
+
+	return config;
+}
+
 gboolean
 gdm_common_config_save (GKeyFile   *config,
 			const char *filename,
@@ -239,7 +274,11 @@ gdm_common_config_get_string (GKeyFile   *config,
 
 	group = key = default_value = NULL;
 	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
-		g_set_error (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_PARSE, "Unable to parse key: %s", keystring);
+		g_set_error (error,
+			     G_KEY_FILE_ERROR,
+			     G_KEY_FILE_ERROR_PARSE,
+			     "Unable to parse key: %s",
+			     keystring);
 		return FALSE;
 	}
 
@@ -251,6 +290,50 @@ gdm_common_config_get_string (GKeyFile   *config,
 	if (local_error != NULL) {
 		/* use the default */
 		val = g_strdup (default_value);
+		g_propagate_error (error, local_error);
+	}
+
+	*value = val;
+
+	g_free (key);
+	g_free (group);
+	g_free (default_value);
+
+	return TRUE;
+}
+
+gboolean
+gdm_common_config_get_string_list (GKeyFile   *config,
+				   const char *keystring,
+				   char     ***value,
+				   gsize      *length,
+				   GError    **error)
+{
+	char   *group;
+	char   *key;
+	char   *default_value;
+	char  **val;
+	GError *local_error;
+
+	group = key = default_value = NULL;
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
+		g_set_error (error,
+			     G_KEY_FILE_ERROR,
+			     G_KEY_FILE_ERROR_PARSE,
+			     "Unable to parse key: %s",
+			     keystring);
+		return FALSE;
+	}
+
+	local_error = NULL;
+	val = g_key_file_get_string_list (config,
+					  group,
+					  key,
+					  length,
+					  &local_error);
+	if (local_error != NULL) {
+		/* use the default */
+		val = g_strsplit (default_value, ";", -1);
 		g_propagate_error (error, local_error);
 	}
 

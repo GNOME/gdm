@@ -60,6 +60,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
 

@@ -34,6 +34,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config-keys.h"
 
 GHashTable *sessnames        = NULL;
 gchar *default_session       = NULL;

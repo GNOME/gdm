@@ -27,6 +27,9 @@ G_BEGIN_DECLS
 
 GKeyFile * gdm_common_config_load             (const char *filename,
 					       GError    **error);
+GKeyFile * gdm_common_config_load_from_dirs   (const char  *filename,
+					       const char **dirs,
+					       GError    **error);
 gboolean   gdm_common_config_save             (GKeyFile   *config,
 					       const char *filename,
 					       GError    **error);
@@ -35,10 +38,15 @@ gboolean   gdm_common_config_get_string       (GKeyFile   *config,
 					       const char *keystring,
 					       char      **value,
 					       GError    **error);
-gboolean   gdm_common_config_get_translated_string       (GKeyFile   *config,
-							  const char *keystring,
-							  char      **value,
-							  GError    **error);
+gboolean   gdm_common_config_get_translated_string (GKeyFile   *config,
+						    const char *keystring,
+						    char      **value,
+						    GError    **error);
+gboolean   gdm_common_config_get_string_list       (GKeyFile   *config,
+						    const char *keystring,
+						    char     ***value,
+						    gsize      *length,
+						    GError    **error);
 gboolean   gdm_common_config_get_int          (GKeyFile   *config,
 					       const char *keystring,
 					       int        *value,

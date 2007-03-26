@@ -24,9 +24,9 @@
 
 #include "gdm.h"
 #include "filecheck.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-daemon-config.h"
 
 /**
  * gdm_file_check:
@@ -60,7 +60,7 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     /* Stat on automounted directory - append the '/.' to dereference mount point.
        Do this only if GdmSupportAutomount is true (default is false)
        2006-09-22, Jerzy Borkowski, CAMK */
-    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_SUPPORT_AUTOMOUNT)) {
+    if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_SUPPORT_AUTOMOUNT)) {
         dirautofs = g_strconcat(dir, "/.", NULL);
         VE_IGNORE_EINTR (r = stat (dirautofs, &statbuf));
         g_free(dirautofs);
@@ -83,7 +83,7 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
        the user.
        2004-06-22, Andreas Schubert, MATHEMA Software GmbH */
 
-    if G_UNLIKELY (gdm_get_value_bool (GDM_KEY_CHECK_DIR_OWNER) && (statbuf.st_uid != user)) {
+    if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_CHECK_DIR_OWNER) && (statbuf.st_uid != user)) {
         syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
         return FALSE;
     }
@@ -199,7 +199,7 @@ gdm_auth_file_check (const gchar *caller, uid_t user, const gchar *authfile, gbo
 	return FALSE;
     }
 
-    usermaxfile = gdm_get_value_int (GDM_KEY_USER_MAX_FILE);
+    usermaxfile = gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE);
     /* ... and smaller than sysadmin specified limit. */
     if G_UNLIKELY (usermaxfile && statbuf.st_size > usermaxfile) {
 	syslog (LOG_WARNING, _("%s: %s is bigger than sysadmin specified maximum file size."), 
