@@ -901,7 +901,6 @@ gdm_read_config (void)
 
 	/* Keys not to include in reread_config */
 	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
-	gdm_config_get_string (GDM_KEY_PID_FILE);
 	gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);
 
 	gdmcomm_comm_bulk_stop ();

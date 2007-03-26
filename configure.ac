@@ -1116,8 +1116,24 @@ if test "x$USER_POST_PATH" != "x"; then
    GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - PID file
+dnl ---------------------------------------------------------------------------
 
-# Turn on the additional warnings last, so they don't affect other tests.
+AC_ARG_WITH(pid-file,    [  --with-pid-file=<file>     pid file])
+
+if ! test -z "$with_pid_file"; then
+   GDM_PID_FILE=$with_pid_file
+else
+   GDM_PID_FILE=${LOCALSTATEDIR}/run/gdm.pid
+fi
+
+AC_SUBST(GDM_PID_FILE)
+AC_DEFINE_UNQUOTED(GDM_PID_FILE, "$GDM_PID_FILE", [pid file])
+
+dnl ---------------------------------------------------------------------------
+dnl - Additional warnings
+dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE(more-warnings,
   AC_HELP_STRING([--enable-more-warnings], [Maximum compiler warnings]),

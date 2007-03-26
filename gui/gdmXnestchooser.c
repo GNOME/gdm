@@ -468,7 +468,7 @@ main (int argc, char *argv[])
 	gboolean honor_indirect;
 	int display;
 	char *socket;
-	char *pidfile;
+	const char *pidfile;
 	GOptionContext *ctx;
 	char *xnest;
 	char **execvec;
@@ -503,7 +503,7 @@ main (int argc, char *argv[])
 
 	xdmcp_enabled  = gdm_config_get_bool (GDM_KEY_XDMCP);
 	honor_indirect = gdm_config_get_bool (GDM_KEY_INDIRECT);
-	pidfile        = gdm_config_get_string (GDM_KEY_PID_FILE);
+	pidfile        = GDM_PID_FILE;
 	xnest          = gdm_config_get_string (GDM_KEY_XNEST);
 
 	/* At this point we are done using the socket, so close it */

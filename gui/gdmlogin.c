@@ -3176,7 +3176,6 @@ gdm_read_config (void)
 
 	/* Keys not to include in reread_config */
 	gdm_config_get_bool   (GDM_KEY_LOCK_POSITION);
-	gdm_config_get_string (GDM_KEY_PID_FILE);
 	gdm_config_get_int    (GDM_KEY_POSITION_X);
 	gdm_config_get_int    (GDM_KEY_POSITION_Y);
 	gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);

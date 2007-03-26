@@ -60,7 +60,6 @@ typedef enum {
 	GDM_ID_KILL_INIT_CLIENTS,
 	GDM_ID_LOG_DIR,
 	GDM_ID_PATH,
-	GDM_ID_PID_FILE,
 	GDM_ID_POSTSESSION,
 	GDM_ID_PRESESSION,
 	GDM_ID_POSTLOGIN,
@@ -256,9 +255,7 @@ typedef enum {
  *   code section for best performance.
  *
  * + The gui/gdmsetup.c program should be updated to support the new option
- *   unless there's a good reason not to (like it is a configuration value
- *   that only someone who really knows what they are doing should change
- *   like GDM_ID_PID_FILE).
+ *   unless there's a good reason not to.
  *
  * + Currently GDM treats any key in the "gui" and "greeter" categories,
  *   and security/PamStack as available for per-display configuration.
@@ -312,7 +309,6 @@ static const GdmConfigEntry gdm_daemon_config_entries [] = {
 	{ GDM_CONFIG_GROUP_DAEMON, "KillInitClients", GDM_CONFIG_VALUE_BOOL, "true", GDM_ID_KILL_INIT_CLIENTS },
 	{ GDM_CONFIG_GROUP_DAEMON, "LogDir", GDM_CONFIG_VALUE_STRING, LOGDIR, GDM_ID_LOG_DIR },
 	{ GDM_CONFIG_GROUP_DAEMON, "DefaultPath", GDM_CONFIG_VALUE_STRING, GDM_USER_PATH, GDM_ID_PATH },
-	{ GDM_CONFIG_GROUP_DAEMON, "PidFile", GDM_CONFIG_VALUE_STRING, "/var/run/gdm.pid", GDM_ID_PID_FILE },
 	{ GDM_CONFIG_GROUP_DAEMON, "PostSessionScriptDir", GDM_CONFIG_VALUE_STRING, GDMCONFDIR "/PostSession/", GDM_ID_POSTSESSION },
 	{ GDM_CONFIG_GROUP_DAEMON, "PreSessionScriptDir", GDM_CONFIG_VALUE_STRING, GDMCONFDIR "/PreSession/", GDM_ID_PRESESSION },
 	{ GDM_CONFIG_GROUP_DAEMON, "PostLoginScriptDir", GDM_CONFIG_VALUE_STRING, GDMCONFDIR "/PreSession/", GDM_ID_POSTLOGIN },

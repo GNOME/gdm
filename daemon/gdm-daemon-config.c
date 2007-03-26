@@ -522,6 +522,15 @@ gdm_daemon_config_to_string (const gchar *keystring,
 		goto out;
 	}
 
+	/* Backward Compatibility */
+	if (group != NULL &&
+	    key != NULL &&
+	    (strcmp (group, "daemon") == 0) &&
+	    (strcmp (key, "PidFile") == 0)) {
+		result = g_strdup (GDM_PID_FILE);
+		goto out;
+	}
+
 	res = gdm_config_get_value (daemon_config,
 				    group,
 				    key,
@@ -1176,8 +1185,6 @@ check_servauthdir (const char  *auth_path,
 			g_free (s);
 		}
 
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
-
 		gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", auth_path);
 	}
 
@@ -1193,8 +1200,6 @@ check_servauthdir (const char  *auth_path,
 			gdm_text_message_dialog (s);
 			g_free (s);
 		}
-
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
 
 		gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", auth_path);
 	}
@@ -1723,8 +1728,6 @@ handle_no_displays (GdmConfig *config)
 			g_free (s);
 		}
 
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
-
 		gdm_fail (_("%s: XDMCP disabled and no static servers defined. Aborting!"), "gdm_config_parse");
 	}
 }
@@ -1767,8 +1770,6 @@ gdm_daemon_change_user (GdmConfig *config,
 			g_free (s);
 		}
 
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
-
 		gdm_fail (_("%s: Can't find the GDM user '%s'. Aborting!"), "gdm_config_parse", username);
 	} else {
 		uid = pwent->pw_uid;
@@ -1786,8 +1787,6 @@ gdm_daemon_change_user (GdmConfig *config,
 			g_free (s);
 		}
 
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
-
 		gdm_fail (_("%s: The GDM user should not be root. Aborting!"), "gdm_config_parse");
 	}
 
@@ -1802,8 +1801,6 @@ gdm_daemon_change_user (GdmConfig *config,
 			gdm_text_message_dialog (s);
 			g_free (s);
 		}
-
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
 
 		gdm_fail (_("%s: Can't find the GDM group '%s'. Aborting!"), "gdm_config_parse", groupname);
 	} else  {
@@ -1820,8 +1817,6 @@ gdm_daemon_change_user (GdmConfig *config,
 			gdm_text_message_dialog (s);
 			g_free (s);
 		}
-
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
 
 		gdm_fail (_("%s: The GDM group should not be root. Aborting!"), "gdm_config_parse");
 	}
@@ -1884,8 +1879,6 @@ gdm_daemon_check_permissions (GdmConfig *config,
 			g_free (s);
 		}
 
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
-
 		gdm_fail (_("%s: Authdir %s is not owned by user %d, group %d. Aborting."),
 			  "gdm_config_parse",
 			  auth_path,
@@ -1907,8 +1900,6 @@ gdm_daemon_check_permissions (GdmConfig *config,
 			gdm_text_message_dialog (s);
 			g_free (s);
 		}
-
-		gdm_config_set_string_for_id (daemon_config, GDM_ID_PID_FILE, NULL);
 
 		gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."),
 			  "gdm_config_parse",
