@@ -20,18 +20,16 @@
  */
 
 /*
- * gdmconfig.c isolates most logic that interacts with GDM configuration
- * into a single file and provides a mechanism for interacting with GDM
- * configuration optins via access functions for getting/setting values.
- * This logic also ensures that the same configuration validation happens
- * when loading the values initially or setting them via the
- * GDM_UPDATE_CONFIG socket command.
+ * gdm-daemon-config.c isolates most logic that interacts with GDM
+ * configuration into a single file and provides a mechanism for
+ * interacting with GDM configuration optins via access functions for
+ * getting/setting values.  This logic also ensures that the same
+ * configuration validation happens when loading the values initially
+ * or setting them via the GDM_UPDATE_CONFIG socket command.
  *
- * When adding a new configuration option, simply add the new option to
- * gdm.h and to the val_hash and type_hash hashes in the gdm_config_init
- * function.  Any validation for the configuration option should be
- * placed in the _gdm_set_value_string, _gdm_set_value_int, or
- * _gdm_set_value_bool functions.
+ * When adding a new configuration option, simply add the new option
+ * to gdm-daemon-config-entries.h.  Any validation for the
+ * configuration option should be placed in the validate_cb function.
  */
 
 #include "config.h"
