@@ -188,7 +188,12 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				  NULL);
 	}
 
+        /*
+         * Disable Configuration if using accessibility (AddGtkModules) since
+         * using it with accessibility causes a hang.
+         */
 	if (gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) &&
+            !gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES) &&
 	    bin_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR))) {
 		w = gtk_menu_item_new_with_mnemonic (_("Confi_gure Login Manager..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
@@ -423,7 +428,12 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (chooser_radio);
   }
 
+  /*
+   * Disable Configuration if using accessibility (AddGtkModules) since
+   * using it with accessibility causes a hang.
+   */
   if (gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) &&
+      !gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES) &&
       bin_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR))) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));

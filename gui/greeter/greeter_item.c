@@ -184,6 +184,7 @@ greeter_item_is_visible (GreeterItemInfo *info)
   sysmenu = gdm_config_get_bool (GDM_KEY_SYSTEM_MENU);
 
   if (( ! gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) ||
+	gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES) ||
         ! sysmenu ||
         ! GdmConfiguratorFound) &&
       (info->show_type != NULL &&
