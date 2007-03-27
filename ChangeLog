@@ -1,5 +1,14 @@
 2006-03-27  Brian Cameron  <brian.cameron@sun.com>
 
+        * gui/gdmlogin.c, gui/greeter/greeter_item.c, gui/greeter/greeter.c
+          gui/greeter_greeter_item_ulist.c, gui/greeter/greeter_system.c:
+          Fix gdmlogin and gdmgreeter so the "Configure GDM" menu choice is
+          not available when accessibility is turned on since running it
+          causes the system to hang.  Also fix gdmgreeter so the Face
+          Browser is not displayed when Browser=false.
+
+2006-03-27  Brian Cameron  <brian.cameron@sun.com>
+
         * gui/greeter/greeter_item_customlist.c:  Fix check so the
           language combo style works.  Fixes bug #423063.  Patch
           provided by Simon <simon@munton.demon.co.uk>.

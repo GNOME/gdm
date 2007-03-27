@@ -800,6 +800,7 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_SESSION_DESKTOP_DIR);
 	gdm_config_get_string (GDM_KEY_PID_FILE);
 	gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);
+	gdm_config_get_bool   (GDM_KEY_BROWSER);
 
 	gdmcomm_comm_bulk_stop ();
 }
@@ -854,7 +855,9 @@ greeter_reread_config (int sig, gpointer data)
 	    gdm_config_reload_bool   (GDM_KEY_GRAPHICAL_THEME_RAND) ||
 	    gdm_config_reload_bool   (GDM_KEY_SHOW_LAST_SESSION) ||
 	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ROOT) ||
-	    gdm_config_reload_bool   (GDM_KEY_ALLOW_REMOTE_ROOT)) {
+	    gdm_config_reload_bool   (GDM_KEY_ALLOW_REMOTE_ROOT) ||
+	    gdm_config_reload_bool   (GDM_KEY_BROWSER)) {
+
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
