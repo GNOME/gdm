@@ -877,6 +877,7 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_DEFAULT_WELCOME);
 	gdm_config_get_bool   (GDM_KEY_DEFAULT_REMOTE_WELCOME);
 	gdm_config_get_bool   (GDM_KEY_ADD_GTK_MODULES);
+	gdm_config_get_bool   (GDM_KEY_BROWSER);
 
 	/* Keys for custom commands */
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
@@ -960,7 +961,8 @@ greeter_reread_config (int sig, gpointer data)
 	    gdm_config_reload_bool   (GDM_KEY_SHOW_LAST_SESSION) ||
 	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ROOT) ||
 	    gdm_config_reload_bool   (GDM_KEY_ALLOW_REMOTE_ROOT) ||
-	    gdm_config_reload_bool   (GDM_KEY_ADD_GTK_MODULES)) {
+	    gdm_config_reload_bool   (GDM_KEY_ADD_GTK_MODULES) ||
+	    gdm_config_reload_bool   (GDM_KEY_BROWSER)) {
 
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);

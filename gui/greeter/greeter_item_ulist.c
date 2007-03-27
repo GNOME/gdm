@@ -72,17 +72,21 @@ void
 greeter_item_ulist_check_show_userlist (void)
 {
 	/*
-	 * If there are no users, then hide the rectangle used to contain the
-	 * userlist.  This id allows a rectangle to be defined with alpha
+	 * If the browser feature isn't enabled or if there are no users,
+	 * then hide the rectangle used to contain the userlist.  The
+	 * userlist-rect id allows a rectangle to be defined with alpha
 	 * behind the userlist that also goes away when the list is empty.
 	 */
-	if (num_users == 0 && user_list != NULL) {
-		GreeterItemInfo *urinfo = greeter_lookup_id ("userlist-rect");
-		GnomeCanvasItem *item;
+	if (num_users == 0 || !gdm_config_get_bool (GDM_KEY_BROWSER)) {
 
-		gtk_widget_hide (user_list);
+		GreeterItemInfo *urinfo = greeter_lookup_id ("userlist-rect");
+
+		if (user_list != NULL)
+			gtk_widget_hide (user_list);
 
 		if (urinfo) {
+			GnomeCanvasItem *item;
+
 			if (urinfo->group_item != NULL)
 				item = GNOME_CANVAS_ITEM (urinfo->group_item);
 			else
@@ -316,7 +320,9 @@ greeter_generate_userlist (GtkWidget *tv)
 								       NULL);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column_two);
 
-		greeter_populate_user_list (tm);
+		/* Only populate the user list if the browser is turned on */
+		if (gdm_config_get_bool (GDM_KEY_BROWSER))
+			greeter_populate_user_list (tm);
 
 		info = greeter_lookup_id ("userlist");
 

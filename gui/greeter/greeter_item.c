@@ -191,7 +191,12 @@ greeter_item_is_visible (GreeterItemInfo *info)
 
   sysmenu = gdm_config_get_bool (GDM_KEY_SYSTEM_MENU);
 
+ /*
+  * Disable Configuration if using accessibility (AddGtkModules) since
+  * using it with accessibility causes a hang.
+  */
   if (( ! gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) ||
+	gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES) ||
         ! sysmenu ||
         ! GdmConfiguratorFound) &&
       (info->show_type != NULL &&

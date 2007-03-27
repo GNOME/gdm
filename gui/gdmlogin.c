@@ -2471,7 +2471,12 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 
+	/*
+	 * Disable Configuration if using accessibility (AddGtkModules) since
+	 * using it with accessibility causes a hang.
+	 */
 	if (gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) &&
+	    !gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES) &&
 	    bin_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR))) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Configure Login Manager..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
