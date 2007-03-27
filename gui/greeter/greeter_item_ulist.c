@@ -277,12 +277,11 @@ browser_change_focus (GtkWidget *widget, GdkEventButton *event, gpointer data)
 }
 
 static void
-greeter_generate_userlist (GtkWidget *tv)
+greeter_generate_userlist (GtkWidget *tv, GreeterItemInfo *info)
 {
 	GtkTreeModel *tm;
 	GtkTreeViewColumn *column_one, *column_two;
 	GtkTreeSelection *selection;
-	GreeterItemInfo *info;
 	GList *list, *li;
 
 	gdm_greeter_users_init ();
@@ -323,8 +322,6 @@ greeter_generate_userlist (GtkWidget *tv)
 		/* Only populate the user list if the browser is turned on */
 		if (gdm_config_get_bool (GDM_KEY_BROWSER))
 			greeter_populate_user_list (tm);
-
-		info = greeter_lookup_id ("userlist");
 
 		list = gtk_tree_view_column_get_cell_renderers (column_one);
 		for (li = list; li != NULL; li = li->next) {
@@ -398,7 +395,7 @@ greeter_item_ulist_setup (void)
 
 			force_no_tree_separators (user_list);
 
-			greeter_generate_userlist (user_list);
+			greeter_generate_userlist (user_list, info);
 
 			/* Reset size of the widget canvas item so it
 			 * is the same size as the userlist.  This
