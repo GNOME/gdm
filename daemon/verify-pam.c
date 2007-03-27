@@ -1550,8 +1550,9 @@ gdm_verify_cleanup (GdmDisplay *d)
 		if (old_opened_session && old_did_setcred && d->attached) {
 			(void) di_devperm_logout ("/dev/console");
 			/* give it back to gdm user */
-			(void) di_devperm_login ("/dev/console", gdm_get_gdmuid (),
-				gdm_get_gdmgid (), NULL);
+			(void) di_devperm_login ("/dev/console",
+				gdm_daemon_config_get_gdmuid (),
+				gdm_daemon_config_get_gdmgid (), NULL);
 		}
 #endif  /* HAVE_LOGINDEVPERM */
 
