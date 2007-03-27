@@ -260,6 +260,31 @@ greeter_item_pam_prompt (const char *message,
   if (conversation_info)
     {
       set_text (conversation_info, message);
+
+      /*
+       * Add Accessibility text for entry field.
+       * Might be nice to set ATK_RELATION_LABEL_FOR, LABELLED_BY between
+       * the label (pam-prompt) and the entry, but gdmgreeter doesn't use real
+       * GTK widgets for text fields.  For now, just set the entry field's
+       * name.
+       */
+      if (entry_info != NULL)
+        {
+          GnomeCanvasWidget *item = GNOME_CANVAS_WIDGET (entry_info->item);
+          if (item != NULL)
+            {
+              GtkWidget *widget = item->widget;
+              if (widget != NULL)
+                {
+                  AtkObject *atk_widget;
+                  atk_widget = gtk_widget_get_accessible (widget);
+                  if (atk_widget != NULL)
+                    {
+                       atk_object_set_name (atk_widget, message);
+                    }
+                }
+            }
+        }
     }
   
   if (entry_info && entry_info->item &&
