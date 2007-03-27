@@ -1115,6 +1115,18 @@ if test "x$USER_POST_PATH" != "x"; then
 fi
 
 dnl ---------------------------------------------------------------------------
+dnl Expand vars
+dnl ---------------------------------------------------------------------------
+
+AS_AC_EXPAND(LOCALSTATEDIR, $localstatedir)
+AS_AC_EXPAND(SYSCONFDIR, $sysconfdir)
+AS_AC_EXPAND(DATADIR, $datadir)
+AS_AC_EXPAND(BINDIR, $bindir)
+AS_AC_EXPAND(SBINDIR, $sbindir)
+AS_AC_EXPAND(LIBDIR, $libdir)
+AS_AC_EXPAND(LIBEXECDIR, $libexecdir)
+
+dnl ---------------------------------------------------------------------------
 dnl - PID file
 dnl ---------------------------------------------------------------------------
 
