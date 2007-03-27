@@ -747,7 +747,7 @@ custom_cmd (long cmd_id)
 
         if (cmd_id < 0 || cmd_id >= GDM_CUSTOM_COMMAND_MAX) {
 		/* We are just feeling very paranoid */
-		gdm_error (_("custom_cmd: Custom command index %ld outside permitted range [0,%d)"), 
+		gdm_error (_("custom_cmd: Custom command index %ld outside permitted range (0,%d)"), 
 			   cmd_id, GDM_CUSTOM_COMMAND_MAX);
 		return;
 	}
@@ -1420,7 +1420,7 @@ GOptionEntry options [] = {
 	{ "no-console", '\0', 0, G_OPTION_ARG_NONE,
 	  &no_console, N_("No console (static) servers to be run"), NULL },
 	{ "config", '\0', 0, G_OPTION_ARG_STRING,
-	  &config_file, N_("Alternative defaults configuration file"), N_("CONFIGFILE") },
+	  &config_file, N_("Alternative GDM System Defaults configuration file"), N_("CONFIGFILE") },
 	{ "preserve-ld-vars", '\0', 0, G_OPTION_ARG_NONE,
 	  &preserve_ld_vars, N_("Preserve LD_* variables"), NULL },
 	{ "version", '\0', 0, G_OPTION_ARG_NONE,
