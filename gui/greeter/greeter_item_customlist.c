@@ -177,7 +177,7 @@ greeter_custom_set_language (gchar *language)
    * Handle for either combo box or list style, depending on which is being
    * used.
  . */
-  if (GTK_IS_COMBO_BOX (session_widget))
+  if (GTK_IS_COMBO_BOX (language_widget))
     {
       valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (lang_model),
          &iter);
