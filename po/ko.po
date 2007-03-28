@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gdm 2.15.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-03-03 20:02+0900\n"
-"PO-Revision-Date: 2007-03-03 20:03+0900\n"
+"PO-Revision-Date: 2007-03-29 07:06+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr "X 서버를 설정하시겠습니까?  root 열쇠글이 필요합니다
 
 #: ../config/gettextfoo.h:7
 msgid "Please type in the root (privileged user) password."
-msgstr "root(특권 사용자)의 열쇠글을 입력하십시오."
+msgstr "루트(root, 관리자 권한 사용자)의 열쇠글을 입력하십시오."
 
 #: ../config/gettextfoo.h:8
 msgid "Trying to restart the X server."
@@ -115,19 +115,14 @@ msgid ""
 "This is the failsafe xterm session.  Windows now have focus only if you have "
 "your cursor above them.  To get out of this mode type 'exit' in the window "
 "in the upper left corner"
-msgstr ""
-"터미널 안전모드 입니다. 커서위의 창으로만 포커스가 가게 될것입니다. 안전모드"
-"를 마치려면 왼쪽 위의 창에서 'exit'를 입력하면 됩니다."
+msgstr "터미널 안전 모드 입니다. 커서위의 창으로만 포커스가 가게 될것입니다. 안전 모드를 마치려면 왼쪽 위의 창에서 'exit'를 입력하면 됩니다."
 
 #: ../config/gettextfoo.h:16
 msgid ""
 "Failed to start the session, so starting a failsafe xterm session.  Windows "
 "will have focus only if the mouse pointer is above them.  To get out of this "
 "mode type 'exit' in the window in the upper left corner"
-msgstr ""
-"세션을 시작할 수 없어서 안전모드 xterm 세션을 시작했습니다. 커서위의 창으로"
-"만 포커스가 가게 될것입니다. 안전모드를 마치려면 왼쪽 위 구석의 창에 "
-"'exit'를 입력하면 됩니다."
+msgstr "세션을 시작할 수 없어서 안전 모드 xterm 세션을 시작했습니다. 커서위의 창으로만 포커스가 가게 될것입니다. 안전 모드를 마치려면 왼쪽 위 구석의 창에 'exit'를 입력하면 됩니다."
 
 #: ../daemon/auth.c:57
 #, c-format
@@ -157,18 +152,18 @@ msgstr "%s: %s에서 새 쿠키 파일을 만들 수 없습니다"
 #: ../daemon/auth.c:219 ../daemon/auth.c:236 ../daemon/auth.c:878
 #, c-format
 msgid "%s: Cannot safely open %s"
-msgstr "%s: %s을(를) 안전하게 열 수 없습니다"
+msgstr "%s: %s 파일을 안전하게 열 수 없습니다"
 
 #. Really no need to clean up here - this process is a goner anyway
 #: ../daemon/auth.c:675 ../daemon/auth.c:719
 #, c-format
 msgid "%s: Could not open cookie file %s"
-msgstr "%s: %s에서 새 쿠키 파일을 열 수 없습니다"
+msgstr "%s: %s 쿠키 파일을 열 수 없습니다"
 
 #: ../daemon/auth.c:696
 #, c-format
 msgid "%s: Could not lock cookie file %s"
-msgstr "%s: %s에서 새 쿠키 파일을 잠글 수 없습니다"
+msgstr "%s: %s 쿠키 파일을 잠글 수 없습니다"
 
 #: ../daemon/auth.c:748 ../daemon/auth.c:770
 #, c-format
@@ -178,7 +173,7 @@ msgstr "%s: 쿠키를 쓰지 못했습니다"
 #: ../daemon/auth.c:854
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
-msgstr "%s: 수상하게 보이는 쿠키 파일 %s을(를) 무시합니다"
+msgstr "%s: 수상하게 보이는 %s 쿠키 파일을 무시합니다"
 
 #: ../daemon/auth.c:897 ../daemon/gdm.c:1507 ../daemon/gdm.c:1877
 #, c-format
@@ -201,9 +196,7 @@ msgid ""
 "The display server has been shut down about 6 times in the last 90 seconds. "
 "It is likely that something bad is going on.  Waiting for 2 minutes before "
 "trying again on display %s."
-msgstr ""
-"디스플레이 서버가 90초안에 6번 종료되었습니다. 무엇인가 설정이 잘못된 것 같습"
-"니다. 디스플레이 %s에서 2분동안 대기하겠습니다."
+msgstr "디스플레이 서버가 최근 90초안에 6번 종료되었습니다. 무엇인가 설정이 잘못된 것 같습니다. 2분동안 대기한 후에 디스플레이 %s에서 다시 시도합니다."
 
 #: ../daemon/display.c:257
 #, c-format
@@ -224,9 +217,7 @@ msgstr "%s은(는) 일반 파일이 아닙니다.\n"
 msgid ""
 "\n"
 "... File too long to display ...\n"
-msgstr ""
-"\n"
-"...파일이 너무 커서 보여줄 수 없음 ...\n"
+msgstr "\n... 파일이 너무 커서 표시할 수 없습니다 ...\n"
 
 #: ../daemon/errorgui.c:382
 #, c-format
@@ -242,43 +233,43 @@ msgstr "%s: 오류/정보 상자 보여주기를 포크할 수 없습니다"
 #: ../daemon/filecheck.c:73
 #, c-format
 msgid "%s: Directory %s does not exist."
-msgstr "%s: %s 디렉토리가 존재하지 않습니다."
+msgstr "%s: %s 디렉토리가 없습니다."
 
 #: ../daemon/filecheck.c:85 ../daemon/filecheck.c:127
 #: ../daemon/filecheck.c:190
 #, c-format
 msgid "%s: %s is not owned by uid %d."
-msgstr "%s: %s은(는) 사용자 아이디 %d의 소유가 아닙니다."
+msgstr "%s: %s 파일이 사용자 아이디 %d 소유가 아닙니다."
 
 #: ../daemon/filecheck.c:91 ../daemon/filecheck.c:134
 #, c-format
 msgid "%s: %s is writable by group."
-msgstr "%s: %s은(는) 그룹에서 쓸 수 있습니다."
+msgstr "%s: %s 파일은 그룹이 쓸 권한이 있습니다."
 
 #: ../daemon/filecheck.c:97
 #, c-format
 msgid "%s: %s is writable by other."
-msgstr "%s: %s은(는) 그 외에서 쓸 수 있습니다."
+msgstr "%s: %s 파일은 다른 사람이 쓸 권한이 있습니다."
 
 #: ../daemon/filecheck.c:112 ../daemon/filecheck.c:178
 #, c-format
 msgid "%s: %s does not exist but must exist."
-msgstr "%s: %s은(는) 꼭 필요한 데 존재하지 않습니다."
+msgstr "%s: %s 파일이 없지만 꼭 있어야 합니다."
 
 #: ../daemon/filecheck.c:120 ../daemon/filecheck.c:184
 #, c-format
 msgid "%s: %s is not a regular file."
-msgstr "%s: %s은(는) 일반 파일이 아닙니다."
+msgstr "%s: %s 파일은 일반 파일이 아닙니다."
 
 #: ../daemon/filecheck.c:141
 #, c-format
 msgid "%s: %s is writable by group/other."
-msgstr "%s: %s은(는) 그룹/그 외에서 쓸 수 있습니다."
+msgstr "%s: %s 파일은 그룹 및 다른 사람이 쓸 권한이 있습니다."
 
 #: ../daemon/filecheck.c:148 ../daemon/filecheck.c:203
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
-msgstr "%s: %s은(는) 시스템 관리자가 지정한 최대 파일 크기보다 큽니다."
+msgstr "%s: %s 파일은 시스템 관리자가 지정한 최대 파일 크기보다 큽니다."
 
 #: ../daemon/gdm-net.c:332
 #, c-format
@@ -305,14 +296,13 @@ msgstr "%s: FIFO를 열지 못했습니다"
 #: ../daemon/gdm.c:1655
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-msgstr ""
-"PID 파일 %s에 쓸 수 없음:  디스크 공간이 바닥났을 것입니다.  오류: %s\n"
+msgstr "PID 파일 %s에 쓸 수 없습니다:  디스크 공간이 부족한 것 같습니다.  오류: %s\n"
 
 #: ../daemon/gdm.c:208 ../daemon/gdm.c:216 ../daemon/gdm.c:1649
 #: ../daemon/gdm.c:1657
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
-msgstr "PID 파일 %s에 쓸 수 없음:  디스크 공간이 바닥났을 것입니다.  오류: %s"
+msgstr "PID 파일 %s에 쓸 수 없습니다:  디스크 공간이 부족한 것 같습니다.  오류: %s"
 
 #: ../daemon/gdm.c:226
 #, c-format
@@ -328,7 +318,7 @@ msgstr "%s: setsid()가 실패했습니다: %s!"
 #: ../daemon/gdm.c:457
 #, c-format
 msgid "%s: Trying failsafe X server %s"
-msgstr "%s: X 서버 %s에 안전모드로 시도합니다"
+msgstr "%s: X 서버 %s에 안전 모드로 시도합니다"
 
 #: ../daemon/gdm.c:475
 #, c-format
@@ -366,12 +356,12 @@ msgstr "마스터 일시 중단..."
 #: ../daemon/gdm.c:667
 #, c-format
 msgid "System is restarting, please wait ..."
-msgstr "시스템을 다시 시작합니다, 잠시만 기다리십시오..."
+msgstr "시스템을 다시 시작합니다. 잠시만 기다리십시오..."
 
 #: ../daemon/gdm.c:669
 #, c-format
 msgid "System is shutting down, please wait ..."
-msgstr "시스템을 끝냅니다, 잠시만 기다리십시오..."
+msgstr "시스템을 끕니다. 잠시만 기다리십시오..."
 
 #: ../daemon/gdm.c:680
 msgid "Master halting..."
@@ -384,7 +374,7 @@ msgstr "%s: 시스템 종료 실패: %s"
 
 #: ../daemon/gdm.c:702
 msgid "Restarting computer..."
-msgstr "컴퓨터 다시 시작합니다..."
+msgstr "컴퓨터를 다시 시작합니다..."
 
 #: ../daemon/gdm.c:715
 #, c-format
@@ -473,7 +463,7 @@ msgstr "백그라운드 프로세스로 포크하지 않음"
 
 #: ../daemon/gdm.c:1382
 msgid "No console (static) servers to be run"
-msgstr "실행할 콘솔(로컬)서버가 없음"
+msgstr "실행할 콘솔 (로컬) 서버가 없습니다"
 
 #: ../daemon/gdm.c:1384
 msgid "Alternative defaults configuration file"
@@ -527,7 +517,7 @@ msgstr "루트만이 GDM을 실행합니다\n"
 #: ../gui/gdmlogin.c:3608
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
-msgstr "%s: %s 시그널 처리기 설정에 오류가 발생했습니다: %s"
+msgstr "%s: %s 시그널 핸들러 설정에 오류가 발생했습니다: %s"
 
 #: ../daemon/gdm.c:1629
 msgid "GDM already running. Aborting!"
@@ -536,11 +526,11 @@ msgstr "GDM은 이미 실행중입니다. 중지!"
 #: ../daemon/gdm.c:1733
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
-msgstr "%s: CHLD 시그널 처리기를 설정하는 데 문제 발생"
+msgstr "%s: CHLD 시그널 핸들러를 설정하는 데 문제 발생"
 
 #: ../daemon/gdm.c:3124
 msgid "DYNAMIC request denied: Not authenticated"
-msgstr "동적 요청이 거부되었습니다: 인증되지 않았습니다"
+msgstr "DYNAMIC 요청이 거부되었습니다: 인증되지 않았습니다"
 
 #: ../daemon/gdm.c:3293 ../daemon/gdm.c:3315 ../daemon/gdm.c:3625
 #: ../daemon/gdm.c:3693 ../daemon/gdm.c:3734 ../daemon/gdm.c:3777
@@ -620,32 +610,32 @@ msgstr "%s%d=false"
 #: ../daemon/gdmconfig.c:592 ../daemon/gdmconfig.c:599
 #, c-format
 msgid "%s: No GDM configuration file: %s. Using defaults."
-msgstr "%s: GDM 설정 파일이 없습니다: %s. 기본값을 사용합니다."
+msgstr "%s: GDM 설정 파일 %s 파일이 없습니다. 기본값을 사용합니다."
 
 #: ../daemon/gdmconfig.c:1112
 #, c-format
 msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
-msgstr "%s: BaseXsession이 비었습니다; %s/gdm/Xsession을 사용합니다"
+msgstr "%s: BaseXsession이 비었습니다. %s/gdm/Xsession을 사용합니다"
 
 #: ../daemon/gdmconfig.c:1145
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
-msgstr "%s: 표준 X 서버를 찾을 수 없습니다; 다른것으로 시도합니다"
+msgstr "%s: 표준 X 서버를 찾을 수 없습니다. 다른 것으로 시도합니다"
 
 #: ../daemon/gdmconfig.c:1219
 #, c-format
 msgid "%s: No greeter specified."
-msgstr "%s: 환영 프로그램이 지정되어 있지 않았습니다."
+msgstr "%s: 환영 프로그램이 지정하지 않았습니다."
 
 #: ../daemon/gdmconfig.c:1221
 #, c-format
 msgid "%s: No remote greeter specified."
-msgstr "%s: 환영 프로그램이 지정되어 있지 않았습니다."
+msgstr "%s: 환영 프로그램이 지정하지 않았습니다."
 
 #: ../daemon/gdmconfig.c:1223
 #, c-format
 msgid "%s: No sessions directory specified."
-msgstr "%s: 세션 디렉토리가 지정되지 않았습니다."
+msgstr "%s: 세션 디렉토리를 지정하지 않았습니다."
 
 #: ../daemon/gdmconfig.c:1255
 #, c-format
@@ -655,8 +645,7 @@ msgstr "%s%d"
 #: ../daemon/gdmconfig.c:1320
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
-msgstr ""
-"%s: XDMCP 지원이 없는데도 XDMCP가 사용가능하게 되어 있습니다; 끄도록 합니다"
+msgstr "%s: XDMCP 지원이 없는데도 XDMCP가 사용가능하게 되어 있습니다. 끄도록 합니다"
 
 #: ../daemon/gdmconfig.c:1381
 #, c-format
@@ -666,19 +655,18 @@ msgstr "%s: TimedLoginDelay가 5보다 작습니다, 5을 사용합니다."
 #: ../daemon/gdmconfig.c:1619
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
-msgstr "%s: 우선순위 범위 벗어남: %d(으)로 바꿉니다"
+msgstr "%s: 우선순위 범위가 벗어났습니다.  %d번으로 바꿉니다"
 
 #: ../daemon/gdmconfig.c:1625
 #, c-format
 msgid "%s: Empty server command; using standard command."
-msgstr "%s: 빈 서버 명령; 표준 서버를 사용합니다."
+msgstr "%s: 서버 명령이 없습니다. 표준 서버를 사용합니다."
 
 #: ../daemon/gdmconfig.c:1824
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
-msgstr ""
-"%s: Logdir %s(이)가 없거나 디렉토리가 아닙니다. ServAuthDir %s(을)를 씁니다."
+msgstr "%s: Logdir %s 디렉토리가 없거나 디렉토리가 아닙니다. ServAuthDir %s 디렉토리를 사용합니다."
 
 #: ../daemon/gdmconfig.c:1841
 #, c-format
@@ -721,7 +709,7 @@ msgstr "%s: 메인 설정 파일이 (defaults.conf) 없습니다. 중지!"
 #: ../daemon/gdmconfig.c:2069 ../daemon/gdmconfig.c:2110
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-msgstr "%s: XDMCP를 사용하지 않고 로컬 서버가 정의되지 않았습니다. 실행 취소!"
+msgstr "%s: XDMCP를 사용하지 않고 로컬 서버를 정의하지 않았습니다. 실행 취소!"
 
 #. start
 #. server uid
@@ -730,9 +718,7 @@ msgstr "%s: XDMCP를 사용하지 않고 로컬 서버가 정의되지 않았습
 msgid ""
 "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow "
 "configuration!"
-msgstr ""
-"%s: XDMCP를 사용하지 않고 로컬 서버가 정의되지 않았습니다.  설정을 할 수 있도"
-"록 %s을(를) :%d에 더합니다!"
+msgstr "%s: XDMCP를 사용하지 않고 로컬 서버를 정의하지 않았습니다.  설정을 할 수 있도록 %s을(를) :%d에 더합니다!"
 
 #: ../daemon/gdmconfig.c:2100
 msgid ""
@@ -760,9 +746,7 @@ msgstr "%s: GDM 사용자 '%s'(이)가 없습니다. 중지!"
 msgid ""
 "The GDM user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct GDM configuration and restart GDM."
-msgstr ""
-"GDM사용자가 root로 설정되어 있습니다만, 이것은 보안의 취약성 때문에 허용되지"
-"않습니다. GDM설정 %s을(를) 올바르게 고치고 GDM을 다시 시작하여 주십시오."
+msgstr "GDM사용자가 root로 설정되어 있지만, 보안상 위험하므로 허용하지 않습니다. GDM설정 %s을(를) 올바르게 고치고 GDM을 다시 시작하여 주십시오."
 
 #: ../daemon/gdmconfig.c:2155
 #, c-format
@@ -787,9 +771,7 @@ msgstr "%s: GDM 그룹 '%s'(이)가 없습니다. 중지!"
 msgid ""
 "The GDM group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct GDM configuration and restart GDM."
-msgstr ""
-"GDM 그룹이 root로 설정되어 있습니다만, 이것은 보안의 취약성 때문에 허용되지않"
-"습니다. GDM 설정을 올바르게 고치고 다시 시작하여 주십시오."
+msgstr "GDM 그룹이 root로 설정되어 있지만, 보안상 위험하므로 허용하지 않습니다. GDM 설정을 올바르게 고치고 다시 시작하여 주십시오."
 
 #: ../daemon/gdmconfig.c:2187
 #, c-format
@@ -819,7 +801,7 @@ msgstr "GDM 설정파일에서 데몬/서버인증 디렉토리가 지정되어�
 #: ../daemon/gdmconfig.c:2222
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
-msgstr "%s: 데몬/서버 인증 디렉토리가 지정되지 않았습니다."
+msgstr "%s: 데몬/서버 인증 디렉토리를 지정하지 않았습니다."
 
 #: ../daemon/gdmconfig.c:2246
 #, c-format
@@ -1129,9 +1111,7 @@ msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
 "server."
-msgstr ""
-"일반적인 X 서버(그래픽 환경)을 시작할 수 없습니다.  그래서 X 서버를 안전모드"
-"로 시작합니다.  로그인해서 X 서버를 올바로 설정하십시오."
+msgstr "일반적인 X 서버(그래픽 환경)을 시작할 수 없습니다.  그래서 X 서버를 안전 모드로 시작합니다.  로그인해서 X 서버를 올바로 설정하십시오."
 
 #: ../daemon/slave.c:2649
 #, c-format
@@ -1196,9 +1176,7 @@ msgstr "%s: gdmchooser에 대한 파이프를 초기화할 수 없습니다"
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
-msgstr ""
-"선택기 프로그램을 시작할 수 없어서, 로그인을 할 수 없습니다. 시스템 관리자에"
-"게 연락하십시오."
+msgstr "선택 프로그램 프로그램을 시작할 수 없어서, 로그인을 할 수 없습니다. 시스템 관리자에게 연락하십시오."
 
 #: ../daemon/slave.c:3106
 #, c-format
@@ -1249,8 +1227,7 @@ msgstr "%s: %s(이)가 되지 못했습니다. 중지합니다."
 msgid ""
 "No Exec line in the session file: %s.  Running the GNOME failsafe session "
 "instead"
-msgstr ""
-"세션 파일에서 실행 중이 없습니다: %s,  그놈 안전모드 세션으로 실행하겠습니다."
+msgstr "세션 파일에서 실행 중이 없습니다: %s,  그놈 안전 모드 세션으로 실행하겠습니다."
 
 #: ../daemon/slave.c:3693
 #, c-format
@@ -1262,25 +1239,19 @@ msgstr "%s: %s"
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
 "session instead."
-msgstr ""
-"%s: 기본 Xsession 스크립트를 찾거나 실행할 수 없습니다. 그놈 안전모드 세션으"
-"로 실행하겠습니다."
+msgstr "%s: 기본 Xsession 스크립트를 찾거나 실행할 수 없습니다. 그놈 안전 모드 세션으로 실행하겠습니다."
 
 #: ../daemon/slave.c:3719
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
-msgstr ""
-"기본 session 스크립트를 찾거나 실행할 수 없습니다. 그놈 안전모드 세션으로 실"
-"행하겠습니다."
+msgstr "기본 session 스크립트를 찾거나 실행할 수 없습니다. 그놈 안전 모드 세션으로 실행하겠습니다."
 
 #. yaikes
 #: ../daemon/slave.c:3751
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-msgstr ""
-"%s: gnome-session에서 안전모드 그놈 세션을 찾을 수 없습니다; xterm으로 시도합"
-"니다"
+msgstr "%s: gnome-session에서 안전 모드 그놈 세션을 찾을 수 없습니다; xterm으로 시도합니다"
 
 #: ../daemon/slave.c:3756
 msgid ""
@@ -1293,17 +1264,13 @@ msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
 "to fix problems in your installation."
-msgstr ""
-"이것은 안전모드 그놈 세션 입니다. 시작 스크립트가 없는 그놈의 '기본'세션으로 "
-"로그인 합니다. 이것은 설치에서 문제점을 고치기 위해 실행 됩니다."
+msgstr "안전 모드 그놈 세션 입니다. 시작 스크립트가 없는 그놈의 '기본'세션으로 로그인 합니다. 이것은 설치에서 문제점을 고치기 위해 실행 됩니다."
 
 #. yaikes
 #: ../daemon/slave.c:3775
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
-msgstr ""
-"%s: gnome-session이 안전모드 그놈 세션을 찾을 수 없습니다; xterm으로 시도합니"
-"다"
+msgstr "%s: gnome-session이 안전 모드 그놈 세션을 찾을 수 없습니다; xterm으로 시도합니다"
 
 #: ../daemon/slave.c:3780
 msgid ""
@@ -1313,17 +1280,14 @@ msgstr "그놈 설치를 찾을 수 없어서 \"안전 모드 xterm\" 세션을 
 
 #: ../daemon/slave.c:3806
 msgid "Cannot find \"xterm\" to start a failsafe session."
-msgstr "안전모드 세션을 시작하기 위한 \"xterm\"을 찾을 수 없습니다."
+msgstr "안전 모드 세션을 시작하기 위한 \"xterm\"을 찾을 수 없습니다."
 
 #: ../daemon/slave.c:3828 ../daemon/slave.c:3874
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
 "To exit the terminal emulator, type 'exit' and an enter into the window."
-msgstr ""
-"안전모드 xterm 세션입니다. 터미널 콘솔 이외에 로그인할 수 있는 방법이 없다면 "
-"터미널 콘솔로 로그인해야 할 것입니다.  터미널 에뮬레이터를 나가려면, 창 안에"
-"서 'exit'라고 타이프하고 엔터를 누르십시오."
+msgstr "안전 모드 xterm 세션입니다. 터미널 콘솔 이외에 로그인할 수 있는 방법이 없다면 터미널 콘솔로 로그인해야 할 것입니다.  터미널 에뮬레이터를 나가려면, 창 안에서 'exit'라고 타이프하고 엔터를 누르십시오."
 
 #: ../daemon/slave.c:3842
 msgid ""
@@ -1331,24 +1295,19 @@ msgid ""
 "console and be prompted to enter the password for root so that you may fix "
 "your system if you cannot log in any other way. To exit the terminal "
 "emulator, type 'exit' and an enter into the window."
-msgstr ""
-"안전모드 xterm 세션입니다. 터미널 콘솔 이외에 로그인할 수 있는 방법이 없다면 "
-"터미널 콘솔로 로그인해야 할 것입니다.  터미널 에뮬레이터를 나가려면, 창 안에"
-"서 'exit'라고 타이프하고 엔터를 누르십시오."
+msgstr "안전 모드 xterm 세션입니다. 터미널 콘솔 이외에 로그인할 수 있는 방법이 없다면 터미널 콘솔로 로그인해야 할 것입니다.  터미널 에뮬레이터를 나가려면, 창 안에서 'exit'라고 타이프하고 엔터를 누르십시오."
 
 #: ../daemon/slave.c:3855
 msgid ""
 "The failsafe session is restricted to users who have been assigned the root "
 "role. If you cannot log in any other way please contact your system "
 "administrator"
-msgstr ""
-"안전모드 세션은 root 권한이 있는 사용자만 가능합니다. 그 외에 다른 방법으로 "
-"로그인이 불가능하다면 시스템 관리자에게 연락하십시오."
+msgstr "안전 모드 세션은 root 권한이 있는 사용자만 가능합니다. 그 외에 다른 방법으로 로그인이 불가능하다면 시스템 관리자에게 연락하십시오."
 
 #: ../daemon/slave.c:3912
 #, c-format
 msgid "%s: User not allowed to log in"
-msgstr "%s: 로그인이 허용되지 않는 사용자"
+msgstr "%s: 사용자 로그인을 허용하지 않습니다"
 
 #: ../daemon/slave.c:3915 ../daemon/verify-pam.c:1368
 msgid "The system administrator has disabled your account."
@@ -1389,10 +1348,7 @@ msgid ""
 "Your home directory is listed as: '%s' but it does not appear to exist.  Do "
 "you want to log in with the / (root) directory as your home directory? It is "
 "unlikely anything will work unless you use a failsafe session."
-msgstr ""
-"홈 디렉토리가 다음과 같습니다: '%s' 하지만 이 디렉토리가 없습니다.  홈 디렉토"
-"리를 / (루트) 디렉토리로 해서 로그인하시겠습니까?  로그인하더라도 안전모드 세"
-"션이 아니라면 아무 것도 동작하지 않을 것입니다."
+msgstr "홈 디렉토리가 다음과 같습니다: '%s' 하지만 이 디렉토리가 없습니다.  홈 디렉토리를 / (루트) 디렉토리로 해서 로그인하시겠습니까?  로그인하더라도 안전 모드 세션이 아니라면 아무 것도 동작하지 않을 것입니다."
 
 #: ../daemon/slave.c:4095
 #, c-format
@@ -1405,10 +1361,7 @@ msgid ""
 "and language from being saved.  File should be owned by user and have 644 "
 "permissions.  User's $HOME directory must be owned by user and not writable "
 "by other users."
-msgstr ""
-"사용자의 $HOME/.dmrc 파일이 무시됩니다. 저장된 기본 세션과 언어를 무시하도록 "
-"합니다. 사용자가 파일을 소유하여야 하며 644 허가권을 가져야 합니다. 사용자 "
-"$HOME디렉토리는 사용자가 소유하여야 하며 다른 사용자가 쓰지 못해야 합니다."
+msgstr "사용자의 $HOME/.dmrc 파일을 무시합니다.  이것때문에 기본 세션과 언어를 저장하지 못합니다.  이 파일은 해당 사용자 소유여야 하고 권한이 644여야 합니다. $HOME 디렉토리도 해당 사용자의 소유여야 하고 다른 사용자가 쓸 권한이 없어야 합니다."
 
 #: ../daemon/slave.c:4283
 msgid ""
@@ -1533,7 +1486,7 @@ msgstr "시스템 관리자가 이 화면에서 로그인 하는 것을 허용�
 #: ../daemon/verify-shadow.c:238 ../daemon/verify-shadow.c:262
 #, c-format
 msgid "User %s not allowed to log in"
-msgstr "사용자 %s은(는) 로그인이 허용되지 않음"
+msgstr "%s 사용자는 로그인을 허용하지 않습니다"
 
 #: ../daemon/verify-crypt.c:222 ../daemon/verify-crypt.c:246
 #: ../daemon/verify-pam.c:1079 ../daemon/verify-shadow.c:240
@@ -1624,11 +1577,11 @@ msgstr "%s의 passwd 구조를 얻을 수 없습니다"
 
 #: ../daemon/verify-pam.c:449
 msgid "You are required to change your password immediately (password aged)"
-msgstr "열쇠글이 지금 바뀌어져야 합니다. (열쇠글이 오래되었습니다)"
+msgstr "열쇠글을 지금 바꿔야 합니다. (열쇠글이 오래되었습니다)"
 
 #: ../daemon/verify-pam.c:450
 msgid "You are required to change your password immediately (root enforced)"
-msgstr "열쇠글이 지금 바뀌어져야 합니다. (root사용자가 설정하였습니다)"
+msgstr "열쇠글을 지금 바꿔야 합니다. (root사용자가 설정하였습니다)"
 
 #: ../daemon/verify-pam.c:451
 msgid "Your account has expired; please contact your system administrator"
@@ -1738,7 +1691,7 @@ msgstr "사용자 %s은(는) 더 이상 이 시스템에 접근을 허용하지 
 #: ../daemon/verify-pam.c:1083 ../daemon/verify-pam.c:1371
 #, c-format
 msgid "User %s not permitted to gain access at this time"
-msgstr "사용자 %s은(는) 현재 접근이 허용되지 않습니다"
+msgstr "%s 사용자는 현재 접근을 허용하지 않습니다"
 
 #: ../daemon/verify-pam.c:1085
 msgid ""
@@ -2014,7 +1967,7 @@ msgstr "XDMCP를 사용할 수 없습니다"
 
 #: ../gui/gdmXnestchooser.c:595
 msgid "GDM is not running"
-msgstr "GDM이 실행되지 않았습니다"
+msgstr "GDM을 실행하지 않았습니다"
 
 #: ../gui/gdmXnestchooser.c:596
 msgid "Please ask your system administrator to start it."
@@ -2130,7 +2083,7 @@ msgstr ""
 
 #: ../gui/gdmchooser.c:2041
 msgid "Cannot run chooser"
-msgstr "선택기를 실행할 수 없습니다"
+msgstr "선택 프로그램을 실행할 수 없습니다"
 
 #. EOF
 #: ../gui/gdmchooser.glade.h:1
@@ -2143,7 +2096,7 @@ msgstr "연결(_O)"
 
 #: ../gui/gdmchooser.glade.h:3
 msgid "Exit the application"
-msgstr "프로그램을 빠져나갑니다"
+msgstr "프로그램을 끝냅니다"
 
 #: ../gui/gdmchooser.glade.h:4
 msgid "How to use this application"
@@ -2151,19 +2104,19 @@ msgstr "이 프로그램을 사용하는 방법"
 
 #: ../gui/gdmchooser.glade.h:5
 msgid "Login Host Chooser"
-msgstr "로그인 호스트 선택기"
+msgstr "로그인 호스트 선택 프로그램"
 
 #: ../gui/gdmchooser.glade.h:6
 msgid "Open a session to the selected host"
-msgstr "선택된 호스트로 세션을 엽니다"
+msgstr "선택한 호스트로 세션을 엽니다"
 
 #: ../gui/gdmchooser.glade.h:7
 msgid "Probe the network"
-msgstr "네트워크 조사"
+msgstr "네트워크 검사"
 
 #: ../gui/gdmchooser.glade.h:8
 msgid "Query and add this host to the above list"
-msgstr "위의 목록에 있는 호스트를 알아보고 더합니다"
+msgstr "위 목록에 있는 호스트를 알아보고 더합니다"
 
 #: ../gui/gdmchooser.glade.h:9
 msgid "Status"
@@ -2175,17 +2128,14 @@ msgstr "더하기(_A)"
 
 #: ../gui/gdmcomm.c:619
 msgid "GDM (The GNOME Display Manager) is not running."
-msgstr "GDM(그놈 화면 관리자)이 실행되지 않았습니다."
+msgstr "GDM(그놈 화면 관리자)을 실행하지 않았습니다."
 
 #: ../gui/gdmcomm.c:621
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm. If you still wish to use this feature, either start "
 "GDM yourself or ask your system administrator to start GDM."
-msgstr ""
-"KDM(KDE 화면 관리자)나 xdm같은 다른 화면관리자가 실행되고 있는 것 같습니다. "
-"이 기능을 쓰고 싶다면 GDM믈 실행하거나 시스템 관리자에게 GDM을 시작해달라고 "
-"요청하십시오."
+msgstr "KDM(KDE 화면 관리자)나 xdm같은 다른 화면관리자가 실행 중인 것 같습니다. 이 기능을 쓰고 싶다면 GDM믈 실행하거나 시스템 관리자에게 GDM을 시작해달라고 요청하십시오."
 
 #: ../gui/gdmcomm.c:645 ../gui/gdmflexiserver.c:787
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
@@ -2193,7 +2143,7 @@ msgstr "GDM(그놈 화면 관리자)와 통신할 수 없습니다"
 
 #: ../gui/gdmcomm.c:647 ../gui/gdmflexiserver.c:789
 msgid "Perhaps you have an old version of GDM running."
-msgstr "옛날 버젼의 GDM이 실행되고 있는 것 같습니다."
+msgstr "옛날 버젼의 GDM이 실행 중인 것 같습니다."
 
 #: ../gui/gdmcomm.c:664 ../gui/gdmcomm.c:667
 msgid "Cannot communicate with GDM. Perhaps you have an old version running."
@@ -2201,11 +2151,11 @@ msgstr "GDM과 통신할 수 없습니다, 옛날 버젼의 GDM이 실행되고 
 
 #: ../gui/gdmcomm.c:670
 msgid "The allowed limit of flexible X servers reached."
-msgstr "탄력적 X 서버의 최대 허용치에 다다랐습니다."
+msgstr "플렉서블 X 서버의 최대 허용치에 다다랐습니다."
 
 #: ../gui/gdmcomm.c:672
 msgid "There were errors trying to start the X server."
-msgstr "X 서버를 시작하는데 오류가 생겼습니다."
+msgstr "X 서버를 시작하는데 오류가 발생했습니다."
 
 #: ../gui/gdmcomm.c:674
 msgid "The X server failed.  Perhaps it is not configured well."
@@ -2257,9 +2207,7 @@ msgstr "지원하지 않는 설정 키를 업데이트하려 합니다."
 msgid ""
 "You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
-msgstr ""
-"이 작업을 하기 위해 필요한 인증한 내용이 없습니다.  아마도 .Xauthority 파일"
-"이 올바르게 설정되지 않았을 것입니다."
+msgstr "이 작업을 하기 위해 필요한 인증한 내용이 없습니다.  아마도 .Xauthority 파일을 올바르게 설정하지 않았을 것입니다."
 
 #: ../gui/gdmcomm.c:705
 msgid "Too many messages were sent to GDM and it hung up on us."
@@ -2298,7 +2246,7 @@ msgstr[0] "%d초"
 #: ../gui/gdmdynamic.c:48
 #, c-format
 msgid "Usage: %s [-b][-v] and one of the following:\n"
-msgstr "사용법: %s [-b][-v]와 아래 중 하나를 쓸 수 있습니다:\n"
+msgstr "사용법: %s [-b][-v]와 다음 중 하나를 쓸 수 있습니다:\n"
 
 #: ../gui/gdmdynamic.c:49
 #, c-format
@@ -2323,7 +2271,7 @@ msgstr "\t-l [서버 이름]\n"
 #: ../gui/gdmdynamic.c:53
 #, c-format
 msgid "\t-t maximum tries to connect (default 15)\n"
-msgstr "\t-t 최대 연결 시도 회수 (기본값 15회)\n"
+msgstr "\t-t 최대 연결 시도 회수 (기본값 15)\n"
 
 #: ../gui/gdmdynamic.c:54
 #, c-format
@@ -2445,15 +2393,15 @@ msgstr "표준 서버"
 
 #: ../gui/gdmflexiserver.c:836
 msgid "You do not seem to have the authentication needed for this operation"
-msgstr "이 작업을 하기 위해 필요한 인증 내용이 없습니다."
+msgstr "이 동작에 필요한 인증을 하지 않았습니다."
 
 #: ../gui/gdmflexiserver.c:839
 msgid "Perhaps your .Xauthority file is not set up correctly."
-msgstr "아마도 .Xauthority 파일이 올바르게 설정되지 않았을 것입니다."
+msgstr "아마도 .Xauthority 파일을 올바르게 설정하지 않았을 것입니다."
 
 #: ../gui/gdmflexiserver.c:866
 msgid "You do not seem to be logged in on the console"
-msgstr "콘솔에서 로그인하지 않으셨습니다."
+msgstr "콘솔에서 로그인하지 않았습니다."
 
 #: ../gui/gdmflexiserver.c:868
 msgid "Starting a new login only works correctly on the console."
@@ -2461,7 +2409,7 @@ msgstr "새로운 로그인의 시작은 콘솔에서만 올바르게 동작합�
 
 #: ../gui/gdmflexiserver.c:916
 msgid "Cannot start new display"
-msgstr "새 디스플레이를 시작할 수 없음"
+msgstr "새 디스플레이를 시작할 수 없습니다"
 
 #: ../gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
@@ -3080,7 +3028,7 @@ msgstr "'%s' 명령을 실행할 수 없습니다: %s."
 
 #: ../gui/gdmlogin.c:365
 msgid "Cannot start background application"
-msgstr "배경 프로그램을 시작할 수 없습니다"
+msgstr "백그라운드 프로그램을 시작할 수 없습니다"
 
 #: ../gui/gdmlogin.c:439 ../gui/greeter/greeter_parser.c:382
 msgid "User %u will login in %t"
@@ -3143,7 +3091,7 @@ msgstr "이 세션에 %s을(를) 선택했지만, 기본 설정은 %s입니다."
 #: ../gui/greeter/greeter.c:289 ../gui/greeter/greeter.c:306
 #: ../gui/greeter/greeter_action_language.c:169
 msgid "Make _Default"
-msgstr "기본값(_D)"
+msgstr "기본값으로 하기(_D)"
 
 #: ../gui/gdmlogin.c:792 ../gui/gdmlogin.c:1731 ../gui/greeter/greeter.c:306
 #: ../gui/greeter/greeter_action_language.c:169
@@ -3153,7 +3101,7 @@ msgstr "이 세션만 쓰기(_T)"
 #: ../gui/gdmlogin.c:903 ../gui/gdmlogin.c:917 ../gui/gdmlogin.c:1560
 #: ../gui/gdmlogin.c:2055 ../gui/gdmlogin.c:2705
 msgid "_Username:"
-msgstr "사용자이름(_U):"
+msgstr "사용자 이름(_U):"
 
 #: ../gui/gdmlogin.c:993
 #, c-format
@@ -3162,7 +3110,7 @@ msgstr "%s 세션을 선택했습니다"
 
 #: ../gui/gdmlogin.c:1014 ../gui/gdmlogin.c:1132
 msgid "_Last"
-msgstr "최근에 선택한 것(_L)"
+msgstr "최근(_L)"
 
 #. never_encoding
 #. no_group
@@ -3188,7 +3136,7 @@ msgstr "열쇠글(_P):"
 #: ../gui/gdmlogin.c:1711 ../gui/greeter/greeter.c:285
 #, c-format
 msgid "Your preferred session type %s is not installed on this computer."
-msgstr "선택한 세션 타입 %s(은)는 이 기계에 설치되어 있지 않습니다."
+msgstr "선택한 세션 타입 %s(은)는 이 컴퓨터에 설치하지 않았습니다."
 
 #: ../gui/gdmlogin.c:1715 ../gui/greeter/greeter.c:289
 msgid "Just _Log In"
@@ -3312,20 +3260,18 @@ msgstr "컴퓨터 다시 시작"
 
 #: ../gui/gdmlogin.c:3619
 msgid "Could not set signal mask!"
-msgstr "시그날 마스크를 맞추지 못했습니다!"
+msgstr "시그널 마스크를 설정하지 못했습니다!"
 
 #: ../gui/gdmlogin.c:3737 ../gui/greeter/greeter.c:1517
 msgid "Session directory is missing"
-msgstr "세션 디렉토리가 지정되지 않았습니다."
+msgstr "세션 디렉토리를 지정하지 않았습니다."
 
 #: ../gui/gdmlogin.c:3738
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the GDM "
 "configuration."
-msgstr ""
-"세션 디렉토리가 없거나 비어있습니다!  사용가능한 세션은 2가지 입니다, 하지만 "
-"로그인 하여서 GDM 설정을 올바르게 고쳐야 할것 입니다."
+msgstr "세션 디렉토리가 없거나 비어 있습니다!  사용 가능한 세션은 2가지 입니다.  하지만 로그인 하여서 GDM 설정을 올바르게 고쳐야 할것 입니다."
 
 #: ../gui/gdmlogin.c:3761 ../gui/greeter/greeter.c:1542
 msgid "Configuration is not correct"
@@ -3381,38 +3327,33 @@ msgstr "로그인 사진 설정"
 
 #: ../gui/gdmsession.c:137 ../gui/gdmsession.c:321
 msgid "Failsafe _GNOME"
-msgstr "그놈 안전모드(_G)"
+msgstr "그놈 안전 모드(_G)"
 
 #: ../gui/gdmsession.c:138 ../gui/gdmsession.c:322
 msgid "Failsafe GNOME"
-msgstr "그놈 안전모드"
+msgstr "그놈 안전 모드"
 
 #: ../gui/gdmsession.c:139 ../gui/gdmsession.c:323
 msgid ""
 "This is a failsafe session that will log you into GNOME. No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
-msgstr ""
-"그놈에 로그인하는 안전모드 세션입니다.  시작 스크립트를 읽지 않으며 다른 방법"
-"으로 로그인할 수 없을 때만 사용됩니다.  그놈은 '기본값' 세션을 사용할 것입니"
-"다."
+msgstr "그놈에 로그인하는 안전 모드 세션입니다.  시작 스크립트를 읽지 않으며 다른 방법으로 로그인할 수 없을 때만 사용됩니다.  그놈은 '기본값' 세션을 사용할 것입니다."
 
 #: ../gui/gdmsession.c:150 ../gui/gdmsession.c:334
 msgid "Failsafe _Terminal"
-msgstr "터미널 안전모드(_T)"
+msgstr "터미널 안전 모드(_T)"
 
 #: ../gui/gdmsession.c:151 ../gui/gdmsession.c:335
 msgid "Failsafe Terminal"
-msgstr "터미널 안전모드"
+msgstr "터미널 안전 모드"
 
 #: ../gui/gdmsession.c:152 ../gui/gdmsession.c:336
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
-msgstr ""
-"터미널에 로그인하는 안전모드 세션입니다.  시작 스크립트를 읽지 않으며 다른 방"
-"법으로 로그인할 수 없을 때만 사용됩니다.  끝내려면 'exit'라고 입력하십시오."
+msgstr "터미널에 로그인하는 안전 모드 세션입니다.  시작 스크립트를 읽지 않으며 다른 방법으로 로그인할 수 없을 때만 사용됩니다.  끝내려면 'exit'라고 입력하십시오."
 
 #: ../gui/gdmsetup.c:282
 msgid ""
@@ -3449,7 +3390,7 @@ msgstr "얼굴 찾아보기가 있는 일반 모양"
 
 #: ../gui/gdmsetup.c:1355
 msgid "Autologin or timed login to the root account is forbidden."
-msgstr "root 계정에는 자동 로그인이나 시간제한 로그인이 금지되어 있습니다."
+msgstr "root 계정으로는 자동 로그인이나 시간제한 로그인을 못 합니다."
 
 #: ../gui/gdmsetup.c:1357 ../gui/gdmsetup.c:2709 ../gui/gdmsetup.c:2817
 #, c-format
@@ -3592,7 +3533,7 @@ msgstr "파일이 tar.gz 또는 tar 묶음이 아닙니다"
 
 #: ../gui/gdmsetup.c:5304
 msgid "Archive does not include a GdmGreeterTheme.info file"
-msgstr "GdmGreeterTheme.info 파일이 묶음에 포함되어 있지 않습니다"
+msgstr "GdmGreeterTheme.info 파일이 묶음에 들어 있지 않습니다"
 
 #: ../gui/gdmsetup.c:5326
 msgid "File does not exist"
@@ -3962,9 +3903,7 @@ msgstr "사용자 메세지(_U):"
 msgid ""
 "Checks the ownership of the home directories before writing to them. This "
 "prevents security issues in case of bad setup."
-msgstr ""
-"홈 디렉토리에 쓰기 전에 홈 디렉토리의 소유자를 확인합니다. 설치가 잘못 된 경"
-"우에 보안 문제를 막을 수 있습니다."
+msgstr "홈 디렉토리에 쓰기 전에 홈 디렉토리의 소유자를 확인합니다. 설치가 잘못된 경우에 보안 문제를 막을 수 있습니다."
 
 #: ../gui/gdmsetup.glade.h:44
 msgid "Co_lor:"
@@ -4181,11 +4120,7 @@ msgid ""
 "defined in the current GTK+ theme.  If no such image is defined, the image "
 "specified by DefaultFace will be used.  The image must be in an gdk-pixbuf "
 "supported format and the file must be readable to the GDM user."
-msgstr ""
-"얼굴 그림을 지정하지 않은 사용자의 경우, 현재 GTK+ 테마에 지정된 "
-"\"stock_person\" 아이콘을 사용합니다.  그러한 그림을 지정하지 않은 경우, 기본"
-"값 얼굴에 지정한 그림을 사용합니다.  그림은 gdk-pixbuf가 지원하는 형식이어야 "
-"하고 GDM 사용자가 읽을 수 있어야 합니다."
+msgstr "얼굴 그림을 지정하지 않은 사용자의 경우, 현재 GTK+ 테마에 지정한 \"stock_person\" 아이콘을 사용합니다.  그러한 그림을 지정하지 않은 경우, 기본값 얼굴에 지정한 그림을 사용합니다.  그림은 gdk-pixbuf가 지원하는 형식이어야 하고 GDM 사용자가 읽을 수 있어야 합니다."
 
 #: ../gui/gdmsetup.glade.h:83
 msgid ""
@@ -4199,7 +4134,7 @@ msgstr ""
 
 #: ../gui/gdmsetup.glade.h:84
 msgid "Includ_e Hostname Chooser (XDMCP) menu item"
-msgstr "호스트이름 선택기 (XDMCP) 메뉴 항목에 포함(_E)"
+msgstr "호스트이름 선택 프로그램 (XDMCP) 메뉴 항목에 포함(_E)"
 
 #: ../gui/gdmsetup.glade.h:85
 msgid "Include Con_figure menu item"
@@ -5017,13 +4952,13 @@ msgstr "컴퓨터를 일시 중단합니다"
 
 #: ../gui/greeter/greeter_system.c:411
 msgid "Run _XDMCP chooser"
-msgstr "XDMCP 선택기 실행(_X)"
+msgstr "XDMCP 선택 프로그램 실행(_X)"
 
 #: ../gui/greeter/greeter_system.c:414
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "computers, if there are any."
-msgstr "원격 기계에서 로그인을 할 수 있도록 하는 XDMCP 선택기를 실행합니다."
+msgstr "원격 기계에서 로그인을 할 수 있도록 XDMCP 선택 프로그램을 실행합니다."
 
 #: ../gui/greeter/greeter_system.c:431
 msgid "Confi_gure the login manager"
