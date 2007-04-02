@@ -217,12 +217,12 @@ System_files = \
 	gdmflexiserver.desktop	\
 	gdmflexiserver-xnest.desktop
 System_dist_files = \
-	gdmsetup.desktop.in.in		\
-	gdmflexiserver.desktop.in	\
-	gdmflexiserver-xnest.desktop.in
+	gdmsetup.desktop.in.in			\
+	gdmflexiserver.desktop.in		\
+	gdmflexiserver-xnest.desktop.in.in
 System_DATA = $(System_files)
 
-CLEANFILES = gdmsetup.desktop gdmsetup.desktop.in gdmflexiserver.desktop gdmflexiserver-xnest.desktop gdmphotosetup.desktop
+CLEANFILES = gdmsetup.desktop gdmsetup.desktop.in gdmflexiserver.desktop gdmflexiserver-xnest.desktop gdmflexiserver-xnest.desktop.in gdmphotosetup.desktop
 
 gdmsetup.desktop.in: $(srcdir)/gdmsetup.desktop.in.in
 	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdmsetup.desktop.in.in \

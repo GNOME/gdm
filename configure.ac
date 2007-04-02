@@ -1230,6 +1230,7 @@ AC_OUTPUT([
 Makefile
 daemon/Makefile
 gui/Makefile
+gui/gdmflexiserver-xnest.desktop.in
 gui/faces/Makefile
 gui/greeter/Makefile
 gui/greeter/themes/Makefile
