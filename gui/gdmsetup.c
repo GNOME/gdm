@@ -6458,7 +6458,7 @@ main (int argc, char *argv[])
 	gtk_init (&argc, &argv);
 
 	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-setup.png", NULL);	
-	glade_gnome_init();
+	glade_init();
 
 	/* Start using socket */
 	gdmcomm_comm_bulk_start ();
