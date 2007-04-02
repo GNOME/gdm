@@ -5566,6 +5566,7 @@ install_new_theme (GtkWidget *button, gpointer data)
 	GtkListStore *store = data;
 	static GtkWidget *chooser = NULL;
 	GtkWidget *setup_dialog;
+	GtkFileFilter *filter;
 	
 	setup_dialog = glade_xml_get_widget (xml, "setup_dialog");
 	
@@ -5575,6 +5576,13 @@ install_new_theme (GtkWidget *button, gpointer data)
 					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					       _("_Install"), GTK_RESPONSE_OK,
 					       NULL);
+	
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Theme archives"));
+	gtk_file_filter_add_mime_type (filter, "application/x-tar");
+	gtk_file_filter_add_mime_type (filter, "application/x-compressed-tar");
+	
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
 	
 	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (chooser), FALSE);
 
