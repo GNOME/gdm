@@ -19,7 +19,6 @@
 #include "config.h"
 
 #include <unistd.h>
-#include <syslog.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -31,6 +30,7 @@
 #include "misc.h"
 
 #include "gdm-common.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 
 #include "greeter.h"
@@ -78,8 +78,6 @@ query_greeter_restart_handler (void)
 {
 	if (gdm_wm_warn_dialog (_("Are you sure you want to restart the computer?"), "",
 			     _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
-		closelog ();
-		
 		_exit (DISPLAY_REBOOT);
 	}
 }
@@ -104,8 +102,6 @@ query_greeter_halt_handler (void)
 {
 	if (gdm_wm_warn_dialog (_("Are you sure you want to Shut Down the computer?"), "",
 			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
-		closelog ();
-
 		_exit (DISPLAY_HALT);
 	}
 }
@@ -124,7 +120,6 @@ query_greeter_suspend_handler (void)
 static void
 greeter_restart_handler (void)
 {
-	closelog ();
 	_exit (DISPLAY_REBOOT);
 }
 
@@ -138,7 +133,6 @@ greeter_custom_cmd_handler (gint cmd_id)
 static void
 greeter_halt_handler (void)
 {
-	closelog ();
 	_exit (DISPLAY_HALT);
 }
 
@@ -168,7 +162,6 @@ greeter_config_handler (void)
 static void
 greeter_chooser_handler (void)
 {
-	closelog ();
 	_exit (DISPLAY_RUN_CHOOSER);
 }
 

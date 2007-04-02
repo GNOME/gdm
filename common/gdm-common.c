@@ -32,6 +32,93 @@
 
 #include "gdm-common.h"
 
+static gboolean
+v4_v4_equal (const struct sockaddr_in *a,
+	     const struct sockaddr_in *b)
+{
+	return a->sin_addr.s_addr == b->sin_addr.s_addr;
+}
+
+#ifdef ENABLE_IPV6
+static gboolean
+v6_v6_equal (struct sockaddr_in6 *a,
+	     struct sockaddr_in6 *b)
+{
+	return IN6_ARE_ADDR_EQUAL (&a->sin6_addr, &b->sin6_addr);
+}
+#endif
+
+#define SA(__s)	   ((struct sockaddr *) __s)
+#define SIN(__s)   ((struct sockaddr_in *) __s)
+#define SIN6(__s)  ((struct sockaddr_in6 *) __s)
+
+gboolean
+gdm_address_equal (struct sockaddr_storage *sa,
+		   struct sockaddr_storage *sb)
+{
+	guint8 fam_a;
+       	guint8 fam_b;
+
+	g_return_val_if_fail (sa != NULL, FALSE);
+	g_return_val_if_fail (sb != NULL, FALSE);
+
+	fam_a = sa->ss_family;
+	fam_b = sb->ss_family;
+
+	if (fam_a == AF_INET && fam_b == AF_INET) {
+		return v4_v4_equal (SIN (sa), SIN (sb));
+	}
+#ifdef ENABLE_IPV6
+	else if (fam_a == AF_INET6 && fam_b == AF_INET6) {
+		return v6_v6_equal (SIN6 (sa), SIN6 (sb));
+	}
+#endif
+	return FALSE;
+}
+
+gboolean
+gdm_address_is_loopback (struct sockaddr_storage *sa)
+{
+	switch(sa->ss_family){
+#ifdef	AF_INET6
+	case AF_INET6:
+		return IN6_IS_ADDR_LOOPBACK (&((struct sockaddr_in6 *)sa)->sin6_addr);
+		break;
+#endif
+	case AF_INET:
+		return (INADDR_LOOPBACK == (((struct sockaddr_in *)sa)->sin_addr.s_addr));
+		break;
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
+void
+gdm_address_get_info (struct sockaddr_storage *ss,
+		      char                   **hostp,
+		      char                   **servp)
+{
+	char host [NI_MAXHOST];
+	char serv [NI_MAXSERV];
+
+	host [0] = '\0';
+	serv [0] = '\0';
+	getnameinfo ((const struct sockaddr *)ss,
+		     sizeof (struct sockaddr_storage),
+		     host, sizeof (host),
+		     serv, sizeof (serv),
+		     NI_NUMERICHOST | NI_NUMERICSERV);
+
+	if (servp != NULL) {
+		*servp = g_strdup (serv);
+	}
+	if (hostp != NULL) {
+		*hostp = g_strdup (host);
+	}
+}
+
 /**
  * ve_clearenv:
  *

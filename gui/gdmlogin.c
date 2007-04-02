@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <syslog.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -62,6 +61,7 @@
 #include "misc.h"
 
 #include "gdm-common.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 
 /*
@@ -696,8 +696,6 @@ gdm_login_restart_handler (void)
 	    _("Are you sure you want to restart the computer?"), "",
 	    _("_Restart"), NULL, TRUE) == GTK_RESPONSE_YES) {
 
-		closelog ();
-
 		gdm_kill_thingies ();
 		_exit (DISPLAY_REBOOT);
 	}
@@ -727,8 +725,6 @@ gdm_login_halt_handler (void)
 	    _("Are you sure you want to Shut Down the computer?"), "",
 	    _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
 
-		closelog ();
-
 		gdm_kill_thingies ();
 		_exit (DISPLAY_HALT);
 	}
@@ -737,8 +733,6 @@ gdm_login_halt_handler (void)
 static void
 gdm_login_use_chooser_handler (void)
 {
-	closelog ();
-
 	gdm_kill_thingies ();
 	_exit (DISPLAY_RUN_CHOOSER);
 }
@@ -2861,8 +2855,6 @@ gdm_read_config (void)
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
 
-	gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
-
 	/*
 	 * Read all the keys at once and close sockets connection so we do
 	 * not have to keep the socket open. 
@@ -2968,9 +2960,6 @@ gdm_reread_config (int sig, gpointer data)
 
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
-
-	if (gdm_config_reload_bool (GDM_KEY_DEBUG))
-		gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
 	/* reparse config stuff here.  At least the ones we care about */
 	/*
@@ -3183,8 +3172,6 @@ main (int argc, char *argv[])
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
 
-    gdm_common_openlog ("gdmlogin", LOG_PID, LOG_DAEMON);
-
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
@@ -3203,6 +3190,9 @@ main (int argc, char *argv[])
 
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
 	disable_system_menu_buttons = TRUE;
+
+    gdm_common_log_init ();
+    gdm_common_log_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
     /* Read all configuration at once, so the values get cached */
     gdm_read_config ();

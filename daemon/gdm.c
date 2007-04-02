@@ -40,7 +40,6 @@
 #include <grp.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <syslog.h>
 #include <locale.h>
 #include <dirent.h>
 #include <gtk/gtk.h>
@@ -68,7 +67,9 @@
 #include "filecheck.h"
 #include "errorgui.h"
 
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config.h"
+#include "gdm-log.h"
 
 #define DYNAMIC_ADD     0
 #define DYNAMIC_RELEASE 1
@@ -77,8 +78,6 @@
 #ifdef  HAVE_LOGINDEVPERM
 #include <libdevinfo.h>
 #endif  /* HAVE_LOGINDEVPERM */
-
-extern GSList *displays;
 
 /* Local functions */
 static void gdm_handle_message (GdmConnection *conn,
@@ -105,20 +104,17 @@ static void custom_cmd_restart (long cmd_id);
 static void custom_cmd_no_restart (long cmd_id);
 
 /* Global vars */
-gint xdmcp_sessions = 0;	/* Number of remote sessions */
-gint xdmcp_pending = 0;		/* Number of pending remote sessions */
 gint flexi_servers = 0;		/* Number of flexi servers */
-pid_t extra_process = 0;	/* An extra process.  Used for quickie 
+static pid_t extra_process = 0;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
-int extra_status = 0;		/* Last status from the last extra process */
-pid_t gdm_main_pid = 0;		/* PID of the main daemon */
+static int extra_status = 0;		/* Last status from the last extra process */
 
 gboolean gdm_wait_for_go = FALSE; /* wait for a GO in the fifo */
 
-gboolean print_version = FALSE; /* print version number and quit */
-gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
-gboolean no_daemon = FALSE;	/* Do not daemonize */
-gboolean no_console = FALSE;	/* There are no static servers, this means,
+static gboolean print_version = FALSE; /* print version number and quit */
+static gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
+static gboolean no_daemon = FALSE;	/* Do not daemonize */
+static gboolean no_console = FALSE;	/* There are no static servers, this means,
 				   don't run static servers and second,
 				   don't display info on the console */
 
@@ -130,26 +126,9 @@ int slave_fifo_pipe_fd = -1; /* the slavepipe connection */
 unsigned char *gdm_global_cookie  = NULL;
 unsigned char *gdm_global_bcookie = NULL;
 
-gchar *gdm_charset = NULL;
-
-char *gdm_system_locale = NULL;
-
-int gdm_normal_runlevel = -1; /* runlevel on linux that gdm was started in */
-
-/* True if the server that was run was in actuallity not specified in the
- * config file.  That is if xdmcp was disabled and no static servers were
- * defined.  If the user kills all his static servers by mistake and keeps
- * xdmcp on.  Well then he's screwed.  The configurator should be smarter
- * about that.  But by default xdmcp is disabled so we're likely to catch
- * some errors like this. */
-gboolean gdm_emergency_server = FALSE;
-
 gboolean gdm_first_login = TRUE;
 
-int gdm_in_signal = 0;
-gboolean gdm_in_final_cleanup = FALSE;
-
-GdmLogoutAction safe_logout_action = GDM_LOGOUT_ACTION_NONE;
+static GdmLogoutAction safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 
 /* set in the main function */
 gchar **stored_argv = NULL;
@@ -162,7 +141,6 @@ static GMainLoop *main_loop = NULL;
 
 static gboolean monte_carlo_sqrt2 = FALSE;
 
-
 /*
  * lookup display number if the display number is
  * exists then clear the remove flag and return TRUE
@@ -171,7 +149,10 @@ static gboolean monte_carlo_sqrt2 = FALSE;
 static gboolean
 mark_display_exists (int num)
 {
-    GSList *li;
+	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *disp = li->data;
@@ -223,7 +204,6 @@ gdm_daemonify (void)
 
         exit (EXIT_SUCCESS);
     }
-    gdm_main_pid = getpid ();
 
     if G_UNLIKELY (pid < 0) 
 	gdm_fail (_("%s: fork () failed!"), "gdm_daemonify");
@@ -248,6 +228,9 @@ static void
 gdm_start_first_unborn_local (int delay)
 {
 	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 
 	/* tickle the random stuff */
 	gdm_random_tick ();
@@ -302,10 +285,11 @@ gdm_final_cleanup (void)
 	GSList *list, *li;
 	const char *pidfile;
 	gboolean first;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 
 	gdm_debug ("gdm_final_cleanup");
-
-	gdm_in_final_cleanup = TRUE;
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
@@ -394,8 +378,6 @@ gdm_final_cleanup (void)
 		VE_IGNORE_EINTR (g_unlink (GDM_SUP_SOCKET));
 		unixconn = NULL;
 	}
-
-	closelog ();
 
 	pidfile = GDM_PID_FILE;
 	if (pidfile != NULL) {
@@ -496,8 +478,6 @@ deal_with_x_crashes (GdmDisplay *d)
 
 		    if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP))
 			    gdm_xdmcp_close ();
-
-		    closelog ();
 
 		    gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
@@ -1187,6 +1167,9 @@ static void
 gdm_safe_restart (void)
 {
 	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 
 	if ( ! gdm_restart_mode)
 		return;
@@ -1231,6 +1214,9 @@ static void
 gdm_try_logout_action (GdmDisplay *disp)
 {
 	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 
 	if (disp != NULL &&
 	    disp->logout_action != GDM_LOGOUT_ACTION_NONE &&
@@ -1477,26 +1463,6 @@ ensure_desc_012 (void)
 	}
 }
 
-static void
-gdm_get_our_runlevel (void)
-{
-#ifdef __linux__
-	/* on linux we get our current runlevel, for use later
-	 * to detect a shutdown going on, and not mess up. */
-	if (g_access ("/sbin/runlevel", X_OK) == 0) {
-		char ign;
-		int rnl;
-		FILE *fp = popen ("/sbin/runlevel", "r");
-		if (fp != NULL) {
-			if (fscanf (fp, "%c %d", &ign, &rnl) == 2) {
-				gdm_normal_runlevel = rnl;
-			}
-			pclose (fp);
-		}
-	}
-#endif /* __linux__ */
-}
-
 /* initially if we get a TERM or INT we just want to die,
    but we want to also kill an extra process if it exists */
 static void
@@ -1558,13 +1524,10 @@ main (int argc, char *argv[])
     struct sigaction sig, child, abrt;
     GOptionContext *ctx;
     const char *pidfile;
-    const char *charset;
     int i;
 
     /* semi init pseudorandomness */
     gdm_random_tick ();
-
-    gdm_main_pid = getpid ();
 
     /* We here ensure descriptors 0, 1 and 2 */
     ensure_desc_012 ();
@@ -1573,7 +1536,6 @@ main (int argc, char *argv[])
     store_argv (argc, argv);
     gdm_saveenv ();
     gdm_get_initial_limits ();
-    gdm_get_our_runlevel ();
 
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     textdomain (GETTEXT_PACKAGE);
@@ -1610,6 +1572,11 @@ main (int argc, char *argv[])
 	    exit (0);
     }
 
+    gdm_log_init ();
+    /* Parse configuration file */
+    gdm_daemon_config_parse (config_file, no_console);
+    gdm_log_set_debug (gdm_daemon_config_get_bool_for_id (GDM_ID_DEBUG));
+
     /* XDM compliant error message */
     if G_UNLIKELY (getuid () != 0) {
 	    /* make sure the pid file doesn't get wiped */
@@ -1618,23 +1585,11 @@ main (int argc, char *argv[])
     }
 
     main_loop = g_main_loop_new (NULL, FALSE);
-    openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-    if ( ! g_get_charset (&charset)) {
-	    gdm_charset = g_strdup (charset);
-    }
-
-    if (setlocale (LC_CTYPE, NULL) != NULL) {
-	gdm_system_locale = g_strdup (setlocale (LC_CTYPE, NULL));
-    }
 
     /* initial TERM/INT handler */
     sig.sa_handler = initial_term_int;
     sig.sa_flags = SA_RESTART;
     sigemptyset (&sig.sa_mask);
-
-    /* Parse configuration file */
-    gdm_daemon_config_parse (config_file);
 
     /*
      * Do not call gdm_fail before calling gdm_config_parse ()
@@ -1846,6 +1801,9 @@ static gboolean
 order_exists (int order)
 {
 	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
 		if (d->x_servers_order == order)
@@ -1859,6 +1817,9 @@ get_new_order (GdmDisplay *d)
 {
 	int order;
 	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 	/* first try the position in the 'displays' list as
 	 * our order */
 	for (order = 0, li = displays; li != NULL; order++, li = li->next) {
@@ -2269,6 +2230,9 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			GString *resp = NULL;
 			GSList *li;
+			GSList *displays;
+
+			displays = gdm_daemon_config_get_display_list ();
 			gdm_debug ("Got QUERYLOGIN %s", p);
 			for (li = displays; li != NULL; li = li->next) {
 				GdmDisplay *di = li->data;
@@ -2309,6 +2273,9 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		long slave_pid;
 		char *p;
 		GSList *li;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 
 		if (sscanf (msg, GDM_SOP_MIGRATE " %ld", &slave_pid) != 1)
 			return;
@@ -2459,12 +2426,18 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		gdm_safe_restart ();
 	} else if (strcmp (msg, GDM_SOP_DIRTY_SERVERS) == 0) {
 		GSList *li;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *d = li->data;
 			send_slave_command (d, GDM_NOTIFY_DIRTY_SERVERS);
 		}
 	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART_SERVERS) == 0) {
 		GSList *li;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *d = li->data;
 			send_slave_command (d, GDM_NOTIFY_SOFT_RESTART_SERVERS);
@@ -2492,12 +2465,16 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		p++;
 
-		syslog (type, "(child %ld) %s", pid, p);
+		/* FIXME: use g_critical or g_debug when required */
+		g_warning ("(child %ld) %s", pid, p);
 	} else if (strcmp (msg, GDM_SOP_START_NEXT_LOCAL) == 0) {
 		gdm_start_first_unborn_local (3 /* delay */);
 	} else if (strcmp (msg, GDM_SOP_HUP_ALL_GREETERS) == 0) {
 		/* probably shouldn't be done too often */
 		GSList *li;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *d = li->data;
 			if (d->greetpid > 1)
@@ -2508,6 +2485,9 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SOP_GO) == 0) {
 		GSList *li;
 		gboolean old_wait = gdm_wait_for_go;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 		gdm_wait_for_go = FALSE;
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *d = li->data;
@@ -2648,7 +2628,8 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
 			}
 
-			gdm_error_box_full (d, type, error, details_label, details_file, 0, 0);
+			/* FIXME: this is really bad */
+			gdm_errorgui_error_box_full (d, type, error, details_label, details_file, 0, 0);
 
 			if (GDM_AUTHFILE (d)) {
 				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
@@ -2685,7 +2666,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
 			}
 
-			response_yesno =  gdm_failsafe_yesno (d, yesno_msg);
+			response_yesno =  gdm_errorgui_failsafe_yesno (d, yesno_msg);
 
 			send_slave_ack_dialog_int (d, GDM_SLAVE_NOTIFY_YESNO_RESPONSE, response_yesno);
 
@@ -2724,7 +2705,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
 			}
 
-			response_question = gdm_failsafe_question (d, question_msg, echo);
+			response_question = gdm_errorgui_failsafe_question (d, question_msg, echo);
 
 			send_slave_ack_dialog_char (d, GDM_SLAVE_NOTIFY_QUESTION_RESPONSE, response_question);
 
@@ -2777,7 +2758,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
 			}
 
-			response_askbuttons = gdm_failsafe_ask_buttons (d, askbuttons_msg, options);
+			response_askbuttons = gdm_errorgui_failsafe_ask_buttons (d, askbuttons_msg, options);
 
 			send_slave_ack_dialog_int (d, GDM_SLAVE_NOTIFY_ASKBUTTONS_RESPONSE, response_askbuttons);
 			if (GDM_AUTHFILE (d)) {
@@ -2887,6 +2868,9 @@ static GdmDisplay *
 find_display (const char *name)
 {
 	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *disp = li->data;
@@ -2996,10 +2980,13 @@ check_cookie (const gchar *file, const gchar *disp, const gchar *cookie)
 }
 
 static void
-handle_flexi_server (GdmConnection *conn, int type, const gchar *server,
+handle_flexi_server (GdmConnection *conn,
+		     int type,
+		     const gchar *server,
 		     gboolean handled,
 		     gboolean chooser,
-		     const gchar *xnest_disp, uid_t xnest_uid,
+		     const gchar *xnest_disp,
+		     uid_t xnest_uid,
 		     const gchar *xnest_auth_file,
 		     const gchar *xnest_cookie,
 		     const gchar *username)
@@ -3141,7 +3128,8 @@ handle_flexi_server (GdmConnection *conn, int type, const gchar *server,
 	display->parent_auth_file = g_strdup (xnest_auth_file);
 	if (conn != NULL)
 		gdm_connection_set_close_notify (conn, display, close_conn);
-	displays = g_slist_append (displays, display);
+	gdm_daemon_config_display_list_append (display);
+
 	if ( ! gdm_display_manage (display)) {
 		gdm_display_unmanage (display);
 		if (conn != NULL)
@@ -3205,9 +3193,8 @@ handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
             gdm_connection_write (conn, "ERROR 4 Display startup failure\n");
             return;
         }
-        displays = g_slist_insert_sorted (displays,
-                                          disp,
-                                          gdm_daemon_config_compare_displays);
+
+	gdm_daemon_config_display_list_insert (disp);
 
         disp->dispstat = DISPLAY_CONFIG;
         disp->removeconf = FALSE;
@@ -3222,6 +3209,10 @@ handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
     if (type == DYNAMIC_REMOVE) {
         GSList *li;
         GSList *nli;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
+
         /* shutdown a dynamic X server */
 
         for (li = displays; li != NULL; li = nli) {
@@ -3245,6 +3236,9 @@ handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
         GSList *li;
         GSList *nli;
 	gboolean found = FALSE;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
 
         for (li = displays; li != NULL; li = nli) {
             GdmDisplay *disp = li->data;
@@ -3273,7 +3267,9 @@ handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
 }
 
 static void
-gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
+gdm_handle_user_message (GdmConnection *conn,
+			 const gchar *msg,
+			 gpointer data)
 {
 	gint i;
 	gboolean has_user;
@@ -3292,6 +3288,10 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		GSList *li;
 		gchar *cookie = g_strdup
 			(&msg[strlen (GDM_SUP_AUTH_LOCAL " ")]);
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
+
 		g_strstrip (cookie);
 		if (strlen (cookie) != 16*2) /* 16 bytes in hex form */ {
 			/* evil, just whack the connection in this case */
@@ -3467,6 +3467,9 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		const gchar *sep = " ";
 		char    *key;
 		int     msgLen=0;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 
 		if (strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
 		             strlen (GDM_SUP_ATTACHED_SERVERS)) == 0)
@@ -3505,6 +3508,9 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		GString *msg;
 		GSList *li;
 		const gchar *sep = " ";
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 
 		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
@@ -3578,6 +3584,9 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 		GString *msg;
 		GSList *li;
 		const gchar *sep = " ";
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 
 		msg = g_string_new ("OK");
 		for (li = displays; li != NULL; li = li->next) {
@@ -3961,6 +3970,9 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			    strlen (GDM_SUP_SET_VT " ")) == 0) {
 		int vt;
 		GSList *li;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
 
 		if (sscanf (msg, GDM_SUP_SET_VT " %d", &vt) != 1 ||
 		    vt < 0) {
@@ -4034,4 +4046,3 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 	}
 }
 
-/* EOF */

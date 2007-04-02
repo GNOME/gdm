@@ -42,6 +42,8 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 
 static char *myname = NULL;  /* name of this program */
@@ -172,7 +174,9 @@ main (int argc, char *argv[])
         }
     }
 
-    gdmcomm_set_debug (verbose);
+    gdm_log_init ();
+    gdm_log_set_debug (verbose);
+
     /*
      * If verbose is not on, then set quiet errors to TRUE since
      * errors are expected and managed by gdmdynamic, so we want

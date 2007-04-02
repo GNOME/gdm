@@ -20,6 +20,11 @@
 
 #include "config.h"
 
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pwd.h>
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -28,8 +33,6 @@
 #elif HAVE_SOLARIS_XINERAMA
 #include <X11/extensions/xinerama.h>
 #endif
-#include <pwd.h>
-#include <unistd.h>
 
 #include "gdmwm.h"
 #include "gdm.h"

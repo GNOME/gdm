@@ -24,6 +24,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "gdm-common.h"
+#include "gdm-socket-protocol.h"
 
 #include "greeter.h"
 #include "greeter_item.h"

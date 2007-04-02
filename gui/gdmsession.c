@@ -23,7 +23,9 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <dirent.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>

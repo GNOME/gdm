@@ -20,6 +20,7 @@
 #define GDM_COOKIE_H
 
 #include "gdm.h"
+#include "display.h"
 
 void gdm_cookie_generate (GdmDisplay *);
 /* Add some more time based randomness, should be done

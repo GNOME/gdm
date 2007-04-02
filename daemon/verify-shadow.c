@@ -19,7 +19,6 @@
 #include "config.h"
 
 #include <glib/gi18n.h>
-#include <syslog.h>
 #include <pwd.h>
 #include <shadow.h>
 #include <grp.h>
@@ -298,7 +297,7 @@ authenticate_again:
     switch (passwdexpired (login, &info_msg)) {
     case 1 :
 	    gdm_error (_("Password of %s has expired"), login);
-	    gdm_error_box (d, GTK_MESSAGE_ERROR,
+	    gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 			   _("You are required to change your password.\n"
 			     "Please choose a new one."));
 	    g_free (info_msg);
@@ -353,7 +352,7 @@ authenticate_again:
 	    }
 
 	    if (ret) {
-		    gdm_error_box (d, GTK_MESSAGE_WARNING,
+		    gdm_errorgui_error_box (d, GTK_MESSAGE_WARNING,
 				   _("Your password has been changed but "
 				     "you may have to change it again. "
 				     "Please try again later or contact "
@@ -361,7 +360,7 @@ authenticate_again:
 	    }
 
 #else /* !CAN_CLEAR_ADMCHG */
-	    gdm_error_box (d, GTK_MESSAGE_WARNING,
+	    gdm_errorgui_error_box (d, GTK_MESSAGE_WARNING,
 			   _("Your password has been changed but you "
 			     "may have to change it again. Please try again "
 			     "later or contact your system administrator."));
@@ -372,7 +371,7 @@ authenticate_again:
 
     case 2 :
 	    gdm_error (_("Password of %s has expired"), login);
-	    gdm_error_box (d, GTK_MESSAGE_ERROR,
+	    gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 			   _("Your password has expired.\n"
 			     "Only a system administrator can now change it"));
 	    g_free (info_msg);
@@ -381,7 +380,7 @@ authenticate_again:
 
     case -1 :
 	    gdm_error (_("Internal error on passwdexpired"));
-	    gdm_error_box (d, GTK_MESSAGE_ERROR,
+	    gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 			   _("An internal error occurred. You will not be able to log in.\n"
 			     "Please try again later or contact your system administrator."));
 	    g_free (info_msg);
@@ -423,7 +422,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 
 	if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
 		gdm_error (_("Cannot set user group for %s"), login);
-		gdm_error_box (d,
+		gdm_errorgui_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("\nCannot set your user group; "
 				 "you will not be able to log in. "

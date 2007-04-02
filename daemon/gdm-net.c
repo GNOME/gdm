@@ -30,13 +30,13 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <syslog.h>
 
 #include "gdm.h"
 #include "misc.h"
 #include "gdm-net.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
 
 /*

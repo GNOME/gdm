@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,7 +20,6 @@
 
 #include "config.h"
 
-#include <syslog.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -57,17 +58,10 @@
 #include "slave.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
 
 extern char **environ;
-
-extern pid_t extra_process;
-extern int extra_status;
-extern pid_t gdm_main_pid;
-extern gboolean preserve_ld_vars;
-extern int gdm_in_signal;
-extern GSList *displays;
-extern char *gdm_charset;
 
 #ifdef ENABLE_IPV6
 
@@ -178,142 +172,6 @@ have_ipv6 (void)
 }
 #endif
 
-
-static void
-do_syslog (int type, const char *s)
-{
-	if (gdm_in_signal > 0) {
-		char *m = g_strdup_printf (GDM_SOP_SYSLOG " %ld %d %s",
-					   (long)getpid (), type, s);
-		gdm_slave_send (m, FALSE);
-		g_free (m);
-	} else {
-		syslog (type, "%s", s);
-	}
-}
-
-
-/**
- * gdm_fail:
- * @format: printf style format string
- * @...: Optional arguments
- *
- * Logs fatal error condition and aborts master daemon.  Also sleeps
- * for 30 seconds to avoid looping if gdm is started by init.  
- */
-void 
-gdm_fail (const gchar *format, ...)
-{
-    va_list args;
-    char *s;
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-
-    /* Log to both syslog and stderr */
-    do_syslog (LOG_CRIT, s);
-    if (getpid () == gdm_main_pid) {
-	    gdm_fdprintf (2, "%s\n", s);
-    }
-
-    g_free (s);
-
-    /* If main process do final cleanup to kill all processes */
-    if (getpid () == gdm_main_pid) {
-	    gdm_final_cleanup ();
-    } else if ( ! gdm_slave_final_cleanup ()) {
-	    /* If we weren't even a slave do some random cleanup only */
-	    /* FIXME: is this all fine? */
-	    gdm_sigchld_block_push ();
-	    if (extra_process > 1 && extra_process != getpid ()) {
-		    /* we sigterm extra processes, and we don't wait */
-		    kill (-(extra_process), SIGTERM);
-		    extra_process = 0;
-	    }
-	    gdm_sigchld_block_pop ();
-    }
-
-    closelog ();
-
-    /* Slow down respawning if we're started from init */
-    if (getppid () == 1)
-	sleep (30);
-
-    exit (EXIT_FAILURE);
-}
-
-
-/**
- * gdm_info:
- * @format: printf style format string
- * @...: Optional arguments
- *
- * Log non-fatal information to syslog
- */
-void 
-gdm_info (const gchar *format, ...)
-{
-    va_list args;
-    char *s;
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-
-    do_syslog (LOG_INFO, s);
-    
-    g_free (s);
-}
-
-/**
- * gdm_error:
- * @format: printf style format string
- * @...: Optional arguments
- *
- * Log non-fatal error condition to syslog
- */
-void 
-gdm_error (const gchar *format, ...)
-{
-    va_list args;
-    char *s;
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-
-    do_syslog (LOG_ERR, s);
-    
-    g_free (s);
-}
-
-/**
- * gdm_debug:
- * @format: printf style format string
- * @...: Optional arguments
- *
- * Log debug information to syslog if debugging is enabled.
- */
-void 
-gdm_debug (const gchar *format, ...)
-{
-    va_list args;
-    char *s;
-
-    if G_LIKELY (! gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG))
-	return;
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-
-    do_syslog (LOG_ERR, s);	/* Maybe should be LOG_DEBUG, but then normally
-				 * you wouldn't get it in the log.  ??? */
-    
-    g_free (s);
-}
-
 void
 gdm_fdprintf (int fd, const gchar *format, ...)
 {
@@ -348,7 +206,6 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 /*
  * Clear environment, but keep the i18n ones,
  * note that this leaks memory so only use before exec
- * (keep LD_* if preserve_ld_vars is true)
  */
 void
 gdm_clearenv_no_lang (void)
@@ -360,39 +217,9 @@ gdm_clearenv_no_lang (void)
 		char *env = environ[i];
 		if (strncmp (env, "LC_", 3) == 0 ||
 		    strncmp (env, "LANG", 4) == 0 ||
-		    strncmp (env, "LINGUAS", 7) == 0)
+		    strncmp (env, "LINGUAS", 7) == 0) {
 			envs = g_list_prepend (envs, g_strdup (env));
-		if (preserve_ld_vars &&
-		    strncmp (env, "LD_", 3) == 0)
-			envs = g_list_prepend (envs, g_strdup (env));
-	}
-
-	ve_clearenv ();
-
-	for (li = envs; li != NULL; li = li->next) {
-		putenv (li->data);
-	}
-
-	g_list_free (envs);
-}
-
-
-/*
- * Clear environment completely
- * note that this leaks memory so only use before exec
- * (keep LD_* if preserve_ld_vars is true)
- */
-void
-gdm_clearenv (void)
-{
-	int i;
-	GList *li, *envs = NULL;
-
-	for (i = 0; environ[i] != NULL; i++) {
-		char *env = environ[i];
-		if (preserve_ld_vars &&
-		    strncmp (env, "LD_", 3) == 0)
-			envs = g_list_prepend (envs, g_strdup (env));
+		}
 	}
 
 	ve_clearenv ();
@@ -458,7 +285,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 {
 	int sock;
 	int i;
-	struct sockaddr_in serv_addr = {0}; 
+	struct sockaddr_in serv_addr = { 0 };
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
@@ -473,6 +300,9 @@ gdm_get_free_display (int start, uid_t server_uid)
 		char buf[256];
 		FILE *fp;
 		int r;
+                GSList *displays;
+
+                displays = gdm_daemon_config_get_display_list ();
 
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *dsp = li->data;
@@ -487,7 +317,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 
 #ifdef ENABLE_IPV6
 		if (have_ipv6 ()) {
-			struct sockaddr_in6 serv6_addr= {0};
+			struct sockaddr_in6 serv6_addr = { 0 };
 
 			sock = socket (AF_INET6, SOCK_STREAM,0);
 
@@ -778,7 +608,8 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 }
 
 int
-gdm_exec_wait (char * const *argv, gboolean no_display,
+gdm_exec_wait (char * const *argv,
+	       gboolean no_display,
 	       gboolean de_setuid)
 {
 	int status;
@@ -789,9 +620,11 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 	    g_access (argv[0], X_OK) != 0)
 		return -1;
 
+	g_debug ("Forking extra process: %s", argv[0]);
+
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
-		closelog ();
+		gdm_log_shutdown ();
 
 		gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
@@ -807,13 +640,13 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 			gdm_desetuid ();
 		}
 
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+		gdm_log_init ();
 
 		if (no_display) {
 			g_unsetenv ("DISPLAY");
 			g_unsetenv ("XAUTHORITY");
 		}
-		
+
 		VE_IGNORE_EINTR (execv (argv[0], argv));
 
 		_exit (-1);
@@ -822,7 +655,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 	if (pid < 0)
 		return -1;
 
-	gdm_wait_for_extra (&status);
+	gdm_wait_for_extra (pid, &status);
 
 	if (WIFEXITED (status))
 		return WEXITSTATUS (status);
@@ -929,9 +762,9 @@ gdm_fork_extra (void)
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
 
-	pid = extra_process = fork ();
+	pid = fork ();
 	if (pid < 0)
-		extra_process = 0;
+		return 0;
 	else if (pid == 0)
 		/*
                  * Unset signals here, and yet again
@@ -968,17 +801,19 @@ gdm_fork_extra (void)
 }
 
 void
-gdm_wait_for_extra (int *status)
+gdm_wait_for_extra (pid_t pid,
+		    int  *statusp)
 {
+	int status;
+
 	gdm_sigchld_block_push ();
 
-	if (extra_process > 1) {
-		ve_waitpid_no_signal (extra_process, &extra_status, 0);
+	if (pid > 1) {
+		ve_waitpid_no_signal (pid, &status, 0);
 	}
-	extra_process = 0;
 
-	if (status != NULL)
-		*status = extra_status;
+	if (statusp != NULL)
+		*statusp = status;
 
 	gdm_sigchld_block_pop ();
 }
@@ -1045,70 +880,49 @@ gdm_ensure_sanity (void)
 }
 
 const GList *
-gdm_peek_local_address_list (void)
+gdm_address_peek_local_list (void)
 {
 	static GList *the_list = NULL;
 	static time_t last_time = 0;
-	struct sockaddr_in *sin;
-#ifdef ENABLE_IPV6
 	char hostbuf[BUFSIZ];
-	struct sockaddr_in6 *sin6;
-	struct addrinfo hints, *result, *res;
-#else /* ENABLE_IPV6 */
-	int sockfd;
-#ifdef SIOCGIFCONF
-	struct ifconf ifc;
-	struct ifreq *ifr;
-	char *buf;
-	int num;
-#else /* SIOCGIFCONF */
-	char hostbuf[BUFSIZ];
-	struct hostent *he;
-#endif
-#endif
+	struct addrinfo hints;
+	struct addrinfo *result;
+	struct addrinfo *res;
 
 	/* Don't check more then every 5 seconds */
-	if (last_time + 5 > time (NULL))
+	if (last_time + 5 > time (NULL)) {
 		return the_list;
+	}
 
 	g_list_foreach (the_list, (GFunc)g_free, NULL);
 	g_list_free (the_list);
 	the_list = NULL;
 
 	last_time = time (NULL);
-#ifdef ENABLE_IPV6
+
 	hostbuf[BUFSIZ-1] = '\0';
 	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
-		gdm_debug ("%s: Could not get server hostname", "gdm_peek_local_address_list");
-
-		sin6 = g_new0 (struct sockaddr_in6, 1);
-		sin6->sin6_family = AF_INET6;
-		sin6->sin6_addr = in6addr_loopback;
-		return g_list_append (the_list, sin6);
+		gdm_debug ("%s: Could not get server hostname, using localhost", "gdm_peek_local_address_list");
+		snprintf (hostbuf, BUFSIZ-1, "localhost");
 	}
+
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_family = AF_INET;
+#ifdef ENABLE_IPV6
+	hints.ai_family |= AF_INET6;
+#endif
 
 	if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
 		gdm_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
 
-		sin6 = g_new0 (struct sockaddr_in6, 1);
-		sin6->sin6_family = AF_INET6;
-		sin6->sin6_addr = in6addr_loopback;
-		return g_list_append (the_list, sin6);
+		return NULL;
 	}
 
-	for (res = result; res; res = res->ai_next) {
-		if (res->ai_family == AF_INET6) {
-			sin6 = g_new0 (struct sockaddr_in6, 1);
-			sin6->sin6_family = AF_INET6;
-			memcpy (sin6, res->ai_addr, res->ai_addrlen);
-			the_list = g_list_append (the_list, sin6);
-               }
-               else if (res->ai_family == AF_INET) {
-			sin = g_new0 (struct sockaddr_in, 1);
-			sin->sin_family = AF_INET;
-			memcpy (sin, res->ai_addr, res->ai_addrlen);
-			the_list = g_list_append (the_list, sin);
-               }
+	for (res = result; res != NULL; res = res->ai_next) {
+		struct sockaddr_storage *sa;
+
+		sa = g_memdup (res->ai_addr, res->ai_addrlen);
+		the_list = g_list_append (the_list, sa);
 	}
 
 	if (result) {
@@ -1116,167 +930,32 @@ gdm_peek_local_address_list (void)
 		result = NULL;
 	}
 
-#else  /* ENABLE_IPV6 */
-
-#ifdef SIOCGIFCONF
-        /* Create an IPv4 socket to pick IPv4 addresses */
-	sockfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
-
-#ifdef SIOCGIFNUM
-	if (ioctl (sockfd, SIOCGIFNUM, &num) < 0) {
-		num = 64;
-	}
-#else
-	num = 64;
-#endif
-
-	ifc.ifc_len = sizeof (struct ifreq) * num;
-	ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
-	if G_UNLIKELY (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
-		gdm_error (_("%s: Cannot get local addresses!"),
-			   "gdm_peek_local_address_list");
-		g_free (buf);
-		VE_IGNORE_EINTR (close (sockfd));
-		sin = g_new0 (struct sockaddr_in, 1);
-		sin->sin_family = AF_INET;
-		sin->sin_addr.s_addr = INADDR_LOOPBACK;
-		return g_list_append (NULL, sin);
-	}
-
-	ifr = ifc.ifc_req;
-	num = ifc.ifc_len / sizeof (struct ifreq);
-	for (; num-- > 0; ifr++) {
-		struct sockaddr_in *addr;
-
-		if (ioctl (sockfd, SIOCGIFFLAGS, ifr) < 0 ||
-		    ! (ifr->ifr_flags & IFF_UP))
-			continue;
-#ifdef IFF_UNNUMBERED
-		if (ifr->ifr_flags & IFF_UNNUMBERED)
-			continue;
-#endif
-		if (ioctl (sockfd, SIOCGIFADDR, ifr) < 0)
-			continue;
-
-		sin = (struct sockaddr_in *)&ifr->ifr_addr;
-
-		if (sin->sin_family != AF_INET ||
-		    sin->sin_addr.s_addr == INADDR_ANY ||
-		    sin->sin_addr.s_addr == INADDR_LOOPBACK)
-			continue;
-		addr = g_new0 (struct sockaddr_in, 1);
-		memcpy (addr, sin, sizeof (struct sockaddr_in));
-		the_list = g_list_append (the_list, addr);
-	}
-
-		VE_IGNORE_EINTR (close (sockfd));
-	g_free (buf);
-#else /* SIOCGIFCONF */
-	/* host based fallback, will likely only get 127.0.0.1 i think */
-
-	hostbuf[BUFSIZ-1] = '\0';
-	sin = g_new0 (struct sockaddr_in, 1);
-	sin->sin_family = AF_INET;
-	if G_UNLIKELY (gethostname (hostbuf, BUFSIZ-1) != 0) {
-		gdm_debug ("%s: Could not get server hostname: %s!",
-			   "gdm_peek_local_address_list",
-			   strerror (errno));
-		sin->sin_addr.s_addr = INADDR_LOOPBACK;
-		return g_list_append (NULL, sin);
-	}
-	he = gethostbyname (hostbuf);
-	if G_UNLIKELY (he == NULL) {
-		gdm_debug ("%s: Could not get address from hostname!",
-			   "gdm_peek_local_address_list");
-		sin->sin_addr.s_addr = INADDR_LOOPBACK;
-		return g_list_append (NULL, sin);
-	}
-	for (i = 0; he->h_addr_list[i] != NULL; i++) {
-		struct in_addr *laddr = (struct in_addr *)he->h_addr_list[i];
-
-		memcpy (&sin->sin_addr, laddr, sizeof (struct in_addr));
-		the_list = g_list_append (the_list, sin);
-	}
-#endif
-#endif /* ENABLE_IPV6 */
-
 	return the_list;
 }
 
-#ifdef ENABLE_IPV6
+
 gboolean
-gdm_is_local_addr6 (struct in6_addr* ia)
+gdm_address_is_local (struct sockaddr_storage *sa)
 {
+	const GList *list;
 
-	if (IN6_IS_ADDR_LOOPBACK (ia)) {
+	if (gdm_address_is_loopback (sa)) {
 		return TRUE;
+	}
 
-	} else {
-		const GList *list = gdm_peek_local_address_list ();
+	list = gdm_address_peek_local_list ();
 
-		while (list != NULL) {
-			struct sockaddr *addr = list->data;
+	while (list != NULL) {
+		struct sockaddr_storage *addr = list->data;
 
-			if ((addr->sa_family == AF_INET6) && (memcmp (ia, &(((struct sockaddr_in6 *)addr)->sin6_addr), sizeof (struct in6_addr)) == 0)) {
-				return TRUE;
-			}
-
-			list = list->next;
+		if (gdm_address_equal (sa, addr)) {
+			return TRUE;
 		}
 
-		return FALSE;
+		list = list->next;
 	}
-}
-#endif
-
-gboolean
-gdm_is_local_addr (struct in_addr *ia)
-{
-	const char lo[] = {127,0,0,1};
-
-	if (ia->s_addr == INADDR_LOOPBACK ||
-	    memcmp (&ia->s_addr, lo, 4) == 0) {
-		return TRUE;
-	} else {
-		const GList *list = gdm_peek_local_address_list ();
-
-		while (list != NULL) {
-			struct sockaddr *addr = list->data;
-
-			if ((addr->sa_family == AF_INET ) && 
-			    (memcmp (ia, &(((struct sockaddr_in *)addr)->sin_addr), 4) == 0)) {
-				return TRUE;
-			}
-
-			list = list->next;
-		}
-
-		return FALSE;
-	}
-}
-
-#ifdef ENABLE_IPV6
-gboolean
-gdm_is_loopback_addr6 (struct in6_addr *ia)
-{
-	if (IN6_IS_ADDR_LOOPBACK(ia))
-		return TRUE;
 
 	return FALSE;
-}
-#endif
-
-gboolean
-gdm_is_loopback_addr (struct in_addr *ia)
-{
-	const char lo[] = {127,0,0,1};
-
-	if (ia->s_addr == INADDR_LOOPBACK ||
-	    memcmp (&ia->s_addr, lo, 4) == 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
 }
 
 gboolean
@@ -1505,7 +1184,7 @@ gdm_open_dev_null (mode_t mode)
 void
 gdm_unset_signals (void)
 {
-	sigset_t mask; 
+	sigset_t mask;
 
 	sigemptyset (&mask);
 	sigprocmask (SIG_SETMASK, &mask, NULL);
@@ -1555,84 +1234,21 @@ gdm_signal_default (int signal)
 			   "gdm_signal_ignore", signal, "SIG_DFL");
 }
 
-
-static char *
-ascify (const char *text)
-{
-	unsigned char *p;
-	char *t = g_strdup (text);
-	for (p = (unsigned char *)t; p != NULL && *p != '\0'; p++) {
-		if (*p > 127)
-			*p = '?';
-	}
-	return t;
-}
-
-char *
-gdm_locale_to_utf8 (const char *text)
-{
-	GIConv cd;
-	char *out;
-
-	if (gdm_charset == NULL) {
-		return g_strdup (text);
-	}
-
-	cd = g_iconv_open ("UTF-8", gdm_charset);
-	if (cd == (GIConv)(-1)) {
-		return ascify (text);
-	}
-
-	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, NULL /* error */);
-	g_iconv_close (cd);
-	if (out == NULL) {
-		return ascify (text);
-	}
-	return out;
-}
-
-char *
-gdm_locale_from_utf8 (const char *text)
-{
-	GIConv cd;
-	char *out;
-
-	if (gdm_charset == NULL) {
-		return g_strdup (text);
-	}
-
-	cd = g_iconv_open (gdm_charset, "UTF-8");
-	if (cd == (GIConv)(-1)) {
-		return ascify (text);
-	}
-
-	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, NULL /* error */);
-	g_iconv_close (cd);
-	if (out == NULL)
-		return ascify (text);
-	return out;
-}
-
 static GdmHostent *
-#ifdef ENABLE_IPV6
-fillout_addrinfo (struct addrinfo *res, struct sockaddr *ia, const char *name)
-#else
-fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
-#endif
+fillout_addrinfo (struct addrinfo *res,
+		  struct sockaddr *ia,
+		  const char *name)
 {
 	GdmHostent *he;
-
-#ifdef ENABLE_IPV6
 	gint i;
 	gint addr_count = 0;
 	struct addrinfo *tempaddrinfo;
-#endif
+
 	he = g_new0 (GdmHostent, 1);
 
 	he->addrs = NULL;
 	he->addr_count = 0;
 
-#ifdef ENABLE_IPV6
 	if (res != NULL && res->ai_canonname != NULL) {
 		he->hostname = g_strdup (res->ai_canonname);
 		he->not_found = FALSE;
@@ -1641,23 +1257,25 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 		if (name != NULL)
 			he->hostname = g_strdup (name);
 		else {
-			static char buffer6[INET6_ADDRSTRLEN], buffer[INET_ADDRSTRLEN];
+			static char buffer6[INET6_ADDRSTRLEN];
+			static char buffer[INET_ADDRSTRLEN];
 			const char *new = NULL;
 
 			if (ia->sa_family == AF_INET6) {
-				if (IN6_IS_ADDR_V4MAPPED (&((struct sockaddr_in6 *)ia)->sin6_addr))
+				if (IN6_IS_ADDR_V4MAPPED (&((struct sockaddr_in6 *)ia)->sin6_addr)) {
 					new = inet_ntop (AF_INET, &(((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr[12]), buffer, sizeof (buffer));
-
-				else
+				} else {
 					new = inet_ntop (AF_INET6, &((struct sockaddr_in6 *)ia)->sin6_addr, buffer6, sizeof (buffer6));
-			}
-			else if (ia->sa_family == AF_INET)
+				}
+			} else if (ia->sa_family == AF_INET) {
 				new = inet_ntop (AF_INET, &((struct sockaddr_in *)ia)->sin_addr, buffer, sizeof (buffer));
+			}
 
-			if (new)
+			if (new != NULL) {
 				he->hostname = g_strdup (new);
-			else
+			} else {
 				he->hostname = NULL;
+			}
 		}
 	}
 
@@ -1671,7 +1289,7 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 	he->addrs = g_new0 (struct sockaddr_storage, addr_count);
 	he->addr_count = addr_count;
 	res = tempaddrinfo;
-	for (i = 0; ;i++) {
+	for (i = 0; ; i++) {
 		if (res == NULL)
 			break;
 
@@ -1687,43 +1305,7 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 	    strncmp (he->hostname, "::ffff:", 7) == 0) {
 		strcpy (he->hostname, he->hostname + 7);
 	}
-#else
-	/*
-         * Sometimes if we can't look things up, we could end
-	 * up with a dot in the name field which would screw
-	 * us up.  Weird but apparently possible
-         */
-	if (he_ != NULL &&
-	    he_->h_name != NULL &&
-	    he_->h_name[0] != '\0' &&
-	    strcmp (he_->h_name, ".") != 0) {
-		he->hostname = g_strdup (he_->h_name);
-		he->not_found = FALSE;
-	} else {
-		he->not_found = TRUE;
-		if (name != NULL)
-			he->hostname = g_strdup (name);
-		else /* Either ia or name is set */
-			he->hostname = g_strdup (inet_ntoa (*ia));
-	}
 
-	if (he_ != NULL && he_->h_addrtype == AF_INET) {
-		int i;
-		for (i = 0; ; i++) {
-			struct in_addr *ia_ = (struct in_addr *) (he_->h_addr_list[i]);
-			if (ia_ == NULL)
-				break;
-		}
-		he->addrs = g_new0 (struct in_addr, i);
-		he->addr_count = i;
-		for (i = 0; ; i++) {
-			struct in_addr *ia_ = (struct in_addr *) he_->h_addr_list[i];
-			if (ia_ == NULL)
-				break;
-			(he->addrs)[i] = *ia_;
-		}
-	}
-#endif
 	return he;
 }
 
@@ -1755,7 +1337,7 @@ jumpback_sighandler (int signal)
 	   the SIGTERM handler in slave.c
 	   might have in fact done the big Longjmp
 	   to the slave's death */
-	
+
 	if (old_do_jumpback) {
 		Longjmp (signal_jumpback, 1);
 	}
@@ -1808,24 +1390,16 @@ jumpback_sighandler (int signal)
 GdmHostent *
 gdm_gethostbyname (const char *name)
 {
-#ifdef ENABLE_IPV6
 	struct addrinfo hints;
 	/* static because of Setjmp */
 	static struct addrinfo *result;
-#else
-	/* static because of Setjmp */
-	static struct hostent * he_;
-#endif
+
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* The cached address */
 	static GdmHostent *he = NULL;
 	static time_t last_time = 0;
 	static char *cached_hostname = NULL;
-
-#ifndef ENABLE_IPV6
-	he_ = NULL;
-#endif
 
 	if (cached_hostname != NULL &&
 	    strcmp (cached_hostname, name) == 0) {
@@ -1838,8 +1412,8 @@ gdm_gethostbyname (const char *name)
 
 	if (Setjmp (signal_jumpback) == 0) {
 		do_jumpback = TRUE;
+
 		/* Find client hostname */
-#ifdef ENABLE_IPV6
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_socktype = SOCK_DGRAM;
 		hints.ai_flags = AI_CANONNAME;
@@ -1855,14 +1429,6 @@ gdm_gethostbyname (const char *name)
                /* Here we got interrupted */
 		result = NULL;
 	}
-#else
-		he_ = gethostbyname (name);
-		do_jumpback = FALSE;
-	} else {
-		/* Here we got interrupted */
-		he_ = NULL;
-	}
-#endif
 
 	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
 
@@ -1870,34 +1436,23 @@ gdm_gethostbyname (const char *name)
 	cached_hostname = g_strdup (name);
 
 	gdm_hostent_free (he);
-#ifdef ENABLE_IPV6
+
 	he = fillout_addrinfo (result, NULL, name);
-#else
-	he = fillout_hostent (he_, NULL, name);
-#endif
 
 	last_time = time (NULL);
 	return gdm_hostent_copy (he);
 }
 
 GdmHostent *
-#ifdef ENABLE_IPV6
-gdm_gethostbyaddr (struct  sockaddr_storage *ia)
-#else
-gdm_gethostbyaddr (struct sockaddr_in *ia)
-#endif
+gdm_gethostbyaddr (struct sockaddr_storage *ia)
 {
-#ifdef ENABLE_IPV6
 	struct addrinfo hints;
 	/* static because of Setjmp */
 	static struct addrinfo *result = NULL;
 	struct sockaddr_in6 sin6;
 	struct sockaddr_in sin;
 	static struct in6_addr cached_addr6;
-#else
-	/* static because of Setjmp */
-	static struct hostent * he_;
-#endif
+
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* The cached address */
@@ -1905,19 +1460,12 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 	static time_t last_time = 0;
 	static struct in_addr cached_addr;
 
-#ifndef ENABLE_IPV6
-	he_ = NULL;
-#endif
-
 	if (last_time != 0) {
-#ifdef ENABLE_IPV6
 		if ((ia->ss_family == AF_INET6) && (memcmp (cached_addr6.s6_addr, ((struct sockaddr_in6 *) ia)->sin6_addr.s6_addr, sizeof (struct in6_addr)) == 0)) {
 			/* Don't check more then every 60 seconds */
 			if (last_time + 60 > time (NULL))
 				return gdm_hostent_copy (he);
-		} else if (ia->ss_family == AF_INET)
-#endif
-		{
+		} else if (ia->ss_family == AF_INET) {
 			if (memcmp (&cached_addr, &(((struct sockaddr_in *)ia)->sin_addr), sizeof (struct in_addr)) == 0) {
 				/* Don't check more then every 60 seconds */
 				if (last_time + 60 > time (NULL))
@@ -1930,9 +1478,8 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 
 	if (Setjmp (signal_jumpback) == 0) {
 		do_jumpback = TRUE;
-		/* Find client hostname */
 
-#ifdef ENABLE_IPV6
+		/* Find client hostname */
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_socktype = SOCK_DGRAM;
 		hints.ai_flags = AI_CANONNAME;
@@ -1956,8 +1503,8 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 				strcpy (buffer6, temp);
 			}
 			getaddrinfo (buffer6, NULL, &hints, &result);
-		}
-		else if (ia->ss_family == AF_INET) {
+
+		} else if (ia->ss_family == AF_INET) {
 			char buffer[INET_ADDRSTRLEN];
 
 			inet_ntop (AF_INET, &((struct sockaddr_in *)ia)->sin_addr, buffer, sizeof (buffer));
@@ -1970,19 +1517,9 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 		/* Here we got interrupted */
 		result = NULL;
 	}
-#else
-		he_ = NULL;
-		he_ = gethostbyaddr ((gchar *) &(ia->sin_addr), sizeof (struct in_addr), AF_INET);
-		do_jumpback = FALSE;
-	} else {
-		/* Here we got interrupted */
-		he_ = NULL;
-	}
-#endif
 
 	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
 
-#ifdef ENABLE_IPV6
 	if (ia->ss_family == AF_INET6) {
 		memcpy (cached_addr6.s6_addr, ((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr, sizeof (struct in6_addr));
 		memset (&sin6, 0, sizeof (sin6));
@@ -1997,10 +1534,7 @@ gdm_gethostbyaddr (struct sockaddr_in *ia)
 		sin.sin_family = AF_INET;
 		he = fillout_addrinfo (result, (struct sockaddr *)&sin, NULL);
 	}
-#else
-	cached_addr = ia->sin_addr;
-	he = fillout_hostent (he_, &(ia->sin_addr), NULL);
-#endif
+
 	last_time = time (NULL);
 	return gdm_hostent_copy (he);
 }
@@ -2021,13 +1555,8 @@ gdm_hostent_copy (GdmHostent *he)
 		cpy->addrs = NULL;
 	} else {
 		cpy->addr_count = he->addr_count;
-#ifdef ENABLE_IPV6
 		cpy->addrs = g_new0 (struct sockaddr_storage, he->addr_count);
 		memcpy (cpy->addrs, he->addrs, sizeof (struct sockaddr_storage) * he->addr_count);
-#else
-		cpy->addrs = g_new0 (struct in_addr, he->addr_count);
-		memcpy (cpy->addrs, he->addrs, sizeof (struct in_addr) * he->addr_count);
-#endif
 	}
 	return cpy;
 }
@@ -2612,7 +2141,7 @@ gdm_console_translate (const char *str)
  * This function is used to support systems that have the /etc/default/login
  * interface to control programs that affect security.  This is a Solaris
  * thing, though some users on other systems may find it useful.
- */ 
+ */
 gchar *
 gdm_read_default (gchar *key)
 {

@@ -20,6 +20,7 @@
 #define GDM_VERIFY_H
 
 #include "gdm.h"
+#include "display.h"
 
 /* If username is NULL, we ask, if local is FALSE, don't start
  * the timed login timer */

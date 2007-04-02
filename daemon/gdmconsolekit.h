@@ -22,6 +22,10 @@
 #ifndef __GDM_CONSOLE_KIT_H
 #define __GDM_CONSOLE_KIT_H
 
+#include <pwd.h>
+
+#include "display.h" /* for GdmDisplay */
+
 G_BEGIN_DECLS
 
 char *      open_ck_session       (struct passwd *pwent,

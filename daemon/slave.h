@@ -20,8 +20,9 @@
 #define GDM_SLAVE_H
 
 #include <glib.h>
-#include <X11/Xlib.h>
+
 #include "gdm.h"
+#include "display.h"
 
 void     gdm_slave_start       (GdmDisplay *d);
 void     gdm_slave_greeter_ctl_no_ret (char cmd, const char *str);

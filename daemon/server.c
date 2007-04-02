@@ -36,7 +36,6 @@
 #include <sys/resource.h>
 #include <strings.h>
 #include <signal.h>
-#include <syslog.h>
 #include <errno.h>
 #include <time.h>
 #include <ctype.h>
@@ -52,7 +51,10 @@
 #include "getvt.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
+
+#include "gdm-socket-protocol.h"
 
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
@@ -60,14 +62,11 @@ static void gdm_server_usr1_handler (gint);
 static void gdm_server_child_handler (gint);
 static char * get_font_path (const char *display);
 
-extern pid_t extra_process;
-extern int extra_status;
-extern int gdm_in_signal;
-
 /* Global vars */
 static GdmDisplay *d = NULL;
 static gboolean server_signal_notified = FALSE;
 static int server_signal_pipe[2];
+static int gdm_in_signal = 0;
 
 static void do_server_wait (GdmDisplay *d);
 static gboolean setup_server_wait (GdmDisplay *d);
@@ -144,6 +143,8 @@ gdm_exec_fbconsole (GdmDisplay *disp)
         argv[1] = "-d";
         argv[2] = disp->name;
         argv[3] = NULL;
+
+	g_debug ("Forking fbconsole");
 
         pid = fork ();
         if (pid == 0) {
@@ -1180,6 +1181,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
 
+    g_debug ("Forking X server process");
+
     gdm_sigterm_block_push ();
     pid = d->servpid = fork ();
     if (pid == 0)
@@ -1193,7 +1196,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	/* the pops whacked mask again */
         gdm_unset_signals ();
 
-	closelog ();
+	gdm_log_shutdown ();
 
 	/* close things */
 	gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
@@ -1204,7 +1207,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-	openlog ("gdm", LOG_PID, LOG_DAEMON);
+	gdm_log_init ();
 
 	/* Rotate the X server logs */
 	rotate_logs (d->name);
@@ -1460,12 +1463,12 @@ gdm_server_child_handler (int signal)
  * Allocate display structure for a local X server
  */
 
-GdmDisplay * 
+GdmDisplay *
 gdm_server_alloc (gint id, const gchar *command)
 {
     gchar hostname[1024];
     GdmDisplay *d;
-    
+
     hostname[1023] = '\0';
     if (gethostname (hostname, 1023) == -1)
 	    strcpy (hostname, "localhost.localdomain");
@@ -1527,7 +1530,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d->chooser_last_line = NULL;
 
     d->theme_name = NULL;
-    
+
     return d;
 }
 

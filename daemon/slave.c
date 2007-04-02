@@ -62,7 +62,6 @@
 #include <grp.h>
 #include <errno.h>
 #include <time.h>
-#include <syslog.h>
 
 #ifdef HAVE_TSOL
 #include <user_attr.h>
@@ -91,7 +90,10 @@
 #include "display.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
+
+#include "gdm-socket-protocol.h"
 
 #ifdef WITH_CONSOLE_KIT
 #include "gdmconsolekit.h"
@@ -108,7 +110,7 @@ static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
 static gboolean do_configurator = FALSE; /* if this is true, login as root
 					  * and start the configurator */
-static gboolean do_cancel = FALSE; /* if this is true, go back to 
+static gboolean do_cancel = FALSE; /* if this is true, go back to
                                       username entry & unselect face
                                       browser (if present) */
 static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
@@ -137,6 +139,11 @@ static gchar *ParsedTimedLogin = NULL;
 static int greeter_fd_out = -1;
 static int greeter_fd_in = -1;
 
+static int gdm_in_signal = 0;
+static int gdm_normal_runlevel = -1;
+static pid_t extra_process = 0;
+static int extra_status = 0;
+
 #ifdef HAVE_TSOL
 static gboolean have_suntsol_extension = FALSE;
 #endif
@@ -150,19 +157,12 @@ static int slave_waitpid_w = -1;
 static GSList *slave_waitpids = NULL;
 
 extern gboolean gdm_first_login;
-extern gboolean gdm_emergency_server;
-extern pid_t extra_process;
-extern int extra_status;
-extern int gdm_in_signal;
-extern int gdm_normal_runlevel;
 
 /* The slavepipe (like fifo) connection, this is the write end */
 extern int slave_fifo_pipe_fd;
 
 /* wait for a GO in the SOP protocol */
 extern gboolean gdm_wait_for_go;
-
-extern char *gdm_system_locale;
 
 /* Local prototypes */
 static gint   gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
@@ -278,7 +278,7 @@ run_session_output (gboolean read_until_eof)
 	int r, written;
 	uid_t old;
 	gid_t oldg;
-	
+
 	old = geteuid ();
 	oldg = getegid ();
 
@@ -358,8 +358,8 @@ run_session_output (gboolean read_until_eof)
 		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES &&
 			       ! got_xfsz_signal) {
 			VE_IGNORE_EINTR (write (d->xsession_errors_fd,
-					     "\n...Too much output, ignoring rest...\n",
-					     strlen ("\n...Too much output, ignoring rest...\n")));
+						"\n...Too much output, ignoring rest...\n",
+						strlen ("\n...Too much output, ignoring rest...\n")));
 		}
 
 		/* there wasn't more then buf available, so no need to try reading
@@ -724,9 +724,34 @@ gdm_slave_xfsz_handler (int signal)
 }
 #endif /* SIGXFSZ */
 
-void 
+
+static int
+get_runlevel (void)
+{
+	int rl;
+
+	rl = -1;
+#ifdef __linux__
+	/* on linux we get our current runlevel, for use later
+	 * to detect a shutdown going on, and not mess up. */
+	if (g_access ("/sbin/runlevel", X_OK) == 0) {
+		char ign;
+		int rnl;
+		FILE *fp = popen ("/sbin/runlevel", "r");
+		if (fp != NULL) {
+			if (fscanf (fp, "%c %d", &ign, &rnl) == 2) {
+				rl = rnl;
+			}
+			pclose (fp);
+		}
+	}
+#endif /* __linux__ */
+	return rl;
+}
+
+void
 gdm_slave_start (GdmDisplay *display)
-{  
+{
 	time_t first_time;
 	int death_count;
 	struct sigaction alrm, term, child, usr2;
@@ -743,6 +768,8 @@ gdm_slave_start (GdmDisplay *display)
 	 * since it is called in a loop.
 	 */
 	d = display;
+
+	gdm_normal_runlevel = get_runlevel ();
 
 	/* Ignore SIGUSR1/SIGPIPE, and especially ignore it
 	   before the Setjmp */
@@ -824,7 +851,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigemptyset (&child.sa_mask);
 	sigaddset (&child.sa_mask, SIGCHLD);
 
-	if G_UNLIKELY (sigaction (SIGCHLD, &child, NULL) < 0) 
+	if G_UNLIKELY (sigaction (SIGCHLD, &child, NULL) < 0)
 		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up %s signal handler: %s"),
 				"gdm_slave_start", "CHLD", strerror (errno));
 
@@ -936,15 +963,15 @@ gdm_tsol_init (GdmDisplay *display)
 	int firsterror;
 
 	have_suntsol_extension = XQueryExtension (display->dsp,
-			"SUN_TSOL",
-			&opcode,
-			&firstevent,
-			&firsterror);
+						  "SUN_TSOL",
+						  &opcode,
+						  &firstevent,
+						  &firsterror);
 }
 #endif
 
-static void 
-gdm_screen_init (GdmDisplay *display) 
+static void
+gdm_screen_init (GdmDisplay *display)
 {
 #ifdef HAVE_XFREE_XINERAMA
 	int (* old_xerror_handler) (Display *, XErrorEvent *);
@@ -994,28 +1021,28 @@ gdm_screen_init (GdmDisplay *display)
 		XFree (xscreens);
 	} else
 #elif HAVE_SOLARIS_XINERAMA
- /* This code from GDK, Copyright (C) 2002 Sun Microsystems */
- 	int opcode;
+		/* This code from GDK, Copyright (C) 2002 Sun Microsystems */
+		int opcode;
 	int firstevent;
 	int firsterror;
 	int n_monitors = 0;
 
 	gboolean have_xinerama = FALSE;
 	have_xinerama = XQueryExtension (display->dsp,
-			"XINERAMA",
-			&opcode,
-			&firstevent,
-			&firsterror);
+					 "XINERAMA",
+					 &opcode,
+					 &firstevent,
+					 &firsterror);
 
 	if (have_xinerama) {
-	
+
 		int result;
 		XRectangle monitors[MAXFRAMEBUFFERS];
 		unsigned char  hints[16];
 		int xineramascreen;
-		
+
 		result = XineramaGetInfo (display->dsp, 0, monitors, hints, &n_monitors);
-		/* Yes I know it should be Success but the current implementation 
+		/* Yes I know it should be Success but the current implementation
 		 * returns the num of monitor
 		 */
 		if G_UNLIKELY (result <= 0)
@@ -1041,15 +1068,15 @@ gdm_screen_init (GdmDisplay *display)
 
 	} else
 #endif
-	{
-		display->screenx = 0;
-		display->screeny = 0;
-		display->screenwidth = 0; /* we'll use the gdk size */
-		display->screenheight = 0;
+		{
+			display->screenx = 0;
+			display->screeny = 0;
+			display->screenwidth = 0; /* we'll use the gdk size */
+			display->screenheight = 0;
 
-		display->lrh_offsetx = 0;
-		display->lrh_offsety = 0;
-	}
+			display->lrh_offsetx = 0;
+			display->lrh_offsety = 0;
+		}
 }
 
 static void
@@ -1151,7 +1178,7 @@ ask_migrate (const char *migrate_to)
 
 	askbuttons_msg = g_strdup_printf ("askbuttons_msg=%s$$options_msg1=%s$$options_msg2=%s$$options_msg3=%s$$options_msg4=%s", msg, but[0], but[1], but[2], but[3]);
 
-       
+
 	gdm_slave_send_string (GDM_SOP_SHOW_ASKBUTTONS_DIALOG, askbuttons_msg);
 
 	r = atoi (gdm_ack_response);
@@ -1183,7 +1210,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 
 	gdm_slave_send_string (GDM_SOP_QUERYLOGIN, user);
 	if G_LIKELY (ve_string_empty (gdm_ack_response))
-	       return TRUE;	
+		return TRUE;
 	vec = g_strsplit (gdm_ack_response, ",", -1);
 	if (vec == NULL)
 		return TRUE;
@@ -1259,7 +1286,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 
 		if (migrate_to == NULL)
 			return TRUE;
-		
+
 		gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
 		g_free (migrate_to);
 
@@ -1291,181 +1318,181 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 
 static gboolean do_xfailed_on_xio_error = FALSE;
 
-static void 
+static void
 gdm_slave_run (GdmDisplay *display)
-{  
-    gint openretries = 0;
-    gint maxtries = 0;
-    gint pinginterval = gdm_daemon_config_get_value_int (GDM_KEY_PING_INTERVAL);
-    
-    gdm_reset_locale ();
+{
+	gint openretries = 0;
+	gint maxtries = 0;
+	gint pinginterval = gdm_daemon_config_get_value_int (GDM_KEY_PING_INTERVAL);
 
-    /* Reset d since gdm_slave_run is called in a loop */
-    d = display;
+	gdm_reset_locale ();
 
-    gdm_random_tick ();
+	/* Reset d since gdm_slave_run is called in a loop */
+	d = display;
 
-    if (d->sleep_before_run > 0) {
-	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
-	    gdm_sleep_no_signal (d->sleep_before_run);
-	    d->sleep_before_run = 0;
+	gdm_random_tick ();
 
-	    check_notifies_now ();
-    }
+	if (d->sleep_before_run > 0) {
+		gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
+		gdm_sleep_no_signal (d->sleep_before_run);
+		d->sleep_before_run = 0;
 
-    /*
-     * Set it before we run the server, it may be that we're using
-     * the XOpenDisplay to find out if a server is ready (as with 
-     * nested display)
-     */
-    d->dsp = NULL;
-
-    /* if this is local display start a server if one doesn't
-     * exist */
-    if (SERVER_IS_LOCAL (d) &&
-	d->servpid <= 0) {
-	    if G_UNLIKELY ( ! gdm_server_start (d,
-						TRUE /* try_again_if_busy */,
-						FALSE /* treat_as_flexi */,
-						20 /* min_flexi_disp */,
-						5 /* flexi_retries */)) {
-		    /* We're really not sure what is going on,
-		     * so we throw up our hands and tell the user
-		     * that we've given up.  The error is likely something
-		     * internal. */
-		    gdm_text_message_dialog
-			    (C_(N_("Could not start the X\n"
-				   "server (your graphical environment)\n"
-				   "due to some internal error.\n"
-				   "Please contact your system administrator\n"
-				   "or check your syslog to diagnose.\n"
-				   "In the meantime this display will be\n"
-				   "disabled.  Please restart GDM when\n"
-				   "the problem is corrected.")));
-		    gdm_slave_quick_exit (DISPLAY_ABORT);
-	    }
-	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
-
-	    check_notifies_now ();
-    }
-
-    /* We can use d->handled from now on on this display,
-     * since the lookup was done in server start */
-    
-    g_setenv ("DISPLAY", d->name, TRUE);
-    g_unsetenv ("XAUTHORITY"); /* just in case it's set */
-
-    gdm_auth_set_local_auth (d);
-
-    if (d->handled) {
-	    /* Now the display name and hostname is final */
-
-	    const char *automaticlogin = gdm_daemon_config_get_value_string (GDM_KEY_AUTOMATIC_LOGIN);
-	    const char *timedlogin     = gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN);
-
-	    if (gdm_daemon_config_get_value_bool (GDM_KEY_AUTOMATIC_LOGIN_ENABLE) && 
-		! ve_string_empty (automaticlogin)) {
-		    g_free (ParsedAutomaticLogin);
-		    ParsedAutomaticLogin = gdm_parse_enriched_login (automaticlogin,
-								     display);
-	    }
-
-	    if (gdm_daemon_config_get_value_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
-		! ve_string_empty (timedlogin)) {
-		    g_free (ParsedTimedLogin);
-		    ParsedTimedLogin = gdm_parse_enriched_login (timedlogin,
-								 display);
-	    }
-    }
-    
-    /* X error handlers to avoid the default one (i.e. exit (1)) */
-    do_xfailed_on_xio_error = TRUE;
-    XSetErrorHandler (gdm_slave_xerror_handler);
-    XSetIOErrorHandler (gdm_slave_xioerror_handler);
-    
-    /* We keep our own (windowless) connection (dsp) open to avoid the
-     * X server resetting due to lack of active connections. */
-
-    gdm_debug ("gdm_slave_run: Opening display %s", d->name);
-
-    /* if local then the the server should be ready for openning, so
-     * don't try so long before killing it and trying again */
-    if (SERVER_IS_LOCAL (d))
-	    maxtries = 2;
-    else
-	    maxtries = 10;
-    
-    while (d->handled &&
-	   openretries < maxtries &&
-	   d->dsp == NULL &&
-	   ( ! SERVER_IS_LOCAL (d) || d->servpid > 1)) {
-
-	gdm_sigchld_block_push ();
-	d->dsp = XOpenDisplay (d->name);
-	gdm_sigchld_block_pop ();
-	
-	if G_UNLIKELY (d->dsp == NULL) {
-	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
-	    gdm_sleep_no_signal (1+openretries*2);
-	    openretries++;
+		check_notifies_now ();
 	}
-    }
 
-    /* Really this will only be useful for the first local server,
-       since that's the only time this can really be on */
-    while G_UNLIKELY (gdm_wait_for_go) {
-	    struct timeval tv;
-	    /* Wait 1 second. */
-	    tv.tv_sec = 1;
-	    tv.tv_usec = 0;
-	    select (0, NULL, NULL, NULL, &tv);
-	    /* don't want to use sleep since we're using alarm
-	       for pinging */
-	    check_notifies_now ();
-    }
+	/*
+	 * Set it before we run the server, it may be that we're using
+	 * the XOpenDisplay to find out if a server is ready (as with
+	 * nested display)
+	 */
+	d->dsp = NULL;
 
-    /* Set the busy cursor */
-    if (d->dsp != NULL) {
-	    Cursor xcursor = XCreateFontCursor (d->dsp, GDK_WATCH);
-	    XDefineCursor (d->dsp,
-			   DefaultRootWindow (d->dsp),
-			   xcursor);
-	    XFreeCursor (d->dsp, xcursor);
-	    XSync (d->dsp, False);
-    }
+	/* if this is local display start a server if one doesn't
+	 * exist */
+	if (SERVER_IS_LOCAL (d) &&
+	    d->servpid <= 0) {
+		if G_UNLIKELY ( ! gdm_server_start (d,
+						    TRUE /* try_again_if_busy */,
+						    FALSE /* treat_as_flexi */,
+						    20 /* min_flexi_disp */,
+						    5 /* flexi_retries */)) {
+			/* We're really not sure what is going on,
+			 * so we throw up our hands and tell the user
+			 * that we've given up.  The error is likely something
+			 * internal. */
+			gdm_text_message_dialog
+				(C_(N_("Could not start the X\n"
+				       "server (your graphical environment)\n"
+				       "due to some internal error.\n"
+				       "Please contact your system administrator\n"
+				       "or check your syslog to diagnose.\n"
+				       "In the meantime this display will be\n"
+				       "disabled.  Please restart GDM when\n"
+				       "the problem is corrected.")));
+			gdm_slave_quick_exit (DISPLAY_ABORT);
+		}
+		gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
 
-    /* Just a race avoiding sleep, probably not necessary though,
-     * but doesn't hurt anything */
-    if ( ! d->handled)
-	    gdm_sleep_no_signal (1);
+		check_notifies_now ();
+	}
 
-    if (SERVER_IS_LOCAL (d)) {
-	    gdm_slave_send (GDM_SOP_START_NEXT_LOCAL, FALSE);
-    }
+	/* We can use d->handled from now on on this display,
+	 * since the lookup was done in server start */
 
-    check_notifies_now ();
+	g_setenv ("DISPLAY", d->name, TRUE);
+	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
 
-    /* something may have gone wrong, try xfailed, if local (non-flexi),
-     * the toplevel loop of death will handle us */ 
-    if G_UNLIKELY (d->handled && d->dsp == NULL) {
-	    if (d->type == TYPE_STATIC)
-		    gdm_slave_quick_exit (DISPLAY_XFAILED);
-	    else
-		    gdm_slave_quick_exit (DISPLAY_ABORT);
-    }
+	gdm_auth_set_local_auth (d);
 
-    /* OK from now on it's really the user whacking us most likely,
-     * we have already started up well */
-    do_xfailed_on_xio_error = FALSE;
+	if (d->handled) {
+		/* Now the display name and hostname is final */
 
-    /* If XDMCP setup pinging */
-    if ( ! SERVER_IS_LOCAL (d) && pinginterval > 0) {
-	    alarm (pinginterval);
-    }
+		const char *automaticlogin = gdm_daemon_config_get_value_string (GDM_KEY_AUTOMATIC_LOGIN);
+		const char *timedlogin     = gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN);
 
-    /* checkout xinerama */
-    if (d->handled)
-	    gdm_screen_init (d);
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_AUTOMATIC_LOGIN_ENABLE) &&
+		    ! ve_string_empty (automaticlogin)) {
+			g_free (ParsedAutomaticLogin);
+			ParsedAutomaticLogin = gdm_parse_enriched_login (automaticlogin,
+									 display);
+		}
+
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
+		    ! ve_string_empty (timedlogin)) {
+			g_free (ParsedTimedLogin);
+			ParsedTimedLogin = gdm_parse_enriched_login (timedlogin,
+								     display);
+		}
+	}
+
+	/* X error handlers to avoid the default one (i.e. exit (1)) */
+	do_xfailed_on_xio_error = TRUE;
+	XSetErrorHandler (gdm_slave_xerror_handler);
+	XSetIOErrorHandler (gdm_slave_xioerror_handler);
+
+	/* We keep our own (windowless) connection (dsp) open to avoid the
+	 * X server resetting due to lack of active connections. */
+
+	gdm_debug ("gdm_slave_run: Opening display %s", d->name);
+
+	/* if local then the the server should be ready for openning, so
+	 * don't try so long before killing it and trying again */
+	if (SERVER_IS_LOCAL (d))
+		maxtries = 2;
+	else
+		maxtries = 10;
+
+	while (d->handled &&
+	       openretries < maxtries &&
+	       d->dsp == NULL &&
+	       ( ! SERVER_IS_LOCAL (d) || d->servpid > 1)) {
+
+		gdm_sigchld_block_push ();
+		d->dsp = XOpenDisplay (d->name);
+		gdm_sigchld_block_pop ();
+
+		if G_UNLIKELY (d->dsp == NULL) {
+			gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
+			gdm_sleep_no_signal (1+openretries*2);
+			openretries++;
+		}
+	}
+
+	/* Really this will only be useful for the first local server,
+	   since that's the only time this can really be on */
+	while G_UNLIKELY (gdm_wait_for_go) {
+		struct timeval tv;
+		/* Wait 1 second. */
+		tv.tv_sec = 1;
+		tv.tv_usec = 0;
+		select (0, NULL, NULL, NULL, &tv);
+		/* don't want to use sleep since we're using alarm
+		   for pinging */
+		check_notifies_now ();
+	}
+
+	/* Set the busy cursor */
+	if (d->dsp != NULL) {
+		Cursor xcursor = XCreateFontCursor (d->dsp, GDK_WATCH);
+		XDefineCursor (d->dsp,
+			       DefaultRootWindow (d->dsp),
+			       xcursor);
+		XFreeCursor (d->dsp, xcursor);
+		XSync (d->dsp, False);
+	}
+
+	/* Just a race avoiding sleep, probably not necessary though,
+	 * but doesn't hurt anything */
+	if ( ! d->handled)
+		gdm_sleep_no_signal (1);
+
+	if (SERVER_IS_LOCAL (d)) {
+		gdm_slave_send (GDM_SOP_START_NEXT_LOCAL, FALSE);
+	}
+
+	check_notifies_now ();
+
+	/* something may have gone wrong, try xfailed, if local (non-flexi),
+	 * the toplevel loop of death will handle us */ 
+	if G_UNLIKELY (d->handled && d->dsp == NULL) {
+		if (d->type == TYPE_STATIC)
+			gdm_slave_quick_exit (DISPLAY_XFAILED);
+		else
+			gdm_slave_quick_exit (DISPLAY_ABORT);
+	}
+
+	/* OK from now on it's really the user whacking us most likely,
+	 * we have already started up well */
+	do_xfailed_on_xio_error = FALSE;
+
+	/* If XDMCP setup pinging */
+	if ( ! SERVER_IS_LOCAL (d) && pinginterval > 0) {
+		alarm (pinginterval);
+	}
+
+	/* checkout xinerama */
+	if (d->handled)
+		gdm_screen_init (d);
 
 #ifdef HAVE_TSOL
 	/* Check out Solaris Trusted Xserver extension */
@@ -1473,107 +1500,107 @@ gdm_slave_run (GdmDisplay *display)
 		gdm_tsol_init (d);
 #endif
 
-    /* check log stuff for the server, this is done here
-     * because it's really a race */
-    if (SERVER_IS_LOCAL (d))
-	    gdm_server_checklog (d);
+	/* check log stuff for the server, this is done here
+	 * because it's really a race */
+	if (SERVER_IS_LOCAL (d))
+		gdm_server_checklog (d);
 
-    if ( ! d->handled) {
-	    /* yay, we now wait for the server to die */
-	    while (d->servpid > 0) {
-		    pause ();
-	    }
-	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
-    } else if (d->use_chooser) {
-	    /* this usually doesn't return */
-	    gdm_slave_chooser ();  /* Run the chooser */
-	    return;
-    } else if (d->type == TYPE_STATIC &&
-	       gdm_first_login &&
-	       ! ve_string_empty (ParsedAutomaticLogin) &&
-	       strcmp (ParsedAutomaticLogin, gdm_root_user ()) != 0) {
-	    gdm_first_login = FALSE;
+	if ( ! d->handled) {
+		/* yay, we now wait for the server to die */
+		while (d->servpid > 0) {
+			pause ();
+		}
+		gdm_slave_quick_exit (DISPLAY_REMANAGE);
+	} else if (d->use_chooser) {
+		/* this usually doesn't return */
+		gdm_slave_chooser ();  /* Run the chooser */
+		return;
+	} else if (d->type == TYPE_STATIC &&
+		   gdm_first_login &&
+		   ! ve_string_empty (ParsedAutomaticLogin) &&
+		   strcmp (ParsedAutomaticLogin, gdm_root_user ()) != 0) {
+		gdm_first_login = FALSE;
 
-	    d->logged_in = TRUE;
-	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
-	    gdm_slave_send_string (GDM_SOP_LOGIN, ParsedAutomaticLogin);
+		d->logged_in = TRUE;
+		gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
+		gdm_slave_send_string (GDM_SOP_LOGIN, ParsedAutomaticLogin);
 
-	    if (setup_automatic_session (d, ParsedAutomaticLogin)) {
-		    gdm_slave_session_start ();
-	    }
+		if (setup_automatic_session (d, ParsedAutomaticLogin)) {
+			gdm_slave_session_start ();
+		}
 
-	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
-	    d->logged_in = FALSE;
-	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
-	    logged_in_uid = -1;
-	    logged_in_gid = -1;
+		gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+		d->logged_in = FALSE;
+		gdm_slave_send_string (GDM_SOP_LOGIN, "");
+		logged_in_uid = -1;
+		logged_in_gid = -1;
 
-	    gdm_debug ("gdm_slave_run: Automatic login done");
-	    
-	    if (remanage_asap) {
-		    gdm_slave_quick_exit (DISPLAY_REMANAGE);
-	    }
+		gdm_debug ("gdm_slave_run: Automatic login done");
 
-	    /* return to gdm_slave_start so that the server
-	     * can be reinitted and all that kind of fun stuff. */
-	    return;
-    }
+		if (remanage_asap) {
+			gdm_slave_quick_exit (DISPLAY_REMANAGE);
+		}
 
-    if (gdm_first_login)
-	    gdm_first_login = FALSE;
+		/* return to gdm_slave_start so that the server
+		 * can be reinitted and all that kind of fun stuff. */
+		return;
+	}
 
-    do {
-	    check_notifies_now ();
+	if (gdm_first_login)
+		gdm_first_login = FALSE;
 
-	    if ( ! greet) {
-		    gdm_slave_greeter ();  /* Start the greeter */
-		    greeter_no_focus = FALSE;
-		    greeter_disabled = FALSE;
-	    }
+	do {
+		check_notifies_now ();
 
-	    gdm_slave_wait_for_login (); /* wait for a password */
+		if ( ! greet) {
+			gdm_slave_greeter ();  /* Start the greeter */
+			greeter_no_focus = FALSE;
+			greeter_disabled = FALSE;
+		}
 
-	    d->logged_in = TRUE;
-	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
+		gdm_slave_wait_for_login (); /* wait for a password */
 
-	    if (do_timed_login) {
-		    /* timed out into a timed login */
-		    do_timed_login = FALSE;
-		    if (setup_automatic_session (d, ParsedTimedLogin)) {
-			    gdm_slave_send_string (GDM_SOP_LOGIN,
-						   ParsedTimedLogin);
-			    gdm_slave_session_start ();
-		    }
-	    } else {
-		    gdm_slave_send_string (GDM_SOP_LOGIN, login);
-		    gdm_slave_session_start ();
-	    }
+		d->logged_in = TRUE;
+		gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 
-	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
-	    d->logged_in = FALSE;
-	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
-	    logged_in_uid = -1;
-	    logged_in_gid = -1;
+		if (do_timed_login) {
+			/* timed out into a timed login */
+			do_timed_login = FALSE;
+			if (setup_automatic_session (d, ParsedTimedLogin)) {
+				gdm_slave_send_string (GDM_SOP_LOGIN,
+						       ParsedTimedLogin);
+				gdm_slave_session_start ();
+			}
+		} else {
+			gdm_slave_send_string (GDM_SOP_LOGIN, login);
+			gdm_slave_session_start ();
+		}
 
-	    if (remanage_asap) {
-		    gdm_slave_quick_exit (DISPLAY_REMANAGE);
-	    }
+		gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+		d->logged_in = FALSE;
+		gdm_slave_send_string (GDM_SOP_LOGIN, "");
+		logged_in_uid = -1;
+		logged_in_gid = -1;
 
-	    if (greet) {
-		    greeter_no_focus = FALSE;
-		    gdm_slave_greeter_ctl_no_ret (GDM_FOCUS, "");
-		    greeter_disabled = FALSE;
-		    gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
-		    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
-	    }
-	    /* Note that greet is only true if the above was no 'login',
-	     * so no need to reinit the server nor rebake cookies
-	     * nor such nonsense */
-    } while (greet);
+		if (remanage_asap) {
+			gdm_slave_quick_exit (DISPLAY_REMANAGE);
+		}
 
-    /* If XDMCP stop pinging */
-    if ( ! SERVER_IS_LOCAL (d))
-	    alarm (0);
+		if (greet) {
+			greeter_no_focus = FALSE;
+			gdm_slave_greeter_ctl_no_ret (GDM_FOCUS, "");
+			greeter_disabled = FALSE;
+			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+			gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
+		}
+		/* Note that greet is only true if the above was no 'login',
+		 * so no need to reinit the server nor rebake cookies
+		 * nor such nonsense */
+	} while (greet);
+
+	/* If XDMCP stop pinging */
+	if ( ! SERVER_IS_LOCAL (d))
+		alarm (0);
 }
 
 /* A hack really, this will wait around until the first mapped window
@@ -1590,6 +1617,8 @@ focus_first_x_window (const char *class_res_name)
 		p[0] = -1;
 		p[1] = -1;
 	}
+
+	g_debug ("Forking process to focus first X11 window");
 
 	pid = fork ();
 	if G_UNLIKELY (pid < 0) {
@@ -1625,7 +1654,7 @@ focus_first_x_window (const char *class_res_name)
 
 	gdm_unset_signals ();
 
-	closelog ();
+	gdm_log_shutdown ();
 
 	gdm_close_all_descriptors (0 /* from */, p[1] /* except */, -1 /* except2 */);
 
@@ -1635,7 +1664,7 @@ focus_first_x_window (const char *class_res_name)
 	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-	openlog ("gdm", LOG_PID, LOG_DAEMON);
+	gdm_log_init ();
 
 	/* just in case it's set */
 	g_unsetenv ("XAUTHORITY");
@@ -1708,20 +1737,20 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 {
 	pid_t pid;
 
-	/* Lets check if custom.conf exists. If not there 
+	/* Lets check if custom.conf exists. If not there
 	   is no point in launching gdmsetup as it will fail.
 	   We don't need to worry about defaults.conf as
 	   the daemon wont start without it
 	*/
 	if (gdm_daemon_config_get_custom_config_file () == NULL) {
-		gdm_error_box (d,
+		gdm_errorgui_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Could not access configuration file (custom.conf). "
 				 "Make sure that the file exists before launching "
 				 " login manager config utility."));
 		return;
 	}
-	    
+
 	/* Set the busy cursor */
 	if (d->dsp != NULL) {
 		Cursor xcursor = XCreateFontCursor (d->dsp, GDK_WATCH);
@@ -1731,6 +1760,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		XFreeCursor (d->dsp, xcursor);
 		XSync (d->dsp, False);
 	}
+
+	g_debug ("Forking GDM configuration process");
 
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
@@ -1746,7 +1777,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		/* Can't fork */
 		display->sesspid = 0;
-	       
+
 		xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
 		XDefineCursor (d->dsp,
 			       DefaultRootWindow (d->dsp),
@@ -1789,7 +1820,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			g_setenv ("GDM_GTK_THEME", display->theme_name, TRUE);
 		g_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
-		closelog ();
+		gdm_log_shutdown ();
 
 		gdm_close_all_descriptors (0 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
 
@@ -1799,7 +1830,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+		gdm_log_init ();
 
 		VE_IGNORE_EINTR (g_chdir (pwent->pw_dir));
 		if G_UNLIKELY (errno != 0)
@@ -1820,14 +1851,13 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		g_strfreev (argv);
 
-		gdm_error_box (d,
-			       GTK_MESSAGE_ERROR,
-			       _("Could not execute the configuration "
-				 "application.  Make sure its path is set "
-				 "correctly in the configuration file.  "
-				 "Attempting to start it from the default "
-				 "location."));
-
+		gdm_errorgui_error_box (d,
+					GTK_MESSAGE_ERROR,
+					_("Could not execute the configuration "
+					  "application.  Make sure its path is set "
+					  "correctly in the configuration file.  "
+					  "Attempting to start it from the default "
+					  "location."));
 		s = LIBEXECDIR "/gdmsetup --disable-sound --disable-crash-dialog";
 		argv = NULL;
 		g_shell_parse_argv (s, NULL, &argv, NULL);
@@ -1838,16 +1868,16 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		g_strfreev (argv);
 
-		gdm_error_box (d,
-			       GTK_MESSAGE_ERROR,
-			       _("Could not execute the configuration "
-				 "application.  Make sure its path is set "
-				 "correctly in the configuration file."));
+		gdm_errorgui_error_box (d,
+					GTK_MESSAGE_ERROR,
+					_("Could not execute the configuration "
+					  "application.  Make sure its path is set "
+					  "correctly in the configuration file."));
 
 		_exit (0);
 	} else {
 		GdmWaitPid *wp;
-		
+
 		configurator = TRUE;
 
 		gdm_sigchld_block_push ();
@@ -1922,6 +1952,8 @@ play_login_sound (const char *sound_file)
 
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
+
+	g_debug ("Forking sound program: %s", soundprogram);
 
 	pid = fork ();
 	if (pid == 0)
@@ -2275,7 +2307,7 @@ run_pictures (void)
 			int written;
 
 			VE_IGNORE_EINTR (bytes = fread (buf, sizeof (char),
-						     max_write, fp));
+							max_write, fp));
 
 			if (bytes <= 0)
 				break;
@@ -2325,7 +2357,7 @@ run_pictures (void)
 			if (bytes > 0)
 				i += bytes;
 		}
-			
+
 		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "done");
 
 		NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
@@ -2364,12 +2396,12 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		errno = 0;
 		fromfd = open (file, O_RDONLY
 #ifdef O_NOCTTY
-				     |O_NOCTTY
+			       |O_NOCTTY
 #endif
 #ifdef O_NOFOLLOW
-				     |O_NOFOLLOW
+			       |O_NOFOLLOW
 #endif
-				    );
+			       );
 	} while G_UNLIKELY (errno == EINTR);
 
 	if G_UNLIKELY (fromfd < 0) {
@@ -2380,7 +2412,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	NEVER_FAILS_root_set_euid_egid (0, 0);
 
 	name = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
-		d->name, ".XnestAuth");
+				  d->name, ".XnestAuth");
 
 	VE_IGNORE_EINTR (g_unlink (name));
 	VE_IGNORE_EINTR (authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600));
@@ -2476,274 +2508,269 @@ exec_command (const char *command, const char *extra_arg)
 static void
 gdm_slave_greeter (void)
 {
-    gint pipe1[2], pipe2[2];  
-    struct passwd *pwent;
-    pid_t pid;
-    const char *command;
-    const char *defaultpath;
-    const char *gdmuser;
-    const char *moduleslist;
-    const char *gdmlang;
-    
-    gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
-    
-    /* Run the init script. gdmslave suspends until script has terminated */
-    gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
-			   NULL, NULL, FALSE /* pass_stdout */);
+	gint pipe1[2], pipe2[2];
+	struct passwd *pwent;
+	pid_t pid;
+	const char *command;
+	const char *defaultpath;
+	const char *gdmuser;
+	const char *moduleslist;
+	const char *gdmlang;
 
-    /* Open a pipe for greeter communications */
-    if G_UNLIKELY (pipe (pipe1) < 0)
-	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
-			"gdm_slave_greeter");
-    if G_UNLIKELY (pipe (pipe2) < 0) {
-	VE_IGNORE_EINTR (close (pipe1[0]));
-	VE_IGNORE_EINTR (close (pipe1[1]));
-	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
-			"gdm_slave_greeter");
-    }
+	gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
 
-    /* hackish ain't it */
-    create_temp_auth_file ();
-    
-    /* Fork. Parent is gdmslave, child is greeter process. */
-    gdm_sigchld_block_push ();
-    gdm_sigterm_block_push ();
-    greet = TRUE;
-    pid = d->greetpid = fork ();
-    if (pid == 0)
-	    gdm_unset_signals ();
-    gdm_sigterm_block_pop ();
-    gdm_sigchld_block_pop ();
+	/* Run the init script. gdmslave suspends until script has terminated */
+	gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
+			       NULL, NULL, FALSE /* pass_stdout */);
 
-    switch (pid) {
-	
-    case 0:
-	setsid ();
-
-	gdm_unset_signals ();
-
-	/* Plumbing */
-	VE_IGNORE_EINTR (close (pipe1[1]));
-	VE_IGNORE_EINTR (close (pipe2[0]));
-
-	VE_IGNORE_EINTR (dup2 (pipe1[0], STDIN_FILENO));
-	VE_IGNORE_EINTR (dup2 (pipe2[1], STDOUT_FILENO));
-
-	closelog ();
-
-	gdm_close_all_descriptors (2 /* from */, slave_fifo_pipe_fd/* except */, d->slave_notify_fd/* except2 */);
-
-	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-	openlog ("gdm", LOG_PID, LOG_DAEMON);
-	
-	if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0) 
-	    gdm_child_exit (DISPLAY_ABORT,
-			    _("%s: Couldn't set groupid to %d"),
-			    "gdm_slave_greeter", gdm_daemon_config_get_gdmgid ());
-
-	gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
-	if G_UNLIKELY (initgroups (gdmuser, gdm_daemon_config_get_gdmgid ()) < 0)
-            gdm_child_exit (DISPLAY_ABORT,
-			    _("%s: initgroups () failed for %s"),
-			    "gdm_slave_greeter", gdmuser);
-	
-	if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0) 
-	    gdm_child_exit (DISPLAY_ABORT,
-			    _("%s: Couldn't set userid to %d"),
-			    "gdm_slave_greeter", gdm_daemon_config_get_gdmuid ());
-
-	gdm_restoreenv ();
-	gdm_reset_locale ();
-	
-	g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
-	g_setenv ("DISPLAY", d->name, TRUE);
+	/* Open a pipe for greeter communications */
+	if G_UNLIKELY (pipe (pipe1) < 0)
+		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
+				"gdm_slave_greeter");
+	if G_UNLIKELY (pipe (pipe2) < 0) {
+		VE_IGNORE_EINTR (close (pipe1[0]));
+		VE_IGNORE_EINTR (close (pipe1[1]));
+		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
+				"gdm_slave_greeter");
+	}
 
 	/* hackish ain't it */
-	set_xnest_parent_stuff ();
-
-	g_setenv ("LOGNAME", gdmuser, TRUE);
-	g_setenv ("USER", gdmuser, TRUE);
-	g_setenv ("USERNAME", gdmuser, TRUE);
-	g_setenv ("GDM_GREETER_PROTOCOL_VERSION",
-		      GDM_GREETER_PROTOCOL_VERSION, TRUE);
-	g_setenv ("GDM_VERSION", VERSION, TRUE);
-	g_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
-
-	pwent = getpwnam (gdmuser);
-	if G_LIKELY (pwent != NULL) {
-		/* Note that usually this doesn't exist */
-		if (pwent->pw_dir != NULL &&
-		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
-			g_setenv ("HOME", pwent->pw_dir, TRUE);
-		else
-			g_setenv ("HOME",
-				ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
-				TRUE); /* Hack */
-		g_setenv ("SHELL", pwent->pw_shell, TRUE);
-	} else {
-		g_setenv ("HOME",
-			 ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
-			 TRUE); /* Hack */
-		g_setenv ("SHELL", "/bin/sh", TRUE);
-	}
-
-	defaultpath = gdm_daemon_config_get_value_string (GDM_KEY_PATH);
-	if (ve_string_empty (g_getenv ("PATH"))) {
-		g_setenv ("PATH", defaultpath, TRUE);
-	} else if ( ! ve_string_empty (defaultpath)) {
-		gchar *temp_string = g_strconcat (g_getenv ("PATH"),
-			":", defaultpath, NULL);
-		g_setenv ("PATH", temp_string, TRUE);
-		g_free (temp_string);
-	}
-	g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-	if ( ! ve_string_empty (d->theme_name))
-		g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
-
-	if (gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG_GESTURES)) {
-		g_setenv ("GDM_DEBUG_GESTURES", "true", TRUE);
-	}
-
-	/* Note that this is just informative, the slave will not listen to
-	 * the greeter even if it does something it shouldn't on a non-local
-	 * display so it's not a security risk */
-	if (d->attached) {
-		g_setenv ("GDM_IS_LOCAL", "yes", TRUE);
-	} else {
-		g_unsetenv ("GDM_IS_LOCAL");
-	}
-
-	/* this is again informal only, if the greeter does time out it will
-	 * not actually login a user if it's not enabled for this display */
-	if (d->timed_login_ok) {
-		if (ParsedTimedLogin == NULL)
-			g_setenv ("GDM_TIMED_LOGIN_OK", " ", TRUE);
-		else
-			g_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin, TRUE);
-	} else {
-		g_unsetenv ("GDM_TIMED_LOGIN_OK");
-	}
-
-	if (SERVER_IS_FLEXI (d)) {
-		g_setenv ("GDM_FLEXI_SERVER", "yes", TRUE);
-	} else {
-		g_unsetenv ("GDM_FLEXI_SERVER");
-	}
-
-	if G_UNLIKELY (gdm_emergency_server) {
-		gdm_error_box (d,
-			       GTK_MESSAGE_ERROR,
-			       _("No servers were defined in the "
-				 "configuration file and XDMCP was "
-				 "disabled.  This can only be a "
-				 "configuration error.  GDM has started "
-				 "a single server for you.  You should "
-				 "log in and fix the configuration.  "
-				 "Note that automatic and timed logins "
-				 "are disabled now."));
-		g_unsetenv ("GDM_TIMED_LOGIN_OK");
-	}
-
-	if G_UNLIKELY (d->failsafe_xserver) {
-		gdm_error_box (d,
-			       GTK_MESSAGE_ERROR,
-			       _("Could not start the regular X "
-				 "server (your graphical environment) "
-				 "and so this is a failsafe X server.  "
-				 "You should log in and properly "
-				 "configure the X server."));
-	}
-
-	if G_UNLIKELY (d->busy_display) {
-		char *msg = g_strdup_printf
-			(_("The specified display number was busy, so "
-			   "this server was started on display %s."),
-			 d->name);
-		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
-		g_free (msg);
-	}
+	create_temp_auth_file ();
 
 	if (d->attached)
 		command = gdm_daemon_config_get_value_string (GDM_KEY_GREETER);
 	else
 		command = gdm_daemon_config_get_value_string (GDM_KEY_REMOTE_GREETER);
 
-	if G_UNLIKELY (d->try_different_greeter) {
-		/* FIXME: we should also really be able to do standalone failsafe
-		   login, but that requires some work and is perhaps an overkill. */
-		/* This should handle mostly the case where gdmgreeter is crashing
-		   and we'd want to start gdmlogin for the user so that at least
-		   something works instead of a flickering screen */
-		gdm_error_box (d,
-			       GTK_MESSAGE_ERROR,
-			       _("The greeter application appears to be crashing. "
-				 "Attempting to use a different one."));
-		if (strstr (command, "gdmlogin") != NULL) {
-			/* in case it is gdmlogin that's crashing
-			   try the themed greeter for luck */
-			command = LIBEXECDIR "/gdmgreeter";
+	g_debug ("Forking greeter process: %s", command);
+
+	/* Fork. Parent is gdmslave, child is greeter process. */
+	gdm_sigchld_block_push ();
+	gdm_sigterm_block_push ();
+	greet = TRUE;
+	pid = d->greetpid = fork ();
+	if (pid == 0)
+		gdm_unset_signals ();
+	gdm_sigterm_block_pop ();
+	gdm_sigchld_block_pop ();
+
+	switch (pid) {
+
+	case 0:
+		setsid ();
+
+		gdm_unset_signals ();
+
+		/* Plumbing */
+		VE_IGNORE_EINTR (close (pipe1[1]));
+		VE_IGNORE_EINTR (close (pipe2[0]));
+
+		VE_IGNORE_EINTR (dup2 (pipe1[0], STDIN_FILENO));
+		VE_IGNORE_EINTR (dup2 (pipe2[1], STDOUT_FILENO));
+
+		gdm_log_shutdown ();
+
+		gdm_close_all_descriptors (2 /* from */, slave_fifo_pipe_fd/* except */, d->slave_notify_fd/* except2 */);
+
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+
+		gdm_log_init ();
+
+		if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0)
+			gdm_child_exit (DISPLAY_ABORT,
+					_("%s: Couldn't set groupid to %d"),
+					"gdm_slave_greeter", gdm_daemon_config_get_gdmgid ());
+
+		gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
+		if G_UNLIKELY (initgroups (gdmuser, gdm_daemon_config_get_gdmgid ()) < 0)
+			gdm_child_exit (DISPLAY_ABORT,
+					_("%s: initgroups () failed for %s"),
+					"gdm_slave_greeter", gdmuser);
+
+		if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0)
+			gdm_child_exit (DISPLAY_ABORT,
+					_("%s: Couldn't set userid to %d"),
+					"gdm_slave_greeter", gdm_daemon_config_get_gdmuid ());
+
+		gdm_restoreenv ();
+		gdm_reset_locale ();
+
+		g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+		g_setenv ("DISPLAY", d->name, TRUE);
+
+		/* hackish ain't it */
+		set_xnest_parent_stuff ();
+
+		g_setenv ("LOGNAME", gdmuser, TRUE);
+		g_setenv ("USER", gdmuser, TRUE);
+		g_setenv ("USERNAME", gdmuser, TRUE);
+		g_setenv ("GDM_GREETER_PROTOCOL_VERSION",
+			  GDM_GREETER_PROTOCOL_VERSION, TRUE);
+		g_setenv ("GDM_VERSION", VERSION, TRUE);
+		g_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
+
+		pwent = getpwnam (gdmuser);
+		if G_LIKELY (pwent != NULL) {
+			/* Note that usually this doesn't exist */
+			if (pwent->pw_dir != NULL &&
+			    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
+				g_setenv ("HOME", pwent->pw_dir, TRUE);
+			else
+				g_setenv ("HOME",
+					  ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+					  TRUE); /* Hack */
+			g_setenv ("SHELL", pwent->pw_shell, TRUE);
 		} else {
-			/* in all other cases, try the gdmlogin (standard greeter)
-			   proggie */
-			command = LIBEXECDIR "/gdmlogin";
+			g_setenv ("HOME",
+				  ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+				  TRUE); /* Hack */
+			g_setenv ("SHELL", "/bin/sh", TRUE);
 		}
-	}
 
-	moduleslist = gdm_daemon_config_get_value_string (GDM_KEY_GTK_MODULES_LIST);
+		defaultpath = gdm_daemon_config_get_value_string (GDM_KEY_PATH);
+		if (ve_string_empty (g_getenv ("PATH"))) {
+			g_setenv ("PATH", defaultpath, TRUE);
+		} else if ( ! ve_string_empty (defaultpath)) {
+			gchar *temp_string = g_strconcat (g_getenv ("PATH"),
+							  ":", defaultpath, NULL);
+			g_setenv ("PATH", temp_string, TRUE);
+			g_free (temp_string);
+		}
+		g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+		if ( ! ve_string_empty (d->theme_name))
+			g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
-	if (gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
-	    ! ve_string_empty (moduleslist) &&
-	    /* don't add modules if we're trying to prevent crashes,
-	       perhaps it's the modules causing the problem in the first place */
-	    ! d->try_different_greeter) {
-		gchar *modules = g_strdup_printf ("--gtk-module=%s", moduleslist);
-		exec_command (command, modules);
-		/* Something went wrong */
-		gdm_error (_("%s: Cannot start greeter with gtk modules: %s. Trying without modules"),
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG_GESTURES)) {
+			g_setenv ("GDM_DEBUG_GESTURES", "true", TRUE);
+		}
+
+		/* Note that this is just informative, the slave will not listen to
+		 * the greeter even if it does something it shouldn't on a non-local
+		 * display so it's not a security risk */
+		if (d->attached) {
+			g_setenv ("GDM_IS_LOCAL", "yes", TRUE);
+		} else {
+			g_unsetenv ("GDM_IS_LOCAL");
+		}
+
+		/* this is again informal only, if the greeter does time out it will
+		 * not actually login a user if it's not enabled for this display */
+		if (d->timed_login_ok) {
+			if (ParsedTimedLogin == NULL)
+				g_setenv ("GDM_TIMED_LOGIN_OK", " ", TRUE);
+			else
+				g_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin, TRUE);
+		} else {
+			g_unsetenv ("GDM_TIMED_LOGIN_OK");
+		}
+
+		if (SERVER_IS_FLEXI (d)) {
+			g_setenv ("GDM_FLEXI_SERVER", "yes", TRUE);
+		} else {
+			g_unsetenv ("GDM_FLEXI_SERVER");
+		}
+
+		if G_UNLIKELY (d->is_emergency_server) {
+			gdm_errorgui_error_box (d,
+						GTK_MESSAGE_ERROR,
+						_("No servers were defined in the "
+						  "configuration file and XDMCP was "
+						  "disabled.  This can only be a "
+						  "configuration error.  GDM has started "
+						  "a single server for you.  You should "
+						  "log in and fix the configuration.  "
+						  "Note that automatic and timed logins "
+						  "are disabled now."));
+			g_unsetenv ("GDM_TIMED_LOGIN_OK");
+		}
+
+		if G_UNLIKELY (d->failsafe_xserver) {
+			gdm_errorgui_error_box (d,
+						GTK_MESSAGE_ERROR,
+						_("Could not start the regular X "
+						  "server (your graphical environment) "
+						  "and so this is a failsafe X server.  "
+						  "You should log in and properly "
+						  "configure the X server."));
+		}
+
+		if G_UNLIKELY (d->busy_display) {
+			char *msg = g_strdup_printf
+				(_("The specified display number was busy, so "
+				   "this server was started on display %s."),
+				 d->name);
+			gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR, msg);
+			g_free (msg);
+		}
+
+		if G_UNLIKELY (d->try_different_greeter) {
+			/* FIXME: we should also really be able to do standalone failsafe
+			   login, but that requires some work and is perhaps an overkill. */
+			/* This should handle mostly the case where gdmgreeter is crashing
+			   and we'd want to start gdmlogin for the user so that at least
+			   something works instead of a flickering screen */
+			gdm_errorgui_error_box (d,
+				       GTK_MESSAGE_ERROR,
+				       _("The greeter application appears to be crashing. "
+					 "Attempting to use a different one."));
+			if (strstr (command, "gdmlogin") != NULL) {
+				/* in case it is gdmlogin that's crashing
+				   try the themed greeter for luck */
+				command = LIBEXECDIR "/gdmgreeter";
+			} else {
+				/* in all other cases, try the gdmlogin (standard greeter)
+				   proggie */
+				command = LIBEXECDIR "/gdmlogin";
+			}
+		}
+
+		moduleslist = gdm_daemon_config_get_value_string (GDM_KEY_GTK_MODULES_LIST);
+
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES) &&
+		    ! ve_string_empty (moduleslist) &&
+		    /* don't add modules if we're trying to prevent crashes,
+		       perhaps it's the modules causing the problem in the first place */
+		    ! d->try_different_greeter) {
+			gchar *modules = g_strdup_printf ("--gtk-module=%s", moduleslist);
+			exec_command (command, modules);
+			/* Something went wrong */
+			gdm_error (_("%s: Cannot start greeter with gtk modules: %s. Trying without modules"),
+				   "gdm_slave_greeter",
+				   moduleslist);
+			g_free (modules);
+		}
+		exec_command (command, NULL);
+
+		gdm_error (_("%s: Cannot start greeter trying default: %s"),
 			   "gdm_slave_greeter",
-			   moduleslist);
-		g_free (modules);
-	}
-	exec_command (command, NULL);
+			   LIBEXECDIR "/gdmlogin");
 
-	gdm_error (_("%s: Cannot start greeter trying default: %s"),
-		   "gdm_slave_greeter",
-		   LIBEXECDIR "/gdmlogin");
+		g_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
 
-	g_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
+		exec_command (LIBEXECDIR "/gdmlogin", NULL);
 
-	exec_command (LIBEXECDIR "/gdmlogin", NULL);
+		VE_IGNORE_EINTR (execl (LIBEXECDIR "/gdmlogin", LIBEXECDIR "/gdmlogin", NULL));
 
-	VE_IGNORE_EINTR (execl (LIBEXECDIR "/gdmlogin", LIBEXECDIR "/gdmlogin", NULL));
+		gdm_errorgui_error_box (d,
+			       GTK_MESSAGE_ERROR,
+			       _("Cannot start the greeter application; "
+				 "you will not be able to log in.  "
+				 "This display will be disabled.  "
+				 "Try logging in by other means and "
+				 "editing the configuration file"));
 
-	gdm_error_box (d,
-		       GTK_MESSAGE_ERROR,
-		       _("Cannot start the greeter application; "
-			 "you will not be able to log in.  "
-			 "This display will be disabled.  "
-			 "Try logging in by other means and "
-			 "editing the configuration file"));
-	
-	/* If no greeter we really have to disable the display */
-	gdm_child_exit (DISPLAY_ABORT, _("%s: Error starting greeter on display %s"), "gdm_slave_greeter", d->name);
-	
-    case -1:
-	d->greetpid = 0;
-	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
-	
-    default:
-	VE_IGNORE_EINTR (close (pipe1[0]));
-	VE_IGNORE_EINTR (close (pipe2[1]));
+		/* If no greeter we really have to disable the display */
+		gdm_child_exit (DISPLAY_ABORT, _("%s: Error starting greeter on display %s"), "gdm_slave_greeter", d->name);
 
-	whack_greeter_fds ();
+	case -1:
+		d->greetpid = 0;
+		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
 
-	greeter_fd_out = pipe1[1];
-	greeter_fd_in = pipe2[0];
-	
-	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", (int)pid);
+	default:
+		VE_IGNORE_EINTR (close (pipe1[0]));
+		VE_IGNORE_EINTR (close (pipe2[1]));
 
-	gdm_slave_send_num (GDM_SOP_GREETPID, d->greetpid);
+		whack_greeter_fds ();
 	if (always_restart_greeter)
 	  gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "Y");
 	else
@@ -2752,11 +2779,25 @@ gdm_slave_greeter (void)
 	if (gdmlang)
 	  gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, gdmlang);
 
-	run_pictures (); /* Append pictures to greeter if browsing is on */
+		greeter_fd_out = pipe1[1];
+		greeter_fd_in = pipe2[0];
 
-	check_notifies_now ();
-	break;
-    }
+		gdm_debug ("gdm_slave_greeter: Greeter on pid %d", (int)pid);
+
+		gdm_slave_send_num (GDM_SOP_GREETPID, d->greetpid);
+		if (always_restart_greeter)
+			gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "Y");
+		else
+			gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "N");
+		gdmlang = g_getenv ("GDM_LANG");
+		if (gdmlang)
+			gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, gdmlang);
+
+		run_pictures (); /* Append pictures to greeter if browsing is on */
+
+		check_notifies_now ();
+		break;
+	}
 }
 
 /* This should not call anything that could cause a syslog in case we
@@ -2792,7 +2833,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		   in main daemon just abort the main daemon.  */
 		/* Use the fifo as a fallback only now that we have a pipe */
 		fifopath = g_build_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
-			".gdmfifo", NULL);
+					     ".gdmfifo", NULL);
 		old = geteuid ();
 		if (old != 0)
 			seteuid (0);
@@ -2849,9 +2890,9 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
         } else {
 		for (i = 0;
 		     wait_for_ack &&
-		     ! gdm_got_ack &&
-		     parent_exists () &&
-		     i < 10;
+			     ! gdm_got_ack &&
+			     parent_exists () &&
+			     i < 10;
 		     i++) {
 			if (in_usr2_signal > 0) {
 				fd_set rfds;
@@ -2874,7 +2915,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 				tv.tv_usec = 0;
 				select (0, NULL, NULL, NULL, &tv);
 				/* don't want to use sleep since we're using alarm
-				for pinging */
+				   for pinging */
 			}
 		}
 	}
@@ -2942,54 +2983,30 @@ gdm_slave_send_string (const char *opcode, const char *str)
 }
 
 static void
-send_chosen_host (GdmDisplay *disp, const char *hostname)
+send_chosen_host (GdmDisplay *disp,
+		  const char *hostname)
 {
-	GdmHostent *host;
-	struct in_addr ia;
-#ifdef ENABLE_IPV6
+	GdmHostent *hostent;
 	struct sockaddr_storage ss;
-#endif
 	char *str = NULL;
+	char *host;
 
-	host = gdm_gethostbyname (hostname);
+	hostent = gdm_gethostbyname (hostname);
 
-	if G_UNLIKELY (host->addrs == NULL) {
+	if G_UNLIKELY (hostent->addrs == NULL) {
 		gdm_error ("Cannot get address of host '%s'", hostname);
-		gdm_hostent_free (host);
+		gdm_hostent_free (hostent);
 		return;
 	}
+
 	/* take first address */
-#ifdef ENABLE_IPV6
-	memcpy (&ss, &host->addrs[0], sizeof (struct sockaddr_storage));
-	if (ss.ss_family == AF_INET6) {
-		struct in6_addr ia6;
-		char buffer6[INET6_ADDRSTRLEN];
+	memcpy (&ss, &hostent->addrs[0], sizeof (struct sockaddr_storage));
 
-		memcpy (&ia6, &((struct sockaddr_in6 *)&ss)->sin6_addr, sizeof (struct in6_addr));
-		gdm_hostent_free (host);
-		gdm_debug ("Sending chosen host address (%s) %s", hostname, inet_ntop (AF_INET6, &ia6, buffer6, sizeof (buffer6)));
-		str = g_strdup_printf ("%s %d %s", GDM_SOP_CHOSEN, disp->indirect_id, buffer6);
-	}
-	else if (ss.ss_family == AF_INET) {
-		char buffer[INET_ADDRSTRLEN];
+	gdm_address_get_info (&ss, &host, NULL);
+	gdm_hostent_free (hostent);
 
-		memcpy (&ia, &((struct sockaddr_in *)&ss)->sin_addr, sizeof (struct in_addr));
-		gdm_hostent_free (host);
-		gdm_debug ("Sending chosen host address (%s) %s", hostname, inet_ntop (AF_INET, &ia, buffer, sizeof (buffer)));
-		str = g_strdup_printf ("%s %d %s", GDM_SOP_CHOSEN, disp->indirect_id, buffer);
-	}
-#else
-	ia = host->addrs[0];
-	gdm_hostent_free (host);
-
-	gdm_debug ("Sending chosen host address (%s) %s",
-		   hostname, inet_ntoa (ia));
-
-	str = g_strdup_printf ("%s %d %s", GDM_SOP_CHOSEN,
-			       disp->indirect_id,
-			       inet_ntoa (ia));
-
-#endif
+	gdm_debug ("Sending chosen host address (%s) %s", hostname, host);
+	str = g_strdup_printf ("%s %d %s", GDM_SOP_CHOSEN, disp->indirect_id, host);
 	gdm_slave_send (str, FALSE);
 
 	g_free (str);
@@ -3017,6 +3034,8 @@ gdm_slave_chooser (void)
 	gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
 			       NULL, NULL, FALSE /* pass_stdout */);
 
+	g_debug ("Forking chooser process: %s", gdm_daemon_config_get_value_string (GDM_KEY_CHOOSER));
+
 	/* Fork. Parent is gdmslave, child is greeter process. */
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
@@ -3036,10 +3055,10 @@ gdm_slave_chooser (void)
 		/* Plumbing */
 		VE_IGNORE_EINTR (close (p[0]));
 
-		if (p[1] != STDOUT_FILENO) 
+		if (p[1] != STDOUT_FILENO)
 			VE_IGNORE_EINTR (dup2 (p[1], STDOUT_FILENO));
 
-		closelog ();
+		gdm_log_shutdown ();
 
 		VE_IGNORE_EINTR (close (0));
 		gdm_close_all_descriptors (2 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
@@ -3047,9 +3066,9 @@ gdm_slave_chooser (void)
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+		gdm_log_init ();
 
-		if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0) 
+		if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set groupid to %d"),
 					"gdm_slave_chooser", gdm_daemon_config_get_gdmgid ());
@@ -3060,7 +3079,7 @@ gdm_slave_chooser (void)
 					_("%s: initgroups () failed for %s"),
 					"gdm_slave_chooser", gdmuser);
 
-		if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0) 
+		if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set userid to %d"),
 					"gdm_slave_chooser", gdm_daemon_config_get_gdmuid ());
@@ -3086,13 +3105,13 @@ gdm_slave_chooser (void)
 				g_setenv ("HOME", pwent->pw_dir, TRUE);
 			else
 				g_setenv ("HOME",
-					ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
-					TRUE); /* Hack */
+					  ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+					  TRUE); /* Hack */
 			g_setenv ("SHELL", pwent->pw_shell, TRUE);
 		} else {
 			g_setenv ("HOME",
-				ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
-				TRUE); /* Hack */
+				  ve_sure_string (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)),
+				  TRUE); /* Hack */
 			g_setenv ("SHELL", "/bin/sh", TRUE);
 		}
 
@@ -3101,7 +3120,7 @@ gdm_slave_chooser (void)
 			g_setenv ("PATH", defaultpath, TRUE);
 		} else if ( ! ve_string_empty (defaultpath)) {
 			gchar *temp_string = g_strconcat (g_getenv ("PATH"),
-				":", defaultpath, NULL);
+							  ":", defaultpath, NULL);
 			g_setenv ("PATH", temp_string, TRUE);
 			g_free (temp_string);
 		}
@@ -3118,7 +3137,7 @@ gdm_slave_chooser (void)
 
 		exec_command (gdm_daemon_config_get_value_string (GDM_KEY_CHOOSER), NULL);
 
-		gdm_error_box (d,
+		gdm_errorgui_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Cannot start the chooser application. "
 				 "You will probably not be able to log in.  "
@@ -3406,7 +3425,7 @@ gdm_selinux_setup (const char *login)
 	int ret=-1;
 	char *seuser=NULL;
 	char *level=NULL;
- 
+
 	/* If selinux is not enabled, then we don't do anything */
 	if (is_selinux_enabled () <= 0)
 		return TRUE;
@@ -3426,7 +3445,7 @@ gdm_selinux_setup (const char *login)
 
 	if (setexeccon (scontext) != 0) {
 		gdm_error ("SELinux gdm login: unable to set executable context %s.",
-			  (char *)scontext);
+			   (char *)scontext);
 		gdm_fdprintf (2, "SELinux gdm login: unable to set executable context %s.",
 			      (char *)scontext);
 		freecon (scontext);
@@ -3507,13 +3526,13 @@ session_child_run (struct passwd *pwent,
 	if (d->attached) {
 		greeter = gdm_daemon_config_get_value_string (GDM_KEY_GREETER);
 	} else {
-		greeter = gdm_daemon_config_get_value_string (GDM_KEY_REMOTE_GREETER);		
+		greeter = gdm_daemon_config_get_value_string (GDM_KEY_REMOTE_GREETER);
 	}
-	
+
 	if (strstr (greeter, "gdmlogin") != NULL) {
-		g_setenv ("GDM_GREETER_TYPE", "PLAIN", TRUE);	
+		g_setenv ("GDM_GREETER_TYPE", "PLAIN", TRUE);
 	} else if (strstr (greeter, "gdmgreeter") != NULL) {
-		g_setenv ("GDM_GREETER_TYPE", "THEMED", TRUE);	
+		g_setenv ("GDM_GREETER_TYPE", "THEMED", TRUE);
 	} else {
 		/* huh? */
 		g_setenv ("GDM_GREETER_TYPE", "unknown", TRUE);
@@ -3524,12 +3543,12 @@ session_child_run (struct passwd *pwent,
                                               pwent->pw_name, pwent,
 					      TRUE /* pass_stdout */) != EXIT_SUCCESS &&
 		       /* ignore errors in failsafe modes */
-		       ! failsafe) 
+		       ! failsafe)
 		/* If script fails reset X server and restart greeter */
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Execution of PreSession script returned > 0. Aborting."), "session_child_run");
 
-	gdm_clearenv ();
+	ve_clearenv ();
 
 	/* Prepare user session */
 	g_setenv ("XAUTHORITY", d->userauth, TRUE);
@@ -3578,7 +3597,7 @@ session_child_run (struct passwd *pwent,
 			! ve_locale_exists (language)) {
 		char *msg = g_strdup_printf (_("Language %s does not exist; using %s"),
 					     language, _("System default"));
-		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
+		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR, msg);
 		language = NULL;
 		g_free (msg);
 	}
@@ -3588,9 +3607,9 @@ session_child_run (struct passwd *pwent,
 	VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0640));
 
 	setpgid (0, 0);
-	
+
 	umask (022);
-	
+
 	/* setup the verify env vars */
 	if G_UNLIKELY ( ! gdm_verify_setup_env (d))
 		gdm_child_exit (DISPLAY_REMANAGE,
@@ -3613,15 +3632,15 @@ session_child_run (struct passwd *pwent,
                 struct stat s0, s1, s2;
                 gint        s0_ret, s1_ret, s2_ret;
                 gint        iceauth_fd;
- 
-		 NEVER_FAILS_root_set_euid_egid (0, 0);
+
+		NEVER_FAILS_root_set_euid_egid (0, 0);
 
                 iceauth_fd = open (".ICEauthority", O_RDONLY);
- 
+
                 s0_ret = stat (home_dir, &s0);
                 s1_ret = lstat (".ICEauthority", &s1);
                 s2_ret = fstat (iceauth_fd, &s2);
- 
+
                 if (iceauth_fd >= 0 &&
                     s0_ret == 0 &&
                     s0.st_uid == pwent->pw_uid &&
@@ -3648,7 +3667,7 @@ session_child_run (struct passwd *pwent,
                                 pwent->pw_gid);
                         fchmod (iceauth_fd, S_IRUSR | S_IWUSR);
                 }
- 
+
                 if (iceauth_fd >= 0)
                         close (iceauth_fd);
         }
@@ -3665,7 +3684,7 @@ session_child_run (struct passwd *pwent,
 				  "Aborting."), "session_child_run",
 				login);
 #else
-	if G_UNLIKELY (setuid (pwent->pw_uid) < 0) 
+	if G_UNLIKELY (setuid (pwent->pw_uid) < 0)
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not become %s. Aborting."), "session_child_run", login);
 #endif
@@ -3680,15 +3699,15 @@ session_child_run (struct passwd *pwent,
 
 	/* just in case there is some weirdness going on */
 	VE_IGNORE_EINTR (g_chdir (home_dir));
-	
+
         if (usrcfgok && home_dir_ok)
 		gdm_daemon_config_set_user_session_lang (savesess, savelang, home_dir, save_session, language);
-	
-	closelog ();
+
+	gdm_log_shutdown ();
 
 	gdm_close_all_descriptors (3 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
 
-	openlog ("gdm", LOG_PID, LOG_DAEMON);
+	gdm_log_init ();
 
 	argv[0] = NULL;
 	argv[1] = NULL;
@@ -3704,15 +3723,15 @@ session_child_run (struct passwd *pwent,
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
 	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
 		exec = gdm_daemon_config_get_session_exec (session,
-			FALSE /* check_try_exec */);
+							   FALSE /* check_try_exec */);
 
 		if G_UNLIKELY (exec == NULL) {
 			gchar *msg = g_strdup_printf (
-				_("No Exec line in the session file: %s.  Running the GNOME failsafe session instead"),
-				session);
+						      _("No Exec line in the session file: %s.  Running the GNOME failsafe session instead"),
+						      session);
 
 			gdm_error (_("%s: %s"), "session_child_run", msg);
-			gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
+			gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR, msg);
 			g_free (msg);
 
 			session = GDM_SESSION_FAILSAFE_GNOME;
@@ -3735,7 +3754,7 @@ session_child_run (struct passwd *pwent,
 				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_GNOME;
 			exec = NULL;
-			gdm_error_box
+			gdm_errorgui_error_box
 				(d, GTK_MESSAGE_ERROR,
 				 _("Cannot find or run the base session script.  Running the GNOME failsafe session instead."));
 		} else {
@@ -3764,7 +3783,7 @@ session_child_run (struct passwd *pwent,
 #ifdef HAVE_TSOL
 		if (have_suntsol_extension == TRUE) {
 			/* Trusted Path will be preserved as long as the sys admin
-		     * doesn't put anything stupid in gdm.conf */
+			 * doesn't put anything stupid in gdm.conf */
 			argv[0] = g_strdup ("/usr/bin/tsoljdslabel");
 			argv[1] = find_prog ("gnome-session");
 			if G_UNLIKELY (argv[1] == NULL) {
@@ -3772,7 +3791,7 @@ session_child_run (struct passwd *pwent,
 				gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
 					   "session_child_run");
 				session = GDM_SESSION_FAILSAFE_XTERM;
-				gdm_error_box
+				gdm_errorgui_error_box
 					(d, GTK_MESSAGE_ERROR,
 					 _("Could not find the GNOME installation, "
 					   "will try running the \"Failsafe xterm\" "
@@ -3780,38 +3799,38 @@ session_child_run (struct passwd *pwent,
 			} else {
 				argv[2] = "--failsafe";
 				argv[3] = NULL;
-				gdm_error_box
+				gdm_errorgui_error_box
 					(d, GTK_MESSAGE_INFO,
 					 _("This is the Failsafe GNOME session.  "
-				   "You will be logged into the 'Default' "
-				   "session of GNOME without the startup scripts "
-				   "being run.  This should be used to fix problems "
-				   "in your installation."));
+					   "You will be logged into the 'Default' "
+					   "session of GNOME without the startup scripts "
+					   "being run.  This should be used to fix problems "
+					   "in your installation."));
 			}
 		} else {
 #endif
-		argv[0] = find_prog ("gnome-session");
-		if G_UNLIKELY (argv[0] == NULL) {
-			/* yaikes */
-			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session; trying xterm"),
-				   "session_child_run");
-			session = GDM_SESSION_FAILSAFE_XTERM;
-			gdm_error_box
-				(d, GTK_MESSAGE_ERROR,
-				 _("Could not find the GNOME installation.  "
-				   "Running the \"Failsafe xterm\" "
-				   "session instead."));
-		} else {
-			argv[1] = "--failsafe";
-			argv[2] = NULL;
-			gdm_error_box
-				(d, GTK_MESSAGE_INFO,
-				 _("This is the Failsafe GNOME session.  "
-				   "You will be logged into the 'Default' "
-				   "session of GNOME without the startup scripts "
-				   "being run.  This should be used to fix problems "
-				   "in your installation."));
-		}
+			argv[0] = find_prog ("gnome-session");
+			if G_UNLIKELY (argv[0] == NULL) {
+				/* yaikes */
+				gdm_error (_("%s: gnome-session not found for a failsafe GNOME session; trying xterm"),
+					   "session_child_run");
+				session = GDM_SESSION_FAILSAFE_XTERM;
+				gdm_errorgui_error_box
+					(d, GTK_MESSAGE_ERROR,
+					 _("Could not find the GNOME installation.  "
+					   "Running the \"Failsafe xterm\" "
+					   "session instead."));
+			} else {
+				argv[1] = "--failsafe";
+				argv[2] = NULL;
+				gdm_errorgui_error_box
+					(d, GTK_MESSAGE_INFO,
+					 _("This is the Failsafe GNOME session.  "
+					   "You will be logged into the 'Default' "
+					   "session of GNOME without the startup scripts "
+					   "being run.  This should be used to fix problems "
+					   "in your installation."));
+			}
 #ifdef HAVE_TSOL
 		}
 #endif
@@ -3823,7 +3842,7 @@ session_child_run (struct passwd *pwent,
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
 		argv[0] = find_prog ("xterm");
 		if (argv[0] == NULL) {
-			gdm_error_box (d, GTK_MESSAGE_ERROR,
+			gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 				       _("Cannot find \"xterm\" to start "
 					 "a failsafe session."));
 			/* nyah nyah nyah nyah nyah */
@@ -3844,40 +3863,40 @@ session_child_run (struct passwd *pwent,
 			 */
 			if (pwent->pw_uid == 0) {
 				argv[3] = argv[4] = argv[5] = argv[6] = NULL;
-				gdm_error_box
+				gdm_errorgui_error_box
 					(d, GTK_MESSAGE_INFO,
-				 	_("This is the Failsafe xterm session.  "
-				 	  "You will be logged into a terminal "
-				 	  "console so that you may fix your system "
-				 	  "if you cannot log in any other way.  "
-				 	  "To exit the terminal emulator, type "
-				 	  "'exit' and an enter into the window."));
+					 _("This is the Failsafe xterm session.  "
+					   "You will be logged into a terminal "
+					   "console so that you may fix your system "
+					   "if you cannot log in any other way.  "
+					   "To exit the terminal emulator, type "
+					   "'exit' and an enter into the window."));
 				focus_first_x_window ("xterm");
 			} else if (gdm_can_i_assume_root_role (pwent) == TRUE) {
 				argv[3] = "-C";
 				argv[4] = "-e";
 				argv[5] = "su";
 				argv[6] = NULL;
-				gdm_error_box
+				gdm_errorgui_error_box
 					(d, GTK_MESSAGE_INFO,
-				 	_("This is the Failsafe xterm session.  "
-				 	  "You will be logged into a terminal "
-					  "console and be prompted to enter the "
-					  "password for root so that you may fix "
-					  "your system if you cannot log in any "
-					  "other way. To exit the terminal "
-					  "emulator, type 'exit' and an enter "
-					  "into the window."));
+					 _("This is the Failsafe xterm session.  "
+					   "You will be logged into a terminal "
+					   "console and be prompted to enter the "
+					   "password for root so that you may fix "
+					   "your system if you cannot log in any "
+					   "other way. To exit the terminal "
+					   "emulator, type 'exit' and an enter "
+					   "into the window."));
 				focus_first_x_window ("xterm");
 			} else {
 				/* Normal user without root role - get lost */
-				gdm_error_box
+				gdm_errorgui_error_box
 					(d, GTK_MESSAGE_INFO,
-				 	_("The failsafe session is restricted to "
-				 	  "users who have been assigned the root "
-					  "role. If you cannot log in any other "
-					  "way please contact your system "
-					  "administrator"));
+					 _("The failsafe session is restricted to "
+					   "users who have been assigned the root "
+					   "role. If you cannot log in any other "
+					   "way please contact your system "
+					   "administrator"));
 				_exit (66);
 			}
 #endif /* HAVE_TSOL */
@@ -3890,7 +3909,7 @@ session_child_run (struct passwd *pwent,
 #ifdef HAVE_TSOL
 			argv[4] = argv[5] = argv[6] = NULL;
 #endif
-			gdm_error_box
+			gdm_errorgui_error_box
 				(d, GTK_MESSAGE_INFO,
 				 _("This is the Failsafe xterm session.  "
 				   "You will be logged into a terminal "
@@ -3901,7 +3920,7 @@ session_child_run (struct passwd *pwent,
 			focus_first_x_window ("xterm");
 		}
 		failsafe = TRUE;
-	} 
+	}
 
 #ifdef HAVE_TSOL
 	gdm_debug ("Running %s %s %s %s %s %s for %s on %s",
@@ -3932,7 +3951,7 @@ session_child_run (struct passwd *pwent,
 	    strcmp (shell, "/bin/true") == 0) {
 		gdm_error (_("%s: User not allowed to log in"),
 			   "session_child_run");
-		gdm_error_box (d, GTK_MESSAGE_ERROR,
+		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 			       _("The system administrator has "
 				 "disabled your account."));
 		/* ends as if nothing bad happened */
@@ -3944,7 +3963,7 @@ session_child_run (struct passwd *pwent,
 #ifdef CAN_USE_SETPENV
 	/* Call the function setpenv which instanciates the extern variable "newenv" */
 	setpenv (login, (PENV_INIT | PENV_NOEXEC), NULL, NULL);
-	
+
 	/* Add the content of the "newenv" variable to the environment */
 	for (i=0; newenv != NULL && newenv[i] != NULL; i++) {
 		char *env_str = g_strdup (newenv[i]);
@@ -3963,7 +3982,7 @@ session_child_run (struct passwd *pwent,
 	if ( ! gdm_selinux_setup (pwent->pw_name)) {
 		/* 66 means no "session crashed" examine .xsession-errors
 		   dialog */
-		gdm_error_box (d, GTK_MESSAGE_ERROR,
+		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 			       _("Error! Unable to set executable context."));
 		_exit (66);
 	}
@@ -3973,7 +3992,7 @@ session_child_run (struct passwd *pwent,
 
 	/* will go to .xsession-errors */
 #ifdef HAVE_TSOL
-	fprintf (stderr, _("%s: Could not exec %s %s %s %s %s %s"), 
+	fprintf (stderr, _("%s: Could not exec %s %s %s %s %s %s"),
 		 "session_child_run",
 		 argv[0],
 		 ve_sure_string (argv[1]),
@@ -3982,35 +4001,35 @@ session_child_run (struct passwd *pwent,
 		 ve_sure_string (argv[4]),
 		 ve_sure_string (argv[5]));
 
-	gdm_error ( _("%s: Could not exec %s %s %s %s %s %s"), 
-		 "session_child_run",
-		 argv[0],
-		 ve_sure_string (argv[1]),
-		 ve_sure_string (argv[2]),
-		 ve_sure_string (argv[3]),
-		 ve_sure_string (argv[4]),
-		 ve_sure_string (argv[5]));
+	gdm_error ( _("%s: Could not exec %s %s %s %s %s %s"),
+		    "session_child_run",
+		    argv[0],
+		    ve_sure_string (argv[1]),
+		    ve_sure_string (argv[2]),
+		    ve_sure_string (argv[3]),
+		    ve_sure_string (argv[4]),
+		    ve_sure_string (argv[5]));
 #else
-	fprintf (stderr, _("%s: Could not exec %s %s %s"), 
+	fprintf (stderr, _("%s: Could not exec %s %s %s"),
 		 "session_child_run",
 		 argv[0],
 		 ve_sure_string (argv[1]),
 		 ve_sure_string (argv[2]));
-	gdm_error ( _("%s: Could not exec %s %s %s"), 
-		 "session_child_run",
-		 argv[0],
-		 ve_sure_string (argv[1]),
-		 ve_sure_string (argv[2]));
+	gdm_error ( _("%s: Could not exec %s %s %s"),
+		    "session_child_run",
+		    argv[0],
+		    ve_sure_string (argv[1]),
+		    ve_sure_string (argv[2]));
 #endif
 
 	/* if we can't read and exec the session, then make a nice
 	 * error dialog */
-	gdm_error_box
+	gdm_errorgui_error_box
 		(d, GTK_MESSAGE_ERROR,
 		 /* we can't really be any more specific */
 		 _("Cannot start the session due to some "
 		   "internal error."));
-	
+
 	/* ends as if nothing bad happened */
 	_exit (0);
 }
@@ -4035,448 +4054,462 @@ finish_session_output (gboolean do_read)
 static void
 gdm_slave_session_start (void)
 {
-    struct passwd *pwent;
-    const char *home_dir = NULL;
-    char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
-    char *gnome_session = NULL;
+	struct passwd *pwent;
+	const char *home_dir = NULL;
+	char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
+	char *gnome_session = NULL;
 #ifdef WITH_CONSOLE_KIT
-    char *ck_session_cookie;
+	char *ck_session_cookie;
 #endif
-    char *tmp;
-    gboolean savesess = FALSE, savelang = FALSE;
-    gboolean usrcfgok = FALSE, authok = FALSE;
-    gboolean home_dir_ok = FALSE;
-    gboolean failsafe = FALSE;
-    time_t session_start_time, end_time; 
-    pid_t pid;
-    GdmWaitPid *wp;
-    uid_t uid;
-    gid_t gid;
-    int logpipe[2];
-    int logfilefd;
+	char *tmp;
+	gboolean savesess = FALSE, savelang = FALSE;
+	gboolean usrcfgok = FALSE, authok = FALSE;
+	gboolean home_dir_ok = FALSE;
+	gboolean failsafe = FALSE;
+	time_t session_start_time, end_time; 
+	pid_t pid;
+	GdmWaitPid *wp;
+	uid_t uid;
+	gid_t gid;
+	int logpipe[2];
+	int logfilefd;
 
-    gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
-	       login);
+	gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
+		   login);
 
-    pwent = getpwnam (login);
+	pwent = getpwnam (login);
 
-    if G_UNLIKELY (pwent == NULL)  {
-	    /* This is sort of an "assert", this should NEVER happen */
-	    if (greet)
-		    gdm_slave_whack_greeter ();
-	    gdm_slave_exit (DISPLAY_REMANAGE,
-			    _("%s: User passed auth but getpwnam (%s) failed!"), "gdm_slave_session_start", login);
-    }
+	if G_UNLIKELY (pwent == NULL)  {
+		/* This is sort of an "assert", this should NEVER happen */
+		if (greet)
+			gdm_slave_whack_greeter ();
+		gdm_slave_exit (DISPLAY_REMANAGE,
+				_("%s: User passed auth but getpwnam (%s) failed!"), "gdm_slave_session_start", login);
+	}
 
-    logged_in_uid = uid = pwent->pw_uid;
-    logged_in_gid = gid = pwent->pw_gid;
+	logged_in_uid = uid = pwent->pw_uid;
+	logged_in_gid = gid = pwent->pw_gid;
 
-    /* Run the PostLogin script */
-    if G_UNLIKELY (gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_POSTLOGIN),
-					  login, pwent,
-					  TRUE /* pass_stdout */) != EXIT_SUCCESS &&
-		   /* ignore errors in failsafe modes */
-		   ! failsafe) {
-	    gdm_verify_cleanup (d);
-	    gdm_error (_("%s: Execution of PostLogin script returned > 0. Aborting."), "gdm_slave_session_start");
-	    /* script failed so just try again */
-	    return;
-		
+	/* Run the PostLogin script */
+	if G_UNLIKELY (gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_POSTLOGIN),
+					      login, pwent,
+					      TRUE /* pass_stdout */) != EXIT_SUCCESS &&
+		       /* ignore errors in failsafe modes */
+		       ! failsafe) {
+		gdm_verify_cleanup (d);
+		gdm_error (_("%s: Execution of PostLogin script returned > 0. Aborting."), "gdm_slave_session_start");
+		/* script failed so just try again */
+		return;
+	}
 
-    }
-
-    /*
-     * Set euid, gid to user before testing for user's $HOME since root
-     * does not always have access to the user's $HOME directory.
-     */
-    if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
-		   seteuid (pwent->pw_uid) != 0) {
-	    gdm_error ("Cannot set effective user/group id");
-	    gdm_verify_cleanup (d);
-	    session_started = FALSE;
-	    return;
-    }
-
-    if G_UNLIKELY (pwent->pw_dir == NULL ||
-		   ! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
-	    char *yesno_msg;
-	    char *msg = g_strdup_printf (
-		     _("Your home directory is listed as: '%s' "
-		       "but it does not appear to exist.  "
-		       "Do you want to log in with the / (root) "
-		       "directory as your home directory? "
-		       "It is unlikely anything will work unless "
-		       "you use a failsafe session."),
-		     ve_sure_string (pwent->pw_dir));
-
-	    /* Set euid, egid to root:gdm to manage user interaction */
-            seteuid (0);
-            setegid (gdm_daemon_config_get_gdmgid ());
-
-	    gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
-		       "gdm_slave_session_start",
-		       login,
-		       ve_sure_string (pwent->pw_dir));
-
-	    /* Check what the user wants to do */
-           yesno_msg = g_strdup_printf ("yesno_msg=%s", msg);
-           gdm_slave_send_string (GDM_SOP_SHOW_YESNO_DIALOG, yesno_msg);
-
-           g_free (yesno_msg);
-
-           if (strcmp (gdm_ack_response, "no") == 0) {
-               gdm_verify_cleanup (d);
-               session_started = FALSE;
-
-               g_free (msg);
-               g_free (gdm_ack_response);
-               gdm_ack_response = NULL;
-               return;
-            }
-
-	    g_free (msg);
-            g_free (gdm_ack_response);
-            gdm_ack_response = NULL;
-
-	    /* Reset euid, egid back to user */
-	    if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
-			   seteuid (pwent->pw_uid) != 0) {
-		    gdm_error ("Cannot set effective user/group id");
-		    gdm_verify_cleanup (d);
-		    session_started = FALSE;
-		    return;
-	    }
-
-	    home_dir_ok = FALSE;
-	    home_dir = "/";
-    } else {
-	    home_dir_ok = TRUE;
-	    home_dir = pwent->pw_dir;
-    }
-
-    if G_LIKELY (home_dir_ok) {
-	    /* Sanity check on ~user/.dmrc */
-	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
-				       home_dir, ".dmrc", TRUE, FALSE,
-				       gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE),
-				       gdm_daemon_config_get_value_int (GDM_KEY_RELAX_PERM));
-    } else {
-	    usrcfgok = FALSE;
-    }
-
-    if G_LIKELY (usrcfgok) {
-	    gdm_daemon_config_get_user_session_lang (&usrsess, &usrlang, home_dir, &savesess);
-    } else {
-	/* This won't get displayed if the .dmrc file simply doesn't
-	 * exist since we pass absentok=TRUE when we call gdm_file_check
+	/*
+	 * Set euid, gid to user before testing for user's $HOME since root
+	 * does not always have access to the user's $HOME directory.
 	 */
-	gdm_error_box (d,
-		GTK_MESSAGE_WARNING,
-		_("User's $HOME/.dmrc file is being ignored.  "
-		  "This prevents the default session "
-		  "and language from being saved.  File "
-		  "should be owned by user and have 644 "
-		  "permissions.  User's $HOME directory "
-		  "must be owned by user and not writable "
-		  "by other users."));
-	usrsess = g_strdup ("");
-	usrlang = g_strdup ("");
-    }
-
-    NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
-
-    if (greet) {
-	    tmp = gdm_ensure_extension (usrsess, ".desktop");
-	    session = gdm_slave_greeter_ctl (GDM_SESS, tmp);
-	    g_free (tmp);
-
-	    if (session != NULL &&
-		strcmp (session, GDM_RESPONSE_CANCEL) == 0) {
-		    gdm_debug ("User canceled login");
-		    gdm_verify_cleanup (d);
-		    session_started = FALSE;
-		    g_free (usrlang);
-		    return;
-	    }
-
-	    language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
-	    if (language != NULL && 
-		strcmp (language, GDM_RESPONSE_CANCEL) == 0) {
-		    gdm_debug ("User canceled login");
-		    gdm_verify_cleanup (d);
-		    session_started = FALSE;
-		    g_free (usrlang);
-		    return;
-	    }
-    } else {
-	    session = g_strdup (usrsess);
-	    language = g_strdup (usrlang);
-    }
-
-    tmp = gdm_strip_extension (session, ".desktop");
-    g_free (session);
-    session = tmp;
-
-    if (ve_string_empty (session)) {
-	    g_free (session);
-	    session = find_a_session ();
-	    if (session == NULL) {
-		    /* we're running out of options */
-		    session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
-	    }
-    }
-
-    if G_LIKELY (ve_string_empty (language)) {
-	    g_free (language);
-	    language = NULL;
-    }
-
-    g_free (usrsess);
-
-    gdm_debug ("Initial setting: session: '%s' language: '%s'\n",
-	       session, ve_sure_string (language));
-
-    /* save this session as the users session */
-    save_session = g_strdup (session);
-
-    if (greet) {
-	    char *ret = gdm_slave_greeter_ctl (GDM_SSESS, "");
-	    if ( ! ve_string_empty (ret))
-		    savesess = TRUE;
-	    g_free (ret);
-
-	    ret = gdm_slave_greeter_ctl (GDM_SLANG, "");
-	    if ( ! ve_string_empty (ret))
-		    savelang = TRUE;
-	    g_free (ret);
-
-	    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
-
-	    gdm_slave_whack_greeter ();
-    }
-
-    if (gdm_daemon_config_get_value_bool (GDM_KEY_KILL_INIT_CLIENTS))
-	    gdm_server_whack_clients (d->dsp);
-
-    /* Now that we will set up the user authorization we will
-       need to run session_stop to whack it */
-    session_started = TRUE;
-
-    /* Setup cookie -- We need this information during cleanup, thus
-     * cookie handling is done before fork()ing */
-
-    if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
-		   seteuid (pwent->pw_uid) != 0) {
-	    gdm_error ("Cannot set effective user/group id");
-	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
-    }
-
-    authok = gdm_auth_user_add (d, pwent->pw_uid,
-				/* Only pass the home_dir if
-				 * it was ok */
-				home_dir_ok ? home_dir : NULL);
-
-    /* FIXME: this should be smarter and only do this on out-of-diskspace
-     * errors */
-    if G_UNLIKELY ( ! authok && home_dir_ok) {
-	    /* try wiping the .xsession-errors file (and perhaps other things)
-	       in an attempt to gain disk space */
-	    if (wipe_xsession_errors (pwent, home_dir, home_dir_ok)) {
-		    gdm_error ("Tried wiping some old user session errors files "
-			       "to make disk space and will try adding user auth "
-			       "files again");
-		    /* Try again */
-		    authok = gdm_auth_user_add (d, pwent->pw_uid,
-						/* Only pass the home_dir if
-						 * it was ok */
-						home_dir_ok ? home_dir : NULL);
-	    }
-    }
-
-    NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
-    
-    if G_UNLIKELY ( ! authok) {
-	    gdm_debug ("gdm_slave_session_start: Auth not OK");
-
-	    gdm_error_box (d,
-			   GTK_MESSAGE_ERROR,
-			   _("GDM could not write to your authorization "
-			     "file.  This could mean that you are out of "
-			     "disk space or that your home directory could "
-			     "not be opened for writing.  In any case, it "
-			     "is not possible to log in.  Please contact "
-			     "your system administrator"));
-
-	    gdm_slave_session_stop (FALSE /* run_post_session */,
-				    FALSE /* no_shutdown_check */);
-
-	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
-    }
-
-    if G_UNLIKELY (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
-		   strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-		   g_ascii_strcasecmp (session, "failsafe") == 0 /* hack */)
-	    failsafe = TRUE;
-
-    if G_LIKELY ( ! failsafe) {
-	    char *exec = gdm_daemon_config_get_session_exec (session, FALSE /* check_try_exec */);
-	    if ( ! ve_string_empty (exec) &&
-		strcmp (exec, "failsafe") == 0)
-		    failsafe = TRUE;
-	    g_free (exec);
-    }
-
-    /* Write out the Xservers file */
-    gdm_slave_send_num (GDM_SOP_WRITE_X_SERVERS, 0 /* bogus */);
-
-    if G_LIKELY (d->dsp != NULL) {
-	    Cursor xcursor;
-
-	    XSetInputFocus (d->dsp, PointerRoot,
-			    RevertToPointerRoot, CurrentTime);
-
-	    /* return left pointer */
-	    xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
-	    XDefineCursor (d->dsp,
-			   DefaultRootWindow (d->dsp),
-			   xcursor);
-	    XFreeCursor (d->dsp, xcursor);
-	    XSync (d->dsp, False);
-    }
-
-    /* Init the ~/.xsession-errors stuff */
-    d->xsession_errors_bytes = 0;
-    d->xsession_errors_fd = -1;
-    d->session_output_fd = -1;
-
-    logfilefd = open_xsession_errors (pwent,
-				      failsafe,
-				      home_dir,
-				      home_dir_ok);
-    if G_UNLIKELY (logfilefd < 0 ||
-		   pipe (logpipe) != 0) {
-	    if (logfilefd >= 0)
-		    VE_IGNORE_EINTR (close (logfilefd));
-	    logfilefd = -1;
-    }
-
-    /* don't completely rely on this, the user
-     * could reset time or do other crazy things */
-    session_start_time = time (NULL);
-
-#ifdef WITH_CONSOLE_KIT
-    ck_session_cookie = open_ck_session (pwent, d, session);
-#endif
-
-    /* Start user process */
-    gdm_sigchld_block_push ();
-    gdm_sigterm_block_push ();
-    pid = d->sesspid = fork ();
-    if (pid == 0)
-	    gdm_unset_signals ();
-    gdm_sigterm_block_pop ();
-    gdm_sigchld_block_pop ();
-
-    switch (pid) {
-	
-    case -1:
-	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Error forking user session"), "gdm_slave_session_start");
-	
-    case 0:
-	if G_LIKELY (logfilefd >= 0) {
-		VE_IGNORE_EINTR (close (logpipe[0]));
+	if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+		       seteuid (pwent->pw_uid) != 0) {
+		gdm_error ("Cannot set effective user/group id");
+		gdm_verify_cleanup (d);
+		session_started = FALSE;
+		return;
 	}
-	/* Never returns */
-	session_child_run (pwent,
-			   logpipe[1],
-			   failsafe,
-			   home_dir,
-			   home_dir_ok,
-#ifdef WITH_CONSOLE_KIT
-			   ck_session_cookie,
-#endif
-			   session,
-			   save_session,
 
-			   ((gdm_system_locale != (char *) NULL) &&
-			   ( (language == NULL) ||
-			   ((language != NULL) && (strcmp (language, "") == 0))) == TRUE ?
-			   gdm_system_locale : language),
-			   gnome_session,
-			   usrcfgok,
-			   savesess,
-			   savelang);
-	gdm_assert_not_reached ();
-	
-    default:
-	always_restart_greeter = FALSE;
-	if (!savelang && language && strcmp (usrlang, language)) {
-		if (gdm_system_locale) {
-			g_setenv ("LANG", gdm_system_locale, TRUE);
-			setlocale (LC_ALL, "");
-			g_unsetenv ("GDM_LANG");
-			/* for "GDM_LANG" */
-			gdm_clearenv_no_lang ();
-			gdm_saveenv ();
+	if G_UNLIKELY (pwent->pw_dir == NULL ||
+		       ! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
+		char *yesno_msg;
+		char *msg = g_strdup_printf (
+					     _("Your home directory is listed as: '%s' "
+					       "but it does not appear to exist.  "
+					       "Do you want to log in with the / (root) "
+					       "directory as your home directory? "
+					       "It is unlikely anything will work unless "
+					       "you use a failsafe session."),
+					     ve_sure_string (pwent->pw_dir));
+
+		/* Set euid, egid to root:gdm to manage user interaction */
+		seteuid (0);
+		setegid (gdm_daemon_config_get_gdmgid ());
+
+		gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
+			   "gdm_slave_session_start",
+			   login,
+			   ve_sure_string (pwent->pw_dir));
+
+		/* Check what the user wants to do */
+		yesno_msg = g_strdup_printf ("yesno_msg=%s", msg);
+		gdm_slave_send_string (GDM_SOP_SHOW_YESNO_DIALOG, yesno_msg);
+
+		g_free (yesno_msg);
+
+		if (strcmp (gdm_ack_response, "no") == 0) {
+			gdm_verify_cleanup (d);
+			session_started = FALSE;
+
+			g_free (msg);
+			g_free (gdm_ack_response);
+			gdm_ack_response = NULL;
+			return;
 		}
-		gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, DEFAULT_LANGUAGE);
+
+		g_free (msg);
+		g_free (gdm_ack_response);
+		gdm_ack_response = NULL;
+
+		/* Reset euid, egid back to user */
+		if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+			       seteuid (pwent->pw_uid) != 0) {
+			gdm_error ("Cannot set effective user/group id");
+			gdm_verify_cleanup (d);
+			session_started = FALSE;
+			return;
+		}
+
+		home_dir_ok = FALSE;
+		home_dir = "/";
+	} else {
+		home_dir_ok = TRUE;
+		home_dir = pwent->pw_dir;
 	}
-	break;
-    }
-    
-    /* this clears internal cache */
-    gdm_daemon_config_get_session_exec (NULL, FALSE);
 
-    if G_LIKELY (logfilefd >= 0)  {
-	    d->xsession_errors_fd = logfilefd;
-	    d->session_output_fd = logpipe[0];
-	    /* make the output read fd non-blocking */
-	    fcntl (d->session_output_fd, F_SETFL, O_NONBLOCK);
-	    VE_IGNORE_EINTR (close (logpipe[1]));
-    }
+	if G_LIKELY (home_dir_ok) {
+		/* Sanity check on ~user/.dmrc */
+		usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
+					   home_dir, ".dmrc", TRUE, FALSE,
+					   gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE),
+					   gdm_daemon_config_get_value_int (GDM_KEY_RELAX_PERM));
+	} else {
+		usrcfgok = FALSE;
+	}
 
-    /* We must be root for this, and we are, but just to make sure */
-    NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
-    /* Reset all the process limits, pam may have set some up for our process and that
-       is quite evil.  But pam is generally evil, so this is to be expected. */
-    gdm_reset_limits ();
+	if G_LIKELY (usrcfgok) {
+		gdm_daemon_config_get_user_session_lang (&usrsess, &usrlang, home_dir, &savesess);
+	} else {
+		/* This won't get displayed if the .dmrc file simply doesn't
+		 * exist since we pass absentok=TRUE when we call gdm_file_check
+		 */
+		gdm_errorgui_error_box (d,
+			       GTK_MESSAGE_WARNING,
+			       _("User's $HOME/.dmrc file is being ignored.  "
+				 "This prevents the default session "
+				 "and language from being saved.  File "
+				 "should be owned by user and have 644 "
+				 "permissions.  User's $HOME directory "
+				 "must be owned by user and not writable "
+				 "by other users."));
+		usrsess = g_strdup ("");
+		usrlang = g_strdup ("");
+	}
 
-    g_free (session);
-    g_free (save_session);
-    g_free (language);
-    g_free (usrlang);
-    g_free (gnome_session);
+	NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
 
-    gdm_slave_send_num (GDM_SOP_SESSPID, pid);
+	if (greet) {
+		tmp = gdm_ensure_extension (usrsess, ".desktop");
+		session = gdm_slave_greeter_ctl (GDM_SESS, tmp);
+		g_free (tmp);
 
-    gdm_sigchld_block_push ();
-    wp = slave_waitpid_setpid (d->sesspid);
-    gdm_sigchld_block_pop ();
+		if (session != NULL &&
+		    strcmp (session, GDM_RESPONSE_CANCEL) == 0) {
+			gdm_debug ("User canceled login");
+			gdm_verify_cleanup (d);
+			session_started = FALSE;
+			g_free (usrlang);
+			return;
+		}
 
-    slave_waitpid (wp);
+		language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
+		if (language != NULL &&
+		    strcmp (language, GDM_RESPONSE_CANCEL) == 0) {
+			gdm_debug ("User canceled login");
+			gdm_verify_cleanup (d);
+			session_started = FALSE;
+			g_free (usrlang);
+			return;
+		}
+	} else {
+		session = g_strdup (usrsess);
+		language = g_strdup (usrlang);
+	}
 
-    d->sesspid = 0;
+	tmp = gdm_strip_extension (session, ".desktop");
+	g_free (session);
+	session = tmp;
 
-    /* finish reading the session output if any of it is still there */
-    finish_session_output (TRUE);
+	if (ve_string_empty (session)) {
+		g_free (session);
+		session = find_a_session ();
+		if (session == NULL) {
+			/* we're running out of options */
+			session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
+		}
+	}
 
-    /* Now still as root make the system authfile readable by others,
-       and therefore by the gdm user */
-    VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0644));
+	if G_LIKELY (ve_string_empty (language)) {
+		g_free (language);
+		language = NULL;
+	}
 
-    end_time = time (NULL);
+	g_free (usrsess);
 
-    gdm_debug ("Session: start_time: %ld end_time: %ld",
-	       (long)session_start_time, (long)end_time);
+	gdm_debug ("Initial setting: session: '%s' language: '%s'\n",
+		   session, ve_sure_string (language));
 
-    /* 66 is a very magical number signifying failure in GDM */
-    if G_UNLIKELY ((d->last_sess_status != 66) &&
-		   (/* sanity */ end_time >= session_start_time) &&
-		   (end_time - 10 <= session_start_time) &&
-		   /* only if the X server still exist! */
-		   d->servpid > 1) {
-	    char *msg_string;
-	    char *error_msg =
+	/* save this session as the users session */
+	save_session = g_strdup (session);
+
+	if (greet) {
+		char *ret = gdm_slave_greeter_ctl (GDM_SSESS, "");
+		if ( ! ve_string_empty (ret))
+			savesess = TRUE;
+		g_free (ret);
+
+		ret = gdm_slave_greeter_ctl (GDM_SLANG, "");
+		if ( ! ve_string_empty (ret))
+			savelang = TRUE;
+		g_free (ret);
+
+		gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
+
+		gdm_slave_whack_greeter ();
+	}
+
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_KILL_INIT_CLIENTS))
+		gdm_server_whack_clients (d->dsp);
+
+	/* Now that we will set up the user authorization we will
+	   need to run session_stop to whack it */
+	session_started = TRUE;
+
+	/* Setup cookie -- We need this information during cleanup, thus
+	 * cookie handling is done before fork()ing */
+
+	if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+		       seteuid (pwent->pw_uid) != 0) {
+		gdm_error ("Cannot set effective user/group id");
+		gdm_slave_quick_exit (DISPLAY_REMANAGE);
+	}
+
+	authok = gdm_auth_user_add (d, pwent->pw_uid,
+				    /* Only pass the home_dir if
+				     * it was ok */
+				    home_dir_ok ? home_dir : NULL);
+
+	/* FIXME: this should be smarter and only do this on out-of-diskspace
+	 * errors */
+	if G_UNLIKELY ( ! authok && home_dir_ok) {
+		/* try wiping the .xsession-errors file (and perhaps other things)
+		   in an attempt to gain disk space */
+		if (wipe_xsession_errors (pwent, home_dir, home_dir_ok)) {
+			gdm_error ("Tried wiping some old user session errors files "
+				   "to make disk space and will try adding user auth "
+				   "files again");
+			/* Try again */
+			authok = gdm_auth_user_add (d, pwent->pw_uid,
+						    /* Only pass the home_dir if
+						     * it was ok */
+						    home_dir_ok ? home_dir : NULL);
+		}
+	}
+
+	NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
+
+	if G_UNLIKELY ( ! authok) {
+		gdm_debug ("gdm_slave_session_start: Auth not OK");
+
+		gdm_errorgui_error_box (d,
+			       GTK_MESSAGE_ERROR,
+			       _("GDM could not write to your authorization "
+				 "file.  This could mean that you are out of "
+				 "disk space or that your home directory could "
+				 "not be opened for writing.  In any case, it "
+				 "is not possible to log in.  Please contact "
+				 "your system administrator"));
+
+		gdm_slave_session_stop (FALSE /* run_post_session */,
+					FALSE /* no_shutdown_check */);
+
+		gdm_slave_quick_exit (DISPLAY_REMANAGE);
+	}
+
+	if G_UNLIKELY (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
+		       strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
+		       g_ascii_strcasecmp (session, "failsafe") == 0 /* hack */)
+		failsafe = TRUE;
+
+	if G_LIKELY ( ! failsafe) {
+		char *exec = gdm_daemon_config_get_session_exec (session, FALSE /* check_try_exec */);
+		if ( ! ve_string_empty (exec) &&
+		     strcmp (exec, "failsafe") == 0)
+			failsafe = TRUE;
+		g_free (exec);
+	}
+
+	/* Write out the Xservers file */
+	gdm_slave_send_num (GDM_SOP_WRITE_X_SERVERS, 0 /* bogus */);
+
+	if G_LIKELY (d->dsp != NULL) {
+		Cursor xcursor;
+
+		XSetInputFocus (d->dsp, PointerRoot,
+				RevertToPointerRoot, CurrentTime);
+
+		/* return left pointer */
+		xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
+		XDefineCursor (d->dsp,
+			       DefaultRootWindow (d->dsp),
+			       xcursor);
+		XFreeCursor (d->dsp, xcursor);
+		XSync (d->dsp, False);
+	}
+
+	/* Init the ~/.xsession-errors stuff */
+	d->xsession_errors_bytes = 0;
+	d->xsession_errors_fd = -1;
+	d->session_output_fd = -1;
+
+	logfilefd = open_xsession_errors (pwent,
+					  failsafe,
+					  home_dir,
+					  home_dir_ok);
+	if G_UNLIKELY (logfilefd < 0 ||
+		       pipe (logpipe) != 0) {
+		if (logfilefd >= 0)
+			VE_IGNORE_EINTR (close (logfilefd));
+		logfilefd = -1;
+	}
+
+	/* don't completely rely on this, the user
+	 * could reset time or do other crazy things */
+	session_start_time = time (NULL);
+
+#ifdef WITH_CONSOLE_KIT
+	ck_session_cookie = open_ck_session (pwent, d, session);
+#endif
+
+	g_debug ("Forking user session");
+
+	/* Start user process */
+	gdm_sigchld_block_push ();
+	gdm_sigterm_block_push ();
+	pid = d->sesspid = fork ();
+	if (pid == 0)
+		gdm_unset_signals ();
+	gdm_sigterm_block_pop ();
+	gdm_sigchld_block_pop ();
+
+	switch (pid) {
+
+	case -1:
+		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Error forking user session"), "gdm_slave_session_start");
+
+	case 0:
+		{
+			const char *gdm_system_locale;
+			const char *lang;
+			gboolean    has_language;
+
+			has_language = (language != NULL) && (language[0] != '\0');
+
+			gdm_system_locale = setlocale (LC_CTYPE, NULL);
+			if ((gdm_system_locale != NULL) && (!has_language)) {
+				lang = gdm_system_locale;
+			} else {
+				lang = language;
+			}
+
+			if G_LIKELY (logfilefd >= 0) {
+				VE_IGNORE_EINTR (close (logpipe[0]));
+			}
+			/* Never returns */
+			session_child_run (pwent,
+					   logpipe[1],
+					   failsafe,
+					   home_dir,
+					   home_dir_ok,
+#ifdef WITH_CONSOLE_KIT
+					   ck_session_cookie,
+#endif
+					   session,
+					   save_session,
+					   lang,
+					   gnome_session,
+					   usrcfgok,
+					   savesess,
+					   savelang);
+			g_assert_not_reached ();
+		}
+
+	default:
+		always_restart_greeter = FALSE;
+		if (!savelang && language && strcmp (usrlang, language)) {
+			const char *gdm_system_locale;
+
+			gdm_system_locale = setlocale (LC_CTYPE, NULL);
+
+			if (gdm_system_locale != NULL) {
+				g_setenv ("LANG", gdm_system_locale, TRUE);
+				setlocale (LC_ALL, "");
+				g_unsetenv ("GDM_LANG");
+				/* for "GDM_LANG" */
+				gdm_clearenv_no_lang ();
+				gdm_saveenv ();
+			}
+			gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, DEFAULT_LANGUAGE);
+		}
+		break;
+	}
+
+	/* this clears internal cache */
+	gdm_daemon_config_get_session_exec (NULL, FALSE);
+
+	if G_LIKELY (logfilefd >= 0)  {
+		d->xsession_errors_fd = logfilefd;
+		d->session_output_fd = logpipe[0];
+		/* make the output read fd non-blocking */
+		fcntl (d->session_output_fd, F_SETFL, O_NONBLOCK);
+		VE_IGNORE_EINTR (close (logpipe[1]));
+	}
+
+	/* We must be root for this, and we are, but just to make sure */
+	NEVER_FAILS_root_set_euid_egid (0, gdm_daemon_config_get_gdmgid ());
+	/* Reset all the process limits, pam may have set some up for our process and that
+	   is quite evil.  But pam is generally evil, so this is to be expected. */
+	gdm_reset_limits ();
+
+	g_free (session);
+	g_free (save_session);
+	g_free (language);
+	g_free (gnome_session);
+
+	gdm_slave_send_num (GDM_SOP_SESSPID, pid);
+
+	gdm_sigchld_block_push ();
+	wp = slave_waitpid_setpid (d->sesspid);
+	gdm_sigchld_block_pop ();
+
+	slave_waitpid (wp);
+
+	d->sesspid = 0;
+
+	/* finish reading the session output if any of it is still there */
+	finish_session_output (TRUE);
+
+	/* Now still as root make the system authfile readable by others,
+	   and therefore by the gdm user */
+	VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0644));
+
+	end_time = time (NULL);
+
+	gdm_debug ("Session: start_time: %ld end_time: %ld",
+		   (long)session_start_time, (long)end_time);
+
+	/* 66 is a very magical number signifying failure in GDM */
+	if G_UNLIKELY ((d->last_sess_status != 66) &&
+		       (/* sanity */ end_time >= session_start_time) &&
+		       (end_time - 10 <= session_start_time) &&
+		       /* only if the X server still exist! */
+		       d->servpid > 1) {
+		char *msg_string;
+		char *error_msg =
 			_("Your session only lasted less than "
 			  "10 seconds.  If you have not logged out "
 			  "yourself, this could mean that there is "
@@ -4485,34 +4518,34 @@ gdm_slave_session_start (void)
 			  "one of the failsafe sessions to see if you "
 			  "can fix this problem.");
 
-	    /* FIXME: perhaps do some checking to display a better error,
-	     * such as gnome-session missing and such things. */
-	    gdm_debug ("Session less than 10 seconds!");
-	    msg_string = g_strdup_printf ("type=%d$$error_msg=%s$$details_label=%s$$details_file=%s$$uid=%d$$gid=%d",
-					  GTK_MESSAGE_WARNING,error_msg, 
-					  (d->xsession_errors_filename != NULL) ?
-					  _("View details (~/.xsession-errors file)") :
-					  NULL,
-					  d->xsession_errors_filename,
-					  0, 0);
+		/* FIXME: perhaps do some checking to display a better error,
+		 * such as gnome-session missing and such things. */
+		gdm_debug ("Session less than 10 seconds!");
+		msg_string = g_strdup_printf ("type=%d$$error_msg=%s$$details_label=%s$$details_file=%s$$uid=%d$$gid=%d",
+					      GTK_MESSAGE_WARNING,error_msg, 
+					      (d->xsession_errors_filename != NULL) ?
+					      _("View details (~/.xsession-errors file)") :
+					      NULL,
+					      d->xsession_errors_filename,
+					      0, 0);
 
-	    gdm_slave_send_string (GDM_SOP_SHOW_ERROR_DIALOG, msg_string);
+		gdm_slave_send_string (GDM_SOP_SHOW_ERROR_DIALOG, msg_string);
 
-	    g_free (msg_string);
+		g_free (msg_string);
 
-    }
+	}
 
 #ifdef WITH_CONSOLE_KIT
-    if (ck_session_cookie != NULL) {
-	    close_ck_session (ck_session_cookie);
-	    g_free (ck_session_cookie);
-    }
+	if (ck_session_cookie != NULL) {
+		close_ck_session (ck_session_cookie);
+		g_free (ck_session_cookie);
+	}
 #endif
 
-    gdm_slave_session_stop (pid != 0 /* run_post_session */,
-			    FALSE /* no_shutdown_check */);
+	gdm_slave_session_stop (pid != 0 /* run_post_session */,
+				FALSE /* no_shutdown_check */);
 
-    gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
+	gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
 }
 
 
@@ -4521,137 +4554,129 @@ static void
 gdm_slave_session_stop (gboolean run_post_session,
 			gboolean no_shutdown_check)
 {
-    struct passwd *pwent;
-    char *x_servers_file;
-    char *local_login;
+	struct passwd *pwent;
+	char *x_servers_file;
+	char *local_login;
 
-    in_session_stop++;
+	in_session_stop++;
 
-    session_started = FALSE;
+	session_started = FALSE;
 
-    local_login = login;
-    login = NULL;
+	local_login = login;
+	login = NULL;
 
-    /* don't use NEVER_FAILS_ here this can be called from places
-       kind of exiting and it's ok if this doesn't work (when shouldn't
-       it work anyway? */
-    seteuid (0);
-    setegid (0);
+	/* don't use NEVER_FAILS_ here this can be called from places
+	   kind of exiting and it's ok if this doesn't work (when shouldn't
+	   it work anyway? */
+	seteuid (0);
+	setegid (0);
 
-    gdm_slave_send_num (GDM_SOP_SESSPID, 0);
+	gdm_slave_send_num (GDM_SOP_SESSPID, 0);
 
-    /* Now still as root make the system authfile not readable by others,
-       and therefore not by the gdm user */
-    if (GDM_AUTHFILE (d) != NULL) {
-	    VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0640));
-    }
+	/* Now still as root make the system authfile not readable by others,
+	   and therefore not by the gdm user */
+	if (GDM_AUTHFILE (d) != NULL) {
+		VE_IGNORE_EINTR (g_chmod (GDM_AUTHFILE (d), 0640));
+	}
 
-    gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
+	gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 
-    /* Note we use the info in the structure here since if we get passed
-     * a 0 that means the process is already dead.
-     * FIXME: Maybe we should waitpid here, note make sure this will
-     * not create a hang! */
-    gdm_sigchld_block_push ();
-    if (d->sesspid > 1)
-	    kill (- (d->sesspid), SIGTERM);
-    gdm_sigchld_block_pop ();
+	/* Note we use the info in the structure here since if we get passed
+	 * a 0 that means the process is already dead.
+	 * FIXME: Maybe we should waitpid here, note make sure this will
+	 * not create a hang! */
+	gdm_sigchld_block_push ();
+	if (d->sesspid > 1)
+		kill (- (d->sesspid), SIGTERM);
+	gdm_sigchld_block_pop ();
 
-    finish_session_output (run_post_session /* do_read */);
-    
-    if (local_login == NULL)
-	    pwent = NULL;
-    else
-	    pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
+	finish_session_output (run_post_session /* do_read */);
 
-    x_servers_file = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
-					d->name, ".Xservers");
+	if (local_login == NULL)
+		pwent = NULL;
+	else
+		pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
 
-    /* if there was a session that ran, run the PostSession script */
-    if (run_post_session) {
-	    /* Execute post session script */
-	    gdm_debug ("gdm_slave_session_stop: Running post session script");
-	    gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_POSTSESSION), local_login, pwent,
-				   FALSE /* pass_stdout */);
-    }
+	x_servers_file = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
+					    d->name, ".Xservers");
 
-    VE_IGNORE_EINTR (g_unlink (x_servers_file));
-    g_free (x_servers_file);
+	/* if there was a session that ran, run the PostSession script */
+	if (run_post_session) {
+		/* Execute post session script */
+		gdm_debug ("gdm_slave_session_stop: Running post session script");
+		gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_POSTSESSION), local_login, pwent,
+				       FALSE /* pass_stdout */);
+	}
 
-    g_free (local_login);
+	VE_IGNORE_EINTR (g_unlink (x_servers_file));
+	g_free (x_servers_file);
 
-    if (pwent != NULL) {
-	    seteuid (0); /* paranoia */
-	    /* Remove display from ~user/.Xauthority */
-	    if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
-			 seteuid (pwent->pw_uid) == 0) {
-		    gdm_auth_user_remove (d, pwent->pw_uid);
-	    }
+	g_free (local_login);
 
-	    /* don't use NEVER_FAILS_ here this can be called from places
-	       kind of exiting and it's ok if this doesn't work (when shouldn't
-	       it work anyway? */
-	    seteuid (0);
-	    setegid (0);
-    }
+	if (pwent != NULL) {
+		seteuid (0); /* paranoia */
+		/* Remove display from ~user/.Xauthority */
+		if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
+			     seteuid (pwent->pw_uid) == 0) {
+			gdm_auth_user_remove (d, pwent->pw_uid);
+		}
 
-    logged_in_uid = -1;
-    logged_in_gid = -1;
+		/* don't use NEVER_FAILS_ here this can be called from places
+		   kind of exiting and it's ok if this doesn't work (when shouldn't
+		   it work anyway? */
+		seteuid (0);
+		setegid (0);
+	}
 
-    /* things are going to be killed, so ignore errors */
-    XSetErrorHandler (ignore_xerror_handler);
+	logged_in_uid = -1;
+	logged_in_gid = -1;
 
-    gdm_verify_cleanup (d);
+	/* things are going to be killed, so ignore errors */
+	XSetErrorHandler (ignore_xerror_handler);
 
-    in_session_stop --;
+	gdm_verify_cleanup (d);
 
-    if (need_to_quit_after_session_stop) {
-	    gdm_debug ("gdm_slave_session_stop: Final cleanup");
+	in_session_stop --;
 
-	    gdm_slave_quick_exit (exit_code_to_use);
-    }
+	if (need_to_quit_after_session_stop) {
+		gdm_debug ("gdm_slave_session_stop: Final cleanup");
+
+		gdm_slave_quick_exit (exit_code_to_use);
+	}
 
 #ifdef __linux__
-    /* If on Linux and the runlevel is 0 or 6 and not the runlevel that
-       we were started in, then we are restarting or halting the machine.
-       Probably the user selected halt or restart from the logout
-       menu.  In this case we can really just sleep for a few seconds and
-       basically wait to be killed.  I will set the default for 30 seconds
-       and let people yell at me if this breaks something.  It shouldn't.
-       In fact it should fix things so that the login screen is not brought
-       up again and then whacked.  Waiting is safer then DISPLAY_ABORT,
-       since if we really do get this wrong, then at the worst case the
-       user will wait for a few moments. */
-    if ( ! need_to_quit_after_session_stop &&
-	 ! no_shutdown_check &&
-	g_access ("/sbin/runlevel", X_OK) == 0) {
-	    char ign;
-	    int rnl;
-	    FILE *fp = popen ("/sbin/runlevel", "r");
-	    if (fp != NULL &&
-		fscanf (fp, "%c %d", &ign, &rnl) == 2 &&
-		(rnl == 0 || rnl == 6) &&
-		rnl != gdm_normal_runlevel) {
-		    /* this is a stupid loop, but we may be getting signals,
-		       so we don't want to just do sleep (30) */
-		    time_t c = time (NULL);
-		    gdm_info (_("GDM detected a halt or restart "
-				"in progress."));
-		    pclose (fp);
-		    while (c + 30 >= time (NULL)) {
-			    struct timeval tv;
-			    /* Wait 30 seconds. */
-			    tv.tv_sec = 30;
-			    tv.tv_usec = 0;
-			    select (0, NULL, NULL, NULL, &tv);
-			    /* don't want to use sleep since we're using alarm
-			       for pinging */
-		    }
-		    /* hmm, didn't get TERM, weird */
-	    } else if (fp != NULL) {
-		    pclose (fp);
-	    }
-    }
+	/* If on Linux and the runlevel is 0 or 6 and not the runlevel that
+	   we were started in, then we are restarting or halting the machine.
+	   Probably the user selected halt or restart from the logout
+	   menu.  In this case we can really just sleep for a few seconds and
+	   basically wait to be killed.  I will set the default for 30 seconds
+	   and let people yell at me if this breaks something.  It shouldn't.
+	   In fact it should fix things so that the login screen is not brought
+	   up again and then whacked.  Waiting is safer then DISPLAY_ABORT,
+	   since if we really do get this wrong, then at the worst case the
+	   user will wait for a few moments. */
+	if ( ! need_to_quit_after_session_stop &&
+	     ! no_shutdown_check &&
+	     g_access ("/sbin/runlevel", X_OK) == 0) {
+		int rnl = get_runlevel ();
+		if ((rnl == 0 || rnl == 6) && rnl != gdm_normal_runlevel) {
+			/* this is a stupid loop, but we may be getting signals,
+			   so we don't want to just do sleep (30) */
+			time_t c = time (NULL);
+			gdm_info (_("GDM detected a halt or restart "
+				    "in progress."));
+			while (c + 30 >= time (NULL)) {
+				struct timeval tv;
+				/* Wait 30 seconds. */
+				tv.tv_sec = 30;
+				tv.tv_usec = 0;
+				select (0, NULL, NULL, NULL, &tv);
+				/* don't want to use sleep since we're using alarm
+				   for pinging */
+			}
+			/* hmm, didn't get TERM, weird */
+		}
+	}
 #endif /* __linux__ */
 }
 
@@ -4746,134 +4771,134 @@ gdm_slave_alrm_handler (int sig)
 }
 
 /* Called on every SIGCHLD */
-void 
+void
 gdm_slave_child_handler (int sig)
 {
-    gint status;
-    pid_t pid;
-    uid_t old;
+	gint status;
+	pid_t pid;
+	uid_t old;
 
-    if G_UNLIKELY (already_in_slave_start_jmp)
-	    return;
+	if G_UNLIKELY (already_in_slave_start_jmp)
+		return;
 
-    gdm_in_signal++;
+	gdm_in_signal++;
 
-    old = geteuid ();
-    if (old != 0)
-	    seteuid (0);
-    
-    while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
-        GSList *li;
+	old = geteuid ();
+	if (old != 0)
+		seteuid (0);
 
-	for (li = slave_waitpids; li != NULL; li = li->next) {
-		GdmWaitPid *wp = li->data;
-		if (wp->pid == pid) {
-			wp->pid = -1;
-			if (slave_waitpid_w >= 0) {
-				VE_IGNORE_EINTR (write (slave_waitpid_w, "!", 1));
+	while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
+		GSList *li;
+
+		for (li = slave_waitpids; li != NULL; li = li->next) {
+			GdmWaitPid *wp = li->data;
+			if (wp->pid == pid) {
+				wp->pid = -1;
+				if (slave_waitpid_w >= 0) {
+					VE_IGNORE_EINTR (write (slave_waitpid_w, "!", 1));
+				}
 			}
 		}
-	}
-	
-	if (pid == d->greetpid && greet) {
-		if (WIFEXITED (status) &&
-		    WEXITSTATUS (status) == DISPLAY_RESTARTGREETER) {
-			/* FIXME: shouldn't do this from
-			   a signal handler */
-			/*gdm_slave_desensitize_config ();*/
 
-			greet = FALSE;
-			d->greetpid = 0;
+		if (pid == d->greetpid && greet) {
+			if (WIFEXITED (status) &&
+			    WEXITSTATUS (status) == DISPLAY_RESTARTGREETER) {
+				/* FIXME: shouldn't do this from
+				   a signal handler */
+				/*gdm_slave_desensitize_config ();*/
+
+				greet = FALSE;
+				d->greetpid = 0;
+				whack_greeter_fds ();
+				gdm_slave_send_num (GDM_SOP_GREETPID, 0);
+
+				do_restart_greeter = TRUE;
+				if (restart_greeter_now) {
+					slave_waitpid_notify ();
+				} else {
+					interrupted = TRUE;
+				}
+				continue;
+			}
+
 			whack_greeter_fds ();
-			gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
-			do_restart_greeter = TRUE;
-			if (restart_greeter_now) {
-				slave_waitpid_notify ();
-			} else {
-				interrupted = TRUE;
-			}
-			continue;
-		}
-
-		whack_greeter_fds ();
-
-		/* if greet is TRUE, then the greeter died outside of our
-		 * control really, so clean up and die, something is wrong
-		 * The greeter is only allowed to pass back these
-		 * exit codes, else we'll just remanage */
-		if (WIFEXITED (status) &&
-		    (WEXITSTATUS (status) == DISPLAY_ABORT ||
-		     WEXITSTATUS (status) == DISPLAY_REBOOT ||
-		     WEXITSTATUS (status) == DISPLAY_HALT ||
-		     WEXITSTATUS (status) == DISPLAY_SUSPEND ||
-		     WEXITSTATUS (status) == DISPLAY_RUN_CHOOSER ||
-		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM ||
-		     WEXITSTATUS (status) == DISPLAY_GREETERFAILED)) {
-			exit_code_to_use = WEXITSTATUS (status);
-			SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
-		} else {
-			if (WIFSIGNALED (status) &&
-			    (WTERMSIG (status) == SIGSEGV ||
-			     WTERMSIG (status) == SIGABRT ||
-			     WTERMSIG (status) == SIGPIPE ||
-			     WTERMSIG (status) == SIGBUS)) {
-				exit_code_to_use = DISPLAY_GREETERFAILED;
+			/* if greet is TRUE, then the greeter died outside of our
+			 * control really, so clean up and die, something is wrong
+			 * The greeter is only allowed to pass back these
+			 * exit codes, else we'll just remanage */
+			if (WIFEXITED (status) &&
+			    (WEXITSTATUS (status) == DISPLAY_ABORT ||
+			     WEXITSTATUS (status) == DISPLAY_REBOOT ||
+			     WEXITSTATUS (status) == DISPLAY_HALT ||
+			     WEXITSTATUS (status) == DISPLAY_SUSPEND ||
+			     WEXITSTATUS (status) == DISPLAY_RUN_CHOOSER ||
+			     WEXITSTATUS (status) == DISPLAY_RESTARTGDM ||
+			     WEXITSTATUS (status) == DISPLAY_GREETERFAILED)) {
+				exit_code_to_use = WEXITSTATUS (status);
 				SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 			} else {
-				/* weird error return, interpret as failure */
-				if (WIFEXITED (status) &&
-				    WEXITSTATUS (status) == 1)
+				if (WIFSIGNALED (status) &&
+				    (WTERMSIG (status) == SIGSEGV ||
+				     WTERMSIG (status) == SIGABRT ||
+				     WTERMSIG (status) == SIGPIPE ||
+				     WTERMSIG (status) == SIGBUS)) {
 					exit_code_to_use = DISPLAY_GREETERFAILED;
-				SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+					SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+				} else {
+					/* weird error return, interpret as failure */
+					if (WIFEXITED (status) &&
+					    WEXITSTATUS (status) == 1)
+						exit_code_to_use = DISPLAY_GREETERFAILED;
+					SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+				}
 			}
-		}
-	} else if (pid != 0 && pid == d->sesspid) {
-		d->sesspid = 0;
-		if (WIFEXITED (status))
-			d->last_sess_status = WEXITSTATUS (status);
-		else
-			d->last_sess_status = -1;
-	} else if (pid != 0 && pid == d->chooserpid) {
-		d->chooserpid = 0;
-	} else if (pid != 0 && pid == d->servpid) {
-		if (d->servstat == SERVER_RUNNING)
-			gdm_server_whack_lockfile (d);
-		d->servstat = SERVER_DEAD;
-		d->servpid = 0;
-		gdm_server_wipe_cookies (d);
-		gdm_slave_whack_temp_auth_file ();
+		} else if (pid != 0 && pid == d->sesspid) {
+			d->sesspid = 0;
+			if (WIFEXITED (status))
+				d->last_sess_status = WEXITSTATUS (status);
+			else
+				d->last_sess_status = -1;
+		} else if (pid != 0 && pid == d->chooserpid) {
+			d->chooserpid = 0;
+		} else if (pid != 0 && pid == d->servpid) {
+			if (d->servstat == SERVER_RUNNING)
+				gdm_server_whack_lockfile (d);
+			d->servstat = SERVER_DEAD;
+			d->servpid = 0;
+			gdm_server_wipe_cookies (d);
+			gdm_slave_whack_temp_auth_file ();
 
-		gdm_slave_send_num (GDM_SOP_XPID, 0);
+			gdm_slave_send_num (GDM_SOP_XPID, 0);
 
-		/* whack the session good */
-		if (d->sesspid > 1) {
-			gdm_slave_send_num (GDM_SOP_SESSPID, 0);
-			kill (- (d->sesspid), SIGTERM);
-		}
-		if (d->greetpid > 1) {
-			gdm_slave_send_num (GDM_SOP_GREETPID, 0);
-			kill (d->greetpid, SIGTERM);
-		}
-		if (d->chooserpid > 1) {
-			gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
-			kill (d->chooserpid, SIGTERM);
-		}
+			/* whack the session good */
+			if (d->sesspid > 1) {
+				gdm_slave_send_num (GDM_SOP_SESSPID, 0);
+				kill (- (d->sesspid), SIGTERM);
+			}
+			if (d->greetpid > 1) {
+				gdm_slave_send_num (GDM_SOP_GREETPID, 0);
+				kill (d->greetpid, SIGTERM);
+			}
+			if (d->chooserpid > 1) {
+				gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
+				kill (d->chooserpid, SIGTERM);
+			}
 
-		/* just in case we restart again wait at least
-		   one sec to avoid races */
-		if (d->sleep_before_run < 1)
-			d->sleep_before_run = 1;
-	} else if (pid == extra_process) {
-		/* an extra process died, yay! */
-		extra_process = 0;
-	    	extra_status = status;
+			/* just in case we restart again wait at least
+			   one sec to avoid races */
+			if (d->sleep_before_run < 1)
+				d->sleep_before_run = 1;
+		} else if (pid == extra_process) {
+			/* an extra process died, yay! */
+			extra_process = 0;
+			extra_status = status;
+		}
 	}
-    }
-    if (old != 0)
-	    seteuid (old);
+	if (old != 0)
+		seteuid (old);
 
-    gdm_in_signal--;
+	gdm_in_signal--;
 }
 
 static void
@@ -4949,7 +4974,7 @@ gdm_slave_handle_usr2_message (void)
 				if (s[2] == '0') {
 					gdm_ack_response =  g_strdup ("no");
 				} else {
-				gdm_ack_response =  g_strdup ("yes");
+					gdm_ack_response =  g_strdup ("yes");
 				}
 			} else if (s[1] == GDM_SLAVE_NOTIFY_ASKBUTTONS_RESPONSE) {
 				gdm_ack_response = g_strdup (&s[2]);
@@ -4984,8 +5009,8 @@ gdm_slave_usr2_handler (int sig)
 static gint
 gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 {
-    gdm_debug ("gdm_slave_xerror_handler: X error - display doesn't respond");
-    return (0);
+	gdm_debug ("gdm_slave_xerror_handler: X error - display doesn't respond");
+	return (0);
 }
 
 /* We usually respond to fatal errors by restarting the display */
@@ -5054,7 +5079,7 @@ check_for_interruption (const char *msg)
 			 * it is allowed for this display (it's only allowed
 			 * for the first local display) and if it's set up
 			 * correctly */
-			if ((d->attached || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN)) 
+			if ((d->attached || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))
                             && d->timed_login_ok &&
 			    ! ve_string_empty (ParsedTimedLogin) &&
                             strcmp (ParsedTimedLogin, gdm_root_user ()) != 0 &&
@@ -5075,8 +5100,8 @@ check_for_interruption (const char *msg)
 			    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
 			    	gchar *msg = g_strdup_printf ("%s %ld", 
-					GDM_SOP_SUSPEND_MACHINE,
-					(long)getpid ());
+							      GDM_SOP_SUSPEND_MACHINE,
+							      (long)getpid ());
 
 				gdm_slave_send (msg, FALSE /* wait_for_ack */);
 				g_free (msg);
@@ -5101,8 +5126,8 @@ check_for_interruption (const char *msg)
 			if (d->attached &&
 			    ! ve_string_empty (&msg[2])) {
 				gchar *message = g_strdup_printf ("%s %ld %s", 
-					GDM_SOP_CUSTOM_CMD,
-					(long)getpid (), &msg[2]);
+								  GDM_SOP_CUSTOM_CMD,
+								  (long)getpid (), &msg[2]);
 
 				gdm_slave_send (message, TRUE);
 				g_free (message);
@@ -5117,12 +5142,17 @@ check_for_interruption (const char *msg)
 			return TRUE;
 		case GDM_INTERRUPT_SELECT_LANG:
 			if (msg + 2) {
-				gchar *locale = (gchar*)(msg + 3);
+				const char *locale;
+				const char *gdm_system_locale;
+
+				locale = (gchar*)(msg + 3);
+				gdm_system_locale = setlocale (LC_CTYPE, NULL);
 
 				always_restart_greeter = (gboolean)(*(msg + 2));
-				gdm_clearenv ();
-				if (!strcmp (locale, DEFAULT_LANGUAGE))
+				ve_clearenv ();
+				if (!strcmp (locale, DEFAULT_LANGUAGE)) {
 					locale = gdm_system_locale;
+				}
 				g_setenv ("GDM_LANG", locale, TRUE);
 				g_setenv ("LANG", locale, TRUE);
 				g_unsetenv ("LC_ALL");
@@ -5149,54 +5179,54 @@ check_for_interruption (const char *msg)
 }
 
 
-char * 
+char *
 gdm_slave_greeter_ctl (char cmd, const char *str)
 {
-    char *buf = NULL;
-    int c;
+	char *buf = NULL;
+	int c;
 
-    /* There is no spoon^H^H^H^H^Hgreeter */
-    if G_UNLIKELY ( ! greet)
-	    return NULL;
+	/* There is no spoon^H^H^H^H^Hgreeter */
+	if G_UNLIKELY ( ! greet)
+		return NULL;
 
-    check_notifies_now ();
+	check_notifies_now ();
 
-    if ( ! ve_string_empty (str)) {
-	    gdm_fdprintf (greeter_fd_out, "%c%c%s\n", STX, cmd, str);
-    } else {
-	    gdm_fdprintf (greeter_fd_out, "%c%c\n", STX, cmd);
-    }
+	if ( ! ve_string_empty (str)) {
+		gdm_fdprintf (greeter_fd_out, "%c%c%s\n", STX, cmd, str);
+	} else {
+		gdm_fdprintf (greeter_fd_out, "%c%c\n", STX, cmd);
+	}
 
 #if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
-    /* let the other process (greeter) do its stuff */
-    sched_yield ();
+	/* let the other process (greeter) do its stuff */
+	sched_yield ();
 #endif
 
-    do {
-      g_free (buf);
-      buf = NULL;
-      /* Skip random junk that might have accumulated */
-      do {
-	    c = gdm_fdgetc (greeter_fd_in);
-      } while (c != EOF && c != STX);
-    
-      if (c == EOF ||
-	  (buf = gdm_fdgets (greeter_fd_in)) == NULL) {
-	      interrupted = TRUE;
-	      /* things don't seem well with the greeter, it probably died */
-	      return NULL;
-      }
-    } while (check_for_interruption (buf) && ! interrupted);
+	do {
+		g_free (buf);
+		buf = NULL;
+		/* Skip random junk that might have accumulated */
+		do {
+			c = gdm_fdgetc (greeter_fd_in);
+		} while (c != EOF && c != STX);
 
-    /* user responses take kind of random amount of time */
-    gdm_random_tick ();
+		if (c == EOF ||
+		    (buf = gdm_fdgets (greeter_fd_in)) == NULL) {
+			interrupted = TRUE;
+			/* things don't seem well with the greeter, it probably died */
+			return NULL;
+		}
+	} while (check_for_interruption (buf) && ! interrupted);
 
-    if ( ! ve_string_empty (buf)) {
-	    return buf;
-    } else {
-	    g_free (buf);
-	    return NULL;
-    }
+	/* user responses take kind of random amount of time */
+	gdm_random_tick ();
+
+	if ( ! ve_string_empty (buf)) {
+		return buf;
+	} else {
+		g_free (buf);
+		return NULL;
+	}
 }
 
 void
@@ -5205,92 +5235,92 @@ gdm_slave_greeter_ctl_no_ret (char cmd, const char *str)
 	g_free (gdm_slave_greeter_ctl (cmd, str));
 }
 
-static void 
+static void
 gdm_slave_quick_exit (gint status)
 {
-    /* just for paranoia's sake */
-    /* don't use NEVER_FAILS_ here this can be called from places
-       kind of exiting and it's ok if this doesn't work (when shouldn't
-       it work anyway? */
-    seteuid (0);
-    setegid (0);
+	/* just for paranoia's sake */
+	/* don't use NEVER_FAILS_ here this can be called from places
+	   kind of exiting and it's ok if this doesn't work (when shouldn't
+	   it work anyway? */
+	seteuid (0);
+	setegid (0);
 
-    if (d != NULL) {
-	    gdm_debug ("gdm_slave_quick_exit: Will kill everything from the display");
+	if (d != NULL) {
+		gdm_debug ("gdm_slave_quick_exit: Will kill everything from the display");
 
-	    /* just in case we do get the XIOError,
-	       don't run session_stop since we've
-	       requested a quick exit */
-	    session_started = FALSE;
+		/* just in case we do get the XIOError,
+		   don't run session_stop since we've
+		   requested a quick exit */
+		session_started = FALSE;
 
-	    /* No need to send the PIDS to the daemon
-	     * since we'll just exit cleanly */
+		/* No need to send the PIDS to the daemon
+		 * since we'll just exit cleanly */
 
-	    /* Push and never pop */
-	    gdm_sigchld_block_push ();
+		/* Push and never pop */
+		gdm_sigchld_block_push ();
 
-	    /* Kill children where applicable */
-	    if (d->greetpid > 1)
-		    kill (d->greetpid, SIGTERM);
-	    d->greetpid = 0;
+		/* Kill children where applicable */
+		if (d->greetpid > 1)
+			kill (d->greetpid, SIGTERM);
+		d->greetpid = 0;
 
-	    if (d->chooserpid > 1)
-		    kill (d->chooserpid, SIGTERM);
-	    d->chooserpid = 0;
+		if (d->chooserpid > 1)
+			kill (d->chooserpid, SIGTERM);
+		d->chooserpid = 0;
 
-	    if (d->sesspid > 1)
-		    kill (-(d->sesspid), SIGTERM);
-	    d->sesspid = 0;
+		if (d->sesspid > 1)
+			kill (-(d->sesspid), SIGTERM);
+		d->sesspid = 0;
 
-	    if (extra_process > 1)
-		    kill (-(extra_process), SIGTERM);
-	    extra_process = 0;
+		if (extra_process > 1)
+			kill (-(extra_process), SIGTERM);
+		extra_process = 0;
 
-	    gdm_verify_cleanup (d);
-	    gdm_server_stop (d);
+		gdm_verify_cleanup (d);
+		gdm_server_stop (d);
 
-	    if (d->servpid > 1)
-		    kill (d->servpid, SIGTERM);
-	    d->servpid = 0;
+		if (d->servpid > 1)
+			kill (d->servpid, SIGTERM);
+		d->servpid = 0;
 
-	    gdm_debug ("gdm_slave_quick_exit: Killed everything from the display");
-    }
+		gdm_debug ("gdm_slave_quick_exit: Killed everything from the display");
+	}
 
-    _exit (status);
+	_exit (status);
 }
 
-static void 
+static void
 gdm_slave_exit (gint status, const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-    
-    gdm_error ("%s", s);
-    
-    g_free (s);
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
 
-    gdm_slave_quick_exit (status);
+	gdm_error ("%s", s);
+
+	g_free (s);
+
+	gdm_slave_quick_exit (status);
 }
 
-static void 
+static void
 gdm_child_exit (gint status, const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-    
-    syslog (LOG_ERR, "%s", s);
-    
-    g_free (s);
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
 
-    _exit (status);
+	g_error ("%s", s);
+
+	g_free (s);
+
+	_exit (status);
 }
 
 void
@@ -5333,7 +5363,7 @@ set_xnest_parent_stuff (void)
 		g_setenv ("GDM_PARENT_DISPLAY", d->parent_disp, TRUE);
 		if (d->parent_temp_auth_file != NULL) {
 			g_setenv ("GDM_PARENT_XAUTHORITY",
-				      d->parent_temp_auth_file, TRUE);
+				  d->parent_temp_auth_file, TRUE);
 			g_free (d->parent_temp_auth_file);
 			d->parent_temp_auth_file = NULL;
 		}
@@ -5341,164 +5371,169 @@ set_xnest_parent_stuff (void)
 }
 
 static gint
-gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
-		       struct passwd *pwent, gboolean pass_stdout)
+gdm_slave_exec_script (GdmDisplay *d,
+		       const gchar *dir,
+		       const char *login,
+		       struct passwd *pwent,
+		       gboolean pass_stdout)
 {
-    pid_t pid;
-    char *script;
-    gchar **argv;
-    gint status;
-    char *x_servers_file;
+	pid_t pid;
+	char *script;
+	gchar **argv;
+	gint status;
+	char *x_servers_file;
 
-    if G_UNLIKELY (!d || ve_string_empty (dir))
-	return EXIT_SUCCESS;
+	if G_UNLIKELY (!d || ve_string_empty (dir))
+		return EXIT_SUCCESS;
 
-    script = g_build_filename (dir, d->name, NULL);
-    if (g_access (script, R_OK|X_OK) != 0) {
-	    g_free (script);
-	    script = NULL;
-    }
-    if (script == NULL &&
-	! ve_string_empty (d->hostname)) {
-	    script = g_build_filename (dir, d->hostname, NULL);
-	    if (g_access (script, R_OK|X_OK) != 0) {
-		    g_free (script);
-		    script = NULL;
-	    }
-    }
-    if (script == NULL &&
-	SERVER_IS_XDMCP (d)) {
-	    script = g_build_filename (dir, "XDMCP", NULL);
-	    if (g_access (script, R_OK|X_OK) != 0) {
-		    g_free (script);
-		    script = NULL;
-	    }
-    }
-    if (script == NULL &&
-	SERVER_IS_FLEXI (d)) {
-	    script = g_build_filename (dir, "Flexi", NULL);
-	    if (g_access (script, R_OK|X_OK) != 0) {
-		    g_free (script);
-		    script = NULL;
-	    }
-    }
-    if (script == NULL) {
-	    script = g_build_filename (dir, "Default", NULL);
-	    if (g_access (script, R_OK|X_OK) != 0) {
-		    g_free (script);
-		    script = NULL;
-	    }
-    }
-    
-    if (script == NULL) {
-	    return EXIT_SUCCESS;
-    }
-
-    create_temp_auth_file ();
-
-    pid = gdm_fork_extra ();
-
-    switch (pid) {
-	    
-    case 0:
-        closelog ();
-
-	VE_IGNORE_EINTR (close (0));
-	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-
-	if ( ! pass_stdout) {
-		VE_IGNORE_EINTR (close (1));
-		VE_IGNORE_EINTR (close (2));
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+	script = g_build_filename (dir, d->name, NULL);
+	if (g_access (script, R_OK|X_OK) != 0) {
+		g_free (script);
+		script = NULL;
+	}
+	if (script == NULL &&
+	    ! ve_string_empty (d->hostname)) {
+		script = g_build_filename (dir, d->hostname, NULL);
+		if (g_access (script, R_OK|X_OK) != 0) {
+			g_free (script);
+			script = NULL;
+		}
+	}
+	if (script == NULL &&
+	    SERVER_IS_XDMCP (d)) {
+		script = g_build_filename (dir, "XDMCP", NULL);
+		if (g_access (script, R_OK|X_OK) != 0) {
+			g_free (script);
+			script = NULL;
+		}
+	}
+	if (script == NULL &&
+	    SERVER_IS_FLEXI (d)) {
+		script = g_build_filename (dir, "Flexi", NULL);
+		if (g_access (script, R_OK|X_OK) != 0) {
+			g_free (script);
+			script = NULL;
+		}
+	}
+	if (script == NULL) {
+		script = g_build_filename (dir, "Default", NULL);
+		if (g_access (script, R_OK|X_OK) != 0) {
+			g_free (script);
+			script = NULL;
+		}
 	}
 
-	gdm_close_all_descriptors (3 /* from */, -1 /* except */, -1 /* except2 */);
+	if (script == NULL) {
+		return EXIT_SUCCESS;
+	}
 
-	openlog ("gdm", LOG_PID, LOG_DAEMON);
+	create_temp_auth_file ();
 
-        if (login != NULL) {
-	        g_setenv ("LOGNAME", login, TRUE);
-	        g_setenv ("USER", login, TRUE);
-	        g_setenv ("USERNAME", login, TRUE);
-        } else {
-		const char *gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
-	        g_setenv ("LOGNAME", gdmuser, TRUE);
-	        g_setenv ("USER", gdmuser, TRUE);
-	        g_setenv ("USERNAME", gdmuser, TRUE);
-        }
-        if (pwent != NULL) {
-		if (ve_string_empty (pwent->pw_dir)) {
+	g_debug ("Forking extra process: %s", script);
+
+	extra_process = pid = gdm_fork_extra ();
+
+	switch (pid) {
+	case 0:
+		gdm_log_shutdown ();
+
+		VE_IGNORE_EINTR (close (0));
+		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+
+		if ( ! pass_stdout) {
+			VE_IGNORE_EINTR (close (1));
+			VE_IGNORE_EINTR (close (2));
+			/* No error checking here - if it's messed the best response
+			 * is to ignore & try to continue */
+			gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+			gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+		}
+
+		gdm_close_all_descriptors (3 /* from */, -1 /* except */, -1 /* except2 */);
+
+		gdm_log_init ();
+
+		if (login != NULL) {
+			g_setenv ("LOGNAME", login, TRUE);
+			g_setenv ("USER", login, TRUE);
+			g_setenv ("USERNAME", login, TRUE);
+		} else {
+			const char *gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
+			g_setenv ("LOGNAME", gdmuser, TRUE);
+			g_setenv ("USER", gdmuser, TRUE);
+			g_setenv ("USERNAME", gdmuser, TRUE);
+		}
+		if (pwent != NULL) {
+			if (ve_string_empty (pwent->pw_dir)) {
+				g_setenv ("HOME", "/", TRUE);
+				g_setenv ("PWD", "/", TRUE);
+				VE_IGNORE_EINTR (g_chdir ("/"));
+			} else {
+				g_setenv ("HOME", pwent->pw_dir, TRUE);
+				g_setenv ("PWD", pwent->pw_dir, TRUE);
+				VE_IGNORE_EINTR (g_chdir (pwent->pw_dir));
+				if (errno != 0) {
+					VE_IGNORE_EINTR (g_chdir ("/"));
+					g_setenv ("PWD", "/", TRUE);
+				}
+			}
+			g_setenv ("SHELL", pwent->pw_shell, TRUE);
+		} else {
 			g_setenv ("HOME", "/", TRUE);
 			g_setenv ("PWD", "/", TRUE);
 			VE_IGNORE_EINTR (g_chdir ("/"));
-		} else {
-			g_setenv ("HOME", pwent->pw_dir, TRUE);
-			g_setenv ("PWD", pwent->pw_dir, TRUE);
-			VE_IGNORE_EINTR (g_chdir (pwent->pw_dir));
-			if (errno != 0) {
-				VE_IGNORE_EINTR (g_chdir ("/"));
-				g_setenv ("PWD", "/", TRUE);
-			}
+			g_setenv ("SHELL", "/bin/sh", TRUE);
 		}
-	        g_setenv ("SHELL", pwent->pw_shell, TRUE);
-        } else {
-	        g_setenv ("HOME", "/", TRUE);
-		g_setenv ("PWD", "/", TRUE);
-		VE_IGNORE_EINTR (g_chdir ("/"));
-	        g_setenv ("SHELL", "/bin/sh", TRUE);
-        }
 
-	set_xnest_parent_stuff ();
+		set_xnest_parent_stuff ();
 
-	/* some env for use with the Pre and Post scripts */
-	x_servers_file = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
-					    d->name, ".Xservers");
-	g_setenv ("X_SERVERS", x_servers_file, TRUE);
-	g_free (x_servers_file);
-	if (SERVER_IS_XDMCP (d))
-		g_setenv ("REMOTE_HOST", d->hostname, TRUE);
+		/* some env for use with the Pre and Post scripts */
+		x_servers_file = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
+						    d->name, ".Xservers");
+		g_setenv ("X_SERVERS", x_servers_file, TRUE);
+		g_free (x_servers_file);
+		if (SERVER_IS_XDMCP (d))
+			g_setenv ("REMOTE_HOST", d->hostname, TRUE);
 
-	/* Runs as root */
-	if (GDM_AUTHFILE (d) != NULL)
-		g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
-	else
-		g_unsetenv ("XAUTHORITY");
-        g_setenv ("DISPLAY", d->name, TRUE);
-	g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
-	g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-	if ( ! ve_string_empty (d->theme_name))
-		g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
-	g_unsetenv ("MAIL");
+		/* Runs as root */
+		if (GDM_AUTHFILE (d) != NULL)
+			g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+		else
+			g_unsetenv ("XAUTHORITY");
+		g_setenv ("DISPLAY", d->name, TRUE);
+		g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
+		g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+		if ( ! ve_string_empty (d->theme_name))
+			g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
+		g_unsetenv ("MAIL");
 
-	argv = NULL;
-	g_shell_parse_argv (script, NULL, &argv, NULL);
+		argv = NULL;
+		g_shell_parse_argv (script, NULL, &argv, NULL);
 
-	VE_IGNORE_EINTR (execv (argv[0], argv));
-	syslog (LOG_ERR, _("%s: Failed starting: %s"), "gdm_slave_exec_script",
-		script);
-	_exit (EXIT_SUCCESS);
-	    
-    case -1:
-	gdm_slave_whack_temp_auth_file ();
-	g_free (script);
-	syslog (LOG_ERR, _("%s: Can't fork script process!"), "gdm_slave_exec_script");
-	return EXIT_SUCCESS;
-	
-    default:
-	gdm_wait_for_extra (&status);
+		VE_IGNORE_EINTR (execv (argv[0], argv));
+		g_error (_("%s: Failed starting: %s"),
+			 "gdm_slave_exec_script",
+			 script);
+		_exit (EXIT_SUCCESS);
 
-	gdm_slave_whack_temp_auth_file ();
+	case -1:
+		gdm_slave_whack_temp_auth_file ();
+		g_free (script);
+		g_error (_("%s: Can't fork script process!"), "gdm_slave_exec_script");
+		return EXIT_SUCCESS;
 
-	g_free (script);
+	default:
+		gdm_wait_for_extra (extra_process, &status);
 
-	if (WIFEXITED (status))
-	    return WEXITSTATUS (status);
-	else
-	    return EXIT_SUCCESS;
-    }
+		gdm_slave_whack_temp_auth_file ();
+
+		g_free (script);
+
+		if (WIFEXITED (status))
+			return WEXITSTATUS (status);
+		else
+			return EXIT_SUCCESS;
+	}
 }
 
 gboolean
@@ -5524,150 +5559,151 @@ gdm_slave_action_pending (void)
 	return TRUE;
 }
 
-/* The user name for automatic/timed login may be parameterized by 
+/* The user name for automatic/timed login may be parameterized by
    host/display. */
 
 static gchar *
 gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 {
-    gchar cmd, in_buffer[20];
-    GString *str;
-    gint pipe1[2], in_buffer_len;  
-    gchar **argv;
-    pid_t pid;
+	gchar cmd, in_buffer[20];
+	GString *str;
+	gint pipe1[2], in_buffer_len;
+	gchar **argv;
+	pid_t pid;
 
-    if (s == NULL)
-	return (NULL);
+	if (s == NULL)
+		return (NULL);
 
-    str = g_string_new (NULL);
+	str = g_string_new (NULL);
 
-    while (s[0] != '\0') {
+	while (s[0] != '\0') {
 
-	if (s[0] == '%' && s[1] != 0) {
-		cmd = s[1];
+		if (s[0] == '%' && s[1] != 0) {
+			cmd = s[1];
+			s++;
+
+			switch (cmd) {
+
+			case 'h':
+				g_string_append (str, display->hostname);
+				break;
+
+			case 'd':
+				g_string_append (str, display->name);
+				break;
+
+			case '%':
+				g_string_append_c (str, '%');
+				break;
+
+			default:
+				break;
+			};
+		} else {
+			g_string_append_c (str, *s);
+		}
 		s++;
-
-		switch (cmd) {
-
-		case 'h': 
-			g_string_append (str, display->hostname);
-			break;
-
-		case 'd': 
-			g_string_append (str, display->name);
-			break;
-
-		case '%':
-			g_string_append_c (str, '%');
-			break;
-
-		default:
-			break;
-		};
-	} else {
-		g_string_append_c (str, *s);
 	}
-	s++;
-    }
 
-    /* Sometimes it is not convenient to use the display or hostname as
-       user name. A script may be used to generate the automatic/timed
-       login name based on the display/host by ending the name with the
-       pipe symbol '|'. */
+	/* Sometimes it is not convenient to use the display or hostname as
+	   user name. A script may be used to generate the automatic/timed
+	   login name based on the display/host by ending the name with the
+	   pipe symbol '|'. */
 
-    if (str->len > 0 && str->str[str->len - 1] == '|') {
-      g_string_truncate (str, str->len - 1);
-      if G_UNLIKELY (pipe (pipe1) < 0) {
-        gdm_error (_("%s: Failed creating pipe"),
-		   "gdm_parse_enriched_login");
-      } else {
-	pid = gdm_fork_extra ();
+	if (str->len > 0 && str->str[str->len - 1] == '|') {
+		g_string_truncate (str, str->len - 1);
+		if G_UNLIKELY (pipe (pipe1) < 0) {
+			gdm_error (_("%s: Failed creating pipe"),
+				   "gdm_parse_enriched_login");
+		} else {
+			g_debug ("Forking extra process: %s", str->str);
 
-        switch (pid) {
-	    
-        case 0:
-	    /* The child will write the username to stdout based on the DISPLAY
-	       environment variable. */
+			extra_process = pid = gdm_fork_extra ();
 
-            VE_IGNORE_EINTR (close (pipe1[0]));
-            if G_LIKELY (pipe1[1] != STDOUT_FILENO)  {
-	      VE_IGNORE_EINTR (dup2 (pipe1[1], STDOUT_FILENO));
-	    }
+			switch (pid) {
+			case 0:
+				/* The child will write the username to stdout based on the DISPLAY
+				   environment variable. */
 
-	    closelog ();
+				VE_IGNORE_EINTR (close (pipe1[0]));
+				if G_LIKELY (pipe1[1] != STDOUT_FILENO)  {
+					VE_IGNORE_EINTR (dup2 (pipe1[1], STDOUT_FILENO));
+				}
 
-	    gdm_close_all_descriptors (3 /* from */, pipe1[1] /* except */, -1 /* except2 */);
+				gdm_log_shutdown ();
 
-	    openlog ("gdm", LOG_PID, LOG_DAEMON);
+				gdm_close_all_descriptors (3 /* from */, pipe1[1] /* except */, -1 /* except2 */);
 
-	    /* runs as root */
-	    if (GDM_AUTHFILE (display) != NULL)
-		    g_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);
-	    else
-		    g_unsetenv ("XAUTHORITY");
-	    g_setenv ("DISPLAY", display->name, TRUE);
-	    if (SERVER_IS_XDMCP (display))
-		    g_setenv ("REMOTE_HOST", display->hostname, TRUE);
-	    g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
-	    g_setenv ("SHELL", "/bin/sh", TRUE);
-	    g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-	    if ( ! ve_string_empty (d->theme_name))
-		    g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
-	    g_unsetenv ("MAIL");
+				gdm_log_init ();
 
-	    argv = NULL;
-	    g_shell_parse_argv (str->str, NULL, &argv, NULL);
+				/* runs as root */
+				if (GDM_AUTHFILE (display) != NULL)
+					g_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);
+				else
+					g_unsetenv ("XAUTHORITY");
+				g_setenv ("DISPLAY", display->name, TRUE);
+				if (SERVER_IS_XDMCP (display))
+					g_setenv ("REMOTE_HOST", display->hostname, TRUE);
+				g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
+				g_setenv ("SHELL", "/bin/sh", TRUE);
+				g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+				if ( ! ve_string_empty (d->theme_name))
+					g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
+				g_unsetenv ("MAIL");
 
-	    VE_IGNORE_EINTR (execv (argv[0], argv));
-	    gdm_error (_("%s: Failed executing: %s"),
-		       "gdm_parse_enriched_login",
-		       str->str);
-	    _exit (EXIT_SUCCESS);
+				argv = NULL;
+				g_shell_parse_argv (str->str, NULL, &argv, NULL);
 
-        case -1:
-	    gdm_error (_("%s: Can't fork script process!"),
-		       "gdm_parse_enriched_login");
-            VE_IGNORE_EINTR (close (pipe1[0]));
-            VE_IGNORE_EINTR (close (pipe1[1]));
-	    break;
+				VE_IGNORE_EINTR (execv (argv[0], argv));
+				gdm_error (_("%s: Failed executing: %s"),
+					   "gdm_parse_enriched_login",
+					   str->str);
+				_exit (EXIT_SUCCESS);
 
-        default:
-	    /* The parent reads username from the pipe a chunk at a time */
-            VE_IGNORE_EINTR (close (pipe1[1]));
-            g_string_truncate (str, 0);
-	    do {
-		    VE_IGNORE_EINTR (in_buffer_len = read (pipe1[0], in_buffer,
-							sizeof (in_buffer) - 1));
-		    if (in_buffer_len > 0) {
-			    in_buffer[in_buffer_len] = '\0';
-			    g_string_append (str, in_buffer);
-		    }
-            } while (in_buffer_len > 0);
+			case -1:
+				gdm_error (_("%s: Can't fork script process!"),
+					   "gdm_parse_enriched_login");
+				VE_IGNORE_EINTR (close (pipe1[0]));
+				VE_IGNORE_EINTR (close (pipe1[1]));
+				break;
 
-            if (str->len > 0 && str->str[str->len - 1] == '\n')
-              g_string_truncate (str, str->len - 1);
+			default:
+				/* The parent reads username from the pipe a chunk at a time */
+				VE_IGNORE_EINTR (close (pipe1[1]));
+				g_string_truncate (str, 0);
+				do {
+					VE_IGNORE_EINTR (in_buffer_len = read (pipe1[0], in_buffer,
+									       sizeof (in_buffer) - 1));
+					if (in_buffer_len > 0) {
+						in_buffer[in_buffer_len] = '\0';
+						g_string_append (str, in_buffer);
+					}
+				} while (in_buffer_len > 0);
 
-            VE_IGNORE_EINTR (close (pipe1[0]));
+				if (str->len > 0 && str->str[str->len - 1] == '\n')
+					g_string_truncate (str, str->len - 1);
 
-	    gdm_wait_for_extra (NULL);
-        }
-      }
-    }
+				VE_IGNORE_EINTR (close (pipe1[0]));
 
-    if (!ve_string_empty(str->str) && gdm_is_user_valid(str->str))
-	    return g_string_free (str, FALSE);
-    else
-    {
-        /* "If an empty or otherwise invalid username is returned [by the script]
-         *  automatic login [and timed login] is not performed." -- GDM manual 
-	 */
-	/* fixme: also turn off automatic login */
-	gdm_daemon_config_set_value_bool(GDM_KEY_TIMED_LOGIN_ENABLE, FALSE);
-	d->timed_login_ok = FALSE;
-	do_timed_login = FALSE;
-	g_string_free(str, TRUE);
-	return NULL;
-    }
+				gdm_wait_for_extra (extra_process, NULL);
+			}
+		}
+	}
+
+	if (!ve_string_empty(str->str) && gdm_is_user_valid(str->str))
+		return g_string_free (str, FALSE);
+	else
+		{
+			/* "If an empty or otherwise invalid username is returned [by the script]
+			 *  automatic login [and timed login] is not performed." -- GDM manual 
+			 */
+			/* fixme: also turn off automatic login */
+			gdm_daemon_config_set_value_bool(GDM_KEY_TIMED_LOGIN_ENABLE, FALSE);
+			d->timed_login_ok = FALSE;
+			do_timed_login = FALSE;
+			g_string_free(str, TRUE);
+			return NULL;
+		}
 }
 
 static void
@@ -5722,7 +5758,7 @@ gdm_slave_handle_notify (const char *msg)
 			    strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE)) == 0) {
     	        if (sscanf (msg, GDM_NOTIFY_CUSTOM_CMD_TEMPLATE "%d", &val) == 1) {
 			gchar * key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, val);
-			/* This assumes that the number of commands is < 100, i.e two digits 
+			/* This assumes that the number of commands is < 100, i.e two digits
 			   if that is not the case then this will fail */
 			gdm_daemon_config_set_value_string (key_string, ((gchar *)&msg[strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE) + 2]));
 			g_free(key_string);
@@ -5741,11 +5777,11 @@ gdm_slave_handle_notify (const char *msg)
 					}
 				}
 			}
-		}		
+		}
 	} else if (strncmp (msg, GDM_NOTIFY_REMOTE_GREETER " ",
 			    strlen (GDM_NOTIFY_REMOTE_GREETER) + 1) == 0) {
 		gdm_daemon_config_set_value_string (GDM_KEY_REMOTE_GREETER,
-			(gchar *)(&msg[strlen (GDM_NOTIFY_REMOTE_GREETER) + 1]));
+						    (gchar *)(&msg[strlen (GDM_NOTIFY_REMOTE_GREETER) + 1]));
 		if ( ! d->attached) {
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
@@ -5779,25 +5815,25 @@ gdm_slave_handle_notify (const char *msg)
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1) == 0) {
 		gdm_daemon_config_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FILE,
-			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1]));
+						    (gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1) == 0) {
 		gdm_daemon_config_set_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE,
-			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1]));
+						    (gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_SUCCESS_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE " ",
 			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1) == 0) {
 		gdm_daemon_config_set_value_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE,
-			(gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1]));
+						    (gchar *)(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FAILURE_FILE) + 1]));
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (strncmp (msg, GDM_NOTIFY_GTK_MODULES_LIST " ",
 			    strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1) == 0) {
 		gdm_daemon_config_set_value_string (GDM_KEY_GTK_MODULES_LIST,
-			(gchar *)(&msg[strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1]));
+						    (gchar *)(&msg[strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1]));
 
 		if (gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES)) {
 			do_restart_greeter = TRUE;
@@ -5857,7 +5893,7 @@ gdm_can_i_assume_root_role (struct passwd *pwent)
 		return FALSE;
 
 	freeroles = roles = g_strdup (kva_match (uattr->attr, USERATTR_ROLES_KW));
-    if (roles == NULL) {
+	if (roles == NULL) {
 		return FALSE;
 	}
 
@@ -5880,6 +5916,5 @@ gdm_can_i_assume_root_role (struct passwd *pwent)
 gboolean
 gdm_is_user_valid (const char *username)
 {
-    return (NULL != getpwnam (username));
+	return (NULL != getpwnam (username));
 }
-/* EOF */

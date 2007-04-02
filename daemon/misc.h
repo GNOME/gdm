@@ -19,44 +19,19 @@
 #ifndef GDM_MISC_H
 #define GDM_MISC_H
 
-#ifndef __PRETTY_FUNCTION__
-#define __PRETTY_FUNCTION__ "N/A"
-#endif
-
+#include <stdio.h>
 #include <sys/types.h>
 
 #include "gdm.h"
-
-void gdm_fail   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-void gdm_info   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-void gdm_error  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-
-#define gdm_assert(expr)		G_STMT_START{			\
-     if G_LIKELY(expr) { } else 					\
-        gdm_fail ("GDM file %s: line %d (%s): assertion failed: (%s)",	\
-		  __FILE__,						\
-		  __LINE__,						\
-		  __PRETTY_FUNCTION__,					\
-                  #expr);			}G_STMT_END
-
-#define gdm_assert_not_reached()	G_STMT_START{			\
-     gdm_fail ("GDM file %s: line %d (%s): should not be reached",	\
-	       __FILE__,						\
-	       __LINE__,						\
-	       __PRETTY_FUNCTION__);	}G_STMT_END
+#include "display.h"
 
 void gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 int gdm_fdgetc     (int fd);
 char *gdm_fdgets   (int fd);
 
-/* Note that these can actually clear environment without killing
- * the LD_* env vars if --preserve-ld-vars was passed to the
- * main daemon */
 /* clear environment, but keep the i18n ones (LANG, LC_ALL, etc...),
  * note that this leak memory so only use before exec */
 void gdm_clearenv_no_lang (void);
-void gdm_clearenv (void);
 
 int gdm_get_free_display (int start, uid_t server_uid);
 
@@ -79,16 +54,10 @@ void	gdm_sigusr2_block_push (void);
 void	gdm_sigusr2_block_pop (void);
 
 pid_t	gdm_fork_extra (void);
-void	gdm_wait_for_extra (int *status);
+void	gdm_wait_for_extra (pid_t pid, int *status);
 
-const GList * gdm_peek_local_address_list (void);
-gboolean gdm_is_local_addr (struct in_addr *ia);
-gboolean gdm_is_loopback_addr (struct in_addr *ia);
-
-#ifdef ENABLE_IPV6
-gboolean gdm_is_local_addr6 (struct in6_addr* ia);
-gboolean gdm_is_loopback_addr6 (struct in6_addr *ia);
-#endif
+const GList * gdm_address_peek_local_list (void);
+gboolean      gdm_address_is_local        (struct sockaddr_storage *sa);
 
 typedef struct {
 	gboolean not_found; /* hostname below set to fallback,
@@ -96,20 +65,14 @@ typedef struct {
 	char *hostname; /* never a bogus dot, if
 			   invalid/unknown, then set to the
 			   ip address in string form */
-#ifdef ENABLE_IPV6
+
 	struct sockaddr_storage *addrs;
-#else
-	struct in_addr *addrs; /* array */
-#endif
 	int addr_count;
 } GdmHostent;
 
 GdmHostent * gdm_gethostbyname (const char *name);
-#ifdef ENABLE_IPV6
+
 GdmHostent *gdm_gethostbyaddr (struct sockaddr_storage *ia);
-#else
-GdmHostent * gdm_gethostbyaddr (struct sockaddr_in *ia);
-#endif
 GdmHostent * gdm_hostent_copy (GdmHostent *he);
 void gdm_hostent_free (GdmHostent *he);
 
@@ -124,9 +87,6 @@ void gdm_close_all_descriptors (int from, int except, int except2);
 int gdm_open_dev_null (mode_t mode);
 
 void gdm_unset_signals (void);
-
-char * gdm_locale_to_utf8 (const char *text);
-char * gdm_locale_from_utf8 (const char *text);
 
 void gdm_saveenv (void);
 const char * gdm_saved_getenv (const char *var);
@@ -182,6 +142,34 @@ const char * gdm_console_translate (const char *str);
 
 gchar * gdm_read_default (gchar *key);
 
-#endif /* GDM_MISC_H */
+#define NEVER_FAILS_seteuid(uid) \
+	{ int r = 0; \
+	  if (geteuid () != uid) \
+	    r = seteuid (uid); \
+	  if G_UNLIKELY (r != 0) \
+        gdm_fail ("GDM file %s: line %d (%s): Cannot run seteuid to %d: %s", \
+		  __FILE__,						\
+		  __LINE__,						\
+		  __PRETTY_FUNCTION__,					\
+                  (int)uid,						\
+		  strerror (errno));			}
+#define NEVER_FAILS_setegid(gid) \
+	{ int r = 0; \
+	  if (getegid () != gid) \
+	    r = setegid (gid); \
+	  if G_UNLIKELY (r != 0) \
+        gdm_fail ("GDM file %s: line %d (%s): Cannot run setegid to %d: %s", \
+		  __FILE__,						\
+		  __LINE__,						\
+		  __PRETTY_FUNCTION__,					\
+                  (int)gid,						\
+		  strerror (errno));			}
 
-/* EOF */
+/* first goes to euid-root and then sets the egid and euid, to make sure
+ * this succeeds */
+#define NEVER_FAILS_root_set_euid_egid(uid,gid) \
+	{ NEVER_FAILS_seteuid (0); \
+	  NEVER_FAILS_setegid (gid); \
+	  if (uid != 0) { NEVER_FAILS_seteuid (uid); } }
+
+#endif /* GDM_MISC_H */

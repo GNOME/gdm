@@ -25,6 +25,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 
 #include "greeter_parser.h"

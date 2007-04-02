@@ -21,13 +21,16 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <pwd.h>
+
+#include <glib.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include "misc.h" /* for gdm_debug */
+#include "gdm-log.h" /* for gdm_debug */
 #include "gdmconsolekit.h"
 
 
@@ -268,7 +271,7 @@ get_path_array_from_iter (DBusMessageIter *iter,
 	return buffer;
 
 oom:
-	fprintf (stderr, "%s %d : error allocating memory\n", __FILE__, __LINE__);
+	g_warning ("%s %d : error allocating memory\n", __FILE__, __LINE__);
 	return NULL;
 
 }

@@ -1,3 +1,150 @@
+2007-04-02  William Jon McCann  <mccann@jhu.edu>
+
+	* common/Makefile.am:
+	* common/gdm-common.c: (v4_v4_equal), (v6_v6_equal),
+	(gdm_address_equal), (gdm_address_is_loopback),
+	(gdm_address_get_info):
+	* common/gdm-common.h:
+	* common/gdm-config.c: (gdm_config_peek_value),
+	(gdm_config_get_value), (gdm_config_peek_value_for_id),
+	(gdm_config_peek_string_for_id), (gdm_config_get_string_for_id),
+	(gdm_config_get_int_for_id), (gdm_config_set_int_for_id):
+	* common/gdm-config.h:
+	* common/gdm-log.c: (log_level_to_priority_and_prefix),
+	(gdm_log_default_handler), (gdm_log_set_debug), (gdm_log_init),
+	(gdm_log_shutdown):
+	* common/gdm-log.h:
+	* configure.ac:
+	* daemon/Makefile.am:
+	* daemon/auth.c: (add_auth_entry), (add_auth_entry_for_addr),
+	(get_local_auths), (gdm_auth_user_add), (gdm_auth_set_local_auth),
+	(gdm_auth_free_auth_list):
+	* daemon/choose.c: (get_first_address_for_node), (gdm_choose_data),
+	(gdm_choose_indirect_alloc),
+	(gdm_choose_indirect_dispose_empty_id),
+	(gdm_choose_indirect_lookup_by_chosen),
+	(gdm_choose_indirect_lookup), (gdm_choose_indirect_dispose):
+	* daemon/choose.h:
+	* daemon/cookie.c:
+	* daemon/cookie.h:
+	* daemon/display.c: (gdm_display_manage), (count_session_limits),
+	(gdm_display_dispose), (gdm_display_lookup):
+	* daemon/display.h:
+	* daemon/errorgui.c: (setup_dialog), (gdm_errorgui_error_box_full),
+	(gdm_errorgui_error_box), (gdm_errorgui_failsafe_question),
+	(gdm_errorgui_failsafe_yesno), (gdm_errorgui_failsafe_ask_buttons):
+	* daemon/errorgui.h:
+	* daemon/filecheck.c: (gdm_file_check), (gdm_auth_file_check):
+	* daemon/gdm-daemon-config.c: (gdm_daemon_config_get_display_list),
+	(gdm_daemon_config_display_list_append),
+	(gdm_daemon_config_display_list_insert),
+	(gdm_daemon_config_display_list_remove),
+	(gdm_daemon_config_get_bool_for_id),
+	(gdm_daemon_config_get_int_for_id),
+	(gdm_daemon_config_get_string_for_id), (handle_no_displays),
+	(gdm_daemon_config_parse):
+	* daemon/gdm-daemon-config.h:
+	* daemon/gdm-net.c:
+	* daemon/gdm-net.h:
+	* daemon/gdm.c: (mark_display_exists), (gdm_daemonify),
+	(gdm_start_first_unborn_local), (gdm_final_cleanup),
+	(deal_with_x_crashes), (gdm_safe_restart), (gdm_try_logout_action),
+	(main), (order_exists), (get_new_order), (gdm_handle_message),
+	(find_display), (handle_flexi_server), (handle_dynamic_server),
+	(gdm_handle_user_message):
+	* daemon/gdm.h:
+	* daemon/gdmconsolekit.c: (get_path_array_from_iter):
+	* daemon/gdmconsolekit.h:
+	* daemon/md5.h:
+	* daemon/misc.c: (gdm_clearenv_no_lang), (gdm_get_free_display),
+	(gdm_exec_wait), (gdm_fork_extra), (gdm_wait_for_extra),
+	(gdm_address_peek_local_list), (gdm_address_is_local),
+	(fillout_addrinfo), (gdm_gethostbyname), (gdm_gethostbyaddr),
+	(gdm_hostent_copy):
+	* daemon/misc.h:
+	* daemon/server.c: (gdm_exec_fbconsole), (gdm_server_spawn):
+	* daemon/server.h:
+	* daemon/slave.c: (get_runlevel), (gdm_slave_start),
+	(focus_first_x_window), (run_config), (play_login_sound),
+	(gdm_slave_greeter), (send_chosen_host), (gdm_slave_chooser),
+	(session_child_run), (gdm_slave_session_start),
+	(gdm_slave_session_stop), (check_for_interruption),
+	(gdm_child_exit), (gdm_slave_exec_script),
+	(gdm_parse_enriched_login), (gdm_is_user_valid):
+	* daemon/slave.h:
+	* daemon/verify-crypt.c: (gdm_verify_user),
+	(gdm_verify_setup_user):
+	* daemon/verify-pam.c: (gdm_verify_pam_conv),
+	(gdm_verify_standalone_pam_conv), (gdm_verify_user),
+	(gdm_verify_setup_user), (gdm_verify_cleanup), (gdm_verify_check):
+	* daemon/verify-shadow.c: (gdm_verify_user),
+	(gdm_verify_setup_user):
+	* daemon/verify.h:
+	* daemon/xdmcp.c: (gdm_xdmcp_displays_from_host),
+	(gdm_xdmcp_display_lookup_by_host), (ai_family_str), (ai_type_str),
+	(ai_protocol_str), (ai_flags_str), (debug_addrinfo),
+	(gdm_xdmcp_create_socket), (gdm_xdmcp_bind), (gdm_xdmcp_init),
+	(gdm_xdmcp_run), (gdm_xdmcp_close), (gdm_xdmcp_decode_packet),
+	(gdm_xdmcp_handle_query), (set_port_for_request),
+	(set_address_for_request), (gdm_xdmcp_send_forward_query),
+	(gdm_forward_query_alloc), (gdm_forward_query_lookup),
+	(gdm_forward_query_dispose), (create_sa_from_request),
+	(gdm_xdmcp_handle_forward_query), (gdm_xdmcp_send_willing),
+	(gdm_xdmcp_send_unwilling),
+	(gdm_xdmcp_really_send_managed_forward), (managed_forward_handler),
+	(gdm_xdmcp_send_managed_forward),
+	(gdm_xdmcp_send_got_managed_forward), (gdm_xdmcp_handle_request),
+	(gdm_xdmcp_send_accept), (gdm_xdmcp_send_decline),
+	(gdm_xdmcp_handle_manage), (gdm_xdmcp_handle_managed_forward),
+	(gdm_xdmcp_whack_queued_managed_forwards),
+	(gdm_xdmcp_handle_got_managed_forward), (gdm_xdmcp_send_refuse),
+	(gdm_xdmcp_send_failed), (gdm_xdmcp_handle_keepalive),
+	(gdm_xdmcp_send_alive), (gdm_xdmcp_host_allow),
+	(gdm_xdmcp_display_alloc), (gdm_xdmcp_display_lookup),
+	(gdm_xdmcp_display_dispose_check), (gdm_xdmcp_displays_check),
+	(gdm_xdmcp_recount_sessions):
+	* daemon/xdmcp.h:
+	* gui/Makefile.am:
+	* gui/gdmXnestchooser.c:
+	* gui/gdmchooser.c: (gdm_chooser_host_alloc), (gdm_chooser_cancel),
+	(gdm_chooser_manage), (gdm_read_config), (gdm_reread_config),
+	(main):
+	* gui/gdmcomm.c: (do_command), (gdmcomm_call_gdm_real):
+	* gui/gdmcommon.c: (gdm_common_log_init),
+	(gdm_common_log_set_debug), (gdm_common_fail_exit),
+	(gdm_common_fail_greeter), (gdm_common_info), (gdm_common_error),
+	(gdm_common_warning), (gdm_common_debug), (gdm_common_expand_text):
+	* gui/gdmcommon.h:
+	* gui/gdmconfig.c:
+	* gui/gdmdynamic.c: (main):
+	* gui/gdmflexiserver.c: (main):
+	* gui/gdmlanguages.c:
+	* gui/gdmlogin.c: (gdm_login_restart_handler),
+	(gdm_login_halt_handler), (gdm_login_use_chooser_handler),
+	(gdm_read_config), (gdm_reread_config), (main):
+	* gui/gdmsession.c:
+	* gui/gdmsetup.c:
+	* gui/gdmuser.c:
+	* gui/gdmwm.c:
+	* gui/greeter/greeter.c: (gdm_read_config),
+	(greeter_reread_config), (main):
+	* gui/greeter/greeter_item_customlist.c:
+	* gui/greeter/greeter_item_pam.c:
+	* gui/greeter/greeter_item_timed.c:
+	* gui/greeter/greeter_item_ulist.c:
+	* gui/greeter/greeter_parser.c: (parse_show):
+	* gui/greeter/greeter_system.c: (query_greeter_restart_handler),
+	(query_greeter_halt_handler), (greeter_restart_handler),
+	(greeter_halt_handler), (greeter_chooser_handler):
+
+	Use fewer global variables.
+	Separate monolithic gdm.h into component parts.
+	Use the Glib message logging API to write to syslog.
+	Cleans up the ipv4/6 handling in the daemon to use a common code
+	patch and be mostly AF- independent.
+	Add a few convenience functions to gdm-config for get/set by ID.
+	Patch from bug #376010
+
 2006-04-02  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac, po/POTFILES.skip, gui/Makefile.am,

@@ -28,13 +28,24 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/socket.h>
 #include <locale.h>
+#include <netdb.h>
 
 #include "ve-signal.h"
 #include "gdm-common-config.h"
 #include "gdm-config.h"
 
 G_BEGIN_DECLS
+
+
+gboolean     gdm_address_equal        (struct sockaddr_storage *sa,
+                                       struct sockaddr_storage *sb);
+gboolean     gdm_address_is_loopback  (struct sockaddr_storage *sa);
+void         gdm_address_get_info     (struct sockaddr_storage *sa,
+                                       char                   **host,
+                                       char                   **port);
+
 void           ve_clearenv (void);
 char *	       ve_first_word (const char *s);
 gboolean       ve_first_word_executable (const char *s,

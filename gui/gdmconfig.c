@@ -22,6 +22,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 
 #include "config.h"
@@ -32,6 +33,8 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+
+#include "server.h"
 
 static GHashTable *int_hash       = NULL;
 static GHashTable *bool_hash      = NULL;

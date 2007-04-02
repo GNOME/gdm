@@ -27,7 +27,6 @@
 #include <unistd.h>
 #include <locale.h>
 #include <string.h>
-#include <syslog.h>
 #include <time.h>
 #include <sys/utsname.h>
 #include <sys/types.h>
@@ -43,149 +42,157 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 
 gint gdm_timed_delay = 0;
 static Atom AT_SPI_IOR;
 
 /*
- * Some slaves want to send output to syslog and others (such as 
- * gdmflexiserver and gdmdynamic send error messages to stdout.  
+ * Some slaves want to send output to syslog and others (such as
+ * gdmflexiserver and gdmdynamic send error messages to stdout.
  * Calling gdm_common_openlog to open the syslog sets the
- * using_syslog flag so that calls to gdm_common_fail, 
- * gdm_common_info, gdm_common_error, and gdm_common_debug sends 
+ * using_syslog flag so that calls to gdm_common_fail,
+ * gdm_common_info, gdm_common_error, and gdm_common_debug sends
  * output to the syslog if the syslog has been opened, otherwise
  * send to stdout.
  */
 static gboolean using_syslog = FALSE;
 
 void
-gdm_common_openlog (const char *ident, int logopt, int facility)
+gdm_common_log_init (void)
 {
-   openlog (ident, logopt, facility);
-   using_syslog = TRUE;
+	gdm_log_init ();
+
+	using_syslog = TRUE;
+}
+
+void
+gdm_common_log_set_debug (gboolean enable)
+{
+	gdm_log_set_debug (enable);
 }
 
 void
 gdm_common_fail_exit (const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    if (!format) {
+	if (!format) {
+		_exit (EXIT_FAILURE);
+	}
+
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	if (using_syslog) {
+		g_critical ("%s", s);
+	} else {
+		g_printf ("%s\n", s);
+	}
+
+	g_free (s);
+
 	_exit (EXIT_FAILURE);
-    }
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-    
-    if (using_syslog) {
-        syslog (LOG_ERR, "%s", s);
-        closelog ();
-    } else
-        g_printf ("%s\n", s);
-
-    g_free (s);
-
-    _exit (EXIT_FAILURE);
 }
 
 void
 gdm_common_fail_greeter (const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    if (!format) {
+	if (!format) {
+		_exit (DISPLAY_GREETERFAILED);
+	}
+
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	if (using_syslog) {
+		g_critical ("%s", s);
+	} else
+		g_printf ("%s\n", s);
+
+	g_free (s);
+
 	_exit (DISPLAY_GREETERFAILED);
-    }
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-    
-    if (using_syslog) {
-        syslog (LOG_ERR, "%s", s);
-        closelog ();
-    } else
-        g_printf ("%s\n", s);
-
-    g_free (s);
-
-    _exit (DISPLAY_GREETERFAILED);
 }
 
 void
 gdm_common_info (const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
 
-    if (using_syslog)
-        syslog (LOG_INFO, "%s", s);
-    else
-        g_printf ("%s\n", s);
- 
-    g_free (s);
+	if (using_syslog) {
+		g_message ("%s", s);
+	} else {
+		g_printf ("%s\n", s);
+	}
+
+	g_free (s);
 }
 
 void
 gdm_common_error (const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
 
-    if (using_syslog)
-        syslog (LOG_ERR, "%s", s);
-    else
-        g_printf ("%s\n", s);
-    
-    g_free (s);
+	if (using_syslog) {
+		g_critical ("%s", s);
+	} else {
+		g_printf ("%s\n", s);
+	}
+
+	g_free (s);
 }
 
 void
 gdm_common_warning (const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
 
-    if (using_syslog)
-        syslog (LOG_WARNING, "%s", s);
-    else
-        g_printf ("%s\n", s);
-    
-    g_free (s);
+	if (using_syslog) {
+		g_warning ("%s", s);
+	} else {
+		g_printf ("%s\n", s);
+	}
+
+	g_free (s);
 }
 
 void
 gdm_common_debug (const gchar *format, ...)
 {
-    va_list args;
-    gchar *s;
+	va_list args;
+	gchar *s;
 
-    if G_LIKELY (! gdm_config_get_bool (GDM_KEY_DEBUG))
-        return;
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
+	g_debug ("%s", s);
 
-    syslog (LOG_ERR, "%s", s);
-    closelog ();
-    g_free (s);
+	g_free (s);
 }
 
 void
@@ -263,8 +270,7 @@ delay_noblink (GSignalInvocationHint *ihint,
 	noblink_timeout
 		= g_timeout_add (NOBLINK_TIMEOUT, no_blink, NULL);
 	return TRUE;
-}      
-
+}
 
 void
 gdm_common_setup_blinking (void)
@@ -272,37 +278,37 @@ gdm_common_setup_blinking (void)
 	guint sid;
 
 	if ( ! ve_string_empty (g_getenv ("GDM_IS_LOCAL")) &&
-	    strncmp (ve_sure_string (g_getenv ("DISPLAY")), ":0", 2) == 0)
+	     strncmp (ve_sure_string (g_getenv ("DISPLAY")), ":0", 2) == 0)
 		return;
 
 	sid = g_signal_lookup ("activate",
 			       GTK_TYPE_MENU_ITEM);
 	if (sid != 0) {
-	   g_signal_add_emission_hook (sid,
-				       0 /* detail */,
-				       delay_noblink,
-				       NULL /* data */,
-				       NULL /* destroy_notify */);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    delay_noblink,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
 	}
 
 	sid = g_signal_lookup ("key_press_event",
 			       GTK_TYPE_WIDGET);
 	if (sid != 0) {
-	   g_signal_add_emission_hook (sid,
-				       0 /* detail */,
-				       delay_noblink,
-				       NULL /* data */,
-				       NULL /* destroy_notify */);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    delay_noblink,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
 	}
 
 	sid = g_signal_lookup ("button_press_event",
 			       GTK_TYPE_WIDGET);
 	if (sid != 0) {
-	   g_signal_add_emission_hook (sid,
-				       0 /* detail */,
-				       delay_noblink,
-				       NULL /* data */,
-				       NULL /* destroy_notify */);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    delay_noblink,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
 	}
 
 	noblink_timeout = g_timeout_add (NOBLINK_TIMEOUT, no_blink, NULL);
@@ -315,7 +321,7 @@ gdm_common_setup_blinking_entry (GtkWidget *entry)
 	GtkSettings *settings;
 
 	if ( ! ve_string_empty (g_getenv ("GDM_IS_LOCAL")) &&
-	    strncmp (ve_sure_string (g_getenv ("DISPLAY")), ":0", 2) == 0)
+	     strncmp (ve_sure_string (g_getenv ("DISPLAY")), ":0", 2) == 0)
 		return;
 
 	eb = g_new0 (EntryBlink, 1);
@@ -355,7 +361,7 @@ gdm_common_get_face (const char *filename,
 
 	if (pixbuf) {
 		guint w, h;
-	
+
 		w = gdk_pixbuf_get_width (pixbuf);
 		h = gdk_pixbuf_get_height (pixbuf);
 
@@ -380,7 +386,7 @@ gdm_common_get_face (const char *filename,
 	return pixbuf;
 }
 
-gchar * 
+gchar *
 gdm_common_get_config_file (void)
 {
 	gchar *result;
@@ -392,7 +398,7 @@ gdm_common_get_config_file (void)
 		return NULL;
 
 	if (ve_string_empty (result) ||
-		strncmp (result, "OK ", 3) != 0) {
+	    strncmp (result, "OK ", 3) != 0) {
 		g_free (result);
 		return NULL;
 	}
@@ -405,7 +411,7 @@ gdm_common_get_config_file (void)
 	return config_file;
 }
 
-gchar * 
+gchar *
 gdm_common_get_custom_config_file (void)
 {
 	gchar *result;
@@ -417,7 +423,7 @@ gdm_common_get_custom_config_file (void)
 		return NULL;
 
 	if (ve_string_empty (result) ||
-		strncmp (result, "OK ", 3) != 0) {
+	    strncmp (result, "OK ", 3) != 0) {
 		g_free (result);
 		return NULL;
 	}
@@ -443,10 +449,10 @@ gdm_common_select_time_format (void)
 	     atoi (val) != 0)) {
 		return TRUE;
 	} else if (val != NULL &&
-	    (val[0] == 'F' ||
-	     val[0] == 'f' ||
-	     val[0] == 'N' ||
-	     val[0] == 'n')) {
+		   (val[0] == 'F' ||
+		    val[0] == 'f' ||
+		    val[0] == 'N' ||
+		    val[0] == 'n')) {
 		return FALSE;
 	} else {
 		/* Value is "auto" (default), thus select according to
@@ -469,34 +475,34 @@ gdm_common_select_time_format (void)
 void
 gdm_common_setup_background_color (gchar *bg_color)
 {
-  GdkColormap *colormap;
-  GdkColor color;
+	GdkColormap *colormap;
+	GdkColor color;
 
-  if (bg_color == NULL ||
-      bg_color[0] == '\0' ||
-      ! gdk_color_parse (bg_color, &color))
-    {
-      gdk_color_parse ("#007777", &color);
-    }
+	if (bg_color == NULL ||
+	    bg_color[0] == '\0' ||
+	    ! gdk_color_parse (bg_color, &color))
+		{
+			gdk_color_parse ("#007777", &color);
+		}
 
-  g_free (bg_color);
+	g_free (bg_color);
 
-  colormap = gdk_drawable_get_colormap
-          (gdk_get_default_root_window ());
-  /* paranoia */
-  if (colormap != NULL)
-    {
-      gboolean success;
-      gdk_error_trap_push ();
+	colormap = gdk_drawable_get_colormap
+		(gdk_get_default_root_window ());
+	/* paranoia */
+	if (colormap != NULL)
+		{
+			gboolean success;
+			gdk_error_trap_push ();
 
-      gdk_colormap_alloc_colors (colormap, &color, 1,
-                                 FALSE, TRUE, &success);
-      gdk_window_set_background (gdk_get_default_root_window (), &color);
-      gdk_window_clear (gdk_get_default_root_window ());
+			gdk_colormap_alloc_colors (colormap, &color, 1,
+						   FALSE, TRUE, &success);
+			gdk_window_set_background (gdk_get_default_root_window (), &color);
+			gdk_window_clear (gdk_get_default_root_window ());
 
-      gdk_flush ();
-      gdk_error_trap_pop ();
-    }
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
 }
 
 gchar *
@@ -615,19 +621,18 @@ pre_atspi_launch (void){
 
 }
 
-
-static GdkFilterReturn 
+static GdkFilterReturn
 filter_watch (GdkXEvent *xevent, GdkEvent *event, gpointer data){
-     XEvent *xev = (XEvent *)xevent;
+	XEvent *xev = (XEvent *)xevent;
 
-     if (xev->xany.type == PropertyNotify &&
-	 xev->xproperty.atom == AT_SPI_IOR){
-	     gtk_main_quit ();
-	  
-	  return GDK_FILTER_REMOVE;
-     }
+	if (xev->xany.type == PropertyNotify &&
+	    xev->xproperty.atom == AT_SPI_IOR){
+		gtk_main_quit ();
 
-     return GDK_FILTER_CONTINUE;
+		return GDK_FILTER_REMOVE;
+	}
+
+	return GDK_FILTER_CONTINUE;
 }
 
 static gboolean
@@ -643,21 +648,21 @@ filter_timeout (gpointer data)
 void
 gdm_common_atspi_launch (void)
 {
-	GdkWindow *w = gdk_get_default_root_window (); 
+	GdkWindow *w = gdk_get_default_root_window ();
 	gboolean a11y = gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
 	guint tid;
 
 	if (! a11y)
 		return;
- 
+
 	if ( ! AT_SPI_IOR)
 		AT_SPI_IOR = XInternAtom (GDK_DISPLAY (), "AT_SPI_IOR", False);
 
-	gdk_window_set_events (w,  GDK_PROPERTY_CHANGE_MASK); 
-	
+	gdk_window_set_events (w,  GDK_PROPERTY_CHANGE_MASK);
+
 	if ( ! pre_atspi_launch ()) {
 		gdm_common_info (_("The accessibility registry could not be started."));
-		
+
 		return;
 	}
 	gdk_window_add_filter (w, filter_watch, NULL);
@@ -733,145 +738,134 @@ gdm_common_get_clock (struct tm **the_tm)
 char *
 gdm_common_expand_text (const gchar *text)
 {
-  GString *str;
-  const char *p;
-  gchar *clock, *display;
-  int r, i, n_chars;
-  gboolean underline = FALSE;
-  gchar buf[256];
-  struct utsname name;
-  struct tm *the_tm;
+	GString *str;
+	const char *p;
+	gchar *clock, *display;
+	int r, i, n_chars;
+	gboolean underline = FALSE;
+	gchar buf[256];
+	struct utsname name;
+	struct tm *the_tm;
 
-  str = g_string_sized_new (strlen (text));
+	str = g_string_sized_new (strlen (text));
 
-  p = text;
-  n_chars = g_utf8_strlen (text, -1);
-  i = 0;
-  
-  while (i < n_chars)
-    {
-      gunichar ch;
+	p = text;
+	n_chars = g_utf8_strlen (text, -1);
+	i = 0;
 
-      ch = g_utf8_get_char (p);
+	while (i < n_chars) {
+		gunichar ch;
 
-      /* Backslash commands */
-      if (ch == '\\')
-        {
-	  p = g_utf8_next_char (p);
-	  i++;
-	  ch = g_utf8_get_char (p);
+		ch = g_utf8_get_char (p);
 
-	  if (i >= n_chars || ch == '\0')
-	    {
-	      g_warning ("Unescaped \\ at end of text\n");
-	      goto bail;
-	    }
-	  else if (ch == 'n')
-	    g_string_append_unichar (str, '\n');
-	  else
-	    g_string_append_unichar (str, ch);
+		/* Backslash commands */
+		if (ch == '\\') {
+			p = g_utf8_next_char (p);
+			i++;
+			ch = g_utf8_get_char (p);
+
+			if (i >= n_chars || ch == '\0') {
+				g_warning ("Unescaped \\ at end of text\n");
+				goto bail;
+			}
+			else if (ch == 'n')
+				g_string_append_unichar (str, '\n');
+			else
+				g_string_append_unichar (str, ch);
+		}
+		else if (ch == '%') {
+			p = g_utf8_next_char (p);
+			i++;
+			ch = g_utf8_get_char (p);
+
+			if (i >= n_chars || ch == '\0') {
+				g_warning ("Unescaped %% at end of text\n");
+				goto bail;
+			}
+
+			switch (ch) {
+			case '%':
+				g_string_append (str, "%");
+				break;
+			case 'c':
+				clock = gdm_common_get_clock (&the_tm);
+				g_string_append (str, clock);
+				g_free (clock);
+				break;
+			case 'd':
+				display = g_strdup (g_getenv ("DISPLAY"));
+				g_string_append (str, display);
+				break;
+			case 'h':
+				buf[sizeof (buf) - 1] = '\0';
+				r = gethostname (buf, sizeof (buf) - 1);
+				if (r)
+					g_string_append (str, "localhost");
+				else
+					g_string_append (str, buf);
+				break;
+			case 'm':
+				uname (&name);
+				g_string_append (str, name.machine);
+				break;
+			case 'n':
+				uname (&name);
+				g_string_append (str, name.nodename);
+				break;
+			case 'o':
+				buf[sizeof (buf) - 1] = '\0';
+				r = getdomainname (buf, sizeof (buf) - 1);
+				if (r)
+					g_string_append (str, "localdomain");
+				else
+					g_string_append (str, buf);
+				break;
+			case 'r':
+				uname (&name);
+				g_string_append (str, name.release);
+				break;
+			case 's':
+				uname (&name);
+				g_string_append (str, name.sysname);
+				break;
+			case 't':
+				g_string_append_printf (str, ngettext("%d second", "%d seconds", gdm_timed_delay),
+							gdm_timed_delay);
+				break;
+			case 'u':
+				g_string_append (str, ve_sure_string (g_getenv("GDM_TIMED_LOGIN_OK")));
+				break;
+			default:
+				if (ch < 127)
+					g_warning ("unknown escape code %%%c in text\n", (char)ch);
+				else
+					g_warning ("unknown escape code %%(U%x) in text\n", (int)ch);
+			}
+		} else if (ch == '_') {
+			/*
+			 * Could be true if an underscore was put right before a special
+			 * character like % or /
+			 */
+			if (underline == FALSE) {
+				underline = TRUE;
+				g_string_append (str, "<u>");
+			}
+		} else {
+			g_string_append_unichar (str, ch);
+			if (underline) {
+				underline = FALSE;
+				g_string_append (str, "</u>");
+			}
+		}
+		p = g_utf8_next_char (p);
+		i++;
 	}
-      else if (ch == '%')
-	{
-	  p = g_utf8_next_char (p);
-	  i++;
-	  ch = g_utf8_get_char (p);
 
-	  if (i >= n_chars || ch == '\0')
-	    {
-	      g_warning ("Unescaped %% at end of text\n");
-	      goto bail;
-	    }
-
-	  switch (ch)
-	    {
-	    case '%':
-	      g_string_append (str, "%");
-	      break;
-	    case 'c':
-	      clock = gdm_common_get_clock (&the_tm);
-	      g_string_append (str, clock);
-	      g_free (clock);
-	      break;
-	    case 'd':
-	      display = g_strdup (g_getenv ("DISPLAY"));
-	      g_string_append (str, display);
-	      break;
-	    case 'h':
-	      buf[sizeof (buf) - 1] = '\0';
-	      r = gethostname (buf, sizeof (buf) - 1);
-	      if (r)
-		g_string_append (str, "localhost");
-	      else
-		g_string_append (str, buf);
-	      break;
-	    case 'm':
-	      uname (&name);
-	      g_string_append (str, name.machine);
-	      break;
-	    case 'n':
-	      uname (&name);
-	      g_string_append (str, name.nodename);
-	      break;
-	    case 'o':
-	      buf[sizeof (buf) - 1] = '\0';
-	      r = getdomainname (buf, sizeof (buf) - 1);
-	      if (r)
-		g_string_append (str, "localdomain");
-	      else
-		g_string_append (str, buf);
-	      break;
-	    case 'r':
-	      uname (&name);
-	      g_string_append (str, name.release);
-	      break;
-	    case 's':
-	      uname (&name);
-	      g_string_append (str, name.sysname);
-	      break;
-	    case 't':
-	      g_string_append_printf (str, ngettext("%d second", "%d seconds", gdm_timed_delay),
-				      gdm_timed_delay);
-	      break;
-	    case 'u':
-	      g_string_append (str, ve_sure_string (g_getenv("GDM_TIMED_LOGIN_OK")));
-	      break;
-	    default:
-	      if (ch < 127)
-	        g_warning ("unknown escape code %%%c in text\n", (char)ch);
-	      else
-		g_warning ("unknown escape code %%(U%x) in text\n", (int)ch);
-	    }
-	}
-      else if (ch == '_')
-        {
-          /*
-           * Could be true if an underscore was put right before a special
-           * character like % or /
-           */
-          if (underline == FALSE) {
-            underline = TRUE;
-	    g_string_append (str, "<u>");
-	  }
-	}
-      else
-	{
-	  g_string_append_unichar (str, ch);
-	  if (underline)
-	    {
-	      underline = FALSE;
-	      g_string_append (str, "</u>");
-	    }
-	}
-      p = g_utf8_next_char (p);
-      i++;
-    }
-  
  bail:
 
-  if (underline)
-    g_string_append (str, "</u>");
+	if (underline)
+		g_string_append (str, "</u>");
 
-  return g_string_free (str, FALSE);
+	return g_string_free (str, FALSE);
 }
 

@@ -81,12 +81,14 @@ libgdmcommon_a_SOURCES = \
 	gdmconfig.c		\
 	gdmconfig.h		\
 	gdmcommon.c		\
-	gdmcommon.h
+	gdmcommon.h		\
+	$(NULL)
 
 gdmchooser_SOURCES = \
 	gdmchooser.c		\
 	misc.c			\
-	misc.h			
+	misc.h			\
+	$(NULL)
 
 gdmlogin_SOURCES = \
 	gdmlogin.c
@@ -112,7 +114,7 @@ gdmchooser_LDADD = \
 	$(X_LIBS)		\
 	$(XDMCP_LIBS)		\
 	-lX11			\
-	-lpopt
+	$(NULL)
 
 gdmlogin_LDADD = \
 	libgdmwm.a		\
@@ -128,7 +130,8 @@ gdmlogin_LDADD = \
 	$(X_EXTRA_LIBS)		\
 	$(XINERAMA_LIBS)	\
 	$(X_LIBS)		\
-	-lX11
+	-lX11			\
+	$(NULL)
 
 # LIBGNOMEUI should be removed from gdmsetup at some point.
 # It is needed because it uses gnome_help_display_uri(), which
@@ -150,7 +153,8 @@ gdmsetup_LDADD = \
 	$(top_builddir)/common/libgdmcommon.a \
 	$(X_LIBS)		\
 	-lXau			\
-	-lX11
+	-lX11			\
+	$(NULL)
 
 gdmphotosetup_LDADD = \
 	libgdmcommon.a		\
@@ -177,7 +181,7 @@ gdmXnestchooser_LDADD = \
 	$(X_LIBS)		\
 	-lXau			\
 	-lX11			\
-	-lpopt
+	$(NULL)
 
 gdmflexiserver_LDADD = \
 	libgdmcommon.a		\
@@ -191,7 +195,7 @@ gdmflexiserver_LDADD = \
 	$(X_LIBS)		\
 	-lX11			\
 	-lXau			\
-	-lpopt
+	$(NULL)
 
 gdmdynamic_LDADD = 		\
 	libgdmcommon.a		\
@@ -204,7 +208,8 @@ gdmdynamic_LDADD = 		\
 	$(EXTRA_DYNAMIC_LIBS)	\
 	$(X_LIBS)		\
 	-lX11			\
-	-lXau
+	-lXau			\
+	$(NULL)
 
 Settingsdir = $(datadir)/applications
 Settings_files = gdmphotosetup.desktop

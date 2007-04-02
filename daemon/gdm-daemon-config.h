@@ -22,12 +22,32 @@
 #ifndef _GDM_DAEMON_CONFIG_H
 #define _GDM_DAEMON_CONFIG_H
 
+#include "server.h"
 #include "gdm-daemon-config-entries.h"
 
 G_BEGIN_DECLS
 
+const char *   gdm_daemon_config_get_string_for_id    (int id);
+gboolean       gdm_daemon_config_get_bool_for_id      (int id);
+int            gdm_daemon_config_get_int_for_id       (int id);
+
+void           gdm_daemon_config_parse                (const char *config_file,
+                                                       gboolean    no_console);
+GdmXserver *   gdm_daemon_config_find_xserver         (const gchar *id);
+gchar *        gdm_daemon_config_get_xservers         (void);
+GSList *       gdm_daemon_config_get_display_list     (void);
+GSList *       gdm_daemon_config_display_list_append  (GdmDisplay *display);
+GSList *       gdm_daemon_config_display_list_insert  (GdmDisplay *display);
+GSList *       gdm_daemon_config_display_list_remove  (GdmDisplay *display);
+uid_t          gdm_daemon_config_get_gdmuid           (void);
+uid_t          gdm_daemon_config_get_gdmgid           (void);
+gint           gdm_daemon_config_get_high_display_num (void);
+void           gdm_daemon_config_set_high_display_num (gint val);
+
+/* deprecated */
 gchar*         gdm_daemon_config_get_display_custom_config_file (const gchar *display);
 gchar*         gdm_daemon_config_get_custom_config_file (void);
+
 
 const char*    gdm_daemon_config_get_value_string     (const gchar *key);
 gboolean       gdm_daemon_config_get_value_bool       (const gchar *key);
@@ -38,7 +58,6 @@ gboolean       gdm_daemon_config_get_value_bool_per_display   (const gchar *disp
                                                                const gchar *key);
 gint           gdm_daemon_config_get_value_int_per_display    (const gchar *display,
                                                                const gchar *key);
-
 
 void           gdm_daemon_config_set_value_string     (const gchar *key,
                                                        const gchar *value);
@@ -60,15 +79,8 @@ void           gdm_daemon_config_to_string            (const gchar *key,
 gboolean       gdm_daemon_config_update_key           (const gchar *key);
 
 
-void           gdm_daemon_config_parse                (const char *config_file);
-GdmXserver *   gdm_daemon_config_find_xserver         (const gchar *id);
-gchar *        gdm_daemon_config_get_xservers         (void);
 int            gdm_daemon_config_compare_displays     (gconstpointer a,
                                                        gconstpointer b);
-uid_t          gdm_daemon_config_get_gdmuid           (void);
-uid_t          gdm_daemon_config_get_gdmgid           (void);
-gint           gdm_daemon_config_get_high_display_num (void);
-void           gdm_daemon_config_set_high_display_num (gint val);
 gboolean       gdm_daemon_config_is_valid_key         (const gchar *key);
 gboolean       gdm_daemon_config_signal_terminthup_was_notified  (void);
 

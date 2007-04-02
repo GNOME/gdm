@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,7 +21,30 @@
 #ifndef GDM_SERVER_H
 #define GDM_SERVER_H
 
-#include "gdm.h"
+#include "display.h"
+
+typedef struct _GdmXserver GdmXserver;
+
+struct _GdmXserver
+{
+	char *id;
+	char *name;
+	char *command;
+	gboolean flexible;
+	gboolean choosable; /* not implemented yet */
+	gboolean chooser; /* instead of greeter, run chooser */
+	gboolean handled;
+	int number;
+	int priority;
+};
+
+/* These are the servstat values, also used as server
+ * process exit codes */
+#define SERVER_TIMEOUT 2	/* Server didn't start */
+#define SERVER_DEAD 250		/* Server stopped */
+#define SERVER_PENDING 251	/* Server started but not ready for connections yet */
+#define SERVER_RUNNING 252	/* Server running and ready for connections */
+#define SERVER_ABORT 253	/* Server failed badly. Suspending display. */
 
 /* Wipe cookie files */
 void		gdm_server_wipe_cookies	(GdmDisplay *disp);

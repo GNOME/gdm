@@ -24,14 +24,13 @@
 #ifndef GDM_COMMON_H
 #define GDM_COMMON_H
 
-#include <gtk/gtk.h> 
+#include <gtk/gtk.h>
 
 #include "misc.h"
 
 /* Handle error messages */
-void      gdm_common_openlog                (const char *ident,
-                                             int logopt,
-                                             int facility);
+void      gdm_common_log_init               (void);
+void      gdm_common_log_set_debug          (gboolean enable);
 void	  gdm_common_fail_exit		    (const gchar *format, ...)
 					     G_GNUC_PRINTF (1, 2);
 void	  gdm_common_fail_greeter	    (const gchar *format, ...)

@@ -21,15 +21,18 @@
 
 #include <glib.h>
 
-#ifndef TYPEDEF_GDM_CONNECTION
-#define TYPEDEF_GDM_CONNECTION
 typedef struct _GdmConnection GdmConnection;
-#endif  /* TYPEDEF_GDM_CONNECTION */
 
-#ifndef TYPEDEF_GDM_DISPLAY
-#define TYPEDEF_GDM_DISPLAY
-typedef struct _GdmDisplay GdmDisplay;
-#endif /* TYPEDEF_GDM_DISPLAY */
+#include "display.h"
+
+/* Macros to check authentication level */
+#define GDM_CONN_AUTHENTICATED(conn) \
+	((gdm_connection_get_user_flags (conn) & GDM_SUP_FLAG_AUTHENTICATED) || \
+	 (gdm_connection_get_user_flags (conn) & GDM_SUP_FLAG_AUTH_GLOBAL))
+
+#define GDM_CONN_AUTH_GLOBAL(conn) \
+	 (gdm_connection_get_user_flags (conn) & GDM_SUP_FLAG_AUTH_GLOBAL)
+
 
 /* Something that will get stuff line by line */
 typedef void (* GdmConnectionHandler) (GdmConnection *conn,

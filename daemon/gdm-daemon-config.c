@@ -38,6 +38,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <fcntl.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
@@ -49,8 +50,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include "gdm-common.h"
-
 #include "gdm.h"
 #include "verify.h"
 #include "gdm-net.h"
@@ -59,19 +58,20 @@
 #include "filecheck.h"
 #include "slave.h"
 
+#include "gdm-common.h"
 #include "gdm-config.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
+
+#include "gdm-socket-protocol.h"
 
 static GdmConfig *daemon_config = NULL;
 
-extern gboolean no_console;
-extern gboolean gdm_emergency_server;
+static GSList *displays = NULL;
+static GSList *xservers = NULL;
 
-GSList *displays          = NULL;
-GSList *xservers          = NULL;
-
-gint high_display_num = 0;
-char *custom_config_file = NULL;
+static gint high_display_num = 0;
+static char *custom_config_file = NULL;
 
 static uid_t GdmUserId;   /* Userid  under which gdm should run */
 static gid_t GdmGroupId;  /* Gruopid under which gdm should run */
@@ -135,6 +135,41 @@ gchar *
 gdm_daemon_config_get_custom_config_file (void)
 {
 	return custom_config_file;
+}
+
+/**
+ * gdm_daemon_config_get_display_list
+ *
+ * Returns the list of displays being used.
+ */
+GSList *
+gdm_daemon_config_get_display_list (void)
+{
+	return displays;
+}
+
+GSList *
+gdm_daemon_config_display_list_append (GdmDisplay *display)
+{
+	displays = g_slist_append (displays, display);
+	return displays;
+}
+
+GSList *
+gdm_daemon_config_display_list_insert (GdmDisplay *display)
+{
+        displays = g_slist_insert_sorted (displays,
+                                          display,
+                                          gdm_daemon_config_compare_displays);
+	return displays;
+}
+
+GSList *
+gdm_daemon_config_display_list_remove (GdmDisplay *display)
+{
+	displays = g_slist_remove (displays, display);
+
+	return displays;
 }
 
 /**
@@ -234,10 +269,61 @@ gdm_daemon_config_get_value_string (const char *keystring)
 }
 
 /**
+ * gdm_daemon_config_get_bool_for_id
+ *
+ * Gets a boolean configuration option by ID.  The option must
+ * first be loaded, say, by calling gdm_daemon_config_parse.
+ */
+gboolean
+gdm_daemon_config_get_bool_for_id (int id)
+{
+	gboolean val;
+
+	val = FALSE;
+	gdm_config_get_bool_for_id (daemon_config, id, &val);
+
+	return val;
+}
+
+/**
+ * gdm_daemon_config_get_int_for_id
+ *
+ * Gets a integer configuration option by ID.  The option must
+ * first be loaded, say, by calling gdm_daemon_config_parse.
+ */
+int
+gdm_daemon_config_get_int_for_id (int id)
+{
+	int val;
+
+	val = -1;
+	gdm_config_get_int_for_id (daemon_config, id, &val);
+
+	return val;
+}
+
+/**
+ * gdm_daemon_config_get_string_for_id
+ *
+ * Gets a string configuration option by ID.  The option must
+ * first be loaded, say, by calling gdm_daemon_config_parse.
+ */
+const char *
+gdm_daemon_config_get_string_for_id (int id)
+{
+	const char *val;
+
+	val = NULL;
+	gdm_config_peek_string_for_id (daemon_config, id, &val);
+
+	return val;
+}
+
+/**
  * gdm_daemon_config_get_value_bool
  *
  * Gets a boolean configuration option by key.  The option must
- * first be loaded, say, by calling gdm_config_parse.
+ * first be loaded, say, by calling gdm_daemon_config_parse.
  */
 gboolean
 gdm_daemon_config_get_value_bool (const char *keystring)
@@ -1684,7 +1770,8 @@ notify_cb (GdmConfig          *config,
 }
 
 static void
-handle_no_displays (GdmConfig *config)
+handle_no_displays (GdmConfig *config,
+		    gboolean   no_console)
 {
 	const char *server;
 	gboolean    console_notify;
@@ -1712,13 +1799,17 @@ handle_no_displays (GdmConfig *config)
 
 	/* yay, we can add a backup emergency server */
 	if (server != NULL) {
+		GdmDisplay *d;
+
 		int num = gdm_get_free_display (0 /* start */, 0 /* server uid */);
 
 		gdm_error (_("%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"),
 			   "gdm_config_parse", server, num);
 
-		gdm_emergency_server = TRUE;
-		displays = g_slist_append (displays, gdm_server_alloc (num, server));
+		d = gdm_server_alloc (num, server);
+		d->is_emergency_server = TRUE;
+
+		displays = g_slist_append (displays, d);
 
 		/* ALWAYS run the greeter and don't log anyone in,
 		 * this is just an emergency session */
@@ -1925,7 +2016,8 @@ gdm_daemon_check_permissions (GdmConfig *config,
  * Loads initial configuration settings.
  */
 void
-gdm_daemon_config_parse (const char *config_file)
+gdm_daemon_config_parse (const char *config_file,
+			 gboolean    no_console)
 {
 	uid_t         uid;
 	gid_t         gid;
@@ -1975,7 +2067,7 @@ gdm_daemon_config_parse (const char *config_file)
 	dynamic_enabled = FALSE;
 	gdm_config_get_bool_for_id (daemon_config, GDM_ID_DYNAMIC_XSERVERS, &dynamic_enabled);
 	if G_UNLIKELY ((displays == NULL) && (! xdmcp_enabled) && (! dynamic_enabled)) {
-		handle_no_displays (daemon_config);
+		handle_no_displays (daemon_config, no_console);
 	}
 
 	/* If no displays were found, then obviously

@@ -37,13 +37,18 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
+#include <X11/Xauth.h>
+
 #include "gdm.h"
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
+#include "server.h"
 
 static GSList *xservers          = NULL;
 static const char *send_command  = NULL;
@@ -756,7 +761,8 @@ main (int argc, char *argv[])
 		return 0;
 	}
 
-	gdmcomm_set_debug (debug_in);
+	gdm_log_init ();
+	gdm_log_set_debug (debug_in);
 
 	if (args_remaining != NULL && args_remaining[0] != NULL)
 		server = args_remaining[0];

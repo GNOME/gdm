@@ -21,7 +21,6 @@
 #include "config.h"
 
 #include <glib/gi18n.h>
-#include <syslog.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -41,18 +40,15 @@
 #include "gdm-net.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
 
 /* External vars */
-extern gint xdmcp_sessions;
-extern gint flexi_servers;
-extern gint xdmcp_pending;
-extern gboolean gdm_in_final_cleanup;
-extern GSList *displays;
 extern GdmConnection *fifoconn;
 extern GdmConnection *pipeconn;
 extern GdmConnection *unixconn;
 extern int slave_fifo_pipe_fd; /* the slavepipe (like fifo) connection, this is the write end */
+extern gint flexi_servers;
 
 static gboolean
 gdm_display_check_loop (GdmDisplay *disp)
@@ -276,6 +272,8 @@ gdm_display_manage (GdmDisplay *d)
 
     d->managetime = time (NULL);
 
+    g_debug ("Forking slave process");
+
     /* Fork slave process */
     pid = d->slavepid = fork ();
 
@@ -306,7 +304,7 @@ gdm_display_manage (GdmDisplay *d)
 	gdm_connection_close (unixconn);
 	unixconn = NULL;
 
-	closelog ();
+	gdm_log_shutdown ();
 
 	/* Close everything */
 	gdm_close_all_descriptors (0 /* from */, fds[0] /* except */, slave_fifo_pipe_fd /* except2 */);
@@ -317,7 +315,7 @@ gdm_display_manage (GdmDisplay *d)
 	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-	openlog ("gdm", LOG_PID, LOG_DAEMON);
+	gdm_log_init ();
 
 	d->slave_notify_fd = fds[0];
 
@@ -405,19 +403,17 @@ static void
 count_session_limits (void)
 {
 	GSList *li;
+	GSList *displays;
 
-	xdmcp_sessions = 0;
-	xdmcp_pending = 0;
+	displays = gdm_daemon_config_get_display_list ();
+
+	gdm_xdmcp_recount_sessions ();
+
 	flexi_servers = 0;
 
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
-		if (SERVER_IS_XDMCP (d)) {
-			if (d->dispstat == XDMCP_MANAGED)
-				xdmcp_sessions++;
-			else if (d->dispstat == XDMCP_PENDING)
-				xdmcp_pending++;
-		}
+
 		if (SERVER_IS_FLEXI (d)) {
 			flexi_servers++;
 		}
@@ -434,6 +430,7 @@ count_session_limits (void)
 void
 gdm_display_dispose (GdmDisplay *d)
 {
+
     if (d == NULL)
 	return;
 
@@ -457,7 +454,7 @@ gdm_display_dispose (GdmDisplay *d)
 	    d->master_notify_fd = -1;
     }
 
-    displays = g_slist_remove (displays, d);
+    gdm_daemon_config_display_list_remove (d);
 
     d->dispstat = DISPLAY_DEAD;
     d->type = -1;
@@ -577,6 +574,9 @@ GdmDisplay *
 gdm_display_lookup (pid_t pid)
 {
     GSList *li;
+    GSList *displays;
+
+    displays = gdm_daemon_config_get_display_list ();
 
     /* Find slave in display list */
     for (li = displays; li != NULL; li = li->next) {

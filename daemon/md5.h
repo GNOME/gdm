@@ -19,6 +19,8 @@
 #ifndef GdmMD5_H
 #define GdmMD5_H
 
+#include <glib.h>
+
 struct GdmMD5Context {
 	guint32 buf[4];
 	guint32 bits[2];

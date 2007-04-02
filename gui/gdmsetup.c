@@ -50,7 +50,10 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
+
+#include "server.h"
 
 static char     *GdmSoundProgram = NULL;
 static gchar    *GdmExclude      = NULL;

@@ -23,7 +23,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
-#include <syslog.h>
 #include <errno.h>
 
 #if HAVE_PAM
@@ -39,6 +38,7 @@
 #include <libgnomecanvas/libgnomecanvas.h>
 
 #include "gdm-common.h"
+#include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 
 #include "gdm.h"
@@ -826,8 +826,6 @@ gdm_read_config (void)
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
 
-	gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
-
 	/*
 	 * Read all the keys at once and close sockets connection so we do
 	 * not have to keep the socket open.
@@ -918,9 +916,6 @@ greeter_reread_config (int sig, gpointer data)
 
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
-
-	if (gdm_config_reload_bool (GDM_KEY_DEBUG))
-		gdmcomm_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
@@ -1198,8 +1193,6 @@ main (int argc, char *argv[])
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
     DOING_GDM_DEVELOPMENT = TRUE;
 
-  gdm_common_openlog ("gdmgreeter", LOG_PID, LOG_DAEMON);
-
   bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
@@ -1220,10 +1213,13 @@ main (int argc, char *argv[])
   if (! DOING_GDM_DEVELOPMENT) {
        gdm_common_atspi_launch ();
   }
-  
+
   gtk_init (&argc, &argv);
 
   gdm_common_setup_cursor (GDK_WATCH);
+
+  gdm_common_log_init ();
+  gdm_common_log_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
   /* Read all configuration at once, so the values get cached */
   gdm_read_config ();

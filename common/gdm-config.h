@@ -125,7 +125,10 @@ char **                gdm_config_get_keys_for_group     (GdmConfig       *confi
 							  gsize           *length,
 							  GError         **error);
 
-
+gboolean               gdm_config_peek_value             (GdmConfig             *config,
+							  const char            *group,
+							  const char            *key,
+							  const GdmConfigValue **value);
 gboolean               gdm_config_get_value              (GdmConfig       *config,
 							  const char      *group,
 							  const char      *key,
@@ -135,6 +138,7 @@ gboolean               gdm_config_set_value              (GdmConfig       *confi
 							  const char      *key,
 							  GdmConfigValue  *value);
 
+/* convenience functions */
 gboolean               gdm_config_get_value_for_id       (GdmConfig       *config,
 							  int              id,
 							  GdmConfigValue **value);
@@ -142,18 +146,27 @@ gboolean               gdm_config_set_value_for_id       (GdmConfig       *confi
 							  int              id,
 							  GdmConfigValue  *value);
 
+gboolean               gdm_config_peek_string_for_id     (GdmConfig       *config,
+							  int              id,
+							  const char     **str);
 gboolean               gdm_config_get_string_for_id      (GdmConfig       *config,
 							  int              id,
 							  char           **str);
 gboolean               gdm_config_get_bool_for_id        (GdmConfig       *config,
 							  int              id,
 							  gboolean        *bool);
+gboolean               gdm_config_get_int_for_id         (GdmConfig       *config,
+							  int              id,
+							  int             *integer);
 gboolean               gdm_config_set_string_for_id      (GdmConfig       *config,
 							  int              id,
 							  char            *str);
 gboolean               gdm_config_set_bool_for_id        (GdmConfig       *config,
 							  int              id,
 							  gboolean         bool);
+gboolean               gdm_config_set_int_for_id         (GdmConfig       *config,
+							  int              id,
+							  int              integer);
 
 /* Config Values */
 

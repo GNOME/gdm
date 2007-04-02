@@ -1107,14 +1107,14 @@ gdm_config_process_all (GdmConfig *config,
 }
 
 gboolean
-gdm_config_get_value (GdmConfig       *config,
-		      const char      *group,
-		      const char      *key,
-		      GdmConfigValue **valuep)
+gdm_config_peek_value (GdmConfig             *config,
+		       const char            *group,
+		       const char            *key,
+		       const GdmConfigValue **valuep)
 {
-	gboolean        ret;
-	char           *key_path;
-	GdmConfigValue *value;
+	gboolean              ret;
+	char                 *key_path;
+	const GdmConfigValue *value;
 
 	g_return_val_if_fail (config != NULL, FALSE);
 
@@ -1128,13 +1128,30 @@ gdm_config_get_value (GdmConfig       *config,
 
 	if (valuep != NULL) {
 		if (ret) {
-			*valuep = gdm_config_value_copy (value);
+			*valuep = value;
 		} else {
 			*valuep = NULL;
 		}
 	}
 
 	return ret;
+}
+
+gboolean
+gdm_config_get_value (GdmConfig       *config,
+		      const char      *group,
+		      const char      *key,
+		      GdmConfigValue **valuep)
+{
+	gboolean              res;
+	const GdmConfigValue *value;
+
+	res = gdm_config_peek_value (config, group, key, &value);
+	if (valuep != NULL) {
+		*valuep = (value == NULL) ? NULL : gdm_config_value_copy (value);
+	}
+
+	return res;
 }
 
 gboolean
@@ -1151,6 +1168,23 @@ gdm_config_set_value (GdmConfig       *config,
 	internal_set_value (config, GDM_CONFIG_SOURCE_RUNTIME_USER, group, key, value);
 
 	return TRUE;
+}
+
+static gboolean
+gdm_config_peek_value_for_id (GdmConfig             *config,
+			      int                    id,
+			      const GdmConfigValue **valuep)
+{
+	const GdmConfigEntry *entry;
+
+	g_return_val_if_fail (config != NULL, FALSE);
+
+	entry = gdm_config_lookup_entry_for_id (config, id);
+	if (entry == NULL) {
+		return FALSE;
+	}
+
+	return gdm_config_peek_value (config, entry->group, entry->key, valuep);
 }
 
 gboolean
@@ -1188,27 +1222,41 @@ gdm_config_set_value_for_id (GdmConfig      *config,
 }
 
 gboolean
-gdm_config_get_string_for_id (GdmConfig       *config,
-			      int              id,
-			      char           **strp)
+gdm_config_peek_string_for_id (GdmConfig       *config,
+			       int              id,
+			       const char     **strp)
 {
-	GdmConfigValue *value;
-	const char     *str;
-	gboolean        res;
+	const GdmConfigValue *value;
+	const char           *str;
+	gboolean              res;
 
 	g_return_val_if_fail (config != NULL, FALSE);
 
-	res = gdm_config_get_value_for_id (config, id, &value);
+	res = gdm_config_peek_value_for_id (config, id, &value);
 	if (! res) {
 		return FALSE;
 	}
 
 	str = gdm_config_value_get_string (value);
 	if (strp != NULL) {
-		*strp = g_strdup (str);
+		*strp = str;
 	}
 
-	gdm_config_value_free (value);
+	return res;
+}
+
+gboolean
+gdm_config_get_string_for_id (GdmConfig       *config,
+			      int              id,
+			      char           **strp)
+{
+	gboolean    res;
+	const char *str;
+
+	res = gdm_config_peek_string_for_id (config, id, &str);
+	if (strp != NULL) {
+		*strp = g_strdup (str);
+	}
 
 	return res;
 }
@@ -1232,6 +1280,32 @@ gdm_config_get_bool_for_id (GdmConfig       *config,
 	bool = gdm_config_value_get_bool (value);
 	if (boolp != NULL) {
 		*boolp = bool;
+	}
+
+	gdm_config_value_free (value);
+
+	return res;
+}
+
+gboolean
+gdm_config_get_int_for_id (GdmConfig       *config,
+			   int              id,
+			   int             *integerp)
+{
+	GdmConfigValue *value;
+	gboolean        integer;
+	gboolean        res;
+
+	g_return_val_if_fail (config != NULL, FALSE);
+
+	res = gdm_config_get_value_for_id (config, id, &value);
+	if (! res) {
+		return FALSE;
+	}
+
+	integer = gdm_config_value_get_int (value);
+	if (integerp != NULL) {
+		*integerp = integer;
 	}
 
 	gdm_config_value_free (value);
@@ -1270,6 +1344,25 @@ gdm_config_set_bool_for_id (GdmConfig      *config,
 
 	value = gdm_config_value_new (GDM_CONFIG_VALUE_BOOL);
 	gdm_config_value_set_bool (value, bool);
+
+	res = gdm_config_set_value_for_id (config, id, value);
+	gdm_config_value_free (value);
+
+	return res;
+}
+
+gboolean
+gdm_config_set_int_for_id (GdmConfig      *config,
+			   int             id,
+			   int             integer)
+{
+	GdmConfigValue *value;
+	gboolean        res;
+
+	g_return_val_if_fail (config != NULL, FALSE);
+
+	value = gdm_config_value_new (GDM_CONFIG_VALUE_INT);
+	gdm_config_value_set_int (value, integer);
 
 	res = gdm_config_set_value_for_id (config, id, value);
 	gdm_config_value_free (value);

@@ -1,4 +1,4 @@
-## Process this file with automake to produce makefile.in
+NULL =
 
 # Note that we have cflags for just about everything even if
 # we don't link to everything
@@ -35,7 +35,8 @@ INCLUDES = \
 #	-DGNOME_DISABLE_DEPRECATED			\
 #
 
-sbin_PROGRAMS = gdm-binary
+sbin_PROGRAMS = gdm-binary		\
+	$(NULL)
 
 gdm_binary_SOURCES = \
 	gdm.c \
@@ -71,20 +72,27 @@ gdm_binary_SOURCES = \
 	gdm-net.c \
 	gdm-net.h \
 	getvt.c \
-	getvt.h
+	getvt.h	\
+	$(NULL)
 
-EXTRA_gdm_binary_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
+EXTRA_gdm_binary_SOURCES = 	\
+	verify-pam.c		\
+	verify-crypt.c		\
+	verify-shadow.c		\
+	$(NULL)
 
-CONSOLE_KIT_SOURCES = \
-	gdmconsolekit.c \
-	gdmconsolekit.h
+CONSOLE_KIT_SOURCES = 		\
+	gdmconsolekit.c		\
+	gdmconsolekit.h		\
+	$(NULL)
 
 EXTRA_gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
 
 # Note that these libs are in LDFLAGS because they should come before
 # everything else on the link line as they may override stuff
-gdm_binary_LDFLAGS = \
-	$(EXTRA_DAEMON_LIBS)
+gdm_binary_LDFLAGS =				\
+	$(EXTRA_DAEMON_LIBS)			\
+	$(NULL)
 
 gdm_binary_LDADD = \
 	$(DAEMON_LIBS)				\
@@ -99,7 +107,7 @@ gdm_binary_LDADD = \
 	-lXau					\
 	-lX11					\
 	-lXext					\
-	-lpopt
+	$(NULL)
 
 if WITH_CONSOLE_KIT
 gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)

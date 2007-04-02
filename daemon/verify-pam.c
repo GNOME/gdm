@@ -18,11 +18,12 @@
 
 #include "config.h"
 
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 #include <grp.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
 #include <syslog.h>
 #include <security/pam_appl.h>
 #include <pwd.h>
@@ -39,7 +40,10 @@
 #include "errorgui.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
+
+#include "gdm-socket-protocol.h"
 
 #ifdef	HAVE_LOGINDEVPERM
 #include <libdevinfo.h>
@@ -515,9 +519,9 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
     }
 
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    closelog ();
-    openlog ("gdm", LOG_PID, LOG_DAEMON);
-    
+    gdm_log_shutdown ();
+    gdm_log_init ();
+
     for (replies = 0; replies < num_msg; replies++) {
 	const char *m = (*msg)[replies].msg;
 	m = perhaps_translate_message (m);
@@ -691,7 +695,7 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 
 		case PAM_ERROR_MSG:
 			/* PAM sent a message that should displayed to the user */
-			gdm_error_box (cur_gdm_disp,
+			gdm_errorgui_error_box (cur_gdm_disp,
 				       GTK_MESSAGE_ERROR,
 				       m);
 			reply[replies].resp_retcode = PAM_SUCCESS;
@@ -700,7 +704,7 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 
 		case PAM_TEXT_INFO:
 			/* PAM sent a message that should displayed to the user */
-			gdm_error_box (cur_gdm_disp,
+			gdm_errorgui_error_box (cur_gdm_disp,
 				       GTK_MESSAGE_INFO,
 				       m);
 			reply[replies].resp_retcode = PAM_SUCCESS;
@@ -1141,8 +1145,8 @@ authenticate_again:
     }
 
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    closelog ();
-    openlog ("gdm", LOG_PID, LOG_DAEMON);
+    gdm_log_shutdown ();
+    gdm_log_init ();
 
     cur_gdm_disp = NULL;
 
@@ -1225,8 +1229,8 @@ authenticate_again:
     pamh = NULL;
     
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    closelog ();
-    openlog ("gdm", LOG_PID, LOG_DAEMON);
+    gdm_log_shutdown ();
+    gdm_log_init ();
 
     g_free (login);
 
@@ -1307,7 +1311,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
 	    if (gdm_slave_action_pending ()) {
 		    gdm_error (_("Couldn't authenticate user"));
-		    gdm_error_box (cur_gdm_disp,
+		    gdm_errorgui_error_box (cur_gdm_disp,
 				   GTK_MESSAGE_ERROR,
 				   _("Authentication failed"));
 	    }
@@ -1319,7 +1323,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	       pretty much look as such, it shouldn't really
 	       happen */
 	    gdm_error (_("Couldn't authenticate user"));
-	    gdm_error_box (cur_gdm_disp,
+	    gdm_errorgui_error_box (cur_gdm_disp,
 			   GTK_MESSAGE_ERROR,
 			   _("Authentication failed"));
 	    goto setup_pamerr;
@@ -1349,7 +1353,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 #if	0	/* don't change password */
 	if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
 	    gdm_error (_("Authentication token change failed for user %s"), login);
-	    gdm_error_box (cur_gdm_disp,
+	    gdm_errorgui_error_box (cur_gdm_disp,
 			   GTK_MESSAGE_ERROR,
 		    _("\nThe change of the authentication token failed. "
 		      "Please try again later or contact the system administrator."));
@@ -1365,13 +1369,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
         break;
     case PAM_ACCT_EXPIRED :
 	gdm_error (_("User %s no longer permitted to access the system"), login);
-	gdm_error_box (cur_gdm_disp,
+	gdm_errorgui_error_box (cur_gdm_disp,
 		       GTK_MESSAGE_ERROR,
 		       _("The system administrator has disabled your account."));
 	goto setup_pamerr;
     case PAM_PERM_DENIED :
 	gdm_error (_("User %s not permitted to gain access at this time"), login);
-	gdm_error_box (cur_gdm_disp,
+	gdm_errorgui_error_box (cur_gdm_disp,
 		       GTK_MESSAGE_ERROR,
 		       _("The system administrator has disabled your access to the system temporarily."));
 	goto setup_pamerr;
@@ -1385,7 +1389,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     if (/* paranoia */ pwent == NULL ||
        	! gdm_setup_gids (login, pwent->pw_gid)) {
 	    gdm_error (_("Cannot set user group for %s"), login);
-	    gdm_error_box (cur_gdm_disp,
+	    gdm_errorgui_error_box (cur_gdm_disp,
 			   GTK_MESSAGE_ERROR,
 			   _("Cannot set your user group; "
 			     "you will not be able to log in. "
@@ -1433,8 +1437,8 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 
 
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    closelog ();
-    openlog ("gdm", LOG_PID, LOG_DAEMON);
+    gdm_log_shutdown ();
+    gdm_log_init ();
 
     cur_gdm_disp = NULL;
 
@@ -1478,8 +1482,8 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     pamh = NULL;
     
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    closelog ();
-    openlog ("gdm", LOG_PID, LOG_DAEMON);
+    gdm_log_shutdown ();
+    gdm_log_init ();
 
     cur_gdm_disp = NULL;
 
@@ -1557,8 +1561,8 @@ gdm_verify_cleanup (GdmDisplay *d)
 #endif  /* HAVE_LOGINDEVPERM */
 
 		/* Workaround to avoid gdm messages being logged as PAM_pwdb */
-		closelog ();
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+                gdm_log_shutdown ();
+                gdm_log_init ();
 	}
 
 	/* Clear the group setup */
@@ -1591,8 +1595,8 @@ gdm_verify_check (void)
 		&standalone_pamc, &ph) != PAM_SUCCESS) {
 		ph = NULL; /* be anal */
 
-		closelog ();
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+                gdm_log_shutdown ();
+                gdm_log_init ();
 
 		if (gdm_daemon_config_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
 			gdm_text_message_dialog
@@ -1604,8 +1608,8 @@ gdm_verify_check (void)
 	if (ph != NULL)
 		pam_end (ph, PAM_SUCCESS);
 
-	closelog ();
-	openlog ("gdm", LOG_PID, LOG_DAEMON);
+        gdm_log_shutdown ();
+        gdm_log_init ();
 }
 
 /* used in pam */

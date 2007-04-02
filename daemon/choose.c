@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,7 +24,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <syslog.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -44,7 +45,10 @@
 #include "xdmcp.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-daemon-config.h"
+
+#include "gdm-socket-protocol.h"
 
 static gint ipending = 0;
 static GSList *indirect = NULL;
@@ -76,75 +80,93 @@ remove_oldest_pending (void)
 	}
 }
 
+static gboolean
+get_first_address_for_node (const char               *node,
+			    struct sockaddr_storage **sa)
+{
+	struct addrinfo  hints;
+	struct addrinfo *ai_list;
+	struct addrinfo *ai;
+	int              gaierr;
+	gboolean         found;
+	char             strport[NI_MAXSERV];
+
+	found = FALSE;
+
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_family = AF_UNSPEC;
+
+	snprintf (strport, sizeof (strport), "%u", XDM_UDP_PORT);
+
+	if ((gaierr = getaddrinfo (node, strport, &hints, &ai_list)) != 0) {
+		g_warning ("Unable get address: %s", gai_strerror (gaierr));
+		return FALSE;
+	}
+
+	for (ai = ai_list; ai != NULL; ai = ai->ai_next) {
+		if (ai->ai_family != AF_INET && ai->ai_family != AF_INET6) {
+			continue;
+		}
+#ifndef ENABLE_IPV6
+		if (ai->ai_family == AF_INET6) {
+			continue;
+		}
+#endif
+		found = TRUE;
+		break;
+	}
+
+	if (ai != NULL) {
+		if (sa != NULL) {
+			*sa = g_memdup (ai->ai_addr, ai->ai_addrlen);
+		}
+	}
+
+	freeaddrinfo (ai_list);
+
+	return found;
+}
+
 gboolean
 gdm_choose_data (const char *data)
 {
 	int id;
-	int t;
-	int status = 0;  /* 4 for IPv4 and 6 for IPv6  */
-	struct in_addr addr;
-#ifdef ENABLE_IPV6
-	struct in6_addr addr6;
-#endif
+	struct sockaddr_storage *sa;
 	GSList *li;
-	char *msg = g_strdup (data);
+	char *msg;
 	char *p;
+	char *host;
+	gboolean ret;
+
+	msg = g_strdup (data);
+	sa = NULL;
+	ret = FALSE;
 
 	p = strtok (msg, " ");
 	if (p == NULL || strcmp (GDM_SOP_CHOSEN, p) != 0) {
-		g_free (msg);
-		return FALSE;
+		goto out;
 	}
 
 	p = strtok (NULL, " ");
 	if (p == NULL || sscanf (p, "%d", &id) != 1) {
-		g_free (msg);
-		return FALSE;
+		goto out;
 	}
 
 	p = strtok (NULL, " ");
 
 	if (p == NULL) {
-		g_free (msg);
-		return FALSE;
+		goto out;
 	}
 
-	t = inet_pton (AF_INET, p, &addr);   /* Check if address is IPv4  */
-
-	if (t > 0)
-		status = AF_INET;  /* Yes, it's an IPv4 address */
-	else
-	{
-		if (t == 0) {         /* It might be an IPv6 one */
-#ifdef ENABLE_IPV6
-			t = inet_pton (AF_INET6, p, &addr6);
-#endif
-			if (t > 0)
-				status = AF_INET6;
-		}
+	if (! get_first_address_for_node (p, &sa)) {
+		goto out;
 	}
 
-	if (p == NULL || t <= 0) {
-		g_free (msg);
-		return FALSE;
-	}
-
-	g_free (msg);
-
-
-#ifdef ENABLE_IPV6
-	if (status == AF_INET6) {
-		char buffer6[INET6_ADDRSTRLEN];
-
-		gdm_debug ("gdm_choose_data: got indirect id: %d address: %s", id, inet_ntop (AF_INET6, &addr6, buffer6, INET6_ADDRSTRLEN));
-	}
-	else
-#endif
-	{
-		char buffer[INET_ADDRSTRLEN];
-
-		gdm_debug ("gdm_choose_data: got indirect id: %d address: %s", id, inet_ntop (AF_INET, &addr, buffer, INET_ADDRSTRLEN));
-	}
+	gdm_address_get_info (sa, &host, NULL);
+	gdm_debug ("gdm_choose_data: got indirect id: %d address: %s",
+		   id,
+		   host);
+	g_free (host);
 
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *idisp = li->data;
@@ -155,77 +177,56 @@ gdm_choose_data (const char *data)
 				;
 
 			idisp->acctime = time (NULL);
-#ifdef ENABLE_IPV6
-			if (status == AF_INET6) {
-				g_free (idisp->chosen_host6);
-				idisp->chosen_host6 = g_new (struct in6_addr, 1);
-				memcpy (idisp->chosen_host6, &addr6, sizeof (struct in6_addr));
-			}
-			else
-#endif
-			{
-				g_free (idisp->chosen_host);
-				idisp->chosen_host = g_new (struct in_addr, 1);
-				memcpy (idisp->chosen_host, &addr, sizeof (struct in_addr));
-			}
+
+			g_free (idisp->chosen_host);
+			idisp->chosen_host = g_memdup (sa, sizeof (struct sockaddr_storage));
 
 			/* Now this display is pending */
 			ipending++;
 
-			return TRUE;
+			ret = TRUE;
+			break;
 		}
 	}
+ out:
+	g_free (sa);
+	g_free (msg);
 
-	return FALSE;
+	return ret;
 }
 
 
 GdmIndirectDisplay *
-#ifdef ENABLE_IPV6
 gdm_choose_indirect_alloc (struct sockaddr_storage *clnt_sa)
-#else
-gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
-#endif
 {
-    GdmIndirectDisplay *id;
+	GdmIndirectDisplay *id;
+	char *host;
 
-    if (clnt_sa == NULL)
-	    return NULL;
+	if (clnt_sa == NULL)
+		return NULL;
 
-    id = g_new0 (GdmIndirectDisplay, 1);
-    id->id = indirect_id++;
-    /* deal with a rollover, that will NEVER EVER happen,
-     * but I'm a paranoid bastard */
-    if (id->id == 0)
+	id = g_new0 (GdmIndirectDisplay, 1);
+	id->id = indirect_id++;
+	/* deal with a rollover, that will NEVER EVER happen,
+	 * but I'm a paranoid bastard */
+	if (id->id == 0)
 	    id->id = indirect_id++;
-#ifdef ENABLE_IPV6
-    id->dsp_sa = g_new0 (struct sockaddr_storage, 1);
-    memcpy (id->dsp_sa, clnt_sa, sizeof (struct sockaddr_storage));
-    id->chosen_host6 = NULL;
-#else
-    id->dsp_sa = g_new0 (struct sockaddr_in, 1);
-    memcpy (id->dsp_sa, clnt_sa, sizeof (struct sockaddr_in));
-#endif
-    id->acctime = 0;
-    id->chosen_host = NULL;
-    
-    indirect = g_slist_prepend (indirect, id);
-    
-#ifdef ENABLE_IPV6
-    if (clnt_sa->ss_family == AF_INET6) {
-	    char buffer6[INET6_ADDRSTRLEN];
 
-	    gdm_debug ("gdm_choose_display_alloc: display=%s, pending=%d ", inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)(id->dsp_sa))->sin6_addr), buffer6, INET6_ADDRSTRLEN), ipending);
-    }
-    else
-#endif
-    {
-	    char buffer[INET_ADDRSTRLEN];
+	id->dsp_sa = g_memdup (clnt_sa, sizeof (struct sockaddr_storage));
+	id->chosen_host = NULL;
 
-	    gdm_debug ("gdm_choose_display_alloc: display=%s, pending=%d ", inet_ntop (AF_INET, &((struct sockaddr_in *)(id->dsp_sa))->sin_addr, buffer, INET_ADDRSTRLEN), ipending);
-    }
+	id->acctime = 0;
 
-    return (id);
+	indirect = g_slist_prepend (indirect, id);
+
+	gdm_address_get_info (id->dsp_sa, &host, NULL);
+
+	gdm_debug ("gdm_choose_display_alloc: display=%s, pending=%d ",
+		   host,
+		   ipending);
+	g_free (host);
+
+	return (id);
 }
 
 /* dispose of indirect display of id, if no host is set */
@@ -233,7 +234,7 @@ void
 gdm_choose_indirect_dispose_empty_id (guint id)
 {
 	GSList *li;
-	
+
 	if (id == 0)
 		return;
 
@@ -244,188 +245,114 @@ gdm_choose_indirect_dispose_empty_id (guint id)
 			continue;
 
 		if (idisp->id == id) {
-			if (
-#ifdef ENABLE_IPV6
-			    (idisp->chosen_host6 == NULL) ||
-#endif
-			    (idisp->chosen_host == NULL))
+			if (idisp->chosen_host == NULL)
 				gdm_choose_indirect_dispose (idisp);
 			return;
 		}
 	}
 }
 
-#ifdef ENABLE_IPV6
 GdmIndirectDisplay *
-gdm_choose_indirect_lookup_by_chosen6 (struct in6_addr *chosen,
-                                     struct in6_addr *origin)
+gdm_choose_indirect_lookup_by_chosen (struct sockaddr_storage *chosen,
+				      struct sockaddr_storage *origin)
 {
 	GSList *li;
-	char buffer6[INET6_ADDRSTRLEN];
+	char *host;
 
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *id = li->data;
 
-		if (id != NULL &&
-                   id->chosen_host6 != NULL &&
-                   id->chosen_host6->s6_addr == chosen->s6_addr) {
-
-			if (((struct sockaddr_in6 *)(id->dsp_sa))->sin6_addr.s6_addr == origin->s6_addr) {
-				return id;
-			} else if (gdm_is_loopback_addr6 (&(((struct sockaddr_in6 *)(id->dsp_sa))->sin6_addr)) && gdm_is_local_addr6 (origin)) {
-				return id;
-			}
-		}
-	}
-   
-	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Chosen %s host not found", inet_ntop (AF_INET6, chosen, buffer6, INET6_ADDRSTRLEN));
-
-	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Origin was: %s", inet_ntop (AF_INET6, origin, buffer6, INET6_ADDRSTRLEN));
-
-	return NULL;
-}
-#endif
-
-
-GdmIndirectDisplay *
-gdm_choose_indirect_lookup_by_chosen (struct in_addr *chosen,
-				      struct in_addr *origin)
-{
-	GSList *li;
-
-	for (li = indirect; li != NULL; li = li->next) {
-		GdmIndirectDisplay *id = li->data;
 		if (id != NULL &&
 		    id->chosen_host != NULL &&
-		    id->chosen_host->s_addr == chosen->s_addr) {
-			if (((struct sockaddr_in *)(id->dsp_sa))->sin_addr.s_addr == origin->s_addr) {
+		    gdm_address_equal (id->chosen_host, chosen)) {
+			if (gdm_address_equal (id->dsp_sa, origin)) {
 				return id;
-			} else if (gdm_is_loopback_addr (&(((struct sockaddr_in *)(id->dsp_sa))->sin_addr)) &&
-				   gdm_is_local_addr (origin)) {
+			} else if (gdm_address_is_loopback (id->dsp_sa) &&
+				   gdm_address_is_local (origin)) {
 				return id;
 			}
 		}
 	}
-    
+
+	gdm_address_get_info (chosen, &host, NULL);
+
 	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Chosen %s host not found",
-		   inet_ntoa (*chosen));
+		   host);
 	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Origin was: %s",
-		   inet_ntoa (*origin));
+		   host);
+	g_free (host);
 
 	return NULL;
 }
 
 
 GdmIndirectDisplay *
-#ifdef ENABLE_IPV6
 gdm_choose_indirect_lookup (struct sockaddr_storage *clnt_sa)
-#else
-gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
-#endif
 {
-    GSList *li, *ilist;
-    GdmIndirectDisplay *id;
-    time_t curtime = time (NULL);
+	GSList *li, *ilist;
+	GdmIndirectDisplay *id;
+	time_t curtime = time (NULL);
+	char *host;
 
-    ilist = g_slist_copy (indirect);
-    
-    for (li = ilist; li != NULL; li = li->next) {
-        id = (GdmIndirectDisplay *) li->data;
-	if (id == NULL)
-		continue;
+	ilist = g_slist_copy (indirect);
 
-	if (id->acctime > 0 &&
-	    curtime > id->acctime + gdm_daemon_config_get_value_int (GDM_KEY_MAX_WAIT_INDIRECT)) {
-#ifdef ENABLE_IPV6
-	    if (clnt_sa->ss_family == AF_INET6) {
-		char buffer6[INET6_ADDRSTRLEN];
+	for (li = ilist; li != NULL; li = li->next) {
+		id = (GdmIndirectDisplay *) li->data;
+		if (id == NULL)
+			continue;
 
-		gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s", inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)clnt_sa)->sin6_addr), buffer6, INET6_ADDRSTRLEN));
-	    }
-	    else
-#endif
-	    {
-		char buffer[INET_ADDRSTRLEN];
+		if (id->acctime > 0 &&
+		    curtime > id->acctime + gdm_daemon_config_get_value_int (GDM_KEY_MAX_WAIT_INDIRECT)) {
 
-		gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s", inet_ntop (AF_INET, &((struct sockaddr_in *)clnt_sa)->sin_addr, buffer, INET_ADDRSTRLEN));
-	    }
+			gdm_address_get_info (clnt_sa, &host, NULL);
+			gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
+				   host);
+			g_free (host);
 
-	    gdm_choose_indirect_dispose (id);
-	    continue;
+			gdm_choose_indirect_dispose (id);
+			continue;
+		}
+
+		if (gdm_address_equal (id->dsp_sa, clnt_sa)) {
+			g_slist_free (ilist);
+			return id;
+		}
 	}
-	
-#ifdef ENABLE_IPV6
-	if (clnt_sa->ss_family == AF_INET6) {
-	    if (memcmp (((struct sockaddr_in6 *)(id->dsp_sa))->sin6_addr.s6_addr, ((struct sockaddr_in6 *)clnt_sa)->sin6_addr.s6_addr, sizeof (struct in6_addr)) == 0) {
-		g_slist_free (ilist);
-		return id;
-	    }
-	}
-	else
-#endif
-	{
-	    if (((struct sockaddr_in *)(id->dsp_sa))->sin_addr.s_addr == ((struct sockaddr_in *)clnt_sa)->sin_addr.s_addr) {
-		g_slist_free (ilist);
-		return id;
-	    }
-	}
-    }
-    g_slist_free (ilist);
-    
-#ifdef ENABLE_IPV6
-    if (clnt_sa->ss_family == AF_INET6) {
-	char buffer6[INET6_ADDRSTRLEN];
+	g_slist_free (ilist);
 
-	gdm_debug ("gdm_choose_indirect_lookup: Host %s not found", inet_ntop (AF_INET6, &((struct sockaddr_in6 *)clnt_sa)->sin6_addr, buffer6, INET6_ADDRSTRLEN));
-    }
-    else
-#endif
-    {
-	char buffer[INET_ADDRSTRLEN];
+	gdm_address_get_info (clnt_sa, &host, NULL);
+	gdm_debug ("gdm_choose_indirect_lookup: Host %s not found",
+		   host);
+	g_free (host);
 
-	gdm_debug ("gdm_choose_indirect_lookup: Host %s not found", inet_ntop (AF_INET, &((struct sockaddr_in *)clnt_sa)->sin_addr, buffer, INET_ADDRSTRLEN));
-    }
-
-    return NULL;
+	return NULL;
 }
 
 
 void
 gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 {
-    if (id == NULL)
-	return;
+	char *host;
 
-    indirect = g_slist_remove (indirect, id);
+	if (id == NULL)
+		return;
 
-    if (id->acctime > 0)
-	    ipending--;
-    id->acctime = 0;
+	indirect = g_slist_remove (indirect, id);
 
-#ifdef ENABLE_IPV6
-    if (id->dsp_sa->ss_family == AF_INET6) {
-	    char buffer6[INET6_ADDRSTRLEN];
+	if (id->acctime > 0)
+		ipending--;
+	id->acctime = 0;
 
-	    gdm_debug ("gdm_choose_indirect_dispose: Disposing %s", inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)(id->dsp_sa))->sin6_addr), buffer6, INET6_ADDRSTRLEN));
-	    g_free (id->chosen_host6);
-	    id->chosen_host6 = NULL;
-    }
-    else
-#endif
-    {
-	    char buffer[INET_ADDRSTRLEN];
+	gdm_address_get_info (id->dsp_sa, &host, NULL);
+	gdm_debug ("gdm_choose_indirect_dispose: Disposing %s",
+		   host);
+	g_free (host);
 
-	    gdm_debug ("gdm_choose_indirect_dispose: Disposing %s", inet_ntop (AF_INET, &((struct sockaddr_in *)(id->dsp_sa))->sin_addr,
-buffer, INET_ADDRSTRLEN));
-	    g_free (id->chosen_host);
-	    id->chosen_host = NULL;
-    }
+	g_free (id->chosen_host);
+	id->chosen_host = NULL;
 
-    g_free (id->dsp_sa);
-    id->dsp_sa = NULL;
+	g_free (id->dsp_sa);
+	id->dsp_sa = NULL;
 
-    g_free (id);
+	g_free (id);
 }
-
-
-/* EOF */

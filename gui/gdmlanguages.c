@@ -34,6 +34,8 @@
 #include "gdmconfig.h"
 #include "gdmlanguages.h"
 
+#include "gdm-socket-protocol.h"
+
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
 

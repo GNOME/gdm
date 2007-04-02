@@ -35,6 +35,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
+
+#include <X11/Xlib.h>
 #include <X11/Xauth.h>
 
 #include "gdm.h"

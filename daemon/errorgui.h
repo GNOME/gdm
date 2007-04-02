@@ -22,30 +22,30 @@
 #include "gdm.h"
 #include <gtk/gtkmessagedialog.h>
 
-void		gdm_error_box_full	(GdmDisplay *d,
-					 GtkMessageType type,
-					 const char *error,
-					 const char *details_label,
-					 const char *details_file,
-					 /* zero doesn't mean root,
-					    we never wish to run as root,
-					    zero means use the gdm user */
-					 uid_t uid,
-					 gid_t gid);
+void		gdm_errorgui_error_box_full	(GdmDisplay *d,
+                                                 GtkMessageType type,
+                                                 const char *error,
+                                                 const char *details_label,
+                                                 const char *details_file,
+                                                 /* zero doesn't mean root,
+                                                    we never wish to run as root,
+                                                    zero means use the gdm user */
+                                                 uid_t uid,
+                                                 gid_t gid);
 
-void		gdm_error_box		(GdmDisplay *d,
-					 GtkMessageType type,
-					 const char *error);
+void		gdm_errorgui_error_box		(GdmDisplay *d,
+                                                 GtkMessageType type,
+                                                 const char *error);
 
-char *		gdm_failsafe_question	(GdmDisplay *d,
-					 const char *question,
-					 gboolean echo);
+char *		gdm_errorgui_failsafe_question	(GdmDisplay *d,
+                                                 const char *question,
+                                                 gboolean echo);
 
-gboolean	gdm_failsafe_yesno	(GdmDisplay *d,
-					 const char *question);
-int		gdm_failsafe_ask_buttons (GdmDisplay *d,
-					  const char *question,
-					  char **but);
+gboolean	gdm_errorgui_failsafe_yesno	(GdmDisplay *d,
+                                                 const char *question);
+int		gdm_errorgui_failsafe_ask_buttons (GdmDisplay *d,
+                                                   const char *question,
+                                                   char **but);
 
 #endif /* GDM_ERRORGUI_H */
 

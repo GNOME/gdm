@@ -34,12 +34,15 @@ libgdmcommon_a_SOURCES =	\
 	gdm-common-config.c	\
 	gdm-config.h		\
 	gdm-config.c		\
+	gdm-log.h		\
+	gdm-log.c		\
 	ve-signal.h		\
 	ve-signal.c		\
 	$(NULL)
 
 noinst_PROGRAMS = 		\
 	test-config		\
+	test-log		\
 	$(NULL)
 
 test_config_SOURCES = 		\
@@ -48,6 +51,15 @@ test_config_SOURCES = 		\
 	$(NULL)
 
 test_config_LDADD =		\
+	$(top_builddir)/common/libgdmcommon.a	\
+	$(GLIB_LIBS)		\
+	$(NULL)
+
+test_log_SOURCES = 		\
+	test-log.c	 	\
+	$(NULL)
+
+test_log_LDADD =		\
 	$(top_builddir)/common/libgdmcommon.a	\
 	$(GLIB_LIBS)		\
 	$(NULL)
