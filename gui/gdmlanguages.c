@@ -34,8 +34,6 @@
 #include "gdmconfig.h"
 #include "gdmlanguages.h"
 
-#include "greeter/greeter_item_customlist.h"
-
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
 
