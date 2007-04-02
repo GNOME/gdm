@@ -1,5 +1,11 @@
 2006-04-02  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmlanguages.c: Fix strcpy so source and destination do not
+	  overlap.  Fixes bug #424299.  Patch by Ray Strode
+	  <rstrode@redhat.com>.
+
+2006-04-02  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm.h, daemon/slave.c, daemon/misc.c, gui/gdmlogin.c,
 	  gui/gdmlanguages.[ch], gui/greeter/Makefile.am, 
 	  gui/greeter/greeter_item_customlist.[ch], 

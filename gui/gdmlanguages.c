@@ -462,7 +462,9 @@ gdm_lang_name (const char *language,
 	if (no_group) {
 		char *p = strchr (name, '|');
 		if (p != NULL) {
-			strcpy (name, p+1);
+			p = g_strdup (p + 1);
+			g_free (name);
+			name = p;
 		}
 	}
 
