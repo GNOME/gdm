@@ -346,6 +346,38 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 }
 
 /*
+ * Clear environment, but keep the i18n ones,
+ * note that this leaks memory so only use before exec
+ * (keep LD_* if preserve_ld_vars is true)
+ */
+void
+gdm_clearenv_no_lang (void)
+{
+	int i;
+	GList *li, *envs = NULL;
+
+	for (i = 0; environ[i] != NULL; i++) {
+		char *env = environ[i];
+		if (strncmp (env, "LC_", 3) == 0 ||
+		    strncmp (env, "LANG", 4) == 0 ||
+		    strncmp (env, "LINGUAS", 7) == 0)
+			envs = g_list_prepend (envs, g_strdup (env));
+		if (preserve_ld_vars &&
+		    strncmp (env, "LD_", 3) == 0)
+			envs = g_list_prepend (envs, g_strdup (env));
+	}
+
+	ve_clearenv ();
+
+	for (li = envs; li != NULL; li = li->next) {
+		putenv (li->data);
+	}
+
+	g_list_free (envs);
+}
+
+
+/*
  * Clear environment completely
  * note that this leaks memory so only use before exec
  * (keep LD_* if preserve_ld_vars is true)
@@ -2154,6 +2186,17 @@ gdm_reset_locale (void)
     gsize i18n_file_length, i;
     GString *line;
     const gchar *p, *q;
+    const gchar *gdmlang = g_getenv ("GDM_LANG");
+
+    if (gdmlang)
+      {
+	g_setenv ("LANG", gdmlang, TRUE);
+	g_unsetenv ("LC_ALL");
+	g_unsetenv ("LC_MESSAGES");
+	setlocale (LC_ALL, "");
+	setlocale (LC_MESSAGES, "");
+	return;
+      }
 
     i18n_file_contents = NULL;
     line = NULL; 

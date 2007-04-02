@@ -47,6 +47,7 @@
 #include "gdmcommon.h"
 #include "gdmconfig.h"
 #include "gdmsession.h"
+#include "gdmlanguages.h"
 
 #include "greeter.h"
 #include "greeter_configuration.h"
@@ -59,7 +60,6 @@
 #include "greeter_item_capslock.h"
 #include "greeter_item_timed.h"
 #include "greeter_events.h"
-#include "greeter_action_language.h"
 #include "greeter_session.h"
 #include "greeter_system.h"
 
@@ -201,7 +201,6 @@ process_operation (guchar       op_code,
     char *session;
     GreeterItemInfo *conversation_info;
     static GnomeCanvasItem *disabled_cover = NULL;
-    gchar *language;
     gint lookup_status = SESSION_LOOKUP_SUCCESS;
     gchar *firstmsg = NULL;
     gchar *secondmsg = NULL;
@@ -368,13 +367,7 @@ process_operation (guchar       op_code,
 	break;
 
     case GDM_LANG:
-	language = greeter_language_get_language (args);
-	if (greeter_language_get_save_language () == GTK_RESPONSE_CANCEL)
-	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
-	else
-	    printf ("%c%s\n", STX, language);
-	fflush (stdout);
-	g_free (language);
+	gdm_lang_op_lang (args);
 	break;
 
     case GDM_SSESS:
@@ -387,12 +380,15 @@ process_operation (guchar       op_code,
 	break;
 
     case GDM_SLANG:
-	if (greeter_language_get_save_language () == GTK_RESPONSE_YES)
-	    printf ("%cY\n", STX);
-	else
-	    printf ("%c\n", STX);
-	fflush (stdout);
+	gdm_lang_op_slang (args);
+	break;
 
+    case GDM_SETLANG:
+	gdm_lang_op_setlang (args);
+	break;
+
+    case GDM_ALWAYS_RESTART:
+	gdm_lang_op_always_restart (args);
 	break;
 
     case GDM_RESET:
@@ -602,6 +598,13 @@ greeter_cancel_handler (GreeterItemInfo *info,
        printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CANCEL);
        fflush (stdout);
      }
+}
+
+static void
+greeter_language_handler (GreeterItemInfo *info,
+                          gpointer         user_data)
+{
+  gdm_lang_handler (user_data);
 }
 
 static void
@@ -1252,7 +1255,7 @@ main (int argc, char *argv[])
   }
   gdm_common_setup_background_color (bg_color);
   greeter_session_init ();
-  greeter_language_initialize_model ();
+  gdm_lang_initialize_model (gdm_config_get_string (GDM_KEY_LOCALE_FILE));
 
   ve_signal_add (SIGHUP, greeter_reread_config, NULL);
 

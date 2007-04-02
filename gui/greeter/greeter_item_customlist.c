@@ -24,6 +24,7 @@
 #include "gdm.h"
 #include "gdmconfig.h"
 #include "gdmsession.h"
+#include "gdmlanguages.h"
 
 #include "gdm-common.h"
 #include "gdm-daemon-config-keys.h"
@@ -33,7 +34,6 @@
 #include "greeter_item_customlist.h"
 #include "greeter_parser.h"
 #include "greeter_session.h"
-#include "greeter_action_language.h"
 
 /*
  * Keep track of the session/language widgets so we can
@@ -161,9 +161,9 @@ greeter_custom_set_session (gchar *session)
  * the language dialog (launched from language button or F10 menu).
  */
 void
-greeter_custom_set_language (gchar *language)
+lang_set_custom_callback (gchar *language)
 {
-  GtkListStore *lang_model = greeter_language_get_model ();
+  GtkListStore *lang_model = gdm_lang_get_model ();
   GtkTreeIter iter;
   gboolean valid;
   char *locale_name;
@@ -313,7 +313,7 @@ populate_session (GObject * object)
 static void
 populate_language (GObject *object)
 {
-  GtkListStore *lang_model = greeter_language_get_model ();
+  GtkListStore *lang_model = gdm_lang_get_model ();
   GtkTreeIter iter;
   char *name, *untranslated, *display_name, *locale_name;
   gboolean valid;
@@ -410,7 +410,7 @@ combo_selected (GtkComboBox *combo, GreeterItemInfo *item)
        * Since combo boxes can't store the ID value, have to do some
        * extra work to figure out which row is selected.
        */
-      GtkListStore *lang_model = greeter_language_get_model ();
+      GtkListStore *lang_model = gdm_lang_get_model ();
       GtkTreeIter iter;
       char *name, *untranslated, *display_name, *locale_name;
       gboolean valid;
@@ -431,7 +431,7 @@ combo_selected (GtkComboBox *combo, GreeterItemInfo *item)
 
           if (strcmp (display_name, active) == 0)
             {
-              greeter_language_set (locale_name);
+              gdm_lang_set (locale_name);
               break;
             }
           g_free (display_name);
@@ -521,7 +521,7 @@ list_selected (GtkTreeSelection *selection, GreeterItemInfo *item)
   else if (strcmp (item->id, "language") == 0)
     {
       if (id != NULL)
-        greeter_language_set (id);
+        gdm_lang_set (id);
     }
   else
     {

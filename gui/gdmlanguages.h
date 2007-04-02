@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This file Copyright (c) 2001 George Lebl
  *
@@ -21,6 +21,20 @@
 #ifndef GDM_LANGUAGES_H
 #define GDM_LANGUAGES_H
 
+#include <glib.h>
+
+enum {
+  LOCALE_COLUMN,
+  TRANSLATED_NAME_COLUMN,
+  UNTRANSLATED_NAME_COLUMN,
+  NUM_COLUMNS
+};
+
+enum {
+  ASK_RESTART = 0,
+  ALWAYS_RESTART
+};
+
 /* This is the interface for translating languages.  Language translations
  * are now hardocded in, but that may change */
 
@@ -40,6 +54,15 @@ char *		gdm_lang_untranslated_name (const char *language,
 
 GList *		gdm_lang_read_locale_file (const char *file);
 
-#endif /* GDM_LANGUAGES_H */
+GtkListStore *	gdm_lang_get_model		(void);
+void		gdm_lang_initialize_model	(gchar *locale_file);
+gint		gdm_lang_get_save_language	(void);
+gchar *		gdm_lang_get_language		(const char      *old_language);
+void		gdm_lang_set			(char *language);
+void		gdm_lang_handler		(gpointer user_data);
+int		gdm_lang_op_lang		(const gchar *args);
+int		gdm_lang_op_slang		(const gchar *args);
+int		gdm_lang_op_setlang		(const gchar *args);
+int		gdm_lang_op_always_restart	(const gchar *args);
 
-/* EOF */
+#endif /* GDM_LANGUAGES_H */

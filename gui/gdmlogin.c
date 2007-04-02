@@ -56,26 +56,32 @@
 #include "gdmcomm.h"
 #include "gdmcommon.h"
 #include "gdmsession.h"
-#include "gdmwm.h"
 #include "gdmlanguages.h"
+#include "gdmwm.h"
 #include "gdmconfig.h"
 #include "misc.h"
 
 #include "gdm-common.h"
 #include "gdm-daemon-config-keys.h"
 
-/* set the DOING_GDM_DEVELOPMENT env variable if you aren't running
- * within the protocol */
-static gboolean DOING_GDM_DEVELOPMENT = FALSE;
-static gboolean browser_ok = TRUE;
-static gboolean disable_sys_config_chooser_buttons = FALSE;
-static gboolean GdmLockPosition = FALSE;
-static gboolean GdmSetPosition = FALSE;
+/*
+ * Set the DOING_GDM_DEVELOPMENT env variable if you aren't running
+ * within the protocol
+ */
+gboolean DOING_GDM_DEVELOPMENT              = FALSE;
+gboolean GdmConfiguratorFound               = FALSE;
+gboolean *GdmCustomCmdsFound                = NULL;
+gboolean GdmSuspendFound                    = FALSE;
+gboolean GdmHaltFound                       = FALSE;
+gboolean GdmRebootFound                     = FALSE;
+gboolean GdmAnyCustomCmdsFound              = FALSE;
+static gboolean browser_ok                  = TRUE;
+static gboolean disable_system_menu_buttons = FALSE;
+static gboolean GdmLockPosition             = FALSE;
+static gboolean GdmSetPosition              = FALSE;
 static gint GdmPositionX;
 static gint GdmPositionY;
 
-#define LAST_LANGUAGE "Last"
-#define DEFAULT_LANGUAGE "Default"
 #define GTK_KEY "gtk-2.0"
 
 enum {
@@ -119,15 +125,12 @@ static GtkTreeModel *browser_model;
 static GdkPixbuf *defface;
 
 /* Eew. Loads of global vars. It's hard to be event controlled while maintaining state */
-static GSList *languages = NULL;
 static GList *users = NULL;
 static GList *users_string = NULL;
 static gint size_of_users = 0;
 
-static const gchar *curlang = NULL;
 static gchar *curuser = NULL;
 static gchar *session = NULL;
-static gchar *language = NULL;
 
 static gint savelang = GTK_RESPONSE_NO;
 
@@ -460,7 +463,8 @@ gdm_timer (gpointer data)
 	} else {
 		gchar *autologin_msg;
 
-		/* Note that this message is not handled the same way as in
+		/*
+		 * Note that this message is not handled the same way as in
 		 * the greeter, we don't parse it through the enriched text.
 		 */
 		autologin_msg = gdm_common_expand_text (
@@ -767,66 +771,6 @@ gdm_theme_handler (GtkWidget *widget, gpointer data)
     gdm_wm_center_window (GTK_WINDOW (login));
 }
 
-static void
-gdm_login_language_lookup (const gchar* savedlang)
-{
-    /* Don't save language unless told otherwise */
-    savelang = GTK_RESPONSE_NO;
-
-    if (savedlang == NULL)
-	    savedlang = "";
-
-    /* If a different language is selected */
-    if (curlang != NULL && strcmp (curlang, LAST_LANGUAGE) != 0) {
-        g_free (language);
-	if (strcmp (curlang, DEFAULT_LANGUAGE) == 0)
-		language = g_strdup ("");
-	else
-		language = g_strdup (curlang);
-
-	/* User's saved language is not the chosen one */
-	if (strcmp (savedlang, language) != 0) {
-	    gchar *firstmsg;
-    	    gchar *secondmsg;
-	    char *curname, *savedname;
-
-	    if (strcmp (curlang, DEFAULT_LANGUAGE) == 0) {
-		    curname = g_strdup (_("System Default"));
-	    } else {
-		    curname = gdm_lang_name (curlang,
-					     FALSE /* never_encoding */,
-					     TRUE /* no_group */,
-					     TRUE /* untranslated */,
-					     TRUE /* markup */);
-	    }
-	    if (strcmp (savedlang, "") == 0) {
-		    savedname = g_strdup (_("System Default"));
-	    } else {
-		    savedname = gdm_lang_name (savedlang,
-					       FALSE /* never_encoding */,
-					       TRUE /* no_group */,
-					       TRUE /* untranslated */,
-					       TRUE /* markup */);
-	    }
-
-	    firstmsg = g_strdup_printf (_("Do you wish to make %s the default for future sessions?"),
-	                                curname);
-	    secondmsg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is %s."),
-	                                 curname, savedname);
-	    g_free (curname);
-	    g_free (savedname);
-
-	    savelang = gdm_wm_query_dialog (firstmsg, secondmsg,
-		_("Make _Default"), _("Just For _This Session"), TRUE);
-	    g_free (firstmsg);
-	    g_free (secondmsg);
-	}
-    } else {
-	g_free (language);
-	language = g_strdup (savedlang);
-    }
-}
-
 static int dance_handler = 0;
 
 static gboolean
@@ -1108,26 +1052,9 @@ gdm_login_session_init (GtkWidget *menu)
 
 
 static void 
-gdm_login_language_handler (GtkWidget *widget) 
+gdm_login_language_handler (GtkMenuItem *menu_item, gpointer user_data) 
 {
-    gchar *s;
-    char *name;
-
-    if (!widget)
-	return;
-
-    curlang = g_object_get_data (G_OBJECT (widget), "Language");
-    name = gdm_lang_name (curlang,
-			  FALSE /* never_encoding */,
-			  TRUE /* no_group */,
-			  TRUE /* untranslated */,
-			  TRUE /* makrup */);
-    s = g_strdup_printf (_("%s language selected"), name);
-    g_free (name);
-    gtk_label_set_markup (GTK_LABEL (msg), s);
-    g_free (s);
-
-    login_window_resize (FALSE /* force */);
+    gdm_lang_handler (user_data);
 }
 
 
@@ -1135,173 +1062,18 @@ static GtkWidget *
 gdm_login_language_menu_new (void)
 {
     GtkWidget *menu;
-    GtkWidget *item, *ammenu, *nzmenu, *omenu;
-    GList *langlist, *li;
-    gboolean has_other_locale = FALSE;
-    GtkWidget *other_menu;
-    const char *g1;
-    const char *g2;
-    char *menulabel;
-    /* Start numbering with 3 since 1-2 is used for toplevel menu */
-    int g1_num = 3;
-    int g2_num = 3;
-    int other_num = 3;
-    int num;
+    GtkWidget *item;
 
-    langlist = gdm_lang_read_locale_file (gdm_config_get_string (GDM_KEY_LOCALE_FILE));
-
-    if (langlist == NULL)
-	    return NULL;
+    gdm_lang_initialize_model (gdm_config_get_string (GDM_KEY_LOCALE_FILE));
 
     menu = gtk_menu_new ();
 
-    curlang = LAST_LANGUAGE;
-
-    item = gtk_radio_menu_item_new_with_mnemonic (NULL, _("_Last"));
-    languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
+    item = gtk_menu_item_new_with_mnemonic (_("Select _Language..."));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     g_signal_connect (G_OBJECT (item), "activate", 
 		      G_CALLBACK (gdm_login_language_handler), 
 		      NULL);
     gtk_widget_show (GTK_WIDGET (item));
-    g_object_set_data (G_OBJECT (item),
-		       "Language",
-		       LAST_LANGUAGE);
-
-    item = gtk_radio_menu_item_new_with_mnemonic (languages, _("_System Default"));
-    languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-    g_signal_connect (G_OBJECT (item), "activate", 
-		      G_CALLBACK (gdm_login_language_handler), 
-		      NULL);
-    gtk_widget_show (GTK_WIDGET (item));
-    g_object_set_data (G_OBJECT (item),
-		       "Language",
-		       DEFAULT_LANGUAGE);
-
-    item = gtk_menu_item_new ();
-    gtk_widget_set_sensitive (item, FALSE);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    menulabel = g_strdup_printf ("_1. %s", gdm_lang_group1());
-    item = gtk_menu_item_new_with_mnemonic (menulabel);
-    g_free (menulabel);
-    ammenu = gtk_menu_new ();
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (ammenu));
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    menulabel = g_strdup_printf ("_2. %s", gdm_lang_group2());
-    item = gtk_menu_item_new_with_mnemonic (menulabel);
-    g_free (menulabel);
-    nzmenu = gtk_menu_new ();
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), nzmenu);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    other_menu = item = gtk_menu_item_new_with_mnemonic (_("_Other"));
-    omenu = gtk_menu_new ();
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), omenu);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    g1 = gdm_lang_group1 ();
-    g2 = gdm_lang_group2 ();
-
-    for (li = langlist; li != NULL; li = li->next) {
-	    char *lang = li->data;
-	    char *name;
-	    char *untranslated;
-	    char *group;
-	    char *p;
-	    GtkWidget *box, *l;
-
-	    li->data = NULL;
-
-	    group = name = gdm_lang_name (lang,
-					  FALSE /* never_encoding */,
-					  FALSE /* no_group */,
-					  FALSE /* untranslated */,
-					  FALSE /* markup */);
-	    if (name == NULL) {
-		    g_free (lang);
-		    continue;
-	    }
-
-	    untranslated = gdm_lang_untranslated_name (lang,
-						       TRUE /* markup */);
-
-	    p = strchr (name, '|');
-	    if (p != NULL) {
-		    *p = '\0';
-		    name = p+1;
-	    }
-
-	    box = gtk_hbox_new (FALSE, 5);
-	    gtk_widget_show (box);
-
-	    if (strcmp (group, g1) == 0)
-		num = g1_num++;
-	    else if (strcmp (group, g2) == 0)
-                num = g2_num++;
-	    else
-		num = other_num++;
-
-	    if (num < 10)
-		menulabel = g_strdup_printf ("_%d. %s", num, name);
-	    else if ((num -10) + (int)'a' <= (int)'z')
-		menulabel = g_strdup_printf ("_%c. %s",
-                                                  (char)(num-10)+'a',
-                                                  name);
-	    else
-		menulabel = g_strdup (name);
-
-	    l = gtk_label_new_with_mnemonic (menulabel);
-	    if ( ! gdm_lang_name_translated (lang))
-		    gtk_widget_set_direction (l, GTK_TEXT_DIR_LTR);
-	    gtk_widget_show (l);
-	    gtk_box_pack_start (GTK_BOX (box), l, FALSE, FALSE, 0);
-
-	    if (untranslated != NULL) {
-		    l = gtk_label_new (untranslated);
-		    /* we really wantd LTR here for the widget */
-		    gtk_widget_set_direction (l, GTK_TEXT_DIR_LTR);
-		    gtk_label_set_use_markup (GTK_LABEL (l), TRUE);
-		    gtk_widget_show (l);
-		    gtk_box_pack_end (GTK_BOX (box), l, FALSE, FALSE, 0);
-	    }
-
-	    item = gtk_radio_menu_item_new (languages);
-	    gtk_container_add (GTK_CONTAINER (item), box);
-	    languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-	    g_object_set_data_full (G_OBJECT (item),
-				    "Language",
-				    g_strdup (lang),
-				    (GDestroyNotify) g_free);
-
-	    if (strcmp (group, g1) == 0) {
-		    gtk_menu_shell_append (GTK_MENU_SHELL (ammenu), item);
-	    } else if (strcmp (group, g2) == 0) {
-		    gtk_menu_shell_append (GTK_MENU_SHELL (nzmenu), item);
-	    } else {
-		    gtk_menu_shell_append (GTK_MENU_SHELL (omenu), item);
-		    has_other_locale = TRUE;
-	    }
-
-	    g_signal_connect (G_OBJECT (item), "activate", 
-			      G_CALLBACK (gdm_login_language_handler), 
-			      NULL);
-	    gtk_widget_show (GTK_WIDGET (item));
-
-	    g_free (lang);
-	    g_free (group);
-	    g_free (untranslated);
-    }
-    if ( ! has_other_locale) 
-	    gtk_widget_destroy (other_menu);
-
-    g_list_free (langlist);
 
     return menu;
 }
@@ -1793,12 +1565,7 @@ process_operation (guchar       op_code,
 	break;
 
     case GDM_LANG:
-	gdm_login_language_lookup (args);
-	if (savelang == GTK_RESPONSE_CANCEL)
-	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
-	else
-	    printf ("%c%s\n", STX, language);
-	fflush (stdout);
+	gdm_lang_op_lang (args);
 	break;
 
     case GDM_SSESS:
@@ -1811,12 +1578,15 @@ process_operation (guchar       op_code,
 	break;
 
     case GDM_SLANG:
-	if (savelang == GTK_RESPONSE_YES)
-	    printf ("%cY\n", STX);
-	else
-	    printf ("%c\n", STX);
-	fflush (stdout);
+	gdm_lang_op_slang (args);
+	break;
 
+    case GDM_SETLANG:
+	gdm_lang_op_setlang (args);
+	break;
+
+    case GDM_ALWAYS_RESTART:
+	gdm_lang_op_always_restart (args);
 	break;
 
     case GDM_RESET:
@@ -2454,7 +2224,7 @@ gdm_login_gui_init (void)
 	gtk_widget_show (GTK_WIDGET (langmenu));
     }
 
-    if (disable_sys_config_chooser_buttons == FALSE &&
+    if (disable_system_menu_buttons == FALSE &&
         gdm_config_get_bool (GDM_KEY_SYSTEM_MENU)) {
 
         gboolean got_anything = FALSE;
@@ -3390,6 +3160,15 @@ gdm_reread_config (int sig, gpointer data)
 	return TRUE;
 }
 
+/*
+ * This function does nothing for gdmlogin, but gdmgreeter does do extra
+ * work in this callback function.
+ */
+void
+lang_set_custom_callback (gchar *language)
+{
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -3423,7 +3202,7 @@ main (int argc, char *argv[])
     gtk_init (&argc, &argv);
 
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")))
-	disable_sys_config_chooser_buttons = TRUE;
+	disable_system_menu_buttons = TRUE;
 
     /* Read all configuration at once, so the values get cached */
     gdm_read_config ();

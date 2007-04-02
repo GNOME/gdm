@@ -115,6 +115,8 @@ static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
 static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
 						SIGCHLD hits */
+static gboolean always_restart_greeter = FALSE; /* Always restart greeter when
+						   the user accepts restarts. */
 static gboolean gdm_wait_for_ack = TRUE; /* wait for ack on all messages to
 				      * the daemon */
 static int in_session_stop = 0;
@@ -212,6 +214,7 @@ enum {
 	JMP_SESSION_STOP_AND_QUIT = 1,
 	JMP_JUST_QUIT_QUICKLY = 2
 };
+#define DEFAULT_LANGUAGE "Default"
 #define SIGNAL_EXIT_WITH_JMP(d,how) \
    {											\
 	if ((d)->slavepid == getpid () && return_to_slave_start_jmp) {			\
@@ -2480,6 +2483,7 @@ gdm_slave_greeter (void)
     const char *defaultpath;
     const char *gdmuser;
     const char *moduleslist;
+    const char *gdmlang;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
@@ -2740,6 +2744,13 @@ gdm_slave_greeter (void)
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", (int)pid);
 
 	gdm_slave_send_num (GDM_SOP_GREETPID, d->greetpid);
+	if (always_restart_greeter)
+	  gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "Y");
+	else
+	  gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "N");
+	gdmlang = g_getenv ("GDM_LANG");
+	if (gdmlang)
+	  gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, gdmlang);
 
 	run_pictures (); /* Append pictures to greeter if browsing is on */
 
@@ -4221,7 +4232,6 @@ gdm_slave_session_start (void)
     }
 
     g_free (usrsess);
-    g_free (usrlang);
 
     gdm_debug ("Initial setting: session: '%s' language: '%s'\n",
 	       session, ve_sure_string (language));
@@ -4399,6 +4409,18 @@ gdm_slave_session_start (void)
 	gdm_assert_not_reached ();
 	
     default:
+	always_restart_greeter = FALSE;
+	if (!savelang && language && strcmp (usrlang, language)) {
+		if (gdm_system_locale) {
+			g_setenv ("LANG", gdm_system_locale, TRUE);
+			setlocale (LC_ALL, "");
+			g_unsetenv ("GDM_LANG");
+			/* for "GDM_LANG" */
+			gdm_clearenv_no_lang ();
+			gdm_saveenv ();
+		}
+		gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, DEFAULT_LANGUAGE);
+	}
 	break;
     }
     
@@ -4422,6 +4444,7 @@ gdm_slave_session_start (void)
     g_free (session);
     g_free (save_session);
     g_free (language);
+    g_free (usrlang);
     g_free (gnome_session);
 
     gdm_slave_send_num (GDM_SOP_SESSPID, pid);
@@ -5092,6 +5115,25 @@ check_for_interruption (const char *msg)
 				d->theme_name = g_strdup (&msg[2]);
 			gdm_slave_send_string (GDM_SOP_CHOSEN_THEME, &msg[2]);
 			return TRUE;
+		case GDM_INTERRUPT_SELECT_LANG:
+			if (msg + 2) {
+				gchar *locale = (gchar*)(msg + 3);
+
+				always_restart_greeter = (gboolean)(*(msg + 2));
+				gdm_clearenv ();
+				if (!strcmp (locale, DEFAULT_LANGUAGE))
+					locale = gdm_system_locale;
+				g_setenv ("GDM_LANG", locale, TRUE);
+				g_setenv ("LANG", locale, TRUE);
+				g_unsetenv ("LC_ALL");
+				g_unsetenv ("LC_MESSAGES");
+				setlocale (LC_ALL, "");
+				setlocale (LC_MESSAGES, "");
+				gdm_saveenv ();
+
+				do_restart_greeter = TRUE;
+			}
+			break;
 		default:
 			break;
 		}

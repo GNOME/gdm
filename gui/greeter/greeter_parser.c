@@ -26,9 +26,9 @@
 #include <math.h>
 #include <locale.h>
 #include <syslog.h>
-
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
+#include <syslog.h>
 
 #include "gdmwm.h"
 #include "gdmcommon.h"

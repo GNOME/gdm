@@ -102,6 +102,7 @@ enum {
 #define GDM_LANG       '&'
 #define GDM_SSESS      'C'
 #define GDM_SLANG      'R'
+#define GDM_SETLANG    'L'
 #define GDM_RESET      'A'
 #define GDM_QUIT       'P'
 /* Well these aren't as nice as above, oh well */
@@ -121,6 +122,7 @@ enum {
 #define GDM_FOCUS      'F' /* Allow focus on the login window again (optional) */
 #define GDM_SAVEDIE    '!' /* Save wm order and die (and set busy cursor) */
 #define GDM_QUERY_CAPSLOCK 'Q' /* Is capslock on? */
+#define GDM_ALWAYS_RESTART 'W' /* Retart greeter when the user accepts restarts */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'
@@ -131,6 +133,7 @@ enum {
 #define GDM_INTERRUPT_THEME       'H'
 #define GDM_INTERRUPT_CUSTOM_CMD  'M'
 #define GDM_INTERRUPT_CANCEL      'X'
+#define GDM_INTERRUPT_SELECT_LANG 'O'
 
 /* List delimiter for config file lists */
 #define GDM_DELIMITER_MODULES ":"
