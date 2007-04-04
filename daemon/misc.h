@@ -150,7 +150,7 @@ gchar * gdm_read_default (gchar *key);
         gdm_fail ("GDM file %s: line %d (%s): Cannot run seteuid to %d: %s", \
 		  __FILE__,						\
 		  __LINE__,						\
-		  __PRETTY_FUNCTION__,					\
+		  G_GNUC_PRETTY_FUNCTION,					\
                   (int)uid,						\
 		  strerror (errno));			}
 #define NEVER_FAILS_setegid(gid) \
@@ -161,7 +161,7 @@ gchar * gdm_read_default (gchar *key);
         gdm_fail ("GDM file %s: line %d (%s): Cannot run setegid to %d: %s", \
 		  __FILE__,						\
 		  __LINE__,						\
-		  __PRETTY_FUNCTION__,					\
+		  G_GNUC_PRETTY_FUNCTION,					\
                   (int)gid,						\
 		  strerror (errno));			}
 
