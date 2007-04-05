@@ -117,6 +117,17 @@ static gint xdmcp_pending = 0;  /* Number of pending remote sessions */
 
 #ifdef HAVE_LIBXDMCP
 
+/*
+ * On Sun, we need to define allow_severity and deny_severity to link
+ * against libwrap.
+ */
+#ifdef __sun
+#include <syslog.h>
+
+gint allow_severity = LOG_INFO;
+gint deny_severity = LOG_WARNING;
+#endif
+
 static guint xdmcp_source = 0;
 static CARD32 globsessid;
 static gchar *sysid;
