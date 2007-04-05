@@ -727,7 +727,7 @@ custom_cmd (long cmd_id)
 
         if (cmd_id < 0 || cmd_id >= GDM_CUSTOM_COMMAND_MAX) {
 		/* We are just feeling very paranoid */
-		gdm_error (_("custom_cmd: Custom command index %ld outside permitted range (0,%d)"), 
+		gdm_error (_("custom_cmd: Custom command index %ld outside permitted range [0,%d)"), 
 			   cmd_id, GDM_CUSTOM_COMMAND_MAX);
 		return;
 	}
@@ -3655,7 +3655,16 @@ gdm_handle_user_message (GdmConnection *conn,
 			g_strfreev (splitstr);
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
-		gdm_connection_printf (conn, "OK %s\n", config_file);
+		/*
+		 * Value is only non-null if passed in on command line. 
+		 * Otherwise print compiled-in default file location.
+		 */
+		if (config_file == NULL) {
+			gdm_connection_printf (conn, "OK %s\n",
+				GDM_DEFAULTS_CONF);
+		} else {
+			gdm_connection_printf (conn, "OK %s\n", config_file);
+		}
 	} else if (strcmp (msg, GDM_SUP_GET_CUSTOM_CONFIG_FILE) == 0) {
 		gchar *ret;
 

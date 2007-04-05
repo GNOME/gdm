@@ -152,7 +152,8 @@ enum {
 enum {
 	LOCAL_PLAIN,
 	LOCAL_PLAIN_WITH_FACE,
-	LOCAL_THEMED
+	LOCAL_THEMED,
+	LOCAL_THEMED_WITH_FACE
 };
 
 enum {
@@ -160,7 +161,8 @@ enum {
 	REMOTE_SAME_AS_LOCAL,
 	REMOTE_PLAIN = 2,
 	REMOTE_THEMED = 2,
-	REMOTE_PLAIN_WITH_FACE = 3
+	REMOTE_PLAIN_WITH_FACE = 3,
+	REMOTE_THEMED_WITH_FACE = 3
 };
 
 enum {
@@ -1193,7 +1195,6 @@ refresh_remote_tab (void)
 	allowremoteauto = glade_xml_get_widget (xml, "allowremoteauto");
 
 	/* Remove previously added items from the combobox */
-	gtk_combo_box_remove_text (GTK_COMBO_BOX (remote_greeter), REMOTE_PLAIN_WITH_FACE);
 	gtk_combo_box_remove_text (GTK_COMBO_BOX (remote_greeter), REMOTE_PLAIN);
 	
 	local_style  = gtk_combo_box_get_active (GTK_COMBO_BOX (local_greeter));
@@ -1201,11 +1202,16 @@ refresh_remote_tab (void)
 					     			 
 	if (gdm_config_get_bool (GDM_KEY_XDMCP) == FALSE) {
 				
-		if (local_style == LOCAL_PLAIN || local_style == LOCAL_PLAIN_WITH_FACE) {
+		if (local_style == LOCAL_PLAIN) {
 			gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Themed"));
 		}
-		else {
+		else if (local_style == LOCAL_PLAIN_WITH_FACE) {
+			gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Themed with face browser"));
+		}
+		else if (local_style == LOCAL_THEMED) {
 			gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Plain"));
+		}
+		else { /* Themed with face browser */			
 			gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Plain with face browser"));
 		}
 				
@@ -1218,9 +1224,16 @@ refresh_remote_tab (void)
 		gtk_widget_hide (configure_xdmcp_vbox);
 	}
 	else {
+		gboolean use_browser = gdm_config_get_bool (GDM_KEY_BROWSER);
+		
 		if (local_style == LOCAL_PLAIN || local_style == LOCAL_PLAIN_WITH_FACE) {
 
-			gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Themed"));
+			if (use_browser == FALSE) {
+				gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Themed"));
+			}
+			else { 
+				gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Themed with face browser"));
+			}
 			
 			if (strstr (remote_style, "/gdmlogin") != NULL) {
 				gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter), REMOTE_SAME_AS_LOCAL);
@@ -1236,19 +1249,15 @@ refresh_remote_tab (void)
 			}
 		}
 		else {
-			gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Plain"));
-			gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Plain with face browser"));
+			if (use_browser == FALSE) {
+				gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Plain"));
+			}
+			else {
+				gtk_combo_box_append_text (GTK_COMBO_BOX (remote_greeter), _("Plain with face browser"));
+			}
 
-			if (strstr (remote_style, "/gdmlogin") != NULL) {
-				gboolean use_browser;
-				
-				use_browser = gdm_config_get_bool (GDM_KEY_BROWSER);
-				if (use_browser == FALSE) {
-					gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter), REMOTE_PLAIN);
-				}
-				else {
-					gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter), REMOTE_PLAIN_WITH_FACE);
-				}
+			if (strstr (remote_style, "/gdmlogin") != NULL) {				
+				gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter), REMOTE_PLAIN);
 				update_remote_sensitivity (TRUE);
 				gtk_widget_hide (remote_themed_vbox);
 				gtk_widget_show (remote_plain_vbox);
@@ -1336,7 +1345,11 @@ combobox_timeout (GtkWidget *combo_box)
 		} 
 		else if (selected == LOCAL_THEMED) {
 			new_key_val = g_strdup (LIBEXECDIR "/gdmgreeter");
-			browser_val = gdm_config_get_bool (GDM_KEY_BROWSER);
+			browser_val = FALSE;
+		}
+		else if (selected == LOCAL_THEMED_WITH_FACE) {
+			new_key_val = g_strdup (LIBEXECDIR "/gdmgreeter");
+			browser_val = TRUE;
 		}
 		else {  /* Plain style */
 			new_key_val = g_strdup (LIBEXECDIR "/gdmlogin");
@@ -1370,21 +1383,16 @@ combobox_timeout (GtkWidget *combo_box)
 				new_key_val  = gdm_config_get_string (GDM_KEY_GREETER);
 				free_new_val = FALSE;
 			}
-			else if (selected == REMOTE_PLAIN_WITH_FACE) {
-				new_key_val = g_strdup (LIBEXECDIR "/gdmlogin");
-				gdm_setup_config_set_bool (GDM_KEY_BROWSER, TRUE);
-			}
 			else {
 				gchar *selected_text;
 				
 				selected_text = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
 				
-				if (strcmp (ve_sure_string (selected_text), _("Themed")) == 0) {
+				if (strstr (ve_sure_string (selected_text), _("Themed")) != NULL) {
 					new_key_val = g_strdup (LIBEXECDIR "/gdmgreeter");
 				}
 				else {
 					new_key_val = g_strdup (LIBEXECDIR "/gdmlogin");
-					gdm_setup_config_set_bool (GDM_KEY_BROWSER, FALSE);
 				}
 				g_free (selected_text);
 			}			
@@ -1708,15 +1716,12 @@ combobox_changed (GtkWidget *combobox)
 
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combobox));
 
-		if (selected == LOCAL_PLAIN_WITH_FACE) {					
-			gtk_widget_show (local_plain_vbox);
-			gtk_widget_hide (local_themed_vbox);									
-		} 
-		else if (selected == LOCAL_THEMED) {						
+		if (selected == LOCAL_THEMED ||
+		    selected == LOCAL_THEMED_WITH_FACE) {						
 			gtk_widget_hide (local_plain_vbox);
 			gtk_widget_show (local_themed_vbox);
 		}
-		else {  /* Plain style */
+		else {  /* Plain and Plain with face browser style */
 			gtk_widget_show (local_plain_vbox);
 			gtk_widget_hide (local_themed_vbox);
 		}
@@ -1780,19 +1785,14 @@ combobox_changed (GtkWidget *combobox)
 					gtk_widget_hide (remote_themed_vbox);
 					gtk_widget_show (remote_plain_vbox);
 				}
-			}
-			else if (selected == REMOTE_PLAIN_WITH_FACE) {
-				update_remote_sensitivity (TRUE);
-				gtk_widget_hide (remote_themed_vbox);
-				gtk_widget_show (remote_plain_vbox);
-			}
+			}		
 			else {
 				gchar *selected_text;
 				
 				selected_text = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
 				update_remote_sensitivity (TRUE);
 				
-				if (strcmp (ve_sure_string (selected_text), _("Themed")) == 0) {
+				if (strstr (ve_sure_string (selected_text), _("Themed")) != NULL) {
 					gtk_widget_hide (remote_plain_vbox);
 					gtk_widget_show (remote_themed_vbox);
 				}
@@ -3997,13 +3997,12 @@ setup_greeter_combobox (const char *name,
 	/* Set initial state of local style combo box. */
 	if (strcmp (ve_sure_string (key), GDM_KEY_GREETER) == 0) {
 
+		gboolean val = gdm_config_get_bool (GDM_KEY_BROWSER);
+
 		if (strstr (greetval, "/gdmlogin") != NULL) {
 	
 			GtkWidget *local_plain_vbox;
-			GtkWidget *local_themed_vbox;
-			gboolean val;
-			
-			val = gdm_config_get_bool (GDM_KEY_BROWSER);
+			GtkWidget *local_themed_vbox;			
 
 			local_plain_vbox = glade_xml_get_widget (xml, "local_plain_properties_vbox");
 			local_themed_vbox = glade_xml_get_widget (xml, "local_themed_properties_vbox");
@@ -4023,8 +4022,13 @@ setup_greeter_combobox (const char *name,
 
 			local_plain_vbox = glade_xml_get_widget (xml, "local_plain_properties_vbox");
 			local_themed_vbox = glade_xml_get_widget (xml, "local_themed_properties_vbox");
+			if (val == FALSE) {
+				gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), LOCAL_THEMED);
+			}
+			else {
+				gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), LOCAL_THEMED_WITH_FACE);
+			}
 
-			gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), LOCAL_THEMED);
 			gtk_widget_hide (local_plain_vbox);
 			gtk_widget_show (local_themed_vbox);
 		}

@@ -550,12 +550,12 @@
 
       <para>
         GDM supports a face browser which will display a list of users who
-        can login and an icon for each user.  This feature can be used with
-        the GTK+ Greeter if the <filename>Browser</filename> configuration
-        option is set to &quot;true&quot;.  This feature can be used with
-        the Themed Greeter if using a GDM theme which includes a
-        &quot;userlist&quot; item type is defined, such as
-        &quot;happygnome-list&quot;
+        can login and an icon for each user.  Starting with version 2.18.1
+        the <filename>Browser</filename> configuration option must be set
+        to &quot;true&quot; for this function to be available.  In previous
+        versions it was only required when using the GTK+ Greeter.  When
+        using the Themed Greeter, the Face Browser is only available if the
+        GDM theme includes a &quot;userlist&quot; item type.
       </para>
 
       <para>
@@ -1187,9 +1187,9 @@ gdm: .your.domain
         If the &quot;Style&quot; choice is &quot;Plain with face browser&quot;,
         then the <command>gdmlogin</command> program is used as the GUI
         (daemon/Greeter) and the face browser is turned on (greeter/Browser).
-        The Face Browser is explained in the Overview section.  Otherwise,
-        the choices are the same as when the &quot;Style&quot; choice is
-        &quot;Plain&quot;.  Additional setup in the Users tab may be 
+        The Face Browser is explained in the &quot;Overview&quot; section.
+        Otherwise, the choices are the same as when the &quot;Style&quot;
+        choice is &quot;Plain&quot;.  Additional setup in the Users tab may be 
         necessary to choose which users appear in the Face Browser.
       </para>
 
@@ -1200,21 +1200,30 @@ gdm: .your.domain
         <command>gdmsetup</command> allows the user to select the theme to be
         used (greeter/GraphicalTheme).  Note that the checkbox to the left
         of the theme's name must be checked for a theme to be selected.
-        Clicking on the theme, but not selecting the checkbox will highlight
-        the theme and the &quot;Remove&quot; button can be used to delete
-        the theme.  Information about the theme's author and copyright are
-        shown for the highlighted theme.  The &quot;Add&quot; button can be
-        used to add new themes to the system.  To turn on the Face Browser, a
-        theme which includes a Face Browser must be selected, such as 
-        happygnome-list.  The &quot;Background color&quot; displayed when
-        GDM starts (and if the theme has transparent elements) can also be
-        selected (greeter/GraphicalThemedColor).  The &quot;Theme&quot; combo
-        box may be set to &quot;Random from selected&quot; if you want a random
-        theme to be used for each login (greeter/GraphicalThemeRand and
+        Information about the theme's author and copyright are shown for the
+        highlighted theme.  The &quot;Remove&quot; button can be used to delete
+        the highlighted theme. The &quot;Add&quot; button can be used to add
+        new themes to the system.  For a new theme to be added it must be
+        in tar or compressed tar format.  The &quot;Background color&quot;
+        displayed when GDM starts (and if the theme has transparent elements)
+        can be selected (greeter/GraphicalThemedColor).  The &quot;Theme&quot;
+        combo box may be set to &quot;Random from selected&quot; to display a
+        random theme for each login (greeter/GraphicalThemeRand and
         greeter/GraphicalThemes).  To use random themes, select each theme that
-        you wish to be used.  By default this combobox is set to
-        &quot;Selected only&quot;, so that only a single theme can be selected
+        you wish to be displayed.  By default this combobox is set to
+        &quot;Selected only&quot;, so that only a single theme may be selected
         and be used.
+      </para>
+
+      <para>
+        If the &quot;Style&quot; choice is &quot;Themed with face
+        browser&quot;, then the <command>gdmgreeter</command> program is used
+        as the GUI (daemon/Greeter) and the face browser is turned on
+        (greeter/Browser) if supported by the theme.  The Face Browser is
+        explained in the Overview section.  Otherwise, the choices are the
+        same as when the &quot;Style&quot; choice is &quot;Themed&quot;.
+        Additional setup in the Users tab may be necessary to choose which
+        users appear in the Face Browser.
       </para>
 
       <para>
@@ -1243,15 +1252,14 @@ gdm: .your.domain
         of this document before enabling it.  This tab includes a
         &quot;Style&quot; combobox which can be used to turn on XDMCP and
         control the appearance of GDM for remote users (gui/RemoteGreeter
-        and xdmcp/Enable).  This combobox may be set to &quot;Remote login
-        disabled&quot; or &quot;Same as Local&quot;.  If the Local tab
-        is set to &quot;Plain&quot; or &quot;Plain with Face Browser&quot;,
-        then the user may also select &quot;Themed&quot;.  If the Local tab
-        is set to &quot;Themed&quot;, then the user may also select
-        &quot;Plain&quot; or &quot;Plain with face browser&quot;.  It is
-        recommended that the &quot;Plain&quot; GUI be used for remote
-        connections since it is more lightweight and tends to have better
-        performance across a network.
+        and xdmcp/Enable).  The user may specify to use either the same
+        greeter as used on the Local tab, or the other Greeter program.  If
+        the Face Browser setting is true on the Local tab, then it will also
+        be true for the Remote tab.  If the Face Browser setting is 
+        false on the Local tab, then it will also be false for the Remote
+        tab.  It is recommended that the &quot;Plain&quot; GUI be used for
+        remote connections since it is more lightweight and tends to have
+        better performance across a network.
       </para>
 
       <para>
@@ -4440,7 +4448,7 @@ Language=cs_CZ.UTF-8
       </para>
 
       <para>
-        If the GDM Face Browser is turned, then the file
+        If the GDM Face Browser is turned on, then the file
         <filename>$HOME/.face</filename> is accessed.  This file should be a 
         standard image that GTK+ can read, such as PNG or JPEG.  It also must
         be smaller than the <filename>MaxIconWidth</filename> and 
@@ -4564,6 +4572,8 @@ GET_SERVER_LIST
 GET_SERVER_DETAILS
 GREETERPIDS
 QUERY_LOGOUT_ACTION
+QUERY_CUSTOM_CMD_LABELS
+QUERY_CUSTOM_CMD_NO_RESTART_STATUS
 QUERY_VT
 RELEASE_DYNAMIC_DISPLAYS
 REMOVE_DYNAMIC_DISPLAY
@@ -6878,7 +6888,7 @@ custom-config=foo
         or keyboard in the usual way.  Accessible Technology (AT) programs
         such as <command>GOK</command> (on-screen keyboard) and
         <command>orca</command> (magnifier and text-to-speech) are supported.
-        The &quot;Standard Greeter&quot; best supports accessibility, so it is
+        The &quot;GTK+ Greeter&quot; best supports accessibility, so it is
         recommended for accessibility support.  The &quot;Themed Greeter&quot;
         supports some accessibility features and may be usable by some users.
         But some AT programs, such as <command>GOK</command>, do not yet work
@@ -6886,9 +6896,9 @@ custom-config=foo
       </para>
 
       <para>
-        Accessibility is enabled by specifying the &quot;Standard Greeter&quot;
+        Accessibility is enabled by specifying the &quot;GTK+ Greeter&quot;
         in the &quot;Local&quot; tab for the console display and specifying
-        the &quot;Standard Greeter&quot; in the &quot;Remote&quot; tab for 
+        the &quot;GTK+ Greeter&quot; in the &quot;Remote&quot; tab for 
         remote displays.  Or you can modify the <filename>Greeter</filename>
         and <filename>RemoteGreeter</filename> configuration options by hand
         to be <command>/usr/lib/gdmlogin</command>.
@@ -6898,7 +6908,7 @@ custom-config=foo
         The GDM greeter programs support the ability to launch AT's at login
         time via configurable &quot;gestures&quot;.  These gestures can be
         defined to be standard keyboard hotkeys, switch device event, or
-        mouse motion events.  When using the &quot;Standard Greeter&quot;, the
+        mouse motion events.  When using the &quot;GTK+ Greeter&quot;, the
         user may also change the visual appearance of the login UI.  For
         example, to use a higher-contrast color scheme for better visibility.  
       </para>
@@ -6931,7 +6941,7 @@ custom-config=foo
             <title>Accessibile Theming</title>
 
             <para>
-              If using the &quot;Standard Greeter&quot; users can easily 
+              If using the &quot;GTK+ Greeter&quot; users can easily 
               switch the color and contrast scheme of the dialog.  To do this,
               ensure the <filename>AllowGtkThemeChange</filename> parameter in
               the GDM configuration is set to &quot;true&quot;.  This should
