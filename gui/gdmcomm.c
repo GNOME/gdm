@@ -684,13 +684,13 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 	} else if (strncmp (ret, "ERROR 4 ", strlen ("ERROR 4 ")) == 0) {
 		return _("Too many X sessions running.");
 	} else if (strncmp (ret, "ERROR 5 ", strlen ("ERROR 5 ")) == 0) {
-		return _("The nested X server (Xnest) cannot connect to "
-			 "your current X server.  You may be missing an "
+		return _("The nested X server cannot connect to your "
+			 "current X server.  You may be missing an "
 			 "X authorization file.");
 	} else if (strncmp (ret, "ERROR 6 ", strlen ("ERROR 6 ")) == 0) {
 		if (use_xnest)
-			return _("The nested X server (Xnest) is not "
-				 "available, or GDM is badly configured.\n"
+			return _("The nested X server is not available, "
+				 "or GDM is badly configured.\n"
 				 "Please install the Xnest package in "
 				 "order to use the nested login.");
 		else
