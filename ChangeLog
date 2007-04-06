@@ -1,3 +1,12 @@
+2007-04-06  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmcommon.[ch], gui/gdmlogin.c,
+	  gui/greeter/greeter_item_ulist.c:  Usernames with non-utf8
+	  characters were causing GDM GUI to crash when it tried to
+	  display in the face browser.  This patch fixes so non-utf8
+	  characters display as '?'.  Fixes bug #426647.  Patch by
+	  Ray Strode <rstrode@redhat.com>.
+
 2007-04-05  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.c: Return correct value when GET_CONFIG_FILE is 

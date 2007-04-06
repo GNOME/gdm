@@ -1803,8 +1803,8 @@ gdm_login_browser_populate (void)
 	    char *label;
 	    char *login, *gecos;
 
-	    login = g_markup_escape_text (usr->login, -1);
-	    gecos = g_markup_escape_text (usr->gecos, -1);
+	    login = gdm_common_text_to_escaped_utf8 (usr->login);
+	    gecos = gdm_common_text_to_escaped_utf8 (usr->gecos);
 
 	    label = g_strdup_printf ("<b>%s</b>\n%s",
 				     login,

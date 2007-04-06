@@ -387,6 +387,29 @@ gdm_common_get_face (const char *filename,
 }
 
 gchar *
+gdm_common_text_to_escaped_utf8 (const char *text)
+{
+	gchar *utf8_string, *escaped_string, *p;
+	const gchar *q;
+ 
+	utf8_string = g_strdup (text);
+	p = utf8_string;
+	while ((*p != '\0') && 
+	       !g_utf8_validate (p, -1, &q)) {
+		p = (gchar *) q;
+		p = '?';
+		p++;
+	}
+ 
+	g_assert (g_utf8_validate (utf8_string, -1, NULL));
+ 
+	escaped_string = g_markup_escape_text (utf8_string, -1);
+	g_free (utf8_string);
+ 
+	return escaped_string;
+}
+
+gchar *
 gdm_common_get_config_file (void)
 {
 	gchar *result;

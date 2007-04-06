@@ -200,9 +200,9 @@ greeter_populate_user_list (GtkTreeModel *tm)
 		gboolean    active;
 
 		if (usr->gecos && strcmp (usr->gecos, "") != 0) {
-			name = g_markup_escape_text (usr->gecos, -1);
+			name = gdm_common_text_to_escaped_utf8 (usr->gecos);
 		} else {
-			name = g_markup_escape_text (usr->login, -1);
+			name = gdm_common_text_to_escaped_utf8 (usr->login);
 		}
 
 		if (g_hash_table_lookup (displays_hash, usr->login))
