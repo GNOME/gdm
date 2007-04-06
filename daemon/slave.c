@@ -2771,13 +2771,6 @@ gdm_slave_greeter (void)
 		VE_IGNORE_EINTR (close (pipe2[1]));
 
 		whack_greeter_fds ();
-	if (always_restart_greeter)
-	  gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "Y");
-	else
-	  gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "N");
-	gdmlang = g_getenv ("GDM_LANG");
-	if (gdmlang)
-	  gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, gdmlang);
 
 		greeter_fd_out = pipe1[1];
 		greeter_fd_in = pipe2[0];
