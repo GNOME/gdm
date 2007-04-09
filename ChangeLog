@@ -1,3 +1,18 @@
+2006-04-09  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.14.12: 
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
+	* daemon/gdm.h: Fix typo in gdm.h.
+
+2007-04-09  Brian Cameron  <brian.cameron@sun.com>
+
+        * configure.ac, daemon/gdm.[ch], gui/gdmlogin.c, gui/gdmcomm.c,
+          gui/gdmXnestchooser.c, gui/greeter/greeter.c,
+	  gui/gdmflexiserver.c:  Deprecated GDM_KEY_PID_FILE and now
+	  use /var/run/gdm.pid.  This fixes bug #162849.  Backported
+	  from head, patch by William Jon McCann <mccann@jhu.edu>.
+
 2007-04-02  Brian Cameron  <brian.cameron@sun.com>
 
         * gui/gdmdynamic.c: Fix comparison with string literal.

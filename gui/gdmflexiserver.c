@@ -729,8 +729,26 @@ main (int argc, char *argv[])
 	if (args != NULL && args[0] != NULL)
 		server = args[0];
 
-	if ( ! gdmcomm_check (FALSE)) {
-		return 1;
+	if (send_command != NULL) {
+		if ( ! gdmcomm_check (FALSE)) {
+			gdm_common_error ("Error: GDM (GNOME Display Manager) "
+			"is not running.");
+			gdm_common_error ("You might be using a different "
+			"display manager.");
+			return 1;
+		}
+	} else {
+		/*
+		 * The --command argument does not display anything, so avoid
+		 * running gtk_init until it finishes.  Sometimes the
+		 * --command argument is used when there is no display so it
+		 * will fail and cause the program to exit, complaining about
+		 * "no display".
+		 */
+		gtk_init(&argc, &argv);
+		if ( ! gdmcomm_check (TRUE)) {
+			return 1;
+		}
 	}
 
 	/* Start reading config data in bulk */
@@ -796,25 +814,22 @@ main (int argc, char *argv[])
 	}
 
 	/*
-	 * The --command argument does not display anything, so avoid running 
-	 * gtk_init until it finishes.  Sometimes the --command argument is
-	 * used when there is no display so it will fail and cause the 
-	 * program to exit, complaining about "no display".  
+	 * Now process what gdmflexiserver is more frequently used to
+	 * do, start VT (Virtual Terminal) sesions - at least on
+	 * systems where it is supported.  On systems where it is not
+	 * supporteed VT stands for "Very Tight" and will mess up your
+	 * display if you use it.  Tight!  So do not use it.
 	 *
-	 * Now process what gdmflexiserver is more used to do, start a
-	 * VT virtual terminal sesions - at least on systems where it
-	 * works.  On systems where it doesn't work VT stands for
-	 * "Very Tight" and will mess up your display if you try to
-	 * use it.  Tight!  So don't use it.  I'd accept a patch to
-	 * disable it, but its easy to avoid not using it as long
-	 * as your distro doesn't put the menu choice in the 
-	 * application launch button on the panel (don't ship the
-	 * desktop file).
+	 * I would accept a patch to disable it on such systems, but it
+	 * is easy to avoid not using it as long as your distro does not
+	 * put the menu choice in the application launch button on the
+	 * panel (don't ship the desktop file).
 	 */
-	gtk_init(&argc, &argv);
 
-	/* always attempt to get cookie and authenticate.  On remote
-	servers */
+	/*
+	 * Always attempt to get cookie and authenticate.  On remote
+	 * servers
+	 */
 	auth_cookie = gdmcomm_get_auth_cookie ();
 
 	/* check for other displays/logged in users */
