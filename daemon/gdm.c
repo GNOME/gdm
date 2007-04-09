@@ -3180,9 +3180,6 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 				done_prefetch = TRUE;
 			}
 			return;
-		} else if (strcmp (splitstr[0], GDM_KEY_PID_FILE) == 0) {
-                        gdm_connection_printf (conn, "OK %s\n", GDM_PID_FILE);
-                        return;
                 }
 
 		if (splitstr[0] != NULL) {
@@ -3197,12 +3194,19 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
    				gdm_connection_printf (conn, "OK %s\n", retval);
    				g_free (retval);
 			} else {
-				if (gdm_is_valid_key ((gchar *)splitstr[0]))
+                                /* Check deprecated keys */
+                                if (strcmp (splitstr[0],
+                                         GDM_KEY_PID_FILE) == 0) {
+                                                gdm_connection_printf (conn,
+                                                        "OK %s\n", GDM_PID_FILE);
+                                                return;
+                                } else if (gdm_is_valid_key ((gchar *)splitstr[0])) {
 					gdm_connection_printf (conn, "OK \n");
-				else
+				} else {
        		         		gdm_connection_printf (conn,
 						"ERROR 50 Unsupported key <%s>\n",
 						splitstr[0]);
+				}
 			}
 			g_strfreev (splitstr);
 		}
