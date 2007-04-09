@@ -185,8 +185,7 @@ enum {
  *
  * + The gui/gdmsetup.c program should be updated to support the new option
  *   unless there's a good reason not to (like it is a configuration value
- *   that only someone who really knows what they are doing should change
- *   like GDM_KEY_PID_FILE).
+ *   that only someone who really knows what they are doing should change).
  * 
  * + Currently GDM treats any key in the "gui" and "greeter" categories,
  *   and security/PamStack as available for per-display configuration.  

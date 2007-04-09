@@ -194,7 +194,7 @@ gdm_daemonify (void)
 
     pid = fork ();
     if (pid > 0) {
-        gchar *pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
+        gchar *pidfile = GDM_PID_FILE;
 
         errno = 0;
 	if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
@@ -394,7 +394,7 @@ gdm_final_cleanup (void)
 
 	closelog ();
 
-	pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
+	pidfile = GDM_PID_FILE;
 	if (pidfile != NULL) {
 		VE_IGNORE_EINTR (g_unlink (pidfile));
 	}
@@ -1608,7 +1608,7 @@ main (int argc, char *argv[])
     /* get the name of the root user */
     gdm_root_user ();
 
-    pidfile = gdm_get_value_string (GDM_KEY_PID_FILE);
+    pidfile = GDM_PID_FILE;
 
     /* Check if another gdm process is already running */
     if (g_access (pidfile, R_OK) == 0) {
@@ -1623,8 +1623,6 @@ main (int argc, char *argv[])
 	    kill (pidv, 0) == 0 &&
 	    linux_only_is_running (pidv)) {
 		/* make sure the pid file doesn't get wiped */
-		gdm_set_value_string (GDM_KEY_PID_FILE, NULL);
-		pidfile = NULL;
 		VE_IGNORE_EINTR (fclose (pf));
 		gdm_fail (_("GDM already running. Aborting!"));
 	}
@@ -3590,12 +3588,20 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
    				gdm_connection_printf (conn, "OK %s\n", retval);
    				g_free (retval);
 			} else {
-				if (gdm_is_valid_key ((gchar *)splitstr[0]))
+				/* Check deprecated keys */
+		                if (strcmp (splitstr[0],
+					 GDM_KEY_PID_FILE) == 0) {
+			                        gdm_connection_printf (conn,
+							"OK %s\n", GDM_PID_FILE);
+			                        return;
+				} else if (gdm_is_valid_key ((gchar *)splitstr[0])) {
 					gdm_connection_printf (conn, "OK \n");
-				else
+
+              			} else {
        		         		gdm_connection_printf (conn,
 						"ERROR 50 Unsupported key <%s>\n",
 						splitstr[0]);
+				}
 			}
 			g_strfreev (splitstr);
 		}

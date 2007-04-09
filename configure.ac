@@ -1106,6 +1106,21 @@ if test "x$USER_POST_PATH" != "x"; then
    GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - PID file
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(pid-file,    [  --with-pid-file=<file>     pid file])
+
+if ! test -z "$with_pid_file"; then
+   GDM_PID_FILE=$with_pid_file
+else
+   GDM_PID_FILE=/var/run/gdm.pid
+fi
+
+AC_SUBST(GDM_PID_FILE)
+AC_DEFINE_UNQUOTED(GDM_PID_FILE, "$GDM_PID_FILE", [pid file])
+
 # Set configuration choices.
 #
 AC_SUBST(HALT_COMMAND)

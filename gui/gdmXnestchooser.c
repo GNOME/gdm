@@ -501,8 +501,8 @@ main (int argc, char *argv[])
 
 	xdmcp_enabled  = gdm_config_get_bool (GDM_KEY_XDMCP);
 	honor_indirect = gdm_config_get_bool (GDM_KEY_INDIRECT);
-	pidfile        = gdm_config_get_string (GDM_KEY_PID_FILE);
 	xnest          = gdm_config_get_string (GDM_KEY_XNEST);
+	pidfile        = GDM_PID_FILE;
 
 	/* At this point we are done using the socket, so close it */
 	gdmcomm_comm_bulk_stop ();
