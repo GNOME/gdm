@@ -335,6 +335,41 @@ Ahh news...
   Raphael Higino, Priit Laes, \303\205smund Skj\303\246veland,
   Ivar Smolin)
 
+2.16.6 Stuff:
+
+- The GDM configuration option daemon/PidFile is now deprecated and
+  GDM now always uses /var/run/gdm.pid.  The location can be configured
+  at compile time with the configure --with-pid-file option.  This
+  fixes bug #162849.  (William Jon McCann)
+
+- Now "Configure GDM" menu choice is not available when accessibility is
+  turned on since running gdmsetup in this configuration causes GDM to
+  hang.  Until the hanging bug is fixed, it's better to not allow the
+  user to get into this situation.  (Brian Cameron)
+
+- Fix so will compile with HURD.  (Brian Cameron)
+
+- Better fix for not showing the face browser if the userlist is empty.
+  (Ludwig Nussel)
+
+- Add ATK label for gdmgreeter entry field.  (David Zeuthen)
+
+- Fix XDMCP send forward query so it works for IPv6.
+  (Ludwig Nussel)
+
+- Fix check so language combo style works.  (Simon)
+
+- Fix strcpy so source and destination do not overlap.  Fixes bug
+  #424299.  (Ray Strode)
+
+- Remove gnome glade references since GNOME does not use libglade anymore.
+  (Kristof Vansant)
+
+- Fix comparison with string literal in gdmdynamic.  (Hans Petter Jansson)
+
+- Translation updates (Amitakhya Phukan, Ignacio Casal Quinteiro,
+  Hendrik Richter)
+
 2.16.5 Stuff:
 
 - Fix so we only hide userlist if there is one.
@@ -695,6 +730,21 @@ Ahh news...
 - Many updates to documentation.  Explain gtk-theme greeter tag, new button and
   pam-error-icon, and startover greeter types, and better info about PAM.
   (Brian Cameron)
+
+2.14.12 stuff:
+
+- The GDM configuration option daemon/PidFile is now deprecated and
+  GDM now always uses /var/run/gdm.pid.  The location can be configured
+  at compile time with the configure --with-pid-file option.  This
+  fixes bug #162849.  (William Jon McCann)
+
+- Fix strcpy so source and destination do not overlap.  Fixes bug
+  #424299.  (Ray Strode)
+
+- Remove gnome glade references since GNOME does not use libglade anymore.
+  (Kristof Vansant)
+
+- Fix comparison with string literal in gdmdynamic.  (Hans Petter Jansson)
 
 2.14.11 stuff:
 
