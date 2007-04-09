@@ -728,6 +728,10 @@ main (int argc, char *argv[])
 		server = args_remaining[0];
 
 	if ( ! gdmcomm_check (FALSE)) {
+		gdm_common_error ("Error: GDM (GNOME Display Manager) is not "
+		"running."); 
+		gdm_common_error ("You might be using a different display "
+		"manager.");
 		return 1;
 	}
 
