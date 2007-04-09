@@ -1,5 +1,16 @@
 2007-04-06  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/greeter/greeter.c, gui/greeter/greeter_ulist.c: Backout
+	  change so that greeter Face Browser only works when Browser=true.
+	  I don't think it is appropriate to change the interface in a
+	  minor release.
+	* gui/greeter/themes/circles/circles.xml, 
+	  gui/greeter/themes/happygnome/happygnome.xml: Remove userlist
+	  from these themes since gdmgreeter does not yet support the
+	  BROWSER key.  This will go into 2.20.
+
+2007-04-06  Brian Cameron  <brian.cameron@sun.com>
+
 	* configure.ac, daemon/gdm.[ch], gui/gdmlogin.c, gui/gdmcomm.c,
 	  gui/gdmXnestchooser.c, gui/greeter/greeter.c:  Deprecated
 	  GDM_KEY_PID_FILE and now use /var/run/gdm.pid.  This fixes
