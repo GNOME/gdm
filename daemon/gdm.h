@@ -1,4 +1,4 @@
-/* GDM - The GNOME Display Manager
+S
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -184,8 +184,7 @@ enum {
  *
  * + The gui/gdmsetup.c program should be updated to support the new option
  *   unless there's a good reason not to (like it is a configuration value
- *   that only someone who really knows what they are doing should change
- *   like GDM_KEY_PID_FILE).
+ *   that only someone who really knows what they are doing should change).
  * 
  * + Currently GDM treats any key in the "gui" and "greeter" categories,
  *   and security/PamStack as available for per-display configuration.  
@@ -227,7 +226,7 @@ enum {
 #define GDM_KEY_KILL_INIT_CLIENTS "daemon/KillInitClients=true"
 #define GDM_KEY_LOG_DIR "daemon/LogDir=" LOGDIR
 #define GDM_KEY_PATH "daemon/DefaultPath=" GDM_USER_PATH
-#define GDM_KEY_PID_FILE "daemon/PidFile=/var/run/gdm.pid"
+#define GDM_KEY_PID_FILE "daemon/PidFile=" GDM_PID_FILE
 #define GDM_KEY_POSTSESSION "daemon/PostSessionScriptDir=" GDMCONFDIR "/PostSession/"
 #define GDM_KEY_PRESESSION "daemon/PreSessionScriptDir=" GDMCONFDIR "/PreSession/"
 #define GDM_KEY_POSTLOGIN "daemon/PostLoginScriptDir=" GDMCONFDIR "/PreSession/"

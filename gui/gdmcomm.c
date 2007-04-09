@@ -593,7 +593,7 @@ gdmcomm_check (gboolean show_dialog)
 	struct stat s;
 	int statret;
 
-	pidfile = gdm_config_get_string (GDM_KEY_PID_FILE);
+	pidfile = GDM_PID_FILE;
 
 	pid = 0;
 	if (pidfile != NULL)
