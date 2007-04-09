@@ -1044,8 +1044,9 @@ gdm_lang_handler (gpointer user_data)
 
           if (strcmp (dialog_selected_language, LAST_LANGUAGE))
             response = gdm_lang_ask_restart (dialog_selected_language);
-          if (response == GTK_RESPONSE_YES)
-            gdm_lang_set ((char *) dialog_selected_language);
+
+          gdm_lang_set ((char *) dialog_selected_language);
+
           if (strcmp (dialog_selected_language, LAST_LANGUAGE)
               && (response == GTK_RESPONSE_YES))
             {
