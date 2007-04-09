@@ -223,7 +223,7 @@ enum {
 #define GDM_KEY_KILL_INIT_CLIENTS "daemon/KillInitClients=true"
 #define GDM_KEY_LOG_DIR "daemon/LogDir=" LOGDIR
 #define GDM_KEY_PATH "daemon/DefaultPath=" GDM_USER_PATH
-#define GDM_KEY_PID_FILE "daemon/PidFile=/var/run/gdm.pid"
+#define GDM_KEY_PID_FILE "daemon/PidFile=" GDM_PID_FILE
 #define GDM_KEY_POSTSESSION "daemon/PostSessionScriptDir=" GDMCONFDIR "/PostSession/"
 #define GDM_KEY_PRESESSION "daemon/PreSessionScriptDir=" GDMCONFDIR "/PreSession/"
 #define GDM_KEY_POSTLOGIN "daemon/PostLoginScriptDir=" GDMCONFDIR "/PreSession/"
