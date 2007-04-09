@@ -397,6 +397,21 @@ Ahh news...
   pam-error-icon, and startover greeter types, and better info about PAM.
   (Brian Cameron)
 
+2.14.12 stuff:
+
+- The GDM configuration option daemon/PidFile is now deprecated and
+  GDM now always uses /var/run/gdm.pid.  The location can be configured
+  at compile time with the configure --with-pid-file option.  This
+  fixes bug #162849.  (William Jon McCann)
+
+- Fix strcpy so source and destination do not overlap.  Fixes bug
+  #424299.  (Ray Strode)
+
+- Remove gnome glade references since GNOME does not use libglade anymore.
+  (Kristof Vansant)
+
+- Fix comparison with string literal in gdmdynamic.  (Hans Petter Jansson)
+
 2.14.11 stuff:
 
 - Fix for a recently reported security issue that has ID
