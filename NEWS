@@ -1,5 +1,44 @@
 Ahh news...
 
+2.18.1 Stuff:
+
+- The GDM configuration option daemon/PidFile is now deprecated and
+  GDM now always uses /var/run/gdm.pid.  The location can be configured
+  at compile time with the configure --with-pid-file option.  This
+  fixes bug #162849.  (William Jon McCann)
+
+- Now GDM supports Xephyr as the Nested Xserver command.  GDM will use
+  Xephyr by default if it is on the system, and fallback to Xnest.  Xephyr
+  works much better than Xnest.  (Brian Cameron)
+
+- GDM application desktop files now use the correct categories, so the
+  menu choices should appear in the correct place in the menu.  (Brian
+  Cameron)
+
+- Remove the userlist from the circles and happygnome themes since this
+  was causing problems for some users.  This change will go into 2.20
+  where we are fixing the problem better by fixing gdmsetup to support
+  setting the configuration so that gdmlogin and gdmgreeter work the
+  same way with the Browser key.
+
+- Now gdmgreeter has an ATK label for the entry field.  (David Zeuthen)
+
+- Fix check so language combo style works.  Fixes bug #423063.  (Simon)
+
+- Now "Configure GDM" menu choice is not available when accessibility is
+  turned on since running gdmsetup in this configuration causes GDM to
+  hang.  Until the hanging bug is fixed, it's better to not allow the
+  user to get into this situation.  (Brian Cameron)
+
+- Now support XnestUnscaledFontPath configuration option, which allows GDM
+  to work with Xnest.  Xorg 7.2 XGetFontPath function now returns fontpath
+  with the ":unscaled" prefix, which Xsun Xnest cannot handle.  Setting
+  XnestUnscaledFontPath=false, will strip the ":unscaled" prefix from the
+  fontpath so that it can work.  (Brian Cameron)
+
+- GDM daemon no longer links with D-Bus if ConsoleKit is not enabled.
+  (William Jon McCann)
+
 2.18.0 Stuff:
 
 - Fix gdmchooser so the Cancel button works.  (Brian Cameron)
