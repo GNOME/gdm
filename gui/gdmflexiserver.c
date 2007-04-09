@@ -769,10 +769,10 @@ main (int argc, char *argv[])
 
 	if (send_command != NULL) {
 		if ( ! gdmcomm_check (FALSE)) {
-			gdm_common_error ("Error: GDM (GNOME Display Manager) "
-			"is not running.");
-			gdm_common_error ("You might be using a different "
-			"display manager.");
+			gdm_common_error (_("Error: GDM (GNOME Display "
+                        "Manager) is not running."));
+			gdm_common_error (_("You might be using a different "
+			"display manager."));
 			return 1;
 		}
 	} else {
