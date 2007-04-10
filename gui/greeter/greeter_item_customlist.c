@@ -30,12 +30,15 @@
 
 #include "gdm-common.h"
 #include "gdm-daemon-config-keys.h"
+#include "gdm-socket-protocol.h"
 
 #include "greeter_item.h"
 #include "greeter_configuration.h"
 #include "greeter_item_customlist.h"
 #include "greeter_parser.h"
 #include "greeter_session.h"
+
+#define LAST_LANGUAGE "Last"
 
 /*
  * Keep track of the session/language widgets so we can
@@ -317,7 +320,7 @@ populate_language (GObject *object)
 {
   GtkListStore *lang_model = gdm_lang_get_model ();
   GtkTreeIter iter;
-  char *name, *untranslated, *display_name, *locale_name;
+  char *name, *untranslated, *lang_display_name, *locale_name;
   gboolean valid;
 
   valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (lang_model),
@@ -330,12 +333,12 @@ populate_language (GObject *object)
          LOCALE_COLUMN, &locale_name, -1);
 
       if (untranslated)
-         display_name = g_strdup_printf ("%s (%s)", name, untranslated);
+         lang_display_name = g_strdup_printf ("%s (%s)", name, untranslated);
       else
-         display_name = g_strdup (name);
+         lang_display_name = g_strdup (name);
 
       if (GTK_IS_COMBO_BOX (object))
-         gtk_combo_box_append_text (GTK_COMBO_BOX (object), display_name);
+         gtk_combo_box_append_text (GTK_COMBO_BOX (object), lang_display_name);
       else if (GTK_IS_TREE_MODEL (object))
         {
           GtkTreeIter loopiter;
@@ -343,7 +346,7 @@ populate_language (GObject *object)
 
           gtk_list_store_append (GTK_LIST_STORE (tm), &loopiter);
           gtk_list_store_set (GTK_LIST_STORE (tm), &loopiter,
-             GREETER_LIST_TEXT, display_name,
+             GREETER_LIST_TEXT, lang_display_name,
              GREETER_LIST_ID,   locale_name,
              -1);
         }
@@ -414,7 +417,7 @@ combo_selected (GtkComboBox *combo, GreeterItemInfo *item)
        */
       GtkListStore *lang_model = gdm_lang_get_model ();
       GtkTreeIter iter;
-      char *name, *untranslated, *display_name, *locale_name;
+      char *name, *untranslated, *lang_display_name, *locale_name;
       gboolean valid;
 
       valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (lang_model),
@@ -427,16 +430,16 @@ combo_selected (GtkComboBox *combo, GreeterItemInfo *item)
              LOCALE_COLUMN, &locale_name, -1);
 
           if (untranslated)
-             display_name = g_strdup_printf ("%s (%s)", name, untranslated);
+             lang_display_name = g_strdup_printf ("%s (%s)", name, untranslated);
           else
-             display_name = g_strdup (name);
+             lang_display_name = g_strdup (name);
 
-          if (strcmp (display_name, active) == 0)
+          if (strcmp (lang_display_name, active) == 0)
             {
-              gdm_lang_set (locale_name);
+              gdm_lang_set_restart_dialog (locale_name);
               break;
             }
-          g_free (display_name);
+          g_free (lang_display_name);
           valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (lang_model), &iter);
         }
     }
@@ -523,7 +526,7 @@ list_selected (GtkTreeSelection *selection, GreeterItemInfo *item)
   else if (strcmp (item->id, "language") == 0)
     {
       if (id != NULL)
-        gdm_lang_set (id);
+        gdm_lang_set_restart_dialog (id);
     }
   else
     {

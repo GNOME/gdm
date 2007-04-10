@@ -725,13 +725,13 @@ gdm_lang_initialize_model (gchar * locale_file)
 }
 
 gint
-gdm_lang_get_save_language (void)
+gdm_lang_get_savelang_setting (void)
 {
   return savelang;
 }
 
 gchar *
-gdm_lang_get_language (const char *old_language)
+gdm_lang_check_language (const char *old_language)
 {
   gchar *retval = NULL;
 
@@ -917,7 +917,7 @@ gdm_lang_setup_treeview (void)
     }
 }
 
-static gint
+gint
 gdm_lang_ask_restart (gchar *language)
 {
 	GtkWidget *dialog;
@@ -963,6 +963,47 @@ gdm_lang_restart_handler (GtkMenuItem *menu_item, gpointer user_data)
     always_restart = TRUE;
   else
     always_restart = FALSE;
+}
+
+static gchar *
+gdm_lang_get (void)
+{
+   return (current_language);
+}
+
+void
+gdm_lang_set_restart_dialog (char *language)
+{
+   /*
+    * Don't do anything if the language is already set to
+    * this value.
+    */
+printf ("got here %s\n", language);
+if (current_language != NULL)
+printf ("current lang is %s\n", current_language);
+   if (current_language == NULL ||
+      (current_language != NULL &&
+       strcmp (current_language, language) != 0))
+     {
+       gint response = GTK_RESPONSE_YES;
+
+       if (strcmp (language, LAST_LANGUAGE))
+         response = gdm_lang_ask_restart (language);
+
+       gdm_lang_set (language);
+
+       if (strcmp (language, LAST_LANGUAGE) &&
+          (response == GTK_RESPONSE_YES))
+         {
+           printf ("%c%c%c%c%s\n", STX,
+                   BEL,
+                   GDM_INTERRUPT_SELECT_LANG,
+                   response == GTK_RESPONSE_YES ? 1 : 0,
+                   language);
+           fflush (stdout);
+
+         }
+     }
 }
 
 void
@@ -1039,25 +1080,8 @@ gdm_lang_handler (gpointer user_data)
     {
     case GTK_RESPONSE_OK:
       if (dialog_selected_language)
-        {
-          gint response = GTK_RESPONSE_YES;
+        gdm_lang_set_restart_dialog (dialog_selected_language);
 
-          if (strcmp (dialog_selected_language, LAST_LANGUAGE))
-            response = gdm_lang_ask_restart (dialog_selected_language);
-
-          gdm_lang_set ((char *) dialog_selected_language);
-
-          if (strcmp (dialog_selected_language, LAST_LANGUAGE)
-              && (response == GTK_RESPONSE_YES))
-            {
-              printf ("%c%c%c%c%s\n", STX,
-                                      BEL,
-                                      GDM_INTERRUPT_SELECT_LANG,
-                                      response == GTK_RESPONSE_YES ? 1 : 0,
-                                      dialog_selected_language);
-              fflush (stdout);
-            }
-        }
       break;
     case GTK_RESPONSE_CANCEL:
     default:
@@ -1073,9 +1097,9 @@ gdm_lang_handler (gpointer user_data)
 int
 gdm_lang_op_lang (const gchar *args)
 {
-  gchar *language = gdm_lang_get_language (args);
+  gchar *language = gdm_lang_check_language (args);
 
-  if (gdm_lang_get_save_language () == GTK_RESPONSE_CANCEL)
+  if (gdm_lang_get_savelang_setting () == GTK_RESPONSE_CANCEL)
     printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
   else
     printf ("%c%s\n", STX, language);
@@ -1088,7 +1112,7 @@ gdm_lang_op_lang (const gchar *args)
 int
 gdm_lang_op_slang (const gchar *args)
 {
-  if (gdm_lang_get_save_language () == GTK_RESPONSE_YES)
+  if (gdm_lang_get_savelang_setting () == GTK_RESPONSE_YES)
     printf ("%cY\n", STX);
   else
     printf ("%c\n", STX);
