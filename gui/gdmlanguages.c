@@ -978,9 +978,6 @@ gdm_lang_set_restart_dialog (char *language)
     * Don't do anything if the language is already set to
     * this value.
     */
-printf ("got here %s\n", language);
-if (current_language != NULL)
-printf ("current lang is %s\n", current_language);
    if (current_language == NULL ||
       (current_language != NULL &&
        strcmp (current_language, language) != 0))
