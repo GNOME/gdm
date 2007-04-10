@@ -218,6 +218,14 @@ gdm_config_value_get_locale_string (const GdmConfigValue *value)
 	return REAL_VALUE (value)->val.str;
 }
 
+const char **
+gdm_config_value_get_string_array (const GdmConfigValue *value)
+{
+	g_return_val_if_fail (value != NULL, NULL);
+	g_return_val_if_fail (value->type == GDM_CONFIG_VALUE_STRING_ARRAY, NULL);
+	return (const char **)REAL_VALUE (value)->val.array;
+}
+
 gboolean
 gdm_config_value_get_bool (const GdmConfigValue *value)
 {

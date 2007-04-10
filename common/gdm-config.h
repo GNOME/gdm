@@ -183,6 +183,8 @@ GdmConfigValue *     gdm_config_value_new_from_string  (GdmConfigValueType    ty
 							GError              **error);
 const char *         gdm_config_value_get_string       (const GdmConfigValue *value);
 const char *         gdm_config_value_get_locale_string       (const GdmConfigValue *value);
+const char **        gdm_config_value_get_string_array (const GdmConfigValue *value);
+
 int                  gdm_config_value_get_int          (const GdmConfigValue *value);
 gboolean             gdm_config_value_get_bool         (const GdmConfigValue *value);
 

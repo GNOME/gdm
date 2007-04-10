@@ -271,6 +271,55 @@ gdm_daemon_config_get_value_string (const char *keystring)
 }
 
 /**
+ * gdm_daemon_config_get_value_string_array
+ *
+ * Gets a string configuration option by key.  The option must
+ * first be loaded, say, by calling gdm_daemon_config_parse.
+ */
+const char **
+gdm_daemon_config_get_value_string_array (const char *keystring)
+{
+	gboolean res;
+	GdmConfigValue *value;
+	char *group;
+	char *key;
+	const char **result;
+
+	result = NULL;
+
+	res = gdm_common_config_parse_key_string (keystring,
+						  &group,
+						  &key,
+						  NULL,
+						  NULL);
+	if (! res) {
+		gdm_error ("Could not parse configuration key %s", keystring);
+		goto out;
+	}
+
+	res = gdm_config_get_value (daemon_config,
+				    group,
+				    key,
+				    &value);
+	if (! res) {
+		gdm_error ("Request for invalid configuration key %s", keystring);
+		goto out;
+	}
+
+	if (value->type != GDM_CONFIG_VALUE_STRING_ARRAY) {
+		gdm_error ("Request for configuration key %s, but not type STRING-ARRAY", keystring);
+		goto out;
+	}
+
+	result = gdm_config_value_get_string_array (value);
+ out:
+	g_free (group);
+	g_free (key);
+
+	return result;
+}
+
+/**
  * gdm_daemon_config_get_bool_for_id
  *
  * Gets a boolean configuration option by ID.  The option must

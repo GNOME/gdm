@@ -1,5 +1,20 @@
 2007-04-10  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-config.c: (gdm_config_value_get_string_array):
+	* common/gdm-config.h:
+	* daemon/gdm-daemon-config.c:
+	(gdm_daemon_config_get_value_string_array):
+	* daemon/gdm-daemon-config.h:
+	* daemon/gdm.c: (deal_with_x_crashes), (try_command),
+	(try_commands), (suspend_machine), (halt_machine),
+	(restart_machine), (custom_cmd_restart), (custom_cmd_no_restart),
+	(gdm_cleanup_children), (create_connections),
+	(gdm_handle_user_message):
+	Fix reboot and halt command handling.  Add ability to get
+	string array values from config.
+
+2007-04-10  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/gdmchooser.c (gdm_chooser_gui_init):
 	Add missing '/' between path and filename.
 

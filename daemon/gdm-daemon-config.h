@@ -49,7 +49,8 @@ gchar*         gdm_daemon_config_get_display_custom_config_file (const gchar *di
 gchar*         gdm_daemon_config_get_custom_config_file (void);
 
 
-const char*    gdm_daemon_config_get_value_string     (const gchar *key);
+const char *   gdm_daemon_config_get_value_string     (const gchar *key);
+const char **  gdm_daemon_config_get_value_string_array (const gchar *key);
 gboolean       gdm_daemon_config_get_value_bool       (const gchar *key);
 gint           gdm_daemon_config_get_value_int        (const gchar *key);
 gchar*         gdm_daemon_config_get_value_string_per_display (const gchar *display,

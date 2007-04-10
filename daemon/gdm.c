@@ -91,11 +91,11 @@ static void gdm_safe_restart (void);
 static void gdm_try_logout_action (GdmDisplay *disp);
 static void gdm_restart_now (void);
 static void handle_flexi_server (GdmConnection *conn,
-				 int type, 
+				 int type,
 				 const gchar *server,
 				 gboolean handled,
 				 gboolean chooser,
-				 const gchar *xnest_disp, 
+				 const gchar *xnest_disp,
 				 uid_t xnest_uid,
 				 const gchar *xnest_auth_file,
 				 const gchar *xnest_cookie,
@@ -105,7 +105,7 @@ static void custom_cmd_no_restart (long cmd_id);
 
 /* Global vars */
 gint flexi_servers = 0;		/* Number of flexi servers */
-static pid_t extra_process = 0;	/* An extra process.  Used for quickie 
+static pid_t extra_process = 0;	/* An extra process.  Used for quickie
 				   processes, so that they also get whacked */
 static int extra_status = 0;		/* Last status from the last extra process */
 
@@ -173,58 +173,58 @@ mark_display_exists (int num)
 static void
 gdm_daemonify (void)
 {
-    FILE *pf;
-    pid_t pid;
+	FILE *pf;
+	pid_t pid;
 
-    pid = fork ();
-    if (pid > 0) {
-	const char *pidfile = GDM_PID_FILE;
+	pid = fork ();
+	if (pid > 0) {
+		const char *pidfile = GDM_PID_FILE;
 
-        errno = 0;
-	if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
-	    errno = 0;
-	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)pid));
-	    VE_IGNORE_EINTR (fclose (pf));
-	    if G_UNLIKELY (errno != 0) {
-		    /* FIXME: how to handle this? */
-		    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-				  pidfile, strerror (errno));
-		    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-			       pidfile, strerror (errno));
+		errno = 0;
+		if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
+			errno = 0;
+			VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)pid));
+			VE_IGNORE_EINTR (fclose (pf));
+			if G_UNLIKELY (errno != 0) {
+				/* FIXME: how to handle this? */
+				gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
+					      pidfile, strerror (errno));
+				gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
+					   pidfile, strerror (errno));
 
-	    }
-	} else if G_UNLIKELY (errno != 0) {
-	    /* FIXME: how to handle this? */
-	    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-			  pidfile, strerror (errno));
-	    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-		       pidfile, strerror (errno));
+			}
+		} else if G_UNLIKELY (errno != 0) {
+			/* FIXME: how to handle this? */
+			gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
+				      pidfile, strerror (errno));
+			gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
+				   pidfile, strerror (errno));
 
+		}
+
+		exit (EXIT_SUCCESS);
 	}
 
-        exit (EXIT_SUCCESS);
-    }
+	if G_UNLIKELY (pid < 0)
+		gdm_fail (_("%s: fork () failed!"), "gdm_daemonify");
 
-    if G_UNLIKELY (pid < 0) 
-	gdm_fail (_("%s: fork () failed!"), "gdm_daemonify");
+	if G_UNLIKELY (setsid () < 0)
+		gdm_fail (_("%s: setsid () failed: %s!"), "gdm_daemonify",
+			  strerror (errno));
 
-    if G_UNLIKELY (setsid () < 0)
-	gdm_fail (_("%s: setsid () failed: %s!"), "gdm_daemonify",
-		  strerror (errno));
+	VE_IGNORE_EINTR (g_chdir (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)));
+	umask (022);
 
-    VE_IGNORE_EINTR (g_chdir (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)));
-    umask (022);
+	VE_IGNORE_EINTR (close (0));
+	VE_IGNORE_EINTR (close (1));
+	VE_IGNORE_EINTR (close (2));
 
-    VE_IGNORE_EINTR (close (0));
-    VE_IGNORE_EINTR (close (1));
-    VE_IGNORE_EINTR (close (2));
-
-    gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-    gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-    gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 }
 
-static void 
+static void
 gdm_start_first_unborn_local (int delay)
 {
 	GSList *li;
@@ -385,7 +385,7 @@ gdm_final_cleanup (void)
 	}
 
 #ifdef  HAVE_LOGINDEVPERM
-    (void) di_devperm_logout ("/dev/console");
+	(void) di_devperm_logout ("/dev/console");
 #endif  /* HAVE_LOGINDEVPERM */
 }
 
@@ -393,241 +393,267 @@ gdm_final_cleanup (void)
 void
 gdm_rmdir (char *thedir)
 {
-    DIR *odir;
-    struct stat buf;
-    struct dirent *dp;
-    char thefile[FILENAME_MAX];
+	DIR *odir;
+	struct stat buf;
+	struct dirent *dp;
+	char thefile[FILENAME_MAX];
 
-    if ((stat(thedir, &buf) == -1) || ! S_ISDIR(buf.st_mode))
-      return ;
+	if ((stat(thedir, &buf) == -1) || ! S_ISDIR(buf.st_mode))
+		return ;
 
-    if ((rmdir (thedir) == -1) && (errno == EEXIST))
-    {
-      odir = opendir (thedir);
-      do {
-        errno = 0;
-        if ((dp = readdir (odir)) != NULL)
-        {
-          if (strcmp (dp->d_name, ".") == 0 ||
-              strcmp (dp->d_name, "..") == 0)
-                continue ;
-          snprintf (thefile, FILENAME_MAX, "%s/%s", thedir, dp->d_name);
-          if (stat (thefile, &buf) == -1)
-            continue ; 
-          if (S_ISDIR(buf.st_mode))
-            gdm_rmdir (thefile);
-          else
-            g_unlink (thefile);
-        }
-      } while (dp != NULL);
-      closedir (odir);
-      rmdir (thedir);
-    }
+	if ((rmdir (thedir) == -1) && (errno == EEXIST))
+		{
+			odir = opendir (thedir);
+			do {
+				errno = 0;
+				if ((dp = readdir (odir)) != NULL)
+					{
+						if (strcmp (dp->d_name, ".") == 0 ||
+						    strcmp (dp->d_name, "..") == 0)
+							continue ;
+						snprintf (thefile, FILENAME_MAX, "%s/%s", thedir, dp->d_name);
+						if (stat (thefile, &buf) == -1)
+							continue ;
+						if (S_ISDIR(buf.st_mode))
+							gdm_rmdir (thefile);
+						else
+							g_unlink (thefile);
+					}
+			} while (dp != NULL);
+			closedir (odir);
+			rmdir (thedir);
+		}
 }
 #endif
 
 static gboolean
 deal_with_x_crashes (GdmDisplay *d)
 {
-    gboolean just_abort = FALSE;
-    const char *failsafe = gdm_daemon_config_get_value_string (GDM_KEY_FAILSAFE_XSERVER);
-    const char *keepscrashing = gdm_daemon_config_get_value_string (GDM_KEY_X_KEEPS_CRASHING);
+	gboolean just_abort = FALSE;
+	const char *failsafe = gdm_daemon_config_get_value_string (GDM_KEY_FAILSAFE_XSERVER);
+	const char *keepscrashing = gdm_daemon_config_get_value_string (GDM_KEY_X_KEEPS_CRASHING);
 
-    if ( ! d->failsafe_xserver &&
-	 ! ve_string_empty (failsafe)) {
-	    char *bin = ve_first_word (failsafe);
-	    /* Yay we have a failsafe */
-	    if ( ! ve_string_empty (bin) &&
-		g_access (bin, X_OK) == 0) {
-		    gdm_info (_("%s: Trying failsafe X "
-				"server %s"), 
-			      "deal_with_x_crashes",
-			      failsafe);
-		    g_free (bin);
-		    g_free (d->command);
-		    d->command = g_strdup (failsafe);
-		    d->failsafe_xserver = TRUE;
-		    return TRUE;
-	    }
-	    g_free (bin);
-    }
+	if ( ! d->failsafe_xserver &&
+	     ! ve_string_empty (failsafe)) {
+		char *bin = ve_first_word (failsafe);
+		/* Yay we have a failsafe */
+		if ( ! ve_string_empty (bin) &&
+		     g_access (bin, X_OK) == 0) {
+			gdm_info (_("%s: Trying failsafe X "
+				    "server %s"),
+				  "deal_with_x_crashes",
+				  failsafe);
+			g_free (bin);
+			g_free (d->command);
+			d->command = g_strdup (failsafe);
+			d->failsafe_xserver = TRUE;
+			return TRUE;
+		}
+		g_free (bin);
+	}
 
-    /* Eeek X keeps crashing, let's try the XKeepsCrashing script */
-    if ( ! ve_string_empty (keepscrashing) &&
-	g_access (keepscrashing, X_OK|R_OK) == 0) {
-	    pid_t pid;
+	/* Eeek X keeps crashing, let's try the XKeepsCrashing script */
+	if ( ! ve_string_empty (keepscrashing) &&
+	     g_access (keepscrashing, X_OK|R_OK) == 0) {
+		pid_t pid;
 
-	    gdm_info (_("%s: Running the "
-			"XKeepsCrashing script"),
-		      "deal_with_x_crashes");
+		gdm_info (_("%s: Running the "
+			    "XKeepsCrashing script"),
+			  "deal_with_x_crashes");
 
-	    extra_process = pid = fork ();
-	    if (pid < 0)
-		    extra_process = 0;
+		extra_process = pid = fork ();
+		if (pid < 0)
+			extra_process = 0;
 
-	    if (pid == 0) {
-		    char *argv[2];
-		    char *xlog = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
+		if (pid == 0) {
+			char *argv[2];
+			char *xlog = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_LOG_DIR), d->name, ".log");
 
-		    gdm_unset_signals ();
+			gdm_unset_signals ();
 
-		    /* Also make a new process group so that we may use
-		     * kill -(extra_process) to kill extra process and all its
-		     * possible children */
-		    setsid ();
+			/* Also make a new process group so that we may use
+			 * kill -(extra_process) to kill extra process and all its
+			 * possible children */
+			setsid ();
 
-		    if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP))
-			    gdm_xdmcp_close ();
+			if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP))
+				gdm_xdmcp_close ();
 
-		    gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
+			gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
-		    /* No error checking here - if it's messed the best response
-		    * is to ignore & try to continue */
-		    gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		    gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		    gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+			/* No error checking here - if it's messed the best response
+			 * is to ignore & try to continue */
+			gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+			gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+			gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-		    argv[0] = (char *)gdm_daemon_config_get_value_string (GDM_KEY_X_KEEPS_CRASHING);
-		    argv[1] = NULL;
+			argv[0] = (char *)gdm_daemon_config_get_value_string (GDM_KEY_X_KEEPS_CRASHING);
+			argv[1] = NULL;
 
-		    gdm_restoreenv ();
+			gdm_restoreenv ();
 
-		    /* unset DISPLAY and XAUTHORITY if they exist
-		     * so that gdialog (if used) doesn't get confused */
-		    g_unsetenv ("DISPLAY");
-		    g_unsetenv ("XAUTHORITY");
+			/* unset DISPLAY and XAUTHORITY if they exist
+			 * so that gdialog (if used) doesn't get confused */
+			g_unsetenv ("DISPLAY");
+			g_unsetenv ("XAUTHORITY");
 
-		    /* some promised variables */
-		    g_setenv ("XLOG", xlog, TRUE);
-		    g_setenv ("BINDIR", BINDIR, TRUE);
-		    g_setenv ("SBINDIR", SBINDIR, TRUE);
-		    g_setenv ("LIBEXECDIR", LIBEXECDIR, TRUE);
-		    g_setenv ("SYSCONFDIR", GDMCONFDIR, TRUE);
+			/* some promised variables */
+			g_setenv ("XLOG", xlog, TRUE);
+			g_setenv ("BINDIR", BINDIR, TRUE);
+			g_setenv ("SBINDIR", SBINDIR, TRUE);
+			g_setenv ("LIBEXECDIR", LIBEXECDIR, TRUE);
+			g_setenv ("SYSCONFDIR", GDMCONFDIR, TRUE);
 
-		    /* To enable gettext stuff in the script */
-		    g_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
-		    g_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
+			/* To enable gettext stuff in the script */
+			g_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
+			g_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
-		    if ( ! gdm_ok_console_language ()) {
-			    g_unsetenv ("LANG");
-			    g_unsetenv ("LC_ALL");
-			    g_unsetenv ("LC_MESSAGES");
-			    g_setenv ("LANG", "C", TRUE);
-			    g_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
-		    }
+			if ( ! gdm_ok_console_language ()) {
+				g_unsetenv ("LANG");
+				g_unsetenv ("LC_ALL");
+				g_unsetenv ("LC_MESSAGES");
+				g_setenv ("LANG", "C", TRUE);
+				g_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
+			}
 
-		    VE_IGNORE_EINTR (execv (argv[0], argv));
-	
-		    /* yaikes! */
-		    _exit (32);
-	    } else if (pid > 0) {
-		    int status;
+			VE_IGNORE_EINTR (execv (argv[0], argv));
 
-		    if (extra_process > 1) {
-			    int ret;
-			    int killsignal = SIGTERM;
-			    int storeerrno;
-			    errno = 0;
-			    ret = waitpid (extra_process, &status, WNOHANG);
-			    do {
-				    /* wait for some signal, yes this is a race */
-				    if (ret <= 0)
-					    sleep (10);
-				    errno = 0;
-				    ret = waitpid (extra_process, &status, WNOHANG);
-				    storeerrno = errno;
-				    if ((ret <= 0) && gdm_daemon_config_signal_terminthup_was_notified ()) {
-					    kill (-(extra_process), killsignal);
-					    killsignal = SIGKILL;
-				    }
-			    } while (ret == 0 || (ret < 0 && storeerrno == EINTR));
-		    }
-		    extra_process = 0;
+			/* yaikes! */
+			_exit (32);
+		} else if (pid > 0) {
+			int status;
 
-		    if (WIFEXITED (status) &&
-			WEXITSTATUS (status) == 0) {
-			    /* Yay, the user wants to try again, so
-			     * here we go */
-			    return TRUE;
-		    } else if (WIFEXITED (status) &&
-			       WEXITSTATUS (status) == 32) {
-			    /* We couldn't run the script, just drop through */
-			    ;
-		    } else {
-			    /* Things went wrong. */
-			    just_abort = TRUE;
-		    }
-	    }
+			if (extra_process > 1) {
+				int ret;
+				int killsignal = SIGTERM;
+				int storeerrno;
+				errno = 0;
+				ret = waitpid (extra_process, &status, WNOHANG);
+				do {
+					/* wait for some signal, yes this is a race */
+					if (ret <= 0)
+						sleep (10);
+					errno = 0;
+					ret = waitpid (extra_process, &status, WNOHANG);
+					storeerrno = errno;
+					if ((ret <= 0) && gdm_daemon_config_signal_terminthup_was_notified ()) {
+						kill (-(extra_process), killsignal);
+						killsignal = SIGKILL;
+					}
+				} while (ret == 0 || (ret < 0 && storeerrno == EINTR));
+			}
+			extra_process = 0;
 
-	    /* if we failed to fork, or something else has happened,
-	     * we fall through to the other options below */
-    }
+			if (WIFEXITED (status) &&
+			    WEXITSTATUS (status) == 0) {
+				/* Yay, the user wants to try again, so
+				 * here we go */
+				return TRUE;
+			} else if (WIFEXITED (status) &&
+				   WEXITSTATUS (status) == 32) {
+				/* We couldn't run the script, just drop through */
+				;
+			} else {
+				/* Things went wrong. */
+				just_abort = TRUE;
+			}
+		}
 
+		/* if we failed to fork, or something else has happened,
+		 * we fall through to the other options below */
+	}
 
-    /* if we have "open" we can talk to the user, not as user
-     * friendly as the above script, but getting there */
-    if ( ! just_abort &&
-	g_access (LIBEXECDIR "/gdmopen", X_OK) == 0) {
-	    /* Shit if we knew what the program was to tell the user,
-	     * the above script would have been defined and we'd run
-	     * it for them */
-	    const char *error =
-		    C_(N_("The X server (your graphical interface) "
-			  "cannot be started.  It is likely that it is not "
-			  "set up correctly.  You will need to log in on a "
-			  "console and rerun the X configuration "
-			  "application, then restart GDM."));
-	    gdm_text_message_dialog (error);
-    } /* else {
-       * At this point .... screw the user, we don't know how to
-       * talk to him.  He's on some 'l33t system anyway, so syslog
-       * reading will do him good 
-       * } */
+	/* if we have "open" we can talk to the user, not as user
+	 * friendly as the above script, but getting there */
+	if ( ! just_abort &&
+	     g_access (LIBEXECDIR "/gdmopen", X_OK) == 0) {
+		/* Shit if we knew what the program was to tell the user,
+		 * the above script would have been defined and we'd run
+		 * it for them */
+		const char *error =
+			C_(N_("The X server (your graphical interface) "
+			      "cannot be started.  It is likely that it is not "
+			      "set up correctly.  You will need to log in on a "
+			      "console and rerun the X configuration "
+			      "application, then restart GDM."));
+		gdm_text_message_dialog (error);
+	} /* else {
+	   * At this point .... screw the user, we don't know how to
+	   * talk to him.  He's on some 'l33t system anyway, so syslog
+	   * reading will do him good
+	   * } */
 
-    gdm_error (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
+	gdm_error (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
 
-    return FALSE;
+	return FALSE;
+}
+
+static gboolean
+try_command (const char *command,
+	     int        *statusp)
+{
+	GError  *error;
+	gboolean res;
+	int      status;
+
+	g_debug ("Running %s", command);
+
+	error = NULL;
+	res = g_spawn_command_line_sync (command, NULL, NULL, &status, &error);
+	if (error != NULL) {
+		g_warning ("Command failed %s: %s", command, error->message);
+		g_error_free (error);
+	}
+
+	*statusp = 0;
+
+	if (WIFEXITED (status)) {
+		*statusp =  WEXITSTATUS (status);
+	}
+
+	return res;
+}
+
+static gboolean
+try_commands (const char **array)
+{
+	int      i;
+	int      status;
+	gboolean ret;
+
+	ret = FALSE;
+
+	/* the idea here is to try the first available command and return if it succeeded */
+
+	for (i = 0; array[i] != NULL; i++) {
+		if (try_command (array[i], &status)) {
+			ret = (status == 0);
+
+			if (! ret) {
+				gdm_error (_("command failed %s: %d"), array[i], status);
+			}
+
+			break;
+		}
+	}
+
+	return ret;
 }
 
 static void
 suspend_machine (void)
 {
-	const gchar *suspend = gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND);
+	const gchar **suspend;
+
+	suspend = gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND);
 
 	gdm_info (_("Master suspending..."));
 
-	if (suspend != NULL && fork () == 0) {
-		char **argv;
-
-		/* sync everything to disk, just in case something goes
-		 * wrong with the suspend */
-		sync ();
-
-		if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP))
-			gdm_xdmcp_close ();
-		/* In the child setup empty mask and set all signals to
-		 * default values */
-		gdm_unset_signals ();
-
-		/* Also make a new process group */
-		setsid ();
-
-		VE_IGNORE_EINTR (g_chdir ("/"));
-
-		/* short sleep to give some processing time to master */
-		usleep (1000);
-
-		argv = NULL;
-		g_shell_parse_argv (suspend, NULL, &argv, NULL);
-
-		if (argv != NULL && argv[0] != NULL)
-			VE_IGNORE_EINTR (execv (argv[0], argv));
-
-		/* FIXME: what about fail */
-		g_strfreev (argv);
-
-		_exit (1);
+	if (suspend == NULL) {
+		return;
 	}
+
+	try_commands (suspend);
 }
 
 #ifdef __linux__
@@ -663,71 +689,53 @@ change_to_first_and_clear (gboolean restart)
 static void
 halt_machine (void)
 {
-	char **argv;
-	const char *s;
+	const char **s;
 
-	gdm_info (_("Master halting..."));
+	g_debug (_("Master halting..."));
 
-	gdm_final_cleanup ();
-	VE_IGNORE_EINTR (g_chdir ("/"));
+	s = gdm_daemon_config_get_value_string_array (GDM_KEY_HALT);
 
+	if (try_commands (s)) {
+		/* maybe these don't run but oh well - there isn't
+		   really a good way to know a priori if the command
+		   will succeed. */
+		gdm_final_cleanup ();
+		VE_IGNORE_EINTR (g_chdir ("/"));
 #ifdef __linux__
-	change_to_first_and_clear (FALSE);
+		change_to_first_and_clear (FALSE);
 #endif /* __linux */
 
-	argv = NULL;
-	s = gdm_daemon_config_get_value_string (GDM_KEY_HALT);
-	if (s != NULL) {
-		g_shell_parse_argv (s, NULL, &argv, NULL);
 	}
-
-	if (argv != NULL && argv[0] != NULL)
-		VE_IGNORE_EINTR (execv (argv[0], argv));
-
-	gdm_error (_("%s: Halt failed: %s"),
-		   "gdm_child_action", strerror (errno));
-
-	g_strfreev (argv);
 }
 
 static void
 restart_machine (void)
 {
-	char **argv;
-	const char *s;
+	const char **s;
 
-	gdm_info (_("Restarting computer..."));
+	g_debug (_("Restarting computer..."));
 
-	gdm_final_cleanup ();
-	VE_IGNORE_EINTR (g_chdir ("/"));
+	s = gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT);
+
+	if (try_commands (s)) {
+		gdm_final_cleanup ();
+		VE_IGNORE_EINTR (g_chdir ("/"));
 
 #ifdef __linux__
-	change_to_first_and_clear (TRUE);
+		change_to_first_and_clear (TRUE);
 #endif /* __linux */
 
-	argv = NULL;
-	s = gdm_daemon_config_get_value_string (GDM_KEY_REBOOT);
-	if (s != NULL) {
-		g_shell_parse_argv (s, NULL, &argv, NULL);
 	}
-
-	if (argv != NULL && argv[0] != NULL)
-		VE_IGNORE_EINTR (execv (argv[0], argv));
-
-	gdm_error (_("%s: Restart failed: %s"), 
-		   "gdm_child_action", strerror (errno));
-
-	g_strfreev (argv);
 }
 
 static void
 custom_cmd (long cmd_id)
-{	
+{
         gchar * key_string;
 
         if (cmd_id < 0 || cmd_id >= GDM_CUSTOM_COMMAND_MAX) {
 		/* We are just feeling very paranoid */
-		gdm_error (_("custom_cmd: Custom command index %ld outside permitted range [0,%d)"), 
+		gdm_error (_("custom_cmd: Custom command index %ld outside permitted range [0,%d)"),
 			   cmd_id, GDM_CUSTOM_COMMAND_MAX);
 		return;
 	}
@@ -737,7 +745,7 @@ custom_cmd (long cmd_id)
 	        custom_cmd_no_restart (cmd_id);
 	else
 	        custom_cmd_restart (cmd_id);
-	
+
 	g_free(key_string);
 }
 
@@ -748,7 +756,7 @@ custom_cmd_restart (long cmd_id)
 	char **argv;
 	const char *s;
 
-        gdm_info (_("Executing custom command %ld with restart option..."), cmd_id);
+        g_debug (_("Executing custom command %ld with restart option..."), cmd_id);
 
 	gdm_final_cleanup ();
 	VE_IGNORE_EINTR (g_chdir ("/"));
@@ -777,10 +785,10 @@ custom_cmd_restart (long cmd_id)
 
 static void
 custom_cmd_no_restart (long cmd_id)
-{	
+{
         pid_t pid;
 
-        gdm_info (_("Executing custom command %ld with no restart option ..."), cmd_id);
+        g_debug (_("Executing custom command %ld with no restart option ..."), cmd_id);
 
         pid = fork ();
 
@@ -809,7 +817,7 @@ custom_cmd_no_restart (long cmd_id)
 
 		g_strfreev (argv);
 
-		gdm_error (_("%s: Execution of custom command failed: %s"), 
+		gdm_error (_("%s: Execution of custom command failed: %s"),
 			   "gdm_child_action", strerror (errno));
 		_exit (0);
 	}
@@ -827,329 +835,329 @@ custom_cmd_no_restart (long cmd_id)
 	}
 }
 
-static gboolean 
+static gboolean
 gdm_cleanup_children (void)
 {
-    pid_t pid;
-    gint exitstatus = 0, status;
-    GdmDisplay *d = NULL;
-    gboolean crashed;
-    gboolean sysmenu;
+	pid_t pid;
+	gint exitstatus = 0, status;
+	GdmDisplay *d = NULL;
+	gboolean crashed;
+	gboolean sysmenu;
 
-    /* Pid and exit status of slave that died */
-    pid = waitpid (-1, &exitstatus, WNOHANG);
+	/* Pid and exit status of slave that died */
+	pid = waitpid (-1, &exitstatus, WNOHANG);
 
-    if (pid <= 0)
-	    return FALSE;
+	if (pid <= 0)
+		return FALSE;
 
-    if G_LIKELY (WIFEXITED (exitstatus)) {
-	    status = WEXITSTATUS (exitstatus);
-	    crashed = FALSE;
-	    gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
-    } else {
-	    status = EXIT_SUCCESS;
-	    crashed = TRUE;
-	    if (WIFSIGNALED (exitstatus)) {
-		    if (WTERMSIG (exitstatus) == SIGTERM ||
-			WTERMSIG (exitstatus) == SIGINT) {
-			    /* we send these signals, sometimes children don't handle them */
-			    gdm_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
-				       (int)WTERMSIG (exitstatus));
-		    } else {
-			    gdm_error ("gdm_cleanup_children: child %d crashed of signal %d", pid,
-				       (int)WTERMSIG (exitstatus));
-		    }
-	    } else {
-		    gdm_error ("gdm_cleanup_children: child %d crashed", pid);
-	    }
-    }
-	
-    if (pid == extra_process) {
-	    /* an extra process died, yay! */
-	    extra_process = 0;
-	    extra_status = exitstatus;
-	    return TRUE;
-    }
-
-    /* Find out who this slave belongs to */
-    d = gdm_display_lookup (pid);
-
-    if (d == NULL)
-	    return TRUE;
-
-    /* whack connections about this display */
-    if (unixconn != NULL)
-      gdm_kill_subconnections_with_display (unixconn, d);
-
-    if G_UNLIKELY (crashed) {
-	    gdm_error ("gdm_cleanup_children: Slave crashed, killing its "
-		       "children");
-
-	    if (d->sesspid > 1)
-		    kill (-(d->sesspid), SIGTERM);
-	    d->sesspid = 0;
-	    if (d->greetpid > 1)
-		    kill (-(d->greetpid), SIGTERM);
-	    d->greetpid = 0;
-	    if (d->chooserpid > 1)
-		    kill (-(d->chooserpid), SIGTERM);
-	    d->chooserpid = 0;
-	    if (d->servpid > 1)
-		    kill (d->servpid, SIGTERM);
-	    d->servpid = 0;
-
-            if (gdm_daemon_config_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS)) {
-		/* XXX - This needs to be handled better */
-		gdm_server_whack_lockfile (d);
-	    }
-
-	    /* race avoider */
-	    gdm_sleep_no_signal (1);
-    }
-
-    /* null all these, they are not valid most definately */
-    d->servpid = 0;
-    d->sesspid = 0;
-    d->greetpid = 0;
-    d->chooserpid = 0;
-
-    /* definately not logged in now */
-    d->logged_in = FALSE;
-    g_free (d->login);
-    d->login = NULL;
-
-    /* Declare the display dead */
-    d->slavepid = 0;
-    d->dispstat = DISPLAY_DEAD;
-
-    sysmenu = gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU);
-
-    if ( ! sysmenu &&
-	(status == DISPLAY_RESTARTGDM ||
-	 status == DISPLAY_REBOOT ||
-	 status == DISPLAY_SUSPEND ||
-	 status == DISPLAY_HALT)) {
-	    gdm_info (_("Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu from display %s"), d->name);
-	    status = DISPLAY_REMANAGE;
-    }
-
-    if ( ! d->attached &&
-	(status == DISPLAY_RESTARTGDM ||
-	 status == DISPLAY_REBOOT ||
-	 status == DISPLAY_SUSPEND ||
-	 status == DISPLAY_HALT)) {
-	    gdm_info (_("Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"), d->name);
-	    status = DISPLAY_REMANAGE;
-    }
-
-    if (status == DISPLAY_RUN_CHOOSER) {
-	    /* use the chooser on the next run (but only if allowed) */
-	    if (sysmenu && 
-		gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_CHOOSER_BUTTON))
-		    d->use_chooser = TRUE;
-	    status = DISPLAY_REMANAGE;
-	    /* go around the display loop detection, these are short
-	     * sessions, so this decreases the chances of the loop
-	     * detection being hit */
-	    d->last_loop_start_time = 0;
-    }
-
-    if (status == DISPLAY_CHOSEN) {
-	    /* forget about this indirect id, since this
-	     * display will be dead very soon, and we don't want it
-	     * to take the indirect display with it */
-	    d->indirect_id = 0;
-	    status = DISPLAY_REMANAGE;
-    }
-
-    if (status == DISPLAY_GREETERFAILED) {
-	    if (d->managetime + 10 >= time (NULL)) {
-		    d->try_different_greeter = TRUE;
-	    } else {
-		    d->try_different_greeter = FALSE;
-	    }
-	    /* now just remanage */
-	    status = DISPLAY_REMANAGE;
-    } else {
-	    d->try_different_greeter = FALSE;
-    }
-
-    /* checkout if we can actually do stuff */
-    switch (status) {
-    case DISPLAY_REBOOT:
-	    if (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT) == NULL)
-		    status = DISPLAY_REMANAGE;
-	    break;
-    case DISPLAY_HALT:
-	    if (gdm_daemon_config_get_value_string (GDM_KEY_HALT) == NULL)
-		    status = DISPLAY_REMANAGE;
-	    break;
-    case DISPLAY_SUSPEND:
-	    if (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND) == NULL)
-		    status = DISPLAY_REMANAGE;
-	    break;
-    default:
-	    break;
-    }
-
-    /* if we crashed clear the theme */
-    if (crashed) {
-	    g_free (d->theme_name);
-	    d->theme_name = NULL;
-    }
-
-start_autopsy:
-
-    /* Autopsy */
-    switch (status) {
-	
-    case DISPLAY_ABORT:		/* Bury this display for good */
-	gdm_info (_("%s: Aborting display %s"),
-		  "gdm_child_action", d->name);
-
-	gdm_try_logout_action (d);
-	gdm_safe_restart ();
-
-	gdm_display_unmanage (d);
-
-	/* If there are some pending statics, start them now */
-	gdm_start_first_unborn_local (3 /* delay */);
-	break;
-	
-    case DISPLAY_REBOOT:	/* Restart machine */
-	restart_machine ();
-
-	status = DISPLAY_REMANAGE;
-	goto start_autopsy;
-	break;
-	
-    case DISPLAY_HALT:		/* Halt machine */
-	halt_machine ();
-
-	status = DISPLAY_REMANAGE;
-	goto start_autopsy;
-	break;
-
-    case DISPLAY_SUSPEND:	/* Suspend machine */
-	/* XXX: this is ugly, why should there be a suspend like this,
-	 * see GDM_SOP_SUSPEND_MACHINE */
-	suspend_machine ();
-
-	status = DISPLAY_REMANAGE;
-	goto start_autopsy;
-	break;
-
-    case DISPLAY_RESTARTGDM:
-	gdm_restart_now ();
-	break;
-
-    case DISPLAY_XFAILED:       /* X sucks */
-	gdm_debug ("X failed!");
-	/* inform about error if needed */
-	if (d->socket_conn != NULL) {
-		GdmConnection *conn = d->socket_conn;
-		d->socket_conn = NULL;
-		gdm_connection_set_close_notify (conn, NULL, NULL);
-		gdm_connection_write (conn, "ERROR 3 X failed\n");
+	if G_LIKELY (WIFEXITED (exitstatus)) {
+		status = WEXITSTATUS (exitstatus);
+		crashed = FALSE;
+		gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
+	} else {
+		status = EXIT_SUCCESS;
+		crashed = TRUE;
+		if (WIFSIGNALED (exitstatus)) {
+			if (WTERMSIG (exitstatus) == SIGTERM ||
+			    WTERMSIG (exitstatus) == SIGINT) {
+				/* we send these signals, sometimes children don't handle them */
+				gdm_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
+					   (int)WTERMSIG (exitstatus));
+			} else {
+				gdm_error ("gdm_cleanup_children: child %d crashed of signal %d", pid,
+					   (int)WTERMSIG (exitstatus));
+			}
+		} else {
+			gdm_error ("gdm_cleanup_children: child %d crashed", pid);
+		}
 	}
 
-	gdm_try_logout_action (d);
-	gdm_safe_restart ();
+	if (pid == extra_process) {
+		/* an extra process died, yay! */
+		extra_process = 0;
+		extra_status = exitstatus;
+		return TRUE;
+	}
 
-	/* in remote/flexi case just drop to _REMANAGE */
-	if (d->type == TYPE_STATIC) {
-		time_t now = time (NULL);
-		d->x_faileds++;
-		/* This really is likely the first time if it's been,
-		   some time, say 5 minutes */
-		if (now - d->last_x_failed > (5*60)) {
-			/* reset */
-			d->x_faileds = 1;
-			d->last_x_failed = now;
-			/* well sleep at least 3 seconds before starting */
-			d->sleep_before_run = 3;
-		} else if (d->x_faileds >= 3) {
-			gdm_debug ("gdm_child_action: dealing with X crashes");
-			if ( ! deal_with_x_crashes (d)) {
-				gdm_debug ("gdm_child_action: Aborting display");
-				/* an original way to deal with these things:
-				 * "Screw you guys, I'm going home!" */
-				gdm_display_unmanage (d);
+	/* Find out who this slave belongs to */
+	d = gdm_display_lookup (pid);
 
-				/* If there are some pending statics,
-				 * start them now */
-				gdm_start_first_unborn_local (3 /* delay */);
-				break;
+	if (d == NULL)
+		return TRUE;
+
+	/* whack connections about this display */
+	if (unixconn != NULL)
+		gdm_kill_subconnections_with_display (unixconn, d);
+
+	if G_UNLIKELY (crashed) {
+		gdm_error ("gdm_cleanup_children: Slave crashed, killing its "
+			   "children");
+
+		if (d->sesspid > 1)
+			kill (-(d->sesspid), SIGTERM);
+		d->sesspid = 0;
+		if (d->greetpid > 1)
+			kill (-(d->greetpid), SIGTERM);
+		d->greetpid = 0;
+		if (d->chooserpid > 1)
+			kill (-(d->chooserpid), SIGTERM);
+		d->chooserpid = 0;
+		if (d->servpid > 1)
+			kill (d->servpid, SIGTERM);
+		d->servpid = 0;
+
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS)) {
+			/* XXX - This needs to be handled better */
+			gdm_server_whack_lockfile (d);
+		}
+
+		/* race avoider */
+		gdm_sleep_no_signal (1);
+	}
+
+	/* null all these, they are not valid most definately */
+	d->servpid = 0;
+	d->sesspid = 0;
+	d->greetpid = 0;
+	d->chooserpid = 0;
+
+	/* definately not logged in now */
+	d->logged_in = FALSE;
+	g_free (d->login);
+	d->login = NULL;
+
+	/* Declare the display dead */
+	d->slavepid = 0;
+	d->dispstat = DISPLAY_DEAD;
+
+	sysmenu = gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU);
+
+	if ( ! sysmenu &&
+	     (status == DISPLAY_RESTARTGDM ||
+	      status == DISPLAY_REBOOT ||
+	      status == DISPLAY_SUSPEND ||
+	      status == DISPLAY_HALT)) {
+		gdm_info (_("Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu from display %s"), d->name);
+		status = DISPLAY_REMANAGE;
+	}
+
+	if ( ! d->attached &&
+	     (status == DISPLAY_RESTARTGDM ||
+	      status == DISPLAY_REBOOT ||
+	      status == DISPLAY_SUSPEND ||
+	      status == DISPLAY_HALT)) {
+		gdm_info (_("Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"), d->name);
+		status = DISPLAY_REMANAGE;
+	}
+
+	if (status == DISPLAY_RUN_CHOOSER) {
+		/* use the chooser on the next run (but only if allowed) */
+		if (sysmenu &&
+		    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_CHOOSER_BUTTON))
+			d->use_chooser = TRUE;
+		status = DISPLAY_REMANAGE;
+		/* go around the display loop detection, these are short
+		 * sessions, so this decreases the chances of the loop
+		 * detection being hit */
+		d->last_loop_start_time = 0;
+	}
+
+	if (status == DISPLAY_CHOSEN) {
+		/* forget about this indirect id, since this
+		 * display will be dead very soon, and we don't want it
+		 * to take the indirect display with it */
+		d->indirect_id = 0;
+		status = DISPLAY_REMANAGE;
+	}
+
+	if (status == DISPLAY_GREETERFAILED) {
+		if (d->managetime + 10 >= time (NULL)) {
+			d->try_different_greeter = TRUE;
+		} else {
+			d->try_different_greeter = FALSE;
+		}
+		/* now just remanage */
+		status = DISPLAY_REMANAGE;
+	} else {
+		d->try_different_greeter = FALSE;
+	}
+
+	/* checkout if we can actually do stuff */
+	switch (status) {
+	case DISPLAY_REBOOT:
+		if (gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) == NULL)
+			status = DISPLAY_REMANAGE;
+		break;
+	case DISPLAY_HALT:
+		if (gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) == NULL)
+			status = DISPLAY_REMANAGE;
+		break;
+	case DISPLAY_SUSPEND:
+		if (gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) == NULL)
+			status = DISPLAY_REMANAGE;
+		break;
+	default:
+		break;
+	}
+
+	/* if we crashed clear the theme */
+	if (crashed) {
+		g_free (d->theme_name);
+		d->theme_name = NULL;
+	}
+
+ start_autopsy:
+
+	/* Autopsy */
+	switch (status) {
+
+	case DISPLAY_ABORT:		/* Bury this display for good */
+		gdm_info (_("%s: Aborting display %s"),
+			  "gdm_child_action", d->name);
+
+		gdm_try_logout_action (d);
+		gdm_safe_restart ();
+
+		gdm_display_unmanage (d);
+
+		/* If there are some pending statics, start them now */
+		gdm_start_first_unborn_local (3 /* delay */);
+		break;
+
+	case DISPLAY_REBOOT:	/* Restart machine */
+		restart_machine ();
+
+		status = DISPLAY_REMANAGE;
+		goto start_autopsy;
+		break;
+
+	case DISPLAY_HALT:		/* Halt machine */
+		halt_machine ();
+
+		status = DISPLAY_REMANAGE;
+		goto start_autopsy;
+		break;
+
+	case DISPLAY_SUSPEND:	/* Suspend machine */
+		/* XXX: this is ugly, why should there be a suspend like this,
+		 * see GDM_SOP_SUSPEND_MACHINE */
+		suspend_machine ();
+
+		status = DISPLAY_REMANAGE;
+		goto start_autopsy;
+		break;
+
+	case DISPLAY_RESTARTGDM:
+		gdm_restart_now ();
+		break;
+
+	case DISPLAY_XFAILED:       /* X sucks */
+		gdm_debug ("X failed!");
+		/* inform about error if needed */
+		if (d->socket_conn != NULL) {
+			GdmConnection *conn = d->socket_conn;
+			d->socket_conn = NULL;
+			gdm_connection_set_close_notify (conn, NULL, NULL);
+			gdm_connection_write (conn, "ERROR 3 X failed\n");
+		}
+
+		gdm_try_logout_action (d);
+		gdm_safe_restart ();
+
+		/* in remote/flexi case just drop to _REMANAGE */
+		if (d->type == TYPE_STATIC) {
+			time_t now = time (NULL);
+			d->x_faileds++;
+			/* This really is likely the first time if it's been,
+			   some time, say 5 minutes */
+			if (now - d->last_x_failed > (5*60)) {
+				/* reset */
+				d->x_faileds = 1;
+				d->last_x_failed = now;
+				/* well sleep at least 3 seconds before starting */
+				d->sleep_before_run = 3;
+			} else if (d->x_faileds >= 3) {
+				gdm_debug ("gdm_child_action: dealing with X crashes");
+				if ( ! deal_with_x_crashes (d)) {
+					gdm_debug ("gdm_child_action: Aborting display");
+					/* an original way to deal with these things:
+					 * "Screw you guys, I'm going home!" */
+					gdm_display_unmanage (d);
+
+					/* If there are some pending statics,
+					 * start them now */
+					gdm_start_first_unborn_local (3 /* delay */);
+					break;
+				}
+				gdm_debug ("gdm_child_action: Trying again");
+
+				/* reset */
+				d->x_faileds = 0;
+				d->last_x_failed = 0;
+			} else {
+				/* well sleep at least 3 seconds before starting */
+				d->sleep_before_run = 3;
 			}
-			gdm_debug ("gdm_child_action: Trying again");
+			/* go around the display loop detection, we're doing
+			 * our own here */
+			d->last_loop_start_time = 0;
+		}
+		/* fall through */
 
+	case DISPLAY_REMANAGE:	/* Remanage display */
+	default:
+		gdm_debug ("gdm_child_action: In remanage");
+
+		/* if we did REMANAGE, that means that we're no longer failing */
+		if (status == DISPLAY_REMANAGE) {
 			/* reset */
 			d->x_faileds = 0;
 			d->last_x_failed = 0;
-		} else {
-			/* well sleep at least 3 seconds before starting */
-			d->sleep_before_run = 3;
 		}
-		/* go around the display loop detection, we're doing
-		 * our own here */
-		d->last_loop_start_time = 0;
-	}
-	/* fall through */
 
-    case DISPLAY_REMANAGE:	/* Remanage display */
-    default:
-	gdm_debug ("gdm_child_action: In remanage");
+		/* inform about error if needed */
+		if (d->socket_conn != NULL) {
+			GdmConnection *conn = d->socket_conn;
+			d->socket_conn = NULL;
+			gdm_connection_set_close_notify (conn, NULL, NULL);
+			gdm_connection_write (conn, "ERROR 2 Startup errors\n");
+		}
 
-	/* if we did REMANAGE, that means that we're no longer failing */
-	if (status == DISPLAY_REMANAGE) {
-		/* reset */
-		d->x_faileds = 0;
-		d->last_x_failed = 0;
-	}
+		gdm_try_logout_action (d);
+		gdm_safe_restart ();
 
-	/* inform about error if needed */
-	if (d->socket_conn != NULL) {
-		GdmConnection *conn = d->socket_conn;
-		d->socket_conn = NULL;
-		gdm_connection_set_close_notify (conn, NULL, NULL);
-		gdm_connection_write (conn, "ERROR 2 Startup errors\n");
+		/* This is a static server so we start a new slave */
+		if (d->type == TYPE_STATIC) {
+			if ( ! gdm_display_manage (d)) {
+				gdm_display_unmanage (d);
+				/* If there are some pending statics,
+				 * start them now */
+				gdm_start_first_unborn_local (3 /* delay */);
+			}
+		} else if (d->type == TYPE_FLEXI || d->type == TYPE_FLEXI_XNEST) {
+			/* if this was a chooser session and we have chosen a host,
+			   then we don't want to unmanage, we want to manage and
+			   choose that host */
+			if (d->chosen_hostname != NULL || d->use_chooser) {
+				if ( ! gdm_display_manage (d)) {
+					gdm_display_unmanage (d);
+				}
+			} else {
+				/* else, this is a one time thing */
+				gdm_display_unmanage (d);
+			}
+			/* Remote displays will send a request to be managed */
+		} else /* TYPE_XDMCP */ {
+			gdm_display_unmanage (d);
+		}
+
+		break;
 	}
 
 	gdm_try_logout_action (d);
 	gdm_safe_restart ();
-	
-	/* This is a static server so we start a new slave */
-	if (d->type == TYPE_STATIC) {
-		if ( ! gdm_display_manage (d)) {
-			gdm_display_unmanage (d);
-			/* If there are some pending statics,
-			 * start them now */
-			gdm_start_first_unborn_local (3 /* delay */);
-		}
-	} else if (d->type == TYPE_FLEXI || d->type == TYPE_FLEXI_XNEST) {
-		/* if this was a chooser session and we have chosen a host,
-		   then we don't want to unmanage, we want to manage and
-		   choose that host */
-		if (d->chosen_hostname != NULL || d->use_chooser) {
-			if ( ! gdm_display_manage (d)) {
-				gdm_display_unmanage (d);
-			}
-		} else {
-			/* else, this is a one time thing */
-			gdm_display_unmanage (d);
-		}
-	/* Remote displays will send a request to be managed */
-	} else /* TYPE_XDMCP */ {
-		gdm_display_unmanage (d);
-	}
-	
-	break;
-    }
 
-    gdm_try_logout_action (d);
-    gdm_safe_restart ();
-
-    return TRUE;
+	return TRUE;
 }
 
 static void
@@ -1204,8 +1212,8 @@ gdm_do_logout_action (GdmLogoutAction logout_action)
 	        /* This is a bit ugly but its the only place we can
 		   check for the range of values */
 	        if (logout_action >= GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST &&
-		    logout_action <= GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST)		    
-			custom_cmd (logout_action - GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST);	    
+		    logout_action <= GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST)
+			custom_cmd (logout_action - GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST);
 		break;
 	}
 }
@@ -1252,52 +1260,52 @@ main_daemon_abrt (int sig)
 static gboolean
 mainloop_sig_callback (int sig, gpointer data)
 {
-  /* signals are at somewhat random times aren't they? */
-  gdm_random_tick ();
+	/* signals are at somewhat random times aren't they? */
+	gdm_random_tick ();
 
-  gdm_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
-  switch (sig)
-    {
-    case SIGCHLD:
-      while (gdm_cleanup_children ())
-	      ;
-      break;
+	gdm_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
+	switch (sig)
+		{
+		case SIGCHLD:
+			while (gdm_cleanup_children ())
+				;
+			break;
 
-    case SIGINT:
-    case SIGTERM:
-      gdm_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
-      gdm_final_cleanup ();
-      exit (EXIT_SUCCESS);
-      break;
+		case SIGINT:
+		case SIGTERM:
+			gdm_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
+			gdm_final_cleanup ();
+			exit (EXIT_SUCCESS);
+			break;
 
 #ifdef SIGXFSZ
-    case SIGXFSZ:
-      gdm_error ("main daemon: Hit file size rlimit, restarting!");
-      gdm_restart_now ();
-      break;
+		case SIGXFSZ:
+			gdm_error ("main daemon: Hit file size rlimit, restarting!");
+			gdm_restart_now ();
+			break;
 #endif
 
 #ifdef SIGXCPU
-    case SIGXCPU:
-      gdm_error ("main daemon: Hit CPU rlimit, restarting!");
-      gdm_restart_now ();
-      break;
+		case SIGXCPU:
+			gdm_error ("main daemon: Hit CPU rlimit, restarting!");
+			gdm_restart_now ();
+			break;
 #endif
 
-    case SIGHUP:
-      gdm_restart_now ();
-      break;
+		case SIGHUP:
+			gdm_restart_now ();
+			break;
 
-    case SIGUSR1:
-      gdm_restart_mode = TRUE;
-      gdm_safe_restart ();
-      break;
- 
-    default:
-      break;
-    }
-  
-  return TRUE;
+		case SIGUSR1:
+			gdm_restart_mode = TRUE;
+			gdm_safe_restart ();
+			break;
+
+		default:
+			break;
+		}
+
+	return TRUE;
 }
 
 /*
@@ -1364,7 +1372,6 @@ create_connections (void)
 		VE_IGNORE_EINTR (close (p[1]));
 		slave_fifo_pipe_fd = -1;
 	}
-
 
 	unixconn = gdm_connection_open_unix (GDM_SUP_SOCKET, 0666);
 
@@ -1519,282 +1526,282 @@ gdm_make_global_cookie (void)
 int
 main (int argc, char *argv[])
 {
-    FILE *pf;
-    sigset_t mask;
-    struct sigaction sig, child, abrt;
-    GOptionContext *ctx;
-    const char *pidfile;
-    int i;
+	FILE *pf;
+	sigset_t mask;
+	struct sigaction sig, child, abrt;
+	GOptionContext *ctx;
+	const char *pidfile;
+	int i;
 
-    /* semi init pseudorandomness */
-    gdm_random_tick ();
+	/* semi init pseudorandomness */
+	gdm_random_tick ();
 
-    /* We here ensure descriptors 0, 1 and 2 */
-    ensure_desc_012 ();
+	/* We here ensure descriptors 0, 1 and 2 */
+	ensure_desc_012 ();
 
-    /* store all initial stuff, args, env, rlimits, runlevel */
-    store_argv (argc, argv);
-    gdm_saveenv ();
-    gdm_get_initial_limits ();
+	/* store all initial stuff, args, env, rlimits, runlevel */
+	store_argv (argc, argv);
+	gdm_saveenv ();
+	gdm_get_initial_limits ();
 
-    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-    textdomain (GETTEXT_PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
 
-    setlocale (LC_ALL, "");
+	setlocale (LC_ALL, "");
 
-    /* Initialize runtime environment */
-    umask (022);
-
-    g_type_init ();
-
-    ctx = g_option_context_new (_("- The GNOME login manager"));
-    g_option_context_add_main_entries (ctx, options, _("main options"));
-
-    /* preprocess the arguments to support the xdm style -nodaemon
-     * option
-     */
-    for (i = 0; i < argc; i++) {
-	    if (strcmp (argv[i], "-nodaemon") == 0)
-	      argv[i] = (char *) "--nodaemon";
-    }
-
-    g_option_context_parse (ctx, &argc, &argv, NULL);
-    g_option_context_free (ctx);
-
-    if (monte_carlo_sqrt2) {
-	    calc_sqrt2 ();
-	    return 0;
-    }
-
-    if (print_version) {
-	    printf ("GDM %s\n", VERSION);
-	    fflush (stdout);
-	    exit (0);
-    }
-
-    gdm_log_init ();
-    /* Parse configuration file */
-    gdm_daemon_config_parse (config_file, no_console);
-    gdm_log_set_debug (gdm_daemon_config_get_bool_for_id (GDM_ID_DEBUG));
-
-    /* XDM compliant error message */
-    if G_UNLIKELY (getuid () != 0) {
-	    /* make sure the pid file doesn't get wiped */
-	    gdm_error (_("Only root wants to run GDM\n"));
-	    exit (-1);
-    }
-
-    main_loop = g_main_loop_new (NULL, FALSE);
-
-    /* initial TERM/INT handler */
-    sig.sa_handler = initial_term_int;
-    sig.sa_flags = SA_RESTART;
-    sigemptyset (&sig.sa_mask);
-
-    /*
-     * Do not call gdm_fail before calling gdm_config_parse ()
-     * since the gdm_fail function uses config data
-     */
-    if G_UNLIKELY (sigaction (SIGTERM, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "TERM", strerror (errno));
-
-    if G_UNLIKELY (sigaction (SIGINT, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "INT", strerror (errno));
-
-    /* get the name of the root user */
-    gdm_root_user ();
-
-    pidfile = GDM_PID_FILE;
-
-    /* Check if another gdm process is already running */
-    if (g_access (pidfile, R_OK) == 0) {
-
-        /* Check if the existing process is still alive. */
-        gint pidv;
-
-        pf = fopen (pidfile, "r");
-
-        if (pf != NULL &&
-	    fscanf (pf, "%d", &pidv) == 1 &&
-	    kill (pidv, 0) == 0 &&
-	    linux_only_is_running (pidv)) {
-		/* make sure the pid file doesn't get wiped */
-		VE_IGNORE_EINTR (fclose (pf));
-		gdm_fail (_("GDM already running. Aborting!"));
-	}
-
-	if (pf != NULL)
-		VE_IGNORE_EINTR (fclose (pf));
-    }
-
-    /* Become daemon unless started in -nodaemon mode or child of init */
-    if (no_daemon || getppid () == 1) {
-
-	/* Write pid to pidfile */
-	errno = 0;
-	if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
-	    errno = 0;
-	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)getpid ()));
-	    VE_IGNORE_EINTR (fclose (pf));
-	    if (errno != 0) {
-		    /* FIXME: how to handle this? */
-		    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-				  pidfile, strerror (errno));
-		    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-			       pidfile, strerror (errno));
-
-	    }
-	} else if (errno != 0) {
-	    /* FIXME: how to handle this? */
-		gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
-			      pidfile, strerror (errno));
-	    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
-		       pidfile, strerror (errno));
-
-	}
-
-	VE_IGNORE_EINTR (g_chdir (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)));
+	/* Initialize runtime environment */
 	umask (022);
-    }
-    else
-	gdm_daemonify ();
+
+	g_type_init ();
+
+	ctx = g_option_context_new (_("- The GNOME login manager"));
+	g_option_context_add_main_entries (ctx, options, _("main options"));
+
+	/* preprocess the arguments to support the xdm style -nodaemon
+	 * option
+	 */
+	for (i = 0; i < argc; i++) {
+		if (strcmp (argv[i], "-nodaemon") == 0)
+			argv[i] = (char *) "--nodaemon";
+	}
+
+	g_option_context_parse (ctx, &argc, &argv, NULL);
+	g_option_context_free (ctx);
+
+	if (monte_carlo_sqrt2) {
+		calc_sqrt2 ();
+		return 0;
+	}
+
+	if (print_version) {
+		printf ("GDM %s\n", VERSION);
+		fflush (stdout);
+		exit (0);
+	}
+
+	gdm_log_init ();
+	/* Parse configuration file */
+	gdm_daemon_config_parse (config_file, no_console);
+	gdm_log_set_debug (gdm_daemon_config_get_bool_for_id (GDM_ID_DEBUG));
+
+	/* XDM compliant error message */
+	if G_UNLIKELY (getuid () != 0) {
+		/* make sure the pid file doesn't get wiped */
+		gdm_error (_("Only root wants to run GDM\n"));
+		exit (-1);
+	}
+
+	main_loop = g_main_loop_new (NULL, FALSE);
+
+	/* initial TERM/INT handler */
+	sig.sa_handler = initial_term_int;
+	sig.sa_flags = SA_RESTART;
+	sigemptyset (&sig.sa_mask);
+
+	/*
+	 * Do not call gdm_fail before calling gdm_config_parse ()
+	 * since the gdm_fail function uses config data
+	 */
+	if G_UNLIKELY (sigaction (SIGTERM, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "TERM", strerror (errno));
+
+	if G_UNLIKELY (sigaction (SIGINT, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "INT", strerror (errno));
+
+	/* get the name of the root user */
+	gdm_root_user ();
+
+	pidfile = GDM_PID_FILE;
+
+	/* Check if another gdm process is already running */
+	if (g_access (pidfile, R_OK) == 0) {
+
+		/* Check if the existing process is still alive. */
+		gint pidv;
+
+		pf = fopen (pidfile, "r");
+
+		if (pf != NULL &&
+		    fscanf (pf, "%d", &pidv) == 1 &&
+		    kill (pidv, 0) == 0 &&
+		    linux_only_is_running (pidv)) {
+			/* make sure the pid file doesn't get wiped */
+			VE_IGNORE_EINTR (fclose (pf));
+			gdm_fail (_("GDM already running. Aborting!"));
+		}
+
+		if (pf != NULL)
+			VE_IGNORE_EINTR (fclose (pf));
+	}
+
+	/* Become daemon unless started in -nodaemon mode or child of init */
+	if (no_daemon || getppid () == 1) {
+
+		/* Write pid to pidfile */
+		errno = 0;
+		if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
+			errno = 0;
+			VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)getpid ()));
+			VE_IGNORE_EINTR (fclose (pf));
+			if (errno != 0) {
+				/* FIXME: how to handle this? */
+				gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
+					      pidfile, strerror (errno));
+				gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
+					   pidfile, strerror (errno));
+
+			}
+		} else if (errno != 0) {
+			/* FIXME: how to handle this? */
+			gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
+				      pidfile, strerror (errno));
+			gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
+				   pidfile, strerror (errno));
+
+		}
+
+		VE_IGNORE_EINTR (g_chdir (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR)));
+		umask (022);
+	}
+	else
+		gdm_daemonify ();
 
 #ifdef __sun
-    g_unlink (SDTLOGIN_DIR);
-    g_mkdir (SDTLOGIN_DIR, 0700);
+	g_unlink (SDTLOGIN_DIR);
+	g_mkdir (SDTLOGIN_DIR, 0700);
 #endif
 
-    /* Signal handling */
-    ve_signal_add (SIGCHLD, mainloop_sig_callback, NULL);
-    ve_signal_add (SIGTERM, mainloop_sig_callback, NULL);
-    ve_signal_add (SIGINT,  mainloop_sig_callback, NULL);
-    ve_signal_add (SIGHUP,  mainloop_sig_callback, NULL);
-    ve_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
+	/* Signal handling */
+	ve_signal_add (SIGCHLD, mainloop_sig_callback, NULL);
+	ve_signal_add (SIGTERM, mainloop_sig_callback, NULL);
+	ve_signal_add (SIGINT,  mainloop_sig_callback, NULL);
+	ve_signal_add (SIGHUP,  mainloop_sig_callback, NULL);
+	ve_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
 
-    sig.sa_handler = ve_signal_notify;
-    sig.sa_flags = SA_RESTART;
-    sigemptyset (&sig.sa_mask);
+	sig.sa_handler = ve_signal_notify;
+	sig.sa_flags = SA_RESTART;
+	sigemptyset (&sig.sa_mask);
 
-    if G_UNLIKELY (sigaction (SIGTERM, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "TERM", strerror (errno));
+	if G_UNLIKELY (sigaction (SIGTERM, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "TERM", strerror (errno));
 
-    if G_UNLIKELY (sigaction (SIGINT, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "INT", strerror (errno));
+	if G_UNLIKELY (sigaction (SIGINT, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "INT", strerror (errno));
 
-    if G_UNLIKELY (sigaction (SIGHUP, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "HUP", strerror (errno));
+	if G_UNLIKELY (sigaction (SIGHUP, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "HUP", strerror (errno));
 
-    if G_UNLIKELY (sigaction (SIGUSR1, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "USR1", strerror (errno));
+	if G_UNLIKELY (sigaction (SIGUSR1, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "USR1", strerror (errno));
 
-    /* some process limit signals we catch and restart on,
-       note that we don't catch these in the slave, but then
-       we catch those in the main daemon as slave crashing
-       (terminated by signal), and we clean up appropriately */
+	/* some process limit signals we catch and restart on,
+	   note that we don't catch these in the slave, but then
+	   we catch those in the main daemon as slave crashing
+	   (terminated by signal), and we clean up appropriately */
 #ifdef SIGXCPU
-    ve_signal_add (SIGXCPU, mainloop_sig_callback, NULL);
-    if G_UNLIKELY (sigaction (SIGXCPU, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "XCPU", strerror (errno));
+	ve_signal_add (SIGXCPU, mainloop_sig_callback, NULL);
+	if G_UNLIKELY (sigaction (SIGXCPU, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "XCPU", strerror (errno));
 #endif
 #ifdef SIGXFSZ
-    ve_signal_add (SIGXFSZ, mainloop_sig_callback, NULL);
-    if G_UNLIKELY (sigaction (SIGXFSZ, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "XFSZ", strerror (errno));
+	ve_signal_add (SIGXFSZ, mainloop_sig_callback, NULL);
+	if G_UNLIKELY (sigaction (SIGXFSZ, &sig, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "XFSZ", strerror (errno));
 #endif
 
-    /* cannot use mainloop for SIGABRT, the handler can never
-       return */
-    abrt.sa_handler = main_daemon_abrt;
-    abrt.sa_flags = SA_RESTART;
-    sigemptyset (&abrt.sa_mask);
+	/* cannot use mainloop for SIGABRT, the handler can never
+	   return */
+	abrt.sa_handler = main_daemon_abrt;
+	abrt.sa_flags = SA_RESTART;
+	sigemptyset (&abrt.sa_mask);
 
-    if G_UNLIKELY (sigaction (SIGABRT, &abrt, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "ABRT", strerror (errno));
+	if G_UNLIKELY (sigaction (SIGABRT, &abrt, NULL) < 0)
+		gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+			  "main", "ABRT", strerror (errno));
 
-    child.sa_handler = ve_signal_notify;
-    child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
-    sigemptyset (&child.sa_mask);
-    sigaddset (&child.sa_mask, SIGCHLD);
+	child.sa_handler = ve_signal_notify;
+	child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
+	sigemptyset (&child.sa_mask);
+	sigaddset (&child.sa_mask, SIGCHLD);
 
-    if G_UNLIKELY (sigaction (SIGCHLD, &child, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up CHLD signal handler"), "gdm_main");
+	if G_UNLIKELY (sigaction (SIGCHLD, &child, NULL) < 0)
+		gdm_fail (_("%s: Error setting up CHLD signal handler"), "gdm_main");
 
-    sigemptyset (&mask);
-    sigaddset (&mask, SIGINT);
-    sigaddset (&mask, SIGTERM);
-    sigaddset (&mask, SIGCHLD);
-    sigaddset (&mask, SIGHUP);
-    sigaddset (&mask, SIGUSR1);
-    sigaddset (&mask, SIGABRT);
+	sigemptyset (&mask);
+	sigaddset (&mask, SIGINT);
+	sigaddset (&mask, SIGTERM);
+	sigaddset (&mask, SIGCHLD);
+	sigaddset (&mask, SIGHUP);
+	sigaddset (&mask, SIGUSR1);
+	sigaddset (&mask, SIGABRT);
 #ifdef SIGXCPU
-    sigaddset (&mask, SIGXCPU);
+	sigaddset (&mask, SIGXCPU);
 #endif
 #ifdef SIGXFSZ
-    sigaddset (&mask, SIGXFSZ);
+	sigaddset (&mask, SIGXFSZ);
 #endif
-    sigprocmask (SIG_UNBLOCK, &mask, NULL);
+	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
-    gdm_signal_ignore (SIGUSR2);
-    gdm_signal_ignore (SIGPIPE);
+	gdm_signal_ignore (SIGUSR2);
+	gdm_signal_ignore (SIGPIPE);
 
-    /* ignore power failures, up to user processes to
-     * handle things correctly */
+	/* ignore power failures, up to user processes to
+	 * handle things correctly */
 #ifdef SIGPWR
-    gdm_signal_ignore (SIGPWR);
+	gdm_signal_ignore (SIGPWR);
 #endif
-    /* can we ever even get this one? */
+	/* can we ever even get this one? */
 #ifdef SIGLOST
-    gdm_signal_ignore (SIGLOST);
+	gdm_signal_ignore (SIGLOST);
 #endif
 
-    gdm_debug ("gdm_main: Here we go...");
+	gdm_debug ("gdm_main: Here we go...");
 
 #ifdef  HAVE_LOGINDEVPERM
-    di_devperm_login ("/dev/console", gdm_daemon_config_get_gdmuid (), gdm_daemon_config_get_gdmgid (), NULL);
+	di_devperm_login ("/dev/console", gdm_daemon_config_get_gdmuid (), gdm_daemon_config_get_gdmgid (), NULL);
 #endif  /* HAVE_LOGINDEVPERM */
 
-    /* Init XDMCP if applicable */
-    if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go)
-	gdm_xdmcp_init ();
+	/* Init XDMCP if applicable */
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go)
+		gdm_xdmcp_init ();
 
-    create_connections ();
+	create_connections ();
 
-    /* make sure things (currently /tmp/.ICE-unix and /tmp/.X11-unix)
-     * are sane */
-    gdm_ensure_sanity () ;
+	/* make sure things (currently /tmp/.ICE-unix and /tmp/.X11-unix)
+	 * are sane */
+	gdm_ensure_sanity () ;
 
-    /* Make us a unique global cookie to authenticate */
-    gdm_make_global_cookie ();
+	/* Make us a unique global cookie to authenticate */
+	gdm_make_global_cookie ();
 
-    /* Start static X servers */
-    gdm_start_first_unborn_local (0 /* delay */);
+	/* Start static X servers */
+	gdm_start_first_unborn_local (0 /* delay */);
 
-    /* Accept remote connections */
-    if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
-	gdm_debug ("Accepting XDMCP connections...");
-	gdm_xdmcp_run ();
-    }
+	/* Accept remote connections */
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
+		gdm_debug ("Accepting XDMCP connections...");
+		gdm_xdmcp_run ();
+	}
 
-    /* We always exit via exit (), and sadly we need to g_main_quit ()
-     * at times not knowing if it's this main or a recursive one we're
-     * quitting.
-     */
-    while (1)
-      {
-	g_main_loop_run (main_loop);
-	gdm_debug ("main: Exited main loop");
-      }
+	/* We always exit via exit (), and sadly we need to g_main_quit ()
+	 * at times not knowing if it's this main or a recursive one we're
+	 * quitting.
+	 */
+	while (1)
+		{
+			g_main_loop_run (main_loop);
+			gdm_debug ("main: Exited main loop");
+		}
 
-    return EXIT_SUCCESS;	/* Not reached */
+	return EXIT_SUCCESS;	/* Not reached */
 }
 
 static gboolean
@@ -1888,7 +1895,7 @@ write_x_servers (GdmDisplay *d)
 	g_free (file);
 }
 
- static void
+static void
 send_slave_ack_dialog_int (GdmDisplay *d, int type, int response)
 {
 	if (d->master_notify_fd >= 0) {
@@ -1901,7 +1908,7 @@ send_slave_ack_dialog_int (GdmDisplay *d, int type, int response)
 	}
 	if (d->slavepid > 1) {
 		/* now yield the CPU as the other process has more
-		useful work to do then we do */
+		   useful work to do then we do */
 #if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 		sched_yield ();
 #endif
@@ -1916,7 +1923,7 @@ send_slave_ack_dialog_char (GdmDisplay *d, int type, const char *resp)
 			char not[3];
 
 			not[0] = GDM_SLAVE_NOTIFY_RESPONSE;
-			not[1] = type; 
+			not[1] = type;
 			not[2] = '\n';
 			VE_IGNORE_EINTR (write (d->master_notify_fd, not, 3));
 		} else {
@@ -1930,7 +1937,7 @@ send_slave_ack_dialog_char (GdmDisplay *d, int type, const char *resp)
 	}
 	if (d->slavepid > 1) {
 		/* now yield the CPU as the other process has more
-		useful work to do then we do */
+		   useful work to do then we do */
 #if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 		sched_yield ();
 #endif
@@ -1983,7 +1990,6 @@ send_slave_command (GdmDisplay *d, const char *command)
 #endif
 	}
 }
-
 
 static void
 gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
@@ -2389,7 +2395,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				error = "ERROR 999 Unknown error\n";
 			if (conn != NULL)
 				gdm_connection_write (conn, error);
-			
+
 			gdm_debug ("Got FLEXI_ERR == %d", err);
 			/* send ack */
 			send_slave_ack (d, NULL);
@@ -2416,7 +2422,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				if ( ! gdm_connection_printf (conn, "OK %s\n", d->name))
 					gdm_display_unmanage (d);
 			}
-			
+
 			gdm_debug ("Got FLEXI_OK");
 			/* send ack */
 			send_slave_ack (d, NULL);
@@ -2577,14 +2583,14 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 		        custom_cmd (cmd_id);
 			send_slave_ack (d, NULL);
-		}		
+		}
 	} else if (strcmp (msg, GDM_SOP_FLEXI_XSERVER) == 0) {
 		handle_flexi_server (NULL, TYPE_FLEXI, gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
 				     NULL, 0, NULL, NULL, NULL);
-       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ERROR_DIALOG,
-			   strlen ("opcode="GDM_SOP_SHOW_ERROR_DIALOG)) == 0) {
+	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ERROR_DIALOG,
+			    strlen ("opcode="GDM_SOP_SHOW_ERROR_DIALOG)) == 0) {
 		GdmDisplay *d;
 		GtkMessageType type;
 		char **list;
@@ -2642,7 +2648,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_free (details_label);
 		g_free (details_file);
 		g_strfreev (list);
-       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_YESNO_DIALOG,
+	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_YESNO_DIALOG,
                             strlen ("opcode="GDM_SOP_SHOW_YESNO_DIALOG)) == 0) {
 		GdmDisplay *d;
 		char **list;
@@ -2677,7 +2683,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		g_free (yesno_msg);
 		g_strfreev (list);
-       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_QUESTION_DIALOG,
+	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_QUESTION_DIALOG,
                             strlen ("opcode="GDM_SOP_SHOW_QUESTION_DIALOG)) == 0) {
 		GdmDisplay *d;
 		char **list;
@@ -2716,7 +2722,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		g_free (question_msg);
 		g_strfreev (list);
-       } else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG,
+	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG,
                             strlen ("opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG)) == 0) {
 		GdmDisplay *d;
 		char *askbuttons_msg;
@@ -2768,7 +2774,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		g_free (askbuttons_msg);
 
-		for (i = 0; i < 3; i ++) 
+		for (i = 0; i < 3; i ++)
 			g_free (options[i]);
 		g_strfreev (list);
 	}
@@ -2961,7 +2967,7 @@ check_cookie (const gchar *file, const gchar *disp, const gchar *cookie)
 		    memcmp (xa->data, bcookie, cookielen) == 0) {
 			XauDisposeAuth (xa);
 			ret = TRUE;
-			break; 
+			break;
 		}
 		XauDisposeAuth (xa);
 
@@ -3143,127 +3149,127 @@ handle_flexi_server (GdmConnection *conn,
 static void
 handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
 {
-    GdmDisplay *disp;
-    int disp_num;
-    gchar *msg;
-    gchar *full;
-    gchar *val;
+	GdmDisplay *disp;
+	int disp_num;
+	gchar *msg;
+	gchar *full;
+	gchar *val;
 
-    if (!(gdm_daemon_config_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS))) {
-        gdm_connection_write (conn, "ERROR 200 Dynamic Displays not allowed\n");
-        return;
-    }
-
-    if ( ! GDM_CONN_AUTH_GLOBAL(conn)) {
-        gdm_info (_("DYNAMIC request denied: " "Not authenticated"));
-        gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
-        return;
-    }
-
-    if (key == NULL) {
-        gdm_connection_write (conn, "ERROR 1 Bad display number <NULL>\n");
-        return;
-    } else if ( !(isdigit (*key))) {
-	msg = g_strdup_printf ("ERROR 1 Bad display number <%s>\n", key);
-        gdm_connection_write (conn, msg);
-	g_free (msg);
-        return;
-    }
-    disp_num = atoi (key);
-
-    if (type == DYNAMIC_ADD) {
-        /* prime an X server for launching */
-
-        if (mark_display_exists (disp_num)) {
-            /* need to skip starting this one again */
-            gdm_connection_write (conn, "ERROR 2 Existing display\n");
-            return;
-        }
-
-        full = strchr (key, '=');
-        if (full == NULL || *(full+1) == 0) {
-            gdm_connection_write (conn, "ERROR 3 No server string\n");
-            return;
-        }
-
-        val = full+1;
-        disp = gdm_server_alloc (disp_num, val);
-
-        if (disp == NULL) {
-            gdm_connection_write (conn, "ERROR 4 Display startup failure\n");
-            return;
-        }
-
-	gdm_daemon_config_display_list_insert (disp);
-
-        disp->dispstat = DISPLAY_CONFIG;
-        disp->removeconf = FALSE;
-
-        if (disp_num > gdm_daemon_config_get_high_display_num ())
-		gdm_daemon_config_set_high_display_num (disp_num);
-
-	gdm_connection_write (conn, "OK\n");
-        return;
-    }
-
-    if (type == DYNAMIC_REMOVE) {
-        GSList *li;
-        GSList *nli;
-	GSList *displays;
-
-	displays = gdm_daemon_config_get_display_list ();
-
-        /* shutdown a dynamic X server */
-
-        for (li = displays; li != NULL; li = nli) {
-            disp = li->data;
-            nli = li->next;
-            if (disp->dispnum == disp_num) {
-                disp->removeconf = TRUE;
-                gdm_display_unmanage (disp);
-                gdm_connection_write (conn, "OK\n");
-                return;
-            }
-        }
-
-	msg = g_strdup_printf ("ERROR 1 Bad display number <%d>\n", disp_num);
-        gdm_connection_write (conn, msg);
-        return;
-    }
-
-    if (type == DYNAMIC_RELEASE) {
-        /* cause the newly configured X servers to actually run */
-        GSList *li;
-        GSList *nli;
-	gboolean found = FALSE;
-	GSList *displays;
-
-	displays = gdm_daemon_config_get_display_list ();
-
-        for (li = displays; li != NULL; li = nli) {
-            GdmDisplay *disp = li->data;
-            nli = li->next;
-            if ((disp->dispnum == disp_num) &&
-                (disp->dispstat == DISPLAY_CONFIG)) {
-                disp->dispstat = DISPLAY_UNBORN;
-
-                if ( ! gdm_display_manage (disp)) {
-                    gdm_display_unmanage (disp);
-                }
-		found = TRUE;
-            }
-        }
-
-	if (found)
-	        gdm_connection_write (conn, "OK\n");
-	else {
-		msg = g_strdup_printf ("ERROR 1 Bad display number <%d>\n", disp_num);
-	        gdm_connection_write (conn, msg);
+	if (!(gdm_daemon_config_get_value_bool (GDM_KEY_DYNAMIC_XSERVERS))) {
+		gdm_connection_write (conn, "ERROR 200 Dynamic Displays not allowed\n");
+		return;
 	}
 
-        /* Now we wait for the server to start up (or not) */
-        return;
-    }
+	if ( ! GDM_CONN_AUTH_GLOBAL(conn)) {
+		gdm_info (_("DYNAMIC request denied: " "Not authenticated"));
+		gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+	if (key == NULL) {
+		gdm_connection_write (conn, "ERROR 1 Bad display number <NULL>\n");
+		return;
+	} else if ( !(isdigit (*key))) {
+		msg = g_strdup_printf ("ERROR 1 Bad display number <%s>\n", key);
+		gdm_connection_write (conn, msg);
+		g_free (msg);
+		return;
+	}
+	disp_num = atoi (key);
+
+	if (type == DYNAMIC_ADD) {
+		/* prime an X server for launching */
+
+		if (mark_display_exists (disp_num)) {
+			/* need to skip starting this one again */
+			gdm_connection_write (conn, "ERROR 2 Existing display\n");
+			return;
+		}
+
+		full = strchr (key, '=');
+		if (full == NULL || *(full+1) == 0) {
+			gdm_connection_write (conn, "ERROR 3 No server string\n");
+			return;
+		}
+
+		val = full+1;
+		disp = gdm_server_alloc (disp_num, val);
+
+		if (disp == NULL) {
+			gdm_connection_write (conn, "ERROR 4 Display startup failure\n");
+			return;
+		}
+
+		gdm_daemon_config_display_list_insert (disp);
+
+		disp->dispstat = DISPLAY_CONFIG;
+		disp->removeconf = FALSE;
+
+		if (disp_num > gdm_daemon_config_get_high_display_num ())
+			gdm_daemon_config_set_high_display_num (disp_num);
+
+		gdm_connection_write (conn, "OK\n");
+		return;
+	}
+
+	if (type == DYNAMIC_REMOVE) {
+		GSList *li;
+		GSList *nli;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
+
+		/* shutdown a dynamic X server */
+
+		for (li = displays; li != NULL; li = nli) {
+			disp = li->data;
+			nli = li->next;
+			if (disp->dispnum == disp_num) {
+				disp->removeconf = TRUE;
+				gdm_display_unmanage (disp);
+				gdm_connection_write (conn, "OK\n");
+				return;
+			}
+		}
+
+		msg = g_strdup_printf ("ERROR 1 Bad display number <%d>\n", disp_num);
+		gdm_connection_write (conn, msg);
+		return;
+	}
+
+	if (type == DYNAMIC_RELEASE) {
+		/* cause the newly configured X servers to actually run */
+		GSList *li;
+		GSList *nli;
+		gboolean found = FALSE;
+		GSList *displays;
+
+		displays = gdm_daemon_config_get_display_list ();
+
+		for (li = displays; li != NULL; li = nli) {
+			GdmDisplay *disp = li->data;
+			nli = li->next;
+			if ((disp->dispnum == disp_num) &&
+			    (disp->dispstat == DISPLAY_CONFIG)) {
+				disp->dispstat = DISPLAY_UNBORN;
+
+				if ( ! gdm_display_manage (disp)) {
+					gdm_display_unmanage (disp);
+				}
+				found = TRUE;
+			}
+		}
+
+		if (found)
+			gdm_connection_write (conn, "OK\n");
+		else {
+			msg = g_strdup_printf ("ERROR 1 Bad display number <%d>\n", disp_num);
+			gdm_connection_write (conn, msg);
+		}
+
+		/* Now we wait for the server to start up (or not) */
+		return;
+	}
 }
 
 static void
@@ -3346,10 +3352,10 @@ gdm_handle_user_message (GdmConnection *conn,
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
 				     NULL, 0, NULL, NULL, NULL);
-	} else if (((has_user = strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ", 
+	} else if (((has_user = strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ",
                                          strlen (GDM_SUP_FLEXI_XSERVER_USER " "))) == 0) ||
                    (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
-		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0)) {
+			     strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0)) {
 		gchar *name;
 		const gchar *command = NULL;
 		GdmXserver *svr;
@@ -3412,9 +3418,9 @@ gdm_handle_user_message (GdmConnection *conn,
 				     NULL, 0, NULL, NULL, username);
 		g_free (username);
 	} else if (((has_user = strncmp (msg, GDM_SUP_FLEXI_XNEST_USER " ",
-                                         strlen (GDM_SUP_FLEXI_XNEST_USER " "))) == 0) || 
+                                         strlen (GDM_SUP_FLEXI_XNEST_USER " "))) == 0) ||
                    (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
-		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0)) {
+			     strlen (GDM_SUP_FLEXI_XNEST " ")) == 0)) {
 		gchar *dispname = NULL, *xauthfile = NULL, *cookie = NULL;
 		uid_t uid;
 		const gchar *rest;
@@ -3449,7 +3455,7 @@ gdm_handle_user_message (GdmConnection *conn,
 			g_free (cookie);
 			return;
 		}
-		
+
 		handle_flexi_server (conn, TYPE_FLEXI_XNEST, gdm_daemon_config_get_value_string (GDM_KEY_XNEST),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
@@ -3475,7 +3481,7 @@ gdm_handle_user_message (GdmConnection *conn,
 		             strlen (GDM_SUP_ATTACHED_SERVERS)) == 0)
 			msgLen = strlen (GDM_SUP_ATTACHED_SERVERS);
 		else if (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
-						  strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)
+				  strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)
 			msgLen = strlen (GDM_SUP_CONSOLE_SERVERS);
 
 		key = g_strdup (&msg[msgLen]);
@@ -3516,8 +3522,8 @@ gdm_handle_user_message (GdmConnection *conn,
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
 			g_string_append_printf (msg, "%s%s,%s", sep,
-					       ve_sure_string (disp->name),
-					       ve_sure_string (disp->login));
+						ve_sure_string (disp->name),
+						ve_sure_string (disp->login));
 			sep = ";";
 		}
 		g_string_append (msg, "\n");
@@ -3532,54 +3538,54 @@ gdm_handle_user_message (GdmConnection *conn,
 		} else {
                		gdm_connection_printf (conn, "ERROR 1 No servers found\n");
 		}
- 
+
 	} else if (strncmp (msg, GDM_SUP_GET_SERVER_DETAILS " ",
-		     strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
+			    strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
 		const gchar *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
 		gchar   **splitstr = g_strsplit (server, " ", 2);
 		GdmXserver  *svr   = gdm_daemon_config_find_xserver ((gchar *)splitstr[0]);
 
 		if (svr != NULL) {
 			if (g_strcasecmp (splitstr[1], "ID") == 0)
-			   gdm_connection_printf (conn, "OK %s\n", svr->id);
+				gdm_connection_printf (conn, "OK %s\n", svr->id);
 			else if (g_strcasecmp (splitstr[1], "NAME") == 0)
-			   gdm_connection_printf (conn, "OK %s\n", svr->name);
-			else if (g_strcasecmp (splitstr[1], "COMMAND") == 0) 
-			   gdm_connection_printf (conn, "OK %s\n", svr->command);
+				gdm_connection_printf (conn, "OK %s\n", svr->name);
+			else if (g_strcasecmp (splitstr[1], "COMMAND") == 0)
+				gdm_connection_printf (conn, "OK %s\n", svr->command);
 			else if (g_strcasecmp (splitstr[1], "PRIORITY") == 0)
-			   gdm_connection_printf (conn, "OK %d\n", svr->priority);
+				gdm_connection_printf (conn, "OK %d\n", svr->priority);
 			else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
                                  svr->flexible)
-			   gdm_connection_printf (conn, "OK true\n");
+				gdm_connection_printf (conn, "OK true\n");
 			else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
                                  !svr->flexible)
-			   gdm_connection_printf (conn, "OK false\n");
+				gdm_connection_printf (conn, "OK false\n");
 			else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
                                  svr->choosable)
-			   gdm_connection_printf (conn, "OK true\n");
+				gdm_connection_printf (conn, "OK true\n");
 			else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
                                  !svr->choosable)
-			   gdm_connection_printf (conn, "OK false\n");
+				gdm_connection_printf (conn, "OK false\n");
 			else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
                                  svr->handled)
-			   gdm_connection_printf (conn, "OK true\n");
+				gdm_connection_printf (conn, "OK true\n");
 			else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
                                  !svr->handled)
-			   gdm_connection_printf (conn, "OK false\n");
+				gdm_connection_printf (conn, "OK false\n");
 			else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
                                  svr->chooser)
-			   gdm_connection_printf (conn, "OK true\n");
+				gdm_connection_printf (conn, "OK true\n");
 			else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
                                  !svr->chooser)
-			   gdm_connection_printf (conn, "OK false\n");
+				gdm_connection_printf (conn, "OK false\n");
 			else
-			   gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
+				gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
 
 			g_strfreev (splitstr);
 		} else {
                		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
 		}
- 
+
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
 		GString *msg;
 		GSList *li;
@@ -3593,7 +3599,7 @@ gdm_handle_user_message (GdmConnection *conn,
 			GdmDisplay *disp = li->data;
 			if (disp->greetpid > 0) {
 				g_string_append_printf (msg, "%s%ld",
-						       sep, (long)disp->greetpid);
+							sep, (long)disp->greetpid);
 				sep = ";";
 			}
 		}
@@ -3601,8 +3607,8 @@ gdm_handle_user_message (GdmConnection *conn,
 		gdm_connection_write (conn, msg->str);
 		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_UPDATE_CONFIG " ",
-		     strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
-		const gchar *key = 
+			    strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
+		const gchar *key =
 			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
 
 		if (! gdm_daemon_config_update_key ((gchar *)key))
@@ -3610,14 +3616,14 @@ gdm_handle_user_message (GdmConnection *conn,
 		else
 			gdm_connection_write (conn, "OK\n");
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
-		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
+			    strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
 		const gchar *parms = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
 		gchar **splitstr = g_strsplit (parms, " ", 2);
 		gchar *retval = NULL;
 		static gboolean done_prefetch = FALSE;
 
 		/*
-		 * It is not meaningful to manage this in a per-display 
+		 * It is not meaningful to manage this in a per-display
 		 * fashion since the prefetch program is only run once the
 		 * for the first display that requests the key.  So process
 		 * this first and return "Unsupported key" for requests
@@ -3634,11 +3640,11 @@ gdm_handle_user_message (GdmConnection *conn,
 		}
 
 		if (splitstr[0] != NULL) {
-                       /*
-                        * Note passing in the display is backwards compatible 
-                        * since if it is NULL, it won't try to load the display
-			* value at all.
-                        */
+			/*
+			 * Note passing in the display is backwards compatible
+			 * since if it is NULL, it won't try to load the display
+			 * value at all.
+			 */
 			gdm_daemon_config_to_string (splitstr[0], splitstr[1], &retval);
 
 	   		if (retval != NULL) {
@@ -3649,19 +3655,19 @@ gdm_handle_user_message (GdmConnection *conn,
 					gdm_connection_printf (conn, "OK \n");
 				else
        		         		gdm_connection_printf (conn,
-						"ERROR 50 Unsupported key <%s>\n",
-						splitstr[0]);
+							       "ERROR 50 Unsupported key <%s>\n",
+							       splitstr[0]);
 			}
 			g_strfreev (splitstr);
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		/*
-		 * Value is only non-null if passed in on command line. 
+		 * Value is only non-null if passed in on command line.
 		 * Otherwise print compiled-in default file location.
 		 */
 		if (config_file == NULL) {
 			gdm_connection_printf (conn, "OK %s\n",
-				GDM_DEFAULTS_CONF);
+					       GDM_DEFAULTS_CONF);
 		} else {
 			gdm_connection_printf (conn, "OK %s\n", config_file);
 		}
@@ -3713,7 +3719,7 @@ gdm_handle_user_message (GdmConnection *conn,
 			if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
 				g_string_append (msg, "!");
 			sep = ";";
-		}	
+		}
 		if (sysmenu && disp->attached &&
 		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
 			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
@@ -3723,12 +3729,12 @@ gdm_handle_user_message (GdmConnection *conn,
 		}
 
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar *key_string = NULL; 
-			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+			gchar *key_string = NULL;
+			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 			if (sysmenu && disp->attached &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				g_free (key_string);
-				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
 				if (gdm_daemon_config_get_value_bool (key_string)) {
 					g_string_append_printf (msg, "%s%s%d", sep, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, i);
 					if (logout_action == (GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + i))
@@ -3736,7 +3742,7 @@ gdm_handle_user_message (GdmConnection *conn,
 					sep = ";";
 				}
 			}
-			g_free(key_string);		     
+			g_free(key_string);
 		}
 
 		g_string_append (msg, "\n");
@@ -3760,24 +3766,24 @@ gdm_handle_user_message (GdmConnection *conn,
 					      "ERROR 100 Not authenticated\n");
 			return;
 		}
-		
-		msg = g_string_new ("OK");		
+
+		msg = g_string_new ("OK");
 
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar *key_string = NULL; 
-			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+			gchar *key_string = NULL;
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 			if (sysmenu && disp->attached &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				g_free (key_string);
-				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
 				if (gdm_daemon_config_get_value_bool (key_string)) {
 					g_free (key_string);
-					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i); 
+					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 					g_string_append_printf (msg, "%s%s",  sep, gdm_daemon_config_get_value_string (key_string));
 					sep = ";";
 				}
 			}
-			g_free(key_string);		     
+			g_free(key_string);
 		}
 
 		g_string_append (msg, "\n");
@@ -3801,32 +3807,32 @@ gdm_handle_user_message (GdmConnection *conn,
 					      "ERROR 100 Not authenticated\n");
 			return;
 		}
-		
+
 		msg = g_string_new ("OK ");
 
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar *key_string = NULL; 
-			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+			gchar *key_string = NULL;
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 			if (sysmenu && disp->attached &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				g_free (key_string);
-				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
 				if (gdm_daemon_config_get_value_bool (key_string)) {
 					g_free (key_string);
-					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i); 
+					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
 					if(gdm_daemon_config_get_value_bool (key_string))
-						no_restart_status_flag |= (1 << i);				 
+						no_restart_status_flag |= (1 << i);
 				}
 			}
-			g_free(key_string);		     
+			g_free(key_string);
 		}
 
 		g_string_append_printf (msg, "%ld\n", no_restart_status_flag);
 		gdm_connection_write (conn, msg->str);
 		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_SET_LOGOUT_ACTION " ",
-		     strlen (GDM_SUP_SET_LOGOUT_ACTION " ")) == 0) {
-		const gchar *action = 
+			    strlen (GDM_SUP_SET_LOGOUT_ACTION " ")) == 0) {
+		const gchar *action =
 			&msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
@@ -3871,20 +3877,20 @@ gdm_handle_user_message (GdmConnection *conn,
 				was_ok = TRUE;
 			}
 		}
-		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, 
+		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
 				  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
-		       int cmd_index;
-		       if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
-			   gchar *key_string = NULL; 
-			   key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
-			   if (sysmenu && disp->attached &&
-			       ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-			           disp->logout_action =
-				           GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
-				   was_ok = TRUE;
-			   }
-			   g_free(key_string);		     
-		       }
+			int cmd_index;
+			if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
+				gchar *key_string = NULL;
+				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
+				if (sysmenu && disp->attached &&
+				    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+					disp->logout_action =
+						GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
+					was_ok = TRUE;
+				}
+				g_free(key_string);
+			}
 		}
 		if (was_ok) {
 			gdm_connection_write (conn, "OK\n");
@@ -3893,8 +3899,8 @@ gdm_handle_user_message (GdmConnection *conn,
 			gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
 		}
 	} else if (strncmp (msg, GDM_SUP_SET_SAFE_LOGOUT_ACTION " ",
-		     strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")) == 0) {
-		const gchar *action = 
+			    strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")) == 0) {
+		const gchar *action =
 			&msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
 		GdmDisplay *disp;
 		gboolean was_ok = FALSE;
@@ -3939,20 +3945,20 @@ gdm_handle_user_message (GdmConnection *conn,
 				was_ok = TRUE;
 			}
 		}
-		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, 
+		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
 				  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
-		       int cmd_index;
-		       if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
-			       gchar *key_string = NULL; 
-			       key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
-			       if (sysmenu && disp->attached &&
-				   ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-			               safe_logout_action =
-				           GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
-				   was_ok = TRUE;
-			   }
-			   g_free(key_string);		     
-		       }
+			int cmd_index;
+			if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
+				gchar *key_string = NULL;
+				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
+				if (sysmenu && disp->attached &&
+				    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+					safe_logout_action =
+						GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
+					was_ok = TRUE;
+				}
+				g_free(key_string);
+			}
 		}
 		if (was_ok) {
 			gdm_connection_write (conn, "OK\n");
@@ -4013,7 +4019,7 @@ gdm_handle_user_message (GdmConnection *conn,
 		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
 #endif
 	} else if (strncmp (msg, GDM_SUP_ADD_DYNAMIC_DISPLAY " ",
-		   strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")) == 0) {
+			    strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")) == 0) {
 		gchar *key;
 
 		key = g_strdup (&msg[strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")]);
@@ -4022,7 +4028,7 @@ gdm_handle_user_message (GdmConnection *conn,
 		g_free (key);
 
 	} else if (strncmp (msg, GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ",
-		   strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")) == 0) {
+			    strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")) == 0) {
 		gchar *key;
 
 		key = g_strdup (&msg[strlen (GDM_SUP_REMOVE_DYNAMIC_DISPLAY " ")]);
@@ -4031,7 +4037,7 @@ gdm_handle_user_message (GdmConnection *conn,
 		g_free (key);
 
 	} else if (strncmp (msg, GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ",
-		   strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
+			    strlen (GDM_SUP_RELEASE_DYNAMIC_DISPLAYS " ")) == 0) {
 
 		gchar *key;
 
@@ -4054,4 +4060,3 @@ gdm_handle_user_message (GdmConnection *conn,
 		gdm_connection_close (conn);
 	}
 }
-
