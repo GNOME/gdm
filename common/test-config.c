@@ -83,8 +83,14 @@ type_to_name (GdmConfigValueType type)
         case GDM_CONFIG_VALUE_STRING:
                 name = "string";
                 break;
+        case GDM_CONFIG_VALUE_LOCALE_STRING:
+                name = "locale-string";
+                break;
         case GDM_CONFIG_VALUE_STRING_ARRAY:
                 name = "string-array";
+                break;
+        case GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY:
+                name = "locale-string-array";
                 break;
         case GDM_CONFIG_VALUE_INVALID:
                 name = "invalid";
@@ -280,6 +286,9 @@ test_config (void)
                 /* populate the database with all specified entries */
                 gdm_config_process_all (config, &error);
         }
+
+
+        /* Test translated keys */
 
         gdm_config_free (config);
 }

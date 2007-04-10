@@ -34,17 +34,21 @@ gboolean
 gdm_common_config_parse_key_string (const char *keystring,
 				    char      **group,
 				    char      **key,
+				    char      **locale,
 				    char      **value)
 {
 	char   **split1;
 	char   **split2;
 	char    *g;
 	char    *k;
+	char    *l;
 	char    *v;
+	char    *tmp1;
+	char    *tmp2;
 	gboolean ret;
 
 	ret = FALSE;
-	g = k = v = NULL;
+	g = k = v = l = NULL;
 	split1 = split2 = NULL;
 
 	split1 = g_strsplit (keystring, "/", 2);
@@ -62,6 +66,14 @@ gdm_common_config_parse_key_string (const char *keystring,
 		v = split2 [1];
 	}
 
+	/* trim off the locale */
+	tmp1 = strchr (k, '[');
+	tmp2 = strchr (k, ']');
+	if (tmp1 != NULL && tmp2 != NULL && tmp2 > tmp1) {
+		l = g_strndup (tmp1 + 1, tmp2 - tmp1 - 1);
+		*tmp1 = '\0';
+	}
+
 	ret = TRUE;
  out:
 	if (group != NULL) {
@@ -69,6 +81,9 @@ gdm_common_config_parse_key_string (const char *keystring,
 	}
 	if (key != NULL) {
 		*key = g_strdup (k);
+	}
+	if (locale != NULL) {
+		*locale = g_strdup (l);
 	}
 	if (value != NULL) {
 		*value = g_strdup (v);
@@ -184,7 +199,7 @@ gdm_common_config_get_int (GKeyFile   *config,
 	GError *local_error;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value))
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value))
 		return FALSE;
 
 	local_error = NULL;
@@ -227,7 +242,7 @@ gdm_common_config_get_translated_string (GKeyFile   *config,
 	val = NULL;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value))
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value))
 		return FALSE;
 
 	langs = g_get_language_names ();
@@ -273,7 +288,7 @@ gdm_common_config_get_string (GKeyFile   *config,
 	GError *local_error;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
 		g_set_error (error,
 			     G_KEY_FILE_ERROR,
 			     G_KEY_FILE_ERROR_PARSE,
@@ -316,7 +331,7 @@ gdm_common_config_get_string_list (GKeyFile   *config,
 	GError *local_error;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
 		g_set_error (error,
 			     G_KEY_FILE_ERROR,
 			     G_KEY_FILE_ERROR_PARSE,
@@ -359,7 +374,7 @@ gdm_common_config_get_boolean (GKeyFile   *config,
 	GError  *local_error;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value))
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value))
 		return FALSE;
 
 	local_error = NULL;
@@ -401,7 +416,7 @@ gdm_common_config_set_string (GKeyFile   *config,
 	char    *default_value;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
 		return;
 	}
 
@@ -422,7 +437,7 @@ gdm_common_config_set_boolean (GKeyFile   *config,
 	char    *default_value;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
 		return;
 	}
 
@@ -443,7 +458,7 @@ gdm_common_config_set_int (GKeyFile   *config,
 	char    *default_value;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
 		return;
 	}
 
@@ -465,7 +480,7 @@ gdm_common_config_remove_key (GKeyFile   *config,
 	GError  *local_error;
 
 	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, &default_value)) {
+	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
 		return;
 	}
 

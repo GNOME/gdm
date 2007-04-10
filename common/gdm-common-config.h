@@ -58,6 +58,7 @@ gboolean   gdm_common_config_get_boolean      (GKeyFile   *config,
 gboolean   gdm_common_config_parse_key_string (const char *keystring,
 					       char      **group,
 					       char      **key,
+					       char      **locale,
 					       char      **value);
 
 void       gdm_common_config_set_string       (GKeyFile   *config,

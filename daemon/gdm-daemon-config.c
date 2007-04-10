@@ -192,9 +192,10 @@ gdm_daemon_config_get_value_int (const char *keystring)
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
+						  NULL,
 						  NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		goto out;
 	}
 
@@ -240,9 +241,10 @@ gdm_daemon_config_get_value_string (const char *keystring)
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
+						  NULL,
 						  NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		goto out;
 	}
 
@@ -339,9 +341,10 @@ gdm_daemon_config_get_value_bool (const char *keystring)
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
+						  NULL,
 						  NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		goto out;
 	}
 
@@ -499,23 +502,28 @@ gdm_daemon_config_key_to_string (const gchar *file,
 				 const gchar *keystring,
 				 gchar **retval)
 {
-	GKeyFile *config;
-	GdmConfigValueType type;
-	gboolean res;
-	char *group;
-	char *key;
+	GKeyFile             *config;
+	GdmConfigValueType    type;
+	gboolean              res;
+	char                 *group;
+	char                 *key;
+	char                 *locale;
 	const GdmConfigEntry *entry;
 
 	if (retval != NULL) {
 		*retval = NULL;
 	}
 
+	group = key = locale = NULL;
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
+						  &locale,
 						  NULL);
+	g_debug ("Requesting group=%s key=%s locale=%s", group, key, locale);
+
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		goto out;
 	}
 
@@ -558,6 +566,13 @@ gdm_daemon_config_key_to_string (const gchar *file,
 			*retval = value;
 		}
 		break;
+	case GDM_CONFIG_VALUE_LOCALE_STRING:
+		{
+			gchar *value;
+			gdm_common_config_get_string (config, keystring, &value, NULL);
+			*retval = value;
+		}
+		break;
 	default:
 		break;
 	}
@@ -566,6 +581,7 @@ gdm_daemon_config_key_to_string (const gchar *file,
  out:
 	g_free (group);
 	g_free (key);
+	g_free (locale);
 
 	return;
 }
@@ -579,12 +595,13 @@ gdm_daemon_config_key_to_string (const gchar *file,
 void
 gdm_daemon_config_to_string (const gchar *keystring,
 			     const gchar *display,
-			     gchar **retval)
+			     gchar      **retval)
 {
 	gboolean res;
 	GdmConfigValue *value;
 	char *group;
 	char *key;
+	char *locale;
 	char *result;
 
 	/*
@@ -601,12 +618,14 @@ gdm_daemon_config_to_string (const gchar *keystring,
 
 	group = NULL;
 	key = NULL;
+	locale = NULL;
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
+						  &locale,
 						  NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		goto out;
 	}
 
@@ -639,6 +658,8 @@ gdm_daemon_config_to_string (const gchar *keystring,
  out:
 	g_free (group);
 	g_free (key);
+	g_free (locale);
+
 
 	*retval = result;
 }
@@ -802,9 +823,9 @@ gdm_daemon_config_set_value_string (const gchar *keystring,
 	gboolean        res;
 	GdmConfigValue *value;
 
-	res = gdm_common_config_parse_key_string (keystring, &group, &key, NULL);
+	res = gdm_common_config_parse_key_string (keystring, &group, &key, NULL, NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		return;
 	}
 
@@ -827,9 +848,9 @@ gdm_daemon_config_set_value_bool (const gchar *keystring,
 	gboolean        res;
 	GdmConfigValue *value;
 
-	res = gdm_common_config_parse_key_string (keystring, &group, &key, NULL);
+	res = gdm_common_config_parse_key_string (keystring, &group, &key, NULL, NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		return;
 	}
 
@@ -852,9 +873,9 @@ gdm_daemon_config_set_value_int (const gchar *keystring,
 	gboolean        res;
 	GdmConfigValue *value;
 
-	res = gdm_common_config_parse_key_string (keystring, &group, &key, NULL);
+	res = gdm_common_config_parse_key_string (keystring, &group, &key, NULL, NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		return;
 	}
 
@@ -1156,9 +1177,11 @@ gdm_daemon_config_update_key (const char *keystring)
 	gboolean              res;
 	char                 *group;
 	char                 *key;
+	char                 *locale;
 	const GdmConfigEntry *entry;
 
 	rc = FALSE;
+	group = key = locale = NULL;
 
 	/*
 	 * Do not allow these keys to be updated, since GDM would need
@@ -1195,13 +1218,13 @@ gdm_daemon_config_update_key (const char *keystring)
 	}
 
 	/* find the entry for the key */
-
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
+						  &locale,
 						  NULL);
 	if (! res) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
+		gdm_error ("Could not parse configuration key %s", keystring);
 		goto out;
 	}
 
@@ -1214,6 +1237,9 @@ gdm_daemon_config_update_key (const char *keystring)
 	gdm_config_process_entry (daemon_config, entry, NULL);
 
  out:
+	g_free (group);
+	g_free (key);
+	g_free (locale);
 
 	return rc;
 }
@@ -2147,6 +2173,7 @@ gdm_daemon_config_is_valid_key (const char *keystring)
 	ret = gdm_common_config_parse_key_string (keystring,
 						  &group,
 						  &key,
+						  NULL,
 						  NULL);
 	if (! ret) {
 		goto out;

@@ -1,10 +1,42 @@
+2007-04-10  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-common-config.c: (gdm_common_config_parse_key_string),
+	(gdm_common_config_get_int),
+	(gdm_common_config_get_translated_string),
+	(gdm_common_config_get_string),
+	(gdm_common_config_get_string_list),
+	(gdm_common_config_get_boolean), (gdm_common_config_set_string),
+	(gdm_common_config_set_boolean), (gdm_common_config_set_int),
+	(gdm_common_config_remove_key):
+	* common/gdm-common-config.h:
+	* common/gdm-config.c: (gdm_config_value_free),
+	(gdm_config_value_copy), (gdm_config_value_get_locale_string),
+	(safe_strcmp), (gdm_config_value_compare),
+	(gdm_config_value_new_from_string),
+	(gdm_config_value_set_locale_string_array),
+	(gdm_config_value_set_locale_string), (gdm_config_value_to_string),
+	(key_file_get_value), (internal_set_value):
+	* common/gdm-config.h:
+	* common/test-config.c: (type_to_name), (test_config):
+	* daemon/gdm-daemon-config-entries.h:
+	* daemon/gdm-daemon-config.c: (gdm_daemon_config_get_value_int),
+	(gdm_daemon_config_get_value_string),
+	(gdm_daemon_config_get_value_bool),
+	(gdm_daemon_config_key_to_string), (gdm_daemon_config_to_string),
+	(gdm_daemon_config_set_value_string),
+	(gdm_daemon_config_set_value_bool),
+	(gdm_daemon_config_set_value_int), (gdm_daemon_config_update_key),
+	(gdm_daemon_config_is_valid_key):
+	* gui/gdmsetup.c: (greeter_entry_untranslate_timeout):
+	Handle locale strings a bit better.
+
 2007-04-06  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmsetup.glade:  Fix some additional spelling issues raised in
 	  bug #423158.
 
 2007-04-06  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
-	
+
 	* daemon/gdm.c, daemon/slave.c:
 	* gui/gdmlogin.c, gui/gdmsetup.c:
 	* gui/greeter/greeter.c, gui/greeter/greeter_item.c:
@@ -12,7 +44,7 @@
 	  Changes to some strings related to custom commands stuff such 
 	  that they are not marked for translation. Fixes some issues
 	  raised in bug #423158
-	
+
 2007-04-09  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmlanguages.[ch], gui/greeter/greeter_item_customlist.c:

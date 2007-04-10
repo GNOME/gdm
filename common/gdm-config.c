@@ -133,9 +133,11 @@ gdm_config_value_free (GdmConfigValue *value)
         case GDM_CONFIG_VALUE_INT:
 		break;
         case GDM_CONFIG_VALUE_STRING:
+        case GDM_CONFIG_VALUE_LOCALE_STRING:
 		g_free (real->val.str);
 		break;
 	case GDM_CONFIG_VALUE_STRING_ARRAY:
+	case GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY:
 		g_strfreev (real->val.array);
 		break;
 	default:
@@ -186,9 +188,11 @@ gdm_config_value_copy (const GdmConfigValue *src)
 		dest->val = real->val;
 		break;
 	case GDM_CONFIG_VALUE_STRING:
+	case GDM_CONFIG_VALUE_LOCALE_STRING:
 		set_string (&dest->val.str, real->val.str);
 		break;
 	case GDM_CONFIG_VALUE_STRING_ARRAY:
+	case GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY:
 		set_string_array (&dest->val.array, (const char **)real->val.array);
 		break;
 	default:
@@ -206,6 +210,14 @@ gdm_config_value_get_string (const GdmConfigValue *value)
 	return REAL_VALUE (value)->val.str;
 }
 
+const char *
+gdm_config_value_get_locale_string (const GdmConfigValue *value)
+{
+	g_return_val_if_fail (value != NULL, NULL);
+	g_return_val_if_fail (value->type == GDM_CONFIG_VALUE_LOCALE_STRING, NULL);
+	return REAL_VALUE (value)->val.str;
+}
+
 gboolean
 gdm_config_value_get_bool (const GdmConfigValue *value)
 {
@@ -220,6 +232,13 @@ gdm_config_value_get_int (const GdmConfigValue *value)
 	g_return_val_if_fail (value != NULL, 0);
 	g_return_val_if_fail (value->type == GDM_CONFIG_VALUE_INT, 0);
 	return REAL_VALUE (value)->val.integer;
+}
+
+static gint
+safe_strcmp (const char *a,
+	     const char *b)
+{
+	return strcmp (a ? a : "", b ? b : "");
 }
 
 /* based on code from gconf */
@@ -246,9 +265,13 @@ gdm_config_value_compare (const GdmConfigValue *value_a,
 			return 0;
 		}
 	case GDM_CONFIG_VALUE_STRING:
-		return strcmp (gdm_config_value_get_string (value_a),
-			       gdm_config_value_get_string (value_b));
+		return safe_strcmp (gdm_config_value_get_string (value_a),
+				    gdm_config_value_get_string (value_b));
+	case GDM_CONFIG_VALUE_LOCALE_STRING:
+		return safe_strcmp (gdm_config_value_get_locale_string (value_a),
+				    gdm_config_value_get_locale_string (value_b));
 	case GDM_CONFIG_VALUE_STRING_ARRAY:
+	case GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY:
 		{
 			char *str_a;
 			char *str_b;
@@ -256,7 +279,7 @@ gdm_config_value_compare (const GdmConfigValue *value_a,
 
 			str_a = gdm_config_value_to_string (value_a);
 			str_b = gdm_config_value_to_string (value_a);
-			res = strcmp (str_a, str_b);
+			res = safe_strcmp (str_a, str_b);
 			g_free (str_a);
 			g_free (str_b);
 
@@ -272,6 +295,7 @@ gdm_config_value_compare (const GdmConfigValue *value_a,
 		}
 	case GDM_CONFIG_VALUE_INVALID:
 	default:
+		g_assert_not_reached ();
 		break;
 	}
 
@@ -360,6 +384,18 @@ gdm_config_value_new_from_string (GdmConfigValueType type,
 			gdm_config_value_set_string (value, value_str);
 		}
                 break;
+        case GDM_CONFIG_VALUE_LOCALE_STRING:
+		if (! g_utf8_validate (value_str, -1, NULL)) {
+			g_set_error (error,
+				     GDM_CONFIG_ERROR,
+				     GDM_CONFIG_ERROR_PARSE_ERROR,
+				     _("Text contains invalid UTF-8"));
+			gdm_config_value_free (value);
+			value = NULL;
+		} else {
+			gdm_config_value_set_locale_string (value, value_str);
+		}
+		break;
         case GDM_CONFIG_VALUE_STRING_ARRAY:
 		if (! g_utf8_validate (value_str, -1, NULL)) {
 			g_set_error (error,
@@ -372,6 +408,21 @@ gdm_config_value_new_from_string (GdmConfigValueType type,
 			char **split;
 			split = g_strsplit (value_str, ";", -1);
 			gdm_config_value_set_string_array (value, (const char **)split);
+			g_strfreev (split);
+		}
+                break;
+        case GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY:
+		if (! g_utf8_validate (value_str, -1, NULL)) {
+			g_set_error (error,
+				     GDM_CONFIG_ERROR,
+				     GDM_CONFIG_ERROR_PARSE_ERROR,
+				     _("Text contains invalid UTF-8"));
+			gdm_config_value_free (value);
+			value = NULL;
+		} else {
+			char **split;
+			split = g_strsplit (value_str, ";", -1);
+			gdm_config_value_set_locale_string_array (value, (const char **)split);
 			g_strfreev (split);
 		}
                 break;
@@ -392,6 +443,21 @@ gdm_config_value_set_string_array (GdmConfigValue *value,
 
 	g_return_if_fail (value != NULL);
 	g_return_if_fail (value->type == GDM_CONFIG_VALUE_STRING_ARRAY);
+
+	real = REAL_VALUE (value);
+
+	g_strfreev (real->val.array);
+	real->val.array = g_strdupv ((char **)array);
+}
+
+void
+gdm_config_value_set_locale_string_array (GdmConfigValue *value,
+					  const char    **array)
+{
+	GdmConfigRealValue *real;
+
+	g_return_if_fail (value != NULL);
+	g_return_if_fail (value->type == GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY);
 
 	real = REAL_VALUE (value);
 
@@ -442,6 +508,21 @@ gdm_config_value_set_string (GdmConfigValue *value,
 	real->val.str = g_strdup (str);
 }
 
+void
+gdm_config_value_set_locale_string (GdmConfigValue *value,
+				    const char     *str)
+{
+	GdmConfigRealValue *real;
+
+	g_return_if_fail (value != NULL);
+	g_return_if_fail (value->type == GDM_CONFIG_VALUE_LOCALE_STRING);
+
+	real = REAL_VALUE (value);
+
+	g_free (real->val.str);
+	real->val.str = g_strdup (str);
+}
+
 char *
 gdm_config_value_to_string (const GdmConfigValue *value)
 {
@@ -463,9 +544,11 @@ gdm_config_value_to_string (const GdmConfigValue *value)
 		ret = g_strdup_printf ("%d", real->val.integer);
 		break;
         case GDM_CONFIG_VALUE_STRING:
+        case GDM_CONFIG_VALUE_LOCALE_STRING:
 		ret = g_strdup (real->val.str);
 		break;
 	case GDM_CONFIG_VALUE_STRING_ARRAY:
+	case GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY:
 		ret = g_strjoinv (";", real->val.array);
 		break;
 	default:
@@ -670,10 +753,35 @@ key_file_get_value (GdmConfig            *config,
 	value = NULL;
 
 	error = NULL;
-	val = g_key_file_get_value (key_file,
-				    group,
-				    key,
-				    &error);
+	if (type == GDM_CONFIG_VALUE_LOCALE_STRING ||
+	    type == GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY) {
+		/* Use NULL locale to detect current locale */
+		val = g_key_file_get_locale_string (key_file,
+						    group,
+						    key,
+						    NULL,
+						    &error);
+		g_debug ("Loading locale string: %s %s", key, val);
+
+		if (error != NULL) {
+			g_debug ("%s", error->message);
+			g_error_free (error);
+		}
+		if (val == NULL) {
+			error = NULL;
+			val = g_key_file_get_value (key_file,
+						    group,
+						    key,
+						    &error);
+			g_debug ("Loading non-locale string: %s %s", key, val);
+		}
+	} else {
+		val = g_key_file_get_value (key_file,
+					    group,
+					    key,
+					    &error);
+	}
+
 	if (error != NULL) {
 		g_error_free (error);
 		goto out;
@@ -831,7 +939,7 @@ internal_set_value (GdmConfig          *config,
 					    (gpointer *)&v);
 
 	if (res) {
-		if (gdm_config_value_compare (v, value) == 0) {
+		if (v != NULL && gdm_config_value_compare (v, value) == 0) {
 			/* value is the same - don't update */
 			goto out;
 		}

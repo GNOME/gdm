@@ -32,7 +32,9 @@ typedef enum {
         GDM_CONFIG_VALUE_BOOL,
         GDM_CONFIG_VALUE_INT,
         GDM_CONFIG_VALUE_STRING,
+        GDM_CONFIG_VALUE_LOCALE_STRING,
         GDM_CONFIG_VALUE_STRING_ARRAY,
+        GDM_CONFIG_VALUE_LOCALE_STRING_ARRAY,
 } GdmConfigValueType;
 
 typedef enum {
@@ -180,14 +182,19 @@ GdmConfigValue *     gdm_config_value_new_from_string  (GdmConfigValueType    ty
 							const char           *str,
 							GError              **error);
 const char *         gdm_config_value_get_string       (const GdmConfigValue *value);
+const char *         gdm_config_value_get_locale_string       (const GdmConfigValue *value);
 int                  gdm_config_value_get_int          (const GdmConfigValue *value);
 gboolean             gdm_config_value_get_bool         (const GdmConfigValue *value);
 
 void                 gdm_config_value_set_string       (GdmConfigValue  *value,
 							const char      *str);
+void                 gdm_config_value_set_locale_string       (GdmConfigValue  *value,
+							       const char      *str);
 
 void                 gdm_config_value_set_string_array (GdmConfigValue  *value,
 							const char     **array);
+void                 gdm_config_value_set_locale_string_array (GdmConfigValue  *value,
+							       const char     **array);
 void                 gdm_config_value_set_int          (GdmConfigValue  *value,
 							int              integer);
 void                 gdm_config_value_set_bool         (GdmConfigValue  *value,

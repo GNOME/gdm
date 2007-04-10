@@ -3566,7 +3566,7 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	config_group = config_key = NULL;
-	if (! gdm_common_config_parse_key_string (key, &config_group, &config_key, NULL)) {
+	if (! gdm_common_config_parse_key_string (key, &config_group, &config_key, NULL, NULL)) {
 		goto out;
 	}
 
