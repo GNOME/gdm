@@ -1684,7 +1684,7 @@ gdm_chooser_gui_init (void)
 	}
 
 	/* Main window */
-	chooser_app = glade_xml_new (GDM_GLADE_DIR "gdmchooser.glade",
+	chooser_app = glade_xml_new (GDM_GLADE_DIR "/gdmchooser.glade",
 				     "gdmchooser_main",
 				     NULL);
 	glade_xml_signal_autoconnect (chooser_app);
