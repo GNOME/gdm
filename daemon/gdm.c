@@ -732,7 +732,7 @@ custom_cmd (long cmd_id)
 		return;
 	}
 
-        key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, cmd_id);
+        key_string = g_strdup_printf ("%s%ld=", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, cmd_id);
         if (gdm_daemon_config_get_value_bool (key_string))
 	        custom_cmd_no_restart (cmd_id);
 	else
@@ -757,7 +757,7 @@ custom_cmd_restart (long cmd_id)
 	change_to_first_and_clear (TRUE);
 #endif /* __linux */
 
-	key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
+	key_string = g_strdup_printf ("%s%ld=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
 
 	argv = NULL;
 	s = gdm_daemon_config_get_value_string (key_string);
@@ -795,7 +795,7 @@ custom_cmd_no_restart (long cmd_id)
 		const char *s;
 		gchar *key_string;
 
-		key_string = g_strdup_printf (_("%s%ld="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
+		key_string = g_strdup_printf ("%s%ld=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_id);
 
 		argv = NULL;
 		s = gdm_daemon_config_get_value_string (key_string);
@@ -3724,11 +3724,11 @@ gdm_handle_user_message (GdmConnection *conn,
 
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 			gchar *key_string = NULL; 
-			key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
 			if (sysmenu && disp->attached &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				g_free (key_string);
-				key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
 				if (gdm_daemon_config_get_value_bool (key_string)) {
 					g_string_append_printf (msg, "%s%s%d", sep, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, i);
 					if (logout_action == (GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + i))
@@ -3765,14 +3765,14 @@ gdm_handle_user_message (GdmConnection *conn,
 
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 			gchar *key_string = NULL; 
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
 			if (sysmenu && disp->attached &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				g_free (key_string);
-				key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
 				if (gdm_daemon_config_get_value_bool (key_string)) {
 					g_free (key_string);
-					key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i); 
+					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i); 
 					g_string_append_printf (msg, "%s%s",  sep, gdm_daemon_config_get_value_string (key_string));
 					sep = ";";
 				}
@@ -3806,14 +3806,14 @@ gdm_handle_user_message (GdmConnection *conn,
 
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 			gchar *key_string = NULL; 
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
 			if (sysmenu && disp->attached &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				g_free (key_string);
-				key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i); 
 				if (gdm_daemon_config_get_value_bool (key_string)) {
 					g_free (key_string);
-					key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i); 
+					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i); 
 					if(gdm_daemon_config_get_value_bool (key_string))
 						no_restart_status_flag |= (1 << i);				 
 				}
@@ -3876,7 +3876,7 @@ gdm_handle_user_message (GdmConnection *conn,
 		       int cmd_index;
 		       if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
 			   gchar *key_string = NULL; 
-			   key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
+			   key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
 			   if (sysmenu && disp->attached &&
 			       ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 			           disp->logout_action =
@@ -3944,7 +3944,7 @@ gdm_handle_user_message (GdmConnection *conn,
 		       int cmd_index;
 		       if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
 			       gchar *key_string = NULL; 
-			       key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
+			       key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index); 
 			       if (sysmenu && disp->attached &&
 				   ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 			               safe_logout_action =

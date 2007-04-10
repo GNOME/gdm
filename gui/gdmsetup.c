@@ -646,7 +646,7 @@ command_toggle_timeout (GtkWidget *toggle)
 		selected = gtk_combo_box_get_active (GTK_COMBO_BOX (command_combobox));
 		
 		i = selected - CUSTOM_CMD;
-		key_string = g_strdup_printf(_("%s%d="), ve_sure_string (key), i); 
+		key_string = g_strdup_printf("%s%d=", ve_sure_string (key), i); 
 		old_val = gdm_config_get_bool (key_string);
 		
 		if (val != old_val) {	
@@ -1385,9 +1385,9 @@ combobox_timeout (GtkWidget *combo_box)
 			}
 			else {
 				gchar *selected_text;
-				
+
 				selected_text = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
-				
+
 				if (strstr (ve_sure_string (selected_text), _("Themed")) != NULL) {
 					new_key_val = g_strdup (LIBEXECDIR "/gdmgreeter");
 				}
@@ -1537,7 +1537,7 @@ combobox_timeout (GtkWidget *combo_box)
 		g_free (val);
 	}
 	/* Commands combobox */
-	else if (strcmp (ve_sure_string (key), _("command_chooser_combobox")) == 0) {
+	else if (strcmp (ve_sure_string (key), "command_chooser_combobox") == 0) {
 		/* We need to set the data according to selected command */
 		GtkWidget *hrs_cmd_entry = NULL;
 		GtkWidget *cust_cmd_entry = NULL;
@@ -1576,47 +1576,47 @@ combobox_timeout (GtkWidget *combo_box)
 
 			gint i = selected - CUSTOM_CMD;
 			/* Here we are going to deal with custom commands */
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_entry), ve_sure_string (val));
 			enabled_command = !ve_string_empty (val);
 			g_free (key_string);
 			g_free (val);
 			
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 			cust_cmd_label_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_label_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_label_entry), ve_sure_string (val));
 			g_free (key_string);
 			g_free (val);
 
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 			cust_cmd_lrlabel_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_lrlabel_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_lrlabel_entry), ve_sure_string (val));
 			g_free (key_string);
 			g_free (val);
 
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
 			cust_cmd_text_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_text_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_text_entry), ve_sure_string (val));
 			g_free (key_string);
 			g_free (val);
 			
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 			cust_cmd_tooltip_entry  = glade_xml_get_widget (xml_commands, "custom_cmd_tooltip_entry");
 			val = gdm_config_get_string (key_string);
 			gtk_entry_set_text (GTK_ENTRY (cust_cmd_tooltip_entry), ve_sure_string (val));
 			g_free (key_string);
 			
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
 			cust_cmd_norestart_checkbox  = glade_xml_get_widget (xml_commands, "custom_cmd_norestart_checkbutton");
 			bool_val = gdm_config_get_bool (key_string);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_norestart_checkbox), bool_val);
 			g_free (key_string);
 			
-			key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
 			cust_cmd_persistent_checkbox  = glade_xml_get_widget (xml_commands, "custom_cmd_persistent_checkbutton");
 			bool_val = gdm_config_get_bool (key_string);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cust_cmd_persistent_checkbox), bool_val);
@@ -1982,7 +1982,7 @@ combobox_changed (GtkWidget *combobox)
 	else if (strcmp (ve_sure_string (key), GDM_KEY_SERVER_PREFIX) == 0 ) {
 		init_servers_combobox (gtk_combo_box_get_active (GTK_COMBO_BOX (combobox)));
 	}
-	else if (strcmp (ve_sure_string (key), _("command_chooser_combobox")) == 0) {
+	else if (strcmp (ve_sure_string (key), "command_chooser_combobox") == 0) {
 		gint selected;
 		GtkWidget *hrs_cmd_vbox;
 		GtkWidget *custom_cmd_vbox;
@@ -2342,7 +2342,7 @@ commands_entry_timeout (GtkWidget *entry)
 		gint i;			
 
 		i = selected - CUSTOM_CMD;
-		key_string = g_strdup_printf(_("%s%d="), ve_sure_string (key), i); 
+		key_string = g_strdup_printf("%s%d=", ve_sure_string (key), i); 
 		old_val = gdm_config_get_string (key_string);				
 	
 		
@@ -3670,7 +3670,7 @@ command_response (GtkWidget *button, gpointer data)
 
 		i = selected - CUSTOM_CMD;
 		
-		key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
+		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i); 
 		value = gdm_config_get_string (key_string);		
 		g_free (key_string);
 	}
@@ -3913,7 +3913,7 @@ command_button_clicked (void)
 		}
 		
 		g_object_set_data_full (G_OBJECT (command_chooser), "key",
-					_("command_chooser_combobox"), (GDestroyNotify) g_free);
+					"command_chooser_combobox", (GDestroyNotify) g_free);
 		g_signal_connect (G_OBJECT (command_chooser), "changed",
 				  G_CALLBACK (combobox_changed), NULL);			
 		

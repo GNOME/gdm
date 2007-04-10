@@ -87,7 +87,7 @@ query_greeter_custom_cmd_handler (GtkWidget *widget, gpointer data)
 {
         if (data) {
 		gint *cmd_id = (gint*)data;
-	        gchar * key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
+	        gchar * key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
 		if (gdm_wm_warn_dialog (gdm_config_get_string (key_string) , "", 
 					GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
 		        printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, *cmd_id);
@@ -221,7 +221,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				gint * cmd_index = g_new0(gint, 1);
 				gchar * key_string = NULL;
 				*cmd_index = i;
-				key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 				w = gtk_menu_item_new_with_mnemonic (gdm_config_get_string(key_string));
 				gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 				gtk_widget_show (GTK_WIDGET (w));
@@ -368,13 +368,13 @@ greeter_system_handler (GreeterItemInfo *info,
 	          custom_cmds_radio[i] = NULL;
 		  if (GdmCustomCmdsFound[i]){
 		          gchar * key_string = NULL;
-			  key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+			  key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 			  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 			  custom_cmds_radio[i] = gtk_radio_button_new_with_mnemonic (radio_group,
 										     gdm_config_get_string(key_string));
 			  group_radio = custom_cmds_radio[i];
 			  g_free (key_string);
-			  key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+			  key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 			  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (custom_cmds_radio[i]),
 						gdm_config_get_string(key_string),
 						NULL);
@@ -521,7 +521,7 @@ greeter_item_system_setup (void)
 	  gint * cmd_index = g_new0(gint, 1);
 	  gchar * key_string;
 	  *cmd_index = i;
-	  key_string = g_strdup_printf (_("custom_cmd_button%d"), i);
+	  key_string = g_strdup_printf ("custom_cmd_button%d", i);
 	  greeter_item_register_action_callback (key_string,
 						 (ActionFunc)query_greeter_custom_cmd_handler,
 						 cmd_index);

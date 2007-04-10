@@ -5750,7 +5750,7 @@ gdm_slave_handle_notify (const char *msg)
 	} else if (strncmp (msg, GDM_NOTIFY_CUSTOM_CMD_TEMPLATE,
 			    strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE)) == 0) {
     	        if (sscanf (msg, GDM_NOTIFY_CUSTOM_CMD_TEMPLATE "%d", &val) == 1) {
-			gchar * key_string = g_strdup_printf(_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, val);
+			gchar * key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, val);
 			/* This assumes that the number of commands is < 100, i.e two digits
 			   if that is not the case then this will fail */
 			gdm_daemon_config_set_value_string (key_string, ((gchar *)&msg[strlen (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE) + 2]));

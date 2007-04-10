@@ -706,7 +706,7 @@ gdm_custom_cmd_handler (GtkWidget *widget, gpointer data)
 {	
 	if (data) {
 		int *cmd_id = (int*)data;
-		gchar * key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
+		gchar * key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
 		if (gdm_wm_warn_dialog (
 			    gdm_config_get_string (key_string) , "", GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
 			
@@ -2263,11 +2263,11 @@ gdm_login_gui_init (void)
 	
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 		gchar * key_string = NULL;
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if (gdm_working_command_exists (gdm_config_get_string (key_string))) {
 			gint * cmd_index = g_new0(gint, 1);
 			*cmd_index = i;
-			key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 			item = gtk_menu_item_new_with_mnemonic (gdm_config_get_string (key_string));
 			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 			g_signal_connect (G_OBJECT (item), "activate",
@@ -2888,19 +2888,19 @@ gdm_read_config (void)
 	/* String keys for custom commands */	
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
 		gchar * key_string = NULL;
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		gdm_config_get_string (key_string);
 
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 		gdm_config_get_string (key_string);
 		
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 		gdm_config_get_string (key_string);
 		
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
 		gdm_config_get_string (key_string);
         
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		gdm_config_get_string (key_string);
 
 		g_free (key_string);
@@ -3035,23 +3035,23 @@ gdm_reread_config (int sig, gpointer data)
 	/* Keys for custom commands */
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 		gchar *key_string = NULL;
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
 		
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
 		
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
 		
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
         
-		key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
 

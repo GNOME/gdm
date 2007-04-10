@@ -226,7 +226,7 @@ greeter_item_is_visible (GreeterItemInfo *info)
 	  return FALSE;
 
   for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {      
-      gchar * key_string = g_strdup_printf (_("custom_cmd%d"), i);
+      gchar * key_string = g_strdup_printf ("custom_cmd%d", i);
       if (( ! sysmenu || ! GdmCustomCmdsFound[i]) &&
           (info->show_type != NULL &&
            strcmp (info->show_type, key_string) == 0)) {

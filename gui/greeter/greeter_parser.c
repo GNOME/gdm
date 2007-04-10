@@ -421,11 +421,11 @@ parse_stock (xmlNodePtr node,
 	  register int i = 0;
 	    for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 		gchar * key_string = NULL;
-		key_string = g_strdup_printf (_("custom_cmd%d"), i);
+		key_string = g_strdup_printf ("custom_cmd%d", i);
 		if (g_ascii_strcasecmp ((char *) prop, key_string) == 0) {
 		    g_free (*translated_text);
 		    g_free (key_string);
-		    key_string = g_strdup_printf (_("%s%d="), GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+		    key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 		    *translated_text = g_strdup(gdm_config_get_string (key_string));
 		    g_free (key_string);
 		    is_error = FALSE;
