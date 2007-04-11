@@ -1082,13 +1082,14 @@ if test "x$real_gdm_prefix" != "x/" -a "x$real_gdm_prefix" != "x/usr"; then
     GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
 fi
 
+
 # Use Xephyr if it is available.  It works better than Xnest since Xephyr
 # supports the Xserver extensions, even if on a remote machine.
 #
+X_XNEST_UNSCALED_FONTPATH="true"
 if test -x $X_SERVER_PATH/Xephyr; then
     X_XNEST_CMD="$X_SERVER_PATH/Xephyr"
     X_XNEST_CONFIG_OPTIONS="-audit 0"
-    X_XNEST_UNSCALED_FONTPATH="true"
 else
     if test -x /usr/openwin/bin/Xnest; then
         # If on Solaris, Xnest is only shipped with the Xsun Xserver, so
@@ -1101,7 +1102,6 @@ else
         if test -x $X_SERVER_PATH/Xnest; then
             X_XNEST_CMD="$X_SERVER_PATH/Xnest"
             X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
-            X_XNEST_UNSCALED_FONTPATH="true"
         fi
     fi
 fi
