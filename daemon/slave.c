@@ -2008,9 +2008,10 @@ gdm_slave_wait_for_login (void)
 		username = d->preset_user;
 		d->preset_user = NULL;
 		login = gdm_verify_user (d /* the display */,
-					 username /* username*/,
+					 username /* username */,
 					 d->name /* display name */,
-					 d->attached /* display attached? (bool) */);
+					 d->attached /* display attached? */,
+					 TRUE /* allow retry */);
 		g_free (username);
 
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
@@ -2058,7 +2059,8 @@ gdm_slave_wait_for_login (void)
 			login = gdm_verify_user (d,
 						 pwent->pw_name,
 						 d->name,
-						 d->attached);
+						 d->attached,
+						 FALSE);
 			gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_ROOT, oldAllowRoot);
 
 			/* Clear message */
@@ -2778,6 +2780,8 @@ gdm_slave_greeter (void)
 		gdm_debug ("gdm_slave_greeter: Greeter on pid %d", (int)pid);
 
 		gdm_slave_send_num (GDM_SOP_GREETPID, d->greetpid);
+		run_pictures (); /* Append pictures to greeter if browsing is on */
+
 		if (always_restart_greeter)
 			gdm_slave_greeter_ctl_no_ret (GDM_ALWAYS_RESTART, "Y");
 		else
@@ -2786,7 +2790,6 @@ gdm_slave_greeter (void)
 		if (gdmlang)
 			gdm_slave_greeter_ctl_no_ret (GDM_SETLANG, gdmlang);
 
-		run_pictures (); /* Append pictures to greeter if browsing is on */
 
 		check_notifies_now ();
 		break;

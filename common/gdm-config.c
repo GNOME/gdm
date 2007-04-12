@@ -769,7 +769,7 @@ key_file_get_value (GdmConfig            *config,
 						    key,
 						    NULL,
 						    &error);
-		g_debug ("Loading locale string: %s %s", key, val);
+		g_debug ("Loading locale string: %s %s", key, val ? val : "(null)");
 
 		if (error != NULL) {
 			g_debug ("%s", error->message);
@@ -781,7 +781,7 @@ key_file_get_value (GdmConfig            *config,
 						    group,
 						    key,
 						    &error);
-			g_debug ("Loading non-locale string: %s %s", key, val);
+			g_debug ("Loading non-locale string: %s %s", key, val ? val : "(null)");
 		}
 	} else {
 		val = g_key_file_get_value (key_file,

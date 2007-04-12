@@ -61,10 +61,10 @@ void		gdm_lang_set			(char *language);
 void            gdm_lang_set_restart_dialog     (char *language);
 gint		gdm_lang_get_savelang_setting	(void);
 void		gdm_lang_handler		(gpointer user_data);
-int		gdm_lang_op_lang		(const gchar *args);
-int		gdm_lang_op_slang		(const gchar *args);
-int		gdm_lang_op_setlang		(const gchar *args);
-int		gdm_lang_op_always_restart	(const gchar *args);
+void		gdm_lang_op_lang		(const gchar *args);
+void		gdm_lang_op_slang		(const gchar *args);
+void		gdm_lang_op_setlang		(const gchar *args);
+void		gdm_lang_op_always_restart	(const gchar *args);
 gint            gdm_lang_ask_restart            (gchar *language);
 
 #endif /* GDM_LANGUAGES_H */

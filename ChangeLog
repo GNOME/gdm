@@ -1,3 +1,22 @@
+2007-04-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/verify-pam.c, daemon/verify-shadow.c, daemon/verify-crypt.c,
+	  daemon/verify.h, daemon/slave.c: Fix for bug #428630.  This was
+	  introduced by Ludwig Nussel when he rewrote the way the PAM logic
+	  works.  If you call gdm_verify_user with a userid, then it will allow
+	  you to retry 3 times without asking for password again to better
+	  support the Face Browser.  However, when we ask for root password for
+	  the configurator, we don't want this behavior.  This patch fixes
+	  this.
+	* slave.c: Fix for bug #427022.  The greeter was hanging when the Face
+	  Browser was turned on because we must use the socket to send face
+	  browser information before using the sockets for other purposes.
+	* daemon/gdm-daemon-config.c, common/gdm-config.c: Fix g_debug call so
+	  we don't pass in a NULL string, which causes a SEGV on Solaris. 
+	* gui/gdmlangugaes.[ch]: Fix so that functions that don't return any
+	  useful information are now void, and remove meaningless debug from
+	  gdm_lang_op_always_restart.
+
 2007-04-11  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
 
 	* gui/gdmsetup.c: Added missing handler for AlwaysLoginCurrentSession

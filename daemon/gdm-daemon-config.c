@@ -569,7 +569,7 @@ gdm_daemon_config_key_to_string (const gchar *file,
 						  &key,
 						  &locale,
 						  NULL);
-	g_debug ("Requesting group=%s key=%s locale=%s", group, key, locale);
+	g_debug ("Requesting group=%s key=%s locale=%s", group, key, locale ? locale : "(null)");
 
 	if (! res) {
 		gdm_error ("Could not parse configuration key %s", keystring);

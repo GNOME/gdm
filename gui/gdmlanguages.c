@@ -1091,7 +1091,7 @@ gdm_lang_handler (gpointer user_data)
     gtk_widget_hide (dialog);
 }
 
-int
+void
 gdm_lang_op_lang (const gchar *args)
 {
   gchar *language = gdm_lang_check_language (args);
@@ -1102,11 +1102,9 @@ gdm_lang_op_lang (const gchar *args)
     printf ("%c%s\n", STX, language);
   fflush (stdout);
   g_free (language);
-
-  return 0;
 }
 
-int
+void
 gdm_lang_op_slang (const gchar *args)
 {
   if (gdm_lang_get_savelang_setting () == GTK_RESPONSE_YES)
@@ -1114,36 +1112,29 @@ gdm_lang_op_slang (const gchar *args)
   else
     printf ("%c\n", STX);
   fflush (stdout);
-
-  return 0;
 }
 
-int
+void
 gdm_lang_op_setlang (const gchar *args)
 {
   if (args)
     gdm_lang_set ((char*)args);
   printf ("%c\n", STX);
   fflush (stdout);
-
-  return 0;
 }
 
-int
+void
 gdm_lang_op_always_restart (const gchar *args)
 {
-  if (!args)
-    ;
-  else if (g_ascii_strcasecmp (args, "y") == 0)
-    gdm_lang_set_restart_state (TRUE);
-  else if (g_ascii_strcasecmp (args, "n") == 0)
-    gdm_lang_set_restart_state (FALSE);
   if (args)
-    gdm_common_error ("test %s", args);
+    {
+      if (g_ascii_strcasecmp (args, "y") == 0)
+        gdm_lang_set_restart_state (TRUE);
+      else if (g_ascii_strcasecmp (args, "n") == 0)
+        gdm_lang_set_restart_state (FALSE);
+    }
 
   printf ("%c\n", STX);
   fflush (stdout);
-
-  return 0;
 }
 
