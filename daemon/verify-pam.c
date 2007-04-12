@@ -790,6 +790,9 @@ create_pamh (GdmDisplay *d,
  * @username: Name of user or NULL if we should ask
  * @display: Name of display to register with the authentication system
  * @local: boolean if local
+ * @allow_retry: boolean if we should allow retry logic to be enabled.
+ *               We only want this to work for normal login, not for
+ *               asking for the root password to cal the configurator.
  *
  * Provides a communication layer between the operating system's
  * authentication functions and the gdmgreeter. 
@@ -801,7 +804,8 @@ gchar *
 gdm_verify_user (GdmDisplay *d,
 		 const char *username,
 		 const gchar *display,
-		 gboolean local) 
+		 gboolean local,
+		 gboolean allow_retry)
 {
     gint pamerr = 0;
     struct passwd *pwent = NULL;
@@ -958,7 +962,7 @@ authenticate_again:
 			    g_free (val);
 			}
 
-			if (pamerr == PAM_MAXTRIES ||
+			if (allow_retry == FALSE || pamerr == PAM_MAXTRIES ||
                             ++auth_retries >= max_auth_retries) {
 
 			    g_free (prev_user);

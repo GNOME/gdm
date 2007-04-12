@@ -1970,9 +1970,10 @@ gdm_slave_wait_for_login (void)
 		username = d->preset_user;
 		d->preset_user = NULL;
 		login = gdm_verify_user (d /* the display */,
-					 username /* username*/,
+					 username /* username */,
 					 d->name /* display name */,
-					 d->attached /* display attached? (bool) */);
+					 d->attached /* display attached? */,
+					 TRUE /* allow retry */);
 		g_free (username);
 
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
@@ -2020,7 +2021,8 @@ gdm_slave_wait_for_login (void)
 			login = gdm_verify_user (d,
 						 pwent->pw_name,
 						 d->name,
-						 d->attached);
+						 d->attached,
+						 FALSE);
 			gdm_set_value_bool (GDM_KEY_ALLOW_ROOT, oldAllowRoot);
 
 			/* Clear message */

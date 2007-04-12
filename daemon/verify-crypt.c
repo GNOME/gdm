@@ -84,6 +84,11 @@ print_cant_auth_errbox (void)
  * @username: Name of user or NULL if we should ask
  * @display: Name of display to register with the authentication system
  * @local: boolean if local
+ * @allow_retry: boolean.  Not used by verify-crypt.  If this code 
+ *               allowed the user to retry, this boolean would specify 
+ *               whether to enable this feature.  We only want this 
+ *               feature to work for normal login, not for asking for 
+ *               root password to call the configurator.
  *
  * Provides a communication layer between the operating system's
  * authentication functions and the gdmgreeter. 
@@ -95,7 +100,8 @@ gchar *
 gdm_verify_user (GdmDisplay *d,
 		 const char *username,
 		 const gchar *display,
-		 gboolean local) 
+		 gboolean local,
+		 gboolean allow_retry)
 {
     gchar *login, *passwd, *ppasswd;
     struct passwd *pwent;

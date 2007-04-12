@@ -26,7 +26,8 @@
 gchar *gdm_verify_user    (GdmDisplay *d,
 			   const char *username,
 			   const gchar *display,
-			   gboolean local);
+			   gboolean local,
+			   gboolean allow_retry);
 void   gdm_verify_cleanup (GdmDisplay *d);
 void   gdm_verify_check   (void);
 void   gdm_verify_select_user (const char *user);

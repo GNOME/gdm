@@ -1,4 +1,15 @@
-2006-04-09  Brian Cameron  <brian.cameron@sun.com>
+2007-04-11  Brian Cameron  <brian.cameron@sun.com>
+
+        * daemon/verify-pam.c, daemon/verify-shadow.c, daemon/verify-crypt.c,
+          daemon/verify.h, daemon/slave.c: Fix for bug #428630.  This was
+          introduced by Ludwig Nussel when he rewrote the way the PAM logic
+          works.  If you call gdm_verify_user with a userid, then it will allow
+          you to retry 3 times without asking for password again to better
+          support the Face Browser.  However, when we ask for root password for
+          the configurator, we don't want this behavior.  This patch fixes
+          this.
+
+2007-04-09  Brian Cameron  <brian.cameron@sun.com>
 
         * Release 2.18.1:
         * configure.ac: Update to new release version.
