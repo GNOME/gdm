@@ -5,11 +5,11 @@ bisessdir = $(datadir)/gdm/BuiltInSessions
 instsessdir = $(datadir)/xsessions
 initdir = $(gdmconfdir)/Init
 authdir = $(localstatedir)/gdm
-logdir = $(localstatedir)/log/gdm
 gnomercdir = $(gdmconfdir)
 postdir = $(gdmconfdir)/PostSession
 predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
+# logdir is set by configure.ac
 
 noinst_DATA = gdm.conf
 

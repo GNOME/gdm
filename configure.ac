@@ -835,8 +835,16 @@ AC_SUBST(EXTRA_SETUP_LIBS)
 #
 AC_SUBST(authdir, ${localstatedir}/gdm)
 AC_SUBST(gdmlocaledir, ${gdmconfdir})
-AC_SUBST(logdir, ${localstatedir}/log/gdm)
 AC_SUBST(pixmapdir, ${datadir}/pixmaps)
+
+AC_ARG_WITH(log-dir,    [  --with-log-dir=<file>     log dir])
+
+if ! test -z "$with_log_dir"; then
+   GDM_LOG_DIR=$with_log_dir
+else
+   GDM_LOG_DIR=/var/log/gdm
+fi
+AC_SUBST(logdir, $GDM_LOG_DIR)
 
 withval=""
 AC_ARG_WITH(at-bindir,

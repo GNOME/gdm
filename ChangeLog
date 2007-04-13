@@ -1,4 +1,13 @@
-2007-04-11  Brian Cameron  <brian.cameron@sun.com>
+2007-04-13  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac, config/Makefile.am: Set LogDir by default to 
+	  /var/log/gdm and add configure --with-log-dir option so this
+	  can be easily configured.
+	* gui/modules/AccessDwellMouseEvents.in, 
+	  gui/modules/AccessKeyMouseEvents.in: Improve comments and make
+	  GOK key binding a bit less painful to enter.
+
+2007-04-12  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/verify-pam.c, daemon/verify-shadow.c, daemon/verify-crypt.c,
 	  daemon/verify.h, daemon/slave.c: Fix for bug #428630.  This was
@@ -32,52 +41,52 @@
 	* common/gdm-config.c: (gdm_config_value_get_string_array):
 	* common/gdm-config.h:
 	* daemon/gdm-daemon-config.c:
-	(gdm_daemon_config_get_value_string_array):
+	  (gdm_daemon_config_get_value_string_array):
 	* daemon/gdm-daemon-config.h:
 	* daemon/gdm.c: (deal_with_x_crashes), (try_command),
-	(try_commands), (suspend_machine), (halt_machine),
-	(restart_machine), (custom_cmd_restart), (custom_cmd_no_restart),
-	(gdm_cleanup_children), (create_connections),
-	(gdm_handle_user_message):
-	Fix reboot and halt command handling.  Add ability to get
-	string array values from config.
+	  (try_commands), (suspend_machine), (halt_machine),
+	  (restart_machine), (custom_cmd_restart), (custom_cmd_no_restart),
+	  (gdm_cleanup_children), (create_connections),
+	  (gdm_handle_user_message):
+	  Fix reboot and halt command handling.  Add ability to get
+	  string array values from config.
 
 2007-04-10  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/gdmchooser.c (gdm_chooser_gui_init):
-	Add missing '/' between path and filename.
+	  Add missing '/' between path and filename.
 
 2007-04-10  William Jon McCann  <mccann@jhu.edu>
 
 	* common/gdm-common-config.c: (gdm_common_config_parse_key_string),
-	(gdm_common_config_get_int),
-	(gdm_common_config_get_translated_string),
-	(gdm_common_config_get_string),
-	(gdm_common_config_get_string_list),
-	(gdm_common_config_get_boolean), (gdm_common_config_set_string),
-	(gdm_common_config_set_boolean), (gdm_common_config_set_int),
-	(gdm_common_config_remove_key):
+	  (gdm_common_config_get_int),
+	  (gdm_common_config_get_translated_string),
+	  (gdm_common_config_get_string),
+	  (gdm_common_config_get_string_list),
+	  (gdm_common_config_get_boolean), (gdm_common_config_set_string),
+	  (gdm_common_config_set_boolean), (gdm_common_config_set_int),
+	  (gdm_common_config_remove_key):
 	* common/gdm-common-config.h:
 	* common/gdm-config.c: (gdm_config_value_free),
-	(gdm_config_value_copy), (gdm_config_value_get_locale_string),
-	(safe_strcmp), (gdm_config_value_compare),
-	(gdm_config_value_new_from_string),
-	(gdm_config_value_set_locale_string_array),
-	(gdm_config_value_set_locale_string), (gdm_config_value_to_string),
-	(key_file_get_value), (internal_set_value):
+	  (gdm_config_value_copy), (gdm_config_value_get_locale_string),
+	  (safe_strcmp), (gdm_config_value_compare),
+	  (gdm_config_value_new_from_string),
+	  (gdm_config_value_set_locale_string_array),
+	  (gdm_config_value_set_locale_string), (gdm_config_value_to_string),
+	  (key_file_get_value), (internal_set_value):
 	* common/gdm-config.h:
 	* common/test-config.c: (type_to_name), (test_config):
 	* daemon/gdm-daemon-config-entries.h:
 	* daemon/gdm-daemon-config.c: (gdm_daemon_config_get_value_int),
-	(gdm_daemon_config_get_value_string),
-	(gdm_daemon_config_get_value_bool),
-	(gdm_daemon_config_key_to_string), (gdm_daemon_config_to_string),
-	(gdm_daemon_config_set_value_string),
-	(gdm_daemon_config_set_value_bool),
-	(gdm_daemon_config_set_value_int), (gdm_daemon_config_update_key),
-	(gdm_daemon_config_is_valid_key):
+	  (gdm_daemon_config_get_value_string),
+	  (gdm_daemon_config_get_value_bool),
+	  (gdm_daemon_config_key_to_string), (gdm_daemon_config_to_string),
+	  (gdm_daemon_config_set_value_string),
+	  (gdm_daemon_config_set_value_bool),
+	  (gdm_daemon_config_set_value_int), (gdm_daemon_config_update_key),
+	  (gdm_daemon_config_is_valid_key):
 	* gui/gdmsetup.c: (greeter_entry_untranslate_timeout):
-	Handle locale strings a bit better.
+	  Handle locale strings a bit better.
 
 2007-04-06  Brian Cameron  <brian.cameron@sun.com>
 
@@ -126,8 +135,8 @@
 2007-04-06  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/slave.c: (gdm_slave_greeter):
-	Remove duplicate code from bad svn merge.
-	From #427022
+	  Remove duplicate code from bad svn merge.
+	  From #427022
 
 2007-04-06  Brian Cameron  <brian.cameron@sun.com>
 
@@ -169,9 +178,9 @@
         * gui/gdmsetup.glade, gui/gdmsetup.c, doc/C/gdm.xml: 
           Added a "Themed with face browser" option to the Local/Remote Style 
           ComboBox and updated the documentation. Fixes bug #423300
-        * gui/gdmsetup.glade: Changed the spacing between elements in the General
-          tab as an aftermath of bug #403242. Also fixes some of the issues 
-          found in bug #423158.
+        * gui/gdmsetup.glade: Changed the spacing between elements in the
+	  General tab as an aftermath of bug #403242. Also fixes some of the
+	  issues found in bug #423158.
 
 2007-04-05  Brian Cameron  <brian.cameron@sun.com>
 
@@ -179,166 +188,164 @@
 
 2007-04-04  William Jon McCann  <mccann@jhu.edu>
 
-	* common/test-log.c: (test_log), (main):
-	Add file.
+	* common/test-log.c: (test_log), (main): Add file.
 
 2007-04-04  William Jon McCann  <mccann@jhu.edu>
 
 	* common/gdm-log.c: (gdm_log_init):
-	* daemon/misc.h:
-	Fix building on Solaris.
+	* daemon/misc.h: Fix building on Solaris.
 
 2007-04-04  William Jon McCann  <mccann@jhu.edu>
 
-	* daemon/gdm-socket-protocol.h:  Oops add file
-	missing from last commit.
+	* daemon/gdm-socket-protocol.h:  Oops add file missing from last
+	  commit.
 
 2007-04-02  William Jon McCann  <mccann@jhu.edu>
 
 	* common/Makefile.am:
 	* common/gdm-common.c: (v4_v4_equal), (v6_v6_equal),
-	(gdm_address_equal), (gdm_address_is_loopback),
-	(gdm_address_get_info):
+	  (gdm_address_equal), (gdm_address_is_loopback),
+	  (gdm_address_get_info):
 	* common/gdm-common.h:
 	* common/gdm-config.c: (gdm_config_peek_value),
-	(gdm_config_get_value), (gdm_config_peek_value_for_id),
-	(gdm_config_peek_string_for_id), (gdm_config_get_string_for_id),
-	(gdm_config_get_int_for_id), (gdm_config_set_int_for_id):
+	  (gdm_config_get_value), (gdm_config_peek_value_for_id),
+	  (gdm_config_peek_string_for_id), (gdm_config_get_string_for_id),
+	  (gdm_config_get_int_for_id), (gdm_config_set_int_for_id):
 	* common/gdm-config.h:
 	* common/gdm-log.c: (log_level_to_priority_and_prefix),
-	(gdm_log_default_handler), (gdm_log_set_debug), (gdm_log_init),
-	(gdm_log_shutdown):
+	  (gdm_log_default_handler), (gdm_log_set_debug), (gdm_log_init),
+	  (gdm_log_shutdown):
 	* common/gdm-log.h:
 	* configure.ac:
 	* daemon/Makefile.am:
 	* daemon/auth.c: (add_auth_entry), (add_auth_entry_for_addr),
-	(get_local_auths), (gdm_auth_user_add), (gdm_auth_set_local_auth),
-	(gdm_auth_free_auth_list):
+	  (get_local_auths), (gdm_auth_user_add), (gdm_auth_set_local_auth),
+	  (gdm_auth_free_auth_list):
 	* daemon/choose.c: (get_first_address_for_node), (gdm_choose_data),
-	(gdm_choose_indirect_alloc),
-	(gdm_choose_indirect_dispose_empty_id),
-	(gdm_choose_indirect_lookup_by_chosen),
-	(gdm_choose_indirect_lookup), (gdm_choose_indirect_dispose):
+	  (gdm_choose_indirect_alloc),
+	  (gdm_choose_indirect_dispose_empty_id),
+	  (gdm_choose_indirect_lookup_by_chosen),
+	  (gdm_choose_indirect_lookup), (gdm_choose_indirect_dispose):
 	* daemon/choose.h:
 	* daemon/cookie.c:
 	* daemon/cookie.h:
 	* daemon/display.c: (gdm_display_manage), (count_session_limits),
-	(gdm_display_dispose), (gdm_display_lookup):
+	  (gdm_display_dispose), (gdm_display_lookup):
 	* daemon/display.h:
 	* daemon/errorgui.c: (setup_dialog), (gdm_errorgui_error_box_full),
-	(gdm_errorgui_error_box), (gdm_errorgui_failsafe_question),
-	(gdm_errorgui_failsafe_yesno), (gdm_errorgui_failsafe_ask_buttons):
+	  (gdm_errorgui_error_box), (gdm_errorgui_failsafe_question),
+	  (gdm_errorgui_failsafe_yesno), (gdm_errorgui_failsafe_ask_buttons):
 	* daemon/errorgui.h:
 	* daemon/filecheck.c: (gdm_file_check), (gdm_auth_file_check):
 	* daemon/gdm-daemon-config.c: (gdm_daemon_config_get_display_list),
-	(gdm_daemon_config_display_list_append),
-	(gdm_daemon_config_display_list_insert),
-	(gdm_daemon_config_display_list_remove),
-	(gdm_daemon_config_get_bool_for_id),
-	(gdm_daemon_config_get_int_for_id),
-	(gdm_daemon_config_get_string_for_id), (handle_no_displays),
-	(gdm_daemon_config_parse):
+	  (gdm_daemon_config_display_list_append),
+	  (gdm_daemon_config_display_list_insert),
+	  (gdm_daemon_config_display_list_remove),
+	  (gdm_daemon_config_get_bool_for_id),
+	  (gdm_daemon_config_get_int_for_id),
+	  (gdm_daemon_config_get_string_for_id), (handle_no_displays),
+	  (gdm_daemon_config_parse):
 	* daemon/gdm-daemon-config.h:
 	* daemon/gdm-net.c:
 	* daemon/gdm-net.h:
 	* daemon/gdm.c: (mark_display_exists), (gdm_daemonify),
-	(gdm_start_first_unborn_local), (gdm_final_cleanup),
-	(deal_with_x_crashes), (gdm_safe_restart), (gdm_try_logout_action),
-	(main), (order_exists), (get_new_order), (gdm_handle_message),
-	(find_display), (handle_flexi_server), (handle_dynamic_server),
-	(gdm_handle_user_message):
+	  (gdm_start_first_unborn_local), (gdm_final_cleanup),
+	  (deal_with_x_crashes), (gdm_safe_restart), (gdm_try_logout_action),
+	  (main), (order_exists), (get_new_order), (gdm_handle_message),
+	  (find_display), (handle_flexi_server), (handle_dynamic_server),
+	  (gdm_handle_user_message):
 	* daemon/gdm.h:
 	* daemon/gdmconsolekit.c: (get_path_array_from_iter):
 	* daemon/gdmconsolekit.h:
 	* daemon/md5.h:
 	* daemon/misc.c: (gdm_clearenv_no_lang), (gdm_get_free_display),
-	(gdm_exec_wait), (gdm_fork_extra), (gdm_wait_for_extra),
-	(gdm_address_peek_local_list), (gdm_address_is_local),
-	(fillout_addrinfo), (gdm_gethostbyname), (gdm_gethostbyaddr),
-	(gdm_hostent_copy):
+	  (gdm_exec_wait), (gdm_fork_extra), (gdm_wait_for_extra),
+	  (gdm_address_peek_local_list), (gdm_address_is_local),
+	  (fillout_addrinfo), (gdm_gethostbyname), (gdm_gethostbyaddr),
+	  (gdm_hostent_copy):
 	* daemon/misc.h:
 	* daemon/server.c: (gdm_exec_fbconsole), (gdm_server_spawn):
 	* daemon/server.h:
 	* daemon/slave.c: (get_runlevel), (gdm_slave_start),
-	(focus_first_x_window), (run_config), (play_login_sound),
-	(gdm_slave_greeter), (send_chosen_host), (gdm_slave_chooser),
-	(session_child_run), (gdm_slave_session_start),
-	(gdm_slave_session_stop), (check_for_interruption),
-	(gdm_child_exit), (gdm_slave_exec_script),
-	(gdm_parse_enriched_login), (gdm_is_user_valid):
+	  (focus_first_x_window), (run_config), (play_login_sound),
+	  (gdm_slave_greeter), (send_chosen_host), (gdm_slave_chooser),
+	  (session_child_run), (gdm_slave_session_start),
+	  (gdm_slave_session_stop), (check_for_interruption),
+	  (gdm_child_exit), (gdm_slave_exec_script),
+	  (gdm_parse_enriched_login), (gdm_is_user_valid):
 	* daemon/slave.h:
 	* daemon/verify-crypt.c: (gdm_verify_user),
-	(gdm_verify_setup_user):
+	  (gdm_verify_setup_user):
 	* daemon/verify-pam.c: (gdm_verify_pam_conv),
-	(gdm_verify_standalone_pam_conv), (gdm_verify_user),
-	(gdm_verify_setup_user), (gdm_verify_cleanup), (gdm_verify_check):
+	  (gdm_verify_standalone_pam_conv), (gdm_verify_user),
+	  (gdm_verify_setup_user), (gdm_verify_cleanup), (gdm_verify_check):
 	* daemon/verify-shadow.c: (gdm_verify_user),
-	(gdm_verify_setup_user):
+	  (gdm_verify_setup_user):
 	* daemon/verify.h:
 	* daemon/xdmcp.c: (gdm_xdmcp_displays_from_host),
-	(gdm_xdmcp_display_lookup_by_host), (ai_family_str), (ai_type_str),
-	(ai_protocol_str), (ai_flags_str), (debug_addrinfo),
-	(gdm_xdmcp_create_socket), (gdm_xdmcp_bind), (gdm_xdmcp_init),
-	(gdm_xdmcp_run), (gdm_xdmcp_close), (gdm_xdmcp_decode_packet),
-	(gdm_xdmcp_handle_query), (set_port_for_request),
-	(set_address_for_request), (gdm_xdmcp_send_forward_query),
-	(gdm_forward_query_alloc), (gdm_forward_query_lookup),
-	(gdm_forward_query_dispose), (create_sa_from_request),
-	(gdm_xdmcp_handle_forward_query), (gdm_xdmcp_send_willing),
-	(gdm_xdmcp_send_unwilling),
-	(gdm_xdmcp_really_send_managed_forward), (managed_forward_handler),
-	(gdm_xdmcp_send_managed_forward),
-	(gdm_xdmcp_send_got_managed_forward), (gdm_xdmcp_handle_request),
-	(gdm_xdmcp_send_accept), (gdm_xdmcp_send_decline),
-	(gdm_xdmcp_handle_manage), (gdm_xdmcp_handle_managed_forward),
-	(gdm_xdmcp_whack_queued_managed_forwards),
-	(gdm_xdmcp_handle_got_managed_forward), (gdm_xdmcp_send_refuse),
-	(gdm_xdmcp_send_failed), (gdm_xdmcp_handle_keepalive),
-	(gdm_xdmcp_send_alive), (gdm_xdmcp_host_allow),
-	(gdm_xdmcp_display_alloc), (gdm_xdmcp_display_lookup),
-	(gdm_xdmcp_display_dispose_check), (gdm_xdmcp_displays_check),
-	(gdm_xdmcp_recount_sessions):
+	  (gdm_xdmcp_display_lookup_by_host), (ai_family_str), (ai_type_str),
+	  (ai_protocol_str), (ai_flags_str), (debug_addrinfo),
+	  (gdm_xdmcp_create_socket), (gdm_xdmcp_bind), (gdm_xdmcp_init),
+	  (gdm_xdmcp_run), (gdm_xdmcp_close), (gdm_xdmcp_decode_packet),
+	  (gdm_xdmcp_handle_query), (set_port_for_request),
+	  (set_address_for_request), (gdm_xdmcp_send_forward_query),
+	  (gdm_forward_query_alloc), (gdm_forward_query_lookup),
+	  (gdm_forward_query_dispose), (create_sa_from_request),
+	  (gdm_xdmcp_handle_forward_query), (gdm_xdmcp_send_willing),
+	  (gdm_xdmcp_send_unwilling),
+	  (gdm_xdmcp_really_send_managed_forward), (managed_forward_handler),
+	  (gdm_xdmcp_send_managed_forward),
+	  (gdm_xdmcp_send_got_managed_forward), (gdm_xdmcp_handle_request),
+	  (gdm_xdmcp_send_accept), (gdm_xdmcp_send_decline),
+	  (gdm_xdmcp_handle_manage), (gdm_xdmcp_handle_managed_forward),
+	  (gdm_xdmcp_whack_queued_managed_forwards),
+	  (gdm_xdmcp_handle_got_managed_forward), (gdm_xdmcp_send_refuse),
+	  (gdm_xdmcp_send_failed), (gdm_xdmcp_handle_keepalive),
+	  (gdm_xdmcp_send_alive), (gdm_xdmcp_host_allow),
+	  (gdm_xdmcp_display_alloc), (gdm_xdmcp_display_lookup),
+	  (gdm_xdmcp_display_dispose_check), (gdm_xdmcp_displays_check),
+	  (gdm_xdmcp_recount_sessions):
 	* daemon/xdmcp.h:
 	* gui/Makefile.am:
 	* gui/gdmXnestchooser.c:
 	* gui/gdmchooser.c: (gdm_chooser_host_alloc), (gdm_chooser_cancel),
-	(gdm_chooser_manage), (gdm_read_config), (gdm_reread_config),
-	(main):
+	  (gdm_chooser_manage), (gdm_read_config), (gdm_reread_config),
+	  (main):
 	* gui/gdmcomm.c: (do_command), (gdmcomm_call_gdm_real):
 	* gui/gdmcommon.c: (gdm_common_log_init),
-	(gdm_common_log_set_debug), (gdm_common_fail_exit),
-	(gdm_common_fail_greeter), (gdm_common_info), (gdm_common_error),
-	(gdm_common_warning), (gdm_common_debug), (gdm_common_expand_text):
+	  (gdm_common_log_set_debug), (gdm_common_fail_exit),
+	  (gdm_common_fail_greeter), (gdm_common_info), (gdm_common_error),
+	  (gdm_common_warning), (gdm_common_debug), (gdm_common_expand_text):
 	* gui/gdmcommon.h:
 	* gui/gdmconfig.c:
 	* gui/gdmdynamic.c: (main):
 	* gui/gdmflexiserver.c: (main):
 	* gui/gdmlanguages.c:
 	* gui/gdmlogin.c: (gdm_login_restart_handler),
-	(gdm_login_halt_handler), (gdm_login_use_chooser_handler),
-	(gdm_read_config), (gdm_reread_config), (main):
+	  (gdm_login_halt_handler), (gdm_login_use_chooser_handler),
+	  (gdm_read_config), (gdm_reread_config), (main):
 	* gui/gdmsession.c:
 	* gui/gdmsetup.c:
 	* gui/gdmuser.c:
 	* gui/gdmwm.c:
 	* gui/greeter/greeter.c: (gdm_read_config),
-	(greeter_reread_config), (main):
+	  (greeter_reread_config), (main):
 	* gui/greeter/greeter_item_customlist.c:
 	* gui/greeter/greeter_item_pam.c:
 	* gui/greeter/greeter_item_timed.c:
 	* gui/greeter/greeter_item_ulist.c:
 	* gui/greeter/greeter_parser.c: (parse_show):
 	* gui/greeter/greeter_system.c: (query_greeter_restart_handler),
-	(query_greeter_halt_handler), (greeter_restart_handler),
-	(greeter_halt_handler), (greeter_chooser_handler):
+	  (query_greeter_halt_handler), (greeter_restart_handler),
+	  (greeter_halt_handler), (greeter_chooser_handler):
 
-	Use fewer global variables.
-	Separate monolithic gdm.h into component parts.
-	Use the Glib message logging API to write to syslog.
-	Cleans up the ipv4/6 handling in the daemon to use a common code
-	patch and be mostly AF- independent.
-	Add a few convenience functions to gdm-config for get/set by ID.
-	Patch from bug #376010
+	  Use fewer global variables.
+	  Separate monolithic gdm.h into component parts.
+	  Use the Glib message logging API to write to syslog.
+	  Cleans up the ipv4/6 handling in the daemon to use a common code
+	  patch and be mostly AF- independent.
+	  Add a few convenience functions to gdm-config for get/set by ID.
+	  Patch from bug #376010
 
 2006-04-02  Brian Cameron  <brian.cameron@sun.com>
 
@@ -439,8 +446,8 @@
 	* daemon/slave.c: (gdm_slave_start):
 	* gui/gdmsetup.c: (setup_general_tab):
 	* gui/gdmsetup.glade:
-	Remove the AlwaysRestartServer configuration option.
-	Fixes part of #326771
+	  Remove the AlwaysRestartServer configuration option.
+	  Fixes part of #326771
 
 2007-03-26  William Jon McCann  <mccann@jhu.edu>
 
@@ -453,14 +460,14 @@
 	* daemon/gdm-daemon-config-entries.h:
 	* daemon/gdm-daemon-config-keys.h:
 	* daemon/gdm-daemon-config.c: (gdm_daemon_config_to_string),
-	(check_servauthdir), (handle_no_displays),
-	(gdm_daemon_change_user), (gdm_daemon_check_permissions):
+	  (check_servauthdir), (handle_no_displays),
+	  (gdm_daemon_change_user), (gdm_daemon_check_permissions):
 	* daemon/gdm.c: (gdm_daemonify), (gdm_final_cleanup), (main):
 	* gui/gdmXnestchooser.c: (main):
 	* gui/gdmcomm.c: (gdmcomm_check):
 	* gui/gdmlogin.c: (gdm_read_config):
 	* gui/greeter/greeter.c: (gdm_read_config):
-	Remove the PidFile configuration option.  Fixes #162849
+	  Remove the PidFile configuration option.  Fixes #162849
 
 2007-03-26  William Jon McCann  <mccann@jhu.edu>
 
@@ -472,45 +479,45 @@
 
 	* common/Makefile.am:
 	* common/gdm-common-config.c: (gdm_common_config_load_from_dirs),
-	(gdm_common_config_get_string),
-	(gdm_common_config_get_string_list):
+	  (gdm_common_config_get_string),
+	  (gdm_common_config_get_string_list):
 	* common/gdm-common-config.h:
 	* common/gdm-common.c: (ve_locale_to_utf8), (ve_locale_from_utf8),
-	(ve_locale_exists):
+	  (ve_locale_exists):
 	* common/gdm-common.h:
 	* common/gdm-config.c: (gdm_config_error_quark),
-	(gdm_config_entry_copy), (gdm_config_entry_free),
-	(gdm_config_value_new), (gdm_config_value_free), (set_string),
-	(set_string_array), (gdm_config_value_copy),
-	(gdm_config_value_get_string), (gdm_config_value_get_bool),
-	(gdm_config_value_get_int), (gdm_config_value_compare),
-	(gdm_config_value_new_from_string),
-	(gdm_config_value_set_string_array), (gdm_config_value_set_int),
-	(gdm_config_value_set_bool), (gdm_config_value_set_string),
-	(gdm_config_value_to_string), (gdm_config_init), (gdm_config_new),
-	(gdm_config_free), (gdm_config_lookup_entry),
-	(gdm_config_lookup_entry_for_id), (gdm_config_add_entry),
-	(gdm_config_add_static_entries), (gdm_config_set_validate_func),
-	(gdm_config_set_mandatory_file), (gdm_config_set_default_file),
-	(gdm_config_set_custom_file), (gdm_config_set_notify_func),
-	(key_file_get_value), (entry_get_default_value),
-	(load_value_entry), (lookup_id_for_key), (internal_set_value),
-	(store_entry_value), (load_entry), (add_keys_to_hash),
-	(collect_hash_keys), (gdm_config_get_keys_for_group),
-	(load_backend), (gdm_config_load), (process_entries),
-	(gdm_config_process_entry), (gdm_config_process_entries),
-	(gdm_config_process_all), (gdm_config_get_value),
-	(gdm_config_set_value), (gdm_config_get_value_for_id),
-	(gdm_config_set_value_for_id), (gdm_config_get_string_for_id),
-	(gdm_config_get_bool_for_id), (gdm_config_set_string_for_id),
-	(gdm_config_set_bool_for_id):
+	  (gdm_config_entry_copy), (gdm_config_entry_free),
+	  (gdm_config_value_new), (gdm_config_value_free), (set_string),
+	  (set_string_array), (gdm_config_value_copy),
+	  (gdm_config_value_get_string), (gdm_config_value_get_bool),
+	  (gdm_config_value_get_int), (gdm_config_value_compare),
+	  (gdm_config_value_new_from_string),
+	  (gdm_config_value_set_string_array), (gdm_config_value_set_int),
+	  (gdm_config_value_set_bool), (gdm_config_value_set_string),
+	  (gdm_config_value_to_string), (gdm_config_init), (gdm_config_new),
+	  (gdm_config_free), (gdm_config_lookup_entry),
+	  (gdm_config_lookup_entry_for_id), (gdm_config_add_entry),
+	  (gdm_config_add_static_entries), (gdm_config_set_validate_func),
+	  (gdm_config_set_mandatory_file), (gdm_config_set_default_file),
+	  (gdm_config_set_custom_file), (gdm_config_set_notify_func),
+	  (key_file_get_value), (entry_get_default_value),
+	  (load_value_entry), (lookup_id_for_key), (internal_set_value),
+	  (store_entry_value), (load_entry), (add_keys_to_hash),
+	  (collect_hash_keys), (gdm_config_get_keys_for_group),
+	  (load_backend), (gdm_config_load), (process_entries),
+	  (gdm_config_process_entry), (gdm_config_process_entries),
+	  (gdm_config_process_all), (gdm_config_get_value),
+	  (gdm_config_set_value), (gdm_config_get_value_for_id),
+	  (gdm_config_set_value_for_id), (gdm_config_get_string_for_id),
+	  (gdm_config_get_bool_for_id), (gdm_config_set_string_for_id),
+	  (gdm_config_set_bool_for_id):
 	* common/gdm-config.h:
 	* common/test-config.c: (source_to_name), (type_to_name),
-	(notify_cb), (validate_cb), (load_servers_group), (test_config),
-	(main):
+	  (notify_cb), (validate_cb), (load_servers_group), (test_config),
+	  (main):
 	* daemon/Makefile.am:
 	* daemon/auth.c: (gdm_auth_secure_display), (get_local_auths),
-	(gdm_auth_user_add), (gdm_auth_user_remove):
+	  (gdm_auth_user_add), (gdm_auth_user_remove):
 	* daemon/choose.c: (gdm_choose_data), (gdm_choose_indirect_lookup):
 	* daemon/cookie.c:
 	* daemon/display.c: (whack_old_slave), (gdm_display_manage):
@@ -519,84 +526,84 @@
 	* daemon/gdm-daemon-config-entries.h:
 	* daemon/gdm-daemon-config-keys.h:
 	* daemon/gdm-daemon-config.c:
-	(gdm_daemon_config_get_per_display_custom_config_file),
-	(gdm_daemon_config_get_custom_config_file),
-	(gdm_daemon_config_get_value_int),
-	(gdm_daemon_config_get_value_string),
-	(gdm_daemon_config_get_value_bool),
-	(gdm_daemon_config_get_value_int_per_display),
-	(gdm_daemon_config_get_value_bool_per_display),
-	(gdm_daemon_config_get_value_string_per_display),
-	(gdm_daemon_config_key_to_string_per_display),
-	(gdm_daemon_config_key_to_string), (gdm_daemon_config_to_string),
-	(gdm_daemon_config_compare_displays), (lookup_notify_key),
-	(notify_displays_value), (gdm_daemon_config_set_value_string),
-	(gdm_daemon_config_set_value_bool),
-	(gdm_daemon_config_set_value_int),
-	(gdm_daemon_config_find_xserver), (gdm_daemon_config_get_xservers),
-	(gdm_daemon_config_load_xserver),
-	(gdm_daemon_config_unload_xservers),
-	(gdm_daemon_config_ensure_one_xserver), (load_xservers_group),
-	(gdm_daemon_config_load_xservers), (gdm_daemon_config_update_key),
-	(check_logdir), (check_servauthdir), (have_display_for_number),
-	(gdm_daemon_config_load_displays), (validate_path),
-	(validate_root_path), (validate_base_xsession),
-	(validate_power_action), (validate_standard_xserver),
-	(validate_graphical_theme_dir), (validate_graphical_theme),
-	(validate_greeter), (validate_remote_greeter),
-	(validate_session_desktop_dir), (validate_password_required),
-	(validate_allow_remote_root), (validate_xdmcp),
-	(validate_at_least_int), (validate_cb), (source_to_name),
-	(notify_cb), (handle_no_displays), (gdm_daemon_change_user),
-	(gdm_daemon_check_permissions), (gdm_daemon_config_parse),
-	(gdm_daemon_config_get_gdmuid), (gdm_daemon_config_get_gdmgid),
-	(gdm_daemon_config_get_high_display_num),
-	(gdm_daemon_config_set_high_display_num),
-	(gdm_daemon_config_is_valid_key),
-	(gdm_daemon_config_signal_terminthup_was_notified),
-	(check_user_file), (gdm_daemon_config_get_facefile_from_home),
-	(gdm_daemon_config_get_facefile_from_global), (is_prog_in_path),
-	(gdm_daemon_config_get_session_exec),
-	(gdm_daemon_config_set_user_session_lang),
-	(gdm_daemon_config_get_user_session_lang):
+	  (gdm_daemon_config_get_per_display_custom_config_file),
+	  (gdm_daemon_config_get_custom_config_file),
+	  (gdm_daemon_config_get_value_int),
+	  (gdm_daemon_config_get_value_string),
+	  (gdm_daemon_config_get_value_bool),
+	  (gdm_daemon_config_get_value_int_per_display),
+	  (gdm_daemon_config_get_value_bool_per_display),
+	  (gdm_daemon_config_get_value_string_per_display),
+	  (gdm_daemon_config_key_to_string_per_display),
+	  (gdm_daemon_config_key_to_string), (gdm_daemon_config_to_string),
+	  (gdm_daemon_config_compare_displays), (lookup_notify_key),
+	  (notify_displays_value), (gdm_daemon_config_set_value_string),
+	  (gdm_daemon_config_set_value_bool),
+	  (gdm_daemon_config_set_value_int),
+	  (gdm_daemon_config_find_xserver), (gdm_daemon_config_get_xservers),
+	  (gdm_daemon_config_load_xserver),
+	  (gdm_daemon_config_unload_xservers),
+	  (gdm_daemon_config_ensure_one_xserver), (load_xservers_group),
+	  (gdm_daemon_config_load_xservers), (gdm_daemon_config_update_key),
+	  (check_logdir), (check_servauthdir), (have_display_for_number),
+	  (gdm_daemon_config_load_displays), (validate_path),
+	  (validate_root_path), (validate_base_xsession),
+	  (validate_power_action), (validate_standard_xserver),
+	  (validate_graphical_theme_dir), (validate_graphical_theme),
+	  (validate_greeter), (validate_remote_greeter),
+	  (validate_session_desktop_dir), (validate_password_required),
+	  (validate_allow_remote_root), (validate_xdmcp),
+	  (validate_at_least_int), (validate_cb), (source_to_name),
+	  (notify_cb), (handle_no_displays), (gdm_daemon_change_user),
+	  (gdm_daemon_check_permissions), (gdm_daemon_config_parse),
+	  (gdm_daemon_config_get_gdmuid), (gdm_daemon_config_get_gdmgid),
+	  (gdm_daemon_config_get_high_display_num),
+	  (gdm_daemon_config_set_high_display_num),
+	  (gdm_daemon_config_is_valid_key),
+	  (gdm_daemon_config_signal_terminthup_was_notified),
+	  (check_user_file), (gdm_daemon_config_get_facefile_from_home),
+	  (gdm_daemon_config_get_facefile_from_global), (is_prog_in_path),
+	  (gdm_daemon_config_get_session_exec),
+	  (gdm_daemon_config_set_user_session_lang),
+	  (gdm_daemon_config_get_user_session_lang):
 	* daemon/gdm-daemon-config.h:
 	* daemon/gdm-net.c:
 	* daemon/gdm.c: (gdm_daemonify), (gdm_final_cleanup),
-	(deal_with_x_crashes), (suspend_machine), (halt_machine),
-	(restart_machine), (custom_cmd), (custom_cmd_restart),
-	(custom_cmd_no_restart), (gdm_cleanup_children),
-	(create_connections), (gdm_make_global_cookie), (main),
-	(write_x_servers), (gdm_handle_message), (handle_flexi_server),
-	(handle_dynamic_server), (gdm_handle_user_message):
+	  (deal_with_x_crashes), (suspend_machine), (halt_machine),
+	  (restart_machine), (custom_cmd), (custom_cmd_restart),
+	  (custom_cmd_no_restart), (gdm_cleanup_children),
+	  (create_connections), (gdm_make_global_cookie), (main),
+	  (write_x_servers), (gdm_handle_message), (handle_flexi_server),
+	  (handle_dynamic_server), (gdm_handle_user_message):
 	* daemon/gdm.h:
 	* daemon/gdmconfig.c:
 	* daemon/gdmconfig.h:
 	* daemon/getvt.c: (get_free_vt_linux),
-	(get_free_vt_freebsd_dragonfly), (gdm_get_empty_vt_argument):
+	  (get_free_vt_freebsd_dragonfly), (gdm_get_empty_vt_argument):
 	* daemon/misc.c: (gdm_debug), (gdm_text_message_dialog),
-	(gdm_text_yesno_dialog), (gdm_fork_extra):
+	  (gdm_text_yesno_dialog), (gdm_fork_extra):
 	* daemon/server.c: (display_parent_no_connect), (display_busy),
-	(display_vt), (do_server_wait), (gdm_server_start), (rotate_logs),
-	(gdm_server_resolve), (gdm_server_resolve_command_line),
-	(gdm_server_spawn), (get_font_path):
+	  (display_vt), (do_server_wait), (gdm_server_start), (rotate_logs),
+	  (gdm_server_resolve), (gdm_server_resolve_command_line),
+	  (gdm_server_spawn), (get_font_path):
 	* daemon/slave.c: (gdm_slave_start), (setup_automatic_session),
-	(gdm_screen_init), (gdm_slave_check_user_wants_to_log_in),
-	(gdm_slave_run), (run_config), (play_login_sound),
-	(gdm_slave_wait_for_login), (run_pictures), (copy_auth_file),
-	(gdm_slave_greeter), (gdm_slave_send), (gdm_slave_send_string),
-	(gdm_slave_chooser), (is_session_ok), (find_a_session),
-	(session_child_run), (gdm_slave_session_start),
-	(gdm_slave_session_stop), (gdm_slave_alrm_handler),
-	(check_for_interruption), (create_temp_auth_file),
-	(gdm_slave_exec_script), (gdm_parse_enriched_login),
-	(gdm_slave_handle_notify):
+	  (gdm_screen_init), (gdm_slave_check_user_wants_to_log_in),
+	  (gdm_slave_run), (run_config), (play_login_sound),
+	  (gdm_slave_wait_for_login), (run_pictures), (copy_auth_file),
+	  (gdm_slave_greeter), (gdm_slave_send), (gdm_slave_send_string),
+	  (gdm_slave_chooser), (is_session_ok), (find_a_session),
+	  (session_child_run), (gdm_slave_session_start),
+	  (gdm_slave_session_stop), (gdm_slave_alrm_handler),
+	  (check_for_interruption), (create_temp_auth_file),
+	  (gdm_slave_exec_script), (gdm_parse_enriched_login),
+	  (gdm_slave_handle_notify):
 	* daemon/verify-pam.c: (gdm_verify_user), (gdm_verify_setup_user),
-	(gdm_verify_check):
+	  (gdm_verify_check):
 	* daemon/xdmcp.c: (gdm_xdmcp_init), (gdm_xdmcp_handle_query),
-	(gdm_xdmcp_handle_forward_query), (gdm_xdmcp_send_willing),
-	(gdm_xdmcp_handle_request), (gdm_xdmcp_handle_manage),
-	(gdm_xdmcp_display_alloc), (gdm_xdmcp_displays_check),
-	(reconnect_to_parent):
+	  (gdm_xdmcp_handle_forward_query), (gdm_xdmcp_send_willing),
+	  (gdm_xdmcp_handle_request), (gdm_xdmcp_handle_manage),
+	  (gdm_xdmcp_display_alloc), (gdm_xdmcp_displays_check),
+	  (reconnect_to_parent):
 	* gui/Makefile.am:
 	* gui/gdmXnestchooser.c:
 	* gui/gdmchooser.c:
@@ -609,8 +616,8 @@
 	* gui/gdmphotosetup.c:
 	* gui/gdmsession.c:
 	* gui/gdmsetup.c: (bool_equal), (toggle_timeout), (ve_rest),
-	(combobox_timeout), (greeter_toggle_timeout), (get_archive_dir),
-	(xserver_toggle_timeout):
+	  (combobox_timeout), (greeter_toggle_timeout), (get_archive_dir),
+	  (xserver_toggle_timeout):
 	* gui/gdmuser.c:
 	* gui/greeter/greeter.c:
 	* gui/greeter/greeter_action_language.c:
@@ -623,8 +630,8 @@
 	* gui/greeter/greeter_session.c:
 	* gui/greeter/greeter_system.c:
 	* gui/misc.c: (gdm_working_command_exists):
-	Redesign the internal configuration system.
-	Fixes #355425
+	  Redesign the internal configuration system.
+	  Fixes #355425
 
 2007-03-26  William Jon McCann  <mccann@jhu.edu>
 
@@ -681,27 +688,27 @@
 
 	* common/Makefile.am:
 	* common/gdm-common-config.c: (gdm_common_config_parse_key_string),
-	(gdm_common_config_load), (gdm_common_config_save),
-	(gdm_common_config_get_int),
-	(gdm_common_config_get_translated_string),
-	(gdm_common_config_get_string), (gdm_common_config_get_boolean),
-	(gdm_common_config_set_string), (gdm_common_config_set_boolean),
-	(gdm_common_config_set_int), (gdm_common_config_remove_key):
+	  (gdm_common_config_load), (gdm_common_config_save),
+	  (gdm_common_config_get_int),
+	  (gdm_common_config_get_translated_string),
+	  (gdm_common_config_get_string), (gdm_common_config_get_boolean),
+	  (gdm_common_config_set_string), (gdm_common_config_set_boolean),
+	  (gdm_common_config_set_int), (gdm_common_config_remove_key):
 	* common/gdm-common-config.h:
 	* common/gdm-common.c: (ve_clearenv), (ve_first_word),
-	(ve_first_word_executable), (ve_get_first_working_command),
-	(ve_rest), (ve_bool_equal), (ve_is_string_in_list),
-	(ve_is_string_in_list_case_no_locale), (ve_find_file_simple),
-	(ve_locale_to_utf8), (ve_locale_from_utf8), (ve_filename_to_utf8),
-	(ve_filename_from_utf8), (ve_strftime), (ve_waitpid_no_signal),
-	(ve_locale_exists), (ve_find_prog_in_path), (ve_is_prog_in_path),
-	(ve_shell_quote_filename):
+	  (ve_first_word_executable), (ve_get_first_working_command),
+	  (ve_rest), (ve_bool_equal), (ve_is_string_in_list),
+	  (ve_is_string_in_list_case_no_locale), (ve_find_file_simple),
+	  (ve_locale_to_utf8), (ve_locale_from_utf8), (ve_filename_to_utf8),
+	  (ve_filename_from_utf8), (ve_strftime), (ve_waitpid_no_signal),
+	  (ve_locale_exists), (ve_find_prog_in_path), (ve_is_prog_in_path),
+	  (ve_shell_quote_filename):
 	* common/gdm-common.h:
 	* common/ve-signal.c: (ve_signal_prepare), (ve_signal_check),
-	(ve_signal_dispatch), (ve_signal_add), (ve_signal_add_full),
-	(ve_signal_notify), (ve_signal_was_notified), (ve_signal_unnotify):
+	  (ve_signal_dispatch), (ve_signal_add), (ve_signal_add_full),
+	  (ve_signal_notify), (ve_signal_was_notified), (ve_signal_unnotify):
 	* common/ve-signal.h:
-	Added new files missed from commit for #355425
+	  Added new files missed from commit for #355425
 
 2006-03-20  Brian Cameron  <brian.cameron@sun.com>
 
