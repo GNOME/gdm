@@ -47,12 +47,16 @@ gdm_common_config_parse_key_string (const char *keystring,
 	char    *tmp2;
 	gboolean ret;
 
+	g_return_val_if_fail (keystring != NULL, FALSE);
+
 	ret = FALSE;
 	g = k = v = l = NULL;
 	split1 = split2 = NULL;
 
+	g_debug ("Attempting to parse key string: %s", keystring);
+
 	split1 = g_strsplit (keystring, "/", 2);
-	if (split1 == NULL) {
+	if (split1 == NULL || split1 [0] == NULL || split1 [1] == NULL) {
 		goto out;
 	}
 
@@ -192,11 +196,14 @@ gdm_common_config_get_int (GKeyFile   *config,
 			   int        *value,
 			   GError    **error)
 {
-	char   *group;
-	char   *key;
-	char   *default_value;
-	int     val;
-	GError *local_error;
+	char    *group;
+	char    *key;
+	char    *default_value;
+	int      val;
+	GError  *local_error;
+	gboolean ret;
+
+	ret = FALSE;
 
 	group = key = default_value = NULL;
 	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value))
@@ -210,11 +217,15 @@ gdm_common_config_get_int (GKeyFile   *config,
 	if (local_error != NULL) {
 		/* use the default */
 		if (default_value != NULL) {
+			ret = TRUE;
+			g_error_free (local_error);
 			val = atoi (default_value);
 		} else {
 			val = 0;
+			g_propagate_error (error, local_error);
 		}
-		g_propagate_error (error, local_error);
+	} else {
+		ret = TRUE;
 	}
 
 	*value = val;
@@ -223,7 +234,7 @@ gdm_common_config_get_int (GKeyFile   *config,
 	g_free (group);
 	g_free (default_value);
 
-	return TRUE;
+	return ret;
 }
 
 gboolean
@@ -238,6 +249,9 @@ gdm_common_config_get_translated_string (GKeyFile   *config,
 	char   *val;
 	const char * const *langs;
 	int     i;
+	gboolean ret;
+
+	ret = FALSE;
 
 	val = NULL;
 
@@ -263,7 +277,12 @@ gdm_common_config_get_translated_string (GKeyFile   *config,
 
 	if (val == NULL) {
 		/* use the default */
-		val = g_strdup (default_value);
+		if (default_value != NULL) {
+			val = g_strdup (default_value);
+			ret = TRUE;
+		}
+	} else {
+		ret = TRUE;
 	}
 
 	*value = val;
@@ -272,7 +291,7 @@ gdm_common_config_get_translated_string (GKeyFile   *config,
 	g_free (group);
 	g_free (default_value);
 
-	return TRUE;
+	return ret;
 }
 
 gboolean
@@ -281,11 +300,14 @@ gdm_common_config_get_string (GKeyFile   *config,
 			      char      **value,
 			      GError    **error)
 {
-	char   *group;
-	char   *key;
-	char   *default_value;
-	char   *val;
-	GError *local_error;
+	char    *group;
+	char    *key;
+	char    *default_value;
+	char    *val;
+	GError  *local_error;
+	gboolean ret;
+
+	ret = FALSE;
 
 	group = key = default_value = NULL;
 	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
@@ -304,8 +326,15 @@ gdm_common_config_get_string (GKeyFile   *config,
 				     &local_error);
 	if (local_error != NULL) {
 		/* use the default */
-		val = g_strdup (default_value);
-		g_propagate_error (error, local_error);
+		if (default_value != NULL) {
+			val = g_strdup (default_value);
+			ret = TRUE;
+			g_error_free (local_error);
+		} else {
+			g_propagate_error (error, local_error);
+		}
+	} else {
+		ret = TRUE;
 	}
 
 	*value = val;
@@ -314,51 +343,7 @@ gdm_common_config_get_string (GKeyFile   *config,
 	g_free (group);
 	g_free (default_value);
 
-	return TRUE;
-}
-
-gboolean
-gdm_common_config_get_string_list (GKeyFile   *config,
-				   const char *keystring,
-				   char     ***value,
-				   gsize      *length,
-				   GError    **error)
-{
-	char   *group;
-	char   *key;
-	char   *default_value;
-	char  **val;
-	GError *local_error;
-
-	group = key = default_value = NULL;
-	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value)) {
-		g_set_error (error,
-			     G_KEY_FILE_ERROR,
-			     G_KEY_FILE_ERROR_PARSE,
-			     "Unable to parse key: %s",
-			     keystring);
-		return FALSE;
-	}
-
-	local_error = NULL;
-	val = g_key_file_get_string_list (config,
-					  group,
-					  key,
-					  length,
-					  &local_error);
-	if (local_error != NULL) {
-		/* use the default */
-		val = g_strsplit (default_value, ";", -1);
-		g_propagate_error (error, local_error);
-	}
-
-	*value = val;
-
-	g_free (key);
-	g_free (group);
-	g_free (default_value);
-
-	return TRUE;
+	return ret;
 }
 
 gboolean
@@ -372,6 +357,9 @@ gdm_common_config_get_boolean (GKeyFile   *config,
 	char    *default_value;
 	gboolean val;
 	GError  *local_error;
+	gboolean ret;
+
+	ret = FALSE;
 
 	group = key = default_value = NULL;
 	if (! gdm_common_config_parse_key_string (keystring, &group, &key, NULL, &default_value))
@@ -384,17 +372,23 @@ gdm_common_config_get_boolean (GKeyFile   *config,
 				      &local_error);
 	if (local_error != NULL) {
 		/* use the default */
-		if (default_value != NULL &&
-		    (default_value[0] == 'T' ||
-		     default_value[0] == 't' ||
-		     default_value[0] == 'Y' ||
-		     default_value[0] == 'y' ||
-		     atoi (default_value) != 0)) {
-			val = TRUE;
+		if (default_value != NULL) {
+			if ((default_value[0] == 'T' ||
+			     default_value[0] == 't' ||
+			     default_value[0] == 'Y' ||
+			     default_value[0] == 'y' ||
+			     atoi (default_value) != 0)) {
+				val = TRUE;
+			} else {
+				val = FALSE;
+			}
+			ret = TRUE;
+			g_error_free (local_error);
 		} else {
-			val = FALSE;
+			g_propagate_error (error, local_error);
 		}
-		g_propagate_error (error, local_error);
+	} else {
+		ret = TRUE;
 	}
 
 	*value = val;
@@ -403,7 +397,7 @@ gdm_common_config_get_boolean (GKeyFile   *config,
 	g_free (group);
 	g_free (default_value);
 
-	return TRUE;
+	return ret;
 }
 
 void

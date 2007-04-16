@@ -42,11 +42,6 @@ gboolean   gdm_common_config_get_translated_string (GKeyFile   *config,
 						    const char *keystring,
 						    char      **value,
 						    GError    **error);
-gboolean   gdm_common_config_get_string_list       (GKeyFile   *config,
-						    const char *keystring,
-						    char     ***value,
-						    gsize      *length,
-						    GError    **error);
 gboolean   gdm_common_config_get_int          (GKeyFile   *config,
 					       const char *keystring,
 					       int        *value,

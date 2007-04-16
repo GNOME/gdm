@@ -5086,15 +5086,15 @@ check_for_interruption (const char *msg)
 			break;
 		case GDM_INTERRUPT_CONFIGURE:
 			if (d->attached &&
-			    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_CONFIG_AVAILABLE) &&
-			    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
+			    gdm_daemon_config_get_value_bool_per_display (GDM_KEY_CONFIG_AVAILABLE, d->name) &&
+			    gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, d->name) &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_CONFIGURATOR))) {
 				do_configurator = TRUE;
 			}
 			break;
 		case GDM_INTERRUPT_SUSPEND:
 			if (d->attached &&
-			    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU) &&
+			    gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, d->name) &&
 			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
 			    	gchar *msg = g_strdup_printf ("%s %ld", 
 							      GDM_SOP_SUSPEND_MACHINE,

@@ -870,8 +870,7 @@ authenticate_again:
      * PAM Stacks, in case one display should use a different 
      * authentication mechanism than another display.
      */
-    pam_stack = gdm_daemon_config_get_value_string_per_display ((char *)display,
-	GDM_KEY_PAM_STACK);
+    pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
 
     if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
 	    if (started_timer)
@@ -1290,7 +1289,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
      * PAM Stacks, in case one display should use a different 
      * authentication mechanism than another display.
      */
-    pam_stack = gdm_daemon_config_get_value_string_per_display ((char *)display, GDM_KEY_PAM_STACK);
+    pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
     pam_service_name = g_strdup_printf ("%s-autologin", pam_stack);
 
     if ( ! create_pamh (d, pam_service_name, login, &standalone_pamc,

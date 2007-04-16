@@ -2669,6 +2669,16 @@ gdm_xdmcp_manager_set_max_wait (GdmXdmcpManager *manager,
 }
 
 static void
+gdm_xdmcp_manager_set_willing_script (GdmXdmcpManager *manager,
+				      const char      *script)
+{
+	g_return_if_fail (GDM_IS_XDMCP_MANAGER (manager));
+
+	g_free (manager->priv->willing_script);
+	manager->priv->willing_script = g_strdup (script);
+}
+
+static void
 gdm_xdmcp_manager_set_property (GObject	      *object,
 				guint	       prop_id,
 				const GValue  *value,
@@ -2702,6 +2712,9 @@ gdm_xdmcp_manager_set_property (GObject	      *object,
 		break;
 	case PROP_MAX_WAIT:
 		gdm_xdmcp_manager_set_max_wait (self, g_value_get_uint (value));
+		break;
+	case PROP_WILLING_SCRIPT:
+		gdm_xdmcp_manager_set_willing_script (self, g_value_get_string (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2743,6 +2756,9 @@ gdm_xdmcp_manager_get_property (GObject	   *object,
 		break;
 	case PROP_MAX_WAIT:
 		g_value_set_uint (value, self->priv->max_wait);
+		break;
+	case PROP_WILLING_SCRIPT:
+		g_value_set_string (value, self->priv->willing_script);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

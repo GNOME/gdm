@@ -432,20 +432,22 @@ gdm_daemon_config_get_value_bool (const char *keystring)
  * Gets the per-display version  of the configuration, or the default
  * value if none exists.
  */
-gint
-gdm_daemon_config_get_value_int_per_display (const gchar *display,
-					     const gchar *key)
+int
+gdm_daemon_config_get_value_int_per_display (const char *key,
+					     const char *display)
 {
-	gchar *perdispval;
+	char    *perdispval;
+	gboolean res;
 
-	gdm_daemon_config_key_to_string_per_display (display, key, &perdispval);
+	res = gdm_daemon_config_key_to_string_per_display (key, display, &perdispval);
 
-	if (perdispval != NULL) {
-		gint val = atoi (perdispval);
+	if (res) {
+		int val;
+		val = atoi (perdispval);
 		g_free (perdispval);
 		return val;
 	} else {
-		return (gdm_daemon_config_get_value_int (key));
+		return gdm_daemon_config_get_value_int (key);
 	}
 }
 
@@ -456,14 +458,15 @@ gdm_daemon_config_get_value_int_per_display (const gchar *display,
  * value if none exists.
  */
 gboolean
-gdm_daemon_config_get_value_bool_per_display (const gchar *display,
-					      const gchar *key)
+gdm_daemon_config_get_value_bool_per_display (const char *key,
+					      const char *display)
 {
-	gchar *perdispval;
+	char    *perdispval;
+	gboolean res;
 
-	gdm_daemon_config_key_to_string_per_display (display, key, &perdispval);
+	res = gdm_daemon_config_key_to_string_per_display (key, display, &perdispval);
 
-	if (perdispval != NULL) {
+	if (res) {
 		if (perdispval[0] == 'T' ||
 		    perdispval[0] == 't' ||
 		    perdispval[0] == 'Y' ||
@@ -475,10 +478,10 @@ gdm_daemon_config_get_value_bool_per_display (const gchar *display,
 			return FALSE;
 		}
 	} else {
-		return (gdm_daemon_config_get_value_bool (key));
+		return gdm_daemon_config_get_value_bool (key);
 	}
 }
- 
+
 /**
  * gdm_daemon_config_get_value_string_per_display
  *
@@ -486,18 +489,19 @@ gdm_daemon_config_get_value_bool_per_display (const gchar *display,
  * value if none exists.  Note that this value needs to be freed,
  * unlike the non-per-display version.
  */
-gchar *
-gdm_daemon_config_get_value_string_per_display (const gchar *display,
-						const gchar *key)
+char *
+gdm_daemon_config_get_value_string_per_display (const char *key,
+						const char *display)
 {
-	gchar *perdispval;
+	char    *perdispval;
+	gboolean res;
 
-	gdm_daemon_config_key_to_string_per_display (display, key, &perdispval);
+	res = gdm_daemon_config_key_to_string_per_display (key, display, &perdispval);
 
-	if (perdispval != NULL) {
+	if (res) {
 		return perdispval;
 	} else {
-		return (g_strdup (gdm_daemon_config_get_value_string (key)));
+		return g_strdup (gdm_daemon_config_get_value_string (key));
 	}
 }
 
@@ -506,62 +510,91 @@ gdm_daemon_config_get_value_string_per_display (const gchar *display,
  *
  * If the key makes sense to be per-display, return the value,
  * otherwise return NULL.  Keys that only apply to the daemon
- * process do not make sense for per-display configuration  
+ * process do not make sense for per-display configuration
  * Valid keys include any key in the greeter or gui categories,
  * and the GDM_KEY_PAM_STACK key.
  *
  * If additional keys make sense for per-display usage, make
  * sure they are added to the if-test below.
  */
-void
-gdm_daemon_config_key_to_string_per_display (const gchar *display,
-					     const gchar *key,
-					     gchar **retval)
+gboolean
+gdm_daemon_config_key_to_string_per_display (const char *keystring,
+					     const char *display,
+					     char      **retval)
 {
-	gchar *file;
-	gchar **splitstr = g_strsplit (key, "/", 2);
+	char    *file;
+	char    *group;
+	char    *key;
+	gboolean res;
+	gboolean ret;
+
+	ret = FALSE;
 
 	*retval = NULL;
+	group = key = NULL;
 
-	if (display == NULL)
-		return;
+	if (display == NULL) {
+		goto out;
+	}
+
+	g_debug ("Looking up per display value for %s", keystring);
+
+	res = gdm_common_config_parse_key_string (keystring,
+						  &group,
+						  &key,
+						  NULL,
+						  NULL);
+	if (! res) {
+		goto out;
+	}
 
 	file = gdm_daemon_config_get_per_display_custom_config_file (display);
 
-	if (strcmp (ve_sure_string (splitstr[0]), "greeter") == 0 ||
-	    strcmp (ve_sure_string (splitstr[0]), "gui") == 0 ||
-	    is_key (key, GDM_KEY_PAM_STACK)) {
-		gdm_daemon_config_key_to_string (file, key, retval);
+	if (strcmp (group, "greeter") == 0 ||
+	    strcmp (group, "gui") == 0 ||
+	    is_key (keystring, GDM_KEY_PAM_STACK)) {
+		ret = gdm_daemon_config_key_to_string (file, keystring, retval);
 	}
 
 	g_free (file);
 
-	return;
+ out:
+	g_free (group);
+	g_free (key);
+
+	return ret;
 }
 
 /**
  * gdm_daemon_config_key_to_string
  *
- * Returns a specific key from the config file, or NULL if not found.
+ * Gets a specific key from the config file.
  * Note this returns the value in string form, so the caller needs
  * to parse it properly if it is a bool or int.
+ *
+ * Returns TRUE if successful..
  */
-void
-gdm_daemon_config_key_to_string (const gchar *file,
-				 const gchar *keystring,
-				 gchar **retval)
+gboolean
+gdm_daemon_config_key_to_string (const char *file,
+				 const char *keystring,
+				 char      **retval)
 {
 	GKeyFile             *config;
 	GdmConfigValueType    type;
 	gboolean              res;
+	gboolean              ret;
 	char                 *group;
 	char                 *key;
 	char                 *locale;
+	char                 *result;
 	const GdmConfigEntry *entry;
 
 	if (retval != NULL) {
 		*retval = NULL;
 	}
+
+	ret = FALSE;
+	result = NULL;
 
 	group = key = locale = NULL;
 	res = gdm_common_config_parse_key_string (keystring,
@@ -585,8 +618,9 @@ gdm_daemon_config_key_to_string (const gchar *file,
 
 	config = gdm_common_config_load (file, NULL);
 	/* If file doesn't exist, then just return */
-	if (config == NULL)
-		return;
+	if (config == NULL) {
+		goto out;
+	}
 
 	gdm_debug ("Returning value for key <%s>\n", keystring);
 
@@ -594,45 +628,62 @@ gdm_daemon_config_key_to_string (const gchar *file,
 	case GDM_CONFIG_VALUE_BOOL:
 		{
 			gboolean value;
-			gdm_common_config_get_boolean (config, keystring, &value, NULL);
-			if (value)
-				*retval = g_strdup ("true");
-			else
-				*retval = g_strdup ("false");
+			res = gdm_common_config_get_boolean (config, keystring, &value, NULL);
+			if (res) {
+				if (value) {
+					result = g_strdup ("true");
+				} else {
+					result = g_strdup ("false");
+				}
+			}
 		}
 		break;
 	case GDM_CONFIG_VALUE_INT:
 		{
-			gint value;
-			gdm_common_config_get_int (config, keystring, &value, NULL);
-			*retval = g_strdup_printf ("%d", value);
+			int value;
+			res = gdm_common_config_get_int (config, keystring, &value, NULL);
+			if (res) {
+				result = g_strdup_printf ("%d", value);
+			}
 		}
 		break;
 	case GDM_CONFIG_VALUE_STRING:
 		{
-			gchar *value;
-			gdm_common_config_get_string (config, keystring, &value, NULL);
-			*retval = value;
+			char *value;
+			res = gdm_common_config_get_string (config, keystring, &value, NULL);
+			if (res) {
+				result = value;
+			}
 		}
 		break;
 	case GDM_CONFIG_VALUE_LOCALE_STRING:
 		{
-			gchar *value;
-			gdm_common_config_get_string (config, keystring, &value, NULL);
-			*retval = value;
+			char *value;
+			res = gdm_common_config_get_string (config, keystring, &value, NULL);
+			if (res) {
+				result = value;
+			}
 		}
 		break;
 	default:
 		break;
 	}
 
+	if (res) {
+		if (retval != NULL) {
+			*retval = g_strdup (result);
+		}
+		ret = TRUE;
+	}
+
 	g_key_file_free (config);
  out:
+	g_free (result);
 	g_free (group);
 	g_free (key);
 	g_free (locale);
 
-	return;
+	return ret;
 }
 
 /**
@@ -641,12 +692,13 @@ gdm_daemon_config_key_to_string (const gchar *file,
  * Returns a configuration option as a string.  Used by GDM's
  * GET_CONFIG socket command.
  */
-void
-gdm_daemon_config_to_string (const gchar *keystring,
-			     const gchar *display,
-			     gchar      **retval)
+gboolean
+gdm_daemon_config_to_string (const char *keystring,
+			     const char *display,
+			     char      **retval)
 {
 	gboolean res;
+	gboolean ret;
 	GdmConfigValue *value;
 	char *group;
 	char *key;
@@ -658,12 +710,17 @@ gdm_daemon_config_to_string (const gchar *keystring,
 	 * if it exists.
 	 */
 	if (display != NULL) {
-		gdm_daemon_config_key_to_string_per_display (display, keystring, retval);
-		if (*retval != NULL)
-			return;
+		res = gdm_daemon_config_key_to_string_per_display (keystring, display, retval);
+		if (res) {
+			g_debug ("Using per display value for key: %s", keystring);
+			return TRUE;
+		}
 	}
 
+	ret = FALSE;
 	result = NULL;
+
+	g_debug ("Looking up key: %s", keystring);
 
 	group = NULL;
 	key = NULL;
@@ -697,12 +754,14 @@ gdm_daemon_config_to_string (const gchar *keystring,
 				    group,
 				    key,
 				    &value);
+
 	if (! res) {
 		gdm_error ("Request for invalid configuration key %s", keystring);
 		goto out;
 	}
 
 	result = gdm_config_value_to_string (value);
+	ret = TRUE;
 
  out:
 	g_free (group);
@@ -711,6 +770,8 @@ gdm_daemon_config_to_string (const gchar *keystring,
 
 
 	*retval = result;
+
+	return ret;
 }
 
 /**

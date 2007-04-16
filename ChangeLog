@@ -1,5 +1,51 @@
 2007-04-16  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-common-config.c: (gdm_common_config_parse_key_string),
+	(gdm_common_config_get_int),
+	(gdm_common_config_get_translated_string),
+	(gdm_common_config_get_string), (gdm_common_config_get_boolean):
+	* common/gdm-common-config.h:
+	Return FALSE if no default is given in the key and key doesn't
+	exist in the file.
+
+	* daemon/gdm-daemon-config.c:
+	(gdm_daemon_config_get_value_int_per_display),
+	(gdm_daemon_config_get_value_bool_per_display),
+	(gdm_daemon_config_get_value_string_per_display),
+	(gdm_daemon_config_key_to_string_per_display),
+	(gdm_daemon_config_key_to_string), (gdm_daemon_config_to_string):
+	* daemon/gdm-daemon-config.h:
+	Fix handling of per display keys.
+
+	* daemon/gdm-xdmcp-manager.c:
+	(gdm_xdmcp_manager_set_willing_script),
+	(gdm_xdmcp_manager_set_property), (gdm_xdmcp_manager_get_property):
+	Fix missing property.
+
+	* daemon/gdm.c: (gdm_start_first_unborn_local),
+	(gdm_final_cleanup), (custom_cmd_no_restart),
+	(gdm_cleanup_children), (mainloop_sig_callback), (main),
+	(gdm_handle_message), (handle_flexi_server),
+	(sup_handle_auth_local), (sup_handle_attached_servers),
+	(sup_handle_get_server_details), (sup_handle_flexi_xserver),
+	(sup_handle_flexi_xnest), (sup_handle_get_config),
+	(sup_handle_query_logout_action),
+	(sup_handle_query_custom_cmd_labels), (sup_handle_all_servers),
+	(sup_handle_get_server_list), (sup_handle_get_custom_config_file),
+	(sup_handle_greeterpids),
+	(sup_handle_query_custom_cmd_no_restart_status),
+	(sup_handle_set_logout_action),
+	(sup_handle_set_safe_logout_action), (sup_handle_query_vt),
+	(sup_handle_set_vt), (gdm_handle_user_message):
+	Break up the monolithic gdm_handle_user_message function so it
+	can be read more easily.
+
+	* daemon/slave.c: (check_for_interruption):
+	* daemon/verify-pam.c: (gdm_verify_user), (gdm_verify_setup_user):
+	Update for changed daemon_config arguments.
+
+2007-04-16  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/Makefile.am:
 	* daemon/auth.c: (gdm_auth_secure_display):
 	* daemon/choose.c:

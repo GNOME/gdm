@@ -243,7 +243,7 @@ gdm_start_first_unborn_local (int delay)
 		    d->type == TYPE_STATIC &&
 		    d->dispstat == DISPLAY_UNBORN) {
 			GdmXserver *svr;
-			gdm_debug ("gdm_start_first_unborn_local: "
+			g_debug ("gdm_start_first_unborn_local: "
 				   "Starting %s", d->name);
 
 			/* well sleep at least 'delay' seconds
@@ -290,7 +290,7 @@ gdm_final_cleanup (void)
 
 	displays = gdm_daemon_config_get_display_list ();
 
-	gdm_debug ("gdm_final_cleanup");
+	g_debug ("gdm_final_cleanup");
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
@@ -829,7 +829,7 @@ custom_cmd_no_restart (long cmd_id)
 		if (p_stat > 0) {
 			if G_LIKELY (WIFEXITED (exitstatus)){
 				status = WEXITSTATUS (exitstatus);
-				gdm_debug (_("custom_cmd: child %d returned %d"), p_stat, status);
+				g_debug (_("custom_cmd: child %d returned %d"), p_stat, status);
 			}
 			return;
 		}
@@ -854,7 +854,7 @@ gdm_cleanup_children (void)
 	if G_LIKELY (WIFEXITED (exitstatus)) {
 		status = WEXITSTATUS (exitstatus);
 		crashed = FALSE;
-		gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
+		g_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
 	} else {
 		status = EXIT_SUCCESS;
 		crashed = TRUE;
@@ -862,7 +862,7 @@ gdm_cleanup_children (void)
 			if (WTERMSIG (exitstatus) == SIGTERM ||
 			    WTERMSIG (exitstatus) == SIGINT) {
 				/* we send these signals, sometimes children don't handle them */
-				gdm_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
+				g_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
 					   (int)WTERMSIG (exitstatus));
 			} else {
 				gdm_error ("gdm_cleanup_children: child %d crashed of signal %d", pid,
@@ -931,7 +931,7 @@ gdm_cleanup_children (void)
 	d->slavepid = 0;
 	d->dispstat = DISPLAY_DEAD;
 
-	sysmenu = gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU);
+	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, d->name);
 
 	if ( ! sysmenu &&
 	     (status == DISPLAY_RESTARTGDM ||
@@ -954,7 +954,7 @@ gdm_cleanup_children (void)
 	if (status == DISPLAY_RUN_CHOOSER) {
 		/* use the chooser on the next run (but only if allowed) */
 		if (sysmenu &&
-		    gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_CHOOSER_BUTTON))
+		    gdm_daemon_config_get_value_bool_per_display (GDM_KEY_CHOOSER_BUTTON, d->name))
 			d->use_chooser = TRUE;
 		status = DISPLAY_REMANAGE;
 		/* go around the display loop detection, these are short
@@ -1053,7 +1053,7 @@ gdm_cleanup_children (void)
 		break;
 
 	case DISPLAY_XFAILED:       /* X sucks */
-		gdm_debug ("X failed!");
+		g_debug ("X failed!");
 		/* inform about error if needed */
 		if (d->socket_conn != NULL) {
 			GdmConnection *conn = d->socket_conn;
@@ -1078,9 +1078,9 @@ gdm_cleanup_children (void)
 				/* well sleep at least 3 seconds before starting */
 				d->sleep_before_run = 3;
 			} else if (d->x_faileds >= 3) {
-				gdm_debug ("gdm_child_action: dealing with X crashes");
+				g_debug ("gdm_child_action: dealing with X crashes");
 				if ( ! deal_with_x_crashes (d)) {
-					gdm_debug ("gdm_child_action: Aborting display");
+					g_debug ("gdm_child_action: Aborting display");
 					/* an original way to deal with these things:
 					 * "Screw you guys, I'm going home!" */
 					gdm_display_unmanage (d);
@@ -1090,7 +1090,7 @@ gdm_cleanup_children (void)
 					gdm_start_first_unborn_local (3 /* delay */);
 					break;
 				}
-				gdm_debug ("gdm_child_action: Trying again");
+				g_debug ("gdm_child_action: Trying again");
 
 				/* reset */
 				d->x_faileds = 0;
@@ -1107,7 +1107,7 @@ gdm_cleanup_children (void)
 
 	case DISPLAY_REMANAGE:	/* Remanage display */
 	default:
-		gdm_debug ("gdm_child_action: In remanage");
+		g_debug ("gdm_child_action: In remanage");
 
 		/* if we did REMANAGE, that means that we're no longer failing */
 		if (status == DISPLAY_REMANAGE) {
@@ -1264,7 +1264,7 @@ mainloop_sig_callback (int sig, gpointer data)
 	/* signals are at somewhat random times aren't they? */
 	gdm_random_tick ();
 
-	gdm_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
+	g_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
 	switch (sig)
 		{
 		case SIGCHLD:
@@ -1274,7 +1274,7 @@ mainloop_sig_callback (int sig, gpointer data)
 
 		case SIGINT:
 		case SIGTERM:
-			gdm_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
+			g_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
 			gdm_final_cleanup ();
 			exit (EXIT_SUCCESS);
 			break;
@@ -1755,7 +1755,7 @@ main (int argc, char *argv[])
 	gdm_signal_ignore (SIGLOST);
 #endif
 
-	gdm_debug ("gdm_main: Here we go...");
+	g_debug ("gdm_main: Here we go...");
 
 #ifdef  HAVE_LOGINDEVPERM
 	di_devperm_login ("/dev/console", gdm_daemon_config_get_gdmuid (), gdm_daemon_config_get_gdmgid (), NULL);
@@ -1780,7 +1780,7 @@ main (int argc, char *argv[])
 
 	/* Accept remote connections */
 	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
-		gdm_debug ("Accepting XDMCP connections...");
+		g_debug ("Accepting XDMCP connections...");
 		gdm_xdmcp_run ();
 	}
 
@@ -1791,7 +1791,7 @@ main (int argc, char *argv[])
 	while (1)
 		{
 			g_main_loop_run (main_loop);
-			gdm_debug ("main: Exited main loop");
+			g_debug ("main: Exited main loop");
 		}
 
 	return EXIT_SUCCESS;	/* Not reached */
@@ -1994,14 +1994,14 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			char *s = g_strndup
 				(msg, strlen (GDM_SOP_COOKIE " XXXX XX"));
 			/* cut off most of the cookie for "security" */
-			gdm_debug ("Handling message: '%s...'", s);
+			g_debug ("Handling message: '%s...'", s);
 			g_free (s);
 		} else if (strncmp (msg, GDM_SOP_SYSLOG " ",
 				    strlen (GDM_SOP_SYSLOG " ")) != 0) {
 			/* Don't print out the syslog message as it will
 			 * be printed out anyway as that's the whole point
 			 * of the message. */
-			gdm_debug ("Handling message: '%s'", msg);
+			g_debug ("Handling message: '%s'", msg);
 		}
 	}
 
@@ -2030,7 +2030,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->chosen_hostname);
 			d->chosen_hostname = g_strdup (p);
-			gdm_debug ("Got CHOSEN_LOCAL == %s", p);
+			g_debug ("Got CHOSEN_LOCAL == %s", p);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2048,7 +2048,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->servpid = pid;
-			gdm_debug ("Got XPID == %ld", (long)pid);
+			g_debug ("Got XPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2066,7 +2066,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->sesspid = pid;
-			gdm_debug ("Got SESSPID == %ld", (long)pid);
+			g_debug ("Got SESSPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2084,7 +2084,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->greetpid = pid;
-			gdm_debug ("Got GREETPID == %ld", (long)pid);
+			g_debug ("Got GREETPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2102,7 +2102,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->chooserpid = pid;
-			gdm_debug ("Got CHOOSERPID == %ld", (long)pid);
+			g_debug ("Got CHOOSERPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2120,7 +2120,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->logged_in = logged_in ? TRUE : FALSE;
-			gdm_debug ("Got logged in == %s",
+			g_debug ("Got logged in == %s",
 				   d->logged_in ? "TRUE" : "FALSE");
 
 			/* whack connections about this display if a user
@@ -2156,7 +2156,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			g_free (d->name);
 			d->name = g_strdup_printf (":%d", disp_num);
 			d->dispnum = disp_num;
-			gdm_debug ("Got DISP_NUM == %d", disp_num);
+			g_debug ("Got DISP_NUM == %d", disp_num);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2175,7 +2175,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->vt = vt_num;
-			gdm_debug ("Got VT_NUM == %d", vt_num);
+			g_debug ("Got VT_NUM == %d", vt_num);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2202,7 +2202,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->login);
 			d->login = g_strdup (p);
-			gdm_debug ("Got LOGIN == %s", p);
+			g_debug ("Got LOGIN == %s", p);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2232,7 +2232,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			GSList *displays;
 
 			displays = gdm_daemon_config_get_display_list ();
-			gdm_debug ("Got QUERYLOGIN %s", p);
+			g_debug ("Got QUERYLOGIN %s", p);
 			for (li = displays; li != NULL; li = li->next) {
 				GdmDisplay *di = li->data;
 				if (di->logged_in &&
@@ -2291,7 +2291,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d == NULL)
 			return;
 
-		gdm_debug ("Got MIGRATE %s", p);
+		g_debug ("Got MIGRATE %s", p);
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *di = li->data;
 			if (di->logged_in && strcmp (di->name, p) == 0) {
@@ -2325,7 +2325,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->cookie);
 			d->cookie = g_strdup (p);
-			gdm_debug ("Got COOKIE == <secret>");
+			g_debug ("Got COOKIE == <secret>");
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2352,7 +2352,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->authfile);
 			d->authfile = g_strdup (p);
-			gdm_debug ("Got AUTHFILE == %s", d->authfile);
+			g_debug ("Got AUTHFILE == %s", d->authfile);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2389,7 +2389,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			if (conn != NULL)
 				gdm_connection_write (conn, error);
 
-			gdm_debug ("Got FLEXI_ERR == %d", err);
+			g_debug ("Got FLEXI_ERR == %d", err);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2416,7 +2416,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 					gdm_display_unmanage (d);
 			}
 
-			gdm_debug ("Got FLEXI_OK");
+			g_debug ("Got FLEXI_OK");
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2495,7 +2495,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Init XDMCP if applicable */
 		if (old_wait && gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP)) {
 			if (gdm_xdmcp_init ()) {
-				gdm_debug ("Accepting XDMCP connections...");
+				g_debug ("Accepting XDMCP connections...");
 				gdm_xdmcp_run ();
 			}
 		}
@@ -2529,7 +2529,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		gdm_info (_("Master suspending..."));
 
-		sysmenu = gdm_daemon_config_get_value_bool_per_display (d->name, GDM_KEY_SYSTEM_MENU);
+		sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, d->name);
 		if (sysmenu && gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND) != NULL) {
 			suspend_machine ();
 		}
@@ -2994,7 +2994,7 @@ handle_flexi_server (GdmConnection *conn,
 	gchar *bin;
 	uid_t server_uid = 0;
 
-	gdm_debug ("server: '%s'", server);
+	g_debug ("server: '%s'", server);
 
 	if (gdm_wait_for_go) {
 		if (conn != NULL)
@@ -3266,17 +3266,831 @@ handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
 }
 
 static void
-gdm_handle_user_message (GdmConnection *conn,
-			 const gchar *msg,
-			 gpointer data)
+sup_handle_auth_local (GdmConnection *conn,
+		       const char    *msg,
+		       gpointer       data)
 {
-	gint i;
+	GSList *li;
+	char *cookie;
+	GSList *displays;
+
+	cookie = g_strdup (&msg[strlen (GDM_SUP_AUTH_LOCAL " ")]);
+
+	displays = gdm_daemon_config_get_display_list ();
+
+	g_strstrip (cookie);
+	if (strlen (cookie) != 16*2) /* 16 bytes in hex form */ {
+		/* evil, just whack the connection in this case */
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		gdm_connection_close (conn);
+		g_free (cookie);
+		return;
+	}
+	/* check if cookie matches one of the attached displays */
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->attached &&
+		    disp->cookie != NULL &&
+		    g_ascii_strcasecmp (disp->cookie, cookie) == 0) {
+			g_free (cookie);
+			GDM_CONNECTION_SET_USER_FLAG
+				(conn, GDM_SUP_FLAG_AUTHENTICATED);
+			gdm_connection_set_display (conn, disp);
+			gdm_connection_write (conn, "OK\n");
+			return;
+		}
+	}
+
+	if (gdm_global_cookie != NULL &&
+	    g_ascii_strcasecmp ((gchar *) gdm_global_cookie, cookie) == 0) {
+		g_free (cookie);
+		GDM_CONNECTION_SET_USER_FLAG
+			(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
+		gdm_connection_write (conn, "OK\n");
+		return;
+	}
+
+	/* Hmmm, perhaps this is better defined behaviour */
+	GDM_CONNECTION_UNSET_USER_FLAG
+		(conn, GDM_SUP_FLAG_AUTHENTICATED);
+	GDM_CONNECTION_UNSET_USER_FLAG
+		(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
+	gdm_connection_set_display (conn, NULL);
+	gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
+	g_free (cookie);
+}
+
+static void
+sup_handle_attached_servers (GdmConnection *conn,
+			     const char    *msg,
+			     gpointer       data)
+{
+	GString *retMsg;
+	GSList  *li;
+	const gchar *sep = " ";
+	char    *key;
+	int     msgLen=0;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
+
+	if (strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
+		     strlen (GDM_SUP_ATTACHED_SERVERS)) == 0)
+		msgLen = strlen (GDM_SUP_ATTACHED_SERVERS);
+	else if (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
+			  strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)
+		msgLen = strlen (GDM_SUP_CONSOLE_SERVERS);
+
+	key = g_strdup (&msg[msgLen]);
+	g_strstrip (key);
+
+	retMsg = g_string_new ("OK");
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+
+		if ( ! disp->attached)
+			continue;
+		if (!(strlen (key)) || (g_pattern_match_simple (key, disp->command))) {
+			g_string_append_printf (retMsg, "%s%s,%s,", sep,
+						ve_sure_string (disp->name),
+						ve_sure_string (disp->login));
+			sep = ";";
+			if (disp->type == TYPE_FLEXI_XNEST) {
+				g_string_append (retMsg, ve_sure_string (disp->parent_disp));
+			} else {
+				g_string_append_printf (retMsg, "%d", disp->vt);
+			}
+		}
+	}
+
+	g_string_append (retMsg, "\n");
+	gdm_connection_write (conn, retMsg->str);
+	g_free (key);
+	g_string_free (retMsg, TRUE);
+}
+
+static void
+sup_handle_get_server_details (GdmConnection *conn,
+			       const char    *msg,
+			       gpointer       data)
+{
+
+	const gchar *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
+	gchar   **splitstr = g_strsplit (server, " ", 2);
+	GdmXserver  *svr   = gdm_daemon_config_find_xserver ((gchar *)splitstr[0]);
+
+	if (svr != NULL) {
+		if (g_strcasecmp (splitstr[1], "ID") == 0)
+			gdm_connection_printf (conn, "OK %s\n", svr->id);
+		else if (g_strcasecmp (splitstr[1], "NAME") == 0)
+			gdm_connection_printf (conn, "OK %s\n", svr->name);
+		else if (g_strcasecmp (splitstr[1], "COMMAND") == 0)
+			gdm_connection_printf (conn, "OK %s\n", svr->command);
+		else if (g_strcasecmp (splitstr[1], "PRIORITY") == 0)
+			gdm_connection_printf (conn, "OK %d\n", svr->priority);
+		else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
+			 svr->flexible)
+			gdm_connection_printf (conn, "OK true\n");
+		else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
+			 !svr->flexible)
+			gdm_connection_printf (conn, "OK false\n");
+		else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
+			 svr->choosable)
+			gdm_connection_printf (conn, "OK true\n");
+		else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
+			 !svr->choosable)
+			gdm_connection_printf (conn, "OK false\n");
+		else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
+			 svr->handled)
+			gdm_connection_printf (conn, "OK true\n");
+		else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
+			 !svr->handled)
+			gdm_connection_printf (conn, "OK false\n");
+		else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
+			 svr->chooser)
+			gdm_connection_printf (conn, "OK true\n");
+		else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
+			 !svr->chooser)
+			gdm_connection_printf (conn, "OK false\n");
+		else
+			gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
+
+		g_strfreev (splitstr);
+	} else {
+		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
+	}
+}
+
+static void
+sup_handle_flexi_xserver (GdmConnection *conn,
+			  const char    *msg,
+			  gpointer       data)
+{
+	gchar *name;
+	const gchar *command = NULL;
+	GdmXserver *svr;
+	const gchar *rest;
+	gchar *username, *end;
 	gboolean has_user;
 
-	gdm_debug ("Handling user message: '%s'", msg);
+	has_user = strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ", strlen (GDM_SUP_FLEXI_XSERVER_USER " ")) == 0;
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED(conn)) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "FLEXI_XSERVER");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+	if (has_user == 0) {
+		rest = msg + strlen (GDM_SUP_FLEXI_XSERVER_USER " ");
+		end = strchr (rest, ' ');
+		if (end) {
+			username = g_strndup (rest, end - rest);
+			rest = end + 1;
+		} else {
+			username = g_strdup (rest);
+			rest = rest + strlen (rest);
+		}
+	} else {
+		rest = msg + strlen (GDM_SUP_FLEXI_XSERVER " ");
+		username = NULL;
+	}
+	name = g_strdup (rest);
+	g_strstrip (name);
+	if (ve_string_empty (name)) {
+		g_free (name);
+		name = g_strdup (GDM_STANDARD);
+	}
+
+	svr = gdm_daemon_config_find_xserver (name);
+	if G_UNLIKELY (svr == NULL) {
+		/* Don't print the name to syslog as it might be
+		 * long and dangerous */
+		gdm_error (_("Unknown server type requested; using "
+			     "standard server."));
+		command = gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER);
+	} else if G_UNLIKELY ( ! svr->flexible) {
+		gdm_error (_("Requested server %s not allowed to be "
+			     "used for flexible servers; using "
+			     "standard server."), name);
+		command = gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER);
+	} else {
+		command = svr->command;
+	}
+	g_free (name);
+
+	handle_flexi_server (conn, TYPE_FLEXI, command,
+			     /* It is kind of ugly that we don't use
+				the standard resolution for this, but
+				oh well, this makes other things simpler */
+			     svr->handled,
+			     svr->chooser,
+			     NULL, 0, NULL, NULL, username);
+	g_free (username);
+}
+
+static void
+sup_handle_flexi_xnest (GdmConnection *conn,
+			const char    *msg,
+			gpointer       data)
+{
+	gchar *dispname = NULL;
+	char  *xauthfile = NULL;
+	char  *cookie = NULL;
+	uid_t uid;
+	const gchar *rest;
+	gchar *username, *end;
+	gboolean has_user;
+
+	has_user = strncmp (msg, GDM_SUP_FLEXI_XNEST_USER " ", strlen (GDM_SUP_FLEXI_XNEST_USER " ")) == 0;
+
+	if (has_user == 0) {
+		rest = msg + strlen (GDM_SUP_FLEXI_XNEST_USER " ");
+		end = strchr (rest, ' ');
+		username = g_strndup (rest, end - rest);
+	} else {
+		rest = msg;
+		username = NULL;
+	}
+
+	extract_dispname_uid_xauthfile_cookie (rest, &dispname, &uid,
+					       &xauthfile, &cookie);
+
+	if (dispname == NULL) {
+		/* Something bogus is going on, so just whack the
+		 * connection */
+		g_free (xauthfile);
+		gdm_connection_close (conn);
+		return;
+	}
+
+	/* This is probably a pre-2.2.4.2 client */
+	if (xauthfile == NULL || cookie == NULL) {
+		/* evil, just whack the connection in this case */
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		gdm_connection_close (conn);
+		g_free (cookie);
+		return;
+	}
+
+	handle_flexi_server (conn, TYPE_FLEXI_XNEST, gdm_daemon_config_get_value_string (GDM_KEY_XNEST),
+			     TRUE /* handled */,
+			     FALSE /* chooser */,
+			     dispname, uid, xauthfile, cookie, username);
+
+	g_free (dispname);
+	g_free (xauthfile);
+	g_free (username);
+}
+
+static void
+sup_handle_get_config (GdmConnection *conn,
+		       const char    *msg,
+		       gpointer       data)
+{
+	const char *parms;
+	char **splitstr;
+	char *retval;
+	static gboolean done_prefetch = FALSE;
+
+	retval = NULL;
+	parms = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
+
+	splitstr = g_strsplit (parms, " ", 2);
+
+	if (splitstr == NULL || splitstr[0] == NULL) {
+		goto out;
+	}
+
+	/*
+	 * It is not meaningful to manage this in a per-display
+	 * fashion since the prefetch program is only run once the
+	 * for the first display that requests the key.  So process
+	 * this first and return "Unsupported key" for requests
+	 * after the first request.
+	 */
+	if (strcmp (splitstr[0], GDM_KEY_PRE_FETCH_PROGRAM) == 0) {
+		if (done_prefetch) {
+			gdm_connection_printf (conn, "OK \n");
+		} else {
+			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", splitstr[0]);
+			done_prefetch = TRUE;
+		}
+		goto out;
+	}
+
+	if (splitstr[0] != NULL) {
+		gboolean res;
+
+		/*
+		 * Note passing in the display is backwards compatible
+		 * since if it is NULL, it won't try to load the display
+		 * value at all.
+		 */
+
+		g_debug ("Handling GET_CONFIG: %s for display %s", splitstr[0], splitstr[1]);
+
+		res = gdm_daemon_config_to_string (splitstr[0], splitstr[1], &retval);
+
+		if (res) {
+			gdm_connection_printf (conn, "OK %s\n", retval);
+			g_free (retval);
+		} else {
+			if (gdm_daemon_config_is_valid_key ((gchar *)splitstr[0]))
+				gdm_connection_printf (conn, "OK \n");
+			else
+				gdm_connection_printf (conn,
+						       "ERROR 50 Unsupported key <%s>\n",
+						       splitstr[0]);
+		}
+	}
+ out:
+	g_strfreev (splitstr);
+}
+
+static void
+sup_handle_query_logout_action (GdmConnection *conn,
+				const char    *msg,
+				gpointer       data)
+{
+	GdmLogoutAction logout_action;
+	GdmDisplay *disp;
+	GString *reply;
+	const gchar *sep = " ";
+	gboolean sysmenu;
+	int i;
+
+	disp = gdm_connection_get_display (conn);
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
+	     disp == NULL) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "QUERY_LOGOUT_ACTION");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
+	reply = g_string_new ("OK");
+
+	logout_action = disp->logout_action;
+	if (logout_action == GDM_LOGOUT_ACTION_NONE)
+		logout_action = safe_logout_action;
+
+	if (sysmenu && disp->attached &&
+	    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
+		g_string_append_printf (reply, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_HALT);
+		if (logout_action == GDM_LOGOUT_ACTION_HALT)
+			g_string_append (reply, "!");
+		sep = ";";
+	}
+	if (sysmenu && disp->attached &&
+	    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
+		g_string_append_printf (reply, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_REBOOT);
+		if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
+			g_string_append (reply, "!");
+		sep = ";";
+	}
+	if (sysmenu && disp->attached &&
+	    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
+		g_string_append_printf (reply, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
+		if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
+			g_string_append (reply, "!");
+		sep = ";";
+	}
+
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar *key_string = NULL;
+		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+			g_free (key_string);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
+			if (gdm_daemon_config_get_value_bool (key_string)) {
+				g_string_append_printf (reply, "%s%s%d", sep, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, i);
+				if (logout_action == (GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + i))
+					g_string_append (reply, "!");
+				sep = ";";
+			}
+		}
+		g_free(key_string);
+	}
+
+	g_string_append (reply, "\n");
+	gdm_connection_write (conn, reply->str);
+	g_string_free (reply, TRUE);
+}
+
+static void
+sup_handle_query_custom_cmd_labels (GdmConnection *conn,
+				    const char    *msg,
+				    gpointer       data)
+{
+
+	GdmDisplay *disp;
+	GString *reply;
+	const gchar *sep = " ";
+	gboolean sysmenu;
+	int i;
+
+	disp = gdm_connection_get_display (conn);
+	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
+	     disp == NULL) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "QUERY_LOGOUT_ACTION");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+	reply = g_string_new ("OK");
+
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar *key_string = NULL;
+		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+			g_free (key_string);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
+			if (gdm_daemon_config_get_value_bool (key_string)) {
+				g_free (key_string);
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+				g_string_append_printf (reply, "%s%s",  sep, gdm_daemon_config_get_value_string (key_string));
+				sep = ";";
+			}
+		}
+		g_free(key_string);
+	}
+
+	g_string_append (reply, "\n");
+	gdm_connection_write (conn, reply->str);
+	g_string_free (reply, TRUE);
+}
+
+static void
+sup_handle_all_servers (GdmConnection *conn,
+			const char    *msg,
+			gpointer       data)
+{
+	GString *reply;
+	GSList *li;
+	const gchar *sep = " ";
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
+
+	reply = g_string_new ("OK");
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		g_string_append_printf (reply, "%s%s,%s", sep,
+					ve_sure_string (disp->name),
+					ve_sure_string (disp->login));
+		sep = ";";
+	}
+	g_string_append (reply, "\n");
+	gdm_connection_write (conn, reply->str);
+	g_string_free (reply, TRUE);
+}
+
+static void
+sup_handle_get_server_list (GdmConnection *conn,
+			    const char    *msg,
+			    gpointer       data)
+{
+	gchar *retval = gdm_daemon_config_get_xservers ();
+
+	if (retval != NULL) {
+		gdm_connection_printf (conn, "OK %s\n", retval);
+		g_free (retval);
+	} else {
+		gdm_connection_printf (conn, "ERROR 1 No servers found\n");
+	}
+}
+
+static void
+sup_handle_get_custom_config_file (GdmConnection *conn,
+				   const char    *msg,
+				   gpointer       data)
+{
+	gchar *ret;
+
+	ret = gdm_daemon_config_get_custom_config_file ();
+	if (ret)
+		gdm_connection_printf (conn, "OK %s\n", ret);
+	else
+		gdm_connection_write (conn,
+				      "ERROR 1 File not found\n");
+}
+
+static void
+sup_handle_greeterpids (GdmConnection *conn,
+			const char    *msg,
+			gpointer       data)
+{
+	GString *reply;
+	GSList *li;
+	const gchar *sep = " ";
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
+
+	reply = g_string_new ("OK");
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->greetpid > 0) {
+			g_string_append_printf (reply, "%s%ld",
+						sep, (long)disp->greetpid);
+			sep = ";";
+		}
+	}
+	g_string_append (reply, "\n");
+	gdm_connection_write (conn, reply->str);
+	g_string_free (reply, TRUE);
+}
+
+static void
+sup_handle_query_custom_cmd_no_restart_status (GdmConnection *conn,
+					       const char    *msg,
+					       gpointer       data)
+{
+
+	GdmDisplay *disp;
+	GString *reply;
+	gboolean sysmenu;
+	unsigned long no_restart_status_flag = 0; /* we can store up-to 32 commands this way */
+	int i;
+
+	disp = gdm_connection_get_display (conn);
+	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
+	     disp == NULL) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "QUERY_LOGOUT_ACTION");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+	reply = g_string_new ("OK ");
+
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar *key_string = NULL;
+		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+			g_free (key_string);
+			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
+			if (gdm_daemon_config_get_value_bool (key_string)) {
+				g_free (key_string);
+				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
+				if(gdm_daemon_config_get_value_bool (key_string))
+					no_restart_status_flag |= (1 << i);
+			}
+		}
+		g_free(key_string);
+	}
+
+	g_string_append_printf (reply, "%ld\n", no_restart_status_flag);
+	gdm_connection_write (conn, reply->str);
+	g_string_free (reply, TRUE);
+}
+
+static void
+sup_handle_set_logout_action (GdmConnection *conn,
+			      const char    *msg,
+			      gpointer       data)
+
+{
+	const gchar *action;
+	GdmDisplay *disp;
+	gboolean was_ok = FALSE;
+	gboolean sysmenu;
+
+	action = &msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
+	disp = gdm_connection_get_display (conn);
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED(conn) ||
+	     disp == NULL ||
+	     ! disp->logged_in) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "SET_LOGOUT_ACTION");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
+	if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
+		disp->logout_action = GDM_LOGOUT_ACTION_NONE;
+		was_ok = TRUE;
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
+			disp->logout_action =
+				GDM_LOGOUT_ACTION_HALT;
+			was_ok = TRUE;
+		}
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
+			disp->logout_action =
+				GDM_LOGOUT_ACTION_REBOOT;
+			was_ok = TRUE;
+		}
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
+			disp->logout_action =
+				GDM_LOGOUT_ACTION_SUSPEND;
+			was_ok = TRUE;
+		}
+	}
+	else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
+			  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
+		int cmd_index;
+		if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
+			gchar *key_string = NULL;
+			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+				disp->logout_action =
+					GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
+				was_ok = TRUE;
+			}
+			g_free(key_string);
+		}
+	}
+	if (was_ok) {
+		gdm_connection_write (conn, "OK\n");
+		gdm_try_logout_action (disp);
+	} else {
+		gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
+	}
+}
+
+static void
+sup_handle_set_safe_logout_action (GdmConnection *conn,
+				   const char    *msg,
+				   gpointer       data)
+
+{
+	const gchar *action;
+	GdmDisplay *disp;
+	gboolean was_ok = FALSE;
+	gboolean sysmenu;
+
+	action = &msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
+
+	disp = gdm_connection_get_display (conn);
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED(conn) ||
+	     disp == NULL ||
+	     ! disp->logged_in) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "SET_LOGOUT_ACTION");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
+	if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
+		safe_logout_action = GDM_LOGOUT_ACTION_NONE;
+		was_ok = TRUE;
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
+			safe_logout_action =
+				GDM_LOGOUT_ACTION_HALT;
+			was_ok = TRUE;
+		}
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
+			safe_logout_action =
+				GDM_LOGOUT_ACTION_REBOOT;
+			was_ok = TRUE;
+		}
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
+		if (sysmenu && disp->attached &&
+		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
+			safe_logout_action =
+				GDM_LOGOUT_ACTION_SUSPEND;
+			was_ok = TRUE;
+		}
+	}
+	else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
+			  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
+		int cmd_index;
+		if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
+			gchar *key_string = NULL;
+			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
+			if (sysmenu && disp->attached &&
+			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+				safe_logout_action =
+					GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
+				was_ok = TRUE;
+			}
+			g_free(key_string);
+		}
+	}
+	if (was_ok) {
+		gdm_connection_write (conn, "OK\n");
+		gdm_try_logout_action (disp);
+	} else {
+		gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
+	}
+}
+
+static void
+sup_handle_query_vt (GdmConnection *conn,
+		     const char    *msg,
+		     gpointer       data)
+
+{
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED(conn)) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "QUERY_VT");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
+	gdm_connection_printf (conn, "OK %d\n", gdm_get_cur_vt ());
+#else
+	gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
+#endif
+}
+
+static void
+sup_handle_set_vt (GdmConnection *conn,
+		   const char    *msg,
+		   gpointer       data)
+{
+	int vt;
+	GSList *li;
+	GSList *displays;
+
+	displays = gdm_daemon_config_get_display_list ();
+
+	if (sscanf (msg, GDM_SUP_SET_VT " %d", &vt) != 1 ||
+	    vt < 0) {
+		gdm_connection_write (conn,
+				      "ERROR 9 Invalid virtual terminal number\n");
+		return;
+	}
+
+	/* Only allow locally authenticated connections */
+	if ( ! GDM_CONN_AUTHENTICATED(conn)) {
+		gdm_info (_("%s request denied: "
+			    "Not authenticated"), "QUERY_VT");
+		gdm_connection_write (conn,
+				      "ERROR 100 Not authenticated\n");
+		return;
+	}
+
+#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
+	gdm_change_vt (vt);
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->vt == vt) {
+			send_slave_command (disp, GDM_NOTIFY_TWIDDLE_POINTER);
+			break;
+		}
+	}
+	gdm_connection_write (conn, "OK\n");
+#else
+	gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
+#endif
+}
+
+static void
+gdm_handle_user_message (GdmConnection *conn,
+			 const char    *msg,
+			 gpointer       data)
+{
+
+	g_debug ("Handling user message: '%s'", msg);
 
 	if (gdm_connection_get_message_count (conn) > GDM_SUP_MAX_MESSAGES) {
-		gdm_debug ("Closing connection, %d messages reached", GDM_SUP_MAX_MESSAGES);
+		g_debug ("Closing connection, %d messages reached", GDM_SUP_MAX_MESSAGES);
 		gdm_connection_write (conn, "ERROR 200 Too many messages\n");
 		gdm_connection_close (conn);
 		return;
@@ -3284,325 +4098,72 @@ gdm_handle_user_message (GdmConnection *conn,
 
 	if (strncmp (msg, GDM_SUP_AUTH_LOCAL " ",
 		     strlen (GDM_SUP_AUTH_LOCAL " ")) == 0) {
-		GSList *li;
-		gchar *cookie = g_strdup
-			(&msg[strlen (GDM_SUP_AUTH_LOCAL " ")]);
-		GSList *displays;
 
-		displays = gdm_daemon_config_get_display_list ();
+		sup_handle_auth_local (conn, msg, data);
 
-		g_strstrip (cookie);
-		if (strlen (cookie) != 16*2) /* 16 bytes in hex form */ {
-			/* evil, just whack the connection in this case */
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			gdm_connection_close (conn);
-			g_free (cookie);
-			return;
-		}
-		/* check if cookie matches one of the attached displays */
-		for (li = displays; li != NULL; li = li->next) {
-			GdmDisplay *disp = li->data;
-			if (disp->attached &&
-			    disp->cookie != NULL &&
-			    g_ascii_strcasecmp (disp->cookie, cookie) == 0) {
-				g_free (cookie);
-				GDM_CONNECTION_SET_USER_FLAG
-					(conn, GDM_SUP_FLAG_AUTHENTICATED);
-				gdm_connection_set_display (conn, disp);
-				gdm_connection_write (conn, "OK\n");
-				return;
-			}
-		}
-
-		if (gdm_global_cookie != NULL &&
-		    g_ascii_strcasecmp ((gchar *) gdm_global_cookie, cookie) == 0) {
-			g_free (cookie);
-			GDM_CONNECTION_SET_USER_FLAG
-				(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
-			gdm_connection_write (conn, "OK\n");
-			return;
-		}
-
-		/* Hmmm, perhaps this is better defined behaviour */
-		GDM_CONNECTION_UNSET_USER_FLAG
-			(conn, GDM_SUP_FLAG_AUTHENTICATED);
-		GDM_CONNECTION_UNSET_USER_FLAG
-			(conn, GDM_SUP_FLAG_AUTH_GLOBAL);
-		gdm_connection_set_display (conn, NULL);
-		gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
-		g_free (cookie);
 	} else if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
 		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
+		if ( ! GDM_CONN_AUTHENTICATED (conn)) {
 			gdm_info (_("%s request denied: "
 				    "Not authenticated"), "FLEXI_XSERVER");
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
 			return;
 		}
-		handle_flexi_server (conn, TYPE_FLEXI, gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER),
+
+		handle_flexi_server (conn,
+				     TYPE_FLEXI,
+				     gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER),
 				     TRUE /* handled */,
 				     FALSE /* chooser */,
-				     NULL, 0, NULL, NULL, NULL);
-	} else if (((has_user = strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ",
-                                         strlen (GDM_SUP_FLEXI_XSERVER_USER " "))) == 0) ||
+				     NULL,
+				     0,
+				     NULL,
+				     NULL,
+				     NULL);
+	} else if ((strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ",
+			     strlen (GDM_SUP_FLEXI_XSERVER_USER " ")) == 0) ||
                    (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
 			     strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0)) {
-		gchar *name;
-		const gchar *command = NULL;
-		GdmXserver *svr;
-		const gchar *rest;
-		gchar *username, *end;
 
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "FLEXI_XSERVER");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
+		sup_handle_flexi_xserver (conn, msg, data);
 
-		if (has_user == 0) {
-			rest = msg + strlen (GDM_SUP_FLEXI_XSERVER_USER " ");
-			end = strchr (rest, ' ');
-			if (end) {
-				username = g_strndup (rest, end - rest);
-				rest = end + 1;
-			} else {
-				username = g_strdup (rest);
-				rest = rest + strlen (rest);
-			}
-		} else {
-			rest = msg + strlen (GDM_SUP_FLEXI_XSERVER " ");
-			username = NULL;
-		}
-		name = g_strdup (rest);
-		g_strstrip (name);
-		if (ve_string_empty (name)) {
-			g_free (name);
-			name = g_strdup (GDM_STANDARD);
-		}
-
-		svr = gdm_daemon_config_find_xserver (name);
-		if G_UNLIKELY (svr == NULL) {
-			/* Don't print the name to syslog as it might be
-			 * long and dangerous */
-			gdm_error (_("Unknown server type requested; using "
-				     "standard server."));
-			command = gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER);
-		} else if G_UNLIKELY ( ! svr->flexible) {
-			gdm_error (_("Requested server %s not allowed to be "
-				     "used for flexible servers; using "
-				     "standard server."), name);
-			command = gdm_daemon_config_get_value_string (GDM_KEY_STANDARD_XSERVER);
-		} else {
-			command = svr->command;
-		}
-		g_free (name);
-
-		handle_flexi_server (conn, TYPE_FLEXI, command,
-				     /* It is kind of ugly that we don't use
-					the standard resolution for this, but
-					oh well, this makes other things simpler */
-				     svr->handled,
-				     svr->chooser,
-				     NULL, 0, NULL, NULL, username);
-		g_free (username);
-	} else if (((has_user = strncmp (msg, GDM_SUP_FLEXI_XNEST_USER " ",
-                                         strlen (GDM_SUP_FLEXI_XNEST_USER " "))) == 0) ||
-                   (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
+	} else if ((strncmp (msg, GDM_SUP_FLEXI_XNEST_USER " ",
+			     strlen (GDM_SUP_FLEXI_XNEST_USER " ")) == 0) ||
+		   (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 			     strlen (GDM_SUP_FLEXI_XNEST " ")) == 0)) {
-		gchar *dispname = NULL, *xauthfile = NULL, *cookie = NULL;
-		uid_t uid;
-		const gchar *rest;
-		gchar *username, *end;
 
-                if (has_user == 0) {
-			rest = msg + strlen (GDM_SUP_FLEXI_XNEST_USER " ");
-			end = strchr (rest, ' ');
-			username = g_strndup (rest, end - rest);
-		} else {
-			rest = msg;
-			username = NULL;
-		}
+		sup_handle_flexi_xnest (conn, msg, data);
 
-		extract_dispname_uid_xauthfile_cookie (rest, &dispname, &uid,
-						       &xauthfile, &cookie);
-
-		if (dispname == NULL) {
-			/* Something bogus is going on, so just whack the
-			 * connection */
-			g_free (xauthfile);
-			gdm_connection_close (conn);
-			return;
-		}
-
-		/* This is probably a pre-2.2.4.2 client */
-		if (xauthfile == NULL || cookie == NULL) {
-			/* evil, just whack the connection in this case */
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			gdm_connection_close (conn);
-			g_free (cookie);
-			return;
-		}
-
-		handle_flexi_server (conn, TYPE_FLEXI_XNEST, gdm_daemon_config_get_value_string (GDM_KEY_XNEST),
-				     TRUE /* handled */,
-				     FALSE /* chooser */,
-				     dispname, uid, xauthfile, cookie, username);
-
-		g_free (dispname);
-		g_free (xauthfile);
-		g_free (username);
 	} else if ((strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
 	                     strlen (GDM_SUP_ATTACHED_SERVERS)) == 0) ||
 	           (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
 	                     strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)) {
-		GString *retMsg;
-		GSList  *li;
-		const gchar *sep = " ";
-		char    *key;
-		int     msgLen=0;
-		GSList *displays;
 
-		displays = gdm_daemon_config_get_display_list ();
+		sup_handle_attached_servers (conn, msg, data);
 
-		if (strncmp (msg, GDM_SUP_ATTACHED_SERVERS,
-		             strlen (GDM_SUP_ATTACHED_SERVERS)) == 0)
-			msgLen = strlen (GDM_SUP_ATTACHED_SERVERS);
-		else if (strncmp (msg, GDM_SUP_CONSOLE_SERVERS,
-				  strlen (GDM_SUP_CONSOLE_SERVERS)) == 0)
-			msgLen = strlen (GDM_SUP_CONSOLE_SERVERS);
-
-		key = g_strdup (&msg[msgLen]);
-		g_strstrip (key);
-
-		retMsg = g_string_new ("OK");
-		for (li = displays; li != NULL; li = li->next) {
-			GdmDisplay *disp = li->data;
-
-			if ( ! disp->attached)
-				continue;
-			if (!(strlen (key)) || (g_pattern_match_simple (key, disp->command))) {
-				g_string_append_printf (retMsg, "%s%s,%s,", sep,
-				                        ve_sure_string (disp->name),
-				                        ve_sure_string (disp->login));
-				sep = ";";
-				if (disp->type == TYPE_FLEXI_XNEST) {
-					g_string_append (retMsg, ve_sure_string (disp->parent_disp));
-				} else {
-					g_string_append_printf (retMsg, "%d", disp->vt);
-				}
-			}
-		}
-
-		g_string_append (retMsg, "\n");
-		gdm_connection_write (conn, retMsg->str);
-		g_free (key);
-		g_string_free (retMsg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_ALL_SERVERS) == 0) {
-		GString *msg;
-		GSList *li;
-		const gchar *sep = " ";
-		GSList *displays;
 
-		displays = gdm_daemon_config_get_display_list ();
+		sup_handle_all_servers (conn, msg, data);
 
-		msg = g_string_new ("OK");
-		for (li = displays; li != NULL; li = li->next) {
-			GdmDisplay *disp = li->data;
-			g_string_append_printf (msg, "%s%s,%s", sep,
-						ve_sure_string (disp->name),
-						ve_sure_string (disp->login));
-			sep = ";";
-		}
-		g_string_append (msg, "\n");
-		gdm_connection_write (conn, msg->str);
-		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_GET_SERVER_LIST) == 0) {
-		gchar *retval = gdm_daemon_config_get_xservers ();
 
-		if (retval != NULL) {
-			gdm_connection_printf (conn, "OK %s\n", retval);
-			g_free (retval);
-		} else {
-               		gdm_connection_printf (conn, "ERROR 1 No servers found\n");
-		}
+		sup_handle_get_server_list (conn, msg, data);
 
 	} else if (strncmp (msg, GDM_SUP_GET_SERVER_DETAILS " ",
 			    strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
-		const gchar *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
-		gchar   **splitstr = g_strsplit (server, " ", 2);
-		GdmXserver  *svr   = gdm_daemon_config_find_xserver ((gchar *)splitstr[0]);
 
-		if (svr != NULL) {
-			if (g_strcasecmp (splitstr[1], "ID") == 0)
-				gdm_connection_printf (conn, "OK %s\n", svr->id);
-			else if (g_strcasecmp (splitstr[1], "NAME") == 0)
-				gdm_connection_printf (conn, "OK %s\n", svr->name);
-			else if (g_strcasecmp (splitstr[1], "COMMAND") == 0)
-				gdm_connection_printf (conn, "OK %s\n", svr->command);
-			else if (g_strcasecmp (splitstr[1], "PRIORITY") == 0)
-				gdm_connection_printf (conn, "OK %d\n", svr->priority);
-			else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
-                                 svr->flexible)
-				gdm_connection_printf (conn, "OK true\n");
-			else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
-                                 !svr->flexible)
-				gdm_connection_printf (conn, "OK false\n");
-			else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
-                                 svr->choosable)
-				gdm_connection_printf (conn, "OK true\n");
-			else if (g_strcasecmp (splitstr[1], "CHOOSABLE") == 0 &&
-                                 !svr->choosable)
-				gdm_connection_printf (conn, "OK false\n");
-			else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
-                                 svr->handled)
-				gdm_connection_printf (conn, "OK true\n");
-			else if (g_strcasecmp (splitstr[1], "HANDLED") == 0 &&
-                                 !svr->handled)
-				gdm_connection_printf (conn, "OK false\n");
-			else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
-                                 svr->chooser)
-				gdm_connection_printf (conn, "OK true\n");
-			else if (g_strcasecmp (splitstr[1], "CHOOSER") == 0 &&
-                                 !svr->chooser)
-				gdm_connection_printf (conn, "OK false\n");
-			else
-				gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
-
-			g_strfreev (splitstr);
-		} else {
-               		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
-		}
+		sup_handle_get_server_details (conn, msg, data);
 
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
-		GString *msg;
-		GSList *li;
-		const gchar *sep = " ";
-		GSList *displays;
 
-		displays = gdm_daemon_config_get_display_list ();
+		sup_handle_greeterpids (conn, msg, data);
 
-		msg = g_string_new ("OK");
-		for (li = displays; li != NULL; li = li->next) {
-			GdmDisplay *disp = li->data;
-			if (disp->greetpid > 0) {
-				g_string_append_printf (msg, "%s%ld",
-							sep, (long)disp->greetpid);
-				sep = ";";
-			}
-		}
-		g_string_append (msg, "\n");
-		gdm_connection_write (conn, msg->str);
-		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_UPDATE_CONFIG " ",
 			    strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
-		const gchar *key =
-			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
+		const char *key;
+
+		key = &msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
 
 		if (! gdm_daemon_config_update_key ((gchar *)key))
 			gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", key);
@@ -3610,49 +4171,9 @@ gdm_handle_user_message (GdmConnection *conn,
 			gdm_connection_write (conn, "OK\n");
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
 			    strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
-		const gchar *parms = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
-		gchar **splitstr = g_strsplit (parms, " ", 2);
-		gchar *retval = NULL;
-		static gboolean done_prefetch = FALSE;
 
-		/*
-		 * It is not meaningful to manage this in a per-display
-		 * fashion since the prefetch program is only run once the
-		 * for the first display that requests the key.  So process
-		 * this first and return "Unsupported key" for requests
-		 * after the first request.
-		 */
-		if (strcmp (splitstr[0], GDM_KEY_PRE_FETCH_PROGRAM) == 0) {
-			if (done_prefetch) {
-				gdm_connection_printf (conn, "OK \n");
-			} else {
-                		gdm_connection_printf (conn, "ERROR 50 Unsupported key <%s>\n", splitstr[0]);
-				done_prefetch = TRUE;
-			}
-			return;
-		}
+		sup_handle_get_config (conn, msg, data);
 
-		if (splitstr[0] != NULL) {
-			/*
-			 * Note passing in the display is backwards compatible
-			 * since if it is NULL, it won't try to load the display
-			 * value at all.
-			 */
-			gdm_daemon_config_to_string (splitstr[0], splitstr[1], &retval);
-
-	   		if (retval != NULL) {
-   				gdm_connection_printf (conn, "OK %s\n", retval);
-   				g_free (retval);
-			} else {
-				if (gdm_daemon_config_is_valid_key ((gchar *)splitstr[0]))
-					gdm_connection_printf (conn, "OK \n");
-				else
-       		         		gdm_connection_printf (conn,
-							       "ERROR 50 Unsupported key <%s>\n",
-							       splitstr[0]);
-			}
-			g_strfreev (splitstr);
-		}
 	} else if (strcmp (msg, GDM_SUP_GET_CONFIG_FILE) == 0) {
 		/*
 		 * Value is only non-null if passed in on command line.
@@ -3665,352 +4186,40 @@ gdm_handle_user_message (GdmConnection *conn,
 			gdm_connection_printf (conn, "OK %s\n", config_file);
 		}
 	} else if (strcmp (msg, GDM_SUP_GET_CUSTOM_CONFIG_FILE) == 0) {
-		gchar *ret;
 
-		ret = gdm_daemon_config_get_custom_config_file ();
-		if (ret)
-			gdm_connection_printf (conn, "OK %s\n", ret);
-		else
-			gdm_connection_write (conn,
-					      "ERROR 1 File not found\n");
+		sup_handle_get_custom_config_file (conn, msg, data);
+
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
-		GdmLogoutAction logout_action;
-		GdmDisplay *disp;
-		GString *msg;
-		const gchar *sep = " ";
-		gboolean sysmenu;
 
-		disp = gdm_connection_get_display (conn);
+		sup_handle_query_logout_action (conn, msg, data);
 
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED (conn) ||
-		     disp == NULL) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "QUERY_LOGOUT_ACTION");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
-
-		sysmenu = gdm_daemon_config_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
-		msg = g_string_new ("OK");
-
-		logout_action = disp->logout_action;
-		if (logout_action == GDM_LOGOUT_ACTION_NONE)
-			logout_action = safe_logout_action;
-
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
-			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_HALT);
-			if (logout_action == GDM_LOGOUT_ACTION_HALT)
-				g_string_append (msg, "!");
-			sep = ";";
-		}
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
-			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_REBOOT);
-			if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
-				g_string_append (msg, "!");
-			sep = ";";
-		}
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
-			g_string_append_printf (msg, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
-			if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
-				g_string_append (msg, "!");
-			sep = ";";
-		}
-
-		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar *key_string = NULL;
-			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-				g_free (key_string);
-				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
-				if (gdm_daemon_config_get_value_bool (key_string)) {
-					g_string_append_printf (msg, "%s%s%d", sep, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, i);
-					if (logout_action == (GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + i))
-						g_string_append (msg, "!");
-					sep = ";";
-				}
-			}
-			g_free(key_string);
-		}
-
-		g_string_append (msg, "\n");
-		gdm_connection_write (conn, msg->str);
-		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_CUSTOM_CMD_LABELS) == 0) {
-		GdmDisplay *disp;
-		GString *msg;
-		const gchar *sep = " ";
-		gboolean sysmenu;
 
-		disp = gdm_connection_get_display (conn);
-		sysmenu = gdm_daemon_config_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
+		sup_handle_query_custom_cmd_labels (conn, msg, data);
 
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED (conn) ||
-		     disp == NULL) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "QUERY_LOGOUT_ACTION");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
-
-		msg = g_string_new ("OK");
-
-		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar *key_string = NULL;
-			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-				g_free (key_string);
-				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
-				if (gdm_daemon_config_get_value_bool (key_string)) {
-					g_free (key_string);
-					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
-					g_string_append_printf (msg, "%s%s",  sep, gdm_daemon_config_get_value_string (key_string));
-					sep = ";";
-				}
-			}
-			g_free(key_string);
-		}
-
-		g_string_append (msg, "\n");
-		gdm_connection_write (conn, msg->str);
-		g_string_free (msg, TRUE);
 	} else if (strcmp (msg, GDM_SUP_QUERY_CUSTOM_CMD_NO_RESTART_STATUS) == 0) {
-		GdmDisplay *disp;
-		GString *msg;
-		gboolean sysmenu;
-		unsigned long no_restart_status_flag = 0; /* we can store up-to 32 commands this way */
 
-		disp = gdm_connection_get_display (conn);
-		sysmenu = gdm_daemon_config_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
+		sup_handle_query_custom_cmd_no_restart_status (conn, msg, data);
 
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED (conn) ||
-		     disp == NULL) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "QUERY_LOGOUT_ACTION");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
-
-		msg = g_string_new ("OK ");
-
-		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar *key_string = NULL;
-			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-				g_free (key_string);
-				key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
-				if (gdm_daemon_config_get_value_bool (key_string)) {
-					g_free (key_string);
-					key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_NO_RESTART_TEMPLATE, i);
-					if(gdm_daemon_config_get_value_bool (key_string))
-						no_restart_status_flag |= (1 << i);
-				}
-			}
-			g_free(key_string);
-		}
-
-		g_string_append_printf (msg, "%ld\n", no_restart_status_flag);
-		gdm_connection_write (conn, msg->str);
-		g_string_free (msg, TRUE);
 	} else if (strncmp (msg, GDM_SUP_SET_LOGOUT_ACTION " ",
 			    strlen (GDM_SUP_SET_LOGOUT_ACTION " ")) == 0) {
-		const gchar *action =
-			&msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
-		GdmDisplay *disp;
-		gboolean was_ok = FALSE;
-		gboolean sysmenu;
 
-		disp = gdm_connection_get_display (conn);
+		sup_handle_set_logout_action (conn, msg, data);
 
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
-		     disp == NULL ||
-		     ! disp->logged_in) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "SET_LOGOUT_ACTION");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
-
-		sysmenu = gdm_daemon_config_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
-		if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
-			disp->logout_action = GDM_LOGOUT_ACTION_NONE;
-			was_ok = TRUE;
-		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
-				disp->logout_action =
-					GDM_LOGOUT_ACTION_HALT;
-				was_ok = TRUE;
-			}
-		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
-				disp->logout_action =
-					GDM_LOGOUT_ACTION_REBOOT;
-				was_ok = TRUE;
-			}
-		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
-				disp->logout_action =
-					GDM_LOGOUT_ACTION_SUSPEND;
-				was_ok = TRUE;
-			}
-		}
-		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
-				  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
-			int cmd_index;
-			if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
-				gchar *key_string = NULL;
-				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
-				if (sysmenu && disp->attached &&
-				    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-					disp->logout_action =
-						GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
-					was_ok = TRUE;
-				}
-				g_free(key_string);
-			}
-		}
-		if (was_ok) {
-			gdm_connection_write (conn, "OK\n");
-			gdm_try_logout_action (disp);
-		} else {
-			gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
-		}
 	} else if (strncmp (msg, GDM_SUP_SET_SAFE_LOGOUT_ACTION " ",
 			    strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")) == 0) {
-		const gchar *action =
-			&msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
-		GdmDisplay *disp;
-		gboolean was_ok = FALSE;
-		gboolean sysmenu;
 
-		disp = gdm_connection_get_display (conn);
+		sup_handle_set_safe_logout_action (conn, msg, data);
 
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED(conn) ||
-		     disp == NULL ||
-		     ! disp->logged_in) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "SET_LOGOUT_ACTION");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
-
-		sysmenu = gdm_daemon_config_get_value_bool_per_display (disp->name, GDM_KEY_SYSTEM_MENU);
-		if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
-			safe_logout_action = GDM_LOGOUT_ACTION_NONE;
-			was_ok = TRUE;
-		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
-				safe_logout_action =
-					GDM_LOGOUT_ACTION_HALT;
-				was_ok = TRUE;
-			}
-		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
-				safe_logout_action =
-					GDM_LOGOUT_ACTION_REBOOT;
-				was_ok = TRUE;
-			}
-		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
-				safe_logout_action =
-					GDM_LOGOUT_ACTION_SUSPEND;
-				was_ok = TRUE;
-			}
-		}
-		else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
-				  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
-			int cmd_index;
-			if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
-				gchar *key_string = NULL;
-				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
-				if (sysmenu && disp->attached &&
-				    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-					safe_logout_action =
-						GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
-					was_ok = TRUE;
-				}
-				g_free(key_string);
-			}
-		}
-		if (was_ok) {
-			gdm_connection_write (conn, "OK\n");
-			gdm_try_logout_action (disp);
-		} else {
-			gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
-		}
 	} else if (strcmp (msg, GDM_SUP_QUERY_VT) == 0) {
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "QUERY_VT");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
 
-#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
-		gdm_connection_printf (conn, "OK %d\n", gdm_get_cur_vt ());
-#else
-		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
-#endif
+		sup_handle_query_vt (conn, msg, data);
+
 	} else if (strncmp (msg, GDM_SUP_SET_VT " ",
 			    strlen (GDM_SUP_SET_VT " ")) == 0) {
-		int vt;
-		GSList *li;
-		GSList *displays;
 
-		displays = gdm_daemon_config_get_display_list ();
+		sup_handle_set_vt (conn, msg, data);
 
-		if (sscanf (msg, GDM_SUP_SET_VT " %d", &vt) != 1 ||
-		    vt < 0) {
-			gdm_connection_write (conn,
-					      "ERROR 9 Invalid virtual terminal number\n");
-			return;
-		}
-
-		/* Only allow locally authenticated connections */
-		if ( ! GDM_CONN_AUTHENTICATED(conn)) {
-			gdm_info (_("%s request denied: "
-				    "Not authenticated"), "QUERY_VT");
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
-			return;
-		}
-
-#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
-		gdm_change_vt (vt);
-		for (li = displays; li != NULL; li = li->next) {
-			GdmDisplay *disp = li->data;
-			if (disp->vt == vt) {
-				send_slave_command (disp, GDM_NOTIFY_TWIDDLE_POINTER);
-				break;
-			}
-		}
-		gdm_connection_write (conn, "OK\n");
-#else
-		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
-#endif
 	} else if (strncmp (msg, GDM_SUP_ADD_DYNAMIC_DISPLAY " ",
 			    strlen (GDM_SUP_ADD_DYNAMIC_DISPLAY " ")) == 0) {
 		gchar *key;
