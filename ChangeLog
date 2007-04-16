@@ -1,3 +1,23 @@
+2007-04-16  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/Makefile.am:
+	* daemon/auth.c: (gdm_auth_secure_display):
+	* daemon/choose.c:
+	* daemon/choose.h:
+	* daemon/cookie.c: (gdm_cookie_generate):
+	* daemon/cookie.h:
+	* daemon/display.c: (gdm_display_manage), (count_session_limits):
+	* daemon/gdm-daemon-config-entries.h:
+	* daemon/gdm-xdmcp-manager.c:
+	* daemon/gdm-xdmcp-manager.h:
+	* daemon/gdm.c: (gdm_make_global_cookie), (main):
+	* daemon/server.c:
+	* daemon/slave.c:
+	* daemon/xdmcp.c: (gdm_xdmcp_init), (gdm_xdmcp_run),
+	(gdm_xdmcp_close), (gdm_xdmcp_migrate):
+	* daemon/xdmcp.h:
+	Turn XDMCP handling into an object.  From bug #376010.
+
 2007-04-13  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac, config/Makefile.am: Set LogDir by default to 

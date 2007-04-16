@@ -22,7 +22,6 @@
 #define CHOOSE_H
 
 #include "gdm.h"
-#include "xdmcp.h"
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 struct _GdmIndirectDisplay {

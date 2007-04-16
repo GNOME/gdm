@@ -57,7 +57,6 @@
 #include "misc.h"
 #include "slave.h"
 #include "server.h"
-#include "xdmcp.h"
 #include "verify.h"
 #include "display.h"
 #include "choose.h"
@@ -70,6 +69,8 @@
 #include "gdm-socket-protocol.h"
 #include "gdm-daemon-config.h"
 #include "gdm-log.h"
+
+#include "xdmcp.h"
 
 #define DYNAMIC_ADD     0
 #define DYNAMIC_RELEASE 1
@@ -1487,16 +1488,7 @@ gdm_make_global_cookie (void)
 	char *file;
 	mode_t oldmode;
 
-	/* kind of a hack */
-	GdmDisplay faked = {0};
-	faked.authfile = NULL;
-	faked.bcookie = NULL;
-	faked.cookie = NULL;
-
-	gdm_cookie_generate (&faked);
-
-	gdm_global_cookie = (unsigned char *) faked.cookie;
-	gdm_global_bcookie = (unsigned char *) faked.bcookie;
+	gdm_cookie_generate ((char **)&gdm_global_cookie, (char **)&gdm_global_bcookie);
 
 	file = g_build_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR), ".cookie", NULL);
 	VE_IGNORE_EINTR (g_unlink (file));
@@ -1770,8 +1762,9 @@ main (int argc, char *argv[])
 #endif  /* HAVE_LOGINDEVPERM */
 
 	/* Init XDMCP if applicable */
-	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go)
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
 		gdm_xdmcp_init ();
+	}
 
 	create_connections ();
 

@@ -35,6 +35,7 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 #include <strings.h>
+#include <string.h>
 #include <signal.h>
 #include <errno.h>
 #include <time.h>

@@ -38,6 +38,7 @@
 #include <sys/stat.h>
 #include <sys/utsname.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "gdm.h"
 #include "misc.h"
@@ -79,6 +80,10 @@ remove_oldest_pending (void)
 		return FALSE;
 	}
 }
+
+#ifndef XDM_UDP_PORT
+#define XDM_UDP_PORT 177
+#endif
 
 static gboolean
 get_first_address_for_node (const char               *node,

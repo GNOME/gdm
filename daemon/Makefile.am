@@ -25,21 +25,14 @@ INCLUDES = \
 	$(DAEMON_CFLAGS)				\
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
 	$(GNOME_INCLUDEDIR)				\
-	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\"
-
-#
-#	-DG_DISABLE_DEPRECATED				\
-#	-DGDK_DISABLE_DEPRECATED			\
-#	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
-#	-DGTK_DISABLE_DEPRECATED			\
-#	-DGNOME_DISABLE_DEPRECATED			\
-#
+	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\"	\
+	$(NULL)
 
 sbin_PROGRAMS = gdm-binary		\
 	$(NULL)
 
 gdm_binary_SOURCES = \
-	gdm.c \
+	gdm.c				\
 	gdm.h \
 	gdm-daemon-config.c \
 	gdm-daemon-config.h \
@@ -75,10 +68,20 @@ gdm_binary_SOURCES = \
 	getvt.h	\
 	$(NULL)
 
+XDMCP_SOURCES =			\
+	gdm-xdmcp-manager.c	\
+	gdm-xdmcp-manager.h	\
+	$(NULL)
+
+if XDMCP_SUPPORT
+gdm_binary_SOURCES += $(XDMCP_SOURCES)
+endif
+
 EXTRA_gdm_binary_SOURCES = 	\
 	verify-pam.c		\
 	verify-crypt.c		\
 	verify-shadow.c		\
+	$(XDMCP_SOURCES)	\
 	$(NULL)
 
 CONSOLE_KIT_SOURCES = 		\

@@ -269,7 +269,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	}
 
 	/* Create new random cookie */
-	gdm_cookie_generate (d);
+	gdm_cookie_generate (&d->cookie, &d->bcookie);
 
 	/* reget local host if local as it may have changed */
 	if (SERVER_IS_LOCAL (d)) {

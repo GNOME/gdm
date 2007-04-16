@@ -34,7 +34,6 @@
 #include "display.h"
 #include "slave.h"
 #include "misc.h"
-#include "xdmcp.h"
 #include "choose.h"
 #include "auth.h"
 #include "gdm-net.h"
@@ -293,10 +292,6 @@ gdm_display_manage (GdmDisplay *d)
 
 	d->slavepid = getpid ();
 
-	/* Close XDMCP fd in slave process */
-	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP))
-	    gdm_xdmcp_close ();
-
 	gdm_connection_close (fifoconn);
 	fifoconn = NULL;
 	gdm_connection_close (pipeconn);
@@ -396,6 +391,7 @@ gdm_display_unmanage (GdmDisplay *d)
     gdm_debug ("gdm_display_unmanage: Display stopped");
 }
 
+
 /* Why recount?  It's just a lot more robust this way and
    gets around those nasty one off errors and races.  And we never
    have so many displays that this would get too slow. */
@@ -406,8 +402,6 @@ count_session_limits (void)
 	GSList *displays;
 
 	displays = gdm_daemon_config_get_display_list ();
-
-	gdm_xdmcp_recount_sessions ();
 
 	flexi_servers = 0;
 

@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 2003 Red Hat, Inc.
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  * Copyright (C) Rik Faith <faith@precisioninsight.com>
@@ -19,10 +21,10 @@
  */
 
 /*
- * Functions for generating MIT-MAGIC-COOKIEs. 
- * 
+ * Functions for generating MIT-MAGIC-COOKIEs.
+ *
  * This code was derived (i.e. stolen) from mcookie.c written by Rik Faith
- *  
+ *
  * Note that this code goes to much greater lengths to be as random as possible.
  * Thus being more secure on systems without /dev/random and friends.
  */
@@ -46,38 +48,33 @@
 
 #define MAXBUFFERSIZE 1024
 
-struct rngs {
-   const char *path; /* null is the authfile name */
-   int        length;
-   off_t      seek;
+static struct rngs {
+	const char *path; /* null is the authfile name */
+	int        length;
+	off_t      seek;
 } rngs[] = {
-   { "/dev/random",              16,	0 },
+	{ "/dev/random",              16,	0 },
 #ifdef __OpenBSD__
-   { "/dev/srandom",             16,	0 },
+	{ "/dev/srandom",             16,	0 },
 #endif
-   { "/dev/urandom",            128,	0 },
-   { "/proc/stat",    MAXBUFFERSIZE,	0 },
-   { "/proc/interrupts", MAXBUFFERSIZE,	0 },
-   { "/proc/loadavg", MAXBUFFERSIZE,	0 },
-   { "/proc/meminfo", MAXBUFFERSIZE,	0 },
+	{ "/dev/urandom",            128,	0 },
+	{ "/proc/stat",    MAXBUFFERSIZE,	0 },
+	{ "/proc/interrupts", MAXBUFFERSIZE,	0 },
+	{ "/proc/loadavg", MAXBUFFERSIZE,	0 },
+	{ "/proc/meminfo", MAXBUFFERSIZE,	0 },
 #if defined (__i386__) || defined (__386__) || defined (_M_IX86)
-   /* On i386, we should not read the first 16megs */
-   { "/dev/mem",      MAXBUFFERSIZE,	0x100000 },
+	/* On i386, we should not read the first 16megs */
+	{ "/dev/mem",      MAXBUFFERSIZE,	0x100000 },
 #else
-   { "/dev/mem",      MAXBUFFERSIZE,	0 },
+	{ "/dev/mem",      MAXBUFFERSIZE,	0 },
 #endif
-   /* this will load the old authfile for the display */
-   { NULL /* null means the authfile */, MAXBUFFERSIZE,	0 },
-   { "/proc/net/dev", MAXBUFFERSIZE,	0 },
-   { "/dev/audio",    MAXBUFFERSIZE,	0 },
-   { "/etc/shadow",   MAXBUFFERSIZE,	0 },
-   { "/var/log/messages",   MAXBUFFERSIZE,	0 },
-   /*
-   { "/var/spool/mail/root", MAXBUFFERSIZE,	0 },
-   */
+	/* this will load the old authfile for the display */
+	{ NULL /* null means the authfile */, MAXBUFFERSIZE,	0 },
+	{ "/proc/net/dev", MAXBUFFERSIZE,	0 },
+	{ "/dev/audio",    MAXBUFFERSIZE,	0 },
+	{ "/etc/shadow",   MAXBUFFERSIZE,	0 },
+	{ "/var/log/messages",   MAXBUFFERSIZE,	0 },
 };
-
-#define RNGS (sizeof(rngs)/sizeof(struct rngs))
 
 /* Some semi random spinners to spin,
  * this is 20 bytes of semi random data */
@@ -167,103 +164,109 @@ data_seems_random (const char buf[], int size)
 
 static unsigned char old_cookie[16];
 
-void 
-gdm_cookie_generate (GdmDisplay *d)
+void
+gdm_cookie_generate (char **cookiep,
+		     char **bcookiep)
 {
-    int i;
-    struct GdmMD5Context ctx;
-    unsigned char digest[16];
-    unsigned char buf[MAXBUFFERSIZE];
-    int fd;
-    pid_t pid;
-    int r;
-    char cookie[40 /* 2*16 == 32, so 40 is enough */];
+	int i;
+	struct GdmMD5Context ctx;
+	unsigned char digest[16];
+	unsigned char buf[MAXBUFFERSIZE];
+	int fd;
+	pid_t pid;
+	int r;
+	char cookie[40]; /* 2*16 == 32, so 40 is enough */
 
-    cookie[0] = '\0';
+	cookie[0] = '\0';
 
-    gdm_md5_init (&ctx);
+	gdm_md5_init (&ctx);
 
-    /* spin the spinners according to current time */
-    gdm_random_tick ();
+	/* spin the spinners according to current time */
+	gdm_random_tick ();
 
-    gdm_md5_update (&ctx, (unsigned char *) randnums, sizeof (int) * RANDNUMS);
+	gdm_md5_update (&ctx, (unsigned char *) randnums, sizeof (int) * RANDNUMS);
 
-    /* use the last cookie */
-    gdm_md5_update (&ctx, old_cookie, 16);
+	/* use the last cookie */
+	gdm_md5_update (&ctx, old_cookie, 16);
 
-    /* use some uninitialized stack space */
-    gdm_md5_update (&ctx, (unsigned char *) cookie, sizeof (cookie));
+	/* use some uninitialized stack space */
+	gdm_md5_update (&ctx, (unsigned char *) cookie, sizeof (cookie));
 
-    pid = getppid ();
-    gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
-    pid = getpid ();
-    gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
-        
-    for (i = 0; i < RNGS; i++) {
-	const char *file = rngs[i].path;
-	if G_UNLIKELY (file == NULL)
-	    file = d->authfile;
-	if G_UNLIKELY (file == NULL)
-	    continue;
-	do {
-		errno = 0;
-		fd = open (file, O_RDONLY|O_NONBLOCK
+	pid = getppid ();
+	gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
+	pid = getpid ();
+	gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
+
+	for (i = 0; i < G_N_ELEMENTS (rngs); i++) {
+		const char *file = rngs[i].path;
+
+		if G_UNLIKELY (file == NULL)
+			continue;
+		do {
+			int flags;
+
+			flags = O_RDONLY | O_NONBLOCK;
 #ifdef O_NOCTTY
-			   |O_NOCTTY
+			flags |= O_NOCTTY;
 #endif
 #ifdef O_NOFOLLOW
-			   |O_NOFOLLOW
+			flags |= O_NOFOLLOW;
 #endif
-			  );
-	} while G_UNLIKELY (errno == EINTR);
-	if G_LIKELY (fd >= 0) {
-	    /* Apparently this can sometimes block anyway even if it is O_NONBLOCK,
-	       so use select to figure out if there is something available */
-	    fd_set rfds;
-	    struct timeval tv;
 
-	    FD_ZERO (&rfds);
-	    FD_SET (fd, &rfds);
+			errno = 0;
+			fd = open (file, flags);
 
-	    tv.tv_sec = 0;
-	    tv.tv_usec = 10*1000 /* 10 ms */;
-	    r = 0;
+		} while G_UNLIKELY (errno == EINTR);
 
-	    if G_UNLIKELY (rngs[i].seek > 0)
-		lseek (fd, rngs[i].seek, SEEK_SET);
+		if G_LIKELY (fd >= 0) {
+			/* Apparently this can sometimes block anyway even if it is O_NONBLOCK,
+			   so use select to figure out if there is something available */
+			fd_set rfds;
+			struct timeval tv;
 
-	    if G_LIKELY (select (fd+1, &rfds, NULL, NULL, &tv) > 0) {
-	        VE_IGNORE_EINTR (r = read (fd, buf, MIN (sizeof (buf), rngs[i].length)));
-	    }
+			FD_ZERO (&rfds);
+			FD_SET (fd, &rfds);
 
-	    if G_LIKELY (r > 0)
-		gdm_md5_update (&ctx, buf, r);
-	    else
-		r = 0;
+			tv.tv_sec = 0;
+			tv.tv_usec = 10*1000 /* 10 ms */;
+			r = 0;
 
-	    VE_IGNORE_EINTR (close (fd));
+			if G_UNLIKELY (rngs[i].seek > 0)
+				lseek (fd, rngs[i].seek, SEEK_SET);
 
-	    if G_LIKELY (r >= rngs[i].length &&
-			 data_seems_random ((char *) buf, r)) 
-		break;
+			if G_LIKELY (select (fd+1, &rfds, NULL, NULL, &tv) > 0) {
+				VE_IGNORE_EINTR (r = read (fd, buf, MIN (sizeof (buf), rngs[i].length)));
+			}
+
+			if G_LIKELY (r > 0)
+				gdm_md5_update (&ctx, buf, r);
+			else
+				r = 0;
+
+			VE_IGNORE_EINTR (close (fd));
+
+			if G_LIKELY (r >= rngs[i].length &&
+				     data_seems_random ((char *) buf, r))
+				break;
+		}
 	}
-    }
 
-    gdm_md5_final (digest, &ctx);
+	gdm_md5_final (digest, &ctx);
 
-    for (i = 0; i < 16; i++) {
-	    char sub[3];
-	    g_snprintf (sub, sizeof (sub), "%02x", (guint)digest[i]);
-	    strcat (cookie, sub);
-    }
+	for (i = 0; i < 16; i++) {
+		char sub[3];
+		g_snprintf (sub, sizeof (sub), "%02x", (guint)digest[i]);
+		strcat (cookie, sub);
+	}
 
-    g_free (d->cookie);
-    d->cookie = g_strdup (cookie);
-    g_free (d->bcookie);
-    d->bcookie = g_new (char, 16);
-    memcpy (d->bcookie, digest, 16);
-    memcpy (old_cookie, digest, 16);
+	if (cookiep != NULL) {
+		*cookiep = g_strdup (cookie);
+	}
+
+	if (bcookiep != NULL) {
+		*bcookiep = g_new (char, 16);
+		memcpy (*bcookiep, digest, 16);
+	}
+
+	memcpy (old_cookie, digest, 16);
 }
-
-
-/* EOF */
