@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,6 +26,7 @@
 #include <grp.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
 
 #if defined (CAN_CLEAR_ADMCHG) && defined (HAVE_USERSEC_H)
 #  include <usersec.h>
@@ -38,7 +41,9 @@
 #include "slave.h"
 #include "verify.h"
 #include "errorgui.h"
-#include "gdmconfig.h"
+#include "gdm-common.h"
+#include "gdm-daemon-config.h"
+#include "gdm-socket-protocol.h"
 
 static char *selected_user = NULL;
 
@@ -84,14 +89,14 @@ print_cant_auth_errbox (void)
  * @username: Name of user or NULL if we should ask
  * @display: Name of display to register with the authentication system
  * @local: boolean if local
- * @allow_retry: boolean.  Not used by verify-crypt.  If this code 
- *               allowed the user to retry, this boolean would specify 
- *               whether to enable this feature.  We only want this 
- *               feature to work for normal login, not for asking for 
+ * @allow_retry: boolean.  Not used by verify-crypt.  If this code
+ *               allowed the user to retry, this boolean would specify
+ *               whether to enable this feature.  We only want this
+ *               feature to work for normal login, not for asking for
  *               root password to call the configurator.
  *
  * Provides a communication layer between the operating system's
- * authentication functions and the gdmgreeter. 
+ * authentication functions and the gdmgreeter.
  *
  * Returns the user's login on success and NULL on failure.
  */
@@ -103,307 +108,307 @@ gdm_verify_user (GdmDisplay *d,
 		 gboolean local,
 		 gboolean allow_retry)
 {
-    gchar *login, *passwd, *ppasswd;
-    struct passwd *pwent;
-    struct spwd *sp;
-#if defined (HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS) \
-    || defined (HAVE_LOGINRESTRICTIONS)
-    gchar *message = NULL;
+	gchar *login, *passwd, *ppasswd;
+	struct passwd *pwent;
+	struct spwd *sp;
+#if defined (HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS)	\
+	|| defined (HAVE_LOGINRESTRICTIONS)
+	gchar *message = NULL;
 #endif
 #if defined (HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS)
-    gchar *info_msg = NULL, *response = NULL;
-    gint reEnter, ret;
+	gchar *info_msg = NULL, *response = NULL;
+	gint reEnter, ret;
 #endif
 
-    if (local && d->timed_login_ok)
-	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
+	if (local && d->timed_login_ok)
+		gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 
-    if (username == NULL) {
-authenticate_again:
-	    /* Ask for the user's login */
-	    gdm_verify_select_user (NULL);
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
-	    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Username:"));
-	    if (login == NULL ||
-		gdm_slave_greeter_check_interruption ()) {
-		    if ( ! ve_string_empty (selected_user)) {
-			    /* user selected */
-			    g_free (login);
-			    login = selected_user;
-			    selected_user = NULL;
-		    } else {
-			    /* some other interruption */
-			    if (local)
-				    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-			    g_free (login);
-			    return NULL;
-		    }
-	    }
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
+	if (username == NULL) {
+	authenticate_again:
+		/* Ask for the user's login */
+		gdm_verify_select_user (NULL);
+		gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
+		login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Username:"));
+		if (login == NULL ||
+		    gdm_slave_greeter_check_interruption ()) {
+			if ( ! ve_string_empty (selected_user)) {
+				/* user selected */
+				g_free (login);
+				login = selected_user;
+				selected_user = NULL;
+			} else {
+				/* some other interruption */
+				if (local)
+					gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+				g_free (login);
+				return NULL;
+			}
+		}
+		gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
 
-	    if (gdm_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
-		    char *info = gdm_get_last_info (login);
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
-		    g_free (info);
-	    }
-    } else {
-	    login = g_strdup (username);
-    }
-    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+		if (gdm_daemon_config_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
+			char *info = gdm_get_last_info (login);
+			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
+			g_free (info);
+		}
+	} else {
+		login = g_strdup (username);
+	}
+	gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
 
-    pwent = getpwnam (login);
+	pwent = getpwnam (login);
 
-    setspent ();
+	setspent ();
 
-    /* Lookup shadow password */
-    sp = getspnam (login);
-    
-    /* Use shadow password when available */
-    if (sp != NULL) {
-	    ppasswd = g_strdup (sp->sp_pwdp);
-    } else {
-	    /* In case shadow password cannot be retrieved (when using NIS
-	       authentication for example), use standard passwd */
-	    if (pwent != NULL &&
-		pwent->pw_passwd != NULL)
-		    ppasswd = g_strdup (pwent->pw_passwd);
-	    else
-		    /* If no password can be retrieved, set it to NULL */
-		    ppasswd = NULL;
-    }
-    
-    endspent ();
+	/* Lookup shadow password */
+	sp = getspnam (login);
 
-    /* Request the user's password */
-    if (pwent != NULL &&
-        ve_string_empty (ppasswd)) {
-	    /* eeek a passwordless account */
-	    passwd = g_strdup ("");
-    } else {
-	    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password:"));
-	    if (passwd == NULL)
-		    passwd = g_strdup ("");
-	    if (gdm_slave_greeter_check_interruption ()) {
-		    if (local)
-			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-		    g_free (login);
-		    g_free (passwd);
-		    g_free (ppasswd);
-		    return NULL;
-	    }
-    }
+	/* Use shadow password when available */
+	if (sp != NULL) {
+		ppasswd = g_strdup (sp->sp_pwdp);
+	} else {
+		/* In case shadow password cannot be retrieved (when using NIS
+		   authentication for example), use standard passwd */
+		if (pwent != NULL &&
+		    pwent->pw_passwd != NULL)
+			ppasswd = g_strdup (pwent->pw_passwd);
+		else
+			/* If no password can be retrieved, set it to NULL */
+			ppasswd = NULL;
+	}
 
-    if (local)
-	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+	endspent ();
 
-    if (pwent == NULL) {
-	    gdm_sleep_no_signal (gdm_get_value_int (GDM_KEY_RETRY_DELAY));
-	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
+	/* Request the user's password */
+	if (pwent != NULL &&
+	    ve_string_empty (ppasswd)) {
+		/* eeek a passwordless account */
+		passwd = g_strdup ("");
+	} else {
+		passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password:"));
+		if (passwd == NULL)
+			passwd = g_strdup ("");
+		if (gdm_slave_greeter_check_interruption ()) {
+			if (local)
+				gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+			g_free (login);
+			g_free (passwd);
+			g_free (ppasswd);
+			return NULL;
+		}
+	}
 
-	    print_cant_auth_errbox ();
+	if (local)
+		gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
-	    g_free (login);
-	    g_free (passwd);
-	    g_free (ppasswd);
-	    return NULL;
-    }
+	if (pwent == NULL) {
+		gdm_sleep_no_signal (gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY));
+		g_warning (_("Couldn't authenticate user \"%s\""), login);
 
-    /* Check whether password is valid */
-    if (ppasswd == NULL || (ppasswd[0] != '\0' &&
-			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
-	    gdm_sleep_no_signal (gdm_get_value_int (GDM_KEY_RETRY_DELAY));
-	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
+		print_cant_auth_errbox ();
 
-	    print_cant_auth_errbox ();
+		g_free (login);
+		g_free (passwd);
+		g_free (ppasswd);
+		return NULL;
+	}
 
-	    g_free (login);
-	    g_free (passwd);
-	    g_free (ppasswd);
-	    return NULL;
-    }
+	/* Check whether password is valid */
+	if (ppasswd == NULL || (ppasswd[0] != '\0' &&
+				strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
+		gdm_sleep_no_signal (gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY));
+		g_warning (_("Couldn't authenticate user \"%s\""), login);
 
-    if ( ( ! gdm_get_value_bool (GDM_KEY_ALLOW_ROOT)||
-	  ( ! gdm_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
-	pwent->pw_uid == 0) {
-	    gdm_error (_("Root login disallowed on display '%s'"), display);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("The system administrator "
-					    "is not allowed to login "
-					    "from this screen"));
-	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
-	      _("Root login disallowed"));*/
-	    g_free (login);
-	    g_free (passwd);
-	    g_free (ppasswd);
-	    return NULL;
-    }
+		print_cant_auth_errbox ();
+
+		g_free (login);
+		g_free (passwd);
+		g_free (ppasswd);
+		return NULL;
+	}
+
+	if ( ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT)||
+	       ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
+	     pwent->pw_uid == 0) {
+		g_warning (_("Root login disallowed on display '%s'"), display);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("The system administrator "
+						"is not allowed to login "
+						"from this screen"));
+		/*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
+		  _("Root login disallowed"));*/
+		g_free (login);
+		g_free (passwd);
+		g_free (ppasswd);
+		return NULL;
+	}
 
 #ifdef HAVE_LOGINRESTRICTIONS
 
-    /* Check with the 'loginrestrictions' function
-       if the user has been disallowed */
-    if (loginrestrictions (login, 0, NULL, &message) != 0) {
-	    gdm_error (_("User %s not allowed to log in"), login);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nThe system administrator "
-					    "has disabled your "
-					    "account."));
-	    g_free (login);
-	    g_free (passwd);
-	    g_free (ppasswd);
-	    if (message != NULL)
-		    free (message);
-	    return NULL;
-    }
-    
-    if (message != NULL)
-	    free (message);
-    message = NULL;
+	/* Check with the 'loginrestrictions' function
+	   if the user has been disallowed */
+	if (loginrestrictions (login, 0, NULL, &message) != 0) {
+		g_warning (_("User %s not allowed to log in"), login);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("\nThe system administrator "
+						"has disabled your "
+						"account."));
+		g_free (login);
+		g_free (passwd);
+		g_free (ppasswd);
+		if (message != NULL)
+			free (message);
+		return NULL;
+	}
+
+	if (message != NULL)
+		free (message);
+	message = NULL;
 
 #else /* ! HAVE_LOGINRESTRICTIONS */
 
-    /* check for the standard method of disallowing users */
-    if (pwent->pw_shell != NULL &&
-	(strcmp (pwent->pw_shell, "/sbin/nologin") == 0 ||
-	 strcmp (pwent->pw_shell, "/bin/true") == 0 ||
-	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
-	    gdm_error (_("User %s not allowed to log in"), login);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nThe system administrator "
-					    "has disabled your "
-					    "account."));
-	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
-	      _("Login disabled"));*/
-	    g_free (login);
-	    g_free (passwd);
-	    g_free (ppasswd);
-	    return NULL;
-    }	
+	/* check for the standard method of disallowing users */
+	if (pwent->pw_shell != NULL &&
+	    (strcmp (pwent->pw_shell, "/sbin/nologin") == 0 ||
+	     strcmp (pwent->pw_shell, "/bin/true") == 0 ||
+	     strcmp (pwent->pw_shell, "/bin/false") == 0)) {
+		g_warning (_("User %s not allowed to log in"), login);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("\nThe system administrator "
+						"has disabled your "
+						"account."));
+		/*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
+		  _("Login disabled"));*/
+		g_free (login);
+		g_free (passwd);
+		g_free (ppasswd);
+		return NULL;
+	}
 
 #endif /* HAVE_LOGINRESTRICTIONS */
 
-    g_free (passwd);
-    g_free (ppasswd);
+	g_free (passwd);
+	g_free (ppasswd);
 
-    if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
-	    g_free (login);
-	    login = NULL;
-	    goto authenticate_again;
-    }
+	if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
+		g_free (login);
+		login = NULL;
+		goto authenticate_again;
+	}
 
-    if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
-	    gdm_error (_("Cannot set user group for %s"), login);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nCannot set your user group; "
-					    "you will not be able to log in. "
-					    "Please contact your system administrator."));
-	    g_free (login);
-	    return NULL;
-    }
+	if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
+		g_warning (_("Cannot set user group for %s"), login);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("\nCannot set your user group; "
+						"you will not be able to log in. "
+						"Please contact your system administrator."));
+		g_free (login);
+		return NULL;
+	}
 
 #if defined (HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS)
 
-    switch (passwdexpired (login, &info_msg)) {
-    case 1 :
-	    gdm_error (_("Password of %s has expired"), login);
-	    gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
-			   _("You are required to change your password.\n"
-			     "Please choose a new one."));
-	    g_free (info_msg);
+	switch (passwdexpired (login, &info_msg)) {
+	case 1 :
+		g_warning (_("Password of %s has expired"), login);
+		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
+					_("You are required to change your password.\n"
+					  "Please choose a new one."));
+		g_free (info_msg);
 
-	    do {
-		    ret = chpass (login, response, &reEnter, &message);
-		    g_free (response);
+		do {
+			ret = chpass (login, response, &reEnter, &message);
+			g_free (response);
 
-		    if (ret != 1) {
-			    if (ret != 0) {
-				    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-								  _("\nCannot change your password; "
-								    "you will not be able to log in. "
-								    "Please try again later or contact "
-								    "your system administrator."));
-			    } else if ((reEnter != 0) && (message)) {
-				    response = gdm_slave_greeter_ctl (GDM_NOECHO, message);
-				    if (response == NULL)
-					    response = g_strdup ("");
-			    }
-		    }
+			if (ret != 1) {
+				if (ret != 0) {
+					gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+								      _("\nCannot change your password; "
+									"you will not be able to log in. "
+									"Please try again later or contact "
+									"your system administrator."));
+				} else if ((reEnter != 0) && (message)) {
+					response = gdm_slave_greeter_ctl (GDM_NOECHO, message);
+					if (response == NULL)
+						response = g_strdup ("");
+				}
+			}
 
-		    g_free (message);
-		    message = NULL;
+			g_free (message);
+			message = NULL;
 
-	    } while ( ((reEnter != 0) && (ret == 0))
-		      || (ret ==1) );
+		} while ( ((reEnter != 0) && (ret == 0))
+			  || (ret ==1) );
 
-	    g_free (response);
-	    g_free (message);
+		g_free (response);
+		g_free (message);
 
-	    if ((ret != 0) || (reEnter != 0)) {
-		    return NULL;
-	    }
+		if ((ret != 0) || (reEnter != 0)) {
+			return NULL;
+		}
 
 #if defined (CAN_CLEAR_ADMCHG)
-	    /* The password is changed by root, clear the ADM_CHG
-	       flag in the passwd file */
-	    ret = setpwdb (S_READ | S_WRITE);
-	    if (!ret) {
-		    upwd = getuserpw (login);
-		    if (upwd == NULL) {
-			    ret = -1;
-		    }
-		    else {
-			    upwd->upw_flags &= ~PW_ADMCHG;
-			    ret = putuserpw (upwd);
-			    if (!ret) {
-				    ret = endpwdb ();
-			    }
-		    }
-	    }
+		/* The password is changed by root, clear the ADM_CHG
+		   flag in the passwd file */
+		ret = setpwdb (S_READ | S_WRITE);
+		if (!ret) {
+			upwd = getuserpw (login);
+			if (upwd == NULL) {
+				ret = -1;
+			}
+			else {
+				upwd->upw_flags &= ~PW_ADMCHG;
+				ret = putuserpw (upwd);
+				if (!ret) {
+					ret = endpwdb ();
+				}
+			}
+		}
 
-	    if (ret) {
-		    gdm_errorgui_error_box (d, GTK_MESSAGE_WARNING,
-				   _("Your password has been changed but "
-				     "you may have to change it again. "
-				     "Please try again later or contact "
-				     "your system administrator."));
-	    }
+		if (ret) {
+			gdm_errorgui_error_box (d, GTK_MESSAGE_WARNING,
+						_("Your password has been changed but "
+						  "you may have to change it again. "
+						  "Please try again later or contact "
+						  "your system administrator."));
+		}
 
 #else /* !CAN_CLEAR_ADMCHG */
-	    gdm_errorgui_error_box (d, GTK_MESSAGE_WARNING,
-			   _("Your password has been changed but you "
-			     "may have to change it again. Please try again "
-			     "later or contact your system administrator."));
+		gdm_errorgui_error_box (d, GTK_MESSAGE_WARNING,
+					_("Your password has been changed but you "
+					  "may have to change it again. Please try again "
+					  "later or contact your system administrator."));
 
 #endif /* CAN_CLEAR_ADMCHG */
 
-	    break;
+		break;
 
-    case 2 :
-	    gdm_error (_("Password of %s has expired"), login);
-	    gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
-			   _("Your password has expired.\n"
-			     "Only a system administrator can now change it"));
-	    g_free (info_msg);
-	    return NULL;
-	    break;    
+	case 2 :
+		g_warning (_("Password of %s has expired"), login);
+		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
+					_("Your password has expired.\n"
+					  "Only a system administrator can now change it"));
+		g_free (info_msg);
+		return NULL;
+		break;
 
-    case -1 :
-	    gdm_error (_("Internal error on passwdexpired"));
-	    gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
-			   _("An internal error occurred. You will not be able to log in.\n"
-			     "Please try again later or contact your system administrator."));
-	    g_free (info_msg);
-	    return NULL;
-	    break;    
+	case -1 :
+		g_warning (_("Internal error on passwdexpired"));
+		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
+					_("An internal error occurred. You will not be able to log in.\n"
+					  "Please try again later or contact your system administrator."));
+		g_free (info_msg);
+		return NULL;
+		break;
 
-    default :
-	    g_free (info_msg);
-	    break;
-    }
+	default :
+		g_free (info_msg);
+		break;
+	}
 
 #endif /* HAVE_PASSWDEXPIRED && HAVE_CHPASS */
 
-    return login;
+	return login;
 }
 
 /**
@@ -416,8 +421,10 @@ authenticate_again:
  */
 
 gboolean
-gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
-		       char **new_login) 
+gdm_verify_setup_user (GdmDisplay *d,
+                       const gchar *login,
+                       const gchar *display,
+		       char **new_login)
 {
 	struct passwd *pwent;
 
@@ -425,23 +432,22 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 
 	pwent = getpwnam (login);
 	if (pwent == NULL) {
-		gdm_error (_("Cannot get passwd structure for %s"), login);
+		g_warning (_("Cannot get passwd structure for %s"), login);
 		return FALSE;
 	}
 
 	if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
-		gdm_error (_("Cannot set user group for %s"), login);
+		g_warning (_("Cannot set user group for %s"), login);
 		gdm_errorgui_error_box (d,
-			       GTK_MESSAGE_ERROR,
-			       _("\nCannot set your user group; "
-				 "you will not be able to log in. "
-				 "Please contact your system administrator."));
+					GTK_MESSAGE_ERROR,
+					_("\nCannot set your user group; "
+					  "you will not be able to log in. "
+					  "Please contact your system administrator."));
 		return FALSE;
 	}
 
 	return TRUE;
 }
-
 
 /**
  * gdm_verify_cleanup:
@@ -459,13 +465,12 @@ gdm_verify_cleanup (GdmDisplay *d)
 	setgroups (1, groups);
 }
 
-
 /**
  * gdm_verify_check:
  *
  * Check that the authentication system is correctly configured.
  *
- * Aborts daemon on error 
+ * Aborts daemon on error
  */
 
 void

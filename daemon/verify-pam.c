@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -81,7 +83,6 @@ extern char *gdm_ack_question_response;
 
 static	adt_session_data_t      *adt_ah = NULL;    /* audit session handle */
 
-
 /*
  * audit_success_login - audit successful login
  *
@@ -95,7 +96,7 @@ static	adt_session_data_t      *adt_ah = NULL;    /* audit session handle */
  *		pw_change == PW_TRUE, ADT_passwd (ADT_SUCCESS) audit
  *			record written.
  *		adt_ah = audit session established for audit_logout ();
- *	
+ *
  */
 static void
 audit_success_login (int pw_change, struct passwd *pwent)
@@ -105,15 +106,15 @@ audit_success_login (int pw_change, struct passwd *pwent)
 	if (adt_start_session (&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_start_session (ADT_login): %m");
+			"adt_start_session (ADT_login): %m");
 		return;
 	}
 
 	if (adt_set_user (adt_ah, pwent->pw_uid, pwent->pw_gid,
-	    pwent->pw_uid, pwent->pw_gid, NULL, ADT_USER) != 0) {
+			  pwent->pw_uid, pwent->pw_gid, NULL, ADT_USER) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_set_user (ADT_login, %s): %m", pwent->pw_name);
+			"adt_set_user (ADT_login, %s): %m", pwent->pw_name);
 	}
 	if ((event = adt_alloc_event (adt_ah, ADT_login)) == NULL) {
 
@@ -121,7 +122,7 @@ audit_success_login (int pw_change, struct passwd *pwent)
 	} else if (adt_put_event (event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_put_event (ADT_login, ADT_SUCCESS): %m");
+			"adt_put_event (ADT_login, ADT_SUCCESS): %m");
 	}
 
 	if (pw_change == PW_TRUE) {
@@ -131,17 +132,16 @@ audit_success_login (int pw_change, struct passwd *pwent)
 		if ((event = adt_alloc_event (adt_ah, ADT_passwd)) == NULL) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_alloc_event (ADT_passwd): %m");
+				"adt_alloc_event (ADT_passwd): %m");
 		} else if (adt_put_event (event, ADT_SUCCESS,
-		    ADT_SUCCESS) != 0) {
+					  ADT_SUCCESS) != 0) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_put_event (ADT_passwd, ADT_SUCCESS): %m");
+				"adt_put_event (ADT_passwd, ADT_SUCCESS): %m");
 		}
 	}
 	adt_free_event (event);
 }
-
 
 /*
  * audit_fail_login - audit failed login
@@ -161,11 +161,11 @@ audit_success_login (int pw_change, struct passwd *pwent)
  *	Exit	ADT_login (ADT_FAILURE) audit record written
  *		pw_change == PW_TRUE, ADT_passwd (ADT_FAILURE) audit
  *			record written.
- *	
+ *
  */
 static void
 audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
-    int pamerr)
+		  int pamerr)
 {
 	adt_session_data_t	*ah;	/* audit session handle */
 	adt_event_data_t	*event;	/* event to generate */
@@ -175,14 +175,14 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		if (adt_start_session (&ah, NULL, ADT_USE_PROC_DATA) != 0) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_start_session (ADT_login, ADT_FAILURE): %m");
+				"adt_start_session (ADT_login, ADT_FAILURE): %m");
 			return;
 		}
 	} else {
 		if (adt_start_session (&ah, NULL, 0) != 0) {
-		
+
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_start_session (ADT_login, ADT_FAILURE): %m");
+				"adt_start_session (ADT_login, ADT_FAILURE): %m");
 			return;
 		}
 		if (d->attached) {
@@ -190,39 +190,39 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 			if (adt_load_ttyname ("/dev/console", &tid) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_loadhostname (localhost): %m");
+					"adt_loadhostname (localhost): %m");
 			}
 		} else {
 			/* login from a remote host */
 			if (adt_load_hostname (d->hostname, &tid) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_loadhostname (%s): %m", d->hostname);
+					"adt_loadhostname (%s): %m", d->hostname);
 			}
 		}
 		if (adt_set_user (ah,
-		    pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
-		    pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
-		    pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
-		    pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
-		    tid, ADT_NEW) != 0) {
+				  pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
+				  pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
+				  pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
+				  pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
+				  tid, ADT_NEW) != 0) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_set_user (%s): %m",
-			    pwent ? pwent->pw_name : "ADT_NO_ATTRIB");
+				"adt_set_user (%s): %m",
+				pwent ? pwent->pw_name : "ADT_NO_ATTRIB");
 		}
 	}
 	if ((event = adt_alloc_event (ah, ADT_login)) == NULL) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_alloc_event (ADT_login, ADT_FAILURE): %m");
+			"adt_alloc_event (ADT_login, ADT_FAILURE): %m");
 		goto done;
 	} else if (adt_put_event (event, ADT_FAILURE,
-	    ADT_FAIL_PAM + pamerr) != 0) {
+				  ADT_FAIL_PAM + pamerr) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_put_event (ADT_login (ADT_FAIL, %s): %m",
-		    pam_strerror (pamh, pamerr));
+			"adt_put_event (ADT_login (ADT_FAIL, %s): %m",
+			pam_strerror (pamh, pamerr));
 	}
 	if (pw_change != PW_FALSE) {
 
@@ -231,42 +231,41 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		if ((event = adt_alloc_event (ah, ADT_passwd)) == NULL) {
 
 			syslog (LOG_AUTH | LOG_ALERT,
-			    "adt_alloc_event (ADT_passwd): %m");
+				"adt_alloc_event (ADT_passwd): %m");
 			goto done;
 		}
 		if (pw_change == PW_TRUE) {
 			if (adt_put_event (event, ADT_SUCCESS,
-			    ADT_SUCCESS) != 0) {
+					   ADT_SUCCESS) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_put_event (ADT_passwd, ADT_SUCCESS): "
-				    "%m");
+					"adt_put_event (ADT_passwd, ADT_SUCCESS): "
+					"%m");
 			}
 		} else if (pw_change == PW_FAILED) {
 			if (adt_put_event (event, ADT_FAILURE,
-			    ADT_FAIL_PAM + pamerr) != 0) {
+					   ADT_FAIL_PAM + pamerr) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
-				    "adt_put_event (ADT_passwd, ADT_FAILURE): "
-				    "%m");
+					"adt_put_event (ADT_passwd, ADT_FAILURE): "
+					"%m");
 			}
 		}
 	}
 	adt_free_event (event);
 
-done:
+ done:
 	/* reset process audit state. this process is being reused.*/
 
 	if ((adt_set_user (ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
-	    ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
+			   ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
 	    (adt_set_proc (ah) != 0)) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_put_event (ADT_login (ADT_FAILURE reset, %m)");
+			"adt_put_event (ADT_login (ADT_FAILURE reset, %m)");
 	}
 	(void) adt_end_session (ah);
 }
-
 
 /*
  * audit_logout - audit user logout
@@ -287,22 +286,22 @@ audit_logout (void)
 	if ((event = adt_alloc_event (adt_ah, ADT_logout)) == NULL) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_alloc_event (ADT_logout): %m");
+			"adt_alloc_event (ADT_logout): %m");
 	} else if (adt_put_event (event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_put_event (ADT_logout, ADT_SUCCESS): %m");
+			"adt_put_event (ADT_logout, ADT_SUCCESS): %m");
 	}
 	adt_free_event (event);
 
 	/* reset process audit state. this process is being reused.*/
 
 	if ((adt_set_user (adt_ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
-	    ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
+			   ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
 	    (adt_set_proc (adt_ah) != 0)) {
 
 		syslog (LOG_AUTH | LOG_ALERT,
-		    "adt_set_proc (ADT_logout reset): %m");
+			"adt_set_proc (ADT_logout reset): %m");
 	}
 	(void) adt_end_session (adt_ah);
 }
@@ -321,11 +320,11 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
 	int ngroups;
 
 	if (!d->attached)
-	    return;
+		return;
 
 	if (g_access (pwent->pw_dir, F_OK) != 0) {
-	    gdm_debug ("solaris_xserver_cred: no HOME dir access\n");
-	    return;
+		gdm_debug ("solaris_xserver_cred: no HOME dir access\n");
+		return;
 	}
 
 	/*
@@ -340,57 +339,57 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
         sprintf (pipe, "%s/%d", SDTLOGIN_DIR, displayNumber);
 
         if (g_stat (SDTLOGIN_DIR, &statbuf) == 0) {
-	    if (! statbuf.st_mode & S_IFDIR) {
-		gdm_debug ("solaris_xserver_cred: %s is not a directory\n",
-		       SDTLOGIN_DIR);
-		return;
-	    }
+		if (! statbuf.st_mode & S_IFDIR) {
+			gdm_debug ("solaris_xserver_cred: %s is not a directory\n",
+				   SDTLOGIN_DIR);
+			return;
+		}
 	}
 	else {
-            gdm_debug ("solaris_xserver_cred: %s does not exist\n", SDTLOGIN_DIR);
-	    return;
+		gdm_debug ("solaris_xserver_cred: %s does not exist\n", SDTLOGIN_DIR);
+		return;
 	}
 
 	fd = open (pipe, O_RDWR);
 	g_unlink (pipe);
 
 	if (fd < 0) {
-            gdm_debug ("solaris_xserver_cred: could not open %s\n", pipe);
-	    return;
+		gdm_debug ("solaris_xserver_cred: could not open %s\n", pipe);
+		return;
 	}
         if (fstat (fd, &statbuf) == 0 ) {
-	   if ( ! statbuf.st_mode & S_IFIFO) {
-	      close (fd);
-	      gdm_debug ("solaris_xserver_cred: %s is not a pipe\n", pipe);
-	      return;
-	   }
+		if ( ! statbuf.st_mode & S_IFIFO) {
+			close (fd);
+			gdm_debug ("solaris_xserver_cred: %s is not a pipe\n", pipe);
+			return;
+		}
 	} else {
-	    close (fd);
-            gdm_debug ("solaris_xserver_cred: %s does not exist\n", pipe);
-	    return;
+		close (fd);
+		gdm_debug ("solaris_xserver_cred: %s does not exist\n", pipe);
+		return;
 	}
-	 
+
 	sprintf (info, "GID=\"%d\"; ", pwent->pw_gid);
 	nb = write (fd, info, strlen (info));
         gdm_debug ("solaris_xserver_cred: %s\n", info);
 
 	if (initgroups (login, pwent->pw_gid) == -1) {
-	    ngroups = 0;
+		ngroups = 0;
 	} else {
-	    ngroups = getgroups (NGROUPS_UMAX, groups);
+		ngroups = getgroups (NGROUPS_UMAX, groups);
 	}
 
         for (i=0; i < ngroups; i++) {
-            sprintf (info, "G_LIST_ID=\"%u\" ", groups[i]);
-	    nb = write (fd, info, strlen (info));
-            gdm_debug ("solaris_xserver_cred: %s\n", info);
+		sprintf (info, "G_LIST_ID=\"%u\" ", groups[i]);
+		nb = write (fd, info, strlen (info));
+		gdm_debug ("solaris_xserver_cred: %s\n", info);
 	}
 
 	if (ngroups > 0) {
-            sprintf (info, ";");
-	    write (fd, info, strlen (info));
+		sprintf (info, ";");
+		write (fd, info, strlen (info));
 	}
-	
+
         sprintf (info, " HOME=\"%s\" ", pwent->pw_dir);
 	nb = write (fd, info, strlen (info));
         gdm_debug ("solaris_xserver_cred: %s\n", info);
@@ -401,11 +400,11 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
 
 	/*
 	 * Handshake with server. Make sure it read the pipe.
-	 * 
-	 * Close file descriptor. 
+	 *
+	 * Close file descriptor.
 	 */
  	close (fd);
-	 
+
 	return;
 }
 #endif
@@ -480,142 +479,141 @@ perhaps_translate_message (const char *msg)
 /* Internal PAM conversation function. Interfaces between the PAM
  * authentication system and the actual greeter program */
 
-static int 
+static int
 gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 		     struct pam_response **resp,
 		     void *appdata_ptr)
 {
-    int replies = 0;
-    int i;
-    char *s = NULL;
-    struct pam_response *reply = NULL;
-    const void *p;
-    const char *login;
+	int replies = 0;
+	int i;
+	char *s = NULL;
+	struct pam_response *reply = NULL;
+	const void *p;
+	const char *login;
 
-    if (pamh == NULL)
-	return PAM_CONV_ERR;
-    
-    /* Should never happen unless PAM is on crack and keeps asking questions
-       after we told it to go away.  So tell it to go away again and
-       maybe it will listen */
-    /* well, it actually happens if there are multiple pam modules
-     * with conversations */
-    if ( ! gdm_slave_action_pending () || selected_user)
-        return PAM_CONV_ERR;
+	if (pamh == NULL)
+		return PAM_CONV_ERR;
 
-    reply = malloc (sizeof (struct pam_response) * num_msg);
-    
-    if (reply == NULL)
-	return PAM_CONV_ERR;
+	/* Should never happen unless PAM is on crack and keeps asking questions
+	   after we told it to go away.  So tell it to go away again and
+	   maybe it will listen */
+	/* well, it actually happens if there are multiple pam modules
+	 * with conversations */
+	if ( ! gdm_slave_action_pending () || selected_user)
+		return PAM_CONV_ERR;
 
-    memset (reply, 0, sizeof (struct pam_response) * num_msg);
+	reply = malloc (sizeof (struct pam_response) * num_msg);
 
-    /* Here we set the login if it wasn't already set,
-     * this is kind of anal, but this way we guarantee that
-     * the greeter always is up to date on the login */
-    if (pam_get_item (pamh, PAM_USER, (void **)&p) == PAM_SUCCESS) {
-	    login = (const char *)p;
-	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
-    }
+	if (reply == NULL)
+		return PAM_CONV_ERR;
 
-    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    gdm_log_shutdown ();
-    gdm_log_init ();
+	memset (reply, 0, sizeof (struct pam_response) * num_msg);
 
-    for (replies = 0; replies < num_msg; replies++) {
-	const char *m = (*msg)[replies].msg;
-	m = perhaps_translate_message (m);
-	
-	switch ((*msg)[replies].msg_style) {
-	    
-	/* PAM requested textual input with echo on */
-	case PAM_PROMPT_ECHO_ON:
- 	    if (strcmp (m, _("Username:")) == 0) {
-		    if ( ve_string_empty (selected_user)) {
-			    /* this is an evil hack, but really there is no way we'll
-			    know this is a username prompt.  However we SHOULD NOT
-			    rely on this working.  The pam modules can set their
-			    prompt to whatever they wish to */
-			    gdm_slave_greeter_ctl_no_ret
-				    (GDM_MSG, _("Please enter your username"));
-			    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
-			    /* this will clear the message */
-			    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
-		    }
-	    } else {
-		    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
-	    }
-
-	    if (gdm_slave_greeter_check_interruption ()) {
-		    g_free (s);
-		    for (i = 0; i < replies; i++)
-			    if (reply[replies].resp != NULL)
-				    free (reply[replies].resp);
-		    free (reply);
-		    return PAM_CONV_ERR;
-	    }
-
-	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (ve_sure_string (s));
-	    g_free (s);
-	    break;
-	    
-	case PAM_PROMPT_ECHO_OFF:
-	    if (strcmp (m, _("Password:")) == 0)
-		    did_we_ask_for_password = TRUE;
-	    /* PAM requested textual input with echo off */
-	    s = gdm_slave_greeter_ctl (GDM_NOECHO, m);
-	    if (gdm_slave_greeter_check_interruption ()) {
-		    g_free (s);
-		    for (i = 0; i < replies; i++)
-			    if (reply[replies].resp != NULL)
-				    free (reply[replies].resp);
-		    free (reply);
-		    return PAM_CONV_ERR;
-	    }
-	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (ve_sure_string (s));
-	    g_free (s);
-	    break;
-	    
-	case PAM_ERROR_MSG:
-	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, m);
-	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = NULL;
-	    break;
-	case PAM_TEXT_INFO:
-	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, m);
-	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = NULL;
-	    break;
-	    
-	default:
-	    /* PAM has been smoking serious crack */
-	    for (i = 0; i < replies; i++)
-		    if (reply[replies].resp != NULL)
-			    free (reply[replies].resp);
-	    free (reply);
-	    return PAM_CONV_ERR;
+	/* Here we set the login if it wasn't already set,
+	 * this is kind of anal, but this way we guarantee that
+	 * the greeter always is up to date on the login */
+	if (pam_get_item (pamh, PAM_USER, (void **)&p) == PAM_SUCCESS) {
+		login = (const char *)p;
+		gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
 	}
-	
-    }
 
-    *resp = reply;
-    return PAM_SUCCESS;
+	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
+	gdm_log_shutdown ();
+	gdm_log_init ();
+
+	for (replies = 0; replies < num_msg; replies++) {
+		const char *m = (*msg)[replies].msg;
+		m = perhaps_translate_message (m);
+
+		switch ((*msg)[replies].msg_style) {
+
+			/* PAM requested textual input with echo on */
+		case PAM_PROMPT_ECHO_ON:
+			if (strcmp (m, _("Username:")) == 0) {
+				if ( ve_string_empty (selected_user)) {
+					/* this is an evil hack, but really there is no way we'll
+					   know this is a username prompt.  However we SHOULD NOT
+					   rely on this working.  The pam modules can set their
+					   prompt to whatever they wish to */
+					gdm_slave_greeter_ctl_no_ret
+						(GDM_MSG, _("Please enter your username"));
+					s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
+					/* this will clear the message */
+					gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
+				}
+			} else {
+				s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
+			}
+
+			if (gdm_slave_greeter_check_interruption ()) {
+				g_free (s);
+				for (i = 0; i < replies; i++)
+					if (reply[replies].resp != NULL)
+						free (reply[replies].resp);
+				free (reply);
+				return PAM_CONV_ERR;
+			}
+
+			reply[replies].resp_retcode = PAM_SUCCESS;
+			reply[replies].resp = strdup (ve_sure_string (s));
+			g_free (s);
+			break;
+
+		case PAM_PROMPT_ECHO_OFF:
+			if (strcmp (m, _("Password:")) == 0)
+				did_we_ask_for_password = TRUE;
+			/* PAM requested textual input with echo off */
+			s = gdm_slave_greeter_ctl (GDM_NOECHO, m);
+			if (gdm_slave_greeter_check_interruption ()) {
+				g_free (s);
+				for (i = 0; i < replies; i++)
+					if (reply[replies].resp != NULL)
+						free (reply[replies].resp);
+				free (reply);
+				return PAM_CONV_ERR;
+			}
+			reply[replies].resp_retcode = PAM_SUCCESS;
+			reply[replies].resp = strdup (ve_sure_string (s));
+			g_free (s);
+			break;
+
+		case PAM_ERROR_MSG:
+			/* PAM sent a message that should displayed to the user */
+			gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, m);
+			reply[replies].resp_retcode = PAM_SUCCESS;
+			reply[replies].resp = NULL;
+			break;
+		case PAM_TEXT_INFO:
+			/* PAM sent a message that should displayed to the user */
+			gdm_slave_greeter_ctl_no_ret (GDM_MSG, m);
+			reply[replies].resp_retcode = PAM_SUCCESS;
+			reply[replies].resp = NULL;
+			break;
+
+		default:
+			/* PAM has been smoking serious crack */
+			for (i = 0; i < replies; i++)
+				if (reply[replies].resp != NULL)
+					free (reply[replies].resp);
+			free (reply);
+			return PAM_CONV_ERR;
+		}
+
+	}
+
+	*resp = reply;
+	return PAM_SUCCESS;
 }
 
-
 static struct pam_conv pamc = {
-    &gdm_verify_pam_conv,
-    NULL
+	&gdm_verify_pam_conv,
+	NULL
 };
 
 /* Extra message to give on queries */
 static char *extra_standalone_message = NULL;
 
-static int 
+static int
 gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 				struct pam_response **resp,
 				void *appdata_ptr)
@@ -628,7 +626,7 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 
 	if (pamh == NULL)
 		return PAM_CONV_ERR;
-    
+
 	reply = malloc (sizeof (struct pam_response) * num_msg);
 
 	if (reply == NULL)
@@ -696,8 +694,8 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 		case PAM_ERROR_MSG:
 			/* PAM sent a message that should displayed to the user */
 			gdm_errorgui_error_box (cur_gdm_disp,
-				       GTK_MESSAGE_ERROR,
-				       m);
+						GTK_MESSAGE_ERROR,
+						m);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
@@ -705,8 +703,8 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 		case PAM_TEXT_INFO:
 			/* PAM sent a message that should displayed to the user */
 			gdm_errorgui_error_box (cur_gdm_disp,
-				       GTK_MESSAGE_INFO,
-				       m);
+						GTK_MESSAGE_INFO,
+						m);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
@@ -727,8 +725,8 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 }
 
 static struct pam_conv standalone_pamc = {
-    &gdm_verify_standalone_pam_conv,
-    NULL
+	&gdm_verify_standalone_pam_conv,
+	NULL
 };
 
 /* Creates a pam handle for the auto login */
@@ -767,13 +765,13 @@ create_pamh (GdmDisplay *d,
 #ifdef __sun
 	if (d->attached)
 		(void) pam_set_item (pamh, PAM_TTY, "/dev/console");
-	else 
+	else
 #endif	/* sun */
-	if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
-		if (gdm_slave_action_pending ())
-			gdm_error (_("Can't set PAM_TTY=%s"), display);
-		return FALSE;
-	}
+		if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
+			if (gdm_slave_action_pending ())
+				gdm_error (_("Can't set PAM_TTY=%s"), display);
+			return FALSE;
+		}
 
 	if ( ! d->attached) {
 		/* Only set RHOST if host is remote */
@@ -790,7 +788,6 @@ create_pamh (GdmDisplay *d,
 	return TRUE;
 }
 
-
 /**
  * gdm_verify_user:
  * @username: Name of user or NULL if we should ask
@@ -801,7 +798,7 @@ create_pamh (GdmDisplay *d,
  *               asking for the root password to cal the configurator.
  *
  * Provides a communication layer between the operating system's
- * authentication functions and the gdmgreeter. 
+ * authentication functions and the gdmgreeter.
  *
  * Returns the user's login on success and NULL on failure.
  */
@@ -813,433 +810,432 @@ gdm_verify_user (GdmDisplay *d,
 		 gboolean local,
 		 gboolean allow_retry)
 {
-    gint pamerr = 0;
-    struct passwd *pwent = NULL;
-    const void *p;
-    char *login, *passreq, *consoleonly;
-    char *pam_stack = NULL;
-    int null_tok = 0;
-    gboolean credentials_set = FALSE;
-    gboolean error_msg_given = FALSE;
-    gboolean started_timer   = FALSE;
+	gint pamerr = 0;
+	struct passwd *pwent = NULL;
+	const void *p;
+	char *login, *passreq, *consoleonly;
+	char *pam_stack = NULL;
+	int null_tok = 0;
+	gboolean credentials_set = FALSE;
+	gboolean error_msg_given = FALSE;
+	gboolean started_timer   = FALSE;
 
 #ifdef HAVE_ADT
-    int pw_change = PW_FALSE;   /* if got to trying to change password */
+	int pw_change = PW_FALSE;   /* if got to trying to change password */
 #endif	/* HAVE_ADT */
 
-verify_user_again:
+ verify_user_again:
 
-    pamerr = 0;
-    login = NULL;
-    error_msg_given = FALSE;
-    credentials_set = FALSE;
-    started_timer = FALSE;
-    null_tok = 0;
+	pamerr = 0;
+	login = NULL;
+	error_msg_given = FALSE;
+	credentials_set = FALSE;
+	started_timer = FALSE;
+	null_tok = 0;
 
-    /* start the timer for timed logins */
-    if ( ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
-	d->timed_login_ok &&
-	(local || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
-	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
-	    started_timer = TRUE;
-    }
+	/* start the timer for timed logins */
+	if ( ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
+	     d->timed_login_ok &&
+	     (local || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
+		gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
+		started_timer = TRUE;
+	}
 
-    if (username != NULL) {
-	    login = g_strdup (username);
-	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
-    }
+	if (username != NULL) {
+		login = g_strdup (username);
+		gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+	}
 
-    cur_gdm_disp = d;
+	cur_gdm_disp = d;
 
-authenticate_again:
+ authenticate_again:
 
-    if (prev_user && !login) {
-	login = g_strdup(prev_user);
-    } else if (login && !prev_user) {
-	prev_user = g_strdup(login);
-	auth_retries = 0;
-    } else if (login && prev_user && strcmp (login, prev_user)) {
-	g_free (prev_user);
-	prev_user = g_strdup (login);
-	auth_retries = 0;
-    }
+	if (prev_user && !login) {
+		login = g_strdup(prev_user);
+	} else if (login && !prev_user) {
+		prev_user = g_strdup(login);
+		auth_retries = 0;
+	} else if (login && prev_user && strcmp (login, prev_user)) {
+		g_free (prev_user);
+		prev_user = g_strdup (login);
+		auth_retries = 0;
+	}
 
-    /*
-     * Initialize a PAM session for the user...
-     * Get value per-display so different displays can use different
-     * PAM Stacks, in case one display should use a different 
-     * authentication mechanism than another display.
-     */
-    pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
+	/*
+	 * Initialize a PAM session for the user...
+	 * Get value per-display so different displays can use different
+	 * PAM Stacks, in case one display should use a different
+	 * authentication mechanism than another display.
+	 */
+	pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
 
-    if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
-	    if (started_timer)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-            g_free (pam_stack);
-	    goto pamerr;
-    }
+	if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
+		if (started_timer)
+			gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+		g_free (pam_stack);
+		goto pamerr;
+	}
 
-    g_free (pam_stack);
+	g_free (pam_stack);
 
-    /*
-     * have to unset login otherwise there is no chance to ever enter
-     * a different user
-     */
-    g_free (login);
-    login = NULL;
+	/*
+	 * have to unset login otherwise there is no chance to ever enter
+	 * a different user
+	 */
+	g_free (login);
+	login = NULL;
 
-    pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
+	pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
 
 #if 0
-    /* FIXME: this makes things wait at the wrong places! such as
-       when running the configurator.  We wish to ourselves cancel logins
-       without a delay, so ... evil */
+	/* FIXME: this makes things wait at the wrong places! such as
+	   when running the configurator.  We wish to ourselves cancel logins
+	   without a delay, so ... evil */
 #ifdef PAM_FAIL_DELAY
-    pam_fail_delay (pamh, gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY) * 1000000);
+	pam_fail_delay (pamh, gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY) * 1000000);
 #endif /* PAM_FAIL_DELAY */
 #endif
 
-    passreq = gdm_read_default ("PASSREQ=");
-    if ((passreq != NULL) &&
-	g_ascii_strcasecmp (passreq, "YES") == 0)
-	    gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
+	passreq = gdm_read_default ("PASSREQ=");
+	if ((passreq != NULL) &&
+	    g_ascii_strcasecmp (passreq, "YES") == 0)
+		gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
 
-    if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
-	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
-	    
-    gdm_verify_select_user (NULL);
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
+		null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 
-    /* Start authentication session */
-    did_we_ask_for_password = FALSE;
-    if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
-	    if ( ! ve_string_empty (selected_user)) {
-		    pam_handle_t *tmp_pamh;
+	gdm_verify_select_user (NULL);
 
-		    /* Face browser was used to select a user,
-		       just completely rewhack everything since it
-		       seems various PAM implementations are
-		       having goats with just setting PAM_USER
-		       and trying to pam_authenticate again */
+	/* Start authentication session */
+	did_we_ask_for_password = FALSE;
+	if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
+		if ( ! ve_string_empty (selected_user)) {
+			pam_handle_t *tmp_pamh;
 
-		    g_free (login);
-		    login = selected_user;
-		    selected_user = NULL;
+			/* Face browser was used to select a user,
+			   just completely rewhack everything since it
+			   seems various PAM implementations are
+			   having goats with just setting PAM_USER
+			   and trying to pam_authenticate again */
 
-		    gdm_sigterm_block_push ();
-		    gdm_sigchld_block_push ();
-		    tmp_pamh = pamh;
-		    pamh     = NULL;
-		    gdm_sigchld_block_pop ();
-		    gdm_sigterm_block_pop ();
+			g_free (login);
+			login = selected_user;
+			selected_user = NULL;
 
-		    /* FIXME: what about errors */
-		    /* really this has been a sucess, not a failure */
-		    pam_end (tmp_pamh, pamerr);
+			gdm_sigterm_block_push ();
+			gdm_sigchld_block_push ();
+			tmp_pamh = pamh;
+			pamh     = NULL;
+			gdm_sigchld_block_pop ();
+			gdm_sigterm_block_pop ();
 
-		    g_free (prev_user);
-		    prev_user    = NULL;
-		    auth_retries = 0;
+			/* FIXME: what about errors */
+			/* really this has been a sucess, not a failure */
+			pam_end (tmp_pamh, pamerr);
 
-		    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+			g_free (prev_user);
+			prev_user    = NULL;
+			auth_retries = 0;
 
-		    goto authenticate_again;
-	    }
+			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
 
-	    if (started_timer)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+			goto authenticate_again;
+		}
 
-	    if (gdm_slave_action_pending ()) {
-		    /* FIXME: see note above about PAM_FAIL_DELAY */
-/* #ifndef PAM_FAIL_DELAY */
-		    gdm_sleep_no_signal (gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY));
-		    /* wait up to 100ms randomly */
-		    usleep (g_random_int_range (0, 100000));
-/* #endif */ /* PAM_FAIL_DELAY */
-		    gdm_error (_("Couldn't authenticate user"));
+		if (started_timer)
+			gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
-		    if (prev_user) {
+		if (gdm_slave_action_pending ()) {
+			/* FIXME: see note above about PAM_FAIL_DELAY */
+			/* #ifndef PAM_FAIL_DELAY */
+			gdm_sleep_no_signal (gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY));
+			/* wait up to 100ms randomly */
+			usleep (g_random_int_range (0, 100000));
+			/* #endif */ /* PAM_FAIL_DELAY */
+			gdm_error (_("Couldn't authenticate user"));
 
-			unsigned max_auth_retries = 3;
-			char *val = gdm_read_default ("LOGIN_RETRIES=");
+			if (prev_user) {
 
-			if (val) {
-			    max_auth_retries = atoi (val);
-			    g_free (val);
+				unsigned max_auth_retries = 3;
+				char *val = gdm_read_default ("LOGIN_RETRIES=");
+
+				if (val) {
+					max_auth_retries = atoi (val);
+					g_free (val);
+				}
+
+				if (allow_retry == FALSE || pamerr == PAM_MAXTRIES ||
+				    ++auth_retries >= max_auth_retries) {
+
+					g_free (prev_user);
+					prev_user    = NULL;
+					auth_retries = 0;
+				}
 			}
+		} else {
+			/* cancel, configurator etc pressed */
+			g_free (prev_user);
+			prev_user    = NULL;
+			auth_retries = 0;
+		}
 
-			if (allow_retry == FALSE || pamerr == PAM_MAXTRIES ||
-                            ++auth_retries >= max_auth_retries) {
-
-			    g_free (prev_user);
-			    prev_user    = NULL;
-			    auth_retries = 0;
-			}
-		    }
-	    } else {
-		/* cancel, configurator etc pressed */
-		g_free (prev_user);
-		prev_user    = NULL;
-		auth_retries = 0;
-	    }
-
-
-	    goto pamerr;
-    }
-
-    /* stop the timer for timed logins */
-    if (started_timer)
-	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-
-    g_free (login);
-    login = NULL;
-    g_free (prev_user);
-    prev_user = NULL;
-    
-    if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
-	    login = NULL;
-	    /* is not really an auth problem, but it will
-	       pretty much look as such, it shouldn't really
-	       happen */
-	    if (gdm_slave_action_pending ())
-		    gdm_error (_("Couldn't authenticate user"));
-	    goto pamerr;
-    }
-
-    login = g_strdup ((const char *)p);
-    /* kind of anal, the greeter likely already knows, but it could have
-       been changed */
-    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
-
-    if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
-	    /* cleanup stuff */
-	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "");
-	    g_free (login);
-	    login = NULL;
-	    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
-
-	    gdm_verify_cleanup (d);
-
-	    goto verify_user_again;
-    }
-
-    /* Check if user is root and is allowed to log in */
-    consoleonly = gdm_read_default ("CONSOLE=");
-    if ((consoleonly != NULL) &&
-	g_ascii_strcasecmp (consoleonly, "/dev/console") == 0)
-	    gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, FALSE);
-
-    pwent = getpwnam (login);
-    if ( ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
-	  ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
-	pwent != NULL &&
-	pwent->pw_uid == 0) {
-	    gdm_error (_("Root login disallowed on display '%s'"),
-		       display);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nThe system administrator "
-					    "is not allowed to login "
-					    "from this screen"));
-	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
-	      _("Root login disallowed"));*/
-	    error_msg_given = TRUE;
-
-#ifdef  HAVE_ADT
-	   /*
-	    * map console login not allowed as a pam_acct_mgmt () failure
-	    * indeed that's where these checks should be made.
-	    */
-	    pamerr = PAM_PERM_DENIED;
-#endif	/* HAVE_ADT */
-	    goto pamerr;
-    }
-
-    if (gdm_daemon_config_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
-	char *info = gdm_get_last_info (login);
-	gdm_slave_greeter_ctl_no_ret (GDM_MSG, info);
-	g_free (info);
-    }
-
-    /* Check if the user's account is healthy. */
-    pamerr = pam_acct_mgmt (pamh, null_tok);
-    switch (pamerr) {
-    case PAM_SUCCESS :
-	break;
-    case PAM_NEW_AUTHTOK_REQD :
-	if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
-	    gdm_error (_("Authentication token change failed for user %s"), login);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, 
-		    _("\nThe change of the authentication token failed. "
-		      "Please try again later or contact the system administrator."));
-	    error_msg_given = TRUE;
-#ifdef  HAVE_ADT
-	    /* Password change failed */
-	    pw_change = PW_FAILED;
-#endif	/* HAVE_ADT */
-	    goto pamerr;
+		goto pamerr;
 	}
-#ifdef  HAVE_ADT
-	/* Password changed */
-	pw_change = PW_TRUE;
-#endif	/* HAVE_ADT */
-        break;
-    case PAM_ACCT_EXPIRED :
-	gdm_error (_("User %s no longer permitted to access the system"), login);
-	gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, 
-		_("\nThe system administrator has disabled your account."));
-	error_msg_given = TRUE;
-	goto pamerr;
-    case PAM_PERM_DENIED :
-	gdm_error (_("User %s not permitted to gain access at this time"), login);
-	gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, 
-		_("\nThe system administrator has disabled access to the system temporarily."));
-	error_msg_given = TRUE;
-	goto pamerr;
-    default :
-	if (gdm_slave_action_pending ())
-	    gdm_error (_("Couldn't set acct. mgmt for %s"), login);
-	goto pamerr;
-    }
 
-    pwent = getpwnam (login);
-    if (/* paranoia */ pwent == NULL ||
-       	! gdm_setup_gids (login, pwent->pw_gid)) {
-	    gdm_error (_("Cannot set user group for %s"), login);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nCannot set your user group; "
-					    "you will not be able to log in. "
-					    "Please contact your system administrator."));
-#ifdef  HAVE_ADT
-	    /*
-	     * map group setup error as a pam_setcred () failure
-	     * indeed that's where this should be done.
-	     */
-	    pamerr = PAM_SYSTEM_ERR;
-#endif	/* HAVE_ADT */
-	    goto pamerr;
-    }
+	/* stop the timer for timed logins */
+	if (started_timer)
+		gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
-    did_setcred = TRUE;
+	g_free (login);
+	login = NULL;
+	g_free (prev_user);
+	prev_user = NULL;
+
+	if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
+		login = NULL;
+		/* is not really an auth problem, but it will
+		   pretty much look as such, it shouldn't really
+		   happen */
+		if (gdm_slave_action_pending ())
+			gdm_error (_("Couldn't authenticate user"));
+		goto pamerr;
+	}
+
+	login = g_strdup ((const char *)p);
+	/* kind of anal, the greeter likely already knows, but it could have
+	   been changed */
+	gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+
+	if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
+		/* cleanup stuff */
+		gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "");
+		g_free (login);
+		login = NULL;
+		gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
+
+		gdm_verify_cleanup (d);
+
+		goto verify_user_again;
+	}
+
+	/* Check if user is root and is allowed to log in */
+	consoleonly = gdm_read_default ("CONSOLE=");
+	if ((consoleonly != NULL) &&
+	    g_ascii_strcasecmp (consoleonly, "/dev/console") == 0)
+		gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, FALSE);
+
+	pwent = getpwnam (login);
+	if ( ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
+	       ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
+	     pwent != NULL &&
+	     pwent->pw_uid == 0) {
+		gdm_error (_("Root login disallowed on display '%s'"),
+			   display);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("\nThe system administrator "
+						"is not allowed to login "
+						"from this screen"));
+		/*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
+		  _("Root login disallowed"));*/
+		error_msg_given = TRUE;
+
+#ifdef  HAVE_ADT
+		/*
+		 * map console login not allowed as a pam_acct_mgmt () failure
+		 * indeed that's where these checks should be made.
+		 */
+		pamerr = PAM_PERM_DENIED;
+#endif	/* HAVE_ADT */
+		goto pamerr;
+	}
+
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_DISPLAY_LAST_LOGIN)) {
+		char *info = gdm_get_last_info (login);
+		gdm_slave_greeter_ctl_no_ret (GDM_MSG, info);
+		g_free (info);
+	}
+
+	/* Check if the user's account is healthy. */
+	pamerr = pam_acct_mgmt (pamh, null_tok);
+	switch (pamerr) {
+	case PAM_SUCCESS :
+		break;
+	case PAM_NEW_AUTHTOK_REQD :
+		if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
+			gdm_error (_("Authentication token change failed for user %s"), login);
+			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+						      _("\nThe change of the authentication token failed. "
+							"Please try again later or contact the system administrator."));
+			error_msg_given = TRUE;
+#ifdef  HAVE_ADT
+			/* Password change failed */
+			pw_change = PW_FAILED;
+#endif	/* HAVE_ADT */
+			goto pamerr;
+		}
+#ifdef  HAVE_ADT
+		/* Password changed */
+		pw_change = PW_TRUE;
+#endif	/* HAVE_ADT */
+		break;
+	case PAM_ACCT_EXPIRED :
+		gdm_error (_("User %s no longer permitted to access the system"), login);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("\nThe system administrator has disabled your account."));
+		error_msg_given = TRUE;
+		goto pamerr;
+	case PAM_PERM_DENIED :
+		gdm_error (_("User %s not permitted to gain access at this time"), login);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("\nThe system administrator has disabled access to the system temporarily."));
+		error_msg_given = TRUE;
+		goto pamerr;
+	default :
+		if (gdm_slave_action_pending ())
+			gdm_error (_("Couldn't set acct. mgmt for %s"), login);
+		goto pamerr;
+	}
+
+	pwent = getpwnam (login);
+	if (/* paranoia */ pwent == NULL ||
+	    ! gdm_setup_gids (login, pwent->pw_gid)) {
+		gdm_error (_("Cannot set user group for %s"), login);
+		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					      _("\nCannot set your user group; "
+						"you will not be able to log in. "
+						"Please contact your system administrator."));
+#ifdef  HAVE_ADT
+		/*
+		 * map group setup error as a pam_setcred () failure
+		 * indeed that's where this should be done.
+		 */
+		pamerr = PAM_SYSTEM_ERR;
+#endif	/* HAVE_ADT */
+		goto pamerr;
+	}
+
+	did_setcred = TRUE;
 
 #ifdef __sun
-    solaris_xserver_cred (login, d, pwent);
+	solaris_xserver_cred (login, d, pwent);
 #endif
 
-    /* Set credentials */
-    pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
-    if (pamerr != PAM_SUCCESS) {
-        did_setcred = FALSE;
-	if (gdm_slave_action_pending ())
-	    gdm_error (_("Couldn't set credentials for %s"), login);
-	goto pamerr;
-    }
+	/* Set credentials */
+	pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
+	if (pamerr != PAM_SUCCESS) {
+		did_setcred = FALSE;
+		if (gdm_slave_action_pending ())
+			gdm_error (_("Couldn't set credentials for %s"), login);
+		goto pamerr;
+	}
 
-    credentials_set = TRUE;
-    opened_session  = TRUE;
+	credentials_set = TRUE;
+	opened_session  = TRUE;
 
-    /* Register the session */
-    pamerr = pam_open_session (pamh, 0);
-    if (pamerr != PAM_SUCCESS) {
-            opened_session = FALSE;
-	    /* we handle this above */
-            did_setcred = FALSE;
-	    if (gdm_slave_action_pending ())
-		    gdm_error (_("Couldn't open session for %s"), login);
-	    goto pamerr;
-    }
+	/* Register the session */
+	pamerr = pam_open_session (pamh, 0);
+	if (pamerr != PAM_SUCCESS) {
+		opened_session = FALSE;
+		/* we handle this above */
+		did_setcred = FALSE;
+		if (gdm_slave_action_pending ())
+			gdm_error (_("Couldn't open session for %s"), login);
+		goto pamerr;
+	}
 
-    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    gdm_log_shutdown ();
-    gdm_log_init ();
+	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
+	gdm_log_shutdown ();
+	gdm_log_init ();
 
-    cur_gdm_disp = NULL;
+	cur_gdm_disp = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-    if (d->attached)
-	(void) di_devperm_login ("/dev/console", pwent->pw_uid,
-	    pwent->pw_gid, NULL);
+	if (d->attached)
+		(void) di_devperm_login ("/dev/console", pwent->pw_uid,
+					 pwent->pw_gid, NULL);
 #endif	/* HAVE_LOGINDEVPERM */
 #ifdef  HAVE_ADT
-    audit_success_login (pw_change, pwent);
+	audit_success_login (pw_change, pwent);
 #endif  /* HAVE_ADT */
 
-    return login;
-    
+	return login;
+
  pamerr:
 #ifdef  HAVE_ADT
-    audit_fail_login (d, pw_change, pwent, pamerr);
+	audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
 
-    /* The verbose authentication is turned on, output the error
-     * message from the PAM subsystem */
-    if ( ! error_msg_given &&
-	gdm_slave_action_pending ()) {
-	    /* I'm not sure yet if I should display this message for any other issues - heeten */
-	    if (pamerr == PAM_AUTH_ERR ||
-		pamerr == PAM_USER_UNKNOWN) {
-		    gboolean is_capslock = FALSE;
-		    const char *basemsg;
-		    char *msg;
-		    char *ret;
-			    
-		    ret = gdm_slave_greeter_ctl (GDM_QUERY_CAPSLOCK, "");
-		    if ( ! ve_string_empty (ret))
-			    is_capslock = TRUE;
-		    g_free (ret);
+	/* The verbose authentication is turned on, output the error
+	 * message from the PAM subsystem */
+	if ( ! error_msg_given &&
+	     gdm_slave_action_pending ()) {
+		/* I'm not sure yet if I should display this message for any other issues - heeten */
+		if (pamerr == PAM_AUTH_ERR ||
+		    pamerr == PAM_USER_UNKNOWN) {
+			gboolean is_capslock = FALSE;
+			const char *basemsg;
+			char *msg;
+			char *ret;
 
-		    /* Only give this message if we actually asked for
-		       password, otherwise it would be silly to say that
-		       the password may have been wrong */
-		    if (did_we_ask_for_password) {
-			    basemsg = _("\nIncorrect username or password.  "
-					"Letters must be typed in the correct "
-					"case.");
-		    } else {
-			    basemsg = _("\nAuthentication failed.  "
-					"Letters must be typed in the correct "
-					"case.");
-		    }
-		    if (is_capslock) {
-			    msg = g_strconcat (basemsg, "  ",
-					       _("Caps Lock is on."),
-					       NULL);
-		    } else {
-			    msg = g_strdup (basemsg);
-		    }
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, msg);
-		    g_free (msg);
-	    } else {
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _("Authentication failed"));
-	    }
-    }
+			ret = gdm_slave_greeter_ctl (GDM_QUERY_CAPSLOCK, "");
+			if ( ! ve_string_empty (ret))
+				is_capslock = TRUE;
+			g_free (ret);
 
-    did_setcred = FALSE;
-    opened_session = FALSE;
+			/* Only give this message if we actually asked for
+			   password, otherwise it would be silly to say that
+			   the password may have been wrong */
+			if (did_we_ask_for_password) {
+				basemsg = _("\nIncorrect username or password.  "
+					    "Letters must be typed in the correct "
+					    "case.");
+			} else {
+				basemsg = _("\nAuthentication failed.  "
+					    "Letters must be typed in the correct "
+					    "case.");
+			}
+			if (is_capslock) {
+				msg = g_strconcat (basemsg, "  ",
+						   _("Caps Lock is on."),
+						   NULL);
+			} else {
+				msg = g_strdup (basemsg);
+			}
+			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, msg);
+			g_free (msg);
+		} else {
+			gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _("Authentication failed"));
+		}
+	}
 
-    if (pamh != NULL) {
-	    pam_handle_t *tmp_pamh;
-	    gdm_sigterm_block_push ();
-	    gdm_sigchld_block_push ();
-	    tmp_pamh = pamh;
-	    pamh = NULL;
-	    gdm_sigchld_block_pop ();
-	    gdm_sigterm_block_pop ();
+	did_setcred = FALSE;
+	opened_session = FALSE;
 
-	    /* Throw away the credentials */
-	    if (credentials_set)
-		    pam_setcred (tmp_pamh, PAM_DELETE_CRED);
-	    pam_end (tmp_pamh, pamerr);
-    }
-    pamh = NULL;
-    
-    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    gdm_log_shutdown ();
-    gdm_log_init ();
+	if (pamh != NULL) {
+		pam_handle_t *tmp_pamh;
+		gdm_sigterm_block_push ();
+		gdm_sigchld_block_push ();
+		tmp_pamh = pamh;
+		pamh = NULL;
+		gdm_sigchld_block_pop ();
+		gdm_sigterm_block_pop ();
 
-    g_free (login);
+		/* Throw away the credentials */
+		if (credentials_set)
+			pam_setcred (tmp_pamh, PAM_DELETE_CRED);
+		pam_end (tmp_pamh, pamerr);
+	}
+	pamh = NULL;
 
-    cur_gdm_disp = NULL;
+	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
+	gdm_log_shutdown ();
+	gdm_log_init ();
 
-    return NULL;
+	g_free (login);
+
+	cur_gdm_disp = NULL;
+
+	return NULL;
 }
 
 /**
@@ -1253,249 +1249,247 @@ authenticate_again:
 
 gboolean
 gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
-		       char **new_login) 
+		       char **new_login)
 {
-    gint pamerr = 0;
-    struct passwd *pwent = NULL;
-    const void *p;
-    char *passreq;
-    char *pam_stack = NULL;
-    char *pam_service_name = NULL;
-    int null_tok = 0;
-    gboolean credentials_set;
-    const char *after_login;
-    
-    credentials_set = FALSE;
+	gint pamerr = 0;
+	struct passwd *pwent = NULL;
+	const void *p;
+	char *passreq;
+	char *pam_stack = NULL;
+	char *pam_service_name = NULL;
+	int null_tok = 0;
+	gboolean credentials_set;
+	const char *after_login;
+
+	credentials_set = FALSE;
 
 #ifdef HAVE_ADT
-    int pw_change = PW_FALSE;   /* if got to trying to change password */
+	int pw_change = PW_FALSE;   /* if got to trying to change password */
 #endif	/* HAVE_ADT */
 
-    *new_login = NULL;
+	*new_login = NULL;
 
-    if (login == NULL)
-	    return FALSE;
+	if (login == NULL)
+		return FALSE;
 
-    cur_gdm_disp = d;
+	cur_gdm_disp = d;
 
-    g_free (extra_standalone_message);
-    extra_standalone_message = g_strdup_printf ("%s (%s)",
-						_("Automatic login"),
-						login);
+	g_free (extra_standalone_message);
+	extra_standalone_message = g_strdup_printf ("%s (%s)",
+						    _("Automatic login"),
+						    login);
 
-    /*
-     * Initialize a PAM session for the user...
-     * Get value per-display so different displays can use different
-     * PAM Stacks, in case one display should use a different 
-     * authentication mechanism than another display.
-     */
-    pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
-    pam_service_name = g_strdup_printf ("%s-autologin", pam_stack);
+	/*
+	 * Initialize a PAM session for the user...
+	 * Get value per-display so different displays can use different
+	 * PAM Stacks, in case one display should use a different
+	 * authentication mechanism than another display.
+	 */
+	pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
+	pam_service_name = g_strdup_printf ("%s-autologin", pam_stack);
 
-    if ( ! create_pamh (d, pam_service_name, login, &standalone_pamc,
-			display, &pamerr)) {
-            g_free (pam_stack);
-            g_free (pam_service_name);
-	    goto setup_pamerr;
-    }
-    g_free (pam_stack);
-    g_free (pam_service_name);
-
-    passreq = gdm_read_default ("PASSREQ=");
-    if ((passreq != NULL) &&
-	g_ascii_strcasecmp (passreq, "YES") == 0)
-	    gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
-
-    if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
-	    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
-
-    /* Start authentication session */
-    did_we_ask_for_password = FALSE;
-    if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
-	    if (gdm_slave_action_pending ()) {
-		    gdm_error (_("Couldn't authenticate user"));
-		    gdm_errorgui_error_box (cur_gdm_disp,
-				   GTK_MESSAGE_ERROR,
-				   _("Authentication failed"));
-	    }
-	    goto setup_pamerr;
-    }
-
-    if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
-	    /* is not really an auth problem, but it will
-	       pretty much look as such, it shouldn't really
-	       happen */
-	    gdm_error (_("Couldn't authenticate user"));
-	    gdm_errorgui_error_box (cur_gdm_disp,
-			   GTK_MESSAGE_ERROR,
-			   _("Authentication failed"));
-	    goto setup_pamerr;
-    }
-    after_login = (const char *)p;
-
-    if (after_login != NULL /* should never be */ &&
-	strcmp (after_login, login) != 0) {
-	    *new_login = g_strdup (after_login);
-    }
-
-#ifdef  HAVE_ADT
-    /* to set up for same auditing calls as in gdm_verify_user */
-    pwent = getpwnam (login);
-#endif	/* HAVE_ADT */
-
-    /* Check if the user's account is healthy. */
-    pamerr = pam_acct_mgmt (pamh, null_tok);
-    switch (pamerr) {
-    case PAM_SUCCESS :
-	break;
-    case PAM_NEW_AUTHTOK_REQD :
-	/* XXX: this is for automatic and timed logins,
-	 * we shouldn't be asking for new pw since we never
-	 * authenticated the user.  I suppose just ignoring
-	 * this would be OK */
-#if	0	/* don't change password */
-	if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
-	    gdm_error (_("Authentication token change failed for user %s"), login);
-	    gdm_errorgui_error_box (cur_gdm_disp,
-			   GTK_MESSAGE_ERROR,
-		    _("\nThe change of the authentication token failed. "
-		      "Please try again later or contact the system administrator."));
-#ifdef  HAVE_ADT
-	    pw_change = PW_FAILED;
-#endif	/* HAVE_ADT */
-	    goto setup_pamerr;
+	if ( ! create_pamh (d, pam_service_name, login, &standalone_pamc,
+			    display, &pamerr)) {
+		g_free (pam_stack);
+		g_free (pam_service_name);
+		goto setup_pamerr;
 	}
+	g_free (pam_stack);
+	g_free (pam_service_name);
+
+	passreq = gdm_read_default ("PASSREQ=");
+	if ((passreq != NULL) &&
+	    g_ascii_strcasecmp (passreq, "YES") == 0)
+		gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
+
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
+		null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
+
+	/* Start authentication session */
+	did_we_ask_for_password = FALSE;
+	if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
+		if (gdm_slave_action_pending ()) {
+			gdm_error (_("Couldn't authenticate user"));
+			gdm_errorgui_error_box (cur_gdm_disp,
+						GTK_MESSAGE_ERROR,
+						_("Authentication failed"));
+		}
+		goto setup_pamerr;
+	}
+
+	if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
+		/* is not really an auth problem, but it will
+		   pretty much look as such, it shouldn't really
+		   happen */
+		gdm_error (_("Couldn't authenticate user"));
+		gdm_errorgui_error_box (cur_gdm_disp,
+					GTK_MESSAGE_ERROR,
+					_("Authentication failed"));
+		goto setup_pamerr;
+	}
+	after_login = (const char *)p;
+
+	if (after_login != NULL /* should never be */ &&
+	    strcmp (after_login, login) != 0) {
+		*new_login = g_strdup (after_login);
+	}
+
 #ifdef  HAVE_ADT
-	pw_change = PW_TRUE;
+	/* to set up for same auditing calls as in gdm_verify_user */
+	pwent = getpwnam (login);
+#endif	/* HAVE_ADT */
+
+	/* Check if the user's account is healthy. */
+	pamerr = pam_acct_mgmt (pamh, null_tok);
+	switch (pamerr) {
+	case PAM_SUCCESS :
+		break;
+	case PAM_NEW_AUTHTOK_REQD :
+		/* XXX: this is for automatic and timed logins,
+		 * we shouldn't be asking for new pw since we never
+		 * authenticated the user.  I suppose just ignoring
+		 * this would be OK */
+#if	0	/* don't change password */
+		if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
+			gdm_error (_("Authentication token change failed for user %s"), login);
+			gdm_errorgui_error_box (cur_gdm_disp,
+						GTK_MESSAGE_ERROR,
+						_("\nThe change of the authentication token failed. "
+						  "Please try again later or contact the system administrator."));
+#ifdef  HAVE_ADT
+			pw_change = PW_FAILED;
+#endif	/* HAVE_ADT */
+			goto setup_pamerr;
+		}
+#ifdef  HAVE_ADT
+		pw_change = PW_TRUE;
 #endif	/* HAVE_ADT */
 #endif	/* 0 */
-        break;
-    case PAM_ACCT_EXPIRED :
-	gdm_error (_("User %s no longer permitted to access the system"), login);
-	gdm_errorgui_error_box (cur_gdm_disp,
-		       GTK_MESSAGE_ERROR,
-		       _("The system administrator has disabled your account."));
-	goto setup_pamerr;
-    case PAM_PERM_DENIED :
-	gdm_error (_("User %s not permitted to gain access at this time"), login);
-	gdm_errorgui_error_box (cur_gdm_disp,
-		       GTK_MESSAGE_ERROR,
-		       _("The system administrator has disabled your access to the system temporarily."));
-	goto setup_pamerr;
-    default :
-	if (gdm_slave_action_pending ())
-	    gdm_error (_("Couldn't set acct. mgmt for %s"), login);
-	goto setup_pamerr;
-    }
+		break;
+	case PAM_ACCT_EXPIRED :
+		gdm_error (_("User %s no longer permitted to access the system"), login);
+		gdm_errorgui_error_box (cur_gdm_disp,
+					GTK_MESSAGE_ERROR,
+					_("The system administrator has disabled your account."));
+		goto setup_pamerr;
+	case PAM_PERM_DENIED :
+		gdm_error (_("User %s not permitted to gain access at this time"), login);
+		gdm_errorgui_error_box (cur_gdm_disp,
+					GTK_MESSAGE_ERROR,
+					_("The system administrator has disabled your access to the system temporarily."));
+		goto setup_pamerr;
+	default :
+		if (gdm_slave_action_pending ())
+			gdm_error (_("Couldn't set acct. mgmt for %s"), login);
+		goto setup_pamerr;
+	}
 
-    pwent = getpwnam (login);
-    if (/* paranoia */ pwent == NULL ||
-       	! gdm_setup_gids (login, pwent->pw_gid)) {
-	    gdm_error (_("Cannot set user group for %s"), login);
-	    gdm_errorgui_error_box (cur_gdm_disp,
-			   GTK_MESSAGE_ERROR,
-			   _("Cannot set your user group; "
-			     "you will not be able to log in. "
-			     "Please contact your system administrator."));
+	pwent = getpwnam (login);
+	if (/* paranoia */ pwent == NULL ||
+	    ! gdm_setup_gids (login, pwent->pw_gid)) {
+		gdm_error (_("Cannot set user group for %s"), login);
+		gdm_errorgui_error_box (cur_gdm_disp,
+					GTK_MESSAGE_ERROR,
+					_("Cannot set your user group; "
+					  "you will not be able to log in. "
+					  "Please contact your system administrator."));
 #ifdef  HAVE_ADT
-	    /*
-	     * map group setup error as a pam_setcred () failure
-	     * indeed that's where this should be done.
-	     */
-	    pamerr = PAM_SYSTEM_ERR;
+		/*
+		 * map group setup error as a pam_setcred () failure
+		 * indeed that's where this should be done.
+		 */
+		pamerr = PAM_SYSTEM_ERR;
 #endif	/* HAVE_ADT */
-	    goto setup_pamerr;
-    }
+		goto setup_pamerr;
+	}
 
-    did_setcred = TRUE;
+	did_setcred = TRUE;
 
 #ifdef __sun
-    solaris_xserver_cred ((char *)login, d, pwent);
+	solaris_xserver_cred ((char *)login, d, pwent);
 #endif
 
-    /* Set credentials */
-    pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
-    if (pamerr != PAM_SUCCESS) {
-	    did_setcred = FALSE;
-	    if (gdm_slave_action_pending ())
-		    gdm_error (_("Couldn't set credentials for %s"), login);
-	    goto setup_pamerr;
-    }
+	/* Set credentials */
+	pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
+	if (pamerr != PAM_SUCCESS) {
+		did_setcred = FALSE;
+		if (gdm_slave_action_pending ())
+			gdm_error (_("Couldn't set credentials for %s"), login);
+		goto setup_pamerr;
+	}
 
-    credentials_set = TRUE;
-    opened_session  = TRUE;
+	credentials_set = TRUE;
+	opened_session  = TRUE;
 
-    /* Register the session */
-    pamerr = pam_open_session (pamh, 0);
-    if (pamerr != PAM_SUCCESS) {
-	    did_setcred = FALSE;
-	    opened_session = FALSE;
-	    /* Throw away the credentials */
-	    pam_setcred (pamh, PAM_DELETE_CRED);
+	/* Register the session */
+	pamerr = pam_open_session (pamh, 0);
+	if (pamerr != PAM_SUCCESS) {
+		did_setcred = FALSE;
+		opened_session = FALSE;
+		/* Throw away the credentials */
+		pam_setcred (pamh, PAM_DELETE_CRED);
 
-	    if (gdm_slave_action_pending ())
-		    gdm_error (_("Couldn't open session for %s"), login);
-	    goto setup_pamerr;
-    }
+		if (gdm_slave_action_pending ())
+			gdm_error (_("Couldn't open session for %s"), login);
+		goto setup_pamerr;
+	}
 
+	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
+	gdm_log_shutdown ();
+	gdm_log_init ();
 
-    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    gdm_log_shutdown ();
-    gdm_log_init ();
+	cur_gdm_disp = NULL;
 
-    cur_gdm_disp = NULL;
-
-    g_free (extra_standalone_message);
-    extra_standalone_message = NULL;
+	g_free (extra_standalone_message);
+	extra_standalone_message = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-    if (d->attached)
-	(void) di_devperm_login ("/dev/console", pwent->pw_uid,
-	    pwent->pw_gid, NULL);
+	if (d->attached)
+		(void) di_devperm_login ("/dev/console", pwent->pw_uid,
+					 pwent->pw_gid, NULL);
 #endif	/* HAVE_LOGINDEVPERM */
 #ifdef  HAVE_ADT
-    audit_success_login (pw_change, pwent);
+	audit_success_login (pw_change, pwent);
 #endif	/* HAVE_ADT */
-    
-    return TRUE;
-    
+
+	return TRUE;
+
  setup_pamerr:
 
 #ifdef  HAVE_ADT
-    audit_fail_login (d, pw_change, pwent, pamerr);
+	audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
 
-    did_setcred = FALSE;
-    opened_session = FALSE;
-    if (pamh != NULL) {
-	    pam_handle_t *tmp_pamh;
+	did_setcred = FALSE;
+	opened_session = FALSE;
+	if (pamh != NULL) {
+		pam_handle_t *tmp_pamh;
 
-	    gdm_sigterm_block_push ();
-	    gdm_sigchld_block_push ();
-	    tmp_pamh = pamh;
-	    pamh = NULL;
-	    gdm_sigchld_block_pop ();
-	    gdm_sigterm_block_pop ();
+		gdm_sigterm_block_push ();
+		gdm_sigchld_block_push ();
+		tmp_pamh = pamh;
+		pamh = NULL;
+		gdm_sigchld_block_pop ();
+		gdm_sigterm_block_pop ();
 
-	    /* Throw away the credentials */
-	    if (credentials_set)
-		    pam_setcred (tmp_pamh, PAM_DELETE_CRED);
-	    pam_end (tmp_pamh, pamerr);
-    }
-    pamh = NULL;
-    
-    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    gdm_log_shutdown ();
-    gdm_log_init ();
+		/* Throw away the credentials */
+		if (credentials_set)
+			pam_setcred (tmp_pamh, PAM_DELETE_CRED);
+		pam_end (tmp_pamh, pamerr);
+	}
+	pamh = NULL;
 
-    cur_gdm_disp = NULL;
+	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
+	gdm_log_shutdown ();
+	gdm_log_init ();
 
-    g_free (extra_standalone_message);
-    extra_standalone_message = NULL;
+	cur_gdm_disp = NULL;
 
-    return FALSE;
+	g_free (extra_standalone_message);
+	extra_standalone_message = NULL;
+
+	return FALSE;
 }
-
 
 /**
  * gdm_verify_cleanup:
@@ -1503,7 +1497,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
  * Unregister the user's session
  */
 
-void 
+void
 gdm_verify_cleanup (GdmDisplay *d)
 {
 	gid_t groups[1] = { 0 };
@@ -1558,8 +1552,8 @@ gdm_verify_cleanup (GdmDisplay *d)
 			(void) di_devperm_logout ("/dev/console");
 			/* give it back to gdm user */
 			(void) di_devperm_login ("/dev/console",
-				gdm_daemon_config_get_gdmuid (),
-				gdm_daemon_config_get_gdmgid (), NULL);
+						 gdm_daemon_config_get_gdmuid (),
+						 gdm_daemon_config_get_gdmgid (), NULL);
 		}
 #endif  /* HAVE_LOGINDEVPERM */
 
@@ -1579,14 +1573,13 @@ gdm_verify_cleanup (GdmDisplay *d)
 	gdm_reset_limits ();
 }
 
-
 /**
  * gdm_verify_check:
  *
  * Check that the authentication system is correctly configured.
  * Not very smart, perhaps we should just whack this.
  *
- * Aborts daemon on error 
+ * Aborts daemon on error
  */
 
 void
@@ -1595,7 +1588,7 @@ gdm_verify_check (void)
 	pam_handle_t *ph = NULL;
 
 	if (pam_start (gdm_daemon_config_get_value_string (GDM_KEY_PAM_STACK), NULL,
-		&standalone_pamc, &ph) != PAM_SUCCESS) {
+		       &standalone_pamc, &ph) != PAM_SUCCESS) {
 		ph = NULL; /* be anal */
 
                 gdm_log_shutdown ();
@@ -1636,5 +1629,3 @@ gdm_verify_setup_env (GdmDisplay *d)
 
 	return TRUE;
 }
-
-/* EOF */
