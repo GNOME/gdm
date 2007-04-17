@@ -34,6 +34,10 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <net/if.h>
+#ifdef HAVE_SYS_SOCKIO_H
+#include <sys/sockio.h>
+#endif
 
 #include <errno.h>
 
