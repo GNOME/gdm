@@ -3676,8 +3676,6 @@ sup_handle_query_logout_action (GdmConnection *conn,
 	GdmDisplay *disp;
 	GString *reply;
 	const gchar *sep = " ";
-        gboolean has_authority = TRUE;
-	gboolean allow_custom = FALSE;
 	int i;
 
 	disp = gdm_connection_get_display (conn);
