@@ -205,6 +205,9 @@ typedef enum {
 	GDM_ID_SHOW_GNOME_FAILSAFE,
 	GDM_ID_SHOW_XTERM_FAILSAFE,
 	GDM_ID_SHOW_LAST_SESSION,
+	GDM_ID_SYSTEM_COMMANDS_IN_MENU,
+	GDM_ID_ALLOW_LOGOUT_ACTIONS,
+	GDM_ID_RBAC_SYSTEM_COMMAND_KEYS,
 	GDK_ID_LAST
 } GdmConfigKey;
 
@@ -218,31 +221,28 @@ typedef enum {
  * Developers who add new configuration options should ensure that they do the
  * following:
  *
- * + Edit the config/gdm.conf file to include the default setting.
+ * + Add the key to config/gdm.conf.in file and specify the default value.
+ *   Include comments explaining what the key does.
  *
- * + Specify the same default in this file as in the config/gdm.conf.in file.
+ * + Add the key as a #define to daemon/gdm-daemon-config-keys.h with
+ *   the same default value.
  *
- * + Update the gdm_daemon_config_entries[] to add the
- *   new key.  Include some documentation about the new key, following the
- *   style of existing comments.
+ * + Update the GdmConfigKey enumeration and gdm_daemon_config_entries[] to
+ *   add the new key.  Include some documentation about the new key,
+ *   following the style of existing comments.
  *
  * + Add any validation to the validate_cb function in
  *   gdm-daemon-config.c, if validation is needed.
  *
  * + If GDM_UPDATE_CONFIG should not respond to this configuration setting,
- *   update the update_config function in gdmconfig.c to return FALSE for
- *   this key.  Examples include changing the PidFile, ServAuthDir, or
- *   other values that GDM should not change until it is restarted.  If
+ *   update the gdm_daemon_config_update_key function in gdmconfig.c to
+ *   return FALSE for this key.  Examples include changing the ServAuthDir
+ *   or  other values that GDM should not change until it is restarted.  If
  *   this is true, the next bullet can be ignored.
  *
  * + If the option should cause the greeter (gdmlogin/gdmgreeter) program to
- *   be updated immediately, make sure to update the appropriate
- *   _gdm_set_value_* function in gdmconfig.c.  This function calls the
- *   notify_displays_* function to call when this value is changed, so you
- *   will need to add your new config value to the list of values sending
- *   such notification.  Supporting logic will need to be added to
- *   gdm_slave_handle_notify function in slave.c to process the notify.
- *   It should be clear to see how to do this from the existing code.
+ *   be updated immediately, update the notify_cb and lookup_notify_key
+ *   functions to handle this key.
  *
  * + Add the key to the gdm_read_config and gdm_reread_config functions in
  *   gui/gdmlogin.c, gui/gdmchooser.c, and gui/greeter/greeter.c
@@ -348,6 +348,10 @@ static const GdmConfigEntry gdm_daemon_config_entries [] = {
 
 	/* How long to wait before assuming an Xserver has timed out */
 	{ GDM_CONFIG_GROUP_DAEMON, "GdmXserverTimeout", GDM_CONFIG_VALUE_INT, "10", GDM_ID_XSERVER_TIMEOUT },
+
+	{ GDM_CONFIG_GROUP_DAEMON, "SystemCommandsInMenu", GDM_CONFIG_VALUE_STRING_ARRAY, "HALT;REBOOT;SUSPEND;CUSTOM_CMD", GDM_ID_SYSTEM_COMMANDS_IN_MENU },
+	{ GDM_CONFIG_GROUP_DAEMON, "AllowLogoutActions", GDM_CONFIG_VALUE_STRING_ARRAY, "HALT;REBOOT;SUSPEND;CUSTOM_CMD", GDM_ID_ALLOW_LOGOUT_ACTIONS },
+	{ GDM_CONFIG_GROUP_DAEMON, "RBACSystemCommandKeys", GDM_CONFIG_VALUE_STRING_ARRAY, GDM_RBAC_SYSCMD_KEYS, GDM_ID_RBAC_SYSTEM_COMMAND_KEYS },
 
 	{ GDM_CONFIG_GROUP_SECURITY, "AllowRoot", GDM_CONFIG_VALUE_BOOL, "true", GDM_ID_ALLOW_ROOT },
 	{ GDM_CONFIG_GROUP_SECURITY, "AllowRemoteRoot", GDM_CONFIG_VALUE_BOOL, "false", GDM_ID_ALLOW_REMOTE_ROOT },

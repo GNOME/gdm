@@ -1,3 +1,27 @@
+2007-04-19  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac, acconfig.h, daemon/gdm.c,
+	  daemon/gdm-daemon-config-entries.h, daemon/gdm-daemon-config-keys.h, 
+	  gui/Makefile.am, gui/gdmlogin.c, gui/greeter/Makefile.am,
+	  gui/greeter/greeter.c, gui/greeter/greeter_system.c,
+	  config/Makefile.am, config/gdm.conf.in, docs/C/gdm.xml:  Add
+	  RBAC support and allow more configuration on how the System
+	  Commands are handled.  This includes adding the SystemCommandsInMenu
+	  option to specify which commands show up in the greeter menu and
+	  the AllowLogoutActions to specify which system commands are supported
+	  via the QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and
+	  SET_SAFE_LOGOUT_ACTION gdmflexiserver commands.  Also add the 
+	  RBACSystemCommandKeys option so that RBAC can be configured in a
+	  generic way for each system command.  The configure.ac script sets
+	  up this key properly for Solaris.  Add RBAC section to the Security
+	  section of the docs and info about the three new configuration 
+	  options.  This fixes bug #372738.  Note that the gdmflexiserver
+          QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION
+          were broken after William Jon McCann's config cleanup, so I fixed
+	  this.
+	* daemon/gdm-net.c: Fix includes so glib includes are after system
+	  includes.
+
 2007-04-17  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-xdmcp-manager.c:

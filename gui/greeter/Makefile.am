@@ -74,6 +74,7 @@ gdmgreeter_SOURCES =  \
 	greeter_system.h
 
 gdmgreeter_LDADD = \
+	$(EXTRA_GREETER_LIBS)   \
 	-L$(top_builddir)/gui	\
 	-lgdmwm			\
 	-lgdmcommon		\

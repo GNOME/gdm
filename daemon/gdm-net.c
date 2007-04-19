@@ -17,7 +17,8 @@
  */
 
 #include "config.h"
-#include <glib/gi18n.h>
+
+#include <strings.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/stat.h>
@@ -30,6 +31,8 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#include <glib/gi18n.h>
 
 #include "gdm.h"
 #include "misc.h"

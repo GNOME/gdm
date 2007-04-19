@@ -42,13 +42,19 @@
 #include <errno.h>
 #include <locale.h>
 #include <dirent.h>
-#include <gtk/gtk.h>
+
+#ifdef HAVE_CHKAUTHATTR
+#include <auth_attr.h>
+#include <secdb.h>
+#endif
 
 /* This should be moved to auth.c I suppose */
 
 #include <X11/Xauth.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
+
+#include <gtk/gtk.h>
 
 /* Needed for signal handling */
 #include "gdm-common.h"
@@ -3613,6 +3619,54 @@ sup_handle_get_config (GdmConnection *conn,
 	g_strfreev (splitstr);
 }
 
+static gboolean
+is_action_available (GdmDisplay *disp, gchar *action)
+{
+	const gchar **allowsyscmd;
+	const gchar **rbackeys;
+	gboolean sysmenu;
+	gboolean ret = FALSE;
+	int i;
+
+	allowsyscmd = gdm_daemon_config_get_value_string_array (GDM_KEY_ALLOW_LOGOUT_ACTIONS);
+	rbackeys    = gdm_daemon_config_get_value_string_array (GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS);
+	sysmenu     = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
+
+	if (!disp->attached || !sysmenu) {
+		return FALSE;
+	}
+
+	for (i = 0; allowsyscmd[i] != NULL; i++) {
+		if (strcmp (allowsyscmd[i], action) == 0) {
+			ret = TRUE;
+			break;
+		}
+	}
+
+#ifdef HAVE_CHKAUTHATTR
+	if (ret == TRUE && rbackeys) {
+		for (i = 0; rbackeys[i] != NULL; i++) {
+			gchar   **rbackey = g_strsplit (rbackeys[i], ":", 2);
+
+			if (! ve_string_empty (rbackey[0]) &&
+			    ! ve_string_empty (rbackey[1]) &&
+			    strcmp (rbackey[0], action) == 0) {
+
+       				if (!chkauthattr (rbackey[1], disp->login)) {
+					g_strfreev (rbackey);
+					ret = FALSE;
+					break;
+				}
+			
+			}
+			g_strfreev (rbackey);
+		}
+	}
+#endif
+
+	return ret;
+}
+
 static void
 sup_handle_query_logout_action (GdmConnection *conn,
 				const char    *msg,
@@ -3622,14 +3676,14 @@ sup_handle_query_logout_action (GdmConnection *conn,
 	GdmDisplay *disp;
 	GString *reply;
 	const gchar *sep = " ";
-	gboolean sysmenu;
+        gboolean has_authority = TRUE;
+	gboolean allow_custom = FALSE;
 	int i;
 
 	disp = gdm_connection_get_display (conn);
 
 	/* Only allow locally authenticated connections */
-	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
-	     disp == NULL) {
+        if (! GDM_CONN_AUTHENTICATED (conn) || disp == NULL) {
 		gdm_info (_("%s request denied: "
 			    "Not authenticated"), "QUERY_LOGOUT_ACTION");
 		gdm_connection_write (conn,
@@ -3637,50 +3691,58 @@ sup_handle_query_logout_action (GdmConnection *conn,
 		return;
 	}
 
-	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
-	reply = g_string_new ("OK");
+	reply   = g_string_new ("OK");
 
 	logout_action = disp->logout_action;
 	if (logout_action == GDM_LOGOUT_ACTION_NONE)
 		logout_action = safe_logout_action;
 
-	if (sysmenu && disp->attached &&
-	    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
-		g_string_append_printf (reply, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_HALT);
+	if (! ve_string_empty (gdm_daemon_config_get_value_string_array (GDM_KEY_HALT)) &&
+	      is_action_available (disp, GDM_SUP_LOGOUT_ACTION_HALT)) {
+		g_string_append_printf (reply, "%s%s", sep,
+			GDM_SUP_LOGOUT_ACTION_HALT);
 		if (logout_action == GDM_LOGOUT_ACTION_HALT)
 			g_string_append (reply, "!");
 		sep = ";";
 	}
-	if (sysmenu && disp->attached &&
-	    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
-		g_string_append_printf (reply, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_REBOOT);
+	if (! ve_string_empty (gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT)) &&
+	      is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
+		g_string_append_printf (reply, "%s%s", sep,
+			GDM_SUP_LOGOUT_ACTION_REBOOT);
 		if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
 			g_string_append (reply, "!");
 		sep = ";";
 	}
-	if (sysmenu && disp->attached &&
-	    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
-		g_string_append_printf (reply, "%s%s", sep, GDM_SUP_LOGOUT_ACTION_SUSPEND);
+	if (! ve_string_empty (gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND)) &&
+	      is_action_available (disp, GDM_SUP_LOGOUT_ACTION_SUSPEND)) {
+		g_string_append_printf (reply, "%s%s", sep,
+			GDM_SUP_LOGOUT_ACTION_SUSPEND);
 		if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
 			g_string_append (reply, "!");
 		sep = ";";
 	}
 
-	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar *key_string = NULL;
-		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
-			g_free (key_string);
-			key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
-			if (gdm_daemon_config_get_value_bool (key_string)) {
-				g_string_append_printf (reply, "%s%s%d", sep, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, i);
-				if (logout_action == (GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + i))
-					g_string_append (reply, "!");
+	if (is_action_available (disp, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) {
+		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+			gchar *key_string = NULL;
+			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+
+			if (! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+
+				g_free (key_string);
+				key_string = g_strdup_printf("%s%d=",
+					GDM_KEY_CUSTOM_CMD_IS_PERSISTENT_TEMPLATE, i);
+
+				if (gdm_daemon_config_get_value_bool (key_string)) {
+					g_string_append_printf (reply, "%s%s%d", sep,
+						GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE, i);
+					if (logout_action == (GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + i))
+						g_string_append (reply, "!");
 				sep = ";";
+				}
 			}
+			g_free(key_string);
 		}
-		g_free(key_string);
 	}
 
 	g_string_append (reply, "\n");
@@ -3707,7 +3769,7 @@ sup_handle_query_custom_cmd_labels (GdmConnection *conn,
 	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
 	     disp == NULL) {
 		gdm_info (_("%s request denied: "
-			    "Not authenticated"), "QUERY_LOGOUT_ACTION");
+			    "Not authenticated"), "QUERY_CUSTOM_CMD_LABELS");
 		gdm_connection_write (conn,
 				      "ERROR 100 Not authenticated\n");
 		return;
@@ -3837,7 +3899,7 @@ sup_handle_query_custom_cmd_no_restart_status (GdmConnection *conn,
 	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
 	     disp == NULL) {
 		gdm_info (_("%s request denied: "
-			    "Not authenticated"), "QUERY_LOGOUT_ACTION");
+			    "Not authenticated"), "QUERY_CUSTOM_CMD_NO_RESTART_STATUS");
 		gdm_connection_write (conn,
 				      "ERROR 100 Not authenticated\n");
 		return;
@@ -3873,13 +3935,12 @@ sup_handle_set_logout_action (GdmConnection *conn,
 			      gpointer       data)
 
 {
-	const gchar *action;
 	GdmDisplay *disp;
+	const gchar *action;
 	gboolean was_ok = FALSE;
-	gboolean sysmenu;
 
 	action = &msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
-	disp = gdm_connection_get_display (conn);
+	disp   = gdm_connection_get_display (conn);
 
 	/* Only allow locally authenticated connections */
 	if ( ! GDM_CONN_AUTHENTICATED(conn) ||
@@ -3892,40 +3953,34 @@ sup_handle_set_logout_action (GdmConnection *conn,
 		return;
 	}
 
-	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
 	if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
 		disp->logout_action = GDM_LOGOUT_ACTION_NONE;
 		was_ok = TRUE;
-	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
-			disp->logout_action =
-				GDM_LOGOUT_ACTION_HALT;
-			was_ok = TRUE;
-		}
-	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
-			disp->logout_action =
-				GDM_LOGOUT_ACTION_REBOOT;
-			was_ok = TRUE;
-		}
-	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
-			disp->logout_action =
-				GDM_LOGOUT_ACTION_SUSPEND;
-			was_ok = TRUE;
-		}
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0 &&
+		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) &&
+		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_HALT)) {
+		disp->logout_action = GDM_LOGOUT_ACTION_HALT;
+		was_ok = TRUE;
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0 &&
+		    ! gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) &&
+		    is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
+		disp->logout_action = GDM_LOGOUT_ACTION_REBOOT;
+		was_ok = TRUE;
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0 &&
+		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) &&
+		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_SUSPEND)) {
+		disp->logout_action = GDM_LOGOUT_ACTION_SUSPEND;
+		was_ok = TRUE;
 	}
 	else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
-			  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
+			  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0 &&
+		 is_action_available (disp, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) {
+
 		int cmd_index;
 		if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
 			gchar *key_string = NULL;
 			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+			if (! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				disp->logout_action =
 					GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
 				was_ok = TRUE;
@@ -3933,6 +3988,7 @@ sup_handle_set_logout_action (GdmConnection *conn,
 			g_free(key_string);
 		}
 	}
+
 	if (was_ok) {
 		gdm_connection_write (conn, "OK\n");
 		gdm_try_logout_action (disp);
@@ -3947,14 +4003,12 @@ sup_handle_set_safe_logout_action (GdmConnection *conn,
 				   gpointer       data)
 
 {
-	const gchar *action;
 	GdmDisplay *disp;
+	const gchar *action;
 	gboolean was_ok = FALSE;
-	gboolean sysmenu;
 
 	action = &msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
-
-	disp = gdm_connection_get_display (conn);
+	disp   = gdm_connection_get_display (conn);
 
 	/* Only allow locally authenticated connections */
 	if ( ! GDM_CONN_AUTHENTICATED(conn) ||
@@ -3967,40 +4021,36 @@ sup_handle_set_safe_logout_action (GdmConnection *conn,
 		return;
 	}
 
-	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
 	if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
 		safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 		was_ok = TRUE;
-	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_HALT))) {
-			safe_logout_action =
-				GDM_LOGOUT_ACTION_HALT;
-			was_ok = TRUE;
-		}
-	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_REBOOT))) {
-			safe_logout_action =
-				GDM_LOGOUT_ACTION_REBOOT;
-			was_ok = TRUE;
-		}
-	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
-		if (sysmenu && disp->attached &&
-		    ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND))) {
-			safe_logout_action =
-				GDM_LOGOUT_ACTION_SUSPEND;
-			was_ok = TRUE;
-		}
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0 &&
+		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) &&
+		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_HALT)) {
+		safe_logout_action = GDM_LOGOUT_ACTION_HALT;
+		was_ok = TRUE;
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0 &&
+		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) &&
+		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
+		safe_logout_action = GDM_LOGOUT_ACTION_REBOOT;
+		was_ok = TRUE;
+	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0 &&
+		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) &&
+		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_SUSPEND)) {
+		safe_logout_action = GDM_LOGOUT_ACTION_SUSPEND;
+		was_ok = TRUE;
 	}
 	else if (strncmp (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE,
-			  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0) {
+			  strlen (GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) == 0 &&
+		 is_action_available (disp, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) {
+
 		int cmd_index;
 		if (sscanf (action, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE "%d", &cmd_index) == 1) {
+
 			gchar *key_string = NULL;
 			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, cmd_index);
-			if (sysmenu && disp->attached &&
-			    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
+
+			if (! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
 				safe_logout_action =
 					GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + cmd_index;
 				was_ok = TRUE;
@@ -4008,6 +4058,7 @@ sup_handle_set_safe_logout_action (GdmConnection *conn,
 			g_free(key_string);
 		}
 	}
+
 	if (was_ok) {
 		gdm_connection_write (conn, "OK\n");
 		gdm_try_logout_action (disp);

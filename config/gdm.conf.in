@@ -121,11 +121,38 @@ DisplayInitDir=@gdmconfdir@/Init
 # of cool stuff to figure out what to tell the user and such and can run an X
 # configuration program.
 XKeepsCrashing=@gdmconfdir@/XKeepsCrashing
+
+# System command support.
+#
 # Reboot, Halt and suspend commands, you can add different commands separated
 # by a semicolon.  GDM will use the first one it can find.
-#RebootCommand=@REBOOT_COMMAND@
-#HaltCommand=@HALT_COMMAND@
-#SuspendCommand=@SUSPEND_COMMAND@
+RebootCommand=@REBOOT_COMMAND@
+HaltCommand=@HALT_COMMAND@
+SuspendCommand=@SUSPEND_COMMAND@
+
+# The following options specify how GDM system commands are supported.
+#
+# Specify which actions are displayed in the greeter.  Valid values are HALT,
+# REBOOT, SUSPEND, and CUSTOM_CMD separated by semicolons.
+SystemCommandsInMenu=HALT;REBOOT;SUSPEND;CUSTOM_CMD
+
+# Specify which actions are supported by QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION
+# and SET_SAFE_LOGOUT_ACTION.  Valid values are HALT, REBOOT, SUSPEND, and
+# CUSTOM_CMD separated by semicolons.
+AllowLogoutActions=HALT;REBOOT;SUSPEND;CUSTOM_CMD
+
+# This feature is only functional if GDM is compiled with RBAC (Role Based
+# Access Control) support.
+# Specify the RBAC key used to determine if the user has permission to use
+# the action via QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION and
+# SET_SAFE_LOGOUT_ACTION.  The GDM GUI will only display the action if the
+# "gdm" user has RBAC permissions to use the action.  RBAC keys for multiple
+# actions can be specified by separating them by semicolons.  The format for
+# each is "Action:RBAC key".  If an action is not specified, it is assumed
+# all users have permission for this action.  For example:
+# HALT:key.for.halt,REBOOT:key.for.reboot,[...]  
+RBACSystemCommandKeys=@GDM_RBAC_SYSCMD_KEYS@
+
 # Probably should not touch the below this is the standard setup.
 ServAuthDir=@authdir@
 # This is our standard startup script.  A bit different from a normal X

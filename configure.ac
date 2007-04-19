@@ -245,6 +245,7 @@ EXTRA_XNEST_LIBS=""
 EXTRA_FLEXI_LIBS=""
 EXTRA_DYNAMIC_LIBS=""
 EXTRA_SETUP_LIBS=""
+EXTRA_GREETER_LIBS=""
 
 AC_CHECK_FUNC(socket,,[
 	      AC_CHECK_LIB(socket,socket, [
@@ -821,16 +822,6 @@ AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
 
 #
-# Subst the extra libs
-#
-AC_SUBST(EXTRA_DAEMON_LIBS)
-AC_SUBST(EXTRA_CHOOSER_LIBS)
-AC_SUBST(EXTRA_XNEST_LIBS)
-AC_SUBST(EXTRA_FLEXI_LIBS)
-AC_SUBST(EXTRA_DYNAMIC_LIBS)
-AC_SUBST(EXTRA_SETUP_LIBS)
-
-#
 # Define some variables to represent the directories we use.
 #
 AC_SUBST(authdir, ${localstatedir}/gdm)
@@ -985,12 +976,32 @@ AC_CHECK_LIB(devinfo, di_devperm_login, [
 		     	AC_DEFINE(HAVE_LOGINDEVPERM)
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
 
+# Check for RBAC support (chkauthattr
+#
+AC_MSG_CHECKING(for RBAC support - chkauthattr)
+AC_CHECK_LIB(secdb, chkauthattr, [
+		     	AC_DEFINE(HAVE_CHKAUTHATTR)
+			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsecdb"
+			    EXTRA_GREETER_LIBS="$EXTRA_GREETER_LIBS -lsecdb"])
+
+#
+# Subst the extra libs
+#
+AC_SUBST(EXTRA_DAEMON_LIBS)
+AC_SUBST(EXTRA_CHOOSER_LIBS)
+AC_SUBST(EXTRA_XNEST_LIBS)
+AC_SUBST(EXTRA_FLEXI_LIBS)
+AC_SUBST(EXTRA_DYNAMIC_LIBS)
+AC_SUBST(EXTRA_SETUP_LIBS)
+AC_SUBST(EXTRA_GREETER_LIBS)
+
 # Define different Halt, and Reboot commands differently for Solaris.
 #
 # On Solaris/bin is a symlink to /usr/bin, so don't include it in
 # GDM_USER_PATH.
 #
 GDM_USER_PATH=""
+GDM_RBAC_SYSCMD_KEYS=""
 
 case "$host" in
 *solaris*)
@@ -1001,6 +1012,7 @@ case "$host" in
         XSESSION_SHELL=/bin/ksh
         SOUND_PROGRAM=/usr/bin/audioplay
         GDMGNOMESESSIONCMD=/usr/dt/config/Xsession.jds
+        GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown"
         ;;
 *freebsd*)
 	GDM_USER_PATH="/bin:/usr/bin"
@@ -1191,6 +1203,14 @@ else
         AC_MSG_RESULT(no)
 fi
 
+# Allow configure to specify RBAC keys.
+#
+AC_ARG_WITH(rbac-system-command-keys,    [  --with-rbac-system-command-keys=<keys>     RBAC system command keys])
+
+if ! test -z "$with_system_command_keys"; then
+   GDM_RBAC_SYSCMD_KEYS=$with_system_command_keys
+fi
+
 # Set configuration choices.
 #
 AC_SUBST(HALT_COMMAND)
@@ -1206,6 +1226,8 @@ AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
 AC_SUBST(GDMGNOMESESSIONCMD)
+AC_SUBST(GDM_RBAC_SYSCMD_KEYS)
+AC_DEFINE_UNQUOTED(GDM_RBAC_SYSCMD_KEYS,"$GDM_RBAC_SYSCMD_KEYS")
 
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)

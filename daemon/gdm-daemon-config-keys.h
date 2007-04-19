@@ -82,6 +82,9 @@ G_BEGIN_DECLS
 #define GDM_KEY_VT_ALLOCATION "daemon/VTAllocation=true"
 #define GDM_KEY_CONSOLE_CANNOT_HANDLE "daemon/ConsoleCannotHandle=am,ar,az,bn,el,fa,gu,hi,ja,ko,ml,mr,pa,ta,zh"
 #define GDM_KEY_XSERVER_TIMEOUT "daemon/GdmXserverTimeout=10"
+#define GDM_KEY_SYSTEM_COMMANDS_IN_MENU "daemon/SystemCommandsInMenu=HALT;REBOOT;SUSPEND;CUSTOM_CMD"
+#define GDM_KEY_ALLOW_LOGOUT_ACTIONS "daemon/AllowLogoutActions=HALT;REBOOT;SUSPEND;CUSTOM_CMD"
+#define GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS "daemon/RBACSystemCommandKeys=" GDM_RBAC_SYSCMD_KEYS
 
 #define GDM_KEY_SERVER_PREFIX "server-"
 #define GDM_KEY_SERVER_NAME "name=Standard server"

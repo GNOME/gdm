@@ -855,6 +855,9 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 	gdm_config_get_string (GDM_KEY_WELCOME);
 	gdm_config_get_string (GDM_KEY_REMOTE_WELCOME);
+        gdm_config_get_string (GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS);
+        gdm_config_get_string (GDM_KEY_SYSTEM_COMMANDS_IN_MENU);
+
 	gdm_config_get_int    (GDM_KEY_XINERAMA_SCREEN);
 	gdm_config_get_int    (GDM_KEY_TIMED_LOGIN_DELAY);
 	gdm_config_get_int    (GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
@@ -940,12 +943,16 @@ greeter_reread_config (int sig, gpointer data)
 	    gdm_config_reload_string (GDM_KEY_BACKGROUND_COLOR) ||
 	    gdm_config_reload_string (GDM_KEY_DEFAULT_FACE) ||
 	    gdm_config_reload_string (GDM_KEY_DEFAULT_SESSION) ||
+            gdm_config_reload_string (GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS) ||
+            gdm_config_reload_string (GDM_KEY_SYSTEM_COMMANDS_IN_MENU) ||
+
 	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
 	    gdm_config_reload_int    (GDM_KEY_TIMED_LOGIN_DELAY) ||
 	    gdm_config_reload_int    (GDM_KEY_FLEXI_REAP_DELAY_MINUTES) ||
 	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_HEIGHT) ||
 	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_WIDTH) ||
 	    gdm_config_reload_int    (GDM_KEY_MINIMAL_UID) ||
+
 	    gdm_config_reload_bool   (GDM_KEY_ENTRY_CIRCLES) ||
 	    gdm_config_reload_bool   (GDM_KEY_ENTRY_INVISIBLE) ||
 	    gdm_config_reload_bool   (GDM_KEY_SHOW_XTERM_FAILSAFE) ||

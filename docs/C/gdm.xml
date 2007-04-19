@@ -1085,6 +1085,25 @@ gdm: .your.domain
         page for details.
       </para>
     </sect2>
+
+    <sect2 id="rbac">
+      <title>RBAC (Role Based Access Control)</title>
+
+      <para>
+        If GDM is compiled with RBAC support, then the
+        <filename>RBACSystemCommandKeys</filename> configuration option can be
+        used to specify the RBAC key to be used to determine if the user has
+        authority to use commands.  This is supported for the Shutdown,
+        Reboot, Suspend, and Custom Commands that appear in the GDM greeter
+        and via the <command>gdmflexiserver</command> QUERY_LOGOUT_ACTION,
+        SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION commands.  The greeter
+        will only display the option if the gdm user (specified by the
+        <filename>User</filename> configuration option) has permission
+        via RBAC.  Users will only be able to use the
+        <command>gdmflexiserver</command> commands if the user has
+        permission via RBAC.
+      </para>
+    </sect2>
   </sect1>
 
   <sect1 id="consolekit">
@@ -1792,6 +1811,23 @@ Greeter=/usr/lib/gdmgreeter
           </varlistentry>
 
           <varlistentry>
+            <term>AllowLogoutActions</term>
+            <listitem>
+              <synopsis>AllowLogoutActions=HALT;REBOOT;SHUTDOWN;SUSPEND;CUSTOM_CMD</synopsis>
+              <para>
+                 Specify which actions are supported by the QUERY_LOGOUT_ACTION,
+                 SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION
+                 <command>gdmflexiserver</command> commands.  Valid values are 
+                 HALT, REBOOT, SHUTDOWN, SUSPEND, and CUSTOM_CMD and these should be
+                 separated by semicolons.  This allows certain options to be disabled  
+                 if desired.  Refer to the related
+                 <filename>SystemCommandsInMenu</filename> and
+                 <filename>RBACSystemCommandKeys</filename> configuration options.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>AlwaysLoginCurrentSession</term>
             <listitem>
               <synopsis>AlwaysLoginCurrentSession=true</synopsis>
@@ -2241,6 +2277,31 @@ Greeter=/usr/lib/gdmgreeter
           </varlistentry>
           
           <varlistentry>
+            <term>RBACSystemCommandKeys</term>
+            <listitem>
+              <synopsis>RBACSystemCommandKeys</synopsis>
+              <para>
+                 Support RBAC (Role Based Access Control) for system commands 
+                 (Shutdown, Reboot, Suspend, etc.).  This feature is only functional
+                 if GDM is compiled with RBAC support.  Specify the RBAC key used
+                 to determine if the user has permission to use the action via the
+                 QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION
+                 <command>gdmflexiserver</command> commands.  Valid actions are 
+                 HALT, REBOOT, SUSPEND, and CUSTOM_CMD.  The greeter will only
+                 display the command if the gdm user (<filename>User</filename>
+                 configuration key) has RBAC permissions to use the action.  RBAC
+                 keys for multiple actions can be specified by separating them with
+                 semicolons.  The format for each is "Action:RBAC key".  If an
+                 action is not specified, it is assumed that all users have 
+                 permission to use this action.  For example, a valid value for
+                 this configuration option would be
+                 &quot;HALT:key.for.halt;REBOOT:key.for.reboot&quot;.  Refer to the
+                 related <filename>AllowLogoutActions</filename> and
+                 <filename>SystemCommandsInMenu</filename> configuration options.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
             <term>RebootCommand</term>
             <listitem>
               <synopsis>RebootCommand=&lt;sbin&gt;/shutdown -r now</synopsis>
@@ -2361,6 +2422,27 @@ Greeter=/usr/lib/gdmgreeter
                 there is no such menu item.  Note that the default for this
                 value is not empty so to disable suspend you must set this
                 explicitly to an empty value.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SystemCommandsInMenu</term>
+            <listitem>
+              <synopsis>SuspendCommand=HALT;REBOOT;SHUTDOWN;SUSPEND;CUSTOM_CMD</synopsis>
+              <para>
+                 Specify which system commands are available in the greeter
+                 menu. Valid values are HALT, REBOOT, SHUTDOWN, SUSPEND, and CUSTOM_CMD
+                 and these should be separated by semicolons.  This can be useful if you
+                 want to disable some options in the menu, but still have them available
+                 to authenticated users via the SET_LOGOUT_ACTION or
+                 SET_SAFE_LOGOUT_ACTION <command>gdmflexiserver</command> commands.  For
+                 example, the GNOME panel uses these commands to provide Shutdown,
+                 Reboot, and Suspend in the application menu.  Therefore if you turn off
+                 these options in the greeter, these options can still be available to
+                 users who have authenticated via the GNOME panel.  Refer to the related
+                 <filename>AllowLogoutActions</filename> and
+                 <filename>RBACSystemCommandKeys</filename> configuration options.
               </para>
             </listitem>
           </varlistentry>
@@ -7285,6 +7367,90 @@ svcadm enable servicename
 <screen>
        gdm-autologin session required pam_unix_session.so.1
 </screen>
+       </sect2>
+
+       <sect2 id="solarisrbac">
+          <title>Solaris RBAC support for Shutdown, Reboot, and Suspend</title>
+
+             <para>
+               Starting with GDM 2.19, GDM supports RBAC (Role Based 
+               Access Control) for enabling the system commands (Shutdown,
+               Reboot, Suspend, etc.) that appear in the greeter system
+               menu and via the <command>gdmflexiserver</command> 
+               QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and
+               SET_SAFE_LOGOUT_ACTION commands.
+             </para>
+
+             <para>
+               On Solaris GDM has the following value specified for the
+              <filename>RBACSystemCommandKeys</filename> configuration
+              option.
+             </para>
+
+<screen>
+HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown
+</screen>
+
+             <para>
+               This will cause the SHUTDOWN and REBOOT features to only be
+               enabled for users who have RBAC authority.  In other words,
+               those users who have the &quot;solaris.system.shutdown&quot;
+               authorization name specified.  The GDM greeter will only 
+               display these options if the gdm user (specified in the
+               <filename>User</filename> configuration option, "gdm" by
+               default) has such RBAC permissions.
+             </para>
+
+             <para>
+               Therefore, add the &quot;solaris.system.shutdown&quot;
+               authorization name to the <filename>/etc/user_attr</filename>
+               for all users who should have authority to shutdown and
+               reboot the system.  If you want these options to appear in
+               the greeter program, also add this authorization name to
+               the gdm user.  If you don't want to use RBAC, then you may
+               unset the <filename>RBACSystemCommandKeys</filename> GDM
+               configuration key, and this will make the system commands
+               available for all users.  Refer to the
+               <filename>user_attr</filename> man page for more information
+               about setting RBAC privileges.
+             </para>
+
+             <para>
+               Note that on Solaris there are two programs that can be used
+               to shutdown the system.  These are GDM and
+               <command>gnome-sys-suspend</command>.
+               <command>gnome-sys-suspend</command> is a GUI front-end for
+               the <command>sys-suspend</command>.
+             </para>
+             
+             <para>
+               If GDM is being used as the login program and the user has
+               RBAC permissions to shutdown the machine (or RBAC support
+               is disabled in GDM), then the GNOME panel
+               &quot;Shut Down..&quot; option will use GDM to shutdown, reboot,
+               and suspend the machine.  This is a bit nicer than using
+               <command>gnome-sys-suspend</command> since GDM will wait until
+               the user session has finished (including running the
+               PostSession script, etc.) before running the
+               shutdown/reboot/suspend command.  Also the
+               <command>gnome-sys-suspend</command> command is less functional
+               since it does not support a reboot option, only shutdown and
+               suspend.
+             </para>
+
+             <para>
+               If GDM is not being used to manage shutdown, reboot, and
+               suspend; then the GNOME panel uses
+               <command>gnome-sys-suspend</command> when you select the
+               &quot;Shut Down...&quot; option from the application menu.
+               If the pop-up that appears when you select this only 
+               shows the suspend and shutdown options, then you are
+               likely using <command>gnome-sys-suspend</command>.  If 
+               you are using this, then refer to the
+               <command>sys-suspend</command> man page for information
+               about how to configure it.  Or consider using GDM and
+               configuring it to provide these options.
+             </para>
        </sect2>
 
        <sect2 id="solarisother">

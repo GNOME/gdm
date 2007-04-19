@@ -117,6 +117,7 @@ gdmchooser_LDADD = \
 	$(NULL)
 
 gdmlogin_LDADD = \
+	$(EXTRA_GREETER_LIBS)	\
 	libgdmwm.a		\
 	libgdmcommon.a		\
 	$(GUING_LIBS)		\

@@ -35,6 +35,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#ifdef HAVE_CHKAUTHATTR
+#include <auth_attr.h>
+#include <secdb.h>
+#endif
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
@@ -2127,6 +2132,63 @@ gdm_set_welcomemsg (void)
 	g_free (greeting);
 }
 
+static gboolean
+is_action_available (gchar *action)
+{
+	gchar **allowsyscmd = NULL;
+	const gchar *allowsyscmdval;
+	gboolean ret = FALSE;
+	int i;
+
+	allowsyscmdval = gdm_config_get_string (GDM_KEY_SYSTEM_COMMANDS_IN_MENU);
+	if (allowsyscmdval)
+		allowsyscmd = g_strsplit (allowsyscmdval, ";", 0);
+
+	if (allowsyscmd) {
+		for (i = 0; allowsyscmd[i] != NULL; i++) {
+			if (strcmp (allowsyscmd[i], action) == 0) {
+				ret = TRUE;
+				break;
+			}
+		}
+	}
+
+#ifdef HAVE_CHKAUTHATTR
+	if (ret == TRUE) {
+		gchar **rbackeys = NULL;
+		const gchar *rbackeysval;
+		const char *gdmuser;
+
+		gdmuser     = gdm_config_get_string (GDM_KEY_USER);
+		rbackeysval = gdm_config_get_string (GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS);
+		if (rbackeysval)
+			rbackeys = g_strsplit (rbackeysval, ";", 0);
+
+		if (rbackeys) {
+			for (i = 0; rbackeys[i] != NULL; i++) {
+				gchar **rbackey = g_strsplit (rbackeys[i], ":", 2);
+
+				if (! ve_string_empty (rbackey[0]) &&
+				    ! ve_string_empty (rbackey[1]) &&
+				    strcmp (rbackey[0], action) == 0) {
+
+					if (!chkauthattr (rbackey[1], gdmuser)) {
+						g_strfreev (rbackey);
+						ret = FALSE;
+						break;
+					}
+				}
+				g_strfreev (rbackey);
+			}
+		}
+		g_strfreev (rbackeys);
+	}
+#endif
+	g_strfreev (allowsyscmd);
+
+	return ret;
+}
+
 static void
 gdm_login_gui_init (void)
 {
@@ -2251,7 +2313,8 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 
-	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT))) {
+	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_REBOOT)) &&
+	    is_action_available ("REBOOT")) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Restart"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
@@ -2261,25 +2324,8 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 	
-	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar * key_string = NULL;
-		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
-		if (gdm_working_command_exists (gdm_config_get_string (key_string))) {
-			gint * cmd_index = g_new0(gint, 1);
-			*cmd_index = i;
-			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
-			item = gtk_menu_item_new_with_mnemonic (gdm_config_get_string (key_string));
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-			g_signal_connect (G_OBJECT (item), "activate",
-					  G_CALLBACK (gdm_custom_cmd_handler), 
-					  cmd_index);
-			gtk_widget_show (GTK_WIDGET (item));
-			got_anything = TRUE;			
-		}
-		g_free (key_string);
-	}
-
-	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT))) {
+	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_HALT)) &&
+	    is_action_available ("HALT")) {
 		item = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
@@ -2289,7 +2335,8 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 
-	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND))) {
+	if (gdm_working_command_exists (gdm_config_get_string (GDM_KEY_SUSPEND)) &&
+	    is_action_available ("SUSPEND")) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Suspend"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
@@ -2299,6 +2346,26 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 	
+	if (is_action_available ("CUSTOM_CMD")) {
+		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+			gchar * key_string = NULL;
+			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+			if (gdm_working_command_exists (gdm_config_get_string (key_string))) {
+				gint * cmd_index = g_new0(gint, 1);
+				*cmd_index = i;
+				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+				item = gtk_menu_item_new_with_mnemonic (gdm_config_get_string (key_string));
+				gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+				g_signal_connect (G_OBJECT (item), "activate",
+						  G_CALLBACK (gdm_custom_cmd_handler), 
+						  cmd_index);
+				gtk_widget_show (GTK_WIDGET (item));
+				got_anything = TRUE;			
+			}
+			g_free (key_string);
+		}
+	}
+
 	if (got_anything) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Actions"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
@@ -2884,6 +2951,8 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_TIMED_LOGIN);
 	gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 	gdm_config_get_string (GDM_KEY_WELCOME);
+	gdm_config_get_string (GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS);
+	gdm_config_get_string (GDM_KEY_SYSTEM_COMMANDS_IN_MENU);
 
 	/* String keys for custom commands */	
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
@@ -2992,6 +3061,8 @@ gdm_reread_config (int sig, gpointer data)
 	    gdm_config_reload_string (GDM_KEY_SESSION_DESKTOP_DIR) ||
 	    gdm_config_reload_string (GDM_KEY_SUSPEND) ||
 	    gdm_config_reload_string (GDM_KEY_TIMED_LOGIN) ||
+	    gdm_config_reload_string (GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS) ||
+	    gdm_config_reload_string (GDM_KEY_SYSTEM_COMMANDS_IN_MENU) ||
 
 	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_PROGRAM_INITIAL_DELAY) ||
 	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_PROGRAM_RESTART_DELAY) ||
