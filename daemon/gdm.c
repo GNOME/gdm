@@ -2986,21 +2986,21 @@ check_cookie (const gchar *file, const gchar *disp, const gchar *cookie)
 
 static void
 handle_flexi_server (GdmConnection *conn,
-		     int type,
-		     const gchar *server,
-		     gboolean handled,
-		     gboolean chooser,
-		     const gchar *xnest_disp,
-		     uid_t xnest_uid,
-		     const gchar *xnest_auth_file,
-		     const gchar *xnest_cookie,
-		     const gchar *username)
+		     int            type,
+		     const char    *server,
+		     gboolean       handled,
+		     gboolean       chooser,
+		     const char    *xnest_disp,
+		     uid_t          xnest_uid,
+		     const char    *xnest_auth_file,
+		     const char    *xnest_cookie,
+		     const char    *username)
 {
 	GdmDisplay *display;
 	gchar *bin;
 	uid_t server_uid = 0;
 
-	g_debug ("server: '%s'", server);
+	g_debug ("flexi server: '%s'", server);
 
 	if (gdm_wait_for_go) {
 		if (conn != NULL)
@@ -3053,7 +3053,7 @@ handle_flexi_server (GdmConnection *conn,
 		/* this must always work, thus the asserts */
 		NEVER_FAILS_root_set_euid_egid (0, oldgid);
 
-		if ( ! authorized) {
+		if (! authorized) {
 			/* Sorry dude, you're not doing something
 			 * right */
 			if (conn != NULL)
@@ -3186,12 +3186,12 @@ handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
 		}
 
 		full = strchr (key, '=');
-		if (full == NULL || *(full+1) == 0) {
+		if (full == NULL || *(full + 1) == 0) {
 			gdm_connection_write (conn, "ERROR 3 No server string\n");
 			return;
 		}
 
-		val = full+1;
+		val = full + 1;
 		disp = gdm_server_alloc (disp_num, val);
 
 		if (disp == NULL) {
@@ -3433,17 +3433,20 @@ sup_handle_flexi_xserver (GdmConnection *conn,
 			  const char    *msg,
 			  gpointer       data)
 {
-	gchar *name;
-	const gchar *command = NULL;
+	char       *name;
+	const char *command = NULL;
 	GdmXserver *svr;
-	const gchar *rest;
-	gchar *username, *end;
-	gboolean has_user;
+	const char *rest;
+	char       *username;
+	char       *end;
+	gboolean    has_user;
 
 	has_user = strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ", strlen (GDM_SUP_FLEXI_XSERVER_USER " ")) == 0;
 
+	g_debug ("Handling flexi request has-user:%d", has_user);
+
 	/* Only allow locally authenticated connections */
-	if ( ! GDM_CONN_AUTHENTICATED(conn)) {
+	if ( ! GDM_CONN_AUTHENTICATED (conn)) {
 		gdm_info (_("%s request denied: "
 			    "Not authenticated"), "FLEXI_XSERVER");
 		gdm_connection_write (conn,
@@ -3451,7 +3454,7 @@ sup_handle_flexi_xserver (GdmConnection *conn,
 		return;
 	}
 
-	if (has_user == 0) {
+	if (has_user) {
 		rest = msg + strlen (GDM_SUP_FLEXI_XSERVER_USER " ");
 		end = strchr (rest, ' ');
 		if (end) {
@@ -3465,6 +3468,7 @@ sup_handle_flexi_xserver (GdmConnection *conn,
 		rest = msg + strlen (GDM_SUP_FLEXI_XSERVER " ");
 		username = NULL;
 	}
+
 	name = g_strdup (rest);
 	g_strstrip (name);
 	if (ve_string_empty (name)) {
@@ -3473,6 +3477,7 @@ sup_handle_flexi_xserver (GdmConnection *conn,
 	}
 
 	svr = gdm_daemon_config_find_xserver (name);
+
 	if G_UNLIKELY (svr == NULL) {
 		/* Don't print the name to syslog as it might be
 		 * long and dangerous */
@@ -3489,13 +3494,19 @@ sup_handle_flexi_xserver (GdmConnection *conn,
 	}
 	g_free (name);
 
-	handle_flexi_server (conn, TYPE_FLEXI, command,
+	handle_flexi_server (conn,
+			     TYPE_FLEXI,
+			     command,
 			     /* It is kind of ugly that we don't use
 				the standard resolution for this, but
 				oh well, this makes other things simpler */
 			     svr->handled,
 			     svr->chooser,
-			     NULL, 0, NULL, NULL, username);
+			     NULL,
+			     0,
+			     NULL,
+			     NULL,
+			     username);
 	g_free (username);
 }
 
@@ -3504,17 +3515,20 @@ sup_handle_flexi_xnest (GdmConnection *conn,
 			const char    *msg,
 			gpointer       data)
 {
-	gchar *dispname = NULL;
-	char  *xauthfile = NULL;
-	char  *cookie = NULL;
-	uid_t uid;
-	const gchar *rest;
-	gchar *username, *end;
-	gboolean has_user;
+	char       *dispname = NULL;
+	char       *xauthfile = NULL;
+	char       *cookie = NULL;
+	uid_t       uid;
+	const char *rest;
+	char       *username;
+	char       *end;
+	gboolean    has_user;
 
 	has_user = strncmp (msg, GDM_SUP_FLEXI_XNEST_USER " ", strlen (GDM_SUP_FLEXI_XNEST_USER " ")) == 0;
 
-	if (has_user == 0) {
+	g_debug ("Handling flexi xnest request has-user:%d", has_user);
+
+	if (has_user) {
 		rest = msg + strlen (GDM_SUP_FLEXI_XNEST_USER " ");
 		end = strchr (rest, ' ');
 		username = g_strndup (rest, end - rest);
@@ -3523,14 +3537,18 @@ sup_handle_flexi_xnest (GdmConnection *conn,
 		username = NULL;
 	}
 
-	extract_dispname_uid_xauthfile_cookie (rest, &dispname, &uid,
-					       &xauthfile, &cookie);
+	extract_dispname_uid_xauthfile_cookie (rest,
+					       &dispname,
+					       &uid,
+					       &xauthfile,
+					       &cookie);
 
 	if (dispname == NULL) {
 		/* Something bogus is going on, so just whack the
 		 * connection */
 		g_free (xauthfile);
 		gdm_connection_close (conn);
+		g_warning ("Unable to get display name from request");
 		return;
 	}
 
@@ -3544,10 +3562,16 @@ sup_handle_flexi_xnest (GdmConnection *conn,
 		return;
 	}
 
-	handle_flexi_server (conn, TYPE_FLEXI_XNEST, gdm_daemon_config_get_value_string (GDM_KEY_XNEST),
+	handle_flexi_server (conn,
+			     TYPE_FLEXI_XNEST,
+			     gdm_daemon_config_get_value_string (GDM_KEY_XNEST),
 			     TRUE /* handled */,
 			     FALSE /* chooser */,
-			     dispname, uid, xauthfile, cookie, username);
+			     dispname,
+			     uid,
+			     xauthfile,
+			     cookie,
+			     username);
 
 	g_free (dispname);
 	g_free (xauthfile);
@@ -3941,7 +3965,7 @@ sup_handle_set_logout_action (GdmConnection *conn,
 	disp   = gdm_connection_get_display (conn);
 
 	/* Only allow locally authenticated connections */
-	if ( ! GDM_CONN_AUTHENTICATED(conn) ||
+	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
 	     disp == NULL ||
 	     ! disp->logged_in) {
 		gdm_info (_("%s request denied: "
@@ -4009,7 +4033,7 @@ sup_handle_set_safe_logout_action (GdmConnection *conn,
 	disp   = gdm_connection_get_display (conn);
 
 	/* Only allow locally authenticated connections */
-	if ( ! GDM_CONN_AUTHENTICATED(conn) ||
+	if ( ! GDM_CONN_AUTHENTICATED (conn) ||
 	     disp == NULL ||
 	     ! disp->logged_in) {
 		gdm_info (_("%s request denied: "
@@ -4073,7 +4097,7 @@ sup_handle_query_vt (GdmConnection *conn,
 {
 
 	/* Only allow locally authenticated connections */
-	if ( ! GDM_CONN_AUTHENTICATED(conn)) {
+	if ( ! GDM_CONN_AUTHENTICATED (conn)) {
 		gdm_info (_("%s request denied: "
 			    "Not authenticated"), "QUERY_VT");
 		gdm_connection_write (conn,
@@ -4107,7 +4131,7 @@ sup_handle_set_vt (GdmConnection *conn,
 	}
 
 	/* Only allow locally authenticated connections */
-	if ( ! GDM_CONN_AUTHENTICATED(conn)) {
+	if ( ! GDM_CONN_AUTHENTICATED (conn)) {
 		gdm_info (_("%s request denied: "
 			    "Not authenticated"), "QUERY_VT");
 		gdm_connection_write (conn,

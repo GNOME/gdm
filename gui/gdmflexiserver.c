@@ -79,24 +79,32 @@ GOptionEntry options [] = {
 static int
 get_cur_vt (void)
 {
-	char *ret;
-	static int cur_vt;
+	char           *result;
+	static int      cur_vt;
 	static gboolean checked = FALSE;
+	int             ret;
 
-	if (checked)
+	result = NULL;
+	ret = -1;
+
+	if (checked) {
 		return cur_vt;
-
-	ret = gdmcomm_call_gdm ("QUERY_VT", auth_cookie, "2.5.90.0", 5);
-	if (ve_string_empty (ret) ||
-	    strncmp (ret, "OK ", 3) != 0) {
-		g_free (ret);
-		return -1;
 	}
 
-	if (sscanf (ret, "OK %d", &cur_vt) != 1)
+	ret = gdmcomm_call_gdm ("QUERY_VT", auth_cookie, "2.5.90.0", 5);
+	if (ve_string_empty (ret) || strncmp (ret, "OK ", 3) != 0) {
+		goto out;
+	}
+
+	if (sscanf (ret, "OK %d", &cur_vt) != 1) {
 		cur_vt = -1;
-	g_free (ret);
+	}
+
 	checked = TRUE;
+
+ out:
+	g_free (result);
+
 	return cur_vt;
 }
 
@@ -132,9 +140,11 @@ change_vt (int vt)
 {
 	char *cmd;
 	char *ret;
+
 	cmd = g_strdup_printf (GDM_SUP_SET_VT " %d", vt);
 	ret = gdmcomm_call_gdm (cmd, auth_cookie, "2.5.90.0", 5);
 	g_free (cmd);
+
 	if (ve_string_empty (ret) ||
 	    strcmp (ret, "OK") != 0) {
 		GtkWidget *dialog;
@@ -390,15 +400,15 @@ maybe_lock_screen (void)
 
 	g_free (command);
 
-	if (!use_gscreensaver) {
+	if (! use_gscreensaver) {
 		command = g_strdup ("xscreensaver-command -throttle");
 		if (! gdk_spawn_command_line_on_screen (screen, command, &error)) {
 			g_warning ("Cannot disable screensaver engines: %s", error->message);
 			g_error_free (error);
 		}
-	}
 
-	g_free (command);
+		g_free (command);
+	}
 }
 
 static void

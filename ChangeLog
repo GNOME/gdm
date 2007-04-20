@@ -1,5 +1,18 @@
 2007-04-20  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm.c: (handle_flexi_server), (handle_dynamic_server),
+	(sup_handle_flexi_xserver), (sup_handle_flexi_xnest),
+	(sup_handle_set_logout_action),
+	(sup_handle_set_safe_logout_action), (sup_handle_query_vt),
+	(sup_handle_set_vt):
+	Fix detection of user specified in flexi command.
+
+	* gui/gdmflexiserver.c: (get_cur_vt), (change_vt),
+	(maybe_lock_screen):
+	Fix a double free.
+
+2007-04-20  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/gdmflexiserver.c: (maybe_lock_screen), (main):
 	Properly initialize gtk.  Fixes #431044
 
