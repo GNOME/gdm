@@ -2,21 +2,21 @@
  *
  *    GDMflexiserver - run a flexible server
  *    (c)2001 Queen of England
- *    
+ *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
- *   
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *   
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- * 
+ *
  */
 
 #include "config.h"
@@ -390,15 +390,12 @@ maybe_lock_screen (void)
 
 	g_free (command);
 
-	if (use_gscreensaver) {
-		command = g_strdup ("gnome-screensaver-command --throttle");
-	} else {
+	if (!use_gscreensaver) {
 		command = g_strdup ("xscreensaver-command -throttle");
-	}
-
-	if (! gdk_spawn_command_line_on_screen (screen, command, &error)) {
-		g_warning ("Cannot disable screensaver engines: %s", error->message);
-		g_error_free (error);
+		if (! gdk_spawn_command_line_on_screen (screen, command, &error)) {
+			g_warning ("Cannot disable screensaver engines: %s", error->message);
+			g_error_free (error);
+		}
 	}
 
 	g_free (command);
@@ -744,17 +741,18 @@ main (int argc, char *argv[])
 	char *version;
 	char *ret;
 	const char *message;
-	GOptionContext *ctx;
+	gboolean    initialized;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	/* Option parsing */
-	ctx = g_option_context_new("- New gdm login");
-        g_option_context_add_main_entries(ctx, options, _("main options"));
-        g_option_context_parse(ctx, &argc, &argv, NULL);
-        g_option_context_free(ctx);
+	initialized = gtk_init_with_args (&argc,
+					  &argv,
+					  "- New gdm login",
+					  options,
+					  GETTEXT_PACKAGE,
+					  NULL);
 
 	if (monte_carlo_pi) {
 		calc_pi ();
@@ -769,21 +767,17 @@ main (int argc, char *argv[])
 
 	if (send_command != NULL) {
 		if ( ! gdmcomm_check (FALSE)) {
-			gdm_common_error (_("Error: GDM (GNOME Display "
-                        "Manager) is not running."));
-			gdm_common_error (_("You might be using a different "
-			"display manager."));
+			gdm_common_error (_("Error: GDM (GNOME Display Manager) is not running."));
+			gdm_common_error (_("You might be using a different display manager."));
 			return 1;
 		}
 	} else {
-		/*
-		 * The --command argument does not display anything, so avoid
-		 * running gtk_init until it finishes.  Sometimes the
-		 * --command argument is used when there is no display so it
-		 * will fail and cause the program to exit, complaining about
-		 * "no display".  
-		 */
-		gtk_init(&argc, &argv);
+
+		if (! initialized) {
+			g_warning ("Unable to open a display");
+			exit (1);
+		}
+
 		if ( ! gdmcomm_check (TRUE)) {
 			return 1;
 		}
@@ -793,9 +787,6 @@ main (int argc, char *argv[])
 	gdmcomm_comm_bulk_start ();
 
 	/* Process --command option */
-
-        g_type_init ();
-
 	if (send_command != NULL) {
 		if (authenticate)
 			auth_cookie = gdmcomm_get_auth_cookie ();
