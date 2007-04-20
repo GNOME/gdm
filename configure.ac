@@ -1292,10 +1292,6 @@ config/PostSession
 config/gdmprefetchlist
 config/gnome.desktop.in
 config/ssh.desktop.in
-gdm-stop
-gdm-restart
-gdm-safe-restart
-gdm.spec
 ])
 
 dnl add back when help comes back

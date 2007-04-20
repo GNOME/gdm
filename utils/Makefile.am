@@ -1,4 +1,5 @@
-## Process this file with automake to produce makefile.in
+NULL =
+
 DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"$(gdmconfdir)/gdm.conf\" \
 	-DGDM_FACTORY_CONFIG_FILE=\"$(gdmconfdir)/factory-gdm.conf\" \
 	-DGDM_GLADE_DIR=\"@datadir@/gdm\"
@@ -11,7 +12,36 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)
 
-EXTRA_DIST = gdm-ssh-session
+edit = sed \
+	-e 's|@sbindir[@]|$(sbindir)|g' \
+	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
+	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@GDM_PID_FILE[@]|$(GDM_PID_FILE)|g'
+
+gdm-stop: gdm-stop.in Makefile
+	$(edit) $< >$@
+gdm-restart: gdm-restart.in Makefile
+	$(edit) $< >$@
+gdm-safe-restart: gdm-safe-restart.in Makefile
+	$(edit) $< >$@
+gdmsetup: gdmsetup-security.in
+	$(edit) <gdmsetup-security.in >gdmsetup
+
+
+sbin_SCRIPTS = 			\
+	gdm-stop		\
+	gdm-restart		\
+	gdm-safe-restart	\
+	$(NULL)
+
+EXTRA_DIST = 			\
+	gdm-ssh-session		\
+	gdm-stop.in		\
+	gdm-restart.in		\
+	gdm-safe-restart.in	\
+	gdmsetup-pam		\
+	gdmsetup-security.in	\
+	$(NULL)
 
 libexec_SCRIPTS = \
 	@GDMSSHSESSION@
@@ -20,7 +50,7 @@ libexec_PROGRAMS = \
 	@GDMASKPASS@	\
 	@GDMOPEN@	\
 	@GDMPREFETCH@	\
-	gdmtranslate	
+	gdmtranslate
 
 if DMX_SUPPORT
 bin_PROGRAMS = gdm-dmx-reconnect-proxy
@@ -63,3 +93,22 @@ gdm_dmx_reconnect_proxy_LDADD = \
 	-lX11 \
 	$(DMX_LIBS)
 endif
+
+if CONSOLE_HELPER
+cappsdir = $(PAM_PREFIX)/security/console.apps
+capps_DATA = gdmsetup
+
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(PAM_PREFIX)/pam.d
+	$(INSTALL_DATA) $(srcdir)/gdmsetup-pam $(DESTDIR)$(PAM_PREFIX)/pam.d/gdmsetup
+else
+install-data-local:
+endif
+
+CLEANFILES = 			\
+	gdmsetup-security	\
+	$(NULL)
+
+DISTCLEANFILES = 		\
+	gdmsetup		\
+	$(NULL)

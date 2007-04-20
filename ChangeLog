@@ -1,3 +1,22 @@
+2007-04-20  William Jon McCann  <mccann@jhu.edu>
+
+	* Makefile.am:
+	* configure.ac:
+	* gdm-restart.in:
+	* gdm-safe-restart.in:
+	* gdm-stop.in:
+	* gdm.spec.in:
+	* gdmsetup-pam:
+	* gdmsetup-security.in:
+	* utils/Makefile.am:
+	* utils/gdm-restart.in:
+	* utils/gdm-safe-restart.in:
+	* utils/gdm-stop.in:
+	Fixes the pid file handling in the gdm-restart/stop/safe-restart
+	scripts. Moves the scripts to the utils subdir.  Moves the
+	gdmsetup stuff from toplevel to utils subdir.  Removes gdm.spec.
+	Fixes #431462
+
 2007-04-19  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac, acconfig.h, daemon/gdm.c,
