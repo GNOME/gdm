@@ -111,7 +111,7 @@ CLEANFILES = 			\
 
 DISTCLEANFILES = 		\
 	gdmsetup		\
-	gdmstop			\
+	gdm-stop		\
 	gdm-restart		\
 	gdm-safe-restart	\
 	$(NULL)
