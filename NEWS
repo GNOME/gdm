@@ -1,5 +1,155 @@
 Ahh news...
 
+2.19.0 Stuff:
+
+Interface Changes:
+
+- Now the GDM PidFile is now specified as /var/run/gdm.pid and the
+  GDM configuration key PidFile has been deprecated.  The location
+  of the PidFile can be configured with the configure --with-pid-file
+  option.  (Brian Cameron, William Jon McCann)
+
+- The GDM AlwaysRestartServer configuration option is deprecated and
+  GDM will now always restart the Xserver between users.  This makes
+  GDM work more reliably since reusing the Xserver can expose memory
+  leaks and instabilities in the Xserver code.  (Brian Cameron,
+  William Jon McCann)
+
+- Now the GDM LogDir is set to /var/log/gdm rather than /var/lib/log/gdm
+  by default.  Users can configure this with the configure
+  --with-log-file option.  (Brian Cameron)
+
+- Remove logic to call whack_clients when closing the session.  This
+  code was written to address bug #126071, to ensure that all clients
+  are killed on session exit.  However, this approach does not work 
+  well and causes GDM to fail badly when you kill the Xserver via
+  control-al-backspace on some environments.  If there is still a need
+  to kill clients on session exit, a better approach will need to be
+  designed.  (Cesare Tirabassi)
+
+- Now GDM supports Xephyr as the Nested Xserver command.  GDM will use
+  Xephyr by default if it is on the system, and fallback to Xnest.  Xephyr
+  works much better than Xnest.  (Brian Cameron)
+
+- Now gdmgreeter will not display the Face Browser is the GDM configuration
+  option Browser is false.  Now gdmsetup supports a "Themed with face
+  browser" option to support selecting this.
+
+- Comment in GDM System Defaults configuration file now shows "true"
+  for ConfigAvailable since this value has been defaulting to true for
+  some time and the comment in the System Defaults configuration file
+  was incorrect.
+
+- Now gdmphotosetup.desktop specifies NotShowIn=GNOME since the About-Me
+  capplet is a better place for configuring the user's face image in GNOME.
+
+New interfaces:
+
+- Add min-screen-height tag to gdmgreeter parser logic so that certain
+  elements in the theme will only display if the screen is large 
+  enough.  (Ray Strode).
+
+- New configuration option SystemCommandsInMenu to configure which
+  system commands (reboot, shutdown, suspend, etc.) appear in the GDM
+  greeter system menu.   New configuration option AllowLogoutActions
+  to specify which system commands are supported by the QUERY_LOGOUT_ACTION,
+  SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT action gdmflexiserver commands.
+  This allows GDM to be configured to support shutdown, reboot, suspend
+  from the user session, but no from the login screen directly, if 
+  desired.  In situations where you want the user to authenticate before
+  being able to shutdown or reboot the machine, this feature would be
+  useful.
+
+- GDM Now supports RBAC (Role Based Access Control) for specifying
+  which actions (reboot, shutdown, suspend, etc.) are supported on a per-user
+  basis.  This feature is only available if GDM is compiled with RBAC support
+  enabled.  The new configuration option RBACSystemCommandKeys allows an RBAC
+  key to be specified for each system command.  Only users who have RBAC
+  authority will be able to query or set the logout action.  The GDM GUI will
+  only display actions for which the "gdm" user has RBAC authority.  GDM will
+  assume that all users have authority for actions which do not have an RBAC
+  key associated with them.
+
+- Now support XnestUnscaledFontPath configuration option, which allows GDM
+  to work with Xnest.  Xorg 7.2 XGetFontPath function now returns fontpath
+  with the ":unscaled" prefix, which Xsun Xnest cannot handle.  Setting
+  XnestUnscaledFontPath=false, will strip the ":unscaled" prefix from the
+  fontpath so that it can work.  (Brian Cameron)
+
+New features, improvements, and bug fixes:
+
+- GDM had a bug that would happen after the user asked to run the
+  "Configure GDM" menu choice.  If the user typed the wrong password,
+  it would ask up to 3 times.  If the user typed the correct password
+  on the 2nd or 3rd try, it would start a root user session rather
+  than running gdmsetup.  This problem would only happen if using PAM
+  for authenticating passwords.  Now GDM only asks for the root
+  passwords once, and only runs gdmsetup if the password is correct.
+  This bug was introduced into GDM 2.18.0 when Ludwig Nussel made some
+  improvements to make the PAM logic more generic (Brian Cameron)
+
+- Much cleanup work in the GDM code, which now makes more use of 
+  GObjects (e.g. XDMCP code).   Configuration logic rewritten to no 
+  longer use vicious-extensions and now uses GKeyFile.  (William Jon
+  McCann)
+
+- Now when a user changes the language choice in GDM, it will ask if
+  the user wants to restart the GDM GUI in the selected language. 
+  (Takao Fujiwara, Brian Cameron)
+
+- Many improvements supporting languages.  Now all LC_* settings are 
+  normalized to LANG, and input methods (IIIM->XIM) are started.  
+  (Hidetoshi Tajima, Chookij Vanatham)
+
+- Fix check in gdmgreeter so that the language combo style selection
+  works.  (Simon)
+
+- Add ATK label for the entry field in gdmgreeter for better 
+  accessibility support.  (David Zeuthen)
+
+- In gdmsetup, only show tar and compressed tar files in the file chooser
+  for selecting gdmgreeter themes to install.  (Kristof Vansant)
+
+- Now the "Configure GDM" option is not displayed when accessibility is
+  enabled in GDM.  This is because gdmsetup currently hangs when the
+  user tries to run gdmsetup from the greeter program.  Not really a 
+  fix, but prevents the user from getting into a situation that causes
+  a system hang.  (Brian Cameron)
+
+- Now Face Browser displays non-utf8 characters as '?' rather than
+  crashing when trying to display such characters.  (Ray Strode)
+
+- Improve GDM messages, correcting spelling and grammar mistakes
+  (Brian Cameron)
+
+- Fix detection of user specified in flexi command.  (William Jon 
+  McCann)
+
+- gdmflexiserver now properly initializes GTK+.  (William Jon McCann)
+
+- Call "xrdb -merge /etc/X11/Xresources" in the Init script so that the
+  GDM GUI is properly configured with Xft rsources.  Fixes bug #301826.
+  (Ray Strode)
+
+- Now desktop categories for all GDM related desktop files should be
+  correct.  (Brian Cameron)
+
+- Fix gdm startup script so it works with Solaris /bin/sh.  (Brian
+  Cameron)
+
+- Fix a strcpy call in gui/gdmlanguages.c so source and destination do
+  not overlap.  (Ray Strode) 
+
+- Remove gnome glade references since GNOME does not use libglade anymore.
+  (Kristof Vansant)
+
+- Many improvements to GDM docs.  (Brian Cameron, William Jon McCann)
+
+- Translation updates (Djihed Afifi, Takeshi AIHANA, Leonardo
+  Ferreira Fontenelle, Jakub Friedl, Pema Geyleg, Priit Laes, Duarte
+  Loreto, Kjartan Maraas, Daniel Nylander, Kostas Papadimas, Ignacio
+  Casal Quinteiro, Hendrik Richter, Funda Wang)
+
 2.18.1 Stuff:
 
 - The GDM configuration option daemon/PidFile is now deprecated and
@@ -38,6 +188,9 @@ Ahh news...
 
 - GDM daemon no longer links with D-Bus if ConsoleKit is not enabled.
   (William Jon McCann)
+
+- Remove gnome glade references since GNOME does not use libglade anymore.
+  (Kristof Vansant)
 
 - Translation updates (Takeshi AIHANA, Jakub Friedl, Leonardo Ferreira
   Fontenelle, Pema Geyleg, Priit Laes, Kjartan Maraas, Inaki Larranaga
