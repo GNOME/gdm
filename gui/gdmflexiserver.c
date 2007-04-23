@@ -82,10 +82,9 @@ get_cur_vt (void)
 	char           *result;
 	static int      cur_vt;
 	static gboolean checked = FALSE;
-	int             ret;
+	char           *ret = NULL;
 
 	result = NULL;
-	ret = -1;
 
 	if (checked) {
 		return cur_vt;
@@ -103,7 +102,7 @@ get_cur_vt (void)
 	checked = TRUE;
 
  out:
-	g_free (result);
+	g_free (ret);
 
 	return cur_vt;
 }
