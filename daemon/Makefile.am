@@ -37,6 +37,7 @@ gdm_binary_SOURCES = \
 	gdm-daemon-config.c \
 	gdm-daemon-config.h \
 	gdm-daemon-config-entries.h \
+	gdm-daemon-config-keys.h \
 	display.c \
 	display.h \
 	fstype.c \
