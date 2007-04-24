@@ -163,7 +163,7 @@ load_servers_group (GdmConfig *config)
         int        i;
 
         keys = gdm_config_get_keys_for_group (config, GDM_CONFIG_GROUP_SERVERS, &len, NULL);
-        g_message ("Got %d keys for group %s", len, GDM_CONFIG_GROUP_SERVERS);
+        g_message ("Got %d keys for group %s", (int)len, GDM_CONFIG_GROUP_SERVERS);
 
         /* now construct entries for these groups */
         for (i = 0; i < len; i++) {
