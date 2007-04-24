@@ -1578,7 +1578,7 @@ gdm_hostent_free (GdmHostent *he)
 
 /* Like fopen with "w" */
 FILE *
-gdm_safe_fopen_w (const char *file)
+gdm_safe_fopen_w (const char *file, mode_t perm)
 {
 	int fd;
 	FILE *ret;
@@ -1592,7 +1592,7 @@ gdm_safe_fopen_w (const char *file)
 #ifdef O_NOFOLLOW
 			   |O_NOFOLLOW
 #endif
-			   , 0644);
+			   , perm);
 	} while G_UNLIKELY (errno == EINTR);
 	if (fd < 0)
 		return NULL;
@@ -1602,7 +1602,7 @@ gdm_safe_fopen_w (const char *file)
 
 /* Like fopen with "a+" */
 FILE *
-gdm_safe_fopen_ap (const char *file)
+gdm_safe_fopen_ap (const char *file, mode_t perm)
 {
 	int fd;
 	FILE *ret;
@@ -1630,7 +1630,7 @@ gdm_safe_fopen_ap (const char *file)
 #ifdef O_NOFOLLOW
 				   |O_NOFOLLOW
 #endif
-				   , 0644);
+				   , perm);
 		} while G_UNLIKELY (errno == EINTR);
 	}
 	if (fd < 0)

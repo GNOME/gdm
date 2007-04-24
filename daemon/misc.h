@@ -94,9 +94,9 @@ const char * gdm_saved_getenv (const char *var);
 void gdm_restoreenv (void);
 
 /* like fopen with "w" but unlinks and uses O_EXCL */
-FILE * gdm_safe_fopen_w (const char *file);
+FILE * gdm_safe_fopen_w (const char *file, mode_t perm);
 /* like fopen with "a+" and uses O_EXCL and O_NOFOLLOW */
-FILE * gdm_safe_fopen_ap (const char *file);
+FILE * gdm_safe_fopen_ap (const char *file, mode_t perm);
 
 /* first must get initial limits before attempting to ever reset those
    limits */

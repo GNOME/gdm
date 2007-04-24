@@ -223,7 +223,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 		/* Make another authfile since the greeter can't read the server/user
 		 * readable file */
 		d->authfile_gdm = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR), d->name, ".Xauth");
-		af_gdm = gdm_safe_fopen_w (d->authfile_gdm);
+		af_gdm = gdm_safe_fopen_w (d->authfile_gdm, 0644);
 
 		if G_UNLIKELY (af_gdm == NULL) {
 			gdm_error (_("%s: Cannot safely open %s"),
@@ -240,7 +240,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	} else {
 		/* gdm and xserver authfile can be the same, server will run as root */
 		d->authfile = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR), d->name, ".Xauth");
-		af = gdm_safe_fopen_w (d->authfile);
+		af = gdm_safe_fopen_w (d->authfile, 0644);
 
 		if G_UNLIKELY (af == NULL) {
 			gdm_error (_("%s: Cannot safely open %s"),
@@ -644,8 +644,6 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 			g_free (d->userauth);
 			d->userauth = NULL;
 
-			umask (022);
-
 			authdir_is_tmp_dir = FALSE;
 			goto try_user_add_again;
 		}
@@ -677,15 +675,13 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 			g_free (d->userauth);
 			d->userauth = NULL;
 
-			umask (022);
-
 			automatic_tmp_dir = TRUE;
 			goto try_user_add_again;
 		}
 
 		locked = TRUE;
 
-		af = gdm_safe_fopen_ap (d->userauth);
+		af = gdm_safe_fopen_ap (d->userauth, 0600);
 	}
 
 	/* Set to NULL, because can goto try_user_add_again. */
@@ -702,13 +698,12 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 		g_free (d->userauth);
 		d->userauth = NULL;
 
-		umask (022);
-
 		if ( ! d->authfb) {
 			automatic_tmp_dir = TRUE;
 			goto try_user_add_again;
 		}
 
+		umask (022);
 		return FALSE; 
 	}
 
@@ -785,7 +780,6 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 	FILE *af;
 	gchar *authfile;
 	gchar *authdir;
-	mode_t oldmode;
 
 	if G_UNLIKELY (!d || !d->userauth)
 		return;
@@ -846,9 +840,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 		return;
 	}
 
-	oldmode = umask (077);
-	af = gdm_safe_fopen_ap (d->userauth);
-	umask (oldmode);
+	af = gdm_safe_fopen_ap (d->userauth, 0600);
 
 	if G_UNLIKELY (af == NULL) {
 		XauUnlockAuth (d->userauth);
@@ -928,7 +920,6 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 {
 	Xauth *xa;
 	GSList *keep = NULL, *li;
-	mode_t oldmode;
 	int cnt;
 
 	if G_UNLIKELY (!d || !af)
@@ -975,9 +966,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 		return NULL;
 	}
 
-	oldmode = umask (077);
-	af = gdm_safe_fopen_w (d->userauth);
-	umask (oldmode);
+	af = gdm_safe_fopen_w (d->userauth, 0600);
 
 	/* Write out remaining entries */
 	for (li = keep; li != NULL; li = li->next) {

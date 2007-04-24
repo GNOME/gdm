@@ -1,5 +1,17 @@
 2007-04-24  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/misc.[ch], daemon/auth.c, daemon/misc.c: Be more clever
+	  about setting umask.  Now gdm_safe_fopen_w and gdm_safe_fopen_ap
+	  takes a perm argument so that the open can specify the mode 
+	  rather than having to use umask to cause the mode to be set
+	  properly.  In daemon/auth.c, no longer set umask to 022
+	  immediately before calling "goto try_user_add_again" since
+	  the umask is reset to 077 right after the goto label.  Patch
+	  by Peter Baumann <waste.manager@gmx.de>.  Partially fixes
+ 	  bug #305931.
+
+2007-04-24  Brian Cameron  <brian.cameron@sun.com>
+
 	* common/Makefile.am: Fix so libgdmcommon.a is referenced without
 	  full path.  Fixes bug #432831.  Patch by Saleem Abdulrasool
 	  <compnerd@gentoo.org>.

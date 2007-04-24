@@ -188,7 +188,7 @@ gdm_daemonify (void)
 		const char *pidfile = GDM_PID_FILE;
 
 		errno = 0;
-		if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
+		if ((pf = gdm_safe_fopen_w (pidfile, 0644)) != NULL) {
 			errno = 0;
 			VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)pid));
 			VE_IGNORE_EINTR (fclose (pf));
@@ -1492,16 +1492,13 @@ gdm_make_global_cookie (void)
 {
 	FILE *fp;
 	char *file;
-	mode_t oldmode;
 
 	gdm_cookie_generate ((char **)&gdm_global_cookie, (char **)&gdm_global_bcookie);
 
 	file = g_build_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR), ".cookie", NULL);
 	VE_IGNORE_EINTR (g_unlink (file));
 
-	oldmode = umask (077);
-	fp = gdm_safe_fopen_w (file);
-	umask (oldmode);
+	fp = gdm_safe_fopen_w (file, 0600);
 	if G_UNLIKELY (fp == NULL) {
 		gdm_error (_("Can't open %s for writing"), file);
 		g_free (file);
@@ -1639,7 +1636,7 @@ main (int argc, char *argv[])
 
 		/* Write pid to pidfile */
 		errno = 0;
-		if ((pf = gdm_safe_fopen_w (pidfile)) != NULL) {
+		if ((pf = gdm_safe_fopen_w (pidfile, 0644)) != NULL) {
 			errno = 0;
 			VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)getpid ()));
 			VE_IGNORE_EINTR (fclose (pf));
@@ -1849,7 +1846,7 @@ write_x_servers (GdmDisplay *d)
 	if (d->x_servers_order < 0)
 		d->x_servers_order = get_new_order (d);
 
-	fp = gdm_safe_fopen_w (file);
+	fp = gdm_safe_fopen_w (file, 0644);
 	if G_UNLIKELY (fp == NULL) {
 		gdm_error (_("Can't open %s for writing"), file);
 		g_free (file);
