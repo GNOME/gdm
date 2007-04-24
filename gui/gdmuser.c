@@ -30,11 +30,11 @@
 #include <pwd.h>
 
 #include "gdm.h"
+#include "gdm-common.h"
 #include "gdmcommon.h"
 #include "gdmuser.h"
 #include "gdmconfig.h"
 
-#include "gdm-common.h"
 #include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 

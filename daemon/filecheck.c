@@ -24,10 +24,10 @@
 #include <sys/stat.h>
 
 #include "gdm.h"
-#include "filecheck.h"
-
 #include "gdm-common.h"
 #include "gdm-daemon-config.h"
+
+#include "filecheck.h"
 
 /**
  * gdm_file_check:
