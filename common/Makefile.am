@@ -51,7 +51,7 @@ test_config_SOURCES = 		\
 	$(NULL)
 
 test_config_LDADD =		\
-	$(top_builddir)/common/libgdmcommon.a	\
+	libgdmcommon.a	\
 	$(GLIB_LIBS)		\
 	$(NULL)
 
@@ -60,6 +60,6 @@ test_log_SOURCES = 		\
 	$(NULL)
 
 test_log_LDADD =		\
-	$(top_builddir)/common/libgdmcommon.a	\
+	libgdmcommon.a	\
 	$(GLIB_LIBS)		\
 	$(NULL)

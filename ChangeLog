@@ -1,5 +1,11 @@
 2007-04-24  Brian Cameron  <brian.cameron@sun.com>
 
+	* common/Makefile.am: Fix so libgdmcommon.a is referenced without
+	  full path.  Fixes bug #432831.  Patch by Saleem Abdulrasool
+	  <compnerd@gentoo.org>.
+
+2007-04-24  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/filecheck.c, gui/gdmuser.c: Fix include order to correct
 	  compile issues on some platforms where uid_t isn't found.  Patch
 	  by Jens Granseuer <jensgr@gmx.net>.  Fixes bug #432686.
