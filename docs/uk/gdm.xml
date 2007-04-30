@@ -1398,11 +1398,12 @@ Greeter=/usr/lib/gdmgreeter
                  Specify which actions are supported by the QUERY_LOGOUT_ACTION,
                  SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION
                  <command>gdmflexiserver</command> commands.  Valid values are 
-                 HALT, REBOOT, SHUTDOWN, SUSPEND, and CUSTOM_CMD and these should be
-                 separated by semicolons.  This allows certain options to be disabled  
-                 if desired.  Refer to the related
+                 HALT, REBOOT, SHUTDOWN, SUSPEND, and CUSTOM_CMD and these
+                 should be separated by semicolons.  This allows certain
+                 options to be disabled  if desired.  Refer to the related
                  <filename>SystemCommandsInMenu</filename> and
-                 <filename>RBACSystemCommandKeys</filename> configuration options.
+                 <filename>RBACSystemCommandKeys</filename> configuration
+                 options.
               </para>
             </listitem>
           </varlistentry>
@@ -1656,9 +1657,9 @@ Greeter=/usr/lib/gdmgreeter
                 once only, the first time a greeter is displayed.  The
                 gdmprefetch command may be used.  This utility will load any
                 libraries passed in on the command line, or if the argument
-                starts with a "@" character, it will process the file assuming
-                it is an ASCII file containing a list of libraries, one per
-                line, and load each library in the file.
+                starts with a "@" character, it will process the file
+                assuming it is an ASCII file containing a list of libraries,
+                one per line, and load each library in the file.
               </para>
             </listitem>
           </varlistentry>
@@ -1693,22 +1694,24 @@ Greeter=/usr/lib/gdmgreeter
               <synopsis>RBACSystemCommandKeys</synopsis>
               <para>
                  Support RBAC (Role Based Access Control) for system commands 
-                 (Shutdown, Reboot, Suspend, etc.).  This feature is only functional
-                 if GDM is compiled with RBAC support.  Specify the RBAC key used
-                 to determine if the user has permission to use the action via the
-                 QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION
-                 <command>gdmflexiserver</command> commands.  Valid actions are 
-                 HALT, REBOOT, SUSPEND, and CUSTOM_CMD.  The greeter will only
-                 display the command if the gdm user (<filename>User</filename>
-                 configuration key) has RBAC permissions to use the action.  RBAC
-                 keys for multiple actions can be specified by separating them with
-                 semicolons.  The format for each is "Action:RBAC key".  If an
-                 action is not specified, it is assumed that all users have 
-                 permission to use this action.  For example, a valid value for
-                 this configuration option would be
-                 "HALT:key.for.halt;REBOOT:key.for.reboot".  Refer to the
-                 related <filename>AllowLogoutActions</filename> and
-                 <filename>SystemCommandsInMenu</filename> configuration options.
+                 (Shutdown, Reboot, Suspend, etc.).  This feature is only
+                 functional if GDM is compiled with RBAC support.  Specify the
+                 RBAC key used to determine if the user has permission to use
+                 the action via the QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and
+                 SET_SAFE_LOGOUT_ACTION <command>gdmflexiserver</command>
+                 commands.  Valid actions are HALT, REBOOT, SUSPEND, and
+                 CUSTOM_CMD.  The greeter will only display the command if the
+                 gdm user (<filename>User</filename> configuration key) has
+                 RBAC permissions to use the action.  RBAC keys for multiple
+                 actions can be specified by separating them with semicolons.
+                 The format for each is "Action:RBAC key".  If an action is not
+                 specified, it is assumed that all users have permission to use
+                 this action.  For example, a valid value for this
+                 configuration option would be
+                 "HALT:key.for.halt;REBOOT:key.for.reboot".  Refer to
+                 the related <filename>AllowLogoutActions</filename> and
+                 <filename>SystemCommandsInMenu</filename> configuration
+                 options.
               </para>
             </listitem>
           </varlistentry>
@@ -1791,17 +1794,20 @@ Greeter=/usr/lib/gdmgreeter
               <synopsis>SuspendCommand=HALT;REBOOT;SHUTDOWN;SUSPEND;CUSTOM_CMD</synopsis>
               <para>
                  Specify which system commands are available in the greeter
-                 menu. Valid values are HALT, REBOOT, SHUTDOWN, SUSPEND, and CUSTOM_CMD
-                 and these should be separated by semicolons.  This can be useful if you
-                 want to disable some options in the menu, but still have them available
-                 to authenticated users via the SET_LOGOUT_ACTION or
-                 SET_SAFE_LOGOUT_ACTION <command>gdmflexiserver</command> commands.  For
-                 example, the GNOME panel uses these commands to provide Shutdown,
-                 Reboot, and Suspend in the application menu.  Therefore if you turn off
-                 these options in the greeter, these options can still be available to
-                 users who have authenticated via the GNOME panel.  Refer to the related
+                 menu. Valid values are HALT, REBOOT, SHUTDOWN, SUSPEND, and
+                 CUSTOM_CMD and these should be separated by semicolons.  This
+                 can be useful if you want to disable some options in the menu,
+                 but still have them available to authenticated users via the
+                 SET_LOGOUT_ACTION or SET_SAFE_LOGOUT_ACTION
+                 <command>gdmflexiserver</command> commands.  For example, the
+                 GNOME panel uses these commands to provide Shutdown, Reboot,
+                 and Suspend in the application menu.  Therefore if you turn
+                 off these options in the greeter, these options can still be
+                 available to users who have authenticated via the GNOME panel.
+                 Refer to the related
                  <filename>AllowLogoutActions</filename> and
-                 <filename>RBACSystemCommandKeys</filename> configuration options.
+                 <filename>RBACSystemCommandKeys</filename> configuration
+                 options.
               </para>
             </listitem>
           </varlistentry>
@@ -3382,7 +3388,8 @@ Arguments: &lt;pattern&gt; (optional)
 Answers:
   OK &lt;server&gt;;&lt;server&gt;;...
 
-  &lt;server&gt; is &lt;display&gt;,&lt;logged in user&gt;,&lt;vt or xnest display&gt;
+  &lt;server&gt; is &lt;display&gt;,&lt;logged in user&gt;,&lt;vt or xnest
+  display&gt;
 
   &lt;logged in user&gt; can be empty in case no one logged
   in yet, and &lt;vt&gt; can be -1 if it's not known or not
@@ -3491,8 +3498,8 @@ Note:             The cookie should be the MIT-MAGIC-COOKIE-1,
                   use you should generate one first.  The cookie
                   should be in hex form.
 Supported since:  2.17.7
-Arguments: &lt;username&gt; &lt;display to run on&gt; &lt;uid of requesting user&gt;
-           &lt;xauth cookie for the display&gt; &lt;xauth file&gt;
+Arguments: &lt;username&gt; &lt;display to run on&gt; &lt;uid of requesting
+           user&gt; &lt;xauth cookie for the display&gt; &lt;xauth file&gt;
 Answers:
   OK &lt;display&gt;
   ERROR &lt;err number&gt; &lt;english error description&gt;
@@ -3562,12 +3569,13 @@ Answers:
 GET_CONFIG:  Get configuration value for key.  Useful so
              that other applications can request configuration
              information from GDM.  Any key defined as GDM_KEY_*
-             in gdm-daemon-config-keys.h is supported.  Starting with version 2.13.0.2
-             translated keys (such as "greeter/GdmWelcome[cs]" are
-             supported via GET_CONFIG.  Also starting with version
-             2.13.0.2 it is no longer necessary to include the
-             default value (i.e. you can use key "greeter/IncludeAll"
-             instead of having to use "greeter/IncludeAll=false".  
+             in gdm-daemon-config-keys.h is supported.  Starting with version
+             2.13.0.2, translated keys (such as
+             "greeter/GdmWelcome[cs]" are supported via GET_CONFIG.
+             Also starting with version 2.13.0.2 it is no longer necessary to
+             include the default value (i.e. you can use key
+             "greeter/IncludeAll" instead of having to use
+             "greeter/IncludeAll=false".  
 Supported since: 2.6.0.9
 Arguments: &lt;key&gt;
 Answers:
@@ -4986,6 +4994,23 @@ homogeneous="bool"&gt;
             </listitem>
           </varlistentry>
         </variablelist>
+
+        <para>
+		Item nodes can have a "background" property, set to "true"
+		or "false" (not setting this property is equivalent to "false"), as follow :
+
+<screen>
+&lt;item type="rect" background="true"&gt;
+    &lt;normal file="background.svg"/&gt;
+    &lt;pos x="0" y="0" width="100%" height="-75"/&gt;
+&lt;/item&gt;
+</screen>
+
+		When this property is set on item nodes, background is applied to root window when greeter
+		exits after login, reducing screen flickering during login process. If no item node have "background"
+		property set, background is not modified when greeter exits.
+	</para>
+
       </sect3>
 
       <sect3 id="positionnodes">

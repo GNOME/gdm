@@ -469,11 +469,11 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	     * should probably be done in the pam item setup thingie.
 	     * but this is really widget kind of thing.  I dunno where
 	     * this belongs but it's a hack here. */
-	    GtkWidget *menubar = make_menubar ();
+	    item->data.text.menubar = make_menubar ();
 
 	    gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
 				   GNOME_TYPE_CANVAS_WIDGET,
-				   "widget", menubar,
+				   "widget", item->data.text.menubar,
 				   "x", (double)x1,
 				   "y", (double)y1,
 				   "height", (double)rect.height,
@@ -482,7 +482,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 
 	    greeter_item_register_action_callback ("options_button",
 						   (ActionFunc)greeter_options_handler,
-						   menubar);
+						   item->data.text.menubar);
 	    
 	    /* Here add a tooltip, so that the user knows about F10 */
 	    tooltips = gtk_tooltips_new ();

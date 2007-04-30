@@ -79,6 +79,7 @@ gboolean GdmConfiguratorFound  = FALSE;
 
 /* FIXME: hack */
 GreeterItemInfo *welcome_string_info = NULL;
+GreeterItemInfo *root = NULL;
 
 extern gboolean session_dir_whacked_out;
 extern gboolean require_quarter;
@@ -449,6 +450,18 @@ process_operation (guchar       op_code,
 
 	gdk_flush ();
 
+	if (greeter_show_only_background (root)) {
+		GdkPixbuf *background;
+		int width, height;
+
+		gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+		background = gdk_pixbuf_get_from_drawable (NULL, gtk_widget_get_root_window(window), NULL, 0, 0, 0, 0 ,width, height);
+		if (background) {
+			gdm_common_set_root_background (background);
+			g_object_unref (background);
+		}
+	}
+
 	printf ("%c\n", STX);
 	fflush (stdout);
 
@@ -555,7 +568,7 @@ key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
 {
   if (DOING_GDM_DEVELOPMENT && (key->keyval == GDK_Escape))
     {
-      gtk_main_quit ();
+      process_operation (GDM_QUIT, NULL);
       
       return TRUE;
     }
@@ -1188,7 +1201,6 @@ main (int argc, char *argv[])
   sigset_t mask;
   GIOChannel *ctrlch;
   GError *error;
-  GreeterItemInfo *root;
   char *theme_file;
   char *theme_dir;
   gchar *gdm_graphical_theme;

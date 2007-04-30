@@ -43,5 +43,6 @@ GreeterItemInfo *greeter_parse (const char  *file,
 
 GreeterItemInfo *greeter_lookup_id (const char *id);
 const GList *greeter_custom_items (void);
+gboolean greeter_show_only_background (GreeterItemInfo *root_item);
 
 #endif /* __GREETER_PARSER_H__ */

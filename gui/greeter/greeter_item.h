@@ -124,6 +124,9 @@ struct _GreeterItemInfo {
   /* is a real GTK button (not the fake canvas button) */
   guint gtkbutton:1;
 
+  /* item is used to draw background */
+  guint background:1;
+
   /* geometry handling: */
   guint has_requisition:1;
   GtkRequisition requisition;
@@ -164,6 +167,7 @@ struct _GreeterItemInfo {
 		  guint16 max_width;
 		  guint8 max_screen_percent_width;
 		  guint16 real_max_width;
+		  GtkWidget *menubar;
 	  } text; /* text and entry (entry only uses fonts) */
 
 #define GREETER_ITEM_TYPE_IS_PIXMAP(info) ((info)->item_type == GREETER_ITEM_TYPE_PIXMAP || (info)->item_type == GREETER_ITEM_TYPE_SVG)

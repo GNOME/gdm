@@ -64,6 +64,7 @@ gchar*	  gdm_common_get_config_file	    (void);
 gchar*	  gdm_common_get_custom_config_file (void);
 gboolean  gdm_common_select_time_format	    (void);
 void	  gdm_common_setup_background_color (gchar *bg_color);
+void      gdm_common_set_root_background    (GdkPixbuf *pb);
 gchar*	  gdm_common_get_welcomemsg	    (void);
 void	  gdm_common_pre_fetch_launch       (void);
 void      gdm_common_atspi_launch           (void);

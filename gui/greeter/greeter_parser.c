@@ -1665,6 +1665,7 @@ parse_items (xmlNodePtr  node,
     GList *items;
     gboolean res;
     xmlChar *type;
+    xmlChar *background;
     GreeterItemInfo *info;
     GreeterItemType item_type;
 
@@ -1766,6 +1767,20 @@ parse_items (xmlNodePtr  node,
 
 	    if (info->canvasbutton)
 	      button_stack = g_list_remove (button_stack, info);
+
+	    background = xmlGetProp (child, (const xmlChar *) "background");
+	    if G_UNLIKELY (background)
+	      {
+		if (strcmp ((char *) background, "true") == 0)
+		   {
+		      info->background = TRUE;
+		   }
+		else if (strcmp ((char *) background, "false") == 0)
+		   {
+		      info->background = FALSE;
+		   }
+		xmlFree (background);
+	      }
 	    
 	    if G_UNLIKELY (!res)
 	      return FALSE;
@@ -1931,4 +1946,52 @@ const GList *
 greeter_custom_items (void)
 {
   return custom_items;
+}
+
+static void
+hide_item (GreeterItemInfo *info, gpointer user_data)
+{  
+	GnomeCanvasItem *item;
+	gboolean *found_background;
+
+	found_background = user_data;
+
+	if (info)
+       	{
+	     if (info->background)
+	     {
+		     *found_background = TRUE;
+	     }
+	     else {
+		item = info->item;
+	      	if (item) {
+			if (GNOME_IS_CANVAS_WIDGET (item)) {
+				gtk_widget_hide (GNOME_CANVAS_WIDGET (item)->widget);
+			}
+			else
+			gnome_canvas_item_hide (item);
+		}
+		if ((info->item_type == GREETER_ITEM_TYPE_ENTRY) &&
+			(info->data.text.menubar != NULL)) {
+				gtk_widget_hide (info->data.text.menubar);
+			}
+	     }
+
+	g_list_foreach (info->fixed_children, (GFunc) hide_item, user_data);
+	g_list_foreach (info->box_children, (GFunc) hide_item, user_data);
+      }
+}
+
+gboolean 
+greeter_show_only_background (GreeterItemInfo *root_item)
+{
+	gboolean found_background = FALSE;
+
+	hide_item (root_item, &found_background);
+
+	/* ensure root canvas is updated */
+	while (gtk_events_pending ())
+	  gtk_main_iteration ();
+
+	return found_background;
 }

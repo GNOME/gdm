@@ -81,12 +81,14 @@ greeter_item_info_new (GreeterItemInfo *parent,
 
   info->canvasbutton = FALSE;
   info->gtkbutton    = FALSE;
+  info->background   = FALSE;
 
   if (GREETER_ITEM_TYPE_IS_TEXT (info))
     {
       info->data.text.max_width = 0xffff;
       info->data.text.max_screen_percent_width = 90;
       info->data.text.real_max_width = 0;
+      info->data.text.menubar= NULL;
     }
 
   return info;

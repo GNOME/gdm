@@ -50,7 +50,7 @@ extern gboolean greeter_probably_login_prompt;
 extern GtkButton *gtk_ok_button;
 extern GtkButton *gtk_start_again_button;
 
-static gboolean
+static void
 greeter_item_pam_error_set (gboolean display)
 {
   GreeterItemInfo *info;
@@ -70,8 +70,6 @@ greeter_item_pam_error_set (gboolean display)
       else
           gnome_canvas_item_hide (item);
     }
-
-  return TRUE;
 }
 
 void

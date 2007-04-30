@@ -1,3 +1,27 @@
+2007-04-30  Frederic Crozat  <fcrozat@mandriva.com>
+
+	* gui/gdmcommon.c: (gdm_common_set_root_background):
+	* gui/gdmcommon.h:
+	* gui/gdmlogin.c: (setup_background):
+	* gui/greeter/greeter.c: (process_operation), (key_press_event),
+	  (main):
+	* gui/greeter/greeter.dtd:
+	* gui/greeter/greeter_canvas_item.c:
+	  (greeter_item_create_canvas_item):
+	* gui/greeter/greeter_item.c: (greeter_item_info_new):
+	* gui/greeter/greeter_item.h:
+	* gui/greeter/greeter_parser.c: (parse_items), (hide_item),
+	  (greeter_show_only_background):
+	* gui/greeter/greeter_parser.h:
+	* gui/greeter/themes/circles/circles.xml:
+	* gui/greeter/themes/happygnome-list/happygnome.xml:
+	* gui/greeter/themes/happygnome/happygnome.xml:
+	  Add support for root background when login is accepted
+	  (bug #322056).
+
+	* gui/greeter/greeter_item_pam.c: (greeter_item_pam_error_set):
+	  Code cleanup.
+
 2007-04-30  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm-xdmcp-manager.c: Add include of sys/ioctl.h to fix

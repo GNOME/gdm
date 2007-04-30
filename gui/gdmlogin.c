@@ -2750,40 +2750,6 @@ gdm_login_gui_init (void)
     }
 }
 
-static void
-set_root (GdkPixbuf *pb)
-{
-	GdkPixmap *pm;
-	gint width, height;
-
-	g_return_if_fail (pb != NULL);
-
-	gdk_drawable_get_size (gdk_get_default_root_window (), &width, &height);
-	pm = gdk_pixmap_new (gdk_get_default_root_window (), 
-			width, height, -1);
-
-
-	/* paranoia */
-	if (pm == NULL)
-		return;
-
-	gdk_draw_pixbuf (pm, NULL, pb, 0, 0, 0, 0, -1, -1, 
-			GDK_RGB_DITHER_MAX, 0, 0);
-
-	gdk_error_trap_push ();
-
-	gdk_window_set_back_pixmap (gdk_get_default_root_window (),
-				    pm,
-				    FALSE /* parent_relative */);
-
-	g_object_unref (G_OBJECT (pm));
-
-	gdk_window_clear (gdk_get_default_root_window ());
-
-	gdk_flush ();
-	gdk_error_trap_pop ();
-}
-
 static GdkPixbuf *
 render_scaled_back (const GdkPixbuf *pb)
 {
@@ -2886,7 +2852,7 @@ setup_background (void)
 
 		/* paranoia */
 		if (pb != NULL) {
-			set_root (pb);
+			gdm_common_set_root_background (pb);
 			g_object_unref (G_OBJECT (pb));
 		}
 	/* Load background color */
