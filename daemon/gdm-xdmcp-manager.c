@@ -38,6 +38,7 @@
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
+#include <sys/ioctl.h>
 
 #include <errno.h>
 
