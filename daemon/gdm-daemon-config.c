@@ -1469,7 +1469,7 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 			continue;
 		}
 
-		disp = gdm_server_alloc (xserver->number, xserver->id);
+		disp = gdm_display_alloc (xserver->number, xserver->id);
 		if (disp == NULL) {
 			continue;
 		}
@@ -1942,7 +1942,7 @@ handle_no_displays (GdmConfig *config,
 		gdm_error (_("%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"),
 			   "gdm_config_parse", server, num);
 
-		d = gdm_server_alloc (num, server);
+		d = gdm_display_alloc (num, server);
 		d->is_emergency_server = TRUE;
 
 		displays = g_slist_append (displays, d);

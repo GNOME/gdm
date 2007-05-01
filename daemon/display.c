@@ -49,6 +49,85 @@ extern GdmConnection *unixconn;
 extern int slave_fifo_pipe_fd; /* the slavepipe (like fifo) connection, this is the write end */
 extern gint flexi_servers;
 
+/**
+ * gdm_display_alloc:
+ * @id: Local display number
+ * @command: Command line for starting the X server
+ *
+ * Allocate display structure for a local X server
+ */
+
+GdmDisplay *
+gdm_display_alloc (gint id, const gchar *command)
+{
+    gchar hostname[1024];
+    GdmDisplay *d;
+
+    hostname[1023] = '\0';
+    if (gethostname (hostname, 1023) == -1)
+            strcpy (hostname, "localhost.localdomain");
+
+    d = g_new0 (GdmDisplay, 1);
+
+    d->logout_action = GDM_LOGOUT_ACTION_NONE;
+
+    d->authfile = NULL;
+    d->authfile_gdm = NULL;
+    d->auths = NULL;
+    d->userauth = NULL;
+    d->command = g_strdup (command);
+    d->cookie = NULL;
+    d->dispstat = DISPLAY_UNBORN;
+    d->greetpid = 0;
+    d->name = g_strdup_printf (":%d", id);
+    d->hostname = g_strdup (hostname);
+    /* Not really used for not XDMCP */
+    memset (&(d->addr), 0, sizeof (d->addr));
+    d->dispnum = id;
+    d->servpid = 0;
+    d->servstat = SERVER_DEAD;
+    d->sesspid = 0;
+    d->slavepid = 0;
+    d->type = TYPE_STATIC;
+    d->attached = TRUE;
+    d->sessionid = 0;
+    d->acctime = 0;
+    d->dsp = NULL;
+    d->screenx = 0; /* xinerama offset */
+    d->screeny = 0;
+
+    d->handled = TRUE;
+    d->tcp_disallowed = FALSE;
+
+    d->priority = 0;
+    d->vt = -1;
+
+    d->x_servers_order = -1;
+
+    d->last_loop_start_time = 0;
+    d->last_start_time = 0;
+    d->retry_count = 0;
+    d->sleep_before_run = 0;
+    d->login = NULL;
+    d->preset_user = NULL;
+
+    d->timed_login_ok = FALSE;
+
+    d->slave_notify_fd = -1;
+    d->master_notify_fd = -1;
+
+    d->xsession_errors_bytes = 0;
+    d->xsession_errors_fd = -1;
+    d->session_output_fd = -1;
+
+    d->chooser_output_fd = -1;
+    d->chooser_last_line = NULL;
+
+    d->theme_name = NULL;
+
+    return d;
+}
+
 static gboolean
 gdm_display_check_loop (GdmDisplay *disp)
 {

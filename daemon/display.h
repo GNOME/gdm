@@ -208,6 +208,7 @@ struct _GdmDisplay
 	char *parent_temp_auth_file;
 };
 
+GdmDisplay *gdm_display_alloc    (gint id, const gchar *command);
 gboolean    gdm_display_manage   (GdmDisplay *d);
 void        gdm_display_dispose  (GdmDisplay *d);
 void        gdm_display_unmanage (GdmDisplay *d);
