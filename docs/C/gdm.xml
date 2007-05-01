@@ -6518,8 +6518,23 @@ homogeneous=&quot;bool&quot;&gt;
         </variablelist>
 
         <para>
-		Item nodes can have a &quot;background&quot; property, set to &quot;true&quot;
-		or &quot;false&quot; (not setting this property is equivalent to &quot;false&quot;), as follow :
+          By default, the GDM login screen will disappear after authentication.
+          This can result in flicker between the login screen and the session.
+          The &quot;background&quot; property allows users to specify what 
+          elements of the theme are the background image.  When used, this
+          will cause GDM to remove all non-background items from the display
+          and render the remaining &quot;background&quot; items to the root
+          window.  This can be used to create a smooth transition between the
+          login screen and the session.  For example, if the GDM theme and the
+          session use the same background, then this will make the background
+          apear seamless.
+        </para>
+          
+        <para>
+          Item nodes may specify a &quot;background&quot; property which can be
+          set to &quot;true&quot; or &quot;false&quot; (not setting this
+          property is equivalent to &quot;false&quot;), as follows:
+        </para>
 
 <screen>
 &lt;item type=&quot;rect&quot; background=&quot;true&quot;&gt;
@@ -6528,11 +6543,10 @@ homogeneous=&quot;bool&quot;&gt;
 &lt;/item&gt;
 </screen>
 
-		When this property is set on item nodes, background is applied to root window when greeter
-		exits after login, reducing screen flickering during login process. If no item node have &quot;background&quot;
-		property set, background is not modified when greeter exits.
+	<para>
+          If no item node has &quot;background&quot; property set, then the
+          background is not modified when greeter exits.
 	</para>
-
       </sect3>
 
       <sect3 id="positionnodes">
