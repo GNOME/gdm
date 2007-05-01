@@ -100,6 +100,7 @@ void	       gdm_daemon_config_set_user_session_lang (gboolean savesess,
                                                         const char *save_language);
 char *         gdm_daemon_config_get_session_exec     (const char *session_name,
                                                        gboolean check_try_exec);
+char *         gdm_daemon_config_get_session_xserver_args (const char *session_name);
 
 
 G_END_DECLS

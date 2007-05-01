@@ -2328,7 +2328,7 @@ gdm_daemon_config_signal_terminthup_was_notified (void)
  * gdm_daemon_config_get_facefile_from_global
  *
  * These functions are used for accessing the user's face image from their
- * home directory via vicious-extensions.
+ * home directory.
  */
 static gboolean
 check_user_file (const char *path,
@@ -2596,9 +2596,8 @@ is_prog_in_path (const char *prog)
 /**
  * gdm_daemon_config_get_session_exec
  *
- * This function accesses the GDM session desktop file, via vicious
- * extensions and returns the execution command for starting the
- * session.
+ * This function accesses the GDM session desktop file and returns
+ * the execution command for starting the session.
  *
  * Must be called with the PATH set correctly to find session exec.
  */
@@ -2704,10 +2703,81 @@ gdm_daemon_config_get_session_exec (const char *session_name,
 }
 
 /**
+ * gdm_daemon_config_get_session_xserver_args
+ *
+ * This function accesses the GDM session desktop file and returns
+ * additional Xserver arguments to be used with this session
+ */
+char *
+gdm_daemon_config_get_session_xserver_args (const char *session_name)
+{
+	char        *session_filename;
+	const char  *path_str;
+	char       **search_dirs;
+	GKeyFile    *cfg;
+	static char *xserver_args;
+	static char *cached = NULL;
+	gboolean     hidden;
+	char        *ret;
+
+	cfg = NULL;
+
+	/* clear cache */
+	if (session_name == NULL) {
+		g_free (xserver_args);
+		xserver_args = NULL;
+		g_free (cached);
+		cached = NULL;
+		return NULL;
+	}
+
+	if (cached != NULL && strcmp (ve_sure_string (session_name), ve_sure_string (cached)) == 0)
+		return g_strdup (xserver_args);
+
+	g_free (xserver_args);
+	xserver_args = NULL;
+	g_free (cached);
+	cached = g_strdup (session_name);
+
+	/* Some ugly special casing for legacy "Default.desktop", oh well,
+	 * we changed to "default.desktop" */
+	if (g_ascii_strcasecmp (session_name, "default") == 0 ||
+	    g_ascii_strcasecmp (session_name, "default.desktop") == 0) {
+		session_filename = g_strdup ("default.desktop");
+	} else {
+		session_filename = gdm_ensure_extension (session_name, ".desktop");
+	}
+
+	path_str = gdm_daemon_config_get_value_string (GDM_KEY_SESSION_DESKTOP_DIR);
+	if (path_str == NULL) {
+		gdm_error ("No session desktop directories defined");
+		goto out;
+	}
+
+	search_dirs = g_strsplit (path_str, ":", -1);
+
+	cfg = gdm_common_config_load_from_dirs (session_filename,
+						(const char **)search_dirs,
+						NULL);
+	g_strfreev (search_dirs);
+
+	xserver_args = NULL;
+	gdm_common_config_get_string (cfg, "Desktop Entry/X-Gdm-XserverArgs", &xserver_args, NULL);
+
+ out:
+
+	ret = g_strdup (xserver_args);
+
+	g_key_file_free (cfg);
+
+	return ret;
+}
+
+/**
  * gdm_daemon_config_get_user_session_lang
  *
  * These functions get and set the user's language and setting in their
- * $HOME/.dmrc file via vicious-extensions.
+ * $HOME/.dmrc file.
  */
 void
 gdm_daemon_config_set_user_session_lang (gboolean savesess,

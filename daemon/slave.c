@@ -100,62 +100,59 @@
 #include "gdmconsolekit.h"
 #endif
 
-/* Some per slave globals */
-static GdmDisplay *d = 0;
-static gchar *login = NULL;
-static gboolean greet = FALSE;
-static gboolean configurator = FALSE;
-static gboolean remanage_asap = FALSE;
-static gboolean got_xfsz_signal = FALSE;
-static gboolean do_timed_login = FALSE; /* if this is true,
-					   login the timed login */
-static gboolean do_configurator = FALSE; /* if this is true, login as root
-					  * and start the configurator */
-static gboolean do_cancel = FALSE; /* if this is true, go back to
-                                      username entry & unselect face
-                                      browser (if present) */
-static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
-					       greeter and try again */
-static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
-						SIGCHLD hits */
+/* Per-slave globals */
+
+static GdmDisplay *d                   = 0;
+static gchar *login                    = NULL;
+static gboolean greet                  = FALSE;
+static gboolean configurator           = FALSE;
+static gboolean remanage_asap          = FALSE;
+static gboolean got_xfsz_signal        = FALSE;
+static gboolean do_timed_login         = FALSE; /* If this is true, login the
+                                                   timed login */
+static gboolean do_configurator        = FALSE; /* If this is true, login as 
+					         * root and start the
+                                                 * configurator */
+static gboolean do_cancel              = FALSE; /* If this is true, go back to
+                                                   username entry & unselect
+                                                   face browser (if present) */
+static gboolean do_restart_greeter     = FALSE; /* If this is true, whack the
+					           greeter and try again */
+static gboolean restart_greeter_now    = FALSE; /* Restart_greeter_when the
+                                                   SIGCHLD hits */
 static gboolean always_restart_greeter = FALSE; /* Always restart greeter when
-						   the user accepts restarts. */
-static gboolean gdm_wait_for_ack = TRUE; /* wait for ack on all messages to
-				      * the daemon */
-static int in_session_stop = 0;
-static int in_usr2_signal = 0;
+                                                   the user accepts restarts. */
+static gboolean gdm_wait_for_ack       = TRUE;  /* Wait for ack on all messages
+                                                   to the daemon */
+static int in_session_stop             = 0;
+static int in_usr2_signal              = 0;
 static gboolean need_to_quit_after_session_stop = FALSE;
-static int exit_code_to_use = DISPLAY_REMANAGE;
-static gboolean session_started = FALSE;
-static gboolean greeter_disabled = FALSE;
-static gboolean greeter_no_focus = FALSE;
+static int exit_code_to_use            = DISPLAY_REMANAGE;
+static gboolean session_started        = FALSE;
+static gboolean greeter_disabled       = FALSE;
+static gboolean greeter_no_focus       = FALSE;
 
-static uid_t logged_in_uid = -1;
-static gid_t logged_in_gid = -1;
+static uid_t logged_in_uid             = -1;
+static gid_t logged_in_gid             = -1;
+static int greeter_fd_out              = -1;
+static int greeter_fd_in               = -1;
 
-static gboolean interrupted = FALSE;
-static gchar *ParsedAutomaticLogin = NULL;
-static gchar *ParsedTimedLogin = NULL;
+static gboolean interrupted            = FALSE;
+static gchar *ParsedAutomaticLogin     = NULL;
+static gchar *ParsedTimedLogin         = NULL;
 
-static int greeter_fd_out = -1;
-static int greeter_fd_in = -1;
-
-static int gdm_in_signal = 0;
-static int gdm_normal_runlevel = -1;
-static pid_t extra_process = 0;
-static int extra_status = 0;
+static int gdm_in_signal               = 0;
+static int gdm_normal_runlevel         = -1;
+static pid_t extra_process             = 0;
+static int extra_status                = 0;
 
 #ifdef HAVE_TSOL
 static gboolean have_suntsol_extension = FALSE;
 #endif
 
-typedef struct {
-	pid_t pid;
-} GdmWaitPid;
-
-static int slave_waitpid_r = -1;
-static int slave_waitpid_w = -1;
-static GSList *slave_waitpids = NULL;
+static int slave_waitpid_r             = -1;
+static int slave_waitpid_w             = -1;
+static GSList *slave_waitpids          = NULL;
 
 extern gboolean gdm_first_login;
 
@@ -164,6 +161,10 @@ extern int slave_fifo_pipe_fd;
 
 /* wait for a GO in the SOP protocol */
 extern gboolean gdm_wait_for_go;
+
+typedef struct {
+	pid_t pid;
+} GdmWaitPid;
 
 /* Local prototypes */
 static gint   gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
@@ -912,8 +913,8 @@ gdm_slave_start (GdmDisplay *display)
 
 		gdm_debug ("gdm_slave_start: Reinitializing things");
 
-		/* Whack the server if we want to restart it next time
-		 * we run gdm_slave_run */
+		/* Whack the server because we want to restart it next
+		 * time we run gdm_slave_run */
 		gdm_server_stop (display);
 		gdm_slave_send_num (GDM_SOP_XPID, 0);
 	}
@@ -4271,6 +4272,20 @@ gdm_slave_session_start (void)
 
 	if (gdm_daemon_config_get_value_bool (GDM_KEY_KILL_INIT_CLIENTS))
 		gdm_server_whack_clients (d->dsp);
+
+	/*
+	 * If the desktop file specifies that there are special Xserver
+	 * arguments to use, then restart the Xserver with them.
+	 */
+	d->xserver_session_args = gdm_daemon_config_get_session_xserver_args (session);
+	if (d->xserver_session_args) {
+		gdm_server_stop (d);
+		gdm_slave_send_num (GDM_SOP_XPID, 0);
+		gdm_server_start (d, TRUE, FALSE, 20, 5);
+		gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
+		g_free (d->xserver_session_args);
+		d->xserver_session_args = NULL;
+	}
 
 	/* Now that we will set up the user authorization we will
 	   need to run session_stop to whack it */

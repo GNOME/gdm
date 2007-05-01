@@ -64,10 +64,10 @@ static void gdm_server_child_handler (gint);
 static char * get_font_path (const char *display);
 
 /* Global vars */
-static GdmDisplay *d = NULL;
-static gboolean server_signal_notified = FALSE;
 static int server_signal_pipe[2];
-static int gdm_in_signal = 0;
+static GdmDisplay *d                   = NULL;
+static gboolean server_signal_notified = FALSE;
+static int gdm_in_signal               = 0;
 
 static void do_server_wait (GdmDisplay *d);
 static gboolean setup_server_wait (GdmDisplay *d);
@@ -951,6 +951,37 @@ rotate_logs (const char *dname)
 	g_free (fname);
 }
 
+static int
+vector_len (char * const *v)
+{
+        int i;
+        if (v == NULL)
+                return 0;
+        for (i = 0; v[i] != NULL; i++)
+                ;
+        return i;
+}
+
+static void
+gdm_server_add_xserver_args (GdmDisplay *d, char **argv)
+{
+	int count;
+	char **args;
+	int len;
+	int i;
+
+	len = vector_len (argv);
+	g_shell_parse_argv (d->xserver_session_args, &count, &args, NULL);
+	argv = g_renew (char *, argv, len + count + 1);
+
+	for (i=0; i < count;i++) {
+		argv[len++] = g_strdup(args[i]);
+	}
+
+	argv[len] = NULL;
+	g_strfreev (args);
+}
+
 GdmXserver *
 gdm_server_resolve (GdmDisplay *disp)
 {
@@ -1176,6 +1207,12 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 				     vtarg,
 				     &argc,
 				     &argv);
+
+    /* Do not support additional session arguments with Xnest. */
+    if (d->type != TYPE_FLEXI_XNEST) {
+	    if (d->xserver_session_args)
+		    gdm_server_add_xserver_args (d, argv);
+    }
 
     command = g_strjoinv (" ", argv);
 

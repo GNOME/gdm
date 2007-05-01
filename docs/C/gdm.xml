@@ -1540,6 +1540,16 @@ PostSession/
       <filename>Hidden=true</filename> in that file.
     </para>
 
+    <para>
+      GDM uses the optional key <filename>X-Gdm-XserverArgs</filename> in
+      session files to specify additional arguments to be passed to the
+      X server.  For example, the entry
+      <filename>X-Gdm-XserverArgs=-depth 16</filename> will start the
+      X server with a color depth of 16 bits.  Any such additional arguments
+      are ignored when using a Nested display (when GDM is launched in a
+      window).
+    </para>
+
     <sect2 id="scriptdirs">
       <title>The Script Directories</title>
       

@@ -1,5 +1,23 @@
 2007-05-01  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/display.[ch], daemon/server.c, daemon/slave.c, 
+	  daemon/gdm-daemon-config.[ch], docs/C/gdm.xml: Add optional
+	  X-Gdm-XserverArgs key to the GDM desktop files.  If this is
+	  set in the desktop file, then GDM will restart the Xserver
+	  with the additional arguments specified.  This allows 
+	  people to create sessions that require special Xserver 
+	  flags (e.g. for accessibility or to use a session that
+	  requires special Xserver extensions to be turned on, etc.)
+	  This implements enhancement request #326771.  Patch by Ron
+	  Yorston <rmy@tigress.co.uk>.  I had to rework the patch 
+	  quite a bit to get it to compile against the latest code.
+	  Also added a test so that any such extra arguments are
+ 	  *not* used when using Xnest since this "restarting"
+	  feature does not work with Xnest.
+	* daemon/gdm.c: Minor cleanup.
+
+2007-05-01  Brian Cameron  <brian.cameron@sun.com>
+
         * docs/C/gdm.xml: Improve docs for new "background" feature.
 
 2007-05-01  Changwoo Ryu  <cwryu@debian.org>

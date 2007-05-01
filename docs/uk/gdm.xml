@@ -1211,6 +1211,14 @@ PostSession/
 
     <para>Сеанси можна вимкнути (якщо вони встановлені у <filename>&lt;share&gt;/xsessions/</filename>), якщо додати ідентичні за назвою <filename>.desktop</filename>-файли до одного раніше згаданих каталогів, (наприклад <filename>&lt;etc&gt;/X11/sessions</filename>) та вказати <filename>Hidden=true</filename> у цьому файлі.</para>
 
+    <para>
+      GDM uses the optional key <filename>X-Gdm-XserverArgs</filename> in
+      session files to specify additional arguments to be passed to the
+      X server.  For example, the entry
+      <filename>X-Gdm-XserverArgs=-depth 16</filename> will start the
+      X server with a color depth of 16 bits.
+    </para>
+
     <sect2 id="scriptdirs">
       <title>Каталоги сценаріїв</title>
       
@@ -4996,8 +5004,23 @@ homogeneous="bool"&gt;
         </variablelist>
 
         <para>
-		Item nodes can have a "background" property, set to "true"
-		or "false" (not setting this property is equivalent to "false"), as follow :
+          By default, the GDM login screen will disappear after authentication.
+          This can result in flicker between the login screen and the session.
+          The "background" property allows users to specify what 
+          elements of the theme are the background image.  When used, this
+          will cause GDM to remove all non-background items from the display
+          and render the remaining "background" items to the root
+          window.  This can be used to create a smooth transition between the
+          login screen and the session.  For example, if the GDM theme and the
+          session use the same background, then this will make the background
+          apear seamless.
+        </para>
+          
+        <para>
+          Item nodes may specify a "background" property which can be
+          set to "true" or "false" (not setting this
+          property is equivalent to "false"), as follows:
+        </para>
 
 <screen>
 &lt;item type="rect" background="true"&gt;
@@ -5006,11 +5029,10 @@ homogeneous="bool"&gt;
 &lt;/item&gt;
 </screen>
 
-		When this property is set on item nodes, background is applied to root window when greeter
-		exits after login, reducing screen flickering during login process. If no item node have "background"
-		property set, background is not modified when greeter exits.
+	<para>
+          If no item node has "background" property set, then the
+          background is not modified when greeter exits.
 	</para>
-
       </sect3>
 
       <sect3 id="positionnodes">

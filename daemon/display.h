@@ -65,7 +65,6 @@ typedef enum {
 
 struct _GdmDisplay
 {
-
 	/* ALL DISPLAY TYPES */
 
 	guint8 type;
@@ -102,7 +101,7 @@ struct _GdmDisplay
 	gchar *cookie;
 	gchar *bcookie;
 
-	gchar *authfile; /* authfile for the server */
+	gchar *authfile;     /* authfile for the server */
 	gchar *authfile_gdm; /* authfile readable by gdm user
 				if necessary */
 	GSList *auths;
@@ -146,6 +145,8 @@ struct _GdmDisplay
 
 	gboolean is_emergency_server;
 	gboolean failsafe_xserver;
+
+        gchar *xserver_session_args;
 
 	/* Only set in the main daemon as that's the only place that cares */
 	GdmLogoutAction logout_action;

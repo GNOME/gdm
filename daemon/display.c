@@ -553,6 +553,9 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->theme_name);
     d->theme_name = NULL;
 
+    g_free (d->xserver_session_args);
+    d->xserver_session_args = NULL;
+
     g_free (d);
 }
 

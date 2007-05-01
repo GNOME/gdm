@@ -111,24 +111,27 @@ static void custom_cmd_restart (long cmd_id);
 static void custom_cmd_no_restart (long cmd_id);
 
 /* Global vars */
-gint flexi_servers = 0;		/* Number of flexi servers */
-static pid_t extra_process = 0;	/* An extra process.  Used for quickie
-				   processes, so that they also get whacked */
-static int extra_status = 0;		/* Last status from the last extra process */
 
-gboolean gdm_wait_for_go = FALSE; /* wait for a GO in the fifo */
+gint flexi_servers         = 0; /* Number of flexi servers */
+static pid_t extra_process = 0; /* An extra process.  Used for quickie
+                                   processes, so that they also get whacked */
+static int extra_status    = 0; /* Last status from the last extra process */
 
-static gboolean print_version = FALSE; /* print version number and quit */
-static gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
-static gboolean no_daemon = FALSE;	/* Do not daemonize */
-static gboolean no_console = FALSE;	/* There are no static servers, this means,
-				   don't run static servers and second,
-				   don't display info on the console */
+gboolean gdm_wait_for_go         = FALSE; /* wait for a GO in the fifo */
+static gboolean print_version    = FALSE; /* print version number and quit */
+static gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment
+                                             variables */
+static gboolean no_daemon        = FALSE; /* Do not daemonize */
+static gboolean no_console       = FALSE; /* There are no static servers, this
+                                             means, don't run static servers
+                                             and second, don't display info on
+                                             the console */
 
 GdmConnection *fifoconn = NULL; /* Fifo connection */
-GdmConnection *pipeconn = NULL; /* slavepipe (handled just like Fifo for compatibility) connection */
+GdmConnection *pipeconn = NULL; /* slavepipe (handled just like Fifo for
+                                   compatibility) connection */
 GdmConnection *unixconn = NULL; /* UNIX Socket connection */
-int slave_fifo_pipe_fd = -1; /* the slavepipe connection */
+int slave_fifo_pipe_fd = -1;    /* The slavepipe connection */
 
 unsigned char *gdm_global_cookie  = NULL;
 unsigned char *gdm_global_bcookie = NULL;
@@ -139,19 +142,17 @@ static GdmLogoutAction safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 
 /* set in the main function */
 gchar **stored_argv = NULL;
-int stored_argc = 0;
+int stored_argc     = 0;
 
-static gchar *config_file = NULL;
-static gboolean gdm_restart_mode = FALSE;
-
-static GMainLoop *main_loop = NULL;
-
+static GMainLoop *main_loop       = NULL;
+static gchar *config_file         = NULL;
+static gboolean gdm_restart_mode  = FALSE;
 static gboolean monte_carlo_sqrt2 = FALSE;
 
 /*
- * lookup display number if the display number is
+ * Lookup display number if the display number is
  * exists then clear the remove flag and return TRUE
- * otherwise return FALSE
+ * otherwise return FALSE.
  */
 static gboolean
 mark_display_exists (int num)
@@ -176,7 +177,6 @@ mark_display_exists (int num)
  *
  * Detach gdm daemon from the controlling terminal
  */
-
 static void
 gdm_daemonify (void)
 {
