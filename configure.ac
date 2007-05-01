@@ -1282,7 +1282,6 @@ docs/es/Makefile
 docs/fr/Makefile
 docs/it/Makefile
 docs/ja/Makefile
-docs/ko/Makefile
 docs/zh_CN/Makefile
 docs/zh_HK/Makefile
 docs/zh_TW/Makefile
