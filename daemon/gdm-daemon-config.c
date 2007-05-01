@@ -1315,15 +1315,21 @@ gdm_daemon_config_update_key (const char *keystring)
 
 	/* Shortcut for updating all XDMCP parameters */
 	if (is_key (keystring, "xdmcp/PARAMETERS")) {
-		gdm_daemon_config_update_key (GDM_KEY_DISPLAYS_PER_HOST);
-		gdm_daemon_config_update_key (GDM_KEY_MAX_PENDING);
-		gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT);
-		gdm_daemon_config_update_key (GDM_KEY_MAX_SESSIONS);
-		gdm_daemon_config_update_key (GDM_KEY_INDIRECT);
-		gdm_daemon_config_update_key (GDM_KEY_MAX_INDIRECT);
-		gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT_INDIRECT);
-		gdm_daemon_config_update_key (GDM_KEY_PING_INTERVAL);
-		rc = TRUE;
+		rc = gdm_daemon_config_update_key (GDM_KEY_DISPLAYS_PER_HOST);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_PENDING);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_SESSIONS);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_INDIRECT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_INDIRECT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT_INDIRECT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_PING_INTERVAL);
 		goto out;
 	}
 
@@ -1344,7 +1350,7 @@ gdm_daemon_config_update_key (const char *keystring)
 		goto out;
 	}
 
-	gdm_config_process_entry (daemon_config, entry, NULL);
+	rc = gdm_config_process_entry (daemon_config, entry, NULL);
 
  out:
 	g_free (group);

@@ -1,5 +1,23 @@
 2007-05-01  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm-daemon-config.c: Fix return of
+	  gdm_daemon_config_update_key so that it returns TRUE when the
+	  key is valid and FALSE when the key is not valid.  This fixes
+	  the UPDATE_CONFIG command so it doesn't return an error message
+	  saying it didn't recognize the key, when it fact it is a valid
+	  key.  Also fixed "xdmcp/PARAMETERS" so we check return codes
+	  more nicely.  Fixes bug #428657.
+
+2007-05-01  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/display.[ch], daemon/server.[ch], daemon/gdm.c,
+	  daemon/gdm-daemon-config.c: Rename gdm_server_alloc to
+	  gdm_display_alloc since this function really initializes
+	  this display structure and belonds in display.c rather
+	  than in server.c.
+
+2007-05-01  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/display.[ch], daemon/server.c, daemon/slave.c, 
 	  daemon/gdm-daemon-config.[ch], docs/C/gdm.xml: Add optional
 	  X-Gdm-XserverArgs key to the GDM desktop files.  If this is
