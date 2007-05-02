@@ -3716,24 +3716,24 @@ sup_handle_query_logout_action (GdmConnection *conn,
 	if (logout_action == GDM_LOGOUT_ACTION_NONE)
 		logout_action = safe_logout_action;
 
-	if (! ve_string_empty (gdm_daemon_config_get_value_string_array (GDM_KEY_HALT)) &&
-	      is_action_available (disp, GDM_SUP_LOGOUT_ACTION_HALT)) {
+	if (gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) &&
+	    is_action_available (disp, GDM_SUP_LOGOUT_ACTION_HALT)) {
 		g_string_append_printf (reply, "%s%s", sep,
 			GDM_SUP_LOGOUT_ACTION_HALT);
 		if (logout_action == GDM_LOGOUT_ACTION_HALT)
 			g_string_append (reply, "!");
 		sep = ";";
 	}
-	if (! ve_string_empty (gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT)) &&
-	      is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
+	if (gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) &&
+	    is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
 		g_string_append_printf (reply, "%s%s", sep,
 			GDM_SUP_LOGOUT_ACTION_REBOOT);
 		if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
 			g_string_append (reply, "!");
 		sep = ";";
 	}
-	if (! ve_string_empty (gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND)) &&
-	      is_action_available (disp, GDM_SUP_LOGOUT_ACTION_SUSPEND)) {
+	if (gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) &&
+	    is_action_available (disp, GDM_SUP_LOGOUT_ACTION_SUSPEND)) {
 		g_string_append_printf (reply, "%s%s", sep,
 			GDM_SUP_LOGOUT_ACTION_SUSPEND);
 		if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
@@ -3976,17 +3976,17 @@ sup_handle_set_logout_action (GdmConnection *conn,
 		disp->logout_action = GDM_LOGOUT_ACTION_NONE;
 		was_ok = TRUE;
 	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0 &&
-		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) &&
+		   gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) &&
 		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_HALT)) {
 		disp->logout_action = GDM_LOGOUT_ACTION_HALT;
 		was_ok = TRUE;
 	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0 &&
-		    ! gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) &&
-		    is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
+		   gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) &&
+		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
 		disp->logout_action = GDM_LOGOUT_ACTION_REBOOT;
 		was_ok = TRUE;
 	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0 &&
-		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) &&
+		   gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) &&
 		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_SUSPEND)) {
 		disp->logout_action = GDM_LOGOUT_ACTION_SUSPEND;
 		was_ok = TRUE;
@@ -4044,17 +4044,17 @@ sup_handle_set_safe_logout_action (GdmConnection *conn,
 		safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 		was_ok = TRUE;
 	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0 &&
-		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) &&
+		   gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) &&
 		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_HALT)) {
 		safe_logout_action = GDM_LOGOUT_ACTION_HALT;
 		was_ok = TRUE;
 	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0 &&
-		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) &&
+		   gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) &&
 		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_REBOOT)) {
 		safe_logout_action = GDM_LOGOUT_ACTION_REBOOT;
 		was_ok = TRUE;
 	} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0 &&
-		   ! gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) &&
+		   gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) &&
 		   is_action_available (disp, GDM_SUP_LOGOUT_ACTION_SUSPEND)) {
 		safe_logout_action = GDM_LOGOUT_ACTION_SUSPEND;
 		was_ok = TRUE;
