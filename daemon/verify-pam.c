@@ -833,17 +833,18 @@ gdm_verify_user (GdmDisplay *d,
 	started_timer = FALSE;
 	null_tok = 0;
 
-	/* start the timer for timed logins */
-	if ( ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
-	     d->timed_login_ok &&
-	     (local || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
-		gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
-		started_timer = TRUE;
-	}
-
+	/* Don't start a timed login if we've already entered a username */
 	if (username != NULL) {
 		login = g_strdup (username);
 		gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+	} else {
+		/* start the timer for timed logins */
+		if ( ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
+		     d->timed_login_ok &&
+		     (local || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
+			gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
+			started_timer = TRUE;
+		}
 	}
 
 	cur_gdm_disp = d;
