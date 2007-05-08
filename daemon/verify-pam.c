@@ -1169,8 +1169,10 @@ authenticate_again:
     if ( ! error_msg_given &&
 	gdm_slave_action_pending ()) {
 	    /* I'm not sure yet if I should display this message for any other issues - heeten */
+	    /* at least AUTHINFO_UNAVAIL -- it's what user unknown is! */
 	    if (pamerr == PAM_AUTH_ERR ||
-		pamerr == PAM_USER_UNKNOWN) {
+		pamerr == PAM_USER_UNKNOWN ||
+		pamerr == PAM_AUTHINFO_UNAVAIL) {
 		    gboolean is_capslock = FALSE;
 		    const char *basemsg;
 		    char *msg;
