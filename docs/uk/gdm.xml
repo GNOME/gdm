@@ -5035,6 +5035,27 @@ homogeneous="bool"&gt;
           If no item node has "background" property set, then the
           background is not modified when greeter exits.
 	</para>
+
+	<para>
+          To use a different background for login transition than the one 
+	  used for login, insert a "item" node with "background" property set to "true" to draw login transition background before "item&quote; node (without any "background" property) used for greeter background. For instance :
+	</para>
+<screen>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE greeter SYSTEM "greeter.dtd"&gt;
+ &lt;greeter&gt;
+
+  &lt;item type="rect" background="true"&gt;
+    &lt;normal file="background_for_login.svg"/&gt;
+    &lt;pos x="0" y="0" width="100%" height="100%"/&gt;
+  &lt;/item&gt;
+  &lt;item type="rect"&gt;
+    &lt;normal file="background_for_greeter.svg"/&gt;
+    &lt;pos x="0" y="0" width="100%" height="100%"/&gt;
+  &lt;/item&gt;
+[...]
+&lt;/greeter&gt;
+</screen>
       </sect3>
 
       <sect3 id="positionnodes">
