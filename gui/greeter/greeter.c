@@ -98,15 +98,22 @@ greeter_ignore_buttons (gboolean val)
    ignore_buttons = val;
 }
 
-/* If in random theme mode then grab a random theme from those selected */
+static char *get_theme_file (const char *in, char **theme_dir);
+
+/* If in random theme mode then grab a random theme from those selected.
+ * If a theme doesn't exist, try  the rest of the list from the randomly chosen
+ * position for one that does.
+ */
 static char *
 get_random_theme ()
 {
     char **vec;
-	char *themes_list;
-	char *theme;
+    char *themes_list;
+    char *theme = NULL;
+    char *dir;
     int size;
-	int i;
+    int chosen;
+    int i;
 
     themes_list = gdm_config_get_string (GDM_KEY_GRAPHICAL_THEMES);
 
@@ -121,9 +128,26 @@ get_random_theme ()
     for (size = 0; vec[size] != NULL; size++) {}
 
 	/* Get Random Theme from list */
-	srand (time (NULL));
-	i = rand () % size;
-	theme = g_strdup (vec[i]);
+	srand ( time(NULL) );
+	chosen = rand() % size;
+
+	/* Find a theme that exists */
+	for (i = 0; i < size; i++) {
+		int j;
+		char *file;
+
+		j = (i + chosen >= size) ? i+chosen-size : i+chosen;
+		file = get_theme_file( vec[j], &dir );
+
+		g_free(file);
+		if (g_file_test(dir, G_FILE_TEST_IS_DIR)) {
+		    g_free(dir);
+			theme = g_strdup (vec[j]);
+			break;
+		}
+	    g_free(dir);
+	}
+
     g_strfreev (vec);
 
     return theme;
