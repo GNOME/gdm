@@ -1,5 +1,13 @@
 2007-05-08  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/verify-pam.c: When we receive PAM_AUTHINFO_UNAVAIL
+	  just display the default "authentication failed" message.
+	  This ensures that the error message is the same for 
+	  invalid user and incorrect password, making it harder to
+	  tell whether an account is a valid one or not.
+
+2007-05-08  Brian Cameron  <brian.cameron@sun.com>
+
 	* config/PostLogin: Change reference from $LOGIN to $LOGNAME
 	  in documentation comment.  Fixes bug 436805.  Patch by Loic
 	  Minier <lool+gnome@via.ecp.fr>

@@ -1170,9 +1170,15 @@ gdm_verify_user (GdmDisplay *d,
 	 * message from the PAM subsystem */
 	if ( ! error_msg_given &&
 	     gdm_slave_action_pending ()) {
-		/* I'm not sure yet if I should display this message for any other issues - heeten */
+		/*
+		 * I'm not sure yet if I should display this message for any
+		 * other issues - heeten
+		 * Adding AUTHINFO_UNAVAIL to the list - its what an unknown
+		 * user is.
+		 */
 		if (pamerr == PAM_AUTH_ERR ||
-		    pamerr == PAM_USER_UNKNOWN) {
+		    pamerr == PAM_USER_UNKNOWN ||
+		    pamerr == PAM_AUTHINFO_UNAVAIL) {
 			gboolean is_capslock = FALSE;
 			const char *basemsg;
 			char *msg;
