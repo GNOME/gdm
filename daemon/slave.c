@@ -1820,7 +1820,6 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 		if ( ! ve_string_empty (display->theme_name))
 			g_setenv ("GDM_GTK_THEME", display->theme_name, TRUE);
-		g_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 		gdm_log_shutdown ();
 
@@ -2611,7 +2610,6 @@ gdm_slave_greeter (void)
 		g_setenv ("GDM_GREETER_PROTOCOL_VERSION",
 			  GDM_GREETER_PROTOCOL_VERSION, TRUE);
 		g_setenv ("GDM_VERSION", VERSION, TRUE);
-		g_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 		pwent = getpwnam (gdmuser);
 		if G_LIKELY (pwent != NULL) {
@@ -3094,8 +3092,6 @@ gdm_slave_chooser (void)
 
 		g_setenv ("GDM_VERSION", VERSION, TRUE);
 
-		g_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
-
 		pwent = getpwnam (gdmuser);
 		if G_LIKELY (pwent != NULL) {
 			/* Note that usually this doesn't exist */
@@ -3560,10 +3556,10 @@ session_child_run (struct passwd *pwent,
 		g_setenv ("XDG_SESSION_COOKIE", ck_session_cookie, TRUE);
 	}
 #endif
+	g_setenv ("PWD", home_dir, TRUE);
 	g_setenv ("GDMSESSION", session, TRUE);
 	g_setenv ("DESKTOP_SESSION", session, TRUE);
 	g_setenv ("SHELL", pwent->pw_shell, TRUE);
-	g_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 	if (d->type == TYPE_STATIC) {
 		g_setenv ("GDM_XSERVER_LOCATION", "local", TRUE);
@@ -5517,7 +5513,6 @@ gdm_slave_exec_script (GdmDisplay *d,
 		g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 		if ( ! ve_string_empty (d->theme_name))
 			g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
-		g_unsetenv ("MAIL");
 
 		argv = NULL;
 		g_shell_parse_argv (script, NULL, &argv, NULL);
@@ -5661,7 +5656,6 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 				g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 				if ( ! ve_string_empty (d->theme_name))
 					g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
-				g_unsetenv ("MAIL");
 
 				argv = NULL;
 				g_shell_parse_argv (str->str, NULL, &argv, NULL);

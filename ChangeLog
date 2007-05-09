@@ -1,3 +1,11 @@
+2007-05-09  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/slave.c:  No longer unset MAIL when starting a user
+	  session.  Now set PWD before starting a user session which
+	  fixes problems when the user's $HOME directory is a symlink.
+	  Fixes bug #436803.  Patch by Lo\357c Minier
+	  <lool+gnome@via.ecp.fr>
+
 2007-05-08  Brian Cameron  <brian.cameron@sun.com>
 
 	* docs/gdm.1: Now refer to full documentation in
