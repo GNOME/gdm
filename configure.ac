@@ -1034,11 +1034,20 @@ case "$host" in
         ;;
 esac
 
-# First check with "! -h" for /usr/X11R6 and /usr/X11 since they often
-# symlink to each other, and configure should use the more stable
-# location (the real directory) if possible.
+# On Solaris, the /usr/bin/Xserver script is used to decide whether to
+# use Xsun or Xorg, so this is used on Solaris.
 #
-if test ! -h /usr/X11R6 -a ! -h /usr/X11R6/bin -a -x /usr/X11R6/bin/X; then
+# When testing for /usr/X11R6, first check with "! -h" for /usr/X11R6
+# and /usr/X11 since they often symlink to each other, and configure
+# should use the more stable location (the real directory) if possible.
+#
+if test -x /usr/X11/bin/Xserver; then
+   X_PATH="/usr/X11/bin"
+   X_SERVER_PATH="/usr/X11/bin"
+   X_SERVER="/usr/X11/bin/Xserver"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test ! -h /usr/X11R6 -a ! -h /usr/X11R6/bin -a -x /usr/X11R6/bin/X; then
    X_PATH="/usr/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
