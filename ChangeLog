@@ -1,5 +1,12 @@
 2007-05-09  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/misc.c: In gdm_fdgetc must used an unsigned char
+	  buffer here because the GUI sends username/password data
+	  as utf8 and the daemon will interpret any character sent
+	  with its high bit set as EOF unless we used unsigned here.
+
+2007-05-09  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/slave.c:  No longer unset MAIL when starting a user
 	  session.  Now set PWD before starting a user session which
 	  fixes problems when the user's $HOME directory is a symlink.

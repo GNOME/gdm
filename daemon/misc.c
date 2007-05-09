@@ -1073,9 +1073,15 @@ gdm_test_opt (const char *cmd, const char *help, const char *option)
 int
 gdm_fdgetc (int fd)
 {
-	char buf[1];
+	unsigned char buf[1];
 	int bytes;
 
+	/*
+	 * Must used an unsigned char buffer here because the GUI sends
+	 * username/password data as utf8 and the daemon will interpret
+	 * any character sent with its high bit set as EOF unless we 
+	 * used unsigned here.
+	 */
 	VE_IGNORE_EINTR (bytes = read (fd, buf, 1));
 	if (bytes != 1)
 		return EOF;
