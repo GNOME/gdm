@@ -1,9 +1,16 @@
 2007-05-09  Brian Cameron  <brian.cameron@sun.com>
 
+	* configure.ac: Fix check for Xserver to work for Debian
+	  and Ubuntu.  Fixes bug #436879.  Patch by Lo\357c Minier
+	  <lool+gnome@via.ecp.fr>
+
+2007-05-09  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/misc.c: In gdm_fdgetc must used an unsigned char
 	  buffer here because the GUI sends username/password data
 	  as utf8 and the daemon will interpret any character sent
 	  with its high bit set as EOF unless we used unsigned here.
+	  Patch by Lo\357c Minier <lool+gnome@via.ecp.fr>
 
 2007-05-09  Brian Cameron  <brian.cameron@sun.com>
 

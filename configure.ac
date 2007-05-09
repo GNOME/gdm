@@ -1038,28 +1038,33 @@ esac
 # symlink to each other, and configure should use the more stable
 # location (the real directory) if possible.
 #
-if test ! -h /usr/X11R6 -a -x /usr/X11R6/bin/X; then
+if test ! -h /usr/X11R6 -a ! -h /usr/X11R6/bin -a -x /usr/X11R6/bin/X; then
    X_PATH="/usr/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
    GDM_USER_PATH="$GDM_USER_PATH:/usr/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"
-elif test ! -h /usr/X11 -a -x /usr/X11/bin/X; then
+elif test ! -h /usr/X11 -a ! -h /usr/X11/bin -a -x /usr/X11/bin/X; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/X"
    GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test -x /usr/bin/X; then
+   X_PATH="/usr/bin"
+   X_SERVER_PATH="/usr/bin"
+   X_SERVER="/usr/bin/X"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test -x /usr/bin/Xorg; then
+   X_PATH="/usr/bin"
+   X_SERVER_PATH="/usr/bin"
+   X_SERVER="/usr/bin/Xorg"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/X11R6/bin/X; then
    X_PATH="/usr/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
    GDM_USER_PATH="$GDM_USER_PATH:/usr/X11R6/bin"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test -x /usr/bin/Xorg; then
-   X_PATH="/usr/bin"
-   X_SERVER_PATH="/usr/bin"
-   X_SERVER="/usr/bin/Xorg"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/X11/bin/X; then
    X_PATH="/usr/X11/bin"
