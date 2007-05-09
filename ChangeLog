@@ -1765,7 +1765,7 @@
 
 	* Makefile.am:
 	* daemon/Makefile.am:
-	Fix make distcheck.
+	  Fix make distcheck.
 
 2006-10-31  William Jon McCann  <mccann@jhu.edu>
 
@@ -1773,13 +1773,13 @@
 	* daemon/Makefile.am:
 	* daemon/gdm.c: (main):
 	* daemon/gdmconsolekit.c: (add_param_int), (add_param_boolean),
-	(add_param_string), (get_string), (unlock_ck_session),
-	(open_ck_session), (close_ck_session):
+	  (add_param_string), (get_string), (unlock_ck_session),
+	  (open_ck_session), (close_ck_session):
 	* daemon/gdmconsolekit.h:
 	* daemon/slave.c: (gdm_slave_check_user_wants_to_log_in),
-	(session_child_run), (gdm_slave_session_start):
+	  (session_child_run), (gdm_slave_session_start):
 	* docs/C/gdm.xml:
-	Add ConsoleKit support.  Fixes #365375.
+	  Add ConsoleKit support.  Fixes #365375.
 
 2006-10-31  Brian Cameron  <brian.cameron@sun.com>
 
@@ -4272,8 +4272,8 @@
 2005-09-28  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/gdmflexiserver.c (is_program_in_path, maybe_lock_screen)
-	(run_logged_in_dialogue, main): Consolidate screensaver activation
-	code.  Don't use deprecated gnome-exec.  Fixes #311497.
+	  (run_logged_in_dialogue, main): Consolidate screensaver activation
+	  code.  Don't use deprecated gnome-exec.  Fixes #311497.
 
 2005-09-27  Brian Cameron <Brian.Cameron@sun.com>
 
@@ -4593,22 +4593,22 @@
 
 	* m4/.cvsignore: Added.
 	* docs/ChangeLog: Started new ChangeLog similar to po/ChangeLog
-	after gnome-doc-utils migration.
+	  after gnome-doc-utils migration.
 	* configure.in, Makefile.am: gnome-doc-utils migration
 	* .cvsignore: Added gnome-doc-utils.make
 
 2005-07-26  Tommi Vainikainen  <thv@iki.fi>
 
 	* gui/gdmsetup.c (setup_gui), gui/gdmsetup.glade: Removed special
-	option for 24 hour time format.
+	  option for 24 hour time format.
 	* gui/gdmcommon.h, gui/gdmcommon.c
-	(gdm_common_select_time_format): Added function to parse between
-	"auto", "true", and "false" in "Use24Clock" setting.
+	  (gdm_common_select_time_format): Added function to parse between
+	  "auto", "true", and "false" in "Use24Clock" setting.
 	* gui/gdmlogin.c (gdm_login_parse_config), gui/greeter/greeter.c
-	(greeter_parse_config): Use gdm_common_select_time_format(...).
+	  (greeter_parse_config): Use gdm_common_select_time_format(...).
 	* docs/C/gdm.xml: Documented new default "auto" option for
-	Use24Clock, which selects 24 hour time format by locale
-	(translation). Fixes bug #145549.
+	  Use24Clock, which selects 24 hour time format by locale
+	  (translation). Fixes bug #145549.
 
 2005-07-25  Brian Cameron  <brian.cameron@sun.com>
 
@@ -4619,7 +4619,7 @@
 
 	* .cvsignore: Added depcomp and stamp-h1
 	* daemon/slave.c (ask_migrate) 
-	(gdm_slave_check_user_wants_to_log_in):
+	  (gdm_slave_check_user_wants_to_log_in):
 	* daemon/gdm.[ch] (gdm_config_parse): 
 	* config/gdm.conf.in: Add a configuration option
 	  AlwaysLoginCurrentSession that will automatically switch the user
@@ -4680,9 +4680,8 @@
 	* gui/face/sunflower.jpg:
 	* gui/face/sunset.jpg:
 	* gui/face/tennis-ball.png:
-	* gui/face/yellow-rose.jpg: New images.  All
-	derived from images on wikipedia and wikimedia
-	with free licenses.
+	* gui/face/yellow-rose.jpg: New images.  All derived from images on
+	  wikipedia and wikimedia with free licenses.
 
 	* gui/face/bonfire.jpg:
 	* gui/face/cdrom.jpg:
@@ -4791,33 +4790,33 @@
 2005-07-19  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init): 
-	Use common function for loading face images.
+	  Use common function for loading face images.
 	
 	* gui/greeter/greeter.c (greeter_ctrl_handler):
-	Update for new common code.
+	  Update for new common code.
 
 	* gui/gdmuser.c (gdm_user_alloc): Use common function for
-	loading face images.
-	(setup_user): Define as static.
+	  loading face images.
+	  (setup_user): Define as static.
 
 	* gui/gdmlogin.c (gdm_kill_thingies): Make static.
-	(gdm_login_ctrl_handler): Update for new gdm_common_login_sound.
-	Add gdm_kill_thingies before all abort calls since they are
-	not in gdm_common_abort anymore.
-	(main): Use new common get face function.
+	  (gdm_login_ctrl_handler): Update for new gdm_common_login_sound.
+	  Add gdm_kill_thingies before all abort calls since they are
+	  not in gdm_common_abort anymore.
+	  (main): Use new common get face function.
 
 	* gui/Makefile.am:
 	* gui/gdmcommon.c (gdm_common_show_info_msg, gdm_common_login_sound):
-	Make more common by not depending on external variables.
-	(gdm_common_abort): Make more common by not depending on
-	external functions.
-	(gdm_common_get_face): Add a common function for loading
-	face images.
+	  Make more common by not depending on external variables.
+	  (gdm_common_abort): Make more common by not depending on
+	  external functions.
+	  (gdm_common_get_face): Add a common function for loading
+	  face images.
 
 	* daemon/slave.c (path_is_local, check_user_file) 
-	(check_global_file, get_facefile_from_gnome2_dir_config) 
-	(get_facefile_from_home, get_facefile_from_global, run_pictures):
-	Don't stat or read from remote home directories.  Fixes #310545.
+	  (check_global_file, get_facefile_from_gnome2_dir_config) 
+	  (get_facefile_from_home, get_facefile_from_global, run_pictures):
+	  Don't stat or read from remote home directories.  Fixes #310545.
 
 	* configure.in:
 	* daemon/Makefile.am:
@@ -4825,8 +4824,8 @@
 
 	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init): 
 	* gui/gdmlogin.c (main):
-	Try GTK+ themed icon stock_person before falling back to
-	nobody.png.  Fixes #310906.
+	  Try GTK+ themed icon stock_person before falling back to
+	  nobody.png.  Fixes #310906.
 
 2005-07-19  William Jon McCann  <mccann@jhu.edu>
 
@@ -4836,18 +4835,18 @@
 2005-07-19  Tommi Vainikainen  <thv@iki.fi>
 
 	* config/XKeepsCrashing, config/Xsession.in, daemon/display.c,
-	daemon/gdm.c, daemon/slave.c, docs/C/gdm.xml,
-	gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmcomm.c,
-	gui/gdmlogin.c, gui/gdmphotosetup.c, gui/gdmsetup.c,
-	gui/gdmsetup.glade, gui/greeter/greeter.c,
-	gui/greeter/greeter_session.c, gui/greeter/greeter_system.c:
-	Cleanup terminology, and fix many strings. See bug #310453.
-	Also fixes bug #308287. List of the most important string changes:
-	machine -> computer
-	program -> application or command
-	superuser -> root
-	gdm, Gdm -> GDM
-	See the Language chapter in GNOME HIG for more information.
+	  daemon/gdm.c, daemon/slave.c, docs/C/gdm.xml,
+	  gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmcomm.c,
+	  gui/gdmlogin.c, gui/gdmphotosetup.c, gui/gdmsetup.c,
+	  gui/gdmsetup.glade, gui/greeter/greeter.c,
+	  gui/greeter/greeter_session.c, gui/greeter/greeter_system.c:
+	  Cleanup terminology, and fix many strings. See bug #310453.
+	  Also fixes bug #308287. List of the most important string changes:
+	  machine -> computer
+	  program -> application or command
+	  superuser -> root
+	  gdm, Gdm -> GDM
+	  See the Language chapter in GNOME HIG for more information.
 
 2005-07-14  Brian Cameron  <brian.cameron@sun.com>
 
@@ -4858,8 +4857,8 @@
 
 2005-07-13  William Jon McCann  <mccann@jhu.edu>
 
-	* gui/gdmphotosetup.c (main): Use new gstdio
-	functions and set correct permission on .face.
+	* gui/gdmphotosetup.c (main): Use new gstdio functions and set
+	  correct permission on .face.
 
 2005-07-11  Brian Cameron  <brian.cameron@sun.com>
 
@@ -5137,45 +5136,45 @@
 	* configure.in: require glib 2.6.0 and check for DMX.
 	
 	* config/gdm.conf.in: add xdmpc/EnableProxy, xdmcp/ProxyXServer
-	and xdmcp/ProxyReconnect config keys.
+	  and xdmcp/ProxyReconnect config keys.
 
 	* docs/C/gdm.xml: document new config keys.
 
 	* daemon/gdm.h: add TYPE_XDMCP_PROXY server type, add #defines
-	for the new config keys, re-name various xnest related GdmDisplay
-	members to be applicable for all proxy servers, add xdmcp_dispnum
-	GdmDisplay member, modify the format of GDM_SOP_QUERYLOGIN and
-	add GDM_SOP_AUTHFILE and GDM_SOP_MIGRATE.
+	  for the new config keys, re-name various xnest related GdmDisplay
+	  members to be applicable for all proxy servers, add xdmcp_dispnum
+	  GdmDisplay member, modify the format of GDM_SOP_QUERYLOGIN and
+	  add GDM_SOP_AUTHFILE and GDM_SOP_MIGRATE.
 
 	* daemon/gdm.c: read the new config keys, change format of what
-	GDM_SOP_QUERYLOGIN returns, implement GDM_SOP_AUTHFILE and 
-	GDM_SOP_MIGRATE.
+	  GDM_SOP_QUERYLOGIN returns, implement GDM_SOP_AUTHFILE and 
+	  GDM_SOP_MIGRATE.
 
 	* daemon/xdmcp.h: add gdm_xdmcp_migrate.
 
 	* daemon/xdmcp.c: when xdmpc/EnableProxy and xdmcp/ProxyXServer,
-	set things up such that a proxy sever (which displays on the
-	requesting X server) is run locally by the slave.
-	Also implement migrating the proxy server from one parent display
-	to another using the xdmcp/ProxyReconnect command.
+	  set things up such that a proxy sever (which displays on the
+	  requesting X server) is run locally by the slave.
+	  Also implement migrating the proxy server from one parent display
+	  to another using the xdmcp/ProxyReconnect command.
 
 	* daemon/server.c: if we're running a proxy server (e.g. Xnest
-	or Xdmx), hold a connection open to the parent display so that
-	it doesn't reset.
-	Run proxy servers with -display rather than setting $DISPLAY.
+	  or Xdmx), hold a connection open to the parent display so that
+	  it doesn't reset.
+	  Run proxy servers with -display rather than setting $DISPLAY.
 
 	* daemon/slave.c:
-	Once we've successfully logged the user in, send SOP_QUERYLOGIN
-	to the slave - if the result from that indicates that the user
-	is already logged in and that session is migratable (e.g. by
-	reconnecting a proxy server or changing the VT), then migrate
-	to the existing session using SOP_MIGRATE.
-	In the case of an Xdmcp proxy, hold open the connection to the
-	parent display so that it doesn't reset. Exit the slave as
-	soon as that connection closes.
+	  Once we've successfully logged the user in, send SOP_QUERYLOGIN
+	  to the slave - if the result from that indicates that the user
+	  is already logged in and that session is migratable (e.g. by
+	  reconnecting a proxy server or changing the VT), then migrate
+	  to the existing session using SOP_MIGRATE.
+	  In the case of an Xdmcp proxy, hold open the connection to the
+	  parent display so that it doesn't reset. Exit the slave as
+	  soon as that connection closes.
 
 	* utils/Makefile.am, utils/gdm-dmx-reconnect-proxy.c: implementation
-	of xdmcp/ProxyReconnect for use with Xdmx.
+	  of xdmcp/ProxyReconnect for use with Xdmx.
 	
 2005-04-21  Mark McLoughlin  <mark@skynet.ie>
 
@@ -5184,12 +5183,12 @@
 	handlers. Fixes random lockups with debugging enabled.
 
 	* daemon/server.c:
-	(gdm_server_usr1_handler),
-	(gdm_server_child_handler): don't use gdm_debug() here.
+	  (gdm_server_usr1_handler),
+	  (gdm_server_child_handler): don't use gdm_debug() here.
 	
 	* daemon/slave.c:
-	(gdm_slave_usr2_handler),
-	(gdm_slave_child_handler): or here.
+	  (gdm_slave_usr2_handler),
+	  (gdm_slave_child_handler): or here.
 
 2005-04-20  Brian Cameron  <brian.cameron@sun.com>
 
@@ -6433,10 +6432,9 @@ Sun Feb 08 09:57:56 2004  George Lebl <jirka@5z.com>
 
 Tue Jan 29  Brian Cameron <Brian.Cameron@Sun.COM>
 
-	* gui/modules/keymouselistener.c:  Fixed so that it accepts
-	  key gestures with a timeout of <= 0 if n_times is 1.  This
-	  makes sense since timeout is not used if n_times is less
-	  than 2.
+	* gui/modules/keymouselistener.c: Fixed so that it accepts key
+	  gestures with a timeout of <= 0 if n_times is 1.  This makes sense
+	  since timeout is not used if n_times is less than 2.
 
 Sun Jan 25 15:49:53 2004  George Lebl <jirka@5z.com>
 
@@ -6451,8 +6449,7 @@ Tue Jan 23  Brian Cameron <Brian.Cameron@Sun.COM>
 
 Tue Jan 16  Brian Cameron <Brian.Cameron@Sun.COM>
 
-	* daemon/misc.c:
-	  Fixed core dumping error that was causing the greeter
+	* daemon/misc.c: Fixed core dumping error that was causing the greeter
 	  to crash on Solaris after entering the username.
 
 Thu Jan 15 12:45:02 2004  George Lebl <jirka@5z.com>
@@ -6682,15 +6679,13 @@ Fri Dec 19 12:22:18 2003  George Lebl <jirka@5z.com>
 
 Mon Dec 17  Brian Cameron <Brian.Cameron@Sun.COM>
 
-	* configure.in
-	Now use -lresolv when building on Solaris so that inet_aton can be
-	found.
+	* configure.in: Now use -lresolv when building on Solaris so that
+	  inet_aton can be found.
 
 Mon Dec 15  Brian Cameron <Brian.Cameron@Sun.COM>
 
-	* daemon/xdmcp.c:
-	Add include of <sys/sockio.h> which is needed on Solaris in order
-	to reference SIOCGIFCONF and SIOCGIFFLAGS.
+	* daemon/xdmcp.c: Add include of <sys/sockio.h> which is needed on
+	  Solaris in order to reference SIOCGIFCONF and SIOCGIFFLAGS.
 
 Fri Dec 12 17:56:58 2003  George Lebl <jirka@5z.com>
 
@@ -8806,8 +8801,8 @@ Wed Jun 11 16:04:02 2003  George Lebl <jirka@5z.com>
 Wed Jun 11  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* configure.in, config/gdm.conf.in: Fixed setting of DefaultPath and
-	RootPath so it works properly.  Properly export X_SERVER_PATH in
-	configure.in.
+	  RootPath so it works properly.  Properly export X_SERVER_PATH in
+	  configure.in.
 
 Wed Jun 11 09:13:50 2003  George Lebl <jirka@5z.com>
 
@@ -8817,7 +8812,7 @@ Wed Jun 11 09:13:50 2003  George Lebl <jirka@5z.com>
 Wed Jun 11  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* config/CDE.desktop.in, config/Makefile.am: Add support for
-	logging into CDE sessions.
+	  logging into CDE sessions.
 
 Tue Jun 10 16:54:04 2003  George Lebl <jirka@5z.com>
 
@@ -8888,8 +8883,8 @@ Mon Jun 09 17:01:27 2003  George Lebl <jirka@5z.com>
 Mon Jun 09  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* gui/modules/keymouselistener.c: Fixed bug that caused the
-	keymouselistener to get into a broken state that would cause
-	applications to freeze.
+	  keymouselistener to get into a broken state that would cause
+	  applications to freeze.
 
 Sun Jun 08 23:49:28 2003  George Lebl <jirka@5z.com>
 
@@ -9119,9 +9114,9 @@ Fri May 30 08:50:28 2003  George Lebl <jirka@5z.com>
 Fri May 30  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* configure.in, config/Default.in, config/PreSession.in,
-	config/PostSession.in: Now Default, PreSession and PostSession
-	are built using .in files so that we can properly set the
-	PATH on Solaris.
+	  config/PostSession.in: Now Default, PreSession and PostSession
+	  are built using .in files so that we can properly set the
+	  PATH on Solaris.
 
 Thu May 29 17:38:56 2003  George Lebl <jirka@5z.com>
 
@@ -9157,8 +9152,8 @@ Thu May 29 17:38:56 2003  George Lebl <jirka@5z.com>
 Wed May 28  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* config/Makefile.am: Install PostLogin file to the postlogindir
-	directory rather than the postdir.  This was causing make install
-	to fail.
+	  directory rather than the postdir.  This was causing make install
+	  to fail.
 
 Tue May 27 08:52:20 2003  George Lebl <jirka@5z.com>
 
@@ -9240,10 +9235,10 @@ Fri May 16 20:46:43 2003  George Lebl <jirka@5z.com>
 	* configure.in: Updated to add AccessDwellMouseEvents.in reference.
 	* gui/modules/Makefile.in: Updated to add dwell listener references.
 	* gui/modules/AccessDwellMouseEvents.in
-	gui/modules/dwellmouselistener.c: Added a gestures listener for
-	dwell events (cursor motion only).
+	  gui/modules/dwellmouselistener.c: Added a gestures listener for
+	  dwell events (cursor motion only).
 	* gui/modules/AccessKeyMouseEvents.in gui/modules/keymouselistener.c:
-	Minor cleanup.
+	  Minor cleanup.
 
 Thu May 15 02:17:55 2003  George Lebl <jirka@5z.com>
 
@@ -9316,7 +9311,7 @@ Tue May 13 12:22:45 2003  George Lebl <jirka@5z.com>
 2003-05-08 Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* gui/greeter/greeter.dtd: Updated so it is no longer
-	out of date.  Patch provided by Aidan.Butler@Sun.COM.
+	  out of date.  Patch provided by Aidan.Butler@Sun.COM.
 
 2003-05-08  Abel Cheung  <maddog@linux.org.hk>
 
@@ -9339,11 +9334,11 @@ Mon May 05 13:33:28 2003  George Lebl <jirka@5z.com>
 2003-05-02 Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* gui/modules/keymouselistener.c, gui/modules/AccessKeyMouseEvents.in
-	Now the keymouselistener does not use grabs, so there is less
-	opportunity for conflict with other programs (like the registryd).
-	Now duration and timeout is specified in ms rather than seconds,
-	which allows more flexibility.  Duration values of 0 to indicate
-	a keypress of any length is now supported.
+	  Now the keymouselistener does not use grabs, so there is less
+	  opportunity for conflict with other programs (like the registryd).
+	  Now duration and timeout is specified in ms rather than seconds,
+	  which allows more flexibility.  Duration values of 0 to indicate
+	  a keypress of any length is now supported.
 
 2003-04-30 Niall Power <Niall.Power@Sun.COM>
 
