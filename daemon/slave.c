@@ -1144,7 +1144,7 @@ ask_migrate (const char *migrate_to)
 	 * the dialog.
 	 */
 	if (migrate_to != NULL &&
-	    gdm_daemon_config_get_value_bool (GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION)) {
+	    gdm_get_value_bool (GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION)) {
 		return 1;
 	}
 
@@ -1152,7 +1152,7 @@ ask_migrate (const char *migrate_to)
 	 * Avoid dialog if DOUBLE_LOGIN_WARNING is false.  In this case
 	 * ALWAYS_LOGIN_CURRENT_SESSION is false, so assume new session.
 	 */
-	if (!gdm_daemon_config_get_value_bool (GDM_KEY_DOUBLE_LOGIN_WARNING)) {
+	if (!gdm_get_value_bool (GDM_KEY_DOUBLE_LOGIN_WARNING)) {
 		return 0;
 	}
 
