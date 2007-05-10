@@ -1,5 +1,11 @@
 2007-05-10  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c: Fix handling of AlwaysLoginCurrentSession and
+	  DoubleLoginWarning so it works for the non-migratable case
+	  (for Xnest, XDMCP, etc.).  Fixes bug #172600.
+
+2007-05-10  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm.c: In debug message handle when display is NULL to
 	  avoid core dump on Solaris.
 

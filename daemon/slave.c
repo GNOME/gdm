@@ -1157,6 +1157,23 @@ ask_migrate (const char *migrate_to)
 	char *but[4];
 	char *askbuttons_msg;
 
+	/*
+	 * If migratable and ALWAYS_LOGIN_CURRENT_SESSION is true, then avoid 
+	 * the dialog.
+	 */
+	if (migrate_to != NULL &&
+	    gdm_daemon_config_get_value_bool (GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION)) {
+		return 1;
+	}
+
+	/*
+	 * Avoid dialog if DOUBLE_LOGIN_WARNING is false.  In this case
+	 * ALWAYS_LOGIN_CURRENT_SESSION is false, so assume new session.
+	 */
+	if (!gdm_daemon_config_get_value_bool (GDM_KEY_DOUBLE_LOGIN_WARNING)) {
+		return 0;
+	}
+
 	but[0] = _("Log in anyway");
 	if (migrate_to != NULL) {
 		msg = _("You are already logged in.  "
@@ -1236,29 +1253,25 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 	if (d->type != TYPE_XDMCP_PROXY) {
 		int r;
 
-		if (!gdm_daemon_config_get_value_bool (GDM_KEY_DOUBLE_LOGIN_WARNING)) {
-			g_free (migrate_to);
-			return TRUE;
-		}
-
-		if (gdm_daemon_config_get_value_bool (GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION))
-			r = 1;
-		else
-			r = ask_migrate (migrate_to);
+		r = ask_migrate (migrate_to);
 
 		if (r <= 0) {
 			g_free (migrate_to);
 			return TRUE;
 		}
 
+		/*
+		 * migrate_to should never be NULL here, since
+		 * ask_migrate will always return 0 or 1 if migrate_to
+		 * is NULL.
+		 */
 		if (migrate_to == NULL ||
 		    (migrate_to != NULL && r == 2)) {
 			g_free (migrate_to);
 			return FALSE;
 		}
 
-		/* Must be that r == 1, that is
-		   return to previous login */
+		/* Must be that r == 1, that is return to previous login */
 
 		if (d->type == TYPE_FLEXI) {
 			gdm_slave_whack_greeter ();
