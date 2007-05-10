@@ -58,7 +58,7 @@
     </copyright>
     <copyright>
       <year>2003</year><year>2004</year><holder>Sun Microsystems, Inc.</holder>
-    </copyright><copyright><year>2003, 2006.</year><holder>Francisco Javier F. Serrador (serrador@openshine.com)</holder></copyright>
+    </copyright><copyright><year>2007</year><holder>Jorge González (jorgegonz@svn.gnome.org)</holder></copyright><copyright><year>2007</year><holder>Lucas Vieites (lucas@asixinformatica.com)</holder></copyright><copyright><year>2003, 2006</year><holder>Francisco Javier F. Serrador (serrador@openshine.com)</holder></copyright>
 
       <legalnotice id="legalnotice">
 	<para>Se concede permiso para copiar, distribuir o modificar este documento según las condiciones de la GNU Free Documentation License (GFDL), Versión 1.1 o cualquier versión posterior publicada por la Free Software Foundation sin Secciones invariantes, Textos de portada y Textos de contraportada. Encontrará una copia de la GFDL en este <ulink type="help" url="ghelp:fdl">enlace</ulink> o en el archivo COPYING-DOCS distribuido con este manual.</para>
@@ -78,19 +78,13 @@
 
 
 
-    <releaseinfo>
-       This manual describes version 2.18.0 of the GNOME Display Manager.
-       It was last updated on 03/12/2007.
-    </releaseinfo>  
+    <releaseinfo>Este manual describe la versión 2.18.0 del Gestor de entrada de Gnome. Se actualizó por última vez el 12 de marzo de 2007.</releaseinfo>  
   </articleinfo>
 
   <sect1 id="preface">
     <title>Términos y convenciones usados en este manual</title>
 
-    <para>
-      This manual describes version 2.18.0 of the GNOME Display Manager.
-      It was last updated on 03/12/2007.
-    </para>  
+    <para>Este manual describe la versión 2.18.0 del Gestor de entrada de Gnome. Se actualizó por última vez el 12 de marzo de 2007.</para>  
 
     <para>Selector: Un programa que se usa para seleccionar un equipo remoto para gestionar una pantalla remotamente en la pantalla local (<command>gdmchooser</command>).</para>
 
@@ -151,21 +145,9 @@
 
       <para>GDM, por omisión, usará Pluggable Authentication Modules (PAM) para autenticar, pero puede usar además contraseñas crypt y shadow en sistemas legados. Tras autenticar al usuario, el demonio ejecuta el script <filename>PostLogin</filename> como root, y bifurca un proceso esclavo para iniciar la sesión solicitada. Este proceso esclavo ejecuta el script de <filename>PreSession</filename> como root, establece el entorno del usuario e inicia la sesión solicitada. GDM conserva la sesión predeterminada del usuario y el idioma en el archivo <filename>~/.dmrc</filename> del usuario y usará estos predeterminados si el usuario no seleccionó una sesión o idioma en el IGU de entrada. En Solaris, GDM (desde la versión 2.8.0.3) usa el interfaz SDTLOGIN después de autenticar al usuario para decir al servidor X que se reinicie como el usuario en vez de como root para mayor seguridad. Cuando la sesión del usuario sale, el demonio de GDM ejecutará el script <filename>PostSession</filename> como root.</para>
 
-      <para>
-        Note that, by default, GDM uses the "gdm" service name for
-        normal login and the "gdm-autologin" service name for
-        automatic login.  The <filename>PamStack</filename> configuration
-        option can be used to specify a different service name.  For example,
-        if "foo" is specified, then GDM will use the "foo"
-        service name for normal login and "foo-autologin" for
-        automatic login. 
-      </para>
+      <para>Tenga en cuenta que, de modo predeterminado, GDM utiliza «gdm» como nombre de servicio para un inicio de sesión normal y el nombre «gdm-autologin» para el inicio de sesión automático. Puede utilizar la opción de configuración <filename>PamStack</filename> para indicar un nombre distinto. Por ejemplo, si indica «foo», GDM utilizará el nombre «foo» para el servicio de inicio de sesión normal y «foo-autologin» para el inicio de sesión automático.</para>
 
-      <para>
-        For those looking at the code, the gdm_verify_user function in 
-        <filename>daemon/verify-pam.c</filename> is used for normal login
-        and the gdm_verify_setup_user function is used for automatic login.
-      </para>
+      <para>Para aquellos que estén viendo el código, la función gdm_verify_user en <filename>daemon/verify-pam.c</filename> se utiliza para el inicio de sesión normal y la función gdm_verify_setup_user para el inicio de sesión automático.</para>
     </sect2>
 
     <sect2 id="displaytypes">
@@ -1672,17 +1654,7 @@ PostSession/
             <listitem>
               <synopsis>Use24Clock=auto</synopsis>
               <para>Seleccione el uso de un reloj de 24 horas. Algunas configuraciones regionales no soportan el formato de 12 horas (como Finlandés, que es <filename>fi_FI</filename>) y en dichas configuraciones regionales este ajuste no tiene ningún efecto.</para>
-              <para>
-                Possible values are "auto" (default),
-                "true", and "false". If this is set to
-                "auto" or left empty, then time format is chosen from
-                locale settings. Locale settings are based on the language in
-                use, thus it is changed by setting environment variables
-                LANGUAGE (GNU extension), LANG, LC_MESSAGES or LC_ALL in the
-                GDM's runtime environment. Priorities between the mentioned
-                environment variables can be found from your system's
-                C library manual.
-              </para>
+              <para>Los valores aceptados son: «auto» (predeterminado), «true» y «false». Si se ajusta a «auto» o se deja vacío, el formato de la hora se tomará de los ajuste de locale. Los ajustes de locale están basados en el idioma en uso, por lo tanto se cambia mediante las variables LANGUAGE (extensión GNU), LANG, LC_MESSAGES o LC_ALL en el entorno de ejecución de GDM. Podrá encontrar información acerda de las prioridades entre las variables de entorno indicadas en el manual de las bibliotecas de C de su sistema.</para>
             </listitem>
           </varlistentry>
 
@@ -1765,14 +1737,7 @@ PostSession/
             <term>Broadcast</term>
             <listitem>
               <synopsis>Broadcast=true</synopsis>
-              <para>
-                If true, the chooser will broadcast a query to the local
-                network and collect responses.  This way the chooser will
-                always show all available managers on the network.  If you
-                need to add some hosts not local to this network, or if you
-                don't want to use a broadcast, you can list them explicitly
-                in the <filename>Hosts</filename> key.
-              </para>
+              <para>Si es «true», el selector emitirá una petición a la red local y recogerá las respuestas. De este modo el selector siempre mostrará todos los gestores disponibles en la red. Si necesita añadir algún servidor que no sea local a esta red, o si no desea utilizar «broadcast», puede añadirlo explícitamente en la clave <filename>Hosts</filename>.</para>
             </listitem>
           </varlistentry>
           
@@ -1780,14 +1745,7 @@ PostSession/
             <term>Multicast</term>
             <listitem>
               <synopsis>Multicast=true</synopsis>
-              <para>
-                If true and IPv6 is enabled, the chooser will send a multicast
-                query to the local network and collect responses from the hosts
-                who have joined multicast group. If you don't want to send a
-                multicast, you can specify IPv6 address in the <filename>Hosts
-                </filename> key. The host will respond if it is listening to
-                XDMCP requests and IPv6 is enabled there.
-              </para>
+              <para>Si es «true» y está activado IPv6, el selector emitirá una petición multicast a la red local y recogerá las respuestas de los servidores que se hayan unido al grupo multicast. Si no desea emitir un multicast puede indicar una dirección IPv6 en la clave <filename>Hosts</filename>. El servidor responderá si está escuchando a las peticiones XDMCP y tiene activado IPv6.</para>
             </listitem>
           </varlistentry>
           
@@ -2461,24 +2419,23 @@ Answers:
       <sect3 id="flexixserveruser">
       <title>FLEXI_XSERVER_USER</title>
 <screen>
-FLEXI_XSERVER_USER: Start a new X flexible display and initialize the
-                    greeter with the given username.  Only supported on
-                    connection that passed AUTH_LOCAL
-Supported since:    2.17.7 
-Arguments: &lt;username&gt; &lt;xserver type&gt;
-  If no server type specified, starts the standard X server
-Answers:
-  OK &lt;display&gt;
-  ERROR &lt;err number&gt; &lt;english error description&gt;
-     0 = Not implemented
-     1 = No more flexi servers
-     2 = Startup errors
-     3 = X failed
-     4 = X too busy
-     6 = No server binary
-     100 = Not authenticated
-     200 = Too many messages
-     999 = Unknown error
+FLEXI_XSERVER_USER: Inicia una nueva pantalla flexible e inicializa
+                     la interfaz de entrada con el usuario proporcionado.
+                     Sólo soportado para conexiones a través de AUTH_LOCAL
+Suportado desde:  2.17.7 
+Argumentos: &lt;nombre de usuario&gt;=&lt;tipo de servidor x&gt;
+  Si no se especifica un tipo de servidor, se iniciará el servidor X estándar
+Respuestas:
+  OK &lt;pantalla&gt;
+  ERROR &lt;número de error&gt; &lt;descripción del error en inglés&gt;
+     0 = No implementado
+     1 = No hay más servidores flexibles
+     2 = Errores de inicio
+     3 = Fallo en las X
+     4 = X demasiado ocupadas
+     100 = No autenticado
+     200 = Demasiados mensajes
+     999 = Error desconocido
 </screen>
       </sect3>
 
@@ -4590,20 +4547,8 @@ Hosts=appserverone,appservertwo
 
   <sect1 id="license">
     <title>Licencia</title>
-    <para>
-      This program is free software; you can redistribute it and/or
-      modify it under the terms of the  <ulink type="help" url="gnome-help:gpl">
-      <citetitle>GNU General Public License</citetitle></ulink> as
-      published by the Free Software Foundation; 
-      either version 2 of the License, or (at your option) any later
-      version.
-    </para>
-    <para>
-      This program is distributed in the hope that it will be useful, but
-      WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      <citetitle>GNU General Public License</citetitle> for more details.
-    </para>
+    <para>Este programa es software libre; puede redistribuirlo y/o modificarlo bajo los términos de la <ulink type="help" url="gnome-help:gpl"><citetitle>Licencia Pública General GNU</citetitle></ulink> tal como se publica por la Free Software Foundation; ya sea la versión 2 de la Licencia, o (a su elección) cualquier versión posterior.</para>
+    <para>Este programa se distribuye con la esperanza de que le sea útil, pero SIN NINGUNA GARANTÍA; sin incluso la garantía implícita de MERCANTILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la <citetitle>Licencia Pública General GNU</citetitle> para más detalles.</para>
     <para>Se incluye una copia de la <citetitle>Licencia Pública General GNU</citetitle> como un apéndice a la <citetitle>Guía del usuario de GNOME</citetitle>. Quizá quiera obtener una copia de la <citetitle>Licencia Pública General GNU</citetitle> de la Free Software Foundation visitando <ulink type="http" url="http://www.fsf.org">su sitio web</ulink> o escribiendo a <address>Free Software Foundation, Inc<street>59 Temple Place</street> Suite 330<city>Boston</city><state>MA</state><postcode>02111-1307</postcode><country>USA</country></address></para>
   </sect1>
 </article>
