@@ -22,7 +22,6 @@
 #ifndef _GDM_DAEMON_CONFIG_H
 #define _GDM_DAEMON_CONFIG_H
 
-#include "server.h"
 #include "gdm-daemon-config-entries.h"
 
 G_BEGIN_DECLS

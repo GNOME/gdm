@@ -26,48 +26,102 @@ INCLUDES = \
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
 	$(GNOME_INCLUDEDIR)				\
 	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\"	\
+	$(DBUS_CFLAGS)					\
 	$(NULL)
 
-sbin_PROGRAMS = gdm-binary		\
+BUILT_SOURCES =				\
+	gdm-slave-glue.h		\
+	gdm-manager-glue.h		\
+	gdm-display-glue.h		\
+	gdm-xdmcp-display-glue.h	\
+	gdm-static-display-glue.h	\
 	$(NULL)
 
-gdm_binary_SOURCES = \
-	gdm.c				\
-	gdm.h \
-	gdm-daemon-config.c \
-	gdm-daemon-config.h \
-	gdm-daemon-config-entries.h \
-	gdm-daemon-config-keys.h \
-	gdm-socket-protocol.h \
-	display.c \
-	display.h \
+gdm-manager-glue.h: gdm-manager.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_manager --mode=glib-server --output=gdm-manager-glue.h gdm-manager.xml
+gdm-slave-glue.h: gdm-slave.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_slave --mode=glib-server --output=gdm-slave-glue.h gdm-slave.xml
+gdm-display-glue.h: gdm-display.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_display --mode=glib-server --output=gdm-display-glue.h gdm-display.xml
+gdm-xdmcp-display-glue.h: gdm-xdmcp-display.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_xdmcp_display --mode=glib-server --output=gdm-xdmcp-display-glue.h gdm-xdmcp-display.xml
+gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_static_display --mode=glib-server --output=gdm-static-display-glue.h gdm-static-display.xml
+
+libexec_PROGRAMS = 			\
+	gdm-slave			\
+	$(NULL)
+
+gdm_slave_SOURCES = 			\
+	slave-main.c 			\
+	gdm-greeter.c			\
+	gdm-greeter.h			\
+	gdm-server.c			\
+	gdm-server.h			\
+	gdm-slave.c			\
+	gdm-slave.h			\
 	fstype.c \
-	slave.c \
-	slave.h \
-	server.c \
+	filecheck.c \
+	filecheck.h \
+	$(NULL)
+
+# Note that these libs are in LDFLAGS because they should come before
+# everything else on the link line as they may override stuff
+gdm_slave_LDFLAGS =				\
+	$(EXTRA_DAEMON_LIBS)			\
+	$(NULL)
+
+gdm_slave_LDADD = 				\
+	$(DAEMON_LIBS)				\
+	$(INTLLIBS)				\
+	$(GLIB_LIBS)				\
+	$(GOBJECT_LIBS)				\
+	$(GDK_LIBS)				\
+	$(top_builddir)/common/libgdmcommon.a	\
+	$(X_LIBS)				\
+	$(XINERAMA_LIBS)			\
+	$(DBUS_LIBS)				\
+	-lXau					\
+	-lX11					\
+	-lXext					\
+	$(NULL)
+
+sbin_PROGRAMS = 			\
+	gdm-binary			\
+	$(NULL)
+
+gdm_binary_SOURCES = 			\
+	gdm.h 				\
+	main.c				\
+	gdm-master-config.c 		\
+	gdm-master-config.h		\
+	gdm-daemon-config-entries.h	\
+	gdm-display-store.c		\
+	gdm-display-store.h		\
+	gdm-display.c			\
+	gdm-display.h			\
+	gdm-xdmcp-display.c		\
+	gdm-xdmcp-display.h		\
+	gdm-static-display.c		\
+	gdm-static-display.h		\
+	gdm-manager.c			\
+	gdm-manager.h			\
+	gdm-slave-proxy.c		\
+	gdm-slave-proxy.h		\
+	gdm-daemon-config-keys.h	\
+	gdm-socket-protocol.h		\
+	auth.c				\
+	auth.h				\
+	fstype.c \
 	server.h \
-	misc.c \
-	misc.h \
-	auth.c \
-	auth.h \
 	cookie.c \
 	cookie.h \
-	xdmcp.c \
-	xdmcp.h \
 	choose.c \
 	choose.h \
 	filecheck.c \
 	filecheck.h \
 	md5.c \
 	md5.h \
-	@VRFY@.c \
-	verify.h \
-	errorgui.c \
-	errorgui.h \
-	gdm-net.c \
-	gdm-net.h \
-	getvt.c \
-	getvt.h	\
 	$(NULL)
 
 XDMCP_SOURCES =			\
@@ -109,6 +163,7 @@ gdm_binary_LDADD = \
 	$(X_LIBS)				\
 	$(XINERAMA_LIBS)			\
 	$(XDMCP_LIBS)				\
+	$(DBUS_LIBS)				\
 	-lXau					\
 	-lX11					\
 	-lXext					\
@@ -116,14 +171,25 @@ gdm_binary_LDADD = \
 
 if WITH_CONSOLE_KIT
 gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
-gdm_binary_LDADD += $(DBUS_LIBS)
-INCLUDES += $(DBUS_CFLAGS)
 endif
 
-sbin_SCRIPTS = gdm
-CLEANFILES = gdm
+sbin_SCRIPTS =		\
+	gdm		\
+	$(NULL)
 
 gdm: $(srcdir)/gdm.in
 	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdm.in >gdm
 
-EXTRA_DIST = gdm.in
+CLEANFILES =			\
+	gdm			\
+	$(BUILT_SOURCES)	\
+	$(NULL)
+
+EXTRA_DIST = 			\
+	gdm.in			\
+	gdm-slave.xml		\
+	gdm-manager.xml		\
+	gdm-display.xml		\
+	gdm-xdmcp-display.xml	\
+	gdm-static-display.xml	\
+	$(NULL)

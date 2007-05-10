@@ -156,12 +156,6 @@ static GSList *slave_waitpids          = NULL;
 
 extern gboolean gdm_first_login;
 
-/* The slavepipe (like fifo) connection, this is the write end */
-extern int slave_fifo_pipe_fd;
-
-/* wait for a GO in the SOP protocol */
-extern gboolean gdm_wait_for_go;
-
 typedef struct {
 	pid_t pid;
 } GdmWaitPid;
@@ -1442,7 +1436,7 @@ gdm_slave_run (GdmDisplay *display)
 
 	/* Really this will only be useful for the first local server,
 	   since that's the only time this can really be on */
-	while G_UNLIKELY (gdm_wait_for_go) {
+	while G_UNLIKELY (d->wait_for_go) {
 		struct timeval tv;
 		/* Wait 1 second. */
 		tv.tv_sec = 1;
@@ -1824,7 +1818,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		gdm_log_shutdown ();
 
-		gdm_close_all_descriptors (0 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
+		gdm_close_all_descriptors (0 /* from */, d->slave_notify_fd  /* except */, -1 /* except2 */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -2574,7 +2568,7 @@ gdm_slave_greeter (void)
 
 		gdm_log_shutdown ();
 
-		gdm_close_all_descriptors (2 /* from */, slave_fifo_pipe_fd/* except */, d->slave_notify_fd/* except2 */);
+		gdm_close_all_descriptors (2 /* from */, d->slave_notify_fd /* except */, -1 /* except2 */);
 
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
@@ -2817,33 +2811,22 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		gdm_ack_response = NULL;
 	}
 
-	/* ensure this is sent from the actual slave with the pipe always, this is anal I know */
-	if (G_LIKELY (d->slavepid == getppid ()) || G_LIKELY (d->slavepid == getpid ())) {
-		fd = slave_fifo_pipe_fd;
-	} else {
-		fd = -1;
-	}
+	fd = -1;
 
-	if G_UNLIKELY (fd < 0) {
-		/* FIXME: This is not likely to ever be used, remove
-		   at some point.  Other then slaves shouldn't be using
-		   these functions.  And if the pipe creation failed
-		   in main daemon just abort the main daemon.  */
-		/* Use the fifo as a fallback only now that we have a pipe */
-		fifopath = g_build_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
-					     ".gdmfifo", NULL);
-		old = geteuid ();
-		if (old != 0)
-			seteuid (0);
+	fifopath = g_build_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR),
+				     ".gdmfifo",
+				     NULL);
+	old = geteuid ();
+	if (old != 0)
+		seteuid (0);
 #ifdef O_NOFOLLOW
-		VE_IGNORE_EINTR (fd = open (fifopath, O_WRONLY|O_NOFOLLOW));
+	VE_IGNORE_EINTR (fd = open (fifopath, O_WRONLY|O_NOFOLLOW));
 #else
-		VE_IGNORE_EINTR (fd = open (fifopath, O_WRONLY));
+	VE_IGNORE_EINTR (fd = open (fifopath, O_WRONLY));
 #endif
-		if (old != 0)
-			seteuid (old);
-		g_free (fifopath);
-	}
+	if (old != 0)
+		seteuid (old);
+	g_free (fifopath);
 
 	/* eek */
 	if G_UNLIKELY (fd < 0) {
@@ -2854,9 +2837,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 
 	gdm_fdprintf (fd, "\n%s\n", str);
 
-	if G_UNLIKELY (fd != slave_fifo_pipe_fd) {
-		VE_IGNORE_EINTR (close (fd));
-	}
+	VE_IGNORE_EINTR (close (fd));
 
 #if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
 	if (wait_for_ack && ! gdm_got_ack) {
@@ -3059,7 +3040,7 @@ gdm_slave_chooser (void)
 		gdm_log_shutdown ();
 
 		VE_IGNORE_EINTR (close (0));
-		gdm_close_all_descriptors (2 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
+		gdm_close_all_descriptors (2 /* from */, d->slave_notify_fd  /* except */, -1 /* except2 */);
 
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
@@ -3703,7 +3684,7 @@ session_child_run (struct passwd *pwent,
 
 	gdm_log_shutdown ();
 
-	gdm_close_all_descriptors (3 /* from */, slave_fifo_pipe_fd /* except */, d->slave_notify_fd /* except2 */);
+	gdm_close_all_descriptors (3 /* from */, d->slave_notify_fd  /* except */, -1 /* except2 */);
 
 	gdm_log_init ();
 
@@ -4973,7 +4954,7 @@ gdm_slave_handle_usr2_message (void)
 					}
 				}
 			} else if (strcmp (&s[1], GDM_NOTIFY_GO) == 0) {
-				gdm_wait_for_go = FALSE;
+				d->wait_for_go = FALSE;
 			} else if (strcmp (&s[1], GDM_NOTIFY_TWIDDLE_POINTER) == 0) {
 				gdm_twiddle_pointer (d);
 			}

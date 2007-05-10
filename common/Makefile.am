@@ -28,6 +28,8 @@ noinst_LIBRARIES = 		\
 	$(null)
 
 libgdmcommon_a_SOURCES =	\
+	gdm-address.h		\
+	gdm-address.c		\
 	gdm-common.h		\
 	gdm-common.c		\
 	gdm-common-config.h	\

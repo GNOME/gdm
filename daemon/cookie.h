@@ -27,5 +27,3 @@ void gdm_cookie_generate (char **cookie,
 void gdm_random_tick (void);
 
 #endif /* GDM_COOKIE_H */
-
-/* EOF */

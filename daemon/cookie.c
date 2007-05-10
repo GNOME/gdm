@@ -44,7 +44,7 @@
 #include "cookie.h"
 
 #include "gdm-common.h"
-#include "gdm-daemon-config.h"
+#include "gdm-master-config.h"
 
 #define MAXBUFFERSIZE 1024
 

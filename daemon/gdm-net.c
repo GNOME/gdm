@@ -109,7 +109,7 @@ struct _GdmConnection {
 	GdmDisplay *disp;
 };
 
-int 
+int
 gdm_connection_is_server_busy (GdmConnection *conn) {
 	int max_connections = MAX_CONNECTIONS;
 
@@ -391,14 +391,15 @@ try_again:
 	conn->subconnections = NULL;
 	conn->n_subconnections = 0;
 
+        gdm_fd_set_close_on_exec (conn->fd);
+
 	unixchan = g_io_channel_unix_new (conn->fd);
 	g_io_channel_set_encoding (unixchan, NULL, NULL);
 	g_io_channel_set_buffered (unixchan, FALSE);
 
-	conn->source = g_io_add_watch_full
-		(unixchan, G_PRIORITY_DEFAULT,
-		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-		 gdm_socket_handler, conn, NULL);
+	conn->source = g_io_add_watch_full (unixchan, G_PRIORITY_DEFAULT,
+                                            G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
+                                            gdm_socket_handler, conn, NULL);
 	g_io_channel_unref (unixchan);
 
 	listen (fd, 5);
@@ -427,6 +428,8 @@ gdm_connection_open_fd (int fd)
 	conn->parent = NULL;
 	conn->subconnections = NULL;
 	conn->n_subconnections = 0;
+
+        gdm_fd_set_close_on_exec (conn->fd);
 
 	unixchan = g_io_channel_unix_new (conn->fd);
 	g_io_channel_set_encoding (unixchan, NULL, NULL);
@@ -479,6 +482,8 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	conn->parent = NULL;
 	conn->subconnections = NULL;
 	conn->n_subconnections = 0;
+
+        gdm_fd_set_close_on_exec (conn->fd);
 
 	fifochan = g_io_channel_unix_new (conn->fd);
 	g_io_channel_set_encoding (fifochan, NULL, NULL);
@@ -679,4 +684,3 @@ gdm_kill_subconnections_with_display (GdmConnection *conn,
 	}
 }
 
-/* EOF */

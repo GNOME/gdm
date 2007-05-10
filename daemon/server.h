@@ -23,21 +23,6 @@
 
 #include "display.h"
 
-typedef struct _GdmXserver GdmXserver;
-
-struct _GdmXserver
-{
-	char *id;
-	char *name;
-	char *command;
-	gboolean flexible;
-	gboolean choosable; /* not implemented yet */
-	gboolean chooser; /* instead of greeter, run chooser */
-	gboolean handled;
-	int number;
-	int priority;
-};
-
 /* These are the servstat values, also used as server
  * process exit codes */
 #define SERVER_TIMEOUT 2	/* Server didn't start */
@@ -72,5 +57,3 @@ GdmXserver *	gdm_server_resolve	(GdmDisplay *disp);
 
 
 #endif /* GDM_SERVER_H */
-
-/* EOF */

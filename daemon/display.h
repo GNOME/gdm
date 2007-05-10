@@ -29,6 +29,32 @@ typedef struct _GdmDisplay GdmDisplay;
 
 #include "gdm-net.h" /* for GdmConnection */
 
+/* DO NOTE USE 1, that's used as error if x connection fails usually */
+/* Note that there is no reason why these were a power of two, and note
+ * that they have to fit in 256 */
+/* These are the exit codes */
+#define DISPLAY_REMANAGE 2	/* Restart display */
+#define DISPLAY_ABORT 4		/* Houston, we have a problem */
+#define DISPLAY_REBOOT 8	/* Rebewt */
+#define DISPLAY_HALT 16		/* Halt */
+#define DISPLAY_SUSPEND 17	/* Suspend (don't use, use the interrupt) */
+#define DISPLAY_CHOSEN 20	/* successful chooser session,
+				   restart display */
+#define DISPLAY_RUN_CHOOSER 30	/* Run chooser */
+#define DISPLAY_XFAILED 64	/* X failed */
+#define DISPLAY_GREETERFAILED 65 /* greeter failed (crashed) */
+#define DISPLAY_RESTARTGREETER 127 /* Restart greeter */
+#define DISPLAY_RESTARTGDM 128	/* Restart GDM */
+
+enum {
+	DISPLAY_UNBORN /* Not yet started */,
+	DISPLAY_ALIVE /* Yay! we're alive (non-XDMCP) */,
+	XDMCP_PENDING /* Pending XDMCP display */,
+	XDMCP_MANAGED /* Managed XDMCP display */,
+	DISPLAY_DEAD /* Left for dead */,
+	DISPLAY_CONFIG /* in process of being configured */
+};
+
 #define TYPE_STATIC 1		/* X server defined in GDM configuration */
 #define TYPE_XDMCP 2		/* Remote display/Xserver */
 #define TYPE_FLEXI 3		/* Local Flexi X server */
@@ -177,6 +203,7 @@ struct _GdmDisplay
 	/* order in the Xservers file for sessreg, -1 if unset yet */
 	int x_servers_order;
 
+	gboolean wait_for_go;
 
 	/* STATIC TYPE */
 

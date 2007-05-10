@@ -43,10 +43,6 @@
 #include "gdm-daemon-config.h"
 
 /* External vars */
-extern GdmConnection *fifoconn;
-extern GdmConnection *pipeconn;
-extern GdmConnection *unixconn;
-extern int slave_fifo_pipe_fd; /* the slavepipe (like fifo) connection, this is the write end */
 extern gint flexi_servers;
 
 /**
@@ -371,17 +367,10 @@ gdm_display_manage (GdmDisplay *d)
 
 	d->slavepid = getpid ();
 
-	gdm_connection_close (fifoconn);
-	fifoconn = NULL;
-	gdm_connection_close (pipeconn);
-	pipeconn = NULL;
-	gdm_connection_close (unixconn);
-	unixconn = NULL;
-
 	gdm_log_shutdown ();
 
 	/* Close everything */
-	gdm_close_all_descriptors (0 /* from */, fds[0] /* except */, slave_fifo_pipe_fd /* except2 */);
+	gdm_close_all_descriptors (0 /* from */, fds[0] /* except */, -1  /* except2 */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */

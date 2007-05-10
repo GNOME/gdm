@@ -34,8 +34,6 @@
 
 #include "gdm-common.h"
 
-#include "server.h"
-
 static GHashTable *int_hash       = NULL;
 static GHashTable *bool_hash      = NULL;
 static GHashTable *string_hash    = NULL;

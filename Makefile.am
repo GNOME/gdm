@@ -1,7 +1,7 @@
 NULL =
 
 SUBDIRS = 			\
-	po 			\
+	data			\
 	config 			\
 	pixmaps 		\
 	common 			\
@@ -9,6 +9,7 @@ SUBDIRS = 			\
 	gui 			\
 	utils 			\
 	docs			\
+	po 			\
 	$(NULL)
 
 # add these when help gets added back

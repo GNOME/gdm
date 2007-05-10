@@ -48,7 +48,7 @@ dnl
 AC_ARG_ENABLE(console-helper,
   [  --enable-console-helper=[auto/no/yes]  Enable PAM console helper [default=auto]],,
   enable_console_helper=auto)
-    
+
 AC_ARG_ENABLE(authentication-scheme,
   [  --enable-authentication-scheme=[auto/pam/crypt/shadow]  Choose a specific
                           authentication scheme [default=auto]],,
@@ -813,13 +813,36 @@ fi
 use_console_kit=no
 if test "x$with_console_kit" != "xno" ; then
 	use_console_kit=yes
-	PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_REQUIRED)
 	AC_DEFINE(WITH_CONSOLE_KIT, 1, [Define to enable ConsoleKit support])
 fi
 AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
 AC_SUBST(WITH_CONSOLE_KIT)
+
+dnl ---------------------------------------------------------------------------
+dnl - D-Bus
+dnl ---------------------------------------------------------------------------
+
+PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_REQUIRED)
 AC_SUBST(DBUS_CFLAGS)
 AC_SUBST(DBUS_LIBS)
+
+dnl ---------------------------------------------------------------------------
+dnl - Are we specifying a different dbus root ?
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(dbus-sys,
+        [AC_HELP_STRING([--with-dbus-sys=<dir>],
+        [where D-BUS system.d directory is])])
+AC_ARG_WITH(dbus-services,
+        [AC_HELP_STRING([--with-dbus-services=<dir>],
+        [where D-BUS services directory is])])
+if ! test -z "$with_dbus_sys" ; then
+        DBUS_SYS_DIR="$with_dbus_sys"
+else
+        DBUS_SYS_DIR="$sysconfdir/dbus-1/system.d"
+fi
+AC_SUBST(DBUS_SYS_DIR)
+
 
 #
 # Define some variables to represent the directories we use.
@@ -1273,9 +1296,10 @@ pixmaps/Makefile
 pixmaps/16x16/Makefile
 pixmaps/32x32/Makefile
 pixmaps/48x48/Makefile
+data/Makefile
 config/Makefile
-po/Makefile.in
 common/Makefile
+po/Makefile.in
 docs/Makefile
 docs/de/Makefile
 docs/es/Makefile

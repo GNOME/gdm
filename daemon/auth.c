@@ -34,17 +34,17 @@
 #include <errno.h>
 
 #include <X11/Xauth.h>
+
+#include <glib.h>
 #include <glib/gi18n.h>
 
-#include "gdm.h"
 #include "cookie.h"
-#include "misc.h"
 #include "filecheck.h"
 #include "auth.h"
 
 #include "gdm-common.h"
 #include "gdm-log.h"
-#include "gdm-daemon-config.h"
+#include "gdm-master-config.h"
 
 /* Ensure we know about FamilyInternetV6 even if what we're compiling
    against doesn't */
@@ -57,41 +57,17 @@
 /* Local prototypes */
 static FILE *gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty);
 
-static void
-display_add_error (GdmDisplay *d)
-{
-	if (errno != 0)
-		gdm_error (_("%s: Could not write new authorization entry: %s"),
-			   "add_auth_entry", strerror (errno));
-	else
-		gdm_error (_("%s: Could not write new authorization entry.  "
-			     "Possibly out of diskspace"),
-			   "add_auth_entry");
-	if (d->attached) {
-		char *s = g_strdup_printf
-			(C_(N_("GDM could not write a new authorization "
-			       "entry to disk.  Possibly out of diskspace.%s%s")),
-			 errno != 0 ? "  Error: " : "",
-			 errno != 0 ? strerror (errno) : "");
-		gdm_text_message_dialog (s);
-		g_free (s);
-	}
-}
-
-static gboolean
-add_auth_entry (GdmDisplay *d,
-		GSList **authlist,
-		FILE *af,
-		FILE *af2,
-		unsigned short family,
-		const char *addr,
-		int addrlen)
+gboolean
+gdm_auth_add_entry (int            display_num,
+		    const char    *bcookie,
+		    GSList       **authlist,
+		    FILE          *af,
+		    unsigned short family,
+		    const char    *addr,
+		    int            addrlen)
 {
 	Xauth *xa;
-	gchar *dispnum;
-
-	if G_UNLIKELY (!d)
-		return FALSE;
+	char  *dispnum;
 
 	xa = malloc (sizeof (Xauth));
 
@@ -113,7 +89,7 @@ add_auth_entry (GdmDisplay *d,
 		xa->address_length = addrlen;
 	}
 
-	dispnum = g_strdup_printf ("%d", d->dispnum);
+	dispnum = g_strdup_printf ("%d", display_num);
 	xa->number = strdup (dispnum);
 	xa->number_length = strlen (dispnum);
 	g_free (dispnum);
@@ -128,7 +104,8 @@ add_auth_entry (GdmDisplay *d,
 		free (xa);
 		return FALSE;
 	}
-	memcpy (xa->data, d->bcookie, 16);
+
+	memcpy (xa->data, bcookie, 16);
 	xa->data_length = 16;
 
 	if (af != NULL) {
@@ -139,21 +116,17 @@ add_auth_entry (GdmDisplay *d,
 			free (xa->name);
 			free (xa->address);
 			free (xa);
-			display_add_error (d);
-			return FALSE;
-		}
 
-		if (af2 != NULL) {
-			errno = 0;
-			if G_UNLIKELY ( ! XauWriteAuth (af2, xa)) {
-				free (xa->data);
-				free (xa->number);
-				free (xa->name);
-				free (xa->address);
-				free (xa);
-				display_add_error (d);
-				return FALSE;
+			if (errno != 0) {
+				g_warning (_("%s: Could not write new authorization entry: %s"),
+					   "add_auth_entry", g_strerror (errno));
+			} else {
+				g_warning (_("%s: Could not write new authorization entry.  "
+					     "Possibly out of diskspace"),
+					   "add_auth_entry");
 			}
+
+			return FALSE;
 		}
 	}
 
@@ -162,151 +135,22 @@ add_auth_entry (GdmDisplay *d,
 	return TRUE;
 }
 
-/**
- * gdm_auth_secure_display:
- * @d: Pointer to a GdmDisplay struct
- * 
- * Create authentication cookies for local and remote displays.
- *
- * Returns TRUE on success and FALSE on error.
- */
-
 gboolean
-gdm_auth_secure_display (GdmDisplay *d)
+gdm_auth_add_entry_for_display (int            display_num,
+				const char    *bcookie,
+				GSList       **authlist,
+				FILE          *af)
 {
-	FILE *af, *af_gdm;
-	int closeret;
-
-	if G_UNLIKELY (!d)
-		return FALSE;
-
-	umask (022);
-
-	gdm_debug ("gdm_auth_secure_display: Setting up access for %s", d->name);
-
-	g_free (d->authfile);
-	d->authfile = NULL;
-	g_free (d->authfile_gdm);
-	d->authfile_gdm = NULL;
-
-	if (d->server_uid != 0) {
-		int authfd;
-
-		/* Note, nested display can't use the GDM_KEY_SERV_AUTHDIR unless 
-		 * running as root, which is rare anyway. */
-
-		d->authfile = g_build_filename (gdm_daemon_config_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK), ".gdmXXXXXX", NULL);
-
-		umask (077);
-		authfd = g_mkstemp (d->authfile);
-		umask (022);
-
-		if G_UNLIKELY (authfd == -1) {
-			gdm_error (_("%s: Could not make new cookie file in %s"),
-				   "gdm_auth_secure_display", gdm_daemon_config_get_value_string (GDM_KEY_USER_AUTHDIR_FALLBACK));
-			g_free (d->authfile);
-			d->authfile = NULL;
-			return FALSE;
-		}
-
-		/* Make it owned by the user that nested display is started as */
-		fchown (authfd, d->server_uid, -1);
-
-		VE_IGNORE_EINTR (af = fdopen (authfd, "w"));
-
-		if G_UNLIKELY (af == NULL) {
-			g_free (d->authfile);
-			d->authfile = NULL;
-			return FALSE;
-		}
-
-		/* Make another authfile since the greeter can't read the server/user
-		 * readable file */
-		d->authfile_gdm = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR), d->name, ".Xauth");
-		af_gdm = gdm_safe_fopen_w (d->authfile_gdm, 0644);
-
-		if G_UNLIKELY (af_gdm == NULL) {
-			gdm_error (_("%s: Cannot safely open %s"),
-				   "gdm_auth_secure_display",
-				   d->authfile_gdm);
-
-			g_free (d->authfile_gdm);
-			d->authfile_gdm = NULL;
-			g_free (d->authfile);
-			d->authfile = NULL;
-			VE_IGNORE_EINTR (fclose (af));
-			return FALSE;
-		}
-	} else {
-		/* gdm and xserver authfile can be the same, server will run as root */
-		d->authfile = gdm_make_filename (gdm_daemon_config_get_value_string (GDM_KEY_SERV_AUTHDIR), d->name, ".Xauth");
-		af = gdm_safe_fopen_w (d->authfile, 0644);
-
-		if G_UNLIKELY (af == NULL) {
-			gdm_error (_("%s: Cannot safely open %s"),
-				   "gdm_auth_secure_display",
-				   d->authfile);
-
-			g_free (d->authfile);
-			d->authfile = NULL;
-			return FALSE;
-		}
-
-		af_gdm = NULL;
-	}
-
-	/* If this is a local display the struct hasn't changed and we
-	 * have to eat up old authentication cookies before baking new
-	 * ones... */
-	if (SERVER_IS_LOCAL (d) && d->auths) {
-		gdm_auth_free_auth_list (d->auths);
-		d->auths = NULL;
-
-		g_free (d->cookie);
-		d->cookie = NULL;
-		g_free (d->bcookie);
-		d->bcookie = NULL;
-	}
-
-	/* Create new random cookie */
-	gdm_cookie_generate (&d->cookie, &d->bcookie);
-
-	/* reget local host if local as it may have changed */
-	if (SERVER_IS_LOCAL (d)) {
-		char hostname[1024];
-
-		hostname[1023] = '\0';
-		if G_LIKELY (gethostname (hostname, 1023) == 0) {
-			g_free (d->hostname);
-			d->hostname = g_strdup (hostname);
-		}
-	}
-
-	if ( ! add_auth_entry (d, &(d->auths), af, af_gdm, FamilyWild, NULL, 0))
-		return FALSE;
-
-	gdm_debug ("gdm_auth_secure_display: Setting up access");
-
-	VE_IGNORE_EINTR (closeret = fclose (af));
-	if G_UNLIKELY (closeret < 0) {
-		display_add_error (d);
-		return FALSE;
-	}
-	if (af_gdm != NULL) {
-		VE_IGNORE_EINTR (closeret = fclose (af_gdm));
-		if G_UNLIKELY (closeret < 0) {
-			display_add_error (d);
-			return FALSE;
-		}
-	}
-	g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
-
-	if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG))
-		gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
-			   d->name, g_slist_length (d->auths));
-
-	return TRUE;
+	gdm_auth_add_entry (display_num,
+			    bcookie,
+			    authlist,
+			    af,
+			    FamilyWild,
+			    NULL,
+			    0);
 }
+
+#if 0
 
 #define SA(__s)	   ((struct sockaddr *) __s)
 #define SIN(__s)   ((struct sockaddr_in *) __s)
@@ -352,7 +196,7 @@ get_local_auths (GdmDisplay *d)
 	if G_UNLIKELY (!d)
 		return NULL;
 
-	if (SERVER_IS_LOCAL (d)) {
+	if (gdm_display_is_local (d)) {
 		char hostname[1024];
 
 		/* reget local host if local as it may have changed */
@@ -391,7 +235,7 @@ get_local_auths (GdmDisplay *d)
 		/* local machine but not local if you get my meaning, add
 		 * the host gotten by gethostname as well if it's different
 		 * since the above is probably localhost */
-		if ( ! SERVER_IS_LOCAL (d)) {
+		if ( ! gdm_display_is_local (d)) {
 			char hostname[1024];
 
 			hostname[1023] = '\0';
@@ -418,7 +262,7 @@ get_local_auths (GdmDisplay *d)
 
 	gdm_debug ("get_local_auths: Setting up network access");
 
-	if ( ! SERVER_IS_LOCAL (d)) {
+	if ( ! gdm_display_is_local (d)) {
 		/* we should write out an entry for d->addr since
 		   possibly it is not in d->addrs */
 
@@ -468,7 +312,7 @@ get_local_auths (GdmDisplay *d)
 	}
 
 	/* if local server add loopback */
-	if (SERVER_IS_LOCAL (d) && ! added_lo && ! d->tcp_disallowed) {
+	if (gdm_display_is_local (d) && ! added_lo && ! d->tcp_disallowed) {
 		struct sockaddr_storage *lo_ss = NULL;
 		/* FIXME: get loobback ss */
 		if (! add_auth_entry_for_addr (d, &auths, lo_ss)) {
@@ -476,9 +320,8 @@ get_local_auths (GdmDisplay *d)
 		}
 	}
 
-	if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG))
-		gdm_debug ("get_local_auths: Setting up access for %s - %d entries",
-			   d->name, g_slist_length (auths));
+	g_debug ("get_local_auths: Setting up access for %s - %d entries",
+		 d->name, g_slist_length (auths));
 
 	return auths;
 
@@ -1005,3 +848,4 @@ gdm_auth_free_auth_list (GSList *list)
 
 	g_slist_free (list);
 }
+#endif

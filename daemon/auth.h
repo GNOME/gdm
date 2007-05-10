@@ -19,17 +19,33 @@
 #ifndef GDM_AUTH_H
 #define GDM_AUTH_H
 
-#include "gdm.h"
+#include "gdm-display.h"
 
-gboolean gdm_auth_secure_display (GdmDisplay *d);
-gboolean gdm_auth_user_add       (GdmDisplay *d, uid_t user, const char *homedir);
-void     gdm_auth_user_remove    (GdmDisplay *d, uid_t user);
+G_BEGIN_DECLS
+
+gboolean gdm_auth_add_entry_for_display (int            display_num,
+                                         const char    *bcookie,
+                                         GSList       **authlist,
+                                         FILE          *af);
+gboolean gdm_auth_add_entry (int            display_num,
+                             const char    *bcookie,
+                             GSList       **authlist,
+                             FILE          *af,
+                             unsigned short family,
+                             const char    *addr,
+                             int            addrlen);
+
+gboolean gdm_auth_user_add       (GdmDisplay *d,
+                                  uid_t       user,
+                                  const char *homedir);
+void     gdm_auth_user_remove    (GdmDisplay *d,
+                                  uid_t       user);
 
 /* Call XSetAuthorization */
 void	 gdm_auth_set_local_auth (GdmDisplay *d);
 
-void     gdm_auth_free_auth_list (GSList *list);
+void     gdm_auth_free_auth_list (GSList     *list);
+
+G_END_DECLS
 
 #endif /* GDM_AUTH_H */
-
-/* EOF */

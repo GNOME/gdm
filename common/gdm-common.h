@@ -38,25 +38,104 @@
 
 G_BEGIN_DECLS
 
+#define        ve_string_empty(x) ((x)==NULL||(x)[0]=='\0')
+#define        ve_sure_string(x) ((x)!=NULL?(x):"")
+#define        VE_IGNORE_EINTR(expr) \
+	do {			     \
+		errno = 0;	     \
+		expr;		     \
+	} while G_UNLIKELY (errno == EINTR);
 
-gboolean     gdm_address_equal        (struct sockaddr_storage *sa,
-                                       struct sockaddr_storage *sb);
-gboolean     gdm_address_is_loopback  (struct sockaddr_storage *sa);
-void         gdm_address_get_info     (struct sockaddr_storage *sa,
-                                       char                   **host,
-                                       char                   **port);
+#define NEVER_FAILS_seteuid(uid) \
+	{ int r = 0; \
+	  if (geteuid () != uid) \
+	    r = seteuid (uid); \
+	  if G_UNLIKELY (r != 0) \
+        g_error ("GDM file %s: line %d (%s): Cannot run seteuid to %d: %s", \
+		  __FILE__,						\
+		  __LINE__,						\
+		  G_GNUC_PRETTY_FUNCTION,					\
+                  (int)uid,						\
+		  strerror (errno));			}
+#define NEVER_FAILS_setegid(gid) \
+	{ int r = 0; \
+	  if (getegid () != gid) \
+	    r = setegid (gid); \
+	  if G_UNLIKELY (r != 0) \
+        g_error ("GDM file %s: line %d (%s): Cannot run setegid to %d: %s", \
+		  __FILE__,						\
+		  __LINE__,						\
+		  G_GNUC_PRETTY_FUNCTION,					\
+                  (int)gid,						\
+		  strerror (errno));			}
+
+/* first goes to euid-root and then sets the egid and euid, to make sure
+ * this succeeds */
+#define NEVER_FAILS_root_set_euid_egid(uid,gid) \
+	{ NEVER_FAILS_seteuid (0); \
+	  NEVER_FAILS_setegid (gid); \
+	  if (uid != 0) { NEVER_FAILS_seteuid (uid); } }
+
+
+/* like fopen with "w" but unlinks and uses O_EXCL */
+FILE *         gdm_safe_fopen_w  (const char *file,
+				  mode_t      perm);
+/* like fopen with "a+" and uses O_EXCL and O_NOFOLLOW */
+FILE *         gdm_safe_fopen_ap (const char *file,
+				  mode_t      perm);
+
+
+typedef struct {
+	gboolean not_found; /* hostname below set to fallback,
+			       as gethostbyaddr/name failed */
+	char *hostname; /* never a bogus dot, if
+			   invalid/unknown, then set to the
+			   ip address in string form */
+
+	struct sockaddr_storage *addrs;
+	int addr_count;
+} GdmHostent;
+
+GdmHostent * gdm_gethostbyname (const char *name);
+
+GdmHostent *gdm_gethostbyaddr (struct sockaddr_storage *ia);
+GdmHostent * gdm_hostent_copy (GdmHostent *he);
+void gdm_hostent_free (GdmHostent *he);
+
+/* This is for race free forks */
+void	gdm_sigchld_block_push (void);
+void	gdm_sigchld_block_pop (void);
+void	gdm_sigterm_block_push (void);
+void	gdm_sigterm_block_pop (void);
+void	gdm_sigusr2_block_push (void);
+void	gdm_sigusr2_block_pop (void);
+
+void gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+int gdm_fdgetc     (int fd);
+char *gdm_fdgets   (int fd);
+
+void gdm_signal_ignore (int signal);
+void gdm_signal_default (int signal);
+
+void gdm_close_all_descriptors (int from, int except, int except2);
+
+int gdm_open_dev_null (mode_t mode);
+
+/* somewhat like g_build_filename, but does somet hing like
+ * <dir> "/" <name> <extension>
+ */
+char *         gdm_make_filename (const char *dir,
+				  const char *name,
+				  const char *extension);
+
+void           gdm_fd_set_close_on_exec  (int fd);
 
 void           ve_clearenv (void);
 char *	       ve_first_word (const char *s);
-gboolean       ve_first_word_executable (const char *s,
-				   gboolean only_existance);
 
 /* Gets the first existing command out of a list separated by semicolons */
 char *	       ve_get_first_working_command (const char *list,
 					     gboolean only_existance);
-
-#define        ve_string_empty(x) ((x)==NULL||(x)[0]=='\0')
-#define        ve_sure_string(x) ((x)!=NULL?(x):"")
 
 /* These two functions will ALWAYS return a non-NULL string,
  * if there is an error, they return the unconverted string */
@@ -73,12 +152,6 @@ pid_t          ve_waitpid_no_signal (pid_t pid, int *status, int options);
 
 /* Testing for existance of a certain locale */
 gboolean       ve_locale_exists (const char *loc);
-
-#define VE_IGNORE_EINTR(expr) \
-	do {		\
-		errno = 0;	\
-		expr;		\
-	} while G_UNLIKELY (errno == EINTR);
 
 G_END_DECLS
 

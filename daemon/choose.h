@@ -21,20 +21,20 @@
 #ifndef CHOOSE_H
 #define CHOOSE_H
 
-#include "gdm.h"
+#include "gdm-address.h"
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 struct _GdmIndirectDisplay {
-	int id;
-	struct sockaddr_storage* dsp_sa;
-	struct sockaddr_storage* chosen_host;
-	time_t acctime;
+	int         id;
+	GdmAddress *dsp_address;
+	GdmAddress *chosen_host;
+	time_t      acctime;
 };
 
-GdmIndirectDisplay *    gdm_choose_indirect_alloc            (struct sockaddr_storage *clnt_sa);
-GdmIndirectDisplay *    gdm_choose_indirect_lookup           (struct sockaddr_storage *clnt_sa);
-GdmIndirectDisplay *	gdm_choose_indirect_lookup_by_chosen (struct sockaddr_storage *chosen,
-							      struct sockaddr_storage *origin);
+GdmIndirectDisplay *    gdm_choose_indirect_alloc            (GdmAddress *address);
+GdmIndirectDisplay *    gdm_choose_indirect_lookup           (GdmAddress *address);
+GdmIndirectDisplay *	gdm_choose_indirect_lookup_by_chosen (GdmAddress *chosen,
+							      GdmAddress *origin);
 void			gdm_choose_indirect_dispose          (GdmIndirectDisplay *id);
 
 /* dispose of indirect display of id, if no host is set */

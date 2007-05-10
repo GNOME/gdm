@@ -25,7 +25,6 @@
 
 #include "gdm.h"
 #include "gdm-common.h"
-#include "gdm-daemon-config.h"
 
 #include "filecheck.h"
 
@@ -63,34 +62,13 @@ gdm_file_check (const gchar *caller,
 	    ve_string_empty (file))
 		return FALSE;
 
-	/* Stat on automounted directory - append the '/.' to dereference mount point.
-	   Do this only if GdmSupportAutomount is true (default is false)
-	   2006-09-22, Jerzy Borkowski, CAMK */
-	if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_SUPPORT_AUTOMOUNT)) {
-		dirautofs = g_strconcat(dir, "/.", NULL);
-		VE_IGNORE_EINTR (r = stat (dirautofs, &statbuf));
-		g_free(dirautofs);
-	}
-	/* Stat directory */
-	else {
-		VE_IGNORE_EINTR (r = stat (dir, &statbuf));
-	}
+
+	VE_IGNORE_EINTR (r = stat (dir, &statbuf));
 
 	if (r < 0) {
 		if ( ! absentdirok)
 			g_warning (_("%s: Directory %s does not exist."),
 				   caller, dir);
-		return FALSE;
-	}
-
-	/* Check if dir is owned by the user ...
-	   Only, if GDM_KEY_CHECK_DIR_OWNER is true (default)
-	   This is a "hack" for directories not owned by
-	   the user.
-	   2004-06-22, Andreas Schubert, MATHEMA Software GmbH */
-
-	if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_CHECK_DIR_OWNER) && (statbuf.st_uid != user)) {
-		g_warning (_("%s: %s is not owned by uid %d."), caller, dir, user);
 		return FALSE;
 	}
 
@@ -206,14 +184,6 @@ gdm_auth_file_check (const gchar *caller,
 	/* ... has right permissions ... */
 	if G_UNLIKELY (statbuf.st_mode & 0077) {
 		g_warning ("%s: %s has wrong permissions (should be 0600)", caller, authfile);
-		return FALSE;
-	}
-
-	usermaxfile = gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE);
-	/* ... and smaller than sysadmin specified limit. */
-	if G_UNLIKELY (usermaxfile && statbuf.st_size > usermaxfile) {
-		g_warning (_("%s: %s is bigger than sysadmin specified maximum file size."),
-			caller, authfile);
 		return FALSE;
 	}
 

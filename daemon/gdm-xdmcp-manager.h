@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "gdm-display-store.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_XDMCP_MANAGER         (gdm_xdmcp_manager_get_type ())
@@ -56,7 +58,7 @@ typedef enum
 GQuark		    gdm_xdmcp_manager_error_quark	      (void);
 GType		    gdm_xdmcp_manager_get_type		      (void);
 
-GdmXdmcpManager *   gdm_xdmcp_manager_new		      (void);
+GdmXdmcpManager *   gdm_xdmcp_manager_new		      (GdmDisplayStore *display_store);
 
 void                gdm_xdmcp_manager_set_port                (GdmXdmcpManager *manager,
 							       guint            port);

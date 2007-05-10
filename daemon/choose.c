@@ -40,14 +40,13 @@
 #include <fcntl.h>
 #include <string.h>
 
-#include "gdm.h"
-#include "misc.h"
 #include "choose.h"
-#include "xdmcp.h"
 
+#include "gdm-address.h"
 #include "gdm-common.h"
 #include "gdm-log.h"
-#include "gdm-daemon-config.h"
+#include "gdm-master-config.h"
+#include "gdm-daemon-config-entries.h"
 
 #include "gdm-socket-protocol.h"
 
@@ -86,8 +85,8 @@ remove_oldest_pending (void)
 #endif
 
 static gboolean
-get_first_address_for_node (const char               *node,
-			    struct sockaddr_storage **sa)
+get_first_address_for_node (const char  *node,
+			    GdmAddress **address)
 {
 	struct addrinfo  hints;
 	struct addrinfo *ai_list;
@@ -122,8 +121,8 @@ get_first_address_for_node (const char               *node,
 	}
 
 	if (ai != NULL) {
-		if (sa != NULL) {
-			*sa = g_memdup (ai->ai_addr, ai->ai_addrlen);
+		if (address != NULL) {
+			*address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)ai->ai_addr);
 		}
 	}
 
@@ -132,19 +131,33 @@ get_first_address_for_node (const char               *node,
 	return found;
 }
 
+static int
+get_config_int (int id)
+{
+	GdmDaemonConfig *dc;
+	int              val;
+
+	dc = gdm_daemon_config_new ();
+	gdm_daemon_config_get_int_for_id (dc, id, &val);
+
+	g_object_unref (dc);
+
+	return val;
+}
+
 gboolean
 gdm_choose_data (const char *data)
 {
-	int id;
-	struct sockaddr_storage *sa;
-	GSList *li;
-	char *msg;
-	char *p;
-	char *host;
-	gboolean ret;
+	int         id;
+	GdmAddress *address;
+	GSList     *li;
+	char       *msg;
+	char       *p;
+	char       *host;
+	gboolean    ret;
 
 	msg = g_strdup (data);
-	sa = NULL;
+	address = NULL;
 	ret = FALSE;
 
 	p = strtok (msg, " ");
@@ -163,28 +176,28 @@ gdm_choose_data (const char *data)
 		goto out;
 	}
 
-	if (! get_first_address_for_node (p, &sa)) {
+	if (! get_first_address_for_node (p, &address)) {
 		goto out;
 	}
 
-	gdm_address_get_info (sa, &host, NULL);
-	gdm_debug ("gdm_choose_data: got indirect id: %d address: %s",
-		   id,
-		   host);
+	gdm_address_get_numeric_info (address, &host, NULL);
+	g_debug ("gdm_choose_data: got indirect id: %d address: %s",
+		 id,
+		 host);
 	g_free (host);
 
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *idisp = li->data;
 		if (idisp->id == id) {
 			/* whack the oldest if more then allowed */
-			while (ipending >= gdm_daemon_config_get_value_int (GDM_KEY_MAX_INDIRECT) &&
+			while (ipending >= get_config_int (GDM_ID_MAX_INDIRECT) &&
 			       remove_oldest_pending ())
 				;
 
 			idisp->acctime = time (NULL);
 
 			g_free (idisp->chosen_host);
-			idisp->chosen_host = g_memdup (sa, sizeof (struct sockaddr_storage));
+			idisp->chosen_host = gdm_address_copy (address);
 
 			/* Now this display is pending */
 			ipending++;
@@ -194,7 +207,7 @@ gdm_choose_data (const char *data)
 		}
 	}
  out:
-	g_free (sa);
+	gdm_address_free (address);
 	g_free (msg);
 
 	return ret;
@@ -202,13 +215,12 @@ gdm_choose_data (const char *data)
 
 
 GdmIndirectDisplay *
-gdm_choose_indirect_alloc (struct sockaddr_storage *clnt_sa)
+gdm_choose_indirect_alloc (GdmAddress *address)
 {
 	GdmIndirectDisplay *id;
-	char *host;
+	char               *host;
 
-	if (clnt_sa == NULL)
-		return NULL;
+	g_assert (address != NULL);
 
 	id = g_new0 (GdmIndirectDisplay, 1);
 	id->id = indirect_id++;
@@ -217,18 +229,18 @@ gdm_choose_indirect_alloc (struct sockaddr_storage *clnt_sa)
 	if (id->id == 0)
 	    id->id = indirect_id++;
 
-	id->dsp_sa = g_memdup (clnt_sa, sizeof (struct sockaddr_storage));
+	id->dsp_address = gdm_address_copy (address);
 	id->chosen_host = NULL;
 
 	id->acctime = 0;
 
 	indirect = g_slist_prepend (indirect, id);
 
-	gdm_address_get_info (id->dsp_sa, &host, NULL);
+	gdm_address_get_numeric_info (id->dsp_address, &host, NULL);
 
-	gdm_debug ("gdm_choose_display_alloc: display=%s, pending=%d ",
-		   host,
-		   ipending);
+	g_debug ("gdm_choose_display_alloc: display=%s, pending=%d ",
+		 host,
+		 ipending);
 	g_free (host);
 
 	return (id);
@@ -258,8 +270,8 @@ gdm_choose_indirect_dispose_empty_id (guint id)
 }
 
 GdmIndirectDisplay *
-gdm_choose_indirect_lookup_by_chosen (struct sockaddr_storage *chosen,
-				      struct sockaddr_storage *origin)
+gdm_choose_indirect_lookup_by_chosen (GdmAddress *chosen,
+				      GdmAddress *origin)
 {
 	GSList *li;
 	char *host;
@@ -270,21 +282,21 @@ gdm_choose_indirect_lookup_by_chosen (struct sockaddr_storage *chosen,
 		if (id != NULL &&
 		    id->chosen_host != NULL &&
 		    gdm_address_equal (id->chosen_host, chosen)) {
-			if (gdm_address_equal (id->dsp_sa, origin)) {
+			if (gdm_address_equal (id->dsp_address, origin)) {
 				return id;
-			} else if (gdm_address_is_loopback (id->dsp_sa) &&
+			} else if (gdm_address_is_loopback (id->dsp_address) &&
 				   gdm_address_is_local (origin)) {
 				return id;
 			}
 		}
 	}
 
-	gdm_address_get_info (chosen, &host, NULL);
+	gdm_address_get_numeric_info (chosen, &host, NULL);
 
-	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Chosen %s host not found",
-		   host);
-	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Origin was: %s",
-		   host);
+	g_debug ("gdm_choose_indirect_lookup_by_chosen: Chosen %s host not found",
+		 host);
+	g_debug ("gdm_choose_indirect_lookup_by_chosen: Origin was: %s",
+		 host);
 	g_free (host);
 
 	return NULL;
@@ -292,7 +304,7 @@ gdm_choose_indirect_lookup_by_chosen (struct sockaddr_storage *chosen,
 
 
 GdmIndirectDisplay *
-gdm_choose_indirect_lookup (struct sockaddr_storage *clnt_sa)
+gdm_choose_indirect_lookup (GdmAddress *address)
 {
 	GSList *li, *ilist;
 	GdmIndirectDisplay *id;
@@ -307,27 +319,27 @@ gdm_choose_indirect_lookup (struct sockaddr_storage *clnt_sa)
 			continue;
 
 		if (id->acctime > 0 &&
-		    curtime > id->acctime + gdm_daemon_config_get_value_int (GDM_KEY_MAX_WAIT_INDIRECT)) {
+		    curtime > id->acctime + get_config_int (GDM_ID_MAX_WAIT_INDIRECT)) {
 
-			gdm_address_get_info (clnt_sa, &host, NULL);
-			gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
-				   host);
+			gdm_address_get_numeric_info (address, &host, NULL);
+			g_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
+				 host);
 			g_free (host);
 
 			gdm_choose_indirect_dispose (id);
 			continue;
 		}
 
-		if (gdm_address_equal (id->dsp_sa, clnt_sa)) {
+		if (gdm_address_equal (id->dsp_address, address)) {
 			g_slist_free (ilist);
 			return id;
 		}
 	}
 	g_slist_free (ilist);
 
-	gdm_address_get_info (clnt_sa, &host, NULL);
-	gdm_debug ("gdm_choose_indirect_lookup: Host %s not found",
-		   host);
+	gdm_address_get_numeric_info (address, &host, NULL);
+	g_debug ("gdm_choose_indirect_lookup: Host %s not found",
+		 host);
 	g_free (host);
 
 	return NULL;
@@ -348,16 +360,16 @@ gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 		ipending--;
 	id->acctime = 0;
 
-	gdm_address_get_info (id->dsp_sa, &host, NULL);
-	gdm_debug ("gdm_choose_indirect_dispose: Disposing %s",
+	gdm_address_get_numeric_info (id->dsp_address, &host, NULL);
+	g_debug ("gdm_choose_indirect_dispose: Disposing %s",
 		   host);
 	g_free (host);
 
 	g_free (id->chosen_host);
 	id->chosen_host = NULL;
 
-	g_free (id->dsp_sa);
-	id->dsp_sa = NULL;
+	gdm_address_free (id->dsp_address);
+	id->dsp_address = NULL;
 
 	g_free (id);
 }

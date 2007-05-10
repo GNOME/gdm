@@ -24,32 +24,6 @@
 #define GDM_MAX_PASS 256	/* Define a value for password length. Glibc
 				 * leaves MAX_PASS undefined. */
 
-/* DO NOTE USE 1, that's used as error if x connection fails usually */
-/* Note that there is no reason why these were a power of two, and note
- * that they have to fit in 256 */
-/* These are the exit codes */
-#define DISPLAY_REMANAGE 2	/* Restart display */
-#define DISPLAY_ABORT 4		/* Houston, we have a problem */
-#define DISPLAY_REBOOT 8	/* Rebewt */
-#define DISPLAY_HALT 16		/* Halt */
-#define DISPLAY_SUSPEND 17	/* Suspend (don't use, use the interrupt) */
-#define DISPLAY_CHOSEN 20	/* successful chooser session,
-				   restart display */
-#define DISPLAY_RUN_CHOOSER 30	/* Run chooser */
-#define DISPLAY_XFAILED 64	/* X failed */
-#define DISPLAY_GREETERFAILED 65 /* greeter failed (crashed) */
-#define DISPLAY_RESTARTGREETER 127 /* Restart greeter */
-#define DISPLAY_RESTARTGDM 128	/* Restart GDM */
-
-enum {
-	DISPLAY_UNBORN /* Not yet started */,
-	DISPLAY_ALIVE /* Yay! we're alive (non-XDMCP) */,
-	XDMCP_PENDING /* Pending XDMCP display */,
-	XDMCP_MANAGED /* Managed XDMCP display */,
-	DISPLAY_DEAD /* Left for dead */,
-	DISPLAY_CONFIG /* in process of being configured */
-};
-
 /* The dreaded miscellaneous category */
 #define PIPE_SIZE 4096
 
@@ -86,9 +60,4 @@ enum {
 #define SDTLOGIN_DIR "/var/dt/sdtlogin"
 #endif
 
-/* If id == NULL, then get the first X server */
-void		gdm_final_cleanup	(void);
-
 #endif /* GDM_H */
-
-/* EOF */
