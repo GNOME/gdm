@@ -3586,6 +3586,7 @@ sup_handle_get_config (GdmConnection *conn,
 	static gboolean done_prefetch = FALSE;
 
 	retval = NULL;
+
 	parms = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
 
 	splitstr = g_strsplit (parms, " ", 2);
@@ -3620,7 +3621,8 @@ sup_handle_get_config (GdmConnection *conn,
 		 * value at all.
 		 */
 
-		g_debug ("Handling GET_CONFIG: %s for display %s", splitstr[0], splitstr[1]);
+		g_debug ("Handling GET_CONFIG: %s for display %s", splitstr[0],
+			splitstr[1] ? splitstr[1] : "(null)");
 
 		res = gdm_daemon_config_to_string (splitstr[0], splitstr[1], &retval);
 
