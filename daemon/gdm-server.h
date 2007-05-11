@@ -45,6 +45,7 @@ typedef struct
 {
 	GObjectClass   parent_class;
 
+	void	      (* ready)	   (GdmServer *server);
 } GdmServerClass;
 
 GType		    gdm_server_get_type	 (void);

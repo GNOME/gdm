@@ -603,51 +603,14 @@ gdm_slave_exec_script (GdmSlave      *slave,
 	return ret;
 }
 
-static gboolean
-gdm_slave_run (GdmSlave *slave)
+static void
+server_ready_cb (GdmServer *server,
+		 GdmSlave  *slave)
 {
-	/* if this is local display start a server if one doesn't
-	 * exist */
-	if (slave->priv->display_is_local) {
-		gboolean res;
-
-		slave->priv->server = gdm_server_new (slave->priv->display_name);
-
-		res = gdm_server_start (slave->priv->server);
-		if (! res) {
-			g_warning (_("Could not start the X "
-				     "server (your graphical environment) "
-				     "due to some internal error. "
-				     "Please contact your system administrator "
-				     "or check your syslog to diagnose. "
-				     "In the meantime this display will be "
-				     "disabled.  Please restart GDM when "
-				     "the problem is corrected."));
-			exit (1);
-		}
-	}
-
-	/* We can use d->handled from now on on this display,
-	 * since the lookup was done in server start */
-
-	g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
-	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
-
-#if 0
-	gdm_auth_set_local_auth (d);
-#endif
-
-#if 0
-	/* X error handlers to avoid the default one (i.e. exit (1)) */
-	do_xfailed_on_xio_error = TRUE;
-	XSetErrorHandler (gdm_slave_xerror_handler);
-	XSetIOErrorHandler (gdm_slave_xioerror_handler);
-#endif
-
 	/* We keep our own (windowless) connection (dsp) open to avoid the
 	 * X server resetting due to lack of active connections. */
 
-	g_debug ("gdm_slave_run: Opening display %s", slave->priv->display_name);
+	g_debug ("Server is ready - opening display %s", slave->priv->display_name);
 
 	gdm_sigchld_block_push ();
 	slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
@@ -701,6 +664,59 @@ gdm_slave_run (GdmSlave *slave)
 	if ( ! slave->priv->display_is_local) {
 		alarm (0);
 	}
+}
+
+static gboolean
+gdm_slave_run (GdmSlave *slave)
+{
+	/* if this is local display start a server if one doesn't
+	 * exist */
+	if (slave->priv->display_is_local) {
+		gboolean res;
+
+		slave->priv->server = gdm_server_new (slave->priv->display_name);
+
+		g_signal_connect (slave->priv->server,
+				  "ready",
+				  G_CALLBACK (server_ready_cb),
+				  slave);
+
+		res = gdm_server_start (slave->priv->server);
+		if (! res) {
+			g_warning (_("Could not start the X "
+				     "server (your graphical environment) "
+				     "due to some internal error. "
+				     "Please contact your system administrator "
+				     "or check your syslog to diagnose. "
+				     "In the meantime this display will be "
+				     "disabled.  Please restart GDM when "
+				     "the problem is corrected."));
+			exit (1);
+		}
+
+		g_debug ("Started X server");
+	}
+
+	/* We can use d->handled from now on on this display,
+	 * since the lookup was done in server start */
+
+	g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
+	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
+
+#if 0
+	gdm_auth_set_local_auth (d);
+#endif
+
+#if 0
+	/* X error handlers to avoid the default one (i.e. exit (1)) */
+	do_xfailed_on_xio_error = TRUE;
+	XSetErrorHandler (gdm_slave_xerror_handler);
+	XSetIOErrorHandler (gdm_slave_xioerror_handler);
+#endif
+
+	/* now we wait for ready signal */
+
+	return TRUE;
 }
 
 gboolean

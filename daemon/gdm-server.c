@@ -90,11 +90,64 @@ enum {
 	PROP_DISABLE_TCP,
 };
 
+enum {
+	READY,
+	LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0, };
+
 static void	gdm_server_class_init	(GdmServerClass *klass);
 static void	gdm_server_init	        (GdmServer      *server);
 static void	gdm_server_finalize	(GObject        *object);
 
 G_DEFINE_TYPE (GdmServer, gdm_server, G_TYPE_OBJECT)
+
+/* copied from nautilus */
+static int ready_pipes[2];
+
+static gboolean
+ready_io_cb (GIOChannel  *io,
+	     GIOCondition condition,
+	     GdmServer   *server)
+{
+        char a;
+
+        while (read (ready_pipes[0], &a, 1) != 1)
+                ;
+
+	g_debug ("Got USR1 from X server - emitting READY");
+
+	g_signal_emit (server, signals[READY], 0);
+
+        return TRUE;
+}
+
+static void
+sigusr1_handler (int sig)
+{
+        while (write (ready_pipes[1], "a", 1) != 1)
+                ;
+}
+
+static void
+setup_ready_signal (GdmServer *server)
+{
+        struct sigaction sa;
+        GIOChannel      *io;
+
+        if (pipe (ready_pipes) == -1) {
+                g_error ("Could not create pipe() for ready signal");
+        }
+
+        io = g_io_channel_unix_new (ready_pipes[0]);
+        g_io_add_watch (io, G_IO_IN, (GIOFunc)ready_io_cb, server);
+
+        sa.sa_handler = sigusr1_handler;
+        sigemptyset (&sa.sa_mask);
+        sa.sa_flags = 0;
+        sigaction (SIGUSR1, &sa, NULL);
+}
 
 gboolean
 gdm_server_stop (GdmServer *server)
@@ -271,6 +324,8 @@ change_user (GdmServer *server)
 {
 	if (server->priv->uid != 0) {
 		struct passwd *pwent;
+
+		g_debug ("Changing user for child process: %d", (int)server->priv->uid);
 
 		pwent = getpwuid (server->priv->uid);
 		if (pwent == NULL) {
@@ -543,6 +598,10 @@ gdm_server_spawn (GdmServer  *server,
 	g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
 
+	g_debug ("Started X server process: %d", (int)server->priv->pid);
+
+	sleep (10);
+
 	return ret;
 }
 
@@ -664,6 +723,17 @@ gdm_server_class_init (GdmServerClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GdmServerPrivate));
 
+	signals [READY] =
+		g_signal_new ("ready",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmServerClass, ready),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE,
+			      0);
+
 	g_object_class_install_property (object_class,
 					 PROP_DISPLAY_NAME,
 					 g_param_spec_string ("display-name",
@@ -682,6 +752,8 @@ gdm_server_init (GdmServer *server)
 	server->priv->pid = -1;
 	server->priv->command = g_strdup ("/usr/bin/Xorg");
 	server->priv->log_dir = g_strdup (LOGDIR);
+
+	setup_ready_signal (server);
 }
 
 static void
