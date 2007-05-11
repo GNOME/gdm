@@ -1659,7 +1659,7 @@ remove_host (const char     *id,
 		return FALSE;
 	}
 
-	gdm_xdmcp_display_get_remote_hostname (GDM_XDMCP_DISPLAY (display), &hostname, NULL);
+	gdm_display_get_remote_hostname (display, &hostname, NULL);
 	gdm_display_get_number (display, &disp_num, NULL);
 
 	if (disp_num == data->display_num &&
@@ -1748,21 +1748,15 @@ gdm_xdmcp_send_decline (GdmXdmcpManager *manager,
 }
 
 static GdmDisplay *
-gdm_xdmcp_display_alloc (GdmXdmcpManager         *manager,
-			 const char              *hostname,
-			 GdmAddress              *address,
-			 int                      displaynum)
+gdm_xdmcp_display_alloc (GdmXdmcpManager *manager,
+			 const char      *hostname,
+			 GdmAddress      *address,
+			 int              displaynum)
 {
 	GdmDisplay *display;
-	char       *name;
 
-	name = g_strdup_printf ("%s:%d",
-				hostname,
-				displaynum);
-
-	display = gdm_xdmcp_display_new (displaynum,
-					 name,
-					 hostname,
+	display = gdm_xdmcp_display_new (hostname,
+					 displaynum,
 					 address,
 					 get_next_session_serial (manager));
 	if (display == NULL) {
@@ -1779,7 +1773,6 @@ gdm_xdmcp_display_alloc (GdmXdmcpManager         *manager,
 
 	manager->priv->num_pending_sessions++;
  out:
-	g_free (name);
 
 	return display;
 }
@@ -2226,7 +2219,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager *manager,
 		char *name;
 
 		name = NULL;
-		gdm_display_get_name (display, &name, NULL);
+		gdm_display_get_x11_display (display, &name, NULL);
 		g_debug ("gdm_xdmcp_handle_manage: Looked up %s", name);
 		g_free (name);
 

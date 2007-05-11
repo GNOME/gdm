@@ -206,8 +206,7 @@ load_static_displays_from_file (GdmManager *manager)
 
 		g_debug ("Loading display for '%d' %s", xserver->number, xserver->id);
 
-		display = gdm_static_display_new (xserver->number,
-						  xserver->id);
+		display = gdm_static_display_new (xserver->number);
 
 		if (display == NULL) {
 			g_warning ("Unable to create display: %d %s", xserver->number, xserver->id);

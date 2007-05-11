@@ -161,15 +161,17 @@ gdm_static_display_finalize (GObject *object)
 }
 
 GdmDisplay *
-gdm_static_display_new (int         number,
-			const char *name)
+gdm_static_display_new (int display_number)
 {
 	GObject *object;
+	char    *x11_display;
 
+	x11_display = g_strdup_printf (":%d", display_number);
 	object = g_object_new (GDM_TYPE_STATIC_DISPLAY,
-			       "number", number,
-			       "name", name,
+			       "number", display_number,
+			       "x11-display", x11_display,
 			       NULL);
+	g_free (x11_display);
 
 	return GDM_DISPLAY (object);
 }

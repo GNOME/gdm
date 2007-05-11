@@ -52,8 +52,7 @@ typedef struct
 } GdmStaticDisplayClass;
 
 GType		    gdm_static_display_get_type		       (void);
-GdmDisplay *	    gdm_static_display_new		       (int         number,
-								const char *name);
+GdmDisplay *	    gdm_static_display_new		       (int display_number);
 
 
 G_END_DECLS

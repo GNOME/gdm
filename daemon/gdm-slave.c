@@ -504,9 +504,7 @@ get_script_environment (GdmSlave   *slave,
 static gboolean
 gdm_slave_exec_script (GdmSlave      *slave,
 		       const char    *dir,
-		       const char    *login,
-		       struct passwd *pwent,
-		       gboolean       pass_stdout)
+		       const char    *login)
 {
 	char      *script;
 	char     **argv;
@@ -515,6 +513,9 @@ gdm_slave_exec_script (GdmSlave      *slave,
 	GPtrArray *env;
 	gboolean   res;
 	gboolean   ret;
+
+	g_assert (dir != NULL);
+	g_assert (login != NULL);
 
 	script = g_build_filename (dir, slave->priv->display_name, NULL);
 	if (g_access (script, R_OK|X_OK) != 0) {
@@ -691,9 +692,7 @@ gdm_slave_run (GdmSlave *slave)
 	/* Run the init script. gdmslave suspends until script has terminated */
 	gdm_slave_exec_script (slave,
 			       GDMCONFDIR"/Init",
-			       NULL,
-			       NULL,
-			       FALSE /* pass_stdout */);
+			       "gdm");
 
 	slave->priv->greeter = gdm_greeter_new (slave->priv->display_name);
 	gdm_greeter_start (slave->priv->greeter);
@@ -772,28 +771,10 @@ gdm_slave_start (GdmSlave *slave)
 
 	error = NULL;
 	res = dbus_g_proxy_call (slave->priv->display_proxy,
-				 "GetName",
+				 "GetX11Display",
 				 &error,
 				 G_TYPE_INVALID,
 				 G_TYPE_STRING, &slave->priv->display_name,
-				 G_TYPE_INVALID);
-	if (! res) {
-		if (error != NULL) {
-			g_warning ("Failed to get value: %s", error->message);
-			g_error_free (error);
-		} else {
-			g_warning ("Failed to get value");
-		}
-
-		return FALSE;
-	}
-
-	error = NULL;
-	res = dbus_g_proxy_call (slave->priv->display_proxy,
-				 "GetNumber",
-				 &error,
-				 G_TYPE_INVALID,
-				 G_TYPE_STRING, &slave->priv->display_number,
 				 G_TYPE_INVALID);
 	if (! res) {
 		if (error != NULL) {

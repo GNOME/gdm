@@ -327,6 +327,8 @@ server_child_setup (GdmServer *server)
 	logfile = gdm_make_filename (server->priv->log_dir,
 				     server->priv->display_name,
 				     ".log");
+	g_debug ("Opening logfile for server %s", logfile);
+
 	VE_IGNORE_EINTR (g_unlink (logfile));
 	VE_IGNORE_EINTR (logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 
@@ -678,6 +680,8 @@ gdm_server_init (GdmServer *server)
 	server->priv = GDM_SERVER_GET_PRIVATE (server);
 
 	server->priv->pid = -1;
+	server->priv->command = g_strdup ("/usr/bin/Xorg");
+	server->priv->log_dir = g_strdup (LOGDIR);
 }
 
 static void

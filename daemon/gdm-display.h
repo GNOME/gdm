@@ -83,11 +83,14 @@ gboolean            gdm_display_unmanage                       (GdmDisplay *disp
 gboolean            gdm_display_get_id                         (GdmDisplay *display,
 								char      **id,
 								GError    **error);
+gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
+								char      **hostname,
+								GError    **error);
 gboolean            gdm_display_get_number                     (GdmDisplay *display,
 								int        *number,
 								GError    **error);
-gboolean            gdm_display_get_name                       (GdmDisplay *display,
-								char      **name,
+gboolean            gdm_display_get_x11_display                (GdmDisplay *display,
+								char      **x11_display,
 								GError    **error);
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
 								gboolean   *local,

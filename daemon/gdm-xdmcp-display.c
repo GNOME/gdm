@@ -49,14 +49,12 @@
 
 struct GdmXdmcpDisplayPrivate
 {
-	char                   *remote_hostname;
 	GdmAddress             *remote_address;
 	gint32                  session_number;
 };
 
 enum {
 	PROP_0,
-	PROP_REMOTE_HOSTNAME,
 	PROP_REMOTE_ADDRESS,
 	PROP_SESSION_NUMBER,
 };
@@ -73,20 +71,6 @@ gdm_xdmcp_display_get_session_number (GdmXdmcpDisplay *display)
 	g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY (display), 0);
 
 	return display->priv->session_number;
-}
-
-gboolean
-gdm_xdmcp_display_get_remote_hostname (GdmXdmcpDisplay *display,
-				       char           **hostname,
-				       GError         **error)
-{
-	g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY (display), FALSE);
-
-	if (hostname != NULL) {
-		*hostname = g_strdup (display->priv->remote_hostname);
-	}
-
-	return TRUE;
 }
 
 GdmAddress *
@@ -200,9 +184,6 @@ gdm_xdmcp_display_set_property (GObject	     *object,
 	self = GDM_XDMCP_DISPLAY (object);
 
 	switch (prop_id) {
-	case PROP_REMOTE_HOSTNAME:
-		self->priv->remote_hostname = g_value_dup_string (value);
-		break;
 	case PROP_REMOTE_ADDRESS:
 		self->priv->remote_address = g_value_get_boxed (value);
 		break;
@@ -226,9 +207,6 @@ gdm_xdmcp_display_get_property (GObject	   *object,
 	self = GDM_XDMCP_DISPLAY (object);
 
 	switch (prop_id) {
-	case PROP_REMOTE_HOSTNAME:
-		g_value_set_string (value, self->priv->remote_hostname);
-		break;
 	case PROP_REMOTE_ADDRESS:
 		g_value_set_boxed (value, self->priv->remote_address);
 		break;
@@ -257,13 +235,6 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
 
-	g_object_class_install_property (object_class,
-					 PROP_REMOTE_HOSTNAME,
-					 g_param_spec_string ("remote-hostname",
-							      "remote-hostname",
-							      "remote-hostname",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
 					 PROP_REMOTE_ADDRESS,
 					 g_param_spec_boxed ("remote-address",
@@ -308,22 +279,24 @@ gdm_xdmcp_display_finalize (GObject *object)
 }
 
 GdmDisplay *
-gdm_xdmcp_display_new (int                      number,
-		       const char              *name,
-		       const char              *hostname,
+gdm_xdmcp_display_new (const char              *hostname,
+		       int                      number,
 		       GdmAddress              *address,
 		       gint32                   session_number)
 {
 	GObject *object;
+	char    *x11_display;
 
+	x11_display = g_strdup_printf ("%s:%d", hostname, number);
 	object = g_object_new (GDM_TYPE_XDMCP_DISPLAY,
-			       "is-local", FALSE,
-			       "number", number,
-			       "name", name,
 			       "remote-hostname", hostname,
+			       "number", number,
+			       "x11-display", x11_display,
+			       "is-local", FALSE,
 			       "remote-address", address,
 			       "session-number", session_number,
 			       NULL);
+	g_free (x11_display);
 
 	return GDM_DISPLAY (object);
 }
