@@ -898,11 +898,25 @@ gestures_filter (GdkXEvent *gdk_xevent,
 			seq_count = 0;
 			for (act_li = curr_gesture->actions;
 			     act_li != NULL; act_li = act_li->next) {
-
 				gchar *action = (gchar *)act_li->data;
+				gchar *ctrun;
+
 				g_return_val_if_fail (action != NULL, GDK_FILTER_CONTINUE);
+
+#ifdef HAVE_CTRUN
+				ctrun = g_strdup_printf (
+					"/bin/sh -c \"/usr/bin/ctrun -l child -i none %s\"",
+					action);
+				if (!g_shell_parse_argv (ctrun, NULL, &argv, NULL)) {
+					g_free (ctrun);
+					continue;
+				}
+
+				g_free (ctrun);
+#else
 				if (!g_shell_parse_argv (action, NULL, &argv, NULL))
 					continue;
+#endif
 
 				envp = get_exec_environment (xevent);
 

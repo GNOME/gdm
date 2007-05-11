@@ -635,11 +635,24 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 
 		for (act_li=curr_binding->actions; act_li != NULL; act_li=act_li->next) {
 			gchar *action = (gchar *)act_li->data;
+			gchar *ctrun;
 
 			g_return_val_if_fail (action != NULL, TRUE);
 
+#ifdef HAVE_CTRUN
+			ctrun = g_strdup_printf (
+				"/bin/sh -c \"/usr/bin/ctrun -l child -i none %s\"",
+				action);
+			if (!g_shell_parse_argv (ctrun, NULL, &argv, NULL)) {
+				g_free (ctrun);
+				continue;
+			}
+				
+			g_free (ctrun);
+#else
 			if (!g_shell_parse_argv (action, NULL, &argv, NULL))
 				continue;
+#endif
 
 			envp = get_exec_environment (gtk_window_get_screen(window));
 

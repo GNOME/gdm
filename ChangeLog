@@ -1,5 +1,22 @@
 2007-05-11  Brian Cameron  <brian.cameron@sun.com>
 
+	* acconfig.h, configure.ac, daemon/slave.c, 
+	  gui/modules/keymouselistener.c,
+	  gui/modules/dwellmouselistener.c:  Add ctrun support which
+	  can be enabled via --with-ctrun.  This is a Solaris only
+	  feature that is required because GDM is started via svcadm(1M)
+	  service.  Child processes (such as the session, scripts, and
+	  AT programs) need to separate themselves from the service so
+	  that if any subprocess core-dumps it doesn't cause a GDM
+	  restart.  I also cleaned up the logic in gnome-session-start
+	  a lot by using a GString and appending the command to it.
+	  This makes things cleaner since the command is affected by
+	  ctrun and Trusted Solaris.  The previous approach of setting
+	  argv directly was a mess.  This makes this function far more
+	  maintainable.
+	
+2007-05-11  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm-daemon-config.c:  Fix gdm_daemon_check_permissions
 	  so it updates the permissions for the SERV_AUTHDIR directory
 	  not the LOGDIR directory.  This bug was introduced when the

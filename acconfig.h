@@ -16,6 +16,7 @@
 #undef HAVE_CHPASS
 #undef HAVE_CLEARENV
 #undef HAVE_CRYPT
+#undef HAVE_CTRUN
 #undef HAVE_DEFOPEN
 #undef HAVE_FBCONSOLE
 #undef HAVE_GETTEXT

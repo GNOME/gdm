@@ -1804,7 +1804,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 	}
 
 	if (pid == 0) {
-		char **argv;
+		char **argv = NULL;
 		const char *s;
 
 		/* child */
@@ -1851,7 +1851,6 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			VE_IGNORE_EINTR (g_chdir ("/"));
 
 		/* exec the configurator */
-		argv = NULL;
 		s = gdm_daemon_config_get_value_string (GDM_KEY_CONFIGURATOR);
 		if (s != NULL) {
 			g_shell_parse_argv (s, NULL, &argv, NULL);
@@ -2510,14 +2509,12 @@ exec_command (const char *command, const char *extra_arg)
 
 	if (extra_arg != NULL) {
 
-		argv = g_renew (char *, argv, argc + 2);
-
-		argv[argc] = g_strdup (extra_arg);
+		argv           = g_renew (char *, argv, argc + 2);
+		argv[argc]     = g_strdup (extra_arg);
 		argv[argc + 1] = NULL;
 	}
 
 	VE_IGNORE_EINTR (execv (argv[0], argv));
-
 	g_strfreev (argv);
 }
 
@@ -3482,15 +3479,12 @@ session_child_run (struct passwd *pwent,
 		   gboolean savesess,
 		   gboolean savelang)
 {
-	char *exec;
+	char *sessionexec = NULL;
+	GString *fullexec = NULL;
 	const char *shell = NULL;
 	const char *greeter;
 	gint result;
-#ifndef HAVE_TSOL
-	char *argv[4];
-#else
-	char *argv[7];
-#endif
+	gchar **argv = NULL;
 
 #ifdef CAN_USE_SETPENV
 	extern char **newenv;
@@ -3716,23 +3710,14 @@ session_child_run (struct passwd *pwent,
 
 	gdm_log_init ();
 
-	argv[0] = NULL;
-	argv[1] = NULL;
-	argv[2] = NULL;
-	argv[3] = NULL;
-#ifdef HAVE_TSOL
-	argv[4] = NULL;
-	argv[5] = NULL;
-	argv[6] = NULL;
-#endif
-
-	exec = NULL;
+	sessionexec = NULL;
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
 	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
-		exec = gdm_daemon_config_get_session_exec (session,
-							   FALSE /* check_try_exec */);
 
-		if G_UNLIKELY (exec == NULL) {
+		sessionexec = gdm_daemon_config_get_session_exec (session,
+			FALSE /* check_try_exec */);
+
+		if G_UNLIKELY (sessionexec == NULL) {
 			gchar *msg = g_strdup_printf (
 						      _("No Exec line in the session file: %s.  Running the GNOME failsafe session instead"),
 						      session);
@@ -3745,14 +3730,20 @@ session_child_run (struct passwd *pwent,
 		} else {
 			/* HACK!, if failsafe, we really wish to run the
 			   internal one */
-			if (strcmp (exec, "failsafe") == 0) {
+			if (strcmp (sessionexec, "failsafe") == 0) {
 				session = GDM_SESSION_FAILSAFE_XTERM;
-				exec    = NULL;
+				sessionexec    = NULL;
 			}
 		}
 	}
 
-	if (exec != NULL) {
+	fullexec = g_string_new (NULL);
+
+#ifdef HAVE_CTRUN
+	g_string_append (fullexec, "/usr/bin/ctrun -l child -i none ");
+#endif
+
+	if (sessionexec != NULL) {
 		const char *basexsession = gdm_daemon_config_get_value_string (GDM_KEY_BASE_XSESSION);
 
 		/* cannot be possibly failsafe */
@@ -3760,191 +3751,133 @@ session_child_run (struct passwd *pwent,
 			gdm_error (_("%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe session instead."),
 				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_GNOME;
-			exec = NULL;
+			sessionexec = NULL;
 			gdm_errorgui_error_box
 				(d, GTK_MESSAGE_ERROR,
 				 _("Cannot find or run the base session script.  Running the GNOME failsafe session instead."));
 		} else {
-			/* This is where everything is OK, and note that
-			   we really DON'T care about leaks, we are going to
-			   exec in just a bit */
+			/*
+			 * This is where the session is OK, and note that
+			 * we really DON'T care about leaks, we are going to
+			 * exec in just a bit
+			 */
+			g_string_append (fullexec, basexsession);
+			g_string_append (fullexec, " ");
+
 #ifdef HAVE_TSOL
-			if (have_suntsol_extension) {
-				argv[0] = g_strdup (basexsession);
-				argv[1] = g_strdup ("/usr/bin/tsoljdslabel");
-				argv[2] = exec;
-				argv[3] = argv[4] = argv[5] = argv[6] = NULL;
-			} else {
+			if (have_suntsol_extension)
+				g_string_append (fullexec, "/usr/bin/tsoljdslabel ");
 #endif
-				argv[0] = g_strdup (basexsession);
-				argv[1] = exec;
-				argv[2] = NULL;
-#ifdef HAVE_TSOL
-				argv[3] = argv[4] = argv[5] = argv[6] = NULL;
-			}
-#endif
+			g_string_append (fullexec, sessionexec);
 		}
 	}
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
+		gchar *test_exec = NULL;
+
 #ifdef HAVE_TSOL
-		if (have_suntsol_extension == TRUE) {
-			/* Trusted Path will be preserved as long as the sys admin
-			 * doesn't put anything stupid in gdm.conf */
-			argv[0] = g_strdup ("/usr/bin/tsoljdslabel");
-			argv[1] = find_prog ("gnome-session");
-			if G_UNLIKELY (argv[1] == NULL) {
-				/* yaikes */
-				gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
-					   "session_child_run");
-				session = GDM_SESSION_FAILSAFE_XTERM;
-				gdm_errorgui_error_box
-					(d, GTK_MESSAGE_ERROR,
-					 _("Could not find the GNOME installation, "
-					   "will try running the \"Failsafe xterm\" "
-					   "session."));
-			} else {
-				argv[2] = "--failsafe";
-				argv[3] = NULL;
-				gdm_errorgui_error_box
-					(d, GTK_MESSAGE_INFO,
-					 _("This is the Failsafe GNOME session.  "
-					   "You will be logged into the 'Default' "
-					   "session of GNOME without the startup scripts "
-					   "being run.  This should be used to fix problems "
-					   "in your installation."));
-			}
+		/*
+		 * Trusted Path will be preserved as long as the sys admin
+		 * doesn't put anything stupid in gdm.conf
+		 */
+		if (have_suntsol_extension == TRUE)
+			g_string_append (fullexec, "/usr/bin/tsoljdslabel ");
+#endif
+
+		test_exec = find_prog ("gnome-session");
+		if G_UNLIKELY (test_exec == NULL) {
+			/* yaikes */
+			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
+				   "session_child_run");
+			session = GDM_SESSION_FAILSAFE_XTERM;
+			gdm_errorgui_error_box
+				(d, GTK_MESSAGE_ERROR,
+				 _("Could not find the GNOME installation, "
+				   "will try running the \"Failsafe xterm\" "
+				   "session."));
 		} else {
-#endif
-			argv[0] = find_prog ("gnome-session");
-			if G_UNLIKELY (argv[0] == NULL) {
-				/* yaikes */
-				gdm_error (_("%s: gnome-session not found for a failsafe GNOME session; trying xterm"),
-					   "session_child_run");
-				session = GDM_SESSION_FAILSAFE_XTERM;
-				gdm_errorgui_error_box
-					(d, GTK_MESSAGE_ERROR,
-					 _("Could not find the GNOME installation.  "
-					   "Running the \"Failsafe xterm\" "
-					   "session instead."));
-			} else {
-				argv[1] = "--failsafe";
-				argv[2] = NULL;
-				gdm_errorgui_error_box
-					(d, GTK_MESSAGE_INFO,
-					 _("This is the Failsafe GNOME session.  "
-					   "You will be logged into the 'Default' "
-					   "session of GNOME without the startup scripts "
-					   "being run.  This should be used to fix problems "
-					   "in your installation."));
-			}
-#ifdef HAVE_TSOL
+			g_string_append (fullexec, test_exec);
+			g_string_append (fullexec, " --failsafe");
+			gdm_errorgui_error_box
+				(d, GTK_MESSAGE_INFO,
+				 _("This is the Failsafe GNOME session.  "
+				   "You will be logged into the 'Default' "
+				   "session of GNOME without the startup scripts "
+				   "being run.  This should be used to fix problems "
+				   "in your installation."));
 		}
-#endif
 		failsafe = TRUE;
 	}
 
-	/* an if and not an else, we could have done a fall-through
+	/* This is an if and not an else, we could have done a fall-through
 	 * to here in the above code if we can't find gnome-session */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
-		argv[0] = find_prog ("xterm");
-		if (argv[0] == NULL) {
+		gchar *test_exec;
+		gchar *geometry = g_strdup_printf (" -geometry 80x24-%d-%d",
+						   d->lrh_offsetx,
+						   d->lrh_offsety);
+		test_exec = find_prog ("xterm");
+		if (test_exec == NULL) {
 			gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 				       _("Cannot find \"xterm\" to start "
 					 "a failsafe session."));
 			/* nyah nyah nyah nyah nyah */
 			/* 66 means no "session crashed" examine .xsession-errors dialog */
 			_exit (66);
+		} else {
+			gchar *failsafe_msg = NULL;
+			g_string_append (fullexec, test_exec);
+			g_string_append (fullexec, geometry);
+
+			failsafe_msg = _("This is the Failsafe xterm session.  "
+					 "You will be logged into a terminal "
+					 "console so that you may fix your system "
+					 "if you cannot log in any other way.  "
+					 "To exit the terminal emulator, type "
+					 "'exit' and an enter into the window.");
 #ifdef HAVE_TSOL
-		} else if (have_suntsol_extension) {
-			argv[1] = "-geometry";
-			argv[2] = g_strdup_printf ("80x24-%d-%d",
-						   d->lrh_offsetx,
-						   d->lrh_offsety);
-			/*
-			 * In a Solaris Trusted Extensions environment, failsafe xterms should
-			 * be restricted to the root user, or users who have the root role.
-			 * This is necessary to prevent normal users and evil terrorists
-			 * bypassing their assigned clearance and getting direct access
-			 * to the global zone.
-			 */
-			if (pwent->pw_uid == 0) {
-				argv[3] = argv[4] = argv[5] = argv[6] = NULL;
-				gdm_errorgui_error_box
-					(d, GTK_MESSAGE_INFO,
-					 _("This is the Failsafe xterm session.  "
-					   "You will be logged into a terminal "
-					   "console so that you may fix your system "
-					   "if you cannot log in any other way.  "
-					   "To exit the terminal emulator, type "
-					   "'exit' and an enter into the window."));
-				focus_first_x_window ("xterm");
-			} else if (gdm_can_i_assume_root_role (pwent) == TRUE) {
-				argv[3] = "-C";
-				argv[4] = "-e";
-				argv[5] = "su";
-				argv[6] = NULL;
-				gdm_errorgui_error_box
-					(d, GTK_MESSAGE_INFO,
-					 _("This is the Failsafe xterm session.  "
-					   "You will be logged into a terminal "
-					   "console and be prompted to enter the "
-					   "password for root so that you may fix "
-					   "your system if you cannot log in any "
-					   "other way. To exit the terminal "
-					   "emulator, type 'exit' and an enter "
-					   "into the window."));
-				focus_first_x_window ("xterm");
-			} else {
-				/* Normal user without root role - get lost */
-				gdm_errorgui_error_box
-					(d, GTK_MESSAGE_INFO,
-					 _("The failsafe session is restricted to "
-					   "users who have been assigned the root "
-					   "role. If you cannot log in any other "
-					   "way please contact your system "
-					   "administrator"));
-				_exit (66);
+			if (have_suntsol_extension) {
+				/*
+				 * In a Solaris Trusted Extensions environment, failsafe
+				 * xterms should be restricted to the root user, or
+				 * users who have the root role.  This is necessary to
+				 * prevent normal users and evil terrorists bypassing
+				 * their assigned clearance and getting direct access
+				 * to the global zone.
+				 */
+				if (pwent->pw_uid != 0 &&
+				    gdm_can_i_assume_root_role (pwent) == TRUE) {
+					g_string_append (fullexec, " -C -e su");
+					failsafe_msg =  _("This is the Failsafe xterm session.  "
+							  "You will be logged into a terminal "
+							  "console and be prompted to enter the "
+							  "password for root so that you may fix "
+							  "your system if you cannot log in any "
+							  "other way. To exit the terminal "
+							  "emulator, type 'exit' and an enter "
+							  "into the window.");
+				} else {
+					/* Normal user without root role - get lost */
+					gdm_errorgui_error_box
+						(d, GTK_MESSAGE_INFO,
+						 _("The failsafe session is restricted to "
+						   "users who have been assigned the root "
+						   "role. If you cannot log in any other "
+						   "way please contact your system "
+						   "administrator"));
+					_exit (66);
+				}
 			}
 #endif /* HAVE_TSOL */
-		} else {
-			argv[1] = "-geometry";
-			argv[2] = g_strdup_printf ("80x24-%d-%d",
-						   d->lrh_offsetx,
-						   d->lrh_offsety);
-			argv[3] = NULL;
-#ifdef HAVE_TSOL
-			argv[4] = argv[5] = argv[6] = NULL;
-#endif
-			gdm_errorgui_error_box
-				(d, GTK_MESSAGE_INFO,
-				 _("This is the Failsafe xterm session.  "
-				   "You will be logged into a terminal "
-				   "console so that you may fix your system "
-				   "if you cannot log in any other way.  "
-				   "To exit the terminal emulator, type "
-				   "'exit' and an enter into the window."));
+
+			gdm_errorgui_error_box (d, GTK_MESSAGE_INFO, failsafe_msg);
 			focus_first_x_window ("xterm");
 		}
+		g_free (geometry);
 		failsafe = TRUE;
 	}
 
-#ifdef HAVE_TSOL
-	gdm_debug ("Running %s %s %s %s %s %s for %s on %s",
-		   argv[0],
-		   ve_sure_string (argv[1]),
-		   ve_sure_string (argv[2]),
-		   ve_sure_string (argv[3]),
-		   ve_sure_string (argv[4]),
-		   ve_sure_string (argv[5]),
-		   login, d->name);
-#else
-	gdm_debug ("Running %s %s %s for %s on %s",
-		   argv[0],
-		   ve_sure_string (argv[1]),
-		   ve_sure_string (argv[2]),
-		   login, d->name);
-#endif
+	gdm_debug ("Running %s for %s on %s", fullexec->str, login, d->name);
 
 	if ( ! ve_string_empty (pwent->pw_shell)) {
 		shell = pwent->pw_shell;
@@ -3995,39 +3928,16 @@ session_child_run (struct passwd *pwent,
 	}
 #endif
 
+        g_shell_parse_argv (fullexec->str, NULL, &argv, NULL);
 	VE_IGNORE_EINTR (execv (argv[0], argv));
+	g_strfreev (argv);
 
 	/* will go to .xsession-errors */
-#ifdef HAVE_TSOL
-	fprintf (stderr, _("%s: Could not exec %s %s %s %s %s %s"),
-		 "session_child_run",
-		 argv[0],
-		 ve_sure_string (argv[1]),
-		 ve_sure_string (argv[2]),
-		 ve_sure_string (argv[3]),
-		 ve_sure_string (argv[4]),
-		 ve_sure_string (argv[5]));
-
-	gdm_error ( _("%s: Could not exec %s %s %s %s %s %s"),
-		    "session_child_run",
-		    argv[0],
-		    ve_sure_string (argv[1]),
-		    ve_sure_string (argv[2]),
-		    ve_sure_string (argv[3]),
-		    ve_sure_string (argv[4]),
-		    ve_sure_string (argv[5]));
-#else
-	fprintf (stderr, _("%s: Could not exec %s %s %s"),
-		 "session_child_run",
-		 argv[0],
-		 ve_sure_string (argv[1]),
-		 ve_sure_string (argv[2]));
-	gdm_error ( _("%s: Could not exec %s %s %s"),
-		    "session_child_run",
-		    argv[0],
-		    ve_sure_string (argv[1]),
-		    ve_sure_string (argv[2]));
-#endif
+	fprintf (stderr, _("%s: Could not exec %s"),
+		 "session_child_run", fullexec->str);
+	gdm_error ( _("%s: Could not exec %s"),
+		    "session_child_run", fullexec->str);
+	g_string_free (fullexec, TRUE);
 
 	/* if we can't read and exec the session, then make a nice
 	 * error dialog */
@@ -5400,7 +5310,8 @@ gdm_slave_exec_script (GdmDisplay *d,
 {
 	pid_t pid;
 	char *script;
-	gchar **argv;
+	char *ctrun;
+	gchar **argv = NULL;
 	gint status;
 	char *x_servers_file;
 
@@ -5527,10 +5438,18 @@ gdm_slave_exec_script (GdmDisplay *d,
 		if ( ! ve_string_empty (d->theme_name))
 			g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
-		argv = NULL;
+#ifdef HAVE_CTRUN
+		ctrun = g_strdup_printf (
+			"/bin/sh -c \"/usr/bin/ctrun -l child -i none %s\"",
+			script);
+		g_shell_parse_argv (ctrun, NULL, &argv, NULL);
+		g_free (ctrun);
+#else
 		g_shell_parse_argv (script, NULL, &argv, NULL);
+#endif
 
 		VE_IGNORE_EINTR (execv (argv[0], argv));
+		g_strfreev (argv);
 		g_error (_("%s: Failed starting: %s"),
 			 "gdm_slave_exec_script",
 			 script);
@@ -5588,7 +5507,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	gchar cmd, in_buffer[20];
 	GString *str;
 	gint pipe1[2], in_buffer_len;
-	gchar **argv;
+	gchar **argv = NULL;
 	pid_t pid;
 
 	if (s == NULL)
@@ -5670,10 +5589,10 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 				if ( ! ve_string_empty (d->theme_name))
 					g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
-				argv = NULL;
 				g_shell_parse_argv (str->str, NULL, &argv, NULL);
 
 				VE_IGNORE_EINTR (execv (argv[0], argv));
+				g_strfreev (argv);
 				gdm_error (_("%s: Failed executing: %s"),
 					   "gdm_parse_enriched_login",
 					   str->str);
