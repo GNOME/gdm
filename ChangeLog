@@ -1,3 +1,10 @@
+2007-05-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm-daemon-config.c:  Fix gdm_daemon_check_permissions
+	  so it updates the permissions for the SERV_AUTHDIR directory
+	  not the LOGDIR directory.  This bug was introduced when the
+	  config logic was rewritten.
+
 2007-05-10  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/slave.c: Fix handling of AlwaysLoginCurrentSession and
@@ -2833,7 +2840,7 @@
 
 	* acconfig.h, configure.ac, config/Makefile.am, config/PostLogin,
 	  config/gdm.conf.in, daemon/Makefile.am, daemon/gdm.[ch],
-	  daemon/gdmconfig.c, gui/Makefile.am, gui/greeter/Makeifle.am,
+	  daemon/gdmconfig.c, gui/Makefile.am, gui/greeter/Makefile.am,
 	  gui/modules/Makefile.am, gui/modules/dwellmouselistener.c,
 	  gui/modules/keymouselistener.c, utils/Makefile.am: Now support
 	  --with-sysconfsubdir so that GDM can be configured to have

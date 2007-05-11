@@ -2089,7 +2089,7 @@ gdm_daemon_check_permissions (GdmConfig *config,
 	console_notify = FALSE;
 	gdm_config_get_bool_for_id (daemon_config, GDM_ID_CONSOLE_NOTIFY, &console_notify);
 	auth_path = NULL;
-	gdm_config_get_string_for_id (config, GDM_ID_LOG_DIR, &auth_path);
+	gdm_config_get_string_for_id (config, GDM_ID_SERV_AUTHDIR, &auth_path);
 
 	/* Enter paranoia mode */
 	check_servauthdir (auth_path, &statbuf);
