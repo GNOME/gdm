@@ -3,7 +3,6 @@
 # This is SORT OF LIKE an X session, but not quite.  You get a command as the
 # first argument (it could be multiple words, so run it with "eval").  As a
 # special case, the command can be:
-#  failsafe - Run an xterm only
 #  default - Run the appropriate Xclients startup (see the code below)
 #  custom - Run ~/.xsession and if that's not available run 'default'
 #
@@ -25,10 +24,6 @@
 # $XConsortium: Xsession /main/10 1995/12/18 18:21:28 gildea $
 
 command="$@"
-
-if [ -z "$command" ] ; then
-  command=failsafe
-fi
 
 # this will go into the .xsession-errors along with all other echo's
 # good for debugging where things went wrong
@@ -76,16 +71,6 @@ gdmwhich () {
 }
 
 zenity=`gdmwhich zenity`
-
-if [ x"$command" = xfailsafe ] ; then
-  if [ -n "$zenity" ] ; then
-    disptext=`gettextfunc "This is the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window."`
-    "$zenity" --info --text "$disptext"
-  else
-    echo "$0: Starting the failsafe xterm session."
-  fi
-  exec xterm -geometry 80x24+0+0
-fi
 
 # Note: ~/.xsession-errors is now done in the daemon so that it
 # works for ALL sessions (except ones named 'Failsafe')

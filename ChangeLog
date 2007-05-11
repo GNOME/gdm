@@ -1,5 +1,12 @@
 2007-05-11  Brian Cameron  <brian.cameron@sun.com>
 
+	* config/Xsession.in:  Remove failsafe logic since it is 
+	  no longer used.  The gnome-session-start function in slave.c
+	  starts the xterm directly.  But when that change was made, 
+	  this cruft was not removed.
+
+2007-05-11  Brian Cameron  <brian.cameron@sun.com>
+
 	* acconfig.h, configure.ac, daemon/slave.c, 
 	  gui/modules/keymouselistener.c,
 	  gui/modules/dwellmouselistener.c:  Add ctrun support which
