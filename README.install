@@ -174,14 +174,17 @@ Solaris
 On Solaris, the following configuration is recommended:
 
 ./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
-   --libexecdir=/usr/lib --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
-   --with-prefetch --with-post-path=/usr/openwin/bin
+   --libexecdir=/usr/lib --enable-ipv6=yes --with-prefetch
+   --with-post-path=/usr/openwin/bin --with-ctrun
+
+The --with-ctrun argument should only be used if using GDM as a
+svcadm(1M) service, as is the default in Solaris 10 and later.
 
 GDM includes code to integrate with the audit API, only supported on
 Solaris 10 and later.  GDM should not be used on Solaris 9 and earlier
 if auditing is needed.  Refer to the "Solaris" section of the
-documentation for information about specific configuration issues for
-Solaris.
+documentation for additional information about specific configuration
+issues for Solaris.
 
    http://www.gnome.org/projects/gdm/docs.html
 
