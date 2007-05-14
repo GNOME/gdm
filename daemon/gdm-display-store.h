@@ -47,9 +47,9 @@ typedef struct
 	GObjectClass   parent_class;
 
 	void	      (* display_added)	   (GdmDisplayStore *display_store,
-					    GdmDisplay      *display);
+					    const char      *id);
 	void	      (* display_removed)  (GdmDisplayStore *display_store,
-					    GdmDisplay      *display);
+					    const char      *id);
 } GdmDisplayStoreClass;
 
 typedef enum

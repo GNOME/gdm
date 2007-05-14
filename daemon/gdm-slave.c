@@ -813,6 +813,18 @@ gdm_slave_stop (GdmSlave *slave)
 {
 	g_debug ("Stopping slave");
 
+	if (slave->priv->greeter != NULL) {
+		gdm_greeter_stop (slave->priv->greeter);
+		g_object_unref (slave->priv->greeter);
+		slave->priv->greeter = NULL;
+	}
+
+	if (slave->priv->server != NULL) {
+		gdm_server_stop (slave->priv->server);
+		g_object_unref (slave->priv->server);
+		slave->priv->server = NULL;
+	}
+
 	if (slave->priv->display_proxy != NULL) {
 		g_object_unref (slave->priv->display_proxy);
 	}
@@ -964,6 +976,8 @@ gdm_slave_finalize (GObject *object)
 	slave = GDM_SLAVE (object);
 
 	g_return_if_fail (slave->priv != NULL);
+
+	gdm_slave_stop (slave);
 
 	G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
 }

@@ -39,6 +39,7 @@
 #include <X11/Xlib.h> /* for Display */
 
 #include "gdm-common.h"
+#include "gdm-signal-handler.h"
 
 #include "gdm-server.h"
 
@@ -103,58 +104,37 @@ static void	gdm_server_finalize	(GObject        *object);
 
 G_DEFINE_TYPE (GdmServer, gdm_server, G_TYPE_OBJECT)
 
-/* copied from nautilus */
-static int ready_pipes[2];
-
 static gboolean
-ready_io_cb (GIOChannel  *io,
-	     GIOCondition condition,
-	     GdmServer   *server)
+emit_ready_idle (GdmServer *server)
 {
-        char a;
-
-        while (read (ready_pipes[0], &a, 1) != 1)
-                ;
-
 	g_debug ("Got USR1 from X server - emitting READY");
 
 	g_signal_emit (server, signals[READY], 0);
+	return FALSE;
+}
+
+
+static gboolean
+signal_cb (int        signo,
+	   GdmServer *server)
+
+{
+	g_idle_add ((GSourceFunc)emit_ready_idle, server);
 
         return TRUE;
 }
 
 static void
-sigusr1_handler (int sig)
-{
-        while (write (ready_pipes[1], "a", 1) != 1)
-                ;
-}
-
-static void
 setup_ready_signal (GdmServer *server)
 {
-        struct sigaction sa;
-        GIOChannel      *io;
+	GdmSignalHandler *signal_handler;
 
-        if (pipe (ready_pipes) == -1) {
-                g_error ("Could not create pipe() for ready signal");
-        }
-
-        io = g_io_channel_unix_new (ready_pipes[0]);
-        g_io_add_watch (io, G_IO_IN, (GIOFunc)ready_io_cb, server);
-
-        sa.sa_handler = sigusr1_handler;
-        sigemptyset (&sa.sa_mask);
-        sa.sa_flags = 0;
-        sigaction (SIGUSR1, &sa, NULL);
-}
-
-gboolean
-gdm_server_stop (GdmServer *server)
-{
-	g_debug ("Stopping server");
-
-	return TRUE;
+	signal_handler = gdm_signal_handler_new ();
+	gdm_signal_handler_add (signal_handler,
+				SIGUSR1,
+				(GdmSignalHandlerFunc)signal_cb,
+				server);
+	g_object_unref (signal_handler);
 }
 
 /* We keep a connection (parent_dsp) open with the parent X server
@@ -647,6 +627,87 @@ gdm_server_start (GdmServer *server)
 	return res;
 }
 
+static int
+signal_pid (int pid,
+	    int signal)
+{
+	int status = -1;
+
+	/* perhaps block sigchld */
+
+	status = kill (pid, signal);
+
+	if (status < 0) {
+		if (errno == ESRCH) {
+			g_warning ("Child process %lu was already dead.",
+				   (unsigned long) pid);
+		} else {
+			g_warning ("Couldn't kill child process %lu: %s",
+				   (unsigned long) pid,
+				   g_strerror (errno));
+		}
+	}
+
+	/* perhaps unblock sigchld */
+
+	return status;
+}
+
+static int
+wait_on_child (int pid)
+{
+	int status;
+
+ wait_again:
+	if (waitpid (pid, &status, 0) < 0) {
+		if (errno == EINTR) {
+			goto wait_again;
+		} else if (errno == ECHILD) {
+			; /* do nothing, child already reaped */
+		} else {
+			g_debug ("waitpid () should not fail");
+		}
+	}
+
+	return status;
+}
+
+static void
+server_died (GdmServer *server)
+{
+	int exit_status;
+
+	g_debug ("Waiting on process %d", server->priv->pid);
+	exit_status = wait_on_child (server->priv->pid);
+
+	if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
+		g_debug ("Wait on child process failed");
+	} else {
+		/* exited normally */
+	}
+
+	g_spawn_close_pid (server->priv->pid);
+	server->priv->pid = -1;
+
+	g_debug ("Server died");
+}
+
+gboolean
+gdm_server_stop (GdmServer *server)
+{
+	if (server->priv->pid <= 1) {
+		return TRUE;
+	}
+
+	g_debug ("Stopping server");
+
+	signal_pid (server->priv->pid, SIGTERM);
+	server_died (server);
+
+	return TRUE;
+}
+
+
 static void
 _gdm_server_set_display_name (GdmServer  *server,
 			      const char *name)
@@ -767,6 +828,8 @@ gdm_server_finalize (GObject *object)
 	server = GDM_SERVER (object);
 
 	g_return_if_fail (server->priv != NULL);
+
+	gdm_server_stop (server);
 
 	G_OBJECT_CLASS (gdm_server_parent_class)->finalize (object);
 }

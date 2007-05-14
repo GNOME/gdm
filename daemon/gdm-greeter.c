@@ -86,14 +86,6 @@ static void	gdm_greeter_finalize	(GObject         *object);
 
 G_DEFINE_TYPE (GdmGreeter, gdm_greeter, G_TYPE_OBJECT)
 
-gboolean
-gdm_greeter_stop (GdmGreeter *greeter)
-{
-	g_debug ("Stopping greeter");
-
-	return TRUE;
-}
-
 static void
 change_user (GdmGreeter *greeter)
 {
@@ -1014,6 +1006,87 @@ gdm_greeter_start (GdmGreeter *greeter)
 
 	return res;
 }
+static int
+signal_pid (int pid,
+	    int signal)
+{
+	int status = -1;
+
+	/* perhaps block sigchld */
+
+	status = kill (pid, signal);
+
+	if (status < 0) {
+		if (errno == ESRCH) {
+			g_warning ("Child process %lu was already dead.",
+				   (unsigned long) pid);
+		} else {
+			g_warning ("Couldn't kill child process %lu: %s",
+				   (unsigned long) pid,
+				   g_strerror (errno));
+		}
+	}
+
+	/* perhaps unblock sigchld */
+
+	return status;
+}
+
+static int
+wait_on_child (int pid)
+{
+	int status;
+
+ wait_again:
+	if (waitpid (pid, &status, 0) < 0) {
+		if (errno == EINTR) {
+			goto wait_again;
+		} else if (errno == ECHILD) {
+			; /* do nothing, child already reaped */
+		} else {
+			g_debug ("waitpid () should not fail");
+		}
+	}
+
+	return status;
+}
+
+static void
+greeter_died (GdmGreeter *greeter)
+{
+	int exit_status;
+
+	g_debug ("Waiting on process %d", greeter->priv->pid);
+	exit_status = wait_on_child (greeter->priv->pid);
+
+	if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
+		g_debug ("Wait on child process failed");
+	} else {
+		/* exited normally */
+	}
+
+	g_spawn_close_pid (greeter->priv->pid);
+	greeter->priv->pid = -1;
+
+	g_debug ("Greeter died");
+}
+
+gboolean
+gdm_greeter_stop (GdmGreeter *greeter)
+{
+
+	if (greeter->priv->pid <= 1) {
+		return TRUE;
+	}
+
+	g_debug ("Stopping greeter");
+
+	signal_pid (greeter->priv->pid, SIGTERM);
+	greeter_died (greeter);
+
+	return TRUE;
+}
+
 
 static void
 _gdm_greeter_set_display_name (GdmGreeter  *greeter,
@@ -1130,6 +1203,8 @@ gdm_greeter_finalize (GObject *object)
 	greeter = GDM_GREETER (object);
 
 	g_return_if_fail (greeter->priv != NULL);
+
+	gdm_greeter_stop (greeter);
 
 	G_OBJECT_CLASS (gdm_greeter_parent_class)->finalize (object);
 }

@@ -38,6 +38,8 @@ libgdmcommon_a_SOURCES =	\
 	gdm-config.c		\
 	gdm-log.h		\
 	gdm-log.c		\
+	gdm-signal-handler.h	\
+	gdm-signal-handler.c	\
 	ve-signal.h		\
 	ve-signal.c		\
 	$(NULL)

@@ -184,7 +184,7 @@ gdm_display_real_manage (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Manage display");
+	g_debug ("GdmDisplay manage display");
 
 	display->priv->status = GDM_DISPLAY_MANAGED;
 
@@ -203,6 +203,8 @@ gdm_display_manage (GdmDisplay *display)
 
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
+	g_debug ("Unmanaging display");
+
 	g_object_ref (display);
 	ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
 	g_object_unref (display);
@@ -216,6 +218,8 @@ gdm_display_real_unmanage (GdmDisplay *display)
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
 	display->priv->status = GDM_DISPLAY_UNMANAGED;
+
+	g_debug ("GdmDisplay unmanage display");
 
 	if (display->priv->slave_proxy != NULL) {
 		gdm_slave_proxy_stop (display->priv->slave_proxy);
@@ -233,6 +237,8 @@ gdm_display_unmanage (GdmDisplay *display)
 	gboolean ret;
 
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	g_debug ("Unmanaging display");
 
 	g_object_ref (display);
 	ret = GDM_DISPLAY_GET_CLASS (display)->unmanage (display);
@@ -477,6 +483,19 @@ gdm_display_constructor (GType                  type,
 }
 
 static void
+gdm_display_dispose (GObject *object)
+{
+	GdmDisplay *display;
+
+	display = GDM_DISPLAY (object);
+
+	g_debug ("Disposing display");
+	gdm_display_unmanage (display);
+
+	G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
+}
+
+static void
 gdm_display_class_init (GdmDisplayClass *klass)
 {
 	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -484,6 +503,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
 	object_class->get_property = gdm_display_get_property;
 	object_class->set_property = gdm_display_set_property;
         object_class->constructor = gdm_display_constructor;
+	object_class->dispose = gdm_display_dispose;
 	object_class->finalize = gdm_display_finalize;
 
 	klass->create_authority = gdm_display_real_create_authority;

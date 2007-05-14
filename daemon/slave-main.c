@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <signal.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -37,6 +38,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include "gdm-signal-handler.h"
 #include "gdm-log.h"
 #include "gdm-slave.h"
 
@@ -63,22 +65,80 @@ get_system_bus (void)
 	return bus;
 }
 
-static void
-setup_signal_handlers (void)
+static gboolean
+signal_cb (int      signo,
+	   gpointer data)
 {
-	/* FIXME */
+	int ret;
+
+	g_debug ("Got callback for signal %d", signo);
+
+	ret = TRUE;
+
+	switch (signo) {
+	case SIGSEGV:
+	case SIGBUS:
+	case SIGILL:
+	case SIGABRT:
+		g_debug ("Caught signal %d.", signo);
+
+		ret = FALSE;
+		break;
+
+	case SIGFPE:
+	case SIGPIPE:
+		/* let the fatal signals interrupt us */
+		g_debug ("Caught signal %d, shutting down abnormally.", signo);
+		ret = FALSE;
+
+		break;
+
+	case SIGINT:
+	case SIGTERM:
+		/* let the fatal signals interrupt us */
+		g_debug ("Caught signal %d, shutting down normally.", signo);
+		ret = FALSE;
+
+		break;
+
+	case SIGHUP:
+		g_debug ("Got HUP signal");
+		/* FIXME:
+		 * Reread config stuff like system config files, VPN service files, etc
+		 */
+		ret = TRUE;
+
+		break;
+
+	case SIGUSR1:
+		g_debug ("Got USR1 signal");
+		/* FIXME:
+		 * Play with log levels or something
+		 */
+		ret = TRUE;
+		break;
+
+	default:
+		g_debug ("Caught unhandled signal %d", signo);
+		ret = TRUE;
+
+		break;
+	}
+
+	return ret;
 }
 
 int
 main (int    argc,
       char **argv)
 {
-	GMainLoop	*loop;
-	GOptionContext	*context;
-	DBusGConnection *connection;
-	int		 ret;
-	GdmSlave        *slave;
-	static char	*display_id = NULL;
+	GMainLoop        *main_loop;
+	GOptionContext	 *context;
+	DBusGConnection  *connection;
+	int		  ret;
+	GdmSlave         *slave;
+	static char      *display_id = NULL;
+	GdmSignalHandler *signal_handler;
 	static GOptionEntry entries []	 = {
 		{ "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("id") },
 		{ NULL }
@@ -112,29 +172,43 @@ main (int    argc,
 		exit (1);
 	}
 
-	setup_signal_handlers ();
+	main_loop = g_main_loop_new (NULL, FALSE);
+
+	signal_handler = gdm_signal_handler_new ();
+	gdm_signal_handler_set_main_loop (signal_handler, main_loop);
+	gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGBUS, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
 	slave = gdm_slave_new (display_id);
-
 	if (slave == NULL) {
 		goto out;
 	}
-
-	loop = g_main_loop_new (NULL, FALSE);
-
 	gdm_slave_start (slave);
 
-	g_main_loop_run (loop);
+	g_main_loop_run (main_loop);
 
 	if (slave != NULL) {
 		g_object_unref (slave);
 	}
 
-	g_main_loop_unref (loop);
+	if (signal_handler != NULL) {
+		g_object_unref (signal_handler);
+	}
+
+	g_main_loop_unref (main_loop);
 
 	ret = 0;
 
  out:
+
+	g_debug ("Slave finished");
 
 	return ret;
 }

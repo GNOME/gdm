@@ -44,6 +44,11 @@ typedef struct
 typedef struct
 {
 	GObjectClass   parent_class;
+
+	void	      (* display_added)	   (GdmManager      *manager,
+					    const char      *id);
+	void	      (* display_removed)  (GdmManager      *manager,
+					    const char      *id);
 } GdmManagerClass;
 
 typedef enum

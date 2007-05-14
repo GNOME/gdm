@@ -71,6 +71,14 @@ struct GdmManagerPrivate
         DBusGConnection *connection;
 };
 
+enum {
+	DISPLAY_ADDED,
+	DISPLAY_REMOVED,
+	LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0, };
+
 static void	gdm_manager_class_init	(GdmManagerClass *klass);
 static void	gdm_manager_init	(GdmManager	 *manager);
 static void	gdm_manager_finalize	(GObject	 *object);
@@ -214,6 +222,9 @@ load_static_displays_from_file (GdmManager *manager)
 		}
 
 		gdm_display_store_add (manager->priv->display_store, display);
+
+		/* let store own the ref */
+		g_object_unref (display);
 	}
 }
 
@@ -357,6 +368,27 @@ gdm_manager_class_init (GdmManagerClass *klass)
 	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = gdm_manager_finalize;
+
+	signals [DISPLAY_ADDED] =
+		g_signal_new ("display-added",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmManagerClass, display_added),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1, G_TYPE_STRING);
+	signals [DISPLAY_REMOVED] =
+		g_signal_new ("display-removed",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmManagerClass, display_removed),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1, G_TYPE_STRING);
 
 	g_type_class_add_private (klass, sizeof (GdmManagerPrivate));
 

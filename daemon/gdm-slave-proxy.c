@@ -83,6 +83,10 @@ slave_died (GdmSlaveProxy *slave)
 {
 	int exit_status;
 
+	if (slave->priv->pid < 0) {
+		return;
+	}
+
 	g_debug ("Waiting on process %d", slave->priv->pid);
 	exit_status = wait_on_child (slave->priv->pid);
 
@@ -288,6 +292,7 @@ signal_pid (int pid,
 	int status = -1;
 
 	/* perhaps block sigchld */
+	g_debug ("Killing pid %d", pid);
 
 	status = kill (pid, signal);
 
@@ -315,8 +320,7 @@ kill_slave (GdmSlaveProxy *slave)
 	}
 
 	signal_pid (slave->priv->pid, SIGTERM);
-
-	/* watch should call slave_died */
+	slave_died (slave);
 }
 
 gboolean
@@ -330,7 +334,15 @@ gdm_slave_proxy_start (GdmSlaveProxy *slave)
 gboolean
 gdm_slave_proxy_stop (GdmSlaveProxy *slave)
 {
+	g_debug ("Killing slave");
+
 	kill_slave (slave);
+	if (slave->priv->output_watch_id > 0) {
+		g_source_remove (slave->priv->output_watch_id);
+	}
+	if (slave->priv->error_watch_id > 0) {
+		g_source_remove (slave->priv->error_watch_id);
+	}
 
 	return TRUE;
 }

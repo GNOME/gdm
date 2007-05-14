@@ -44,6 +44,7 @@
 
 #include "gdm-manager.h"
 #include "gdm-log.h"
+#include "gdm-signal-handler.h"
 #include "gdm-master-config.h"
 #include "gdm-daemon-config-entries.h"
 
@@ -445,35 +446,97 @@ gdm_daemon_change_user (uid_t *uidp,
 	g_free (groupname);
 }
 
-static void
-setup_signal_handlers (void)
+static gboolean
+signal_cb (int      signo,
+	   gpointer data)
 {
-	/* FIXME */
+	int ret;
+
+	g_debug ("Got callback for signal %d", signo);
+
+	ret = TRUE;
+
+	switch (signo) {
+	case SIGSEGV:
+	case SIGBUS:
+	case SIGILL:
+	case SIGABRT:
+		g_debug ("Caught signal %d.", signo);
+
+		ret = FALSE;
+		break;
+
+	case SIGFPE:
+	case SIGPIPE:
+		/* let the fatal signals interrupt us */
+		g_debug ("Caught signal %d, shutting down abnormally.", signo);
+		ret = FALSE;
+
+		break;
+
+	case SIGINT:
+	case SIGTERM:
+		/* let the fatal signals interrupt us */
+		g_debug ("Caught signal %d, shutting down normally.", signo);
+		ret = FALSE;
+
+		break;
+
+	case SIGHUP:
+		g_debug ("Got HUP signal");
+		/* FIXME:
+		 * Reread config stuff like system config files, VPN service files, etc
+		 */
+		ret = TRUE;
+
+		break;
+
+	case SIGUSR1:
+		g_debug ("Got USR1 signal");
+		/* FIXME:
+		 * Play with log levels or something
+		 */
+		ret = TRUE;
+		break;
+
+	default:
+		g_debug ("Caught unhandled signal %d", signo);
+		ret = TRUE;
+
+		break;
+	}
+
+	return ret;
 }
 
 int
 main (int    argc,
       char **argv)
 {
-	GMainLoop	*loop;
-	GOptionContext	*context;
-	DBusGProxy	*bus_proxy;
-	DBusGConnection *connection;
-	int		 ret;
-	int		 i;
-	gboolean         debug;
+	GMainLoop	   *main_loop;
+	GOptionContext	   *context;
+	DBusGProxy	   *bus_proxy;
+	DBusGConnection    *connection;
+	GError             *error;
+	int		    ret;
+	int	   	    i;
+	gboolean	    res;
+	gboolean            debug;
+	GdmSignalHandler   *signal_handler;
 	static char	   *config_file	     = NULL;
 	static gboolean	    no_daemon	     = FALSE;
 	static gboolean	    no_console	     = FALSE;
 	static gboolean	    do_timed_exit    = FALSE;
 	static gboolean	    print_version    = FALSE;
+	static gboolean	    fatal_warnings   = FALSE;
 	static GOptionEntry entries []	 = {
 		{ "config", 0, 0, G_OPTION_ARG_STRING, &config_file, N_("Alternative GDM System Defaults configuration file"), N_("CONFIGFILE") },
 
-		{ "nodaemon", 0, 0, G_OPTION_ARG_NONE, &no_daemon, N_("Don't become a daemon"), NULL },
+		{ "no-daemon", 0, 0, G_OPTION_ARG_NONE, &no_daemon, N_("Don't become a daemon"), NULL },
 		{ "no-console", 0, 0, G_OPTION_ARG_NONE, &no_console, N_("No console (static) servers to be run"), NULL },
 
 		{ "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time - for debugging"), NULL },
+		{ "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
 		{ "version", 0, 0, G_OPTION_ARG_NONE, &print_version, N_("Print GDM version"), NULL },
 
 		{ NULL }
@@ -497,12 +560,27 @@ main (int    argc,
 	 * option
 	 */
 	for (i = 0; i < argc; i++) {
-		if (strcmp (argv[i], "-nodaemon") == 0)
-			argv[i] = (char *) "--nodaemon";
+		if (strcmp (argv[i], "-nodaemon") == 0) {
+			argv[i] = (char *) "--no-daemon";
+		}
 	}
 
-	g_option_context_parse (context, &argc, &argv, NULL);
+	error = NULL;
+	res = g_option_context_parse (context, &argc, &argv, &error);
 	g_option_context_free (context);
+	if (! res) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	if (fatal_warnings) {
+		GLogLevelFlags fatal_mask;
+
+		fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
+		fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
+		g_log_set_always_fatal (fatal_mask);
+	}
 
 	if (! no_daemon && daemon (0, 0)) {
 		g_error ("Could not daemonize: %s", g_strerror (errno));
@@ -556,8 +634,6 @@ main (int    argc,
 	g_mkdir (SDTLOGIN_DIR, 0700);
 #endif
 
-	setup_signal_handlers ();
-
 	manager = gdm_manager_new ();
 
 	if (manager == NULL) {
@@ -569,24 +645,41 @@ main (int    argc,
 			  G_CALLBACK (bus_proxy_destroyed_cb),
 			  manager);
 
-	loop = g_main_loop_new (NULL, FALSE);
+	main_loop = g_main_loop_new (NULL, FALSE);
+
+	signal_handler = gdm_signal_handler_new ();
+	gdm_signal_handler_set_main_loop (signal_handler, main_loop);
+	gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGBUS, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
+	gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
 	if (do_timed_exit) {
-		g_timeout_add (1000 * 30, (GSourceFunc) timed_exit_cb, loop);
+		g_timeout_add (1000 * 30, (GSourceFunc) timed_exit_cb, main_loop);
 	}
 
 	gdm_manager_start (manager);
 
-	g_main_loop_run (loop);
+	g_main_loop_run (main_loop);
 
 	if (manager != NULL) {
 		g_object_unref (manager);
 	}
+
 	if (daemon_config != NULL) {
 		g_object_unref (daemon_config);
 	}
 
-	g_main_loop_unref (loop);
+	if (signal_handler != NULL) {
+		g_object_unref (signal_handler);
+	}
+
+	g_main_loop_unref (main_loop);
 
 	ret = 0;
 

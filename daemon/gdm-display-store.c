@@ -68,6 +68,7 @@ gdm_display_store_error_quark (void)
 void
 gdm_display_store_clear (GdmDisplayStore    *store)
 {
+	g_debug ("Clearing display store");
 	g_hash_table_remove_all (store->priv->displays);
 }
 
@@ -177,7 +178,8 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
 static void
 display_unref (GdmDisplay *display)
 {
-	/* nothing yet */
+	g_debug ("Unreffing display");
+	g_object_unref (display);
 }
 
 static void
