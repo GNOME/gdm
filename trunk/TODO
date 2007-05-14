@@ -1,0 +1,54 @@
+
+This file is just a place to note ideas about GDM that are maybe
+experimental or not significant enough to report a bug.  Refore
+to http://bugzilla.gnome.org in the "gdm" category for the real 
+TODO list for GDM.
+
+ + On Solaris GDM uses /etc/logindevperm (see README.install)
+   and it might be useful to simply make GDM's PreSession and
+   PostSession scripts process /etc/logindevperm directly and
+   not call the library interface on Solaris.  
+
+ + Big TODO: Rewrite the slave to be based around a mainloop.
+   So that we don't have to do things directly from signal handlers.
+   Some work has already been started by making the slave use select
+   calls instead of waitpid.  This needs to be extended a bit.  The
+   big issue is things that hang.  We need two things, some better
+   general framework for things that hang and handling signals there 
+   (see daemon/misc.c for solution when using gethostbyaddr in the
+   main daemon).  We also need some way to do something like
+   "sleep(5)" with the mainloop nicely.  We want the slave to still
+   be very synchronous, but just have some small handlers run from
+   within the mainloop.  The one thing that will always cause
+   trouble here is the XDMCP server pinging, I think in this case
+   it would be sane to do the setjmp thing and just ignore the ping
+   if a signal comes, not sure how this will play with the X stuff
+   and if this would completely whack us out.  The other option is
+   to have a separate "pinger process" but that seems to
+   heavyweight.  Another option here is to give up on complete
+   mainloopishness and during pinging set up an alarm or some other
+   polling thing that checks all the mainloops stuff.
+  
+ + Resource limits have been implemented into the GDM slaves, but
+   perhaps more could be done.  Always keep eye out for leaks.
+
+Small TODO things:
+
+ + If we can't setup PAM display user visible errors and not just
+   syslog stuff
+
+ + Languages should be read from available locales.   Right now the code
+   stats each file in /usr/locale, which is slow.  Would be faster to
+   do a readdir on the direction and process them without doing stats.
+
+Perhaps stuff:
+
+ + Keyboard layout menu.
+ + native utmp/wtmp handling without sessreg
+ + xsri like logo functionality
+ + Handle all the XFree86 Xserver error thingies, such as No "Display"
+   subsection for etc...
+ + Add spacer files.  Files which we can use in case there is disk
+   shortage to write a new xauthority stuff so that someone can
+   actually log on and clean up.  Is this crack?  Maybe.
+

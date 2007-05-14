@@ -1,0 +1,383 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+ [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "2.4.2.101" >
+  <!ENTITY manrevision "2.0.1" >
+  <!ENTITY date "2004 年 1 月" >
+  <!ENTITY app "登录屏幕设置" >
+  <!ENTITY ug "GNOME 桌面用户指南" >
+]><!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+--><!-- =============Document Header ============================= --> <article id="index" lang="zh_cn"><!-- please do not change the id; for translations, change lang to --><!-- appropriate code -->
+
+
+  <articleinfo> 
+    <title>登录屏幕设置手册 &manrevision; 版 </title>       
+
+	 <copyright><year>2004</year> <holder>Sun Microsystems</holder>  </copyright><!-- translators: uncomment this:
+  	 <copyright>
+   		<year>2003</year>
+   		<holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  	 </copyright>
+   	 -->
+	 
+
+    <publisher><publishername> GNOME Documentation Project </publishername>  </publisher><!-- This file  contains link to license for the documentation (GNU FDL), and 
+        other legal stuff such as "NO WARRANTY" statement. Please do not change 
+	any of this. -->&legal;  <authorgroup> 
+		<author><firstname>Sun</firstname> <surname>GNOME Documentation Team</surname>  <affiliation><orgname>Sun Microsystems</orgname>  </affiliation>
+		</author><!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+
+    </authorgroup>
+
+    <revhistory>
+      <revision><revnumber>登录屏幕设置手册 &manrevision; 版</revnumber> <date>&date;</date> <revdescription> 
+	  		<para role="author">Sun GNOME Documentation Team </para>
+	  		<para role="publisher">GNOME Documentation Project </para>
+		</revdescription> 
+      </revision>
+    </revhistory><releaseinfo>本手册介绍 &app; 的 &appversion; 版。</releaseinfo>  <legalnotice> 
+      <title>反馈</title> 
+      <para>要报告关于 &app; 应用程序或本手册的错误或提出建议，请遵循 <ulink url="ghelp:gnome-feedback" type="help">GNOME 反馈页</ulink>中的指导。  </para><!-- Translators may also add here feedback address for translations -->
+
+    </legalnotice> 
+  </articleinfo><!-- ============= Document Body ============================= --><!-- ============= Introduction ============================== --><indexterm> <primary>登录屏幕设置</primary> </indexterm> <sect1 id="gdm-introduction">
+<title>简介 </title>
+<para>要启动 GNOME 桌面会话，用户必须登录并验证身份。 登录屏幕是用户通向 GNOME 桌面的门户。 使用 <application>&app;</application> 应用程序可以配置用户登录到系统的方式。</para>
+</sect1><!-- =========== Getting Started ============================== -->
+
+
+
+  <sect1 id="gdm-getting-started"> 
+	 <title>入门</title>
+
+	 <sect2 id="gdm-to-start"> 
+		<title>启动 &app;</title>
+		
+		<para>可以通过以下方式启动 <application>&app;</application>： </para>
+		
+		<variablelist>
+			<varlistentry><term>菜单</term> <listitem>
+			<para>有关如何从菜单启动 <application>&app;</application> 的信息，请参阅适用于您的平台的最新版本的 &ug;。  </para>
+			</listitem>
+			</varlistentry>
+			<varlistentry><term>命令行</term> <listitem>
+			<para>执行以下命令： <command>gdmsetup</command></para>
+			</listitem>
+			</varlistentry>
+	</variablelist>
+<note><para>您必须有系统管理员特权或<literal>超级用户</literal>访问特权才能配置登录屏幕。</para></note>
+	</sect2>
+
+	<sect2 id="gdm-when-you-start">
+	<title>在启动 &app; 时</title>
+
+	<para>当您启动 <application>&app;</application> 时，系统会显示下面的对话框。</para><!-- ==== Figure ==== -->
+	
+		<figure id="gdm_window"> 
+		  <title>&app; 对话框</title>
+		  <screenshot> 
+			 <mediaobject> 
+				<imageobject><imagedata fileref="figures/gdm_window.png" format="PNG"/>
+					 </imageobject>
+				<textobject> <phrase>显示&ldquo;登录屏幕设置&rdquo;对话框。 文中对该图形进行了说明。
+</phrase>
+				</textobject> </mediaobject>
+		  </screenshot>
+		</figure><!-- ==== End of Figure ==== -->
+	
+<para><application>&app;</application> 对话框包含以下选项卡式部分：</para>
+<itemizedlist>
+<listitem><para><link linkend="gdm-prefs-general"><guilabel>常规</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-standard"><guilabel>标准欢迎程序</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-graphical"><guilabel>图形欢迎程序</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-security"><guilabel>安全</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-xdmcp"><guilabel>XDMCP</guilabel></link></para></listitem>
+</itemizedlist>
+	
+	 </sect2>
+
+
+  </sect1><!-- ============= Customization ============================= -->
+
+
+  
+  <sect1 id="gdm-preferences"> 
+<title>首选项</title>
+
+<sect2 id="gdm-prefs-general">
+<title>常规</title>
+<para>使用<guilabel>&ldquo;常规&rdquo;</guilabel>选项卡式部分可以设置登录屏幕的常规首选项。 </para>
+
+		<variablelist> 
+		  <varlistentry><term><guilabel>本地</guilabel> </term> <listitem> 
+				<para>选择用户从本地系统登录时要用于登录屏幕的界面类型。 从下拉列表中选择以下选项之一：</para>
+<itemizedlist>
+<listitem><para><guilabel>图形欢迎程序</guilabel>： 选择用户从本地系统登录时要使用图形登录屏幕的选项。 </para>
+</listitem>
+<listitem><para><guilabel>标准欢迎程序</guilabel>： 选择此选项在用户从本地系统登录时使用标准的 GNOME 登录屏幕。  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term><guilabel>远程</guilabel> </term> <listitem> 
+				<para>选择用户从远程系统登录时要用于登录屏幕的界面类型。 从下拉列表中选择以下选项之一：</para><itemizedlist>
+<listitem><para><guilabel>图形欢迎程序</guilabel>： 选择用户从远程系统登录时要使用图形登录屏幕的选项。 </para>
+</listitem>
+<listitem><para><guilabel>标准欢迎程序</guilabel>： 选择此选项在用户从远程系统登录时使用标准的 GNOME 登录屏幕。  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>始终使用 24 小时的时钟格式</guilabel> </term> <listitem> 
+<para>选择此选项在登录屏幕上以 00.00 到 24.00 的格式显示时间。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>欢迎词</guilabel> </term> <listitem> 
+<para>键入当用户从本地系统登录时在标准 GNOME 登录屏幕上显示的欢迎词。</para><note><para>如果希望在欢迎词中显示系统名称，请在这个文本框中键入 <literal>%n</literal>。  </para></note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>远程欢迎词</guilabel> </term> <listitem> 
+<para>键入当用户从远程系统登录时在标准 GNOME 登录屏幕上显示的欢迎词。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>第一次启动时让用户自动登录</guilabel> </term> <listitem> 
+<para>选择这个选项可以让用户在第一次启动系统时自动登录。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>自动登录用户名</guilabel> </term> <listitem> 
+<para>使用该下拉组合框可以输入让用户自动登录时使用的用户名。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>经过指定的秒数之后自动登录用户</guilabel> </term> <listitem> 
+<para>如果选择此选项，在经过指定的秒数之后将自动让用户登录。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>计时登录用户名</guilabel> </term> <listitem> 
+<para>使用该下拉组合框可以输入在一定时间间隔后让用户自动登录时使用的用户名。 </para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term><guilabel>登录前等待的秒数</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定等待多长时间后让用户自动登录。</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+</sect2>
+
+<sect2 id="gdm-prefs-standard">
+<title>标准欢迎程序</title>
+<para>使用<guilabel>&ldquo;标准欢迎程序&rdquo;</guilabel>选项卡部分可以设置标准 GNOME 登录屏幕的首选项。 </para>
+
+
+
+<variablelist>
+		  <varlistentry><term><guilabel>徽标</guilabel> </term> <listitem> 
+<para>选择要在标准 GNOME 登录屏幕上显示为徽标的图像。 选择一个图像，在下拉组合框中输入该图像的文件名。 或者，单击<guibutton>&ldquo;浏览&rdquo;</guibutton>按钮显示一个对话框，您可以从该对话框中选择图像。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>显示可选择的用户图像（外观浏览器）</guilabel> </term> <listitem> 
+<para>选择此选项在标准 GNOME 登录屏幕上显示用户的图像。 选中此选项后，用户能够以选择图像代替键入用户名。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>无背景</guilabel> </term> <listitem> 
+<para>如果您不希望在标准 GNOME 登录屏幕上显示图像或背景颜色，请选择这个选项。  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>图像</guilabel> </term> <listitem> 
+<para>选择此选项在标准 GNOME 登录屏幕的背景中显示一个图像。 要选择图像，请在对话框右侧的下拉组合框中输入图像的文件名。 或者，单击对话框右侧的<guibutton>&ldquo;浏览&rdquo;</guibutton>按钮打开一个对话框，您可在这个对话框中选择图像。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>颜色</guilabel> </term> <listitem> 
+<para>选择此选项在标准 GNOME 登录屏幕的背景中显示一种颜色。 使用<guilabel> &ldquo;背景颜色&rdquo;</guilabel>按钮指定颜色。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>调整背景图像的大小以填充</guilabel> </term> <listitem> 
+<para>如果选择<guilabel>&ldquo;图像&rdquo;</guilabel>选项，选择这个选项可以调整背景图像的大小，以适应标准 GNOME 登录屏幕的背景。 该图像的宽高比将保持不变。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>远程显示器上仅显示颜色</guilabel> </term> <listitem> 
+<para>选择这个选项，则当用户从远程系统登录时，标准 GNOME 登录屏幕上显示背景颜色。  </para>
+			 </listitem>
+		  </varlistentry>
+
+
+		  <varlistentry><term><guilabel>背景颜色</guilabel> </term> <listitem> 
+<para>如果对背景选择<guilabel>&ldquo;颜色&rdquo;</guilabel>选项或<guilabel>&ldquo;远程显示器上仅显示颜色&rdquo;</guilabel>选项，请用这个按钮指定颜色。 单击颜色选择器按钮以显示颜色选择器对话框。 从颜色选择器对话框选择您需要的颜色。 </para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-graphical">
+<title>图形欢迎程序</title>
+<para>使用<guilabel>&ldquo;图形欢迎程序&rdquo;</guilabel>选项卡部分来设置图形登录屏幕的首选项。</para>
+
+<variablelist>
+
+		  <varlistentry><term>主题列表</term> <listitem> 
+<para>选择图形登录屏幕使用的主题。 要预览选定的主题，请查看该对话框的右侧。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guibutton>安装新主题</guibutton> </term> <listitem> 
+<para>您可以向可用主题列表中添加新主题。 新主题必须是使用 tar 和 zip 压缩的归档文件。 即，新主题必须是 <filename>.tar.gz</filename> 文件。</para><para>要安装新主题，请执行下列步骤：</para>
+<orderedlist>
+<listitem><para>单击<guibutton>&ldquo;安装新主题&rdquo;</guibutton>按钮。</para></listitem>
+<listitem><para>使用对话框选择归档文件。</para></listitem>
+<listitem><para>单击<guibutton>&ldquo;确定&rdquo;</guibutton>。 </para></listitem>
+</orderedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guibutton>删除主题</guibutton> </term> <listitem> 
+<para>要删除主题，请选择该主题，然后单击<guibutton>&ldquo;删除主题&rdquo;</guibutton>按钮。</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-security">
+<title>安全性</title>
+<para>使用<guilabel>&ldquo;安全性&rdquo;</guilabel>选项卡式部分可以设置登录安全性首选项。 </para>
+
+<variablelist>
+		  <varlistentry><term><guilabel>允许超级用户使用 GDM 登录</guilabel> </term> <listitem> 
+<para>选择此选项使具有管理员特权或<literal>超级用户</literal>访问特权的用户可以使用 <application>GNOME 显示管理器</application> (<application>GDM</application>) 从本地系统登录。</para>
+<note><para>支持可插拔身份验证模块 (PAM) 的系统会忽略此选项。 PAM 库会判断用户是否在本地系统上。  </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允许超级用户使用 GDM 远程登录</guilabel> </term> <listitem> 
+<para>选择这个选项后，有系统管理员特权或<literal>超级用户</literal>访问特权的用户可以使用 <application>GDM</application> 从远程系统登录。  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允许远程计时登录</guilabel> </term> <listitem> 
+<para>选择这个选项允许 <application>GDM</application> 在一定的时间间隔后自动让用户从远程系统登录。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>显示操作菜单</guilabel> </term> <listitem> 
+<para>选择这个选项允许用户在登录屏幕上使用<guimenu>&ldquo;操作&rdquo;</guimenu>菜单。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允许从登录屏幕配置</guilabel> </term> <listitem> 
+<para>选择这个选项允许用户在登录屏幕上从<guimenu>&ldquo;操作&rdquo;</guimenu>菜单使用 <guimenuitem>&ldquo;配置登录管理器&rdquo;</guimenuitem>项目。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允许从登录屏幕运行 XDMCP 选择器</guilabel> </term> <listitem> 
+<para>选择这个选项允许用户在登录屏幕上从<guimenu>&ldquo;操作&rdquo;</guimenu>菜单使用 <guimenuitem>&ldquo;运行 XDMCP 选择器&rdquo;</guimenuitem>项目。</para><para><guimenuitem>&ldquo;运行 XDMCP 选择器&rdquo;</guimenuitem>项目会显示一个提供显示管理服务的主机列表。 用户可以使用此列表选择管理会话的主机。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>始终禁止通过 TCP 连接到 X 服务器（禁用所有远程连接）</guilabel> </term> <listitem> 
+<para>如果不希望用户能够从远程系统连接到 X 窗口系统服务器，请选择这个选项。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>重试延迟（秒）</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定登录尝试失败后要等待多长时间再在登录屏幕上重新激活<guilabel>&ldquo;用户名&rdquo;</guilabel>字段。</para>
+<note><para>支持 PAM 的系统会忽略此选项。 </para></note>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+
+</sect2>
+<sect2 id="gdm-prefs-xdmcp">
+<title>XDMCP</title>
+<para>使用<guilabel>&ldquo;XDMCP&rdquo;</guilabel>选项卡部分来设置 X 显示管理器控制协议 (XDMCP) 的首选项。  </para>
+
+
+<variablelist>
+		  <varlistentry><term><guilabel>启用 XDMCP</guilabel> </term> <listitem> 
+<para>选择这个选项可以允许远程 X 窗口系统显示从该系统请求 X 窗口系统会话。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>批准间接请求</guilabel> </term> <listitem> 
+<para>选择这个选项可以允许没有显示管理器的远程 X 窗口系统显示从这个系统请求 XDMCP 显示管理服务。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>监听 UDP 端口</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定要监听用户数据报协议 (UDP) 请求的端口号。  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>未决请求的最大数量</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定队列中请求系统会话的最大请求数量。</para><note><para>使用此选项有助于避免拒绝服务攻击。 这个选项指定了可以同时<emphasis>请求</emphasis>会话的显示数量。 这个选项并不指定 <application>GDM</application> 允许的远程会话的总数。 </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>未决间接请求的最大数量</guilabel> </term> <listitem> 
+<para><application>GDM</application> 可以创建要求系统会话的请求队列。 使用该旋转框可以指定队列中由没有显示管理器的显示发出的会话请求的最大数量。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>远程会话的最大数量</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定 <application>GDM</application> 允许的远程会话的总数。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>最长等待时间</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定 <application>GDM</application> 从请求队列中删除某个请求之前的等待时间。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>最长间接等待时间</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定 <application>GDM</application> 从已请求了会话的显示队列中删除那些没有显示管理器的显示之前应等待的时间。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>每台主机的显示数量</guilabel> </term> <listitem> 
+<para>使用该旋转框可以指定 <application>GDM</application> 允许某个主机发出的会话总数。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>Ping 间隔（秒）</guilabel> </term> <listitem> 
+<para><application>GDM</application> 会对会话执行 ping 操作，以检查该会话是否仍然处于活动状态。 使用该旋转框可以指定 <application>GDM</application> 发出两次 Ping 指令之间的间隔时间。</para>
+			 </listitem>
+		  </varlistentry>
+</variablelist>
+
+</sect2>
+
+</sect1>
+</article>

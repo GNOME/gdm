@@ -1,0 +1,51 @@
+=head1 NAME
+
+gdm - GNOME Display Manager
+
+=head1 SYNOPSIS
+
+gdm
+
+=head1 DESCRIPTION
+
+B<gdm> is the equivalent of xdm(1x) or wdm(1x), but uses the GNOME
+libraries to provide a GNOME look-and-feel. It provides the GNOME
+equivalent of a "login:" prompt.
+
+The full B<gdm> manual is installed as
+F</usr/share/gnome/help/gdm/C/index.html> on your system. This is only a brief
+summary - the HTML manual is the canonical documentation.
+
+B<gdm> reads F</etc/gdm/gdm.conf> for its configuration. For each
+local display, gdm starts an X server and runs gdmlogin(8x) on that
+display. The main gdm process also listens for XDMCP requests from
+remote displays. These requests can either be direct, causing B<gdm>
+to start a gdmlogin(8x) on the remote display, or indirect, causeing 
+a gdmchooser(8x) to be opened.
+
+When managing a display, B<gdm> attempts to execute
+F</etc/gdm/Init/>I<display>, or F</etc/gdm/Init/Default> if that does
+not exist. When a user logs in, B<gdm> first attempts
+F</etc/gdm/PreSession/>I<display> (or F</etc/gdm/PreSession/Default>),
+and then one of the sessions in F</etc/gdm/Sessions>. When the session
+has completed, B<gdm> attempts to run
+F</etc/gdm/PostSession/>I<display>, or
+F</etc/gdm/PostSession/>I<Default>. Of all these files, only the
+F</etc/gdm/Sessions> one is required to exist.
+
+B<gdm> maintains information about the displays it is managing in
+F</var/lib/gdm>. This includes xauth information, so this directory
+is not readable to normal users.
+
+B<gdm> uses PAM to perform authentication using the config file
+F</etc/pam.d/gdm>.
+
+=head1 AUTHOR
+
+Martin Kasper Petersen <mkp@SunSITE.auc.dk>
+
+This manual page written by Steve Haslam <araqnid@debian.org> for
+Debian GNU/Linux. Updated by Raphaël Hertzog <hertzog@debian.org>.
+Updated by Ryan Murray <rmurray@debian.org>.
+
+=cut

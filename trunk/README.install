@@ -1,0 +1,187 @@
+QUICK NOTES ON INSTALLATION/USE:
+ 
+General
+=======
+
+GDM sometimes requires some configuration work for a given setup.
+
+Make sure you are familiar with the "Overview", "Security", 
+"Configuration", and "Troubleshooting" sections of the GDM
+documentation:
+
+   http://www.gnome.org/projects/gdm/docs.html
+
+You can also look in the docs subdirectory for the XML version of
+the documentation.
+
+WARNING: "gdm-binary" is a *daemon* -- not a common user application.
+It requires extensive knowledge about your system setup to install and
+configure.  GDM does not intend to be Plug and Play.
+(i.e. ./configure ; make install). 
+
+Building GDM
+------------
+
+You may need to update your build tools if the autogen.sh command
+complains that it requires a newer version of the build tool.
+
+If you did not compile GNOME yourself, make sure you have the
+appropriate -devel packages installed.
+
+Here is a recommended configure for GDM:
+
+./autogen.sh --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
+   --with-prefetch --with-post-path=/usr/openwin/bin
+
+Remove --enable-ipv6=yes if you do not use IPv6.
+
+If you want to add distribution-specific directories to the end of
+DefaultPath and RootDefaultPath, then use the --with-post-path
+configure option.  Argument value should be a list of directories
+separated by ":" characters (no spaces).
+
+Make sure the --with-pam-prefix points to the prefix where the
+pam.conf file is located if it is not in the default directory
+(sysconfdir or /etc).
+
+If you want accessibility to work and have AT programs like gok and
+gnopernicus installed to a different directory than bindir,
+then use the --with-at-bindir configure option.
+
+For best a11y support on Linux, it is recommended use the
+--with-xevie configuration option so that the user's Xserver
+session is always started with the Xserver XEVIE extension.
+GOK works best when XEVIE is enabled.
+
+Read the GDM documentation for more information about configuring
+GDM: http://www.gnome.org/projects/gdm/
+
+Reporting Bugs
+--------------
+
+When reporting bugs you should first turn on debugging as described
+in the README.  This causes debug messages to be sent to the system
+log (/var/log/messages or /var/adm/messages) and include the
+output sent to syslog.
+
+You should not have to configure syslog for this to work, but if
+you don't see GDM messages in your syslog you may need to 
+configure it.
+
+You should not leave "debug" on after collecting data.  It will
+clutter your syslog and slow system performance.
+
+Configuration
+=============
+
+Gain, refer to the "Configuring GDM" section of the GDM
+documentation for full information:
+
+   http://www.gnome.org/projects/gdm/docs.html
+
+GDM Default Configuration File
+------------------------------
+
+The GDM configuration file ${datadir}/gdm/default.conf may be
+replaced by your distribution on upgrade, so if a user wants
+to ensure that configuration changes persist on upgrade, edit
+the /etc/gdm/custom.conf file.  You can specify a different
+location for the configuration files via the
+"--with-defaults-conf=/path/to/file" and the
+"--with-custom-conf=/path/to/file" options.  This can be
+useful if you want to put the default file on a filesystem
+shared by multiple machines.
+
+If you wish to change configuration by hand, edit the
+/etc/gdm/custom.conf file and make sure the keyname=value pair
+you want is included in the appropriate section.  For example,
+to change the "Greeter" key in the "daemon" section, make sure the
+daemon section of the custom.conf file has the value like
+in this example.  The modified option does not have to come
+first after the "[daemon]" section heading, but can be placed
+anywhere in the section.
+
+[daemon]
+Greeter=/usr/lib/gdmgreeter
+
+The following interfaces most frequently need to be customized
+for a given setup, since they are OS/machine specific:
+
+   HaltCommand
+   RebootCommand
+   SuspendCommand
+   StandardXServer
+   Xnest
+   SoundProgram
+   "command" value in each "[server-foo]" section
+
+For example on some systems you need to define RebootCommand
+as "/sbin halt -p" or "/sbin/init 0" or whatever is right on
+your system.
+
+Face Browser
+------------
+
+Face Browser is turned off by default and displays a list of
+faces to choose from on the login screen which can be used
+instead of typing the username.  This decreases security, but
+is appropriate for some uses (e.g. home use).
+
+To assign a default face to a user for the face browser, place a
+(jpg, gif, png, xpm) image to the user's $HOME/.iface directory.
+The DefaultFace configuration option allows the system
+administrator to set up a default face image.
+
+Configuring Performance
+----------------------
+
+PreFetch can be turned on by using the "--with-prefetch" configure
+option. Turning on PreFetch tells GDM to load a specified list of
+libraries immediately after displaying the first GUI screen.  This
+list can be populated with libraries that will get used when the
+session starts and will speed up session start performance.  Why
+not let your computer load these libraries while the user types
+in their name and password?  
+
+The provided gdmprefetchlist.in was created for Solaris 11 running
+GNOME 2.13 (not a particularly stable configuration).  If using
+another OS or desktop (such as KDE), then you will probably want
+to modify the config/gdmprefetchlist.in file before running
+configure.  The GDM PreFetch will ignore libraries listed that it
+does not find on your system.
+
+Red Hat
+=======
+
+If you want to install OVER RedHat or Ximian packages use, following
+configure options:
+
+   --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
+   --enable-console-helper --with-pam-prefix=/etc
+
+However, there is now a spec file so you can build an rpm by just doing
+
+rpm -ta gdm-<version>.tar.gz
+
+This should work on RedHat 6.x, 7.x, 8.x, 9 and perhaps later, and if you
+are very lucky then on your favorite other distribution, but no promises.
+GDM is not a trivial package so it's more likely it will not work in other
+places out of the box.
+
+Solaris
+=======
+
+On Solaris, the following configuration is recommended:
+
+./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
+   --libexecdir=/usr/lib --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
+   --with-prefetch --with-post-path=/usr/openwin/bin
+
+GDM includes code to integrate with the audit API, only supported on
+Solaris 10 and later.  GDM should not be used on Solaris 9 and earlier
+if auditing is needed.  Refer to the "Solaris" section of the
+documentation for information about specific configuration issues for
+Solaris.
+
+   http://www.gnome.org/projects/gdm/docs.html
+
