@@ -92,4 +92,10 @@ uninstall-local-doc:
 	done
 	-rmdir $(DESTDIR)$(docdir)
 
-clean-local: clean-local-omf
+clean-local: clean-local-doc clean-local-omf
+
+# for non-srcdir builds, remove the copied entities.
+clean-local-doc:
+	if test $(srcdir) != .; then \
+	  rm -f $(entities); \
+	fi
