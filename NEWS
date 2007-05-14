@@ -1,5 +1,78 @@
 Ahh news...
 
+2.19.1 Stuff:
+
+- Now GDM desktop files support the optional X-Gdm-XserverArgs extension to
+  the desktop files installed to /usr/share/xsessions.  This allows a desktop
+  session file to specify additional Xserver flags to be used with the
+  session.  This could be useful to turn on special extensions needed for
+  certain accessibility features, or to use sessions that require special
+  Xserver flags or extensions, etc.  Note that sessions that use this
+  feature cause GDM to restart the Xserver after authentication.
+  <Ron Yorston>
+
+- Now gdmgreeter themes support a "background=[true|false]" element to be 
+  specified for any item tag.  Items which have this tag set to true will
+  be mapped to the root window after authentication.  This way the 
+  background image to be displayed can be specified for the interim 
+  between authentication and when the session starts.  (Frederic Crozat)
+
+- Fix gdm_daemon_check_permissions so it resets the permissions of the
+  ServAuthDir rather than LogDir.  This bug was introduced into 2.19.0.
+  (Brian Cameron)
+
+- Correct handling of AlwaysLoginCurrentSession and DoubleLoginWarning so they
+  work more sensibly.  Previously they caused a silent login failure for
+  non-migratable sessions (e.g. Xnest and XDMCP) if both were set to true.
+  (Brian Cameron)
+
+- When using PAM, if it receives a PAM_AUTHINFO_UNAVAIL message, it will
+  display the default "authentication failed" message.  This ensures that
+  the error message is the same for invalid user and incorrect password,
+  making it harder to tell whether an account is a valid one or not. 
+  (Lo\357c Minier)
+
+- Avoid starting timed login timer if a username has already been entered.
+  (Lo\357c Minier)
+
+- Check for existance of a gdmgreeter theme before selecting a random 
+  theme.  Skip over themes that don't exist on the system.  (Lo\357c Minier)
+
+- Fix a bug that was causing gdmflexiserver commands SET_LOGOUT_ACTION and
+  SET_SAFE_LOGOUT action to not work.  Also fix a bug that was causing the
+  gdmflexiserver command UPDATE_CONFIG to return an incorrect return code.
+  These issues were introduced in GDM 2.19.0.  (Brian Cameron) 
+
+- Now used an unsigned character buffer in gdm_fdgetc because the GDM GUI
+  sends the username/password data as utf8 and the daemon will interpret
+  any character sent with its high bit set as EOF unless we use an unsigned
+  buffer.  This should improve support of usernames and passwords which 
+  contain non-ASCII characters.  (Lo\357c Minier)
+
+- This change should only affect Solaris users.  Add support for ctrun, so
+  that when running GDM as a svc service via svcadm(1M), subprocesses are run
+  in a separate contract.  This ensures that when programs in the user session
+  crash, it doesn't cause a GDM restart.  (Brian Cameron)
+
+- Remove unused failsafe logic from the GDM Xsession script.  For
+  some time GDM has called failsafe directly from the daemon slave,
+  so this code hasn't been used for some time.  (Brian Cameron)
+
+- Improvements to how GDM sets umask.  (Peter Baumann)
+
+- No longer unset MAIL when starting a user session, and set PWD before 
+  starting a user session.  This fixes problems when the user's $HOME
+  directory is a symlink.  (Lo\357c Minier)
+
+- Fix detection of Xserver so that it should work on Solaris, Debian and
+  Ubuntu without needing to patch the code.  (Brian Cameron, Lo\357c Minier)
+
+- Documentation and manpage improvements (Brian Cameron, Lo\357c Minier)
+
+- Several build fixes (Saleem Abdulrasool, Ed Catmur, Jens Granseuer).
+
+- Translation updates (David Lodge, Kjartan Maraas, Christophe Merlet)
+
 2.19.0 Stuff:
 
 Interface Changes:
