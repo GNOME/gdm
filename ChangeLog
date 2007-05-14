@@ -1,5 +1,14 @@
 2007-05-14  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm-socket-protocol.h: Change location of .gdm_socket
+	  file from /tmp to /var/run.  Fixes bug #331059.  This interface
+	  change also required changing gnome-session, gnome-panel, and
+	  the Fast-User-Switch Applet (FUSA).  I understand all these
+	  programs have been updated already in the unstable branch.
+	  Patch by Lo\357c Minier.
+
+2007-05-14  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/slave.c, gui/Makefile.am: Now install GDM desktop files
 	  to /usr/share/gdm/applications and append this directory to 
 	  XDG_DATA_DIR before starting the user session, so that these
