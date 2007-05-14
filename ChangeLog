@@ -1,5 +1,15 @@
 2007-05-14  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/slave.c, gui/Makefile.am: Now install GDM desktop files
+	  to /usr/share/gdm/applications and append this directory to 
+	  XDG_DATA_DIR before starting the user session, so that these
+	  desktop files are only visible if using the GDM program as the
+	  display manager.  This will ensure these menu options do not 
+	  appear when using other display managers such as KDM or CDE
+	  login.  Fixes bug #434813.
+
+2007-05-14  Brian Cameron  <brian.cameron@sun.com>
+
         * Release 2.19.1:
         * NEWS: Updated.
 	* docs/C/gdm.xml: Updated to say release 2.19.1.

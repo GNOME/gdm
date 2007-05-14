@@ -3592,6 +3592,29 @@ session_child_run (struct passwd *pwent,
 	else
 		g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_PATH), TRUE);
 
+	/*
+	 * Install GDM desktop files to a non-default desktop file 
+	 * location (/usr/share/gdm/applications) and GDM appends 
+	 * this directory to the end of the XDG_DATA_DIR environment
+	 * variable.  This way, GDM menu choices never appear if
+	 * using a different display manager.
+	 */
+	{
+		const char *old_system_data_dirs;
+		char *new_system_data_dirs;
+
+		old_system_data_dirs = g_getenv ("XDG_DATA_DIRS") ?
+				       g_getenv ("XDG_DATA_DIRS") :
+				       "/usr/local/share/:/usr/share/";
+
+		new_system_data_dirs = g_build_path (":",
+			 old_system_data_dirs, DATADIR "/gdm/", NULL);
+
+		g_setenv ("XDG_DATA_DIRS", new_system_data_dirs, TRUE);
+
+		g_free (new_system_data_dirs);
+	}
+
 	/* Eeeeek, this no lookie as a correct language code,
 	 * just use the system default */
 	if G_UNLIKELY ( ! ve_string_empty (language) &&

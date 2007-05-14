@@ -212,17 +212,17 @@ gdmdynamic_LDADD = 		\
 	-lXau			\
 	$(NULL)
 
-Settingsdir = $(datadir)/applications
+Settingsdir = $(datadir)/gdm/applications
 Settings_files = gdmphotosetup.desktop
 Settings_in_files = gdmphotosetup.desktop.in
-Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
+Settings_DATA = $(Settings_files)
 
-Systemdir = $(datadir)/applications
+Systemdir = $(datadir)/gdm/applications
 System_files = \
 	gdmsetup.desktop	\
 	gdmflexiserver.desktop	\
 	gdmflexiserver-xnest.desktop
-System_dist_files = \
+System_in_files = \
 	gdmsetup.desktop.in.in			\
 	gdmflexiserver.desktop.in		\
 	gdmflexiserver-xnest.desktop.in.in
@@ -252,9 +252,8 @@ EXTRA_DIST = \
 	$(Glade_DATA)		\
 	$(Icons_DATA)		\
 	$(System_DATA)		\
-	$(System_dist_files)	\
+	$(System_in_files)	\
 	$(Settings_DATA)	\
-	$(Settings_files)	\
 	$(Settings_in_files)
 
 clean-local:
