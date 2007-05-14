@@ -1,5 +1,14 @@
 2007-05-14  Brian Cameron  <brian.cameron@sun.com>
 
+	* docs/C/gdm.xml:  Add mdash and percnt entities so that make 
+	  stops complaining.  Probably a better way to do this since these
+	  should be defined elsewhere, but this seems to work okay.  Fix
+	  &quote; typo, changing to &quot;.
+	* docs/C/Makefile.am: Clean up a bit.
+	* config/gettextfoo.h: Removed some string that are no longer used.
+
+2007-05-14  Brian Cameron  <brian.cameron@sun.com>
+
 	* configure.ac: Do not builds docs/*/Makefile.  These aren't needed.
 	* Makefile.am: Do not distribute xmldocs.make or omf.make.
 	* omf.make, xmldocs.make: Delete these files.  They aren't needed.
