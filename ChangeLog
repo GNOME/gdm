@@ -1,5 +1,16 @@
 2007-05-14  Brian Cameron  <brian.cameron@sun.com>
 
+	* configure.ac: Do not builds docs/*/Makefile.  These aren't needed.
+	* Makefile.am: Do not distribute xmldocs.make or omf.make.
+	* omf.make, xmldocs.make: Delete these files.  They aren't needed.
+	* docs/*/Makefile.am:  Delete these files.  They aren't needed.
+	  Update to no longer use the deprecated xmldocs.make and omf.make.
+	  Now gnome-doc-utils.make handles everything.
+	* docs/Makefile.am: No longer go into SUBDIRS.  Instead all all
+	  languages to DOC_LINGUAS.  Add gdm.xml to DOC_ENTITIES.
+
+2007-05-14  Brian Cameron  <brian.cameron@sun.com>
+
 	* omf.make, xmldocs.make: Bump to the latest versions from
 	  gnome-common 2.18.0.
 

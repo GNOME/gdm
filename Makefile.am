@@ -22,9 +22,7 @@ EXTRA_DIST = \
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in	\
-	gnome-doc-utils.make	\
-	xmldocs.make		\
-	omf.make
+	gnome-doc-utils.make
 
 DISTCLEANFILES = \
 	gnome-doc-utils.make	\
