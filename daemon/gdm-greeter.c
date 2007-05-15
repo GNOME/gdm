@@ -57,9 +57,9 @@ struct GdmGreeterPrivate
 	char    *command;
 	GPid     pid;
 
-	char    *username;
-	uid_t    uid;
-	gid_t    gid;
+	char    *user_name;
+	char    *group_name;
+
 	int      pipe1[2];
 	int      pipe2[2];
 
@@ -80,6 +80,8 @@ struct GdmGreeterPrivate
 enum {
 	PROP_0,
 	PROP_DISPLAY_NAME,
+	PROP_USER_NAME,
+	PROP_GROUP_NAME,
 };
 
 static void	gdm_greeter_class_init	(GdmGreeterClass *klass);
@@ -90,45 +92,60 @@ G_DEFINE_TYPE (GdmGreeter, gdm_greeter, G_TYPE_OBJECT)
 
 static void
 change_user (GdmGreeter *greeter)
+
 {
-	if (greeter->priv->uid != 0) {
-		struct passwd *pwent;
+	struct passwd *pwent;
+	struct group  *grent;
 
-		pwent = getpwuid (greeter->priv->uid);
-		if (pwent == NULL) {
-			g_warning (_("%s: Greeter was to be spawned by uid %d but "
-				     "that user doesn't exist"),
-				   "gdm_greeter_spawn",
-				   (int)greeter->priv->uid);
-			_exit (1);
-		}
+	if (greeter->priv->user_name == NULL) {
+		return;
+	}
 
-		if (setgid (greeter->priv->gid) < 0)  {
-			g_warning (_("%s: Couldn't set groupid to %d"),
-				   "gdm_greeter_spawn", (int)greeter->priv->gid);
+	pwent = getpwnam (greeter->priv->user_name);
+	if (pwent == NULL) {
+		g_warning (_("Greeter was to be spawned by user %s but that user doesn't exist"),
+			   greeter->priv->user_name);
+		_exit (1);
+	}
+
+	grent = getgrnam (greeter->priv->group_name);
+	if (grent == NULL) {
+		g_warning (_("Greeter was to be spawned by group %s but that user doesn't exist"),
+			   greeter->priv->group_name);
+		_exit (1);
+	}
+
+	g_debug ("Changing (uid:gid) for child process to (%d:%d)",
+		 pwent->pw_uid,
+		 grent->gr_gid);
+
+	if (pwent->pw_uid != 0) {
+		if (setgid (grent->gr_gid) < 0)  {
+			g_warning (_("Couldn't set groupid to %d"),
+				   grent->gr_gid);
 			_exit (1);
 		}
 
 		if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
-			g_warning (_("%s: initgroups () failed for %s"),
-				   "gdm_greeter_spawn", pwent->pw_name);
+			g_warning (_("initgroups () failed for %s"),
+				   pwent->pw_name);
 			_exit (1);
 		}
 
-		if (setuid (greeter->priv->uid) < 0)  {
-			g_warning (_("%s: Couldn't set userid to %d"),
-				   "gdm_greeter_spawn", (int)greeter->priv->uid);
+		if (setuid (pwent->pw_uid) < 0)  {
+			g_warning (_("Couldn't set userid to %d"),
+				   (int)pwent->pw_uid);
 			_exit (1);
 		}
 	} else {
 		gid_t groups[1] = { 0 };
 
 		if (setgid (0) < 0)  {
-			g_warning (_("%s: Couldn't set groupid to 0"),
-				   "gdm_greeter_spawn");
+			g_warning (_("Couldn't set groupid to 0"));
 			/* Don't error out, it's not fatal, if it fails we'll
 			 * just still be */
 		}
+
 		/* this will get rid of any suplementary groups etc... */
 		setgroups (1, groups);
 	}
@@ -191,9 +208,9 @@ get_greeter_environment (GdmGreeter *greeter)
 	set_xnest_parent_stuff ();
 #endif
 
-	g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (greeter->priv->username));
-	g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (greeter->priv->username));
-	g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (greeter->priv->username));
+	g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (greeter->priv->user_name));
+	g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (greeter->priv->user_name));
+	g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (greeter->priv->user_name));
 
 	g_hash_table_insert (hash, g_strdup ("GDM_GREETER_PROTOCOL_VERSION"), g_strdup (GDM_GREETER_PROTOCOL_VERSION));
 	g_hash_table_insert (hash, g_strdup ("GDM_VERSION"), g_strdup (VERSION));
@@ -203,7 +220,7 @@ get_greeter_environment (GdmGreeter *greeter)
 	g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
 	g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
 
-	pwent = getpwnam (greeter->priv->username);
+	pwent = getpwnam (greeter->priv->user_name);
 	if (pwent != NULL) {
 		if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
 			g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (pwent->pw_dir));
@@ -475,6 +492,7 @@ gdm_slave_greeter_ctl_no_ret (GdmGreeter *greeter,
 {
 	g_free (gdm_slave_greeter_ctl (greeter, cmd, str));
 }
+
 /**
  * check_user_file
  * check_global_file
@@ -1029,6 +1047,7 @@ gdm_greeter_start (GdmGreeter *greeter)
 
 	return res;
 }
+
 static int
 signal_pid (int pid,
 	    int signal)
@@ -1118,18 +1137,34 @@ gdm_greeter_stop (GdmGreeter *greeter)
 
 
 static void
-_gdm_greeter_set_display_name (GdmGreeter  *greeter,
-			      const char *name)
+_gdm_greeter_set_display_name (GdmGreeter *greeter,
+			       const char *name)
 {
         g_free (greeter->priv->display_name);
         greeter->priv->display_name = g_strdup (name);
 }
 
 static void
+_gdm_greeter_set_user_name (GdmGreeter *greeter,
+			    const char *name)
+{
+        g_free (greeter->priv->user_name);
+        greeter->priv->user_name = g_strdup (name);
+}
+
+static void
+_gdm_greeter_set_group_name (GdmGreeter *greeter,
+			     const char *name)
+{
+        g_free (greeter->priv->group_name);
+        greeter->priv->group_name = g_strdup (name);
+}
+
+static void
 gdm_greeter_set_property (GObject      *object,
-			guint	       prop_id,
-			const GValue *value,
-			GParamSpec   *pspec)
+			  guint	        prop_id,
+			  const GValue *value,
+			  GParamSpec   *pspec)
 {
 	GdmGreeter *self;
 
@@ -1138,6 +1173,12 @@ gdm_greeter_set_property (GObject      *object,
 	switch (prop_id) {
 	case PROP_DISPLAY_NAME:
 		_gdm_greeter_set_display_name (self, g_value_get_string (value));
+		break;
+	case PROP_USER_NAME:
+		_gdm_greeter_set_user_name (self, g_value_get_string (value));
+		break;
+	case PROP_GROUP_NAME:
+		_gdm_greeter_set_group_name (self, g_value_get_string (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1159,6 +1200,12 @@ gdm_greeter_get_property (GObject    *object,
 	case PROP_DISPLAY_NAME:
 		g_value_set_string (value, self->priv->display_name);
 		break;
+	case PROP_USER_NAME:
+		g_value_set_string (value, self->priv->user_name);
+		break;
+	case PROP_GROUP_NAME:
+		g_value_set_string (value, self->priv->group_name);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1167,23 +1214,17 @@ gdm_greeter_get_property (GObject    *object,
 
 static GObject *
 gdm_greeter_constructor (GType                  type,
-		       guint                  n_construct_properties,
-		       GObjectConstructParam *construct_properties)
+			 guint                  n_construct_properties,
+			 GObjectConstructParam *construct_properties)
 {
         GdmGreeter      *greeter;
         GdmGreeterClass *klass;
-	struct passwd   *pwent;
 
         klass = GDM_GREETER_CLASS (g_type_class_peek (GDM_TYPE_GREETER));
 
         greeter = GDM_GREETER (G_OBJECT_CLASS (gdm_greeter_parent_class)->constructor (type,
 										       n_construct_properties,
 										       construct_properties));
-
-	pwent = getpwuid (greeter->priv->uid);
-	if (pwent != NULL) {
-		greeter->priv->username = g_strdup (pwent->pw_name);
-	}
 
         return G_OBJECT (greeter);
 }
@@ -1207,6 +1248,20 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
 							      "name",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+					 PROP_USER_NAME,
+					 g_param_spec_string ("user-name",
+							      "user name",
+							      "user name",
+							      "gdm",
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	g_object_class_install_property (object_class,
+					 PROP_GROUP_NAME,
+					 g_param_spec_string ("group-name",
+							      "group name",
+							      "group name",
+							      "gdm",
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 }
 
 static void

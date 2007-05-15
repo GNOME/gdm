@@ -62,7 +62,7 @@ struct GdmServerPrivate
 
 	gboolean disable_tcp;
 	int      priority;
-	uid_t    uid;
+	char    *user_name;
 	char    *session_args;
 
 	char    *log_dir;
@@ -87,7 +87,7 @@ enum {
 	PROP_CHOSEN_HOSTNAME,
 	PROP_COMMAND,
 	PROP_PRIORITY,
-	PROP_UID,
+	PROP_USER_NAME,
 	PROP_SESSION_ARGS,
 	PROP_LOG_DIR,
 	PROP_DISABLE_TCP,
@@ -304,46 +304,50 @@ rotate_logs (GdmServer *server)
 static void
 change_user (GdmServer *server)
 {
-	if (server->priv->uid != 0) {
-		struct passwd *pwent;
+	struct passwd *pwent;
 
-		g_debug ("Changing user for child process: %d", (int)server->priv->uid);
+	if (server->priv->user_name == NULL) {
+		return;
+	}
 
-		pwent = getpwuid (server->priv->uid);
-		if (pwent == NULL) {
-			g_warning (_("%s: Server was to be spawned by uid %d but "
-				     "that user doesn't exist"),
-				   "gdm_server_spawn",
-				   (int)server->priv->uid);
-			_exit (SERVER_ABORT);
-		}
+	pwent = getpwnam (server->priv->user_name);
+	if (pwent == NULL) {
+		g_warning (_("Server was to be spawned by user %s but that user doesn't exist"),
+			   server->priv->user_name);
+		_exit (1);
+	}
 
+	g_debug ("Changing (uid:gid) for child process to (%d:%d)",
+		 pwent->pw_uid,
+		 pwent->pw_gid);
+
+	if (pwent->pw_uid != 0) {
 		if (setgid (pwent->pw_gid) < 0)  {
-			g_warning (_("%s: Couldn't set groupid to %d"), 
-				   "gdm_server_spawn", (int)pwent->pw_gid);
-			_exit (SERVER_ABORT);
+			g_warning (_("Couldn't set groupid to %d"),
+				   pwent->pw_gid);
+			_exit (1);
 		}
 
 		if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
-			g_warning (_("%s: initgroups () failed for %s"),
-				   "gdm_server_spawn", pwent->pw_name);
-			_exit (SERVER_ABORT);
+			g_warning (_("initgroups () failed for %s"),
+				   pwent->pw_name);
+			_exit (1);
 		}
 
-		if (setuid (server->priv->uid) < 0)  {
-			g_warning (_("%s: Couldn't set userid to %d"),
-				   "gdm_server_spawn", (int)server->priv->uid);
-			_exit (SERVER_ABORT);
+		if (setuid (pwent->pw_uid) < 0)  {
+			g_warning (_("Couldn't set userid to %d"),
+				   (int)pwent->pw_uid);
+			_exit (1);
 		}
 	} else {
 		gid_t groups[1] = { 0 };
 
 		if (setgid (0) < 0)  {
-			g_warning (_("%s: Couldn't set groupid to 0"), 
-				   "gdm_server_spawn");
+			g_warning (_("Couldn't set groupid to 0"));
 			/* Don't error out, it's not fatal, if it fails we'll
 			 * just still be */
 		}
+
 		/* this will get rid of any suplementary groups etc... */
 		setgroups (1, groups);
 	}
@@ -474,10 +478,10 @@ get_server_environment (GdmServer *server)
 		g_hash_table_insert (hash, g_strdup ("DISPLAY="), g_strdup (server->priv->display_name));
 	}
 
-	if (server->priv->uid != 0) {
+	if (server->priv->user_name != NULL) {
 		struct passwd *pwent;
 
-		pwent = getpwuid (server->priv->uid);
+		pwent = getpwnam (server->priv->user_name);
 
 		if (pwent->pw_dir != NULL
 		    && g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS)) {
@@ -747,10 +751,18 @@ _gdm_server_set_display_name (GdmServer  *server,
 }
 
 static void
+_gdm_server_set_user_name (GdmServer  *server,
+			   const char *name)
+{
+        g_free (server->priv->user_name);
+        server->priv->user_name = g_strdup (name);
+}
+
+static void
 gdm_server_set_property (GObject      *object,
-			guint	       prop_id,
-			const GValue *value,
-			GParamSpec   *pspec)
+			 guint	       prop_id,
+			 const GValue *value,
+			 GParamSpec   *pspec)
 {
 	GdmServer *self;
 
@@ -760,6 +772,9 @@ gdm_server_set_property (GObject      *object,
 	case PROP_DISPLAY_NAME:
 		_gdm_server_set_display_name (self, g_value_get_string (value));
 		break;
+	case PROP_USER_NAME:
+		_gdm_server_set_user_name (self, g_value_get_string (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -768,9 +783,9 @@ gdm_server_set_property (GObject      *object,
 
 static void
 gdm_server_get_property (GObject    *object,
-				 guint       prop_id,
-				 GValue	    *value,
-				 GParamSpec *pspec)
+			 guint       prop_id,
+			 GValue	    *value,
+			 GParamSpec *pspec)
 {
 	GdmServer *self;
 
@@ -780,6 +795,9 @@ gdm_server_get_property (GObject    *object,
 	case PROP_DISPLAY_NAME:
 		g_value_set_string (value, self->priv->display_name);
 		break;
+	case PROP_USER_NAME:
+		g_value_set_string (value, self->priv->user_name);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -788,8 +806,8 @@ gdm_server_get_property (GObject    *object,
 
 static GObject *
 gdm_server_constructor (GType                  type,
-		       guint                  n_construct_properties,
-		       GObjectConstructParam *construct_properties)
+			guint                  n_construct_properties,
+			GObjectConstructParam *construct_properties)
 {
         GdmServer      *server;
         GdmServerClass *klass;
@@ -832,6 +850,14 @@ gdm_server_class_init (GdmServerClass *klass)
 							      "name",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+					 PROP_USER_NAME,
+					 g_param_spec_string ("user-name",
+							      "user name",
+							      "user name",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
 }
 
 static void
