@@ -73,6 +73,8 @@ struct GdmServerPrivate
 	char    *parent_display_name;
 	char    *parent_auth_file;
 	char    *chosen_hostname;
+
+	guint    child_watch_id;
 };
 
 enum {
@@ -520,6 +522,24 @@ server_add_xserver_args (GdmServer *server,
 	g_strfreev (args);
 }
 
+static void
+server_child_watch (GPid       pid,
+		    int        status,
+		    GdmServer *server)
+{
+	g_debug ("child (pid:%d) done (%s:%d)",
+		 (int) pid,
+		 WIFEXITED (status) ? "status"
+		 : WIFSIGNALED (status) ? "signal"
+		 : "unknown",
+		 WIFEXITED (status) ? WEXITSTATUS (status)
+		 : WIFSIGNALED (status) ? WTERMSIG (status)
+		 : -1);
+
+	g_spawn_close_pid (server->priv->pid);
+	server->priv->pid = -1;
+}
+
 static gboolean
 gdm_server_spawn (GdmServer  *server,
 		  const char *vtarg)
@@ -579,6 +599,10 @@ gdm_server_spawn (GdmServer  *server,
         g_ptr_array_free (env, TRUE);
 
 	g_debug ("Started X server process: %d", (int)server->priv->pid);
+
+	server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
+							  (GChildWatchFunc)server_child_watch,
+							  server);
 
 	sleep (10);
 
@@ -697,6 +721,12 @@ gdm_server_stop (GdmServer *server)
 {
 	if (server->priv->pid <= 1) {
 		return TRUE;
+	}
+
+	/* remove watch source before we can wait on child */
+	if (server->priv->child_watch_id > 0) {
+		g_source_remove (server->priv->child_watch_id);
+		server->priv->child_watch_id = 0;
 	}
 
 	g_debug ("Stopping server");

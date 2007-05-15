@@ -54,25 +54,27 @@ extern char **environ;
 
 struct GdmGreeterPrivate
 {
-	char *command;
-	GPid  pid;
+	char    *command;
+	GPid     pid;
 
-	char *username;
-	uid_t uid;
-	gid_t gid;
-	int   pipe1[2];
-	int   pipe2[2];
+	char    *username;
+	uid_t    uid;
+	gid_t    gid;
+	int      pipe1[2];
+	int      pipe2[2];
 
-	int   greeter_fd_in;
-	int   greeter_fd_out;
+	int      greeter_fd_in;
+	int      greeter_fd_out;
 
-	char *display_name;
-	char *display_auth_file;
+	char    *display_name;
+	char    *display_auth_file;
 
 	int      user_max_filesize;
 
 	gboolean interrupted;
 	gboolean always_restart_greeter;
+
+	guint    child_watch_id;
 };
 
 enum {
@@ -901,6 +903,24 @@ run_pictures (GdmGreeter *greeter)
 	g_free (response); /* not reached */
 }
 
+static void
+greeter_child_watch (GPid        pid,
+		     int         status,
+		     GdmGreeter *greeter)
+{
+	g_debug ("child (pid:%d) done (%s:%d)",
+		 (int) pid,
+		 WIFEXITED (status) ? "status"
+		 : WIFSIGNALED (status) ? "signal"
+		 : "unknown",
+		 WIFEXITED (status) ? WEXITSTATUS (status)
+		 : WIFSIGNALED (status) ? WTERMSIG (status)
+		 : -1);
+
+	g_spawn_close_pid (greeter->priv->pid);
+	greeter->priv->pid = -1;
+}
+
 static gboolean
 gdm_greeter_spawn (GdmGreeter *greeter)
 {
@@ -968,6 +988,9 @@ gdm_greeter_spawn (GdmGreeter *greeter)
 		g_debug ("gdm_slave_greeter: Greeter on pid %d", (int)greeter->priv->pid);
 	}
 
+	greeter->priv->child_watch_id = g_child_watch_add (greeter->priv->pid,
+							   (GChildWatchFunc)greeter_child_watch,
+							   greeter);
 
 	g_strfreev (argv);
  out:
@@ -1077,6 +1100,12 @@ gdm_greeter_stop (GdmGreeter *greeter)
 
 	if (greeter->priv->pid <= 1) {
 		return TRUE;
+	}
+
+	/* remove watch source before we can wait on child */
+	if (greeter->priv->child_watch_id > 0) {
+		g_source_remove (greeter->priv->child_watch_id);
+		greeter->priv->child_watch_id = 0;
 	}
 
 	g_debug ("Stopping greeter");
