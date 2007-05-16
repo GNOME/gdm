@@ -114,14 +114,10 @@ gdm_binary_SOURCES = 			\
 	auth.h				\
 	fstype.c \
 	server.h \
-	cookie.c \
-	cookie.h \
 	choose.c \
 	choose.h \
 	filecheck.c \
 	filecheck.h \
-	md5.c \
-	md5.h \
 	$(NULL)
 
 XDMCP_SOURCES =			\

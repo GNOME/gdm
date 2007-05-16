@@ -56,7 +56,6 @@
 #include "gdm-display-store.h"
 
 #include "auth.h"
-#include "cookie.h"
 #include "choose.h"
 #include "gdm-master-config.h"
 #include "gdm-daemon-config-entries.h"
@@ -1674,9 +1673,9 @@ remove_host (const char     *id,
 }
 
 static void
-gdm_xdmcp_display_dispose_check (GdmXdmcpManager *manager,
-				 const char      *hostname,
-				 int              display_num)
+display_dispose_check (GdmXdmcpManager *manager,
+		       const char      *hostname,
+		       int              display_num)
 {
 	RemoveHostData *data;
 
@@ -1684,7 +1683,7 @@ gdm_xdmcp_display_dispose_check (GdmXdmcpManager *manager,
 		return;
 	}
 
-	g_debug ("gdm_xdmcp_display_dispose_check (%s:%d)", hostname, display_num);
+	g_debug ("display_dispose_check (%s:%d)", hostname, display_num);
 
 	data = g_new0 (RemoveHostData, 1);
 	data->hostname = hostname;
@@ -1826,7 +1825,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 	ARRAYofARRAY8 clnt_addr;
 	ARRAY8        clnt_authname;
 	ARRAY8        clnt_authdata;
-	ARRAYofARRAY8 clnt_authorization;
+	ARRAYofARRAY8 clnt_authorization_names;
 	ARRAY8        clnt_manufacturer;
 	int           explen;
 	int           i;
@@ -1893,7 +1892,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 	}
 
 	/* Read and select from supported authorization list */
-	if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&manager->priv->buf, &clnt_authorization)) {
+	if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&manager->priv->buf, &clnt_authorization_names)) {
 		g_warning (_("%s: Could not read Authorization List"),
 			   "gdm_xdmcp_handle_request");
 		XdmcpDisposeARRAY8 (&clnt_authdata);
@@ -1904,11 +1903,12 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 	}
 
 	/* libXdmcp doesn't terminate strings properly so we cheat and use strncmp () */
-	for (i = 0 ; i < clnt_authorization.length ; i++)
-		if (clnt_authorization.data[i].length == 18 &&
-		    strncmp ((char *) clnt_authorization.data[i].data,
-			     "MIT-MAGIC-COOKIE-1", 18) == 0)
+	for (i = 0 ; i < clnt_authorization_names.length ; i++) {
+		if (clnt_authorization_names.data[i].length == 18 &&
+		    strncmp ((char *) clnt_authorization_names.data[i].data, "MIT-MAGIC-COOKIE-1", 18) == 0) {
 			mitauth = TRUE;
+		}
+	}
 
 	/* Manufacturer ID */
 	if G_UNLIKELY (! XdmcpReadARRAY8 (&manager->priv->buf, &clnt_manufacturer)) {
@@ -1917,7 +1917,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 		XdmcpDisposeARRAY8 (&clnt_authname);
 		XdmcpDisposeARRAY8 (&clnt_authdata);
 		XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
-		XdmcpDisposeARRAYofARRAY8 (&clnt_authorization);
+		XdmcpDisposeARRAYofARRAY8 (&clnt_authorization_names);
 		XdmcpDisposeARRAY16 (&clnt_conntyp);
 		goto out;
 	}
@@ -1926,13 +1926,16 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 	explen = 2;		    /* Display Number */
 	explen += 1 + 2 * clnt_conntyp.length; /* Connection Type */
 	explen += 1;		    /* Connection Address */
-	for (i = 0 ; i < clnt_addr.length ; i++)
+	for (i = 0 ; i < clnt_addr.length ; i++) {
 		explen += 2 + clnt_addr.data[i].length;
+	}
 	explen += 2 + clnt_authname.length; /* Authentication Name */
 	explen += 2 + clnt_authdata.length; /* Authentication Data */
 	explen += 1;		    /* Authorization Names */
-	for (i = 0 ; i < clnt_authorization.length ; i++)
-		explen += 2 + clnt_authorization.data[i].length;
+	for (i = 0 ; i < clnt_authorization_names.length ; i++) {
+		explen += 2 + clnt_authorization_names.data[i].length;
+	}
+
 	explen += 2 + clnt_manufacturer.length;
 
 	if G_UNLIKELY (explen != len) {
@@ -1944,7 +1947,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 		XdmcpDisposeARRAY8 (&clnt_authdata);
 		XdmcpDisposeARRAY8 (&clnt_manufacturer);
 		XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
-		XdmcpDisposeARRAYofARRAY8 (&clnt_authorization);
+		XdmcpDisposeARRAYofARRAY8 (&clnt_authorization_names);
 		XdmcpDisposeARRAY16 (&clnt_conntyp);
 		goto out;
 	}
@@ -1971,7 +1974,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 	if (entered) {
 
 		/* Check if we are already talking to this host */
-		gdm_xdmcp_display_dispose_check (manager, hostname, clnt_dspnum);
+		display_dispose_check (manager, hostname, clnt_dspnum);
 
 		if (manager->priv->num_pending_sessions >= manager->priv->max_pending_displays) {
 			g_debug ("gdm_xdmcp_handle_request: maximum pending");
@@ -1991,10 +1994,29 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 				ARRAY8 authentication_data;
 				ARRAY8 authorization_name;
 				ARRAY8 authorization_data;
-				char  *binary_cookie;
 				gint32 session_number;
+				char    *x11_cookie;
+				GString *cookie;
+				GString *binary_cookie;
 
-				binary_cookie = gdm_display_get_binary_cookie (display);
+				gdm_display_get_x11_cookie (display, &x11_cookie, NULL);
+				cookie = g_string_new (x11_cookie);
+				g_free (x11_cookie);
+
+				binary_cookie = g_string_new (NULL);
+
+				if (! gdm_string_hex_decode (cookie,
+							     0,
+							     NULL,
+							     binary_cookie,
+							     0)) {
+					g_warning ("Unable to decode hex cookie");
+					/* FIXME: handle error */
+				}
+
+				g_debug ("Sending authorization key for display %s", cookie->str);
+				g_debug ("Decoded cookie len %d", binary_cookie->len);
+
 				session_number = gdm_xdmcp_display_get_session_number (GDM_XDMCP_DISPLAY (display));
 
 				/* the send accept will fail if cookie is null */
@@ -2008,10 +2030,8 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 				authorization_name.data     = (CARD8 *) "MIT-MAGIC-COOKIE-1";
 				authorization_name.length   = strlen ((char *) authorization_name.data);
 
-				authorization_data.data     = (CARD8 *) binary_cookie;
-				authorization_data.length   = 16;
-
-				g_free (binary_cookie);
+				authorization_data.data     = (CARD8 *) binary_cookie->str;
+				authorization_data.length   = binary_cookie->len;
 
 				/* the addrs are NOT copied */
 				gdm_xdmcp_send_accept (manager,
@@ -2021,6 +2041,9 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 						       &authentication_data,
 						       &authorization_name,
 						       &authorization_data);
+
+				g_string_free (binary_cookie, TRUE);
+				g_string_free (cookie, TRUE);
 			}
 		}
 	} else {
@@ -2048,7 +2071,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 	XdmcpDisposeARRAY8 (&clnt_authdata);
 	XdmcpDisposeARRAY8 (&clnt_manufacturer);
 	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
-	XdmcpDisposeARRAYofARRAY8 (&clnt_authorization);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_authorization_names);
 	XdmcpDisposeARRAY16 (&clnt_conntyp);
  out:
 	g_free (hostname);

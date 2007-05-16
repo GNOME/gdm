@@ -40,6 +40,7 @@
 #include <glib/gi18n.h>
 
 #include "gdm-common.h"
+#include "gdm-md5.h"
 
 int
 gdm_fdgetc (int fd)
@@ -314,361 +315,6 @@ gdm_sigusr2_block_pop (void)
 	}
 }
 
-static GdmHostent *
-fillout_addrinfo (struct addrinfo *res,
-		  struct sockaddr *ia,
-		  const char *name)
-{
-	GdmHostent *he;
-	gint i;
-	gint addr_count = 0;
-	struct addrinfo *tempaddrinfo;
-
-	he = g_new0 (GdmHostent, 1);
-
-	he->addrs = NULL;
-	he->addr_count = 0;
-
-	if (res != NULL && res->ai_canonname != NULL) {
-		he->hostname = g_strdup (res->ai_canonname);
-		he->not_found = FALSE;
-	} else {
-		he->not_found = TRUE;
-		if (name != NULL)
-			he->hostname = g_strdup (name);
-		else {
-			static char buffer6[INET6_ADDRSTRLEN];
-			static char buffer[INET_ADDRSTRLEN];
-			const char *new = NULL;
-
-			if (ia->sa_family == AF_INET6) {
-				if (IN6_IS_ADDR_V4MAPPED (&((struct sockaddr_in6 *)ia)->sin6_addr)) {
-					new = inet_ntop (AF_INET, &(((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr[12]), buffer, sizeof (buffer));
-				} else {
-					new = inet_ntop (AF_INET6, &((struct sockaddr_in6 *)ia)->sin6_addr, buffer6, sizeof (buffer6));
-				}
-			} else if (ia->sa_family == AF_INET) {
-				new = inet_ntop (AF_INET, &((struct sockaddr_in *)ia)->sin_addr, buffer, sizeof (buffer));
-			}
-
-			if (new != NULL) {
-				he->hostname = g_strdup (new);
-			} else {
-				he->hostname = NULL;
-			}
-		}
-	}
-
-	tempaddrinfo = res;
-
-	while (res != NULL) {
-		addr_count++;
-		res = res->ai_next;
-	}
-
-	he->addrs = g_new0 (struct sockaddr_storage, addr_count);
-	he->addr_count = addr_count;
-	res = tempaddrinfo;
-	for (i = 0; ; i++) {
-		if (res == NULL)
-			break;
-
-		if ((res->ai_family == AF_INET) || (res->ai_family == AF_INET6)) {
-			(he->addrs)[i] = *(struct sockaddr_storage *)(res->ai_addr);
-		}
-
-		res = res->ai_next;
-	}
-
-	/* We don't want the ::ffff: that could arise here */
-	if (he->hostname != NULL &&
-	    strncmp (he->hostname, "::ffff:", 7) == 0) {
-		strcpy (he->hostname, he->hostname + 7);
-	}
-
-	return he;
-}
-
-/* stolen from xdm sources */
-#if defined(X_NOT_POSIX) || defined(__EMX__) || defined(__NetBSD__) && defined(__sparc__)
-#define Setjmp(e)	setjmp(e)
-#define Longjmp(e,v)	longjmp(e,v)
-#define Jmp_buf		jmp_buf
-#else
-#define Setjmp(e)   sigsetjmp(e,1)
-#define Longjmp(e,v)	siglongjmp(e,v)
-#define Jmp_buf		sigjmp_buf
-#endif
-
-static gboolean do_jumpback = FALSE;
-static Jmp_buf signal_jumpback;
-static struct sigaction oldterm, oldint, oldhup;
-
-static void
-jumpback_sighandler (int signal)
-{
-	/*
-         * This avoids a race see Note below.
-	 * We want to jump back only on the first
-	 * signal invocation, even if the signal
-	 * handler didn't return.
-         */
-	gboolean old_do_jumpback = do_jumpback;
-	do_jumpback = FALSE;
-
-	if (signal == SIGINT)
-		oldint.sa_handler (signal);
-	else if (signal == SIGTERM)
-		oldint.sa_handler (signal);
-	else if (signal == SIGHUP)
-		oldint.sa_handler (signal);
-	/* No others should be set up */
-
-	/* Note that we may not get here since
-	   the SIGTERM handler in slave.c
-	   might have in fact done the big Longjmp
-	   to the slave's death */
-
-	if (old_do_jumpback) {
-		Longjmp (signal_jumpback, 1);
-	}
-}
-
-/*
- * This sets up interruptes to be proxied and the
- * gethostbyname/addr to be whacked using longjmp,
- * in case INT/TERM/HUP was gotten in which case
- * we no longer care for the result of the
- * resolution.
- */
-#define SETUP_INTERRUPTS_FOR_TERM_DECLS \
-    struct sigaction term;
-
-#define SETUP_INTERRUPTS_FOR_TERM_SETUP \
-    do_jumpback = FALSE;						\
-    									\
-    term.sa_handler = jumpback_sighandler;				\
-    term.sa_flags = SA_RESTART;						\
-    sigemptyset (&term.sa_mask);					\
-									\
-    if G_UNLIKELY (sigaction (SIGTERM, &term, &oldterm) < 0) 		\
-	g_critical (_("%s: Error setting up %s signal handler: %s"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM", "TERM", g_strerror (errno)); \
-									\
-    if G_UNLIKELY (sigaction (SIGINT, &term, &oldint) < 0)		\
-	g_critical (_("%s: Error setting up %s signal handler: %s"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM", "INT", g_strerror (errno)); \
-									\
-    if G_UNLIKELY (sigaction (SIGHUP, &term, &oldhup) < 0) 		\
-	g_critical (_("%s: Error setting up %s signal handler: %s"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM", "HUP", g_strerror (errno)); \
-
-#define SETUP_INTERRUPTS_FOR_TERM_TEARDOWN \
-    do_jumpback = FALSE;						\
-									\
-    if G_UNLIKELY (sigaction (SIGTERM, &oldterm, NULL) < 0) 		\
-	g_critical (_("%s: Error setting up %s signal handler: %s"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM", "TERM", g_strerror (errno)); \
-									\
-    if G_UNLIKELY (sigaction (SIGINT, &oldint, NULL) < 0) 		\
-	g_critical (_("%s: Error setting up %s signal handler: %s"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM", "INT", g_strerror (errno)); \
-									\
-    if G_UNLIKELY (sigaction (SIGHUP, &oldhup, NULL) < 0) 		\
-	g_critical (_("%s: Error setting up %s signal handler: %s"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM", "HUP", g_strerror (errno));
-
-GdmHostent *
-gdm_gethostbyname (const char *name)
-{
-	struct addrinfo hints;
-	/* static because of Setjmp */
-	static struct addrinfo *result;
-
-	SETUP_INTERRUPTS_FOR_TERM_DECLS
-
-	/* The cached address */
-	static GdmHostent *he = NULL;
-	static time_t last_time = 0;
-	static char *cached_hostname = NULL;
-
-	if (cached_hostname != NULL &&
-	    strcmp (cached_hostname, name) == 0) {
-		/* Don't check more then every 60 seconds */
-		if (last_time + 60 > time (NULL))
-			return gdm_hostent_copy (he);
-	}
-
-	SETUP_INTERRUPTS_FOR_TERM_SETUP
-
-	if (Setjmp (signal_jumpback) == 0) {
-		do_jumpback = TRUE;
-
-		/* Find client hostname */
-		memset (&hints, 0, sizeof (hints));
-		hints.ai_socktype = SOCK_DGRAM;
-		hints.ai_flags = AI_CANONNAME;
-
-		if (result) {
-			freeaddrinfo (result);
-			result = NULL;
-		}
-
-		getaddrinfo (name, NULL, &hints, &result);
-		do_jumpback = FALSE;
-	} else {
-               /* Here we got interrupted */
-		result = NULL;
-	}
-
-	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
-
-	g_free (cached_hostname);
-	cached_hostname = g_strdup (name);
-
-	gdm_hostent_free (he);
-
-	he = fillout_addrinfo (result, NULL, name);
-
-	last_time = time (NULL);
-	return gdm_hostent_copy (he);
-}
-
-GdmHostent *
-gdm_gethostbyaddr (struct sockaddr_storage *ia)
-{
-	struct addrinfo hints;
-	/* static because of Setjmp */
-	static struct addrinfo *result = NULL;
-	struct sockaddr_in6 sin6;
-	struct sockaddr_in sin;
-	static struct in6_addr cached_addr6;
-
-	SETUP_INTERRUPTS_FOR_TERM_DECLS
-
-	/* The cached address */
-	static GdmHostent *he = NULL;
-	static time_t last_time = 0;
-	static struct in_addr cached_addr;
-
-	if (last_time != 0) {
-		if ((ia->ss_family == AF_INET6) && (memcmp (cached_addr6.s6_addr, ((struct sockaddr_in6 *) ia)->sin6_addr.s6_addr, sizeof (struct in6_addr)) == 0)) {
-			/* Don't check more then every 60 seconds */
-			if (last_time + 60 > time (NULL))
-				return gdm_hostent_copy (he);
-		} else if (ia->ss_family == AF_INET) {
-			if (memcmp (&cached_addr, &(((struct sockaddr_in *)ia)->sin_addr), sizeof (struct in_addr)) == 0) {
-				/* Don't check more then every 60 seconds */
-				if (last_time + 60 > time (NULL))
-					return gdm_hostent_copy (he);
-			}
-		}
-	}
-
-	SETUP_INTERRUPTS_FOR_TERM_SETUP
-
-	if (Setjmp (signal_jumpback) == 0) {
-		do_jumpback = TRUE;
-
-		/* Find client hostname */
-		memset (&hints, 0, sizeof (hints));
-		hints.ai_socktype = SOCK_DGRAM;
-		hints.ai_flags = AI_CANONNAME;
-
-		if (result) {
-			freeaddrinfo (result);
-			result = NULL;
-		}
-
-		if (ia->ss_family == AF_INET6) {
-			char buffer6[INET6_ADDRSTRLEN];
-
-			inet_ntop (AF_INET6, &((struct sockaddr_in6 *)ia)->sin6_addr, buffer6, sizeof (buffer6));
-
-			/*
-                         * In the case of IPv6 mapped address strip the
-                         * ::ffff: and lookup as an IPv4 address
-                         */
-			if (strncmp (buffer6, "::ffff:", 7) == 0) {
-				char *temp= (buffer6 + 7);
-				strcpy (buffer6, temp);
-			}
-			getaddrinfo (buffer6, NULL, &hints, &result);
-
-		} else if (ia->ss_family == AF_INET) {
-			char buffer[INET_ADDRSTRLEN];
-
-			inet_ntop (AF_INET, &((struct sockaddr_in *)ia)->sin_addr, buffer, sizeof (buffer));
-
-			getaddrinfo (buffer, NULL, &hints, &result);
-		}
-
-		do_jumpback = FALSE;
-	} else {
-		/* Here we got interrupted */
-		result = NULL;
-	}
-
-	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
-
-	if (ia->ss_family == AF_INET6) {
-		memcpy (cached_addr6.s6_addr, ((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr, sizeof (struct in6_addr));
-		memset (&sin6, 0, sizeof (sin6));
-		memcpy (sin6.sin6_addr.s6_addr, cached_addr6.s6_addr, sizeof (struct in6_addr));
-		sin6.sin6_family = AF_INET6;
-		he = fillout_addrinfo (result, (struct sockaddr *)&sin6, NULL);
-	}
-	else if (ia->ss_family == AF_INET) {
-		memcpy (&(cached_addr.s_addr), &(((struct sockaddr_in *)ia)->sin_addr.s_addr), sizeof (struct in_addr));
-		memset (&sin, 0, sizeof (sin));
-		memcpy (&sin.sin_addr, &cached_addr, sizeof (struct in_addr));
-		sin.sin_family = AF_INET;
-		he = fillout_addrinfo (result, (struct sockaddr *)&sin, NULL);
-	}
-
-	last_time = time (NULL);
-	return gdm_hostent_copy (he);
-}
-
-GdmHostent *
-gdm_hostent_copy (GdmHostent *he)
-{
-	GdmHostent *cpy;
-
-	if (he == NULL)
-		return NULL;
-
-	cpy = g_new0 (GdmHostent, 1);
-	cpy->not_found = he->not_found;
-	cpy->hostname = g_strdup (he->hostname);
-	if (he->addr_count == 0) {
-		cpy->addr_count = 0;
-		cpy->addrs = NULL;
-	} else {
-		cpy->addr_count = he->addr_count;
-		cpy->addrs = g_new0 (struct sockaddr_storage, he->addr_count);
-		memcpy (cpy->addrs, he->addrs, sizeof (struct sockaddr_storage) * he->addr_count);
-	}
-	return cpy;
-}
-
-void
-gdm_hostent_free (GdmHostent *he)
-{
-	if (he == NULL)
-		return;
-	g_free (he->hostname);
-	he->hostname = NULL;
-
-	g_free (he->addrs);
-	he->addrs = NULL;
-	he->addr_count = 0;
-
-	g_free (he);
-}
-
-
-
 /* Like fopen with "w" */
 FILE *
 gdm_safe_fopen_w (const char *file, mode_t perm)
@@ -914,5 +560,403 @@ ve_locale_exists (const char *loc)
 		ret = FALSE;
 	setlocale (LC_MESSAGES, old);
 	g_free (old);
+	return ret;
+}
+
+/* hex conversion adapted from D-Bus */
+
+/**
+ * Appends a two-character hex digit to a string, where the hex digit
+ * has the value of the given byte.
+ *
+ * @param str the string
+ * @param byte the byte
+ */
+static void
+_gdm_string_append_byte_as_hex (GString *str,
+				int      byte)
+{
+	const char hexdigits[16] = {
+		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+		'a', 'b', 'c', 'd', 'e', 'f'
+	};
+
+	str = g_string_append_c (str, hexdigits[(byte >> 4)]);
+
+	str = g_string_append_c (str, hexdigits[(byte & 0x0f)]);
+}
+
+/**
+ * Encodes a string in hex, the way MD5 and SHA-1 are usually
+ * encoded. (Each byte is two hex digits.)
+ *
+ * @param source the string to encode
+ * @param start byte index to start encoding
+ * @param dest string where encoded data should be placed
+ * @param insert_at where to place encoded data
+ * @returns #TRUE if encoding was successful, #FALSE if no memory etc.
+ */
+gboolean
+gdm_string_hex_encode (const GString *source,
+		       int            start,
+		       GString       *dest,
+		       int            insert_at)
+{
+	GString             *result;
+	const unsigned char *p;
+	const unsigned char *end;
+	gboolean             retval;
+
+	g_assert (start <= source->len);
+
+	result = g_string_new (NULL);
+
+	retval = FALSE;
+
+	p = (const unsigned char*) source->str;
+	end = p + source->len;
+	p += start;
+
+	while (p != end) {
+		_gdm_string_append_byte_as_hex (result, *p);
+		++p;
+	}
+
+	dest = g_string_insert (dest, insert_at, result->str);
+
+	retval = TRUE;
+
+	g_string_free (result, TRUE);
+
+	return retval;
+}
+
+/**
+ * Decodes a string from hex encoding.
+ *
+ * @param source the string to decode
+ * @param start byte index to start decode
+ * @param end_return return location of the end of the hex data, or #NULL
+ * @param dest string where decoded data should be placed
+ * @param insert_at where to place decoded data
+ * @returns #TRUE if decoding was successful, #FALSE if no memory.
+ */
+gboolean
+gdm_string_hex_decode (const GString *source,
+		       int            start,
+		       int           *end_return,
+		       GString       *dest,
+		       int            insert_at)
+{
+	GString             *result;
+	const unsigned char *p;
+	const unsigned char *end;
+	gboolean             retval;
+	gboolean             high_bits;
+
+	g_assert (start <= source->len);
+
+	result = g_string_new (NULL);
+
+	retval = FALSE;
+
+	high_bits = TRUE;
+	p = (const unsigned char*) source->str;
+	end = p + source->len;
+	p += start;
+
+	while (p != end) {
+		unsigned int val;
+
+		switch (*p) {
+		case '0':
+			val = 0;
+			break;
+		case '1':
+			val = 1;
+			break;
+		case '2':
+			val = 2;
+			break;
+		case '3':
+			val = 3;
+			break;
+		case '4':
+			val = 4;
+			break;
+		case '5':
+			val = 5;
+			break;
+		case '6':
+			val = 6;
+			break;
+		case '7':
+			val = 7;
+			break;
+		case '8':
+			val = 8;
+			break;
+		case '9':
+			val = 9;
+			break;
+		case 'a':
+		case 'A':
+			val = 10;
+			break;
+		case 'b':
+		case 'B':
+			val = 11;
+			break;
+		case 'c':
+		case 'C':
+			val = 12;
+			break;
+		case 'd':
+		case 'D':
+			val = 13;
+			break;
+		case 'e':
+		case 'E':
+			val = 14;
+			break;
+		case 'f':
+		case 'F':
+			val = 15;
+			break;
+		default:
+			goto done;
+		}
+
+		if (high_bits) {
+			result = g_string_append_c (result, val << 4);
+		} else {
+			int           len;
+			unsigned char b;
+
+			len = result->len;
+
+			b = result->str[len - 1];
+
+			b |= val;
+
+			result->str[len - 1] = b;
+		}
+
+		high_bits = !high_bits;
+
+		++p;
+	}
+
+ done:
+	dest = g_string_insert (dest, insert_at, result->str);
+
+	if (end_return) {
+		*end_return = p - (const unsigned char*) source->str;
+	}
+
+	retval = TRUE;
+
+	g_string_free (result, TRUE);
+
+	return retval;
+}
+
+static void
+_gdm_generate_pseudorandom_bytes_buffer (char *buffer,
+					 int   n_bytes)
+{
+	int i;
+
+	/* fall back to pseudorandom */
+	g_debug ("Falling back to pseudorandom for %d bytes\n",
+                 n_bytes);
+
+	i = 0;
+	while (i < n_bytes) {
+		int b;
+
+		b = g_random_int_range (0, 255);
+
+		buffer[i] = b;
+
+		++i;
+	}
+}
+
+static gboolean
+_gdm_generate_pseudorandom_bytes (GString *str,
+				  int      n_bytes)
+{
+	int old_len;
+	char *p;
+
+	old_len = str->len;
+
+	str = g_string_set_size (str, old_len + n_bytes);
+
+	p = str->str + old_len;
+
+	_gdm_generate_pseudorandom_bytes_buffer (p, n_bytes);
+
+	return TRUE;
+}
+
+
+static int
+_gdm_fdread (int            fd,
+	     GString       *buffer,
+	     int            count)
+{
+	int   bytes_read;
+	int   start;
+	char *data;
+
+	g_assert (count >= 0);
+
+	start = buffer->len;
+
+	buffer = g_string_set_size (buffer, start + count);
+
+	data = buffer->str + start;
+
+ again:
+	bytes_read = read (fd, data, count);
+
+	if (bytes_read < 0) {
+		if (errno == EINTR) {
+			goto again;
+		} else {
+			/* put length back (note that this doesn't actually realloc anything) */
+			buffer = g_string_set_size (buffer, start);
+			return -1;
+		}
+	} else {
+		/* put length back (doesn't actually realloc) */
+		buffer = g_string_set_size (buffer, start + bytes_read);
+
+		return bytes_read;
+	}
+}
+
+/**
+ * Closes a file descriptor.
+ *
+ * @param fd the file descriptor
+ * @param error error object
+ * @returns #FALSE if error set
+ */
+static gboolean
+_gdm_fdclose (int fd)
+{
+ again:
+	if (close (fd) < 0) {
+		if (errno == EINTR)
+			goto again;
+
+		g_warning ("Could not close fd %d: %s",
+			   fd,
+			   g_strerror (errno));
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/**
+ * Generates the given number of random bytes,
+ * using the best mechanism we can come up with.
+ *
+ * @param str the string
+ * @param n_bytes the number of random bytes to append to string
+ */
+gboolean
+gdm_generate_random_bytes (GString *str,
+			   int      n_bytes)
+{
+	int old_len;
+	int fd;
+
+	/* FALSE return means "no memory", if it could
+	 * mean something else then we'd need to return
+	 * a DBusError. So we always fall back to pseudorandom
+	 * if the I/O fails.
+	 */
+
+	old_len = str->len;
+	fd = -1;
+
+	/* note, urandom on linux will fall back to pseudorandom */
+	fd = g_open ("/dev/urandom", O_RDONLY, 0);
+	if (fd < 0) {
+		return _gdm_generate_pseudorandom_bytes (str, n_bytes);
+	}
+
+	if (_gdm_fdread (fd, str, n_bytes) != n_bytes) {
+		_gdm_fdclose (fd);
+		str = g_string_set_size (str, old_len);
+		return _gdm_generate_pseudorandom_bytes (str, n_bytes);
+	}
+
+	g_debug ("Read %d bytes from /dev/urandom\n", n_bytes);
+
+	_gdm_fdclose (fd);
+
+	return TRUE;
+}
+
+/**
+ * Computes the ASCII hex-encoded md5sum of the given data and
+ * appends it to the output string.
+ *
+ * @param data input data to be hashed
+ * @param ascii_output string to append ASCII md5sum to
+ * @returns #FALSE if not enough memory
+ */
+static gboolean
+gdm_md5_compute (const GString *data,
+		 GString       *ascii_output)
+{
+	GdmMD5Context context;
+	GString      *digest;
+
+	gdm_md5_init (&context);
+
+	gdm_md5_update (&context, data);
+
+	digest = g_string_new (NULL);
+	if (digest == NULL)
+		return FALSE;
+
+	if (! gdm_md5_final (&context, digest))
+		goto error;
+
+	if (! gdm_string_hex_encode (digest,
+				     0,
+				     ascii_output,
+				     ascii_output->len))
+		goto error;
+
+	g_string_free (digest, TRUE);
+
+	return TRUE;
+
+ error:
+	g_string_free (digest, TRUE);
+
+	return FALSE;
+}
+
+gboolean
+gdm_generate_cookie (GString *result)
+{
+	gboolean ret;
+	GString *data;
+
+	data = g_string_new (NULL);
+	gdm_generate_random_bytes (data, 16);
+
+	ret = gdm_md5_compute (data, result);
+	g_string_free (data, TRUE);
+
 	return ret;
 }

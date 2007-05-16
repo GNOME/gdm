@@ -66,8 +66,8 @@ struct GdmGreeterPrivate
 	int      greeter_fd_in;
 	int      greeter_fd_out;
 
-	char    *display_name;
-	char    *display_auth_file;
+	char    *x11_display_name;
+	char    *x11_authority_file;
 
 	int      user_max_filesize;
 
@@ -79,7 +79,8 @@ struct GdmGreeterPrivate
 
 enum {
 	PROP_0,
-	PROP_DISPLAY_NAME,
+	PROP_X11_DISPLAY_NAME,
+	PROP_X11_AUTHORITY_FILE,
 	PROP_USER_NAME,
 	PROP_GROUP_NAME,
 };
@@ -193,15 +194,17 @@ get_greeter_environment (GdmGreeter *greeter)
 
 	/* create a hash table of current environment, then update keys has necessary */
 	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+#if 0
 	for (l = environ; *l != NULL; l++) {
 		char **str;
 		str = g_strsplit (*l, "=", 2);
 		g_hash_table_insert (hash, str[0], str[1]);
 	}
+#endif
 
-
-	g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (greeter->priv->display_auth_file));
-	g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (greeter->priv->display_name));
+	g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (greeter->priv->x11_authority_file));
+	g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (greeter->priv->x11_display_name));
 
 #if 0
 	/* hackish ain't it */
@@ -1137,11 +1140,19 @@ gdm_greeter_stop (GdmGreeter *greeter)
 
 
 static void
-_gdm_greeter_set_display_name (GdmGreeter *greeter,
-			       const char *name)
+_gdm_greeter_set_x11_display_name (GdmGreeter *greeter,
+				   const char *name)
 {
-        g_free (greeter->priv->display_name);
-        greeter->priv->display_name = g_strdup (name);
+        g_free (greeter->priv->x11_display_name);
+        greeter->priv->x11_display_name = g_strdup (name);
+}
+
+static void
+_gdm_greeter_set_x11_authority_file (GdmGreeter *greeter,
+				     const char *file)
+{
+        g_free (greeter->priv->x11_authority_file);
+        greeter->priv->x11_authority_file = g_strdup (file);
 }
 
 static void
@@ -1171,8 +1182,11 @@ gdm_greeter_set_property (GObject      *object,
 	self = GDM_GREETER (object);
 
 	switch (prop_id) {
-	case PROP_DISPLAY_NAME:
-		_gdm_greeter_set_display_name (self, g_value_get_string (value));
+	case PROP_X11_DISPLAY_NAME:
+		_gdm_greeter_set_x11_display_name (self, g_value_get_string (value));
+		break;
+	case PROP_X11_AUTHORITY_FILE:
+		_gdm_greeter_set_x11_authority_file (self, g_value_get_string (value));
 		break;
 	case PROP_USER_NAME:
 		_gdm_greeter_set_user_name (self, g_value_get_string (value));
@@ -1197,8 +1211,11 @@ gdm_greeter_get_property (GObject    *object,
 	self = GDM_GREETER (object);
 
 	switch (prop_id) {
-	case PROP_DISPLAY_NAME:
-		g_value_set_string (value, self->priv->display_name);
+	case PROP_X11_DISPLAY_NAME:
+		g_value_set_string (value, self->priv->x11_display_name);
+		break;
+	case PROP_X11_AUTHORITY_FILE:
+		g_value_set_string (value, self->priv->x11_authority_file);
 		break;
 	case PROP_USER_NAME:
 		g_value_set_string (value, self->priv->user_name);
@@ -1242,12 +1259,19 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
 	g_type_class_add_private (klass, sizeof (GdmGreeterPrivate));
 
 	g_object_class_install_property (object_class,
-					 PROP_DISPLAY_NAME,
-					 g_param_spec_string ("display-name",
+					 PROP_X11_DISPLAY_NAME,
+					 g_param_spec_string ("x11-display-name",
 							      "name",
 							      "name",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+					 PROP_X11_AUTHORITY_FILE,
+					 g_param_spec_string ("x11-authority-file",
+							      "authority file",
+							      "authority file",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property (object_class,
 					 PROP_USER_NAME,
 					 g_param_spec_string ("user-name",
@@ -1299,7 +1323,7 @@ gdm_greeter_new (const char *display_name)
 	GObject *object;
 
 	object = g_object_new (GDM_TYPE_GREETER,
-			       "display-name", display_name,
+			       "x11-display-name", display_name,
 			       NULL);
 
 	return GDM_GREETER (object);

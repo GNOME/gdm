@@ -38,7 +38,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include "cookie.h"
 #include "filecheck.h"
 #include "auth.h"
 
@@ -59,7 +58,7 @@ static FILE *gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty
 
 gboolean
 gdm_auth_add_entry (int            display_num,
-		    const char    *bcookie,
+		    GString       *binary_cookie,
 		    GSList       **authlist,
 		    FILE          *af,
 		    unsigned short family,
@@ -105,8 +104,8 @@ gdm_auth_add_entry (int            display_num,
 		return FALSE;
 	}
 
-	memcpy (xa->data, bcookie, 16);
-	xa->data_length = 16;
+	memcpy (xa->data, binary_cookie->str, binary_cookie->len);
+	xa->data_length = binary_cookie->len;
 
 	if (af != NULL) {
 		errno = 0;
@@ -136,18 +135,35 @@ gdm_auth_add_entry (int            display_num,
 }
 
 gboolean
-gdm_auth_add_entry_for_display (int            display_num,
-				const char    *bcookie,
-				GSList       **authlist,
-				FILE          *af)
+gdm_auth_add_entry_for_display (int      display_num,
+				GString *cookie,
+				GSList **authlist,
+				FILE    *af)
 {
-	gdm_auth_add_entry (display_num,
-			    bcookie,
-			    authlist,
-			    af,
-			    FamilyWild,
-			    NULL,
-			    0);
+	GString *binary_cookie;
+	gboolean ret;
+
+	binary_cookie = g_string_new (NULL);
+
+	if (! gdm_string_hex_decode (cookie,
+				     0,
+				     NULL,
+				     binary_cookie,
+				     0)) {
+		ret = FALSE;
+		goto out;
+	}
+
+	ret = gdm_auth_add_entry (display_num,
+				  binary_cookie,
+				  authlist,
+				  af,
+				  FamilyWild,
+				  NULL,
+				  0);
+ out:
+	g_string_free (binary_cookie, TRUE);
+	return ret;
 }
 
 #if 0
@@ -825,15 +841,6 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 	g_slist_free (keep);
 
 	return af;
-}
-
-void
-gdm_auth_set_local_auth (GdmDisplay *d)
-{
-	XSetAuthorization ((char *)"MIT-MAGIC-COOKIE-1",
-			   (int) strlen ("MIT-MAGIC-COOKIE-1"),
-			   (char *)d->bcookie,
-			   (int) 16);
 }
 
 void

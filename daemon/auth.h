@@ -24,11 +24,11 @@
 G_BEGIN_DECLS
 
 gboolean gdm_auth_add_entry_for_display (int            display_num,
-                                         const char    *bcookie,
+                                         GString       *cookie,
                                          GSList       **authlist,
                                          FILE          *af);
 gboolean gdm_auth_add_entry (int            display_num,
-                             const char    *bcookie,
+                             GString       *binary_cookie,
                              GSList       **authlist,
                              FILE          *af,
                              unsigned short family,

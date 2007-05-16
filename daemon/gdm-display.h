@@ -70,8 +70,6 @@ GType		    gdm_display_get_type		       (void);
 
 int                 gdm_display_get_status                     (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
-char *              gdm_display_get_cookie                     (GdmDisplay *display);
-char *              gdm_display_get_binary_cookie              (GdmDisplay *display);
 char *              gdm_display_get_user_auth                  (GdmDisplay *display);
 
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
@@ -95,6 +93,15 @@ gboolean            gdm_display_get_x11_display                (GdmDisplay *disp
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
 								gboolean   *local,
 								GError    **error);
+
+/* exported but protected */
+gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *display,
+								char      **x11_cookie,
+								GError    **error);
+gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
+								char      **file,
+								GError    **error);
+
 
 G_END_DECLS
 

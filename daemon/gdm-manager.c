@@ -47,8 +47,6 @@
 #include "gdm-master-config.h"
 #include "gdm-daemon-config-entries.h"
 
-#include "cookie.h"
-
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
 #define GDM_DBUS_PATH         "/org/gnome/DisplayManager"
@@ -63,7 +61,7 @@ struct GdmManagerPrivate
 
 	gboolean         xdmcp_enabled;
 
-	char            *global_cookie;
+	GString         *global_cookie;
 	gboolean         wait_for_go;
 	gboolean         no_console;
 
@@ -171,8 +169,9 @@ make_global_cookie (GdmManager *manager)
 {
 	FILE  *fp;
 	char  *file;
+	GString *cookie;
 
-	gdm_cookie_generate ((char **)&manager->priv->global_cookie, NULL);
+	gdm_generate_cookie (manager->priv->global_cookie);
 
 	file = g_build_filename (AUTHDIR, ".cookie", NULL);
 	VE_IGNORE_EINTR (g_unlink (file));
@@ -184,7 +183,7 @@ make_global_cookie (GdmManager *manager)
 		return;
 	}
 
-	VE_IGNORE_EINTR (fprintf (fp, "%s\n", manager->priv->global_cookie));
+	VE_IGNORE_EINTR (fprintf (fp, "%s\n", manager->priv->global_cookie->str));
 
 	/* FIXME: What about out of disk space errors? */
 	errno = 0;
@@ -403,6 +402,8 @@ gdm_manager_init (GdmManager *manager)
 
 	manager->priv->daemon_config = gdm_daemon_config_new ();
 
+	manager->priv->global_cookie = g_string_new (NULL);
+
 	make_global_cookie (manager);
 
 	gdm_daemon_config_get_bool_for_id (manager->priv->daemon_config,
@@ -438,6 +439,8 @@ gdm_manager_finalize (GObject *object)
 	if (manager->priv->daemon_config != NULL) {
 		g_object_unref (manager->priv->daemon_config);
 	}
+
+	g_string_free (manager->priv->global_cookie, TRUE);
 
 	G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);
 }

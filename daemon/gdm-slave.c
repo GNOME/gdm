@@ -60,6 +60,8 @@ extern char **environ;
 #define GDM_DBUS_NAME	           "org.gnome.DisplayManager"
 #define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
 
+#define MAX_CONNECT_ATTEMPTS 10
+
 struct GdmSlavePrivate
 {
 	char            *id;
@@ -71,6 +73,7 @@ struct GdmSlavePrivate
 
 	GPid             server_pid;
 	Display         *server_display;
+	guint            connection_attempts;
 
 	/* cached display values */
 	char            *display_id;
@@ -79,9 +82,10 @@ struct GdmSlavePrivate
 	char            *display_hostname;
 	gboolean         display_is_local;
 	gboolean         display_is_parented;
-	char            *display_auth_file;
+	char            *display_x11_authority_file;
+	char            *display_x11_cookie;
 	char            *parent_display_name;
-	char            *parent_display_auth_file;
+	char            *parent_display_x11_authority_file;
 
 
 	GdmServer       *server;
@@ -420,6 +424,7 @@ listify_hash (const char *key,
 {
 	char *str;
 	str = g_strdup_printf ("%s=%s", key, value);
+	g_debug ("environment: %s", str);
 	g_ptr_array_add (env, str);
 }
 
@@ -437,11 +442,14 @@ get_script_environment (GdmSlave   *slave,
 
 	/* create a hash table of current environment, then update keys has necessary */
 	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+#if 0
 	for (l = environ; *l != NULL; l++) {
 		char **str;
 		str = g_strsplit (*l, "=", 2);
 		g_hash_table_insert (hash, str[0], str[1]);
 	}
+#endif
 
 	/* modify environment here */
 	g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup ("/"));
@@ -479,7 +487,7 @@ get_script_environment (GdmSlave   *slave,
 	}
 
 	/* Runs as root */
-	g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (slave->priv->display_auth_file));
+	g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (slave->priv->display_x11_authority_file));
 	g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (slave->priv->display_name));
 
 	/*g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);*/
@@ -604,29 +612,11 @@ gdm_slave_exec_script (GdmSlave      *slave,
 }
 
 static void
-server_ready_cb (GdmServer *server,
-		 GdmSlave  *slave)
+run_greeter (GdmSlave *slave)
 {
-	/* We keep our own (windowless) connection (dsp) open to avoid the
-	 * X server resetting due to lack of active connections. */
-
-	g_debug ("Server is ready - opening display %s", slave->priv->display_name);
-
-	gdm_sigchld_block_push ();
-	slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
-	gdm_sigchld_block_pop ();
-
-	if (slave->priv->server_display == NULL) {
-		return FALSE;
-	}
-
-
-	/* FIXME: handle wait for go */
-
 
 	/* Set the busy cursor */
 	set_busy_cursor (slave);
-
 
 	/* FIXME: send a signal back to the master */
 
@@ -658,12 +648,111 @@ server_ready_cb (GdmServer *server,
 			       "gdm");
 
 	slave->priv->greeter = gdm_greeter_new (slave->priv->display_name);
+	g_object_set (slave->priv->greeter,
+		      "x11-authority-file", slave->priv->display_x11_authority_file,
+		      NULL);
 	gdm_greeter_start (slave->priv->greeter);
 
 	/* If XDMCP stop pinging */
 	if ( ! slave->priv->display_is_local) {
 		alarm (0);
 	}
+}
+
+static void
+set_local_auth (GdmSlave *slave)
+{
+	GString *binary_cookie;
+	GString *cookie;
+
+	g_debug ("Setting authorization key for display %s", slave->priv->display_x11_cookie);
+
+	cookie = g_string_new (slave->priv->display_x11_cookie);
+	binary_cookie = g_string_new (NULL);
+	if (! gdm_string_hex_decode (cookie,
+				     0,
+				     NULL,
+				     binary_cookie,
+				     0)) {
+		g_warning ("Unable to decode hex cookie");
+		goto out;
+	}
+
+	g_debug ("Decoded cookie len %d", binary_cookie->len);
+
+	XSetAuthorization ("MIT-MAGIC-COOKIE-1",
+			   (int) strlen ("MIT-MAGIC-COOKIE-1"),
+			   (char *)binary_cookie->str,
+			   binary_cookie->len);
+
+ out:
+	g_string_free (binary_cookie, TRUE);
+	g_string_free (cookie, TRUE);
+}
+
+static gboolean
+connect_to_display (GdmSlave *slave)
+{
+	/* We keep our own (windowless) connection (dsp) open to avoid the
+	 * X server resetting due to lack of active connections. */
+
+	g_debug ("Server is ready - opening display %s", slave->priv->display_name);
+
+	g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
+	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
+
+
+
+	set_local_auth (slave);
+
+#if 0
+	/* X error handlers to avoid the default one (i.e. exit (1)) */
+	do_xfailed_on_xio_error = TRUE;
+	XSetErrorHandler (gdm_slave_xerror_handler);
+	XSetIOErrorHandler (gdm_slave_xioerror_handler);
+#endif
+
+	gdm_sigchld_block_push ();
+	slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
+	gdm_sigchld_block_pop ();
+
+	if (slave->priv->server_display == NULL) {
+		g_warning ("Unable to connect to display %s", slave->priv->display_name);
+		return FALSE;
+	} else {
+		g_debug ("Connected to display %s", slave->priv->display_name);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+idle_connect_to_display (GdmSlave *slave)
+{
+	gboolean res;
+
+	slave->priv->connection_attempts++;
+
+	res = connect_to_display (slave);
+	if (res) {
+		/* FIXME: handle wait-for-go */
+
+		run_greeter (slave);
+	} else {
+		if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
+			g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
+			exit (1);
+		}
+	}
+
+	return FALSE;
+}
+
+static void
+server_ready_cb (GdmServer *server,
+		 GdmSlave  *slave)
+{
+	g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
 }
 
 static gboolean
@@ -695,26 +784,9 @@ gdm_slave_run (GdmSlave *slave)
 		}
 
 		g_debug ("Started X server");
+	} else {
+		g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
 	}
-
-	/* We can use d->handled from now on on this display,
-	 * since the lookup was done in server start */
-
-	g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
-	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
-
-#if 0
-	gdm_auth_set_local_auth (d);
-#endif
-
-#if 0
-	/* X error handlers to avoid the default one (i.e. exit (1)) */
-	do_xfailed_on_xio_error = TRUE;
-	XSetErrorHandler (gdm_slave_xerror_handler);
-	XSetIOErrorHandler (gdm_slave_xioerror_handler);
-#endif
-
-	/* now we wait for ready signal */
 
 	return TRUE;
 }
@@ -791,6 +863,42 @@ gdm_slave_start (GdmSlave *slave)
 				 &error,
 				 G_TYPE_INVALID,
 				 G_TYPE_STRING, &slave->priv->display_name,
+				 G_TYPE_INVALID);
+	if (! res) {
+		if (error != NULL) {
+			g_warning ("Failed to get value: %s", error->message);
+			g_error_free (error);
+		} else {
+			g_warning ("Failed to get value");
+		}
+
+		return FALSE;
+	}
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->display_proxy,
+				 "GetX11Cookie",
+				 &error,
+				 G_TYPE_INVALID,
+				 G_TYPE_STRING, &slave->priv->display_x11_cookie,
+				 G_TYPE_INVALID);
+	if (! res) {
+		if (error != NULL) {
+			g_warning ("Failed to get value: %s", error->message);
+			g_error_free (error);
+		} else {
+			g_warning ("Failed to get value");
+		}
+
+		return FALSE;
+	}
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->display_proxy,
+				 "GetX11AuthorityFile",
+				 &error,
+				 G_TYPE_INVALID,
+				 G_TYPE_STRING, &slave->priv->display_x11_authority_file,
 				 G_TYPE_INVALID);
 	if (! res) {
 		if (error != NULL) {

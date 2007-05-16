@@ -84,42 +84,26 @@ FILE *         gdm_safe_fopen_w  (const char *file,
 FILE *         gdm_safe_fopen_ap (const char *file,
 				  mode_t      perm);
 
-
-typedef struct {
-	gboolean not_found; /* hostname below set to fallback,
-			       as gethostbyaddr/name failed */
-	char *hostname; /* never a bogus dot, if
-			   invalid/unknown, then set to the
-			   ip address in string form */
-
-	struct sockaddr_storage *addrs;
-	int addr_count;
-} GdmHostent;
-
-GdmHostent * gdm_gethostbyname (const char *name);
-
-GdmHostent *gdm_gethostbyaddr (struct sockaddr_storage *ia);
-GdmHostent * gdm_hostent_copy (GdmHostent *he);
-void gdm_hostent_free (GdmHostent *he);
-
 /* This is for race free forks */
-void	gdm_sigchld_block_push (void);
-void	gdm_sigchld_block_pop (void);
-void	gdm_sigterm_block_push (void);
-void	gdm_sigterm_block_pop (void);
-void	gdm_sigusr2_block_push (void);
-void	gdm_sigusr2_block_pop (void);
+void           gdm_sigchld_block_push (void);
+void           gdm_sigchld_block_pop (void);
+void           gdm_sigterm_block_push (void);
+void           gdm_sigterm_block_pop (void);
+void           gdm_sigusr2_block_push (void);
+void           gdm_sigusr2_block_pop (void);
 
-void gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
-int gdm_fdgetc     (int fd);
-char *gdm_fdgets   (int fd);
+void           gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+int            gdm_fdgetc     (int fd);
+char          *gdm_fdgets   (int fd);
+void           gdm_fd_set_close_on_exec  (int fd);
 
-void gdm_signal_ignore (int signal);
-void gdm_signal_default (int signal);
 
-void gdm_close_all_descriptors (int from, int except, int except2);
+void           gdm_signal_ignore (int signal);
+void           gdm_signal_default (int signal);
 
-int gdm_open_dev_null (mode_t mode);
+void           gdm_close_all_descriptors (int from, int except, int except2);
+
+int            gdm_open_dev_null (mode_t mode);
 
 /* somewhat like g_build_filename, but does somet hing like
  * <dir> "/" <name> <extension>
@@ -127,8 +111,6 @@ int gdm_open_dev_null (mode_t mode);
 char *         gdm_make_filename (const char *dir,
 				  const char *name,
 				  const char *extension);
-
-void           gdm_fd_set_close_on_exec  (int fd);
 
 void           ve_clearenv (void);
 char *	       ve_first_word (const char *s);
@@ -152,6 +134,20 @@ pid_t          ve_waitpid_no_signal (pid_t pid, int *status, int options);
 
 /* Testing for existance of a certain locale */
 gboolean       ve_locale_exists (const char *loc);
+
+gboolean       gdm_generate_random_bytes (GString *str,
+					  int      n_bytes);
+
+gboolean       gdm_string_hex_encode (const GString *source,
+				      int            start,
+				      GString       *dest,
+				      int            insert_at);
+gboolean       gdm_string_hex_decode (const GString *source,
+				      int            start,
+				      int           *end_return,
+				      GString       *dest,
+				      int            insert_at);
+gboolean       gdm_generate_cookie (GString *result);
 
 G_END_DECLS
 

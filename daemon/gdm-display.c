@@ -52,9 +52,8 @@ struct GdmDisplayPrivate
 	char            *x11_display;
 	int              status;
 	time_t           creation_time;
-	char            *cookie;
-	char            *binary_cookie;
-	char            *authority_file;
+	char            *x11_cookie;
+	char            *x11_authority_file;
 
 	gboolean         is_local;
 
@@ -68,9 +67,8 @@ enum {
 	PROP_REMOTE_HOSTNAME,
 	PROP_NUMBER,
 	PROP_X11_DISPLAY,
-	PROP_COOKIE,
-	PROP_BINARY_COOKIE,
-	PROP_AUTHORITY_FILE,
+	PROP_X11_COOKIE,
+	PROP_X11_AUTHORITY_FILE,
 	PROP_IS_LOCAL,
 };
 
@@ -103,14 +101,6 @@ get_next_display_serial (void)
 	}
 
 	return serial;
-}
-
-char *
-gdm_display_get_binary_cookie (GdmDisplay *display)
-{
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), NULL);
-
-	return g_strdup (display->priv->binary_cookie);
 }
 
 time_t
@@ -149,6 +139,34 @@ gdm_display_create_authority (GdmDisplay *display)
 	g_object_unref (display);
 
 	return ret;
+}
+
+gboolean
+gdm_display_get_x11_cookie (GdmDisplay *display,
+			    char      **x11_cookie,
+			    GError    **error)
+{
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	if (x11_cookie != NULL) {
+		*x11_cookie = g_strdup (display->priv->x11_cookie);
+	}
+
+	return TRUE;
+}
+
+gboolean
+gdm_display_get_x11_authority_file (GdmDisplay *display,
+				    char      **filename,
+				    GError    **error)
+{
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	if (filename != NULL) {
+		*filename = g_strdup (display->priv->x11_authority_file);
+	}
+
+	return TRUE;
 }
 
 gboolean
@@ -321,27 +339,19 @@ _gdm_display_set_x11_display (GdmDisplay     *display,
 }
 
 static void
-_gdm_display_set_cookie (GdmDisplay     *display,
-			 const char     *cookie)
+_gdm_display_set_x11_cookie (GdmDisplay     *display,
+			     const char     *x11_cookie)
 {
-        g_free (display->priv->cookie);
-        display->priv->cookie = g_strdup (cookie);
+        g_free (display->priv->x11_cookie);
+        display->priv->x11_cookie = g_strdup (x11_cookie);
 }
 
 static void
-_gdm_display_set_binary_cookie (GdmDisplay     *display,
-				const char     *cookie)
+_gdm_display_set_x11_authority_file (GdmDisplay     *display,
+				     const char     *file)
 {
-        g_free (display->priv->binary_cookie);
-        display->priv->binary_cookie = g_strdup (cookie);
-}
-
-static void
-_gdm_display_set_authority_file (GdmDisplay     *display,
-				 const char     *file)
-{
-        g_free (display->priv->authority_file);
-        display->priv->authority_file = g_strdup (file);
+        g_free (display->priv->x11_authority_file);
+        display->priv->x11_authority_file = g_strdup (file);
 }
 
 static void
@@ -374,14 +384,11 @@ gdm_display_set_property (GObject	 *object,
 	case PROP_X11_DISPLAY:
 		_gdm_display_set_x11_display (self, g_value_get_string (value));
 		break;
-	case PROP_COOKIE:
-		_gdm_display_set_cookie (self, g_value_get_string (value));
+	case PROP_X11_COOKIE:
+		_gdm_display_set_x11_cookie (self, g_value_get_string (value));
 		break;
-	case PROP_BINARY_COOKIE:
-		_gdm_display_set_binary_cookie (self, g_value_get_string (value));
-		break;
-	case PROP_AUTHORITY_FILE:
-		_gdm_display_set_authority_file (self, g_value_get_string (value));
+	case PROP_X11_AUTHORITY_FILE:
+		_gdm_display_set_x11_authority_file (self, g_value_get_string (value));
 		break;
 	case PROP_IS_LOCAL:
 		_gdm_display_set_is_local (self, g_value_get_boolean (value));
@@ -415,14 +422,11 @@ gdm_display_get_property (GObject	 *object,
 	case PROP_X11_DISPLAY:
 		g_value_set_string (value, self->priv->x11_display);
 		break;
-	case PROP_COOKIE:
-		g_value_set_string (value, self->priv->cookie);
+	case PROP_X11_COOKIE:
+		g_value_set_string (value, self->priv->x11_cookie);
 		break;
-	case PROP_BINARY_COOKIE:
-		g_value_set_string (value, self->priv->binary_cookie);
-		break;
-	case PROP_AUTHORITY_FILE:
-		g_value_set_string (value, self->priv->authority_file);
+	case PROP_X11_AUTHORITY_FILE:
+		g_value_set_string (value, self->priv->x11_authority_file);
 		break;
 	case PROP_IS_LOCAL:
 		g_value_set_boolean (value, self->priv->is_local);
@@ -541,22 +545,15 @@ gdm_display_class_init (GdmDisplayClass *klass)
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
-					 PROP_COOKIE,
-					 g_param_spec_string ("cookie",
+					 PROP_X11_COOKIE,
+					 g_param_spec_string ("x11-cookie",
 							      "cookie",
 							      "cookie",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property (object_class,
-					 PROP_BINARY_COOKIE,
-					 g_param_spec_string ("binary-cookie",
-							      "binary-cookie",
-							      "binary-cookie",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-	g_object_class_install_property (object_class,
-					 PROP_AUTHORITY_FILE,
-					 g_param_spec_string ("authority-file",
+					 PROP_X11_AUTHORITY_FILE,
+					 g_param_spec_string ("x11-authority-file",
 							      "authority file",
 							      "authority file",
 							      NULL,

@@ -42,7 +42,6 @@
 #include "gdm-common.h"
 #include "gdm-address.h"
 
-#include "cookie.h"
 #include "auth.h"
 
 #define GDM_XDMCP_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_XDMCP_DISPLAY, GdmXdmcpDisplayPrivate))
@@ -89,24 +88,27 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
 	gboolean ret;
 	char    *authfile;
 	int      display_num;
-	char    *name;
-	char    *cookie;
-	char    *bcookie;
+	char    *x11_display;
+	GString *cookie;
 	GSList  *authlist;
 	char    *basename;
 
 	ret = FALSE;
-	name = NULL;
+	x11_display = NULL;
 
 	g_object_get (display,
-		      "name", &name,
+		      "x11-display", &x11_display,
 		      "number", &display_num,
 		      NULL);
 
-	g_debug ("Setting up access for %s", name);
+	/* Create new random cookie */
+	cookie = g_string_new (NULL);
+	gdm_generate_cookie (cookie);
+
+	g_debug ("Setting up access for %s", x11_display);
 
 	/* gdm and xserver authfile can be the same, server will run as root */
-	basename = g_strconcat (name, ".Xauth", NULL);
+	basename = g_strconcat (x11_display, ".Xauth", NULL);
 	authfile = g_build_filename (AUTHDIR, basename, NULL);
 	g_free (basename);
 
@@ -117,10 +119,8 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
 		goto out;
 	}
 
-	/* Create new random cookie */
-	gdm_cookie_generate (&cookie, &bcookie);
 	authlist = NULL;
-	if (! gdm_auth_add_entry_for_display (display_num, bcookie, &authlist, af)) {
+	if (! gdm_auth_add_entry_for_display (display_num, cookie, &authlist, af)) {
 		goto out;
 	}
 
@@ -134,21 +134,21 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
 	}
 
 	g_debug ("Set up access for %s - %d entries",
-		 name,
+		 x11_display,
 		 g_slist_length (authlist));
 
 	/* FIXME: save authlist */
 
 	g_object_set (display,
-		      "authority-file", authfile,
-		      "cookie", cookie,
-		      "binary-cookie", bcookie,
+		      "x11-authority-file", authfile,
+		      "x11-cookie", cookie->str,
 		      NULL);
 
 	ret = TRUE;
 
  out:
-	g_free (name);
+	g_free (x11_display);
+	g_string_free (cookie, TRUE);
 
 	return ret;
 }
