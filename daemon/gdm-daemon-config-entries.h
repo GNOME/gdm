@@ -277,7 +277,6 @@ typedef enum {
 
 /* These are processed in order so debug should always be first */
 static const GdmConfigEntry gdm_daemon_config_entries [] = {
-	{ GDM_CONFIG_GROUP_DEBUG, "Enable", GDM_CONFIG_VALUE_BOOL, "false", GDM_ID_DEBUG },
 	{ GDM_CONFIG_GROUP_DEBUG, "Gestures", GDM_CONFIG_VALUE_BOOL, "false", GDM_ID_DEBUG_GESTURES },
 
 

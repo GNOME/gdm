@@ -153,6 +153,18 @@ gdm_log_default_handler (const gchar   *log_domain,
 }
 
 void
+gdm_log_toggle_debug (void)
+{
+	if (syslog_levels & G_LOG_LEVEL_DEBUG) {
+		g_debug ("Debugging disabled");
+		syslog_levels &= ~G_LOG_LEVEL_DEBUG;
+	} else {
+		syslog_levels |= G_LOG_LEVEL_DEBUG;
+		g_debug ("Debugging enabled");
+	}
+}
+
+void
 gdm_log_set_debug (gboolean debug)
 {
 	if (debug) {

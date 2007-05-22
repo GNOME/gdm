@@ -497,6 +497,9 @@ signal_cb (int      signo,
 		 * Play with log levels or something
 		 */
 		ret = TRUE;
+
+		gdm_log_toggle_debug ();
+
 		break;
 
 	default:
@@ -532,11 +535,12 @@ main (int    argc,
 	static GOptionEntry entries []	 = {
 		{ "config", 0, 0, G_OPTION_ARG_STRING, &config_file, N_("Alternative GDM System Defaults configuration file"), N_("CONFIGFILE") },
 
+		{ "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
+		{ "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
 		{ "no-daemon", 0, 0, G_OPTION_ARG_NONE, &no_daemon, N_("Don't become a daemon"), NULL },
 		{ "no-console", 0, 0, G_OPTION_ARG_NONE, &no_console, N_("No console (static) servers to be run"), NULL },
 
 		{ "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time - for debugging"), NULL },
-		{ "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
 		{ "version", 0, 0, G_OPTION_ARG_NONE, &print_version, N_("Print GDM version"), NULL },
 
 		{ NULL }
@@ -607,8 +611,6 @@ main (int    argc,
 	daemon_config = gdm_daemon_config_new ();
 	gdm_daemon_config_load (daemon_config);
 
-	debug = FALSE;
-	gdm_daemon_config_get_bool_for_id (daemon_config, GDM_ID_DEBUG, &debug);
 	gdm_log_set_debug (debug);
 
 	gdm_daemon_change_user (&gdm_uid, &gdm_gid);

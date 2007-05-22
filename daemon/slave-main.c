@@ -116,6 +116,7 @@ signal_cb (int      signo,
 		 * Play with log levels or something
 		 */
 		ret = TRUE;
+
 		break;
 
 	default:
