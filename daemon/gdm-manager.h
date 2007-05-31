@@ -66,6 +66,8 @@ void                gdm_manager_start                          (GdmManager *mana
 void                gdm_manager_set_wait_for_go                (GdmManager *manager,
 								gboolean    wait_for_go);
 
+void                gdm_manager_set_xdmcp_enabled              (GdmManager *manager,
+								gboolean    enabled);
 gboolean            gdm_manager_get_displays                   (GdmManager *manager,
 								GPtrArray **displays,
 								GError    **error);

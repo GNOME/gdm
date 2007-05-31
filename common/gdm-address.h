@@ -38,7 +38,7 @@ G_BEGIN_DECLS
 
 typedef struct _GdmAddress GdmAddress;
 
-GType		         gdm_address_get_type	          (void);
+GType		         gdm_address_get_type	               (void);
 
 GdmAddress *             gdm_address_new_from_sockaddr_storage (struct sockaddr_storage *ss);
 

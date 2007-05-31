@@ -33,8 +33,6 @@
 #include <netdb.h>
 
 #include "ve-signal.h"
-#include "gdm-common-config.h"
-#include "gdm-config.h"
 
 G_BEGIN_DECLS
 

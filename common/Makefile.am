@@ -21,21 +21,49 @@ INCLUDES = \
 	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
 	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
 	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
+	$(DBUS_CFLAGS)					\
 	$(GLIB_CFLAGS)
 
 noinst_LIBRARIES = 		\
 	libgdmcommon.a		\
 	$(null)
 
+BUILT_SOURCES =			\
+	gdm-settings-glue.h	\
+	gdm-marshal.c		\
+	gdm-marshal.h		\
+	$(NULL)
+
+gdm-settings-glue.h: gdm-settings.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_settings --mode=glib-server --output=gdm-settings-glue.h gdm-settings.xml
+
+gdm-marshal.c: gdm-marshal.list
+	echo "#include \"gdm-marshal.h\"" > $@ && \
+	@GLIB_GENMARSHAL@ $< --prefix=gdm_marshal --body >> $@
+
+gdm-marshal.h: gdm-marshal.list
+	@GLIB_GENMARSHAL@ $< --prefix=gdm_marshal --header > $@
+
 libgdmcommon_a_SOURCES =	\
 	gdm-address.h		\
 	gdm-address.c		\
+	gdm-marshal.c		\
+	gdm-marshal.h		\
 	gdm-common.h		\
 	gdm-common.c		\
-	gdm-common-config.h	\
-	gdm-common-config.c	\
-	gdm-config.h		\
-	gdm-config.c		\
+	gdm-settings.c 		\
+	gdm-settings.h		\
+	gdm-settings-backend.c 	\
+	gdm-settings-backend.h	\
+	gdm-settings-desktop-backend.c 	\
+	gdm-settings-desktop-backend.h	\
+	gdm-settings-keys.h	\
+	gdm-settings-utils.h	\
+	gdm-settings-utils.c	\
+	gdm-settings-direct.c 	\
+	gdm-settings-direct.h	\
+	gdm-settings-client.h	\
+	gdm-settings-client.c	\
 	gdm-log.h		\
 	gdm-log.c		\
 	gdm-md5.h		\
@@ -47,18 +75,9 @@ libgdmcommon_a_SOURCES =	\
 	$(NULL)
 
 noinst_PROGRAMS = 		\
-	test-config		\
+	test-settings-server	\
+	test-settings-client	\
 	test-log		\
-	$(NULL)
-
-test_config_SOURCES = 		\
-	$(top_builddir)/daemon/gdm-daemon-config-entries.h	\
-	test-config.c	 	\
-	$(NULL)
-
-test_config_LDADD =		\
-	libgdmcommon.a	\
-	$(GLIB_LIBS)		\
 	$(NULL)
 
 test_log_SOURCES = 		\
@@ -68,4 +87,33 @@ test_log_SOURCES = 		\
 test_log_LDADD =		\
 	libgdmcommon.a	\
 	$(GLIB_LIBS)		\
+	$(NULL)
+
+test_settings_server_SOURCES = 		\
+	test-settings-server.c	 	\
+	$(NULL)
+
+test_settings_server_LDADD =		\
+	libgdmcommon.a			\
+	$(GLIB_LIBS)			\
+	$(DBUS_LIBS)			\
+	$(NULL)
+
+test_settings_client_SOURCES = 		\
+	test-settings-client.c	 	\
+	$(NULL)
+
+test_settings_client_LDADD =		\
+	libgdmcommon.a			\
+	$(GLIB_LIBS)			\
+	$(DBUS_LIBS)			\
+	$(NULL)
+
+CLEANFILES =			\
+	$(BUILT_SOURCES)	\
+	$(NULL)
+
+EXTRA_DIST = 			\
+	gdm-settings.xml	\
+	gdm-marshal.list	\
 	$(NULL)

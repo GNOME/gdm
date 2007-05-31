@@ -151,6 +151,8 @@ AC_STDC_HEADERS
 dnl AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
 
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
 AC_PATH_XTRA
 
 dnl socklen_t may be declared, but not in a "standard" C header location

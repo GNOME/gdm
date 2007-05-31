@@ -43,7 +43,6 @@
 
 #include "gdm-common.h"
 #include "gdm-log.h"
-#include "gdm-master-config.h"
 
 /* Ensure we know about FamilyInternetV6 even if what we're compiling
    against doesn't */

@@ -45,8 +45,9 @@
 #include "gdm-manager.h"
 #include "gdm-log.h"
 #include "gdm-signal-handler.h"
-#include "gdm-master-config.h"
-#include "gdm-daemon-config-entries.h"
+
+#include "gdm-settings.h"
+#include "gdm-settings-direct.h"
 
 #include "misc.h"
 
@@ -61,7 +62,7 @@ static char           **stored_argv   = NULL;
 static int              stored_argc   = 0;
 static GList           *stored_env    = NULL;
 static GdmManager      *manager       = NULL;
-static GdmDaemonConfig *daemon_config = NULL;
+static GdmSettings     *settings      = NULL;
 static uid_t            gdm_uid       = -1;
 static gid_t            gdm_gid       = -1;
 
@@ -315,17 +316,14 @@ check_logdir (void)
 {
         struct stat     statbuf;
         int             r;
-	char           *log_path;
+	const char     *log_path;
 
-	log_path = NULL;
-	gdm_daemon_config_get_string_for_id (daemon_config, GDM_ID_LOG_DIR, &log_path);
+	log_path = LOGDIR;
 
         VE_IGNORE_EINTR (r = g_stat (log_path, &statbuf));
         if (r < 0 || ! S_ISDIR (statbuf.st_mode))  {
                 gdm_fail (_("Logdir %s does not exist or isn't a directory."), log_path);
         }
-
-	g_free (log_path);
 }
 
 static void
@@ -350,10 +348,9 @@ gdm_daemon_check_permissions (uid_t uid,
 			      gid_t gid)
 {
 	struct stat statbuf;
-	char       *auth_path;
+	const char *auth_path;
 
-	auth_path = NULL;
-	gdm_daemon_config_get_string_for_id (daemon_config, GDM_ID_LOG_DIR, &auth_path);
+	auth_path = LOGDIR;
 
 	/* Enter paranoia mode */
 	check_servauthdir (auth_path, &statbuf);
@@ -382,8 +379,6 @@ gdm_daemon_check_permissions (uid_t uid,
 			  statbuf.st_mode,
 			  (S_IRWXU|S_IRWXG|S_ISVTX));
 	}
-
-	g_free (auth_path);
 }
 
 static void
@@ -402,8 +397,10 @@ gdm_daemon_change_user (uid_t *uidp,
 	uid = 0;
 	gid = 0;
 
+#if 0
 	gdm_daemon_config_get_string_for_id (daemon_config, GDM_ID_USER, &username);
 	gdm_daemon_config_get_string_for_id (daemon_config, GDM_ID_GROUP, &groupname);
+#endif
 
 	/* Lookup user and groupid for the GDM user */
 	pwent = getpwnam (username);
@@ -524,9 +521,9 @@ main (int    argc,
 	int		    ret;
 	int	   	    i;
 	gboolean	    res;
-	gboolean            debug;
 	GdmSignalHandler   *signal_handler;
 	static char	   *config_file	     = NULL;
+	static gboolean     debug            = FALSE;
 	static gboolean	    no_daemon	     = FALSE;
 	static gboolean	    no_console	     = FALSE;
 	static gboolean	    do_timed_exit    = FALSE;
@@ -608,8 +605,16 @@ main (int    argc,
 
 	gdm_log_init ();
 
-	daemon_config = gdm_daemon_config_new ();
-	gdm_daemon_config_load (daemon_config);
+	settings = gdm_settings_new ();
+	if (settings == NULL) {
+		g_warning ("Unable to initialize settings");
+		goto out;
+        }
+
+        if (! gdm_settings_direct_init (settings, GDMCONFDIR "/gdm.schemas", "/")) {
+		g_warning ("Unable to initialize settings");
+		goto out;
+        }
 
 	gdm_log_set_debug (debug);
 
@@ -642,6 +647,9 @@ main (int    argc,
 		goto out;
 	}
 
+	/* FIXME: pull from settings */
+	gdm_manager_set_xdmcp_enabled (manager, TRUE);
+
 	g_signal_connect (bus_proxy,
 			  "destroy",
 			  G_CALLBACK (bus_proxy_destroyed_cb),
@@ -673,8 +681,8 @@ main (int    argc,
 		g_object_unref (manager);
 	}
 
-	if (daemon_config != NULL) {
-		g_object_unref (daemon_config);
+	if (settings != NULL) {
+		g_object_unref (settings);
 	}
 
 	if (signal_handler != NULL) {

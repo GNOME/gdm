@@ -93,9 +93,6 @@ sbin_PROGRAMS = 			\
 gdm_binary_SOURCES = 			\
 	gdm.h 				\
 	main.c				\
-	gdm-master-config.c 		\
-	gdm-master-config.h		\
-	gdm-daemon-config-entries.h	\
 	gdm-display-store.c		\
 	gdm-display-store.h		\
 	gdm-display.c			\
@@ -108,7 +105,6 @@ gdm_binary_SOURCES = 			\
 	gdm-manager.h			\
 	gdm-slave-proxy.c		\
 	gdm-slave-proxy.h		\
-	gdm-daemon-config-keys.h	\
 	gdm-socket-protocol.h		\
 	auth.c				\
 	auth.h				\

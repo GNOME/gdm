@@ -57,8 +57,6 @@
 
 #include "auth.h"
 #include "choose.h"
-#include "gdm-master-config.h"
-#include "gdm-daemon-config-entries.h"
 
 /*
  * On Sun, we need to define allow_severity and deny_severity to link

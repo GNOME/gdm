@@ -45,10 +45,11 @@
 #include "gdm-address.h"
 #include "gdm-common.h"
 #include "gdm-log.h"
-#include "gdm-master-config.h"
-#include "gdm-daemon-config-entries.h"
 
 #include "gdm-socket-protocol.h"
+
+#include "gdm-settings-keys.h"
+#include "gdm-settings-direct.h"
 
 static gint ipending = 0;
 static GSList *indirect = NULL;
@@ -132,15 +133,11 @@ get_first_address_for_node (const char  *node,
 }
 
 static int
-get_config_int (int id)
+get_config_int (char *key)
 {
-	GdmDaemonConfig *dc;
-	int              val;
+	int val;
 
-	dc = gdm_daemon_config_new ();
-	gdm_daemon_config_get_int_for_id (dc, id, &val);
-
-	g_object_unref (dc);
+	gdm_settings_direct_get_int (key, &val);
 
 	return val;
 }
@@ -190,7 +187,7 @@ gdm_choose_data (const char *data)
 		GdmIndirectDisplay *idisp = li->data;
 		if (idisp->id == id) {
 			/* whack the oldest if more then allowed */
-			while (ipending >= get_config_int (GDM_ID_MAX_INDIRECT) &&
+			while (ipending >= get_config_int (GDM_KEY_MAX_INDIRECT) &&
 			       remove_oldest_pending ())
 				;
 
@@ -319,7 +316,7 @@ gdm_choose_indirect_lookup (GdmAddress *address)
 			continue;
 
 		if (id->acctime > 0 &&
-		    curtime > id->acctime + get_config_int (GDM_ID_MAX_WAIT_INDIRECT)) {
+		    curtime > id->acctime + get_config_int (GDM_KEY_MAX_WAIT_INDIRECT)) {
 
 			gdm_address_get_numeric_info (address, &host, NULL);
 			g_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",

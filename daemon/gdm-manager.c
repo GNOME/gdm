@@ -44,9 +44,6 @@
 
 #include "gdm-static-display.h"
 
-#include "gdm-master-config.h"
-#include "gdm-daemon-config-entries.h"
-
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
 #define GDM_DBUS_PATH         "/org/gnome/DisplayManager"
@@ -56,7 +53,6 @@
 struct GdmManagerPrivate
 {
 	GdmDisplayStore *display_store;
-	GdmDaemonConfig *daemon_config;
 	GdmXdmcpManager *xdmcp_manager;
 
 	gboolean         xdmcp_enabled;
@@ -67,6 +63,11 @@ struct GdmManagerPrivate
 
         DBusGProxy      *bus_proxy;
         DBusGConnection *connection;
+};
+
+enum {
+	PROP_0,
+	PROP_XDMCP_ENABLED
 };
 
 enum {
@@ -169,7 +170,6 @@ make_global_cookie (GdmManager *manager)
 {
 	FILE  *fp;
 	char  *file;
-	GString *cookie;
 
 	gdm_generate_cookie (manager->priv->global_cookie);
 
@@ -200,16 +200,10 @@ make_global_cookie (GdmManager *manager)
 static void
 load_static_displays_from_file (GdmManager *manager)
 {
-	GSList *xservers;
-	GSList *l;
-
-	xservers = gdm_daemon_config_get_xserver_list (manager->priv->daemon_config);
+#if 0
 
 	for (l = xservers; l != NULL; l = l->next) {
-		GdmXserver *xserver;
 		GdmDisplay *display;
-
-		xserver = l->data;
 
 		g_debug ("Loading display for '%d' %s", xserver->number, xserver->id);
 
@@ -225,6 +219,7 @@ load_static_displays_from_file (GdmManager *manager)
 		/* let store own the ref */
 		g_object_unref (display);
 	}
+#endif
 }
 
 static void
@@ -361,11 +356,62 @@ register_manager (GdmManager *manager)
         return TRUE;
 }
 
+void
+gdm_manager_set_xdmcp_enabled (GdmManager *manager,
+			       gboolean    enabled)
+{
+	g_return_if_fail (GDM_IS_MANAGER (manager));
+
+	manager->priv->xdmcp_enabled = enabled;
+}
+
+static void
+gdm_manager_set_property (GObject      *object,
+			  guint	        prop_id,
+			  const GValue  *value,
+			  GParamSpec    *pspec)
+{
+	GdmManager *self;
+
+	self = GDM_MANAGER (object);
+
+	switch (prop_id) {
+	case PROP_XDMCP_ENABLED:
+		gdm_manager_set_xdmcp_enabled (self, g_value_get_boolean (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gdm_manager_get_property (GObject    *object,
+			  guint       prop_id,
+			  GValue     *value,
+			  GParamSpec *pspec)
+{
+	GdmManager *self;
+
+	self = GDM_MANAGER (object);
+
+	switch (prop_id) {
+	case PROP_XDMCP_ENABLED:
+		g_value_set_boolean (value, self->priv->xdmcp_enabled);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
 static void
 gdm_manager_class_init (GdmManagerClass *klass)
 {
 	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
+	object_class->get_property = gdm_manager_get_property;
+	object_class->set_property = gdm_manager_set_property;
 	object_class->finalize = gdm_manager_finalize;
 
 	signals [DISPLAY_ADDED] =
@@ -389,6 +435,14 @@ gdm_manager_class_init (GdmManagerClass *klass)
 			      G_TYPE_NONE,
 			      1, G_TYPE_STRING);
 
+        g_object_class_install_property (object_class,
+                                         PROP_XDMCP_ENABLED,
+                                         g_param_spec_boolean ("xdmcp-enabled",
+                                                               NULL,
+                                                               NULL,
+							       TRUE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
 	g_type_class_add_private (klass, sizeof (GdmManagerPrivate));
 
         dbus_g_object_type_install_info (GDM_TYPE_MANAGER, &dbus_glib_gdm_manager_object_info);
@@ -400,15 +454,9 @@ gdm_manager_init (GdmManager *manager)
 
 	manager->priv = GDM_MANAGER_GET_PRIVATE (manager);
 
-	manager->priv->daemon_config = gdm_daemon_config_new ();
-
 	manager->priv->global_cookie = g_string_new (NULL);
 
 	make_global_cookie (manager);
-
-	gdm_daemon_config_get_bool_for_id (manager->priv->daemon_config,
-					   GDM_ID_XDMCP,
-					   &manager->priv->xdmcp_enabled);
 
 	manager->priv->display_store = gdm_display_store_new ();
 
@@ -435,10 +483,6 @@ gdm_manager_finalize (GObject *object)
 
 	gdm_display_store_clear (manager->priv->display_store);
 	g_object_unref (manager->priv->display_store);
-
-	if (manager->priv->daemon_config != NULL) {
-		g_object_unref (manager->priv->daemon_config);
-	}
 
 	g_string_free (manager->priv->global_cookie, TRUE);
 

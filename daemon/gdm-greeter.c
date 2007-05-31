@@ -578,11 +578,12 @@ get_facefile_from_gnome2_dir_config (const char *homedir,
 		char *cfgfile;
 
 		cfgfile = g_build_filename (homedir, ".gnome2", "gdm", NULL);
-		cfg = gdm_common_config_load (cfgfile, NULL);
+		cfg = g_key_file_new ();
+		g_key_file_load_from_file (cfg, cfgfile, 0, NULL);
 		g_free (cfgfile);
 
 		if (cfg != NULL) {
-			gdm_common_config_get_string (cfg, "face/picture=", &picfile, NULL);
+			picfile = g_key_file_get_string (cfg, "face", "picture", NULL);
 			g_key_file_free (cfg);
 		}
 
