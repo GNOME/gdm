@@ -371,7 +371,7 @@ parse_stock (xmlNodePtr node,
 				if (g_ascii_strcasecmp ((char *) prop, key_string) == 0) {
 					g_free (*translated_text);
 					g_free (key_string);
-					key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+					key_string = g_strdup_printf ("%s%d", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 
 					gdm_settings_client_get_string (key_string, translated_text);
 

@@ -98,7 +98,7 @@ query_greeter_custom_cmd_handler (GtkWidget *widget, gpointer data)
 	        char *key_string;
 		char *val;
 
-		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
+		key_string = g_strdup_printf ("%s%d", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, *cmd_id);
 
 		gdm_settings_client_get_string (key_string, &val);
 		if (gdm_wm_warn_dialog (val, "", GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
@@ -324,7 +324,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				char *val;
 
 				*cmd_index = i;
-				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+				key_string = g_strdup_printf ("%s%d", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 				gdm_settings_client_get_string (key_string, &val);
 				w = gtk_menu_item_new_with_mnemonic (val);
 				g_free (val);
@@ -468,7 +468,7 @@ greeter_system_handler (GreeterItemInfo *info,
 				char *key_string = NULL;
 				char *val;
 
-				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
+				key_string = g_strdup_printf ("%s%d", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 				radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 
 				gdm_settings_client_get_string (key_string, &val);
@@ -477,7 +477,7 @@ greeter_system_handler (GreeterItemInfo *info,
 				group_radio = custom_cmds_radio[i];
 				g_free (key_string);
 
-				key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
+				key_string = g_strdup_printf ("%s%d", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 				gdm_settings_client_get_string (key_string, &val);
 				gtk_tooltips_set_tip (tooltips, GTK_WIDGET (custom_cmds_radio[i]), val, NULL);
 				g_free (val);

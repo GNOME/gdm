@@ -219,6 +219,21 @@ load_static_displays_from_file (GdmManager *manager)
 		/* let store own the ref */
 		g_object_unref (display);
 	}
+#else
+	GdmDisplay *display;
+
+	/* just load one for now */
+	display = gdm_static_display_new (0);
+
+	if (display == NULL) {
+		g_warning ("Unable to create display: %d", 0);
+		return;
+	}
+
+	gdm_display_store_add (manager->priv->display_store, display);
+
+	/* let store own the ref */
+	g_object_unref (display);
 #endif
 }
 

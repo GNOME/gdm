@@ -676,6 +676,8 @@ verify_gdm_version (void)
 	const char *gdm_version;
 	const char *gdm_protocol_version;
 
+	g_debug ("Checking GDM version");
+
 	gdm_version = g_getenv ("GDM_VERSION");
 	gdm_protocol_version = g_getenv ("GDM_GREETER_PROTOCOL_VERSION");
 
@@ -1025,6 +1027,12 @@ main (int argc, char *argv[])
 	else
 		GDM_IS_LOCAL = TRUE;
 
+	g_type_init ();
+
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                exit (1);
+        }
+
 	/*
 	 * gdm_common_atspi_launch () needs gdk initialized.
 	 * We cannot start gtk before the registry is running
@@ -1036,10 +1044,6 @@ main (int argc, char *argv[])
 	}
 
 	gtk_init (&argc, &argv);
-
-        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
-                exit (1);
-        }
 
 	gdm_common_setup_cursor (GDK_WATCH);
 
@@ -1080,11 +1084,13 @@ main (int argc, char *argv[])
 	/* Load the background as early as possible so GDM does not leave  */
 	/* the background unfilled.   The cursor should be a watch already */
 	/* but just in case */
+	bg_color = NULL;
 	gdm_settings_client_get_string (GDM_KEY_GRAPHICAL_THEMED_COLOR, &bg_color);
 
 	/* If a graphical theme color does not exist fallback to the plain color */
 	if (ve_string_empty (bg_color)) {
 		g_free (bg_color);
+		bg_color = NULL;
 		gdm_settings_client_get_string (GDM_KEY_BACKGROUND_COLOR, &bg_color);
 	}
 	gdm_common_setup_background_color (bg_color);
@@ -1194,7 +1200,7 @@ main (int argc, char *argv[])
 		char *val;
 
 		/*  For each possible custom command */
-		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
+		key_string = g_strdup_printf ("%s%d", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 
 		gdm_settings_client_get_string (key_string, &val);
 		GdmCustomCmdsFound[i] = gdm_working_command_exists (val);
@@ -1217,7 +1223,8 @@ main (int argc, char *argv[])
 	theme_file = get_theme_file (gdm_graphical_theme, &theme_dir);
 
 	error = NULL;
-	root = greeter_parse (theme_file, theme_dir,
+	root = greeter_parse (theme_file,
+			      theme_dir,
 			      GNOME_CANVAS (canvas),
 			      gdm_wm_screen.width,
 			      gdm_wm_screen.height,
@@ -1266,7 +1273,8 @@ main (int argc, char *argv[])
 		g_free (theme_file);
 		g_free (theme_dir);
 		theme_file = get_theme_file ("circles", &theme_dir);
-		root = greeter_parse (theme_file, theme_dir,
+		root = greeter_parse (theme_file,
+				      theme_dir,
 				      GNOME_CANVAS (canvas),
 				      gdm_wm_screen.width,
 				      gdm_wm_screen.height,
