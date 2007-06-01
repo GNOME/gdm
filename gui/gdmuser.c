@@ -33,14 +33,14 @@
 #include "gdm-common.h"
 #include "gdmcommon.h"
 #include "gdmuser.h"
-#include "gdmconfig.h"
 
 #include "gdm-socket-protocol.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 static time_t time_started;
 
-static GdmUser * 
+static GdmUser *
 gdm_user_alloc (const gchar *logname,
 		uid_t uid,
 		const gchar *homedir,
@@ -135,7 +135,7 @@ gdm_user_alloc (const gchar *logname,
 			gdk_pixbuf_loader_write (loader, buffer, n, NULL);
 			pos += n;
 			if (pos >= bufsize)
-			       break;	
+				break;
 		}
 
 		gdk_pixbuf_loader_close (loader, NULL);
@@ -149,10 +149,15 @@ gdm_user_alloc (const gchar *logname,
 		/* read the "done" bit, but don't check */
 		read (STDIN_FILENO, buf, sizeof (buf));
 	} else if (g_access (&buf[1], R_OK) == 0) {
+		int maxw;
+		int maxh;
+		gdm_settings_client_get_int (GDM_KEY_MAX_ICON_WIDTH, &maxw);
+		gdm_settings_client_get_int (GDM_KEY_MAX_ICON_HEIGHT, &maxh);
+
 		img = gdm_common_get_face (&buf[1],
 					   NULL,
-					   gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH),
-					   gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT));
+					   maxw,
+					   maxh);
 	} else {
 		img = NULL;
 	}
@@ -172,18 +177,27 @@ gdm_user_alloc (const gchar *logname,
 }
 
 static gboolean
-gdm_check_exclude (struct passwd *pwent, char **excludes, gboolean is_local)
+gdm_check_exclude (struct passwd *pwent,
+		   char **excludes,
+		   gboolean is_local)
 {
 	const char * const lockout_passes[] = { "!!", NULL };
 	gint i;
+	gboolean allow_root;
+	gboolean allow_remote_root;
+	int min_uid;
 
-        if ( ! gdm_config_get_bool (GDM_KEY_ALLOW_ROOT) && pwent->pw_uid == 0)
+	gdm_settings_client_get_boolean (GDM_KEY_ALLOW_ROOT, &allow_root);
+	gdm_settings_client_get_boolean (GDM_KEY_ALLOW_REMOTE_ROOT, &allow_remote_root);
+	gdm_settings_client_get_int (GDM_KEY_MINIMAL_UID, &min_uid);
+
+        if ( ! allow_root && pwent->pw_uid == 0)
                 return TRUE;
 
-        if ( ! gdm_config_get_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! is_local && pwent->pw_uid == 0)
+        if ( ! allow_remote_root && ! is_local && pwent->pw_uid == 0)
                 return TRUE;
 
-	if (pwent->pw_uid < gdm_config_get_int (GDM_KEY_MINIMAL_UID))
+	if (pwent->pw_uid < min_uid)
 		return TRUE;
 
 	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
@@ -207,30 +221,30 @@ gdm_check_exclude (struct passwd *pwent, char **excludes, gboolean is_local)
 static gboolean
 gdm_check_shell (const gchar *usersh)
 {
-    gint found = 0;
-    gchar *csh;
+	gint found = 0;
+	gchar *csh;
 
-    setusershell ();
+	setusershell ();
 
-    while ((csh = getusershell ()) != NULL)
-        if (! strcmp (csh, usersh))
-            found = 1;
+	while ((csh = getusershell ()) != NULL)
+		if (! strcmp (csh, usersh))
+			found = 1;
 
-    endusershell ();
+	endusershell ();
 
-    return (found);
+	return (found);
 }
 
 static gint
 gdm_sort_func (gpointer d1, gpointer d2)
 {
-    GdmUser *a = d1;
-    GdmUser *b = d2;
+	GdmUser *a = d1;
+	GdmUser *b = d2;
 
-    if (!d1 || !d2)
-        return (0);
+	if (!d1 || !d2)
+		return (0);
 
-    return (strcmp (a->login, b->login));
+	return (strcmp (a->login, b->login));
 }
 
 
@@ -245,63 +259,65 @@ setup_user (struct passwd *pwent,
 	    gboolean is_local,
 	    gboolean read_faces)
 {
-    GdmUser *user;
-    int cnt = 0;
+	GdmUser *user;
+	int cnt = 0;
 
-    if (pwent->pw_shell && 
-	gdm_check_shell (pwent->pw_shell) &&
-	!gdm_check_exclude (pwent, excludes, is_local) &&
-	(exclude_user == NULL ||
-	strcmp (ve_sure_string (exclude_user), pwent->pw_name)) != 0) {
+	if (pwent->pw_shell &&
+	    gdm_check_shell (pwent->pw_shell) &&
+	    !gdm_check_exclude (pwent, excludes, is_local) &&
+	    (exclude_user == NULL ||
+	     strcmp (ve_sure_string (exclude_user), pwent->pw_name)) != 0) {
 
-	    user = gdm_user_alloc (pwent->pw_name,
-				   pwent->pw_uid,
-				   pwent->pw_dir,
-				   ve_sure_string (pwent->pw_gecos),
-				   defface, read_faces);
+		user = gdm_user_alloc (pwent->pw_name,
+				       pwent->pw_uid,
+				       pwent->pw_dir,
+				       ve_sure_string (pwent->pw_gecos),
+				       defface, read_faces);
 
-	    if ((user) &&
-		(! g_list_find_custom (*users, user, (GCompareFunc) gdm_sort_func))) {
-		cnt++;
-		*users = g_list_insert_sorted (*users, user,
-		     (GCompareFunc) gdm_sort_func);
-		*users_string = g_list_prepend (*users_string, g_strdup (pwent->pw_name));
+		if ((user) &&
+		    (! g_list_find_custom (*users, user, (GCompareFunc) gdm_sort_func))) {
+			cnt++;
+			*users = g_list_insert_sorted (*users, user,
+						       (GCompareFunc) gdm_sort_func);
+			*users_string = g_list_prepend (*users_string, g_strdup (pwent->pw_name));
 
-		if (user->picture != NULL) {
-			*size_of_users +=
-				gdk_pixbuf_get_height (user->picture) + 2;
-		} else {
-			*size_of_users += gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
+			if (user->picture != NULL) {
+				*size_of_users +=
+					gdk_pixbuf_get_height (user->picture) + 2;
+			} else {
+				int h;
+				gdm_settings_client_get_int (GDM_KEY_MAX_ICON_HEIGHT, &h);
+				*size_of_users += h;
+			}
 		}
-	    }
 
-	    if (cnt > 1000 || time_started + 5 <= time (NULL)) {
-		*users = g_list_append (*users,
-			g_strdup (_("Too many users to list here...")));
-		*users_string = g_list_append (*users_string,
-			g_strdup (_("Too many users to list here...")));
+		if (cnt > 1000 || time_started + 5 <= time (NULL)) {
+			*users = g_list_append (*users,
+						g_strdup (_("Too many users to list here...")));
+			*users_string = g_list_append (*users_string,
+						       g_strdup (_("Too many users to list here...")));
 
-		return (FALSE);
-	    }
-    }
-    return (TRUE);
+			return (FALSE);
+		}
+	}
+	return (TRUE);
 }
 
 gboolean
 gdm_is_user_valid (const char *username)
 {
-    return (NULL != getpwnam (username));
+	return (NULL != getpwnam (username));
 }
 
 gint
 gdm_user_uid (const char *username)
 {
-    struct passwd *pwent;
-    pwent = getpwnam (username);
-    if (pwent != NULL)
-	    return pwent->pw_uid;
+	struct passwd *pwent;
+	pwent = getpwnam (username);
+	if (pwent != NULL)
+		return pwent->pw_uid;
 
-    return -1;
+	return -1;
 }
 
 const char *
@@ -309,10 +325,10 @@ get_root_user (void)
 {
 	static char *root_user = NULL;
 	struct passwd *pwent;
-	
+
 	if (root_user != NULL)
 		return root_user;
-	
+
 	pwent = getpwuid (0);
 	if (pwent == NULL) /* huh? */
 		root_user = g_strdup ("root");
@@ -321,7 +337,7 @@ get_root_user (void)
 	return root_user;
 }
 
-void 
+void
 gdm_users_init (GList **users,
 		GList **users_string,
 		char *exclude_user,
@@ -330,54 +346,61 @@ gdm_users_init (GList **users,
 		gboolean is_local,
 		gboolean read_faces)
 {
-    struct passwd *pwent;
-    char **includes;
-    char **excludes;
-    gboolean found_include = FALSE;
-    int i;
+	struct passwd *pwent;
+	char **includes;
+	char **excludes;
+	gboolean found_include = FALSE;
+	int i;
+	char *include;
+	char *exclude;
+	gboolean include_all;
 
-    time_started = time (NULL);
-	
-    includes = g_strsplit (gdm_config_get_string (GDM_KEY_INCLUDE), ",", 0);
-    for (i=0 ; includes != NULL && includes[i] != NULL ; i++) {
-	g_strstrip (includes[i]);
-        if (includes[i] != NULL)
-           found_include = TRUE;
-    }
+	time_started = time (NULL);
 
-    excludes = g_strsplit (gdm_config_get_string (GDM_KEY_EXCLUDE), ",", 0);
-    for (i=0 ; excludes != NULL && excludes[i] != NULL ; i++)
-	g_strstrip (excludes[i]);
+	gdm_settings_client_get_string (GDM_KEY_INCLUDE, &include);
+	gdm_settings_client_get_string (GDM_KEY_EXCLUDE, &exclude);
+	gdm_settings_client_get_boolean (GDM_KEY_INCLUDE_ALL, &include_all);
 
-    if (gdm_config_get_bool (GDM_KEY_INCLUDE_ALL) == TRUE) {
-	    setpwent ();
-	    pwent = getpwent ();
-	    while (pwent != NULL) {
-
-		if (! setup_user (pwent, users, users_string, excludes,
-			exclude_user, defface, size_of_users, is_local,
-			read_faces))
-			break;
-
-		pwent = getpwent ();
-	}
-	endpwent ();
-
-    } else if (found_include == TRUE) {
+	includes = g_strsplit (include, ",", 0);
 	for (i=0 ; includes != NULL && includes[i] != NULL ; i++) {
-		pwent = getpwnam (includes[i]);
+		g_strstrip (includes[i]);
+		if (includes[i] != NULL)
+			found_include = TRUE;
+	}
 
-		if (pwent != NULL) {
-			if (!setup_user (pwent, users, users_string, excludes,
-			    exclude_user, defface, size_of_users, is_local,
-			    read_faces))
-			break;
+	excludes = g_strsplit (exclude, ",", 0);
+	for (i=0 ; excludes != NULL && excludes[i] != NULL ; i++)
+		g_strstrip (excludes[i]);
 
+	if (include_all == TRUE) {
+		setpwent ();
+		pwent = getpwent ();
+		while (pwent != NULL) {
+
+			if (! setup_user (pwent, users, users_string, excludes,
+					  exclude_user, defface, size_of_users, is_local,
+					  read_faces))
+				break;
+
+			pwent = getpwent ();
+		}
+		endpwent ();
+
+	} else if (found_include == TRUE) {
+		for (i=0 ; includes != NULL && includes[i] != NULL ; i++) {
+			pwent = getpwnam (includes[i]);
+
+			if (pwent != NULL) {
+				if (!setup_user (pwent, users, users_string, excludes,
+						 exclude_user, defface, size_of_users, is_local,
+						 read_faces))
+					break;
+
+			}
 		}
 	}
-    }
 
-    g_strfreev (includes);
-    g_strfreev (excludes);
+	g_strfreev (includes);
+	g_strfreev (excludes);
 }
 

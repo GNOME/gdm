@@ -8,6 +8,7 @@ INCLUDES = \
 	-I$(top_srcdir)/common				\
 	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
+	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DDMCONFDIR=\""$(dmconfdir)"\"		 	\
 	-DGDM_CONFIG_FILE=\"$(gdmconfdir)/gdm.conf\"	\
 	-DGDMLOCALEDIR=\""$(gdmlocaledir)"\"		\

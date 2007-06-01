@@ -48,6 +48,7 @@
 
 #include "gdm-settings.h"
 #include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #include "misc.h"
 
@@ -397,10 +398,14 @@ gdm_daemon_change_user (uid_t *uidp,
 	uid = 0;
 	gid = 0;
 
-#if 0
-	gdm_daemon_config_get_string_for_id (daemon_config, GDM_ID_USER, &username);
-	gdm_daemon_config_get_string_for_id (daemon_config, GDM_ID_GROUP, &groupname);
-#endif
+	gdm_settings_direct_get_string (GDM_KEY_USER, &username);
+	gdm_settings_direct_get_string (GDM_KEY_GROUP, &groupname);
+
+	if (username == NULL || groupname == NULL) {
+		return;
+	}
+
+	g_debug ("Changing user:group to %s:%s", username, groupname);
 
 	/* Lookup user and groupid for the GDM user */
 	pwent = getpwnam (username);

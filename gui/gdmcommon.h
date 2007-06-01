@@ -28,6 +28,21 @@
 
 #include "misc.h"
 
+#define DISPLAY_REMANAGE 2	/* Restart display */
+#define DISPLAY_ABORT 4		/* Houston, we have a problem */
+#define DISPLAY_REBOOT 8	/* Rebewt */
+#define DISPLAY_HALT 16		/* Halt */
+#define DISPLAY_SUSPEND 17	/* Suspend (don't use, use the interrupt) */
+#define DISPLAY_CHOSEN 20	/* successful chooser session,
+				   restart display */
+#define DISPLAY_RUN_CHOOSER 30	/* Run chooser */
+#define DISPLAY_XFAILED 64	/* X failed */
+#define DISPLAY_GREETERFAILED 65 /* greeter failed (crashed) */
+#define DISPLAY_RESTARTGREETER 127 /* Restart greeter */
+#define DISPLAY_RESTARTGDM 128	/* Restart GDM */
+
+char     *gdm_common_get_a_cookie           (gboolean binary);
+
 /* Handle error messages */
 void      gdm_common_log_init               (void);
 void      gdm_common_log_set_debug          (gboolean enable);

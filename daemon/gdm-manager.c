@@ -232,6 +232,8 @@ load_static_servers (GdmManager *manager)
 void
 gdm_manager_start (GdmManager *manager)
 {
+	g_debug ("GDM starting to manage");
+
 	load_static_servers (manager);
 
 	/* Start static X servers */
@@ -405,6 +407,27 @@ gdm_manager_get_property (GObject    *object,
 	}
 }
 
+static GObject *
+gdm_manager_constructor (GType                  type,
+			 guint                  n_construct_properties,
+			 GObjectConstructParam *construct_properties)
+{
+        GdmManager      *manager;
+        GdmManagerClass *klass;
+
+        klass = GDM_MANAGER_CLASS (g_type_class_peek (GDM_TYPE_MANAGER));
+
+        manager = GDM_MANAGER (G_OBJECT_CLASS (gdm_manager_parent_class)->constructor (type,
+										       n_construct_properties,
+										       construct_properties));
+
+	if (manager->priv->xdmcp_enabled) {
+		manager->priv->xdmcp_manager = gdm_xdmcp_manager_new (manager->priv->display_store);
+	}
+
+        return G_OBJECT (manager);
+}
+
 static void
 gdm_manager_class_init (GdmManagerClass *klass)
 {
@@ -412,6 +435,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
 
 	object_class->get_property = gdm_manager_get_property;
 	object_class->set_property = gdm_manager_set_property;
+	object_class->constructor = gdm_manager_constructor;
 	object_class->finalize = gdm_manager_finalize;
 
 	signals [DISPLAY_ADDED] =
@@ -459,10 +483,6 @@ gdm_manager_init (GdmManager *manager)
 	make_global_cookie (manager);
 
 	manager->priv->display_store = gdm_display_store_new ();
-
-	if (manager->priv->xdmcp_enabled) {
-		manager->priv->xdmcp_manager = gdm_xdmcp_manager_new (manager->priv->display_store);
-	}
 }
 
 static void

@@ -36,18 +36,129 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
+#include <X11/Xauth.h>
+
 #include "gdm.h"
 #include "gdmcommon.h"
-#include "gdmcomm.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-socket-protocol.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 gint gdm_timed_delay = 0;
 static Atom AT_SPI_IOR;
+
+static const char *
+gdm_common_get_display (void)
+{
+	static char *display = NULL;
+
+	if (display == NULL) {
+		char *p;
+
+		display = gdk_get_display ();
+		if (display == NULL) {
+			display = g_strdup (g_getenv ("DISPLAY"));
+			if (display == NULL) /*eek!*/ {
+				display = g_strdup (":0");
+			}
+		}
+
+		/* whack screen part, GDM doesn't like those */
+		p = strchr (display, '.');
+		if (p != NULL)
+			*p = '\0';
+	}
+
+	return display;
+}
+
+static char *
+get_dispnum (void)
+{
+	static char *number = NULL;
+
+	if (number == NULL) {
+		char *p;
+		number = g_strdup (gdm_common_get_display ());
+
+		/* whee! handles even DECnet */
+		number = strchr (number, ':');
+		if (number != NULL) {
+			while (*number == ':') {
+				number++;
+			}
+			p = strchr (number, '.');
+			if (p != NULL)
+				*p = '\0';
+		} else {
+			number = "0";
+		}
+	}
+
+	return number;
+}
+
+/* This just gets a cookie of MIT-MAGIC-COOKIE-1 type */
+char *
+gdm_common_get_a_cookie (gboolean binary)
+{
+	FILE *fp;
+	char *number;
+	char *cookie = NULL;
+	Xauth *xau;
+
+	VE_IGNORE_EINTR (fp = fopen (XauFileName (), "r"));
+	if (fp == NULL) {
+		return NULL;
+	}
+
+	number = get_dispnum ();
+
+	cookie = NULL;
+
+	while ((xau = XauReadAuth (fp)) != NULL) {
+		/* Just find the FIRST magic cookie, that's what gdm uses */
+		if (xau->number_length != strlen (number) ||
+		    strncmp (xau->number, number, xau->number_length) != 0 ||
+		    /* gdm sends MIT-MAGIC-COOKIE-1 cookies of length 16,
+		     * so just do those */
+		    xau->data_length != 16 ||
+		    xau->name_length != strlen ("MIT-MAGIC-COOKIE-1") ||
+		    strncmp (xau->name, "MIT-MAGIC-COOKIE-1",
+			     xau->name_length) != 0) {
+			XauDisposeAuth (xau);
+			continue;
+		}
+
+		if (binary) {
+			cookie = g_new0 (char, 16);
+			memcpy (cookie, xau->data, 16);
+		} else {
+			int i;
+			GString *str;
+
+			str = g_string_new (NULL);
+
+			for (i = 0; i < xau->data_length; i++) {
+				g_string_append_printf
+					(str, "%02x",
+					 (guint)(guchar)xau->data[i]);
+			}
+			cookie = g_string_free (str, FALSE);
+		}
+
+		XauDisposeAuth (xau);
+
+		break;
+	}
+	VE_IGNORE_EINTR (fclose (fp));
+
+	return cookie;
+}
+
 
 /*
  * Some slaves want to send output to syslog and others (such as
@@ -412,57 +523,22 @@ gdm_common_text_to_escaped_utf8 (const char *text)
 gchar *
 gdm_common_get_config_file (void)
 {
-	gchar *result;
-	gchar *config_file;
-
-	/* Get config file */
-	result = gdmcomm_call_gdm ("GET_CONFIG_FILE", NULL /* auth cookie */, "2.8.0.2", 5);
-	if (! result)
-		return NULL;
-
-	if (ve_string_empty (result) ||
-	    strncmp (result, "OK ", 3) != 0) {
-		g_free (result);
-		return NULL;
-	}
-
-	/* skip the "OK " */
-	config_file = g_strdup (result + 3);
-
-	g_free (result);
-
-	return config_file;
+	return NULL;
 }
 
 gchar *
 gdm_common_get_custom_config_file (void)
 {
-	gchar *result;
-	gchar *config_file;
-
-	/* Get config file */
-	result = gdmcomm_call_gdm ("GET_CUSTOM_CONFIG_FILE", NULL /* auth cookie */, "2.8.0.2", 5);
-	if (! result)
-		return NULL;
-
-	if (ve_string_empty (result) ||
-	    strncmp (result, "OK ", 3) != 0) {
-		g_free (result);
-		return NULL;
-	}
-
-	/* skip the "OK " */
-	config_file = g_strdup (result + 3);
-
-	g_free (result);
-
-	return config_file;
+	return NULL;
 }
 
 gboolean
 gdm_common_select_time_format (void)
 {
-	gchar *val = gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
+	char *val;
+
+	val = NULL;
+	gdm_settings_client_get_string (GDM_KEY_USE_24_CLOCK, &val);
 
 	if (val != NULL &&
 	    (val[0] == 'T' ||
@@ -575,10 +651,14 @@ gdm_common_get_welcomemsg (void)
 	 * user and therefore has the appropriate language environment set.
 	 */
         if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-                if (gdm_config_get_bool (GDM_KEY_DEFAULT_REMOTE_WELCOME))
+		gboolean val;
+		gdm_settings_client_get_boolean (GDM_KEY_DEFAULT_REMOTE_WELCOME, &val);
+
+                if (val) {
                         welcomemsg = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
-                else {
-			tempstr = gdm_config_get_translated_string (GDM_KEY_REMOTE_WELCOME);
+		} else {
+			tempstr = NULL;
+			gdm_settings_client_get_locale_string (GDM_KEY_REMOTE_WELCOME, NULL, &tempstr);
 
 			if (tempstr == NULL ||
 			    strcmp (ve_sure_string (tempstr), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
@@ -587,10 +667,14 @@ gdm_common_get_welcomemsg (void)
 				welcomemsg = g_strdup (tempstr);
 		}
         } else {
-                if (gdm_config_get_bool (GDM_KEY_DEFAULT_WELCOME))
+		gboolean val;
+		gdm_settings_client_get_boolean (GDM_KEY_DEFAULT_WELCOME, &val);
+
+                if (val)
                         welcomemsg = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
                 else {
-                        tempstr = gdm_config_get_translated_string (GDM_KEY_WELCOME);
+			tempstr = NULL;
+			gdm_settings_client_get_locale_string (GDM_KEY_WELCOME, NULL, &tempstr);
 
 			if (tempstr == NULL ||
 			    strcmp (ve_sure_string (tempstr), GDM_DEFAULT_WELCOME_MSG) == 0)
@@ -606,9 +690,11 @@ gdm_common_get_welcomemsg (void)
 static gchar *
 pre_fetch_prog_get_path (void)
 {
-	gchar *prefetchprog;
+	char *prefetchprog;
 
-	prefetchprog = gdm_config_get_string (GDM_KEY_PRE_FETCH_PROGRAM);
+	prefetchprog = NULL;
+	gdm_settings_client_get_string (GDM_KEY_PRE_FETCH_PROGRAM, &prefetchprog);
+
 	if  (! ve_string_empty (prefetchprog)) {
 		return prefetchprog;
 	} else
@@ -646,11 +732,14 @@ pre_fetch_run (gpointer data)
 
 static gboolean
 pre_atspi_launch (void){
-	gboolean a11y = gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
+	gboolean a11y;
 	GPid pid = -1;
 	GError *error = NULL;
 	char *command = NULL;
 	gchar **atspi_prog_argv;
+
+	a11y = FALSE;
+	gdm_settings_client_get_boolean (GDM_KEY_ADD_GTK_MODULES, &a11y);
 
 	if (! a11y)
 		return FALSE;
@@ -708,8 +797,11 @@ void
 gdm_common_atspi_launch (void)
 {
 	GdkWindow *w = gdk_get_default_root_window ();
-	gboolean a11y = gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
+	gboolean a11y;
 	guint tid;
+
+	a11y = FALSE;
+	gdm_settings_client_get_boolean (GDM_KEY_ADD_GTK_MODULES, &a11y);
 
 	if (! a11y)
 		return;

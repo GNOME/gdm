@@ -51,7 +51,6 @@ update_real_max_width (GreeterItemInfo *info, int max_width)
 		info->data.text.real_max_width = max_width;
 }
 
-
 /* Position the item */
 static void
 greeter_item_size_allocate (GreeterItemInfo *item,
@@ -93,7 +92,7 @@ fixup_from_anchor (GtkAllocation *rect,
     case GTK_ANCHOR_NE:
       rect->x -= rect->width;
       break;
-      
+
     case GTK_ANCHOR_W:
       rect->y -= rect->height/2;
       break;
@@ -105,7 +104,7 @@ fixup_from_anchor (GtkAllocation *rect,
       rect->x -= rect->width;
       rect->y -= rect->height/2;
       break;
-      
+
     case GTK_ANCHOR_SW:
       rect->y -= rect->height;
       break;
@@ -151,15 +150,15 @@ greeter_size_allocate_fixed (GreeterItemInfo *fixed,
 
       child_allocation.x = fixed->allocation.x;
       child_allocation.y = fixed->allocation.y;
-      
+
       child_allocation.width = requisition.width;
       child_allocation.height = requisition.height;
-      
+
       if (child->x_type == GREETER_ITEM_POS_ABSOLUTE)
 	child_allocation.x += ( ! child->x_negative) ? child->x : fixed->allocation.width + child->x;
       else if (child->x_type == GREETER_ITEM_POS_RELATIVE)
 	child_allocation.x += fixed->allocation.width * child->x / 100.0;
-      
+
       if (child->y_type == GREETER_ITEM_POS_ABSOLUTE)
 	child_allocation.y += ( ! child->y_negative) ? child->y : fixed->allocation.height + child->y;
       else if (child->y_type == GREETER_ITEM_POS_RELATIVE)
@@ -173,7 +172,6 @@ greeter_size_allocate_fixed (GreeterItemInfo *fixed,
 				  canvas);
     }
 }
-
 
 /* Position the children of the parent given
  * the size */
@@ -197,7 +195,7 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 
   nvis_children = 0;
   nexpand_children = 0;
-  
+
   children = items;
   while (children)
     {
@@ -259,7 +257,6 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	  major = allocation->y + box->box_y_padding;
 	}
 
-      
       children = items;
       while (children)
 	{
@@ -275,9 +272,9 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 		child_major_size = major_size;
 	      else
 		child_major_size = extra;
-		  
+
 	      major_size -= extra;
-		
+
 	      nvis_children -= 1;
 	    }
 	  else
@@ -285,19 +282,19 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	      greeter_item_size_request (child,
 					 &child_requisition,
 					 0, 0, canvas);
-	      
+
 	      if (box->box_orientation == GTK_ORIENTATION_HORIZONTAL)
 		child_major_size = child_requisition.width;
 	      else
 		child_major_size = child_requisition.height;
-		  
+
 	      if (child->expand)
 		{
 		  if (nexpand_children == 1)
 		    child_major_size += major_size;
 		  else
 		    child_major_size += extra;
-		  
+
 		  nexpand_children -= 1;
 		  major_size -= extra;
 		}
@@ -309,11 +306,11 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	  child->has_requisition = FALSE;
 	  w = (box->box_orientation == GTK_ORIENTATION_HORIZONTAL) ? child_major_size : allocation->width - 2 * box->box_x_padding;
 	  h = (box->box_orientation == GTK_ORIENTATION_HORIZONTAL) ? allocation->height - 2 * box->box_y_padding : child_major_size;
-      
+
 	  greeter_item_size_request (child,
 				     &child_requisition,
 				     w, h, canvas);
-	  
+
 	  child_allocation.width = child_requisition.width;
 	  child_allocation.height = child_requisition.height;
 
@@ -345,7 +342,7 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 
 	  if (child->item_type != GREETER_ITEM_TYPE_LABEL)
 	    fixup_from_anchor (&child_allocation, child->anchor);
-	  
+
 	  if (child_allocation.x + child_allocation.width > allocation->x + allocation->width)
 	      child_allocation.width -= (child_allocation.x + child_allocation.width
 					 - allocation->x - allocation->width);
@@ -353,7 +350,7 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	  greeter_item_size_allocate (child,
 				      &child_allocation,
 				      canvas);
-	  
+
 	  major += child_major_size + box->box_spacing;
 	}
     }
@@ -364,12 +361,12 @@ greeter_size_request_box (GreeterItemInfo *box,
 			  GtkRequisition  *requisition,
 			  GnomeCanvas     *canvas)
 {
-  
+
   GreeterItemInfo *child;
   GtkRequisition child_requisition;
   GList *children;
   gint nvis_children;
-  
+
   requisition->width = 0;
   requisition->height = 0;
 
@@ -416,14 +413,13 @@ greeter_size_request_box (GreeterItemInfo *box,
 
 	  requisition->width = MAX (requisition->width, child_requisition.width);
 	}
-      
-      
+
       nvis_children += 1;
     }
 
   if (nvis_children > 0)
     {
-      
+
       if (box->box_orientation == GTK_ORIENTATION_HORIZONTAL)
 	{
 	  if (box->box_homogeneous)
@@ -454,10 +450,10 @@ greeter_item_size_request (GreeterItemInfo *item,
 			   GnomeCanvas     *canvas)
 {
   GtkRequisition *req;
-  GtkRequisition box_requisition = {0, 0}; 
+  GtkRequisition box_requisition = {0, 0};
   int set_width = 0;
   int set_height = 0;
-  
+
   if (item->has_requisition)
     {
       *requisition_out = item->requisition;
@@ -465,7 +461,7 @@ greeter_item_size_request (GreeterItemInfo *item,
     }
 
   req = &item->requisition;
-  
+
   req->width = 0;
   req->height = 0;
 
@@ -563,18 +559,18 @@ greeter_item_size_request (GreeterItemInfo *item,
 
   if (item->item_type == GREETER_ITEM_TYPE_BUTTON)
     {
-#define ITEM_BUTTON_MIN_RECOMMANDED_WIDTH_OFFSET 15      
+#define ITEM_BUTTON_MIN_RECOMMANDED_WIDTH_OFFSET 15
 #define ITEM_BUTTON_MIN_RECOMMANDED_HEIGHT_OFFSET 10
       PangoLayout *layout;
       int pango_width, pango_height;
       int pix_width, pix_height;
-      
+
       GtkWidget *dummy_w = gtk_button_new ();
-      
+
       layout = gtk_widget_create_pango_layout (dummy_w, item->data.text.orig_text);
-       
+
       pango_layout_get_size (layout, &pango_width, &pango_height);
-      
+
       pix_height = PANGO_PIXELS (pango_height) + ITEM_BUTTON_MIN_RECOMMANDED_HEIGHT_OFFSET;
       pix_width = PANGO_PIXELS (pango_width) + ITEM_BUTTON_MIN_RECOMMANDED_WIDTH_OFFSET;
 
@@ -588,7 +584,7 @@ greeter_item_size_request (GreeterItemInfo *item,
       else
 	req->height = item->parent->box_min_height;
     }
- 
+
   if (req->width > 0 && req->height > 0)
     {
       if (item->width_type == GREETER_ITEM_SIZE_SCALE && set_height > 0)
@@ -596,7 +592,7 @@ greeter_item_size_request (GreeterItemInfo *item,
       else if (item->height_type == GREETER_ITEM_SIZE_SCALE && set_width > 0)
         set_height = (req->height * set_width) / req->width;
     }
-  
+
   if (set_width > 0)
     req->width = set_width;
   if (set_height > 0)
@@ -606,8 +602,6 @@ greeter_item_size_request (GreeterItemInfo *item,
   item->has_requisition = TRUE;
 }
 
-
-
 void
 greeter_layout (GreeterItemInfo *root_item,
 		GnomeCanvas     *canvas)
@@ -616,7 +610,7 @@ greeter_layout (GreeterItemInfo *root_item,
   root_item->allocation.y = 0;
   root_item->allocation.width = root_item->width;
   root_item->allocation.height = root_item->height;
-  
+
   greeter_size_allocate_fixed (root_item,
 			       root_item->fixed_children,
 			       canvas);

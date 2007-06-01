@@ -36,6 +36,9 @@ gboolean              gdm_settings_client_get_boolean                (const char
 								      gboolean          *value);
 gboolean              gdm_settings_client_get_string                 (const char        *key,
 								      char             **value);
+gboolean              gdm_settings_client_get_locale_string          (const char        *key,
+								      const char        *locale,
+								      char             **value);
 
 gboolean              gdm_settings_client_set_int                    (const char        *key,
 								      int                value);

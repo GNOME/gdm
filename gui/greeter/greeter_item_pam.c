@@ -150,7 +150,7 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
       fflush (stdout);
       return;
     }
-  
+
   gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 
   /* clear the err_box */
@@ -164,7 +164,7 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
     greeter_item_pam_error_set (FALSE);
     set_text (error_info, "");
   }
-  
+
   tmp = ve_locale_from_utf8 (str);
   printf ("%c%s\n", STX, tmp);
   fflush (stdout);
@@ -243,7 +243,6 @@ greeter_item_pam_setup (void)
   return TRUE;
 }
 
-
 void
 greeter_item_pam_prompt (const char *message,
 			 int         entry_len,
@@ -285,12 +284,12 @@ greeter_item_pam_prompt (const char *message,
             }
         }
     }
-  
+
   if (entry_info && entry_info->item &&
       GNOME_IS_CANVAS_WIDGET (entry_info->item))
     {
       entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
-      
+
       gtk_entry_set_visibility (GTK_ENTRY (entry), entry_visible);
       gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
       gtk_entry_set_max_length (GTK_ENTRY (entry), entry_len);
@@ -308,7 +307,7 @@ greeter_item_pam_message (const char *message)
   GreeterItemInfo *message_info;
   char *oldtext;
   char *newtext;
-  
+
   /* the user has not yet seen messages */
   messages_to_give = TRUE;
 
@@ -341,7 +340,6 @@ greeter_item_pam_message (const char *message)
   replace_msg = FALSE;
 }
 
-
 static gboolean
 error_clear (gpointer data)
 {
@@ -366,12 +364,12 @@ greeter_item_pam_error (const char *message)
    */
   if (message[0] == '\n')
     message++;
-  
+
   error_info = greeter_lookup_id ("pam-error");
   if (error_info)
     {
       set_text (error_info, message);
-      
+
       if (err_box_clear_handler > 0)
 	g_source_remove (err_box_clear_handler);
 
@@ -453,4 +451,3 @@ greeter_item_pam_leftover_messages (void)
       messages_to_give = FALSE;
     }
 }
-

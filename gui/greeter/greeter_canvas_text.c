@@ -6,8 +6,7 @@
 #include <libgnomecanvas/gnome-canvas-text.h>
 #include <pango/pangoft2.h>
 
-
-enum 
+enum
 {
   PROP_0,
   PROP_TEXT,
@@ -77,13 +76,13 @@ greeter_canvas_text_get_screen_dpi (GreeterCanvasText *text)
   if (atom == 0)
     return default_dpi;
 
-  display = 
+  display =
       gtk_widget_get_display (GTK_WIDGET (GNOME_CANVAS_ITEM (text)->canvas));
 
   if (display == NULL)
     return default_dpi;
 
-  screen = 
+  screen =
       gtk_widget_get_screen (GTK_WIDGET (GNOME_CANVAS_ITEM (text)->canvas));
 
   if (screen == NULL)
@@ -145,7 +144,7 @@ greeter_canvas_text_init_layout (GreeterCanvasText *greeter_item)
   item = GNOME_CANVAS_ITEM (greeter_item);
   text = GNOME_CANVAS_TEXT (greeter_item);
 
-  if (text->layout != NULL) 
+  if (text->layout != NULL)
     return;
 
   gtk_context = gtk_widget_get_pango_context (GTK_WIDGET (item->canvas));
@@ -159,7 +158,7 @@ greeter_canvas_text_init_layout (GreeterCanvasText *greeter_item)
 
   context = pango_ft2_font_map_create_context (font_map);
 
-  pango_context_set_language (context, 
+  pango_context_set_language (context,
                               pango_context_get_language (gtk_context));
   pango_context_set_base_dir (context,
                               pango_context_get_base_dir (gtk_context));

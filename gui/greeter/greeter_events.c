@@ -29,7 +29,7 @@
 struct CallbackInfo {
   ActionFunc func;
   gpointer user_data;
-}; 
+};
 
 static GHashTable *callback_hash = NULL;
 
@@ -132,7 +132,7 @@ greeter_item_run_action_callback (const char *id)
    * If run_action_callback gets called and there is no
    * callback function registered, don't try to call it.
    * This can happen because the button_release event
-   * tries calling the callback function for any 
+   * tries calling the callback function for any
    * item that has an id (like the Username field).
    */
   if (cb_info)
@@ -161,22 +161,22 @@ greeter_item_event_handler (GnomeCanvasItem *item,
 					 event,
 					 button);
     }
-  
+
   old_state = info->state;
-  
+
   switch (event->type) {
   case GDK_ENTER_NOTIFY:
     info->mouse_over = TRUE;
     break;
-    
+
   case GDK_LEAVE_NOTIFY:
     info->mouse_over = FALSE;
     break;
-    
+
   case GDK_BUTTON_PRESS:
     info->mouse_down = TRUE;
     break;
-    
+
   case GDK_BUTTON_RELEASE:
     info->mouse_down = FALSE;
 
@@ -198,7 +198,7 @@ greeter_item_event_handler (GnomeCanvasItem *item,
       }
 
     break;
-    
+
   default:
     break;
   }
@@ -253,4 +253,3 @@ greeter_item_register_action_callback (char            *id,
 		       g_strdup (id),
 		       info);
 }
-

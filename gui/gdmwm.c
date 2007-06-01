@@ -37,7 +37,6 @@
 #include "gdmwm.h"
 #include "gdm.h"
 #include "gdmcommon.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
 

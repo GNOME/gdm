@@ -24,7 +24,6 @@
 #include <stdio.h>
 
 #include "misc.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
 

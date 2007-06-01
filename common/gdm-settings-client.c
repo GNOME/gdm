@@ -79,10 +79,10 @@ get_value (const char *key,
 				 G_TYPE_INVALID);
 	if (! res) {
 		if (error != NULL) {
-			g_warning ("Failed to get value for %s: %s", key, error->message);
+			g_debug ("Failed to get value for %s: %s", key, error->message);
 			g_error_free (error);
 		} else {
-			g_warning ("Failed to get value for %s", key);
+			g_debug ("Failed to get value for %s", key);
 		}
 
 		return FALSE;
@@ -140,6 +140,76 @@ gdm_settings_client_get_string (const char  *key,
 	}
 
 	g_free (str);
+
+	return ret;
+}
+
+gboolean
+gdm_settings_client_get_locale_string (const char  *key,
+				       const char  *locale,
+				       char       **value)
+{
+	char    *candidate_key;
+	char    *translated_value;
+	GError  *error;
+	char   **languages;
+	gboolean free_languages = FALSE;
+	int      i;
+	gboolean ret;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+
+	candidate_key = NULL;
+	translated_value = NULL;
+	error = NULL;
+
+	if (locale != NULL) {
+		languages = g_new (char *, 2);
+		languages[0] = (char *)locale;
+		languages[1] = NULL;
+
+		free_languages = TRUE;
+	} else {
+		languages = (char **) g_get_language_names ();
+		free_languages = FALSE;
+	}
+
+	for (i = 0; languages[i]; i++) {
+		gboolean res;
+
+		candidate_key = g_strdup_printf ("%s[%s]", key, languages[i]);
+
+		res = get_value (candidate_key, &translated_value);
+		g_free (candidate_key);
+
+		if (res) {
+			break;
+		}
+
+		g_free (translated_value);
+		translated_value = NULL;
+	}
+
+	/* Fallback to untranslated key
+	 */
+	if (translated_value == NULL) {
+		get_value (key, &translated_value);
+	}
+
+	if (free_languages) {
+		g_strfreev (languages);
+	}
+
+	if (translated_value != NULL) {
+		ret = TRUE;
+		if (value != NULL) {
+			*value = g_strdup (translated_value);
+		}
+	} else {
+		ret = FALSE;
+	}
+
+	g_free (translated_value);
 
 	return ret;
 }

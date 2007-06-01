@@ -35,13 +35,12 @@
 
 #include "gdm.h"
 #include "gdmcommon.h"
-#include "gdmcomm.h"
-#include "gdmconfig.h"
 #include "gdmuser.h"
 
 #include "gdm-common.h"
 #include "gdm-socket-protocol.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 #include "greeter.h"
 #include "greeter_item_ulist.h"
@@ -72,13 +71,16 @@ enum
 void
 greeter_item_ulist_check_show_userlist (void)
 {
+	gboolean browser;
+
 	/*
 	 * If the browser feature isn't enabled or if there are no users,
 	 * then hide the rectangle used to contain the userlist.  The
 	 * userlist-rect id allows a rectangle to be defined with alpha
 	 * behind the userlist that also goes away when the list is empty.
 	 */
-	if (num_users == 0 || !gdm_config_get_bool (GDM_KEY_BROWSER)) {
+	gdm_settings_client_get_boolean (GDM_KEY_BROWSER, &browser);
+	if (num_users == 0 || !browser) {
 
 		GreeterItemInfo *urinfo = greeter_lookup_id ("userlist-rect");
 
@@ -112,79 +114,45 @@ greeter_item_ulist_unset_selected_user (void)
 	selected_user = NULL;
 }
 
-static int
-vector_len (char * const *v)
-{
-	int i;
-	if (v == NULL)
-		return 0;
-	for (i = 0; v[i] != NULL; i++)
-		;
-	return i;
-}
-
 static void
 check_for_displays (void)
 {
-	char  *ret;
-	char **vec;
-	char  *auth_cookie = NULL;
-	int    i;
-
-	/*
-	 * Might be nice to move this call into read_config() so that it happens
-	 * on the same socket call as reading the configuration.
-	 */
-	ret = gdmcomm_call_gdm (GDM_SUP_ATTACHED_SERVERS, auth_cookie, "2.2.4.0", 5);
-	if (ve_string_empty (ret) || strncmp (ret, "OK ", 3) != 0) {
-		g_free (ret);
-		return;
-	}
-
-	vec = g_strsplit (&ret[3], ";", -1);
-	g_free (ret);
-	if (vec == NULL)
-		return;
-
 	if (displays_hash == NULL)
 		displays_hash = g_hash_table_new_full (g_str_hash,
 						       g_str_equal,
 						       g_free,
 						       g_free);
-
-	for (i = 0; vec[i] != NULL; i++) {
-		char **rvec;
-
-		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL || vector_len (rvec) != 3)
-			continue;
-
-		g_hash_table_insert (displays_hash,
-				     g_strdup (rvec[1]),
-				     g_strdup (rvec[0]));
-
-		g_strfreev (rvec);
-	}
-
-	g_strfreev (vec);
 }
 
-static void 
+static void
 gdm_greeter_users_init (void)
 {
-	gint   size_of_users = 0;
+	int   size_of_users = 0;
+	char *face;
+	int   max_width;
+	int   max_height;
+
+	gdm_settings_client_get_string (GDM_KEY_DEFAULT_FACE, &face);
+	gdm_settings_client_get_int (GDM_KEY_MAX_ICON_WIDTH, &max_width);
+	gdm_settings_client_get_int (GDM_KEY_MAX_ICON_HEIGHT, &max_height);
 
 	defface = gdm_common_get_face (NULL,
-				       gdm_config_get_string (GDM_KEY_DEFAULT_FACE),
-				       gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH),
-				       gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT));
+				       face,
+				       max_width,
+				       max_height);
 	if (! defface) {
-		gdm_common_warning ("Can't open DefaultImage: %s!",
-			gdm_config_get_string (GDM_KEY_DEFAULT_FACE));
+		gdm_common_warning ("Can't open DefaultImage: %s!", face);
 	}
 
-	gdm_users_init (&users, &users_string, NULL, defface,
-			&size_of_users, GDM_IS_LOCAL, !DOING_GDM_DEVELOPMENT);
+	g_free (face);
+
+	gdm_users_init (&users,
+			&users_string,
+			NULL,
+			defface,
+			&size_of_users,
+			GDM_IS_LOCAL,
+			!DOING_GDM_DEVELOPMENT);
 }
 
 static void
@@ -294,6 +262,8 @@ greeter_generate_userlist (GtkWidget *tv, GreeterItemInfo *info)
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 	if (users != NULL) {
+		gboolean browser;
+
 		g_signal_connect (selection, "changed",
 				  G_CALLBACK (user_selected),
 				  NULL);
@@ -321,7 +291,8 @@ greeter_generate_userlist (GtkWidget *tv, GreeterItemInfo *info)
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column_two);
 
 		/* Only populate the user list if the browser is turned on */
-		if (gdm_config_get_bool (GDM_KEY_BROWSER))
+		gdm_settings_client_get_boolean (GDM_KEY_BROWSER, &browser);
+		if (browser)
 			greeter_populate_user_list (tm);
 
 		list = gtk_tree_view_column_get_cell_renderers (column_one);
@@ -337,7 +308,7 @@ greeter_generate_userlist (GtkWidget *tv, GreeterItemInfo *info)
 		for (li = list; li != NULL; li = li->next) {
 			GtkObject *cell = li->data;
 
-			if (info->data.list.label_color != NULL) 
+			if (info->data.list.label_color != NULL)
 				g_object_set (cell, "background",
 					      info->data.list.label_color, NULL);
 		}
@@ -387,7 +358,7 @@ greeter_item_ulist_setup (void)
 	    GNOME_IS_CANVAS_WIDGET (info->item)) {
 		GtkWidget *sw = GNOME_CANVAS_WIDGET (info->item)->widget;
 
-		if (GTK_IS_SCROLLED_WINDOW (sw) && 
+		if (GTK_IS_SCROLLED_WINDOW (sw) &&
 		    GTK_IS_TREE_VIEW (GTK_BIN (sw)->child)) {
 			GtkRequisition req;
 			gdouble        height;
@@ -472,7 +443,7 @@ greeter_item_ulist_set_user (const char *user)
 				gtk_tree_path_free (path);
 				break;
 			}
-	  
+
 		} while (gtk_tree_model_iter_next (tm, &iter));
 	}
 	selecting_user = old_selecting_user;

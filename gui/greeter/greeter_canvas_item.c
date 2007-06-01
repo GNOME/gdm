@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,10 +28,10 @@
 
 #include "gdm.h"
 #include "gdmcommon.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 #include "greeter.h"
 #include "greeter_item.h"
@@ -45,99 +47,102 @@ GtkButton *gtk_ok_button = NULL;
 GtkButton *gtk_start_again_button = NULL;
 
 static void
-apply_tint (GdkPixbuf *pixbuf, guint32 tint_color)
+apply_tint (GdkPixbuf *pixbuf,
+	    guint32 tint_color)
 {
-  guchar *pixels;
-  guint r, g, b;
-  gboolean has_alpha;
-  guint w, h, stride;
-  guint pixel_stride;
-  guchar *line;
-  int i;
-  
-  pixels = gdk_pixbuf_get_pixels (pixbuf);
-  has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
-  
-  r = (tint_color & 0xff0000) >> 16;
-  g = (tint_color & 0x00ff00) >> 8;
-  b = (tint_color & 0x0000ff);
+	guchar *pixels;
+	guint r, g, b;
+	gboolean has_alpha;
+	guint w, h, stride;
+	guint pixel_stride;
+	guchar *line;
+	int i;
 
-  w = gdk_pixbuf_get_width (pixbuf);
-  h = gdk_pixbuf_get_height (pixbuf);
-  stride = gdk_pixbuf_get_rowstride (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
 
-  pixel_stride = (has_alpha) ? 4 : 3;
+	r = (tint_color & 0xff0000) >> 16;
+	g = (tint_color & 0x00ff00) >> 8;
+	b = (tint_color & 0x0000ff);
 
-  while (h-->0)
-    {
-      line = pixels;
+	w = gdk_pixbuf_get_width (pixbuf);
+	h = gdk_pixbuf_get_height (pixbuf);
+	stride = gdk_pixbuf_get_rowstride (pixbuf);
 
-      for (i = 0; i < w; i++)
-	{
-	  line[0] = line[0] * r / 0xff;
-	  line[1] = line[1] * g / 0xff;
-	  line[2] = line[2] * b / 0xff;
-	  line += pixel_stride;
+	pixel_stride = (has_alpha) ? 4 : 3;
+
+	while (h-->0) {
+		line = pixels;
+
+		for (i = 0; i < w; i++) {
+			line[0] = line[0] * r / 0xff;
+			line[1] = line[1] * g / 0xff;
+			line[2] = line[2] * b / 0xff;
+			line += pixel_stride;
+		}
+
+		pixels += stride;
 	}
-
-      pixels += stride;
-    }
 }
 
 static GdkPixbuf *
 transform_pixbuf (GdkPixbuf *orig,
-		  gboolean has_tint, guint32 tint_color,
-		  double alpha, gint width, gint height)
+		  gboolean has_tint,
+		  guint32 tint_color,
+		  double alpha,
+		  gint width,
+		  gint height)
 {
-  GdkPixbuf *scaled;
-  gint p_width, p_height;
+	GdkPixbuf *scaled;
+	gint p_width, p_height;
 
-  p_width = gdk_pixbuf_get_width (orig);
-  p_height = gdk_pixbuf_get_height (orig);
-  
-  if (p_width != width ||
-      p_height != height ||
-      alpha < 1.0 ||
-      has_tint)
-    {
-      int alpha_i;
-      
-      if (alpha >= 1.0)
-	alpha_i = 0xff;
-      else if (alpha <= 0.0)
-	alpha_i = 0;
-      else
-	alpha_i = (guint) floor (0xff*alpha);
-      if (alpha != 0xff)
-	{
-	  scaled = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
-	  gdk_pixbuf_fill (scaled, 0);
-	  gdk_pixbuf_composite (orig, scaled, 0, 0, width, height,
-				0, 0, (double)width/p_width, (double)height/p_height,
-				GDK_INTERP_BILINEAR, alpha_i);
+	p_width = gdk_pixbuf_get_width (orig);
+	p_height = gdk_pixbuf_get_height (orig);
+
+	if (p_width != width ||
+	    p_height != height ||
+	    alpha < 1.0 ||
+	    has_tint) {
+		int alpha_i;
+
+		if (alpha >= 1.0)
+			alpha_i = 0xff;
+		else if (alpha <= 0.0)
+			alpha_i = 0;
+		else
+			alpha_i = (guint) floor (0xff*alpha);
+
+		if (alpha != 0xff) {
+			scaled = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
+			gdk_pixbuf_fill (scaled, 0);
+			gdk_pixbuf_composite (orig, scaled, 0, 0, width, height,
+					      0, 0, (double)width/p_width, (double)height/p_height,
+					      GDK_INTERP_BILINEAR, alpha_i);
+		} else {
+			scaled = gdk_pixbuf_scale_simple (orig, width, height, GDK_INTERP_BILINEAR);
+		}
+	} else {
+		scaled = g_object_ref (orig);
 	}
-      else
-	scaled = gdk_pixbuf_scale_simple (orig, width, height, GDK_INTERP_BILINEAR);
-    }
-  else
-    scaled = g_object_ref (orig);
-  
-  if (has_tint)
-    apply_tint (scaled, tint_color);
 
-  return scaled;
+	if (has_tint)
+		apply_tint (scaled, tint_color);
+
+	return scaled;
 }
 
 static void
-activate_button (GtkWidget *widget, gpointer data)
+activate_button (GtkWidget *widget,
+		 gpointer data)
 {
 	const char *id = data;
 	if (id != NULL)
 		greeter_item_run_action_callback (id);
 }
 
-static void 
-menubar_done (GtkMenuShell *menushell, gpointer data)
+static void
+menubar_done (GtkMenuShell *menushell,
+	      gpointer data)
 {
 	GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
 	GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
@@ -186,6 +191,7 @@ make_menubar (void)
 	} else {
 		w = NULL;
 	}
+
 	if (w != NULL) {
 		GtkWidget *sep;
 		/* add separator before the quit */
@@ -200,13 +206,14 @@ make_menubar (void)
 	}
 
 	g_signal_connect (G_OBJECT(gtk_menu_item_get_submenu(
-                        gtk_container_get_children(GTK_CONTAINER(menubar))->data)), "selection-done", G_CALLBACK (menubar_done), NULL);
+							     gtk_container_get_children(GTK_CONTAINER(menubar))->data)), "selection-done", G_CALLBACK (menubar_done), NULL);
 
 	return menubar;
 }
 
 static void
-get_gdk_color_from_rgb (GdkColor *c, guint32 rgb)
+get_gdk_color_from_rgb (GdkColor *c,
+			guint32 rgb)
 {
 	c->red = ((rgb & 0xff0000) >> 16) * 0x101;
 	c->green = ((rgb & 0xff00) >> 8) * 0x101;
@@ -224,7 +231,7 @@ menu_position_func (GtkMenu           *menu,
 	GtkAllocation rect;
 	GtkRequisition  requisition;
 
-	rect = item->allocation; 
+	rect = item->allocation;
 	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
 	*x = rect.x;
 	if (requisition.height <= rect.y)
@@ -240,16 +247,18 @@ menu_position_func (GtkMenu           *menu,
  * it can make use of callback data.
  */
 static void
-greeter_options_handler (GreeterItemInfo *item, GtkWidget *menubar)
+greeter_options_handler (GreeterItemInfo *item,
+			 GtkWidget *menubar)
 {
 	gtk_menu_popup (GTK_MENU(gtk_menu_item_get_submenu(
-		        gtk_container_get_children(GTK_CONTAINER(menubar))->data)), 
-			NULL, NULL, (GtkMenuPositionFunc)menu_position_func, 
+							   gtk_container_get_children(GTK_CONTAINER(menubar))->data)),
+			NULL, NULL, (GtkMenuPositionFunc)menu_position_func,
 			item, 0, gtk_get_current_event_time());
 }
 
 static void
-greeter_item_run_button_action_callback (GtkButton *button, const char *id)
+greeter_item_run_button_action_callback (GtkButton *button,
+					 const char *id)
 {
 	GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
 	GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
@@ -261,299 +270,301 @@ greeter_item_run_button_action_callback (GtkButton *button, const char *id)
 void
 greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
-  GnomeCanvasGroup *group;
-  GtkJustification just;
-  GtkWidget *entry;
-  GtkWidget *gtkbutton;
-  GtkWidget *list;
-  GtkWidget *swin;
-  double x1, y1, x2, y2;
-  int i;
-  GtkAllocation rect;
-  char *text;
-  GtkTooltips *tooltips;
-  char *num_locale;
-  GdkColor c;
+	GnomeCanvasGroup *group;
+	GtkJustification just;
+	GtkWidget *entry;
+	GtkWidget *gtkbutton;
+	GtkWidget *list;
+	GtkWidget *swin;
+	double x1, y1, x2, y2;
+	int i;
+	GtkAllocation rect;
+	char *text;
+	GtkTooltips *tooltips;
+	char *num_locale;
+	GdkColor c;
 
-  if (item->item != NULL)
-    return;
+	if (item->item != NULL)
+		return;
 
-  if ( ! greeter_item_is_visible (item))
-    return;
+	if ( ! greeter_item_is_visible (item))
+		return;
 
-  g_assert (item->parent->group_item);
-  
-  if (item->fixed_children != NULL ||
-      item->box_children != NULL)
-    {
-      item->group_item =
-	(GnomeCanvasGroup *)gnome_canvas_item_new (item->parent->group_item,
-						   GNOME_TYPE_CANVAS_GROUP,
-						   "x", (gdouble) 0.0,
-						   "y", (gdouble) 0.0,
-						   NULL);
-      group = item->group_item;
-    }
-  else
-    group = item->parent->group_item;
+	g_assert (item->parent->group_item);
 
-  rect = item->allocation;
+	if (item->fixed_children != NULL ||
+	    item->box_children != NULL) {
+		item->group_item =
+			(GnomeCanvasGroup *)gnome_canvas_item_new (item->parent->group_item,
+								   GNOME_TYPE_CANVAS_GROUP,
+								   "x", (gdouble) 0.0,
+								   "y", (gdouble) 0.0,
+								   NULL);
+		group = item->group_item;
+	} else {
+		group = item->parent->group_item;
+	}
 
-  
-  x1 = (gdouble) rect.x;
-  y1 = (gdouble) rect.y;
-  x2 = (gdouble) rect.x + rect.width;
-  y2 = (gdouble) rect.y + rect.height;
+	rect = item->allocation;
 
-  switch (item->item_type) {
-  case GREETER_ITEM_TYPE_RECT:
-    item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_RECT,
-					"x1", x1,
-					"y1", y1,
-					"x2", x2,
-					"y2", y2,
-					"fill_color_rgba", item->data.rect.colors[GREETER_ITEM_STATE_NORMAL],
-					NULL);
-    break;
-  case GREETER_ITEM_TYPE_SVG:
-    num_locale = g_strdup (setlocale (LC_NUMERIC, NULL));
-    setlocale (LC_NUMERIC, "C");
-    for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
-      {
-	if (item->data.pixmap.files[i] != NULL)
-	  {
-	    if (i > 0 &&
-		item->data.pixmap.files[0] != NULL &&
-		item->data.pixmap.pixbufs[0] != NULL &&
-		strcmp (item->data.pixmap.files[0], item->data.pixmap.files[i]) == 0)
-	      item->data.pixmap.pixbufs[i] = g_object_ref (item->data.pixmap.pixbufs[0]);
-	    else
-	      item->data.pixmap.pixbufs[i] =
-                  gdk_pixbuf_new_from_file_at_size (item->data.pixmap.files[i], rect.width, rect.height, NULL);
-	  }
-	else
-	  item->data.pixmap.pixbufs[i] = NULL;
-      }
-    setlocale (LC_NUMERIC, num_locale);
-    g_free (num_locale);
-    num_locale = NULL;
+	x1 = (gdouble) rect.x;
+	y1 = (gdouble) rect.y;
+	x2 = (gdouble) rect.x + rect.width;
+	y2 = (gdouble) rect.y + rect.height;
 
-    /* Fall through */
-  case GREETER_ITEM_TYPE_PIXMAP:
-    for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
-      {
-	GdkPixbuf *pb = item->data.pixmap.pixbufs[i];
-	if (pb != NULL)
-	  {
-	    item->data.pixmap.pixbufs[i] =
-	      transform_pixbuf (pb,
-				(item->data.pixmap.have_tint & (1<<i)), item->data.pixmap.tints[i],
-				(double)item->data.pixmap.alphas[i] / 256.0, rect.width, rect.height);
-	    g_object_unref (pb);
-	  }
-      }
-    
-    if (item->data.pixmap.pixbufs[GREETER_ITEM_STATE_NORMAL] != NULL)
-      item->item = gnome_canvas_item_new (group,
-					  GNOME_TYPE_CANVAS_PIXBUF,
-					  "x", (gdouble) x1,
-					  "y", (gdouble) y1,
-					  "pixbuf", item->data.pixmap.pixbufs[GREETER_ITEM_STATE_NORMAL],
-					  NULL);
-    break;
-  case GREETER_ITEM_TYPE_LABEL:
-    text = gdm_common_expand_text (item->data.text.orig_text);
+	switch (item->item_type) {
+	case GREETER_ITEM_TYPE_RECT:
+		item->item = gnome_canvas_item_new (group,
+						    GNOME_TYPE_CANVAS_RECT,
+						    "x1", x1,
+						    "y1", y1,
+						    "x2", x2,
+						    "y2", y2,
+						    "fill_color_rgba", item->data.rect.colors[GREETER_ITEM_STATE_NORMAL],
+						    NULL);
+		break;
+	case GREETER_ITEM_TYPE_SVG:
+		num_locale = g_strdup (setlocale (LC_NUMERIC, NULL));
+		setlocale (LC_NUMERIC, "C");
+		for (i = 0; i < GREETER_ITEM_STATE_MAX; i++) {
+			if (item->data.pixmap.files[i] != NULL) {
+				if (i > 0 &&
+				    item->data.pixmap.files[0] != NULL &&
+				    item->data.pixmap.pixbufs[0] != NULL &&
+				    strcmp (item->data.pixmap.files[0], item->data.pixmap.files[i]) == 0)
+					item->data.pixmap.pixbufs[i] = g_object_ref (item->data.pixmap.pixbufs[0]);
+				else
+					item->data.pixmap.pixbufs[i] =
+						gdk_pixbuf_new_from_file_at_size (item->data.pixmap.files[i], rect.width, rect.height, NULL);
+			} else {
+				item->data.pixmap.pixbufs[i] = NULL;
+			}
+		}
+		setlocale (LC_NUMERIC, num_locale);
+		g_free (num_locale);
+		num_locale = NULL;
 
-    /* Justification is taken from the anchor */
-    if (item->anchor == GTK_ANCHOR_NORTH_WEST ||
-	item->anchor == GTK_ANCHOR_SOUTH_WEST ||
-	item->anchor == GTK_ANCHOR_WEST)
-	    just = GTK_JUSTIFY_LEFT;
-    else if (item->anchor == GTK_ANCHOR_NORTH_EAST ||
-	     item->anchor == GTK_ANCHOR_SOUTH_EAST ||
-	     item->anchor == GTK_ANCHOR_EAST)
-	    just = GTK_JUSTIFY_RIGHT;
-    else
-	    just = GTK_JUSTIFY_CENTER;
+		/* Fall through */
+	case GREETER_ITEM_TYPE_PIXMAP:
+		for (i = 0; i < GREETER_ITEM_STATE_MAX; i++) {
+			GdkPixbuf *pb = item->data.pixmap.pixbufs[i];
+			if (pb != NULL)
+				{
+					item->data.pixmap.pixbufs[i] =
+						transform_pixbuf (pb,
+								  (item->data.pixmap.have_tint & (1<<i)), item->data.pixmap.tints[i],
+								  (double)item->data.pixmap.alphas[i] / 256.0, rect.width, rect.height);
+					g_object_unref (pb);
+				}
+		}
 
-    item->item = gnome_canvas_item_new (group,
-					GREETER_TYPE_CANVAS_TEXT,
-					"text", "",
-					"x", x1,
-					"y", y1,
-					"anchor", item->anchor,
-					"font_desc", item->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
-					"fill_color_rgba", item->data.text.colors[GREETER_ITEM_STATE_NORMAL],
-					"justification", just,
-					NULL);
+		if (item->data.pixmap.pixbufs[GREETER_ITEM_STATE_NORMAL] != NULL)
+			item->item = gnome_canvas_item_new (group,
+							    GNOME_TYPE_CANVAS_PIXBUF,
+							    "x", (gdouble) x1,
+							    "y", (gdouble) y1,
+							    "pixbuf", item->data.pixmap.pixbufs[GREETER_ITEM_STATE_NORMAL],
+							    NULL);
+		break;
+	case GREETER_ITEM_TYPE_LABEL:
+		text = gdm_common_expand_text (item->data.text.orig_text);
 
-    greeter_canvas_item_break_set_string (item,
-					  text,
-					  TRUE /* markup */,
-					  item->data.text.real_max_width,
-					  NULL /* width */,
-					  NULL /* height */,
-					  NULL /* canvas */,
-					  item->item);
-    g_free (text);
+		/* Justification is taken from the anchor */
+		if (item->anchor == GTK_ANCHOR_NORTH_WEST ||
+		    item->anchor == GTK_ANCHOR_SOUTH_WEST ||
+		    item->anchor == GTK_ANCHOR_WEST)
+			just = GTK_JUSTIFY_LEFT;
+		else if (item->anchor == GTK_ANCHOR_NORTH_EAST ||
+			 item->anchor == GTK_ANCHOR_SOUTH_EAST ||
+			 item->anchor == GTK_ANCHOR_EAST)
+			just = GTK_JUSTIFY_RIGHT;
+		else
+			just = GTK_JUSTIFY_CENTER;
 
-    /* if there is an accelerator we do an INCREDIBLE hack */
-    if (strchr (item->data.text.orig_text, '_') != NULL)
-      {
-	GreeterItemInfo *button;
-	GtkWidget *fake_button = gtk_button_new_with_mnemonic (item->data.text.orig_text);
-	gtk_widget_show (fake_button);
-	GTK_WIDGET_UNSET_FLAGS (fake_button, GTK_CAN_FOCUS);
-	gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
-			       GNOME_TYPE_CANVAS_WIDGET,
-			       "widget", fake_button,
-			       "x", (double)-999.0,
-			       "y", (double)-999.0,
-			       "height", (double)20.0,
-			       "width", (double)20.0,
-			       NULL);
-	button = item->my_button;
-	if (button == NULL)
-	  button = item;
-	g_signal_connect_data (G_OBJECT (fake_button), "clicked",
-			       G_CALLBACK (activate_button),
-			       g_strdup (button->id),
-			       (GClosureNotify)g_free,
-			       0 /* connect_flags */);
-      }
-    
-    break;
-    
-  case GREETER_ITEM_TYPE_BUTTON:
-    gtkbutton = gtk_button_new_with_mnemonic (item->data.text.orig_text);
-    gtk_widget_set_name (gtkbutton, item->id);
-    if (strcmp (ve_sure_string (item->id), "ok_button") == 0) {
-       gtk_ok_button = GTK_BUTTON (gtkbutton);
-    } else if (strcmp (ve_sure_string (item->id), "cancel_button") == 0) {
-       gtk_start_again_button = GTK_BUTTON (gtkbutton);
-    }
+		item->item = gnome_canvas_item_new (group,
+						    GREETER_TYPE_CANVAS_TEXT,
+						    "text", "",
+						    "x", x1,
+						    "y", y1,
+						    "anchor", item->anchor,
+						    "font_desc", item->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
+						    "fill_color_rgba", item->data.text.colors[GREETER_ITEM_STATE_NORMAL],
+						    "justification", just,
+						    NULL);
 
-    g_signal_connect (G_OBJECT (gtkbutton), "clicked",
-                      G_CALLBACK (greeter_item_run_button_action_callback),
-                      item->id);
+		greeter_canvas_item_break_set_string (item,
+						      text,
+						      TRUE /* markup */,
+						      item->data.text.real_max_width,
+						      NULL /* width */,
+						      NULL /* height */,
+						      NULL /* canvas */,
+						      item->item);
+		g_free (text);
 
-    item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_WIDGET,
-					"widget", gtkbutton,
-					"x", x1,
-					"y", y1,
-					"height", (double)rect.height,
-					"width", (double)rect.width,
-					NULL);
+		/* if there is an accelerator we do an INCREDIBLE hack */
+		if (strchr (item->data.text.orig_text, '_') != NULL) {
+			GreeterItemInfo *button;
+			GtkWidget *fake_button = gtk_button_new_with_mnemonic (item->data.text.orig_text);
+			gtk_widget_show (fake_button);
+			GTK_WIDGET_UNSET_FLAGS (fake_button, GTK_CAN_FOCUS);
+			gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
+					       GNOME_TYPE_CANVAS_WIDGET,
+					       "widget", fake_button,
+					       "x", (double)-999.0,
+					       "y", (double)-999.0,
+					       "height", (double)20.0,
+					       "width", (double)20.0,
+					       NULL);
+			button = item->my_button;
+			if (button == NULL)
+				button = item;
+			g_signal_connect_data (G_OBJECT (fake_button), "clicked",
+					       G_CALLBACK (activate_button),
+					       g_strdup (button->id),
+					       (GClosureNotify)g_free,
+					       0 /* connect_flags */);
+		}
 
-    break;
+		break;
 
-  case GREETER_ITEM_TYPE_ENTRY:
-    entry = gtk_entry_new ();
-    gtk_widget_set_name (entry, "user-pw-entry");
-    gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
+	case GREETER_ITEM_TYPE_BUTTON:
+		gtkbutton = gtk_button_new_with_mnemonic (item->data.text.orig_text);
+		gtk_widget_set_name (gtkbutton, item->id);
+		if (strcmp (ve_sure_string (item->id), "ok_button") == 0) {
+			gtk_ok_button = GTK_BUTTON (gtkbutton);
+		} else if (strcmp (ve_sure_string (item->id), "cancel_button") == 0) {
+			gtk_start_again_button = GTK_BUTTON (gtkbutton);
+		}
 
-    if (gdm_config_get_bool (GDM_KEY_ENTRY_INVISIBLE))
-      gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
-    else if (gdm_config_get_bool (GDM_KEY_ENTRY_CIRCLES))
-      gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
+		g_signal_connect (G_OBJECT (gtkbutton), "clicked",
+				  G_CALLBACK (greeter_item_run_button_action_callback),
+				  item->id);
 
-    gtk_widget_modify_font (entry, item->data.text.fonts[GREETER_ITEM_STATE_NORMAL]);
+		item->item = gnome_canvas_item_new (group,
+						    GNOME_TYPE_CANVAS_WIDGET,
+						    "widget", gtkbutton,
+						    "x", x1,
+						    "y", y1,
+						    "height", (double)rect.height,
+						    "width", (double)rect.width,
+						    NULL);
 
-    get_gdk_color_from_rgb (&c, item->data.text.colors[GREETER_ITEM_STATE_NORMAL]);
-    gtk_widget_modify_text (entry, GTK_STATE_NORMAL, &c);
-    
-    if (item->id != NULL && strcmp (item->id, "user-pw-entry") == 0) {
-	    /* HACK! Add a menubar, this is kind of evil isn't it,
-	     * should probably be done in the pam item setup thingie.
-	     * but this is really widget kind of thing.  I dunno where
-	     * this belongs but it's a hack here. */
-	    item->data.text.menubar = make_menubar ();
+		break;
 
-	    gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
-				   GNOME_TYPE_CANVAS_WIDGET,
-				   "widget", item->data.text.menubar,
-				   "x", (double)x1,
-				   "y", (double)y1,
-				   "height", (double)rect.height,
-				   "width", (double)rect.width,
-				   NULL);
+	case GREETER_ITEM_TYPE_ENTRY:
+			entry = gtk_entry_new ();
+			gtk_widget_set_name (entry, "user-pw-entry");
+			gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
 
-	    greeter_item_register_action_callback ("options_button",
-						   (ActionFunc)greeter_options_handler,
-						   item->data.text.menubar);
-	    
-	    /* Here add a tooltip, so that the user knows about F10 */
-	    tooltips = gtk_tooltips_new ();
-	    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (entry),
-				  _("Answer questions here and press Enter "
-				    "when done.  For a menu press F10."),
-				  NULL);
+			{
+				gboolean invisible;
+				gboolean circles;
 
-	    /* FIXME: how to make this accessible??? */
-    }
+				gdm_settings_client_get_boolean (GDM_KEY_ENTRY_INVISIBLE, &invisible);
+				gdm_settings_client_get_boolean (GDM_KEY_ENTRY_CIRCLES, &circles);
 
-    item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_WIDGET,
-					"widget", entry,
-					"x", x1,
-					"y", y1,
-					"height", (double)rect.height,
-					"width", (double)rect.width,
-					NULL);
+				if (invisible)
+					gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
+				else if (circles)
+					gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
+			}
 
-    /* cursor blinking is evil on remote displays, don't do it forever */
-    gdm_common_setup_blinking_entry (entry);
+		gtk_widget_modify_font (entry, item->data.text.fonts[GREETER_ITEM_STATE_NORMAL]);
 
-    break;
+		get_gdk_color_from_rgb (&c, item->data.text.colors[GREETER_ITEM_STATE_NORMAL]);
+		gtk_widget_modify_text (entry, GTK_STATE_NORMAL, &c);
 
-  case GREETER_ITEM_TYPE_LIST:
-    /* Note a list type must be setup later and we will add the list store
-     * to it then, depending on the type.  Likely userlist is the
-     * only type we support */
+		if (item->id != NULL && strcmp (item->id, "user-pw-entry") == 0) {
+			/* HACK! Add a menubar, this is kind of evil isn't it,
+			 * should probably be done in the pam item setup thingie.
+			 * but this is really widget kind of thing.  I dunno where
+			 * this belongs but it's a hack here. */
+			item->data.text.menubar = make_menubar ();
 
-    if (item->data.list.combo_type) {
-       list = gtk_combo_box_new_text ();
+			gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
+					       GNOME_TYPE_CANVAS_WIDGET,
+					       "widget", item->data.text.menubar,
+					       "x", (double)x1,
+					       "y", (double)y1,
+					       "height", (double)rect.height,
+					       "width", (double)rect.width,
+					       NULL);
 
-       item->item = gnome_canvas_item_new (group,
-					   GNOME_TYPE_CANVAS_WIDGET,
-					   "widget", list,
-					   "x", x1,
-					   "y", y1,
-					   "height", (double)rect.height,
-					   "width", (double)rect.width,
-					   NULL);
-    } else {
-       list = gtk_tree_view_new ();
+			greeter_item_register_action_callback ("options_button",
+							       (ActionFunc)greeter_options_handler,
+							       item->data.text.menubar);
 
-       swin = gtk_scrolled_window_new (NULL, NULL);
-       gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swin),
-    					GTK_SHADOW_NONE);
-       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swin),
-    				GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-       gtk_container_add (GTK_CONTAINER (swin), list);
+			/* Here add a tooltip, so that the user knows about F10 */
+			tooltips = gtk_tooltips_new ();
+			gtk_tooltips_set_tip (tooltips, GTK_WIDGET (entry),
+					      _("Answer questions here and press Enter "
+						"when done.  For a menu press F10."),
+					      NULL);
 
-       item->item = gnome_canvas_item_new (group,
-					   GNOME_TYPE_CANVAS_WIDGET,
-					   "widget", swin,
-					   "x", x1,
-					   "y", y1,
-					   "height", (double)rect.height,
-					   "width", (double)rect.width,
-					   NULL);
-    }
+			/* FIXME: how to make this accessible??? */
+		}
 
-    break;
-  }
+		item->item = gnome_canvas_item_new (group,
+						    GNOME_TYPE_CANVAS_WIDGET,
+						    "widget", entry,
+						    "x", x1,
+						    "y", y1,
+						    "height", (double)rect.height,
+						    "width", (double)rect.width,
+						    NULL);
 
-  if (item->item_type == GREETER_ITEM_TYPE_RECT ||
-      item->item_type == GREETER_ITEM_TYPE_SVG ||
-      item->item_type == GREETER_ITEM_TYPE_PIXMAP ||
-      item->item_type == GREETER_ITEM_TYPE_LABEL)
-    g_signal_connect (G_OBJECT (item->item), "event",
-		      G_CALLBACK (greeter_item_event_handler),
-		      item);
+		/* cursor blinking is evil on remote displays, don't do it forever */
+		gdm_common_setup_blinking_entry (entry);
+
+		break;
+
+	case GREETER_ITEM_TYPE_LIST:
+		/* Note a list type must be setup later and we will add the list store
+		 * to it then, depending on the type.  Likely userlist is the
+		 * only type we support */
+
+		if (item->data.list.combo_type) {
+			list = gtk_combo_box_new_text ();
+
+			item->item = gnome_canvas_item_new (group,
+							    GNOME_TYPE_CANVAS_WIDGET,
+							    "widget", list,
+							    "x", x1,
+							    "y", y1,
+							    "height", (double)rect.height,
+							    "width", (double)rect.width,
+							    NULL);
+		} else {
+			list = gtk_tree_view_new ();
+
+			swin = gtk_scrolled_window_new (NULL, NULL);
+			gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swin),
+							     GTK_SHADOW_NONE);
+			gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swin),
+							GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+			gtk_container_add (GTK_CONTAINER (swin), list);
+
+			item->item = gnome_canvas_item_new (group,
+							    GNOME_TYPE_CANVAS_WIDGET,
+							    "widget", swin,
+							    "x", x1,
+							    "y", y1,
+							    "height", (double)rect.height,
+							    "width", (double)rect.width,
+							    NULL);
+		}
+
+		break;
+	}
+
+	if (item->item_type == GREETER_ITEM_TYPE_RECT ||
+	    item->item_type == GREETER_ITEM_TYPE_SVG ||
+	    item->item_type == GREETER_ITEM_TYPE_PIXMAP ||
+	    item->item_type == GREETER_ITEM_TYPE_LABEL)
+		g_signal_connect (G_OBJECT (item->item), "event",
+				  G_CALLBACK (greeter_item_event_handler),
+				  item);
 }
 
 /* This is so evil it hurts */
@@ -577,7 +588,7 @@ make_ugly_long_string_with_line_breaks (const char *orig)
 			in_element = FALSE;
 		g_string_append_unichar (foo, ch);
 		if ( ! in_element)
-		g_string_append_unichar (foo, '\n');
+			g_string_append_unichar (foo, '\n');
 		p = g_utf8_next_char (p);
 		i++;
 	}
@@ -729,7 +740,7 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 			}
 			if (i >= n_chars)
 				break;
-		}	
+		}
 
 		if (attrs[ia].is_line_break && in_current_row > 0) {
 			if (append_word (str, line, word, p, max_width, textattr, canvas_item))
@@ -770,4 +781,3 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 
 	g_string_free (str, TRUE);
 }
-

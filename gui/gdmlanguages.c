@@ -31,7 +31,6 @@
 #include "gdm.h"
 #include "gdmwm.h"
 #include "gdmcommon.h"
-#include "gdmconfig.h"
 #include "gdmlanguages.h"
 
 #include "gdm-socket-protocol.h"

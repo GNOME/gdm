@@ -44,11 +44,10 @@ update_clock (gpointer data)
   return FALSE;
 }
 
-
 gboolean
 greeter_item_clock_setup (void)
 {
-  GreeterItemInfo *info;	
+  GreeterItemInfo *info;
 
   info = greeter_lookup_id ("clock");
   if (info)
@@ -60,7 +59,7 @@ greeter_item_clock_setup (void)
 void
 greeter_item_clock_update (void)
 {
-  GreeterItemInfo *info;	
+  GreeterItemInfo *info;
 
   info = greeter_lookup_id ("clock");
   if (info)

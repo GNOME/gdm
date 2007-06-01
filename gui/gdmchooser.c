@@ -54,12 +54,11 @@
 #include "gdm.h"
 #include "misc.h"
 #include "gdmwm.h"
-#include "gdmcomm.h"
 #include "gdmcommon.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
@@ -229,8 +228,10 @@ gdm_chooser_host_alloc (const char *hostname,
 	if ( ! willing)
 		return host;
 
-	hostimgdir = gdm_config_get_string (GDM_KEY_HOST_IMAGE_DIR); 
+	gdm_settings_client_get_string (GDM_KEY_HOST_IMAGE_DIR, &hostimgdir);
 	hostimg    = g_strconcat (hostimgdir, "/", hostname, NULL);
+	g_free (hostimgdir);
+
 	if (g_access (hostimg, R_OK) != 0) {
 		g_free (hostimg);
 		hostimg = g_strconcat (hostimgdir, "/", hostname, ".png", NULL);
@@ -243,9 +244,8 @@ gdm_chooser_host_alloc (const char *hostname,
 		w = gdk_pixbuf_get_width (img);
 		h = gdk_pixbuf_get_height (img);
 
-		maxw = gdm_config_get_int (GDM_KEY_MAX_ICON_WIDTH);
-		maxh = gdm_config_get_int (GDM_KEY_MAX_ICON_HEIGHT);
-
+		gdm_settings_client_get_int (GDM_KEY_MAX_ICON_WIDTH, &maxw);
+		gdm_settings_client_get_int (GDM_KEY_MAX_ICON_HEIGHT, &maxh);
 		if (w > h && w > maxw) {
 			h = h * ((gfloat) maxw / w);
 			w = maxw;
@@ -261,7 +261,7 @@ gdm_chooser_host_alloc (const char *hostname,
 								 GDK_INTERP_BILINEAR);
 		else
 			host->picture = g_object_ref (G_OBJECT (img));
-	
+
 		g_object_unref (G_OBJECT (img));
 	} else if (defhostimg != NULL) {
 		host->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defhostimg));
@@ -760,6 +760,7 @@ gdm_chooser_find_mcaddr (void)
 	/* For interfaces' list */
 	struct ifconf ifc;
 	struct ifreq *ifr = NULL;
+	char *multicast;
 
 	sock = socket (AF_INET, SOCK_DGRAM, 0);
 #ifdef SIOCGIFNUM
@@ -778,18 +779,21 @@ gdm_chooser_find_mcaddr (void)
 	if (ioctl (sock, SIOCGIFCONF, &ifc) >= 0)
 		ifr = ifc.ifc_req;
 	num = ifc.ifc_len / sizeof (struct ifreq); /* No of interfaces */
+
+	gdm_settings_client_get_string (GDM_KEY_MULTICAST_ADDR, &multicast);
+
 	for (i = 0 ; i < num ; i++) {
 		struct ifreq ifreq;
 		int ifindex;
-                                                            
+
 		memset (&ifreq, 0, sizeof (ifreq));
 		strncpy (ifreq.ifr_name, ifr[i].ifr_name, sizeof (ifreq.ifr_name));
 		ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
 		if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0)
-			gdm_common_error ("Could not get interface flags for %s\n", ifr[i].ifr_name); 
+			gdm_common_error ("Could not get interface flags for %s\n", ifr[i].ifr_name);
 		ifindex = if_nametoindex (ifr[i].ifr_name);
-                                                            
+
 		if ((!(ifreq.ifr_flags & IFF_UP) || (!(ifreq.ifr_flags & IFF_MULTICAST))) || (ifindex == 0 )) {
 			/* Not a valid interface or Not up */
 			continue;
@@ -799,12 +803,17 @@ gdm_chooser_find_mcaddr (void)
 		sin6->sin6_family = AF_INET6;
 		sin6->sin6_port = htons (XDM_UDP_PORT);
 		sin6->sin6_scope_id = ifindex;
-		inet_pton (AF_INET6, gdm_config_get_string (GDM_KEY_MULTICAST_ADDR),
+
+		inet_pton (AF_INET6,
+			   multicast,
 			   &sin6->sin6_addr);
 
 		/* bcaddr is also serving for multicast address for IPv6 */
 		bcaddr = g_slist_append (bcaddr, sin6);
 	}
+
+	g_free (multicast);
+
 }
 #endif
 
@@ -928,6 +937,7 @@ void
 gdm_chooser_xdmcp_discover (void)
 {
 	GList *hl = chooser_hosts;
+	int    scan_time;
 
 	g_free (added_host);
 	added_host = NULL;
@@ -958,7 +968,9 @@ gdm_chooser_xdmcp_discover (void)
 
 	if (scan_time_handler > 0)
 		g_source_remove (scan_time_handler);
-	scan_time_handler = g_timeout_add (gdm_config_get_int (GDM_KEY_SCAN_TIME) * 1000, 
+
+	gdm_settings_client_get_int (GDM_KEY_SCAN_TIME, &scan_time);
+	scan_time_handler = g_timeout_add (scan_time * 1000,
 					   chooser_scan_time_update, NULL);
 
 	/* Note we already used up one try */
@@ -1651,24 +1663,34 @@ gdm_chooser_gui_init (void)
 	gchar *defaulthosticon;
 	int width;
 	int height;
+	gboolean allow_add;
 
 	/* Enable theme */
 	if (RUNNING_UNDER_GDM) {
-		const char *theme_name;
+		char *theme_name;
+		char *gtkrc;
 
-		if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_GTKRC)))
-			gtk_rc_parse (gdm_config_get_string (GDM_KEY_GTKRC));
+		gdm_settings_client_get_string (GDM_KEY_GTKRC, &gtkrc);
 
-		theme_name = g_getenv ("GDM_GTK_THEME");
-		if (ve_string_empty (theme_name))
-			theme_name = gdm_config_get_string (GDM_KEY_GTK_THEME);
+		if ( ! ve_string_empty (gtkrc))
+			gtk_rc_parse (gtkrc);
+		g_free (gtkrc);
+
+		theme_name = g_strdup (g_getenv ("GDM_GTK_THEME"));
+
+		if (ve_string_empty (theme_name)) {
+			gdm_settings_client_get_string (GDM_KEY_GTK_THEME, &theme_name);
+		}
 
 		if ( ! ve_string_empty (theme_name)) {
 			gdm_set_theme (theme_name);
 		}
+
+		g_free (theme_name);
 	}
 
-	defaulthosticon = gdm_config_get_string (GDM_KEY_DEFAULT_HOST_IMG);
+	defaulthosticon = NULL;
+	gdm_settings_client_get_string (GDM_KEY_DEFAULT_HOST_IMG, &defaulthosticon);
 
 	/* Load default host image */
 	if (g_access (defaulthosticon, R_OK) != 0) {
@@ -1682,6 +1704,8 @@ gdm_chooser_gui_init (void)
 	} else {
 		defhostimg = gdk_pixbuf_new_from_file (defaulthosticon, NULL);
 	}
+
+	g_free (defaulthosticon);
 
 	/* Main window */
 	chooser_app = glade_xml_new (GDM_GLADE_DIR "/gdmchooser.glade",
@@ -1732,8 +1756,8 @@ gdm_chooser_gui_init (void)
 					      CHOOSER_LIST_LABEL_COLUMN,
 					      GTK_SORT_ASCENDING);
 
-
-	if ( ! gdm_config_get_bool (GDM_KEY_ALLOW_ADD)) {
+	gdm_settings_client_get_boolean (GDM_KEY_ALLOW_ADD, &allow_add);
+	if ( ! allow_add) {
 		GtkWidget *w = glade_xml_get_widget (chooser_app, "add_hbox");
 		gtk_widget_hide (w);
 	}
@@ -1769,93 +1793,6 @@ gdm_chooser_gui_init (void)
 	}
 }
 
-/* 
- * If new configuration keys are added to this program, make sure to add the
- * key to the gdm_read_config and gdm_reread_config functions.
- */
-static gboolean
-gdm_read_config (void)
-{
-	/* Read config data in bulk */
-	gdmcomm_comm_bulk_start ();
-
-	/*
-	 * Read all the keys at once and close sockets connection so we do
-	 * not have to keep the socket open.  
-	 */
-	gdm_config_get_string (GDM_KEY_HOSTS);
-	gdm_config_get_string (GDM_KEY_GTKRC);
-	gdm_config_get_string (GDM_KEY_GTK_THEME);
-	gdm_config_get_string (GDM_KEY_DEFAULT_HOST_IMG);
-	gdm_config_get_string (GDM_KEY_HOST_IMAGE_DIR);
-	gdm_config_get_string (GDM_KEY_MULTICAST_ADDR);
-	gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR);
-	gdm_config_get_int    (GDM_KEY_XINERAMA_SCREEN);
-	gdm_config_get_int    (GDM_KEY_MAX_ICON_WIDTH);
-	gdm_config_get_int    (GDM_KEY_MAX_ICON_HEIGHT);
-	gdm_config_get_int    (GDM_KEY_SCAN_TIME);
-	gdm_config_get_int    (GDM_KEY_BACKGROUND_TYPE);
-	gdm_config_get_bool   (GDM_KEY_ALLOW_ADD);
-	gdm_config_get_bool   (GDM_KEY_BROADCAST);
-	gdm_config_get_bool   (GDM_KEY_MULTICAST);
-
-	gdmcomm_comm_bulk_stop ();
-
-	return FALSE;
-}
-
-static gboolean
-gdm_reread_config (int sig, gpointer data)
-{
-	/* reparse config stuff here.  At least ones we care about */
-
-	/* Read config data in bulk */
-	gdmcomm_comm_bulk_start ();
-
-	/* FIXME: The following is evil, we should update on the fly rather
-	 * then just restarting */
-	/* Also we may not need to check ALL those keys but just a few */
-	if (gdm_config_reload_string (GDM_KEY_HOSTS) ||
-	    gdm_config_reload_string (GDM_KEY_GTKRC) ||
-	    gdm_config_reload_string (GDM_KEY_GTK_THEME) ||
-	    gdm_config_reload_string (GDM_KEY_DEFAULT_HOST_IMG) ||
-	    gdm_config_reload_string (GDM_KEY_HOST_IMAGE_DIR) ||
-	    gdm_config_reload_string (GDM_KEY_MULTICAST_ADDR) ||
-	    gdm_config_reload_int    (GDM_KEY_XINERAMA_SCREEN) ||
-	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_WIDTH) ||
-	    gdm_config_reload_int    (GDM_KEY_MAX_ICON_HEIGHT) ||
-	    gdm_config_reload_int    (GDM_KEY_SCAN_TIME) ||
-	    gdm_config_reload_bool   (GDM_KEY_ALLOW_ADD) ||
-	    gdm_config_reload_bool   (GDM_KEY_BROADCAST) ||
-	    gdm_config_reload_bool   (GDM_KEY_MULTICAST)) {
-
-		if (RUNNING_UNDER_GDM) {
-			/* Set busy cursor */
-			gdm_common_setup_cursor (GDK_WATCH);
-			gdm_wm_save_wm_order ();
-		}
-
-		/* we don't need to tell the slave that we're restarting
-		   it doesn't care about our state.  Unlike with the greeter */
-		execvp (stored_argv[0], stored_argv);
-		_exit (DISPLAY_REMANAGE);
-	}
-
-	/* we only use the color and do it for all types except NONE */
-	if (gdm_config_reload_string (GDM_KEY_BACKGROUND_COLOR) ||
-	    gdm_config_reload_int    (GDM_KEY_BACKGROUND_TYPE)) {
-
-		if (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE) != GDM_BACKGROUND_NONE) {
-			gdm_common_setup_background_color (gdm_config_get_string
-							   (GDM_KEY_BACKGROUND_COLOR));
-		}
-	}
-
-	gdmcomm_comm_bulk_stop ();
-
-	return TRUE;
-}
-
 
 static void
 gdm_chooser_signals_init (void)
@@ -1864,7 +1801,7 @@ gdm_chooser_signals_init (void)
 	struct sigaction term;
 	sigset_t mask;
 
-	ve_signal_add (SIGHUP, gdm_reread_config, NULL);
+	/*ve_signal_add (SIGHUP, gdm_reread_config, NULL);*/
 
 	hup.sa_handler = ve_signal_notify;
 	hup.sa_flags = 0;
@@ -1936,9 +1873,9 @@ gdm_event (GSignalInvocationHint *ihint,
 		event->button.button = 1;
 
 	return TRUE;
-}      
+}
 
-int 
+int
 main (int argc, char *argv[])
 {
 	gchar *GdmHosts;
@@ -1947,6 +1884,9 @@ main (int argc, char *argv[])
 	const char *gdm_version;
 	int i;
 	guint sid;
+	gboolean broadcast;
+	gboolean multicast;
+	gboolean allow_add;
 
 	stored_argv = g_new0 (char *, argc + 1);
 	for (i = 0; i < argc; i++)
@@ -1970,16 +1910,22 @@ main (int argc, char *argv[])
 
 	glade_init ();
 
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                exit (1);
+        }
+
 	gdm_common_log_init ();
-	gdm_common_log_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
+	/*gdm_common_log_set_debug (TRUE);*/
 
-	/* Read all configuration at once, so the values get cached */
-	gdm_read_config ();
+	GdmHosts = NULL;
+	gdm_settings_client_get_string (GDM_KEY_HOSTS, &GdmHosts);
 
-	GdmHosts = g_strdup (gdm_config_get_string (GDM_KEY_HOSTS));
+	gdm_settings_client_get_boolean (GDM_KEY_BROADCAST, &broadcast);
+	gdm_settings_client_get_boolean (GDM_KEY_MULTICAST, &multicast);
+
 
 	/* if broadcasting, then append BROADCAST to hosts */
-	if (gdm_config_get_bool (GDM_KEY_BROADCAST)) {
+	if (broadcast) {
 		gchar *tmp;
 		if (ve_string_empty (GdmHosts)) {
 			tmp = "BROADCAST";
@@ -1991,7 +1937,7 @@ main (int argc, char *argv[])
 	}
 
 #ifdef ENABLE_IPV6
-	if (gdm_config_get_bool (GDM_KEY_MULTICAST)) {
+	if (multicast) {
 		gchar *tmp;
 		if (ve_string_empty (GdmHosts)) {
 			tmp = "MULTICAST";
@@ -2003,8 +1949,12 @@ main (int argc, char *argv[])
 	}
 #endif
 
-	if (RUNNING_UNDER_GDM)
-		gdm_wm_screen_init (gdm_config_get_int (GDM_KEY_XINERAMA_SCREEN));
+	if (RUNNING_UNDER_GDM) {
+		int screen;
+		gdm_settings_client_get_int (GDM_KEY_XINERAMA_SCREEN, &screen);
+
+		gdm_wm_screen_init (screen);
+	}
 
 	gdm_version = g_getenv ("GDM_VERSION");
 
@@ -2012,8 +1962,17 @@ main (int argc, char *argv[])
 	/* the background unfilled.   The cursor should be a watch already */
 	/* but just in case */
 	if (RUNNING_UNDER_GDM) {
-		if (gdm_config_get_int (GDM_KEY_BACKGROUND_TYPE) != GDM_BACKGROUND_NONE)
-			gdm_common_setup_background_color (gdm_config_get_string (GDM_KEY_BACKGROUND_COLOR));
+		int backtype;
+		char *color;
+
+		backtype = 0;
+		color = NULL;
+
+		gdm_settings_client_get_int (GDM_KEY_BACKGROUND_TYPE, &backtype);
+		gdm_settings_client_get_string (GDM_KEY_BACKGROUND_COLOR, &color);
+
+		if (backtype != GDM_BACKGROUND_NONE)
+			gdm_common_setup_background_color (color);
 
 		gdm_common_setup_cursor (GDK_WATCH);
 	}
@@ -2051,7 +2010,7 @@ main (int argc, char *argv[])
 
 		return EXIT_SUCCESS;
 	}
-    
+
 	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-xnest.png", NULL);
 
 	gdm_chooser_gui_init ();
@@ -2094,7 +2053,8 @@ main (int argc, char *argv[])
 		gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
 	}
 
-	if (gdm_config_get_bool (GDM_KEY_ALLOW_ADD))
+	gdm_settings_client_get_boolean (GDM_KEY_ALLOW_ADD, &allow_add);
+	if (allow_add)
 		gtk_widget_grab_focus (add_entry);
 
 	gdm_chooser_add_entry_changed ();

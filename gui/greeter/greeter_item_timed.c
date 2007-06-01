@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,11 +24,11 @@
 #include <glib/gi18n.h>
 
 #include "gdm.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
 #include "gdm-socket-protocol.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
@@ -39,13 +41,12 @@ static guint timed_handler_id = 0;
 static void
 greeter_item_timed_update (void)
 {
-  GreeterItemInfo *info;
+	GreeterItemInfo *info;
 
-  info = greeter_lookup_id ("timed-label");
-  if (info != NULL)
-    {
-      greeter_item_update_text (info);
-    }
+	info = greeter_lookup_id ("timed-label");
+	if (info != NULL) {
+		greeter_item_update_text (info);
+	}
 }
 
 /*
@@ -55,15 +56,14 @@ greeter_item_timed_update (void)
 static gboolean
 gdm_timer (gpointer data)
 {
-  greeter_item_timed_update ();
-  gdm_timed_delay--;
-  if (gdm_timed_delay <= 0)
-    {
-      /* timed interruption */
-      printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
-      fflush (stdout);
-    }
-  return TRUE;
+	greeter_item_timed_update ();
+	gdm_timed_delay--;
+	if (gdm_timed_delay <= 0) {
+		/* timed interruption */
+		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+		fflush (stdout);
+	}
+	return TRUE;
 }
 
 /*
@@ -77,80 +77,92 @@ gdm_timer_up_delay (GSignalInvocationHint *ihint,
 		    const GValue	  *param_values,
 		    gpointer		   data)
 {
-  int timeddelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+	int timeddelay;
 
-  if (gdm_timed_delay < 30)
-    gdm_timed_delay = 30;
-  if (gdm_timed_delay < timeddelay)
-    gdm_timed_delay = timeddelay;
-  return TRUE;
-}      
+	gdm_settings_client_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &timeddelay);
+
+	if (gdm_timed_delay < 30)
+		gdm_timed_delay = 30;
+	if (gdm_timed_delay < timeddelay)
+		gdm_timed_delay = timeddelay;
+	return TRUE;
+}
 
 gboolean
 greeter_item_timed_setup (void)
 {
+	char *timed_login;
 
-  /* if in timed mode, delay timeout on keyboard or menu activity */
-  if ( ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)))
-    {
-      guint sid;
+	/* if in timed mode, delay timeout on keyboard or menu activity */
+	gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN, &timed_login);
 
-      g_type_class_ref (GTK_TYPE_MENU_ITEM);
+	if ( ! ve_string_empty (timed_login)) {
+		guint sid;
 
-      sid = g_signal_lookup ("activate",
-			     GTK_TYPE_MENU_ITEM);
-      g_signal_add_emission_hook (sid,
-				  0 /* detail */,
-				  gdm_timer_up_delay,
-				  NULL /* data */,
-				  NULL /* destroy_notify */);
+		g_type_class_ref (GTK_TYPE_MENU_ITEM);
 
-      sid = g_signal_lookup ("key_press_event",
-			     GTK_TYPE_WIDGET);
-      g_signal_add_emission_hook (sid,
-				  0 /* detail */,
-				  gdm_timer_up_delay,
-				  NULL /* data */,
-				  NULL /* destroy_notify */);
-      sid = g_signal_lookup ("button_press_event",
-			     GTK_TYPE_WIDGET);
-      g_signal_add_emission_hook (sid,
-				  0 /* detail */,
-				  gdm_timer_up_delay,
-				  NULL /* data */,
-				  NULL /* destroy_notify */);
-    }
+		sid = g_signal_lookup ("activate",
+				       GTK_TYPE_MENU_ITEM);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_timer_up_delay,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
 
-  return TRUE;
+		sid = g_signal_lookup ("key_press_event",
+				       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_timer_up_delay,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+		sid = g_signal_lookup ("button_press_event",
+				       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_timer_up_delay,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+	}
+
+	g_free (timed_login);
+
+	return TRUE;
 }
 
 void
 greeter_item_timed_start (void)
 {
-  int timeddelay = gdm_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+	int timeddelay;
+	gboolean enabled;
+	char *timed_login;
 
-  if (timed_handler_id == 0 &&
-      gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
-      ! ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) &&
-      timeddelay > 0)
-    {
-      gdm_timed_delay  = timeddelay;
-      timed_handler_id = g_timeout_add (1000, gdm_timer, NULL);
-    }
+	gdm_settings_client_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &timeddelay);
+	gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
+	gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN, &timed_login);
+
+	if (timed_handler_id == 0 &&
+	    enabled &&
+	    ! ve_string_empty (timed_login) &&
+	    timeddelay > 0) {
+		gdm_timed_delay  = timeddelay;
+		timed_handler_id = g_timeout_add (1000, gdm_timer, NULL);
+	}
+
+	g_free (timed_login);
 }
 
 void
 greeter_item_timed_stop (void)
 {
-  if (timed_handler_id != 0)
-    {
-      g_source_remove (timed_handler_id);
-      timed_handler_id = 0;
-    }
+	if (timed_handler_id != 0) {
+		g_source_remove (timed_handler_id);
+		timed_handler_id = 0;
+	}
 }
 
 gboolean
 greeter_item_timed_is_timed (void)
 {
-  return timed_handler_id != 0;
+	return timed_handler_id != 0;
 }

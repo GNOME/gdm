@@ -2,27 +2,27 @@
  *
  * GDM - The GNOME Display Manager
  * Copyright (c) 2001 Queen of England
- *    
+ *
  * GDMXnestChooser - run X nest with a chooser using xdmcp
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *   
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *   
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- * 
+ *
  */
 
 #include "config.h"
-#include <glib/gi18n.h>
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -39,13 +39,14 @@
 #include <X11/Xlib.h>
 #include <X11/Xauth.h>
 
+#include <glib/gi18n.h>
+
 #include "gdm.h"
-#include "gdmcomm.h"
 #include "gdmcommon.h"
-#include "gdmconfig.h"
 
 #include "gdm-common.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 static gchar **args_remaining;
 static pid_t xnest_pid = 0;
@@ -399,13 +400,14 @@ setup_cookie (int disp)
     FILE *af;
     Xauth *xa;
     const char *filename = XauFileName ();
+
     if (filename == NULL)
 	    return;
 
     if (XauLockAuth (filename, 3, 3, 0) != LOCK_SUCCESS)
 	    return;
 
-    cookie = gdmcomm_get_a_cookie (TRUE /* binary */);
+    cookie = gdm_common_get_a_cookie (TRUE /* binary */);
     if (cookie == NULL) {
 	    XauUnlockAuth (filename);
 	    return;
@@ -500,16 +502,16 @@ main (int argc, char *argv[])
 		host = args_remaining[0];
 	g_strfreev (args_remaining);
 
-	/* Read config data in bulk */
-	gdmcomm_comm_bulk_start ();
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                exit (1);
+        }
 
-	xdmcp_enabled  = gdm_config_get_bool (GDM_KEY_XDMCP);
-	honor_indirect = gdm_config_get_bool (GDM_KEY_INDIRECT);
+	gdm_settings_client_get_boolean (GDM_KEY_XDMCP, &xdmcp_enabled);
+	gdm_settings_client_get_boolean (GDM_KEY_INDIRECT, &honor_indirect);
+	xnest = NULL;
+	gdm_settings_client_get_string (GDM_KEY_XNEST, &xnest);
+
 	pidfile        = GDM_PID_FILE;
-	xnest          = gdm_config_get_string (GDM_KEY_XNEST);
-
-	/* At this point we are done using the socket, so close it */
-	gdmcomm_comm_bulk_stop ();
 
 	/* complex and wonderous way to get the exec vector */
 	execvec = make_us_an_exec_vector (xnest);

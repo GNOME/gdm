@@ -79,7 +79,6 @@ greeter_is_capslock_on (void)
   return (states.locked_mods & LockMask) != 0;
 }
 
-
 static void
 capslock_update (gboolean new_state)
 {
@@ -87,7 +86,7 @@ capslock_update (gboolean new_state)
   GnomeCanvasItem *item;
 
   caps_lock_state = new_state;
-  
+
   info = greeter_lookup_id ("caps-lock-warning");
 
   if (info)
@@ -116,18 +115,16 @@ cl_key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
   new_state = greeter_is_capslock_on ();
   if (new_state != caps_lock_state)
     capslock_update (new_state);
-  
+
   return FALSE;
 }
-
 
 gboolean
 greeter_item_capslock_setup (GtkWidget *window)
 {
   capslock_update (greeter_is_capslock_on ());
-  
+
   g_signal_connect (G_OBJECT (window), "key_press_event",
 		    G_CALLBACK (cl_key_press_event), NULL);
   return TRUE;
 }
-

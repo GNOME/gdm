@@ -1,4 +1,6 @@
-/* GDM - The GNOME Display Manager
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,12 +29,12 @@
 
 #include "gdm.h"
 #include "gdmwm.h"
-#include "gdmconfig.h"
 #include "gdmcommon.h"
 #include "misc.h"
 
 #include "gdm-common.h"
-#include "gdm-daemon-config-keys.h"
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
 
 #include "greeter_item.h"
 #include "greeter_configuration.h"
@@ -48,202 +50,209 @@ GreeterItemInfo *
 greeter_item_info_new (GreeterItemInfo *parent,
 		       GreeterItemType  type)
 {
-  GreeterItemInfo *info;
-  int i;
+	GreeterItemInfo *info;
+	int i;
 
-  info = g_new0 (GreeterItemInfo, 1);
+	info = g_new0 (GreeterItemInfo, 1);
 
-  info->item_type = type;
-  info->parent = parent;
+	info->item_type = type;
+	info->parent = parent;
 
-  info->anchor = GTK_ANCHOR_NW;
-  info->x_type = GREETER_ITEM_POS_UNSET;
-  info->y_type = GREETER_ITEM_POS_UNSET;
-  info->width_type = GREETER_ITEM_SIZE_UNSET;
-  info->height_type = GREETER_ITEM_SIZE_UNSET;
+	info->anchor = GTK_ANCHOR_NW;
+	info->x_type = GREETER_ITEM_POS_UNSET;
+	info->y_type = GREETER_ITEM_POS_UNSET;
+	info->width_type = GREETER_ITEM_SIZE_UNSET;
+	info->height_type = GREETER_ITEM_SIZE_UNSET;
 
-  if (type != GREETER_ITEM_TYPE_LIST)
-    {
-      for (i=0; i< GREETER_ITEM_STATE_MAX; i++)
-        {
-	  /* these happen to coincide for all
-	     items but list */
-          info->data.rect.alphas[i] = 0xff;
-        }
-    }
+	if (type != GREETER_ITEM_TYPE_LIST) {
+		for (i=0; i< GREETER_ITEM_STATE_MAX; i++) {
+			/* these happen to coincide for all
+			   items but list */
+			info->data.rect.alphas[i] = 0xff;
+		}
+	}
 
-  info->box_orientation = GTK_ORIENTATION_VERTICAL;
-  
-  info->state = GREETER_ITEM_STATE_NORMAL;
-  info->base_state = GREETER_ITEM_STATE_NORMAL;
+	info->box_orientation = GTK_ORIENTATION_VERTICAL;
 
-  info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
+	info->state = GREETER_ITEM_STATE_NORMAL;
+	info->base_state = GREETER_ITEM_STATE_NORMAL;
 
-  info->canvasbutton = FALSE;
-  info->gtkbutton    = FALSE;
-  info->background   = FALSE;
+	info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
 
-  if (GREETER_ITEM_TYPE_IS_TEXT (info))
-    {
-      info->data.text.max_width = 0xffff;
-      info->data.text.max_screen_percent_width = 90;
-      info->data.text.real_max_width = 0;
-      info->data.text.menubar= NULL;
-    }
+	info->canvasbutton = FALSE;
+	info->gtkbutton    = FALSE;
+	info->background   = FALSE;
 
-  return info;
+	if (GREETER_ITEM_TYPE_IS_TEXT (info)) {
+		info->data.text.max_width = 0xffff;
+		info->data.text.max_screen_percent_width = 90;
+		info->data.text.real_max_width = 0;
+		info->data.text.menubar= NULL;
+	}
+
+	return info;
 }
 
 void
 greeter_item_info_free (GreeterItemInfo *info)
 {
-  int i;
-  GList *list;
+	int i;
+	GList *list;
 
-  for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
-    {
-      if (GREETER_ITEM_TYPE_IS_PIXMAP (info))
-        {
-          if (info->data.pixmap.pixbufs[i] != NULL)
-            g_object_unref (G_OBJECT (info->data.pixmap.pixbufs[i]));
-          if (info->data.pixmap.files[i] != NULL)
-            g_free (info->data.pixmap.files[i]);
+	for (i = 0; i < GREETER_ITEM_STATE_MAX; i++) {
+		if (GREETER_ITEM_TYPE_IS_PIXMAP (info)) {
+			if (info->data.pixmap.pixbufs[i] != NULL)
+				g_object_unref (G_OBJECT (info->data.pixmap.pixbufs[i]));
+			if (info->data.pixmap.files[i] != NULL)
+				g_free (info->data.pixmap.files[i]);
+		} else if (GREETER_ITEM_TYPE_IS_TEXT (info)) {
+			if (info->data.text.fonts[i] != NULL)
+				pango_font_description_free (info->data.text.fonts[i]);
+		}
 	}
-      else if (GREETER_ITEM_TYPE_IS_TEXT (info))
-        {
-          if (info->data.text.fonts[i] != NULL)
-            pango_font_description_free (info->data.text.fonts[i]);
-	}
-    }
 
-  list = info->fixed_children;
-  info->fixed_children = NULL;
-  g_list_foreach (list, (GFunc) greeter_item_info_free, NULL);
-  g_list_free (list);
+	list = info->fixed_children;
+	info->fixed_children = NULL;
+	g_list_foreach (list, (GFunc) greeter_item_info_free, NULL);
+	g_list_free (list);
 
-  list = info->box_children;
-  info->box_children = NULL;
-  g_list_foreach (list, (GFunc) greeter_item_info_free, NULL);
-  g_list_free (list);
+	list = info->box_children;
+	info->box_children = NULL;
+	g_list_foreach (list, (GFunc) greeter_item_info_free, NULL);
+	g_list_free (list);
 
-  if (GREETER_ITEM_TYPE_IS_TEXT (info))
-    g_free (info->data.text.orig_text);
+	if (GREETER_ITEM_TYPE_IS_TEXT (info))
+		g_free (info->data.text.orig_text);
 
-  /* FIXME: what about custom list items! */
+	/* FIXME: what about custom list items! */
 
-  g_free (info->id);
-  g_free (info->show_type);
+	g_free (info->id);
+	g_free (info->show_type);
 
-  memset (info, 0, sizeof (GreeterItemInfo));
-  g_free (info);
+	memset (info, 0, sizeof (GreeterItemInfo));
+	g_free (info);
 }
 
 void
 greeter_item_update_text (GreeterItemInfo *info)
 {
-  char *text;
-  if (info && info->item &&
-      GNOME_IS_CANVAS_TEXT (info->item) &&
-      GREETER_ITEM_TYPE_IS_TEXT (info))
-    {
-      text = gdm_common_expand_text (info->data.text.orig_text);
+	char *text;
+	if (info && info->item &&
+	    GNOME_IS_CANVAS_TEXT (info->item) &&
+	    GREETER_ITEM_TYPE_IS_TEXT (info)) {
+		text = gdm_common_expand_text (info->data.text.orig_text);
 
-      g_object_set (G_OBJECT (info->item),
-		    "markup", text,
-		    NULL);
+		g_object_set (G_OBJECT (info->item),
+			      "markup", text,
+			      NULL);
 
-      g_free (text);
-    }
+		g_free (text);
+	}
 
 }
 
 gboolean
 greeter_item_is_visible (GreeterItemInfo *info)
 {
-  static gboolean checked = FALSE;
-  static gboolean GDM_IS_LOCAL = FALSE;
-  static gboolean GDM_FLEXI_SERVER = FALSE;
-  gboolean sysmenu = FALSE;	
-  gint i = 0;
+	static gboolean checked = FALSE;
+	static gboolean GDM_IS_LOCAL = FALSE;
+	static gboolean GDM_FLEXI_SERVER = FALSE;
+	gboolean sysmenu = FALSE;
+	gboolean config_available;
+	gboolean chooser_button;
+	gboolean add_modules;
+	gboolean timed_login_enable;
+	char    *timed_login;
+	gint i = 0;
 
-  if ( ! checked)
-    {
-      if (g_getenv ("GDM_IS_LOCAL") != NULL)
-	GDM_IS_LOCAL = TRUE;
-      if (g_getenv ("GDM_FLEXI_SERVER") != NULL)
-	GDM_FLEXI_SERVER = TRUE;
-    }
+	if ( ! checked) {
+		if (g_getenv ("GDM_IS_LOCAL") != NULL)
+			GDM_IS_LOCAL = TRUE;
+		if (g_getenv ("GDM_FLEXI_SERVER") != NULL)
+			GDM_FLEXI_SERVER = TRUE;
+	}
 
-  if (GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
-      ! (info->show_modes & GREETER_ITEM_SHOW_CONSOLE_FIXED))
-    return FALSE;
-  if (GDM_IS_LOCAL && GDM_FLEXI_SERVER &&
-      ! (info->show_modes & GREETER_ITEM_SHOW_CONSOLE_FLEXI))
-    return FALSE;
-  if ( ! GDM_IS_LOCAL && GDM_FLEXI_SERVER &&
-       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE_FLEXI))
-    return FALSE;
-  if ( ! GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
-       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
-    return FALSE;
+	if (GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
+	    ! (info->show_modes & GREETER_ITEM_SHOW_CONSOLE_FIXED))
+		return FALSE;
+	if (GDM_IS_LOCAL && GDM_FLEXI_SERVER &&
+	    ! (info->show_modes & GREETER_ITEM_SHOW_CONSOLE_FLEXI))
+		return FALSE;
+	if ( ! GDM_IS_LOCAL && GDM_FLEXI_SERVER &&
+	     ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE_FLEXI))
+		return FALSE;
+	if ( ! GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
+	     ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
+		return FALSE;
 
-  if ((gdm_wm_screen.width < info->minimum_required_screen_width) ||
-      (gdm_wm_screen.height < info->minimum_required_screen_height))
-    return FALSE;
+	if ((gdm_wm_screen.width < info->minimum_required_screen_width) ||
+	    (gdm_wm_screen.height < info->minimum_required_screen_height))
+		return FALSE;
 
-  sysmenu = gdm_config_get_bool (GDM_KEY_SYSTEM_MENU);
+	gdm_settings_client_get_boolean (GDM_KEY_SYSTEM_MENU, &sysmenu);
 
- /*
-  * Disable Configuration if using accessibility (AddGtkModules) since
-  * using it with accessibility causes a hang.
-  */
-  if (( ! gdm_config_get_bool (GDM_KEY_CONFIG_AVAILABLE) ||
-	gdm_config_get_bool (GDM_KEY_ADD_GTK_MODULES) ||
-        ! sysmenu ||
-        ! GdmConfiguratorFound) &&
-      (info->show_type != NULL &&
-       strcmp (info->show_type, "config") == 0))
-	  return FALSE;
+	/*
+	 * Disable Configuration if using accessibility (AddGtkModules) since
+	 * using it with accessibility causes a hang.
+	 */
+	gdm_settings_client_get_boolean (GDM_KEY_CONFIG_AVAILABLE, &config_available);
+	gdm_settings_client_get_boolean (GDM_KEY_ADD_GTK_MODULES, &add_modules);
+	gdm_settings_client_get_boolean (GDM_KEY_CHOOSER_BUTTON, &chooser_button);
+	gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &timed_login_enable);
 
-  if (( ! gdm_config_get_bool (GDM_KEY_CHOOSER_BUTTON) || ! sysmenu) &&
-      (info->show_type != NULL &&
-       strcmp (info->show_type, "chooser") == 0))
-	  return FALSE;
+	if (( ! config_available ||
+	      add_modules ||
+	      ! sysmenu ||
+	      ! GdmConfiguratorFound) &&
+	    (info->show_type != NULL &&
+	     strcmp (info->show_type, "config") == 0))
+		return FALSE;
 
-  if ( ! sysmenu && info->show_type != NULL &&
-      strcmp (info->show_type, "system") == 0)
-	  return FALSE;
+	if (( ! chooser_button || ! sysmenu) &&
+	    (info->show_type != NULL &&
+	     strcmp (info->show_type, "chooser") == 0))
+		return FALSE;
 
-  if (( ! sysmenu || ! GdmHaltFound) &&
-      (info->show_type != NULL &&
-       strcmp (info->show_type, "halt") == 0))
-	  return FALSE;
-  if (( ! sysmenu || ! GdmRebootFound) &&
-      (info->show_type != NULL &&
-       strcmp (info->show_type, "reboot") == 0))
-	  return FALSE;
-  if (( ! sysmenu || ! GdmSuspendFound) &&
-      (info->show_type != NULL &&
-       strcmp (info->show_type, "suspend") == 0))
-	  return FALSE;
+	if ( ! sysmenu && info->show_type != NULL &&
+	     strcmp (info->show_type, "system") == 0)
+		return FALSE;
 
-  for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {      
-      gchar * key_string = g_strdup_printf ("custom_cmd%d", i);
-      if (( ! sysmenu || ! GdmCustomCmdsFound[i]) &&
-          (info->show_type != NULL &&
-           strcmp (info->show_type, key_string) == 0)) {
-	      g_free (key_string);
-	      return FALSE;
-      }
-      g_free (key_string);
-  }
+	if (( ! sysmenu || ! GdmHaltFound) &&
+	    (info->show_type != NULL &&
+	     strcmp (info->show_type, "halt") == 0))
+		return FALSE;
+	if (( ! sysmenu || ! GdmRebootFound) &&
+	    (info->show_type != NULL &&
+	     strcmp (info->show_type, "reboot") == 0))
+		return FALSE;
+	if (( ! sysmenu || ! GdmSuspendFound) &&
+	    (info->show_type != NULL &&
+	     strcmp (info->show_type, "suspend") == 0))
+		return FALSE;
 
-  if (( ! gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) ||
-          ve_string_empty (gdm_config_get_string (GDM_KEY_TIMED_LOGIN)) ||
-          NULL == g_getenv("GDM_TIMED_LOGIN_OK")) &&
-      (info->show_type != NULL &&
-       strcmp (info->show_type, "timed") == 0))
-	  return FALSE;
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
+		gchar * key_string = g_strdup_printf ("custom_cmd%d", i);
+		if (( ! sysmenu || ! GdmCustomCmdsFound[i]) &&
+		    (info->show_type != NULL &&
+		     strcmp (info->show_type, key_string) == 0)) {
+			g_free (key_string);
+			return FALSE;
+		}
+		g_free (key_string);
+	}
 
-  return TRUE;
+	gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN, &timed_login);
+
+	if (( ! timed_login_enable ||
+	      ve_string_empty (timed_login) ||
+	      NULL == g_getenv("GDM_TIMED_LOGIN_OK")) &&
+	    (info->show_type != NULL &&
+	     strcmp (info->show_type, "timed") == 0)) {
+		g_free (timed_login);
+		return FALSE;
+	}
+
+	g_free (timed_login);
+
+	return TRUE;
 }
