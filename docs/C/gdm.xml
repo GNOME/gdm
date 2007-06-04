@@ -6545,7 +6545,12 @@ homogeneous=&quot;bool&quot;&gt;
 
 	<para>
           To use a different background for login transition than the one 
-	  used for login, insert a &quot;item&quot; node with &quot;background&quot; property set to &quot;true&quot; to draw login transition background before &quot;item&quot; node (without any &quot;background&quot; property) used for greeter background. For instance :
+	  used for login, the theme should specify two item nodes (which
+          could contain pixmaps or svg images, for example).  The item
+          which corresponds to the greeter background should not have the
+          &quot;background&quot; property while the item which corresponds
+          to the transition background should have the &quot;background&quot;
+          property.  For instance :
 	</para>
 <screen>
 &lt;?xml version="1.0" encoding=&quot;UTF-8&quot;?&gt;
