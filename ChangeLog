@@ -1,3 +1,10 @@
+2007-06-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/Makefile.am, gui/greeter/Makefile.am: Add -lfontconfig to
+	  programs that link against gui/libgdmcommon.a since it now
+	  contains FontConfig code, due to fix for bug #426653.  On
+	  Solaris it is necessary to not link libraries implicitely.
+
 2007-06-04  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
 
 	* gui/greeter/greeter_item.c: (greeter_item_is_visible):

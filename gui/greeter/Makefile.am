@@ -89,7 +89,8 @@ gdmgreeter_LDADD = \
 	$(X_EXTRA_LIBS)		\
 	$(XINERAMA_LIBS)	\
 	$(X_LIBS)		\
-	-lX11
+	-lX11			\
+	-lfontconfig
 
 EXTRA_DIST = \
 	gdmthemetester.in \

@@ -114,6 +114,7 @@ gdmchooser_LDADD = \
 	$(X_LIBS)		\
 	$(XDMCP_LIBS)		\
 	-lX11			\
+	-lfontconfig		\
 	$(NULL)
 
 gdmlogin_LDADD = \
@@ -132,6 +133,7 @@ gdmlogin_LDADD = \
 	$(XINERAMA_LIBS)	\
 	$(X_LIBS)		\
 	-lX11			\
+	-lfontconfig		\
 	$(NULL)
 
 # LIBGNOMEUI should be removed from gdmsetup at some point.
@@ -155,6 +157,7 @@ gdmsetup_LDADD = \
 	$(X_LIBS)		\
 	-lXau			\
 	-lX11			\
+	-lfontconfig		\
 	$(NULL)
 
 gdmphotosetup_LDADD = \
@@ -167,7 +170,8 @@ gdmphotosetup_LDADD = \
 	$(GDKPIXBUF_LIBS)	\
 	$(INTLLIBS)		\
 	-lX11			\
-	$(top_builddir)/common/libgdmcommon.a	\
+	-lfontconfig		\
+	$(top_builddir)/common/libgdmcommon.a \
 	$(NULL)
 
 gdmXnestchooser_LDADD = \
@@ -177,11 +181,12 @@ gdmXnestchooser_LDADD = \
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
-	$(top_builddir)/common/libgdmcommon.a \
 	$(EXTRA_XNEST_LIBS)	\
 	$(X_LIBS)		\
 	-lXau			\
 	-lX11			\
+	-lfontconfig		\
+	$(top_builddir)/common/libgdmcommon.a \
 	$(NULL)
 
 gdmflexiserver_LDADD = \
@@ -196,6 +201,7 @@ gdmflexiserver_LDADD = \
 	$(X_LIBS)		\
 	-lX11			\
 	-lXau			\
+	-lfontconfig		\
 	$(NULL)
 
 gdmdynamic_LDADD = 		\
@@ -210,6 +216,7 @@ gdmdynamic_LDADD = 		\
 	$(X_LIBS)		\
 	-lX11			\
 	-lXau			\
+	-lfontconfig		\
 	$(NULL)
 
 Settingsdir = $(datadir)/gdm/applications
