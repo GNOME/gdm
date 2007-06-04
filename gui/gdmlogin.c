@@ -2096,13 +2096,6 @@ key_release_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
 {
 	const char *login_string;
 
-	if ((event->keyval == GDK_Tab ||
-	     event->keyval == GDK_KP_Tab) &&
-	    (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0) {
-		gdm_login_enter (entry);
-		return TRUE;
-	}
-
 	/*
 	 * Set ok button to sensitive only if there are characters in
 	 * the entry field

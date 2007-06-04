@@ -1,5 +1,14 @@
 2007-06-04  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmlogin.c, gui/greeter/greeter_item_pam.c: No longer 
+	  accept Tab as Enter, backing out fix for bug #127339.  For
+	  a11y purposes, it is better to be able to let users navigate
+	  to other widgets via the Tab key.  Patch by Patrick Wade
+	  <Patrick.Wade@sun.com> and by myself.  This fixes bug
+	  #433495.
+
+2007-06-04  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmlanguages.c, gui/gdmcommon.[ch]: Now only display languages
 	  where the locale is actually installed on the machine.  Fixes bug
 	  #426653.  Patch by Ray Strode <rstrode@redhat.com>.
