@@ -32,6 +32,8 @@
 #include <sys/types.h>
 #include <signal.h>
 
+#include <fontconfig/fontconfig.h>
+
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
@@ -928,3 +930,95 @@ gdm_common_expand_text (const gchar *text)
 	return g_string_free (str, FALSE);
 }
 
+typedef enum
+{
+  LOCALE_UP_TO_LANGUAGE = 0,
+  LOCALE_UP_TO_COUNTRY,
+  LOCALE_UP_TO_ENCODING,
+  LOCALE_UP_TO_MODIFIER,
+} LocaleScope;
+
+static char *
+get_less_specific_locale (const char *locale,
+                          LocaleScope scope)
+{
+  char *generalized_locale;
+  char *end;
+
+  generalized_locale = strdup (locale);
+
+  end = strchr (generalized_locale, '_');
+
+  if (end != NULL && scope <= LOCALE_UP_TO_LANGUAGE)
+    {
+      *end = '\0';
+      return generalized_locale;
+    }
+
+  end = strchr (generalized_locale, '.');
+
+  if (end != NULL && scope <= LOCALE_UP_TO_COUNTRY)
+    {
+      *end = '\0';
+      return generalized_locale;
+    }
+
+  end = strchr (generalized_locale, '@');
+
+  if (end != NULL && scope <= LOCALE_UP_TO_ENCODING)
+    {
+      *end = '\0';
+      return generalized_locale;
+    }
+
+  return generalized_locale;
+}
+
+gboolean
+gdm_common_locale_is_displayable (const gchar *locale)
+{
+  char *language_code;
+  gboolean is_displayable;
+
+  FcPattern *pattern;
+  FcObjectSet *object_set;
+  FcFontSet *font_set;
+
+  is_displayable = FALSE;
+  pattern = NULL;
+  object_set = NULL;
+  font_set = NULL;
+
+  language_code = get_less_specific_locale (locale, LOCALE_UP_TO_LANGUAGE);
+
+  pattern = FcPatternBuild (NULL, FC_LANG, FcTypeString, language_code, NULL);
+
+  if (pattern == NULL)
+    goto done;
+
+  object_set = FcObjectSetBuild (NULL, NULL);
+
+  if (object_set == NULL)
+    goto done;
+
+  font_set = FcFontList (NULL, pattern, object_set);
+
+  if (font_set == NULL)
+    goto done;
+
+  is_displayable = (font_set->nfont > 0);
+
+done:
+
+  if (font_set != NULL)
+    FcFontSetDestroy (font_set);
+
+  if (object_set != NULL)
+    FcObjectSetDestroy (object_set);
+
+  if (pattern != NULL)
+    FcPatternDestroy (pattern);
+
+  g_free (language_code);
+  return is_displayable;
+}

@@ -701,6 +701,11 @@ gdm_lang_initialize_model (gchar * locale_file)
 
       li->data = NULL;
 
+      if (!gdm_common_locale_is_displayable (lang)) {
+        g_free (lang);
+        continue;
+      }
+
       name = gdm_lang_name (lang,
 			    FALSE /* never_encoding */,
 			    TRUE /* no_group */,
