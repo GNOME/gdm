@@ -5577,39 +5577,31 @@ Answers:
         <title><command>gdmdynamic</command> Command Line Options</title>
 
         <para>
-         The <command>gdmdynamic</command> command which creates, runs, and
-         removes displays (X servers) on demand.
-        </para>
-
-        <para>
         <command>gdmdynamic</command> allows the management of displays in a
         dynamic fashion.  It is typically used in environments where it is not
         possible to list the possible displays in the GDM configuration files.
         The <command>gdmdynamic</command> command can be used to create a new
         display on a particular display number, run all newly created displays,
         or remove a display.  The <command>gdmdynamic</command> command can also
-        be used to list all attached displays, or only attached displays that
-        match a pattern.
+        be used to list all attached displays or only those attached displays
+        that match a pattern.  The -a option is used to add a display, the -r
+        option is used to run (or release) a display, the -d option is used to
+        delete a display, and the -l option lists existing displays.  Only one
+        of these four options can be specified at a time, so in the life cycle
+        of a particular display, the command will be run once to add, again to
+        release (run) the display, and finally to delete when the session is to
+        be terminated.
         </para>
 
         <para>
         This program is designed to manage multiple simultaneous requests and
-        works to avoid flooding the daemon with requests.  If the sockets
+        tries to avoid flooding the daemon with requests.  If the sockets
         connection is busy, it will sleep and retry a certain number of times
         that can be tuned with the -s and -t options.
         </para>
 
         <variablelist>
           <title><command>gdmdynamic</command> Command Line Options</title>
-
-          <varlistentry>
-            <term></term>
-            <listitem>
-            <para><emphasis>
-              One of the following options can be used per instance:
-              </emphasis></para>
-            </listitem>
-          </varlistentry>
 
           <varlistentry>
             <term>-a display=server</term>
@@ -5660,19 +5652,10 @@ Answers:
           </varlistentry>
 
           <varlistentry>
-            <term></term>
-            <listitem>
-            <para><emphasis>
-              These options can be added to the above:
-              </emphasis></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
             <term>-v</term>
             <listitem>
               <para>
-              Verbose mode. Prinr diagnostic messages about each message sent
+              Verbose mode.  Prints diagnostic messages.
               to GDM.
               </para>
             </listitem>

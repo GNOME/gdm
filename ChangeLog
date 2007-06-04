@@ -2,7 +2,12 @@
 
         * Release 2.19.2:
         * NEWS: Updated.
-	* docs/C/gdm.xml: Updated to new release number.
+	* docs/C/gdm.xml: Rewrote the "gdmdynamic Command Line Options"
+	  section to fix a problem with xml2po crashing while trying to
+	  process the file.  This problem was caused because some of the 
+	  <varlistentry> items did not have values for the <term> tag,
+	  which seemed to make xml2po unhappy.  Rewording this section
+	  avoids this problem.  Updated to the new release number.
 	* gui/gdmflexiserver-xnest-desktop.in.in: Change Name and
 	  Comment from "New Login in a Nested Window" to
 	  "New Login in a Window" since the usability team determined
