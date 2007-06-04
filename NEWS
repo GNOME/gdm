@@ -1,5 +1,53 @@
 Ahh news...
 
+2.19.2 Stuff:
+
+Interface Changes:
+
+- The location of the .gdm_socket file has been moved from /tmp to 
+  /var/run.  This interface change has been coordinated with 
+  gnome-session, gnome-panel, and the Fast-User-Switch Applet (FUSA).
+  This is a more sensible place for GDM to store its sockets file.
+  (Lo\357c Minier)
+
+- Now GDM desktop files are installed to /usr/share/gdm/applications and
+  GDM appends this directory to XDG_DATA_DIR.  This way GDM programs only
+  show up in the menus if GDM is actually being used as the login program.
+  This prevents the menu items from showing up if the user switches to
+  another login program.  (Brian Cameron)
+
+- The greeter programs no longer accept the Tab key as Enter so that now
+  the GUI's are now more navigable for a11y users.  (Patrick Wade)
+
+New features, improvements, and bug fixes:
+
+- Now support Linux auditing if configure detects libaudit on the system.
+  See enhancement request #349835.  (Ray Strode)
+
+- Now GDM greeters only display languages that are installed on the system. 
+  (Ray Strode)
+
+- The Face Browser now prunes out users if their shell is /sbin/nologin,
+  /bin/true, or /bin/false.  (Ray Strode)
+
+- Improve custom command logic so that you can specify a widget in the
+  gdmgreeter theme with the following sort of tag:
+  <show modes="console" type=custom_cmdX/>.  (Lukasz Zalewski)
+
+- Now the greeter invisible character is set explicitely to '*' if
+  the configuration file doesn't specify to use invisible or circles.
+  (Sebastien Bacher)
+
+- GDM documention make logic has been updated so it works better and we
+  now generate documentation for more languages.  Now mdash and percnt
+  entities have definitions so they no longer generate warnings.
+  (Brian Cameron)
+
+- Translation updates (Djihed Afifi, Theppitak Karoonboonyanan,
+  Priit Laes, David Lodge, Kjartan Maraas, Christophe Merlet,
+  Daniel Nylander, Ignacio Casal Quinteiro, St\303\251phane Raimbault,
+  Funda Wang)
+
 2.19.1 Stuff:
 
 - Now GDM desktop files support the optional X-Gdm-XserverArgs extension to
@@ -9,7 +57,7 @@ Ahh news...
   certain accessibility features, or to use sessions that require special
   Xserver flags or extensions, etc.  Note that sessions that use this
   feature cause GDM to restart the Xserver after authentication.
-  <Ron Yorston>
+  (Ron Yorston)
 
 - Now gdmgreeter themes support a "background=[true|false]" element to be 
   specified for any item tag.  Items which have this tag set to true will
