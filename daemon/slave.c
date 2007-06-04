@@ -162,6 +162,8 @@ extern int slave_fifo_pipe_fd;
 /* wait for a GO in the SOP protocol */
 extern gboolean gdm_wait_for_go;
 
+extern char *gdm_system_locale;
+
 typedef struct {
 	pid_t pid;
 } GdmWaitPid;
@@ -4357,13 +4359,11 @@ gdm_slave_session_start (void)
 
 	case 0:
 		{
-			const char *gdm_system_locale;
 			const char *lang;
 			gboolean    has_language;
 
 			has_language = (language != NULL) && (language[0] != '\0');
 
-			gdm_system_locale = setlocale (LC_CTYPE, NULL);
 			if ((gdm_system_locale != NULL) && (!has_language)) {
 				lang = gdm_system_locale;
 			} else {
@@ -4395,10 +4395,6 @@ gdm_slave_session_start (void)
 	default:
 		always_restart_greeter = FALSE;
 		if (!savelang && language && strcmp (usrlang, language)) {
-			const char *gdm_system_locale;
-
-			gdm_system_locale = setlocale (LC_CTYPE, NULL);
-
 			if (gdm_system_locale != NULL) {
 				g_setenv ("LANG", gdm_system_locale, TRUE);
 				setlocale (LC_ALL, "");

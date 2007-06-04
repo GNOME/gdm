@@ -1100,6 +1100,7 @@ gdm_lang_op_lang (const gchar *args)
     printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
   else
     printf ("%c%s\n", STX, language);
+
   fflush (stdout);
   g_free (language);
 }
@@ -1111,6 +1112,7 @@ gdm_lang_op_slang (const gchar *args)
     printf ("%cY\n", STX);
   else
     printf ("%c\n", STX);
+
   fflush (stdout);
 }
 
@@ -1119,6 +1121,7 @@ gdm_lang_op_setlang (const gchar *args)
 {
   if (args)
     gdm_lang_set ((char*)args);
+
   printf ("%c\n", STX);
   fflush (stdout);
 }

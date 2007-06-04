@@ -1,3 +1,12 @@
+2007-06-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.c, daemon/slave.c: Rework system locale setting so
+	  it is done in the main daemon rather than in the slave.
+	* daemon/auth.c: If local server, add loopback properly.
+	  Patch for these issues by Takao Fujiwara <Takao.Fujiwara@sun.com>.
+	  Fixes bug #108820.
+	* gui/gdmlanguages.c: Minor cleanup.
+
 2007-05-14  Brian Cameron  <brian.cameron@sun.com>
 
 	* docs/C/gdm.xml:  Add mdash and percnt entities so that make 

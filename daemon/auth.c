@@ -344,6 +344,7 @@ static GSList *
 get_local_auths (GdmDisplay *d)
 {
 	gboolean is_local = FALSE;
+	const char lo[] = {127,0,0,1};
 	guint i;
 	const GList *local_addys = NULL;
 	gboolean added_lo = FALSE;
@@ -467,11 +468,11 @@ get_local_auths (GdmDisplay *d)
 		}
 	}
 
-	/* if local server add loopback */
+	/* If local server, then add loopback */
 	if (SERVER_IS_LOCAL (d) && ! added_lo && ! d->tcp_disallowed) {
 		struct sockaddr_storage *lo_ss = NULL;
-		/* FIXME: get loobback ss */
-		if (! add_auth_entry_for_addr (d, &auths, lo_ss)) {
+		if (! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
+		      lo, sizeof (struct in_addr))) {
 			goto get_local_auth_error;
 		}
 	}

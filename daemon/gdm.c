@@ -135,6 +135,7 @@ int slave_fifo_pipe_fd = -1;    /* The slavepipe connection */
 
 unsigned char *gdm_global_cookie  = NULL;
 unsigned char *gdm_global_bcookie = NULL;
+char *gdm_system_locale = NULL;
 
 gboolean gdm_first_login = TRUE;
 
@@ -1588,6 +1589,9 @@ main (int argc, char *argv[])
 
 	main_loop = g_main_loop_new (NULL, FALSE);
 
+	if (setlocale (LC_CTYPE, NULL) != NULL) {
+		gdm_system_locale = g_strdup (setlocale (LC_CTYPE, NULL));
+	}
 	/* initial TERM/INT handler */
 	sig.sa_handler = initial_term_int;
 	sig.sa_flags = SA_RESTART;
