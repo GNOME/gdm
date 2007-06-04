@@ -2232,9 +2232,6 @@ gdm_daemon_config_parse (const char *config_file,
 
 	GdmUserId = uid;
 	GdmGroupId = gid;
-
-	/* Check that user authentication is properly configured */
-	gdm_verify_check ();
 }
 
 /**

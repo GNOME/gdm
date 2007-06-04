@@ -55,6 +55,14 @@
 #include <bsm/adt_event.h>
 #endif	/* HAVE_ADT */
 
+#define  AU_FAILED 0
+#define  AU_SUCCESS 1
+#ifdef HAVE_LIBAUDIT
+#include <libaudit.h>
+#else
+#define log_to_audit_system(l,h,d,s)	do { ; } while (0)
+#endif
+
 /* Evil, but this way these things are passed to the child session */
 static pam_handle_t *pamh = NULL;
 
@@ -789,6 +797,54 @@ create_pamh (GdmDisplay *d,
 }
 
 /**
+ * log_to_audit_system:
+ * @login: Name of user
+ * @hostname: Name of host machine
+ * @tty: Name of display 
+ * @success: 1 for success, 0 for failure
+ *
+ * Logs the success or failure of the login attempt with the linux kernel
+ * audit system. The intent is to capture failed events where the user
+ * fails authentication or otherwise is not permitted to login. There are
+ * many other places where pam could potentially fail and cause login to 
+ * fail, but these are system failures rather than the signs of an account
+ * being hacked.
+ *
+ * Returns nothing.
+ */
+
+#ifdef HAVE_LIBAUDIT
+static void 
+log_to_audit_system(const char *login,
+		    const char *hostname,
+		    const char *tty,
+		    gboolean success)
+{
+	struct passwd *pw;
+	char buf[64];
+	int audit_fd;
+
+	audit_fd = audit_open();
+	if (login)
+		pw = getpwnam(login);
+	else {
+		login = "unknown";
+		pw = NULL;
+	}
+	if (pw) {
+		snprintf(buf, sizeof(buf), "uid=%d", pw->pw_uid);
+		audit_log_user_message(audit_fd, AUDIT_USER_LOGIN,
+				       buf, hostname, NULL, tty, (int)success);
+	} else {
+		snprintf(buf, sizeof(buf), "acct=%s", login);
+		audit_log_user_message(audit_fd, AUDIT_USER_LOGIN,
+				       buf, hostname, NULL, tty, (int)success);
+	}
+	close(audit_fd);
+}
+#endif
+
+/**
  * gdm_verify_user:
  * @username: Name of user or NULL if we should ask
  * @display: Name of display to register with the authentication system
@@ -910,6 +966,8 @@ gdm_verify_user (GdmDisplay *d,
 	/* Start authentication session */
 	did_we_ask_for_password = FALSE;
 	if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
+		/* Log the failed login attempt */
+		log_to_audit_system(login, d->hostname, display, AU_FAILED);
 		if ( ! ve_string_empty (selected_user)) {
 			pam_handle_t *tmp_pamh;
 
@@ -1030,6 +1088,8 @@ gdm_verify_user (GdmDisplay *d,
 	       ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
 	     pwent != NULL &&
 	     pwent->pw_uid == 0) {
+		/* Log the failed login attempt */
+		log_to_audit_system(login, d->hostname, display, AU_FAILED);
 		gdm_error (_("Root login disallowed on display '%s'"),
 			   display);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
@@ -1063,6 +1123,8 @@ gdm_verify_user (GdmDisplay *d,
 		break;
 	case PAM_NEW_AUTHTOK_REQD :
 		if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
+			/* Log the failed login attempt */
+			log_to_audit_system(login, d->hostname, display, AU_FAILED);
 			gdm_error (_("Authentication token change failed for user %s"), login);
 			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 						      _("\nThe change of the authentication token failed. "
@@ -1080,18 +1142,24 @@ gdm_verify_user (GdmDisplay *d,
 #endif	/* HAVE_ADT */
 		break;
 	case PAM_ACCT_EXPIRED :
+		/* Log the failed login attempt */
+		log_to_audit_system(login, d->hostname, display, AU_FAILED);
 		gdm_error (_("User %s no longer permitted to access the system"), login);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator has disabled your account."));
 		error_msg_given = TRUE;
 		goto pamerr;
 	case PAM_PERM_DENIED :
+		/* Log the failed login attempt */
+		log_to_audit_system(login, d->hostname, display, AU_FAILED);
 		gdm_error (_("User %s not permitted to gain access at this time"), login);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator has disabled access to the system temporarily."));
 		error_msg_given = TRUE;
 		goto pamerr;
 	default :
+		/* Log the failed login attempt */
+		log_to_audit_system(login, d->hostname, display, AU_FAILED);
 		if (gdm_slave_action_pending ())
 			gdm_error (_("Couldn't set acct. mgmt for %s"), login);
 		goto pamerr;
@@ -1143,6 +1211,8 @@ gdm_verify_user (GdmDisplay *d,
 			gdm_error (_("Couldn't open session for %s"), login);
 		goto pamerr;
 	}
+	/* Login succeeded */
+	log_to_audit_system(login, d->hostname, display, AU_SUCCESS);
 
 	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
 	gdm_log_shutdown ();
@@ -1578,41 +1648,6 @@ gdm_verify_cleanup (GdmDisplay *d)
 
 	/* reset limits */
 	gdm_reset_limits ();
-}
-
-/**
- * gdm_verify_check:
- *
- * Check that the authentication system is correctly configured.
- * Not very smart, perhaps we should just whack this.
- *
- * Aborts daemon on error
- */
-
-void
-gdm_verify_check (void)
-{
-	pam_handle_t *ph = NULL;
-
-	if (pam_start (gdm_daemon_config_get_value_string (GDM_KEY_PAM_STACK), NULL,
-		       &standalone_pamc, &ph) != PAM_SUCCESS) {
-		ph = NULL; /* be anal */
-
-                gdm_log_shutdown ();
-                gdm_log_init ();
-
-		if (gdm_daemon_config_get_value_bool (GDM_KEY_CONSOLE_NOTIFY))
-			gdm_text_message_dialog
-				(C_(N_("Can't find PAM configuration for GDM.")));
-		gdm_fail ("gdm_verify_check: %s",
-			  _("Can't find PAM configuration for GDM."));
-	}
-
-	if (ph != NULL)
-		pam_end (ph, PAM_SUCCESS);
-
-        gdm_log_shutdown ();
-        gdm_log_init ();
 }
 
 /* used in pam */

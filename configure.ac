@@ -837,6 +837,10 @@ else
 fi
 AC_SUBST(logdir, $GDM_LOG_DIR)
 
+AC_ARG_WITH(libaudit,
+  [  --with-libaudit=[auto/yes/no]  Add Linux audit support [default=auto]],,
+  with_libaudit=auto)
+
 withval=""
 AC_ARG_WITH(at-bindir,
 [  --with-at-bindir=<PATH>   PATH to Accessible Technology programs [default=BINDIR]],)
@@ -946,6 +950,24 @@ if test -x /usr/openwin/bin/fbconsole; then
    AC_MSG_RESULT(yes)
 else
    AC_MSG_RESULT(no)
+fi
+
+# Check for Linux auditing API
+#
+# libaudit detection
+if test x$with_libaudit = xno ; then
+    have_libaudit=no;
+else
+    # See if we have audit daemon library
+    AC_CHECK_LIB(audit, audit_log_user_message,
+                 have_libaudit=yes, have_libaudit=no)
+fi
+
+AM_CONDITIONAL(HAVE_LIBAUDIT, test x$have_libaudit = xyes)
+
+if test x$have_libaudit = xyes ; then
+    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -laudit"
+    AC_DEFINE(HAVE_LIBAUDIT,1,[linux audit support])
 fi
 
 # Check for Solaris auditing API

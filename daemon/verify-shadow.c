@@ -465,19 +465,6 @@ gdm_verify_cleanup (GdmDisplay *d)
 	setgroups (1, groups);
 }
 
-/**
- * gdm_verify_check:
- *
- * Check that the authentication system is correctly configured.
- *
- * Aborts daemon on error
- */
-
-void
-gdm_verify_check (void)
-{
-}
-
 /* used in pam */
 gboolean
 gdm_verify_setup_env (GdmDisplay *d)
