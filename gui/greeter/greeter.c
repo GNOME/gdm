@@ -859,6 +859,7 @@ static void
 gdm_read_config (void)
 {
 	gint i;
+	gchar *key_string = NULL;
 
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
@@ -921,23 +922,25 @@ gdm_read_config (void)
 	gdm_config_get_bool   (GDM_KEY_BROWSER);
 
 	/* Keys for custom commands */
-	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar * key_string = NULL;
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		gdm_config_get_string (key_string);
-
+		g_free (key_string);
+		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 		gdm_config_get_string (key_string);
+		g_free (key_string);
 		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 		gdm_config_get_string (key_string);
+		g_free (key_string);
 		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
 		gdm_config_get_string (key_string);
-        
+		g_free (key_string);
+		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		gdm_config_get_string (key_string);
-
 		g_free (key_string);
 	}     
 
@@ -953,7 +956,8 @@ greeter_reread_config (int sig, gpointer data)
 {
 	gint i;
 	gboolean custom_changed = FALSE;
-
+	gchar *key_string = NULL;
+	
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
 
@@ -1015,28 +1019,30 @@ greeter_reread_config (int sig, gpointer data)
 		_exit (DISPLAY_RESTARTGREETER);
 	}
 
-	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar *key_string = NULL;
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if (gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
+		g_free (key_string);
 		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 		if (gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
+		g_free (key_string);
 		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 		if (gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
+		g_free (key_string);
 		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
 		if (gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
+		g_free (key_string);
 		
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		if (gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
-
 		g_free (key_string);
 	}     	
 	
@@ -1232,6 +1238,7 @@ main (int argc, char *argv[])
   guint sid;
   int r;
   gint i;
+  gchar *key_string = NULL;
 
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
     DOING_GDM_DEVELOPMENT = TRUE;
@@ -1372,7 +1379,6 @@ main (int argc, char *argv[])
 
   GdmCustomCmdsFound = g_new0 (gboolean, GDM_CUSTOM_COMMAND_MAX);
   for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-	  gchar * key_string = NULL;
 	  /*  For each possible custom command */      
 	  key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 	  GdmCustomCmdsFound[i] = gdm_working_command_exists (gdm_config_get_string (key_string));

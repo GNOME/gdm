@@ -2198,6 +2198,7 @@ gdm_login_gui_init (void)
     gboolean have_logo = FALSE;
     GtkWidget *thememenu;
     const gchar *theme_name;
+    gchar *key_string = NULL;
 
     theme_name = g_getenv ("GDM_GTK_THEME");
     if (ve_string_empty (theme_name))
@@ -2340,8 +2341,7 @@ gdm_login_gui_init (void)
 	}
 	
 	if (is_action_available ("CUSTOM_CMD")) {
-		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar * key_string = NULL;
+		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {			
 			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 			if (gdm_working_command_exists (gdm_config_get_string (key_string))) {
 				gint * cmd_index = g_new0(gint, 1);
@@ -2881,7 +2881,8 @@ static void
 gdm_read_config (void)
 {
 	gint i;
-
+	gchar *key_string = NULL;
+	
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
 
@@ -2918,23 +2919,25 @@ gdm_read_config (void)
 	gdm_config_get_string (GDM_KEY_SYSTEM_COMMANDS_IN_MENU);
 
 	/* String keys for custom commands */	
-	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
-		gchar * key_string = NULL;
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {				
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		gdm_config_get_string (key_string);
+		g_free (key_string);
 
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 		gdm_config_get_string (key_string);
+		g_free (key_string);
 		
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 		gdm_config_get_string (key_string);
-		
+		g_free (key_string);
+
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
 		gdm_config_get_string (key_string);
-        
+		g_free (key_string);
+
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		gdm_config_get_string (key_string);
-
 		g_free (key_string);
 	}     
 
@@ -2989,6 +2992,7 @@ gdm_reread_config (int sig, gpointer data)
 	gboolean resize = FALSE;
 	gboolean custom_changed = FALSE;
 	gint i;
+	gchar *key_string = NULL;
 
 	/* Read config data in bulk */
 	gdmcomm_comm_bulk_start ();
@@ -3067,28 +3071,30 @@ gdm_reread_config (int sig, gpointer data)
 	}
 
 	/* Keys for custom commands */
-	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar *key_string = NULL;
+	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {		
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
-		
+		g_free (key_string);
+
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
-		
+		g_free (key_string);
+
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LR_LABEL_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
-		
+		g_free (key_string);
+
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEXT_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
-        
+		g_free (key_string);
+
 		key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TOOLTIP_TEMPLATE, i);
 		if(gdm_config_reload_string (key_string))
 			custom_changed = TRUE;
-
 		g_free (key_string);
 	}     
 

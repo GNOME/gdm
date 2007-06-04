@@ -317,7 +317,9 @@ parse_stock (xmlNodePtr node,
 	     GError   **error)
 {
   xmlChar *prop;
-  
+  int i = -1;
+  gchar * key_string = NULL;
+
   prop = xmlGetProp (node,(const xmlChar *) "type");
   if (prop)
     {
@@ -415,34 +417,22 @@ parse_stock (xmlNodePtr node,
           g_free (*translated_text);
           *translated_text = g_strdup (_("_Start Again"));
         }
-      else
+      else if (sscanf ((char *) prop, "custom_cmd%d", &i) == 1 && 
+	       i >= 0 && i < GDM_CUSTOM_COMMAND_MAX) 
         {
-	  gboolean is_error = TRUE;
-	  register int i = 0;
-	    for (; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar * key_string = NULL;
-		key_string = g_strdup_printf ("custom_cmd%d", i);
-		if (g_ascii_strcasecmp ((char *) prop, key_string) == 0) {
-		    g_free (*translated_text);
-		    g_free (key_string);
-		    key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
-		    *translated_text = g_strdup(gdm_config_get_string (key_string));
-		    g_free (key_string);
-		    is_error = FALSE;
-		    break;
-		}
-		g_free (key_string);
-	    }
-	    
-	    if (is_error)
-	      {
-		g_set_error (error,
-		     GREETER_PARSER_ERROR,
-		     GREETER_PARSER_ERROR_BAD_SPEC,
-		     "Bad stock label type");
-		xmlFree (prop);
-		return FALSE;
-	      }
+	      key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_LABEL_TEMPLATE, i);
+	      g_free (*translated_text);
+	      *translated_text = g_strdup(gdm_config_get_string (key_string));
+	      g_free (key_string);
+	}
+      else
+      {
+	      g_set_error (error,
+			   GREETER_PARSER_ERROR,
+			   GREETER_PARSER_ERROR_BAD_SPEC,
+			   "Bad stock label type");
+	      xmlFree (prop);
+	      return FALSE;	      
 	}
 
       /* This is the very very very best "translation" */

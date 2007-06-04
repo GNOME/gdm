@@ -227,15 +227,11 @@ greeter_item_is_visible (GreeterItemInfo *info)
        strcmp (info->show_type, "suspend") == 0))
 	  return FALSE;
 
-  for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {      
-      gchar * key_string = g_strdup_printf ("custom_cmd%d", i);
-      if (( ! sysmenu || ! GdmCustomCmdsFound[i]) &&
-          (info->show_type != NULL &&
-           strcmp (info->show_type, key_string) == 0)) {
-	      g_free (key_string);
-	      return FALSE;
-      }
-      g_free (key_string);
+  if (info->show_type != NULL && 
+      sscanf (info->show_type, "custom_cmd%d", &i) == 1 &&
+      i >= 0 && i < GDM_CUSTOM_COMMAND_MAX &&
+      (! sysmenu || ! GdmCustomCmdsFound[i])) {	  
+	  return FALSE;
   }
 
   if (( ! gdm_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE) ||

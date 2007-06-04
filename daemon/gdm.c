@@ -3704,6 +3704,7 @@ sup_handle_query_logout_action (GdmConnection *conn,
 	GString *reply;
 	const gchar *sep = " ";
 	int i;
+	gchar *key_string = NULL;
 
 	disp = gdm_connection_get_display (conn);
 
@@ -3749,7 +3750,6 @@ sup_handle_query_logout_action (GdmConnection *conn,
 
 	if (is_action_available (disp, GDM_SUP_LOGOUT_ACTION_CUSTOM_CMD_TEMPLATE)) {
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-			gchar *key_string = NULL;
 			key_string = g_strdup_printf ("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 
 			if (! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
@@ -3786,6 +3786,7 @@ sup_handle_query_custom_cmd_labels (GdmConnection *conn,
 	const gchar *sep = " ";
 	gboolean sysmenu;
 	int i;
+	gchar *key_string = NULL;
 
 	disp = gdm_connection_get_display (conn);
 	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
@@ -3803,7 +3804,6 @@ sup_handle_query_custom_cmd_labels (GdmConnection *conn,
 	reply = g_string_new ("OK");
 
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar *key_string = NULL;
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if (sysmenu && disp->attached &&
 		    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
@@ -3916,6 +3916,7 @@ sup_handle_query_custom_cmd_no_restart_status (GdmConnection *conn,
 	gboolean sysmenu;
 	unsigned long no_restart_status_flag = 0; /* we can store up-to 32 commands this way */
 	int i;
+	gchar *key_string = NULL;
 
 	disp = gdm_connection_get_display (conn);
 	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, disp->name);
@@ -3933,7 +3934,6 @@ sup_handle_query_custom_cmd_no_restart_status (GdmConnection *conn,
 	reply = g_string_new ("OK ");
 
 	for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
-		gchar *key_string = NULL;
 		key_string = g_strdup_printf("%s%d=", GDM_KEY_CUSTOM_CMD_TEMPLATE, i);
 		if (sysmenu && disp->attached &&
 		    ! ve_string_empty (gdm_daemon_config_get_value_string (key_string))) {
