@@ -60,7 +60,7 @@ test_session_SOURCES = 		\
 test_session_LDADD =		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
-	$(EXTRA_DAEMON_LIBS)	\
+	$(PAM_LIBS)	\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
@@ -84,8 +84,8 @@ gdm_slave_SOURCES = 			\
 
 # Note that these libs are in LDFLAGS because they should come before
 # everything else on the link line as they may override stuff
-gdm_slave_LDFLAGS =				\
-	$(EXTRA_DAEMON_LIBS)			\
+gdm_slave_LDFLAGS =			\
+	$(PAM_LIBS)			\
 	$(NULL)
 
 gdm_slave_LDADD = 				\
@@ -143,9 +143,6 @@ gdm_binary_SOURCES += $(XDMCP_SOURCES)
 endif
 
 EXTRA_gdm_binary_SOURCES = 	\
-	verify-pam.c		\
-	verify-crypt.c		\
-	verify-shadow.c		\
 	$(XDMCP_SOURCES)	\
 	$(NULL)
 

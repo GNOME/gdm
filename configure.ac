@@ -356,15 +356,15 @@ AC_TRY_CPP([#include <sys/statfs.h>
 #include <sys/vmount.h>], AC_DEFINE(FSTYPE_AIX_STATFS, [],
 							 [Define to use AIX3 statfs to get filesystem type]) fstype=AIX)
 fi
-if test $fstype = no; then  
+if test $fstype = no; then
 AC_TRY_CPP([#include <mntent.h>], AC_DEFINE(FSTYPE_MNTENT, [],
 						    [Define to use 4.3BSD getmntent to get filesystem typ]) fstype=4.3BSD)
 fi
-if test $fstype = no; then  
+if test $fstype = no; then
 AC_EGREP_HEADER(f_type;, sys/mount.h, AC_DEFINE(FSTYPE_STATFS, [],
 							   [Define to use 4.4BSD and OSF1 statfs to get filesystem typ]) fstype=4.4BSD/OSF1)
 fi
-if test $fstype = no; then  
+if test $fstype = no; then
 AC_TRY_CPP([#include <sys/mount.h>
 #include <sys/fs_types.h>], AC_DEFINE(FSTYPE_GETMNT, [],
 							   [Define to use Ultrix getmnt to get filesystem typ]) fstype=Ultrix)
@@ -382,98 +382,24 @@ AC_CHECK_HEADERS(linux/vt.h, [
 		 GDMOPEN=gdmopen])
 AC_SUBST(GDMOPEN)
 
-dnl ## Authentication scheme
+dnl ---------------------------------------------------------------------------
+dnl - Check for PAM
+dnl ---------------------------------------------------------------------------
+
 have_pam=no
-VRFY="verify-crypt"
-if test x$enable_authentication_scheme != xcrypt -a \
-	x$enable_authentication_scheme != xshadow ; then
-	AC_CHECK_HEADERS(security/pam_appl.h, [
-		have_pam=yes
-        	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lpam"
-        	VRFY="verify-pam"
-        	AC_DEFINE(HAVE_PAM)])
+AC_CHECK_LIB(pam, pam_start, have_pam=yes)
+
+if test "x$have_pam" = "xyes"; then
+        PAM_LIBS="${PAM_LIBS} -lpam"
 fi
+AC_SUBST(HAVE_PAM)
+AC_SUBST(PAM_LIBS)
 
-GDMASKPASS=
-EXTRA_GDMASKPASS_LIBS=
-if test x$have_pam = xyes ; then
-	AC_CHECK_HEADERS(security/pam_misc.h, [
-			 GDMASKPASS=gdmaskpass])
-	if test x$GDMASKPASS != x ; then
-		AC_CHECK_LIB(pam,misc_conv,,[AC_CHECK_LIB(pam_misc,misc_conv, [
-		     EXTRA_GDMASKPASS_LIBS="$EXTRA_GDMASKPASS_LIBS -lpam_misc"], [
-		     GDMASKPASS=], [
-		     -lpam])])
-	fi
-fi
-AC_SUBST(GDMASKPASS)
-AC_SUBST(EXTRA_GDMASKPASS_LIBS)
+AC_CHECK_HEADERS([security/pam_modutil.h security/pam_ext.h])
+AC_CHECK_LIB(pam, pam_syslog, [AC_DEFINE(HAVE_PAM_SYSLOG, [], [Define to 1 if you have the pam_syslog function])])
 
-if test x$enable_authentication_scheme = xpam -a x$have_pam = xno ; then
-	AC_MSG_ERROR(PAM support requested but not available)
-fi
 
-if test x$have_pam = xno; then
 
-  # Check if -lcrypt is necessary, and if so
-  # add it to the front of the link chain
-  AC_CHECK_LIB(crypt, crypt, [
-  	      EXTRA_DAEMON_LIBS="-lcrypt $EXTRA_DAEMON_LIBS"])
-
-  # Check if crypt lives in a separate header file
-  AC_CHECK_HEADERS(crypt.h, [
-		AC_DEFINE(HAVE_CRYPT)])
-
-  if test x$enable_authentication_scheme = xshadow ; then
-  	VRFY="verify-shadow"
-	AC_DEFINE(HAVE_SHADOW)
-  elif test x$enable_authentication_scheme != xcrypt ; then
-  	# Check for shadow passwords (hack)
-  	AC_MSG_CHECKING(for /etc/shadow)
-
-  	if test -f /etc/shadow; then
-		VRFY="verify-shadow"
-		AC_MSG_RESULT(yes)
-		AC_DEFINE(HAVE_SHADOW)
-  	else	
-		AC_MSG_RESULT(no)
-  	fi
-  fi
-
-  # Check How to handle authentication with the functions 'loginrestrictions',
-  # 'passwdexpired', 'chpass', 'setpwdb', 'getuserpw', 'putuserpw' and 'endpwdb'
-  AC_CHECK_FUNCS(loginrestrictions)
-  can_clear_admchg_flag=yes
-  AC_CHECK_FUNCS([passwdexpired chpass setpwdb getuserpw putuserpw endpwdb],
-  		  ,can_clear_admchg_flag=no)
-  if test x$can_clear_admchg_flag = xyes ; then
-    AC_COMPILE_IFELSE([
-      #if !defined(S_READ) || !defined(S_WRITE) || !defined(PW_ADMCHG)
-      choke me
-      #endif
-      ],
-      ,[AC_CHECK_HEADERS(
-	usersec.h
-	,[AC_COMPILE_IFELSE([
-	  #include <usersec.h>
-	  #if !defined(S_READ) || !defined(S_WRITE) || !defined(PW_ADMCHG)
-	  choke me
-	  #endif
-	  ],
-	  ,
-	  can_clear_admchg_flag=no
-	)]
-	,can_clear_admchg_flag=no
-      )]
-    )
-  fi
-  if test x$can_clear_admchg_flag = xyes ; then
-    AC_DEFINE(CAN_CLEAR_ADMCHG,,[Define this variable if the code to clear
-    	      the ADMCHG flag can be compiled])
-  fi
-fi
-
-AC_SUBST(VRFY)
 
 dnl Check if we can use the setpenv function to add specialvariable
 dnl to the environment (such as the /etc/environment file under AIX)
@@ -809,9 +735,10 @@ if test "x$with_selinux" = "xyes" ; then
 	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lselinux -lattr"
 fi
 
-#
-# ConsoleKit support
-#
+dnl ---------------------------------------------------------------------------
+dnl - ConsoleKit support
+dnl ---------------------------------------------------------------------------
+
 use_console_kit=no
 if test "x$with_console_kit" != "xno" ; then
 	use_console_kit=yes
@@ -1411,9 +1338,6 @@ if test "x$use_console_kit" = "xyes" ; then
 else
 	echo "ConsoleKit support                    : NO"
 fi
-
-dnl <= Authentication scheme =>
-echo "Authentication scheme                 : $VRFY"
 
 dnl <= Utils built =>
 echo "Extra utilities built                 : "`echo $GDMOPEN $GDMASKPASS $GDMPREFETCH $GDMSSHSESSION`

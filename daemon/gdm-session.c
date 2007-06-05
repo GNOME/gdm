@@ -792,8 +792,8 @@ gdm_session_verification_message_new (const char *service_name,
                                       const char *username,
                                       const char *hostname,
                                       const char *console_name,
-                                      int standard_output_fd,
-                                      int standard_error_fd)
+                                      int         standard_output_fd,
+                                      int         standard_error_fd)
 {
 	GdmSessionVerificationMessage *message;
 	gsize size, username_size;
@@ -839,8 +839,8 @@ gdm_session_verification_message_new (const char *service_name,
 }
 
 static char *
-gdm_session_flatten_arguments (const char * const * argv,
-			       gsize *arguments_size)
+gdm_session_flatten_arguments (const char * const *argv,
+			       gsize              *arguments_size)
 {
 	char *arguments;
 	gsize i, total_size, argument_size;
@@ -874,7 +874,7 @@ static char **
 gdm_session_unflatten_arguments (const char *arguments)
 {
 	GPtrArray *array;
-	char *argument;
+	char      *argument;
 
 	array = g_ptr_array_new ();
 
@@ -893,7 +893,8 @@ gdm_session_start_program_message_new (const char * const * args)
 {
 	GdmSessionStartProgramMessage *message;
 	char *arguments;
-	gsize size, arguments_size;
+	gsize size;
+	gsize arguments_size;
 
 	g_assert (args != NULL);
 
@@ -927,7 +928,8 @@ gdm_session_set_environment_variable_message_new (const char *name,
 {
 	GdmSessionSetEnvironmentVariableMessage *message;
 	char *environment_variable;
-	gsize size, environment_variable_size;
+	gsize size;
+	gsize environment_variable_size;
 	int length;
 
 	g_assert (name != NULL);
@@ -963,7 +965,8 @@ static GdmSessionMessage *
 gdm_session_info_reply_message_new (const char *answer)
 {
 	GdmSessionInfoReplyMessage *message;
-	gsize size, answer_size;
+	gsize size;
+	gsize answer_size;
 
 	answer_size = (answer != NULL? strlen (answer) + 1 : 0);
 	size = sizeof (GdmSessionInfoReplyMessage) +
@@ -994,7 +997,8 @@ static GdmSessionMessage *
 gdm_session_secret_info_reply_message_new (const char *answer)
 {
 	GdmSessionSecretInfoReplyMessage *message;
-	gsize size, answer_size;
+	gsize size;
+	gsize answer_size;
 
 	answer_size = (answer != NULL? strlen (answer) + 1 : 0);
 	size = sizeof (GdmSessionSecretInfoReplyMessage) +
@@ -1177,18 +1181,21 @@ gdm_session_validate_message_size (GdmSession        *session,
 
 static GdmSessionWorkerMessage *
 gdm_session_get_incoming_message (GdmSession  *session,
-				  GError          **error)
+				  GError     **error)
 {
-	GError *size_error;
-	char *error_message;
+	GError                  *size_error;
+	char                    *error_message;
 	GdmSessionWorkerMessage *message;
-	gsize message_size;
+	gsize                    message_size;
+	gboolean                 res;
 
 	g_debug ("attemping to read message from worker...");
 	error_message = NULL;
-	if (!gdm_read_message (session->priv->worker_message_pipe_fd,
-			       (gpointer) &message, &message_size,
-			       &error_message)) {
+	res = gdm_read_message (session->priv->worker_message_pipe_fd,
+				(gpointer) &message,
+				&message_size,
+				&error_message);
+	if (! res) {
 		g_debug ("could not read message from worker: %s", error_message);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
@@ -1214,7 +1221,8 @@ gdm_session_get_incoming_message (GdmSession  *session,
 	g_debug ("validating that message size is right for message "
 		 "type...");
 	size_error = NULL;
-	if (!gdm_session_validate_message_size (session, message, &size_error)) {
+	res = gdm_session_validate_message_size (session, message, &size_error);
+	if (! res) {
 		g_propagate_error (error, size_error);
 		return NULL;
 	}
@@ -1531,9 +1539,9 @@ gdm_session_incoming_message_handler (GdmSession *session)
 }
 
 static gboolean
-gdm_session_data_on_message_pipe_handler (GIOChannel      *channel,
-					  GIOCondition     condition,
-					  GdmSession *session)
+gdm_session_data_on_message_pipe_handler (GIOChannel   *channel,
+					  GIOCondition  condition,
+					  GdmSession   *session)
 {
 	if ((condition & G_IO_IN) || (condition & G_IO_PRI)) {
 		g_debug ("got message from message pipe");
@@ -1557,20 +1565,18 @@ gdm_session_worker_clear_child_watch_source (GdmSessionWorker *worker)
 }
 
 static void
-gdm_session_watch_child (GdmSession        *session)
+gdm_session_watch_child (GdmSession *session)
 {
 	GIOChannel *io_channel;
-	GIOFlags channel_flags;
+	GIOFlags    channel_flags;
 
 	g_assert (session->priv->child_watch_source == NULL);
 
 	session->priv->child_watch_source = g_child_watch_source_new (session->priv->worker_pid);
 	g_source_set_callback (session->priv->child_watch_source,
-			       (GSourceFunc) (GChildWatchFunc)
-			       gdm_session_on_child_exited,
+			       (GChildWatchFunc) gdm_session_on_child_exited,
 			       session,
-			       (GDestroyNotify)
-			       gdm_session_clear_child_watch_source);
+			       (GDestroyNotify) gdm_session_clear_child_watch_source);
 	g_source_attach (session->priv->child_watch_source, session->priv->context);
 	g_source_unref (session->priv->child_watch_source);
 
@@ -1588,11 +1594,9 @@ gdm_session_watch_child (GdmSession        *session)
 	g_io_channel_unref (io_channel);
 
 	g_source_set_callback (session->priv->worker_message_pipe_source,
-			       (GSourceFunc) (GIOFunc)
-			       gdm_session_data_on_message_pipe_handler,
+			       (GIOFunc) gdm_session_data_on_message_pipe_handler,
 			       session,
-			       (GDestroyNotify)
-			       gdm_session_clear_message_pipe_source);
+			       (GDestroyNotify) gdm_session_clear_message_pipe_source);
 	g_source_attach (session->priv->worker_message_pipe_source, session->priv->context);
 	g_source_unref (session->priv->worker_message_pipe_source);
 }
@@ -1600,8 +1604,9 @@ gdm_session_watch_child (GdmSession        *session)
 static void
 gdm_session_unwatch_child (GdmSession *session)
 {
-	if (session->priv->child_watch_source == NULL)
+	if (session->priv->child_watch_source == NULL) {
 		return;
+	}
 
 	g_source_destroy (session->priv->child_watch_source);
 	session->priv->child_watch_source = NULL;
@@ -1629,7 +1634,7 @@ gdm_session_worker_disconnected_handler (GdmSessionWorker *worker)
 static gboolean
 gdm_session_worker_validate_message_size (GdmSessionWorker   *worker,
 					  GdmSessionMessage  *message,
-					  GError          **error)
+					  GError            **error)
 {
 	gsize expected_size;
 
@@ -1666,7 +1671,9 @@ gdm_session_worker_validate_message_size (GdmSessionWorker   *worker,
 
 	if (message->size != expected_size) {
 		g_debug ("message size was '%lu', but message was supposed "
-			 "to be '%lu'", (gulong) message->size, (gulong) expected_size);
+			 "to be '%lu'",
+			 (gulong) message->size,
+			 (gulong) expected_size);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1681,13 +1688,13 @@ gdm_session_worker_validate_message_size (GdmSessionWorker   *worker,
 
 static GdmSessionMessage *
 gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
-					 GError         **error)
+					 GError           **error)
 {
-	GError *size_error;
-	char *error_message;
+	GError            *size_error;
+	char              *error_message;
 	GdmSessionMessage *message;
-	gsize message_size;
-	gboolean res;
+	gsize              message_size;
+	gboolean           res;
 
 	g_debug ("attemping to read message from parent...");
 	error_message = NULL;
@@ -1708,7 +1715,8 @@ gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
 
 	if (message_size != message->size) {
 		g_debug ("message reports to be '%ld' bytes but is actually '%ld'",
-			 (glong) message->size, (glong) message_size);
+			 (glong) message->size,
+			 (glong) message_size);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1766,16 +1774,15 @@ gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
 }
 
 static gboolean
-gdm_write_message (int     socket_fd,
+gdm_write_message (int      socket_fd,
                    gpointer message_data,
                    gsize    message_data_size,
-                   char **error_message)
+                   char   **error_message)
 {
 	struct msghdr message = { 0 };
-	struct iovec data_block = { 0 };
-
-	const int flags = MSG_NOSIGNAL;
-	gboolean message_was_sent;
+	struct iovec  data_block = { 0 };
+	const int     flags = MSG_NOSIGNAL;
+	gboolean      message_was_sent;
 
 	message.msg_iov = &data_block;
 	message.msg_iovlen = 1;
@@ -1797,9 +1804,10 @@ gdm_write_message (int     socket_fd,
 			message_was_sent = TRUE;
 		}
 	}
-	while (!message_was_sent && (errno == EINTR));
 
-	if (!message_was_sent && (error_message != NULL)) {
+	while (! message_was_sent && (errno == EINTR));
+
+	if (! message_was_sent && (error_message != NULL)) {
 		const char *error;
 		error = g_strerror (errno);
 		g_debug ("message was not sent: %s", error);
@@ -1815,13 +1823,13 @@ gdm_write_message (int     socket_fd,
 
 static char *
 gdm_session_worker_ask_question (GdmSessionWorker *worker,
-				 const char    *question)
+				 const char       *question)
 {
-	GdmSessionWorkerMessage *message;
-	GdmSessionMessage *reply;
+	GdmSessionWorkerMessage    *message;
+	GdmSessionMessage          *reply;
 	GdmSessionInfoReplyMessage *info_reply;
-	char *answer;
-	GError *error;
+	char                       *answer;
+	GError                     *error;
 
 	message = gdm_session_worker_info_request_message_new (question);
 	gdm_write_message (worker->message_pipe_fd, message, message->size, NULL);
@@ -1874,13 +1882,13 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 
 static char *
 gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
-				   const char    *secret)
+				   const char       *secret)
 {
 	GdmSessionWorkerMessage *message;
-	GdmSessionMessage *reply;
+	GdmSessionMessage       *reply;
 	GdmSessionSecretInfoReplyMessage *secret_info_reply;
-	char *answer;
-	GError *error;
+	char                    *answer;
+	GError                  *error;
 
 	message = gdm_session_worker_secret_info_request_message_new (secret);
 	gdm_write_message (worker->message_pipe_fd, message, message->size, NULL);
@@ -1929,7 +1937,7 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
 
 static void
 gdm_session_worker_report_info (GdmSessionWorker *worker,
-				const char    *info)
+				const char       *info)
 {
 	GdmSessionWorkerMessage *message;
 	message = gdm_session_worker_info_message_new (info);
@@ -1939,7 +1947,7 @@ gdm_session_worker_report_info (GdmSessionWorker *worker,
 
 static void
 gdm_session_worker_report_problem (GdmSessionWorker *worker,
-				   const char    *problem)
+				   const char       *problem)
 {
 	GdmSessionWorkerMessage *message;
 	message = gdm_session_worker_problem_message_new (problem);
@@ -1949,7 +1957,7 @@ gdm_session_worker_report_problem (GdmSessionWorker *worker,
 
 static gboolean
 gdm_session_worker_get_username (GdmSessionWorker  *worker,
-				 char          **username)
+				 char             **username)
 {
 	gconstpointer item;
 
@@ -1958,7 +1966,8 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
 	if (pam_get_item (worker->pam_handle, PAM_USER, &item) == PAM_SUCCESS) {
 		if (username) {
 			*username = g_strdup ((char *) item);
-			g_debug ("username is '%s'", *username != NULL? *username :
+			g_debug ("username is '%s'",
+				 *username != NULL ? *username :
 				 "<unset>");
 		}
 		return TRUE;
@@ -1999,11 +2008,11 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
 }
 
 static gboolean
-gdm_session_worker_process_pam_message (GdmSessionWorker            *worker,
+gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 					const struct pam_message  *query,
 					char                     **response_text)
 {
-	char *user_answer;
+	char    *user_answer;
 	gboolean was_processed;
 
 	g_debug ("received pam message of type %u with payload '%s'",
@@ -2035,8 +2044,9 @@ gdm_session_worker_process_pam_message (GdmSessionWorker            *worker,
 		/* we strdup and g_free to make sure we return malloc'd
 		 * instead of g_malloc'd memory
 		 */
-		if (response_text != NULL)
+		if (response_text != NULL) {
 			*response_text = strdup (user_answer);
+		}
 
 		g_free (user_answer);
 
@@ -2049,25 +2059,27 @@ gdm_session_worker_process_pam_message (GdmSessionWorker            *worker,
 }
 
 static int
-gdm_session_worker_pam_new_messages_handler (int               number_of_messages,
+gdm_session_worker_pam_new_messages_handler (int                        number_of_messages,
 					     const struct pam_message **messages,
 					     struct pam_response      **responses,
-					     GdmSessionWorker            *worker)
+					     GdmSessionWorker          *worker)
 {
 	struct pam_response *replies;
-	int return_value;
-	int i;
+	int                  return_value;
+	int                  i;
 
 	g_debug ("%d new messages received from pam\n", number_of_messages);
 
 	return_value = PAM_CONV_ERR;
 
-	if (number_of_messages < 0)
+	if (number_of_messages < 0) {
 		return PAM_CONV_ERR;
+	}
 
 	if (number_of_messages == 0) {
-		if (responses)
+		if (responses) {
 			*responses = NULL;
+		}
 
 		return PAM_SUCCESS;
 	}
@@ -2108,15 +2120,16 @@ gdm_session_worker_pam_new_messages_handler (int               number_of_message
 		replies = NULL;
 	}
 
-	if (responses)
+	if (responses) {
 		*responses = replies;
+	}
 
 	return return_value;
 }
 
 static void
 gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
-				     int             error_code)
+				     int               error_code)
 {
 	g_debug ("uninitializing PAM");
 
@@ -2138,15 +2151,15 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 }
 
 static gboolean
-gdm_session_worker_initialize_pam (GdmSessionWorker  *worker,
-				   const char     *service,
-				   const char     *username,
-				   const char     *hostname,
-				   const char     *console_name,
-				   GError         **error)
+gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
+				   const char       *service,
+				   const char       *username,
+				   const char       *hostname,
+				   const char       *console_name,
+				   GError          **error)
 {
 	struct pam_conv pam_conversation;
-	int error_code;
+	int             error_code;
 
 	g_assert (worker->pam_handle == NULL);
 
@@ -2156,7 +2169,8 @@ gdm_session_worker_initialize_pam (GdmSessionWorker  *worker,
 	pam_conversation.appdata_ptr = worker;
 
 	error_code = pam_start (service,
-				username, &pam_conversation,
+				username,
+				&pam_conversation,
 				&worker->pam_handle);
 
 	if (error_code != PAM_SUCCESS) {
@@ -2223,18 +2237,20 @@ gdm_session_worker_initialize_pam (GdmSessionWorker  *worker,
 }
 
 static gboolean
-gdm_session_worker_authenticate_user (GdmSessionWorker  *worker,
-				      gboolean       password_is_required,
-				      GError                     **error)
+gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
+				      gboolean          password_is_required,
+				      GError          **error)
 {
-	int error_code, authentication_flags;
+	int error_code;
+	int authentication_flags;
 
 	g_debug ("authenticating user");
 
 	authentication_flags = 0;
 
-	if (password_is_required)
+	if (password_is_required) {
 		authentication_flags |= PAM_DISALLOW_NULL_AUTHTOK;
+	}
 
 	/* blocking call, does the actual conversation
 	 */
@@ -2258,18 +2274,20 @@ gdm_session_worker_authenticate_user (GdmSessionWorker  *worker,
 }
 
 static gboolean
-gdm_session_worker_authorize_user (GdmSessionWorker  *worker,
-				   gboolean         password_is_required,
-				   GError         **error)
+gdm_session_worker_authorize_user (GdmSessionWorker *worker,
+				   gboolean          password_is_required,
+				   GError          **error)
 {
-	int error_code, authentication_flags;
+	int error_code;
+	int authentication_flags;
 
 	g_debug ("determining if authenticated user is authorized to session");
 
 	authentication_flags = 0;
 
-	if (password_is_required)
+	if (password_is_required) {
 		authentication_flags |= PAM_DISALLOW_NULL_AUTHTOK;
+	}
 
 	/* check that the account isn't disabled or expired
 	 */
@@ -2301,7 +2319,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker  *worker,
 
 static void
 gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
-					     const char    *environment_variable)
+					     const char       *environment_variable)
 {
 	char **key_and_value;
 
@@ -2323,7 +2341,7 @@ gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
 
 static void
 gdm_session_worker_update_environment_from_passwd_entry (GdmSessionWorker *worker,
-							 struct passwd  *passwd_entry)
+							 struct passwd    *passwd_entry)
 {
 	char *environment_variable;
 
@@ -2350,14 +2368,14 @@ gdm_session_worker_update_environment_from_passwd_entry (GdmSessionWorker *worke
 
 static gboolean
 gdm_session_worker_environment_variable_is_set (GdmSessionWorker *worker,
-						const char    *name)
+						const char       *name)
 {
 	return g_hash_table_lookup (worker->environment, name) != NULL;
 }
 
 static gboolean
 gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
-					  GError         **error)
+					  GError           **error)
 {
 	int error_code;
 	struct passwd *passwd_entry, passwd_buffer;
@@ -2479,23 +2497,28 @@ gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
 
 static gboolean
 gdm_session_worker_verify_user (GdmSessionWorker  *worker,
-				const char     *service_name,
-				const char     *username,
-				const char     *hostname,
-				const char     *console_name,
-				gboolean         password_is_required,
-				GError         **error)
+				const char        *service_name,
+				const char        *username,
+				const char        *hostname,
+				const char        *console_name,
+				gboolean           password_is_required,
+				GError           **error)
 {
-	GError *pam_error;
+	GError                  *pam_error;
 	GdmSessionWorkerMessage *reply;
-	char *error_message;
-	gboolean res;
+	char                    *error_message;
+	gboolean                 res;
+
+	g_debug ("Verifying user: %s host: %s service: %s tty: %s", username, hostname, service_name, console_name);
 
 	pam_error = NULL;
-	if (!gdm_session_worker_initialize_pam (worker,
-						service_name,
-						username, hostname,
-						console_name, &pam_error)) {
+	res = gdm_session_worker_initialize_pam (worker,
+						 service_name,
+						 username,
+						 hostname,
+						 console_name,
+						 &pam_error);
+	if (! res) {
 		g_propagate_error (error, pam_error);
 		return FALSE;
 	}
@@ -2572,7 +2595,7 @@ gdm_session_worker_update_environment_from_pam (GdmSessionWorker *worker)
 static void
 gdm_session_worker_fill_environment_array (const char *key,
 					   const char *value,
-					   GPtrArray   *environment)
+					   GPtrArray  *environment)
 {
 	char *variable;
 
@@ -2599,8 +2622,8 @@ gdm_session_worker_get_environment (GdmSessionWorker *worker)
 }
 
 static void
-gdm_session_worker_on_child_exited (GPid       pid,
-				    int       status,
+gdm_session_worker_on_child_exited (GPid              pid,
+				    int               status,
 				    GdmSessionWorker *worker)
 {
 	GdmSessionWorkerMessage *message;
@@ -2641,12 +2664,12 @@ gdm_session_worker_watch_child (GdmSessionWorker *worker)
 
 static gboolean
 gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
-				      GError         **error)
+				      GError           **error)
 {
-	int error_code;
-	pid_t session_pid;
+	int                      error_code;
+	pid_t                    session_pid;
 	GdmSessionWorkerMessage *message;
-	char *error_message;
+	char                    *error_message;
 
 	g_assert (!worker->is_running);
 	g_assert (geteuid () == 0);
@@ -2811,7 +2834,7 @@ gdm_session_worker_session_startup_failed_message_new (GError *error)
 }
 
 static void
-gdm_session_worker_handle_verification_message (GdmSessionWorker  *worker,
+gdm_session_worker_handle_verification_message (GdmSessionWorker              *worker,
 						GdmSessionVerificationMessage *message)
 {
 	GError                  *verification_error;
@@ -2824,10 +2847,8 @@ gdm_session_worker_handle_verification_message (GdmSessionWorker  *worker,
 	verification_error = NULL;
 	res = gdm_session_worker_verify_user (worker,
 					      message->service_name,
-					      (message->username_size >= 0)?
-					      message->username : NULL,
-					      message->hostname_is_provided?
-					      message->hostname: NULL,
+					      (message->username_size >= 0) ? message->username : NULL,
+					      message->hostname_is_provided ? message->hostname : NULL,
 					      message->console_name,
 					      TRUE /* password is required */,
 					      &verification_error);
@@ -3792,7 +3813,7 @@ gdm_session_open_for_user (GdmSession    *session,
 }
 
 void
-gdm_session_start_program (GdmSession          *session,
+gdm_session_start_program (GdmSession         *session,
                            const char * const *args)
 {
 	GdmSessionMessage *message;

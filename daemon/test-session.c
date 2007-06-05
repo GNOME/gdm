@@ -33,23 +33,23 @@
 static GMainLoop *loop;
 
 static void
-on_session_started (GdmSession        *session,
-                    GPid             pid)
+on_session_started (GdmSession *session,
+                    GPid        pid)
 {
-	g_print ("session started on pid %d\n", (gint) pid);
+	g_print ("session started on pid %d\n", (int) pid);
 }
 
 static void
-on_session_exited (GdmSession        *session,
-                   gint             exit_code)
+on_session_exited (GdmSession *session,
+                   int         exit_code)
 {
 	g_print ("session exited with code %d\n", exit_code);
 	exit (0);
 }
 
 static void
-on_session_died (GdmSession        *session,
-                 gint             signal_number)
+on_session_died (GdmSession *session,
+                 int         signal_number)
 {
 	g_print ("session died with signal %d, (%s)",
 		 signal_number,
@@ -58,9 +58,9 @@ on_session_died (GdmSession        *session,
 }
 
 static void
-on_user_verified (GdmSession        *session)
+on_user_verified (GdmSession *session)
 {
-	gchar *username;
+	char *username;
 	const char *args[] = { "/usr/bin/gedit", "/tmp/foo.log", NULL };
 
 	username = gdm_session_get_username (session);
@@ -73,10 +73,10 @@ on_user_verified (GdmSession        *session)
 }
 
 static void
-on_user_verification_error (GdmSession        *session,
-                            GError          *error)
+on_user_verification_error (GdmSession *session,
+                            GError     *error)
 {
-	gchar *username;
+	char *username;
 
 	username = gdm_session_get_username (session);
 
@@ -89,8 +89,8 @@ on_user_verification_error (GdmSession        *session,
 }
 
 static void
-on_info_query (GdmSession        *session,
-               const gchar     *query_text)
+on_info_query (GdmSession *session,
+               const char *query_text)
 {
 	char answer[1024];
 
@@ -108,22 +108,22 @@ on_info_query (GdmSession        *session,
 }
 
 static void
-on_info (GdmSession        *session,
-         const gchar     *info)
+on_info (GdmSession *session,
+         const char *info)
 {
 	g_print ("\n** NOTE: %s\n", info);
 }
 
 static void
-on_problem (GdmSession        *session,
-            const gchar     *problem)
+on_problem (GdmSession *session,
+            const char *problem)
 {
 	g_print ("\n** WARNING: %s\n", problem);
 }
 
 static void
-on_secret_info_query (GdmSession        *session,
-                      const gchar     *query_text)
+on_secret_info_query (GdmSession *session,
+                      const char *query_text)
 {
 	char answer[1024];
 	struct termio io_info;
@@ -143,22 +143,22 @@ on_secret_info_query (GdmSession        *session,
 
 	g_print ("\n");
 
-	gdm_session_answer_query (session, answer);  
+	gdm_session_answer_query (session, answer);
 }
 
 static void
 import_environment (GdmSession *session)
 {
 	if (g_getenv ("PATH") != NULL)
-		gdm_session_set_environment_variable (session, "PATH", 
+		gdm_session_set_environment_variable (session, "PATH",
 						      g_getenv ("PATH"));
 
 	if (g_getenv ("DISPLAY") != NULL)
-		gdm_session_set_environment_variable (session, "DISPLAY", 
+		gdm_session_set_environment_variable (session, "DISPLAY",
 						      g_getenv ("DISPLAY"));
 
 	if (g_getenv ("XAUTHORITY") != NULL)
-		gdm_session_set_environment_variable (session, "XAUTHORITY", 
+		gdm_session_set_environment_variable (session, "XAUTHORITY",
 						      g_getenv ("XAUTHORITY"));
 }
 
@@ -167,15 +167,14 @@ main (int   argc,
       char *argv[])
 {
 	GdmSession *session;
-	char *username;
-	int exit_code;
-	gchar **args;
-	int i;
+	char       *username;
+	int         exit_code;
+	char      **args;
+	int         i;
 
 	exit_code = 0;
 
-	g_log_set_always_fatal (G_LOG_LEVEL_ERROR
-				| G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
+	g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
 
 	g_type_init ();
 
@@ -186,14 +185,22 @@ main (int   argc,
 
 		if (argc <= 1) {
 			username = NULL;
-			gdm_session_open (session, "local", NULL /* hostname */,
+			gdm_session_open (session,
+					  "gdm",
+					  NULL /* hostname */,
 					  ttyname (STDIN_FILENO),
-					  STDOUT_FILENO, STDERR_FILENO, NULL);
+					  STDOUT_FILENO,
+					  STDERR_FILENO,
+					  NULL);
 		} else {
 			username = argv[1];
-			gdm_session_open_for_user (session, "local", username,
-						   NULL, ttyname (STDIN_FILENO), 
-						   STDOUT_FILENO, STDERR_FILENO, 
+			gdm_session_open_for_user (session,
+						   "gdm",
+						   username,
+						   NULL,
+						   ttyname (STDIN_FILENO),
+						   STDOUT_FILENO,
+						   STDERR_FILENO,
 						   NULL);
 		}
 
