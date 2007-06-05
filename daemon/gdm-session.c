@@ -52,7 +52,6 @@
 #include <glib-object.h>
 
 #include "gdm-session.h"
-#include "gdm-marshal.h"
 
 #ifndef GDM_BAD_SESSION_RECORDS_FILE
 #define	GDM_BAD_SESSION_RECORDS_FILE "/var/log/btmp"
@@ -169,16 +168,16 @@ struct _GdmSessionPrivate
 {
 	GPid pid;
 
-	gchar  *service_name;
-	gchar **arguments;
-	gchar  *username;
-	gchar  *hostname;
-	gchar  *console_name;
+	char  *service_name;
+	char **arguments;
+	char  *username;
+	char  *hostname;
+	char  *console_name;
 
-	gint standard_output_fd;
-	gint standard_error_fd;
+	int standard_output_fd;
+	int standard_error_fd;
 
-	gint worker_message_pipe_fd;
+	int worker_message_pipe_fd;
 	GSource *worker_message_pipe_source;
 
 	GMainContext *context;
@@ -191,7 +190,7 @@ struct _GdmSessionPrivate
 	/* variable is only alive briefly to store user
 	 * responses set in callbacks to authentication queries
 	 */
-	gchar *query_answer;
+	char *query_answer;
 
 	guint32 is_verified : 1;
 	guint32 is_running : 1;
@@ -207,17 +206,17 @@ struct _GdmSessionVerificationMessage
 {
 	GdmSessionMessage header;
 
-	gchar service_name[GDM_MAX_SERVICE_NAME_SIZE];
-	gchar console_name[GDM_MAX_CONSOLE_NAME_SIZE];
-	gchar hostname[GDM_MAX_HOSTNAME_SIZE];
+	char service_name[GDM_MAX_SERVICE_NAME_SIZE];
+	char console_name[GDM_MAX_CONSOLE_NAME_SIZE];
+	char hostname[GDM_MAX_HOSTNAME_SIZE];
 
-	gint standard_output_fd;
-	gint standard_error_fd;
+	int standard_output_fd;
+	int standard_error_fd;
 
 	guint32 hostname_is_provided : 1;
 
 	gssize username_size;
-	gchar username[0];
+	char username[0];
 };
 
 struct _GdmSessionStartProgramMessage
@@ -225,7 +224,7 @@ struct _GdmSessionStartProgramMessage
 	GdmSessionMessage header;
 
 	gsize arguments_size;
-	gchar arguments[0];
+	char arguments[0];
 };
 
 struct _GdmSessionSetEnvironmentVariableMessage
@@ -233,7 +232,7 @@ struct _GdmSessionSetEnvironmentVariableMessage
 	GdmSessionMessage header;
 
 	gsize environment_variable_size;
-	gchar environment_variable[0];
+	char environment_variable[0];
 };
 
 struct _GdmSessionInfoReplyMessage
@@ -241,7 +240,7 @@ struct _GdmSessionInfoReplyMessage
 	GdmSessionMessage header;
 
 	gssize answer_size;
-	gchar answer[0];
+	char answer[0];
 };
 
 struct _GdmSessionSecretInfoReplyMessage
@@ -249,17 +248,17 @@ struct _GdmSessionSecretInfoReplyMessage
 	GdmSessionMessage header;
 
 	gssize answer_size;
-	gchar answer[0];
+	char answer[0];
 };
 
 struct _GdmSessionWorker
 {
 	GMainLoop *event_loop;
-	gint exit_code;
+	int exit_code;
 
 	pam_handle_t *pam_handle;
 
-	gint message_pipe_fd;
+	int message_pipe_fd;
 	GSource *message_pipe_source;
 
 	GSList *inherited_fd_list;
@@ -267,13 +266,13 @@ struct _GdmSessionWorker
 	GPid child_pid;
 	GSource *child_watch_source;
 
-	gchar *username;
-	gchar **arguments;
+	char *username;
+	char **arguments;
 
 	GHashTable *environment;
 
-	gint standard_output_fd;
-	gint standard_error_fd;
+	int standard_output_fd;
+	int standard_error_fd;
 
 	guint32 credentials_are_established : 1;
 	guint32 is_running : 1;
@@ -290,7 +289,7 @@ struct _GdmSessionWorkerInfoRequestMessage
 	GdmSessionWorkerMessage header;
 
 	gssize question_size;
-	gchar question[0];
+	char question[0];
 };
 
 struct _GdmSessionWorkerUsernameChangedMessage
@@ -306,7 +305,7 @@ struct _GdmSessionWorkerSecretInfoRequestMessage
 	GdmSessionWorkerMessage header;
 
 	gssize question_size;
-	gchar question[0];
+	char question[0];
 };
 
 struct _GdmSessionWorkerInfoMessage
@@ -314,7 +313,7 @@ struct _GdmSessionWorkerInfoMessage
 	GdmSessionWorkerMessage header;
 
 	gssize info_size;
-	gchar info[0];
+	char info[0];
 };
 
 struct _GdmSessionWorkerProblemMessage
@@ -322,7 +321,7 @@ struct _GdmSessionWorkerProblemMessage
 	GdmSessionWorkerMessage header;
 
 	gssize problem_size;
-	gchar problem[0];
+	char problem[0];
 };
 
 struct _GdmSessionWorkerSessionStartedMessage
@@ -335,24 +334,24 @@ struct _GdmSessionWorkerSessionStartupFailedMessage
 {
 	GdmSessionWorkerMessage header;
 	GQuark error_domain;
-	gint error_code;
+	int error_code;
 
 	gssize error_message_size;
-	gchar error_message[0];
+	char error_message[0];
 };
 
 struct _GdmSessionWorkerSessionExitedMessage
 {
 	GdmSessionWorkerMessage header;
 
-	gint exit_code;
+	int exit_code;
 };
 
 struct _GdmSessionWorkerSessionDiedMessage
 {
 	GdmSessionWorkerMessage header;
 
-	gint signal_number;
+	int signal_number;
 };
 
 struct _GdmSessionWorkerVerifiedMessage
@@ -364,22 +363,22 @@ struct _GdmSessionWorkerVerificationFailedMessage
 {
 	GdmSessionWorkerMessage header;
 	GQuark error_domain;
-	gint error_code;
+	int error_code;
 
 	gssize error_message_size;
-	gchar error_message[0];
+	char error_message[0];
 };
 
 static GdmSessionWorkerMessage *gdm_session_worker_verified_message_new (void);
 static GdmSessionWorkerMessage *gdm_session_worker_verification_failed_message_new (GError *error);
-static GdmSessionWorkerMessage *gdm_session_worker_info_request_message_new (const gchar *question);
-static GdmSessionWorkerMessage *gdm_session_worker_username_changed_message_new (const gchar *new_username);
-static GdmSessionWorkerMessage *gdm_session_worker_secret_info_request_message_new (const gchar *question);
-static GdmSessionWorkerMessage *gdm_session_worker_info_message_new (const gchar *info);
-static GdmSessionWorkerMessage *gdm_session_worker_problem_message_new (const gchar *problem);
+static GdmSessionWorkerMessage *gdm_session_worker_info_request_message_new (const char *question);
+static GdmSessionWorkerMessage *gdm_session_worker_username_changed_message_new (const char *new_username);
+static GdmSessionWorkerMessage *gdm_session_worker_secret_info_request_message_new (const char *question);
+static GdmSessionWorkerMessage *gdm_session_worker_info_message_new (const char *info);
+static GdmSessionWorkerMessage *gdm_session_worker_problem_message_new (const char *problem);
 static GdmSessionWorkerMessage *gdm_session_worker_session_started_message_new (GPid pid);
-static GdmSessionWorkerMessage *gdm_session_worker_session_exited_message_new (gint exit_code);
-static GdmSessionWorkerMessage *gdm_session_worker_session_died_message_new (gint signal_number);
+static GdmSessionWorkerMessage *gdm_session_worker_session_exited_message_new (int exit_code);
+static GdmSessionWorkerMessage *gdm_session_worker_session_died_message_new (int signal_number);
 static void gdm_session_worker_message_free (GdmSessionWorkerMessage *message);
 
 static gboolean gdm_session_worker_process_asynchronous_message (GdmSessionWorker *worker,
@@ -420,12 +419,12 @@ gdm_session_write_record (GdmSession           *session,
 {
 	struct utmp session_record = { 0 };
 	GTimeVal now = { 0 };
-	gchar *hostname;
+	char *hostname;
 
 	g_debug ("writing %s record",
-		   record_type == GDM_SESSION_RECORD_TYPE_LOGIN? "session" :
-		   record_type == GDM_SESSION_RECORD_TYPE_LOGOUT? "logout" :
-		   "failed session attempt");
+		 record_type == GDM_SESSION_RECORD_TYPE_LOGIN? "session" :
+		 record_type == GDM_SESSION_RECORD_TYPE_LOGOUT? "logout" :
+		 "failed session attempt");
 
 	if (record_type != GDM_SESSION_RECORD_TYPE_LOGOUT) {
 		/* it's possible that PAM failed before it mapped the user input
@@ -440,8 +439,8 @@ gdm_session_write_record (GdmSession           *session,
 	}
 
 	g_debug ("using username %.*s",
-		   sizeof (session_record.ut_user),
-		   session_record.ut_user);
+		 sizeof (session_record.ut_user),
+		 session_record.ut_user);
 
 	/* FIXME: I have no idea what to do for ut_id.
 	 */
@@ -451,9 +450,7 @@ gdm_session_write_record (GdmSession           *session,
 		 sizeof (session_record.ut_id),
 		 sizeof (session_record.ut_id));
 
-	g_debug ("using id %.*s",
-		   sizeof (session_record.ut_id),
-		   session_record.ut_id);
+	g_debug ("using id %.*s", sizeof (session_record.ut_id), session_record.ut_id);
 
 	if (g_str_has_prefix (session->priv->console_name, "/dev/")) {
 		strncpy (session_record.ut_line,
@@ -466,8 +463,8 @@ gdm_session_write_record (GdmSession           *session,
 	}
 
 	g_debug ("using line %.*s",
-		   sizeof (session_record.ut_line),
-		   session_record.ut_line);
+		 sizeof (session_record.ut_line),
+		 session_record.ut_line);
 
 	/* FIXME: this is a bit of a mess. Figure out how
 	 * wrong the logic is
@@ -486,8 +483,8 @@ gdm_session_write_record (GdmSession           *session,
 
 	if (hostname) {
 		g_debug ("using hostname %.*s",
-			   sizeof (session_record.ut_host),
-			   session_record.ut_host);
+			 sizeof (session_record.ut_host),
+			 session_record.ut_host);
 		strncpy (session_record.ut_host,
 			 hostname, sizeof (session_record.ut_host));
 		g_free (hostname);
@@ -498,7 +495,7 @@ gdm_session_write_record (GdmSession           *session,
 	session_record.ut_tv.tv_usec = now.tv_usec;
 
 	g_debug ("using time %ld",
-		   (glong) session_record.ut_tv.tv_sec);
+		 (glong) session_record.ut_tv.tv_sec);
 
 	session_record.ut_type = USER_PROCESS;
 	g_debug ("using type USER_PROCESS");
@@ -508,7 +505,7 @@ gdm_session_write_record (GdmSession           *session,
 	else
 		session_record.ut_pid = session->priv->worker_pid;
 
-	g_debug ("using pid %d", (gint) session_record.ut_pid);
+	g_debug ("using pid %d", (int) session_record.ut_pid);
 
 	switch (record_type) {
 	case GDM_SESSION_RECORD_TYPE_LOGIN:
@@ -523,7 +520,7 @@ gdm_session_write_record (GdmSession           *session,
 
 	case GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT:
 		g_debug ("writing failed session attempt record to "
-			   GDM_BAD_SESSION_RECORDS_FILE);
+			 GDM_BAD_SESSION_RECORDS_FILE);
 		updwtmp (GDM_BAD_SESSION_RECORDS_FILE, &session_record);
 		break;
 	}
@@ -556,7 +553,7 @@ gdm_session_startup_error_handler (GdmSession      *session,
 
 static void
 gdm_session_exited_handler (GdmSession *session,
-                            gint        exit_code)
+                            int        exit_code)
 {
 	gdm_session_write_record (session, GDM_SESSION_RECORD_TYPE_LOGOUT);
 }
@@ -738,14 +735,14 @@ gdm_session_init (GdmSession *session)
 }
 
 static gboolean
-gdm_read_message (gint      socket_fd,
+gdm_read_message (int      socket_fd,
                   gpointer *message_data,
                   gsize    *message_data_size,
-                  gchar   **error_message)
+                  char   **error_message)
 {
 	struct msghdr message = { 0 };
 	struct iovec data_block = { 0 };
-	const gint flags = MSG_NOSIGNAL;
+	const int flags = MSG_NOSIGNAL;
 
 	gssize num_bytes_received;
 
@@ -761,14 +758,14 @@ gdm_read_message (gint      socket_fd,
 
 		if (num_bytes_received > 0) {
 			g_debug ("read '%lu' bytes over socket '%d'",
-				   (gulong) num_bytes_received,
-				   socket_fd);
+				 (gulong) num_bytes_received,
+				 socket_fd);
 		}
 	}
 	while (!(num_bytes_received > 0) && (errno == EINTR));
 
 	if ((num_bytes_received < 0) && (error_message != NULL)) {
-		const gchar *error;
+		const char *error;
 		error = g_strerror (errno);
 		g_debug ("message was not received: %s", error);
 		*error_message = g_strdup (error);
@@ -791,12 +788,12 @@ gdm_read_message (gint      socket_fd,
 }
 
 static GdmSessionMessage *
-gdm_session_verification_message_new (const gchar *service_name,
-                                      const gchar *username,
-                                      const gchar *hostname,
-                                      const gchar *console_name,
-                                      gint standard_output_fd,
-                                      gint standard_error_fd)
+gdm_session_verification_message_new (const char *service_name,
+                                      const char *username,
+                                      const char *hostname,
+                                      const char *console_name,
+                                      int standard_output_fd,
+                                      int standard_error_fd)
 {
 	GdmSessionVerificationMessage *message;
 	gsize size, username_size;
@@ -833,7 +830,7 @@ gdm_session_verification_message_new (const gchar *service_name,
 	message->standard_output_fd = standard_output_fd;
 	message->standard_error_fd = standard_error_fd;
 
-	g_strlcpy ((gchar *) (gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) (char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL),
 		   GDM_SESSION_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL));
@@ -841,11 +838,11 @@ gdm_session_verification_message_new (const gchar *service_name,
 	return (GdmSessionMessage *) message;
 }
 
-static gchar *
-gdm_session_flatten_arguments (const gchar * const * argv,
+static char *
+gdm_session_flatten_arguments (const char * const * argv,
 			       gsize *arguments_size)
 {
-	gchar *arguments;
+	char *arguments;
 	gsize i, total_size, argument_size;
 
 	total_size = 0;
@@ -873,29 +870,29 @@ gdm_session_flatten_arguments (const gchar * const * argv,
 	return arguments;
 }
 
-static gchar **
-gdm_session_unflatten_arguments (const gchar *arguments)
+static char **
+gdm_session_unflatten_arguments (const char *arguments)
 {
 	GPtrArray *array;
-	gchar *argument;
+	char *argument;
 
 	array = g_ptr_array_new ();
 
-	argument = (gchar *) arguments;
+	argument = (char *) arguments;
 	while (*argument != '\0') {
 		g_ptr_array_add (array, g_strdup (argument));
 		argument += strlen (argument) + 1;
 	}
 	g_ptr_array_add (array, NULL);
 
-	return (gchar **) g_ptr_array_free (array, FALSE);
+	return (char **) g_ptr_array_free (array, FALSE);
 }
 
 static GdmSessionMessage *
-gdm_session_start_program_message_new (const gchar * const * args)
+gdm_session_start_program_message_new (const char * const * args)
 {
 	GdmSessionStartProgramMessage *message;
-	gchar *arguments;
+	char *arguments;
 	gsize size, arguments_size;
 
 	g_assert (args != NULL);
@@ -916,7 +913,7 @@ gdm_session_start_program_message_new (const gchar * const * args)
 	g_slice_free1 (arguments_size, arguments);
 	message->arguments_size = arguments_size;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL),
 		   GDM_SESSION_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL));
@@ -925,13 +922,13 @@ gdm_session_start_program_message_new (const gchar * const * args)
 }
 
 static GdmSessionMessage *
-gdm_session_set_environment_variable_message_new (const gchar *name,
-						  const gchar *value)
+gdm_session_set_environment_variable_message_new (const char *name,
+						  const char *value)
 {
 	GdmSessionSetEnvironmentVariableMessage *message;
-	gchar *environment_variable;
+	char *environment_variable;
 	gsize size, environment_variable_size;
-	gint length;
+	int length;
 
 	g_assert (name != NULL);
 	g_assert (strchr (name, '=') == NULL);
@@ -954,7 +951,7 @@ gdm_session_set_environment_variable_message_new (const gchar *name,
 	g_free (environment_variable);
 	message->environment_variable_size = environment_variable_size;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL),
 		   GDM_SESSION_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL));
@@ -985,7 +982,7 @@ gdm_session_info_reply_message_new (const char *answer)
 		message->answer_size = -1;
 	}
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL),
 		   GDM_SESSION_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL));
@@ -1016,7 +1013,7 @@ gdm_session_secret_info_reply_message_new (const char *answer)
 		message->answer_size = -1;
 	}
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL),
 		   GDM_SESSION_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_MESSAGE_SENTINAL));
@@ -1055,7 +1052,7 @@ gdm_session_clear_message_pipe_source (GdmSession *session)
 
 static void
 gdm_session_on_child_exited (GPid             pid,
-                             gint             status,
+                             int             status,
                              GdmSession *session)
 {
 	GError *error;
@@ -1165,7 +1162,7 @@ gdm_session_validate_message_size (GdmSession        *session,
 
 	if (message->size != expected_size) {
 		g_debug ("message size was '%lu', but message was supposed "
-			   "to be '%lu'", (gulong) message->size, (gulong) expected_size);
+			 "to be '%lu'", (gulong) message->size, (gulong) expected_size);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1183,7 +1180,7 @@ gdm_session_get_incoming_message (GdmSession  *session,
 				  GError          **error)
 {
 	GError *size_error;
-	gchar *error_message;
+	char *error_message;
 	GdmSessionWorkerMessage *message;
 	gsize message_size;
 
@@ -1204,7 +1201,7 @@ gdm_session_get_incoming_message (GdmSession  *session,
 
 	if (message_size != message->size) {
 		g_debug ("message reports to be '%ld' bytes but is actually '%ld'",
-			   (glong) message->size, (glong) message_size);
+			 (glong) message->size, (glong) message_size);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1215,7 +1212,7 @@ gdm_session_get_incoming_message (GdmSession  *session,
 	g_debug ("message size is '%lu'", (gulong) message_size);
 
 	g_debug ("validating that message size is right for message "
-		   "type...");
+		 "type...");
 	size_error = NULL;
 	if (!gdm_session_validate_message_size (session, message, &size_error)) {
 		g_propagate_error (error, size_error);
@@ -1239,7 +1236,7 @@ gdm_session_get_incoming_message (GdmSession  *session,
 	case GDM_SESSION_WORKER_MESSAGE_TYPE_INFO_REQUEST:
 		g_debug ("received valid 'info request' message from worker");
 		g_debug ("***********MESSAGE QUESTION IS '%s'********",
-			   ((GdmSessionWorkerInfoRequestMessage *) message)->question);
+			 ((GdmSessionWorkerInfoRequestMessage *) message)->question);
 		break;
 
 	case GDM_SESSION_WORKER_MESSAGE_TYPE_SECRET_INFO_REQUEST:
@@ -1272,7 +1269,7 @@ gdm_session_get_incoming_message (GdmSession  *session,
 
 	default:
 		g_debug ("received unknown message of type '0x%x'",
-			   (guint) message->type);
+			 (guint) message->type);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1320,8 +1317,8 @@ gdm_session_handle_username_changed_message (GdmSession *session,
 					     GdmSessionWorkerUsernameChangedMessage *message)
 {
 	g_debug ("changing username from '%s' to '%s'",
-		   session->priv->username != NULL? session->priv->username : "<unset>",
-		   (message->username_size >= 0)? message->username : "<unset>");
+		 session->priv->username != NULL? session->priv->username : "<unset>",
+		 (message->username_size >= 0)? message->username : "<unset>");
 	g_free (session->priv->username);
 	session->priv->username = (message->username_size >= 0)? g_strdup (message->username) : NULL;
 }
@@ -1381,14 +1378,14 @@ gdm_session_handle_session_started_message (GdmSession *session,
 					    GdmSessionWorkerSessionStartedMessage *message)
 {
 	g_debug ("Emitting 'session-started' signal with pid '%d'",
-		   (gint) message->pid);
+		 (int) message->pid);
 
 	session->priv->pid = message->pid;
 	session->priv->is_running = TRUE;
 
 	g_signal_emit (session,
 		       gdm_session_signals[SESSION_STARTED],
-		       0, (gint) message->pid);
+		       0, (int) message->pid);
 }
 
 static void
@@ -1413,7 +1410,7 @@ gdm_session_handle_session_exited_message (GdmSession *session,
 					   GdmSessionWorkerSessionExitedMessage *message)
 {
 	g_debug ("Emitting 'session-exited' signal with exit code '%d'",
-		   message->exit_code);
+		 message->exit_code);
 
 	session->priv->is_running = FALSE;
 	g_signal_emit (session,
@@ -1426,7 +1423,7 @@ gdm_session_handle_session_died_message (GdmSession *session,
                                          GdmSessionWorkerSessionDiedMessage *message)
 {
 	g_debug ("Emitting 'session-died' signal with signal number '%d'",
-		   message->signal_number);
+		 message->signal_number);
 
 	session->priv->is_running = FALSE;
 	g_signal_emit (session,
@@ -1526,7 +1523,7 @@ gdm_session_incoming_message_handler (GdmSession *session)
 
 	default:
 		g_debug ("received unknown message of type '0x%x' from worker",
-			   message->type);
+			 message->type);
 		break;
 	}
 
@@ -1657,7 +1654,7 @@ gdm_session_worker_validate_message_size (GdmSessionWorker   *worker,
 
 	default:
 		g_debug ("do not know about message type '0x%x'",
-			   (guint) message->type);
+			 (guint) message->type);
 
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
@@ -1669,7 +1666,7 @@ gdm_session_worker_validate_message_size (GdmSessionWorker   *worker,
 
 	if (message->size != expected_size) {
 		g_debug ("message size was '%lu', but message was supposed "
-			   "to be '%lu'", (gulong) message->size, (gulong) expected_size);
+			 "to be '%lu'", (gulong) message->size, (gulong) expected_size);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1687,15 +1684,18 @@ gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
 					 GError         **error)
 {
 	GError *size_error;
-	gchar *error_message;
+	char *error_message;
 	GdmSessionMessage *message;
 	gsize message_size;
+	gboolean res;
 
 	g_debug ("attemping to read message from parent...");
 	error_message = NULL;
-	if (!gdm_read_message (worker->message_pipe_fd,
-			       (gpointer) &message, &message_size,
-			       &error_message)) {
+	res = gdm_read_message (worker->message_pipe_fd,
+				(gpointer) &message,
+				&message_size,
+				&error_message);
+	if (! res) {
 		g_debug ("could not read message from parent: %s", error_message);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
@@ -1708,7 +1708,7 @@ gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
 
 	if (message_size != message->size) {
 		g_debug ("message reports to be '%ld' bytes but is actually '%ld'",
-			   (glong) message->size, (glong) message_size);
+			 (glong) message->size, (glong) message_size);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1719,9 +1719,11 @@ gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
 	g_debug ("message size is '%lu'", (gulong) message_size);
 
 	g_debug ("validating that message size is right for message "
-		   "type...");
+		 "type...");
+
 	size_error = NULL;
-	if (!gdm_session_worker_validate_message_size (worker, message, &size_error)) {
+	res = gdm_session_worker_validate_message_size (worker, message, &size_error);
+	if (! res) {
 		g_propagate_error (error, size_error);
 		return NULL;
 	}
@@ -1750,7 +1752,7 @@ gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
 
 	default:
 		g_debug ("do not know about message type '0x%x'",
-			   (guint) message->type);
+			 (guint) message->type);
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_COMMUNICATING,
@@ -1764,15 +1766,15 @@ gdm_session_worker_get_incoming_message (GdmSessionWorker  *worker,
 }
 
 static gboolean
-gdm_write_message (gint     socket_fd,
+gdm_write_message (int     socket_fd,
                    gpointer message_data,
                    gsize    message_data_size,
-                   gchar **error_message)
+                   char **error_message)
 {
 	struct msghdr message = { 0 };
 	struct iovec data_block = { 0 };
 
-	const gint flags = MSG_NOSIGNAL;
+	const int flags = MSG_NOSIGNAL;
 	gboolean message_was_sent;
 
 	message.msg_iov = &data_block;
@@ -1790,15 +1792,15 @@ gdm_write_message (gint     socket_fd,
 
 		if (num_bytes_sent > 0) {
 			g_debug ("sent '%lu' bytes over socket '%d'",
-				   (gulong) num_bytes_sent,
-				   socket_fd);
+				 (gulong) num_bytes_sent,
+				 socket_fd);
 			message_was_sent = TRUE;
 		}
 	}
 	while (!message_was_sent && (errno == EINTR));
 
 	if (!message_was_sent && (error_message != NULL)) {
-		const gchar *error;
+		const char *error;
 		error = g_strerror (errno);
 		g_debug ("message was not sent: %s", error);
 		*error_message = g_strdup (error);
@@ -1811,14 +1813,14 @@ gdm_write_message (gint     socket_fd,
 	return message_was_sent;
 }
 
-static gchar *
+static char *
 gdm_session_worker_ask_question (GdmSessionWorker *worker,
-				 const gchar    *question)
+				 const char    *question)
 {
 	GdmSessionWorkerMessage *message;
 	GdmSessionMessage *reply;
 	GdmSessionInfoReplyMessage *info_reply;
-	gchar *answer;
+	char *answer;
 	GError *error;
 
 	message = gdm_session_worker_info_request_message_new (question);
@@ -1827,6 +1829,8 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 
 	error = NULL;
 	do {
+		gboolean res;
+
 		reply = gdm_session_worker_get_incoming_message (worker, &error);
 
 		if (reply == NULL) {
@@ -1837,7 +1841,9 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 			 */
 			return NULL;
 		}
-		if (gdm_session_worker_process_asynchronous_message (worker, reply)) {
+
+		res = gdm_session_worker_process_asynchronous_message (worker, reply);
+		if (res) {
 			gdm_session_message_free (reply);
 			reply = NULL;
 		}
@@ -1866,14 +1872,14 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 	return answer;
 }
 
-static gchar *
+static char *
 gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
-				   const gchar    *secret)
+				   const char    *secret)
 {
 	GdmSessionWorkerMessage *message;
 	GdmSessionMessage *reply;
 	GdmSessionSecretInfoReplyMessage *secret_info_reply;
-	gchar *answer;
+	char *answer;
 	GError *error;
 
 	message = gdm_session_worker_secret_info_request_message_new (secret);
@@ -1882,6 +1888,8 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
 
 	error = NULL;
 	do {
+		gboolean res;
+
 		reply = gdm_session_worker_get_incoming_message (worker, &error);
 
 		if (reply == NULL) {
@@ -1892,7 +1900,9 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
 			 */
 			return NULL;
 		}
-		if (gdm_session_worker_process_asynchronous_message (worker, reply)) {
+
+		res = gdm_session_worker_process_asynchronous_message (worker, reply);
+		if (res) {
 			gdm_session_message_free (reply);
 			reply = NULL;
 		}
@@ -1919,7 +1929,7 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
 
 static void
 gdm_session_worker_report_info (GdmSessionWorker *worker,
-				const gchar    *info)
+				const char    *info)
 {
 	GdmSessionWorkerMessage *message;
 	message = gdm_session_worker_info_message_new (info);
@@ -1929,7 +1939,7 @@ gdm_session_worker_report_info (GdmSessionWorker *worker,
 
 static void
 gdm_session_worker_report_problem (GdmSessionWorker *worker,
-				   const gchar    *problem)
+				   const char    *problem)
 {
 	GdmSessionWorkerMessage *message;
 	message = gdm_session_worker_problem_message_new (problem);
@@ -1939,7 +1949,7 @@ gdm_session_worker_report_problem (GdmSessionWorker *worker,
 
 static gboolean
 gdm_session_worker_get_username (GdmSessionWorker  *worker,
-				 gchar          **username)
+				 char          **username)
 {
 	gconstpointer item;
 
@@ -1947,9 +1957,9 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
 
 	if (pam_get_item (worker->pam_handle, PAM_USER, &item) == PAM_SUCCESS) {
 		if (username) {
-			*username = g_strdup ((gchar *) item);
+			*username = g_strdup ((char *) item);
 			g_debug ("username is '%s'", *username != NULL? *username :
-				   "<unset>");
+				 "<unset>");
 		}
 		return TRUE;
 	}
@@ -1960,10 +1970,12 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
 static void
 gdm_session_worker_update_username (GdmSessionWorker *worker)
 {
-	gchar *username;
+	char *username;
+	gboolean res;
 
 	username = NULL;
-	if (gdm_session_worker_get_username (worker, &username)) {
+	res = gdm_session_worker_get_username (worker, &username);
+	if (res) {
 		GdmSessionWorkerMessage *message;
 
 		if ((worker->username == username) ||
@@ -1991,11 +2003,11 @@ gdm_session_worker_process_pam_message (GdmSessionWorker            *worker,
 					const struct pam_message  *query,
 					char                     **response_text)
 {
-	gchar *user_answer;
+	char *user_answer;
 	gboolean was_processed;
 
 	g_debug ("received pam message of type %u with payload '%s'",
-		   query->msg_style, query->msg);
+		 query->msg_style, query->msg);
 
 	user_answer = NULL;
 	was_processed = FALSE;
@@ -2076,7 +2088,7 @@ gdm_session_worker_pam_new_messages_handler (int               number_of_message
 			goto out;
 
 		g_debug ("answered pam message %d with response '%s'",
-			   i, response_text);
+			 i, response_text);
 		replies[i].resp = response_text;
 		replies[i].resp_retcode = PAM_SUCCESS;
 	}
@@ -2127,10 +2139,10 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
 static gboolean
 gdm_session_worker_initialize_pam (GdmSessionWorker  *worker,
-				   const gchar     *service,
-				   const gchar     *username,
-				   const gchar     *hostname,
-				   const gchar     *console_name,
+				   const char     *service,
+				   const char     *username,
+				   const char     *hostname,
+				   const char     *console_name,
 				   GError         **error)
 {
 	struct pam_conv pam_conversation;
@@ -2140,8 +2152,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker  *worker,
 
 	g_debug ("initializing PAM");
 
-	pam_conversation.conv = (GdmSessionWorkerPamNewMessagesFunc)
-		gdm_session_worker_pam_new_messages_handler;
+	pam_conversation.conv = (GdmSessionWorkerPamNewMessagesFunc) gdm_session_worker_pam_new_messages_handler;
 	pam_conversation.appdata_ptr = worker;
 
 	error_code = pam_start (service,
@@ -2271,7 +2282,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker  *worker,
 
 	if (error_code != PAM_SUCCESS) {
 		g_debug ("user is not authorized to log in: %s",
-			   pam_strerror (worker->pam_handle, error_code));
+			 pam_strerror (worker->pam_handle, error_code));
 		g_set_error (error,
 			     GDM_SESSION_ERROR,
 			     GDM_SESSION_ERROR_AUTHORIZING,
@@ -2290,9 +2301,9 @@ gdm_session_worker_authorize_user (GdmSessionWorker  *worker,
 
 static void
 gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
-					     const gchar    *environment_variable)
+					     const char    *environment_variable)
 {
-	gchar **key_and_value;
+	char **key_and_value;
 
 	key_and_value = g_strsplit (environment_variable, "=", 2);
 
@@ -2314,7 +2325,7 @@ static void
 gdm_session_worker_update_environment_from_passwd_entry (GdmSessionWorker *worker,
 							 struct passwd  *passwd_entry)
 {
-	gchar *environment_variable;
+	char *environment_variable;
 
 	environment_variable = g_strdup_printf ("LOGNAME=%s", worker->username);
 	gdm_session_worker_set_environment_variable (worker, environment_variable);
@@ -2339,7 +2350,7 @@ gdm_session_worker_update_environment_from_passwd_entry (GdmSessionWorker *worke
 
 static gboolean
 gdm_session_worker_environment_variable_is_set (GdmSessionWorker *worker,
-						const gchar    *name)
+						const char    *name)
 {
 	return g_hash_table_lookup (worker->environment, name) != NULL;
 }
@@ -2350,7 +2361,7 @@ gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
 {
 	int error_code;
 	struct passwd *passwd_entry, passwd_buffer;
-	gchar *aux_buffer;
+	char *aux_buffer;
 	long required_aux_buffer_size;
 	gsize aux_buffer_size;
 
@@ -2468,16 +2479,17 @@ gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
 
 static gboolean
 gdm_session_worker_verify_user (GdmSessionWorker  *worker,
-				const gchar     *service_name,
-				const gchar     *username,
-				const gchar     *hostname,
-				const gchar     *console_name,
+				const char     *service_name,
+				const char     *username,
+				const char     *hostname,
+				const char     *console_name,
 				gboolean         password_is_required,
 				GError         **error)
 {
 	GError *pam_error;
 	GdmSessionWorkerMessage *reply;
-	gchar *error_message;
+	char *error_message;
+	gboolean res;
 
 	pam_error = NULL;
 	if (!gdm_session_worker_initialize_pam (worker,
@@ -2490,9 +2502,10 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
 
 	/* find out who the user is and ensure they are who they say they are
 	 */
-	if (!gdm_session_worker_authenticate_user (worker,
-						   password_is_required,
-						   &pam_error)) {
+	res = gdm_session_worker_authenticate_user (worker,
+						    password_is_required,
+						    &pam_error);
+	if (! res) {
 		g_propagate_error (error, pam_error);
 		return FALSE;
 	}
@@ -2505,16 +2518,18 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
 
 	/* make sure the user is allowed to log in to this system
 	 */
-	if (!gdm_session_worker_authorize_user (worker,
-						password_is_required,
-						&pam_error)) {
+	res = gdm_session_worker_authorize_user (worker,
+						 password_is_required,
+						 &pam_error);
+	if (! res) {
 		g_propagate_error (error, pam_error);
 		return FALSE;
 	}
 
 	/* get kerberos tickets, setup group lists, etc
 	 */
-	if (!gdm_session_worker_give_user_credentials (worker, &pam_error)) {
+	res = gdm_session_worker_give_user_credentials (worker, &pam_error);
+	if (! res) {
 		g_propagate_error (error, pam_error);
 		return FALSE;
 	}
@@ -2523,9 +2538,11 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
 	reply = gdm_session_worker_verified_message_new ();
 
 	error_message = NULL;
-	if (!gdm_write_message (worker->message_pipe_fd,
-				reply, reply->size,
-				&error_message)) {
+	res = gdm_write_message (worker->message_pipe_fd,
+				 reply,
+				 reply->size,
+				 &error_message);
+	if (! res) {
 		g_warning ("could not send 'verified' reply to parent: %s\n",
 			   error_message);
 		g_free (error_message);
@@ -2539,7 +2556,7 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
 static void
 gdm_session_worker_update_environment_from_pam (GdmSessionWorker *worker)
 {
-	gchar **environment;
+	char **environment;
 	gsize i;
 
 	environment = pam_getenvlist (worker->pam_handle);
@@ -2553,11 +2570,11 @@ gdm_session_worker_update_environment_from_pam (GdmSessionWorker *worker)
 }
 
 static void
-gdm_session_worker_fill_environment_array (const gchar *key,
-					   const gchar *value,
+gdm_session_worker_fill_environment_array (const char *key,
+					   const char *value,
 					   GPtrArray   *environment)
 {
-	gchar *variable;
+	char *variable;
 
 	if (value == NULL)
 		return;
@@ -2567,7 +2584,7 @@ gdm_session_worker_fill_environment_array (const gchar *key,
 	g_ptr_array_add (environment, variable);
 }
 
-static gchar **
+static char **
 gdm_session_worker_get_environment (GdmSessionWorker *worker)
 {
 	GPtrArray *environment;
@@ -2578,12 +2595,12 @@ gdm_session_worker_get_environment (GdmSessionWorker *worker)
 			      environment);
 	g_ptr_array_add (environment, NULL);
 
-	return (gchar **) g_ptr_array_free (environment, FALSE);
+	return (char **) g_ptr_array_free (environment, FALSE);
 }
 
 static void
 gdm_session_worker_on_child_exited (GPid       pid,
-				    gint       status,
+				    int       status,
 				    GdmSessionWorker *worker)
 {
 	GdmSessionWorkerMessage *message;
@@ -2629,7 +2646,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 	int error_code;
 	pid_t session_pid;
 	GdmSessionWorkerMessage *message;
-	gchar *error_message;
+	char *error_message;
 
 	g_assert (!worker->is_running);
 	g_assert (geteuid () == 0);
@@ -2648,7 +2665,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 	gdm_session_worker_update_environment_from_pam (worker);
 
 	g_debug ("opening user session with program '%s'",
-		   worker->arguments[0]);
+		 worker->arguments[0]);
 
 	session_pid = fork ();
 
@@ -2662,8 +2679,8 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 	}
 
 	if (session_pid == 0) {
-		gchar **environment;
-		gchar *home_dir;
+		char **environment;
+		char *home_dir;
 		int fd;
 
 		worker->inherited_fd_list =
@@ -2684,7 +2701,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 
 		if (setsid () < 0) {
 			g_debug ("could not set pid '%u' as leader of new session and process group - %s",
-				   (guint) getpid (), g_strerror (errno));
+				 (guint) getpid (), g_strerror (errno));
 			_exit (2);
 		}
 
@@ -2725,7 +2742,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 		execve (worker->arguments[0], worker->arguments, environment);
 
 		g_debug ("child '%s' could not be started - %s",
-			   worker->arguments[0], g_strerror (errno));
+			 worker->arguments[0], g_strerror (errno));
 		g_strfreev (environment);
 
 		_exit (127);
@@ -2734,7 +2751,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 	worker->child_pid = session_pid;
 
 	g_debug ("session opened creating reply...");
-	g_assert (sizeof (GPid) <= sizeof (gint));
+	g_assert (sizeof (GPid) <= sizeof (int));
 
 	message = gdm_session_worker_session_started_message_new ((GPid) session_pid);
 
@@ -2785,7 +2802,7 @@ gdm_session_worker_session_startup_failed_message_new (GError *error)
 		message->error_message_size = -1;
 	}
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -2797,25 +2814,27 @@ static void
 gdm_session_worker_handle_verification_message (GdmSessionWorker  *worker,
 						GdmSessionVerificationMessage *message)
 {
-	GError *verification_error;
+	GError                  *verification_error;
 	GdmSessionWorkerMessage *reply;
+	gboolean                 res;
 
 	worker->standard_output_fd = message->standard_output_fd;
 	worker->standard_error_fd = message->standard_error_fd;
 
 	verification_error = NULL;
-	if (!gdm_session_worker_verify_user (worker,
-					     message->service_name,
-					     (message->username_size >= 0)?
-					     message->username : NULL,
-					     message->hostname_is_provided?
-					     message->hostname: NULL,
-					     message->console_name,
-					     TRUE /* password is required */,
-					     &verification_error)) {
+	res = gdm_session_worker_verify_user (worker,
+					      message->service_name,
+					      (message->username_size >= 0)?
+					      message->username : NULL,
+					      message->hostname_is_provided?
+					      message->hostname: NULL,
+					      message->console_name,
+					      TRUE /* password is required */,
+					      &verification_error);
+	if (! res) {
 		g_assert (verification_error != NULL);
 
-		g_warning ("%s", verification_error->message);
+		g_message ("%s", verification_error->message);
 
 		reply = gdm_session_worker_verification_failed_message_new (verification_error);
 
@@ -2833,7 +2852,7 @@ gdm_session_worker_handle_verification_message (GdmSessionWorker  *worker,
 	    !gdm_session_worker_open_user_session (worker, &verification_error)) {
 		g_assert (verification_error != NULL);
 
-		g_warning ("%s", verification_error->message);
+		g_message ("%s", verification_error->message);
 
 		reply = gdm_session_worker_session_startup_failed_message_new (verification_error);
 
@@ -2852,7 +2871,8 @@ static void
 gdm_session_worker_handle_start_program_message (GdmSessionWorker  *worker,
 						 GdmSessionStartProgramMessage *message)
 {
-	GError *start_error;
+	GError  *start_error;
+	gboolean res;
 
 	if (worker->arguments != NULL)
 		g_strfreev (worker->arguments);
@@ -2866,7 +2886,8 @@ gdm_session_worker_handle_start_program_message (GdmSessionWorker  *worker,
 		return;
 
 	start_error = NULL;
-	if (!gdm_session_worker_open_user_session (worker, &start_error)) {
+	res = gdm_session_worker_open_user_session (worker, &start_error);
+	if (! res) {
 		GdmSessionWorkerMessage *message;
 
 		g_assert (start_error != NULL);
@@ -2917,7 +2938,7 @@ gdm_session_worker_process_asynchronous_message (GdmSessionWorker *worker,
 
 	default:
 		g_debug ("received unknown message with type '0x%x' from parent",
-			   message->type);
+			 message->type);
 		return FALSE;
 	}
 
@@ -2951,27 +2972,27 @@ gdm_session_worker_unwatch_child (GdmSessionWorker *worker)
 	worker->child_watch_source = NULL;
 }
 
-static gint
+static int
 gdm_get_max_open_fds (void)
 {
 	struct rlimit open_fd_limit;
-	const gint fallback_limit = GDM_MAX_OPEN_FILE_DESCRIPTORS;
+	const int fallback_limit = GDM_MAX_OPEN_FILE_DESCRIPTORS;
 
 	if (getrlimit (RLIMIT_NOFILE, &open_fd_limit) < 0) {
 		g_debug ("could not get file descriptor limit: %s",
-			   g_strerror (errno));
+			 g_strerror (errno));
 		g_debug ("returning fallback file descriptor limit of %d",
-			   fallback_limit);
+			 fallback_limit);
 		return fallback_limit;
 	}
 
 	if (open_fd_limit.rlim_cur == RLIM_INFINITY) {
 		g_debug ("currently no file descriptor limit, returning fallback limit of %d",
-			   fallback_limit);
+			 fallback_limit);
 		return fallback_limit;
 	}
 
-	return (gint) open_fd_limit.rlim_cur;
+	return (int) open_fd_limit.rlim_cur;
 }
 
 static void
@@ -2981,7 +3002,7 @@ gdm_session_worker_close_all_fds (GdmSessionWorker *worker)
 
 	max_open_fds = gdm_get_max_open_fds ();
 	g_debug ("closing all file descriptors except those that are specifically "
-		   "excluded");
+		 "excluded");
 
 	for (fd = 0; fd < max_open_fds; fd++) {
 		GSList *node;
@@ -3033,13 +3054,13 @@ gdm_session_worker_close_open_fds (GdmSessionWorker *worker)
 		while ((entry = readdir (dir)) != NULL) {
 			GSList *node;
 			glong filename_as_number;
-			gchar *byte_after_number;
+			char *byte_after_number;
 
 			if (entry->d_name[0] == '.')
 				continue;
 
 			g_debug ("scanning filename '%s' for file descriptor number",
-				   entry->d_name);
+				 entry->d_name);
 			fd = -1;
 			filename_as_number = strtol (entry->d_name, &byte_after_number, 10);
 
@@ -3049,13 +3070,13 @@ gdm_session_worker_close_open_fds (GdmSessionWorker *worker)
 			    (filename_as_number < 0) ||
 			    (filename_as_number >= G_MAXINT)) {
 				g_debug ("filename '%s' does not appear to represent a "
-					   "file descriptor: %s",
-					   entry->d_name, strerror (errno));
+					 "file descriptor: %s",
+					 entry->d_name, strerror (errno));
 				should_use_fallback = TRUE;
 			} else {
-				fd = (gint) filename_as_number;
+				fd = (int) filename_as_number;
 				g_debug ("filename '%s' represents file descriptor '%d'",
-					   entry->d_name, fd);
+					 entry->d_name, fd);
 				should_use_fallback = FALSE;
 			}
 
@@ -3072,7 +3093,7 @@ gdm_session_worker_close_open_fds (GdmSessionWorker *worker)
 				close (fd);
 			} else {
 				g_debug ("will not close file descriptor '%d' because it "
-					   "is still neded", fd);
+					 "is still neded", fd);
 			}
 		}
 		g_debug ("closing directory '"GDM_OPEN_FILE_DESCRIPTORS_DIR"'");
@@ -3103,7 +3124,7 @@ gdm_session_worker_verified_message_new (void)
 	message->header.type = GDM_SESSION_WORKER_MESSAGE_TYPE_VERIFIED;
 	message->header.size = size;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3137,7 +3158,7 @@ gdm_session_worker_verification_failed_message_new (GError *error)
 		message->error_message_size = -1;
 	}
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3146,7 +3167,7 @@ gdm_session_worker_verification_failed_message_new (GError *error)
 }
 
 static GdmSessionWorkerMessage *
-gdm_session_worker_info_request_message_new (const gchar *question)
+gdm_session_worker_info_request_message_new (const char *question)
 {
 	GdmSessionWorkerInfoRequestMessage *message;
 	gsize question_size, size;
@@ -3169,7 +3190,7 @@ gdm_session_worker_info_request_message_new (const gchar *question)
 }
 
 static GdmSessionWorkerMessage *
-gdm_session_worker_username_changed_message_new (const gchar *new_username)
+gdm_session_worker_username_changed_message_new (const char *new_username)
 {
 	GdmSessionWorkerUsernameChangedMessage *message;
 	gsize username_size, size;
@@ -3192,7 +3213,7 @@ gdm_session_worker_username_changed_message_new (const gchar *new_username)
 		message->username_size = -1;
 	}
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3201,7 +3222,7 @@ gdm_session_worker_username_changed_message_new (const gchar *new_username)
 }
 
 static GdmSessionWorkerMessage *
-gdm_session_worker_secret_info_request_message_new (const gchar *question)
+gdm_session_worker_secret_info_request_message_new (const char *question)
 {
 	GdmSessionWorkerSecretInfoRequestMessage *message;
 	gsize question_size, size;
@@ -3222,7 +3243,7 @@ gdm_session_worker_secret_info_request_message_new (const gchar *question)
 	g_strlcpy (message->question, question, question_size);
 	message->question_size = question_size;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3231,7 +3252,7 @@ gdm_session_worker_secret_info_request_message_new (const gchar *question)
 }
 
 static GdmSessionWorkerMessage *
-gdm_session_worker_info_message_new (const gchar *info)
+gdm_session_worker_info_message_new (const char *info)
 {
 	GdmSessionWorkerInfoMessage *message;
 	gsize info_size, size;
@@ -3252,7 +3273,7 @@ gdm_session_worker_info_message_new (const gchar *info)
 	g_strlcpy (message->info, info, info_size);
 	message->info_size = info_size;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3261,7 +3282,7 @@ gdm_session_worker_info_message_new (const gchar *info)
 }
 
 static GdmSessionWorkerMessage *
-gdm_session_worker_problem_message_new (const gchar *problem)
+gdm_session_worker_problem_message_new (const char *problem)
 {
 	GdmSessionWorkerProblemMessage *message;
 	gsize problem_size, size;
@@ -3282,7 +3303,7 @@ gdm_session_worker_problem_message_new (const gchar *problem)
 	g_strlcpy (message->problem, problem, problem_size);
 	message->problem_size = problem_size;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3306,7 +3327,7 @@ gdm_session_worker_session_started_message_new (GPid pid)
 
 	message->pid = pid;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3316,7 +3337,7 @@ gdm_session_worker_session_started_message_new (GPid pid)
 
 
 static GdmSessionWorkerMessage *
-gdm_session_worker_session_exited_message_new (gint exit_code)
+gdm_session_worker_session_exited_message_new (int exit_code)
 {
 	GdmSessionWorkerSessionExitedMessage *message;
 	gsize size;
@@ -3331,7 +3352,7 @@ gdm_session_worker_session_exited_message_new (gint exit_code)
 
 	message->exit_code = exit_code;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3340,7 +3361,7 @@ gdm_session_worker_session_exited_message_new (gint exit_code)
 }
 
 static GdmSessionWorkerMessage *
-gdm_session_worker_session_died_message_new (gint signal_number)
+gdm_session_worker_session_died_message_new (int signal_number)
 {
 	GdmSessionWorkerSessionDiedMessage *message;
 	gsize size;
@@ -3355,7 +3376,7 @@ gdm_session_worker_session_died_message_new (gint signal_number)
 
 	message->signal_number = signal_number;
 
-	g_strlcpy ((gchar *) ((guint *) message) + size -
+	g_strlcpy ((char *) ((guint *) message) + size -
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL),
 		   GDM_SESSION_WORKER_MESSAGE_SENTINAL,
 		   sizeof (GDM_SESSION_WORKER_MESSAGE_SENTINAL));
@@ -3445,11 +3466,11 @@ gdm_session_worker_wait_for_messages (GdmSessionWorker *worker)
 }
 
 static gboolean
-gdm_open_bidirectional_pipe (gint    *fd1,
-                             gint    *fd2,
-                             gchar  **error_message)
+gdm_open_bidirectional_pipe (int    *fd1,
+                             int    *fd2,
+                             char  **error_message)
 {
-	gint pipe_fds[2];
+	int pipe_fds[2];
 
 	g_assert (fd1 != NULL);
 	g_assert (fd2 != NULL);
@@ -3570,9 +3591,9 @@ gdm_session_worker_free (GdmSessionWorker *worker)
 
 static gboolean
 gdm_session_create_worker (GdmSession  *session,
-			   gint       standard_output_fd,
-			   gint       standard_error_fd,
-			   gint      *worker_fd,
+			   int       standard_output_fd,
+			   int       standard_error_fd,
+			   int      *worker_fd,
 			   GPid      *worker_pid,
 			   GError   **error)
 {
@@ -3671,18 +3692,18 @@ gdm_session_create_worker (GdmSession  *session,
 }
 
 static gboolean
-gdm_session_open_with_worker (GdmSession     *session,
-                              const gchar  *service_name,
-                              const gchar  *username,
-                              const gchar  *hostname,
-                              const gchar  *console_name,
-                              gint standard_output_fd,
-                              gint standard_error_fd,
+gdm_session_open_with_worker (GdmSession   *session,
+                              const char  *service_name,
+                              const char  *username,
+                              const char  *hostname,
+                              const char  *console_name,
+                              int standard_output_fd,
+                              int standard_error_fd,
                               GError      **error)
 {
 	GdmSessionMessage *message;
 	GError *worker_error;
-	gint worker_message_pipe_fd;
+	int worker_message_pipe_fd;
 	GPid worker_pid;
 	gboolean worker_is_created;
 
@@ -3731,11 +3752,11 @@ gdm_session_open_with_worker (GdmSession     *session,
 
 gboolean
 gdm_session_open (GdmSession   *session,
-                  const gchar  *service_name,
-                  const gchar  *hostname,
-                  const gchar  *console_name,
-                  gint standard_output_fd,
-                  gint standard_error_fd,
+                  const char  *service_name,
+                  const char  *hostname,
+                  const char  *console_name,
+                  int standard_output_fd,
+                  int standard_error_fd,
                   GError      **error)
 {
 	g_return_val_if_fail (session != NULL, FALSE);
@@ -3750,12 +3771,12 @@ gdm_session_open (GdmSession   *session,
 
 gboolean
 gdm_session_open_for_user (GdmSession    *session,
-                           const gchar *service_name,
+                           const char *service_name,
                            const char  *username,
-                           const gchar *hostname,
-                           const gchar *console_name,
-                           gint standard_output_fd,
-                           gint standard_error_fd,
+                           const char *hostname,
+                           const char *console_name,
+                           int standard_output_fd,
+                           int standard_error_fd,
                            GError     **error)
 {
 	g_return_val_if_fail (session != NULL, FALSE);
@@ -3771,8 +3792,8 @@ gdm_session_open_for_user (GdmSession    *session,
 }
 
 void
-gdm_session_start_program (GdmSession        *session,
-                           const gchar     * const * args)
+gdm_session_start_program (GdmSession          *session,
+                           const char * const *args)
 {
 	GdmSessionMessage *message;
 	int argc, i;
@@ -3783,8 +3804,8 @@ gdm_session_start_program (GdmSession        *session,
 	g_return_if_fail (args != NULL);
 	g_return_if_fail (args[0] != NULL);
 
-	argc = g_strv_length ((gchar **) args);
-	session->priv->arguments = g_new0 (gchar *, (argc + 1));
+	argc = g_strv_length ((char **) args);
+	session->priv->arguments = g_new0 (char *, (argc + 1));
 
 	for (i = 0; args[i] != NULL; i++)
 		session->priv->arguments[i] = g_strdup (args[i]);
@@ -3841,6 +3862,7 @@ gdm_session_close (GdmSession *session)
 	}
 
 }
+
 gboolean
 gdm_session_is_running (GdmSession *session)
 {
@@ -3848,9 +3870,9 @@ gdm_session_is_running (GdmSession *session)
 }
 
 void
-gdm_session_set_environment_variable (GdmSession        *session,
-                                      const gchar     *key,
-                                      const gchar     *value)
+gdm_session_set_environment_variable (GdmSession      *session,
+                                      const char     *key,
+                                      const char     *value)
 {
 	GdmSessionMessage *message;
 
@@ -3867,7 +3889,7 @@ gdm_session_set_environment_variable (GdmSession        *session,
 
 void
 gdm_session_answer_query  (GdmSession        *session,
-                           const gchar     *answer)
+                           const char     *answer)
 {
 	GdmSessionMessage *reply;
 
@@ -3903,12 +3925,10 @@ gdm_session_answer_query  (GdmSession        *session,
 	session->priv->next_expected_message = GDM_SESSION_MESSAGE_TYPE_INVALID;
 }
 
-gchar *
+char *
 gdm_session_get_username (GdmSession *session)
 {
 	g_return_val_if_fail (session != NULL, NULL);
 
 	return g_strdup (session->priv->username);
 }
-
-

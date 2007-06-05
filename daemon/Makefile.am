@@ -48,6 +48,21 @@ gdm-xdmcp-display-glue.h: gdm-xdmcp-display.xml Makefile.am
 gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_static_display --mode=glib-server --output=gdm-static-display-glue.h gdm-static-display.xml
 
+noinst_PROGRAMS = 		\
+	test-session		\
+	$(NULL)
+
+test_session_SOURCES = 		\
+	test-session.c	 	\
+	gdm-session.c		\
+	$(NULL)
+
+test_session_LDADD =		\
+	$(GLIB_LIBS)		\
+	$(GOBJECT_LIBS)		\
+	$(EXTRA_DAEMON_LIBS)	\
+	$(NULL)
+
 libexec_PROGRAMS = 			\
 	gdm-slave			\
 	$(NULL)
@@ -62,9 +77,9 @@ gdm_slave_SOURCES = 			\
 	gdm-session.h			\
 	gdm-slave.c			\
 	gdm-slave.h			\
-	fstype.c \
-	filecheck.c \
-	filecheck.h \
+	fstype.c			\
+	filecheck.c			\
+	filecheck.h			\
 	$(NULL)
 
 # Note that these libs are in LDFLAGS because they should come before
@@ -110,12 +125,12 @@ gdm_binary_SOURCES = 			\
 	gdm-socket-protocol.h		\
 	auth.c				\
 	auth.h				\
-	fstype.c \
-	server.h \
-	choose.c \
-	choose.h \
-	filecheck.c \
-	filecheck.h \
+	fstype.c			\
+	server.h			\
+	choose.c			\
+	choose.h			\
+	filecheck.c			\
+	filecheck.h			\
 	$(NULL)
 
 XDMCP_SOURCES =			\

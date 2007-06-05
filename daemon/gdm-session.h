@@ -20,10 +20,9 @@
  * 02111-1307, USA.
  */
 
-#ifndef GDM_SESSION_H
-#define GDM_SESSION_H
+#ifndef __GDM_SESSION_H
+#define __GDM_SESSION_H
 
-#include <glib.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
