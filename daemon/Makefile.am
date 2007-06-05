@@ -58,6 +58,8 @@ gdm_slave_SOURCES = 			\
 	gdm-greeter.h			\
 	gdm-server.c			\
 	gdm-server.h			\
+	gdm-session.c			\
+	gdm-session.h			\
 	gdm-slave.c			\
 	gdm-slave.h			\
 	fstype.c \
