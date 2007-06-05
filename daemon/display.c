@@ -81,6 +81,7 @@ gdm_display_alloc (gint id, const gchar *command)
     d->greetpid = 0;
     d->name = g_strdup_printf (":%d", id);
     d->hostname = g_strdup (hostname);
+    d->windowpath = NULL;
     /* Not really used for not XDMCP */
     memset (&(d->addr), 0, sizeof (d->addr));
     d->dispnum = id;
@@ -546,6 +547,9 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->hostname);
     d->hostname = NULL;
 
+    g_free (d->windowpath);
+    d->windowpath = NULL;
+
     g_free (d->addrs);
     d->addrs = NULL;
     d->addr_count = 0;
@@ -582,6 +586,9 @@ gdm_display_dispose (GdmDisplay *d)
 
     g_free (d->userauth);
     d->userauth = NULL;
+
+    g_free (d->windowpath);
+    d->windowpath = NULL;
 
     g_free (d->command);
     d->command = NULL;

@@ -73,6 +73,8 @@ struct _GdmDisplay
 	gchar *name;     /* value of DISPLAY */
 	gchar *hostname; /* remote hostname */
 
+	char *windowpath; /* path to server "window" */
+
 	guint8 dispstat;
 	guint16 dispnum;
 

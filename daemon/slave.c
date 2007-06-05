@@ -1084,6 +1084,77 @@ gdm_screen_init (GdmDisplay *display)
 }
 
 static void
+gdm_window_path (GdmDisplay *d)
+{
+	/* setting WINDOWPATH for clients */
+	Atom prop;
+	Atom actualtype;
+	int actualformat;
+	unsigned long nitems;
+	unsigned long bytes_after;
+	unsigned char *buf;
+	const char *windowpath;
+	char *newwindowpath;
+	unsigned long num;
+	char nums[10];
+	int numn;
+
+	prop = XInternAtom (d->dsp, "XFree86_VT", False);
+	if (prop == None) {
+		gdm_debug ("no XFree86_VT atom\n");
+		return;
+	}
+	if (XGetWindowProperty (d->dsp, DefaultRootWindow (d->dsp), prop, 0, 1, 
+		False, AnyPropertyType, &actualtype, &actualformat, 
+		&nitems, &bytes_after, &buf)) {
+		gdm_debug ("no XFree86_VT property\n");
+		return;
+	}
+	if (nitems != 1) {
+		gdm_debug ("%lu items in XFree86_VT property!\n", nitems);
+		XFree (buf);
+		return;
+	}
+	switch (actualtype) {
+	case XA_CARDINAL:
+	case XA_INTEGER:
+	case XA_WINDOW:
+		switch (actualformat) {
+		case  8:
+			num = (*(uint8_t  *)(void *)buf);
+			break;
+		case 16:
+			num = (*(uint16_t *)(void *)buf);
+			break;
+		case 32:
+			num = (*(uint32_t *)(void *)buf);
+			break;
+		default:
+			gdm_debug ("format %d in XFree86_VT property!\n", actualformat);
+			XFree (buf);
+			return;
+		}
+		break;
+	default:
+		gdm_debug ("type %lx in XFree86_VT property!\n", actualtype);
+		XFree (buf);
+		return;
+	}
+	XFree (buf);
+	windowpath = getenv("WINDOWPATH");
+	numn = snprintf (nums, sizeof (nums), "%lu", num);
+	if (!windowpath) {
+		newwindowpath = malloc (numn + 1);
+		sprintf (newwindowpath, "%s", nums);
+	} else {
+		newwindowpath = malloc (strlen (windowpath) + 1 + numn + 1);
+		sprintf (newwindowpath, "%s:%s", windowpath, nums);
+	}
+	free (d->windowpath);
+	d->windowpath = newwindowpath;
+}
+
+static void
 gdm_slave_whack_greeter (void)
 {
 	GdmWaitPid *wp;
@@ -1397,6 +1468,8 @@ gdm_slave_run (GdmDisplay *display)
 	 * since the lookup was done in server start */
 
 	g_setenv ("DISPLAY", d->name, TRUE);
+	if (d->windowpath)
+		g_setenv ("WINDOWPATH", d->windowpath, TRUE);
 	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
 
 	gdm_auth_set_local_auth (d);
@@ -1516,6 +1589,9 @@ gdm_slave_run (GdmDisplay *display)
 	if (d->handled)
 		gdm_tsol_init (d);
 #endif
+
+    /* checkout window number */
+    gdm_window_path (d);
 
 	/* check log stuff for the server, this is done here
 	 * because it's really a race */
@@ -1826,6 +1902,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		/* root here */
 		g_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);
 		g_setenv ("DISPLAY", display->name, TRUE);
+		if (d->windowpath)
+			g_setenv ("WINDOWPATH", d->windowpath, TRUE);
 		g_setenv ("LOGNAME", pwent->pw_name, TRUE);
 		g_setenv ("USER", pwent->pw_name, TRUE);
 		g_setenv ("USERNAME", pwent->pw_name, TRUE);
@@ -2612,6 +2690,8 @@ gdm_slave_greeter (void)
 
 		g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 		g_setenv ("DISPLAY", d->name, TRUE);
+		if (d->windowpath)
+			g_setenv ("WINDOWPATH", d->windowpath, TRUE);
 
 		/* hackish ain't it */
 		set_xnest_parent_stuff ();
@@ -3097,6 +3177,8 @@ gdm_slave_chooser (void)
 
 		g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 		g_setenv ("DISPLAY", d->name, TRUE);
+		if (d->windowpath)
+			g_setenv ("WINDOWPATH", d->windowpath, TRUE);
 
 		g_setenv ("LOGNAME", gdmuser, TRUE);
 		g_setenv ("USER", gdmuser, TRUE);
@@ -3556,6 +3638,8 @@ session_child_run (struct passwd *pwent,
 	/* Prepare user session */
 	g_setenv ("XAUTHORITY", d->userauth, TRUE);
 	g_setenv ("DISPLAY", d->name, TRUE);
+	if (d->windowpath)
+		g_setenv ("WINDOWPATH", d->windowpath, TRUE);
 	g_setenv ("LOGNAME", pwent->pw_name, TRUE);
 	g_setenv ("USER", pwent->pw_name, TRUE);
 	g_setenv ("USERNAME", pwent->pw_name, TRUE);
@@ -5452,6 +5536,8 @@ gdm_slave_exec_script (GdmDisplay *d,
 		else
 			g_unsetenv ("XAUTHORITY");
 		g_setenv ("DISPLAY", d->name, TRUE);
+		if (d->windowpath)
+			g_setenv ("WINDOWPATH", d->windowpath, TRUE);
 		g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
 		g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 		if ( ! ve_string_empty (d->theme_name))
@@ -5600,6 +5686,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 				else
 					g_unsetenv ("XAUTHORITY");
 				g_setenv ("DISPLAY", display->name, TRUE);
+				if (d->windowpath)
+					g_setenv ("WINDOWPATH", d->windowpath, TRUE);
 				if (SERVER_IS_XDMCP (display))
 					g_setenv ("REMOTE_HOST", display->hostname, TRUE);
 				g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
