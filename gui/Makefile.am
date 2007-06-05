@@ -1,6 +1,10 @@
 NULL =
 
-SUBDIRS = . greeter modules faces
+SUBDIRS = 		\
+	greeter		\
+	modules		\
+	faces		\
+	$(NULL)
 
 ## Process this file with automake to produce makefile.in
 DEFS = @DEFS@ \
@@ -25,7 +29,9 @@ INCLUDES = \
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/common				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	$(GUI_CFLAGS)
+	$(GUI_CFLAGS)					\
+	$(DBUS_CFLAGS)					\
+	$(NULL)
 
 #
 #	-DG_DISABLE_DEPRECATED				\
@@ -35,9 +41,16 @@ INCLUDES = \
 #	-DGNOME_DISABLE_DEPRECATED			\
 #
 
+BUILT_SOURCES =				\
+	gdm-greeter-glue.h		\
+	$(NULL)
+
+gdm-greeter-glue.h: gdm-greeter.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_greeter --mode=glib-server --output=gdm-greeter-glue.h gdm-greeter.xml
+
 noinst_LIBRARIES = libgdmwm.a libgdmcommon.a
 
-libexec_PROGRAMS = \
+libexec_PROGRAMS = 		\
 	@GDMCHOOSER@ 		\
 	$(NULL)
 
@@ -46,19 +59,27 @@ bin_PROGRAMS = \
 	gdmflexiserver      	\
 	$(NULL)
 
-EXTRA_PROGRAMS = gdmchooser gdmXnestchooser
+EXTRA_PROGRAMS = 		\
+	gdmchooser		\
+	gdmXnestchooser		\
+	$(NULL)
 
-gdmXnestchooser_SOURCES = \
-	gdmXnestchooser.c
+gdmXnestchooser_SOURCES = 	\
+	gdmXnestchooser.c	\
+	$(NULL)
 
-gdmflexiserver_SOURCES = \
-	gdmflexiserver.c
+gdmflexiserver_SOURCES = 	\
+	gdmflexiserver.c	\
+	$(NULL)
 
 libgdmwm_a_SOURCES = \
 	gdmwm.c			\
-	gdmwm.h
+	gdmwm.h			\
+	$(NULL)
 
-libgdmcommon_a_SOURCES = \
+libgdmcommon_a_SOURCES = 	\
+	gdm-greeter.c		\
+	gdm-greeter.h		\
 	gdmlanguages.c		\
 	gdmlanguages.h		\
 	gdmuser.c		\
@@ -71,14 +92,14 @@ libgdmcommon_a_SOURCES = \
 	gdmcommon.h		\
 	$(NULL)
 
-gdmchooser_SOURCES = \
+gdmchooser_SOURCES = 		\
 	gdmchooser.c		\
 	misc.c			\
 	misc.h			\
 	$(NULL)
 
 gdmchooser_LDFLAGS = -export-dynamic
-gdmchooser_LDADD = \
+gdmchooser_LDADD = 		\
 	$(EXTRA_CHOOSER_LIBS)	\
 	libgdmwm.a		\
 	libgdmcommon.a		\
@@ -98,7 +119,7 @@ gdmchooser_LDADD = \
 	-lX11			\
 	$(NULL)
 
-gdmXnestchooser_LDADD = \
+gdmXnestchooser_LDADD = 	\
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
@@ -113,7 +134,7 @@ gdmXnestchooser_LDADD = \
 	-lX11			\
 	$(NULL)
 
-gdmflexiserver_LDADD = \
+gdmflexiserver_LDADD = 		\
 	libgdmcommon.a		\
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
@@ -130,17 +151,22 @@ gdmflexiserver_LDADD = \
 
 Systemdir = $(datadir)/applications
 System_files = \
-	gdmflexiserver.desktop	\
-	gdmflexiserver-xnest.desktop
+	gdmflexiserver.desktop		\
+	gdmflexiserver-xnest.desktop	\
+	$(NULL)
+
 System_dist_files = \
 	gdmflexiserver.desktop.in		\
-	gdmflexiserver-xnest.desktop.in.in
+	gdmflexiserver-xnest.desktop.in.in	\
+	$(NULL)
+
 System_DATA = $(System_files)
 
 CLEANFILES = 				\
 	gdmflexiserver.desktop		\
 	gdmflexiserver-xnest.desktop	\
 	gdmflexiserver-xnest.desktop.in	\
+	$(BUILT_SOURCES)		\
 	$(NULL)
 
 @INTLTOOL_DESKTOP_RULE@
@@ -152,8 +178,9 @@ Glade_DATA = 			\
 
 Iconsdir = $(datadir)/pixmaps
 
-Icons_DATA = \
-	login-photo.png
+Icons_DATA =			\
+	login-photo.png		\
+	$(NULL)
 
 install-data-local:
 	-test -z "$(DESTDIR)$(bindir)/gdmXnest" || rm -f $(DESTDIR)$(bindir)/gdmXnest
