@@ -20,13 +20,15 @@
 
 #include "config.h"
 
-#include <glib/gi18n.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#include <glib/gi18n.h>
 
 #include "gdm.h"
 #include "gdm-net.h"

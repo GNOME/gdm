@@ -1736,7 +1736,7 @@ gdm_xdmcp_display_alloc (GdmXdmcpManager         *manager,
 
 	gdm_hostent_free (he);
 
-	d->windowpath            = NULL.
+	d->windowpath            = NULL;
 	d->slave_notify_fd       = -1;
 	d->master_notify_fd      = -1;
 	d->xsession_errors_bytes = 0;
