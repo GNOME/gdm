@@ -49,7 +49,8 @@
 #include "gdm-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-greeter.h"
+#include "gdm-session.h"
+#include "gdm-greeter-proxy.h"
 
 extern char **environ;
 
@@ -89,7 +90,8 @@ struct GdmSlavePrivate
 
 
 	GdmServer       *server;
-	GdmGreeter      *greeter;
+	GdmGreeterProxy *greeter;
+	GdmSession      *session;
 	DBusGProxy      *display_proxy;
         DBusGConnection *connection;
 };
@@ -612,6 +614,133 @@ gdm_slave_exec_script (GdmSlave      *slave,
 }
 
 static void
+on_session_started (GdmSession *session,
+                    GPid        pid,
+		    GdmSlave   *slave)
+{
+	g_debug ("session started on pid %d\n", (int) pid);
+}
+
+static void
+on_session_exited (GdmSession *session,
+                   int         exit_code,
+		   GdmSlave   *slave)
+{
+	g_debug ("session exited with code %d\n", exit_code);
+	exit (0);
+}
+
+static void
+on_session_died (GdmSession *session,
+                 int         signal_number,
+		 GdmSlave   *slave)
+{
+	g_debug ("session died with signal %d, (%s)",
+		 signal_number,
+		 g_strsignal (signal_number));
+	exit (1);
+}
+
+static void
+on_user_verified (GdmSession *session,
+		  GdmSlave   *slave)
+{
+	char *username;
+	const char *args[] = { "/usr/bin/gedit", "/tmp/foo.log", NULL };
+
+	username = gdm_session_get_username (session);
+
+	g_debug ("%s%ssuccessfully authenticated\n",
+		 username ? username : "",
+		 username ? " " : "");
+	g_free (username);
+
+	gdm_session_start_program (session, args);
+}
+
+static void
+on_user_verification_error (GdmSession *session,
+                            GError     *error,
+			    GdmSlave   *slave)
+{
+	char *username;
+
+	username = gdm_session_get_username (session);
+
+	g_debug ("%s%scould not be successfully authenticated: %s\n",
+		 username ? username : "",
+		 username ? " " : "",
+		 error->message);
+
+	g_free (username);
+}
+
+static void
+on_info (GdmSession *session,
+         const char *text,
+	 GdmSlave   *slave)
+{
+	g_debug ("Info: %s", text);
+	gdm_greeter_proxy_info (slave->priv->greeter, text);
+}
+
+static void
+on_problem (GdmSession *session,
+            const char *text,
+	    GdmSlave   *slave)
+{
+	g_debug ("Problem: %s", text);
+	gdm_greeter_proxy_problem (slave->priv->greeter, text);
+}
+
+static void
+on_info_query (GdmSession *session,
+               const char *text,
+	       GdmSlave   *slave)
+{
+
+	g_debug ("Info query: %s", text);
+	gdm_greeter_proxy_info_query (slave->priv->greeter, text);
+}
+
+static void
+on_secret_info_query (GdmSession *session,
+                      const char *text,
+		      GdmSlave   *slave)
+{
+	g_debug ("Secret info query: %s", text);
+	gdm_greeter_proxy_secret_info_query (slave->priv->greeter, text);
+}
+
+static void
+on_greeter_answer (GdmGreeterProxy *greeter,
+		   const char      *text,
+		   GdmSlave        *slave)
+{
+	gdm_session_answer_query (slave->priv->session, text);
+}
+
+static void
+on_greeter_start (GdmGreeterProxy *greeter,
+		  GdmSlave        *slave)
+{
+	g_debug ("Greeter started");
+
+	gdm_session_open (slave->priv->session,
+			  "gdm",
+			  NULL /* hostname */,
+			  "/dev/console",
+			  STDOUT_FILENO,
+			  STDERR_FILENO,
+			  NULL);
+
+	/* If XDMCP stop pinging */
+	if ( ! slave->priv->display_is_local) {
+		alarm (0);
+	}
+}
+
+static void
 run_greeter (GdmSlave *slave)
 {
 
@@ -647,16 +776,66 @@ run_greeter (GdmSlave *slave)
 			       GDMCONFDIR"/Init",
 			       "gdm");
 
-	slave->priv->greeter = gdm_greeter_new (slave->priv->display_name);
+	slave->priv->session = gdm_session_new ();
+
+	g_signal_connect (slave->priv->session,
+			  "info",
+			  G_CALLBACK (on_info),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "problem",
+			  G_CALLBACK (on_problem),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "info-query",
+			  G_CALLBACK (on_info_query),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "secret-info-query",
+			  G_CALLBACK (on_secret_info_query),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "user-verified",
+			  G_CALLBACK (on_user_verified),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "user-verification-error",
+			  G_CALLBACK (on_user_verification_error),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "session-started",
+			  G_CALLBACK (on_session_started),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "session-exited",
+			  G_CALLBACK (on_session_exited),
+			  slave);
+
+	g_signal_connect (slave->priv->session,
+			  "session-died",
+			  G_CALLBACK (on_session_died),
+			  slave);
+
+	slave->priv->greeter = gdm_greeter_proxy_new (slave->priv->display_name);
+	g_signal_connect (slave->priv->greeter,
+			  "answer",
+			  G_CALLBACK (on_greeter_answer),
+			  slave);
+	g_signal_connect (slave->priv->greeter,
+			  "started",
+			  G_CALLBACK (on_greeter_start),
+			  slave);
 	g_object_set (slave->priv->greeter,
 		      "x11-authority-file", slave->priv->display_x11_authority_file,
 		      NULL);
-	gdm_greeter_start (slave->priv->greeter);
-
-	/* If XDMCP stop pinging */
-	if ( ! slave->priv->display_is_local) {
-		alarm (0);
-	}
+	gdm_greeter_proxy_start (slave->priv->greeter);
 }
 
 static void
@@ -922,9 +1101,15 @@ gdm_slave_stop (GdmSlave *slave)
 	g_debug ("Stopping slave");
 
 	if (slave->priv->greeter != NULL) {
-		gdm_greeter_stop (slave->priv->greeter);
+		gdm_greeter_proxy_stop (slave->priv->greeter);
 		g_object_unref (slave->priv->greeter);
 		slave->priv->greeter = NULL;
+	}
+
+	if (slave->priv->session != NULL) {
+		gdm_session_close (slave->priv->session);
+		g_object_unref (slave->priv->session);
+		slave->priv->session = NULL;
 	}
 
 	if (slave->priv->server != NULL) {
@@ -950,7 +1135,7 @@ _gdm_slave_set_display_id (GdmSlave   *slave,
 
 static void
 gdm_slave_set_property (GObject      *object,
-			guint	       prop_id,
+			guint	      prop_id,
 			const GValue *value,
 			GParamSpec   *pspec)
 {
@@ -970,9 +1155,9 @@ gdm_slave_set_property (GObject      *object,
 
 static void
 gdm_slave_get_property (GObject    *object,
-				 guint       prop_id,
-				 GValue	    *value,
-				 GParamSpec *pspec)
+			guint       prop_id,
+			GValue	   *value,
+			GParamSpec *pspec)
 {
 	GdmSlave *self;
 

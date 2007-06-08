@@ -26,7 +26,6 @@
 #include "gdm.h"
 
 #include "gdm-common.h"
-#include "gdm-socket-protocol.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
@@ -60,8 +59,10 @@ gdm_timer (gpointer data)
 	gdm_timed_delay--;
 	if (gdm_timed_delay <= 0) {
 		/* timed interruption */
+#if 0
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
 		fflush (stdout);
+#endif
 	}
 	return TRUE;
 }

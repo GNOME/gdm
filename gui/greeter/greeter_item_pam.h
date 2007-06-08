@@ -20,8 +20,9 @@
 #define GREETER_ITEM_PAM_H
 
 #include "greeter_item.h"
+#include "gdm-greeter.h"
 
-gboolean greeter_item_pam_setup (void);
+gboolean greeter_item_pam_setup (GdmGreeter *greeter);
 void greeter_item_pam_prompt (const char *message,
 			      int         entry_len,
 			      gboolean    entry_visible);

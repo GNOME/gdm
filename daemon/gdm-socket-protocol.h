@@ -76,9 +76,6 @@
 #define GDM_INTERRUPT_CANCEL      'X'
 #define GDM_INTERRUPT_SELECT_LANG 'O'
 
-/* List delimiter for config file lists */
-#define GDM_DELIMITER_MODULES ":"
-#define GDM_DELIMITER_THEMES "/:"
 
 
 /*

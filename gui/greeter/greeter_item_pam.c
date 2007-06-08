@@ -24,7 +24,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "gdm-common.h"
-#include "gdm-socket-protocol.h"
+#include "gdm-greeter.h"
 
 #include "greeter.h"
 #include "greeter_item.h"
@@ -38,6 +38,7 @@
 #include "gdmwm.h"
 #include "gdmcommon.h"
 
+static GdmGreeter *greeter_object = NULL;
 static gboolean messages_to_give = FALSE;
 static gboolean replace_msg = TRUE;
 static guint err_box_clear_handler = 0;
@@ -141,6 +142,7 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
       return;
     }
 
+#if 0
   if (greeter_probably_login_prompt &&
       ve_string_empty (str) &&
       greeter_item_timed_is_timed ())
@@ -150,6 +152,7 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
       fflush (stdout);
       return;
     }
+#endif
 
   gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 
@@ -165,10 +168,15 @@ greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
     set_text (error_info, "");
   }
 
+#if 0
   tmp = ve_locale_from_utf8 (str);
   printf ("%c%s\n", STX, tmp);
   fflush (stdout);
   g_free (tmp);
+#endif
+
+  gdm_greeter_answer_query (greeter_object, str);
+
 }
 
 static gboolean
@@ -208,9 +216,11 @@ pam_key_release_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
 }
 
 gboolean
-greeter_item_pam_setup (void)
+greeter_item_pam_setup (GdmGreeter *greeter)
 {
   GreeterItemInfo *entry_info;
+
+  greeter_object = greeter;
 
   greeter_item_pam_error_set (FALSE);
 
@@ -222,8 +232,7 @@ greeter_item_pam_setup (void)
       GtkWidget *entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
       gtk_widget_grab_focus (entry);
 
-      if ( ! DOING_GDM_DEVELOPMENT)
-        {
+      {
           /* hack.  For some reason if we leave it blank,
            * we'll get a little bit of activity on first keystroke,
            * this way we get rid of it, it will be cleared for the

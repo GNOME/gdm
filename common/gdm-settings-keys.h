@@ -25,6 +25,10 @@
 
 G_BEGIN_DECLS
 
+/* List delimiter for config file lists */
+#define GDM_DELIMITER_MODULES ":"
+#define GDM_DELIMITER_THEMES "/:"
+
 #define GDM_KEY_CHOOSER "daemon/Chooser"
 #define GDM_KEY_AUTOMATIC_LOGIN_ENABLE "daemon/AutomaticLoginEnable"
 #define GDM_KEY_AUTOMATIC_LOGIN "daemon/AutomaticLogin"

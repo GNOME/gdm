@@ -37,7 +37,6 @@
 #include "misc.h"
 
 #include "gdm-common.h"
-#include "gdm-socket-protocol.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
@@ -102,8 +101,10 @@ query_greeter_custom_cmd_handler (GtkWidget *widget, gpointer data)
 
 		gdm_settings_client_get_string (key_string, &val);
 		if (gdm_wm_warn_dialog (val, "", GTK_STOCK_OK, NULL, TRUE) == GTK_RESPONSE_YES) {
+#if 0
 		        printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, *cmd_id);
 			fflush (stdout);
+#endif
 		}
 		g_free (val);
 		g_free (key_string);
@@ -125,8 +126,10 @@ query_greeter_suspend_handler (void)
 	if (gdm_wm_warn_dialog (_("Are you sure you want to suspend the computer?"), "",
 				_("_Suspend"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		/* suspend interruption */
+#if 0
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
 		fflush (stdout);
+#endif
 	}
 }
 
@@ -139,8 +142,10 @@ greeter_restart_handler (void)
 static void
 greeter_custom_cmd_handler (gint cmd_id)
 {
+#if 0
 	printf ("%c%c%c%d\n", STX, BEL, GDM_INTERRUPT_CUSTOM_CMD, cmd_id);
 	fflush (stdout);
+#endif
 }
 
 static void
@@ -152,8 +157,10 @@ greeter_halt_handler (void)
 static void
 greeter_suspend_handler (void)
 {
+#if 0
 	printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
 	fflush (stdout);
+#endif
 }
 
 static void
@@ -167,9 +174,11 @@ greeter_config_handler (void)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
+#if 0
 	/* configure interruption */
 	printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
 	fflush (stdout);
+#endif
 }
 
 static void

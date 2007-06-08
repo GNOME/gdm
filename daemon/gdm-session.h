@@ -35,8 +35,6 @@ G_BEGIN_DECLS
 #define GDM_SESSION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION, GdmSessionClass))
 #define GDM_SESSION_ERROR (gdm_session_error_quark ())
 
-typedef enum _GdmSessionError GdmSessionError;
-
 typedef struct _GdmSessionPrivate GdmSessionPrivate;
 
 typedef struct
@@ -82,7 +80,7 @@ typedef struct
 					  int                signal_number);
 } GdmSessionClass;
 
-enum _GdmSessionError {
+typedef enum _GdmSessionError {
 	GDM_SESSION_ERROR_GENERIC = 0,
 	GDM_SESSION_ERROR_WITH_SESSION_COMMAND,
 	GDM_SESSION_ERROR_FORKING,
@@ -94,43 +92,43 @@ enum _GdmSessionError {
 	GDM_SESSION_ERROR_OPENING_LOG_FILE,
 	GDM_SESSION_ERROR_OPENING_SESSION,
 	GDM_SESSION_ERROR_GIVING_CREDENTIALS
-};
+} GdmSessionError;
 
 GType        gdm_session_get_type                 (void);
 GQuark       gdm_session_error_quark              (void);
 
 GdmSession * gdm_session_new                      (void) G_GNUC_MALLOC;
 
-gboolean     gdm_session_open                     (GdmSession  *session,
+gboolean     gdm_session_open                     (GdmSession *session,
 						   const char *service_name,
 						   const char *hostname,
 						   const char *console_name,
-						   int standard_output_fd,
-						   int standard_error_fd,
-						   GError   **error);
+						   int         standard_output_fd,
+						   int         standard_error_fd,
+						   GError    **error);
 
 gboolean     gdm_session_open_for_user            (GdmSession  *session,
 						   const char  *service_name,
 						   const char  *username,
 						   const char  *hostname,
 						   const char  *console_name,
-						   int standard_output_fd,
-						   int standard_error_fd,
-						   GError      **error);
-void         gdm_session_start_program            (GdmSession *session,
+						   int          standard_output_fd,
+						   int          standard_error_fd,
+						   GError     **error);
+void         gdm_session_start_program            (GdmSession  *session,
 						   const char * const * args);
 
 void         gdm_session_set_environment_variable (GdmSession  *session,
-						   const char *key,
-						   const char *value);
+						   const char  *key,
+						   const char  *value);
 
 void         gdm_session_answer_query             (GdmSession  *session,
-						   const char *answer);
+						   const char  *answer);
 
-char       * gdm_session_get_username             (GdmSession *session);
+char       * gdm_session_get_username             (GdmSession  *session);
 
-void         gdm_session_close                    (GdmSession *session);
-gboolean     gdm_session_is_running               (GdmSession *session);
+void         gdm_session_close                    (GdmSession  *session);
+gboolean     gdm_session_is_running               (GdmSession  *session);
 
 G_END_DECLS
 

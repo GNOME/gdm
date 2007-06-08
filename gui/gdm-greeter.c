@@ -32,44 +32,33 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-greeter.h"
-#include "gdm-greeter-glue.h"
-
 
 #define GDM_GREETER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER, GdmGreeterPrivate))
 
-#define GDM_DBUS_PATH         "/org/gnome/DisplayGreeter"
-#define GDM_GREETER_DBUS_PATH GDM_DBUS_PATH "/Greeter"
-#define GDM_GREETER_DBUS_NAME "org.gnome.DisplayGreeter.Greeter"
-
 struct GdmGreeterPrivate
 {
-        DBusGProxy      *bus_proxy;
-        DBusGConnection *connection;
+	gpointer dummy;
 };
 
 enum {
-	PROP_0
+	PROP_0,
 };
 
 enum {
-	FOO,
+	QUERY_ANSWER,
 	LAST_SIGNAL
 };
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
+
 static void	gdm_greeter_class_init	(GdmGreeterClass *klass);
 static void	gdm_greeter_init	(GdmGreeter	 *greeter);
 static void	gdm_greeter_finalize	(GObject	 *object);
 
-static gpointer greeter_object = NULL;
-
-G_DEFINE_TYPE (GdmGreeter, gdm_greeter, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE (GdmGreeter, gdm_greeter, G_TYPE_OBJECT)
 
 GQuark
 gdm_greeter_error_quark (void)
@@ -82,12 +71,162 @@ gdm_greeter_error_quark (void)
 	return ret;
 }
 
+static gboolean
+gdm_greeter_real_start (GdmGreeter *greeter)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_start (GdmGreeter *greeter)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_object_ref (greeter);
+	ret = GDM_GREETER_GET_CLASS (greeter)->start (greeter);
+	g_object_unref (greeter);
+
+	return ret;
+}
+
+static gboolean
+gdm_greeter_real_stop (GdmGreeter *greeter)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_stop (GdmGreeter *greeter)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_object_ref (greeter);
+	ret = GDM_GREETER_GET_CLASS (greeter)->stop (greeter);
+	g_object_unref (greeter);
+
+	return ret;
+}
+
+static gboolean
+gdm_greeter_real_info (GdmGreeter *greeter,
+		       const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_info (GdmGreeter *greeter,
+		  const char *text)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_object_ref (greeter);
+	ret = GDM_GREETER_GET_CLASS (greeter)->info (greeter, text);
+	g_object_unref (greeter);
+
+	return ret;
+}
+
+static gboolean
+gdm_greeter_real_problem (GdmGreeter *greeter,
+			  const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_problem (GdmGreeter *greeter,
+		     const char *text)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_object_ref (greeter);
+	ret = GDM_GREETER_GET_CLASS (greeter)->problem (greeter, text);
+	g_object_unref (greeter);
+
+	return ret;
+}
+
+static gboolean
+gdm_greeter_real_info_query (GdmGreeter *greeter,
+			     const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_info_query (GdmGreeter *greeter,
+			const char *text)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_object_ref (greeter);
+	ret = GDM_GREETER_GET_CLASS (greeter)->info_query (greeter, text);
+	g_object_unref (greeter);
+
+	return ret;
+}
+
+static gboolean
+gdm_greeter_real_secret_info_query (GdmGreeter *greeter,
+				    const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_secret_info_query (GdmGreeter *greeter,
+			       const char *text)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_object_ref (greeter);
+	ret = GDM_GREETER_GET_CLASS (greeter)->secret_info_query (greeter, text);
+	g_object_unref (greeter);
+
+	return ret;
+}
+
+gboolean
+gdm_greeter_answer_query (GdmGreeter *greeter,
+			  const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_debug ("Answer query: %s", text);
+
+	g_signal_emit (greeter, signals[QUERY_ANSWER], 0, text);
+}
 
 static void
-gdm_greeter_set_property (GObject      *object,
-			  guint	        prop_id,
-			  const GValue  *value,
-			  GParamSpec    *pspec)
+gdm_greeter_set_property (GObject	 *object,
+			  guint		  prop_id,
+			  const GValue	 *value,
+			  GParamSpec	 *pspec)
 {
 	GdmGreeter *self;
 
@@ -101,10 +240,10 @@ gdm_greeter_set_property (GObject      *object,
 }
 
 static void
-gdm_greeter_get_property (GObject    *object,
-			  guint       prop_id,
-			  GValue     *value,
-			  GParamSpec *pspec)
+gdm_greeter_get_property (GObject	 *object,
+			  guint  	  prop_id,
+			  GValue	 *value,
+			  GParamSpec	 *pspec)
 {
 	GdmGreeter *self;
 
@@ -124,6 +263,7 @@ gdm_greeter_constructor (GType                  type,
 {
         GdmGreeter      *greeter;
         GdmGreeterClass *klass;
+	gboolean         res;
 
         klass = GDM_GREETER_CLASS (g_type_class_peek (GDM_TYPE_GREETER));
 
@@ -135,18 +275,49 @@ gdm_greeter_constructor (GType                  type,
 }
 
 static void
+gdm_greeter_dispose (GObject *object)
+{
+	GdmGreeter *greeter;
+
+	greeter = GDM_GREETER (object);
+
+	g_debug ("Disposing greeter");
+	gdm_greeter_stop (greeter);
+
+	G_OBJECT_CLASS (gdm_greeter_parent_class)->dispose (object);
+}
+
+static void
 gdm_greeter_class_init (GdmGreeterClass *klass)
 {
 	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
 	object_class->get_property = gdm_greeter_get_property;
 	object_class->set_property = gdm_greeter_set_property;
-	object_class->constructor = gdm_greeter_constructor;
+        object_class->constructor = gdm_greeter_constructor;
+	object_class->dispose = gdm_greeter_dispose;
 	object_class->finalize = gdm_greeter_finalize;
 
-	g_type_class_add_private (klass, sizeof (GdmGreeterPrivate));
+	klass->start = gdm_greeter_real_start;
+	klass->stop = gdm_greeter_real_stop;
+	klass->info = gdm_greeter_real_info;
+	klass->problem = gdm_greeter_real_problem;
+	klass->info_query = gdm_greeter_real_info_query;
+	klass->secret_info_query = gdm_greeter_real_secret_info_query;
 
-        dbus_g_object_type_install_info (GDM_TYPE_GREETER, &dbus_glib_gdm_greeter_object_info);
+
+	signals [QUERY_ANSWER] =
+		g_signal_new ("query-answer",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmGreeterClass, query_answer),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1, G_TYPE_STRING);
+
+	g_type_class_add_private (klass, sizeof (GdmGreeterPrivate));
 }
 
 static void
@@ -169,20 +340,5 @@ gdm_greeter_finalize (GObject *object)
 
 	g_return_if_fail (greeter->priv != NULL);
 
-
 	G_OBJECT_CLASS (gdm_greeter_parent_class)->finalize (object);
-}
-
-GdmGreeter *
-gdm_greeter_new (void)
-{
-	if (greeter_object != NULL) {
-		g_object_ref (greeter_object);
-	} else {
-		greeter_object = g_object_new (GDM_TYPE_GREETER, NULL);
-		g_object_add_weak_pointer (greeter_object,
-					   (gpointer *) &greeter_object);
-	}
-
-	return GDM_GREETER (greeter_object);
 }

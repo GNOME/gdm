@@ -69,8 +69,8 @@ libexec_PROGRAMS = 			\
 
 gdm_slave_SOURCES = 			\
 	slave-main.c 			\
-	gdm-greeter.c			\
-	gdm-greeter.h			\
+	gdm-greeter-proxy.c		\
+	gdm-greeter-proxy.h		\
 	gdm-server.c			\
 	gdm-server.h			\
 	gdm-session.c			\

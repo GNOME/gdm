@@ -1,6 +1,7 @@
 NULL =
 
-SUBDIRS = 		\
+SUBDIRS =
+	. 		\
 	greeter		\
 	modules		\
 	faces		\
@@ -41,14 +42,10 @@ INCLUDES = \
 #	-DGNOME_DISABLE_DEPRECATED			\
 #
 
-BUILT_SOURCES =				\
-	gdm-greeter-glue.h		\
+noinst_LIBRARIES =		\
+	libgdmwm.a		\
+	libgdmguicommon.a	\
 	$(NULL)
-
-gdm-greeter-glue.h: gdm-greeter.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_greeter --mode=glib-server --output=gdm-greeter-glue.h gdm-greeter.xml
-
-noinst_LIBRARIES = libgdmwm.a libgdmcommon.a
 
 libexec_PROGRAMS = 		\
 	@GDMCHOOSER@ 		\
@@ -77,7 +74,7 @@ libgdmwm_a_SOURCES = \
 	gdmwm.h			\
 	$(NULL)
 
-libgdmcommon_a_SOURCES = 	\
+libgdmguicommon_a_SOURCES = 	\
 	gdm-greeter.c		\
 	gdm-greeter.h		\
 	gdmlanguages.c		\
@@ -102,7 +99,7 @@ gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = 		\
 	$(EXTRA_CHOOSER_LIBS)	\
 	libgdmwm.a		\
-	libgdmcommon.a		\
+	libgdmguicommon.a	\
 	$(GUIGLADE_LIBS)	\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
@@ -120,7 +117,7 @@ gdmchooser_LDADD = 		\
 	$(NULL)
 
 gdmXnestchooser_LDADD = 	\
-	libgdmcommon.a		\
+	libgdmguicommon.a	\
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\
@@ -135,7 +132,7 @@ gdmXnestchooser_LDADD = 	\
 	$(NULL)
 
 gdmflexiserver_LDADD = 		\
-	libgdmcommon.a		\
+	libgdmguicommon.a	\
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\

@@ -33,7 +33,6 @@
 #include "gdm-common.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
-#include "gdm-socket-protocol.h"
 
 #include "greeter_item.h"
 #include "greeter_configuration.h"
@@ -467,9 +466,6 @@ combo_selected (GtkComboBox *combo, GreeterItemInfo *item)
 	} else {
 		char *authdir;
 
-		if (DOING_GDM_DEVELOPMENT)
-			return;
-
 		id   = gtk_combo_box_get_active_text (combo);
 
 		gdm_settings_client_get_string (GDM_KEY_SERV_AUTHDIR, &authdir);
@@ -545,9 +541,6 @@ list_selected (GtkTreeSelection *selection, GreeterItemInfo *item)
 			gdm_lang_set_restart_dialog (id);
 	} else {
 		char *authdir;
-
-		if (DOING_GDM_DEVELOPMENT)
-			return;
 
 		gdm_settings_client_get_string (GDM_KEY_SERV_AUTHDIR, &authdir);
 		file = g_strdup_printf ("%s/%s.GreeterInfo",

@@ -100,8 +100,8 @@ on_info_query (GdmSession *session,
 	answer[strlen(answer) - 1] = '\0';
 
 	if (answer[0] == '\0') {
-			gdm_session_close (session);
-			g_main_loop_quit (loop);
+		gdm_session_close (session);
+		g_main_loop_quit (loop);
 	} else {
 		gdm_session_answer_query (session, answer);
 	}

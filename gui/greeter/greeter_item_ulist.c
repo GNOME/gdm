@@ -38,7 +38,6 @@
 #include "gdmuser.h"
 
 #include "gdm-common.h"
-#include "gdm-socket-protocol.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
@@ -151,8 +150,8 @@ gdm_greeter_users_init (void)
 			NULL,
 			defface,
 			&size_of_users,
-			GDM_IS_LOCAL,
-			!DOING_GDM_DEVELOPMENT);
+			TRUE,
+			TRUE);
 }
 
 static void
@@ -204,10 +203,12 @@ greeter_populate_user_list (GtkTreeModel *tm)
 void
 greeter_item_ulist_select_user (gchar *login)
 {
+#if 0
 	printf ("%c%c%c%s\n", STX, BEL,
 		GDM_INTERRUPT_SELECT_USER, login);
 
 	fflush (stdout);
+#endif
 }
 
 static void

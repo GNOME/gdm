@@ -79,10 +79,10 @@ get_value (const char *key,
 				 G_TYPE_INVALID);
 	if (! res) {
 		if (error != NULL) {
-			g_debug ("Failed to get value for %s: %s", key, error->message);
+			/*g_debug ("Failed to get value for %s: %s", key, error->message);*/
 			g_error_free (error);
 		} else {
-			g_debug ("Failed to get value for %s", key);
+			/*g_debug ("Failed to get value for %s", key);*/
 		}
 
 		return FALSE;

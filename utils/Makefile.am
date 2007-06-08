@@ -47,7 +47,6 @@ libexec_SCRIPTS = \
 	@GDMSSHSESSION@
 
 libexec_PROGRAMS = \
-	@GDMASKPASS@	\
 	@GDMOPEN@	\
 	@GDMPREFETCH@	\
 	gdmtranslate
@@ -57,10 +56,7 @@ bin_PROGRAMS = gdm-dmx-reconnect-proxy
 endif
 
 EXTRA_SCRIPTS = gdm-ssh-session
-EXTRA_PROGRAMS = gdmaskpass gdmopen gdmprefetch
-
-gdmaskpass_SOURCES = \
-	gdmaskpass.c
+EXTRA_PROGRAMS = gdmopen gdmprefetch
 
 gdmtranslate_SOURCES = \
 	gdmtranslate.c
@@ -70,11 +66,6 @@ gdmopen_SOURCES = \
 
 gdmprefetch_SOURCES = \
 	gdmprefetch.c
-
-gdmaskpass_LDADD = \
-	$(INTLLIBS)		\
-	-lpam			\
-	$(EXTRA_GDMASKPASS_LIBS)
 
 gdmopen_LDADD = \
 	$(INTLLIBS)

@@ -17,6 +17,7 @@ INCLUDES = \
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
 	$(GUI_CFLAGS)					\
+	$(DBUS_CFLAGS)					\
 	$(PANGO_CFLAGS)					\
 	$(PANGOFT_CFLAGS)				\
 	$(GREETER_CFLAGS)
@@ -44,6 +45,8 @@ gdmthemetester: $(srcdir)/gdmthemetester.in
 gdmgreeter_SOURCES =  \
 	greeter.c \
 	greeter.h \
+	gdm-themed-greeter.c	\
+	gdm-themed-greeter.h	\
 	greeter_canvas_text.c \
 	greeter_canvas_text.h \
 	greeter_canvas_item.c \
@@ -78,9 +81,10 @@ gdmgreeter_LDADD = \
 	$(EXTRA_GREETER_LIBS)   \
 	-L$(top_builddir)/gui	\
 	-lgdmwm			\
-	-lgdmcommon		\
+	-lgdmguicommon		\
 	$(top_builddir)/common/libgdmcommon.a \
 	$(GLIB_LIBS)		\
+	$(DBUS_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(PANGO_LIBS)		\
 	$(PANGOFT_LIBS)		\

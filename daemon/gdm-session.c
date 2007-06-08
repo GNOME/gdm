@@ -630,7 +630,8 @@ gdm_session_class_install_signals (GdmSessionClass *session_class)
 	session_class->info = NULL;
 
 	gdm_session_signals[PROBLEM] =
-		g_signal_new ("problem", G_OBJECT_CLASS_TYPE (object_class),
+		g_signal_new ("problem",
+			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (GdmSessionClass, problem),
 			      NULL,

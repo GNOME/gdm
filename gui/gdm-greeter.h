@@ -45,6 +45,22 @@ typedef struct
 {
 	GObjectClass   parent_class;
 
+	/* signals */
+	void (* query_answer)         (GdmGreeter *greeter,
+				       const char *text);
+	/* methods */
+	gboolean (*start)             (GdmGreeter *greeter);
+	gboolean (*stop)              (GdmGreeter *greeter);
+
+	gboolean (*info_query)        (GdmGreeter *greeter,
+				       const char *text);
+	gboolean (*secret_info_query) (GdmGreeter *greeter,
+				       const char *text);
+	gboolean (*info)              (GdmGreeter *greeter,
+				       const char *text);
+	gboolean (*problem)           (GdmGreeter *greeter,
+				       const char *text);
+
 } GdmGreeterClass;
 
 typedef enum
@@ -57,7 +73,20 @@ typedef enum
 GQuark		    gdm_greeter_error_quark		       (void);
 GType		    gdm_greeter_get_type		       (void);
 
-GdmGreeter *	    gdm_greeter_new			       (void);
+gboolean            gdm_greeter_start                          (GdmGreeter *greeter);
+gboolean            gdm_greeter_stop                           (GdmGreeter *greeter);
+
+gboolean            gdm_greeter_answer_query                   (GdmGreeter *greeter,
+								const char *text);
+
+gboolean            gdm_greeter_info_query                     (GdmGreeter *greeter,
+								const char *text);
+gboolean            gdm_greeter_secret_info_query              (GdmGreeter *greeter,
+								const char *text);
+gboolean            gdm_greeter_info                           (GdmGreeter *greeter,
+								const char *text);
+gboolean            gdm_greeter_problem                        (GdmGreeter *greeter,
+								const char *text);
 
 G_END_DECLS
 
