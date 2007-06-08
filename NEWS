@@ -154,12 +154,13 @@ Interface Changes:
 
 - Now gdmgreeter will not display the Face Browser is the GDM configuration
   option Browser is false.  Now gdmsetup supports a "Themed with face
-  browser" option to support selecting this.
+  browser" option to support selecting this.  (Brian Cameron and Lukasz
+  Zalewski)
 
 - Comment in GDM System Defaults configuration file now shows "true"
   for ConfigAvailable since this value has been defaulting to true for
   some time and the comment in the System Defaults configuration file
-  was incorrect.
+  was incorrect.  (Brian Cameron)
 
 - Now gdmphotosetup.desktop specifies NotShowIn=GNOME since the About-Me
   capplet is a better place for configuring the user's face image in GNOME.
@@ -179,7 +180,7 @@ New interfaces:
   from the user session, but no from the login screen directly, if 
   desired.  In situations where you want the user to authenticate before
   being able to shutdown or reboot the machine, this feature would be
-  useful.
+  useful.  (Brian Cameron)
 
 - GDM Now supports RBAC (Role Based Access Control) for specifying
   which actions (reboot, shutdown, suspend, etc.) are supported on a per-user
@@ -189,7 +190,7 @@ New interfaces:
   authority will be able to query or set the logout action.  The GDM GUI will
   only display actions for which the "gdm" user has RBAC authority.  GDM will
   assume that all users have authority for actions which do not have an RBAC
-  key associated with them.
+  key associated with them.  (Brian Cameron)
 
 - Now support XnestUnscaledFontPath configuration option, which allows GDM
   to work with Xnest.  Xorg 7.2 XGetFontPath function now returns fontpath
@@ -306,7 +307,7 @@ New features, improvements, and bug fixes:
   was causing problems for some users.  This change will go into 2.20
   where we are fixing the problem better by fixing gdmsetup to support
   setting the configuration so that gdmlogin and gdmgreeter work the
-  same way with the Browser key.
+  same way with the Browser key.  (Brian Cameron)
 
 - Now gdmgreeter has an ATK label for the entry field.  (David Zeuthen)
 
@@ -364,7 +365,7 @@ New features, improvements, and bug fixes:
 - Fix spacing in gdmsetup so it uses less vertical space.  (Lukasz
   Zalewski)
 
-- Fix gdmchooser so it builds with HURD.
+- Fix gdmchooser so it builds with HURD.  (Brian Cameron)
 
 - Fix comparison with string literal in gdmdynamic.  (Hans Petter
   Jansson)
@@ -393,7 +394,7 @@ New features, improvements, and bug fixes:
   (Ludwig Nussel)
 
 - Fix so ConsoleKit logic does not use dbus-glib bindings to using the
-  lower level API instead.  Fixes bug #400793.
+  lower level API instead.  Fixes bug #400793.  (William Jon McCann)
 
 - Fixes for compiler warnings and for c99 compile issues.  (Ludwig Nussel
   and Jens Granseuer)
@@ -672,9 +673,10 @@ New features, improvements, and bug fixes:
 2.16.4 Stuff:
 
 - Fix for a recently reported security issue that has ID
-  CVE-2006-6105.  This fixes a problem where a user can
-  enter strings like "%08x" into the gdmchooser "Add"j
-  host button and print out memory.  (Brian Cameron)
+  CVE-2006-6105.  This fixes a problem where a user can 
+  enter strings like "%08x" into the gdmchooser entry and
+  press the "Add" host button to print out memory contents.
+  This issue was introduced into GDM 2.13.0.
 
 - Fix for TryExec check in gdmsession to make sure that any
   arguments are not passed to g_find_program_in_path since
@@ -689,10 +691,10 @@ New features, improvements, and bug fixes:
 2.16.3 Stuff:
 
 - Now support altfile[n] propery to cater for alternative
-  image file definition.
+  image file definition.  (Erwann Chenede)
 
 - Fix custom lists so that focus does not ever leave the
-  username/password entry field.
+  username/password entry field.  (Brian Cameron)
 
 - Update to make casting more clear in PAM logic.  This fixes a
   bug where the Kerberos PAM module was sending multiple error
@@ -1040,9 +1042,10 @@ New features, improvements, and bug fixes:
 2.14.11 stuff:
 
 - Fix for a recently reported security issue that has ID
-  CVE-2006-6105.  This fixes a problem where a user can
-  enter strings like "%08x" into the gdmchooser "Add"j
-  host button and print out memory.  (Brian Cameron)
+  CVE-2006-6105.  This fixes a problem where a user can 
+  enter strings like "%08x" into the gdmchooser entry and
+  press the "Add" host button to print out memory contents.
+  This issue was introduced into GDM 2.13.0.
 
 - Set authdir to NULL after freeing to avoid accessing an invalid
   pointer.  Fixes bug #359831.  (Amnon Aaronsohn)
