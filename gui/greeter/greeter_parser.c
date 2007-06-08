@@ -1444,8 +1444,11 @@ parse_label (xmlNodePtr        node,
       info->data.text.colors[i] = (info->data.text.colors[i] << 8) | (guint) info->data.text.alphas[i];
     }
   
-  if (info->data.text.fonts[GREETER_ITEM_STATE_NORMAL] == NULL)
-    info->data.text.fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
+  if (info->data.text.fonts[GREETER_ITEM_STATE_NORMAL] == NULL) {
+	  info->data.text.fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
+	  if (gtk_widget_get_default_style()->font_desc)
+		pango_font_description_merge (info->data.text.fonts[GREETER_ITEM_STATE_NORMAL], gtk_widget_get_default_style()->font_desc, FALSE);
+  }
 
   do_font_size_reduction (info);
 
