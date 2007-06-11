@@ -50,6 +50,7 @@
 #ifdef	HAVE_LOGINDEVPERM
 #include <libdevinfo.h>
 #endif	/* HAVE_LOGINDEVPERM */
+
 #ifdef  HAVE_ADT
 #include <bsm/adt.h>
 #include <bsm/adt_event.h>
@@ -538,7 +539,7 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 			/* PAM requested textual input with echo on */
 		case PAM_PROMPT_ECHO_ON:
 			if (strcmp (m, _("Username:")) == 0) {
-				if ( ve_string_empty (selected_user)) {
+				if (ve_string_empty (selected_user)) {
 					/* this is an evil hack, but really there is no way we'll
 					   know this is a username prompt.  However we SHOULD NOT
 					   rely on this working.  The pam modules can set their
@@ -591,6 +592,7 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
+
 		case PAM_TEXT_INFO:
 			/* PAM sent a message that should displayed to the user */
 			gdm_slave_greeter_ctl_no_ret (GDM_MSG, m);
@@ -824,23 +826,23 @@ log_to_audit_system(const char *login,
 	char buf[64];
 	int audit_fd;
 
-	audit_fd = audit_open();
+	audit_fd = audit_open ();
 	if (login)
-		pw = getpwnam(login);
+		pw = getpwnam (login);
 	else {
 		login = "unknown";
 		pw = NULL;
 	}
 	if (pw) {
-		snprintf(buf, sizeof(buf), "uid=%d", pw->pw_uid);
-		audit_log_user_message(audit_fd, AUDIT_USER_LOGIN,
-				       buf, hostname, NULL, tty, (int)success);
+		snprintf (buf, sizeof (buf), "uid=%d", pw->pw_uid);
+		audit_log_user_message (audit_fd, AUDIT_USER_LOGIN,
+				        buf, hostname, NULL, tty, (int)success);
 	} else {
-		snprintf(buf, sizeof(buf), "acct=%s", login);
-		audit_log_user_message(audit_fd, AUDIT_USER_LOGIN,
-				       buf, hostname, NULL, tty, (int)success);
+		snprintf (buf, sizeof (buf), "acct=%s", login);
+		audit_log_user_message (audit_fd, AUDIT_USER_LOGIN,
+				        buf, hostname, NULL, tty, (int)success);
 	}
-	close(audit_fd);
+	close (audit_fd);
 }
 #endif
 
@@ -908,9 +910,9 @@ gdm_verify_user (GdmDisplay *d,
  authenticate_again:
 
 	if (prev_user && !login) {
-		login = g_strdup(prev_user);
+		login = g_strdup (prev_user);
 	} else if (login && !prev_user) {
-		prev_user = g_strdup(login);
+		prev_user = g_strdup (login);
 		auth_retries = 0;
 	} else if (login && prev_user && strcmp (login, prev_user)) {
 		g_free (prev_user);
@@ -1221,10 +1223,12 @@ gdm_verify_user (GdmDisplay *d,
 	cur_gdm_disp = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-	if (d->attached)
+	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
 		(void) di_devperm_login ("/dev/console", pwent->pw_uid,
 					 pwent->pw_gid, NULL);
+	}
 #endif	/* HAVE_LOGINDEVPERM */
+
 #ifdef  HAVE_ADT
 	audit_success_login (pw_change, pwent);
 #endif  /* HAVE_ADT */
@@ -1521,10 +1525,12 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	extra_standalone_message = NULL;
 
 #ifdef  HAVE_LOGINDEVPERM
-	if (d->attached)
+	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
 		(void) di_devperm_login ("/dev/console", pwent->pw_uid,
 					 pwent->pw_gid, NULL);
+	}
 #endif	/* HAVE_LOGINDEVPERM */
+
 #ifdef  HAVE_ADT
 	audit_success_login (pw_change, pwent);
 #endif	/* HAVE_ADT */
@@ -1625,7 +1631,8 @@ gdm_verify_cleanup (GdmDisplay *d)
 		pam_end (tmp_pamh, pamerr);
 
 #ifdef  HAVE_LOGINDEVPERM
-		if (old_opened_session && old_did_setcred && d->attached) {
+		if (old_opened_session && old_did_setcred &&
+		    d->attached && d->type != TYPE_FLEXI_XNEST) {
 			(void) di_devperm_logout ("/dev/console");
 			/* give it back to gdm user */
 			(void) di_devperm_login ("/dev/console",

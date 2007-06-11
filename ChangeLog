@@ -1,3 +1,10 @@
+2007-06-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/verify-pam.c: Do not call logindevperm logic when
+	  logging into XNEST sessions since we don't want to change
+	  device permissions for xnest sessions, only for the real
+	  console session.
+
 2007-06-08  Frederic Crozat  <fcrozat@mandriva.com>
 
 	+ gui/greeter/greeter_parser.c: (parse_label): Ensure a non
