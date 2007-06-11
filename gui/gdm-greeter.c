@@ -48,6 +48,8 @@ enum {
 
 enum {
 	QUERY_ANSWER,
+	SESSION_SELECTED,
+	LANGUAGE_SELECTED,
 	LAST_SIGNAL
 };
 
@@ -220,6 +222,34 @@ gdm_greeter_answer_query (GdmGreeter *greeter,
 	g_debug ("Answer query: %s", text);
 
 	g_signal_emit (greeter, signals[QUERY_ANSWER], 0, text);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_select_session (GdmGreeter *greeter,
+			    const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_debug ("Select session: %s", text);
+
+	g_signal_emit (greeter, signals[SESSION_SELECTED], 0, text);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_select_language (GdmGreeter *greeter,
+			     const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_debug ("Select language: %s", text);
+
+	g_signal_emit (greeter, signals[LANGUAGE_SELECTED], 0, text);
+
+	return TRUE;
 }
 
 static void
@@ -263,7 +293,6 @@ gdm_greeter_constructor (GType                  type,
 {
         GdmGreeter      *greeter;
         GdmGreeterClass *klass;
-	gboolean         res;
 
         klass = GDM_GREETER_CLASS (g_type_class_peek (GDM_TYPE_GREETER));
 
@@ -311,6 +340,26 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
 			      G_TYPE_FROM_CLASS (object_class),
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (GdmGreeterClass, query_answer),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1, G_TYPE_STRING);
+	signals [LANGUAGE_SELECTED] =
+		g_signal_new ("language-selected",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmGreeterClass, language_selected),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1, G_TYPE_STRING);
+	signals [SESSION_SELECTED] =
+		g_signal_new ("session-selected",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmGreeterClass, session_selected),
 			      NULL,
 			      NULL,
 			      g_cclosure_marshal_VOID__STRING,

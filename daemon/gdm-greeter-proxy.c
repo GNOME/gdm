@@ -60,21 +60,21 @@ extern char **environ;
 
 struct GdmGreeterProxyPrivate
 {
-	char    *command;
-	GPid     pid;
+	char           *command;
+	GPid            pid;
 
-	char    *user_name;
-	char    *group_name;
+	char           *user_name;
+	char           *group_name;
 
-	char    *x11_display_name;
-	char    *x11_authority_file;
+	char           *x11_display_name;
+	char           *x11_authority_file;
 
-	int      user_max_filesize;
+	int             user_max_filesize;
 
-	gboolean interrupted;
-	gboolean always_restart_greeter;
+	gboolean        interrupted;
+	gboolean        always_restart_greeter;
 
-	guint    child_watch_id;
+	guint           child_watch_id;
 
 	DBusServer     *server;
 	char           *server_address;
@@ -90,7 +90,9 @@ enum {
 };
 
 enum {
-	ANSWER,
+	QUERY_ANSWER,
+	SESSION_SELECTED,
+	LANGUAGE_SELECTED,
 	STARTED,
 	STOPPED,
 	LAST_SIGNAL
@@ -267,7 +269,6 @@ static GPtrArray *
 get_greeter_environment (GdmGreeterProxy *greeter_proxy)
 {
 	GPtrArray     *env;
-	char         **l;
 	GHashTable    *hash;
 	struct passwd *pwent;
 
@@ -275,14 +276,6 @@ get_greeter_environment (GdmGreeterProxy *greeter_proxy)
 
 	/* create a hash table of current environment, then update keys has necessary */
 	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-
-#if 0
-	for (l = environ; *l != NULL; l++) {
-		char **str;
-		str = g_strsplit (*l, "=", 2);
-		g_hash_table_insert (hash, str[0], str[1]);
-	}
-#endif
 
 	g_hash_table_insert (hash, g_strdup ("GDM_GREETER_DBUS_ADDRESS"), g_strdup (greeter_proxy->priv->server_address));
 
@@ -446,6 +439,87 @@ generate_address (void)
 }
 
 static DBusHandlerResult
+handle_answer_query (GdmGreeterProxy *greeter_proxy,
+		     DBusConnection  *connection,
+		     DBusMessage     *message)
+{
+	DBusMessage *reply;
+	DBusError    error;
+	const char  *text;
+
+	dbus_error_init (&error);
+	if (! dbus_message_get_args (message, &error,
+				     DBUS_TYPE_STRING, &text,
+				     DBUS_TYPE_INVALID)) {
+		g_warning ("ERROR: %s", error.message);
+	}
+
+	g_debug ("AnswerQuery: %s", text);
+
+	reply = dbus_message_new_method_return (message);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+
+	g_signal_emit (greeter_proxy, signals [QUERY_ANSWER], 0, text);
+
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_select_session (GdmGreeterProxy *greeter_proxy,
+		       DBusConnection  *connection,
+		       DBusMessage     *message)
+{
+	DBusMessage *reply;
+	DBusError    error;
+	const char  *text;
+
+	dbus_error_init (&error);
+	if (! dbus_message_get_args (message, &error,
+				     DBUS_TYPE_STRING, &text,
+				     DBUS_TYPE_INVALID)) {
+		g_warning ("ERROR: %s", error.message);
+	}
+
+	g_debug ("SelectSession: %s", text);
+
+	reply = dbus_message_new_method_return (message);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+
+	g_signal_emit (greeter_proxy, signals [SESSION_SELECTED], 0, text);
+
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_select_language (GdmGreeterProxy *greeter_proxy,
+			DBusConnection  *connection,
+			DBusMessage     *message)
+{
+	DBusMessage *reply;
+	DBusError    error;
+	const char  *text;
+
+	dbus_error_init (&error);
+	if (! dbus_message_get_args (message, &error,
+				     DBUS_TYPE_STRING, &text,
+				     DBUS_TYPE_INVALID)) {
+		g_warning ("ERROR: %s", error.message);
+	}
+
+	g_debug ("SelectLanguage: %s", text);
+
+	reply = dbus_message_new_method_return (message);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+
+	g_signal_emit (greeter_proxy, signals [LANGUAGE_SELECTED], 0, text);
+
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 greeter_handle_child_message (DBusConnection *connection,
 			      DBusMessage    *message,
 			      void           *user_data)
@@ -453,26 +527,11 @@ greeter_handle_child_message (DBusConnection *connection,
         GdmGreeterProxy *greeter_proxy = GDM_GREETER_PROXY (user_data);
 
 	if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
-		DBusMessage *reply;
-		DBusError    error;
-		const char  *text;
-
-		dbus_error_init (&error);
-		if (! dbus_message_get_args (message, &error,
-					     DBUS_TYPE_STRING, &text,
-					     DBUS_TYPE_INVALID)) {
-			g_warning ("ERROR: %s", error.message);
-		}
-
-		g_debug ("AnswerQuery: %s", text);
-
-		reply = dbus_message_new_method_return (message);
-		dbus_connection_send (connection, reply, NULL);
-		dbus_message_unref (reply);
-
-		g_signal_emit (greeter_proxy, signals [ANSWER], 0, text);
-
-                return DBUS_HANDLER_RESULT_HANDLED;
+		return handle_answer_query (greeter_proxy, connection, message);
+	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
+		return handle_select_session (greeter_proxy, connection, message);
+	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
+		return handle_select_language (greeter_proxy, connection, message);
 	}
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -502,6 +561,12 @@ do_introspect (DBusConnection *connection,
 	xml = g_string_append (xml,
 			       "  <interface name=\"org.gnome.DisplayManager.GreeterServer\">\n"
 			       "    <method name=\"AnswerQuery\">\n"
+			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
+			       "    </method>\n"
+			       "    <method name=\"SelectSession\">\n"
+			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
+			       "    </method>\n"
+			       "    <method name=\"SelectLanguage\">\n"
 			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
 			       "    </method>\n"
 			       "    <signal name=\"Info\">\n"
@@ -547,8 +612,6 @@ greeter_server_message_handler (DBusConnection  *connection,
 				DBusMessage     *message,
 				void            *user_data)
 {
-        GdmGreeterProxy *greeter_proxy = GDM_GREETER_PROXY (user_data);
-
 	g_debug ("greeter_server_message_handler: destination=%s obj_path=%s interface=%s method=%s",
 		 dbus_message_get_destination (message),
 		 dbus_message_get_path (message),
@@ -591,8 +654,6 @@ static void
 greeter_server_unregister_handler (DBusConnection  *connection,
 				   void            *user_data)
 {
-        GdmGreeterProxy *greeter_proxy = GDM_GREETER_PROXY (user_data);
-
 	g_debug ("greeter_server_unregister_handler");
 }
 
@@ -700,7 +761,6 @@ create_dbus_server (GdmGreeterProxy *greeter_proxy)
 	DBusError   error;
 	gboolean    ret;
 	char       *address;
-	char       *server_address;
 	const char *auth_mechanisms[] = {"EXTERNAL", NULL};
 
 	ret = FALSE;
@@ -1055,11 +1115,33 @@ gdm_greeter_proxy_class_init (GdmGreeterProxyClass *klass)
 							      "group name",
 							      "gdm",
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-	signals [ANSWER] =
-		g_signal_new ("answer",
+	signals [QUERY_ANSWER] =
+		g_signal_new ("query-answer",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (GdmGreeterProxyClass, answer),
+			      G_STRUCT_OFFSET (GdmGreeterProxyClass, query_answer),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_STRING);
+	signals [SESSION_SELECTED] =
+		g_signal_new ("session-selected",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmGreeterProxyClass, session_selected),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_STRING);
+	signals [LANGUAGE_SELECTED] =
+		g_signal_new ("language-selected",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmGreeterProxyClass, language_selected),
 			      NULL,
 			      NULL,
 			      g_cclosure_marshal_VOID__STRING,
@@ -1096,7 +1178,7 @@ gdm_greeter_proxy_init (GdmGreeterProxy *greeter_proxy)
 
 	greeter_proxy->priv->pid = -1;
 
-	greeter_proxy->priv->command = g_strdup (LIBEXECDIR "/gdmgreeter");
+	greeter_proxy->priv->command = g_strdup (LIBEXECDIR "/gdmgreeter --g-fatal-warnings");
 	greeter_proxy->priv->user_max_filesize = 65536;
 }
 

@@ -94,8 +94,6 @@ gdm_settings_get_value (GdmSettings *settings,
 	g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	g_debug ("Getting key %s", key);
-
 	local_error = NULL;
 	res = gdm_settings_backend_get_value (settings->priv->backend,
 					      key,

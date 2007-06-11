@@ -121,6 +121,52 @@ on_query_answer (GdmGreeter *greeter,
 }
 
 static void
+on_select_session (GdmGreeter *greeter,
+		   const char *text,
+		   gpointer    data)
+{
+	gboolean res;
+	GError  *error;
+
+	g_debug ("GREETER session selected: %s", text);
+
+	error = NULL;
+	res = dbus_g_proxy_call (server_proxy,
+				 "SelectSession",
+				 &error,
+				 G_TYPE_STRING, text,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send SelectSession: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
+on_select_language (GdmGreeter *greeter,
+		    const char *text,
+		    gpointer    data)
+{
+	gboolean res;
+	GError  *error;
+
+	g_debug ("GREETER session selected: %s", text);
+
+	error = NULL;
+	res = dbus_g_proxy_call (server_proxy,
+				 "SelectLanguage",
+				 &error,
+				 G_TYPE_STRING, text,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send SelectLanguage: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 proxy_destroyed (GObject *object,
 		 gpointer data)
 {
@@ -222,6 +268,15 @@ main (int argc, char *argv[])
 			  "query-answer",
 			  G_CALLBACK (on_query_answer),
 			  NULL);
+	g_signal_connect (greeter,
+			  "session-selected",
+			  G_CALLBACK (on_select_session),
+			  NULL);
+	g_signal_connect (greeter,
+			  "language-selected",
+			  G_CALLBACK (on_select_language),
+			  NULL);
+
 	gtk_main ();
 
 	if (greeter != NULL) {

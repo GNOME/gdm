@@ -1,6 +1,6 @@
 NULL =
 
-SUBDIRS =
+SUBDIRS =		\
 	. 		\
 	greeter		\
 	modules		\
@@ -24,7 +24,7 @@ DEFS = @DEFS@ \
 	-DSBINDIR=\"@sbindir@\"				\
 	$(NULL)
 
-INCLUDES = \
+INCLUDES = 						\
 	-I.						\
 	-I..						\
 	-I$(top_srcdir)/daemon				\

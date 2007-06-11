@@ -123,7 +123,7 @@ start_element_cb (GMarkupParseContext *ctx,
 static void
 add_schema_entry (ParserInfo *info)
 {
-	g_debug ("Inserting entry %s", info->entry->key);
+	/*g_debug ("Inserting entry %s", info->entry->key);*/
 
 	info->list = g_slist_prepend (info->list, info->entry);
 }

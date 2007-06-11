@@ -78,10 +78,8 @@ get_value (const char *key,
 	res = gdm_settings_get_value (settings_object, key, &str, &error);
 	if (! res) {
 		if (error != NULL) {
-			g_debug ("Failed to get value for %s: %s", key, error->message);
 			g_error_free (error);
 		} else {
-			g_debug ("Failed to get value for %s", key);
 		}
 
 		return FALSE;

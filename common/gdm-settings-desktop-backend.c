@@ -76,7 +76,7 @@ parse_key_string (const char *keystring,
 	g = k = v = l = NULL;
 	split1 = split2 = NULL;
 
-	g_debug ("Attempting to parse key string: %s", keystring);
+	/*g_debug ("Attempting to parse key string: %s", keystring);*/
 
 	split1 = g_strsplit (keystring, "/", 2);
 	if (split1 == NULL || split1 [0] == NULL || split1 [1] == NULL) {
@@ -147,7 +147,7 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
 		return FALSE;
 	}
 
-	g_debug ("Getting key: %s %s %s", g, k, l);
+	/*g_debug ("Getting key: %s %s %s", g, k, l);*/
 	local_error = NULL;
 	val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
 				    g,

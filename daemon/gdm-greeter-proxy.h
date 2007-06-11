@@ -45,10 +45,14 @@ typedef struct
 {
 	GObjectClass   parent_class;
 
-	void (* answer)   (GdmGreeterProxy  *greeter_proxy,
-			   const char       *text);
-	void (* started)  (GdmGreeterProxy  *greeter_proxy);
-	void (* stopped)  (GdmGreeterProxy  *greeter_proxy);
+	void (* query_answer)      (GdmGreeterProxy  *greeter_proxy,
+				    const char       *text);
+	void (* session_selected)  (GdmGreeterProxy  *greeter_proxy,
+				    const char       *name);
+	void (* language_selected) (GdmGreeterProxy  *greeter_proxy,
+				    const char       *name);
+	void (* started)           (GdmGreeterProxy  *greeter_proxy);
+	void (* stopped)           (GdmGreeterProxy  *greeter_proxy);
 } GdmGreeterProxyClass;
 
 GType		    gdm_greeter_proxy_get_type          (void);

@@ -61,7 +61,7 @@ static void
 on_user_verified (GdmSession *session)
 {
 	char *username;
-	const char *args[] = { "/usr/bin/gedit", "/tmp/foo.log", NULL };
+	const char *argv[] = { "/usr/bin/gedit", "/tmp/foo.log", NULL };
 
 	username = gdm_session_get_username (session);
 
@@ -69,7 +69,7 @@ on_user_verified (GdmSession *session)
 		 username? username : "", username? " " : "");
 	g_free (username);
 
-	gdm_session_start_program (session, args);
+	gdm_session_start_program (session, 2, argv);
 }
 
 static void
@@ -169,8 +169,6 @@ main (int   argc,
 	GdmSession *session;
 	char       *username;
 	int         exit_code;
-	char      **args;
-	int         i;
 
 	exit_code = 0;
 

@@ -88,6 +88,9 @@ struct GdmSlavePrivate
 	char            *parent_display_name;
 	char            *parent_display_x11_authority_file;
 
+	/* user selected */
+	char            *selected_session;
+	char            *selected_language;
 
 	GdmServer       *server;
 	GdmGreeterProxy *greeter;
@@ -101,270 +104,20 @@ enum {
 	PROP_DISPLAY_ID,
 };
 
+enum {
+	SESSION_STARTED,
+	SESSION_EXITED,
+	SESSION_DIED,
+	LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0, };
+
 static void	gdm_slave_class_init	(GdmSlaveClass *klass);
 static void	gdm_slave_init	        (GdmSlave      *slave);
 static void	gdm_slave_finalize	(GObject            *object);
 
 G_DEFINE_TYPE (GdmSlave, gdm_slave, G_TYPE_OBJECT)
-
-/* adapted from gspawn.c */
-static int
-wait_on_child (int pid)
-{
-	int status;
-
- wait_again:
-	if (waitpid (pid, &status, 0) < 0) {
-		if (errno == EINTR) {
-			goto wait_again;
-		} else if (errno == ECHILD) {
-			; /* do nothing, child already reaped */
-		} else {
-			g_debug ("waitpid () should not fail in 'GdmSpawn'");
-		}
-	}
-
-	return status;
-}
-
-static void
-slave_died (GdmSlave *slave)
-{
-	int exit_status;
-
-	g_debug ("Waiting on process %d", slave->priv->pid);
-	exit_status = wait_on_child (slave->priv->pid);
-
-	if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-		g_debug ("Wait on child process failed");
-	} else {
-		/* exited normally */
-	}
-
-	g_spawn_close_pid (slave->priv->pid);
-	slave->priv->pid = -1;
-
-	g_debug ("Slave died");
-}
-
-static gboolean
-output_watch (GIOChannel    *source,
-	      GIOCondition   condition,
-	      GdmSlave *slave)
-{
-	gboolean finished = FALSE;
-
-	if (condition & G_IO_IN) {
-		GIOStatus status;
-		GError	 *error = NULL;
-		char	 *line;
-
-		line = NULL;
-		status = g_io_channel_read_line (source, &line, NULL, NULL, &error);
-
-		switch (status) {
-		case G_IO_STATUS_NORMAL:
-			{
-				char *p;
-
-				g_debug ("command output: %s", line);
-
-				if ((p = strstr (line, "ADDRESS=")) != NULL) {
-					char *address;
-
-					address = g_strdup (p + strlen ("ADDRESS="));
-					g_debug ("Got address %s", address);
-
-					g_free (address);
-				}
-			}
-			break;
-		case G_IO_STATUS_EOF:
-			finished = TRUE;
-			break;
-		case G_IO_STATUS_ERROR:
-			finished = TRUE;
-			g_debug ("Error reading from child: %s\n", error->message);
-			return FALSE;
-		case G_IO_STATUS_AGAIN:
-		default:
-			break;
-		}
-
-		g_free (line);
-	} else if (condition & G_IO_HUP) {
-		finished = TRUE;
-	}
-
-	if (finished) {
-		slave_died (slave);
-
-		slave->priv->output_watch_id = 0;
-
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/* just for debugging */
-static gboolean
-error_watch (GIOChannel	   *source,
-	     GIOCondition   condition,
-	     GdmSlave *slave)
-{
-	gboolean finished = FALSE;
-
-	if (condition & G_IO_IN) {
-		GIOStatus status;
-		GError	 *error = NULL;
-		char	 *line;
-
-		line = NULL;
-		status = g_io_channel_read_line (source, &line, NULL, NULL, &error);
-
-		switch (status) {
-		case G_IO_STATUS_NORMAL:
-			g_debug ("command error output: %s", line);
-			break;
-		case G_IO_STATUS_EOF:
-			finished = TRUE;
-			break;
-		case G_IO_STATUS_ERROR:
-			finished = TRUE;
-			g_debug ("Error reading from child: %s\n", error->message);
-			return FALSE;
-		case G_IO_STATUS_AGAIN:
-		default:
-			break;
-		}
-		g_free (line);
-	} else if (condition & G_IO_HUP) {
-		finished = TRUE;
-	}
-
-	if (finished) {
-		slave->priv->error_watch_id = 0;
-
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
-spawn_slave (GdmSlave *slave)
-{
-	char	   *command;
-	char	  **argv;
-	gboolean    result;
-	GIOChannel *channel;
-	GError	   *error = NULL;
-	int	    standard_output;
-	int	    standard_error;
-
-
-	result = FALSE;
-
-	command = g_strdup_printf ("%s --id %s", GDM_SLAVE_COMMAND, slave->priv->display_id);
-
-	if (! g_shell_parse_argv (command, NULL, &argv, &error)) {
-		g_warning ("Could not parse command: %s", error->message);
-		g_error_free (error);
-		goto out;
-	}
-
-	error = NULL;
-	result = g_spawn_async_with_pipes (NULL,
-					   argv,
-					   NULL,
-					   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
-					   NULL,
-					   NULL,
-					   &slave->priv->pid,
-					   NULL,
-					   &standard_output,
-					   &standard_error,
-					   &error);
-
-	if (! result) {
-		g_warning ("Could not start command '%s': %s", command, error->message);
-		g_error_free (error);
-		g_strfreev (argv);
-		goto out;
-	}
-
-	g_strfreev (argv);
-
-	/* output channel */
-	channel = g_io_channel_unix_new (standard_output);
-	g_io_channel_set_close_on_unref (channel, TRUE);
-	g_io_channel_set_flags (channel,
-				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
-				NULL);
-	slave->priv->output_watch_id = g_io_add_watch (channel,
-						       G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL,
-						       (GIOFunc)output_watch,
-						       slave);
-	g_io_channel_unref (channel);
-
-	/* error channel */
-	channel = g_io_channel_unix_new (standard_error);
-	g_io_channel_set_close_on_unref (channel, TRUE);
-	g_io_channel_set_flags (channel,
-				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
-				NULL);
-	slave->priv->error_watch_id = g_io_add_watch (channel,
-						      G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL,
-						      (GIOFunc)error_watch,
-						      slave);
-	g_io_channel_unref (channel);
-
-	result = TRUE;
-
- out:
-	g_free (command);
-
-	return result;
-}
-
-static int
-signal_pid (int pid,
-	    int signal)
-{
-	int status = -1;
-
-	/* perhaps block sigchld */
-
-	status = kill (pid, signal);
-
-	if (status < 0) {
-		if (errno == ESRCH) {
-			g_warning ("Child process %lu was already dead.",
-				   (unsigned long) pid);
-		} else {
-			g_warning ("Couldn't kill child process %lu: %s",
-				   (unsigned long) pid,
-				   g_strerror (errno));
-		}
-	}
-
-	/* perhaps unblock sigchld */
-
-	return status;
-}
-
-static void
-kill_slave (GdmSlave *slave)
-{
-	if (slave->priv->pid <= 1) {
-		return;
-	}
-
-	signal_pid (slave->priv->pid, SIGTERM);
-
-	/* watch should call slave_died */
-}
 
 static void
 set_busy_cursor (GdmSlave *slave)
@@ -435,7 +188,6 @@ get_script_environment (GdmSlave   *slave,
 			const char *username)
 {
 	GPtrArray     *env;
-	char         **l;
 	GHashTable    *hash;
 	struct passwd *pwent;
 	char          *x_servers_file;
@@ -444,14 +196,6 @@ get_script_environment (GdmSlave   *slave,
 
 	/* create a hash table of current environment, then update keys has necessary */
 	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-
-#if 0
-	for (l = environ; *l != NULL; l++) {
-		char **str;
-		str = g_strsplit (*l, "=", 2);
-		g_hash_table_insert (hash, str[0], str[1]);
-	}
-#endif
 
 	/* modify environment here */
 	g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup ("/"));
@@ -619,6 +363,7 @@ on_session_started (GdmSession *session,
 		    GdmSlave   *slave)
 {
 	g_debug ("session started on pid %d\n", (int) pid);
+	g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);
 }
 
 static void
@@ -627,7 +372,7 @@ on_session_exited (GdmSession *session,
 		   GdmSlave   *slave)
 {
 	g_debug ("session exited with code %d\n", exit_code);
-	exit (0);
+	g_signal_emit (slave, signals [SESSION_EXITED], 0, exit_code);
 }
 
 static void
@@ -638,15 +383,159 @@ on_session_died (GdmSession *session,
 	g_debug ("session died with signal %d, (%s)",
 		 signal_number,
 		 g_strsignal (signal_number));
-	exit (1);
+	g_signal_emit (slave, signals [SESSION_DIED], 0, signal_number);
+}
+
+static gboolean
+is_prog_in_path (const char *prog)
+{
+	char    *f;
+	gboolean ret;
+
+	f = g_find_program_in_path (prog);
+	ret = (f != NULL);
+	g_free (f);
+	return ret;
+}
+
+static gboolean
+get_session_command (const char *file,
+		     char      **command)
+{
+	GKeyFile   *key_file;
+	GError     *error;
+	char       *full_path;
+	char       *exec;
+	gboolean    ret;
+	gboolean    res;
+	const char *search_dirs[] = {
+		"/etc/X11/sessions/",
+		DMCONFDIR "/Sessions/",
+		DATADIR "/gdm/BuiltInSessions/",
+		DATADIR "/xsessions/",
+		NULL
+	};
+
+	exec = NULL;
+	ret = FALSE;
+	if (command != NULL) {
+		*command = NULL;
+	}
+
+	key_file = g_key_file_new ();
+
+	error = NULL;
+	full_path = NULL;
+	res = g_key_file_load_from_dirs (key_file,
+					 file,
+					 search_dirs,
+					 &full_path,
+					 G_KEY_FILE_NONE,
+					 &error);
+	if (! res) {
+		g_debug ("File '%s' not found: %s", file, error->message);
+		g_error_free (error);
+		if (command != NULL) {
+			*command = NULL;
+		}
+		goto out;
+	}
+
+	error = NULL;
+	res = g_key_file_get_boolean (key_file,
+				      G_KEY_FILE_DESKTOP_GROUP,
+				      G_KEY_FILE_DESKTOP_KEY_HIDDEN,
+				      &error);
+	if (error == NULL && res) {
+		g_debug ("Session %s is marked as hidden", file);
+		goto out;
+	}
+
+	error = NULL;
+	exec = g_key_file_get_string (key_file,
+				      G_KEY_FILE_DESKTOP_GROUP,
+				      G_KEY_FILE_DESKTOP_KEY_TRY_EXEC,
+				      &error);
+	if (exec == NULL) {
+		g_debug ("%s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
+		goto out;
+	}
+
+	res = is_prog_in_path (exec);
+	g_free (exec);
+
+	if (! res) {
+		g_debug ("Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
+		goto out;
+	}
+
+	error = NULL;
+	exec = g_key_file_get_string (key_file,
+				      G_KEY_FILE_DESKTOP_GROUP,
+				      G_KEY_FILE_DESKTOP_KEY_EXEC,
+				      &error);
+	if (error != NULL) {
+		g_debug ("%s key not found: %s",
+			 G_KEY_FILE_DESKTOP_KEY_EXEC,
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	if (command != NULL) {
+		*command = g_strdup (exec);
+	}
+	ret = TRUE;
+
+out:
+	g_free (exec);
+
+	return ret;
+}
+
+static void
+setup_session_environment (GdmSlave *slave)
+{
+
+	gdm_session_set_environment_variable (slave->priv->session,
+					      "GDMSESSION",
+					      slave->priv->selected_session);
+	gdm_session_set_environment_variable (slave->priv->session,
+					      "DESKTOP_SESSION",
+					      slave->priv->selected_session);
+
+	gdm_session_set_environment_variable (slave->priv->session,
+					      "LANG",
+					      slave->priv->selected_language);
+	gdm_session_set_environment_variable (slave->priv->session,
+					      "GDM_LANG",
+					      slave->priv->selected_language);
+
+	gdm_session_set_environment_variable (slave->priv->session,
+					      "DISPLAY",
+					      slave->priv->display_name);
+	gdm_session_set_environment_variable (slave->priv->session,
+					      "XAUTHORITY",
+					      slave->priv->display_x11_authority_file);
+
+	gdm_session_set_environment_variable (slave->priv->session,
+					      "PATH",
+					      "/bin:/usr/bin:" BINDIR);
 }
 
 static void
 on_user_verified (GdmSession *session,
 		  GdmSlave   *slave)
 {
-	char *username;
-	const char *args[] = { "/usr/bin/gedit", "/tmp/foo.log", NULL };
+	char    *username;
+	int      argc;
+	char   **argv;
+	char    *command;
+	char    *filename;
+	GError  *error;
+	gboolean res;
+
+	gdm_greeter_proxy_stop (slave->priv->greeter);
 
 	username = gdm_session_get_username (session);
 
@@ -655,7 +544,34 @@ on_user_verified (GdmSession *session,
 		 username ? " " : "");
 	g_free (username);
 
-	gdm_session_start_program (session, args);
+	if (slave->priv->selected_session != NULL) {
+		filename = g_strdup (slave->priv->selected_session);
+	} else {
+		filename = g_strdup ("gnome.desktop");
+	}
+
+	setup_session_environment (slave);
+
+	res = get_session_command (filename, &command);
+	if (! res) {
+		g_warning ("Could find session file: %s", filename);
+		return;
+	}
+
+	error = NULL;
+	res = g_shell_parse_argv (command, &argc, &argv, &error);
+	if (! res) {
+		g_warning ("Could not parse command: %s", error->message);
+		g_error_free (error);
+	}
+
+	gdm_session_start_program (session,
+				   argc,
+				   (const char **)argv);
+
+	g_free (filename);
+	g_free (command);
+	g_strfreev (argv);
 }
 
 static void
@@ -718,6 +634,24 @@ on_greeter_answer (GdmGreeterProxy *greeter,
 		   GdmSlave        *slave)
 {
 	gdm_session_answer_query (slave->priv->session, text);
+}
+
+static void
+on_greeter_session_selected (GdmGreeterProxy *greeter,
+			     const char      *text,
+			     GdmSlave        *slave)
+{
+	g_free (slave->priv->selected_session);
+	slave->priv->selected_session = g_strdup (text);
+}
+
+static void
+on_greeter_language_selected (GdmGreeterProxy *greeter,
+			      const char      *text,
+			      GdmSlave        *slave)
+{
+	g_free (slave->priv->selected_language);
+	slave->priv->selected_language = g_strdup (text);
 }
 
 static void
@@ -812,12 +746,10 @@ run_greeter (GdmSlave *slave)
 			  "session-started",
 			  G_CALLBACK (on_session_started),
 			  slave);
-
 	g_signal_connect (slave->priv->session,
 			  "session-exited",
 			  G_CALLBACK (on_session_exited),
 			  slave);
-
 	g_signal_connect (slave->priv->session,
 			  "session-died",
 			  G_CALLBACK (on_session_died),
@@ -825,8 +757,16 @@ run_greeter (GdmSlave *slave)
 
 	slave->priv->greeter = gdm_greeter_proxy_new (slave->priv->display_name);
 	g_signal_connect (slave->priv->greeter,
-			  "answer",
+			  "query-answer",
 			  G_CALLBACK (on_greeter_answer),
+			  slave);
+	g_signal_connect (slave->priv->greeter,
+			  "session-selected",
+			  G_CALLBACK (on_greeter_session_selected),
+			  slave);
+	g_signal_connect (slave->priv->greeter,
+			  "language-selected",
+			  G_CALLBACK (on_greeter_language_selected),
 			  slave);
 	g_signal_connect (slave->priv->greeter,
 			  "started",
@@ -1245,6 +1185,42 @@ gdm_slave_class_init (GdmSlaveClass *klass)
 							      "id",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+	signals [SESSION_STARTED] =
+		g_signal_new ("session-started",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmSlaveClass, session_started),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__INT,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_INT);
+
+	signals [SESSION_EXITED] =
+		g_signal_new ("session-exited",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmSlaveClass, session_exited),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__INT,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_INT);
+
+	signals [SESSION_DIED] =
+		g_signal_new ("session-died",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmSlaveClass, session_exited),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__INT,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_INT);
 
 	dbus_g_object_type_install_info (GDM_TYPE_SLAVE, &dbus_glib_gdm_slave_object_info);
 }

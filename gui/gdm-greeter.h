@@ -48,6 +48,11 @@ typedef struct
 	/* signals */
 	void (* query_answer)         (GdmGreeter *greeter,
 				       const char *text);
+	void (* session_selected)     (GdmGreeter *greeter,
+				       const char *text);
+	void (* language_selected)    (GdmGreeter *greeter,
+				       const char *text);
+
 	/* methods */
 	gboolean (*start)             (GdmGreeter *greeter);
 	gboolean (*stop)              (GdmGreeter *greeter);
@@ -76,9 +81,15 @@ GType		    gdm_greeter_get_type		       (void);
 gboolean            gdm_greeter_start                          (GdmGreeter *greeter);
 gboolean            gdm_greeter_stop                           (GdmGreeter *greeter);
 
+/* emit signals */
 gboolean            gdm_greeter_answer_query                   (GdmGreeter *greeter,
 								const char *text);
+gboolean            gdm_greeter_select_session                 (GdmGreeter *greeter,
+								const char *text);
+gboolean            gdm_greeter_select_language                (GdmGreeter *greeter,
+								const char *text);
 
+/* actions */
 gboolean            gdm_greeter_info_query                     (GdmGreeter *greeter,
 								const char *text);
 gboolean            gdm_greeter_secret_info_query              (GdmGreeter *greeter,

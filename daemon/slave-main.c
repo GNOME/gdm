@@ -42,6 +42,8 @@
 #include "gdm-log.h"
 #include "gdm-slave.h"
 
+static int gdm_return_code = 0;
+
 static DBusGConnection *
 get_system_bus (void)
 {
@@ -129,6 +131,28 @@ signal_cb (int      signo,
 	return ret;
 }
 
+static void
+on_session_exited (GdmSlave   *slave,
+                   int         exit_code,
+		   GMainLoop  *main_loop)
+{
+	g_debug ("session exited with code %d\n", exit_code);
+	gdm_return_code = exit_code;
+	g_main_loop_quit (main_loop);
+}
+
+static void
+on_session_died (GdmSlave   *slave,
+                 int         signal_number,
+		 GMainLoop  *main_loop)
+{
+	g_debug ("session died with signal %d, (%s)",
+		 signal_number,
+		 g_strsignal (signal_number));
+	gdm_return_code = 1;
+	g_main_loop_quit (main_loop);
+}
+
 int
 main (int    argc,
       char **argv)
@@ -136,7 +160,6 @@ main (int    argc,
 	GMainLoop        *main_loop;
 	GOptionContext	 *context;
 	DBusGConnection  *connection;
-	int		  ret;
 	GdmSlave         *slave;
 	static char      *display_id = NULL;
 	GdmSignalHandler *signal_handler;
@@ -148,8 +171,6 @@ main (int    argc,
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 	setlocale (LC_ALL, "");
-
-	ret = 1;
 
 	g_type_init ();
 
@@ -191,6 +212,15 @@ main (int    argc,
 	if (slave == NULL) {
 		goto out;
 	}
+	g_signal_connect (slave,
+			  "session-exited",
+			  G_CALLBACK (on_session_exited),
+			  main_loop);
+	g_signal_connect (slave,
+			  "session-died",
+			  G_CALLBACK (on_session_died),
+			  main_loop);
+
 	gdm_slave_start (slave);
 
 	g_main_loop_run (main_loop);
@@ -205,11 +235,9 @@ main (int    argc,
 
 	g_main_loop_unref (main_loop);
 
-	ret = 0;
-
  out:
 
 	g_debug ("Slave finished");
 
-	return ret;
+	return gdm_return_code;
 }

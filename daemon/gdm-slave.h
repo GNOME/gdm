@@ -37,7 +37,7 @@ typedef struct GdmSlavePrivate GdmSlavePrivate;
 
 typedef struct
 {
-	GObject	              parent;
+	GObject	         parent;
 	GdmSlavePrivate *priv;
 } GdmSlave;
 
@@ -45,6 +45,12 @@ typedef struct
 {
 	GObjectClass   parent_class;
 
+	void (* session_started)         (GdmSlave        *slave,
+					  GPid             pid);
+	void (* session_exited)          (GdmSlave        *slave,
+					  int              exit_code);
+	void (* session_died)            (GdmSlave        *slave,
+					  int              signal_number);
 } GdmSlaveClass;
 
 GType		    gdm_slave_get_type	 (void);

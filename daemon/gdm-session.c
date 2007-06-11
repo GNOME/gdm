@@ -2091,7 +2091,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 						  sizeof (struct pam_response));
 	for (i = 0; i < number_of_messages; i++) {
 		gboolean got_response;
-		char *response_text;
+		char    *response_text;
 
 		response_text = NULL;
 		got_response = gdm_session_worker_process_pam_message (worker,
@@ -2331,7 +2331,8 @@ gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
 	 * better?
 	 */
 	g_hash_table_replace (worker->environment,
-			      key_and_value[0], key_and_value[1]);
+			      key_and_value[0],
+			      key_and_value[1]);
 
 	/* We are calling g_free instead of g_strfreev because the
 	 * hash table is taking over ownership of the individual
@@ -2663,6 +2664,177 @@ gdm_session_worker_watch_child (GdmSessionWorker *worker)
 	g_source_unref (worker->child_watch_source);
 }
 
+/* adapted from glib script_execute */
+static void
+script_execute (const gchar *file,
+		char       **argv,
+		char       **envp,
+		gboolean     search_path)
+{
+	/* Count the arguments.  */
+	int argc = 0;
+
+	while (argv[argc])
+		++argc;
+
+	/* Construct an argument list for the shell.  */
+	{
+		char **new_argv;
+
+		new_argv = g_new0 (gchar*, argc + 2); /* /bin/sh and NULL */
+
+		new_argv[0] = (char *) "/bin/sh";
+		new_argv[1] = (char *) file;
+		while (argc > 0) {
+			new_argv[argc + 1] = argv[argc];
+			--argc;
+		}
+
+		/* Execute the shell. */
+		if (envp)
+			execve (new_argv[0], new_argv, envp);
+		else
+			execv (new_argv[0], new_argv);
+
+		g_free (new_argv);
+	}
+}
+
+static char *
+my_strchrnul (const char *str, char c)
+{
+	char *p = (char*) str;
+	while (*p && (*p != c))
+		++p;
+
+	return p;
+}
+
+/* adapted from glib g_execute */
+static gint
+gdm_session_execute (const char *file,
+		     char      **argv,
+		     char      **envp,
+		     gboolean    search_path)
+{
+	if (*file == '\0') {
+		/* We check the simple case first. */
+		errno = ENOENT;
+		return -1;
+	}
+
+	if (!search_path || strchr (file, '/') != NULL) {
+		/* Don't search when it contains a slash. */
+		if (envp)
+			execve (file, argv, envp);
+		else
+			execv (file, argv);
+
+		if (errno == ENOEXEC)
+			script_execute (file, argv, envp, FALSE);
+	} else {
+		gboolean got_eacces = 0;
+		const char *path, *p;
+		char *name, *freeme;
+		gsize len;
+		gsize pathlen;
+
+		path = g_getenv ("PATH");
+		if (path == NULL) {
+			/* There is no `PATH' in the environment.  The default
+			 * search path in libc is the current directory followed by
+			 * the path `confstr' returns for `_CS_PATH'.
+			 */
+
+			/* In GLib we put . last, for security, and don't use the
+			 * unportable confstr(); UNIX98 does not actually specify
+			 * what to search if PATH is unset. POSIX may, dunno.
+			 */
+
+			path = "/bin:/usr/bin:.";
+		}
+
+		len = strlen (file) + 1;
+		pathlen = strlen (path);
+		freeme = name = g_malloc (pathlen + len + 1);
+
+		/* Copy the file name at the top, including '\0'  */
+		memcpy (name + pathlen + 1, file, len);
+		name = name + pathlen;
+		/* And add the slash before the filename  */
+		*name = '/';
+
+		p = path;
+		do {
+			char *startp;
+
+			path = p;
+			p = my_strchrnul (path, ':');
+
+			if (p == path)
+				/* Two adjacent colons, or a colon at the beginning or the end
+				 * of `PATH' means to search the current directory.
+				 */
+				startp = name + 1;
+			else
+				startp = memcpy (name - (p - path), path, p - path);
+
+			/* Try to execute this name.  If it works, execv will not return.  */
+			if (envp)
+				execve (startp, argv, envp);
+			else
+				execv (startp, argv);
+
+			if (errno == ENOEXEC)
+				script_execute (startp, argv, envp, search_path);
+
+			switch (errno) {
+			case EACCES:
+				/* Record the we got a `Permission denied' error.  If we end
+				 * up finding no executable we can use, we want to diagnose
+				 * that we did find one but were denied access.
+				 */
+				got_eacces = TRUE;
+
+				/* FALL THRU */
+
+			case ENOENT:
+#ifdef ESTALE
+			case ESTALE:
+#endif
+#ifdef ENOTDIR
+			case ENOTDIR:
+#endif
+				/* Those errors indicate the file is missing or not executable
+				 * by us, in which case we want to just try the next path
+				 * directory.
+				 */
+				break;
+
+			default:
+				/* Some other error means we found an executable file, but
+				 * something went wrong executing it; return the error to our
+				 * caller.
+				 */
+				g_free (freeme);
+				return -1;
+			}
+		} while (*p++ != '\0');
+
+		/* We tried every element and none of them worked.  */
+		if (got_eacces)
+			/* At least one failure was due to permissions, so report that
+			 * error.
+			 */
+			errno = EACCES;
+
+		g_free (freeme);
+	}
+
+	/* Return the error from the last attempt (probably ENOENT).  */
+	return -1;
+}
+
 static gboolean
 gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 				      GError           **error)
@@ -2707,12 +2879,10 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 		char *home_dir;
 		int fd;
 
-		worker->inherited_fd_list =
-			g_slist_append (NULL,
-					GINT_TO_POINTER (worker->standard_output_fd));
-		worker->inherited_fd_list =
-			g_slist_append (worker->inherited_fd_list,
-					GINT_TO_POINTER (worker->standard_error_fd));
+		worker->inherited_fd_list = g_slist_append (NULL,
+							    GINT_TO_POINTER (worker->standard_output_fd));
+		worker->inherited_fd_list = g_slist_append (worker->inherited_fd_list,
+							    GINT_TO_POINTER (worker->standard_error_fd));
 
 #if 0
 		gdm_session_worker_close_open_fds (worker);
@@ -2763,10 +2933,14 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 			g_chdir ("/");
 		}
 
-		execve (worker->arguments[0], worker->arguments, environment);
+		gdm_session_execute (worker->arguments[0],
+				     worker->arguments,
+				     environment,
+				     TRUE);
 
 		g_debug ("child '%s' could not be started - %s",
-			 worker->arguments[0], g_strerror (errno));
+			 worker->arguments[0],
+			 g_strerror (errno));
 		g_strfreev (environment);
 
 		_exit (127);
@@ -2890,7 +3064,7 @@ gdm_session_worker_handle_verification_message (GdmSessionWorker              *w
 }
 
 static void
-gdm_session_worker_handle_start_program_message (GdmSessionWorker  *worker,
+gdm_session_worker_handle_start_program_message (GdmSessionWorker              *worker,
 						 GdmSessionStartProgramMessage *message)
 {
 	GError  *start_error;
@@ -3814,26 +3988,29 @@ gdm_session_open_for_user (GdmSession    *session,
 }
 
 void
-gdm_session_start_program (GdmSession         *session,
-                           const char * const *args)
+gdm_session_start_program (GdmSession     *session,
+			   int             argc,
+                           const char    **argv)
 {
 	GdmSessionMessage *message;
-	int argc, i;
+	int                i;
 
 	g_return_if_fail (session != NULL);
 	g_return_if_fail (session != NULL);
 	g_return_if_fail (gdm_session_is_running (session) == FALSE);
-	g_return_if_fail (args != NULL);
-	g_return_if_fail (args[0] != NULL);
+	g_return_if_fail (argv != NULL);
+	g_return_if_fail (argv[0] != NULL);
 
-	argc = g_strv_length ((char **) args);
 	session->priv->arguments = g_new0 (char *, (argc + 1));
 
-	for (i = 0; args[i] != NULL; i++)
-		session->priv->arguments[i] = g_strdup (args[i]);
+	for (i = 0; argv[i] != NULL; i++) {
+		session->priv->arguments[i] = g_strdup (argv[i]);
+	}
 
-	message = gdm_session_start_program_message_new (args);
-	gdm_write_message (session->priv->worker_message_pipe_fd, message, message->size,
+	message = gdm_session_start_program_message_new (argv);
+	gdm_write_message (session->priv->worker_message_pipe_fd,
+			   message,
+			   message->size,
 			   NULL);
 	gdm_session_message_free (message);
 }
