@@ -42,7 +42,7 @@ struct _GdmSettingsEntry
 	char   *key;
 	char   *signature;
 	char   *default_value;
-	GSList *notifiers;
+	char   *value;
 };
 
 GdmSettingsEntry *
@@ -53,7 +53,7 @@ gdm_settings_entry_new (void)
 	entry = g_new0 (GdmSettingsEntry, 1);
 	entry->key = NULL;
 	entry->signature = NULL;
-	entry->notifiers = NULL;
+	entry->value = NULL;
 	entry->default_value = NULL;
 
 	return entry;
@@ -77,13 +77,27 @@ gdm_settings_entry_get_default_value (GdmSettingsEntry *entry)
 	return entry->default_value;
 }
 
+const char *
+gdm_settings_entry_get_value (GdmSettingsEntry *entry)
+{
+	return entry->value;
+}
+
+void
+gdm_settings_entry_set_value (GdmSettingsEntry *entry,
+			      const char       *value)
+{
+	g_free (entry->value);
+	entry->value = g_strdup (value);
+}
+
 void
 gdm_settings_entry_free (GdmSettingsEntry *entry)
 {
 	g_free (entry->key);
 	g_free (entry->signature);
 	g_free (entry->default_value);
-	g_slist_free (entry->notifiers);
+	g_free (entry->value);
 	g_free (entry);
 }
 

@@ -47,9 +47,31 @@
 
 static char            *schemas_file   = NULL;
 static char            *schemas_root   = NULL;
+static GHashTable      *notifiers      = NULL;
 static GHashTable      *schemas        = NULL;
 static DBusGProxy      *settings_proxy = NULL;
 static DBusGConnection *connection     = NULL;
+static guint32          id_serial      = 0;
+
+typedef struct {
+	guint                       id;
+	char                       *root;
+	GdmSettingsClientNotifyFunc func;
+	gpointer                    user_data;
+	GFreeFunc                   destroy_notify;
+} GdmSettingsClientNotify;
+
+static void
+gdm_settings_client_notify_free (GdmSettingsClientNotify *notify)
+{
+	g_free (notify->root);
+
+	if (notify->destroy_notify != NULL) {
+		notify->destroy_notify (notify->user_data);
+	}
+
+	g_free (notify);
+}
 
 static GdmSettingsEntry *
 get_entry_for_key (const char *key)
@@ -108,6 +130,47 @@ assert_signature (GdmSettingsEntry *entry,
 	g_assert (sig != NULL);
 	g_assert (signature != NULL);
 	g_assert (strcmp (signature, sig) == 0);
+}
+
+static guint32
+get_next_serial (void)
+{
+        guint32 serial;
+
+        serial = id_serial++;
+
+        if ((gint32)id_serial < 0) {
+                id_serial = 1;
+        }
+
+        return serial;
+}
+
+guint
+gdm_settings_client_notify_add (const char                 *root,
+				GdmSettingsClientNotifyFunc func,
+				gpointer                    user_data,
+				GFreeFunc                   destroy_notify)
+{
+	guint32                  id;
+	GdmSettingsClientNotify *notify;
+
+	id = get_next_serial ();
+
+	notify = g_new0 (GdmSettingsClientNotify, 1);
+	notify->id = id;
+	notify->root = g_strdup (root);
+	notify->func = func;
+	notify->user_data = user_data;
+	notify->destroy_notify = destroy_notify;
+
+	g_hash_table_insert (notifiers, GINT_TO_POINTER (id), notify);
+}
+
+void
+gdm_settings_client_notify_remove (guint id)
+{
+	g_hash_table_remove (notifiers, GINT_TO_POINTER (id));
 }
 
 gboolean
@@ -309,6 +372,42 @@ hashify_list (GdmSettingsEntry *entry,
 	g_hash_table_insert (schemas, g_strdup (gdm_settings_entry_get_key (entry)), entry);
 }
 
+static void
+send_notification (gpointer                 key,
+		   GdmSettingsClientNotify *notify,
+		   GdmSettingsEntry        *entry)
+{
+	/* get out if the key is not in the region of interest */
+	if (! g_str_has_prefix (gdm_settings_entry_get_key (entry), notify->root)) {
+		return;
+	}
+
+	notify->func (notify->id, entry, notify->user_data);
+}
+
+static void
+on_value_changed (DBusGProxy *proxy,
+		  const char *key,
+		  const char *old_value,
+		  const char *new_value,
+		  gpointer    data)
+{
+	GdmSettingsEntry *entry;
+
+	g_debug ("Value Changed key=%s old=%s new=%s", key, old_value, new_value);
+
+	/* lookup entry */
+	entry = get_entry_for_key (key);
+
+	if (entry == NULL) {
+		return;
+	}
+
+	gdm_settings_entry_set_value (entry, new_value);
+
+	g_hash_table_foreach (notifiers, (GHFunc)send_notification, entry);
+}
+
 gboolean
 gdm_settings_client_init (const char *file,
 			  const char *root)
@@ -346,11 +445,20 @@ gdm_settings_client_init (const char *file,
 		return FALSE;
 	}
 
+	notifiers = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)gdm_settings_client_notify_free);
+
 	schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
 	g_slist_foreach (list, (GFunc)hashify_list, NULL);
 
 	schemas_file = g_strdup (file);
 	schemas_root = g_strdup (root);
+
+	dbus_g_proxy_connect_signal (settings_proxy,
+				     "ValueChanged",
+				     G_CALLBACK (on_value_changed),
+				     NULL,
+				     NULL);
+
 
 	return TRUE;
 }

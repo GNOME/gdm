@@ -49,7 +49,7 @@ struct GdmSettingsDesktopBackendPrivate
 
 static void	gdm_settings_desktop_backend_class_init	(GdmSettingsDesktopBackendClass *klass);
 static void	gdm_settings_desktop_backend_init	(GdmSettingsDesktopBackend      *settings_desktop_backend);
-static void	gdm_settings_desktop_backend_finalize	(GObject	  *object);
+static void	gdm_settings_desktop_backend_finalize	(GObject	                *object);
 
 G_DEFINE_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, GDM_TYPE_SETTINGS_BACKEND)
 

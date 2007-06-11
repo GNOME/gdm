@@ -35,6 +35,10 @@ void                      gdm_settings_entry_free              (GdmSettingsEntry
 const char *              gdm_settings_entry_get_key           (GdmSettingsEntry *entry);
 const char *              gdm_settings_entry_get_signature     (GdmSettingsEntry *entry);
 const char *              gdm_settings_entry_get_default_value (GdmSettingsEntry *entry);
+const char *              gdm_settings_entry_get_value         (GdmSettingsEntry *entry);
+
+void                      gdm_settings_entry_set_value         (GdmSettingsEntry *entry,
+								const char       *value);
 
 gboolean                  gdm_settings_parse_schemas	       (const char  *file,
 								const char  *root,
