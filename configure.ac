@@ -1218,6 +1218,7 @@ daemon/Makefile
 libgreeter/Makefile
 gui/Makefile
 gui/modules/Makefile
+gui/simple-greeter/Makefile
 utils/Makefile
 data/Makefile
 data/faces/Makefile
