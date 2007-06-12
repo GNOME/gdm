@@ -36,6 +36,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include <glade/glade-xml.h>
+
 #include "gdm-greeter.h"
 #include "gdm-simple-greeter.h"
 #include "gdm-common.h"
@@ -49,6 +51,8 @@
 #define PW_ENTRY_SIZE GDM_MAX_PASS
 #endif
 
+#define GLADE_XML_FILE "gdm-simple-greeter.glade"
+
 #define GDM_SIMPLE_GREETER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_GREETER, GdmSimpleGreeterPrivate))
 
 enum {
@@ -59,6 +63,7 @@ enum {
 
 struct GdmSimpleGreeterPrivate
 {
+	GladeXML       *xml;
 };
 
 enum {
@@ -125,13 +130,25 @@ static gboolean
 gdm_simple_greeter_info_query (GdmGreeter *greeter,
 			       const char *text)
 {
+	GtkWidget  *entry;
+	GtkWidget  *label;
+
 	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
 
 	GDM_GREETER_CLASS (gdm_simple_greeter_parent_class)->info_query (greeter, text);
 
 	g_debug ("SIMPLE GREETER: info query: %s", text);
 
+	entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+	gtk_entry_set_text (GTK_ENTRY (entry), "");
+	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 
+	label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
+	gtk_label_set_text (GTK_LABEL (label), text);
+
+        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
+                gtk_widget_grab_focus (entry);
+        }
 
 	return TRUE;
 }
@@ -140,12 +157,25 @@ static gboolean
 gdm_simple_greeter_secret_info_query (GdmGreeter *greeter,
 				      const char *text)
 {
+	GtkWidget  *entry;
+	GtkWidget  *label;
+
 	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
 
 	GDM_GREETER_CLASS (gdm_simple_greeter_parent_class)->secret_info_query (greeter, text);
 
 	g_debug ("SIMPLE GREETER: secret info query: %s", text);
 
+	entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+	gtk_entry_set_text (GTK_ENTRY (entry), "");
+	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
+
+	label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
+	gtk_label_set_text (GTK_LABEL (label), text);
+
+        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
+                gtk_widget_grab_focus (entry);
+        }
 
 	return TRUE;
 }
@@ -185,8 +215,80 @@ gdm_simple_greeter_get_property (GObject    *object,
 }
 
 static void
+ok_button_clicked (GtkButton        *button,
+		   GdmSimpleGreeter *greeter)
+{
+	gboolean    res;
+	GtkWidget  *entry;
+	const char *text;
+
+	entry = glade_xml_get_widget (greeter->priv->xml, "auth-entry");
+	text = gtk_entry_get_text (GTK_ENTRY (entry));
+	res = gdm_greeter_answer_query (GDM_GREETER (greeter), text);
+}
+
+static void
+cancel_button_clicked (GtkButton        *button,
+		       GdmSimpleGreeter *greeter)
+{
+
+}
+
+static void
 create_greeter (GdmSimpleGreeter *greeter)
 {
+	GError    *error;
+	GtkWidget *dialog;
+	GtkWidget *button;
+
+#if 0
+	error = NULL;
+	g_spawn_command_line_async ("gtk-window-decorator", &error);
+	if (error != NULL) {
+		g_warning ("Error starting WM: %s", error->message);
+		g_error_free (error);
+	}
+
+	error = NULL;
+	g_spawn_command_line_async ("compiz", &error);
+	if (error != NULL) {
+		g_warning ("Error starting WM: %s", error->message);
+		g_error_free (error);
+	}
+#else
+	error = NULL;
+	g_spawn_command_line_async ("metacity", &error);
+	if (error != NULL) {
+		g_warning ("Error starting WM: %s", error->message);
+		g_error_free (error);
+	}
+#endif
+
+        greeter->priv->xml = glade_xml_new (GLADEDIR "/" GLADE_XML_FILE, NULL, PACKAGE);
+	if (greeter->priv->xml == NULL) {
+		/* FIXME: */
+	}
+
+	dialog = glade_xml_get_widget (greeter->priv->xml, "auth-window");
+	if (dialog == NULL) {
+		/* FIXME: */
+	}
+
+	button = glade_xml_get_widget (greeter->priv->xml, "ok-button");
+	if (dialog != NULL) {
+		gtk_widget_grab_default (button);
+		g_signal_connect (button, "clicked", G_CALLBACK (ok_button_clicked), greeter);
+	}
+
+	button = glade_xml_get_widget (greeter->priv->xml, "cancel-button");
+	if (dialog != NULL) {
+		g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), greeter);
+	}
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_window_set_deletable (GTK_WINDOW (dialog), FALSE);
+	gtk_window_set_decorated (GTK_WINDOW (dialog), FALSE);
+	gtk_widget_show (dialog);
 }
 
 static GObject *
