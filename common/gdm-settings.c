@@ -112,10 +112,22 @@ gdm_settings_set_value (GdmSettings *settings,
 			const char  *value,
 			GError     **error)
 {
+	GError  *local_error;
+	gboolean res;
+
 	g_return_val_if_fail (GDM_IS_SETTINGS (settings), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	g_debug ("Setting key %s", key);
+	g_debug ("Setting value %s", key);
+
+	local_error = NULL;
+	res = gdm_settings_backend_set_value (settings->priv->backend,
+					      key,
+					      value,
+					      &local_error);
+	if (! res) {
+		g_propagate_error (error, local_error);
+	}
 
 	return FALSE;
 }
@@ -177,6 +189,7 @@ backend_value_changed (GdmSettingsBackend *backend,
 		       const char         *new_value,
 		       GdmSettings        *settings)
 {
+	g_debug ("Emitting value-changed %s %s %s", key, old_value, new_value);
 	/* just proxy it */
 	g_signal_emit (settings,
 		       signals [VALUE_CHANGED],

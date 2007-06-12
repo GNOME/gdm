@@ -35,33 +35,40 @@
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
+static void
+notify_cb (guint             id,
+           GdmSettingsEntry *entry,
+           gpointer          user_data)
+{
+        g_debug ("Value changed: %s=%s",
+                 gdm_settings_entry_get_key (entry),
+                 gdm_settings_entry_get_value (entry));
+}
+
 static gboolean
-test_settings_client (void)
+test_settings_client (gpointer data)
 {
         char    *strval;
         gboolean boolval;
         int      intval;
         gboolean res;
-
-        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
-                exit (1);
-        }
+        guint    notify_id;
 
         strval = NULL;
         res = gdm_settings_client_get_string (GDM_KEY_GREETER, &strval);
-        g_message ("Got res=%d %s=%s", res, GDM_KEY_GREETER, strval);
+        g_debug ("Got res=%d %s=%s", res, GDM_KEY_GREETER, strval);
         g_free (strval);
 
         res = gdm_settings_client_get_boolean (GDM_KEY_XDMCP, &boolval);
-        g_message ("Got res=%d %s=%s", res, GDM_KEY_XDMCP, boolval ? "true" : "false");
+        g_debug ("Got res=%d %s=%s", res, GDM_KEY_XDMCP, boolval ? "true" : "false");
 
-        /* This should assert */
-        strval = NULL;
-        res = gdm_settings_client_get_string (GDM_KEY_XDMCP, &strval);
-        g_message ("Got res=%d %s=%s", res, GDM_KEY_XDMCP, strval);
-        g_free (strval);
+        g_debug ("Adding notify for all keys");
+        notify_id = gdm_settings_client_notify_add ("/", notify_cb, NULL, NULL);
 
-        gdm_settings_client_shutdown ();
+        g_debug ("Setting boolean key %s to %s", GDM_KEY_XDMCP, !boolval ? "true" : "false");
+        gdm_settings_client_set_boolean (GDM_KEY_XDMCP, !boolval);
+        g_debug ("Setting boolean key %s to %s", GDM_KEY_XDMCP, boolval ? "true" : "false");
+        gdm_settings_client_set_boolean (GDM_KEY_XDMCP, boolval);
 
         return FALSE;
 }
@@ -69,7 +76,18 @@ test_settings_client (void)
 int
 main (int argc, char **argv)
 {
+        GMainLoop *loop;
+
         g_type_init ();
-        test_settings_client ();
+
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                exit (1);
+        }
+
+        g_idle_add (test_settings_client, NULL);
+
+        loop = g_main_loop_new (NULL, FALSE);
+        g_main_loop_run (loop);
+
 	return 0;
 }

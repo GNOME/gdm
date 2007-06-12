@@ -240,6 +240,34 @@ gdm_settings_parse_schemas (const char  *file,
 	return TRUE;
 }
 
+char *
+gdm_settings_parse_double_as_value (gdouble doubleval)
+{
+	char result[G_ASCII_DTOSTR_BUF_SIZE];
+
+	g_ascii_dtostr (result, sizeof (result), doubleval);
+
+	return g_strdup (result);
+}
+
+char *
+gdm_settings_parse_integer_as_value (int intval)
+
+{
+	return g_strdup_printf ("%d", intval);
+}
+
+char *
+gdm_settings_parse_boolean_as_value  (gboolean boolval)
+{
+	if (boolval) {
+		return g_strdup ("true");
+	} else {
+		return g_strdup ("false");
+	}
+}
+
+
 /* adapted from GKeyFile */
 gboolean
 gdm_settings_parse_value_as_boolean (const char *value,

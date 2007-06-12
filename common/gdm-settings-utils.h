@@ -51,6 +51,10 @@ gboolean                  gdm_settings_parse_value_as_integer  (const char *valu
 gboolean                  gdm_settings_parse_value_as_double   (const char *value,
 								gdouble    *doubleval);
 
+char *                    gdm_settings_parse_boolean_as_value  (gboolean    boolval);
+char *                    gdm_settings_parse_integer_as_value  (int         intval);
+char *                    gdm_settings_parse_double_as_value   (gdouble     doubleval);
+
 
 G_END_DECLS
 

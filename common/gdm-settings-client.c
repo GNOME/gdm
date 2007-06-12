@@ -84,12 +84,46 @@ get_entry_for_key (const char *key)
 }
 
 static gboolean
+set_value (const char *key,
+	   const char *value)
+{
+	GError  *error;
+	gboolean res;
+
+	/* FIXME: check cache */
+
+	g_debug ("Setting %s=%s", key, value);
+	error = NULL;
+	res = dbus_g_proxy_call (settings_proxy,
+				 "SetValue",
+				 &error,
+				 G_TYPE_STRING, key,
+				 G_TYPE_STRING, value,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		if (error != NULL) {
+			/*g_debug ("Failed to get value for %s: %s", key, error->message);*/
+			g_error_free (error);
+		} else {
+			/*g_debug ("Failed to get value for %s", key);*/
+		}
+
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 get_value (const char *key,
 	   char      **value)
 {
 	GError  *error;
 	char    *str;
 	gboolean res;
+
+	/* FIXME: check cache */
 
 	error = NULL;
 	res = dbus_g_proxy_call (settings_proxy,
@@ -165,6 +199,8 @@ gdm_settings_client_notify_add (const char                 *root,
 	notify->destroy_notify = destroy_notify;
 
 	g_hash_table_insert (notifiers, GINT_TO_POINTER (id), notify);
+
+	return id;
 }
 
 void
@@ -345,24 +381,67 @@ gboolean
 gdm_settings_client_set_int (const char *key,
 			     int         value)
 {
+	GdmSettingsEntry *entry;
+	gboolean          res;
+	char             *str;
+
 	g_return_val_if_fail (key != NULL, FALSE);
-	return TRUE;
+
+	entry = get_entry_for_key (key);
+	g_assert (entry != NULL);
+
+	assert_signature (entry, "i");
+
+	str = gdm_settings_parse_integer_as_value (value);
+
+	res = set_value (key, str);
+
+	g_free (str);
+
+	return res;
 }
 
 gboolean
 gdm_settings_client_set_string (const char *key,
 				const char *value)
 {
+	GdmSettingsEntry *entry;
+	gboolean          res;
+
 	g_return_val_if_fail (key != NULL, FALSE);
-	return TRUE;
+
+	entry = get_entry_for_key (key);
+	g_assert (entry != NULL);
+
+	assert_signature (entry, "s");
+
+	res = set_value (key, value);
+
+	return res;
 }
 
 gboolean
 gdm_settings_client_set_boolean (const char *key,
 				 gboolean    value)
 {
+	GdmSettingsEntry *entry;
+	gboolean          res;
+	char             *str;
+
 	g_return_val_if_fail (key != NULL, FALSE);
-	return TRUE;
+
+	entry = get_entry_for_key (key);
+	g_assert (entry != NULL);
+
+	assert_signature (entry, "b");
+
+	str = gdm_settings_parse_boolean_as_value (value);
+
+	res = set_value (key, str);
+
+	g_free (str);
+
+	return res;
 }
 
 static void
@@ -453,6 +532,7 @@ gdm_settings_client_init (const char *file,
 	schemas_file = g_strdup (file);
 	schemas_root = g_strdup (root);
 
+	dbus_g_proxy_add_signal (settings_proxy, "ValueChanged", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (settings_proxy,
 				     "ValueChanged",
 				     G_CALLBACK (on_value_changed),

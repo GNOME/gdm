@@ -44,7 +44,8 @@ struct GdmSettingsDesktopBackendPrivate
 {
 	char       *filename;
 	GKeyFile   *key_file;
-	GHashTable *values;
+	gboolean    dirty;
+	guint       save_id;
 };
 
 static void	gdm_settings_desktop_backend_class_init	(GdmSettingsDesktopBackendClass *klass);
@@ -124,9 +125,9 @@ parse_key_string (const char *keystring,
 
 static gboolean
 gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
-					const char  *key,
-					char       **value,
-					GError     **error)
+					const char         *key,
+					char              **value,
+					GError            **error)
 {
 	GError *local_error;
 	char   *val;
@@ -168,18 +169,113 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
 	return TRUE;
 }
 
-static gboolean
-gdm_settings_desktop_backend_set_value (GdmSettingsBackend *settings_backend,
-					const char  *key,
-					const char  *value,
-					GError     **error)
+static void
+save_settings (GdmSettingsDesktopBackend *backend)
 {
-	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
+	GError   *local_error;
+	gboolean  res;
+	char     *contents;
+	gsize     length;
+
+	if (! backend->priv->dirty) {
+		return;
+	}
+
+	g_debug ("Saving settings to %s", backend->priv->filename);
+
+	local_error = NULL;
+	contents = g_key_file_to_data (backend->priv->key_file, &length, &local_error);
+	if (local_error != NULL) {
+		g_warning ("Unable to save settings: %s", local_error->message);
+		g_error_free (local_error);
+		return;
+	}
+
+	local_error = NULL;
+	res = g_file_set_contents (backend->priv->filename,
+				   contents,
+				   length,
+				   &local_error);
+	if (local_error != NULL) {
+		g_warning ("Unable to save settings: %s", local_error->message);
+		g_error_free (local_error);
+		g_free (contents);
+		return;
+	}
+
+	g_free (contents);
+
+	backend->priv->dirty = FALSE;
+}
+
+static gboolean
+save_settings_timer (GdmSettingsDesktopBackend *backend)
+{
+	save_settings (backend);
+	backend->priv->save_id = 0;
+	return FALSE;
+}
+
+static void
+queue_save (GdmSettingsDesktopBackend *backend)
+{
+	if (! backend->priv->dirty) {
+		return;
+	}
+
+	if (backend->priv->save_id != 0) {
+		/* already pending */
+		return;
+	}
+
+	backend->priv->save_id = g_timeout_add_seconds (5, (GSourceFunc)save_settings_timer, backend);
+}
+
+static gboolean
+gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
+					const char         *key,
+					const char         *value,
+					GError            **error)
+{
+	GError *local_error;
+	char   *old_val;
+	char   *g;
+	char   *k;
+	char   *l;
+
+	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	g_debug ("Setting key %s", key);
+	/*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
+	if (! parse_key_string (key, &g, &k, &l, NULL)) {
+		g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
+		return FALSE;
+	}
 
-	return FALSE;
+	local_error = NULL;
+	old_val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+					g,
+					k,
+					&local_error);
+	if (local_error != NULL) {
+		g_error_free (local_error);
+	}
+
+	/*g_debug ("Setting key: %s %s %s", g, k, l);*/
+	local_error = NULL;
+	g_key_file_set_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+			      g,
+			      k,
+			      value);
+
+	GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->dirty = TRUE;
+	queue_save (GDM_SETTINGS_DESKTOP_BACKEND (backend));
+
+	gdm_settings_backend_value_changed (backend, key, old_val, value);
+
+	g_free (old_val);
+
+	return TRUE;
 }
 
 static void
@@ -207,11 +303,6 @@ gdm_settings_desktop_backend_init (GdmSettingsDesktopBackend *backend)
 	backend->priv->key_file = g_key_file_new ();
 	backend->priv->filename = g_strdup (GDMCONFDIR "/custom.conf");
 
-	backend->priv->values = g_hash_table_new_full (g_str_hash,
-						       g_str_equal,
-						       (GDestroyNotify)g_free,
-						       (GDestroyNotify)g_free);
-
 	error = NULL;
 	res = g_key_file_load_from_file (backend->priv->key_file,
 					 backend->priv->filename,
@@ -234,8 +325,8 @@ gdm_settings_desktop_backend_finalize (GObject *object)
 
 	g_return_if_fail (backend->priv != NULL);
 
+	save_settings (backend);
 	g_key_file_free (backend->priv->key_file);
-	g_hash_table_destroy (backend->priv->values);
 
 	G_OBJECT_CLASS (gdm_settings_desktop_backend_parent_class)->finalize (object);
 }
