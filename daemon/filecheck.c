@@ -23,7 +23,6 @@
 #include <glib/gi18n.h>
 #include <sys/stat.h>
 
-#include "gdm.h"
 #include "gdm-common.h"
 
 #include "filecheck.h"

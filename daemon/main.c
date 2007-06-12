@@ -50,8 +50,6 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#include "misc.h"
-
 #define GDM_DBUS_NAME "org.gnome.DisplayManager"
 
 static void bus_proxy_destroyed_cb (DBusGProxy *bus_proxy,

@@ -21,10 +21,10 @@
 #ifndef GDM_WM_H
 #define GDM_WM_H
 
-#include <gtk/gtk.h>
-#include <gdk/gdkx.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtk.h>
 
 /*
  * Login window will be given focus every time a window

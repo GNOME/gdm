@@ -35,9 +35,6 @@
 #endif
 
 #include "gdmwm.h"
-#include "gdm.h"
-#include "gdmcommon.h"
-
 #include "gdm-common.h"
 
 typedef struct _GdmWindow GdmWindow;
@@ -120,7 +117,7 @@ gdm_wm_screen_init (int cur_screen_num)
 
 		if (screen_num <= 0) {
 			/* should NEVER EVER happen */
-			gdm_common_error ("Xinerama active, but <= 0 screens?");
+			g_warning ("Xinerama active, but <= 0 screens?");
 			gdm_wm_screen.x = 0;
 			gdm_wm_screen.y = 0;
 			gdm_wm_screen.width = gdk_screen_width ();
@@ -182,7 +179,7 @@ gdm_wm_screen_init (int cur_screen_num)
 
 		if (result <= 0) {
 			/* should NEVER EVER happen */
-			gdm_common_error ("Xinerama active, but <= 0 screens?");
+			g_warning ("Xinerama active, but <= 0 screens?");
 			gdm_wm_screen.x = 0;
 			gdm_wm_screen.y = 0;
 			gdm_wm_screen.width = gdk_screen_width ();
@@ -1532,6 +1529,14 @@ gdm_wm_restore_wm_order (void)
 	}
 }
 
+static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+	gdk_cursor_unref (cursor);
+}
+
 void
 gdm_wm_show_info_msg_dialog (const gchar *msg_file,
 			     const gchar *msg_font)
@@ -1570,7 +1575,7 @@ gdm_wm_show_info_msg_dialog (const gchar *msg_file,
 	gtk_widget_show_all (dialog);
 	gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	gdm_common_setup_cursor (GDK_LEFT_PTR);
+	setup_cursor (GDK_LEFT_PTR);
 
 	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (dialog));

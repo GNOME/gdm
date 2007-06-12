@@ -3,9 +3,9 @@ NULL =
 SUBDIRS = 			\
 	data			\
 	config 			\
-	pixmaps 		\
 	common 			\
 	daemon 			\
+	libgreeter		\
 	gui 			\
 	utils 			\
 	docs			\

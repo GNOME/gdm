@@ -46,8 +46,6 @@
 #include "gdm-common.h"
 #include "gdm-log.h"
 
-#include "gdm-socket-protocol.h"
-
 #include "gdm-settings-keys.h"
 #include "gdm-settings-direct.h"
 
@@ -142,6 +140,7 @@ get_config_int (char *key)
 	return val;
 }
 
+#if 0
 gboolean
 gdm_choose_data (const char *data)
 {
@@ -209,7 +208,7 @@ gdm_choose_data (const char *data)
 
 	return ret;
 }
-
+#endif
 
 GdmIndirectDisplay *
 gdm_choose_indirect_alloc (GdmAddress *address)

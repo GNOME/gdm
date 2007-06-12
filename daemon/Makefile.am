@@ -147,8 +147,6 @@ EXTRA_gdm_binary_SOURCES = 	\
 	$(NULL)
 
 CONSOLE_KIT_SOURCES = 		\
-	gdmconsolekit.c		\
-	gdmconsolekit.h		\
 	$(NULL)
 
 EXTRA_gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)

@@ -24,8 +24,8 @@ INCLUDES = \
 	$(DBUS_CFLAGS)					\
 	$(GLIB_CFLAGS)
 
-noinst_LIBRARIES = 		\
-	libgdmcommon.a		\
+noinst_LTLIBRARIES = 		\
+	libgdmcommon.la		\
 	$(null)
 
 BUILT_SOURCES =			\
@@ -44,7 +44,7 @@ gdm-marshal.c: gdm-marshal.list
 gdm-marshal.h: gdm-marshal.list
 	@GLIB_GENMARSHAL@ $< --prefix=gdm_marshal --header > $@
 
-libgdmcommon_a_SOURCES =	\
+libgdmcommon_la_SOURCES =	\
 	gdm-address.h		\
 	gdm-address.c		\
 	gdm-marshal.c		\
@@ -72,6 +72,21 @@ libgdmcommon_a_SOURCES =	\
 	gdm-signal-handler.c	\
 	ve-signal.h		\
 	ve-signal.c		\
+	$(NULL)
+
+libgdmcommon_la_CPPFLAGS = 		\
+	$(DISABLE_DEPRECATED_CFLAGS)	\
+	$(NULL)
+
+libgdmcommon_la_CFLAGS =		\
+	$(DBUS_CFLAGS)			\
+	$(NULL)
+
+libgdmcommon_la_LIBADD =		\
+	$(NULL)
+
+libgdmcommon_la_LDFLAGS = 	\
+	-export-dynamic 	\
 	$(NULL)
 
 noinst_PROGRAMS = 		\

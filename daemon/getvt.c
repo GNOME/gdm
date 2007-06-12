@@ -29,8 +29,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "gdm.h"
-#include "misc.h"
 #include "getvt.h"
 
 #include "gdm-common.h"

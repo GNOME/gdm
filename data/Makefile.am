@@ -1,5 +1,9 @@
 NULL =
 
+SUBDIRS =		\
+	faces 		\
+	$(NULL)
+
 dbusconfdir = $(DBUS_SYS_DIR)
 dbusconf_DATA = gdm.conf
 

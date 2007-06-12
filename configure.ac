@@ -1,8 +1,22 @@
-AC_PREREQ(2.52)
-AC_INIT(daemon/gdm.h)
+AC_PREREQ(2.59c)
+AC_INIT([gdm],
+        [2.99.0],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=gdm2],
+        [gdm])
+
+AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
+AM_INIT_AUTOMAKE
+
+AC_ISC_POSIX
+AC_PROG_CC
+AC_STDC_HEADERS
+AC_PROG_LIBTOOL
+
+AC_HEADER_STDC
+
+AC_SUBST(VERSION)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.19.0)
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
 
@@ -131,7 +145,7 @@ else
 	LANG_CONFIG_FILE='${sysconfdir}/sysconfig/i18n'
 fi
 AC_SUBST(LANG_CONFIG_FILE)
-    
+
 AC_PATH_PROG(CONSOLE_HELPER,consolehelper,no)
 if test "x$CONSOLE_HELPER" = "xno" ; then
   if test "x$enable_console_helper" = "xyes" ; then
@@ -145,14 +159,7 @@ else
   fi
 fi
 
-AC_ISC_POSIX
-AC_PROG_CC
-AC_STDC_HEADERS
-dnl AC_ARG_PROGRAM
-AM_PROG_LIBTOOL
-
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
-
 AC_PATH_XTRA
 
 dnl socklen_t may be declared, but not in a "standard" C header location
@@ -463,7 +470,6 @@ AC_SUBST(XDMCP_LIBS)
 if test x$XDMCP_SUPPORT = xyes ; then
 	AM_CONDITIONAL(XDMCP_SUPPORT, true)
 	GDMCHOOSER=gdmchooser
-	GDMXNESTCHOOSER=gdmXnestchooser
 else
         # No need for TCP Wrappers in case XDMCP is disabled
         if test x$with_tcp_wrappers != xno ; then
@@ -472,10 +478,8 @@ else
 	with_tcp_wrappers=no
 	AM_CONDITIONAL(XDMCP_SUPPORT, false)
 	GDMCHOOSER=
-	GDMXNESTCHOOSER=
 fi
 AC_SUBST(GDMCHOOSER)
-AC_SUBST(GDMXNESTCHOOSER)
 
 #
 # TCP Wrappers for XDMCP access control
@@ -1211,9 +1215,9 @@ AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH")
 AC_OUTPUT([
 Makefile
 daemon/Makefile
+libgreeter/Makefile
 gui/Makefile
 gui/gdmflexiserver-xnest.desktop.in
-gui/faces/Makefile
 gui/greeter/Makefile
 gui/greeter/themes/Makefile
 gui/greeter/themes/circles/Makefile
@@ -1221,11 +1225,12 @@ gui/greeter/themes/happygnome/Makefile
 gui/greeter/themes/happygnome-list/Makefile
 gui/modules/Makefile
 utils/Makefile
-pixmaps/Makefile
-pixmaps/16x16/Makefile
-pixmaps/32x32/Makefile
-pixmaps/48x48/Makefile
 data/Makefile
+data/faces/Makefile
+data/pixmaps/Makefile
+data/pixmaps/16x16/Makefile
+data/pixmaps/32x32/Makefile
+data/pixmaps/48x48/Makefile
 config/Makefile
 common/Makefile
 po/Makefile.in
