@@ -35,7 +35,6 @@
 #endif
 
 #include "gdmwm.h"
-#include "gdm-common.h"
 
 typedef struct _GdmWindow GdmWindow;
 struct _GdmWindow {
@@ -1545,7 +1544,7 @@ gdm_wm_show_info_msg_dialog (const gchar *msg_file,
 	gchar *InfoMsg;
 	gsize InfoMsgLength;
 
-	if (ve_string_empty (msg_file) ||
+	if ((msg_file == NULL || msg_file[0] == '\0') ||
 	    ! g_file_test (msg_file, G_FILE_TEST_EXISTS) ||
 	    ! g_file_get_contents (msg_file, &InfoMsg, &InfoMsgLength, NULL))
 		return;

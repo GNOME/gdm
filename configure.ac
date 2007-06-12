@@ -1217,12 +1217,6 @@ Makefile
 daemon/Makefile
 libgreeter/Makefile
 gui/Makefile
-gui/gdmflexiserver-xnest.desktop.in
-gui/greeter/Makefile
-gui/greeter/themes/Makefile
-gui/greeter/themes/circles/Makefile
-gui/greeter/themes/happygnome/Makefile
-gui/greeter/themes/happygnome-list/Makefile
 gui/modules/Makefile
 utils/Makefile
 data/Makefile

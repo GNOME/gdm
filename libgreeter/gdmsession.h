@@ -22,7 +22,7 @@
 #ifndef GDM_SESSION_H
 #define GDM_SESSION_H
 
-#include "misc.h"
+#include <glib.h>
 
 #define LAST_SESSION "Last"
 #define SESSION_NAME "SessionName"
@@ -39,6 +39,15 @@ enum {
 	SESSION_LOOKUP_DEFAULT_MISMATCH,
 	SESSION_LOOKUP_USE_SWITCHDESK
 };
+
+#define GDM_SESSION_FAILSAFE_GNOME "GDM_Failsafe.GNOME"
+#define GDM_SESSION_FAILSAFE_XTERM "GDM_Failsafe.XTERM"
+
+/* FIXME: will support these builtin types later */
+#define GDM_SESSION_DEFAULT "default"
+#define GDM_SESSION_CUSTOM "custom"
+#define GDM_SESSION_FAILSAFE "failsafe"
+
 
 void		gdm_session_list_init		(void);
 void		_gdm_session_list_init		(GHashTable **sessnames,

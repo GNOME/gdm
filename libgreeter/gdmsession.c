@@ -30,9 +30,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#include "gdm.h"
 #include "gdmsession.h"
-#include "gdmcommon.h"
 
 #include "gdm-common.h"
 #include "gdm-settings-client.h"
@@ -358,15 +356,15 @@ _gdm_session_list_init (GHashTable **sessnames,
 
 	/* Check that session dir is readable */
 	if G_UNLIKELY ( ! some_dir_exists) {
-		gdm_common_error ("%s: Session directory <%s> not found!",
-				  "gdm_session_list_init",
-				  desktop_dir);
+		g_warning ("%s: Session directory <%s> not found!",
+			   "gdm_session_list_init",
+			   desktop_dir);
 		session_dir_whacked_out = TRUE;
 	}
 
 	if G_UNLIKELY (g_hash_table_size (*sessnames) == 0) {
-		gdm_common_warning ("Error, no sessions found in the session directory <%s>.",
-				    desktop_dir);
+		g_warning ("Error, no sessions found in the session directory <%s>.",
+			   desktop_dir);
 
 		session_dir_whacked_out = TRUE;
 		if (default_session != NULL)
@@ -385,7 +383,7 @@ _gdm_session_list_init (GHashTable **sessnames,
 	if (default_session != NULL)
 		if G_UNLIKELY (*default_session == NULL) {
 			*default_session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
-			gdm_common_warning ("No default session link found. Using Failsafe GNOME.");
+			g_warning ("No default session link found. Using Failsafe GNOME.");
 		}
 
 	if (current_session != NULL &&
