@@ -13,7 +13,7 @@ postlogindir = $(gdmconfdir)/PostLogin
 
 noinst_DATA = gdm.conf
 
-DESKTOP_FILES = default.desktop CDE.desktop gnome.desktop @SSHDESKTOP@
+DESKTOP_FILES = default.desktop gnome.desktop @SSHDESKTOP@
 
 EXTRA_DIST = \
 	gdm.conf.in \
@@ -21,7 +21,6 @@ EXTRA_DIST = \
 	$(DESKTOP_FILES) \
 	default.desktop.in \
 	gnome.desktop.in.in \
-	CDE.desktop.in \
 	ssh.desktop.in.in \
 	Xsession.in \
 	gdm \
@@ -36,7 +35,7 @@ EXTRA_DIST = \
 	gdmprefetchlist.in \
 	extract-shell.sh
 
-CLEANFILES = Xsession gdm.conf gdm.conf-custom default.desktop gnome.desktop CDE.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
+CLEANFILES = Xsession gdm.conf gdm.conf-custom default.desktop gnome.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
@@ -86,11 +85,9 @@ clean-local:
 uninstall-hook:
 	rm -f $(DESTDIR)$(bisessdir)/gnome.desktop \
 	$(DESTDIR)$(bisessdir)/default.desktop \
-	$(DESTDIR)$(bisessdir)/CDE.desktop \
 	$(DESTDIR)$(instsessdir)/gnome.desktop \
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/ssh.desktop \
-	$(DESTDIR)$(instsessdir)/CDE.desktop \
 	$(DESTDIR)$(GDM_DEFAULTS_CONF) \
 	$(DESTDIR)$(GDM_CUSTOM_CONF) \
 	`dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`/factory-`basename $(DESTDIR)$(GDM_DEFAULTS_CONF)` \
@@ -172,16 +169,6 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	fi
 	$(INSTALL_DATA) gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop
 	chmod 644 $(DESTDIR)$(instsessdir)/gnome.desktop
-
-	-if test -f /usr/dt/bin/Xsession; then \
-	   if test -f $(DESTDIR)$(bisessdir)/CDE.desktop; then \
-		mv -f $(DESTDIR)$(bisessdir)/CDE.desktop $(DESTDIR)$(bisessdir)/CDE.desktop.orig; \
-	   fi; \
-	   if test -f $(DESTDIR)$(instsessdir)/CDE.desktop; then \
-		cp -f $(DESTDIR)$(instsessdir)/CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop.orig; \
-	   fi; \
-	   $(INSTALL_DATA) CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop; \
-	fi
 
 	if test '!' -d $(DESTDIR)$(initdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(initdir); \
