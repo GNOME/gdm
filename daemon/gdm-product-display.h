@@ -19,8 +19,8 @@
  */
 
 
-#ifndef __GDM_STATIC_DISPLAY_H
-#define __GDM_STATIC_DISPLAY_H
+#ifndef __GDM_PRODUCT_DISPLAY_H
+#define __GDM_PRODUCT_DISPLAY_H
 
 #include <glib-object.h>
 #include <dbus/dbus-glib.h>
@@ -28,31 +28,31 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_STATIC_DISPLAY         (gdm_static_display_get_type ())
-#define GDM_STATIC_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplay))
-#define GDM_STATIC_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplayClass))
-#define GDM_IS_STATIC_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_STATIC_DISPLAY))
-#define GDM_IS_STATIC_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_STATIC_DISPLAY))
-#define GDM_STATIC_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplayClass))
+#define GDM_TYPE_PRODUCT_DISPLAY         (gdm_product_display_get_type ())
+#define GDM_PRODUCT_DISPLAY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_PRODUCT_DISPLAY, GdmProductDisplay))
+#define GDM_PRODUCT_DISPLAY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_PRODUCT_DISPLAY, GdmProductDisplayClass))
+#define GDM_IS_PRODUCT_DISPLAY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_PRODUCT_DISPLAY))
+#define GDM_IS_PRODUCT_DISPLAY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_PRODUCT_DISPLAY))
+#define GDM_PRODUCT_DISPLAY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_PRODUCT_DISPLAY, GdmProductDisplayClass))
 
-typedef struct GdmStaticDisplayPrivate GdmStaticDisplayPrivate;
+typedef struct GdmProductDisplayPrivate GdmProductDisplayPrivate;
 
 typedef struct
 {
 	GdmDisplay	 	 parent;
-	GdmStaticDisplayPrivate *priv;
-} GdmStaticDisplay;
+	GdmProductDisplayPrivate *priv;
+} GdmProductDisplay;
 
 typedef struct
 {
 	GdmDisplayClass   parent_class;
 
-} GdmStaticDisplayClass;
+} GdmProductDisplayClass;
 
-GType		    gdm_static_display_get_type		       (void);
-GdmDisplay *	    gdm_static_display_new		       (int display_number);
+GType		    gdm_product_display_get_type	       (void);
+GdmDisplay *	    gdm_product_display_new		       (int display_number);
 
 
 G_END_DECLS
 
-#endif /* __GDM_STATIC_DISPLAY_H */
+#endif /* __GDM_PRODUCT_DISPLAY_H */

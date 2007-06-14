@@ -35,12 +35,12 @@
 #include <glib-object.h>
 
 #include "gdm-display.h"
-#include "gdm-static-display.h"
-#include "gdm-static-display-glue.h"
+#include "gdm-product-display.h"
+#include "gdm-product-display-glue.h"
 
-#define GDM_STATIC_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_STATIC_DISPLAY, GdmStaticDisplayPrivate))
+#define GDM_PRODUCT_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_PRODUCT_DISPLAY, GdmProductDisplayPrivate))
 
-struct GdmStaticDisplayPrivate
+struct GdmProductDisplayPrivate
 {
 	gpointer dummy;
 };
@@ -49,51 +49,51 @@ enum {
 	PROP_0,
 };
 
-static void	gdm_static_display_class_init	(GdmStaticDisplayClass *klass);
-static void	gdm_static_display_init	        (GdmStaticDisplay      *static_display);
-static void	gdm_static_display_finalize	(GObject	      *object);
+static void	gdm_product_display_class_init	(GdmProductDisplayClass *klass);
+static void	gdm_product_display_init	        (GdmProductDisplay      *product_display);
+static void	gdm_product_display_finalize	(GObject	      *object);
 
-G_DEFINE_TYPE (GdmStaticDisplay, gdm_static_display, GDM_TYPE_DISPLAY)
+G_DEFINE_TYPE (GdmProductDisplay, gdm_product_display, GDM_TYPE_DISPLAY)
 
 static gboolean
-gdm_static_display_create_authority (GdmDisplay *display)
+gdm_product_display_create_authority (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->create_authority (display);
+	GDM_DISPLAY_CLASS (gdm_product_display_parent_class)->create_authority (display);
 
 	return TRUE;
 }
 
 static gboolean
-gdm_static_display_manage (GdmDisplay *display)
+gdm_product_display_manage (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->manage (display);
+	GDM_DISPLAY_CLASS (gdm_product_display_parent_class)->manage (display);
 
 	return TRUE;
 }
 
 static gboolean
-gdm_static_display_unmanage (GdmDisplay *display)
+gdm_product_display_unmanage (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->unmanage (display);
+	GDM_DISPLAY_CLASS (gdm_product_display_parent_class)->unmanage (display);
 
 	return TRUE;
 }
 
 static void
-gdm_static_display_set_property (GObject      *object,
+gdm_product_display_set_property (GObject      *object,
 				 guint	       prop_id,
 				 const GValue *value,
 				 GParamSpec   *pspec)
 {
-	GdmStaticDisplay *self;
+	GdmProductDisplay *self;
 
-	self = GDM_STATIC_DISPLAY (object);
+	self = GDM_PRODUCT_DISPLAY (object);
 
 	switch (prop_id) {
 	default:
@@ -103,14 +103,14 @@ gdm_static_display_set_property (GObject      *object,
 }
 
 static void
-gdm_static_display_get_property (GObject    *object,
+gdm_product_display_get_property (GObject    *object,
 				 guint       prop_id,
 				 GValue	    *value,
 				 GParamSpec *pspec)
 {
-	GdmStaticDisplay *self;
+	GdmProductDisplay *self;
 
-	self = GDM_STATIC_DISPLAY (object);
+	self = GDM_PRODUCT_DISPLAY (object);
 
 	switch (prop_id) {
 	default:
@@ -120,54 +120,54 @@ gdm_static_display_get_property (GObject    *object,
 }
 
 static void
-gdm_static_display_class_init (GdmStaticDisplayClass *klass)
+gdm_product_display_class_init (GdmProductDisplayClass *klass)
 {
 	GObjectClass    *object_class = G_OBJECT_CLASS (klass);
 	GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
-	object_class->get_property = gdm_static_display_get_property;
-	object_class->set_property = gdm_static_display_set_property;
-	object_class->finalize = gdm_static_display_finalize;
+	object_class->get_property = gdm_product_display_get_property;
+	object_class->set_property = gdm_product_display_set_property;
+	object_class->finalize = gdm_product_display_finalize;
 
-	display_class->create_authority = gdm_static_display_create_authority;
-	display_class->manage = gdm_static_display_manage;
-	display_class->unmanage = gdm_static_display_unmanage;
+	display_class->create_authority = gdm_product_display_create_authority;
+	display_class->manage = gdm_product_display_manage;
+	display_class->unmanage = gdm_product_display_unmanage;
 
-	g_type_class_add_private (klass, sizeof (GdmStaticDisplayPrivate));
+	g_type_class_add_private (klass, sizeof (GdmProductDisplayPrivate));
 
-	dbus_g_object_type_install_info (GDM_TYPE_STATIC_DISPLAY, &dbus_glib_gdm_static_display_object_info);
+	dbus_g_object_type_install_info (GDM_TYPE_PRODUCT_DISPLAY, &dbus_glib_gdm_product_display_object_info);
 }
 
 static void
-gdm_static_display_init (GdmStaticDisplay *static_display)
+gdm_product_display_init (GdmProductDisplay *product_display)
 {
 
-	static_display->priv = GDM_STATIC_DISPLAY_GET_PRIVATE (static_display);
+	product_display->priv = GDM_PRODUCT_DISPLAY_GET_PRIVATE (product_display);
 }
 
 static void
-gdm_static_display_finalize (GObject *object)
+gdm_product_display_finalize (GObject *object)
 {
-	GdmStaticDisplay *static_display;
+	GdmProductDisplay *product_display;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (GDM_IS_STATIC_DISPLAY (object));
+	g_return_if_fail (GDM_IS_PRODUCT_DISPLAY (object));
 
-	static_display = GDM_STATIC_DISPLAY (object);
+	product_display = GDM_PRODUCT_DISPLAY (object);
 
-	g_return_if_fail (static_display->priv != NULL);
+	g_return_if_fail (product_display->priv != NULL);
 
-	G_OBJECT_CLASS (gdm_static_display_parent_class)->finalize (object);
+	G_OBJECT_CLASS (gdm_product_display_parent_class)->finalize (object);
 }
 
 GdmDisplay *
-gdm_static_display_new (int display_number)
+gdm_product_display_new (int display_number)
 {
 	GObject *object;
 	char    *x11_display;
 
 	x11_display = g_strdup_printf (":%d", display_number);
-	object = g_object_new (GDM_TYPE_STATIC_DISPLAY,
+	object = g_object_new (GDM_TYPE_PRODUCT_DISPLAY,
 			       "number", display_number,
 			       "x11-display", x11_display,
 			       NULL);
