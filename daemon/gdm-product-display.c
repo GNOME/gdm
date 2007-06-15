@@ -40,9 +40,11 @@
 
 #define GDM_PRODUCT_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_PRODUCT_DISPLAY, GdmProductDisplayPrivate))
 
+#define DEFAULT_SLAVE_COMMAND LIBEXECDIR"/gdm-product-slave"
+
 struct GdmProductDisplayPrivate
 {
-	gpointer dummy;
+	char *greeter_server_address;
 };
 
 enum {
@@ -54,6 +56,33 @@ static void	gdm_product_display_init	        (GdmProductDisplay      *product_di
 static void	gdm_product_display_finalize	(GObject	      *object);
 
 G_DEFINE_TYPE (GdmProductDisplay, gdm_product_display, GDM_TYPE_DISPLAY)
+
+gboolean
+gdm_product_display_get_greeter_server_address (GdmProductDisplay *display,
+						char             **address,
+						GError           **error)
+{
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	if (address != NULL) {
+		*address = g_strdup (display->priv->greeter_server_address);
+	}
+
+	return TRUE;
+}
+
+gboolean
+gdm_product_display_set_greeter_server_address (GdmProductDisplay *display,
+						const char        *address,
+						GError           **error)
+{
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	g_free (display->priv->greeter_server_address);
+	display->priv->greeter_server_address = g_strdup (address);
+
+	return TRUE;
+}
 
 static gboolean
 gdm_product_display_create_authority (GdmDisplay *display)
@@ -119,6 +148,26 @@ gdm_product_display_get_property (GObject    *object,
 	}
 }
 
+static GObject *
+gdm_product_display_constructor (GType                  type,
+				 guint                  n_construct_properties,
+				 GObjectConstructParam *construct_properties)
+{
+        GdmProductDisplay      *display;
+        GdmProductDisplayClass *klass;
+
+        klass = GDM_PRODUCT_DISPLAY_CLASS (g_type_class_peek (GDM_TYPE_PRODUCT_DISPLAY));
+
+        display = GDM_PRODUCT_DISPLAY (G_OBJECT_CLASS (gdm_product_display_parent_class)->constructor (type,
+												       n_construct_properties,
+												       construct_properties));
+	g_object_set (display,
+		      "slave-command", DEFAULT_SLAVE_COMMAND,
+		      NULL);
+
+        return G_OBJECT (display);
+}
+
 static void
 gdm_product_display_class_init (GdmProductDisplayClass *klass)
 {
@@ -127,6 +176,7 @@ gdm_product_display_class_init (GdmProductDisplayClass *klass)
 
 	object_class->get_property = gdm_product_display_get_property;
 	object_class->set_property = gdm_product_display_set_property;
+        object_class->constructor = gdm_product_display_constructor;
 	object_class->finalize = gdm_product_display_finalize;
 
 	display_class->create_authority = gdm_product_display_create_authority;

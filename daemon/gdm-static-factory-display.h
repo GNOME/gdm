@@ -24,7 +24,9 @@
 
 #include <glib-object.h>
 #include <dbus/dbus-glib.h>
+
 #include "gdm-display.h"
+#include "gdm-display-store.h"
 
 G_BEGIN_DECLS
 
@@ -50,8 +52,12 @@ typedef struct
 } GdmStaticFactoryDisplayClass;
 
 GType		    gdm_static_factory_display_get_type		       (void);
-GdmDisplay *	    gdm_static_factory_display_new		       (int display_number);
+GdmDisplay *	    gdm_static_factory_display_new		       (int                      display_number,
+									GdmDisplayStore         *store);
 
+gboolean            gdm_static_factory_display_create_product_display  (GdmStaticFactoryDisplay *display,
+									char                   **id,
+									GError                 **error);
 
 G_END_DECLS
 

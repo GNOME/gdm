@@ -45,17 +45,17 @@ typedef struct
 {
 	GObjectClass   parent_class;
 
-	void (* session_started)         (GdmSlave        *slave,
-					  GPid             pid);
-	void (* session_exited)          (GdmSlave        *slave,
-					  int              exit_code);
-	void (* session_died)            (GdmSlave        *slave,
-					  int              signal_number);
+	/* methods */
+	gboolean (*start) (GdmSlave *slave);
+	gboolean (*stop)  (GdmSlave *slave);
+
+	/* signals */
+	void (*stopped) (GdmSlave *slave);
 } GdmSlaveClass;
 
 GType		    gdm_slave_get_type	 (void);
-GdmSlave *	    gdm_slave_new	 (const char *display_id);
 gboolean            gdm_slave_start      (GdmSlave   *slave);
+gboolean            gdm_slave_stop       (GdmSlave   *slave);
 
 G_END_DECLS
 

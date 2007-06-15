@@ -26,12 +26,12 @@
 
 G_BEGIN_DECLS
 
-#define GDM_TYPE_SLAVE               (gdm_slave_proxy_get_type ())
-#define GDM_SLAVE_PROXY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_SLAVE, GdmSlaveProxy))
-#define GDM_SLAVE_PROXY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_SLAVE, GdmSlaveProxyClass))
-#define GDM_IS_SLAVE(o)              (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_SLAVE))
-#define GDM_IS_SLAVE_CLASS(k)        (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_SLAVE))
-#define GDM_SLAVE_PROXY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SLAVE, GdmSlaveProxyClass))
+#define GDM_TYPE_SLAVE_PROXY         (gdm_slave_proxy_get_type ())
+#define GDM_SLAVE_PROXY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GDM_TYPE_SLAVE_PROXY, GdmSlaveProxy))
+#define GDM_SLAVE_PROXY_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), GDM_TYPE_SLAVE_PROXY, GdmSlaveProxyClass))
+#define GDM_IS_SLAVE_PROXY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_SLAVE_PROXY))
+#define GDM_IS_SLAVE_PROXY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_SLAVE_PROXY))
+#define GDM_SLAVE_PROXY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SLAVE_PROXY, GdmSlaveProxyClass))
 
 typedef struct GdmSlaveProxyPrivate GdmSlaveProxyPrivate;
 
@@ -48,7 +48,9 @@ typedef struct
 } GdmSlaveProxyClass;
 
 GType		    gdm_slave_proxy_get_type	 (void);
-GdmSlaveProxy *	    gdm_slave_proxy_new	         (const char *display_id);
+GdmSlaveProxy *	    gdm_slave_proxy_new	         (void);
+void                gdm_slave_proxy_set_command  (GdmSlaveProxy *slave,
+						  const char    *command);
 gboolean            gdm_slave_proxy_start        (GdmSlaveProxy *slave);
 gboolean            gdm_slave_proxy_stop         (GdmSlaveProxy *slave);
 

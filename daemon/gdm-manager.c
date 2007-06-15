@@ -43,6 +43,7 @@
 #include "gdm-common.h"
 
 #include "gdm-static-display.h"
+#include "gdm-static-factory-display.h"
 
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
@@ -145,7 +146,8 @@ start_local_display (const char *id,
 
 	g_assert (d != NULL);
 
-	if (GDM_IS_STATIC_DISPLAY (d) &&
+	if ((GDM_IS_STATIC_FACTORY_DISPLAY (d) ||
+	     GDM_IS_STATIC_DISPLAY (d)) &&
 	    gdm_display_get_status (d) == GDM_DISPLAY_UNMANAGED) {
 		if (! gdm_display_manage (d)) {
 			gdm_display_unmanage (d);
@@ -223,7 +225,7 @@ load_static_displays_from_file (GdmManager *manager)
 	GdmDisplay *display;
 
 	/* just load one for now */
-	display = gdm_static_display_new (0);
+	display = gdm_static_factory_display_new (0, manager->priv->display_store);
 
 	if (display == NULL) {
 		g_warning ("Unable to create display: %d", 0);

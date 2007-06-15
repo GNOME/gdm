@@ -31,6 +31,9 @@ INCLUDES = \
 
 BUILT_SOURCES =					\
 	gdm-slave-glue.h			\
+	gdm-simple-slave-glue.h			\
+	gdm-factory-slave-glue.h		\
+	gdm-product-slave-glue.h		\
 	gdm-manager-glue.h			\
 	gdm-display-glue.h			\
 	gdm-xdmcp-display-glue.h		\
@@ -43,6 +46,12 @@ gdm-manager-glue.h: gdm-manager.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_manager --mode=glib-server --output=gdm-manager-glue.h gdm-manager.xml
 gdm-slave-glue.h: gdm-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_slave --mode=glib-server --output=gdm-slave-glue.h gdm-slave.xml
+gdm-simple-slave-glue.h: gdm-simple-slave.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_simple_slave --mode=glib-server --output=gdm-simple-slave-glue.h gdm-simple-slave.xml
+gdm-factory-slave-glue.h: gdm-factory-slave.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_factory_slave --mode=glib-server --output=gdm-factory-slave-glue.h gdm-factory-slave.xml
+gdm-product-slave-glue.h: gdm-product-slave.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_product_slave --mode=glib-server --output=gdm-product-slave-glue.h gdm-product-slave.xml
 gdm-display-glue.h: gdm-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_display --mode=glib-server --output=gdm-display-glue.h gdm-display.xml
 gdm-xdmcp-display-glue.h: gdm-xdmcp-display.xml Makefile.am
@@ -70,11 +79,15 @@ test_session_LDADD =		\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
-	gdm-slave			\
+	gdm-simple-slave		\
+	gdm-factory-slave		\
+	gdm-product-slave		\
 	$(NULL)
 
-gdm_slave_SOURCES = 			\
-	slave-main.c 			\
+gdm_simple_slave_SOURCES = 		\
+	simple-slave-main.c 		\
+	gdm-greeter-server.c		\
+	gdm-greeter-server.h		\
 	gdm-greeter-proxy.c		\
 	gdm-greeter-proxy.h		\
 	gdm-server.c			\
@@ -83,18 +96,90 @@ gdm_slave_SOURCES = 			\
 	gdm-session.h			\
 	gdm-slave.c			\
 	gdm-slave.h			\
+	gdm-simple-slave.c		\
+	gdm-simple-slave.h		\
 	fstype.c			\
 	filecheck.c			\
 	filecheck.h			\
 	$(NULL)
 
-# Note that these libs are in LDFLAGS because they should come before
-# everything else on the link line as they may override stuff
-gdm_slave_LDFLAGS =			\
+gdm_simple_slave_LDFLAGS =		\
 	$(PAM_LIBS)			\
 	$(NULL)
 
-gdm_slave_LDADD = 				\
+gdm_simple_slave_LDADD = 			\
+	$(DAEMON_LIBS)				\
+	$(INTLLIBS)				\
+	$(GLIB_LIBS)				\
+	$(GOBJECT_LIBS)				\
+	$(GDK_LIBS)				\
+	$(top_builddir)/common/libgdmcommon.la	\
+	$(X_LIBS)				\
+	$(XINERAMA_LIBS)			\
+	$(DBUS_LIBS)				\
+	-lXau					\
+	-lX11					\
+	-lXext					\
+	$(NULL)
+
+gdm_factory_slave_SOURCES = 		\
+	factory-slave-main.c 		\
+	gdm-greeter-proxy.c		\
+	gdm-greeter-proxy.h		\
+	gdm-server.c			\
+	gdm-server.h			\
+	gdm-session.c			\
+	gdm-session.h			\
+	gdm-slave.c			\
+	gdm-slave.h			\
+	gdm-factory-slave.c		\
+	gdm-factory-slave.h		\
+	fstype.c			\
+	filecheck.c			\
+	filecheck.h			\
+	$(NULL)
+
+gdm_factory_slave_LDFLAGS =		\
+	$(PAM_LIBS)			\
+	$(NULL)
+
+gdm_factory_slave_LDADD = 			\
+	$(DAEMON_LIBS)				\
+	$(INTLLIBS)				\
+	$(GLIB_LIBS)				\
+	$(GOBJECT_LIBS)				\
+	$(GDK_LIBS)				\
+	$(top_builddir)/common/libgdmcommon.la	\
+	$(X_LIBS)				\
+	$(XINERAMA_LIBS)			\
+	$(DBUS_LIBS)				\
+	-lXau					\
+	-lX11					\
+	-lXext					\
+	$(NULL)
+
+gdm_product_slave_SOURCES = 		\
+	product-slave-main.c 		\
+	gdm-greeter-server.c		\
+	gdm-greeter-server.h		\
+	gdm-server.c			\
+	gdm-server.h			\
+	gdm-session.c			\
+	gdm-session.h			\
+	gdm-slave.c			\
+	gdm-slave.h			\
+	gdm-product-slave.c		\
+	gdm-product-slave.h		\
+	fstype.c			\
+	filecheck.c			\
+	filecheck.h			\
+	$(NULL)
+
+gdm_product_slave_LDFLAGS =		\
+	$(PAM_LIBS)			\
+	$(NULL)
+
+gdm_product_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
 	$(INTLLIBS)				\
 	$(GLIB_LIBS)				\
@@ -202,6 +287,9 @@ CLEANFILES =			\
 EXTRA_DIST = 				\
 	gdm.in				\
 	gdm-slave.xml			\
+	gdm-simple-slave.xml		\
+	gdm-factory-slave.xml		\
+	gdm-product-slave.xml		\
 	gdm-manager.xml			\
 	gdm-display.xml			\
 	gdm-xdmcp-display.xml		\

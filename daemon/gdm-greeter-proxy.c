@@ -76,7 +76,6 @@ struct GdmGreeterProxyPrivate
 
 	guint           child_watch_id;
 
-	DBusServer     *server;
 	char           *server_address;
 	DBusConnection *greeter_connection;
 };
@@ -87,12 +86,10 @@ enum {
 	PROP_X11_AUTHORITY_FILE,
 	PROP_USER_NAME,
 	PROP_GROUP_NAME,
+	PROP_SERVER_ADDRESS,
 };
 
 enum {
-	QUERY_ANSWER,
-	SESSION_SELECTED,
-	LANGUAGE_SELECTED,
 	STARTED,
 	STOPPED,
 	LAST_SIGNAL
@@ -106,87 +103,6 @@ static void	gdm_greeter_proxy_finalize	(GObject         *object);
 
 G_DEFINE_TYPE (GdmGreeterProxy, gdm_greeter_proxy, G_TYPE_OBJECT)
 
-static gboolean
-send_dbus_message (DBusConnection *connection,
-		   DBusMessage	  *message)
-{
-	gboolean is_connected;
-	gboolean sent;
-
-	g_return_val_if_fail (message != NULL, FALSE);
-
-	if (connection == NULL) {
-		g_debug ("There is no valid connection");
-		return FALSE;
-	}
-
-	is_connected = dbus_connection_get_is_connected (connection);
-	if (! is_connected) {
-		g_warning ("Not connected!");
-		return FALSE;
-	}
-
-	sent = dbus_connection_send (connection, message, NULL);
-
-	return sent;
-}
-
-static void
-send_dbus_string_signal (GdmGreeterProxy *greeter_proxy,
-			 const char	 *name,
-			 const char	 *text)
-{
-	DBusMessage    *message;
-	DBusMessageIter iter;
-
-	g_return_if_fail (greeter_proxy != NULL);
-
-	message = dbus_message_new_signal (GDM_GREETER_SERVER_DBUS_PATH,
-					   GDM_GREETER_SERVER_DBUS_INTERFACE,
-					   name);
-
-	dbus_message_iter_init_append (message, &iter);
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
-
-	if (! send_dbus_message (greeter_proxy->priv->greeter_connection, message)) {
-		g_debug ("Could not send %s signal", name);
-	}
-
-	dbus_message_unref (message);
-}
-
-gboolean
-gdm_greeter_proxy_info_query (GdmGreeterProxy *greeter_proxy,
-			      const char      *text)
-{
-        send_dbus_string_signal (greeter_proxy, "InfoQuery", text);
-
-	return TRUE;
-}
-
-gboolean
-gdm_greeter_proxy_secret_info_query (GdmGreeterProxy *greeter_proxy,
-				     const char      *text)
-{
-        send_dbus_string_signal (greeter_proxy, "SecretInfoQuery", text);
-	return TRUE;
-}
-
-gboolean
-gdm_greeter_proxy_info (GdmGreeterProxy *greeter_proxy,
-			const char      *text)
-{
-        send_dbus_string_signal (greeter_proxy, "Info", text);
-	return TRUE;
-}
-
-gboolean
-gdm_greeter_proxy_problem (GdmGreeterProxy *greeter_proxy,
-			   const char      *text)
-{
-        send_dbus_string_signal (greeter_proxy, "Problem", text);
-	return TRUE;
-}
 
 static void
 change_user (GdmGreeterProxy *greeter_proxy)
@@ -410,392 +326,6 @@ greeter_proxy_child_watch (GPid        pid,
 	greeter_proxy->priv->pid = -1;
 }
 
-/* Note: Use abstract sockets like dbus does by default on Linux. Abstract
- * sockets are only available on Linux.
- */
-static char *
-generate_address (void)
-{
-	char *path;
-#if defined (__linux__)
-	int   i;
-	char  tmp[9];
-
-	for (i = 0; i < 8; i++) {
-		if (g_random_int_range (0, 2) == 0) {
-			tmp[i] = g_random_int_range ('a', 'z' + 1);
-		} else {
-			tmp[i] = g_random_int_range ('A', 'Z' + 1);
-		}
-	}
-	tmp[8] = '\0';
-
-	path = g_strdup_printf ("unix:abstract=/tmp/gdm-greeter-%s", tmp);
-#else
-	path = g_strdup ("unix:tmpdir=/tmp/gdm-greeter");
-#endif
-
-	return path;
-}
-
-static DBusHandlerResult
-handle_answer_query (GdmGreeterProxy *greeter_proxy,
-		     DBusConnection  *connection,
-		     DBusMessage     *message)
-{
-	DBusMessage *reply;
-	DBusError    error;
-	const char  *text;
-
-	dbus_error_init (&error);
-	if (! dbus_message_get_args (message, &error,
-				     DBUS_TYPE_STRING, &text,
-				     DBUS_TYPE_INVALID)) {
-		g_warning ("ERROR: %s", error.message);
-	}
-
-	g_debug ("AnswerQuery: %s", text);
-
-	reply = dbus_message_new_method_return (message);
-	dbus_connection_send (connection, reply, NULL);
-	dbus_message_unref (reply);
-
-	g_signal_emit (greeter_proxy, signals [QUERY_ANSWER], 0, text);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-handle_select_session (GdmGreeterProxy *greeter_proxy,
-		       DBusConnection  *connection,
-		       DBusMessage     *message)
-{
-	DBusMessage *reply;
-	DBusError    error;
-	const char  *text;
-
-	dbus_error_init (&error);
-	if (! dbus_message_get_args (message, &error,
-				     DBUS_TYPE_STRING, &text,
-				     DBUS_TYPE_INVALID)) {
-		g_warning ("ERROR: %s", error.message);
-	}
-
-	g_debug ("SelectSession: %s", text);
-
-	reply = dbus_message_new_method_return (message);
-	dbus_connection_send (connection, reply, NULL);
-	dbus_message_unref (reply);
-
-	g_signal_emit (greeter_proxy, signals [SESSION_SELECTED], 0, text);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-handle_select_language (GdmGreeterProxy *greeter_proxy,
-			DBusConnection  *connection,
-			DBusMessage     *message)
-{
-	DBusMessage *reply;
-	DBusError    error;
-	const char  *text;
-
-	dbus_error_init (&error);
-	if (! dbus_message_get_args (message, &error,
-				     DBUS_TYPE_STRING, &text,
-				     DBUS_TYPE_INVALID)) {
-		g_warning ("ERROR: %s", error.message);
-	}
-
-	g_debug ("SelectLanguage: %s", text);
-
-	reply = dbus_message_new_method_return (message);
-	dbus_connection_send (connection, reply, NULL);
-	dbus_message_unref (reply);
-
-	g_signal_emit (greeter_proxy, signals [LANGUAGE_SELECTED], 0, text);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-greeter_handle_child_message (DBusConnection *connection,
-			      DBusMessage    *message,
-			      void           *user_data)
-{
-        GdmGreeterProxy *greeter_proxy = GDM_GREETER_PROXY (user_data);
-
-	if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
-		return handle_answer_query (greeter_proxy, connection, message);
-	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
-		return handle_select_session (greeter_proxy, connection, message);
-	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
-		return handle_select_language (greeter_proxy, connection, message);
-	}
-
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-static DBusHandlerResult
-do_introspect (DBusConnection *connection,
-	       DBusMessage    *message)
-{
-	DBusMessage *reply;
-	GString	    *xml;
-	char	    *xml_string;
-
-	g_debug ("Do introspect");
-
-	/* standard header */
-	xml = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
-			    "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
-			    "<node>\n"
-			    "  <interface name=\"org.freedesktop.DBus.Introspectable\">\n"
-			    "	 <method name=\"Introspect\">\n"
-			    "	   <arg name=\"data\" direction=\"out\" type=\"s\"/>\n"
-			    "	 </method>\n"
-			    "  </interface>\n");
-
-	/* interface */
-	xml = g_string_append (xml,
-			       "  <interface name=\"org.gnome.DisplayManager.GreeterServer\">\n"
-			       "    <method name=\"AnswerQuery\">\n"
-			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
-			       "    </method>\n"
-			       "    <method name=\"SelectSession\">\n"
-			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
-			       "    </method>\n"
-			       "    <method name=\"SelectLanguage\">\n"
-			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
-			       "    </method>\n"
-			       "    <signal name=\"Info\">\n"
-			       "      <arg name=\"text\" type=\"s\"/>\n"
-			       "    </signal>\n"
-			       "    <signal name=\"Problem\">\n"
-			       "      <arg name=\"text\" type=\"s\"/>\n"
-			       "    </signal>\n"
-			       "    <signal name=\"InfoQuery\">\n"
-			       "      <arg name=\"text\" type=\"s\"/>\n"
-			       "    </signal>\n"
-			       "    <signal name=\"SecretInfoQuery\">\n"
-			       "      <arg name=\"text\" type=\"s\"/>\n"
-			       "    </signal>\n"
-			       "  </interface>\n");
-
-	reply = dbus_message_new_method_return (message);
-
-	xml = g_string_append (xml, "</node>\n");
-	xml_string = g_string_free (xml, FALSE);
-
-	dbus_message_append_args (reply,
-				  DBUS_TYPE_STRING, &xml_string,
-				  DBUS_TYPE_INVALID);
-
-	g_free (xml_string);
-
-	if (reply == NULL) {
-		g_error ("No memory");
-	}
-
-	if (! dbus_connection_send (connection, reply, NULL)) {
-		g_error ("No memory");
-	}
-
-	dbus_message_unref (reply);
-
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-greeter_server_message_handler (DBusConnection  *connection,
-				DBusMessage     *message,
-				void            *user_data)
-{
-	g_debug ("greeter_server_message_handler: destination=%s obj_path=%s interface=%s method=%s",
-		 dbus_message_get_destination (message),
-		 dbus_message_get_path (message),
-		 dbus_message_get_interface (message),
-		 dbus_message_get_member (message));
-
-
-        if (dbus_message_is_method_call (message, "org.freedesktop.DBus", "AddMatch")) {
-                DBusMessage *reply;
-
-                reply = dbus_message_new_method_return (message);
-
-                if (reply == NULL) {
-                        g_error ("No memory");
-                }
-
-                if (! dbus_connection_send (connection, reply, NULL)) {
-                        g_error ("No memory");
-                }
-
-                dbus_message_unref (reply);
-
-                return DBUS_HANDLER_RESULT_HANDLED;
-        } else if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected") &&
-                   strcmp (dbus_message_get_path (message), DBUS_PATH_LOCAL) == 0) {
-
-                /*dbus_connection_unref (connection);*/
-
-                return DBUS_HANDLER_RESULT_HANDLED;
-	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		return do_introspect (connection, message);
-        } else {
-                return greeter_handle_child_message (connection, message, user_data);
-        }
-
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-static void
-greeter_server_unregister_handler (DBusConnection  *connection,
-				   void            *user_data)
-{
-	g_debug ("greeter_server_unregister_handler");
-}
-
-static DBusHandlerResult
-connection_filter_function (DBusConnection *connection,
-			    DBusMessage    *message,
-			    void	   *user_data)
-{
-        GdmGreeterProxy *greeter_proxy = GDM_GREETER_PROXY (user_data);
-	const char      *path;
-
-	path = dbus_message_get_path (message);
-
-	g_debug ("obj_path=%s interface=%s method=%s",
-		 dbus_message_get_path (message),
-		 dbus_message_get_interface (message),
-		 dbus_message_get_member (message));
-
-	if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
-	    && strcmp (path, DBUS_PATH_LOCAL) == 0) {
-
-		g_debug ("Disconnected");
-
-		dbus_connection_unref (connection);
-		greeter_proxy->priv->greeter_connection = NULL;
-	} else if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")) {
-
-
-	} else {
-		return greeter_server_message_handler (connection, message, user_data);
-	}
-
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static dbus_bool_t
-allow_user_function (DBusConnection *connection,
-                     unsigned long   uid,
-                     void           *data)
-{
-        GdmGreeterProxy *greeter_proxy = GDM_GREETER_PROXY (data);
-	struct passwd   *pwent;
-
-	if (greeter_proxy->priv->user_name == NULL) {
-		return FALSE;
-	}
-
-	pwent = getpwnam (greeter_proxy->priv->user_name);
-	if (pwent == NULL) {
-		return FALSE;
-	}
-
-	if (pwent->pw_uid == uid) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static void
-handle_connection (DBusServer      *server,
-		   DBusConnection  *new_connection,
-		   void            *user_data)
-{
-        GdmGreeterProxy *greeter_proxy = GDM_GREETER_PROXY (user_data);
-
-	g_debug ("Handing new connection");
-
-	if (greeter_proxy->priv->greeter_connection == NULL) {
-		DBusObjectPathVTable vtable = { &greeter_server_unregister_handler,
-						&greeter_server_message_handler,
-						NULL, NULL, NULL, NULL
-		};
-
-		greeter_proxy->priv->greeter_connection = new_connection;
-		dbus_connection_ref (new_connection);
-		dbus_connection_setup_with_g_main (new_connection, NULL);
-
-		g_debug ("greeter connection is %p", new_connection);
-#if 1
-		dbus_connection_add_filter (new_connection,
-					    connection_filter_function,
-					    greeter_proxy,
-					    NULL);
-#endif
-		dbus_connection_set_unix_user_function (new_connection,
-							allow_user_function,
-							greeter_proxy,
-							NULL);
-
-		dbus_connection_register_object_path (new_connection,
-						      GDM_GREETER_SERVER_DBUS_PATH,
-						      &vtable,
-						      greeter_proxy);
-
-		g_signal_emit (greeter_proxy, signals[STARTED], 0);
-
-	}
-}
-
-static gboolean
-create_dbus_server (GdmGreeterProxy *greeter_proxy)
-{
-	DBusServer *server;
-	DBusError   error;
-	gboolean    ret;
-	char       *address;
-	const char *auth_mechanisms[] = {"EXTERNAL", NULL};
-
-	ret = FALSE;
-
-	g_debug ("Creating D-Bus server for greeter");
-
-	address = generate_address ();
-
-	dbus_error_init (&error);
-	server = dbus_server_listen (address, &error);
-	g_free (address);
-
-	if (server == NULL) {
-		g_warning ("Cannot create D-BUS server for the greeter: %s", error.message);
-		goto out;
-	}
-
-	dbus_server_setup_with_g_main (server, NULL);
-	dbus_server_set_auth_mechanisms (server, auth_mechanisms);
-	dbus_server_set_new_connection_function (server,
-						 handle_connection,
-						 greeter_proxy,
-						 NULL);
-	ret = TRUE;
-
-	g_free (greeter_proxy->priv->server_address);
-	greeter_proxy->priv->server_address = dbus_server_get_address (server);
-
-	g_debug ("D-Bus server listening on %s", greeter_proxy->priv->server_address);
-
- out:
-
-	return ret;
-}
-
 static gboolean
 gdm_greeter_proxy_spawn (GdmGreeterProxy *greeter_proxy)
 {
@@ -816,8 +346,6 @@ gdm_greeter_proxy_spawn (GdmGreeterProxy *greeter_proxy)
 		g_error_free (error);
 		goto out;
 	}
-
-	create_dbus_server (greeter_proxy);
 
 	env = get_greeter_environment (greeter_proxy);
 
@@ -862,7 +390,6 @@ gdm_greeter_proxy_spawn (GdmGreeterProxy *greeter_proxy)
  *
  * Starts a local X greeter_proxy. Handles retries and fatal errors properly.
  */
-
 gboolean
 gdm_greeter_proxy_start (GdmGreeterProxy *greeter_proxy)
 {
@@ -967,6 +494,15 @@ gdm_greeter_proxy_stop (GdmGreeterProxy *greeter_proxy)
 	return TRUE;
 }
 
+void
+gdm_greeter_proxy_set_server_address (GdmGreeterProxy *greeter_proxy,
+				      const char      *address)
+{
+	g_return_if_fail (GDM_IS_GREETER_PROXY (greeter_proxy));
+
+	g_free (greeter_proxy->priv->server_address);
+	greeter_proxy->priv->server_address = g_strdup (address);
+}
 
 static void
 _gdm_greeter_proxy_set_x11_display_name (GdmGreeterProxy *greeter_proxy,
@@ -1023,6 +559,9 @@ gdm_greeter_proxy_set_property (GObject      *object,
 	case PROP_GROUP_NAME:
 		_gdm_greeter_proxy_set_group_name (self, g_value_get_string (value));
 		break;
+	case PROP_SERVER_ADDRESS:
+		gdm_greeter_proxy_set_server_address (self, g_value_get_string (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1051,6 +590,9 @@ gdm_greeter_proxy_get_property (GObject    *object,
 		break;
 	case PROP_GROUP_NAME:
 		g_value_set_string (value, self->priv->group_name);
+		break;
+	case PROP_SERVER_ADDRESS:
+		g_value_set_string (value, self->priv->server_address);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1115,39 +657,13 @@ gdm_greeter_proxy_class_init (GdmGreeterProxyClass *klass)
 							      "group name",
 							      "gdm",
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-	signals [QUERY_ANSWER] =
-		g_signal_new ("query-answer",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (GdmGreeterProxyClass, query_answer),
-			      NULL,
-			      NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE,
-			      1,
-			      G_TYPE_STRING);
-	signals [SESSION_SELECTED] =
-		g_signal_new ("session-selected",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (GdmGreeterProxyClass, session_selected),
-			      NULL,
-			      NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE,
-			      1,
-			      G_TYPE_STRING);
-	signals [LANGUAGE_SELECTED] =
-		g_signal_new ("language-selected",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (GdmGreeterProxyClass, language_selected),
-			      NULL,
-			      NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE,
-			      1,
-			      G_TYPE_STRING);
+	g_object_class_install_property (object_class,
+					 PROP_SERVER_ADDRESS,
+					 g_param_spec_string ("server-address",
+							      "server address",
+							      "server address",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	signals [STARTED] =
 		g_signal_new ("started",
 			      G_OBJECT_CLASS_TYPE (object_class),

@@ -44,6 +44,8 @@ static guint32 display_serial = 1;
 
 #define GDM_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_DISPLAY, GdmDisplayPrivate))
 
+#define DEFAULT_SLAVE_COMMAND LIBEXECDIR"/gdm-simple-slave"
+
 struct GdmDisplayPrivate
 {
 	char            *id;
@@ -54,6 +56,7 @@ struct GdmDisplayPrivate
 	time_t           creation_time;
 	char            *x11_cookie;
 	char            *x11_authority_file;
+	char            *slave_command;
 
 	gboolean         is_local;
 
@@ -70,6 +73,7 @@ enum {
 	PROP_X11_COOKIE,
 	PROP_X11_AUTHORITY_FILE,
 	PROP_IS_LOCAL,
+	PROP_SLAVE_COMMAND,
 };
 
 static void	gdm_display_class_init	(GdmDisplayClass *klass);
@@ -200,6 +204,8 @@ gdm_display_get_number (GdmDisplay *display,
 static gboolean
 gdm_display_real_manage (GdmDisplay *display)
 {
+	char *command;
+
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
 	g_debug ("GdmDisplay manage display");
@@ -208,7 +214,15 @@ gdm_display_real_manage (GdmDisplay *display)
 
 	g_assert (display->priv->slave_proxy == NULL);
 
-	display->priv->slave_proxy = gdm_slave_proxy_new (display->priv->id);
+	display->priv->slave_proxy = gdm_slave_proxy_new ();
+
+	command = g_strdup_printf ("%s --display-id %s",
+				   display->priv->slave_command,
+				   display->priv->id);
+
+	gdm_slave_proxy_set_command (display->priv->slave_proxy, command);
+	g_free (command);
+
 	gdm_slave_proxy_start (display->priv->slave_proxy);
 
 	return TRUE;
@@ -362,6 +376,14 @@ _gdm_display_set_is_local (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_slave_command (GdmDisplay     *display,
+				const char     *command)
+{
+        g_free (display->priv->slave_command);
+        display->priv->slave_command = g_strdup (command);
+}
+
+static void
 gdm_display_set_property (GObject	 *object,
 			  guint		  prop_id,
 			  const GValue	 *value,
@@ -392,6 +414,9 @@ gdm_display_set_property (GObject	 *object,
 		break;
 	case PROP_IS_LOCAL:
 		_gdm_display_set_is_local (self, g_value_get_boolean (value));
+		break;
+	case PROP_SLAVE_COMMAND:
+		_gdm_display_set_slave_command (self, g_value_get_string (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -430,6 +455,9 @@ gdm_display_get_property (GObject	 *object,
 		break;
 	case PROP_IS_LOCAL:
 		g_value_set_boolean (value, self->priv->is_local);
+		break;
+	case PROP_SLAVE_COMMAND:
+		g_value_set_string (value, self->priv->slave_command);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -566,6 +594,14 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                NULL,
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+	g_object_class_install_property (object_class,
+					 PROP_SLAVE_COMMAND,
+					 g_param_spec_string ("slave-command",
+							      "slave command",
+							      "slave command",
+							      DEFAULT_SLAVE_COMMAND,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
 	g_type_class_add_private (klass, sizeof (GdmDisplayPrivate));
 

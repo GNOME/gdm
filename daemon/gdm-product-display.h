@@ -49,9 +49,15 @@ typedef struct
 
 } GdmProductDisplayClass;
 
-GType		    gdm_product_display_get_type	       (void);
-GdmDisplay *	    gdm_product_display_new		       (int display_number);
+GType		    gdm_product_display_get_type	           (void);
+GdmDisplay *	    gdm_product_display_new		           (int display_number);
 
+gboolean            gdm_product_display_set_greeter_server_address (GdmProductDisplay *display,
+								    const char        *address,
+								    GError           **error);
+gboolean            gdm_product_display_get_greeter_server_address (GdmProductDisplay *display,
+								    char             **address,
+								    GError           **error);
 
 G_END_DECLS
 

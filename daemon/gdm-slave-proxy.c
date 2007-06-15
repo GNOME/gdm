@@ -35,13 +35,11 @@
 
 #include "gdm-slave-proxy.h"
 
-#define GDM_SLAVE_PROXY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE, GdmSlaveProxyPrivate))
-
-#define GDM_SLAVE_PROXY_COMMAND LIBEXECDIR"/gdm-slave"
+#define GDM_SLAVE_PROXY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE_PROXY, GdmSlaveProxyPrivate))
 
 struct GdmSlaveProxyPrivate
 {
-	char    *display_id;
+	char    *command;
 	GPid     pid;
         guint    output_watch_id;
         guint    error_watch_id;
@@ -49,7 +47,7 @@ struct GdmSlaveProxyPrivate
 
 enum {
 	PROP_0,
-	PROP_DISPLAY_ID,
+	PROP_COMMAND,
 };
 
 static void	gdm_slave_proxy_class_init	(GdmSlaveProxyClass *klass);
@@ -119,20 +117,7 @@ output_watch (GIOChannel    *source,
 
 		switch (status) {
 		case G_IO_STATUS_NORMAL:
-			{
-				char *p;
-
-				g_debug ("command output: %s", line);
-
-				if ((p = strstr (line, "ADDRESS=")) != NULL) {
-					char *address;
-
-					address = g_strdup (p + strlen ("ADDRESS="));
-					g_debug ("Got address %s", address);
-
-					g_free (address);
-				}
-			}
+			g_debug ("command output: %s", line);
 			break;
 		case G_IO_STATUS_EOF:
 			finished = TRUE;
@@ -210,7 +195,6 @@ error_watch (GIOChannel	   *source,
 static gboolean
 spawn_slave (GdmSlaveProxy *slave)
 {
-	char	   *command;
 	char	  **argv;
 	gboolean    result;
 	GIOChannel *channel;
@@ -221,15 +205,13 @@ spawn_slave (GdmSlaveProxy *slave)
 
 	result = FALSE;
 
-	command = g_strdup_printf ("%s --display-id %s", GDM_SLAVE_PROXY_COMMAND, slave->priv->display_id);
-
-	if (! g_shell_parse_argv (command, NULL, &argv, &error)) {
+	if (! g_shell_parse_argv (slave->priv->command, NULL, &argv, &error)) {
 		g_warning ("Could not parse command: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
 
-	g_debug ("Running command: %s", command);
+	g_debug ("Running command: %s", slave->priv->command);
 
 	error = NULL;
 	result = g_spawn_async_with_pipes (NULL,
@@ -245,7 +227,7 @@ spawn_slave (GdmSlaveProxy *slave)
 					   &error);
 
 	if (! result) {
-		g_warning ("Could not start command '%s': %s", command, error->message);
+		g_warning ("Could not start command '%s': %s", slave->priv->command, error->message);
 		g_error_free (error);
 		g_strfreev (argv);
 		goto out;
@@ -280,7 +262,6 @@ spawn_slave (GdmSlaveProxy *slave)
 	result = TRUE;
 
  out:
-	g_free (command);
 
 	return result;
 }
@@ -347,12 +328,12 @@ gdm_slave_proxy_stop (GdmSlaveProxy *slave)
 	return TRUE;
 }
 
-static void
-_gdm_slave_proxy_set_display_id (GdmSlaveProxy *slave,
-				 const char    *id)
+void
+gdm_slave_proxy_set_command (GdmSlaveProxy *slave,
+			     const char    *command)
 {
-        g_free (slave->priv->display_id);
-        slave->priv->display_id = g_strdup (id);
+        g_free (slave->priv->command);
+        slave->priv->command = g_strdup (command);
 }
 
 static void
@@ -366,8 +347,8 @@ gdm_slave_proxy_set_property (GObject      *object,
 	self = GDM_SLAVE_PROXY (object);
 
 	switch (prop_id) {
-	case PROP_DISPLAY_ID:
-		_gdm_slave_proxy_set_display_id (self, g_value_get_string (value));
+	case PROP_COMMAND:
+		gdm_slave_proxy_set_command (self, g_value_get_string (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -386,8 +367,8 @@ gdm_slave_proxy_get_property (GObject    *object,
 	self = GDM_SLAVE_PROXY (object);
 
 	switch (prop_id) {
-	case PROP_DISPLAY_ID:
-		g_value_set_string (value, self->priv->display_id);
+	case PROP_COMMAND:
+		g_value_set_string (value, self->priv->command);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -407,10 +388,10 @@ gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
 	g_type_class_add_private (klass, sizeof (GdmSlaveProxyPrivate));
 
 	g_object_class_install_property (object_class,
-					 PROP_DISPLAY_ID,
-					 g_param_spec_string ("display-id",
-							      "id",
-							      "id",
+					 PROP_COMMAND,
+					 g_param_spec_string ("command",
+							      "command",
+							      "command",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
@@ -431,7 +412,7 @@ gdm_slave_proxy_finalize (GObject *object)
 	GdmSlaveProxy *slave;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (GDM_IS_SLAVE (object));
+	g_return_if_fail (GDM_IS_SLAVE_PROXY (object));
 
 	slave = GDM_SLAVE_PROXY (object);
 
@@ -441,12 +422,11 @@ gdm_slave_proxy_finalize (GObject *object)
 }
 
 GdmSlaveProxy *
-gdm_slave_proxy_new (const char *id)
+gdm_slave_proxy_new (void)
 {
 	GObject *object;
 
-	object = g_object_new (GDM_TYPE_SLAVE,
-			       "display-id", id,
+	object = g_object_new (GDM_TYPE_SLAVE_PROXY,
 			       NULL);
 
 	return GDM_SLAVE_PROXY (object);

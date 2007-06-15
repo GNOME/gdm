@@ -45,30 +45,16 @@ typedef struct
 {
 	GObjectClass   parent_class;
 
-	void (* query_answer)      (GdmGreeterProxy  *greeter_proxy,
-				    const char       *text);
-	void (* session_selected)  (GdmGreeterProxy  *greeter_proxy,
-				    const char       *name);
-	void (* language_selected) (GdmGreeterProxy  *greeter_proxy,
-				    const char       *name);
 	void (* started)           (GdmGreeterProxy  *greeter_proxy);
 	void (* stopped)           (GdmGreeterProxy  *greeter_proxy);
 } GdmGreeterProxyClass;
 
-GType		    gdm_greeter_proxy_get_type          (void);
-GdmGreeterProxy *   gdm_greeter_proxy_new	        (const char      *display_id);
-gboolean            gdm_greeter_proxy_start             (GdmGreeterProxy *greeter_proxy);
-gboolean            gdm_greeter_proxy_stop              (GdmGreeterProxy *greeter_proxy);
-
-
-gboolean            gdm_greeter_proxy_info_query        (GdmGreeterProxy *greeter_proxy,
-							 const char      *text);
-gboolean            gdm_greeter_proxy_secret_info_query (GdmGreeterProxy *greeter_proxy,
-							 const char      *text);
-gboolean            gdm_greeter_proxy_info              (GdmGreeterProxy *greeter_proxy,
-							 const char      *text);
-gboolean            gdm_greeter_proxy_problem           (GdmGreeterProxy *greeter_proxy,
-							 const char      *text);
+GType		    gdm_greeter_proxy_get_type           (void);
+GdmGreeterProxy *   gdm_greeter_proxy_new	         (const char      *display_id);
+void                gdm_greeter_proxy_set_server_address (GdmGreeterProxy *greeter_proxy,
+							  const char      *server_address);
+gboolean            gdm_greeter_proxy_start              (GdmGreeterProxy *greeter_proxy);
+gboolean            gdm_greeter_proxy_stop               (GdmGreeterProxy *greeter_proxy);
 
 G_END_DECLS
 

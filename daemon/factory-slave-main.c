@@ -40,7 +40,7 @@
 
 #include "gdm-signal-handler.h"
 #include "gdm-log.h"
-#include "gdm-slave.h"
+#include "gdm-factory-slave.h"
 
 static int gdm_return_code = 0;
 
@@ -132,24 +132,11 @@ signal_cb (int      signo,
 }
 
 static void
-on_session_exited (GdmSlave   *slave,
-                   int         exit_code,
-		   GMainLoop  *main_loop)
+on_slave_stopped (GdmSlave   *slave,
+		  GMainLoop  *main_loop)
 {
-	g_debug ("session exited with code %d\n", exit_code);
-	gdm_return_code = exit_code;
-	g_main_loop_quit (main_loop);
-}
-
-static void
-on_session_died (GdmSlave   *slave,
-                 int         signal_number,
-		 GMainLoop  *main_loop)
-{
-	g_debug ("session died with signal %d, (%s)",
-		 signal_number,
-		 g_strsignal (signal_number));
-	gdm_return_code = 1;
+	g_debug ("slave finished");
+	gdm_return_code = 0;
 	g_main_loop_quit (main_loop);
 }
 
@@ -208,19 +195,14 @@ main (int    argc,
 	gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
 	gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
-	slave = gdm_slave_new (display_id);
+	slave = gdm_factory_slave_new (display_id);
 	if (slave == NULL) {
 		goto out;
 	}
 	g_signal_connect (slave,
-			  "session-exited",
-			  G_CALLBACK (on_session_exited),
+			  "stopped",
+			  G_CALLBACK (on_slave_stopped),
 			  main_loop);
-	g_signal_connect (slave,
-			  "session-died",
-			  G_CALLBACK (on_session_died),
-			  main_loop);
-
 	gdm_slave_start (slave);
 
 	g_main_loop_run (main_loop);
