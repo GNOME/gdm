@@ -1,5 +1,13 @@
 2007-06-17  Brian Cameron  <brian.cameron@sun.com>
 
+	* Release 2.19.3:
+	* configure.ac: Updated to new release version
+	* NEWS: Updated.
+	* README.install: Some updates for Solaris and to make
+	  things a bit more clear.
+
+2007-06-17  Brian Cameron  <brian.cameron@sun.com>
+
 	* acconfig.h, configure.ac, daemon/gdm.c, daemon/getvt.[ch],
 	  utils/gdmopen.c: Now support VT on Solaris (at the moment
 	  only available in Nevada development builds).  I cleaned
@@ -43,14 +51,15 @@
 
 2007-06-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.19.2:
-        * NEWS: Updated.
+	* Release 2.19.2:
+	* configure.ac: Updated to new version number.
+	* NEWS: Updated.
 	* docs/C/gdm.xml: Rewrote the "gdmdynamic Command Line Options"
 	  section to fix a problem with xml2po crashing while trying to
 	  process the file.  This problem was caused because some of the 
 	  <varlistentry> items did not have values for the <term> tag,
 	  which seemed to make xml2po unhappy.  Rewording this section
-	  avoids this problem.  Updated to the new release number.
+	  avoids this problem.  Updated to the new release version.
 	* gui/gdmflexiserver-xnest-desktop.in.in: Change Name and
 	  Comment from "New Login in a Nested Window" to
 	  "New Login in a Window" since the usability team determined
@@ -168,9 +177,10 @@
 
 2007-05-14  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.19.1:
-        * NEWS: Updated.
-	* docs/C/gdm.xml: Updated to new release number.
+	* Release 2.19.1:
+	* configure.ac: Updated to new version number.
+	* NEWS: Updated.
+	* docs/C/gdm.xml: Updated to new release version
 	* README.install: Minor update to Solaris recommended
 	  configuration.
 
@@ -325,7 +335,7 @@
 
 2007-05-01  Brian Cameron  <brian.cameron@sun.com>
 
-        * docs/C/gdm.xml: Improve docs for new "background" feature.
+	* docs/C/gdm.xml: Improve docs for new "background" feature.
 
 2007-05-01  Changwoo Ryu  <cwryu@debian.org>
 
@@ -395,8 +405,9 @@
 
 2007-04-23  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.19.0:
-        * NEWS: Updated.
+	* Release 2.19.0:
+	* configure.ac: Updated to new version number.
+	* NEWS: Updated.
 	* gui/gdmflexiserver.c: Fix compile errors from 04/20 change.
 	* daemon/Makefile.am: Add daemon/gdm-daemon-config-keys.h and
 	  daemon/socket-protocol.h to gdm_binary_SOURCES.
@@ -458,8 +469,8 @@
 	  up this key properly for Solaris.  Add RBAC section to the Security
 	  section of the docs and info about the three new configuration 
 	  options.  This fixes bug #372738.  Note that the gdmflexiserver
-          QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION
-          were broken after William Jon McCann's config cleanup, so I fixed
+	  QUERY_LOGOUT_ACTION, SET_LOGOUT_ACTION, and SET_SAFE_LOGOUT_ACTION
+	  were broken after William Jon McCann's config cleanup, so I fixed
 	  this.
 	* daemon/gdm-net.c: Fix includes so glib includes are after system
 	  includes.
@@ -723,10 +734,10 @@
 
 2007-04-05  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
 
-        * gui/gdmsetup.glade, gui/gdmsetup.c, doc/C/gdm.xml: 
-          Added a "Themed with face browser" option to the Local/Remote Style 
-          ComboBox and updated the documentation. Fixes bug #423300
-        * gui/gdmsetup.glade: Changed the spacing between elements in the
+	* gui/gdmsetup.glade, gui/gdmsetup.c, doc/C/gdm.xml: 
+	  Added a "Themed with face browser" option to the Local/Remote Style 
+	  ComboBox and updated the documentation. Fixes bug #423300
+	* gui/gdmsetup.glade: Changed the spacing between elements in the
 	  General tab as an aftermath of bug #403242. Also fixes some of the
 	  issues found in bug #423158.
 
@@ -964,9 +975,9 @@
 
 2006-03-27  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/verify-pam.c: Fix some Solaris specific code to call the new
-          gdm_daemon_config_get_gdmuid and gdm_daemon_config_get_gdmgid
-          functions.
+	* daemon/verify-pam.c: Fix some Solaris specific code to call the new
+	  gdm_daemon_config_get_gdmuid and gdm_daemon_config_get_gdmgid
+	  functions.
 
 2006-03-27  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1187,12 +1198,12 @@
 
 2006-03-23  Brian Cameron  <brian.cameron@sun.com>
 
-        * docs/C/gdm.xml: A little more information added to Solaris
+	* docs/C/gdm.xml: A little more information added to Solaris
 	  and Accessibility sections.
 
 2006-03-23  Brian Cameron  <brian.cameron@sun.com>
 
-        * docs/C/gdm.xml: Update Accessibility and Solaris sections
+	* docs/C/gdm.xml: Update Accessibility and Solaris sections
 	  of the manual.  The Accessibility section was badly out of
 	  date, and some new information needed to be added (like
 	  that you don't need to create a writable gdm home directory
@@ -1279,7 +1290,7 @@
 	  min-screen-height tag to parser so that certain
 	  elements in the theme will only display if the
 	  screen is large enough.  Patch by Ray Strode.
-          <rstrode@redhat.com>.  Enhancement #420610.
+	  <rstrode@redhat.com>.  Enhancement #420610.
 
 2006-03-20  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1334,7 +1345,7 @@
 	* config/Init.in: Call xrdb -merge /etc/X11/Xresources in the Init
 	  script so that the GDM GUI is properly configured with xft 
 	  resources.  Fixes bug #301826.  Patch by Ray Strode
-          <rstrode@redhat.com>.
+	  <rstrode@redhat.com>.
 	* config/Xsession.in: Minor cleanup.
 
 2006-03-13  Brian Cameron  <brian.cameron@sun.com>
@@ -1392,9 +1403,9 @@
 
 2006-03-12  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.18.0:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.18.0:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 	* docs/C/gdm.xml: Update version number to 2.18.0.
 
 2007-03-12  Brian Cameron  <brian.cameron@sun.com>
@@ -1430,7 +1441,7 @@
 	* config/Makefile.am, config/gdm.conf-custom.in, config/gdm.conf.in:
 	  Now expand the GDM configuration files so that they point to the
 	  correct location of the file (if a non-default location is used).
-          This required renaming gdm.conf-custom to gdm-conf-custom.in.  I
+	  This required renaming gdm.conf-custom to gdm-conf-custom.in.  I
 	  also reworded the comment secction so that the filenames are only
 	  mentioned once and further references are to "GDM System Defaults"
 	  and "GDM Custom Configuration" file since the filenames are
@@ -1449,22 +1460,22 @@
 
 2006-02-26  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.8:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.17.8:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 	* configure.ac, docs/en_GB/Makefile.am: Add needed Makefile.
 	* docs/Makefile.am: Remove en_GB from SUBDIRS so it doesn't build
 	  since needed omf file is not present.
 
 2007-02-26  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmchooser.c:  Fix setting of PIPE_BUF to fix buf #409801
-          to fix Hurd support.
+	* gui/gdmchooser.c:  Fix setting of PIPE_BUF to fix buf #409801
+	  to fix Hurd support.
 
 2007-02-26  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmlogin.c: Change Session mnemonic to "e" instead of "s"
-          so it doesn't conflict with "Start Again" button.  Fixes bug
+	* gui/gdmlogin.c: Change Session mnemonic to "e" instead of "s"
+	  so it doesn't conflict with "Start Again" button.  Fixes bug
 	  #409693.
 
 2007-02-26  Brian Cameron  <brian.cameron@sun.com>
@@ -1520,9 +1531,9 @@
 
 2006-02-12  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.7:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.17.7:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 	* docs/C/gdm.xml: Update version number.
 
 2007-02-09  Brian Cameron  <brian.cameron@sun.com>
@@ -1594,14 +1605,14 @@
 
 2007-01-31  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_item_customlist.c,
-          gui/greeter/greeter_canvas_item.c,
-          gui/greeter/greeter_canvas_text.c, gui/greeter/greeter_session.c,
-          gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmconfig.[ch],
+	* gui/greeter/greeter_item_customlist.c,
+	  gui/greeter/greeter_canvas_item.c,
+	  gui/greeter/greeter_canvas_text.c, gui/greeter/greeter_session.c,
+	  gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmconfig.[ch],
 	  daemon/xdmcp.c, daemon/verify-pam.c, daemon/server.c,
-          daemon/gdmconfig.c, daemon/errorgui.c, daemon/misc.c:  Fix warnings
+	  daemon/gdmconfig.c, daemon/errorgui.c, daemon/misc.c:  Fix warnings
 	  and fix an assertion in gdm because it called
-          gdm_xdmcp_send_forward_query also for IPv6.  Patch by Ludwig Nussel
+	  gdm_xdmcp_send_forward_query also for IPv6.  Patch by Ludwig Nussel
 	  <ludwig.nussel@suse.de>.
 :
 2006-01-26  Brian Cameron  <brian.cameron@sun.com>
@@ -1639,9 +1650,9 @@
 
 2006-01-21  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.6:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.17.6:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 
 2007-01-21  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
 
@@ -1672,9 +1683,9 @@
 
 2006-01-07  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.5:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.17.5:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 
 2006-01-07  Brian Cameron  <Brian.Cameron@sun.com>
 
@@ -1766,26 +1777,26 @@
 	* daemon/gdm.c, daemon/gdmconfig.c, gui/gdmsetup.c,
 	  gui/gdmlogin.c, gui/greeter/greeter_action_language.c,
 	  gui/greeter/greeter_system.c: Fixes for compiling
-          with gcc 2.95.  Fixes bugs #385644 and #385650.
-          Patch provided by Jens Granseuer <jensgr@gmx.net>.
+	  with gcc 2.95.  Fixes bugs #385644 and #385650.
+	  Patch provided by Jens Granseuer <jensgr@gmx.net>.
 
 2006-12-13  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.4:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.17.4:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 	* docs/C/gdm.xml: Update version number.
 
 2006-12-10  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
 
 	* vicious-extension/ve-nongnome.c, gui/gdmsetup.c,
 	  gui/gdmsetup.glade, gui/greeter/greeter.c,
-          gui/gdmlogin.c, gui/gdmchooser.c, gui/gdmsession.[ch],
-          gui/gdmcommon.c, gui/greeter/greeter_canvas_item.c,
-          gui/greeter_item_customlist.c,
-          gui/greeter/greeter_item_pam.c,
-          gui/greeter/greeter_geometry.c: Additional fixes for bug/feature
-          request #334186.  Fixed some of the compiler warnings.
+	  gui/gdmlogin.c, gui/gdmchooser.c, gui/gdmsession.[ch],
+	  gui/gdmcommon.c, gui/greeter/greeter_canvas_item.c,
+	  gui/greeter_item_customlist.c,
+	  gui/greeter/greeter_item_pam.c,
+	  gui/greeter/greeter_geometry.c: Additional fixes for bug/feature
+	  request #334186.  Fixed some of the compiler warnings.
 
 2006-12-08  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1808,7 +1819,7 @@
 	
 2006-12-07  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
 	
-        Fixes bug/feature request #334186.
+	Fixes bug/feature request #334186.
 	Fixes bug #343206
 	Fixes bug #347101
 	* gui/gdmsession. [ch] (_gdm_session_list_init): Replaces functionality
@@ -1859,9 +1870,9 @@
 
 2006-12-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.3:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.17.3:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 	* docs/C/gdm.xml: Update version number.
 
 2006-12-04  Brian Cameron  <brian.cameron@sun.com>
@@ -1893,7 +1904,7 @@
 2006-11-28  Brian Cameron  <brian.cameron@sun.com>
 
 	* config/Xsession.in config/default.desktop.in:  Since the
-          default.desktop file really just runs the Xclients script
+	  default.desktop file really just runs the Xclients script
 	  it should have a better name that specifies this is what
 	  it does.   Modify the default fallback program if no
 	  Xclients file exists to xterm since xsm isn't on all 
@@ -1919,7 +1930,7 @@
 
 2006-11-08  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
 	
-        More changes related to bug #352924.
+	More changes related to bug #352924.
 	* gui/gdmsetup.c: Made warnings more self-explanatory when no themes 
 	  are selected in "Random from selected" mode. Enabled back the delete 
 	  button on the "Random from selected" view for the currently selected
@@ -1938,27 +1949,27 @@
 
 2006-11-06  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/verify-pam.c: Update to make casting more clear.
-          This fixes a problem noticed with the Kerberos PAM module.
-          Kerberos was sending the proper error message but gdm was not
-          accessing it properly.  This message comes as "struct pam_message"
-          and is accesed using a double pointer "**msg".GDM was treating
-          msg as a pointer to an array of "num_msg"s of "struct pam_message"
-          whereas it actually is pointer to a pointer to an array of
-         "num_msg"s of "struct pam_message".
+	* daemon/verify-pam.c: Update to make casting more clear.
+	  This fixes a problem noticed with the Kerberos PAM module.
+	  Kerberos was sending the proper error message but gdm was not
+	  accessing it properly.  This message comes as "struct pam_message"
+	  and is accesed using a double pointer "**msg".GDM was treating
+	  msg as a pointer to an array of "num_msg"s of "struct pam_message"
+	  whereas it actually is pointer to a pointer to an array of
+	 "num_msg"s of "struct pam_message".
 
 2006-11-06  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.2:
-        * configure.ac: Update to new release version.
-        * NEWS: Updated.
+	* Release 2.17.2:
+	* configure.ac: Update to new release version.
+	* NEWS: Updated.
 	* docs/C/gdm.xml: Update version number.
 	* utils/Makefile.am: Add back X_EXTRA_LIBS and X_LIBS to
 	  gdm-dmx-reconnect-proxy to fix bug #368808.
 
 2006-11-04  Lukasz Zalewski  <lukas@dcs.qmul.ac.uk>
 	
-        Fixes bug #352924.
+	Fixes bug #352924.
 	* gui/gdmsetup.c: Added warnings when no themes are selected in
 	  Random from selected mode. Random from selected option can only be 
 	  enabled only and only if one or more themes are selected. Also 
@@ -2007,12 +2018,12 @@
 
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.1:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
-        * gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_system.c:
-          Back out patch from 10/17 from Sebastien Bacher <seb128@debian.org>
-          since we don't have icons yet.
+	* Release 2.17.1:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
+	* gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_system.c:
+	  Back out patch from 10/17 from Sebastien Bacher <seb128@debian.org>
+	  since we don't have icons yet.
 	* docs/C/gdm.xml: Fix docs.
 
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
@@ -2024,17 +2035,17 @@
 
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.[ch],
-          gui/greeter_item_pam.c:  Similar usability fixes for gdmgreeter.
-          OK/Cancel buttons are now sensitive/insensitive (but only if
-          using GTK style buttons), and the userlist now is not shown
-          if there are no users.  Added a new item id "userlist-rect"
-          which can be used to specify the rectangle containing the
-          userlist, so it can also disappear when the userlist is
-          empty.
-        * gui/greeter/themes/happygnome-list/happygnome.xml:  Now use
-          "userlist-rect" so the alpha rectangle goes away when the
-          list is empty.
+	* gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.[ch],
+	  gui/greeter_item_pam.c:  Similar usability fixes for gdmgreeter.
+	  OK/Cancel buttons are now sensitive/insensitive (but only if
+	  using GTK style buttons), and the userlist now is not shown
+	  if there are no users.  Added a new item id "userlist-rect"
+	  which can be used to specify the rectangle containing the
+	  userlist, so it can also disappear when the userlist is
+	  empty.
+	* gui/greeter/themes/happygnome-list/happygnome.xml:  Now use
+	  "userlist-rect" so the alpha rectangle goes away when the
+	  list is empty.
 	* docs/C/gdm.xml: Add information about userlist-rect id.
 
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
@@ -2112,7 +2123,7 @@
 	* docs/C/gdm.xml: Corrections to spelling and grammar mistakes.
 	  Patch by Malcolm Parsons <malcolm.parsons@gmail.com>.  Also
 	  updated docs for list combo style to indicate this feature is
-          supported in GDM 2.18 and later.
+	  supported in GDM 2.18 and later.
 
 2006-10-23  Dwayne Bailey  <dwayne@translate.org.za>
 
@@ -2153,9 +2164,9 @@
 
 2006-10-16  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.17.0:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.17.0:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 	* docs/C/gdm.xml: Update version number.
 
 2006-10-16  Brian Cameron  <brian.cameron@sun.com>
@@ -2180,7 +2191,7 @@
 
 2006-10-08  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/auth.c: Fix comment.
+	* daemon/auth.c: Fix comment.
 
 2006-10-08  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2284,9 +2295,9 @@
 
 2006-09-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.0:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.0:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-09-04  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2296,9 +2307,9 @@
 
 2006-09-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.0:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.0:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-08-23  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2311,9 +2322,9 @@
 
 2006-08-21  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.10:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.10:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-08-15  Kjartan Maraas  <kmaraas@gnome.org>
 
@@ -2331,9 +2342,9 @@
 
 2006-08-07  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.9:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.9:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-08-03  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2381,9 +2392,9 @@
 
 2006-07-31  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.8:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.8:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-07-31  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2399,9 +2410,9 @@
 
 2006-07-24  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.7:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.  Removing
+	* Release 2.15.7:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.  Removing
 	  docs/sv/Makefile from files to create, since it seems
 	  to have build problems.
 
@@ -2444,9 +2455,9 @@
 
 2006-07-10  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.6:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.6:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-06-30  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2492,9 +2503,9 @@
 
 2006-06-12  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.5:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.5:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-06-09  Brian Cameron  <brian.cameron@sun.com>
 
@@ -2513,9 +2524,9 @@
 
 2006-06-07  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.4:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.4:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-06-06  Brian Cameron  <brian.cameron@sun.com>
 

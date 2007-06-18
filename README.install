@@ -17,7 +17,11 @@ the documentation.
 WARNING: "gdm-binary" is a *daemon* -- not a common user application.
 It requires extensive knowledge about your system setup to install and
 configure.  GDM does not intend to be Plug and Play.
-(i.e. ./configure ; make install). 
+(i.e. ./configure ; make ; make install).   For example, you should
+make sure that GDM's configuration is set up properly for your system
+before using.  Although care is taken to make sure that the default
+configuration should work reasonably on all systems, these  default
+values may not be what you want.
 
 Building GDM
 ------------
@@ -30,13 +34,12 @@ appropriate -devel packages installed.
 
 Here is a recommended configure for GDM:
 
-./autogen.sh --enable-ipv6=yes --with-at-bindir=/usr/sfw/bin
-   --with-prefetch --with-post-path=/usr/openwin/bin
+./autogen.sh --enable-ipv6=yes --with-prefetch 
 
 Remove --enable-ipv6=yes if you do not use IPv6.
 
 If you want to add distribution-specific directories to the end of
-DefaultPath and RootDefaultPath, then use the --with-post-path
+DefaultPath and RootDefaultPath, then also use the --with-post-path
 configure option.  Argument value should be a list of directories
 separated by ":" characters (no spaces).
 
@@ -74,7 +77,7 @@ clutter your syslog and slow system performance.
 Configuration
 =============
 
-Gain, refer to the "Configuring GDM" section of the GDM
+Again, refer to the "Configuring GDM" section of the GDM
 documentation for full information:
 
    http://www.gnome.org/projects/gdm/docs.html
@@ -113,7 +116,7 @@ for a given setup, since they are OS/machine specific:
    StandardXServer
    Xnest
    SoundProgram
-   "command" value in each "[server-foo]" section
+   "command" value to start Xserver in each "[server-foo]" section
 
 For example on some systems you need to define RebootCommand
 as "/sbin halt -p" or "/sbin/init 0" or whatever is right on
@@ -180,11 +183,21 @@ On Solaris, the following configuration is recommended:
 The --with-ctrun argument should only be used if using GDM as a
 svcadm(1M) service, as is the default in Solaris 10 and later.
 
-GDM includes code to integrate with the audit API, only supported on
-Solaris 10 and later.  GDM should not be used on Solaris 9 and earlier
-if auditing is needed.  Refer to the "Solaris" section of the
-documentation for additional information about specific configuration
-issues for Solaris.
+For accessibility support you may need to use --with-at-bindir
+to specify that the AT programs (such as gok, gnopernicus and/or orca)
+are installed to a different directory than /usr/bin.  This is the
+case on Solaris 10 where they are installed to /usr/sfw/bin.  This
+is not needed if using a later version than Solaris 10 since AT
+programs have been moved to /usr/bin.  This option only modifies the
+configuration files that are installed to /etc/X11/gdm/modules, which
+can be modified by hand after installation if needed.
+
+GDM includes code to integrate with the Solaris audit API and is only
+supported on Solaris 10 and later.  GDM should not be used on Solaris
+9 and earlier if auditing is needed.
+
+Refer to the "Solaris" section of the documentation for additional
+information about specific configuration issues for Solaris.
 
    http://www.gnome.org/projects/gdm/docs.html
 
