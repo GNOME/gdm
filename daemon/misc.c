@@ -1204,6 +1204,8 @@ gdm_peek_local_address_list (void)
 gboolean
 gdm_is_local_addr6 (struct in6_addr* ia)
 {
+	if (ia == NULL)
+		return FALSE;
 
 	if (IN6_IS_ADDR_LOOPBACK (ia)) {
 		return TRUE;
@@ -1230,6 +1232,9 @@ gboolean
 gdm_is_local_addr (struct in_addr *ia)
 {
 	const char lo[] = {127,0,0,1};
+
+	if (ia == NULL)
+		return FALSE;
 
 	if (ia->s_addr == INADDR_LOOPBACK ||
 	    memcmp (&ia->s_addr, lo, 4) == 0) {

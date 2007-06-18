@@ -810,7 +810,8 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 					struct in_addr *addr;
 
 #ifdef ENABLE_IPV6
-					if (saddr->sa_family == AF_INET6) {
+					if (saddr->sa_family == AF_INET6 && id != NULL &&
+					    id->chosen_host6 != NULL) {
 						addr6 = &(((struct sockaddr_in6 *)saddr)->sin6_addr);
 						if ( ! gdm_is_loopback_addr6 (addr6)) {
 							/* forward query to * chosen host */
@@ -837,7 +838,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 			} else {
 				/* or send forward query to chosen host */
 #ifdef ENABLE_IPV6
-				if (clnt_sa->ss_family == AF_INET6)
+				if (clnt_sa->ss_family == AF_INET6 && id != NULL && id->chosen_host6 != NULL)
 				{
 					gdm_xdmcp_send_forward_query6
 						(id, (struct sockaddr_in6 *)clnt_sa,
