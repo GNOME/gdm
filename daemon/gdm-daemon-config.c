@@ -2843,6 +2843,7 @@ gdm_daemon_config_get_user_session_lang (char      **usrsess,
 
 	save = FALSE;
 	session = NULL;
+	lang = NULL;
 
 	gdm_common_config_get_string (cfg, "Desktop/Session", &session, NULL);
 	if (session == NULL) {
