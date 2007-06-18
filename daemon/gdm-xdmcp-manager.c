@@ -1626,7 +1626,7 @@ gdm_xdmcp_send_decline (GdmXdmcpManager         *manager,
 	char            *host;
 
 	gdm_address_get_info (clnt_sa, &host, NULL);
-	g_debug ("XMDCP: Sending DECLINE to %s", host);
+	g_debug ("XDMCP: Sending DECLINE to %s", host);
 	g_free (host);
 
 	authentype.data   = (CARD8 *) 0;
@@ -2486,7 +2486,7 @@ decode_packet (GIOChannel      *source,
 
 	if G_UNLIKELY (header.version != XDM_PROTOCOL_VERSION &&
 		       header.version != GDM_XDMCP_PROTOCOL_VERSION) {
-		g_warning (_("XMDCP: Incorrect XDMCP version!"));
+		g_warning (_("XDMCP: Incorrect XDMCP version!"));
 		return TRUE;
 	}
 
