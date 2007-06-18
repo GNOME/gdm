@@ -47,8 +47,14 @@
 /*
  * Where your VTs are hidden
  */
-#ifdef __linux__
+#ifdef HAVE_SYS_VT_H
 #define VTNAME "/dev/tty%d"
+#endif
+
+#ifdef __sun
+#define GDMCONSOLEDEVICE "/dev/vt/0"
+#else
+#define GDMCONSOLEDEVICE "/dev/console"
 #endif
 
 #ifdef ESIX_5_3_2_D
@@ -137,9 +143,9 @@ main (int argc, char *argv[])
 		*(argv[2]) = '-';
 	}
 
-	fd = open ("/dev/console", O_WRONLY, 0);
+	fd = open (GDMCONSOLEDEVICE, O_WRONLY, 0);
 	if (fd < 0) {
-		perror ("gdmopen: Failed to open /dev/console");	
+		perror ("gdmopen: Failed to open " GDMCONSOLEDEVICE);	
 		return 66;
 	}
 

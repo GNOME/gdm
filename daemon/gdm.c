@@ -4108,7 +4108,7 @@ sup_handle_query_vt (GdmConnection *conn,
 		return;
 	}
 
-#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
+#if defined (GDM_USE_SYS_VT) || defined (GDM_USE_CONSIO_VT)
 	gdm_connection_printf (conn, "OK %d\n", gdm_get_cur_vt ());
 #else
 	gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
@@ -4142,7 +4142,7 @@ sup_handle_set_vt (GdmConnection *conn,
 		return;
 	}
 
-#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
+#if defined (GDM_USE_SYS_VT) || defined (GDM_USE_CONSIO_VT)
 	gdm_change_vt (vt);
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *disp = li->data;

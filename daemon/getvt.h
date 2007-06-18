@@ -19,6 +19,18 @@
 #ifndef GETVT_H
 #define GETVT_H
 
+/* Virtual terminals only supported on Linux, FreeBSD, DragonFly, or Solaris */
+#if defined (__linux__) || defined (__sun)
+/* Must check HAVE_SYS_VT since older Solaris doesn't support this. */
+#ifdef HAVE_SYS_VT_H
+#define GDM_USE_SYS_VT
+#endif
+#endif
+
+#if defined (__FreeBSD__) || defined (__DragonFly__)
+#define GDM_USE_CONSIO_VT
+#endif
+
 /* gets an argument we should pass to the X server, on
  * linux for example we get the first empty vt (higher than
  * or equal to GDM_KEY_FIRST_VT) and then return vt<number>

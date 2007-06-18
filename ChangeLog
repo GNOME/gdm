@@ -1,5 +1,17 @@
 2007-06-17  Brian Cameron  <brian.cameron@sun.com>
 
+	* acconfig.h, configure.ac, daemon/gdm.c, daemon/getvt.[ch],
+	  utils/gdmopen.c: Now support VT on Solaris (at the moment
+	  only available in Nevada development builds).  I cleaned
+	  up the code to better use #defines so we set whether we
+	  support VT in daemon/getvt.h rather than using complicated
+	  #ifdefs in many places.  Also now detect if sys/vt.h is
+	  available in configure.ac and only enable VT if it is
+	  present.  This ensures GDM builds okay on older versions
+	  of Solaris without this interface.
+
+2007-06-17  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm-xdmcp-manager.c: Change string to say XDMCP instead
 	  of XMCP or XMDCP.  Fixes bugs #448547 and #448548.
 

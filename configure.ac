@@ -76,19 +76,13 @@ AC_ARG_WITH(console-kit,
   [  --with-console-kit=[auto/yes/no]  Add ConsoleKit support [default=auto]],,
   with_console_kit=auto)
 
-# On Solaris, Xnest is only shipped in /usr/openwin/, but your
-# should use "--with-post-path=/usr/openwin/bin" for full
-# Xserver support (such as access to Xnest and other X executables
-# that are only in /usr/openwin/bin and not yet in /usr/X11/bin).
-# Someday the Xserver team at Sun may fix this, then you don't
-# have to do this anymore.
+# Some distros may want to add directories to the end of the default path.
+# The --with-post-path can be used to add these at configure time.
 #
-# For other platforms it may be useful to add stuff you want to the
-# end of the default path, if your distribution provider has
-# specific directories for branded applications or whatever or
-# clever directories like /usr/sfw/bin or whatever that OpenView
-# binary directory is for those OpenView users forced to use GDM.
-# OpenView users like to recompile code anyway.
+# On Solaris, you should use "--with-post-path=/usr/openwin/bin" for
+# full Xserver support since some X programs are still in the older
+# location (such as sessreg).  Someday the Sun Xserver team will fix this,
+# and then you will not have to do this anymore.
 #
 withval=""
 AC_ARG_WITH(post-path,
@@ -376,7 +370,9 @@ dnl ****************************
 dnl ## gdmopen building
 dnl There are perhaps others where this works
 GDMOPEN=
-AC_CHECK_HEADERS(linux/vt.h, [
+AC_CHECK_HEADERS(sys/vt.h, [
+		 AC_DEFINE(HAVE_SYS_VT_H)])
+AC_CHECK_HEADERS(sys/vt.h, [
 		 GDMOPEN=gdmopen])
 AC_SUBST(GDMOPEN)
 

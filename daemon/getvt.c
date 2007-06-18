@@ -36,13 +36,17 @@
 #include "gdm-common.h"
 #include "gdm-daemon-config.h"
 
-/* Virtual terminals only supported on Linux, FreeBSD, or DragonFly */
+#if defined (GDM_USE_SYS_VT) || defined (GDM_USE_CONSIO_VT)
 
-#if defined (__linux__) || defined (__FreeBSD__) || defined (__DragonFly__)
+#ifdef __sun
+#define GDMCONSOLEDEVICE "/dev/vt/0"
+#else
+#define GDMCONSOLEDEVICE "/dev/console"
+#endif
 
-#if defined (__linux__)
+#if defined (GDM_USE_SYS_VT)
 #include <sys/vt.h>
-#elif defined (__FreeBSD__) || defined (__DragonFly__)
+#elif defined (GDM_USE_CONSIO_VT)
 #include <sys/consio.h>
 
 static const char*
@@ -63,12 +67,16 @@ __itovty (int val)
 static int
 open_vt (int vtno)
 {
-	char *vtname;
-	int fd;
+	char *vtname = NULL;
+	int fd = -1;
 
-#if defined (__linux__)
+#if defined (GDM_USE_SYS_VT)
+#ifdef __sun
+	vtname = g_strdup_printf ("/dev/vt/%d", vtno);
+#else
 	vtname = g_strdup_printf ("/dev/tty%d", vtno);
-#elif defined (__FreeBSD__) || defined (__DragonFly__)
+#endif
+#elif defined (GDM_USE_CONSIO_VT)
 	vtname = g_strdup_printf ("/dev/ttyv%s", __itovty (vtno - 1));
 #endif
 	do {
@@ -79,14 +87,16 @@ open_vt (int vtno)
 #endif
 			   , 0);
 	} while G_UNLIKELY (errno == EINTR);
+
 	g_free (vtname);
+
 	return fd;
 }
 
-#if defined (__linux__)
+#if defined (GDM_USE_SYS_VT)
 
 static int 
-get_free_vt_linux (int *vtfd)
+get_free_vt_sys (int *vtfd)
 {
 	int fd, fdv;
 	int vtno;
@@ -97,7 +107,8 @@ get_free_vt_linux (int *vtfd)
 
 	do {
 		errno = 0;
-		fd = open ("/dev/console", O_WRONLY
+		fd = open (GDMCONSOLEDEVICE,
+			   O_WRONLY
 #ifdef O_NOCTTY
 			   |O_NOCTTY
 #endif
@@ -127,10 +138,10 @@ get_free_vt_linux (int *vtfd)
 	return vtno;
 }
 
-#elif defined (__FreeBSD__) || defined (__DragonFly__)
+#elif defined (GDM_USE_CONSIO_VT)
 
 static int
-get_free_vt_freebsd_dragonfly (int *vtfd)
+get_free_vt_consio (int *vtfd)
 {
 	int fd, fdv;
 	int vtno;
@@ -140,7 +151,8 @@ get_free_vt_freebsd_dragonfly (int *vtfd)
 
 	do {
 		errno = 0;
-		fd = open ("/dev/console", O_WRONLY
+		fd = open (GDMCONSOLEDEVICE,
+			   O_WRONLY
 #ifdef O_NOCTTY
 			   |O_NOCTTY
 #endif
@@ -201,10 +213,10 @@ gdm_get_empty_vt_argument (int *fd, int *vt)
 		return NULL;
 	}
 
-#if defined (__linux__)
-	*vt = get_free_vt_linux (fd);
-#elif defined (__FreeBSD__) || defined (__DragonFly__)
-	*vt = get_free_vt_freebsd_dragonfly (fd);
+#if defined (GDM_USE_SYS_VT)
+	*vt = get_free_vt_sys (fd);
+#elif defined (GDM_USE_CONSIO_VT)
+	*vt = get_free_vt_consio (fd);
 #endif
 
 	if (*vt < 0)
@@ -218,12 +230,14 @@ void
 gdm_change_vt (int vt)
 {
 	int fd;
+	int rc;
 	if (vt < 0)
 		return;
 
 	do {
 		errno = 0;
-		fd = open ("/dev/console", O_WRONLY
+		fd = open (GDMCONSOLEDEVICE,
+			   O_WRONLY
 #ifdef O_NOCTTY
 			   |O_NOCTTY
 #endif
@@ -232,8 +246,8 @@ gdm_change_vt (int vt)
 	if (fd < 0)
 		return;
 
-	ioctl (fd, VT_ACTIVATE, vt);
-	ioctl (fd, VT_WAITACTIVE, vt);
+	rc = ioctl (fd, VT_ACTIVATE, vt);
+	rc = ioctl (fd, VT_WAITACTIVE, vt);
 
 	VE_IGNORE_EINTR (close (fd));
 }
@@ -241,16 +255,17 @@ gdm_change_vt (int vt)
 int
 gdm_get_cur_vt (void)
 {
-#if defined (__linux__)
+#if defined (GDM_USE_SYS_VT)
 	struct vt_stat s;
-#elif defined (__FreeBSD__) || defined (__DragonFly__)
+#elif defined (GDM_USE_CONSIO_VT)
 	int vtno;
 #endif
 	int fd;
 
 	do {
 		errno = 0;
-		fd = open ("/dev/console", O_WRONLY
+		fd = open (GDMCONSOLEDEVICE,
+			   O_WRONLY
 #ifdef O_NOCTTY
 			   |O_NOCTTY
 #endif
@@ -258,7 +273,7 @@ gdm_get_cur_vt (void)
 	} while G_UNLIKELY (errno == EINTR);
 	if (fd < 0)
 		return -1;
-#if defined (__linux__)
+#if defined (GDM_USE_SYS_VT)
 	ioctl (fd, VT_GETSTATE, &s);
 
 	VE_IGNORE_EINTR (close (fd));
@@ -269,13 +284,13 @@ gdm_get_cur_vt (void)
 	*/
 
 	return s.v_active;
-#elif defined (__FreeBSD__) || defined (__DragonFly__)
+#elif defined (GDM_USE_CONSIO_VT)
 	if (ioctl (fd, VT_GETACTIVE, &vtno) == -1) {
 		VE_IGNORE_EINTR (close (fd));
 		return -1;
 	}
 
-	VE_IGNORE_EINTR (close (fd));
+VE_IGNORE_EINTR (close (fd));
 
 	/* debug */
 	/*
@@ -286,8 +301,10 @@ gdm_get_cur_vt (void)
 #endif
 }
 
-#else /* here this is just a stub, we don't know how to do this outside
-	 of linux really */
+#else /* GDM_USE_SYS_VT || GDM_USE_CONSIO_VT - Here this is just
+       * a stub, we do not know how to support this on other
+       * platforms
+       */
 
 char *
 gdm_get_empty_vt_argument (int *fd, int *vt)
