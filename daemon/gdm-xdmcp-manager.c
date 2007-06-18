@@ -2474,7 +2474,7 @@ decode_packet (GIOChannel      *source,
 
 	res = XdmcpFill (manager->priv->socket_fd, &manager->priv->buf, (XdmcpNetaddr)&clnt_sa, &sa_len);
 	if G_UNLIKELY (! res) {
-		g_debug (_("XMCP: Could not create XDMCP buffer!"));
+		g_debug (_("XDMCP: Could not create XDMCP buffer!"));
 		return TRUE;
 	}
 
