@@ -796,7 +796,7 @@ run_greeter (GdmSimpleSlave *slave)
 			  G_CALLBACK (on_session_died),
 			  slave);
 
-	slave->priv->greeter_server = gdm_greeter_server_new (display_name);
+	slave->priv->greeter_server = gdm_greeter_server_new ();
 	g_signal_connect (slave->priv->greeter_server,
 			  "query-answer",
 			  G_CALLBACK (on_greeter_answer),

@@ -56,6 +56,7 @@ GdmDisplay *	    gdm_static_factory_display_new		       (int                    
 									GdmDisplayStore         *store);
 
 gboolean            gdm_static_factory_display_create_product_display  (GdmStaticFactoryDisplay *display,
+									const char              *server_address,
 									char                   **id,
 									GError                 **error);
 

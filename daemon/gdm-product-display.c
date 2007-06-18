@@ -44,45 +44,19 @@
 
 struct GdmProductDisplayPrivate
 {
-	char *greeter_server_address;
+	char *relay_address;
 };
 
 enum {
 	PROP_0,
+	PROP_RELAY_ADDRESS,
 };
 
 static void	gdm_product_display_class_init	(GdmProductDisplayClass *klass);
-static void	gdm_product_display_init	        (GdmProductDisplay      *product_display);
-static void	gdm_product_display_finalize	(GObject	      *object);
+static void	gdm_product_display_init	(GdmProductDisplay      *product_display);
+static void	gdm_product_display_finalize	(GObject	        *object);
 
 G_DEFINE_TYPE (GdmProductDisplay, gdm_product_display, GDM_TYPE_DISPLAY)
-
-gboolean
-gdm_product_display_get_greeter_server_address (GdmProductDisplay *display,
-						char             **address,
-						GError           **error)
-{
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-	if (address != NULL) {
-		*address = g_strdup (display->priv->greeter_server_address);
-	}
-
-	return TRUE;
-}
-
-gboolean
-gdm_product_display_set_greeter_server_address (GdmProductDisplay *display,
-						const char        *address,
-						GError           **error)
-{
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-	g_free (display->priv->greeter_server_address);
-	display->priv->greeter_server_address = g_strdup (address);
-
-	return TRUE;
-}
 
 static gboolean
 gdm_product_display_create_authority (GdmDisplay *display)
@@ -114,17 +88,44 @@ gdm_product_display_unmanage (GdmDisplay *display)
 	return TRUE;
 }
 
+gboolean
+gdm_product_display_get_relay_address (GdmProductDisplay *display,
+				       char             **address,
+				       GError           **error)
+{
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	if (address != NULL) {
+		*address = g_strdup (display->priv->relay_address);
+		g_debug ("Returning address: %s", display->priv->relay_address);
+	}
+
+	return TRUE;
+}
+
+static void
+gdm_product_display_set_relay_address (GdmProductDisplay *display,
+				       const char        *address)
+{
+	g_free (display->priv->relay_address);
+	display->priv->relay_address = g_strdup (address);
+}
+
+
 static void
 gdm_product_display_set_property (GObject      *object,
-				 guint	       prop_id,
-				 const GValue *value,
-				 GParamSpec   *pspec)
+				  guint	        prop_id,
+				  const GValue *value,
+				  GParamSpec   *pspec)
 {
 	GdmProductDisplay *self;
 
 	self = GDM_PRODUCT_DISPLAY (object);
 
 	switch (prop_id) {
+	case PROP_RELAY_ADDRESS:
+		gdm_product_display_set_relay_address (self, g_value_get_string (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -133,15 +134,17 @@ gdm_product_display_set_property (GObject      *object,
 
 static void
 gdm_product_display_get_property (GObject    *object,
-				 guint       prop_id,
-				 GValue	    *value,
-				 GParamSpec *pspec)
+				  guint       prop_id,
+				  GValue     *value,
+				  GParamSpec *pspec)
 {
 	GdmProductDisplay *self;
 
 	self = GDM_PRODUCT_DISPLAY (object);
 
 	switch (prop_id) {
+	case PROP_RELAY_ADDRESS:
+		g_value_set_string (value, self->priv->relay_address);
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -161,10 +164,6 @@ gdm_product_display_constructor (GType                  type,
         display = GDM_PRODUCT_DISPLAY (G_OBJECT_CLASS (gdm_product_display_parent_class)->constructor (type,
 												       n_construct_properties,
 												       construct_properties));
-	g_object_set (display,
-		      "slave-command", DEFAULT_SLAVE_COMMAND,
-		      NULL);
-
         return G_OBJECT (display);
 }
 
@@ -184,6 +183,14 @@ gdm_product_display_class_init (GdmProductDisplayClass *klass)
 	display_class->unmanage = gdm_product_display_unmanage;
 
 	g_type_class_add_private (klass, sizeof (GdmProductDisplayPrivate));
+
+	g_object_class_install_property (object_class,
+					 PROP_RELAY_ADDRESS,
+					 g_param_spec_string ("relay-address",
+							      "relay address",
+							      "relay address",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	dbus_g_object_type_install_info (GDM_TYPE_PRODUCT_DISPLAY, &dbus_glib_gdm_product_display_object_info);
 }
@@ -211,15 +218,18 @@ gdm_product_display_finalize (GObject *object)
 }
 
 GdmDisplay *
-gdm_product_display_new (int display_number)
+gdm_product_display_new (int         display_number,
+			 const char *relay_address)
 {
 	GObject *object;
 	char    *x11_display;
 
 	x11_display = g_strdup_printf (":%d", display_number);
 	object = g_object_new (GDM_TYPE_PRODUCT_DISPLAY,
+			       "slave-command", DEFAULT_SLAVE_COMMAND,
 			       "number", display_number,
 			       "x11-display", x11_display,
+			       "relay-address", relay_address,
 			       NULL);
 	g_free (x11_display);
 

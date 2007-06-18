@@ -43,17 +43,10 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include <X11/Xlib.h> /* for Display */
-
-#include "gdm-common.h"
-#include "filecheck.h"
-
 #include "gdm-greeter-server.h"
 
 #define GDM_GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
 #define GDM_GREETER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
-
-extern char **environ;
 
 #define GDM_GREETER_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SERVER, GdmGreeterServerPrivate))
 
@@ -61,9 +54,6 @@ struct GdmGreeterServerPrivate
 {
 	char           *user_name;
 	char           *group_name;
-
-	char           *x11_display_name;
-	char           *x11_authority_file;
 
 	gboolean        interrupted;
 	gboolean        always_restart_greeter;
@@ -75,8 +65,6 @@ struct GdmGreeterServerPrivate
 
 enum {
 	PROP_0,
-	PROP_X11_DISPLAY_NAME,
-	PROP_X11_AUTHORITY_FILE,
 	PROP_USER_NAME,
 	PROP_GROUP_NAME,
 };
@@ -93,8 +81,8 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0, };
 
 static void	gdm_greeter_server_class_init	(GdmGreeterServerClass *klass);
-static void	gdm_greeter_server_init	(GdmGreeterServer      *greeter_server);
-static void	gdm_greeter_server_finalize	(GObject         *object);
+static void	gdm_greeter_server_init         (GdmGreeterServer      *greeter_server);
+static void	gdm_greeter_server_finalize	(GObject               *object);
 
 G_DEFINE_TYPE (GdmGreeterServer, gdm_greeter_server, G_TYPE_OBJECT)
 
@@ -351,6 +339,8 @@ do_introspect (DBusConnection *connection,
 			       "    <signal name=\"SecretInfoQuery\">\n"
 			       "      <arg name=\"text\" type=\"s\"/>\n"
 			       "    </signal>\n"
+			       "    <signal name=\"Reset\">\n"
+			       "    </signal>\n"
 			       "  </interface>\n");
 
 	reply = dbus_message_new_method_return (message);
@@ -584,22 +574,6 @@ gdm_greeter_server_get_address (GdmGreeterServer *greeter_server)
 }
 
 static void
-_gdm_greeter_server_set_x11_display_name (GdmGreeterServer *greeter_server,
-					 const char *name)
-{
-        g_free (greeter_server->priv->x11_display_name);
-        greeter_server->priv->x11_display_name = g_strdup (name);
-}
-
-static void
-_gdm_greeter_server_set_x11_authority_file (GdmGreeterServer *greeter_server,
-					   const char *file)
-{
-        g_free (greeter_server->priv->x11_authority_file);
-        greeter_server->priv->x11_authority_file = g_strdup (file);
-}
-
-static void
 _gdm_greeter_server_set_user_name (GdmGreeterServer *greeter_server,
 				  const char *name)
 {
@@ -626,12 +600,6 @@ gdm_greeter_server_set_property (GObject      *object,
 	self = GDM_GREETER_SERVER (object);
 
 	switch (prop_id) {
-	case PROP_X11_DISPLAY_NAME:
-		_gdm_greeter_server_set_x11_display_name (self, g_value_get_string (value));
-		break;
-	case PROP_X11_AUTHORITY_FILE:
-		_gdm_greeter_server_set_x11_authority_file (self, g_value_get_string (value));
-		break;
 	case PROP_USER_NAME:
 		_gdm_greeter_server_set_user_name (self, g_value_get_string (value));
 		break;
@@ -655,12 +623,6 @@ gdm_greeter_server_get_property (GObject    *object,
 	self = GDM_GREETER_SERVER (object);
 
 	switch (prop_id) {
-	case PROP_X11_DISPLAY_NAME:
-		g_value_set_string (value, self->priv->x11_display_name);
-		break;
-	case PROP_X11_AUTHORITY_FILE:
-		g_value_set_string (value, self->priv->x11_authority_file);
-		break;
 	case PROP_USER_NAME:
 		g_value_set_string (value, self->priv->user_name);
 		break;
@@ -702,20 +664,6 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GdmGreeterServerPrivate));
 
-	g_object_class_install_property (object_class,
-					 PROP_X11_DISPLAY_NAME,
-					 g_param_spec_string ("x11-display-name",
-							      "name",
-							      "name",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class,
-					 PROP_X11_AUTHORITY_FILE,
-					 g_param_spec_string ("x11-authority-file",
-							      "authority file",
-							      "authority file",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property (object_class,
 					 PROP_USER_NAME,
 					 g_param_spec_string ("user-name",
@@ -810,12 +758,11 @@ gdm_greeter_server_finalize (GObject *object)
 }
 
 GdmGreeterServer *
-gdm_greeter_server_new (const char *display_name)
+gdm_greeter_server_new (void)
 {
 	GObject *object;
 
 	object = g_object_new (GDM_TYPE_GREETER_SERVER,
-			       "x11-display-name", display_name,
 			       NULL);
 
 	return GDM_GREETER_SERVER (object);

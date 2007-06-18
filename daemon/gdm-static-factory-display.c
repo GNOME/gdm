@@ -79,6 +79,7 @@ get_next_display_number (void)
 
 gboolean
 gdm_static_factory_display_create_product_display (GdmStaticFactoryDisplay *display,
+						   const char              *relay_address,
 						   char                   **id,
 						   GError                 **error)
 {
@@ -92,7 +93,9 @@ gdm_static_factory_display_create_product_display (GdmStaticFactoryDisplay *disp
 
 	num = get_next_display_number ();
 
-	product = gdm_product_display_new (num);
+	g_debug ("Creating product display %d  address:%s", num, relay_address);
+
+	product = gdm_product_display_new (num, relay_address);
 
 	if (! gdm_display_create_authority (product)) {
 		g_object_unref (product);
@@ -216,13 +219,9 @@ gdm_static_factory_display_constructor (GType                  type,
         display = GDM_STATIC_FACTORY_DISPLAY (G_OBJECT_CLASS (gdm_static_factory_display_parent_class)->constructor (type,
 														     n_construct_properties,
 														     construct_properties));
-	g_object_set (display,
-		      "slave-command", DEFAULT_SLAVE_COMMAND,
-		      NULL);
 
         return G_OBJECT (display);
 }
-
 
 static void
 gdm_static_factory_display_class_init (GdmStaticFactoryDisplayClass *klass)
@@ -283,6 +282,7 @@ gdm_static_factory_display_new (int              display_number,
 
 	x11_display = g_strdup_printf (":%d", display_number);
 	object = g_object_new (GDM_TYPE_STATIC_FACTORY_DISPLAY,
+			       "slave-command", DEFAULT_SLAVE_COMMAND,
 			       "number", display_number,
 			       "x11-display", x11_display,
 			       "display-store", store,

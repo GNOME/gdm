@@ -50,7 +50,6 @@
 
 #include "gdm-server.h"
 #include "gdm-session.h"
-#include "gdm-greeter-server.h"
 
 extern char **environ;
 
@@ -58,6 +57,9 @@ extern char **environ;
 
 #define GDM_DBUS_NAME	                   "org.gnome.DisplayManager"
 #define GDM_DBUS_PRODUCT_DISPLAY_INTERFACE "org.gnome.DisplayManager.ProductDisplay"
+
+#define SERVER_DBUS_PATH      "/org/gnome/DisplayManager/SessionRelay"
+#define SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.SessionRelay"
 
 #define MAX_CONNECT_ATTEMPTS 10
 
@@ -68,6 +70,8 @@ struct GdmProductSlavePrivate
         guint             output_watch_id;
         guint             error_watch_id;
 
+	char             *relay_address;
+
 	GPid              server_pid;
 	Display          *server_display;
 	guint             connection_attempts;
@@ -77,8 +81,9 @@ struct GdmProductSlavePrivate
 	char             *selected_language;
 
 	GdmServer        *server;
-	GdmGreeterServer *greeter;
 	GdmSession       *session;
+	DBusGProxy       *session_relay_proxy;
+        DBusGConnection  *session_relay_connection;
 	DBusGProxy       *product_display_proxy;
         DBusGConnection  *connection;
 };
@@ -556,7 +561,7 @@ on_user_verified (GdmSession      *session,
 	GError  *error;
 	gboolean res;
 
-	gdm_greeter_server_stop (slave->priv->greeter);
+	/*gdm_greeter_server_stop (slave->priv->greeter);*/
 
 	username = gdm_session_get_username (session);
 
@@ -613,12 +618,44 @@ on_user_verification_error (GdmSession      *session,
 }
 
 static void
+ready_relay (GdmProductSlave *slave)
+{
+	GError *error;
+	gboolean res;
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
+				 "Ready",
+				 &error,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send Info: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 on_info (GdmSession      *session,
          const char      *text,
 	 GdmProductSlave *slave)
 {
+	GError *error;
+	gboolean res;
+
 	g_debug ("Info: %s", text);
-	gdm_greeter_server_info (slave->priv->greeter, text);
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
+				 "Info",
+				 &error,
+				 G_TYPE_STRING, text,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send Info: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 static void
@@ -626,8 +663,23 @@ on_problem (GdmSession      *session,
             const char      *text,
 	    GdmProductSlave *slave)
 {
+	GError *error;
+	gboolean res;
+
 	g_debug ("Problem: %s", text);
-	gdm_greeter_server_problem (slave->priv->greeter, text);
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
+				 "Problem",
+				 &error,
+				 G_TYPE_STRING, text,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send Problem: %s", error->message);
+		g_error_free (error);
+	}
+
 }
 
 static void
@@ -635,9 +687,22 @@ on_info_query (GdmSession      *session,
                const char      *text,
 	       GdmProductSlave *slave)
 {
+	GError  *error;
+	gboolean res;
 
 	g_debug ("Info query: %s", text);
-	gdm_greeter_server_info_query (slave->priv->greeter, text);
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
+				 "InfoQuery",
+				 &error,
+				 G_TYPE_STRING, text,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send InfoQuery: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 static void
@@ -645,66 +710,93 @@ on_secret_info_query (GdmSession      *session,
                       const char      *text,
 		      GdmProductSlave *slave)
 {
+	GError *error;
+	gboolean res;
+
+
 	g_debug ("Secret info query: %s", text);
-	gdm_greeter_server_secret_info_query (slave->priv->greeter, text);
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
+				 "SecretInfoQuery",
+				 &error,
+				 G_TYPE_STRING, text,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send SecretInfoQuery: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 static void
-on_greeter_answer (GdmGreeterServer *greeter,
-		   const char       *text,
-		   GdmProductSlave  *slave)
+on_relay_answer (DBusGProxy *proxy,
+		 const char *text,
+		 gpointer    data)
 {
+	GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
+
+	g_debug ("Relay Answer: %s", text);
+
 	gdm_session_answer_query (slave->priv->session, text);
 }
 
 static void
-on_greeter_session_selected (GdmGreeterServer *greeter,
-			     const char       *text,
-			     GdmProductSlave  *slave)
+on_relay_session_selected (DBusGProxy *proxy,
+			   const char *text,
+			   gpointer    data)
 {
+	GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
+
+	g_debug ("Session: %s", text);
+
 	g_free (slave->priv->selected_session);
 	slave->priv->selected_session = g_strdup (text);
 }
 
 static void
-on_greeter_language_selected (GdmGreeterServer *greeter,
-			      const char       *text,
-			      GdmProductSlave  *slave)
+on_relay_language_selected (DBusGProxy *proxy,
+			    const char *text,
+			    gpointer    data)
 {
+	GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
+
+	g_debug ("Language: %s", text);
+
 	g_free (slave->priv->selected_language);
 	slave->priv->selected_language = g_strdup (text);
 }
 
 static void
-on_greeter_connected (GdmGreeterServer *greeter,
-		      GdmProductSlave  *slave)
+on_relay_open (DBusGProxy *proxy,
+	       gpointer    data)
 {
-	gboolean       display_is_local;
+	GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
+	gboolean         res;
+	GError          *error;
 
-	g_object_get (slave,
-		      "display-is-local", &display_is_local,
-		      NULL);
+	g_debug ("Relay open: opening session");
 
-	g_debug ("Greeter connected");
-
-	gdm_session_open (slave->priv->session,
-			  "gdm",
-			  NULL /* hostname */,
-			  "/dev/console",
-			  STDOUT_FILENO,
-			  STDERR_FILENO,
-			  NULL);
+	error = NULL;
+	res = gdm_session_open (slave->priv->session,
+				"gdm",
+				NULL /* hostname */,
+				"/dev/console",
+				STDOUT_FILENO,
+				STDERR_FILENO,
+				&error);
+	if (! res) {
+		g_warning ("Unable to open session: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 static void
-run_greeter (GdmProductSlave *slave)
+setup_relay (GdmProductSlave *slave)
 {
 	gboolean       display_is_local;
 	char          *display_name;
 	char          *auth_file;
-	char          *address;
-	GError        *error;
-	gboolean       res;
 
 	g_object_get (slave,
 		      "display-is-local", &display_is_local,
@@ -739,93 +831,10 @@ run_greeter (GdmProductSlave *slave)
 				      GDMCONFDIR"/Init",
 				      "gdm");
 
-	slave->priv->session = gdm_session_new ();
-
-	g_signal_connect (slave->priv->session,
-			  "info",
-			  G_CALLBACK (on_info),
-			  slave);
-
-	g_signal_connect (slave->priv->session,
-			  "problem",
-			  G_CALLBACK (on_problem),
-			  slave);
-
-	g_signal_connect (slave->priv->session,
-			  "info-query",
-			  G_CALLBACK (on_info_query),
-			  slave);
-
-	g_signal_connect (slave->priv->session,
-			  "secret-info-query",
-			  G_CALLBACK (on_secret_info_query),
-			  slave);
-
-	g_signal_connect (slave->priv->session,
-			  "user-verified",
-			  G_CALLBACK (on_user_verified),
-			  slave);
-
-	g_signal_connect (slave->priv->session,
-			  "user-verification-error",
-			  G_CALLBACK (on_user_verification_error),
-			  slave);
-
-	g_signal_connect (slave->priv->session,
-			  "session-started",
-			  G_CALLBACK (on_session_started),
-			  slave);
-	g_signal_connect (slave->priv->session,
-			  "session-exited",
-			  G_CALLBACK (on_session_exited),
-			  slave);
-	g_signal_connect (slave->priv->session,
-			  "session-died",
-			  G_CALLBACK (on_session_died),
-			  slave);
-
-	slave->priv->greeter = gdm_greeter_server_new (display_name);
-	g_signal_connect (slave->priv->greeter,
-			  "query-answer",
-			  G_CALLBACK (on_greeter_answer),
-			  slave);
-	g_signal_connect (slave->priv->greeter,
-			  "session-selected",
-			  G_CALLBACK (on_greeter_session_selected),
-			  slave);
-	g_signal_connect (slave->priv->greeter,
-			  "language-selected",
-			  G_CALLBACK (on_greeter_language_selected),
-			  slave);
-	g_signal_connect (slave->priv->greeter,
-			  "connected",
-			  G_CALLBACK (on_greeter_connected),
-			  slave);
-	g_object_set (slave->priv->greeter,
-		      "x11-authority-file", auth_file,
-		      NULL);
-	gdm_greeter_server_start (slave->priv->greeter);
-
-	address = gdm_greeter_server_get_address (slave->priv->greeter);
-	error = NULL;
-	res = dbus_g_proxy_call (GDM_PRODUCT_SLAVE (slave)->priv->product_display_proxy,
-				 "SetGreeterServerAddress",
-				 &error,
-				 G_TYPE_STRING, address,
-				 G_TYPE_INVALID,
-				 G_TYPE_INVALID);
-	if (! res) {
-		if (error != NULL) {
-			g_warning ("Failed to set greeter server address: %s", error->message);
-			g_error_free (error);
-		} else {
-			g_warning ("Failed to set greeter server address");
-		}
-	}
-	g_free (address);
-
 	g_free (display_name);
 	g_free (auth_file);
+
+	ready_relay (slave);
 }
 
 static void
@@ -922,7 +931,7 @@ idle_connect_to_display (GdmProductSlave *slave)
 	if (res) {
 		/* FIXME: handle wait-for-go */
 
-		run_greeter (slave);
+		setup_relay (slave);
 	} else {
 		if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
 			g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
@@ -986,6 +995,116 @@ gdm_product_slave_run (GdmProductSlave *slave)
 	return TRUE;
 }
 
+static void
+session_relay_proxy_destroyed (GObject *object,
+				gpointer data)
+{
+	g_debug ("Session server proxy destroyed");
+}
+
+static void
+get_relay_address (GdmProductSlave *slave)
+{
+	GError  *error;
+	char    *text;
+	gboolean res;
+
+	text = NULL;
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->product_display_proxy,
+				 "GetRelayAddress",
+				 &error,
+				 G_TYPE_INVALID,
+				 G_TYPE_STRING, &text,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to get relay address: %s", error->message);
+		g_error_free (error);
+	} else {
+		g_free (slave->priv->relay_address);
+		slave->priv->relay_address = g_strdup (text);
+		g_debug ("Got relay address: %s", slave->priv->relay_address);
+	}
+
+	g_free (text);
+}
+
+static gboolean
+connect_to_session_relay (GdmProductSlave *slave)
+{
+	GError *error;
+
+	get_relay_address (slave);
+
+	g_debug ("connecting to session relay address: %s", slave->priv->relay_address);
+
+        error = NULL;
+        slave->priv->session_relay_connection = dbus_g_connection_open (slave->priv->relay_address, &error);
+        if (slave->priv->session_relay_connection == NULL) {
+                if (error != NULL) {
+                        g_warning ("error opening connection: %s", error->message);
+                        g_error_free (error);
+                } else {
+			g_warning ("Unable to open connection");
+		}
+		exit (1);
+        }
+
+	g_debug ("creating session server proxy for peer: %s", SERVER_DBUS_PATH);
+        slave->priv->session_relay_proxy = dbus_g_proxy_new_for_peer (slave->priv->session_relay_connection,
+								      SERVER_DBUS_PATH,
+								      SERVER_DBUS_INTERFACE);
+	if (slave->priv->session_relay_proxy == NULL) {
+		g_warning ("Unable to create proxy for peer");
+		exit (1);
+	}
+
+	/* FIXME: not sure why introspection isn't working */
+	dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
+				 "AnswerQuery",
+				 G_TYPE_STRING,
+				 G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
+				 "SessionSelected",
+				 G_TYPE_STRING,
+				 G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
+				 "LanguageSelected",
+				 G_TYPE_STRING,
+				 G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
+				 "Open",
+				 G_TYPE_INVALID);
+
+	dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
+				     "AnswerQuery",
+				     G_CALLBACK (on_relay_answer),
+				     slave,
+				     NULL);
+	dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
+				     "SessionSelected",
+				     G_CALLBACK (on_relay_session_selected),
+				     slave,
+				     NULL);
+	dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
+				     "LanguageSelected",
+				     G_CALLBACK (on_relay_language_selected),
+				     slave,
+				     NULL);
+	dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
+				     "Open",
+				     G_CALLBACK (on_relay_open),
+				     slave,
+				     NULL);
+
+	g_signal_connect (slave->priv->session_relay_proxy,
+			  "destroy",
+			  G_CALLBACK (session_relay_proxy_destroyed),
+			  NULL);
+
+	return TRUE;
+}
+
 static gboolean
 gdm_product_slave_start (GdmSlave *slave)
 {
@@ -1028,6 +1147,7 @@ gdm_product_slave_start (GdmSlave *slave)
 		goto out;
 	}
 
+	connect_to_session_relay (GDM_PRODUCT_SLAVE (slave));
 
 	gdm_product_slave_run (GDM_PRODUCT_SLAVE (slave));
 
@@ -1047,12 +1167,6 @@ gdm_product_slave_stop (GdmSlave *slave)
 	g_debug ("Stopping product_slave");
 
 	res = GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->stop (slave);
-
-	if (GDM_PRODUCT_SLAVE (slave)->priv->greeter != NULL) {
-		gdm_greeter_server_stop (GDM_PRODUCT_SLAVE (slave)->priv->greeter);
-		g_object_unref (GDM_PRODUCT_SLAVE (slave)->priv->greeter);
-		GDM_PRODUCT_SLAVE (slave)->priv->greeter = NULL;
-	}
 
 	if (GDM_PRODUCT_SLAVE (slave)->priv->session != NULL) {
 		gdm_session_close (GDM_PRODUCT_SLAVE (slave)->priv->session);
@@ -1075,9 +1189,9 @@ gdm_product_slave_stop (GdmSlave *slave)
 
 static void
 gdm_product_slave_set_property (GObject      *object,
-			       guint	      prop_id,
-			       const GValue *value,
-			       GParamSpec   *pspec)
+				guint	      prop_id,
+				const GValue *value,
+				GParamSpec   *pspec)
 {
 	GdmProductSlave *self;
 
@@ -1092,9 +1206,9 @@ gdm_product_slave_set_property (GObject      *object,
 
 static void
 gdm_product_slave_get_property (GObject    *object,
-			       guint       prop_id,
-			       GValue	   *value,
-			       GParamSpec *pspec)
+				guint       prop_id,
+				GValue	   *value,
+				GParamSpec *pspec)
 {
 	GdmProductSlave *self;
 
@@ -1109,8 +1223,8 @@ gdm_product_slave_get_property (GObject    *object,
 
 static GObject *
 gdm_product_slave_constructor (GType                  type,
-			      guint                  n_construct_properties,
-			      GObjectConstructParam *construct_properties)
+			       guint                  n_construct_properties,
+			       GObjectConstructParam *construct_properties)
 {
         GdmProductSlave      *product_slave;
         GdmProductSlaveClass *klass;
@@ -1118,8 +1232,52 @@ gdm_product_slave_constructor (GType                  type,
         klass = GDM_PRODUCT_SLAVE_CLASS (g_type_class_peek (GDM_TYPE_PRODUCT_SLAVE));
 
         product_slave = GDM_PRODUCT_SLAVE (G_OBJECT_CLASS (gdm_product_slave_parent_class)->constructor (type,
-										 n_construct_properties,
-										 construct_properties));
+													 n_construct_properties,
+													 construct_properties));
+	product_slave->priv->session = gdm_session_new ();
+
+	g_signal_connect (product_slave->priv->session,
+			  "info",
+			  G_CALLBACK (on_info),
+			  product_slave);
+
+	g_signal_connect (product_slave->priv->session,
+			  "problem",
+			  G_CALLBACK (on_problem),
+			  product_slave);
+
+	g_signal_connect (product_slave->priv->session,
+			  "info-query",
+			  G_CALLBACK (on_info_query),
+			  product_slave);
+
+	g_signal_connect (product_slave->priv->session,
+			  "secret-info-query",
+			  G_CALLBACK (on_secret_info_query),
+			  product_slave);
+
+	g_signal_connect (product_slave->priv->session,
+			  "user-verified",
+			  G_CALLBACK (on_user_verified),
+			  product_slave);
+
+	g_signal_connect (product_slave->priv->session,
+			  "user-verification-error",
+			  G_CALLBACK (on_user_verification_error),
+			  product_slave);
+
+	g_signal_connect (product_slave->priv->session,
+			  "session-started",
+			  G_CALLBACK (on_session_started),
+			  product_slave);
+	g_signal_connect (product_slave->priv->session,
+			  "session-exited",
+			  G_CALLBACK (on_session_exited),
+			  product_slave);
+	g_signal_connect (product_slave->priv->session,
+			  "session-died",
+			  G_CALLBACK (on_session_died),
+			  product_slave);
 
         return G_OBJECT (product_slave);
 }

@@ -56,7 +56,7 @@ typedef struct
 } GdmGreeterServerClass;
 
 GType		    gdm_greeter_server_get_type          (void);
-GdmGreeterServer *  gdm_greeter_server_new	         (const char       *display_id);
+GdmGreeterServer *  gdm_greeter_server_new	         (void);
 
 gboolean            gdm_greeter_server_start             (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_stop              (GdmGreeterServer *greeter_server);

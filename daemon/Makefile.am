@@ -75,7 +75,7 @@ test_session_SOURCES = 		\
 test_session_LDADD =		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
-	$(PAM_LIBS)	\
+	$(PAM_LIBS)		\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
@@ -124,10 +124,14 @@ gdm_simple_slave_LDADD = 			\
 
 gdm_factory_slave_SOURCES = 		\
 	factory-slave-main.c 		\
+	gdm-greeter-server.c		\
+	gdm-greeter-server.h		\
 	gdm-greeter-proxy.c		\
 	gdm-greeter-proxy.h		\
 	gdm-server.c			\
 	gdm-server.h			\
+	gdm-session-relay.c		\
+	gdm-session-relay.h		\
 	gdm-session.c			\
 	gdm-session.h			\
 	gdm-slave.c			\
@@ -160,8 +164,6 @@ gdm_factory_slave_LDADD = 			\
 
 gdm_product_slave_SOURCES = 		\
 	product-slave-main.c 		\
-	gdm-greeter-server.c		\
-	gdm-greeter-server.h		\
 	gdm-server.c			\
 	gdm-server.h			\
 	gdm-session.c			\

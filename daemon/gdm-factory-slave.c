@@ -50,6 +50,8 @@
 
 #include "gdm-server.h"
 #include "gdm-greeter-proxy.h"
+#include "gdm-greeter-server.h"
+#include "gdm-session-relay.h"
 
 extern char **environ;
 
@@ -62,19 +64,21 @@ extern char **environ;
 
 struct GdmFactorySlavePrivate
 {
-	char            *id;
-	GPid             pid;
-        guint            output_watch_id;
-        guint            error_watch_id;
+	char             *id;
+	GPid              pid;
+        guint             output_watch_id;
+        guint             error_watch_id;
 
-	GPid             server_pid;
-	Display         *server_display;
-	guint            connection_attempts;
+	GPid              server_pid;
+	Display          *server_display;
+	guint             connection_attempts;
 
-	GdmServer       *server;
-	GdmGreeterProxy *greeter;
-	DBusGProxy      *factory_display_proxy;
-        DBusGConnection *connection;
+	GdmServer        *server;
+	GdmSessionRelay  *session_relay;
+	GdmGreeterServer *greeter_server;
+	GdmGreeterProxy  *greeter;
+	DBusGProxy       *factory_display_proxy;
+        DBusGConnection  *connection;
 };
 
 enum {
@@ -373,11 +377,145 @@ on_greeter_stop (GdmGreeterProxy *greeter,
 }
 
 static void
+on_relay_info (GdmSessionRelay *relay,
+	       const char      *text,
+	       GdmFactorySlave  *slave)
+{
+	g_debug ("Info: %s", text);
+	gdm_greeter_server_info (slave->priv->greeter_server, text);
+}
+
+static void
+on_relay_problem (GdmSessionRelay *relay,
+		  const char      *text,
+		  GdmFactorySlave  *slave)
+{
+	g_debug ("Problem: %s", text);
+	gdm_greeter_server_problem (slave->priv->greeter_server, text);
+}
+
+static void
+on_relay_info_query (GdmSessionRelay *relay,
+		     const char      *text,
+		     GdmFactorySlave  *slave)
+{
+
+	g_debug ("Info query: %s", text);
+	gdm_greeter_server_info_query (slave->priv->greeter_server, text);
+}
+
+static void
+on_relay_secret_info_query (GdmSessionRelay *relay,
+			    const char      *text,
+			    GdmFactorySlave  *slave)
+{
+	g_debug ("Secret info query: %s", text);
+	gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
+}
+
+static void
+on_relay_ready (GdmSessionRelay *relay,
+		GdmFactorySlave *slave)
+{
+	g_debug ("Relay is ready");
+	gdm_session_relay_open (slave->priv->session_relay);
+
+}
+
+static void
+on_greeter_answer (GdmGreeterServer *greeter_server,
+		   const char       *text,
+		   GdmFactorySlave  *slave)
+{
+	g_debug ("Greeter answer: %s", text);
+	gdm_session_relay_answer_query (slave->priv->session_relay, text);
+}
+
+static void
+on_greeter_session_selected (GdmGreeterServer *greeter_server,
+			     const char       *text,
+			     GdmFactorySlave  *slave)
+{
+	gdm_session_relay_select_session (slave->priv->session_relay, text);
+}
+
+static void
+on_greeter_language_selected (GdmGreeterServer *greeter_server,
+			      const char       *text,
+			      GdmFactorySlave  *slave)
+{
+	gdm_session_relay_select_language (slave->priv->session_relay, text);
+}
+
+static void
+on_greeter_connected (GdmGreeterServer *greeter_server,
+		      GdmFactorySlave  *slave)
+{
+	char    *display_id;
+	char    *server_address;
+	char    *product_id;
+	GError  *error;
+	gboolean res;
+
+	g_debug ("Greeter started");
+
+	error = NULL;
+        GDM_FACTORY_SLAVE (slave)->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (GDM_FACTORY_SLAVE (slave)->priv->connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+                exit (1);
+        }
+
+	g_object_get (slave,
+		      "display-id", &display_id,
+		      NULL);
+
+	g_debug ("Connecting to display %s", display_id);
+	GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy = dbus_g_proxy_new_for_name (GDM_FACTORY_SLAVE (slave)->priv->connection,
+											    GDM_DBUS_NAME,
+											    display_id,
+											    GDM_DBUS_FACTORY_DISPLAY_INTERFACE);
+	g_free (display_id);
+
+	if (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy == NULL) {
+		g_warning ("Failed to create display proxy %s", display_id);
+		return;
+	}
+
+	server_address = gdm_session_relay_get_address (slave->priv->session_relay);
+
+	error = NULL;
+	res = dbus_g_proxy_call (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy,
+				 "CreateProductDisplay",
+				 &error,
+				 G_TYPE_STRING, server_address,
+				 G_TYPE_INVALID,
+				 DBUS_TYPE_G_OBJECT_PATH, &product_id,
+				 G_TYPE_INVALID);
+	g_free (server_address);
+
+	if (! res) {
+		if (error != NULL) {
+			g_warning ("Failed to create product display: %s", error->message);
+			g_error_free (error);
+		} else {
+			g_warning ("Failed to create product display");
+		}
+	}
+}
+
+static void
 run_greeter (GdmFactorySlave *slave)
 {
 	gboolean       display_is_local;
 	char          *display_name;
 	char          *auth_file;
+	char          *address;
+
+	g_debug ("Running greeter");
 
 	g_object_get (slave,
 		      "display-is-local", &display_is_local,
@@ -412,6 +550,26 @@ run_greeter (GdmFactorySlave *slave)
 				       GDMCONFDIR"/Init",
 				      "gdm");
 
+	slave->priv->greeter_server = gdm_greeter_server_new ();
+	g_signal_connect (slave->priv->greeter_server,
+			  "query-answer",
+			  G_CALLBACK (on_greeter_answer),
+			  slave);
+	g_signal_connect (slave->priv->greeter_server,
+			  "session-selected",
+			  G_CALLBACK (on_greeter_session_selected),
+			  slave);
+	g_signal_connect (slave->priv->greeter_server,
+			  "language-selected",
+			  G_CALLBACK (on_greeter_language_selected),
+			  slave);
+	g_signal_connect (slave->priv->greeter_server,
+			  "connected",
+			  G_CALLBACK (on_greeter_connected),
+			  slave);
+	gdm_greeter_server_start (slave->priv->greeter_server);
+
+	address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
 	slave->priv->greeter = gdm_greeter_proxy_new (display_name);
 	g_signal_connect (slave->priv->greeter,
@@ -425,7 +583,10 @@ run_greeter (GdmFactorySlave *slave)
 	g_object_set (slave->priv->greeter,
 		      "x11-authority-file", auth_file,
 		      NULL);
+	gdm_greeter_proxy_set_server_address (slave->priv->greeter, address);
 	gdm_greeter_proxy_start (slave->priv->greeter);
+
+	g_free (address);
 
 	g_free (display_name);
 	g_free (auth_file);
@@ -594,68 +755,50 @@ gdm_factory_slave_start (GdmSlave *slave)
 {
 	gboolean res;
 	gboolean ret;
-	char    *display_id;
-	char    *product_id;
-	GError  *error;
 
 	ret = FALSE;
 
+	g_debug ("Starting factory slave");
+
 	res = GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->start (slave);
 
-	g_object_get (slave,
-		      "display-id", &display_id,
-		      NULL);
 
-	error = NULL;
-        GDM_FACTORY_SLAVE (slave)->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (GDM_FACTORY_SLAVE (slave)->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
-                exit (1);
-        }
-	error = NULL;
-	GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy = dbus_g_proxy_new_for_name_owner (GDM_FACTORY_SLAVE (slave)->priv->connection,
-												  GDM_DBUS_NAME,
-												  display_id,
-												  GDM_DBUS_FACTORY_DISPLAY_INTERFACE,
-												  &error);
-	if (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy == NULL) {
-		if (error != NULL) {
-			g_warning ("Failed to create display proxy %s: %s", display_id, error->message);
-			g_error_free (error);
-		} else {
-			g_warning ("Unable to create display proxy");
-		}
-		goto out;
-	}
+	GDM_FACTORY_SLAVE (slave)->priv->session_relay = gdm_session_relay_new ();
+	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+			  "info",
+			  G_CALLBACK (on_relay_info),
+			  slave);
 
-	error = NULL;
-	res = dbus_g_proxy_call (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy,
-				 "CreateProductDisplay",
-				 &error,
-				 G_TYPE_INVALID,
-				 DBUS_TYPE_G_OBJECT_PATH, &product_id,
-				 G_TYPE_INVALID);
-	if (! res) {
-		if (error != NULL) {
-			g_warning ("Failed to create product display: %s", error->message);
-			g_error_free (error);
-		} else {
-			g_warning ("Failed to create product display");
-		}
+	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+			  "problem",
+			  G_CALLBACK (on_relay_problem),
+			  slave);
 
-		return FALSE;
-	}
+	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+			  "info-query",
+			  G_CALLBACK (on_relay_info_query),
+			  slave);
 
+	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+			  "secret-info-query",
+			  G_CALLBACK (on_relay_secret_info_query),
+			  slave);
+	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+			  "ready",
+			  G_CALLBACK (on_relay_ready),
+			  slave);
+#if 0
+	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+			  "user-verified",
+			  G_CALLBACK (on_relay_user_verified),
+			  slave);
+#endif
+
+	gdm_session_relay_start (GDM_FACTORY_SLAVE (slave)->priv->session_relay);
 
 	gdm_factory_slave_run (GDM_FACTORY_SLAVE (slave));
 
 	ret = TRUE;
-
- out:
-	g_free (display_id);
 
 	return ret;
 }
@@ -668,6 +811,18 @@ gdm_factory_slave_stop (GdmSlave *slave)
 	g_debug ("Stopping factory_slave");
 
 	res = GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->stop (slave);
+
+	if (GDM_FACTORY_SLAVE (slave)->priv->session_relay != NULL) {
+		gdm_session_relay_stop (GDM_FACTORY_SLAVE (slave)->priv->session_relay);
+		g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->session_relay);
+		GDM_FACTORY_SLAVE (slave)->priv->session_relay = NULL;
+	}
+
+	if (GDM_FACTORY_SLAVE (slave)->priv->greeter_server != NULL) {
+		gdm_greeter_server_stop (GDM_FACTORY_SLAVE (slave)->priv->greeter_server);
+		g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->greeter_server);
+		GDM_FACTORY_SLAVE (slave)->priv->greeter_server = NULL;
+	}
 
 	if (GDM_FACTORY_SLAVE (slave)->priv->greeter != NULL) {
 		gdm_greeter_proxy_stop (GDM_FACTORY_SLAVE (slave)->priv->greeter);
@@ -733,8 +888,8 @@ gdm_factory_slave_constructor (GType                  type,
         klass = GDM_FACTORY_SLAVE_CLASS (g_type_class_peek (GDM_TYPE_FACTORY_SLAVE));
 
         factory_slave = GDM_FACTORY_SLAVE (G_OBJECT_CLASS (gdm_factory_slave_parent_class)->constructor (type,
-										 n_construct_properties,
-										 construct_properties));
+													 n_construct_properties,
+													 construct_properties));
 
         return G_OBJECT (factory_slave);
 }
