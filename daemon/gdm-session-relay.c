@@ -178,6 +178,19 @@ gdm_session_relay_select_language (GdmSessionRelay *session_relay,
         send_dbus_string_signal (session_relay, "LanguageSelected", text);
 }
 
+void
+gdm_session_relay_select_user (GdmSessionRelay *session_relay,
+			       const char      *text)
+{
+        send_dbus_string_signal (session_relay, "UserSelected", text);
+}
+
+void
+gdm_session_relay_reset (GdmSessionRelay *session_relay)
+{
+        send_dbus_void_signal (session_relay, "Reset");
+}
+
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
  * sockets are only available on Linux.
  */
@@ -572,8 +585,6 @@ allow_user_function (DBusConnection *connection,
                      unsigned long   uid,
                      void           *data)
 {
-        GdmSessionRelay *session_relay = GDM_SESSION_RELAY (data);
-
 	if (uid == 0) {
 		return TRUE;
 	}

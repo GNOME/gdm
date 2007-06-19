@@ -51,6 +51,9 @@ typedef struct
 				    const char        *name);
 	void (* language_selected) (GdmGreeterServer  *greeter_server,
 				    const char        *name);
+	void (* user_selected)    (GdmGreeterServer  *greeter_server,
+				    const char        *name);
+	void (* reset)             (GdmGreeterServer  *greeter_server);
 	void (* connected)         (GdmGreeterServer  *greeter_server);
 	void (* disconnected)      (GdmGreeterServer  *greeter_server);
 } GdmGreeterServerClass;
@@ -70,6 +73,7 @@ gboolean            gdm_greeter_server_info              (GdmGreeterServer *gree
 							  const char       *text);
 gboolean            gdm_greeter_server_problem           (GdmGreeterServer *greeter_server,
 							  const char       *text);
+gboolean            gdm_greeter_server_reset             (GdmGreeterServer *greeter_server);
 
 G_END_DECLS
 

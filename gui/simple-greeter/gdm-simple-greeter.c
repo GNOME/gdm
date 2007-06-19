@@ -224,14 +224,16 @@ ok_button_clicked (GtkButton        *button,
 
 	entry = glade_xml_get_widget (greeter->priv->xml, "auth-entry");
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
-	res = gdm_greeter_answer_query (GDM_GREETER (greeter), text);
+	res = gdm_greeter_emit_answer_query (GDM_GREETER (greeter), text);
 }
 
 static void
 cancel_button_clicked (GtkButton        *button,
 		       GdmSimpleGreeter *greeter)
 {
+	gboolean    res;
 
+	res = gdm_greeter_emit_cancelled (GDM_GREETER (greeter));
 }
 
 static void

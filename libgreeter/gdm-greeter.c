@@ -50,6 +50,8 @@ enum {
 	QUERY_ANSWER,
 	SESSION_SELECTED,
 	LANGUAGE_SELECTED,
+	USER_SELECTED,
+	CANCELLED,
 	LAST_SIGNAL
 };
 
@@ -214,8 +216,8 @@ gdm_greeter_secret_info_query (GdmGreeter *greeter,
 }
 
 gboolean
-gdm_greeter_answer_query (GdmGreeter *greeter,
-			  const char *text)
+gdm_greeter_emit_answer_query (GdmGreeter *greeter,
+			       const char *text)
 {
 	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
 
@@ -227,8 +229,8 @@ gdm_greeter_answer_query (GdmGreeter *greeter,
 }
 
 gboolean
-gdm_greeter_select_session (GdmGreeter *greeter,
-			    const char *text)
+gdm_greeter_emit_select_session (GdmGreeter *greeter,
+				 const char *text)
 {
 	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
 
@@ -240,14 +242,39 @@ gdm_greeter_select_session (GdmGreeter *greeter,
 }
 
 gboolean
-gdm_greeter_select_language (GdmGreeter *greeter,
-			     const char *text)
+gdm_greeter_emit_select_language (GdmGreeter *greeter,
+				  const char *text)
 {
 	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
 
 	g_debug ("Select language: %s", text);
 
 	g_signal_emit (greeter, signals[LANGUAGE_SELECTED], 0, text);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_emit_select_user (GdmGreeter *greeter,
+			      const char *text)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_debug ("Select user: %s", text);
+
+	g_signal_emit (greeter, signals[USER_SELECTED], 0, text);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_emit_cancelled (GdmGreeter *greeter)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_debug ("Cancelled");
+
+	g_signal_emit (greeter, signals[CANCELLED], 0);
 
 	return TRUE;
 }
@@ -355,6 +382,16 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
 			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE,
 			      1, G_TYPE_STRING);
+	signals [USER_SELECTED] =
+		g_signal_new ("user-selected",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmGreeterClass, user_selected),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1, G_TYPE_STRING);
 	signals [SESSION_SELECTED] =
 		g_signal_new ("session-selected",
 			      G_TYPE_FROM_CLASS (object_class),
@@ -365,6 +402,16 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
 			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE,
 			      1, G_TYPE_STRING);
+	signals [CANCELLED] =
+		g_signal_new ("cancelled",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (GdmGreeterClass, cancelled),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE,
+			      0);
 
 	g_type_class_add_private (klass, sizeof (GdmGreeterPrivate));
 }

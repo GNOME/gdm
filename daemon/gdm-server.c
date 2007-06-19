@@ -553,6 +553,7 @@ gdm_server_spawn (GdmServer  *server,
 	GError          *error;
 	GPtrArray       *env;
 	gboolean         ret;
+	char            *freeme;
 
 	ret = FALSE;
 
@@ -577,7 +578,10 @@ gdm_server_spawn (GdmServer  *server,
 
 	env = get_server_environment (server);
 
-	g_debug ("Starting X server process");
+	freeme = g_strjoinv (" ", argv);
+	g_debug ("Starting X server process: %s", freeme);
+	g_free (freeme);
+
 	error = NULL;
 	ret = g_spawn_async_with_pipes (NULL,
 					argv,
@@ -867,7 +871,7 @@ gdm_server_init (GdmServer *server)
 	server->priv = GDM_SERVER_GET_PRIVATE (server);
 
 	server->priv->pid = -1;
-	server->priv->command = g_strdup ("/usr/bin/Xorg");
+	server->priv->command = g_strdup ("/usr/bin/Xorg -verbose -novtswitch");
 	server->priv->log_dir = g_strdup (LOGDIR);
 
 	setup_ready_signal (server);

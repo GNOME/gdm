@@ -159,6 +159,50 @@ on_select_language (GdmGreeter *greeter,
 }
 
 static void
+on_select_user (GdmGreeter *greeter,
+		const char *text,
+		gpointer    data)
+{
+	gboolean res;
+	GError  *error;
+
+	g_debug ("GREETER user selected: %s", text);
+
+	error = NULL;
+	res = dbus_g_proxy_call (server_proxy,
+				 "SelectUser",
+				 &error,
+				 G_TYPE_STRING, text,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send SelectUser: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
+on_cancelled (GdmGreeter *greeter,
+	      gpointer    data)
+{
+	gboolean res;
+	GError  *error;
+
+	g_debug ("GREETER cancelled");
+
+	error = NULL;
+	res = dbus_g_proxy_call (server_proxy,
+				 "Reset",
+				 &error,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send Reset: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 proxy_destroyed (GObject *object,
 		 gpointer data)
 {
@@ -267,6 +311,14 @@ main (int argc, char *argv[])
 	g_signal_connect (greeter,
 			  "language-selected",
 			  G_CALLBACK (on_select_language),
+			  NULL);
+	g_signal_connect (greeter,
+			  "user-selected",
+			  G_CALLBACK (on_select_user),
+			  NULL);
+	g_signal_connect (greeter,
+			  "cancelled",
+			  G_CALLBACK (on_cancelled),
 			  NULL);
 
 	gtk_main ();

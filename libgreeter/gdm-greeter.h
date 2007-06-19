@@ -52,10 +52,14 @@ typedef struct
 				       const char *text);
 	void (* language_selected)    (GdmGreeter *greeter,
 				       const char *text);
+	void (* user_selected)        (GdmGreeter *greeter,
+				       const char *text);
+	void (* cancelled)            (GdmGreeter *greeter);
 
 	/* methods */
 	gboolean (*start)             (GdmGreeter *greeter);
 	gboolean (*stop)              (GdmGreeter *greeter);
+	gboolean (*reset)             (GdmGreeter *greeter);
 
 	gboolean (*info_query)        (GdmGreeter *greeter,
 				       const char *text);
@@ -80,14 +84,18 @@ GType		    gdm_greeter_get_type		       (void);
 
 gboolean            gdm_greeter_start                          (GdmGreeter *greeter);
 gboolean            gdm_greeter_stop                           (GdmGreeter *greeter);
+gboolean            gdm_greeter_reset                          (GdmGreeter *greeter);
 
 /* emit signals */
-gboolean            gdm_greeter_answer_query                   (GdmGreeter *greeter,
+gboolean            gdm_greeter_emit_answer_query              (GdmGreeter *greeter,
 								const char *text);
-gboolean            gdm_greeter_select_session                 (GdmGreeter *greeter,
+gboolean            gdm_greeter_emit_select_session            (GdmGreeter *greeter,
 								const char *text);
-gboolean            gdm_greeter_select_language                (GdmGreeter *greeter,
+gboolean            gdm_greeter_emit_select_language           (GdmGreeter *greeter,
 								const char *text);
+gboolean            gdm_greeter_emit_select_user               (GdmGreeter *greeter,
+								const char *text);
+gboolean            gdm_greeter_emit_cancelled                 (GdmGreeter *greeter);
 
 /* actions */
 gboolean            gdm_greeter_info_query                     (GdmGreeter *greeter,

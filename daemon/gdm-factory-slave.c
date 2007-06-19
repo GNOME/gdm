@@ -418,8 +418,74 @@ on_relay_ready (GdmSessionRelay *relay,
 		GdmFactorySlave *slave)
 {
 	g_debug ("Relay is ready");
-	gdm_session_relay_open (slave->priv->session_relay);
 
+	gdm_greeter_server_reset (slave->priv->greeter_server);
+	gdm_session_relay_open (slave->priv->session_relay);
+}
+
+static gboolean
+create_product_display (GdmFactorySlave *slave)
+{
+	char    *display_id;
+	char    *server_address;
+	char    *product_id;
+	GError  *error;
+	gboolean res;
+	gboolean ret;
+
+	ret = FALSE;
+
+	g_object_get (slave,
+		      "display-id", &display_id,
+		      NULL);
+
+	g_debug ("Connecting to display %s", display_id);
+	slave->priv->factory_display_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
+									GDM_DBUS_NAME,
+									display_id,
+									GDM_DBUS_FACTORY_DISPLAY_INTERFACE);
+	g_free (display_id);
+
+	if (slave->priv->factory_display_proxy == NULL) {
+		g_warning ("Failed to create display proxy %s", display_id);
+		goto out;
+	}
+
+	server_address = gdm_session_relay_get_address (slave->priv->session_relay);
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->factory_display_proxy,
+				 "CreateProductDisplay",
+				 &error,
+				 G_TYPE_STRING, server_address,
+				 G_TYPE_INVALID,
+				 DBUS_TYPE_G_OBJECT_PATH, &product_id,
+				 G_TYPE_INVALID);
+	g_free (server_address);
+
+	if (! res) {
+		if (error != NULL) {
+			g_warning ("Failed to create product display: %s", error->message);
+			g_error_free (error);
+		} else {
+			g_warning ("Failed to create product display");
+		}
+		goto out;
+	}
+
+	ret = TRUE;
+
+ out:
+	return ret;
+}
+
+static void
+on_relay_session_started (GdmSessionRelay *relay,
+			  GdmFactorySlave *slave)
+{
+	g_debug ("Relay session started");
+	gdm_greeter_server_reset (slave->priv->greeter_server);
+	create_product_display (slave);
 }
 
 static void
@@ -448,63 +514,27 @@ on_greeter_language_selected (GdmGreeterServer *greeter_server,
 }
 
 static void
+on_greeter_user_selected (GdmGreeterServer *greeter_server,
+			  const char       *text,
+			  GdmFactorySlave  *slave)
+{
+	gdm_session_relay_select_user (slave->priv->session_relay, text);
+}
+
+static void
+on_greeter_reset (GdmGreeterServer *greeter_server,
+		  GdmFactorySlave  *slave)
+{
+	gdm_session_relay_reset (slave->priv->session_relay);
+}
+
+static void
 on_greeter_connected (GdmGreeterServer *greeter_server,
 		      GdmFactorySlave  *slave)
 {
-	char    *display_id;
-	char    *server_address;
-	char    *product_id;
-	GError  *error;
-	gboolean res;
-
 	g_debug ("Greeter started");
 
-	error = NULL;
-        GDM_FACTORY_SLAVE (slave)->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (GDM_FACTORY_SLAVE (slave)->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
-                exit (1);
-        }
-
-	g_object_get (slave,
-		      "display-id", &display_id,
-		      NULL);
-
-	g_debug ("Connecting to display %s", display_id);
-	GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy = dbus_g_proxy_new_for_name (GDM_FACTORY_SLAVE (slave)->priv->connection,
-											    GDM_DBUS_NAME,
-											    display_id,
-											    GDM_DBUS_FACTORY_DISPLAY_INTERFACE);
-	g_free (display_id);
-
-	if (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy == NULL) {
-		g_warning ("Failed to create display proxy %s", display_id);
-		return;
-	}
-
-	server_address = gdm_session_relay_get_address (slave->priv->session_relay);
-
-	error = NULL;
-	res = dbus_g_proxy_call (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy,
-				 "CreateProductDisplay",
-				 &error,
-				 G_TYPE_STRING, server_address,
-				 G_TYPE_INVALID,
-				 DBUS_TYPE_G_OBJECT_PATH, &product_id,
-				 G_TYPE_INVALID);
-	g_free (server_address);
-
-	if (! res) {
-		if (error != NULL) {
-			g_warning ("Failed to create product display: %s", error->message);
-			g_error_free (error);
-		} else {
-			g_warning ("Failed to create product display");
-		}
-	}
+	create_product_display (slave);
 }
 
 static void
@@ -564,8 +594,16 @@ run_greeter (GdmFactorySlave *slave)
 			  G_CALLBACK (on_greeter_language_selected),
 			  slave);
 	g_signal_connect (slave->priv->greeter_server,
+			  "user-selected",
+			  G_CALLBACK (on_greeter_user_selected),
+			  slave);
+	g_signal_connect (slave->priv->greeter_server,
 			  "connected",
 			  G_CALLBACK (on_greeter_connected),
+			  slave);
+	g_signal_connect (slave->priv->greeter_server,
+			  "reset",
+			  G_CALLBACK (on_greeter_reset),
 			  slave);
 	gdm_greeter_server_start (slave->priv->greeter_server);
 
@@ -768,17 +806,14 @@ gdm_factory_slave_start (GdmSlave *slave)
 			  "info",
 			  G_CALLBACK (on_relay_info),
 			  slave);
-
 	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
 			  "problem",
 			  G_CALLBACK (on_relay_problem),
 			  slave);
-
 	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
 			  "info-query",
 			  G_CALLBACK (on_relay_info_query),
 			  slave);
-
 	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
 			  "secret-info-query",
 			  G_CALLBACK (on_relay_secret_info_query),
@@ -787,12 +822,10 @@ gdm_factory_slave_start (GdmSlave *slave)
 			  "ready",
 			  G_CALLBACK (on_relay_ready),
 			  slave);
-#if 0
 	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
-			  "user-verified",
-			  G_CALLBACK (on_relay_user_verified),
+			  "session-started",
+			  G_CALLBACK (on_relay_session_started),
 			  slave);
-#endif
 
 	gdm_session_relay_start (GDM_FACTORY_SLAVE (slave)->priv->session_relay);
 
@@ -914,12 +947,23 @@ gdm_factory_slave_class_init (GdmFactorySlaveClass *klass)
 }
 
 static void
-gdm_factory_slave_init (GdmFactorySlave *factory_slave)
+gdm_factory_slave_init (GdmFactorySlave *slave)
 {
+	GError *error;
 
-	factory_slave->priv = GDM_FACTORY_SLAVE_GET_PRIVATE (factory_slave);
+	slave->priv = GDM_FACTORY_SLAVE_GET_PRIVATE (slave);
 
-	factory_slave->priv->pid = -1;
+	slave->priv->pid = -1;
+
+	error = NULL;
+        slave->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (slave->priv->connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+                exit (1);
+        }
 }
 
 static void

@@ -73,6 +73,8 @@ enum {
 	QUERY_ANSWER,
 	SESSION_SELECTED,
 	LANGUAGE_SELECTED,
+	USER_SELECTED,
+	RESET,
 	CONNECTED,
 	DISCONNECTED,
 	LAST_SIGNAL
@@ -135,6 +137,25 @@ send_dbus_string_signal (GdmGreeterServer *greeter_server,
 	dbus_message_unref (message);
 }
 
+static void
+send_dbus_void_signal (GdmGreeterServer *greeter_server,
+		       const char	*name)
+{
+	DBusMessage    *message;
+
+	g_return_if_fail (greeter_server != NULL);
+
+	message = dbus_message_new_signal (GDM_GREETER_SERVER_DBUS_PATH,
+					   GDM_GREETER_SERVER_DBUS_INTERFACE,
+					   name);
+
+	if (! send_dbus_message (greeter_server->priv->greeter_connection, message)) {
+		g_debug ("Could not send %s signal", name);
+	}
+
+	dbus_message_unref (message);
+}
+
 gboolean
 gdm_greeter_server_info_query (GdmGreeterServer *greeter_server,
 			      const char      *text)
@@ -165,6 +186,13 @@ gdm_greeter_server_problem (GdmGreeterServer *greeter_server,
 			   const char      *text)
 {
         send_dbus_string_signal (greeter_server, "Problem", text);
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_server_reset (GdmGreeterServer *greeter_server)
+{
+        send_dbus_void_signal (greeter_server, "Reset");
 	return TRUE;
 }
 
@@ -278,6 +306,49 @@ handle_select_language (GdmGreeterServer *greeter_server,
 }
 
 static DBusHandlerResult
+handle_select_user (GdmGreeterServer *greeter_server,
+		    DBusConnection   *connection,
+		    DBusMessage      *message)
+{
+	DBusMessage *reply;
+	DBusError    error;
+	const char  *text;
+
+	dbus_error_init (&error);
+	if (! dbus_message_get_args (message, &error,
+				     DBUS_TYPE_STRING, &text,
+				     DBUS_TYPE_INVALID)) {
+		g_warning ("ERROR: %s", error.message);
+	}
+
+	g_debug ("SelectUser: %s", text);
+
+	reply = dbus_message_new_method_return (message);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+
+	g_signal_emit (greeter_server, signals [USER_SELECTED], 0, text);
+
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_reset (GdmGreeterServer *greeter_server,
+	      DBusConnection   *connection,
+	      DBusMessage      *message)
+{
+	DBusMessage *reply;
+
+	reply = dbus_message_new_method_return (message);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+
+	g_signal_emit (greeter_server, signals [RESET], 0);
+
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 greeter_handle_child_message (DBusConnection *connection,
 			      DBusMessage    *message,
 			      void           *user_data)
@@ -290,6 +361,10 @@ greeter_handle_child_message (DBusConnection *connection,
 		return handle_select_session (greeter_server, connection, message);
 	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
 		return handle_select_language (greeter_server, connection, message);
+	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectUser")) {
+		return handle_select_user (greeter_server, connection, message);
+	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "Reset")) {
+		return handle_reset (greeter_server, connection, message);
 	}
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -326,6 +401,11 @@ do_introspect (DBusConnection *connection,
 			       "    </method>\n"
 			       "    <method name=\"SelectLanguage\">\n"
 			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
+			       "    </method>\n"
+			       "    <method name=\"SelectUser\">\n"
+			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
+			       "    </method>\n"
+			       "    <method name=\"Reset\">\n"
 			       "    </method>\n"
 			       "    <signal name=\"Info\">\n"
 			       "      <arg name=\"text\" type=\"s\"/>\n"
@@ -711,6 +791,27 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
 			      G_TYPE_NONE,
 			      1,
 			      G_TYPE_STRING);
+	signals [USER_SELECTED] =
+		g_signal_new ("user-selected",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmGreeterServerClass, user_selected),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__STRING,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_STRING);
+	signals [RESET] =
+		g_signal_new ("reset",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmGreeterServerClass, reset),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE,
+			      0);
 	signals [CONNECTED] =
 		g_signal_new ("connected",
 			      G_OBJECT_CLASS_TYPE (object_class),
