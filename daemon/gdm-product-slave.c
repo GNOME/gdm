@@ -393,13 +393,13 @@ relay_session_started (GdmProductSlave *slave)
 }
 
 static void
-on_open (GdmSession      *session,
-	 GdmProductSlave *slave)
+on_opened (GdmSession      *session,
+	   GdmProductSlave *slave)
 {
 	GError *error;
 	gboolean res;
 
-	g_debug ("session open");
+	g_debug ("session opened");
 	res = gdm_session_begin_verification (session,
 					      slave->priv->selected_user,
 					      &error);
@@ -839,7 +839,7 @@ on_relay_open (DBusGProxy *proxy,
 	error = NULL;
 	res = gdm_session_open (slave->priv->session,
 				"gdm",
-				NULL /* hostname */,
+				"",
 				"/dev/console",
 				&error);
 	if (! res) {
@@ -854,8 +854,8 @@ create_new_session (GdmProductSlave *slave)
 	slave->priv->session = gdm_session_new ();
 
 	g_signal_connect (slave->priv->session,
-			  "open",
-			  G_CALLBACK (on_open),
+			  "opened",
+			  G_CALLBACK (on_opened),
 			  slave);
 
 	g_signal_connect (slave->priv->session,

@@ -62,6 +62,8 @@
 #define GDM_SESSION_ROOT_UID 0
 #endif
 
+#define MESSAGE_REPLY_TIMEOUT (10 * 60 * 1000)
+
 struct GdmSessionWorkerPrivate
 {
 	int               exit_code;
@@ -453,14 +455,16 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 	char    *answer;
 
 	error = NULL;
-	res = dbus_g_proxy_call (worker->priv->server_proxy,
-				 "InfoQuery",
-				 &error,
-				 G_TYPE_STRING, question,
-				 G_TYPE_INVALID,
-				 G_TYPE_STRING, &answer,
-				 G_TYPE_INVALID);
+	res = dbus_g_proxy_call_with_timeout (worker->priv->server_proxy,
+					      "InfoQuery",
+					      MESSAGE_REPLY_TIMEOUT,
+					      &error,
+					      G_TYPE_STRING, question,
+					      G_TYPE_INVALID,
+					      G_TYPE_STRING, &answer,
+					      G_TYPE_INVALID);
 	if (! res) {
+		/* FIXME: handle timeout */
 		g_warning ("Unable to send InfoQuery: %s", error->message);
 		g_error_free (error);
 	}
@@ -479,14 +483,16 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
 	g_debug ("Secret info query: %s", secret);
 
 	error = NULL;
-	res = dbus_g_proxy_call (worker->priv->server_proxy,
-				 "SecretInfoQuery",
-				 &error,
-				 G_TYPE_STRING, secret,
-				 G_TYPE_INVALID,
-				 G_TYPE_STRING, &answer,
-				 G_TYPE_INVALID);
+	res = dbus_g_proxy_call_with_timeout (worker->priv->server_proxy,
+					      "SecretInfoQuery",
+					      MESSAGE_REPLY_TIMEOUT,
+					      &error,
+					      G_TYPE_STRING, secret,
+					      G_TYPE_INVALID,
+					      G_TYPE_STRING, &answer,
+					      G_TYPE_INVALID);
 	if (! res) {
+		/* FIXME: handle timeout */
 		g_warning ("Unable to send SecretInfoQuery: %s", error->message);
 		g_error_free (error);
 	}

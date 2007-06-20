@@ -567,7 +567,6 @@ gdm_session_handle_verified (GdmSession     *session,
 			     DBusMessage    *message)
 {
 	DBusMessage *reply;
-	DBusError    error;
 
 	g_debug ("Emitting 'user-verified' signal");
 
@@ -699,7 +698,7 @@ gdm_session_handle_secret_info_query (GdmSession     *session,
 				      DBusConnection *connection,
 				      DBusMessage    *message)
 {
-	DBusMessage *reply;
+	DBusError    error;
 	const char  *text;
 
 	dbus_error_init (&error);
