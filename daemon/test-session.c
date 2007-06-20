@@ -33,6 +33,25 @@
 static GMainLoop *loop;
 
 static void
+on_open (GdmSession *session,
+	 const char *username)
+{
+	GError *error;
+	gboolean res;
+
+	g_debug ("Got opened: begin auth for %s", username);
+
+	error = NULL;
+	res = gdm_session_begin_verification (session,
+					      username,
+					      &error);
+	if (! res) {
+		g_warning ("Unable to begin verification: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 on_session_started (GdmSession *session,
                     GPid        pid)
 {
@@ -61,15 +80,15 @@ static void
 on_user_verified (GdmSession *session)
 {
 	char *username;
-	const char *argv[] = { "/usr/bin/gedit", "/tmp/foo.log", NULL };
+	const char *command = "/usr/bin/gedit /tmp/foo.log";
 
 	username = gdm_session_get_username (session);
 
 	g_print ("%s%ssuccessfully authenticated\n",
-		 username? username : "", username? " " : "");
+		 username ? username : "", username ? " " : "");
 	g_free (username);
 
-	gdm_session_start_program (session, 2, argv);
+	gdm_session_start_program (session, command);
 }
 
 static void
@@ -183,24 +202,19 @@ main (int   argc,
 
 		if (argc <= 1) {
 			username = NULL;
-			gdm_session_open (session,
-					  "gdm",
-					  NULL /* hostname */,
-					  ttyname (STDIN_FILENO),
-					  STDOUT_FILENO,
-					  STDERR_FILENO,
-					  NULL);
 		} else {
 			username = argv[1];
-			gdm_session_open_for_user (session,
-						   "gdm",
-						   username,
-						   NULL,
-						   ttyname (STDIN_FILENO),
-						   STDOUT_FILENO,
-						   STDERR_FILENO,
-						   NULL);
 		}
+
+		gdm_session_open (session,
+				  "gdm",
+				  "",
+				  ttyname (STDIN_FILENO),
+				  NULL);
+
+		g_signal_connect (session, "opened",
+				  G_CALLBACK (on_open),
+				  username);
 
 		g_signal_connect (session, "info",
 				  G_CALLBACK (on_info),

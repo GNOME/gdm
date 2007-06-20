@@ -549,15 +549,12 @@ setup_session_environment (GdmSimpleSlave *slave)
 }
 
 static void
-on_user_verified (GdmSession *session,
-		  GdmSimpleSlave   *slave)
+on_user_verified (GdmSession     *session,
+		  GdmSimpleSlave *slave)
 {
 	char    *username;
-	int      argc;
-	char   **argv;
 	char    *command;
 	char    *filename;
-	GError  *error;
 	gboolean res;
 
 	gdm_greeter_proxy_stop (slave->priv->greeter);
@@ -584,20 +581,10 @@ on_user_verified (GdmSession *session,
 		return;
 	}
 
-	error = NULL;
-	res = g_shell_parse_argv (command, &argc, &argv, &error);
-	if (! res) {
-		g_warning ("Could not parse command: %s", error->message);
-		g_error_free (error);
-	}
-
-	gdm_session_start_program (session,
-				   argc,
-				   (const char **)argv);
+	gdm_session_start_program (session, command);
 
 	g_free (filename);
 	g_free (command);
-	g_strfreev (argv);
 }
 
 static void
@@ -696,8 +683,6 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 			  "gdm",
 			  NULL /* hostname */,
 			  "/dev/console",
-			  STDOUT_FILENO,
-			  STDERR_FILENO,
 			  NULL);
 
 	/* If XDMCP stop pinging */

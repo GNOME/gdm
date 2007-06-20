@@ -32,10 +32,6 @@
 #include <pwd.h>
 #include <grp.h>
 
-#if defined (_POSIX_PRIORITY_SCHEDULING) && defined (HAVE_SCHED_YIELD)
-#include <sched.h>
-#endif
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
@@ -43,10 +39,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include <X11/Xlib.h> /* for Display */
-
 #include "gdm-common.h"
-#include "filecheck.h"
 
 #include "gdm-greeter-proxy.h"
 
@@ -77,7 +70,6 @@ struct GdmGreeterProxyPrivate
 	guint           child_watch_id;
 
 	char           *server_address;
-	DBusConnection *greeter_connection;
 };
 
 enum {
@@ -611,8 +603,8 @@ gdm_greeter_proxy_constructor (GType                  type,
         klass = GDM_GREETER_PROXY_CLASS (g_type_class_peek (GDM_TYPE_GREETER_PROXY));
 
         greeter_proxy = GDM_GREETER_PROXY (G_OBJECT_CLASS (gdm_greeter_proxy_parent_class)->constructor (type,
-										       n_construct_properties,
-										       construct_properties));
+													 n_construct_properties,
+													 construct_properties));
 
         return G_OBJECT (greeter_proxy);
 }

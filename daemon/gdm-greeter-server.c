@@ -226,8 +226,8 @@ generate_address (void)
 
 static DBusHandlerResult
 handle_answer_query (GdmGreeterServer *greeter_server,
-		     DBusConnection  *connection,
-		     DBusMessage     *message)
+		     DBusConnection   *connection,
+		     DBusMessage      *message)
 {
 	DBusMessage *reply;
 	DBusError    error;

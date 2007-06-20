@@ -50,6 +50,9 @@ typedef struct
 	GObjectClass parent_class;
 
 	/* signals */
+	void (* opened)                  (GdmSession        *session);
+	void (* closed)                  (GdmSession        *session);
+
 	void (* user_verified)           (GdmSession        *session);
 
 	void (* user_verification_error) (GdmSession        *session,
@@ -84,7 +87,6 @@ typedef enum _GdmSessionError {
 	GDM_SESSION_ERROR_GENERIC = 0,
 	GDM_SESSION_ERROR_WITH_SESSION_COMMAND,
 	GDM_SESSION_ERROR_FORKING,
-	GDM_SESSION_ERROR_OPENING_MESSAGE_PIPE,
 	GDM_SESSION_ERROR_COMMUNICATING,
 	GDM_SESSION_ERROR_WORKER_DIED,
 	GDM_SESSION_ERROR_AUTHENTICATING,
@@ -103,22 +105,13 @@ gboolean     gdm_session_open                     (GdmSession    *session,
 						   const char    *service_name,
 						   const char    *hostname,
 						   const char    *console_name,
-						   int            standard_output_fd,
-						   int            standard_error_fd,
 						   GError       **error);
-
-gboolean     gdm_session_open_for_user            (GdmSession     *session,
-						   const char     *service_name,
+void         gdm_session_close                    (GdmSession     *session);
+gboolean     gdm_session_begin_verification       (GdmSession     *session,
 						   const char     *username,
-						   const char     *hostname,
-						   const char     *console_name,
-						   int             standard_output_fd,
-						   int             standard_error_fd,
 						   GError        **error);
 void         gdm_session_start_program            (GdmSession     *session,
-						   int             argc,
-						   const char    **argv);
-
+						   const char     *command);
 void         gdm_session_set_environment_variable (GdmSession     *session,
 						   const char     *key,
 						   const char     *value);
@@ -128,7 +121,6 @@ void         gdm_session_answer_query             (GdmSession     *session,
 
 char       * gdm_session_get_username             (GdmSession     *session);
 
-void         gdm_session_close                    (GdmSession     *session);
 gboolean     gdm_session_is_running               (GdmSession     *session);
 
 G_END_DECLS

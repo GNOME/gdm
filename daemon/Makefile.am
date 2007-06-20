@@ -70,18 +70,21 @@ noinst_PROGRAMS = 		\
 test_session_SOURCES = 		\
 	test-session.c	 	\
 	gdm-session.c		\
+	gdm-session-worker-job.c\
 	$(NULL)
 
 test_session_LDADD =		\
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(PAM_LIBS)		\
+	$(DBUS_LIBS)		\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
 	gdm-simple-slave		\
 	gdm-factory-slave		\
 	gdm-product-slave		\
+	gdm-session-worker		\
 	$(NULL)
 
 gdm_simple_slave_SOURCES = 		\
@@ -94,6 +97,8 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-server.h			\
 	gdm-session.c			\
 	gdm-session.h			\
+	gdm-session-worker-job.c	\
+	gdm-session-worker-job.h	\
 	gdm-slave.c			\
 	gdm-slave.h			\
 	gdm-simple-slave.c		\
@@ -132,8 +137,6 @@ gdm_factory_slave_SOURCES = 		\
 	gdm-server.h			\
 	gdm-session-relay.c		\
 	gdm-session-relay.h		\
-	gdm-session.c			\
-	gdm-session.h			\
 	gdm-slave.c			\
 	gdm-slave.h			\
 	gdm-factory-slave.c		\
@@ -168,6 +171,8 @@ gdm_product_slave_SOURCES = 		\
 	gdm-server.h			\
 	gdm-session.c			\
 	gdm-session.h			\
+	gdm-session-worker-job.c	\
+	gdm-session-worker-job.h	\
 	gdm-slave.c			\
 	gdm-slave.h			\
 	gdm-product-slave.c		\
@@ -194,6 +199,22 @@ gdm_product_slave_LDADD = 			\
 	-lXau					\
 	-lX11					\
 	-lXext					\
+	$(NULL)
+
+gdm_session_worker_SOURCES = 			\
+	session-worker-main.c 			\
+	gdm-session-worker.c			\
+	$(NULL)
+
+gdm_session_worker_LDFLAGS =			\
+	$(PAM_LIBS)				\
+	$(NULL)
+
+gdm_session_worker_LDADD = 			\
+	$(GLIB_LIBS)				\
+	$(GOBJECT_LIBS)				\
+	$(top_builddir)/common/libgdmcommon.la	\
+	$(DBUS_LIBS)				\
 	$(NULL)
 
 sbin_PROGRAMS = 			\

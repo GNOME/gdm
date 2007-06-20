@@ -79,6 +79,7 @@ struct GdmProductSlavePrivate
 	/* user selected */
 	char             *selected_session;
 	char             *selected_language;
+	char             *selected_user;
 
 	GdmServer        *server;
 	GdmSession       *session;
@@ -392,11 +393,28 @@ relay_session_started (GdmProductSlave *slave)
 }
 
 static void
+on_open (GdmSession      *session,
+	 GdmProductSlave *slave)
+{
+	GError *error;
+	gboolean res;
+
+	g_debug ("session open");
+	res = gdm_session_begin_verification (session,
+					      slave->priv->selected_user,
+					      &error);
+	if (! res) {
+		g_warning ("Unable to begin verification: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 on_session_started (GdmSession      *session,
                     GPid             pid,
 		    GdmProductSlave *slave)
 {
-	g_debug ("session started on pid %d\n", (int) pid);
+	g_debug ("session started on pid %d", (int) pid);
 	g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);
 	relay_session_started (slave);
 }
@@ -406,7 +424,7 @@ on_session_exited (GdmSession *session,
                    int         exit_code,
 		   GdmProductSlave   *slave)
 {
-	g_debug ("session exited with code %d\n", exit_code);
+	g_debug ("session exited with code %d", exit_code);
 	g_signal_emit (slave, signals [SESSION_EXITED], 0, exit_code);
 }
 
@@ -573,11 +591,8 @@ on_user_verified (GdmSession      *session,
 		  GdmProductSlave *slave)
 {
 	char    *username;
-	int      argc;
-	char   **argv;
 	char    *command;
 	char    *filename;
-	GError  *error;
 	gboolean res;
 
 	/*gdm_greeter_server_stop (slave->priv->greeter);*/
@@ -603,20 +618,10 @@ on_user_verified (GdmSession      *session,
 		return;
 	}
 
-	error = NULL;
-	res = g_shell_parse_argv (command, &argc, &argv, &error);
-	if (! res) {
-		g_warning ("Could not parse command: %s", error->message);
-		g_error_free (error);
-	}
-
-	gdm_session_start_program (session,
-				   argc,
-				   (const char **)argv);
+	gdm_session_start_program (session, command);
 
 	g_free (filename);
 	g_free (command);
-	g_strfreev (argv);
 }
 
 static void
@@ -786,32 +791,39 @@ on_relay_language_selected (DBusGProxy *proxy,
 	slave->priv->selected_language = g_strdup (text);
 }
 
+static gboolean
+reset_session (GdmProductSlave *slave)
+{
+	gboolean         res;
+	GError          *error;
+
+	gdm_session_close (slave->priv->session);
+	res = gdm_session_open (slave->priv->session,
+				"gdm",
+				"",
+				"/dev/console",
+				&error);
+	if (! res) {
+		g_warning ("Unable to open session: %s", error->message);
+		g_error_free (error);
+	}
+
+	return res;
+}
+
 static void
 on_relay_user_selected (DBusGProxy *proxy,
 			const char *text,
 			gpointer    data)
 {
 	GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
-	gboolean         res;
-	GError          *error;
 
 	g_debug ("User: %s", text);
 
-	gdm_session_close (slave->priv->session);
+	g_free (slave->priv->selected_user);
+	slave->priv->selected_user = g_strdup (text);
 
-	error = NULL;
-	res = gdm_session_open_for_user (slave->priv->session,
-					 "gdm",
-					 text,
-					 NULL /* hostname */,
-					 "/dev/console",
-					 STDOUT_FILENO,
-					 STDERR_FILENO,
-					 &error);
-	if (! res) {
-		g_warning ("Unable to open session: %s", error->message);
-		g_error_free (error);
-	}
+	reset_session (slave);
 }
 
 static void
@@ -829,8 +841,6 @@ on_relay_open (DBusGProxy *proxy,
 				"gdm",
 				NULL /* hostname */,
 				"/dev/console",
-				STDOUT_FILENO,
-				STDERR_FILENO,
 				&error);
 	if (! res) {
 		g_warning ("Unable to open session: %s", error->message);
@@ -842,6 +852,11 @@ static void
 create_new_session (GdmProductSlave *slave)
 {
 	slave->priv->session = gdm_session_new ();
+
+	g_signal_connect (slave->priv->session,
+			  "open",
+			  G_CALLBACK (on_open),
+			  slave);
 
 	g_signal_connect (slave->priv->session,
 			  "info",
