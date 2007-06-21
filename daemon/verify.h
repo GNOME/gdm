@@ -24,19 +24,17 @@
 
 /* If username is NULL, we ask, if local is FALSE, don't start
  * the timed login timer */
-gchar *gdm_verify_user    (GdmDisplay *d,
-			   const char *username,
-			   const gchar *display,
-			   gboolean local,
-			   gboolean allow_retry);
-void   gdm_verify_cleanup (GdmDisplay *d);
-void   gdm_verify_check   (void);
-void   gdm_verify_select_user (const char *user);
+gchar *gdm_verify_user			 (GdmDisplay *d,
+					  const char *username,
+					  gboolean allow_retry);
+void   gdm_verify_cleanup		 (GdmDisplay *d);
+void   gdm_verify_check			 (void);
+void   gdm_verify_select_user		 (const char *user);
+
 /* used in pam */
-gboolean gdm_verify_setup_env (GdmDisplay *d);
+gboolean gdm_verify_setup_env  (GdmDisplay *d);
 gboolean gdm_verify_setup_user (GdmDisplay *d,
 				const gchar *login,
-				const gchar *display,
 				char **new_login);
 
 #endif /* GDM_VERIFY_H */

@@ -48,6 +48,9 @@ char *	gdm_get_empty_vt_argument	(int *fd,
 void	gdm_change_vt			(int vt);
 
 /* Get the current virtual terminal number or -1 if we can't */
-int	gdm_get_cur_vt			(void);
+int	gdm_get_current_vt		(void);
+long	gdm_get_current_vtnum		(Display *display);
+gchar * gdm_get_vt_device		(int vtno);
+gchar * gdm_get_current_vt_device	(GdmDisplay *d);
 
 #endif /* GETVT_H */

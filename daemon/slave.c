@@ -45,9 +45,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <utmpx.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+
 #ifdef HAVE_XFREE_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #elif HAVE_SOLARIS_XINERAMA
@@ -100,6 +102,14 @@
 #include "gdmconsolekit.h"
 #endif
 
+#ifndef GDM_BAD_RECORDS_FILE
+#define GDM_BAD_RECORDS_FILE "/var/log/btmp"
+#endif
+
+#ifndef GDM_NEW_RECORDS_FILE
+#define GDM_NEW_RECORDS_FILE "/var/log/wtmp"
+#endif
+
 /* Per-slave globals */
 
 static GdmDisplay *d                   = 0;
@@ -132,8 +142,19 @@ static gboolean session_started        = FALSE;
 static gboolean greeter_disabled       = FALSE;
 static gboolean greeter_no_focus       = FALSE;
 
+#ifdef __sun
+/*
+ * On Solaris uid_t and gid_t are unsigned ints, so you cannot
+ * set them to -1.  These globals are just used for bookkeeping
+ * so using a signed long works.
+ */
+static long logged_in_uid              = -1;
+static long logged_in_gid              = -1;
+#else
 static uid_t logged_in_uid             = -1;
 static gid_t logged_in_gid             = -1;
+#endif
+
 static int greeter_fd_out              = -1;
 static int greeter_fd_in               = -1;
 
@@ -943,8 +964,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
 
 	new_login = NULL;
-	if ( ! gdm_verify_setup_user (display, login,
-				      display->name, &new_login))
+	if ( ! gdm_verify_setup_user (display, login, &new_login))
 		return FALSE;
 
 	if (new_login != NULL) {
@@ -1087,71 +1107,27 @@ static void
 gdm_window_path (GdmDisplay *d)
 {
 	/* setting WINDOWPATH for clients */
-	Atom prop;
-	Atom actualtype;
-	int actualformat;
-	unsigned long nitems;
-	unsigned long bytes_after;
-	unsigned char *buf;
 	const char *windowpath;
 	char *newwindowpath;
-	unsigned long num;
 	char nums[10];
+	unsigned long num;
 	int numn;
 
-	prop = XInternAtom (d->dsp, "XFree86_VT", False);
-	if (prop == None) {
-		gdm_debug ("no XFree86_VT atom\n");
-		return;
-	}
-	if (XGetWindowProperty (d->dsp, DefaultRootWindow (d->dsp), prop, 0, 1, 
-		False, AnyPropertyType, &actualtype, &actualformat, 
-		&nitems, &bytes_after, &buf)) {
-		gdm_debug ("no XFree86_VT property\n");
-		return;
-	}
-	if (nitems != 1) {
-		gdm_debug ("%lu items in XFree86_VT property!\n", nitems);
-		XFree (buf);
-		return;
-	}
-	switch (actualtype) {
-	case XA_CARDINAL:
-	case XA_INTEGER:
-	case XA_WINDOW:
-		switch (actualformat) {
-		case  8:
-			num = (*(uint8_t  *)(void *)buf);
-			break;
-		case 16:
-			num = (*(uint16_t *)(void *)buf);
-			break;
-		case 32:
-			num = (*(uint32_t *)(void *)buf);
-			break;
-		default:
-			gdm_debug ("format %d in XFree86_VT property!\n", actualformat);
-			XFree (buf);
-			return;
+	num = (unsigned long) gdm_get_current_vtnum (d->dsp);
+
+	if (num != -1) {
+		windowpath = getenv ("WINDOWPATH");
+		numn = snprintf (nums, sizeof (nums), "%lu", num);
+		if (!windowpath) {
+			newwindowpath = malloc (numn + 1);
+			sprintf (newwindowpath, "%s", nums);
+		} else {
+			newwindowpath = malloc (strlen (windowpath) + 1 + numn + 1);
+			sprintf (newwindowpath, "%s:%s", windowpath, nums);
 		}
-		break;
-	default:
-		gdm_debug ("type %lx in XFree86_VT property!\n", actualtype);
-		XFree (buf);
-		return;
+		free (d->windowpath);
+		d->windowpath = newwindowpath;
 	}
-	XFree (buf);
-	windowpath = getenv("WINDOWPATH");
-	numn = snprintf (nums, sizeof (nums), "%lu", num);
-	if (!windowpath) {
-		newwindowpath = malloc (numn + 1);
-		sprintf (newwindowpath, "%s", nums);
-	} else {
-		newwindowpath = malloc (strlen (windowpath) + 1 + numn + 1);
-		sprintf (newwindowpath, "%s:%s", windowpath, nums);
-	}
-	free (d->windowpath);
-	d->windowpath = newwindowpath;
 }
 
 static void
@@ -2102,8 +2078,6 @@ gdm_slave_wait_for_login (void)
 		d->preset_user = NULL;
 		login = gdm_verify_user (d /* the display */,
 					 username /* username */,
-					 d->name /* display name */,
-					 d->attached /* display attached? */,
 					 TRUE /* allow retry */);
 		g_free (username);
 
@@ -2151,8 +2125,6 @@ gdm_slave_wait_for_login (void)
 			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, pwent->pw_name);
 			login = gdm_verify_user (d,
 						 pwent->pw_name,
-						 d->name,
-						 d->attached,
 						 FALSE);
 			gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_ROOT, oldAllowRoot);
 
@@ -2634,6 +2606,15 @@ gdm_slave_greeter (void)
 		command = gdm_daemon_config_get_value_string (GDM_KEY_GREETER);
 	else
 		command = gdm_daemon_config_get_value_string (GDM_KEY_REMOTE_GREETER);
+
+#ifdef __sun
+	/*
+	 * Set access control for audio device so that GDM owned programs can
+	 * play audio and work with accessibility programs that require audio.
+	 */
+	system ("/usr/bin/setfacl -m user:gdm:rw-,mask:rw- /dev/audio");
+	system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audioctl");
+#endif
 
 	g_debug ("Forking greeter process: %s", command);
 
@@ -4077,6 +4058,185 @@ finish_session_output (gboolean do_read)
 	}
 }
 
+void
+gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
+			    GdmVerifyRecordType record_type,
+			    const gchar *username,
+			    GPid  pid)
+{
+    struct utmpx record = { 0 };
+    struct utmpx *u = NULL;
+    const gchar *host_name;
+    GTimeVal now = { 0 };
+    gchar *device_name;
+    gchar *host;
+
+#ifdef __sun
+    device_name = gdm_get_current_vt_device (d);    
+    if (device_name == NULL) {
+       device_name = g_strdup ("/dev/console");
+    }
+#else
+    /* Linux seems to want to use display as the device name */
+    device_name = g_strdup (d->name);
+#endif
+
+    gdm_debug ("Writing %s utmp-wtmp record",
+	       record_type == GDM_VERIFY_RECORD_TYPE_LOGIN ? "session" :
+	       record_type == GDM_VERIFY_RECORD_TYPE_LOGOUT ?  "logout" :
+	       "failed session attempt");
+
+    if (record_type != GDM_VERIFY_RECORD_TYPE_LOGOUT) {
+	    /*
+	     * It is possible that PAM failed before
+	     * it mapped the user input into a valid username
+	     * so we fallback to try using "(unknown)"
+	     */
+	    if (username != NULL)
+		    strncpy (record.ut_user,
+			     username, 
+			     sizeof (record.ut_user));
+	    else
+		    strncpy (record.ut_user,
+			     "(unknown)",
+			     sizeof (record.ut_user));
+
+	    gdm_debug ("utmp-wtmp: Using username %.*s",
+	               sizeof (record.ut_user),
+	               record.ut_user);
+    }
+
+    if (record_type == GDM_VERIFY_RECORD_TYPE_LOGOUT) {
+       record.ut_type = DEAD_PROCESS;
+       gdm_debug ("utmp-wtmp: Using type DEAD_PROCESS"); 
+    } else  {
+       record.ut_type = USER_PROCESS;
+       gdm_debug ("utmp-wtmp: Using type USER_PROCESS"); 
+    }
+
+    record.ut_pid = pid;
+    gdm_debug ("utmp-wtmp: Using pid %d", (gint)record.ut_pid);
+
+    g_get_current_time (&now);
+    record.ut_tv.tv_sec = now.tv_sec;
+    gdm_debug ("utmp-wtmp: Using time %ld", (glong) record.ut_tv.tv_sec);
+
+    strncpy (record.ut_id, d->name, sizeof (record.ut_id));
+    gdm_debug ("utmp:wtmp: Using id %.*s",
+	       sizeof (record.ut_id),
+	       record.ut_id);
+
+    if (g_str_has_prefix (device_name, "/dev/")) {
+	    strncpy (record.ut_line, 
+		     device_name + strlen ("/dev/"),
+		     sizeof (record.ut_line));
+    } else if (g_str_has_prefix (device_name, ":")) {
+	    strncpy (record.ut_line, 
+		     device_name,
+		     sizeof (record.ut_line));
+    }
+    g_free (device_name);
+
+    gdm_debug ("utmp-wtmp: Using line %.*s",
+	       sizeof (record.ut_line),
+	       record.ut_line);
+
+    host = NULL;
+    if (! d->attached && g_str_has_prefix (d->name, ":")) {
+	    host = g_strdup_printf ("%s%s",
+				    d->hostname,
+				    d->name);
+    } else {
+	    host = g_strdup (d->name);
+    }
+
+    if (host) {
+            int hostlen;
+
+	    strncpy (record.ut_host, host, sizeof (record.ut_host));
+	    g_free (host);
+
+	    gdm_debug ("utmp-wtmp: Using hostname %.*s",
+		       sizeof (record.ut_host),
+		       record.ut_host);
+
+            hostlen = strlen (host) + 1;
+            if (hostlen < sizeof (record.ut_host))
+                record.ut_syslen = hostlen;
+            else
+                record.ut_syslen = sizeof (record.ut_host);
+    } else {
+            (void) memset (record.ut_host, 0, sizeof (record.ut_host));
+            record.ut_syslen = 0;
+    }
+
+    switch (record_type)
+    {
+	    case GDM_VERIFY_RECORD_TYPE_LOGIN:
+		    gdm_debug ("Login utmp/wtmp record");
+		    updwtmpx (GDM_NEW_RECORDS_FILE, &record);
+
+	            /* Update if entry already exists */
+	            while ((u = getutxent ()) != NULL) {
+	                if ((u->ut_type == USER_PROCESS &&
+	                    (record.ut_line != NULL &&
+	                     strncmp (u->ut_line, record.ut_line,
+	                              sizeof (u->ut_line)) == 0) ||
+	                     u->ut_pid == record.ut_pid)) {
+
+			     gdm_debug ("Updating existing utmp record");
+	                     pututxline (&record);
+	                     break;
+	                }
+	            }
+	            endutxent ();
+
+                    /* Add new entry if update did not work */
+	            if (u == (struct utmpx *)NULL) {
+	                gdm_debug ("Adding new utmp record");
+	                pututxline (&record);
+	            }
+
+		    break;
+
+	    case GDM_VERIFY_RECORD_TYPE_LOGOUT: 
+		    gdm_debug ("Logout utmp/wtmp record");
+
+		    updwtmpx (GDM_NEW_RECORDS_FILE, &record);
+
+	            setutxent ();
+
+	            while ((u = getutxent ()) != NULL &&
+	                   (u = getutxid (&record)) != NULL) {
+
+			gdm_debug ("Removing utmp record");
+	                if (u->ut_pid == pid &&
+	                    u->ut_type == DEAD_PROCESS) {
+	                     /* Already done */
+	                     break;
+	                }
+
+	                u->ut_type = DEAD_PROCESS;
+	                u->ut_tv.tv_sec = record.ut_tv.tv_sec;
+	                u->ut_exit.e_termination = 0;
+	                u->ut_exit.e_exit = 0;
+
+	                pututxline (u);
+
+	                break;
+	            }
+
+	            endutxent ();
+		    break;
+
+	    case GDM_VERIFY_RECORD_TYPE_FAILED_ATTEMPT:
+		    gdm_debug ("Writing failed session attempt record to " 
+			       GDM_BAD_RECORDS_FILE);
+		    updwtmpx (GDM_BAD_RECORDS_FILE, &record);
+		    break;
+    }
+}
+
 static void
 gdm_slave_session_start (void)
 {
@@ -4514,6 +4674,11 @@ gdm_slave_session_start (void)
 	g_free (language);
 	g_free (gnome_session);
 
+	gdm_slave_write_utmp_wtmp_record (d,
+				GDM_VERIFY_RECORD_TYPE_LOGIN,
+				pwent->pw_name,
+				pid);
+
 	gdm_slave_send_num (GDM_SOP_SESSPID, pid);
 
 	gdm_sigchld_block_push ();
@@ -4575,6 +4740,15 @@ gdm_slave_session_start (void)
 		g_free (ck_session_cookie);
 	}
 #endif
+
+	if ((pid != 0) && (d->last_sess_status != -1)) {
+		gdm_debug ("session '%d' exited with status '%d', recording logout",
+		pid, d->last_sess_status);
+		gdm_slave_write_utmp_wtmp_record (d,
+					 GDM_VERIFY_RECORD_TYPE_LOGOUT,
+					 pwent->pw_name,
+					 pid);
+	}
 
 	gdm_slave_session_stop (pid != 0 /* run_post_session */,
 				FALSE /* no_shutdown_check */);
@@ -5963,3 +6137,4 @@ gdm_is_user_valid (const char *username)
 {
 	return (NULL != getpwnam (username));
 }
+

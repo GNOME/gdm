@@ -40,6 +40,7 @@
 #include "slave.h"
 #include "verify.h"
 #include "errorgui.h"
+#include "getvt.h"
 
 #include "gdm-common.h"
 #include "gdm-log.h"
@@ -194,12 +195,18 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 				"adt_start_session (ADT_login, ADT_FAILURE): %m");
 			return;
 		}
+
 		if (d->attached) {
+			gchar *vtname = gdm_get_current_vt_device (d);
+			if (vtname == NULL)
+				vtname = g_strdup_printf ("/dev/console");
+
 			/* login from the local host */
-			if (adt_load_ttyname ("/dev/console", &tid) != 0) {
+			if (adt_load_ttyname (vtname, &tid) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
 					"adt_loadhostname (localhost): %m");
+			g_free (vtname);
 			}
 		} else {
 			/* login from a remote host */
@@ -209,6 +216,7 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 					"adt_loadhostname (%s): %m", d->hostname);
 			}
 		}
+
 		if (adt_set_user (ah,
 				  pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
 				  pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
@@ -773,15 +781,23 @@ create_pamh (GdmDisplay *d,
 
 	/* Inform PAM of the user's tty */
 #ifdef __sun
-	if (d->attached)
-		(void) pam_set_item (pamh, PAM_TTY, "/dev/console");
-	else
+	if (d->attached) {
+		gchar *vtname = gdm_get_current_vt_device (d);
+		if (vtname == NULL)
+			vtname = g_strdup_printf ("/dev/console");
+
+		(void) pam_set_item (pamh, PAM_TTY, vtname);
+		g_free (vtname);
+	} else {
 #endif	/* sun */
 		if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
 			if (gdm_slave_action_pending ())
 				gdm_error (_("Can't set PAM_TTY=%s"), display);
 			return FALSE;
 		}
+#ifdef __sun
+	}
+#endif
 
 	if ( ! d->attached) {
 		/* Only set RHOST if host is remote */
@@ -849,8 +865,6 @@ log_to_audit_system(const char *login,
 /**
  * gdm_verify_user:
  * @username: Name of user or NULL if we should ask
- * @display: Name of display to register with the authentication system
- * @local: boolean if local
  * @allow_retry: boolean if we should allow retry logic to be enabled.
  *               We only want this to work for normal login, not for
  *               asking for the root password to cal the configurator.
@@ -864,8 +878,6 @@ log_to_audit_system(const char *login,
 gchar *
 gdm_verify_user (GdmDisplay *d,
 		 const char *username,
-		 const gchar *display,
-		 gboolean local,
 		 gboolean allow_retry)
 {
 	gint pamerr = 0;
@@ -898,8 +910,8 @@ gdm_verify_user (GdmDisplay *d,
 	} else {
 		/* start the timer for timed logins */
 		if ( ! ve_string_empty (gdm_daemon_config_get_value_string (GDM_KEY_TIMED_LOGIN)) &&
-		     d->timed_login_ok &&
-		     (local || gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
+		    d->timed_login_ok && (d->attached ||
+		    gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_AUTOLOGIN))) {
 			gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 			started_timer = TRUE;
 		}
@@ -926,9 +938,10 @@ gdm_verify_user (GdmDisplay *d,
 	 * PAM Stacks, in case one display should use a different
 	 * authentication mechanism than another display.
 	 */
-	pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
+	pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK,
+		(char *)d->name);
 
-	if ( ! create_pamh (d, pam_stack, login, &pamc, display, &pamerr)) {
+	if ( ! create_pamh (d, pam_stack, login, &pamc, d->name, &pamerr)) {
 		if (started_timer)
 			gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 		g_free (pam_stack);
@@ -969,7 +982,7 @@ gdm_verify_user (GdmDisplay *d,
 	did_we_ask_for_password = FALSE;
 	if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
 		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, display, AU_FAILED);
+		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		if ( ! ve_string_empty (selected_user)) {
 			pam_handle_t *tmp_pamh;
 
@@ -1086,14 +1099,14 @@ gdm_verify_user (GdmDisplay *d,
 		gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, FALSE);
 
 	pwent = getpwnam (login);
-	if ( ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
-	       ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
-	     pwent != NULL &&
-	     pwent->pw_uid == 0) {
+	if (( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
+	    ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) &&
+	      ! d->attached)) && pwent != NULL && pwent->pw_uid == 0) {
+
 		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, display, AU_FAILED);
+		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		gdm_error (_("Root login disallowed on display '%s'"),
-			   display);
+			   d->name);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator "
 						"is not allowed to login "
@@ -1126,7 +1139,7 @@ gdm_verify_user (GdmDisplay *d,
 	case PAM_NEW_AUTHTOK_REQD :
 		if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
 			/* Log the failed login attempt */
-			log_to_audit_system(login, d->hostname, display, AU_FAILED);
+			log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 			gdm_error (_("Authentication token change failed for user %s"), login);
 			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 						      _("\nThe change of the authentication token failed. "
@@ -1145,7 +1158,7 @@ gdm_verify_user (GdmDisplay *d,
 		break;
 	case PAM_ACCT_EXPIRED :
 		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, display, AU_FAILED);
+		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		gdm_error (_("User %s no longer permitted to access the system"), login);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator has disabled your account."));
@@ -1153,7 +1166,7 @@ gdm_verify_user (GdmDisplay *d,
 		goto pamerr;
 	case PAM_PERM_DENIED :
 		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, display, AU_FAILED);
+		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		gdm_error (_("User %s not permitted to gain access at this time"), login);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator has disabled access to the system temporarily."));
@@ -1161,7 +1174,7 @@ gdm_verify_user (GdmDisplay *d,
 		goto pamerr;
 	default :
 		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, display, AU_FAILED);
+		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		if (gdm_slave_action_pending ())
 			gdm_error (_("Couldn't set acct. mgmt for %s"), login);
 		goto pamerr;
@@ -1214,7 +1227,7 @@ gdm_verify_user (GdmDisplay *d,
 		goto pamerr;
 	}
 	/* Login succeeded */
-	log_to_audit_system(login, d->hostname, display, AU_SUCCESS);
+	log_to_audit_system(login, d->hostname, d->name, AU_SUCCESS);
 
 	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
 	gdm_log_shutdown ();
@@ -1224,8 +1237,13 @@ gdm_verify_user (GdmDisplay *d,
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		(void) di_devperm_login ("/dev/console", pwent->pw_uid,
+		gchar *vtname = gdm_get_current_vt_device (d);
+		if (vtname == NULL)
+			vtname = g_strdup_printf ("/dev/console");
+
+		(void) di_devperm_login (vtname, pwent->pw_uid,
 					 pwent->pw_gid, NULL);
+		g_free (vtname);
 	}
 #endif	/* HAVE_LOGINDEVPERM */
 
@@ -1244,6 +1262,10 @@ gdm_verify_user (GdmDisplay *d,
 	 * message from the PAM subsystem */
 	if ( ! error_msg_given &&
 	     gdm_slave_action_pending ()) {
+		gdm_slave_write_utmp_wtmp_record (d,
+					GDM_VERIFY_RECORD_TYPE_FAILED_ATTEMPT,
+					login, getpid ());
+
 		/*
 		 * I'm not sure yet if I should display this message for any
 		 * other issues - heeten
@@ -1322,15 +1344,13 @@ gdm_verify_user (GdmDisplay *d,
 /**
  * gdm_verify_setup_user:
  * @login: The name of the user
- * @display: The name of the display
  *
  * This is used for auto loging in.  This just sets up the login
  * session for this user
  */
 
 gboolean
-gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
-		       char **new_login)
+gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 {
 	gint pamerr = 0;
 	struct passwd *pwent = NULL;
@@ -1366,11 +1386,12 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	 * PAM Stacks, in case one display should use a different
 	 * authentication mechanism than another display.
 	 */
-	pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK, (char *)display);
+	pam_stack = gdm_daemon_config_get_value_string_per_display (GDM_KEY_PAM_STACK,
+		(char *)d->name);
 	pam_service_name = g_strdup_printf ("%s-autologin", pam_stack);
 
 	if ( ! create_pamh (d, pam_service_name, login, &standalone_pamc,
-			    display, &pamerr)) {
+			    d->name, &pamerr)) {
 		g_free (pam_stack);
 		g_free (pam_service_name);
 		goto setup_pamerr;
@@ -1526,8 +1547,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		(void) di_devperm_login ("/dev/console", pwent->pw_uid,
+		gchar *vtname = gdm_get_current_vt_device (d);
+		if (vtname == NULL)
+			vtname = g_strdup_printf ("/dev/console");
+
+		(void) di_devperm_login (vtname, pwent->pw_uid,
 					 pwent->pw_gid, NULL);
+		g_free (vtname);
 	}
 #endif	/* HAVE_LOGINDEVPERM */
 
@@ -1633,11 +1659,12 @@ gdm_verify_cleanup (GdmDisplay *d)
 #ifdef  HAVE_LOGINDEVPERM
 		if (old_opened_session && old_did_setcred &&
 		    d->attached && d->type != TYPE_FLEXI_XNEST) {
-			(void) di_devperm_logout ("/dev/console");
-			/* give it back to gdm user */
-			(void) di_devperm_login ("/dev/console",
-						 gdm_daemon_config_get_gdmuid (),
-						 gdm_daemon_config_get_gdmgid (), NULL);
+			gchar *vtname = gdm_get_current_vt_device (d);
+			if (vtname == NULL)
+				vtname = g_strdup_printf ("/dev/console");
+
+			(void) di_devperm_logout (vtname);
+			g_free (vtname);
 		}
 #endif  /* HAVE_LOGINDEVPERM */
 

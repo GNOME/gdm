@@ -1,3 +1,44 @@
+2007-06-21  Brian Cameron  <brian.cameron@sun.com>
+
+        * daemon/slave.[ch]: Add functions to support utmp and
+          wtmp processing.  Modified the gdm_window_path
+          function to use the new gdm_get_current_vtnum
+          funtion.  This fixes enhancement request #347871.
+          I did modify the patch provided by Ray Strode
+          <rstrode@redhat.com> quite a bit.  Biggest changes were
+          to make it use utmpx rather than utmp functions,
+          add utmp handling in addition to wtmp/btmp which was
+          in his original patch, move function from verify-pam.c
+	  to slave.c so it also works when PAM isn't being used.
+	  Other changes include using the device name for ut_line
+	  on Solaris instead of DISPLAY, setting ut_type to 
+	  DEAD_PROCESS on logout, and adding better error
+	  handling and debugging messages.
+        * daemon/getvt.[ch]: Add function gdm_get_current_vtnum
+          which checks the XFree86_VT atom and returns the
+          VT number used by current display.  This function used
+          to be a part of the windowpath code.  Also added the
+          gdm_get_vt_device and gdm_get_current_vt_device
+          access functions to get the right VT device name.
+        * daemon/verify-pam.[ch]: Now Solaris audit, PAM_TTY, and
+          di_devperm functions pass proper VT device names, not
+          just hardcoded to /dev/console.
+	* daemon/verify-pam.c, daemon/verify-crypt.c,
+	  daemon-verify-shadow.c  Cleaned up the gdm_verify_user
+	  and gdm_verify_setup_user functions so they don't take
+	  the display and local arguments.  Since these values
+	  are already in the GdmDisplay structure that is passed
+	  in, the code is cleaner just to access the values
+	  directly from the GdmDisplay structure.
+        * daemon/gdm.c: If gdm_get_current_vt returns -1, return
+          error message, not OK.
+        * daemon/gdm.c, daemon/slave.c: No longer use di_devperm
+          functions to set device ownership to the gdm user.
+          Instead use setfacl to do the same with ACL.  This
+          is cleaner and now that VT's are working on Solaris,
+          the di_devperm functions are not an appropriate way
+          to get this behavior.
+
 2007-06-18  Juerg Billeter  <j@bitron.ch>
 
 	* daemon/gdm-daemon-config.c: Initialize lang variable to avoid

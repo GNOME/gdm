@@ -29,13 +29,110 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+
 #include "gdm.h"
 #include "misc.h"
 #include "getvt.h"
+#include "display.h"
 
 #include "gdm-common.h"
 #include "gdm-daemon-config.h"
+#include "gdm-log.h"
 
+/*
+ * Get the VT number associated with the display via the XFree86_VT
+ * Atom.
+ */
+long
+gdm_get_current_vtnum (Display *display)
+{
+	/* setting WINDOWPATH for clients */
+	Atom prop;
+	Atom actualtype;
+	int actualformat;
+	unsigned long nitems;
+	unsigned long bytes_after;
+	unsigned char *buf;
+	unsigned long num;
+
+	prop = XInternAtom (display, "XFree86_VT", False);
+	if (prop == None) {
+	        gdm_debug ("no XFree86_VT atom\n");
+	        return -1;
+	}
+	if (XGetWindowProperty (display, DefaultRootWindow (display), prop, 0, 1,
+		False, AnyPropertyType, &actualtype, &actualformat,
+		&nitems, &bytes_after, &buf)) {
+		gdm_debug ("no XFree86_VT property\n");
+		return -1;
+	}
+	if (nitems != 1) {
+		gdm_debug ("%lu items in XFree86_VT property!\n", nitems);
+		XFree (buf);
+		return -1;
+	}
+
+	switch (actualtype) {
+	case XA_CARDINAL:
+	case XA_INTEGER:
+	case XA_WINDOW:
+		switch (actualformat) {
+		case  8:
+			num = (*(uint8_t  *)(void *)buf);
+			break;
+		case 16:
+			num = (*(uint16_t *)(void *)buf);
+			break;
+		case 32:
+			num = (*(uint32_t *)(void *)buf);
+			break;
+		default:
+			gdm_debug ("format %d in XFree86_VT property!\n", actualformat);
+			XFree (buf);
+			return -1;
+		}
+		break;
+	default:
+		gdm_debug ("type %lx in XFree86_VT property!\n", actualtype);
+		XFree (buf);
+		return -1;
+	}
+	XFree (buf);
+	return num;
+}
+
+gchar *
+gdm_get_vt_device (int vtno)
+{
+   gchar *vtname = NULL;
+
+#if defined (GDM_USE_SYS_VT)
+#ifdef __sun
+     vtname = g_strdup_printf ("/dev/vt/%d", vtno);
+#else
+     vtname = g_strdup_printf ("/dev/tty%d", vtno);
+#endif
+#elif defined (GDM_USE_CONSIO_VT)
+     vtname = g_strdup_printf ("/dev/ttyv%s", __itovty (vtno - 1));
+#endif
+
+   return vtname;
+}
+
+gchar *
+gdm_get_current_vt_device (GdmDisplay *d)
+{
+   gchar *vtname = NULL;
+   long vtnum    = gdm_get_current_vtnum (d->dsp);
+
+   if (vtnum != -1)
+      vtname = gdm_get_vt_device (vtnum);
+
+   return vtname;
+}
+      
 #if defined (GDM_USE_SYS_VT) || defined (GDM_USE_CONSIO_VT)
 
 #ifdef __sun
@@ -70,15 +167,8 @@ open_vt (int vtno)
 	char *vtname = NULL;
 	int fd = -1;
 
-#if defined (GDM_USE_SYS_VT)
-#ifdef __sun
-	vtname = g_strdup_printf ("/dev/vt/%d", vtno);
-#else
-	vtname = g_strdup_printf ("/dev/tty%d", vtno);
-#endif
-#elif defined (GDM_USE_CONSIO_VT)
-	vtname = g_strdup_printf ("/dev/ttyv%s", __itovty (vtno - 1));
-#endif
+	vtname = gdm_get_vt_device (vtno);
+
 	do {
 		errno = 0;
 		fd = open (vtname, O_RDWR
@@ -253,7 +343,7 @@ gdm_change_vt (int vt)
 }
 
 int
-gdm_get_cur_vt (void)
+gdm_get_current_vt (void)
 {
 #if defined (GDM_USE_SYS_VT)
 	struct vt_stat s;
@@ -321,7 +411,7 @@ gdm_change_vt (int vt)
 }
 
 int
-gdm_get_cur_vt (void)
+gdm_get_current_vt (void)
 {
 	return -1;
 }

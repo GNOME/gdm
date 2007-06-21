@@ -82,10 +82,6 @@
 #define DYNAMIC_RELEASE 1
 #define DYNAMIC_REMOVE  2
 
-#ifdef  HAVE_LOGINDEVPERM
-#include <libdevinfo.h>
-#endif  /* HAVE_LOGINDEVPERM */
-
 /* Local functions */
 static void gdm_handle_message (GdmConnection *conn,
 				const gchar *msg,
@@ -391,10 +387,6 @@ gdm_final_cleanup (void)
 	if (pidfile != NULL) {
 		VE_IGNORE_EINTR (g_unlink (pidfile));
 	}
-
-#ifdef  HAVE_LOGINDEVPERM
-	(void) di_devperm_logout ("/dev/console");
-#endif  /* HAVE_LOGINDEVPERM */
 }
 
 #ifdef __sun
@@ -1763,10 +1755,6 @@ main (int argc, char *argv[])
 #endif
 
 	g_debug ("gdm_main: Here we go...");
-
-#ifdef  HAVE_LOGINDEVPERM
-	di_devperm_login ("/dev/console", gdm_daemon_config_get_gdmuid (), gdm_daemon_config_get_gdmgid (), NULL);
-#endif  /* HAVE_LOGINDEVPERM */
 
 	/* Init XDMCP if applicable */
 	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
@@ -4098,6 +4086,7 @@ sup_handle_query_vt (GdmConnection *conn,
 		     gpointer       data)
 
 {
+	int current_vt;
 
 	/* Only allow locally authenticated connections */
 	if ( ! GDM_CONN_AUTHENTICATED (conn)) {
@@ -4109,7 +4098,13 @@ sup_handle_query_vt (GdmConnection *conn,
 	}
 
 #if defined (GDM_USE_SYS_VT) || defined (GDM_USE_CONSIO_VT)
-	gdm_connection_printf (conn, "OK %d\n", gdm_get_cur_vt ());
+	current_vt = gdm_get_current_vt ();
+
+	if (current_vt != -1) {
+		gdm_connection_printf (conn, "OK %d\n", current_vt);
+	} else {
+		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
+	}
 #else
 	gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
 #endif

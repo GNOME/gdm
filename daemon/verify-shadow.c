@@ -87,8 +87,6 @@ print_cant_auth_errbox (void)
 /**
  * gdm_verify_user:
  * @username: Name of user or NULL if we should ask
- * @display: Name of display to register with the authentication system
- * @local: boolean if local
  * @allow_retry: boolean.  Not used by verify-crypt.  If this code
  *               allowed the user to retry, this boolean would specify
  *               whether to enable this feature.  We only want this
@@ -104,8 +102,6 @@ print_cant_auth_errbox (void)
 gchar *
 gdm_verify_user (GdmDisplay *d,
 		 const char *username,
-		 const gchar *display,
-		 gboolean local,
 		 gboolean allow_retry)
 {
 	gchar *login, *passwd, *ppasswd;
@@ -120,7 +116,7 @@ gdm_verify_user (GdmDisplay *d,
 	gint reEnter, ret;
 #endif
 
-	if (local && d->timed_login_ok)
+	if (d->attached && d->timed_login_ok)
 		gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 
 	if (username == NULL) {
@@ -138,7 +134,7 @@ gdm_verify_user (GdmDisplay *d,
 				selected_user = NULL;
 			} else {
 				/* some other interruption */
-				if (local)
+				if (d->attached)
 					gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 				g_free (login);
 				return NULL;
@@ -189,7 +185,7 @@ gdm_verify_user (GdmDisplay *d,
 		if (passwd == NULL)
 			passwd = g_strdup ("");
 		if (gdm_slave_greeter_check_interruption ()) {
-			if (local)
+			if (d->attached)
 				gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 			g_free (login);
 			g_free (passwd);
@@ -198,7 +194,7 @@ gdm_verify_user (GdmDisplay *d,
 		}
 	}
 
-	if (local)
+	if (d->attached)
 		gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
 	if (pwent == NULL) {
@@ -227,10 +223,11 @@ gdm_verify_user (GdmDisplay *d,
 		return NULL;
 	}
 
-	if ( ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT)||
-	       ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) && ! local) ) &&
-	     pwent->pw_uid == 0) {
-		g_warning (_("Root login disallowed on display '%s'"), display);
+	if (( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
+	    ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) &&
+              ! d->attached)) && pwent->pw_uid == 0) {
+
+		g_warning (_("Root login disallowed on display '%s'"), d->name);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("The system administrator "
 						"is not allowed to login "
@@ -414,7 +411,6 @@ gdm_verify_user (GdmDisplay *d,
 /**
  * gdm_verify_setup_user:
  * @login: The name of the user
- * @display: The name of the display
  *
  * This is used for auto loging in.  This just sets up the login
  * session for this user
@@ -423,7 +419,6 @@ gdm_verify_user (GdmDisplay *d,
 gboolean
 gdm_verify_setup_user (GdmDisplay *d,
                        const gchar *login,
-                       const gchar *display,
 		       char **new_login)
 {
 	struct passwd *pwent;
