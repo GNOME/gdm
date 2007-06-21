@@ -192,12 +192,12 @@ on_cancelled (GdmGreeter *greeter,
 
 	error = NULL;
 	res = dbus_g_proxy_call (server_proxy,
-				 "Reset",
+				 "Cancel",
 				 &error,
 				 G_TYPE_INVALID,
 				 G_TYPE_INVALID);
 	if (! res) {
-		g_warning ("Unable to send Reset: %s", error->message);
+		g_warning ("Unable to send Cancelled: %s", error->message);
 		g_error_free (error);
 	}
 }

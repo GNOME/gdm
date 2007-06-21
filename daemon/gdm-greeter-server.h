@@ -53,7 +53,7 @@ typedef struct
 				    const char        *name);
 	void (* user_selected)    (GdmGreeterServer  *greeter_server,
 				    const char        *name);
-	void (* reset)             (GdmGreeterServer  *greeter_server);
+	void (* cancelled)         (GdmGreeterServer  *greeter_server);
 	void (* connected)         (GdmGreeterServer  *greeter_server);
 	void (* disconnected)      (GdmGreeterServer  *greeter_server);
 } GdmGreeterServerClass;

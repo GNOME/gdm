@@ -1,5 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
+ * Copyright (C) 2006 Red Hat, Inc.
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,9 +27,14 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <execinfo.h>
+#include <syslog.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 
 #include "gdm-signal-handler.h"
@@ -138,12 +144,109 @@ signal_io_watch (GIOChannel       *ioc,
 }
 
 static void
+fallback_get_backtrace (void)
+{
+	void *	frames[64];
+	size_t	size;
+	char **	strings;
+	size_t	i;
+
+	size = backtrace (frames, G_N_ELEMENTS (frames));
+	if ((strings = backtrace_symbols (frames, size))) {
+		syslog (LOG_CRIT, "******************* START ********************************");
+		for (i = 0; i < size; i++) {
+			syslog (LOG_CRIT, "Frame %zd: %s", i, strings[i]);
+		}
+		free (strings);
+		syslog (LOG_CRIT, "******************* END **********************************");
+	} else {
+		g_warning ("GDM crashed, but symbols couldn't be retrieved.");
+	}
+}
+
+
+static gboolean
+crashlogger_get_backtrace (void)
+{
+	gboolean success = FALSE;
+	int      pid;
+
+	pid = fork();
+	if (pid > 0) {
+		/* Wait for the child to finish */
+		int estatus;
+		if (waitpid (pid, &estatus, 0) != -1) {
+			/* Only succeed if the crashlogger succeeded */
+			if (WIFEXITED (estatus) && (WEXITSTATUS (estatus) == 0)) {
+				success = TRUE;
+			}
+		}
+	} else if (pid == 0) {
+		/* Child process */
+		execl (LIBEXECDIR"/gdm-crash-logger",
+		       LIBEXECDIR"/gdm-crash-logger", NULL);
+	}
+
+	return success;
+}
+
+
+static void
+gdm_signal_handler_backtrace (void)
+{
+	struct stat s;
+	gboolean    fallback = TRUE;
+
+	/* Try to use gdb via gdm-crash-logger if it exists, since
+	 * we get much better information out of it.  Otherwise
+	 * fall back to execinfo.
+	 */
+	if (g_stat (LIBEXECDIR"/gdm-crash-logger", &s) == 0) {
+		fallback = crashlogger_get_backtrace () ? FALSE : TRUE;
+	}
+
+	if (fallback) {
+		fallback_get_backtrace ();
+	}
+}
+
+static void
 signal_handler (int signo)
 {
-	int ignore;
+	static int in_fatal = 0;
+	int        ignore;
 
-	/* FIXME: should probably use int32 here */
-	ignore = write (signal_pipes [1], (guchar *)&signo, 1);
+	/* avoid loops */
+	if (in_fatal > 0) {
+		return;
+	}
+
+	++in_fatal;
+
+	switch (signo) {
+	case SIGSEGV:
+	case SIGBUS:
+	case SIGILL:
+	case SIGABRT:
+		g_warning ("Caught signal %d.  Generating backtrace...", signo);
+		gdm_signal_handler_backtrace ();
+		exit (1);
+		break;
+	case SIGFPE:
+	case SIGPIPE:
+		/* let the fatal signals interrupt us */
+		--in_fatal;
+
+		g_warning ("Caught signal %d, shutting down abnormally.  Generating backtrace...", signo);
+		gdm_signal_handler_backtrace ();
+		ignore = write (signal_pipes [1], (guchar *)&signo, 1);
+		break;
+	default:
+		--in_fatal;
+		/* FIXME: should probably use int32 here */
+		ignore = write (signal_pipes [1], (guchar *)&signo, 1);
+		break;
+	}
 }
 
 static void

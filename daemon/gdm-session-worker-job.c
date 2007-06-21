@@ -300,7 +300,7 @@ gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
 		session_worker_job->priv->child_watch_id = 0;
 	}
 
-	g_debug ("Stopping session_worker_job");
+	g_debug ("Stopping session_worker_job pid:%d", session_worker_job->priv->pid);
 
 	signal_pid (session_worker_job->priv->pid, SIGTERM);
 	session_worker_job_died (session_worker_job);

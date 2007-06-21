@@ -100,7 +100,7 @@ on_user_verification_error (GdmSession *session,
 	username = gdm_session_get_username (session);
 
 	g_print ("%s%scould not be successfully authenticated: %s\n",
-		 username? username : "", username? " " : "",
+		 username ? username : "", username ? " " : "",
 		 error->message);
 
 	g_free (username);

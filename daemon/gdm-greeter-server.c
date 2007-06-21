@@ -74,7 +74,7 @@ enum {
 	SESSION_SELECTED,
 	LANGUAGE_SELECTED,
 	USER_SELECTED,
-	RESET,
+	CANCELLED,
 	CONNECTED,
 	DISCONNECTED,
 	LAST_SIGNAL
@@ -333,9 +333,9 @@ handle_select_user (GdmGreeterServer *greeter_server,
 }
 
 static DBusHandlerResult
-handle_reset (GdmGreeterServer *greeter_server,
-	      DBusConnection   *connection,
-	      DBusMessage      *message)
+handle_cancel (GdmGreeterServer *greeter_server,
+	       DBusConnection   *connection,
+	       DBusMessage      *message)
 {
 	DBusMessage *reply;
 
@@ -343,7 +343,7 @@ handle_reset (GdmGreeterServer *greeter_server,
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
 
-	g_signal_emit (greeter_server, signals [RESET], 0);
+	g_signal_emit (greeter_server, signals [CANCELLED], 0);
 
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -363,8 +363,8 @@ greeter_handle_child_message (DBusConnection *connection,
 		return handle_select_language (greeter_server, connection, message);
 	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectUser")) {
 		return handle_select_user (greeter_server, connection, message);
-	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "Reset")) {
-		return handle_reset (greeter_server, connection, message);
+	} else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "Cancel")) {
+		return handle_cancel (greeter_server, connection, message);
 	}
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -405,7 +405,7 @@ do_introspect (DBusConnection *connection,
 			       "    <method name=\"SelectUser\">\n"
 			       "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
 			       "    </method>\n"
-			       "    <method name=\"Reset\">\n"
+			       "    <method name=\"Cancel\">\n"
 			       "    </method>\n"
 			       "    <signal name=\"Info\">\n"
 			       "      <arg name=\"text\" type=\"s\"/>\n"
@@ -802,11 +802,11 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
 			      G_TYPE_NONE,
 			      1,
 			      G_TYPE_STRING);
-	signals [RESET] =
-		g_signal_new ("reset",
+	signals [CANCELLED] =
+		g_signal_new ("cancelled",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (GdmGreeterServerClass, reset),
+			      G_STRUCT_OFFSET (GdmGreeterServerClass, cancelled),
 			      NULL,
 			      NULL,
 			      g_cclosure_marshal_VOID__VOID,

@@ -93,7 +93,7 @@ void               gdm_session_relay_select_language   (GdmSessionRelay *session
 							const char      *language);
 void               gdm_session_relay_select_user       (GdmSessionRelay *session_relay,
 							const char      *user);
-void               gdm_session_relay_reset             (GdmSessionRelay *session_relay);
+void               gdm_session_relay_cancel            (GdmSessionRelay *session_relay);
 
 gboolean           gdm_session_relay_start             (GdmSessionRelay *session_relay);
 gboolean           gdm_session_relay_stop              (GdmSessionRelay *session_relay);

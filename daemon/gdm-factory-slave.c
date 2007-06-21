@@ -522,10 +522,10 @@ on_greeter_user_selected (GdmGreeterServer *greeter_server,
 }
 
 static void
-on_greeter_reset (GdmGreeterServer *greeter_server,
-		  GdmFactorySlave  *slave)
+on_greeter_cancel (GdmGreeterServer *greeter_server,
+		   GdmFactorySlave  *slave)
 {
-	gdm_session_relay_reset (slave->priv->session_relay);
+	gdm_session_relay_cancel (slave->priv->session_relay);
 }
 
 static void
@@ -602,8 +602,8 @@ run_greeter (GdmFactorySlave *slave)
 			  G_CALLBACK (on_greeter_connected),
 			  slave);
 	g_signal_connect (slave->priv->greeter_server,
-			  "reset",
-			  G_CALLBACK (on_greeter_reset),
+			  "cancelled",
+			  G_CALLBACK (on_greeter_cancel),
 			  slave);
 	gdm_greeter_server_start (slave->priv->greeter_server);
 

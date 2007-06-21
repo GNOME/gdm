@@ -340,6 +340,46 @@ send_startup_failed (GdmSessionWorker *worker,
 }
 
 static void
+send_session_exited (GdmSessionWorker *worker,
+		     int               code)
+{
+	GError  *error;
+	gboolean res;
+
+	error = NULL;
+	res = dbus_g_proxy_call (worker->priv->server_proxy,
+				 "SessionExited",
+				 &error,
+				 G_TYPE_INT, code,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send SessionExited: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
+send_session_died (GdmSessionWorker *worker,
+		   int               num)
+{
+	GError  *error;
+	gboolean res;
+
+	error = NULL;
+	res = dbus_g_proxy_call (worker->priv->server_proxy,
+				 "SessionDied",
+				 &error,
+				 G_TYPE_INT, num,
+				 G_TYPE_INVALID,
+				 G_TYPE_INVALID);
+	if (! res) {
+		g_warning ("Unable to send SessionDied: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 send_username_changed (GdmSessionWorker *worker)
 {
 	GError  *error;
@@ -446,13 +486,15 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
 	g_free (username);
 }
 
-static char *
+static gboolean
 gdm_session_worker_ask_question (GdmSessionWorker *worker,
-				 const char       *question)
+				 const char       *question,
+				 char            **answer)
 {
 	GError  *error;
 	gboolean res;
-	char    *answer;
+
+	g_assert (answer != NULL);
 
 	error = NULL;
 	res = dbus_g_proxy_call_with_timeout (worker->priv->server_proxy,
@@ -461,7 +503,7 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 					      &error,
 					      G_TYPE_STRING, question,
 					      G_TYPE_INVALID,
-					      G_TYPE_STRING, &answer,
+					      G_TYPE_STRING, answer,
 					      G_TYPE_INVALID);
 	if (! res) {
 		/* FIXME: handle timeout */
@@ -469,18 +511,20 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
 		g_error_free (error);
 	}
 
-	return answer;
+	return res;
 }
 
-static char *
+static gboolean
 gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
-				   const char       *secret)
+				   const char       *secret,
+				   char            **answer)
 {
 	GError  *error;
 	gboolean res;
-	char    *answer;
 
 	g_debug ("Secret info query: %s", secret);
+
+	g_assert (answer != NULL);
 
 	error = NULL;
 	res = dbus_g_proxy_call_with_timeout (worker->priv->server_proxy,
@@ -489,7 +533,7 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
 					      &error,
 					      G_TYPE_STRING, secret,
 					      G_TYPE_INVALID,
-					      G_TYPE_STRING, &answer,
+					      G_TYPE_STRING, answer,
 					      G_TYPE_INVALID);
 	if (! res) {
 		/* FIXME: handle timeout */
@@ -497,11 +541,10 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
 		g_error_free (error);
 	}
 
-	g_debug ("answer to secret question '%s' is '%s'", secret, answer);
-	return answer;
+	return res;
 }
 
-static void
+static gboolean
 gdm_session_worker_report_info (GdmSessionWorker *worker,
 				const char       *info)
 {
@@ -521,9 +564,11 @@ gdm_session_worker_report_info (GdmSessionWorker *worker,
 		g_warning ("Unable to send Info: %s", error->message);
 		g_error_free (error);
 	}
+
+	return res;
 }
 
-static void
+static gboolean
 gdm_session_worker_report_problem (GdmSessionWorker *worker,
 				   const char       *problem)
 {
@@ -543,6 +588,8 @@ gdm_session_worker_report_problem (GdmSessionWorker *worker,
 		g_warning ("Unable to send Problem: %s", error->message);
 		g_error_free (error);
 	}
+
+	return res;
 }
 
 static char *
@@ -579,9 +626,12 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 					char                     **response_text)
 {
 	char    *user_answer;
-	gboolean was_processed;
+	gboolean res;
 	char    *utf8_msg;
 
+	if (response_text != NULL) {
+		*response_text = NULL;
+	}
 
 	g_debug ("received pam message of type %u with payload '%s'",
 		 query->msg_style, query->msg);
@@ -589,21 +639,19 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 	utf8_msg = convert_to_utf8 (query->msg);
 
 	user_answer = NULL;
-	was_processed = FALSE;
+	res = FALSE;
 	switch (query->msg_style) {
 	case PAM_PROMPT_ECHO_ON:
-		user_answer = gdm_session_worker_ask_question (worker, utf8_msg);
+		res = gdm_session_worker_ask_question (worker, utf8_msg, &user_answer);
 		break;
 	case PAM_PROMPT_ECHO_OFF:
-		user_answer = gdm_session_worker_ask_for_secret (worker, utf8_msg);
+		res = gdm_session_worker_ask_for_secret (worker, utf8_msg, &user_answer);
 		break;
 	case PAM_TEXT_INFO:
-		gdm_session_worker_report_info (worker, utf8_msg);
-		was_processed = TRUE;
+		res = gdm_session_worker_report_info (worker, utf8_msg);
 		break;
 	case PAM_ERROR_MSG:
-		gdm_session_worker_report_problem (worker, utf8_msg);
-		was_processed = TRUE;
+		res = gdm_session_worker_report_problem (worker, utf8_msg);
 		break;
 	default:
 		g_debug ("unknown query of type %u\n", query->msg_style);
@@ -614,7 +662,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 		/* we strdup and g_free to make sure we return malloc'd
 		 * instead of g_malloc'd memory
 		 */
-		if (response_text != NULL) {
+		if (res && response_text != NULL) {
 			*response_text = strdup (user_answer);
 		}
 
@@ -622,12 +670,12 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 
 		g_debug ("trying to get updated username");
 		gdm_session_worker_update_username (worker);
-		was_processed = TRUE;
+		res = TRUE;
 	}
 
 	g_free (utf8_msg);
 
-	return was_processed;
+	return res;
 }
 
 static int
@@ -640,7 +688,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 	int                  return_value;
 	int                  i;
 
-	g_debug ("%d new messages received from pam\n", number_of_messages);
+	g_debug ("%d new messages received from PAM\n", number_of_messages);
 
 	return_value = PAM_CONV_ERR;
 
@@ -668,8 +716,9 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 		got_response = gdm_session_worker_process_pam_message (worker,
 								       messages[i],
 								       &response_text);
-		if (!got_response)
+		if (!got_response) {
 			goto out;
+		}
 
 		g_debug ("answered pam message %d with response '%s'",
 			 i, response_text);
@@ -695,6 +744,8 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 	if (responses) {
 		*responses = replies;
 	}
+
+	g_debug ("PAM conversation returning %d", return_value);
 
 	return return_value;
 }
@@ -829,6 +880,8 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
 	error_code = pam_authenticate (worker->priv->pam_handle, authentication_flags);
 
 	if (error_code != PAM_SUCCESS) {
+		g_debug ("authentication returned %d: %s", error_code, pam_strerror (worker->priv->pam_handle, error_code));
+
 		g_set_error (error,
 			     GDM_SESSION_WORKER_ERROR,
 			     GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
@@ -1080,6 +1133,7 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
 						    password_is_required,
 						    &pam_error);
 	if (! res) {
+		g_debug ("Unable to verify user");
 		g_propagate_error (error, pam_error);
 		return FALSE;
 	}
@@ -1185,10 +1239,12 @@ session_worker_child_watch (GPid              pid,
 
 	if (WIFEXITED (status)) {
 		int code = WEXITSTATUS (status);
-		/*g_signal_emit (job, signals [EXITED], 0, code);*/
+
+		send_session_exited (worker, code);
 	} else if (WIFSIGNALED (status)) {
 		int num = WTERMSIG (status);
-		/*g_signal_emit (job, signals [DIED], 0, num);*/
+
+		send_session_died (worker, num);
 	}
 
 	worker->priv->child_pid = -1;
@@ -1325,7 +1381,7 @@ gdm_session_worker_open (GdmSessionWorker    *worker,
 	if (! res) {
 		g_assert (verification_error != NULL);
 
-		g_message ("%s", verification_error->message);
+		g_debug ("%s", verification_error->message);
 
 		g_propagate_error (error, verification_error);
 
@@ -1339,7 +1395,7 @@ gdm_session_worker_open (GdmSessionWorker    *worker,
 	    !gdm_session_worker_open_user_session (worker, &verification_error)) {
 		g_assert (verification_error != NULL);
 
-		g_message ("%s", verification_error->message);
+		g_debug ("%s", verification_error->message);
 
 		g_propagate_error (error, verification_error);
 
@@ -1507,6 +1563,16 @@ on_begin_verification_for_user (DBusGProxy *proxy,
 	}
 }
 
+static void
+proxy_destroyed (DBusGProxy       *bus_proxy,
+		 GdmSessionWorker *worker)
+{
+	g_debug ("Disconnected");
+
+	/* do cleanup */
+	exit (1);
+}
+
 static GObject *
 gdm_session_worker_constructor (GType                  type,
 				guint                  n_construct_properties,
@@ -1536,6 +1602,8 @@ gdm_session_worker_constructor (GType                  type,
 		exit (1);
         }
 
+	/*dbus_connection_set_exit_on_disconnect (dbus_g_connection_get_connection (worker->priv->connection), TRUE);*/
+
 	g_debug ("creating proxy for peer: %s", GDM_SESSION_DBUS_PATH);
         worker->priv->server_proxy = dbus_g_proxy_new_for_peer (worker->priv->connection,
 								GDM_SESSION_DBUS_PATH,
@@ -1545,7 +1613,7 @@ gdm_session_worker_constructor (GType                  type,
 		exit (1);
 	}
 
-	/*g_signal_connect (worker->priv->server_proxy, "destroy", G_CALLBACK (proxy_destroyed), NULL);*/
+	g_signal_connect (worker->priv->server_proxy, "destroy", G_CALLBACK (proxy_destroyed), NULL);
 
 	dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING,
 					   G_TYPE_NONE,

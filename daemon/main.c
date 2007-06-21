@@ -192,7 +192,7 @@ bus_reconnect (GdmManager *manager)
 			  G_CALLBACK (bus_proxy_destroyed_cb),
 			  manager);
 
-	gdm_debug ("Successfully reconnected to D-Bus");
+	g_debug ("Successfully reconnected to D-Bus");
 
 	ret = FALSE;
 
@@ -204,7 +204,7 @@ static void
 bus_proxy_destroyed_cb (DBusGProxy *bus_proxy,
 			GdmManager  *manager)
 {
-	gdm_debug ("Disconnected from D-Bus");
+	g_debug ("Disconnected from D-Bus");
 
 	g_object_unref (manager);
 	manager = NULL;

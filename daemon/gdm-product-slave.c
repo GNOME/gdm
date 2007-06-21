@@ -903,12 +903,12 @@ create_new_session (GdmProductSlave *slave)
 }
 
 static void
-on_relay_reset (DBusGProxy *proxy,
-		gpointer    data)
+on_relay_cancelled (DBusGProxy *proxy,
+		    gpointer    data)
 {
 	GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-	g_debug ("Relay reset");
+	g_debug ("Relay cancelled");
 
 	if (slave->priv->session != NULL) {
 		gdm_session_close (slave->priv->session);
@@ -1128,7 +1128,7 @@ static void
 session_relay_proxy_destroyed (GObject *object,
 				gpointer data)
 {
-	g_debug ("Session server proxy destroyed");
+	g_debug ("Session server relay destroyed");
 }
 
 static void
@@ -1209,7 +1209,7 @@ connect_to_session_relay (GdmProductSlave *slave)
 				 "Open",
 				 G_TYPE_INVALID);
 	dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
-				 "Reset",
+				 "Cancelled",
 				 G_TYPE_INVALID);
 
 	dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
@@ -1238,8 +1238,8 @@ connect_to_session_relay (GdmProductSlave *slave)
 				     slave,
 				     NULL);
 	dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
-				     "Reset",
-				     G_CALLBACK (on_relay_reset),
+				     "Cancelled",
+				     G_CALLBACK (on_relay_cancelled),
 				     slave,
 				     NULL);
 

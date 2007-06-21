@@ -186,9 +186,9 @@ gdm_session_relay_select_user (GdmSessionRelay *session_relay,
 }
 
 void
-gdm_session_relay_reset (GdmSessionRelay *session_relay)
+gdm_session_relay_cancel (GdmSessionRelay *session_relay)
 {
-        send_dbus_void_signal (session_relay, "Reset");
+        send_dbus_void_signal (session_relay, "Cancelled");
 }
 
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
@@ -391,6 +391,28 @@ handle_ready (GdmSessionRelay *session_relay,
 }
 
 static DBusHandlerResult
+handle_reset (GdmSessionRelay *session_relay,
+	      DBusConnection  *connection,
+	      DBusMessage     *message)
+{
+	DBusMessage *reply;
+	DBusError    error;
+
+	dbus_error_init (&error);
+
+	g_debug ("Reset");
+
+	reply = dbus_message_new_method_return (message);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+
+	/* FIXME: */
+	/*g_signal_emit (session_relay, signals [RESET], 0);*/
+
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 session_handle_child_message (DBusConnection *connection,
 			      DBusMessage    *message,
 			      void           *user_data)
@@ -411,6 +433,8 @@ session_handle_child_message (DBusConnection *connection,
 		return handle_session_started (session_relay, connection, message);
 	} else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Ready")) {
 		return handle_ready (session_relay, connection, message);
+	} else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Reset")) {
+		return handle_reset (session_relay, connection, message);
 	}
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -470,6 +494,12 @@ do_introspect (DBusConnection *connection,
 			       "      <arg name=\"language\" type=\"s\"/>\n"
 			       "    </signal>\n"
 			       "    <signal name=\"SessionSelected\">\n"
+			       "      <arg name=\"session\" type=\"s\"/>\n"
+			       "    </signal>\n"
+			       "    <signal name=\"UserSelected\">\n"
+			       "      <arg name=\"session\" type=\"s\"/>\n"
+			       "    </signal>\n"
+			       "    <signal name=\"Cancelled\">\n"
 			       "      <arg name=\"session\" type=\"s\"/>\n"
 			       "    </signal>\n"
 			       "  </interface>\n");

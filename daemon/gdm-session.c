@@ -57,6 +57,7 @@
 
 #define GDM_SESSION_DBUS_PATH      "/org/gnome/DisplayManager/Session"
 #define GDM_SESSION_DBUS_INTERFACE "org.gnome.DisplayManager.Session"
+#define GDM_SESSION_DBUS_ERROR_NAME "org.gnome.DisplayManager.Session.Error"
 
 
 #ifndef GDM_BAD_SESSION_RECORDS_FILE
@@ -642,6 +643,26 @@ gdm_session_handle_username_changed (GdmSession     *session,
 }
 
 static void
+cancel_pending_query (GdmSession *session)
+{
+	DBusMessage    *reply;
+
+	if (session->priv->message_pending_reply == NULL) {
+		return;
+	}
+
+	g_debug ("Cancelling pending query");
+
+	reply = dbus_message_new_error (session->priv->message_pending_reply,
+					GDM_SESSION_DBUS_ERROR_NAME,
+					"Operation cancelled");
+	dbus_connection_send (session->priv->worker_connection, reply, NULL);
+	dbus_message_unref (reply);
+	dbus_message_unref (session->priv->message_pending_reply);
+	session->priv->message_pending_reply = NULL;
+}
+
+static void
 answer_pending_query (GdmSession *session,
 		      const char *answer)
 {
@@ -1065,6 +1086,8 @@ session_message_handler (DBusConnection  *connection,
         } else if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected") &&
                    strcmp (dbus_message_get_path (message), DBUS_PATH_LOCAL) == 0) {
 
+		g_debug ("Disconnected here");
+
                 /*dbus_connection_unref (connection);*/
 
                 return DBUS_HANDLER_RESULT_HANDLED;
@@ -1132,9 +1155,10 @@ connection_filter_function (DBusConnection *connection,
 
 		g_debug ("Disconnected");
 
-		dbus_connection_unref (connection);
+		/*dbus_connection_unref (connection);*/
 		session->priv->worker_connection = NULL;
 
+		g_debug ("Emitting closed signal");
 		g_signal_emit (session, gdm_session_signals [CLOSED], 0);
 	} else if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")) {
 
@@ -1180,11 +1204,13 @@ handle_connection (DBusServer      *server,
 		dbus_connection_setup_with_g_main (new_connection, NULL);
 
 		g_debug ("worker connection is %p", new_connection);
-
+#if 0
 		dbus_connection_add_filter (new_connection,
 					    connection_filter_function,
 					    session,
 					    NULL);
+#endif
+		dbus_connection_set_exit_on_disconnect (new_connection, FALSE);
 
 		dbus_connection_set_unix_user_function (new_connection,
 							allow_user_function,
@@ -1192,7 +1218,7 @@ handle_connection (DBusServer      *server,
 							NULL);
 
 		dbus_connection_register_object_path (new_connection,
-						      "/",
+						      GDM_SESSION_DBUS_PATH,
 						      &vtable,
 						      session);
 
@@ -1374,6 +1400,8 @@ gdm_session_open (GdmSession  *session,
 	g_return_val_if_fail (console_name != NULL, FALSE);
 	g_return_val_if_fail (hostname != NULL, FALSE);
 
+	g_debug ("Openning session");
+
 	res = start_worker (session);
 
 	session->priv->service_name = g_strdup (service_name);
@@ -1388,6 +1416,8 @@ send_begin_verification (GdmSession *session)
 {
 	DBusMessage    *message;
 	DBusMessageIter iter;
+
+	g_debug ("Beginning verification");
 
 	message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
 					   GDM_SESSION_DBUS_INTERFACE,
@@ -1410,6 +1440,8 @@ send_begin_verification_for_user (GdmSession *session)
 {
 	DBusMessage    *message;
 	DBusMessageIter iter;
+
+	g_debug ("Beginning verification for user %s", session->priv->username);
 
 	message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
 					   GDM_SESSION_DBUS_INTERFACE,
@@ -1498,10 +1530,18 @@ gdm_session_close (GdmSession *session)
 {
 	g_return_if_fail (session != NULL);
 
+	g_debug ("Closing session");
+
 	if (session->priv->job != NULL) {
 		if (session->priv->is_running) {
 			gdm_session_write_record (session,
 						  GDM_SESSION_RECORD_TYPE_LOGOUT);
+		}
+
+		cancel_pending_query (session);
+
+		if (session->priv->worker_connection != NULL) {
+			dbus_connection_close (session->priv->worker_connection);
 		}
 
 		gdm_session_worker_job_stop (session->priv->job);
