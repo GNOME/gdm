@@ -140,6 +140,26 @@ on_slave_stopped (GdmSlave   *slave,
 	g_main_loop_quit (main_loop);
 }
 
+static void
+on_session_exited (GdmSlave   *slave,
+		   int         code,
+		   GMainLoop  *main_loop)
+{
+	g_debug ("slave session exited: %d", code);
+	gdm_return_code = 0;
+	g_main_loop_quit (main_loop);
+}
+
+static void
+on_session_died (GdmSlave   *slave,
+		 int         num,
+		 GMainLoop  *main_loop)
+{
+	g_debug ("slave session died: %d", num);
+	gdm_return_code = 0;
+	g_main_loop_quit (main_loop);
+}
+
 int
 main (int    argc,
       char **argv)
@@ -202,6 +222,14 @@ main (int    argc,
 	g_signal_connect (slave,
 			  "stopped",
 			  G_CALLBACK (on_slave_stopped),
+			  main_loop);
+	g_signal_connect (slave,
+			  "session-exited",
+			  G_CALLBACK (on_session_exited),
+			  main_loop);
+	g_signal_connect (slave,
+			  "session-died",
+			  G_CALLBACK (on_session_exited),
 			  main_loop);
 	gdm_slave_start (slave);
 

@@ -1416,14 +1416,16 @@ gdm_product_slave_init (GdmProductSlave *product_slave)
 static void
 gdm_product_slave_finalize (GObject *object)
 {
-	GdmProductSlave *product_slave;
+	GdmProductSlave *slave;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (GDM_IS_PRODUCT_SLAVE (object));
 
-	product_slave = GDM_PRODUCT_SLAVE (object);
+	slave = GDM_PRODUCT_SLAVE (object);
 
-	g_return_if_fail (product_slave->priv != NULL);
+	g_return_if_fail (slave->priv != NULL);
+
+	gdm_product_slave_stop (GDM_SLAVE (slave));
 
 	G_OBJECT_CLASS (gdm_product_slave_parent_class)->finalize (object);
 }
