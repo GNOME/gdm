@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.13.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-08 15:37+0200\n"
-"PO-Revision-Date: 2007-05-08 15:43+0200\n"
+"POT-Creation-Date: 2007-06-23 11:25+0200\n"
+"PO-Revision-Date: 2007-06-23 11:28+0200\n"
 "Last-Translator: Espen Stefansen <espenas@gmail.com>\n"
 "Language-Team: Norwegian/Bokmaal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -121,20 +121,22 @@ msgstr ""
 "Vil du prøve å konfigurere musen? Du må ha root-passordet for å gjøre dette."
 
 #: ../config/gettextfoo.h:15
+#, fuzzy
 msgid ""
-"This is the failsafe xterm session.  Windows now have focus only if you have "
-"your cursor above them.  To get out of this mode type 'exit' in the window "
-"in the upper left corner"
+"System has no Xclients file, so starting a failsafe xterm session.  Windows "
+"will have focus only if the mouse pointer is above them.  To get out of this "
+"mode type 'exit' in the window."
 msgstr ""
-"Dette er en feilsikker xterm-sesjon. Vinduer får nå kun fokus hvis du har "
-"markøren over dem. For å avslutte denne sesjonen kan du skrive «exit» i "
-"vinduet i øvre venstre hjørne"
+"Kunne ikke starte din sesjon og har derfor startet feilsikker xterm-sesjon. "
+"Vinduer får nå kun fokus hvis du har markøren over dem. For å avslutte denne "
+"sesjonen må du skrive «exit» i vinduet i øvre venstre hjørne"
 
 #: ../config/gettextfoo.h:16
+#, fuzzy
 msgid ""
 "Failed to start the session, so starting a failsafe xterm session.  Windows "
 "will have focus only if the mouse pointer is above them.  To get out of this "
-"mode type 'exit' in the window in the upper left corner"
+"mode type 'exit' in the window."
 msgstr ""
 "Kunne ikke starte din sesjon og har derfor startet feilsikker xterm-sesjon. "
 "Vinduer får nå kun fokus hvis du har markøren over dem. For å avslutte denne "
@@ -181,33 +183,33 @@ msgstr ""
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: Kunne ikke lage ny cookie-fil i %s"
 
-#: ../daemon/auth.c:229 ../daemon/auth.c:246 ../daemon/auth.c:848
+#: ../daemon/auth.c:229 ../daemon/auth.c:246 ../daemon/auth.c:849
 #, c-format
 msgid "%s: Cannot safely open %s"
 msgstr "%s: Kan ikke åpne %s på en sikker måte"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: ../daemon/auth.c:652 ../daemon/auth.c:693
+#: ../daemon/auth.c:653 ../daemon/auth.c:694
 #, c-format
 msgid "%s: Could not open cookie file %s"
 msgstr "%s: Kunne ikke åpne cookie-fil %s"
 
-#: ../daemon/auth.c:672
+#: ../daemon/auth.c:673
 #, c-format
 msgid "%s: Could not lock cookie file %s"
 msgstr "%s: Kunne ikke låse cookie-fil %s"
 
-#: ../daemon/auth.c:721 ../daemon/auth.c:743
+#: ../daemon/auth.c:722 ../daemon/auth.c:744
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s: Kunne ikke skrive informasjonskapsel"
 
-#: ../daemon/auth.c:826
+#: ../daemon/auth.c:827
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Overser suspekt cookie-fil %s"
 
-#: ../daemon/auth.c:867 ../daemon/gdm.c:1514 ../daemon/gdm.c:1887
+#: ../daemon/auth.c:868 ../daemon/gdm.c:1507 ../daemon/gdm.c:1879
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Kan ikke skrive til %s: %s"
@@ -222,7 +224,7 @@ msgstr "Kan ikke skrive til %s: %s"
 #. * that should give people ample time to stop gdm if needed,
 #. * or just wait for the stupid malicious user to get bored
 #. * and go away
-#: ../daemon/display.c:189
+#: ../daemon/display.c:192
 #, c-format
 msgid ""
 "The display server has been shut down about 6 times in the last 90 seconds. "
@@ -233,12 +235,12 @@ msgstr ""
 "90 sekundene, så det er sannsynlig at noe ikke fungerer. Venter i tominutter "
 "før nytt forsøk på skjerm %s."
 
-#: ../daemon/display.c:333
+#: ../daemon/display.c:336
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Kan ikke opprette rør"
 
-#: ../daemon/display.c:409
+#: ../daemon/display.c:412
 #, c-format
 msgid "%s: Failed forking GDM slave process for %s"
 msgstr "%s: Feil under start av GDM-slaveprosess for %s"
@@ -482,7 +484,8 @@ msgstr ""
 #: ../daemon/gdm-daemon-config.c:2123
 #, c-format
 msgid "%s: Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr "%s: Autentiseringskatalog %s eies ikke av bruker %d, gruppe %d. Avbryter."
+msgstr ""
+"%s: Autentiseringskatalog %s eies ikke av bruker %d, gruppe %d. Avbryter."
 
 #: ../daemon/gdm-daemon-config.c:2132
 #, c-format
@@ -563,130 +566,130 @@ msgstr "%s: Kunne ikke hente ut autentiseringsliste fra pakke"
 msgid "%s: Error in checksum"
 msgstr "%s: Feil i sjekksum"
 
-#: ../daemon/gdm-xdmcp-manager.c:1838
+#: ../daemon/gdm-xdmcp-manager.c:1839
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Mottok REQUEST fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-manager.c:1850 ../daemon/gdm-xdmcp-manager.c:2171
-#: ../daemon/gdm-xdmcp-manager.c:2403
+#: ../daemon/gdm-xdmcp-manager.c:1851 ../daemon/gdm-xdmcp-manager.c:2172
+#: ../daemon/gdm-xdmcp-manager.c:2404
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Kunne ikke lese skjermnummer"
 
-#: ../daemon/gdm-xdmcp-manager.c:1857
+#: ../daemon/gdm-xdmcp-manager.c:1858
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Kunne ikke lese forbindelsestype"
 
-#: ../daemon/gdm-xdmcp-manager.c:1864
+#: ../daemon/gdm-xdmcp-manager.c:1865
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Kunne ikke lese klientens adresse"
 
-#: ../daemon/gdm-xdmcp-manager.c:1872
+#: ../daemon/gdm-xdmcp-manager.c:1873
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Kunne ikke lese autentiseringsnavn"
 
-#: ../daemon/gdm-xdmcp-manager.c:1881
+#: ../daemon/gdm-xdmcp-manager.c:1882
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Kunne ikke lese autentiseringsdata"
 
-#: ../daemon/gdm-xdmcp-manager.c:1891
+#: ../daemon/gdm-xdmcp-manager.c:1892
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Kunne ikke lese autorisasjonslisten"
 
-#: ../daemon/gdm-xdmcp-manager.c:1909
+#: ../daemon/gdm-xdmcp-manager.c:1910
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Kunne ikke lese produsent-ID"
 
-#: ../daemon/gdm-xdmcp-manager.c:1934
+#: ../daemon/gdm-xdmcp-manager.c:1935
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Feilet sjekksum fra %s"
 
-#: ../daemon/gdm-xdmcp-manager.c:2154
+#: ../daemon/gdm-xdmcp-manager.c:2155
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Mottok Manage fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-manager.c:2164 ../daemon/gdm-xdmcp-manager.c:2410
+#: ../daemon/gdm-xdmcp-manager.c:2165 ../daemon/gdm-xdmcp-manager.c:2411
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Kunne ikke lese sesjons-ID"
 
-#: ../daemon/gdm-xdmcp-manager.c:2178
+#: ../daemon/gdm-xdmcp-manager.c:2179
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Kunne ikke lese skjermklasse"
 
-#: ../daemon/gdm-xdmcp-manager.c:2273 ../daemon/gdm-xdmcp-manager.c:2320
-#: ../daemon/gdm-xdmcp-manager.c:2326
+#: ../daemon/gdm-xdmcp-manager.c:2274 ../daemon/gdm-xdmcp-manager.c:2321
+#: ../daemon/gdm-xdmcp-manager.c:2327
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Kunne ikke lese adresse"
 
-#: ../daemon/gdm-xdmcp-manager.c:2393
+#: ../daemon/gdm-xdmcp-manager.c:2394
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Mottok KEEPALIVE fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-manager.c:2476
-msgid "XMCP: Could not create XDMCP buffer!"
+#: ../daemon/gdm-xdmcp-manager.c:2477
+msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: Kunne ikke opprette XDMCP-buffer!"
 
-#: ../daemon/gdm-xdmcp-manager.c:2482
+#: ../daemon/gdm-xdmcp-manager.c:2483
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Kunne ikke lese XDMCP header!"
 
-#: ../daemon/gdm-xdmcp-manager.c:2488
-msgid "XMDCP: Incorrect XDMCP version!"
+#: ../daemon/gdm-xdmcp-manager.c:2489
+msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Feil XDMCP versjon!"
 
-#: ../daemon/gdm-xdmcp-manager.c:2875
+#: ../daemon/gdm-xdmcp-manager.c:2876
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Fant ikke tjenerens vertsnavn: %s!"
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:197 ../daemon/gdm.c:205 ../daemon/gdm.c:1645
-#: ../daemon/gdm.c:1653
+#: ../daemon/gdm.c:194 ../daemon/gdm.c:202 ../daemon/gdm.c:1641
+#: ../daemon/gdm.c:1649
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr "Kan ikke skrive PID-fil %s. Kan være tom for diskplass. Feil: %s\n"
 
-#: ../daemon/gdm.c:199 ../daemon/gdm.c:207 ../daemon/gdm.c:1647
-#: ../daemon/gdm.c:1655
+#: ../daemon/gdm.c:196 ../daemon/gdm.c:204 ../daemon/gdm.c:1643
+#: ../daemon/gdm.c:1651
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr "Kan ikke skrive PID-fil %s. Kan være tom for diskplass. Feil: %s"
 
-#: ../daemon/gdm.c:216
+#: ../daemon/gdm.c:213
 #, c-format
 msgid "%s: fork () failed!"
 msgstr "%s: fork() feilet!"
 
 #. should never happen
-#: ../daemon/gdm.c:219 ../daemon/slave.c:3494
+#: ../daemon/gdm.c:216 ../daemon/slave.c:3562
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: setsid() feilet: %s!"
 
-#: ../daemon/gdm.c:449
+#: ../daemon/gdm.c:442
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: Prøver feilsikker X-tjener %s"
 
-#: ../daemon/gdm.c:467
+#: ../daemon/gdm.c:460
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: Kjører skriptet XKeepsCrashing"
 
-#: ../daemon/gdm.c:581
+#: ../daemon/gdm.c:574
 msgid ""
 "The X server (your graphical interface) cannot be started.  It is likely "
 "that it is not set up correctly.  You will need to log in on a console and "
@@ -701,7 +704,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:593
+#: ../daemon/gdm.c:586
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -710,66 +713,66 @@ msgstr ""
 "Gjentatte feil under oppstart av X-tjeneren over en kort tidsperiode; "
 "stenger skjerm %s"
 
-#: ../daemon/gdm.c:640
+#: ../daemon/gdm.c:633
 #, c-format
 msgid "command failed %s: %d"
 msgstr "kommando feilet %s: %d"
 
-#: ../daemon/gdm.c:657 ../daemon/gdm.c:2533
+#: ../daemon/gdm.c:650 ../daemon/gdm.c:2525
 msgid "Master suspending..."
 msgstr "Sjef går i dvale..."
 
-#: ../daemon/gdm.c:688
+#: ../daemon/gdm.c:681
 #, c-format
 msgid "System is restarting, please wait ..."
 msgstr "Systemet starter på nytt. Vennligst vent..."
 
-#: ../daemon/gdm.c:690
+#: ../daemon/gdm.c:683
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "Systemet stenger ned. Vennligst vent..."
 
-#: ../daemon/gdm.c:701
+#: ../daemon/gdm.c:694
 msgid "Master halting..."
 msgstr "Sjef stopper..."
 
-#: ../daemon/gdm.c:723
+#: ../daemon/gdm.c:716
 msgid "Restarting computer..."
 msgstr "Start datamaskinen på nytt..."
 
 #. We are just feeling very paranoid
-#: ../daemon/gdm.c:745
+#: ../daemon/gdm.c:738
 #, c-format
 msgid "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
 msgstr ""
 
-#: ../daemon/gdm.c:766
+#: ../daemon/gdm.c:759
 #, c-format
 msgid "Executing custom command %ld with restart option..."
 msgstr ""
 
-#: ../daemon/gdm.c:789 ../daemon/gdm.c:827
+#: ../daemon/gdm.c:782 ../daemon/gdm.c:820
 #, c-format
 msgid "%s: Execution of custom command failed: %s"
 msgstr "%s: Kjøring av egendefinert kommando feilet: %s"
 
-#: ../daemon/gdm.c:798
+#: ../daemon/gdm.c:791
 #, c-format
 msgid "Executing custom command %ld with no restart option ..."
 msgstr ""
 
 #. failed fork
-#: ../daemon/gdm.c:804
+#: ../daemon/gdm.c:797
 #, c-format
 msgid "custom_cmd: forking process for custom command %ld failed"
 msgstr ""
 
-#: ../daemon/gdm.c:838
+#: ../daemon/gdm.c:831
 #, c-format
 msgid "custom_cmd: child %d returned %d"
 msgstr "custom_cmd: barn %d returnerte %d"
 
-#: ../daemon/gdm.c:947
+#: ../daemon/gdm.c:940
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
@@ -778,7 +781,7 @@ msgstr ""
 "Forespørsel for omstart av GDM, omstart av maskinen, hvilemodus eller "
 "nedstenging selv om det ikke finnes en systemmeny på skjerm %s"
 
-#: ../daemon/gdm.c:956
+#: ../daemon/gdm.c:949
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
@@ -788,111 +791,111 @@ msgstr ""
 "nedstenging fra en ikke-statisk skjerm %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:1022
+#: ../daemon/gdm.c:1015
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Avbryter skjerm %s"
 
-#: ../daemon/gdm.c:1173
+#: ../daemon/gdm.c:1166
 msgid "GDM restarting ..."
 msgstr "GDM starter på nytt..."
 
-#: ../daemon/gdm.c:1177
+#: ../daemon/gdm.c:1170
 msgid "Failed to restart self"
 msgstr "Feil under gjenoppstarting"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1262
+#: ../daemon/gdm.c:1255
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr "hoveddaemon: Mottok SIGABRT. Noe gikk veldig galt. Går ned!"
 
-#: ../daemon/gdm.c:1419
+#: ../daemon/gdm.c:1412
 msgid "Do not fork into the background"
 msgstr "Ikke kjør fork() og gå til bakgrunnen"
 
-#: ../daemon/gdm.c:1421
+#: ../daemon/gdm.c:1414
 msgid "No console (static) servers to be run"
 msgstr "Ingen konsolltjenere (lokale) å kjøre"
 
-#: ../daemon/gdm.c:1423
+#: ../daemon/gdm.c:1416
 msgid "Alternative GDM System Defaults configuration file"
 msgstr "Alternativ forvalgt systemkonfigurasjonsfil for GDM"
 
-#: ../daemon/gdm.c:1423
+#: ../daemon/gdm.c:1416
 msgid "CONFIGFILE"
 msgstr "KONFIGURASJONSFIL"
 
-#: ../daemon/gdm.c:1425
+#: ../daemon/gdm.c:1418
 msgid "Preserve LD_* variables"
 msgstr "Bevar LD_* variabler"
 
-#: ../daemon/gdm.c:1427
+#: ../daemon/gdm.c:1420
 msgid "Print GDM version"
 msgstr "Skriv ut GDM-versjon"
 
-#: ../daemon/gdm.c:1429
+#: ../daemon/gdm.c:1422
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "Start første X-tjener, men vent til vi får startsignal i fifo"
 
-#: ../daemon/gdm.c:1503 ../daemon/gdm.c:1851
+#: ../daemon/gdm.c:1496 ../daemon/gdm.c:1843
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Kunne ikke åpne %s for skriving"
 
-#: ../daemon/gdm.c:1552
+#: ../daemon/gdm.c:1545
 msgid "- The GNOME login manager"
 msgstr "- GNOME innlogging"
 
-#: ../daemon/gdm.c:1553 ../gui/gdmXnestchooser.c:486
+#: ../daemon/gdm.c:1546 ../gui/gdmXnestchooser.c:486
 #: ../gui/gdmXnestchooser.c:494 ../gui/gdmchooser.c:1967
 msgid "main options"
 msgstr "hovedalternativer"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/gdm.c:1585
+#: ../daemon/gdm.c:1578
 msgid "Only root wants to run GDM\n"
 msgstr "Bare root ønsker å kjøre gdm\n"
 
-#: ../daemon/gdm.c:1601 ../daemon/gdm.c:1605 ../daemon/gdm.c:1683
-#: ../daemon/gdm.c:1687 ../daemon/gdm.c:1691 ../daemon/gdm.c:1695
-#: ../daemon/gdm.c:1705 ../daemon/gdm.c:1711 ../daemon/gdm.c:1722
-#: ../daemon/misc.c:1364 ../daemon/misc.c:1368 ../daemon/misc.c:1372
-#: ../daemon/misc.c:1379 ../daemon/misc.c:1383 ../daemon/misc.c:1387
-#: ../daemon/server.c:528 ../daemon/server.c:541 ../daemon/slave.c:833
-#: ../daemon/slave.c:847 ../daemon/slave.c:857 ../daemon/slave.c:867
-#: ../daemon/slave.c:879 ../gui/gdmlogin.c:3429 ../gui/gdmlogin.c:3440
-#: ../gui/gdmlogin.c:3446
+#: ../daemon/gdm.c:1597 ../daemon/gdm.c:1601 ../daemon/gdm.c:1679
+#: ../daemon/gdm.c:1683 ../daemon/gdm.c:1687 ../daemon/gdm.c:1691
+#: ../daemon/gdm.c:1701 ../daemon/gdm.c:1707 ../daemon/gdm.c:1718
+#: ../daemon/misc.c:1370 ../daemon/misc.c:1374 ../daemon/misc.c:1378
+#: ../daemon/misc.c:1385 ../daemon/misc.c:1389 ../daemon/misc.c:1393
+#: ../daemon/server.c:528 ../daemon/server.c:541 ../daemon/slave.c:856
+#: ../daemon/slave.c:870 ../daemon/slave.c:880 ../daemon/slave.c:890
+#: ../daemon/slave.c:902 ../gui/gdmlogin.c:3432 ../gui/gdmlogin.c:3443
+#: ../gui/gdmlogin.c:3449
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Feil under oppsett av signalhåndterer for %s: %s"
 
-#: ../daemon/gdm.c:1627
+#: ../daemon/gdm.c:1623
 msgid "GDM already running. Aborting!"
 msgstr "GDM kjører allerede. Avbryter!"
 
-#: ../daemon/gdm.c:1731
+#: ../daemon/gdm.c:1727
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Feil under oppsett av CHLD signalhåndtereren"
 
-#: ../daemon/gdm.c:3160
+#: ../daemon/gdm.c:3152
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "DYNAMIC-forespørsel nektet: Ikke autentisert"
 
-#: ../daemon/gdm.c:3447 ../daemon/gdm.c:3706 ../daemon/gdm.c:3790
-#: ../daemon/gdm.c:3920 ../daemon/gdm.c:3968 ../daemon/gdm.c:4036
-#: ../daemon/gdm.c:4098 ../daemon/gdm.c:4132 ../daemon/gdm.c:4177
+#: ../daemon/gdm.c:3439 ../daemon/gdm.c:3701 ../daemon/gdm.c:3785
+#: ../daemon/gdm.c:3915 ../daemon/gdm.c:3962 ../daemon/gdm.c:4030
+#: ../daemon/gdm.c:4093 ../daemon/gdm.c:4133 ../daemon/gdm.c:4178
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s-forespørsel nektet: Ikke autentisert"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:3481
+#: ../daemon/gdm.c:3473
 msgid "Unknown server type requested; using standard server."
 msgstr "Ukjent tjenertype etterspurt, bruker forvalgt tjener."
 
-#: ../daemon/gdm.c:3485
+#: ../daemon/gdm.c:3477
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -916,12 +919,12 @@ msgstr "Kunne ikke kjøre setgid %d. Avbryter."
 msgid "initgroups () failed for %s. Aborting."
 msgstr "initgroups() feilet for %s. Avbryter."
 
-#: ../daemon/misc.c:1219 ../daemon/misc.c:1233
+#: ../daemon/misc.c:1225 ../daemon/misc.c:1239
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: Feil under setting av signal %d til %s"
 
-#: ../daemon/misc.c:2078
+#: ../daemon/misc.c:2084
 #, c-format
 msgid ""
 "Last login:\n"
@@ -1022,17 +1025,17 @@ msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 "%s: Tjeneren skulle startes av uid %d, men denne brukeren eksisterer ikke"
 
-#: ../daemon/server.c:1381 ../daemon/slave.c:2585 ../daemon/slave.c:3071
+#: ../daemon/server.c:1381 ../daemon/slave.c:2655 ../daemon/slave.c:3142
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Kunne ikke sette gruppe-id til %d"
 
-#: ../daemon/server.c:1387 ../daemon/slave.c:2591 ../daemon/slave.c:3077
+#: ../daemon/server.c:1387 ../daemon/slave.c:2661 ../daemon/slave.c:3148
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s: initgroups () feilet for %s"
 
-#: ../daemon/server.c:1393 ../daemon/slave.c:2596 ../daemon/slave.c:3082
+#: ../daemon/server.c:1393 ../daemon/slave.c:2666 ../daemon/slave.c:3153
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Kunne ikke sette bruker-id til %d"
@@ -1052,19 +1055,19 @@ msgstr "%s: Xserver ikke funnet: %s"
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Kan ikke kjøre Xserver-prosess!"
 
-#: ../daemon/slave.c:295
+#: ../daemon/slave.c:318
 msgid "Can't set EGID to user GID"
 msgstr "Kan ikke sette EGID til brukers GID"
 
-#: ../daemon/slave.c:303
+#: ../daemon/slave.c:326
 msgid "Can't set EUID to user UID"
 msgstr "Kan ikke sette EUID til brukers UID"
 
-#: ../daemon/slave.c:1160
+#: ../daemon/slave.c:1226
 msgid "Log in anyway"
 msgstr "Logg inn likevel"
 
-#: ../daemon/slave.c:1162
+#: ../daemon/slave.c:1228
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -1072,21 +1075,21 @@ msgstr ""
 "Du er allerede logget inn. Du kan velge mellom å logge inn likevel, "
 "returnere til din forrige sesjon eller avbryte denne påloggingen"
 
-#: ../daemon/slave.c:1166
+#: ../daemon/slave.c:1232
 msgid "Return to previous login"
 msgstr "Gå tilbake til innlogging"
 
-#: ../daemon/slave.c:1167 ../daemon/slave.c:1173
+#: ../daemon/slave.c:1233 ../daemon/slave.c:1239
 msgid "Abort login"
 msgstr "Avbryt innlogging"
 
-#: ../daemon/slave.c:1170
+#: ../daemon/slave.c:1236
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 "Du er allerede logget inn. Du kan velge mellom å logge inn likevel eller "
 "avbryte denne påloggingen"
 
-#: ../daemon/slave.c:1366
+#: ../daemon/slave.c:1428
 msgid ""
 "Could not start the X\n"
 "server (your graphical environment)\n"
@@ -1106,17 +1109,17 @@ msgstr ""
 "skjermen deaktiveres. Vennligst start gdm på\n"
 "nytt når problemet er rettet."
 
-#: ../daemon/slave.c:1631
+#: ../daemon/slave.c:1698
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: kan ikke kjøre"
 
-#: ../daemon/slave.c:1680
+#: ../daemon/slave.c:1747
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: kan ikke åpne skjerm %s"
 
-#: ../daemon/slave.c:1750
+#: ../daemon/slave.c:1817
 msgid ""
 "Could not access configuration file (custom.conf). Make sure that the file "
 "exists before launching  login manager config utility."
@@ -1124,7 +1127,7 @@ msgstr ""
 "Kunne ikke aksessere konfigurasjonsfilen (custom.conf). Sjekk at filen "
 "eksisterer før du starter konfigurasjonsprogrammet."
 
-#: ../daemon/slave.c:1858
+#: ../daemon/slave.c:1925
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file.  Attempting to start it from the "
@@ -1133,7 +1136,7 @@ msgstr ""
 "Kunne ikke kjøre konfigurasjonsprogrammet. Sjekk at stien er satt riktig i "
 "konfigurasjonsfilen. Vil forsøke å starte det fra forvalgt lokasjon."
 
-#: ../daemon/slave.c:1875
+#: ../daemon/slave.c:1942
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file."
@@ -1141,11 +1144,11 @@ msgstr ""
 "Kunne ikke kjøre konfigurasjonsprogrammet. Sjekk at stien er satt riktig i "
 "konfigurasjonsfilen."
 
-#: ../daemon/slave.c:2047
+#: ../daemon/slave.c:2112
 msgid "You must authenticate as root to run configuration."
 msgstr "Skriv inn passord for root for å starte konfigurasjon."
 
-#: ../daemon/slave.c:2179 ../daemon/slave.c:2202
+#: ../daemon/slave.c:2242 ../daemon/slave.c:2265
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist."
@@ -1153,12 +1156,12 @@ msgstr ""
 "Lyd for innlogging forespurt på ikke-lokal skjerm. Andre mulige feil kan "
 "være at avspillingsprogrammet ikke kan kjøre eller at lyden ikke eksisterer"
 
-#: ../daemon/slave.c:2532 ../daemon/slave.c:2537
+#: ../daemon/slave.c:2593 ../daemon/slave.c:2598
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Kan ikke åpne rør til gdmgreeter"
 
-#: ../daemon/slave.c:2680
+#: ../daemon/slave.c:2751
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  GDM has started a single server for "
@@ -1170,7 +1173,7 @@ msgstr ""
 "deg. Du bør logge inn og rette konfigurasjonen. Merk at automatisk og "
 "tidsbestemt innlogging er deaktivert nå."
 
-#: ../daemon/slave.c:2694
+#: ../daemon/slave.c:2765
 msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1179,7 +1182,7 @@ msgstr ""
 "Kunne ikke starte vanlig X-tjener (ditt grafiske miljø) og kjører derfor en "
 "feilsikker X-tjener. Du bør logge inn og konfigurere X-tjeneren riktig."
 
-#: ../daemon/slave.c:2703
+#: ../daemon/slave.c:2774
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1188,24 +1191,24 @@ msgstr ""
 "Spesifisert skjermnummer var opptatt så denne tjeneren ble startet på skjerm "
 "%s."
 
-#: ../daemon/slave.c:2718
+#: ../daemon/slave.c:2789
 msgid ""
 "The greeter application appears to be crashing. Attempting to use a "
 "different one."
 msgstr "Velkomstprogrammet ser ut til å krasje. Prøver å bruke et annet."
 
 #. Something went wrong
-#: ../daemon/slave.c:2741
+#: ../daemon/slave.c:2812
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr "%s: Kan ikke starte velkomst med gtk-moduler: %s. Prøver uten modulene"
 
-#: ../daemon/slave.c:2748
+#: ../daemon/slave.c:2819
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Kan ikke starte velkomst ved forsøk på å bruke standard: %s"
 
-#: ../daemon/slave.c:2760
+#: ../daemon/slave.c:2831
 msgid ""
 "Cannot start the greeter application; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1216,27 +1219,27 @@ msgstr ""
 "konfigurasjonsfilen"
 
 #. If no greeter we really have to disable the display
-#: ../daemon/slave.c:2767
+#: ../daemon/slave.c:2838
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Feil under oppstart av velkomst på skjerm %s"
 
-#: ../daemon/slave.c:2771
+#: ../daemon/slave.c:2842
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Kan ikke kjøre fork() for gdmgreeter-prosess"
 
-#: ../daemon/slave.c:2851
+#: ../daemon/slave.c:2922
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Kan ikke åpne fifo!"
 
-#: ../daemon/slave.c:3029
+#: ../daemon/slave.c:3100
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Kan ikke initiere rør til gdmchooser"
 
-#: ../daemon/slave.c:3140
+#: ../daemon/slave.c:3211
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
@@ -1244,51 +1247,51 @@ msgstr ""
 "Kan ikke starte velgerprogrammet. Du vil ikke kunne logge inn. Vennligst "
 "kontakt din systemadministrator."
 
-#: ../daemon/slave.c:3144
+#: ../daemon/slave.c:3215
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Feil under oppstart av velger på skjerm %s"
 
-#: ../daemon/slave.c:3147
+#: ../daemon/slave.c:3218
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: Kan ikke kjøre gdmchooser-prosess"
 
-#: ../daemon/slave.c:3380
+#: ../daemon/slave.c:3451
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Kunne ikke åpne ~/.xsession-errors"
 
-#: ../daemon/slave.c:3547
+#: ../daemon/slave.c:3615
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: Kjøring av PreSession skript returnerte > 0. Avbryter."
 
-#: ../daemon/slave.c:3596
+#: ../daemon/slave.c:3689
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "Språk %s eksisterer ikke. Bruker %s"
 
-#: ../daemon/slave.c:3597
+#: ../daemon/slave.c:3690
 msgid "System default"
 msgstr "Systemets forvalg"
 
-#: ../daemon/slave.c:3614
+#: ../daemon/slave.c:3707
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Kunne ikke sette opp miljø for %s. Avbryter."
 
-#: ../daemon/slave.c:3681
+#: ../daemon/slave.c:3774
 #, c-format
 msgid "%s: setusercontext () failed for %s. Aborting."
 msgstr "%s: setusercontext () feilet for %s. Avbryter."
 
-#: ../daemon/slave.c:3687
+#: ../daemon/slave.c:3780
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Kunne ikke bli %s. Avbryter."
 
-#: ../daemon/slave.c:3728
+#: ../daemon/slave.c:3812
 #, c-format
 msgid ""
 "No Exec line in the session file: %s.  Running the GNOME failsafe session "
@@ -1296,12 +1299,12 @@ msgid ""
 msgstr ""
 "Ingen Exec-linje i sesjonsfilen: %s. Kjører feilsikker GNOME-sesjon i stedet."
 
-#: ../daemon/slave.c:3731
+#: ../daemon/slave.c:3815
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../daemon/slave.c:3751
+#: ../daemon/slave.c:3841
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
@@ -1310,7 +1313,7 @@ msgstr ""
 "%s: Kan ikke finne eller kjøre det grunnleggende Xsession-skriptet. Prøver "
 "med feilsikker GNOME-sesjon."
 
-#: ../daemon/slave.c:3757
+#: ../daemon/slave.c:3847
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
@@ -1319,14 +1322,14 @@ msgstr ""
 "feilsikker GNOME-sesjon."
 
 #. yaikes
-#: ../daemon/slave.c:3789
+#: ../daemon/slave.c:3880
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: gnome-session ble ikke funnet for en feilsikker GNOME-sesjon, prøver "
 "xterm"
 
-#: ../daemon/slave.c:3794
+#: ../daemon/slave.c:3885
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
@@ -1334,7 +1337,7 @@ msgstr ""
 "Kunne ikke finne GNOME-installasjonen, vil forsøke å kjøre sesjonen "
 "«Feilsikker xterm»."
 
-#: ../daemon/slave.c:3802 ../daemon/slave.c:3826
+#: ../daemon/slave.c:3893
 msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
@@ -1344,27 +1347,11 @@ msgstr ""
 "GNOME-sesjon uten kjøring av oppstartsskript. Bruk denne kun for å rette opp "
 "problemer med installasjonen."
 
-#. yaikes
-#: ../daemon/slave.c:3813
-#, c-format
-msgid "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
-msgstr ""
-"%s: gnome-session ble ikke funnet for en feilsikker gnome sesjon, prøver "
-"xterm"
-
-#: ../daemon/slave.c:3818
-msgid ""
-"Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
-"session instead."
-msgstr ""
-"Kunne ikke finne GNOME-installasjonen, vil forsøke å kjøre sesjonen "
-"«Feilsikker xterm»."
-
-#: ../daemon/slave.c:3844
+#: ../daemon/slave.c:3912
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Kan ikke finne \"xterm\" for en feilsikker sesjon."
 
-#: ../daemon/slave.c:3866 ../daemon/slave.c:3912
+#: ../daemon/slave.c:3922
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1375,7 +1362,7 @@ msgstr ""
 "kan logge inn på annen måte. For å avslutte terminalemulatoren, skriv 'exit' "
 "og trykk linjeskift."
 
-#: ../daemon/slave.c:3880
+#: ../daemon/slave.c:3941
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console and be prompted to enter the password for root so that you may fix "
@@ -1387,7 +1374,7 @@ msgstr ""
 "kan logge inn på annen måte. For å avslutte terminalemulatoren må du skrive "
 "«exit» og trykke linjeskift."
 
-#: ../daemon/slave.c:3893
+#: ../daemon/slave.c:3953
 msgid ""
 "The failsafe session is restricted to users who have been assigned the root "
 "role. If you cannot log in any other way please contact your system "
@@ -1396,45 +1383,41 @@ msgstr ""
 "Feilsikker sesjon er begrenset til systemadministratorer. Hvis du ikke kan "
 "logge inn på annen måte kontakt din systemadministrator."
 
-#: ../daemon/slave.c:3950
+#: ../daemon/slave.c:3982
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Bruker har ikke tillatelse til å logge inn"
 
-#: ../daemon/slave.c:3953 ../daemon/verify-pam.c:1380
+#: ../daemon/slave.c:3985 ../daemon/verify-pam.c:1475
 msgid "The system administrator has disabled your account."
 msgstr "Systemadministrator har deaktivert din konto."
 
-#: ../daemon/slave.c:3984
+#: ../daemon/slave.c:4016
 msgid "Error! Unable to set executable context."
 msgstr "Feil! Kan ikke sette kontekst for kjøringsmiljø."
 
-#: ../daemon/slave.c:3993 ../daemon/slave.c:4002
+#. will go to .xsession-errors
+#: ../daemon/slave.c:4026 ../daemon/slave.c:4028
 #, c-format
-msgid "%s: Could not exec %s %s %s %s %s %s"
-msgstr "%s: Kunne ikke kjøre %s %s %s %s %s %s"
-
-#: ../daemon/slave.c:4011 ../daemon/slave.c:4016
-#, c-format
-msgid "%s: Could not exec %s %s %s"
-msgstr "%s: Kunne ikke kjøre %s %s %s"
+msgid "%s: Could not exec %s"
+msgstr "%s: Kunne ikke kjøre %s"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:4028
+#: ../daemon/slave.c:4037
 msgid "Cannot start the session due to some internal error."
 msgstr "Kan ikke starte sesjonen pga en intern feil."
 
-#: ../daemon/slave.c:4085
+#: ../daemon/slave.c:4273
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr "%s: Bruker ble autentisert men getpwnam (%s) feilet.!"
 
-#: ../daemon/slave.c:4098
+#: ../daemon/slave.c:4286
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Kjøring av PostLogin-skript returnerte > 0. Avbryter."
 
-#: ../daemon/slave.c:4119
+#: ../daemon/slave.c:4307
 #, c-format
 msgid ""
 "Your home directory is listed as: '%s' but it does not appear to exist.  Do "
@@ -1445,12 +1428,12 @@ msgstr ""
 "du logge inn med rotkatalogen (/) som din hjemmekatalog? Det er usannsynlig "
 "at dette vil fungere med mindre du bruker en feilsikker sesjon."
 
-#: ../daemon/slave.c:4131
+#: ../daemon/slave.c:4319
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Hjemmekatalog for %s: '%s' eksisterer ikke!"
 
-#: ../daemon/slave.c:4190
+#: ../daemon/slave.c:4378
 msgid ""
 "User's $HOME/.dmrc file is being ignored.  This prevents the default session "
 "and language from being saved.  File should be owned by user and have 644 "
@@ -1462,7 +1445,7 @@ msgstr ""
 "\"644\". Brukers $HOME-katalog må eies av bruker og ikke skrivbar for andre "
 "brukere."
 
-#: ../daemon/slave.c:4332
+#: ../daemon/slave.c:4520
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1474,12 +1457,12 @@ msgstr ""
 "Uansett vil det ikke være mulig å logge inn. Vennligst kontakt din "
 "systemadministrator"
 
-#: ../daemon/slave.c:4414
+#: ../daemon/slave.c:4602
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Feil under kjøring av brukersesjon"
 
-#: ../daemon/slave.c:4525
+#: ../daemon/slave.c:4712
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1491,21 +1474,21 @@ msgstr ""
 "tom for diskplass. Prøv å logge inn med en av de feilsikre sesjonene for å "
 "se om dette løser problemet."
 
-#: ../daemon/slave.c:4539
+#: ../daemon/slave.c:4726
 msgid "View details (~/.xsession-errors file)"
 msgstr "Vis detaljer (~/.xsession-errors filen)"
 
-#: ../daemon/slave.c:4678
+#: ../daemon/slave.c:4874
 msgid "GDM detected a halt or restart in progress."
 msgstr ""
 "GDM oppdaget at maskinen er i ferd med å stenges ned eller startes på nytt."
 
-#: ../daemon/slave.c:5054
+#: ../daemon/slave.c:5250
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Fatal X feil - Starter %s på nytt"
 
-#: ../daemon/slave.c:5127
+#: ../daemon/slave.c:5323
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1513,27 +1496,27 @@ msgstr ""
 "Lyd for innlogging forespurt på ikke-lokal skjerm. Andre mulige feil kan "
 "være at avspillingsprogrammet ikke kan kjøre eller at lyden ikke eksisterer"
 
-#: ../daemon/slave.c:5526
+#: ../daemon/slave.c:5732
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Feil under oppstart: %s"
 
-#: ../daemon/slave.c:5534 ../daemon/slave.c:5676
+#: ../daemon/slave.c:5740 ../daemon/slave.c:5883
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Kan ikke kjøre skript-prosess!"
 
-#: ../daemon/slave.c:5628
+#: ../daemon/slave.c:5834
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Kan ikke opprette rør"
 
-#: ../daemon/slave.c:5670
+#: ../daemon/slave.c:5877
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Feil under kjøring: %s"
 
-#: ../daemon/verify-crypt.c:72 ../daemon/verify-pam.c:1196
+#: ../daemon/verify-crypt.c:72 ../daemon/verify-pam.c:1292
 #: ../daemon/verify-shadow.c:76
 msgid ""
 "\n"
@@ -1542,58 +1525,58 @@ msgstr ""
 "\n"
 "Ugyldig brukernavn eller passord. Det må tas hensyn til små/store bokstaver."
 
-#: ../daemon/verify-crypt.c:77 ../daemon/verify-pam.c:1206
-#: ../daemon/verify-shadow.c:81 ../gui/greeter/greeter_parser.c:382
+#: ../daemon/verify-crypt.c:77 ../daemon/verify-pam.c:1302
+#: ../daemon/verify-shadow.c:81 ../gui/greeter/greeter_parser.c:384
 msgid "Caps Lock is on."
 msgstr "Caps Lock er på."
 
-#: ../daemon/verify-crypt.c:128 ../daemon/verify-pam.c:539
-#: ../daemon/verify-shadow.c:133
+#: ../daemon/verify-crypt.c:124 ../daemon/verify-pam.c:556
+#: ../daemon/verify-shadow.c:129
 msgid "Please enter your username"
 msgstr "Vennligst skriv inn brukernavn"
 
 #. login: is whacked always translate to Username:
-#: ../daemon/verify-crypt.c:129 ../daemon/verify-pam.c:449
-#: ../daemon/verify-pam.c:450 ../daemon/verify-pam.c:451
-#: ../daemon/verify-pam.c:532 ../daemon/verify-pam.c:889
-#: ../daemon/verify-shadow.c:134 ../gui/gdmlogin.c:873 ../gui/gdmlogin.c:887
+#: ../daemon/verify-crypt.c:125 ../daemon/verify-pam.c:466
+#: ../daemon/verify-pam.c:467 ../daemon/verify-pam.c:468
+#: ../daemon/verify-pam.c:549 ../daemon/verify-pam.c:960
+#: ../daemon/verify-shadow.c:130 ../gui/gdmlogin.c:873 ../gui/gdmlogin.c:887
 #: ../gui/gdmlogin.c:1355 ../gui/gdmlogin.c:1851 ../gui/greeter/greeter.c:247
-#: ../gui/greeter/greeter_parser.c:401
+#: ../gui/greeter/greeter_parser.c:403
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/verify-crypt.c:167 ../daemon/verify-pam.c:452
-#: ../daemon/verify-pam.c:453 ../daemon/verify-pam.c:563
-#: ../daemon/verify-shadow.c:191 ../gui/gdmlogin.c:1390
+#: ../daemon/verify-crypt.c:163 ../daemon/verify-pam.c:469
+#: ../daemon/verify-pam.c:470 ../daemon/verify-pam.c:580
+#: ../daemon/verify-shadow.c:187 ../gui/gdmlogin.c:1390
 msgid "Password:"
 msgstr "Passord:"
 
-#: ../daemon/verify-crypt.c:185 ../daemon/verify-crypt.c:199
-#: ../daemon/verify-shadow.c:209 ../daemon/verify-shadow.c:223
+#: ../daemon/verify-crypt.c:181 ../daemon/verify-crypt.c:195
+#: ../daemon/verify-shadow.c:205 ../daemon/verify-shadow.c:219
 #, c-format
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Kunne ikke autentisere bruker «%s»"
 
-#: ../daemon/verify-crypt.c:212 ../daemon/verify-pam.c:1033
-#: ../daemon/verify-shadow.c:236
+#: ../daemon/verify-crypt.c:209 ../daemon/verify-pam.c:1108
+#: ../daemon/verify-shadow.c:233
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root innlogging ikke tillatt på skjerm «%s»"
 
-#: ../daemon/verify-crypt.c:214 ../daemon/verify-shadow.c:238
+#: ../daemon/verify-crypt.c:211 ../daemon/verify-shadow.c:235
 msgid "The system administrator is not allowed to login from this screen"
 msgstr ""
 "Systemadministrator har ikke tillatelse til å logge inn fra denne skjermen"
 
-#: ../daemon/verify-crypt.c:230 ../daemon/verify-crypt.c:254
-#: ../daemon/verify-shadow.c:254 ../daemon/verify-shadow.c:278
+#: ../daemon/verify-crypt.c:227 ../daemon/verify-crypt.c:251
+#: ../daemon/verify-shadow.c:251 ../daemon/verify-shadow.c:275
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Bruker %s har ikke tillatelse til å logge inn"
 
-#: ../daemon/verify-crypt.c:232 ../daemon/verify-crypt.c:256
-#: ../daemon/verify-pam.c:1085 ../daemon/verify-shadow.c:256
-#: ../daemon/verify-shadow.c:280
+#: ../daemon/verify-crypt.c:229 ../daemon/verify-crypt.c:253
+#: ../daemon/verify-pam.c:1164 ../daemon/verify-shadow.c:253
+#: ../daemon/verify-shadow.c:277
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1601,16 +1584,16 @@ msgstr ""
 "\n"
 "Systemadministrator har deaktivert din konto."
 
-#: ../daemon/verify-crypt.c:279 ../daemon/verify-crypt.c:417
-#: ../daemon/verify-pam.c:1103 ../daemon/verify-pam.c:1397
-#: ../daemon/verify-shadow.c:303 ../daemon/verify-shadow.c:443
+#: ../daemon/verify-crypt.c:276 ../daemon/verify-crypt.c:413
+#: ../daemon/verify-pam.c:1186 ../daemon/verify-pam.c:1492
+#: ../daemon/verify-shadow.c:300 ../daemon/verify-shadow.c:438
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Kan ikke sette brukergruppe for %s"
 
-#: ../daemon/verify-crypt.c:281 ../daemon/verify-crypt.c:420
-#: ../daemon/verify-pam.c:1105 ../daemon/verify-shadow.c:305
-#: ../daemon/verify-shadow.c:446
+#: ../daemon/verify-crypt.c:278 ../daemon/verify-crypt.c:416
+#: ../daemon/verify-pam.c:1188 ../daemon/verify-shadow.c:302
+#: ../daemon/verify-shadow.c:441
 msgid ""
 "\n"
 "Cannot set your user group; you will not be able to log in. Please contact "
@@ -1620,13 +1603,13 @@ msgstr ""
 "Kan ikke sette din brukergruppe. Du vil ikke kunne logge inn. Vennligst "
 "kontakt din systemadministrator."
 
-#: ../daemon/verify-crypt.c:292 ../daemon/verify-crypt.c:365
-#: ../daemon/verify-shadow.c:316 ../daemon/verify-shadow.c:390
+#: ../daemon/verify-crypt.c:289 ../daemon/verify-crypt.c:362
+#: ../daemon/verify-shadow.c:313 ../daemon/verify-shadow.c:387
 #, c-format
 msgid "Password of %s has expired"
 msgstr "Passord for %s er utgått"
 
-#: ../daemon/verify-crypt.c:294 ../daemon/verify-shadow.c:318
+#: ../daemon/verify-crypt.c:291 ../daemon/verify-shadow.c:315
 msgid ""
 "You are required to change your password.\n"
 "Please choose a new one."
@@ -1634,7 +1617,7 @@ msgstr ""
 "Det kreves at du endrer ditt passord.\n"
 "Vennligst velg et nytt."
 
-#: ../daemon/verify-crypt.c:305 ../daemon/verify-shadow.c:329
+#: ../daemon/verify-crypt.c:302 ../daemon/verify-shadow.c:326
 msgid ""
 "\n"
 "Cannot change your password; you will not be able to log in. Please try "
@@ -1644,8 +1627,8 @@ msgstr ""
 "Kan ikke endre ditt passord. Du vil ikke kunne logge inn. Vennligst prøv "
 "igjen senere, eller kontakt din systemadministrator."
 
-#: ../daemon/verify-crypt.c:348 ../daemon/verify-crypt.c:356
-#: ../daemon/verify-shadow.c:373 ../daemon/verify-shadow.c:381
+#: ../daemon/verify-crypt.c:345 ../daemon/verify-crypt.c:353
+#: ../daemon/verify-shadow.c:370 ../daemon/verify-shadow.c:378
 msgid ""
 "Your password has been changed but you may have to change it again. Please "
 "try again later or contact your system administrator."
@@ -1653,7 +1636,7 @@ msgstr ""
 "Passordet ditt err endret, men du vil kanskje måtte endre det igjen. "
 "Vennligst prøv igjen senere, eller kontakt din systemadministrator."
 
-#: ../daemon/verify-crypt.c:367 ../daemon/verify-shadow.c:392
+#: ../daemon/verify-crypt.c:364 ../daemon/verify-shadow.c:389
 msgid ""
 "Your password has expired.\n"
 "Only a system administrator can now change it"
@@ -1661,11 +1644,11 @@ msgstr ""
 "Passordet ditt er utgått.\n"
 "Kun en systemadministrator kan endre det nå."
 
-#: ../daemon/verify-crypt.c:374 ../daemon/verify-shadow.c:399
+#: ../daemon/verify-crypt.c:371 ../daemon/verify-shadow.c:396
 msgid "Internal error on passwdexpired"
 msgstr "Intern feil med passwdexpired"
 
-#: ../daemon/verify-crypt.c:376 ../daemon/verify-shadow.c:401
+#: ../daemon/verify-crypt.c:373 ../daemon/verify-shadow.c:398
 msgid ""
 "An internal error occurred. You will not be able to log in.\n"
 "Please try again later or contact your system administrator."
@@ -1673,82 +1656,82 @@ msgstr ""
 "En intern feil oppsto. Du vil ikke kunne logge inn.\n"
 "Vennligst prøv igjen senere eller kontakt din systemadministrator."
 
-#: ../daemon/verify-crypt.c:412 ../daemon/verify-shadow.c:438
+#: ../daemon/verify-crypt.c:408 ../daemon/verify-shadow.c:433
 #, c-format
 msgid "Cannot get passwd structure for %s"
 msgstr "Kan ikke finne passwd-data for %s"
 
-#: ../daemon/verify-pam.c:454
+#: ../daemon/verify-pam.c:471
 msgid "You are required to change your password immediately (password aged)"
 msgstr "Du må endre ditt passord med en gang (passordet er utløpt)"
 
-#: ../daemon/verify-pam.c:455
+#: ../daemon/verify-pam.c:472
 msgid "You are required to change your password immediately (root enforced)"
 msgstr "Du må endre ditt passord med en gang (tvunget av root)"
 
-#: ../daemon/verify-pam.c:456
+#: ../daemon/verify-pam.c:473
 msgid "Your account has expired; please contact your system administrator"
 msgstr "Din konto er utløpt. Vennligst kontakt din systemadministrator."
 
-#: ../daemon/verify-pam.c:457
+#: ../daemon/verify-pam.c:474
 msgid "No password supplied"
 msgstr "Ingen passord oppgitt"
 
-#: ../daemon/verify-pam.c:458
+#: ../daemon/verify-pam.c:475
 msgid "Password unchanged"
 msgstr "Passord ikke endret"
 
-#: ../daemon/verify-pam.c:459
+#: ../daemon/verify-pam.c:476
 msgid "Can not get username"
 msgstr "Kan ikke finne brukernavn"
 
-#: ../daemon/verify-pam.c:460
+#: ../daemon/verify-pam.c:477
 msgid "Retype new UNIX password:"
 msgstr "Skriv nytt UNIX-passord igjen:"
 
-#: ../daemon/verify-pam.c:461
+#: ../daemon/verify-pam.c:478
 msgid "Enter new UNIX password:"
 msgstr "Skriv inn nytt UNIX-passord:"
 
-#: ../daemon/verify-pam.c:462
+#: ../daemon/verify-pam.c:479
 msgid "(current) UNIX password:"
 msgstr "(nåværende) UNIX-passord:"
 
-#: ../daemon/verify-pam.c:463
+#: ../daemon/verify-pam.c:480
 msgid "Error while changing NIS password."
 msgstr "Feil under endring av NIS-passord."
 
-#: ../daemon/verify-pam.c:464
+#: ../daemon/verify-pam.c:481
 msgid "You must choose a longer password"
 msgstr "Du må velge et lengre passord"
 
-#: ../daemon/verify-pam.c:465
+#: ../daemon/verify-pam.c:482
 msgid "Password has been already used. Choose another."
 msgstr "Passordet har allerede vært brukt. Velg et annet."
 
-#: ../daemon/verify-pam.c:466
+#: ../daemon/verify-pam.c:483
 msgid "You must wait longer to change your password"
 msgstr "Du må vente lengre før du endrer ditt passord"
 
-#: ../daemon/verify-pam.c:467
+#: ../daemon/verify-pam.c:484
 msgid "Sorry, passwords do not match"
 msgstr "Beklager, passordene er ikke like"
 
-#: ../daemon/verify-pam.c:742
+#: ../daemon/verify-pam.c:760
 msgid "Cannot setup pam handle with null display"
 msgstr "Kan ikke sette opp pam håndterer uten skjerm"
 
-#: ../daemon/verify-pam.c:759
+#: ../daemon/verify-pam.c:777
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "Kan ikke etablere tjeneste %s: %s\n"
 
-#: ../daemon/verify-pam.c:772
+#: ../daemon/verify-pam.c:795
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Kan ikke sette PAM_TTY=%s"
 
-#: ../daemon/verify-pam.c:782
+#: ../daemon/verify-pam.c:808
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Kan ikke sette PAM_RHOST=%s"
@@ -1758,12 +1741,12 @@ msgstr "Kan ikke sette PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:956 ../daemon/verify-pam.c:1001
-#: ../daemon/verify-pam.c:1319 ../daemon/verify-pam.c:1331
+#: ../daemon/verify-pam.c:1029 ../daemon/verify-pam.c:1074
+#: ../daemon/verify-pam.c:1414 ../daemon/verify-pam.c:1426
 msgid "Couldn't authenticate user"
 msgstr "Kunne ikke autentisere bruker"
 
-#: ../daemon/verify-pam.c:1036
+#: ../daemon/verify-pam.c:1111
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1771,12 +1754,12 @@ msgstr ""
 "\n"
 "Systemadministrator kan ikke logge inn fra denne skjermen"
 
-#: ../daemon/verify-pam.c:1066 ../daemon/verify-pam.c:1361
+#: ../daemon/verify-pam.c:1143 ../daemon/verify-pam.c:1456
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Endring av autentiseringstoken feilet for bruker %s"
 
-#: ../daemon/verify-pam.c:1068 ../daemon/verify-pam.c:1364
+#: ../daemon/verify-pam.c:1145 ../daemon/verify-pam.c:1459
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1786,17 +1769,17 @@ msgstr ""
 "Endring av autentiseringstoken feilet. Vennligst prøve igjen senere eller "
 "kontakt systemadministrator."
 
-#: ../daemon/verify-pam.c:1083 ../daemon/verify-pam.c:1377
+#: ../daemon/verify-pam.c:1162 ../daemon/verify-pam.c:1472
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Bruker %s har ikke tilgangsrettigheter til systemet lenger"
 
-#: ../daemon/verify-pam.c:1089 ../daemon/verify-pam.c:1383
+#: ../daemon/verify-pam.c:1170 ../daemon/verify-pam.c:1478
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Bruker %s har ikke tilgangsrettigheter til systemet nå"
 
-#: ../daemon/verify-pam.c:1091
+#: ../daemon/verify-pam.c:1172
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1804,22 +1787,22 @@ msgstr ""
 "\n"
 "Systemadministrator har deaktivert tilgang til systemet midlertidig."
 
-#: ../daemon/verify-pam.c:1096 ../daemon/verify-pam.c:1390
+#: ../daemon/verify-pam.c:1179 ../daemon/verify-pam.c:1485
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Kunne ikke sette kontohåndtering for %s"
 
-#: ../daemon/verify-pam.c:1129 ../daemon/verify-pam.c:1424
+#: ../daemon/verify-pam.c:1212 ../daemon/verify-pam.c:1519
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Kunne ikke sette credentials for %s"
 
-#: ../daemon/verify-pam.c:1143 ../daemon/verify-pam.c:1440
+#: ../daemon/verify-pam.c:1226 ../daemon/verify-pam.c:1535
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Kunne ikke åpne sesjon for %s"
 
-#: ../daemon/verify-pam.c:1200
+#: ../daemon/verify-pam.c:1296
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1827,32 +1810,28 @@ msgstr ""
 "\n"
 "Autentisering feilet. Sjekk store og små bokstaver."
 
-#: ../daemon/verify-pam.c:1214 ../daemon/verify-pam.c:1322
-#: ../daemon/verify-pam.c:1334
+#: ../daemon/verify-pam.c:1310 ../daemon/verify-pam.c:1417
+#: ../daemon/verify-pam.c:1429
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
-#: ../daemon/verify-pam.c:1286
+#: ../daemon/verify-pam.c:1380
 msgid "Automatic login"
 msgstr "Automatisk innlogging"
 
-#: ../daemon/verify-pam.c:1386
+#: ../daemon/verify-pam.c:1481
 msgid ""
 "The system administrator has disabled your access to the system temporarily."
 msgstr ""
 "Systemadministrator har deaktivert din tilgang til systemet midlertidig."
 
-#: ../daemon/verify-pam.c:1400
+#: ../daemon/verify-pam.c:1495
 msgid ""
 "Cannot set your user group; you will not be able to log in. Please contact "
 "your system administrator."
 msgstr ""
 "Kan ikke sette din brukergruppe. Du vil ikke kunne logge inn. Vennligst "
 "kontakt din systemadministrator."
-
-#: ../daemon/verify-pam.c:1606 ../daemon/verify-pam.c:1608
-msgid "Can't find PAM configuration for GDM."
-msgstr "Kan ikke finne PAM-konfigurasjon for GDM."
 
 #: ../daemon/xdmcp.c:85
 #, c-format
@@ -2195,16 +2174,16 @@ msgstr "For mange meldinger ble sendt til GDM og programmet gikk i heng."
 msgid "Unknown error occurred."
 msgstr "Ukjent feil oppsto."
 
-#: ../gui/gdmcommon.c:700
+#: ../gui/gdmcommon.c:702
 msgid "The accessibility registry was not found."
 msgstr "Registeret for hjelpefunksjoner for tilgjengelighet ble ikke funnet."
 
-#: ../gui/gdmcommon.c:723
+#: ../gui/gdmcommon.c:725
 msgid "The accessibility registry could not be started."
 msgstr ""
 "Registeret for hjelpefunksjoner for tilgjengelighet kunne ikke startes."
 
-#: ../gui/gdmcommon.c:785
+#: ../gui/gdmcommon.c:787
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
@@ -2212,11 +2191,11 @@ msgstr "%a %b %d, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:791
+#: ../gui/gdmcommon.c:793
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d %b, %H:%M"
 
-#: ../gui/gdmcommon.c:891
+#: ../gui/gdmcommon.c:893
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2275,11 +2254,11 @@ msgid "Failed to connect to server after %d retries\n"
 msgstr "Kunne ikke koble til tjener etter %d forsøk\n"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.in.h:1
-msgid "Login as another user inside a nested window"
-msgstr "Logg inn som en annen bruker i et nøstet vindu"
+msgid "Login as another user in a window"
+msgstr "Logg inn som en annen bruker i et vindu"
 
 #: ../gui/gdmflexiserver-xnest.desktop.in.in.h:2
-msgid "New Login in a Nested Window"
+msgid "New Login in a Window"
 msgstr "Ny innlogging i et vindu"
 
 #: ../gui/gdmflexiserver.c:68
@@ -2328,7 +2307,7 @@ msgstr "Skjerm %s på virtuell terminal %d"
 msgid "Nested display %s on virtual terminal %d"
 msgstr "Innbakt skjerm %s på virtuell terminal %d"
 
-#: ../gui/gdmflexiserver.c:311 ../gui/gdmlogin.c:2465
+#: ../gui/gdmflexiserver.c:311 ../gui/gdmlogin.c:2458
 #: ../gui/greeter/greeter_item_ulist.c:317
 msgid "Username"
 msgstr "Brukernavn"
@@ -3014,8 +2993,8 @@ msgstr "N-Z"
 msgid "Last language"
 msgstr "Forrige språk"
 
-#: ../gui/gdmlanguages.c:691 ../gui/gdmlanguages.c:760
-#: ../gui/gdmlanguages.c:768
+#: ../gui/gdmlanguages.c:691 ../gui/gdmlanguages.c:765
+#: ../gui/gdmlanguages.c:773
 msgid "System Default"
 msgstr "Systemforvalg"
 
@@ -3023,59 +3002,59 @@ msgstr "Systemforvalg"
 #. no_group
 #. untranslated
 #. markup
-#: ../gui/gdmlanguages.c:776 ../gui/gdmlogin.c:1507 ../gui/gdmlogin.c:1521
+#: ../gui/gdmlanguages.c:781 ../gui/gdmlogin.c:1507 ../gui/gdmlogin.c:1521
 #: ../gui/greeter/greeter.c:333 ../gui/greeter/greeter.c:348
 #, c-format
 msgid "Do you wish to make %s the default for future sessions?"
 msgstr "Ønsker du å bruke %s som forvalg for fremtidige sesjoner?"
 
-#: ../gui/gdmlanguages.c:778 ../gui/gdmlogin.c:1524
+#: ../gui/gdmlanguages.c:783 ../gui/gdmlogin.c:1524
 #: ../gui/greeter/greeter.c:351
 #, c-format
 msgid "You have chosen %s for this session, but your default setting is %s."
 msgstr "Du har valgt %s for denne sesjonen, men forvalgt innstilling er %s."
 
-#: ../gui/gdmlanguages.c:784 ../gui/gdmlogin.c:1514 ../gui/gdmlogin.c:1530
+#: ../gui/gdmlanguages.c:789 ../gui/gdmlogin.c:1514 ../gui/gdmlogin.c:1530
 #: ../gui/greeter/greeter.c:340 ../gui/greeter/greeter.c:357
 msgid "Make _Default"
 msgstr "Bruk som _forvalg"
 
-#: ../gui/gdmlanguages.c:784 ../gui/gdmlogin.c:1530
+#: ../gui/gdmlanguages.c:789 ../gui/gdmlogin.c:1530
 #: ../gui/greeter/greeter.c:357
 msgid "Just For _This Session"
 msgstr "Kun for _denne sesjonen"
 
-#: ../gui/gdmlanguages.c:839
+#: ../gui/gdmlanguages.c:844
 msgid "Select a Language"
 msgstr "Velg et språk"
 
-#: ../gui/gdmlanguages.c:849
+#: ../gui/gdmlanguages.c:854
 msgid "Change _Language"
 msgstr "Endre _språk"
 
-#: ../gui/gdmlanguages.c:869
+#: ../gui/gdmlanguages.c:874
 msgid "_Select the language for your session to use:"
 msgstr "_Velg et språk som skal brukes i din sesjon:"
 
-#: ../gui/gdmlanguages.c:932
+#: ../gui/gdmlanguages.c:937
 msgid "the login screen"
 msgstr "påloggingsskjermen"
 
-#: ../gui/gdmlanguages.c:933
+#: ../gui/gdmlanguages.c:938
 #, c-format
 msgid "Do you wish to restart %s with the chosen language?"
 msgstr "Vil du starte %s på nytt med valgt språk?"
 
-#: ../gui/gdmlanguages.c:935
+#: ../gui/gdmlanguages.c:940
 #, c-format
 msgid "You will restart %s with the %s locale."
 msgstr "Du vil starte %s på nytt med locale %s."
 
-#: ../gui/gdmlanguages.c:939
+#: ../gui/gdmlanguages.c:944
 msgid "_Yes"
 msgstr "_Ja"
 
-#: ../gui/gdmlanguages.c:939
+#: ../gui/gdmlanguages.c:944
 msgid "_No"
 msgstr "_Nei"
 
@@ -3088,7 +3067,7 @@ msgstr "Kan ikke kjøre kommando «%s»: %s."
 msgid "Cannot start background application"
 msgstr "Kan ikke starte bakgrunnsprogram"
 
-#: ../gui/gdmlogin.c:476 ../gui/greeter/greeter_parser.c:387
+#: ../gui/gdmlogin.c:476 ../gui/greeter/greeter_parser.c:389
 msgid "User %u will login in %t"
 msgstr "Bruker %u vil logge på om %t"
 
@@ -3096,8 +3075,8 @@ msgstr "Bruker %u vil logge på om %t"
 msgid "Are you sure you want to restart the computer?"
 msgstr "Er du sikker på at du vil starte datamaskinen på nytt?"
 
-#: ../gui/gdmlogin.c:702 ../gui/gdmlogin.c:2318
-#: ../gui/greeter/greeter_parser.c:362 ../gui/greeter/greeter_system.c:86
+#: ../gui/gdmlogin.c:702 ../gui/gdmlogin.c:2312
+#: ../gui/greeter/greeter_parser.c:364 ../gui/greeter/greeter_system.c:86
 #: ../gui/greeter/greeter_system.c:273
 msgid "_Restart"
 msgstr "Sta_rt på nytt"
@@ -3106,8 +3085,8 @@ msgstr "Sta_rt på nytt"
 msgid "Are you sure you want to Shut Down the computer?"
 msgstr "Er du sikker på at du vil slå av datamaskinen?"
 
-#: ../gui/gdmlogin.c:731 ../gui/gdmlogin.c:2329
-#: ../gui/greeter/greeter_parser.c:352 ../gui/greeter/greeter_system.c:110
+#: ../gui/gdmlogin.c:731 ../gui/gdmlogin.c:2323
+#: ../gui/greeter/greeter_parser.c:354 ../gui/greeter/greeter_system.c:110
 #: ../gui/greeter/greeter_system.c:282
 msgid "Shut _Down"
 msgstr "Slå _av"
@@ -3116,13 +3095,13 @@ msgstr "Slå _av"
 msgid "Are you sure you want to suspend the computer?"
 msgstr "Er du sikker på at du vil sette datamaskinen i hvilemodus?"
 
-#: ../gui/gdmlogin.c:750 ../gui/gdmlogin.c:2340
+#: ../gui/gdmlogin.c:750 ../gui/gdmlogin.c:2334
 #: ../gui/greeter/greeter_system.c:119
 msgid "_Suspend"
 msgstr "_Hvilemodus"
 
 #: ../gui/gdmlogin.c:874 ../gui/gdmlogin.c:888 ../gui/gdmlogin.c:1359
-#: ../gui/gdmlogin.c:1852 ../gui/gdmlogin.c:2569
+#: ../gui/gdmlogin.c:1852 ../gui/gdmlogin.c:2562
 msgid "_Username:"
 msgstr "Br_ukernavn:"
 
@@ -3180,57 +3159,57 @@ msgstr "GNOME skrivebordshåndterer"
 msgid "Finger"
 msgstr "Finger"
 
-#: ../gui/gdmlogin.c:2227
+#: ../gui/gdmlogin.c:2221
 msgid "GDM Login"
 msgstr "GDM innlogging"
 
-#: ../gui/gdmlogin.c:2270
+#: ../gui/gdmlogin.c:2264
 msgid "S_ession"
 msgstr "S_esjon"
 
-#: ../gui/gdmlogin.c:2277 ../gui/greeter/greeter_parser.c:327
+#: ../gui/gdmlogin.c:2271 ../gui/greeter/greeter_parser.c:329
 msgid "_Language"
 msgstr "S_pråk"
 
-#: ../gui/gdmlogin.c:2291 ../gui/greeter/greeter_system.c:243
+#: ../gui/gdmlogin.c:2285 ../gui/greeter/greeter_system.c:243
 msgid "Remote Login via _XDMCP..."
 msgstr "Ekstern pålogging via _XDMCP..."
 
-#: ../gui/gdmlogin.c:2307
+#: ../gui/gdmlogin.c:2301
 msgid "_Configure Login Manager..."
 msgstr "_Konfigurer hånderer for innlogging..."
 
-#: ../gui/gdmlogin.c:2370 ../gui/greeter/greeter_parser.c:337
+#: ../gui/gdmlogin.c:2363 ../gui/greeter/greeter_parser.c:339
 msgid "_Actions"
 msgstr "H_andlinger"
 
-#: ../gui/gdmlogin.c:2379
+#: ../gui/gdmlogin.c:2372
 msgid "_Theme"
 msgstr "_Tema"
 
-#: ../gui/gdmlogin.c:2390 ../gui/greeter/greeter_canvas_item.c:183
-#: ../gui/greeter/greeter_parser.c:347
+#: ../gui/gdmlogin.c:2383 ../gui/greeter/greeter_canvas_item.c:183
+#: ../gui/greeter/greeter_parser.c:349
 msgid "_Quit"
 msgstr "_Avslutt"
 
-#: ../gui/gdmlogin.c:2392 ../gui/greeter/greeter_canvas_item.c:185
-#: ../gui/greeter/greeter_parser.c:342
+#: ../gui/gdmlogin.c:2385 ../gui/greeter/greeter_canvas_item.c:185
+#: ../gui/greeter/greeter_parser.c:344
 msgid "D_isconnect"
 msgstr "Ko_ble fra"
 
-#: ../gui/gdmlogin.c:2458 ../gui/greeter/greeter_item_ulist.c:311
+#: ../gui/gdmlogin.c:2451 ../gui/greeter/greeter_item_ulist.c:311
 msgid "Icon"
 msgstr "Ikon"
 
-#: ../gui/gdmlogin.c:2539
+#: ../gui/gdmlogin.c:2532
 msgid "Welcome"
 msgstr "Velkommen"
 
-#: ../gui/gdmlogin.c:2657 ../gui/greeter/greeter_parser.c:416
+#: ../gui/gdmlogin.c:2654 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
 msgstr "_Start igjen"
 
-#: ../gui/gdmlogin.c:3268 ../gui/gdmlogin.c:3302 ../gui/greeter/greeter.c:706
+#: ../gui/gdmlogin.c:3271 ../gui/gdmlogin.c:3305 ../gui/greeter/greeter.c:706
 #: ../gui/greeter/greeter.c:741
 #, c-format
 msgid ""
@@ -3240,17 +3219,17 @@ msgstr ""
 "Velkomst versjonen (%s) er ikke lik tjenestens versjon. Du har sannsynligvis "
 "nettopp oppgradert GDM. Vennligst start GDM-tjenesten eller maskinen på nytt."
 
-#: ../gui/gdmlogin.c:3278 ../gui/gdmlogin.c:3312 ../gui/gdmlogin.c:3360
+#: ../gui/gdmlogin.c:3281 ../gui/gdmlogin.c:3315 ../gui/gdmlogin.c:3363
 #: ../gui/greeter/greeter.c:716 ../gui/greeter/greeter.c:751
 #: ../gui/greeter/greeter.c:800
 msgid "Cannot start the greeter"
 msgstr "Kan ikke starte velkomst"
 
-#: ../gui/gdmlogin.c:3317
+#: ../gui/gdmlogin.c:3320
 msgid "Restart"
 msgstr "Start på nytt"
 
-#: ../gui/gdmlogin.c:3350 ../gui/greeter/greeter.c:790
+#: ../gui/gdmlogin.c:3353 ../gui/greeter/greeter.c:790
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -3260,23 +3239,23 @@ msgstr ""
 "sannsynligvis nettopp oppgradert GDM. Vennligst start GDM tjenesten eller "
 "maskinen på nytt."
 
-#: ../gui/gdmlogin.c:3365 ../gui/greeter/greeter.c:805
+#: ../gui/gdmlogin.c:3368 ../gui/greeter/greeter.c:805
 msgid "Restart GDM"
 msgstr "Start GDM på nytt"
 
-#: ../gui/gdmlogin.c:3367
+#: ../gui/gdmlogin.c:3370
 msgid "Restart computer"
 msgstr "Start datamaskinen på nytt"
 
-#: ../gui/gdmlogin.c:3457
+#: ../gui/gdmlogin.c:3460
 msgid "Could not set signal mask!"
 msgstr "Kunne ikke sette signalmaske!"
 
-#: ../gui/gdmlogin.c:3575 ../gui/greeter/greeter.c:1587
+#: ../gui/gdmlogin.c:3578 ../gui/greeter/greeter.c:1593
 msgid "Session directory is missing"
 msgstr "Sesjonskatalog mangler"
 
-#: ../gui/gdmlogin.c:3576
+#: ../gui/gdmlogin.c:3579
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the GDM "
@@ -3285,11 +3264,11 @@ msgstr ""
 "Din sesjonskatalog mangler eller er tom! Du har to tilgjengelige sesjoner du "
 "kan bruke, men du bør logge inn og korrigere konfigurasjonen for GDM."
 
-#: ../gui/gdmlogin.c:3599 ../gui/greeter/greeter.c:1612
+#: ../gui/gdmlogin.c:3602 ../gui/greeter/greeter.c:1618
 msgid "Configuration is not correct"
 msgstr "Konfigurasjonen er ikke korrekt"
 
-#: ../gui/gdmlogin.c:3600 ../gui/greeter/greeter.c:1613
+#: ../gui/gdmlogin.c:3603 ../gui/greeter/greeter.c:1619
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, so running the default command.  Please fix your configuration."
@@ -3400,9 +3379,8 @@ msgid "Themed"
 msgstr "Med tema"
 
 #: ../gui/gdmsetup.c:1209 ../gui/gdmsetup.c:1235
-#, fuzzy
 msgid "Themed with face browser"
-msgstr "Vanlig med ansiktsvisning"
+msgstr "Tema med ansiktsvisning"
 
 #: ../gui/gdmsetup.c:1212 ../gui/gdmsetup.c:1253
 msgid "Plain"
@@ -3720,9 +3698,8 @@ msgid " "
 msgstr " "
 
 #: ../gui/gdmsetup.glade.h:2
-#, fuzzy
 msgid "  "
-msgstr " "
+msgstr "  "
 
 #: ../gui/gdmsetup.glade.h:3
 msgid "    "
@@ -4115,9 +4092,8 @@ msgid ""
 msgstr ""
 
 #: ../gui/gdmsetup.glade.h:81
-#, fuzzy
 msgid "LRla_bel:"
-msgstr "     LRet_ikett:"
+msgstr "LRet_ikett:"
 
 #: ../gui/gdmsetup.glade.h:82
 msgid "La_unch:"
@@ -4176,9 +4152,8 @@ msgid "Menu Bar"
 msgstr "Menylinje"
 
 #: ../gui/gdmsetup.glade.h:96
-#, fuzzy
 msgid "Messa_ge:"
-msgstr "     _Beskjed:"
+msgstr "Meldin_g:"
 
 #: ../gui/gdmsetup.glade.h:97
 msgid "Ne_ver place cookies on NFS"
@@ -4203,9 +4178,8 @@ msgid "Op_tions:\t"
 msgstr "Al_ternativer:\t"
 
 #: ../gui/gdmsetup.glade.h:102
-#, fuzzy
 msgid "Pa_th:"
-msgstr "     S_ti:"
+msgstr "S_ti:"
 
 #: ../gui/gdmsetup.glade.h:103
 msgid "Paranoia option. Only accepts user owned files and directories."
@@ -4224,7 +4198,6 @@ msgid "Pick Background Color"
 msgstr "Velg bakgrunnsfarge"
 
 #: ../gui/gdmsetup.glade.h:107
-#, fuzzy
 msgid ""
 "Plain\n"
 "Plain with face browser\n"
@@ -4233,7 +4206,8 @@ msgid ""
 msgstr ""
 "Vanlig\n"
 "Vanlig med ansiktsvelger\n"
-"Tema"
+"Tema\n"
+"Tema med ansiktsvelger"
 
 #: ../gui/gdmsetup.glade.h:111
 msgid "Qui_ver when incorrect username/password entered"
@@ -4396,9 +4370,8 @@ msgid ""
 msgstr ""
 
 #: ../gui/gdmsetup.glade.h:147
-#, fuzzy
 msgid "T_ooltip:"
-msgstr "     _Hjelpetekst:"
+msgstr "_Hjelpetekst:"
 
 #: ../gui/gdmsetup.glade.h:148
 msgid "Text to appear in the warning pop-up dialogs"
@@ -4616,9 +4589,8 @@ msgid "_Include all users from /etc/passwd (not for NIS)"
 msgstr "_Inkluder alle brukere fra /etc/passwd (ikke for NIS)"
 
 #: ../gui/gdmsetup.glade.h:194
-#, fuzzy
 msgid "_Label:"
-msgstr "     _Etikett:"
+msgstr "_Etikett:"
 
 #: ../gui/gdmsetup.glade.h:195
 msgid "_Login screen ready:"
@@ -4641,9 +4613,8 @@ msgid "_Only allow login if user's home directory permissions are secure"
 msgstr ""
 
 #: ../gui/gdmsetup.glade.h:200
-#, fuzzy
 msgid "_Path:       "
-msgstr "     _Sti:        "
+msgstr "_Sti:        "
 
 #: ../gui/gdmsetup.glade.h:201
 msgid "_Pause before login:"
@@ -4723,7 +4694,7 @@ msgstr "dummy"
 msgid "seconds"
 msgstr "sekunder"
 
-#: ../gui/gdmuser.c:280 ../gui/gdmuser.c:282
+#: ../gui/gdmuser.c:286 ../gui/gdmuser.c:288
 msgid "Too many users to list here..."
 msgstr "For mange brukere til å vise alle her..."
 
@@ -4731,22 +4702,22 @@ msgstr "For mange brukere til å vise alle her..."
 msgid "Restart Machine"
 msgstr "Start maskinen på nytt"
 
-#: ../gui/greeter/greeter.c:1411
+#: ../gui/greeter/greeter.c:1417
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Det oppsto en feil under lasting av tema %s"
 
-#: ../gui/greeter/greeter.c:1465
+#: ../gui/greeter/greeter.c:1471
 msgid "The greeter theme is corrupt"
 msgstr "Tema for grafisk velkomst er korrupt"
 
-#: ../gui/greeter/greeter.c:1466
+#: ../gui/greeter/greeter.c:1472
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "Temaet har ingen definisjon for elementet brukernavn/passord."
 
-#: ../gui/greeter/greeter.c:1499
+#: ../gui/greeter/greeter.c:1505
 msgid ""
 "There was an error loading the theme, and the default theme could not be "
 "loaded. Attempting to start the standard greeter"
@@ -4754,7 +4725,7 @@ msgstr ""
 "Det oppsto en feil under lasting av tema, og forvalgt tema kan heller ikke "
 "lastes. Forsøker å starte forvalgt velkomst"
 
-#: ../gui/greeter/greeter.c:1521
+#: ../gui/greeter/greeter.c:1527
 msgid ""
 "The GTK+ greeter could not be started.  This display will abort and you may "
 "have to login another way and fix the installation of GDM"
@@ -4762,7 +4733,7 @@ msgstr ""
 "GTK+-velkomst kunne ikke startes. Denne skjermen vil avbrytes og du vil "
 "kanskje måtte logge inn via andre metoder og rette opp installasjonen av GDM"
 
-#: ../gui/greeter/greeter.c:1588
+#: ../gui/greeter/greeter.c:1594
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -4792,31 +4763,31 @@ msgstr "Forrige sesjon"
 msgid "Already logged in"
 msgstr "Allerede logget inn"
 
-#: ../gui/greeter/greeter_parser.c:332
+#: ../gui/greeter/greeter_parser.c:334
 msgid "_Session"
 msgstr "_Sesjon"
 
-#: ../gui/greeter/greeter_parser.c:357 ../gui/greeter/greeter_system.c:291
+#: ../gui/greeter/greeter_parser.c:359 ../gui/greeter/greeter_system.c:291
 msgid "Sus_pend"
 msgstr "_Hvilemodus"
 
-#: ../gui/greeter/greeter_parser.c:367
+#: ../gui/greeter/greeter_parser.c:369
 msgid "Remote Login via _XDMCP"
 msgstr "Ekstern pålogging via _XDMCP"
 
-#: ../gui/greeter/greeter_parser.c:372
+#: ../gui/greeter/greeter_parser.c:374
 msgid "Confi_gure"
 msgstr "Konfi_gurer"
 
-#: ../gui/greeter/greeter_parser.c:377
+#: ../gui/greeter/greeter_parser.c:379
 msgid "Op_tions"
 msgstr "Al_ternativer"
 
-#: ../gui/greeter/greeter_parser.c:406
+#: ../gui/greeter/greeter_parser.c:408
 msgid "_OK"
 msgstr "_OK"
 
-#: ../gui/greeter/greeter_parser.c:411
+#: ../gui/greeter/greeter_parser.c:413
 msgid "_Cancel"
 msgstr "_Avbryt"
 
@@ -4932,8 +4903,8 @@ msgstr "GNOME kunstvariasjon av Sirkler"
 msgid "Happy GNOME"
 msgstr "Glad GNOME"
 
-#: ../gui/modules/dwellmouselistener.c:659
-#: ../gui/modules/keymouselistener.c:929
+#: ../gui/modules/dwellmouselistener.c:672
+#: ../gui/modules/keymouselistener.c:943
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -5009,4 +4980,3 @@ msgstr "gdmaskpass kjører kun som root\n"
 #, c-format
 msgid "Authentication failure!\n"
 msgstr "Autentiseringfeil!\n"
-
