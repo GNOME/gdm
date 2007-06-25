@@ -2052,7 +2052,7 @@ main (int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
     
-	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-xnest.png", NULL);
+	gtk_window_set_default_icon_name ("gdm-xnest");
 
 	gdm_chooser_gui_init ();
 	gdm_chooser_signals_init ();

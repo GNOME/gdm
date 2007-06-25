@@ -8204,7 +8204,7 @@ main (int argc, char *argv[])
 	if (gdm_running == FALSE)
 		exit (EXIT_FAILURE);
 
-	gtk_window_set_default_icon_from_file (DATADIR"/pixmaps/gdm-setup.png", NULL);	
+	gtk_window_set_default_icon_name ("gdm-setup");	
 	glade_init();
 	
 	/* Start using socket */

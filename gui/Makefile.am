@@ -246,9 +246,9 @@ gdmsetup.desktop.in: $(srcdir)/gdmsetup.desktop.in.in
 Gladedir = $(datadir)/gdm
 Glade_DATA = gdmsetup.glade gdmchooser.glade gdmphotosetup.glade
 
-Iconsdir = $(datadir)/pixmaps
-
-Icons_DATA = \
+Iconsdir = \
+	$(datadir)/icons/hicolor/48x48/apps
+dist_Icons_DATA = \
 	login-photo.png
 
 install-data-local:
@@ -257,7 +257,6 @@ install-data-local:
 
 EXTRA_DIST = \
 	$(Glade_DATA)		\
-	$(Icons_DATA)		\
 	$(System_DATA)		\
 	$(System_in_files)	\
 	$(Settings_DATA)	\
@@ -265,3 +264,16 @@ EXTRA_DIST = \
 
 clean-local:
 	rm -f $(System_files) $(Settings_files)
+
+gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
+install-data-hook: update-icon-cache
+uninstall-hook: update-icon-cache
+update-icon-cache:
+	@-if test -z "$(DESTDIR)"; then \
+		echo "Updating Gtk icon cache."; \
+		$(gtk_update_icon_cache); \
+	else \
+		echo "*** Icon cache not updated.  After (un)install, run this:"; \
+		echo "***   $(gtk_update_icon_cache)"; \
+	fi
+
