@@ -4066,7 +4066,6 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 {
     struct utmpx record = { 0 };
     struct utmpx *u = NULL;
-    const gchar *host_name;
     GTimeVal now = { 0 };
     gchar *device_name;
     gchar *host;
@@ -4178,11 +4177,11 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 
 	            /* Update if entry already exists */
 	            while ((u = getutxent ()) != NULL) {
-	                if ((u->ut_type == USER_PROCESS &&
-	                    (record.ut_line != NULL &&
-	                     strncmp (u->ut_line, record.ut_line,
-	                              sizeof (u->ut_line)) == 0) ||
-	                     u->ut_pid == record.ut_pid)) {
+	                if (u->ut_type == USER_PROCESS &&
+	                   (record.ut_line != NULL &&
+	                   (strncmp (u->ut_line, record.ut_line,
+	                              sizeof (u->ut_line)) == 0 ||
+	                     u->ut_pid == record.ut_pid))) {
 
 			     gdm_debug ("Updating existing utmp record");
 	                     pututxline (&record);
@@ -5587,10 +5586,12 @@ gdm_slave_exec_script (GdmDisplay *d,
 {
 	pid_t pid;
 	char *script;
-	char *ctrun;
 	gchar **argv = NULL;
 	gint status;
 	char *x_servers_file;
+#ifdef HAVE_CTRUN
+	char *ctrun;
+#endif
 
 	if G_UNLIKELY (!d || ve_string_empty (dir))
 		return EXIT_SUCCESS;
