@@ -197,7 +197,10 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		}
 
 		if (d->attached) {
-			gchar *vtname = gdm_get_current_vt_device (d);
+			gchar *vtname = NULL;
+
+			if (d->vtnum != -1)
+				vtname = gdm_get_vt_device (d->vtnum);
 			if (vtname == NULL)
 				vtname = g_strdup_printf ("/dev/console");
 
@@ -782,7 +785,10 @@ create_pamh (GdmDisplay *d,
 	/* Inform PAM of the user's tty */
 #ifdef __sun
 	if (d->attached) {
-		gchar *vtname = gdm_get_current_vt_device (d);
+		gchar *vtname = NULL;
+
+		if (d->vtnum != -1)
+			vtname = gdm_get_vt_device (d->vtnum);
 		if (vtname == NULL)
 			vtname = g_strdup_printf ("/dev/console");
 
@@ -1237,7 +1243,10 @@ gdm_verify_user (GdmDisplay *d,
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		gchar *vtname = gdm_get_current_vt_device (d);
+		gchar *vtname = NULL;
+
+		if (d->vtnum != -1)
+			vtname = gdm_get_vt_device (d->vtnum);
 		if (vtname == NULL)
 			vtname = g_strdup_printf ("/dev/console");
 
@@ -1263,7 +1272,7 @@ gdm_verify_user (GdmDisplay *d,
 	if ( ! error_msg_given &&
 	     gdm_slave_action_pending ()) {
 		gdm_slave_write_utmp_wtmp_record (d,
-					GDM_VERIFY_RECORD_TYPE_FAILED_ATTEMPT,
+					GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT,
 					login, getpid ());
 
 		/*
@@ -1547,7 +1556,10 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		gchar *vtname = gdm_get_current_vt_device (d);
+		gchar *vtname = NULL;
+
+		if (d->vtnum != -1)
+			vtname = gdm_get_vt_device (d->vtnum);
 		if (vtname == NULL)
 			vtname = g_strdup_printf ("/dev/console");
 
@@ -1659,7 +1671,10 @@ gdm_verify_cleanup (GdmDisplay *d)
 #ifdef  HAVE_LOGINDEVPERM
 		if (old_opened_session && old_did_setcred &&
 		    d->attached && d->type != TYPE_FLEXI_XNEST) {
-			gchar *vtname = gdm_get_current_vt_device (d);
+			gchar *vtname = NULL;
+
+			if (d->vtnum != NULL)
+				vtname = gdm_get_vt_device (d->vtnum);
 			if (vtname == NULL)
 				vtname = g_strdup_printf ("/dev/console");
 

@@ -51,3 +51,4 @@
 #undef X_PATH
 #undef XSESSION_SHELL
 #undef XEVIE_OPTION
+#undef HAVE_UT_SYSLEN

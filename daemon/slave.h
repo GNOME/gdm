@@ -25,10 +25,10 @@
 #include "display.h"
 
 typedef enum {
-        GDM_VERIFY_RECORD_TYPE_LOGIN,
-        GDM_VERIFY_RECORD_TYPE_LOGOUT,
-        GDM_VERIFY_RECORD_TYPE_FAILED_ATTEMPT
-} GdmVerifyRecordType;
+        GDM_SESSION_RECORD_TYPE_LOGIN,
+        GDM_SESSION_RECORD_TYPE_LOGOUT,
+        GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT
+} GdmSessionRecordType;
 
 void     gdm_slave_start       (GdmDisplay *d);
 void     gdm_slave_greeter_ctl_no_ret (char cmd, const char *str);
@@ -49,9 +49,9 @@ gboolean gdm_is_session_magic (const char *session_name);
 /* This is the slave child handler so that we can chain to it from elsewhere */
 void	 gdm_slave_child_handler (int sig);
 void     gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
-                                           GdmVerifyRecordType record_type,
-                                           const gchar *username,
-                                           GPid  pid);
+                                 GdmSessionRecordType record_type,
+                                 const gchar *username,
+                                 GPid  pid);
 
 
 #endif /* GDM_SLAVE_H */

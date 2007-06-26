@@ -1709,6 +1709,7 @@ gdm_xdmcp_display_alloc (GdmXdmcpManager         *manager,
 	d->handled          = TRUE;
 	d->tcp_disallowed   = FALSE;
 	d->vt               = -1;
+	d->vtnum            = -1;
 	d->x_servers_order  = -1;
 	d->logged_in        = FALSE;
 	d->login            = NULL;

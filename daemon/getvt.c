@@ -48,7 +48,6 @@
 long
 gdm_get_current_vtnum (Display *display)
 {
-	/* setting WINDOWPATH for clients */
 	Atom prop;
 	Atom actualtype;
 	int actualformat;
@@ -121,18 +120,6 @@ gdm_get_vt_device (int vtno)
    return vtname;
 }
 
-gchar *
-gdm_get_current_vt_device (GdmDisplay *d)
-{
-   gchar *vtname = NULL;
-   long vtnum    = gdm_get_current_vtnum (d->dsp);
-
-   if (vtnum != -1)
-      vtname = gdm_get_vt_device (vtnum);
-
-   return vtname;
-}
-      
 #if defined (GDM_USE_SYS_VT) || defined (GDM_USE_CONSIO_VT)
 
 #ifdef __sun

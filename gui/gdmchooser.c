@@ -1961,6 +1961,14 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
+	/*
+	 * gdm_common_atspi_launch () needs gdk initialized.
+	 * We cannot start gtk before the registry is running
+	 * because the atk-bridge will crash.
+	 */
+	gdk_init (&argc, &argv);
+	gdm_common_atspi_launch ();
+
 	gtk_init (&argc, &argv);
 
 	ctx = g_option_context_new (_("- gdm login chooser")); 

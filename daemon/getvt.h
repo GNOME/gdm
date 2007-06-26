@@ -51,6 +51,5 @@ void	gdm_change_vt			(int vt);
 int	gdm_get_current_vt		(void);
 long	gdm_get_current_vtnum		(Display *display);
 gchar * gdm_get_vt_device		(int vtno);
-gchar * gdm_get_current_vt_device	(GdmDisplay *d);
 
 #endif /* GETVT_H */

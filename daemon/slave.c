@@ -1113,11 +1113,9 @@ gdm_window_path (GdmDisplay *d)
 	unsigned long num;
 	int numn;
 
-	num = (unsigned long) gdm_get_current_vtnum (d->dsp);
-
-	if (num != -1) {
+	if (d->vtnum != -1) {
 		windowpath = getenv ("WINDOWPATH");
-		numn = snprintf (nums, sizeof (nums), "%lu", num);
+		numn = snprintf (nums, sizeof (nums), "%lu", d->vtnum);
 		if (!windowpath) {
 			newwindowpath = malloc (numn + 1);
 			sprintf (newwindowpath, "%s", nums);
@@ -1566,8 +1564,16 @@ gdm_slave_run (GdmDisplay *display)
 		gdm_tsol_init (d);
 #endif
 
-    /* checkout window number */
-    gdm_window_path (d);
+	/*
+	 * Find out the VT number of the display.  VT's could be started by some
+	 * other mechanism than by running gdmflexiserver, so need to check the
+	 * Atom.  Do this before starting the greeter so that the user does not
+	 * have the ability to modify the atom.
+	 */
+	d->vtnum = gdm_get_current_vtnum (d->dsp);
+
+	/* checkout window number */
+	gdm_window_path (d);
 
 	/* check log stuff for the server, this is done here
 	 * because it's really a race */
@@ -2612,10 +2618,9 @@ gdm_slave_greeter (void)
 	 * Set access control for audio device so that GDM owned programs can
 	 * play audio and work with accessibility programs that require audio.
 	 */
-	system ("/usr/bin/setfacl -m user:gdm:rw-,mask:rw- /dev/audio");
+	system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audio");
 	system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audioctl");
 #endif
-
 	g_debug ("Forking greeter process: %s", command);
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
@@ -4060,57 +4065,60 @@ finish_session_output (gboolean do_read)
 
 void
 gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
-			    GdmVerifyRecordType record_type,
-			    const gchar *username,
-			    GPid  pid)
+			GdmSessionRecordType record_type,
+			const gchar *username,
+			GPid  pid)
 {
     struct utmpx record = { 0 };
     struct utmpx *u = NULL;
     GTimeVal now = { 0 };
-    gchar *device_name;
+    gchar *device_name = NULL;
     gchar *host;
 
-#ifdef __sun
-    device_name = gdm_get_current_vt_device (d);    
-    if (device_name == NULL) {
-       device_name = g_strdup ("/dev/console");
+    device_name = NULL;
+    if (d->attached) {
+        if (d->vtnum != -1)
+		device_name = gdm_get_vt_device (d->vtnum);
+	if (device_name == NULL)
+		device_name = g_strdup ("/dev/console");
     }
-#else
-    /* Linux seems to want to use display as the device name */
-    device_name = g_strdup (d->name);
-#endif
 
     gdm_debug ("Writing %s utmp-wtmp record",
-	       record_type == GDM_VERIFY_RECORD_TYPE_LOGIN ? "session" :
-	       record_type == GDM_VERIFY_RECORD_TYPE_LOGOUT ?  "logout" :
+	       record_type == GDM_SESSION_RECORD_TYPE_LOGIN ? "session" :
+	       record_type == GDM_SESSION_RECORD_TYPE_LOGOUT ?  "logout" :
 	       "failed session attempt");
 
-    if (record_type != GDM_VERIFY_RECORD_TYPE_LOGOUT) {
-	    /*
-	     * It is possible that PAM failed before
-	     * it mapped the user input into a valid username
-	     * so we fallback to try using "(unknown)"
-	     */
-	    if (username != NULL)
-		    strncpy (record.ut_user,
-			     username, 
-			     sizeof (record.ut_user));
-	    else
-		    strncpy (record.ut_user,
-			     "(unknown)",
-			     sizeof (record.ut_user));
+    if (record_type != GDM_SESSION_RECORD_TYPE_LOGOUT) {
+	/*
+	 * It is possible that PAM failed before
+	 * it mapped the user input into a valid username
+	 * so we fallback to try using "(unknown)".  We
+	 * don't ever log user input directly, because
+	 * we don't want passwords entered into the 
+	 * username entry to accidently get logged.
+	 */
+	if (username != NULL) {
+		strncpy (record.ut_user,
+			 username, 
+			 sizeof (record.ut_user));
+	} else {
+		g_assert (record_type == GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT);
+			strncpy (record.ut_user,
+				 "(unknown)",
+				 sizeof (record.ut_user));
+	}
 
-	    gdm_debug ("utmp-wtmp: Using username %.*s",
-	               sizeof (record.ut_user),
-	               record.ut_user);
+	gdm_debug ("utmp-wtmp: Using username %.*s",
+		   sizeof (record.ut_user),
+		   record.ut_user);
     }
 
-    if (record_type == GDM_VERIFY_RECORD_TYPE_LOGOUT) {
-       record.ut_type = DEAD_PROCESS;
-       gdm_debug ("utmp-wtmp: Using type DEAD_PROCESS"); 
+    if (record_type == GDM_SESSION_RECORD_TYPE_LOGOUT) {
+	record.ut_type = DEAD_PROCESS;
+	gdm_debug ("utmp-wtmp: Using type DEAD_PROCESS"); 
     } else  {
-       record.ut_type = USER_PROCESS;
-       gdm_debug ("utmp-wtmp: Using type USER_PROCESS"); 
+	record.ut_type = USER_PROCESS;
+	gdm_debug ("utmp-wtmp: Using type USER_PROCESS"); 
     }
 
     record.ut_pid = pid;
@@ -4121,20 +4129,17 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
     gdm_debug ("utmp-wtmp: Using time %ld", (glong) record.ut_tv.tv_sec);
 
     strncpy (record.ut_id, d->name, sizeof (record.ut_id));
-    gdm_debug ("utmp:wtmp: Using id %.*s",
+    gdm_debug ("utmp-wtmp: Using id %.*s",
 	       sizeof (record.ut_id),
 	       record.ut_id);
 
-    if (g_str_has_prefix (device_name, "/dev/")) {
-	    strncpy (record.ut_line, 
-		     device_name + strlen ("/dev/"),
-		     sizeof (record.ut_line));
-    } else if (g_str_has_prefix (device_name, ":")) {
-	    strncpy (record.ut_line, 
-		     device_name,
-		     sizeof (record.ut_line));
+    if (device_name != NULL) {
+	g_assert (g_str_has_prefix (device_name, "/dev/"));
+	strncpy (record.ut_line, device_name + strlen ("/dev/"),
+		 sizeof (record.ut_line));
+	g_free (device_name);
+	device_name = NULL;
     }
-    g_free (device_name);
 
     gdm_debug ("utmp-wtmp: Using line %.*s",
 	       sizeof (record.ut_line),
@@ -4142,97 +4147,90 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 
     host = NULL;
     if (! d->attached && g_str_has_prefix (d->name, ":")) {
-	    host = g_strdup_printf ("%s%s",
-				    d->hostname,
-				    d->name);
+	host = g_strdup_printf ("%s%s",
+				d->hostname,
+				d->name);
     } else {
-	    host = g_strdup (d->name);
+	host = g_strdup (d->name);
     }
 
     if (host) {
-            int hostlen;
+	strncpy (record.ut_host, host, sizeof (record.ut_host));
+	g_free (host);
 
-	    strncpy (record.ut_host, host, sizeof (record.ut_host));
-	    g_free (host);
+	gdm_debug ("utmp-wtmp: Using hostname %.*s",
+		   sizeof (record.ut_host),
+		   record.ut_host);
 
-	    gdm_debug ("utmp-wtmp: Using hostname %.*s",
-		       sizeof (record.ut_host),
-		       record.ut_host);
-
-            hostlen = strlen (host) + 1;
-            if (hostlen < sizeof (record.ut_host))
-                record.ut_syslen = hostlen;
-            else
-                record.ut_syslen = sizeof (record.ut_host);
-    } else {
-            (void) memset (record.ut_host, 0, sizeof (record.ut_host));
-            record.ut_syslen = 0;
-    }
+#ifdef HAVE_UT_SYSLEN
+	record.ut_syslen = MIN (strlen (host), sizeof (record.ut_host));
+#endif
+    } 
 
     switch (record_type)
     {
-	    case GDM_VERIFY_RECORD_TYPE_LOGIN:
-		    gdm_debug ("Login utmp/wtmp record");
-		    updwtmpx (GDM_NEW_RECORDS_FILE, &record);
+	case GDM_SESSION_RECORD_TYPE_LOGIN:
+		gdm_debug ("Login utmp/wtmp record");
+		updwtmpx (GDM_NEW_RECORDS_FILE, &record);
 
-	            /* Update if entry already exists */
-	            while ((u = getutxent ()) != NULL) {
-	                if (u->ut_type == USER_PROCESS &&
-	                   (record.ut_line != NULL &&
-	                   (strncmp (u->ut_line, record.ut_line,
-	                              sizeof (u->ut_line)) == 0 ||
-	                     u->ut_pid == record.ut_pid))) {
+		/* Update if entry already exists */
+		while ((u = getutxent ()) != NULL) {
+			if (u->ut_type == USER_PROCESS &&
+			   (record.ut_line != NULL &&
+			   (strncmp (u->ut_line, record.ut_line,
+				     sizeof (u->ut_line)) == 0 ||
+			    u->ut_pid == record.ut_pid))) {
 
-			     gdm_debug ("Updating existing utmp record");
-	                     pututxline (&record);
-	                     break;
-	                }
-	            }
-	            endutxent ();
+				gdm_debug ("Updating existing utmp record");
+				pututxline (&record);
+				break;
+			}
+		}
+		endutxent ();
 
-                    /* Add new entry if update did not work */
-	            if (u == (struct utmpx *)NULL) {
-	                gdm_debug ("Adding new utmp record");
-	                pututxline (&record);
-	            }
+		/* Add new entry if update did not work */
+		if (u == (struct utmpx *)NULL) {
+			gdm_debug ("Adding new utmp record");
+			pututxline (&record);
+		}
 
-		    break;
+		break;
 
-	    case GDM_VERIFY_RECORD_TYPE_LOGOUT: 
-		    gdm_debug ("Logout utmp/wtmp record");
+	case GDM_SESSION_RECORD_TYPE_LOGOUT: 
+		gdm_debug ("Logout utmp/wtmp record");
 
-		    updwtmpx (GDM_NEW_RECORDS_FILE, &record);
+		updwtmpx (GDM_NEW_RECORDS_FILE, &record);
 
-	            setutxent ();
+		setutxent ();
 
-	            while ((u = getutxent ()) != NULL &&
-	                   (u = getutxid (&record)) != NULL) {
+		while ((u = getutxent ()) != NULL &&
+		       (u = getutxid (&record)) != NULL) {
 
 			gdm_debug ("Removing utmp record");
-	                if (u->ut_pid == pid &&
-	                    u->ut_type == DEAD_PROCESS) {
-	                     /* Already done */
-	                     break;
-	                }
+			if (u->ut_pid == pid &&
+			    u->ut_type == DEAD_PROCESS) {
+				/* Already done */
+				break;
+			}
 
-	                u->ut_type = DEAD_PROCESS;
-	                u->ut_tv.tv_sec = record.ut_tv.tv_sec;
-	                u->ut_exit.e_termination = 0;
-	                u->ut_exit.e_exit = 0;
+			u->ut_type = DEAD_PROCESS;
+			u->ut_tv.tv_sec = record.ut_tv.tv_sec;
+			u->ut_exit.e_termination = 0;
+			u->ut_exit.e_exit = 0;
 
-	                pututxline (u);
+			pututxline (u);
 
-	                break;
-	            }
+			break;
+		}
 
-	            endutxent ();
-		    break;
+		endutxent ();
+		break;
 
-	    case GDM_VERIFY_RECORD_TYPE_FAILED_ATTEMPT:
-		    gdm_debug ("Writing failed session attempt record to " 
-			       GDM_BAD_RECORDS_FILE);
-		    updwtmpx (GDM_BAD_RECORDS_FILE, &record);
-		    break;
+	case GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT:
+		gdm_debug ("Writing failed session attempt record to " 
+			   GDM_BAD_RECORDS_FILE);
+		updwtmpx (GDM_BAD_RECORDS_FILE, &record);
+		break;
     }
 }
 
@@ -4674,7 +4672,7 @@ gdm_slave_session_start (void)
 	g_free (gnome_session);
 
 	gdm_slave_write_utmp_wtmp_record (d,
-				GDM_VERIFY_RECORD_TYPE_LOGIN,
+				GDM_SESSION_RECORD_TYPE_LOGIN,
 				pwent->pw_name,
 				pid);
 
@@ -4744,9 +4742,9 @@ gdm_slave_session_start (void)
 		gdm_debug ("session '%d' exited with status '%d', recording logout",
 		pid, d->last_sess_status);
 		gdm_slave_write_utmp_wtmp_record (d,
-					 GDM_VERIFY_RECORD_TYPE_LOGOUT,
-					 pwent->pw_name,
-					 pid);
+					GDM_SESSION_RECORD_TYPE_LOGOUT,
+					pwent->pw_name,
+					pid);
 	}
 
 	gdm_slave_session_stop (pid != 0 /* run_post_session */,

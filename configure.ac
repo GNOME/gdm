@@ -5,6 +5,7 @@ AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gdm,2.19.3)
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
+AC_GNU_SOURCE
 
 IT_PROG_INTLTOOL([0.35.0])
 
@@ -262,6 +263,20 @@ AC_CHECK_FUNC(sched_yield,[
 AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
+
+AC_MSG_CHECKING(if utmpx structure has ut_syslen field)
+AC_TRY_COMPILE([
+  #include <utmpx.h>],[
+  struct utmpx record;
+  record.ut_syslen = sizeof (record.ut_host);
+  ],
+  have_ut_syslen=yes,
+  have_ut_syslen=no
+  )
+if test x$have_ut_syslen = xyes; then
+  AC_DEFINE(HAVE_UT_SYSLEN)
+fi
+AC_MSG_RESULT($have_ut_syslen)
 
 COMMON_GNOME_LIBS="libgdmcommon-ui.a"
 AC_SUBST(COMMON_GNOME_LIBS)

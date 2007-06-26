@@ -1,5 +1,24 @@
 2007-06-25  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmchooser.c: Call gdm_common_atspi_launch so that
+	  users can launch AT programs when gdmchooser is running.
+	* acconfig.h, configure.ac, 
+	* daemon/display.[ch], daemon/verify-pam.c, 
+	  daemon/gdm-xdmcp-manager.c, daemon/getvt.[ch], 
+	  daemon/slave.[ch]: Fix utmp logic so it works on Linux
+	  and improved the logic a bit, fixing bug #450453.
+	  Patch by Ray Strode.  <rstrode@redhat.com>.
+	  Also, I changed the way the XFree86_VT atom is accessed
+	  so it is only checked once after X starts and before the
+	  gdmgreeter starts, and then the value is cached.  This
+	  is better because the Atom can be changed by the user,
+	  so we do not want to access the Atom after the user
+	  session starts.
+	* daemon/slave.c: Fix calls to setfacl so they work in
+	  Solaris specific block of code.
+
+2007-06-25  Brian Cameron  <brian.cameron@sun.com>
+
 	* pixmaps/48x48/Makefile.am, pixmaps/32x32/Makefile.am,
 	  pixmaps/16x16/Makefile.am, gui/gdmphotosetup.desktop.in,
 	  gui/gdmsetup.c, gui/Makefile.am, gui/gdmchooser.c:

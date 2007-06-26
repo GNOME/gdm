@@ -171,7 +171,8 @@ struct _GdmDisplay
 
 	/* ALL LOCAL TYPE (static, flexi) */
 
-	int vt;
+	int vt;     /* The VT number used when starting via GDM */
+	int vtnum;  /* The VT number of the display */
 	pid_t servpid;
 	guint8 servstat;
 	gchar *command;
