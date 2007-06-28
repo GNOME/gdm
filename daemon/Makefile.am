@@ -281,7 +281,7 @@ gdm_binary_LDADD = \
 	$(GLIB_LIBS)				\
 	$(GOBJECT_LIBS)				\
 	$(GDK_LIBS)				\
-	$(top_builddir)/common/libgdmcommon.a	\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(X_LIBS)				\
 	$(XINERAMA_LIBS)			\
 	$(XDMCP_LIBS)				\
