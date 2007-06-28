@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GDM2 HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-03-29 19:21+0100\n"
-"PO-Revision-Date: 2007-05-11 12;53+0300\n"
+"PO-Revision-Date: 2007-06-23 10:15+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -427,7 +427,7 @@ msgstr ""
 #: ../daemon/gdm.c:763 ../daemon/gdm.c:792
 #, c-format
 msgid "%s: Execution of custom command failed: %s"
-msgstr ""
+msgstr "%s: Tõrge kohandatud käsu täitmisel: %s"
 
 #: ../daemon/gdm.c:772
 #, c-format
@@ -443,7 +443,7 @@ msgstr ""
 #: ../daemon/gdm.c:804
 #, c-format
 msgid "custom_cmd: child %d returned %d"
-msgstr ""
+msgstr "custom_cmd: laps %d tagastas %d"
 
 #: ../daemon/gdm.c:913
 #, c-format
@@ -1096,6 +1096,8 @@ msgid ""
 "Could not access configuration file (custom.conf). Make sure that the file "
 "exists before launching  login manager config utility."
 msgstr ""
+"Seadistusfailile (custom.conf) pole võimalik ligi pääseda. Enne "
+"sisselogimishalduri utiliidi käivitamist veendu, et see fail on olemas."
 
 #: ../daemon/slave.c:1823
 msgid ""
@@ -1374,6 +1376,7 @@ msgstr "Seanssi pole võimalik sisemiste vigade tõttu alustada."
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr ""
+"%s: Kasutaja läbis autentimise, kuid funktsioonis getpwnam (%s) tekkis tõrge!"
 
 #: ../daemon/slave.c:4066
 #, c-format
@@ -2001,7 +2004,7 @@ msgstr "XDMCP ei ole lubatud"
 
 #: ../gui/gdmXnestchooser.c:595
 msgid "GDM is not running"
-msgstr "GDM ei ole käivitatud"
+msgstr "GDM ei tööta"
 
 #: ../gui/gdmXnestchooser.c:596
 msgid "Please ask your system administrator to start it."
@@ -3514,7 +3517,7 @@ msgstr "Kas rakendada tehtud muudatused enne sulgemist?"
 
 #: ../gui/gdmsetup.c:3837
 msgid "If you don't apply, the changes made will be disregarded."
-msgstr "Rakendamata jättes tühistatakse tehtud muudatused."
+msgstr "Rakendamata jättes lähevad muudatused kaotsi."
 
 #: ../gui/gdmsetup.c:3840 ../gui/gdmsetup.c:8332
 msgid "Close _without Applying"
@@ -3663,7 +3666,7 @@ msgstr ""
 
 #: ../gui/gdmsetup.c:8310
 msgid "Random theme mode change"
-msgstr ""
+msgstr "Teemarežiimi juhuslik muutmine"
 
 #: ../gui/gdmsetup.c:8311
 msgid ""
@@ -3688,6 +3691,7 @@ msgstr "Seadistusfailile (defaults.conf) pole võimalik ligi pääseda"
 msgid ""
 "Make sure that the file exists before launching login manager config utility."
 msgstr ""
+"Enne sisselogimishalduri utiliidi käivitamist veendu, et see fail on olemas."
 
 #: ../gui/gdmsetup.c:8416
 msgid "Could not access configuration file (custom.conf)"
@@ -3934,12 +3938,16 @@ msgid ""
 "Controls which text to display next to the logo image in the greeter for "
 "remote XDMCP sessions."
 msgstr ""
+"Siin määratakse tekst, mida kuvatakse standardtervitaja logopildi kõrval. "
+"Seda stringi kasutatakse XDMCP kauglogimiste puhul."
 
 #: ../gui/gdmsetup.glade.h:50
 msgid ""
 "Controls which text to display next to the logo image in the standard "
 "greeter. This string is only used for local logins."
 msgstr ""
+"Siin määratakse tekst, mida kuvatakse standardtervitaja logopildi kõrval. "
+"Seda stringi kasutatakse kohalike sisselogimiste puhul."
 
 #: ../gui/gdmsetup.glade.h:51
 msgid "Copyright:"
@@ -4567,7 +4575,7 @@ msgstr "_Kasutajatel on lubatud lihtsa tervitaja kirjatüüpe ja värve muuta"
 
 #: ../gui/gdmsetup.glade.h:184
 msgid "_Background color:"
-msgstr "_Taustavärvus:"
+msgstr "Taustavä_rvus:"
 
 #: ../gui/gdmsetup.glade.h:186
 #, no-c-format
