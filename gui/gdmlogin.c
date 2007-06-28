@@ -2641,18 +2641,16 @@ gdm_login_gui_init (void)
 
     /* FIXME: No Documentation yet.... */
     /*help_button = gtk_button_new_from_stock (GTK_STOCK_OK);
-    GTK_WIDGET_UNSET_FLAGS (help_button, GTK_CAN_FOCUS);
     gtk_widget_show (help_button);*/
 
     ok_button = gtk_button_new_from_stock (GTK_STOCK_OK);
-    GTK_WIDGET_UNSET_FLAGS (ok_button, GTK_CAN_FOCUS);
+    gtk_widget_set_sensitive (ok_button, FALSE);
     g_signal_connect (G_OBJECT (ok_button), "clicked",
 		      G_CALLBACK (gdm_login_ok_button_press),
 		      entry);
     gtk_widget_show (ok_button);
 
     start_again_button = gtk_button_new_with_mnemonic (_("_Start Again"));
-    GTK_WIDGET_UNSET_FLAGS (start_again_button, GTK_CAN_FOCUS);
     g_signal_connect (G_OBJECT (start_again_button), "clicked",
 		      G_CALLBACK (gdm_login_start_again_button_press),
 		      entry);
