@@ -100,7 +100,7 @@ test_log_SOURCES = 		\
 	$(NULL)
 
 test_log_LDADD =		\
-	libgdmcommon.a	\
+	libgdmcommon.la	\
 	$(GLIB_LIBS)		\
 	$(NULL)
 
@@ -109,7 +109,7 @@ test_settings_server_SOURCES = 		\
 	$(NULL)
 
 test_settings_server_LDADD =		\
-	libgdmcommon.a			\
+	libgdmcommon.la			\
 	$(GLIB_LIBS)			\
 	$(DBUS_LIBS)			\
 	$(NULL)
@@ -119,7 +119,7 @@ test_settings_client_SOURCES = 		\
 	$(NULL)
 
 test_settings_client_LDADD =		\
-	libgdmcommon.a			\
+	libgdmcommon.la			\
 	$(GLIB_LIBS)			\
 	$(DBUS_LIBS)			\
 	$(NULL)
