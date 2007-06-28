@@ -1110,12 +1110,11 @@ gdm_window_path (GdmDisplay *d)
 	const char *windowpath;
 	char *newwindowpath;
 	char nums[10];
-	unsigned long num;
 	int numn;
 
 	if (d->vtnum != -1) {
 		windowpath = getenv ("WINDOWPATH");
-		numn = snprintf (nums, sizeof (nums), "%lu", d->vtnum);
+		numn = snprintf (nums, sizeof (nums), "%d", d->vtnum);
 		if (!windowpath) {
 			newwindowpath = malloc (numn + 1);
 			sprintf (newwindowpath, "%s", nums);

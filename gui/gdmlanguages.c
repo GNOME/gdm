@@ -39,6 +39,13 @@
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
 
+/*
+ * This function does nothing for gdmlogin, but for gdmgreeter it sets the
+ * custom list when the language list has changed in the language dialog
+ * (launched from language button or F10 menu)
+ */
+void lang_set_custom_callback (gchar *language);
+
 static GtkWidget    *tv                       = NULL;
 static GtkListStore *lang_model               = NULL;
 static GtkWidget    *dialog                   = NULL;
@@ -547,7 +554,6 @@ gdm_lang_read_locale_file (const char *locale_file)
 	GHashTable *dupcheck;
 	Language *language;
 	gboolean clean;
-	char *curlocale;
 	char *getsret;
 	char *p;
 
@@ -914,7 +920,6 @@ gdm_lang_setup_treeview (void)
 gint
 gdm_lang_ask_restart (gchar *language)
 {
-	GtkWidget *dialog;
 	gchar *firstmsg;
 	gchar *secondmsg;
 	gchar *login;
@@ -938,31 +943,10 @@ gdm_lang_ask_restart (gchar *language)
 	return response;
 }
 
-static gboolean
-gdm_lang_get_restart_state (void)
-{
-  return  always_restart;
-}
-
 static void
 gdm_lang_set_restart_state (gboolean do_restart)
 {
   always_restart = do_restart;
-}
-
-static void
-gdm_lang_restart_handler (GtkMenuItem *menu_item, gpointer user_data)
-{
-  if ((int)user_data == ALWAYS_RESTART)
-    always_restart = TRUE;
-  else
-    always_restart = FALSE;
-}
-
-static gchar *
-gdm_lang_get (void)
-{
-   return (current_language);
 }
 
 void

@@ -399,7 +399,7 @@ gdm_common_text_to_escaped_utf8 (const char *text)
 	while ((*p != '\0') && 
 	       !g_utf8_validate (p, -1, &q)) {
 		p = (gchar *) q;
-		p = '?';
+		*p = '?';
 		p++;
 	}
  

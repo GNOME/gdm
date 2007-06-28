@@ -2720,7 +2720,6 @@ gdm_daemon_config_get_session_xserver_args (const char *session_name)
 	GKeyFile    *cfg;
 	static char *xserver_args;
 	static char *cached = NULL;
-	gboolean     hidden;
 	char        *ret;
 
 	cfg = NULL;

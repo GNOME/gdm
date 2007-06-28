@@ -635,7 +635,9 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 
 		for (act_li=curr_binding->actions; act_li != NULL; act_li=act_li->next) {
 			gchar *action = (gchar *)act_li->data;
+#ifdef HAVE_CTRUN
 			gchar *ctrun;
+#endif
 
 			g_return_val_if_fail (action != NULL, TRUE);
 

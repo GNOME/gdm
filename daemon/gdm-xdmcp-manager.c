@@ -199,8 +199,6 @@ enum {
 	PROP_MAX_WAIT,
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
-
 static void	gdm_xdmcp_manager_class_init	(GdmXdmcpManagerClass *klass);
 static void	gdm_xdmcp_manager_init	        (GdmXdmcpManager      *manager);
 static void	gdm_xdmcp_manager_finalize	(GObject	      *object);

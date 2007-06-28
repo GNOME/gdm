@@ -95,6 +95,7 @@ static gint connection_type = 0;
 /* Exported for glade */
 void gdm_chooser_add_host (void);
 void gdm_chooser_add_entry_changed (void);
+void gdm_chooser_cancel (int sig);
 void gdm_chooser_manage (GtkButton *button, gpointer data);
 void gdm_chooser_browser_select (GtkWidget *widget,
 				 gint selected,

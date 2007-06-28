@@ -470,7 +470,6 @@ get_local_auths (GdmDisplay *d)
 
 	/* If local server, then add loopback */
 	if (SERVER_IS_LOCAL (d) && ! added_lo && ! d->tcp_disallowed) {
-		struct sockaddr_storage *lo_ss = NULL;
 		if (! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
 		      lo, sizeof (struct in_addr))) {
 			goto get_local_auth_error;
