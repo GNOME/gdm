@@ -1,15 +1,14 @@
 # Vietnamese translation for GDM2.
 # Copyright © 2007 Gnome i18n Project for Vietnamese.
 # This file is distributed under the same license as the gdm2 package.
-# Nguyễn Thái Ngọc Duy <pclouds@vnlinux.org>, 2002-2004.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2007.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
-# 
+#
 msgid ""
-""
 msgstr "Project-Id-Version: gdm2 GNOME HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-06-19 04:13+0100\n"
-"PO-Revision-Date: 2007-06-26 17:45+0930\n"
+"PO-Revision-Date: 2007-07-01 10:53-0400\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -159,16 +158,14 @@ msgstr "%s: không thể ghi mục nhập xác thực mới: %s"
 #: ../daemon/auth.c:67
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
-msgstr "%s: không thể ghi mục nhập xác thực mới. Có lẽ do hết sức chứa còn rảnh trên "
-"đĩa."
+msgstr "%s: không thể ghi mục nhập xác thực mới. Có lẽ do hết vùng trống trên đĩa."
 
 #: ../daemon/auth.c:72
 #, c-format
 msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
 "diskspace.%s%s"
-msgstr "GDM không thể ghi mục nhập xác thực mới vào đĩa. Có lẽ do hết sức chứa còn "
-"rảnh trên đĩa. %s%s"
+msgstr "GDM không thể ghi mục nhập xác thực mới vào đĩa. Có lẽ do hết vùng trống trên đĩa. %s%s"
 
 #: ../daemon/auth.c:205
 #, c-format
@@ -650,7 +647,7 @@ msgstr "Không thể lấy tên máy cho máy phục vụ: %s."
 #, c-format
 #. FIXME: how to handle this?
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-msgstr "Không thể ghi tập tin PID « %s », có thể do hết sức chứa còn rảnh trên đĩa. "
+msgstr "Không thể ghi tập tin PID « %s », có thể do hết vùng trống trên đĩa. "
 "Lỗi: %s\n"
 
 #: ../daemon/gdm.c:200
@@ -659,7 +656,7 @@ msgstr "Không thể ghi tập tin PID « %s », có thể do hết sức chứa
 #: ../daemon/gdm.c:1659
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
-msgstr "Không thể ghi tập tin PID « %s », có thể do hết sức chứa còn rảnh trên đĩa. "
+msgstr "Không thể ghi tập tin PID « %s », có thể do hết vùng trống trên đĩa. "
 "Lỗi: %s"
 
 #: ../daemon/gdm.c:217
@@ -1462,8 +1459,8 @@ msgid ""
 "are out of disk space or that your home directory could not be opened for "
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
-msgstr "GDM không thể ghi vào tập tin xác thực của bạn. Có lẽ là do hết sức chứa còn "
-"rảnh trên đĩa hoặc không thể mở thư mục chính để ghi. Trong mọi trường hợp "
+msgstr "GDM không thể ghi vào tập tin xác thực của bạn. Có lẽ là do hết vùng "
+"trống trên đĩa hoặc không thể mở thư mục chính để ghi. Trong mọi trường hợp "
 "đều không thể đăng nhập. Hãy liên hệ với quản trị hệ thống của bạn."
 
 #: ../daemon/slave.c:4442
@@ -1479,7 +1476,7 @@ msgid ""
 "sessions to see if you can fix this problem."
 msgstr "Phiên chạy của bạn lần cuối cùng kéo dài ít hơn 10 giây. Nếu bạn không tự "
 "đăng xuất, điều này có lẽ nghĩa là có vấn đề nào về cài đặt hoặc bạn đã hết "
-"sức chứa còn rảnh trên đĩa. Hãy thử đăng nhập vào một phiên chạy dự phòng để "
+"vùng trống trên đĩa. Hãy thử đăng nhập vào một phiên chạy dự phòng để "
 "xem có giải quyết được vấn đề hay không."
 
 #: ../daemon/slave.c:4561
@@ -1973,7 +1970,7 @@ msgstr "Không tìm thấy số hiệu bộ trình bày chưa dùng."
 
 #: ../gui/gdmchooser.c:86
 msgid "Please wait: scanning local network..."
-msgstr "Hãy chờ: đang quét mạng địa phương..."
+msgstr "Hãy chờ: đang quét mạng cục bộ..."
 
 #: ../gui/gdmchooser.c:87
 msgid "No serving hosts were found."
@@ -2263,7 +2260,7 @@ msgstr "\t-l [tên_máy_phục_vụ]\n"
 #: ../gui/gdmdynamic.c:59
 #, c-format
 msgid "\t-t maximum tries to connect (default 15)\n"
-msgstr "\t-t số lần cố kết nối Tối đa (mặc định là 15)\n"
+msgstr "\t-t số lần cố kết nối tối đa (mặc định là 15)\n"
 
 #: ../gui/gdmdynamic.c:60
 #, c-format
@@ -4039,8 +4036,7 @@ msgid ""
 "Determines the maximum number of remote display connections which will be "
 "managed simultaneously. I.e. the total number of remote displays that can "
 "use your host."
-msgstr "Quyết định số tối đa sự kết nối từ xa sẽ được quản lý đồng thời, tức là tổng "
-"số bộ trình bày từ xa có khả năng sử dụng máy cua bạn."
+msgstr "Quyết định số sự kết nối tối đa từ xa sẽ được quản lý đồng thời, tức là tổng số bộ trình bày từ xa có khả năng sử dụng máy cua bạn."
 
 #: ../gui/gdmsetup.glade.h:50
 msgid ""
