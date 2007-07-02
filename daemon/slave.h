@@ -52,6 +52,7 @@ void     gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
                                  GdmSessionRecordType record_type,
                                  const gchar *username,
                                  GPid  pid);
+gchar *  gdm_slave_get_display_device (GdmDisplay *d);
 
 
 #endif /* GDM_SLAVE_H */

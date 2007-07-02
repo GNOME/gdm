@@ -3072,7 +3072,7 @@ handle_flexi_server (GdmConnection *conn,
 	}
 	g_free (bin);
 
-	display = gdm_display_alloc (-1, server);
+	display = gdm_display_alloc (-1, server, NULL);
 	if G_UNLIKELY (display == NULL) {
 		if (conn != NULL)
 			gdm_connection_write (conn,
@@ -3181,7 +3181,7 @@ handle_dynamic_server (GdmConnection *conn, int type, gchar *key)
 		}
 
 		val = full + 1;
-		disp = gdm_display_alloc (disp_num, val);
+		disp = gdm_display_alloc (disp_num, val, NULL);
 
 		if (disp == NULL) {
 			gdm_connection_write (conn, "ERROR 4 Display startup failure\n");

@@ -30,6 +30,7 @@ struct _GdmXserver
 	char *id;
 	char *name;
 	char *command;
+	char *device;
 	gboolean flexible;
 	gboolean choosable; /* not implemented yet */
 	gboolean chooser; /* instead of greeter, run chooser */
@@ -49,7 +50,6 @@ struct _GdmXserver
 /* Wipe cookie files */
 void		gdm_server_wipe_cookies	(GdmDisplay *disp);
 
-/* Wipe X server's butt */
 void		gdm_server_whack_lockfile (GdmDisplay *disp);
 
 gboolean	gdm_server_start	(GdmDisplay *d,

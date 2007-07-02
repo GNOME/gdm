@@ -60,7 +60,7 @@ extern gint flexi_servers;
  */
 
 GdmDisplay *
-gdm_display_alloc (gint id, const gchar *command)
+gdm_display_alloc (gint id, const gchar *command, const gchar *device)
 {
     gchar hostname[1024];
     GdmDisplay *d;
@@ -104,6 +104,10 @@ gdm_display_alloc (gint id, const gchar *command)
     d->priority = 0;
     d->vt = -1;
     d->vtnum = -1;
+    if (device != NULL)
+	d->device_name = g_strdup (device);
+    else
+	d->device_name = NULL;
 
     d->x_servers_order = -1;
 
@@ -594,6 +598,9 @@ gdm_display_dispose (GdmDisplay *d)
 
     g_free (d->command);
     d->command = NULL;
+
+    g_free (d->device_name);
+    d->device_name = NULL;
 
     g_free (d->cookie);
     d->cookie = NULL;

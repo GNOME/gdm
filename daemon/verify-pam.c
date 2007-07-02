@@ -197,19 +197,14 @@ audit_fail_login (GdmDisplay *d, int pw_change, struct passwd *pwent,
 		}
 
 		if (d->attached) {
-			gchar *vtname = NULL;
-
-			if (d->vtnum != -1)
-				vtname = gdm_get_vt_device (d->vtnum);
-			if (vtname == NULL)
-				vtname = g_strdup_printf ("/dev/console");
+			gchar *device_name = gdm_slave_get_display_device (d);
 
 			/* login from the local host */
-			if (adt_load_ttyname (vtname, &tid) != 0) {
+			if (adt_load_ttyname (device_name, &tid) != 0) {
 
 				syslog (LOG_AUTH | LOG_ALERT,
 					"adt_loadhostname (localhost): %m");
-			g_free (vtname);
+			g_free (device_name);
 			}
 		} else {
 			/* login from a remote host */
@@ -759,6 +754,10 @@ create_pamh (GdmDisplay *d,
 	     const char *display,
 	     int *pamerr)
 {
+#ifdef __sun
+	gchar *device_name = NULL;
+#endif
+
 	if (display == NULL) {
 		gdm_error (_("Cannot setup pam handle with null display"));
 		return FALSE;
@@ -784,16 +783,11 @@ create_pamh (GdmDisplay *d,
 
 	/* Inform PAM of the user's tty */
 #ifdef __sun
-	if (d->attached) {
-		gchar *vtname = NULL;
+	device_name = gdm_slave_get_display_device (d);
 
-		if (d->vtnum != -1)
-			vtname = gdm_get_vt_device (d->vtnum);
-		if (vtname == NULL)
-			vtname = g_strdup_printf ("/dev/console");
-
-		(void) pam_set_item (pamh, PAM_TTY, vtname);
-		g_free (vtname);
+	if (device_name != NULL) {
+		(void) pam_set_item (pamh, PAM_TTY, device_name);
+		g_free (device_name);
 	} else {
 #endif	/* sun */
 		if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
@@ -1243,16 +1237,16 @@ gdm_verify_user (GdmDisplay *d,
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		gchar *vtname = NULL;
+		gchar *device_name = NULL;
 
 		if (d->vtnum != -1)
-			vtname = gdm_get_vt_device (d->vtnum);
-		if (vtname == NULL)
-			vtname = g_strdup_printf ("/dev/console");
+			device_name = gdm_get_vt_device (d->vtnum);
 
-		(void) di_devperm_login (vtname, pwent->pw_uid,
-					 pwent->pw_gid, NULL);
-		g_free (vtname);
+		if (device_name != NULL) {
+			(void) di_devperm_login (device_name, pwent->pw_uid,
+						 pwent->pw_gid, NULL);
+			g_free (device_name);
+		}
 	}
 #endif	/* HAVE_LOGINDEVPERM */
 
@@ -1556,16 +1550,16 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		gchar *vtname = NULL;
+		gchar *device_name = NULL;
 
 		if (d->vtnum != -1)
-			vtname = gdm_get_vt_device (d->vtnum);
-		if (vtname == NULL)
-			vtname = g_strdup_printf ("/dev/console");
+			device_name = gdm_get_vt_device (d->vtnum);
 
-		(void) di_devperm_login (vtname, pwent->pw_uid,
-					 pwent->pw_gid, NULL);
-		g_free (vtname);
+		if (device_name != NULL) {
+			(void) di_devperm_login (device_name, pwent->pw_uid,
+						 pwent->pw_gid, NULL);
+			g_free (device_name);
+		}
 	}
 #endif	/* HAVE_LOGINDEVPERM */
 
@@ -1671,15 +1665,15 @@ gdm_verify_cleanup (GdmDisplay *d)
 #ifdef  HAVE_LOGINDEVPERM
 		if (old_opened_session && old_did_setcred &&
 		    d->attached && d->type != TYPE_FLEXI_XNEST) {
-			gchar *vtname = NULL;
+			gchar *device_name = NULL;
 
 			if (d->vtnum != NULL)
-				vtname = gdm_get_vt_device (d->vtnum);
-			if (vtname == NULL)
-				vtname = g_strdup_printf ("/dev/console");
+				device_name = gdm_get_vt_device (d->vtnum);
 
-			(void) di_devperm_logout (vtname);
-			g_free (vtname);
+			if (device_name != NULL) {
+				(void) di_devperm_logout (device_name);
+				g_free (device_name);
+			}
 		}
 #endif  /* HAVE_LOGINDEVPERM */
 

@@ -150,9 +150,14 @@ struct _GdmDisplay
 
         gchar *xserver_session_args;
 
+	/*
+	 * The device associated with the display, if specified in the
+	 * configuration file
+	 */
+	gchar *device_name;
+
 	/* Only set in the main daemon as that's the only place that cares */
 	GdmLogoutAction logout_action;
-
 
 	/* XDMCP TYPE */
 
@@ -211,7 +216,7 @@ struct _GdmDisplay
 	char *parent_temp_auth_file;
 };
 
-GdmDisplay *gdm_display_alloc    (gint id, const gchar *command);
+GdmDisplay *gdm_display_alloc    (gint id, const gchar *command, const gchar *device);
 gboolean    gdm_display_manage   (GdmDisplay *d);
 void        gdm_display_dispose  (GdmDisplay *d);
 void        gdm_display_unmanage (GdmDisplay *d);

@@ -1068,7 +1068,8 @@ gdm_daemon_config_get_xservers (void)
 static void
 gdm_daemon_config_load_xserver (GdmConfig  *config,
 				const char *key,
-				const char *name)
+				const char *name,
+				const char *device)
 {
 	GdmXserver     *svr;
 	int             n;
@@ -1076,16 +1077,14 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 	gboolean        res;
 	GdmConfigValue *value;
 
-	/*
-	 * See if we already loaded a server with this id, skip if
-	 * one already exists.
-	 */
+	/* Do not add xserver if name doesn't exist */
 	if (gdm_daemon_config_find_xserver (name) != NULL) {
 		return;
 	}
 
 	svr = g_new0 (GdmXserver, 1);
 	svr->id = g_strdup (name);
+	svr->device = g_strdup (device);
 
 	if (isdigit (*key)) {
 		svr->number = atoi (key);
@@ -1103,8 +1102,10 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 		svr->command = g_strdup (gdm_config_value_get_string (value));
 	}
 
-	gdm_debug ("Adding new server id=%s name=%s command=%s", name, svr->name, svr->command);
-
+	if (device != NULL)
+		gdm_debug ("Adding new server id=%s name=%s command=%s device=%s", name, svr->name, svr->command, svr->device);
+	else
+		gdm_debug ("Adding new server id=%s name=%s command=%s", name, svr->name, svr->command);
 
 	/* bool */
 	res = gdm_config_get_value (config, group, "flexible", &value);
@@ -1165,6 +1166,7 @@ gdm_daemon_config_unload_xservers (GdmConfig *config)
 		g_free (xsvr->id);
 		g_free (xsvr->name);
 		g_free (xsvr->command);
+		g_free (xsvr->device);
 	}
 
 	if (xservers != NULL) {
@@ -1183,6 +1185,7 @@ gdm_daemon_config_ensure_one_xserver (GdmConfig *config)
 		svr->id        = g_strdup (GDM_STANDARD);
 		svr->name      = g_strdup ("Standard server");
 		svr->command   = g_strdup (X_SERVER);
+		svr->device    = NULL;
 		svr->flexible  = TRUE;
 		svr->choosable = TRUE;
 		svr->handled   = TRUE;
@@ -1205,10 +1208,13 @@ load_xservers_group (GdmConfig *config)
         for (i = 0; i < len; i++) {
                 GdmConfigEntry  entry;
                 GdmConfigValue *value;
-                char           *new_group;
                 gboolean        res;
                 int             j;
-		const char     *name;
+                char           *new_group;
+        	char          **value_list;
+        	const char     *display_value;
+        	const char     *name;
+        	const char     *device_name = NULL;
 
                 entry.group = GDM_CONFIG_GROUP_SERVERS;
                 entry.key = keys[i];
@@ -1224,15 +1230,25 @@ load_xservers_group (GdmConfig *config)
                         continue;
                 }
 
-		name = gdm_config_value_get_string (value);
-		if (name == NULL || name[0] == '\0') {
+		display_value = gdm_config_value_get_string (value);
+		value_list = g_strsplit (display_value, " ", -1);
+		if (value_list == NULL || value_list[0] == '\0') {
 			gdm_config_value_free (value);
+			g_strfreev (value_list);
 			continue;
 		}
+		
+		name = value_list[0];
 
-		/* skip servers marked as inactive */
-		if (g_ascii_strcasecmp (name, "inactive") == 0) {
+		/* Allow an optional device to be passed in as a 2nd argument */
+		if (value_list[1] != NULL)
+			device_name = value_list[1];
+
+		/* Skip servers marked as inactive */
+		if (name == NULL || name[0] == '\0' ||
+		    g_ascii_strcasecmp (name, "inactive") == 0) {
 			gdm_config_value_free (value);
+			g_strfreev (value_list);
 			continue;
 		}
 
@@ -1250,10 +1266,10 @@ load_xservers_group (GdmConfig *config)
                 }
 		g_free (new_group);
 
-		/* now we can add this server */
-		gdm_daemon_config_load_xserver (config, entry.key, gdm_config_value_get_string (value));
-
+		/* Now we can add this server */
+		gdm_daemon_config_load_xserver (config, entry.key, name, device_name);
                 gdm_config_value_free (value);
+		g_strfreev (value_list);
         }
 }
 
@@ -1475,7 +1491,7 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 			continue;
 		}
 
-		disp = gdm_display_alloc (xserver->number, xserver->id);
+		disp = gdm_display_alloc (xserver->number, xserver->id, xserver->device);
 		if (disp == NULL) {
 			continue;
 		}
@@ -1948,7 +1964,7 @@ handle_no_displays (GdmConfig *config,
 		gdm_error (_("%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"),
 			   "gdm_config_parse", server, num);
 
-		d = gdm_display_alloc (num, server);
+		d = gdm_display_alloc (num, server, NULL);
 		d->is_emergency_server = TRUE;
 
 		displays = g_slist_append (displays, d);

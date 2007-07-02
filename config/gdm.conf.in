@@ -286,20 +286,24 @@ SupportAutomount=false
 #PasswordRequired=false
 # Specifies the PAM Stack to use, "gdm" by default.
 PamStack=gdm
-# When GDM allows configuration of how ut_line is set when it does utmp/wtmp
-# processing.  If VT is being used, then ut_line will be set to the device
-# associated with the VT.  Otherwise the value specified in UtmpLineLocal will
-# be used for attached displays.  For remote displays, the ut_line will be set
-# to the value specified in UtmpLineRemote.  If the device specified does not
-# exist, then a pseudo-device will be created.  A psuedo-device is a symlink
-# to /dev/null.  If the device already exists and is a symlink to /dev/null,
-# then the pseudo-device filename will be touched when the utmp record is
-# updated.  Creating such a psuedo-device ensures that programs that stat
-# the utmp device associated with ut_line such as finger, last, etc. work
-# in a reasonable way.  If the UtmpLineLocal or UtmpLineRemote configuration
-# options are not set, then GDM will leave the ut_line field empty.
+# GDM allows configuration of how ut_line is set when it does utmp/wtmp and
+# audit processing.  If VT is being used, then ut_line will be set to the
+# device associated with the VT.  If the console is attached and has a device
+# name specified in the [servers] section, then this value will be used.
+# Otherwise the value is defaulted to the value specified in UtmpLineLocal
+# for attached displays and UtmpLineRemote for remote displays.  The value
+# can be left empty which means that ut_line will be set to an empty value
+# (if not VT and no value specified in the [servers] section.  The values
+# can contain "%d" which is translated to the DISPLAY value or %h which
+# is translated to the hostname.
 UtmpLineLocal=/dev/console
 UtmpLineRemote=
+# If true and the specified UtmpLineLocal or UtmpLineRemote does not exist,
+# then create a pseudo-device filename that will be touched when the utmp
+# record is updated.  Creating such a psuedo-device ensures that programs
+# that stat the utmp device associated with ut_line such as finger, last,
+# etc. work in a reasonable way.  
+UtmpPseudoDevice=true
 
 # XDMCP is the protocol that allows remote login.  If you want to log into GDM
 # remotely (I'd never turn this on on open network, use ssh for such remote
@@ -581,12 +585,29 @@ Enable=false
 Gestures=false
 
 [servers]
-# These are the standard servers.  You can add as many you want here and they
-# will always be started.  Each line must start with a unique number and that
-# will be the display number of that server.  Usually just the 0 server is
-# used.
-0=Standard
+# This section defines which servers should be started by GDM by default.
+# You can add as many servers as desired and they will always be started.
+# Each line must start with a unique number and this corresponds to the
+# DISPLAY number of that server.  For a typical single-display machine,
+# this section will only contain the "0" server for DISPLAY ":0".
+#
+# The optional second argument is used to specify the device that is
+# associated with the display.  When using Virtual Terminals (VT), 
+# this value is ignored and GDM uses the correct device name associated
+# with the VT.  If not using VT, then it will use the value specified
+# by this optional second argument.  If no optional second argument is
+# defined, then GDM will use the default settings specified in the
+# UtmpLineLocal configuration option.  For the main display (typically
+# DISPLAY ":0"), "/dev/console" is a reasonable value.  For other
+# displays it is probably best to leave this blank unless you know the
+# specific device associated with the DISPLAY.  The values can contain
+# "%d" which is translated to the DISPLAY value or %h which is
+# translated to the hostname.
+0=Standard /dev/console
+
+# Example of how to set up display :1 to also use Standard.
 #1=Standard
+
 # Note the VTAllocation and FirstVT keys on Linux and FreeBSD.  Don't add any
 # vt<number> arguments if VTAllocation is on, and set FirstVT to be the first
 # vt available that your gettys don't grab (gettys are usually dumb and grab

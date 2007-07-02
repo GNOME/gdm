@@ -208,7 +208,7 @@ static void   gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PRIN
 static gint   gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent,
 				       gboolean pass_stdout);
-static gchar *gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
+static gchar *gdm_slave_parse_enriched_login (GdmDisplay *d, const gchar *s);
 static void   gdm_slave_handle_usr2_message (void);
 static void   gdm_slave_handle_notify (const char *msg);
 static void   create_temp_auth_file (void);
@@ -1456,15 +1456,15 @@ gdm_slave_run (GdmDisplay *display)
 		if (gdm_daemon_config_get_value_bool (GDM_KEY_AUTOMATIC_LOGIN_ENABLE) &&
 		    ! ve_string_empty (automaticlogin)) {
 			g_free (ParsedAutomaticLogin);
-			ParsedAutomaticLogin = gdm_parse_enriched_login (automaticlogin,
-									 display);
+			ParsedAutomaticLogin = gdm_slave_parse_enriched_login (display,
+									       automaticlogin);
 		}
 
 		if (gdm_daemon_config_get_value_bool (GDM_KEY_TIMED_LOGIN_ENABLE) &&
 		    ! ve_string_empty (timedlogin)) {
 			g_free (ParsedTimedLogin);
-			ParsedTimedLogin = gdm_parse_enriched_login (timedlogin,
-								     display);
+			ParsedTimedLogin = gdm_slave_parse_enriched_login (display,
+									   timedlogin);
 		}
 	}
 
@@ -4062,141 +4062,240 @@ finish_session_output (gboolean do_read)
 	}
 }
 
-/* HERE */
+GString *
+gdm_slave_parse_enriched_string (GdmDisplay *d, const gchar *s)
+{
+	GString *str = g_string_new (NULL);
+	gchar cmd;
+
+	while (s[0] != '\0') {
+
+		if (s[0] == '%' && s[1] != 0) {
+			cmd = s[1];
+			s++;
+
+			switch (cmd) {
+
+			case 'h':
+				g_string_append (str, d->hostname);
+				break;
+
+			case 'd':
+				g_string_append (str, d->name);
+				break;
+
+			case '%':
+				g_string_append_c (str, '%');
+				break;
+
+			default:
+				break;
+			};
+		} else {
+			g_string_append_c (str, *s);
+		}
+		s++;
+	}
+	return (str);
+}
+
+static gchar *
+gdm_slave_update_pseudo_device (GdmDisplay *d, const char *device_in)
+{
+	GString *str;
+	struct stat st;
+	gchar *device;
+	gboolean pseudo_device;
+
+	/* If not a valid device, then do not update */
+	if (device_in == NULL || strncmp (device_in, "/dev/", 5) != 0) {
+		gdm_debug ("Warning, invalid device %s", device_in);
+		return NULL;
+	}
+
+	/* Parse the string, changing %d to display or %h to hostname, etc. */
+	str = gdm_slave_parse_enriched_string (d, device_in);
+	device = g_strdup (str->str);
+	g_string_free (str, TRUE);
+
+	/* If using pseudo-devices, setup symlink if it does not exist */
+	if (device != NULL &&
+	    gdm_daemon_config_get_value_bool (GDM_KEY_UTMP_PSEUDO_DEVICE)) {
+		gchar buf[MAXPATHLEN + 1];
+
+		memset (buf, 0, sizeof (gchar) * (MAXPATHLEN + 1));
+
+		if (stat (device, &st) != 0) {
+			gdm_debug ("Creating pseudo-device %s", device);
+			symlink ("/dev/null", device);
+		} else if (readlink (device, buf, MAXPATHLEN) > 0) {
+			if (strcmp (buf, "/dev/null") == 0) {
+				/* Touch symlink */
+				struct utimbuf  timebuf;
+
+				timebuf.modtime = time ((time_t *) 0);
+				timebuf.actime  = timebuf.modtime;
+
+				if ((utime (device, &timebuf)) != 0)
+					gdm_debug ("Problem updating access time of pseudo-device %s", device);
+				else
+					gdm_debug ("Touching pseudo-device %s",
+						device);
+			} else {
+				gdm_debug ("Device %s points to %s", device, buf);
+			}
+		} else {
+			gdm_debug ("Device %s is not a symlink", device);
+		}
+	}
+	return (device);
+}
+
+gchar *
+gdm_slave_get_display_device (GdmDisplay *d)
+{
+	gchar *device_name = NULL;
+
+	if (d->attached) {
+		if (d->vtnum != -1)
+			device_name = gdm_get_vt_device (d->vtnum);
+
+		/*
+		 * Default to the value in the GDM configuration for the
+		 * display number.  Allow pseudo devices.
+		 */
+		if (device_name == NULL && d->device_name != NULL) {
+			device_name = gdm_slave_update_pseudo_device (d,
+				d->device_name);
+		}
+
+		/* If not VT, then use default local value from configuration */
+		if (device_name == NULL) {
+			const char *dev_local =
+				gdm_daemon_config_get_value_string (GDM_KEY_UTMP_LINE_LOCAL);
+
+			if (dev_local != NULL) {
+				device_name = gdm_slave_update_pseudo_device (d,
+					dev_local);
+			}
+		}
+	} else {
+		/*
+		 * If a remote display, then use default remote value from
+		 * configuration
+		 */
+		const char *dev_remote =
+			gdm_daemon_config_get_value_string (GDM_KEY_UTMP_LINE_REMOTE);
+		if (dev_remote != NULL) {
+			device_name = gdm_slave_update_pseudo_device (d,
+				dev_remote);
+		}
+	}
+
+	gdm_debug ("Display device is %s for display %s", device_name, d->name);
+	return (device_name);
+}
+	
 void
 gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 			GdmSessionRecordType record_type,
 			const gchar *username,
 			GPid  pid)
 {
-    struct utmpx record = { 0 };
-    struct utmpx *u = NULL;
-    GTimeVal now = { 0 };
-    gchar *device_name = NULL;
-    gchar *host;
+	struct utmpx record = { 0 };
+	struct utmpx *u = NULL;
+	GTimeVal now = { 0 };
+	gchar *device_name = NULL;
+	gchar *host;
 
-    device_name = NULL;
-    if (d->attached) {
-        if (d->vtnum != -1)
-		device_name = gdm_get_vt_device (d->vtnum);
+	device_name = gdm_slave_get_display_device (d);
 
-	if (device_name == NULL) {
-		const char *utmp_local = gdm_daemon_config_get_value_string (GDM_KEY_UTMP_LINE_LOCAL);
-		struct stat st;
-
-		/* TODO - Check if the device beings in "/dev" */
-		if (utmp_local != NULL &&
-		    strncmp (utmp_local, "/dev/", 5) == 0) {
-			gchar buf[MAXPATHLEN + 1];
-			memset (buf, 0, sizeof (gchar) * (MAXPATHLEN + 1));
-
-			if (stat (utmp_local, &st) != 0) {
-				symlink ("/dev/null", utmp_local);
-			} else if (readlink (utmp_local, buf, MAXPATHLEN) <= 0) {
-				if (strcmp (buf, "/dev/null") == 0) {
-					/* Touch symlink */
-					struct utimbuf  timebuf;
-
-					timebuf.modtime = time ((time_t *) 0);
-					timebuf.actime  = timebuf.modtime;
-
-					if ((utime (utmp_local, &timebuf)) != 0) {
-						gdm_debug ("Problem updating time of file %s", utmp_local);
-					}
-				}
-			}
-		device_name = g_strdup (utmp_local);
-		}
-	}
-
-    }
-
-    gdm_debug ("Writing %s utmp-wtmp record",
+	gdm_debug ("Writing %s utmp-wtmp record",
 	       record_type == GDM_SESSION_RECORD_TYPE_LOGIN ? "session" :
 	       record_type == GDM_SESSION_RECORD_TYPE_LOGOUT ?  "logout" :
 	       "failed session attempt");
 
-    if (record_type != GDM_SESSION_RECORD_TYPE_LOGOUT) {
-	/*
-	 * It is possible that PAM failed before
-	 * it mapped the user input into a valid username
-	 * so we fallback to try using "(unknown)".  We
-	 * don't ever log user input directly, because
-	 * we don't want passwords entered into the 
-	 * username entry to accidently get logged.
-	 */
-	if (username != NULL) {
-		strncpy (record.ut_user,
-			 username, 
-			 sizeof (record.ut_user));
-	} else {
-		g_assert (record_type == GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT);
+	if (record_type != GDM_SESSION_RECORD_TYPE_LOGOUT) {
+		/*
+		 * It is possible that PAM failed before
+		 * it mapped the user input into a valid username
+		 * so we fallback to try using "(unknown)".  We
+		 * don't ever log user input directly, because
+		 * we don't want passwords entered into the 
+		 * username entry to accidently get logged.
+		 */
+		if (username != NULL) {
+			strncpy (record.ut_user,
+				 username, 
+				 sizeof (record.ut_user));
+		} else {
+			g_assert (record_type == GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT);
 			strncpy (record.ut_user,
 				 "(unknown)",
 				 sizeof (record.ut_user));
+		}
+
+		gdm_debug ("utmp-wtmp: Using username %.*s",
+			   sizeof (record.ut_user),
+			   record.ut_user);
 	}
 
-	gdm_debug ("utmp-wtmp: Using username %.*s",
-		   sizeof (record.ut_user),
-		   record.ut_user);
-    }
+	if (record_type == GDM_SESSION_RECORD_TYPE_LOGOUT) {
+		record.ut_type = DEAD_PROCESS;
+		gdm_debug ("utmp-wtmp: Using type DEAD_PROCESS"); 
+	} else  {
+		record.ut_type = USER_PROCESS;
+		gdm_debug ("utmp-wtmp: Using type USER_PROCESS"); 
+	}
 
-    if (record_type == GDM_SESSION_RECORD_TYPE_LOGOUT) {
-	record.ut_type = DEAD_PROCESS;
-	gdm_debug ("utmp-wtmp: Using type DEAD_PROCESS"); 
-    } else  {
-	record.ut_type = USER_PROCESS;
-	gdm_debug ("utmp-wtmp: Using type USER_PROCESS"); 
-    }
+	record.ut_pid = pid;
+	gdm_debug ("utmp-wtmp: Using pid %d", (gint)record.ut_pid);
 
-    record.ut_pid = pid;
-    gdm_debug ("utmp-wtmp: Using pid %d", (gint)record.ut_pid);
+	g_get_current_time (&now);
+	record.ut_tv.tv_sec = now.tv_sec;
+	gdm_debug ("utmp-wtmp: Using time %ld", (glong) record.ut_tv.tv_sec);
 
-    g_get_current_time (&now);
-    record.ut_tv.tv_sec = now.tv_sec;
-    gdm_debug ("utmp-wtmp: Using time %ld", (glong) record.ut_tv.tv_sec);
-
-    strncpy (record.ut_id, d->name, sizeof (record.ut_id));
-    gdm_debug ("utmp-wtmp: Using id %.*s",
+	strncpy (record.ut_id, d->name, sizeof (record.ut_id));
+	gdm_debug ("utmp-wtmp: Using id %.*s",
 	       sizeof (record.ut_id),
 	       record.ut_id);
 
-    if (device_name != NULL) {
-	g_assert (g_str_has_prefix (device_name, "/dev/"));
-	strncpy (record.ut_line, device_name + strlen ("/dev/"),
-		 sizeof (record.ut_line));
-	g_free (device_name);
-	device_name = NULL;
-    }
+	if (device_name != NULL) {
+		g_assert (g_str_has_prefix (device_name, "/dev/"));
+		strncpy (record.ut_line, device_name + strlen ("/dev/"),
+			 sizeof (record.ut_line));
+		g_free (device_name);
+		device_name = NULL;
+	}
 
-    gdm_debug ("utmp-wtmp: Using line %.*s",
+	gdm_debug ("utmp-wtmp: Using line %.*s",
 	       sizeof (record.ut_line),
 	       record.ut_line);
 
-    host = NULL;
-    if (! d->attached && g_str_has_prefix (d->name, ":")) {
-	host = g_strdup_printf ("%s%s",
-				d->hostname,
-				d->name);
-    } else {
-	host = g_strdup (d->name);
-    }
+	host = NULL;
+	if (! d->attached && g_str_has_prefix (d->name, ":")) {
+		host = g_strdup_printf ("%s%s",
+					d->hostname,
+					d->name);
+	} else {
+		host = g_strdup (d->name);
+	}
 
-    if (host) {
-	strncpy (record.ut_host, host, sizeof (record.ut_host));
-	g_free (host);
+	if (host) {
+		strncpy (record.ut_host, host, sizeof (record.ut_host));
+		g_free (host);
 
-	gdm_debug ("utmp-wtmp: Using hostname %.*s",
+		gdm_debug ("utmp-wtmp: Using hostname %.*s",
 		   sizeof (record.ut_host),
 		   record.ut_host);
 
 #ifdef HAVE_UT_SYSLEN
-	record.ut_syslen = MIN (strlen (host), sizeof (record.ut_host));
+		record.ut_syslen = MIN (strlen (host), sizeof (record.ut_host));
 #endif
-    } 
+	} 
 
-    switch (record_type)
-    {
+	switch (record_type)
+	{
 	case GDM_SESSION_RECORD_TYPE_LOGIN:
 		gdm_debug ("Login utmp/wtmp record");
 		updwtmpx (GDM_NEW_RECORDS_FILE, &record);
@@ -4259,7 +4358,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 			   GDM_BAD_RECORDS_FILE);
 		updwtmpx (GDM_BAD_RECORDS_FILE, &record);
 		break;
-    }
+	}
 }
 
 static void
@@ -5808,10 +5907,10 @@ gdm_slave_action_pending (void)
    host/display. */
 
 static gchar *
-gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
+gdm_slave_parse_enriched_login (GdmDisplay *d, const gchar *s)
 {
-	gchar cmd, in_buffer[20];
 	GString *str;
+	gchar in_buffer[20];
 	gint pipe1[2], in_buffer_len;
 	gchar **argv = NULL;
 	pid_t pid;
@@ -5819,36 +5918,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	if (s == NULL)
 		return (NULL);
 
-	str = g_string_new (NULL);
-
-	while (s[0] != '\0') {
-
-		if (s[0] == '%' && s[1] != 0) {
-			cmd = s[1];
-			s++;
-
-			switch (cmd) {
-
-			case 'h':
-				g_string_append (str, display->hostname);
-				break;
-
-			case 'd':
-				g_string_append (str, display->name);
-				break;
-
-			case '%':
-				g_string_append_c (str, '%');
-				break;
-
-			default:
-				break;
-			};
-		} else {
-			g_string_append_c (str, *s);
-		}
-		s++;
-	}
+	str = gdm_slave_parse_enriched_string (d, s);
 
 	/* Sometimes it is not convenient to use the display or hostname as
 	   user name. A script may be used to generate the automatic/timed
@@ -5859,7 +5929,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 		g_string_truncate (str, str->len - 1);
 		if G_UNLIKELY (pipe (pipe1) < 0) {
 			gdm_error (_("%s: Failed creating pipe"),
-				   "gdm_parse_enriched_login");
+				   "gdm_slave_parse_enriched_login");
 		} else {
 			g_debug ("Forking extra process: %s", str->str);
 
@@ -5882,15 +5952,15 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 				gdm_log_init ();
 
 				/* runs as root */
-				if (GDM_AUTHFILE (display) != NULL)
-					g_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);
+				if (GDM_AUTHFILE (d) != NULL)
+					g_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 				else
 					g_unsetenv ("XAUTHORITY");
-				g_setenv ("DISPLAY", display->name, TRUE);
+				g_setenv ("DISPLAY", d->name, TRUE);
 				if (d->windowpath)
 					g_setenv ("WINDOWPATH", d->windowpath, TRUE);
-				if (SERVER_IS_XDMCP (display))
-					g_setenv ("REMOTE_HOST", display->hostname, TRUE);
+				if (SERVER_IS_XDMCP (d))
+					g_setenv ("REMOTE_HOST", d->hostname, TRUE);
 				g_setenv ("PATH", gdm_daemon_config_get_value_string (GDM_KEY_ROOT_PATH), TRUE);
 				g_setenv ("SHELL", "/bin/sh", TRUE);
 				g_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
@@ -5902,13 +5972,13 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 				VE_IGNORE_EINTR (execv (argv[0], argv));
 				g_strfreev (argv);
 				gdm_error (_("%s: Failed executing: %s"),
-					   "gdm_parse_enriched_login",
+					   "gdm_slave_parse_enriched_login",
 					   str->str);
 				_exit (EXIT_SUCCESS);
 
 			case -1:
 				gdm_error (_("%s: Can't fork script process!"),
-					   "gdm_parse_enriched_login");
+					   "gdm_slave_parse_enriched_login");
 				VE_IGNORE_EINTR (close (pipe1[0]));
 				VE_IGNORE_EINTR (close (pipe1[1]));
 				break;
@@ -5947,7 +6017,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 			gdm_daemon_config_set_value_bool(GDM_KEY_TIMED_LOGIN_ENABLE, FALSE);
 			d->timed_login_ok = FALSE;
 			do_timed_login = FALSE;
-			g_string_free(str, TRUE);
+			g_string_free (str, TRUE);
 			return NULL;
 		}
 }

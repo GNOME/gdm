@@ -1,3 +1,20 @@
+2007-07-02  Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/gdm.c daemon/display.[ch], daemon/verify-pam.c,
+	  daemon/slave.[ch], daemon/gdm-daemon-config-entries.h,
+	  daemon/gdm-daemon-config-keys.h, daemon/gdm-daemon-config.c
+	  daemon/server.h, config/gdm.conf.in: Improve configurability
+	  of how ut_line is set when doing utmp/wtmp processing.  Now
+	  GDM supports the ability to specify the device in the
+	  [servers] section and also to define default local/remote
+	  values via the new UtmpLineLocal and UtmpLineRemote 
+	  configuration options.  The new UtmpPseudoDevice
+	  configuration option allows you to specify if pseudo
+	  devices should be created.
+	* daemon/slave.c: Now support a new
+	  gdm_slave_parse_enriched_string function used by new
+	  device logic.
+
 2007-07-01  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
 
 	* gui/greeter/greeter.c: when getting the theme file added
