@@ -286,6 +286,20 @@ SupportAutomount=false
 #PasswordRequired=false
 # Specifies the PAM Stack to use, "gdm" by default.
 PamStack=gdm
+# When GDM allows configuration of how ut_line is set when it does utmp/wtmp
+# processing.  If VT is being used, then ut_line will be set to the device
+# associated with the VT.  Otherwise the value specified in UtmpLineLocal will
+# be used for attached displays.  For remote displays, the ut_line will be set
+# to the value specified in UtmpLineRemote.  If the device specified does not
+# exist, then a pseudo-device will be created.  A psuedo-device is a symlink
+# to /dev/null.  If the device already exists and is a symlink to /dev/null,
+# then the pseudo-device filename will be touched when the utmp record is
+# updated.  Creating such a psuedo-device ensures that programs that stat
+# the utmp device associated with ut_line such as finger, last, etc. work
+# in a reasonable way.  If the UtmpLineLocal or UtmpLineRemote configuration
+# options are not set, then GDM will leave the ut_line field empty.
+UtmpLineLocal=/dev/console
+UtmpLineRemote=
 
 # XDMCP is the protocol that allows remote login.  If you want to log into GDM
 # remotely (I'd never turn this on on open network, use ssh for such remote

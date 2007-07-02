@@ -4062,6 +4062,7 @@ finish_session_output (gboolean do_read)
 	}
 }
 
+/* HERE */
 void
 gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 			GdmSessionRecordType record_type,
@@ -4078,8 +4079,36 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
     if (d->attached) {
         if (d->vtnum != -1)
 		device_name = gdm_get_vt_device (d->vtnum);
-	if (device_name == NULL)
-		device_name = g_strdup ("/dev/console");
+
+	if (device_name == NULL) {
+		const char *utmp_local = gdm_daemon_config_get_value_string (GDM_KEY_UTMP_LINE_LOCAL);
+		struct stat st;
+
+		/* TODO - Check if the device beings in "/dev" */
+		if (utmp_local != NULL &&
+		    strncmp (utmp_local, "/dev/", 5) == 0) {
+			gchar buf[MAXPATHLEN + 1];
+			memset (buf, 0, sizeof (gchar) * (MAXPATHLEN + 1));
+
+			if (stat (utmp_local, &st) != 0) {
+				symlink ("/dev/null", utmp_local);
+			} else if (readlink (utmp_local, buf, MAXPATHLEN) <= 0) {
+				if (strcmp (buf, "/dev/null") == 0) {
+					/* Touch symlink */
+					struct utimbuf  timebuf;
+
+					timebuf.modtime = time ((time_t *) 0);
+					timebuf.actime  = timebuf.modtime;
+
+					if ((utime (utmp_local, &timebuf)) != 0) {
+						gdm_debug ("Problem updating time of file %s", utmp_local);
+					}
+				}
+			}
+		device_name = g_strdup (utmp_local);
+		}
+	}
+
     }
 
     gdm_debug ("Writing %s utmp-wtmp record",

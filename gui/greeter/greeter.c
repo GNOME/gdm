@@ -1129,15 +1129,17 @@ get_theme_file (const char *in, char **theme_dir)
   *theme_dir = dir;
 
   info = g_build_filename (dir, "GdmGreeterTheme.desktop", NULL);
-  if (g_access (info, F_OK) != 0) {
+  if (g_access (info, R_OK) != 0) {
+	  g_debug ("Could not open %s. The file either doesn't exist or is not readable", info);
 	  g_free (info);
 	  info = g_build_filename (dir, "GdmGreeterTheme.info", NULL);
   }
-  if (g_access (info, F_OK) != 0)
+  if (g_access (info, R_OK) != 0)
     {
       char *base = g_path_get_basename (in);
       /* just guess the name, we have no info about the theme at
        * this point */
+      g_debug ("Could not open %s. The file either doesn't exist or is not readable", info);
       g_free (info);
       file = g_strdup_printf ("%s/%s.xml", dir, base);
       g_free (base);

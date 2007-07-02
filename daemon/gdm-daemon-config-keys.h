@@ -107,6 +107,8 @@ G_BEGIN_DECLS
 #define GDM_KEY_PAM_STACK "security/PamStack=gdm"
 #define GDM_KEY_NEVER_PLACE_COOKIES_ON_NFS "security/NeverPlaceCookiesOnNFS=true"
 #define GDM_KEY_PASSWORD_REQUIRED "security/PasswordRequired=false"
+#define GDM_KEY_UTMP_LINE_LOCAL "security/UtmpLineLocal="
+#define GDM_KEY_UTMP_LINE_REMOTE "security/UtmpLineRemote="
 #define GDM_KEY_XDMCP "xdmcp/Enable=false"
 #define GDM_KEY_MAX_PENDING "xdmcp/MaxPending=4"
 #define GDM_KEY_MAX_SESSIONS "xdmcp/MaxSessions=16"
