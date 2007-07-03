@@ -84,7 +84,7 @@
 
     <para>
       Chooser - A program used to select a remote host for managing a
-      display remotely on the local display (<command>gdmchooser</command>).
+      display remotely on the attached display (<command>gdmchooser</command>).
     </para>
 
     <para>
@@ -149,7 +149,7 @@
       <para> 
         The Gnome Display Manager (GDM) is a display manager that
         implements all significant features required for managing
-        local and remote displays.   GDM was written from scratch and
+        attached and remote displays.   GDM was written from scratch and
         does not contain any XDM / X Consortium code.
       </para>
 
@@ -187,7 +187,7 @@
         modified to work on a given OS.  Typical examples are HaltCommand,
         RebootCommand, CustomCommands, SuspendCommand, StandardXServer, Xnest,
         SoundProgram, and the &quot;command&quot; value for each
-        &quot;server-foo&quot;.
+        <filename>server-foo</filename>.
       </para>
 
       <para>
@@ -234,15 +234,13 @@
       </para>
 
       <para>
-        GDM can be asked to manage a display a number of ways.  Local displays
-        are always managed when GDM starts and will be restarted when a user's
-        session is finished.  Displays can be requested via XDMCP, flexible
-        displays can be requested by running the
-        <command>gdmflexiserver</command> command.  Displays that are started
-        on request are not restarted on session exit.  GDM also provides the
-        <command>gdmdynamic</command> command to allow easier management of
-        displays on a multi-user server.  These display types are discussed
-        further in the next section.  
+        GDM can be asked to manage a display a number of ways.  Attached
+        displays are always managed when GDM starts and will be restarted when
+        a user's session is finished.  Remote displays can be requested via
+        XDMCP, flexible displays via the <command>gdmflexiserver</command>
+        command, and dynamic displays via the <command>gdmdynamic</command>
+        command.  Displays that are started on request are not restarted on
+        session exit.  
       </para>
         
       <para>
@@ -315,32 +313,32 @@
       <title>Different Display Types</title>
 
       <para>
-        GDM supports three different display types: static (local) displays,
-        flexible (on-demand) displays, and XDMCP (remote) displays.  The
+        GDM supports three different display types: attached displays,
+        flexible displays, and XDMCP remote displays.  The
         &quot;X Server Definitions&quot; subsection of the
         &quot;Configuration&quot; section explains how the X server is
         configured for different displays.
       </para>
 
       <para>
-        Static (local) displays are always started by the daemon, and when they
-        die or are killed, they are restarted.  GDM can run as many of these
-        as needed.  GDM can also manage displays on which it does not manage a
-        GUI login, thus GDM can be used for supporting X terminals.
-        The &quot;Local Static X Display Configuration&quot; subsection of
-        the &quot;Configuration&quot; section describes how Static (local)
-        displays are defined.
+        Attached (also known as local or static) displays are always started by
+        the daemon, and when they die or are killed, they are restarted.  GDM
+        can run as many of these as needed.  GDM can also manage displays on
+        which it does not manage a GUI login, thus GDM can be used for
+        supporting X terminals.  The &quot;Attached DISPLAY Configuration&quot;
+        subsection of the &quot;Configuration&quot; section describes how
+        attached displays are defined.
       </para>
 
       <para>
-        Flexible, or on demand displays are only available to users logged
-        in on the console.  Starting a flexible display will lock the current
-        user session and will show a new login screen over the current running
-        session.  If at least one flexible display is already running, and the
-        user requests another, then a dialog will display showing existing
-        flexible displays.  The user can choose to switch back to a previous
-        display or start a new flexible display.  If the user switches back
-        to a previous display, they will need to enter the password in the
+        Flexible (also known as on-demand) displays are only available to users
+        logged on the console.  Starting a flexible display will lock the
+        current user session and will show a new login screen over the current
+        running session.  If at least one flexible display is already running,
+        and the user requests another, then a dialog will display showing
+        existing flexible displays.  The user can choose to switch back to a
+        previous display or start a new flexible display.  If the user switches
+        back to a previous display, they will need to enter the password in the
         lock screen program to return to their session.  The GDM configuration
         file specifies the maximum number of flexible displays allowed on the
         system.
@@ -376,19 +374,19 @@
         command or via calling the GDM socket protocol directly.  Nested
         displays require that the X server supports a nested X server command
         like Xnest or Xephyr.  The <filename>Xnest</filename> configuration
-        option is used to configure how nested displays operate
+        option is used to configure how nested displays are started.
       </para>
 
       <para>
         The <command>gdmdynamic</command> is similar to
         <command>gdmflexiserver</command> in the sense that it allows the
         user to manage displays dynamically.  However displays started with
-        <command>gdmdynamic</command> are treated as local displays, so 
+        <command>gdmdynamic</command> are treated as attached displays, so 
         they are restarted automatically when the session exits.  This 
         command is intended to be used in multi-user server environments
         (many displays connected to a single server).  In other words,
         this command allows the displays to be managed without hardcoding
-        the display information in the &quot;Local Static X Display
+        the display information in the &quot;Attached DISPLAY
         Configuration&quot; section of the configuration file.  This
         is useful to support the ability of adding new displays to the
         server without needing to restart GDM, for example.
@@ -464,8 +462,8 @@
       </para>
 
       <para>
-        To remedy this problem, gdm can be configured at compilation-time with
-        the option --enable-secureremote, in which case gdm proposes as a
+        To remedy this problem, GDM can be configured at compilation-time with
+        the option --enable-secureremote, in which case GDM proposes as a
         built-in session a session called &quot;Secure Remote Connection&quot;.
         Starting such a session allows the user to enter the name or the
         address of the host on which to connect; provided the said host runs an
@@ -867,6 +865,60 @@
       </para>
     </sect2>
 
+    <sect2 id="utmpwtmp">
+      <title>
+        utmp/wtmp
+      </title>
+
+      <para>
+        GDM generates utmp and wtmp User Accounting Database entries upon
+        session login and logout.  The utmp database contains user access
+        and accounting information that is accessed by commands such as
+        <command>finger</command>, <command>last</command>,
+        <command>login</command>, and <command>who</command>.  The wtmp
+        database contains the history of user access and accounting 
+        information for the utmp database.
+      </para>
+
+      <para>
+        GDM 2.18 and earlier would run the X server <command>sessreg</command>
+        program from the default GDM <command>PreSession</command> and
+        <command>PostSession</command> scripts.  Starting with GDM 2.20, GDM
+        interacts with the UTMP and WTMP databases directly and supports the
+        following configuration options.
+      </para>
+        
+      <para>
+        When doing utmp processing, GDM supports configurability on how the
+        ut_line value is set.  Programs that access the database assume that
+        this value is an actual device, so GDM will set the device as follows.
+        If the display is attached and has an associated Virtual Terminal (VT)
+        device, then this device will be used.  Otherwise, if an attached
+        display in the <command>[servers]</command> specifies a device name,
+        then this value will be used.  Otherwise attached displays will default
+        to the <filename>UtmpLineAttached</filename> value in the GDM
+        configuration.  Remote displays will default to the 
+        <filename>UtmpLineRemote</filename> value in the GDM configuration.
+        Device values must begin with &quot;/dev/&quot;.
+      </para>
+
+      <para>
+        GDM also supports the <filename>UtmpPseudoDevice</filename>
+        configuration option.  If this configuration setting is true, then GDM
+        will ensure that the specified device exists and will create a pseudo
+        device if the device does not exist.  A pseudo device is a symlink to
+        <filename>/dev/null</filename>.  If
+        <filename>UtmpPseudoDevice</filename> is true, and the device does
+        already exist, GDM checks to see if the device is a symlink to
+        <filename>/dev/null</filename>.  If so, then GDM will update the access
+        time of the symlink.  This ensures that programs that check the access
+        time of the device will get a reasonable value for the last time the
+        device was accessed.  If the <filename>UtmpPseudoDevice</filename>
+        configuration option is false, then GDM will only set the ut_line
+        value as specified regardless of whether the device exists or not.  
+      </para>
+    </sect2>
+
     <sect2 id="gdmuser">
       <title>The GDM User</title>
 
@@ -1126,7 +1178,7 @@ gdm: .your.domain
       this user session such as: the user ID, the X11 Display name that will be
       associated with the session, the host-name from which the session
       originates (useful in the case of an XDMCP session), whether or not this
-      session is local, etc.  As the entity that initiates the user process,
+      session is attached, etc.  As the entity that initiates the user process,
       GDM is in a unique position know and to be trusted to provide these bits
       of information about the user session.  The use of this privileged method
       is restricted by the use of D-Bus system message bus security policy.
@@ -1182,12 +1234,13 @@ gdm: .your.domain
      
       <para>
         The Local tab is used for controlling the appearance of GDM for
-        local/static displays (non-XDMCP remote connections).  The choices
-        available in this tab depend on the setting of the &quot;Style&quot;
-        combobox.  This combobox is used to determine whether the 
-        &quot;Plain&quot; or &quot;Themed&quot; greeter GUI is used.  The
-        differences between these greeter programs are explained in the
-        &quot;Overview&quot; section of this document.
+        attached (also known as local or static) displays.  Attached displays
+        are non-XDMCP remote connections, for example.  The choices available
+        in this tab depend on the setting of the &quot;Style&quot; combobox.
+        This combobox is used to determine whether the &quot;Plain&quot; or
+        &quot;Themed&quot; greeter GUI is used.  The differences between these
+        greeter programs are explained in the &quot;Overview&quot; section of
+        this document.
       </para>
 
       <para>
@@ -1253,13 +1306,13 @@ gdm: .your.domain
         Actions menu includes the choice to start <command>gdmsetup</command>
         (greeter/ConfigAvailable), and whether the Action menu includes the
         choice to start <command>gdmchooser</command> to run a remote XDMCP
-        login session (greeter/ChooserButton).  Note that the root password
-        must be entered to start <command>gdmsetup</command> from the login
-        screen if it is enabled.   Also the Welcome message displayed for local
-        sessions may be selected (greeter/DefaultWelcome and greeter/Welcome). 
-        The Welcome message can contain the character sequences described in
-        the &quot;Text Node&quot; section of the &quot;Themed Greeter&quot;
-        section of this manual.
+        login session (greeter/ChooserButton).  The welcome message for 
+        attached DISPLAYS may be specified (greeter/DefaultWelcome and
+        greeter/Welcome). The welcome message may contain the character
+        sequences described in the &quot;Text Node&quot; subsection of the
+        &quot;Themed Greeter&quot; section of this manual.  These character
+        sequences allow the welcome message to contain things like the display
+        or host name.
       </para>
     </sect2>
 
@@ -1284,13 +1337,15 @@ gdm: .your.domain
       </para>
 
       <para>
-        If Remote login is enabled, then the user can specify the remote
-        Welcome Message to be displayed (greeter/DefaultRemoteWelcome and 
+        If Remote login is enabled, then the welcome message for
+        remote DISPLAYs may be specified (greeter/DefaultRemoteWelcome and 
         greeter/RemoteWelcome).  This welcome message is separate from the
-        Local welcome message and can have a different value.  The Welcome
-        message can contain the character sequences described in the
-        &quot;Text Node&quot; section of the &quot;Themed Greeter&quot;
-        section of this manual.
+        one shown for attached displays defined in the Local tab and can have
+        a different value.  The welcome message may contain the character
+        sequences described in the &quot;Text Node&quot; subsection of the
+        &quot;Themed Greeter&quot; section of this manual.  These character
+        sequences allow the welcome message to contain things like the
+        display or host name.
       </para>
 
       <para>
@@ -1564,8 +1619,8 @@ PostSession/
       <para>
         When the X server has been successfully started, GDM will try to run
         the script called <filename>Init/&lt;displayname&gt;</filename>. I.e.
-        <filename>Init/:0</filename> for the first local display.  If this file
-        is not found, GDM will attempt to to run
+        <filename>Init/:0</filename> for the first attached display.  If this
+        file is not found, GDM will attempt to to run
         <filename>Init/&lt;hostname&gt;</filename>. I.e.
         <filename>Init/somehost</filename>.
         If this still is not found, GDM will try
@@ -1604,12 +1659,12 @@ PostSession/
         After the user session has been setup from the GDM side of things, GDM
         will run the scripts in the <filename>PreSession</filename> directory,
         again in the same manner as the <filename>Init</filename> directory.
-        Use this script for local session management or accounting stuff.  The
-        <filename>$USER</filename> environment variable contains the login of
-        the authenticated user and <filename>$DISPLAY</filename> is set to the
-        current display.  The script should return 0 on success.  Any other
-        value will cause GDM to terminate the current login process.  This is
-        not true for failsafe sessions however.  Also
+        This script can be used for session management or accounting, for
+        example.  The <filename>$USER</filename> environment variable contains
+        the login of the authenticated user and <filename>$DISPLAY</filename>
+        is set to the current display.  The script should return 0 on success.
+        Any other value will cause GDM to terminate the current login process.
+        This is not true for failsafe sessions however.  Also
         <filename>$X_SERVERS</filename> environmental variable is set and this
         points to a fake generated X servers file for use with the sessreg
         accounting application.
@@ -1860,11 +1915,11 @@ Greeter=/usr/lib/gdmgreeter
             <listitem>
               <synopsis>AutomaticLoginEnable=false</synopsis>
               <para>
-                 If the user given in AutomaticLogin should be logged in upon
+                If the user given in AutomaticLogin should be logged in upon
                 first bootup.  No password will be asked.  This is useful
-                for single user workstations where local console security
-                is not an issue.  Also could be useful for public terminals,
-                although there see <filename>TimedLogin</filename>.
+                for single user workstations where console security is not an
+                issue and also could be useful for public terminals.  Refer
+                also to <filename>TimedLogin</filename>.
               </para>
             </listitem>
           </varlistentry>
@@ -2709,10 +2764,10 @@ Greeter=/usr/lib/gdmgreeter
             <listitem>
               <synopsis>AllowRemoteAutoLogin=false</synopsis>
               <para>
-                Allow the timed login to work remotely.  That is, remote
-                connections through XDMCP will be allowed to log into the
-                &quot;TimedLogin&quot; user by letting the login window time
-                out, just like the local user on the first console.
+                Allow the timed login feature to work for remote displays.
+                In other words, remote connections via XDMCP will be allowed to
+                log into the &quot;TimedLogin&quot; user after the delay
+                defined by <filename>TimedLoginDelay</filename>.
               </para>
               <para>
                 Note that this can make a system quite insecure, and thus is
@@ -2759,12 +2814,9 @@ Greeter=/usr/lib/gdmgreeter
               <synopsis>DisallowTCP=true</synopsis>
               <para>
                 If true, then always append <filename>-nolisten tcp</filename>
-                to the command line
-                of local X servers, thus disallowing TCP connection.  This is
-                useful if you do not care for allowing remote connections,
-                since the X protocol could really be potentially a security
-                hazard to leave open, even though no known security problems
-                exist.
+                to the command line when starting attached X servers, thus
+                disallowing TCP connection.  This is a more secure
+                configuration if not using remote connections.
               </para>
             </listitem>
           </varlistentry>
@@ -2861,6 +2913,53 @@ Greeter=/usr/lib/gdmgreeter
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry>
+            <term>UtmpLineAttached</term>
+            <listitem>
+              <synopsis>UtmpLineAttached=/dev/console (or /dev/dtlocal on Solaris)</synopsis>
+              <para>
+                When doing Utmp processing for attached displays, GDM sets the
+                ut_line to the device associated with the Virtual Terminal (VT)
+                if it is being used.  Otherwise, it will use the value
+                specified with the display in the
+                <filename>[servers]</filename> section if a value is provided.
+                If not, then the default value specified in UtmpLineAttached is
+                used for attached displays.  The value can contain
+                &quot;%d&quot; which is translated to the DISPLAY value or
+                &quot;%h&quot; which is translated to the hostname.  This value
+                must begin with <filename>/dev/</filename>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>UtmpLineRemote</term>
+            <listitem>
+              <synopsis>UtmpLineRemote= (or /dev/dtremote on Solaris)</synopsis>
+              <para>
+                When doing Utmp processing, GDM sets the ut_line to this value
+                for remote displays.  The value can contain &quot;%d&quot;
+                which is translated to the DISPLAY value or &quot;%h&quot;
+                which is translated to the hostname.  This value must begin
+                with <filename>/dev/</filename>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>UtmpPseudoDevice</term>
+            <listitem>
+              <synopsis>PseudoDevice=false (or true on Solaris)</synopsis>
+              <para>
+                If the device associated with a display does not exist, then
+                GDM will create a symlink to <filename>/dev/null</filename>, or
+                touch it if it is a symlink to <filename>/dev/null</filename>.
+                Some programs such as <command>last</command>,
+                <command>finger</command>, or <command>who</command> access the
+                utmp database and may assume that the device points to an
+                actual file.  Creating such symlinks ensures that such programs
+                work properly.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </sect3>
 
@@ -2883,8 +2982,9 @@ Greeter=/usr/lib/gdmgreeter
               </para>
 
               <para>
-                Note that the number of connections from the local computer is
-                unlimited.  Only remote connections are limited by this number.
+                Note that the number of attached DISPLAYS allowed is not 
+                limited.  Only remote connections via XDMCP are limited by
+                this configuration option.
               </para>
             </listitem>
           </varlistentry>
@@ -3857,10 +3957,9 @@ gdm:.my.domain
                 Configure, XDMCP chooser and such.  All of those can however
                 be turned off individually.  Shutdown, Restart and Suspend can
                 be turned off by just setting the corresponding keys to empty.
-                Note that the actions menu is only shown on local logins as it
-                would not be safe or even desirable on remote logins, so you
-                don't have to worry about remote users having any sort of
-                console privileges.
+                Note that the actions menu is only shown on attached displays.
+                It would not be safe or even desirable on remote logins, so you
+                do not have to worry about remote users having these privileges.
               </para>
 
               <para>
@@ -3983,8 +4082,8 @@ gdm:.my.domain
               </para>
 
               <para>
-                This string is only used for local logins.  For remote XDMCP
-                logins we use <filename>RemoteWelcome</filename>.
+                This string is only used for attached displays.  For remote
+                XDMCP displays we use <filename>RemoteWelcome</filename>.
               </para>
 
               <para>
@@ -4306,13 +4405,13 @@ gdm:.my.domain
         </variablelist>
       </sect3>
           
-      <sect3 id="serverdefs">
+      <sect3 id="xserverdefs">
         <title>X Server Definitions</title>
 
         <para>
-          To set up X servers, you need to provide GDM with information about
-          the installed X servers.  You can have as many different definitions
-          as you wish, each identified with a unique name.  The name
+          GDM needs to be provided with information about each X servers that
+          will be used.  You can have as many different definitions as you wish,
+          each identified with a unique name.  The name
           <filename>Standard</filename> is required.  If you do not specify
           this server, GDM will assume default values for a 'Standard' server
           and the path given by <filename>daemon/StandardXServer</filename>.
@@ -4325,15 +4424,18 @@ gdm:.my.domain
           followed by the identifier of this server.  This should be a simple
           ASCII string with no spaces.  The GUI configuration program allows
           users to edit the servers defined in the GDM configuration files
-          but currently does not allow adding or deleting entries.  Like normal
-          configuration options, <filename>server-</filename> sections in the
-          GDM Custom Configuration File override values in the GDM System
-          Defaults Configuration File.  In other words, if a
-          <filename>server-Standard</filename> section is defined in the GDM
-          Custom Configuration File, then that will be used and the section in
-          the GDM System Defaults Configuration File will be ignored.
+          but currently does not allow adding or deleting entries.  Like
+          normal configuration options, <filename>server-</filename>
+          sections in the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+          file override values in the
+          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.  In other
+          words, if a <filename>server-Standard</filename> section is defined
+          in <filename>&lt;etc&gt;/gdm/custom.conf</filename>, then that
+          will be used and the section in the
+          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file will be
+          ignored.
         </para>
-        
+
         <variablelist>
           <title>[server-Standard]</title>
 
@@ -4353,7 +4455,10 @@ gdm:.my.domain
               <synopsis>command=/path/to/X</synopsis>
               <para>
                 The command to execute, with full path to the binary of the X
-                server, and any extra arguments needed.
+                server, and any extra arguments needed.  Normally it is not
+                necessary to add a <filename>-nolisten tcp</filename> argument
+                since the addition of this argument is controlled by the
+                <filename>DisallowTCP</filename> GDM configuration option.
               </para>
             </listitem>
           </varlistentry>
@@ -4399,87 +4504,7 @@ gdm:.my.domain
               </para>
             </listitem>
           </varlistentry>
-        </variablelist>
-      </sect3>
 
-      <sect3 id="localservers">
-        <title>Local Static X Display Configuration</title>
-
-        <para>
-          The static display configuration specifies what displays should be
-          always managed by GDM.  GDM will restart the X server on the display
-          if it dies, for example.  There may be as many static displays that
-          are managed as you wish, although typically each display is 
-          associated with a real display.  For example, if a machine has two
-          displays (say display &quot;:0&quot; and display &quot;:1&quot;),
-          then this section can be used to specify that a separate login
-          screen be managed for each screen.  Each key in the
-          <filename>[servers]</filename> section corresponds to the display
-          number to be managed.  Normally there is only one key, which is the
-          key <filename>0</filename>, which corresponds to the display
-          <filename>:0</filename>.
-        </para>
-
-        <para>
-          The GUI configuration program allows users to edit the static display
-          configuration defined in the GDM configuration files and allows the
-          user to add or delete entries.  Like normal configuration options,
-          the <filename>[servers]</filename> section in the GDM Custom
-          Configuration File overrides values in the GDM System Defaults
-          Configuration File.
-        </para>
-
-        <variablelist>
-          <title>[servers]</title>
-          
-          <varlistentry>
-            <term>&lt;display number&gt;</term>
-            <listitem>
-              <synopsis>0=Standard</synopsis>
-              <para>
-                Control section for local displays. Each line indicates
-                the local display number and the command that needs to
-                be run to start the X server(s).
-              </para>
-
-              <para>
-                The command can either be a path to an X executable, or a name
-                of one of the server definitions.  This can be followed by some
-                arguments that should be passed to the X server when executed.
-                The gdm daemon doesn't enforce the numbers to be in order or
-                for them to be &quot;packed&quot;.  They keyword
-                &quot;inactive&quot; can be used instead of a command to
-                specify that the display should be not managed.  This can be
-                used in the GDM Custom Configuration File to turn off a 
-                display that is defined in the GDM System Defaults
-                Configuration File.
-              </para>
-              
-              <para>
-                GDM will splice &quot;<filename>-auth
-                &lt;ServAuthDir&gt;/:n.Xauth :n</filename>&quot;, where n is
-                the display number.  Inside the command line before all
-                other arguments before running the X server.
-              </para>
-
-              <para>
-                On some systems it is necessary for GDM to know on which
-                virtual consoles to run the X server.  In this case,
-                (if running XFree86) add &quot;vt7&quot; to the command line,
-                for example, to run on virtual console 7.  However on Linux and
-                FreeBSD this is normally done automatically if the
-                <filename>VTAllocation</filename> key is set.
-              </para>
-
-              <para>
-                Normally you do not need to add a
-                <filename>-nolisten tcp</filename> flag as this is added
-                automatically for local X servers when the
-                <filename>DisallowTCP</filename> option is set.
-              </para>
-            </listitem>
-          </varlistentry>
-          
           <varlistentry>
             <term>priority</term>
             <listitem>
@@ -4492,6 +4517,92 @@ gdm:.my.domain
                 For highly interactive applications, -5 yields good
                 responsiveness.  The default value is 0 and the 
                 setpriority function is not called if the value is 0.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
+
+      <sect3 id="attacheddisplayconfig">
+        <title>Attached DISPLAY Configuration</title>
+
+        <para>
+          The attached (also known as local or static) display configuration
+          specifies what displays should be always managed by GDM.  GDM will
+          restart the X server on the display if it dies, for example.  There
+          may be as many attached displays that are managed as you wish.
+          Typically each display is associated with a real display.  On a
+          typical single-display machine this section would only contain one
+          key <filename>0</filename> that corresponds to DISPLAY
+          <filename>:0</filename>.
+        </para>
+
+        <para>
+          The GUI configuration program allows users to edit the attached
+          display configuration defined in the GDM configuration files
+          and allows the user to add or delete entries.  Like normal
+          configuration options, the <filename>[servers]</filename>
+          section in the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+          file overrides values in the
+          <filename>&lt;share&gt;/gdm/defaults.conf</filename> file.
+        </para>
+
+        <variablelist>
+          <title>[servers]</title>
+          
+          <varlistentry>
+            <term>&lt;display number&gt;</term>
+            <listitem>
+              <synopsis>0=Standard [device=/dev/foo]</synopsis>
+
+              <para>
+                The key cooresponds to the DISPLAY to be managed, so that
+                key <filename>0</filename> cooresponds to DISPLAY
+                <filename>:0</filename>.  On a multi-display machine you
+                can configure GDM to manage a login program on other displays
+                by adding additional keys.  For example, adding key
+                <filename>1</filename> would cause GDM to manage DISPLAY
+                <filename>:1</filename>.
+              </para>
+
+              <para>
+                The first word of the value corresponds to a X server
+                definition in the &quot;X Server Definitions&quot; section
+                of the configuration file.  For example, the following entry
+                means that DISPLAY <filename>:0</filename> will start an X
+                server as defined in the
+                <filename>[server-Standard]</filename> section:
+              </para>
+
+<screen>
+[servers]
+0=Standard
+</screen>
+
+              <para>
+                The first word of the value can also be set to the string
+                &quot;inactive&quot; to indicate that this DISPLAY should not 
+                be managed.  This can be used in the GDM Custom Configuration
+                File to turn off a DISPLAY that is defined in the GDM System
+                Defaults Configuration File.
+              </para>
+
+              <para>
+                The optional device argument is used to specify the device that
+                is associated with the DISPLAY.  When using Virtual Terminals
+                (VT), this value is ignored and GDM will use the correct
+                device name associated with the VT.  If not using VT, then GDM
+                will use the value specified by this optional argument.  If
+                the device argument is not defined, then GDM will use the
+                default setting for attached displays defined in the
+                <filename>UtmpLineAttached</filename> configuration section.
+                For the main display (typically DISPLAY
+                <filename>:0</filename>), <filename>/dev/console</filename> is
+                a reasonable value.  For other displays it is probably best
+                to not include this argument unless you know the specific
+                device associated with the DISPLAY.  The device value can
+                contain &quot;%d&quot; which is translated to the DISPLAY value
+                or &quot;%h&quot; which is translated to the hostname.
               </para>
             </listitem>
           </varlistentry>
@@ -4777,10 +4888,10 @@ Answers:
 AUTH_LOCAL: Setup this connection as authenticated for
             FLEXI_SERVER.  Because all full blown
             (non-nested) displays can be started only from
-            users logged in locally, and here GDM assumes
-            only users logged in from GDM.  They must pass
-            the xauth MIT-MAGIC-COOKIE-1 that they were passed
-            before the connection is authenticated.
+            users logged into attached displays, and here GDM
+            assumes only users logged in from GDM.  They must
+            pass the xauth MIT-MAGIC-COOKIE-1 that they were
+            passed before the connection is authenticated.
 Note:       The AUTH LOCAL command requires the
             --authenticate option, although only
             FLEXI XSERVER uses this currently.
@@ -5642,9 +5753,10 @@ Answers:
             <term>-l [pattern]</term>
             <listitem>
               <para>
-              List displays via the ATTACHED_SERVERS <command>gdmflexiserver</command>
-              command. Without a pattern lists all attached displays.  With a pattern
-              will match using glob characters '*', '?', and '[]'. For example:
+              List displays via the ATTACHED_SERVERS
+              <command>gdmflexiserver</command> command. Without a pattern
+              lists all attached displays.  With a pattern will match using
+              glob characters '*', '?', and '[]'. For example:
               <command>&quot;-l Standard*&quot;</command>
               <command>&quot;-l *Xorg*&quot;</command>
               </para>
@@ -5791,8 +5903,8 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
             <listitem>
               <para>
                 Tell the daemon that it should not run anything on the console.
-                This means that none of the local servers from the
-                <filename>[servers]</filename> section will be run, and the
+                This means that none of the attached servers from the
+                <filename>[servers]</filename> section will be started, and the
                 console will not be used for communicating errors to the user.
                 An empty <filename>[servers]</filename> section automatically
                 implies this option.
@@ -5833,10 +5945,10 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
             <listitem>
               <para>
                 If started with this option, gdm will init, but only start the
-                first local display and then wait for a GO message in the fifo
-                protocol.  No greeter will be shown until the GO message is
-                sent.  Also flexiserver requests will be denied and XDMCP will
-                not be started until GO is given.  This is useful for
+                first attached display and then wait for a GO message in the
+                fifo protocol.  No greeter will be shown until the GO message
+                is sent.  Also flexiserver requests will be denied and XDMCP
+                will not be started until GO is given.  This is useful for
                 initialization scripts which wish to start X early, but where
                 you don't yet want the user to start logging in.  So the script
                 would send the GO to the fifo once it is ready and GDM will
@@ -6020,18 +6132,21 @@ Screenshot=screenshot.png
       </para>
 
       <para>
-        Once you have theme ready and installed you can test it with the
-        installed <command>gdmthemetester</command> script.  This script
-        assumes that the X server supports a nested server command.  This
-        command takes two arguments, first the environment that should be used.
-        This is one of console, console-timed, flexi, remote-flexi, xdmcp.
-        Where console is a standard console login, console-timed is a console
-        login with a timed login going on, flexi is for any local flexible
-        display, remote-flexi is for flexi displays that are not local (such
-        as an Xnest flexiserver run from a remote display) and xdmcp is for
-        remote XDMCP connections.  The second argument is the theme name.  So
-        for example to test how things look in the XDMCP mode with the circles
-        theme you would run:
+        Once a theme is installed, it can be tested with the
+        <command>gdmthemetester</command> program.  This program assumes that
+        the X server supports a nested server command.  This command takes two
+        arguments, first the environment that should be used.  The environment
+        can be one of the following values: console, console-timed, flexi,
+        remote-flexi, or xdmcp.  The &quot;console&quot; option tests the
+        theme as it would be shown on an attached display.  The
+        &quot;console-timed&quot; option tests the theme as it would be shown
+        on an attached display with timed login enabled.  The &quot;flexi&quot;
+        option tests the theme as it would be shown on an attached flexible
+        display (such as started via Xnest).  Finally, the &quot;xdmcp&quot;
+        option tests the theme as it would be shown for remote XDMCP 
+        displays.  The second argument is the theme name.  For example, to 
+        test how the circles theme would look in XDMP remote display mode,
+        you would run the following command:
       </para>
 
 <screen>
@@ -6039,23 +6154,19 @@ Screenshot=screenshot.png
 </screen>
 
       <para>
-        Be sure to test all the environments with your theme, and make sure to
-        test how the caps lock warning looks by pressing caps lock.  This is
-        also a good way to take screenshots, just take a screenshot of the
-        nested display window.  This can be done in GNOME by focusing the
-        nested login window and pressing Alt-PrintScreen.
+        When developing a theme, make sure to test all the environments, and
+        make sure to test how the caps lock warning looks by pressing the caps
+        lock key.  Running <command>gdmthemetester</command> is also a good way
+        to take screenshots of GDM themes.  Simply take a screenshot of the
+        theme running in the nested display window.  This can be done in GNOME
+        by focusing the nested login window and pressing Alt-PrintScreen.
       </para>
 
       <para>
-        Once you have all this done, then make a tarball that contains the
-        directory name (so that you could just untar it in the
-        <filename>&lt;share&gt;/gdm/themes</filename> directory).  And this is
-        the tarball you distribute and people can install from the graphical
-        configuration application.  You can do this with the commands:
-<screen>
-cd &lt;share&gt;/gdm/themes
-tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
-</screen>
+        Once a theme has been fully tested, then make a tarball that contains
+        the directory as it would be insatlled to the
+        <filename>&lt;share&gt;/gdm/themes</filename> directory.  This is
+        the standard format for distributing GDM themes.
       </para>
     </sect2>
 
@@ -7178,7 +7289,7 @@ GtkModulesList=gail:atk-bridge:/usr/lib/gtk-2.0/modules/libdwellmouselistener:/u
               gestures to work, so you may need to add +xkb to your X server
               command line for gestures to work properly.  The X server command
               line is specified in the GDM configuration file in the
-              &quot;server-foo&quot; sections.
+              <filename>server-foo</filename> sections.
             </para>
 
             <para>
@@ -7550,127 +7661,6 @@ HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown
   <sect1 id="exampleconf">
     <title>Example Configurations</title>
 
-    <para>
-      This section has some example configurations that are useful for
-      various setups.
-    </para>
-
-    <sect2 id="terminallab">
-      <title>Terminal Lab With One Server</title>
-
-      <para>
-        Suppose you want to make a lab full of X terminals that all connect
-        to one server machine.  So let's call one X terminal
-        <filename>xterminal</filename> and let's call the server machine
-        <filename>appserver</filename>.  You install GDM on both.
-      </para>
-
-      <para>
-        On <filename>appserver</filename> you enable XDMCP, so you have
-<screen>
-[xdmcp]
-Enable=true
-</screen>
-        If you want no local screens here, you can then
-        make the <filename>[servers]</filename> section empty.
-      </para>
-
-      <para>
-        On the <filename>xterminal</filename> you disable XDMCP (you don't
-        want anyone to connect to the xterminal really).  You will add a
-        server type perhaps called <filename>Terminal</filename> as follows:
-<screen>
-[server-Terminal]
-name=Terminal server
-command=/path/to/X -terminate
-flexible=false
-handled=false
-</screen>
-        This definition should in fact be included in the standard
-        configuration file.  Notice that we made the
-        <filename>handled</filename> key false since we don't want GDM to
-        handle this server localy.  Also note that we have not yet added the
-        <filename>-query</filename> argument, you can add that here, or in the
-        <filename>[servers]</filename> section.  We'll define our local
-        servers as follows:
-<screen>
-[servers]
-0=Terminal -query appserver
-</screen>
-        This will run a direct XDMCP query to the server named
-        <filename>appserver</filename>.
-      </para>
-    </sect2>
-
-    <sect2 id="terminallabtwo">
-      <title>Terminal Lab With Two Or More Servers</title>
-
-      <para>
-        Suppose you want to make a lab full of X terminals that all connect
-        to some choice of servers.  For now let's make it
-        <filename>appserverone</filename> and
-        <filename>appservertwo</filename>.  Again we'll call our example X
-        terminal server <filename>xterminal</filename>.  The setup on both
-        servers is the same as with the case of one server in the previous
-        section.  You do not need to explicitly enable indirect queries on the
-        server since we'll run the choosers locally on the X terminals.
-      </para>
-
-      <para>
-        So on the <filename>xterminal</filename> you again disable XDMCP.
-        You will add a server type perhaps called <filename>Chooser</filename>
-        as follows:
-<screen>
-[server-Chooser]
-name=Chooser server
-command=/path/to/X
-flexible=false
-chooser=true
-</screen>
-        And again this definition should in fact be included in the standard
-        configuration file.  Notice that we made the
-        <filename>chooser</filename> key true here.  This will run the XDMCP
-        chooser for this server, and when the user chooses a host GDM will run
-        a query for that host.  Then we will define our local servers as
-        follows:
-<screen>
-[servers]
-0=Chooser
-</screen>
-      </para>
-
-      <para>
-        The XDMCP chooser on the X terminal will normally give a broadcast
-        query to see which servers exist on the network.  If the two servers
-        are not reachable by a broadcast query, you must add them by hand to
-        the configuration file.  So in the <filename>[chooser]</filename>
-        section you would have:
-<screen>
-Hosts=appserverone,appservertwo
-</screen>
-        and any other servers you wish the users to be able to connect to.
-      </para>
-
-      <para>
-        Sometimes you may want to run the chooser on the server side however.
-        Then what you want to do is to run a configuration similar to the
-        previous section about the one server configuration with XDMCP
-        indirect queries enabled on <filename>appserver</filename> and on the
-        X terminals you'd have
-<screen>
-[servers]
-0=Terminal -indirect appserver
-</screen>
-        This way for example you only have to maintain one
-        <filename>Hosts</filename> entry.  However as a disadvantage then,
-        the <filename>appserver</filename> must then always be available.  So
-        it's not good for situations where you want to have several servers
-        and not all of them have to be on all the time.  You could also have
-        one of the X terminals handle indirect XDMCP queries and serve up the
-        chooser to the other X terminals.
-      </para>
-    </sect2>
-    
     <sect2 id="customcommand">
       <title>Defining Custom Commands</title>
       

@@ -1,3 +1,14 @@
+2007-07-02  Brian Cameron <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add docs for new UtmpLocalLine, UtmpRemoteLine,
+	  UtmpPseudoDevice, and the new device optional argument in the
+	  [servers] section.  Also add new section about how GDM supports
+	  utmp/wtmp processing.  Remove examples that show the [servers]
+	  section supporting commands which GDM does not support.  Now more
+	  consistantly use the word attached display instead of local or
+	  static displays.  Rewrite the Configuration of [servers] and
+	  [server-foo] sections so they are more clear.
+
 2007-06-18  Brian Cameron  <brian.cameron@sun.com>
 
 	* en_GB/en_GB.po, es/es.po, ko/ko.po, sv/sv.po, uk/uk.po: I
@@ -32,10 +43,63 @@
 	* C/gdm.xml: Fix description of gdmchooser options to remove
 	  double wording.
 
+2007-06-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: While reviewing bug #440498, I updated the
+	  docs that explain the new background property so it makes
+	  more sense.
+
+2007-06-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.19.2
+	* C/gdm.xml: Rewrote the "gdmdynamic Command Line Options"
+	  section to fix a problem with xml2po crashing while trying to
+	  process the file.  This problem was caused because some of the
+	  <varlistentry> items did not have values for the <term> tag,
+	  which seemed to make xml2po unhappy.  Rewording this section
+	  avoids this problem.  Updated to the new release version.
+
+2007-05-14  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Add mdash and percnt entities so that make
+	  stops complaining.  Probably a better way to do this since these
+	  should be defined elsewhere, but this seems to work okay.  Fix
+	  &quote; typo, changing to &quot;.
+	* C/Makefile.am: Clean up a bit.
+
+2007-05-14  Brian Cameron  <brian.cameron@sun.com>
+
+	* */Makefile.am:  Delete these files.  They aren't needed.
+	  Update to no longer use the deprecated xmldocs.make and omf.make.
+	  Now gnome-doc-utils.make handles everything.
+	* Makefile.am: No longer go into SUBDIRS.  Instead all all
+	  languages to DOC_LINGUAS.  Add gdm.xml to DOC_ENTITIES.  This
+	  should fix bug #431168.
+
+2007-05-14  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.19.1:
+	* C/gdm.xml: Updated to new release version
+
+2007-05-08  Brian Cameron  <brian.cameron@sun.com>
+
+	* gdm.1: Now refer to full documentation in
+	  "Applications / System Tools" section rather than
+	  "GNOME / System".  Fixes bug #436807.  Patch by
+	  Lo\357c Minier <lool+gnome@via.ecp.fr>
+
 2007-05-04  Frederic Crozat  <fcrozat@mandriva.com>
 
-	* C/gdm.xml:
-	Update background property documentation.
+	* C/gdm.xml: Update background property documentation.
+
+2007-05-01  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add information about the new X-Gdm-XserverArgs key in the
+	  GDM desktop files.  This implements enhancement request #326771.
+
+2007-05-01  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Improve docs for new "background" feature.
 
 2007-04-28  Changwoo Ryu  <cwryu@debian.org>
 
@@ -47,32 +111,210 @@
 
 	* es/es.po: Updated Spanish translation by Lucas Vieites
 
+2007-04-19  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add information about new configuration options:
+	  SystemCommandsInMenu, AllowLogoutAction, and RBACSystemCommandKeys.
+	  Add RBAC section to the Security section.
+
+2007-04-05  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Improved docs some more.  Lukasz did not update
+	  all the places where the Face Browser change needed to be
+	  mentioned.
+
+2007-04-05  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
+
+	* C/gdm.xml: Added a "Themed with face browser" option to the
+	  Local/Remote Style ComboBox and updated the documentation. Fixes
+	  bug #423300
+
+2007-04-02  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Add comment about XDMCP troubleshooting.
+
 2007-03-26  William Jon McCann  <mccann@jhu.edu>
 
-	reviewed by: <delete if not using a buddy>
+	* C/gdm.xml: Update docs for last commit.
 
-	* C/gdm.xml:
+2007-03-23  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: A little more information added to Solaris
+	  and Accessibility sections.
+
+2007-03-23  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Update Accessibility and Solaris sections
+	  of the manual.  The Accessibility section was badly out of
+	  date, and some new information needed to be added (like
+	  that you don't need to create a writable gdm home directory
+	  starting with GNOME 2.18).
+
+2007-03-23  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add new XnestUnscaledFontPath key to docs.  Fix
+	  Configuration section to refer to the configuration file by name
+	  rather than repeating the full path over and over.  Now that we
+	  support Xephyr, change docs to refer to "nested Xserver" or "nested
+	  display" rathar than referring to this feature as "Xnest".  Added
+	  some docs to the PAM section.  Other cleanup of wording.
+
+2007-03-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* es/gdm.xml, uk/gdm.xml: Remove generated files.
+
+2007-03-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Add min-screen-height tag to parser so that certain
+	  elements in the theme will only display if the screen is large
+	  enough.  Patch by Ray Strode.  <rstrode@redhat.com>.  Enhancement
+	  #420610.
+
+2007-03-12  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.18.0:
+	* C/gdm.xml: Update version number.
 
 2007-03-11  Daniel Nylander <po@danielnylander.se>
 
 	* sv/sv.po: Updated Swedish translation.
+
+2007-02-26  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.17.8
+	* en_GB/Makefile.am: Add needed Makefile.am.
+	* Makefile.am: Remove en_GB from SUBDIRS so it does not build since
+	  needed omf file is not present.
 
 2007-02-16  David Lodge <dave@cirt.net>
 
 	* en_GB/en_GB.po: Added English (British) translation
 	* Makefile.am: Added en_GB
 
+2007-02-12  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.17.7
+	* C/gdm.xml: Update version number.
+
+2007-02-09  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add sockets command to start login procedure, to be used
+	  by gnome-screensaver and Fast User Switch applet.  Fixes enhancement
+	  request #335786.  Patch by Matthias Clasen <mclasen@redhat.com>.
+
 2007-02-02  Daniel Nylander <po@danielnylander.se>
 
 	* sv/sv.po: Updated Swedish translation.
+
+2007-01-26  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Fix tags.
+
+2007-01-24  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Some improvements to the PAM documentation.  Suggestions
+	  by Gary Winiger <Gary.Winiger@sun.com>.
+
+2006-12-29  Brian Cameron  <Brian.Cameron@sun.com>
+
+	* C/gdm.xml: Add revnumber and date to GDM docs.  Patch by Paul
+	  <ephraim_owns@hotmail.com>.  Helps to fix bug #389931.
+
+2006-12-13  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.17.4:
+	* C/gdm.xml: Update version number.
 
 2006-12-12  Francisco Javier F. Serrador  <serrador@openshine.com>
 
 	* es/es.po: Updated Spanish translation.
 
+2006-12-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.17.3:
+	* C/gdm.xml: Update version number.
+
+2006-11-06  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.17.2:
+	* C/gdm.xml: Update version number.
+
+2006-11-01  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Mention that altfile feature is supported
+	  since 2.16.3.
+
+2006-10-31  William Jon McCann  <mccann@jhu.edu>
+
+	* C/gdm.xml:
+	  Add ConsoleKit support.  Fixes #365375.
+
+2006-10-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.17.1:
+	* C/gdm.xml: Fix docs.
+
+2006-10-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add information about userlist-rect id.
+
+2006-10-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Add new  QUERY_CUSTOM_CMD_LABELS
+	  and QUERY_CUSTOM_CMD_NO_RESTART_STATUS commands and the
+	  new CustomCommandIsPersistent[0-9]
+
+2006-10-26 Erwann Chenede - <erwann.chenede@sun.com>
+
+	* docs/C/gdm.xml: added documentation for the new alstfile[n]
+	  alternate image file property.
+
+2006-10-23  Brian Cameron  <brian.cameron@sun.com>
+
+	* docs/C/gdm.xml: Corrections to spelling and grammar mistakes.
+	  Patch by Malcolm Parsons <malcolm.parsons@gmail.com>.  Also
+	  updated docs for list combo style to indicate this feature is
+	  supported in GDM 2.18 and later.
+
+2006-10-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml Add "combo" style lists and now support "language" and
+	  "session" style lists which can be used directly in the
+	  gdmgreeter theme rather than having to use the session/language
+	  pop-ups. 
+
+2006-10-16  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.17.0:
+	* C/gdm.xml: Update version number.
+
+2006-10-04  Ariel Rios  <ariel@gnu.org>
+
+	Fixes bug #345434.
+	* C/gdm.xml: Add documentation to indicate that the GUI will now
+	  launch the at-spi-registryd if GTK_ADD_MODULES is set to true.
+
 2006-09-25  Francisco Javier F. Serrador  <serrador@openshine.com>
 
 	* es/es.po: Updated Spanish translation.
+
+2006-09-22  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Now gdm.conf has SupportAutomount option which, when
+	  turned on, changes the way that GDM accessess the user's $HOME/.dmrc
+	  file so that automounted $HOME directories can be configured to work
+	  even with the automounter is not started with the --ghost option.
+	  This feature is off by default.  This addresses RFE bug #356869.
+	  Patch by Jerzy Borkowski <jubork@ncac.torun.pl>.
+
+2006-09-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Make gdmdynamic section a bit more clear.
+
+2006-09-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml, es/gdm.xml, uk/gdm.xml: Accidently putback docs fix after
+	  freeze.  Backing out.
 
 2006-08-15  Francisco Javier F. Serrador  <serrador@openshine.com>
 
@@ -88,10 +330,9 @@
 
 2006-07-24  Brian Cameron  <brian.cameron@sun.com>
 
-	* Removing sv from Makefile.am since it doesn't build properly.
-	  Running autogen.sh complains that Makefile.am doesn't exist, 
-	  and adding one based on the others seems to cause a build
-	  problem also.
+	* Makefile.am: Removing sv since it does not build properly.  Running
+	  autogen.sh complains that Makefile.am doesn't exist, and adding one
+	  based on the others seems to cause a build problem also.
 
 2006-07-23  Daniel Nylander <po@danielnylander.se>
 
@@ -107,20 +348,951 @@
 
 	* es/es.po: Updated Spanish translation.
 
+2006-05-24  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Put back support for -nodaemon argument, lost in the
+	  2006-05-12 patch by Christian Kirbach.  This fixes bug #324831.
+	  Patch provided by Ray Strode <rstrode@redhat.com>.
+
+2006-05-12  Christian Kirbach  <Christian.Kirbach@siemens.com>
+
+	* C/gdm.xml: -nodaemon command line option has become --nodaemon.
+	  GDM User Commands section has been rewritten accordingly. Also the
+	  interface stability sections reflects the new changes.
+
+2006-05-12  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.15.1:
+	* C/gdm.xml: Updated to reflect which interfaces are supported
+	  starting with 2.14.6.
+
+2006-04-27  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated to add new "Using gdmsetup" section and other
+	  corrections.
+
+2006-04-26  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add docs for new features and the gtk-theme greeter
+	  element feature added in 2.12 but after string-freeze, so docs
+	  could not be updated then.
+
+2006-04-26  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated docs to reflect new per-display config.
+
+2006-04-25  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml.  Add units information to TimedLoginDelay.  Fixes bug
+	  #334531.  Improved PAM documentation based on input from Gary Winger
+	  <Gary.Winiger@sun.com>.  Added info about GET_CUSTOM_CONFIG_FILE.
+	  Added docs for AlwaysLoginCurrentSession which I noticed were
+	  missing.
+
+2006-04-05  Brian Cameron  <brian.cameron@sun.com>
+
+	* es/.cvsignore, uk/.cvsignore:  Update .cvsignore files to include
+	  generated files not currently listed.
+
+2006-03-28  Julio M. Merino Vidal  <jmmv@NetBSD.org>
+
+	* C/gdm.xml: Fixes bug #336364.
+
+2006-03-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated version to 2.14 in docs.
+
 2006-03-03  Maxim Dziumanenko <mvd@mylinux.ua>
 
 	* Makefile.am: Add uk to DOC_LINGUAS.
+
+2006-02-28  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.9:
+	* Makefile.am: Remove "uk" since there is no such subdir yet.
 
 2006-02-20  Maxim Dziumanenko <mvd@mylinux.ua>
 
 	* uk/*, Makefile.am: Add Ukrainian translation of the manual.
 
+2006-02-13  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.8:
+	* C/gdm.xml:  Update docs so that the change from --with-configdir
+	  to --with-defaults-conf and renaming of default and custom config
+	  file is documented.
+
+2006-02-13  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Change --with-configdir to --with-defaults-conf and make
+	  it work so that the gdm.conf and gdm.conf-custom file can be
+	  installed to different subdirectories.  Fixes bug #330905.  Patch
+	  provided by Ray Strode.
+
+2006-02-13  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Last minute updates before string freeze.
+
+2006-02-10  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Few more updates worth adding.
+
+2006-02-10  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated docs with a bunch of information from the README
+	  and README.install file that really belonged in the docs.
+
+2006-02-09  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Cleaned up section that explains sockets commands so that
+	  they are in alphabetical order, added info about SERVER_BUSY and new
+	  gdmdynamic -s and -t options.
+
+2006-02-02  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add comment to docs that +xkb is needed as an Xserver
+	  argument for the keyboard gestures to work.
+
+2006-01-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Change section name for "Security" to "security" so the
+	  generated html file has a more consistant name with the other html
+	  files.
+
+2006-01-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.7:
+	* C/gdm.xml: Updated version/date.
+	* Makefile.am:  Adding es back to SUBDIRS.
+	* es/Makefile.am:  Adding file.
+
+2006-01-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Added new "options_button" which pops up the F10 menu.
+	  Modified themes to now use the new options button for a cleaner
+	  one-button look.  Patch provied by Sebastien Bacher
+	  <seb128@debian.org>.  Modifications to existing themes made by
+	  myself.  Also modified string "Remote login via XDMCP" to "Remote
+	  Login via XDMCP".
+
+2006-01-27  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Change "XDMCP Chooser" to "Remote login via XDMCP".
+	  Fixing bug #328857.
+
+2006-01-23  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add Troubleshooting section.
+
+2006-01-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Better scrollkeeper/yelp description for GDM.  Fixes
+	  bug #327796.  Patch by Alessandro Ferrucci <a24@umbc.edu>.
+
+2006-01-19  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.6:
+	* docs/C/gdm.xml: Updated version/date.
+
+2006-01-17  Brian Cameron  <brian.cameron@sun.com>
+
+	* docs/C/gdm.xml: Added docs for "secure remote" feature.  Patch
+	  provided by Dominique Hazael-Massieux.
+
+2006-01-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.5:
+	* docs/C/gdm.xml: Updated version/date.
+
+2006-01-13  Brian Cameron  <brian.cameron@sun.com>
+
+	Enhancement patch provided by Dominique Hazael-Massieux
+	<dominique.hazael-massieux@centraliens.net>
+
+	* C/gdm.xml: Add support for --enable-secureremote
+
+2006-01-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Change the "Please make sure the Caps Lock key is not
+	  enabled." message to the more informational "Caps Lock is on.".
+	  Some users may want to use Caps Lock when logging in.
+
+2006-01-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Use "Shut Down" instead of "Shut down" or "shut down".
+
+2006-01-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Rename "shutdown" to "shut down" or "halt" and rename
+	  "capslock" to "Caps Lock" since these are the recommended wordings
+	  suggested by Calum Benson.  Also corrected a few errors in the stock
+	  labels.
+
+2006-01-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Added "Performance" section to discuss the
+	  --with-prefetch option.
+
+2006-01-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Fix Prefetch command so that there is a needed "@" before
+	  the argument to gdmprefetch.  Padraig O'Briain pointed out this
+	  oversight.  Made docs a bit more clear to highlight the usage of
+	  this "@" character.
+
+2006-01-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Rewrote the Introduction section so it is more clear,
+	  made improvements to the Accessibility section, and fixed a number
+	  of formatting issues.  Now a separate Security section.  Updated
+	  docs to reflect PreFetchProgram change.
+
+2006-01-02  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.4:
+	* C/gdm.xml: Updated version/date.
+
+2005-12-24  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Now mention that if the user hits just ENTER when
+	  TimedLoginEnable is on, that GDM will just login immediately as the
+	  timed user.  This is how GDM has always behaved, just was not
+	  documented.
+
+2005-12-24  Brian Cameron  <brian.cameron@sun.com>
+
+	Happy holidays.  Some bug fixes.
+
+	* C/gdm.xml: Document how character sequences work with text labels
+	  and Welcome/RemoteWelcome messages.
+
+2005-12-21  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated docs with information about the new priority
+	  [server-foo] configuration option.
+
+2005-12-21  Brian Cameron  <brian.cameron@sun.com>
+
+	Patch by Padraig O'Briain <Padraig.OBriain@sun.com>, modified by myself
+	so it also works with gdmlogin and not just gdmgreeter.  Also I
+	integrated his gdmprefetch.c utility into the configure/Makefile system
+	with the --with-prefetch option.
+
+	* C/gdm.xml: Add docs for new PostDisplayProgram key.
+
+2005-12-21  Brian Cameron  <brian.cameron@sun.com>
+
+	Refer to main ChangeLog for more information about the GDM
+	configuration redesign.
+
+	* C/gdm.xml: Updated docs with info about how configuration works now.
+	  Now sockets protocol info is the same in this document and 
+	  daemon/gdm.h
+
+2005-12-12  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add docs for new GET_SERVER_LIST and GET_SERVER_DETAILS
+	  sockets commands.
+
+2005-12-12  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.3:
+	* C/gdm.xml: Updated version/date.
+
+2005-11-28  Brian Cameron  <brian.cameron@sun.com>
+
+	* Release 2.13.0.2:
+	* C/gdm.xml: Updated version/date and added new info about GET_CONFIG
+	  command.
+
+2005-11-14  Brian Cameron <Brian.Cameron@sun.com>
+
+	* Release 2.13.0.1:
+	* C/gdm.xml: Updated version/date.
+
+2005-11-03  Dennis Cranston  <dennis_cranston@yahoo.com>
+
+	* C/gdm.xml: Fixes bug #314685.
+
+2005-10-26  Brian Cameron <Brian.Cameron@sun.com>
+
+	* C/gdm.xml: Updated to include more workaround info for
+	  accessibility.
+
+2005-10-06  Brian Cameron <Brian.Cameron@sun.com>
+
+	* C/gdm.xml: Add some information about using GlobalFaceDir when home
+	  directories are mounted via NFS/NIS, etc.
+
+2005-09-14  Brian Cameron <Brian.Cameron@sun.com>
+
+	* C/gdm.xml: Docs had very little information about debug, so added
+	  some.
+
 2005-08-22  Tommi Vainikainen  <thv@iki.fi>
 
 	* C/gdm.xml, gdm.1: Fixed address of the web site.
+
+2005-08-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated Face Browser docs to better explain how things
+	  work now that bug #310906 has been fixed, and to clarify that the
+	  Face Browser can be used with the Themed Greeter.
+
+2005-08-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated links to point to the new
+	  http://www.gnome.org/projects/gdm/ for the project page.  Updated
+	  Commands section of the docs so they look better.  Fixed
+	  art.gnome.org link.
+
+2005-08-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Updated gdmflexiserver docs so they are more clear and
+	  added info about the SDTLOGIN mechanism.  Add info about new
+	  gdmflexiserver --startnew (or -s) option.
+
+2005-08-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Made XML conformant.
+
+2005-08-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Discuss support for /etc/default/login.
+
+2005-08-02  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated docs.
 
 2005-07-31  Tommi Vainikainen  <thv@iki.fi>
 
 	* C/gdm.xml: This is now valid Docbook XML.
 
 	* *: Migrated to gnome-doc-utils.
+
+2005-07-31  Tommi Vainikainen  <thv@iki.fi>
+
+	* ChangeLog: Started new ChangeLog similar to po/ChangeLog after
+	  gnome-doc-utils migration.  This file has older entries because
+	  they were ported over on 2007-06-03.
+
+2005-07-26  Tommi Vainikainen  <thv@iki.fi>
+
+	* C/gdm.xml: Documented new default "auto" option for Use24Clock,
+	  which selects 24 hour time format by locale (translation). Fixes
+	  bug #145549.
+
+2005-07-22  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: GDM configuration enhancements.
+
+2005-07-19  Tommi Vainikainen  <thv@iki.fi>
+
+	* C/gdm.xml: Cleanup terminology, and fix many strings. See bug
+	  #310453.  Also fixes bug #308287. List of the most important string
+	  changes:
+	  machine -> computer
+	  program -> application or command
+	  superuser -> root
+	  gdm, Gdm -> GDM
+	  See the Language chapter in GNOME HIG for more information.
+
+2005-06-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Corrected grammar.  Thanks to Martin Petersen for
+	  noticing this.
+
+2005-06-17  Julio M. Merino Vidal <jmmv84@gmail.com>
+
+	* C/gdm.xml: Fix duplicate entity ID so that the document validates
+	  correctly.  Fixes bug #308048.
+
+2005-05-17  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Added support for dynamic Xservers.  Fixes enhancement
+	  request #168219.  Patch provided by Bob Terek <Robert.Terek@sun.com>.
+
+2005-05-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Now support random theme.  Fixes #302354.  Patch by
+	  Andrew Case.
+
+2005-04-25  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Now support background programs that are started after a
+	  timedelay and can be restarted after a delay.  Useful for running a
+	  screensaver at login time.  Fixes bug #301528.  Patch provided by
+	  Laurent Birtz.
+
+2005-04-22  Mark McLoughlin  <mark@skynet.ie>
+
+	Add the ability to make GDM spawn XDMCP sessions on a local
+	X proxy server. Experimental support for disconnect/reconnect
+	or "session migration" is also implemented using DMX.
+	More details in bug #301602.
+
+	* C/gdm.xml: document new config keys.
+
+2005-04-19  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml:  Now support ratio scaling of SVG images.  Docs were not
+	  provided with the patch so I added some.  Fixes bug 159524.  Patch
+	  provided by Vincent Untz <vincent@vuntz.net>.  Also fixed spelling.
+	* C/gdm.xml: Fixed bug 300138 by providing better sound docs in the
+	  a11y section.  Fixes bug #300138.  Patch provided by Andrew Case.
+
+2005-04-18  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add login success/failure sounds.  Patch provided by
+	  Andrew Case.  Refer to bug #300136.
+
+2005-04-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Add docs for DefaultWelcome and DefaultRemoteWelcome
+	  keys and the ability to allow theming of background colors in
+	  the Face Browser.
+
+2005-03-23  Brian Cameron  <Brian.Cameron@sun.com>
+
+	* C/gdm.xml:  Add face browser tab for configuring the face browser
+	  with the Exclude options and the new Include and IncludeAll
+	  configuration options.
+
+Fri Mar 18 21:45:0000 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* C/gdm.xml:  Added OK button to greeter so GDM now properly follows
+	  the Sun HCI recommendations.  Fixes bug #98470.
+
+Thu Mar 17 2:06:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* C/gdm.xml:  Made face browser much less braindead.  The facebrowser
+	  is no longer insensitive when entering the password so you can
+	  change the selected user without having to enter an invalid
+	  password.  Also added a cancel button which allows user to reselect
+	  a different username without having to enter an invalid password.
+	  Removed the stupid double-click requirement to select a user with
+	  the face browser.  Now just clicking on a user takes you to password
+	  entry.  Clicking the cancel button unselects all users in the face
+	  browser and takes the user back to the Username prompt.
+
+Mon Mar 14 12:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* C/gdm.xml:  Added Include and IncludeAll gdm config options to
+	  better control what users are displayed in the face browser.
+
+Thu Mar 10 17:50:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* C/gdm.xml: Document the face that the default face directory is
+	  changed to EXPANDED_DATADIR/pixmaps/faces since putting the faces
+	  subdirectory in pixmaps simply makes more sense.  Also document
+	  changes to the way GDM files are installed.  Now all programs
+	  intended to be run by root are in EXPANDED_SBINDIR
+	  (gdm/gdm-binary/gdmsetup), all programs that are not intended to be
+	  run by end-users are in EXPANDED_LIBEXEC
+	  (gdmchooser/gdmgreeter/gdmlogin).  Removed gdmconfig wrapper script
+	  and gdmXnest symlink since they only server to clutter the
+	  filesystem.  
+
+Mon Feb 14 16:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* C/gdm.xml: Fixes bug #151018.  Add configuration option to disallow
+	  visible feedback in password entry.  Patch provided by John
+	  Martinsson.
+
+Thu Aug 26 15:55:00 2004  Brian Cameron  <brian.cameron@sun.com>
+
+	* C/gdm.xml: Updated docs to include gdmflexiserver command options,
+ 	  arguments for all GDM programs aside from gdm-binary (which was
+	  already there), added accessibility section, and cleaned up the XML
+	  so it is more readible.  Also added a comment that gdmlogin now lets
+	  you change the theme from the menu.
+
+Wed Jul 14 09:37:25 2004  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: Document the new CheckDirOwner key to fix systems
+	  which have non-user-owned home dirs.
+
+Tue Jul 13 10:27:35 2004  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: Add mention that VTAllocation now works on FreeBSD as
+	  well.
+
+Wed May 26 18:23:14 2004  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml:  Add a daemon/ConsoleCannotHandle key which lists
+	  languages which should not be used on the console because they
+	  will not work.  Uses "C" locale strings instead then.  Should
+	  "fix" #135387, but I suppose there's no clean way to do this,
+	  just let the distributors ship proper config files and have them
+	  test it (yeah right).  I've tested the current set on RH9 and I
+	  listed all of the ones that didn't work.
+
+Fri Apr 16 16:02:53 2004  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update version information, no changes.  I should have
+	  done this before the release.
+
+Mon Mar 15 10:22:30 2004  George Lebl <jirka@5z.com>
+
+	* Release 2.6.0.0
+	* Makefile.am: fix build
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Add localized docs to build.
+	* *: Add de, es, fr, it, ja, ko, sv, zh_CN, zh_HK and zh_TW
+	  all from the Sun translation team.
+
+Thu Feb 12 11:49:20 2004  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml, config/gdm.conf.in: Adding the GtkTheme,
+	  AllowGtkThemeChange and GtkThemesToAllow keys
+
+Tue Jan 06 17:06:42 2004  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update for DisplayLastLogin
+
+Tue Dec 30 15:34:59 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml:  Update docs for the accessibility/sound stuff
+
+Mon Dec 29 16:52:32 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: set version to 2.5.90.0 since it's really for GNOME 2.5
+	  not 2.4
+
+Fri Dec 12 17:56:58 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: Add a GO fifo SOP command and a --wait-for-go command
+	  line option.  This is intended to allow an initialization script to
+	  start X early and have that be the GDM display, but not allow users
+	  to log in until it's ready.
+
+Fri Dec 12 17:14:41 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: There's now the ability to reap flexiservers that are
+	  inactive for a period of time.  The default time is 5 minutes.
+
+Wed Dec 10 13:08:13 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: Move the built in sessions to a more appropriate place
+	  (datadir).  Apply a patch from Anton Altaparmakov to add an optional
+	  info message to the greeters.  Fixes #125219
+
+Wed Dec 10 2003 Archana Shah <archana.shah@wipro.com>
+
+	* C/gdm.xml: Add documentation for Multicast and Multicast_Addr.
+
+Mon Oct 06 15:02:19 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: add info about NeverPlaceCookiesOnNFS
+
+Wed Sep 24 13:21:43 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update the docs a bit
+
+Mon Sep 22 15:01:41 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update a bit.
+
+Fri Sep 19 13:41:37 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml:  Update the session docs to reflect reality,
+	  plus some other minor cleanup
+
+Thu Sep 18 13:53:37 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update for the SessionDesktopDir path stuff 
+
+Fri Sep 12 14:49:30 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update
+
+Tue Aug 26 18:06:51 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: minor update
+
+Tue Aug 26 17:58:46 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: lots of updates, stylistic and fixing
+	  errors, also add ShowLastSession.
+
+Mon Aug 25 16:27:09 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update
+
+Mon Aug 25 11:13:08 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update the SystemMenu (Actions menu) key description.
+
+Mon Aug 25 10:47:30 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: updates relating to the ~/.xsession-errors stuff and how
+	  to handle the Xsession file.
+
+Thu Aug 21 14:35:25 2003  George Lebl <jirka@5z.com>
+
+	* Makefile.am, gdm.1: add a very simple man page
+
+Wed Aug 20 12:13:04 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: minor updates
+
+Mon Aug 18 11:02:38 2003  George Lebl <jirka@5z.com>
+
+	To prevent a possible DoS attack where an app might spit out
+	too many warnings on stdout/stderr and thus fill up the users
+	home dir (or when an app is buggy), the output of the session
+	no longer goes directly into .xsession-errors but in fact
+	through an internal pipe.  This way we can just cap the file
+	at some size (currently 80*2500 bytes, which should be long
+	enough for actual use in debugging but it's short enough to
+	prevent a DoS attack)
+
+	* C/gdm.xml: note about the above
+
+Fri Aug 15 12:36:30 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: added more notes on the MIT-MAGIC-COOKIE-1 authorization
+	  scheme
+
+Thu Aug 14 17:50:30 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml:  Update docs for UserAuthDir and add a note about using
+	  this with NFS mounted home directories.
+
+Mon Aug 11 09:38:08 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: whack a doubled paragraph.
+
+Fri Aug 08 17:20:59 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: fill in missing info in the theme manual
+
+Thu Aug 07 17:59:25 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: add more comments on security of XDMCP, fixup the screen
+	  sections a bit, whack SessionMaxFile entry
+
+Wed Aug 06 17:40:27 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: more notes on security of XDMCP and using
+	  MIT-MAGIC-COOKIE-1 added, plus a section on the TCP Wrappers,
+	  though it kind of sucks.
+
+Wed Aug 06 12:05:52 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update version number
+
+Wed Aug 06 11:39:37 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: some fixes from my mailspool from like a year ago, plus
+	  added section about terminal lab example setups.
+
+Thu Jul 31 15:26:41 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: add the release info as the first paragraph of the
+	  preface so that it appears in the HTML and PDF versions
+
+Thu Jul 31 13:50:38 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: fix closing tag
+
+Mon Jul 28 16:28:28 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: fix doc of the gdm User/Group and add a section on this
+	  to the Overview.
+
+Fri Jul 25 16:31:24 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: add documentation of command line options
+
+Thu Jul 24 16:41:25 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update the version information on top
+
+Thu Jul 24 16:40:07 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: fixed the art.gnome.org link added a link to the GDM
+	  website, ran through a spellchecker, whacked the last vestiges of
+	  iconification feature mentions and added MinimalUID mention next to
+	  Exclude in the overview.
+
+Thu Jul 24 14:58:23 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update the PostLogin behaviour and the permissions on the
+	  ServAuthDir
+
+Wed Jul 23 15:13:33 2003  George Lebl <jirka@5z.com>
+
+	* Release 2.4.2.98
+	* Makefile.am: fix for distcheck
+
+Mon Jul 21 15:36:48 2003  George Lebl <jirka@5z.com>
+
+	* GdmGreeterThemeManual.txt: removed since this is now in the XML
+	  documentation
+
+Mon Jul 21 13:45:31 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm-C.omf: add.  I forgot to add this to CVS :)
+
+Sun Jul 20 14:34:42 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: remove the documentation for the Icon key, and add a
+	  better blurb in the [servers] description.
+
+Sun Jul 20 12:36:06 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update
+
+Sun Jul 20 08:59:19 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: fix docbook errors
+
+Sat Jul 19 16:40:55 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml: update the way the years in the copyright are done
+
+Sat Jul 19 16:33:19 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.xml, C/Makefile.am, Makefile.am: Update the documentation a
+	  lot and install the docs.  Yay!  We have actual documentation now!!!
+
+Sat Jul 19 16:33:19 2003  George Lebl <jirka@5z.com>
+
+	* C/gdmconfig/*, C/gdm.sgml, C/gdm-manual.txt: Remove everything here
+	  as it was old and unused and outdated.
+
+Tue Jul 15 15:54:14 2003  George Lebl <jirka@5z.com>
+
+	* GdmGreeterThemeManual.txt: Update the theme manual adding the
+	  userlist and whacking pam-warning which does not exist and other
+	  minor fixes and additions.
+
+Thu Jun 26 12:01:55 2003  George Lebl <jirka@5z.com>
+
+	* Makefile.am: Actually include the docs dir in the tarball and redo
+	  the .96 release (doh!)
+
+Wed Jun 11 16:04:02 2003  George Lebl <jirka@5z.com>
+
+	* Makefile.am: Actually include the theme document, DUH!
+
+Fri Jun 06 19:07:22 2003  George Lebl <jirka@5z.com>
+
+	* GdmGreeterThemeManual.txt:  Update a bit on theme creation and the
+	  .desktop file and add notes about gdmthemetester
+
+Wed Jun 04  Brian Cameron <Brian.Cameron@Sun.COM>
+
+	* GdmGreeterThemeManual.txt: Added theme docs.
+
+Tue May 13 17:00:16 2003  George Lebl <jirka@5z.com>
+
+	* C/gdm.(xml|sgml):  PingInterval is now in seconds.  It really makes
+	  no sense in minutes, I mean who wants to use a connection which
+	  hangs for several minutes, that makes no sense.  This fixes a whole
+	  bunch of bugs, among others #103266
+
+2003-04-10 Niall Power <Niall.Power@Sun.COM>
+
+	* C/gdm.xml: Add support for launching gdmlogin/gdmgreeter with a
+	  configurable list of gtk modules. Needed for accessibility.  Adds
+	  two new options to gdm.conf: "AddGtkModules" (boolean) and
+	  "GtkModulesList" (string).
+
+Thu Apr 25 17:20:52 2002  George Lebl <jirka@5z.com>
+
+	* Makefile.am: Do not build gdmconfig docs.
+
+Mon Dec 10 08:23:00 2001 Trevor Curtis <tcurtis@somaradio.ca>
+
+	* C/gdm.xml: Updated the doc to use the FDL, and cleaned up a few
+	  things.
+
+Fri Dec 7 23:02:12 2001 Trevor Curtis <tcurtis@somaradio.ca>
+
+	* C/gdmconfig/C/gdm.xml: Removed Tim Jansen from documentation at his
+	  request.
+
+Fri Dec 7 06:33:13 2001 Trevor Curtis <tcurtis@soamradio.ca>
+
+	* C/gdmconfig/C/gdm.xml: Created xml version of gdmconfig
+	  documentation.
+
+Fri Dec  7 05:05:26 2001  Trevor Curtis <tcurtis@somaradio.ca>
+
+	* C/gdm.xml: Created xml version of GDM documentation.
+
+Wed Oct 24 17:57:03 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml:  Remove the XKeepsCrashingConfigurators option.
+
+Wed Oct 24 01:22:41 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: Remove documentation of the VerboseAuth option.
+
+Sat Oct 20 12:03:14 2001  George Lebl <jirka@5z.com>
+
+	* C/Makefile.am: DESTDIR added patch by: frodol@dds.nl (Frodo
+	  Looijaard)
+
+Tue Sep 11 02:34:47 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml:  Apply and finish a patch from Terje Rosten
+	  <terjeros@phys.ntnu.no> to add an option to force 24 hour clock on
+	  the greeter
+
+Tue Sep  4 18:52:10 2001  Trevor Curtis <tcurtis@somaradio.ca>
+
+	* gdmconfig/C/figures/GDM_xserv_setup.png,GDM_xdmcp.png: Updated the
+	  above screenshots to reflect recent changes.
+
+Sat Sep 01 14:53:22 2001  George Lebl <jirka@5z.com>
+
+	* gdmconfig/C/gdmconfig.sgml:  Updated trevors email.
+
+Sat Sep 01 00:47:36 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: a small update
+
+Fri Aug 31 20:22:33 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: Update for all the server def stuff.
+
+Fri Aug 31 18:21:46 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: update
+
+Fri Aug 31 18:12:05 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml:  Document some of the new configuration keys.  Not
+	  everything is documented yet.
+
+Fri Aug 24 19:32:42 2001  George Lebl <jirka@5z.com>
+
+	* sgmldocs.make: update to newest from gnome-core
+
+Fri Aug 17 14:47:08 2001  George Lebl <jirka@5z.com>
+
+	* C/Makefile.am: fix rules since the .sgml file changed
+
+2001-08-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* C/gdm.sgml: Fix sgml up a bit.
+	* gdmconfig/C/gdmconfig.sgml: Fix up here too.
+
+Thu Jun 28 18:48:56 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: add docs for the above two keys
+
+Tue Jun 26 23:00:04 2001  Trevor Curtis <trevor.curtis@home.com>
+
+	* gdmconfig/C: added sections for Miscellaneous, and Login Sessions.
+	  Updated XServer-Setup section.
+	* gdmconfig/C/figures/*: updated GDM_xserv_setup.png, and
+	  GDM_login_sessions.png. Added GDM_expert_misc.png
+
+Sun Jun 24 14:55:29 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: Add daemon/AlwaysRestartServer option.
+
+Fri Jun 22 19:13:05 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: fix indirect wait entry, add entries for the showingl
+	  of different built in sessions (failsafes, chooser)
+
+Thu May 24 12:55:05 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, sgmldocs.make, gdmconfig/C/Makefile.am: Set up the
+	  documentation/omf build stuff.
+
+	* gdmconfig/C/gdmconfig.sgml: fix version to say 2.2.2 and this is
+	  part of the GDM package not the Gnome-Core package :)
+
+Wed May 23 23:31:00 2001  Trevor Curtis <trevor.curtis@home.com>
+
+	* gdmconfig/C/gdmconfig.sgml: Added the expert and system
+	  descriptions.
+
+	* gdmconfig/C/figures: Was created to put the screenshots in for the
+	  gdmconfig doc.
+
+	* gdmconfig/C/figures/*: added the following png's;
+	  GDM_auto_login.png, GDM_background.png, GDM_chooser.png,
+	  GDM_enviro.png, GDM_face_brow.png,  GDM_full.png,
+	  GDM_login_appear.png, GDM_login_behav.png, GDM_login_sessions.png,
+	  GDM_menubar.png, GDM_misc.png, GDM_paths.png, GDM_security.png,
+	  GDM_xdmcp.png, GDM_xserv_setup.png
+
+Fri May 18 04:17:00 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml:  Add a config option for a failsafe X server which is
+	  empty by default
+
+Fri May 18 00:16:58 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml: update for the XKeepsCrashing stuff
+
+Mon May 14 22:20:09 2001  George Lebl <jirka@5z.com>
+
+	* C/Makefile.am: install the index.html file correctly on make install.
+	  For those weirdos like me that run out of CVS
+
+Mon May 14 21:52:53 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml:  Add proper copyrights/authors for me and Tim Jensen and
+	  update the configuration section with all the new keys.
+
+Thu Apr 19 17:32:36 2001  George Lebl <jirka@5z.com>
+
+	* C/gdm.sgml:  Update the VerboseAuth and AllowRoot sections to
+	  reflect what actually happens nowdays.
+
+Sun Mar  4 16:13:55 2001  Lee Mallabone <lee0@callnetuk.com>
+
+	* gdmconfig/*: Added initial directory structure/files for the
+	  gdmconfig user guide. Not installed yet.
+
+	* gdmconfig/C/gdmconfig.sgml: Initial gdmconfig user guide content
+	  from Trevor Curtis <trevor.curtis@home.com>.
+
+Mon Feb 19 21:37:07 2001  George Lebl <jirka@5z.com>
+
+	Patch from Tim Jansen <tim@tjansen.de>
+
+	* C/gdm.sgml: Fixed docs in terms of true/false vs. 1/0 and add new
+	  values.
+
+2000-12-12  Mathieu Lacage  <mathieu@eazel.com>
+
+	Make it: 1) compile 2) pass make distcheck.
+	* C/Makefile.am: remove images.
+	* C/gdm.sgml: fix sgml.
+
+1999-09-27    <mkp@mkp.net>
+
+	* C/gdm.sgml: Lots of updates.
+
+1999-08-18    <mkp@mkp.net>
+
+	* C/gdm.sgml: More documentation work.
+
+1999-08-16    <mkp@mkp.net>
+
+	* C/gdm.sgml: SGML-ified manual. Only bare bones so far.
+
+1999-08-15    <mkp@mkp.net>
+
+	* gdm-manual.txt: Updated for v2 config file syntax.
+
+1999-05-14  Jacob Berkman  <jberk+@cmu.edu>
+
+	* gdm-manual.txt: Added entry for %m
+
+1998-12-01  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* gdm-manual.txt: Crude manual draft.
+
+

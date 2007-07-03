@@ -1237,12 +1237,15 @@ gdm_verify_user (GdmDisplay *d,
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		gchar *device_name = NULL;
+		gchar *device_name = gdm_slave_get_display_device (d);
+		/*
+		 * Only do logindevperm processing if /dev/console or
+		 * a device associated with a VT
+		 */
+		if (device_name != NULL &&
+		    strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/") == 0) ||
+		    strcmp  (device_name, "/dev/console") == 0) {
 
-		if (d->vtnum != -1)
-			device_name = gdm_get_vt_device (d->vtnum);
-
-		if (device_name != NULL) {
 			(void) di_devperm_login (device_name, pwent->pw_uid,
 						 pwent->pw_gid, NULL);
 			g_free (device_name);
@@ -1550,12 +1553,14 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 
 #ifdef  HAVE_LOGINDEVPERM
 	if (d->attached && d->type != TYPE_FLEXI_XNEST) {
-		gchar *device_name = NULL;
-
-		if (d->vtnum != -1)
-			device_name = gdm_get_vt_device (d->vtnum);
-
-		if (device_name != NULL) {
+		gchar *device_name = gdm_slave_get_display_device (d);
+		/*
+		 * Only do logindevperm processing if /dev/console or
+		 * a device associated with a VT
+		 */
+		if (device_name != NULL &&
+		    strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/") == 0) ||
+		    strcmp  (device_name, "/dev/console") == 0) {
 			(void) di_devperm_login (device_name, pwent->pw_uid,
 						 pwent->pw_gid, NULL);
 			g_free (device_name);
@@ -1665,12 +1670,14 @@ gdm_verify_cleanup (GdmDisplay *d)
 #ifdef  HAVE_LOGINDEVPERM
 		if (old_opened_session && old_did_setcred &&
 		    d->attached && d->type != TYPE_FLEXI_XNEST) {
-			gchar *device_name = NULL;
-
-			if (d->vtnum != NULL)
-				device_name = gdm_get_vt_device (d->vtnum);
-
-			if (device_name != NULL) {
+			gchar *device_name = gdm_slave_get_display_device (d);
+			/*
+			 * Only do logindevperm processing if /dev/console or
+			 * a device associated with a VT
+			 */
+			if (device_name != NULL &&
+			    strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/") == 0) ||
+			    strcmp  (device_name, "/dev/console") == 0) {
 				(void) di_devperm_logout (device_name);
 				g_free (device_name);
 			}

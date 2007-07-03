@@ -4172,7 +4172,7 @@ gdm_slave_get_display_device (GdmDisplay *d)
 		/* If not VT, then use default local value from configuration */
 		if (device_name == NULL) {
 			const char *dev_local =
-				gdm_daemon_config_get_value_string (GDM_KEY_UTMP_LINE_LOCAL);
+				gdm_daemon_config_get_value_string (GDM_KEY_UTMP_LINE_ATTACHED);
 
 			if (dev_local != NULL) {
 				device_name = gdm_slave_update_pseudo_device (d,

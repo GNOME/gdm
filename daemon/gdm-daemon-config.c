@@ -1240,9 +1240,16 @@ load_xservers_group (GdmConfig *config)
 		
 		name = value_list[0];
 
-		/* Allow an optional device to be passed in as a 2nd argument */
-		if (value_list[1] != NULL)
-			device_name = value_list[1];
+		/*
+		 * Allow an optional device to be passed in as a 2nd argument
+		 * with the format "device=/dev/foo".
+ 		 * In the future, if more per-display configuration is desired, 
+		 * this can be made more sophisticated to handle additional
+		 * arguments.
+		 */
+		if (value_list[1] != NULL &&
+		    strncmp (value_list[1], "device=", strlen ("device=")) == 0)
+			device_name = value_list[1] + strlen ("device=");
 
 		/* Skip servers marked as inactive */
 		if (name == NULL || name[0] == '\0' ||

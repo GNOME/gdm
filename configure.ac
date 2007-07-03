@@ -337,8 +337,8 @@ AC_ARG_WITH(prefetch,
 
 if test x$with_prefetch != xno ; then
 	GDMPREFETCH="gdmprefetch"
-        GDMPREFETCHLIST="gdmprefetchlist"
-        GDMPREFETCHCMD='${libdir}/gdmprefetch \@${gdmconfdir}/gdmprefetchlist'
+	GDMPREFETCHLIST="gdmprefetchlist"
+	GDMPREFETCHCMD='${libdir}/gdmprefetch \@${gdmconfdir}/gdmprefetchlist'
 fi
 
 AC_ARG_WITH(afs,
@@ -1051,15 +1051,18 @@ GDM_RBAC_SYSCMD_KEYS=""
 
 case "$host" in
 *solaris*)
-        GDM_USER_PATH="/usr/bin"
-        HALT_COMMAND="/sbin/init 5"
-        REBOOT_COMMAND="/sbin/init 6"
-        SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
-        XSESSION_SHELL=/bin/ksh
-        SOUND_PROGRAM=/usr/bin/audioplay
-        GDMGNOMESESSIONCMD=/usr/dt/config/Xsession.jds
-        GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown"
-        ;;
+	GDM_USER_PATH="/usr/bin"
+	HALT_COMMAND="/sbin/init 5"
+	REBOOT_COMMAND="/sbin/init 6"
+	SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
+	XSESSION_SHELL=/bin/ksh
+	SOUND_PROGRAM=/usr/bin/audioplay
+	GDMGNOMESESSIONCMD=/usr/dt/config/Xsession.jds
+	GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown"
+	UTMP_LINE_ATTACHED="/dev/dtlocal"
+	UTMP_LINE_REMOTE="/dev/dtremote"
+	UTMP_PSEUDO_DEVICE="true"
+	;;
 *freebsd*)
 	GDM_USER_PATH="/bin:/usr/bin"
 	HALT_COMMAND="/sbin/shutdown -p now;/usr/sbin/shutdown -p now"
@@ -1067,17 +1070,23 @@ case "$host" in
 	SUSPEND_COMMAND="/usr/sbin/zzz"
 	XSESSION_SHELL=/bin/sh
 	SOUND_PROGRAM=
-        GDMGNOMESESSIONCMD=gnome-session
+	GDMGNOMESESSIONCMD=gnome-session
+	UTMP_LINE_ATTACHED="/dev/console"
+	UTMP_LINE_REMOTE=""
+	UTMP_PSEUDO_DEVICE="false"
 	;;
 *)
-        GDM_USER_PATH="/bin:/usr/bin"
-        HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
-        REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
-        SUSPEND_COMMAND=""
-        XSESSION_SHELL=/bin/sh
-        SOUND_PROGRAM=/usr/bin/play
-        GDMGNOMESESSIONCMD=gnome-session
-        ;;
+	GDM_USER_PATH="/bin:/usr/bin"
+	HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
+	REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
+	SUSPEND_COMMAND=""
+	XSESSION_SHELL=/bin/sh
+	SOUND_PROGRAM=/usr/bin/play
+	GDMGNOMESESSIONCMD=gnome-session
+	UTMP_LINE_ATTACHED="/dev/console"
+	UTMP_LINE_REMOTE=""
+	UTMP_PSEUDO_DEVICE="false"
+	;;
 esac
 
 # On Solaris, the /usr/bin/Xserver script is used to decide whether to
@@ -1229,9 +1238,9 @@ AC_ARG_ENABLE(more-warnings,
   AC_HELP_STRING([--enable-more-warnings], [Maximum compiler warnings]),
 set_more_warnings="$enableval",[
 if test -d $srcdir/.svn; then
-        set_more_warnings=yes
+	set_more_warnings=yes
 else
-        set_more_warnings=no
+	set_more_warnings=no
 fi
 ])
 AC_MSG_CHECKING(for more warnings)
@@ -1285,6 +1294,12 @@ AC_SUBST(GDM_USER_PATH)
 AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
+AC_SUBST(UTMP_LINE_ATTACHED)
+AC_DEFINE_UNQUOTED(UTMP_LINE_ATTACHED,"$UTMP_LINE_ATTACHED")
+AC_SUBST(UTMP_LINE_REMOTE)
+AC_DEFINE_UNQUOTED(UTMP_LINE_REMOTE,"$UTMP_LINE_REMOTE")
+AC_SUBST(UTMP_PSEUDO_DEVICE)
+AC_DEFINE_UNQUOTED(UTMP_PSEUDO_DEVICE,"$UTMP_PSEUDO_DEVICE")
 AC_SUBST(GDMGNOMESESSIONCMD)
 AC_SUBST(GDM_RBAC_SYSCMD_KEYS)
 AC_DEFINE_UNQUOTED(GDM_RBAC_SYSCMD_KEYS,"$GDM_RBAC_SYSCMD_KEYS")

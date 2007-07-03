@@ -47,8 +47,8 @@
 # Have fun!
 
 [daemon]
-# Automatic login, if true the first local screen will automatically logged in
-# as user as set with AutomaticLogin key.
+# Automatic login, if true the first attached screen will automatically logged
+# in as user as set with AutomaticLogin key.
 AutomaticLoginEnable=false
 AutomaticLogin=
 
@@ -66,8 +66,8 @@ TimedLoginDelay=30
 # should leave this alone.
 #Chooser=@libexecdir@/gdmchooser
 
-# The greeter for local (non-xdmcp) logins.  Change gdmlogin to gdmgreeter to
-# get the new graphical greeter.
+# The greeter for attached (non-xdmcp) logins.  Change gdmlogin to gdmgreeter
+# to get the new graphical greeter.
 #Greeter=@libexecdir@/gdmlogin
 
 # The greeter for xdmcp logins, usually you want a less graphically intensive
@@ -270,7 +270,7 @@ SupportAutomount=false
 # need this and it's more of a security risk then anything else.
 # Note: Anytime we find a -query or -indirect on the command line we do not add
 # a "-nolisten tcp", as then the query just wouldn't work, so this setting only
-# affects truly local sessions.
+# affects truly attached sessions.
 #DisallowTCP=true
 # By default never place cookies if we "detect" NFS.  We detect NFS by
 # detecting "root-squashing".  It seems bad practice to place cookies on things
@@ -290,20 +290,21 @@ PamStack=gdm
 # audit processing.  If VT is being used, then ut_line will be set to the
 # device associated with the VT.  If the console is attached and has a device
 # name specified in the [servers] section, then this value will be used.
-# Otherwise the value is defaulted to the value specified in UtmpLineLocal
+# Otherwise the value is defaulted to the value specified in UtmpLineAttached
 # for attached displays and UtmpLineRemote for remote displays.  The value
 # can be left empty which means that ut_line will be set to an empty value
 # (if not VT and no value specified in the [servers] section.  The values
 # can contain "%d" which is translated to the DISPLAY value or %h which
-# is translated to the hostname.
-UtmpLineLocal=/dev/console
-UtmpLineRemote=
-# If true and the specified UtmpLineLocal or UtmpLineRemote does not exist,
+# is translated to the hostname.  The values for both keys  must begin with
+# "/dev/".
+UtmpLineAttached=@UTMP_LINE_ATTACHED@
+UtmpLineRemote=@UTMP_LINE_REMOTE@
+# If true and the specified UtmpLineAttached or UtmpLineRemote does not exist,
 # then create a pseudo-device filename that will be touched when the utmp
 # record is updated.  Creating such a psuedo-device ensures that programs
 # that stat the utmp device associated with ut_line such as finger, last,
 # etc. work in a reasonable way.  
-UtmpPseudoDevice=true
+UtmpPseudoDevice=@UTMP_PSEUDO_DEVICE@
 
 # XDMCP is the protocol that allows remote login.  If you want to log into GDM
 # remotely (I'd never turn this on on open network, use ssh for such remote
@@ -584,52 +585,48 @@ Enable=false
 # gesture listeners may not be working, but is too verbose for general debug.
 Gestures=false
 
-[servers]
-# This section defines which servers should be started by GDM by default.
-# You can add as many servers as desired and they will always be started.
-# Each line must start with a unique number and this corresponds to the
-# DISPLAY number of that server.  For a typical single-display machine,
-# this section will only contain the "0" server for DISPLAY ":0".
+# Attached DISPLAY Configuration
 #
-# The optional second argument is used to specify the device that is
-# associated with the display.  When using Virtual Terminals (VT), 
-# this value is ignored and GDM uses the correct device name associated
-# with the VT.  If not using VT, then it will use the value specified
-# by this optional second argument.  If no optional second argument is
-# defined, then GDM will use the default settings specified in the
-# UtmpLineLocal configuration option.  For the main display (typically
-# DISPLAY ":0"), "/dev/console" is a reasonable value.  For other
-# displays it is probably best to leave this blank unless you know the
-# specific device associated with the DISPLAY.  The values can contain
-# "%d" which is translated to the DISPLAY value or %h which is
-# translated to the hostname.
-0=Standard /dev/console
+[servers]
+# This section defines which attached DISPLAYS should be started by GDM by
+# default.  You can add as many DISPLAYS as desired and they will always be
+# started.  The key for each entry must be a unique number that cooresponds to
+# the DISPLAY number to start the X server.  For a typical single-display
+# machine, there will only be one entry "0" for DISPLAY ":0".  The first word
+# in the value corresponds to an X server definition in the "X Server
+# Definitions" section of the configuration file.  For example, the entry:
+#
+# 0=Standard
+#
+# Means that DISPLAY ":0" will start an X server as defined in the 
+# [server-Standard] section.
+#
+# The optional device argument is used to specify the device that is associated
+# with the DISPLAY.  When using Virtual Terminals (VT), this value is ignored
+# and GDM will use the correct device name associated with the VT.  If not
+# using VT, then GDM will use the value specified by this optional argument.
+# If the device argument is not defined, then GDM will use the default setting
+# for attached displays defined in the UtmpLineAttached configuration option.
+# For the main display (typically DISPLAY ":0"), "/dev/console" is a reasonable
+# value.  For other displays it is probably best to not include this argument
+# unless you know the specific device associated with the DISPLAY.  The device
+# value can contain "%d" which is translated to the DISPLAY value or %h which
+# is translated to the hostname.
+#
+0=Standard device=/dev/console
 
-# Example of how to set up display :1 to also use Standard.
+# Example of how to set up DISPLAY :1 to also use Standard.
 #1=Standard
 
-# Note the VTAllocation and FirstVT keys on Linux and FreeBSD.  Don't add any
-# vt<number> arguments if VTAllocation is on, and set FirstVT to be the first
-# vt available that your gettys don't grab (gettys are usually dumb and grab
-# even a vt that has already been taken).  Using 7 will work pretty much for
-# all Linux distributions.  VTAllocation is not currently implemented on
-# anything but Linux and FreeBSD.  Feel free to send patches.  X servers will
-# just not get any extra arguments then.
-#
-# If you want to run an X terminal you could add an X server such as this:
-#0=Terminal -query serverhostname
-# or for a chooser (optionally serverhostname could be localhost):
-#0=Terminal -indirect serverhostname
-#
 # If you wish to run the XDMCP chooser on the local display use the following
 # line
 #0=Chooser
 
-## Note:
-# is your X server not listening to TCP requests?  Perhaps you should look at
-# the security/DisallowTCP setting!
+# X Server Definitions
+#
+# Note: Is your X server not listening to TCP requests?  Refer to the 
+# security/DisallowTCP setting!
 
-# Definition of the standard X server.
 [server-Standard]
 name=Standard server
 command=@X_SERVER@ @X_CONFIG_OPTIONS@ @XEVIE_OPTION@
@@ -654,7 +651,7 @@ command=@X_SERVER@ @X_CONFIG_OPTIONS@ -terminate
 # indirect query server, then you must get rid of the -terminate and the only
 # way to kill the flexible server will then be by Ctrl-Alt-Backspace.
 flexible=false
-# Not local, we do not handle the logins for this X server.
+# Do not handle this X server for attached displays.
 handled=false
 
 # To use this server type you should add -query host or -indirect host to the
