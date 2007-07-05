@@ -1,6 +1,6 @@
 2007-07-05  Brian Cameron <brian.cameron@sun.com>
 
-	* daemon/verify-pam.c: Add logindevperm debug messages, so it ies
+	* daemon/verify-pam.c: Add logindevperm debug messages, so it is
 	  easier to tell when it is working.
 	* config/Makefile.am: Fix typo that was causing the UtmpLineAttached
 	  and UtmpLineRemote values to not get filled with proper defaults.
@@ -3893,10 +3893,10 @@
 2005-12-03  Dennis Cranston  <dennis_cranston@yahoo.com>
 
 	* gui/gdmsetup.c: (gg_selection_changed), (read_themes),
-	(xserver_button_clicked), (setup_local_themed_settings),
-	(setup_remote_themed_settings), (setup_gui):
+	  (xserver_button_clicked), (setup_local_themed_settings),
+	  (setup_remote_themed_settings), (setup_gui):
 	* gui/gdmsetup.glade:  First set of UI changes as 
-	recommended by Calum Benson. 
+	  recommended by Calum Benson. 
 
 2005-12-02  Brian Cameron  <brian.cameron@sun.com>
 
@@ -4700,8 +4700,8 @@
 2005-08-01  Ryan Lortie  <desrt@desrt.ca>
 
 	* gui/gdmwm.c (gdm_common_query): Reorder code so that the 
-	affirmative response is always the rightmost button in a dialog
-	as per the HIG. (Bug #312188)
+	  affirmative response is always the rightmost button in a dialog
+	  as per the HIG. (Bug #312188)
 
 2005-07-31  Tommi Vainikainen  <thv@iki.fi>
 
@@ -4755,13 +4755,13 @@
 2005-07-24  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/greeter/greeter_item_ulist.c (check_for_displays) 
-	(greeter_generate_userlist, greeter_populate_user_list):
-	A few more tweaks to the face browser.
+	  (greeter_generate_userlist, greeter_populate_user_list):
+	  A few more tweaks to the face browser.
 
 	* gui/gdmphotosetup.c (maybe_migrate_old_config): Fix leak.
-	(main): Freeing result of gdm_common_get_config file
-	causes memory corruption.  So, don't free it until
-	we find the problem.
+	  (main): Freeing result of gdm_common_get_config file
+	  causes memory corruption.  So, don't free it until
+	  we find the problem.
 
 2005-07-24  William Jon McCann  <mccann@jhu.edu>
 
@@ -6314,8 +6314,8 @@ Tue Apr 13 11:22:00 2004  George Lebl <jirka@5z.com>
 2004-04-08 Vijaykumar Patwari <vijaykumar.patwari@wipro.com>
 
 	* daemon/auth.c (get_local_auths): Replaced Address Family, 
-	FamilyInternet by FamilyInternetV6 for IPv6 while adding addresses 
-	for authorization. Fixes "Remote login with IPv6 enabled".
+	  FamilyInternet by FamilyInternetV6 for IPv6 while adding addresses 
+	  for authorization. Fixes "Remote login with IPv6 enabled".
 
 Sun Apr 04 11:12:55 2004  George Lebl <jirka@5z.com>
 
@@ -6421,7 +6421,7 @@ Sun Feb 29 10:02:51 2004  George Lebl <jirka@5z.com>
 	* gui/gdmlanguages.c (languages): 
 
 	* config/locale.alias: Add Canadian English (fixes #135053) --
-	patch by Adam Weinberger <adamw@freebsd.org>.
+	  patch by Adam Weinberger <adamw@freebsd.org>.
 
 2004-02-25  Danilo Šegan  <dsegan@gmx.net>
 
@@ -6652,8 +6652,8 @@ Fri Jan 02 16:31:34 2004  George Lebl <jirka@5z.com>
 Thu Jan 01 11:24:30 2004  Ray Strode <halfline@hawaii.rr.com>
 
 	* daemon/gdm.c (handle_user_message): Fix bug where
-	REBOOT would get written to the socket before the separator
-	when user queries available logout actions.
+	  REBOOT would get written to the socket before the separator
+	  when user queries available logout actions.
 
 Thu Jan 01 10:39:00 2004  Ray Strode <halfline@hawaii.rr.com>
 
@@ -8633,7 +8633,7 @@ Thu Jul 03 14:57:38 2003  George Lebl <jirka@5z.com>
 2003-07-02  Jordi Mallach  <jordi@sindominio.net>
 
 	* gui/*.desktop.in: Fix Terminal entries and add StartupNotify
-	support where appropriate.
+	  support where appropriate.
 
 2003-06-30  Mohammad DAMT  <mdamt@bisnisweb.com>
 
@@ -8696,7 +8696,7 @@ Wed Jun 25 15:38:29 2003  George Lebl <jirka@5z.com>
 2003-06-16  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gui/greeter/greeter_session.c: (greeter_session_init):
-	don't use file name from session name.
+	  don't use file name from session name.
 
 Thu Jun 12 16:27:47 2003  George Lebl <jirka@5z.com>
 
@@ -9912,7 +9912,7 @@ Wed Aug 07 18:38:11 2002  George Lebl <jirka@5z.com>
 2002-08-07  Havoc Pennington  <hp@redhat.com>
 
 	* config/XKeepsCrashing (XCONFIGURATOR): add redhat-config-xfree86
-	to list of config tools to look for
+	  to list of config tools to look for
 
 Wed Aug 07 16:23:13 2002  George Lebl <jirka@5z.com>
 
@@ -10208,8 +10208,8 @@ Sat Jul 20 10:19:25 2002  George Lebl <jirka@5z.com>
 2002-07-18  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gui/greeter/themes/happygnome/Makefile.am:
-	add disconnect.png to Makefile.am. Fix happygnome theme when
-	using tarball
+	  add disconnect.png to Makefile.am. Fix happygnome theme when
+	  using tarball
 
 Wed Jul 17 11:17:10 2002  George Lebl <jirka@5z.com>
 
@@ -10577,7 +10577,7 @@ Sat Jun 01 17:21:38 2002  George Lebl <jirka@5z.com>
 Sun Jun 02 01:35:00 2002  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* config/locale.alias: The es_ES locale is now ISO-8859-15 to add euro
-	support.
+	  support.
 
 Sat Jun 01 14:42:29 2002  George Lebl <jirka@5z.com>
 
@@ -10622,7 +10622,7 @@ Fri May 31 10:12:04 2002  George Lebl <jirka@5z.com>
 2002-05-31  Changwoo Ryu  <cwryu@debian.org>
 
 	* gui/greeter/greeter_lang_list.c: Added Korean
-	untranslated_name to the languages list.
+	  untranslated_name to the languages list.
 
 Thu May 30 13:30:01 2002  George Lebl <jirka@5z.com>
 
@@ -12677,16 +12677,16 @@ Fri Aug  3 12:51:58 2001  Owen Taylor  <otaylor@redhat.com>
 	* daemon/server.c (display_busy): fix format 
 
 	* daemon/verify-crypt.c (gdm_verify_user): don't put login 
-	in syslog, because people accidentally type their password 
-	in this field.
+	  in syslog, because people accidentally type their password 
+	  in this field.
 
 	* daemon/verify-shadow.c (gdm_verify_user): same
 
 	* daemon/verify-pam.c (gdm_verify_user): same
 	
 	* daemon/misc.c: syslog takes a format string, don't pass it data
-	we got from the user. Reported by Cyril Diakhate
-	<diakhate@easynet.fr>
+	  we got from the user. Reported by Cyril Diakhate
+	  <diakhate@easynet.fr>
 
 Thu Aug  2 03:10:23 2001  Abel Cheung <maddog@linux.org.hk>
 
@@ -13251,8 +13251,8 @@ Wed May 30 16:19:39 2001  George Lebl <jirka@5z.com>
 2001-05-30  Havoc Pennington  <hp@redhat.com>
 
 	* configure.in (ALL_LINGUAS): remove ja.po and zh_TW.Big5.po. 
-	ja.po contains invalid euc-jp. zh_TW.Big5.po causes gettext 
-	to get upset but iconv likes it OK, so I don't know.
+	  ja.po contains invalid euc-jp. zh_TW.Big5.po causes gettext 
+	  to get upset but iconv likes it OK, so I don't know.
 
 Wed May 30 04:00:33 2001  George Lebl <jirka@5z.com>
 
@@ -14177,10 +14177,10 @@ Wed Feb 28 19:23:42 2001  George Lebl <jirka@5z.com>
 Web Feb 28 18:47:14 2001  Lee Mallabone <lee0@callnetuk.com>
 
 	* gdmconfig-pam, gdmconfig-security: New files to support
-	privileged non-root users running gdmconfig.
+	  privileged non-root users running gdmconfig.
 	
 	* Makefile.am, configure.in, gdm.spec.in: Add option to configure
-	to --enable-console-helper for gdmconfig.
+	  to --enable-console-helper for gdmconfig.
 
 Tue Feb 27 16:44:34 2001  George Lebl <jirka@5z.com>
 
@@ -14197,7 +14197,7 @@ Tue Feb 27 13:27:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
 	* gdmconfig/Makefile.am: removed DLOCALEDIR.
 	* gdmconfig/gdmconfig.c/h: include config.h in c file, not h.
-	i18n fixes, gui now translated.
+	  i18n fixes, gui now translated.
 
 Tue Feb 27 00:25:10 2001  George Lebl <jirka@5z.com>
 
@@ -14241,7 +14241,7 @@ Mon Feb 19 03:42:01 2001  Jonathan Blandford  <jrb@redhat.com>
 Sun Feb 18 15:05:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
 	* gui/gdmconfig.glade: Improve clarity, and make 'automatic login'
-	more noticeable.
+	  more noticeable.
 
 Sun Feb 18 11:32:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
@@ -14396,7 +14396,7 @@ Thu Feb 01 04:49:11 2001  George Lebl <jirka@5z.com>
 2001-01-31  Gediminas Paulauskas <menesis@delfi.lt>
 
 	* gui/gdmconfig-strings.c, gui/gdmconfig.glade: fix some mistakes in
-	strings.
+	  strings.
 	* config/locale.alias: added lithuanian.
 
 Tue Jan 30 20:19:46 2001  George Lebl <jirka@5z.com>
