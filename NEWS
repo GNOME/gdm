@@ -1,5 +1,57 @@
 Ahh news...
 
+2.19.4 Stuff:
+
+- Now GDM manages utmp/wtmp processing directly rather than
+  using the X server sessreg program.  (Brian Cameron, Ray
+  Strode)
+
+- Now GDM supports new configuration options to specify how the
+  utmp/wtmp ut_line value is set.  Refer to the UtmpLineAttached,
+  UtmpLineRemote, UtmpPseudoDevice configuration options and the
+  fact that the [servers] section now supports specifying a 
+  device via device="/dev/foo" syntax.
+
+- Fix gdmchooser so it will start the at_spi_registryd so that
+  AT programs work when you run it.  (Brian Cameron)
+
+- Now icons are installed to the hicolor theme and use the 
+  correct GTK calls to grab application icons from the theme, not
+  pixmaps.  (Michael Terry)
+
+- Now the gdmgreeter sports icons in the F10 menu.  (Brian
+  Cameron, Michael Terry)
+
+- Fix focus handling in gdmlogin so that the Tab key can move
+  focus into the button widgets.  Also fix sensitivity of the
+  "OK" button so it is insensitive when no characters are in
+  the entry field.  (Brian Cameron)
+
+- Remove logic that sets the default locale selection to en_US
+  since this locale is not guaranteed to always be available.  Now
+  just let the system default to C without special code in GDM.
+  (Lo\357c Minier)
+
+- Now GDM checks to ensure that a theme file is readable and
+  reports better error messages if not. (Lukasz Zalewski)
+
+- Enhanced Solaris utmp, PAM_TTY, Sun Audit, and logindevperm
+  code to work with Virtual Terminals which will be available
+  in Solaris Nevada in the next few months.  Fix logindevperm
+  code so it only is used when the user logs in and logs out.
+  Now setfacl calls are made to allow the GDM user to have
+  access to the sound device on Solaris.  (Brian Cameron)
+
+- Initialize lang variable to avoid accessing a unitialized memory.
+  (Juerg Billeter)
+
+- Fix many warnings.  (Lo\357c Minier)
+
+- Translation updates (I. Felix, Pema Geyleg, Jorge Gonzalez,
+  Priit Laes, Kjartan Maraas, Nguy\341\273\205n Th\303\241i
+  Ng\341\273\215c, Daniel Nylander, St\303\251phane Raimbault,
+  Clytie Siddall)
+
 2.19.3 Stuff:
 
 - Ensure non-null size is set by default for pango font
@@ -59,7 +111,7 @@ New features, improvements, and bug fixes:
   the configuration file doesn't specify to use invisible or circles.
   (Sebastien Bacher)
 
-- GDM documention make logic has been updated so it works better and we
+- GDM documentation make logic has been updated so it works better and we
   now generate documentation for more languages.  Now mdash and percnt
   entities have definitions so they no longer generate warnings.
   (Brian Cameron)
@@ -1300,7 +1352,7 @@ New features, improvements, and bug fixes:
 - Now Xsession script uses "$@" instead of "$1" so it is possible to
   pass arguments with the command to run.  (Brian Cameron)
 
-- Add Trusted Solraris support.  (Niall Power)
+- Add Trusted Solaris support.  (Niall Power)
 
 - One line fix to Solaris auditing logic that fixes a bug causing
   authentication to fail when auditing is turned on.  (Brian Cameron)
@@ -1313,7 +1365,7 @@ New features, improvements, and bug fixes:
   Dejean, Laurent Dhima, Maxim Dziumanenko, Alessio Frusciante, Rhys
   Jones, Raphael Higino, Theppitak Karoonboonyanan, Gabor Kelmen,
   Priit Laes, Jordi Mallach, Kjartan Maraas, Daniel Nylander, Kostas
-  Papdimas, Guilherme de S. Pastore, Ankit Patel, Ignacio Casal
+  Papadimas, Guilherme de S. Pastore, Ankit Patel, Ignacio Casal
   Quinteiro, Hendrik Richter, Jens Seidel, Francisco Javier F. Serrador,
   Alexander Shopov, Clytie Siddall, Ilkka Tuohela, Vincent van Adrighem,
   Tommi Vainikaninen)
@@ -1363,7 +1415,7 @@ New features, improvements, and bug fixes:
   the string didn't change, just the value placed into the %s
   sequence.  (Brian Cameron)
 
-- Some C-99 compile issues resolved.  (Jans Granseur)
+- Some C-99 compile issues resolved.  (Jans Granseuer)
 
 - Translation updates (Takeshi AIHANA, \305\275ygimantas
   Beru\304\215ka, Raphael Higino, Inaki Larranaga, Rhys Jones,
@@ -1476,7 +1528,7 @@ New features, improvements, and bug fixes:
   Hazael-Massieux)
 
 - Translation updates (Kjartan Maraas, Lasse Bang Mikkelsen, Ankit Patel,
-  Ignacia Casal Quinteriro, Clytie Siddall, Ilkka Tuohela)
+  Ignacia Casal Quinteiro, Clytie Siddall, Ilkka Tuohela)
 
 2.13.0.5 stuff:
 
