@@ -1,3 +1,9 @@
+2007-07-09  Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/slave.c: Define MAXPATHLEN to PATH_MAX if MAXPATHLEN does
+	  not exist on the system.  Fixes bug #454777.  Patch by Laurent
+	  Goujon <laurent.goujon@online.fr>.
+
 2007-07-05  Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/verify-pam.c: Add logindevperm debug messages, so it is

@@ -47,6 +47,12 @@
 #include <string.h>
 #include <utmpx.h>
 
+#if !defined MAXPATHLEN && defined PATH_MAX
+#define MAXPATHLEN PATH_MAX
+#else
+#error "MAXPATHLEN or PATH_MAX undefined"
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
