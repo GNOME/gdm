@@ -1287,6 +1287,9 @@ main (int argc, char *argv[])
 	  gdm_set_theme (gdm_gtk_theme);
   }
 
+  gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+                                     GDM_DATADIR G_DIR_SEPARATOR_S "icons");
+
   gdm_wm_screen_init (gdm_config_get_int (GDM_KEY_XINERAMA_SCREEN));
   
   r = verify_gdm_version ();

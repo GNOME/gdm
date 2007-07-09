@@ -1346,6 +1346,7 @@ gui/modules/Makefile
 utils/Makefile
 pixmaps/Makefile
 pixmaps/16x16/Makefile
+pixmaps/24x24/Makefile
 pixmaps/32x32/Makefile
 pixmaps/48x48/Makefile
 config/Makefile

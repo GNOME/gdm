@@ -1,6 +1,6 @@
 
 SUBDIRS = \
-	16x16 32x32 48x48
+	16x16 24x24 32x32 48x48
 
 pixmapdir = $(datadir)/pixmaps
 
