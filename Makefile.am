@@ -32,4 +32,4 @@ DISTCLEANFILES = \
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper
 
-distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper'
+distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper' | grep -v '^./share/.*/icons/hicolor/icon-theme.cache'
