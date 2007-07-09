@@ -47,9 +47,9 @@
 #include <string.h>
 #include <utmpx.h>
 
-#if !defined MAXPATHLEN && defined PATH_MAX
+#if !defined (MAXPATHLEN) && defined (PATH_MAX)
 #define MAXPATHLEN PATH_MAX
-#else
+#elif !defined (MAXPATHLEN)
 #error "MAXPATHLEN or PATH_MAX undefined"
 #endif
 
