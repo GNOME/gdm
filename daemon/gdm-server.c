@@ -871,7 +871,7 @@ gdm_server_init (GdmServer *server)
 	server->priv = GDM_SERVER_GET_PRIVATE (server);
 
 	server->priv->pid = -1;
-	server->priv->command = g_strdup ("/usr/bin/Xorg -verbose -novtswitch");
+	server->priv->command = g_strdup ("/usr/bin/Xorg -verbose");
 	server->priv->log_dir = g_strdup (LOGDIR);
 
 	setup_ready_signal (server);

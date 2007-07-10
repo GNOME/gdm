@@ -587,17 +587,141 @@ setup_session_environment (GdmProductSlave *slave)
 }
 
 static void
-on_user_verified (GdmSession      *session,
-		  GdmProductSlave *slave)
+setup_server (GdmProductSlave *slave)
+{
+	gboolean       display_is_local;
+	char          *display_name;
+	char          *auth_file;
+
+	g_object_get (slave,
+		      "display-is-local", &display_is_local,
+		      "display-name", &display_name,
+		      "display-x11-authority-file", &auth_file,
+		      NULL);
+
+	/* Set the busy cursor */
+	set_busy_cursor (slave);
+
+	/* FIXME: send a signal back to the master */
+
+#if 0
+
+	/* OK from now on it's really the user whacking us most likely,
+	 * we have already started up well */
+	do_xfailed_on_xio_error = FALSE;
+#endif
+
+#if 0
+	/* checkout xinerama */
+	gdm_screen_init (slave);
+#endif
+
+#ifdef HAVE_TSOL
+	/* Check out Solaris Trusted Xserver extension */
+	gdm_tsol_init (d);
+#endif
+
+	/* Run the init script. gdmslave suspends until script has terminated */
+	gdm_product_slave_exec_script (slave,
+				      GDMCONFDIR"/Init",
+				      "gdm");
+
+	g_free (display_name);
+	g_free (auth_file);
+}
+
+static void
+set_local_auth (GdmProductSlave *slave)
+{
+	GString *binary_cookie;
+	GString *cookie;
+	char    *display_x11_cookie;
+
+	g_object_get (slave,
+		      "display-x11-cookie", &display_x11_cookie,
+		      NULL);
+
+	g_debug ("Setting authorization key for display %s", display_x11_cookie);
+
+	cookie = g_string_new (display_x11_cookie);
+	binary_cookie = g_string_new (NULL);
+	if (! gdm_string_hex_decode (cookie,
+				     0,
+				     NULL,
+				     binary_cookie,
+				     0)) {
+		g_warning ("Unable to decode hex cookie");
+		goto out;
+	}
+
+	g_debug ("Decoded cookie len %d", binary_cookie->len);
+
+	XSetAuthorization ("MIT-MAGIC-COOKIE-1",
+			   (int) strlen ("MIT-MAGIC-COOKIE-1"),
+			   (char *)binary_cookie->str,
+			   binary_cookie->len);
+
+ out:
+	g_string_free (binary_cookie, TRUE);
+	g_string_free (cookie, TRUE);
+	g_free (display_x11_cookie);
+}
+
+static gboolean
+connect_to_display (GdmProductSlave *slave)
+{
+	char          *display_name;
+	gboolean       ret;
+
+	ret = FALSE;
+
+	g_object_get (slave,
+		      "display-name", &display_name,
+		      NULL);
+
+	/* We keep our own (windowless) connection (dsp) open to avoid the
+	 * X server resetting due to lack of active connections. */
+
+	g_debug ("Server is ready - opening display %s", display_name);
+
+	g_setenv ("DISPLAY", display_name, TRUE);
+	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
+
+	set_local_auth (slave);
+
+#if 0
+	/* X error handlers to avoid the default one (i.e. exit (1)) */
+	do_xfailed_on_xio_error = TRUE;
+	XSetErrorHandler (gdm_product_slave_xerror_handler);
+	XSetIOErrorHandler (gdm_product_slave_xioerror_handler);
+#endif
+
+	gdm_sigchld_block_push ();
+	slave->priv->server_display = XOpenDisplay (display_name);
+	gdm_sigchld_block_pop ();
+
+	if (slave->priv->server_display == NULL) {
+		g_warning ("Unable to connect to display %s", display_name);
+		ret = FALSE;
+	} else {
+		g_debug ("Connected to display %s", display_name);
+		ret = TRUE;
+	}
+
+	g_free (display_name);
+
+	return ret;
+}
+
+static gboolean
+setup_session (GdmProductSlave *slave)
 {
 	char    *username;
 	char    *command;
 	char    *filename;
 	gboolean res;
 
-	/*gdm_greeter_server_stop (slave->priv->greeter);*/
-
-	username = gdm_session_get_username (session);
+	username = gdm_session_get_username (slave->priv->session);
 
 	g_debug ("%s%ssuccessfully authenticated\n",
 		 username ? username : "",
@@ -615,13 +739,98 @@ on_user_verified (GdmSession      *session,
 	res = get_session_command (filename, &command);
 	if (! res) {
 		g_warning ("Could find session file: %s", filename);
-		return;
+		return FALSE;
 	}
 
-	gdm_session_start_program (session, command);
+	gdm_session_start_program (slave->priv->session, command);
 
 	g_free (filename);
 	g_free (command);
+
+	return TRUE;
+}
+
+static gboolean
+idle_connect_to_display (GdmProductSlave *slave)
+{
+	gboolean res;
+
+	slave->priv->connection_attempts++;
+
+	res = connect_to_display (slave);
+	if (res) {
+		/* FIXME: handle wait-for-go */
+
+		setup_server (slave);
+		setup_session (slave);
+	} else {
+		if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
+			g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
+			exit (1);
+		}
+	}
+
+	return FALSE;
+}
+
+static void
+server_ready_cb (GdmServer *server,
+		 GdmProductSlave  *slave)
+{
+	g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
+}
+
+static gboolean
+gdm_product_slave_create_server (GdmProductSlave *slave)
+{
+	char    *display_name;
+	gboolean display_is_local;
+
+	g_object_get (slave,
+		      "display-is-local", &display_is_local,
+		      "display-name", &display_name,
+		      NULL);
+
+	/* if this is local display start a server if one doesn't
+	 * exist */
+	if (display_is_local) {
+		gboolean res;
+
+		slave->priv->server = gdm_server_new (display_name);
+
+		g_signal_connect (slave->priv->server,
+				  "ready",
+				  G_CALLBACK (server_ready_cb),
+				  slave);
+
+		res = gdm_server_start (slave->priv->server);
+		if (! res) {
+			g_warning (_("Could not start the X "
+				     "server (your graphical environment) "
+				     "due to some internal error. "
+				     "Please contact your system administrator "
+				     "or check your syslog to diagnose. "
+				     "In the meantime this display will be "
+				     "disabled.  Please restart GDM when "
+				     "the problem is corrected."));
+			exit (1);
+		}
+
+		g_debug ("Started X server");
+	} else {
+		g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
+	}
+
+	g_free (display_name);
+
+	return TRUE;
+}
+
+static void
+on_user_verified (GdmSession      *session,
+		  GdmProductSlave *slave)
+{
+	gdm_product_slave_create_server (slave);
 }
 
 static void
@@ -921,210 +1130,6 @@ on_relay_cancelled (DBusGProxy *proxy,
 }
 
 static void
-setup_relay (GdmProductSlave *slave)
-{
-	gboolean       display_is_local;
-	char          *display_name;
-	char          *auth_file;
-
-	g_object_get (slave,
-		      "display-is-local", &display_is_local,
-		      "display-name", &display_name,
-		      "display-x11-authority-file", &auth_file,
-		      NULL);
-
-	/* Set the busy cursor */
-	set_busy_cursor (slave);
-
-	/* FIXME: send a signal back to the master */
-
-#if 0
-
-	/* OK from now on it's really the user whacking us most likely,
-	 * we have already started up well */
-	do_xfailed_on_xio_error = FALSE;
-#endif
-
-#if 0
-	/* checkout xinerama */
-	gdm_screen_init (slave);
-#endif
-
-#ifdef HAVE_TSOL
-	/* Check out Solaris Trusted Xserver extension */
-	gdm_tsol_init (d);
-#endif
-
-	/* Run the init script. gdmslave suspends until script has terminated */
-	gdm_product_slave_exec_script (slave,
-				      GDMCONFDIR"/Init",
-				      "gdm");
-
-	g_free (display_name);
-	g_free (auth_file);
-
-	ready_relay (slave);
-}
-
-static void
-set_local_auth (GdmProductSlave *slave)
-{
-	GString *binary_cookie;
-	GString *cookie;
-	char    *display_x11_cookie;
-
-	g_object_get (slave,
-		      "display-x11-cookie", &display_x11_cookie,
-		      NULL);
-
-	g_debug ("Setting authorization key for display %s", display_x11_cookie);
-
-	cookie = g_string_new (display_x11_cookie);
-	binary_cookie = g_string_new (NULL);
-	if (! gdm_string_hex_decode (cookie,
-				     0,
-				     NULL,
-				     binary_cookie,
-				     0)) {
-		g_warning ("Unable to decode hex cookie");
-		goto out;
-	}
-
-	g_debug ("Decoded cookie len %d", binary_cookie->len);
-
-	XSetAuthorization ("MIT-MAGIC-COOKIE-1",
-			   (int) strlen ("MIT-MAGIC-COOKIE-1"),
-			   (char *)binary_cookie->str,
-			   binary_cookie->len);
-
- out:
-	g_string_free (binary_cookie, TRUE);
-	g_string_free (cookie, TRUE);
-	g_free (display_x11_cookie);
-}
-
-static gboolean
-connect_to_display (GdmProductSlave *slave)
-{
-	char          *display_name;
-	gboolean       ret;
-
-	ret = FALSE;
-
-	g_object_get (slave,
-		      "display-name", &display_name,
-		      NULL);
-
-	/* We keep our own (windowless) connection (dsp) open to avoid the
-	 * X server resetting due to lack of active connections. */
-
-	g_debug ("Server is ready - opening display %s", display_name);
-
-	g_setenv ("DISPLAY", display_name, TRUE);
-	g_unsetenv ("XAUTHORITY"); /* just in case it's set */
-
-	set_local_auth (slave);
-
-#if 0
-	/* X error handlers to avoid the default one (i.e. exit (1)) */
-	do_xfailed_on_xio_error = TRUE;
-	XSetErrorHandler (gdm_product_slave_xerror_handler);
-	XSetIOErrorHandler (gdm_product_slave_xioerror_handler);
-#endif
-
-	gdm_sigchld_block_push ();
-	slave->priv->server_display = XOpenDisplay (display_name);
-	gdm_sigchld_block_pop ();
-
-	if (slave->priv->server_display == NULL) {
-		g_warning ("Unable to connect to display %s", display_name);
-		ret = FALSE;
-	} else {
-		g_debug ("Connected to display %s", display_name);
-		ret = TRUE;
-	}
-
-	g_free (display_name);
-
-	return ret;
-}
-
-static gboolean
-idle_connect_to_display (GdmProductSlave *slave)
-{
-	gboolean res;
-
-	slave->priv->connection_attempts++;
-
-	res = connect_to_display (slave);
-	if (res) {
-		/* FIXME: handle wait-for-go */
-
-		setup_relay (slave);
-	} else {
-		if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
-			g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
-			exit (1);
-		}
-	}
-
-	return FALSE;
-}
-
-static void
-server_ready_cb (GdmServer *server,
-		 GdmProductSlave  *slave)
-{
-	g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
-}
-
-static gboolean
-gdm_product_slave_run (GdmProductSlave *slave)
-{
-	char    *display_name;
-	gboolean display_is_local;
-
-	g_object_get (slave,
-		      "display-is-local", &display_is_local,
-		      "display-name", &display_name,
-		      NULL);
-
-	/* if this is local display start a server if one doesn't
-	 * exist */
-	if (display_is_local) {
-		gboolean res;
-
-		slave->priv->server = gdm_server_new (display_name);
-
-		g_signal_connect (slave->priv->server,
-				  "ready",
-				  G_CALLBACK (server_ready_cb),
-				  slave);
-
-		res = gdm_server_start (slave->priv->server);
-		if (! res) {
-			g_warning (_("Could not start the X "
-				     "server (your graphical environment) "
-				     "due to some internal error. "
-				     "Please contact your system administrator "
-				     "or check your syslog to diagnose. "
-				     "In the meantime this display will be "
-				     "disabled.  Please restart GDM when "
-				     "the problem is corrected."));
-			exit (1);
-		}
-
-		g_debug ("Started X server");
-	} else {
-		g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
-	}
-
-	g_free (display_name);
-
-	return TRUE;
-}
-
-static void
 session_relay_proxy_destroyed (GObject *object,
 				gpointer data)
 {
@@ -1297,7 +1302,7 @@ gdm_product_slave_start (GdmSlave *slave)
 
 	connect_to_session_relay (GDM_PRODUCT_SLAVE (slave));
 
-	gdm_product_slave_run (GDM_PRODUCT_SLAVE (slave));
+	ready_relay (GDM_PRODUCT_SLAVE (slave));
 
 	ret = TRUE;
 
