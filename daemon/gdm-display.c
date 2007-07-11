@@ -201,6 +201,22 @@ gdm_display_get_number (GdmDisplay *display,
        return TRUE;
 }
 
+static void
+slave_exited (GdmSlaveProxy       *proxy,
+	      int                  code,
+	      GdmDisplay          *display)
+{
+	g_debug ("Slave exited: %d", code);
+}
+
+static void
+slave_died (GdmSlaveProxy       *proxy,
+	    int                  signum,
+	    GdmDisplay          *display)
+{
+	g_debug ("Slave died: %d", signum);
+}
+
 static gboolean
 gdm_display_real_manage (GdmDisplay *display)
 {
@@ -215,6 +231,14 @@ gdm_display_real_manage (GdmDisplay *display)
 	g_assert (display->priv->slave_proxy == NULL);
 
 	display->priv->slave_proxy = gdm_slave_proxy_new ();
+	g_signal_connect (display->priv->slave_proxy,
+			  "exited",
+			  G_CALLBACK (slave_exited),
+			  display);
+	g_signal_connect (display->priv->slave_proxy,
+			  "died",
+			  G_CALLBACK (slave_died),
+			  display);
 
 	command = g_strdup_printf ("%s --display-id %s",
 				   display->priv->slave_command,
@@ -235,7 +259,7 @@ gdm_display_manage (GdmDisplay *display)
 
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Unmanaging display");
+	g_debug ("Unmanaging display: %s", display->priv->id);
 
 	g_object_ref (display);
 	ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
@@ -630,6 +654,7 @@ gdm_display_finalize (GObject *object)
 
 	g_return_if_fail (display->priv != NULL);
 
+	g_debug ("Finalizing display: %s", display->priv->id);
 	g_free (display->priv->id);
 
 	G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);

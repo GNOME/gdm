@@ -41,14 +41,21 @@ struct GdmSlaveProxyPrivate
 {
 	char    *command;
 	GPid     pid;
-        guint    output_watch_id;
-        guint    error_watch_id;
+	guint    child_watch_id;
 };
 
 enum {
 	PROP_0,
 	PROP_COMMAND,
 };
+
+enum {
+	EXITED,
+	DIED,
+	LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0, };
 
 static void	gdm_slave_proxy_class_init	(GdmSlaveProxyClass *klass);
 static void	gdm_slave_proxy_init	        (GdmSlaveProxy      *slave);
@@ -100,96 +107,29 @@ slave_died (GdmSlaveProxy *slave)
 	g_debug ("Slave died");
 }
 
-static gboolean
-output_watch (GIOChannel    *source,
-	      GIOCondition   condition,
-	      GdmSlaveProxy *slave)
-{
-	gboolean finished = FALSE;
-
-	if (condition & G_IO_IN) {
-		GIOStatus status;
-		GError	 *error = NULL;
-		char	 *line;
-
-		line = NULL;
-		status = g_io_channel_read_line (source, &line, NULL, NULL, &error);
-
-		switch (status) {
-		case G_IO_STATUS_NORMAL:
-			g_debug ("command output: %s", line);
-			break;
-		case G_IO_STATUS_EOF:
-			finished = TRUE;
-			break;
-		case G_IO_STATUS_ERROR:
-			finished = TRUE;
-			g_debug ("Error reading from child: %s\n", error->message);
-			return FALSE;
-		case G_IO_STATUS_AGAIN:
-		default:
-			break;
-		}
-
-		g_free (line);
-	} else if (condition & G_IO_HUP) {
-		finished = TRUE;
-	}
-
-	if (finished) {
-		slave_died (slave);
-
-		slave->priv->output_watch_id = 0;
-
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/* just for debugging */
-static gboolean
-error_watch (GIOChannel	   *source,
-	     GIOCondition   condition,
+static void
+child_watch (GPid           pid,
+	     int            status,
 	     GdmSlaveProxy *slave)
 {
-	gboolean finished = FALSE;
+        g_debug ("child (pid:%d) done (%s:%d)",
+                 (int) pid,
+                 WIFEXITED (status) ? "status"
+                 : WIFSIGNALED (status) ? "signal"
+                 : "unknown",
+                 WIFEXITED (status) ? WEXITSTATUS (status)
+                 : WIFSIGNALED (status) ? WTERMSIG (status)
+                 : -1);
+        if (WIFEXITED (status)) {
+                int code = WEXITSTATUS (status);
+                g_signal_emit (slave, signals [EXITED], 0, code);
+        } else if (WIFSIGNALED (status)) {
+                int num = WTERMSIG (status);
+                g_signal_emit (slave, signals [DIED], 0, num);
+        }
 
-	if (condition & G_IO_IN) {
-		GIOStatus status;
-		GError	 *error = NULL;
-		char	 *line;
-
-		line = NULL;
-		status = g_io_channel_read_line (source, &line, NULL, NULL, &error);
-
-		switch (status) {
-		case G_IO_STATUS_NORMAL:
-			g_debug ("command error output: %s", line);
-			break;
-		case G_IO_STATUS_EOF:
-			finished = TRUE;
-			break;
-		case G_IO_STATUS_ERROR:
-			finished = TRUE;
-			g_debug ("Error reading from child: %s\n", error->message);
-			return FALSE;
-		case G_IO_STATUS_AGAIN:
-		default:
-			break;
-		}
-		g_free (line);
-	} else if (condition & G_IO_HUP) {
-		finished = TRUE;
-	}
-
-	if (finished) {
-		slave->priv->error_watch_id = 0;
-
-		return FALSE;
-	}
-
-	return TRUE;
+        g_spawn_close_pid (slave->priv->pid);
+	slave->priv->pid = -1;
 }
 
 static gboolean
@@ -197,11 +137,7 @@ spawn_slave (GdmSlaveProxy *slave)
 {
 	char	  **argv;
 	gboolean    result;
-	GIOChannel *channel;
 	GError	   *error = NULL;
-	int	    standard_output;
-	int	    standard_error;
-
 
 	result = FALSE;
 
@@ -222,8 +158,8 @@ spawn_slave (GdmSlaveProxy *slave)
 					   NULL,
 					   &slave->priv->pid,
 					   NULL,
-					   &standard_output,
-					   &standard_error,
+					   NULL,
+					   NULL,
 					   &error);
 
 	if (! result) {
@@ -235,29 +171,9 @@ spawn_slave (GdmSlaveProxy *slave)
 
 	g_strfreev (argv);
 
-	/* output channel */
-	channel = g_io_channel_unix_new (standard_output);
-	g_io_channel_set_close_on_unref (channel, TRUE);
-	g_io_channel_set_flags (channel,
-				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
-				NULL);
-	slave->priv->output_watch_id = g_io_add_watch (channel,
-						       G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL,
-						       (GIOFunc)output_watch,
-						       slave);
-	g_io_channel_unref (channel);
-
-	/* error channel */
-	channel = g_io_channel_unix_new (standard_error);
-	g_io_channel_set_close_on_unref (channel, TRUE);
-	g_io_channel_set_flags (channel,
-				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
-				NULL);
-	slave->priv->error_watch_id = g_io_add_watch (channel,
-						      G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL,
-						      (GIOFunc)error_watch,
-						      slave);
-	g_io_channel_unref (channel);
+	slave->priv->child_watch_id = g_child_watch_add (slave->priv->pid,
+							 (GChildWatchFunc)child_watch,
+							 slave);
 
 	result = TRUE;
 
@@ -273,7 +189,7 @@ signal_pid (int pid,
 	int status = -1;
 
 	/* perhaps block sigchld */
-	g_debug ("Killing pid %d", pid);
+	g_debug ("Sending signal %d to pid %d", signal, pid);
 
 	status = kill (pid, signal);
 
@@ -301,7 +217,6 @@ kill_slave (GdmSlaveProxy *slave)
 	}
 
 	signal_pid (slave->priv->pid, SIGTERM);
-	slave_died (slave);
 }
 
 gboolean
@@ -318,11 +233,9 @@ gdm_slave_proxy_stop (GdmSlaveProxy *slave)
 	g_debug ("Killing slave");
 
 	kill_slave (slave);
-	if (slave->priv->output_watch_id > 0) {
-		g_source_remove (slave->priv->output_watch_id);
-	}
-	if (slave->priv->error_watch_id > 0) {
-		g_source_remove (slave->priv->error_watch_id);
+
+	if (slave->priv->child_watch_id > 0) {
+		g_source_remove (slave->priv->child_watch_id);
 	}
 
 	return TRUE;
@@ -394,7 +307,29 @@ gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
 							      "command",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	signals [EXITED] =
+		g_signal_new ("exited",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmSlaveProxyClass, exited),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__INT,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_INT);
 
+	signals [DIED] =
+		g_signal_new ("died",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GdmSlaveProxyClass, died),
+			      NULL,
+			      NULL,
+			      g_cclosure_marshal_VOID__INT,
+			      G_TYPE_NONE,
+			      1,
+			      G_TYPE_INT);
 }
 
 static void

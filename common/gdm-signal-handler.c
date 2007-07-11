@@ -345,6 +345,8 @@ gdm_signal_handler_finalize (GObject *object)
 
 	handler = GDM_SIGNAL_HANDLER (object);
 
+	g_debug ("Finalizing signal handler");
+
 	g_return_if_fail (handler->priv != NULL);
 
 	/* FIXME: free hash lists */

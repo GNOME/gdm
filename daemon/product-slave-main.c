@@ -243,7 +243,9 @@ main (int    argc,
 		g_object_unref (signal_handler);
 	}
 
-	g_main_loop_unref (main_loop);
+	if (main_loop != NULL) {
+		g_main_loop_unref (main_loop);
+	}
 
  out:
 

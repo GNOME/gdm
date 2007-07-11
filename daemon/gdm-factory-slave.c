@@ -976,7 +976,11 @@ gdm_factory_slave_finalize (GObject *object)
 
 	factory_slave = GDM_FACTORY_SLAVE (object);
 
+	g_debug ("Finalizing slave");
+
 	g_return_if_fail (factory_slave->priv != NULL);
+
+	gdm_factory_slave_stop (factory_slave);
 
 	G_OBJECT_CLASS (gdm_factory_slave_parent_class)->finalize (object);
 }

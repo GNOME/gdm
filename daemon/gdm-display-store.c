@@ -178,7 +178,7 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
 static void
 display_unref (GdmDisplay *display)
 {
-	g_debug ("Unreffing display");
+	g_debug ("Unreffing display: %p", display);
 	g_object_unref (display);
 }
 

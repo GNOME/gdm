@@ -118,6 +118,15 @@ static void	gdm_slave_finalize	(GObject       *object);
 
 G_DEFINE_ABSTRACT_TYPE (GdmSlave, gdm_slave, G_TYPE_OBJECT)
 
+static void
+display_proxy_destroyed_cb (DBusGProxy *display_proxy,
+			    GdmSlave   *slave)
+{
+	g_debug ("Disconnected from display");
+
+	slave->priv->display_proxy = NULL;
+}
+
 static gboolean
 gdm_slave_real_start (GdmSlave *slave)
 {
@@ -136,6 +145,11 @@ gdm_slave_real_start (GdmSlave *slave)
 								      slave->priv->display_id,
 								      GDM_DBUS_DISPLAY_INTERFACE,
 								      &error);
+	g_signal_connect (slave->priv->display_proxy,
+			  "destroy",
+			  G_CALLBACK (display_proxy_destroyed_cb),
+			  slave);
+
 	if (slave->priv->display_proxy == NULL) {
 		if (error != NULL) {
 			g_warning ("Failed to create display proxy %s: %s", slave->priv->display_id, error->message);

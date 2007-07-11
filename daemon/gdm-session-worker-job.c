@@ -436,7 +436,8 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
 			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE,
 			      1,
-			      G_TYPE_INT);}
+			      G_TYPE_INT);
+}
 
 static void
 gdm_session_worker_job_init (GdmSessionWorkerJob *session_worker_job)

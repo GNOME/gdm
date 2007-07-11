@@ -98,7 +98,6 @@ gdm_static_factory_display_create_product_display (GdmStaticFactoryDisplay *disp
 	product = gdm_product_display_new (num, relay_address);
 
 	if (! gdm_display_create_authority (product)) {
-		g_object_unref (product);
 		product = NULL;
 		goto out;
 	}
@@ -106,19 +105,20 @@ gdm_static_factory_display_create_product_display (GdmStaticFactoryDisplay *disp
 	gdm_display_store_add (display->priv->display_store, product);
 
 	if (! gdm_display_manage (product)) {
-		g_object_unref (product);
 		product = NULL;
 		goto out;
 	}
 
 	if (! gdm_display_get_id (product, id, NULL)) {
-		g_object_unref (product);
 		product = NULL;
 		goto out;
 	}
 
 	ret = TRUE;
  out:
+	/* ref either held by store or not at all */
+	g_object_unref (product);
+
 	return ret;
 }
 

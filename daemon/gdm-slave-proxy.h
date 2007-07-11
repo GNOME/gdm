@@ -44,7 +44,11 @@ typedef struct
 typedef struct
 {
 	GObjectClass   parent_class;
+	void (* exited)            (GdmSlaveProxy  *proxy,
+				    int             exit_code);
 
+	void (* died)              (GdmSlaveProxy  *proxy,
+				    int             signal_number);
 } GdmSlaveProxyClass;
 
 GType		    gdm_slave_proxy_get_type	 (void);
