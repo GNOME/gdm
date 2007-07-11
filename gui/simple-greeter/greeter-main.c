@@ -45,9 +45,14 @@
 #define SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
 #define SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
 
+#define GPM_DBUS_NAME      "org.gnome.PowerManager"
+#define GPM_DBUS_PATH      "/org/gnome/PowerManager/Manager"
+#define GPM_DBUS_INTERFACE "org.gnome.PowerManager.Manager"
+
 static DBusGConnection  *connection     = NULL;
 static GdmGreeter       *greeter        = NULL;
 static DBusGProxy       *server_proxy   = NULL;
+static DBusGProxy       *gpm_proxy      = NULL;
 
 static void
 on_info (DBusGProxy *proxy,
@@ -218,6 +223,33 @@ proxy_destroyed (GObject *object,
 	g_debug ("GREETER Proxy disconnected");
 }
 
+static void
+activate_power_manager (void)
+{
+	DBusGConnection *connection;
+	GError          *error;
+	gboolean         on_ac;
+
+	g_debug ("Activating power management");
+	error = NULL;
+	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (error != NULL) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
+
+	gpm_proxy = dbus_g_proxy_new_for_name (connection,
+					       GPM_DBUS_NAME,
+					       GPM_DBUS_PATH,
+					       GPM_DBUS_INTERFACE);
+	dbus_g_proxy_call (gpm_proxy,
+			   "GetOnAc",
+			   &error,
+			   G_TYPE_INVALID,
+			   G_TYPE_BOOLEAN, &on_ac,
+			   G_TYPE_INVALID);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -335,6 +367,8 @@ main (int argc, char *argv[])
 			  "cancelled",
 			  G_CALLBACK (on_cancelled),
 			  NULL);
+
+	activate_power_manager ();
 
 	gtk_main ();
 

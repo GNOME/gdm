@@ -686,7 +686,7 @@ gdm_greeter_proxy_init (GdmGreeterProxy *greeter_proxy)
 
 	greeter_proxy->priv->pid = -1;
 
-	greeter_proxy->priv->command = g_strdup (LIBEXECDIR "/gdm-simple-greeter --g-fatal-warnings");
+	greeter_proxy->priv->command = g_strdup ("dbus-launch " LIBEXECDIR "/gdm-simple-greeter --g-fatal-warnings");
 	greeter_proxy->priv->user_max_filesize = 65536;
 }
 
