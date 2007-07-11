@@ -1055,7 +1055,13 @@ gdm_lang_handler (gpointer user_data)
     {
     case GTK_RESPONSE_OK:
       if (dialog_selected_language)
-        gdm_lang_set_restart_dialog (dialog_selected_language);
+        {
+          gchar *language = g_strdup (dialog_selected_language);
+
+          /* dialog_selected_language will be freed in gdm_lang_set */
+          gdm_lang_set_restart_dialog (language);
+          g_free (language);
+        }
 
       break;
     case GTK_RESPONSE_CANCEL:
