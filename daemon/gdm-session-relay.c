@@ -600,6 +600,8 @@ connection_filter_function (DBusConnection *connection,
 
 		dbus_connection_unref (connection);
 		session_relay->priv->session_connection = NULL;
+
+		g_signal_emit (session_relay, signals[DISCONNECTED], 0);
 	} else if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")) {
 
 
@@ -629,7 +631,9 @@ handle_connection (DBusServer      *server,
 {
         GdmSessionRelay *session_relay = GDM_SESSION_RELAY (user_data);
 
-	g_debug ("Handing new connection");
+	g_debug ("Handling new connection");
+
+	g_assert (session_relay->priv->session_connection == NULL);
 
 	if (session_relay->priv->session_connection == NULL) {
 		DBusObjectPathVTable vtable = { &session_relay_unregister_handler,

@@ -171,6 +171,8 @@ spawn_slave (GdmSlaveProxy *slave)
 
 	g_strfreev (argv);
 
+	g_debug ("Started slave with pid %d", slave->priv->pid);
+
 	slave->priv->child_watch_id = g_child_watch_add (slave->priv->pid,
 							 (GChildWatchFunc)child_watch,
 							 slave);

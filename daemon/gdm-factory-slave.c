@@ -435,6 +435,8 @@ create_product_display (GdmFactorySlave *slave)
 
 	ret = FALSE;
 
+	g_debug ("Create product display");
+
 	g_object_get (slave,
 		      "display-id", &display_id,
 		      NULL);
@@ -480,12 +482,22 @@ create_product_display (GdmFactorySlave *slave)
 }
 
 static void
+on_relay_disconnected (GdmSessionRelay *relay,
+		       GdmFactorySlave *slave)
+{
+	g_debug ("Relay disconnected");
+
+	/* FIXME: do some kind of loop detection */
+	gdm_greeter_server_reset (slave->priv->greeter_server);
+	create_product_display (slave);
+}
+
+static void
 on_relay_session_started (GdmSessionRelay *relay,
 			  GdmFactorySlave *slave)
 {
 	g_debug ("Relay session started");
 	gdm_greeter_server_reset (slave->priv->greeter_server);
-	create_product_display (slave);
 }
 
 static void
@@ -821,6 +833,10 @@ gdm_factory_slave_start (GdmSlave *slave)
 	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
 			  "ready",
 			  G_CALLBACK (on_relay_ready),
+			  slave);
+	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+			  "disconnected",
+			  G_CALLBACK (on_relay_disconnected),
 			  slave);
 	g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
 			  "session-started",

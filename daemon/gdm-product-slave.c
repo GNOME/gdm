@@ -410,6 +410,16 @@ on_opened (GdmSession      *session,
 }
 
 static void
+disconnect_relay (GdmProductSlave *slave)
+{
+	/* drop the connection */
+	g_object_unref (slave->priv->session_relay_proxy);
+
+	dbus_connection_close (dbus_g_connection_get_connection (slave->priv->session_relay_connection));
+	slave->priv->session_relay_connection = NULL;
+}
+
+static void
 on_session_started (GdmSession      *session,
                     GPid             pid,
 		    GdmProductSlave *slave)
@@ -417,6 +427,8 @@ on_session_started (GdmSession      *session,
 	g_debug ("session started on pid %d", (int) pid);
 	g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);
 	relay_session_started (slave);
+
+	disconnect_relay (slave);
 }
 
 static void
@@ -1130,10 +1142,12 @@ on_relay_cancelled (DBusGProxy *proxy,
 }
 
 static void
-session_relay_proxy_destroyed (GObject *object,
-				gpointer data)
+session_relay_proxy_destroyed (GObject         *object,
+			       GdmProductSlave *slave)
 {
 	g_debug ("Session server relay destroyed");
+
+	slave->priv->session_relay_proxy = NULL;
 }
 
 static void
@@ -1166,18 +1180,22 @@ get_relay_address (GdmProductSlave *slave)
 static gboolean
 connect_to_session_relay (GdmProductSlave *slave)
 {
-	GError *error;
+	DBusError       error;
+	DBusConnection *connection;
 
 	get_relay_address (slave);
 
 	g_debug ("connecting to session relay address: %s", slave->priv->relay_address);
 
-        error = NULL;
-        slave->priv->session_relay_connection = dbus_g_connection_open (slave->priv->relay_address, &error);
+	dbus_error_init (&error);
+	connection = dbus_connection_open_private (slave->priv->relay_address, &error);
+	dbus_connection_setup_with_g_main (connection, NULL);
+
+        slave->priv->session_relay_connection = dbus_connection_get_g_connection (connection);
         if (slave->priv->session_relay_connection == NULL) {
-                if (error != NULL) {
-                        g_warning ("error opening connection: %s", error->message);
-                        g_error_free (error);
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("error opening connection: %s", error.message);
+                        dbus_error_free (&error);
                 } else {
 			g_warning ("Unable to open connection");
 		}
@@ -1251,7 +1269,7 @@ connect_to_session_relay (GdmProductSlave *slave)
 	g_signal_connect (slave->priv->session_relay_proxy,
 			  "destroy",
 			  G_CALLBACK (session_relay_proxy_destroyed),
-			  NULL);
+			  slave);
 
 	return TRUE;
 }
