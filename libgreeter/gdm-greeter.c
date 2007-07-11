@@ -120,6 +120,28 @@ gdm_greeter_stop (GdmGreeter *greeter)
 }
 
 static gboolean
+gdm_greeter_real_reset (GdmGreeter *greeter)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	return TRUE;
+}
+
+gboolean
+gdm_greeter_reset (GdmGreeter *greeter)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	g_object_ref (greeter);
+	ret = GDM_GREETER_GET_CLASS (greeter)->reset (greeter);
+	g_object_unref (greeter);
+
+	return ret;
+}
+
+static gboolean
 gdm_greeter_real_info (GdmGreeter *greeter,
 		       const char *text)
 {
@@ -356,6 +378,7 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
 
 	klass->start = gdm_greeter_real_start;
 	klass->stop = gdm_greeter_real_stop;
+	klass->reset = gdm_greeter_real_reset;
 	klass->info = gdm_greeter_real_info;
 	klass->problem = gdm_greeter_real_problem;
 	klass->info_query = gdm_greeter_real_info_query;

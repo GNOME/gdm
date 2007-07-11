@@ -96,6 +96,38 @@ gdm_simple_greeter_stop (GdmGreeter *greeter)
 	return TRUE;
 }
 
+static void
+reset_dialog (GdmSimpleGreeter *greeter)
+{
+	GtkWidget  *entry;
+	GtkWidget  *label;
+
+	g_debug ("Resetting dialog");
+
+	entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+	gtk_entry_set_text (GTK_ENTRY (entry), "");
+	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
+
+	label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
+	gtk_label_set_text (GTK_LABEL (label), "");
+
+        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
+                gtk_widget_grab_focus (entry);
+        }
+}
+
+static gboolean
+gdm_simple_greeter_reset (GdmGreeter *greeter)
+{
+	g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+	/*GDM_GREETER_CLASS (gdm_simple_greeter_parent_class)->reset (greeter);*/
+
+	reset_dialog (GDM_SIMPLE_GREETER (greeter));
+
+	return TRUE;
+}
+
 static gboolean
 gdm_simple_greeter_info (GdmGreeter *greeter,
 			 const char *text)
@@ -324,6 +356,7 @@ gdm_simple_greeter_class_init (GdmSimpleGreeterClass *klass)
 
 	greeter_class->start = gdm_simple_greeter_start;
 	greeter_class->stop = gdm_simple_greeter_stop;
+	greeter_class->reset = gdm_simple_greeter_reset;
 	greeter_class->info = gdm_simple_greeter_info;
 	greeter_class->problem = gdm_simple_greeter_problem;
 	greeter_class->info_query = gdm_simple_greeter_info_query;

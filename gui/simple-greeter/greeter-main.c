@@ -70,6 +70,15 @@ on_problem (DBusGProxy *proxy,
 }
 
 static void
+on_reset (DBusGProxy *proxy,
+	  gpointer    data)
+{
+	g_debug ("GREETER RESET");
+
+	gdm_greeter_reset (GDM_GREETER (greeter));
+}
+
+static void
 on_info_query (DBusGProxy *proxy,
 	       const char *text,
 	       gpointer    data)
@@ -277,6 +286,7 @@ main (int argc, char *argv[])
 	dbus_g_proxy_add_signal (server_proxy, "SecretInfoQuery", G_TYPE_STRING, G_TYPE_INVALID);
 	dbus_g_proxy_add_signal (server_proxy, "Info", G_TYPE_STRING, G_TYPE_INVALID);
 	dbus_g_proxy_add_signal (server_proxy, "Problem", G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (server_proxy, "Reset", G_TYPE_INVALID);
 
 	dbus_g_proxy_connect_signal (server_proxy,
 				     "InfoQuery",
@@ -296,6 +306,11 @@ main (int argc, char *argv[])
 	dbus_g_proxy_connect_signal (server_proxy,
 				     "Problem",
 				     G_CALLBACK (on_problem),
+				     NULL,
+				     NULL);
+	dbus_g_proxy_connect_signal (server_proxy,
+				     "Reset",
+				     G_CALLBACK (on_reset),
 				     NULL,
 				     NULL);
 

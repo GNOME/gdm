@@ -78,7 +78,7 @@ static guint signals [LAST_SIGNAL] = { 0, };
 
 static void	gdm_session_relay_class_init	(GdmSessionRelayClass *klass);
 static void	gdm_session_relay_init	        (GdmSessionRelay      *session_relay);
-static void	gdm_session_relay_finalize	(GObject               *object);
+static void	gdm_session_relay_finalize	(GObject              *object);
 
 G_DEFINE_TYPE (GdmSessionRelay, gdm_session_relay, G_TYPE_OBJECT)
 

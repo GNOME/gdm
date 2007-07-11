@@ -612,8 +612,6 @@ gdm_server_spawn (GdmServer  *server,
 							  (GChildWatchFunc)server_child_watch,
 							  server);
 
-	sleep (10);
-
 	return ret;
 }
 
