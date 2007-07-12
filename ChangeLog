@@ -1,3 +1,9 @@
+2007-07-11  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/misc.c: Remove setting hints.ai_family |= AF_INET6
+	  since it turns out that this causes problems with fixing
+	  bug #455190.
+
 2007-07-11 Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.c, daemon/gdmconfig.c, gui/gdmsetup.c,
@@ -8,7 +14,8 @@
 2007-07-09  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/misc.c: Initialize hints and set ai_family in the
-	  function gdm_peek_local_address_list.
+	  function gdm_peek_local_address_list.  Fixes bug 
+	  #455190.
 
 2007-07-02  Brian Cameron  <brian.cameron@sun.com>
 

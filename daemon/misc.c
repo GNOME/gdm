@@ -1086,7 +1086,6 @@ gdm_peek_local_address_list (void)
 
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_family = AF_INET;
-	hints.ai_family |= AF_INET6;
 
 	if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
 		gdm_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
