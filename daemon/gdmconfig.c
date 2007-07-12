@@ -850,9 +850,10 @@ gdm_config_key_to_string_per_display (const gchar *display, gchar *key, gchar **
 
    file = gdm_get_per_display_custom_config_file (display);
 
-   if (strcmp (ve_sure_string (splitstr[0]), "greeter") == 0 ||
-       strcmp (ve_sure_string (splitstr[0]), "gui") == 0 ||
-       is_key (key, GDM_KEY_PAM_STACK)) {
+   if (splitstr != NULL &&
+       (strcmp (ve_sure_string (splitstr[0]), "greeter") == 0 ||
+        strcmp (ve_sure_string (splitstr[0]), "gui") == 0 ||
+        is_key (key, GDM_KEY_PAM_STACK))) {
       gdm_config_key_to_string (file, key, retval);
    }
 
@@ -878,7 +879,7 @@ gdm_config_key_to_string (gchar *file, gchar *key, gchar **retval)
    *retval = NULL;
 
    /* Should not fail, all keys should have a category. */
-   if (splitstr[0] == NULL)
+   if (splitstr == NULL || splitstr[0] == NULL)
       return;
 
    /* If file doesn't exist, then just return */
@@ -1768,7 +1769,7 @@ gdm_update_config (gchar* key)
    if (custom_cfg != NULL) {
        gchar **splitstr = g_strsplit (key, "/", 2);
 
-       if (splitstr[0] != NULL) {
+       if (splitstr != NULL && splitstr[0] != NULL) {
           GList *list = ve_config_get_keys (custom_cfg, splitstr[0]);
 
           while (list != NULL) {
@@ -1956,7 +1957,7 @@ gdm_load_config_option (gpointer key_in, gpointer value_in, gpointer data)
       /* First check the custom file */
       if (cfgfiles->custom_cfg != NULL) {
           gchar **splitstr = g_strsplit (key_in, "/", 2);
-          if (splitstr[0] != NULL) {
+          if (splitstr != NULL && splitstr[0] != NULL) {
              GList *list = ve_config_get_keys (cfgfiles->custom_cfg, splitstr[0]);
 
              while (list != NULL) {
