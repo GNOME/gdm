@@ -70,5 +70,6 @@ void	  gdm_common_pre_fetch_launch       (void);
 void      gdm_common_atspi_launch           (void);
 gchar*    gdm_common_expand_text            (const gchar *text);
 gchar*    gdm_common_get_clock              (struct tm **the_tm);
-gboolean  gdm_common_locale_is_displayable (const gchar *locale);
+gboolean  gdm_common_locale_is_displayable  (const gchar *locale);
+gboolean  gdm_common_is_action_available    (gchar *action);
 #endif /* GDM_COMMON_H */

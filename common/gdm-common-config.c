@@ -128,16 +128,14 @@ gdm_common_config_load_from_dirs (const char  *filename,
 				  const char **dirs,
 				  GError     **error)
 {
-	GKeyFile *config;
+	GKeyFile *config = NULL;
 	int       i;
-
-	config = NULL;
 
 	/* FIXME: hope to have g_key_file_load_from_dirs
 	   see GNOME bug #355334
 	 */
 
-	for (i = 0; dirs[i] != NULL; i++) {
+	for (i = 0; dirs != NULL && dirs[i] != NULL; i++) {
 		char *path;
 
 		path = g_build_filename (dirs[i], filename, NULL);

@@ -1,3 +1,21 @@
+2007-07-11  Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/gdm.c, daemon/server.c, common/gdm-common.[ch],
+	  common/gdm-common-config.c, gui/gdmlogin.c, gui/gdmcommon.[ch],
+	  gui/gdmflexiserver.c, gui/gdmsetup.c, gui/gdmconfig.c,
+	  gui/greeter/greeter_system.c, gui/greeter/greeter_item_ulist.c:
+	  Fix g_strsplit calls so that NULL return codes are better
+	  handled.
+	* gui/Makefile.am, gui/greeter/Makefile.am, gui/gdmgreeter.[ch],
+	  Create new gdmgreeter.a library that is only linked by 
+	  gdmlogin and gdmgreeter.  This was needed because I wanted to
+	  make the gdm_common_is_action_available function a common
+	  function and the chkauthattr function requires linking additional
+	  libraries.  This made this change easier and also makes GDM a bit 
+	  cleaner.  It is better, I think, to separate the code only used by
+	  the greeters since these two programs have more common shared code
+	  than the other GDM gui programs.
+
 2007-07-09  Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmlanguages.c: Fix memory handling of dialog_selected_language

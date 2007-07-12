@@ -2579,191 +2579,220 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				     NULL, 0, NULL, NULL, NULL);
 	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ERROR_DIALOG,
 			    strlen ("opcode="GDM_SOP_SHOW_ERROR_DIALOG)) == 0) {
-		GdmDisplay *d;
-		GtkMessageType type;
 		char **list;
-		char *ptr;
-		char *error;
-		char *details_label;
-		char *details_file;
-		long slave_pid;
-		int uid, gid;
-
 		list = g_strsplit (msg, "$$", -1);
 
-		ptr = strchr (list[1], '=');
-		slave_pid = atol (ptr + 1);
+		if (gdm_vector_len (list) == 8) {
+			GdmDisplay *d;
+			GtkMessageType type;
+			char *ptr;
+			char *error;
+			char *details_label;
+			char *details_file;
+			long slave_pid;
+			int uid, gid;
 
-		ptr = strchr (list[2], '=');
-		type = atoi (ptr + 1);
+			ptr = strchr (list[1], '=');
+			slave_pid = atol (ptr + 1);
 
-		ptr = strchr (list[3], '=');
-		error = g_malloc0 (strlen (ptr));
-		strcpy (error, ptr + 1);
+			ptr = strchr (list[2], '=');
+			type = atoi (ptr + 1);
 
-		ptr = strchr (list[4], '=');
-		details_label = g_malloc0 (strlen (ptr));
-		strcpy (details_label, ptr + 1);
+			ptr = strchr (list[3], '=');
+			error = g_malloc0 (strlen (ptr));
+			strcpy (error, ptr + 1);
 
-		ptr = strchr (list[5], '=');
-		details_file = g_malloc0 (strlen (ptr));
-		strcpy (details_file, ptr + 1);
+			ptr = strchr (list[4], '=');
+			details_label = g_malloc0 (strlen (ptr));
+			strcpy (details_label, ptr + 1);
 
-		ptr = strchr (list[6], '=');
-		uid = atoi (ptr + 1);
+			ptr = strchr (list[5], '=');
+			details_file = g_malloc0 (strlen (ptr));
+			strcpy (details_file, ptr + 1);
 
-		ptr = strchr (list[7], '=');
-		gid = atoi (ptr + 1);
+			ptr = strchr (list[6], '=');
+			uid = atoi (ptr + 1);
 
-		d = gdm_display_lookup (slave_pid);
+			ptr = strchr (list[7], '=');
+			gid = atoi (ptr + 1);
 
-		if (d != NULL) {
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			d = gdm_display_lookup (slave_pid);
+
+			if (d != NULL) {
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0644));
+				}
+
+				/* FIXME: this is really bad */
+				gdm_errorgui_error_box_full (d, type, error,
+				     details_label, details_file, 0, 0);
+
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0640));
+				}
+
+				send_slave_ack_dialog_char (d,
+					GDM_SLAVE_NOTIFY_ERROR_RESPONSE, NULL);
 			}
 
-			/* FIXME: this is really bad */
-			gdm_errorgui_error_box_full (d, type, error, details_label, details_file, 0, 0);
-
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
-			}
-
-			send_slave_ack_dialog_char (d, GDM_SLAVE_NOTIFY_ERROR_RESPONSE, NULL);
+			g_free (error);
+			g_free (details_label);
+			g_free (details_file);
 		}
-
-		g_free (error);
-		g_free (details_label);
-		g_free (details_file);
 		g_strfreev (list);
 	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_YESNO_DIALOG,
                             strlen ("opcode="GDM_SOP_SHOW_YESNO_DIALOG)) == 0) {
-		GdmDisplay *d;
 		char **list;
-		char *ptr;
-		char *yesno_msg;
-		long slave_pid;
-		gboolean response_yesno;
-
 		list = g_strsplit (msg, "$$", -1);
 
-		ptr = strchr (list [1], '=');
-		slave_pid = atol (ptr + 1);
+		if (gdm_vector_len (list) == 3) {
+			GdmDisplay *d;
+			char *ptr;
+			char *yesno_msg;
+			long slave_pid;
+			gboolean resp;
 
-		ptr = strchr (list [2], '=');
-		yesno_msg = g_malloc0 (strlen (ptr));
-		strcpy (yesno_msg, ptr + 1);
+			ptr = strchr (list [1], '=');
+			slave_pid = atol (ptr + 1);
 
-		d = gdm_display_lookup (slave_pid);
-		if (d != NULL) {
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			ptr = strchr (list [2], '=');
+			yesno_msg = g_malloc0 (strlen (ptr));
+			strcpy (yesno_msg, ptr + 1);
+
+			d = gdm_display_lookup (slave_pid);
+			if (d != NULL) {
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0644));
+				}
+
+				resp = gdm_errorgui_failsafe_yesno (d,
+					yesno_msg);
+
+				send_slave_ack_dialog_int (d,
+					GDM_SLAVE_NOTIFY_YESNO_RESPONSE,
+					resp);
+
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0640));
+				}
 			}
-
-			response_yesno =  gdm_errorgui_failsafe_yesno (d, yesno_msg);
-
-			send_slave_ack_dialog_int (d, GDM_SLAVE_NOTIFY_YESNO_RESPONSE, response_yesno);
-
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
-			}
+			g_free (yesno_msg);
 		}
 
-		g_free (yesno_msg);
 		g_strfreev (list);
 	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_QUESTION_DIALOG,
                             strlen ("opcode="GDM_SOP_SHOW_QUESTION_DIALOG)) == 0) {
-		GdmDisplay *d;
 		char **list;
-		char *ptr;
-		char *question_msg;
-		char *response_question;
-		long slave_pid;
-		gboolean echo;
 
 		list = g_strsplit (msg, "$$", -1);
 
-		ptr = strchr (list [1], '=');
-		slave_pid = atol (ptr + 1);
+		if (gdm_vector_len (list) == 4) {
+			GdmDisplay *d;
+			char *ptr;
+			char *question_msg;
+			char *resp;
+			long slave_pid;
+			gboolean echo;
 
-		ptr = strchr (list [2], '=');
-		question_msg = g_malloc0 (strlen (ptr));
-		strcpy (question_msg, ptr + 1);
+			ptr = strchr (list [1], '=');
+			slave_pid = atol (ptr + 1);
 
-		ptr = strchr (list [3], '=');
-		echo = atoi (ptr + 1);
+			ptr = strchr (list [2], '=');
+			question_msg = g_malloc0 (strlen (ptr));
+			strcpy (question_msg, ptr + 1);
 
-		d = gdm_display_lookup (slave_pid);
-		if (d != NULL) {
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			ptr = strchr (list [3], '=');
+			echo = atoi (ptr + 1);
+
+			d = gdm_display_lookup (slave_pid);
+			if (d != NULL) {
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0644));
+				}
+
+				resp = gdm_errorgui_failsafe_question (d,
+					question_msg, echo);
+
+				send_slave_ack_dialog_char (d,
+					GDM_SLAVE_NOTIFY_QUESTION_RESPONSE,
+					resp);
+
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0640));
+				}
 			}
 
-			response_question = gdm_errorgui_failsafe_question (d, question_msg, echo);
-
-			send_slave_ack_dialog_char (d, GDM_SLAVE_NOTIFY_QUESTION_RESPONSE, response_question);
-
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
-			}
+			g_free (question_msg);
 		}
-
-		g_free (question_msg);
 		g_strfreev (list);
 	} else if (strncmp (msg, "opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG,
                             strlen ("opcode="GDM_SOP_SHOW_ASKBUTTONS_DIALOG)) == 0) {
-		GdmDisplay *d;
-		char *askbuttons_msg;
 		char **list;
-		char *ptr;
-		char *options[4];
-		long slave_pid;
-		int i;
-		int response_askbuttons;
-
 		list = g_strsplit (msg, "$$", -1);
 
-		ptr = strchr (list [1], '=');
-		slave_pid = atol (ptr + 1);
+		if (gdm_vector_len (list) == 7) {
+			GdmDisplay *d;
+			char *askbuttons_msg;
+			char *ptr;
+			char *options[4];
+			long slave_pid;
+			int i;
 
-		ptr = strchr (list [2], '=');
-		askbuttons_msg = g_malloc0 (strlen (ptr));
-		strcpy (askbuttons_msg, ptr + 1);
+			int resp;
+			ptr = strchr (list [1], '=');
+			slave_pid = atol (ptr + 1);
 
-		ptr = strchr (list [3], '=');
-		options[0] = g_malloc0 (strlen (ptr));
-		strcpy (options[0], ptr + 1);
+			ptr = strchr (list [2], '=');
+			askbuttons_msg = g_malloc0 (strlen (ptr));
+			strcpy (askbuttons_msg, ptr + 1);
 
-		ptr = strchr (list [4], '=');
-		options[1] = g_malloc0 (strlen (ptr));
-		strcpy (options[1], ptr + 1);
+			ptr = strchr (list [3], '=');
+			options[0] = g_malloc0 (strlen (ptr));
+			strcpy (options[0], ptr + 1);
 
-		ptr = strchr (list [5], '=');
-		options[2] = g_malloc0 (strlen (ptr));
-		strcpy (options[2], ptr + 1);
+			ptr = strchr (list [4], '=');
+			options[1] = g_malloc0 (strlen (ptr));
+			strcpy (options[1], ptr + 1);
 
-		ptr = strchr (list [6], '=');
-		options[3] = g_malloc0 (strlen (ptr));
-		strcpy (options[3], ptr + 1);
+			ptr = strchr (list [5], '=');
+			options[2] = g_malloc0 (strlen (ptr));
+			strcpy (options[2], ptr + 1);
 
-		d = gdm_display_lookup (slave_pid);
-		if (d != NULL) {
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+			ptr = strchr (list [6], '=');
+			options[3] = g_malloc0 (strlen (ptr));
+			strcpy (options[3], ptr + 1);
+
+			d = gdm_display_lookup (slave_pid);
+			if (d != NULL) {
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0644));
+				}
+
+				resp = gdm_errorgui_failsafe_ask_buttons (d,
+					askbuttons_msg, options);
+
+				send_slave_ack_dialog_int (d,
+					GDM_SLAVE_NOTIFY_ASKBUTTONS_RESPONSE,
+					resp);
+
+				if (GDM_AUTHFILE (d)) {
+					VE_IGNORE_EINTR (
+						chmod (GDM_AUTHFILE (d), 0640));
+				}
 			}
 
-			response_askbuttons = gdm_errorgui_failsafe_ask_buttons (d, askbuttons_msg, options);
+			g_free (askbuttons_msg);
 
-			send_slave_ack_dialog_int (d, GDM_SLAVE_NOTIFY_ASKBUTTONS_RESPONSE, response_askbuttons);
-			if (GDM_AUTHFILE (d)) {
-				VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
-			}
+			for (i = 0; i < 3; i ++)
+				g_free (options[i]);
 		}
-
-		g_free (askbuttons_msg);
-
-		for (i = 0; i < 3; i ++)
-			g_free (options[i]);
 		g_strfreev (list);
 	}
 }
@@ -3370,12 +3399,15 @@ sup_handle_get_server_details (GdmConnection *conn,
 			       const char    *msg,
 			       gpointer       data)
 {
+	const gchar  *server   = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
+	gchar       **splitstr = g_strsplit (server, " ", 2);
+	GdmXserver   *svr      = NULL;
 
-	const gchar *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
-	gchar   **splitstr = g_strsplit (server, " ", 2);
-	GdmXserver  *svr   = gdm_daemon_config_find_xserver ((gchar *)splitstr[0]);
+	if (splitstr != NULL && splitstr[0] != NULL) {
+		svr = gdm_daemon_config_find_xserver ((gchar *)splitstr[0]);
+	}
 
-	if (svr != NULL) {
+	if (svr != NULL && splitstr[1] != NULL) {
 		if (g_strcasecmp (splitstr[1], "ID") == 0)
 			gdm_connection_printf (conn, "OK %s\n", svr->id);
 		else if (g_strcasecmp (splitstr[1], "NAME") == 0)
@@ -3411,10 +3443,10 @@ sup_handle_get_server_details (GdmConnection *conn,
 		else
 			gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
 
-		g_strfreev (splitstr);
 	} else {
 		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
 	}
+	g_strfreev (splitstr);
 }
 
 static void
@@ -3584,6 +3616,7 @@ sup_handle_get_config (GdmConnection *conn,
 	splitstr = g_strsplit (parms, " ", 2);
 
 	if (splitstr == NULL || splitstr[0] == NULL) {
+		gdm_connection_printf (conn, "ERROR 50 Unsupported key <null>\n");
 		goto out;
 	}
 
@@ -3661,9 +3694,10 @@ is_action_available (GdmDisplay *disp, gchar *action)
 #ifdef HAVE_CHKAUTHATTR
 	if (ret == TRUE && rbackeys) {
 		for (i = 0; rbackeys[i] != NULL; i++) {
-			gchar   **rbackey = g_strsplit (rbackeys[i], ":", 2);
+			gchar **rbackey = g_strsplit (rbackeys[i], ":", 2);
 
-			if (! ve_string_empty (rbackey[0]) &&
+			if (gdm_vector_len (rbackey) == 2 &&
+			    ! ve_string_empty (rbackey[0]) &&
 			    ! ve_string_empty (rbackey[1]) &&
 			    strcmp (rbackey[0], action) == 0) {
 

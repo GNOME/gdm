@@ -45,6 +45,7 @@ gboolean     gdm_address_is_loopback  (struct sockaddr_storage *sa);
 void         gdm_address_get_info     (struct sockaddr_storage *sa,
                                        char                   **host,
                                        char                   **port);
+int          gdm_vector_len           (char * const *v);
 
 void           ve_clearenv (void);
 char *	       ve_first_word (const char *s);

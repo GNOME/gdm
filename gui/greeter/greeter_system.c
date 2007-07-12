@@ -21,11 +21,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#ifdef HAVE_CHKAUTHATTR
-#include <auth_attr.h>
-#include <secdb.h>
-#endif
-
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
@@ -171,63 +166,6 @@ greeter_chooser_handler (void)
 	_exit (DISPLAY_RUN_CHOOSER);
 }
 
-static gboolean
-is_action_available (gchar *action)
-{
-	gchar **allowsyscmd = NULL;
-	const gchar *allowsyscmdval;
-	gboolean ret = FALSE;
-	int i;
-
-	allowsyscmdval = gdm_config_get_string (GDM_KEY_SYSTEM_COMMANDS_IN_MENU);
-	if (allowsyscmdval)
-		allowsyscmd = g_strsplit (allowsyscmdval, ";", 0);
-
-	if (allowsyscmd) {
-		for (i = 0; allowsyscmd[i] != NULL; i++) {
-			if (strcmp (allowsyscmd[i], action) == 0) {
-				ret = TRUE;
-				break;
-			}
-		}
-	}
-
-#ifdef HAVE_CHKAUTHATTR
-	if (ret == TRUE) {
-		gchar **rbackeys = NULL;
-		const gchar *rbackeysval;
-		const char *gdmuser;
-
-		gdmuser     = gdm_config_get_string (GDM_KEY_USER);
-		rbackeysval = gdm_config_get_string (GDM_KEY_RBAC_SYSTEM_COMMAND_KEYS);
-		if (rbackeysval)
-			rbackeys = g_strsplit (rbackeysval, ";", 0);
-
-		if (rbackeys) {
-			for (i = 0; rbackeys[i] != NULL; i++) {
-				gchar **rbackey = g_strsplit (rbackeys[i], ":", 2);
-
-				if (! ve_string_empty (rbackey[0]) &&
-				    ! ve_string_empty (rbackey[1]) &&
-				    strcmp (rbackey[0], action) == 0) {
-
-					if (!chkauthattr (rbackey[1], gdmuser)) {
-						g_strfreev (rbackey);
-						ret = FALSE;
-						break;
-					}
-				}
-				g_strfreev (rbackey);
-			}
-		}
-		g_strfreev (rbackeys);
-	}
-#endif
-	g_strfreev (allowsyscmd);
-
-	return ret;
-}
-
 void
 greeter_system_append_system_menu (GtkWidget *menu)
 {
@@ -275,7 +213,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		gtk_widget_show (sep);
 	}
 
-	if (GdmRebootFound && is_action_available ("REBOOT")) {
+	if (GdmRebootFound && gdm_common_is_action_available ("REBOOT")) {
  		w = gtk_image_menu_item_new_with_mnemonic (_("_Restart"));
  		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
  					       gtk_image_new_from_icon_name ("system-restart", GTK_ICON_SIZE_MENU));
@@ -286,7 +224,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				  NULL);
 	}
 
-	if (GdmHaltFound && is_action_available ("HALT")) {
+	if (GdmHaltFound && gdm_common_is_action_available ("HALT")) {
  		w = gtk_image_menu_item_new_with_mnemonic (_("Shut _Down"));
  		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w), 
  					       gtk_image_new_from_icon_name ("system-shut-down", GTK_ICON_SIZE_MENU));
@@ -297,7 +235,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				  NULL);
 	}
 
-	if (GdmSuspendFound && is_action_available ("SUSPEND")) {
+	if (GdmSuspendFound && gdm_common_is_action_available ("SUSPEND")) {
  		w = gtk_image_menu_item_new_with_mnemonic (_("Sus_pend"));
  		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
  					       gtk_image_new_from_icon_name ("system-suspend", GTK_ICON_SIZE_MENU));
@@ -308,7 +246,8 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				  NULL);
 	}
 
-	if (GdmAnyCustomCmdsFound && is_action_available ("CUSTOM_CMD")) {
+	if (GdmAnyCustomCmdsFound &&
+	    gdm_common_is_action_available ("CUSTOM_CMD")) {
 		for (i = 0; i < GDM_CUSTOM_COMMAND_MAX; i++) {
 		        if (GdmCustomCmdsFound[i]){
 				gint * cmd_index = g_new0(gint, 1);

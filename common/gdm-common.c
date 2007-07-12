@@ -287,3 +287,15 @@ ve_locale_exists (const char *loc)
 	g_free (old);
 	return ret;
 }
+
+int
+gdm_vector_len (char * const *v)
+{
+        int i;
+        if (v == NULL)
+                return 0;
+        for (i = 0; v[i] != NULL; i++)
+                ;
+        return i;
+}
+

@@ -35,7 +35,7 @@ INCLUDES = \
 #	-DGNOME_DISABLE_DEPRECATED			\
 #
 
-noinst_LIBRARIES = libgdmwm.a libgdmcommon.a
+noinst_LIBRARIES = libgdmwm.a libgdmcommon.a libgdmgreeter.a
 
 libexec_PROGRAMS = \
 	@GDMCHOOSER@ 		\
@@ -67,13 +67,18 @@ libgdmwm_a_SOURCES = \
 	gdmwm.c			\
 	gdmwm.h
 
-libgdmcommon_a_SOURCES = \
+libgdmgreeter_a_SOURCES = \
+	gdmgreeter.c		\
+	gdmgreeter.h		\
 	gdmlanguages.c		\
 	gdmlanguages.h		\
-	gdmuser.c		\
-	gdmuser.h		\
 	gdmsession.c		\
 	gdmsession.h		\
+	gdmuser.c		\
+	gdmuser.h		\
+	$(NULL)
+
+libgdmcommon_a_SOURCES = \
 	misc.c			\
 	misc.h			\
 	gdmcomm.c		\
@@ -94,6 +99,10 @@ gdmlogin_SOURCES = \
 	gdmlogin.c
 
 gdmsetup_SOURCES = \
+	gdmsession.c		\
+	gdmsession.h		\
+	gdmuser.c		\
+	gdmuser.h		\
 	gdmsetup.c
 
 gdmchooser_LDFLAGS = -export-dynamic
@@ -121,6 +130,7 @@ gdmlogin_LDADD = \
 	$(EXTRA_GREETER_LIBS)	\
 	libgdmwm.a		\
 	libgdmcommon.a		\
+	libgdmgreeter.a		\
 	$(GUING_LIBS)		\
 	$(INTLLIBS)		\
 	$(GLIB_LIBS)		\

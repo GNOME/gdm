@@ -112,17 +112,6 @@ greeter_item_ulist_unset_selected_user (void)
 	selected_user = NULL;
 }
 
-static int
-vector_len (char * const *v)
-{
-	int i;
-	if (v == NULL)
-		return 0;
-	for (i = 0; v[i] != NULL; i++)
-		;
-	return i;
-}
-
 static void
 check_for_displays (void)
 {
@@ -156,8 +145,10 @@ check_for_displays (void)
 		char **rvec;
 
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL || vector_len (rvec) != 3)
+		if (gdm_vector_len (rvec) != 3) {
+			g_strfreev (rvec);
 			continue;
+		}
 
 		g_hash_table_insert (displays_hash,
 				     g_strdup (rvec[1]),

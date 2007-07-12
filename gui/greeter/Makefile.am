@@ -79,6 +79,7 @@ gdmgreeter_LDADD = \
 	-L$(top_builddir)/gui	\
 	-lgdmwm			\
 	-lgdmcommon		\
+	-lgdmgreeter		\
 	$(top_builddir)/common/libgdmcommon.a \
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\

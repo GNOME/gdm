@@ -951,17 +951,6 @@ rotate_logs (const char *dname)
 	g_free (fname);
 }
 
-static int
-vector_len (char * const *v)
-{
-        int i;
-        if (v == NULL)
-                return 0;
-        for (i = 0; v[i] != NULL; i++)
-                ;
-        return i;
-}
-
 static void
 gdm_server_add_xserver_args (GdmDisplay *d, char **argv)
 {
@@ -970,7 +959,7 @@ gdm_server_add_xserver_args (GdmDisplay *d, char **argv)
 	int len;
 	int i;
 
-	len = vector_len (argv);
+	len = gdm_vector_len (argv);
 	g_shell_parse_argv (d->xserver_session_args, &count, &args, NULL);
 	argv = g_renew (char *, argv, len + count + 1);
 
