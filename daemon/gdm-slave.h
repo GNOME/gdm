@@ -57,6 +57,8 @@ GType		    gdm_slave_get_type	 (void);
 gboolean            gdm_slave_start      (GdmSlave   *slave);
 gboolean            gdm_slave_stop       (GdmSlave   *slave);
 
+void                gdm_slave_stopped    (GdmSlave   *slave);
+
 G_END_DECLS
 
 #endif /* __GDM_SLAVE_H */

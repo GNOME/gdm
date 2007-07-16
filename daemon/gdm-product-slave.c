@@ -95,9 +95,6 @@ enum {
 };
 
 enum {
-	SESSION_STARTED,
-	SESSION_EXITED,
-	SESSION_DIED,
 	LAST_SIGNAL
 };
 
@@ -425,19 +422,20 @@ on_session_started (GdmSession      *session,
 		    GdmProductSlave *slave)
 {
 	g_debug ("session started on pid %d", (int) pid);
-	g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);
+	/*g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);*/
 	relay_session_started (slave);
 
 	disconnect_relay (slave);
 }
 
 static void
-on_session_exited (GdmSession *session,
-                   int         exit_code,
-		   GdmProductSlave   *slave)
+on_session_exited (GdmSession      *session,
+                   int              exit_code,
+		   GdmProductSlave *slave)
 {
 	g_debug ("session exited with code %d", exit_code);
-	g_signal_emit (slave, signals [SESSION_EXITED], 0, exit_code);
+
+	gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
 static void
@@ -448,7 +446,8 @@ on_session_died (GdmSession *session,
 	g_debug ("session died with signal %d, (%s)",
 		 signal_number,
 		 g_strsignal (signal_number));
-	g_signal_emit (slave, signals [SESSION_DIED], 0, signal_number);
+
+	gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
 static gboolean

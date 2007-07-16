@@ -306,6 +306,14 @@ gdm_slave_stop (GdmSlave *slave)
 	return ret;
 }
 
+void
+gdm_slave_stopped (GdmSlave *slave)
+{
+	g_return_if_fail (GDM_IS_SLAVE (slave));
+
+	g_signal_emit (slave, signals [STOPPED], 0);
+}
+
 static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
 			   const char *id)
