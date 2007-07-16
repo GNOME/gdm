@@ -36,6 +36,10 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#define DBUS_API_SUBJECT_TO_CHANGE
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 #include <glade/glade-xml.h>
 
 #include "gdm-greeter.h"
@@ -52,6 +56,10 @@
 #endif
 
 #define GLADE_XML_FILE "gdm-simple-greeter.glade"
+
+#define GPM_DBUS_NAME "org.gnome.PowerManager"
+#define GPM_DBUS_PATH "/org/gnome/PowerManager"
+#define GPM_DBUS_INTERFACE "org.gnome.PowerManager"
 
 #define GDM_SIMPLE_GREETER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_GREETER, GdmSimpleGreeterPrivate))
 
@@ -269,6 +277,43 @@ cancel_button_clicked (GtkButton        *button,
 }
 
 static void
+suspend_button_clicked (GtkButton        *button,
+			GdmSimpleGreeter *greeter)
+{
+	gboolean         res;
+	GError          *error;
+	DBusGConnection *connection;
+	DBusGProxy      *proxy;
+
+	g_debug ("Suspend button clicked");
+
+	error = NULL;
+	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (error != NULL) {
+		g_warning ("Couldn't suspend: %s", error->message);
+		g_error_free (error);
+		return;
+	}
+	proxy = dbus_g_proxy_new_for_name (connection,
+					   GPM_DBUS_NAME,
+					   GPM_DBUS_PATH,
+					   GPM_DBUS_INTERFACE);
+	error = NULL;
+	dbus_g_proxy_call (proxy,
+                           "Suspend",
+                           &error,
+                           G_TYPE_INVALID,
+                           G_TYPE_INVALID);
+	if (error != NULL) {
+		g_warning ("Couldn't suspend: %s", error->message);
+		g_error_free (error);
+		return;
+	}
+
+	g_object_unref (proxy);
+}
+
+static void
 create_greeter (GdmSimpleGreeter *greeter)
 {
 	GError    *error;
@@ -317,6 +362,11 @@ create_greeter (GdmSimpleGreeter *greeter)
 	button = glade_xml_get_widget (greeter->priv->xml, "cancel-button");
 	if (dialog != NULL) {
 		g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), greeter);
+	}
+
+	button = glade_xml_get_widget (greeter->priv->xml, "suspend-button");
+	if (dialog != NULL) {
+		g_signal_connect (button, "clicked", G_CALLBACK (suspend_button_clicked), greeter);
 	}
 
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
