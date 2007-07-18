@@ -1273,6 +1273,8 @@ main (int argc, char *argv[])
   gdm_common_log_init ();
   gdm_common_log_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
+  gdm_common_setup_builtin_icons ();
+
   /* Read all configuration at once, so the values get cached */
   gdm_read_config ();
 
@@ -1286,9 +1288,6 @@ main (int argc, char *argv[])
   if ( ! ve_string_empty (gdm_gtk_theme)) {
 	  gdm_set_theme (gdm_gtk_theme);
   }
-
-  gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
-                                     GDM_DATADIR G_DIR_SEPARATOR_S "icons");
 
   gdm_wm_screen_init (gdm_config_get_int (GDM_KEY_XINERAMA_SCREEN));
   

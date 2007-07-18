@@ -1,36 +1,27 @@
 # This file will be processed with automake-1.7 to create Makefile.in
 
-themedir = $(pkgdatadir)/icons/hicolor
-size = 24x24
-
-actionsicondir = $(themedir)/$(size)/actions
-dist_actionsicon_DATA = \
+icons = \
+	preferences-desktop-locale.png \
+	preferences-desktop-remote-desktop.png \
 	system-log-out.png \
 	system-restart.png \
 	system-shut-down.png \
-	system-suspend.png
-
-appsicondir = $(themedir)/$(size)/apps
-dist_appsicon_DATA = \
-	preferences-desktop-locale.png \
-	preferences-desktop-remote-desktop.png
-
-placesicondir = $(themedir)/$(size)/places
-dist_placesicon_DATA = \
+	system-suspend.png \
 	user-desktop.png
 
-MAINTAINERCLEANFILES = \
-	Makefile.in
+icon_names = \
+	preferences_desktop_locale_24 $(srcdir)/preferences-desktop-locale.png \
+	preferences_desktop_remote_desktop_24 $(srcdir)/preferences-desktop-remote-desktop.png \
+	system_log_out_24 $(srcdir)/system-log-out.png \
+	system_restart_24 $(srcdir)/system-restart.png \
+	system_shut_down_24 $(srcdir)/system-shut-down.png \
+	system_suspend_24 $(srcdir)/system-suspend.png \
+	user_desktop_24 $(srcdir)/user-desktop.png
 
-gtk_update_icon_cache = gtk-update-icon-cache -f -t $(themedir)
-install-data-hook: update-icon-cache
-uninstall-hook: update-icon-cache
-update-icon-cache:
-	@-if test -z "$(DESTDIR)"; then \
-		echo "Updating Gtk icon cache."; \
-		$(gtk_update_icon_cache); \
-	else \
-		echo "*** Icon cache not updated.  After (un)install, run this:"; \
-		echo "***   $(gtk_update_icon_cache)"; \
-	fi
+EXTRA_DIST = $(icons)
+BUILT_SOURCES = inlines.h
+CLEANFILES = $(BUILT_SOURCES)
+
+inlines.h: $(icons)
+	gdk-pixbuf-csource --raw --build-list $(icon_names) > $@
 

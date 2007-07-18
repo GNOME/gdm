@@ -1982,6 +1982,8 @@ main (int argc, char *argv[])
 	gdm_common_log_init ();
 	gdm_common_log_set_debug (gdm_config_get_bool (GDM_KEY_DEBUG));
 
+	gdm_common_setup_builtin_icons ();
+
 	/* Read all configuration at once, so the values get cached */
 	gdm_read_config ();
 

@@ -47,6 +47,8 @@ void	  gdm_common_debug		    (const gchar *format, ...)
 /* Misc. Common Functions */
 void	  gdm_common_setup_cursor	    (GdkCursorType type);
 
+void      gdm_common_setup_builtin_icons    (void);
+
 void      gdm_common_login_sound            (const gchar *GdmSoundProgram,
                                              const gchar *GdmSoundOnLoginReadyFile,
                                              gboolean     GdmSoundOnLoginReady);

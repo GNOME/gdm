@@ -48,6 +48,8 @@
 #include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
 
+#include "pixmaps/24x24/inlines.h"
+
 gint gdm_timed_delay = 0;
 static Atom AT_SPI_IOR;
 
@@ -203,6 +205,49 @@ gdm_common_setup_cursor (GdkCursorType type)
 	GdkCursor *cursor = gdk_cursor_new (type);
 	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
 	gdk_cursor_unref (cursor);
+}
+
+void
+gdm_common_setup_builtin_icons (void)
+{
+        typedef struct 
+        {
+                const char *id;
+                gint size;
+                const guint8 *data;
+        } GdmThemeIcon;
+
+	static const GdmThemeIcon builtins[] =
+	{
+		{"preferences-desktop-locale", 24, preferences_desktop_locale_24},
+		{"preferences-desktop-remote-desktop", 24, preferences_desktop_remote_desktop_24},
+		{"system-log-out", 24, system_log_out_24},
+		{"system-restart", 24, system_restart_24},
+		{"system-shut-down", 24, system_shut_down_24},
+		{"system-suspend", 24, system_suspend_24},
+		{"user-desktop", 24, user_desktop_24}
+	};
+
+	static gboolean icons_setup = FALSE;
+	int i;
+
+	if (icons_setup)
+		return;
+	icons_setup = TRUE;
+
+	for (i = 0; i < (int) G_N_ELEMENTS (builtins); ++i)
+	{
+		GdkPixbuf *pixbuf;
+
+		pixbuf = gdk_pixbuf_new_from_inline (-1, builtins[i].data,
+						     FALSE, NULL);
+
+		gtk_icon_theme_add_builtin_icon (builtins[i].id,
+						 builtins[i].size,
+						 pixbuf);
+
+		g_object_unref (G_OBJECT (pixbuf));
+	}
 }
 
 void
