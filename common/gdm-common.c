@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <netinet/in.h>
 
 #ifdef HAVE_CRT_EXTERNS_H
 #include <crt_externs.h>
