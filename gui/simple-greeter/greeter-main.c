@@ -222,6 +222,7 @@ proxy_destroyed (GObject *object,
 	g_debug ("GREETER Proxy disconnected");
 }
 
+#if 1
 static void
 activate_power_manager (void)
 {
@@ -259,6 +260,23 @@ activate_power_manager (void)
 		g_debug ("Result %u", result);
 	}
 }
+#else
+static void
+activate_power_manager (void)
+{
+	GError  *error;
+	gboolean res;
+
+	g_debug ("Activating power management");
+
+	error = NULL;
+	res = g_spawn_command_line_async ("gnome-power-manager --no-daemon --verbose", &error);
+	if (! res) {
+		g_warning ("Unable to activate power management: %s", error->message);
+		g_error_free (error);
+	}
+}
+#endif
 
 int
 main (int argc, char *argv[])

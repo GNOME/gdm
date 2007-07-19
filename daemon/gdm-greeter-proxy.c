@@ -248,6 +248,9 @@ get_greeter_environment (GdmGreeterProxy *greeter_proxy)
 		g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (pwent->pw_shell));
 	}
 
+
+	g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (g_getenv ("PATH")));
+
 #if 0
 	defaultpath = gdm_daemon_config_get_value_string (GDM_KEY_PATH);
 	if (ve_string_empty (g_getenv ("PATH"))) {
