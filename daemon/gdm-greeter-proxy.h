@@ -50,7 +50,8 @@ typedef struct
 } GdmGreeterProxyClass;
 
 GType		    gdm_greeter_proxy_get_type           (void);
-GdmGreeterProxy *   gdm_greeter_proxy_new	         (const char      *display_id);
+GdmGreeterProxy *   gdm_greeter_proxy_new	         (const char      *display_name,
+							  const char      *display_device);
 void                gdm_greeter_proxy_set_server_address (GdmGreeterProxy *greeter_proxy,
 							  const char      *server_address);
 gboolean            gdm_greeter_proxy_start              (GdmGreeterProxy *greeter_proxy);

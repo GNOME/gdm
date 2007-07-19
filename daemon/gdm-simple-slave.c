@@ -696,6 +696,7 @@ run_greeter (GdmSimpleSlave *slave)
 {
 	gboolean       display_is_local;
 	char          *display_name;
+	char          *display_device;
 	char          *auth_file;
 
 	g_object_get (slave,
@@ -703,6 +704,8 @@ run_greeter (GdmSimpleSlave *slave)
 		      "display-name", &display_name,
 		      "display-x11-authority-file", &auth_file,
 		      NULL);
+
+	display_device = gdm_server_get_display_device (slave->priv->server);
 
 	/* Set the busy cursor */
 	set_busy_cursor (slave);
@@ -800,13 +803,15 @@ run_greeter (GdmSimpleSlave *slave)
 			  slave);
 	gdm_greeter_server_start (slave->priv->greeter_server);
 
-	slave->priv->greeter = gdm_greeter_proxy_new (display_name);
+	slave->priv->greeter = gdm_greeter_proxy_new (display_name,
+						      display_device);
 	g_object_set (slave->priv->greeter,
 		      "x11-authority-file", auth_file,
 		      NULL);
 	gdm_greeter_proxy_start (slave->priv->greeter);
 
 	g_free (display_name);
+	g_free (display_device);
 	g_free (auth_file);
 }
 

@@ -554,6 +554,7 @@ run_greeter (GdmFactorySlave *slave)
 {
 	gboolean       display_is_local;
 	char          *display_name;
+	char          *display_device;
 	char          *auth_file;
 	char          *address;
 
@@ -564,6 +565,8 @@ run_greeter (GdmFactorySlave *slave)
 		      "display-name", &display_name,
 		      "display-x11-authority-file", &auth_file,
 		      NULL);
+
+	display_device = gdm_server_get_display_device (slave->priv->server);
 
 	/* Set the busy cursor */
 	set_busy_cursor (slave);
@@ -621,7 +624,8 @@ run_greeter (GdmFactorySlave *slave)
 
 	address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
-	slave->priv->greeter = gdm_greeter_proxy_new (display_name);
+	g_debug ("Creating greeter on %s %s", display_name, display_device);
+	slave->priv->greeter = gdm_greeter_proxy_new (display_name, display_device);
 	g_signal_connect (slave->priv->greeter,
 			  "started",
 			  G_CALLBACK (on_greeter_start),
@@ -639,6 +643,7 @@ run_greeter (GdmFactorySlave *slave)
 	g_free (address);
 
 	g_free (display_name);
+	g_free (display_device);
 	g_free (auth_file);
 }
 
@@ -732,6 +737,8 @@ idle_connect_to_display (GdmFactorySlave *slave)
 
 	slave->priv->connection_attempts++;
 
+	g_debug ("Connect to display");
+
 	res = connect_to_display (slave);
 	if (res) {
 		/* FIXME: handle wait-for-go */
@@ -751,6 +758,8 @@ static void
 server_ready_cb (GdmServer *server,
 		 GdmFactorySlave  *slave)
 {
+	g_debug ("Server ready");
+
 	g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
 }
 
@@ -996,7 +1005,7 @@ gdm_factory_slave_finalize (GObject *object)
 
 	g_return_if_fail (factory_slave->priv != NULL);
 
-	gdm_factory_slave_stop (factory_slave);
+	gdm_factory_slave_stop (GDM_SLAVE (factory_slave));
 
 	G_OBJECT_CLASS (gdm_factory_slave_parent_class)->finalize (object);
 }

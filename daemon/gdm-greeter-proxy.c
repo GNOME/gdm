@@ -40,6 +40,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
+#include "gdm-ck-session.h"
 
 #include "gdm-greeter-proxy.h"
 
@@ -60,7 +61,10 @@ struct GdmGreeterProxyPrivate
 	char           *group_name;
 
 	char           *x11_display_name;
+	char           *x11_display_device;
 	char           *x11_authority_file;
+
+	char           *session_cookie;
 
 	int             user_max_filesize;
 
@@ -75,6 +79,7 @@ struct GdmGreeterProxyPrivate
 enum {
 	PROP_0,
 	PROP_X11_DISPLAY_NAME,
+	PROP_X11_DISPLAY_DEVICE,
 	PROP_X11_AUTHORITY_FILE,
 	PROP_USER_NAME,
 	PROP_GROUP_NAME,
@@ -173,6 +178,31 @@ listify_hash (const char *key,
 	g_ptr_array_add (env, str);
 }
 
+static char *
+open_session (GdmGreeterProxy *greeter_proxy)
+{
+	struct passwd *pwent;
+	const char    *session;
+	const char    *hostname;
+	gboolean       is_local;
+	char          *cookie;
+
+	/* FIXME: */
+	session = "greeter";
+	hostname = "localhost";
+	is_local = TRUE;
+
+	pwent = getpwnam (greeter_proxy->priv->user_name);
+	cookie = open_ck_session (pwent,
+				  greeter_proxy->priv->x11_display_device,
+				  greeter_proxy->priv->x11_display_name,
+				  hostname,
+				  is_local,
+				  session);
+
+	return cookie;
+}
+
 static GPtrArray *
 get_greeter_environment (GdmGreeterProxy *greeter_proxy)
 {
@@ -194,6 +224,8 @@ get_greeter_environment (GdmGreeterProxy *greeter_proxy)
 	/* hackish ain't it */
 	set_xnest_parent_stuff ();
 #endif
+
+	g_hash_table_insert (hash, g_strdup ("XDG_SESSION_COOKIE"), g_strdup (greeter_proxy->priv->session_cookie));
 
 	g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (greeter_proxy->priv->user_name));
 	g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (greeter_proxy->priv->user_name));
@@ -338,6 +370,8 @@ gdm_greeter_proxy_spawn (GdmGreeterProxy *greeter_proxy)
 		g_error_free (error);
 		goto out;
 	}
+
+	greeter_proxy->priv->session_cookie = open_session (greeter_proxy);
 
 	env = get_greeter_environment (greeter_proxy);
 
@@ -505,6 +539,14 @@ _gdm_greeter_proxy_set_x11_display_name (GdmGreeterProxy *greeter_proxy,
 }
 
 static void
+_gdm_greeter_proxy_set_x11_display_device (GdmGreeterProxy *greeter_proxy,
+					   const char *name)
+{
+        g_free (greeter_proxy->priv->x11_display_device);
+        greeter_proxy->priv->x11_display_device = g_strdup (name);
+}
+
+static void
 _gdm_greeter_proxy_set_x11_authority_file (GdmGreeterProxy *greeter_proxy,
 					   const char *file)
 {
@@ -542,6 +584,9 @@ gdm_greeter_proxy_set_property (GObject      *object,
 	case PROP_X11_DISPLAY_NAME:
 		_gdm_greeter_proxy_set_x11_display_name (self, g_value_get_string (value));
 		break;
+	case PROP_X11_DISPLAY_DEVICE:
+		_gdm_greeter_proxy_set_x11_display_device (self, g_value_get_string (value));
+		break;
 	case PROP_X11_AUTHORITY_FILE:
 		_gdm_greeter_proxy_set_x11_authority_file (self, g_value_get_string (value));
 		break;
@@ -573,6 +618,9 @@ gdm_greeter_proxy_get_property (GObject    *object,
 	switch (prop_id) {
 	case PROP_X11_DISPLAY_NAME:
 		g_value_set_string (value, self->priv->x11_display_name);
+		break;
+	case PROP_X11_DISPLAY_DEVICE:
+		g_value_set_string (value, self->priv->x11_display_device);
 		break;
 	case PROP_X11_AUTHORITY_FILE:
 		g_value_set_string (value, self->priv->x11_authority_file);
@@ -626,6 +674,13 @@ gdm_greeter_proxy_class_init (GdmGreeterProxyClass *klass)
 					 g_param_spec_string ("x11-display-name",
 							      "name",
 							      "name",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+					 PROP_X11_DISPLAY_DEVICE,
+					 g_param_spec_string ("x11-display-device",
+							      "device",
+							      "device",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
@@ -686,7 +741,7 @@ gdm_greeter_proxy_init (GdmGreeterProxy *greeter_proxy)
 
 	greeter_proxy->priv->pid = -1;
 
-	greeter_proxy->priv->command = g_strdup ("dbus-launch " LIBEXECDIR "/gdm-simple-greeter --g-fatal-warnings");
+	greeter_proxy->priv->command = g_strdup ("dbus-launch " LIBEXECDIR "/gdm-simple-greeter");
 	greeter_proxy->priv->user_max_filesize = 65536;
 }
 
@@ -704,16 +759,20 @@ gdm_greeter_proxy_finalize (GObject *object)
 
 	gdm_greeter_proxy_stop (greeter_proxy);
 
+	g_free (greeter_proxy->priv->session_cookie);
+
 	G_OBJECT_CLASS (gdm_greeter_proxy_parent_class)->finalize (object);
 }
 
 GdmGreeterProxy *
-gdm_greeter_proxy_new (const char *display_name)
+gdm_greeter_proxy_new (const char *display_name,
+		       const char *display_device)
 {
 	GObject *object;
 
 	object = g_object_new (GDM_TYPE_GREETER_PROXY,
 			       "x11-display-name", display_name,
+			       "x11-display-device", display_device,
 			       NULL);
 
 	return GDM_GREETER_PROXY (object);

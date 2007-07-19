@@ -57,9 +57,9 @@
 
 #define GLADE_XML_FILE "gdm-simple-greeter.glade"
 
-#define GPM_DBUS_NAME "org.gnome.PowerManager"
-#define GPM_DBUS_PATH "/org/gnome/PowerManager"
-#define GPM_DBUS_INTERFACE "org.gnome.PowerManager"
+#define GPM_DBUS_NAME      "org.freedesktop.PowerManagement"
+#define GPM_DBUS_PATH      "/org/freedesktop/PowerManagement"
+#define GPM_DBUS_INTERFACE "org.freedesktop.PowerManagement"
 
 #define GDM_SIMPLE_GREETER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_GREETER, GdmSimpleGreeterPrivate))
 
