@@ -2,6 +2,7 @@ NULL =
 
 SUBDIRS =		\
 	faces 		\
+	pixmaps		\
 	$(NULL)
 
 dbusconfdir = $(DBUS_SYS_DIR)
@@ -42,11 +43,17 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		<$(srcdir)/gdm.schemas.in.in >gdm.schemas.in
 
 EXTRA_DIST =						\
+	$(schemas_in_files)				\
 	$(schemas_DATA)					\
 	$(dbusconf_DATA)				\
+	gdm.schemas.in.in				\
 	$(NULL)
 
 CLEANFILES = 				\
+	$(NULL)
+
+DISTCLEANFILES =			\
+	gdm.schemas			\
 	$(NULL)
 
 MAINTAINERCLEANFILES =			\

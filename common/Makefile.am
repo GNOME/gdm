@@ -35,7 +35,7 @@ BUILT_SOURCES =			\
 	$(NULL)
 
 gdm-settings-glue.h: gdm-settings.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_settings --mode=glib-server --output=gdm-settings-glue.h gdm-settings.xml
+	dbus-binding-tool --prefix=gdm_settings --mode=glib-server --output=gdm-settings-glue.h $(srcdir)/gdm-settings.xml
 
 gdm-marshal.c: gdm-marshal.list
 	echo "#include \"gdm-marshal.h\"" > $@ && \

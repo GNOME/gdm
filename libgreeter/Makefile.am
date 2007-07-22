@@ -24,7 +24,7 @@ libgreeter_la_CFLAGS =			\
 	$(NULL)
 
 libgreeter_la_LIBADD =			\
-	$(top_srcdir)/common/libgdmcommon.la	\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 libgreeter_la_LDFLAGS = 		\

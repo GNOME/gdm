@@ -24,7 +24,6 @@ libexec_PROGRAMS =					\
 
 gdm_simple_greeter_SOURCES =  	\
 	greeter-main.c 		\
-	greeter-main.h 		\
 	gdm-simple-greeter.c	\
 	gdm-simple-greeter.h	\
 	$(NULL)
@@ -43,4 +42,8 @@ gdm_simple_greeter_LDADD = 		\
 gladedir = $(pkgdatadir)
 glade_DATA = 				\
 	gdm-simple-greeter.glade	\
+	$(NULL)
+
+EXTRA_DIST = 			\
+	$(glade_DATA)		\
 	$(NULL)

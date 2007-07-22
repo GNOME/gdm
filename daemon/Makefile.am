@@ -43,25 +43,25 @@ BUILT_SOURCES =					\
 	$(NULL)
 
 gdm-manager-glue.h: gdm-manager.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_manager --mode=glib-server --output=gdm-manager-glue.h gdm-manager.xml
+	dbus-binding-tool --prefix=gdm_manager --mode=glib-server --output=gdm-manager-glue.h $(srcdir)/gdm-manager.xml
 gdm-slave-glue.h: gdm-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_slave --mode=glib-server --output=gdm-slave-glue.h gdm-slave.xml
+	dbus-binding-tool --prefix=gdm_slave --mode=glib-server --output=gdm-slave-glue.h $(srcdir)/gdm-slave.xml
 gdm-simple-slave-glue.h: gdm-simple-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_simple_slave --mode=glib-server --output=gdm-simple-slave-glue.h gdm-simple-slave.xml
+	dbus-binding-tool --prefix=gdm_simple_slave --mode=glib-server --output=gdm-simple-slave-glue.h $(srcdir)/gdm-simple-slave.xml
 gdm-factory-slave-glue.h: gdm-factory-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_factory_slave --mode=glib-server --output=gdm-factory-slave-glue.h gdm-factory-slave.xml
+	dbus-binding-tool --prefix=gdm_factory_slave --mode=glib-server --output=gdm-factory-slave-glue.h $(srcdir)/gdm-factory-slave.xml
 gdm-product-slave-glue.h: gdm-product-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_product_slave --mode=glib-server --output=gdm-product-slave-glue.h gdm-product-slave.xml
+	dbus-binding-tool --prefix=gdm_product_slave --mode=glib-server --output=gdm-product-slave-glue.h $(srcdir)/gdm-product-slave.xml
 gdm-display-glue.h: gdm-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_display --mode=glib-server --output=gdm-display-glue.h gdm-display.xml
+	dbus-binding-tool --prefix=gdm_display --mode=glib-server --output=gdm-display-glue.h $(srcdir)/gdm-display.xml
 gdm-xdmcp-display-glue.h: gdm-xdmcp-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_xdmcp_display --mode=glib-server --output=gdm-xdmcp-display-glue.h gdm-xdmcp-display.xml
+	dbus-binding-tool --prefix=gdm_xdmcp_display --mode=glib-server --output=gdm-xdmcp-display-glue.h $(srcdir)/gdm-xdmcp-display.xml
 gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_static_display --mode=glib-server --output=gdm-static-display-glue.h gdm-static-display.xml
+	dbus-binding-tool --prefix=gdm_static_display --mode=glib-server --output=gdm-static-display-glue.h $(srcdir)/gdm-static-display.xml
 gdm-static-factory-display-glue.h: gdm-static-factory-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_static_factory_display --mode=glib-server --output=gdm-static-factory-display-glue.h gdm-static-factory-display.xml
+	dbus-binding-tool --prefix=gdm_static_factory_display --mode=glib-server --output=gdm-static-factory-display-glue.h $(srcdir)/gdm-static-factory-display.xml
 gdm-product-display-glue.h: gdm-product-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_product_display --mode=glib-server --output=gdm-product-display-glue.h gdm-product-display.xml
+	dbus-binding-tool --prefix=gdm_product_display --mode=glib-server --output=gdm-product-display-glue.h $(srcdir)/gdm-product-display.xml
 
 noinst_PROGRAMS = 		\
 	test-session		\
@@ -207,6 +207,7 @@ gdm_product_slave_LDADD = 			\
 
 gdm_session_worker_SOURCES = 			\
 	session-worker-main.c 			\
+	gdm-session-worker.h			\
 	gdm-session-worker.c			\
 	$(NULL)
 
@@ -226,7 +227,6 @@ sbin_PROGRAMS = 			\
 	$(NULL)
 
 gdm_binary_SOURCES = 			\
-	gdm.h 				\
 	main.c				\
 	gdm-display-store.c		\
 	gdm-display-store.h		\
@@ -244,11 +244,9 @@ gdm_binary_SOURCES = 			\
 	gdm-manager.h			\
 	gdm-slave-proxy.c		\
 	gdm-slave-proxy.h		\
-	gdm-socket-protocol.h		\
 	auth.c				\
 	auth.h				\
 	fstype.c			\
-	server.h			\
 	choose.c			\
 	choose.h			\
 	filecheck.c			\

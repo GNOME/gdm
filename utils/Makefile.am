@@ -25,7 +25,7 @@ gdm-restart: gdm-restart.in Makefile
 gdm-safe-restart: gdm-safe-restart.in Makefile
 	$(edit) $< >$@
 gdmsetup: gdmsetup-security.in
-	$(edit) <gdmsetup-security.in >gdmsetup
+	$(edit) <$(srcdir)/gdmsetup-security.in >gdmsetup
 
 
 sbin_SCRIPTS = 			\
