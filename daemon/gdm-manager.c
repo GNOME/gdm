@@ -225,7 +225,8 @@ load_static_displays_from_file (GdmManager *manager)
 	GdmDisplay *display;
 
 	/* just load one for now */
-	display = gdm_static_factory_display_new (0, manager->priv->display_store);
+	/*display = gdm_static_factory_display_new (0, manager->priv->display_store);*/
+	display = gdm_static_display_new (0);
 
 	if (display == NULL) {
 		g_warning ("Unable to create display: %d", 0);

@@ -79,6 +79,19 @@ gdm_product_display_manage (GdmDisplay *display)
 }
 
 static gboolean
+gdm_product_display_finish (GdmDisplay *display)
+{
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	GDM_DISPLAY_CLASS (gdm_product_display_parent_class)->finish (display);
+
+	/* when a product display is done it is done */
+	gdm_display_unmanage (display);
+
+	return TRUE;
+}
+
+static gboolean
 gdm_product_display_unmanage (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
@@ -180,6 +193,7 @@ gdm_product_display_class_init (GdmProductDisplayClass *klass)
 
 	display_class->create_authority = gdm_product_display_create_authority;
 	display_class->manage = gdm_product_display_manage;
+	display_class->finish = gdm_product_display_finish;
 	display_class->unmanage = gdm_product_display_unmanage;
 
 	g_type_class_add_private (klass, sizeof (GdmProductDisplayPrivate));

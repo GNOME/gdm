@@ -78,6 +78,7 @@ struct GdmSimpleSlavePrivate
 	/* user selected */
 	char             *selected_session;
 	char             *selected_language;
+	char             *selected_user;
 
 	GdmServer        *server;
 	GdmGreeterServer *greeter_server;
@@ -373,32 +374,34 @@ gdm_simple_slave_exec_script (GdmSimpleSlave *slave,
 }
 
 static void
-on_session_started (GdmSession *session,
-                    GPid        pid,
-		    GdmSimpleSlave   *slave)
+on_session_started (GdmSession     *session,
+                    GPid            pid,
+		    GdmSimpleSlave *slave)
 {
 	g_debug ("session started on pid %d\n", (int) pid);
 	g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);
 }
 
 static void
-on_session_exited (GdmSession *session,
-                   int         exit_code,
-		   GdmSimpleSlave   *slave)
+on_session_exited (GdmSession     *session,
+                   int             exit_code,
+		   GdmSimpleSlave *slave)
 {
 	g_debug ("session exited with code %d\n", exit_code);
-	g_signal_emit (slave, signals [SESSION_EXITED], 0, exit_code);
+
+	gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
 static void
-on_session_died (GdmSession *session,
-                 int         signal_number,
-		 GdmSimpleSlave   *slave)
+on_session_died (GdmSession     *session,
+                 int             signal_number,
+		 GdmSimpleSlave *slave)
 {
 	g_debug ("session died with signal %d, (%s)",
 		 signal_number,
 		 g_strsignal (signal_number));
-	g_signal_emit (slave, signals [SESSION_DIED], 0, signal_number);
+
+	gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
 static gboolean
@@ -642,104 +645,31 @@ on_secret_info_query (GdmSession     *session,
 }
 
 static void
-on_greeter_answer (GdmGreeterServer *greeter_server,
-		   const char       *text,
-		   GdmSimpleSlave   *slave)
+on_opened (GdmSession     *session,
+	   GdmSimpleSlave *slave)
 {
-	gdm_session_answer_query (slave->priv->session, text);
-}
+	GError *error;
+	gboolean res;
 
-static void
-on_greeter_session_selected (GdmGreeterServer *greeter_server,
-			     const char       *text,
-			     GdmSimpleSlave   *slave)
-{
-	g_free (slave->priv->selected_session);
-	slave->priv->selected_session = g_strdup (text);
-}
-
-static void
-on_greeter_language_selected (GdmGreeterServer *greeter_server,
-			      const char       *text,
-			      GdmSimpleSlave   *slave)
-{
-	g_free (slave->priv->selected_language);
-	slave->priv->selected_language = g_strdup (text);
-}
-
-static void
-on_greeter_connected (GdmGreeterServer *greeter_server,
-		      GdmSimpleSlave   *slave)
-{
-	gboolean       display_is_local;
-
-	g_object_get (slave,
-		      "display-is-local", &display_is_local,
-		      NULL);
-
-	g_debug ("Greeter started");
-
-	gdm_session_open (slave->priv->session,
-			  "gdm",
-			  NULL /* hostname */,
-			  "/dev/console",
-			  NULL);
-
-	/* If XDMCP stop pinging */
-	if ( ! display_is_local) {
-		alarm (0);
+	g_debug ("session opened");
+	res = gdm_session_begin_verification (session,
+					      slave->priv->selected_user,
+					      &error);
+	if (! res) {
+		g_warning ("Unable to begin verification: %s", error->message);
+		g_error_free (error);
 	}
 }
 
 static void
-run_greeter (GdmSimpleSlave *slave)
+create_new_session (GdmSimpleSlave *slave)
 {
-	gboolean       display_is_local;
-	char          *display_name;
-	char          *display_device;
-	char          *auth_file;
-
-	g_object_get (slave,
-		      "display-is-local", &display_is_local,
-		      "display-name", &display_name,
-		      "display-x11-authority-file", &auth_file,
-		      NULL);
-
-	display_device = gdm_server_get_display_device (slave->priv->server);
-
-	/* Set the busy cursor */
-	set_busy_cursor (slave);
-
-	/* FIXME: send a signal back to the master */
-
-#if 0
-
-	/* OK from now on it's really the user whacking us most likely,
-	 * we have already started up well */
-	do_xfailed_on_xio_error = FALSE;
-#endif
-
-	/* If XDMCP setup pinging */
-	if ( ! display_is_local && slave->priv->ping_interval > 0) {
-		alarm (slave->priv->ping_interval);
-	}
-
-#if 0
-	/* checkout xinerama */
-	gdm_screen_init (slave);
-#endif
-
-#ifdef HAVE_TSOL
-	/* Check out Solaris Trusted Xserver extension */
-	gdm_tsol_init (d);
-#endif
-
-	/* Run the init script. gdmslave suspends until script has terminated */
-	gdm_simple_slave_exec_script (slave,
-				      GDMCONFDIR"/Init",
-				      "gdm");
-
 	slave->priv->session = gdm_session_new ();
+
+	g_signal_connect (slave->priv->session,
+			  "opened",
+			  G_CALLBACK (on_opened),
+			  slave);
 
 	g_signal_connect (slave->priv->session,
 			  "info",
@@ -783,6 +713,144 @@ run_greeter (GdmSimpleSlave *slave)
 			  "session-died",
 			  G_CALLBACK (on_session_died),
 			  slave);
+}
+
+static void
+on_greeter_start (GdmGreeterProxy *greeter,
+		  GdmSimpleSlave  *slave)
+{
+	g_debug ("Greeter started");
+}
+
+static void
+on_greeter_stop (GdmGreeterProxy *greeter,
+		 GdmSimpleSlave  *slave)
+{
+	g_debug ("Greeter stopped");
+}
+
+static void
+on_greeter_answer (GdmGreeterServer *greeter_server,
+		   const char       *text,
+		   GdmSimpleSlave   *slave)
+{
+	gdm_session_answer_query (slave->priv->session, text);
+}
+
+static void
+on_greeter_session_selected (GdmGreeterServer *greeter_server,
+			     const char       *text,
+			     GdmSimpleSlave   *slave)
+{
+	g_free (slave->priv->selected_session);
+	slave->priv->selected_session = g_strdup (text);
+}
+
+static void
+on_greeter_language_selected (GdmGreeterServer *greeter_server,
+			      const char       *text,
+			      GdmSimpleSlave   *slave)
+{
+	g_free (slave->priv->selected_language);
+	slave->priv->selected_language = g_strdup (text);
+}
+
+static void
+on_greeter_user_selected (GdmGreeterServer *greeter_server,
+			  const char       *text,
+			  GdmSimpleSlave   *slave)
+{
+
+}
+
+static void
+on_greeter_cancel (GdmGreeterServer *greeter_server,
+		   GdmSimpleSlave   *slave)
+{
+	if (slave->priv->session != NULL) {
+		gdm_session_close (slave->priv->session);
+		g_object_unref (slave->priv->session);
+	}
+
+	create_new_session (slave);
+}
+
+static void
+on_greeter_connected (GdmGreeterServer *greeter_server,
+		      GdmSimpleSlave   *slave)
+{
+	gboolean       display_is_local;
+
+	g_object_get (slave,
+		      "display-is-local", &display_is_local,
+		      NULL);
+
+	g_debug ("Greeter started");
+
+	gdm_session_open (slave->priv->session,
+			  "gdm",
+			  "" /* hostname */,
+			  "/dev/console",
+			  NULL);
+
+	/* If XDMCP stop pinging */
+	if ( ! display_is_local) {
+		alarm (0);
+	}
+}
+
+static void
+run_greeter (GdmSimpleSlave *slave)
+{
+	gboolean       display_is_local;
+	char          *display_name;
+	char          *display_device;
+	char          *auth_file;
+	char          *address;
+
+	g_debug ("Running greeter");
+
+	g_object_get (slave,
+		      "display-is-local", &display_is_local,
+		      "display-name", &display_name,
+		      "display-x11-authority-file", &auth_file,
+		      NULL);
+
+	display_device = gdm_server_get_display_device (slave->priv->server);
+
+	/* Set the busy cursor */
+	set_busy_cursor (slave);
+
+	/* FIXME: send a signal back to the master */
+
+#if 0
+
+	/* OK from now on it's really the user whacking us most likely,
+	 * we have already started up well */
+	do_xfailed_on_xio_error = FALSE;
+#endif
+
+	/* If XDMCP setup pinging */
+	if ( ! display_is_local && slave->priv->ping_interval > 0) {
+		alarm (slave->priv->ping_interval);
+	}
+
+#if 0
+	/* checkout xinerama */
+	gdm_screen_init (slave);
+#endif
+
+#ifdef HAVE_TSOL
+	/* Check out Solaris Trusted Xserver extension */
+	gdm_tsol_init (d);
+#endif
+
+	/* Run the init script. gdmslave suspends until script has terminated */
+	gdm_simple_slave_exec_script (slave,
+				      GDMCONFDIR"/Init",
+				      "gdm");
+
+	create_new_session (slave);
 
 	slave->priv->greeter_server = gdm_greeter_server_new ();
 	g_signal_connect (slave->priv->greeter_server,
@@ -798,16 +866,35 @@ run_greeter (GdmSimpleSlave *slave)
 			  G_CALLBACK (on_greeter_language_selected),
 			  slave);
 	g_signal_connect (slave->priv->greeter_server,
+			  "user-selected",
+			  G_CALLBACK (on_greeter_user_selected),
+			  slave);
+	g_signal_connect (slave->priv->greeter_server,
 			  "connected",
 			  G_CALLBACK (on_greeter_connected),
 			  slave);
+	g_signal_connect (slave->priv->greeter_server,
+			  "cancelled",
+			  G_CALLBACK (on_greeter_cancel),
+			  slave);
 	gdm_greeter_server_start (slave->priv->greeter_server);
 
-	slave->priv->greeter = gdm_greeter_proxy_new (display_name,
-						      display_device);
+	address = gdm_greeter_server_get_address (slave->priv->greeter_server);
+
+	g_debug ("Creating greeter on %s %s", display_name, display_device);
+	slave->priv->greeter = gdm_greeter_proxy_new (display_name, display_device);
+	g_signal_connect (slave->priv->greeter,
+			  "started",
+			  G_CALLBACK (on_greeter_start),
+			  slave);
+	g_signal_connect (slave->priv->greeter,
+			  "stopped",
+			  G_CALLBACK (on_greeter_stop),
+			  slave);
 	g_object_set (slave->priv->greeter,
 		      "x11-authority-file", auth_file,
 		      NULL);
+	gdm_greeter_proxy_set_server_address (slave->priv->greeter, address);
 	gdm_greeter_proxy_start (slave->priv->greeter);
 
 	g_free (display_name);
@@ -1109,6 +1196,8 @@ gdm_simple_slave_finalize (GObject *object)
 	simple_slave = GDM_SIMPLE_SLAVE (object);
 
 	g_return_if_fail (simple_slave->priv != NULL);
+
+	gdm_simple_slave_stop (GDM_SLAVE (simple_slave));
 
 	G_OBJECT_CLASS (gdm_simple_slave_parent_class)->finalize (object);
 }

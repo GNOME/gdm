@@ -59,6 +59,7 @@ struct GdmDisplayPrivate
 	char            *slave_command;
 
 	gboolean         is_local;
+	guint            finish_idle_id;
 
 	GdmSlaveProxy   *slave_proxy;
         DBusGConnection *connection;
@@ -201,12 +202,30 @@ gdm_display_get_number (GdmDisplay *display,
        return TRUE;
 }
 
+static gboolean
+finish_idle (GdmDisplay *display)
+{
+	gdm_display_finish (display);
+	display->priv->finish_idle_id = 0;
+	return FALSE;
+}
+
+static void
+queue_finish (GdmDisplay *display)
+{
+	if (display->priv->finish_idle_id == 0) {
+		display->priv->finish_idle_id = g_idle_add ((GSourceFunc)finish_idle, display);
+	}
+}
+
 static void
 slave_exited (GdmSlaveProxy       *proxy,
 	      int                  code,
 	      GdmDisplay          *display)
 {
 	g_debug ("Slave exited: %d", code);
+
+	queue_finish (display);
 }
 
 static void
@@ -215,6 +234,8 @@ slave_died (GdmSlaveProxy       *proxy,
 	    GdmDisplay          *display)
 {
 	g_debug ("Slave died: %d", signum);
+
+	queue_finish (display);
 }
 
 static gboolean
@@ -259,10 +280,38 @@ gdm_display_manage (GdmDisplay *display)
 
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Unmanaging display: %s", display->priv->id);
+	g_debug ("Managing display: %s", display->priv->id);
 
 	g_object_ref (display);
 	ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
+	g_object_unref (display);
+
+	return ret;
+}
+
+static gboolean
+gdm_display_real_finish (GdmDisplay *display)
+{
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	display->priv->status = GDM_DISPLAY_FINISHED;
+
+	g_debug ("GdmDisplay finish display");
+
+	return TRUE;
+}
+
+gboolean
+gdm_display_finish (GdmDisplay *display)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	g_debug ("Finishing display: %s", display->priv->id);
+
+	g_object_ref (display);
+	ret = GDM_DISPLAY_GET_CLASS (display)->finish (display);
 	g_object_unref (display);
 
 	return ret;
@@ -545,6 +594,11 @@ gdm_display_dispose (GObject *object)
 
 	display = GDM_DISPLAY (object);
 
+	if (display->priv->finish_idle_id > 0) {
+		g_source_remove (display->priv->finish_idle_id);
+		display->priv->finish_idle_id = 0;
+	}
+
 	g_debug ("Disposing display");
 	gdm_display_unmanage (display);
 
@@ -564,6 +618,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
 
 	klass->create_authority = gdm_display_real_create_authority;
 	klass->manage = gdm_display_real_manage;
+	klass->finish = gdm_display_real_finish;
 	klass->unmanage = gdm_display_real_unmanage;
 
 	g_object_class_install_property (object_class,

@@ -63,56 +63,12 @@ static void	gdm_slave_proxy_finalize	(GObject            *object);
 
 G_DEFINE_TYPE (GdmSlaveProxy, gdm_slave_proxy, G_TYPE_OBJECT)
 
-/* adapted from gspawn.c */
-static int
-wait_on_child (int pid)
-{
-	int status;
-
- wait_again:
-	if (waitpid (pid, &status, 0) < 0) {
-		if (errno == EINTR) {
-			goto wait_again;
-		} else if (errno == ECHILD) {
-			; /* do nothing, child already reaped */
-		} else {
-			g_debug ("waitpid () should not fail in 'GdmSpawnProxy'");
-		}
-	}
-
-	return status;
-}
-
-static void
-slave_died (GdmSlaveProxy *slave)
-{
-	int exit_status;
-
-	if (slave->priv->pid < 0) {
-		return;
-	}
-
-	g_debug ("Waiting on process %d", slave->priv->pid);
-	exit_status = wait_on_child (slave->priv->pid);
-
-	if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-		g_debug ("Wait on child process failed");
-	} else {
-		/* exited normally */
-	}
-
-	g_spawn_close_pid (slave->priv->pid);
-	slave->priv->pid = -1;
-
-	g_debug ("Slave died");
-}
-
 static void
 child_watch (GPid           pid,
 	     int            status,
 	     GdmSlaveProxy *slave)
 {
-        g_debug ("child (pid:%d) done (%s:%d)",
+        g_debug ("slave (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -120,16 +76,17 @@ child_watch (GPid           pid,
                  WIFEXITED (status) ? WEXITSTATUS (status)
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
-        if (WIFEXITED (status)) {
+
+        g_spawn_close_pid (slave->priv->pid);
+	slave->priv->pid = -1;
+
+	if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
                 g_signal_emit (slave, signals [EXITED], 0, code);
         } else if (WIFSIGNALED (status)) {
                 int num = WTERMSIG (status);
                 g_signal_emit (slave, signals [DIED], 0, num);
         }
-
-        g_spawn_close_pid (slave->priv->pid);
-	slave->priv->pid = -1;
 }
 
 static gboolean
@@ -273,9 +230,9 @@ gdm_slave_proxy_set_property (GObject      *object,
 
 static void
 gdm_slave_proxy_get_property (GObject    *object,
-				 guint       prop_id,
-				 GValue	    *value,
-				 GParamSpec *pspec)
+			      guint       prop_id,
+			      GValue	 *value,
+			      GParamSpec *pspec)
 {
 	GdmSlaveProxy *self;
 
@@ -292,12 +249,29 @@ gdm_slave_proxy_get_property (GObject    *object,
 }
 
 static void
+gdm_slave_proxy_dispose (GObject *object)
+{
+	GdmSlaveProxy *slave;
+
+	slave = GDM_SLAVE_PROXY (object);
+
+	g_debug ("Disposing slave proxy");
+	if (slave->priv->child_watch_id > 0) {
+		g_source_remove (slave->priv->child_watch_id);
+		slave->priv->child_watch_id = 0;
+	}
+
+	G_OBJECT_CLASS (gdm_slave_proxy_parent_class)->dispose (object);
+}
+
+static void
 gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
 {
 	GObjectClass    *object_class = G_OBJECT_CLASS (klass);
 
 	object_class->get_property = gdm_slave_proxy_get_property;
 	object_class->set_property = gdm_slave_proxy_set_property;
+	object_class->dispose = gdm_slave_proxy_dispose;
 	object_class->finalize = gdm_slave_proxy_finalize;
 
 	g_type_class_add_private (klass, sizeof (GdmSlaveProxyPrivate));

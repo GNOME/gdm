@@ -38,7 +38,8 @@ typedef struct GdmDisplayPrivate GdmDisplayPrivate;
 
 typedef enum {
 	GDM_DISPLAY_UNMANAGED,
-	GDM_DISPLAY_MANAGED
+	GDM_DISPLAY_MANAGED,
+	GDM_DISPLAY_FINISHED
 } GdmDisplayStatus;
 
 typedef struct
@@ -54,6 +55,7 @@ typedef struct
 	/* methods */
 	gboolean (*create_authority) (GdmDisplay *display);
 	gboolean (*manage)           (GdmDisplay *display);
+	gboolean (*finish)           (GdmDisplay *display);
 	gboolean (*unmanage)         (GdmDisplay *display);
 
 } GdmDisplayClass;
@@ -74,6 +76,7 @@ char *              gdm_display_get_user_auth                  (GdmDisplay *disp
 
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
 gboolean            gdm_display_manage                         (GdmDisplay *display);
+gboolean            gdm_display_finish                         (GdmDisplay *display);
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);
 
 

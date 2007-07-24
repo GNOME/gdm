@@ -1,3 +1,28 @@
+2007-07-24  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-display.c: (finish_idle), (queue_finish),
+	(slave_exited), (slave_died), (gdm_display_manage),
+	(gdm_display_real_finish), (gdm_display_finish),
+	(gdm_display_dispose), (gdm_display_class_init):
+	* daemon/gdm-display.h:
+	* daemon/gdm-manager.c: (load_static_displays_from_file):
+	* daemon/gdm-product-display.c: (gdm_product_display_finish),
+	(gdm_product_display_class_init):
+	* daemon/gdm-simple-slave.c: (on_session_exited),
+	(on_session_died), (on_opened), (create_new_session),
+	(on_greeter_start), (on_greeter_stop), (on_greeter_user_selected),
+	(on_greeter_cancel), (on_greeter_connected), (run_greeter),
+	(gdm_simple_slave_finalize):
+	* daemon/gdm-slave-proxy.c: (child_watch),
+	(gdm_slave_proxy_dispose), (gdm_slave_proxy_class_init):
+	* daemon/gdm-static-display.c: (gdm_static_display_finish),
+	(gdm_static_display_class_init):
+	* daemon/gdm-static-factory-display.c:
+	(gdm_static_factory_display_finish),
+	(gdm_static_factory_display_class_init):
+	Dogfood static display.  Make static display work.  Add a finished
+	state to the Display.  Always restart static displays on finish.
+
 2007-07-22  Richard Hughes  <richard@hughsie.com>
 
 	* common/Makefile.am:
