@@ -174,46 +174,77 @@ gdm_address_equal (GdmAddress *a,
 	return FALSE;
 }
 
-char *
-gdm_address_get_hostname (GdmAddress *address)
+gboolean
+gdm_address_get_hostname (GdmAddress *address,
+			  char      **hostnamep)
 {
-	char host [NI_MAXHOST];
+	char     host [NI_MAXHOST];
+	int      res;
+	gboolean ret;
 
-	g_return_val_if_fail (address != NULL || address->ss != NULL, NULL);
+	g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+
+	ret = FALSE;
 
 	host [0] = '\0';
-	getnameinfo ((const struct sockaddr *)address->ss,
-		     sizeof (struct sockaddr_storage),
-		     host, sizeof (host),
-		     NULL, 0,
-		     0);
+	res = getnameinfo ((const struct sockaddr *)address->ss,
+			   sizeof (struct sockaddr_storage),
+			   host, sizeof (host),
+			   NULL, 0,
+			   0);
+	if (res == 0) {
+		ret = TRUE;
+		goto done;
+	} else {
+		g_warning ("Unable lookup hostname: %s", gai_strerror (res));
+		gdm_address_debug (address);
+	}
 
-	return g_strdup (host);
+	/* try numeric? */
+
+ done:
+	if (hostnamep != NULL) {
+		*hostnamep = g_strdup (host);
+	}
+
+	return ret;
 }
 
-void
+gboolean
 gdm_address_get_numeric_info (GdmAddress *address,
 			      char      **hostp,
 			      char      **servp)
 {
-	char host [NI_MAXHOST];
-	char serv [NI_MAXSERV];
+	char     host [NI_MAXHOST];
+	char     serv [NI_MAXSERV];
+	int      res;
+	gboolean ret;
 
-	g_return_if_fail (address != NULL || address->ss != NULL);
+	g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+
+	ret = FALSE;
 
 	host [0] = '\0';
 	serv [0] = '\0';
-	getnameinfo ((const struct sockaddr *)address->ss,
-		     sizeof (struct sockaddr_storage),
-		     host, sizeof (host),
-		     serv, sizeof (serv),
-		     NI_NUMERICHOST | NI_NUMERICSERV);
+	res = getnameinfo ((const struct sockaddr *)address->ss,
+			   sizeof (struct sockaddr_storage),
+			   host, sizeof (host),
+			   serv, sizeof (serv),
+			   NI_NUMERICHOST | NI_NUMERICSERV);
+	if (res != 0) {
+		g_warning ("Unable lookup numeric info: %s", gai_strerror (res));
+	} else {
+		ret = TRUE;
+	}
+
 	if (servp != NULL) {
 		*servp = g_strdup (serv);
 	}
 	if (hostp != NULL) {
 		*hostp = g_strdup (host);
 	}
+
+	return ret;
 }
 
 gboolean
@@ -351,4 +382,57 @@ gdm_address_free (GdmAddress *address)
 	g_free (address);
 }
 
+/* for debugging */
+static const char *
+address_family_str (GdmAddress *address)
+{
+	const char *str;
+	switch (address->ss->ss_family) {
+	case AF_INET:
+		str = "inet";
+		break;
+	case AF_INET6:
+		str = "inet6";
+		break;
+	case AF_UNIX:
+		str = "unix";
+		break;
+	case AF_UNSPEC:
+		str = "unspecified";
+		break;
+	default:
+		str = "unknown";
+		break;
+	}
+	return str;
+}
 
+void
+gdm_address_debug (GdmAddress *address)
+{
+	char *hostname;
+	char *host;
+	char *port;
+
+	g_return_if_fail (address != NULL);
+
+	hostname = NULL;
+	host = NULL;
+	port = NULL;
+
+	gdm_address_get_hostname (address, &hostname);
+	gdm_address_get_numeric_info (address, &host, &port);
+
+	g_debug ("Address family:%d (%s) hostname:%s host:%s port:%s local:%d loopback:%d",
+		 address->ss->ss_family,
+		 address_family_str (address),
+		 hostname,
+		 host,
+		 port,
+		 gdm_address_is_local (address),
+		 gdm_address_is_loopback (address));
+
+	g_free (hostname);
+	g_free (host);
+	g_free (port);
+}

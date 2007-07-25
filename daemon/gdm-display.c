@@ -50,8 +50,8 @@ struct GdmDisplayPrivate
 {
 	char            *id;
 	char            *remote_hostname;
-	int              number;
-	char            *x11_display;
+	int              x11_display_number;
+	char            *x11_display_name;
 	int              status;
 	time_t           creation_time;
 	char            *x11_cookie;
@@ -69,8 +69,8 @@ enum {
 	PROP_0,
 	PROP_ID,
 	PROP_REMOTE_HOSTNAME,
-	PROP_NUMBER,
-	PROP_X11_DISPLAY,
+	PROP_X11_DISPLAY_NUMBER,
+	PROP_X11_DISPLAY_NAME,
 	PROP_X11_COOKIE,
 	PROP_X11_AUTHORITY_FILE,
 	PROP_IS_LOCAL,
@@ -146,6 +146,68 @@ gdm_display_create_authority (GdmDisplay *display)
 	return ret;
 }
 
+static gboolean
+gdm_display_real_add_user_authorization (GdmDisplay *display,
+					 const char *username,
+					 char      **filename,
+					 GError    **error)
+{
+	gboolean ret;
+
+	ret = FALSE;
+
+	return ret;
+}
+
+gboolean
+gdm_display_add_user_authorization (GdmDisplay *display,
+				    const char *username,
+				    char      **filename,
+				    GError    **error)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	g_debug ("Adding authorization for user:%s on display %s", username, display->priv->x11_display_name);
+
+	g_object_ref (display);
+	ret = GDM_DISPLAY_GET_CLASS (display)->add_user_authorization (display, username, filename, error);
+	g_object_unref (display);
+
+	return ret;
+}
+
+static gboolean
+gdm_display_real_remove_user_authorization (GdmDisplay *display,
+					    const char *username,
+					    GError    **error)
+{
+	gboolean ret;
+
+	ret = FALSE;
+
+	return ret;
+}
+
+gboolean
+gdm_display_remove_user_authorization (GdmDisplay *display,
+				       const char *username,
+				       GError    **error)
+{
+	gboolean ret;
+
+	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+	g_debug ("Removing authorization for user:%s on display %s", username, display->priv->x11_display_name);
+
+	g_object_ref (display);
+	ret = GDM_DISPLAY_GET_CLASS (display)->remove_user_authorization (display, username, error);
+	g_object_unref (display);
+
+	return ret;
+}
+
 gboolean
 gdm_display_get_x11_cookie (GdmDisplay *display,
 			    char      **x11_cookie,
@@ -189,14 +251,14 @@ gdm_display_get_remote_hostname (GdmDisplay *display,
 }
 
 gboolean
-gdm_display_get_number (GdmDisplay *display,
-			int	   *number,
-			GError	  **error)
+gdm_display_get_x11_display_number (GdmDisplay *display,
+				    int	       *number,
+				    GError    **error)
 {
        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
        if (number != NULL) {
-	       *number = display->priv->number;
+	       *number = display->priv->x11_display_number;
        }
 
        return TRUE;
@@ -367,14 +429,14 @@ gdm_display_get_id (GdmDisplay	       *display,
 }
 
 gboolean
-gdm_display_get_x11_display (GdmDisplay       *display,
-			     char	      **x11_display,
-			     GError	      **error)
+gdm_display_get_x11_display_name (GdmDisplay   *display,
+				  char	      **x11_display,
+				  GError      **error)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
 	if (x11_display != NULL) {
-		*x11_display = g_strdup (display->priv->x11_display);
+		*x11_display = g_strdup (display->priv->x11_display_name);
 	}
 
 	return TRUE;
@@ -411,18 +473,18 @@ _gdm_display_set_remote_hostname (GdmDisplay     *display,
 }
 
 static void
-_gdm_display_set_number (GdmDisplay     *display,
-			 int             num)
+_gdm_display_set_x11_display_number (GdmDisplay     *display,
+				     int             num)
 {
-        display->priv->number = num;
+        display->priv->x11_display_number = num;
 }
 
 static void
-_gdm_display_set_x11_display (GdmDisplay     *display,
-			      const char     *x11_display)
+_gdm_display_set_x11_display_name (GdmDisplay     *display,
+				   const char     *x11_display)
 {
-        g_free (display->priv->x11_display);
-        display->priv->x11_display = g_strdup (x11_display);
+        g_free (display->priv->x11_display_name);
+        display->priv->x11_display_name = g_strdup (x11_display);
 }
 
 static void
@@ -473,11 +535,11 @@ gdm_display_set_property (GObject	 *object,
 	case PROP_REMOTE_HOSTNAME:
 		_gdm_display_set_remote_hostname (self, g_value_get_string (value));
 		break;
-	case PROP_NUMBER:
-		_gdm_display_set_number (self, g_value_get_int (value));
+	case PROP_X11_DISPLAY_NUMBER:
+		_gdm_display_set_x11_display_number (self, g_value_get_int (value));
 		break;
-	case PROP_X11_DISPLAY:
-		_gdm_display_set_x11_display (self, g_value_get_string (value));
+	case PROP_X11_DISPLAY_NAME:
+		_gdm_display_set_x11_display_name (self, g_value_get_string (value));
 		break;
 	case PROP_X11_COOKIE:
 		_gdm_display_set_x11_cookie (self, g_value_get_string (value));
@@ -514,11 +576,11 @@ gdm_display_get_property (GObject	 *object,
 	case PROP_REMOTE_HOSTNAME:
 		g_value_set_string (value, self->priv->remote_hostname);
 		break;
-	case PROP_NUMBER:
-		g_value_set_int (value, self->priv->number);
+	case PROP_X11_DISPLAY_NUMBER:
+		g_value_set_int (value, self->priv->x11_display_number);
 		break;
-	case PROP_X11_DISPLAY:
-		g_value_set_string (value, self->priv->x11_display);
+	case PROP_X11_DISPLAY_NAME:
+		g_value_set_string (value, self->priv->x11_display_name);
 		break;
 	case PROP_X11_COOKIE:
 		g_value_set_string (value, self->priv->x11_cookie);
@@ -617,6 +679,8 @@ gdm_display_class_init (GdmDisplayClass *klass)
 	object_class->finalize = gdm_display_finalize;
 
 	klass->create_authority = gdm_display_real_create_authority;
+	klass->add_user_authorization = gdm_display_real_add_user_authorization;
+	klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
 	klass->manage = gdm_display_real_manage;
 	klass->finish = gdm_display_real_finish;
 	klass->unmanage = gdm_display_real_unmanage;
@@ -636,19 +700,19 @@ gdm_display_class_init (GdmDisplayClass *klass)
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
-					 PROP_NUMBER,
-					 g_param_spec_int ("number",
-							  "number",
-							  "number",
+					 PROP_X11_DISPLAY_NUMBER,
+					 g_param_spec_int ("x11-display-number",
+							  "x11 display number",
+							  "x11 display number",
 							  -1,
 							  G_MAXINT,
 							  -1,
 							  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
-					 PROP_X11_DISPLAY,
-					 g_param_spec_string ("x11-display",
-							      "x11-display",
-							      "x11-display",
+					 PROP_X11_DISPLAY_NAME,
+					 g_param_spec_string ("x11-display-name",
+							      "x11-display-name",
+							      "x11-display-name",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,

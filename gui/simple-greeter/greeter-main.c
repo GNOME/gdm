@@ -296,6 +296,8 @@ main (int argc, char *argv[])
                 exit (1);
         }
 
+	g_debug ("Greeter for display %s xauthority:%s", g_getenv ("DISPLAY"), g_getenv ("XAUTHORITY"));
+
 	/*
 	 * gdm_common_atspi_launch () needs gdk initialized.
 	 * We cannot start gtk before the registry is running

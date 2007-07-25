@@ -97,8 +97,8 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
 	x11_display = NULL;
 
 	g_object_get (display,
-		      "x11-display", &x11_display,
-		      "number", &display_num,
+		      "x11-display-name", &x11_display,
+		      "x11-display-number", &display_num,
 		      NULL);
 
 	/* Create new random cookie */
@@ -119,8 +119,9 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
 		goto out;
 	}
 
+	g_debug ("Adding auth entry for xdmcp display:%d cookie:%s", display_num, cookie->str);
 	authlist = NULL;
-	if (! gdm_auth_add_entry_for_display (display_num, cookie, &authlist, af)) {
+	if (! gdm_auth_add_entry_for_display (display_num, NULL, cookie, af, &authlist)) {
 		goto out;
 	}
 
@@ -154,6 +155,42 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
 }
 
 static gboolean
+gdm_xdmcp_display_add_user_authorization (GdmDisplay *display,
+					  const char *username,
+					  char      **filename,
+					  GError    **error)
+{
+	gboolean res;
+	char    *cookie;
+	char    *hostname;
+	int      display_num;
+
+	res = gdm_display_get_x11_cookie (display, &cookie, NULL);
+	res = gdm_display_get_x11_display_number (display, &display_num, NULL);
+
+	hostname = NULL;
+	res = gdm_address_get_hostname (GDM_XDMCP_DISPLAY (display)->priv->remote_address, &hostname);
+	g_debug ("add user auth for xdmcp display: %s host:%s", username, hostname);
+	gdm_address_debug (GDM_XDMCP_DISPLAY (display)->priv->remote_address);
+	g_free (hostname);
+
+	res = gdm_auth_user_add (display_num,
+				 GDM_XDMCP_DISPLAY (display)->priv->remote_address,
+				 username,
+				 cookie,
+				 filename);
+	return res;
+}
+
+static gboolean
+gdm_xdmcp_display_remove_user_authorization (GdmDisplay *display,
+					     const char *username,
+					     GError    **error)
+{
+	return TRUE;
+}
+
+static gboolean
 gdm_xdmcp_display_manage (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
@@ -174,6 +211,20 @@ gdm_xdmcp_display_unmanage (GdmDisplay *display)
 }
 
 static void
+_gdm_xdmcp_display_set_remote_address (GdmXdmcpDisplay *display,
+				       GdmAddress      *address)
+{
+	if (display->priv->remote_address != NULL) {
+		gdm_address_free (display->priv->remote_address);
+	}
+
+	g_assert (address != NULL);
+
+	gdm_address_debug (address);
+	display->priv->remote_address = gdm_address_copy (address);
+}
+
+static void
 gdm_xdmcp_display_set_property (GObject	     *object,
 				guint	      prop_id,
 				const GValue *value,
@@ -185,7 +236,7 @@ gdm_xdmcp_display_set_property (GObject	     *object,
 
 	switch (prop_id) {
 	case PROP_REMOTE_ADDRESS:
-		self->priv->remote_address = g_value_get_boxed (value);
+		_gdm_xdmcp_display_set_remote_address (self, g_value_get_boxed (value));
 		break;
 	case PROP_SESSION_NUMBER:
 		self->priv->session_number = g_value_get_int (value);
@@ -230,6 +281,8 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 	object_class->finalize = gdm_xdmcp_display_finalize;
 
 	display_class->create_authority = gdm_xdmcp_display_create_authority;
+	display_class->add_user_authorization = gdm_xdmcp_display_add_user_authorization;
+	display_class->remove_user_authorization = gdm_xdmcp_display_remove_user_authorization;
 	display_class->manage = gdm_xdmcp_display_manage;
 	display_class->unmanage = gdm_xdmcp_display_unmanage;
 
@@ -290,8 +343,8 @@ gdm_xdmcp_display_new (const char              *hostname,
 	x11_display = g_strdup_printf ("%s:%d", hostname, number);
 	object = g_object_new (GDM_TYPE_XDMCP_DISPLAY,
 			       "remote-hostname", hostname,
-			       "number", number,
-			       "x11-display", x11_display,
+			       "x11-display-number", number,
+			       "x11-display-name", x11_display,
 			       "is-local", FALSE,
 			       "remote-address", address,
 			       "session-number", session_number,

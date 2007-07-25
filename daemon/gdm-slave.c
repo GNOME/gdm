@@ -52,8 +52,6 @@
 #include "gdm-session.h"
 #include "gdm-greeter-proxy.h"
 
-extern char **environ;
-
 #define GDM_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE, GdmSlavePrivate))
 
 #define GDM_DBUS_NAME	           "org.gnome.DisplayManager"
@@ -99,6 +97,7 @@ enum {
 	PROP_0,
 	PROP_DISPLAY_ID,
 	PROP_DISPLAY_NAME,
+	PROP_DISPLAY_NUMBER,
 	PROP_DISPLAY_HOSTNAME,
 	PROP_DISPLAY_IS_LOCAL,
 	PROP_DISPLAY_X11_AUTHORITY_FILE,
@@ -207,10 +206,46 @@ gdm_slave_real_start (GdmSlave *slave)
 
 	error = NULL;
 	res = dbus_g_proxy_call (slave->priv->display_proxy,
-				 "GetX11Display",
+				 "GetX11DisplayName",
 				 &error,
 				 G_TYPE_INVALID,
 				 G_TYPE_STRING, &slave->priv->display_name,
+				 G_TYPE_INVALID);
+	if (! res) {
+		if (error != NULL) {
+			g_warning ("Failed to get value: %s", error->message);
+			g_error_free (error);
+		} else {
+			g_warning ("Failed to get value");
+		}
+
+		return FALSE;
+	}
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->display_proxy,
+				 "GetX11DisplayNumber",
+				 &error,
+				 G_TYPE_INVALID,
+				 G_TYPE_INT, &slave->priv->display_number,
+				 G_TYPE_INVALID);
+	if (! res) {
+		if (error != NULL) {
+			g_warning ("Failed to get value: %s", error->message);
+			g_error_free (error);
+		} else {
+			g_warning ("Failed to get value");
+		}
+
+		return FALSE;
+	}
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->display_proxy,
+				 "GetRemoteHostname",
+				 &error,
+				 G_TYPE_INVALID,
+				 G_TYPE_STRING, &slave->priv->display_hostname,
 				 G_TYPE_INVALID);
 	if (! res) {
 		if (error != NULL) {
@@ -314,6 +349,46 @@ gdm_slave_stopped (GdmSlave *slave)
 	g_signal_emit (slave, signals [STOPPED], 0);
 }
 
+gboolean
+gdm_slave_add_user_authorization (GdmSlave   *slave,
+				  const char *username,
+				  char      **filenamep)
+{
+	gboolean res;
+	GError  *error;
+	char    *filename;
+
+	filename = NULL;
+
+	if (filenamep != NULL) {
+		*filenamep = NULL;
+	}
+
+	error = NULL;
+	res = dbus_g_proxy_call (slave->priv->display_proxy,
+				 "AddUserAuthorization",
+				 &error,
+				 G_TYPE_STRING, username,
+				 G_TYPE_INVALID,
+				 G_TYPE_STRING, &filename,
+				 G_TYPE_INVALID);
+	if (filenamep != NULL) {
+		*filenamep = g_strdup (filename);
+	}
+	g_free (filename);
+
+	if (! res) {
+		if (error != NULL) {
+			g_warning ("Failed to add user authorization: %s", error->message);
+			g_error_free (error);
+		} else {
+			g_warning ("Failed to add user authorization");
+		}
+	}
+
+	return res;
+}
+
 static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
 			   const char *id)
@@ -328,6 +403,13 @@ _gdm_slave_set_display_name (GdmSlave   *slave,
 {
         g_free (slave->priv->display_name);
         slave->priv->display_name = g_strdup (name);
+}
+
+static void
+_gdm_slave_set_display_number (GdmSlave   *slave,
+			       int         number)
+{
+        slave->priv->display_number = number;
 }
 
 static void
@@ -378,6 +460,9 @@ gdm_slave_set_property (GObject      *object,
 	case PROP_DISPLAY_NAME:
 		_gdm_slave_set_display_name (self, g_value_get_string (value));
 		break;
+	case PROP_DISPLAY_NUMBER:
+		_gdm_slave_set_display_number (self, g_value_get_int (value));
+		break;
 	case PROP_DISPLAY_HOSTNAME:
 		_gdm_slave_set_display_hostname (self, g_value_get_string (value));
 		break;
@@ -412,6 +497,9 @@ gdm_slave_get_property (GObject    *object,
 		break;
 	case PROP_DISPLAY_NAME:
 		g_value_set_string (value, self->priv->display_name);
+		break;
+	case PROP_DISPLAY_NUMBER:
+		g_value_set_int (value, self->priv->display_number);
 		break;
 	case PROP_DISPLAY_HOSTNAME:
 		g_value_set_string (value, self->priv->display_hostname);
@@ -512,6 +600,15 @@ gdm_slave_class_init (GdmSlaveClass *klass)
 							      "display name",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+					 PROP_DISPLAY_NUMBER,
+					 g_param_spec_int ("display-number",
+							   "display number",
+							   "display number",
+							   -1,
+							   G_MAXINT,
+							   -1,
+							   G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
 					 PROP_DISPLAY_HOSTNAME,
 					 g_param_spec_string ("display-hostname",

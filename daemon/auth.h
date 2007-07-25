@@ -19,30 +19,28 @@
 #ifndef GDM_AUTH_H
 #define GDM_AUTH_H
 
-#include "gdm-display.h"
+#include <glib.h>
+#include "gdm-address.h"
 
 G_BEGIN_DECLS
 
-gboolean gdm_auth_add_entry_for_display (int            display_num,
-                                         GString       *cookie,
-                                         GSList       **authlist,
-                                         FILE          *af);
-gboolean gdm_auth_add_entry (int            display_num,
-                             GString       *binary_cookie,
-                             GSList       **authlist,
-                             FILE          *af,
-                             unsigned short family,
-                             const char    *addr,
-                             int            addrlen);
+gboolean gdm_auth_add_entry_for_display (int         display_num,
+                                         GdmAddress *address,
+                                         GString    *cookie,
+                                         FILE       *af,
+                                         GSList    **authlist);
 
-gboolean gdm_auth_user_add       (GdmDisplay *d,
-                                  uid_t       user,
-                                  const char *homedir);
-void     gdm_auth_user_remove    (GdmDisplay *d,
-                                  uid_t       user);
+gboolean gdm_auth_add_entry             (int         display_num,
+                                         GdmAddress *address,
+                                         GString    *binary_cookie,
+                                         FILE       *af,
+                                         GSList    **authlist);
 
-/* Call XSetAuthorization */
-void	 gdm_auth_set_local_auth (GdmDisplay *d);
+gboolean gdm_auth_user_add              (int         display_num,
+                                         GdmAddress *address,
+                                         const char *cookie,
+                                         const char *username,
+                                         char      **filenamep);
 
 void     gdm_auth_free_auth_list (GSList     *list);
 

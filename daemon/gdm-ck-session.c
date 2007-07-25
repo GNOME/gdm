@@ -189,7 +189,7 @@ unlock_ck_session (const char *user,
 		if (session_proxy != NULL) {
 			char *xdisplay;
 
-			get_string (session_proxy, "GetX11Display", &xdisplay);
+			get_string (session_proxy, "GetX11DisplayName", &xdisplay);
 			if (xdisplay != NULL
 			    && x11_display != NULL
 			    && strcmp (xdisplay, x11_display) == 0) {

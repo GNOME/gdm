@@ -105,6 +105,8 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-simple-slave.c		\
 	gdm-simple-slave.h		\
+	auth.c				\
+	auth.h				\
 	fstype.c			\
 	filecheck.c			\
 	filecheck.h			\
@@ -181,6 +183,8 @@ gdm_product_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-product-slave.c		\
 	gdm-product-slave.h		\
+	auth.c				\
+	auth.h				\
 	fstype.c			\
 	filecheck.c			\
 	filecheck.h			\

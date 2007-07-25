@@ -1,3 +1,71 @@
+2007-07-25  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-address.c: (gdm_address_get_hostname),
+	(gdm_address_get_numeric_info), (address_family_str),
+	(gdm_address_debug):
+	* common/gdm-address.h:
+	* daemon/Makefile.am:
+	* daemon/auth.c: (gdm_auth_add_entry),
+	(gdm_auth_add_entry_for_display), (gdm_auth_user_add):
+	* daemon/auth.h:
+	* daemon/gdm-ck-session.c: (unlock_ck_session):
+	* daemon/gdm-display.c: (gdm_display_real_add_user_authorization),
+	(gdm_display_add_user_authorization),
+	(gdm_display_real_remove_user_authorization),
+	(gdm_display_remove_user_authorization),
+	(gdm_display_get_x11_display_number),
+	(gdm_display_get_x11_display_name),
+	(_gdm_display_set_x11_display_number),
+	(_gdm_display_set_x11_display_name), (gdm_display_set_property),
+	(gdm_display_get_property), (gdm_display_class_init):
+	* daemon/gdm-display.h:
+	* daemon/gdm-display.xml:
+	* daemon/gdm-factory-slave.c: (run_greeter):
+	* daemon/gdm-greeter-proxy.c: (listify_hash):
+	* daemon/gdm-product-display.c:
+	(gdm_product_display_add_user_authorization),
+	(gdm_product_display_remove_user_authorization),
+	(gdm_product_display_class_init), (gdm_product_display_new):
+	* daemon/gdm-simple-slave.c: (listify_hash),
+	(get_script_environment), (add_user_authorization),
+	(setup_session_environment), (run_greeter),
+	(gdm_simple_slave_init):
+	* daemon/gdm-slave.c: (gdm_slave_real_start),
+	(gdm_slave_add_user_authorization),
+	(_gdm_slave_set_display_number), (gdm_slave_set_property),
+	(gdm_slave_get_property), (gdm_slave_class_init):
+	* daemon/gdm-slave.h:
+	* daemon/gdm-static-display.c:
+	(gdm_static_display_add_user_authorization),
+	(gdm_static_display_remove_user_authorization),
+	(gdm_static_display_class_init), (gdm_static_display_new):
+	* daemon/gdm-static-factory-display.c:
+	(gdm_static_factory_display_add_user_authorization),
+	(gdm_static_factory_display_remove_user_authorization),
+	(gdm_static_factory_display_class_init),
+	(gdm_static_factory_display_new):
+	* daemon/gdm-xdmcp-display.c: (gdm_xdmcp_display_create_authority),
+	(gdm_xdmcp_display_add_user_authorization),
+	(gdm_xdmcp_display_remove_user_authorization),
+	(_gdm_xdmcp_display_set_remote_address),
+	(gdm_xdmcp_display_set_property), (gdm_xdmcp_display_class_init),
+	(gdm_xdmcp_display_new):
+	* daemon/gdm-xdmcp-manager.c: (do_bind), (gdm_xdmcp_host_allow),
+	(lookup_by_host), (gdm_xdmcp_send_willing),
+	(gdm_xdmcp_send_unwilling), (gdm_xdmcp_send_forward_query),
+	(gdm_forward_query_dispose), (gdm_forward_query_lookup),
+	(gdm_xdmcp_handle_forward_query),
+	(gdm_xdmcp_really_send_managed_forward),
+	(gdm_xdmcp_send_got_managed_forward), (remove_host),
+	(gdm_xdmcp_send_decline), (gdm_xdmcp_display_alloc),
+	(gdm_xdmcp_send_accept), (gdm_xdmcp_handle_request),
+	(gdm_xdmcp_handle_manage), (gdm_xdmcp_handle_managed_forward),
+	(gdm_xdmcp_handle_got_managed_forward),
+	(gdm_xdmcp_handle_keepalive), (decode_packet):
+	* data/gdm.conf:
+	* gui/simple-greeter/greeter-main.c: (main):
+	Make XDMCP logins work.
+
 2007-07-24  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-display.c: (finish_idle), (queue_finish),

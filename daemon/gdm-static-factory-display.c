@@ -123,6 +123,23 @@ gdm_static_factory_display_create_product_display (GdmStaticFactoryDisplay *disp
 }
 
 static gboolean
+gdm_static_factory_display_add_user_authorization (GdmDisplay *display,
+						   const char *username,
+						   char      **filename,
+						   GError    **error)
+{
+	return FALSE;
+}
+
+static gboolean
+gdm_static_factory_display_remove_user_authorization (GdmDisplay *display,
+						      const char *username,
+						      GError    **error)
+{
+	return FALSE;
+}
+
+static gboolean
 gdm_static_factory_display_create_authority (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
@@ -249,6 +266,8 @@ gdm_static_factory_display_class_init (GdmStaticFactoryDisplayClass *klass)
 	object_class->finalize = gdm_static_factory_display_finalize;
 
 	display_class->create_authority = gdm_static_factory_display_create_authority;
+	display_class->add_user_authorization = gdm_static_factory_display_add_user_authorization;
+	display_class->remove_user_authorization = gdm_static_factory_display_remove_user_authorization;
 	display_class->manage = gdm_static_factory_display_manage;
 	display_class->finish = gdm_static_factory_display_finish;
 	display_class->unmanage = gdm_static_factory_display_unmanage;
@@ -298,8 +317,8 @@ gdm_static_factory_display_new (int              display_number,
 	x11_display = g_strdup_printf (":%d", display_number);
 	object = g_object_new (GDM_TYPE_STATIC_FACTORY_DISPLAY,
 			       "slave-command", DEFAULT_SLAVE_COMMAND,
-			       "number", display_number,
-			       "x11-display", x11_display,
+			       "x11-display-number", display_number,
+			       "x11-display-name", x11_display,
 			       "display-store", store,
 			       NULL);
 	g_free (x11_display);

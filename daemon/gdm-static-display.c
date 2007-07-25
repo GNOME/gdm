@@ -66,6 +66,23 @@ gdm_static_display_create_authority (GdmDisplay *display)
 }
 
 static gboolean
+gdm_static_display_add_user_authorization (GdmDisplay *display,
+					   const char *username,
+					   char      **filename,
+					   GError    **error)
+{
+	return TRUE;
+}
+
+static gboolean
+gdm_static_display_remove_user_authorization (GdmDisplay *display,
+					      const char *username,
+					      GError    **error)
+{
+	return TRUE;
+}
+
+static gboolean
 gdm_static_display_manage (GdmDisplay *display)
 {
 	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
@@ -144,6 +161,8 @@ gdm_static_display_class_init (GdmStaticDisplayClass *klass)
 	object_class->finalize = gdm_static_display_finalize;
 
 	display_class->create_authority = gdm_static_display_create_authority;
+	display_class->add_user_authorization = gdm_static_display_add_user_authorization;
+	display_class->remove_user_authorization = gdm_static_display_remove_user_authorization;
 	display_class->manage = gdm_static_display_manage;
 	display_class->finish = gdm_static_display_finish;
 	display_class->unmanage = gdm_static_display_unmanage;
@@ -183,8 +202,8 @@ gdm_static_display_new (int display_number)
 
 	x11_display = g_strdup_printf (":%d", display_number);
 	object = g_object_new (GDM_TYPE_STATIC_DISPLAY,
-			       "number", display_number,
-			       "x11-display", x11_display,
+			       "x11-display-number", display_number,
+			       "x11-display-name", x11_display,
 			       NULL);
 	g_free (x11_display);
 

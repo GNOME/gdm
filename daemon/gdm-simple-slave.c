@@ -168,7 +168,7 @@ listify_hash (const char *key,
 {
 	char *str;
 	str = g_strdup_printf ("%s=%s", key, value);
-	g_debug ("environment: %s", str);
+	g_debug ("script environment: %s", str);
 	g_ptr_array_add (env, str);
 }
 
@@ -184,6 +184,11 @@ get_script_environment (GdmSimpleSlave *slave,
 	char          *display_hostname;
 	char          *display_x11_authority_file;
 	gboolean       display_is_local;
+
+	display_name = NULL;
+	display_hostname = NULL;
+	display_x11_authority_file = NULL;
+	display_is_local = FALSE;
 
 	g_object_get (slave,
 		      "display-name", &display_name,
@@ -511,16 +516,41 @@ out:
 	return ret;
 }
 
+static gboolean
+add_user_authorization (GdmSimpleSlave *slave,
+			char          **filename)
+{
+	char    *username;
+	gboolean ret;
+
+	username = gdm_session_get_username (slave->priv->session);
+	ret = gdm_slave_add_user_authorization (GDM_SLAVE (slave),
+						username,
+						filename);
+	g_free (username);
+
+	return ret;
+}
+
 static void
 setup_session_environment (GdmSimpleSlave *slave)
 {
+	int   display_number;
+	char *display_x11_cookie;
 	char *display_name;
 	char *auth_file;
 
+	display_name = NULL;
+	display_x11_cookie = NULL;
+	auth_file = NULL;
+
 	g_object_get (slave,
+		      "display-number", &display_number,
 		      "display-name", &display_name,
-		      "display-x11-authority-file", &auth_file,
+		      "display-x11-cookie", &display_x11_cookie,
 		      NULL);
+
+	add_user_authorization (slave, &auth_file);
 
 	gdm_session_set_environment_variable (slave->priv->session,
 					      "GDMSESSION",
@@ -548,6 +578,7 @@ setup_session_environment (GdmSimpleSlave *slave)
 					      "/bin:/usr/bin:" BINDIR);
 
 	g_free (display_name);
+	g_free (display_x11_cookie);
 	g_free (auth_file);
 }
 
@@ -810,13 +841,20 @@ run_greeter (GdmSimpleSlave *slave)
 
 	g_debug ("Running greeter");
 
+	display_is_local = FALSE;
+	display_name = NULL;
+	auth_file = NULL;
+	display_device = NULL;
+
 	g_object_get (slave,
 		      "display-is-local", &display_is_local,
 		      "display-name", &display_name,
 		      "display-x11-authority-file", &auth_file,
 		      NULL);
 
-	display_device = gdm_server_get_display_device (slave->priv->server);
+	if (slave->priv->server != NULL) {
+		display_device = gdm_server_get_display_device (slave->priv->server);
+	}
 
 	/* Set the busy cursor */
 	set_busy_cursor (slave);
@@ -1177,12 +1215,20 @@ gdm_simple_slave_class_init (GdmSimpleSlaveClass *klass)
 }
 
 static void
-gdm_simple_slave_init (GdmSimpleSlave *simple_slave)
+gdm_simple_slave_init (GdmSimpleSlave *slave)
 {
+	const char **languages;
 
-	simple_slave->priv = GDM_SIMPLE_SLAVE_GET_PRIVATE (simple_slave);
+	slave->priv = GDM_SIMPLE_SLAVE_GET_PRIVATE (slave);
 
-	simple_slave->priv->pid = -1;
+	slave->priv->pid = -1;
+
+	languages = g_get_language_names ();
+	if (languages != NULL) {
+		slave->priv->selected_language = g_strdup (languages[0]);
+	}
+
+	slave->priv->selected_session = g_strdup ("gnome.desktop");
 }
 
 static void

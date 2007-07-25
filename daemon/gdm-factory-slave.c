@@ -560,13 +560,20 @@ run_greeter (GdmFactorySlave *slave)
 
 	g_debug ("Running greeter");
 
+	display_is_local = FALSE;
+	display_name = NULL;
+	auth_file = NULL;
+	display_device = NULL;
+
 	g_object_get (slave,
 		      "display-is-local", &display_is_local,
 		      "display-name", &display_name,
 		      "display-x11-authority-file", &auth_file,
 		      NULL);
 
-	display_device = gdm_server_get_display_device (slave->priv->server);
+	if (slave->priv->server != NULL) {
+		display_device = gdm_server_get_display_device (slave->priv->server);
+	}
 
 	/* Set the busy cursor */
 	set_busy_cursor (slave);

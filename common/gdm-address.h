@@ -46,8 +46,9 @@ int                      gdm_address_get_family_type           (GdmAddress      
 struct sockaddr_storage *gdm_address_get_sockaddr_storage      (GdmAddress              *address);
 struct sockaddr_storage *gdm_address_peek_sockaddr_storage     (GdmAddress              *address);
 
-char *                   gdm_address_get_hostname              (GdmAddress              *address);
-void                     gdm_address_get_numeric_info          (GdmAddress              *address,
+gboolean                 gdm_address_get_hostname              (GdmAddress              *address,
+								char                   **hostname);
+gboolean                 gdm_address_get_numeric_info          (GdmAddress              *address,
 								char                   **numeric_hostname,
 								char                   **service);
 gboolean                 gdm_address_is_local                  (GdmAddress              *address);
@@ -60,6 +61,7 @@ GdmAddress *             gdm_address_copy                      (GdmAddress      
 void                     gdm_address_free                      (GdmAddress              *address);
 
 
+void                     gdm_address_debug                     (GdmAddress              *address);
 
 const GList *            gdm_address_peek_local_list           (void);
 

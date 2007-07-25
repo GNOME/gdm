@@ -456,6 +456,9 @@ do_bind (guint                     port,
 			GdmAddress *addr;
 
 			addr = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)ai->ai_addr);
+
+			host = NULL;
+			serv = NULL;
 			gdm_address_get_numeric_info (addr, &host, &serv);
 			g_debug ("XDMCP: Attempting to bind to host %s port %s", host, serv);
 			g_free (host);
@@ -602,9 +605,10 @@ gdm_xdmcp_host_allow (GdmAddress *address)
 	gboolean    ret;
 
 	host = NULL;
+	client = NULL;
 
 	/* Find client hostname */
-	client = gdm_address_get_hostname (address);
+	gdm_address_get_hostname (address, &client);
 	gdm_address_get_numeric_info (address, &host, NULL);
 
 	/* Check with tcp_wrappers if client is allowed to access */
@@ -676,7 +680,7 @@ lookup_by_host (const char     *id,
 	}
 
 	this_address = gdm_xdmcp_display_get_remote_address (GDM_XDMCP_DISPLAY (display));
-	gdm_display_get_number (display, &disp_num, NULL);
+	gdm_display_get_x11_display_number (display, &disp_num, NULL);
 
 	if (gdm_address_equal (this_address, data->address)
 	    && disp_num == data->display_num) {
@@ -760,6 +764,7 @@ gdm_xdmcp_send_willing (GdmXdmcpManager *manager,
 	static time_t last_willing = 0;
 	char         *host;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("XDMCP: Sending WILLING to %s", host);
 	g_free (host);
@@ -827,6 +832,7 @@ gdm_xdmcp_send_unwilling (GdmXdmcpManager *manager,
 		return;
 	}
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("XDMCP: Sending UNWILLING to %s", host);
 	g_warning (_("Denied XDMCP query from host %s"), host);
@@ -923,11 +929,14 @@ gdm_xdmcp_send_forward_query (GdmXdmcpManager         *manager,
 	g_assert (id != NULL);
 	g_assert (id->chosen_host != NULL);
 
+	host = NULL;
 	gdm_address_get_numeric_info (id->chosen_host, &host, NULL);
 	g_debug ("XDMCP: Sending forward query to %s",
 		   host);
 	g_free (host);
 
+	host = NULL;
+	serv = NULL;
 	gdm_address_get_numeric_info (display_address, &host, &serv);
 	g_debug ("gdm_xdmcp_send_forward_query: Query contains %s:%s",
 		 host, serv);
@@ -1134,6 +1143,7 @@ gdm_forward_query_dispose (GdmXdmcpManager *manager,
 	{
 		char *host;
 
+		host = NULL;
 		gdm_address_get_numeric_info (q->dsp_address, &host, NULL);
 		g_debug ("gdm_forward_query_dispose: Disposing %s", host);
 		g_free (host);
@@ -1217,6 +1227,8 @@ gdm_forward_query_lookup (GdmXdmcpManager *manager,
 			continue;
 		}
 
+		host = NULL;
+		serv = NULL;
 		gdm_address_get_numeric_info (q->dsp_address, &host, &serv);
 
 		g_debug ("gdm_forward_query_lookup: comparing %s:%s", host, serv);
@@ -1243,6 +1255,7 @@ gdm_forward_query_lookup (GdmXdmcpManager *manager,
 	if (ret == NULL) {
 		char *host;
 
+		host = NULL;
 		gdm_address_get_numeric_info (address, &host, NULL);
 		g_debug ("gdm_forward_query_lookup: Host %s not found",
 			 host);
@@ -1376,6 +1389,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpManager *manager,
 	if (! gdm_xdmcp_host_allow (address)) {
 		char *host;
 
+		host = NULL;
 		gdm_address_get_numeric_info (address, &host, NULL);
 
 		g_warning ("%s: Got FORWARD_QUERY from banned host %s",
@@ -1438,6 +1452,8 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpManager *manager,
 						 address,
 						 disp_address);
 
+	host = NULL;
+	serv = NULL;
 	gdm_address_get_numeric_info (disp_address, &host, &serv);
 	g_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %s",
 		 host, serv);
@@ -1476,6 +1492,7 @@ gdm_xdmcp_really_send_managed_forward (GdmXdmcpManager *manager,
 	XdmcpHeader header;
 	char       *host;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("XDMCP: Sending MANAGED_FORWARD to %s", host);
 	g_free (host);
@@ -1556,6 +1573,7 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpManager *manager,
 	XdmcpHeader header;
 	char       *host;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("XDMCP: Sending GOT_MANAGED_FORWARD to %s", host);
 	g_free (host);
@@ -1657,7 +1675,7 @@ remove_host (const char     *id,
 	}
 
 	gdm_display_get_remote_hostname (display, &hostname, NULL);
-	gdm_display_get_number (display, &disp_num, NULL);
+	gdm_display_get_x11_display_number (display, &disp_num, NULL);
 
 	if (disp_num == data->display_num &&
 	    hostname != NULL &&
@@ -1706,6 +1724,7 @@ gdm_xdmcp_send_decline (GdmXdmcpManager *manager,
 	GdmForwardQuery *fq;
 	char            *host;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("XMDCP: Sending DECLINE to %s", host);
 	g_free (host);
@@ -1751,6 +1770,8 @@ gdm_xdmcp_display_alloc (GdmXdmcpManager *manager,
 			 int              displaynum)
 {
 	GdmDisplay *display;
+
+	g_debug ("Creating xdmcp display for %s:%d", hostname, displaynum);
 
 	display = gdm_xdmcp_display_new (hostname,
 					 displaynum,
@@ -1806,6 +1827,7 @@ gdm_xdmcp_send_accept (GdmXdmcpManager *manager,
 		    (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
 		    (int)sizeof (struct sockaddr_storage));
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("XDMCP: Sending ACCEPT to %s with SessionID=%ld",
 		 host,
@@ -1996,6 +2018,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 				char    *x11_cookie;
 				GString *cookie;
 				GString *binary_cookie;
+				GString *test_cookie;
 
 				gdm_display_get_x11_cookie (display, &x11_cookie, NULL);
 				cookie = g_string_new (x11_cookie);
@@ -2011,6 +2034,21 @@ gdm_xdmcp_handle_request (GdmXdmcpManager *manager,
 					g_warning ("Unable to decode hex cookie");
 					/* FIXME: handle error */
 				}
+
+				test_cookie = g_string_new (NULL);
+				if (! gdm_string_hex_encode (binary_cookie,
+							     0,
+							     test_cookie,
+							     0)) {
+					g_warning ("Unable to encode hex cookie");
+					/* FIXME: handle error */
+				}
+
+				/* sanity check cookie */
+				g_debug ("Reencoded cookie len:%d '%s'", test_cookie->len, test_cookie->str);
+				g_assert (test_cookie->len == cookie->len);
+				g_assert (strcmp (test_cookie->str, cookie->str) == 0);
+				g_string_free (test_cookie, TRUE);
 
 				g_debug ("Sending authorization key for display %s", cookie->str);
 				g_debug ("Decoded cookie len %d", binary_cookie->len);
@@ -2192,6 +2230,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager *manager,
 	GdmForwardQuery    *fq;
 	char               *host;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", host);
 
@@ -2203,33 +2242,35 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager *manager,
 		g_free (host);
 		return;
 	}
-	g_free (host);
 
 	/* SessionID */
 	if G_UNLIKELY (! XdmcpReadCARD32 (&manager->priv->buf, &clnt_sessid)) {
 		g_warning (_("%s: Could not read Session ID"),
 			   "gdm_xdmcp_handle_manage");
-		return;
+		goto out;
 	}
 
 	/* Remote display number */
 	if G_UNLIKELY (! XdmcpReadCARD16 (&manager->priv->buf, &clnt_dspnum)) {
 		g_warning (_("%s: Could not read Display Number"),
 			   "gdm_xdmcp_handle_manage");
-		return;
+		goto out;
 	}
 
 	/* Display Class */
 	if G_UNLIKELY (! XdmcpReadARRAY8 (&manager->priv->buf, &clnt_dspclass)) {
 		g_warning (_("%s: Could not read Display Class"),
 			   "gdm_xdmcp_handle_manage");
-		return;
+		goto out;
 	}
 
 	{
 		char *s = g_strndup ((char *) clnt_dspclass.data, clnt_dspclass.length);
 		g_debug ("gdm_xdmcp-handle_manage: Got display=%d, SessionID=%ld Class=%s from %s",
-			   (int)clnt_dspnum, (long)clnt_sessid, ve_sure_string (s), host);
+			 (int)clnt_dspnum,
+			 (long)clnt_sessid,
+			 ve_sure_string (s),
+			 host);
 
 		g_free (s);
 	}
@@ -2240,7 +2281,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager *manager,
 		char *name;
 
 		name = NULL;
-		gdm_display_get_x11_display (display, &name, NULL);
+		gdm_display_get_x11_display_name (display, &name, NULL);
 		g_debug ("gdm_xdmcp_handle_manage: Looked up %s", name);
 		g_free (name);
 
@@ -2293,7 +2334,9 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager *manager,
 		gdm_xdmcp_send_refuse (manager, address, clnt_sessid);
 	}
 
+ out:
 	XdmcpDisposeARRAY8 (&clnt_dspclass);
+	g_free (host);
 }
 
 static void
@@ -2301,11 +2344,12 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpManager *manager,
 				  GdmAddress      *address,
 				  int              len)
 {
-	ARRAY8 clnt_address;
+	ARRAY8              clnt_address;
 	GdmIndirectDisplay *id;
-	char *host;
-	GdmAddress *disp_address;
+	char               *host;
+	GdmAddress         *disp_address;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("gdm_xdmcp_handle_managed_forward: Got MANAGED_FORWARD from %s",
 		   host);
@@ -2356,6 +2400,7 @@ gdm_xdmcp_handle_got_managed_forward (GdmXdmcpManager *manager,
 	ARRAY8      clnt_address;
 	char       *host;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("gdm_xdmcp_handle_got_managed_forward: Got MANAGED_FORWARD from %s",
 		   host);
@@ -2444,6 +2489,7 @@ gdm_xdmcp_handle_keepalive (GdmXdmcpManager *manager,
 	CARD32 clnt_sessid;
 	char *host;
 
+	host = NULL;
 	gdm_address_get_numeric_info (address, &host, NULL);
 	g_debug ("XDMCP: Got KEEPALIVE from %s", host);
 
@@ -2554,6 +2600,10 @@ decode_packet (GIOChannel      *source,
 		return TRUE;
 	}
 
+	gdm_address_debug (address);
+
+	host = NULL;
+	port = NULL;
 	gdm_address_get_numeric_info (address, &host, &port);
 
 	g_debug ("XDMCP: Received opcode %s from client %s : %s",

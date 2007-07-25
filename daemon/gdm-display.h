@@ -53,10 +53,17 @@ typedef struct
 	GObjectClass   parent_class;
 
 	/* methods */
-	gboolean (*create_authority) (GdmDisplay *display);
-	gboolean (*manage)           (GdmDisplay *display);
-	gboolean (*finish)           (GdmDisplay *display);
-	gboolean (*unmanage)         (GdmDisplay *display);
+	gboolean (*create_authority)          (GdmDisplay *display);
+	gboolean (*add_user_authorization)    (GdmDisplay *display,
+					       const char *username,
+					       char      **filename,
+					       GError    **error);
+	gboolean (*remove_user_authorization) (GdmDisplay *display,
+					       const char *username,
+					       GError    **error);
+	gboolean (*manage)                    (GdmDisplay *display);
+	gboolean (*finish)                    (GdmDisplay *display);
+	gboolean (*unmanage)                  (GdmDisplay *display);
 
 } GdmDisplayClass;
 
@@ -87,10 +94,10 @@ gboolean            gdm_display_get_id                         (GdmDisplay *disp
 gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
 								char      **hostname,
 								GError    **error);
-gboolean            gdm_display_get_number                     (GdmDisplay *display,
+gboolean            gdm_display_get_x11_display_number         (GdmDisplay *display,
 								int        *number,
 								GError    **error);
-gboolean            gdm_display_get_x11_display                (GdmDisplay *display,
+gboolean            gdm_display_get_x11_display_name           (GdmDisplay *display,
 								char      **x11_display,
 								GError    **error);
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
@@ -102,7 +109,14 @@ gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *disp
 								char      **x11_cookie,
 								GError    **error);
 gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
-								char      **file,
+								char      **filename,
+								GError    **error);
+gboolean            gdm_display_add_user_authorization         (GdmDisplay *display,
+								const char *username,
+								char      **filename,
+								GError    **error);
+gboolean            gdm_display_remove_user_authorization      (GdmDisplay *display,
+								const char *username,
 								GError    **error);
 
 
