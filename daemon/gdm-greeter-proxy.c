@@ -206,6 +206,17 @@ open_greeter_session (GdmGreeterProxy *greeter_proxy,
 	return res;
 }
 
+static gboolean
+close_greeter_session (GdmGreeterProxy *greeter_proxy,
+		       const char      *cookie)
+{
+	gboolean res;
+
+	res = close_ck_session (cookie);
+
+	return res;
+}
+
 static GPtrArray *
 get_greeter_environment (GdmGreeterProxy *greeter_proxy)
 {
@@ -354,6 +365,12 @@ greeter_proxy_child_watch (GPid        pid,
 
 	g_spawn_close_pid (greeter_proxy->priv->pid);
 	greeter_proxy->priv->pid = -1;
+
+	if (greeter_proxy->priv->session_cookie != NULL) {
+		close_greeter_session (greeter_proxy, greeter_proxy->priv->session_cookie);
+		greeter_proxy->priv->session_cookie = NULL;
+	}
+
 }
 
 static gboolean
@@ -522,6 +539,11 @@ gdm_greeter_proxy_stop (GdmGreeterProxy *greeter_proxy)
 
 	signal_pid (greeter_proxy->priv->pid, SIGTERM);
 	greeter_proxy_died (greeter_proxy);
+
+	if (greeter_proxy->priv->session_cookie != NULL) {
+		close_greeter_session (greeter_proxy, greeter_proxy->priv->session_cookie);
+		greeter_proxy->priv->session_cookie = NULL;
+	}
 
 	return TRUE;
 }
