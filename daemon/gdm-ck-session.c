@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <pwd.h>
+#include <string.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
@@ -215,13 +216,14 @@ unlock_ck_session (const char *user,
 	g_object_unref (proxy);
 }
 
-char *
+gboolean
 open_ck_session (struct passwd *pwent,
                  const char    *display_device,
                  const char    *x11_display,
                  const char    *hostname,
                  gboolean       is_local,
-		 const char    *session)
+		 const char    *session,
+		 char         **cookiep)
 {
 	DBusGConnection *connection;
 	DBusGProxy	*proxy;
@@ -239,7 +241,7 @@ open_ck_session (struct passwd *pwent,
 	if (connection == NULL) {
 		g_debug ("Failed to connect to the D-Bus daemon: %s", error->message);
 		g_error_free (error);
-		return NULL;
+		return FALSE;
 	}
 
 	proxy = dbus_g_proxy_new_for_name (connection,
@@ -247,7 +249,7 @@ open_ck_session (struct passwd *pwent,
 					   CK_MANAGER_PATH,
 					   CK_MANAGER_INTERFACE);
 	if (proxy == NULL) {
-		return NULL;
+		return FALSE;
 	}
 
 	parameters = g_ptr_array_sized_new (10);
@@ -281,10 +283,14 @@ open_ck_session (struct passwd *pwent,
 
 	g_ptr_array_free (parameters, TRUE);
 
-	return cookie;
+	if (cookiep != NULL) {
+		*cookiep = g_strdup (cookie);
+	}
+
+	return res;
 }
 
-void
+gboolean
 close_ck_session (const char *cookie)
 {
 	DBusGConnection *connection;
@@ -292,14 +298,14 @@ close_ck_session (const char *cookie)
 	GError		*error;
 	gboolean	 res;
 
-	g_return_if_fail (cookie != NULL);
+	g_return_val_if_fail (cookie != NULL, FALSE);
 
 	error = NULL;
 	connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
 	if (connection == NULL) {
 		g_debug ("Failed to connect to the D-Bus daemon: %s", error->message);
 		g_error_free (error);
-		return;
+		return FALSE;
 	}
 
 	proxy = dbus_g_proxy_new_for_name (connection,
@@ -307,7 +313,7 @@ close_ck_session (const char *cookie)
 					   CK_MANAGER_PATH,
 					   CK_MANAGER_INTERFACE);
 	if (proxy == NULL) {
-		return;
+		return FALSE;
 	}
 
 	error = NULL;
@@ -324,5 +330,7 @@ close_ck_session (const char *cookie)
 	}
 
 	g_object_unref (proxy);
+
+	return res;
 }
 

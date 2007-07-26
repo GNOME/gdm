@@ -26,13 +26,14 @@
 
 G_BEGIN_DECLS
 
-char *      open_ck_session       (struct passwd *pwent,
-                                   const char    *display_device,
+gboolean    open_ck_session       (struct passwd *pwent,
+                                   const char    *x11_display_device,
                                    const char    *x11_display,
                                    const char    *hostname,
                                    gboolean       is_local,
-                                   const char    *session);
-void        close_ck_session      (const char    *cookie);
+                                   const char    *session,
+				   char         **cookie);
+gboolean    close_ck_session      (const char    *cookie);
 void        unlock_ck_session     (const char    *user,
                                    const char    *x11_display);
 

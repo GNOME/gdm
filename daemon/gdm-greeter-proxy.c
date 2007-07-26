@@ -179,14 +179,15 @@ listify_hash (const char *key,
 	g_ptr_array_add (env, str);
 }
 
-static char *
-open_session (GdmGreeterProxy *greeter_proxy)
+static gboolean
+open_greeter_session (GdmGreeterProxy *greeter_proxy,
+		      char           **cookie)
 {
 	struct passwd *pwent;
 	const char    *session;
 	const char    *hostname;
 	gboolean       is_local;
-	char          *cookie;
+	gboolean       res;
 
 	/* FIXME: */
 	session = "greeter";
@@ -194,14 +195,15 @@ open_session (GdmGreeterProxy *greeter_proxy)
 	is_local = TRUE;
 
 	pwent = getpwnam (greeter_proxy->priv->user_name);
-	cookie = open_ck_session (pwent,
-				  greeter_proxy->priv->x11_display_device,
-				  greeter_proxy->priv->x11_display_name,
-				  hostname,
-				  is_local,
-				  session);
+	res = open_ck_session (pwent,
+			       greeter_proxy->priv->x11_display_device,
+			       greeter_proxy->priv->x11_display_name,
+			       hostname,
+			       is_local,
+			       session,
+			       cookie);
 
-	return cookie;
+	return res;
 }
 
 static GPtrArray *
@@ -375,7 +377,7 @@ gdm_greeter_proxy_spawn (GdmGreeterProxy *greeter_proxy)
 		goto out;
 	}
 
-	greeter_proxy->priv->session_cookie = open_session (greeter_proxy);
+	open_greeter_session (greeter_proxy, &greeter_proxy->priv->session_cookie);
 
 	env = get_greeter_environment (greeter_proxy);
 

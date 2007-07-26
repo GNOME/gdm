@@ -53,15 +53,15 @@ typedef struct
 	void (*stopped) (GdmSlave *slave);
 } GdmSlaveClass;
 
-GType		    gdm_slave_get_type	 (void);
-gboolean            gdm_slave_start      (GdmSlave   *slave);
-gboolean            gdm_slave_stop       (GdmSlave   *slave);
+GType		    gdm_slave_get_type	             (void);
+gboolean            gdm_slave_start                  (GdmSlave   *slave);
+gboolean            gdm_slave_stop                   (GdmSlave   *slave);
 
 gboolean            gdm_slave_add_user_authorization (GdmSlave   *slave,
 						      const char *username,
 						      char      **filename);
 
-void                gdm_slave_stopped    (GdmSlave   *slave);
+void                gdm_slave_stopped                (GdmSlave   *slave);
 
 G_END_DECLS
 

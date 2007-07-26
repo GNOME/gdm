@@ -53,6 +53,8 @@
 #include "gdm-greeter-server.h"
 #include "gdm-greeter-proxy.h"
 
+#include "gdm-ck-session.h"
+
 extern char **environ;
 
 #define GDM_SIMPLE_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_SLAVE, GdmSimpleSlavePrivate))
@@ -532,25 +534,77 @@ add_user_authorization (GdmSimpleSlave *slave,
 	return ret;
 }
 
+static gboolean
+slave_open_ck_session (GdmSimpleSlave *slave,
+		       const char     *display_name,
+		       const char     *display_hostname,
+		       gboolean        display_is_local,
+		       char          **cookiep)
+{
+	char          *cookie;
+	char          *username;
+	struct passwd *pwent;
+	gboolean       ret;
+
+	g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
+
+	username = gdm_session_get_username (slave->priv->session),
+
+	pwent = getpwnam (username);
+	if (pwent == NULL) {
+		return FALSE;
+	}
+
+	cookie = NULL;
+	ret = open_ck_session (pwent,
+			       gdm_server_get_display_device (slave->priv->server),
+			       display_name,
+			       display_hostname,
+			       display_is_local,
+			       slave->priv->selected_session,
+			       &cookie);
+	if (cookiep != NULL) {
+		*cookiep = g_strdup (cookie);
+	}
+
+	g_free (cookie);
+
+	return ret;
+}
+
 static void
 setup_session_environment (GdmSimpleSlave *slave)
 {
 	int   display_number;
 	char *display_x11_cookie;
 	char *display_name;
+	char *display_hostname;
 	char *auth_file;
+	char *session_cookie;
+	gboolean display_is_local;
 
 	display_name = NULL;
+	display_hostname = NULL;
 	display_x11_cookie = NULL;
 	auth_file = NULL;
+	session_cookie = NULL;
+	display_is_local = FALSE;
 
 	g_object_get (slave,
 		      "display-number", &display_number,
 		      "display-name", &display_name,
+		      "display-hostname", &display_hostname,
+		      "display-is-local", &display_is_local,
 		      "display-x11-cookie", &display_x11_cookie,
 		      NULL);
 
 	add_user_authorization (slave, &auth_file);
+
+	slave_open_ck_session (slave,
+			       display_name,
+			       display_hostname,
+			       display_is_local,
+			       &session_cookie);
 
 	gdm_session_set_environment_variable (slave->priv->session,
 					      "GDMSESSION",
@@ -572,14 +626,21 @@ setup_session_environment (GdmSimpleSlave *slave)
 	gdm_session_set_environment_variable (slave->priv->session,
 					      "XAUTHORITY",
 					      auth_file);
+	if (session_cookie != NULL) {
+		gdm_session_set_environment_variable (slave->priv->session,
+						      "XDG_SESSION_COOKIE",
+						      session_cookie);
+	}
 
 	gdm_session_set_environment_variable (slave->priv->session,
 					      "PATH",
 					      "/bin:/usr/bin:" BINDIR);
 
 	g_free (display_name);
+	g_free (display_hostname);
 	g_free (display_x11_cookie);
 	g_free (auth_file);
+	g_free (session_cookie);
 }
 
 static void
@@ -1217,7 +1278,7 @@ gdm_simple_slave_class_init (GdmSimpleSlaveClass *klass)
 static void
 gdm_simple_slave_init (GdmSimpleSlave *slave)
 {
-	const char **languages;
+	const char * const *languages;
 
 	slave->priv = GDM_SIMPLE_SLAVE_GET_PRIVATE (slave);
 
