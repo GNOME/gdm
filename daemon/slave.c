@@ -119,7 +119,7 @@
 /* Per-slave globals */
 
 static GdmDisplay *d                   = 0;
-static gchar *login                    = NULL;
+static gchar *login_user               = NULL;
 static gboolean greet                  = FALSE;
 static gboolean configurator           = FALSE;
 static gboolean remanage_asap          = FALSE;
@@ -686,7 +686,7 @@ term_session_stop_and_quit (void)
 	/* only if we're not hanging in session stop and getting a
 	   TERM signal again */
 	if (in_session_stop == 0 && session_started)
-		gdm_slave_session_stop (d->logged_in && login != NULL,
+		gdm_slave_session_stop (d->logged_in && login_user != NULL,
 					TRUE /* no_shutdown_check */);
 
 	gdm_debug ("term_session_stop_and_quit: Final cleanup");
@@ -956,11 +956,11 @@ static gboolean
 setup_automatic_session (GdmDisplay *display, const char *name)
 {
 	char *new_login;
-	g_free (login);
-	login = g_strdup (name);
+	g_free (login_user);
+	login_user = g_strdup (name);
 
 	greet = FALSE;
-	gdm_debug ("setup_automatic_session: Automatic login: %s", login);
+	gdm_debug ("setup_automatic_session: Automatic login: %s", login_user);
 
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
@@ -970,12 +970,12 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
 
 	new_login = NULL;
-	if ( ! gdm_verify_setup_user (display, login, &new_login))
+	if ( ! gdm_verify_setup_user (display, login_user, &new_login))
 		return FALSE;
 
 	if (new_login != NULL) {
-		g_free (login);
-		login = g_strdup (new_login);
+		g_free (login_user);
+		login_user = g_strdup (new_login);
 	}
 
 	gdm_debug ("setup_automatic_session: Automatic login successful");
@@ -1652,7 +1652,7 @@ gdm_slave_run (GdmDisplay *display)
 				gdm_slave_session_start ();
 			}
 		} else {
-			gdm_slave_send_string (GDM_SOP_LOGIN, login);
+			gdm_slave_send_string (GDM_SOP_LOGIN, login_user);
 			gdm_slave_session_start ();
 		}
 
@@ -1982,8 +1982,8 @@ restart_the_greeter (void)
 	gdm_slave_desensitize_config ();
 
 	/* no login */
-	g_free (login);
-	login = NULL;
+	g_free (login_user);
+	login_user = NULL;
 
 	/* Now restart it */
 	if (greet) {
@@ -2061,11 +2061,11 @@ gdm_slave_wait_for_login (void)
 {
 	const char *successsound;
 	char *username;
-	g_free (login);
-	login = NULL;
+	g_free (login_user);
+	login_user = NULL;
 
 	/* Chat with greeter */
-	while (login == NULL) {
+	while (login_user == NULL) {
 		/* init to a sane value */
 		do_timed_login = FALSE;
 		do_configurator = FALSE;
@@ -2087,21 +2087,21 @@ gdm_slave_wait_for_login (void)
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
 		username = d->preset_user;
 		d->preset_user = NULL;
-		login = gdm_verify_user (d /* the display */,
-					 username /* username */,
-					 TRUE /* allow retry */);
+		login_user = gdm_verify_user (d /* the display */,
+					      username /* username */,
+					      TRUE /* allow retry */);
 		g_free (username);
 
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
-			   ve_sure_string (login));
+			   ve_sure_string (login_user));
 
 		/* Complex, make sure to always handle the do_configurator
 		 * do_timed_login and do_restart_greeter after any call
 		 * to gdm_verify_user */
 
 		if G_UNLIKELY (do_restart_greeter) {
-			g_free (login);
-			login = NULL;
+			g_free (login_user);
+			login_user = NULL;
 			do_restart_greeter = FALSE;
 			restart_the_greeter ();
 			continue;
@@ -2114,8 +2114,8 @@ gdm_slave_wait_for_login (void)
 			gboolean oldAllowRoot;
 
 			do_configurator = FALSE;
-			g_free (login);
-			login = NULL;
+			g_free (login_user);
+			login_user = NULL;
 			/* clear any error */
 			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, "");
 			gdm_slave_greeter_ctl_no_ret
@@ -2134,17 +2134,17 @@ gdm_slave_wait_for_login (void)
 			}
 
 			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, pwent->pw_name);
-			login = gdm_verify_user (d,
-						 pwent->pw_name,
-						 FALSE);
+			login_user = gdm_verify_user (d,
+						      pwent->pw_name,
+						      FALSE);
 			gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_ROOT, oldAllowRoot);
 
 			/* Clear message */
 			gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
 
 			if G_UNLIKELY (do_restart_greeter) {
-				g_free (login);
-				login = NULL;
+				g_free (login_user);
+				login_user = NULL;
 				do_restart_greeter = FALSE;
 				restart_the_greeter ();
 				continue;
@@ -2153,15 +2153,15 @@ gdm_slave_wait_for_login (void)
 			check_notifies_now ();
 
 			/* The user can't remember his password */
-			if (login == NULL) {
+			if (login_user == NULL) {
 				gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
 			}
 
 			/* Wipe the login */
-			g_free (login);
-			login = NULL;
+			g_free (login_user);
+			login_user = NULL;
 
 			/* Note that this can still fall through to
 			 * the timed login if the user doesn't type in the
@@ -2240,7 +2240,7 @@ gdm_slave_wait_for_login (void)
 			break;
 		}
 
-		if (login == NULL) {
+		if (login_user == NULL) {
 			const char *failuresound = gdm_daemon_config_get_value_string (GDM_KEY_SOUND_ON_LOGIN_FAILURE_FILE);
 
 			gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
@@ -2258,8 +2258,8 @@ gdm_slave_wait_for_login (void)
 
 	/* The user timed out into a timed login during the conversation */
 	if (do_timed_login) {
-		g_free (login);
-		login = NULL;
+		g_free (login_user);
+		login_user = NULL;
 		/* timed login is automatic, thus no need for greeter,
 		 * we'll take default values */
 		gdm_slave_whack_greeter ();
@@ -2269,7 +2269,7 @@ gdm_slave_wait_for_login (void)
 
 	successsound = gdm_daemon_config_get_value_string (GDM_KEY_SOUND_ON_LOGIN_SUCCESS_FILE);
 	/* Play sounds if specified for a successful login */
-	if (login != NULL && successsound &&
+	if (login_user != NULL && successsound &&
 	    gdm_daemon_config_get_value_bool (GDM_KEY_SOUND_ON_LOGIN_SUCCESS) &&
 	    d->attached &&
 	    ! play_login_sound (successsound)) {
@@ -2278,7 +2278,7 @@ gdm_slave_wait_for_login (void)
 	}
 
 	gdm_debug ("gdm_slave_wait_for_login: got_login for '%s'",
-		   ve_sure_string (login));
+		   ve_sure_string (login_user));
 
 
 }
@@ -3716,7 +3716,7 @@ session_child_run (struct passwd *pwent,
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not setup environment for %s. "
 				  "Aborting."),
-				"session_child_run", login);
+				"session_child_run", login_user);
 
         /* setup euid/egid to the correct user,
          * not to leave the egid around.  It's
@@ -3787,7 +3787,7 @@ session_child_run (struct passwd *pwent,
 #else
 	if G_UNLIKELY (setuid (pwent->pw_uid) < 0)
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: Could not become %s. Aborting."), "session_child_run", login);
+				_("%s: Could not become %s. Aborting."), "session_child_run", login_user);
 #endif
 
 	/* Only force GDM_LANG to something if there is other then
@@ -3977,7 +3977,7 @@ session_child_run (struct passwd *pwent,
 		failsafe = TRUE;
 	}
 
-	gdm_debug ("Running %s for %s on %s", fullexec->str, login, d->name);
+	gdm_debug ("Running %s for %s on %s", fullexec->str, login_user, d->name);
 
 	if ( ! ve_string_empty (pwent->pw_shell)) {
 		shell = pwent->pw_shell;
@@ -4391,16 +4391,16 @@ gdm_slave_session_start (void)
 	int logfilefd;
 
 	gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
-		   login);
+		   login_user);
 
-	pwent = getpwnam (login);
+	pwent = getpwnam (login_user);
 
 	if G_UNLIKELY (pwent == NULL)  {
 		/* This is sort of an "assert", this should NEVER happen */
 		if (greet)
 			gdm_slave_whack_greeter ();
 		gdm_slave_exit (DISPLAY_REMANAGE,
-				_("%s: User passed auth but getpwnam (%s) failed!"), "gdm_slave_session_start", login);
+				_("%s: User passed auth but getpwnam (%s) failed!"), "gdm_slave_session_start", login_user);
 	}
 
 	logged_in_uid = uid = pwent->pw_uid;
@@ -4408,7 +4408,7 @@ gdm_slave_session_start (void)
 
 	/* Run the PostLogin script */
 	if G_UNLIKELY (gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_POSTLOGIN),
-					      login, pwent,
+					      login_user, pwent,
 					      TRUE /* pass_stdout */) != EXIT_SUCCESS &&
 		       /* ignore errors in failsafe modes */
 		       ! failsafe) {
@@ -4448,7 +4448,7 @@ gdm_slave_session_start (void)
 
 		gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
 			   "gdm_slave_session_start",
-			   login,
+			   login_user,
 			   ve_sure_string (pwent->pw_dir));
 
 		/* Check what the user wants to do */
@@ -4900,8 +4900,8 @@ gdm_slave_session_stop (gboolean run_post_session,
 
 	session_started = FALSE;
 
-	local_login = login;
-	login = NULL;
+	local_login = login_user;
+	login_user  = NULL;
 
 	/* don't use NEVER_FAILS_ here this can be called from places
 	   kind of exiting and it's ok if this doesn't work (when shouldn't

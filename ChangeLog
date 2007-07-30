@@ -1,9 +1,20 @@
-2007-07-26  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
+2007-07-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/slave.c: Rename login to login_user to avoid problem
+	  on FreeBSD with symbol conflict since their utmp code needs
+	  to call a function called login.  Partially fixes #456697.
+
+2007-07-30  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.c: Fix double fclose of pid file.  Fixes bug #461822.
+	  Patch by Oliver Blin <blino@mandriva.org>.
+
+2007-07-30  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
 
 	* daemon/gdm.c, gui/gdmsetup.glade: Fixed some sting translation 
 	  issues for bug #460407.
 	
-2007-07-18  Lo\357c Minier  <lool@dooz.org>
+2007-07-30  Lo\357c Minier  <lool@dooz.org>
 
 	* configure.ac:
 	* daemon/slave.c: (session_child_run):
@@ -12,7 +23,7 @@
 	* gui/gdmuser.c: (gdm_check_shell): Autodetect the path to the nologin
 	  binary.  Fixes bug #457958.
 
-2007-07-15  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
+2007-07-30  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
 
 	* daemon/display.h, daemon/gdm.c: Fixes bug #457098. Range
 	  check in gdm_do_logout_action for custom commands was 
