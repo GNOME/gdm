@@ -1,5 +1,10 @@
 2007-07-11  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmsetup.c: Use an assert to check that the array is not
+	  NULL before the loop rather than in the loop.
+
+2007-07-11  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/misc.c: Remove setting hints.ai_family |= AF_INET6
 	  since it turns out that this causes problems with fixing
 	  bug #455190.
