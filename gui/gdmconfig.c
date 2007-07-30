@@ -214,11 +214,11 @@ gdm_config_get_xservers (gboolean flexible)
 	}
 
 	/* skip the "OK " */
-        splitstr = g_strsplit (result + 3, ";", 0);
-	sec = splitstr;
+	splitstr = g_strsplit (result + 3, ";", 0);
+	sec      = splitstr;
 	g_free (result);
 
-        while (*sec != NULL) {
+	while (sec != NULL && *sec != NULL) {
 		GdmXserver *svr = g_new0 (GdmXserver, 1);
 		gchar *temp;
 
