@@ -375,6 +375,19 @@ New features, improvements, and bug fixes:
   Loreto, Kjartan Maraas, Daniel Nylander, Kostas Papadimas, Ignacio
   Casal Quinteiro, Hendrik Richter, Funda Wang)
 
+2.18.4 Stuff:
+
+- Fix for CVE-2007-3381, a denial of service attack where the
+  user can crash the GDM daemon with a carefuly crafted
+  GDM sockets command and cause GDM to stop managing future
+  displays.  GDM now is much better about safegarding against
+  NULL values returned from g_strsplit calls.  (Brian Cameron)
+
+- Remove setting hints.ai_family != AF_INET6 to fix bug #455190.
+  (Brian Cameron)
+
+- Translation updates (Priit Laes)
+
 2.18.3 Stuff:
 
 - Fix crashing issue with XDMCP logic.  Fixes bug #436725.  (Brian
@@ -736,6 +749,17 @@ New features, improvements, and bug fixes:
 - Translation updates (Abel Cheung, Yair Hershkovitz,
   Raphael Higino, Priit Laes, \303\205smund Skj\303\246veland,
   Ivar Smolin)
+
+2.16.7 Stuff:
+
+- Fix for CVE-2007-3381, a denial of service attack where the
+  user can crash the GDM daemon with a carefuly crafted
+  GDM sockets command and cause GDM to stop managing future
+  displays.  GDM now is much better about safegarding against
+  NULL values returned from g_strsplit calls.  (Brian Cameron)
+
+- Translation updates (Christophe Merlet, Amitakhya Phukan,
+  Ignacio Casal Quinteiro)
 
 2.16.6 Stuff:
 
@@ -1133,6 +1157,16 @@ New features, improvements, and bug fixes:
 - Many updates to documentation.  Explain gtk-theme greeter tag, new button and
   pam-error-icon, and startover greeter types, and better info about PAM.
   (Brian Cameron)
+
+2.14.13 stuff:
+
+- Fix for CVE-2007-3381, a denial of service attack where the
+  user can crash the GDM daemon with a carefuly crafted
+  GDM sockets command and cause GDM to stop managing future
+  displays.  GDM now is much better about safegarding against
+  NULL values returned from g_strsplit calls.  (Brian Cameron)
+
+- Translation updates (Christophe Merlet)
 
 2.14.12 stuff:
 
