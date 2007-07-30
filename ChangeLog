@@ -1,7 +1,7 @@
 2007-07-30  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.7:
-        * NEWS: Updated.
+	* Release 2.16.7:
+	* NEWS: Updated.
 
 2007-07-30  Brian Cameron  <brian.cameron@sun.com>
 
@@ -15,11 +15,11 @@
 
 2007-04-09  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.6:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.6:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 	* gui/gdmflexiserver.c: Report an error message when the gdmcomm_check
-          test fails.
+	  test fails.
 	* daemon/gdm.h: Fix typo.
 	* daemon/gdm.c: Fix check for GDM_KEY_PID_FILE so it matches 2.18.
 
@@ -33,15 +33,15 @@
 
 2006-04-02  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmchooser.glade, gui/gdmsetup.glade, gui/gdmsetup.c:
-          Remove gnome glade, since it is not used anymore.  Fixes
-          bug #424696.  Patch by Kristof Vansant <de_lupus@pandora.be>.
+	* gui/gdmchooser.glade, gui/gdmsetup.glade, gui/gdmsetup.c:
+	  Remove gnome glade, since it is not used anymore.  Fixes
+	  bug #424696.  Patch by Kristof Vansant <de_lupus@pandora.be>.
 
 2006-04-02  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmlanguages.c: Fix strcpy so source and destination do not
-          overlap.  Fixes bug #424299.  Patch by Ray Strode
-          <rstrode@redhat.com>.
+	* gui/gdmlanguages.c: Fix strcpy so source and destination do not
+	  overlap.  Fixes bug #424299.  Patch by Ray Strode
+	  <rstrode@redhat.com>.
 
 2006-03-27  Brian Cameron  <brian.cameron@sun.com>
 
@@ -51,24 +51,24 @@
 
 2006-03-27  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_item_pam.c: Partially fix #412576 by adding
-          ATK label for the entry field.  Patch provided by David Zeuthen
-          <david@fubar.dk>.
+	* gui/greeter/greeter_item_pam.c: Partially fix #412576 by adding
+	  ATK label for the entry field.  Patch provided by David Zeuthen
+	  <david@fubar.dk>.
 
 2006-03-27  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmlogin.c, gui/greeter/greeter_item.c, gui/greeter/greeter.c
-          gui/greeter_greeter_item_ulist.c, gui/greeter/greeter_system.c:
-          Fix gdmlogin and gdmgreeter so the "Configure GDM" menu choice is
-          not available when accessibility is turned on since running it
-          causes the system to hang.  Also fix gdmgreeter so the Face
-          Browser is not displayed when Browser=false.
+	* gui/gdmlogin.c, gui/greeter/greeter_item.c, gui/greeter/greeter.c
+	  gui/greeter_greeter_item_ulist.c, gui/greeter/greeter_system.c:
+	  Fix gdmlogin and gdmgreeter so the "Configure GDM" menu choice is
+	  not available when accessibility is turned on since running it
+	  causes the system to hang.  Also fix gdmgreeter so the Face
+	  Browser is not displayed when Browser=false.
 
 2006-03-27  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_item_customlist.c:  Fix check so the
-          language combo style works.  Fixes bug #423063.  Patch
-          provided by Simon <simon@munton.demon.co.uk>.
+	* gui/greeter/greeter_item_customlist.c:  Fix check so the
+	  language combo style works.  Fixes bug #423063.  Patch
+	  provided by Simon <simon@munton.demon.co.uk>.
 
 2007-03-20  Brian Cameron  <brian.cameron@sun.com>
 
@@ -88,13 +88,13 @@
 
 2007-02-05  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmlogin.c:  Better fix for not showing the face browser
-          if the userlist is empty.  Now we add the model to the treeview
-          and add entries to the model rather than building the model first.
-          For some reason building the model first and adding it to the
-          treeview was causing a selection "changed" signal to get sent
-          which caused the interruption message to the slave process.
-          Fix by Ludwig Nussel <ludwig.nussel@suse.de>.
+	* gui/gdmlogin.c:  Better fix for not showing the face browser
+	  if the userlist is empty.  Now we add the model to the treeview
+	  and add entries to the model rather than building the model first.
+	  For some reason building the model first and adding it to the
+	  treeview was causing a selection "changed" signal to get sent
+	  which caused the interruption message to the slave process.
+	  Fix by Ludwig Nussel <ludwig.nussel@suse.de>.
 
 2007-01-31  Brian Cameron  <brian.cameron@sun.com>
 
@@ -112,63 +112,63 @@
 
 2007-01-29  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.5:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.5:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-12-15  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_item_ulist.c: Fix so we only hide
-          userlist if there is one.
+	* gui/greeter/greeter_item_ulist.c: Fix so we only hide
+	  userlist if there is one.
 
 2006-12-13  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.4:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.4:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-12-05  Brian Cameron  <brian.cameron@sun.com>
 
-        * vicious-extensions/ve-miscui.c: Same fix for
-          primary message.
+	* vicious-extensions/ve-miscui.c: Same fix for
+	  primary message.
 
 2006-12-05  Brian Cameron  <brian.cameron@sun.com>
 
-        * vicious-extensions/ve-miscui.c, gui/gdmchooser.c: Cleaner
-          fix for same problem fixed in last commit.
+	* vicious-extensions/ve-miscui.c, gui/gdmchooser.c: Cleaner
+	  fix for same problem fixed in last commit.
 
 2006-12-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * vicious-extensions/ve-miscui.c, gui/gdmchooser.c: Fix so
-          that if the "%" key is entered in the input field in
-          gdmchooser, the secondary message in the error dialog
-          displays properly.  Also fix ve-miscui.c so that if "%"
-          exists in the secondary message, to not display it.
-          Message must have "%%" to display the "%" character.
+	* vicious-extensions/ve-miscui.c, gui/gdmchooser.c: Fix so
+	  that if the "%" key is entered in the input field in
+	  gdmchooser, the secondary message in the error dialog
+	  displays properly.  Also fix ve-miscui.c so that if "%"
+	  exists in the secondary message, to not display it.
+	  Message must have "%%" to display the "%" character.
 
 2006-11-28  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmsession.c: Fix for TryExec check in gdmsession.c so
-          that it does not pass arguments into g_find_program_in_path
-          since it causes it to say it is not executable if arguments
-          are passed in.
+	* gui/gdmsession.c: Fix for TryExec check in gdmsession.c so
+	  that it does not pass arguments into g_find_program_in_path
+	  since it causes it to say it is not executable if arguments
+	  are passed in.
 
 2006-11-22  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.3:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.3:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-11-06  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/verify-pam.c: Update to make casting more clear.
-          This fixes a problem noticed with the Kerberos PAM module.
-          Kerberos was sending the proper error message but gdm was not
-          accessing it properly.  This message comes as "struct pam_message"
-          and is accesed using a double pointer "**msg".GDM was treating
-          msg as a pointer to an array of "num_msg"s of "struct pam_message"
-          whereas it actually is pointer to a pointer to an array of
-         "num_msg"s of "struct pam_message".
+	* daemon/verify-pam.c: Update to make casting more clear.
+	  This fixes a problem noticed with the Kerberos PAM module.
+	  Kerberos was sending the proper error message but gdm was not
+	  accessing it properly.  This message comes as "struct pam_message"
+	  and is accesed using a double pointer "**msg".GDM was treating
+	  msg as a pointer to an array of "num_msg"s of "struct pam_message"
+	  whereas it actually is pointer to a pointer to an array of
+	 "num_msg"s of "struct pam_message".
 
 2006-11-06 Brian Cameron  <brian.cameron@sun.com>
 
@@ -184,16 +184,16 @@
 
 2006-10-31  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_item_customlist.c: Fix custom lists so
-          that focus does not leave the username/password entry field.
-        * gui/greeter/greeter_item_pam.c: Minor cleanup.
+	* gui/greeter/greeter_item_customlist.c: Fix custom lists so
+	  that focus does not leave the username/password entry field.
+	* gui/greeter/greeter_item_pam.c: Minor cleanup.
 
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.2:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
-        * gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_system.c:
+	* Release 2.16.2:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
+	* gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_system.c:
 	  Back out patch from 10/17 from Sebastien Bacher <seb128@debian.org>
 	  since we don't have icons yet.
 
@@ -217,51 +217,51 @@
 
 2006-10-30  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmconfig.[ch], gdmsession.[ch], greeter/greeter.c,
-          greeter_action_language.[ch], greeter_canvas_item.c,
-          greeter/greeter_item.h, greeter/greeter_item_customlist.[ch],
-          greeter/greeter_item_ulist.c, greeter/greeter_parser.c,
-          greeter_session.[ch]: Now support combo style lists in 2.16.
-          Patch backported from 2.17 without docs or theme changes.  This
-          way these features work in 2.16 but do not break translation.
+	* gui/gdmconfig.[ch], gdmsession.[ch], greeter/greeter.c,
+	  greeter_action_language.[ch], greeter_canvas_item.c,
+	  greeter/greeter_item.h, greeter/greeter_item_customlist.[ch],
+	  greeter/greeter_item_ulist.c, greeter/greeter_parser.c,
+	  greeter_session.[ch]: Now support combo style lists in 2.16.
+	  Patch backported from 2.17 without docs or theme changes.  This
+	  way these features work in 2.16 but do not break translation.
 
-        * gui/gdmlogin.c: Number of usability fixes for gdmlogin.c.  Now
-          do not bother showing browser userlist widget if there are no
-          users to display.  Now OK and Cancel buttons are set sensitive or
-          insensitive based on context (OK only if something is in the entry
-          field and Cancel if not on "Username" request).  Fixed bug causing
-          face browser to autoselect first user.  I changed the behavior
-          of how key events are listened to.  Now respond on release instead
-          of press for accepting Tab key as Enter, back_prog delay,
-          timed_login reset, and flexiserver reaping.  This made setting the
-          buttons sensitive/insensitive easier.
+	* gui/gdmlogin.c: Number of usability fixes for gdmlogin.c.  Now
+	  do not bother showing browser userlist widget if there are no
+	  users to display.  Now OK and Cancel buttons are set sensitive or
+	  insensitive based on context (OK only if something is in the entry
+	  field and Cancel if not on "Username" request).  Fixed bug causing
+	  face browser to autoselect first user.  I changed the behavior
+	  of how key events are listened to.  Now respond on release instead
+	  of press for accepting Tab key as Enter, back_prog delay,
+	  timed_login reset, and flexiserver reaping.  This made setting the
+	  buttons sensitive/insensitive easier.
 
 2006-10-23  Brian Cameron  <brian.cameron@sun.com>
 
-        * utils/Makefile.am: Remove X_EXTRA_LIBS and X_LIBS from
-          building of dm_dmx_reconnect_proxy since these libraries
-          are not needed for building this program.
+	* utils/Makefile.am: Remove X_EXTRA_LIBS and X_LIBS from
+	  building of dm_dmx_reconnect_proxy since these libraries
+	  are not needed for building this program.
 
 2006-10-17  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_system.c:
-          Add icons to the F10/Options menu.  Fixes RFE #360984.  Patch by
-          Sebastien Bacher <seb128@debian.org>.
+	* gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_system.c:
+	  Add icons to the F10/Options menu.  Fixes RFE #360984.  Patch by
+	  Sebastien Bacher <seb128@debian.org>.
 
 2006-10-17  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmphotosetup.c: Enable help button.  Fixes bug #362853.
-          Patch by Matthias Clasen <mclasen@redhat.com>.
+	* gui/gdmphotosetup.c: Enable help button.  Fixes bug #362853.
+	  Patch by Matthias Clasen <mclasen@redhat.com>.
 
 2006-10-16  Brian Cameron  <brian.cameron@sun.com>
 
-        * NEWS, daemon/auth.c, daemon/gdm.c, daemon/slave.c: Clean up
-          comments.
+	* NEWS, daemon/auth.c, daemon/gdm.c, daemon/slave.c: Clean up
+	  comments.
 
 2006-10-08  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/Makefile.am: Add -lX11 to link statements so that the new code
-          from Ariel that uses X atoms will build on Solaris.
+	* gui/Makefile.am: Add -lX11 to link statements so that the new code
+	  from Ariel that uses X atoms will build on Solaris.
 
 2006-10-08  Brian Cameron  <brian.cameron@sun.com>
 
@@ -269,22 +269,22 @@
 
 2006-10-08  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmcommon.c: Add missing break statement to case 't' in the
-          function gdm_common_expand_text.
+	* gui/gdmcommon.c: Add missing break statement to case 't' in the
+	  function gdm_common_expand_text.
 
 2006-10-05  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/auth.c: Set authdir to NULL after freeing to avoid accessing
-          an invalid pointer.  Fixes bug #359831.  Patch provided by
-          Amnon Aaronsohn <bla@cs.huji.ac.il>.
+	* daemon/auth.c: Set authdir to NULL after freeing to avoid accessing
+	  an invalid pointer.  Fixes bug #359831.  Patch provided by
+	  Amnon Aaronsohn <bla@cs.huji.ac.il>.
 
 2006-10-02  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/slave.c, daemon/verify-crypt.c, daemon/verify-pam.c,
-          daemon/verify-shadow.c, gui/greeter/greeter_item.c: Fix so that
+	* daemon/slave.c, daemon/verify-crypt.c, daemon/verify-pam.c,
+	  daemon/verify-shadow.c, gui/greeter/greeter_item.c: Fix so that
 	  if timed login script returns an invalid user, timed login is
-          not turned on.  Fixes bug #340148.  Patch by Andrew
-          (andrewz@springsrescuemission.org).
+	  not turned on.  Fixes bug #340148.  Patch by Andrew
+	  (andrewz@springsrescuemission.org).
 
 2006-10-02  Brian Cameron  <brian.cameron@sun.com>
 
@@ -295,22 +295,22 @@
 
 2006-10-02  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.1:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.1:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-09-27  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmsetup.c:  Fix so the wm close works as the Close button
-          in the dialog.  Fixes bug #358002.  Patch by Matthias Clasen
-          <mclasen@redhat.com>.
+	* gui/gdmsetup.c:  Fix so the wm close works as the Close button
+	  in the dialog.  Fixes bug #358002.  Patch by Matthias Clasen
+	  <mclasen@redhat.com>.
 
 2006-09-27  Brian Cameron  <brian.cameron@sun.com>
 
-        * gui/gdmsetup.c: Use g_markup_printf_escaped so gdmsetup better
-          handles description strings that contains things similar to
-          a tag like an email address.  Fix bug #357998.  Patch by
-          Matthias Clasen <mclasen@redhat.com>.
+	* gui/gdmsetup.c: Use g_markup_printf_escaped so gdmsetup better
+	  handles description strings that contains things similar to
+	  a tag like an email address.  Fix bug #357998.  Patch by
+	  Matthias Clasen <mclasen@redhat.com>.
 
 2006-09-23  Brian Cameron  <brian.cameron@sun.com>
 
@@ -319,16 +319,16 @@
 
 2006-09-11  Brian Cameron  <brian.cameron@sun.com>
 
-        * daemon/gdm.c: Move call to get GDM_KEY_SYSTEM_MENU
-          until after authentication check.  Fixes bug
-          #352838.  Patch by Frederic Crozat
-          <fcrozat@mandriva.com>.
+	* daemon/gdm.c: Move call to get GDM_KEY_SYSTEM_MENU
+	  until after authentication check.  Fixes bug
+	  #352838.  Patch by Frederic Crozat
+	  <fcrozat@mandriva.com>.
 
 2006-09-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.0:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.0:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-09-04  Brian Cameron  <brian.cameron@sun.com>
 
@@ -338,9 +338,9 @@
 
 2006-09-04  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.16.0:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.16.0:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-08-23  Brian Cameron  <brian.cameron@sun.com>
 
@@ -353,9 +353,9 @@
 
 2006-08-21  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.10:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.10:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-08-15  Kjartan Maraas  <kmaraas@gnome.org>
 
@@ -373,9 +373,9 @@
 
 2006-08-07  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.9:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.9:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-08-03  Brian Cameron  <brian.cameron@sun.com>
 
@@ -423,9 +423,9 @@
 
 2006-07-31  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.8:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.8:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-07-31  Brian Cameron  <brian.cameron@sun.com>
 
@@ -441,9 +441,9 @@
 
 2006-07-24  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.7:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.  Removing
+	* Release 2.15.7:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.  Removing
 	  docs/sv/Makefile from files to create, since it seems
 	  to have build problems.
 
@@ -486,9 +486,9 @@
 
 2006-07-10  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.6:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.6:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-06-30  Brian Cameron  <brian.cameron@sun.com>
 
@@ -534,9 +534,9 @@
 
 2006-06-12  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.5:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.5:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-06-09  Brian Cameron  <brian.cameron@sun.com>
 
@@ -555,9 +555,9 @@
 
 2006-06-07  Brian Cameron  <brian.cameron@sun.com>
 
-        * Release 2.15.4:
-        * NEWS: Updated.
-        * configure.ac: Update to new release version.
+	* Release 2.15.4:
+	* NEWS: Updated.
+	* configure.ac: Update to new release version.
 
 2006-06-06  Brian Cameron  <brian.cameron@sun.com>
 
