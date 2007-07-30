@@ -292,11 +292,13 @@ ve_locale_exists (const char *loc)
 int
 gdm_vector_len (char * const *v)
 {
-        int i;
-        if (v == NULL)
-                return 0;
-        for (i = 0; v[i] != NULL; i++)
-                ;
-        return i;
+	int i;
+
+	if (v == NULL)
+		return 0;
+
+	i = g_strv_length (v);
+
+	return i;
 }
 

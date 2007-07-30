@@ -4203,7 +4203,8 @@ strings_list_remove (char *strings_list, const char *string, const char *sep)
     msg = g_string_new ("");
 
     actions = g_strsplit (strings_list, sep, -1);
-    for (i = 0; actions != NULL && actions[i] != NULL; i++) {
+    g_assert (actions != NULL);
+    for (i = 0; actions[i] != NULL; i++) {
         if (strncmp (actions[i], string, strlen (string)) == 0)
             continue;
         g_string_append_printf (msg, "%s%s", separator, actions[i]);

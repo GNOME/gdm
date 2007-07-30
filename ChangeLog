@@ -1,5 +1,12 @@
 2007-07-30  Brian Cameron  <brian.cameron@sun.com>
 
+	* common/gdm-common.c: Now use g_strv_length to calculate the
+	  array size.
+	* gui/gdmsetup.c: Use an assert to check that the array is not
+	  NULL before the loop rather than in the loop.
+
+2007-07-30  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/slave.c: Rename login to login_user to avoid problem
 	  on FreeBSD with symbol conflict since their utmp code needs
 	  to call a function called login.  Partially fixes #456697.
