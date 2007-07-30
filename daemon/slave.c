@@ -3986,7 +3986,7 @@ session_child_run (struct passwd *pwent,
 	}
 
 	/* just a stupid test */
-	if (strcmp (shell, "/sbin/nologin") == 0 ||
+	if (strcmp (shell, NOLOGIN) == 0 ||
 	    strcmp (shell, "/bin/false") == 0 ||
 	    strcmp (shell, "/bin/true") == 0) {
 		gdm_error (_("%s: User not allowed to log in"),

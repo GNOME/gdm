@@ -210,7 +210,7 @@ gdm_check_shell (const gchar *usersh)
     gint found = 0;
     gchar *csh;
 
-    if (strcmp (usersh, "/sbin/nologin") == 0 ||
+    if (strcmp (usersh, NOLOGIN) == 0 ||
 	strcmp (usersh, "/bin/true") == 0 ||
 	strcmp (usersh, "/bin/false") == 0) {
       return 0;

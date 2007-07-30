@@ -1030,6 +1030,10 @@ if test x$with_ctrun != xno ; then
    fi
 fi
 
+# check for the nologin location
+AC_PATH_PROG(NOLOGIN, nologin, /sbin/nologin)
+AC_DEFINE_UNQUOTED(NOLOGIN, "$NOLOGIN", [Path to the nologin binary])
+
 #
 # Subst the extra libs
 #

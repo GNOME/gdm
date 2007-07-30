@@ -266,7 +266,7 @@ gdm_verify_user (GdmDisplay *d,
 
 	/* check for the standard method of disallowing users */
 	if (pwent->pw_shell != NULL &&
-	    (strcmp (pwent->pw_shell, "/sbin/nologin") == 0 ||
+	    (strcmp (pwent->pw_shell, NOLOGIN) == 0 ||
 	     strcmp (pwent->pw_shell, "/bin/true") == 0 ||
 	     strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 		g_warning (_("User %s not allowed to log in"), login);
