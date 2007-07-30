@@ -630,6 +630,7 @@ try_commands (const char **array)
 			ret = (status == 0);
 
 			if (! ret) {
+				/* %s is the command string and %d defines the exit status (both non-translatable) */
 				gdm_error (_("command failed %s: %d"), array[i], status);
 			}
 
