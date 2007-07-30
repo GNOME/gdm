@@ -1,5 +1,35 @@
 Ahh news...
 
+2.19.5 Stuff:
+
+- Fix for CVE-2007-3381, a denial of service attack where the
+  user can crash the GDM daemon with a carefuly crafted 
+  GDM sockets command and cause GDM to stop managing future
+  displays.  GDM now is much better about safegarding against
+  NULL values returned from g_strsplit calls.  (Brian Cameron)
+
+- Fix range check for custom commands.  (Lukasz Zalewski)
+
+- Fix string translation issues for bug #460407.
+  (Lukasz Zalewski) 
+
+- Fix issues with icons not showing up properly in the 
+  gdmgreeter menu.  (Michael Terry)
+
+- Fix memory handling of the dialog which asks if you want
+  to restart the greeter in a different language.  (Takao
+  Fujiwara)
+
+- Autodetect the path to the nologin binary to fix GDM so it
+  works on FreeBSD where nologin is in a different location.
+  Also fix compile issues for FreeBSD.  (Lo\357c Minier)
+
+- Fix some build issues and code cleanup.  (Brian Cameron)
+
+- Translation updates (Subhransu Behera, Runa Bhattacharjee,
+  I. Felix, Theppitak Karoonboonyanan, Gabor Kelemen, Priit
+  Laes, Ankit Patel, Changwoo Ryu, Ilkka Tuohela)
+
 2.19.4 Stuff:
 
 - Now GDM manages utmp/wtmp processing directly rather than
