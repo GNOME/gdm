@@ -136,9 +136,10 @@ get_vt_num (char **vec, char *vtpart, int depth)
 	for (i = 0; vec[i] != NULL; i++) {
 		char **rvec;
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL ||
-		    ve_vector_len (rvec) != 3)
+		if (ve_vector_len (rvec) != 3) {
+			g_strfreev (rvec);
 			continue;
+		}
 
 		if (strcmp (rvec[0], vtpart) == 0) {
 			/* could be nested? */
@@ -177,9 +178,10 @@ create_model (char **vec)
 		char **rvec;
 		int vt;
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL ||
-		    ve_vector_len (rvec) != 3)
+		if (ve_vector_len (rvec) != 3) {
+			g_strfreev (rvec);
 			continue;
+		}
 
 		vt = get_vt_num (vec, rvec[2], 5);
 
@@ -516,9 +518,10 @@ check_for_users (void)
 		char **rvec;
 		int vt;
 		rvec = g_strsplit (vec[i], ",", -1);
-		if (rvec == NULL ||
-		    ve_vector_len (rvec) != 3)
+		if (ve_vector_len (rvec) != 3) {
+			g_strfreev (rvec);
 			continue;
+		}
 
 		vt = get_vt_num (vec, rvec[2], 5);
 

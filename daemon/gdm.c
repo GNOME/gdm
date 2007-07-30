@@ -3087,9 +3087,13 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
  
 	} else if (strncmp (msg, GDM_SUP_GET_SERVER_DETAILS " ",
 		     strlen (GDM_SUP_GET_SERVER_DETAILS " ")) == 0) {
-		const gchar *server = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
-		gchar   **splitstr = g_strsplit (server, " ", 2);
-		GdmXserver  *svr   = gdm_find_xserver ((gchar *)splitstr[0]);
+		const gchar  *server   = &msg[strlen (GDM_SUP_GET_SERVER_DETAILS " ")];
+		gchar       **splitstr = g_strsplit (server, " ", 2);
+		GdmXserver   *svr      = NULL;
+
+		if (splitstr != NULL && splitstr[0] != NULL) {
+			svr = gdm_find_xserver ((gchar *)splitstr[0]);
+		}
 
 		if (svr != NULL) {
 			if (g_strcasecmp (splitstr[1], "ID") == 0)
@@ -3126,12 +3130,11 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 			   gdm_connection_printf (conn, "OK false\n");
 			else
 			   gdm_connection_printf (conn, "ERROR 2 Key not valid\n");
-
-			g_strfreev (splitstr);
 		} else {
                		gdm_connection_printf (conn, "ERROR 1 Server not found\n");
 		}
  
+		g_strfreev (splitstr);
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
 		GString *msg;
 		GSList *li;
@@ -3161,10 +3164,15 @@ gdm_handle_user_message (GdmConnection *conn, const gchar *msg, gpointer data)
 	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
 		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
 		const gchar *parms = &msg[strlen (GDM_SUP_GET_CONFIG " ")];
-		gchar **splitstr = g_strsplit (parms, " ", 2);
-		gchar *retval = NULL;
+		gchar **splitstr   = g_strsplit (parms, " ", 2);
+		gchar *retval      = NULL;
 		static gboolean done_prefetch = FALSE;
 
+		if (splitstr == NULL || splitstr[0] == NULL) {
+               		gdm_connection_printf (conn, "ERROR 50 Unsupported key <null>\n");
+			return;
+		}
+		
 		/*
 		 * It is not meaningful to manage this in a per-display 
 		 * fashion since the prefetch program is only run once the
