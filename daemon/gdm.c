@@ -1212,7 +1212,7 @@ gdm_do_logout_action (GdmLogoutAction logout_action)
 	        /* This is a bit ugly but its the only place we can
 		   check for the range of values */
 	        if (logout_action >= GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST &&
-		    logout_action <= GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST)
+		    logout_action <= GDM_LOGOUT_ACTION_CUSTOM_CMD_LAST)
 			custom_cmd (logout_action - GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST);
 		break;
 	}

@@ -31,6 +31,8 @@ typedef struct _GdmDisplay GdmDisplay;
 
 #include "gdm-net.h" /* for GdmConnection */
 
+#include "gdm.h" /* for GDM_CUSTOM_COMMAND_MAX */
+
 #define TYPE_STATIC 1		/* X server defined in GDM configuration */
 #define TYPE_XDMCP 2		/* Remote display/Xserver */
 #define TYPE_FLEXI 3		/* Local Flexi X server */
@@ -61,7 +63,7 @@ typedef enum {
 	GDM_LOGOUT_ACTION_REBOOT,
 	GDM_LOGOUT_ACTION_SUSPEND,
 	GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST,
-	GDM_LOGOUT_ACTION_CUSTOM_CMD_LAST,
+	GDM_LOGOUT_ACTION_CUSTOM_CMD_LAST = GDM_LOGOUT_ACTION_CUSTOM_CMD_FIRST + GDM_CUSTOM_COMMAND_MAX - 1,
 	GDM_LOGOUT_ACTION_LAST
 } GdmLogoutAction;
 

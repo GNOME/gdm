@@ -1,3 +1,10 @@
+2007-07-15  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
+
+	* daemon/display.h, daemon/gdm.c: Fixes bug #457098. Range
+	  check in gdm_do_logout_action for custom commands was 
+	  only allowing index 0. Now the whole range of commands 
+	  is allowed.
+	
 2007-07-18  Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/getvt.c, daemon/gdm-common.c, daemon/display.h:  Fix
