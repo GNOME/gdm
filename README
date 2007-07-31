@@ -4,7 +4,7 @@
  -----------------------------------------------------------
  Note: For instructions how to install read README.install |
  -----------------------------------------------------------
- | For documentation see the website:
+ | For documentation see the GDM project website:
  | http://www.gnome.org/projects/gdm/
  | Or use the GNOME help browser under GNOME|System.
  | The XML documentation is in docs/ and is in DocBook/XML
@@ -15,7 +15,8 @@
 The Gnome Display Manager (GDM) is a display manager that
 implements all significant features required for managing
 local and remote displays.   For full information about 
-GDM features, refer to the documentation.
+GDM features, refer to the documentation.  In summary,
+features include:
 
 GDM daemon:
 
@@ -29,15 +30,20 @@ GDM daemon:
  o IPv6 support (optional, use --enable-ipv6=yes to enable)
  o Autologin for single user workstations (off by default)
  o Timed login for kiosks and public terminals (off by
-   default)
- o On-demand local servers (gdmflexiserver)
- o SunRay (SRSS) support via gdmdynamic.
+   default).
+ o On-demand local servers (gdmflexiserver) and dynamic
+   servers (gdmdynamic).  For example, dynamic servers are
+   used to support SRSS (Sun Ray) environments.
  o Can manage X servers without a login window (Such as
    for XDMCP terminal client machines)
  o Many other features ...
 
 gdmlogin and gdmgreeter:
 
+ o Supports accessibility and the ability to launch AT
+   programs like orca or GOK.  Currently gdmlogin 
+   has more complete accessibility support than
+   gdmgreeter.
  o Can launch the XDMCP chooser program (Remote Login)
  o Can launch the Setup program (off by default)
  o Can halt, reboot, or suspend the machine (off by
@@ -120,7 +126,7 @@ a while.
 -------------------------------------------------------------------------
 Note:
 
-Starting January, 2005 I have been acting as maintainer.  
+From 01/2005 I have been acting as GDM maintainer.
 
 -Brian Cameron <Brian.Cameron@Sun.Com>
 -------------------------------------------------------------------------
