@@ -69,6 +69,8 @@ struct GdmSimpleSlavePrivate
         guint             output_watch_id;
         guint             error_watch_id;
 
+	guint             greeter_reset_id;
+
 	int               ping_interval;
 
 	GPid              server_pid;
@@ -709,6 +711,24 @@ on_user_verified (GdmSession     *session,
 	g_free (command);
 }
 
+static gboolean
+greeter_reset_timeout (GdmSimpleSlave *slave)
+{
+	gdm_greeter_server_reset (slave->priv->greeter_server);
+	slave->priv->greeter_reset_id = 0;
+	return FALSE;
+}
+
+static void
+queue_greeter_reset (GdmSimpleSlave *slave)
+{
+	if (slave->priv->greeter_reset_id > 0) {
+		return;
+	}
+
+	slave->priv->greeter_reset_id = g_timeout_add_seconds (2, (GSourceFunc)greeter_reset_timeout, slave);
+}
+
 static void
 on_user_verification_error (GdmSession     *session,
                             GError         *error,
@@ -718,12 +738,15 @@ on_user_verification_error (GdmSession     *session,
 
 	username = gdm_session_get_username (session);
 
-	g_debug ("%s%scould not be successfully authenticated: %s\n",
-		 username ? username : "",
-		 username ? " " : "",
+	g_debug ("could not successfully authenticate user '%s': %s",
+		 username,
 		 error->message);
 
+	gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
+
 	g_free (username);
+
+	queue_greeter_reset (slave);
 }
 
 static void

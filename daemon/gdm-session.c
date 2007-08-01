@@ -590,6 +590,7 @@ gdm_session_handle_verification_failed (GdmSession     *session,
 {
 	DBusMessage *reply;
 	DBusError    error;
+	GError      *gerror;
 	const char  *text;
 
 	dbus_error_init (&error);
@@ -605,9 +606,15 @@ gdm_session_handle_verification_failed (GdmSession     *session,
 
 	g_debug ("Emitting 'verification-failed' signal");
 
+	gerror = g_error_new (GDM_SESSION_ERROR,
+			      GDM_SESSION_ERROR_AUTHENTICATING,
+			      "%s",
+			      text);
+
 	g_signal_emit (session,
 		       gdm_session_signals[USER_VERIFICATION_ERROR],
-		       0, text);
+		       0, gerror);
+	g_error_free (gerror);
 
 	return DBUS_HANDLER_RESULT_HANDLED;
 }

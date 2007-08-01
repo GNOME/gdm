@@ -80,6 +80,7 @@ struct GdmSessionWorkerPrivate
 
 	guint32           credentials_are_established : 1;
 	guint32           is_running : 1;
+	guint             open_idle_id;
 
 	char             *server_address;
 	DBusGConnection  *connection;
@@ -1520,6 +1521,74 @@ on_start_program (DBusGProxy *proxy,
 	gdm_session_worker_start_program (worker, text);
 }
 
+typedef struct {
+	GdmSessionWorker *worker;
+	char             *service;
+	char             *console;
+	char             *hostname;
+	char             *username;
+} OpenData;
+
+static gboolean
+open_idle (OpenData *data)
+{
+	GError  *error;
+	gboolean res;
+
+	g_debug ("begin verification: %s %s", data->service, data->console);
+
+	error = NULL;
+	res = gdm_session_worker_open (data->worker,
+				       data->service,
+				       data->console,
+				       data->hostname,
+				       data->username,
+				       &error);
+	if (! res) {
+		g_debug ("Verification failed: %s", error->message);
+		g_error_free (error);
+		send_user_verification_error (data->worker, error->message);
+	}
+
+	data->worker->priv->open_idle_id = 0;
+	return FALSE;
+}
+
+static void
+free_open_data (OpenData *data)
+{
+	g_free (data->service);
+	g_free (data->console);
+	g_free (data->hostname);
+	g_free (data->username);
+	g_free (data);
+}
+
+static void
+queue_open (GdmSessionWorker *worker,
+	    const char       *service,
+	    const char       *console,
+	    const char       *hostname,
+	    const char       *username)
+{
+	OpenData *data;
+
+	if (worker->priv->open_idle_id > 0) {
+		return;
+	}
+
+	data = g_new0 (OpenData, 1);
+	data->worker = worker;
+	data->service = g_strdup (service);
+	data->console = g_strdup (console);
+	data->hostname = g_strdup (hostname);
+	data->username = g_strdup (username);
+	worker->priv->open_idle_id = g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+						      (GSourceFunc)open_idle,
+						      data,
+						      (GDestroyNotify)free_open_data);
+}
+
 static void
 on_begin_verification (DBusGProxy *proxy,
 		       const char *service,
@@ -1528,17 +1597,9 @@ on_begin_verification (DBusGProxy *proxy,
 		       gpointer    data)
 {
 	GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
-	GError *error;
-	gboolean res;
 
 	g_debug ("begin verification: %s %s", service, console);
-
-	error = NULL;
-	res = gdm_session_worker_open (worker, service, console, hostname, NULL, &error);
-	if (! res) {
-		g_debug ("Verification failed: %s", error->message);
-		g_error_free (error);
-	}
+	queue_open (worker, service, console, hostname, NULL);
 }
 
 static void
@@ -1550,17 +1611,9 @@ on_begin_verification_for_user (DBusGProxy *proxy,
 				gpointer    data)
 {
 	GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
-	GError *error;
-	gboolean res;
 
 	g_debug ("begin verification: %s %s", service, console);
-
-	error = NULL;
-	res = gdm_session_worker_open (worker, service, console, hostname, username, &error);
-	if (! res) {
-		g_debug ("Verification failed: %s", error->message);
-		g_error_free (error);
-	}
+	queue_open (worker, service, console, hostname, username);
 }
 
 static void

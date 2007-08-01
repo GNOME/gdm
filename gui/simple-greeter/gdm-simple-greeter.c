@@ -143,6 +143,24 @@ set_sensitive (GdmSimpleGreeter *greeter,
         gtk_widget_set_sensitive (box, sensitive);
 }
 
+static void
+set_message (GdmSimpleGreeter *greeter,
+	     const char       *text)
+{
+        GtkWidget *label;
+
+	label = glade_xml_get_widget (greeter->priv->xml, "message-label");
+	gtk_label_set_text (GTK_LABEL (label), text);
+}
+
+static void
+do_cancel (GdmSimpleGreeter *greeter)
+{
+	set_busy (greeter);
+	set_sensitive (greeter, FALSE);
+
+	gdm_greeter_emit_cancelled (GDM_GREETER (greeter));
+}
 
 static void
 reset_dialog (GdmSimpleGreeter *greeter)
@@ -163,6 +181,8 @@ reset_dialog (GdmSimpleGreeter *greeter)
                 gtk_widget_grab_focus (entry);
         }
 
+	set_message (greeter, "");
+
 	set_ready (greeter);
 	set_sensitive (greeter, TRUE);
 }
@@ -175,6 +195,7 @@ gdm_simple_greeter_reset (GdmGreeter *greeter)
 	/*GDM_GREETER_CLASS (gdm_simple_greeter_parent_class)->reset (greeter);*/
 
 	reset_dialog (GDM_SIMPLE_GREETER (greeter));
+	do_cancel (GDM_SIMPLE_GREETER (greeter));
 
 	return TRUE;
 }
@@ -189,7 +210,7 @@ gdm_simple_greeter_info (GdmGreeter *greeter,
 
 	g_debug ("SIMPLE GREETER: info: %s", text);
 
-
+	set_message (GDM_SIMPLE_GREETER (greeter), text);
 
 	return TRUE;
 }
@@ -204,7 +225,7 @@ gdm_simple_greeter_problem (GdmGreeter *greeter,
 
 	g_debug ("SIMPLE GREETER: problem: %s", text);
 
-
+	set_message (GDM_SIMPLE_GREETER (greeter), text);
 
 	return TRUE;
 }
@@ -234,7 +255,7 @@ gdm_simple_greeter_info_query (GdmGreeter *greeter,
         }
 
 	set_ready (GDM_SIMPLE_GREETER (greeter));
-	set_sensitive (greeter, TRUE);
+	set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
 
 	return TRUE;
 }
@@ -264,7 +285,7 @@ gdm_simple_greeter_secret_info_query (GdmGreeter *greeter,
         }
 
 	set_ready (GDM_SIMPLE_GREETER (greeter));
-	set_sensitive (greeter, TRUE);
+	set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
 
 	return TRUE;
 }
@@ -323,12 +344,7 @@ static void
 cancel_button_clicked (GtkButton        *button,
 		       GdmSimpleGreeter *greeter)
 {
-	gboolean    res;
-
-	set_busy (greeter);
-	set_sensitive (greeter, FALSE);
-
-	res = gdm_greeter_emit_cancelled (GDM_GREETER (greeter));
+	do_cancel (greeter);
 }
 
 static void

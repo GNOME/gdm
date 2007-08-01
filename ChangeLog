@@ -1,5 +1,22 @@
 2007-08-01  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-worker.c: (open_idle), (free_open_data),
+	(queue_open), (on_begin_verification),
+	(on_begin_verification_for_user):
+	* daemon/gdm-session.c: (gdm_session_handle_verification_failed):
+	* daemon/gdm-simple-slave.c: (greeter_reset_timeout),
+	(queue_greeter_reset), (on_user_verification_error):
+	* gui/simple-greeter/gdm-simple-greeter.c: (set_message),
+	(do_cancel), (reset_dialog), (gdm_simple_greeter_reset),
+	(gdm_simple_greeter_info), (gdm_simple_greeter_problem),
+	(gdm_simple_greeter_info_query),
+	(gdm_simple_greeter_secret_info_query), (cancel_button_clicked):
+	* gui/simple-greeter/gdm-simple-greeter.glade:
+	Report errors to the greeter.  Reset greeter after errors.
+	Open the session in an idle.
+
+2007-08-01  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-simple-greeter.c: (set_busy), (set_ready),
 	(set_sensitive), (reset_dialog), (gdm_simple_greeter_info_query),
 	(gdm_simple_greeter_secret_info_query), (ok_button_clicked),
