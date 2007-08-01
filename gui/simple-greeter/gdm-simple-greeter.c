@@ -105,6 +105,46 @@ gdm_simple_greeter_stop (GdmGreeter *greeter)
 }
 
 static void
+set_busy (GdmSimpleGreeter *greeter)
+{
+        GdkCursor *cursor;
+        GtkWidget *top_level;
+
+	top_level = glade_xml_get_widget (greeter->priv->xml, "auth-window");
+
+        cursor = gdk_cursor_new (GDK_WATCH);
+        gdk_window_set_cursor (top_level->window, cursor);
+        gdk_cursor_unref (cursor);
+}
+
+static void
+set_ready (GdmSimpleGreeter *greeter)
+{
+        GdkCursor *cursor;
+        GtkWidget *top_level;
+
+	top_level = glade_xml_get_widget (greeter->priv->xml, "auth-window");
+
+        cursor = gdk_cursor_new (GDK_LEFT_PTR);
+        gdk_window_set_cursor (top_level->window, cursor);
+        gdk_cursor_unref (cursor);
+}
+
+static void
+set_sensitive (GdmSimpleGreeter *greeter,
+	       gboolean          sensitive)
+{
+	GtkWidget *box;
+
+	box = glade_xml_get_widget (greeter->priv->xml, "input-box");
+        gtk_widget_set_sensitive (box, sensitive);
+
+	box = glade_xml_get_widget (greeter->priv->xml, "button-box");
+        gtk_widget_set_sensitive (box, sensitive);
+}
+
+
+static void
 reset_dialog (GdmSimpleGreeter *greeter)
 {
 	GtkWidget  *entry;
@@ -122,6 +162,9 @@ reset_dialog (GdmSimpleGreeter *greeter)
         if (! GTK_WIDGET_HAS_FOCUS (entry)) {
                 gtk_widget_grab_focus (entry);
         }
+
+	set_ready (greeter);
+	set_sensitive (greeter, TRUE);
 }
 
 static gboolean
@@ -190,6 +233,9 @@ gdm_simple_greeter_info_query (GdmGreeter *greeter,
                 gtk_widget_grab_focus (entry);
         }
 
+	set_ready (GDM_SIMPLE_GREETER (greeter));
+	set_sensitive (greeter, TRUE);
+
 	return TRUE;
 }
 
@@ -216,6 +262,9 @@ gdm_simple_greeter_secret_info_query (GdmGreeter *greeter,
         if (! GTK_WIDGET_HAS_FOCUS (entry)) {
                 gtk_widget_grab_focus (entry);
         }
+
+	set_ready (GDM_SIMPLE_GREETER (greeter));
+	set_sensitive (greeter, TRUE);
 
 	return TRUE;
 }
@@ -262,6 +311,9 @@ ok_button_clicked (GtkButton        *button,
 	GtkWidget  *entry;
 	const char *text;
 
+	set_busy (greeter);
+	set_sensitive (greeter, FALSE);
+
 	entry = glade_xml_get_widget (greeter->priv->xml, "auth-entry");
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 	res = gdm_greeter_emit_answer_query (GDM_GREETER (greeter), text);
@@ -272,6 +324,9 @@ cancel_button_clicked (GtkButton        *button,
 		       GdmSimpleGreeter *greeter)
 {
 	gboolean    res;
+
+	set_busy (greeter);
+	set_sensitive (greeter, FALSE);
 
 	res = gdm_greeter_emit_cancelled (GDM_GREETER (greeter));
 }
@@ -373,6 +428,8 @@ create_greeter (GdmSimpleGreeter *greeter)
 	gtk_window_set_deletable (GTK_WINDOW (dialog), FALSE);
 	gtk_window_set_decorated (GTK_WINDOW (dialog), FALSE);
 	gtk_widget_show (dialog);
+
+	set_busy (greeter);
 }
 
 static GObject *
