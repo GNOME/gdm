@@ -521,6 +521,15 @@ AC_CHECK_HEADERS(sys/sockio.h, [
 AC_CHECK_HEADERS(libgen.h, [
 		 AC_DEFINE(HAVE_LIBGEN_H)])
 
+#
+# Check for utmp stuff
+#
+AC_CHECK_HEADERS(utmp.h utmpx.h libutil.h sys/param.h)
+AC_CHECK_FUNC(getutmpx updwtmpx)
+AC_CHECK_LIB(util,login)
+AC_CHECK_LIB(util,logout)
+GDM_CHECK_UTMP
+
 
 #
 # Xdmcp checking

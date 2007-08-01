@@ -35,6 +35,9 @@
 #include <login_cap.h>
 #endif
 #include <fcntl.h>
+#if defined(HAVE_SYS_PARAM_H)
+#include <sys/param.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -45,7 +48,15 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#if defined(HAVE_UTMPX_H)
 #include <utmpx.h>
+#endif
+#if defined(HAVE_UTMP_H)
+#include <utmp.h>
+#endif
+#if defined(HAVE_LIBUTIL_H)
+#include <libutil.h>
+#endif
 
 #if !defined (MAXPATHLEN) && defined (PATH_MAX)
 #define MAXPATHLEN PATH_MAX
@@ -3348,7 +3359,7 @@ find_prog (const char *name)
 	int i;
 	char *try[] = {
 		"/usr/bin/X11/",
-		"/usr/X11R6/bin/",
+		"/usr/local/bin/",
 		"/opt/X11R6/bin/",
 		"/usr/bin/",
 		"/usr/openwin/bin/",
@@ -4208,8 +4219,12 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 			const gchar *username,
 			GPid  pid)
 {
+#if defined(HAVE_UTMPX_H)
 	struct utmpx record = { 0 };
 	struct utmpx *u = NULL;
+#else
+	struct utmp record = { 0 };
+#endif
 	GTimeVal now = { 0 };
 	gchar *device_name = NULL;
 	gchar *host;
@@ -4231,21 +4246,39 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 		 * username entry to accidently get logged.
 		 */
 		if (username != NULL) {
+#if defined(HAVE_UT_UT_USER)
 			strncpy (record.ut_user,
 				 username, 
 				 sizeof (record.ut_user));
+#elif defined(HAVE_UT_UT_NAME)
+			strncpy (record.ut_name,
+				 username,
+				 sizeof (record.ut_name));
+#endif
 		} else {
 			g_assert (record_type == GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT);
+#if defined(HAVE_UT_UT_USER)
 			strncpy (record.ut_user,
 				 "(unknown)",
 				 sizeof (record.ut_user));
+#elif defined(HAVE_UT_UT_NAME)
+			strncpy (record.ut_name,
+				 "(unknown)",
+				 sizeof (record.ut_name));
+#endif
 		}
 
 		gdm_debug ("utmp-wtmp: Using username %.*s",
+#if defined(HAVE_UT_UT_USER)
 			   sizeof (record.ut_user),
 			   record.ut_user);
+#elif defined(HAVE_UT_UT_NAME)
+			   sizeof (record.ut_name),
+			   record.ut_name);
+#endif
 	}
 
+#if defined(HAVE_UT_UT_TYPE)
 	if (record_type == GDM_SESSION_RECORD_TYPE_LOGOUT) {
 		record.ut_type = DEAD_PROCESS;
 		gdm_debug ("utmp-wtmp: Using type DEAD_PROCESS"); 
@@ -4253,18 +4286,27 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 		record.ut_type = USER_PROCESS;
 		gdm_debug ("utmp-wtmp: Using type USER_PROCESS"); 
 	}
+#endif
 
+#if defined(HAVE_UT_UT_PID)
 	record.ut_pid = pid;
 	gdm_debug ("utmp-wtmp: Using pid %d", (gint)record.ut_pid);
+#endif
 
+#if defined(HAVE_UT_UT_TV)
 	g_get_current_time (&now);
 	record.ut_tv.tv_sec = now.tv_sec;
 	gdm_debug ("utmp-wtmp: Using time %ld", (glong) record.ut_tv.tv_sec);
+#elif defined(HAVE_UT_UT_TIME)
+	time (&record.ut_time);
+#endif
 
+#if defined(HAVE_UT_UT_ID)
 	strncpy (record.ut_id, d->name, sizeof (record.ut_id));
 	gdm_debug ("utmp-wtmp: Using id %.*s",
 	       sizeof (record.ut_id),
 	       record.ut_id);
+#endif
 
 	if (device_name != NULL) {
 		g_assert (g_str_has_prefix (device_name, "/dev/"));
@@ -4278,6 +4320,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 	       sizeof (record.ut_line),
 	       record.ut_line);
 
+#if defined(HAVE_UT_UT_HOST)
 	host = NULL;
 	if (! d->attached && g_str_has_prefix (d->name, ":")) {
 		host = g_strdup_printf ("%s%s",
@@ -4299,13 +4342,23 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 		record.ut_syslen = MIN (strlen (host), sizeof (record.ut_host));
 #endif
 	} 
+#endif
 
 	switch (record_type)
 	{
 	case GDM_SESSION_RECORD_TYPE_LOGIN:
 		gdm_debug ("Login utmp/wtmp record");
+#if defined(HAVE_UPDWTMPX)
 		updwtmpx (GDM_NEW_RECORDS_FILE, &record);
+#elif defined(HAVE_LOGWTMP) && defined(HAVE_UT_UT_HOST) && !defined(HAVE_LOGIN)
+#if defined(HAVE_UT_UT_USER)
+		logwtmp (record.ut_line, record.ut_user, record.ut_host);
+#elif defined(HAVE_UT_UT_NAME)
+		logwtmp (record.ut_line, record.ut_name, record.ut_host);
+#endif
+#endif
 
+#if defined(HAVE_GETUTXENT)
 		/* Update if entry already exists */
 		while ((u = getutxent ()) != NULL) {
 			if (u->ut_type == USER_PROCESS &&
@@ -4326,14 +4379,22 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 			gdm_debug ("Adding new utmp record");
 			pututxline (&record);
 		}
+#elif defined(HAVE_LOGIN)
+		login (&record);
+#endif
 
 		break;
 
 	case GDM_SESSION_RECORD_TYPE_LOGOUT: 
 		gdm_debug ("Logout utmp/wtmp record");
 
+#if defined(HAVE_UPDWTMPX)
 		updwtmpx (GDM_NEW_RECORDS_FILE, &record);
+#elif defined(HAVE_LOGWTMP)
+		logwtmp (record.ut_line, "", "");
+#endif
 
+#if defined(HAVE_GETUTXENT)
 		setutxent ();
 
 		while ((u = getutxent ()) != NULL &&
@@ -4357,12 +4418,17 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 		}
 
 		endutxent ();
+#elif defined(HAVE_LOGOUT)
+		logout (record.ut_line);
+#endif
 		break;
 
 	case GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT:
+#if defined(HAVE_UPDWTMPX)
 		gdm_debug ("Writing failed session attempt record to " 
 			   GDM_BAD_RECORDS_FILE);
 		updwtmpx (GDM_BAD_RECORDS_FILE, &record);
+#endif
 		break;
 	}
 }
