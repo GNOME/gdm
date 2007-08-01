@@ -669,6 +669,8 @@ answer_pending_query (GdmSession *session,
 	DBusMessage    *reply;
 	DBusMessageIter iter;
 
+	g_assert (session->priv->message_pending_reply != NULL);
+
 	reply = dbus_message_new_method_return (session->priv->message_pending_reply);
 	dbus_message_iter_init_append (reply, &iter);
 	dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &answer);

@@ -783,6 +783,8 @@ on_opened (GdmSession     *session,
 static void
 create_new_session (GdmSimpleSlave *slave)
 {
+	g_debug ("Creating new session");
+
 	slave->priv->session = gdm_session_new ();
 
 	g_signal_connect (slave->priv->session,
@@ -886,12 +888,20 @@ static void
 on_greeter_cancel (GdmGreeterServer *greeter_server,
 		   GdmSimpleSlave   *slave)
 {
+	g_debug ("Greeter cancelled");
+
 	if (slave->priv->session != NULL) {
 		gdm_session_close (slave->priv->session);
 		g_object_unref (slave->priv->session);
 	}
 
 	create_new_session (slave);
+
+	gdm_session_open (slave->priv->session,
+			  "gdm",
+			  "" /* hostname */,
+			  "/dev/console",
+			  NULL);
 }
 
 static void
