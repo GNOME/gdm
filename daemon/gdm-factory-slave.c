@@ -555,6 +555,7 @@ run_greeter (GdmFactorySlave *slave)
 	gboolean       display_is_local;
 	char          *display_name;
 	char          *display_device;
+	char          *display_hostname;
 	char          *auth_file;
 	char          *address;
 
@@ -564,10 +565,12 @@ run_greeter (GdmFactorySlave *slave)
 	display_name = NULL;
 	auth_file = NULL;
 	display_device = NULL;
+	display_hostname = NULL;
 
 	g_object_get (slave,
 		      "display-is-local", &display_is_local,
 		      "display-name", &display_name,
+		      "display-hostname", &display_hostname,
 		      "display-x11-authority-file", &auth_file,
 		      NULL);
 
@@ -632,7 +635,10 @@ run_greeter (GdmFactorySlave *slave)
 	address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
 	g_debug ("Creating greeter on %s %s", display_name, display_device);
-	slave->priv->greeter = gdm_greeter_proxy_new (display_name, display_device);
+	slave->priv->greeter = gdm_greeter_proxy_new (display_name,
+						      display_device,
+						      display_hostname,
+						      display_is_local);
 	g_signal_connect (slave->priv->greeter,
 			  "started",
 			  G_CALLBACK (on_greeter_start),
@@ -651,6 +657,7 @@ run_greeter (GdmFactorySlave *slave)
 
 	g_free (display_name);
 	g_free (display_device);
+	g_free (display_hostname);
 	g_free (auth_file);
 }
 

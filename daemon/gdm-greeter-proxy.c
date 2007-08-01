@@ -40,7 +40,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
-#include "gdm-ck-session.h"
+#include "ck-connector.h"
 
 #include "gdm-greeter-proxy.h"
 
@@ -62,9 +62,11 @@ struct GdmGreeterProxyPrivate
 
 	char           *x11_display_name;
 	char           *x11_display_device;
+	char           *x11_display_hostname;
 	char           *x11_authority_file;
+	gboolean        x11_display_is_local;
 
-	char           *session_cookie;
+	CkConnector    *ckc;
 
 	int             user_max_filesize;
 
@@ -80,6 +82,8 @@ enum {
 	PROP_0,
 	PROP_X11_DISPLAY_NAME,
 	PROP_X11_DISPLAY_DEVICE,
+	PROP_X11_DISPLAY_HOSTNAME,
+	PROP_X11_DISPLAY_IS_LOCAL,
 	PROP_X11_AUTHORITY_FILE,
 	PROP_USER_NAME,
 	PROP_GROUP_NAME,
@@ -180,41 +184,109 @@ listify_hash (const char *key,
 }
 
 static gboolean
-open_greeter_session (GdmGreeterProxy *greeter_proxy,
-		      char           **cookie)
+open_greeter_session (GdmGreeterProxy *greeter_proxy)
 {
 	struct passwd *pwent;
 	const char    *session;
 	const char    *hostname;
-	gboolean       is_local;
-	gboolean       res;
+	const char    *x11_display_device;
+	int            res;
+	gboolean       ret;
+	DBusError      error;
+
+	ret = FALSE;
 
 	/* FIXME: */
 	session = "greeter";
-	hostname = "localhost";
-	is_local = TRUE;
 
 	pwent = getpwnam (greeter_proxy->priv->user_name);
-	res = open_ck_session (pwent,
-			       greeter_proxy->priv->x11_display_device,
-			       greeter_proxy->priv->x11_display_name,
-			       hostname,
-			       is_local,
-			       session,
-			       cookie);
+	if (pwent == NULL) {
+		/* FIXME: */
+		g_warning ("Couldn't look up uid");
+		goto out;
+	}
 
-	return res;
+	greeter_proxy->priv->ckc = ck_connector_new ();
+	if (greeter_proxy->priv->ckc == NULL) {
+		g_warning ("Couldn't create new ConsoleKit connector");
+		goto out;
+	}
+
+	if (greeter_proxy->priv->x11_display_hostname != NULL) {
+		hostname = greeter_proxy->priv->x11_display_hostname;
+	} else {
+		hostname = "";
+	}
+
+	if (greeter_proxy->priv->x11_display_device != NULL) {
+		x11_display_device = greeter_proxy->priv->x11_display_device;
+	} else {
+		x11_display_device = "";
+	}
+
+	g_debug ("Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d",
+		 pwent->pw_uid,
+		 greeter_proxy->priv->x11_display_name,
+		 x11_display_device,
+		 hostname,
+		 greeter_proxy->priv->x11_display_is_local);
+
+	dbus_error_init (&error);
+        res = ck_connector_open_session_with_parameters (greeter_proxy->priv->ckc,
+                                                         &error,
+                                                         "unix-user", &pwent->pw_uid,
+                                                         "x11-display", &greeter_proxy->priv->x11_display_name,
+                                                         "x11-display-device", &x11_display_device,
+                                                         "remote-host-name", &hostname,
+							 "is-local", &greeter_proxy->priv->x11_display_is_local,
+                                                         NULL);
+        if (! res) {
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("%s\n", error.message);
+                        dbus_error_free (&error);
+                } else {
+                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
+				   "ConsoleKit not available or insufficient privileges.\n");
+                }
+		goto out;
+        }
+
+	ret = TRUE;
+
+ out:
+	return ret;
 }
 
 static gboolean
-close_greeter_session (GdmGreeterProxy *greeter_proxy,
-		       const char      *cookie)
+close_greeter_session (GdmGreeterProxy *greeter_proxy)
 {
-	gboolean res;
+	int       res;
+	gboolean  ret;
+	DBusError error;
 
-	res = close_ck_session (cookie);
+	ret = FALSE;
 
-	return res;
+	if (greeter_proxy->priv->ckc == NULL) {
+		return FALSE;
+	}
+
+	dbus_error_init (&error);
+	res = ck_connector_close_session (greeter_proxy->priv->ckc, &error);
+        if (! res) {
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("%s\n", error.message);
+                        dbus_error_free (&error);
+                } else {
+                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
+				   "ConsoleKit not available or insufficient privileges.\n");
+                }
+		goto out;
+        }
+
+	ret = TRUE;
+ out:
+
+	return ret;
 }
 
 static GPtrArray *
@@ -239,7 +311,13 @@ get_greeter_environment (GdmGreeterProxy *greeter_proxy)
 	set_xnest_parent_stuff ();
 #endif
 
-	g_hash_table_insert (hash, g_strdup ("XDG_SESSION_COOKIE"), g_strdup (greeter_proxy->priv->session_cookie));
+	if (greeter_proxy->priv->ckc != NULL) {
+		const char *cookie;
+		cookie = ck_connector_get_cookie (greeter_proxy->priv->ckc);
+		if (cookie != NULL) {
+			g_hash_table_insert (hash, g_strdup ("XDG_SESSION_COOKIE"), g_strdup (cookie));
+		}
+	}
 
 	g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (greeter_proxy->priv->user_name));
 	g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (greeter_proxy->priv->user_name));
@@ -343,13 +421,6 @@ create_temp_auth_file (GdmGreeterProxy *greeter_proxy)
 }
 
 static void
-gdm_slave_quick_exit (GdmGreeterProxy *greeter_proxy)
-{
-	/* FIXME */
-	_exit (1);
-}
-
-static void
 greeter_proxy_child_watch (GPid        pid,
 		     int         status,
 		     GdmGreeterProxy *greeter_proxy)
@@ -366,11 +437,9 @@ greeter_proxy_child_watch (GPid        pid,
 	g_spawn_close_pid (greeter_proxy->priv->pid);
 	greeter_proxy->priv->pid = -1;
 
-	if (greeter_proxy->priv->session_cookie != NULL) {
-		close_greeter_session (greeter_proxy, greeter_proxy->priv->session_cookie);
-		greeter_proxy->priv->session_cookie = NULL;
+	if (greeter_proxy->priv->ckc != NULL) {
+		close_greeter_session (greeter_proxy);
 	}
-
 }
 
 static gboolean
@@ -394,7 +463,7 @@ gdm_greeter_proxy_spawn (GdmGreeterProxy *greeter_proxy)
 		goto out;
 	}
 
-	open_greeter_session (greeter_proxy, &greeter_proxy->priv->session_cookie);
+	open_greeter_session (greeter_proxy);
 
 	env = get_greeter_environment (greeter_proxy);
 
@@ -540,9 +609,8 @@ gdm_greeter_proxy_stop (GdmGreeterProxy *greeter_proxy)
 	signal_pid (greeter_proxy->priv->pid, SIGTERM);
 	greeter_proxy_died (greeter_proxy);
 
-	if (greeter_proxy->priv->session_cookie != NULL) {
-		close_greeter_session (greeter_proxy, greeter_proxy->priv->session_cookie);
-		greeter_proxy->priv->session_cookie = NULL;
+	if (greeter_proxy->priv->ckc != NULL) {
+		close_greeter_session (greeter_proxy);
 	}
 
 	return TRUE;
@@ -560,23 +628,38 @@ gdm_greeter_proxy_set_server_address (GdmGreeterProxy *greeter_proxy,
 
 static void
 _gdm_greeter_proxy_set_x11_display_name (GdmGreeterProxy *greeter_proxy,
-					 const char *name)
+					 const char      *name)
 {
         g_free (greeter_proxy->priv->x11_display_name);
         greeter_proxy->priv->x11_display_name = g_strdup (name);
 }
 
 static void
+_gdm_greeter_proxy_set_x11_display_hostname (GdmGreeterProxy *greeter_proxy,
+					     const char      *name)
+{
+        g_free (greeter_proxy->priv->x11_display_hostname);
+        greeter_proxy->priv->x11_display_hostname = g_strdup (name);
+}
+
+static void
 _gdm_greeter_proxy_set_x11_display_device (GdmGreeterProxy *greeter_proxy,
-					   const char *name)
+					   const char      *name)
 {
         g_free (greeter_proxy->priv->x11_display_device);
         greeter_proxy->priv->x11_display_device = g_strdup (name);
 }
 
 static void
+_gdm_greeter_proxy_set_x11_display_is_local (GdmGreeterProxy *greeter_proxy,
+					     gboolean         is_local)
+{
+        greeter_proxy->priv->x11_display_is_local = is_local;
+}
+
+static void
 _gdm_greeter_proxy_set_x11_authority_file (GdmGreeterProxy *greeter_proxy,
-					   const char *file)
+					   const char      *file)
 {
         g_free (greeter_proxy->priv->x11_authority_file);
         greeter_proxy->priv->x11_authority_file = g_strdup (file);
@@ -584,7 +667,7 @@ _gdm_greeter_proxy_set_x11_authority_file (GdmGreeterProxy *greeter_proxy,
 
 static void
 _gdm_greeter_proxy_set_user_name (GdmGreeterProxy *greeter_proxy,
-				  const char *name)
+				  const char      *name)
 {
         g_free (greeter_proxy->priv->user_name);
         greeter_proxy->priv->user_name = g_strdup (name);
@@ -592,7 +675,7 @@ _gdm_greeter_proxy_set_user_name (GdmGreeterProxy *greeter_proxy,
 
 static void
 _gdm_greeter_proxy_set_group_name (GdmGreeterProxy *greeter_proxy,
-				   const char *name)
+				   const char      *name)
 {
         g_free (greeter_proxy->priv->group_name);
         greeter_proxy->priv->group_name = g_strdup (name);
@@ -612,8 +695,14 @@ gdm_greeter_proxy_set_property (GObject      *object,
 	case PROP_X11_DISPLAY_NAME:
 		_gdm_greeter_proxy_set_x11_display_name (self, g_value_get_string (value));
 		break;
+	case PROP_X11_DISPLAY_HOSTNAME:
+		_gdm_greeter_proxy_set_x11_display_hostname (self, g_value_get_string (value));
+		break;
 	case PROP_X11_DISPLAY_DEVICE:
 		_gdm_greeter_proxy_set_x11_display_device (self, g_value_get_string (value));
+		break;
+	case PROP_X11_DISPLAY_IS_LOCAL:
+		_gdm_greeter_proxy_set_x11_display_is_local (self, g_value_get_boolean (value));
 		break;
 	case PROP_X11_AUTHORITY_FILE:
 		_gdm_greeter_proxy_set_x11_authority_file (self, g_value_get_string (value));
@@ -647,8 +736,14 @@ gdm_greeter_proxy_get_property (GObject    *object,
 	case PROP_X11_DISPLAY_NAME:
 		g_value_set_string (value, self->priv->x11_display_name);
 		break;
+	case PROP_X11_DISPLAY_HOSTNAME:
+		g_value_set_string (value, self->priv->x11_display_hostname);
+		break;
 	case PROP_X11_DISPLAY_DEVICE:
 		g_value_set_string (value, self->priv->x11_display_device);
+		break;
+	case PROP_X11_DISPLAY_IS_LOCAL:
+		g_value_set_boolean (value, self->priv->x11_display_is_local);
 		break;
 	case PROP_X11_AUTHORITY_FILE:
 		g_value_set_string (value, self->priv->x11_authority_file);
@@ -705,12 +800,26 @@ gdm_greeter_proxy_class_init (GdmGreeterProxyClass *klass)
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
+					 PROP_X11_DISPLAY_HOSTNAME,
+					 g_param_spec_string ("x11-display-hostname",
+							      "hostname",
+							      "hostname",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
 					 PROP_X11_DISPLAY_DEVICE,
 					 g_param_spec_string ("x11-display-device",
 							      "device",
 							      "device",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+					 PROP_X11_DISPLAY_IS_LOCAL,
+					 g_param_spec_boolean ("x11-display-is-local",
+							       "is local",
+							       "is local",
+							       FALSE,
+							       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
 					 PROP_X11_AUTHORITY_FILE,
 					 g_param_spec_string ("x11-authority-file",
@@ -769,7 +878,7 @@ gdm_greeter_proxy_init (GdmGreeterProxy *greeter_proxy)
 
 	greeter_proxy->priv->pid = -1;
 
-	greeter_proxy->priv->command = g_strdup ("dbus-launch " LIBEXECDIR "/gdm-simple-greeter");
+	greeter_proxy->priv->command = g_strdup ("dbus-launch --exit-with-session " LIBEXECDIR "/gdm-simple-greeter");
 	greeter_proxy->priv->user_max_filesize = 65536;
 }
 
@@ -787,20 +896,26 @@ gdm_greeter_proxy_finalize (GObject *object)
 
 	gdm_greeter_proxy_stop (greeter_proxy);
 
-	g_free (greeter_proxy->priv->session_cookie);
+	if (greeter_proxy->priv->ckc != NULL) {
+		ck_connector_unref (greeter_proxy->priv->ckc);
+	}
 
 	G_OBJECT_CLASS (gdm_greeter_proxy_parent_class)->finalize (object);
 }
 
 GdmGreeterProxy *
 gdm_greeter_proxy_new (const char *display_name,
-		       const char *display_device)
+		       const char *display_device,
+		       const char *display_hostname,
+		       gboolean    display_is_local)
 {
 	GObject *object;
 
 	object = g_object_new (GDM_TYPE_GREETER_PROXY,
 			       "x11-display-name", display_name,
 			       "x11-display-device", display_device,
+			       "x11-display-hostname", display_hostname,
+			       "x11-display-is-local", display_is_local,
 			       NULL);
 
 	return GDM_GREETER_PROXY (object);

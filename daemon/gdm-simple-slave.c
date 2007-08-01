@@ -53,9 +53,7 @@
 #include "gdm-greeter-server.h"
 #include "gdm-greeter-proxy.h"
 
-#include "gdm-ck-session.h"
-
-extern char **environ;
+#include "ck-connector.h"
 
 #define GDM_SIMPLE_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_SLAVE, GdmSimpleSlavePrivate))
 
@@ -82,6 +80,7 @@ struct GdmSimpleSlavePrivate
 	char             *selected_language;
 	char             *selected_user;
 
+	CkConnector      *ckc;
 	GdmServer        *server;
 	GdmGreeterServer *greeter_server;
 	GdmGreeterProxy  *greeter;
@@ -538,50 +537,78 @@ static gboolean
 slave_open_ck_session (GdmSimpleSlave *slave,
 		       const char     *display_name,
 		       const char     *display_hostname,
-		       gboolean        display_is_local,
-		       char          **cookiep)
+		       gboolean        display_is_local)
 {
-	char          *cookie;
 	char          *username;
+	char          *x11_display_device;
 	struct passwd *pwent;
 	gboolean       ret;
+	int            res;
+	DBusError      error;
 
 	g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
 
-	username = gdm_session_get_username (slave->priv->session),
+	username = gdm_session_get_username (slave->priv->session);
+
+	x11_display_device = NULL;
 
 	pwent = getpwnam (username);
 	if (pwent == NULL) {
 		return FALSE;
 	}
 
-	cookie = NULL;
-	ret = open_ck_session (pwent,
-			       gdm_server_get_display_device (slave->priv->server),
-			       display_name,
-			       display_hostname,
-			       display_is_local,
-			       slave->priv->selected_session,
-			       &cookie);
-	if (cookiep != NULL) {
-		*cookiep = g_strdup (cookie);
+	slave->priv->ckc = ck_connector_new ();
+	if (slave->priv->ckc == NULL) {
+		g_warning ("Couldn't create new ConsoleKit connector");
+		goto out;
 	}
 
-	g_free (cookie);
+	if (slave->priv->server != NULL) {
+		x11_display_device = gdm_server_get_display_device (slave->priv->server);
+	}
 
+	if (x11_display_device == NULL) {
+		x11_display_device = g_strdup ("");
+	}
+
+	dbus_error_init (&error);
+        res = ck_connector_open_session_with_parameters (slave->priv->ckc,
+                                                         &error,
+                                                         "unix-user", &pwent->pw_uid,
+                                                         "x11-display", &display_name,
+                                                         "x11-display-device", &x11_display_device,
+                                                         "remote-host-name", &display_hostname,
+							 "is-local", &display_is_local,
+                                                         NULL);
+	g_free (x11_display_device);
+
+        if (! res) {
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("%s\n", error.message);
+                        dbus_error_free (&error);
+                } else {
+                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
+				   "ConsoleKit not available or insufficient privileges.\n");
+                }
+		goto out;
+        }
+
+	ret = TRUE;
+
+ out:
 	return ret;
 }
 
 static void
 setup_session_environment (GdmSimpleSlave *slave)
 {
-	int   display_number;
-	char *display_x11_cookie;
-	char *display_name;
-	char *display_hostname;
-	char *auth_file;
-	char *session_cookie;
-	gboolean display_is_local;
+	int         display_number;
+	char       *display_x11_cookie;
+	char       *display_name;
+	char       *display_hostname;
+	char       *auth_file;
+	const char *session_cookie;
+	gboolean    display_is_local;
 
 	display_name = NULL;
 	display_hostname = NULL;
@@ -600,11 +627,12 @@ setup_session_environment (GdmSimpleSlave *slave)
 
 	add_user_authorization (slave, &auth_file);
 
-	slave_open_ck_session (slave,
-			       display_name,
-			       display_hostname,
-			       display_is_local,
-			       &session_cookie);
+	if (slave_open_ck_session (slave,
+				   display_name,
+				   display_hostname,
+				   display_is_local)) {
+		session_cookie = ck_connector_get_cookie (slave->priv->ckc);
+	}
 
 	gdm_session_set_environment_variable (slave->priv->session,
 					      "GDMSESSION",
@@ -640,7 +668,6 @@ setup_session_environment (GdmSimpleSlave *slave)
 	g_free (display_hostname);
 	g_free (display_x11_cookie);
 	g_free (auth_file);
-	g_free (session_cookie);
 }
 
 static void
@@ -897,6 +924,7 @@ run_greeter (GdmSimpleSlave *slave)
 	gboolean       display_is_local;
 	char          *display_name;
 	char          *display_device;
+	char          *display_hostname;
 	char          *auth_file;
 	char          *address;
 
@@ -906,12 +934,16 @@ run_greeter (GdmSimpleSlave *slave)
 	display_name = NULL;
 	auth_file = NULL;
 	display_device = NULL;
+	display_hostname = NULL;
 
 	g_object_get (slave,
 		      "display-is-local", &display_is_local,
 		      "display-name", &display_name,
+		      "display-hostname", &display_hostname,
 		      "display-x11-authority-file", &auth_file,
 		      NULL);
+
+	g_debug ("Creating greeter for %s %s", display_name, display_hostname);
 
 	if (slave->priv->server != NULL) {
 		display_device = gdm_server_get_display_device (slave->priv->server);
@@ -980,8 +1012,11 @@ run_greeter (GdmSimpleSlave *slave)
 
 	address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
-	g_debug ("Creating greeter on %s %s", display_name, display_device);
-	slave->priv->greeter = gdm_greeter_proxy_new (display_name, display_device);
+	g_debug ("Creating greeter on %s %s %s", display_name, display_device, display_hostname);
+	slave->priv->greeter = gdm_greeter_proxy_new (display_name,
+						      display_device,
+						      display_hostname,
+						      display_is_local);
 	g_signal_connect (slave->priv->greeter,
 			  "started",
 			  G_CALLBACK (on_greeter_start),
@@ -998,6 +1033,7 @@ run_greeter (GdmSimpleSlave *slave)
 
 	g_free (display_name);
 	g_free (display_device);
+	g_free (display_hostname);
 	g_free (auth_file);
 }
 

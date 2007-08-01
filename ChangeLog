@@ -1,3 +1,32 @@
+2007-08-01  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/Makefile.am:
+	* daemon/ck-connector.c: (lookup_parameter_type),
+	(add_param_basic), (_ck_connector_free), (ck_connector_unref),
+	(ck_connector_ref), (ck_connector_new),
+	(ck_connector_open_session),
+	(ck_connector_open_session_with_parameters_valist),
+	(ck_connector_open_session_with_parameters),
+	(ck_connector_open_session_for_user), (ck_connector_get_cookie),
+	(ck_connector_close_session):
+	* daemon/ck-connector.h:
+	* daemon/gdm-ck-session.c:
+	* daemon/gdm-ck-session.h:
+	* daemon/gdm-factory-slave.c: (run_greeter):
+	* daemon/gdm-greeter-proxy.c: (open_greeter_session),
+	(close_greeter_session), (get_greeter_environment),
+	(greeter_proxy_child_watch), (gdm_greeter_proxy_spawn),
+	(gdm_greeter_proxy_stop),
+	(_gdm_greeter_proxy_set_x11_display_hostname),
+	(_gdm_greeter_proxy_set_x11_display_is_local),
+	(gdm_greeter_proxy_set_property), (gdm_greeter_proxy_get_property),
+	(gdm_greeter_proxy_class_init), (gdm_greeter_proxy_init),
+	(gdm_greeter_proxy_finalize), (gdm_greeter_proxy_new):
+	* daemon/gdm-greeter-proxy.h:
+	* daemon/gdm-simple-slave.c: (slave_open_ck_session),
+	(setup_session_environment), (run_greeter):
+	Make ConsoleKit session registration more robust and complete.
+
 2007-07-26  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-greeter-proxy.c: (close_greeter_session),
