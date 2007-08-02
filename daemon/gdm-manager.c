@@ -39,11 +39,9 @@
 #include "gdm-manager.h"
 #include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
+#include "gdm-local-display-factory.h"
 #include "gdm-xdmcp-manager.h"
 #include "gdm-common.h"
-
-#include "gdm-static-display.h"
-#include "gdm-static-factory-display.h"
 
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
@@ -53,17 +51,18 @@
 
 struct GdmManagerPrivate
 {
-	GdmDisplayStore *display_store;
-	GdmXdmcpManager *xdmcp_manager;
+	GdmDisplayStore        *display_store;
+	GdmLocalDisplayFactory *local_factory;
+	GdmXdmcpManager        *xdmcp_manager;
 
-	gboolean         xdmcp_enabled;
+	gboolean                xdmcp_enabled;
 
-	GString         *global_cookie;
-	gboolean         wait_for_go;
-	gboolean         no_console;
+	GString                *global_cookie;
+	gboolean                wait_for_go;
+	gboolean                no_console;
 
-        DBusGProxy      *bus_proxy;
-        DBusGConnection *connection;
+        DBusGProxy             *bus_proxy;
+        DBusGConnection        *connection;
 };
 
 enum {
@@ -135,38 +134,6 @@ gdm_manager_get_displays (GdmManager *manager,
 	return TRUE;
 }
 
-static gboolean
-start_local_display (const char *id,
-		     GdmDisplay *d,
-		     GdmManager *manager)
-{
-	gboolean ret;
-
-	ret = TRUE;
-
-	g_assert (d != NULL);
-
-	if ((GDM_IS_STATIC_FACTORY_DISPLAY (d) ||
-	     GDM_IS_STATIC_DISPLAY (d)) &&
-	    gdm_display_get_status (d) == GDM_DISPLAY_UNMANAGED) {
-		if (! gdm_display_manage (d)) {
-			gdm_display_unmanage (d);
-		} else {
-			ret = FALSE;
-		}
-	}
-
-	return ret;
-}
-
-static void
-start_unborn_local_displays (GdmManager *manager)
-{
-	gdm_display_store_foreach (manager->priv->display_store,
-				   (GdmDisplayStoreFunc)start_local_display,
-				   manager);
-}
-
 static void
 make_global_cookie (GdmManager *manager)
 {
@@ -199,63 +166,14 @@ make_global_cookie (GdmManager *manager)
 	g_free (file);
 }
 
-static void
-load_static_displays_from_file (GdmManager *manager)
-{
-#if 0
-
-	for (l = xservers; l != NULL; l = l->next) {
-		GdmDisplay *display;
-
-		g_debug ("Loading display for '%d' %s", xserver->number, xserver->id);
-
-		display = gdm_static_display_new (xserver->number);
-
-		if (display == NULL) {
-			g_warning ("Unable to create display: %d %s", xserver->number, xserver->id);
-			continue;
-		}
-
-		gdm_display_store_add (manager->priv->display_store, display);
-
-		/* let store own the ref */
-		g_object_unref (display);
-	}
-#else
-	GdmDisplay *display;
-
-	/* just load one for now */
-	/*display = gdm_static_factory_display_new (0, manager->priv->display_store);*/
-	display = gdm_static_display_new (0);
-
-	if (display == NULL) {
-		g_warning ("Unable to create display: %d", 0);
-		return;
-	}
-
-	gdm_display_store_add (manager->priv->display_store, display);
-
-	/* let store own the ref */
-	g_object_unref (display);
-#endif
-}
-
-static void
-load_static_servers (GdmManager *manager)
-{
-
-	load_static_displays_from_file (manager);
-}
-
 void
 gdm_manager_start (GdmManager *manager)
 {
 	g_debug ("GDM starting to manage");
 
-	load_static_servers (manager);
-
-	/* Start static X servers */
-	start_unborn_local_displays (manager);
+	if (! manager->priv->wait_for_go) {
+		gdm_local_display_factory_start (manager->priv->local_factory, NULL);
+	}
 
 	/* Accept remote connections */
 	if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
@@ -276,6 +194,7 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
 
 		if (! wait_for_go) {
 			/* we got a go */
+			gdm_local_display_factory_start (manager->priv->local_factory, NULL);
 
 			if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_manager != NULL) {
 				g_debug ("Accepting XDMCP connections...");
@@ -438,6 +357,8 @@ gdm_manager_constructor (GType                  type,
         manager = GDM_MANAGER (G_OBJECT_CLASS (gdm_manager_parent_class)->constructor (type,
 										       n_construct_properties,
 										       construct_properties));
+
+	manager->priv->local_factory = gdm_local_display_factory_new (manager->priv->display_store);
 
 	if (manager->priv->xdmcp_enabled) {
 		manager->priv->xdmcp_manager = gdm_xdmcp_manager_new (manager->priv->display_store);

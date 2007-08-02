@@ -234,6 +234,8 @@ gdm_binary_SOURCES = 			\
 	main.c				\
 	gdm-display-store.c		\
 	gdm-display-store.h		\
+	gdm-local-display-factory.c	\
+	gdm-local-display-factory.h	\
 	gdm-display.c			\
 	gdm-display.h			\
 	gdm-xdmcp-display.c		\

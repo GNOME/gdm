@@ -1,3 +1,23 @@
+2007-08-02  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/Makefile.am:
+	* daemon/gdm-local-display-factory.c:
+	(gdm_local_display_factory_error_quark), (get_pci_seat_devices),
+	(gdm_local_display_factory_start),
+	(gdm_local_display_factory_stop),
+	(gdm_local_display_factory_set_display_store),
+	(gdm_local_display_factory_set_property),
+	(gdm_local_display_factory_get_property),
+	(gdm_local_display_factory_class_init), (connect_to_hal),
+	(disconnect_from_hal), (gdm_local_display_factory_init),
+	(gdm_local_display_factory_finalize),
+	(gdm_local_display_factory_new):
+	* daemon/gdm-local-display-factory.h:
+	* daemon/gdm-manager.c: (gdm_manager_start),
+	(gdm_manager_set_wait_for_go), (gdm_manager_constructor):
+	Add new object that will monitor HAL and act as a factory
+	for displays.
+
 2007-08-01  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-session-worker.c: (open_idle), (free_open_data),
