@@ -1,3 +1,72 @@
+2007-08-03  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/Makefile.am:
+	* daemon/gdm-display-factory.c: (gdm_display_factory_error_quark),
+	(gdm_display_factory_get_display_store),
+	(gdm_display_factory_start), (gdm_display_factory_stop),
+	(gdm_display_factory_set_display_store),
+	(gdm_display_factory_set_property),
+	(gdm_display_factory_get_property),
+	(gdm_display_factory_class_init), (gdm_display_factory_init),
+	(gdm_display_factory_finalize):
+	* daemon/gdm-display-factory.h:
+	* daemon/gdm-local-display-factory.c: (create_display_for_device),
+	(create_displays_for_pci_devices),
+	(gdm_local_display_factory_start),
+	(gdm_local_display_factory_set_property),
+	(gdm_local_display_factory_get_property),
+	(gdm_local_display_factory_class_init):
+	* daemon/gdm-local-display-factory.h:
+	* daemon/gdm-manager.c: (gdm_manager_start),
+	(gdm_manager_set_wait_for_go), (gdm_manager_constructor),
+	(gdm_manager_finalize):
+	* daemon/gdm-xdmcp-display-factory.c:
+	(gdm_xdmcp_display_factory_error_quark), (get_next_session_serial),
+	(setup_multicast), (open_port), (gdm_xdmcp_num_displays_from_host),
+	(gdm_xdmcp_display_lookup_by_host), (get_willing_output),
+	(gdm_xdmcp_send_willing), (gdm_xdmcp_send_unwilling),
+	(gdm_xdmcp_send_forward_query), (handle_any_query),
+	(handle_direct_query), (gdm_xdmcp_handle_broadcast_query),
+	(gdm_xdmcp_handle_query), (gdm_xdmcp_handle_indirect_query),
+	(gdm_forward_query_dispose), (remove_oldest_forward),
+	(gdm_forward_query_alloc), (gdm_forward_query_lookup),
+	(gdm_xdmcp_whack_queued_managed_forwards),
+	(gdm_xdmcp_handle_forward_query),
+	(gdm_xdmcp_really_send_managed_forward), (managed_forward_handler),
+	(gdm_xdmcp_send_managed_forward),
+	(gdm_xdmcp_send_got_managed_forward), (count_sessions),
+	(gdm_xdmcp_recount_sessions), (purge_displays),
+	(gdm_xdmcp_displays_purge), (display_dispose_check),
+	(gdm_xdmcp_send_decline), (gdm_xdmcp_display_alloc),
+	(gdm_xdmcp_send_accept), (gdm_xdmcp_handle_request),
+	(gdm_xdmcp_display_lookup), (gdm_xdmcp_send_failed),
+	(gdm_xdmcp_send_refuse), (gdm_xdmcp_handle_manage),
+	(gdm_xdmcp_handle_managed_forward),
+	(gdm_xdmcp_handle_got_managed_forward), (gdm_xdmcp_send_alive),
+	(gdm_xdmcp_handle_keepalive), (decode_packet),
+	(gdm_xdmcp_display_factory_start),
+	(gdm_xdmcp_display_factory_stop),
+	(gdm_xdmcp_display_factory_set_port),
+	(gdm_xdmcp_display_factory_set_use_multicast),
+	(gdm_xdmcp_display_factory_set_multicast_address),
+	(gdm_xdmcp_display_factory_set_honor_indirect),
+	(gdm_xdmcp_display_factory_set_max_displays_per_host),
+	(gdm_xdmcp_display_factory_set_max_displays),
+	(gdm_xdmcp_display_factory_set_max_pending_displays),
+	(gdm_xdmcp_display_factory_set_max_wait),
+	(gdm_xdmcp_display_factory_set_willing_script),
+	(gdm_xdmcp_display_factory_set_property),
+	(gdm_xdmcp_display_factory_get_property),
+	(gdm_xdmcp_display_factory_class_init),
+	(gdm_xdmcp_display_factory_init),
+	(gdm_xdmcp_display_factory_finalize),
+	(gdm_xdmcp_display_factory_new):
+	* daemon/gdm-xdmcp-display-factory.h:
+	* daemon/gdm-xdmcp-manager.c:
+	* daemon/gdm-xdmcp-manager.h:
+	Add an abstract base class for display factories.  Rename
+	gdm-xdmcp-manager to gdm-xdmcp-display-factory.
+
 2007-08-02  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/Makefile.am:

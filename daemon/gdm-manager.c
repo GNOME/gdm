@@ -36,12 +36,14 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include "gdm-common.h"
+
 #include "gdm-manager.h"
 #include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
+#include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
-#include "gdm-xdmcp-manager.h"
-#include "gdm-common.h"
+#include "gdm-xdmcp-display-factory.h"
 
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
@@ -53,7 +55,7 @@ struct GdmManagerPrivate
 {
 	GdmDisplayStore        *display_store;
 	GdmLocalDisplayFactory *local_factory;
-	GdmXdmcpManager        *xdmcp_manager;
+	GdmXdmcpDisplayFactory *xdmcp_factory;
 
 	gboolean                xdmcp_enabled;
 
@@ -172,14 +174,14 @@ gdm_manager_start (GdmManager *manager)
 	g_debug ("GDM starting to manage");
 
 	if (! manager->priv->wait_for_go) {
-		gdm_local_display_factory_start (manager->priv->local_factory, NULL);
+		gdm_display_factory_start (manager->priv->local_factory, NULL);
 	}
 
 	/* Accept remote connections */
 	if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
-		if (manager->priv->xdmcp_manager != NULL) {
+		if (manager->priv->xdmcp_factory != NULL) {
 			g_debug ("Accepting XDMCP connections...");
-			gdm_xdmcp_manager_start (manager->priv->xdmcp_manager, NULL);
+			gdm_display_factory_start (manager->priv->xdmcp_factory, NULL);
 		}
 	}
 
@@ -194,11 +196,11 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
 
 		if (! wait_for_go) {
 			/* we got a go */
-			gdm_local_display_factory_start (manager->priv->local_factory, NULL);
+			gdm_display_factory_start (manager->priv->local_factory, NULL);
 
-			if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_manager != NULL) {
+			if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
 				g_debug ("Accepting XDMCP connections...");
-				gdm_xdmcp_manager_start (manager->priv->xdmcp_manager, NULL);
+				gdm_display_factory_start (manager->priv->xdmcp_factory, NULL);
 			}
 		}
 	}
@@ -361,7 +363,7 @@ gdm_manager_constructor (GType                  type,
 	manager->priv->local_factory = gdm_local_display_factory_new (manager->priv->display_store);
 
 	if (manager->priv->xdmcp_enabled) {
-		manager->priv->xdmcp_manager = gdm_xdmcp_manager_new (manager->priv->display_store);
+		manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
 	}
 
         return G_OBJECT (manager);
@@ -436,8 +438,8 @@ gdm_manager_finalize (GObject *object)
 
 	g_return_if_fail (manager->priv != NULL);
 
-	if (manager->priv->xdmcp_manager != NULL) {
-		g_object_unref (manager->priv->xdmcp_manager);
+	if (manager->priv->xdmcp_factory != NULL) {
+		g_object_unref (manager->priv->xdmcp_factory);
 	}
 
 	gdm_display_store_clear (manager->priv->display_store);

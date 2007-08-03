@@ -27,6 +27,7 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
 #include "gdm-display-store.h"
 #include "gdm-static-display.h"
@@ -42,11 +43,8 @@
 
 struct GdmLocalDisplayFactoryPrivate
 {
-	GdmDisplayStore *display_store;
-
 	DBusGConnection *connection;
 	DBusGProxy      *proxy;
-
 };
 
 enum {
@@ -57,7 +55,6 @@ enum {
 
 enum {
 	PROP_0,
-	PROP_DISPLAY_STORE,
 };
 
 static guint signals [LAST_SIGNAL] = { 0, };
@@ -68,7 +65,7 @@ static void	gdm_local_display_factory_finalize	(GObject	             *object);
 
 static gpointer local_display_factory_object = NULL;
 
-G_DEFINE_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmLocalDisplayFactory, gdm_local_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
 GQuark
 gdm_local_display_factory_error_quark (void)
@@ -82,8 +79,31 @@ gdm_local_display_factory_error_quark (void)
 }
 
 static void
-get_pci_seat_devices (GdmLocalDisplayFactory *factory,
-		      GList                  *seats)
+create_display_for_device (GdmLocalDisplayFactory *factory,
+			   DBusGProxy             *device_proxy)
+{
+	GdmDisplay      *display;
+	GdmDisplayStore *store;
+
+	store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+	display = gdm_static_display_new (0);
+	if (display == NULL) {
+		g_warning ("Unable to create display: %d", 0);
+		return;
+	}
+
+	gdm_display_store_add (store, display);
+	/* let store own the ref */
+	g_object_unref (display);
+
+	if (! gdm_display_manage (display)) {
+		gdm_display_unmanage (display);
+	}
+}
+
+static void
+create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
 {
 	char      **devices;
 	const char *key;
@@ -133,9 +153,10 @@ get_pci_seat_devices (GdmLocalDisplayFactory *factory,
 					 G_TYPE_INVALID,
 					 G_TYPE_INT, &class_val,
 					 G_TYPE_INVALID);
+
 		if (class_val == SEAT_PCI_DEVICE_CLASS) {
 			g_debug ("Found device: %s", devices [i]);
-			seats = g_list_prepend (seats, devices [i]);
+			create_display_for_device (factory, device_proxy);
 		}
 
 		g_object_unref (device_proxy);
@@ -149,27 +170,13 @@ gdm_local_display_factory_start (GdmLocalDisplayFactory *factory,
 				 GError                **error)
 {
 	gboolean    ret;
-	GdmDisplay *display;
 
 	g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
 	ret = TRUE;
 
 	/* FIXME: */
-
-	display = gdm_static_display_new (0);
-	if (display == NULL) {
-		g_warning ("Unable to create display: %d", 0);
-		return FALSE;
-	}
-
-	gdm_display_store_add (factory->priv->display_store, display);
-	/* let store own the ref */
-	g_object_unref (display);
-
-	if (! gdm_display_manage (display)) {
-		gdm_display_unmanage (display);
-	}
+	create_displays_for_pci_devices (factory);
 
 	return ret;
 }
@@ -184,20 +191,6 @@ gdm_local_display_factory_stop (GdmLocalDisplayFactory *factory,
 }
 
 static void
-gdm_local_display_factory_set_display_store (GdmLocalDisplayFactory *factory,
-					     GdmDisplayStore        *display_store)
-{
-	if (factory->priv->display_store != NULL) {
-		g_object_unref (factory->priv->display_store);
-		factory->priv->display_store = NULL;
-	}
-
-	if (display_store != NULL) {
-		factory->priv->display_store = g_object_ref (display_store);
-	}
-}
-
-static void
 gdm_local_display_factory_set_property (GObject	      *object,
 					guint	       prop_id,
 					const GValue  *value,
@@ -208,9 +201,6 @@ gdm_local_display_factory_set_property (GObject	      *object,
 	self = GDM_LOCAL_DISPLAY_FACTORY (object);
 
 	switch (prop_id) {
-	case PROP_DISPLAY_STORE:
-		gdm_local_display_factory_set_display_store (self, g_value_get_object (value));
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -228,9 +218,6 @@ gdm_local_display_factory_get_property (GObject	   *object,
 	self = GDM_LOCAL_DISPLAY_FACTORY (object);
 
 	switch (prop_id) {
-	case PROP_DISPLAY_STORE:
-		g_value_set_object (value, self->priv->display_store);
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -245,14 +232,6 @@ gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
 	object_class->get_property = gdm_local_display_factory_get_property;
 	object_class->set_property = gdm_local_display_factory_set_property;
 	object_class->finalize = gdm_local_display_factory_finalize;
-
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_STORE,
-                                         g_param_spec_object ("display-store",
-							      "display store",
-							      "display store",
-							      GDM_TYPE_DISPLAY_STORE,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_type_class_add_private (klass, sizeof (GdmLocalDisplayFactoryPrivate));
 }

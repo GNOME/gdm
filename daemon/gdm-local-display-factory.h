@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 
+#include "gdm-display-factory.h"
 #include "gdm-display-store.h"
 
 G_BEGIN_DECLS

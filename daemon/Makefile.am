@@ -234,6 +234,8 @@ gdm_binary_SOURCES = 			\
 	main.c				\
 	gdm-display-store.c		\
 	gdm-display-store.h		\
+	gdm-display-factory.c		\
+	gdm-display-factory.h		\
 	gdm-local-display-factory.c	\
 	gdm-local-display-factory.h	\
 	gdm-display.c			\
@@ -259,9 +261,9 @@ gdm_binary_SOURCES = 			\
 	filecheck.h			\
 	$(NULL)
 
-XDMCP_SOURCES =			\
-	gdm-xdmcp-manager.c	\
-	gdm-xdmcp-manager.h	\
+XDMCP_SOURCES =				\
+	gdm-xdmcp-display-factory.c	\
+	gdm-xdmcp-display-factory.h	\
 	$(NULL)
 
 if XDMCP_SUPPORT
