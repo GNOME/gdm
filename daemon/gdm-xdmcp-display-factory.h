@@ -40,13 +40,13 @@ typedef struct GdmXdmcpDisplayFactoryPrivate GdmXdmcpDisplayFactoryPrivate;
 
 typedef struct
 {
-	GObject		               parent;
+	GdmDisplayFactory	       parent;
 	GdmXdmcpDisplayFactoryPrivate *priv;
 } GdmXdmcpDisplayFactory;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+	GdmDisplayFactoryClass   parent_class;
 } GdmXdmcpDisplayFactoryClass;
 
 typedef enum

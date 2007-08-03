@@ -205,7 +205,7 @@ static void	gdm_xdmcp_display_factory_finalize	(GObject	      *object);
 
 static gpointer xdmcp_display_factory_object = NULL;
 
-G_DEFINE_TYPE (GdmXdmcpDisplayFactory, gdm_xdmcp_display_factory, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmXdmcpDisplayFactory, gdm_xdmcp_display_factory, GDM_TYPE_DISPLAY_FACTORY)
 
 /* Theory of operation:
  *
@@ -2678,12 +2678,12 @@ decode_packet (GIOChannel      *source,
 	return TRUE;
 }
 
-gboolean
-gdm_xdmcp_display_factory_start (GdmXdmcpDisplayFactory *factory,
-			 GError         **error)
+static gboolean
+gdm_xdmcp_display_factory_start (GdmDisplayFactory *base_factory)
 {
-	gboolean    ret;
-	GIOChannel *ioc;
+	gboolean                ret;
+	GIOChannel             *ioc;
+	GdmXdmcpDisplayFactory *factory = GDM_XDMCP_DISPLAY_FACTORY (base_factory);
 
 	g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory), FALSE);
 	g_return_val_if_fail (factory->priv->socket_fd == -1, FALSE);
@@ -2711,10 +2711,11 @@ gdm_xdmcp_display_factory_start (GdmXdmcpDisplayFactory *factory,
 	return ret;
 }
 
-gboolean
-gdm_xdmcp_display_factory_stop (GdmXdmcpDisplayFactory *factory,
-				GError                **error)
+static gboolean
+gdm_xdmcp_display_factory_stop (GdmDisplayFactory *base_factory)
 {
+	GdmXdmcpDisplayFactory *factory = GDM_XDMCP_DISPLAY_FACTORY (base_factory);
+
 	g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory), FALSE);
 	g_return_val_if_fail (factory->priv->socket_fd != -1, FALSE);
 
@@ -2905,11 +2906,15 @@ gdm_xdmcp_display_factory_get_property (GObject	   *object,
 static void
 gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
 {
-	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass           *object_class = G_OBJECT_CLASS (klass);
+	GdmDisplayFactoryClass *factory_class = GDM_DISPLAY_FACTORY_CLASS (klass);
 
 	object_class->get_property = gdm_xdmcp_display_factory_get_property;
 	object_class->set_property = gdm_xdmcp_display_factory_set_property;
 	object_class->finalize = gdm_xdmcp_display_factory_finalize;
+
+	factory_class->start = gdm_xdmcp_display_factory_start;
+	factory_class->stop = gdm_xdmcp_display_factory_stop;
 
         g_object_class_install_property (object_class,
                                          PROP_PORT,

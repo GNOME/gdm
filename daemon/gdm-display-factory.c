@@ -74,8 +74,7 @@ gdm_display_factory_get_display_store (GdmDisplayFactory *factory)
 }
 
 gboolean
-gdm_display_factory_start (GdmDisplayFactory *factory,
-			   GError           **error)
+gdm_display_factory_start (GdmDisplayFactory *factory)
 {
 	gboolean ret;
 
@@ -89,8 +88,7 @@ gdm_display_factory_start (GdmDisplayFactory *factory,
 }
 
 gboolean
-gdm_display_factory_stop (GdmDisplayFactory *factory,
-			  GError           **error)
+gdm_display_factory_stop (GdmDisplayFactory *factory)
 {
 	gboolean ret;
 

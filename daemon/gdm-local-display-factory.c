@@ -165,11 +165,11 @@ create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
 	g_strfreev (devices);
 }
 
-gboolean
-gdm_local_display_factory_start (GdmLocalDisplayFactory *factory,
-				 GError                **error)
+static gboolean
+gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 {
-	gboolean    ret;
+	gboolean                ret;
+	GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
 
 	g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
@@ -181,10 +181,11 @@ gdm_local_display_factory_start (GdmLocalDisplayFactory *factory,
 	return ret;
 }
 
-gboolean
-gdm_local_display_factory_stop (GdmLocalDisplayFactory *factory,
-				GError                **error)
+static gboolean
+gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
 {
+	GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
+
 	g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
 	return TRUE;
@@ -227,11 +228,15 @@ gdm_local_display_factory_get_property (GObject	   *object,
 static void
 gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
 {
-	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass           *object_class = G_OBJECT_CLASS (klass);
+	GdmDisplayFactoryClass *factory_class = GDM_DISPLAY_FACTORY_CLASS (klass);
 
 	object_class->get_property = gdm_local_display_factory_get_property;
 	object_class->set_property = gdm_local_display_factory_set_property;
 	object_class->finalize = gdm_local_display_factory_finalize;
+
+	factory_class->start = gdm_local_display_factory_start;
+	factory_class->stop = gdm_local_display_factory_stop;
 
 	g_type_class_add_private (klass, sizeof (GdmLocalDisplayFactoryPrivate));
 }

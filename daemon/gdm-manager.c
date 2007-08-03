@@ -174,14 +174,14 @@ gdm_manager_start (GdmManager *manager)
 	g_debug ("GDM starting to manage");
 
 	if (! manager->priv->wait_for_go) {
-		gdm_display_factory_start (manager->priv->local_factory, NULL);
+		gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
 	}
 
 	/* Accept remote connections */
 	if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
 		if (manager->priv->xdmcp_factory != NULL) {
 			g_debug ("Accepting XDMCP connections...");
-			gdm_display_factory_start (manager->priv->xdmcp_factory, NULL);
+			gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
 		}
 	}
 
@@ -196,11 +196,11 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
 
 		if (! wait_for_go) {
 			/* we got a go */
-			gdm_display_factory_start (manager->priv->local_factory, NULL);
+			gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
 
 			if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
 				g_debug ("Accepting XDMCP connections...");
-				gdm_display_factory_start (manager->priv->xdmcp_factory, NULL);
+				gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
 			}
 		}
 	}

@@ -40,13 +40,13 @@ typedef struct GdmLocalDisplayFactoryPrivate GdmLocalDisplayFactoryPrivate;
 
 typedef struct
 {
-	GObject		               parent;
+	GdmDisplayFactory	       parent;
 	GdmLocalDisplayFactoryPrivate *priv;
 } GdmLocalDisplayFactory;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+	GdmDisplayFactoryClass   parent_class;
 } GdmLocalDisplayFactoryClass;
 
 typedef enum
@@ -60,11 +60,6 @@ GQuark		           gdm_local_display_factory_error_quark	     (void);
 GType		           gdm_local_display_factory_get_type		     (void);
 
 GdmLocalDisplayFactory *   gdm_local_display_factory_new		     (GdmDisplayStore        *display_store);
-
-gboolean                   gdm_local_display_factory_start                   (GdmLocalDisplayFactory *manager,
-									      GError                **error);
-gboolean                   gdm_local_display_factory_stop                    (GdmLocalDisplayFactory *manager,
-									      GError                **error);
 
 G_END_DECLS
 

@@ -61,10 +61,8 @@ typedef enum
 GQuark		           gdm_display_factory_error_quark	       (void);
 GType		           gdm_display_factory_get_type		       (void);
 
-gboolean                   gdm_display_factory_start                   (GdmDisplayFactory *manager,
-									GError           **error);
-gboolean                   gdm_display_factory_stop                    (GdmDisplayFactory *manager,
-									GError           **error);
+gboolean                   gdm_display_factory_start                   (GdmDisplayFactory *manager);
+gboolean                   gdm_display_factory_stop                    (GdmDisplayFactory *manager);
 GdmDisplayStore *          gdm_display_factory_get_display_store       (GdmDisplayFactory *manager);
 
 G_END_DECLS
