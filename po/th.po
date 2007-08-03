@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-21 19:36+0700\n"
-"PO-Revision-Date: 2007-07-21 19:39+0700\n"
+"POT-Creation-Date: 2007-08-03 10:01+0700\n"
+"PO-Revision-Date: 2007-08-03 10:04+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -205,7 +205,7 @@ msgstr "%s: ไม่สามารถเขียนคุกกี้ได�
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: กำลังข้ามแฟ้มคุกกี้ที่ดูน่าสงสัย %s"
 
-#: ../daemon/auth.c:867 ../daemon/gdm.c:1507 ../daemon/gdm.c:1879
+#: ../daemon/auth.c:867 ../daemon/gdm.c:1508 ../daemon/gdm.c:1880
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "ไม่สามารถเขียนไปยัง %s: %s"
@@ -638,14 +638,14 @@ msgid "Could not get server hostname: %s!"
 msgstr "ไม่สามารถอ่านชื่อโฮสต์ของเซิร์ฟเวอร์: %s!"
 
 #. FIXME: how to handle this?
-#: ../daemon/gdm.c:194 ../daemon/gdm.c:202 ../daemon/gdm.c:1641
-#: ../daemon/gdm.c:1649
+#: ../daemon/gdm.c:194 ../daemon/gdm.c:202 ../daemon/gdm.c:1642
+#: ../daemon/gdm.c:1650
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr "ไม่สามารถเขียนแฟ้ม PID %s: เป็นไปได้ว่าพื้นที่ในดิสก์ไม่พอ ข้อผิดพลาด: %s\n"
 
-#: ../daemon/gdm.c:196 ../daemon/gdm.c:204 ../daemon/gdm.c:1643
-#: ../daemon/gdm.c:1651
+#: ../daemon/gdm.c:196 ../daemon/gdm.c:204 ../daemon/gdm.c:1644
+#: ../daemon/gdm.c:1652
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr "ไม่สามารถเขียนแฟ้ม PID %s: เป็นไปได้ว่าพื้นที่ดิสก์ไม่พอ  ข้อผิดพลาด: %s"
@@ -656,7 +656,7 @@ msgid "%s: fork () failed!"
 msgstr "%s: fork () ล้มเหลว!"
 
 #. should never happen
-#: ../daemon/gdm.c:216 ../daemon/slave.c:3572
+#: ../daemon/gdm.c:216 ../daemon/slave.c:3583
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: setsid () ล้มเหลว: %s!"
@@ -693,66 +693,67 @@ msgid ""
 "display %s"
 msgstr "เปิด X server ไม่สำเร็จหลายครั้งในช่วงเวลาอันสั้น ขอปิดการใช้งานดิสเพลย์ %s"
 
-#: ../daemon/gdm.c:633
+#. %s is the command string and %d defines the exit status (both non-translatable)
+#: ../daemon/gdm.c:634
 #, c-format
 msgid "command failed %s: %d"
 msgstr "คำสั่ง %s ล้มเหลว: %d"
 
-#: ../daemon/gdm.c:650 ../daemon/gdm.c:2525
+#: ../daemon/gdm.c:651 ../daemon/gdm.c:2526
 msgid "Master suspending..."
 msgstr "มาสเตอร์กำลังหยุดทำงานชั่วคราว..."
 
-#: ../daemon/gdm.c:681
+#: ../daemon/gdm.c:682
 #, c-format
 msgid "System is restarting, please wait ..."
 msgstr "ระบบกำลังเริ่มเปิดใหม่ กรุณารอสักครู่ ..."
 
-#: ../daemon/gdm.c:683
+#: ../daemon/gdm.c:684
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "ระบบกำลังปิด กรุณารอสักครู่ ..."
 
-#: ../daemon/gdm.c:694
+#: ../daemon/gdm.c:695
 msgid "Master halting..."
 msgstr "มาสเตอร์กำลังปิดระบบ..."
 
-#: ../daemon/gdm.c:716
+#: ../daemon/gdm.c:717
 msgid "Restarting computer..."
 msgstr "กำลังเริ่มระบบใหม่..."
 
 #. We are just feeling very paranoid
-#: ../daemon/gdm.c:738
+#: ../daemon/gdm.c:739
 #, c-format
 msgid "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
 msgstr "custom_cmd: หมายเลขคำสั่งกำหนดเอง %ld อยู่นอกช่วงที่อนุญาต [0,%d)"
 
-#: ../daemon/gdm.c:759
+#: ../daemon/gdm.c:760
 #, c-format
 msgid "Executing custom command %ld with restart option..."
 msgstr "กำลังเรียกคำสั่งกำหนดเอง %ld ด้วยตัวเลือกให้วนเริ่มใหม่..."
 
-#: ../daemon/gdm.c:782 ../daemon/gdm.c:820
+#: ../daemon/gdm.c:783 ../daemon/gdm.c:821
 #, c-format
 msgid "%s: Execution of custom command failed: %s"
 msgstr "%s: ดำเนินการคำสั่งกำหนดเองไม่สำเร็จ: %s"
 
-#: ../daemon/gdm.c:791
+#: ../daemon/gdm.c:792
 #, c-format
 msgid "Executing custom command %ld with no restart option ..."
 msgstr "กำลังเรียกคำสั่งกำหนดเอง %ld โดยไม่มีตัวเลือกให้วนเริ่มใหม่ ..."
 
 #. failed fork
-#: ../daemon/gdm.c:797
+#: ../daemon/gdm.c:798
 #, c-format
 msgid "custom_cmd: forking process for custom command %ld failed"
 msgstr "custom_cmd: fork โพรเซสสำหรับคำสั่งกำหนดเอง %ld ไม่สำเร็จ"
 
-#: ../daemon/gdm.c:831
+#: ../daemon/gdm.c:832
 #, c-format
 msgid "custom_cmd: child %d returned %d"
 msgstr "custom_cmd: โพรเซสลูก %d คืนค่า %d"
 
-#: ../daemon/gdm.c:940
+#: ../daemon/gdm.c:941
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
@@ -761,7 +762,7 @@ msgstr ""
 "มีการร้องขอให้เริ่ม GDM ใหม่, บูตเครื่องใหม่, พักเครื่อง, หรือปิดเครื่อง ขณะที่ไม่มีเมนูระบบ "
 "จากดิสเพลย์ %s"
 
-#: ../daemon/gdm.c:949
+#: ../daemon/gdm.c:950
 #, c-format
 msgid ""
 "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
@@ -770,111 +771,111 @@ msgstr ""
 "มีการร้องขอให้เริ่ม GDM ใหม่, บูตเครื่องใหม่, พักเครื่อง, หรือปิดเครื่อง จากดิสเพลย์แบบไม่ถาวร %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:1015
+#: ../daemon/gdm.c:1016
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: กำลังยกเลิกดิสเพลย์ %s"
 
-#: ../daemon/gdm.c:1166
+#: ../daemon/gdm.c:1167
 msgid "GDM restarting ..."
 msgstr "กำลังเริ่มเปิด GDM ใหม่..."
 
-#: ../daemon/gdm.c:1170
+#: ../daemon/gdm.c:1171
 msgid "Failed to restart self"
 msgstr "เปิดตัวเองใหม่ไม่สำเร็จ"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1255
+#: ../daemon/gdm.c:1256
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr "ดีมอนหลัก: ได้รับสัญญาณ SIGABRT อาจมีความผิดพลาดร้ายแรงเกิดขึ้น จะปิดโปรแกรมเดี๋ยวนี้!"
 
-#: ../daemon/gdm.c:1412
+#: ../daemon/gdm.c:1413
 msgid "Do not fork into the background"
 msgstr "ไม่ควร fork ไปเป็นพื้นหลัง"
 
-#: ../daemon/gdm.c:1414
+#: ../daemon/gdm.c:1415
 msgid "No console (static) servers to be run"
 msgstr "ไม่มีคอนโซล (ในเครื่องนี้) ที่จะทำงาน"
 
-#: ../daemon/gdm.c:1416
+#: ../daemon/gdm.c:1417
 msgid "Alternative GDM System Defaults configuration file"
 msgstr "แฟ้มค่าตั้งปริยายของระบบสำหรับ GDM แฟ้มอื่น"
 
-#: ../daemon/gdm.c:1416
+#: ../daemon/gdm.c:1417
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
-#: ../daemon/gdm.c:1418
+#: ../daemon/gdm.c:1419
 msgid "Preserve LD_* variables"
 msgstr "สงวนตัวแปร LD_*"
 
-#: ../daemon/gdm.c:1420
+#: ../daemon/gdm.c:1421
 msgid "Print GDM version"
 msgstr "พิมพ์รุ่น GDM"
 
-#: ../daemon/gdm.c:1422
+#: ../daemon/gdm.c:1423
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "เปิด X server ตัวแรก แต่หยุดรอไว้ จนกว่าจะมีข้อความ GO ใน fifo"
 
-#: ../daemon/gdm.c:1496 ../daemon/gdm.c:1843
+#: ../daemon/gdm.c:1497 ../daemon/gdm.c:1844
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "ไม่สามารถเปิด %s สำหรับเขียนได้"
 
-#: ../daemon/gdm.c:1545
+#: ../daemon/gdm.c:1546
 msgid "- The GNOME login manager"
 msgstr "- โปรแกรมจัดการการเข้าระบบของ GNOME"
 
-#: ../daemon/gdm.c:1546 ../gui/gdmXnestchooser.c:486
+#: ../daemon/gdm.c:1547 ../gui/gdmXnestchooser.c:486
 #: ../gui/gdmXnestchooser.c:494 ../gui/gdmchooser.c:1976
 msgid "main options"
 msgstr "ตัวเลือกหลักๆ"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/gdm.c:1578
+#: ../daemon/gdm.c:1579
 msgid "Only root wants to run GDM\n"
 msgstr "root เท่านั้นที่ต้องการเรียกทำงาน GDM\n"
 
-#: ../daemon/gdm.c:1597 ../daemon/gdm.c:1601 ../daemon/gdm.c:1679
-#: ../daemon/gdm.c:1683 ../daemon/gdm.c:1687 ../daemon/gdm.c:1691
-#: ../daemon/gdm.c:1701 ../daemon/gdm.c:1707 ../daemon/gdm.c:1718
+#: ../daemon/gdm.c:1598 ../daemon/gdm.c:1602 ../daemon/gdm.c:1680
+#: ../daemon/gdm.c:1684 ../daemon/gdm.c:1688 ../daemon/gdm.c:1692
+#: ../daemon/gdm.c:1702 ../daemon/gdm.c:1708 ../daemon/gdm.c:1719
 #: ../daemon/misc.c:1370 ../daemon/misc.c:1374 ../daemon/misc.c:1378
 #: ../daemon/misc.c:1385 ../daemon/misc.c:1389 ../daemon/misc.c:1393
-#: ../daemon/server.c:528 ../daemon/server.c:541 ../daemon/slave.c:862
-#: ../daemon/slave.c:876 ../daemon/slave.c:886 ../daemon/slave.c:896
-#: ../daemon/slave.c:908 ../gui/gdmlogin.c:3369 ../gui/gdmlogin.c:3380
+#: ../daemon/server.c:528 ../daemon/server.c:541 ../daemon/slave.c:873
+#: ../daemon/slave.c:887 ../daemon/slave.c:897 ../daemon/slave.c:907
+#: ../daemon/slave.c:919 ../gui/gdmlogin.c:3369 ../gui/gdmlogin.c:3380
 #: ../gui/gdmlogin.c:3386
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: เกิดความผิดพลาดขณะตั้งค่าฟังก์ชันจัดการสัญญาณ %s: %s"
 
-#: ../daemon/gdm.c:1623
+#: ../daemon/gdm.c:1624
 msgid "GDM already running. Aborting!"
 msgstr "GDM กำลังทำงานอยู่แล้ว ขอยกเลิก!"
 
-#: ../daemon/gdm.c:1727
+#: ../daemon/gdm.c:1728
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: เกิดความผิดพลาดขณะตั้งค่าฟังก์ชันจัดการสัญญาณ CHLD"
 
-#: ../daemon/gdm.c:3181
+#: ../daemon/gdm.c:3182
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "การร้องขอไปยัง %s ถูกปฏิเสธ: ไม่ผ่านการตรวจสอบสิทธิ์"
 
-#: ../daemon/gdm.c:3471 ../daemon/gdm.c:3735 ../daemon/gdm.c:3819
-#: ../daemon/gdm.c:3949 ../daemon/gdm.c:3996 ../daemon/gdm.c:4064
-#: ../daemon/gdm.c:4127 ../daemon/gdm.c:4167 ../daemon/gdm.c:4212
+#: ../daemon/gdm.c:3472 ../daemon/gdm.c:3736 ../daemon/gdm.c:3820
+#: ../daemon/gdm.c:3950 ../daemon/gdm.c:3997 ../daemon/gdm.c:4065
+#: ../daemon/gdm.c:4128 ../daemon/gdm.c:4168 ../daemon/gdm.c:4213
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "การร้องขอไปยัง %s ถูกปฏิเสธ: ยังไม่ผ่านการตรวจสอบสิทธิ์"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:3505
+#: ../daemon/gdm.c:3506
 msgid "Unknown server type requested; using standard server."
 msgstr "ไม่รู้จักชนิดของเซิร์ฟเวอร์ที่ร้องขอ จะใช้เซิร์ฟเวอร์มาตรฐาน"
 
-#: ../daemon/gdm.c:3509
+#: ../daemon/gdm.c:3510
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
@@ -1000,17 +1001,17 @@ msgstr "%s: ไม่สามารถกำหนดลำดับควา�
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: เซิร์ฟเวอร์ได้ถูก spawn โดย uid %d แต่ผู้ใช้นั้นไม่มีอยู่จริง"
 
-#: ../daemon/server.c:1370 ../daemon/slave.c:2665 ../daemon/slave.c:3152
+#: ../daemon/server.c:1370 ../daemon/slave.c:2676 ../daemon/slave.c:3163
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: ไม่สามารถกำหนด groupid เป็น %d"
 
-#: ../daemon/server.c:1376 ../daemon/slave.c:2671 ../daemon/slave.c:3158
+#: ../daemon/server.c:1376 ../daemon/slave.c:2682 ../daemon/slave.c:3169
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s: initgroups () ล้มเหลวสำหรับ %s"
 
-#: ../daemon/server.c:1382 ../daemon/slave.c:2676 ../daemon/slave.c:3163
+#: ../daemon/server.c:1382 ../daemon/slave.c:2687 ../daemon/slave.c:3174
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: ไม่สามารถกำหนด ID ของผู้ใช้เป็น %d"
@@ -1030,19 +1031,19 @@ msgstr "%s: ไม่พบ Xserver: %s"
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: สร้างโพรเซส X server ไม่สำเร็จ!"
 
-#: ../daemon/slave.c:324
+#: ../daemon/slave.c:335
 msgid "Can't set EGID to user GID"
 msgstr "ตั้งค่า EGID ให้เป็น GID ของผู้ใช้ไม่สำเร็จ"
 
-#: ../daemon/slave.c:332
+#: ../daemon/slave.c:343
 msgid "Can't set EUID to user UID"
 msgstr "ตั้งค่า EUID ให้เป็น UID ของผู้ใช้ไม่สำเร็จ"
 
-#: ../daemon/slave.c:1229
+#: ../daemon/slave.c:1240
 msgid "Log in anyway"
 msgstr "เข้าระบบต่อไป"
 
-#: ../daemon/slave.c:1231
+#: ../daemon/slave.c:1242
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -1050,19 +1051,19 @@ msgstr ""
 "คุณได้เข้าระบบอยู่แล้ว  คุณสามารถเข้าระบบอีกทีก็ได้ หรือกลับไปที่วาระก่อนหน้า "
 "หรือยกเลิกการเข้าระบบนี้"
 
-#: ../daemon/slave.c:1235
+#: ../daemon/slave.c:1246
 msgid "Return to previous login"
 msgstr "กลับไปยังเข้าระบบก่อนหน้า"
 
-#: ../daemon/slave.c:1236 ../daemon/slave.c:1242
+#: ../daemon/slave.c:1247 ../daemon/slave.c:1253
 msgid "Abort login"
 msgstr "ยกเลิกการเข้าระบบ"
 
-#: ../daemon/slave.c:1239
+#: ../daemon/slave.c:1250
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr "คุณได้เข้าระบบแล้ว คุณสามารถเข้าระบบได้อีกหรือยกเลิกการเข้าระบบนี้"
 
-#: ../daemon/slave.c:1431
+#: ../daemon/slave.c:1442
 msgid ""
 "Could not start the X\n"
 "server (your graphical environment)\n"
@@ -1082,17 +1083,17 @@ msgstr ""
 "กรุณาเริ่มการใช้งาน GDM ใหม่เมื่อเมื่อได้\n"
 "แก้ปัญหาแล้ว"
 
-#: ../daemon/slave.c:1709
+#: ../daemon/slave.c:1720
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: ไม่สามารถ fork ได้"
 
-#: ../daemon/slave.c:1758
+#: ../daemon/slave.c:1769
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: ไม่สามารถเปิดดิสเพลย์ %s"
 
-#: ../daemon/slave.c:1828
+#: ../daemon/slave.c:1839
 msgid ""
 "Could not access configuration file (custom.conf). Make sure that the file "
 "exists before launching  login manager config utility."
@@ -1100,7 +1101,7 @@ msgstr ""
 "ไม่สามารถเข้าใช้แฟ้มค่าตั้ง (custom.conf) ได้  กรุณาตรวจดูให้แน่ใจ ว่ามีแฟ้มดังกล่าวอยู่ "
 "ก่อนที่จะเรียกเครื่องมือตั้งค่าโปรแกรมจัดการการเข้าระบบ"
 
-#: ../daemon/slave.c:1936
+#: ../daemon/slave.c:1947
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file.  Attempting to start it from the "
@@ -1110,7 +1111,7 @@ msgstr ""
 "ว่าได้มีการตั้งค่าพาธของโปรแกรมในแฟ้มค่าตั้งถูกต้องแล้ว "
 "ระบบกำลังจะพยายามเรียกใหม่จากตำแหน่งปริยาย"
 
-#: ../daemon/slave.c:1953
+#: ../daemon/slave.c:1964
 msgid ""
 "Could not execute the configuration application.  Make sure its path is set "
 "correctly in the configuration file."
@@ -1118,22 +1119,22 @@ msgstr ""
 "ไม่สามารถดำเนินงานโปรแกรมกำหนดค่า  กรุณาตรวจดูให้แน่ใจ "
 "ว่าได้มีการตั้งค่าพาธของโปรแกรมในแฟ้มค่าตั้งถูกต้องแล้ว"
 
-#: ../daemon/slave.c:2123
+#: ../daemon/slave.c:2134
 msgid "You must authenticate as root to run configuration."
 msgstr "ป้อนรหัสผ่านของ root เพื่อเรียกทำงานการกำหนดค่า"
 
-#: ../daemon/slave.c:2253 ../daemon/slave.c:2276
+#: ../daemon/slave.c:2264 ../daemon/slave.c:2287
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist."
 msgstr "พยายามเล่นเสียงเข้าระบบที่เครื่องอื่น หรือโปรแกรมเล่นเสียงไม่ทำงาน หรือไม่มีแฟ้มเสียงอยู่"
 
-#: ../daemon/slave.c:2604 ../daemon/slave.c:2609
+#: ../daemon/slave.c:2615 ../daemon/slave.c:2620
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: ไม่สามารถเริ่มต้นไปป์ไปยัง gdmgreeter ได้"
 
-#: ../daemon/slave.c:2761
+#: ../daemon/slave.c:2772
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  GDM has started a single server for "
@@ -1145,7 +1146,7 @@ msgstr ""
 "คุณควรเข้าระบบและแก้ไขการกำหนดค่า  สังเกตว่า "
 "การเข้าระบบอัตโนมัติและเข้าระบบตามกำหนดเวลาจะไม่สามารถใช้งานได้ในตอนนี้"
 
-#: ../daemon/slave.c:2775
+#: ../daemon/slave.c:2786
 msgid ""
 "Could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1154,31 +1155,31 @@ msgstr ""
 "ระบบไม่สามารถเปิด X server (สภาพแวดล้อมแบบกราฟิกของคุณ) ปกติได้ และนี่คือ X server แบบ "
 "failsafe คุณควรเข้าระบบ และปรับแต่ง X server ให้ถูกต้อง"
 
-#: ../daemon/slave.c:2784
+#: ../daemon/slave.c:2795
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr "ดิสเพลย์หมายเลขที่ระบุไม่ว่าง ดังนั้นเซิร์ฟเวอร์นี้จะเปิดที่ดิสเพลย์ %s"
 
-#: ../daemon/slave.c:2799
+#: ../daemon/slave.c:2810
 msgid ""
 "The greeter application appears to be crashing. Attempting to use a "
 "different one."
 msgstr "ดูเหมือนว่าโปรแกรมหน้าต่างต้อนรับจะขัดข้อง จะพยายามใช้โปรแกรมอื่นดู"
 
 #. Something went wrong
-#: ../daemon/slave.c:2822
+#: ../daemon/slave.c:2833
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr "%s: ไม่สามารถเปิดหน้าต่างต้อนรับด้วยมอดูลของ gtk: %s กำลังพยายามโดยไม่มีมอดูล"
 
-#: ../daemon/slave.c:2829
+#: ../daemon/slave.c:2840
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: ไม่สามารถเปิดหน้าต่างต้อนรับ กำลังพยายามใช้ค่าปริยาย: %s"
 
-#: ../daemon/slave.c:2841
+#: ../daemon/slave.c:2852
 msgid ""
 "Cannot start the greeter application; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1188,114 +1189,114 @@ msgstr ""
 "และดิสเพลย์นี้จะถูกปิดการใช้งาน กรุณาลองเข้าระบบด้วยวิธีอื่นและแก้ไขแฟ้มค่าตั้ง"
 
 #. If no greeter we really have to disable the display
-#: ../daemon/slave.c:2848
+#: ../daemon/slave.c:2859
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: เกิดข้อผิดพลาดขณะเริ่มหน้าต่างต้อนรับที่ดิสเพลย์ %s"
 
-#: ../daemon/slave.c:2852
+#: ../daemon/slave.c:2863
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: ไม่สามารถ fork โพรเซสของ gdmgreeter"
 
-#: ../daemon/slave.c:2932
+#: ../daemon/slave.c:2943
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: ไม่สามารถเปิด fifo"
 
-#: ../daemon/slave.c:3110
+#: ../daemon/slave.c:3121
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: ไม่สามารถเริ่มต้นไปป์ไปยัง gdmchooser"
 
-#: ../daemon/slave.c:3221
+#: ../daemon/slave.c:3232
 msgid ""
 "Cannot start the chooser application. You will probably not be able to log "
 "in.  Please contact the system administrator."
 msgstr "ไม่สามารถเรียกโปรแกรมเลือกโฮสต์ คุณอาจจะไม่สามารถเข้าระบบได้  กรุณาติดต่อผู้ดูแลระบบ"
 
-#: ../daemon/slave.c:3225
+#: ../daemon/slave.c:3236
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: เกิดข้อผิดพลาดขณะเปิดหน้าต่างเลือกโฮสต์ที่ดิสเพลย์ %s"
 
-#: ../daemon/slave.c:3228
+#: ../daemon/slave.c:3239
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: ไม่สามารถ fork โพรเซส gdmchooser"
 
-#: ../daemon/slave.c:3461
+#: ../daemon/slave.c:3472
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: ไม่สามารถเปิด ~/.xsession-errors"
 
-#: ../daemon/slave.c:3625
+#: ../daemon/slave.c:3636
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: การดำเนินการของสคริปต์ PreSession คืนค่า > 0 ขอยกเลิก"
 
-#: ../daemon/slave.c:3699
+#: ../daemon/slave.c:3710
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "ไม่มีภาษา %s กำลังจะใช้ %s"
 
-#: ../daemon/slave.c:3700
+#: ../daemon/slave.c:3711
 msgid "System default"
 msgstr "ค่าปริยายของระบบ"
 
-#: ../daemon/slave.c:3717
+#: ../daemon/slave.c:3728
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: ไม่สามารถตั้งค่าสภาพแวดล้อมสำหรับ %s ขอยกเลิก"
 
-#: ../daemon/slave.c:3784
+#: ../daemon/slave.c:3795
 #, c-format
 msgid "%s: setusercontext () failed for %s. Aborting."
 msgstr "%s: setusercontext () ล้มเหลวสำหรับ %s ขอยกเลิก"
 
-#: ../daemon/slave.c:3790
+#: ../daemon/slave.c:3801
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: เปลี่ยนผู้ใช้เป็น %s ไม่สำเร็จ ขอยกเลิก"
 
-#: ../daemon/slave.c:3822
+#: ../daemon/slave.c:3833
 #, c-format
 msgid ""
 "No Exec line in the session file: %s.  Running the GNOME failsafe session "
 "instead"
 msgstr "ไม่มีบรรทัด Exec ในแฟ้มวาระ: %s  กำลังจะเรียกวาระ GNOME failsafe แทน"
 
-#: ../daemon/slave.c:3825
+#: ../daemon/slave.c:3836
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../daemon/slave.c:3851
+#: ../daemon/slave.c:3862
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
 "session instead."
 msgstr "%s: ไม่พบหรือไม่สามารถเรียกสคริปต์วาระพื้นฐาน จะลองใช้วาระ GNOME failsafe แทน"
 
-#: ../daemon/slave.c:3857
+#: ../daemon/slave.c:3868
 msgid ""
 "Cannot find or run the base session script.  Running the GNOME failsafe "
 "session instead."
 msgstr "ไม่พบหรือไม่สามารถเรียกสคริปต์วาระพื้นฐาน กำลังจะเรียกวาระ GNOME failsafe แทน"
 
 #. yaikes
-#: ../daemon/slave.c:3890
+#: ../daemon/slave.c:3901
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr "%s: ไม่พบ gnome-session ซึ่งวาระ failsafe GNOME ต้องใช้ จะลอง xterm แทน"
 
-#: ../daemon/slave.c:3895
+#: ../daemon/slave.c:3906
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
 msgstr "ไม่พบการติดตั้งของ GNOME จะลองใช้วาระ \"Failsafe xterm\" แทน"
 
-#: ../daemon/slave.c:3903
+#: ../daemon/slave.c:3914
 msgid ""
 "This is the Failsafe GNOME session.  You will be logged into the 'Default' "
 "session of GNOME without the startup scripts being run.  This should be used "
@@ -1304,11 +1305,11 @@ msgstr ""
 "นี่คือวาระ Failsafe GNOME  คุณจะเข้าระบบด้วยวาระ 'ปริยาย' ของ GNOME "
 "โดยไม่มีการทำงานของสคริปต์เริ่มทำงาน  วาระนี้ใช้เพื่อแก้ไขปัญหาการติดตั้งของคุณเท่านั้น"
 
-#: ../daemon/slave.c:3922
+#: ../daemon/slave.c:3933
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "ไม่สามารถค้นหา \"xterm\" เพื่อเริ่มต้นวาระ failsafe"
 
-#: ../daemon/slave.c:3932
+#: ../daemon/slave.c:3943
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1318,7 +1319,7 @@ msgstr ""
 "เพื่อให้คุณแก้ไขระบบในกรณีที่คุณไม่สามารถเข้าระบบในทางอื่นได้ การออกจากโปรแกรมจำลองเทอร์มินัล "
 "ให้พิมพ์ exit แล้วกด enter ในหน้าต่าง"
 
-#: ../daemon/slave.c:3951
+#: ../daemon/slave.c:3962
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console and be prompted to enter the password for root so that you may fix "
@@ -1329,7 +1330,7 @@ msgstr ""
 "เพื่อให้คุณแก้ไขระบบในกรณีที่คุณไม่สามารถเข้าระบบในทางอื่นได้ การออกจากโปรแกรมจำลองเทอร์มินัล "
 "ให้พิมพ์ 'exit' แล้วกด enter ในหน้าต่าง"
 
-#: ../daemon/slave.c:3963
+#: ../daemon/slave.c:3974
 msgid ""
 "The failsafe session is restricted to users who have been assigned the root "
 "role. If you cannot log in any other way please contact your system "
@@ -1338,41 +1339,41 @@ msgstr ""
 "วาระ failsafe สงวนไว้สำหรับผู้ใช้ที่มีหน้าที่ดูแลระบบเท่านั้น ถ้าคุณไม่สามารถเข้าระบบได้ด้วยวิธีใดๆ "
 "กรุณาติดต่อผู้ดูแลระบบของคุณ"
 
-#: ../daemon/slave.c:3992
+#: ../daemon/slave.c:4003
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: ผู้ใช้ไม่ได้รับอนุญาตให้เข้าระบบ"
 
-#: ../daemon/slave.c:3995 ../daemon/verify-pam.c:1482
+#: ../daemon/slave.c:4006 ../daemon/verify-pam.c:1482
 msgid "The system administrator has disabled your account."
 msgstr "ผู้ดูแลระบบได้ปิดการใช้งานบัญชีผู้ใช้ของคุณ"
 
-#: ../daemon/slave.c:4026
+#: ../daemon/slave.c:4037
 msgid "Error! Unable to set executable context."
 msgstr "ผิดพลาด! ไม่สามารถกำหนด executable context"
 
 #. will go to .xsession-errors
-#: ../daemon/slave.c:4036 ../daemon/slave.c:4038
+#: ../daemon/slave.c:4047 ../daemon/slave.c:4049
 #, c-format
 msgid "%s: Could not exec %s"
 msgstr "%s: ไม่สามารถดำเนินการ %s"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:4047
+#: ../daemon/slave.c:4058
 msgid "Cannot start the session due to some internal error."
 msgstr "ไม่สามารถเปิดวาระได้เนื่องจากความผิดพลาดภายในบางอย่าง"
 
-#: ../daemon/slave.c:4403
+#: ../daemon/slave.c:4469
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr "%s: ผู้ใช้ได้ผ่านการอนุญาตแล้ว แต่ getpwnam (%s) ล้มเหลว!"
 
-#: ../daemon/slave.c:4416
+#: ../daemon/slave.c:4482
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: การดำเนินงานสคริปต์ของ PostLogin คืนค่า > 0 ขอยกเลิก"
 
-#: ../daemon/slave.c:4437
+#: ../daemon/slave.c:4503
 #, c-format
 msgid ""
 "Your home directory is listed as: '%s' but it does not appear to exist.  Do "
@@ -1383,12 +1384,12 @@ msgstr ""
 "คุณต้องการเข้าระบบโดยใช้ไดเรกทอรี / (ราก) เป็นบ้านของคุณหรือไม่? "
 "ดูเหมือนว่าทุกอย่างไม่น่าจะทำงานได้ นอกจากคุณจะใช้วาระ failsafe"
 
-#: ../daemon/slave.c:4449
+#: ../daemon/slave.c:4515
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: ไดเรกทอรีบ้านสำหรับ %s: '%s' ไม่มีอยู่จริง"
 
-#: ../daemon/slave.c:4508
+#: ../daemon/slave.c:4574
 msgid ""
 "User's $HOME/.dmrc file is being ignored.  This prevents the default session "
 "and language from being saved.  File should be owned by user and have 644 "
@@ -1399,7 +1400,7 @@ msgstr ""
 "แฟ้มดังกล่าวควรเป็นของผู้ใช้แต่ละคน และมีควรกำหนดสิทธิ์เป็น 644 ไดเรกทอรี $HOME "
 "ของผู้ใช้ควรเป็นของผู้ใช้คนนั้น และไม่ควรอนุญาตให้ผู้ใช้อื่นเขียนได้"
 
-#: ../daemon/slave.c:4650
+#: ../daemon/slave.c:4716
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1410,12 +1411,12 @@ msgstr ""
 "หรือไดเรกทอรีบ้านของคุณไม่สามารถเปิดเพื่อเขียนได้  ไม่ว่าจะอย่างไรก็ตาม "
 "คุณไม่สามารถเข้าระบบได้ กรุณาติดต่อผู้ดูแลระบบ"
 
-#: ../daemon/slave.c:4732
+#: ../daemon/slave.c:4798
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: เกิดความผิดพลาดขณะ fork วาระของผู้ใช้"
 
-#: ../daemon/slave.c:4842
+#: ../daemon/slave.c:4908
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1426,41 +1427,41 @@ msgstr ""
 "นั่นอาจหมายถึงว่ามีปัญหาในการติดตั้งบางอย่าง หรือคุณอาจไม่มีพื้นที่ว่างบนดิสก์  ลองเข้าระบบด้วยวาระ "
 "failsafe เพื่อดูว่าจะแก้ปัญหานี้ได้หรือไม่"
 
-#: ../daemon/slave.c:4856
+#: ../daemon/slave.c:4922
 msgid "View details (~/.xsession-errors file)"
 msgstr "ดูรายละเอียด (แฟ้ม ~/.xsession-errors)"
 
-#: ../daemon/slave.c:5004
+#: ../daemon/slave.c:5070
 msgid "GDM detected a halt or restart in progress."
 msgstr "GDM ตรวจพบการปิดเครื่องหรือเริ่มระบบใหม่กำลังดำเนินอยู่"
 
-#: ../daemon/slave.c:5380
+#: ../daemon/slave.c:5446
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: เกิดความผิดพลาดของ X ขั้นร้ายแรง - จะเริ่ม %s ใหม่"
 
-#: ../daemon/slave.c:5453
+#: ../daemon/slave.c:5519
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
 msgstr "พยายามเล่นเสียงเข้าระบบที่เครื่องอื่น หรือโปรแกรมเล่นเสียงไม่ทำงาน หรือไม่มีแฟ้มเสียงอยู่"
 
-#: ../daemon/slave.c:5864
+#: ../daemon/slave.c:5930
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: ล้มเหลวขณะเริ่ม: %s"
 
-#: ../daemon/slave.c:5872 ../daemon/slave.c:5986
+#: ../daemon/slave.c:5938 ../daemon/slave.c:6052
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: ไม่สามารถ fork กระบวนการของสคริปต์"
 
-#: ../daemon/slave.c:5937
+#: ../daemon/slave.c:6003
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: เกิดความล้มเหลวขณะสร้างไปป์"
 
-#: ../daemon/slave.c:5980
+#: ../daemon/slave.c:6046
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: เกิดความล้มเหลวขณะดำเนินงาน: %s"
@@ -3213,13 +3214,13 @@ msgstr "ไม่สามารถเปิดแฟ้มได้"
 msgid "Select User Image"
 msgstr "เลือกรูปผู้ใช้"
 
-#: ../gui/gdmphotosetup.c:299 ../gui/gdmsetup.c:4325 ../gui/gdmsetup.c:7128
-#: ../gui/gdmsetup.c:7268 ../gui/gdmsetup.c:7581 ../gui/gdmsetup.c:7720
+#: ../gui/gdmphotosetup.c:299 ../gui/gdmsetup.c:4326 ../gui/gdmsetup.c:7129
+#: ../gui/gdmsetup.c:7269 ../gui/gdmsetup.c:7582 ../gui/gdmsetup.c:7721
 msgid "Images"
 msgstr "รูปภาพ"
 
-#: ../gui/gdmphotosetup.c:304 ../gui/gdmsetup.c:4463 ../gui/gdmsetup.c:7133
-#: ../gui/gdmsetup.c:7273 ../gui/gdmsetup.c:7586 ../gui/gdmsetup.c:7725
+#: ../gui/gdmphotosetup.c:304 ../gui/gdmsetup.c:4464 ../gui/gdmsetup.c:7134
+#: ../gui/gdmsetup.c:7274 ../gui/gdmsetup.c:7587 ../gui/gdmsetup.c:7726
 msgid "All Files"
 msgstr "ทุกแฟ้ม"
 
@@ -3322,7 +3323,7 @@ msgstr "UID ของผู้ใช้ \"%s\" มีค่าต่ำกว่
 msgid "User not allowed"
 msgstr "ผู้ใช้ไม่ได้รับอนุญาต"
 
-#: ../gui/gdmsetup.c:1629 ../gui/gdmsetup.glade.h:8
+#: ../gui/gdmsetup.c:1629 ../gui/gdmsetup.glade.h:3
 msgid "(Enabled)"
 msgstr "(เปิดใช้)"
 
@@ -3330,11 +3331,11 @@ msgstr "(เปิดใช้)"
 msgid "(Disabled)"
 msgstr "(ปิดใช้งาน)"
 
-#: ../gui/gdmsetup.c:1849 ../gui/gdmsetup.c:1881 ../gui/gdmsetup.c:5032
+#: ../gui/gdmsetup.c:1849 ../gui/gdmsetup.c:1881 ../gui/gdmsetup.c:5033
 msgid "No themes selected!"
 msgstr "ไม่ได้เลือกชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:1850 ../gui/gdmsetup.c:1882 ../gui/gdmsetup.c:5033
+#: ../gui/gdmsetup.c:1850 ../gui/gdmsetup.c:1882 ../gui/gdmsetup.c:5034
 msgid ""
 "You need one or more themes selected for the \"Random from selected\" option "
 "to be valid. Failure to do so will force \"Selected only\" mode."
@@ -3395,7 +3396,7 @@ msgstr "ผู้ใช้บางคนมี uid ต่ำกว่าค่�
 msgid "Select Command"
 msgstr "เลือกคำสั่ง"
 
-#: ../gui/gdmsetup.c:3644 ../gui/gdmsetup.c:5558
+#: ../gui/gdmsetup.c:3644 ../gui/gdmsetup.c:5559
 msgid "No file selected"
 msgstr "ไม่ได้เลือกแฟ้ม"
 
@@ -3407,7 +3408,7 @@ msgstr "เริ่มใช้การเปลี่ยนแปลงคำ
 msgid "If you don't apply, the changes made will be disregarded."
 msgstr "ถ้าคุณไม่เริ่มใช้ การเปลี่ยนแปลงดังกล่าวจะถูกละทิ้งไป"
 
-#: ../gui/gdmsetup.c:3813 ../gui/gdmsetup.c:8157
+#: ../gui/gdmsetup.c:3813 ../gui/gdmsetup.c:8158
 msgid "Close _without Applying"
 msgstr "ปิดโดยไ_ม่เริ่มใช้"
 
@@ -3424,72 +3425,72 @@ msgstr "คำสั่งเริ่มเปิดเครื่องให
 msgid "Suspend command"
 msgstr "คำสั่งพักเครื่อง"
 
-#: ../gui/gdmsetup.c:4458 ../gui/gdmsetup.glade.h:139
+#: ../gui/gdmsetup.c:4459 ../gui/gdmsetup.glade.h:135
 msgid "Sounds"
 msgstr "เสียง"
 
-#: ../gui/gdmsetup.c:4677 ../gui/gdmsetup.c:4731
+#: ../gui/gdmsetup.c:4678 ../gui/gdmsetup.c:4732
 msgid "None"
 msgstr "ไม่มี"
 
-#: ../gui/gdmsetup.c:5206
+#: ../gui/gdmsetup.c:5207
 msgid "Archive is not of a subdirectory"
 msgstr "แฟ้มจัดเก็บไม่ได้เก็บข้อมูลในไดเรกทอรีย่อย"
 
-#: ../gui/gdmsetup.c:5214
+#: ../gui/gdmsetup.c:5215
 msgid "Archive is not of a single subdirectory"
 msgstr "แฟ้มจัดเก็บไม่ได้เก็บข้อมูลในไดเรกทอรีย่อยเดียว"
 
-#: ../gui/gdmsetup.c:5238 ../gui/gdmsetup.c:5315
+#: ../gui/gdmsetup.c:5239 ../gui/gdmsetup.c:5316
 msgid "File not a tar.gz or tar archive"
 msgstr "ไม่ใช่แฟ้มนามสกุล tar.gz หรือแฟ้มจัดเก็บข้อมูลของ tar"
 
-#: ../gui/gdmsetup.c:5240
+#: ../gui/gdmsetup.c:5241
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "แฟ้มจัดเก็บข้อมูลไม่มีแฟ้ม GdmGreeterTheme.info อยู่ด้วย"
 
-#: ../gui/gdmsetup.c:5262
+#: ../gui/gdmsetup.c:5263
 msgid "File does not exist"
 msgstr "ไม่มีแฟ้มอยู่"
 
-#: ../gui/gdmsetup.c:5381
+#: ../gui/gdmsetup.c:5382
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../gui/gdmsetup.c:5388
+#: ../gui/gdmsetup.c:5389
 msgid "Not a theme archive"
 msgstr "ไม่ใช่แฟ้มจัดเก็บชุดตกแต่ง"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:5410
+#: ../gui/gdmsetup.c:5411
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr "ดูเหมือนว่าไดเรกทอรีของชุดตกแต่ง '%s' ได้ติดตั้งไว้แล้ว จะติดตั้งอีกครั้งหรือไม่?"
 
-#: ../gui/gdmsetup.c:5502
+#: ../gui/gdmsetup.c:5503
 msgid "Some error occurred when installing the theme"
 msgstr "เกิดความผิดพลาดบางอย่างขณะติดตั้งชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:5580
+#: ../gui/gdmsetup.c:5581
 msgid "Select Theme Archive"
 msgstr "เลือกแฟ้มจัดเก็บชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:5584 ../gui/gdmsetup.c:6677
+#: ../gui/gdmsetup.c:5585 ../gui/gdmsetup.c:6678
 msgid "_Install"
 msgstr "_ติดตั้ง"
 
-#: ../gui/gdmsetup.c:5588
+#: ../gui/gdmsetup.c:5589
 msgid "Theme archives"
 msgstr "แฟ้มจัดเก็บชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:5689
+#: ../gui/gdmsetup.c:5690
 msgid "Theme active in \"Selected only\" mode"
 msgstr "ชุดตกแต่งใช้อยู่สำหรับรูปแบบ \"จากที่เลือกไว้เท่านั้น\""
 
-#: ../gui/gdmsetup.c:5690
+#: ../gui/gdmsetup.c:5691
 msgid ""
 "This theme cannot be deleted at this point. If you wish to delete this theme "
 "switch to \"Selected only\" mode, and deselect it by choosing a different "
@@ -3498,31 +3499,31 @@ msgstr ""
 "ไม่สามารถลบชุดตกแต่งนี้ได้ในขณะนี้ ถ้าคุณต้องการลบชุดตกแต่งนี้ ให้เปลี่ยนไปเป็นรูปแบบ "
 "\"จากที่เลือกไว้เท่านั้น\" แล้วยกเลิกการเลือกก่อน โดยเลือกชุดตกแต่งอื่น"
 
-#: ../gui/gdmsetup.c:5719
+#: ../gui/gdmsetup.c:5720
 #, c-format
 msgid "Remove the \"%s\" theme?"
 msgstr "ลบชุดตกแต่ง \"%s\" หรือไม่?"
 
-#: ../gui/gdmsetup.c:5727
+#: ../gui/gdmsetup.c:5728
 msgid "If you choose to remove the theme, it will be permanently lost."
 msgstr "ถ้าคุณเลือกที่จะลบ ชุดตกแต่งจะสูญหายอย่างถาวร"
 
-#: ../gui/gdmsetup.c:5735
+#: ../gui/gdmsetup.c:5736
 msgid "_Remove Theme"
 msgstr "_ลบชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:6666
+#: ../gui/gdmsetup.c:6667
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "ติดตั้งชุดตกแต่งจาก '%s' หรือไม่?"
 
-#: ../gui/gdmsetup.c:6667
+#: ../gui/gdmsetup.c:6668
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "เลือก 'ติดตั้ง' เพื่อเพิ่มชุดตกแต่งจากแฟ้ม '%s'"
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:6922
+#: ../gui/gdmsetup.c:6923
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3543,53 +3544,53 @@ msgstr ""
 "\n"
 "สำหรับเอกสารที่สมบูรณ์ให้ดูที่คำแนะนำวิธีใช้ของ GNOME ภายในหมวด \"พื้นโต๊ะ\""
 
-#: ../gui/gdmsetup.c:7520
+#: ../gui/gdmsetup.c:7521
 msgid "auto"
 msgstr "auto"
 
-#: ../gui/gdmsetup.c:7523
+#: ../gui/gdmsetup.c:7524
 msgid "yes"
 msgstr "yes"
 
-#: ../gui/gdmsetup.c:7526
+#: ../gui/gdmsetup.c:7527
 msgid "no"
 msgstr "no"
 
-#: ../gui/gdmsetup.c:8135
+#: ../gui/gdmsetup.c:8136
 msgid "Random theme mode change"
 msgstr "การเปลี่ยนรูปแบบการสุ่มชุดตกแต่ง"
 
-#: ../gui/gdmsetup.c:8136
+#: ../gui/gdmsetup.c:8137
 msgid ""
 "Since no themes were selected in random theme mode switching back to single "
 "theme mode."
 msgstr ""
 "เนื่องจากไม่มีการเลือกชุดตกแต่งในรูปแบบการสุ่มชุดตกแต่ง จะเปลี่ยนกลับไปสู่รูปแบบชุดตกแต่งเดียว"
 
-#: ../gui/gdmsetup.c:8153
+#: ../gui/gdmsetup.c:8154
 msgid "Apply the changes to users before closing?"
 msgstr "บันทึกค่าตั้งเกี่ยวกับผู้ใช้ก่อนปิดหรือไม่?"
 
-#: ../gui/gdmsetup.c:8154
+#: ../gui/gdmsetup.c:8155
 msgid ""
 "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr "ถ้าคุณไม่บันทึก การเปลี่ยนแปลงที่ทำในแท็บผู้ใช้ จะถูกละทิ้งไป"
 
-#: ../gui/gdmsetup.c:8223
+#: ../gui/gdmsetup.c:8224
 msgid "Could not access configuration file (defaults.conf)"
 msgstr "ไม่สามารถเข้าใช้แฟ้มค่าตั้ง (defaults.conf) ได้"
 
-#: ../gui/gdmsetup.c:8224 ../gui/gdmsetup.c:8241
+#: ../gui/gdmsetup.c:8225 ../gui/gdmsetup.c:8242
 msgid ""
 "Make sure that the file exists before launching login manager config utility."
 msgstr ""
 "กรุณาตรวจดูให้แน่ใจ ว่ามีแฟ้มดังกล่าวอยู่ ก่อนที่จะเรียกเครื่องมือตั้งค่าโปรแกรมจัดการการเข้าระบบ"
 
-#: ../gui/gdmsetup.c:8240
+#: ../gui/gdmsetup.c:8241
 msgid "Could not access configuration file (custom.conf)"
 msgstr "ไม่สามารถเข้าใช้แฟ้มค่าตั้ง (custom.conf) ได้"
 
-#: ../gui/gdmsetup.c:8288
+#: ../gui/gdmsetup.c:8289
 msgid "You must be the root user to configure GDM."
 msgstr "คุณต้องเป็น root เพื่อกำหนดค่า GDM"
 
@@ -3602,32 +3603,12 @@ msgstr "ปรับแต่งรูปโฉมและพฤติกรร
 msgid "Login Window"
 msgstr "หน้าจอเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:1
-msgid " "
-msgstr " "
-
 #: ../gui/gdmsetup.glade.h:2
-msgid "  "
-msgstr "  "
-
-#: ../gui/gdmsetup.glade.h:3
-msgid "    "
-msgstr "    "
-
-#: ../gui/gdmsetup.glade.h:4
-msgid "     "
-msgstr "     "
-
-#: ../gui/gdmsetup.glade.h:5
-msgid "         "
-msgstr "         "
-
-#: ../gui/gdmsetup.glade.h:7
 #, no-c-format
 msgid "%n will be replaced by hostname"
 msgstr "%n จะถูกแทนด้วยชื่อโฮสต์"
 
-#: ../gui/gdmsetup.glade.h:9
+#: ../gui/gdmsetup.glade.h:4
 msgid ""
 "<b>Note:</b>  Users in the Include list will appear in the face browser if "
 "enabled and will appear in the user drop-down lists for automatic and timed "
@@ -3640,7 +3621,7 @@ msgstr ""
 "ผู้ใช้ในรายการที่ไม่แสดงจะไม่ปรากฏชื่อในแหล่งดังกล่าว  ค่า MinimalUID ในแท็บระบบความปลอดภัย "
 "จะกำหนดผู้ใช้ที่จะอนุญาตให้รวมในรายการผู้ใช้ที่แสดง"
 
-#: ../gui/gdmsetup.glade.h:10
+#: ../gui/gdmsetup.glade.h:5
 msgid ""
 "<b>Note:</b> You can select different commands from the drop-down list, and "
 "modify them through relevant fields located below. To save changes press "
@@ -3650,7 +3631,7 @@ msgstr ""
 "และแก้ไขคำสั่งได้ในช่องรายการด้านล่าง เมื่อแก้ไขเสร็จแล้ว สามารถบันทึกได้โดยกดปุ่ม "
 "\"เริ่มใช้การเปลี่ยนแปลงคำสั่ง\""
 
-#: ../gui/gdmsetup.glade.h:11
+#: ../gui/gdmsetup.glade.h:6
 msgid ""
 "<b>Warning:</b>  Incorrect settings could prevent the X server from "
 "restarting.  Changes to these settings will not take effect until GDM is "
@@ -3659,39 +3640,39 @@ msgstr ""
 "<b>คำเตือน:</b>  การตั้งค่าที่ไม่ถูกต้องอาจทำให้เปิด X server ใหม่ไม่ได้อีก "
 "การเปลี่ยนแปลงต่างๆ จะไม่มีผลจนกว่าจะเริ่มเปิด GDM ใหม่"
 
-#: ../gui/gdmsetup.glade.h:12
+#: ../gui/gdmsetup.glade.h:7
 msgid "A_dd..."
 msgstr "เ_พิ่ม..."
 
-#: ../gui/gdmsetup.glade.h:13
+#: ../gui/gdmsetup.glade.h:8
 msgid "A_llow remote system administrator login"
 msgstr "อนุญาตให้ผู้ดูแลระบบเข้าระบบจากเครื่อง_อื่น"
 
-#: ../gui/gdmsetup.glade.h:14
+#: ../gui/gdmsetup.glade.h:9
 msgid "A_pply User Changes"
 msgstr "เ_ริ่มใช้ค่าที่แก้"
 
-#: ../gui/gdmsetup.glade.h:15
+#: ../gui/gdmsetup.glade.h:10
 msgid "Accessibility"
 msgstr "สิ่งอำนวยความสะดวก"
 
-#: ../gui/gdmsetup.glade.h:16
+#: ../gui/gdmsetup.glade.h:11
 msgid "Accessible from the outside of the login manager"
 msgstr "เข้าถึงได้จากภายนอกโปรแกรมจัดการการเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:17
+#: ../gui/gdmsetup.glade.h:12
 msgid "Add / Modify Servers To Start"
 msgstr "เพิ่ม/แก้ไขเซิร์ฟเวอร์ที่จะเปิด"
 
-#: ../gui/gdmsetup.glade.h:18
+#: ../gui/gdmsetup.glade.h:13
 msgid "Add S_erver..."
 msgstr "เพิ่มเซิร์ฟเ_วอร์..."
 
-#: ../gui/gdmsetup.glade.h:19
+#: ../gui/gdmsetup.glade.h:14
 msgid "Add User"
 msgstr "เพิ่มผู้ใช้"
 
-#: ../gui/gdmsetup.glade.h:20
+#: ../gui/gdmsetup.glade.h:15
 msgid ""
 "Adds a chooser button to the Actions menu that will restart the current X "
 "server with a chooser.  XDMCP does not need to be enabled on the local "
@@ -3700,7 +3681,7 @@ msgstr ""
 "เพิ่มปุ่มเลือกโฮสต์ในเมนูปฏิบััติการ ซึ่งจะเริ่ม X server ปัจจุบันใหม่ให้มีหน้าต่างเลือกโฮสต์ "
 "ไม่จำเป็นต้องเปิดใช้ XDMCP ที่เครื่องนี้เพื่อจะให้ปุ่มดังกล่าวทำงานได้"
 
-#: ../gui/gdmsetup.glade.h:21
+#: ../gui/gdmsetup.glade.h:16
 msgid ""
 "All users with a lower UID will be excluded from the face browser, automatic "
 "and timed login."
@@ -3708,11 +3689,11 @@ msgstr ""
 "ผู้ใช้ทั้งหมดที่มี UID ต่ำกว่าค่านี้ จะถูกกันออกจากรายการรูปผู้ใช้ "
 "และการเข้าระบบแบบอัตโนมัติหรือตั้งเวลา"
 
-#: ../gui/gdmsetup.glade.h:22
+#: ../gui/gdmsetup.glade.h:17
 msgid "Allo_w remote timed logins"
 msgstr "อนุญาตให้เข้าระบบจากเครื่องอื่นผ่านการตั้งเ_วลา"
 
-#: ../gui/gdmsetup.glade.h:23
+#: ../gui/gdmsetup.glade.h:18
 msgid ""
 "Allow changing the GTK+ (widget) theme from the greeter. Currently this only "
 "affects the standard greeter. The theme will stay in effect on this display "
@@ -3722,23 +3703,23 @@ msgstr ""
 "ตัวเลือกนี้มีผลต่อหน้าต่างต้อนรับมาตรฐานเท่านั้น "
 "ชุดตกแต่งจะมีผลในดิสเพลย์นี้จนกว่าจะถูกเปลี่ยนแปลงอีก โดยจะใช้แสดงหน้าต่างอื่นๆ ที่ GDM เปิดทั้งหมด"
 
-#: ../gui/gdmsetup.glade.h:24
+#: ../gui/gdmsetup.glade.h:19
 msgid "Allow group writable files and directories."
 msgstr "อนุญาตให้ใช้แฟ้มและไดเรกทอรีที่ให้กลุ่มเขียนได้"
 
-#: ../gui/gdmsetup.glade.h:25
+#: ../gui/gdmsetup.glade.h:20
 msgid "Allow logi_n if group write permissions on user's home directory"
 msgstr "อนุญาตให้เข้า_ระบบถ้าไดเรกทอรีบ้านอนุญาตให้กลุ่มเขียนได้"
 
-#: ../gui/gdmsetup.glade.h:26
+#: ../gui/gdmsetup.glade.h:21
 msgid "Allow login _if all write permissions on user's home directory"
 msgstr "อนุญาตให้เข้าระ_บบถ้าไดเรกทอรีบ้านอนุญาตให้ทุกคนเขียนได้"
 
-#: ../gui/gdmsetup.glade.h:27
+#: ../gui/gdmsetup.glade.h:22
 msgid "Allow world writable files and directories."
 msgstr "อนุญาตให้ใช้แฟ้มและไดเรกทอรีที่ให้ทุกคนเขียนได้"
 
-#: ../gui/gdmsetup.glade.h:28
+#: ../gui/gdmsetup.glade.h:23
 msgid ""
 "Allows the configurator to be run from the greeter. Note that the user will "
 "need to type in the root password before the configurator will be started."
@@ -3746,7 +3727,7 @@ msgstr ""
 "อนุญาตให้เรียกหน้าต่างปรับแต่งจากหน้าต่างต้อนรับได้ สังเกตว่าผู้ใช้จะต้องป้อนรหัสผ่าน root "
 "ก่อนที่จะเปิดหน้าต่างปรับแต่งได้"
 
-#: ../gui/gdmsetup.glade.h:29
+#: ../gui/gdmsetup.glade.h:24
 msgid ""
 "Always append -nolisten tcp to the command line of local X servers, thus "
 "disallowing TCP connection.  This is useful if you do not care for allowing "
@@ -3760,35 +3741,35 @@ msgstr ""
 "แม้จะไม่พบว่ามีปัญหาระบบรักษาความปลอดภัยก็ตาม นอกจากนี้ ตัวเลือกนี้ยังได้ปิดการส่งต่อ X ผ่าน ssh "
 "ด้วย แต่จะไม่มีผลกับ XDMCP"
 
-#: ../gui/gdmsetup.glade.h:30
+#: ../gui/gdmsetup.glade.h:25
 msgid "Apply Co_mmand Changes"
 msgstr "เ_ริ่มใช้การเปลี่ยนแปลงคำสั่ง"
 
-#: ../gui/gdmsetup.glade.h:31
+#: ../gui/gdmsetup.glade.h:26
 msgid "Author:"
 msgstr "ผู้สร้าง:"
 
-#: ../gui/gdmsetup.glade.h:32
+#: ../gui/gdmsetup.glade.h:27
 msgid "Background"
 msgstr "พื้นหลัง"
 
-#: ../gui/gdmsetup.glade.h:33
+#: ../gui/gdmsetup.glade.h:28
 msgid "Background color of the greeter."
 msgstr "สีพื้นหลังของหน้าต่างต้อนรับ"
 
-#: ../gui/gdmsetup.glade.h:34
+#: ../gui/gdmsetup.glade.h:29
 msgid "Behaviour"
 msgstr "พฤติกรรม"
 
-#: ../gui/gdmsetup.glade.h:35
+#: ../gui/gdmsetup.glade.h:30
 msgid "C_ommand:"
 msgstr "_คำสั่ง:"
 
-#: ../gui/gdmsetup.glade.h:36
+#: ../gui/gdmsetup.glade.h:31
 msgid "C_ustom:"
 msgstr "_กำหนดเอง:"
 
-#: ../gui/gdmsetup.glade.h:37
+#: ../gui/gdmsetup.glade.h:32
 msgid ""
 "Checks the ownership of the home directories before writing to them. This "
 "prevents security issues in case of bad setup."
@@ -3796,33 +3777,33 @@ msgstr ""
 "ตรวจสอบความเป็นเจ้าของของไดเรกทอรีบ้านก่อนเขียนข้อมูลลงในนั้น การตรวจสอบนี้ "
 "จะช่วยป้องกันปัญหาระบบรักษาความปลอดภัยในกรณีที่ตั้งค่าไม่เรียบร้อย"
 
-#: ../gui/gdmsetup.glade.h:38
+#: ../gui/gdmsetup.glade.h:33
 msgid "Co_lor:"
 msgstr "_สี:"
 
-#: ../gui/gdmsetup.glade.h:39
+#: ../gui/gdmsetup.glade.h:34
 msgid "Color depth:"
 msgstr "จำนวนบิตสี:"
 
-#: ../gui/gdmsetup.glade.h:40
+#: ../gui/gdmsetup.glade.h:35
 msgid "Comma_nd type:"
 msgstr "_ชนิดคำสั่ง:"
 
-#: ../gui/gdmsetup.glade.h:41
+#: ../gui/gdmsetup.glade.h:36
 msgid "Configure XDMC_P..."
 msgstr "กำหนดค่า XDMC_P..."
 
-#: ../gui/gdmsetup.glade.h:42
+#: ../gui/gdmsetup.glade.h:37
 msgid "Configure _X Server..."
 msgstr "กำหนดค่า _X Server..."
 
-#: ../gui/gdmsetup.glade.h:43
+#: ../gui/gdmsetup.glade.h:38
 msgid ""
 "Controls which text to display next to the logo image in the greeter for "
 "remote XDMCP sessions."
 msgstr "กำหนดข้อความที่จะแสดงข้างๆ ภาพโลโก้ในหน้าต่างต้อนรับสำหรับวาระ XDMCP จากเครื่องอื่น"
 
-#: ../gui/gdmsetup.glade.h:44
+#: ../gui/gdmsetup.glade.h:39
 msgid ""
 "Controls which text to display next to the logo image in the standard "
 "greeter. This string is only used for local logins."
@@ -3830,23 +3811,23 @@ msgstr ""
 "กำหนดข้อความที่จะแสดงข้างๆ ภาพโลโก้ในหน้าต่างต้อนรับมาตรฐาน "
 "ข้อความนี้จะใช้สำหรับการเข้าระบบภายในเครื่องนี้เท่านั้น"
 
-#: ../gui/gdmsetup.glade.h:45
+#: ../gui/gdmsetup.glade.h:40
 msgid "Copyright:"
 msgstr "ลิขสิทธิ์:"
 
-#: ../gui/gdmsetup.glade.h:46
+#: ../gui/gdmsetup.glade.h:41
 msgid "De_fault face:"
 msgstr "รูป_ปริยาย:"
 
-#: ../gui/gdmsetup.glade.h:47
+#: ../gui/gdmsetup.glade.h:42
 msgid "De_fault session:"
 msgstr "วาระ_ปริยาย"
 
-#: ../gui/gdmsetup.glade.h:48
+#: ../gui/gdmsetup.glade.h:43
 msgid "Delay in seconds before the Timed login user will be logged in."
 msgstr "การหน่วงเวลาเป็นวินาทีก่อนที่ผู้ใช้ที่เข้าระบบแบบตั้งเวลาจะเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:49
+#: ../gui/gdmsetup.glade.h:44
 msgid ""
 "Determines the maximum number of remote display connections which will be "
 "managed simultaneously. I.e. the total number of remote displays that can "
@@ -3855,7 +3836,7 @@ msgstr ""
 "กำหนดจำนวนสูงสุดของการเชื่อมต่อดิสเพลย์จากเครื่องอื่น ที่จะจัดการในเวลาเดียวกัน นั่นคือ "
 "จำนวนทั้งหมดของดิสเพลย์ในเครือข่ายที่จะสามารถใช้เครื่องของคุณได้พร้อมๆ กัน"
 
-#: ../gui/gdmsetup.glade.h:50
+#: ../gui/gdmsetup.glade.h:45
 msgid ""
 "Determines the maximum number of seconds between the time where a user "
 "chooses a host and the subsequent indirect query where the user is connected "
@@ -3866,53 +3847,53 @@ msgstr ""
 "ซึ่งผู้ใช้เชื่อมต่อกับโฮสต์เรียบร้อยแล้ว เมื่อหมดเวลาที่กำหนด ข้อมูลเกี่ยวกับการเลือกโฮสต์จะถูกทิ้งไป "
 "และช่องข้อมูลสอบถามโดยอ้อมจะถูกล้างค่าเพื่อให้ดิสเพลย์อื่นใช้"
 
-#: ../gui/gdmsetup.glade.h:51
+#: ../gui/gdmsetup.glade.h:46
 msgid "Disa_ble multiple logins for a single user"
 msgstr "_ปิดการเข้าระบบหลายวาระสำหรับผู้ใช้เดียว"
 
-#: ../gui/gdmsetup.glade.h:52
+#: ../gui/gdmsetup.glade.h:47
 msgid "Display the title bar in the greeter."
 msgstr "แสดงหัวหน้าต่างของหน้าต่างต้อนรับ"
 
-#: ../gui/gdmsetup.glade.h:53
+#: ../gui/gdmsetup.glade.h:48
 msgid "Displays per _host:"
 msgstr "จำนวน_ดิสเพลย์ต่อโฮสต์:"
 
-#: ../gui/gdmsetup.glade.h:54
+#: ../gui/gdmsetup.glade.h:49
 msgid "Displays this image as the background in the greeter."
 msgstr "แสดงภาพนี้เป็นพื้นหลังของหน้าต่างต้อนรับ"
 
-#: ../gui/gdmsetup.glade.h:55
+#: ../gui/gdmsetup.glade.h:50
 msgid "Do not show image for _remote logins"
 msgstr "ไม่ต้องแสดงภาพพื้นหลังสำหรับการเข้าระบบจากเครื่อง_อื่น"
 
-#: ../gui/gdmsetup.glade.h:56
+#: ../gui/gdmsetup.glade.h:51
 msgid ""
 "Does not place cookies into the users home directory if this directory is on "
 "NFS."
 msgstr "ไม่ต้องเก็บคุกกี้ในไดเรกทอรีบ้านของผู้ใช้ถ้าไดเรกทอรีดังกล่าวใช้งานผ่าน NFS"
 
-#: ../gui/gdmsetup.glade.h:57
+#: ../gui/gdmsetup.glade.h:52
 msgid "Don't restart the login manager after the execution"
 msgstr "ไม่ต้องเริ่มโปรแกรมจัดการการเข้าระบบใหม่หลังจากทำงานเสร็จ"
 
-#: ../gui/gdmsetup.glade.h:58
+#: ../gui/gdmsetup.glade.h:53
 msgid "E_dit Commands..."
 msgstr "แ_ก้ไขคำสั่ง..."
 
-#: ../gui/gdmsetup.glade.h:59
+#: ../gui/gdmsetup.glade.h:54
 msgid "E_xclude:"
 msgstr "ไ_ม่แสดง:"
 
-#: ../gui/gdmsetup.glade.h:60
+#: ../gui/gdmsetup.glade.h:55
 msgid "Ena_ble debug messages to system log"
 msgstr "บันทึกข้อความ_ดีบั๊กในบันทึกปฏิบัติการระบบ"
 
-#: ../gui/gdmsetup.glade.h:61
+#: ../gui/gdmsetup.glade.h:56
 msgid "Enable _Timed Login"
 msgstr "เปิดใช้การ_ตั้งเวลาเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:62
+#: ../gui/gdmsetup.glade.h:57
 msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of gdmchooser) for X-"
 "terminals which don't supply their own display browser."
@@ -3920,7 +3901,7 @@ msgstr ""
 "เปิดใช้การเลือกโฮสต์แบบอ้อม (indirect) ของ XDMCP (กล่าวคือ การเรียก gdmchooser "
 "จากเครื่องอื่น) สำหรับเทอร์มินัล X ที่ไม่สนับสนุนการเรียกดูดิสเพลย์ในเครือข่าย"
 
-#: ../gui/gdmsetup.glade.h:63
+#: ../gui/gdmsetup.glade.h:58
 msgid ""
 "Enables greeter to be launched with additional Gtk+ modules. This is useful "
 "when extra features are required such as accessible login. Note that only "
@@ -3930,17 +3911,17 @@ msgstr ""
 "ตัวเลือกนี้มีประโยชน์เมื่อต้องใช้ความสามารถพิเศษ เช่น การใช้เทคโนโลยีสิ่งอำนวยความสะดวก "
 "สังเกตว่าควรใช้มอดูลที่ \"เชื่อถือได้\" เท่านั้น เพื่อลดปัญหาในระบบรักษาความปลอดภัย"
 
-#: ../gui/gdmsetup.glade.h:64
+#: ../gui/gdmsetup.glade.h:59
 msgid ""
 "Full path and arguments for the command to be executed. If the value is "
 "missing, the command will not be available."
 msgstr "พาธเต็มและอาร์กิวเมนต์สำหรับคำสั่งที่จะเรียก ถ้าขาดข้อมูลนี้ ก็จะไม่สามารถใช้คำสั่งได้"
 
-#: ../gui/gdmsetup.glade.h:65
+#: ../gui/gdmsetup.glade.h:60
 msgid "Full path and arguments to the command to be executed"
 msgstr "พาธเต็มและอาร์กิวเมนต์สำหรับคำสั่งที่จะเรียก"
 
-#: ../gui/gdmsetup.glade.h:66
+#: ../gui/gdmsetup.glade.h:61
 msgid ""
 "GDM should run the login window on this server and allow a user to log in.  "
 "If not selected, then GDM will just run this server and wait for it to "
@@ -3949,11 +3930,11 @@ msgstr ""
 "GDM ควรเปิดหน้าต่างเข้าระบบที่เซิร์ฟเวอร์นี้ และให้ผู้ใช้เข้าระบบได้ ถ้าไม่เลือกตัวเลือกนี้ GDM "
 "จะแค่เปิดเซิร์ฟเวอร์นี้ไว้ และรอให้มันปิดตัวลงเท่านั้น"
 
-#: ../gui/gdmsetup.glade.h:67
+#: ../gui/gdmsetup.glade.h:62
 msgid "General"
 msgstr "ทั่วไป"
 
-#: ../gui/gdmsetup.glade.h:68
+#: ../gui/gdmsetup.glade.h:63
 msgid ""
 "Given user should be logged in after a number of seconds (set with Pause "
 "before login) of inactivity on the login screen.  This is useful for public "
@@ -3963,7 +3944,7 @@ msgstr ""
 "(กำหนดโดยช่อง \"รอก่อนเข้าระบบ\") ตัวเลือกนี้มีประโยชน์สำหรับเครื่องสาธารณะ "
 "หรือแม้แต่เครื่องที่ใช้ที่บ้าน"
 
-#: ../gui/gdmsetup.glade.h:69
+#: ../gui/gdmsetup.glade.h:64
 msgid ""
 "Given user should be logged in upon first bootup.  No password will be "
 "asked.  This is useful for single user workstations where local console "
@@ -3973,7 +3954,7 @@ msgstr ""
 "ตัวเลือกนี้มีประโยชน์สำหรับเครื่องลูกข่ายที่ใช้งานคนเดียว "
 "โดยประเด็นเรื่องการเข้าถึงเครื่องของบุคคลอื่นไม่ถือเป็นปัญหา"
 
-#: ../gui/gdmsetup.glade.h:70
+#: ../gui/gdmsetup.glade.h:65
 msgid ""
 "Greeter\n"
 "Chooser"
@@ -3981,19 +3962,19 @@ msgstr ""
 "หน้าต่างต้อนรับ\n"
 "หน้าต่างเลือกโฮสต์"
 
-#: ../gui/gdmsetup.glade.h:72
+#: ../gui/gdmsetup.glade.h:67
 msgid "Honor _indirect requests"
 msgstr "ยอมรับการเรียกแบบ_อ้อม"
 
-#: ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.glade.h:68
 msgid "I_mage:"
 msgstr "รูป_ภาพ:"
 
-#: ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.glade.h:69
 msgid "I_nclude:"
 msgstr "แ_สดง:"
 
-#: ../gui/gdmsetup.glade.h:75
+#: ../gui/gdmsetup.glade.h:70
 msgid ""
 "If a user has no defined face image, GDM will use the \"stock_person\" icon "
 "defined in the current GTK+ theme.  If no such image is defined, the image "
@@ -4004,7 +3985,7 @@ msgstr ""
 "ปัจจุบัน ถ้าไม่มีการกำหนดรูปดังกล่าวไว้ ก็จะใช้รูปที่กำหนดโดยรูปปริยายนี้แทน "
 "รูปที่กำหนดต้องอยู่ในรูปแบบที่ gdk-pixbuf สนับสนุน และผู้ใช้ \"gdm\" จะต้องมีสิทธิ์อ่านได้"
 
-#: ../gui/gdmsetup.glade.h:76
+#: ../gui/gdmsetup.glade.h:71
 msgid ""
 "Image file to display in the logo box. The file must be in an gdk-pixbuf "
 "supported format and it must be readable by the GDM user. If no file is "
@@ -4013,21 +3994,21 @@ msgstr ""
 "รูปภาพที่จะแสดงในช่องโลโก้ แฟ้มรูปภาพนี้ควรอยู่ในรูปแบบที่ gdk-pixbuf สนับสนุน และผู้ใช้ \"gdm"
 "\" ต้องมีสิทธิ์อ่านได้ ถ้าไม่ระบุแฟ้มใด ก็จะไม่แสดงโลโก้"
 
-#: ../gui/gdmsetup.glade.h:77
+#: ../gui/gdmsetup.glade.h:72
 msgid "Includ_e Hostname Chooser (XDMCP) menu item"
 msgstr "แสดงเมนูเ_ลือกโฮสต์ (XDMCP)"
 
-#: ../gui/gdmsetup.glade.h:78
+#: ../gui/gdmsetup.glade.h:73
 msgid "Include Con_figure menu item"
 msgstr "แสดงเมนู_ปรับแต่ง"
 
-#: ../gui/gdmsetup.glade.h:79
+#: ../gui/gdmsetup.glade.h:74
 msgid ""
 "Indicates that the X server should be started at a different process "
 "priority."
 msgstr "ระบุว่า X server ควรเปิดด้วยโพรเซสที่มีระดับความสำคัญต่างออกไป"
 
-#: ../gui/gdmsetup.glade.h:80
+#: ../gui/gdmsetup.glade.h:75
 msgid ""
 "Interval in which to ping the X server in seconds.  If the X server doesn't "
 "return before the next time we ping it, the connection is stopped and the "
@@ -4036,79 +4017,80 @@ msgstr ""
 "ระยะเวลาเป็นวินาทีที่จะ ping X server ถ้า X server ไม่ตอบกลับมาก่อนที่เราจะ ping "
 "ครั้งต่อไป ก็จะปิดการเชื่อมต่อและวาระ"
 
-#: ../gui/gdmsetup.glade.h:81
+#. This defines the label that will appear on the list/radiobutton items and stands for L(ist)R(adiobutton)label
+#: ../gui/gdmsetup.glade.h:77
 msgid "LRla_bel:"
 msgstr "ป้าย_ชื่อรายการเลือก:"
 
-#: ../gui/gdmsetup.glade.h:82
+#: ../gui/gdmsetup.glade.h:78
 msgid "La_unch:"
 msgstr "เ_รียก:"
 
-#: ../gui/gdmsetup.glade.h:83
+#: ../gui/gdmsetup.glade.h:79
 msgid "Listen on _UDP port: "
 msgstr "ฟังที่_พอร์ต UDP:"
 
-#: ../gui/gdmsetup.glade.h:84
+#: ../gui/gdmsetup.glade.h:80
 msgid "Loc_k position of the window"
 msgstr "ล็อ_คตำแหน่งหน้าต่าง"
 
-#: ../gui/gdmsetup.glade.h:85
+#: ../gui/gdmsetup.glade.h:81
 msgid "Local"
 msgstr "จากเครื่องนี้"
 
-#: ../gui/gdmsetup.glade.h:86
+#: ../gui/gdmsetup.glade.h:82
 msgid "Login Window Preferences"
 msgstr "ปรับแต่งหน้าจอเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:87
+#: ../gui/gdmsetup.glade.h:83
 msgid "Login _failed:"
 msgstr "เข้าระบบไ_ม่สำเร็จ:"
 
-#: ../gui/gdmsetup.glade.h:88
+#: ../gui/gdmsetup.glade.h:84
 msgid "Login _retry delay:"
 msgstr "ห_น่วงเวลาก่อนลองเข้าระบบใหม่:"
 
-#: ../gui/gdmsetup.glade.h:89
+#: ../gui/gdmsetup.glade.h:85
 msgid "Login _successful:"
 msgstr "เข้าระบบ_สำเร็จ:"
 
-#: ../gui/gdmsetup.glade.h:90
+#: ../gui/gdmsetup.glade.h:86
 msgid "Logo"
 msgstr "โลโก้"
 
-#: ../gui/gdmsetup.glade.h:91
+#: ../gui/gdmsetup.glade.h:87
 msgid "Maximum _remote sessions:"
 msgstr "จำนวนวาระจากเครื่อง_อื่นสูงสุด:"
 
-#: ../gui/gdmsetup.glade.h:92
+#: ../gui/gdmsetup.glade.h:88
 msgid "Maximum _wait time:"
 msgstr "เวลา_รอสูงสุด:"
 
-#: ../gui/gdmsetup.glade.h:93
+#: ../gui/gdmsetup.glade.h:89
 msgid "Maximum indirect w_ait time:"
 msgstr "เวลาร_อการเชื่อมต่อแบบอ้อมสูงสุด:"
 
-#: ../gui/gdmsetup.glade.h:94
+#: ../gui/gdmsetup.glade.h:90
 msgid "Maximum p_ending indirect requests:"
 msgstr "จำนวนลูก_ข่ายที่ให้เข้าใช้งานแบบอ้อมพร้อมกันสูงสุด:"
 
-#: ../gui/gdmsetup.glade.h:95
+#: ../gui/gdmsetup.glade.h:91
 msgid "Menu Bar"
 msgstr "แถบเมนู"
 
-#: ../gui/gdmsetup.glade.h:96
+#: ../gui/gdmsetup.glade.h:92
 msgid "Messa_ge:"
 msgstr "_ข้อความ:"
 
-#: ../gui/gdmsetup.glade.h:97
+#: ../gui/gdmsetup.glade.h:93
 msgid "Ne_ver place cookies on NFS"
 msgstr "ไ_ม่ต้องเก็บคุกกี้เมื่อใช้ NFS"
 
-#: ../gui/gdmsetup.glade.h:98
+#: ../gui/gdmsetup.glade.h:94
 msgid "No _restart required"
 msgstr "ไม่ต้องปิดเปิดให_ม่"
 
-#: ../gui/gdmsetup.glade.h:99
+#: ../gui/gdmsetup.glade.h:95
 msgid ""
 "Number of simultaneously provided displays with host choosers.  If more "
 "queries from different hosts come in, the oldest ones will be forgotten."
@@ -4116,35 +4098,35 @@ msgstr ""
 "จำนวนดิสเพลย์พร้อมหน้าต่างเลือกโฮสต์ที่จะเตรียมให้ใช้พร้อมๆ กัน "
 "ถ้ามีการสอบถามจากโฮสต์อื่นเพิ่มเข้ามาอีก รายการที่เก่าที่สุดจะถูกลบทิ้ง"
 
-#: ../gui/gdmsetup.glade.h:100
+#: ../gui/gdmsetup.glade.h:96
 msgid "Only allow login i_f user owns their home directory"
 msgstr "อนุญาตให้เข้าระบบ_ถ้าผู้ใช้เป็นเจ้าของไดเรกทอรีบ้านเท่านั้น"
 
-#: ../gui/gdmsetup.glade.h:101
+#: ../gui/gdmsetup.glade.h:97
 msgid "Op_tions:\t"
 msgstr "ตัวเ_ลือก:\t"
 
-#: ../gui/gdmsetup.glade.h:102
+#: ../gui/gdmsetup.glade.h:98
 msgid "Pa_th:"
 msgstr "พ_าธ:"
 
-#: ../gui/gdmsetup.glade.h:103
+#: ../gui/gdmsetup.glade.h:99
 msgid "Paranoia option. Only accepts user owned files and directories."
 msgstr "ตัวเลือกแบบระแวงภัย จะยอมรับเฉพาะการใช้แฟ้มและไดเรกทอรีที่ผู้ใช้เป็นเจ้าของเท่านั้น"
 
-#: ../gui/gdmsetup.glade.h:104
+#: ../gui/gdmsetup.glade.h:100
 msgid "Per_sistent"
 msgstr "_ถาวร"
 
-#: ../gui/gdmsetup.glade.h:105
+#: ../gui/gdmsetup.glade.h:101
 msgid "Permissions"
 msgstr "การกำหนดสิทธิ์"
 
-#: ../gui/gdmsetup.glade.h:106
+#: ../gui/gdmsetup.glade.h:102
 msgid "Pick Background Color"
 msgstr "เลือกสีพื้นหลัง"
 
-#: ../gui/gdmsetup.glade.h:107
+#: ../gui/gdmsetup.glade.h:103
 msgid ""
 "Plain\n"
 "Plain with face browser\n"
@@ -4156,31 +4138,31 @@ msgstr ""
 "ใช้ชุดตกแต่ง\n"
 "ใช้ชุดตกแต่ง พร้อมแสดงรูปผู้ใช้"
 
-#: ../gui/gdmsetup.glade.h:111
+#: ../gui/gdmsetup.glade.h:107
 msgid "Qui_ver when incorrect username/password entered"
 msgstr "_สั่นเมื่อป้อนชื่อผู้ใช้หรือรหัสผ่านผิด"
 
-#: ../gui/gdmsetup.glade.h:112
+#: ../gui/gdmsetup.glade.h:108
 msgid "R_emove"
 msgstr "_ลบ"
 
-#: ../gui/gdmsetup.glade.h:113
+#: ../gui/gdmsetup.glade.h:109
 msgid "Re_move Server"
 msgstr "ล_บเซิร์ฟเวอร์"
 
-#: ../gui/gdmsetup.glade.h:114
+#: ../gui/gdmsetup.glade.h:110
 msgid "Reboot, Halt, Suspend and Custom Command Preferences"
 msgstr "ปรับแต่งคำสั่งเปิดเครื่องใหม่, ปิดเครื่อง, พักเครื่อง และคำสั่งกำหนดเอง"
 
-#: ../gui/gdmsetup.glade.h:115
+#: ../gui/gdmsetup.glade.h:111
 msgid "Refresh rate:"
 msgstr "อัตราการรีเฟรช:"
 
-#: ../gui/gdmsetup.glade.h:116
+#: ../gui/gdmsetup.glade.h:112
 msgid "Remote"
 msgstr "จากเครื่องอื่น"
 
-#: ../gui/gdmsetup.glade.h:117
+#: ../gui/gdmsetup.glade.h:113
 msgid ""
 "Remote connections through XDMCP will be allowed to log into the \"TimedLogin"
 "\" user by letting the login window time out, just like the local user on "
@@ -4189,7 +4171,7 @@ msgstr ""
 "การเชื่อมต่อจากเครื่องอื่นผ่าน XDMCP จะสามารถเข้าระบบในนามผู้ใช้ที่เข้าระบบผ่านการตั้งเวลาได้ "
 "โดยรอให้หน้าต่างเข้าระบบหมดเวลาลง เหมือนกับผู้ใช้ภายในเครื่องที่หน้าจอคอนโซล"
 
-#: ../gui/gdmsetup.glade.h:118
+#: ../gui/gdmsetup.glade.h:114
 msgid ""
 "Remote login disabled\n"
 "Same as Local"
@@ -4197,35 +4179,35 @@ msgstr ""
 "ห้ามเข้าระบบจากเครื่องอื่น\n"
 "เหมือนจากเครื่องนี้"
 
-#: ../gui/gdmsetup.glade.h:120
+#: ../gui/gdmsetup.glade.h:116
 msgid "Resolution:"
 msgstr "ความละเอียด:"
 
-#: ../gui/gdmsetup.glade.h:121
+#: ../gui/gdmsetup.glade.h:117
 msgid "Sc_ale to fit screen"
 msgstr "_ขยายเต็มจอ"
 
-#: ../gui/gdmsetup.glade.h:122
+#: ../gui/gdmsetup.glade.h:118
 msgid "Scale background image to fit the screen."
 msgstr "ปรับขนาดรูปภาพพื้นหลังให้พอดีจอ"
 
-#: ../gui/gdmsetup.glade.h:123
+#: ../gui/gdmsetup.glade.h:119
 msgid "Security"
 msgstr "ระบบความปลอดภัย"
 
-#: ../gui/gdmsetup.glade.h:124
+#: ../gui/gdmsetup.glade.h:120
 msgid "Select Background Image"
 msgstr "เลือกรูปพื้นหลัง"
 
-#: ../gui/gdmsetup.glade.h:125
+#: ../gui/gdmsetup.glade.h:121
 msgid "Select Logo Image"
 msgstr "เลือกรูปโลโก้"
 
-#: ../gui/gdmsetup.glade.h:126
+#: ../gui/gdmsetup.glade.h:122
 msgid "Select Sound File"
 msgstr "เลือกแฟ้มเสียง"
 
-#: ../gui/gdmsetup.glade.h:127
+#: ../gui/gdmsetup.glade.h:123
 msgid ""
 "Selected only\n"
 "Random from selected\n"
@@ -4233,7 +4215,7 @@ msgstr ""
 "จากที่เลือกไว้เท่านั้น\n"
 "สุ่มจากที่เลือกไว้\n"
 
-#: ../gui/gdmsetup.glade.h:130
+#: ../gui/gdmsetup.glade.h:126
 msgid ""
 "Sends debug output to the syslog.  This can be useful for tracking down "
 "problems with GDM.  This output tends to be verbose so should not be turned "
@@ -4242,35 +4224,35 @@ msgstr ""
 "ส่งข้อความดีบั๊กเข้าในบันทึกปฏิบัติการระบบด้วย ตัวเลือกนี้มีประโยชน์สำหรับการตรวจสอบปัญหาใน GDM "
 "แต่จะมีข้อความเยอะมาก จึงไม่ควรเปิดใช้ในกรณีทั่วไป"
 
-#: ../gui/gdmsetup.glade.h:131
+#: ../gui/gdmsetup.glade.h:127
 msgid "Server Settings"
 msgstr "ค่าตั้งเซิร์ฟเวอร์"
 
-#: ../gui/gdmsetup.glade.h:132
+#: ../gui/gdmsetup.glade.h:128
 msgid "Server _name:"
 msgstr "_ชื่อเซิร์ฟเวอร์:"
 
-#: ../gui/gdmsetup.glade.h:133
+#: ../gui/gdmsetup.glade.h:129
 msgid "Servers To Start"
 msgstr "เซิร์ฟเวอร์ที่จะเปิด"
 
-#: ../gui/gdmsetup.glade.h:134
+#: ../gui/gdmsetup.glade.h:130
 msgid "Set positio_n of the window:"
 msgstr "กำหนด_ตำแหน่งของหน้าต่าง:"
 
-#: ../gui/gdmsetup.glade.h:135
+#: ../gui/gdmsetup.glade.h:131
 msgid "Sh_ow title bar"
 msgstr "แสดง_หัวหน้าต่าง"
 
-#: ../gui/gdmsetup.glade.h:136
+#: ../gui/gdmsetup.glade.h:132
 msgid "Shake the display when an incorrect username/password is entered."
 msgstr "สั่นหน้าจอเมื่อป้อนชื่อผู้ใช้หรือรหัสผ่านผิด"
 
-#: ../gui/gdmsetup.glade.h:137
+#: ../gui/gdmsetup.glade.h:133
 msgid "Sho_w Actions menu"
 msgstr "แสดงเมนู_ปฏิบัติการ"
 
-#: ../gui/gdmsetup.glade.h:138
+#: ../gui/gdmsetup.glade.h:134
 msgid ""
 "Show visual feedback in the password entry. Turning this option on can be a "
 "security hazard as the length of your password can be guessed."
@@ -4278,7 +4260,7 @@ msgstr ""
 "แสดงการตอบสนองในช่องป้อนรหัสผ่าน การเปิดตัวเลือกนี้อาจเป็นอันตรายต่อระบบรักษาความปลอดภัยได้ "
 "เพราะทำให้สามารถเดาความยาวของรหัสผ่านได้"
 
-#: ../gui/gdmsetup.glade.h:140
+#: ../gui/gdmsetup.glade.h:136
 msgid ""
 "Specifies if Custom Command will appear outside the login manager, for "
 "example on the desktop through the Log Out/Shut Down widgets."
@@ -4286,37 +4268,37 @@ msgstr ""
 "ระบุว่าคำสั่งกำหนดเองนี้อยู่นอกเหนือขอบเขตของหน้าต่างจัดการการเข้าระบบหรือไม่ เช่น "
 "ยังคงปรากฏอยู่บนเดสก์ท็อปผ่านวิดเจ็ตออกจากระบบหรือปิดเครื่อง"
 
-#: ../gui/gdmsetup.glade.h:141
+#: ../gui/gdmsetup.glade.h:137
 msgid ""
 "Specifies if gdm will be stopped/restarted once Custom Command has been "
 "executed."
 msgstr "ระบุว่า GDM จะปิดหรือเริ่มใหม่หรือไม่ เมื่อทำคำสั่งกำหนดเองแล้ว"
 
-#: ../gui/gdmsetup.glade.h:142
+#: ../gui/gdmsetup.glade.h:138
 msgid ""
 "Specifies the label that will be displayed on the Custom Command buttons and "
 "menu items."
 msgstr "ระบุชื่อที่จะแสดงในปุ่มคำสั่งกำหนดเองและในรายการเมนู"
 
-#: ../gui/gdmsetup.glade.h:143
+#: ../gui/gdmsetup.glade.h:139
 msgid ""
 "Specifies the label that will be displayed on the Custom Command list items "
 "and radio buttons."
 msgstr "ระบุชื่อที่จะแสดงในรายการคำสั่งกำหนดเองและในปุ่มตัวเลือก"
 
-#: ../gui/gdmsetup.glade.h:144
+#: ../gui/gdmsetup.glade.h:140
 msgid ""
 "Specifies the message that will be displayed on Custom Command tooltip "
 "entries."
 msgstr "ระบุข้อความที่จะแสดงในคำแนะนำเครื่องมือของคำสั่งกำหนดเอง"
 
-#: ../gui/gdmsetup.glade.h:145
+#: ../gui/gdmsetup.glade.h:141
 msgid ""
 "Specifies the message that will be displayed on the warning dialog box when "
 "one of the Custom Command widgets is activated."
 msgstr "ระบุข้อความที่จะแสดงในกล่องโต้ตอบเตือนเมื่อมีการเรียกที่วิดเจ็ตคำสั่งกำหนดเอง"
 
-#: ../gui/gdmsetup.glade.h:146
+#: ../gui/gdmsetup.glade.h:142
 msgid ""
 "Systemwide directory for face files. The sysadmin can place icons for users "
 "here without touching their homedirs. Faces are named after their users' "
@@ -4327,34 +4309,34 @@ msgstr ""
 "โดยไม่ต้องแตะต้องไดเรกทอรีบ้านของผู้ใช้เลย รูปผู้ใช้จะใช้ชื่อตามชื่อเข้าระบบของผู้ใช้ "
 "รูปดังกล่าวต้องอยู่ในรูปแบบที่ gdk-pixbuf สนับสนุน และผู้ใช้ \"gdm\" ต้องมีสิทธิ์อ่านได้"
 
-#: ../gui/gdmsetup.glade.h:147
+#: ../gui/gdmsetup.glade.h:143
 msgid "T_ooltip:"
 msgstr "คำแ_นะนำเครื่องมือ:"
 
-#: ../gui/gdmsetup.glade.h:148
+#: ../gui/gdmsetup.glade.h:144
 msgid "Text to appear in the warning pop-up dialogs"
 msgstr "ข้อความที่จะปรากฏในกล่องโต้ตอบเตือน"
 
-#: ../gui/gdmsetup.glade.h:149
+#: ../gui/gdmsetup.glade.h:145
 msgid "Text to appear on the buttons and menu items"
 msgstr "ข้อความที่จะปรากฏในปุ่มและรายการเมนู"
 
-#: ../gui/gdmsetup.glade.h:150
+#: ../gui/gdmsetup.glade.h:146
 msgid "Text to appear on the radio buttons and list items"
 msgstr "ข้อความที่จะปรากฏในรายการเลือก"
 
-#: ../gui/gdmsetup.glade.h:151
+#: ../gui/gdmsetup.glade.h:147
 msgid "Text to appear on the tooltips"
 msgstr "ข้อความที่จะปรากฏในคำแนะนำเครื่องมือ"
 
-#: ../gui/gdmsetup.glade.h:152
+#: ../gui/gdmsetup.glade.h:148
 msgid ""
 "The UDP port number gdm should listen to for XDMCP requests. Don't change "
 "this unless you know what you are doing."
 msgstr ""
 "หมายเลขพอร์ต UDP ที่ GDM ควรจะรอรับการร้องขอ XDMCP อย่าเปลี่ยนค่านี้ถ้าไม่มีความเข้าใจ"
 
-#: ../gui/gdmsetup.glade.h:153
+#: ../gui/gdmsetup.glade.h:149
 msgid ""
 "The command to execute, with full path to the binary of the X server, and "
 "any extra arguments needed. Example: /usr/X11R6/bin/X"
@@ -4362,63 +4344,63 @@ msgstr ""
 "คำสั่งที่จะเรียก โดยป้อนพาธเต็มไปยังโปรแกรม X server พร้อมอาร์กิวเมนต์ที่จำเป็น ตัวอย่างเช่น: /"
 "usr/bin/X11/X"
 
-#: ../gui/gdmsetup.glade.h:154
+#: ../gui/gdmsetup.glade.h:150
 msgid "The greeter will play a sound after a failed login attempt."
 msgstr "หน้าจอต้อนรับจะเล่นเสียงเมื่อเข้าระบบไม่สำเร็จ"
 
-#: ../gui/gdmsetup.glade.h:155
+#: ../gui/gdmsetup.glade.h:151
 msgid "The greeter will play a sound after a successful login attempt."
 msgstr "หน้าจอต้อนรับจะเล่นเสียงเมื่อเข้าระบบสำเร็จ"
 
-#: ../gui/gdmsetup.glade.h:156
+#: ../gui/gdmsetup.glade.h:152
 msgid "The greeter will play a sound or beep when it is ready for a login."
 msgstr "หน้าจอต้อนรับจะเล่นเสียงหรือส่งเสียงบี๊ปเมื่อพร้อมจะรอรับการเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:157
+#: ../gui/gdmsetup.glade.h:153
 msgid "The horizontal position of the login window."
 msgstr "ตำแหน่งในแนวนอนของหน้าต่างเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:158
+#: ../gui/gdmsetup.glade.h:154
 msgid "The name that will be displayed to the user."
 msgstr "ชื่อที่จะแสดงกับผู้ใช้"
 
-#: ../gui/gdmsetup.glade.h:159
+#: ../gui/gdmsetup.glade.h:155
 msgid ""
 "The number of seconds that should pass before reactivating the entry field "
 "after a failed login."
 msgstr "การหน่วงเวลาเป็นวินาทีก่อนที่จะให้ป้อนในช่องป้อนได้อีก หลังจากที่เข้าระบบไม่สำเร็จ"
 
-#: ../gui/gdmsetup.glade.h:160
+#: ../gui/gdmsetup.glade.h:156
 msgid "The position of the login window cannot be changed."
 msgstr "จะไม่สามารถเปลี่ยนตำแหน่งหน้าต่างเข้าระบบได้"
 
-#: ../gui/gdmsetup.glade.h:161
+#: ../gui/gdmsetup.glade.h:157
 msgid ""
 "The position of the login window is determined by Position X / Position Y."
 msgstr "ตำแหน่งของหน้าต่างเข้าระบบจะกำหนดโดยตำแหน่ง X / ตำแหน่ง Y"
 
-#: ../gui/gdmsetup.glade.h:162
+#: ../gui/gdmsetup.glade.h:158
 msgid ""
 "The session that is used by default if the user does not have a saved "
 "preference and has picked 'Last' from the list of sessions."
 msgstr ""
 "วาระที่จะใช้โดยปริยาย ถ้าผู้ใช้ไม่มีวาระเดิมที่บันทึกไว้ และได้เลือก 'วาระล่าสุด' จากรายการวาระ"
 
-#: ../gui/gdmsetup.glade.h:163
+#: ../gui/gdmsetup.glade.h:159
 msgid "The vertical position of the login window."
 msgstr "ตำแหน่งในแนวตั้งของหน้าต่างเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:164
+#: ../gui/gdmsetup.glade.h:160
 msgid "Themes"
 msgstr "ชุดตกแต่ง"
 
-#: ../gui/gdmsetup.glade.h:165
+#: ../gui/gdmsetup.glade.h:161
 msgid ""
 "This server is available as a choice when a user wishes to run a flexible, "
 "on demand server."
 msgstr "เซิร์ฟเวอร์นี้จะปรากฏเป็นตัวเลือกเมื่อผู้ใช้ต้องการเรียกเซิร์ฟเวอร์แบบยืดหยุ่นตามสั่ง"
 
-#: ../gui/gdmsetup.glade.h:166
+#: ../gui/gdmsetup.glade.h:162
 msgid ""
 "To avoid denial of service attacks, GDM has fixed size queue of pending "
 "connections. Please note that this parameter does *not* limit the number of "
@@ -4430,7 +4412,7 @@ msgstr ""
 "จำกัดจำนวนของดิสเพลย์ระยะไกลที่จะสามารถจัดการได้ "
 "แต่เป็นการจำกัดจำนวนดิสเพลย์ที่จะขอเชื่อมต่อได้พร้อมๆ กันเท่านั้น"
 
-#: ../gui/gdmsetup.glade.h:167
+#: ../gui/gdmsetup.glade.h:163
 msgid ""
 "To prevent attackers from filling up the pending queue, GDM will only allow "
 "one connection for each remote computer.  If you want to provide display "
@@ -4441,7 +4423,7 @@ msgstr ""
 "จึงอนุญาตให้เครื่องระยะไกลเชื่อมต่อเพียงหนึ่งช่องต่อเครื่องเท่านั้น "
 "ถ้าคุณต้องการให้บริการดิสเพลย์กับเครื่องที่มีสกรีนมากกว่าหนึ่งสกรีน คุณก็ควรเพิ่มค่านี้ตามที่ต้องการ"
 
-#: ../gui/gdmsetup.glade.h:168
+#: ../gui/gdmsetup.glade.h:164
 msgid ""
 "Turns the Actions menu (which used to be called System menu) on or off.  If "
 "this is off then one of the actions will be available anywhere.  These "
@@ -4451,29 +4433,29 @@ msgstr ""
 "ปฏิบัติการหนึ่งในปฏิบัติการเหล่านี้จะปรากฏให้เรียก ได้แก่ การปิดเครื่อง การเริ่มระบบใหม่ "
 "คำสั่งกำหนดเอง การกำหนดค่า และหน้าต่างเลือกโฮสต์ XDMCP เป็นต้น"
 
-#: ../gui/gdmsetup.glade.h:169
+#: ../gui/gdmsetup.glade.h:165
 msgid "U_ser:"
 msgstr "ผู้ใ_ช้:"
 
-#: ../gui/gdmsetup.glade.h:170
+#: ../gui/gdmsetup.glade.h:166
 msgid "Us_e 24 Hour Clock:"
 msgstr "ใช้_นาฬิกาแบบ 24 ชั่วโมง"
 
-#: ../gui/gdmsetup.glade.h:171
+#: ../gui/gdmsetup.glade.h:167
 msgid ""
 "Use circles instead of asterisks in the password entry. This may not work "
 "with all fonts however."
 msgstr "ใช้จุดกลมแทนดอกจันในช่องรหัสผ่าน อย่างไรก็ดี อาจใช้ไม่ได้กับแบบอักษรทุกแบบ"
 
-#: ../gui/gdmsetup.glade.h:172
+#: ../gui/gdmsetup.glade.h:168
 msgid "Users"
 msgstr "ผู้ใช้"
 
-#: ../gui/gdmsetup.glade.h:173
+#: ../gui/gdmsetup.glade.h:169
 msgid "Welcome Message"
 msgstr "ข้อความต้อนรับ"
 
-#: ../gui/gdmsetup.glade.h:174
+#: ../gui/gdmsetup.glade.h:170
 msgid ""
 "When GDM is ready to manage a remote display, an ACCEPT packet is sent to it "
 "containing a unique session id which will be used in future XDMCP "
@@ -4488,7 +4470,7 @@ msgstr ""
 "ถ้าไม่มีการตอบสนองดังกล่าวมาภายในเวลารอสูงสุดที่กำหนด GDM ก็จะถือว่าดิสเพลย์นั้นตายไปแล้ว "
 "และจะลบออกจากแถวคอย เพื่อให้มีที่ว่างสำหรับจัดการดิสเพลย์อื่น"
 
-#: ../gui/gdmsetup.glade.h:175
+#: ../gui/gdmsetup.glade.h:171
 msgid ""
 "When the user logs in and already has an existing session, they are "
 "connected to that session rather than starting a new session.  This only "
@@ -4499,164 +4481,164 @@ msgstr ""
 "ตัวเลือกนี้ใช้ได้กับวาระที่ทำงานบนเทอร์มินัลเสมือน ซึ่งเปิดด้วย gdmflexiserver เท่านั้น และใช้กับ "
 "XDMCP ไม่ได้"
 
-#: ../gui/gdmsetup.glade.h:176
+#: ../gui/gdmsetup.glade.h:172
 msgid "X Server Login Window Preferences"
 msgstr "ปรับแต่ง XServer สำหรับหน้าจอบันทึกเข้าระบบ"
 
-#: ../gui/gdmsetup.glade.h:177
+#: ../gui/gdmsetup.glade.h:173
 msgid "XDMCP Login Window Preferences"
 msgstr "ปรับแต่งหน้าต่างบันทึกเข้าระบบผ่าน XDMCP"
 
-#: ../gui/gdmsetup.glade.h:178
+#: ../gui/gdmsetup.glade.h:174
 msgid "_Add..."
 msgstr "เ_พิ่ม..."
 
-#: ../gui/gdmsetup.glade.h:179
+#: ../gui/gdmsetup.glade.h:175
 msgid "_Add/Modify..."
 msgstr "เ_พิ่ม/แก้ไข..."
 
-#: ../gui/gdmsetup.glade.h:180
+#: ../gui/gdmsetup.glade.h:176
 msgid "_Allow local system administrator login"
 msgstr "_อนุญาตให้ผู้ดูแลระบบเข้าระบบที่เครื่องนี้"
 
-#: ../gui/gdmsetup.glade.h:181
+#: ../gui/gdmsetup.glade.h:177
 msgid "_Allow users to change fonts and colors of plain greeter"
 msgstr "_อนุญาตให้ผู้ใช้เปลี่ยนแบบอักษรและสีของหน้าต่างต้อนรับแบบธรรมดา"
 
-#: ../gui/gdmsetup.glade.h:182
+#: ../gui/gdmsetup.glade.h:178
 msgid "_Background color:"
 msgstr "สี_พื้นหลัง:"
 
-#: ../gui/gdmsetup.glade.h:184
+#: ../gui/gdmsetup.glade.h:180
 #, no-c-format
 msgid "_Default: \"Welcome to %n\""
 msgstr "ข้อความ_ปกติ: \"ยินดีต้อนรับสู่ %n\""
 
-#: ../gui/gdmsetup.glade.h:185
+#: ../gui/gdmsetup.glade.h:181
 msgid "_Default: \"Welcome\""
 msgstr "ข้อความ_ปกติ: \"ยินดีต้อนรับ\""
 
-#: ../gui/gdmsetup.glade.h:186
+#: ../gui/gdmsetup.glade.h:182
 msgid "_Deny TCP connections to Xserver"
 msgstr "ไ_ม่ยอมรับการเชื่อมต่อ TCP มายัง Xserver"
 
-#: ../gui/gdmsetup.glade.h:187
+#: ../gui/gdmsetup.glade.h:183
 msgid "_Enable Automatic Login"
 msgstr "เ_ปิดใช้การเข้าระบบอัตโนมัติ"
 
-#: ../gui/gdmsetup.glade.h:188
+#: ../gui/gdmsetup.glade.h:184
 msgid "_Enable accessible login"
 msgstr "เปิดใ_ช้งานสิ่งอำนวยความสะดวก"
 
-#: ../gui/gdmsetup.glade.h:189
+#: ../gui/gdmsetup.glade.h:185
 msgid "_Flexible (on demand)"
 msgstr "_ยืดหยุ่น (ตามสั่ง)"
 
-#: ../gui/gdmsetup.glade.h:190
+#: ../gui/gdmsetup.glade.h:186
 msgid "_Global face dir:"
 msgstr "ไดเรกทอรี_รวมรูป:"
 
-#: ../gui/gdmsetup.glade.h:191
+#: ../gui/gdmsetup.glade.h:187
 msgid "_GtkRC file:"
 msgstr "แฟ้ม _GtkRC:"
 
-#: ../gui/gdmsetup.glade.h:192
+#: ../gui/gdmsetup.glade.h:188
 msgid "_Image:"
 msgstr "_รูปภาพ:"
 
-#: ../gui/gdmsetup.glade.h:193
+#: ../gui/gdmsetup.glade.h:189
 msgid "_Include all users from /etc/passwd (not for NIS)"
 msgstr "แ_สดงผู้ใช้ทุกคนใน /etc/passwd (ไม่รวม NIS)"
 
-#: ../gui/gdmsetup.glade.h:194
+#: ../gui/gdmsetup.glade.h:190
 msgid "_Label:"
 msgstr "_ป้ายชื่อ:"
 
-#: ../gui/gdmsetup.glade.h:195
+#: ../gui/gdmsetup.glade.h:191
 msgid "_Login screen ready:"
 msgstr "หน้า_จอเข้าระบบพร้อมใช้งาน:"
 
-#: ../gui/gdmsetup.glade.h:196
+#: ../gui/gdmsetup.glade.h:192
 msgid "_Logins are handled by this computer"
 msgstr "จัดการการเ_ข้าระบบโดยเครื่องนี้"
 
-#: ../gui/gdmsetup.glade.h:197
+#: ../gui/gdmsetup.glade.h:193
 msgid "_Maximum pending requests:"
 msgstr "จำนวน_ลูกข่ายที่ให้เข้าใช้งานพร้อมกันสูงสุด:"
 
-#: ../gui/gdmsetup.glade.h:198
+#: ../gui/gdmsetup.glade.h:194
 msgid "_Minimal UID:"
 msgstr "UID _ต่ำสุด:"
 
-#: ../gui/gdmsetup.glade.h:199
+#: ../gui/gdmsetup.glade.h:195
 msgid "_Only allow login if user's home directory permissions are secure"
 msgstr "อนุญาตให้เ_ข้าระบบถ้าไดเรกทอรีบ้านของผู้ใช้อนุญาตสิทธิ์อย่างเหมาะสมเท่านั้น"
 
-#: ../gui/gdmsetup.glade.h:200
-msgid "_Path:       "
-msgstr "_พาธ:       "
+#: ../gui/gdmsetup.glade.h:196
+msgid "_Path:        "
+msgstr "_พาธ:         "
 
-#: ../gui/gdmsetup.glade.h:201
+#: ../gui/gdmsetup.glade.h:197
 msgid "_Pause before login:"
 msgstr "_รอก่อนเข้าระบบ:"
 
-#: ../gui/gdmsetup.glade.h:202
+#: ../gui/gdmsetup.glade.h:198
 msgid "_Ping interval:"
 msgstr "ช่วงเ_วลาการ ping:"
 
-#: ../gui/gdmsetup.glade.h:203
+#: ../gui/gdmsetup.glade.h:199
 msgid "_Priority:"
 msgstr "ระดับความ_สำคัญ:"
 
-#: ../gui/gdmsetup.glade.h:204
+#: ../gui/gdmsetup.glade.h:200
 msgid "_Remove"
 msgstr "_ลบ"
 
-#: ../gui/gdmsetup.glade.h:205
+#: ../gui/gdmsetup.glade.h:201
 msgid "_Remove..."
 msgstr "_ลบ..."
 
-#: ../gui/gdmsetup.glade.h:206
+#: ../gui/gdmsetup.glade.h:202
 msgid "_Server:"
 msgstr "เ_ซิร์ฟเวอร์:"
 
-#: ../gui/gdmsetup.glade.h:207
+#: ../gui/gdmsetup.glade.h:203
 msgid "_Servers:"
 msgstr "เ_ซิร์ฟเวอร์:"
 
-#: ../gui/gdmsetup.glade.h:208
+#: ../gui/gdmsetup.glade.h:204
 msgid "_Show visual feedback (asterisks) in the password entry"
 msgstr "แ_สดงการตอบสนอง (ด้วยดอกจัน) ในช่องป้อนรหัสผ่าน"
 
-#: ../gui/gdmsetup.glade.h:209
+#: ../gui/gdmsetup.glade.h:205
 msgid "_Style:"
 msgstr "รูปแ_บบ:"
 
-#: ../gui/gdmsetup.glade.h:210
+#: ../gui/gdmsetup.glade.h:206
 msgid "_Theme:"
 msgstr "ชุด_ตกแต่ง:"
 
-#: ../gui/gdmsetup.glade.h:211
+#: ../gui/gdmsetup.glade.h:207
 msgid "_Use circles instead of asterisks in the password entry"
 msgstr "ใ_ช้จุดกลมแทนดอกจันในช่องรหัสผ่าน"
 
-#: ../gui/gdmsetup.glade.h:212
+#: ../gui/gdmsetup.glade.h:208
 msgid "_User:"
 msgstr "_ผู้ใช้:"
 
-#: ../gui/gdmsetup.glade.h:213
+#: ../gui/gdmsetup.glade.h:209
 msgid "_VT:"
 msgstr "เ_ทอร์มินัลเสมือน:"
 
-#: ../gui/gdmsetup.glade.h:214
+#: ../gui/gdmsetup.glade.h:210
 msgid "_X coordinate"
 msgstr "ตำแหน่ง _X"
 
-#: ../gui/gdmsetup.glade.h:215
+#: ../gui/gdmsetup.glade.h:211
 msgid "_Y coordinate"
 msgstr "ตำแหน่ง _Y"
 
-#: ../gui/gdmsetup.glade.h:216
+#: ../gui/gdmsetup.glade.h:212
 msgid ""
 "auto\n"
 "yes\n"
@@ -4666,11 +4648,11 @@ msgstr ""
 "ใช้\n"
 "ไม่ใช้"
 
-#: ../gui/gdmsetup.glade.h:219
+#: ../gui/gdmsetup.glade.h:215
 msgid "dummy"
 msgstr "dummy"
 
-#: ../gui/gdmsetup.glade.h:220
+#: ../gui/gdmsetup.glade.h:216
 msgid "seconds"
 msgstr "วินาที"
 
@@ -4955,6 +4937,21 @@ msgstr "gdmaskpass เรียกทำงานเป็น root ได้เ�
 #, c-format
 msgid "Authentication failure!\n"
 msgstr "การอนุญาตสิทธิ์ล้มเหลว!\n"
+
+#~ msgid " "
+#~ msgstr " "
+
+#~ msgid "  "
+#~ msgstr "  "
+
+#~ msgid "    "
+#~ msgstr "    "
+
+#~ msgid "     "
+#~ msgstr "     "
+
+#~ msgid "         "
+#~ msgstr "         "
 
 #~ msgid "Can't find PAM configuration for GDM."
 #~ msgstr "ไม่สามารถค้นหาการกำหนดค่า PAM สำหรับ GDM"
