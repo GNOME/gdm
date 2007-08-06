@@ -1,3 +1,11 @@
+2007-08-06  Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/gdm.c: Fix error handling of try_command so it generates
+	  more reasonable debug messages.  These messages are not 
+	  translated so it's okay to commit this after string freeze.
+	  Fixes bug #460407.  Patch by Lukasz Zalewski
+	  <lukas@dcs.qmul.ac.uk>.
+
 2007-07-31  Brian Cameron <brian.cameron@sun.com>
 
 	* configure.ac, acinclude.m4, daemon/slave.c: Now support utmp

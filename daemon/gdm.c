@@ -589,8 +589,7 @@ deal_with_x_crashes (GdmDisplay *d)
 }
 
 static gboolean
-try_command (const char *command,
-	     int        *statusp)
+try_command (const char *command)
 {
 	GError  *error;
 	gboolean res;
@@ -602,13 +601,19 @@ try_command (const char *command,
 	res = g_spawn_command_line_sync (command, NULL, NULL, &status, &error);
 	if (error != NULL) {
 		g_warning ("Command failed %s: %s", command, error->message);
-		g_error_free (error);
+		g_error_free (error);		
 	}
-
-	*statusp = 0;
-
-	if (WIFEXITED (status)) {
-		*statusp =  WEXITSTATUS (status);
+	else {
+		if (WIFEXITED (status)) {
+			if (WEXITSTATUS (status) != 0) {
+				gdm_error ("Command '%s' exited with status %u", command, WEXITSTATUS (status));
+				res = FALSE;
+			}
+		}
+		else if (WIFSIGNALED (status)) {
+			gdm_error ("Command '%s' was killed by signal '%s'"), command, g_strsignal (WTERMSIG (status));
+			res = FALSE;
+		}
 	}
 
 	return res;
@@ -618,7 +623,6 @@ static gboolean
 try_commands (const char **array)
 {
 	int      i;
-	int      status;
 	gboolean ret;
 
 	ret = FALSE;
@@ -626,16 +630,9 @@ try_commands (const char **array)
 	/* the idea here is to try the first available command and return if it succeeded */
 
 	for (i = 0; array[i] != NULL; i++) {
-		if (try_command (array[i], &status)) {
-			ret = (status == 0);
-
-			if (! ret) {
-				/* %s is the command string and %d defines the exit status (both non-translatable) */
-				gdm_error (_("command failed %s: %d"), array[i], status);
-			}
-
-			break;
-		}
+		ret = try_command (array[i], &status);
+		if (ret == TRUE)
+			break;				
 	}
 
 	return ret;
