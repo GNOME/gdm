@@ -623,6 +623,7 @@ static gboolean
 try_commands (const char **array)
 {
 	int      i;
+	int      status;
 	gboolean ret;
 
 	ret = FALSE;
@@ -630,7 +631,7 @@ try_commands (const char **array)
 	/* the idea here is to try the first available command and return if it succeeded */
 
 	for (i = 0; array[i] != NULL; i++) {
-		ret = try_command (array[i], &status);
+		ret = try_command (array[i]);
 		if (ret == TRUE)
 			break;				
 	}
