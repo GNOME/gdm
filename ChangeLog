@@ -1,5 +1,12 @@
 2007-08-06  Brian Cameron <brian.cameron@sun.com>
 
+	* configure.ac: Now check for utmp/utmpx functions so that
+	  utmp processing is actually enabled.
+	* daemon/verify-pam.c: Fix bug in if-statement for checking
+	  for logindevperm when VT is enabled.
+
+2007-08-06  Brian Cameron <brian.cameron@sun.com>
+
 	* daemon/gdm.c: Fix compile problem with last commit.
 
 2007-08-06  Brian Cameron <brian.cameron@sun.com>

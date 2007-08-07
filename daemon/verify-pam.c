@@ -1243,8 +1243,8 @@ gdm_verify_user (GdmDisplay *d,
 		 * a device associated with a VT
 		 */
 		if (device_name != NULL &&
-		    strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/") == 0) ||
-		    strcmp  (device_name, "/dev/console") == 0) {
+		   (strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/")) == 0 ||
+		    strcmp  (device_name, "/dev/console") == 0)) {
 			gdm_debug ("Logindevperm login for device %s", device_name);
 
 			(void) di_devperm_login (device_name, pwent->pw_uid,
@@ -1560,8 +1560,8 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 		 * a device associated with a VT
 		 */
 		if (device_name != NULL &&
-		    strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/") == 0) ||
-		    strcmp  (device_name, "/dev/console") == 0) {
+		   (strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/")) == 0 ||
+		    strcmp  (device_name, "/dev/console") == 0)) {
 			gdm_debug ("Logindevperm login for device %s", device_name);
 			(void) di_devperm_login (device_name, pwent->pw_uid,
 						 pwent->pw_gid, NULL);
@@ -1678,8 +1678,8 @@ gdm_verify_cleanup (GdmDisplay *d)
 			 * a device associated with a VT
 			 */
 			if (device_name != NULL &&
-			    strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/") == 0) ||
-			    strcmp  (device_name, "/dev/console") == 0) {
+			   (strncmp (device_name, "/dev/vt/", strlen ("/dev/vt/")) == 0 ||
+			    strcmp  (device_name, "/dev/console") == 0)) {
 				gdm_debug ("Logindevperm logout for device %s", device_name);
 				(void) di_devperm_logout (device_name);
 				g_free (device_name);
