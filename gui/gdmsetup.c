@@ -7522,7 +7522,7 @@ setup_general_tab (void)
 			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_AUTO);
 		}
 		else if (strcasecmp (ve_sure_string (user_24hr_clock), _("yes")) == 0) {
-			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_AUTO);
+			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_YES);
 		}
 		else if (strcasecmp (ve_sure_string (user_24hr_clock), _("no")) == 0) {	
 			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_NO);
