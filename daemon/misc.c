@@ -297,12 +297,13 @@ gdm_get_free_display (int start, uid_t server_uid)
 	 * go that far
          */
 	for (i = start; i < 3000; i++) {
+		FILE *fp;
 		GSList *li;
+		GSList *displays;
 		struct stat s;
 		char buf[256];
-		FILE *fp;
 		int r;
-                GSList *displays;
+		gboolean try_ipv4 = TRUE;
 
                 displays = gdm_daemon_config_get_display_list ();
 
@@ -330,9 +331,20 @@ gdm_get_free_display (int start, uid_t server_uid)
 			VE_IGNORE_EINTR (connect (sock,
                                       (struct sockaddr *)&serv6_addr,
                                       sizeof (serv6_addr)));
+
+			/*
+			 * If IPv6 returns the network is unreachable,
+			 * then try fallbacking to IPv4.  In all other
+			 * cases, do not fallback.  This problem can
+			 * happen if IPv6 is enabled, but the
+			 * administrator has disabled it.
+			 */
+			if (errno != ENETUNREACH)
+				try_ipv4 = FALSE;
 		}
-		else
 #endif
+
+		if (try_ipv4)
 		{
 			sock = socket (AF_INET, SOCK_STREAM, 0);
 
