@@ -1,3 +1,25 @@
+2007-08-09  Brian Cameron <brian.cameron@sun.com>
+
+	* common/gdm-log.h, daemon/misc.h, daemon/misc.c: Revert to
+	  previous gdm_fail function since we really want this
+	  function to cleanup and exit, not just log a message.  This
+	  was broken in the 2.19 cleanup.  Fixes bug #461822.
+	* daemon/gdm.c: Fixes to support gdm_fail and also better 
+	  string error handling for GET_XSERVER_DETAILS command.
+	* daemon/gdm-config.c, daemon/server.h: Revert code to the way
+	  the 2.18 code managed the xserver and display lists.  This
+	  also got broken in the cleanup.  It is not appropriate to 
+	  save the display in the server array because more than one
+	  display can share the same server name.  There is one 
+	  change in behavior still.  In 2.18 GDM would load all 
+	  [server-foo] sections even if they weren't actually being
+	  used.  Now it only loads the ones that are used by a
+	  display in the [servers] section.  This means gdmsetup is
+	  a bit broken for editing the server-foo sections, so 
+	  probably need to fix this later.  Still at least now it
+	  should manage the displays properly if you have multiple
+	  displays defined to use the same [server-foo].
+
 2007-08-08  Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmsetup.c: Now properly set "Use 24 Hour Clock" to

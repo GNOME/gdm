@@ -30,12 +30,10 @@ struct _GdmXserver
 	char *id;
 	char *name;
 	char *command;
-	char *device;
 	gboolean flexible;
 	gboolean choosable; /* not implemented yet */
 	gboolean chooser; /* instead of greeter, run chooser */
 	gboolean handled;
-	int number;
 	int priority;
 };
 

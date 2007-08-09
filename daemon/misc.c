@@ -62,6 +62,8 @@
 #include "gdm-daemon-config.h"
 
 extern char **environ;
+extern pid_t gdm_main_pid;
+extern pid_t extra_process;
 
 #ifdef ENABLE_IPV6
 
@@ -2166,6 +2168,54 @@ gdm_read_default (gchar *key)
 #else
     return NULL;
 #endif
+}
+
+/**
+ * gdm_fail:
+ * @format: printf style format string
+ * @...: Optional arguments
+ *
+ * Logs fatal error condition and aborts master daemon.  Also sleeps
+ * for 30 seconds to avoid looping if gdm is started by init.
+ */
+void
+gdm_fail (const gchar *format, ...)
+{
+    va_list args;
+    char *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+
+    /* Log to both syslog and stderr */
+    gdm_error (s);
+    if (getpid () == gdm_main_pid) {
+	    gdm_fdprintf (2, "%s\n", s);
+    }
+
+    g_free (s);
+
+    /* If main process do final cleanup to kill all processes */
+    if (getpid () == gdm_main_pid) {
+            gdm_final_cleanup ();
+    } else if ( ! gdm_slave_final_cleanup ()) {
+            /* If we weren't even a slave do some random cleanup only */
+            /* FIXME: is this all fine? */
+            gdm_sigchld_block_push ();
+            if (extra_process > 1 && extra_process != getpid ()) {
+                    /* we sigterm extra processes, and we don't wait */
+                    kill (-(extra_process), SIGTERM);
+                    extra_process = 0;
+            }
+            gdm_sigchld_block_pop ();
+    }
+
+    /* Slow down respawning if we're started from init */
+    if (getppid () == 1)
+        sleep (30);
+
+    exit (EXIT_FAILURE);
 }
 
 /* EOF */

@@ -1068,8 +1068,7 @@ gdm_daemon_config_get_xservers (void)
 static void
 gdm_daemon_config_load_xserver (GdmConfig  *config,
 				const char *key,
-				const char *name,
-				const char *device)
+				const char *name)
 {
 	GdmXserver     *svr;
 	int             n;
@@ -1084,11 +1083,6 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 
 	svr = g_new0 (GdmXserver, 1);
 	svr->id = g_strdup (name);
-	svr->device = g_strdup (device);
-
-	if (isdigit (*key)) {
-		svr->number = atoi (key);
-	}
 
 	group = g_strdup_printf ("server-%s", name);
 
@@ -1101,11 +1095,6 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 	if (res) {
 		svr->command = g_strdup (gdm_config_value_get_string (value));
 	}
-
-	if (device != NULL)
-		gdm_debug ("Adding new server id=%s name=%s command=%s device=%s", name, svr->name, svr->command, svr->device);
-	else
-		gdm_debug ("Adding new server id=%s name=%s command=%s", name, svr->name, svr->command);
 
 	/* bool */
 	res = gdm_config_get_value (config, group, "flexible", &value);
@@ -1166,7 +1155,6 @@ gdm_daemon_config_unload_xservers (GdmConfig *config)
 		g_free (xsvr->id);
 		g_free (xsvr->name);
 		g_free (xsvr->command);
-		g_free (xsvr->device);
 	}
 
 	if (xservers != NULL) {
@@ -1185,7 +1173,6 @@ gdm_daemon_config_ensure_one_xserver (GdmConfig *config)
 		svr->id        = g_strdup (GDM_STANDARD);
 		svr->name      = g_strdup ("Standard server");
 		svr->command   = g_strdup (X_SERVER);
-		svr->device    = NULL;
 		svr->flexible  = TRUE;
 		svr->choosable = TRUE;
 		svr->handled   = TRUE;
@@ -1198,37 +1185,38 @@ gdm_daemon_config_ensure_one_xserver (GdmConfig *config)
 static void
 load_xservers_group (GdmConfig *config)
 {
-        char     **keys;
-        gsize      len;
-        int        i;
+	char     **keys;
+	gsize      len;
+	int        i;
 
-        keys = gdm_config_get_keys_for_group (config, GDM_CONFIG_GROUP_SERVERS, &len, NULL);
+	keys = gdm_config_get_keys_for_group (config,
+		GDM_CONFIG_GROUP_SERVERS, &len, NULL);
 
-        /* now construct entries for these groups */
-        for (i = 0; i < len; i++) {
-                GdmConfigEntry  entry;
-                GdmConfigValue *value;
-                gboolean        res;
-                int             j;
-                char           *new_group;
-        	char          **value_list;
-        	const char     *display_value;
-        	const char     *name;
-        	const char     *device_name = NULL;
+	/* now construct entries for these groups */
+	for (i = 0; i < len; i++) {
+		GdmConfigEntry   entry;
+		GdmConfigValue  *value;
+		const char      *display_value;
+		const char      *name;
+		char           **value_list;
+		char            *new_group;
+		int              j;
+		gboolean         res;
 
-                entry.group = GDM_CONFIG_GROUP_SERVERS;
-                entry.key = keys[i];
-                entry.type = GDM_CONFIG_VALUE_STRING;
-                entry.default_value = NULL;
-                entry.id = GDM_CONFIG_INVALID_ID;
+	        entry.group         = GDM_CONFIG_GROUP_SERVERS;
+		entry.key           = keys[i];
+		entry.type          = GDM_CONFIG_VALUE_STRING;
+		entry.default_value = NULL;
+		entry.id            = GDM_CONFIG_INVALID_ID;
 
-                gdm_config_add_entry (config, &entry);
-                gdm_config_process_entry (config, &entry, NULL);
+		gdm_config_add_entry (config, &entry);
+		gdm_config_process_entry (config, &entry, NULL);
 
-                res = gdm_config_get_value (config, entry.group, entry.key, &value);
-                if (! res) {
-                        continue;
-                }
+		res = gdm_config_get_value (config, entry.group, entry.key,
+			&value);
+		if (! res) {
+			continue;
+		}
 
 		display_value = gdm_config_value_get_string (value);
 		value_list = g_strsplit (display_value, " ", -1);
@@ -1240,17 +1228,6 @@ load_xservers_group (GdmConfig *config)
 		
 		name = value_list[0];
 
-		/*
-		 * Allow an optional device to be passed in as a 2nd argument
-		 * with the format "device=/dev/foo".
- 		 * In the future, if more per-display configuration is desired, 
-		 * this can be made more sophisticated to handle additional
-		 * arguments.
-		 */
-		if (value_list[1] != NULL &&
-		    strncmp (value_list[1], "device=", strlen ("device=")) == 0)
-			device_name = value_list[1] + strlen ("device=");
-
 		/* Skip servers marked as inactive */
 		if (name == NULL || name[0] == '\0' ||
 		    g_ascii_strcasecmp (name, "inactive") == 0) {
@@ -1259,22 +1236,22 @@ load_xservers_group (GdmConfig *config)
 			continue;
 		}
 
-                new_group = g_strdup_printf ("server-%s", name);
-                for (j = 0; j < G_N_ELEMENTS (gdm_daemon_server_config_entries); j++) {
-                        GdmConfigEntry *srv_entry;
-                        if (gdm_daemon_server_config_entries[j].key == NULL) {
-                                continue;
-                        }
-                        srv_entry = gdm_config_entry_copy (&gdm_daemon_server_config_entries[j]);
-                        g_free (srv_entry->group);
-                        srv_entry->group = g_strdup (new_group);
-                        gdm_config_process_entry (config, srv_entry, NULL);
-                        gdm_config_entry_free (srv_entry);
-                }
+		new_group = g_strdup_printf ("server-%s", name);
+		for (j = 0; j < G_N_ELEMENTS (gdm_daemon_server_config_entries); j++) {
+			GdmConfigEntry *srv_entry;
+			if (gdm_daemon_server_config_entries[j].key == NULL) {
+				continue;
+			}
+			srv_entry = gdm_config_entry_copy (&gdm_daemon_server_config_entries[j]);
+			g_free (srv_entry->group);
+			srv_entry->group = g_strdup (new_group);
+			gdm_config_process_entry (config, srv_entry, NULL);
+			gdm_config_entry_free (srv_entry);
+		}
 		g_free (new_group);
 
 		/* Now we can add this server */
-		gdm_daemon_config_load_xserver (config, entry.key, name, device_name);
+		gdm_daemon_config_load_xserver (config, entry.key, name);
                 gdm_config_value_free (value);
 		g_strfreev (value_list);
         }
@@ -1482,31 +1459,73 @@ have_display_for_number (int number)
 static void
 gdm_daemon_config_load_displays (GdmConfig *config)
 {
-	GSList *l;
+	char       **keys;
+	const char *display_value;
+	gsize      len;
+	int        i;
 
-	for (l = xservers; l != NULL; l = l->next) {
-		GdmXserver *xserver;
-		GdmDisplay *disp;
+	keys = gdm_config_get_keys_for_group (config,
+		GDM_CONFIG_GROUP_SERVERS, &len, NULL);
 
-		xserver = l->data;
+        /* now construct entries for these groups */
+        for (i = 0; i < len; i++) {
+		GdmDisplay     *disp;
+		GdmConfigValue *value;
+		const char      *name        = NULL;
+		const char      *device_name = NULL;
+		char           **value_list;
+		int             keynum;
+		gboolean        res;
 
-		gdm_debug ("Loading display for key '%d'", xserver->number);
+		name   = keys[i];
 
-		gdm_debug ("Got name for server: %s", xserver->id);
-		/* Do not add if already in the list */
-		if (have_display_for_number (xserver->number)) {
+		if (!isdigit (*name)) {
 			continue;
 		}
 
-		disp = gdm_display_alloc (xserver->number, xserver->id, xserver->device);
+		keynum = atoi (name);
+
+                res = gdm_config_get_value (config, GDM_CONFIG_GROUP_SERVERS,
+			keys[i], &value);
+		if (! res) {
+			continue;
+		}
+
+                display_value = gdm_config_value_get_string (value);
+		value_list    = g_strsplit (display_value, " ", -1);
+
+		if (value_list == NULL || value_list[0] == '\0') {
+			gdm_config_value_free (value);
+			g_strfreev (value_list);
+			continue;
+		}
+
+		/*
+		 * Allow an optional device to be passed in as a 2nd argument
+		 * with the format "device=/dev/foo".
+		 * In the future, if more per-display configuration is desired, 
+		 * this can be made more sophisticated to handle additional
+		 * arguments.
+		 */
+		if (value_list[1] != NULL &&
+		    strncmp (value_list[1], "device=", strlen ("device=")) == 0)
+		        device_name = value_list[1] + strlen ("device=");
+
+		gdm_debug ("Loading display for key '%d'", keynum);
+
+		disp = gdm_display_alloc (keynum, name, device_name);
 		if (disp == NULL) {
+			g_strfreev (value_list);
 			continue;
 		}
 
-		displays = g_slist_insert_sorted (displays, disp, gdm_daemon_config_compare_displays);
-		if (xserver->number > high_display_num) {
-			high_display_num = xserver->number;
+		displays = g_slist_insert_sorted (displays, disp,
+			gdm_daemon_config_compare_displays);
+		if (keynum > high_display_num) {
+			high_display_num = keynum;
 		}
+
+		g_strfreev (value_list);
 	}
 }
 

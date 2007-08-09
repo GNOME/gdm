@@ -37,7 +37,6 @@ void      gdm_log_init            (void);
 void      gdm_log_shutdown        (void);
 
 /* compatibility */
-#define   gdm_fail               g_critical
 #define   gdm_error              g_warning
 #define   gdm_info               g_message
 #define   gdm_debug              g_debug

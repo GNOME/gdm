@@ -109,9 +109,10 @@ static void custom_cmd_no_restart (long cmd_id);
 /* Global vars */
 
 gint flexi_servers         = 0; /* Number of flexi servers */
-static pid_t extra_process = 0; /* An extra process.  Used for quickie
+pid_t extra_process = 0;        /* An extra process.  Used for quickie
                                    processes, so that they also get whacked */
 static int extra_status    = 0; /* Last status from the last extra process */
+pid_t gdm_main_pid         = 0; /* PID of the main daemon */
 
 gboolean gdm_wait_for_go         = FALSE; /* wait for a GO in the fifo */
 static gboolean print_version    = FALSE; /* print version number and quit */
@@ -208,6 +209,8 @@ gdm_daemonify (void)
 
 		exit (EXIT_SUCCESS);
 	}
+
+	gdm_main_pid = getpid ();
 
 	if G_UNLIKELY (pid < 0)
 		gdm_fail (_("%s: fork () failed!"), "gdm_daemonify");
@@ -1522,6 +1525,8 @@ main (int argc, char *argv[])
 
 	/* semi init pseudorandomness */
 	gdm_random_tick ();
+
+	gdm_main_pid = getpid ();
 
 	/* We here ensure descriptors 0, 1 and 2 */
 	ensure_desc_012 ();
@@ -3402,17 +3407,20 @@ sup_handle_get_server_details (GdmConnection *conn,
 	gchar       **splitstr = g_strsplit (server, " ", 2);
 	GdmXserver   *svr      = NULL;
 
-	if (splitstr != NULL && splitstr[0] != NULL) {
+	if (gdm_vector_len (splitstr) == 2) {
 		svr = gdm_daemon_config_find_xserver ((gchar *)splitstr[0]);
 	}
 
-	if (svr != NULL && splitstr[1] != NULL) {
+	if (svr != NULL) {
 		if (g_strcasecmp (splitstr[1], "ID") == 0)
-			gdm_connection_printf (conn, "OK %s\n", svr->id);
+			gdm_connection_printf (conn, "OK %s\n",
+				svr->id ? svr->id : "(null)");
 		else if (g_strcasecmp (splitstr[1], "NAME") == 0)
-			gdm_connection_printf (conn, "OK %s\n", svr->name);
+			gdm_connection_printf (conn, "OK %s\n",
+				svr->name ? svr->name : "(null)");
 		else if (g_strcasecmp (splitstr[1], "COMMAND") == 0)
-			gdm_connection_printf (conn, "OK %s\n", svr->command);
+			gdm_connection_printf (conn, "OK %s\n",
+				svr->command ? svr->command : "(null)");
 		else if (g_strcasecmp (splitstr[1], "PRIORITY") == 0)
 			gdm_connection_printf (conn, "OK %d\n", svr->priority);
 		else if (g_strcasecmp (splitstr[1], "FLEXIBLE") == 0 &&
