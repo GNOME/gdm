@@ -866,9 +866,6 @@ main (int argc, char *argv[])
 	 */
 	auth_cookie = gdmcomm_get_auth_cookie ();
 
-	/* check for other displays/logged in users */
-	check_for_users ();
-
 	if (use_xnest) {
 		char *cookie = gdmcomm_get_a_cookie (FALSE /* binary */);
 
@@ -900,6 +897,10 @@ main (int argc, char *argv[])
 		version = "2.3.90.4";
 		auth_cookie = NULL;
 	} else {
+
+		/* check for other displays/logged in users */
+		check_for_users ();
+
 		if (auth_cookie == NULL) {
 
 			/* At this point we are done using the socket, so close it */
