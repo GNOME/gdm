@@ -1,3 +1,12 @@
+2007-08-15  Brian Cameron <brian.cameron@sun.com>
+
+	* gui/modules/dwellmouselistener.c: Remove XInput code from
+	  dwellmouselistener.c since it doesn't seem to work properly.
+	  Now this module assumes that X be configured to send core
+	  events for extended input devices.  This fixes bug #457998
+	  where a tablet was not working with dwellmouselistener.c.
+	  Patch by Ray Strode <rstrode@redhat.com>.
+
 2007-08-09  Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmflexiserver.c: We do not want to pop up the
