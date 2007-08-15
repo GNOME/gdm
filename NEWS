@@ -1,5 +1,42 @@
 Ahh news...
 
+2.19.6 Stuff:
+
+- Fix gdmflexiserver so when used to start a "Nested Display" (a login
+  in a window), it does not pop-up the window showing the user what
+  VT's are already logged in.  That window should only show up when
+  starting Flexi (VT) displays, not Nested displays.  (Brian Cameron)
+
+- Remove XInput code from the dwellmouselistener accessibility module.
+  Bug #457998 reported that this code was not working and causing 
+  devices to fail. (Ray Strode)
+
+- Fix bug #461822 which caused entries in the [servers] section of the
+  configuration to get ignored if more than one referenced the same
+  [server-foo] server.  This was working in 2.18 but got broken during
+  the cleanup.  (Brian Cameron)
+
+- Fix gdm_fail function so that it cleans up and exits, so now GDM
+  will better handle critical failures.  This was working in 2.18
+  but got broken during the cleanup.  (Brian Cameron)
+
+- Now gdmsetup sets "Use 24 Hour Clock" to "yes" when this is its
+  value.  (Sebastien Bacher)
+
+- Fixes for utmpx processing so it now works with utmp and also on
+  FreeBSD.  (Brian Cameron, Joe Marcus Clarke)
+
+- Fix IPv6 check when starting VT so that if IPv6 reports that the
+  network is not reachable, it falls back to IPv4.  (Brian Cameron)
+
+- Fix string translation issues.  (Lukasz Zalewski)
+
+- Translation updates (Takeshi AIHANA, \305\275ygimantas Beru\304\215ka,
+  Runa Bhattacharjee, Theppitak Karoonboonyanan, Gabor Kelemen, Kjartan
+  Maraas, Inaki Larranaga Murgoitio, Danishka Navin, Daniel Nylander,
+  Ankit Patel, Ani Peter, Pramod Raghavendra, Hendrik Richter, Ilkka
+  Tuohela)
+
 2.19.5 Stuff:
 
 - Fix for CVE-2007-3381, a denial of service attack where the
