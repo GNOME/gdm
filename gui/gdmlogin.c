@@ -2369,6 +2369,8 @@ gdm_login_gui_init (void)
 	    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (browser), FALSE);
 	    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (browser),
 					       FALSE);
+	    gtk_tree_view_set_enable_search (GTK_TREE_VIEW (browser),
+					     FALSE);
 	    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
 	    gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 

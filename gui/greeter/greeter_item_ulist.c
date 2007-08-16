@@ -282,6 +282,9 @@ greeter_generate_userlist (GtkWidget *tv, GreeterItemInfo *info)
 
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tv),
 					   FALSE);
+	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (tv),
+					 FALSE);
+
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 	if (users != NULL) {
