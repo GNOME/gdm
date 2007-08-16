@@ -1,7 +1,15 @@
 2007-08-16  Brian Cameron <brian.cameron@sun.com>
 
+	* daemon/slave.c: Fix some warnings and avoid using #ifdef's
+	  in gdm_debug calls since some compilers do not like #ifdef's
+	  in macros.  Some code cleanup.  Fixes bug #467401.  Patch	
+	  by Jens Granseuer <jensgr@gmx.net>.
+
+2007-08-16  Brian Cameron <brian.cameron@sun.com>
+
 	* gui/gdmlogin.c, * gui/greeter/greeter_item_ulist.c: Disable
-	  autocompletion in the face browser.
+	  autocompletion in the face browser.  Fixes bug #467335.  Patch
+	  by Ray Strode <rstrode@redhat.com>.
 
 2007-08-15  Brian Cameron <brian.cameron@sun.com>
 

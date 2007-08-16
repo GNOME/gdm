@@ -4079,7 +4079,7 @@ finish_session_output (gboolean do_read)
 	}
 }
 
-GString *
+static GString *
 gdm_slave_parse_enriched_string (GdmDisplay *d, const gchar *s)
 {
 	GString *str = g_string_new (NULL);
@@ -4122,7 +4122,6 @@ gdm_slave_update_pseudo_device (GdmDisplay *d, const char *device_in)
 	GString *str;
 	struct stat st;
 	gchar *device;
-	gboolean pseudo_device;
 
 	/* If not a valid device, then do not update */
 	if (device_in == NULL || strncmp (device_in, "/dev/", 5) != 0) {
@@ -4268,11 +4267,12 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 #endif
 		}
 
-		gdm_debug ("utmp-wtmp: Using username %.*s",
 #if defined(HAVE_UT_UT_USER)
+		gdm_debug ("utmp-wtmp: Using username %*s",
 			   sizeof (record.ut_user),
 			   record.ut_user);
 #elif defined(HAVE_UT_UT_NAME)
+		gdm_debug ("utmp-wtmp: Using username %*s",
 			   sizeof (record.ut_name),
 			   record.ut_name);
 #endif
@@ -4303,7 +4303,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 
 #if defined(HAVE_UT_UT_ID)
 	strncpy (record.ut_id, d->name, sizeof (record.ut_id));
-	gdm_debug ("utmp-wtmp: Using id %.*s",
+	gdm_debug ("utmp-wtmp: Using id %*s",
 	       sizeof (record.ut_id),
 	       record.ut_id);
 #endif
@@ -4316,7 +4316,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 		device_name = NULL;
 	}
 
-	gdm_debug ("utmp-wtmp: Using line %.*s",
+	gdm_debug ("utmp-wtmp: Using line %*s",
 	       sizeof (record.ut_line),
 	       record.ut_line);
 
@@ -4334,7 +4334,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 		strncpy (record.ut_host, host, sizeof (record.ut_host));
 		g_free (host);
 
-		gdm_debug ("utmp-wtmp: Using hostname %.*s",
+		gdm_debug ("utmp-wtmp: Using hostname %*s",
 		   sizeof (record.ut_host),
 		   record.ut_host);
 
