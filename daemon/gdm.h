@@ -82,7 +82,7 @@ enum {
 
 #define GDM_CUSTOM_COMMAND_MAX 10 /* maximum number of supported custom commands */
 
-#ifdef sun
+#ifdef __sun
 #define SDTLOGIN_DIR "/var/dt/sdtlogin"
 #endif
 
