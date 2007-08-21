@@ -94,12 +94,6 @@ enum {
 	PROP_DISPLAY_ID,
 };
 
-enum {
-	LAST_SIGNAL
-};
-
-static guint signals [LAST_SIGNAL] = { 0, };
-
 static void	gdm_product_slave_class_init	(GdmProductSlaveClass *klass);
 static void	gdm_product_slave_init	        (GdmProductSlave      *product_slave);
 static void	gdm_product_slave_finalize	(GObject             *object);
@@ -422,7 +416,7 @@ on_session_started (GdmSession      *session,
 		    GdmProductSlave *slave)
 {
 	g_debug ("session started on pid %d", (int) pid);
-	/*g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);*/
+
 	relay_session_started (slave);
 
 	disconnect_relay (slave);

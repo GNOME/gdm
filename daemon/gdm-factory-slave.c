@@ -85,12 +85,6 @@ enum {
 	PROP_0,
 };
 
-enum {
-	LAST_SIGNAL
-};
-
-static guint signals [LAST_SIGNAL] = { 0, };
-
 static void	gdm_factory_slave_class_init	(GdmFactorySlaveClass *klass);
 static void	gdm_factory_slave_init	        (GdmFactorySlave      *factory_slave);
 static void	gdm_factory_slave_finalize	(GObject             *object);

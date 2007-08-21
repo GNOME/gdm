@@ -181,10 +181,6 @@ struct GdmXdmcpDisplayFactoryPrivate
 };
 
 enum {
-	LAST_SIGNAL
-};
-
-enum {
 	PROP_0,
 	PROP_PORT,
 	PROP_USE_MULTICAST,
@@ -196,8 +192,6 @@ enum {
 	PROP_MAX_PENDING_DISPLAYS,
 	PROP_MAX_WAIT,
 };
-
-static guint signals [LAST_SIGNAL] = { 0, };
 
 static void	gdm_xdmcp_display_factory_class_init	(GdmXdmcpDisplayFactoryClass *klass);
 static void	gdm_xdmcp_display_factory_init	        (GdmXdmcpDisplayFactory      *manager);

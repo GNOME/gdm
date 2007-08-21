@@ -38,15 +38,9 @@ struct GdmDisplayFactoryPrivate
 };
 
 enum {
-	LAST_SIGNAL
-};
-
-enum {
 	PROP_0,
 	PROP_DISPLAY_STORE,
 };
-
-static guint signals [LAST_SIGNAL] = { 0, };
 
 static void	gdm_display_factory_class_init	(GdmDisplayFactoryClass *klass);
 static void	gdm_display_factory_init	(GdmDisplayFactory      *factory);
