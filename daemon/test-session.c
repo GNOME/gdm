@@ -144,25 +144,25 @@ static void
 on_secret_info_query (GdmSession *session,
                       const char *query_text)
 {
-	char answer[1024];
-#ifdef __sun
-	struct termios io_info;
-#else
-	struct termio io_info;
-#endif
+	char           answer[1024];
+	struct termios ts0;
+        struct termios ts1;
+
+        tcgetattr (fileno (stdin), &ts0);
+        ts1 = ts0;
+        ts1.c_lflag &= ~ECHO;
 
 	g_print ("%s", query_text);
 
-	ioctl (0, TCGETA, &io_info);
-	io_info.c_lflag &= ~ECHO;
-	ioctl (0, TCSETA, &io_info);
+        if (tcsetattr (fileno (stdin), TCSAFLUSH, &ts1) != 0) {
+                fprintf (stderr, "Could not set terminal attributes\n");
+                exit (1);
+        }
 
 	fgets (answer, sizeof (answer), stdin);
-	answer[strlen(answer) - 1] = '\0';
+	answer[strlen (answer) - 1] = '\0';
 
-	ioctl (0, TCGETA, &io_info);
-	io_info.c_lflag |= ECHO;
-	ioctl (0, TCSETA, &io_info);
+        tcsetattr (fileno (stdin), TCSANOW, &ts0);
 
 	g_print ("\n");
 
