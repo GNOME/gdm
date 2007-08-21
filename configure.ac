@@ -245,6 +245,7 @@ dnl ## internationalization support
 AM_GLIB_GNU_GETTEXT
 
 EXTRA_DAEMON_LIBS=""
+EXTRA_SLAVE_LIBS=""
 EXTRA_CHOOSER_LIBS=""
 EXTRA_XNEST_LIBS=""
 EXTRA_FLEXI_LIBS=""
@@ -255,6 +256,7 @@ EXTRA_GREETER_LIBS=""
 AC_CHECK_FUNC(socket,,[
 	      AC_CHECK_LIB(socket,socket, [
 			   EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsocket"
+			   EXTRA_SLAVE_LIBS="$EXTRA_SLAVE_LIBS -lsocket"
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lsocket"
 			   EXTRA_XNEST_LIBS="$EXTRA_XNEST_LIBS -lsocket"
 			   EXTRA_FLEXI_LIBS="$EXTRA_FLEXI_LIBS -lsocket"
@@ -263,6 +265,7 @@ AC_CHECK_FUNC(socket,,[
 AC_CHECK_FUNC(gethostbyname,,[
 	      AC_CHECK_LIB(nsl,gethostbyname, [
 			   EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lnsl"
+			   EXTRA_SLAVE_LIBS="$EXTRA_SLAVE_LIBS -lnsl"
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lnsl"])])
 AC_CHECK_FUNC(sched_yield,[
 	      AC_DEFINE(HAVE_SCHED_YIELD)],[
@@ -273,6 +276,20 @@ AC_CHECK_FUNC(sched_yield,[
 AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
+
+AC_MSG_CHECKING(if utmpx structure has ut_syslen field)
+AC_TRY_COMPILE([
+  #include <utmpx.h>],[
+  struct utmpx record;
+  record.ut_syslen = sizeof (record.ut_host);
+  ],
+  have_ut_syslen=yes,
+  have_ut_syslen=no
+  )
+if test x$have_ut_syslen = xyes; then
+  AC_DEFINE(HAVE_UT_SYSLEN)
+fi
+AC_MSG_RESULT($have_ut_syslen)
 
 COMMON_GNOME_LIBS="libgdmcommon-ui.a"
 AC_SUBST(COMMON_GNOME_LIBS)
@@ -441,6 +458,14 @@ AC_CHECK_HEADERS(sys/sockio.h, [
 AC_CHECK_HEADERS(libgen.h, [
 		 AC_DEFINE(HAVE_LIBGEN_H)])
 
+#
+# Check for utmp stuff
+#
+AC_CHECK_HEADERS(utmp.h utmpx.h libutil.h sys/param.h)
+AC_CHECK_FUNC(getutmpx updwtmpx)
+AC_CHECK_LIB(util,login)
+AC_CHECK_LIB(util,logout)
+GDM_CHECK_UTMP
 
 #
 # Xdmcp checking
@@ -940,6 +965,7 @@ AC_CHECK_LIB(secdb, chkauthattr, [
 # Subst the extra libs
 #
 AC_SUBST(EXTRA_DAEMON_LIBS)
+AC_SUBST(EXTRA_SLAVE_LIBS)
 AC_SUBST(EXTRA_CHOOSER_LIBS)
 AC_SUBST(EXTRA_XNEST_LIBS)
 AC_SUBST(EXTRA_FLEXI_LIBS)

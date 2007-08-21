@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <locale.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>

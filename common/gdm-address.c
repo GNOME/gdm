@@ -26,6 +26,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+#ifdef HAS_SYS_SOCKET
+#include <sys/socket.h>
+#endif
+#include <netdb.h>
 
 #ifndef G_OS_WIN32
 #include <sys/socket.h>

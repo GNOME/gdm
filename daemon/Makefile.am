@@ -113,6 +113,7 @@ gdm_simple_slave_SOURCES = 		\
 	$(NULL)
 
 gdm_simple_slave_LDFLAGS =		\
+	$(EXTRA_SLAVE_LIBS)		\
 	$(PAM_LIBS)			\
 	$(NULL)
 
@@ -191,6 +192,7 @@ gdm_product_slave_SOURCES = 		\
 	$(NULL)
 
 gdm_product_slave_LDFLAGS =		\
+	$(EXTRA_SLAVE_LIBS)		\
 	$(PAM_LIBS)			\
 	$(NULL)
 

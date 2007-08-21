@@ -145,7 +145,11 @@ on_secret_info_query (GdmSession *session,
                       const char *query_text)
 {
 	char answer[1024];
+#ifdef __sun
+	struct termios io_info;
+#else
 	struct termio io_info;
+#endif
 
 	g_print ("%s", query_text);
 

@@ -31,6 +31,7 @@
 #include <ctype.h>
 #include <pwd.h>
 #include <grp.h>
+#include <signal.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -461,16 +462,6 @@ server_child_setup (GdmServer *server)
 	setpgid (0, 0);
 
 	change_user (server);
-
-#if sun
-	{
-		/* Remove old communication pipe, if present */
-		char old_pipe[MAXPATHLEN];
-
-		sprintf (old_pipe, "%s/%d", SDTLOGIN_DIR, server->priv->display_name);
-		g_unlink (old_pipe);
-	}
-#endif
 }
 
 static void

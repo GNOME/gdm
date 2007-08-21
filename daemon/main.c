@@ -639,11 +639,6 @@ main (int    argc,
 
 	g_chdir (AUTHDIR);
 
-#ifdef __sun
-	g_unlink (SDTLOGIN_DIR);
-	g_mkdir (SDTLOGIN_DIR, 0700);
-#endif
-
 	manager = gdm_manager_new ();
 
 	if (manager == NULL) {
