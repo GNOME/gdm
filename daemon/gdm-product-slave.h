@@ -48,7 +48,7 @@ typedef struct
 } GdmProductSlaveClass;
 
 GType		    gdm_product_slave_get_type	(void);
-GdmSlave *          gdm_product_slave_new        (const char       *id);
+GdmSlave *          gdm_product_slave_new       (const char       *id);
 
 G_END_DECLS
 

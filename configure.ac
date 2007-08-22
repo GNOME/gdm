@@ -277,20 +277,6 @@ AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
 
-AC_MSG_CHECKING(if utmpx structure has ut_syslen field)
-AC_TRY_COMPILE([
-  #include <utmpx.h>],[
-  struct utmpx record;
-  record.ut_syslen = sizeof (record.ut_host);
-  ],
-  have_ut_syslen=yes,
-  have_ut_syslen=no
-  )
-if test x$have_ut_syslen = xyes; then
-  AC_DEFINE(HAVE_UT_SYSLEN)
-fi
-AC_MSG_RESULT($have_ut_syslen)
-
 COMMON_GNOME_LIBS="libgdmcommon-ui.a"
 AC_SUBST(COMMON_GNOME_LIBS)
 
@@ -458,6 +444,57 @@ AC_CHECK_HEADERS(sys/sockio.h, [
 AC_CHECK_HEADERS(libgen.h, [
 		 AC_DEFINE(HAVE_LIBGEN_H)])
 
+
+#
+# Checking for a posix version of getpwnam_r
+# if we are cross compiling and can not run the test
+# assume getpwnam_r is the posix version
+# it is up to the person cross compiling to change
+# this behavior if desired
+#
+AC_LANG_PUSH(C)
+AC_CACHE_CHECK([for posix getpwnam_r],
+		ac_cv_func_posix_getpwnam_r,
+		[AC_RUN_IFELSE([AC_LANG_PROGRAM(
+[[
+#include <errno.h>
+#include <pwd.h>
+]],
+[[
+    char buffer[10000];
+    struct passwd pwd, *pwptr = &pwd;
+    int error;
+    errno = 0;
+    error = getpwnam_r ("", &pwd, buffer,
+                        sizeof (buffer), &pwptr);
+   return (error < 0 && errno == ENOSYS)
+	   || error == ENOSYS;
+]])],
+	[ac_cv_func_posix_getpwnam_r=yes],
+	[ac_cv_func_posix_getpwnam_r=no],
+        [ac_cv_func_posix_getpwnam_r=yes]
+)])
+AC_LANG_POP(C)
+
+if test "$ac_cv_func_posix_getpwnam_r" = yes; then
+	AC_DEFINE(HAVE_POSIX_GETPWNAM_R,1,
+		[Have POSIX function getpwnam_r])
+else
+	AC_CACHE_CHECK([for nonposix getpwnam_r],
+		ac_cv_func_nonposix_getpwnam_r,
+		[AC_TRY_LINK([#include <pwd.h>],
+                      	[char buffer[10000];
+                       	struct passwd pwd;
+                       	getpwnam_r ("", &pwd, buffer, 
+                               		sizeof (buffer));],
+			[ac_cv_func_nonposix_getpwnam_r=yes],
+			[ac_cv_func_nonposix_getpwnam_r=no])])
+		if test "$ac_cv_func_nonposix_getpwnam_r" = yes; then
+		AC_DEFINE(HAVE_NONPOSIX_GETPWNAM_R,1,
+			[Have non-POSIX function getpwnam_r])
+	fi
+fi
+
 #
 # Check for utmp stuff
 #
@@ -466,6 +503,20 @@ AC_CHECK_FUNC(getutmpx updwtmpx)
 AC_CHECK_LIB(util,login)
 AC_CHECK_LIB(util,logout)
 GDM_CHECK_UTMP
+
+AC_MSG_CHECKING(if utmpx structure has ut_syslen field)
+AC_TRY_COMPILE([
+  #include <utmpx.h>],[
+  struct utmpx record;
+  record.ut_syslen = sizeof (record.ut_host);
+  ],
+  have_ut_syslen=yes,
+  have_ut_syslen=no
+  )
+if test x$have_ut_syslen = xyes; then
+  AC_DEFINE(HAVE_UT_SYSLEN)
+fi
+AC_MSG_RESULT($have_ut_syslen)
 
 #
 # Xdmcp checking

@@ -107,8 +107,6 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0, };
-
 static void	gdm_session_worker_class_init	(GdmSessionWorkerClass *klass);
 static void	gdm_session_worker_init	        (GdmSessionWorker      *session_worker);
 static void	gdm_session_worker_finalize	(GObject               *object);
@@ -979,11 +977,12 @@ static gboolean
 gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
 					  GError           **error)
 {
-	int error_code;
-	struct passwd *passwd_entry, passwd_buffer;
-	char *aux_buffer;
-	long required_aux_buffer_size;
-	gsize aux_buffer_size;
+	int            error_code;
+	struct passwd *passwd_entry;
+	struct passwd  passwd_buffer;
+	char          *aux_buffer;
+	long           required_aux_buffer_size;
+	gsize          aux_buffer_size;
 
 	aux_buffer = NULL;
 	aux_buffer_size = 0;
@@ -1012,11 +1011,19 @@ gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
 	 * by a PAM module
 	 */
 	passwd_entry = NULL;
-	errno = getpwnam_r (worker->priv->username,
+#ifdef HAVE_POSIX_GETPWNAM_R
+        errno = getpwnam_r (worker->priv->username,
 			    &passwd_buffer,
-			    aux_buffer,
+                            aux_buffer,
 			    (size_t) aux_buffer_size,
-			    &passwd_entry);
+                            &passwd_entry);
+#else
+        passwd_entry = getpwnam_r (worker->priv->username,
+				   &passwd_buffer,
+                                   aux_buffer,
+				   (size_t) aux_buffer_size);
+        errno = 0;
+#endif /* !HAVE_POSIX_GETPWNAM_R */
 
 	if (errno != 0) {
 		error_code = PAM_SYSTEM_ERR;
