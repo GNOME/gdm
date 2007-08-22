@@ -1004,11 +1004,6 @@ run_greeter (GdmSimpleSlave *slave)
 	gdm_screen_init (slave);
 #endif
 
-#ifdef HAVE_TSOL
-	/* Check out Solaris Trusted Xserver extension */
-	gdm_tsol_init (d);
-#endif
-
 	/* Run the init script. gdmslave suspends until script has terminated */
 	gdm_simple_slave_exec_script (slave,
 				      GDMCONFDIR"/Init",
