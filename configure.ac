@@ -1012,18 +1012,6 @@ AC_CHECK_LIB(secdb, chkauthattr, [
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsecdb"
 			    EXTRA_GREETER_LIBS="$EXTRA_GREETER_LIBS -lsecdb"])
 
-#
-# Subst the extra libs
-#
-AC_SUBST(EXTRA_DAEMON_LIBS)
-AC_SUBST(EXTRA_SLAVE_LIBS)
-AC_SUBST(EXTRA_CHOOSER_LIBS)
-AC_SUBST(EXTRA_XNEST_LIBS)
-AC_SUBST(EXTRA_FLEXI_LIBS)
-AC_SUBST(EXTRA_DYNAMIC_LIBS)
-AC_SUBST(EXTRA_SETUP_LIBS)
-AC_SUBST(EXTRA_GREETER_LIBS)
-
 # Define different Halt, and Reboot commands differently for Solaris.
 #
 # On Solaris/bin is a symlink to /usr/bin, so don't include it in
@@ -1034,6 +1022,7 @@ GDM_RBAC_SYSCMD_KEYS=""
 
 case "$host" in
 *solaris*)
+        AC_CHECK_LIB(resolv, daemon, [EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lresolv"])
         GDM_USER_PATH="/usr/bin"
         HALT_COMMAND="/sbin/init 5"
         REBOOT_COMMAND="/sbin/init 6"
@@ -1062,6 +1051,18 @@ case "$host" in
         GDMGNOMESESSIONCMD=gnome-session
         ;;
 esac
+
+#
+# Subst the extra libs
+#
+AC_SUBST(EXTRA_DAEMON_LIBS)
+AC_SUBST(EXTRA_SLAVE_LIBS)
+AC_SUBST(EXTRA_CHOOSER_LIBS)
+AC_SUBST(EXTRA_XNEST_LIBS)
+AC_SUBST(EXTRA_FLEXI_LIBS)
+AC_SUBST(EXTRA_DYNAMIC_LIBS)
+AC_SUBST(EXTRA_SETUP_LIBS)
+AC_SUBST(EXTRA_GREETER_LIBS)
 
 # First check with "! -h" for /usr/X11R6 and /usr/X11 since they often
 # symlink to each other, and configure should use the more stable
