@@ -49,6 +49,8 @@ static guint32 display_serial = 1;
 struct GdmDisplayPrivate
 {
 	char            *id;
+	char            *seat_id;
+
 	char            *remote_hostname;
 	int              x11_display_number;
 	char            *x11_display_name;
@@ -68,6 +70,7 @@ struct GdmDisplayPrivate
 enum {
 	PROP_0,
 	PROP_ID,
+	PROP_SEAT_ID,
 	PROP_REMOTE_HOSTNAME,
 	PROP_X11_DISPLAY_NUMBER,
 	PROP_X11_DISPLAY_NAME,
@@ -465,6 +468,14 @@ _gdm_display_set_id (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_seat_id (GdmDisplay     *display,
+			  const char     *seat_id)
+{
+        g_free (display->priv->seat_id);
+        display->priv->seat_id = g_strdup (seat_id);
+}
+
+static void
 _gdm_display_set_remote_hostname (GdmDisplay     *display,
 				  const char     *hostname)
 {
@@ -532,6 +543,9 @@ gdm_display_set_property (GObject	 *object,
 	case PROP_ID:
 		_gdm_display_set_id (self, g_value_get_string (value));
 		break;
+	case PROP_SEAT_ID:
+		_gdm_display_set_seat_id (self, g_value_get_string (value));
+		break;
 	case PROP_REMOTE_HOSTNAME:
 		_gdm_display_set_remote_hostname (self, g_value_get_string (value));
 		break;
@@ -572,6 +586,9 @@ gdm_display_get_property (GObject	 *object,
 	switch (prop_id) {
 	case PROP_ID:
 		g_value_set_string (value, self->priv->id);
+		break;
+	case PROP_SEAT_ID:
+		g_value_set_string (value, self->priv->seat_id);
 		break;
 	case PROP_REMOTE_HOSTNAME:
 		g_value_set_string (value, self->priv->remote_hostname);
@@ -693,6 +710,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
+					 PROP_SEAT_ID,
+					 g_param_spec_string ("seat-id",
+							      "seat id",
+							      "seat id",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
 					 PROP_REMOTE_HOSTNAME,
 					 g_param_spec_string ("remote-hostname",
 							      "remote-hostname",
@@ -775,6 +799,12 @@ gdm_display_finalize (GObject *object)
 
 	g_debug ("Finalizing display: %s", display->priv->id);
 	g_free (display->priv->id);
+	g_free (display->priv->seat_id);
+	g_free (display->priv->remote_hostname);
+	g_free (display->priv->x11_display_name);
+	g_free (display->priv->x11_cookie);
+	g_free (display->priv->x11_authority_file);
+	g_free (display->priv->slave_command);
 
 	G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
 }
