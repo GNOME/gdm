@@ -1,3 +1,22 @@
+2007-08-25  Brian Cameron <brian.cameron@sun.com>
+
+	* gui/greeter/greeter.dtd: Fix bug #469759.  Patch by Dave
+	  Fincher <finchair@yahoo.com>.
+	  1. CDATA #IMPLIED" properties
+	  2. Added "background (true | false) #IMPLIED to item ATTLIST
+	     properties
+	  3. Added "everywhere" and "nowhere" to list of modes for the
+             show ATTLIST
+	* gui/greeter/themes/happygnome-list/Makefile.am,
+	  gui/greeter/themes/happygnome-list/happygnome-list.xml: Removed
+	  an error where max-width was used as a property for a box
+	  element. The max-width property is a property of the pos
+	  element specifically dealing with a label item type: Rename
+	  happygnome.xml to happygnome-list.xml.  Fixes bug #469741.
+	  Patch by Dave Fincher <finchair@yahoo.com>.
+	* gui/greeter/themes/happygnome-list/happygnome-xml: Deleted.
+	* gui/greeter/themes/happygnome-list/happygnome-list.xml: Added.
+
 2007-08-21  Brian Cameron <brian.cameron@sun.com>
 
 	* gui/greeter/greeter.dtd: This was badly out of date, the new

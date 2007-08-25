@@ -1,7 +1,7 @@
 happygnomedir = $(datadir)/gdm/themes/happygnome-list
 happygnome_DATA = \
 	GdmGreeterTheme.desktop \
-	happygnome.xml \
+	happygnome-list.xml \
 	background.svg \
 	gnome-logo.svg  \
 	options.png \
