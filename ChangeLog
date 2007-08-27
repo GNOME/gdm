@@ -1,5 +1,11 @@
 2007-08-27 Brian Cameron <brian.cameron@sun.com>
 
+	* daemon/verify-pam.c: When using gdm_verify_standalone_pam_conv
+	  we need to send echo to FALSE when PAM_PROMPT_ECHO_OFF is
+	  handled.  Fixes bug #302282.
+
+2007-08-27 Brian Cameron <brian.cameron@sun.com>
+
 	* Release 2.19.7:
 	* configure.ac: Updated to new release version
 	* NEWS: Updated.
