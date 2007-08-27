@@ -670,7 +670,7 @@ gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
 				text = g_strdup (m);
 
 			/* PAM requested textual input with echo off */
-			question_msg = g_strdup_printf ("question_msg=%s$$echo=%d", text, TRUE);
+			question_msg = g_strdup_printf ("question_msg=%s$$echo=%d", text, FALSE);
 
 			gdm_slave_send_string (GDM_SOP_SHOW_QUESTION_DIALOG, question_msg);
 
