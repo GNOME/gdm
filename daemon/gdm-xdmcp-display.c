@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -48,308 +48,308 @@
 
 struct GdmXdmcpDisplayPrivate
 {
-	GdmAddress             *remote_address;
-	gint32                  session_number;
+        GdmAddress             *remote_address;
+        gint32                  session_number;
 };
 
 enum {
-	PROP_0,
-	PROP_REMOTE_ADDRESS,
-	PROP_SESSION_NUMBER,
+        PROP_0,
+        PROP_REMOTE_ADDRESS,
+        PROP_SESSION_NUMBER,
 };
 
-static void	gdm_xdmcp_display_class_init	(GdmXdmcpDisplayClass *klass);
-static void	gdm_xdmcp_display_init	        (GdmXdmcpDisplay      *xdmcp_display);
-static void	gdm_xdmcp_display_finalize	(GObject	      *object);
+static void     gdm_xdmcp_display_class_init    (GdmXdmcpDisplayClass *klass);
+static void     gdm_xdmcp_display_init          (GdmXdmcpDisplay      *xdmcp_display);
+static void     gdm_xdmcp_display_finalize      (GObject              *object);
 
 G_DEFINE_TYPE (GdmXdmcpDisplay, gdm_xdmcp_display, GDM_TYPE_DISPLAY)
 
 gint32
 gdm_xdmcp_display_get_session_number (GdmXdmcpDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY (display), 0);
+        g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY (display), 0);
 
-	return display->priv->session_number;
+        return display->priv->session_number;
 }
 
 GdmAddress *
 gdm_xdmcp_display_get_remote_address (GdmXdmcpDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY (display), NULL);
+        g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY (display), NULL);
 
-	return display->priv->remote_address;
+        return display->priv->remote_address;
 }
 
 static gboolean
 gdm_xdmcp_display_create_authority (GdmDisplay *display)
 {
-	FILE    *af;
-	int      closeret;
-	gboolean ret;
-	char    *authfile;
-	int      display_num;
-	char    *x11_display;
-	GString *cookie;
-	GSList  *authlist;
-	char    *basename;
+        FILE    *af;
+        int      closeret;
+        gboolean ret;
+        char    *authfile;
+        int      display_num;
+        char    *x11_display;
+        GString *cookie;
+        GSList  *authlist;
+        char    *basename;
 
-	ret = FALSE;
-	x11_display = NULL;
+        ret = FALSE;
+        x11_display = NULL;
 
-	g_object_get (display,
-		      "x11-display-name", &x11_display,
-		      "x11-display-number", &display_num,
-		      NULL);
+        g_object_get (display,
+                      "x11-display-name", &x11_display,
+                      "x11-display-number", &display_num,
+                      NULL);
 
-	/* Create new random cookie */
-	cookie = g_string_new (NULL);
-	gdm_generate_cookie (cookie);
+        /* Create new random cookie */
+        cookie = g_string_new (NULL);
+        gdm_generate_cookie (cookie);
 
-	g_debug ("Setting up access for %s", x11_display);
+        g_debug ("Setting up access for %s", x11_display);
 
-	/* gdm and xserver authfile can be the same, server will run as root */
-	basename = g_strconcat (x11_display, ".Xauth", NULL);
-	authfile = g_build_filename (AUTHDIR, basename, NULL);
-	g_free (basename);
+        /* gdm and xserver authfile can be the same, server will run as root */
+        basename = g_strconcat (x11_display, ".Xauth", NULL);
+        authfile = g_build_filename (AUTHDIR, basename, NULL);
+        g_free (basename);
 
-	af = gdm_safe_fopen_w (authfile, 0644);
-	if (af == NULL) {
-		g_warning (_("Cannot safely open %s"), authfile);
-		g_free (authfile);
-		goto out;
-	}
+        af = gdm_safe_fopen_w (authfile, 0644);
+        if (af == NULL) {
+                g_warning (_("Cannot safely open %s"), authfile);
+                g_free (authfile);
+                goto out;
+        }
 
-	g_debug ("Adding auth entry for xdmcp display:%d cookie:%s", display_num, cookie->str);
-	authlist = NULL;
-	if (! gdm_auth_add_entry_for_display (display_num, NULL, cookie, af, &authlist)) {
-		goto out;
-	}
+        g_debug ("Adding auth entry for xdmcp display:%d cookie:%s", display_num, cookie->str);
+        authlist = NULL;
+        if (! gdm_auth_add_entry_for_display (display_num, NULL, cookie, af, &authlist)) {
+                goto out;
+        }
 
-	g_debug ("gdm_auth_secure_display: Setting up access");
+        g_debug ("gdm_auth_secure_display: Setting up access");
 
-	VE_IGNORE_EINTR (closeret = fclose (af));
-	if (closeret < 0) {
-		g_warning (_("Could not write new authorization entry: %s"),
-			   g_strerror (errno));
-		goto out;
-	}
+        VE_IGNORE_EINTR (closeret = fclose (af));
+        if (closeret < 0) {
+                g_warning (_("Could not write new authorization entry: %s"),
+                           g_strerror (errno));
+                goto out;
+        }
 
-	g_debug ("Set up access for %s - %d entries",
-		 x11_display,
-		 g_slist_length (authlist));
+        g_debug ("Set up access for %s - %d entries",
+                 x11_display,
+                 g_slist_length (authlist));
 
-	/* FIXME: save authlist */
+        /* FIXME: save authlist */
 
-	g_object_set (display,
-		      "x11-authority-file", authfile,
-		      "x11-cookie", cookie->str,
-		      NULL);
+        g_object_set (display,
+                      "x11-authority-file", authfile,
+                      "x11-cookie", cookie->str,
+                      NULL);
 
-	ret = TRUE;
+        ret = TRUE;
 
  out:
-	g_free (x11_display);
-	g_string_free (cookie, TRUE);
+        g_free (x11_display);
+        g_string_free (cookie, TRUE);
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 gdm_xdmcp_display_add_user_authorization (GdmDisplay *display,
-					  const char *username,
-					  char      **filename,
-					  GError    **error)
+                                          const char *username,
+                                          char      **filename,
+                                          GError    **error)
 {
-	gboolean res;
-	char    *cookie;
-	char    *hostname;
-	int      display_num;
+        gboolean res;
+        char    *cookie;
+        char    *hostname;
+        int      display_num;
 
-	res = gdm_display_get_x11_cookie (display, &cookie, NULL);
-	res = gdm_display_get_x11_display_number (display, &display_num, NULL);
+        res = gdm_display_get_x11_cookie (display, &cookie, NULL);
+        res = gdm_display_get_x11_display_number (display, &display_num, NULL);
 
-	hostname = NULL;
-	res = gdm_address_get_hostname (GDM_XDMCP_DISPLAY (display)->priv->remote_address, &hostname);
-	g_debug ("add user auth for xdmcp display: %s host:%s", username, hostname);
-	gdm_address_debug (GDM_XDMCP_DISPLAY (display)->priv->remote_address);
-	g_free (hostname);
+        hostname = NULL;
+        res = gdm_address_get_hostname (GDM_XDMCP_DISPLAY (display)->priv->remote_address, &hostname);
+        g_debug ("add user auth for xdmcp display: %s host:%s", username, hostname);
+        gdm_address_debug (GDM_XDMCP_DISPLAY (display)->priv->remote_address);
+        g_free (hostname);
 
-	res = gdm_auth_user_add (display_num,
-				 GDM_XDMCP_DISPLAY (display)->priv->remote_address,
-				 username,
-				 cookie,
-				 filename);
-	return res;
+        res = gdm_auth_user_add (display_num,
+                                 GDM_XDMCP_DISPLAY (display)->priv->remote_address,
+                                 username,
+                                 cookie,
+                                 filename);
+        return res;
 }
 
 static gboolean
 gdm_xdmcp_display_remove_user_authorization (GdmDisplay *display,
-					     const char *username,
-					     GError    **error)
+                                             const char *username,
+                                             GError    **error)
 {
-	return TRUE;
+        return TRUE;
 }
 
 static gboolean
 gdm_xdmcp_display_manage (GdmDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->manage (display);
+        GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->manage (display);
 
-	return TRUE;
+        return TRUE;
 }
 
 static gboolean
 gdm_xdmcp_display_unmanage (GdmDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->unmanage (display);
+        GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->unmanage (display);
 
-	return TRUE;
+        return TRUE;
 }
 
 static void
 _gdm_xdmcp_display_set_remote_address (GdmXdmcpDisplay *display,
-				       GdmAddress      *address)
+                                       GdmAddress      *address)
 {
-	if (display->priv->remote_address != NULL) {
-		gdm_address_free (display->priv->remote_address);
-	}
+        if (display->priv->remote_address != NULL) {
+                gdm_address_free (display->priv->remote_address);
+        }
 
-	g_assert (address != NULL);
+        g_assert (address != NULL);
 
-	gdm_address_debug (address);
-	display->priv->remote_address = gdm_address_copy (address);
+        gdm_address_debug (address);
+        display->priv->remote_address = gdm_address_copy (address);
 }
 
 static void
-gdm_xdmcp_display_set_property (GObject	     *object,
-				guint	      prop_id,
-				const GValue *value,
-				GParamSpec   *pspec)
+gdm_xdmcp_display_set_property (GObject      *object,
+                                guint         prop_id,
+                                const GValue *value,
+                                GParamSpec   *pspec)
 {
-	GdmXdmcpDisplay *self;
+        GdmXdmcpDisplay *self;
 
-	self = GDM_XDMCP_DISPLAY (object);
+        self = GDM_XDMCP_DISPLAY (object);
 
-	switch (prop_id) {
-	case PROP_REMOTE_ADDRESS:
-		_gdm_xdmcp_display_set_remote_address (self, g_value_get_boxed (value));
-		break;
-	case PROP_SESSION_NUMBER:
-		self->priv->session_number = g_value_get_int (value);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+        switch (prop_id) {
+        case PROP_REMOTE_ADDRESS:
+                _gdm_xdmcp_display_set_remote_address (self, g_value_get_boxed (value));
+                break;
+        case PROP_SESSION_NUMBER:
+                self->priv->session_number = g_value_get_int (value);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
 }
 
 static void
-gdm_xdmcp_display_get_property (GObject	   *object,
-				guint  	    prop_id,
-				GValue	   *value,
-				GParamSpec *pspec)
+gdm_xdmcp_display_get_property (GObject    *object,
+                                guint       prop_id,
+                                GValue     *value,
+                                GParamSpec *pspec)
 {
-	GdmXdmcpDisplay *self;
+        GdmXdmcpDisplay *self;
 
-	self = GDM_XDMCP_DISPLAY (object);
+        self = GDM_XDMCP_DISPLAY (object);
 
-	switch (prop_id) {
-	case PROP_REMOTE_ADDRESS:
-		g_value_set_boxed (value, self->priv->remote_address);
-		break;
-	case PROP_SESSION_NUMBER:
-		g_value_set_int (value, self->priv->session_number);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+        switch (prop_id) {
+        case PROP_REMOTE_ADDRESS:
+                g_value_set_boxed (value, self->priv->remote_address);
+                break;
+        case PROP_SESSION_NUMBER:
+                g_value_set_int (value, self->priv->session_number);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
 }
 
 static void
 gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 {
-	GObjectClass    *object_class = G_OBJECT_CLASS (klass);
-	GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
+        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
-	object_class->get_property = gdm_xdmcp_display_get_property;
-	object_class->set_property = gdm_xdmcp_display_set_property;
-	object_class->finalize = gdm_xdmcp_display_finalize;
+        object_class->get_property = gdm_xdmcp_display_get_property;
+        object_class->set_property = gdm_xdmcp_display_set_property;
+        object_class->finalize = gdm_xdmcp_display_finalize;
 
-	display_class->create_authority = gdm_xdmcp_display_create_authority;
-	display_class->add_user_authorization = gdm_xdmcp_display_add_user_authorization;
-	display_class->remove_user_authorization = gdm_xdmcp_display_remove_user_authorization;
-	display_class->manage = gdm_xdmcp_display_manage;
-	display_class->unmanage = gdm_xdmcp_display_unmanage;
+        display_class->create_authority = gdm_xdmcp_display_create_authority;
+        display_class->add_user_authorization = gdm_xdmcp_display_add_user_authorization;
+        display_class->remove_user_authorization = gdm_xdmcp_display_remove_user_authorization;
+        display_class->manage = gdm_xdmcp_display_manage;
+        display_class->unmanage = gdm_xdmcp_display_unmanage;
 
-	g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
+        g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
 
-	g_object_class_install_property (object_class,
-					 PROP_REMOTE_ADDRESS,
-					 g_param_spec_boxed ("remote-address",
-							     "Remote address",
-							     "Remote address",
-							     GDM_TYPE_ADDRESS,
-							     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_REMOTE_ADDRESS,
+                                         g_param_spec_boxed ("remote-address",
+                                                             "Remote address",
+                                                             "Remote address",
+                                                             GDM_TYPE_ADDRESS,
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
         g_object_class_install_property (object_class,
                                          PROP_SESSION_NUMBER,
                                          g_param_spec_int ("session-number",
-							   "session-number",
-							   "session-number",
-							   G_MININT,
-							   G_MAXINT,
-							   0,
-							   G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                           "session-number",
+                                                           "session-number",
+                                                           G_MININT,
+                                                           G_MAXINT,
+                                                           0,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-	dbus_g_object_type_install_info (GDM_TYPE_XDMCP_DISPLAY, &dbus_glib_gdm_xdmcp_display_object_info);
+        dbus_g_object_type_install_info (GDM_TYPE_XDMCP_DISPLAY, &dbus_glib_gdm_xdmcp_display_object_info);
 }
 
 static void
 gdm_xdmcp_display_init (GdmXdmcpDisplay *xdmcp_display)
 {
 
-	xdmcp_display->priv = GDM_XDMCP_DISPLAY_GET_PRIVATE (xdmcp_display);
+        xdmcp_display->priv = GDM_XDMCP_DISPLAY_GET_PRIVATE (xdmcp_display);
 }
 
 static void
 gdm_xdmcp_display_finalize (GObject *object)
 {
-	GdmXdmcpDisplay *xdmcp_display;
+        GdmXdmcpDisplay *xdmcp_display;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (GDM_IS_XDMCP_DISPLAY (object));
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (GDM_IS_XDMCP_DISPLAY (object));
 
-	xdmcp_display = GDM_XDMCP_DISPLAY (object);
+        xdmcp_display = GDM_XDMCP_DISPLAY (object);
 
-	g_return_if_fail (xdmcp_display->priv != NULL);
+        g_return_if_fail (xdmcp_display->priv != NULL);
 
-	G_OBJECT_CLASS (gdm_xdmcp_display_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_xdmcp_display_parent_class)->finalize (object);
 }
 
 GdmDisplay *
 gdm_xdmcp_display_new (const char              *hostname,
-		       int                      number,
-		       GdmAddress              *address,
-		       gint32                   session_number)
+                       int                      number,
+                       GdmAddress              *address,
+                       gint32                   session_number)
 {
-	GObject *object;
-	char    *x11_display;
+        GObject *object;
+        char    *x11_display;
 
-	x11_display = g_strdup_printf ("%s:%d", hostname, number);
-	object = g_object_new (GDM_TYPE_XDMCP_DISPLAY,
-			       "remote-hostname", hostname,
-			       "x11-display-number", number,
-			       "x11-display-name", x11_display,
-			       "is-local", FALSE,
-			       "remote-address", address,
-			       "session-number", session_number,
-			       NULL);
-	g_free (x11_display);
+        x11_display = g_strdup_printf ("%s:%d", hostname, number);
+        object = g_object_new (GDM_TYPE_XDMCP_DISPLAY,
+                               "remote-hostname", hostname,
+                               "x11-display-number", number,
+                               "x11-display-name", x11_display,
+                               "is-local", FALSE,
+                               "remote-address", address,
+                               "session-number", session_number,
+                               NULL);
+        g_free (x11_display);
 
-	return GDM_DISPLAY (object);
+        return GDM_DISPLAY (object);
 }

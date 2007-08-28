@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,45 +37,45 @@ G_BEGIN_DECLS
 typedef struct GdmDisplayPrivate GdmDisplayPrivate;
 
 typedef enum {
-	GDM_DISPLAY_UNMANAGED,
-	GDM_DISPLAY_MANAGED,
-	GDM_DISPLAY_FINISHED
+        GDM_DISPLAY_UNMANAGED,
+        GDM_DISPLAY_MANAGED,
+        GDM_DISPLAY_FINISHED
 } GdmDisplayStatus;
 
 typedef struct
 {
-	GObject		  parent;
-	GdmDisplayPrivate *priv;
+        GObject           parent;
+        GdmDisplayPrivate *priv;
 } GdmDisplay;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	/* methods */
-	gboolean (*create_authority)          (GdmDisplay *display);
-	gboolean (*add_user_authorization)    (GdmDisplay *display,
-					       const char *username,
-					       char      **filename,
-					       GError    **error);
-	gboolean (*remove_user_authorization) (GdmDisplay *display,
-					       const char *username,
-					       GError    **error);
-	gboolean (*manage)                    (GdmDisplay *display);
-	gboolean (*finish)                    (GdmDisplay *display);
-	gboolean (*unmanage)                  (GdmDisplay *display);
+        /* methods */
+        gboolean (*create_authority)          (GdmDisplay *display);
+        gboolean (*add_user_authorization)    (GdmDisplay *display,
+                                               const char *username,
+                                               char      **filename,
+                                               GError    **error);
+        gboolean (*remove_user_authorization) (GdmDisplay *display,
+                                               const char *username,
+                                               GError    **error);
+        gboolean (*manage)                    (GdmDisplay *display);
+        gboolean (*finish)                    (GdmDisplay *display);
+        gboolean (*unmanage)                  (GdmDisplay *display);
 
 } GdmDisplayClass;
 
 typedef enum
 {
-	 GDM_DISPLAY_ERROR_GENERAL
+         GDM_DISPLAY_ERROR_GENERAL
 } GdmDisplayError;
 
 #define GDM_DISPLAY_ERROR gdm_display_error_quark ()
 
-GQuark		    gdm_display_error_quark		       (void);
-GType		    gdm_display_get_type		       (void);
+GQuark              gdm_display_error_quark                    (void);
+GType               gdm_display_get_type                       (void);
 
 int                 gdm_display_get_status                     (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
@@ -89,35 +89,35 @@ gboolean            gdm_display_unmanage                       (GdmDisplay *disp
 
 /* exported to bus */
 gboolean            gdm_display_get_id                         (GdmDisplay *display,
-								char      **id,
-								GError    **error);
+                                                                char      **id,
+                                                                GError    **error);
 gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
-								char      **hostname,
-								GError    **error);
+                                                                char      **hostname,
+                                                                GError    **error);
 gboolean            gdm_display_get_x11_display_number         (GdmDisplay *display,
-								int        *number,
-								GError    **error);
+                                                                int        *number,
+                                                                GError    **error);
 gboolean            gdm_display_get_x11_display_name           (GdmDisplay *display,
-								char      **x11_display,
-								GError    **error);
+                                                                char      **x11_display,
+                                                                GError    **error);
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
-								gboolean   *local,
-								GError    **error);
+                                                                gboolean   *local,
+                                                                GError    **error);
 
 /* exported but protected */
 gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *display,
-								char      **x11_cookie,
-								GError    **error);
+                                                                char      **x11_cookie,
+                                                                GError    **error);
 gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
-								char      **filename,
-								GError    **error);
+                                                                char      **filename,
+                                                                GError    **error);
 gboolean            gdm_display_add_user_authorization         (GdmDisplay *display,
-								const char *username,
-								char      **filename,
-								GError    **error);
+                                                                const char *username,
+                                                                char      **filename,
+                                                                GError    **error);
 gboolean            gdm_display_remove_user_authorization      (GdmDisplay *display,
-								const char *username,
-								GError    **error);
+                                                                const char *username,
+                                                                GError    **error);
 
 
 G_END_DECLS

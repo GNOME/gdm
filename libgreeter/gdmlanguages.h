@@ -38,33 +38,33 @@ enum {
 /* This is the interface for translating languages.  Language translations
  * are now hardocded in, but that may change */
 
-const char *	gdm_lang_group1		(void);
-const char *	gdm_lang_group2		(void);
+const char *    gdm_lang_group1         (void);
+const char *    gdm_lang_group2         (void);
 
-char *		gdm_lang_name		(const char *language,
-					 gboolean never_encoding,
-					 gboolean no_group,
-					 gboolean untranslated,
-					 gboolean markup);
-gboolean	gdm_lang_name_translated (const char *language);
+char *          gdm_lang_name           (const char *language,
+                                         gboolean never_encoding,
+                                         gboolean no_group,
+                                         gboolean untranslated,
+                                         gboolean markup);
+gboolean        gdm_lang_name_translated (const char *language);
 
 /* NULL if not found */
-char *		gdm_lang_untranslated_name (const char *language,
-					    gboolean markup);
+char *          gdm_lang_untranslated_name (const char *language,
+                                            gboolean markup);
 
-GList *		gdm_lang_read_locale_file (const char *file);
+GList *         gdm_lang_read_locale_file (const char *file);
 
-GtkListStore *	gdm_lang_get_model		(void);
-void		gdm_lang_initialize_model	(gchar *locale_file);
-gchar *		gdm_lang_check_language		(const char      *old_language);
-void		gdm_lang_set			(char *language);
+GtkListStore *  gdm_lang_get_model              (void);
+void            gdm_lang_initialize_model       (gchar *locale_file);
+gchar *         gdm_lang_check_language         (const char      *old_language);
+void            gdm_lang_set                    (char *language);
 void            gdm_lang_set_restart_dialog     (char *language);
-gint		gdm_lang_get_savelang_setting	(void);
-void		gdm_lang_handler		(gpointer user_data);
-void		gdm_lang_op_lang		(const gchar *args);
-void		gdm_lang_op_slang		(const gchar *args);
-void		gdm_lang_op_setlang		(const gchar *args);
-void		gdm_lang_op_always_restart	(const gchar *args);
+gint            gdm_lang_get_savelang_setting   (void);
+void            gdm_lang_handler                (gpointer user_data);
+void            gdm_lang_op_lang                (const gchar *args);
+void            gdm_lang_op_slang               (const gchar *args);
+void            gdm_lang_op_setlang             (const gchar *args);
+void            gdm_lang_op_always_restart      (const gchar *args);
 gint            gdm_lang_ask_restart            (gchar *language);
 
 #endif /* GDM_LANGUAGES_H */

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2006 Ray Strode <rstrode@redhat.com>
  *
@@ -35,32 +35,32 @@ G_BEGIN_DECLS
 #define GDM_SESSION_WORKER_ERROR           (gdm_session_worker_error_quark ())
 
 typedef enum _GdmSessionWorkerError {
-	GDM_SESSION_WORKER_ERROR_GENERIC = 0,
-	GDM_SESSION_WORKER_ERROR_WITH_SESSION_COMMAND,
-	GDM_SESSION_WORKER_ERROR_FORKING,
-	GDM_SESSION_WORKER_ERROR_OPENING_MESSAGE_PIPE,
-	GDM_SESSION_WORKER_ERROR_COMMUNICATING,
-	GDM_SESSION_WORKER_ERROR_WORKER_DIED,
-	GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-	GDM_SESSION_WORKER_ERROR_AUTHORIZING,
-	GDM_SESSION_WORKER_ERROR_OPENING_LOG_FILE,
-	GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-	GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS
+        GDM_SESSION_WORKER_ERROR_GENERIC = 0,
+        GDM_SESSION_WORKER_ERROR_WITH_SESSION_COMMAND,
+        GDM_SESSION_WORKER_ERROR_FORKING,
+        GDM_SESSION_WORKER_ERROR_OPENING_MESSAGE_PIPE,
+        GDM_SESSION_WORKER_ERROR_COMMUNICATING,
+        GDM_SESSION_WORKER_ERROR_WORKER_DIED,
+        GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+        GDM_SESSION_WORKER_ERROR_AUTHORIZING,
+        GDM_SESSION_WORKER_ERROR_OPENING_LOG_FILE,
+        GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+        GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS
 } GdmSessionWorkerError;
 
 typedef struct GdmSessionWorkerPrivate GdmSessionWorkerPrivate;
 
 typedef struct
 {
-	GObject parent;
+        GObject parent;
 
-	/*< private > */
-	GdmSessionWorkerPrivate *priv;
+        /*< private > */
+        GdmSessionWorkerPrivate *priv;
 } GdmSessionWorker;
 
 typedef struct
 {
-	GObjectClass parent_class;
+        GObjectClass parent_class;
 
 } GdmSessionWorkerClass;
 

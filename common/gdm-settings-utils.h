@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -38,18 +38,18 @@ const char *              gdm_settings_entry_get_default_value (GdmSettingsEntry
 const char *              gdm_settings_entry_get_value         (GdmSettingsEntry *entry);
 
 void                      gdm_settings_entry_set_value         (GdmSettingsEntry *entry,
-								const char       *value);
+                                                                const char       *value);
 
-gboolean                  gdm_settings_parse_schemas	       (const char  *file,
-								const char  *root,
-								GSList     **list);
+gboolean                  gdm_settings_parse_schemas           (const char  *file,
+                                                                const char  *root,
+                                                                GSList     **list);
 
 gboolean                  gdm_settings_parse_value_as_boolean  (const char *value,
-								gboolean   *bool);
+                                                                gboolean   *bool);
 gboolean                  gdm_settings_parse_value_as_integer  (const char *value,
-								int        *intval);
+                                                                int        *intval);
 gboolean                  gdm_settings_parse_value_as_double   (const char *value,
-								gdouble    *doubleval);
+                                                                gdouble    *doubleval);
 
 char *                    gdm_settings_parse_boolean_as_value  (gboolean    boolval);
 char *                    gdm_settings_parse_integer_as_value  (int         intval);

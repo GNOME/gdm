@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -48,181 +48,181 @@ static int gdm_return_code = 0;
 static DBusGConnection *
 get_system_bus (void)
 {
-	GError		*error;
-	DBusGConnection *bus;
-	DBusConnection	*connection;
+        GError          *error;
+        DBusGConnection *bus;
+        DBusConnection  *connection;
 
-	error = NULL;
-	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (bus == NULL) {
-		g_warning ("Couldn't connect to system bus: %s",
-			   error->message);
-		g_error_free (error);
-		goto out;
-	}
+        error = NULL;
+        bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (bus == NULL) {
+                g_warning ("Couldn't connect to system bus: %s",
+                           error->message);
+                g_error_free (error);
+                goto out;
+        }
 
-	connection = dbus_g_connection_get_connection (bus);
-	dbus_connection_set_exit_on_disconnect (connection, FALSE);
+        connection = dbus_g_connection_get_connection (bus);
+        dbus_connection_set_exit_on_disconnect (connection, FALSE);
 
  out:
-	return bus;
+        return bus;
 }
 
 static gboolean
 signal_cb (int      signo,
-	   gpointer data)
+           gpointer data)
 {
-	int ret;
+        int ret;
 
-	g_debug ("Got callback for signal %d", signo);
+        g_debug ("Got callback for signal %d", signo);
 
-	ret = TRUE;
+        ret = TRUE;
 
-	switch (signo) {
-	case SIGSEGV:
-	case SIGBUS:
-	case SIGILL:
-	case SIGABRT:
-		g_debug ("Caught signal %d.", signo);
+        switch (signo) {
+        case SIGSEGV:
+        case SIGBUS:
+        case SIGILL:
+        case SIGABRT:
+                g_debug ("Caught signal %d.", signo);
 
-		ret = FALSE;
-		break;
+                ret = FALSE;
+                break;
 
-	case SIGFPE:
-	case SIGPIPE:
-		/* let the fatal signals interrupt us */
-		g_debug ("Caught signal %d, shutting down abnormally.", signo);
-		ret = FALSE;
+        case SIGFPE:
+        case SIGPIPE:
+                /* let the fatal signals interrupt us */
+                g_debug ("Caught signal %d, shutting down abnormally.", signo);
+                ret = FALSE;
 
-		break;
+                break;
 
-	case SIGINT:
-	case SIGTERM:
-		/* let the fatal signals interrupt us */
-		g_debug ("Caught signal %d, shutting down normally.", signo);
-		ret = FALSE;
+        case SIGINT:
+        case SIGTERM:
+                /* let the fatal signals interrupt us */
+                g_debug ("Caught signal %d, shutting down normally.", signo);
+                ret = FALSE;
 
-		break;
+                break;
 
-	case SIGHUP:
-		g_debug ("Got HUP signal");
-		/* FIXME:
-		 * Reread config stuff like system config files, VPN service files, etc
-		 */
-		ret = TRUE;
+        case SIGHUP:
+                g_debug ("Got HUP signal");
+                /* FIXME:
+                 * Reread config stuff like system config files, VPN service files, etc
+                 */
+                ret = TRUE;
 
-		break;
+                break;
 
-	case SIGUSR1:
-		g_debug ("Got USR1 signal");
-		/* FIXME:
-		 * Play with log levels or something
-		 */
-		ret = TRUE;
+        case SIGUSR1:
+                g_debug ("Got USR1 signal");
+                /* FIXME:
+                 * Play with log levels or something
+                 */
+                ret = TRUE;
 
-		break;
+                break;
 
-	default:
-		g_debug ("Caught unhandled signal %d", signo);
-		ret = TRUE;
+        default:
+                g_debug ("Caught unhandled signal %d", signo);
+                ret = TRUE;
 
-		break;
-	}
+                break;
+        }
 
-	return ret;
+        return ret;
 }
 
 static void
 on_slave_stopped (GdmSlave   *slave,
-		  GMainLoop  *main_loop)
+                  GMainLoop  *main_loop)
 {
-	g_debug ("slave finished");
-	gdm_return_code = 0;
-	g_main_loop_quit (main_loop);
+        g_debug ("slave finished");
+        gdm_return_code = 0;
+        g_main_loop_quit (main_loop);
 }
 
 int
 main (int    argc,
       char **argv)
 {
-	GMainLoop        *main_loop;
-	GOptionContext	 *context;
-	DBusGConnection  *connection;
-	GdmSlave         *slave;
-	static char      *display_id = NULL;
-	GdmSignalHandler *signal_handler;
-	static GOptionEntry entries []	 = {
-		{ "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("id") },
-		{ NULL }
-	};
+        GMainLoop        *main_loop;
+        GOptionContext   *context;
+        DBusGConnection  *connection;
+        GdmSlave         *slave;
+        static char      *display_id = NULL;
+        GdmSignalHandler *signal_handler;
+        static GOptionEntry entries []   = {
+                { "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("id") },
+                { NULL }
+        };
 
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-	textdomain (GETTEXT_PACKAGE);
-	setlocale (LC_ALL, "");
+        bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+        textdomain (GETTEXT_PACKAGE);
+        setlocale (LC_ALL, "");
 
-	g_type_init ();
+        g_type_init ();
 
-	context = g_option_context_new (_("GNOME Display Manager Slave"));
-	g_option_context_add_main_entries (context, entries, NULL);
+        context = g_option_context_new (_("GNOME Display Manager Slave"));
+        g_option_context_add_main_entries (context, entries, NULL);
 
-	g_option_context_parse (context, &argc, &argv, NULL);
-	g_option_context_free (context);
+        g_option_context_parse (context, &argc, &argv, NULL);
+        g_option_context_free (context);
 
-	connection = get_system_bus ();
-	if (connection == NULL) {
-		goto out;
-	}
+        connection = get_system_bus ();
+        if (connection == NULL) {
+                goto out;
+        }
 
-	gdm_log_init ();
+        gdm_log_init ();
 
-	gdm_log_set_debug (TRUE);
+        gdm_log_set_debug (TRUE);
 
-	if (display_id == NULL) {
-		g_critical ("No display ID set");
-		exit (1);
-	}
+        if (display_id == NULL) {
+                g_critical ("No display ID set");
+                exit (1);
+        }
 
-	main_loop = g_main_loop_new (NULL, FALSE);
+        main_loop = g_main_loop_new (NULL, FALSE);
 
-	signal_handler = gdm_signal_handler_new ();
-	gdm_signal_handler_set_main_loop (signal_handler, main_loop);
-	gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGBUS, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
-	gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
+        signal_handler = gdm_signal_handler_new ();
+        gdm_signal_handler_set_main_loop (signal_handler, main_loop);
+        gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGBUS, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
-	slave = gdm_factory_slave_new (display_id);
-	if (slave == NULL) {
-		goto out;
-	}
-	g_signal_connect (slave,
-			  "stopped",
-			  G_CALLBACK (on_slave_stopped),
-			  main_loop);
-	gdm_slave_start (slave);
+        slave = gdm_factory_slave_new (display_id);
+        if (slave == NULL) {
+                goto out;
+        }
+        g_signal_connect (slave,
+                          "stopped",
+                          G_CALLBACK (on_slave_stopped),
+                          main_loop);
+        gdm_slave_start (slave);
 
-	g_main_loop_run (main_loop);
+        g_main_loop_run (main_loop);
 
-	if (slave != NULL) {
-		g_object_unref (slave);
-	}
+        if (slave != NULL) {
+                g_object_unref (slave);
+        }
 
-	if (signal_handler != NULL) {
-		g_object_unref (signal_handler);
-	}
+        if (signal_handler != NULL) {
+                g_object_unref (signal_handler);
+        }
 
-	if (main_loop != NULL) {
-		g_main_loop_unref (main_loop);
-	}
+        if (main_loop != NULL) {
+                g_main_loop_unref (main_loop);
+        }
 
  out:
 
-	g_debug ("Slave finished");
+        g_debug ("Slave finished");
 
-	return gdm_return_code;
+        return gdm_return_code;
 }

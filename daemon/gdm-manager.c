@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -53,36 +53,36 @@
 
 struct GdmManagerPrivate
 {
-	GdmDisplayStore        *display_store;
-	GdmLocalDisplayFactory *local_factory;
-	GdmXdmcpDisplayFactory *xdmcp_factory;
+        GdmDisplayStore        *display_store;
+        GdmLocalDisplayFactory *local_factory;
+        GdmXdmcpDisplayFactory *xdmcp_factory;
 
-	gboolean                xdmcp_enabled;
+        gboolean                xdmcp_enabled;
 
-	GString                *global_cookie;
-	gboolean                wait_for_go;
-	gboolean                no_console;
+        GString                *global_cookie;
+        gboolean                wait_for_go;
+        gboolean                no_console;
 
         DBusGProxy             *bus_proxy;
         DBusGConnection        *connection;
 };
 
 enum {
-	PROP_0,
-	PROP_XDMCP_ENABLED
+        PROP_0,
+        PROP_XDMCP_ENABLED
 };
 
 enum {
-	DISPLAY_ADDED,
-	DISPLAY_REMOVED,
-	LAST_SIGNAL
+        DISPLAY_ADDED,
+        DISPLAY_REMOVED,
+        LAST_SIGNAL
 };
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-static void	gdm_manager_class_init	(GdmManagerClass *klass);
-static void	gdm_manager_init	(GdmManager	 *manager);
-static void	gdm_manager_finalize	(GObject	 *object);
+static void     gdm_manager_class_init  (GdmManagerClass *klass);
+static void     gdm_manager_init        (GdmManager      *manager);
+static void     gdm_manager_finalize    (GObject         *object);
 
 static gpointer manager_object = NULL;
 
@@ -91,23 +91,23 @@ G_DEFINE_TYPE (GdmManager, gdm_manager, G_TYPE_OBJECT)
 GQuark
 gdm_manager_error_quark (void)
 {
-	static GQuark ret = 0;
-	if (ret == 0) {
-		ret = g_quark_from_static_string ("gdm_manager_error");
-	}
+        static GQuark ret = 0;
+        if (ret == 0) {
+                ret = g_quark_from_static_string ("gdm_manager_error");
+        }
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 listify_display_ids (const char *id,
-		     GdmDisplay *display,
-		     GPtrArray **array)
+                     GdmDisplay *display,
+                     GPtrArray **array)
 {
-	g_ptr_array_add (*array, g_strdup (id));
+        g_ptr_array_add (*array, g_strdup (id));
 
-	/* return FALSE to continue */
-	return FALSE;
+        /* return FALSE to continue */
+        return FALSE;
 }
 
 /*
@@ -119,91 +119,91 @@ listify_display_ids (const char *id,
 */
 gboolean
 gdm_manager_get_displays (GdmManager *manager,
-			  GPtrArray **displays,
-			  GError    **error)
+                          GPtrArray **displays,
+                          GError    **error)
 {
-	g_return_val_if_fail (GDM_IS_MANAGER (manager), FALSE);
+        g_return_val_if_fail (GDM_IS_MANAGER (manager), FALSE);
 
-	if (displays == NULL) {
-		return FALSE;
-	}
+        if (displays == NULL) {
+                return FALSE;
+        }
 
-	*displays = g_ptr_array_new ();
-	gdm_display_store_foreach (manager->priv->display_store,
-				   (GdmDisplayStoreFunc)listify_display_ids,
-				   displays);
+        *displays = g_ptr_array_new ();
+        gdm_display_store_foreach (manager->priv->display_store,
+                                   (GdmDisplayStoreFunc)listify_display_ids,
+                                   displays);
 
-	return TRUE;
+        return TRUE;
 }
 
 static void
 make_global_cookie (GdmManager *manager)
 {
-	FILE  *fp;
-	char  *file;
+        FILE  *fp;
+        char  *file;
 
-	gdm_generate_cookie (manager->priv->global_cookie);
+        gdm_generate_cookie (manager->priv->global_cookie);
 
-	file = g_build_filename (AUTHDIR, ".cookie", NULL);
-	VE_IGNORE_EINTR (g_unlink (file));
+        file = g_build_filename (AUTHDIR, ".cookie", NULL);
+        VE_IGNORE_EINTR (g_unlink (file));
 
-	fp = gdm_safe_fopen_w (file, 077);
-	if G_UNLIKELY (fp == NULL) {
-		g_warning (_("Can't open %s for writing"), file);
-		g_free (file);
-		return;
-	}
+        fp = gdm_safe_fopen_w (file, 077);
+        if G_UNLIKELY (fp == NULL) {
+                g_warning (_("Can't open %s for writing"), file);
+                g_free (file);
+                return;
+        }
 
-	VE_IGNORE_EINTR (fprintf (fp, "%s\n", manager->priv->global_cookie->str));
+        VE_IGNORE_EINTR (fprintf (fp, "%s\n", manager->priv->global_cookie->str));
 
-	/* FIXME: What about out of disk space errors? */
-	errno = 0;
-	VE_IGNORE_EINTR (fclose (fp));
-	if G_UNLIKELY (errno != 0) {
-		g_warning (_("Can't write to %s: %s"),
-			   file,
-			   g_strerror (errno));
-	}
+        /* FIXME: What about out of disk space errors? */
+        errno = 0;
+        VE_IGNORE_EINTR (fclose (fp));
+        if G_UNLIKELY (errno != 0) {
+                g_warning (_("Can't write to %s: %s"),
+                           file,
+                           g_strerror (errno));
+        }
 
-	g_free (file);
+        g_free (file);
 }
 
 void
 gdm_manager_start (GdmManager *manager)
 {
-	g_debug ("GDM starting to manage");
+        g_debug ("GDM starting to manage");
 
-	if (! manager->priv->wait_for_go) {
-		gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
-	}
+        if (! manager->priv->wait_for_go) {
+                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
+        }
 
-	/* Accept remote connections */
-	if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
-		if (manager->priv->xdmcp_factory != NULL) {
-			g_debug ("Accepting XDMCP connections...");
-			gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
-		}
-	}
+        /* Accept remote connections */
+        if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
+                if (manager->priv->xdmcp_factory != NULL) {
+                        g_debug ("Accepting XDMCP connections...");
+                        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+                }
+        }
 
 }
 
 void
 gdm_manager_set_wait_for_go (GdmManager *manager,
-			     gboolean    wait_for_go)
+                             gboolean    wait_for_go)
 {
-	if (manager->priv->wait_for_go != wait_for_go) {
-		manager->priv->wait_for_go = wait_for_go;
+        if (manager->priv->wait_for_go != wait_for_go) {
+                manager->priv->wait_for_go = wait_for_go;
 
-		if (! wait_for_go) {
-			/* we got a go */
-			gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
+                if (! wait_for_go) {
+                        /* we got a go */
+                        gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
 
-			if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
-				g_debug ("Accepting XDMCP connections...");
-				gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
-			}
-		}
-	}
+                        if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
+                                g_debug ("Accepting XDMCP connections...");
+                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+                        }
+                }
+        }
 }
 
 typedef struct {
@@ -213,12 +213,12 @@ typedef struct {
 
 static gboolean
 remove_display_for_connection (GdmDisplay        *display,
-			       RemoveDisplayData *data)
+                               RemoveDisplayData *data)
 {
         g_assert (display != NULL);
         g_assert (data->service_name != NULL);
 
-	/* FIXME: compare service name to that of display */
+        /* FIXME: compare service name to that of display */
 #if 0
         if (strcmp (info->service_name, data->service_name) == 0) {
                 remove_session_for_cookie (data->manager, cookie, NULL);
@@ -241,9 +241,9 @@ remove_displays_for_connection (GdmManager *manager,
 
         g_debug ("Removing display for service name: %s", service_name);
 
-	gdm_display_store_foreach_remove (manager->priv->display_store,
-					  (GdmDisplayStoreFunc)remove_display_for_connection,
-					  &data);
+        gdm_display_store_foreach_remove (manager->priv->display_store,
+                                          (GdmDisplayStoreFunc)remove_display_for_connection,
+                                          &data);
 }
 
 static void
@@ -299,57 +299,57 @@ register_manager (GdmManager *manager)
 
 void
 gdm_manager_set_xdmcp_enabled (GdmManager *manager,
-			       gboolean    enabled)
+                               gboolean    enabled)
 {
-	g_return_if_fail (GDM_IS_MANAGER (manager));
+        g_return_if_fail (GDM_IS_MANAGER (manager));
 
-	manager->priv->xdmcp_enabled = enabled;
+        manager->priv->xdmcp_enabled = enabled;
 }
 
 static void
 gdm_manager_set_property (GObject      *object,
-			  guint	        prop_id,
-			  const GValue  *value,
-			  GParamSpec    *pspec)
+                          guint         prop_id,
+                          const GValue  *value,
+                          GParamSpec    *pspec)
 {
-	GdmManager *self;
+        GdmManager *self;
 
-	self = GDM_MANAGER (object);
+        self = GDM_MANAGER (object);
 
-	switch (prop_id) {
-	case PROP_XDMCP_ENABLED:
-		gdm_manager_set_xdmcp_enabled (self, g_value_get_boolean (value));
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+        switch (prop_id) {
+        case PROP_XDMCP_ENABLED:
+                gdm_manager_set_xdmcp_enabled (self, g_value_get_boolean (value));
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
 }
 
 static void
 gdm_manager_get_property (GObject    *object,
-			  guint       prop_id,
-			  GValue     *value,
-			  GParamSpec *pspec)
+                          guint       prop_id,
+                          GValue     *value,
+                          GParamSpec *pspec)
 {
-	GdmManager *self;
+        GdmManager *self;
 
-	self = GDM_MANAGER (object);
+        self = GDM_MANAGER (object);
 
-	switch (prop_id) {
-	case PROP_XDMCP_ENABLED:
-		g_value_set_boolean (value, self->priv->xdmcp_enabled);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+        switch (prop_id) {
+        case PROP_XDMCP_ENABLED:
+                g_value_set_boolean (value, self->priv->xdmcp_enabled);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
 }
 
 static GObject *
 gdm_manager_constructor (GType                  type,
-			 guint                  n_construct_properties,
-			 GObjectConstructParam *construct_properties)
+                         guint                  n_construct_properties,
+                         GObjectConstructParam *construct_properties)
 {
         GdmManager      *manager;
         GdmManagerClass *klass;
@@ -357,14 +357,14 @@ gdm_manager_constructor (GType                  type,
         klass = GDM_MANAGER_CLASS (g_type_class_peek (GDM_TYPE_MANAGER));
 
         manager = GDM_MANAGER (G_OBJECT_CLASS (gdm_manager_parent_class)->constructor (type,
-										       n_construct_properties,
-										       construct_properties));
+                                                                                       n_construct_properties,
+                                                                                       construct_properties));
 
-	manager->priv->local_factory = gdm_local_display_factory_new (manager->priv->display_store);
+        manager->priv->local_factory = gdm_local_display_factory_new (manager->priv->display_store);
 
-	if (manager->priv->xdmcp_enabled) {
-		manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
-	}
+        if (manager->priv->xdmcp_enabled) {
+                manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
+        }
 
         return G_OBJECT (manager);
 }
@@ -372,43 +372,43 @@ gdm_manager_constructor (GType                  type,
 static void
 gdm_manager_class_init (GdmManagerClass *klass)
 {
-	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-	object_class->get_property = gdm_manager_get_property;
-	object_class->set_property = gdm_manager_set_property;
-	object_class->constructor = gdm_manager_constructor;
-	object_class->finalize = gdm_manager_finalize;
+        object_class->get_property = gdm_manager_get_property;
+        object_class->set_property = gdm_manager_set_property;
+        object_class->constructor = gdm_manager_constructor;
+        object_class->finalize = gdm_manager_finalize;
 
-	signals [DISPLAY_ADDED] =
-		g_signal_new ("display-added",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (GdmManagerClass, display_added),
-			      NULL,
-			      NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE,
-			      1, G_TYPE_STRING);
-	signals [DISPLAY_REMOVED] =
-		g_signal_new ("display-removed",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (GdmManagerClass, display_removed),
-			      NULL,
-			      NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE,
-			      1, G_TYPE_STRING);
+        signals [DISPLAY_ADDED] =
+                g_signal_new ("display-added",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmManagerClass, display_added),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+        signals [DISPLAY_REMOVED] =
+                g_signal_new ("display-removed",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmManagerClass, display_removed),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
 
         g_object_class_install_property (object_class,
                                          PROP_XDMCP_ENABLED,
                                          g_param_spec_boolean ("xdmcp-enabled",
                                                                NULL,
                                                                NULL,
-							       TRUE,
+                                                               TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-	g_type_class_add_private (klass, sizeof (GdmManagerPrivate));
+        g_type_class_add_private (klass, sizeof (GdmManagerPrivate));
 
         dbus_g_object_type_install_info (GDM_TYPE_MANAGER, &dbus_glib_gdm_manager_object_info);
 }
@@ -417,56 +417,56 @@ static void
 gdm_manager_init (GdmManager *manager)
 {
 
-	manager->priv = GDM_MANAGER_GET_PRIVATE (manager);
+        manager->priv = GDM_MANAGER_GET_PRIVATE (manager);
 
-	manager->priv->global_cookie = g_string_new (NULL);
+        manager->priv->global_cookie = g_string_new (NULL);
 
-	make_global_cookie (manager);
+        make_global_cookie (manager);
 
-	manager->priv->display_store = gdm_display_store_new ();
+        manager->priv->display_store = gdm_display_store_new ();
 }
 
 static void
 gdm_manager_finalize (GObject *object)
 {
-	GdmManager *manager;
+        GdmManager *manager;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (GDM_IS_MANAGER (object));
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (GDM_IS_MANAGER (object));
 
-	manager = GDM_MANAGER (object);
+        manager = GDM_MANAGER (object);
 
-	g_return_if_fail (manager->priv != NULL);
+        g_return_if_fail (manager->priv != NULL);
 
-	if (manager->priv->xdmcp_factory != NULL) {
-		g_object_unref (manager->priv->xdmcp_factory);
-	}
+        if (manager->priv->xdmcp_factory != NULL) {
+                g_object_unref (manager->priv->xdmcp_factory);
+        }
 
-	gdm_display_store_clear (manager->priv->display_store);
-	g_object_unref (manager->priv->display_store);
+        gdm_display_store_clear (manager->priv->display_store);
+        g_object_unref (manager->priv->display_store);
 
-	g_string_free (manager->priv->global_cookie, TRUE);
+        g_string_free (manager->priv->global_cookie, TRUE);
 
-	G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);
 }
 
 GdmManager *
 gdm_manager_new (void)
 {
-	if (manager_object != NULL) {
-		g_object_ref (manager_object);
-	} else {
-		gboolean res;
+        if (manager_object != NULL) {
+                g_object_ref (manager_object);
+        } else {
+                gboolean res;
 
-		manager_object = g_object_new (GDM_TYPE_MANAGER, NULL);
-		g_object_add_weak_pointer (manager_object,
-					   (gpointer *) &manager_object);
+                manager_object = g_object_new (GDM_TYPE_MANAGER, NULL);
+                g_object_add_weak_pointer (manager_object,
+                                           (gpointer *) &manager_object);
                 res = register_manager (manager_object);
                 if (! res) {
                         g_object_unref (manager_object);
                         return NULL;
                 }
-	}
+        }
 
-	return GDM_MANAGER (manager_object);
+        return GDM_MANAGER (manager_object);
 }

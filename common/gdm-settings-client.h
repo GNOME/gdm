@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -28,34 +28,34 @@
 G_BEGIN_DECLS
 
 typedef void        (*GdmSettingsClientNotifyFunc)        (guint             id,
-							   GdmSettingsEntry *entry,
-							   gpointer          user_data);
+                                                           GdmSettingsEntry *entry,
+                                                           gpointer          user_data);
 
-gboolean              gdm_settings_client_init			     (const char                 *schemas_file,
-								      const char                 *root);
-void                  gdm_settings_client_shutdown		     (void);
+gboolean              gdm_settings_client_init                       (const char                 *schemas_file,
+                                                                      const char                 *root);
+void                  gdm_settings_client_shutdown                   (void);
 
 gboolean              gdm_settings_client_get_int                    (const char                 *key,
-								      int                        *value);
+                                                                      int                        *value);
 gboolean              gdm_settings_client_get_boolean                (const char                 *key,
-								      gboolean                   *value);
+                                                                      gboolean                   *value);
 gboolean              gdm_settings_client_get_string                 (const char                 *key,
-								      char                      **value);
+                                                                      char                      **value);
 gboolean              gdm_settings_client_get_locale_string          (const char                 *key,
-								      const char                 *locale,
-								      char                      **value);
+                                                                      const char                 *locale,
+                                                                      char                      **value);
 
 gboolean              gdm_settings_client_set_int                    (const char                 *key,
-								      int                         value);
+                                                                      int                         value);
 gboolean              gdm_settings_client_set_boolean                (const char                 *key,
-								      gboolean                    value);
+                                                                      gboolean                    value);
 gboolean              gdm_settings_client_set_string                 (const char                 *key,
-								      const char                 *value);
+                                                                      const char                 *value);
 
 guint                 gdm_settings_client_notify_add                 (const char                 *namespace_section,
-								      GdmSettingsClientNotifyFunc func,
-								      gpointer                    user_data,
-								      GFreeFunc                   destroy_notify);
+                                                                      GdmSettingsClientNotifyFunc func,
+                                                                      gpointer                    user_data,
+                                                                      GFreeFunc                   destroy_notify);
 void                  gdm_settings_client_notify_remove              (guint                       id);
 
 G_END_DECLS

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -34,32 +34,32 @@ G_BEGIN_DECLS
 #define GDM_SIGNAL_HANDLER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_SIGNAL_HANDLER, GdmSignalHandlerClass))
 
 
-typedef gboolean (*GdmSignalHandlerFunc) (int	        signal,
-					  gpointer	data);
+typedef gboolean (*GdmSignalHandlerFunc) (int           signal,
+                                          gpointer      data);
 
 typedef struct GdmSignalHandlerPrivate GdmSignalHandlerPrivate;
 
 typedef struct
 {
-	GObject		         parent;
-	GdmSignalHandlerPrivate *priv;
+        GObject                  parent;
+        GdmSignalHandlerPrivate *priv;
 } GdmSignalHandler;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 } GdmSignalHandlerClass;
 
-GType		    gdm_signal_handler_get_type		       (void);
+GType               gdm_signal_handler_get_type                (void);
 
 GdmSignalHandler *  gdm_signal_handler_new                     (void);
 void                gdm_signal_handler_set_main_loop           (GdmSignalHandler    *handler,
-								GMainLoop           *main_loop);
+                                                                GMainLoop           *main_loop);
 
 void                gdm_signal_handler_add                     (GdmSignalHandler    *handler,
-								int                  signal_number,
-								GdmSignalHandlerFunc callback,
-								gpointer             data);
+                                                                int                  signal_number,
+                                                                GdmSignalHandlerFunc callback,
+                                                                gpointer             data);
 
 G_END_DECLS
 

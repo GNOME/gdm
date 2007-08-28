@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -38,16 +38,16 @@ typedef struct GdmSimpleSlavePrivate GdmSimpleSlavePrivate;
 
 typedef struct
 {
-	GdmSlave	       parent;
-	GdmSimpleSlavePrivate *priv;
+        GdmSlave               parent;
+        GdmSimpleSlavePrivate *priv;
 } GdmSimpleSlave;
 
 typedef struct
 {
-	GdmSlaveClass   parent_class;
+        GdmSlaveClass   parent_class;
 } GdmSimpleSlaveClass;
 
-GType		    gdm_simple_slave_get_type	(void);
+GType               gdm_simple_slave_get_type   (void);
 GdmSlave *          gdm_simple_slave_new        (const char       *id);
 
 G_END_DECLS

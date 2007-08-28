@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
@@ -25,22 +25,22 @@
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 struct _GdmIndirectDisplay {
-	int         id;
-	GdmAddress *dsp_address;
-	GdmAddress *chosen_host;
-	time_t      acctime;
+        int         id;
+        GdmAddress *dsp_address;
+        GdmAddress *chosen_host;
+        time_t      acctime;
 };
 
 GdmIndirectDisplay *    gdm_choose_indirect_alloc            (GdmAddress *address);
 GdmIndirectDisplay *    gdm_choose_indirect_lookup           (GdmAddress *address);
-GdmIndirectDisplay *	gdm_choose_indirect_lookup_by_chosen (GdmAddress *chosen,
-							      GdmAddress *origin);
-void			gdm_choose_indirect_dispose          (GdmIndirectDisplay *id);
+GdmIndirectDisplay *    gdm_choose_indirect_lookup_by_chosen (GdmAddress *chosen,
+                                                              GdmAddress *origin);
+void                    gdm_choose_indirect_dispose          (GdmIndirectDisplay *id);
 
 /* dispose of indirect display of id, if no host is set */
-void			gdm_choose_indirect_dispose_empty_id (guint id);
+void                    gdm_choose_indirect_dispose_empty_id (guint id);
 
-gboolean		gdm_choose_data (const char *data);
+gboolean                gdm_choose_data (const char *data);
 
 #endif /* CHOOSE_H */
 

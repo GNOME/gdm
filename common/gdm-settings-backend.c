@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -41,19 +41,19 @@
 
 struct GdmSettingsBackendPrivate
 {
-	gpointer dummy;
+        gpointer dummy;
 };
 
 enum {
-	VALUE_CHANGED,
-	LAST_SIGNAL
+        VALUE_CHANGED,
+        LAST_SIGNAL
 };
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-static void	gdm_settings_backend_class_init	(GdmSettingsBackendClass *klass);
-static void	gdm_settings_backend_init	(GdmSettingsBackend      *settings_backend);
-static void	gdm_settings_backend_finalize	(GObject	         *object);
+static void     gdm_settings_backend_class_init (GdmSettingsBackendClass *klass);
+static void     gdm_settings_backend_init       (GdmSettingsBackend      *settings_backend);
+static void     gdm_settings_backend_finalize   (GObject                 *object);
 
 static gpointer settings_backend_object = NULL;
 
@@ -62,125 +62,125 @@ G_DEFINE_ABSTRACT_TYPE (GdmSettingsBackend, gdm_settings_backend, G_TYPE_OBJECT)
 GQuark
 gdm_settings_backend_error_quark (void)
 {
-	static GQuark ret = 0;
-	if (ret == 0) {
-		ret = g_quark_from_static_string ("gdm_settings_backend_error");
-	}
+        static GQuark ret = 0;
+        if (ret == 0) {
+                ret = g_quark_from_static_string ("gdm_settings_backend_error");
+        }
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 gdm_settings_backend_real_get_value (GdmSettingsBackend *settings_backend,
-				     const char         *key,
-				     char              **value,
-				     GError            **error)
+                                     const char         *key,
+                                     char              **value,
+                                     GError            **error)
 {
-	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
+        g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
 
-	return FALSE;
+        return FALSE;
 }
 
 static gboolean
 gdm_settings_backend_real_set_value (GdmSettingsBackend *settings_backend,
-				     const char         *key,
-				     const char         *value,
-				     GError            **error)
+                                     const char         *key,
+                                     const char         *value,
+                                     GError            **error)
 {
-	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
+        g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
 
-	return FALSE;
+        return FALSE;
 }
 
 gboolean
 gdm_settings_backend_get_value (GdmSettingsBackend *settings_backend,
-				const char         *key,
-				char              **value,
-				GError            **error)
+                                const char         *key,
+                                char              **value,
+                                GError            **error)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
+        g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
 
-	g_object_ref (settings_backend);
-	ret = GDM_SETTINGS_BACKEND_GET_CLASS (settings_backend)->get_value (settings_backend, key, value, error);
-	g_object_unref (settings_backend);
+        g_object_ref (settings_backend);
+        ret = GDM_SETTINGS_BACKEND_GET_CLASS (settings_backend)->get_value (settings_backend, key, value, error);
+        g_object_unref (settings_backend);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_backend_set_value (GdmSettingsBackend *settings_backend,
-				const char         *key,
-				const char         *value,
-				GError            **error)
+                                const char         *key,
+                                const char         *value,
+                                GError            **error)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
+        g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend), FALSE);
 
-	g_object_ref (settings_backend);
-	ret = GDM_SETTINGS_BACKEND_GET_CLASS (settings_backend)->set_value (settings_backend, key, value, error);
-	g_object_unref (settings_backend);
+        g_object_ref (settings_backend);
+        ret = GDM_SETTINGS_BACKEND_GET_CLASS (settings_backend)->set_value (settings_backend, key, value, error);
+        g_object_unref (settings_backend);
 
-	return ret;
+        return ret;
 }
 
 void
 gdm_settings_backend_value_changed (GdmSettingsBackend *settings_backend,
-				    const char         *key,
-				    const char         *old_value,
-				    const char         *new_value)
+                                    const char         *key,
+                                    const char         *old_value,
+                                    const char         *new_value)
 {
-	g_return_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend));
+        g_return_if_fail (GDM_IS_SETTINGS_BACKEND (settings_backend));
 
-	g_signal_emit (settings_backend, signals[VALUE_CHANGED], 0, key, old_value, new_value);
+        g_signal_emit (settings_backend, signals[VALUE_CHANGED], 0, key, old_value, new_value);
 }
 
 static void
 gdm_settings_backend_class_init (GdmSettingsBackendClass *klass)
 {
-	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-	object_class->finalize = gdm_settings_backend_finalize;
+        object_class->finalize = gdm_settings_backend_finalize;
 
-	klass->get_value = gdm_settings_backend_real_get_value;
-	klass->set_value = gdm_settings_backend_real_set_value;
+        klass->get_value = gdm_settings_backend_real_get_value;
+        klass->set_value = gdm_settings_backend_real_set_value;
 
-	signals [VALUE_CHANGED] =
-		g_signal_new ("value-changed",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (GdmSettingsBackendClass, value_changed),
-			      NULL,
-			      NULL,
-			      gdm_marshal_VOID__STRING_STRING_STRING,
-			      G_TYPE_NONE,
-			      3,
-			      G_TYPE_STRING,
-			      G_TYPE_STRING,
-			      G_TYPE_STRING);
+        signals [VALUE_CHANGED] =
+                g_signal_new ("value-changed",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmSettingsBackendClass, value_changed),
+                              NULL,
+                              NULL,
+                              gdm_marshal_VOID__STRING_STRING_STRING,
+                              G_TYPE_NONE,
+                              3,
+                              G_TYPE_STRING,
+                              G_TYPE_STRING,
+                              G_TYPE_STRING);
 
-	g_type_class_add_private (klass, sizeof (GdmSettingsBackendPrivate));
+        g_type_class_add_private (klass, sizeof (GdmSettingsBackendPrivate));
 }
 
 static void
 gdm_settings_backend_init (GdmSettingsBackend *settings_backend)
 {
-	settings_backend->priv = GDM_SETTINGS_BACKEND_GET_PRIVATE (settings_backend);
+        settings_backend->priv = GDM_SETTINGS_BACKEND_GET_PRIVATE (settings_backend);
 }
 
 static void
 gdm_settings_backend_finalize (GObject *object)
 {
-	GdmSettingsBackend *settings_backend;
+        GdmSettingsBackend *settings_backend;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (GDM_IS_SETTINGS_BACKEND (object));
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (GDM_IS_SETTINGS_BACKEND (object));
 
-	settings_backend = GDM_SETTINGS_BACKEND (object);
+        settings_backend = GDM_SETTINGS_BACKEND (object);
 
-	g_return_if_fail (settings_backend->priv != NULL);
+        g_return_if_fail (settings_backend->priv != NULL);
 
-	G_OBJECT_CLASS (gdm_settings_backend_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_settings_backend_parent_class)->finalize (object);
 }

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * (c) 2000 Eazel, Inc.
  * (c) 2001,2002 George Lebl
@@ -10,7 +10,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
@@ -39,48 +39,48 @@ G_BEGIN_DECLS
 #define        ve_string_empty(x) ((x)==NULL||(x)[0]=='\0')
 #define        ve_sure_string(x) ((x)!=NULL?(x):"")
 #define        VE_IGNORE_EINTR(expr) \
-	do {			     \
-		errno = 0;	     \
-		expr;		     \
-	} while G_UNLIKELY (errno == EINTR);
+        do {                         \
+                errno = 0;           \
+                expr;                \
+        } while G_UNLIKELY (errno == EINTR);
 
 #define NEVER_FAILS_seteuid(uid) \
-	{ int r = 0; \
-	  if (geteuid () != uid) \
-	    r = seteuid (uid); \
-	  if G_UNLIKELY (r != 0) \
+        { int r = 0; \
+          if (geteuid () != uid) \
+            r = seteuid (uid); \
+          if G_UNLIKELY (r != 0) \
         g_error ("GDM file %s: line %d (%s): Cannot run seteuid to %d: %s", \
-		  __FILE__,						\
-		  __LINE__,						\
-		  G_GNUC_PRETTY_FUNCTION,					\
-                  (int)uid,						\
-		  strerror (errno));			}
+                  __FILE__,                                             \
+                  __LINE__,                                             \
+                  G_GNUC_PRETTY_FUNCTION,                                       \
+                  (int)uid,                                             \
+                  strerror (errno));                    }
 #define NEVER_FAILS_setegid(gid) \
-	{ int r = 0; \
-	  if (getegid () != gid) \
-	    r = setegid (gid); \
-	  if G_UNLIKELY (r != 0) \
+        { int r = 0; \
+          if (getegid () != gid) \
+            r = setegid (gid); \
+          if G_UNLIKELY (r != 0) \
         g_error ("GDM file %s: line %d (%s): Cannot run setegid to %d: %s", \
-		  __FILE__,						\
-		  __LINE__,						\
-		  G_GNUC_PRETTY_FUNCTION,					\
-                  (int)gid,						\
-		  strerror (errno));			}
+                  __FILE__,                                             \
+                  __LINE__,                                             \
+                  G_GNUC_PRETTY_FUNCTION,                                       \
+                  (int)gid,                                             \
+                  strerror (errno));                    }
 
 /* first goes to euid-root and then sets the egid and euid, to make sure
  * this succeeds */
 #define NEVER_FAILS_root_set_euid_egid(uid,gid) \
-	{ NEVER_FAILS_seteuid (0); \
-	  NEVER_FAILS_setegid (gid); \
-	  if (uid != 0) { NEVER_FAILS_seteuid (uid); } }
+        { NEVER_FAILS_seteuid (0); \
+          NEVER_FAILS_setegid (gid); \
+          if (uid != 0) { NEVER_FAILS_seteuid (uid); } }
 
 
 /* like fopen with "w" but unlinks and uses O_EXCL */
 FILE *         gdm_safe_fopen_w  (const char *file,
-				  mode_t      perm);
+                                  mode_t      perm);
 /* like fopen with "a+" and uses O_EXCL and O_NOFOLLOW */
 FILE *         gdm_safe_fopen_ap (const char *file,
-				  mode_t      perm);
+                                  mode_t      perm);
 
 /* This is for race free forks */
 void           gdm_sigchld_block_push (void);
@@ -107,15 +107,15 @@ int            gdm_open_dev_null (mode_t mode);
  * <dir> "/" <name> <extension>
  */
 char *         gdm_make_filename (const char *dir,
-				  const char *name,
-				  const char *extension);
+                                  const char *name,
+                                  const char *extension);
 
 void           ve_clearenv (void);
-char *	       ve_first_word (const char *s);
+char *         ve_first_word (const char *s);
 
 /* Gets the first existing command out of a list separated by semicolons */
-char *	       ve_get_first_working_command (const char *list,
-					     gboolean only_existance);
+char *         ve_get_first_working_command (const char *list,
+                                             gboolean only_existance);
 
 /* These two functions will ALWAYS return a non-NULL string,
  * if there is an error, they return the unconverted string */
@@ -134,17 +134,17 @@ pid_t          ve_waitpid_no_signal (pid_t pid, int *status, int options);
 gboolean       ve_locale_exists (const char *loc);
 
 gboolean       gdm_generate_random_bytes (GString *str,
-					  int      n_bytes);
+                                          int      n_bytes);
 
 gboolean       gdm_string_hex_encode (const GString *source,
-				      int            start,
-				      GString       *dest,
-				      int            insert_at);
+                                      int            start,
+                                      GString       *dest,
+                                      int            insert_at);
 gboolean       gdm_string_hex_decode (const GString *source,
-				      int            start,
-				      int           *end_return,
-				      GString       *dest,
-				      int            insert_at);
+                                      int            start,
+                                      int           *end_return,
+                                      GString       *dest,
+                                      int            insert_at);
 gboolean       gdm_generate_cookie (GString *result);
 
 G_END_DECLS

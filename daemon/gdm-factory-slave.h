@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -38,16 +38,16 @@ typedef struct GdmFactorySlavePrivate GdmFactorySlavePrivate;
 
 typedef struct
 {
-	GdmSlave	        parent;
-	GdmFactorySlavePrivate *priv;
+        GdmSlave                parent;
+        GdmFactorySlavePrivate *priv;
 } GdmFactorySlave;
 
 typedef struct
 {
-	GdmSlaveClass   parent_class;
+        GdmSlaveClass   parent_class;
 } GdmFactorySlaveClass;
 
-GType		    gdm_factory_slave_get_type	(void);
+GType               gdm_factory_slave_get_type  (void);
 GdmSlave *          gdm_factory_slave_new        (const char       *id);
 
 G_END_DECLS

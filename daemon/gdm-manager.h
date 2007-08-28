@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2006 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,40 +37,40 @@ typedef struct GdmManagerPrivate GdmManagerPrivate;
 
 typedef struct
 {
-	GObject		  parent;
-	GdmManagerPrivate *priv;
+        GObject           parent;
+        GdmManagerPrivate *priv;
 } GdmManager;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void	      (* display_added)	   (GdmManager      *manager,
-					    const char      *id);
-	void	      (* display_removed)  (GdmManager      *manager,
-					    const char      *id);
+        void          (* display_added)    (GdmManager      *manager,
+                                            const char      *id);
+        void          (* display_removed)  (GdmManager      *manager,
+                                            const char      *id);
 } GdmManagerClass;
 
 typedef enum
 {
-	 GDM_MANAGER_ERROR_GENERAL
+         GDM_MANAGER_ERROR_GENERAL
 } GdmManagerError;
 
 #define GDM_MANAGER_ERROR gdm_manager_error_quark ()
 
-GQuark		    gdm_manager_error_quark		       (void);
-GType		    gdm_manager_get_type		       (void);
+GQuark              gdm_manager_error_quark                    (void);
+GType               gdm_manager_get_type                       (void);
 
-GdmManager *	    gdm_manager_new			       (void);
+GdmManager *        gdm_manager_new                            (void);
 void                gdm_manager_start                          (GdmManager *manager);
 void                gdm_manager_set_wait_for_go                (GdmManager *manager,
-								gboolean    wait_for_go);
+                                                                gboolean    wait_for_go);
 
 void                gdm_manager_set_xdmcp_enabled              (GdmManager *manager,
-								gboolean    enabled);
+                                                                gboolean    enabled);
 gboolean            gdm_manager_get_displays                   (GdmManager *manager,
-								GPtrArray **displays,
-								GError    **error);
+                                                                GPtrArray **displays,
+                                                                GError    **error);
 
 
 G_END_DECLS

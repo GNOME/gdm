@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -43,23 +43,23 @@ typedef struct GdmXdmcpDisplayPrivate GdmXdmcpDisplayPrivate;
 
 typedef struct
 {
-	GdmDisplay		parent;
-	GdmXdmcpDisplayPrivate *priv;
+        GdmDisplay              parent;
+        GdmXdmcpDisplayPrivate *priv;
 } GdmXdmcpDisplay;
 
 typedef struct
 {
-	GdmDisplayClass   parent_class;
+        GdmDisplayClass   parent_class;
 
 } GdmXdmcpDisplayClass;
 
-GType		          gdm_xdmcp_display_get_type		     (void);
+GType                     gdm_xdmcp_display_get_type                 (void);
 
 
-GdmDisplay *	          gdm_xdmcp_display_new		             (const char              *hostname,
-								      int                      number,
-								      GdmAddress              *addr,
-								      gint32                   serial_number);
+GdmDisplay *              gdm_xdmcp_display_new                      (const char              *hostname,
+                                                                      int                      number,
+                                                                      GdmAddress              *addr,
+                                                                      gint32                   serial_number);
 
 gint32                    gdm_xdmcp_display_get_session_number       (GdmXdmcpDisplay         *display);
 GdmAddress              * gdm_xdmcp_display_get_remote_address       (GdmXdmcpDisplay         *display);

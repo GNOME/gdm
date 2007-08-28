@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -48,220 +48,220 @@ static guint32 display_serial = 1;
 
 struct GdmDisplayPrivate
 {
-	char            *id;
-	char            *seat_id;
+        char            *id;
+        char            *seat_id;
 
-	char            *remote_hostname;
-	int              x11_display_number;
-	char            *x11_display_name;
-	int              status;
-	time_t           creation_time;
-	char            *x11_cookie;
-	char            *x11_authority_file;
-	char            *slave_command;
+        char            *remote_hostname;
+        int              x11_display_number;
+        char            *x11_display_name;
+        int              status;
+        time_t           creation_time;
+        char            *x11_cookie;
+        char            *x11_authority_file;
+        char            *slave_command;
 
-	gboolean         is_local;
-	guint            finish_idle_id;
+        gboolean         is_local;
+        guint            finish_idle_id;
 
-	GdmSlaveProxy   *slave_proxy;
+        GdmSlaveProxy   *slave_proxy;
         DBusGConnection *connection;
 };
 
 enum {
-	PROP_0,
-	PROP_ID,
-	PROP_SEAT_ID,
-	PROP_REMOTE_HOSTNAME,
-	PROP_X11_DISPLAY_NUMBER,
-	PROP_X11_DISPLAY_NAME,
-	PROP_X11_COOKIE,
-	PROP_X11_AUTHORITY_FILE,
-	PROP_IS_LOCAL,
-	PROP_SLAVE_COMMAND,
+        PROP_0,
+        PROP_ID,
+        PROP_SEAT_ID,
+        PROP_REMOTE_HOSTNAME,
+        PROP_X11_DISPLAY_NUMBER,
+        PROP_X11_DISPLAY_NAME,
+        PROP_X11_COOKIE,
+        PROP_X11_AUTHORITY_FILE,
+        PROP_IS_LOCAL,
+        PROP_SLAVE_COMMAND,
 };
 
-static void	gdm_display_class_init	(GdmDisplayClass *klass);
-static void	gdm_display_init	(GdmDisplay	 *display);
-static void	gdm_display_finalize	(GObject	 *object);
+static void     gdm_display_class_init  (GdmDisplayClass *klass);
+static void     gdm_display_init        (GdmDisplay      *display);
+static void     gdm_display_finalize    (GObject         *object);
 
 G_DEFINE_ABSTRACT_TYPE (GdmDisplay, gdm_display, G_TYPE_OBJECT)
 
 GQuark
 gdm_display_error_quark (void)
 {
-	static GQuark ret = 0;
-	if (ret == 0) {
-		ret = g_quark_from_static_string ("gdm_display_error");
-	}
+        static GQuark ret = 0;
+        if (ret == 0) {
+                ret = g_quark_from_static_string ("gdm_display_error");
+        }
 
-	return ret;
+        return ret;
 }
 
 static guint32
 get_next_display_serial (void)
 {
-	guint32 serial;
+        guint32 serial;
 
-	serial = display_serial++;
+        serial = display_serial++;
 
-	if ((gint32)display_serial < 0) {
-		display_serial = 1;
-	}
+        if ((gint32)display_serial < 0) {
+                display_serial = 1;
+        }
 
-	return serial;
+        return serial;
 }
 
 time_t
 gdm_display_get_creation_time (GdmDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), 0);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), 0);
 
-	return display->priv->creation_time;
+        return display->priv->creation_time;
 }
 
 int
 gdm_display_get_status (GdmDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), 0);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), 0);
 
-	return display->priv->status;
+        return display->priv->status;
 }
 
 static gboolean
 gdm_display_real_create_authority (GdmDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_create_authority (GdmDisplay *display)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_object_ref (display);
-	ret = GDM_DISPLAY_GET_CLASS (display)->create_authority (display);
-	g_object_unref (display);
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->create_authority (display);
+        g_object_unref (display);
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 gdm_display_real_add_user_authorization (GdmDisplay *display,
-					 const char *username,
-					 char      **filename,
-					 GError    **error)
+                                         const char *username,
+                                         char      **filename,
+                                         GError    **error)
 {
-	gboolean ret;
+        gboolean ret;
 
-	ret = FALSE;
+        ret = FALSE;
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_display_add_user_authorization (GdmDisplay *display,
-				    const char *username,
-				    char      **filename,
-				    GError    **error)
+                                    const char *username,
+                                    char      **filename,
+                                    GError    **error)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Adding authorization for user:%s on display %s", username, display->priv->x11_display_name);
+        g_debug ("Adding authorization for user:%s on display %s", username, display->priv->x11_display_name);
 
-	g_object_ref (display);
-	ret = GDM_DISPLAY_GET_CLASS (display)->add_user_authorization (display, username, filename, error);
-	g_object_unref (display);
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->add_user_authorization (display, username, filename, error);
+        g_object_unref (display);
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 gdm_display_real_remove_user_authorization (GdmDisplay *display,
-					    const char *username,
-					    GError    **error)
+                                            const char *username,
+                                            GError    **error)
 {
-	gboolean ret;
+        gboolean ret;
 
-	ret = FALSE;
+        ret = FALSE;
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_display_remove_user_authorization (GdmDisplay *display,
-				       const char *username,
-				       GError    **error)
+                                       const char *username,
+                                       GError    **error)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Removing authorization for user:%s on display %s", username, display->priv->x11_display_name);
+        g_debug ("Removing authorization for user:%s on display %s", username, display->priv->x11_display_name);
 
-	g_object_ref (display);
-	ret = GDM_DISPLAY_GET_CLASS (display)->remove_user_authorization (display, username, error);
-	g_object_unref (display);
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->remove_user_authorization (display, username, error);
+        g_object_unref (display);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_display_get_x11_cookie (GdmDisplay *display,
-			    char      **x11_cookie,
-			    GError    **error)
+                            char      **x11_cookie,
+                            GError    **error)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	if (x11_cookie != NULL) {
-		*x11_cookie = g_strdup (display->priv->x11_cookie);
-	}
+        if (x11_cookie != NULL) {
+                *x11_cookie = g_strdup (display->priv->x11_cookie);
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_get_x11_authority_file (GdmDisplay *display,
-				    char      **filename,
-				    GError    **error)
+                                    char      **filename,
+                                    GError    **error)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	if (filename != NULL) {
-		*filename = g_strdup (display->priv->x11_authority_file);
-	}
+        if (filename != NULL) {
+                *filename = g_strdup (display->priv->x11_authority_file);
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_get_remote_hostname (GdmDisplay *display,
-				 char      **hostname,
-				 GError    **error)
+                                 char      **hostname,
+                                 GError    **error)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	if (hostname != NULL) {
-		*hostname = g_strdup (display->priv->remote_hostname);
-	}
+        if (hostname != NULL) {
+                *hostname = g_strdup (display->priv->remote_hostname);
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_get_x11_display_number (GdmDisplay *display,
-				    int	       *number,
-				    GError    **error)
+                                    int        *number,
+                                    GError    **error)
 {
        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
        if (number != NULL) {
-	       *number = display->priv->x11_display_number;
+               *number = display->priv->x11_display_number;
        }
 
        return TRUE;
@@ -270,198 +270,198 @@ gdm_display_get_x11_display_number (GdmDisplay *display,
 static gboolean
 finish_idle (GdmDisplay *display)
 {
-	gdm_display_finish (display);
-	display->priv->finish_idle_id = 0;
-	return FALSE;
+        gdm_display_finish (display);
+        display->priv->finish_idle_id = 0;
+        return FALSE;
 }
 
 static void
 queue_finish (GdmDisplay *display)
 {
-	if (display->priv->finish_idle_id == 0) {
-		display->priv->finish_idle_id = g_idle_add ((GSourceFunc)finish_idle, display);
-	}
+        if (display->priv->finish_idle_id == 0) {
+                display->priv->finish_idle_id = g_idle_add ((GSourceFunc)finish_idle, display);
+        }
 }
 
 static void
 slave_exited (GdmSlaveProxy       *proxy,
-	      int                  code,
-	      GdmDisplay          *display)
+              int                  code,
+              GdmDisplay          *display)
 {
-	g_debug ("Slave exited: %d", code);
+        g_debug ("Slave exited: %d", code);
 
-	queue_finish (display);
+        queue_finish (display);
 }
 
 static void
 slave_died (GdmSlaveProxy       *proxy,
-	    int                  signum,
-	    GdmDisplay          *display)
+            int                  signum,
+            GdmDisplay          *display)
 {
-	g_debug ("Slave died: %d", signum);
+        g_debug ("Slave died: %d", signum);
 
-	queue_finish (display);
+        queue_finish (display);
 }
 
 static gboolean
 gdm_display_real_manage (GdmDisplay *display)
 {
-	char *command;
+        char *command;
 
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("GdmDisplay manage display");
+        g_debug ("GdmDisplay manage display");
 
-	display->priv->status = GDM_DISPLAY_MANAGED;
+        display->priv->status = GDM_DISPLAY_MANAGED;
 
-	g_assert (display->priv->slave_proxy == NULL);
+        g_assert (display->priv->slave_proxy == NULL);
 
-	display->priv->slave_proxy = gdm_slave_proxy_new ();
-	g_signal_connect (display->priv->slave_proxy,
-			  "exited",
-			  G_CALLBACK (slave_exited),
-			  display);
-	g_signal_connect (display->priv->slave_proxy,
-			  "died",
-			  G_CALLBACK (slave_died),
-			  display);
+        display->priv->slave_proxy = gdm_slave_proxy_new ();
+        g_signal_connect (display->priv->slave_proxy,
+                          "exited",
+                          G_CALLBACK (slave_exited),
+                          display);
+        g_signal_connect (display->priv->slave_proxy,
+                          "died",
+                          G_CALLBACK (slave_died),
+                          display);
 
-	command = g_strdup_printf ("%s --display-id %s",
-				   display->priv->slave_command,
-				   display->priv->id);
+        command = g_strdup_printf ("%s --display-id %s",
+                                   display->priv->slave_command,
+                                   display->priv->id);
 
-	gdm_slave_proxy_set_command (display->priv->slave_proxy, command);
-	g_free (command);
+        gdm_slave_proxy_set_command (display->priv->slave_proxy, command);
+        g_free (command);
 
-	gdm_slave_proxy_start (display->priv->slave_proxy);
+        gdm_slave_proxy_start (display->priv->slave_proxy);
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_manage (GdmDisplay *display)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Managing display: %s", display->priv->id);
+        g_debug ("Managing display: %s", display->priv->id);
 
-	g_object_ref (display);
-	ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
-	g_object_unref (display);
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
+        g_object_unref (display);
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 gdm_display_real_finish (GdmDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	display->priv->status = GDM_DISPLAY_FINISHED;
+        display->priv->status = GDM_DISPLAY_FINISHED;
 
-	g_debug ("GdmDisplay finish display");
+        g_debug ("GdmDisplay finish display");
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_finish (GdmDisplay *display)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Finishing display: %s", display->priv->id);
+        g_debug ("Finishing display: %s", display->priv->id);
 
-	g_object_ref (display);
-	ret = GDM_DISPLAY_GET_CLASS (display)->finish (display);
-	g_object_unref (display);
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->finish (display);
+        g_object_unref (display);
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 gdm_display_real_unmanage (GdmDisplay *display)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	display->priv->status = GDM_DISPLAY_UNMANAGED;
+        display->priv->status = GDM_DISPLAY_UNMANAGED;
 
-	g_debug ("GdmDisplay unmanage display");
+        g_debug ("GdmDisplay unmanage display");
 
-	if (display->priv->slave_proxy != NULL) {
-		gdm_slave_proxy_stop (display->priv->slave_proxy);
+        if (display->priv->slave_proxy != NULL) {
+                gdm_slave_proxy_stop (display->priv->slave_proxy);
 
-		g_object_unref (display->priv->slave_proxy);
-		display->priv->slave_proxy = NULL;
-	}
+                g_object_unref (display->priv->slave_proxy);
+                display->priv->slave_proxy = NULL;
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_unmanage (GdmDisplay *display)
 {
-	gboolean ret;
+        gboolean ret;
 
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	g_debug ("Unmanaging display");
+        g_debug ("Unmanaging display");
 
-	g_object_ref (display);
-	ret = GDM_DISPLAY_GET_CLASS (display)->unmanage (display);
-	g_object_unref (display);
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->unmanage (display);
+        g_object_unref (display);
 
-	return ret;
+        return ret;
 }
 
 gboolean
-gdm_display_get_id (GdmDisplay	       *display,
-		    char	      **id,
-		    GError	      **error)
+gdm_display_get_id (GdmDisplay         *display,
+                    char              **id,
+                    GError            **error)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	if (id != NULL) {
-		*id = g_strdup (display->priv->id);
-	}
+        if (id != NULL) {
+                *id = g_strdup (display->priv->id);
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_get_x11_display_name (GdmDisplay   *display,
-				  char	      **x11_display,
-				  GError      **error)
+                                  char        **x11_display,
+                                  GError      **error)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	if (x11_display != NULL) {
-		*x11_display = g_strdup (display->priv->x11_display_name);
-	}
+        if (x11_display != NULL) {
+                *x11_display = g_strdup (display->priv->x11_display_name);
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_display_is_local (GdmDisplay *display,
-		      gboolean   *local,
-		      GError    **error)
+                      gboolean   *local,
+                      GError    **error)
 {
-	g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-	if (local != NULL) {
-		*local = display->priv->is_local;
-	}
+        if (local != NULL) {
+                *local = display->priv->is_local;
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 static void
 _gdm_display_set_id (GdmDisplay     *display,
-		     const char     *id)
+                     const char     *id)
 {
         g_free (display->priv->id);
         display->priv->id = g_strdup (id);
@@ -469,7 +469,7 @@ _gdm_display_set_id (GdmDisplay     *display,
 
 static void
 _gdm_display_set_seat_id (GdmDisplay     *display,
-			  const char     *seat_id)
+                          const char     *seat_id)
 {
         g_free (display->priv->seat_id);
         display->priv->seat_id = g_strdup (seat_id);
@@ -477,7 +477,7 @@ _gdm_display_set_seat_id (GdmDisplay     *display,
 
 static void
 _gdm_display_set_remote_hostname (GdmDisplay     *display,
-				  const char     *hostname)
+                                  const char     *hostname)
 {
         g_free (display->priv->remote_hostname);
         display->priv->remote_hostname = g_strdup (hostname);
@@ -485,14 +485,14 @@ _gdm_display_set_remote_hostname (GdmDisplay     *display,
 
 static void
 _gdm_display_set_x11_display_number (GdmDisplay     *display,
-				     int             num)
+                                     int             num)
 {
         display->priv->x11_display_number = num;
 }
 
 static void
 _gdm_display_set_x11_display_name (GdmDisplay     *display,
-				   const char     *x11_display)
+                                   const char     *x11_display)
 {
         g_free (display->priv->x11_display_name);
         display->priv->x11_display_name = g_strdup (x11_display);
@@ -500,7 +500,7 @@ _gdm_display_set_x11_display_name (GdmDisplay     *display,
 
 static void
 _gdm_display_set_x11_cookie (GdmDisplay     *display,
-			     const char     *x11_cookie)
+                             const char     *x11_cookie)
 {
         g_free (display->priv->x11_cookie);
         display->priv->x11_cookie = g_strdup (x11_cookie);
@@ -508,7 +508,7 @@ _gdm_display_set_x11_cookie (GdmDisplay     *display,
 
 static void
 _gdm_display_set_x11_authority_file (GdmDisplay     *display,
-				     const char     *file)
+                                     const char     *file)
 {
         g_free (display->priv->x11_authority_file);
         display->priv->x11_authority_file = g_strdup (file);
@@ -516,105 +516,105 @@ _gdm_display_set_x11_authority_file (GdmDisplay     *display,
 
 static void
 _gdm_display_set_is_local (GdmDisplay     *display,
-			   gboolean        is_local)
+                           gboolean        is_local)
 {
         display->priv->is_local = is_local;
 }
 
 static void
 _gdm_display_set_slave_command (GdmDisplay     *display,
-				const char     *command)
+                                const char     *command)
 {
         g_free (display->priv->slave_command);
         display->priv->slave_command = g_strdup (command);
 }
 
 static void
-gdm_display_set_property (GObject	 *object,
-			  guint		  prop_id,
-			  const GValue	 *value,
-			  GParamSpec	 *pspec)
+gdm_display_set_property (GObject        *object,
+                          guint           prop_id,
+                          const GValue   *value,
+                          GParamSpec     *pspec)
 {
-	GdmDisplay *self;
+        GdmDisplay *self;
 
-	self = GDM_DISPLAY (object);
+        self = GDM_DISPLAY (object);
 
-	switch (prop_id) {
-	case PROP_ID:
-		_gdm_display_set_id (self, g_value_get_string (value));
-		break;
-	case PROP_SEAT_ID:
-		_gdm_display_set_seat_id (self, g_value_get_string (value));
-		break;
-	case PROP_REMOTE_HOSTNAME:
-		_gdm_display_set_remote_hostname (self, g_value_get_string (value));
-		break;
-	case PROP_X11_DISPLAY_NUMBER:
-		_gdm_display_set_x11_display_number (self, g_value_get_int (value));
-		break;
-	case PROP_X11_DISPLAY_NAME:
-		_gdm_display_set_x11_display_name (self, g_value_get_string (value));
-		break;
-	case PROP_X11_COOKIE:
-		_gdm_display_set_x11_cookie (self, g_value_get_string (value));
-		break;
-	case PROP_X11_AUTHORITY_FILE:
-		_gdm_display_set_x11_authority_file (self, g_value_get_string (value));
-		break;
-	case PROP_IS_LOCAL:
-		_gdm_display_set_is_local (self, g_value_get_boolean (value));
-		break;
-	case PROP_SLAVE_COMMAND:
-		_gdm_display_set_slave_command (self, g_value_get_string (value));
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+        switch (prop_id) {
+        case PROP_ID:
+                _gdm_display_set_id (self, g_value_get_string (value));
+                break;
+        case PROP_SEAT_ID:
+                _gdm_display_set_seat_id (self, g_value_get_string (value));
+                break;
+        case PROP_REMOTE_HOSTNAME:
+                _gdm_display_set_remote_hostname (self, g_value_get_string (value));
+                break;
+        case PROP_X11_DISPLAY_NUMBER:
+                _gdm_display_set_x11_display_number (self, g_value_get_int (value));
+                break;
+        case PROP_X11_DISPLAY_NAME:
+                _gdm_display_set_x11_display_name (self, g_value_get_string (value));
+                break;
+        case PROP_X11_COOKIE:
+                _gdm_display_set_x11_cookie (self, g_value_get_string (value));
+                break;
+        case PROP_X11_AUTHORITY_FILE:
+                _gdm_display_set_x11_authority_file (self, g_value_get_string (value));
+                break;
+        case PROP_IS_LOCAL:
+                _gdm_display_set_is_local (self, g_value_get_boolean (value));
+                break;
+        case PROP_SLAVE_COMMAND:
+                _gdm_display_set_slave_command (self, g_value_get_string (value));
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
 }
 
 static void
-gdm_display_get_property (GObject	 *object,
-			  guint  	  prop_id,
-			  GValue	 *value,
-			  GParamSpec	 *pspec)
+gdm_display_get_property (GObject        *object,
+                          guint           prop_id,
+                          GValue         *value,
+                          GParamSpec     *pspec)
 {
-	GdmDisplay *self;
+        GdmDisplay *self;
 
-	self = GDM_DISPLAY (object);
+        self = GDM_DISPLAY (object);
 
-	switch (prop_id) {
-	case PROP_ID:
-		g_value_set_string (value, self->priv->id);
-		break;
-	case PROP_SEAT_ID:
-		g_value_set_string (value, self->priv->seat_id);
-		break;
-	case PROP_REMOTE_HOSTNAME:
-		g_value_set_string (value, self->priv->remote_hostname);
-		break;
-	case PROP_X11_DISPLAY_NUMBER:
-		g_value_set_int (value, self->priv->x11_display_number);
-		break;
-	case PROP_X11_DISPLAY_NAME:
-		g_value_set_string (value, self->priv->x11_display_name);
-		break;
-	case PROP_X11_COOKIE:
-		g_value_set_string (value, self->priv->x11_cookie);
-		break;
-	case PROP_X11_AUTHORITY_FILE:
-		g_value_set_string (value, self->priv->x11_authority_file);
-		break;
-	case PROP_IS_LOCAL:
-		g_value_set_boolean (value, self->priv->is_local);
-		break;
-	case PROP_SLAVE_COMMAND:
-		g_value_set_string (value, self->priv->slave_command);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+        switch (prop_id) {
+        case PROP_ID:
+                g_value_set_string (value, self->priv->id);
+                break;
+        case PROP_SEAT_ID:
+                g_value_set_string (value, self->priv->seat_id);
+                break;
+        case PROP_REMOTE_HOSTNAME:
+                g_value_set_string (value, self->priv->remote_hostname);
+                break;
+        case PROP_X11_DISPLAY_NUMBER:
+                g_value_set_int (value, self->priv->x11_display_number);
+                break;
+        case PROP_X11_DISPLAY_NAME:
+                g_value_set_string (value, self->priv->x11_display_name);
+                break;
+        case PROP_X11_COOKIE:
+                g_value_set_string (value, self->priv->x11_cookie);
+                break;
+        case PROP_X11_AUTHORITY_FILE:
+                g_value_set_string (value, self->priv->x11_authority_file);
+                break;
+        case PROP_IS_LOCAL:
+                g_value_set_boolean (value, self->priv->is_local);
+                break;
+        case PROP_SLAVE_COMMAND:
+                g_value_set_string (value, self->priv->slave_command);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
 }
 
 static gboolean
@@ -643,24 +643,24 @@ register_display (GdmDisplay *display)
 
 static GObject *
 gdm_display_constructor (GType                  type,
-			 guint                  n_construct_properties,
-			 GObjectConstructParam *construct_properties)
+                         guint                  n_construct_properties,
+                         GObjectConstructParam *construct_properties)
 {
         GdmDisplay      *display;
         GdmDisplayClass *klass;
-	gboolean         res;
+        gboolean         res;
 
         klass = GDM_DISPLAY_CLASS (g_type_class_peek (GDM_TYPE_DISPLAY));
 
         display = GDM_DISPLAY (G_OBJECT_CLASS (gdm_display_parent_class)->constructor (type,
-										       n_construct_properties,
-										       construct_properties));
+                                                                                       n_construct_properties,
+                                                                                       construct_properties));
 
-	display->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Display%u", get_next_display_serial ());
+        display->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Display%u", get_next_display_serial ());
 
         res = register_display (display);
         if (! res) {
-		g_warning ("Unable to register display with system bus");
+                g_warning ("Unable to register display with system bus");
         }
 
         return G_OBJECT (display);
@@ -669,90 +669,90 @@ gdm_display_constructor (GType                  type,
 static void
 gdm_display_dispose (GObject *object)
 {
-	GdmDisplay *display;
+        GdmDisplay *display;
 
-	display = GDM_DISPLAY (object);
+        display = GDM_DISPLAY (object);
 
-	if (display->priv->finish_idle_id > 0) {
-		g_source_remove (display->priv->finish_idle_id);
-		display->priv->finish_idle_id = 0;
-	}
+        if (display->priv->finish_idle_id > 0) {
+                g_source_remove (display->priv->finish_idle_id);
+                display->priv->finish_idle_id = 0;
+        }
 
-	g_debug ("Disposing display");
-	gdm_display_unmanage (display);
+        g_debug ("Disposing display");
+        gdm_display_unmanage (display);
 
-	G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
+        G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
 }
 
 static void
 gdm_display_class_init (GdmDisplayClass *klass)
 {
-	GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-	object_class->get_property = gdm_display_get_property;
-	object_class->set_property = gdm_display_set_property;
+        object_class->get_property = gdm_display_get_property;
+        object_class->set_property = gdm_display_set_property;
         object_class->constructor = gdm_display_constructor;
-	object_class->dispose = gdm_display_dispose;
-	object_class->finalize = gdm_display_finalize;
+        object_class->dispose = gdm_display_dispose;
+        object_class->finalize = gdm_display_finalize;
 
-	klass->create_authority = gdm_display_real_create_authority;
-	klass->add_user_authorization = gdm_display_real_add_user_authorization;
-	klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
-	klass->manage = gdm_display_real_manage;
-	klass->finish = gdm_display_real_finish;
-	klass->unmanage = gdm_display_real_unmanage;
+        klass->create_authority = gdm_display_real_create_authority;
+        klass->add_user_authorization = gdm_display_real_add_user_authorization;
+        klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
+        klass->manage = gdm_display_real_manage;
+        klass->finish = gdm_display_real_finish;
+        klass->unmanage = gdm_display_real_unmanage;
 
-	g_object_class_install_property (object_class,
-					 PROP_ID,
-					 g_param_spec_string ("id",
-							      "id",
-							      "id",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class,
-					 PROP_SEAT_ID,
-					 g_param_spec_string ("seat-id",
-							      "seat id",
-							      "seat id",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class,
-					 PROP_REMOTE_HOSTNAME,
-					 g_param_spec_string ("remote-hostname",
-							      "remote-hostname",
-							      "remote-hostname",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class,
-					 PROP_X11_DISPLAY_NUMBER,
-					 g_param_spec_int ("x11-display-number",
-							  "x11 display number",
-							  "x11 display number",
-							  -1,
-							  G_MAXINT,
-							  -1,
-							  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class,
-					 PROP_X11_DISPLAY_NAME,
-					 g_param_spec_string ("x11-display-name",
-							      "x11-display-name",
-							      "x11-display-name",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class,
-					 PROP_X11_COOKIE,
-					 g_param_spec_string ("x11-cookie",
-							      "cookie",
-							      "cookie",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-	g_object_class_install_property (object_class,
-					 PROP_X11_AUTHORITY_FILE,
-					 g_param_spec_string ("x11-authority-file",
-							      "authority file",
-							      "authority file",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_ID,
+                                         g_param_spec_string ("id",
+                                                              "id",
+                                                              "id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_SEAT_ID,
+                                         g_param_spec_string ("seat-id",
+                                                              "seat id",
+                                                              "seat id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_REMOTE_HOSTNAME,
+                                         g_param_spec_string ("remote-hostname",
+                                                              "remote-hostname",
+                                                              "remote-hostname",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_X11_DISPLAY_NUMBER,
+                                         g_param_spec_int ("x11-display-number",
+                                                          "x11 display number",
+                                                          "x11 display number",
+                                                          -1,
+                                                          G_MAXINT,
+                                                          -1,
+                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_X11_DISPLAY_NAME,
+                                         g_param_spec_string ("x11-display-name",
+                                                              "x11-display-name",
+                                                              "x11-display-name",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_X11_COOKIE,
+                                         g_param_spec_string ("x11-cookie",
+                                                              "cookie",
+                                                              "cookie",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_X11_AUTHORITY_FILE,
+                                         g_param_spec_string ("x11-authority-file",
+                                                              "authority file",
+                                                              "authority file",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_object_class_install_property (object_class,
                                          PROP_IS_LOCAL,
@@ -762,49 +762,49 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-	g_object_class_install_property (object_class,
-					 PROP_SLAVE_COMMAND,
-					 g_param_spec_string ("slave-command",
-							      "slave command",
-							      "slave command",
-							      DEFAULT_SLAVE_COMMAND,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_SLAVE_COMMAND,
+                                         g_param_spec_string ("slave-command",
+                                                              "slave command",
+                                                              "slave command",
+                                                              DEFAULT_SLAVE_COMMAND,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-	g_type_class_add_private (klass, sizeof (GdmDisplayPrivate));
+        g_type_class_add_private (klass, sizeof (GdmDisplayPrivate));
 
-	dbus_g_object_type_install_info (GDM_TYPE_DISPLAY, &dbus_glib_gdm_display_object_info);
+        dbus_g_object_type_install_info (GDM_TYPE_DISPLAY, &dbus_glib_gdm_display_object_info);
 }
 
 static void
 gdm_display_init (GdmDisplay *display)
 {
 
-	display->priv = GDM_DISPLAY_GET_PRIVATE (display);
+        display->priv = GDM_DISPLAY_GET_PRIVATE (display);
 
-	display->priv->status = GDM_DISPLAY_UNMANAGED;
-	display->priv->creation_time = time (NULL);
+        display->priv->status = GDM_DISPLAY_UNMANAGED;
+        display->priv->creation_time = time (NULL);
 }
 
 static void
 gdm_display_finalize (GObject *object)
 {
-	GdmDisplay *display;
+        GdmDisplay *display;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (GDM_IS_DISPLAY (object));
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (GDM_IS_DISPLAY (object));
 
-	display = GDM_DISPLAY (object);
+        display = GDM_DISPLAY (object);
 
-	g_return_if_fail (display->priv != NULL);
+        g_return_if_fail (display->priv != NULL);
 
-	g_debug ("Finalizing display: %s", display->priv->id);
-	g_free (display->priv->id);
-	g_free (display->priv->seat_id);
-	g_free (display->priv->remote_hostname);
-	g_free (display->priv->x11_display_name);
-	g_free (display->priv->x11_cookie);
-	g_free (display->priv->x11_authority_file);
-	g_free (display->priv->slave_command);
+        g_debug ("Finalizing display: %s", display->priv->id);
+        g_free (display->priv->id);
+        g_free (display->priv->seat_id);
+        g_free (display->priv->remote_hostname);
+        g_free (display->priv->x11_display_name);
+        g_free (display->priv->x11_cookie);
+        g_free (display->priv->x11_authority_file);
+        g_free (display->priv->slave_command);
 
-	G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
 }

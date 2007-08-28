@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,19 +37,19 @@ typedef struct GdmServerPrivate GdmServerPrivate;
 
 typedef struct
 {
-	GObject	          parent;
-	GdmServerPrivate *priv;
+        GObject           parent;
+        GdmServerPrivate *priv;
 } GdmServer;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void	      (* ready)	   (GdmServer *server);
+        void          (* ready)    (GdmServer *server);
 } GdmServerClass;
 
-GType		    gdm_server_get_type	 (void);
-GdmServer *	    gdm_server_new	 (const char *display_id);
+GType               gdm_server_get_type  (void);
+GdmServer *         gdm_server_new       (const char *display_id);
 gboolean            gdm_server_start     (GdmServer   *server);
 gboolean            gdm_server_stop      (GdmServer   *server);
 char *              gdm_server_get_display_device (GdmServer *server);

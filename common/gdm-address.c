@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -47,22 +47,22 @@
 
 struct _GdmAddress
 {
-	struct sockaddr_storage *ss;
+        struct sockaddr_storage *ss;
 };
 
 /* Register GdmAddress in the glib type system */
 GType
 gdm_address_get_type (void)
 {
-	static GType addr_type = 0;
+        static GType addr_type = 0;
 
-	if (addr_type == 0) {
-		addr_type = g_boxed_type_register_static ("GdmAddress",
-							  (GBoxedCopyFunc) gdm_address_copy,
-							  (GBoxedFreeFunc) gdm_address_free);
-	}
+        if (addr_type == 0) {
+                addr_type = g_boxed_type_register_static ("GdmAddress",
+                                                          (GBoxedCopyFunc) gdm_address_copy,
+                                                          (GBoxedFreeFunc) gdm_address_free);
+        }
 
-	return addr_type;
+        return addr_type;
 }
 
 /**
@@ -94,14 +94,14 @@ gdm_address_get_family_type (GdmAddress *address)
 GdmAddress *
 gdm_address_new_from_sockaddr_storage (struct sockaddr_storage *ss)
 {
-	GdmAddress *addr;
+        GdmAddress *addr;
 
-	g_return_val_if_fail (ss != NULL, NULL);
+        g_return_val_if_fail (ss != NULL, NULL);
 
-	addr = g_new0 (GdmAddress, 1);
-	addr->ss = g_memdup (ss, sizeof (struct sockaddr_storage));
+        addr = g_new0 (GdmAddress, 1);
+        addr->ss = g_memdup (ss, sizeof (struct sockaddr_storage));
 
-	return addr;
+        return addr;
 }
 
 /**
@@ -117,237 +117,237 @@ gdm_address_new_from_sockaddr_storage (struct sockaddr_storage *ss)
 struct sockaddr_storage *
 gdm_address_get_sockaddr_storage (GdmAddress *address)
 {
-	struct sockaddr_storage *ss;
+        struct sockaddr_storage *ss;
 
-	g_return_val_if_fail (address != NULL, NULL);
+        g_return_val_if_fail (address != NULL, NULL);
 
-	ss = g_memdup (address->ss, sizeof (struct sockaddr_storage));
+        ss = g_memdup (address->ss, sizeof (struct sockaddr_storage));
 
-	return ss;
+        return ss;
 }
 
 struct sockaddr_storage *
 gdm_address_peek_sockaddr_storage (GdmAddress *address)
 {
-	g_return_val_if_fail (address != NULL, NULL);
+        g_return_val_if_fail (address != NULL, NULL);
 
-	return address->ss;
+        return address->ss;
 }
 
 static gboolean
 v4_v4_equal (const struct sockaddr_in *a,
-	     const struct sockaddr_in *b)
+             const struct sockaddr_in *b)
 {
-	return a->sin_addr.s_addr == b->sin_addr.s_addr;
+        return a->sin_addr.s_addr == b->sin_addr.s_addr;
 }
 
 #ifdef ENABLE_IPV6
 static gboolean
 v6_v6_equal (struct sockaddr_in6 *a,
-	     struct sockaddr_in6 *b)
+             struct sockaddr_in6 *b)
 {
-	return IN6_ARE_ADDR_EQUAL (&a->sin6_addr, &b->sin6_addr);
+        return IN6_ARE_ADDR_EQUAL (&a->sin6_addr, &b->sin6_addr);
 }
 #endif
 
-#define SA(__s)	   ((struct sockaddr *) __s)
+#define SA(__s)    ((struct sockaddr *) __s)
 #define SIN(__s)   ((struct sockaddr_in *) __s)
 #define SIN6(__s)  ((struct sockaddr_in6 *) __s)
 
 gboolean
 gdm_address_equal (GdmAddress *a,
-		   GdmAddress *b)
+                   GdmAddress *b)
 {
-	guint8 fam_a;
-       	guint8 fam_b;
+        guint8 fam_a;
+        guint8 fam_b;
 
-	g_return_val_if_fail (a != NULL || a->ss != NULL, FALSE);
-	g_return_val_if_fail (b != NULL || b->ss != NULL, FALSE);
+        g_return_val_if_fail (a != NULL || a->ss != NULL, FALSE);
+        g_return_val_if_fail (b != NULL || b->ss != NULL, FALSE);
 
-	fam_a = a->ss->ss_family;
-	fam_b = b->ss->ss_family;
+        fam_a = a->ss->ss_family;
+        fam_b = b->ss->ss_family;
 
-	if (fam_a == AF_INET && fam_b == AF_INET) {
-		return v4_v4_equal (SIN (a->ss), SIN (b->ss));
-	}
+        if (fam_a == AF_INET && fam_b == AF_INET) {
+                return v4_v4_equal (SIN (a->ss), SIN (b->ss));
+        }
 #ifdef ENABLE_IPV6
-	else if (fam_a == AF_INET6 && fam_b == AF_INET6) {
-		return v6_v6_equal (SIN6 (a->ss), SIN6 (b->ss));
-	}
+        else if (fam_a == AF_INET6 && fam_b == AF_INET6) {
+                return v6_v6_equal (SIN6 (a->ss), SIN6 (b->ss));
+        }
 #endif
-	return FALSE;
+        return FALSE;
 }
 
 gboolean
 gdm_address_get_hostname (GdmAddress *address,
-			  char      **hostnamep)
+                          char      **hostnamep)
 {
-	char     host [NI_MAXHOST];
-	int      res;
-	gboolean ret;
+        char     host [NI_MAXHOST];
+        int      res;
+        gboolean ret;
 
-	g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+        g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
 
-	ret = FALSE;
+        ret = FALSE;
 
-	host [0] = '\0';
-	res = getnameinfo ((const struct sockaddr *)address->ss,
-			   sizeof (struct sockaddr_storage),
-			   host, sizeof (host),
-			   NULL, 0,
-			   0);
-	if (res == 0) {
-		ret = TRUE;
-		goto done;
-	} else {
-		g_warning ("Unable lookup hostname: %s", gai_strerror (res));
-		gdm_address_debug (address);
-	}
+        host [0] = '\0';
+        res = getnameinfo ((const struct sockaddr *)address->ss,
+                           sizeof (struct sockaddr_storage),
+                           host, sizeof (host),
+                           NULL, 0,
+                           0);
+        if (res == 0) {
+                ret = TRUE;
+                goto done;
+        } else {
+                g_warning ("Unable lookup hostname: %s", gai_strerror (res));
+                gdm_address_debug (address);
+        }
 
-	/* try numeric? */
+        /* try numeric? */
 
  done:
-	if (hostnamep != NULL) {
-		*hostnamep = g_strdup (host);
-	}
+        if (hostnamep != NULL) {
+                *hostnamep = g_strdup (host);
+        }
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_address_get_numeric_info (GdmAddress *address,
-			      char      **hostp,
-			      char      **servp)
+                              char      **hostp,
+                              char      **servp)
 {
-	char     host [NI_MAXHOST];
-	char     serv [NI_MAXSERV];
-	int      res;
-	gboolean ret;
+        char     host [NI_MAXHOST];
+        char     serv [NI_MAXSERV];
+        int      res;
+        gboolean ret;
 
-	g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+        g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
 
-	ret = FALSE;
+        ret = FALSE;
 
-	host [0] = '\0';
-	serv [0] = '\0';
-	res = getnameinfo ((const struct sockaddr *)address->ss,
-			   sizeof (struct sockaddr_storage),
-			   host, sizeof (host),
-			   serv, sizeof (serv),
-			   NI_NUMERICHOST | NI_NUMERICSERV);
-	if (res != 0) {
-		g_warning ("Unable lookup numeric info: %s", gai_strerror (res));
-	} else {
-		ret = TRUE;
-	}
+        host [0] = '\0';
+        serv [0] = '\0';
+        res = getnameinfo ((const struct sockaddr *)address->ss,
+                           sizeof (struct sockaddr_storage),
+                           host, sizeof (host),
+                           serv, sizeof (serv),
+                           NI_NUMERICHOST | NI_NUMERICSERV);
+        if (res != 0) {
+                g_warning ("Unable lookup numeric info: %s", gai_strerror (res));
+        } else {
+                ret = TRUE;
+        }
 
-	if (servp != NULL) {
-		*servp = g_strdup (serv);
-	}
-	if (hostp != NULL) {
-		*hostp = g_strdup (host);
-	}
+        if (servp != NULL) {
+                *servp = g_strdup (serv);
+        }
+        if (hostp != NULL) {
+                *hostp = g_strdup (host);
+        }
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_address_is_loopback (GdmAddress *address)
 {
-	g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+        g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
 
-	switch (address->ss->ss_family){
-#ifdef	AF_INET6
-	case AF_INET6:
-		return IN6_IS_ADDR_LOOPBACK (&((struct sockaddr_in6 *)address->ss)->sin6_addr);
-		break;
+        switch (address->ss->ss_family){
+#ifdef  AF_INET6
+        case AF_INET6:
+                return IN6_IS_ADDR_LOOPBACK (&((struct sockaddr_in6 *)address->ss)->sin6_addr);
+                break;
 #endif
-	case AF_INET:
-		return (INADDR_LOOPBACK == (((struct sockaddr_in *)address->ss)->sin_addr.s_addr));
-		break;
-	default:
-		break;
-	}
+        case AF_INET:
+                return (INADDR_LOOPBACK == (((struct sockaddr_in *)address->ss)->sin_addr.s_addr));
+                break;
+        default:
+                break;
+        }
 
-	return FALSE;
+        return FALSE;
 }
 
 const GList *
 gdm_address_peek_local_list (void)
 {
-	static GList *the_list = NULL;
-	static time_t last_time = 0;
-	char hostbuf[BUFSIZ];
-	struct addrinfo hints;
-	struct addrinfo *result;
-	struct addrinfo *res;
+        static GList *the_list = NULL;
+        static time_t last_time = 0;
+        char hostbuf[BUFSIZ];
+        struct addrinfo hints;
+        struct addrinfo *result;
+        struct addrinfo *res;
 
-	/* Don't check more then every 5 seconds */
-	if (last_time + 5 > time (NULL)) {
-		return the_list;
-	}
+        /* Don't check more then every 5 seconds */
+        if (last_time + 5 > time (NULL)) {
+                return the_list;
+        }
 
-	g_list_foreach (the_list, (GFunc)gdm_address_free, NULL);
-	g_list_free (the_list);
-	the_list = NULL;
+        g_list_foreach (the_list, (GFunc)gdm_address_free, NULL);
+        g_list_free (the_list);
+        the_list = NULL;
 
-	last_time = time (NULL);
+        last_time = time (NULL);
 
-	hostbuf[BUFSIZ-1] = '\0';
-	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
-		g_debug ("%s: Could not get server hostname, using localhost", "gdm_peek_local_address_list");
-		snprintf (hostbuf, BUFSIZ-1, "localhost");
-	}
+        hostbuf[BUFSIZ-1] = '\0';
+        if (gethostname (hostbuf, BUFSIZ-1) != 0) {
+                g_debug ("%s: Could not get server hostname, using localhost", "gdm_peek_local_address_list");
+                snprintf (hostbuf, BUFSIZ-1, "localhost");
+        }
 
-	memset (&hints, 0, sizeof (hints));
-	hints.ai_family = AF_INET;
+        memset (&hints, 0, sizeof (hints));
+        hints.ai_family = AF_INET;
 #ifdef ENABLE_IPV6
-	hints.ai_family |= AF_INET6;
+        hints.ai_family |= AF_INET6;
 #endif
 
-	if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
-		g_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
+        if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
+                g_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
 
-		return NULL;
-	}
+                return NULL;
+        }
 
-	for (res = result; res != NULL; res = res->ai_next) {
-		GdmAddress *address;
+        for (res = result; res != NULL; res = res->ai_next) {
+                GdmAddress *address;
 
-		address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)res->ai_addr);
-		the_list = g_list_append (the_list, address);
-	}
+                address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)res->ai_addr);
+                the_list = g_list_append (the_list, address);
+        }
 
-	if (result != NULL) {
-		freeaddrinfo (result);
-		result = NULL;
-	}
+        if (result != NULL) {
+                freeaddrinfo (result);
+                result = NULL;
+        }
 
-	return the_list;
+        return the_list;
 }
 
 gboolean
 gdm_address_is_local (GdmAddress *address)
 {
-	const GList *list;
+        const GList *list;
 
-	if (gdm_address_is_loopback (address)) {
-		return TRUE;
-	}
+        if (gdm_address_is_loopback (address)) {
+                return TRUE;
+        }
 
-	list = gdm_address_peek_local_list ();
+        list = gdm_address_peek_local_list ();
 
-	while (list != NULL) {
-		GdmAddress *addr = list->data;
+        while (list != NULL) {
+                GdmAddress *addr = list->data;
 
-		if (gdm_address_equal (address, addr)) {
-			return TRUE;
-		}
+                if (gdm_address_equal (address, addr)) {
+                        return TRUE;
+                }
 
-		list = list->next;
-	}
+                list = list->next;
+        }
 
-	return FALSE;
+        return FALSE;
 }
 
 /**
@@ -361,14 +361,14 @@ gdm_address_is_local (GdmAddress *address)
 GdmAddress *
 gdm_address_copy (GdmAddress *address)
 {
-	GdmAddress *addr;
+        GdmAddress *addr;
 
-	g_return_val_if_fail (address != NULL, NULL);
+        g_return_val_if_fail (address != NULL, NULL);
 
-	addr = g_new0 (GdmAddress, 1);
-	addr->ss = g_memdup (address->ss, sizeof (struct sockaddr_storage));
+        addr = g_new0 (GdmAddress, 1);
+        addr->ss = g_memdup (address->ss, sizeof (struct sockaddr_storage));
 
-	return addr;
+        return addr;
 }
 
 /**
@@ -380,63 +380,63 @@ gdm_address_copy (GdmAddress *address)
 void
 gdm_address_free (GdmAddress *address)
 {
-	g_return_if_fail (address != NULL);
+        g_return_if_fail (address != NULL);
 
-	g_free (address->ss);
-	g_free (address);
+        g_free (address->ss);
+        g_free (address);
 }
 
 /* for debugging */
 static const char *
 address_family_str (GdmAddress *address)
 {
-	const char *str;
-	switch (address->ss->ss_family) {
-	case AF_INET:
-		str = "inet";
-		break;
-	case AF_INET6:
-		str = "inet6";
-		break;
-	case AF_UNIX:
-		str = "unix";
-		break;
-	case AF_UNSPEC:
-		str = "unspecified";
-		break;
-	default:
-		str = "unknown";
-		break;
-	}
-	return str;
+        const char *str;
+        switch (address->ss->ss_family) {
+        case AF_INET:
+                str = "inet";
+                break;
+        case AF_INET6:
+                str = "inet6";
+                break;
+        case AF_UNIX:
+                str = "unix";
+                break;
+        case AF_UNSPEC:
+                str = "unspecified";
+                break;
+        default:
+                str = "unknown";
+                break;
+        }
+        return str;
 }
 
 void
 gdm_address_debug (GdmAddress *address)
 {
-	char *hostname;
-	char *host;
-	char *port;
+        char *hostname;
+        char *host;
+        char *port;
 
-	g_return_if_fail (address != NULL);
+        g_return_if_fail (address != NULL);
 
-	hostname = NULL;
-	host = NULL;
-	port = NULL;
+        hostname = NULL;
+        host = NULL;
+        port = NULL;
 
-	gdm_address_get_hostname (address, &hostname);
-	gdm_address_get_numeric_info (address, &host, &port);
+        gdm_address_get_hostname (address, &hostname);
+        gdm_address_get_numeric_info (address, &host, &port);
 
-	g_debug ("Address family:%d (%s) hostname:%s host:%s port:%s local:%d loopback:%d",
-		 address->ss->ss_family,
-		 address_family_str (address),
-		 hostname,
-		 host,
-		 port,
-		 gdm_address_is_local (address),
-		 gdm_address_is_loopback (address));
+        g_debug ("Address family:%d (%s) hostname:%s host:%s port:%s local:%d loopback:%d",
+                 address->ss->ss_family,
+                 address_family_str (address),
+                 hostname,
+                 host,
+                 port,
+                 gdm_address_is_local (address),
+                 gdm_address_is_loopback (address));
 
-	g_free (hostname);
-	g_free (host);
-	g_free (port);
+        g_free (hostname);
+        g_free (host);
+        g_free (port);
 }

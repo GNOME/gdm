@@ -70,7 +70,7 @@ struct _CkConnector
 };
 
 static struct {
-	char *name;
+        char *name;
         int   type;
 } parameter_lookup[] = {
         { "display-device",     DBUS_TYPE_STRING },

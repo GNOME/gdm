@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -38,7 +38,7 @@ G_BEGIN_DECLS
 
 typedef struct _GdmAddress GdmAddress;
 
-GType		         gdm_address_get_type	               (void);
+GType                    gdm_address_get_type                  (void);
 
 GdmAddress *             gdm_address_new_from_sockaddr_storage (struct sockaddr_storage *ss);
 
@@ -47,15 +47,15 @@ struct sockaddr_storage *gdm_address_get_sockaddr_storage      (GdmAddress      
 struct sockaddr_storage *gdm_address_peek_sockaddr_storage     (GdmAddress              *address);
 
 gboolean                 gdm_address_get_hostname              (GdmAddress              *address,
-								char                   **hostname);
+                                                                char                   **hostname);
 gboolean                 gdm_address_get_numeric_info          (GdmAddress              *address,
-								char                   **numeric_hostname,
-								char                   **service);
+                                                                char                   **numeric_hostname,
+                                                                char                   **service);
 gboolean                 gdm_address_is_local                  (GdmAddress              *address);
 gboolean                 gdm_address_is_loopback               (GdmAddress              *address);
 
 gboolean                 gdm_address_equal                     (GdmAddress              *a,
-								GdmAddress              *b);
+                                                                GdmAddress              *b);
 
 GdmAddress *             gdm_address_copy                      (GdmAddress              *address);
 void                     gdm_address_free                      (GdmAddress              *address);

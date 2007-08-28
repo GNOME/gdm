@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * gdm-md5.h md5 implementation (based on L Peter Deutsch implementation)
  *
@@ -34,16 +34,16 @@ typedef struct GdmMD5Context GdmMD5Context;
  */
 struct GdmMD5Context
 {
-	guint32       count[2];       /**< message length in bits, lsw first */
-	guint32       abcd[4];        /**< digest buffer */
-	unsigned char buf[64];        /**< accumulate block */
+        guint32       count[2];       /**< message length in bits, lsw first */
+        guint32       abcd[4];        /**< digest buffer */
+        unsigned char buf[64];        /**< accumulate block */
 };
 
 void        gdm_md5_init    (GdmMD5Context   *context);
 void        gdm_md5_update  (GdmMD5Context   *context,
-			     const GString   *data);
+                             const GString   *data);
 gboolean    gdm_md5_final   (GdmMD5Context   *context,
-			     GString         *results);
+                             GString         *results);
 
 G_END_DECLS
 

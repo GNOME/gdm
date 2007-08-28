@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -36,132 +36,132 @@ static GMainLoop *loop;
 
 static void
 get_pci_seats (DBusGConnection *bus,
-	       DBusGProxy      *proxy,
-	       GList           *seats)
+               DBusGProxy      *proxy,
+               GList           *seats)
 {
-	char      **devices;
-	const char *key;
-	const char *value;
-	GError     *error;
-	gboolean    res;
-	int         i;
+        char      **devices;
+        const char *key;
+        const char *value;
+        GError     *error;
+        gboolean    res;
+        int         i;
 
-	g_message ("Getting PCI seats");
+        g_message ("Getting PCI seats");
 
-	key = "info.bus";
-	value = "pci";
+        key = "info.bus";
+        value = "pci";
 
-	devices = NULL;
-	error = NULL;
+        devices = NULL;
+        error = NULL;
         res = dbus_g_proxy_call (proxy,
-				 "FindDeviceStringMatch",
-				 &error,
+                                 "FindDeviceStringMatch",
+                                 &error,
                                  G_TYPE_STRING, key,
                                  G_TYPE_STRING, value,
                                  G_TYPE_INVALID,
                                  G_TYPE_STRV, &devices,
                                  G_TYPE_INVALID);
-	if (! res) {
-		g_warning ("Unable to query HAL: %s", error->message);
-		g_error_free (error);
-	}
+        if (! res) {
+                g_warning ("Unable to query HAL: %s", error->message);
+                g_error_free (error);
+        }
 
-	/* now look for pci class 3 */
-	key = "pci.device_class";
-	for (i = 0; devices [i] != NULL; i++) {
-		DBusGProxy *device_proxy;
-		int         class_val;
+        /* now look for pci class 3 */
+        key = "pci.device_class";
+        for (i = 0; devices [i] != NULL; i++) {
+                DBusGProxy *device_proxy;
+                int         class_val;
 
-		device_proxy = dbus_g_proxy_new_for_name (bus,
-							  HAL_DBUS_NAME,
-							  devices [i],
-							  HAL_DBUS_DEVICE_INTERFACE);
-		if (device_proxy == NULL) {
-			continue;
-		}
+                device_proxy = dbus_g_proxy_new_for_name (bus,
+                                                          HAL_DBUS_NAME,
+                                                          devices [i],
+                                                          HAL_DBUS_DEVICE_INTERFACE);
+                if (device_proxy == NULL) {
+                        continue;
+                }
 
-		res = dbus_g_proxy_call (device_proxy,
-					 "GetPropertyInteger",
-					 &error,
-					 G_TYPE_STRING, key,
-					 G_TYPE_INVALID,
-					 G_TYPE_INT, &class_val,
-					 G_TYPE_INVALID);
-		if (class_val == SEAT_PCI_DEVICE_CLASS) {
-			g_message ("Found device: %s", devices [i]);
-			seats = g_list_prepend (seats, devices [i]);
-		}
+                res = dbus_g_proxy_call (device_proxy,
+                                         "GetPropertyInteger",
+                                         &error,
+                                         G_TYPE_STRING, key,
+                                         G_TYPE_INVALID,
+                                         G_TYPE_INT, &class_val,
+                                         G_TYPE_INVALID);
+                if (class_val == SEAT_PCI_DEVICE_CLASS) {
+                        g_message ("Found device: %s", devices [i]);
+                        seats = g_list_prepend (seats, devices [i]);
+                }
 
-		g_object_unref (device_proxy);
-	}
+                g_object_unref (device_proxy);
+        }
 
-	g_strfreev (devices);
+        g_strfreev (devices);
 }
 
 static void
 list_seats (GList *seats)
 {
-	GList *l;
-	for (l = seats; l != NULL; l = l->next) {
-		g_message ("Found device: %s", l->data);
-	}
+        GList *l;
+        for (l = seats; l != NULL; l = l->next) {
+                g_message ("Found device: %s", l->data);
+        }
 }
 
 static gboolean
 test_hal_seats (void)
 {
-	GError		*error;
-	DBusGConnection *bus;
+        GError          *error;
+        DBusGConnection *bus;
         DBusGProxy      *proxy;
-	GList           *seats;
+        GList           *seats;
 
-	proxy = NULL;
+        proxy = NULL;
 
-	error = NULL;
-	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (bus == NULL) {
-		g_warning ("Couldn't connect to system bus: %s",
-			   error->message);
-		g_error_free (error);
-		goto out;
-	}
+        error = NULL;
+        bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (bus == NULL) {
+                g_warning ("Couldn't connect to system bus: %s",
+                           error->message);
+                g_error_free (error);
+                goto out;
+        }
 
         proxy = dbus_g_proxy_new_for_name (bus,
                                            HAL_DBUS_NAME,
                                            HAL_DBUS_MANAGER_PATH,
                                            HAL_DBUS_MANAGER_INTERFACE);
-	if (proxy == NULL) {
-		g_warning ("Couldn't create proxy for HAL Manager");
-		goto out;
-	}
+        if (proxy == NULL) {
+                g_warning ("Couldn't create proxy for HAL Manager");
+                goto out;
+        }
 
-	seats = NULL;
+        seats = NULL;
 
-	get_pci_seats (bus, proxy, seats);
+        get_pci_seats (bus, proxy, seats);
 
-	list_seats (seats);
+        list_seats (seats);
 
  out:
-	if (proxy != NULL) {
-		g_object_unref (proxy);
-	}
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
 
-	return FALSE;
+        return FALSE;
 }
 
 int
 main (int   argc,
       char *argv[])
 {
-	g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
+        g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
 
-	g_type_init ();
+        g_type_init ();
 
         g_idle_add ((GSourceFunc)test_hal_seats, NULL);
 
-	loop = g_main_loop_new (NULL, FALSE);
-	g_main_loop_run (loop);
-	g_main_loop_unref (loop);
+        loop = g_main_loop_new (NULL, FALSE);
+        g_main_loop_run (loop);
+        g_main_loop_unref (loop);
 
-	return 0;
+        return 0;
 }

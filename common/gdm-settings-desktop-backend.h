@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -38,16 +38,16 @@ typedef struct GdmSettingsDesktopBackendPrivate GdmSettingsDesktopBackendPrivate
 
 typedef struct
 {
-	GdmSettingsBackend		  parent;
-	GdmSettingsDesktopBackendPrivate *priv;
+        GdmSettingsBackend                parent;
+        GdmSettingsDesktopBackendPrivate *priv;
 } GdmSettingsDesktopBackend;
 
 typedef struct
 {
-	GdmSettingsBackendClass   parent_class;
+        GdmSettingsBackendClass   parent_class;
 } GdmSettingsDesktopBackendClass;
 
-GType		           gdm_settings_desktop_backend_get_type	(void);
+GType                      gdm_settings_desktop_backend_get_type        (void);
 
 GdmSettingsBackend        *gdm_settings_desktop_backend_new             (void);
 

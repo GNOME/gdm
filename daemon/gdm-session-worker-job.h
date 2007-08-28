@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,27 +37,27 @@ typedef struct GdmSessionWorkerJobPrivate GdmSessionWorkerJobPrivate;
 
 typedef struct
 {
-	GObject	                parent;
-	GdmSessionWorkerJobPrivate *priv;
+        GObject                 parent;
+        GdmSessionWorkerJobPrivate *priv;
 } GdmSessionWorkerJob;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void (* started)           (GdmSessionWorkerJob  *session_worker_job);
-	void (* stopped)           (GdmSessionWorkerJob  *session_worker_job);
-	void (* exited)            (GdmSessionWorkerJob  *session_worker_job,
-				    int                   exit_code);
+        void (* started)           (GdmSessionWorkerJob  *session_worker_job);
+        void (* stopped)           (GdmSessionWorkerJob  *session_worker_job);
+        void (* exited)            (GdmSessionWorkerJob  *session_worker_job,
+                                    int                   exit_code);
 
-	void (* died)              (GdmSessionWorkerJob  *session_worker_job,
-				    int                   signal_number);
+        void (* died)              (GdmSessionWorkerJob  *session_worker_job,
+                                    int                   signal_number);
 } GdmSessionWorkerJobClass;
 
-GType		        gdm_session_worker_job_get_type           (void);
-GdmSessionWorkerJob *   gdm_session_worker_job_new	          (void);
+GType                   gdm_session_worker_job_get_type           (void);
+GdmSessionWorkerJob *   gdm_session_worker_job_new                (void);
 void                    gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_job,
-								   const char          *server_address);
+                                                                   const char          *server_address);
 gboolean                gdm_session_worker_job_start              (GdmSessionWorkerJob *session_worker_job);
 gboolean                gdm_session_worker_job_stop               (GdmSessionWorkerJob *session_worker_job);
 

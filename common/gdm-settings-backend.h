@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,55 +37,55 @@ typedef struct GdmSettingsBackendPrivate GdmSettingsBackendPrivate;
 
 typedef struct
 {
-	GObject		    parent;
-	GdmSettingsBackendPrivate *priv;
+        GObject             parent;
+        GdmSettingsBackendPrivate *priv;
 } GdmSettingsBackend;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	/* methods */
-	gboolean (*get_value)              (GdmSettingsBackend *settings_backend,
-					    const char         *key,
-					    char              **value,
-					    GError            **error);
-	gboolean (*set_value)              (GdmSettingsBackend *settings_backend,
-					    const char         *key,
-					    const char         *value,
-					    GError            **error);
+        /* methods */
+        gboolean (*get_value)              (GdmSettingsBackend *settings_backend,
+                                            const char         *key,
+                                            char              **value,
+                                            GError            **error);
+        gboolean (*set_value)              (GdmSettingsBackend *settings_backend,
+                                            const char         *key,
+                                            const char         *value,
+                                            GError            **error);
 
-	/* signals */
-	void	      (* value_changed)	   (GdmSettingsBackend *settings_backend,
-					    const char  *key,
-					    const char  *old_value,
-					    const char **new_value);
+        /* signals */
+        void          (* value_changed)    (GdmSettingsBackend *settings_backend,
+                                            const char  *key,
+                                            const char  *old_value,
+                                            const char **new_value);
 } GdmSettingsBackendClass;
 
 typedef enum
 {
-	GDM_SETTINGS_BACKEND_ERROR_GENERAL,
-	GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND
+        GDM_SETTINGS_BACKEND_ERROR_GENERAL,
+        GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND
 } GdmSettingsBackendError;
 
 #define GDM_SETTINGS_BACKEND_ERROR gdm_settings_backend_error_quark ()
 
-GQuark		    gdm_settings_backend_error_quark		(void);
-GType		    gdm_settings_backend_get_type		(void);
+GQuark              gdm_settings_backend_error_quark            (void);
+GType               gdm_settings_backend_get_type               (void);
 
 gboolean            gdm_settings_backend_get_value              (GdmSettingsBackend *settings_backend,
-								 const char  *key,
-								 char       **value,
-								 GError     **error);
+                                                                 const char  *key,
+                                                                 char       **value,
+                                                                 GError     **error);
 gboolean            gdm_settings_backend_set_value              (GdmSettingsBackend *settings_backend,
-								 const char  *key,
-								 const char  *value,
-								 GError     **error);
+                                                                 const char  *key,
+                                                                 const char  *value,
+                                                                 GError     **error);
 
 void                gdm_settings_backend_value_changed          (GdmSettingsBackend *settings_backend,
-								 const char  *key,
-								 const char  *old_value,
-								 const char  *new_value);
+                                                                 const char  *key,
+                                                                 const char  *old_value,
+                                                                 const char  *new_value);
 
 G_END_DECLS
 

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -54,116 +54,116 @@ static DBusGConnection *connection     = NULL;
 static guint32          id_serial      = 0;
 
 typedef struct {
-	guint                       id;
-	char                       *root;
-	GdmSettingsClientNotifyFunc func;
-	gpointer                    user_data;
-	GFreeFunc                   destroy_notify;
+        guint                       id;
+        char                       *root;
+        GdmSettingsClientNotifyFunc func;
+        gpointer                    user_data;
+        GFreeFunc                   destroy_notify;
 } GdmSettingsClientNotify;
 
 static void
 gdm_settings_client_notify_free (GdmSettingsClientNotify *notify)
 {
-	g_free (notify->root);
+        g_free (notify->root);
 
-	if (notify->destroy_notify != NULL) {
-		notify->destroy_notify (notify->user_data);
-	}
+        if (notify->destroy_notify != NULL) {
+                notify->destroy_notify (notify->user_data);
+        }
 
-	g_free (notify);
+        g_free (notify);
 }
 
 static GdmSettingsEntry *
 get_entry_for_key (const char *key)
 {
-	GdmSettingsEntry *entry;
+        GdmSettingsEntry *entry;
 
-	entry = g_hash_table_lookup (schemas, key);
+        entry = g_hash_table_lookup (schemas, key);
 
-	return entry;
+        return entry;
 }
 
 static gboolean
 set_value (const char *key,
-	   const char *value)
+           const char *value)
 {
-	GError  *error;
-	gboolean res;
+        GError  *error;
+        gboolean res;
 
-	/* FIXME: check cache */
+        /* FIXME: check cache */
 
-	g_debug ("Setting %s=%s", key, value);
-	error = NULL;
-	res = dbus_g_proxy_call (settings_proxy,
-				 "SetValue",
-				 &error,
-				 G_TYPE_STRING, key,
-				 G_TYPE_STRING, value,
-				 G_TYPE_INVALID,
-				 G_TYPE_INVALID);
-	if (! res) {
-		if (error != NULL) {
-			/*g_debug ("Failed to get value for %s: %s", key, error->message);*/
-			g_error_free (error);
-		} else {
-			/*g_debug ("Failed to get value for %s", key);*/
-		}
+        g_debug ("Setting %s=%s", key, value);
+        error = NULL;
+        res = dbus_g_proxy_call (settings_proxy,
+                                 "SetValue",
+                                 &error,
+                                 G_TYPE_STRING, key,
+                                 G_TYPE_STRING, value,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        /*g_debug ("Failed to get value for %s: %s", key, error->message);*/
+                        g_error_free (error);
+                } else {
+                        /*g_debug ("Failed to get value for %s", key);*/
+                }
 
-		return FALSE;
-	}
+                return FALSE;
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 static gboolean
 get_value (const char *key,
-	   char      **value)
+           char      **value)
 {
-	GError  *error;
-	char    *str;
-	gboolean res;
+        GError  *error;
+        char    *str;
+        gboolean res;
 
-	/* FIXME: check cache */
+        /* FIXME: check cache */
 
-	error = NULL;
-	res = dbus_g_proxy_call (settings_proxy,
-				 "GetValue",
-				 &error,
-				 G_TYPE_STRING, key,
-				 G_TYPE_INVALID,
-				 G_TYPE_STRING, &str,
-				 G_TYPE_INVALID);
-	if (! res) {
-		if (error != NULL) {
-			/*g_debug ("Failed to get value for %s: %s", key, error->message);*/
-			g_error_free (error);
-		} else {
-			/*g_debug ("Failed to get value for %s", key);*/
-		}
+        error = NULL;
+        res = dbus_g_proxy_call (settings_proxy,
+                                 "GetValue",
+                                 &error,
+                                 G_TYPE_STRING, key,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &str,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        /*g_debug ("Failed to get value for %s: %s", key, error->message);*/
+                        g_error_free (error);
+                } else {
+                        /*g_debug ("Failed to get value for %s", key);*/
+                }
 
-		return FALSE;
-	}
+                return FALSE;
+        }
 
-	if (value != NULL) {
-		*value = g_strdup (str);
-	}
+        if (value != NULL) {
+                *value = g_strdup (str);
+        }
 
-	g_free (str);
+        g_free (str);
 
-	return TRUE;
+        return TRUE;
 }
 
 static void
 assert_signature (GdmSettingsEntry *entry,
-		  const char       *signature)
+                  const char       *signature)
 {
-	const char *sig;
+        const char *sig;
 
-	sig = gdm_settings_entry_get_signature (entry);
+        sig = gdm_settings_entry_get_signature (entry);
 
-	g_assert (sig != NULL);
-	g_assert (signature != NULL);
-	g_assert (strcmp (signature, sig) == 0);
+        g_assert (sig != NULL);
+        g_assert (signature != NULL);
+        g_assert (strcmp (signature, sig) == 0);
 }
 
 static guint32
@@ -182,322 +182,322 @@ get_next_serial (void)
 
 guint
 gdm_settings_client_notify_add (const char                 *root,
-				GdmSettingsClientNotifyFunc func,
-				gpointer                    user_data,
-				GFreeFunc                   destroy_notify)
+                                GdmSettingsClientNotifyFunc func,
+                                gpointer                    user_data,
+                                GFreeFunc                   destroy_notify)
 {
-	guint32                  id;
-	GdmSettingsClientNotify *notify;
+        guint32                  id;
+        GdmSettingsClientNotify *notify;
 
-	id = get_next_serial ();
+        id = get_next_serial ();
 
-	notify = g_new0 (GdmSettingsClientNotify, 1);
-	notify->id = id;
-	notify->root = g_strdup (root);
-	notify->func = func;
-	notify->user_data = user_data;
-	notify->destroy_notify = destroy_notify;
+        notify = g_new0 (GdmSettingsClientNotify, 1);
+        notify->id = id;
+        notify->root = g_strdup (root);
+        notify->func = func;
+        notify->user_data = user_data;
+        notify->destroy_notify = destroy_notify;
 
-	g_hash_table_insert (notifiers, GINT_TO_POINTER (id), notify);
+        g_hash_table_insert (notifiers, GINT_TO_POINTER (id), notify);
 
-	return id;
+        return id;
 }
 
 void
 gdm_settings_client_notify_remove (guint id)
 {
-	g_hash_table_remove (notifiers, GINT_TO_POINTER (id));
+        g_hash_table_remove (notifiers, GINT_TO_POINTER (id));
 }
 
 gboolean
 gdm_settings_client_get_string (const char  *key,
-				char       **value)
+                                char       **value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          ret;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          ret;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "s");
+        assert_signature (entry, "s");
 
-	ret = FALSE;
+        ret = FALSE;
 
-	res = get_value (key, &str);
+        res = get_value (key, &str);
 
-	if (! res) {
-		/* use the default */
-		str = g_strdup (gdm_settings_entry_get_default_value (entry));
-	}
+        if (! res) {
+                /* use the default */
+                str = g_strdup (gdm_settings_entry_get_default_value (entry));
+        }
 
-	if (value != NULL) {
-		*value = g_strdup (str);
-	}
+        if (value != NULL) {
+                *value = g_strdup (str);
+        }
 
-	g_free (str);
+        g_free (str);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_client_get_locale_string (const char  *key,
-				       const char  *locale,
-				       char       **value)
+                                       const char  *locale,
+                                       char       **value)
 {
-	char    *candidate_key;
-	char    *translated_value;
-	GError  *error;
-	char   **languages;
-	gboolean free_languages = FALSE;
-	int      i;
-	gboolean ret;
+        char    *candidate_key;
+        char    *translated_value;
+        GError  *error;
+        char   **languages;
+        gboolean free_languages = FALSE;
+        int      i;
+        gboolean ret;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	candidate_key = NULL;
-	translated_value = NULL;
-	error = NULL;
+        candidate_key = NULL;
+        translated_value = NULL;
+        error = NULL;
 
-	if (locale != NULL) {
-		languages = g_new (char *, 2);
-		languages[0] = (char *)locale;
-		languages[1] = NULL;
+        if (locale != NULL) {
+                languages = g_new (char *, 2);
+                languages[0] = (char *)locale;
+                languages[1] = NULL;
 
-		free_languages = TRUE;
-	} else {
-		languages = (char **) g_get_language_names ();
-		free_languages = FALSE;
-	}
+                free_languages = TRUE;
+        } else {
+                languages = (char **) g_get_language_names ();
+                free_languages = FALSE;
+        }
 
-	for (i = 0; languages[i]; i++) {
-		gboolean res;
+        for (i = 0; languages[i]; i++) {
+                gboolean res;
 
-		candidate_key = g_strdup_printf ("%s[%s]", key, languages[i]);
+                candidate_key = g_strdup_printf ("%s[%s]", key, languages[i]);
 
-		res = get_value (candidate_key, &translated_value);
-		g_free (candidate_key);
+                res = get_value (candidate_key, &translated_value);
+                g_free (candidate_key);
 
-		if (res) {
-			break;
-		}
+                if (res) {
+                        break;
+                }
 
-		g_free (translated_value);
-		translated_value = NULL;
-	}
+                g_free (translated_value);
+                translated_value = NULL;
+        }
 
-	/* Fallback to untranslated key
-	 */
-	if (translated_value == NULL) {
-		get_value (key, &translated_value);
-	}
+        /* Fallback to untranslated key
+         */
+        if (translated_value == NULL) {
+                get_value (key, &translated_value);
+        }
 
-	if (free_languages) {
-		g_strfreev (languages);
-	}
+        if (free_languages) {
+                g_strfreev (languages);
+        }
 
-	if (translated_value != NULL) {
-		ret = TRUE;
-		if (value != NULL) {
-			*value = g_strdup (translated_value);
-		}
-	} else {
-		ret = FALSE;
-	}
+        if (translated_value != NULL) {
+                ret = TRUE;
+                if (value != NULL) {
+                        *value = g_strdup (translated_value);
+                }
+        } else {
+                ret = FALSE;
+        }
 
-	g_free (translated_value);
+        g_free (translated_value);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_client_get_boolean (const char *key,
-				 gboolean   *value)
+                                 gboolean   *value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          ret;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          ret;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "b");
+        assert_signature (entry, "b");
 
-	ret = FALSE;
+        ret = FALSE;
 
-	res = get_value (key, &str);
+        res = get_value (key, &str);
 
-	if (! res) {
-		/* use the default */
-		str = g_strdup (gdm_settings_entry_get_default_value (entry));
-	}
+        if (! res) {
+                /* use the default */
+                str = g_strdup (gdm_settings_entry_get_default_value (entry));
+        }
 
-	ret = gdm_settings_parse_value_as_boolean  (str, value);
+        ret = gdm_settings_parse_value_as_boolean  (str, value);
 
-	g_free (str);
+        g_free (str);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_client_get_int (const char *key,
-			     int        *value)
+                             int        *value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          ret;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          ret;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "i");
+        assert_signature (entry, "i");
 
-	ret = FALSE;
+        ret = FALSE;
 
-	res = get_value (key, &str);
+        res = get_value (key, &str);
 
-	if (! res) {
-		/* use the default */
-		str = g_strdup (gdm_settings_entry_get_default_value (entry));
-	}
+        if (! res) {
+                /* use the default */
+                str = g_strdup (gdm_settings_entry_get_default_value (entry));
+        }
 
-	ret = gdm_settings_parse_value_as_integer (str, value);
+        ret = gdm_settings_parse_value_as_integer (str, value);
 
-	g_free (str);
+        g_free (str);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_client_set_int (const char *key,
-			     int         value)
+                             int         value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "i");
+        assert_signature (entry, "i");
 
-	str = gdm_settings_parse_integer_as_value (value);
+        str = gdm_settings_parse_integer_as_value (value);
 
-	res = set_value (key, str);
+        res = set_value (key, str);
 
-	g_free (str);
+        g_free (str);
 
-	return res;
+        return res;
 }
 
 gboolean
 gdm_settings_client_set_string (const char *key,
-				const char *value)
+                                const char *value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          res;
+        GdmSettingsEntry *entry;
+        gboolean          res;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "s");
+        assert_signature (entry, "s");
 
-	res = set_value (key, value);
+        res = set_value (key, value);
 
-	return res;
+        return res;
 }
 
 gboolean
 gdm_settings_client_set_boolean (const char *key,
-				 gboolean    value)
+                                 gboolean    value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "b");
+        assert_signature (entry, "b");
 
-	str = gdm_settings_parse_boolean_as_value (value);
+        str = gdm_settings_parse_boolean_as_value (value);
 
-	res = set_value (key, str);
+        res = set_value (key, str);
 
-	g_free (str);
+        g_free (str);
 
-	return res;
+        return res;
 }
 
 static void
 hashify_list (GdmSettingsEntry *entry,
-	      gpointer          data)
+              gpointer          data)
 {
-	g_hash_table_insert (schemas, g_strdup (gdm_settings_entry_get_key (entry)), entry);
+        g_hash_table_insert (schemas, g_strdup (gdm_settings_entry_get_key (entry)), entry);
 }
 
 static void
 send_notification (gpointer                 key,
-		   GdmSettingsClientNotify *notify,
-		   GdmSettingsEntry        *entry)
+                   GdmSettingsClientNotify *notify,
+                   GdmSettingsEntry        *entry)
 {
-	/* get out if the key is not in the region of interest */
-	if (! g_str_has_prefix (gdm_settings_entry_get_key (entry), notify->root)) {
-		return;
-	}
+        /* get out if the key is not in the region of interest */
+        if (! g_str_has_prefix (gdm_settings_entry_get_key (entry), notify->root)) {
+                return;
+        }
 
-	notify->func (notify->id, entry, notify->user_data);
+        notify->func (notify->id, entry, notify->user_data);
 }
 
 static void
 on_value_changed (DBusGProxy *proxy,
-		  const char *key,
-		  const char *old_value,
-		  const char *new_value,
-		  gpointer    data)
+                  const char *key,
+                  const char *old_value,
+                  const char *new_value,
+                  gpointer    data)
 {
-	GdmSettingsEntry *entry;
+        GdmSettingsEntry *entry;
 
-	g_debug ("Value Changed key=%s old=%s new=%s", key, old_value, new_value);
+        g_debug ("Value Changed key=%s old=%s new=%s", key, old_value, new_value);
 
-	/* lookup entry */
-	entry = get_entry_for_key (key);
+        /* lookup entry */
+        entry = get_entry_for_key (key);
 
-	if (entry == NULL) {
-		return;
-	}
+        if (entry == NULL) {
+                return;
+        }
 
-	gdm_settings_entry_set_value (entry, new_value);
+        gdm_settings_entry_set_value (entry, new_value);
 
-	g_hash_table_foreach (notifiers, (GHFunc)send_notification, entry);
+        g_hash_table_foreach (notifiers, (GHFunc)send_notification, entry);
 }
 
 gboolean
 gdm_settings_client_init (const char *file,
-			  const char *root)
+                          const char *root)
 {
         GError  *error;
-	GSList  *list;
+        GSList  *list;
 
-	g_return_val_if_fail (file != NULL, FALSE);
-	g_return_val_if_fail (root != NULL, FALSE);
+        g_return_val_if_fail (file != NULL, FALSE);
+        g_return_val_if_fail (root != NULL, FALSE);
 
-	g_assert (schemas == NULL);
+        g_assert (schemas == NULL);
 
         error = NULL;
         connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -506,41 +506,41 @@ gdm_settings_client_init (const char *file,
                         g_warning ("error getting system bus: %s", error->message);
                         g_error_free (error);
                 }
-		return FALSE;
+                return FALSE;
         }
 
         settings_proxy = dbus_g_proxy_new_for_name (connection,
-						    SETTINGS_DBUS_NAME,
-						    SETTINGS_DBUS_PATH,
-						    SETTINGS_DBUS_INTERFACE);
-	if (settings_proxy == NULL) {
-		g_warning ("Unable to connect to settings server");
-		return FALSE;
-	}
+                                                    SETTINGS_DBUS_NAME,
+                                                    SETTINGS_DBUS_PATH,
+                                                    SETTINGS_DBUS_INTERFACE);
+        if (settings_proxy == NULL) {
+                g_warning ("Unable to connect to settings server");
+                return FALSE;
+        }
 
-	list = NULL;
-	if (! gdm_settings_parse_schemas (file, root, &list)) {
-		g_warning ("Unable to parse schemas");
-		return FALSE;
-	}
+        list = NULL;
+        if (! gdm_settings_parse_schemas (file, root, &list)) {
+                g_warning ("Unable to parse schemas");
+                return FALSE;
+        }
 
-	notifiers = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)gdm_settings_client_notify_free);
+        notifiers = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)gdm_settings_client_notify_free);
 
-	schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
-	g_slist_foreach (list, (GFunc)hashify_list, NULL);
+        schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
+        g_slist_foreach (list, (GFunc)hashify_list, NULL);
 
-	schemas_file = g_strdup (file);
-	schemas_root = g_strdup (root);
+        schemas_file = g_strdup (file);
+        schemas_root = g_strdup (root);
 
-	dbus_g_proxy_add_signal (settings_proxy, "ValueChanged", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (settings_proxy,
-				     "ValueChanged",
-				     G_CALLBACK (on_value_changed),
-				     NULL,
-				     NULL);
+        dbus_g_proxy_add_signal (settings_proxy, "ValueChanged", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+        dbus_g_proxy_connect_signal (settings_proxy,
+                                     "ValueChanged",
+                                     G_CALLBACK (on_value_changed),
+                                     NULL,
+                                     NULL);
 
 
-	return TRUE;
+        return TRUE;
 }
 
 void

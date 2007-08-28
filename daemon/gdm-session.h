@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * session.h - authenticates and authorizes users with system
  *
@@ -39,61 +39,61 @@ typedef struct _GdmSessionPrivate GdmSessionPrivate;
 
 typedef struct
 {
-	GObject parent;
+        GObject parent;
 
-	/*< private > */
-	GdmSessionPrivate *priv;
+        /*< private > */
+        GdmSessionPrivate *priv;
 } GdmSession;
 
 typedef struct
 {
-	GObjectClass parent_class;
+        GObjectClass parent_class;
 
-	/* signals */
-	void (* opened)                  (GdmSession        *session);
-	void (* closed)                  (GdmSession        *session);
+        /* signals */
+        void (* opened)                  (GdmSession        *session);
+        void (* closed)                  (GdmSession        *session);
 
-	void (* user_verified)           (GdmSession        *session);
+        void (* user_verified)           (GdmSession        *session);
 
-	void (* user_verification_error) (GdmSession        *session,
-					  GError            *error);
+        void (* user_verification_error) (GdmSession        *session,
+                                          GError            *error);
 
-	void (* info_query)              (GdmSession        *session,
-					  const char        *query_text);
+        void (* info_query)              (GdmSession        *session,
+                                          const char        *query_text);
 
-	void (* secret_info_query)       (GdmSession        *session,
-					  const char        *query_text);
+        void (* secret_info_query)       (GdmSession        *session,
+                                          const char        *query_text);
 
-	void (* info)                    (GdmSession        *session,
-					  const char        *info);
+        void (* info)                    (GdmSession        *session,
+                                          const char        *info);
 
-	void (* problem)                 (GdmSession        *session,
-					  const char        *problem);
+        void (* problem)                 (GdmSession        *session,
+                                          const char        *problem);
 
-	void (* session_started)         (GdmSession        *session,
-					  GPid               pid);
+        void (* session_started)         (GdmSession        *session,
+                                          GPid               pid);
 
-	void (* session_startup_error)   (GdmSession        *session,
-					  GError            *error);
+        void (* session_startup_error)   (GdmSession        *session,
+                                          GError            *error);
 
-	void (* session_exited)          (GdmSession        *session,
-					  int                exit_code);
+        void (* session_exited)          (GdmSession        *session,
+                                          int                exit_code);
 
-	void (* session_died)            (GdmSession        *session,
-					  int                signal_number);
+        void (* session_died)            (GdmSession        *session,
+                                          int                signal_number);
 } GdmSessionClass;
 
 typedef enum _GdmSessionError {
-	GDM_SESSION_ERROR_GENERIC = 0,
-	GDM_SESSION_ERROR_WITH_SESSION_COMMAND,
-	GDM_SESSION_ERROR_FORKING,
-	GDM_SESSION_ERROR_COMMUNICATING,
-	GDM_SESSION_ERROR_WORKER_DIED,
-	GDM_SESSION_ERROR_AUTHENTICATING,
-	GDM_SESSION_ERROR_AUTHORIZING,
-	GDM_SESSION_ERROR_OPENING_LOG_FILE,
-	GDM_SESSION_ERROR_OPENING_SESSION,
-	GDM_SESSION_ERROR_GIVING_CREDENTIALS
+        GDM_SESSION_ERROR_GENERIC = 0,
+        GDM_SESSION_ERROR_WITH_SESSION_COMMAND,
+        GDM_SESSION_ERROR_FORKING,
+        GDM_SESSION_ERROR_COMMUNICATING,
+        GDM_SESSION_ERROR_WORKER_DIED,
+        GDM_SESSION_ERROR_AUTHENTICATING,
+        GDM_SESSION_ERROR_AUTHORIZING,
+        GDM_SESSION_ERROR_OPENING_LOG_FILE,
+        GDM_SESSION_ERROR_OPENING_SESSION,
+        GDM_SESSION_ERROR_GIVING_CREDENTIALS
 } GdmSessionError;
 
 GType        gdm_session_get_type                 (void);
@@ -102,22 +102,22 @@ GQuark       gdm_session_error_quark              (void);
 GdmSession * gdm_session_new                      (void) G_GNUC_MALLOC;
 
 gboolean     gdm_session_open                     (GdmSession    *session,
-						   const char    *service_name,
-						   const char    *hostname,
-						   const char    *console_name,
-						   GError       **error);
+                                                   const char    *service_name,
+                                                   const char    *hostname,
+                                                   const char    *console_name,
+                                                   GError       **error);
 void         gdm_session_close                    (GdmSession     *session);
 gboolean     gdm_session_begin_verification       (GdmSession     *session,
-						   const char     *username,
-						   GError        **error);
+                                                   const char     *username,
+                                                   GError        **error);
 void         gdm_session_start_program            (GdmSession     *session,
-						   const char     *command);
+                                                   const char     *command);
 void         gdm_session_set_environment_variable (GdmSession     *session,
-						   const char     *key,
-						   const char     *value);
+                                                   const char     *key,
+                                                   const char     *value);
 
 void         gdm_session_answer_query             (GdmSession     *session,
-						   const char     *answer);
+                                                   const char     *answer);
 
 char       * gdm_session_get_username             (GdmSession     *session);
 

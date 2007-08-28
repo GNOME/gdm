@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -38,50 +38,50 @@ typedef struct GdmDisplayStorePrivate GdmDisplayStorePrivate;
 
 typedef struct
 {
-	GObject		        parent;
-	GdmDisplayStorePrivate *priv;
+        GObject                 parent;
+        GdmDisplayStorePrivate *priv;
 } GdmDisplayStore;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void	      (* display_added)	   (GdmDisplayStore *display_store,
-					    const char      *id);
-	void	      (* display_removed)  (GdmDisplayStore *display_store,
-					    const char      *id);
+        void          (* display_added)    (GdmDisplayStore *display_store,
+                                            const char      *id);
+        void          (* display_removed)  (GdmDisplayStore *display_store,
+                                            const char      *id);
 } GdmDisplayStoreClass;
 
 typedef enum
 {
-	 GDM_DISPLAY_STORE_ERROR_GENERAL
+         GDM_DISPLAY_STORE_ERROR_GENERAL
 } GdmDisplayStoreError;
 
 #define GDM_DISPLAY_STORE_ERROR gdm_display_store_error_quark ()
 
 typedef gboolean (*GdmDisplayStoreFunc) (const char *id,
-					 GdmDisplay *display,
-					 gpointer    user_data);
+                                         GdmDisplay *display,
+                                         gpointer    user_data);
 
-GQuark		    gdm_display_store_error_quark	       (void);
-GType		    gdm_display_store_get_type		       (void);
+GQuark              gdm_display_store_error_quark              (void);
+GType               gdm_display_store_get_type                 (void);
 
-GdmDisplayStore *   gdm_display_store_new	               (void);
+GdmDisplayStore *   gdm_display_store_new                      (void);
 
 void                gdm_display_store_add                      (GdmDisplayStore    *store,
-								GdmDisplay         *display);
+                                                                GdmDisplay         *display);
 void                gdm_display_store_clear                    (GdmDisplayStore    *store);
 gboolean            gdm_display_store_remove                   (GdmDisplayStore    *store,
-								GdmDisplay         *display);
+                                                                GdmDisplay         *display);
 void                gdm_display_store_foreach                  (GdmDisplayStore    *store,
-								GdmDisplayStoreFunc func,
-								gpointer            user_data);
+                                                                GdmDisplayStoreFunc func,
+                                                                gpointer            user_data);
 guint               gdm_display_store_foreach_remove           (GdmDisplayStore    *store,
-								GdmDisplayStoreFunc func,
-								gpointer            user_data);
+                                                                GdmDisplayStoreFunc func,
+                                                                gpointer            user_data);
 GdmDisplay *        gdm_display_store_find                     (GdmDisplayStore    *store,
-								GdmDisplayStoreFunc predicate,
-								gpointer            user_data);
+                                                                GdmDisplayStoreFunc predicate,
+                                                                gpointer            user_data);
 
 
 G_END_DECLS

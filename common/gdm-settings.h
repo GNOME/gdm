@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,43 +37,43 @@ typedef struct GdmSettingsPrivate GdmSettingsPrivate;
 
 typedef struct
 {
-	GObject		    parent;
-	GdmSettingsPrivate *priv;
+        GObject             parent;
+        GdmSettingsPrivate *priv;
 } GdmSettings;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void	      (* value_changed)	   (GdmSettings *settings,
-					    const char  *key,
-					    const char  *old_value,
-					    const char **new_value);
+        void          (* value_changed)    (GdmSettings *settings,
+                                            const char  *key,
+                                            const char  *old_value,
+                                            const char **new_value);
 } GdmSettingsClass;
 
 typedef enum
 {
-	GDM_SETTINGS_ERROR_GENERAL,
-	GDM_SETTINGS_ERROR_KEY_NOT_FOUND
+        GDM_SETTINGS_ERROR_GENERAL,
+        GDM_SETTINGS_ERROR_KEY_NOT_FOUND
 } GdmSettingsError;
 
 #define GDM_SETTINGS_ERROR gdm_settings_error_quark ()
 
-GQuark		    gdm_settings_error_quark		        (void);
-GType		    gdm_settings_get_type		        (void);
+GQuark              gdm_settings_error_quark                    (void);
+GType               gdm_settings_get_type                       (void);
 
-GdmSettings *       gdm_settings_new			        (void);
+GdmSettings *       gdm_settings_new                            (void);
 
 /* exported */
 
 gboolean            gdm_settings_get_value                      (GdmSettings *settings,
-								 const char  *key,
-								 char       **value,
-								 GError     **error);
+                                                                 const char  *key,
+                                                                 char       **value,
+                                                                 GError     **error);
 gboolean            gdm_settings_set_value                      (GdmSettings *settings,
-								 const char  *key,
-								 const char  *value,
-								 GError     **error);
+                                                                 const char  *key,
+                                                                 const char  *value,
+                                                                 GError     **error);
 
 G_END_DECLS
 

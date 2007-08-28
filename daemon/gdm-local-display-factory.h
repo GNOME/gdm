@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -40,26 +40,26 @@ typedef struct GdmLocalDisplayFactoryPrivate GdmLocalDisplayFactoryPrivate;
 
 typedef struct
 {
-	GdmDisplayFactory	       parent;
-	GdmLocalDisplayFactoryPrivate *priv;
+        GdmDisplayFactory              parent;
+        GdmLocalDisplayFactoryPrivate *priv;
 } GdmLocalDisplayFactory;
 
 typedef struct
 {
-	GdmDisplayFactoryClass   parent_class;
+        GdmDisplayFactoryClass   parent_class;
 } GdmLocalDisplayFactoryClass;
 
 typedef enum
 {
-	 GDM_LOCAL_DISPLAY_FACTORY_ERROR_GENERAL
+         GDM_LOCAL_DISPLAY_FACTORY_ERROR_GENERAL
 } GdmLocalDisplayFactoryError;
 
 #define GDM_LOCAL_DISPLAY_FACTORY_ERROR gdm_local_display_factory_error_quark ()
 
-GQuark		           gdm_local_display_factory_error_quark	     (void);
-GType		           gdm_local_display_factory_get_type		     (void);
+GQuark                     gdm_local_display_factory_error_quark             (void);
+GType                      gdm_local_display_factory_get_type                (void);
 
-GdmLocalDisplayFactory *   gdm_local_display_factory_new		     (GdmDisplayStore        *display_store);
+GdmLocalDisplayFactory *   gdm_local_display_factory_new                     (GdmDisplayStore        *display_store);
 
 G_END_DECLS
 

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,62 +37,62 @@ typedef struct GdmSessionRelayPrivate GdmSessionRelayPrivate;
 
 typedef struct
 {
-	GObject	                parent;
-	GdmSessionRelayPrivate *priv;
+        GObject                 parent;
+        GdmSessionRelayPrivate *priv;
 } GdmSessionRelay;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void (* user_verified)           (GdmSessionRelay   *session_relay);
+        void (* user_verified)           (GdmSessionRelay   *session_relay);
 
-	void (* user_verification_error) (GdmSessionRelay   *session_relay,
-					  GError            *error);
+        void (* user_verification_error) (GdmSessionRelay   *session_relay,
+                                          GError            *error);
 
-	void (* info_query)              (GdmSessionRelay   *session_relay,
-					  const char        *query_text);
+        void (* info_query)              (GdmSessionRelay   *session_relay,
+                                          const char        *query_text);
 
-	void (* secret_info_query)       (GdmSessionRelay   *session_relay,
-					  const char        *query_text);
+        void (* secret_info_query)       (GdmSessionRelay   *session_relay,
+                                          const char        *query_text);
 
-	void (* info)                    (GdmSessionRelay   *session_relay,
-					  const char        *info);
+        void (* info)                    (GdmSessionRelay   *session_relay,
+                                          const char        *info);
 
-	void (* problem)                 (GdmSessionRelay   *session_relay,
-					  const char        *problem);
+        void (* problem)                 (GdmSessionRelay   *session_relay,
+                                          const char        *problem);
 
-	void (* session_started)         (GdmSessionRelay   *session_relay,
-					  GPid               pid);
+        void (* session_started)         (GdmSessionRelay   *session_relay,
+                                          GPid               pid);
 
-	void (* session_startup_error)   (GdmSessionRelay   *session_relay,
-					  GError            *error);
+        void (* session_startup_error)   (GdmSessionRelay   *session_relay,
+                                          GError            *error);
 
-	void (* session_exited)          (GdmSessionRelay   *session_relay,
-					  int                exit_code);
+        void (* session_exited)          (GdmSessionRelay   *session_relay,
+                                          int                exit_code);
 
-	void (* session_died)            (GdmSessionRelay   *session_relay,
-					  int                signal_number);
+        void (* session_died)            (GdmSessionRelay   *session_relay,
+                                          int                signal_number);
 
-	void (* ready)                   (GdmSessionRelay  *session_relay);
-	void (* connected)               (GdmSessionRelay  *session_relay);
-	void (* disconnected)            (GdmSessionRelay  *session_relay);
+        void (* ready)                   (GdmSessionRelay  *session_relay);
+        void (* connected)               (GdmSessionRelay  *session_relay);
+        void (* disconnected)            (GdmSessionRelay  *session_relay);
 
 } GdmSessionRelayClass;
 
-GType		   gdm_session_relay_get_type          (void);
-GdmSessionRelay *  gdm_session_relay_new	       (void);
+GType              gdm_session_relay_get_type          (void);
+GdmSessionRelay *  gdm_session_relay_new               (void);
 
 void               gdm_session_relay_answer_query      (GdmSessionRelay *session_relay,
-							const char      *text);
+                                                        const char      *text);
 void               gdm_session_relay_open              (GdmSessionRelay *session_relay);
 
 void               gdm_session_relay_select_session    (GdmSessionRelay *session_relay,
-							const char      *session);
+                                                        const char      *session);
 void               gdm_session_relay_select_language   (GdmSessionRelay *session_relay,
-							const char      *language);
+                                                        const char      *language);
 void               gdm_session_relay_select_user       (GdmSessionRelay *session_relay,
-							const char      *user);
+                                                        const char      *user);
 void               gdm_session_relay_cancel            (GdmSessionRelay *session_relay);
 
 gboolean           gdm_session_relay_start             (GdmSessionRelay *session_relay);

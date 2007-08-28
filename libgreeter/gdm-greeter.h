@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: h; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,50 +37,50 @@ typedef struct GdmGreeterPrivate GdmGreeterPrivate;
 
 typedef struct
 {
-	GObject		   parent;
-	GdmGreeterPrivate *priv;
+        GObject            parent;
+        GdmGreeterPrivate *priv;
 } GdmGreeter;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	/* signals */
-	void (* query_answer)         (GdmGreeter *greeter,
-				       const char *text);
-	void (* session_selected)     (GdmGreeter *greeter,
-				       const char *text);
-	void (* language_selected)    (GdmGreeter *greeter,
-				       const char *text);
-	void (* user_selected)        (GdmGreeter *greeter,
-				       const char *text);
-	void (* cancelled)            (GdmGreeter *greeter);
+        /* signals */
+        void (* query_answer)         (GdmGreeter *greeter,
+                                       const char *text);
+        void (* session_selected)     (GdmGreeter *greeter,
+                                       const char *text);
+        void (* language_selected)    (GdmGreeter *greeter,
+                                       const char *text);
+        void (* user_selected)        (GdmGreeter *greeter,
+                                       const char *text);
+        void (* cancelled)            (GdmGreeter *greeter);
 
-	/* methods */
-	gboolean (*start)             (GdmGreeter *greeter);
-	gboolean (*stop)              (GdmGreeter *greeter);
-	gboolean (*reset)             (GdmGreeter *greeter);
+        /* methods */
+        gboolean (*start)             (GdmGreeter *greeter);
+        gboolean (*stop)              (GdmGreeter *greeter);
+        gboolean (*reset)             (GdmGreeter *greeter);
 
-	gboolean (*info_query)        (GdmGreeter *greeter,
-				       const char *text);
-	gboolean (*secret_info_query) (GdmGreeter *greeter,
-				       const char *text);
-	gboolean (*info)              (GdmGreeter *greeter,
-				       const char *text);
-	gboolean (*problem)           (GdmGreeter *greeter,
-				       const char *text);
+        gboolean (*info_query)        (GdmGreeter *greeter,
+                                       const char *text);
+        gboolean (*secret_info_query) (GdmGreeter *greeter,
+                                       const char *text);
+        gboolean (*info)              (GdmGreeter *greeter,
+                                       const char *text);
+        gboolean (*problem)           (GdmGreeter *greeter,
+                                       const char *text);
 
 } GdmGreeterClass;
 
 typedef enum
 {
-	 GDM_GREETER_ERROR_GENERAL
+         GDM_GREETER_ERROR_GENERAL
 } GdmGreeterError;
 
 #define GDM_GREETER_ERROR gdm_greeter_error_quark ()
 
-GQuark		    gdm_greeter_error_quark		       (void);
-GType		    gdm_greeter_get_type		       (void);
+GQuark              gdm_greeter_error_quark                    (void);
+GType               gdm_greeter_get_type                       (void);
 
 gboolean            gdm_greeter_start                          (GdmGreeter *greeter);
 gboolean            gdm_greeter_stop                           (GdmGreeter *greeter);
@@ -88,24 +88,24 @@ gboolean            gdm_greeter_reset                          (GdmGreeter *gree
 
 /* emit signals */
 gboolean            gdm_greeter_emit_answer_query              (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 gboolean            gdm_greeter_emit_select_session            (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 gboolean            gdm_greeter_emit_select_language           (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 gboolean            gdm_greeter_emit_select_user               (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 gboolean            gdm_greeter_emit_cancelled                 (GdmGreeter *greeter);
 
 /* actions */
 gboolean            gdm_greeter_info_query                     (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 gboolean            gdm_greeter_secret_info_query              (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 gboolean            gdm_greeter_info                           (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 gboolean            gdm_greeter_problem                        (GdmGreeter *greeter,
-								const char *text);
+                                                                const char *text);
 
 G_END_DECLS
 

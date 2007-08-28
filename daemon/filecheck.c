@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
@@ -46,100 +46,100 @@ gboolean
 gdm_file_check (const gchar *caller,
                 uid_t user,
                 const gchar *dir,
-		const gchar *file,
+                const gchar *file,
                 gboolean absentok,
-		gboolean absentdirok,
+                gboolean absentdirok,
                 gint maxsize,
                 gint perms)
 {
-	struct stat statbuf;
-	gchar *fullpath;
-	gchar *dirautofs;
-	int r;
+        struct stat statbuf;
+        gchar *fullpath;
+        gchar *dirautofs;
+        int r;
 
-	if (ve_string_empty (dir) ||
-	    ve_string_empty (file))
-		return FALSE;
+        if (ve_string_empty (dir) ||
+            ve_string_empty (file))
+                return FALSE;
 
 
-	VE_IGNORE_EINTR (r = stat (dir, &statbuf));
+        VE_IGNORE_EINTR (r = stat (dir, &statbuf));
 
-	if (r < 0) {
-		if ( ! absentdirok)
-			g_warning (_("%s: Directory %s does not exist."),
-				   caller, dir);
-		return FALSE;
-	}
+        if (r < 0) {
+                if ( ! absentdirok)
+                        g_warning (_("%s: Directory %s does not exist."),
+                                   caller, dir);
+                return FALSE;
+        }
 
-	/* ... if group has write permission ... */
-	if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
-		g_warning (_("%s: %s is writable by group."), caller, dir);
-		return FALSE;
-	}
+        /* ... if group has write permission ... */
+        if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
+                g_warning (_("%s: %s is writable by group."), caller, dir);
+                return FALSE;
+        }
 
-	/* ... and if others have write permission. */
-	if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
-		g_warning (_("%s: %s is writable by other."), caller, dir);
-		return FALSE;
-	}
+        /* ... and if others have write permission. */
+        if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
+                g_warning (_("%s: %s is writable by other."), caller, dir);
+                return FALSE;
+        }
 
-	fullpath = g_build_filename (dir, file, NULL);
+        fullpath = g_build_filename (dir, file, NULL);
 
-	/* Stat file */
-	VE_IGNORE_EINTR (r = g_stat (fullpath, &statbuf));
-	if (r < 0) {
-		/* Return true if file does not exist and that is ok */
-		if (absentok) {
-			g_free (fullpath);
-			return TRUE;
-		}
-		else {
-			g_warning (_("%s: %s does not exist but must exist."), caller, fullpath);
-			g_free (fullpath);
-			return FALSE;
-		}
-	}
+        /* Stat file */
+        VE_IGNORE_EINTR (r = g_stat (fullpath, &statbuf));
+        if (r < 0) {
+                /* Return true if file does not exist and that is ok */
+                if (absentok) {
+                        g_free (fullpath);
+                        return TRUE;
+                }
+                else {
+                        g_warning (_("%s: %s does not exist but must exist."), caller, fullpath);
+                        g_free (fullpath);
+                        return FALSE;
+                }
+        }
 
-	/* Check that it is a regular file ... */
-	if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
-		g_warning (_("%s: %s is not a regular file."), caller, fullpath);
-		g_free (fullpath);
-		return FALSE;
-	}
+        /* Check that it is a regular file ... */
+        if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
+                g_warning (_("%s: %s is not a regular file."), caller, fullpath);
+                g_free (fullpath);
+                return FALSE;
+        }
 
-	/* ... owned by the user ... */
-	if G_UNLIKELY (statbuf.st_uid != user) {
-		g_warning (_("%s: %s is not owned by uid %d."), caller, fullpath, user);
-		g_free (fullpath);
-		return FALSE;
-	}
+        /* ... owned by the user ... */
+        if G_UNLIKELY (statbuf.st_uid != user) {
+                g_warning (_("%s: %s is not owned by uid %d."), caller, fullpath, user);
+                g_free (fullpath);
+                return FALSE;
+        }
 
-	/* ... unwritable by group ... */
-	if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
-		g_warning (_("%s: %s is writable by group."), caller, fullpath);
-		g_free (fullpath);
-		return FALSE;
-	}
+        /* ... unwritable by group ... */
+        if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
+                g_warning (_("%s: %s is writable by group."), caller, fullpath);
+                g_free (fullpath);
+                return FALSE;
+        }
 
-	/* ... unwritable by others ... */
-	if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
-		g_warning (_("%s: %s is writable by group/other."), caller, fullpath);
-		g_free (fullpath);
-		return FALSE;
-	}
+        /* ... unwritable by others ... */
+        if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
+                g_warning (_("%s: %s is writable by group/other."), caller, fullpath);
+                g_free (fullpath);
+                return FALSE;
+        }
 
-	/* ... and smaller than sysadmin specified limit. */
-	if G_UNLIKELY (maxsize && statbuf.st_size > maxsize) {
-		g_warning (_("%s: %s is bigger than sysadmin specified maximum file size."),
-			   caller, fullpath);
-		g_free (fullpath);
-		return FALSE;
-	}
+        /* ... and smaller than sysadmin specified limit. */
+        if G_UNLIKELY (maxsize && statbuf.st_size > maxsize) {
+                g_warning (_("%s: %s is bigger than sysadmin specified maximum file size."),
+                           caller, fullpath);
+                g_free (fullpath);
+                return FALSE;
+        }
 
-	g_free (fullpath);
+        g_free (fullpath);
 
-	/* Yeap, this file is ok */
-	return TRUE;
+        /* Yeap, this file is ok */
+        return TRUE;
 }
 
 /* we should be euid the user BTW */
@@ -150,42 +150,42 @@ gdm_auth_file_check (const gchar *caller,
                      gboolean absentok,
                      struct stat *s)
 {
-	struct stat statbuf;
-	gint usermaxfile;
-	int r;
+        struct stat statbuf;
+        gint usermaxfile;
+        int r;
 
-	if (ve_string_empty (authfile))
-		return FALSE;
+        if (ve_string_empty (authfile))
+                return FALSE;
 
-	/* Stat file */
-	VE_IGNORE_EINTR (r = g_lstat (authfile, &statbuf));
-	if (s != NULL)
-		*s = statbuf;
-	if (r < 0) {
-		if (absentok)
-			return TRUE;
-		g_warning (_("%s: %s does not exist but must exist."), caller, authfile);
-		return FALSE;
-	}
+        /* Stat file */
+        VE_IGNORE_EINTR (r = g_lstat (authfile, &statbuf));
+        if (s != NULL)
+                *s = statbuf;
+        if (r < 0) {
+                if (absentok)
+                        return TRUE;
+                g_warning (_("%s: %s does not exist but must exist."), caller, authfile);
+                return FALSE;
+        }
 
-	/* Check that it is a regular file ... */
-	if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
-		g_warning (_("%s: %s is not a regular file."), caller, authfile);
-		return FALSE;
-	}
+        /* Check that it is a regular file ... */
+        if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
+                g_warning (_("%s: %s is not a regular file."), caller, authfile);
+                return FALSE;
+        }
 
-	/* ... owned by the user ... */
-	if G_UNLIKELY (statbuf.st_uid != user) {
-		g_warning (_("%s: %s is not owned by uid %d."), caller, authfile, user);
-		return FALSE;
-	}
+        /* ... owned by the user ... */
+        if G_UNLIKELY (statbuf.st_uid != user) {
+                g_warning (_("%s: %s is not owned by uid %d."), caller, authfile, user);
+                return FALSE;
+        }
 
-	/* ... has right permissions ... */
-	if G_UNLIKELY (statbuf.st_mode & 0077) {
-		g_warning ("%s: %s has wrong permissions (should be 0600)", caller, authfile);
-		return FALSE;
-	}
+        /* ... has right permissions ... */
+        if G_UNLIKELY (statbuf.st_mode & 0077) {
+                g_warning ("%s: %s has wrong permissions (should be 0600)", caller, authfile);
+                return FALSE;
+        }
 
-	/* Yeap, this file is ok */
-	return TRUE;
+        /* Yeap, this file is ok */
+        return TRUE;
 }

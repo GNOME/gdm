@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,29 +37,29 @@ typedef struct GdmSlavePrivate GdmSlavePrivate;
 
 typedef struct
 {
-	GObject	         parent;
-	GdmSlavePrivate *priv;
+        GObject          parent;
+        GdmSlavePrivate *priv;
 } GdmSlave;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	/* methods */
-	gboolean (*start) (GdmSlave *slave);
-	gboolean (*stop)  (GdmSlave *slave);
+        /* methods */
+        gboolean (*start) (GdmSlave *slave);
+        gboolean (*stop)  (GdmSlave *slave);
 
-	/* signals */
-	void (*stopped) (GdmSlave *slave);
+        /* signals */
+        void (*stopped) (GdmSlave *slave);
 } GdmSlaveClass;
 
-GType		    gdm_slave_get_type	             (void);
+GType               gdm_slave_get_type               (void);
 gboolean            gdm_slave_start                  (GdmSlave   *slave);
 gboolean            gdm_slave_stop                   (GdmSlave   *slave);
 
 gboolean            gdm_slave_add_user_authorization (GdmSlave   *slave,
-						      const char *username,
-						      char      **filename);
+                                                      const char *username,
+                                                      char      **filename);
 
 void                gdm_slave_stopped                (GdmSlave   *slave);
 

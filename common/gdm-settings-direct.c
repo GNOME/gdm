@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -46,192 +46,192 @@ static GdmSettings     *settings_object;
 static GdmSettingsEntry *
 get_entry_for_key (const char *key)
 {
-	GdmSettingsEntry *entry;
+        GdmSettingsEntry *entry;
 
-	entry = g_hash_table_lookup (schemas, key);
+        entry = g_hash_table_lookup (schemas, key);
 
-	return entry;
+        return entry;
 }
 
 static void
 assert_signature (GdmSettingsEntry *entry,
-		  const char       *signature)
+                  const char       *signature)
 {
-	const char *sig;
+        const char *sig;
 
-	sig = gdm_settings_entry_get_signature (entry);
+        sig = gdm_settings_entry_get_signature (entry);
 
-	g_assert (sig != NULL);
-	g_assert (signature != NULL);
-	g_assert (strcmp (signature, sig) == 0);
+        g_assert (sig != NULL);
+        g_assert (signature != NULL);
+        g_assert (strcmp (signature, sig) == 0);
 }
 
 static gboolean
 get_value (const char *key,
-	   char      **value)
+           char      **value)
 {
-	GError  *error;
-	char    *str;
-	gboolean res;
+        GError  *error;
+        char    *str;
+        gboolean res;
 
-	error = NULL;
-	res = gdm_settings_get_value (settings_object, key, &str, &error);
-	if (! res) {
-		if (error != NULL) {
-			g_error_free (error);
-		} else {
-		}
+        error = NULL;
+        res = gdm_settings_get_value (settings_object, key, &str, &error);
+        if (! res) {
+                if (error != NULL) {
+                        g_error_free (error);
+                } else {
+                }
 
-		return FALSE;
-	}
+                return FALSE;
+        }
 
-	if (value != NULL) {
-		*value = g_strdup (str);
-	}
+        if (value != NULL) {
+                *value = g_strdup (str);
+        }
 
-	g_free (str);
+        g_free (str);
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_settings_direct_get_int (const char        *key,
-			     int               *value)
+                             int               *value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          ret;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          ret;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "i");
+        assert_signature (entry, "i");
 
-	ret = FALSE;
+        ret = FALSE;
 
-	res = get_value (key, &str);
+        res = get_value (key, &str);
 
-	if (! res) {
-		/* use the default */
-		str = g_strdup (gdm_settings_entry_get_default_value (entry));
-	}
+        if (! res) {
+                /* use the default */
+                str = g_strdup (gdm_settings_entry_get_default_value (entry));
+        }
 
-	ret = gdm_settings_parse_value_as_integer (str, value);
+        ret = gdm_settings_parse_value_as_integer (str, value);
 
-	g_free (str);
+        g_free (str);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_direct_get_boolean (const char        *key,
-				 gboolean          *value)
+                                 gboolean          *value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          ret;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          ret;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "b");
+        assert_signature (entry, "b");
 
-	ret = FALSE;
+        ret = FALSE;
 
-	res = get_value (key, &str);
+        res = get_value (key, &str);
 
-	if (! res) {
-		/* use the default */
-		str = g_strdup (gdm_settings_entry_get_default_value (entry));
-	}
+        if (! res) {
+                /* use the default */
+                str = g_strdup (gdm_settings_entry_get_default_value (entry));
+        }
 
-	ret = gdm_settings_parse_value_as_boolean  (str, value);
+        ret = gdm_settings_parse_value_as_boolean  (str, value);
 
-	g_free (str);
+        g_free (str);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_direct_get_string (const char        *key,
-				char             **value)
+                                char             **value)
 {
-	GdmSettingsEntry *entry;
-	gboolean          ret;
-	gboolean          res;
-	char             *str;
+        GdmSettingsEntry *entry;
+        gboolean          ret;
+        gboolean          res;
+        char             *str;
 
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	entry = get_entry_for_key (key);
-	g_assert (entry != NULL);
+        entry = get_entry_for_key (key);
+        g_assert (entry != NULL);
 
-	assert_signature (entry, "s");
+        assert_signature (entry, "s");
 
-	ret = FALSE;
+        ret = FALSE;
 
-	res = get_value (key, &str);
+        res = get_value (key, &str);
 
-	if (! res) {
-		/* use the default */
-		str = g_strdup (gdm_settings_entry_get_default_value (entry));
-	}
+        if (! res) {
+                /* use the default */
+                str = g_strdup (gdm_settings_entry_get_default_value (entry));
+        }
 
-	if (value != NULL) {
-		*value = g_strdup (str);
-	}
+        if (value != NULL) {
+                *value = g_strdup (str);
+        }
 
-	g_free (str);
+        g_free (str);
 
-	return ret;
+        return ret;
 }
 
 gboolean
 gdm_settings_direct_set (const char        *key,
-			 GValue            *value)
+                         GValue            *value)
 {
-	return TRUE;
+        return TRUE;
 }
 
 static void
 hashify_list (GdmSettingsEntry *entry,
-	      gpointer          data)
+              gpointer          data)
 {
-	g_hash_table_insert (schemas, g_strdup (gdm_settings_entry_get_key (entry)), entry);
+        g_hash_table_insert (schemas, g_strdup (gdm_settings_entry_get_key (entry)), entry);
 }
 
 gboolean
 gdm_settings_direct_init (GdmSettings *settings,
-			  const char  *file,
-			  const char  *root)
+                          const char  *file,
+                          const char  *root)
 {
-	GSList  *list;
+        GSList  *list;
 
-	g_return_val_if_fail (file != NULL, FALSE);
-	g_return_val_if_fail (root != NULL, FALSE);
+        g_return_val_if_fail (file != NULL, FALSE);
+        g_return_val_if_fail (root != NULL, FALSE);
 
-	g_assert (schemas == NULL);
+        g_assert (schemas == NULL);
 
-	if (! gdm_settings_parse_schemas (file, root, &list)) {
-		g_warning ("Unable to parse schemas");
-		return FALSE;
-	}
+        if (! gdm_settings_parse_schemas (file, root, &list)) {
+                g_warning ("Unable to parse schemas");
+                return FALSE;
+        }
 
-	schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
-	g_slist_foreach (list, (GFunc)hashify_list, NULL);
+        schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
+        g_slist_foreach (list, (GFunc)hashify_list, NULL);
 
-	schemas_file = g_strdup (file);
-	schemas_root = g_strdup (root);
+        schemas_file = g_strdup (file);
+        schemas_root = g_strdup (root);
 
-	settings_object = settings;
+        settings_object = settings;
 
-	return TRUE;
+        return TRUE;
 }
 
 void

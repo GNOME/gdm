@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
@@ -48,194 +48,194 @@
 
 gboolean
 gdm_auth_add_entry (int            display_num,
-		    GdmAddress    *address,
-		    GString       *binary_cookie,
-		    FILE          *af,
-		    GSList       **authlist)
+                    GdmAddress    *address,
+                    GString       *binary_cookie,
+                    FILE          *af,
+                    GSList       **authlist)
 {
-	Xauth *xa;
-	char  *dispnum;
+        Xauth *xa;
+        char  *dispnum;
 
-	xa = malloc (sizeof (Xauth));
+        xa = malloc (sizeof (Xauth));
 
-	if (xa == NULL) {
-		return FALSE;
-	}
+        if (xa == NULL) {
+                return FALSE;
+        }
 
-	if (address == NULL) {
-		xa->family = FamilyWild;
-		xa->address = NULL;
-		xa->address_length = 0;
-	} else {
-		gboolean res;
-		char    *hostname;
+        if (address == NULL) {
+                xa->family = FamilyWild;
+                xa->address = NULL;
+                xa->address_length = 0;
+        } else {
+                gboolean res;
+                char    *hostname;
 
-		xa->family = gdm_address_get_family_type (address);
+                xa->family = gdm_address_get_family_type (address);
 
-		res = gdm_address_get_hostname (address, &hostname);
-		if (! res) {
-			free (xa);
-			return FALSE;
-		}
+                res = gdm_address_get_hostname (address, &hostname);
+                if (! res) {
+                        free (xa);
+                        return FALSE;
+                }
 
-		g_debug ("Got hostname: %s", hostname);
+                g_debug ("Got hostname: %s", hostname);
 
-		xa->address = hostname;
-		xa->address_length = strlen (xa->address);
-	}
+                xa->address = hostname;
+                xa->address_length = strlen (xa->address);
+        }
 
-	dispnum = g_strdup_printf ("%d", display_num);
-	xa->number = strdup (dispnum);
-	xa->number_length = strlen (dispnum);
-	g_free (dispnum);
+        dispnum = g_strdup_printf ("%d", display_num);
+        xa->number = strdup (dispnum);
+        xa->number_length = strlen (dispnum);
+        g_free (dispnum);
 
-	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
-	xa->name_length = strlen ("MIT-MAGIC-COOKIE-1");
-	xa->data = malloc (16);
-	if (xa->data == NULL) {
-		free (xa->number);
-		free (xa->name);
-		free (xa->address);
-		free (xa);
-		return FALSE;
-	}
+        xa->name = strdup ("MIT-MAGIC-COOKIE-1");
+        xa->name_length = strlen ("MIT-MAGIC-COOKIE-1");
+        xa->data = malloc (16);
+        if (xa->data == NULL) {
+                free (xa->number);
+                free (xa->name);
+                free (xa->address);
+                free (xa);
+                return FALSE;
+        }
 
-	memcpy (xa->data, binary_cookie->str, binary_cookie->len);
-	xa->data_length = binary_cookie->len;
+        memcpy (xa->data, binary_cookie->str, binary_cookie->len);
+        xa->data_length = binary_cookie->len;
 
-	g_debug ("Writing auth for address:%p %s:%d", address, xa->address, display_num);
+        g_debug ("Writing auth for address:%p %s:%d", address, xa->address, display_num);
 
-	if (af != NULL) {
-		errno = 0;
-		if ( ! XauWriteAuth (af, xa)) {
-			free (xa->data);
-			free (xa->number);
-			free (xa->name);
-			free (xa->address);
-			free (xa);
+        if (af != NULL) {
+                errno = 0;
+                if ( ! XauWriteAuth (af, xa)) {
+                        free (xa->data);
+                        free (xa->number);
+                        free (xa->name);
+                        free (xa->address);
+                        free (xa);
 
-			if (errno != 0) {
-				g_warning (_("%s: Could not write new authorization entry: %s"),
-					   "add_auth_entry", g_strerror (errno));
-			} else {
-				g_warning (_("%s: Could not write new authorization entry.  "
-					     "Possibly out of diskspace"),
-					   "add_auth_entry");
-			}
+                        if (errno != 0) {
+                                g_warning (_("%s: Could not write new authorization entry: %s"),
+                                           "add_auth_entry", g_strerror (errno));
+                        } else {
+                                g_warning (_("%s: Could not write new authorization entry.  "
+                                             "Possibly out of diskspace"),
+                                           "add_auth_entry");
+                        }
 
-			return FALSE;
-		}
-	}
+                        return FALSE;
+                }
+        }
 
-	if (authlist != NULL) {
-		*authlist = g_slist_append (*authlist, xa);
-	}
+        if (authlist != NULL) {
+                *authlist = g_slist_append (*authlist, xa);
+        }
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_auth_add_entry_for_display (int         display_num,
-				GdmAddress *address,
-				GString    *cookie,
-				FILE       *af,
-				GSList    **authlist)
+                                GdmAddress *address,
+                                GString    *cookie,
+                                FILE       *af,
+                                GSList    **authlist)
 {
-	GString *binary_cookie;
-	gboolean ret;
+        GString *binary_cookie;
+        gboolean ret;
 
-	binary_cookie = g_string_new (NULL);
+        binary_cookie = g_string_new (NULL);
 
-	if (! gdm_string_hex_decode (cookie,
-				     0,
-				     NULL,
-				     binary_cookie,
-				     0)) {
-		ret = FALSE;
-		goto out;
-	}
+        if (! gdm_string_hex_decode (cookie,
+                                     0,
+                                     NULL,
+                                     binary_cookie,
+                                     0)) {
+                ret = FALSE;
+                goto out;
+        }
 
-	ret = gdm_auth_add_entry (display_num,
-				  address,
-				  binary_cookie,
-				  af,
-				  authlist);
+        ret = gdm_auth_add_entry (display_num,
+                                  address,
+                                  binary_cookie,
+                                  af,
+                                  authlist);
 
  out:
-	g_string_free (binary_cookie, TRUE);
-	return ret;
+        g_string_free (binary_cookie, TRUE);
+        return ret;
 }
 
 gboolean
 gdm_auth_user_add (int         display_num,
-		   GdmAddress *address,
-		   const char *username,
-		   const char *cookie,
-		   char      **filenamep)
+                   GdmAddress *address,
+                   const char *username,
+                   const char *cookie,
+                   char      **filenamep)
 {
-	int            fd;
-	char          *filename;
-	GError        *error;
-	mode_t         old_mask;
-	FILE          *af;
-	gboolean       ret;
-	struct passwd *pwent;
-	GString       *cookie_str;
+        int            fd;
+        char          *filename;
+        GError        *error;
+        mode_t         old_mask;
+        FILE          *af;
+        gboolean       ret;
+        struct passwd *pwent;
+        GString       *cookie_str;
 
-	g_debug ("Add user auth for address:%p num:%d user:%s", address, display_num, username);
+        g_debug ("Add user auth for address:%p num:%d user:%s", address, display_num, username);
 
-	ret = FALSE;
-	filename = NULL;
-	af = NULL;
-	fd = -1;
+        ret = FALSE;
+        filename = NULL;
+        af = NULL;
+        fd = -1;
 
-	old_mask = umask (077);
+        old_mask = umask (077);
 
-	filename = NULL;
-	error = NULL;
-	fd = g_file_open_tmp (".gdmXXXXXX", &filename, &error);
+        filename = NULL;
+        error = NULL;
+        fd = g_file_open_tmp (".gdmXXXXXX", &filename, &error);
 
-	umask (old_mask);
+        umask (old_mask);
 
-	if (fd == -1) {
-		g_warning ("Unable to create temporary file: %s", error->message);
-		g_error_free (error);
-		goto out;
-	}
+        if (fd == -1) {
+                g_warning ("Unable to create temporary file: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
 
-	if (filenamep != NULL) {
-		*filenamep = g_strdup (filename);
-	}
+        if (filenamep != NULL) {
+                *filenamep = g_strdup (filename);
+        }
 
-	VE_IGNORE_EINTR (af = fdopen (fd, "w"));
-	if (af == NULL) {
-		g_warning ("Unable to open cookie file: %s", filename);
-		goto out;
-	}
+        VE_IGNORE_EINTR (af = fdopen (fd, "w"));
+        if (af == NULL) {
+                g_warning ("Unable to open cookie file: %s", filename);
+                goto out;
+        }
 
-	/* FIXME: clean old files? */
+        /* FIXME: clean old files? */
 
-	cookie_str = g_string_new (cookie);
+        cookie_str = g_string_new (cookie);
 
-	/* FIXME: ?? */
-	/*gdm_auth_add_entry_for_display (display_num, address, cookie_str, af, NULL);*/
-	gdm_auth_add_entry_for_display (display_num, NULL, cookie_str, af, NULL);
-	g_string_free (cookie_str, TRUE);
+        /* FIXME: ?? */
+        /*gdm_auth_add_entry_for_display (display_num, address, cookie_str, af, NULL);*/
+        gdm_auth_add_entry_for_display (display_num, NULL, cookie_str, af, NULL);
+        g_string_free (cookie_str, TRUE);
 
-	pwent = getpwnam (username);
-	if (pwent == NULL) {
-		goto out;
-	}
+        pwent = getpwnam (username);
+        if (pwent == NULL) {
+                goto out;
+        }
 
-	fchown (fd, pwent->pw_uid, -1);
+        fchown (fd, pwent->pw_uid, -1);
 
-	ret = TRUE;
+        ret = TRUE;
  out:
-	g_free (filename);
+        g_free (filename);
 
-	if (af != NULL) {
-		fclose (af);
-	}
+        if (af != NULL) {
+                fclose (af);
+        }
 
-	return ret;
+        return ret;
 }

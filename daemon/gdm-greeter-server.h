@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,42 +37,42 @@ typedef struct GdmGreeterServerPrivate GdmGreeterServerPrivate;
 
 typedef struct
 {
-	GObject	                 parent;
-	GdmGreeterServerPrivate *priv;
+        GObject                  parent;
+        GdmGreeterServerPrivate *priv;
 } GdmGreeterServer;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void (* query_answer)      (GdmGreeterServer  *greeter_server,
-				    const char        *text);
-	void (* session_selected)  (GdmGreeterServer  *greeter_server,
-				    const char        *name);
-	void (* language_selected) (GdmGreeterServer  *greeter_server,
-				    const char        *name);
-	void (* user_selected)    (GdmGreeterServer  *greeter_server,
-				    const char        *name);
-	void (* cancelled)         (GdmGreeterServer  *greeter_server);
-	void (* connected)         (GdmGreeterServer  *greeter_server);
-	void (* disconnected)      (GdmGreeterServer  *greeter_server);
+        void (* query_answer)      (GdmGreeterServer  *greeter_server,
+                                    const char        *text);
+        void (* session_selected)  (GdmGreeterServer  *greeter_server,
+                                    const char        *name);
+        void (* language_selected) (GdmGreeterServer  *greeter_server,
+                                    const char        *name);
+        void (* user_selected)    (GdmGreeterServer  *greeter_server,
+                                    const char        *name);
+        void (* cancelled)         (GdmGreeterServer  *greeter_server);
+        void (* connected)         (GdmGreeterServer  *greeter_server);
+        void (* disconnected)      (GdmGreeterServer  *greeter_server);
 } GdmGreeterServerClass;
 
-GType		    gdm_greeter_server_get_type          (void);
-GdmGreeterServer *  gdm_greeter_server_new	         (void);
+GType               gdm_greeter_server_get_type          (void);
+GdmGreeterServer *  gdm_greeter_server_new               (void);
 
 gboolean            gdm_greeter_server_start             (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_stop              (GdmGreeterServer *greeter_server);
 char *              gdm_greeter_server_get_address       (GdmGreeterServer *greeter_server);
 
 gboolean            gdm_greeter_server_info_query        (GdmGreeterServer *greeter_server,
-							  const char       *text);
+                                                          const char       *text);
 gboolean            gdm_greeter_server_secret_info_query (GdmGreeterServer *greeter_server,
-							  const char       *text);
+                                                          const char       *text);
 gboolean            gdm_greeter_server_info              (GdmGreeterServer *greeter_server,
-							  const char       *text);
+                                                          const char       *text);
 gboolean            gdm_greeter_server_problem           (GdmGreeterServer *greeter_server,
-							  const char       *text);
+                                                          const char       *text);
 gboolean            gdm_greeter_server_reset             (GdmGreeterServer *greeter_server);
 
 G_END_DECLS

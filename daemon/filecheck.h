@@ -20,9 +20,9 @@
 #define GDM_FILECHECK_H
 
 gboolean gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
-			 const gchar *file, gboolean absentok,
-			 gboolean absentdirok, gint maxsize,
-			 gint perms);
+                         const gchar *file, gboolean absentok,
+                         gboolean absentdirok, gint maxsize,
+                         gint perms);
 
 /* more paranoid on the file itself, doesn't check directory (for all we know
    it could be /tmp) */

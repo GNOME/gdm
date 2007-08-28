@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -31,7 +31,7 @@ G_BEGIN_DECLS
 void      gdm_log_default_handler (const gchar   *log_domain,
                                    GLogLevelFlags log_level,
                                    const gchar   *message,
-                                   gpointer	 unused_data);
+                                   gpointer      unused_data);
 void      gdm_log_set_debug       (gboolean       debug);
 void      gdm_log_toggle_debug    (void);
 void      gdm_log_init            (void);

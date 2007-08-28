@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -39,18 +39,18 @@ typedef struct GdmStaticDisplayPrivate GdmStaticDisplayPrivate;
 
 typedef struct
 {
-	GdmDisplay	 	 parent;
-	GdmStaticDisplayPrivate *priv;
+        GdmDisplay               parent;
+        GdmStaticDisplayPrivate *priv;
 } GdmStaticDisplay;
 
 typedef struct
 {
-	GdmDisplayClass   parent_class;
+        GdmDisplayClass   parent_class;
 
 } GdmStaticDisplayClass;
 
-GType		    gdm_static_display_get_type		       (void);
-GdmDisplay *	    gdm_static_display_new		       (int display_number);
+GType               gdm_static_display_get_type                (void);
+GdmDisplay *        gdm_static_display_new                     (int display_number);
 
 
 G_END_DECLS

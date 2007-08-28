@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2006 William Jon McCann <mccann@jhu.edu>
  *
@@ -40,29 +40,29 @@ typedef struct GdmXdmcpDisplayFactoryPrivate GdmXdmcpDisplayFactoryPrivate;
 
 typedef struct
 {
-	GdmDisplayFactory	       parent;
-	GdmXdmcpDisplayFactoryPrivate *priv;
+        GdmDisplayFactory              parent;
+        GdmXdmcpDisplayFactoryPrivate *priv;
 } GdmXdmcpDisplayFactory;
 
 typedef struct
 {
-	GdmDisplayFactoryClass   parent_class;
+        GdmDisplayFactoryClass   parent_class;
 } GdmXdmcpDisplayFactoryClass;
 
 typedef enum
 {
-	 GDM_XDMCP_DISPLAY_FACTORY_ERROR_GENERAL
+         GDM_XDMCP_DISPLAY_FACTORY_ERROR_GENERAL
 } GdmXdmcpDisplayFactoryError;
 
 #define GDM_XDMCP_DISPLAY_FACTORY_ERROR gdm_xdmcp_display_factory_error_quark ()
 
-GQuark		           gdm_xdmcp_display_factory_error_quark      (void);
-GType		           gdm_xdmcp_display_factory_get_type	      (void);
+GQuark                     gdm_xdmcp_display_factory_error_quark      (void);
+GType                      gdm_xdmcp_display_factory_get_type         (void);
 
-GdmXdmcpDisplayFactory *   gdm_xdmcp_display_factory_new	      (GdmDisplayStore        *display_store);
+GdmXdmcpDisplayFactory *   gdm_xdmcp_display_factory_new              (GdmDisplayStore        *display_store);
 
 void                       gdm_xdmcp_display_factory_set_port         (GdmXdmcpDisplayFactory *manager,
-								       guint                   port);
+                                                                       guint                   port);
 
 G_END_DECLS
 

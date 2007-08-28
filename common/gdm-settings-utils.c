@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -39,289 +39,289 @@
 
 struct _GdmSettingsEntry
 {
-	char   *key;
-	char   *signature;
-	char   *default_value;
-	char   *value;
+        char   *key;
+        char   *signature;
+        char   *default_value;
+        char   *value;
 };
 
 GdmSettingsEntry *
 gdm_settings_entry_new (void)
 {
-	GdmSettingsEntry *entry = NULL;
+        GdmSettingsEntry *entry = NULL;
 
-	entry = g_new0 (GdmSettingsEntry, 1);
-	entry->key = NULL;
-	entry->signature = NULL;
-	entry->value = NULL;
-	entry->default_value = NULL;
+        entry = g_new0 (GdmSettingsEntry, 1);
+        entry->key = NULL;
+        entry->signature = NULL;
+        entry->value = NULL;
+        entry->default_value = NULL;
 
-	return entry;
+        return entry;
 }
 
 const char *
 gdm_settings_entry_get_key (GdmSettingsEntry *entry)
 {
-	return entry->key;
+        return entry->key;
 }
 
 const char *
 gdm_settings_entry_get_signature (GdmSettingsEntry *entry)
 {
-	return entry->signature;
+        return entry->signature;
 }
 
 const char *
 gdm_settings_entry_get_default_value (GdmSettingsEntry *entry)
 {
-	return entry->default_value;
+        return entry->default_value;
 }
 
 const char *
 gdm_settings_entry_get_value (GdmSettingsEntry *entry)
 {
-	return entry->value;
+        return entry->value;
 }
 
 void
 gdm_settings_entry_set_value (GdmSettingsEntry *entry,
-			      const char       *value)
+                              const char       *value)
 {
-	g_free (entry->value);
-	entry->value = g_strdup (value);
+        g_free (entry->value);
+        entry->value = g_strdup (value);
 }
 
 void
 gdm_settings_entry_free (GdmSettingsEntry *entry)
 {
-	g_free (entry->key);
-	g_free (entry->signature);
-	g_free (entry->default_value);
-	g_free (entry->value);
-	g_free (entry);
+        g_free (entry->key);
+        g_free (entry->signature);
+        g_free (entry->default_value);
+        g_free (entry->value);
+        g_free (entry);
 }
 
 typedef struct {
-	GSList                 *list;
-	GdmSettingsEntry       *entry;
-	gboolean                in_key;
-	gboolean                in_signature;
-	gboolean                in_default;
+        GSList                 *list;
+        GdmSettingsEntry       *entry;
+        gboolean                in_key;
+        gboolean                in_signature;
+        gboolean                in_default;
 } ParserInfo;
 
 static void
 start_element_cb (GMarkupParseContext *ctx,
-		  const char          *element_name,
-		  const char         **attribute_names,
-		  const char         **attribute_values,
-		  gpointer             user_data,
-		  GError             **error)
+                  const char          *element_name,
+                  const char         **attribute_names,
+                  const char         **attribute_values,
+                  gpointer             user_data,
+                  GError             **error)
 {
-	ParserInfo *info;
+        ParserInfo *info;
 
-	info = (ParserInfo *) user_data;
+        info = (ParserInfo *) user_data;
 
-	/*g_debug ("parsing start: '%s'", element_name);*/
+        /*g_debug ("parsing start: '%s'", element_name);*/
 
-	if (strcmp (element_name, "schema") == 0) {
-		info->entry = gdm_settings_entry_new ();
-	} else if (strcmp (element_name, "key") == 0) {
-		info->in_key = TRUE;
-	} else if (strcmp (element_name, "signature") == 0) {
-		info->in_signature = TRUE;
-	} else if (strcmp (element_name, "default") == 0) {
-		info->in_default = TRUE;
-	}
+        if (strcmp (element_name, "schema") == 0) {
+                info->entry = gdm_settings_entry_new ();
+        } else if (strcmp (element_name, "key") == 0) {
+                info->in_key = TRUE;
+        } else if (strcmp (element_name, "signature") == 0) {
+                info->in_signature = TRUE;
+        } else if (strcmp (element_name, "default") == 0) {
+                info->in_default = TRUE;
+        }
 }
 
 static void
 add_schema_entry (ParserInfo *info)
 {
-	/*g_debug ("Inserting entry %s", info->entry->key);*/
+        /*g_debug ("Inserting entry %s", info->entry->key);*/
 
-	info->list = g_slist_prepend (info->list, info->entry);
+        info->list = g_slist_prepend (info->list, info->entry);
 }
 
 static void
 end_element_cb (GMarkupParseContext *ctx,
-		const char          *element_name,
-		gpointer             user_data,
-		GError             **error)
+                const char          *element_name,
+                gpointer             user_data,
+                GError             **error)
 {
-	ParserInfo *info;
+        ParserInfo *info;
 
-	info = (ParserInfo *) user_data;
+        info = (ParserInfo *) user_data;
 
-	/*g_debug ("parsing end: '%s'", element_name);*/
+        /*g_debug ("parsing end: '%s'", element_name);*/
 
-	if (strcmp (element_name, "schema") == 0) {
-		add_schema_entry (info);
-	} else if (strcmp (element_name, "key") == 0) {
-		info->in_key = FALSE;
-	} else if (strcmp (element_name, "signature") == 0) {
-		info->in_signature = FALSE;
-	} else if (strcmp (element_name, "default") == 0) {
-		info->in_default = FALSE;
-	}
+        if (strcmp (element_name, "schema") == 0) {
+                add_schema_entry (info);
+        } else if (strcmp (element_name, "key") == 0) {
+                info->in_key = FALSE;
+        } else if (strcmp (element_name, "signature") == 0) {
+                info->in_signature = FALSE;
+        } else if (strcmp (element_name, "default") == 0) {
+                info->in_default = FALSE;
+        }
 }
 
 static void
 text_cb (GMarkupParseContext *ctx,
-	 const char          *text,
-	 gsize                text_len,
-	 gpointer             user_data,
-	 GError             **error)
+         const char          *text,
+         gsize                text_len,
+         gpointer             user_data,
+         GError             **error)
 {
-	ParserInfo *info;
-	char       *t;
+        ParserInfo *info;
+        char       *t;
 
-	info = (ParserInfo *) user_data;
+        info = (ParserInfo *) user_data;
 
-	t = g_strndup (text, text_len);
+        t = g_strndup (text, text_len);
 
-	if (info->in_key) {
-		info->entry->key = g_strdup (t);
-	} else if (info->in_signature) {
-		info->entry->signature = g_strdup (t);
-	} else if (info->in_default) {
-		info->entry->default_value = g_strdup (t);
-	}
+        if (info->in_key) {
+                info->entry->key = g_strdup (t);
+        } else if (info->in_signature) {
+                info->entry->signature = g_strdup (t);
+        } else if (info->in_default) {
+                info->entry->default_value = g_strdup (t);
+        }
 
-	g_free (t);
+        g_free (t);
 
 }
 
 static void
 error_cb (GMarkupParseContext *ctx,
-	  GError              *error,
-	  gpointer             user_data)
+          GError              *error,
+          gpointer             user_data)
 {
 }
 
 static GMarkupParser parser = {
-	start_element_cb,
-	end_element_cb,
-	text_cb,
-	NULL,
-	error_cb
+        start_element_cb,
+        end_element_cb,
+        text_cb,
+        NULL,
+        error_cb
 };
 
 gboolean
 gdm_settings_parse_schemas (const char  *file,
-			    const char  *root,
-			    GSList     **schemas)
+                            const char  *root,
+                            GSList     **schemas)
 {
-	GMarkupParseContext *ctx;
-	ParserInfo          *info;
-	char                *contents;
-	gsize                len;
-	GError              *error;
+        GMarkupParseContext *ctx;
+        ParserInfo          *info;
+        char                *contents;
+        gsize                len;
+        GError              *error;
 
-	g_return_val_if_fail (file != NULL, FALSE);
-	g_return_val_if_fail (root != NULL, FALSE);
+        g_return_val_if_fail (file != NULL, FALSE);
+        g_return_val_if_fail (root != NULL, FALSE);
 
-	g_assert (schemas != NULL);
+        g_assert (schemas != NULL);
 
-	error = NULL;
-	if (! g_file_get_contents (file, &contents, &len, &error)) {
-		g_warning ("Unable to read schemas file: %s", error->message);
-		g_error_free (error);
-		return FALSE;
-	}
+        error = NULL;
+        if (! g_file_get_contents (file, &contents, &len, &error)) {
+                g_warning ("Unable to read schemas file: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
 
-	info = g_new0 (ParserInfo, 1);
-	ctx = g_markup_parse_context_new (&parser, 0, info, NULL);
-	g_markup_parse_context_parse (ctx, contents, len, NULL);
+        info = g_new0 (ParserInfo, 1);
+        ctx = g_markup_parse_context_new (&parser, 0, info, NULL);
+        g_markup_parse_context_parse (ctx, contents, len, NULL);
 
-	*schemas = info->list;
+        *schemas = info->list;
 
-	g_free (info);
+        g_free (info);
 
-	return TRUE;
+        return TRUE;
 }
 
 char *
 gdm_settings_parse_double_as_value (gdouble doubleval)
 {
-	char result[G_ASCII_DTOSTR_BUF_SIZE];
+        char result[G_ASCII_DTOSTR_BUF_SIZE];
 
-	g_ascii_dtostr (result, sizeof (result), doubleval);
+        g_ascii_dtostr (result, sizeof (result), doubleval);
 
-	return g_strdup (result);
+        return g_strdup (result);
 }
 
 char *
 gdm_settings_parse_integer_as_value (int intval)
 
 {
-	return g_strdup_printf ("%d", intval);
+        return g_strdup_printf ("%d", intval);
 }
 
 char *
 gdm_settings_parse_boolean_as_value  (gboolean boolval)
 {
-	if (boolval) {
-		return g_strdup ("true");
-	} else {
-		return g_strdup ("false");
-	}
+        if (boolval) {
+                return g_strdup ("true");
+        } else {
+                return g_strdup ("false");
+        }
 }
 
 
 /* adapted from GKeyFile */
 gboolean
 gdm_settings_parse_value_as_boolean (const char *value,
-				     gboolean   *bool)
+                                     gboolean   *bool)
 {
-	if (strcmp (value, "true") == 0 || strcmp (value, "1") == 0) {
-		*bool = TRUE;
-		return TRUE;
-	} else if (strcmp (value, "false") == 0 || strcmp (value, "0") == 0) {
-		*bool = FALSE;
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+        if (strcmp (value, "true") == 0 || strcmp (value, "1") == 0) {
+                *bool = TRUE;
+                return TRUE;
+        } else if (strcmp (value, "false") == 0 || strcmp (value, "0") == 0) {
+                *bool = FALSE;
+                return TRUE;
+        } else {
+                return FALSE;
+        }
 }
 
 gboolean
 gdm_settings_parse_value_as_integer (const char *value,
-				     int        *intval)
+                                     int        *intval)
 {
-	char *end_of_valid_int;
-	glong long_value;
-	gint  int_value;
+        char *end_of_valid_int;
+        glong long_value;
+        gint  int_value;
 
-	errno = 0;
-	long_value = strtol (value, &end_of_valid_int, 10);
+        errno = 0;
+        long_value = strtol (value, &end_of_valid_int, 10);
 
-	if (*value == '\0' || *end_of_valid_int != '\0') {
-		return FALSE;
-	}
+        if (*value == '\0' || *end_of_valid_int != '\0') {
+                return FALSE;
+        }
 
-	int_value = long_value;
-	if (int_value != long_value || errno == ERANGE) {
-		return FALSE;
-	}
+        int_value = long_value;
+        if (int_value != long_value || errno == ERANGE) {
+                return FALSE;
+        }
 
-	*intval = int_value;
+        *intval = int_value;
 
-	return TRUE;
+        return TRUE;
 }
 
 gboolean
 gdm_settings_parse_value_as_double  (const char *value,
-				     gdouble    *doubleval)
+                                     gdouble    *doubleval)
 {
-	char   *end_of_valid_d;
-	gdouble double_value = 0;
+        char   *end_of_valid_d;
+        gdouble double_value = 0;
 
-	double_value = g_ascii_strtod (value, &end_of_valid_d);
+        double_value = g_ascii_strtod (value, &end_of_valid_d);
 
-	if (*end_of_valid_d != '\0' || end_of_valid_d == value) {
-		return FALSE;
-	}
+        if (*end_of_valid_d != '\0' || end_of_valid_d == value) {
+                return FALSE;
+        }
 
-	*doubleval = double_value;
-	return TRUE;
+        *doubleval = double_value;
+        return TRUE;
 }

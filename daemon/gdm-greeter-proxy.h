@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,25 +37,25 @@ typedef struct GdmGreeterProxyPrivate GdmGreeterProxyPrivate;
 
 typedef struct
 {
-	GObject	                parent;
-	GdmGreeterProxyPrivate *priv;
+        GObject                 parent;
+        GdmGreeterProxyPrivate *priv;
 } GdmGreeterProxy;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	void (* started)           (GdmGreeterProxy  *greeter_proxy);
-	void (* stopped)           (GdmGreeterProxy  *greeter_proxy);
+        void (* started)           (GdmGreeterProxy  *greeter_proxy);
+        void (* stopped)           (GdmGreeterProxy  *greeter_proxy);
 } GdmGreeterProxyClass;
 
-GType		    gdm_greeter_proxy_get_type           (void);
-GdmGreeterProxy *   gdm_greeter_proxy_new	         (const char      *display_name,
-							  const char      *display_device,
-							  const char      *display_hostname,
-							  gboolean         display_is_local);
+GType               gdm_greeter_proxy_get_type           (void);
+GdmGreeterProxy *   gdm_greeter_proxy_new                (const char      *display_name,
+                                                          const char      *display_device,
+                                                          const char      *display_hostname,
+                                                          gboolean         display_is_local);
 void                gdm_greeter_proxy_set_server_address (GdmGreeterProxy *greeter_proxy,
-							  const char      *server_address);
+                                                          const char      *server_address);
 gboolean            gdm_greeter_proxy_start              (GdmGreeterProxy *greeter_proxy);
 gboolean            gdm_greeter_proxy_stop               (GdmGreeterProxy *greeter_proxy);
 

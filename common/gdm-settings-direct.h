@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -27,21 +27,21 @@
 
 G_BEGIN_DECLS
 
-gboolean              gdm_settings_direct_init			     (GdmSettings       *settings,
-								      const char        *schemas_file,
-								      const char        *root);
-void                  gdm_settings_direct_shutdown		     (void);
+gboolean              gdm_settings_direct_init                       (GdmSettings       *settings,
+                                                                      const char        *schemas_file,
+                                                                      const char        *root);
+void                  gdm_settings_direct_shutdown                   (void);
 
 gboolean              gdm_settings_direct_get                        (const char        *key,
-								      GValue            *value);
+                                                                      GValue            *value);
 gboolean              gdm_settings_direct_set                        (const char        *key,
-								      GValue            *value);
+                                                                      GValue            *value);
 gboolean              gdm_settings_direct_get_int                    (const char        *key,
-								      int               *value);
+                                                                      int               *value);
 gboolean              gdm_settings_direct_get_boolean                (const char        *key,
-								      gboolean          *value);
+                                                                      gboolean          *value);
 gboolean              gdm_settings_direct_get_string                 (const char        *key,
-								      char             **value);
+                                                                      char             **value);
 
 G_END_DECLS
 

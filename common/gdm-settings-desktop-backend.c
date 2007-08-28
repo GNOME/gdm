@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -42,301 +42,301 @@
 
 struct GdmSettingsDesktopBackendPrivate
 {
-	char       *filename;
-	GKeyFile   *key_file;
-	gboolean    dirty;
-	guint       save_id;
+        char       *filename;
+        GKeyFile   *key_file;
+        gboolean    dirty;
+        guint       save_id;
 };
 
-static void	gdm_settings_desktop_backend_class_init	(GdmSettingsDesktopBackendClass *klass);
-static void	gdm_settings_desktop_backend_init	(GdmSettingsDesktopBackend      *settings_desktop_backend);
-static void	gdm_settings_desktop_backend_finalize	(GObject	                *object);
+static void     gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass);
+static void     gdm_settings_desktop_backend_init       (GdmSettingsDesktopBackend      *settings_desktop_backend);
+static void     gdm_settings_desktop_backend_finalize   (GObject                        *object);
 
 G_DEFINE_TYPE (GdmSettingsDesktopBackend, gdm_settings_desktop_backend, GDM_TYPE_SETTINGS_BACKEND)
 
 static gboolean
 parse_key_string (const char *keystring,
-		  char      **group,
-		  char      **key,
-		  char      **locale,
-		  char      **value)
+                  char      **group,
+                  char      **key,
+                  char      **locale,
+                  char      **value)
 {
-	char   **split1;
-	char   **split2;
-	char    *g;
-	char    *k;
-	char    *l;
-	char    *v;
-	char    *tmp1;
-	char    *tmp2;
-	gboolean ret;
+        char   **split1;
+        char   **split2;
+        char    *g;
+        char    *k;
+        char    *l;
+        char    *v;
+        char    *tmp1;
+        char    *tmp2;
+        gboolean ret;
 
-	g_return_val_if_fail (keystring != NULL, FALSE);
+        g_return_val_if_fail (keystring != NULL, FALSE);
 
-	ret = FALSE;
-	g = k = v = l = NULL;
-	split1 = split2 = NULL;
+        ret = FALSE;
+        g = k = v = l = NULL;
+        split1 = split2 = NULL;
 
-	/*g_debug ("Attempting to parse key string: %s", keystring);*/
+        /*g_debug ("Attempting to parse key string: %s", keystring);*/
 
-	split1 = g_strsplit (keystring, "/", 2);
-	if (split1 == NULL || split1 [0] == NULL || split1 [1] == NULL) {
-		goto out;
-	}
+        split1 = g_strsplit (keystring, "/", 2);
+        if (split1 == NULL || split1 [0] == NULL || split1 [1] == NULL) {
+                goto out;
+        }
 
-	g = split1 [0];
+        g = split1 [0];
 
-	split2 = g_strsplit (split1 [1], "=", 2);
-	if (split2 == NULL) {
-		k = split1 [1];
-	} else {
-		k = split2 [0];
-		v = split2 [1];
-	}
+        split2 = g_strsplit (split1 [1], "=", 2);
+        if (split2 == NULL) {
+                k = split1 [1];
+        } else {
+                k = split2 [0];
+                v = split2 [1];
+        }
 
-	/* trim off the locale */
-	tmp1 = strchr (k, '[');
-	tmp2 = strchr (k, ']');
-	if (tmp1 != NULL && tmp2 != NULL && tmp2 > tmp1) {
-		l = g_strndup (tmp1 + 1, tmp2 - tmp1 - 1);
-		*tmp1 = '\0';
-	}
+        /* trim off the locale */
+        tmp1 = strchr (k, '[');
+        tmp2 = strchr (k, ']');
+        if (tmp1 != NULL && tmp2 != NULL && tmp2 > tmp1) {
+                l = g_strndup (tmp1 + 1, tmp2 - tmp1 - 1);
+                *tmp1 = '\0';
+        }
 
-	ret = TRUE;
+        ret = TRUE;
  out:
-	if (group != NULL) {
-		*group = g_strdup (g);
-	}
-	if (key != NULL) {
-		*key = g_strdup (k);
-	}
-	if (locale != NULL) {
-		*locale = g_strdup (l);
-	}
-	if (value != NULL) {
-		*value = g_strdup (v);
-	}
+        if (group != NULL) {
+                *group = g_strdup (g);
+        }
+        if (key != NULL) {
+                *key = g_strdup (k);
+        }
+        if (locale != NULL) {
+                *locale = g_strdup (l);
+        }
+        if (value != NULL) {
+                *value = g_strdup (v);
+        }
 
-	g_strfreev (split1);
-	g_strfreev (split2);
+        g_strfreev (split1);
+        g_strfreev (split2);
 
-	return ret;
+        return ret;
 }
 
 static gboolean
 gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
-					const char         *key,
-					char              **value,
-					GError            **error)
+                                        const char         *key,
+                                        char              **value,
+                                        GError            **error)
 {
-	GError *local_error;
-	char   *val;
-	char   *g;
-	char   *k;
-	char   *l;
+        GError *local_error;
+        char   *val;
+        char   *g;
+        char   *k;
+        char   *l;
 
-	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	if (value != NULL) {
-		*value = NULL;
-	}
+        if (value != NULL) {
+                *value = NULL;
+        }
 
-	/*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
-	if (! parse_key_string (key, &g, &k, &l, NULL)) {
-		g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
-		return FALSE;
-	}
+        /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
+        if (! parse_key_string (key, &g, &k, &l, NULL)) {
+                g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
+                return FALSE;
+        }
 
-	/*g_debug ("Getting key: %s %s %s", g, k, l);*/
-	local_error = NULL;
-	val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
-				    g,
-				    k,
-				    &local_error);
-	if (local_error != NULL) {
-		g_error_free (local_error);
-		g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
-		return FALSE;
-	}
+        /*g_debug ("Getting key: %s %s %s", g, k, l);*/
+        local_error = NULL;
+        val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+                                    g,
+                                    k,
+                                    &local_error);
+        if (local_error != NULL) {
+                g_error_free (local_error);
+                g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
+                return FALSE;
+        }
 
-	if (value != NULL) {
-		*value = g_strdup (val);
-	}
+        if (value != NULL) {
+                *value = g_strdup (val);
+        }
 
-	g_free (val);
+        g_free (val);
 
-	return TRUE;
+        return TRUE;
 }
 
 static void
 save_settings (GdmSettingsDesktopBackend *backend)
 {
-	GError   *local_error;
-	gboolean  res;
-	char     *contents;
-	gsize     length;
+        GError   *local_error;
+        gboolean  res;
+        char     *contents;
+        gsize     length;
 
-	if (! backend->priv->dirty) {
-		return;
-	}
+        if (! backend->priv->dirty) {
+                return;
+        }
 
-	g_debug ("Saving settings to %s", backend->priv->filename);
+        g_debug ("Saving settings to %s", backend->priv->filename);
 
-	local_error = NULL;
-	contents = g_key_file_to_data (backend->priv->key_file, &length, &local_error);
-	if (local_error != NULL) {
-		g_warning ("Unable to save settings: %s", local_error->message);
-		g_error_free (local_error);
-		return;
-	}
+        local_error = NULL;
+        contents = g_key_file_to_data (backend->priv->key_file, &length, &local_error);
+        if (local_error != NULL) {
+                g_warning ("Unable to save settings: %s", local_error->message);
+                g_error_free (local_error);
+                return;
+        }
 
-	local_error = NULL;
-	res = g_file_set_contents (backend->priv->filename,
-				   contents,
-				   length,
-				   &local_error);
-	if (local_error != NULL) {
-		g_warning ("Unable to save settings: %s", local_error->message);
-		g_error_free (local_error);
-		g_free (contents);
-		return;
-	}
+        local_error = NULL;
+        res = g_file_set_contents (backend->priv->filename,
+                                   contents,
+                                   length,
+                                   &local_error);
+        if (local_error != NULL) {
+                g_warning ("Unable to save settings: %s", local_error->message);
+                g_error_free (local_error);
+                g_free (contents);
+                return;
+        }
 
-	g_free (contents);
+        g_free (contents);
 
-	backend->priv->dirty = FALSE;
+        backend->priv->dirty = FALSE;
 }
 
 static gboolean
 save_settings_timer (GdmSettingsDesktopBackend *backend)
 {
-	save_settings (backend);
-	backend->priv->save_id = 0;
-	return FALSE;
+        save_settings (backend);
+        backend->priv->save_id = 0;
+        return FALSE;
 }
 
 static void
 queue_save (GdmSettingsDesktopBackend *backend)
 {
-	if (! backend->priv->dirty) {
-		return;
-	}
+        if (! backend->priv->dirty) {
+                return;
+        }
 
-	if (backend->priv->save_id != 0) {
-		/* already pending */
-		return;
-	}
+        if (backend->priv->save_id != 0) {
+                /* already pending */
+                return;
+        }
 
-	backend->priv->save_id = g_timeout_add_seconds (5, (GSourceFunc)save_settings_timer, backend);
+        backend->priv->save_id = g_timeout_add_seconds (5, (GSourceFunc)save_settings_timer, backend);
 }
 
 static gboolean
 gdm_settings_desktop_backend_set_value (GdmSettingsBackend *backend,
-					const char         *key,
-					const char         *value,
-					GError            **error)
+                                        const char         *key,
+                                        const char         *value,
+                                        GError            **error)
 {
-	GError *local_error;
-	char   *old_val;
-	char   *g;
-	char   *k;
-	char   *l;
+        GError *local_error;
+        char   *old_val;
+        char   *g;
+        char   *k;
+        char   *l;
 
-	g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
+        g_return_val_if_fail (key != NULL, FALSE);
 
-	/*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
-	if (! parse_key_string (key, &g, &k, &l, NULL)) {
-		g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
-		return FALSE;
-	}
+        /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
+        if (! parse_key_string (key, &g, &k, &l, NULL)) {
+                g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
+                return FALSE;
+        }
 
-	local_error = NULL;
-	old_val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
-					g,
-					k,
-					&local_error);
-	if (local_error != NULL) {
-		g_error_free (local_error);
-	}
+        local_error = NULL;
+        old_val = g_key_file_get_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+                                        g,
+                                        k,
+                                        &local_error);
+        if (local_error != NULL) {
+                g_error_free (local_error);
+        }
 
-	/*g_debug ("Setting key: %s %s %s", g, k, l);*/
-	local_error = NULL;
-	g_key_file_set_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
-			      g,
-			      k,
-			      value);
+        /*g_debug ("Setting key: %s %s %s", g, k, l);*/
+        local_error = NULL;
+        g_key_file_set_value (GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->key_file,
+                              g,
+                              k,
+                              value);
 
-	GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->dirty = TRUE;
-	queue_save (GDM_SETTINGS_DESKTOP_BACKEND (backend));
+        GDM_SETTINGS_DESKTOP_BACKEND (backend)->priv->dirty = TRUE;
+        queue_save (GDM_SETTINGS_DESKTOP_BACKEND (backend));
 
-	gdm_settings_backend_value_changed (backend, key, old_val, value);
+        gdm_settings_backend_value_changed (backend, key, old_val, value);
 
-	g_free (old_val);
+        g_free (old_val);
 
-	return TRUE;
+        return TRUE;
 }
 
 static void
 gdm_settings_desktop_backend_class_init (GdmSettingsDesktopBackendClass *klass)
 {
-	GObjectClass            *object_class = G_OBJECT_CLASS (klass);
-	GdmSettingsBackendClass *backend_class = GDM_SETTINGS_BACKEND_CLASS (klass);
+        GObjectClass            *object_class = G_OBJECT_CLASS (klass);
+        GdmSettingsBackendClass *backend_class = GDM_SETTINGS_BACKEND_CLASS (klass);
 
-	object_class->finalize = gdm_settings_desktop_backend_finalize;
+        object_class->finalize = gdm_settings_desktop_backend_finalize;
 
-	backend_class->get_value = gdm_settings_desktop_backend_get_value;
-	backend_class->set_value = gdm_settings_desktop_backend_set_value;
+        backend_class->get_value = gdm_settings_desktop_backend_get_value;
+        backend_class->set_value = gdm_settings_desktop_backend_set_value;
 
-	g_type_class_add_private (klass, sizeof (GdmSettingsDesktopBackendPrivate));
+        g_type_class_add_private (klass, sizeof (GdmSettingsDesktopBackendPrivate));
 }
 
 static void
 gdm_settings_desktop_backend_init (GdmSettingsDesktopBackend *backend)
 {
-	gboolean res;
-	GError  *error;
+        gboolean res;
+        GError  *error;
 
-	backend->priv = GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE (backend);
+        backend->priv = GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE (backend);
 
-	backend->priv->key_file = g_key_file_new ();
-	backend->priv->filename = g_strdup (GDMCONFDIR "/custom.conf");
+        backend->priv->key_file = g_key_file_new ();
+        backend->priv->filename = g_strdup (GDMCONFDIR "/custom.conf");
 
-	error = NULL;
-	res = g_key_file_load_from_file (backend->priv->key_file,
-					 backend->priv->filename,
-					 G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
-					 &error);
-	if (! res) {
-		g_warning ("Unable to load file '%s': %s", backend->priv->filename, error->message);
-	}
+        error = NULL;
+        res = g_key_file_load_from_file (backend->priv->key_file,
+                                         backend->priv->filename,
+                                         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
+                                         &error);
+        if (! res) {
+                g_warning ("Unable to load file '%s': %s", backend->priv->filename, error->message);
+        }
 }
 
 static void
 gdm_settings_desktop_backend_finalize (GObject *object)
 {
-	GdmSettingsDesktopBackend *backend;
+        GdmSettingsDesktopBackend *backend;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (GDM_IS_SETTINGS_DESKTOP_BACKEND (object));
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (GDM_IS_SETTINGS_DESKTOP_BACKEND (object));
 
-	backend = GDM_SETTINGS_DESKTOP_BACKEND (object);
+        backend = GDM_SETTINGS_DESKTOP_BACKEND (object);
 
-	g_return_if_fail (backend->priv != NULL);
+        g_return_if_fail (backend->priv != NULL);
 
-	save_settings (backend);
-	g_key_file_free (backend->priv->key_file);
+        save_settings (backend);
+        g_key_file_free (backend->priv->key_file);
 
-	G_OBJECT_CLASS (gdm_settings_desktop_backend_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_settings_desktop_backend_parent_class)->finalize (object);
 }
 
 GdmSettingsBackend *
 gdm_settings_desktop_backend_new (void)
 {
-	GObject *object;
+        GObject *object;
 
-	object = g_object_new (GDM_TYPE_SETTINGS_DESKTOP_BACKEND, NULL);
+        object = g_object_new (GDM_TYPE_SETTINGS_DESKTOP_BACKEND, NULL);
 
-	return GDM_SETTINGS_BACKEND (object);
+        return GDM_SETTINGS_BACKEND (object);
 }

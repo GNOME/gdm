@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: h; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -39,18 +39,18 @@ typedef struct GdmSimpleGreeterPrivate GdmSimpleGreeterPrivate;
 
 typedef struct
 {
-	GdmGreeter	 	 parent;
-	GdmSimpleGreeterPrivate *priv;
+        GdmGreeter               parent;
+        GdmSimpleGreeterPrivate *priv;
 } GdmSimpleGreeter;
 
 typedef struct
 {
-	GdmGreeterClass   parent_class;
+        GdmGreeterClass   parent_class;
 
 } GdmSimpleGreeterClass;
 
-GType		    gdm_simple_greeter_get_type		       (void);
-GdmGreeter *	    gdm_simple_greeter_new		       (void);
+GType               gdm_simple_greeter_get_type                (void);
+GdmGreeter *        gdm_simple_greeter_new                     (void);
 
 
 G_END_DECLS

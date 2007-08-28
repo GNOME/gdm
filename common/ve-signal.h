@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Signal routines
  *
@@ -11,7 +11,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
@@ -25,16 +25,16 @@
 
 #include <glib.h>
 
-typedef gboolean (*VeSignalFunc) (int	        signal,
-				  gpointer	data);
-guint	ve_signal_add		(int		signal,
-				 VeSignalFunc	function,
-				 gpointer    	data);
+typedef gboolean (*VeSignalFunc) (int           signal,
+                                  gpointer      data);
+guint   ve_signal_add           (int            signal,
+                                 VeSignalFunc   function,
+                                 gpointer       data);
 guint   ve_signal_add_full      (int            priority,
-				 int            signal,
-				 VeSignalFunc   function,
-				 gpointer       data,
-				 GDestroyNotify destroy);
+                                 int            signal,
+                                 VeSignalFunc   function,
+                                 gpointer       data,
+                                 GDestroyNotify destroy);
 /* You must handle the signal notify yourself, you add
  * this function as the signal notification function
  * however */

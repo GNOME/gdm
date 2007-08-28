@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -41,24 +41,24 @@ typedef struct GdmStaticFactoryDisplayPrivate GdmStaticFactoryDisplayPrivate;
 
 typedef struct
 {
-	GdmDisplay	 	 parent;
-	GdmStaticFactoryDisplayPrivate *priv;
+        GdmDisplay               parent;
+        GdmStaticFactoryDisplayPrivate *priv;
 } GdmStaticFactoryDisplay;
 
 typedef struct
 {
-	GdmDisplayClass   parent_class;
+        GdmDisplayClass   parent_class;
 
 } GdmStaticFactoryDisplayClass;
 
-GType		    gdm_static_factory_display_get_type		       (void);
-GdmDisplay *	    gdm_static_factory_display_new		       (int                      display_number,
-									GdmDisplayStore         *store);
+GType               gdm_static_factory_display_get_type                (void);
+GdmDisplay *        gdm_static_factory_display_new                     (int                      display_number,
+                                                                        GdmDisplayStore         *store);
 
 gboolean            gdm_static_factory_display_create_product_display  (GdmStaticFactoryDisplay *display,
-									const char              *server_address,
-									char                   **id,
-									GError                 **error);
+                                                                        const char              *server_address,
+                                                                        char                   **id,
+                                                                        GError                 **error);
 
 G_END_DECLS
 

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -37,24 +37,24 @@ typedef struct GdmSlaveProxyPrivate GdmSlaveProxyPrivate;
 
 typedef struct
 {
-	GObject	              parent;
-	GdmSlaveProxyPrivate *priv;
+        GObject               parent;
+        GdmSlaveProxyPrivate *priv;
 } GdmSlaveProxy;
 
 typedef struct
 {
-	GObjectClass   parent_class;
-	void (* exited)            (GdmSlaveProxy  *proxy,
-				    int             exit_code);
+        GObjectClass   parent_class;
+        void (* exited)            (GdmSlaveProxy  *proxy,
+                                    int             exit_code);
 
-	void (* died)              (GdmSlaveProxy  *proxy,
-				    int             signal_number);
+        void (* died)              (GdmSlaveProxy  *proxy,
+                                    int             signal_number);
 } GdmSlaveProxyClass;
 
-GType		    gdm_slave_proxy_get_type	 (void);
-GdmSlaveProxy *	    gdm_slave_proxy_new	         (void);
+GType               gdm_slave_proxy_get_type     (void);
+GdmSlaveProxy *     gdm_slave_proxy_new          (void);
 void                gdm_slave_proxy_set_command  (GdmSlaveProxy *slave,
-						  const char    *command);
+                                                  const char    *command);
 gboolean            gdm_slave_proxy_start        (GdmSlaveProxy *slave);
 gboolean            gdm_slave_proxy_stop         (GdmSlaveProxy *slave);
 

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -39,23 +39,23 @@ typedef struct GdmProductDisplayPrivate GdmProductDisplayPrivate;
 
 typedef struct
 {
-	GdmDisplay	 	 parent;
-	GdmProductDisplayPrivate *priv;
+        GdmDisplay               parent;
+        GdmProductDisplayPrivate *priv;
 } GdmProductDisplay;
 
 typedef struct
 {
-	GdmDisplayClass   parent_class;
+        GdmDisplayClass   parent_class;
 
 } GdmProductDisplayClass;
 
-GType		    gdm_product_display_get_type	           (void);
-GdmDisplay *	    gdm_product_display_new		           (int         display_number,
-								    const char *server_address);
+GType               gdm_product_display_get_type                   (void);
+GdmDisplay *        gdm_product_display_new                        (int         display_number,
+                                                                    const char *server_address);
 
-gboolean 	    gdm_product_display_get_relay_address          (GdmProductDisplay *display,
-								    char             **address,
-								    GError           **error);
+gboolean            gdm_product_display_get_relay_address          (GdmProductDisplay *display,
+                                                                    char             **address,
+                                                                    GError           **error);
 
 
 G_END_DECLS

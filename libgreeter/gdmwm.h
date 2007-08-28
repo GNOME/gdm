@@ -30,39 +30,39 @@
  * Login window will be given focus every time a window
  * is killed
  */
-void	gdm_wm_init			(Window login_window);
+void    gdm_wm_init                     (Window login_window);
 
 /*
  * By default new windows aren't given focus, you have to
  * call this function with a TRUE
  */
-void	gdm_wm_focus_new_windows	(gboolean focus);
+void    gdm_wm_focus_new_windows        (gboolean focus);
 
-void	gdm_wm_focus_window		(Window window);
+void    gdm_wm_focus_window             (Window window);
 
 /* Movement for the impatient */
-void	gdm_wm_move_window_now		(Window window,
-					 int x,
-					 int y);
-void	gdm_wm_get_window_pos		(Window window,
-					 int *xp,
-					 int *yp);
+void    gdm_wm_move_window_now          (Window window,
+                                         int x,
+                                         int y);
+void    gdm_wm_get_window_pos           (Window window,
+                                         int *xp,
+                                         int *yp);
 
 /* Refuse to focus the login window, poor mans modal dialogs */
-void	gdm_wm_no_login_focus_push	(void);
-void	gdm_wm_no_login_focus_pop	(void);
+void    gdm_wm_no_login_focus_push      (void);
+void    gdm_wm_no_login_focus_pop       (void);
 
 /*
  * Xinerama support stuff
  */
-void	gdm_wm_screen_init		(int cur_screen_num);
-void	gdm_wm_set_screen		(int cur_screen_num);
+void    gdm_wm_screen_init              (int cur_screen_num);
+void    gdm_wm_set_screen               (int cur_screen_num);
 
 /*
  * Not really a WM function, center a gtk window on current screen
  * by setting uposition
  */
-void	gdm_wm_center_window		(GtkWindow *cw);
+void    gdm_wm_center_window            (GtkWindow *cw);
 
 /* Center mouse pointer
  */
@@ -72,8 +72,8 @@ void gdm_wm_center_cursor (void);
  * Save and restore stacking order, useful for restarting
  * the greeter
  */
-void	gdm_wm_save_wm_order		(void);
-void	gdm_wm_restore_wm_order		(void);
+void    gdm_wm_save_wm_order            (void);
+void    gdm_wm_restore_wm_order         (void);
 
 /* Dialogs */
 gint    gdm_wm_query_dialog             (const gchar *primary_message,

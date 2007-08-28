@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -39,27 +39,27 @@ typedef struct GdmDisplayFactoryPrivate GdmDisplayFactoryPrivate;
 
 typedef struct
 {
-	GObject		          parent;
-	GdmDisplayFactoryPrivate *priv;
+        GObject                   parent;
+        GdmDisplayFactoryPrivate *priv;
 } GdmDisplayFactory;
 
 typedef struct
 {
-	GObjectClass   parent_class;
+        GObjectClass   parent_class;
 
-	gboolean (*start)                  (GdmDisplayFactory *factory);
-	gboolean (*stop)                   (GdmDisplayFactory *factory);
+        gboolean (*start)                  (GdmDisplayFactory *factory);
+        gboolean (*stop)                   (GdmDisplayFactory *factory);
 } GdmDisplayFactoryClass;
 
 typedef enum
 {
-	 GDM_DISPLAY_FACTORY_ERROR_GENERAL
+         GDM_DISPLAY_FACTORY_ERROR_GENERAL
 } GdmDisplayFactoryError;
 
 #define GDM_DISPLAY_FACTORY_ERROR gdm_display_factory_error_quark ()
 
-GQuark		           gdm_display_factory_error_quark	       (void);
-GType		           gdm_display_factory_get_type		       (void);
+GQuark                     gdm_display_factory_error_quark             (void);
+GType                      gdm_display_factory_get_type                (void);
 
 gboolean                   gdm_display_factory_start                   (GdmDisplayFactory *manager);
 gboolean                   gdm_display_factory_stop                    (GdmDisplayFactory *manager);
