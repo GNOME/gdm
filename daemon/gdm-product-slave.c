@@ -969,7 +969,7 @@ on_relay_answer (DBusGProxy *proxy,
 {
 	GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-	g_debug ("Relay Answer: %s", text);
+	g_debug ("Relay Answer");
 
 	gdm_session_answer_query (slave->priv->session, text);
 }

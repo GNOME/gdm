@@ -499,7 +499,7 @@ on_greeter_answer (GdmGreeterServer *greeter_server,
 		   const char       *text,
 		   GdmFactorySlave  *slave)
 {
-	g_debug ("Greeter answer: %s", text);
+	g_debug ("Greeter answer");
 	gdm_session_relay_answer_query (slave->priv->session_relay, text);
 }
 

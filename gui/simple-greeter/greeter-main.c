@@ -110,7 +110,7 @@ on_query_answer (GdmGreeter *greeter,
 	gboolean res;
 	GError  *error;
 
-	g_debug ("GREETER answer: %s", text);
+	g_debug ("GREETER answer");
 
 	error = NULL;
 	res = dbus_g_proxy_call (server_proxy,

@@ -240,7 +240,7 @@ handle_answer_query (GdmGreeterServer *greeter_server,
 		g_warning ("ERROR: %s", error.message);
 	}
 
-	g_debug ("AnswerQuery: %s", text);
+	g_debug ("AnswerQuery");
 
 	reply = dbus_message_new_method_return (message);
 	dbus_connection_send (connection, reply, NULL);

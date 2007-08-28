@@ -160,7 +160,7 @@ void
 gdm_session_relay_answer_query (GdmSessionRelay *session_relay,
 				const char      *text)
 {
-	g_debug ("Sending signal AnswerQuery: %s", text);
+	g_debug ("Sending signal AnswerQuery");
         send_dbus_string_signal (session_relay, "AnswerQuery", text);
 }
 

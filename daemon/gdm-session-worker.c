@@ -719,8 +719,6 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 			goto out;
 		}
 
-		g_debug ("answered pam message %d with response '%s'",
-			 i, response_text);
 		replies[i].resp = response_text;
 		replies[i].resp_retcode = PAM_SUCCESS;
 	}
