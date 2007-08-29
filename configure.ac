@@ -1064,43 +1064,57 @@ GDM_RBAC_SYSCMD_KEYS=""
 
 case "$host" in
 *solaris*)
-	GDM_USER_PATH="/usr/bin"
-	HALT_COMMAND="/sbin/init 5"
-	REBOOT_COMMAND="/sbin/init 6"
-	SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
-	XSESSION_SHELL=/bin/ksh
-	SOUND_PROGRAM=/usr/bin/audioplay
-	GDMGNOMESESSIONCMD=/usr/dt/config/Xsession.jds
-	GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown"
-	UTMP_LINE_ATTACHED="/dev/dtlocal"
-	UTMP_LINE_REMOTE="/dev/dtremote"
-	UTMP_PSEUDO_DEVICE="true"
+	HOST_GDM_USER_PATH="/usr/bin"
+	HOST_HALT_COMMAND="/sbin/init 5"
+	HOST_REBOOT_COMMAND="/sbin/init 6"
+	HOST_SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
+	HOST_XSESSION_SHELL=/bin/ksh
+	HOST_SOUND_PROGRAM=/usr/bin/audioplay
+	HOST_GDMGNOMESESSIONCMD=/usr/dt/config/Xsession.jds
+	HOST_GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown"
+	HOST_UTMP_LINE_ATTACHED="/dev/dtlocal"
+	HOST_UTMP_LINE_REMOTE="/dev/dtremote"
+	HOST_UTMP_PSEUDO_DEVICE="true"
 	;;
 *freebsd*)
-	GDM_USER_PATH="/bin:/usr/bin"
-	HALT_COMMAND="/sbin/shutdown -p now;/usr/sbin/shutdown -p now"
-	REBOOT_COMMAND="/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
-	SUSPEND_COMMAND="/usr/sbin/zzz"
-	XSESSION_SHELL=/bin/sh
-	SOUND_PROGRAM=
-	GDMGNOMESESSIONCMD=gnome-session
-	UTMP_LINE_ATTACHED="/dev/console"
-	UTMP_LINE_REMOTE=""
-	UTMP_PSEUDO_DEVICE="false"
+	HOST_GDM_USER_PATH="/bin:/usr/bin"
+	HOST_HALT_COMMAND="/sbin/shutdown -p now;/usr/sbin/shutdown -p now"
+	HOST_REBOOT_COMMAND="/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
+	HOST_SUSPEND_COMMAND="/usr/sbin/zzz"
+	HOST_XSESSION_SHELL=/bin/sh
+	HOST_SOUND_PROGRAM=
+	HOST_GDMGNOMESESSIONCMD=gnome-session
+	HOST_UTMP_LINE_ATTACHED="/dev/console"
+	HOST_UTMP_LINE_REMOTE=""
+	HOST_UTMP_PSEUDO_DEVICE="false"
 	;;
 *)
-	GDM_USER_PATH="/bin:/usr/bin"
-	HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
-	REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
-	SUSPEND_COMMAND=""
-	XSESSION_SHELL=/bin/sh
-	SOUND_PROGRAM=/usr/bin/play
-	GDMGNOMESESSIONCMD=gnome-session
-	UTMP_LINE_ATTACHED="/dev/console"
-	UTMP_LINE_REMOTE=""
-	UTMP_PSEUDO_DEVICE="false"
+	HOST_GDM_USER_PATH="/bin:/usr/bin"
+	HOST_HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
+	HOST_REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
+	HOST_SUSPEND_COMMAND=""
+	HOST_XSESSION_SHELL=/bin/sh
+	HOST_SOUND_PROGRAM=/usr/bin/play
+	HOST_GDMGNOMESESSIONCMD=gnome-session
+	HOST_UTMP_LINE_ATTACHED="/dev/console"
+	HOST_UTMP_LINE_REMOTE=""
+	HOST_UTMP_PSEUDO_DEVICE="false"
 	;;
 esac
+
+# allow user to override the host-specific default
+
+test "x$GDM_USER_PATH" == x && GDM_USER_PATH=${HOST_GDM_USER_PATH}
+test "x$GDM_HALT_COMMAND" == x && GDM_HALT_COMMAND=${HOST_GDM_HALT_COMMAND}
+test "x$REBOOT_COMMAND" == x && REBOOT_COMMAND=${HOST_REBOOT_COMMAND}
+test "x$SUSPEND_COMMAND" == x && SUSPEND_COMMAND=${HOST_SUSPEND_COMMAND}
+test "x$XSESSION_SHELL" == x && XSESSION_SHELL=${HOST_XSESSION_SHELL}
+test "x$SOUND_PROGRAM" == x && SOUND_PROGRAM=${HOST_SOUND_PROGRAM}
+test "x$GDMGNOMESESSIONCMD" == x && GDMGNOMESESSIONCMD=${HOST_GDMGNOMESESSIONCMD}
+test "x$UTMP_LINE_ATTACHED" == x && UTMP_LINE_ATTACHED=${HOST_UTMP_LINE_ATTACHED}
+test "x$UTMP_LINE_REMOTE" == x && UTMP_LINE_REMOTE=${HOST_UTMP_LINE_REMOTE}
+test "x$UTMP_PSEUDO_DEVICE" == x && UTMP_PSEUDO_DEVICE=${HOST_UTMP_PSEUDO_DEVICE}
+test "x$GDM_RBAC_SYSCMD_KEYS" == x && GDM_RBAC_SYSCMD_KEYS=${HOST_GDM_RBAC_SYSCMD_KEYS}
 
 # On Solaris, the /usr/bin/Xserver script is used to decide whether to
 # use Xsun or Xorg, so this is used on Solaris.
