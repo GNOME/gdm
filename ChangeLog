@@ -1,3 +1,10 @@
+2007-08-29  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/slave.c: Fix bug with ConsoleKit that occurs when
+	  the session is going to migrate.  Previous code was failing
+	  to send the notification when the greeter is not TYPE_FLEXI.
+	  Fixes bug #461056.  Patch by Ian Jackson <iwj@ubuntu.com>
+
 2007-08-27 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/verify-pam.c: When using gdm_verify_standalone_pam_conv
