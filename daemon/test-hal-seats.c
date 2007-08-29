@@ -80,6 +80,7 @@ get_pci_seats (DBusGConnection *bus,
                         continue;
                 }
 
+                error = NULL;
                 res = dbus_g_proxy_call (device_proxy,
                                          "GetPropertyInteger",
                                          &error,
@@ -87,6 +88,11 @@ get_pci_seats (DBusGConnection *bus,
                                          G_TYPE_INVALID,
                                          G_TYPE_INT, &class_val,
                                          G_TYPE_INVALID);
+                if (! res) {
+                        g_warning ("Unable to query HAL: %s", error->message);
+                        g_error_free (error);
+                }
+
                 if (class_val == SEAT_PCI_DEVICE_CLASS) {
                         g_message ("Found device: %s", devices [i]);
                         seats = g_list_prepend (seats, devices [i]);

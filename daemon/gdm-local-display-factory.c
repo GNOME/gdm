@@ -146,6 +146,7 @@ create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
                         continue;
                 }
 
+                error = NULL;
                 res = dbus_g_proxy_call (device_proxy,
                                          "GetPropertyInteger",
                                          &error,
@@ -153,6 +154,10 @@ create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
                                          G_TYPE_INVALID,
                                          G_TYPE_INT, &class_val,
                                          G_TYPE_INVALID);
+                if (! res) {
+                        g_warning ("Unable to query HAL: %s", error->message);
+                        g_error_free (error);
+                }
 
                 if (class_val == SEAT_PCI_DEVICE_CLASS) {
                         g_debug ("Found device: %s", devices [i]);
