@@ -1344,21 +1344,19 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 			/* wait for a few seconds to avoid any vt changing race
 			 */
 			gdm_sleep_no_signal (1);
+		}
 
 #ifdef WITH_CONSOLE_KIT
-			unlock_ck_session (user, migrate_to);
+		unlock_ck_session (user, migrate_to);
 #endif
+		gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
+		g_free (migrate_to);
 
-			gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
-			g_free (migrate_to);
-
+		if (d->type == TYPE_FLEXI) {
 			/* we are no longer needed so just die.
 			   REMANAGE == ABORT here really */
 			gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		}
-
-		gdm_slave_send_string (GDM_SOP_MIGRATE, migrate_to);
-		g_free (migrate_to);
 	} else {
 		Display *parent_dsp;
 

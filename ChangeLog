@@ -1,3 +1,10 @@
+2007-08-29  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/slave.c: Fix bug with ConsoleKit that occurs when
+	  the session is going to migrate.  Previous code was failing
+	  to send the notification when the greeter is not TYPE_FLEXI.
+	  Fixes bug #461056.  Patch by Ian Jackson <iwj@ubuntu.com>
+
 2007-08-28  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/greeter/greeter_canvas_item.c: Set invisible character to '*' if
@@ -619,8 +626,8 @@
 	* daemon/misc.c: In gdm_fdgetc must used an unsigned char buffer here
 	  because the GUI sends username/password data as utf8 and the daemon
 	  will interpret any character sent with its high bit set as EOF
-	  unless we used unsigned here.  Patch by Lo\357c Minier
-	  <lool+gnome@via.ecp.fr>
+	  unless we used unsigned here.  Fixes bug #436808.  Patch by
+	  Lo\357c Minier <lool+gnome@via.ecp.fr>
 
 2007-05-09  Brian Cameron  <brian.cameron@sun.com>
 
