@@ -1293,6 +1293,7 @@ libgreeter/Makefile
 gui/Makefile
 gui/modules/Makefile
 gui/simple-greeter/Makefile
+gui/simple-chooser/Makefile
 utils/Makefile
 data/Makefile
 data/faces/Makefile
