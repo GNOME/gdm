@@ -687,6 +687,7 @@ gdm_session_relay_start (GdmSessionRelay *session_relay)
 
         if (session_relay->priv->server == NULL) {
                 g_warning ("Cannot create D-BUS relay for the session: %s", error.message);
+                /* FIXME: should probably fail if we can't create the socket */
                 goto out;
         }
 

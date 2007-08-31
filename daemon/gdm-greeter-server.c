@@ -614,6 +614,7 @@ gdm_greeter_server_start (GdmGreeterServer *greeter_server)
 
         if (greeter_server->priv->server == NULL) {
                 g_warning ("Cannot create D-BUS server for the greeter: %s", error.message);
+                /* FIXME: should probably fail if we can't create the socket */
                 goto out;
         }
 

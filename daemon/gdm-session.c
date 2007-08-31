@@ -1256,6 +1256,7 @@ setup_server (GdmSession *session)
 
         if (session->priv->server == NULL) {
                 g_warning ("Cannot create D-BUS server for the session: %s", error.message);
+                /* FIXME: should probably fail if we can't create the socket */
                 goto out;
         }
 
