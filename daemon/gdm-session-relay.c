@@ -213,7 +213,7 @@ generate_address (void)
 
         path = g_strdup_printf ("unix:abstract=/tmp/gdm-session-%s", tmp);
 #else
-        path = g_strdup ("unix:tmpdir=/tmp/gdm-session");
+        path = g_strdup ("unix:tmpdir=/tmp");
 #endif
 
         return path;

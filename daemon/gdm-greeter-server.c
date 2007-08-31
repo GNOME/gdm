@@ -218,7 +218,7 @@ generate_address (void)
 
         path = g_strdup_printf ("unix:abstract=/tmp/gdm-greeter-%s", tmp);
 #else
-        path = g_strdup ("unix:tmpdir=/tmp/gdm-greeter");
+        path = g_strdup ("unix:tmpdir=/tmp");
 #endif
 
         return path;
