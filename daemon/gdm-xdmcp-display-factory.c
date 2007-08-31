@@ -2565,8 +2565,8 @@ opcode_string (int opcode)
 }
 
 static gboolean
-decode_packet (GIOChannel      *source,
-               GIOCondition     cond,
+decode_packet (GIOChannel             *source,
+               GIOCondition            cond,
                GdmXdmcpDisplayFactory *factory)
 {
         struct sockaddr_storage clnt_ss;

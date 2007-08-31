@@ -34,6 +34,7 @@ gdm_simple_chooser_LDADD = 		\
 	$(GOBJECT_LIBS)		\
 	$(GUI_LIBS)		\
 	$(CHOOSER_LIBS)		\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 EXTRA_DIST = 			\
