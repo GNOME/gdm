@@ -1462,13 +1462,14 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 	char       **keys;
 	const char *display_value;
 	gsize      len;
-	int        i;
+	int        i,j;
 
 	keys = gdm_config_get_keys_for_group (config,
 		GDM_CONFIG_GROUP_SERVERS, &len, NULL);
 
         /* now construct entries for these groups */
         for (i = 0; i < len; i++) {
+		GString         *command     = NULL;
 		GdmDisplay     *disp;
 		GdmConfigValue *value;
 		const char      *name        = NULL;
@@ -1500,20 +1501,31 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 			continue;
 		}
 
+		command = g_string_new (NULL);
+
 		/*
-		 * Allow an optional device to be passed in as a 2nd argument
+		 * Allow an optional device to be passed in as an argument
 		 * with the format "device=/dev/foo".
 		 * In the future, if more per-display configuration is desired, 
 		 * this can be made more sophisticated to handle additional
 		 * arguments.
 		 */
-		if (value_list[1] != NULL &&
-		    strncmp (value_list[1], "device=", strlen ("device=")) == 0)
-		        device_name = value_list[1] + strlen ("device=");
+		j=0;
+		while (value_list[j] != NULL) {
+			if (strncmp (value_list[j], "device=",
+				     strlen ("device=")) == 0) {
+			        device_name = value_list[j] + strlen ("device=");
+			} else {
+				g_string_append (command, value_list[j]);
+				g_string_append (command, " ");
+			}
+			j++;
+                }
 
 		gdm_debug ("Loading display for key '%d'", keynum);
 
-		disp = gdm_display_alloc (keynum, name, device_name);
+		disp = gdm_display_alloc (keynum, command->str, device_name);
+		g_string_free (command, TRUE);
 		if (disp == NULL) {
 			g_strfreev (value_list);
 			continue;
