@@ -427,6 +427,8 @@ do_bind (guint                     port,
         hints.ai_flags = AI_PASSIVE;
 
         snprintf (strport, sizeof (strport), "%u", port);
+
+        ai_list = NULL;
         if ((gaierr = getaddrinfo (NULL, strport, &hints, &ai_list)) != 0) {
                 g_error ("Unable to connect to socket: %s", gai_strerror (gaierr));
                 return -1;
@@ -2180,7 +2182,7 @@ gdm_xdmcp_send_failed (GdmXdmcpDisplayFactory *factory,
 
         header.version = XDM_PROTOCOL_VERSION;
         header.opcode  = (CARD16) FAILED;
-        header.length  = 6+status.length;
+        header.length  = 6 + status.length;
 
         XdmcpWriteHeader (&factory->priv->buf, &header);
         XdmcpWriteCARD32 (&factory->priv->buf, sessid);

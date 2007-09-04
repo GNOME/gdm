@@ -46,8 +46,7 @@ typedef struct
         GtkVBoxClass   parent_class;
 
         /* signals */
-        void (* hostname_activated)        (GdmHostChooserWidget *widget,
-                                            const char           *hostname);
+        void (* host_activated)        (GdmHostChooserWidget *widget);
 } GdmHostChooserWidgetClass;
 
 GType                  gdm_host_chooser_widget_get_type                       (void);

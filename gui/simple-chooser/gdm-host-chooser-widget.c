@@ -1,5 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
+ * Copyright (C) 1998, 1999, 2000 Martin K, Petersen <mkp@mkp.net>
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,7 +25,13 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+#ifdef HAVE_SYS_SOCKIO_H
+#include <sys/sockio.h>
+#endif
 
 #include <X11/Xmd.h>
 #include <X11/Xdmcp.h>
@@ -39,18 +46,33 @@
 
 #define GDM_HOST_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_HOST_CHOOSER_WIDGET, GdmHostChooserWidgetPrivate))
 
+typedef struct _GdmChooserHost {
+        GdmAddress *address;
+        char       *description;
+        gboolean    willing;
+} GdmChooserHost;
+
 struct GdmHostChooserWidgetPrivate
 {
-        GtkWidget  *treeview;
+        GtkWidget      *treeview;
 
-        XdmcpBuffer buf;
-        gboolean    have_ipv6;
-        int         socket_fd;
-        guint       io_watch_id;
-        guint       scan_time_id;
-        guint       ping_try_id;
+        char          **hosts;
 
-        int         ping_tries;
+        XdmcpBuffer     broadcast_buf;
+        XdmcpBuffer     query_buf;
+        gboolean        have_ipv6;
+        int             socket_fd;
+        guint           io_watch_id;
+        guint           scan_time_id;
+        guint           ping_try_id;
+
+        int             ping_tries;
+
+        GSList         *broadcast_addresses;
+        GSList         *query_addresses;
+        GSList         *chooser_hosts;
+
+        GdmChooserHost *current_host;
 };
 
 enum {
@@ -58,7 +80,7 @@ enum {
 };
 
 enum {
-        HOSTNAME_ACTIVATED,
+        HOST_ACTIVATED,
         LAST_SIGNAL
 };
 
@@ -70,20 +92,105 @@ static void     gdm_host_chooser_widget_finalize    (GObject                   *
 
 G_DEFINE_TYPE (GdmHostChooserWidget, gdm_host_chooser_widget, GTK_TYPE_VBOX)
 
-typedef struct _XdmAuth {
-        ARRAY8  authentication;
-        ARRAY8  authorization;
-} XdmAuthRec, *XdmAuthPtr;
-
-static XdmAuthRec authlist = {
-        { (CARD16)  0, (CARD8 *) 0 },
-        { (CARD16)  0, (CARD8 *) 0 }
-};
-
 #define GDM_XDMCP_PROTOCOL_VERSION 1001
 #define SCAN_TIMEOUT 30000
 #define PING_TIMEOUT 2000
 #define PING_TRIES 3
+
+enum {
+        CHOOSER_LIST_ICON_COLUMN = 0,
+        CHOOSER_LIST_LABEL_COLUMN,
+        CHOOSER_LIST_HOST_COLUMN
+};
+
+static void
+chooser_host_add (GdmHostChooserWidget *widget,
+                  GdmChooserHost       *host)
+{
+        widget->priv->chooser_hosts = g_slist_prepend (widget->priv->chooser_hosts, host);
+}
+
+static void
+chooser_host_remove (GdmHostChooserWidget *widget,
+                     GdmChooserHost       *host)
+{
+        widget->priv->chooser_hosts = g_slist_remove (widget->priv->chooser_hosts, host);
+}
+
+static void
+chooser_host_free (GdmChooserHost *host)
+{
+        if (host == NULL) {
+                return;
+        }
+
+        g_free (host->description);
+        gdm_address_free (host->address);
+        g_free (host);
+}
+
+static GdmChooserHost *
+find_known_host (GdmHostChooserWidget *widget,
+                 GdmAddress           *address)
+{
+        GSList         *li;
+        GdmChooserHost *host;
+
+        for (li = widget->priv->chooser_hosts; li != NULL; li = li->next) {
+                host = li->data;
+                if (gdm_address_equal (host->address, address)) {
+                        goto out;
+                }
+        }
+
+        host = NULL;
+ out:
+
+        return host;
+}
+
+static void
+browser_add_host (GdmHostChooserWidget *widget,
+                  GdmChooserHost       *host)
+{
+        char         *hostname;
+        char         *name;
+        char         *desc;
+        char         *label;
+        GtkTreeModel *model;
+        GtkTreeIter   iter;
+        gboolean      res;
+
+        g_assert (host != NULL);
+
+        if (! host->willing) {
+                gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
+                return;
+        }
+
+        res = gdm_address_get_hostname (host->address, &hostname);
+        if (! res) {
+                gdm_address_get_numeric_info (host->address, &hostname, NULL);
+        }
+
+        name = g_markup_escape_text (hostname, -1);
+        desc = g_markup_escape_text (host->description, -1);
+        label = g_strdup_printf ("<b>%s</b>\n%s", name, desc);
+        g_free (name);
+        g_free (desc);
+
+        model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget->priv->treeview));
+
+        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model),
+                            &iter,
+                            CHOOSER_LIST_ICON_COLUMN, NULL,
+                            CHOOSER_LIST_LABEL_COLUMN, label,
+                            CHOOSER_LIST_HOST_COLUMN, host,
+                            -1);
+        g_free (label);
+
+}
 
 static gboolean
 decode_packet (GIOChannel           *source,
@@ -92,9 +199,18 @@ decode_packet (GIOChannel           *source,
 {
         struct sockaddr_storage clnt_ss;
         GdmAddress             *address;
-        gint                    ss_len;
+        int                     ss_len;
         XdmcpHeader             header;
         int                     res;
+        static XdmcpBuffer      buf;
+        ARRAY8                  auth = {0};
+        ARRAY8                  host = {0};
+        ARRAY8                  stat = {0};
+        char                   *status;
+        GdmChooserHost         *chooser_host;
+
+        status = NULL;
+        address = NULL;
 
         g_debug ("decode_packet: GIOCondition %d", (int)condition);
 
@@ -103,13 +219,13 @@ decode_packet (GIOChannel           *source,
         }
 
         ss_len = sizeof (clnt_ss);
-        res = XdmcpFill (widget->priv->socket_fd, &widget->priv->buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
+        res = XdmcpFill (widget->priv->socket_fd, &buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
                 g_debug (_("XMCP: Could not create XDMCP buffer!"));
                 return TRUE;
         }
 
-        res = XdmcpReadHeader (&widget->priv->buf, &header);
+        res = XdmcpReadHeader (&buf, &header);
         if G_UNLIKELY (! res) {
                 g_warning (_("XDMCP: Could not read XDMCP header!"));
                 return TRUE;
@@ -129,6 +245,56 @@ decode_packet (GIOChannel           *source,
 
         gdm_address_debug (address);
 
+        if (header.opcode == WILLING) {
+                if (! XdmcpReadARRAY8 (&buf, &auth)) {
+                        goto done;
+                }
+
+                if (! XdmcpReadARRAY8 (&buf, &host)) {
+                        goto done;
+                }
+
+                if (! XdmcpReadARRAY8 (&buf, &stat)) {
+                        goto done;
+                }
+
+                status = g_strndup ((char *) stat.data, MIN (stat.length, 256));
+        } else if (header.opcode == UNWILLING) {
+                /* immaterial, will not be shown */
+                status = NULL;
+        } else {
+                goto done;
+        }
+
+        g_debug ("STATUS: %s", status);
+
+        chooser_host = find_known_host (widget, address);
+        if (chooser_host == NULL) {
+
+                chooser_host = g_new0 (GdmChooserHost, 1);
+                chooser_host->address = gdm_address_copy (address);
+                chooser_host->description = g_strdup (status);
+                chooser_host->willing = (header.opcode == WILLING);
+                chooser_host_add (widget, chooser_host);
+                browser_add_host (widget, chooser_host);
+        } else {
+                /* server changed it's mind */
+                if (header.opcode == WILLING && ! chooser_host->willing) {
+                        chooser_host->willing = TRUE;
+                        browser_add_host (widget, chooser_host);
+                }
+        }
+
+ done:
+        if (header.opcode == WILLING) {
+                XdmcpDisposeARRAY8 (&auth);
+                XdmcpDisposeARRAY8 (&host);
+                XdmcpDisposeARRAY8 (&stat);
+        }
+
+        g_free (status);
+        gdm_address_free (address);
+
         return TRUE;
 }
 
@@ -136,7 +302,45 @@ static void
 do_ping (GdmHostChooserWidget *widget,
          gboolean              full)
 {
+        GSList *l;
+
         g_debug ("do ping full:%d", full);
+
+        for (l = widget->priv->broadcast_addresses; l != NULL; l = l->next) {
+                GdmAddress              *address;
+                int                      res;
+
+                address = l->data;
+
+                gdm_address_debug (address);
+                errno = 0;
+                g_debug ("fd:%d", widget->priv->socket_fd);
+                res = XdmcpFlush (widget->priv->socket_fd,
+                                  &widget->priv->broadcast_buf,
+                                  (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
+                                  (int)sizeof (struct sockaddr_storage));
+                if (! res) {
+                        g_warning ("Unable to flush the XDMCP broadcast packet: %s", g_strerror (errno));
+                }
+        }
+
+        if (full) {
+                for (l = widget->priv->query_addresses; l != NULL; l = l->next) {
+                        GdmAddress *address;
+                        int         res;
+
+                        address = l->data;
+
+                        gdm_address_debug (address);
+                        res = XdmcpFlush (widget->priv->socket_fd,
+                                          &widget->priv->query_buf,
+                                          (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
+                                          (int)sizeof (struct sockaddr_storage));
+                        if (! res) {
+                                g_warning ("Unable to flush the XDMCP query packet");
+                        }
+                }
+        }
 }
 
 static gboolean
@@ -192,17 +396,150 @@ xdmcp_discover (GdmHostChooserWidget *widget)
         }
 
         widget->priv->ping_try_id = g_timeout_add (PING_TIMEOUT,
-                                                   ping_try,
+                                                   (GSourceFunc)ping_try,
                                                    widget);
+}
+
+/* Find broadcast address for all active, non pointopoint interfaces */
+static void
+find_broadcast_addresses (GdmHostChooserWidget *widget)
+{
+        int           i;
+        int           num;
+        int           sock;
+        struct ifconf ifc;
+        char         *buf;
+        struct ifreq *ifr;
+
+        g_debug ("Finding broadcast addresses");
+
+        sock = socket (AF_INET, SOCK_DGRAM, 0);
+#ifdef SIOCGIFNUM
+        if (ioctl (sock, SIOCGIFNUM, &num) < 0) {
+                num = 64;
+        }
+#else
+        num = 64;
+#endif
+
+        ifc.ifc_len = sizeof (struct ifreq) * num;
+        ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
+        if (ioctl (sock, SIOCGIFCONF, &ifc) < 0) {
+                g_warning ("Could not get local addresses!");
+                goto out;
+        }
+
+        ifr = ifc.ifc_req;
+        num = ifc.ifc_len / sizeof (struct ifreq);
+        for (i = 0 ; i < num ; i++) {
+                const char *name;
+
+                name = ifr[i].ifr_name;
+                g_debug ("Checking if %s", name);
+                if (name != NULL && name[0] != '\0') {
+                        struct ifreq            ifreq;
+                        GdmAddress             *address;
+                        struct sockaddr_in      sin;
+
+                        memset (&ifreq, 0, sizeof (ifreq));
+
+                        strncpy (ifreq.ifr_name,
+                                 ifr[i].ifr_name,
+                                 sizeof (ifreq.ifr_name));
+                        /* paranoia */
+                        ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
+
+                        if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0) {
+                                g_warning ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
+                        }
+
+                        if ((ifreq.ifr_flags & IFF_UP) == 0 ||
+                            (ifreq.ifr_flags & IFF_BROADCAST) == 0 ||
+                            ioctl (sock, SIOCGIFBRDADDR, &ifreq) < 0) {
+                                g_debug ("Skipping if %s", name);
+                                continue;
+                        }
+
+                        g_memmove (&sin, &ifreq.ifr_broadaddr, sizeof (struct sockaddr_in));
+                        sin.sin_port = htons (XDM_UDP_PORT);
+                        address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)&sin);
+                        if (address != NULL) {
+                                g_debug ("Adding if %s", name);
+                                gdm_address_debug (address);
+
+                                widget->priv->broadcast_addresses = g_slist_append (widget->priv->broadcast_addresses, address);
+                        }
+                }
+        }
+ out:
+        g_free (buf);
+        close (sock);
+}
+
+static void
+add_hosts (GdmHostChooserWidget *widget)
+{
+        int i;
+
+        for (i = 0; widget->priv->hosts != NULL && widget->priv->hosts[i] != NULL; i++) {
+                struct addrinfo  hints;
+                struct addrinfo *result;
+                struct addrinfo *ai;
+                int              gaierr;
+                const char      *name;
+                char             serv_buf [NI_MAXSERV];
+                const char      *serv;
+
+                name = widget->priv->hosts[i];
+
+                if (strcmp (name, "BROADCAST") == 0) {
+                        find_broadcast_addresses (widget);
+                        continue;
+                }
+
+                if (strcmp (name, "MULTICAST") == 0) {
+                        /*gdm_chooser_find_mcaddr ();*/
+                        continue;
+                }
+
+                result = NULL;
+                memset (&hints, 0, sizeof (hints));
+                hints.ai_socktype = SOCK_STREAM;
+
+                snprintf (serv_buf, sizeof (serv_buf), "%u", XDM_UDP_PORT);
+                serv = serv_buf;
+
+                gaierr = getaddrinfo (name, serv, &hints, &result);
+                if (gaierr != 0) {
+                        g_warning ("Unable to get address info for name %s: %s", name, gai_strerror (gaierr));
+                        continue;
+                }
+
+                for (ai = result; ai != NULL; ai = ai->ai_next) {
+                        GdmAddress *address;
+
+                        address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)ai->ai_addr);
+                        if (address != NULL) {
+                                widget->priv->query_addresses = g_slist_append (widget->priv->query_addresses, address);
+                        }
+                }
+
+                freeaddrinfo (result);
+        }
+
+        if (widget->priv->broadcast_addresses == NULL && widget->priv->query_addresses == NULL) {
+                find_broadcast_addresses (widget);
+        }
 }
 
 static void
 xdmcp_init (GdmHostChooserWidget *widget)
 {
-        static XdmcpHeader header;
-        int                sockopts;
-        int                res;
-        GIOChannel        *ioc;
+        XdmcpHeader   header;
+        int           sockopts;
+        int           res;
+        GIOChannel   *ioc;
+        ARRAYofARRAY8 aanames;
 
         sockopts = 1;
 
@@ -232,28 +569,32 @@ xdmcp_init (GdmHostChooserWidget *widget)
         }
 
         /* Assemble XDMCP BROADCAST_QUERY packet in static buffer */
+        memset (&header, 0, sizeof (XdmcpHeader));
         header.opcode  = (CARD16) BROADCAST_QUERY;
         header.length  = 1;
         header.version = XDM_PROTOCOL_VERSION;
-        XdmcpWriteHeader (&widget->priv->buf, &header);
-        XdmcpWriteARRAY8 (&widget->priv->buf, &authlist.authentication);
+        aanames.length = 0;
+        XdmcpWriteHeader (&widget->priv->broadcast_buf, &header);
+        XdmcpWriteARRAYofARRAY8 (&widget->priv->broadcast_buf, &aanames);
 
         /* Assemble XDMCP QUERY packet in static buffer */
+        memset (&header, 0, sizeof (XdmcpHeader));
         header.opcode  = (CARD16) QUERY;
         header.length  = 1;
         header.version = XDM_PROTOCOL_VERSION;
-        XdmcpWriteHeader (&widget->priv->buf, &header);
-        XdmcpWriteARRAY8 (&widget->priv->buf, &authlist.authentication);
+        memset (&widget->priv->query_buf, 0, sizeof (XdmcpBuffer));
+        XdmcpWriteHeader (&widget->priv->query_buf, &header);
+        XdmcpWriteARRAYofARRAY8 (&widget->priv->query_buf, &aanames);
 
-        /*gdm_chooser_add_hosts (hosts);*/
+        add_hosts (widget);
 
         ioc = g_io_channel_unix_new (widget->priv->socket_fd);
         g_io_channel_set_encoding (ioc, NULL, NULL);
         g_io_channel_set_buffered (ioc, FALSE);
-        widget->priv->io_watch_id = g_io_add_watch(ioc,
-                                                   G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
-                                                   (GIOFunc)decode_packet,
-                                                   widget);
+        widget->priv->io_watch_id = g_io_add_watch (ioc,
+                                                    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
+                                                    (GIOFunc)decode_packet,
+                                                    widget);
         g_io_channel_unref (ioc);
 
         xdmcp_discover (widget);
@@ -273,6 +614,9 @@ gdm_host_chooser_widget_get_current_hostname (GdmHostChooserWidget *widget)
         g_return_val_if_fail (GDM_IS_HOST_CHOOSER_WIDGET (widget), NULL);
 
         hostname = NULL;
+        if (widget->priv->current_host != NULL) {
+                gdm_address_get_hostname (widget->priv->current_host->address, &hostname);
+        }
 
         return hostname;
 }
@@ -331,11 +675,35 @@ gdm_host_chooser_widget_constructor (GType                  type,
 static void
 gdm_host_chooser_widget_dispose (GObject *object)
 {
-        GdmHostChooserWidget *host_chooser_widget;
+        GdmHostChooserWidget *widget;
 
-        host_chooser_widget = GDM_HOST_CHOOSER_WIDGET (object);
+        widget = GDM_HOST_CHOOSER_WIDGET (object);
 
         g_debug ("Disposing host_chooser_widget");
+
+        if (widget->priv->broadcast_addresses != NULL) {
+                g_slist_foreach (widget->priv->broadcast_addresses,
+                                 (GFunc)gdm_address_free,
+                                 NULL);
+                g_slist_free (widget->priv->broadcast_addresses);
+                widget->priv->broadcast_addresses = NULL;
+        }
+        if (widget->priv->query_addresses != NULL) {
+                g_slist_foreach (widget->priv->query_addresses,
+                                 (GFunc)gdm_address_free,
+                                 NULL);
+                g_slist_free (widget->priv->query_addresses);
+                widget->priv->query_addresses = NULL;
+        }
+        if (widget->priv->chooser_hosts != NULL) {
+                g_slist_foreach (widget->priv->chooser_hosts,
+                                 (GFunc)chooser_host_free,
+                                 NULL);
+                g_slist_free (widget->priv->chooser_hosts);
+                widget->priv->chooser_hosts = NULL;
+        }
+
+        widget->priv->current_host = NULL;
 
         G_OBJECT_CLASS (gdm_host_chooser_widget_parent_class)->dispose (object);
 }
@@ -351,17 +719,34 @@ gdm_host_chooser_widget_class_init (GdmHostChooserWidgetClass *klass)
         object_class->dispose = gdm_host_chooser_widget_dispose;
         object_class->finalize = gdm_host_chooser_widget_finalize;
 
-        signals [HOSTNAME_ACTIVATED] = g_signal_new ("hostname-activated",
-                                                     G_TYPE_FROM_CLASS (object_class),
-                                                     G_SIGNAL_RUN_LAST,
-                                                     G_STRUCT_OFFSET (GdmHostChooserWidgetClass, hostname_activated),
-                                                     NULL,
-                                                     NULL,
-                                                     g_cclosure_marshal_VOID__STRING,
-                                                     G_TYPE_NONE,
-                                                     1, G_TYPE_STRING);
+        signals [HOST_ACTIVATED] = g_signal_new ("host-activated",
+                                                 G_TYPE_FROM_CLASS (object_class),
+                                                 G_SIGNAL_RUN_LAST,
+                                                 G_STRUCT_OFFSET (GdmHostChooserWidgetClass, host_activated),
+                                                 NULL,
+                                                 NULL,
+                                                 g_cclosure_marshal_VOID__VOID,
+                                                 G_TYPE_NONE,
+                                                 0);
 
         g_type_class_add_private (klass, sizeof (GdmHostChooserWidgetPrivate));
+}
+
+static void
+on_host_selected (GtkTreeSelection     *selection,
+                  GdmHostChooserWidget *widget)
+{
+        GtkTreeModel   *model = NULL;
+        GtkTreeIter     iter = {0};
+        GdmChooserHost *curhost;
+
+        curhost = NULL;
+
+        if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+                gtk_tree_model_get (model, &iter, CHOOSER_LIST_HOST_COLUMN, &curhost, -1);
+        }
+
+        widget->priv->current_host = curhost;
 }
 
 static void
@@ -370,13 +755,16 @@ on_row_activated (GtkTreeView          *tree_view,
                   GtkTreeViewColumn    *tree_column,
                   GdmHostChooserWidget *widget)
 {
+        g_signal_emit (widget, signals[HOST_ACTIVATED], 0);
 }
-
 
 static void
 gdm_host_chooser_widget_init (GdmHostChooserWidget *widget)
 {
-        GtkWidget *scrolled;
+        GtkWidget         *scrolled;
+        GtkTreeSelection  *selection;
+        GtkTreeViewColumn *column;
+        GtkTreeModel      *model;
 
         widget->priv = GDM_HOST_CHOOSER_WIDGET_GET_PRIVATE (widget);
 
@@ -394,6 +782,34 @@ gdm_host_chooser_widget_init (GdmHostChooserWidget *widget)
                           G_CALLBACK (on_row_activated),
                           widget);
         gtk_container_add (GTK_CONTAINER (scrolled), widget->priv->treeview);
+
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->treeview));
+        gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+        g_signal_connect (selection, "changed",
+                          G_CALLBACK (on_host_selected),
+                          widget);
+
+        model = (GtkTreeModel *)gtk_list_store_new (3,
+                                                    GDK_TYPE_PIXBUF,
+                                                    G_TYPE_STRING,
+                                                    G_TYPE_POINTER);
+        gtk_tree_view_set_model (GTK_TREE_VIEW (widget->priv->treeview), model);
+
+        column = gtk_tree_view_column_new_with_attributes ("Icon",
+                                                           gtk_cell_renderer_pixbuf_new (),
+                                                           "pixbuf", CHOOSER_LIST_ICON_COLUMN,
+                                                           NULL);
+        gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
+
+        column = gtk_tree_view_column_new_with_attributes ("Hostname",
+                                                           gtk_cell_renderer_text_new (),
+                                                           "markup", CHOOSER_LIST_LABEL_COLUMN,
+                                                           NULL);
+        gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
+
+        gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
+                                              CHOOSER_LIST_LABEL_COLUMN,
+                                              GTK_SORT_ASCENDING);
 
         xdmcp_init (widget);
 }

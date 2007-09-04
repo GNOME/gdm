@@ -305,6 +305,7 @@ gdm_address_peek_local_list (void)
         hints.ai_family |= AF_INET6;
 #endif
 
+        result = NULL;
         if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
                 g_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
 

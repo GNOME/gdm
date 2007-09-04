@@ -65,7 +65,7 @@ main (int argc, char *argv[])
         gtk_init (&argc, &argv);
 
         chooser = gdm_host_chooser_dialog_new ();
-        if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT) {
+        if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) {
                 char *hostname;
 
                 hostname = gdm_host_chooser_dialog_get_current_hostname (GDM_HOST_CHOOSER_DIALOG (chooser));
