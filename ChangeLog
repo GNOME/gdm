@@ -1,5 +1,11 @@
 2007-09-04  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-worker.c (gdm_session_worker_verify_user):
+	Don't print null strings - solaris crashes.
+	Patch from Brian Cameron <brian.cameron@sun.com>
+
+2007-09-04  William Jon McCann  <mccann@jhu.edu>
+
 	* common/gdm-address.c: (gdm_address_peek_local_list):
 	* daemon/gdm-xdmcp-display-factory.c: (do_bind),
 	(gdm_xdmcp_send_failed):

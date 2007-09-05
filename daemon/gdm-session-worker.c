@@ -1119,7 +1119,11 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
         GError   *pam_error;
         gboolean  res;
 
-        g_debug ("Verifying user: %s host: %s service: %s tty: %s", username, hostname, service_name, console_name);
+        g_debug ("Verifying user: %s host: %s service: %s tty: %s",
+                 username != NULL ? username : "(null)",
+                 hostname != NULL ? hostname : "(null)",
+                 service_name != NULL ? service_name : "(null)",
+                 console_name != NULL ? console_name : "(null)");
 
         pam_error = NULL;
         res = gdm_session_worker_initialize_pam (worker,
