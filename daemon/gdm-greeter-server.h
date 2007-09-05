@@ -49,6 +49,8 @@ typedef struct
                                     const char        *text);
         void (* session_selected)  (GdmGreeterServer  *greeter_server,
                                     const char        *name);
+        void (* hostname_selected) (GdmGreeterServer  *greeter_server,
+                                    const char        *hostname);
         void (* language_selected) (GdmGreeterServer  *greeter_server,
                                     const char        *name);
         void (* user_selected)    (GdmGreeterServer  *greeter_server,

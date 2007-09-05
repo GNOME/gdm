@@ -72,6 +72,7 @@ enum {
 enum {
         QUERY_ANSWER,
         SESSION_SELECTED,
+        HOSTNAME_SELECTED,
         LANGUAGE_SELECTED,
         USER_SELECTED,
         CANCELLED,
@@ -253,8 +254,8 @@ handle_answer_query (GdmGreeterServer *greeter_server,
 
 static DBusHandlerResult
 handle_select_session (GdmGreeterServer *greeter_server,
-                       DBusConnection  *connection,
-                       DBusMessage     *message)
+                       DBusConnection   *connection,
+                       DBusMessage      *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -274,6 +275,33 @@ handle_select_session (GdmGreeterServer *greeter_server,
         dbus_message_unref (reply);
 
         g_signal_emit (greeter_server, signals [SESSION_SELECTED], 0, text);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_select_hostname (GdmGreeterServer *greeter_server,
+                        DBusConnection   *connection,
+                        DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        g_debug ("SelectHostname: %s", text);
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (greeter_server, signals [HOSTNAME_SELECTED], 0, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -359,6 +387,8 @@ greeter_handle_child_message (DBusConnection *connection,
                 return handle_answer_query (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
                 return handle_select_session (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "HostnameSession")) {
+                return handle_select_hostname (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
                 return handle_select_language (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectUser")) {
@@ -403,6 +433,9 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"SelectUser\">\n"
+                               "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"SelectHostname\">\n"
                                "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"Cancel\">\n"
@@ -775,6 +808,17 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterServerClass, session_selected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
+        signals [HOSTNAME_SELECTED] =
+                g_signal_new ("hostname-selected",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, hostname_selected),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
