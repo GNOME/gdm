@@ -1,5 +1,32 @@
 2007-09-05  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-factory-slave.c: (run_greeter):
+	* daemon/gdm-greeter-server.c: (handle_disconnect),
+	(handle_get_display_id), (greeter_handle_child_message),
+	(do_introspect), (_gdm_greeter_server_set_display_id),
+	(gdm_greeter_server_set_property),
+	(gdm_greeter_server_get_property), (gdm_greeter_server_class_init),
+	(gdm_greeter_server_new):
+	* daemon/gdm-greeter-server.h:
+	* daemon/gdm-simple-slave.c: (run_greeter),
+	(gdm_simple_slave_stop):
+	* daemon/gdm-slave.c: (gdm_slave_finalize):
+	* gui/simple-greeter/gdm-simple-greeter.c:
+	(suspend_button_clicked), (gdm_simple_greeter_new):
+	* gui/simple-greeter/gdm-simple-greeter.h:
+	* gui/simple-greeter/greeter-main.c: (on_select_hostname),
+	(on_disconnected), (get_display_id), (main):
+	* libgreeter/gdm-greeter.c: (gdm_greeter_display_is_local),
+	(gdm_greeter_emit_disconnected), (_gdm_greeter_set_display_id),
+	(gdm_greeter_set_property), (gdm_greeter_get_property),
+	(cache_display_values), (gdm_greeter_constructor),
+	(gdm_greeter_class_init), (gdm_greeter_finalize):
+	* libgreeter/gdm-greeter.h:
+	Add SelectHostname, Disconnected, and GetDisplayId methods
+	to the greeter server interface.
+
+2007-09-05  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-greeter-server.c: (handle_select_hostname),
 	(greeter_handle_child_message), (do_introspect),
 	(gdm_greeter_server_class_init):

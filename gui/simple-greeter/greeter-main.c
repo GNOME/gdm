@@ -195,6 +195,29 @@ on_select_user (GdmGreeter *greeter,
 }
 
 static void
+on_select_hostname (GdmGreeter *greeter,
+                    const char *text,
+                    gpointer    data)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GREETER hostname selected: %s", text);
+
+        error = NULL;
+        res = dbus_g_proxy_call (server_proxy,
+                                 "SelectHostname",
+                                 &error,
+                                 G_TYPE_STRING, text,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Unable to send SelectHostname: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+static void
 on_cancelled (GdmGreeter *greeter,
               gpointer    data)
 {
@@ -213,6 +236,52 @@ on_cancelled (GdmGreeter *greeter,
                 g_warning ("Unable to send Cancelled: %s", error->message);
                 g_error_free (error);
         }
+}
+
+static void
+on_disconnected (GdmGreeter *greeter,
+                 gpointer    data)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GREETER disconnected");
+
+        error = NULL;
+        res = dbus_g_proxy_call (server_proxy,
+                                 "Disconnect",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Unable to send Disconnected: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+static char *
+get_display_id (void)
+{
+        gboolean res;
+        GError  *error;
+        char    *id;
+
+        g_debug ("GREETER disconnected");
+
+        id = NULL;
+        error = NULL;
+        res = dbus_g_proxy_call (server_proxy,
+                                 "GetDisplayId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Unable to GetDisplayId: %s", error->message);
+                g_error_free (error);
+        }
+
+        return id;
 }
 
 static void
@@ -283,6 +352,7 @@ main (int argc, char *argv[])
 {
         GError           *error;
         const char       *address;
+        char             *display_id;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -376,7 +446,10 @@ main (int argc, char *argv[])
                                      NULL,
                                      NULL);
 
-        greeter = gdm_simple_greeter_new ();
+        display_id = get_display_id ();
+        greeter = gdm_simple_greeter_new (display_id);
+        g_free (display_id);
+
         g_signal_connect (greeter,
                           "query-answer",
                           G_CALLBACK (on_query_answer),
@@ -394,8 +467,16 @@ main (int argc, char *argv[])
                           G_CALLBACK (on_select_user),
                           NULL);
         g_signal_connect (greeter,
+                          "hostname-selected",
+                          G_CALLBACK (on_select_hostname),
+                          NULL);
+        g_signal_connect (greeter,
                           "cancelled",
                           G_CALLBACK (on_cancelled),
+                          NULL);
+        g_signal_connect (greeter,
+                          "disconnected",
+                          G_CALLBACK (on_disconnected),
                           NULL);
 
         activate_power_manager ();

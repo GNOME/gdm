@@ -87,13 +87,11 @@ struct GdmSimpleSlavePrivate
         GdmGreeterServer *greeter_server;
         GdmGreeterProxy  *greeter;
         GdmSession       *session;
-        DBusGProxy       *display_proxy;
         DBusGConnection  *connection;
 };
 
 enum {
         PROP_0,
-        PROP_DISPLAY_ID,
 };
 
 enum {
@@ -955,6 +953,7 @@ static void
 run_greeter (GdmSimpleSlave *slave)
 {
         gboolean       display_is_local;
+        char          *display_id;
         char          *display_name;
         char          *display_device;
         char          *display_hostname;
@@ -964,12 +963,14 @@ run_greeter (GdmSimpleSlave *slave)
         g_debug ("Running greeter");
 
         display_is_local = FALSE;
+        display_id = NULL;
         display_name = NULL;
         auth_file = NULL;
         display_device = NULL;
         display_hostname = NULL;
 
         g_object_get (slave,
+                      "display-id", &display_id,
                       "display-is-local", &display_is_local,
                       "display-name", &display_name,
                       "display-hostname", &display_hostname,
@@ -1011,7 +1012,7 @@ run_greeter (GdmSimpleSlave *slave)
 
         create_new_session (slave);
 
-        slave->priv->greeter_server = gdm_greeter_server_new ();
+        slave->priv->greeter_server = gdm_greeter_server_new (display_id);
         g_signal_connect (slave->priv->greeter_server,
                           "query-answer",
                           G_CALLBACK (on_greeter_answer),
@@ -1059,6 +1060,7 @@ run_greeter (GdmSimpleSlave *slave)
         gdm_greeter_proxy_set_server_address (slave->priv->greeter, address);
         gdm_greeter_proxy_start (slave->priv->greeter);
 
+        g_free (display_id);
         g_free (display_name);
         g_free (display_device);
         g_free (display_hostname);
@@ -1260,10 +1262,6 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 gdm_server_stop (GDM_SIMPLE_SLAVE (slave)->priv->server);
                 g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->server);
                 GDM_SIMPLE_SLAVE (slave)->priv->server = NULL;
-        }
-
-        if (GDM_SIMPLE_SLAVE (slave)->priv->display_proxy != NULL) {
-                g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->display_proxy);
         }
 
         return TRUE;

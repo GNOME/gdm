@@ -675,5 +675,7 @@ gdm_slave_finalize (GObject *object)
 
         gdm_slave_real_stop (slave);
 
+        g_free (slave->priv->display_id);
+
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
 }

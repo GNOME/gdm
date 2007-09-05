@@ -351,7 +351,6 @@ static void
 suspend_button_clicked (GtkButton        *button,
                         GdmSimpleGreeter *greeter)
 {
-        gboolean         res;
         GError          *error;
         DBusGConnection *connection;
         DBusGProxy      *proxy;
@@ -512,11 +511,12 @@ gdm_simple_greeter_finalize (GObject *object)
 }
 
 GdmGreeter *
-gdm_simple_greeter_new (void)
+gdm_simple_greeter_new (const char *display_id)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_SIMPLE_GREETER,
+                               "display-id", display_id,
                                NULL);
 
         return GDM_GREETER (object);

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: h; c-basic-offset: 8 -*-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
@@ -50,7 +50,7 @@ typedef struct
 } GdmSimpleGreeterClass;
 
 GType               gdm_simple_greeter_get_type                (void);
-GdmGreeter *        gdm_simple_greeter_new                     (void);
+GdmGreeter *        gdm_simple_greeter_new                     (const char *display_id);
 
 
 G_END_DECLS

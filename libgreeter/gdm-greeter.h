@@ -54,7 +54,10 @@ typedef struct
                                        const char *text);
         void (* user_selected)        (GdmGreeter *greeter,
                                        const char *text);
+        void (* hostname_selected)    (GdmGreeter *greeter,
+                                       const char *text);
         void (* cancelled)            (GdmGreeter *greeter);
+        void (* disconnected)         (GdmGreeter *greeter);
 
         /* methods */
         gboolean (*start)             (GdmGreeter *greeter);
@@ -95,7 +98,10 @@ gboolean            gdm_greeter_emit_select_language           (GdmGreeter *gree
                                                                 const char *text);
 gboolean            gdm_greeter_emit_select_user               (GdmGreeter *greeter,
                                                                 const char *text);
+gboolean            gdm_greeter_emit_select_hostname           (GdmGreeter *greeter,
+                                                                const char *text);
 gboolean            gdm_greeter_emit_cancelled                 (GdmGreeter *greeter);
+gboolean            gdm_greeter_emit_disconnected              (GdmGreeter *greeter);
 
 /* actions */
 gboolean            gdm_greeter_info_query                     (GdmGreeter *greeter,
@@ -106,6 +112,8 @@ gboolean            gdm_greeter_info                           (GdmGreeter *gree
                                                                 const char *text);
 gboolean            gdm_greeter_problem                        (GdmGreeter *greeter,
                                                                 const char *text);
+/* misc */
+gboolean            gdm_greeter_display_is_local               (GdmGreeter *greeter);
 
 G_END_DECLS
 

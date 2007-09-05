@@ -54,6 +54,7 @@ struct GdmGreeterServerPrivate
 {
         char           *user_name;
         char           *group_name;
+        char           *display_id;
 
         gboolean        interrupted;
         gboolean        always_restart_greeter;
@@ -67,6 +68,7 @@ enum {
         PROP_0,
         PROP_USER_NAME,
         PROP_GROUP_NAME,
+        PROP_DISPLAY_ID,
 };
 
 enum {
@@ -377,6 +379,39 @@ handle_cancel (GdmGreeterServer *greeter_server,
 }
 
 static DBusHandlerResult
+handle_disconnect (GdmGreeterServer *greeter_server,
+                   DBusConnection   *connection,
+                   DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (greeter_server, signals [DISCONNECTED], 0);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_get_display_id (GdmGreeterServer *greeter_server,
+                       DBusConnection   *connection,
+                       DBusMessage      *message)
+{
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+
+        reply = dbus_message_new_method_return (message);
+        dbus_message_iter_init_append (reply, &iter);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_G_OBJECT_PATH, &greeter_server->priv->display_id);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 greeter_handle_child_message (DBusConnection *connection,
                               DBusMessage    *message,
                               void           *user_data)
@@ -395,6 +430,10 @@ greeter_handle_child_message (DBusConnection *connection,
                 return handle_select_user (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "Cancel")) {
                 return handle_cancel (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "Disconnect")) {
+                return handle_disconnect (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "GetDisplayId")) {
+                return handle_get_display_id (greeter_server, connection, message);
         }
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -439,6 +478,11 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"Cancel\">\n"
+                               "    </method>\n"
+                               "    <method name=\"Disconnect\">\n"
+                               "    </method>\n"
+                               "    <method name=\"GetDisplayId\">\n"
+                               "      <arg name=\"id\" direction=\"out\" type=\"o\"/>\n"
                                "    </method>\n"
                                "    <signal name=\"Info\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
@@ -688,6 +732,14 @@ gdm_greeter_server_get_address (GdmGreeterServer *greeter_server)
 }
 
 static void
+_gdm_greeter_server_set_display_id (GdmGreeterServer *greeter_server,
+                                    const char       *display_id)
+{
+        g_free (greeter_server->priv->display_id);
+        greeter_server->priv->display_id = g_strdup (display_id);
+}
+
+static void
 _gdm_greeter_server_set_user_name (GdmGreeterServer *greeter_server,
                                   const char *name)
 {
@@ -714,6 +766,9 @@ gdm_greeter_server_set_property (GObject      *object,
         self = GDM_GREETER_SERVER (object);
 
         switch (prop_id) {
+        case PROP_DISPLAY_ID:
+                _gdm_greeter_server_set_display_id (self, g_value_get_string (value));
+                break;
         case PROP_USER_NAME:
                 _gdm_greeter_server_set_user_name (self, g_value_get_string (value));
                 break;
@@ -737,6 +792,9 @@ gdm_greeter_server_get_property (GObject    *object,
         self = GDM_GREETER_SERVER (object);
 
         switch (prop_id) {
+        case PROP_DISPLAY_ID:
+                g_value_set_string (value, self->priv->display_id);
+                break;
         case PROP_USER_NAME:
                 g_value_set_string (value, self->priv->user_name);
                 break;
@@ -779,6 +837,13 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
         g_type_class_add_private (klass, sizeof (GdmGreeterServerPrivate));
 
         g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_ID,
+                                         g_param_spec_string ("display-id",
+                                                              "display id",
+                                                              "display id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+         g_object_class_install_property (object_class,
                                          PROP_USER_NAME,
                                          g_param_spec_string ("user-name",
                                                               "user name",
@@ -904,11 +969,12 @@ gdm_greeter_server_finalize (GObject *object)
 }
 
 GdmGreeterServer *
-gdm_greeter_server_new (void)
+gdm_greeter_server_new (const char *display_id)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_GREETER_SERVER,
+                               "display-id", display_id,
                                NULL);
 
         return GDM_GREETER_SERVER (object);

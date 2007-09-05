@@ -33,17 +33,26 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#define DBUS_API_SUBJECT_TO_CHANGE
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 #include "gdm-greeter.h"
 
 #define GDM_GREETER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER, GdmGreeterPrivate))
 
+#define GDM_DBUS_NAME              "org.gnome.DisplayManager"
+#define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
+
 struct GdmGreeterPrivate
 {
-        gpointer dummy;
+        char    *display_id;
+        gboolean display_is_local;
 };
 
 enum {
         PROP_0,
+        PROP_DISPLAY_ID,
 };
 
 enum {
@@ -51,6 +60,8 @@ enum {
         SESSION_SELECTED,
         LANGUAGE_SELECTED,
         USER_SELECTED,
+        HOSTNAME_SELECTED,
+        DISCONNECTED,
         CANCELLED,
         LAST_SIGNAL
 };
@@ -73,6 +84,14 @@ gdm_greeter_error_quark (void)
         }
 
         return ret;
+}
+
+gboolean
+gdm_greeter_display_is_local (GdmGreeter *greeter)
+{
+        g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+        return greeter->priv->display_is_local;
 }
 
 static gboolean
@@ -301,6 +320,26 @@ gdm_greeter_emit_cancelled (GdmGreeter *greeter)
         return TRUE;
 }
 
+gboolean
+gdm_greeter_emit_disconnected (GdmGreeter *greeter)
+{
+        g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+        g_debug ("Disconnected");
+
+        g_signal_emit (greeter, signals[DISCONNECTED], 0);
+
+        return TRUE;
+}
+
+static void
+_gdm_greeter_set_display_id (GdmGreeter *greeter,
+                             const char *id)
+{
+        g_free (greeter->priv->display_id);
+        greeter->priv->display_id = g_strdup (id);
+}
+
 static void
 gdm_greeter_set_property (GObject        *object,
                           guint           prop_id,
@@ -312,6 +351,9 @@ gdm_greeter_set_property (GObject        *object,
         self = GDM_GREETER (object);
 
         switch (prop_id) {
+        case PROP_DISPLAY_ID:
+                _gdm_greeter_set_display_id (self, g_value_get_string (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -329,9 +371,53 @@ gdm_greeter_get_property (GObject        *object,
         self = GDM_GREETER (object);
 
         switch (prop_id) {
+        case PROP_DISPLAY_ID:
+                g_value_set_string (value, self->priv->display_id);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
+        }
+}
+
+static void
+cache_display_values (GdmGreeter *greeter)
+{
+        DBusGProxy      *display_proxy;
+        DBusGConnection *connection;
+        GError          *error;
+        gboolean         res;
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+                exit (1);
+        }
+
+        g_debug ("Creating proxy for %s", greeter->priv->display_id);
+        display_proxy = dbus_g_proxy_new_for_name (connection,
+                                                   GDM_DBUS_NAME,
+                                                   greeter->priv->display_id,
+                                                   GDM_DBUS_DISPLAY_INTERFACE);
+        /* cache some values up front */
+        error = NULL;
+        res = dbus_g_proxy_call (display_proxy,
+                                 "IsLocal",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &greeter->priv->display_is_local,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
         }
 }
 
@@ -348,6 +434,8 @@ gdm_greeter_constructor (GType                  type,
         greeter = GDM_GREETER (G_OBJECT_CLASS (gdm_greeter_parent_class)->constructor (type,
                                                                                        n_construct_properties,
                                                                                        construct_properties));
+
+        cache_display_values (greeter);
 
         return G_OBJECT (greeter);
 }
@@ -425,6 +513,16 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
+        signals [HOSTNAME_SELECTED] =
+                g_signal_new ("hostname-selected",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterClass, hostname_selected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
         signals [CANCELLED] =
                 g_signal_new ("cancelled",
                               G_TYPE_FROM_CLASS (object_class),
@@ -435,6 +533,24 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
+        signals [DISCONNECTED] =
+                g_signal_new ("disconnected",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterClass, disconnected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_ID,
+                                         g_param_spec_string ("display-id",
+                                                              "id",
+                                                              "id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
         g_type_class_add_private (klass, sizeof (GdmGreeterPrivate));
 }
@@ -458,6 +574,8 @@ gdm_greeter_finalize (GObject *object)
         greeter = GDM_GREETER (object);
 
         g_return_if_fail (greeter->priv != NULL);
+
+        g_free (greeter->priv->display_id);
 
         G_OBJECT_CLASS (gdm_greeter_parent_class)->finalize (object);
 }
