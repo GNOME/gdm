@@ -1306,6 +1306,7 @@ libgreeter/Makefile
 gui/Makefile
 gui/modules/Makefile
 gui/simple-greeter/Makefile
+gui/simple-greeter/cutnpaste/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/Makefile

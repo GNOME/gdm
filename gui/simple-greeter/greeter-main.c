@@ -266,15 +266,13 @@ get_display_id (void)
         GError  *error;
         char    *id;
 
-        g_debug ("GREETER disconnected");
-
         id = NULL;
         error = NULL;
         res = dbus_g_proxy_call (server_proxy,
                                  "GetDisplayId",
                                  &error,
                                  G_TYPE_INVALID,
-                                 G_TYPE_STRING, &id,
+                                 DBUS_TYPE_G_OBJECT_PATH, &id,
                                  G_TYPE_INVALID);
         if (! res) {
                 g_warning ("Unable to GetDisplayId: %s", error->message);

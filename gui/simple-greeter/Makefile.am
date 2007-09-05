@@ -1,8 +1,13 @@
 NULL =
 
+SUBDIRS = 			\
+	cutnpaste		\
+	$(NULL)
+
 INCLUDES = \
 	-I$(top_srcdir)/common				\
 	-I$(top_srcdir)/libgreeter			\
+	-I$(top_srcdir)/gui/simple-greeter/cutnpaste	\
 	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
@@ -19,6 +24,21 @@ INCLUDES = \
 	$(GREETER_CFLAGS)				\
 	$(NULL)
 
+noinst_PROGRAMS = 		\
+	test-greeter-panel	\
+	$(NULL)
+
+test_greeter_panel_SOURCES = 	\
+	test-greeter-panel.c	\
+	gdm-greeter-panel.h	\
+	gdm-greeter-panel.c	\
+	$(NULL)
+
+test_greeter_panel_LDADD =	\
+	$(top_builddir)/gui/simple-greeter/cutnpaste/libnotificationarea.la	\
+	$(GUI_LIBS)		\
+	$(NULL)
+
 libexec_PROGRAMS =					\
 	gdm-simple-greeter
 
@@ -26,12 +46,15 @@ gdm_simple_greeter_SOURCES =  	\
 	greeter-main.c 		\
 	gdm-simple-greeter.c	\
 	gdm-simple-greeter.h	\
+	gdm-greeter-panel.h	\
+	gdm-greeter-panel.c	\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\
 	$(EXTRA_GREETER_LIBS)   	\
 	-L$(top_builddir)/libgreeter	\
 	-lgreeter			\
+	$(top_builddir)/gui/simple-greeter/cutnpaste/libnotificationarea.la	\
 	$(GLIB_LIBS)		\
 	$(DBUS_LIBS)		\
 	$(GOBJECT_LIBS)		\

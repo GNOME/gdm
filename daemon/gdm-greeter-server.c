@@ -404,7 +404,7 @@ handle_get_display_id (GdmGreeterServer *greeter_server,
 
         reply = dbus_message_new_method_return (message);
         dbus_message_iter_init_append (reply, &iter);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_G_OBJECT_PATH, &greeter_server->priv->display_id);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_OBJECT_PATH, &greeter_server->priv->display_id);
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 

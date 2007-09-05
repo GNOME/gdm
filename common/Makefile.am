@@ -100,7 +100,7 @@ test_log_SOURCES = 		\
 	$(NULL)
 
 test_log_LDADD =		\
-	libgdmcommon.la	\
+	libgdmcommon.la		\
 	$(GLIB_LIBS)		\
 	$(NULL)
 

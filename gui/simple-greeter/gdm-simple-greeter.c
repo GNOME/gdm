@@ -48,6 +48,8 @@
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
+#include "gdm-greeter-panel.h"
+
 #if HAVE_PAM
 #include <security/pam_appl.h>
 #define PW_ENTRY_SIZE PAM_MAX_RESP_SIZE
@@ -71,7 +73,8 @@ enum {
 
 struct GdmSimpleGreeterPrivate
 {
-        GladeXML       *xml;
+        GladeXML        *xml;
+        GtkWidget       *panel;
 };
 
 enum {
@@ -136,10 +139,10 @@ set_sensitive (GdmSimpleGreeter *greeter,
 {
         GtkWidget *box;
 
-        box = glade_xml_get_widget (greeter->priv->xml, "input-box");
+        box = glade_xml_get_widget (greeter->priv->xml, "auth-input-box");
         gtk_widget_set_sensitive (box, sensitive);
 
-        box = glade_xml_get_widget (greeter->priv->xml, "button-box");
+        box = glade_xml_get_widget (greeter->priv->xml, "auth-button-box");
         gtk_widget_set_sensitive (box, sensitive);
 }
 
@@ -149,7 +152,7 @@ set_message (GdmSimpleGreeter *greeter,
 {
         GtkWidget *label;
 
-        label = glade_xml_get_widget (greeter->priv->xml, "message-label");
+        label = glade_xml_get_widget (greeter->priv->xml, "auth-message-label");
         gtk_label_set_text (GTK_LABEL (label), text);
 }
 
@@ -423,20 +426,15 @@ create_greeter (GdmSimpleGreeter *greeter)
                 /* FIXME: */
         }
 
-        button = glade_xml_get_widget (greeter->priv->xml, "ok-button");
+        button = glade_xml_get_widget (greeter->priv->xml, "auth-ok-button");
         if (dialog != NULL) {
                 gtk_widget_grab_default (button);
                 g_signal_connect (button, "clicked", G_CALLBACK (ok_button_clicked), greeter);
         }
 
-        button = glade_xml_get_widget (greeter->priv->xml, "cancel-button");
+        button = glade_xml_get_widget (greeter->priv->xml, "auth-cancel-button");
         if (dialog != NULL) {
                 g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), greeter);
-        }
-
-        button = glade_xml_get_widget (greeter->priv->xml, "suspend-button");
-        if (dialog != NULL) {
-                g_signal_connect (button, "clicked", G_CALLBACK (suspend_button_clicked), greeter);
         }
 
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
@@ -445,6 +443,13 @@ create_greeter (GdmSimpleGreeter *greeter)
         gtk_widget_show (dialog);
 
         set_busy (greeter);
+}
+
+static void
+create_panel (GdmSimpleGreeter *greeter)
+{
+        greeter->priv->panel = gdm_greeter_panel_new ();
+        gtk_widget_show (greeter->priv->panel);
 }
 
 static GObject *
@@ -461,6 +466,7 @@ gdm_simple_greeter_constructor (GType                  type,
                                                                                                      n_construct_properties,
                                                                                                      construct_properties));
         create_greeter (greeter);
+        create_panel (greeter);
 
         return G_OBJECT (greeter);
 }

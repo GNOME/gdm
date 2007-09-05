@@ -21,13 +21,13 @@
   <property name="urgency_hint">False</property>
 
   <child>
-    <widget class="GtkVBox" id="vbox1">
+    <widget class="GtkVBox" id="auth-vbox">
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
       <property name="spacing">12</property>
 
       <child>
-	<widget class="GtkHBox" id="input-box">
+	<widget class="GtkHBox" id="auth-input-box">
 	  <property name="visible">True</property>
 	  <property name="homogeneous">False</property>
 	  <property name="spacing">6</property>
@@ -85,7 +85,7 @@
       </child>
 
       <child>
-	<widget class="GtkLabel" id="message-label">
+	<widget class="GtkLabel" id="auth-message-label">
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes"></property>
 	  <property name="use_underline">False</property>
@@ -110,25 +110,13 @@
       </child>
 
       <child>
-	<widget class="GtkHButtonBox" id="button-box">
+	<widget class="GtkHButtonBox" id="auth-button-box">
 	  <property name="visible">True</property>
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 	  <property name="spacing">6</property>
 
 	  <child>
-	    <widget class="GtkButton" id="suspend-button">
-	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">Suspend</property>
-	      <property name="use_underline">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	    </widget>
-	  </child>
-
-	  <child>
-	    <widget class="GtkButton" id="cancel-button">
+	    <widget class="GtkButton" id="auth-cancel-button">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -140,7 +128,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="ok-button">
+	    <widget class="GtkButton" id="auth-ok-button">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -160,5 +148,4 @@
     </widget>
   </child>
 </widget>
-
 </glade-interface>

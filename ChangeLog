@@ -1,5 +1,82 @@
 2007-09-05  William Jon McCann  <mccann@jhu.edu>
 
+	* configure.ac:
+	* daemon/gdm-greeter-server.c: (handle_get_display_id):
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/cutnpaste/Makefile.am:
+	* gui/simple-greeter/cutnpaste/fixedtip.c: (button_press_handler),
+	(expose_handler), (na_fixed_tip_class_init), (na_fixed_tip_init),
+	(na_fixed_tip_position), (na_fixed_tip_parent_size_allocated),
+	(na_fixed_tip_parent_screen_changed), (na_fixed_tip_new),
+	(na_fixed_tip_set_markup), (na_fixed_tip_set_orientation):
+	* gui/simple-greeter/cutnpaste/fixedtip.h:
+	* gui/simple-greeter/cutnpaste/na-marshal.list:
+	* gui/simple-greeter/cutnpaste/na-tray-manager.c:
+	(na_tray_manager_init), (na_tray_manager_class_init),
+	(na_tray_manager_finalize), (na_tray_manager_set_property),
+	(na_tray_manager_get_property), (na_tray_manager_new),
+	(na_tray_manager_plug_removed),
+	(na_tray_manager_make_socket_transparent),
+	(na_tray_manager_socket_exposed),
+	(na_tray_manager_socket_style_set),
+	(na_tray_manager_handle_dock_request), (pending_message_free),
+	(na_tray_manager_handle_client_message_message_data),
+	(na_tray_manager_handle_begin_message),
+	(na_tray_manager_handle_cancel_message),
+	(na_tray_manager_handle_client_message_opcode),
+	(na_tray_manager_window_filter),
+	(na_tray_manager_selection_clear_event),
+	(na_tray_manager_unmanage),
+	(na_tray_manager_set_orientation_property),
+	(na_tray_manager_manage_screen_x11),
+	(na_tray_manager_manage_screen),
+	(na_tray_manager_check_running_screen_x11),
+	(na_tray_manager_check_running), (na_tray_manager_get_child_title),
+	(na_tray_manager_set_orientation),
+	(na_tray_manager_get_orientation):
+	* gui/simple-greeter/cutnpaste/na-tray-manager.h:
+	* gui/simple-greeter/cutnpaste/na-tray.c: (get_tray), (tray_added),
+	(tray_removed), (icon_tip_buffer_free), (icon_tip_free),
+	(icon_tip_buffer_compare), (icon_tip_show_next_clicked),
+	(icon_tip_show_next_timeout), (icon_tip_show_next), (message_sent),
+	(message_cancelled), (update_orientation_for_messages),
+	(update_size_and_orientation), (na_tray_init),
+	(na_tray_constructor), (na_tray_dispose), (na_tray_set_property),
+	(na_tray_size_request), (na_tray_size_allocate),
+	(na_tray_class_init), (na_tray_new_for_screen),
+	(na_tray_set_orientation), (na_tray_get_orientation),
+	(idle_redraw_cb), (na_tray_force_redraw):
+	* gui/simple-greeter/cutnpaste/na-tray.h:
+	* gui/simple-greeter/cutnpaste/obox.c: (na_obox_class_init),
+	(na_obox_init), (na_obox_new), (get_class), (na_obox_size_request),
+	(na_obox_size_allocate), (na_obox_set_orientation):
+	* gui/simple-greeter/cutnpaste/obox.h:
+	* gui/simple-greeter/cutnpaste/testtray.c: (do_add),
+	(update_child_count), (tray_added_cb), (tray_removed_cb),
+	(orientation_changed_cb), (maybe_quit),
+	(warning_dialog_response_cb), (add_tray_cb),
+	(create_tray_on_screen), (main):
+	* gui/simple-greeter/gdm-greeter-panel.c:
+	(gdm_greeter_panel_set_property), (gdm_greeter_panel_get_property),
+	(gdm_greeter_panel_constructor), (gdm_greeter_panel_dispose),
+	(gdm_greeter_panel_move_resize_window), (on_screen_size_changed),
+	(gdm_greeter_panel_real_realize),
+	(gdm_greeter_panel_real_unrealize), (get_outside_region),
+	(get_monitor_geometry), (set_struts), (update_struts),
+	(update_geometry), (gdm_greeter_panel_real_size_request),
+	(gdm_greeter_panel_class_init), (gdm_greeter_panel_init),
+	(gdm_greeter_panel_finalize), (gdm_greeter_panel_new):
+	* gui/simple-greeter/gdm-greeter-panel.h:
+	* gui/simple-greeter/gdm-simple-greeter.c: (set_sensitive),
+	(set_message), (create_greeter), (create_panel),
+	(gdm_simple_greeter_constructor):
+	* gui/simple-greeter/gdm-simple-greeter.glade:
+	* gui/simple-greeter/greeter-main.c: (get_display_id):
+	* gui/simple-greeter/test-greeter-panel.c: (main):
+	Add a greeter panel bar with an embedded notification area.
+
+2007-09-05  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-factory-slave.c: (run_greeter):
 	* daemon/gdm-greeter-server.c: (handle_disconnect),
 	(handle_get_display_id), (greeter_handle_child_message),
