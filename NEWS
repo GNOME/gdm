@@ -1,5 +1,30 @@
 Ahh news...
 
+2.19.8 Stuff:
+
+- Fix bug where GDM was not properly executing a custom Xserver
+  start script.  This fixes a regression introduced earlier in
+  GDM 2.19.  (Brian Cameron)
+
+- Fix bug with ConsoleKit that occurs when the session is going
+  to migrate.  Previous code was failing to send the notification
+  when the greeter is not TYPE_FLEXI.  (Ian Jackson)
+
+- Set invisible character to '*' for gdmgreeter.  (Sebastien
+  Bacher)
+
+- When using gdm_verify_standalone_pam_conv (used by automatic
+  login) set echo to FALSE when PAM_PROMPT_ECHO_OFF is handled.
+
+- Make it possible to configure system dependant options by
+  setting environment variables before running configure.  Also
+  support /usr/X11/bin/Xorg when setting X_PATH, etc.  (Laszlo
+  Peter)
+
+- Translation updates (I. Felix, Duarte Loreto, Jovan Naumovski,
+  St\303\251phane Raimbault, Pramod Raghavendra, Rajesh Ranjan,
+  Clytie Siddall)
+
 2.19.7 Stuff:
 
 - Disable autocompletion in the face browser since it wasn't
