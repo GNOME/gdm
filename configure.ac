@@ -937,15 +937,25 @@ else
 fi
 
 if test ${libexecdir} = "\${exec_prefix}/libexec"; then
-   ssh_libexec="$real_gdm_prefix/libexec"
+   gdm_libexec="$real_gdm_prefix/libexec"
 else
-   ssh_libexec="${libexecdir}"
+   gdm_libexec="${libexecdir}"
 fi
+
+AC_ARG_WITH(atspi-dir,
+  [  --with-atspi-dir=<PATH>   PATH to at-spi-registryd [default=LIBEXECDIR]])
++
+if ! test -z "$with_atspi_dir"; then
+  ATSPI_DIR="$with_atspi_dir"
+else
+  ATSPI_DIR="$gdm_libexec"
+fi
+AC_SUBST(ATSPI_DIR)
 
 if test x$enable_secureremote != xno ; then
        SSHDESKTOP="ssh.desktop"
         GDMSSHSESSION="gdm-ssh-session"
-        GDMSSHSESSIONCMD="${ssh_libexec}/gdm-ssh-session"
+        GDMSSHSESSIONCMD="${gdm_libexec}/gdm-ssh-session"
 fi
 AC_SUBST(SSHDESKTOP)
 AC_SUBST(GDMSSHSESSION)
@@ -1146,6 +1156,11 @@ elif test -x /usr/bin/X; then
    X_PATH="/usr/bin"
    X_SERVER_PATH="/usr/bin"
    X_SERVER="/usr/bin/X"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test -x /usr/X11/bin/Xorg; then
+   X_PATH="/usr/X11/bin"
+   X_SERVER_PATH="/usr/X11/bin"
+   X_SERVER="/usr/X11/bin/Xorg"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/bin/Xorg; then
    X_PATH="/usr/bin"
