@@ -1,3 +1,14 @@
+2007-09-08  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-greeter-server.c: (greeter_server_message_handler),
+	(connection_filter_function):
+	* daemon/gdm-session-relay.c: (session_relay_message_handler),
+	(connection_filter_function):
+	* daemon/gdm-session.c: (session_message_handler),
+	(connection_filter_function):
+	Don't print null strings - solaris crashes.
+	Patch from Brian Cameron <brian.cameron@sun.com>
+
 2007-09-05  William Jon McCann  <mccann@jhu.edu>
 
 	* configure.ac:

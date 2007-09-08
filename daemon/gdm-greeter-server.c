@@ -529,12 +529,16 @@ greeter_server_message_handler (DBusConnection  *connection,
                                 DBusMessage     *message,
                                 void            *user_data)
 {
-        g_debug ("greeter_server_message_handler: destination=%s obj_path=%s interface=%s method=%s",
-                 dbus_message_get_destination (message),
-                 dbus_message_get_path (message),
-                 dbus_message_get_interface (message),
-                 dbus_message_get_member (message));
+        const char *dbus_destination = dbus_message_get_destination (message);
+        const char *dbus_path        = dbus_message_get_path (message);
+        const char *dbus_interface   = dbus_message_get_interface (message);
+        const char *dbus_member      = dbus_message_get_member (message);
 
+        g_debug ("greeter_server_message_handler: destination=%s obj_path=%s interface=%s method=%s",
+                 dbus_destination ? dbus_destination : "(null)",
+                 dbus_path        ? dbus_path        : "(null)",
+                 dbus_interface   ? dbus_interface   : "(null)",
+                 dbus_member      ? dbus_member      : "(null)");
 
         if (dbus_message_is_method_call (message, "org.freedesktop.DBus", "AddMatch")) {
                 DBusMessage *reply;
@@ -580,17 +584,17 @@ connection_filter_function (DBusConnection *connection,
                             void           *user_data)
 {
         GdmGreeterServer *greeter_server = GDM_GREETER_SERVER (user_data);
-        const char      *path;
-
-        path = dbus_message_get_path (message);
+        const char       *dbus_path      = dbus_message_get_path (message);
+        const char       *dbus_interface = dbus_message_get_interface (message);
+        const char       *dbus_message   = dbus_message_get_member (message);
 
         g_debug ("obj_path=%s interface=%s method=%s",
-                 dbus_message_get_path (message),
-                 dbus_message_get_interface (message),
-                 dbus_message_get_member (message));
+                 dbus_path      ? dbus_path      : "(null)",
+                 dbus_interface ? dbus_interface : "(null)",
+                 dbus_message   ? dbus_message   : "(null)");
 
         if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
-            && strcmp (path, DBUS_PATH_LOCAL) == 0) {
+            && strcmp (dbus_path, DBUS_PATH_LOCAL) == 0) {
 
                 g_debug ("Disconnected");
 
