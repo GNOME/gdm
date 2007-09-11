@@ -50,7 +50,6 @@
 
 #include "gdm-server.h"
 #include "gdm-session.h"
-#include "gdm-greeter-proxy.h"
 
 #define GDM_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE, GdmSlavePrivate))
 
@@ -66,14 +65,10 @@ struct GdmSlavePrivate
         guint            output_watch_id;
         guint            error_watch_id;
 
-        GPid             server_pid;
-        Display         *server_display;
-        guint            connection_attempts;
-
         /* cached display values */
         char            *display_id;
         char            *display_name;
-        int             *display_number;
+        int              display_number;
         char            *display_hostname;
         gboolean         display_is_local;
         gboolean         display_is_parented;
@@ -86,9 +81,6 @@ struct GdmSlavePrivate
         char            *selected_session;
         char            *selected_language;
 
-        GdmServer       *server;
-        GdmGreeterProxy *greeter;
-        GdmSession      *session;
         DBusGProxy      *display_proxy;
         DBusGConnection *connection;
 };

@@ -1,5 +1,40 @@
 2007-09-10  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/INTERNALS:
+	* daemon/Makefile.am:
+	* daemon/gdm-factory-slave.c: (on_greeter_start),
+	(on_greeter_stop), (run_greeter), (gdm_factory_slave_stop):
+	* daemon/gdm-greeter-proxy.c:
+	* daemon/gdm-greeter-proxy.h:
+	* daemon/gdm-greeter-session.c: (change_user),
+	(greeter_session_child_setup), (open_greeter_session),
+	(close_greeter_session), (get_greeter_environment),
+	(gdm_slave_whack_temp_auth_file), (create_temp_auth_file),
+	(greeter_session_child_watch), (gdm_greeter_session_spawn),
+	(gdm_greeter_session_start), (greeter_session_died),
+	(gdm_greeter_session_stop),
+	(gdm_greeter_session_set_server_address),
+	(_gdm_greeter_session_set_x11_display_name),
+	(_gdm_greeter_session_set_x11_display_hostname),
+	(_gdm_greeter_session_set_x11_display_device),
+	(_gdm_greeter_session_set_x11_display_is_local),
+	(_gdm_greeter_session_set_x11_authority_file),
+	(_gdm_greeter_session_set_user_name),
+	(_gdm_greeter_session_set_group_name),
+	(gdm_greeter_session_set_property),
+	(gdm_greeter_session_get_property),
+	(gdm_greeter_session_constructor),
+	(gdm_greeter_session_class_init), (gdm_greeter_session_init),
+	(gdm_greeter_session_finalize), (gdm_greeter_session_new):
+	* daemon/gdm-greeter-session.h:
+	* daemon/gdm-simple-slave.c: (on_user_verified),
+	(on_greeter_start), (on_greeter_stop), (run_greeter),
+	(gdm_simple_slave_stop):
+	* daemon/gdm-slave.c:
+	Rename GdmGreeterProxy->GdmGreeterSession
+
+2007-09-10  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-simple-greeter.c: (set_focus),
 	(reset_dialog), (gdm_simple_greeter_info_query),
 	(gdm_simple_greeter_secret_info_query):

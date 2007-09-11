@@ -51,7 +51,7 @@
 #include "gdm-server.h"
 #include "gdm-session.h"
 #include "gdm-greeter-server.h"
-#include "gdm-greeter-proxy.h"
+#include "gdm-greeter-session.h"
 
 #include "ck-connector.h"
 
@@ -64,30 +64,30 @@
 
 struct GdmSimpleSlavePrivate
 {
-        char             *id;
-        GPid              pid;
-        guint             output_watch_id;
-        guint             error_watch_id;
+        char              *id;
+        GPid               pid;
+        guint              output_watch_id;
+        guint              error_watch_id;
 
-        guint             greeter_reset_id;
+        guint              greeter_reset_id;
 
-        int               ping_interval;
+        int                ping_interval;
 
-        GPid              server_pid;
-        Display          *server_display;
-        guint             connection_attempts;
+        GPid               server_pid;
+        Display           *server_display;
+        guint              connection_attempts;
 
         /* user selected */
-        char             *selected_session;
-        char             *selected_language;
-        char             *selected_user;
+        char              *selected_session;
+        char              *selected_language;
+        char              *selected_user;
 
-        CkConnector      *ckc;
-        GdmServer        *server;
-        GdmGreeterServer *greeter_server;
-        GdmGreeterProxy  *greeter;
-        GdmSession       *session;
-        DBusGConnection  *connection;
+        CkConnector       *ckc;
+        GdmServer         *server;
+        GdmGreeterServer  *greeter_server;
+        GdmGreeterSession *greeter;
+        GdmSession        *session;
+        DBusGConnection   *connection;
 };
 
 enum {
@@ -679,7 +679,7 @@ on_user_verified (GdmSession     *session,
         char    *filename;
         gboolean res;
 
-        gdm_greeter_proxy_stop (slave->priv->greeter);
+        gdm_greeter_session_stop (slave->priv->greeter);
         gdm_greeter_server_stop (slave->priv->greeter_server);
 
         username = gdm_session_get_username (session);
@@ -858,15 +858,15 @@ create_new_session (GdmSimpleSlave *slave)
 }
 
 static void
-on_greeter_start (GdmGreeterProxy *greeter,
-                  GdmSimpleSlave  *slave)
+on_greeter_start (GdmGreeterSession *greeter,
+                  GdmSimpleSlave    *slave)
 {
         g_debug ("Greeter started");
 }
 
 static void
-on_greeter_stop (GdmGreeterProxy *greeter,
-                 GdmSimpleSlave  *slave)
+on_greeter_stop (GdmGreeterSession *greeter,
+                 GdmSimpleSlave    *slave)
 {
         g_debug ("Greeter stopped");
 }
@@ -1042,10 +1042,10 @@ run_greeter (GdmSimpleSlave *slave)
         address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
         g_debug ("Creating greeter on %s %s %s", display_name, display_device, display_hostname);
-        slave->priv->greeter = gdm_greeter_proxy_new (display_name,
-                                                      display_device,
-                                                      display_hostname,
-                                                      display_is_local);
+        slave->priv->greeter = gdm_greeter_session_new (display_name,
+                                                        display_device,
+                                                        display_hostname,
+                                                        display_is_local);
         g_signal_connect (slave->priv->greeter,
                           "started",
                           G_CALLBACK (on_greeter_start),
@@ -1057,8 +1057,8 @@ run_greeter (GdmSimpleSlave *slave)
         g_object_set (slave->priv->greeter,
                       "x11-authority-file", auth_file,
                       NULL);
-        gdm_greeter_proxy_set_server_address (slave->priv->greeter, address);
-        gdm_greeter_proxy_start (slave->priv->greeter);
+        gdm_greeter_session_set_server_address (slave->priv->greeter, address);
+        gdm_greeter_session_start (slave->priv->greeter);
 
         g_free (display_id);
         g_free (display_name);
@@ -1247,7 +1247,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
         res = GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->greeter != NULL) {
-                gdm_greeter_proxy_stop (GDM_SIMPLE_SLAVE (slave)->priv->greeter);
+                gdm_greeter_session_stop (GDM_SIMPLE_SLAVE (slave)->priv->greeter);
                 g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->greeter);
                 GDM_SIMPLE_SLAVE (slave)->priv->greeter = NULL;
         }

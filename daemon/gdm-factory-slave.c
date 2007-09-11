@@ -49,7 +49,7 @@
 #include "gdm-factory-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-greeter-proxy.h"
+#include "gdm-greeter-session.h"
 #include "gdm-greeter-server.h"
 #include "gdm-session-relay.h"
 
@@ -64,21 +64,21 @@ extern char **environ;
 
 struct GdmFactorySlavePrivate
 {
-        char             *id;
-        GPid              pid;
-        guint             output_watch_id;
-        guint             error_watch_id;
+        char              *id;
+        GPid               pid;
+        guint              output_watch_id;
+        guint              error_watch_id;
 
-        GPid              server_pid;
-        Display          *server_display;
-        guint             connection_attempts;
+        GPid               server_pid;
+        Display           *server_display;
+        guint              connection_attempts;
 
-        GdmServer        *server;
-        GdmSessionRelay  *session_relay;
-        GdmGreeterServer *greeter_server;
-        GdmGreeterProxy  *greeter;
-        DBusGProxy       *factory_display_proxy;
-        DBusGConnection  *connection;
+        GdmServer         *server;
+        GdmSessionRelay   *session_relay;
+        GdmGreeterServer  *greeter_server;
+        GdmGreeterSession *greeter;
+        DBusGProxy        *factory_display_proxy;
+        DBusGConnection   *connection;
 };
 
 enum {
@@ -357,15 +357,15 @@ gdm_factory_slave_exec_script (GdmFactorySlave *slave,
 }
 
 static void
-on_greeter_start (GdmGreeterProxy *greeter,
-                  GdmFactorySlave  *slave)
+on_greeter_start (GdmGreeterSession *greeter,
+                  GdmFactorySlave   *slave)
 {
         g_debug ("Greeter started");
 }
 
 static void
-on_greeter_stop (GdmGreeterProxy *greeter,
-                 GdmFactorySlave  *slave)
+on_greeter_stop (GdmGreeterSession *greeter,
+                 GdmFactorySlave   *slave)
 {
         g_debug ("Greeter stopped");
 }
@@ -627,10 +627,10 @@ run_greeter (GdmFactorySlave *slave)
         address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
         g_debug ("Creating greeter on %s %s", display_name, display_device);
-        slave->priv->greeter = gdm_greeter_proxy_new (display_name,
-                                                      display_device,
-                                                      display_hostname,
-                                                      display_is_local);
+        slave->priv->greeter = gdm_greeter_session_new (display_name,
+                                                        display_device,
+                                                        display_hostname,
+                                                        display_is_local);
         g_signal_connect (slave->priv->greeter,
                           "started",
                           G_CALLBACK (on_greeter_start),
@@ -642,8 +642,8 @@ run_greeter (GdmFactorySlave *slave)
         g_object_set (slave->priv->greeter,
                       "x11-authority-file", auth_file,
                       NULL);
-        gdm_greeter_proxy_set_server_address (slave->priv->greeter, address);
-        gdm_greeter_proxy_start (slave->priv->greeter);
+        gdm_greeter_session_set_server_address (slave->priv->greeter, address);
+        gdm_greeter_session_start (slave->priv->greeter);
 
         g_free (address);
 
@@ -890,7 +890,7 @@ gdm_factory_slave_stop (GdmSlave *slave)
         }
 
         if (GDM_FACTORY_SLAVE (slave)->priv->greeter != NULL) {
-                gdm_greeter_proxy_stop (GDM_FACTORY_SLAVE (slave)->priv->greeter);
+                gdm_greeter_session_stop (GDM_FACTORY_SLAVE (slave)->priv->greeter);
                 g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->greeter);
                 GDM_FACTORY_SLAVE (slave)->priv->greeter = NULL;
         }

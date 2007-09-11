@@ -91,8 +91,8 @@ gdm_simple_slave_SOURCES = 		\
 	simple-slave-main.c 		\
 	gdm-greeter-server.c		\
 	gdm-greeter-server.h		\
-	gdm-greeter-proxy.c		\
-	gdm-greeter-proxy.h		\
+	gdm-greeter-session.c		\
+	gdm-greeter-session.h		\
 	ck-connector.h			\
 	ck-connector.c			\
 	gdm-server.c			\
@@ -136,8 +136,8 @@ gdm_factory_slave_SOURCES = 		\
 	factory-slave-main.c 		\
 	gdm-greeter-server.c		\
 	gdm-greeter-server.h		\
-	gdm-greeter-proxy.c		\
-	gdm-greeter-proxy.h		\
+	gdm-greeter-session.c		\
+	gdm-greeter-session.h		\
 	ck-connector.h			\
 	ck-connector.c			\
 	gdm-server.c			\
