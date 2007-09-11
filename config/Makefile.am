@@ -13,14 +13,13 @@ postlogindir = $(gdmconfdir)/PostLogin
 
 noinst_DATA = gdm.conf
 
-DESKTOP_FILES = default.desktop gnome.desktop @SSHDESKTOP@
+DESKTOP_FILES = default.desktop @SSHDESKTOP@
 
 EXTRA_DIST = \
 	gdm.conf.in \
 	gdm.conf-custom.in \
 	$(DESKTOP_FILES) \
 	default.desktop.in \
-	gnome.desktop.in.in \
 	ssh.desktop.in.in \
 	Xsession.in \
 	gdm \
@@ -35,7 +34,7 @@ EXTRA_DIST = \
 	gdmprefetchlist.in \
 	extract-shell.sh
 
-CLEANFILES = Xsession gdm.conf gdm.conf-custom default.desktop gnome.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
+CLEANFILES = Xsession gdm.conf gdm.conf-custom default.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
@@ -83,9 +82,8 @@ clean-local:
 	rm -f $(DESKTOP_FILES)
 
 uninstall-hook:
-	rm -f $(DESTDIR)$(bisessdir)/gnome.desktop \
+	rm -f \
 	$(DESTDIR)$(bisessdir)/default.desktop \
-	$(DESTDIR)$(instsessdir)/gnome.desktop \
 	$(DESTDIR)$(instsessdir)/default.desktop \
 	$(DESTDIR)$(instsessdir)/ssh.desktop \
 	$(DESTDIR)$(GDM_DEFAULTS_CONF) \
@@ -160,15 +158,6 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	fi
 	$(INSTALL_DATA) default.desktop $(DESTDIR)$(bisessdir)/default.desktop
 	chmod 644 $(DESTDIR)$(bisessdir)/default.desktop
-
-	-if test -f $(DESTDIR)$(bisessdir)/gnome.desktop; then \
-		mv -f $(DESTDIR)$(bisessdir)/gnome.desktop $(DESTDIR)$(bisessdir)/gnome.desktop.orig; \
-	fi
-	-if test -f $(DESTDIR)$(instsessdir)/gnome.desktop; then \
-		cp -f $(DESTDIR)$(instsessdir)/gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop.orig; \
-	fi
-	$(INSTALL_DATA) gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop
-	chmod 644 $(DESTDIR)$(instsessdir)/gnome.desktop
 
 	if test '!' -d $(DESTDIR)$(initdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(initdir); \
