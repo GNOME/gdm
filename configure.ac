@@ -1319,14 +1319,6 @@ config/Makefile
 common/Makefile
 po/Makefile.in
 docs/Makefile
-docs/de/Makefile
-docs/es/Makefile
-docs/fr/Makefile
-docs/it/Makefile
-docs/ja/Makefile
-docs/zh_CN/Makefile
-docs/zh_HK/Makefile
-docs/zh_TW/Makefile
 config/Init
 config/PreSession
 config/PostSession
