@@ -289,7 +289,7 @@ proxy_destroyed (GObject *object,
         g_debug ("GREETER Proxy disconnected");
 }
 
-#if 1
+#if 0
 static void
 activate_power_manager (void)
 {

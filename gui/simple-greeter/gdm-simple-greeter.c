@@ -147,6 +147,23 @@ set_sensitive (GdmSimpleGreeter *greeter,
 }
 
 static void
+set_focus (GdmSimpleGreeter *greeter)
+{
+        GtkWidget *top_level;
+        GtkWidget *entry;
+
+        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+        top_level = glade_xml_get_widget (greeter->priv->xml, "auth-window");
+
+        gdk_window_focus (top_level->window, GDK_CURRENT_TIME);
+
+        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
+                gtk_widget_grab_focus (entry);
+        }
+}
+
+
+static void
 set_message (GdmSimpleGreeter *greeter,
              const char       *text)
 {
@@ -180,14 +197,11 @@ reset_dialog (GdmSimpleGreeter *greeter)
         label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
         gtk_label_set_text (GTK_LABEL (label), "");
 
-        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
-                gtk_widget_grab_focus (entry);
-        }
-
         set_message (greeter, "");
 
-        set_ready (greeter);
         set_sensitive (greeter, TRUE);
+        set_ready (greeter);
+        set_focus (GDM_SIMPLE_GREETER (greeter));
 }
 
 static gboolean
@@ -253,12 +267,13 @@ gdm_simple_greeter_info_query (GdmGreeter *greeter,
         label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
         gtk_label_set_text (GTK_LABEL (label), text);
 
+        set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
+        set_ready (GDM_SIMPLE_GREETER (greeter));
+        set_focus (GDM_SIMPLE_GREETER (greeter));
+
         if (! GTK_WIDGET_HAS_FOCUS (entry)) {
                 gtk_widget_grab_focus (entry);
         }
-
-        set_ready (GDM_SIMPLE_GREETER (greeter));
-        set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
 
         return TRUE;
 }
@@ -283,12 +298,9 @@ gdm_simple_greeter_secret_info_query (GdmGreeter *greeter,
         label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
         gtk_label_set_text (GTK_LABEL (label), text);
 
-        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
-                gtk_widget_grab_focus (entry);
-        }
-
-        set_ready (GDM_SIMPLE_GREETER (greeter));
         set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
+        set_ready (GDM_SIMPLE_GREETER (greeter));
+        set_focus (GDM_SIMPLE_GREETER (greeter));
 
         return TRUE;
 }
