@@ -75,6 +75,7 @@ struct GdmSimpleGreeterPrivate
 {
         GladeXML        *xml;
         GtkWidget       *panel;
+        GtkWidget       *background;
 };
 
 enum {
@@ -460,6 +461,8 @@ create_greeter (GdmSimpleGreeter *greeter)
 static void
 create_panel (GdmSimpleGreeter *greeter)
 {
+        greeter->priv->background = gdm_greeter_background_new ();
+        gtk_widget_show (greeter->priv->background);
         greeter->priv->panel = gdm_greeter_panel_new ();
         gtk_widget_show (greeter->priv->panel);
 }
