@@ -322,7 +322,7 @@ add_auth_entry_for_addr (GdmDisplay              *d,
 	unsigned short family;
 
 	switch (ss->ss_family) {
-#if IPV6_ENABLED
+#ifdef ENABLE_IPV6
 	case AF_INET6:
 		family = FamilyInternetV6;
 		addr = (const char *) &SIN6 (ss)->sin6_addr;

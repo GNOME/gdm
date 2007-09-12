@@ -87,7 +87,7 @@ gdm_address_is_loopback (struct sockaddr_storage *sa)
 		break;
 #endif
 	case AF_INET:
-		return (INADDR_LOOPBACK == (((struct sockaddr_in *)sa)->sin_addr.s_addr));
+		return (INADDR_LOOPBACK == htonl (((struct sockaddr_in *)sa)->sin_addr.s_addr));
 		break;
 	default:
 		break;
