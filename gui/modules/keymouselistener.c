@@ -169,7 +169,8 @@ init_xinput (GdkDisplay *display, GdkWindow *root)
 	    syslog (LOG_WARNING, "checking %d input devices...", num_devices);
 
 	for (i=0; i < num_devices; i++) {
-		if (devices[i].use == IsXExtensionDevice)
+		if (devices[i].use == IsXExtensionDevice &&
+		    devices[i].num_classes > 0)
 		{
 			device = XOpenDevice (GDK_DISPLAY_XDISPLAY (display),
 				devices[i].id);
@@ -207,6 +208,7 @@ init_xinput (GdkDisplay *display, GdkWindow *root)
 			}
 		}
 	}
+	XFreeDeviceList (devices);
 
 	if (debug_gestures)
 	    syslog (LOG_WARNING, "%d event types available", number);
