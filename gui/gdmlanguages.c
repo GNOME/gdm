@@ -204,7 +204,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Lithuanian"), "lt_LT", "Lietuvių", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Macedonian"), "mk_MK", NULL, 0 },
+	{ N_("A-M|Macedonian"), "mk_MK", "македонски", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Malay"), "ms_MY", "Bahasa Melayu", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
