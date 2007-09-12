@@ -24,6 +24,7 @@ INCLUDES = \
 	$(GUI_CFLAGS)					\
 	$(DBUS_CFLAGS)					\
 	$(GREETER_CFLAGS)				\
+	$(CAPPLET_CFLAGS)				\
 	$(NULL)
 
 noinst_PROGRAMS = 		\
@@ -65,6 +66,7 @@ gdm_simple_greeter_LDADD = 		\
 	$(GOBJECT_LIBS)		\
 	$(GUI_LIBS)		\
 	$(GREETER_LIBS)		\
+	$(CAPPLET_LIBS)		\
 	$(NULL)
 
 gladedir = $(pkgdatadir)

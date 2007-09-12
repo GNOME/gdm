@@ -27,7 +27,6 @@
 #endif
 
 #include <string.h>
-#include <gnome.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkprivate.h>

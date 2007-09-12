@@ -201,6 +201,10 @@ PKG_CHECK_MODULES(GREETER, gtk+-2.0 >= $GTK_REQUIRED)
 AC_SUBST(GREETER_CFLAGS)
 AC_SUBST(GREETER_LIBS)
 
+dnl libbackground
+PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0")
+dnl ==========================================================================
+
 PKG_CHECK_MODULES(UTILS, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(UTILS_CFLAGS)
 AC_SUBST(UTILS_LIBS)
@@ -1302,7 +1306,8 @@ libgreeter/Makefile
 gui/Makefile
 gui/modules/Makefile
 gui/simple-greeter/Makefile
-gui/simple-greeter/cutnpaste/Makefile
+gui/simple-greeter/libnotificationarea/Makefile
+gui/simple-greeter/libbackground/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/Makefile

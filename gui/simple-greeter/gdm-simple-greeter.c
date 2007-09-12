@@ -49,6 +49,7 @@
 #include "gdm-settings-keys.h"
 
 #include "gdm-greeter-panel.h"
+#include "gdm-greeter-background.h"
 
 #if HAVE_PAM
 #include <security/pam_appl.h>
