@@ -2,12 +2,14 @@ NULL =
 
 SUBDIRS = 				\
 	libnotificationarea		\
+	libbackground			\
 	$(NULL)
 
 INCLUDES = \
 	-I$(top_srcdir)/common				\
 	-I$(top_srcdir)/libgreeter			\
 	-I$(top_srcdir)/gui/simple-greeter/libnotificationarea	\
+	-I$(top_srcdir)/gui/simple-greeter/libbackground	\
 	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
@@ -57,6 +59,7 @@ gdm_simple_greeter_LDADD = 		\
 	-L$(top_builddir)/libgreeter	\
 	-lgreeter			\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(top_builddir)/gui/simple-greeter/libbackground/libbackground.la		\
 	$(GLIB_LIBS)		\
 	$(DBUS_LIBS)		\
 	$(GOBJECT_LIBS)		\

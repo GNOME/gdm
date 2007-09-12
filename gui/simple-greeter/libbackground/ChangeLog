@@ -1,0 +1,517 @@
+2007-04-16  Jens Granseuer  <jensgr@gmx.net>
+
+	Patch by: Erich Schubert <erich@debian.org>
+
+	* applier.c: (get_geometry): fix scaling for WPTYPE_ZOOM. Fixes
+	bug #342356.
+
+2007-01-08  Rodney Dawes  <dobey@novell.com>
+
+	* preferences.c (bg_preferences_merge_entry):
+	Set prefs->enabled not prefs->wallpaper_enabled
+	Patch from Jean-Christophe Jaskula
+
+	Fixes #339404
+
+2006-08-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* preferences.c: (bg_preferences_load),
+	(bg_preferences_merge_entry), (read_wptype_from_string),
+	(read_orientation_from_string): Make read_orientation_from_string()
+	and read_wptype_from_string() behave like read_color_from_string()
+	and adjust all callers. Avoids some excess strduping too I guess.
+	Closes bug #352252.
+
+2006-08-21  Rodney Dawes  <dobey@novell.com>
+
+	* preferences.c (bg_preferences_load): Revert previous leak fix from
+	Kjartan Maraas as it seems to cause crashes in nautilus
+
+	see bug #352279
+
+2006-08-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* preferences.c: (bg_preferences_load): Don't leak gconf strings.
+
+2006-06-27  Sergey Udaltsov <svu@gnome.org>
+
+	* Makefile.am: redundant GNOMELOCALEDIR removed. Patch from #345178
+	applied.
+	
+2006-01-14  Alan Swanson <swanson@ukfsn.org>
+
+	* applier.c (get_geometry): Handle the new WPTYPE_ZOOM setting and
+	return proper geometry for it
+
+	* preferences.c (_bg_wptype_values[]): Add the alias for the zoom type
+	(read_wptype_from_string): Handle setting the type for zoom
+	(bg_preferences_get_wptype_as_string): Return the string for the new
+	zoom setting type
+
+	* preferences.h (_wallpaper_type_t): Add the new zoom type
+
+	Partial code for #105231
+	
+2005-11-07  Alexis Robert <alexis@linuxcode.eu.org>
+
+	Fixes #320647
+
+	* libbackground/preferences.c (bg_preferences_load): only use strings
+	returned from GConf when not NULL.
+
+2005-10-01  Rodney Dawes  <dobey@novell.com>
+
+	* preferences.c (bg_preferences_load, bg_preferences_merge_entry):
+	Make sure that the UTF8 filename is valid and exists before trying
+	to use it, otherwise fall back to using the filename encoding specified
+	by the user with the environment variables used by glib to determine
+	the locale encoding of filenames
+
+	Fixes #168604
+
+2005-06-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* applier.c: (render_wallpaper), (is_nautilus_running): GCC4
+	build issues.
+
+2005-05-08  Richard Hoelscher  <rah@rahga.com>
+
+	* applier.c (refresh_render): Remove egg_pixbuf_new_from_file_at_size,
+	using the gtk+-2.6 function for this instead.
+
+	Fixes #169757
+
+2005-02-10  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am: Don't define GNOME_ICONDIR as libbackground does not
+	use it in any of the code
+
+2004-10-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.1
+
+2004-06-27  Rodney Dawes  <dobey@novell.com>
+
+	* applier.c: Remove all references to #ifdef HAVE_GTK_MULTIHEAD
+	Patch from Kjartan Maraas <kmaraas@gnome.org>
+
+	Fixes #142749
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-03-12  Chris Lahey  <clahey@rigger.boston.ximian.com>
+
+	* applier.c (refresh_render): Move the image reload into a separate function.
+	(size_changed_cb): Handle screen resolution changes.
+
+2004-03-11  Chris Lahey  <clahey@rigger.boston.ximian.com>
+
+	* applier.c (bg_applier_apply_prefs): If the image is going to be
+	scaled or stretched, load it at the size it's going to be
+	displayed.
+	(need_wallpaper_load_p): If the wallpaper type changed, unless it
+	changed between TILED and CENTERED, we need to reload the image.
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2003-12-07  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* Makefile.am: remove ununsed preview-file-selection.[ch] from
+	build.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+Mon Jun  2 13:35:49 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* preview-file-selection.c
+	(preview_file_selection_intelligent_scale): scaling fix.  Patch
+	from Marcus Matèrn <marcus.matern@safecareab.com>, #113816
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-04-07  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+
+	* applier.c (set_root_pixmap): Fixes bogus GC creation.
+	patch from Anders Carlsson <andersca@gnu.org>
+ 
+2003-02-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* applier.c: Fix a typo in a comment.
+	
+Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* Release 2.2.0.1
+
+Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* Release 2.2.0
+
+Thu Jan 16 02:41:09 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* Release 2.1.7
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.6
+
+2002-12-18  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.5
+
+2002-11-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.3
+
+2002-11-02  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.2
+
+2002-10-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
+
+2002-09-13  Iain <iain@prettypeople.org>
+
+	* preview-file-selection.c (preview_file_selection_update): Update the
+	label with the size of the image.
+	(preview_file_selection_add_preview): Add a label below the preview.
+	
+2002-10-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.0.1
+
+2002-08-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.0
+
+2002-07-29  jacob berkman  <jacob@ximian.com>
+
+	* applier.c (set_root_pixmap): 
+	(make_root_pixmap): fixes for building with gdk 2.0
+
+2002-07-27  Mark McLoughlin  <mark@skynet.ie>
+
+	Add support for rendering the wallpaper on
+	a particular physical screen.
+
+	* applier.[ch]:
+	(bg_applier_init): init screen and root_window.
+	(bg_applier_class_init), (bg_applier_set_prop),
+	(bg_applier_get_prop): add "screen" property.
+	(bg_applier_new_for_screen): implement.
+	(render_wallpaper), (render_to_screen),
+	(create_pixmap), (wallpaper_full_cover_p): use the
+	screen and root window information.
+	(make_root_pixmap): add a GdkScreen arg, actually
+	use the display we opened, use the correct root
+	window and not the default one
+	(set_root_pixmap): add a GdkScreen arg, use the
+	default display, use the correct root window.
+
+2002-06-18  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=85224
+	* applier.c (render_wallpaper) : clamp to avoid underflow
+
+2002-06-17  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.0
+
+2002-05-31  Damon Chaplin  <damon@ximian.com>
+
+	* applier.c (bg_applier_apply_prefs): don't call set_root_pixmap() at
+	all if nautilus is running. It didn't do anything in this case anyway.
+	Removed the nice(20). A library function shouldn't do this. If
+	gnome-settings-daemon wants to be niced then it should do it in main()
+	or something like that.
+	(set_root_pixmap): do a final check to see if nautilus is running
+	before setting the pixmap.
+
+	Fixes part of #74311.
+
+2002-05-21  jacob berkman  <jacob@ximian.com>
+
+	* applier.c (render_to_screen): use a gc for the pixmap not the
+	root window
+	(bg_applier_get_preview_widget): don't create the pixmap until we
+	are realized
+	(make_root_pixmap): use gdk_get_display(), not getenv ("DISPLAY"),
+	and set the colormap for our GdkPixmap so we can draw on it
+	(preview_realized_cb): create the pixmap here, and set it on our
+	GtkImage
+
+	fixes #73496
+
+2002-05-16  jacob berkman  <jacob@ximian.com>
+
+	* applier.c (bg_applier_apply_prefs): don't spew a warning when
+	files can't be loaded (helps fix #76993)
+
+2002-04-19  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=79149
+	* preferences.c (bg_preferences_clone) : fix leaks and use
+	  gdk_color_free because some wiseguy thought GdkColours should use
+	  memchunks.
+	(bg_preferences_load) : ditto.
+	(bg_preferences_merge_entry) : ditto.
+	(read_color_from_string) : ditto.
+	(bg_preferences_finalize) : ditto. clean out pointers to protect
+	  against multiple calls.
+
+2002-04-17  Rachel Hestilow  <hestilow@ximian.com>
+
+	* applier.c (need_root_pixmap_p): Return TRUE if pixmap is NULL.
+	(create_pixmap): Only set pixmap if not already set.
+
+2002-04-17  Anders Carlsson  <andersca@gnu.org>
+
+	* preferences.c: (bg_preferences_finalize), (bg_preferences_load):
+	Plug leaks. Sigh.
+	
+2002-04-07  Rachel Hestilow  <hestilow@ximian.com>
+
+	* applier.c (bg_applier_get_preview_widget): Connect to "realize"
+	on preview.
+	(preview_realized_cb): Added function to initialize preview pixmap.
+
+2002-03-28  Richard Hestilow  <hestilow@ximian.com>
+
+	* applier.c (bg_applier_set_prop): Only set size for preview modes.
+
+2002-03-28  Richard Hestilow  <hestilow@ximian.com>
+
+	* applier.c (MONITOR_CONTENTS_WIDTH, MONITOR_CONTENTS_HEIGHT):
+	Rename to _DEFAULT_WIDTH, _DEFAULT_HEIGHT.
+	(draw_disabled_message): Accept width and height as variables.
+	(bg_applier_class_init): Install props preview_width, preview_height.
+	(bg_applier_set_prop): Accept new size properties, only set to
+	default width/height on mode PREVIEW if uninitialized.
+	(bg_applier_new_at_size): Added.
+	(bg_applier_apply_prefs): Call draw_disabled_message with actual
+	width/height.
+	(bg_applier_get_preview_width): Create pixmap based on set size.
+	
+2002-03-26  Dave Camp  <dave@ximian.com>
+
+	* applier.c: (bg_applier_init): Don't initialize
+	is_nautilus_running here (check it each time in appy_prefs).
+	(bg_applier_apply_prefs): Don't try to apply the background if
+	nautilus is running.
+
+2002-03-19  Richard Hestilow  <hestilow@ximian.com>
+
+	* preferences.h (wallpaper_type_t): Remove EMBOSSED since we
+	don't support it.
+	
+	* preferences.c:
+	(_bg_wptype_values, _bg_orientation_values): Move name values
+	to nick, change name to "correct" form.
+	(read_wptype_from_string, bg_preferences_get_wptype_as_string):
+	Remove EMBOSSSED option.
+	
+	* preview-file-selection.[ch]: Add function
+	preview_file_selection_intelligent_scale.
+
+	* applier.c: Change MONITOR_CONTENTS_WIDTH/HEIGHT to 64/48
+	(correct monitor ratio).
+	(bg_applier_apply_prefs): Disable wallpaper if WPTYPE_NONE.
+	(bg_applier_get_preview_widget): Create to WIDTH/HEIGHT.
+	(get_geometry): Remove reference to EMBOSSED.
+
+2002-03-17  Darin Adler  <darin@bentspoon.com>
+
+	* preferences.c: (bg_preferences_merge_entry):
+	Use G_GNUC_FUNCTION so we're not gcc-specific.
+
+2002-03-15  Seth Nickell  <snickell@stanford.edu>
+
+	* preferences.c: (bg_preferences_load),
+	(bg_preferences_merge_entry), (read_wptype_from_string),
+	(read_color_from_string), (bg_preferences_get_wptype_as_string):
+	* preferences.h:
+
+	Add an enum type for specifying that we don't know the type (i.e. the
+	key was not available, or set to something invalid). Currently it
+	was using -1, which barfs with some compilers that set enums
+	to be uint.
+	
+2002-03-09  Richard Hestilow  <hestilow@ximian.com>
+
+	* preview-file-selection.[ch]: Added.
+
+	* Makefile.am: Compile preview-file-selection.c.
+	
+	* preferences.c (bg_preferences_init): Initialize adjust_opacity
+	to FALSE.
+
+2002-03-03  Alexander Larsson  <alla@lysator.liu.se>
+
+	* preferences.c (bg_preferences_save):
+	Save wallpaper-enabled too.
+
+2002-02-22  Richard Hestilow  <hestilow@ximian.com>
+	
+	* preferences.[ch]: Add function bg_preferences_save.
+	
+2002-02-17  Bradford Hovinen  <hovinen@ximian.com>
+
+	* applier.c (need_root_pixmap_p): We don't need a root pixmap if
+	neither a wallpaper nor a gradient is enabled
+	(render_to_screen): Use set_back_pixmap/set_background when just
+	setting a color with a root applier
+	(need_root_pixmap_p): If the last preferences structure had
+	neither gradient nor wallpaper enabled, we need a new root pixmap
+	(need_wallpaper_load_p): We need to reload the wallpaper pixbuf if
+	it is enabled and not loaded
+	(cleanup_cb): Free bg_applier->p->pixbuf too
+	(bg_applier_apply_prefs): Only add the timeout for cleanup if we
+	are in a root renderer; we don't need it for preview
+
+2002-02-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* applier.c (draw_disabled_message): Use g_object_unref for GdkGC
+	(render_wallpaper): Use gdk_drawable_get_size
+	(render_to_screen): Use gdk_get_default_root_window
+	(wallpaper_full_cover_p): Ditto
+
+	* preferences.c (read_color_from_string): Use gdk_rgb_find_color
+
+	* applier.c (bg_applier_get_preview_widget): Use gnome_program_locate_file,
+	replace GDK_ROOT_PARENT with gdk_get_default_root_window, deprecated
+	gdk_window_* methods with gdk_drawable_* ones
+	(bg_applier_get_preview_widget): Removed gtk_widget_push_visual,
+	gtk_widget_pop_visual, use gtk_image instead of gtk_pixmap
+
+2002-02-07  Richard Hestilow  <hestilow@ximian.com>
+
+	* applier.c (BGApplierPrivate): Add "timeout" field.
+	(bg_apply_cleanup_cb): Added.
+	(bg_applier_apply_prefs): Add/reset timeout for cleanup function
+	if we load a pixbuf.
+
+2002-02-04  Lauris Kaplinski  <lauris@ximian.com>
+
+	* preferences.c (read_wptype_from_string): Do not crash on NULL
+	(read_orientation_from_string): Ditto
+
+	* applier.c (bg_applier_dispose): Replace deprecated methods
+	(draw_disabled_message): Use gtk_image instead of gtk_pixmap,
+	replace deprecated methods
+	(render_wallpaper): Replace deprecated methods
+
+2002-01-13  Seth Nickell  <snickell@stanford.edu>
+
+	reviewed by: <delete if not using a buddy>
+
+	* Makefile.am:
+	* applier.c: (bg_applier_apply_prefs),
+	(bg_applier_get_preview_widget), (draw_disabled_message),
+	(create_pixmap), (get_geometry):
+	* preferences.c: (bg_preferences_load),
+	(bg_preferences_merge_entry), (read_wptype_from_string),
+	(read_orientation_from_string):
+	* preferences.h:
+
+2002-01-28  Richard Hestilow  <hestilow@ximian.com>
+
+	* Makefile.am: Use libtool to create the static library, thus
+	allowing shlibs to link to libbackground (needed for metatheme).
+
+2002-01-10  Bradford Hovinen  <hovinen@ximian.com>
+
+	Courtesy of Jean Schurger <jschurger@schurger.org>:
+	* preferences.c (bg_preferences_merge_entry): Make sure the
+	wallpaper filename is non-NULL before doing anything with it
+
+2001-12-20  Bradford Hovinen  <hovinen@ximian.com>
+
+	* applier.c (bg_applier_apply_prefs): Disable the wallpaper if we
+	couldn't load it
+	(bg_applier_apply_prefs): Create a clone of the preferences
+	structure first and work off of that
+	(wallpaper_full_cover_p): Return FALSE if the wallpaper pixbuf is NULL
+
+	* preferences.c (bg_preferences_merge_entry): Don't actually set
+	the wallpaper to "enabled" unless we can load the thing
+
+	* applier.c: Eliminate compiler warnings
+
+	* applier.[ch]: Rename applier to bg_applier to avoid possible
+	namespace collision
+
+	* preferences.[ch]: Rename preferences to bg_preferences to avoid
+	possible namespace collision
+
+2001-12-18  Bradford Hovinen  <hovinen@ximian.com>
+
+	* preferences.c: Update GConf keys to use /desktop/gnome/background
+	(preferences_load): Use gconf_client rather than gconf_engine
+
+2001-12-17  Bradford Hovinen  <hovinen@ximian.com>
+
+	* applier.c (set_root_pixmap): Set the pixmap_id correctly if
+	pixmap is NULL or -1.
+
+	* preferences.c (preferences_merge_entry): Eliminate name; use
+	entry->key on the warning
+	(preferences_merge_entry): Use correct keys
+
+	* applier.c (applier_get_preview_widget): Make sure the pixmap is
+	masked correctly
+	(applier_apply_prefs): s/gtk_object_destroy/g_object_unref/
+
+2001-12-07  Bradford Hovinen  <hovinen@ximian.com>
+
+	* preferences.c (read_color_from_string): Check if string is
+	non-NULL
+	(preferences_load): Initialize the error structure
+
+	* applier.c (applier_class_init): Initialize object_class properly
+	before using it; install property after {get|set}_property are set
+	(applier_get_preview_widget): Construct the GC before using it
+
