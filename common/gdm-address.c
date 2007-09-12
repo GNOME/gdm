@@ -263,7 +263,7 @@ gdm_address_is_loopback (GdmAddress *address)
                 break;
 #endif
         case AF_INET:
-                return (INADDR_LOOPBACK == (((struct sockaddr_in *)address->ss)->sin_addr.s_addr));
+                return (INADDR_LOOPBACK == htonl (((struct sockaddr_in *)address->ss)->sin_addr.s_addr));
                 break;
         default:
                 break;
