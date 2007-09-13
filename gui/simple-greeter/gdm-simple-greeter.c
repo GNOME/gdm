@@ -454,6 +454,9 @@ create_greeter (GdmSimpleGreeter *greeter)
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_deletable (GTK_WINDOW (dialog), FALSE);
         gtk_window_set_decorated (GTK_WINDOW (dialog), FALSE);
+        gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), TRUE);
+        gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), TRUE);
+        gtk_window_stick (GTK_WINDOW (dialog));
         gtk_widget_show (dialog);
 
         set_busy (greeter);

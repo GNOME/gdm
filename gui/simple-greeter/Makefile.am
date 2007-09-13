@@ -2,14 +2,12 @@ NULL =
 
 SUBDIRS = 				\
 	libnotificationarea		\
-	libbackground			\
 	$(NULL)
 
 INCLUDES = \
 	-I$(top_srcdir)/common				\
 	-I$(top_srcdir)/libgreeter			\
 	-I$(top_srcdir)/gui/simple-greeter/libnotificationarea	\
-	-I$(top_srcdir)/gui/simple-greeter/libbackground	\
 	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
@@ -28,7 +26,19 @@ INCLUDES = \
 	$(NULL)
 
 noinst_PROGRAMS = 		\
+	test-greeter-background	\
 	test-greeter-panel	\
+	$(NULL)
+
+test_greeter_background_SOURCES = 	\
+	test-greeter-background.c	\
+	gdm-greeter-background.h	\
+	gdm-greeter-background.c	\
+	$(NULL)
+
+test_greeter_background_LDADD =	\
+	$(CAPPLET_LIBS)		\
+	$(GUI_LIBS)		\
 	$(NULL)
 
 test_greeter_panel_SOURCES = 	\
@@ -60,7 +70,6 @@ gdm_simple_greeter_LDADD = 		\
 	-L$(top_builddir)/libgreeter	\
 	-lgreeter			\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
-	$(top_builddir)/gui/simple-greeter/libbackground/libbackground.la		\
 	$(GLIB_LIBS)		\
 	$(DBUS_LIBS)		\
 	$(GOBJECT_LIBS)		\

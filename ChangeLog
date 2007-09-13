@@ -1,3 +1,24 @@
+2007-09-13  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-greeter-background.c:
+	(read_background_image_placement_from_string),
+	(read_color_shading_from_string), (on_key_changed),
+	(settings_init), (scale_pixbuf), (load_image), (update_background),
+	(gdm_greeter_background_constructor),
+	(gdm_greeter_background_dispose),
+	(gdm_greeter_background_real_map),
+	(gdm_greeter_background_real_realize),
+	(gdm_greeter_background_real_configure),
+	(gdm_greeter_background_real_expose),
+	(gdm_greeter_background_class_init), (gdm_greeter_background_init):
+	* gui/simple-greeter/gdm-simple-greeter.c: (create_greeter):
+	* gui/simple-greeter/libbackground/*:
+	* gui/simple-greeter/test-greeter-background.c: (main):
+	Make background widget functional.  Will follow the
+	gconf defaults in /desktop/gnome/background.  Removed
+	libbackground.
+
 2007-09-12  William Jon McCann  <mccann@jhu.edu>
 
 	* configure.ac:
