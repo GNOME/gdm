@@ -3,6 +3,8 @@
 	* Release 2.20.0:
 	* configure.ac: Updated to new release version
 	* NEWS: Updated.
+	* gui/gdmcommon.c, gui/Makefile.am: Properly propegate the new
+	  atspidir to the c-file.
 
 2007-09-17 Brian Cameron <brian.cameron@sun.com>
 
@@ -100,7 +102,7 @@
 	  2. Added "background (true | false) #IMPLIED to item ATTLIST
 	     properties
 	  3. Added "everywhere" and "nowhere" to list of modes for the
-             show ATTLIST
+	     show ATTLIST
 	* gui/greeter/themes/happygnome-list/Makefile.am,
 	  gui/greeter/themes/happygnome-list/happygnome-list.xml: Removed
 	  an error where max-width was used as a property for a box
@@ -289,9 +291,9 @@
 
 2007-07-11  Brian Cameron <brian.cameron@sun.com>
 
-        This fixes CVE-2007-3381 - a denial of service attack where
-        the user can crash the GDM daemon with a carefully crafted GDM
-        sockets command and cause GDM to stop managing future displays.
+	This fixes CVE-2007-3381 - a denial of service attack where
+	the user can crash the GDM daemon with a carefully crafted GDM
+	sockets command and cause GDM to stop managing future displays.
 
 	* daemon/gdm.c, daemon/server.c, common/gdm-common.[ch],
 	  common/gdm-common-config.c, gui/gdmlogin.c, gui/gdmcommon.[ch],

@@ -15,6 +15,7 @@ DEFS = @DEFS@ \
 	-DLIBDIR=\"@libdir@\" 				\
 	-DLIBEXECDIR=\"@libexecdir@\" 			\
 	-DLOGDIR=\"@logdir@\"				\
+	-DATSPIDIR=\"@atspidir@\"				\
 	-DPIXMAPDIR=\"@pixmapdir@\" 			\
 	-DSBINDIR=\"@sbindir@\"				\
 	$(NULL)

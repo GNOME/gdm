@@ -950,7 +950,7 @@ if ! test -z "$with_atspi_dir"; then
 else
   ATSPI_DIR="$gdm_libexec"
 fi
-AC_SUBST(ATSPI_DIR)
+AC_SUBST(atspidir, $ATSPI_DIR)
 
 if test x$enable_secureremote != xno ; then
        SSHDESKTOP="ssh.desktop"
