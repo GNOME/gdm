@@ -944,7 +944,7 @@ fi
 
 AC_ARG_WITH(atspi-dir,
   [  --with-atspi-dir=<PATH>   PATH to at-spi-registryd [default=LIBEXECDIR]])
-+
+
 if ! test -z "$with_atspi_dir"; then
   ATSPI_DIR="$with_atspi_dir"
 else

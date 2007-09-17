@@ -702,7 +702,7 @@ pre_atspi_launch (void){
 	if (! a11y)
 		return FALSE;
 
-	command = g_strdup (LIBEXECDIR "/at-spi-registryd");
+	command = g_strdup (ATSPI_DIR "/at-spi-registryd");
 
 	atspi_prog_argv = NULL;
 	g_shell_parse_argv (command, NULL, &atspi_prog_argv, NULL);
