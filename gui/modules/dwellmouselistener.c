@@ -431,7 +431,6 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 {
 	GObject *object;
 	GtkWidget *widget;
-	GtkWindow *window;
 	GdkEventCrossing *event;
 	GdkRectangle rect;
 	GSList *li;
@@ -441,7 +440,6 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 	object = g_value_get_object (param_values + 0);
 	event  = g_value_get_boxed (param_values + 1);
 	widget = GTK_WIDGET (object);
-	window = GTK_WINDOW (object);
 
 	if (event->detail == GDK_NOTIFY_INFERIOR ||
 	    !GTK_IS_WINDOW (object) || !GTK_WIDGET_TOPLEVEL (object)) {
@@ -577,7 +575,8 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 				continue;
 #endif
 
-			envp = get_exec_environment (gtk_window_get_screen(window));
+			envp = get_exec_environment (gtk_window_get_screen
+						     (GTK_WINDOW(widget)));
 
 			if (debug_gestures)
 				syslog (LOG_WARNING, "Action is %s", action);

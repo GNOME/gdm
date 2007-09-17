@@ -1,5 +1,11 @@
 2007-09-12 Brian Cameron <brian.cameron@sun.com>
 
+	* gui/modules/dwellmouselistener.c: Fix casting so that it doesn't
+	  generate warnings when you enter/leave various widgets.  Fixes
+	  bug #440948.  Patch by Gerd Kohlberger <lowfi@chello.at>.
+
+2007-09-12 Brian Cameron <brian.cameron@sun.com>
+
 	* gui/gdmlanguages.c: Fix Macedonian language so that the
 	  language appears in the local language.  Fixes bug #474530.
 	  Patch by Arangel Angov <ufo@linux.net.mk>.
@@ -207,7 +213,7 @@
 
 2007-07-31  Brian Cameron <brian.cameron@sun.com>
 
-	* README: Some improvments.
+	* README: Some improvements.
 
 2007-07-31  Lukasz Zalewski <lukas@dcs.qmul.ac.uk>
 
