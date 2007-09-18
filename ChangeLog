@@ -1,3 +1,45 @@
+2007-09-18  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-language-chooser-dialog.c:
+	(gdm_language_chooser_dialog_get_current_language_name),
+	(gdm_language_chooser_dialog_set_property),
+	(gdm_language_chooser_dialog_get_property),
+	(gdm_language_chooser_dialog_constructor),
+	(gdm_language_chooser_dialog_dispose),
+	(gdm_language_chooser_dialog_class_init), (on_response),
+	(gdm_language_chooser_dialog_init),
+	(gdm_language_chooser_dialog_finalize),
+	(gdm_language_chooser_dialog_new):
+	* gui/simple-greeter/gdm-language-chooser-dialog.h:
+	* gui/simple-greeter/gdm-language-chooser-widget.c:
+	(chooser_locale_free),
+	(gdm_language_chooser_widget_get_current_language_name),
+	(gdm_language_chooser_widget_set_property),
+	(gdm_language_chooser_widget_get_property),
+	(gdm_language_chooser_widget_constructor),
+	(gdm_language_chooser_widget_dispose),
+	(gdm_language_chooser_widget_class_init), (on_language_selected),
+	(locale_exists), (utf8_convert), (get_lc_identification),
+	(get_short_name_for_locale), (parse_short_name), (nameentcmp),
+	(collect_locales_from_archive), (select_dirs),
+	(collect_locales_from_directory), (collect_locales_from_aliases),
+	(collect_locales), (on_row_activated), (get_translated_language),
+	(get_language), (get_territory), (get_translated_territory),
+	(languages_parse_start_tag), (territories_parse_start_tag),
+	(languages_init), (territories_init), (add_locale_to_model),
+	(populate_model), (gdm_language_chooser_widget_init),
+	(gdm_language_chooser_widget_finalize),
+	(gdm_language_chooser_widget_new):
+	* gui/simple-greeter/gdm-language-chooser-widget.h:
+	* gui/simple-greeter/langinfo.h:
+	* gui/simple-greeter/libnotificationarea/Makefile.am:
+	* gui/simple-greeter/locarchive.h:
+	* gui/simple-greeter/test-language-chooser.c: (main):
+	First shot at a language chooser widget that uses locale
+	archives and iso-codes.
+
 2007-09-13  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/Makefile.am:

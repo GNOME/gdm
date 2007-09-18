@@ -677,7 +677,7 @@ if test "x$XINPUT_LIBS" = x; then
   done
   if test "x$XINPUT_LIBS" = x; then
     AC_MSG_ERROR(Couldn't find the XInput library. Check config.log for details)
-  fi			       
+  fi
 fi
 AC_CHECK_HEADER(X11/extensions/XInput.h, have_xinput=yes)
 if test "x$have_xinput" = xyes; then
@@ -852,6 +852,18 @@ else
 fi
 AC_SUBST(DBUS_SYS_DIR)
 
+dnl ---------------------------------------------------------------------------
+dnl - ISO Codes checks
+dnl ---------------------------------------------------------------------------
+
+AC_MSG_CHECKING([whether iso-codes has iso-639 domain])
+if $PKG_CONFIG --variable=domains iso-codes | grep 639 >/dev/null ; then
+	AC_MSG_RESULT([yes])
+else
+	AC_MSG_RESULT([no])
+fi
+AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["`$PKG_CONFIG --variable=prefix iso-codes`"],[ISO codes prefix])
+ISO_CODES=iso-codes
 
 #
 # Define some variables to represent the directories we use.
@@ -1307,7 +1319,6 @@ gui/Makefile
 gui/modules/Makefile
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
-gui/simple-greeter/libbackground/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/Makefile

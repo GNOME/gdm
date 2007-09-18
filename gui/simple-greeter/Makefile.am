@@ -8,17 +8,13 @@ INCLUDES = \
 	-I$(top_srcdir)/common				\
 	-I$(top_srcdir)/libgreeter			\
 	-I$(top_srcdir)/gui/simple-greeter/libnotificationarea	\
-	-DAUTHDIR=\""$(authdir)"\"		 	\
+	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
 	-DDATADIR=\""$(datadir)"\"		 	\
-	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
-	-DDMCONFDIR=\""$(dmconfdir)"\"		 	\
-	-DGDM_CONFIG_FILE=\"$(gdmconfdir)/gdm.conf\"	\
-	-DGDMLOCALEDIR=\""$(gdmlocaledir)"\"		\
+	-DLIBLOCALEDIR=\""$(libdir)/locale"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DGLADEDIR=\""$(pkgdatadir)"\" 	\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
-	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
 	$(GUI_CFLAGS)					\
 	$(DBUS_CFLAGS)					\
 	$(GREETER_CFLAGS)				\
@@ -28,6 +24,7 @@ INCLUDES = \
 noinst_PROGRAMS = 		\
 	test-greeter-background	\
 	test-greeter-panel	\
+	test-language-chooser	\
 	$(NULL)
 
 test_greeter_background_SOURCES = 	\
@@ -49,6 +46,18 @@ test_greeter_panel_SOURCES = 	\
 
 test_greeter_panel_LDADD =	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(GUI_LIBS)		\
+	$(NULL)
+
+test_language_chooser_SOURCES = 	\
+	test-language-chooser.c		\
+	gdm-language-chooser-widget.h	\
+	gdm-language-chooser-widget.c	\
+	gdm-language-chooser-dialog.h	\
+	gdm-language-chooser-dialog.c	\
+	$(NULL)
+
+test_language_chooser_LDADD =	\
 	$(GUI_LIBS)		\
 	$(NULL)
 

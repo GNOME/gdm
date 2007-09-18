@@ -39,7 +39,7 @@ libnotificationarea_la_LIBADD =			\
 	$(GUI_LIBS)				\
 	$(NULL)
 
-libnotification_area_la_LDFLAGS = 		\
+libnotificationarea_la_LDFLAGS = 		\
 	-export-dynamic 			\
 	$(NULL)
 
