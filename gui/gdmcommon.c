@@ -681,7 +681,9 @@ pre_fetch_run (gpointer data)
 	g_spawn_async (".",
 		       pre_fetch_prog_argv,
 		       NULL,
-		       (GSpawnFlags) (G_SPAWN_SEARCH_PATH),
+		       (GSpawnFlags) (G_SPAWN_SEARCH_PATH | 
+                              G_SPAWN_STDOUT_TO_DEV_NULL |
+                              G_SPAWN_STDERR_TO_DEV_NULL),
 		       NULL,
 		       NULL,
 		       &pid,
@@ -710,7 +712,9 @@ pre_atspi_launch (void){
 	g_spawn_async (".",
 		       atspi_prog_argv,
 		       NULL,
-		       (GSpawnFlags) (G_SPAWN_SEARCH_PATH),
+		       (GSpawnFlags) (G_SPAWN_SEARCH_PATH |
+                              G_SPAWN_STDOUT_TO_DEV_NULL |
+                              G_SPAWN_STDERR_TO_DEV_NULL),
 		       NULL,
 		       NULL,
 		       &pid,
