@@ -120,8 +120,6 @@ gdm_language_chooser_dialog_dispose (GObject *object)
 
         language_chooser_dialog = GDM_LANGUAGE_CHOOSER_DIALOG (object);
 
-        g_debug ("Disposing language_chooser_dialog");
-
         G_OBJECT_CLASS (gdm_language_chooser_dialog_parent_class)->dispose (object);
 }
 

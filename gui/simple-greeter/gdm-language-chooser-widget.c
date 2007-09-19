@@ -117,6 +117,7 @@ gdm_language_chooser_widget_get_current_language_name (GdmLanguageChooserWidget 
 
         language_name = NULL;
         if (widget->priv->current_locale != NULL) {
+                language_name = g_strdup (widget->priv->current_locale->name);
         }
 
         return language_name;
