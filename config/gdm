@@ -1,5 +1,6 @@
 #%PAM-1.0
 auth       required    pam_env.so
+auth       required    pam_succeed_if.so user != root quiet
 auth       include     system-auth
 account    required    pam_nologin.so
 account    include     system-auth
