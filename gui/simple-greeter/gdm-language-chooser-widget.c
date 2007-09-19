@@ -295,6 +295,8 @@ utf8_convert (const char *str,
    ? ((unsigned int) (0x20051014 ^ (category)))                         \
    : ((unsigned int) (0x20031115 ^ (category))))
 
+
+/* This seems to be specified by ISO/IEC 14652 */
 static void
 get_lc_identification (GdmChooserLocale *locale,
                        void             *data,
@@ -306,6 +308,7 @@ get_lc_identification (GdmChooserLocale *locale,
                 unsigned int strindex[0];
         } *filedata = data;
 
+#ifdef LC_IDENTIFICATION
         if (filedata->magic == LIMAGIC (LC_IDENTIFICATION)
             && (sizeof *filedata + (filedata->nstrings * sizeof (unsigned int)) <= size)) {
 
@@ -315,6 +318,7 @@ get_lc_identification (GdmChooserLocale *locale,
                 locale->language = utf8_convert (GET_HANDLE (LANGUAGE), -1);
                 locale->territory = utf8_convert (GET_HANDLE (TERRITORY), -1);
         }
+#endif
 }
 
 static char *
@@ -446,9 +450,11 @@ collect_locales_from_archive (GdmLanguageChooserWidget *widget)
 
                 locrec = (struct locrecent *) (addr + names[cnt].locrec_offset);
 
+#ifdef LC_IDENTIFICATION
                 get_lc_identification (locale,
                                        addr + locrec->record[LC_IDENTIFICATION].offset,
                                        locrec->record[LC_IDENTIFICATION].len);
+#endif
 
                 g_hash_table_insert (widget->priv->available_locales, g_strdup (short_name), locale);
         }
