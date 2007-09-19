@@ -154,6 +154,8 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
         dialog->priv = GDM_LANGUAGE_CHOOSER_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->chooser_widget = gdm_language_chooser_widget_new ();
+        gdm_language_chooser_widget_set_current_language_name (GDM_LANGUAGE_CHOOSER_WIDGET (dialog->priv->chooser_widget), g_getenv ("LANG"));
+
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),

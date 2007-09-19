@@ -53,6 +53,8 @@ GType                  gdm_language_chooser_widget_get_type                     
 GtkWidget *            gdm_language_chooser_widget_new                            (void);
 
 char *                 gdm_language_chooser_widget_get_current_language_name      (GdmLanguageChooserWidget *widget);
+void                   gdm_language_chooser_widget_set_current_language_name      (GdmLanguageChooserWidget *widget,
+                                                                                   const char               *lang_name);
 
 G_END_DECLS
 

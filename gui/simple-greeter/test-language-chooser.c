@@ -46,6 +46,8 @@ main (int argc, char *argv[])
         gtk_init (&argc, &argv);
 
         dialog = gdm_language_chooser_dialog_new ();
+        gtk_widget_set_size_request (dialog, 480, 480);
+
         if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
                 char *name;
 

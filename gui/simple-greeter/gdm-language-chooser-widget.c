@@ -108,6 +108,77 @@ chooser_locale_free (GdmChooserLocale *locale)
         g_free (locale);
 }
 
+/*
+ * According to http://en.wikipedia.org/wiki/Locale
+ * locale names are of the form:
+ * [language[_territory][.codeset][@modifier]]
+ */
+static void
+parse_locale (const char *name,
+              char      **language_codep,
+              char      **territory_codep,
+              char      **codesetp,
+              char      **modifierp)
+{
+        GRegex     *re;
+        GMatchInfo *match_info;
+        gboolean    res;
+        GError     *error;
+
+        error = NULL;
+        re = g_regex_new ("(?P<language>[a-zA-Z]+)(_(?P<territory>[a-zA-Z]+))?(.(?P<codeset>[0-9a-zA-Z]+))?(@(?P<modifier>[0-9a-zA-Z]+))?", 0, 0, &error);
+        if (re == NULL) {
+                g_critical (error->message);
+        }
+
+        g_regex_match (re, name, 0, &match_info);
+
+        res = g_match_info_matches (match_info);
+        if (! res) {
+                g_warning ("Unable to parse locale: %s", name);
+                return;
+        }
+
+        if (language_codep != NULL) {
+                *language_codep = g_match_info_fetch_named (match_info, "language");
+        }
+
+        if (territory_codep != NULL) {
+                *territory_codep = g_match_info_fetch_named (match_info, "territory");
+        }
+
+        if (codesetp != NULL) {
+                *codesetp = g_match_info_fetch_named (match_info, "codeset");
+        }
+
+        if (modifierp != NULL) {
+                *modifierp = g_match_info_fetch_named (match_info, "modifier");
+        }
+
+        g_match_info_free (match_info);
+        g_regex_unref (re);
+}
+
+static char *
+construct_language_name (const char *language,
+                         const char *territory,
+                         const char *codeset,
+                         const char *modifier)
+{
+        char *name;
+
+        /* Ignore codeset and modifier for this */
+        if (territory == NULL) {
+                name = g_strdup (language);
+        } else {
+                name = g_strdup_printf ("%s_%s",
+                                        language,
+                                        territory);
+        }
+
+        return name;
+}
+
 char *
 gdm_language_chooser_widget_get_current_language_name (GdmLanguageChooserWidget *widget)
 {
@@ -121,6 +192,90 @@ gdm_language_chooser_widget_get_current_language_name (GdmLanguageChooserWidget 
         }
 
         return language_name;
+}
+
+static void
+select_name (GdmLanguageChooserWidget *widget,
+             const char               *name)
+{
+        GtkTreeModel *model;
+        GtkTreeIter   iter;
+        GtkTreePath  *path;
+
+        path = NULL;
+
+        model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget->priv->treeview));
+
+        if (name != NULL && gtk_tree_model_get_iter_first (model, &iter)) {
+
+                do {
+                        GdmChooserLocale *locale;
+                        gboolean          found;
+
+                        gtk_tree_model_get (model,
+                                            &iter,
+                                            CHOOSER_LIST_LOCALE_COLUMN, &locale,
+                                            -1);
+                        found = (locale != NULL
+                                 && locale->name != NULL
+                                 && strcmp (locale->name, name) == 0);
+
+                        if (found) {
+                                path = gtk_tree_model_get_path (model, &iter);
+                                break;
+                        }
+
+                } while (gtk_tree_model_iter_next (model, &iter));
+        }
+
+        if (path != NULL) {
+                gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (widget->priv->treeview),
+                                              path,
+                                              gtk_tree_view_get_column (GTK_TREE_VIEW (widget->priv->treeview), 0),
+                                              TRUE, 0.5, 0.0);
+                gtk_tree_view_set_cursor (GTK_TREE_VIEW (widget->priv->treeview),
+                                          path,
+                                          NULL,
+                                          FALSE);
+
+                gtk_tree_path_free (path);
+        }
+}
+
+void
+gdm_language_chooser_widget_set_current_language_name (GdmLanguageChooserWidget *widget,
+                                                       const char               *lang_name)
+{
+        GtkTreeSelection *selection;
+
+        g_return_if_fail (GDM_IS_LANGUAGE_CHOOSER_WIDGET (widget));
+
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->treeview));
+
+        if (lang_name == NULL) {
+                gtk_tree_selection_unselect_all (selection);
+        } else {
+                char *name;
+                char *language_code;
+                char *territory_code;
+
+                language_code = NULL;
+                territory_code = NULL;
+
+                /* in case this is a locale name and not a short name */
+                parse_locale (lang_name,
+                              &language_code,
+                              &territory_code,
+                              NULL,
+                              NULL);
+
+                name = construct_language_name (language_code, territory_code, NULL, NULL);
+                select_name (widget, name);
+
+                g_free (name);
+                g_free (language_code);
+                g_free (territory_code);
+        }
 }
 
 static void
@@ -323,57 +478,6 @@ get_lc_identification (GdmChooserLocale *locale,
 #endif
 }
 
-/*
- * According to http://en.wikipedia.org/wiki/Locale
- * locale names are of the form:
- * [language[_territory][.codeset][@modifier]]
- */
-static void
-parse_locale (const char *name,
-              char      **language_codep,
-              char      **territory_codep,
-              char      **codesetp,
-              char      **modifierp)
-{
-        GRegex     *re;
-        GMatchInfo *match_info;
-        gboolean    res;
-        GError     *error;
-
-        error = NULL;
-        re = g_regex_new ("(?P<language>[a-zA-Z]+)(_(?P<territory>[a-zA-Z]+))?(.(?P<codeset>[0-9a-zA-Z]+))?(@(?P<modifier>[0-9a-zA-Z]+))?", 0, 0, &error);
-        if (re == NULL) {
-                g_critical (error->message);
-        }
-
-        g_regex_match (re, name, 0, &match_info);
-
-        res = g_match_info_matches (match_info);
-        if (! res) {
-                g_warning ("Unable to parse locale: %s", name);
-                return;
-        }
-
-        if (language_codep != NULL) {
-                *language_codep = g_match_info_fetch_named (match_info, "language");
-        }
-
-        if (territory_codep != NULL) {
-                *territory_codep = g_match_info_fetch_named (match_info, "territory");
-        }
-
-        if (codesetp != NULL) {
-                *codesetp = g_match_info_fetch_named (match_info, "codeset");
-        }
-
-        if (modifierp != NULL) {
-                *modifierp = g_match_info_fetch_named (match_info, "modifier");
-        }
-
-        g_match_info_free (match_info);
-        g_regex_unref (re);
-}
-
 struct nameent
 {
         char    *name;
@@ -444,14 +548,7 @@ collect_locales_from_archive (GdmLanguageChooserWidget *widget)
                               NULL,
                               NULL);
 
-                /* Ignore codeset and modifier for this */
-                if (locale->territory_code == NULL) {
-                        locale->name = g_strdup (locale->language_code);
-                } else {
-                        locale->name = g_strdup_printf ("%s_%s",
-                                                        locale->language_code,
-                                                        locale->territory_code);
-                }
+                locale->name = construct_language_name (locale->language_code, locale->territory_code, NULL, NULL);
 
                 if (g_hash_table_lookup (widget->priv->available_locales, locale->name) != NULL) {
                         chooser_locale_free (locale);
@@ -528,13 +625,7 @@ collect_locales_from_directory (GdmLanguageChooserWidget *widget)
                               NULL);
 
                 /* Ignore codeset and modifier for this */
-                if (locale->territory_code == NULL) {
-                        locale->name = g_strdup (locale->language_code);
-                } else {
-                        locale->name = g_strdup_printf ("%s_%s",
-                                                        locale->language_code,
-                                                        locale->territory_code);
-                }
+                locale->name = construct_language_name (locale->language_code, locale->territory_code, NULL, NULL);
 
                 if (g_hash_table_lookup (widget->priv->available_locales, locale->name) != NULL) {
                         chooser_locale_free (locale);

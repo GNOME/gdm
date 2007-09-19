@@ -1,6 +1,18 @@
 2007-09-19  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-language-chooser-dialog.c:
+	(gdm_language_chooser_dialog_init):
+	* gui/simple-greeter/gdm-language-chooser-widget.c: (parse_locale),
+	(construct_language_name), (select_name),
+	(gdm_language_chooser_widget_set_current_language_name),
+	(collect_locales_from_archive), (collect_locales_from_directory):
+	* gui/simple-greeter/gdm-language-chooser-widget.h:
+	* gui/simple-greeter/test-language-chooser.c: (main):
+	Add lang setting capability and set initially to $LANG
+
+2007-09-19  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/simple-greeter/gdm-language-chooser-dialog.c:
 	(gdm_language_chooser_dialog_dispose):
 	* gui/simple-greeter/gdm-language-chooser-widget.c:
 	(gdm_language_chooser_widget_get_current_language_name):
