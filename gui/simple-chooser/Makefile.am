@@ -29,11 +29,12 @@ gdm_simple_chooser_SOURCES =  		\
 
 gdm_simple_chooser_LDADD = 		\
 	$(EXTRA_CHOOSER_LIBS)   	\
-	$(GLIB_LIBS)		\
-	$(DBUS_LIBS)		\
-	$(GOBJECT_LIBS)		\
-	$(GUI_LIBS)		\
-	$(CHOOSER_LIBS)		\
+	$(GLIB_LIBS)			\
+	$(DBUS_LIBS)			\
+	$(GOBJECT_LIBS)			\
+	$(GUI_LIBS)			\
+	$(CHOOSER_LIBS)			\
+	$(XDMCP_LIBS)			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
