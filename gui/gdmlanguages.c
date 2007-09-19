@@ -120,7 +120,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Czech"), "cs_CZ", "čeština", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Danish"), "da_DK", "dansk", 0 },
+	{ N_("A-M|Danish"), "da_DK", "Dansk", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Dutch"), "nl_NL", "Nederlands", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -236,7 +236,7 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Romanian"), "ro_RO", "Română", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Russian"), "ru_RU", "русский", 0 },
+	{ N_("N-Z|Russian"), "ru_RU", "Русский", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Serbian"), "sr_YU", "српски", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
