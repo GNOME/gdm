@@ -1,5 +1,12 @@
 2007-09-19  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/gdm-language-chooser-widget.c: (parse_locale),
+	(collect_locales_from_archive), (collect_locales_from_directory),
+	(add_locale_to_model):
+	Properly parse a locale name using the template [language[_territory][.codeset][@modifier]].
+
+2007-09-19  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-greeter-session.c: (get_greeter_environment),
 	(signal_pid), (spawn_child_setup),
 	(spawn_command_line_sync_as_user),
