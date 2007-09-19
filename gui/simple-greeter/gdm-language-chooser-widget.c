@@ -36,7 +36,7 @@
 
 #include "gdm-language-chooser-widget.h"
 
-#include "langinfo.h"
+#include <langinfo.h>
 #ifndef __LC_LAST
 #define __LC_LAST       13
 #endif

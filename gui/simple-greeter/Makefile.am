@@ -53,7 +53,6 @@ test_language_chooser_SOURCES = 	\
 	test-language-chooser.c		\
 	gdm-language-chooser-widget.h	\
 	gdm-language-chooser-widget.c	\
-	langinfo.h			\
 	locarchive.h			\
 	gdm-language-chooser-dialog.h	\
 	gdm-language-chooser-dialog.c	\
