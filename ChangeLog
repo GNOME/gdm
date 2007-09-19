@@ -1,5 +1,20 @@
 2007-09-19  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-greeter-session.c: (get_greeter_environment),
+	(signal_pid), (spawn_child_setup),
+	(spawn_command_line_sync_as_user),
+	(spawn_command_line_async_as_user), (parse_value_as_integer),
+	(parse_dbus_launch_output), (start_dbus_daemon),
+	(stop_dbus_daemon), (gdm_greeter_session_spawn),
+	(gdm_greeter_session_stop), (gdm_greeter_session_init),
+	(gdm_greeter_session_finalize):
+	* gui/simple-greeter/gdm-language-chooser-widget.c:
+	(parse_short_name):
+	Manage the lifecycle of the D-Bus session since
+	the X server doesn't exit.
+
+2007-09-19  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-session.c:
 	Remove old defines
 

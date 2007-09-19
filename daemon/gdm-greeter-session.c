@@ -44,6 +44,8 @@
 
 #include "gdm-greeter-session.h"
 
+#define DBUS_LAUNCH_COMMAND "dbus-launch --exit-with-session"
+
 #define GDM_GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
 #define GDM_GREETER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
 
@@ -75,6 +77,9 @@ struct GdmGreeterSessionPrivate
 
         guint           child_watch_id;
 
+        GPid            dbus_pid;
+        char           *dbus_bus_address;
+
         char           *server_address;
 };
 
@@ -103,74 +108,6 @@ static void     gdm_greeter_session_init  (GdmGreeterSession      *greeter_sessi
 static void     gdm_greeter_session_finalize      (GObject         *object);
 
 G_DEFINE_TYPE (GdmGreeterSession, gdm_greeter_session, G_TYPE_OBJECT)
-
-
-static void
-change_user (GdmGreeterSession *greeter_session)
-
-{
-        struct passwd *pwent;
-        struct group  *grent;
-
-        if (greeter_session->priv->user_name == NULL) {
-                return;
-        }
-
-        pwent = getpwnam (greeter_session->priv->user_name);
-        if (pwent == NULL) {
-                g_warning (_("GreeterSession was to be spawned by user %s but that user doesn't exist"),
-                           greeter_session->priv->user_name);
-                _exit (1);
-        }
-
-        grent = getgrnam (greeter_session->priv->group_name);
-        if (grent == NULL) {
-                g_warning (_("GreeterSession was to be spawned by group %s but that user doesn't exist"),
-                           greeter_session->priv->group_name);
-                _exit (1);
-        }
-
-        g_debug ("Changing (uid:gid) for child process to (%d:%d)",
-                 pwent->pw_uid,
-                 grent->gr_gid);
-
-        if (pwent->pw_uid != 0) {
-                if (setgid (grent->gr_gid) < 0)  {
-                        g_warning (_("Couldn't set groupid to %d"),
-                                   grent->gr_gid);
-                        _exit (1);
-                }
-
-                if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
-                        g_warning (_("initgroups () failed for %s"),
-                                   pwent->pw_name);
-                        _exit (1);
-                }
-
-                if (setuid (pwent->pw_uid) < 0)  {
-                        g_warning (_("Couldn't set userid to %d"),
-                                   (int)pwent->pw_uid);
-                        _exit (1);
-                }
-        } else {
-                gid_t groups[1] = { 0 };
-
-                if (setgid (0) < 0)  {
-                        g_warning (_("Couldn't set groupid to 0"));
-                        /* Don't error out, it's not fatal, if it fails we'll
-                         * just still be */
-                }
-
-                /* this will get rid of any suplementary groups etc... */
-                setgroups (1, groups);
-        }
-}
-
-static void
-greeter_session_child_setup (GdmGreeterSession *greeter_session)
-{
-        change_user (greeter_session);
-}
 
 static void
 listify_hash (const char *key,
@@ -301,6 +238,7 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
+        g_hash_table_insert (hash, g_strdup ("DBUS_SESSION_BUS_ADDRESS"), g_strdup (greeter_session->priv->dbus_bus_address));
         g_hash_table_insert (hash, g_strdup ("GDM_GREETER_DBUS_ADDRESS"), g_strdup (greeter_session->priv->server_address));
 
         g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (greeter_session->priv->x11_authority_file));
@@ -442,43 +380,355 @@ greeter_session_child_watch (GPid        pid,
         }
 }
 
+static int
+signal_pid (int pid,
+            int signal)
+{
+        int status = -1;
+
+        /* perhaps block sigchld */
+
+        status = kill (pid, signal);
+
+        if (status < 0) {
+                if (errno == ESRCH) {
+                        g_warning ("Child process %lu was already dead.",
+                                   (unsigned long) pid);
+                } else {
+                        g_warning ("Couldn't kill child process %lu: %s",
+                                   (unsigned long) pid,
+                                   g_strerror (errno));
+                }
+        }
+
+        /* perhaps unblock sigchld */
+
+        return status;
+}
+
+typedef struct {
+        const char *user_name;
+        const char *group_name;
+} SpawnChildData;
+
+static void
+spawn_child_setup (SpawnChildData *data)
+{
+        struct passwd *pwent;
+        struct group  *grent;
+
+        if (data->user_name == NULL) {
+                return;
+        }
+
+        pwent = getpwnam (data->user_name);
+        if (pwent == NULL) {
+                g_warning (_("User %s doesn't exist"),
+                           data->user_name);
+                _exit (1);
+        }
+
+        grent = getgrnam (data->group_name);
+        if (grent == NULL) {
+                g_warning (_("Group %s doesn't exist"),
+                           data->group_name);
+                _exit (1);
+        }
+
+        g_debug ("Changing (uid:gid) for child process to (%d:%d)",
+                 pwent->pw_uid,
+                 grent->gr_gid);
+
+        if (pwent->pw_uid != 0) {
+                if (setgid (grent->gr_gid) < 0)  {
+                        g_warning (_("Couldn't set groupid to %d"),
+                                   grent->gr_gid);
+                        _exit (1);
+                }
+
+                if (initgroups (pwent->pw_name, pwent->pw_gid) < 0) {
+                        g_warning (_("initgroups () failed for %s"),
+                                   pwent->pw_name);
+                        _exit (1);
+                }
+
+                if (setuid (pwent->pw_uid) < 0)  {
+                        g_warning (_("Couldn't set userid to %d"),
+                                   (int)pwent->pw_uid);
+                        _exit (1);
+                }
+        } else {
+                gid_t groups[1] = { 0 };
+
+                if (setgid (0) < 0)  {
+                        g_warning (_("Couldn't set groupid to 0"));
+                        /* Don't error out, it's not fatal, if it fails we'll
+                         * just still be */
+                }
+
+                /* this will get rid of any suplementary groups etc... */
+                setgroups (1, groups);
+        }
+}
+
+static gboolean
+spawn_command_line_sync_as_user (const char *command_line,
+                                 const char *user_name,
+                                 const char *group_name,
+                                 char       **env,
+                                 char       **std_output,
+                                 char       **std_error,
+                                 int         *exit_status,
+                                 GError     **error)
+{
+        char           **argv;
+        GError          *local_error;
+        gboolean         ret;
+        gboolean         res;
+        SpawnChildData   data;
+
+        ret = FALSE;
+
+        argv = NULL;
+        local_error = NULL;
+        if (! g_shell_parse_argv (command_line, NULL, &argv, &local_error)) {
+                g_warning ("Could not parse command: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        data.user_name = user_name;
+        data.group_name = group_name;
+
+        local_error = NULL;
+        res = g_spawn_sync (NULL,
+                            argv,
+                            env,
+                            G_SPAWN_SEARCH_PATH,
+                            (GSpawnChildSetupFunc)spawn_child_setup,
+                            &data,
+                            std_output,
+                            std_error,
+                            exit_status,
+                            &local_error);
+
+        if (! res) {
+                g_warning ("Could not spawn command: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        ret = TRUE;
+ out:
+        g_strfreev (argv);
+
+        return ret;
+}
+
+static gboolean
+spawn_command_line_async_as_user (const char *command_line,
+                                  const char *user_name,
+                                  const char *group_name,
+                                  char       **env,
+                                  GPid        *child_pid,
+                                  GError     **error)
+{
+        char           **argv;
+        GError          *local_error;
+        gboolean         ret;
+        gboolean         res;
+        SpawnChildData   data;
+
+        ret = FALSE;
+
+        argv = NULL;
+        local_error = NULL;
+        if (! g_shell_parse_argv (command_line, NULL, &argv, &local_error)) {
+                g_warning ("Could not parse command: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        data.user_name = user_name;
+        data.group_name = group_name;
+
+        local_error = NULL;
+        res = g_spawn_async (NULL,
+                             argv,
+                             env,
+                             G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
+                             (GSpawnChildSetupFunc)spawn_child_setup,
+                             &data,
+                             child_pid,
+                             &local_error);
+        if (! res) {
+                g_warning ("Could not spawn command: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        ret = TRUE;
+ out:
+        g_strfreev (argv);
+
+        return ret;
+}
+
+static gboolean
+parse_value_as_integer (const char *value,
+                        int        *intval)
+{
+        char *end_of_valid_int;
+        glong long_value;
+        gint  int_value;
+
+        errno = 0;
+        long_value = strtol (value, &end_of_valid_int, 10);
+
+        if (*value == '\0' || *end_of_valid_int != '\0') {
+                return FALSE;
+        }
+
+        int_value = long_value;
+        if (int_value != long_value || errno == ERANGE) {
+                return FALSE;
+        }
+
+        *intval = int_value;
+
+        return TRUE;
+}
+
+static gboolean
+parse_dbus_launch_output (const char *output,
+                          char      **addressp,
+                          GPid       *pidp)
+{
+        GRegex     *re;
+        GMatchInfo *match_info;
+        gboolean    ret;
+        gboolean    res;
+        GError     *error;
+
+        ret = FALSE;
+
+        error = NULL;
+        re = g_regex_new ("DBUS_SESSION_BUS_ADDRESS=(.+)\nDBUS_SESSION_BUS_PID=([0-9]+)", 0, 0, &error);
+        if (re == NULL) {
+                g_critical (error->message);
+        }
+
+        g_regex_match (re, output, 0, &match_info);
+
+        res = g_match_info_matches (match_info);
+        if (! res) {
+                g_warning ("Unable to parse output: %s", output);
+                goto out;
+        }
+
+        if (addressp != NULL) {
+                *addressp = g_strdup (g_match_info_fetch (match_info, 1));
+        }
+
+        if (pidp != NULL) {
+                int      pid;
+                gboolean res;
+                res = parse_value_as_integer (g_match_info_fetch (match_info, 2), &pid);
+                if (res) {
+                        *pidp = pid;
+                } else {
+                        *pidp = 0;
+                }
+        }
+
+        ret = TRUE;
+
+ out:
+        g_match_info_free (match_info);
+        g_regex_unref (re);
+
+        return ret;
+}
+
+static gboolean
+start_dbus_daemon (GdmGreeterSession *greeter_session)
+{
+        gboolean res;
+        char    *std_out;
+        char    *std_err;
+        int      exit_status;
+        GError  *error;
+
+        error = NULL;
+        res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
+                                               greeter_session->priv->user_name,
+                                               greeter_session->priv->group_name,
+                                               NULL,
+                                               &std_out,
+                                               &std_err,
+                                               &exit_status,
+                                               &error);
+        if (! res) {
+                g_warning ("Unable to launch D-Bus daemon: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        /* pull the address and pid from the output */
+        res = parse_dbus_launch_output (std_out,
+                                        &greeter_session->priv->dbus_bus_address,
+                                        &greeter_session->priv->dbus_pid);
+        if (! res) {
+                g_warning ("Unable to parse D-Bus launch output");
+        } else {
+                g_debug ("Started D-Bus daemon on pid %d", greeter_session->priv->dbus_pid);
+        }
+ out:
+        return res;
+}
+
+static gboolean
+stop_dbus_daemon (GdmGreeterSession *greeter_session)
+{
+        if (greeter_session->priv->dbus_pid > 0) {
+                signal_pid (greeter_session->priv->dbus_pid, SIGTERM);
+                greeter_session->priv->dbus_pid = 0;
+        }
+        return TRUE;
+}
+
 static gboolean
 gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
 {
-        gchar          **argv;
+        char           **argv;
         GError          *error;
         GPtrArray       *env;
         gboolean         ret;
+        gboolean         res;
 
         ret = FALSE;
+
+        res = start_dbus_daemon (greeter_session);
+        if (! res) {
+                /* FIXME: */
+        }
 
         create_temp_auth_file (greeter_session);
 
         g_debug ("Running greeter_session process: %s", greeter_session->priv->command);
-
-        argv = NULL;
-        if (! g_shell_parse_argv (greeter_session->priv->command, NULL, &argv, &error)) {
-                g_warning ("Could not parse command: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
 
         open_greeter_session (greeter_session);
 
         env = get_greeter_environment (greeter_session);
 
         error = NULL;
-        ret = g_spawn_async_with_pipes (NULL,
-                                        argv,
-                                        (char **)env->pdata,
-                                        G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
-                                        (GSpawnChildSetupFunc)greeter_session_child_setup,
-                                        greeter_session,
-                                        &greeter_session->priv->pid,
-                                        NULL,
-                                        NULL,
-                                        NULL,
-                                        &error);
+
+        ret = spawn_command_line_async_as_user (greeter_session->priv->command,
+                                                greeter_session->priv->user_name,
+                                                greeter_session->priv->group_name,
+                                                (char **)env->pdata,
+                                                &greeter_session->priv->pid,
+                                                &error);
 
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
@@ -488,15 +738,15 @@ gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
                            greeter_session->priv->command,
                            error->message);
                 g_error_free (error);
+                goto out;
         } else {
                 g_debug ("gdm_slave_greeter_session: GreeterSession on pid %d", (int)greeter_session->priv->pid);
         }
 
         greeter_session->priv->child_watch_id = g_child_watch_add (greeter_session->priv->pid,
-                                                                 (GChildWatchFunc)greeter_session_child_watch,
-                                                                 greeter_session);
+                                                                   (GChildWatchFunc)greeter_session_child_watch,
+                                                                   greeter_session);
 
-        g_strfreev (argv);
  out:
 
         return ret;
@@ -523,32 +773,6 @@ gdm_greeter_session_start (GdmGreeterSession *greeter_session)
 
 
         return res;
-}
-
-static int
-signal_pid (int pid,
-            int signal)
-{
-        int status = -1;
-
-        /* perhaps block sigchld */
-
-        status = kill (pid, signal);
-
-        if (status < 0) {
-                if (errno == ESRCH) {
-                        g_warning ("Child process %lu was already dead.",
-                                   (unsigned long) pid);
-                } else {
-                        g_warning ("Couldn't kill child process %lu: %s",
-                                   (unsigned long) pid,
-                                   g_strerror (errno));
-                }
-        }
-
-        /* perhaps unblock sigchld */
-
-        return status;
 }
 
 static int
@@ -612,6 +836,8 @@ gdm_greeter_session_stop (GdmGreeterSession *greeter_session)
         if (greeter_session->priv->ckc != NULL) {
                 close_greeter_session (greeter_session);
         }
+
+        stop_dbus_daemon (greeter_session);
 
         return TRUE;
 }
@@ -878,7 +1104,7 @@ gdm_greeter_session_init (GdmGreeterSession *greeter_session)
 
         greeter_session->priv->pid = -1;
 
-        greeter_session->priv->command = g_strdup ("dbus-launch --exit-with-session " LIBEXECDIR "/gdm-simple-greeter");
+        greeter_session->priv->command = g_strdup (LIBEXECDIR "/gdm-simple-greeter");
         greeter_session->priv->user_max_filesize = 65536;
 }
 
@@ -895,6 +1121,16 @@ gdm_greeter_session_finalize (GObject *object)
         g_return_if_fail (greeter_session->priv != NULL);
 
         gdm_greeter_session_stop (greeter_session);
+
+        g_free (greeter_session->priv->command);
+        g_free (greeter_session->priv->user_name);
+        g_free (greeter_session->priv->group_name);
+        g_free (greeter_session->priv->x11_display_name);
+        g_free (greeter_session->priv->x11_display_device);
+        g_free (greeter_session->priv->x11_display_hostname);
+        g_free (greeter_session->priv->x11_authority_file);
+        g_free (greeter_session->priv->dbus_bus_address);
+        g_free (greeter_session->priv->server_address);
 
         if (greeter_session->priv->ckc != NULL) {
                 ck_connector_unref (greeter_session->priv->ckc);

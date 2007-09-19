@@ -342,10 +342,10 @@ parse_short_name (const char *short_name,
                   char      **language_codep,
                   char      **territory_codep)
 {
-        static GRegex *re;
-        GMatchInfo    *match_info;
-        gboolean       res;
-        GError        *error;
+        GRegex     *re;
+        GMatchInfo *match_info;
+        gboolean    res;
+        GError     *error;
 
         error = NULL;
         re = g_regex_new ("([a-zA-Z]+)(_([a-zA-Z]+))?", 0, 0, &error);
