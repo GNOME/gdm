@@ -1,3 +1,10 @@
+2007-09-19 Brian Cameron <brian.cameron@sun.com>
+
+	* configure.ac, gui/Makefile.am: I discovered that GDM was getting
+	  -lsocket and -lnsl from a different pc file, which is not
+	  appropriate.  Fix gdm so we list these explicitely.  This is
+	  needed on Solaris where we need to specify dependant libraries.
+
 2007-09-18 Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmcommon.c: Set stdout/stderr to DEV_NULL when spawning
