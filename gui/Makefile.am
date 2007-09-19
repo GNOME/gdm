@@ -162,7 +162,8 @@ gdmsetup_LDADD = \
 	$(PANGO_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(EXTRA_SETUP_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(LIBGNOMEUI_LIBS)	\
 	$(top_builddir)/common/libgdmcommon.a \
 	$(X_LIBS)		\
@@ -180,6 +181,8 @@ gdmphotosetup_LDADD = \
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
 	$(INTLLIBS)		\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	-lX11			\
 	-lfontconfig		\
 	$(top_builddir)/common/libgdmcommon.a \
@@ -192,7 +195,8 @@ gdmXnestchooser_LDADD = \
 	$(GLIB_LIBS)		\
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
-	$(EXTRA_XNEST_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(X_LIBS)		\
 	-lXau			\
 	-lX11			\
@@ -208,7 +212,8 @@ gdmflexiserver_LDADD = \
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(top_builddir)/common/libgdmcommon.a \
-	$(EXTRA_FLEXI_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(X_LIBS)		\
 	-lX11			\
 	-lXau			\
@@ -223,7 +228,8 @@ gdmdynamic_LDADD = 		\
 	$(GOBJECT_LIBS) 	\
 	$(GDK_LIBS) 		\
 	$(top_builddir)/common/libgdmcommon.a \
-	$(EXTRA_DYNAMIC_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(X_LIBS)		\
 	-lX11			\
 	-lXau			\
