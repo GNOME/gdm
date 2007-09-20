@@ -5,41 +5,31 @@
     <normal file="background.svg"/>
     <pos x="0" y="0" width="100%" height="-75"/>
   </item>
-  <item type="rect" background="true">
-    <normal color="#000000"/>
-    <pos x="0" y="-75" width="100%" height="75"/>
-    <fixed>
-      <item type="rect" background="true">
-        <normal color="#ffffff"/>
-        <pos x="0" y="4" width="100%" height="100%"/>
-        <box orientation="horizontal" spacing="10" xpadding="10" ypadding="10">
-          <item type="button" id="options_button" button="true">
-            <pos y="5" width="80" height="50"/>
-            <stock type="options"/>
-          </item>
-          <item type="list" id="language" combo="true">
-            <pos  x="25" y="10" height="40" width="300"/>
-          </item>
-          <item type="list" id="session" combo="true">
-            <pos x="50" y="10" height="40" width="300"/>
-          </item>
-        </box>
-      </item>
-    </fixed>
-  </item>
-  <item type="rect" id="userlist-rect">
-    <normal color="#FFFFFF" alpha="0.5" font="Sans 14"/>
-    <pos anchor="nw" x="0" y="0" width="box" height="box"/>
-    <box orientation="vertical" min-width="440" max-width="440" min-height="100"
- xpadding="4" ypadding="4" spacing="0">
-      <item type="list" id="userlist">
-        <pos anchor="nw" x="0" y="0" height="550" width="440"/>
-        <color iconcolor="#ACBFDD" labelcolor="#ACBFDD"/>
-      </item>
-    </box>
-  </item>
+	<item type="rect"> 
+		<normal color="#000000"/>
+		<pos x="0" y="-76" width="100%" height="76"/>
+		<fixed>
+			<item type="rect" background="true"> 
+				<normal color="#ffffff"/>
+				<pos x="0" y="5" width="100%" height="100%"/>
+				<box orientation="horizontal" spacing="10" xpadding="10" ypadding="0">
+					<item type="button" id="options_button">
+						<pos y="50%" anchor="w" width="100" height="40" />
+						<stock type="options"/>
+					</item>
+					<item type="list" id="session" combo="true">
+						<pos y="50%" anchor="w" height="40" width="200"/>
+					</item>
+					<item type="list" id="language" combo="true">
+						<pos y="50%" anchor="w" height="40" width="250"/>
+					</item>
+				</box>
+			</item>
+		</fixed>
+	</item>
 
-  <item type="pixmap" background="true">
+
+  <item type="pixmap">
     <normal file="flower.png"/>
     <pos x="100%" y="100%" anchor="se"/>
   </item>
