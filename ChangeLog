@@ -1,3 +1,9 @@
+2007-09-20 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/gdm-daemon-config.c: Fix so that if the .dmrc file does
+	  not exist, it is created.  Fixes bug #453916.  Patch by Brady
+	  Anderson <brady.anderson@gmail.com>.
+
 2007-09-19 Brian Cameron <brian.cameron@sun.com>
 
 	* configure.ac, gui/Makefile.am: I discovered that GDM was getting
@@ -7,10 +13,10 @@
 
 2007-09-18 Brian Cameron <brian.cameron@sun.com>
 
-        * gui/gdmcommon.c: Set stdout/stderr to DEV_NULL when spawning
-          at_spi_registryd and the prefetch program.  This fixes a
-          hanging problem reported in bug #473480.  Patch by
-          Huang Peng <shawn.p.huang@gmail.com>
+	* gui/gdmcommon.c: Set stdout/stderr to DEV_NULL when spawning
+	  at_spi_registryd and the prefetch program.  This fixes a
+	  hanging problem reported in bug #473480.  Patch by
+	  Huang Peng <shawn.p.huang@gmail.com>
 
 2007-09-17 Brian Cameron <brian.cameron@sun.com>
 

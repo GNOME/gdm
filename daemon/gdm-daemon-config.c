@@ -2846,10 +2846,24 @@ gdm_daemon_config_set_user_session_lang (gboolean savesess,
 	gchar *cfgstr;
 
 	cfgstr = g_build_filename (home_dir, ".dmrc", NULL);
-
 	dmrc = gdm_common_config_load (cfgstr, NULL);
 	if (dmrc == NULL) {
-		return;
+		gint fd = -1;
+		gdm_debug ("file: %s does not exist - creating it", cfgstr);
+		VE_IGNORE_EINTR (fd = g_open (cfgstr,
+			O_CREAT | O_TRUNC | O_RDWR, 0644));
+
+		if (fd < 0)
+			return;
+
+		write (fd, "\n", 2);
+		close (fd);
+		dmrc = gdm_common_config_load (cfgstr, NULL);
+
+		if (dmrc == NULL) {
+			gdm_debug ("failed to open %s after creating it", cfgstr);
+			return;
+		}
 	}
 
 	if (savesess) {
