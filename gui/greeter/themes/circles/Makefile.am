@@ -4,8 +4,6 @@ circles_DATA = \
 	circles.xml \
 	background.svg \
 	flower.png  \
-	help.png \
-	options.png \
 	screenshot.png
 
 circles_in_files = \
