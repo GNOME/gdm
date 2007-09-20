@@ -27,6 +27,7 @@
 #include <string.h>
 #include <errno.h>
 #include <dirent.h>
+#include <locale.h>
 #include <sys/stat.h>
 
 #include <glib.h>
@@ -462,7 +463,7 @@ get_lc_identification (GdmChooserLocale *locale,
         struct {
                 unsigned int magic;
                 unsigned int nstrings;
-                unsigned int strindex[0];
+                unsigned int strindex[];
         } *filedata = data;
 
 #ifdef LC_IDENTIFICATION
@@ -1020,26 +1021,33 @@ add_locale_to_model (const char               *name,
         char         *translated;
         const char   *lang;
         const char   *translated_lang;
+        const char   *title_lang;
+        const char   *title_trans_lang;
 
         lang = get_language (widget, locale->language_code);
         translated_lang = get_translated_language (widget, locale->language_code);
 
 #if 0
         g_debug ("adding to model: %s title='%s' language='%s' territory='%s' language_code='%s' territory_code='%s'",
-                 locale->name,
-                 locale->title,
-                 locale->language,
-                 locale->territory,
-                 locale->language_code,
-                 locale->territory_code,
-                 locale->modifier);
+                 locale->name           ? locale->name           : "(null)",
+                 locale->title          ? locale->title          : "(null)",
+                 locale->language       ? locale->language       : "(null)",
+                 locale->territory      ? locale->territory      : "(null)",
+                 locale->language_code  ? locale->language_code  : "(null)",
+                 locale->territory_code ? locale->territory_code : "(null)",
+                 locale->modifier       ? locale->modifier       : "(null)");
 #endif
 
+        title_lang = lang != NULL ? lang : locale->language;
+        title_trans_lang = translated_lang != NULL ? translated_lang : locale->language;
+
+        if (title_lang == NULL || title_trans_lang == NULL) {
+                g_debug ("Problem with language code %s", locale->language_code);
+        }
+
         if (locale->territory_code == NULL || locale->territory_code[0] == '\0') {
-                title = g_strdup_printf ("%s",
-                                         lang ? lang : locale->language);
-                translated = g_strdup_printf ("%s",
-                                              translated_lang ? lang : locale->language);
+                 title = g_strdup_printf ("%s", title_lang ? title_lang : "");
+                 translated = g_strdup_printf ("%s", title_trans_lang ? title_trans_lang : "");
         } else {
                 const char *terr;
                 const char *translated_terr;
@@ -1048,11 +1056,12 @@ add_locale_to_model (const char               *name,
                 translated_terr = get_translated_territory (widget, locale->territory_code);
 
                 title = g_strdup_printf ("%s (%s)",
-                                         lang ? lang : locale->language,
-                                         terr);
+                                         title_lang ? title_lang : "(null)",
+                                         terr ? terr : "(null)");
                 translated = g_strdup_printf ("%s (%s)",
-                                              translated_lang ? lang : locale->language,
-                                              translated_terr);
+                                              title_trans_lang ? title_trans_lang : "",
+                                              translated_terr ? translated_terr : "");
+
         }
 
         model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget->priv->treeview));

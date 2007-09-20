@@ -52,7 +52,7 @@ main (int argc, char *argv[])
                 char *name;
 
                 name = gdm_language_chooser_dialog_get_current_language_name (GDM_LANGUAGE_CHOOSER_DIALOG (dialog));
-                g_message ("Language: %s", name);
+                g_message ("Language: %s", name ? name : "(null)");
                 g_free (name);
         }
         gtk_widget_destroy (dialog);

@@ -1,5 +1,13 @@
 2007-09-19  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/gdm-language-chooser-widget.c:
+	(get_lc_identification), (add_locale_to_model):
+	* gui/simple-greeter/test-language-chooser.c: (main):
+	Don't print null strings - solaris crashes.
+	Patch from Brian Cameron <brian.cameron@sun.com>
+
+2007-09-19  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-language-chooser-dialog.c:
 	(gdm_language_chooser_dialog_init):
 	* gui/simple-greeter/gdm-language-chooser-widget.c: (parse_locale),
