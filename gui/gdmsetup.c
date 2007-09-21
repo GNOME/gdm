@@ -8198,6 +8198,9 @@ main (int argc, char *argv[])
 
 	gtk_init (&argc, &argv);
 
+	gdm_log_init ();
+	gdm_log_set_debug (FALSE);
+
 	/* Lets check if gdm daemon is running
 	   if no there is no point in continuing
 	*/
