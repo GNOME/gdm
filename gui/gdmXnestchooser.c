@@ -496,6 +496,9 @@ main (int argc, char *argv[])
 		g_option_context_free (ctx);
 	}
 
+	gdm_log_init ();
+	gdm_log_set_debug (FALSE);
+
 	if (args_remaining != NULL && args_remaining[0] != NULL)
 		host = args_remaining[0];
 	g_strfreev (args_remaining);
