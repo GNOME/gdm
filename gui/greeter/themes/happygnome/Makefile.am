@@ -4,7 +4,6 @@ happygnome_DATA = \
 	happygnome.xml \
 	background.svg \
 	gnome-logo.svg  \
-	options.png \
 	screenshot.png
 
 happygnome_in_files = \
