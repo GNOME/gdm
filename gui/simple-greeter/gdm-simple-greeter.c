@@ -400,11 +400,18 @@ suspend_button_clicked (GtkButton        *button,
         g_object_unref (proxy);
 }
 
+#define INVISIBLE_CHAR_DEFAULT       '*'
+#define INVISIBLE_CHAR_BLACK_CIRCLE  0x25cf
+#define INVISIBLE_CHAR_WHITE_BULLET  0x25e6
+#define INVISIBLE_CHAR_BULLET        0x2022
+#define INVISIBLE_CHAR_NONE          0
+
 static void
 create_greeter (GdmSimpleGreeter *greeter)
 {
         GError    *error;
         GtkWidget *dialog;
+        GtkWidget *entry;
         GtkWidget *button;
 
 #if 0
@@ -449,6 +456,14 @@ create_greeter (GdmSimpleGreeter *greeter)
         button = glade_xml_get_widget (greeter->priv->xml, "auth-cancel-button");
         if (dialog != NULL) {
                 g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), greeter);
+        }
+
+        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+        /* Only change the invisible character if it '*' otherwise assume it is OK */
+        if ('*' == gtk_entry_get_invisible_char (GTK_ENTRY (entry))) {
+                gunichar invisible_char;
+                invisible_char = INVISIBLE_CHAR_BLACK_CIRCLE;
+                gtk_entry_set_invisible_char (GTK_ENTRY (entry), invisible_char);
         }
 
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
