@@ -1,3 +1,11 @@
+2007-09-24  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-session-worker.c: (gdm_session_worker_initialize_pam):
+	Also check for empty hostname strings.
+	* daemon/test-session.c: (on_open):
+	Don't print null strings - solaris crashes.
+	Patch from Brian Cameron <brian.cameron@sun.com>
+
 2007-09-21  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-simple-greeter.c: (create_greeter):

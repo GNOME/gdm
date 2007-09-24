@@ -39,7 +39,7 @@ on_open (GdmSession *session,
         GError *error;
         gboolean res;
 
-        g_debug ("Got opened: begin auth for %s", username);
+        g_debug ("Got opened: begin auth for %s", username ? username : "(null)");
 
         error = NULL;
         res = gdm_session_begin_verification (session,

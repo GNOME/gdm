@@ -823,7 +823,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 }
         }
 
-        if (hostname != NULL) {
+        if (hostname != NULL && hostname[0] != '\0') {
                 error_code = pam_set_item (worker->priv->pam_handle, PAM_RHOST, hostname);
 
                 if (error_code != PAM_SUCCESS) {
