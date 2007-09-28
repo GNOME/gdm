@@ -569,6 +569,8 @@ process_operation (guchar       op_code,
 	gdm_wm_save_wm_order ();
 
 	gdk_flush ();
+	printf ("%c\n", STX);
+	fflush (stdout);
 
 	_exit (EXIT_SUCCESS);
 
