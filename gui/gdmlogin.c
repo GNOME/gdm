@@ -1772,6 +1772,9 @@ process_operation (guchar       op_code,
 	gdm_kill_thingies ();
 	gdk_flush ();
 
+	printf ("%c\n", STX);
+	fflush (stdout);
+
 	_exit (EXIT_SUCCESS);
 
     case GDM_QUERY_CAPSLOCK:
