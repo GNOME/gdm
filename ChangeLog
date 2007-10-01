@@ -1,3 +1,39 @@
+2007-10-01  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-session-chooser-dialog.c:
+	(gdm_session_chooser_dialog_get_current_session_name),
+	(gdm_session_chooser_dialog_set_property),
+	(gdm_session_chooser_dialog_get_property),
+	(gdm_session_chooser_dialog_constructor),
+	(gdm_session_chooser_dialog_dispose),
+	(gdm_session_chooser_dialog_class_init), (on_response),
+	(gdm_session_chooser_dialog_init),
+	(gdm_session_chooser_dialog_finalize),
+	(gdm_session_chooser_dialog_new):
+	* gui/simple-greeter/gdm-session-chooser-dialog.h:
+	* gui/simple-greeter/gdm-session-chooser-widget.c:
+	(chooser_session_free),
+	(gdm_session_chooser_widget_get_current_session_name),
+	(select_name),
+	(gdm_session_chooser_widget_set_current_session_name),
+	(gdm_session_chooser_widget_set_property),
+	(gdm_session_chooser_widget_get_property),
+	(gdm_session_chooser_widget_constructor),
+	(gdm_session_chooser_widget_dispose),
+	(gdm_session_chooser_widget_class_init), (on_session_selected),
+	(get_flags_from_key_file), (load_session_file),
+	(collect_sessions_from_directory),
+	(collect_sessions_from_directories), (collect_sessions),
+	(on_row_activated), (add_session_to_model), (populate_model),
+	(gdm_session_chooser_widget_init),
+	(gdm_session_chooser_widget_finalize),
+	(gdm_session_chooser_widget_new):
+	* gui/simple-greeter/gdm-session-chooser-widget.h:
+	* gui/simple-greeter/test-session-chooser.c: (main):
+	Add a basic session chooser widget.
+
 2007-09-24  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-session-worker.c: (gdm_session_worker_initialize_pam):

@@ -111,22 +111,6 @@ if test x$withval != x; then
 fi
 
 dnl
-dnl PAM prefix
-dnl
-withval=""
-AC_ARG_WITH(pam-prefix,
-[  --with-pam-prefix=<prefix>   specify where pam files go],[
-if test x$withval != x; then
-   AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
-fi])
-if test x$withval != x; then
-	PAM_PREFIX="$withval"
-else
-	PAM_PREFIX='${sysconfdir}'
-fi
-AC_SUBST(PAM_PREFIX)
-
-dnl
 dnl file that sets LANG
 dnl
 withval=""
@@ -393,8 +377,23 @@ AC_CHECK_HEADERS(linux/vt.h, [
 AC_SUBST(GDMOPEN)
 
 dnl ---------------------------------------------------------------------------
-dnl - Check for PAM
+dnl - Check for PAM stuff
 dnl ---------------------------------------------------------------------------
+
+
+dnl PAM prefix
+withval=""
+AC_ARG_WITH(pam-prefix,
+[  --with-pam-prefix=<prefix>   specify where pam files go],[
+if test x$withval != x; then
+   AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
+fi])
+if test x$withval != x; then
+	PAM_PREFIX="$withval"
+else
+	PAM_PREFIX='${sysconfdir}'
+fi
+AC_SUBST(PAM_PREFIX)
 
 have_pam=no
 AC_CHECK_LIB(pam, pam_start, have_pam=yes)
@@ -408,8 +407,21 @@ AC_SUBST(PAM_LIBS)
 AC_CHECK_HEADERS([security/pam_modutil.h security/pam_ext.h])
 AC_CHECK_LIB(pam, pam_syslog, [AC_DEFINE(HAVE_PAM_SYSLOG, [], [Define to 1 if you have the pam_syslog function])])
 
-
-
+dnl test whether struct pam_message is const (Linux) or not (Sun)
+if test "x$have_pam" = "xyes"; then
+   pam_appl_h="$ac_pam_includes/security/pam_appl.h"
+   AC_MSG_CHECKING(for const pam_message)
+   AC_EGREP_HEADER([struct pam_message],
+      $pam_appl_h,
+      [ AC_EGREP_HEADER([const struct pam_message],
+                        $pam_appl_h,
+                        [AC_MSG_RESULT(["const: Linux-type PAM"]) ],
+                        [AC_MSG_RESULT(["nonconst: Sun-type PAM"])
+                        AC_DEFINE(PAM_MESSAGE_NONCONST, 1, [Define if your PAM support takes non-const arguments (Solaris)])]
+                        )],
+       [AC_MSG_RESULT(["not found - assume const, Linux-type PAM"])]
+       )
+fi
 
 dnl Check if we can use the setpenv function to add specialvariable
 dnl to the environment (such as the /etc/environment file under AIX)
