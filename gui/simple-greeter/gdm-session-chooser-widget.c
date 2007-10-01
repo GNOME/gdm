@@ -58,7 +58,7 @@ struct GdmSessionChooserWidgetPrivate
         GtkWidget          *treeview;
 
         GHashTable         *available_sessions;
-        GdmChooserSession  *current_session;
+        char               *current_session;
 };
 
 enum {
@@ -79,9 +79,9 @@ static void     gdm_session_chooser_widget_finalize    (GObject                 
 G_DEFINE_TYPE (GdmSessionChooserWidget, gdm_session_chooser_widget, GTK_TYPE_VBOX)
 
 enum {
-        CHOOSER_LIST_TITLE_COLUMN = 0,
-        CHOOSER_LIST_NAME_COLUMN,
-        CHOOSER_LIST_SESSION_COLUMN
+        CHOOSER_LIST_NAME_COLUMN = 0,
+        CHOOSER_LIST_COMMENT_COLUMN,
+        CHOOSER_LIST_ID_COLUMN
 };
 
 static void
@@ -108,7 +108,7 @@ gdm_session_chooser_widget_get_current_session_name (GdmSessionChooserWidget *wi
 
         session_name = NULL;
         if (widget->priv->current_session != NULL) {
-                session_name = g_strdup (widget->priv->current_session->filename);
+                session_name = g_strdup (widget->priv->current_session);
         }
 
         return session_name;
@@ -130,12 +130,20 @@ select_name (GdmSessionChooserWidget *widget,
 
                 do {
                         GdmChooserSession *session;
+                        char              *id;
                         gboolean          found;
 
+                        session = NULL;
+                        id = NULL;
                         gtk_tree_model_get (model,
                                             &iter,
-                                            CHOOSER_LIST_SESSION_COLUMN, &session,
+                                            CHOOSER_LIST_ID_COLUMN, &id,
                                             -1);
+                        if (id != NULL) {
+                                session = g_hash_table_lookup (widget->priv->available_sessions, id);
+                                g_free (id);
+                        }
+
                         found = (session != NULL
                                  && session->filename != NULL
                                  && strcmp (session->filename, name) == 0);
@@ -242,6 +250,7 @@ gdm_session_chooser_widget_dispose (GObject *object)
                 widget->priv->available_sessions = NULL;
         }
 
+        g_free (widget->priv->current_session);
         widget->priv->current_session = NULL;
 
         G_OBJECT_CLASS (gdm_session_chooser_widget_parent_class)->dispose (object);
@@ -277,15 +286,18 @@ on_session_selected (GtkTreeSelection        *selection,
 {
         GtkTreeModel      *model = NULL;
         GtkTreeIter        iter = {0};
-        GdmChooserSession *session;
+        char              *id;
 
-        session = NULL;
+        id = NULL;
 
         if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
-                gtk_tree_model_get (model, &iter, CHOOSER_LIST_SESSION_COLUMN, &session, -1);
+                gtk_tree_model_get (model, &iter, CHOOSER_LIST_ID_COLUMN, &id, -1);
         }
 
-        widget->priv->current_session = session;
+        g_free (widget->priv->current_session);
+        widget->priv->current_session = g_strdup (id);
+
+        g_free (id);
 }
 
 /* adapted from gnome-menus desktop-entries.c */
@@ -464,7 +476,6 @@ add_session_to_model (const char              *name,
 {
         GtkTreeModel *model;
         GtkTreeIter   iter;
-        char         *title;
 
         if (session->flags & DESKTOP_ENTRY_NO_DISPLAY
             || session->flags & DESKTOP_ENTRY_HIDDEN
@@ -473,27 +484,127 @@ add_session_to_model (const char              *name,
                 g_debug ("Not adding session to list: %s", session->filename);
         }
 
-        title = g_strdup_printf ("%s (%s)",
-                                 session->translated_name ? session->translated_name : "(null)",
-                                 session->translated_comment ? session->translated_comment : "(null)");
-
         model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget->priv->treeview));
 
         gtk_list_store_append (GTK_LIST_STORE (model), &iter);
         gtk_list_store_set (GTK_LIST_STORE (model),
                             &iter,
-                            CHOOSER_LIST_TITLE_COLUMN, title,
-                            CHOOSER_LIST_SESSION_COLUMN, session,
+                            CHOOSER_LIST_NAME_COLUMN, session->translated_name,
+                            CHOOSER_LIST_COMMENT_COLUMN, session->translated_comment,
+                            CHOOSER_LIST_ID_COLUMN, name,
                             -1);
-        g_free (title);
 }
 
 static void
-populate_model (GdmSessionChooserWidget *widget)
+populate_model (GdmSessionChooserWidget *widget,
+                GtkTreeModel            *model)
 {
+        GtkTreeIter iter;
+
+        /* Add some fake entries */
+        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                            CHOOSER_LIST_NAME_COLUMN, _("Previous Session"),
+                            CHOOSER_LIST_ID_COLUMN, "__previous-session",
+                            -1);
+
+        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                            CHOOSER_LIST_NAME_COLUMN, _("System Default"),
+                            CHOOSER_LIST_ID_COLUMN, "__default-session",
+                            -1);
+
+        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                            CHOOSER_LIST_NAME_COLUMN, NULL,
+                            CHOOSER_LIST_ID_COLUMN, "__separator",
+                            -1);
+
         g_hash_table_foreach (widget->priv->available_sessions,
                               (GHFunc)add_session_to_model,
                               widget);
+}
+
+static gboolean
+separator_func (GtkTreeModel *model,
+                GtkTreeIter  *iter,
+                gpointer      data)
+{
+        int   column = GPOINTER_TO_INT (data);
+        char *text;
+
+        gtk_tree_model_get (model, iter, column, &text, -1);
+
+        if (text != NULL && strcmp (text, "__separator") == 0) {
+                return TRUE;
+        }
+
+        g_free (text);
+
+        return FALSE;
+}
+
+static int
+compare_session_names (char *name_a,
+                       char *name_b,
+                       char *id_a,
+                       char *id_b)
+{
+
+        if (id_a == NULL) {
+                return 1;
+        } else if (id_b == NULL) {
+                return -1;
+        }
+
+        if (strcmp (id_a, "__previous-session") == 0) {
+                return -1;
+        } else if (strcmp (id_b, "__previous-session") == 0) {
+                return 1;
+        } else if (strcmp (id_a, "__default-session") == 0) {
+                return -1;
+        } else if (strcmp (id_b, "__default-session") == 0) {
+                return 1;
+        } else if (strcmp (id_a, "__separator") == 0) {
+                return -1;
+        } else if (strcmp (id_b, "__separator") == 0) {
+                return 1;
+        }
+
+        if (name_a == NULL) {
+                return 1;
+        } else if (name_b == NULL) {
+                return -1;
+        }
+
+        return g_utf8_collate (name_a, name_b);
+}
+
+static int
+compare_session  (GtkTreeModel *model,
+                  GtkTreeIter  *a,
+                  GtkTreeIter  *b,
+                  gpointer      user_data)
+{
+        char *name_a;
+        char *name_b;
+        char *id_a;
+        char *id_b;
+        int   result;
+
+        gtk_tree_model_get (model, a, CHOOSER_LIST_NAME_COLUMN, &name_a, -1);
+        gtk_tree_model_get (model, b, CHOOSER_LIST_NAME_COLUMN, &name_b, -1);
+        gtk_tree_model_get (model, a, CHOOSER_LIST_ID_COLUMN, &id_a, -1);
+        gtk_tree_model_get (model, b, CHOOSER_LIST_ID_COLUMN, &id_b, -1);
+
+        result = compare_session_names (name_a, name_b, id_a, id_b);
+
+        g_free (name_a);
+        g_free (name_b);
+        g_free (id_a);
+        g_free (id_b);
+
+        return result;
 }
 
 static void
@@ -532,22 +643,38 @@ gdm_session_chooser_widget_init (GdmSessionChooserWidget *widget)
         model = (GtkTreeModel *)gtk_list_store_new (3,
                                                     G_TYPE_STRING,
                                                     G_TYPE_STRING,
-                                                    G_TYPE_POINTER);
+                                                    G_TYPE_STRING);
         gtk_tree_view_set_model (GTK_TREE_VIEW (widget->priv->treeview), model);
 
         column = gtk_tree_view_column_new_with_attributes ("Session",
                                                            gtk_cell_renderer_text_new (),
-                                                           "markup", CHOOSER_LIST_TITLE_COLUMN,
+                                                           "text", CHOOSER_LIST_NAME_COLUMN,
                                                            NULL);
         gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
 
+        column = gtk_tree_view_column_new_with_attributes ("Comment",
+                                                           gtk_cell_renderer_text_new (),
+                                                           "text", CHOOSER_LIST_COMMENT_COLUMN,
+                                                           NULL);
+        gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
+
+        gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (model),
+                                         CHOOSER_LIST_NAME_COLUMN,
+                                         compare_session,
+                                         NULL, NULL);
+
         gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
-                                              CHOOSER_LIST_TITLE_COLUMN,
+                                              CHOOSER_LIST_NAME_COLUMN,
                                               GTK_SORT_ASCENDING);
+
+        gtk_tree_view_set_row_separator_func (GTK_TREE_VIEW (widget->priv->treeview),
+                                              separator_func,
+                                              GINT_TO_POINTER (CHOOSER_LIST_ID_COLUMN),
+                                              NULL);
 
         collect_sessions (widget);
 
-        populate_model (widget);
+        populate_model (widget, model);
 }
 
 static void
