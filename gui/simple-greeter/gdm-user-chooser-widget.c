@@ -33,8 +33,6 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
-#include "gdm-icon-nav.h"
-
 #include "gdm-user-chooser-widget.h"
 
 enum {
@@ -55,7 +53,6 @@ struct GdmUserChooserWidgetPrivate
 {
         GtkWidget          *iconview;
 
-        GtkWidget          *nav;
         GHashTable         *available_users;
         char               *current_user;
 };
@@ -510,10 +507,18 @@ static void
 gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 {
         GtkTreeModel      *model;
+        GtkWidget         *scrolled;
 
         widget->priv = GDM_USER_CHOOSER_WIDGET_GET_PRIVATE (widget);
 
         widget->priv->available_users = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)chooser_user_free);
+
+        scrolled = gtk_scrolled_window_new (NULL, NULL);
+        gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled),
+                                             GTK_SHADOW_IN);
+        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        gtk_box_pack_start (GTK_BOX (widget), scrolled, TRUE, TRUE, 0);
 
         widget->priv->iconview = gtk_icon_view_new ();
         gtk_icon_view_set_selection_mode (GTK_ICON_VIEW (widget->priv->iconview), GTK_SELECTION_SINGLE);
@@ -526,11 +531,7 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                           "selection-changed",
                           G_CALLBACK (on_selection_changed),
                           widget);
-
-        widget->priv->nav = gdm_icon_nav_new (widget->priv->iconview,
-                                              GDM_ICON_NAV_MODE_ONE_ROW,
-                                              TRUE);
-        gtk_box_pack_start (GTK_BOX (widget), widget->priv->nav, TRUE, TRUE, 0);
+        gtk_container_add (GTK_CONTAINER (scrolled), widget->priv->iconview);
 
         model = (GtkTreeModel *)gtk_list_store_new (4,
                                                     GDK_TYPE_PIXBUF,
