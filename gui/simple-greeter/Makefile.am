@@ -83,8 +83,6 @@ test_user_chooser_SOURCES = 	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
 	gdm-user-chooser-dialog.c	\
-	gdm-icon-nav.h			\
-	gdm-icon-nav.c			\
 	$(NULL)
 
 test_user_chooser_LDADD =	\

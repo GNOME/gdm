@@ -80,6 +80,7 @@ G_DEFINE_TYPE (GdmUserChooserWidget, gdm_user_chooser_widget, GTK_TYPE_VBOX)
 enum {
         CHOOSER_LIST_PIXBUF_COLUMN = 0,
         CHOOSER_LIST_CAPTION_COLUMN,
+        CHOOSER_LIST_TOOLTIP_COLUMN,
         CHOOSER_LIST_ID_COLUMN
 };
 
@@ -328,6 +329,7 @@ add_user_to_model (const char           *name,
         GtkTreeModel *model;
         GtkTreeIter   iter;
         char         *caption;
+        char         *tooltip;
 
         if (user->flags & USER_NO_DISPLAY
             || user->flags & USER_ACCOUNT_DISABLED) {
@@ -335,8 +337,10 @@ add_user_to_model (const char           *name,
                 g_debug ("Not adding user to list: %s", user->name);
         }
 
-        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>\n(%s)",
-                                   user->realname,
+        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>",
+                                   user->realname);
+        tooltip = g_strdup_printf ("%s: %s",
+                                   _("Short Name"),
                                    user->name);
 
         model = gtk_icon_view_get_model (GTK_ICON_VIEW (widget->priv->iconview));
@@ -346,6 +350,7 @@ add_user_to_model (const char           *name,
                             &iter,
                             CHOOSER_LIST_PIXBUF_COLUMN, user->pixbuf,
                             CHOOSER_LIST_CAPTION_COLUMN, caption,
+                            CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
                             CHOOSER_LIST_ID_COLUMN, name,
                             -1);
         g_free (caption);
@@ -373,33 +378,42 @@ populate_model (GdmUserChooserWidget *widget,
         GtkTreeIter   iter;
         GdkPixbuf    *pixbuf;
         char         *caption;
+        char         *tooltip;
 
         /* Add some fake entries */
 
-        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>\n<span size=\"small\">(%s)</span>\n<i>%s</i>",
+        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>\n<i>%s</i>",
                                    _("Guest User"),
-                                   "guest",
                                    _("Already logged in"));
+        tooltip = g_strdup_printf ("%s: %s",
+                                   _("Short Name"),
+                                   "guest");
         pixbuf = get_pixbuf_for_user (widget, "guest");
         gtk_list_store_append (GTK_LIST_STORE (model), &iter);
         gtk_list_store_set (GTK_LIST_STORE (model), &iter,
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_CAPTION_COLUMN, caption,
+                            CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
                             CHOOSER_LIST_ID_COLUMN, "guest",
                             -1);
         g_free (caption);
+        g_free (tooltip);
 
-        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>\n<span size=\"small\">(%s)</span>",
-                                   _("Administrator"),
+        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>",
+                                   _("Administrator"));
+        tooltip = g_strdup_printf ("%s: %s",
+                                   _("Short Name"),
                                    "administrator");
 
         gtk_list_store_append (GTK_LIST_STORE (model), &iter);
         gtk_list_store_set (GTK_LIST_STORE (model), &iter,
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_CAPTION_COLUMN, caption,
+                            CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
                             CHOOSER_LIST_ID_COLUMN, "administrator",
                             -1);
         g_free (caption);
+        g_free (tooltip);
 
         if (pixbuf != NULL) {
                 g_object_unref (pixbuf);
@@ -503,7 +517,7 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 
         widget->priv->iconview = gtk_icon_view_new ();
         gtk_icon_view_set_selection_mode (GTK_ICON_VIEW (widget->priv->iconview), GTK_SELECTION_SINGLE);
-        gtk_icon_view_set_orientation (GTK_ICON_VIEW (widget->priv->iconview), GTK_ORIENTATION_VERTICAL);
+        gtk_icon_view_set_orientation (GTK_ICON_VIEW (widget->priv->iconview), GTK_ORIENTATION_HORIZONTAL);
         g_signal_connect (widget->priv->iconview,
                           "item-activated",
                           G_CALLBACK (on_item_activated),
@@ -518,14 +532,16 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                                               TRUE);
         gtk_box_pack_start (GTK_BOX (widget), widget->priv->nav, TRUE, TRUE, 0);
 
-        model = (GtkTreeModel *)gtk_list_store_new (3,
+        model = (GtkTreeModel *)gtk_list_store_new (4,
                                                     GDK_TYPE_PIXBUF,
+                                                    G_TYPE_STRING,
                                                     G_TYPE_STRING,
                                                     G_TYPE_STRING);
         gtk_icon_view_set_model (GTK_ICON_VIEW (widget->priv->iconview), model);
 
         gtk_icon_view_set_pixbuf_column (GTK_ICON_VIEW (widget->priv->iconview), CHOOSER_LIST_PIXBUF_COLUMN);
         gtk_icon_view_set_markup_column (GTK_ICON_VIEW (widget->priv->iconview), CHOOSER_LIST_CAPTION_COLUMN);
+        gtk_icon_view_set_tooltip_column (GTK_ICON_VIEW (widget->priv->iconview), CHOOSER_LIST_TOOLTIP_COLUMN);
 
         gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (model),
                                          CHOOSER_LIST_CAPTION_COLUMN,
