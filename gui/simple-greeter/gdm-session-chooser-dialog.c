@@ -154,7 +154,6 @@ gdm_session_chooser_dialog_init (GdmSessionChooserDialog *dialog)
         dialog->priv = GDM_SESSION_CHOOSER_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->chooser_widget = gdm_session_chooser_widget_new ();
-        gdm_session_chooser_widget_set_current_session_name (GDM_SESSION_CHOOSER_WIDGET (dialog->priv->chooser_widget), g_getenv ("LANG"));
 
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 

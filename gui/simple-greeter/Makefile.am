@@ -27,6 +27,7 @@ noinst_PROGRAMS = 		\
 	test-greeter-panel	\
 	test-language-chooser	\
 	test-session-chooser	\
+	test-user-chooser	\
 	$(NULL)
 
 test_greeter_background_SOURCES = 	\
@@ -73,6 +74,18 @@ test_session_chooser_SOURCES = 	\
 	$(NULL)
 
 test_session_chooser_LDADD =	\
+	$(GUI_LIBS)		\
+	$(NULL)
+
+test_user_chooser_SOURCES = 	\
+	test-user-chooser.c		\
+	gdm-user-chooser-widget.h	\
+	gdm-user-chooser-widget.c	\
+	gdm-user-chooser-dialog.h	\
+	gdm-user-chooser-dialog.c	\
+	$(NULL)
+
+test_user_chooser_LDADD =	\
 	$(GUI_LIBS)		\
 	$(NULL)
 

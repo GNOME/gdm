@@ -337,7 +337,7 @@ activate_power_manager (void)
         g_debug ("Activating power management");
 
         error = NULL;
-        res = g_spawn_command_line_async ("gnome-power-manager --no-daemon --verbose", &error);
+        res = g_spawn_command_line_async ("gnome-power-manager --no-daemon", &error);
         if (! res) {
                 g_warning ("Unable to activate power management: %s", error->message);
                 g_error_free (error);

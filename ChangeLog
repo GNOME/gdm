@@ -1,3 +1,40 @@
+2007-10-02  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-language-chooser-widget.c:
+	* gui/simple-greeter/gdm-session-chooser-dialog.c:
+	(gdm_session_chooser_dialog_init):
+	* gui/simple-greeter/gdm-session-chooser-widget.c:
+	* gui/simple-greeter/gdm-simple-greeter.c: (create_greeter):
+	* gui/simple-greeter/gdm-user-chooser-dialog.c:
+	(gdm_user_chooser_dialog_get_current_user_name),
+	(gdm_user_chooser_dialog_set_property),
+	(gdm_user_chooser_dialog_get_property),
+	(gdm_user_chooser_dialog_constructor),
+	(gdm_user_chooser_dialog_dispose),
+	(gdm_user_chooser_dialog_class_init), (on_response),
+	(gdm_user_chooser_dialog_init), (gdm_user_chooser_dialog_finalize),
+	(gdm_user_chooser_dialog_new):
+	* gui/simple-greeter/gdm-user-chooser-dialog.h:
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(chooser_user_free),
+	(gdm_user_chooser_widget_get_current_user_name), (select_name),
+	(gdm_user_chooser_widget_set_current_user_name),
+	(gdm_user_chooser_widget_set_property),
+	(gdm_user_chooser_widget_get_property),
+	(gdm_user_chooser_widget_constructor),
+	(gdm_user_chooser_widget_dispose),
+	(gdm_user_chooser_widget_class_init), (on_selection_changed),
+	(collect_users), (on_item_activated), (add_user_to_model),
+	(get_pixbuf_for_user), (populate_model), (separator_func),
+	(compare_user_names), (compare_user),
+	(gdm_user_chooser_widget_init), (gdm_user_chooser_widget_finalize),
+	(gdm_user_chooser_widget_new):
+	* gui/simple-greeter/gdm-user-chooser-widget.h:
+	* gui/simple-greeter/greeter-main.c: (activate_power_manager):
+	* gui/simple-greeter/test-user-chooser.c: (main):
+	Add skeleton for user switcher widget.
+
 2007-10-01  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-session-chooser-widget.c:

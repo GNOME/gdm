@@ -416,21 +416,21 @@ create_greeter (GdmSimpleGreeter *greeter)
 
 #if 0
         error = NULL;
-        g_spawn_command_line_async ("gtk-window-decorator", &error);
+        g_spawn_command_line_async ("gtk-window-decorator --replace", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
         }
 
         error = NULL;
-        g_spawn_command_line_async ("compiz", &error);
+        g_spawn_command_line_async ("compiz --replace", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
         }
 #else
         error = NULL;
-        g_spawn_command_line_async ("metacity", &error);
+        g_spawn_command_line_async ("metacity --replace", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
