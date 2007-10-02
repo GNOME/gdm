@@ -1,6 +1,24 @@
 2007-10-02  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-icon-nav.c: (gdm_icon_nav_scroll_event),
+	(gdm_icon_nav_adj_changed), (gdm_icon_nav_adj_value_changed),
+	(gdm_icon_nav_scroll_step), (gdm_icon_nav_button_clicked),
+	(gdm_icon_nav_start_scroll), (gdm_icon_nav_stop_scroll),
+	(gdm_icon_nav_get_property), (gdm_icon_nav_set_property),
+	(gdm_icon_nav_constructor), (gdm_icon_nav_class_init),
+	(gdm_icon_nav_init), (gdm_icon_nav_new),
+	(gdm_icon_nav_get_show_buttons), (gdm_icon_nav_set_show_buttons),
+	(gdm_icon_nav_get_mode), (gdm_icon_nav_set_mode):
+	* gui/simple-greeter/gdm-icon-nav.h:
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(gdm_user_chooser_widget_init):
+	Use a custom scrolling widget for user list.  Adapted
+	from eog-thumb-nav.
+
+2007-10-02  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/simple-greeter/Makefile.am:
 	* gui/simple-greeter/gdm-language-chooser-widget.c:
 	* gui/simple-greeter/gdm-session-chooser-dialog.c:
 	(gdm_session_chooser_dialog_init):
