@@ -28,6 +28,7 @@ noinst_PROGRAMS = 		\
 	test-language-chooser	\
 	test-session-chooser	\
 	test-user-chooser	\
+	test-user-manager	\
 	$(NULL)
 
 test_greeter_background_SOURCES = 	\
@@ -83,9 +84,25 @@ test_user_chooser_SOURCES = 	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
 	gdm-user-chooser-dialog.c	\
+	gdm-user-manager.h		\
+	gdm-user-manager.c		\
+	gdm-user.h			\
+	gdm-user.c			\
 	$(NULL)
 
 test_user_chooser_LDADD =	\
+	$(GUI_LIBS)		\
+	$(NULL)
+
+test_user_manager_SOURCES = 	\
+	test-user-manager.c	\
+	gdm-user-manager.h	\
+	gdm-user-manager.c	\
+	gdm-user.h		\
+	gdm-user.c		\
+	$(NULL)
+
+test_user_manager_LDADD =	\
 	$(GUI_LIBS)		\
 	$(NULL)
 
@@ -102,6 +119,10 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-greeter-background.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
+	gdm-user-manager.h		\
+	gdm-user-manager.c		\
+	gdm-user.h			\
+	gdm-user.c			\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\

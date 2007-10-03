@@ -1,3 +1,32 @@
+2007-10-03  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-user-chooser-widget.c: (populate_model),
+	(on_user_added), (on_user_removed), (gdm_user_chooser_widget_init):
+	* gui/simple-greeter/gdm-user-manager.c:
+	(gdm_user_manager_error_quark), (gdm_user_manager_get_user),
+	(listify_hash_values_hfunc), (gdm_user_manager_list_users),
+	(reload_passwd), (reload_shells), (shells_monitor_cb),
+	(passwd_monitor_cb), (gdm_user_manager_class_init),
+	(reload_passwd_timeout), (queue_reload_passwd),
+	(gdm_user_manager_init), (gdm_user_manager_finalize),
+	(gdm_user_manager_ref_default):
+	* gui/simple-greeter/gdm-user-manager.h:
+	* gui/simple-greeter/gdm-user.c: (gdm_user_class_init),
+	(gdm_user_init), (gdm_user_set_property), (gdm_user_get_property),
+	(gdm_user_finalize), (_gdm_user_update), (_gdm_user_add_session),
+	(_gdm_user_remove_session), (_gdm_user_icon_changed),
+	(gdm_user_get_uid), (gdm_user_get_real_name),
+	(gdm_user_get_user_name), (gdm_user_get_home_directory),
+	(gdm_user_get_shell), (gdm_user_get_sessions),
+	(gdm_user_get_n_sessions), (gdm_user_collate):
+	* gui/simple-greeter/gdm-user.h:
+	* gui/simple-greeter/test-user-chooser.c: (main):
+	* gui/simple-greeter/test-user-manager.c: (on_user_added),
+	(on_user_removed), (main):
+	Add basic user monitoring.  Hook up to user-list.
+
 2007-10-02  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-factory-slave.c: (on_session_relay_info),

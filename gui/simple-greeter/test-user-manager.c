@@ -29,9 +29,28 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+
 #include <libgnomevfs/gnome-vfs-init.h>
 
-#include "gdm-user-chooser-dialog.h"
+#include "gdm-user-manager.h"
+
+static GdmUserManager *manager = NULL;
+
+static void
+on_user_added (GdmUserManager *manager,
+               GdmUser        *user,
+               gpointer        data)
+{
+        g_debug ("User added: %s", gdm_user_get_user_name (user));
+}
+
+static void
+on_user_removed (GdmUserManager *manager,
+                 GdmUser        *user,
+                 gpointer        data)
+{
+        g_debug ("User removed: %s", gdm_user_get_user_name (user));
+}
 
 int
 main (int argc, char *argv[])
@@ -47,17 +66,17 @@ main (int argc, char *argv[])
         gtk_init (&argc, &argv);
         gnome_vfs_init ();
 
-        dialog = gdm_user_chooser_dialog_new ();
-        /*gtk_widget_set_size_request (dialog, 480, 128);*/
+        manager = gdm_user_manager_ref_default ();
+        g_signal_connect (manager,
+                          "user-added",
+                          G_CALLBACK (on_user_added),
+                          NULL);
+        g_signal_connect (manager,
+                          "user-removed",
+                          G_CALLBACK (on_user_removed),
+                          NULL);
 
-        if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
-                char *name;
-
-                name = gdm_user_chooser_dialog_get_current_user_name (GDM_USER_CHOOSER_DIALOG (dialog));
-                g_message ("User: %s", name ? name : "(null)");
-                g_free (name);
-        }
-        gtk_widget_destroy (dialog);
+        gtk_main ();
 
         return 0;
 }
