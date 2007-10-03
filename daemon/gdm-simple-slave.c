@@ -671,8 +671,8 @@ setup_session_environment (GdmSimpleSlave *slave)
 }
 
 static void
-on_user_verified (GdmSession     *session,
-                  GdmSimpleSlave *slave)
+on_session_user_verified (GdmSession     *session,
+                          GdmSimpleSlave *slave)
 {
         char    *username;
         char    *command;
@@ -728,9 +728,9 @@ queue_greeter_reset (GdmSimpleSlave *slave)
 }
 
 static void
-on_user_verification_error (GdmSession     *session,
-                            GError         *error,
-                            GdmSimpleSlave *slave)
+on_session_user_verification_error (GdmSession     *session,
+                                    GError         *error,
+                                    GdmSimpleSlave *slave)
 {
         char *username;
 
@@ -748,27 +748,27 @@ on_user_verification_error (GdmSession     *session,
 }
 
 static void
-on_info (GdmSession     *session,
-         const char     *text,
-         GdmSimpleSlave *slave)
+on_session_info (GdmSession     *session,
+                 const char     *text,
+                 GdmSimpleSlave *slave)
 {
         g_debug ("Info: %s", text);
         gdm_greeter_server_info (slave->priv->greeter_server, text);
 }
 
 static void
-on_problem (GdmSession     *session,
-            const char     *text,
-            GdmSimpleSlave *slave)
+on_session_problem (GdmSession     *session,
+                    const char     *text,
+                    GdmSimpleSlave *slave)
 {
         g_debug ("Problem: %s", text);
         gdm_greeter_server_problem (slave->priv->greeter_server, text);
 }
 
 static void
-on_info_query (GdmSession     *session,
-               const char     *text,
-               GdmSimpleSlave *slave)
+on_session_info_query (GdmSession     *session,
+                       const char     *text,
+                       GdmSimpleSlave *slave)
 {
 
         g_debug ("Info query: %s", text);
@@ -776,28 +776,24 @@ on_info_query (GdmSession     *session,
 }
 
 static void
-on_secret_info_query (GdmSession     *session,
-                      const char     *text,
-                      GdmSimpleSlave *slave)
+on_session_secret_info_query (GdmSession     *session,
+                              const char     *text,
+                              GdmSimpleSlave *slave)
 {
         g_debug ("Secret info query: %s", text);
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
 }
 
 static void
-on_opened (GdmSession     *session,
-           GdmSimpleSlave *slave)
+on_session_opened (GdmSession     *session,
+                   GdmSimpleSlave *slave)
 {
-        GError *error;
         gboolean res;
 
         g_debug ("session opened");
-        res = gdm_session_begin_verification (session,
-                                              slave->priv->selected_user,
-                                              &error);
+        res = gdm_greeter_server_ready (slave->priv->greeter_server);
         if (! res) {
-                g_warning ("Unable to begin verification: %s", error->message);
-                g_error_free (error);
+                g_warning ("Unable to send ready");
         }
 }
 
@@ -810,37 +806,37 @@ create_new_session (GdmSimpleSlave *slave)
 
         g_signal_connect (slave->priv->session,
                           "opened",
-                          G_CALLBACK (on_opened),
+                          G_CALLBACK (on_session_opened),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "info",
-                          G_CALLBACK (on_info),
+                          G_CALLBACK (on_session_info),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "problem",
-                          G_CALLBACK (on_problem),
+                          G_CALLBACK (on_session_problem),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "info-query",
-                          G_CALLBACK (on_info_query),
+                          G_CALLBACK (on_session_info_query),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "secret-info-query",
-                          G_CALLBACK (on_secret_info_query),
+                          G_CALLBACK (on_session_secret_info_query),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "user-verified",
-                          G_CALLBACK (on_user_verified),
+                          G_CALLBACK (on_session_user_verified),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "user-verification-error",
-                          G_CALLBACK (on_user_verification_error),
+                          G_CALLBACK (on_session_user_verification_error),
                           slave);
 
         g_signal_connect (slave->priv->session,
@@ -869,6 +865,25 @@ on_greeter_stop (GdmGreeterSession *greeter,
                  GdmSimpleSlave    *slave)
 {
         g_debug ("Greeter stopped");
+}
+
+static void
+on_greeter_begin_verification (GdmGreeterServer *greeter_server,
+                               const char       *username,
+                               GdmSimpleSlave   *slave)
+{
+        GError *error;
+        gboolean res;
+
+        g_debug ("begin verification");
+        error = NULL;
+        res = gdm_session_begin_verification (slave->priv->session,
+                                              username,
+                                              &error);
+        if (! res) {
+                g_warning ("Unable to begin verification: %s", error->message);
+                g_error_free (error);
+        }
 }
 
 static void
@@ -902,7 +917,7 @@ on_greeter_user_selected (GdmGreeterServer *greeter_server,
                           const char       *text,
                           GdmSimpleSlave   *slave)
 {
-
+        g_debug ("Greeter user selected");
 }
 
 static void
@@ -1013,6 +1028,10 @@ run_greeter (GdmSimpleSlave *slave)
         create_new_session (slave);
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-verification",
+                          G_CALLBACK (on_greeter_begin_verification),
+                          slave);
         g_signal_connect (slave->priv->greeter_server,
                           "query-answer",
                           G_CALLBACK (on_greeter_answer),
@@ -1367,6 +1386,11 @@ gdm_simple_slave_finalize (GObject *object)
         g_return_if_fail (simple_slave->priv != NULL);
 
         gdm_simple_slave_stop (GDM_SLAVE (simple_slave));
+
+        if (simple_slave->priv->greeter_reset_id > 0) {
+                g_source_remove (simple_slave->priv->greeter_reset_id);
+                simple_slave->priv->greeter_reset_id = 0;
+        }
 
         G_OBJECT_CLASS (gdm_simple_slave_parent_class)->finalize (object);
 }

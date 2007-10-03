@@ -396,6 +396,23 @@ populate_model (GdmUserChooserWidget *widget,
         g_free (caption);
         g_free (tooltip);
 
+        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>\n<i>%s</i>",
+                                   _("GNOME Test"),
+                                   _("Already logged in"));
+        tooltip = g_strdup_printf ("%s: %s",
+                                   _("Short Name"),
+                                   "gtest");
+        pixbuf = get_pixbuf_for_user (widget, "gtest");
+        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                            CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
+                            CHOOSER_LIST_CAPTION_COLUMN, caption,
+                            CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
+                            CHOOSER_LIST_ID_COLUMN, "gtest",
+                            -1);
+        g_free (caption);
+        g_free (tooltip);
+
         caption = g_strdup_printf ("<span size=\"x-large\">%s</span>",
                                    _("Administrator"));
         tooltip = g_strdup_printf ("%s: %s",

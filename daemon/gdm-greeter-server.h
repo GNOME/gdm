@@ -45,6 +45,8 @@ typedef struct
 {
         GObjectClass   parent_class;
 
+        void (* begin_verification)(GdmGreeterServer  *greeter_server,
+                                    const char        *username);
         void (* query_answer)      (GdmGreeterServer  *greeter_server,
                                     const char        *text);
         void (* session_selected)  (GdmGreeterServer  *greeter_server,
@@ -76,6 +78,7 @@ gboolean            gdm_greeter_server_info              (GdmGreeterServer *gree
 gboolean            gdm_greeter_server_problem           (GdmGreeterServer *greeter_server,
                                                           const char       *text);
 gboolean            gdm_greeter_server_reset             (GdmGreeterServer *greeter_server);
+gboolean            gdm_greeter_server_ready             (GdmGreeterServer *greeter_server);
 
 G_END_DECLS
 

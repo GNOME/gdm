@@ -46,6 +46,8 @@ typedef struct
         GObjectClass   parent_class;
 
         /* signals */
+        void (* begin_verification)   (GdmGreeter *greeter,
+                                       const char *username);
         void (* query_answer)         (GdmGreeter *greeter,
                                        const char *text);
         void (* session_selected)     (GdmGreeter *greeter,
@@ -62,6 +64,7 @@ typedef struct
         /* methods */
         gboolean (*start)             (GdmGreeter *greeter);
         gboolean (*stop)              (GdmGreeter *greeter);
+        gboolean (*ready)             (GdmGreeter *greeter);
         gboolean (*reset)             (GdmGreeter *greeter);
 
         gboolean (*info_query)        (GdmGreeter *greeter,
@@ -87,9 +90,12 @@ GType               gdm_greeter_get_type                       (void);
 
 gboolean            gdm_greeter_start                          (GdmGreeter *greeter);
 gboolean            gdm_greeter_stop                           (GdmGreeter *greeter);
+gboolean            gdm_greeter_ready                          (GdmGreeter *greeter);
 gboolean            gdm_greeter_reset                          (GdmGreeter *greeter);
 
 /* emit signals */
+gboolean            gdm_greeter_emit_begin_verification        (GdmGreeter *greeter,
+                                                                const char *username);
 gboolean            gdm_greeter_emit_answer_query              (GdmGreeter *greeter,
                                                                 const char *text);
 gboolean            gdm_greeter_emit_select_session            (GdmGreeter *greeter,

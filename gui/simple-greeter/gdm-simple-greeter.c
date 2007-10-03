@@ -50,6 +50,7 @@
 
 #include "gdm-greeter-panel.h"
 #include "gdm-greeter-background.h"
+#include "gdm-user-chooser-widget.h"
 
 #if HAVE_PAM
 #include <security/pam_appl.h>
@@ -67,6 +68,11 @@
 #define GDM_SIMPLE_GREETER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_GREETER, GdmSimpleGreeterPrivate))
 
 enum {
+        PAGE_USERLIST = 0,
+        PAGE_AUTH
+};
+
+enum {
         RESPONSE_RESTART,
         RESPONSE_REBOOT,
         RESPONSE_CLOSE
@@ -77,6 +83,7 @@ struct GdmSimpleGreeterPrivate
         GladeXML        *xml;
         GtkWidget       *panel;
         GtkWidget       *background;
+        GtkWidget       *user_chooser;
 };
 
 enum {
@@ -176,12 +183,27 @@ set_message (GdmSimpleGreeter *greeter,
 }
 
 static void
+switch_page (GdmSimpleGreeter *greeter,
+             int               number)
+{
+        GtkWidget *notebook;
+
+        /* switch page */
+        notebook = glade_xml_get_widget (greeter->priv->xml, "notebook");
+        gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), number);
+
+}
+
+static void
 do_cancel (GdmSimpleGreeter *greeter)
 {
+        switch_page (greeter, PAGE_USERLIST);
         set_busy (greeter);
         set_sensitive (greeter, FALSE);
 
         gdm_greeter_emit_cancelled (GDM_GREETER (greeter));
+
+        set_ready (greeter);
 }
 
 static void
@@ -201,9 +223,25 @@ reset_dialog (GdmSimpleGreeter *greeter)
 
         set_message (greeter, "");
 
+        switch_page (greeter, PAGE_USERLIST);
+
         set_sensitive (greeter, TRUE);
         set_ready (greeter);
         set_focus (GDM_SIMPLE_GREETER (greeter));
+}
+
+static gboolean
+gdm_simple_greeter_ready (GdmGreeter *greeter)
+{
+        g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+        /*GDM_GREETER_CLASS (gdm_simple_greeter_parent_class)->reset (greeter);*/
+
+        set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
+        set_ready (GDM_SIMPLE_GREETER (greeter));
+        set_focus (GDM_SIMPLE_GREETER (greeter));
+
+        return TRUE;
 }
 
 static gboolean
@@ -214,7 +252,6 @@ gdm_simple_greeter_reset (GdmGreeter *greeter)
         /*GDM_GREETER_CLASS (gdm_simple_greeter_parent_class)->reset (greeter);*/
 
         reset_dialog (GDM_SIMPLE_GREETER (greeter));
-        do_cancel (GDM_SIMPLE_GREETER (greeter));
 
         return TRUE;
 }
@@ -400,6 +437,19 @@ suspend_button_clicked (GtkButton        *button,
         g_object_unref (proxy);
 }
 
+static void
+on_user_activated (GdmUserChooserWidget *user_chooser,
+                   GdmSimpleGreeter     *greeter)
+{
+        char *user_name;
+
+        user_name = gdm_user_chooser_widget_get_current_user_name (GDM_USER_CHOOSER_WIDGET (greeter->priv->user_chooser));
+
+        gdm_greeter_emit_begin_verification (GDM_GREETER (greeter),
+                                             user_name);
+        switch_page (greeter, PAGE_AUTH);
+}
+
 #define INVISIBLE_CHAR_DEFAULT       '*'
 #define INVISIBLE_CHAR_BLACK_CIRCLE  0x25cf
 #define INVISIBLE_CHAR_WHITE_BULLET  0x25e6
@@ -413,6 +463,7 @@ create_greeter (GdmSimpleGreeter *greeter)
         GtkWidget *dialog;
         GtkWidget *entry;
         GtkWidget *button;
+        GtkWidget *box;
 
 #if 0
         error = NULL;
@@ -437,6 +488,14 @@ create_greeter (GdmSimpleGreeter *greeter)
         }
 #endif
 
+        greeter->priv->user_chooser = gdm_user_chooser_widget_new ();
+        g_signal_connect (greeter->priv->user_chooser,
+                          "user-activated",
+                          G_CALLBACK (on_user_activated),
+                          greeter);
+
+        gtk_widget_show_all (greeter->priv->user_chooser);
+
         greeter->priv->xml = glade_xml_new (GLADEDIR "/" GLADE_XML_FILE, NULL, PACKAGE);
         if (greeter->priv->xml == NULL) {
                 /* FIXME: */
@@ -446,6 +505,13 @@ create_greeter (GdmSimpleGreeter *greeter)
         if (dialog == NULL) {
                 /* FIXME: */
         }
+
+        box = glade_xml_get_widget (greeter->priv->xml, "userlist-box");
+        if (box == NULL) {
+                g_warning ("Userlist box not found");
+                /* FIXME: */
+        }
+        gtk_container_add (GTK_CONTAINER (box), greeter->priv->user_chooser);
 
         button = glade_xml_get_widget (greeter->priv->xml, "auth-ok-button");
         if (dialog != NULL) {
@@ -473,8 +539,6 @@ create_greeter (GdmSimpleGreeter *greeter)
         gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), TRUE);
         gtk_window_stick (GTK_WINDOW (dialog));
         gtk_widget_show (dialog);
-
-        set_busy (greeter);
 }
 
 static void
@@ -518,6 +582,7 @@ gdm_simple_greeter_class_init (GdmSimpleGreeterClass *klass)
 
         greeter_class->start = gdm_simple_greeter_start;
         greeter_class->stop = gdm_simple_greeter_stop;
+        greeter_class->ready = gdm_simple_greeter_ready;
         greeter_class->reset = gdm_simple_greeter_reset;
         greeter_class->info = gdm_simple_greeter_info;
         greeter_class->problem = gdm_simple_greeter_problem;

@@ -56,6 +56,7 @@ enum {
 };
 
 enum {
+        BEGIN_VERIFICATION,
         QUERY_ANSWER,
         SESSION_SELECTED,
         LANGUAGE_SELECTED,
@@ -139,11 +140,33 @@ gdm_greeter_stop (GdmGreeter *greeter)
 }
 
 static gboolean
+gdm_greeter_real_ready (GdmGreeter *greeter)
+{
+        g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+        return TRUE;
+}
+
+static gboolean
 gdm_greeter_real_reset (GdmGreeter *greeter)
 {
         g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
 
         return TRUE;
+}
+
+gboolean
+gdm_greeter_ready (GdmGreeter *greeter)
+{
+        gboolean ret;
+
+        g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+        g_object_ref (greeter);
+        ret = GDM_GREETER_GET_CLASS (greeter)->ready (greeter);
+        g_object_unref (greeter);
+
+        return ret;
 }
 
 gboolean
@@ -257,12 +280,25 @@ gdm_greeter_secret_info_query (GdmGreeter *greeter,
 }
 
 gboolean
+gdm_greeter_emit_begin_verification (GdmGreeter *greeter,
+                                     const char *username)
+{
+        g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
+
+        g_debug ("Begin Verification: %s", username);
+
+        g_signal_emit (greeter, signals[BEGIN_VERIFICATION], 0, username);
+
+        return TRUE;
+}
+
+gboolean
 gdm_greeter_emit_answer_query (GdmGreeter *greeter,
                                const char *text)
 {
         g_return_val_if_fail (GDM_IS_GREETER (greeter), FALSE);
 
-        g_debug ("Answer query: %s", text);
+        g_debug ("Answer query");
 
         g_signal_emit (greeter, signals[QUERY_ANSWER], 0, text);
 
@@ -466,6 +502,7 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
 
         klass->start = gdm_greeter_real_start;
         klass->stop = gdm_greeter_real_stop;
+        klass->ready = gdm_greeter_real_ready;
         klass->reset = gdm_greeter_real_reset;
         klass->info = gdm_greeter_real_info;
         klass->problem = gdm_greeter_real_problem;
@@ -473,6 +510,16 @@ gdm_greeter_class_init (GdmGreeterClass *klass)
         klass->secret_info_query = gdm_greeter_real_secret_info_query;
 
 
+        signals [BEGIN_VERIFICATION] =
+                g_signal_new ("begin-verification",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterClass, begin_verification),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
         signals [QUERY_ANSWER] =
                 g_signal_new ("query-answer",
                               G_TYPE_FROM_CLASS (object_class),

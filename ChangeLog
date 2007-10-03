@@ -1,5 +1,64 @@
 2007-10-02  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-factory-slave.c: (on_session_relay_info),
+	(on_session_relay_problem), (on_session_relay_info_query),
+	(on_session_relay_secret_info_query), (on_session_relay_opened),
+	(on_session_relay_user_verified), (greeter_reset_timeout),
+	(queue_greeter_reset), (on_session_relay_user_verification_error),
+	(on_session_relay_disconnected),
+	(on_session_relay_session_started),
+	(on_greeter_begin_verification), (run_greeter),
+	(gdm_factory_slave_start), (gdm_factory_slave_finalize):
+	* daemon/gdm-greeter-server.c: (gdm_greeter_server_ready),
+	(handle_begin_verification), (greeter_handle_child_message),
+	(do_introspect), (gdm_greeter_server_class_init):
+	* daemon/gdm-greeter-server.h:
+	* daemon/gdm-local-display-factory.c: (create_display_for_device):
+	* daemon/gdm-product-slave.c: (relay_session_opened),
+	(on_session_opened), (on_session_user_verified),
+	(on_session_user_verification_error), (on_session_info),
+	(on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_relay_begin_verification),
+	(create_new_session), (on_relay_cancelled),
+	(connect_to_session_relay), (gdm_product_slave_start):
+	* daemon/gdm-session-relay.c:
+	(gdm_session_relay_begin_verification), (handle_user_verified),
+	(handle_user_verification_error), (handle_opened),
+	(session_handle_child_message), (do_introspect),
+	(handle_connection), (gdm_session_relay_class_init):
+	* daemon/gdm-session-relay.h:
+	* daemon/gdm-session.c:
+	* daemon/gdm-simple-slave.c: (on_session_user_verified),
+	(on_session_user_verification_error), (on_session_info),
+	(on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_session_opened),
+	(create_new_session), (on_greeter_begin_verification),
+	(on_greeter_user_selected), (run_greeter),
+	(gdm_simple_slave_finalize):
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-simple-greeter.c: (switch_page),
+	(do_cancel), (reset_dialog), (gdm_simple_greeter_ready),
+	(gdm_simple_greeter_reset), (on_user_activated), (create_greeter),
+	(gdm_simple_greeter_class_init):
+	* gui/simple-greeter/gdm-simple-greeter.glade:
+	* gui/simple-greeter/gdm-user-chooser-widget.c: (populate_model):
+	* gui/simple-greeter/greeter-main.c: (on_ready),
+	(on_begin_verification), (main):
+	* libgreeter/gdm-greeter.c: (gdm_greeter_real_ready),
+	(gdm_greeter_ready), (gdm_greeter_emit_begin_verification),
+	(gdm_greeter_emit_answer_query), (gdm_greeter_class_init):
+	* libgreeter/gdm-greeter.h:
+	Require the greeter to call BeginVerification.  But only
+	after the greeter is sent a Ready.
+
+	Make the factory-slave report verification status.
+
+	Audit the communication paths and apply some fixes.
+
+	Hook up the user chooser in the greeter.  Only has dummy users.
+
+2007-10-02  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-user-chooser-widget.c:
 	(gdm_user_chooser_widget_init):
 	Oops really revert this time.

@@ -62,13 +62,16 @@ enum {
 };
 
 enum {
-        INFO_QUERY,
-        SECRET_INFO_QUERY,
+        USER_VERIFIED = 0,
+        USER_VERIFICATION_ERROR,
         INFO,
         PROBLEM,
+        INFO_QUERY,
+        SECRET_INFO_QUERY,
         SESSION_STARTED,
         SESSION_STOPPED,
-        READY,
+        OPENED,
+        CLOSED,
         CONNECTED,
         DISCONNECTED,
         LAST_SIGNAL
@@ -154,6 +157,14 @@ void
 gdm_session_relay_open (GdmSessionRelay *session_relay)
 {
         send_dbus_void_signal (session_relay, "Open");
+}
+
+void
+gdm_session_relay_begin_verification (GdmSessionRelay *session_relay,
+                                      const char      *username)
+{
+        g_debug ("Sending signal BeginVerification");
+        send_dbus_string_signal (session_relay, "BeginVerification", username);
 }
 
 void
@@ -328,6 +339,48 @@ handle_problem (GdmSessionRelay *session_relay,
 }
 
 static DBusHandlerResult
+handle_user_verified (GdmSessionRelay *session_relay,
+                      DBusConnection  *connection,
+                      DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("UserVerified");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (session_relay, signals [USER_VERIFIED], 0);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_user_verification_error (GdmSessionRelay *session_relay,
+                                DBusConnection  *connection,
+                                DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("UserVerificationError");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (session_relay, signals [USER_VERIFICATION_ERROR], 0);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 handle_session_started (GdmSessionRelay *session_relay,
                         DBusConnection  *connection,
                         DBusMessage     *message)
@@ -370,22 +423,22 @@ handle_session_stopped (GdmSessionRelay *session_relay,
 }
 
 static DBusHandlerResult
-handle_ready (GdmSessionRelay *session_relay,
-              DBusConnection  *connection,
-              DBusMessage     *message)
+handle_opened (GdmSessionRelay *session_relay,
+               DBusConnection  *connection,
+               DBusMessage     *message)
 {
         DBusMessage *reply;
         DBusError    error;
 
         dbus_error_init (&error);
 
-        g_debug ("Ready");
+        g_debug ("Opened");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [READY], 0);
+        g_signal_emit (session_relay, signals [OPENED], 0);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -427,12 +480,16 @@ session_handle_child_message (DBusConnection *connection,
                 return handle_info (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Problem")) {
                 return handle_problem (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "UserVerified")) {
+                return handle_user_verified (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "UserVerificationError")) {
+                return handle_user_verification_error (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStarted")) {
                 return handle_session_started (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStopped")) {
                 return handle_session_started (session_relay, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Ready")) {
-                return handle_ready (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Opened")) {
+                return handle_opened (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Reset")) {
                 return handle_reset (session_relay, connection, message);
         }
@@ -465,6 +522,9 @@ do_introspect (DBusConnection *connection,
                                "  <interface name=\"org.gnome.DisplayManager.SessionRelay\">\n"
                                "    <method name=\"UserVerified\">\n"
                                "    </method>\n"
+                               "    <method name=\"UserVerificationError\">\n"
+                               "      <arg name=\"text\" type=\"s\"/>\n"
+                               "    </method>\n"
                                "    <method name=\"InfoQuery\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
                                "    </method>\n"
@@ -481,11 +541,14 @@ do_introspect (DBusConnection *connection,
                                "    </method>\n"
                                "    <method name=\"SessionStopped\">\n"
                                "    </method>\n"
-                               "    <method name=\"Ready\">\n"
+                               "    <method name=\"Opened\">\n"
                                "    </method>\n"
                                "    <method name=\"Reset\">\n"
                                "    </method>\n"
                                "    <signal name=\"Open\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"BeginVerification\">\n"
+                               "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"AnswerQuery\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
@@ -668,6 +731,7 @@ handle_connection (DBusServer      *server,
 
                 g_signal_emit (session_relay, signals[CONNECTED], 0);
 
+                gdm_session_relay_open (session_relay);
         }
 }
 
@@ -794,7 +858,28 @@ gdm_session_relay_class_init (GdmSessionRelayClass *klass)
 
         g_type_class_add_private (klass, sizeof (GdmSessionRelayPrivate));
 
-        signals [INFO_QUERY] =
+        signals [USER_VERIFIED] =
+                g_signal_new ("user-verified",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionRelayClass, user_verified),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+        signals [USER_VERIFICATION_ERROR] =
+                g_signal_new ("user-verification-error",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionRelayClass, user_verification_error),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__POINTER,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_POINTER);
+         signals [INFO_QUERY] =
                 g_signal_new ("info-query",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
@@ -848,11 +933,11 @@ gdm_session_relay_class_init (GdmSessionRelayClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [READY] =
-                g_signal_new ("ready",
+        signals [OPENED] =
+                g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, ready),
+                              G_STRUCT_OFFSET (GdmSessionRelayClass, opened),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

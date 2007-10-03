@@ -92,14 +92,16 @@ test_user_chooser_LDADD =	\
 libexec_PROGRAMS =					\
 	gdm-simple-greeter
 
-gdm_simple_greeter_SOURCES =  	\
-	greeter-main.c 		\
-	gdm-simple-greeter.c	\
-	gdm-simple-greeter.h	\
-	gdm-greeter-panel.h	\
-	gdm-greeter-panel.c	\
-	gdm-greeter-background.h\
-	gdm-greeter-background.c\
+gdm_simple_greeter_SOURCES =  		\
+	greeter-main.c 			\
+	gdm-simple-greeter.c		\
+	gdm-simple-greeter.h		\
+	gdm-greeter-panel.h		\
+	gdm-greeter-panel.c		\
+	gdm-greeter-background.h	\
+	gdm-greeter-background.c	\
+	gdm-user-chooser-widget.h	\
+	gdm-user-chooser-widget.c	\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\

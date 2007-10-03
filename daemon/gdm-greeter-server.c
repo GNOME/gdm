@@ -72,6 +72,7 @@ enum {
 };
 
 enum {
+        BEGIN_VERIFICATION,
         QUERY_ANSWER,
         SESSION_SELECTED,
         HOSTNAME_SELECTED,
@@ -199,6 +200,13 @@ gdm_greeter_server_reset (GdmGreeterServer *greeter_server)
         return TRUE;
 }
 
+gboolean
+gdm_greeter_server_ready (GdmGreeterServer *greeter_server)
+{
+        send_dbus_void_signal (greeter_server, "Ready");
+        return TRUE;
+}
+
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
  * sockets are only available on Linux.
  */
@@ -225,6 +233,33 @@ generate_address (void)
 #endif
 
         return path;
+}
+
+static DBusHandlerResult
+handle_begin_verification (GdmGreeterServer *greeter_server,
+                           DBusConnection   *connection,
+                           DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        g_debug ("BeginVerification for %s", text);
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (greeter_server, signals [BEGIN_VERIFICATION], 0, text);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
@@ -418,7 +453,9 @@ greeter_handle_child_message (DBusConnection *connection,
 {
         GdmGreeterServer *greeter_server = GDM_GREETER_SERVER (user_data);
 
-        if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
+        if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginVerification")) {
+                return handle_begin_verification (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
                 return handle_answer_query (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
                 return handle_select_session (greeter_server, connection, message);
@@ -462,6 +499,9 @@ do_introspect (DBusConnection *connection,
         /* interface */
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.GreeterServer\">\n"
+                               "    <method name=\"BeginVerification\">\n"
+                               "      <arg name=\"username\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
                                "    <method name=\"AnswerQuery\">\n"
                                "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
@@ -495,6 +535,8 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"SecretInfoQuery\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"Ready\">\n"
                                "    </signal>\n"
                                "    <signal name=\"Reset\">\n"
                                "    </signal>\n"
@@ -861,6 +903,17 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                                                               "group name",
                                                               "gdm",
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        signals [BEGIN_VERIFICATION] =
+                g_signal_new ("begin-verification",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, begin_verification),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
         signals [QUERY_ANSWER] =
                 g_signal_new ("query-answer",
                               G_OBJECT_CLASS_TYPE (object_class),

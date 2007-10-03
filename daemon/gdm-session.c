@@ -177,25 +177,6 @@ send_dbus_string_signal (GdmSession *session,
 }
 
 static void
-send_dbus_void_signal (GdmSession *session,
-                       const char *name)
-{
-        DBusMessage    *message;
-
-        g_return_if_fail (session != NULL);
-
-        message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
-                                           GDM_SESSION_DBUS_INTERFACE,
-                                           name);
-
-        if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("Could not send %s signal", name);
-        }
-
-        dbus_message_unref (message);
-}
-
-static void
 gdm_session_write_record (GdmSession           *session,
                           GdmSessionRecordType  record_type)
 {

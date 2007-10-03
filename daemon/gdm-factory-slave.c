@@ -68,6 +68,7 @@ struct GdmFactorySlavePrivate
         GPid               pid;
         guint              output_watch_id;
         guint              error_watch_id;
+        guint              greeter_reset_id;
 
         GPid               server_pid;
         Display           *server_display;
@@ -371,27 +372,27 @@ on_greeter_stop (GdmGreeterSession *greeter,
 }
 
 static void
-on_relay_info (GdmSessionRelay *relay,
-               const char      *text,
-               GdmFactorySlave  *slave)
+on_session_relay_info (GdmSessionRelay *relay,
+                       const char      *text,
+                       GdmFactorySlave  *slave)
 {
         g_debug ("Info: %s", text);
         gdm_greeter_server_info (slave->priv->greeter_server, text);
 }
 
 static void
-on_relay_problem (GdmSessionRelay *relay,
-                  const char      *text,
-                  GdmFactorySlave  *slave)
+on_session_relay_problem (GdmSessionRelay *relay,
+                          const char      *text,
+                          GdmFactorySlave *slave)
 {
         g_debug ("Problem: %s", text);
         gdm_greeter_server_problem (slave->priv->greeter_server, text);
 }
 
 static void
-on_relay_info_query (GdmSessionRelay *relay,
-                     const char      *text,
-                     GdmFactorySlave  *slave)
+on_session_relay_info_query (GdmSessionRelay *relay,
+                             const char      *text,
+                             GdmFactorySlave *slave)
 {
 
         g_debug ("Info query: %s", text);
@@ -399,22 +400,61 @@ on_relay_info_query (GdmSessionRelay *relay,
 }
 
 static void
-on_relay_secret_info_query (GdmSessionRelay *relay,
-                            const char      *text,
-                            GdmFactorySlave  *slave)
+on_session_relay_secret_info_query (GdmSessionRelay *relay,
+                                    const char      *text,
+                                    GdmFactorySlave *slave)
 {
         g_debug ("Secret info query: %s", text);
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
 }
 
 static void
-on_relay_ready (GdmSessionRelay *relay,
-                GdmFactorySlave *slave)
+on_session_relay_opened (GdmSessionRelay *relay,
+                         GdmFactorySlave *slave)
 {
-        g_debug ("Relay is ready");
+        g_debug ("Relay session opened");
+
+        gdm_greeter_server_ready (slave->priv->greeter_server);
+}
+
+static void
+on_session_relay_user_verified (GdmSessionRelay *relay,
+                                GdmFactorySlave *slave)
+{
+        g_debug ("Relay session user verified");
 
         gdm_greeter_server_reset (slave->priv->greeter_server);
-        gdm_session_relay_open (slave->priv->session_relay);
+}
+
+static gboolean
+greeter_reset_timeout (GdmFactorySlave *slave)
+{
+        gdm_greeter_server_reset (slave->priv->greeter_server);
+        slave->priv->greeter_reset_id = 0;
+        return FALSE;
+}
+
+static void
+queue_greeter_reset (GdmFactorySlave *slave)
+{
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
+
+        slave->priv->greeter_reset_id = g_timeout_add_seconds (2, (GSourceFunc)greeter_reset_timeout, slave);
+}
+
+static void
+on_session_relay_user_verification_error (GdmSessionRelay *relay,
+                                          const char      *message,
+                                          GdmFactorySlave *slave)
+{
+        g_debug ("could not successfully authenticate user: %s",
+                 message);
+
+        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
+
+        queue_greeter_reset (slave);
 }
 
 static gboolean
@@ -476,8 +516,8 @@ create_product_display (GdmFactorySlave *slave)
 }
 
 static void
-on_relay_disconnected (GdmSessionRelay *relay,
-                       GdmFactorySlave *slave)
+on_session_relay_disconnected (GdmSessionRelay *relay,
+                               GdmFactorySlave *slave)
 {
         g_debug ("Relay disconnected");
 
@@ -487,11 +527,22 @@ on_relay_disconnected (GdmSessionRelay *relay,
 }
 
 static void
-on_relay_session_started (GdmSessionRelay *relay,
-                          GdmFactorySlave *slave)
+on_session_relay_session_started (GdmSessionRelay *relay,
+                                  GdmFactorySlave *slave)
 {
         g_debug ("Relay session started");
         gdm_greeter_server_reset (slave->priv->greeter_server);
+}
+
+static void
+on_greeter_begin_verification (GdmGreeterServer *greeter_server,
+                               const char       *username,
+                               GdmFactorySlave  *slave)
+{
+        g_debug ("begin verification");
+
+        gdm_session_relay_begin_verification (slave->priv->session_relay,
+                                              username);
 }
 
 static void
@@ -598,6 +649,10 @@ run_greeter (GdmFactorySlave *slave)
                                       "gdm");
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-verification",
+                          G_CALLBACK (on_greeter_begin_verification),
+                          slave);
         g_signal_connect (slave->priv->greeter_server,
                           "query-answer",
                           G_CALLBACK (on_greeter_answer),
@@ -832,31 +887,39 @@ gdm_factory_slave_start (GdmSlave *slave)
         GDM_FACTORY_SLAVE (slave)->priv->session_relay = gdm_session_relay_new ();
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
                           "info",
-                          G_CALLBACK (on_relay_info),
+                          G_CALLBACK (on_session_relay_info),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
                           "problem",
-                          G_CALLBACK (on_relay_problem),
+                          G_CALLBACK (on_session_relay_problem),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
                           "info-query",
-                          G_CALLBACK (on_relay_info_query),
+                          G_CALLBACK (on_session_relay_info_query),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
                           "secret-info-query",
-                          G_CALLBACK (on_relay_secret_info_query),
+                          G_CALLBACK (on_session_relay_secret_info_query),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
-                          "ready",
-                          G_CALLBACK (on_relay_ready),
+                          "user-verified",
+                          G_CALLBACK (on_session_relay_user_verified),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+                          "user-verification-error",
+                          G_CALLBACK (on_session_relay_user_verification_error),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
+                          "opened",
+                          G_CALLBACK (on_session_relay_opened),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
                           "disconnected",
-                          G_CALLBACK (on_relay_disconnected),
+                          G_CALLBACK (on_session_relay_disconnected),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session_relay,
                           "session-started",
-                          G_CALLBACK (on_relay_session_started),
+                          G_CALLBACK (on_session_relay_session_started),
                           slave);
 
         gdm_session_relay_start (GDM_FACTORY_SLAVE (slave)->priv->session_relay);
@@ -1013,6 +1076,11 @@ gdm_factory_slave_finalize (GObject *object)
         g_return_if_fail (factory_slave->priv != NULL);
 
         gdm_factory_slave_stop (GDM_SLAVE (factory_slave));
+
+        if (factory_slave->priv->greeter_reset_id > 0) {
+                g_source_remove (factory_slave->priv->greeter_reset_id);
+                factory_slave->priv->greeter_reset_id = 0;
+        }
 
         G_OBJECT_CLASS (gdm_factory_slave_parent_class)->finalize (object);
 }

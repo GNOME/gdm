@@ -384,20 +384,30 @@ relay_session_started (GdmProductSlave *slave)
 }
 
 static void
-on_opened (GdmSession      *session,
-           GdmProductSlave *slave)
+relay_session_opened (GdmProductSlave *slave)
 {
         GError *error;
         gboolean res;
 
-        g_debug ("session opened");
-        res = gdm_session_begin_verification (session,
-                                              slave->priv->selected_user,
-                                              &error);
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
+                                 "Opened",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
         if (! res) {
-                g_warning ("Unable to begin verification: %s", error->message);
+                g_warning ("Unable to send Opened: %s", error->message);
                 g_error_free (error);
         }
+}
+
+static void
+on_session_opened (GdmSession      *session,
+                   GdmProductSlave *slave)
+{
+        g_debug ("session opened");
+
+        relay_session_opened (slave);
 }
 
 static void
@@ -827,18 +837,36 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
 }
 
 static void
-on_user_verified (GdmSession      *session,
-                  GdmProductSlave *slave)
+on_session_user_verified (GdmSession      *session,
+                          GdmProductSlave *slave)
 {
+        GError  *error;
+        gboolean res;
+
+        g_debug ("Session user verified");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
+                                 "UserVerified",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Unable to send UserVerified: %s", error->message);
+                g_error_free (error);
+        }
+
         gdm_product_slave_create_server (slave);
 }
 
 static void
-on_user_verification_error (GdmSession      *session,
-                            GError          *error,
-                            GdmProductSlave *slave)
+on_session_user_verification_error (GdmSession      *session,
+                                    GError          *error,
+                                    GdmProductSlave *slave)
 {
-        char *username;
+        char    *username;
+        GError  *local_error;
+        gboolean res;
 
         username = gdm_session_get_username (session);
 
@@ -848,30 +876,24 @@ on_user_verification_error (GdmSession      *session,
                  error->message);
 
         g_free (username);
-}
 
-static void
-ready_relay (GdmProductSlave *slave)
-{
-        GError *error;
-        gboolean res;
-
-        error = NULL;
+        local_error = NULL;
         res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
-                                 "Ready",
-                                 &error,
+                                 "UserVerificationError",
+                                 &local_error,
+                                 G_TYPE_STRING, error->message,
                                  G_TYPE_INVALID,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_warning ("Unable to send Ready: %s", error->message);
-                g_error_free (error);
+                g_warning ("Unable to send UserVerificationError: %s", local_error->message);
+                g_error_free (local_error);
         }
 }
 
 static void
-on_info (GdmSession      *session,
-         const char      *text,
-         GdmProductSlave *slave)
+on_session_info (GdmSession      *session,
+                 const char      *text,
+                 GdmProductSlave *slave)
 {
         GError *error;
         gboolean res;
@@ -892,9 +914,9 @@ on_info (GdmSession      *session,
 }
 
 static void
-on_problem (GdmSession      *session,
-            const char      *text,
-            GdmProductSlave *slave)
+on_session_problem (GdmSession      *session,
+                    const char      *text,
+                    GdmProductSlave *slave)
 {
         GError *error;
         gboolean res;
@@ -916,9 +938,9 @@ on_problem (GdmSession      *session,
 }
 
 static void
-on_info_query (GdmSession      *session,
-               const char      *text,
-               GdmProductSlave *slave)
+on_session_info_query (GdmSession      *session,
+                       const char      *text,
+                       GdmProductSlave *slave)
 {
         GError  *error;
         gboolean res;
@@ -939,9 +961,9 @@ on_info_query (GdmSession      *session,
 }
 
 static void
-on_secret_info_query (GdmSession      *session,
-                      const char      *text,
-                      GdmProductSlave *slave)
+on_session_secret_info_query (GdmSession      *session,
+                              const char      *text,
+                              GdmProductSlave *slave)
 {
         GError *error;
         gboolean res;
@@ -958,6 +980,27 @@ on_secret_info_query (GdmSession      *session,
                                  G_TYPE_INVALID);
         if (! res) {
                 g_warning ("Unable to send SecretInfoQuery: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+static void
+on_relay_begin_verification (DBusGProxy *proxy,
+                             const char *username,
+                             gpointer    data)
+{
+        GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
+        GError          *error;
+        gboolean         res;
+
+        g_debug ("Relay Begin Verification");
+
+        error = NULL;
+        res = gdm_session_begin_verification (slave->priv->session,
+                                              username,
+                                              &error);
+        if (! res) {
+                g_warning ("Unable to begin verification: %s", error->message);
                 g_error_free (error);
         }
 }
@@ -1064,37 +1107,37 @@ create_new_session (GdmProductSlave *slave)
 
         g_signal_connect (slave->priv->session,
                           "opened",
-                          G_CALLBACK (on_opened),
+                          G_CALLBACK (on_session_opened),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "info",
-                          G_CALLBACK (on_info),
+                          G_CALLBACK (on_session_info),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "problem",
-                          G_CALLBACK (on_problem),
+                          G_CALLBACK (on_session_problem),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "info-query",
-                          G_CALLBACK (on_info_query),
+                          G_CALLBACK (on_session_info_query),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "secret-info-query",
-                          G_CALLBACK (on_secret_info_query),
+                          G_CALLBACK (on_session_secret_info_query),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "user-verified",
-                          G_CALLBACK (on_user_verified),
+                          G_CALLBACK (on_session_user_verified),
                           slave);
 
         g_signal_connect (slave->priv->session,
                           "user-verification-error",
-                          G_CALLBACK (on_user_verification_error),
+                          G_CALLBACK (on_session_user_verification_error),
                           slave);
 
         g_signal_connect (slave->priv->session,
@@ -1125,8 +1168,6 @@ on_relay_cancelled (DBusGProxy *proxy,
         }
 
         create_new_session (slave);
-
-        ready_relay (slave);
 }
 
 static void
@@ -1201,6 +1242,10 @@ connect_to_session_relay (GdmProductSlave *slave)
 
         /* FIXME: not sure why introspection isn't working */
         dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
+                                 "BeginVerification",
+                                 G_TYPE_STRING,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
                                  "AnswerQuery",
                                  G_TYPE_STRING,
                                  G_TYPE_INVALID);
@@ -1223,6 +1268,11 @@ connect_to_session_relay (GdmProductSlave *slave)
                                  "Cancelled",
                                  G_TYPE_INVALID);
 
+        dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
+                                     "BeginVerification",
+                                     G_CALLBACK (on_relay_begin_verification),
+                                     slave,
+                                     NULL);
         dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
                                      "AnswerQuery",
                                      G_CALLBACK (on_relay_answer),
@@ -1307,8 +1357,6 @@ gdm_product_slave_start (GdmSlave *slave)
         create_new_session (GDM_PRODUCT_SLAVE (slave));
 
         connect_to_session_relay (GDM_PRODUCT_SLAVE (slave));
-
-        ready_relay (GDM_PRODUCT_SLAVE (slave));
 
         ret = TRUE;
 

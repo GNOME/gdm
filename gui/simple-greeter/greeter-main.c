@@ -74,6 +74,15 @@ on_problem (DBusGProxy *proxy,
 }
 
 static void
+on_ready (DBusGProxy *proxy,
+          gpointer    data)
+{
+        g_debug ("GREETER SERVER READY");
+
+        gdm_greeter_ready (GDM_GREETER (greeter));
+}
+
+static void
 on_reset (DBusGProxy *proxy,
           gpointer    data)
 {
@@ -100,6 +109,29 @@ on_secret_info_query (DBusGProxy *proxy,
         g_debug ("GREETER Secret info query: %s", text);
 
         gdm_greeter_secret_info_query (GDM_GREETER (greeter), text);
+}
+
+static void
+on_begin_verification (GdmGreeter *greeter,
+                       const char *username,
+                       gpointer    data)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GREETER begin verification");
+
+        error = NULL;
+        res = dbus_g_proxy_call (server_proxy,
+                                 "BeginVerification",
+                                 &error,
+                                 G_TYPE_STRING, username,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Unable to send BeginVerification: %s", error->message);
+                g_error_free (error);
+        }
 }
 
 static void
@@ -416,6 +448,7 @@ main (int argc, char *argv[])
         dbus_g_proxy_add_signal (server_proxy, "SecretInfoQuery", G_TYPE_STRING, G_TYPE_INVALID);
         dbus_g_proxy_add_signal (server_proxy, "Info", G_TYPE_STRING, G_TYPE_INVALID);
         dbus_g_proxy_add_signal (server_proxy, "Problem", G_TYPE_STRING, G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (server_proxy, "Ready", G_TYPE_INVALID);
         dbus_g_proxy_add_signal (server_proxy, "Reset", G_TYPE_INVALID);
 
         dbus_g_proxy_connect_signal (server_proxy,
@@ -439,6 +472,11 @@ main (int argc, char *argv[])
                                      NULL,
                                      NULL);
         dbus_g_proxy_connect_signal (server_proxy,
+                                     "Ready",
+                                     G_CALLBACK (on_ready),
+                                     NULL,
+                                     NULL);
+        dbus_g_proxy_connect_signal (server_proxy,
                                      "Reset",
                                      G_CALLBACK (on_reset),
                                      NULL,
@@ -448,6 +486,10 @@ main (int argc, char *argv[])
         greeter = gdm_simple_greeter_new (display_id);
         g_free (display_id);
 
+        g_signal_connect (greeter,
+                          "begin-verification",
+                          G_CALLBACK (on_begin_verification),
+                          NULL);
         g_signal_connect (greeter,
                           "query-answer",
                           G_CALLBACK (on_query_answer),
