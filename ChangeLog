@@ -1,3 +1,10 @@
+2007-10-03  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm-xdmcp-manager.c: Decrease num_sessions when appropriate.
+	  Otherwise GDM incorrectly thinks the maximum number of XDMCP
+	  connections has been reached.  Fixes bug #478441.  Patch by Francis
+	  Giraldeau <francis.giraldeau@revolutionlinux.com>.
+
 2007-09-28  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter.c: Send a response before
@@ -9,7 +16,7 @@
 	* gui/gdmXnestchooser.c, gui/gdmsetup.c: Turn off debug message
 	  logging.  Fixes bug #478318.
 
-2007-09-21  Dave Fincher  <finchair@yahoo.com>^M
+2007-09-21  Dave Fincher  <finchair@yahoo.com>
 
 	Fixes bug #478805.
 	* gui/greeter/themes/happygnome/happygnome-list.xml: Updated
