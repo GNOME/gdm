@@ -86,6 +86,7 @@ test_user_chooser_SOURCES = 	\
 	gdm-user-chooser-dialog.c	\
 	gdm-user-manager.h		\
 	gdm-user-manager.c		\
+	gdm-user-private.h		\
 	gdm-user.h			\
 	gdm-user.c			\
 	$(NULL)
@@ -98,6 +99,7 @@ test_user_manager_SOURCES = 	\
 	test-user-manager.c	\
 	gdm-user-manager.h	\
 	gdm-user-manager.c	\
+	gdm-user-private.h	\
 	gdm-user.h		\
 	gdm-user.c		\
 	$(NULL)
@@ -121,6 +123,7 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-user-chooser-widget.c	\
 	gdm-user-manager.h		\
 	gdm-user-manager.c		\
+	gdm-user-private.h		\
 	gdm-user.h			\
 	gdm-user.c			\
 	$(NULL)
