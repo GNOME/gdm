@@ -32,6 +32,7 @@
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 
 #include "gdm-common.h"
 #include "gdm-log.h"
@@ -406,6 +407,7 @@ main (int argc, char *argv[])
         gdk_init (&argc, &argv);
         /*gdm_common_atspi_launch ();*/
         gtk_init (&argc, &argv);
+        gnome_vfs_init ();
 
         gdm_log_init ();
 
