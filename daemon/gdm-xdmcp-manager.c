@@ -1533,20 +1533,12 @@ gdm_xdmcp_recount_sessions (GdmXdmcpManager *manager)
 }
 
 static void
-do_dispose (GdmXdmcpManager *manager,
-	    GdmDisplay      *d)
-{
-
-	gdm_display_dispose (d);
-	gdm_xdmcp_recount_sessions (manager);
-}
-
-static void
 gdm_xdmcp_displays_purge (GdmXdmcpManager *manager)
 {
 	GSList *dlist;
 	time_t curtime = time (NULL);
 	GSList *displays;
+	gboolean sess_dirty = FALSE;
 
 	displays = gdm_daemon_config_get_display_list ();
 
@@ -1560,7 +1552,8 @@ gdm_xdmcp_displays_purge (GdmXdmcpManager *manager)
 		    curtime > d->acctime + manager->priv->max_wait) {
 			g_debug ("gdm_xdmcp_displays_purge: Disposing session id %ld",
 				 (long)d->sessionid);
-			do_dispose (manager, d);
+			gdm_display_dispose (d);
+			sess_dirty = TRUE;
 
 			/* restart as the list is now broken */
 			dlist = displays;
@@ -1568,6 +1561,11 @@ gdm_xdmcp_displays_purge (GdmXdmcpManager *manager)
 			/* just go on */
 			dlist = dlist->next;
 		}
+	}
+
+	/* Recount sessions only if dirty */ 
+	if (sess_dirty) {
+		gdm_xdmcp_recount_sessions (manager);
 	}
 }
 
@@ -1578,6 +1576,7 @@ gdm_xdmcp_display_dispose_check (GdmXdmcpManager *manager,
 {
 	GSList *dlist;
 	GSList *displays;
+	gboolean sess_dirty = FALSE;
 
 	if (hostname == NULL) {
 		return;
@@ -1599,7 +1598,8 @@ gdm_xdmcp_display_dispose_check (GdmXdmcpManager *manager,
 			if (d->dispstat == XDMCP_MANAGED) {
 				gdm_display_unmanage (d);
 			} else {
-				do_dispose (manager, d);
+				gdm_display_dispose (d);
+				sess_dirty = TRUE;
 			}
 
 			/* restart as the list is now broken */
@@ -1608,6 +1608,11 @@ gdm_xdmcp_display_dispose_check (GdmXdmcpManager *manager,
 			/* just go on */
 			dlist = dlist->next;
 		}
+	}
+
+	/* Recount sessions only if dirty */ 
+	if (sess_dirty) {
+		gdm_xdmcp_recount_sessions (manager);
 	}
 }
 
@@ -1844,6 +1849,12 @@ gdm_xdmcp_handle_request (GdmXdmcpManager         *manager,
 	g_free (host);
 
 	gdm_xdmcp_displays_purge (manager); /* Purge pending displays */
+
+	/* Update num_sessions only if the length of the list that contain
+ 	 * them is smaller */ 
+	if (g_list_length (gdm_daemon_config_get_display_list()) < manager->priv->num_sessions ){
+		gdm_xdmcp_recount_sessions (manager);
+	}
 
 	/* Remote display number */
 	if G_UNLIKELY (! XdmcpReadCARD16 (&manager->priv->buf, &clnt_dspnum)) {
