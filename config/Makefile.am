@@ -17,40 +17,25 @@ noinst_DATA = \
 	gdm.conf		\
 	$(NULL)
 
-DESKTOP_FILES = \
-	default.desktop		\
-	$(NULL)
-
 EXTRA_DIST = 			\
 	gdm.conf.in 		\
 	gdm.conf-custom.in 	\
-	$(DESKTOP_FILES) 	\
-	default.desktop.in 	\
-	ssh.desktop.in.in 	\
 	Xsession.in 		\
 	gdm 			\
 	gdm-autologin 		\
-	locale.alias 		\
 	Init.in 		\
 	PreSession.in 		\
 	PostSession.in 		\
 	PostLogin 		\
-	XKeepsCrashing 		\
-	gettextfoo.h 		\
-	gdmprefetchlist.in 	\
-	extract-shell.sh	\
 	$(NULL)
 
 CLEANFILES = 			\
 	Xsession		\
 	gdm.conf		\
 	gdm.conf-custom		\
-	default.desktop		\
-	ssh.desktop		\
 	Init			\
 	PreSession		\
 	PostSession		\
-	gdmprefetchlist		\
 	$(NULL)
 
 Xsession: $(srcdir)/Xsession.in
@@ -59,8 +44,7 @@ Xsession: $(srcdir)/Xsession.in
 		<$(srcdir)/Xsession.in >Xsession
 
 gdm.conf: $(srcdir)/gdm.conf.in
-	sed	-e 's,[@]GDMPREFETCHCMD[@],$(GDMPREFETCHCMD),g' \
-		-e 's,[@]GDM_CUSTOM_CONF[@],$(GDM_CUSTOM_CONF),g' \
+	sed     -e 's,[@]GDM_CUSTOM_CONF[@],$(GDM_CUSTOM_CONF),g' \
 		-e 's,[@]GDM_USER_PATH[@],$(GDM_USER_PATH),g' \
 		-e 's,[@]HALT_COMMAND[@],$(HALT_COMMAND),g' \
 		-e 's,[@]REBOOT_COMMAND[@],$(REBOOT_COMMAND),g' \
@@ -90,32 +74,20 @@ gdm.conf-custom: $(srcdir)/gdm.conf-custom.in
 	sed	-e 's,[@]GDM_DEFAULTS_CONF[@],$(GDM_DEFAULTS_CONF),g' \
 		<$(srcdir)/gdm.conf-custom.in >gdm.conf-custom
 
-gettextfoo.h: XKeepsCrashing Xsession.in
-	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
-
 @INTLTOOL_DESKTOP_RULE@
-
-clean-local:
-	rm -f $(DESKTOP_FILES)
 
 uninstall-hook:
 	rm -f \
-	$(DESTDIR)$(bisessdir)/default.desktop \
-	$(DESTDIR)$(instsessdir)/default.desktop \
-	$(DESTDIR)$(instsessdir)/ssh.desktop \
 	$(DESTDIR)$(GDM_DEFAULTS_CONF) \
 	$(DESTDIR)$(GDM_CUSTOM_CONF) \
 	`dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`/factory-`basename $(DESTDIR)$(GDM_DEFAULTS_CONF)` \
-	$(DESTDIR)$(confdir)/XKeepsCrashing \
 	$(DESTDIR)$(confdir)/Xsession \
-	$(DESTDIR)$(confdir)/gdmprefetchlist \
-	$(DESTDIR)$(gdmlocaledir)/locale.alias \
 	$(DESTDIR)$(initdir)/Default \
 	$(DESTDIR)$(postlogindir)/Default.sample \
 	$(DESTDIR)$(predir)/Default \
 	$(DESTDIR)$(postdir)/Default
 
-install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession $(DESKTOP_FILES) $(GDMPREFETCHLIST)
+install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
@@ -149,13 +121,7 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	fi
 	$(INSTALL_DATA) gdm.conf `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`/factory-`basename $(DESTDIR)$(GDM_DEFAULTS_CONF)`
 
-	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
 	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(confdir)/Xsession
-
-	-if test -f $(DESTDIR)$(gdmlocaledir)/locale.alias; then \
-		cp -f $(DESTDIR)$(gdmlocaledir)/locale.alias $(DESTDIR)$(gdmlocaledir)/locale.alias.orig; \
-	fi
-	$(INSTALL_DATA) $(srcdir)/locale.alias $(DESTDIR)$(gdmlocaledir)/locale.alias
 
 	if test '!' -d $(DESTDIR)$(bisessdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(bisessdir); \
@@ -166,15 +132,6 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 		$(mkinstalldirs) $(DESTDIR)$(instsessdir); \
 		chmod 755 $(DESTDIR)$(instsessdir); \
 	fi
-
-	-if test -f $(DESTDIR)$(bisessdir)/Default.desktop; then \
-		mv -f $(DESTDIR)$(bisessdir)/Default.desktop $(DESTDIR)$(bisessdir)/Default.desktop.orig; \
-	fi
-	-if test -f $(DESTDIR)$(bisessdir)/default.desktop; then \
-		cp -f $(DESTDIR)$(bisessdir)/default.desktop $(DESTDIR)$(bisessdir)/default.desktop.orig; \
-	fi
-	$(INSTALL_DATA) default.desktop $(DESTDIR)$(bisessdir)/default.desktop
-	chmod 644 $(DESTDIR)$(bisessdir)/default.desktop
 
 	if test '!' -d $(DESTDIR)$(initdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(initdir); \
@@ -241,17 +198,5 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	   if test $$system = SunOS; then \
 		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
-	fi
-
-	if test "x$(GDMPREFETCHLIST)" != "x"; then \
-	   $(INSTALL_DATA) gdmprefetchlist $(DESTDIR)$(confdir)/gdmprefetchlist; \
-	fi
-
-	if test "x$(SSHDESKTOP)" != "x"; then \
-	   if test -f $(DESTDIR)$(instsessdir)/ssh.desktop; then \
-		cp -f $(DESTDIR)$(instsessdir)/ssh.desktop $(DESTDIR)$(instsessdir)/ssh.desktop.orig; \
-	   fi; \
-	   $(INSTALL_SCRIPT) ssh.desktop $(DESTDIR)$(instsessdir)/ssh.desktop; \
-	   chmod 644 $(DESTDIR)$(instsessdir)/ssh.desktop; \
 	fi
 

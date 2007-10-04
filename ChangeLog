@@ -1,6 +1,38 @@
 2007-10-04  William Jon McCann  <mccann@jhu.edu>
 
 	* common/Makefile.am:
+	* common/gdm-common-unknown-origin.c: (gdm_sigchld_block_push),
+	(gdm_sigchld_block_pop), (gdm_sigterm_block_push),
+	(gdm_sigterm_block_pop), (gdm_sigusr2_block_push),
+	(gdm_sigusr2_block_pop), (gdm_safe_fopen_w), (ve_clearenv):
+	* common/gdm-common-unknown-origin.h:
+	* common/gdm-common.c:
+	* common/gdm-common.h:
+	* config/Makefile.am:
+	* config/XKeepsCrashing:
+	* config/default.desktop.in:
+	* config/extract-shell.sh:
+	* config/gdmprefetchlist.in:
+	* config/gettextfoo.h:
+	* config/locale.alias:
+	* config/ssh.desktop.in.in:
+	* configure.ac:
+	* daemon/Makefile.am:
+	* daemon/choose.c:
+	* daemon/choose.h:
+	* daemon/gdm-xdmcp-display-factory.c:
+	(gdm_xdmcp_handle_indirect_query), (gdm_xdmcp_handle_manage),
+	(gdm_xdmcp_handle_managed_forward):
+	* daemon/main.c: (delete_pid):
+	* utils/Makefile.am:
+	* utils/gdm-dmx-reconnect-proxy.c:
+	Remove some more obsolete code.  Move common
+	code with unknown copyright status into separate file.
+	Try to identify more copy with unknown copyright status.
+
+2007-10-04  William Jon McCann  <mccann@jhu.edu>
+
+	* common/Makefile.am:
 	* common/gdm-common.c:
 	* common/gdm-common.h:
 	* common/ve-signal.c:

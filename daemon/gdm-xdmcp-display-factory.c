@@ -57,7 +57,6 @@
 #include "gdm-display-store.h"
 
 #include "auth.h"
-#include "choose.h"
 
 /*
  * On Sun, we need to define allow_severity and deny_severity to link
@@ -1088,6 +1087,9 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
         }
 
 
+#if 0
+        /* FIXME: Add chooser support */
+
         id = gdm_choose_indirect_lookup (address);
 
         if (id != NULL && id->chosen_host != NULL) {
@@ -1133,6 +1135,7 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
         } else  {
                 gdm_xdmcp_send_willing (factory, address);
         }
+#endif
 
 out:
         XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
@@ -2309,7 +2312,8 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
                 g_debug ("gdm_xdmcp_handle_manage: Looked up %s", name);
                 g_free (name);
 
-#if 0 /* FIXME: */
+#if 0
+                /* FIXME: Add chooser support */
                 if (factory->priv->honor_indirect) {
                         GdmIndirectDisplay *id;
 
@@ -2401,10 +2405,13 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
                 return;
         }
 
+#if 0
+        /* FIXME: Add chooser support */
         id = gdm_choose_indirect_lookup_by_chosen (address, disp_address);
         if (id != NULL) {
                 gdm_choose_indirect_dispose (id);
         }
+#endif
 
         /* Note: we send GOT even on not found, just in case our previous
          * didn't get through and this was a second managed forward */

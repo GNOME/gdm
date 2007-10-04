@@ -30,17 +30,16 @@
 #include <fcntl.h>
 #include <pwd.h>
 #include <grp.h>
+#include <wait.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-
-/* Needed for signal handling */
-#include "gdm-common.h"
 
 #include "gdm-manager.h"
 #include "gdm-log.h"
@@ -215,7 +214,7 @@ bus_proxy_destroyed_cb (DBusGProxy *bus_proxy,
 static void
 delete_pid (void)
 {
-        unlink (GDM_PID_FILE);
+        g_unlink (GDM_PID_FILE);
 }
 
 static void
@@ -256,6 +255,11 @@ gdm_final_cleanup (void)
         g_object_unref (manager);
 }
 
+/*
+ * -------------------------------------
+ * BEGIN Copyright status/holder unknown
+ * -------------------------------------
+ */
 static void
 main_saveenv (void)
 {
@@ -445,6 +449,12 @@ gdm_daemon_change_user (uid_t *uidp,
         g_free (username);
         g_free (groupname);
 }
+
+/*
+ * -------------------------------------
+ * END Copyright status/holder unknown
+ * -------------------------------------
+ */
 
 static gboolean
 signal_cb (int      signo,

@@ -212,8 +212,6 @@ gdm_binary_SOURCES = 			\
 	auth.c				\
 	auth.h				\
 	fstype.c			\
-	choose.c			\
-	choose.h			\
 	$(NULL)
 
 XDMCP_SOURCES =				\

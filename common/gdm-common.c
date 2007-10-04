@@ -1,7 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * (c) 2000 Eazel, Inc.
- * (c) 2001,2002 George Lebl
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
  * This library is free software; you can redistribute it and/or

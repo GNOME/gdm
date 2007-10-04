@@ -144,10 +144,6 @@ AC_ARG_WITH(tcp-wrappers,
   [  --with-tcp-wrappers=[auto/yes/no]  Use TCP Wrappers [default=auto]],,
   with_tcp_wrappers=auto)
 
-AC_ARG_WITH(dmx,
-  [  --with-dmx=[auto/yes/no]  Add DMX (Distributed Multihead X) support [default=auto]],,
-  with_dmx=auto)
-
 AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
 
 AC_ARG_WITH(console-kit,
@@ -734,30 +730,6 @@ fi
 
 AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
-
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for Distributed Multihead X extension (DMX)
-dnl ---------------------------------------------------------------------------
-
-DMX_SUPPORT=""
-DMX_LIBS=""
-if test x$with_dmx != xno ; then
-	dmx_save_CPPFLAGS="$CPPFLAGS"
-	CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-	AC_CHECK_HEADER(X11/extensions/dmxext.h, [
-		AC_CHECK_LIB(dmx, DMXQueryExtension, [
-			DMX_LIBS="-ldmx"
-			DMX_SUPPORT=yes],,[$X_LIBS -lX11 $X_EXTRA_LIBS])
-	],,[#include <X11/Xlib.h>])
-
-	if test x$with_dmx = xyes -a x$DMX_SUPPORT = x ; then
-		AC_MSG_ERROR(DMX support requested but DMX librariy not found)
-	fi
-	CPPFLAGS="$dmx_save_CPPFLAGS"
-fi
-AC_SUBST(DMX_LIBS)
-AM_CONDITIONAL(DMX_SUPPORT, test x$DMX_SUPPORT = xyes)
 
 
 dnl ---------------------------------------------------------------------------
@@ -1356,7 +1328,6 @@ fi
 echo \
 "        Xinerama support:         ${XINERAMA_SUPPORT}
         XDMCP support:            ${XDMCP_SUPPORT}
-        DMX support:              ${DMX_SUPPORT}
         SELinux support:          ${with_selinux}
         Solaris TSOL support:     ${found_tsol}
         ConsoleKit support:       ${use_console_kit}

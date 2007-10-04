@@ -51,6 +51,8 @@ libgdmcommon_la_SOURCES =	\
 	gdm-marshal.h		\
 	gdm-common.h		\
 	gdm-common.c		\
+	gdm-common-unknown-origin.h	\
+	gdm-common-unknown-origin.c	\
 	gdm-settings.c 		\
 	gdm-settings.h		\
 	gdm-settings-backend.c 	\
