@@ -1,7 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * session.h - authenticates and authorizes users with system
- *
  * Copyright (C) 2006 Ray Strode <rstrode@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify

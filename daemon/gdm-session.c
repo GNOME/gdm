@@ -1,7 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * session.c - authenticates and authorizes users with system
- *
  * Copyright (C) 2006 Ray Strode <rstrode@redhat.com>
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
