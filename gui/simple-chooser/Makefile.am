@@ -11,9 +11,7 @@ INCLUDES = \
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
-	$(GUI_CFLAGS)					\
-	$(DBUS_CFLAGS)					\
-	$(CHOOSER_CFLAGS)				\
+	$(SIMPLE_CHOOSER_CFLAGS)			\
 	$(NULL)
 
 libexec_PROGRAMS =					\
@@ -29,11 +27,7 @@ gdm_simple_chooser_SOURCES =  		\
 
 gdm_simple_chooser_LDADD = 		\
 	$(EXTRA_CHOOSER_LIBS)   	\
-	$(GLIB_LIBS)			\
-	$(DBUS_LIBS)			\
-	$(GOBJECT_LIBS)			\
-	$(GUI_LIBS)			\
-	$(CHOOSER_LIBS)			\
+	$(SIMPLE_CHOOSER_LIBS)		\
 	$(XDMCP_LIBS)			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)

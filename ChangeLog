@@ -1,3 +1,34 @@
+2007-10-04  William Jon McCann  <mccann@jhu.edu>
+
+	* acinclude.m4:
+	* common/Makefile.am:
+	* configure.ac:
+	* daemon/Makefile.am:
+	* daemon/gdm-factory-slave.c: (run_greeter),
+	(idle_connect_to_display):
+	* daemon/gdm-product-slave.c: (setup_server),
+	(idle_connect_to_display):
+	* daemon/gdm-simple-slave.c: (run_greeter),
+	(idle_connect_to_display):
+	* daemon/gdm-slave.c: (gdm_slave_set_busy_cursor),
+	(set_local_auth), (gdm_slave_connect_to_x11_display):
+	* daemon/gdm-slave.h:
+	* gui/Makefile.am:
+	* gui/modules/.cvsignore:
+	* gui/modules/AccessDwellMouseEvents.in:
+	* gui/modules/AccessKeyMouseEvents.in:
+	* gui/modules/Makefile.am:
+	* gui/modules/dwellmouselistener.c:
+	* gui/modules/keymouselistener.c:
+	* gui/simple-chooser/Makefile.am:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/libnotificationarea/Makefile.am:
+	* libgreeter/Makefile.am:
+	Fix up the handling of dependencies.  Make the daemon
+	only depend on x11, glib, gobject, dbus.  Move some
+	things from the slaves to the base class.
+	Remove the unused modules for now.
+
 2007-10-03  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/greeter-main.c: (main):

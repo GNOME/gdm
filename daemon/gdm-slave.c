@@ -34,14 +34,13 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#include <gdk/gdkx.h>
-#include <gtk/gtk.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include <X11/Xlib.h> /* for Display */
+#include <X11/cursorfont.h> /* for watch cursor */
 
 #include "gdm-common.h"
 
@@ -64,6 +63,8 @@ struct GdmSlavePrivate
         GPid             pid;
         guint            output_watch_id;
         guint            error_watch_id;
+
+        Display         *server_display;
 
         /* cached display values */
         char            *display_id;
@@ -108,6 +109,92 @@ static void     gdm_slave_init          (GdmSlave      *slave);
 static void     gdm_slave_finalize      (GObject       *object);
 
 G_DEFINE_ABSTRACT_TYPE (GdmSlave, gdm_slave, G_TYPE_OBJECT)
+
+#define CURSOR_WATCH XC_watch
+void
+gdm_slave_set_busy_cursor (GdmSlave *slave)
+{
+        if (slave->priv->server_display != NULL) {
+                Cursor xcursor;
+
+                xcursor = XCreateFontCursor (slave->priv->server_display, CURSOR_WATCH);
+                XDefineCursor (slave->priv->server_display,
+                               DefaultRootWindow (slave->priv->server_display),
+                               xcursor);
+                XFreeCursor (slave->priv->server_display, xcursor);
+                XSync (slave->priv->server_display, False);
+        }
+}
+
+static void
+set_local_auth (GdmSlave *slave)
+{
+        GString *binary_cookie;
+        GString *cookie;
+
+        g_debug ("Setting authorization key for display %s", slave->priv->display_x11_cookie);
+
+        cookie = g_string_new (slave->priv->display_x11_cookie);
+        binary_cookie = g_string_new (NULL);
+        if (! gdm_string_hex_decode (cookie,
+                                     0,
+                                     NULL,
+                                     binary_cookie,
+                                     0)) {
+                g_warning ("Unable to decode hex cookie");
+                goto out;
+        }
+
+        g_debug ("Decoded cookie len %d", binary_cookie->len);
+
+        XSetAuthorization ("MIT-MAGIC-COOKIE-1",
+                           (int) strlen ("MIT-MAGIC-COOKIE-1"),
+                           (char *)binary_cookie->str,
+                           binary_cookie->len);
+
+ out:
+        g_string_free (binary_cookie, TRUE);
+        g_string_free (cookie, TRUE);
+}
+
+gboolean
+gdm_slave_connect_to_x11_display (GdmSlave *slave)
+{
+        gboolean ret;
+
+        ret = FALSE;
+
+        /* We keep our own (windowless) connection (dsp) open to avoid the
+         * X server resetting due to lack of active connections. */
+
+        g_debug ("Server is ready - opening display %s", slave->priv->display_name);
+
+        g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
+        g_unsetenv ("XAUTHORITY"); /* just in case it's set */
+
+        set_local_auth (slave);
+
+#if 0
+        /* X error handlers to avoid the default one (i.e. exit (1)) */
+        do_xfailed_on_xio_error = TRUE;
+        XSetErrorHandler (gdm_slave_xerror_handler);
+        XSetIOErrorHandler (gdm_slave_xioerror_handler);
+#endif
+
+        gdm_sigchld_block_push ();
+        slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
+        gdm_sigchld_block_pop ();
+
+        if (slave->priv->server_display == NULL) {
+                g_warning ("Unable to connect to display %s", slave->priv->display_name);
+                ret = FALSE;
+        } else {
+                g_debug ("Connected to display %s", slave->priv->display_name);
+                ret = TRUE;
+        }
+
+        return ret;
+}
 
 static void
 display_proxy_destroyed_cb (DBusGProxy *display_proxy,

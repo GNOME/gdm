@@ -1,7 +1,5 @@
 NULL =
 
-# Note that we have cflags for just about everything even if
-# we don't link to everything
 INCLUDES = \
 	-I.						\
 	-I..						\
@@ -21,12 +19,11 @@ INCLUDES = \
 	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
 	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
 	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
-	$(GUI_CFLAGS)					\
+	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(DAEMON_CFLAGS)				\
+	$(WARN_CFLAGS)					\
+	$(DEBUG_CFLAGS)					\
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
-	$(GNOME_INCLUDEDIR)				\
-	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\"	\
-	$(DBUS_CFLAGS)					\
 	$(NULL)
 
 BUILT_SOURCES =					\
@@ -74,10 +71,8 @@ test_session_SOURCES = 		\
 	$(NULL)
 
 test_session_LDADD =		\
-	$(GLIB_LIBS)		\
-	$(GOBJECT_LIBS)		\
+	$(DAEMON_LIBS)		\
 	$(PAM_LIBS)		\
-	$(DBUS_LIBS)		\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
@@ -113,23 +108,12 @@ gdm_simple_slave_SOURCES = 		\
 	$(NULL)
 
 gdm_simple_slave_LDFLAGS =		\
-	$(EXTRA_SLAVE_LIBS)		\
 	$(PAM_LIBS)			\
 	$(NULL)
 
 gdm_simple_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
-	$(INTLLIBS)				\
-	$(GLIB_LIBS)				\
-	$(GOBJECT_LIBS)				\
-	$(GDK_LIBS)				\
 	$(top_builddir)/common/libgdmcommon.la	\
-	$(X_LIBS)				\
-	$(XINERAMA_LIBS)			\
-	$(DBUS_LIBS)				\
-	-lXau					\
-	-lX11					\
-	-lXext					\
 	$(NULL)
 
 gdm_factory_slave_SOURCES = 		\
@@ -159,17 +143,7 @@ gdm_factory_slave_LDFLAGS =		\
 
 gdm_factory_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
-	$(INTLLIBS)				\
-	$(GLIB_LIBS)				\
-	$(GOBJECT_LIBS)				\
-	$(GDK_LIBS)				\
 	$(top_builddir)/common/libgdmcommon.la	\
-	$(X_LIBS)				\
-	$(XINERAMA_LIBS)			\
-	$(DBUS_LIBS)				\
-	-lXau					\
-	-lX11					\
-	-lXext					\
 	$(NULL)
 
 gdm_product_slave_SOURCES = 		\
@@ -192,23 +166,12 @@ gdm_product_slave_SOURCES = 		\
 	$(NULL)
 
 gdm_product_slave_LDFLAGS =		\
-	$(EXTRA_SLAVE_LIBS)		\
 	$(PAM_LIBS)			\
 	$(NULL)
 
 gdm_product_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
-	$(INTLLIBS)				\
-	$(GLIB_LIBS)				\
-	$(GOBJECT_LIBS)				\
-	$(GDK_LIBS)				\
 	$(top_builddir)/common/libgdmcommon.la	\
-	$(X_LIBS)				\
-	$(XINERAMA_LIBS)			\
-	$(DBUS_LIBS)				\
-	-lXau					\
-	-lX11					\
-	-lXext					\
 	$(NULL)
 
 gdm_session_worker_SOURCES = 			\
@@ -222,10 +185,8 @@ gdm_session_worker_LDFLAGS =			\
 	$(NULL)
 
 gdm_session_worker_LDADD = 			\
-	$(GLIB_LIBS)				\
-	$(GOBJECT_LIBS)				\
+	$(DAEMON_LIBS)				\
 	$(top_builddir)/common/libgdmcommon.la	\
-	$(DBUS_LIBS)				\
 	$(NULL)
 
 sbin_PROGRAMS = 			\
@@ -289,18 +250,7 @@ gdm_binary_LDFLAGS =				\
 
 gdm_binary_LDADD = \
 	$(DAEMON_LIBS)				\
-	$(INTLLIBS)				\
-	$(GLIB_LIBS)				\
-	$(GOBJECT_LIBS)				\
-	$(GDK_LIBS)				\
 	$(top_builddir)/common/libgdmcommon.la	\
-	$(X_LIBS)				\
-	$(XINERAMA_LIBS)			\
-	$(XDMCP_LIBS)				\
-	$(DBUS_LIBS)				\
-	-lXau					\
-	-lX11					\
-	-lXext					\
 	$(NULL)
 
 if WITH_CONSOLE_KIT

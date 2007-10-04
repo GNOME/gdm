@@ -3,9 +3,9 @@
 NULL =
 
 INCLUDES = \
-	-I.					\
-	-I..					\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-I.						\
+	-I..						\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DAUTHDIR=\"$(authdir)\"			\
 	-DBINDIR=\"$(bindir)\"				\
 	-DDATADIR=\"$(datadir)\"			\
@@ -21,8 +21,8 @@ INCLUDES = \
 	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
 	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
 	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
-	$(DBUS_CFLAGS)					\
-	$(GLIB_CFLAGS)
+	$(COMMON_CFLAGS)				\
+	$(NULL)
 
 noinst_LTLIBRARIES = 		\
 	libgdmcommon.la		\
@@ -79,7 +79,7 @@ libgdmcommon_la_CPPFLAGS = 		\
 	$(NULL)
 
 libgdmcommon_la_CFLAGS =		\
-	$(DBUS_CFLAGS)			\
+	$(COMMON_CFLAGS)		\
 	$(NULL)
 
 libgdmcommon_la_LIBADD =		\
@@ -101,7 +101,7 @@ test_log_SOURCES = 		\
 
 test_log_LDADD =		\
 	libgdmcommon.la		\
-	$(GLIB_LIBS)		\
+	$(COMMON_LIBS)		\
 	$(NULL)
 
 test_settings_server_SOURCES = 		\
@@ -110,8 +110,7 @@ test_settings_server_SOURCES = 		\
 
 test_settings_server_LDADD =		\
 	libgdmcommon.la			\
-	$(GLIB_LIBS)			\
-	$(DBUS_LIBS)			\
+	$(COMMON_LIBS)			\
 	$(NULL)
 
 test_settings_client_SOURCES = 		\
@@ -120,8 +119,7 @@ test_settings_client_SOURCES = 		\
 
 test_settings_client_LDADD =		\
 	libgdmcommon.la			\
-	$(GLIB_LIBS)			\
-	$(DBUS_LIBS)			\
+	$(COMMON_LIBS)			\
 	$(NULL)
 
 CLEANFILES =			\

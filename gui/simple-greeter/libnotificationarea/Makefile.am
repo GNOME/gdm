@@ -10,7 +10,7 @@ INCLUDES = \
 	-DLOGDIR=\"$(logdir)\"				\
 	-DPIXMAPDIR=\"$(pixmapdir)\"			\
 	-DSBINDIR=\"$(sbindir)\"			\
-	$(GUI_CFLAGS)					\
+	$(GREETER_CFLAGS)				\
 	$(NULL)
 
 noinst_LTLIBRARIES = 			\
@@ -62,5 +62,5 @@ testtray_SOURCES = 		\
 
 testtray_LDADD = 		\
 	libnotificationarea.la	\
-	$(GUI_LIBS)		\
+	$(GREETER_LIBS)		\
 	$(NULL)

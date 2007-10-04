@@ -24,13 +24,14 @@ IT_PROG_INTLTOOL([0.35.0])
 
 GNOME_DOC_INIT
 
-DBUS_GLIB_REQUIRED=0.74
-GLIB_REQUIRED=2.13.0
-GTK_REQUIRED=2.10.0
-GNOME_VFS_REQUIRED=2.18.0
-PANGO_REQUIRED=1.3.0
-LIBGLADE_REQUIRED=1.99.2
-SCROLLKEEPER_REQUIRED=0.1.4
+X11_REQUIRED_VERSION=1.0.0
+DBUS_GLIB_REQUIRED_VERSION=0.74
+GLIB_REQUIRED_VERSION=2.13.0
+GTK_REQUIRED_VERSION=2.10.0
+GNOME_VFS_REQUIRED_VERSION=2.18.0
+PANGO_REQUIRED_VERSION=1.3.0
+LIBGLADE_REQUIRED_VERSION=1.99.2
+SCROLLKEEPER_REQUIRED_VERSION=0.1.4
 
 dnl
 dnl Let the user configure where to look for the configuration files.
@@ -159,64 +160,56 @@ dnl checks needed for Darwin compatibility to linux **environ.
 AC_CHECK_HEADERS(crt_externs.h)
 AC_CHECK_FUNCS(_NSGetEnviron)
 
-GNOME_COMPILE_WARNINGS
-CFLAGS="$CFLAGS $WARN_CFLAGS"
+EXTRA_COMPILE_WARNINGS(yes)
 
-PKG_CHECK_MODULES(COMMON, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
+PKG_CHECK_MODULES(COMMON,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gobject-2.0 >= $GLIB_REQUIRED_VERSION
+)
 AC_SUBST(COMMON_CFLAGS)
 AC_SUBST(COMMON_LIBS)
 
-PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED)
+PKG_CHECK_MODULES(DAEMON,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gobject-2.0 >= $GLIB_REQUIRED_VERSION
+        x11 >= $X11_REQUIRED_VERSION
+)
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
-PKG_CHECK_MODULES(GUI, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED)
-AC_SUBST(GUI_CFLAGS)
-AC_SUBST(GUI_LIBS)
-
-PKG_CHECK_MODULES(GUIGLADE, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
-AC_SUBST(GUIGLADE_CFLAGS)
-AC_SUBST(GUIGLADE_LIBS)
-
-PKG_CHECK_MODULES(GUING, gtk+-2.0 >= $GTK_REQUIRED)
-AC_SUBST(GUING_CFLAGS)
-AC_SUBST(GUING_LIBS)
-
-PKG_CHECK_MODULES(GREETER, gtk+-2.0 >= $GTK_REQUIRED)
+PKG_CHECK_MODULES(GREETER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+)
 AC_SUBST(GREETER_CFLAGS)
 AC_SUBST(GREETER_LIBS)
 
-dnl libbackground
-PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0")
+PKG_CHECK_MODULES(SIMPLE_GREETER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+        libglade-2.0 >= $LIBGLADE_REQUIRED_VERSION
+        gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED_VERSION
+)
+AC_SUBST(SIMPLE_GREETER_CFLAGS)
+AC_SUBST(SIMPLE_GREETER_LIBS)
+
+PKG_CHECK_MODULES(CHOOSER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+)
+AC_SUBST(CHOOSER_CFLAGS)
+AC_SUBST(CHOOSER_LIBS)
+
+PKG_CHECK_MODULES(SIMPLE_CHOOSER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+        libglade-2.0 >= $LIBGLADE_REQUIRED_VERSION
+        gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED_VERSION
+)
+AC_SUBST(SIMPLE_CHOOSER_CFLAGS)
+AC_SUBST(SIMPLE_CHOOSER_LIBS)
+
 dnl ==========================================================================
-
-PKG_CHECK_MODULES(UTILS, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
-AC_SUBST(UTILS_CFLAGS)
-AC_SUBST(UTILS_LIBS)
-
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLIB_REQUIRED)
-AC_SUBST(GLIB_CFLAGS)
-AC_SUBST(GLIB_LIBS)
-
-PKG_CHECK_MODULES(GOBJECT, gobject-2.0 >= $GLIB_REQUIRED)
-AC_SUBST(GOBJECT_CFLAGS)
-AC_SUBST(GOBJECT_LIBS)
-
-PKG_CHECK_MODULES(PANGO, pango >= $PANGO_REQUIRED)
-AC_SUBST(PANGO_CFLAGS)
-AC_SUBST(PANGO_LIBS)
-
-PKG_CHECK_MODULES(PANGOFT, pangoft2 >= $PANGO_REQUIRED)
-AC_SUBST(PANGOFT_CFLAGS)
-AC_SUBST(PANGOFT_LIBS)
-
-PKG_CHECK_MODULES(GDK, gdk-2.0 >= $GTK_REQUIRED)
-AC_SUBST(GDK_CFLAGS)
-AC_SUBST(GDK_LIBS)
-
-PKG_CHECK_MODULES(GDKPIXBUF, gdk-pixbuf-2.0 >= $GTK_REQUIRED)
-AC_SUBST(GDKPIXBUF_CFLAGS)
-AC_SUBST(GDKPIXBUF_LIBS)
 
 dnl Allow users to run gdmsetup using the console helper PAM stuff.
 if test "x$enable_console_helper" = "xyes"; then
@@ -265,9 +258,6 @@ AC_CHECK_FUNC(sched_yield,[
 AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
-
-COMMON_GNOME_LIBS="libgdmcommon-ui.a"
-AC_SUBST(COMMON_GNOME_LIBS)
 
 dnl *****************************
 dnl     IPv6 specific checks
@@ -844,14 +834,7 @@ dnl ---------------------------------------------------------------------------
 dnl - D-Bus
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_GLIB_REQUIRED)
-AC_SUBST(DBUS_CFLAGS)
-AC_SUBST(DBUS_LIBS)
-
-dnl ---------------------------------------------------------------------------
 dnl - Are we specifying a different dbus root ?
-dnl ---------------------------------------------------------------------------
-
 AC_ARG_WITH(dbus-sys,
         [AC_HELP_STRING([--with-dbus-sys=<dir>],
         [where D-BUS system.d directory is])])
@@ -1329,7 +1312,6 @@ Makefile
 daemon/Makefile
 libgreeter/Makefile
 gui/Makefile
-gui/modules/Makefile
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile

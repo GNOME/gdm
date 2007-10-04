@@ -16,10 +16,8 @@ INCLUDES = \
 	-DGLADEDIR=\""$(pkgdatadir)"\" 	\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
-	$(GUI_CFLAGS)					\
-	$(DBUS_CFLAGS)					\
 	$(GREETER_CFLAGS)				\
-	$(CAPPLET_CFLAGS)				\
+	$(SIMPLE_GREETER_CFLAGS)			\
 	$(NULL)
 
 noinst_PROGRAMS = 		\
@@ -38,8 +36,7 @@ test_greeter_background_SOURCES = 	\
 	$(NULL)
 
 test_greeter_background_LDADD =	\
-	$(CAPPLET_LIBS)		\
-	$(GUI_LIBS)		\
+	$(SIMPLE_GREETER_LIBS)	\
 	$(NULL)
 
 test_greeter_panel_SOURCES = 	\
@@ -49,8 +46,8 @@ test_greeter_panel_SOURCES = 	\
 	$(NULL)
 
 test_greeter_panel_LDADD =	\
+	$(GREETER_LIBS)		\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
-	$(GUI_LIBS)		\
 	$(NULL)
 
 test_language_chooser_SOURCES = 	\
@@ -63,7 +60,7 @@ test_language_chooser_SOURCES = 	\
 	$(NULL)
 
 test_language_chooser_LDADD =	\
-	$(GUI_LIBS)		\
+	$(GREETER_LIBS)		\
 	$(NULL)
 
 test_session_chooser_SOURCES = 	\
@@ -74,11 +71,11 @@ test_session_chooser_SOURCES = 	\
 	gdm-session-chooser-dialog.c	\
 	$(NULL)
 
-test_session_chooser_LDADD =	\
-	$(GUI_LIBS)		\
+test_session_chooser_LDADD =		\
+	$(GREETER_LIBS)			\
 	$(NULL)
 
-test_user_chooser_SOURCES = 	\
+test_user_chooser_SOURCES = 		\
 	test-user-chooser.c		\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
@@ -92,7 +89,7 @@ test_user_chooser_SOURCES = 	\
 	$(NULL)
 
 test_user_chooser_LDADD =	\
-	$(GUI_LIBS)		\
+	$(SIMPLE_GREETER_LIBS)	\
 	$(NULL)
 
 test_user_manager_SOURCES = 	\
@@ -105,7 +102,7 @@ test_user_manager_SOURCES = 	\
 	$(NULL)
 
 test_user_manager_LDADD =	\
-	$(GUI_LIBS)		\
+	$(SIMPLE_GREETER_LIBS)	\
 	$(NULL)
 
 libexec_PROGRAMS =					\
@@ -133,12 +130,7 @@ gdm_simple_greeter_LDADD = 		\
 	-L$(top_builddir)/libgreeter	\
 	-lgreeter			\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
-	$(GLIB_LIBS)		\
-	$(DBUS_LIBS)		\
-	$(GOBJECT_LIBS)		\
-	$(GUI_LIBS)		\
-	$(GREETER_LIBS)		\
-	$(CAPPLET_LIBS)		\
+	$(SIMPLE_GREETER_LIBS)		\
 	$(NULL)
 
 gladedir = $(pkgdatadir)

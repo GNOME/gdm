@@ -34,8 +34,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#include <gdk/gdkx.h>
-#include <gtk/gtk.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
@@ -74,7 +72,6 @@ struct GdmSimpleSlavePrivate
         int                ping_interval;
 
         GPid               server_pid;
-        Display           *server_display;
         guint              connection_attempts;
 
         /* user selected */
@@ -108,21 +105,6 @@ static void     gdm_simple_slave_init           (GdmSimpleSlave      *simple_sla
 static void     gdm_simple_slave_finalize       (GObject             *object);
 
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
-
-static void
-set_busy_cursor (GdmSimpleSlave *simple_slave)
-{
-        if (simple_slave->priv->server_display != NULL) {
-                Cursor xcursor;
-
-                xcursor = XCreateFontCursor (simple_slave->priv->server_display, GDK_WATCH);
-                XDefineCursor (simple_slave->priv->server_display,
-                               DefaultRootWindow (simple_slave->priv->server_display),
-                               xcursor);
-                XFreeCursor (simple_slave->priv->server_display, xcursor);
-                XSync (simple_slave->priv->server_display, False);
-        }
-}
 
 static void
 gdm_simple_slave_whack_temp_auth_file (GdmSimpleSlave *simple_slave)
@@ -999,7 +981,7 @@ run_greeter (GdmSimpleSlave *slave)
         }
 
         /* Set the busy cursor */
-        set_busy_cursor (slave);
+        gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
 
         /* FIXME: send a signal back to the master */
 
@@ -1086,89 +1068,6 @@ run_greeter (GdmSimpleSlave *slave)
         g_free (auth_file);
 }
 
-static void
-set_local_auth (GdmSimpleSlave *slave)
-{
-        GString *binary_cookie;
-        GString *cookie;
-        char    *display_x11_cookie;
-
-        g_object_get (slave,
-                      "display-x11-cookie", &display_x11_cookie,
-                      NULL);
-
-        g_debug ("Setting authorization key for display %s", display_x11_cookie);
-
-        cookie = g_string_new (display_x11_cookie);
-        binary_cookie = g_string_new (NULL);
-        if (! gdm_string_hex_decode (cookie,
-                                     0,
-                                     NULL,
-                                     binary_cookie,
-                                     0)) {
-                g_warning ("Unable to decode hex cookie");
-                goto out;
-        }
-
-        g_debug ("Decoded cookie len %d", binary_cookie->len);
-
-        XSetAuthorization ("MIT-MAGIC-COOKIE-1",
-                           (int) strlen ("MIT-MAGIC-COOKIE-1"),
-                           (char *)binary_cookie->str,
-                           binary_cookie->len);
-
- out:
-        g_string_free (binary_cookie, TRUE);
-        g_string_free (cookie, TRUE);
-        g_free (display_x11_cookie);
-}
-
-static gboolean
-connect_to_display (GdmSimpleSlave *slave)
-{
-        char          *display_name;
-        gboolean       ret;
-
-        ret = FALSE;
-
-        g_object_get (slave,
-                      "display-name", &display_name,
-                      NULL);
-
-        /* We keep our own (windowless) connection (dsp) open to avoid the
-         * X server resetting due to lack of active connections. */
-
-        g_debug ("Server is ready - opening display %s", display_name);
-
-        g_setenv ("DISPLAY", display_name, TRUE);
-        g_unsetenv ("XAUTHORITY"); /* just in case it's set */
-
-        set_local_auth (slave);
-
-#if 0
-        /* X error handlers to avoid the default one (i.e. exit (1)) */
-        do_xfailed_on_xio_error = TRUE;
-        XSetErrorHandler (gdm_simple_slave_xerror_handler);
-        XSetIOErrorHandler (gdm_simple_slave_xioerror_handler);
-#endif
-
-        gdm_sigchld_block_push ();
-        slave->priv->server_display = XOpenDisplay (display_name);
-        gdm_sigchld_block_pop ();
-
-        if (slave->priv->server_display == NULL) {
-                g_warning ("Unable to connect to display %s", display_name);
-                ret = FALSE;
-        } else {
-                g_debug ("Connected to display %s", display_name);
-                ret = TRUE;
-        }
-
-        g_free (display_name);
-
-        return ret;
-}
-
 static gboolean
 idle_connect_to_display (GdmSimpleSlave *slave)
 {
@@ -1176,7 +1075,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 
         slave->priv->connection_attempts++;
 
-        res = connect_to_display (slave);
+        res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
                 /* FIXME: handle wait-for-go */
 
@@ -1192,8 +1091,8 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 }
 
 static void
-server_ready_cb (GdmServer *server,
-                 GdmSimpleSlave  *slave)
+server_ready_cb (GdmServer      *server,
+                 GdmSimpleSlave *slave)
 {
         g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
 }

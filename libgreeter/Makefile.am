@@ -14,12 +14,12 @@ libgreeter_la_SOURCES = 		\
 	$(NULL)
 
 libgreeter_la_CPPFLAGS = 		\
+	$(WARN_CFLAGS)			\
 	$(DISABLE_DEPRECATED_CFLAGS)	\
 	$(NULL)
 
 libgreeter_la_CFLAGS =			\
-	$(DBUS_CFLAGS)			\
-	$(GUI_CFLAGS)			\
+	$(GREETER_CFLAGS)		\
 	-I$(top_srcdir)/common/		\
 	$(NULL)
 
