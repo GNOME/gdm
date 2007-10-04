@@ -22,12 +22,9 @@
 #ifndef _GDM_COMMON_UNKNOWN_H
 #define _GDM_COMMON_UNKNOWN_H
 
-#include <glib.h>
-#include <glib/gstdio.h>
-#include <time.h>
+#include <stdio.h>
 #include <errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
@@ -37,50 +34,9 @@ G_BEGIN_DECLS
                 expr;                \
         } while G_UNLIKELY (errno == EINTR);
 
-#define NEVER_FAILS_seteuid(uid) \
-        { int r = 0; \
-          if (geteuid () != uid) \
-            r = seteuid (uid); \
-          if G_UNLIKELY (r != 0) \
-        g_error ("GDM file %s: line %d (%s): Cannot run seteuid to %d: %s", \
-                  __FILE__,                                             \
-                  __LINE__,                                             \
-                  G_GNUC_PRETTY_FUNCTION,                                       \
-                  (int)uid,                                             \
-                  strerror (errno));                    }
-#define NEVER_FAILS_setegid(gid) \
-        { int r = 0; \
-          if (getegid () != gid) \
-            r = setegid (gid); \
-          if G_UNLIKELY (r != 0) \
-        g_error ("GDM file %s: line %d (%s): Cannot run setegid to %d: %s", \
-                  __FILE__,                                             \
-                  __LINE__,                                             \
-                  G_GNUC_PRETTY_FUNCTION,                                       \
-                  (int)gid,                                             \
-                  strerror (errno));                    }
-
-/* first goes to euid-root and then sets the egid and euid, to make sure
- * this succeeds */
-#define NEVER_FAILS_root_set_euid_egid(uid,gid) \
-        { NEVER_FAILS_seteuid (0); \
-          NEVER_FAILS_setegid (gid); \
-          if (uid != 0) { NEVER_FAILS_seteuid (uid); } }
-
-
 /* like fopen with "w" but unlinks and uses O_EXCL */
 FILE *         gdm_safe_fopen_w  (const char *file,
                                   mode_t      perm);
-
-/* This is for race free forks */
-void           gdm_sigchld_block_push (void);
-void           gdm_sigchld_block_pop (void);
-void           gdm_sigterm_block_push (void);
-void           gdm_sigterm_block_pop (void);
-void           gdm_sigusr2_block_push (void);
-void           gdm_sigusr2_block_pop (void);
-
-void           ve_clearenv (void);
 
 G_END_DECLS
 

@@ -547,6 +547,7 @@ setup_multicast (GdmXdmcpDisplayFactory *factory)
 #endif /* ENABLE_IPV6 */
 }
 
+static void
 fd_set_close_on_exec (int fd)
 {
         int flags;
@@ -921,8 +922,10 @@ set_address_for_request (GdmAddress *address,
 
 }
 
+#if 0
+/* FIXME: Add chooser support */
 static void
-gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory         *factory,
+gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
                               GdmIndirectDisplay      *id,
                               GdmAddress              *address,
                               GdmAddress              *display_address,
@@ -978,6 +981,7 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory         *factory,
         g_free (port.data);
         g_free (addr.data);
 }
+#endif
 
 static void
 handle_any_query (GdmXdmcpDisplayFactory         *factory,
@@ -1053,7 +1057,6 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
         int                 expected_len;
         int                 i;
         int                 res;
-        GdmIndirectDisplay *id;
 
         if (! gdm_xdmcp_host_allow (address)) {
                 /* ignore the request */
@@ -1088,6 +1091,7 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
 
 
 #if 0
+        GdmIndirectDisplay *id;
         /* FIXME: Add chooser support */
 
         id = gdm_choose_indirect_lookup (address);
@@ -2373,7 +2377,6 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
                                   int              len)
 {
         ARRAY8              clnt_address;
-        GdmIndirectDisplay *id;
         char               *host;
         GdmAddress         *disp_address;
 
@@ -2406,6 +2409,7 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
         }
 
 #if 0
+        GdmIndirectDisplay *id;
         /* FIXME: Add chooser support */
         id = gdm_choose_indirect_lookup_by_chosen (address, disp_address);
         if (id != NULL) {

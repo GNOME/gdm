@@ -161,6 +161,8 @@ gboolean
 gdm_slave_connect_to_x11_display (GdmSlave *slave)
 {
         gboolean ret;
+        sigset_t mask;
+        sigset_t omask;
 
         ret = FALSE;
 
@@ -181,9 +183,14 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         XSetIOErrorHandler (gdm_slave_xioerror_handler);
 #endif
 
-        gdm_sigchld_block_push ();
+        sigemptyset (&mask);
+        sigaddset (&mask, SIGCHLD);
+        sigprocmask (SIG_BLOCK, &mask, &omask);
+
         slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
-        gdm_sigchld_block_pop ();
+
+        sigprocmask (SIG_SETMASK, &omask, NULL);
+
 
         if (slave->priv->server_display == NULL) {
                 g_warning ("Unable to connect to display %s", slave->priv->display_name);

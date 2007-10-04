@@ -280,7 +280,13 @@ main_restoreenv (void)
 {
         GList *li;
 
-        ve_clearenv ();
+#ifdef HAVE_CLEARENV
+        clearenv ();
+#else
+        if (environ != NULL) {
+                environ[0] = NULL;
+        }
+#endif
 
         /* FIXME: leaks */
 
@@ -295,7 +301,12 @@ gdm_restart_now (void)
         gdm_info (_("GDM restarting ..."));
         gdm_final_cleanup ();
         main_restoreenv ();
-        VE_IGNORE_EINTR (execvp (stored_argv[0], stored_argv));
+
+        do {
+                errno = 0;
+                execvp (stored_argv[0], stored_argv);
+        } while (errno == EINTR);
+
         g_warning (_("Failed to restart self"));
         _exit (1);
 }
@@ -323,7 +334,7 @@ check_logdir (void)
 
         log_path = LOGDIR;
 
-        VE_IGNORE_EINTR (r = g_stat (log_path, &statbuf));
+        r = g_stat (log_path, &statbuf);
         if (r < 0 || ! S_ISDIR (statbuf.st_mode))  {
                 gdm_fail (_("Logdir %s does not exist or isn't a directory."), log_path);
         }
@@ -336,13 +347,43 @@ check_servauthdir (const char  *auth_path,
         int r;
 
         /* Enter paranoia mode */
-        VE_IGNORE_EINTR (r = g_stat (auth_path, statbuf));
-        if G_UNLIKELY (r < 0) {
+        r = g_stat (auth_path, statbuf);
+        if (r < 0) {
                 gdm_fail (_("Authdir %s does not exist. Aborting."), auth_path);
         }
 
-        if G_UNLIKELY (! S_ISDIR (statbuf->st_mode)) {
+        if (! S_ISDIR (statbuf->st_mode)) {
                 gdm_fail (_("Authdir %s is not a directory. Aborting."), auth_path);
+        }
+}
+
+static void
+set_effective_user_group (uid_t uid,
+                          gid_t gid)
+{
+        int res;
+
+        res = 0;
+
+        if (geteuid () != uid) {
+                res = seteuid (uid);
+        }
+
+        if (res != 0) {
+                g_error ("Cannot set uid to %d: %s",
+                         (int)uid,
+                         g_strerror (errno));
+        }
+
+        res = 0;
+        if (getegid () != gid) {
+                res = setegid (gid);
+        }
+
+        if (res != 0) {
+                g_error ("Cannot set gid to %d: %s",
+                         (int)gid,
+                         g_strerror (errno));
         }
 }
 
@@ -352,19 +393,20 @@ gdm_daemon_check_permissions (uid_t uid,
 {
         struct stat statbuf;
         const char *auth_path;
+        int         res;
 
         auth_path = LOGDIR;
 
         /* Enter paranoia mode */
         check_servauthdir (auth_path, &statbuf);
 
-        NEVER_FAILS_root_set_euid_egid (0, 0);
+        set_effective_user_group (0, 0);
 
         /* Now set things up for us as  */
         chown (auth_path, 0, gid);
         g_chmod (auth_path, (S_IRWXU|S_IRWXG|S_ISVTX));
 
-        NEVER_FAILS_root_set_euid_egid (uid, gid);
+        set_effective_user_group (uid, gid);
 
         /* Again paranoid */
         check_servauthdir (auth_path, &statbuf);
@@ -436,7 +478,7 @@ gdm_daemon_change_user (uid_t *uidp,
         }
 
         /* gid remains `gdm' */
-        NEVER_FAILS_root_set_euid_egid (uid, gid);
+        set_effective_user_group (uid, gid);
 
         if (uidp != NULL) {
                 *uidp = uid;
@@ -633,7 +675,8 @@ main (int    argc,
 
         gdm_daemon_change_user (&gdm_uid, &gdm_gid);
         gdm_daemon_check_permissions (gdm_uid, gdm_gid);
-        NEVER_FAILS_root_set_euid_egid (0, 0);
+
+        set_effective_user_group (0, 0);
         check_logdir ();
 
         /* XDM compliant error message */

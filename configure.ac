@@ -1283,8 +1283,6 @@ po/Makefile.in
 config/Init
 config/PreSession
 config/PostSession
-config/gdmprefetchlist
-config/ssh.desktop.in
 ])
 
 dnl ---------------------------------------------------------------------------
