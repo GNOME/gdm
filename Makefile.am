@@ -8,7 +8,6 @@ SUBDIRS = 			\
 	libgreeter		\
 	gui 			\
 	utils 			\
-	docs			\
 	po 			\
 	$(NULL)
 

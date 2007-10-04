@@ -1280,7 +1280,6 @@ data/pixmaps/48x48/Makefile
 config/Makefile
 common/Makefile
 po/Makefile.in
-docs/Makefile
 config/Init
 config/PreSession
 config/PostSession
