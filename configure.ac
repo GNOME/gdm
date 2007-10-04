@@ -1,3 +1,4 @@
+
 AC_PREREQ(2.59c)
 AC_INIT([gdm],
         [2.99.0],
@@ -5,7 +6,10 @@ AC_INIT([gdm],
         [gdm])
 
 AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
+
 AM_INIT_AUTOMAKE
+
+AM_MAINTAINER_MODE
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -18,11 +22,20 @@ AC_SUBST(VERSION)
 
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_MACRO_DIR([m4])
-AM_MAINTAINER_MODE
 
 IT_PROG_INTLTOOL([0.35.0])
 
 GNOME_DOC_INIT
+
+GETTEXT_PACKAGE=gdm
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+
+AM_GLIB_GNU_GETTEXT
+
+dnl ---------------------------------------------------------------------------
+dnl - Dependencies
+dnl ---------------------------------------------------------------------------
 
 X11_REQUIRED_VERSION=1.0.0
 DBUS_GLIB_REQUIRED_VERSION=0.74
@@ -33,9 +46,61 @@ PANGO_REQUIRED_VERSION=1.3.0
 LIBGLADE_REQUIRED_VERSION=1.99.2
 SCROLLKEEPER_REQUIRED_VERSION=0.1.4
 
-dnl
-dnl Let the user configure where to look for the configuration files.
-dnl
+EXTRA_COMPILE_WARNINGS(yes)
+
+PKG_CHECK_MODULES(COMMON,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gobject-2.0 >= $GLIB_REQUIRED_VERSION
+)
+AC_SUBST(COMMON_CFLAGS)
+AC_SUBST(COMMON_LIBS)
+
+PKG_CHECK_MODULES(DAEMON,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gobject-2.0 >= $GLIB_REQUIRED_VERSION
+        x11 >= $X11_REQUIRED_VERSION
+)
+AC_SUBST(DAEMON_CFLAGS)
+AC_SUBST(DAEMON_LIBS)
+
+PKG_CHECK_MODULES(GREETER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+)
+AC_SUBST(GREETER_CFLAGS)
+AC_SUBST(GREETER_LIBS)
+
+PKG_CHECK_MODULES(SIMPLE_GREETER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+        libglade-2.0 >= $LIBGLADE_REQUIRED_VERSION
+        gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED_VERSION
+)
+AC_SUBST(SIMPLE_GREETER_CFLAGS)
+AC_SUBST(SIMPLE_GREETER_LIBS)
+
+PKG_CHECK_MODULES(CHOOSER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+)
+AC_SUBST(CHOOSER_CFLAGS)
+AC_SUBST(CHOOSER_LIBS)
+
+PKG_CHECK_MODULES(SIMPLE_CHOOSER,
+        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+        libglade-2.0 >= $LIBGLADE_REQUIRED_VERSION
+        gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED_VERSION
+)
+AC_SUBST(SIMPLE_CHOOSER_CFLAGS)
+AC_SUBST(SIMPLE_CHOOSER_LIBS)
+
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+AC_PATH_XTRA
+
+dnl ---------------------------------------------------------------------------
+dnl - Configuration file stuff
+dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH(sysconfsubdir, AC_HELP_STRING([--with-sysconfsubdir],
             [directory name used under sysconfdir, default=gdm]),
@@ -54,9 +119,10 @@ AC_ARG_WITH(dmconfdir, AC_HELP_STRING([--with-dmconfdir],
             dmconfdir=${withval}, dmconfdir=${sysconfdir}/dm)
 AC_SUBST(dmconfdir)
 
-dnl
-dnl Configure arguments
-dnl
+dnl ---------------------------------------------------------------------------
+dnl - Configure arguments
+dnl ---------------------------------------------------------------------------
+
 AC_ARG_ENABLE(console-helper,
   [  --enable-console-helper=[auto/no/yes]  Enable PAM console helper [default=auto]],,
   enable_console_helper=auto)
@@ -128,22 +194,6 @@ else
 fi
 AC_SUBST(LANG_CONFIG_FILE)
 
-AC_PATH_PROG(CONSOLE_HELPER,consolehelper,no)
-if test "x$CONSOLE_HELPER" = "xno" ; then
-  if test "x$enable_console_helper" = "xyes" ; then
-    AC_MSG_ERROR(Console helper requested but consolehelper binary not found)
-  fi
-  # if it was no, nothing happens, if it was auto, well then we're out of luck
-  enable_console_helper=no
-else
-  if test ! "x$enable_console_helper" = "xno" ; then
-    enable_console_helper=yes
-  fi
-fi
-
-AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
-AC_PATH_XTRA
-
 dnl socklen_t may be declared, but not in a "standard" C header location
 AC_CHECK_HEADERS(sys/socket.h)
 AC_CHECK_TYPE(socklen_t,,
@@ -159,72 +209,6 @@ AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 dnl checks needed for Darwin compatibility to linux **environ.
 AC_CHECK_HEADERS(crt_externs.h)
 AC_CHECK_FUNCS(_NSGetEnviron)
-
-EXTRA_COMPILE_WARNINGS(yes)
-
-PKG_CHECK_MODULES(COMMON,
-        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
-        gobject-2.0 >= $GLIB_REQUIRED_VERSION
-)
-AC_SUBST(COMMON_CFLAGS)
-AC_SUBST(COMMON_LIBS)
-
-PKG_CHECK_MODULES(DAEMON,
-        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
-        gobject-2.0 >= $GLIB_REQUIRED_VERSION
-        x11 >= $X11_REQUIRED_VERSION
-)
-AC_SUBST(DAEMON_CFLAGS)
-AC_SUBST(DAEMON_LIBS)
-
-PKG_CHECK_MODULES(GREETER,
-        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
-        gtk+-2.0 >= $GTK_REQUIRED_VERSION
-)
-AC_SUBST(GREETER_CFLAGS)
-AC_SUBST(GREETER_LIBS)
-
-PKG_CHECK_MODULES(SIMPLE_GREETER,
-        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
-        gtk+-2.0 >= $GTK_REQUIRED_VERSION
-        libglade-2.0 >= $LIBGLADE_REQUIRED_VERSION
-        gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED_VERSION
-)
-AC_SUBST(SIMPLE_GREETER_CFLAGS)
-AC_SUBST(SIMPLE_GREETER_LIBS)
-
-PKG_CHECK_MODULES(CHOOSER,
-        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
-        gtk+-2.0 >= $GTK_REQUIRED_VERSION
-)
-AC_SUBST(CHOOSER_CFLAGS)
-AC_SUBST(CHOOSER_LIBS)
-
-PKG_CHECK_MODULES(SIMPLE_CHOOSER,
-        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
-        gtk+-2.0 >= $GTK_REQUIRED_VERSION
-        libglade-2.0 >= $LIBGLADE_REQUIRED_VERSION
-        gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED_VERSION
-)
-AC_SUBST(SIMPLE_CHOOSER_CFLAGS)
-AC_SUBST(SIMPLE_CHOOSER_LIBS)
-
-dnl ==========================================================================
-
-dnl Allow users to run gdmsetup using the console helper PAM stuff.
-if test "x$enable_console_helper" = "xyes"; then
-  AM_CONDITIONAL(CONSOLE_HELPER, true)
-else
-  AM_CONDITIONAL(CONSOLE_HELPER, false)
-fi
-
-dnl ## Language Support
-GETTEXT_PACKAGE=gdm
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
-AC_SUBST(GETTEXT_PACKAGE)
-
-dnl ## internationalization support
-AM_GLIB_GNU_GETTEXT
 
 EXTRA_DAEMON_LIBS=""
 EXTRA_SLAVE_LIBS=""
@@ -259,9 +243,11 @@ AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
 
-dnl *****************************
-dnl     IPv6 specific checks
-dnl *****************************
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for IPv6
+dnl ---------------------------------------------------------------------------
+
 AC_MSG_CHECKING([whether to enable IPv6])
 AC_ARG_ENABLE(ipv6, [  --enable-ipv6=[yes/no] Enables compilation of IPv6 code default=[no]],, enable_ipv6=no)
 if test x$enable_ipv6 = xyes; then
@@ -306,24 +292,16 @@ else
   AC_MSG_RESULT(no)
 fi
 
-dnl borrowed from gnu findutils
-dnl and relicensed as LGPL by the FSF
-
-AC_ARG_WITH(prefetch,
-  [  --with-prefetch=[yes/no]  Install GDM library prefetch utility [default=no]],,
-  with_prefetch=no)
-
-if test x$with_prefetch != xno ; then
-	GDMPREFETCH="gdmprefetch"
-        GDMPREFETCHLIST="gdmprefetchlist"
-        GDMPREFETCHCMD='${libdir}/gdmprefetch \@${gdmconfdir}/gdmprefetchlist'
-fi
-
 AC_ARG_WITH(afs,
 [  --with-afs              support -fstype afs],
 [  AC_DEFINE(AFS, [], [Define if you have the Andrew File System])
   CPPFLAGS="$CPPFLAGS -I/usr/afsws/include"
   LIBS="$LIBS -L/usr/afsws/lib -L/usr/afsws/lib/afs -lsys -lrx -llwp"])
+
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for filesystem type support
+dnl ---------------------------------------------------------------------------
 
 AC_MSG_CHECKING(how to get filesystem type)
 fstype=no
@@ -356,21 +334,10 @@ AC_TRY_CPP([#include <sys/mount.h>
 fi
 AC_MSG_RESULT($fstype)
 
-dnl ****************************
-dnl    IPv6 checks end here
-dnl ****************************
-
-dnl ## gdmopen building
-dnl There are perhaps others where this works
-GDMOPEN=
-AC_CHECK_HEADERS(linux/vt.h, [
-		 GDMOPEN=gdmopen])
-AC_SUBST(GDMOPEN)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for PAM stuff
 dnl ---------------------------------------------------------------------------
-
 
 dnl PAM prefix
 withval=""
@@ -452,13 +419,16 @@ AC_CHECK_HEADERS(libgen.h, [
 		 AC_DEFINE(HAVE_LIBGEN_H)])
 
 
-#
+dnl ---------------------------------------------------------------------------
+dnl - Check for POSIX version of getpwnam_r
+dnl ---------------------------------------------------------------------------
+
 # Checking for a posix version of getpwnam_r
 # if we are cross compiling and can not run the test
 # assume getpwnam_r is the posix version
 # it is up to the person cross compiling to change
 # this behavior if desired
-#
+
 AC_LANG_PUSH(C)
 AC_CACHE_CHECK([for posix getpwnam_r],
 		ac_cv_func_posix_getpwnam_r,
@@ -502,9 +472,11 @@ else
 	fi
 fi
 
-#
-# Check for utmp stuff
-#
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for utmp stuff
+dnl ---------------------------------------------------------------------------
+
 AC_CHECK_HEADERS(utmp.h utmpx.h libutil.h sys/param.h)
 AC_CHECK_FUNC(getutmpx updwtmpx)
 AC_CHECK_LIB(util,login)
@@ -525,9 +497,11 @@ if test x$have_ut_syslen = xyes; then
 fi
 AC_MSG_RESULT($have_ut_syslen)
 
-#
-# Xdmcp checking
-#
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for Xdmcp
+dnl ---------------------------------------------------------------------------
+
 XDMCP_LIBS=""
 if test x$with_xdmcp != xno ; then
 	xdmcp_save_CPPFLAGS="$CPPFLAGS"
@@ -560,9 +534,11 @@ else
 fi
 AC_SUBST(GDMCHOOSER)
 
-#
-# TCP Wrappers for XDMCP access control
-#
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for TCP Wrappers for XDMCP access control
+dnl ---------------------------------------------------------------------------
+
 if test x$with_tcp_wrappers = xno ; then
 	echo "TCP wrappers disabled"
 else
@@ -658,8 +634,10 @@ LIBS="$OLD_LIBS"
    esac
 fi
 
-AC_MSG_CHECKING([for corrupt government])
-AC_MSG_RESULT(yes)
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for Xinput
+dnl ---------------------------------------------------------------------------
 
 have_xinput=
 AC_CHECK_LIB(Xi, XOpenDevice, XINPUT_LIBS=-lXi)
@@ -668,7 +646,7 @@ if test "x$XINPUT_LIBS" = x; then
   for xinputpath in $x_libraries /usr/X11R6/lib /usr/openwin/lib; do
     LIBS="-L$xinputpath -lXi"
     case "$host" in
-       *solaris*) XINPUT_RPATH_FLAGS="-R$xinputpath" 
+       *solaris*) XINPUT_RPATH_FLAGS="-R$xinputpath"
        ;;
     esac
     AC_MSG_CHECKING(for -lXi in $xinputpath)
@@ -688,9 +666,12 @@ if test "x$have_xinput" = xyes; then
    X_EXTRA_LIBS="$X_EXTRA_LIBS $XINPUT_LIBS"
 fi
 
-#
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for Xinerama
+dnl ---------------------------------------------------------------------------
+
 # X11 Xinerama extension
-#
 # Check for Xinerama extension (Solaris impl or Xfree impl)
 xinerama_save_cppflags="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $X_CFLAGS"
@@ -754,9 +735,11 @@ fi
 AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
 
-#
-# Distributed Multihead X extension (DMX)
-#
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for Distributed Multihead X extension (DMX)
+dnl ---------------------------------------------------------------------------
+
 DMX_SUPPORT=""
 DMX_LIBS=""
 if test x$with_dmx != xno ; then
@@ -776,9 +759,11 @@ fi
 AC_SUBST(DMX_LIBS)
 AM_CONDITIONAL(DMX_SUPPORT, test x$DMX_SUPPORT = xyes)
 
-#
-# Solaris Trusted Extensions stuff
-#
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for Solaris Trusted Extensions stuff
+dnl ---------------------------------------------------------------------------
+
 case "$host" in
 *solaris*)
         AC_CHECK_HEADERS(sys/tsol/label_macro.h,
@@ -794,9 +779,10 @@ if test "x$found_tsol" = "xyes" ; then
 fi
 
 
-#
-# SELinux stuff
-#
+dnl ---------------------------------------------------------------------------
+dnl - Check for SELinux
+dnl ---------------------------------------------------------------------------
+
 if test "x$with_selinux" = "xyes" ; then
 	echo "SELinux support requested (--with-selinux was given), checking prerequisites"
 	if test -d /usr/local/selinux/include ; then
@@ -819,7 +805,7 @@ if test "x$with_selinux" = "xyes" ; then
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl - ConsoleKit support
+dnl - Check for ConsoleKit support
 dnl ---------------------------------------------------------------------------
 
 use_console_kit=no
@@ -831,7 +817,7 @@ AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
 AC_SUBST(WITH_CONSOLE_KIT)
 
 dnl ---------------------------------------------------------------------------
-dnl - D-Bus
+dnl - Check for D-Bus
 dnl ---------------------------------------------------------------------------
 
 dnl - Are we specifying a different dbus root ?
@@ -849,7 +835,7 @@ fi
 AC_SUBST(DBUS_SYS_DIR)
 
 dnl ---------------------------------------------------------------------------
-dnl - ISO Codes checks
+dnl - Check for ISO Codes
 dnl ---------------------------------------------------------------------------
 
 AC_MSG_CHECKING([whether iso-codes has iso-639 domain])
@@ -861,9 +847,11 @@ fi
 AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["`$PKG_CONFIG --variable=prefix iso-codes`"],[ISO codes prefix])
 ISO_CODES=iso-codes
 
-#
-# Define some variables to represent the directories we use.
-#
+
+dnl ---------------------------------------------------------------------------
+dnl - Define some variables to represent the directories we use.
+dnl ---------------------------------------------------------------------------
+
 AC_SUBST(authdir, ${localstatedir}/gdm)
 AC_SUBST(gdmlocaledir, ${gdmconfdir})
 AC_SUBST(pixmapdir, ${datadir}/pixmaps)
@@ -914,58 +902,9 @@ fi
 AC_SUBST(GDM_CUSTOM_CONF)
 AC_SUBST(GDM_OLD_CONF, '${gdmconfdir}/gdm.conf')
 
-AC_ARG_WITH(prefetch,
-  [  --with-prefetch=[yes/no]  Install GDM library prefetch utility [default=no]],,
-  with_prefetch=no)
-
-if test x$with_prefetch != xno ; then
-	GDMPREFETCH="gdmprefetch"
-        GDMPREFETCHLIST="gdmprefetchlist"
-        GDMPREFETCHCMD='${libdir}/gdmprefetch \@${gdmconfdir}/gdmprefetchlist'
-fi
-AC_SUBST(GDMPREFETCH)
-AC_SUBST(GDMPREFETCHLIST)
-AC_SUBST(GDMPREFETCHCMD)
-
-AC_ARG_ENABLE(secureremote,
-  [  --enable-secureremote=[yes/no]  Enable to offer a secure X connection through ssh  [default=no]],,
-  enable_secureremote=no)
-
-AC_PATH_PROG(ZENITY,zenity,no)
-if test "x$ZENITY" = "xno" ; then
-  if test "x$enable_secureremote" = "xyes" ; then
-    AC_MSG_ERROR(Secure remote connection requested but zenity binary not found)
-  fi
-  # if it was no, nothing happens, if it was auto, well then we're out of luck
-  enable_console_helper=no
-else
-  if test ! "x$enable_secureremote" = "xno" ; then
-    enable_secureremote=yes
-  fi
-fi
-
-if test ${exec_prefix} != "NONE"; then
-   real_gdm_prefix=$exec_prefix
-elif test ${prefix} != "NONE"; then
-   real_gdm_prefix=$prefix
-else
-   real_gdm_prefix=$ac_default_prefix
-fi
-
-if test ${libexecdir} = "\${exec_prefix}/libexec"; then
-   ssh_libexec="$real_gdm_prefix/libexec"
-else
-   ssh_libexec="${libexecdir}"
-fi
-
-if test x$enable_secureremote != xno ; then
-       SSHDESKTOP="ssh.desktop"
-        GDMSSHSESSION="gdm-ssh-session"
-        GDMSSHSESSIONCMD="${ssh_libexec}/gdm-ssh-session"
-fi
-AC_SUBST(SSHDESKTOP)
-AC_SUBST(GDMSSHSESSION)
-AC_SUBST(GDMSSHSESSIONCMD)
+dnl ---------------------------------------------------------------------------
+dnl - Check for XEvIE extension support
+dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH(xevie,
   [  --with-xevie=[yes/no]  Add XEvIE Xserver extension support [default=no]],,
@@ -980,6 +919,11 @@ fi
 AC_SUBST(XEVIE_OPTION)
 AC_DEFINE_UNQUOTED(XEVIE_OPTION,"$XEVIE_OPTION")
 
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for Solaris fbconsole
+dnl ---------------------------------------------------------------------------
+
 AC_MSG_CHECKING(for Solaris fbconsole)
 if test -x /usr/openwin/bin/fbconsole; then
    AC_DEFINE(HAVE_FBCONSOLE)
@@ -987,6 +931,10 @@ if test -x /usr/openwin/bin/fbconsole; then
 else
    AC_MSG_RESULT(no)
 fi
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for audit framework
+dnl ---------------------------------------------------------------------------
 
 # Check for Solaris auditing API
 # Note, Solaris auditing not supported for Solaris 9 or earlier and
@@ -1024,11 +972,15 @@ AC_CHECK_LIB(secdb, chkauthattr, [
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsecdb"
 			    EXTRA_GREETER_LIBS="$EXTRA_GREETER_LIBS -lsecdb"])
 
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for Halt, and Reboot commands
+dnl ---------------------------------------------------------------------------
+
 # Define different Halt, and Reboot commands differently for Solaris.
 #
 # On Solaris/bin is a symlink to /usr/bin, so don't include it in
 # GDM_USER_PATH.
-#
 GDM_USER_PATH=""
 GDM_RBAC_SYSCMD_KEYS=""
 
@@ -1072,6 +1024,10 @@ AC_SUBST(EXTRA_FLEXI_LIBS)
 AC_SUBST(EXTRA_DYNAMIC_LIBS)
 AC_SUBST(EXTRA_SETUP_LIBS)
 AC_SUBST(EXTRA_GREETER_LIBS)
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for X Server location
+dnl ---------------------------------------------------------------------------
 
 # First check with "! -h" for /usr/X11R6 and /usr/X11 since they often
 # symlink to each other, and configure should use the more stable
@@ -1120,7 +1076,7 @@ elif test -x /usr/X11/bin/X; then
    GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/openwin/bin/Xsun; then
-   # Do not add /usr/openwin/bin here because on Solaris you need 
+   # Do not add /usr/openwin/bin here because on Solaris you need
    # /usr/openwin/bin in your PATH even if you are using the Xorg
    # Xserver.  We add this to the path below.
    X_PATH="/usr/openwin/bin"
@@ -1132,7 +1088,7 @@ elif test -x /opt/X11R6/bin/X; then
    X_SERVER_PATH="/opt/X11R6/bin"
    X_SERVER="/opt/X11R6/bin/X"
    GDM_USER_PATH="$GDM_USER_PATH:/opt/X11R6/bin"
-   X_CONFIG_OPTIONS="-audit 0"   
+   X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/bin/X; then
    X_PATH="/usr/bin"
    X_SERVER_PATH="/usr/bin"
@@ -1154,6 +1110,9 @@ if test "x$real_gdm_prefix" != "x/" -a "x$real_gdm_prefix" != "x/usr"; then
     GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - Check for Xnest / Xephyr support
+dnl ---------------------------------------------------------------------------
 
 # Use Xephyr if it is available.  It works better than Xnest since Xephyr
 # supports the Xserver extensions, even if on a remote machine.
@@ -1187,7 +1146,7 @@ if test "x$USER_POST_PATH" != "x"; then
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl Expand vars
+dnl - Expand vars
 dnl ---------------------------------------------------------------------------
 
 AS_AC_EXPAND(LOCALSTATEDIR, $localstatedir)
@@ -1214,18 +1173,32 @@ AC_SUBST(GDM_PID_FILE)
 AC_DEFINE_UNQUOTED(GDM_PID_FILE, "$GDM_PID_FILE", [pid file])
 
 dnl ---------------------------------------------------------------------------
-dnl - Additional warnings
+dnl - Allow configure to specify RBAC keys.
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_ENABLE(more-warnings,
-  AC_HELP_STRING([--enable-more-warnings], [Maximum compiler warnings]),
-set_more_warnings="$enableval",[
-if test -d $srcdir/.svn; then
-        set_more_warnings=yes
-else
-        set_more_warnings=no
+AC_ARG_WITH(rbac-system-command-keys,    [  --with-rbac-system-command-keys=<keys>     RBAC system command keys])
+
+if ! test -z "$with_system_command_keys"; then
+   GDM_RBAC_SYSCMD_KEYS=$with_system_command_keys
 fi
-])
+
+dnl ---------------------------------------------------------------------------
+dnl - Finish
+dnl ---------------------------------------------------------------------------
+
+
+# Turn on the additional warnings last, so -Werror doesn't affect other tests.
+
+AC_ARG_ENABLE(more-warnings,
+	[AC_HELP_STRING([--enable-more-warnings],
+	[Maximum compiler warnings])],
+	set_more_warnings="$enableval",[
+        	if test -d $srcdir/.svn; then
+        		set_more_warnings=yes
+              	else
+                  	set_more_warnings=no
+              	fi
+        ])
 AC_MSG_CHECKING(for more warnings)
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
         AC_MSG_RESULT(yes)
@@ -1255,13 +1228,23 @@ else
         AC_MSG_RESULT(no)
 fi
 
-# Allow configure to specify RBAC keys.
 #
-AC_ARG_WITH(rbac-system-command-keys,    [  --with-rbac-system-command-keys=<keys>     RBAC system command keys])
-
-if ! test -z "$with_system_command_keys"; then
-   GDM_RBAC_SYSCMD_KEYS=$with_system_command_keys
+# Enable Debug
+#
+AC_ARG_ENABLE(debug,
+	[AC_HELP_STRING([--enable-debug],
+	[turn on debugging])],
+	, enable_debug=yes)
+if test "$enable_debug" = "yes"; then
+	DEBUG_CFLAGS="-DG_ENABLE_DEBUG"
+else
+	if test "x$enable_debug" = "xno"; then
+		DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS"
+  	else
+    		DEBUG_CFLAGS=""
+  	fi
 fi
+AC_SUBST(DEBUG_CFLAGS)
 
 # Set configuration choices.
 #
@@ -1333,102 +1316,48 @@ config/gdmprefetchlist
 config/ssh.desktop.in
 ])
 
-dnl add back when help comes back
-dnl docs/C/Makefile
-dnl omf-install/Makefile
+dnl ---------------------------------------------------------------------------
+dnl - Show summary
+dnl ---------------------------------------------------------------------------
 
-dnl <= Configuration summary =>
+echo "
+                    GDM $VERSION
+                    ============
 
-echo ""
-echo "GDM2 configuration summary:"
-echo "==========================="
-echo ""
+	prefix:                   ${prefix}
+	exec_prefix:              ${exec_prefix}
+        libdir:                   ${libdir}
+        bindir:                   ${bindir}
+        sbindir:                  ${sbindir}
+        sysconfdir:               ${sysconfdir}
+        sysconfsubdir:            ${sysconfsubdir}
+        gdmconfdir:               ${gdmconfdir}
+        dmconfdir:                ${dmconfdir}
+        localstatedir:            ${localstatedir}
+        datadir:                  ${datadir}
+	source code location:	  ${srcdir}
+	compiler:		  ${CC}
+	cflags:		          ${CFLAGS}
+        Maintainer mode:          ${USE_MAINTAINER_MODE}
 
-dnl <= CFLAGS and LDFLAGS =>
-echo "CFLAGS : $CFLAGS"
-echo "LDFLAGS : $LDFLAGS"
-echo ""
+        dbus-1 system.d dir:      ${DBUS_SYS_DIR}
+        PAM prefix:               ${PAM_PREFIX}
+        X server:                 ${X_SERVER}
+"
 
-dnl <= Prefixes =>
-echo "prefix : $prefix"
-echo "sysconf : $sysconfdir"
-echo "sysconfsubdir : $sysconfsubdir"
-echo "gdmconf dir : $gdmconfdir"
-echo "dmconf dir : $dmconfdir"
-echo "bin dir : $bindir"
-echo "sbin dir : $sbindir"
-echo "PAM prefix : $PAM_PREFIX"
-echo "data dir : $datadir"
-echo "X server : $X_SERVER"
-echo ""
-
-dnl <= TCP Wrappers support? =>
+dnl TCP Wrappers support?
 if test x"$LIBWRAP_PATH" = x ; then
-	echo "TCP Wrappers support                  : NO"
+	echo \
+"        TCP Wrappers support:     no"
 else
-	echo "TCP Wrappers support                  : YES"
+"        TCP Wrappers support:     yes"
 fi
 
-dnl <= XINERAMA =>
-if test x"$XINERAMA_SUPPORT" = xyes ; then
-	echo "Xinerama support                      : YES"
-else
-	echo "Xinerama support                      : NO"
-fi
-
-dnl <= XDMCP =>
-if test x"$XDMCP_SUPPORT" = xyes ; then
-	echo "XDMCP (remote login) support          : YES"
-else
-	echo "XDMCP (remote login) support          : NO"
-fi
-
-dnl <= Secure remote connection =>
-if test x"$enable_secureremote" = xyes ; then
-	echo "Secure remote connection              : YES"
-else
-	echo "Secure remote connection              : NO"
-fi
-
-
-dnl <= DMX =>
-if test x"$DMX_SUPPORT" = xyes ; then
-	echo "DMX (Distributed Multihead X) support : YES"
-else
-	echo "DMX (Distributed Multihead X) support : NO"
-fi
-
-dnl <= Console Helper =>
-if test "x$enable_console_helper" = "xyes"; then
-	echo "Console helper                        : YES"
-else
-	echo "Console helper                        : NO"
-fi
-
-dnl <= SELinux support =>
-if test "x$with_selinux" = "xyes" ; then
-	echo "SELinux support                       : YES"
-else
-	echo "SELinux support                       : NO"
-fi
-
-dnl <= Solaris Trusted Extensions support =>
-if test "x$found_tsol" = "xyes" ; then
-	echo "Solaris Trusted Extensions support    : YES"
-else
-	echo "Solaris Trusted Extensions support    : NO"
-fi
-
-dnl <= ConsoleKit support =>
-if test "x$use_console_kit" = "xyes" ; then
-	echo "ConsoleKit support                    : YES"
-else
-	echo "ConsoleKit support                    : NO"
-fi
-
-dnl <= Utils built =>
-echo "Extra utilities built                 : "`echo $GDMOPEN $GDMASKPASS $GDMPREFETCH $GDMSSHSESSION`
-
-echo ""
-dnl <= End of configuration summary =>
-
+echo \
+"        Xinerama support:         ${XINERAMA_SUPPORT}
+        XDMCP support:            ${XDMCP_SUPPORT}
+        DMX support:              ${DMX_SUPPORT}
+        SELinux support:          ${with_selinux}
+        Solaris TSOL support:     ${found_tsol}
+        ConsoleKit support:       ${use_console_kit}
+"

@@ -281,36 +281,7 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
 
         g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (g_getenv ("PATH")));
 
-#if 0
-        defaultpath = gdm_daemon_config_get_value_string (GDM_KEY_PATH);
-        if (ve_string_empty (g_getenv ("PATH"))) {
-                g_setenv ("PATH", defaultpath, TRUE);
-        } else if ( ! ve_string_empty (defaultpath)) {
-                gchar *temp_string = g_strconcat (g_getenv ("PATH"),
-                                                  ":", defaultpath, NULL);
-                g_setenv ("PATH", temp_string, TRUE);
-                g_free (temp_string);
-        }
-#endif
-
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
-
-#if 0
-        if ( ! ve_string_empty (d->theme_name))
-                g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
-        if (gdm_daemon_config_get_value_bool (GDM_KEY_DEBUG_GESTURES)) {
-                g_setenv ("G_DEBUG_GESTURES", "true", TRUE);
-        }
-#endif
-
-#if 0
-        if (SERVER_IS_FLEXI (d)) {
-                g_setenv ("GDM_FLEXI_SERVER", "yes", TRUE);
-        } else {
-                g_unsetenv ("GDM_FLEXI_SERVER");
-        }
-#endif
-
 
         g_hash_table_foreach (hash, (GHFunc)listify_hash, env);
         g_hash_table_destroy (hash);

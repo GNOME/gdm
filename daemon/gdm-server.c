@@ -286,55 +286,34 @@ gdm_server_resolve_command_line (GdmServer  *server,
         return TRUE;
 }
 
-/* somewhat safer rename (safer if the log dir is unsafe), may in fact
-   lose the file though, it guarantees that a is gone, but not that
-   b exists */
-static void
-safer_rename (const char *a, const char *b)
-{
-        errno = 0;
-        if (link (a, b) < 0) {
-                if (errno == EEXIST) {
-                        VE_IGNORE_EINTR (g_unlink (a));
-                        return;
-                }
-                VE_IGNORE_EINTR (g_unlink (b));
-                /* likely this system doesn't support hard links */
-                g_rename (a, b);
-                VE_IGNORE_EINTR (g_unlink (a));
-                return;
-        }
-        VE_IGNORE_EINTR (g_unlink (a));
-}
-
 static void
 rotate_logs (GdmServer *server)
 {
-        const char *dname;
-        const char *logdir;
+        int   n_copies;
+        int   i;
+        char *filename;
+        char *path;
 
-        dname = server->priv->display_name;
-        logdir = server->priv->log_dir;
+        n_copies = 5;
 
-        /* I'm too lazy to write a loop */
-        char *fname4 = gdm_make_filename (logdir, dname, ".log.4");
-        char *fname3 = gdm_make_filename (logdir, dname, ".log.3");
-        char *fname2 = gdm_make_filename (logdir, dname, ".log.2");
-        char *fname1 = gdm_make_filename (logdir, dname, ".log.1");
-        char *fname = gdm_make_filename (logdir, dname, ".log");
+        filename = g_strdup_printf ("%s.log", server->priv->display_name);
+        path = g_build_filename (server->priv->log_dir, filename, NULL);
+        g_free (filename);
 
-        /* Rotate the logs (keep 4 last) */
-        VE_IGNORE_EINTR (g_unlink (fname4));
-        safer_rename (fname3, fname4);
-        safer_rename (fname2, fname3);
-        safer_rename (fname1, fname2);
-        safer_rename (fname, fname1);
+        for (i = n_copies - 1; i > 0; i--) {
+                char *name_n;
+                char *name_n1;
 
-        g_free (fname4);
-        g_free (fname3);
-        g_free (fname2);
-        g_free (fname1);
-        g_free (fname);
+                name_n = g_strdup_printf ("%s.%d", path, i);
+                name_n1 = g_strdup_printf ("%s.%d", path, i - 1);
+                g_unlink (name_n);
+                g_rename (name_n1, name_n);
+
+                g_free (name_n1);
+                g_free (name_n);
+        }
+
+        g_unlink (path);
 }
 
 static void
@@ -396,14 +375,14 @@ server_child_setup (GdmServer *server)
         int              logfd;
         struct sigaction ign_signal;
         sigset_t         mask;
+        char            *temp;
 
         /* Rotate the X server logs */
         rotate_logs (server);
 
         /* Log all output from spawned programs to a file */
-        logfile = gdm_make_filename (server->priv->log_dir,
-                                     server->priv->display_name,
-                                     ".log");
+        temp = g_strconcat (server->priv->display_name, ".log", NULL);
+        logfile = g_build_filename (server->priv->log_dir, temp, NULL);
         g_debug ("Opening logfile for server %s", logfile);
 
         VE_IGNORE_EINTR (g_unlink (logfile));
@@ -651,34 +630,10 @@ gdm_server_spawn (GdmServer  *server,
 gboolean
 gdm_server_start (GdmServer *server)
 {
-        char *vtarg = NULL;
-        int vtfd = -1;
-        int vt = -1;
         gboolean res;
 
-#if 0
-        if (d->type == TYPE_XDMCP_PROXY &&
-            ! connect_to_parent (d))
-                return FALSE;
-#endif
-
-#if 0
-        if (d->type == TYPE_STATIC ||
-            d->type == TYPE_FLEXI) {
-                vtarg = gdm_get_empty_vt_argument (&vtfd, &vt);
-        }
-#endif
-
         /* fork X server process */
-        res = gdm_server_spawn (server, vtarg);
-
-#if 0
-        /* If we were holding a vt open for the server, close it now as it has
-         * already taken the bait. */
-        if (vtfd > 0) {
-                VE_IGNORE_EINTR (close (vtfd));
-        }
-#endif
+        res = gdm_server_spawn (server, NULL);
 
         return res;
 }

@@ -159,6 +159,7 @@ get_script_environment (GdmProductSlave *slave,
         char          *display_hostname;
         char          *display_x11_authority_file;
         gboolean       display_is_local;
+        char          *temp;
 
         g_object_get (slave,
                       "display-name", &display_name,
@@ -200,9 +201,10 @@ get_script_environment (GdmProductSlave *slave,
 #endif
 
         /* some env for use with the Pre and Post scripts */
-        x_servers_file = gdm_make_filename (AUTHDIR,
-                                            display_name,
-                                            ".Xservers");
+        temp = g_strconcat (display_name, ".Xservers", NULL);
+        x_servers_file = g_build_filename (AUTHDIR, temp, NULL);
+        g_free (temp);
+
         g_hash_table_insert (hash, g_strdup ("X_SERVERS"), x_servers_file);
 
         if (! display_is_local) {
@@ -217,10 +219,6 @@ get_script_environment (GdmProductSlave *slave,
 
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
 
-#if 0
-        if ( ! ve_string_empty (d->theme_name))
-                g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
-#endif
         g_hash_table_remove (hash, "MAIL");
 
 

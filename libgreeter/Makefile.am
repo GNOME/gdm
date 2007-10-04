@@ -5,12 +5,6 @@ noinst_LTLIBRARIES = libgreeter.la
 libgreeter_la_SOURCES = 		\
 	gdm-greeter.c			\
 	gdm-greeter.h			\
-	gdmwm.c				\
-	gdmwm.h				\
-	gdmsession.c			\
-	gdmsession.h			\
-	gdmlanguages.c			\
-	gdmlanguages.h			\
 	$(NULL)
 
 libgreeter_la_CPPFLAGS = 		\

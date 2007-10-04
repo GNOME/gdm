@@ -2,6 +2,7 @@
  *
  * (c) 2000 Eazel, Inc.
  * (c) 2001,2002 George Lebl
+ * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,16 +29,9 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/socket.h>
-#include <locale.h>
-#include <netdb.h>
-
-#include "ve-signal.h"
 
 G_BEGIN_DECLS
 
-#define        ve_string_empty(x) ((x)==NULL||(x)[0]=='\0')
-#define        ve_sure_string(x) ((x)!=NULL?(x):"")
 #define        VE_IGNORE_EINTR(expr) \
         do {                         \
                 errno = 0;           \
@@ -78,9 +72,6 @@ G_BEGIN_DECLS
 /* like fopen with "w" but unlinks and uses O_EXCL */
 FILE *         gdm_safe_fopen_w  (const char *file,
                                   mode_t      perm);
-/* like fopen with "a+" and uses O_EXCL and O_NOFOLLOW */
-FILE *         gdm_safe_fopen_ap (const char *file,
-                                  mode_t      perm);
 
 /* This is for race free forks */
 void           gdm_sigchld_block_push (void);
@@ -90,48 +81,7 @@ void           gdm_sigterm_block_pop (void);
 void           gdm_sigusr2_block_push (void);
 void           gdm_sigusr2_block_pop (void);
 
-void           gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
-int            gdm_fdgetc     (int fd);
-char          *gdm_fdgets   (int fd);
-void           gdm_fd_set_close_on_exec  (int fd);
-
-
-void           gdm_signal_ignore (int signal);
-void           gdm_signal_default (int signal);
-
-void           gdm_close_all_descriptors (int from, int except, int except2);
-
-int            gdm_open_dev_null (mode_t mode);
-
-/* somewhat like g_build_filename, but does somet hing like
- * <dir> "/" <name> <extension>
- */
-char *         gdm_make_filename (const char *dir,
-                                  const char *name,
-                                  const char *extension);
-
 void           ve_clearenv (void);
-char *         ve_first_word (const char *s);
-
-/* Gets the first existing command out of a list separated by semicolons */
-char *         ve_get_first_working_command (const char *list,
-                                             gboolean only_existance);
-
-/* These two functions will ALWAYS return a non-NULL string,
- * if there is an error, they return the unconverted string */
-char *         ve_locale_to_utf8 (const char *str);
-char *         ve_locale_from_utf8 (const char *str);
-
-/* These two functions will ALWAYS return a non-NULL string,
- * if there is an error, they return the unconverted string */
-char *         ve_filename_to_utf8 (const char *str);
-char *         ve_filename_from_utf8 (const char *str);
-
-/* function which doesn't stop on signals */
-pid_t          ve_waitpid_no_signal (pid_t pid, int *status, int options);
-
-/* Testing for existance of a certain locale */
-gboolean       ve_locale_exists (const char *loc);
 
 gboolean       gdm_generate_random_bytes (GString *str,
                                           int      n_bytes);

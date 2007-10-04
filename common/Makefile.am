@@ -70,8 +70,6 @@ libgdmcommon_la_SOURCES =	\
 	gdm-md5.c		\
 	gdm-signal-handler.h	\
 	gdm-signal-handler.c	\
-	ve-signal.h		\
-	ve-signal.c		\
 	$(NULL)
 
 libgdmcommon_la_CPPFLAGS = 		\

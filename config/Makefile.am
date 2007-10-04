@@ -1,3 +1,5 @@
+NULL =
+
 pixmapdir = $(datadir)/pixmaps
 confdir = $(gdmconfdir)
 gdmlocaledir = $(gdmconfdir)
@@ -11,30 +13,45 @@ predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
 # logdir is set by configure.ac
 
-noinst_DATA = gdm.conf
+noinst_DATA = \
+	gdm.conf		\
+	$(NULL)
 
-DESKTOP_FILES = default.desktop @SSHDESKTOP@
+DESKTOP_FILES = \
+	default.desktop		\
+	$(NULL)
 
-EXTRA_DIST = \
-	gdm.conf.in \
-	gdm.conf-custom.in \
-	$(DESKTOP_FILES) \
-	default.desktop.in \
-	ssh.desktop.in.in \
-	Xsession.in \
-	gdm \
-	gdm-autologin \
-	locale.alias \
-	Init.in \
-	PreSession.in \
-	PostSession.in \
-	PostLogin \
-	XKeepsCrashing \
-	gettextfoo.h \
-	gdmprefetchlist.in \
-	extract-shell.sh
+EXTRA_DIST = 			\
+	gdm.conf.in 		\
+	gdm.conf-custom.in 	\
+	$(DESKTOP_FILES) 	\
+	default.desktop.in 	\
+	ssh.desktop.in.in 	\
+	Xsession.in 		\
+	gdm 			\
+	gdm-autologin 		\
+	locale.alias 		\
+	Init.in 		\
+	PreSession.in 		\
+	PostSession.in 		\
+	PostLogin 		\
+	XKeepsCrashing 		\
+	gettextfoo.h 		\
+	gdmprefetchlist.in 	\
+	extract-shell.sh	\
+	$(NULL)
 
-CLEANFILES = Xsession gdm.conf gdm.conf-custom default.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
+CLEANFILES = 			\
+	Xsession		\
+	gdm.conf		\
+	gdm.conf-custom		\
+	default.desktop		\
+	ssh.desktop		\
+	Init			\
+	PreSession		\
+	PostSession		\
+	gdmprefetchlist		\
+	$(NULL)
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \

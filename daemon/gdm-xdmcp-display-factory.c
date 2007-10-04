@@ -548,6 +548,20 @@ setup_multicast (GdmXdmcpDisplayFactory *factory)
 #endif /* ENABLE_IPV6 */
 }
 
+fd_set_close_on_exec (int fd)
+{
+        int flags;
+
+        flags = fcntl (fd, F_GETFD, 0);
+        if (flags < 0) {
+                return;
+        }
+
+        flags |= FD_CLOEXEC;
+
+        fcntl (fd, F_SETFD, flags);
+}
+
 static gboolean
 open_port (GdmXdmcpDisplayFactory *factory)
 {
@@ -569,7 +583,7 @@ open_port (GdmXdmcpDisplayFactory *factory)
                 return FALSE;
         }
 
-        gdm_fd_set_close_on_exec (factory->priv->socket_fd);
+        fd_set_close_on_exec (factory->priv->socket_fd);
 
         if (factory->priv->use_multicast) {
                 setup_multicast (factory);
@@ -1987,7 +2001,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                          factory->priv->max_pending_displays,
                          factory->priv->num_sessions,
                          factory->priv->max_displays,
-                         ve_sure_string (s));
+                         s != NULL ? s : "");
                 g_free (s);
         }
 
@@ -2279,7 +2293,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
                 g_debug ("gdm_xdmcp-handle_manage: Got display=%d, SessionID=%ld Class=%s from %s",
                          (int)clnt_dspnum,
                          (long)clnt_sessid,
-                         ve_sure_string (s),
+                         s != NULL ? s : "",
                          host);
 
                 g_free (s);
