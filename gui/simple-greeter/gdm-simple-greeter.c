@@ -456,21 +456,22 @@ on_user_activated (GdmUserChooserWidget *user_chooser,
 #define INVISIBLE_CHAR_BULLET        0x2022
 #define INVISIBLE_CHAR_NONE          0
 
-static void
-create_greeter (GdmSimpleGreeter *greeter)
+static gboolean
+launch_compiz (GdmSimpleGreeter *greeter)
 {
-        GError    *error;
-        GtkWidget *dialog;
-        GtkWidget *entry;
-        GtkWidget *button;
-        GtkWidget *box;
+        GError  *error;
+        gboolean ret;
 
-#if 0
+        g_debug ("Launching compiz");
+
+        ret = FALSE;
+
         error = NULL;
         g_spawn_command_line_async ("gtk-window-decorator --replace", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
+                goto out;
         }
 
         error = NULL;
@@ -478,15 +479,52 @@ create_greeter (GdmSimpleGreeter *greeter)
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
+                goto out;
         }
-#else
+
+        ret = TRUE;
+
+        /* FIXME: should try to detect if it actually works */
+
+ out:
+        return ret;
+}
+
+static gboolean
+launch_metacity (GdmSimpleGreeter *greeter)
+{
+        GError  *error;
+        gboolean ret;
+
+        g_debug ("Launching metacity");
+
+        ret = FALSE;
+
         error = NULL;
         g_spawn_command_line_async ("metacity --replace", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
+                goto out;
         }
-#endif
+
+        ret = TRUE;
+
+ out:
+        return ret;
+}
+
+static void
+create_greeter (GdmSimpleGreeter *greeter)
+{
+        GtkWidget *dialog;
+        GtkWidget *entry;
+        GtkWidget *button;
+        GtkWidget *box;
+
+        if (! launch_compiz (greeter)) {
+                launch_metacity (greeter);
+        }
 
         greeter->priv->user_chooser = gdm_user_chooser_widget_new ();
         g_signal_connect (greeter->priv->user_chooser,
