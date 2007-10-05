@@ -1,3 +1,20 @@
+2007-10-05  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/simple-greeter/gdm-greeter-background.c:
+	(cairo_surface_get_width), (cairo_surface_get_height),
+	(update_surface), (load_image), (update_background),
+	(gdm_greeter_background_move_resize_window), (get_outside_region),
+	(get_monitor_geometry), (update_geometry),
+	(gdm_greeter_background_real_size_request),
+	(gdm_greeter_background_real_expose),
+	(gdm_greeter_background_real_configure),
+	(gdm_greeter_background_class_init):
+	* gui/simple-greeter/gdm-greeter-panel.c: (gdm_greeter_panel_init):
+	* gui/simple-greeter/gdm-simple-greeter.c: (create_greeter):
+	Make the background window sizing more robust.  And a little
+	more efficient.  Also add some tranparency to the windows
+	when running under a compositor.
+
 2007-10-04  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/main.c: (set_effective_user), (set_effective_group),
@@ -5,8 +22,6 @@
 	Set euid to 0 before setting egid so it can succeed.
 
 2007-10-04  William Jon McCann  <mccann@jhu.edu>
-
-	reviewed by: <delete if not using a buddy>
 
 	* AUTHORS:
 	Add myself.

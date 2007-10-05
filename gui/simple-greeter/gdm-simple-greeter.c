@@ -532,6 +532,8 @@ create_greeter (GdmSimpleGreeter *greeter)
                 gtk_entry_set_invisible_char (GTK_ENTRY (entry), invisible_char);
         }
 
+        gtk_window_set_opacity (GTK_WINDOW (dialog), 0.75);
+
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_deletable (GTK_WINDOW (dialog), FALSE);
         gtk_window_set_decorated (GTK_WINDOW (dialog), FALSE);

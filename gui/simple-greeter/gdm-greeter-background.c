@@ -30,6 +30,11 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <cairo.h>
+#if CAIRO_HAS_XLIB_SURFACE
+#include <cairo-xlib.h>
+#endif
+
 #include <gconf/gconf-client.h>
 
 #include "gdm-greeter-background.h"
@@ -53,8 +58,8 @@ typedef enum {
 
 struct GdmGreeterBackgroundPrivate
 {
-        int                      window_width;
-        int                      window_height;
+        int                      monitor;
+        GdkRectangle             geometry;
 
         gboolean                 background_enabled;
         char                    *image_filename;
@@ -309,6 +314,96 @@ scale_pixbuf (GdkPixbuf *pixbuf,
         }
 }
 
+static int
+cairo_surface_get_width (cairo_surface_t *surface)
+{
+        cairo_surface_type_t surf_type;
+        int                  w;
+
+        surf_type = cairo_surface_get_type (surface);
+
+        w = 0;
+
+        switch (surf_type) {
+#if CAIRO_HAS_XLIB_SURFACE
+        case CAIRO_SURFACE_TYPE_XLIB:
+                w = cairo_xlib_surface_get_width (surface);
+                break;
+#endif
+        case CAIRO_SURFACE_TYPE_IMAGE:
+                w = cairo_image_surface_get_width (surface);
+                break;
+        default:
+                g_warning ("Unknown surface type: %d", surf_type);
+                break;
+        }
+
+        return w;
+}
+
+static int
+cairo_surface_get_height (cairo_surface_t *surface)
+{
+        cairo_surface_type_t surf_type;
+        int                  w;
+
+        surf_type = cairo_surface_get_type (surface);
+
+        w = 0;
+
+        g_debug ("Surface type %d", surf_type);
+        switch (surf_type) {
+#if CAIRO_HAS_XLIB_SURFACE
+        case CAIRO_SURFACE_TYPE_XLIB:
+                w = cairo_xlib_surface_get_height (surface);
+                break;
+#endif
+        case CAIRO_SURFACE_TYPE_IMAGE:
+                w = cairo_image_surface_get_height (surface);
+                break;
+        default:
+                g_warning ("Unknown surface type: %d", surf_type);
+                break;
+        }
+
+        return w;
+}
+
+static void
+update_surface (GdmGreeterBackground *background)
+{
+
+        g_assert (GTK_WIDGET_REALIZED (GTK_WIDGET (background)));
+
+        if (background->priv->surf == NULL
+            || cairo_surface_get_width (background->priv->surf) != background->priv->geometry.width
+            || cairo_surface_get_height (background->priv->surf) != background->priv->geometry.height) {
+                cairo_t *cr;
+
+                if (background->priv->surf != NULL) {
+                        g_debug ("Destroying existing surface w:%d h:%d",
+                                 cairo_image_surface_get_width (background->priv->surf),
+                                 cairo_image_surface_get_height (background->priv->surf));
+                        cairo_surface_destroy (background->priv->surf);
+                }
+
+                g_debug ("Creating a new surface for the background w:%d h:%d",
+                         background->priv->geometry.width,
+                         background->priv->geometry.height);
+
+                cr = gdk_cairo_create (GTK_WIDGET (background)->window);
+                background->priv->surf = cairo_surface_create_similar (cairo_get_target (cr),
+                                                                       CAIRO_CONTENT_COLOR,
+                                                                       background->priv->geometry.width,
+                                                                       background->priv->geometry.height);
+                g_debug ("Created surface w:%d h:%d",
+                         cairo_surface_get_width (background->priv->surf),
+                         cairo_surface_get_height (background->priv->surf));
+                cairo_destroy (cr);
+        }
+
+}
+
 static void
 load_image (GdmGreeterBackground *background)
 {
@@ -316,14 +411,21 @@ load_image (GdmGreeterBackground *background)
         GdkPixbuf       *scaled;
         cairo_t         *cr;
         int              pw, ph;
-        cairo_surface_t *image;
+        GError          *error;
 
-        pixbuf = gdk_pixbuf_new_from_file (background->priv->image_filename, NULL);
+        g_debug ("Loading background from %s", background->priv->image_filename);
+        error = NULL;
+        pixbuf = gdk_pixbuf_new_from_file (background->priv->image_filename, &error);
         if (pixbuf == NULL) {
+                g_warning ("Unable to load image: %s", error->message);
+                g_error_free (error);
                 return;
         }
 
-        scaled = scale_pixbuf (pixbuf, background->priv->window_width, background->priv->window_height, TRUE);
+        scaled = scale_pixbuf (pixbuf,
+                               background->priv->geometry.width,
+                               background->priv->geometry.height,
+                               TRUE);
         if (scaled != NULL) {
                 g_object_unref (pixbuf);
                 pixbuf = scaled;
@@ -336,14 +438,15 @@ load_image (GdmGreeterBackground *background)
                 cairo_pattern_destroy (background->priv->pat);
         }
 
-        image = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
-                                            pw,
-                                            ph);
+        update_surface (background);
+
+        g_assert (background->priv->surf != NULL);
 
         cr = cairo_create (background->priv->surf);
 
         /* XXX Handle out of memory? */
         gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
+
         background->priv->pat = cairo_pattern_reference (cairo_get_source (cr));
         background->priv->pat_width = pw;
         background->priv->pat_height = ph;
@@ -357,17 +460,19 @@ update_background (GdmGreeterBackground *background)
 {
         cairo_t         *cr;
 
-        if (background->priv->window_width <= 0
-            || background->priv->window_height <= 0) {
+        if (background->priv->geometry.width <= 0
+            || background->priv->geometry.height <= 0) {
                 /* we haven't gotten a configure yet - so don't bother */
                 return;
         }
 
         cr = gdk_cairo_create (GTK_WIDGET (background)->window);
 
+        g_debug ("Clearing background");
+
         /* always clear to black */
         cairo_set_source_rgb (cr, 0, 0, 0);
-        cairo_rectangle (cr, 0, 0, background->priv->window_width, background->priv->window_height);
+        cairo_rectangle (cr, 0, 0, background->priv->geometry.width, background->priv->geometry.height);
         cairo_fill (cr);
 
         if (background->priv->image_filename != NULL
@@ -381,18 +486,23 @@ update_background (GdmGreeterBackground *background)
                 if (background->priv->image_placement == BACKGROUND_SCALED) {
                         double sx, sy;
 
-                        sx = (double)background->priv->window_width / background->priv->pat_width;
-                        sy = (double)background->priv->window_height / background->priv->pat_height;
+                        sx = (double)background->priv->geometry.width / background->priv->pat_width;
+                        sy = (double)background->priv->geometry.height / background->priv->pat_height;
                         cairo_scale (cr, sx, sy);
-                        g_debug ("scaling w:%d sx:%f sy:%f", background->priv->window_width, sx, sy);
+                        if (cairo_status (cr) != CAIRO_STATUS_SUCCESS) {
+                                g_warning ("couldn't scale background: %s", cairo_status_to_string (cairo_status (cr)));
+                        }
+
+                        g_debug ("scaling w:%d sx:%f sy:%f", background->priv->geometry.width, sx, sy);
 
                         cairo_pattern_set_extend (background->priv->pat, CAIRO_EXTEND_NONE);
+
                 } else if (background->priv->image_placement == BACKGROUND_SCALED_ASPECT) {
                         double sx, sy, s;
                         double dx, dy;
 
-                        sx = (double)background->priv->window_width / background->priv->pat_width;
-                        sy = (double)background->priv->window_height / background->priv->pat_height;
+                        sx = (double)background->priv->geometry.width / background->priv->pat_width;
+                        sy = (double)background->priv->geometry.height / background->priv->pat_height;
 
                         /* scale up long dimension */
                         s = MIN (sx, sy);
@@ -401,12 +511,12 @@ update_background (GdmGreeterBackground *background)
                         dx = dy = 0;
                         /* now center short dimension */
                         if (sy > sx) {
-                                dy = (double)background->priv->window_height - background->priv->pat_height * s;
+                                dy = (double)background->priv->geometry.height - background->priv->pat_height * s;
                         } else {
-                                dx = (double)background->priv->window_width - background->priv->pat_width * s;
+                                dx = (double)background->priv->geometry.width - background->priv->pat_width * s;
                         }
                         cairo_translate (cr, dx / 2, dy / 2);
-                        g_debug ("aspect scaling w:%d scale:%f dx:%f dy:%f", background->priv->window_width, s, dx, dy);
+                        g_debug ("aspect scaling w:%d scale:%f dx:%f dy:%f", background->priv->geometry.width, s, dx, dy);
                         cairo_pattern_set_extend (background->priv->pat, CAIRO_EXTEND_NONE);
 
                 } else if (background->priv->image_placement == BACKGROUND_TILED) {
@@ -415,25 +525,32 @@ update_background (GdmGreeterBackground *background)
                         /* centered */
                         double dx, dy;
 
-                        dx = (double)background->priv->window_width - background->priv->pat_width;
-                        dy = (double)background->priv->window_height - background->priv->pat_height;
+                        dx = (double)background->priv->geometry.width - background->priv->pat_width;
+                        dy = (double)background->priv->geometry.height - background->priv->pat_height;
                         cairo_translate (cr, dx / 2, dy / 2);
                         g_debug ("centering dx:%f dy:%f", dx, dy);
 
                         cairo_pattern_set_extend (background->priv->pat, CAIRO_EXTEND_NONE);
                 }
 
+                g_debug ("Painting background with alpha %f", background->priv->image_alpha);
                 cairo_set_source (cr, background->priv->pat);
+                if (cairo_status (cr) != CAIRO_STATUS_SUCCESS) {
+                        g_warning ("couldn't set pattern source: %s", cairo_status_to_string (cairo_status (cr)));
+                }
                 cairo_paint_with_alpha (cr, background->priv->image_alpha);
+                if (cairo_status (cr) != CAIRO_STATUS_SUCCESS) {
+                        g_warning ("couldn't paint background: %s", cairo_status_to_string (cairo_status (cr)));
+                }
 
         } else if (background->priv->color_shading != COLOR_SHADING_SOLID) {
                 cairo_pattern_t *pat;
                 g_debug ("color gradient");
 
                 if (background->priv->color_shading == COLOR_SHADING_VERTICAL) {
-                        pat = cairo_pattern_create_linear (0.0, 0.0,  0.0, background->priv->window_height);
+                        pat = cairo_pattern_create_linear (0.0, 0.0,  0.0, background->priv->geometry.height);
                 } else {
-                        pat = cairo_pattern_create_linear (0.0, 0.0,  background->priv->window_width, 0.0);
+                        pat = cairo_pattern_create_linear (0.0, 0.0,  background->priv->geometry.width, 0.0);
                 }
 
                 cairo_pattern_add_color_stop_rgba (pat,
@@ -451,7 +568,7 @@ update_background (GdmGreeterBackground *background)
 
                 cairo_set_source (cr, pat);
 
-                cairo_rectangle (cr, 0, 0, background->priv->window_width, background->priv->window_height);
+                cairo_rectangle (cr, 0, 0, background->priv->geometry.width, background->priv->geometry.height);
                 cairo_fill (cr);
                 cairo_pattern_destroy (pat);
         } else {
@@ -461,7 +578,7 @@ update_background (GdmGreeterBackground *background)
                                        background->priv->color1.green / 65535.0,
                                        background->priv->color1.blue / 65535.0,
                                        1.0);
-                cairo_rectangle (cr, 0, 0, background->priv->window_width, background->priv->window_height);
+                cairo_rectangle (cr, 0, 0, background->priv->geometry.width, background->priv->geometry.height);
                 cairo_fill (cr);
         }
 
@@ -538,38 +655,138 @@ gdm_greeter_background_real_unrealize (GtkWidget *widget)
                 GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->unrealize (widget);
         }
 }
-static gboolean
-gdm_greeter_background_real_configure (GtkWidget         *widget,
-                                       GdkEventConfigure *event)
+
+/* copied from panel-toplevel.c */
+static void
+gdm_greeter_background_move_resize_window (GdmGreeterBackground *background,
+                                      gboolean         move,
+                                      gboolean         resize)
 {
-        gboolean              handled = FALSE;
-        GdmGreeterBackground *background = GDM_GREETER_BACKGROUND (widget);
-        cairo_t              *cr;
+        GtkWidget *widget;
 
-        g_debug ("configure w: %d h: %d", event->width, event->height);
-        background->priv->window_width = event->width;
-        background->priv->window_height = event->height;
+        widget = GTK_WIDGET (background);
 
-        if (background->priv->surf != NULL) {
-                cairo_surface_destroy (background->priv->surf);
+        g_assert (GTK_WIDGET_REALIZED (widget));
+
+        if (move && resize) {
+                gdk_window_move_resize (widget->window,
+                                        background->priv->geometry.x,
+                                        background->priv->geometry.y,
+                                        background->priv->geometry.width,
+                                        background->priv->geometry.height);
+        } else if (move) {
+                gdk_window_move (widget->window,
+                                 background->priv->geometry.x,
+                                 background->priv->geometry.y);
+        } else if (resize) {
+                gdk_window_resize (widget->window,
+                                   background->priv->geometry.width,
+                                   background->priv->geometry.height);
+        }
+}
+
+static GdkRegion *
+get_outside_region (GdmGreeterBackground *background)
+{
+        int        i;
+        GdkRegion *region;
+
+        region = gdk_region_new ();
+        for (i = 0; i < background->priv->monitor; i++) {
+                GdkRectangle geometry;
+
+                gdk_screen_get_monitor_geometry (GTK_WINDOW (background)->screen,
+                                                 i,
+                                                 &geometry);
+                gdk_region_union_with_rect (region, &geometry);
         }
 
-        cr = gdk_cairo_create (widget->window);
-        background->priv->surf = cairo_surface_create_similar (cairo_get_target (cr),
-                                                               CAIRO_CONTENT_COLOR,
-                                                               background->priv->window_width,
-                                                               background->priv->window_height);
-        cairo_destroy (cr);
+        return region;
+}
 
+static void
+get_monitor_geometry (GdmGreeterBackground *background,
+                      GdkRectangle    *geometry)
+{
+        GdkRegion   *outside_region;
+        GdkRegion   *monitor_region;
+        GdkRectangle geom;
 
-        /* schedule a redraw */
-        gtk_widget_queue_draw (widget);
+        outside_region = get_outside_region (background);
 
-        if (GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->configure_event) {
-                handled = GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->configure_event (widget, event);
+        gdk_screen_get_monitor_geometry (GTK_WINDOW (background)->screen,
+                                         background->priv->monitor,
+                                         &geom);
+        monitor_region = gdk_region_rectangle (&geom);
+        gdk_region_subtract (monitor_region, outside_region);
+        gdk_region_destroy (outside_region);
+
+        gdk_region_get_clipbox (monitor_region, geometry);
+        gdk_region_destroy (monitor_region);
+}
+
+static void
+update_geometry (GdmGreeterBackground *background,
+                 GtkRequisition  *requisition)
+{
+        GdkRectangle geometry;
+        int          height;
+
+        get_monitor_geometry (background, &geometry);
+
+        height = requisition->height;
+        background->priv->geometry.width = geometry.width;
+        background->priv->geometry.height = geometry.height;
+
+        background->priv->geometry.x = geometry.x;
+        background->priv->geometry.y = geometry.y;
+
+        g_debug ("Setting background geometry x:%d y:%d w:%d h:%d",
+                 background->priv->geometry.x,
+                 background->priv->geometry.y,
+                 background->priv->geometry.width,
+                 background->priv->geometry.height);
+}
+
+static void
+gdm_greeter_background_real_size_request (GtkWidget      *widget,
+                                          GtkRequisition *requisition)
+{
+        GdmGreeterBackground *background;
+        GtkBin               *bin;
+        GdkRectangle          old_geometry;
+        int                   position_changed = FALSE;
+        int                   size_changed = FALSE;
+
+        background = GDM_GREETER_BACKGROUND (widget);
+        bin = GTK_BIN (widget);
+
+        if (bin->child && GTK_WIDGET_VISIBLE (bin->child)) {
+                gtk_widget_size_request (bin->child, requisition);
         }
 
-        return handled;
+        old_geometry = background->priv->geometry;
+
+        update_geometry (background, requisition);
+
+        requisition->width  = background->priv->geometry.width;
+        requisition->height = background->priv->geometry.height;
+
+        if (! GTK_WIDGET_REALIZED (widget)) {
+                return;
+        }
+
+        if (old_geometry.width  != background->priv->geometry.width ||
+            old_geometry.height != background->priv->geometry.height) {
+                size_changed = TRUE;
+        }
+
+        if (old_geometry.x != background->priv->geometry.x ||
+            old_geometry.y != background->priv->geometry.y) {
+                position_changed = TRUE;
+        }
+
+        gdm_greeter_background_move_resize_window (background, position_changed, size_changed);
 }
 
 static gboolean
@@ -578,10 +795,28 @@ gdm_greeter_background_real_expose (GtkWidget      *widget,
 {
         gboolean handled = FALSE;
 
-        update_background (GDM_GREETER_BACKGROUND (widget));
+        g_debug ("Exposing the background");
 
         if (GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->expose_event) {
                 handled = GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->expose_event (widget, event);
+        }
+
+        update_background (GDM_GREETER_BACKGROUND (widget));
+
+        return handled;
+}
+
+static gboolean
+gdm_greeter_background_real_configure (GtkWidget         *widget,
+                                       GdkEventConfigure *event)
+{
+        gboolean handled;
+
+        handled = FALSE;
+
+        g_debug ("Background configure w: %d h: %d", event->width, event->height);
+        if (GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->configure_event) {
+                handled = GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->configure_event (widget, event);
         }
 
         return handled;
@@ -604,6 +839,7 @@ gdm_greeter_background_class_init (GdmGreeterBackgroundClass *klass)
         widget_class->unrealize = gdm_greeter_background_real_unrealize;
         widget_class->expose_event = gdm_greeter_background_real_expose;
         widget_class->configure_event = gdm_greeter_background_real_configure;
+        widget_class->size_request = gdm_greeter_background_real_size_request;
 
         g_type_class_add_private (klass, sizeof (GdmGreeterBackgroundPrivate));
 }

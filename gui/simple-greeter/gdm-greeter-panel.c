@@ -376,7 +376,7 @@ static void
 gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
         GtkWidget *label;
-        GtkWidget *tray;
+        NaTray    *tray;
 
         panel->priv = GDM_GREETER_PANEL_GET_PRIVATE (panel);
 
@@ -392,6 +392,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         gtk_window_set_keep_above (GTK_WINDOW (panel), TRUE);
         gtk_window_set_type_hint (GTK_WINDOW (panel), GDK_WINDOW_TYPE_HINT_DOCK);
+        gtk_window_set_opacity (GTK_WINDOW (panel), 0.75);
 
         panel->priv->hbox = gtk_hbox_new (FALSE, 12);
         gtk_widget_show (panel->priv->hbox);
@@ -403,8 +404,8 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
                                        GTK_ORIENTATION_HORIZONTAL);
-        gtk_box_pack_end (GTK_BOX (panel->priv->hbox), tray, FALSE, FALSE, 6);
-        gtk_widget_show (tray);
+        gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (tray), FALSE, FALSE, 6);
+        gtk_widget_show (GTK_WIDGET (tray));
 
 }
 
