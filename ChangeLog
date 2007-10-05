@@ -1,5 +1,11 @@
 2007-10-04  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/main.c: (set_effective_user), (set_effective_group),
+	(set_effective_user_group), (gdm_daemon_check_permissions):
+	Set euid to 0 before setting egid so it can succeed.
+
+2007-10-04  William Jon McCann  <mccann@jhu.edu>
+
 	reviewed by: <delete if not using a buddy>
 
 	* AUTHORS:

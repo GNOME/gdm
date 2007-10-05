@@ -358,8 +358,7 @@ check_servauthdir (const char  *auth_path,
 }
 
 static void
-set_effective_user_group (uid_t uid,
-                          gid_t gid)
+set_effective_user (uid_t uid)
 {
         int res;
 
@@ -374,6 +373,12 @@ set_effective_user_group (uid_t uid,
                          (int)uid,
                          g_strerror (errno));
         }
+}
+
+static void
+set_effective_group (gid_t gid)
+{
+        int res;
 
         res = 0;
         if (getegid () != gid) {
@@ -388,12 +393,22 @@ set_effective_user_group (uid_t uid,
 }
 
 static void
+set_effective_user_group (uid_t uid,
+                          gid_t gid)
+{
+        set_effective_user (0);
+        set_effective_group (gid);
+        if (uid != 0) {
+                set_effective_user (0);
+        }
+}
+
+static void
 gdm_daemon_check_permissions (uid_t uid,
                               gid_t gid)
 {
         struct stat statbuf;
         const char *auth_path;
-        int         res;
 
         auth_path = LOGDIR;
 
