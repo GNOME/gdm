@@ -111,6 +111,7 @@ gdm_simple_slave_LDFLAGS =		\
 
 gdm_simple_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
+	$(EXTRA_DAEMON_LIBS)                    \
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
@@ -165,6 +166,7 @@ gdm_product_slave_LDFLAGS =		\
 
 gdm_product_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
+	$(EXTRA_DAEMON_LIBS)                    \
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
@@ -240,6 +242,8 @@ gdm_binary_LDFLAGS =				\
 
 gdm_binary_LDADD = \
 	$(DAEMON_LIBS)				\
+	$(XDMCP_LIBS)                           \
+	$(LIBWRAP_LIBS)                         \
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 

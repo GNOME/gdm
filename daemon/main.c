@@ -31,6 +31,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <wait.h>
+#include <locale.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>

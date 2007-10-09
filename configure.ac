@@ -509,14 +509,14 @@ if test x$with_xdmcp != xno ; then
 		     	XDMCP_SUPPORT=yes],,[$X_LIBS -lX11 $X_EXTRA_LIBS])
 	],,[#include <X11/Xproto.h>])
 
-	if test x$with_xdmcp = xyes -a x$XDMCP_SUPPORT = x ; then
+	if test x$with_xdmcp = xyes -a "x$XDMCP_SUPPORT" = "x" ; then
 		AC_MSG_ERROR(XDMCP support requested but XDMCP libraries not found)
 	fi
 	CPPFLAGS="$xdmcp_save_CPPFLAGS"
 fi
 AC_SUBST(XDMCP_LIBS)
 
-if test x$XDMCP_SUPPORT = xyes ; then
+if test "x$XDMCP_SUPPORT" = "xyes" ; then
 	AM_CONDITIONAL(XDMCP_SUPPORT, true)
 	GDMCHOOSER=gdmchooser
 else
@@ -546,7 +546,7 @@ else
 		LIBWRAP_PATH=/usr/sfw/lib/libwrap.so
 		echo "Found $LIBWRAP_PATH" 1>&5
 	fi
-	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
+	LIBWRAP_LIBS="-L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
 	;;
     *)
         for I in $LDFLAGS $LIBS -L/usr/lib; do
@@ -594,8 +594,8 @@ else
     *)
 	if test -n "$LIBWRAP_PATH"; then
 	AC_CHECK_LIB(wrap, hosts_ctl, [
-		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lwrap"], [
-		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIBWRAP_PATH"])
+		LIBWRAP_LIBS="-lwrap"], [
+		LIBWRAP_LIBS="$LIBWRAP_PATH"])
 	fi
 
 	dnl find out if we need -lnsl or whatever
@@ -630,6 +630,7 @@ LIBS="$OLD_LIBS"
    esac
 fi
 
+AC_SUBST(LIBWRAP_LIBS)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for Xinput

@@ -45,7 +45,13 @@
 #define DEFAULT_ALLOW_ROOT      TRUE
 #define DEFAULT_MAX_ICON_SIZE   128
 #define DEFAULT_USER_MAX_FILE   65536
+
+#ifdef __sun
+#define DEFAULT_MINIMAL_UID     100
+#else
 #define DEFAULT_MINIMAL_UID     500
+#endif
+
 #define DEFAULT_GLOBAL_FACE_DIR DATADIR "/faces"
 #define DEFAULT_USER_ICON       "stock_person"
 #define DEFAULT_EXCLUDE         { "bin",        \
