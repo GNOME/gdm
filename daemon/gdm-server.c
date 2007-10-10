@@ -35,6 +35,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 
 #include <X11/Xlib.h> /* for Display */
