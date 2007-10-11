@@ -1,3 +1,21 @@
+2007-10-11  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-marshal.list:
+	* daemon/gdm-product-slave.c: (reset_session), (on_relay_open):
+	* daemon/gdm-session-worker.c: (gdm_session_worker_initialize_pam),
+	(gdm_session_worker_verify_user), (gdm_session_worker_open),
+	(open_idle), (queue_open), (on_begin_verification),
+	(on_begin_verification_for_user), (gdm_session_worker_constructor):
+	* daemon/gdm-session.c: (gdm_session_write_record),
+	(do_introspect), (gdm_session_open), (send_begin_verification),
+	(send_begin_verification_for_user):
+	* daemon/gdm-session.h:
+	* daemon/gdm-simple-slave.c: (on_greeter_cancel),
+	(on_greeter_connected):
+	* daemon/test-session.c: (main):
+	Also pass x11-display when opening the session.
+	Patch from Brian Cameron <brian.cameron@sun.com>
+
 2007-10-10  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-server.c:

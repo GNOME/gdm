@@ -944,19 +944,27 @@ on_relay_language_selected (DBusGProxy *proxy,
 static gboolean
 reset_session (GdmProductSlave *slave)
 {
+        char            *display_name;
         gboolean         res;
         GError          *error;
+
+        g_object_get (slave,
+                      "display-name", &display_name,
+                      NULL);
 
         gdm_session_close (slave->priv->session);
         res = gdm_session_open (slave->priv->session,
                                 "gdm",
                                 "",
+                                display_name,
                                 "/dev/console",
                                 &error);
         if (! res) {
                 g_warning ("Unable to open session: %s", error->message);
                 g_error_free (error);
         }
+
+        g_free (display_name);
 
         return res;
 }
@@ -981,21 +989,29 @@ on_relay_open (DBusGProxy *proxy,
                gpointer    data)
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
+        char            *display_name;
         gboolean         res;
         GError          *error;
 
         g_debug ("Relay open: opening session");
 
+        g_object_get (slave,
+                      "display-name", &display_name,
+                      NULL);
+
         error = NULL;
         res = gdm_session_open (slave->priv->session,
                                 "gdm",
                                 "",
+                                display_name,
                                 "/dev/console",
                                 &error);
         if (! res) {
                 g_warning ("Unable to open session: %s", error->message);
                 g_error_free (error);
         }
+
+        g_free (display_name);
 }
 
 static void

@@ -102,6 +102,7 @@ GdmSession * gdm_session_new                      (void) G_GNUC_MALLOC;
 gboolean     gdm_session_open                     (GdmSession    *session,
                                                    const char    *service_name,
                                                    const char    *hostname,
+                                                   const char    *x11_display_name,
                                                    const char    *console_name,
                                                    GError       **error);
 void         gdm_session_close                    (GdmSession     *session);

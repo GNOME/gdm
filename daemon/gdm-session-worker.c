@@ -775,7 +775,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *service,
                                    const char       *username,
                                    const char       *hostname,
-                                   const char       *console_name,
+                                   const char       *display_device,
                                    GError          **error)
 {
         struct pam_conv pam_conversation;
@@ -836,7 +836,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 }
         }
 
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, console_name);
+        error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, display_device);
 
         if (error_code != PAM_SUCCESS) {
                 g_set_error (error,
@@ -1111,7 +1111,8 @@ static gboolean
 gdm_session_worker_verify_user (GdmSessionWorker  *worker,
                                 const char        *service_name,
                                 const char        *hostname,
-                                const char        *console_name,
+                                const char        *x11_display_name,
+                                const char        *display_device,
                                 const char        *username,
                                 gboolean           password_is_required,
                                 GError           **error)
@@ -1119,18 +1120,19 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
         GError   *pam_error;
         gboolean  res;
 
-        g_debug ("Verifying user: %s host: %s service: %s tty: %s",
+        g_debug ("Verifying user: %s host: %s service: %s display: %s tty: %s",
                  username != NULL ? username : "(null)",
                  hostname != NULL ? hostname : "(null)",
                  service_name != NULL ? service_name : "(null)",
-                 console_name != NULL ? console_name : "(null)");
+                 x11_display_name != NULL ? x11_display_name : "(null)",
+                 display_device != NULL ? display_device : "(null)");
 
         pam_error = NULL;
         res = gdm_session_worker_initialize_pam (worker,
                                                  service_name,
                                                  username,
                                                  hostname,
-                                                 console_name,
+                                                 display_device,
                                                  &pam_error);
         if (! res) {
                 g_propagate_error (error, pam_error);
@@ -1369,8 +1371,9 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 static gboolean
 gdm_session_worker_open (GdmSessionWorker    *worker,
                          const char          *service_name,
+                         const char          *x11_display_name,
+                         const char          *display_device,
                          const char          *hostname,
-                         const char          *console_name,
                          const char          *username,
                          GError             **error)
 {
@@ -1384,7 +1387,8 @@ gdm_session_worker_open (GdmSessionWorker    *worker,
         res = gdm_session_worker_verify_user (worker,
                                               service_name,
                                               hostname,
-                                              console_name,
+                                              x11_display_name,
+                                              display_device,
                                               username,
                                               TRUE /* password is required */,
                                               &verification_error);
@@ -1533,6 +1537,7 @@ on_start_program (DBusGProxy *proxy,
 typedef struct {
         GdmSessionWorker *worker;
         char             *service;
+        char             *x11_display_name;
         char             *console;
         char             *hostname;
         char             *username;
@@ -1549,6 +1554,7 @@ open_idle (OpenData *data)
         error = NULL;
         res = gdm_session_worker_open (data->worker,
                                        data->service,
+                                       data->x11_display_name,
                                        data->console,
                                        data->hostname,
                                        data->username,
@@ -1576,6 +1582,7 @@ free_open_data (OpenData *data)
 static void
 queue_open (GdmSessionWorker *worker,
             const char       *service,
+            const char       *x11_display_name,
             const char       *console,
             const char       *hostname,
             const char       *username)
@@ -1589,6 +1596,7 @@ queue_open (GdmSessionWorker *worker,
         data = g_new0 (OpenData, 1);
         data->worker = worker;
         data->service = g_strdup (service);
+        data->x11_display_name = g_strdup (x11_display_name);
         data->console = g_strdup (console);
         data->hostname = g_strdup (hostname);
         data->username = g_strdup (username);
@@ -1601,6 +1609,7 @@ queue_open (GdmSessionWorker *worker,
 static void
 on_begin_verification (DBusGProxy *proxy,
                        const char *service,
+                       const char *x11_display_name,
                        const char *console,
                        const char *hostname,
                        gpointer    data)
@@ -1608,12 +1617,13 @@ on_begin_verification (DBusGProxy *proxy,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
 
         g_debug ("begin verification: %s %s", service, console);
-        queue_open (worker, service, console, hostname, NULL);
+        queue_open (worker, service, x11_display_name, console, hostname, NULL);
 }
 
 static void
 on_begin_verification_for_user (DBusGProxy *proxy,
                                 const char *service,
+                                const char *x11_display_name,
                                 const char *console,
                                 const char *hostname,
                                 const char *username,
@@ -1622,7 +1632,7 @@ on_begin_verification_for_user (DBusGProxy *proxy,
         GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
 
         g_debug ("begin verification: %s %s", service, console);
-        queue_open (worker, service, console, hostname, username);
+        queue_open (worker, service, x11_display_name, console, hostname, username);
 }
 
 static void
@@ -1689,12 +1699,20 @@ gdm_session_worker_constructor (GType                  type,
                                            G_TYPE_STRING,
                                            G_TYPE_STRING,
                                            G_TYPE_INVALID);
+        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING_STRING_STRING_STRING,
+                                           G_TYPE_NONE,
+                                           G_TYPE_STRING,
+                                           G_TYPE_STRING,
+                                           G_TYPE_STRING,
+                                           G_TYPE_STRING,
+                                           G_TYPE_STRING,
+                                           G_TYPE_INVALID);
 
         /* FIXME: not sure why introspection isn't working */
         dbus_g_proxy_add_signal (worker->priv->server_proxy, "StartProgram", G_TYPE_STRING, G_TYPE_INVALID);
         dbus_g_proxy_add_signal (worker->priv->server_proxy, "SetEnvironmentVariable", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (worker->priv->server_proxy, "BeginVerification", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (worker->priv->server_proxy, "BeginVerificationForUser", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (worker->priv->server_proxy, "BeginVerification", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (worker->priv->server_proxy, "BeginVerificationForUser", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
 
         dbus_g_proxy_connect_signal (worker->priv->server_proxy,
                                      "StartProgram",

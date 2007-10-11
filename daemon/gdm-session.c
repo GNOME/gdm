@@ -80,7 +80,8 @@ struct _GdmSessionPrivate
         char                *service_name;
         char                *username;
         char                *hostname;
-        char                *console_name;
+        char                *x11_display_name;
+        char                *display_device;
 
         DBusMessage         *message_pending_reply;
 
@@ -206,20 +207,20 @@ gdm_session_write_record (GdmSession           *session,
         /* FIXME: I have no idea what to do for ut_id.
          */
         strncpy (session_record.ut_id,
-                 session->priv->console_name +
-                 strlen (session->priv->console_name) -
+                 session->priv->display_device +
+                 strlen (session->priv->display_device) -
                  sizeof (session_record.ut_id),
                  sizeof (session_record.ut_id));
 
         g_debug ("using id %.*s", sizeof (session_record.ut_id), session_record.ut_id);
 
-        if (g_str_has_prefix (session->priv->console_name, "/dev/")) {
+        if (g_str_has_prefix (session->priv->display_device, "/dev/")) {
                 strncpy (session_record.ut_line,
-                         session->priv->console_name + strlen ("/dev/"),
+                         session->priv->display_device + strlen ("/dev/"),
                          sizeof (session_record.ut_line));
-        } else if (g_str_has_prefix (session->priv->console_name, ":")) {
+        } else if (g_str_has_prefix (session->priv->display_device, ":")) {
                 strncpy (session_record.ut_line,
-                         session->priv->console_name,
+                         session->priv->display_device,
                          sizeof (session_record.ut_line));
         }
 
@@ -232,15 +233,15 @@ gdm_session_write_record (GdmSession           *session,
          */
         hostname = NULL;
         if ((session->priv->hostname != NULL) &&
-            g_str_has_prefix (session->priv->console_name, ":"))
+            g_str_has_prefix (session->priv->display_device, ":"))
                 hostname = g_strdup_printf ("%s%s", session->priv->hostname,
-                                            session->priv->console_name);
+                                            session->priv->display_device);
         else if ((session->priv->hostname != NULL) &&
-                 !strstr (session->priv->console_name, ":"))
+                 !strstr (session->priv->display_device, ":"))
                 hostname = g_strdup (session->priv->hostname);
-        else if (!g_str_has_prefix (session->priv->console_name, ":") &&
-                 strstr (session->priv->console_name, ":"))
-                hostname = g_strdup (session->priv->console_name);
+        else if (!g_str_has_prefix (session->priv->display_device, ":") &&
+                 strstr (session->priv->display_device, ":"))
+                hostname = g_strdup (session->priv->display_device);
 
         if (hostname) {
                 g_debug ("using hostname %.*s",
@@ -970,13 +971,15 @@ do_introspect (DBusConnection *connection,
                                "    </method>\n"
                                "    <signal name=\"BeginVerification\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
-                               "      <arg name=\"console\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"BeginVerificationForUser\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
-                               "      <arg name=\"console\" type=\"s\"/>\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"StartProgram\">\n"
@@ -1354,14 +1357,16 @@ gboolean
 gdm_session_open (GdmSession  *session,
                   const char  *service_name,
                   const char  *hostname,
-                  const char  *console_name,
+                  const char  *x11_display_name,
+                  const char  *display_device,
                   GError     **error)
 {
         gboolean res;
 
         g_return_val_if_fail (session != NULL, FALSE);
         g_return_val_if_fail (service_name != NULL, FALSE);
-        g_return_val_if_fail (console_name != NULL, FALSE);
+        g_return_val_if_fail (x11_display_name != NULL, FALSE);
+        g_return_val_if_fail (display_device != NULL, FALSE);
         g_return_val_if_fail (hostname != NULL, FALSE);
 
         g_debug ("Openning session");
@@ -1370,7 +1375,8 @@ gdm_session_open (GdmSession  *session,
 
         session->priv->service_name = g_strdup (service_name);
         session->priv->hostname = g_strdup (hostname);
-        session->priv->console_name = g_strdup (console_name);
+        session->priv->x11_display_name = g_strdup (x11_display_name);
+        session->priv->display_device = g_strdup (display_device);
 
         return res;
 }
@@ -1389,8 +1395,9 @@ send_begin_verification (GdmSession *session)
 
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->x11_display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->hostname);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->console_name);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
                 g_debug ("Could not send %s signal", "BeginVerification");
@@ -1413,8 +1420,9 @@ send_begin_verification_for_user (GdmSession *session)
 
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->x11_display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->hostname);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->console_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->username);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {

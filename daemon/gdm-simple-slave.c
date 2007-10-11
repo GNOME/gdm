@@ -904,7 +904,13 @@ static void
 on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmSimpleSlave   *slave)
 {
+        char *display_name;
+
         g_debug ("Greeter cancelled");
+
+        g_object_get (slave,
+                      "display-name", &display_name,
+                      NULL);
 
         if (slave->priv->session != NULL) {
                 gdm_session_close (slave->priv->session);
@@ -916,8 +922,11 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
         gdm_session_open (slave->priv->session,
                           "gdm",
                           "" /* hostname */,
+                          display_name,
                           "/dev/console",
                           NULL);
+
+        g_free (display_name);
 }
 
 static void
@@ -925,8 +934,10 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
                       GdmSimpleSlave   *slave)
 {
         gboolean       display_is_local;
+        char          *display_name;
 
         g_object_get (slave,
+                      "display-name", &display_name,
                       "display-is-local", &display_is_local,
                       NULL);
 
@@ -935,6 +946,7 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
         gdm_session_open (slave->priv->session,
                           "gdm",
                           "" /* hostname */,
+                          display_name,
                           "/dev/console",
                           NULL);
 
@@ -942,6 +954,8 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
         if ( ! display_is_local) {
                 alarm (0);
         }
+
+        g_free (display_name);
 }
 
 static void

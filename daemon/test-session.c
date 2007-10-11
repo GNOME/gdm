@@ -213,6 +213,7 @@ main (int   argc,
                 gdm_session_open (session,
                                   "gdm",
                                   "",
+                                  ":0",
                                   ttyname (STDIN_FILENO),
                                   NULL);
 
