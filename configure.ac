@@ -1,8 +1,8 @@
 
 AC_PREREQ(2.59c)
 AC_INIT([gdm],
-        [2.99.0],
-        [http://bugzilla.gnome.org/enter_bug.cgi?product=gdm2],
+        [2.21.1],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=gdm],
         [gdm])
 
 AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
