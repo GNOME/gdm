@@ -84,22 +84,27 @@ gdm_address_get_family_type (GdmAddress *address)
 
 /**
  * gdm_address_new_from_sockaddr:
- * @sa: A pointer to a sockaddr_storage.
+ * @sa: A pointer to a sockaddr.
+ * @size: size of sockaddr in bytes.
  *
- * Creates a new #GdmAddress from @ss.
+ * Creates a new #GdmAddress from @sa.
  *
  * Return value: The new #GdmAddress
  * or %NULL if @sa was invalid or the address family isn't supported.
  **/
 GdmAddress *
-gdm_address_new_from_sockaddr_storage (struct sockaddr_storage *ss)
+gdm_address_new_from_sockaddr (struct sockaddr *sa,
+                               size_t           size)
 {
         GdmAddress *addr;
 
-        g_return_val_if_fail (ss != NULL, NULL);
+        g_return_val_if_fail (sa != NULL, NULL);
+        g_return_val_if_fail (size >= sizeof (struct sockaddr), NULL);
+        g_return_val_if_fail (size <= sizeof (struct sockaddr_storage), NULL);
 
         addr = g_new0 (GdmAddress, 1);
-        addr->ss = g_memdup (ss, sizeof (struct sockaddr_storage));
+        addr->ss = g_new0 (struct sockaddr_storage, 1);
+        memcpy (addr->ss, sa, size);
 
         return addr;
 }
@@ -315,7 +320,7 @@ gdm_address_peek_local_list (void)
         for (res = result; res != NULL; res = res->ai_next) {
                 GdmAddress *address;
 
-                address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)res->ai_addr);
+                address = gdm_address_new_from_sockaddr (res->ai_addr, res->ai_addrlen);
                 the_list = g_list_append (the_list, address);
         }
 

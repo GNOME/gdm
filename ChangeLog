@@ -1,5 +1,21 @@
 2007-10-15  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-address.c: (gdm_address_new_from_sockaddr),
+	(gdm_address_peek_local_list):
+	* common/gdm-address.h:
+	* daemon/gdm-xdmcp-display-factory.c: (do_bind),
+	(create_address_from_request), (decode_packet):
+	* gui/simple-chooser/gdm-host-chooser-widget.c: (decode_packet),
+	(find_broadcast_addresses), (add_hosts):
+	The function gdm_address_new_from_sockaddr_storage gets called in a
+	few places with socket addresses that aren't necessary
+	sockaddr_storage bytes big (all the places that call getaddrinfo).
+	This results in the memdup call in that function potentially copying
+	out of bounds bytes.
+	Patch from: Ray Strode <halfline@gmail.com>
+
+2007-10-15  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-greeter-background.c (update_background):
 	Don't crash if background pattern can't be loaded.
 	Patch from: Ray Strode <halfline@gmail.com>

@@ -40,7 +40,8 @@ typedef struct _GdmAddress GdmAddress;
 
 GType                    gdm_address_get_type                  (void);
 
-GdmAddress *             gdm_address_new_from_sockaddr_storage (struct sockaddr_storage *ss);
+GdmAddress *             gdm_address_new_from_sockaddr         (struct sockaddr *sa,
+                                                                size_t           size);
 
 int                      gdm_address_get_family_type           (GdmAddress              *address);
 struct sockaddr_storage *gdm_address_get_sockaddr_storage      (GdmAddress              *address);

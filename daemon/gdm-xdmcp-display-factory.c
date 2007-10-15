@@ -446,7 +446,7 @@ do_bind (guint                     port,
                         char       *serv;
                         GdmAddress *addr;
 
-                        addr = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)ai->ai_addr);
+                        addr = gdm_address_new_from_sockaddr (ai->ai_addr, ai->ai_addrlen);
 
                         host = NULL;
                         serv = NULL;
@@ -1356,7 +1356,7 @@ create_address_from_request (ARRAY8      *req_addr,
         if (ai != NULL) {
                 found = TRUE;
                 if (address != NULL) {
-                        *address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)ai->ai_addr);
+                        *address = gdm_address_new_from_sockaddr (ai->ai_addr, ai->ai_addrlen);
                 }
         }
 
@@ -2629,7 +2629,7 @@ decode_packet (GIOChannel             *source,
                 return TRUE;
         }
 
-        address = gdm_address_new_from_sockaddr_storage (&clnt_ss);
+        address = gdm_address_new_from_sockaddr ((struct sockaddr *) &clnt_ss, ss_len);
         if (address == NULL) {
                 g_warning (_("XMDCP: Unable to parse address"));
                 return TRUE;

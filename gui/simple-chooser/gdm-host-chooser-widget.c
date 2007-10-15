@@ -237,7 +237,7 @@ decode_packet (GIOChannel           *source,
                 return TRUE;
         }
 
-        address = gdm_address_new_from_sockaddr_storage (&clnt_ss);
+        address = gdm_address_new_from_sockaddr ((struct sockaddr *) &clnt_ss, ss_len);
         if (address == NULL) {
                 g_warning (_("XMDCP: Unable to parse address"));
                 return TRUE;
@@ -462,7 +462,7 @@ find_broadcast_addresses (GdmHostChooserWidget *widget)
 
                         g_memmove (&sin, &ifreq.ifr_broadaddr, sizeof (struct sockaddr_in));
                         sin.sin_port = htons (XDM_UDP_PORT);
-                        address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)&sin);
+                        address = gdm_address_new_from_sockaddr ((struct sockaddr *) &sin, sizeof (sin));
                         if (address != NULL) {
                                 g_debug ("Adding if %s", name);
                                 gdm_address_debug (address);
@@ -518,7 +518,7 @@ add_hosts (GdmHostChooserWidget *widget)
                 for (ai = result; ai != NULL; ai = ai->ai_next) {
                         GdmAddress *address;
 
-                        address = gdm_address_new_from_sockaddr_storage ((struct sockaddr_storage *)ai->ai_addr);
+                        address = gdm_address_new_from_sockaddr (ai->ai_addr, ai->ai_addrlen);
                         if (address != NULL) {
                                 widget->priv->query_addresses = g_slist_append (widget->priv->query_addresses, address);
                         }
