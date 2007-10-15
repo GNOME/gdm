@@ -100,6 +100,8 @@ gdmchooser_LDADD = \
 	$(PANGO_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
+	$(EXTRA_SOCKET_LIB)     \
+	$(EXTRA_NSL_LIB)        \
 	$(top_builddir)/vicious-extensions/libviciousui.a \
 	$(X_EXTRA_LIBS)		\
 	$(XINERAMA_LIBS)	\
@@ -139,7 +141,8 @@ gdmsetup_LDADD = \
 	$(PANGO_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
-	$(EXTRA_SETUP_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(LIBGNOMEUI_LIBS)	\
 	$(top_builddir)/vicious-extensions/libviciousui.a \
 	$(X_LIBS)		\
@@ -154,6 +157,8 @@ gdmphotosetup_LDADD = \
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(GDKPIXBUF_LIBS)	\
+	$(EXTRA_SOCKET_LIB)     \
+	$(EXTRA_NSL_LIB)        \
 	$(INTLLIBS)		\
 	-lX11			\
 	$(top_builddir)/vicious-extensions/libviciousui.a
@@ -166,7 +171,8 @@ gdmXnestchooser_LDADD = \
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(top_builddir)/vicious-extensions/libviciousui.a \
-	$(EXTRA_XNEST_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(X_LIBS)		\
 	-lXau			\
 	-lX11			\
@@ -180,7 +186,8 @@ gdmflexiserver_LDADD = \
 	$(GOBJECT_LIBS)		\
 	$(GDK_LIBS)		\
 	$(top_builddir)/vicious-extensions/libviciousui.a \
-	$(EXTRA_FLEXI_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(X_LIBS)		\
 	-lX11			\
 	-lXau			\
@@ -194,7 +201,8 @@ gdmdynamic_LDADD = 		\
 	$(GOBJECT_LIBS) 	\
 	$(GDK_LIBS) 		\
 	$(top_builddir)/vicious-extensions/libviciousui.a \
-	$(EXTRA_DYNAMIC_LIBS)	\
+	$(EXTRA_SOCKET_LIB)	\
+	$(EXTRA_NSL_LIB)	\
 	$(X_LIBS)		\
 	-lX11			\
 	-lXau
