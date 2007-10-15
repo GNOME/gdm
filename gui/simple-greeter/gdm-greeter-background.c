@@ -481,6 +481,10 @@ update_background (GdmGreeterBackground *background)
 
                 if (background->priv->pat == NULL) {
                         load_image (background);
+
+                        if (background->priv->pat == NULL) {
+                                goto out;
+                        }
                 }
 
                 if (background->priv->image_placement == BACKGROUND_SCALED) {
@@ -582,6 +586,7 @@ update_background (GdmGreeterBackground *background)
                 cairo_fill (cr);
         }
 
+out:
         cairo_destroy (cr);
 }
 
