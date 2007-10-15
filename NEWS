@@ -1,5 +1,44 @@
 Ahh news...
 
+2.20.1 Stuff:
+
+- Now gdmlogin and gdmgreeter treat Tab like enter if the focus
+  is on the entry field.  This addresses usability issues as
+  described in bug #433495.  (Lo\357c Minier)
+
+- Fix bug that was causing the user's default language/session choices
+  to not get saved properly if they didn't already have a $HOME/.dmrc
+  file.  (Brady Anderson)
+
+- Fix bug with XDMCP logic that was causing GDM to get confused 
+  about when the maximum number of XDMCP sessions has been reached.
+  (Francis Giraldeau)
+   
+- Fix an issue that was causing the username to be logged as a debug
+  message when using GDM configured to use crypt or shadow passwords
+  (instead of the default PAM).  This could cause the user's password
+  to get saved as a debug message if the user accidently typed their
+  password into the username field when using crypt/shadow passwords.
+  No longer translate debug messages in general.  (Brian Cameron)
+
+- Set stdout/stderr to DEV_NULL when spawning at_spi_registryd and
+  the prefetch program, fixing a hanging problem.  (Huang Peng)
+
+- GDM now always sends the daemon a response before exit to avoid a
+  hang.  (Ray Strode)
+
+- Fix gdmXnestchooser and gdmsetup so debug isn't on by default. 
+  (Brian Cameron)
+
+- Updated the gdmgreeter themes so that they display correctly 
+  on 800x600 displays.  (Dave Fincher)
+
+- Build/configure fixes for Solaris.  (Brian Cameron)
+
+- Translation updates (Sunil Mohan Adapa, Gil Forcada, Duarte Loreto,
+  S\303\255lvia Miranda, Ankit Patel, Ignacio Casal Quinteiro,
+  Changwoo Ryu)
+
 2.20.0 Stuff:
 
 - Now support --with-atspi-dir so you can specify a non-default
