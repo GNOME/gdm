@@ -102,7 +102,6 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-simple-slave.h		\
 	auth.c				\
 	auth.h				\
-	fstype.c			\
 	$(NULL)
 
 gdm_simple_slave_LDFLAGS =		\
@@ -131,7 +130,6 @@ gdm_factory_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-factory-slave.c		\
 	gdm-factory-slave.h		\
-	fstype.c			\
 	$(NULL)
 
 gdm_factory_slave_LDFLAGS =		\
@@ -157,7 +155,6 @@ gdm_product_slave_SOURCES = 		\
 	gdm-product-slave.h		\
 	auth.c				\
 	auth.h				\
-	fstype.c			\
 	$(NULL)
 
 gdm_product_slave_LDFLAGS =		\
@@ -213,7 +210,6 @@ gdm_binary_SOURCES = 			\
 	gdm-slave-proxy.h		\
 	auth.c				\
 	auth.h				\
-	fstype.c			\
 	$(NULL)
 
 XDMCP_SOURCES =				\
