@@ -52,7 +52,6 @@
 static DBusGConnection  *connection     = NULL;
 static GdmGreeter       *greeter        = NULL;
 static DBusGProxy       *server_proxy   = NULL;
-static DBusGProxy       *gpm_proxy      = NULL;
 
 static void
 on_info (DBusGProxy *proxy,
@@ -322,45 +321,6 @@ proxy_destroyed (GObject *object,
         g_debug ("GREETER Proxy disconnected");
 }
 
-#if 0
-static void
-activate_power_manager (void)
-{
-        DBusGConnection *connection;
-        GError          *error;
-        gboolean         res;
-        guint            result;
-
-        g_debug ("Activating power management");
-
-        error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-        if (error != NULL) {
-                g_warning ("%s", error->message);
-                g_error_free (error);
-        }
-
-        gpm_proxy = dbus_g_proxy_new_for_name (connection,
-                                               DBUS_SERVICE_DBUS,
-                                               DBUS_PATH_DBUS,
-                                               DBUS_INTERFACE_DBUS);
-        error = NULL;
-        res = dbus_g_proxy_call (gpm_proxy,
-                                 "StartServiceByName",
-                                 &error,
-                                 G_TYPE_STRING, GPM_DBUS_NAME,
-                                 G_TYPE_UINT, 0,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_UINT, &result,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Could not start service: %s", error->message);
-                g_error_free (error);
-        } else {
-                g_debug ("Result %u", result);
-        }
-}
-#else
 static void
 activate_power_manager (void)
 {
@@ -376,7 +336,6 @@ activate_power_manager (void)
                 g_error_free (error);
         }
 }
-#endif
 
 int
 main (int argc, char *argv[])

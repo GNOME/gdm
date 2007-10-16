@@ -110,12 +110,14 @@ chooser_host_add (GdmHostChooserWidget *widget,
         widget->priv->chooser_hosts = g_slist_prepend (widget->priv->chooser_hosts, host);
 }
 
+#if 0
 static void
 chooser_host_remove (GdmHostChooserWidget *widget,
                      GdmChooserHost       *host)
 {
         widget->priv->chooser_hosts = g_slist_remove (widget->priv->chooser_hosts, host);
 }
+#endif
 
 static void
 chooser_host_free (GdmChooserHost *host)

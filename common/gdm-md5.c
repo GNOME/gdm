@@ -445,7 +445,7 @@ gdm_md5_final (GdmMD5Context *context,
 
         md5_finish (context, digest);
 
-        if (!g_string_append_len (results, digest, 16))
+        if (!g_string_append_len (results, (char *)digest, 16))
                 return FALSE;
 
         /* some kind of security paranoia, though it seems pointless

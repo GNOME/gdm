@@ -397,25 +397,6 @@ on_language_selected (GtkTreeSelection     *selection,
         widget->priv->current_locale = locale;
 }
 
-static gboolean
-locale_exists (const char *loc)
-{
-        gboolean ret;
-        char    *old;
-
-        old = g_strdup (setlocale (LC_MESSAGES, NULL));
-        if (setlocale (LC_MESSAGES, loc) != NULL) {
-                ret = TRUE;
-        } else {
-                ret = FALSE;
-        }
-
-        setlocale (LC_MESSAGES, old);
-        g_free (old);
-
-        return ret;
-}
-
 static char *
 utf8_convert (const char *str,
               int         len)
@@ -771,16 +752,19 @@ get_translated_territory (GdmLanguageChooserWidget *widget,
 
 static void
 languages_parse_start_tag (GMarkupParseContext      *ctx,
-                            const char               *element_name,
-                            const char              **attr_names,
-                            const char              **attr_values,
-                            GdmLanguageChooserWidget *widget,
-                            GError                  **error)
+                           const char               *element_name,
+                           const char              **attr_names,
+                           const char              **attr_values,
+                           gpointer                  user_data,
+                           GError                  **error)
 {
+        GdmLanguageChooserWidget *widget;
         const char *ccode_longB;
         const char *ccode_longT;
         const char *ccode;
         const char *lang_name;
+
+        widget = GDM_LANGUAGE_CHOOSER_WIDGET (user_data);
 
         if (! g_str_equal (element_name, "iso_639_entry") || attr_names == NULL || attr_values == NULL) {
                 return;
@@ -850,13 +834,16 @@ territories_parse_start_tag (GMarkupParseContext      *ctx,
                              const char               *element_name,
                              const char              **attr_names,
                              const char              **attr_values,
-                             GdmLanguageChooserWidget *widget,
+                             gpointer                  user_data,
                              GError                  **error)
 {
+        GdmLanguageChooserWidget *widget;
         const char *acode_2;
         const char *acode_3;
         const char *ncode;
         const char *territory_name;
+
+        widget = GDM_LANGUAGE_CHOOSER_WIDGET (user_data);
 
         if (! g_str_equal (element_name, "iso_3166_entry") || attr_names == NULL || attr_values == NULL) {
                 return;

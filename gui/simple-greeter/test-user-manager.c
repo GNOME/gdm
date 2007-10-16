@@ -55,7 +55,6 @@ on_user_removed (GdmUserManager *manager,
 int
 main (int argc, char *argv[])
 {
-        GtkWidget *dialog;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");

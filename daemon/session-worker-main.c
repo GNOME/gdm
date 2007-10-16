@@ -172,7 +172,6 @@ main (int    argc,
 
         g_main_loop_unref (main_loop);
 
- out:
 
         g_debug ("Worker finished");
 

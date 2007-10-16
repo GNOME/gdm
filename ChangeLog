@@ -1,5 +1,35 @@
 2007-10-15  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-md5.c: (gdm_md5_final):
+	* common/gdm-settings-backend.c:
+	* common/gdm-signal-handler.c: (gdm_signal_handler_init):
+	* common/test-settings-client.c: (test_settings_client):
+	* configure.ac:
+	* daemon/gdm-factory-slave.c:
+	* daemon/gdm-greeter-session.c: (gdm_greeter_session_spawn):
+	* daemon/gdm-local-display-factory.c:
+	* daemon/gdm-manager.c:
+	* daemon/gdm-product-slave.c:
+	* daemon/gdm-session-relay.c: (session_handle_child_message):
+	* daemon/gdm-session.c: (handle_connection):
+	* daemon/gdm-simple-slave.c:
+	* daemon/gdm-xdmcp-display-factory.c:
+	* daemon/main.c: (main):
+	* daemon/session-worker-main.c: (main):
+	* gui/simple-chooser/gdm-host-chooser-dialog.c: (on_response):
+	* gui/simple-chooser/gdm-host-chooser-widget.c:
+	* gui/simple-greeter/gdm-language-chooser-widget.c:
+	(languages_parse_start_tag), (territories_parse_start_tag):
+	* gui/simple-greeter/gdm-simple-greeter.c:
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(gdm_user_chooser_widget_init):
+	* gui/simple-greeter/greeter-main.c: (activate_power_manager):
+	* gui/simple-greeter/test-user-manager.c: (main):
+	Fix a bunch of compiler warnings.  Add Werror for now to
+	warning flags.
+
+2007-10-15  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/Makefile.am:
 	* daemon/fstype.c:
 	Remove unused file.

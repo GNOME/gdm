@@ -402,42 +402,6 @@ cancel_button_clicked (GtkButton        *button,
 }
 
 static void
-suspend_button_clicked (GtkButton        *button,
-                        GdmSimpleGreeter *greeter)
-{
-        GError          *error;
-        DBusGConnection *connection;
-        DBusGProxy      *proxy;
-
-        g_debug ("Suspend button clicked");
-
-        error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-        if (error != NULL) {
-                g_warning ("Couldn't suspend: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-        proxy = dbus_g_proxy_new_for_name (connection,
-                                           GPM_DBUS_NAME,
-                                           GPM_DBUS_PATH,
-                                           GPM_DBUS_INTERFACE);
-        error = NULL;
-        dbus_g_proxy_call (proxy,
-                           "Suspend",
-                           &error,
-                           G_TYPE_INVALID,
-                           G_TYPE_INVALID);
-        if (error != NULL) {
-                g_warning ("Couldn't suspend: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-
-        g_object_unref (proxy);
-}
-
-static void
 on_user_activated (GdmUserChooserWidget *user_chooser,
                    GdmSimpleGreeter     *greeter)
 {

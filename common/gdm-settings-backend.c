@@ -55,8 +55,6 @@ static void     gdm_settings_backend_class_init (GdmSettingsBackendClass *klass)
 static void     gdm_settings_backend_init       (GdmSettingsBackend      *settings_backend);
 static void     gdm_settings_backend_finalize   (GObject                 *object);
 
-static gpointer settings_backend_object = NULL;
-
 G_DEFINE_ABSTRACT_TYPE (GdmSettingsBackend, gdm_settings_backend, G_TYPE_OBJECT)
 
 GQuark

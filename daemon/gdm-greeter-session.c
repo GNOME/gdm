@@ -292,44 +292,6 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
 }
 
 static void
-gdm_slave_whack_temp_auth_file (GdmGreeterSession *greeter_session)
-{
-#if 0
-        uid_t old;
-
-        old = geteuid ();
-        if (old != 0)
-                seteuid (0);
-        if (d->parent_temp_auth_file != NULL) {
-                VE_IGNORE_EINTR (g_unlink (d->parent_temp_auth_file));
-        }
-        g_free (d->parent_temp_auth_file);
-        d->parent_temp_auth_file = NULL;
-        if (old != 0)
-                seteuid (old);
-#endif
-}
-
-
-static void
-create_temp_auth_file (GdmGreeterSession *greeter_session)
-{
-#if 0
-        if (d->type == TYPE_FLEXI_XNEST &&
-            d->parent_auth_file != NULL) {
-                if (d->parent_temp_auth_file != NULL) {
-                        VE_IGNORE_EINTR (g_unlink (d->parent_temp_auth_file));
-                }
-                g_free (d->parent_temp_auth_file);
-                d->parent_temp_auth_file =
-                        copy_auth_file (d->server_uid,
-                                        gdm_daemon_config_get_gdmuid (),
-                                        d->parent_auth_file);
-        }
-#endif
-}
-
-static void
 greeter_session_child_watch (GPid        pid,
                      int         status,
                      GdmGreeterSession *greeter_session)
@@ -671,7 +633,6 @@ stop_dbus_daemon (GdmGreeterSession *greeter_session)
 static gboolean
 gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
 {
-        char           **argv;
         GError          *error;
         GPtrArray       *env;
         gboolean         ret;
@@ -684,7 +645,9 @@ gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
                 /* FIXME: */
         }
 
+#if 0
         create_temp_auth_file (greeter_session);
+#endif
 
         g_debug ("Running greeter_session process: %s", greeter_session->priv->command);
 

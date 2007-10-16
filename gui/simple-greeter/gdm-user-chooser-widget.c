@@ -380,6 +380,7 @@ populate_model (GdmUserChooserWidget *widget,
                               widget);
 }
 
+#if 0
 static gboolean
 separator_func (GtkTreeModel *model,
                 GtkTreeIter  *iter,
@@ -398,6 +399,7 @@ separator_func (GtkTreeModel *model,
 
         return FALSE;
 }
+#endif
 
 static int
 compare_user_names (char *name_a,
@@ -569,6 +571,13 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
         gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
                                               CHOOSER_LIST_CAPTION_COLUMN,
                                               GTK_SORT_ASCENDING);
+
+#if 0
+        gtk_tree_view_set_row_separator_func (GTK_TREE_VIEW (widget->priv->treeview),
+                                              separator_func,
+                                              GINT_TO_POINTER (CHOOSER_LIST_ID_COLUMN),
+                                              NULL);
+#endif
 
         collect_users (widget);
 

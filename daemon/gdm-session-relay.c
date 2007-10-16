@@ -487,7 +487,7 @@ session_handle_child_message (DBusConnection *connection,
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStarted")) {
                 return handle_session_started (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStopped")) {
-                return handle_session_started (session_relay, connection, message);
+                return handle_session_stopped (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Opened")) {
                 return handle_opened (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Reset")) {

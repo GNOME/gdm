@@ -50,7 +50,6 @@ test_settings_client (gpointer data)
 {
         char    *strval;
         gboolean boolval;
-        int      intval;
         gboolean res;
         guint    notify_id;
 

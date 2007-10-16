@@ -57,9 +57,6 @@ static void bus_proxy_destroyed_cb (DBusGProxy *bus_proxy,
 
 extern char **environ;
 
-static char           **stored_argv   = NULL;
-static int              stored_argc   = 0;
-static GList           *stored_env    = NULL;
 static GdmManager      *manager       = NULL;
 static GdmSettings     *settings      = NULL;
 static uid_t            gdm_uid       = -1;
@@ -248,82 +245,6 @@ write_pid (void)
         }
 
         g_atexit (delete_pid);
-}
-
-static void
-gdm_final_cleanup (void)
-{
-        g_object_unref (manager);
-}
-
-/*
- * -------------------------------------
- * BEGIN Copyright status/holder unknown
- * -------------------------------------
- */
-static void
-main_saveenv (void)
-{
-        int i;
-
-        g_list_foreach (stored_env, (GFunc)g_free, NULL);
-        g_list_free (stored_env);
-        stored_env = NULL;
-
-        for (i = 0; environ[i] != NULL; i++) {
-                char *env = environ[i];
-                stored_env = g_list_prepend (stored_env, g_strdup (env));
-        }
-}
-
-static void
-main_restoreenv (void)
-{
-        GList *li;
-
-#ifdef HAVE_CLEARENV
-        clearenv ();
-#else
-        if (environ != NULL) {
-                environ[0] = NULL;
-        }
-#endif
-
-        /* FIXME: leaks */
-
-        for (li = stored_env; li != NULL; li = li->next) {
-                putenv (g_strdup (li->data));
-        }
-}
-
-static void
-gdm_restart_now (void)
-{
-        gdm_info (_("GDM restarting ..."));
-        gdm_final_cleanup ();
-        main_restoreenv ();
-
-        do {
-                errno = 0;
-                execvp (stored_argv[0], stored_argv);
-        } while (errno == EINTR);
-
-        g_warning (_("Failed to restart self"));
-        _exit (1);
-}
-
-static void
-store_argv (int   argc,
-            char *argv[])
-{
-        int i;
-
-        stored_argv = g_new0 (char *, argc + 1);
-        for (i = 0; i < argc; i++) {
-                stored_argv[i] = g_strdup (argv[i]);
-        }
-        stored_argv[i] = NULL;
-        stored_argc = argc;
 }
 
 static void
@@ -621,9 +542,6 @@ main (int    argc,
         ret = 1;
 
         g_type_init ();
-
-        store_argv (argc, argv);
-        main_saveenv ();
 
         context = g_option_context_new (_("GNOME Display Manager"));
         g_option_context_add_main_entries (context, entries, NULL);

@@ -44,6 +44,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 
 #include <X11/Xlib.h>
@@ -873,6 +874,8 @@ gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
 #define SIN(__s)   ((struct sockaddr_in *) __s)
 #define SIN6(__s)  ((struct sockaddr_in6 *) __s)
 
+#if 0
+/* FIXME: Add chooser support */
 static void
 set_port_for_request (GdmAddress *address,
                       ARRAY8     *port)
@@ -896,6 +899,7 @@ set_port_for_request (GdmAddress *address,
                 break;
         }
 }
+#endif
 
 static void
 set_address_for_request (GdmAddress *address,

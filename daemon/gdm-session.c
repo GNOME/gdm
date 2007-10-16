@@ -1170,12 +1170,12 @@ handle_connection (DBusServer      *server,
                 dbus_connection_setup_with_g_main (new_connection, NULL);
 
                 g_debug ("worker connection is %p", new_connection);
-#if 0
+
                 dbus_connection_add_filter (new_connection,
                                             connection_filter_function,
                                             session,
                                             NULL);
-#endif
+
                 dbus_connection_set_exit_on_disconnect (new_connection, FALSE);
 
                 dbus_connection_set_unix_user_function (new_connection,

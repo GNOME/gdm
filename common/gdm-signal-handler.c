@@ -322,7 +322,10 @@ gdm_signal_handler_init (GdmSignalHandler *handler)
 
         handler->priv = GDM_SIGNAL_HANDLER_GET_PRIVATE (handler);
 
-        handler->priv->lookup = g_hash_table_new (NULL, NULL);
+        handler->priv->lookup = g_hash_table_new_full (NULL,
+                                                       NULL,
+                                                       NULL,
+                                                       (GDestroyNotify)signal_list_free);
 
         if (pipe (signal_pipes) == -1) {
                 g_error ("Could not create pipe() for signal handling");

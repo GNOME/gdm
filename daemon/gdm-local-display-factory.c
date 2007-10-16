@@ -48,16 +48,8 @@ struct GdmLocalDisplayFactoryPrivate
 };
 
 enum {
-        DISPLAY_ADDED,
-        DISPLAY_REMOVED,
-        LAST_SIGNAL
-};
-
-enum {
         PROP_0,
 };
-
-static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryClass *klass);
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);

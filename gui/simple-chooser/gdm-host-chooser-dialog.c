@@ -144,7 +144,7 @@ on_response (GdmHostChooserDialog *dialog,
 {
         switch (response_id) {
         case GTK_RESPONSE_APPLY:
-                gdm_host_chooser_widget_refresh (dialog->priv->chooser_widget);
+                gdm_host_chooser_widget_refresh (GDM_HOST_CHOOSER_WIDGET (dialog->priv->chooser_widget));
                 g_signal_stop_emission_by_name (dialog, "response");
                 break;
         default:
