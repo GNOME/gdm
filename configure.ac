@@ -474,9 +474,10 @@ dnl - Check for utmp stuff
 dnl ---------------------------------------------------------------------------
 
 AC_CHECK_HEADERS(utmp.h utmpx.h libutil.h sys/param.h)
-AC_CHECK_FUNC(getutmpx updwtmpx)
+AC_CHECK_FUNCS([getutxent updwtmpx updwtmp])
 AC_CHECK_LIB(util,login)
 AC_CHECK_LIB(util,logout)
+AC_CHECK_LIB(util,logwtmp)
 GDM_CHECK_UTMP
 
 AC_MSG_CHECKING(if utmpx structure has ut_syslen field)
