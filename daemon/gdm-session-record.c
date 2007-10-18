@@ -47,8 +47,8 @@
 #define GDM_NEW_SESSION_RECORDS_FILE "/var/log/wtmp"
 #endif
 
-static void
-gdm_session_write_record (GdmSessionRecordType  record_type,
+void
+gdm_session_record_write (GdmSessionRecordType  record_type,
                           GPid                  session_pid,
                           const char           *user_name,
                           const char           *host_name,
