@@ -30,6 +30,7 @@
 #include <errno.h>
 #include <pwd.h>
 #include <grp.h>
+#include <signal.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
