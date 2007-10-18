@@ -43,7 +43,9 @@
 
 #if defined(HAVE_UTMPX_H)
 #include <utmpx.h>
-#elif defined(HAVE_UTMP_H)
+#endif
+
+#if defined(HAVE_UTMP_H)
 #include <utmp.h>
 #endif
 
@@ -184,14 +186,13 @@ static void
 gdm_session_write_record (GdmSession           *session,
                           GdmSessionRecordType  record_type)
 {
-#if defined(HAVE_UTMPX_H)
-        struct utmpx session_record = { 0 };
-        struct utmpx *u = NULL;
-#elif defined(HAVE_UTMP_H)
-        struct utmp session_record = { 0 };
-#endif
+        UTMP     session_record = { 0 };
+        UTMP    *u;
         GTimeVal now = { 0 };
-        char *hostname, *username;
+        char    *hostname;
+        char    *username;
+
+        u = NULL;
 
         g_debug ("Writing %s utmp/wtmp record",
                  record_type == GDM_SESSION_RECORD_TYPE_LOGIN  ? "session" :
@@ -355,7 +356,7 @@ gdm_session_write_record (GdmSession           *session,
                 endutxent ();
 
                 /* Add new entry if update did not work */
-                if (u == (struct utmpx *)NULL) {
+                if (u == NULL) {
                         g_debug ("Adding new utmp record");
                         pututxline (&session_record);
                 }

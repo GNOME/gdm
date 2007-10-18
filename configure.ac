@@ -11,6 +11,9 @@ AM_INIT_AUTOMAKE
 
 AM_MAINTAINER_MODE
 
+# for utmpx stuff
+AC_GNU_SOURCE
+
 AC_ISC_POSIX
 AC_PROG_CC
 AC_STDC_HEADERS
@@ -475,9 +478,9 @@ dnl ---------------------------------------------------------------------------
 
 AC_CHECK_HEADERS(utmp.h utmpx.h libutil.h sys/param.h)
 AC_CHECK_FUNCS([getutxent updwtmpx updwtmp])
-AC_CHECK_LIB(util,login)
-AC_CHECK_LIB(util,logout)
-AC_CHECK_LIB(util,logwtmp)
+AC_CHECK_LIB(util, login)
+AC_CHECK_LIB(util, logout)
+AC_CHECK_LIB(util, logwtmp)
 GDM_CHECK_UTMP
 
 AC_MSG_CHECKING(if utmpx structure has ut_syslen field)
