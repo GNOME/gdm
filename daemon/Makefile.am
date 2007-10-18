@@ -94,6 +94,8 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-server.h			\
 	gdm-session.c			\
 	gdm-session.h			\
+	gdm-session-record.c		\
+	gdm-session-record.h		\
 	gdm-session-worker-job.c	\
 	gdm-session-worker-job.h	\
 	gdm-slave.c			\
@@ -147,6 +149,8 @@ gdm_product_slave_SOURCES = 		\
 	gdm-server.h			\
 	gdm-session.c			\
 	gdm-session.h			\
+	gdm-session-record.c		\
+	gdm-session-record.h		\
 	gdm-session-worker-job.c	\
 	gdm-session-worker-job.h	\
 	gdm-slave.c			\
