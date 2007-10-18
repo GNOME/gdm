@@ -67,6 +67,9 @@ noinst_PROGRAMS = 		\
 test_session_SOURCES = 		\
 	test-session.c	 	\
 	gdm-session.c		\
+	gdm-session.h		\
+	gdm-session-record.c	\
+	gdm-session-record.h	\
 	gdm-session-worker-job.c\
 	$(NULL)
 
