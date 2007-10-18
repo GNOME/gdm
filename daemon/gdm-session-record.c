@@ -55,11 +55,11 @@ gdm_session_write_record (GdmSessionRecordType  record_type,
                           const char           *x11_display_name,
                           const char           *display_device)
 {
-        UTMP     session_record = { 0 };
-        UTMP    *u;
-        GTimeVal now = { 0 };
-        char    *hostname;
-        char    *username;
+        UTMP        session_record = { 0 };
+        UTMP       *u;
+        GTimeVal    now = { 0 };
+        char       *hostname;
+        const char *username;
 
         u = NULL;
 
