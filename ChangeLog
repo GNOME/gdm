@@ -1,3 +1,10 @@
+2007-10-18  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm-session-record.c: Some trivial fixes.  The #ifdef
+	  GETUTXENT got lost in the logout function.  It should match the
+	  login function.  Also make sure to set both tv_sec and tv_usec when
+	  doing logout.
+
 2007-10-19  William Jon McCann  <mccann@jhu.edu>
 
 	* common/gdm-signal-handler.c: (signal_io_watch), (catch_signal),

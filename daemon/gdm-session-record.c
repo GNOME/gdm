@@ -236,6 +236,7 @@ gdm_session_record_login (GPid                  session_pid,
          * Handle utmp
          * Update if entry already exists
          */
+#if defined(HAVE_GETUTXENT)
         setutxent ();
 
         while ((u = getutxent ()) != NULL) {
@@ -256,6 +257,7 @@ gdm_session_record_login (GPid                  session_pid,
                 g_debug ("Adding new utmp record");
                 pututxline (&session_record);
         }
+#endif
 }
 
 void
@@ -309,7 +311,8 @@ gdm_session_record_logout (GPid                  session_pid,
 
                 u->ut_type = DEAD_PROCESS;
 #if defined(HAVE_UT_UT_TV)
-                u->ut_tv.tv_sec = session_record.ut_tv.tv_sec;
+                u->ut_tv.tv_sec  = session_record.ut_tv.tv_sec;
+                u->ut_tv.tv_usec = session_record.ut_tv.tv_usec;
 #elif defined(HAVE_UT_UT_TIME)
                 u->ut_time = session_record.ut_time;
 #endif
