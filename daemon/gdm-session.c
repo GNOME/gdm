@@ -160,12 +160,11 @@ static void
 gdm_session_user_verification_error_handler (GdmSession      *session,
                                              GError          *error)
 {
-        gdm_session_record_write (GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT,
-                                  session->priv->session_pid,
-                                  session->priv->username,
-                                  session->priv->hostname,
-                                  session->priv->x11_display_name,
-                                  session->priv->display_device);
+        gdm_session_record_failed (session->priv->session_pid,
+                                   session->priv->username,
+                                   session->priv->hostname,
+                                   session->priv->x11_display_name,
+                                   session->priv->display_device);
 }
 
 static void
@@ -173,8 +172,7 @@ gdm_session_started_handler (GdmSession      *session,
                              GPid             pid)
 {
 
-        gdm_session_record_write (GDM_SESSION_RECORD_TYPE_LOGIN,
-                                  session->priv->session_pid,
+        gdm_session_record_login (session->priv->session_pid,
                                   session->priv->username,
                                   session->priv->hostname,
                                   session->priv->x11_display_name,
@@ -185,8 +183,7 @@ static void
 gdm_session_startup_error_handler (GdmSession      *session,
                                    GError          *error)
 {
-        gdm_session_record_write (GDM_SESSION_RECORD_TYPE_LOGIN,
-                                  session->priv->session_pid,
+        gdm_session_record_login (session->priv->session_pid,
                                   session->priv->username,
                                   session->priv->hostname,
                                   session->priv->x11_display_name,
@@ -197,12 +194,11 @@ static void
 gdm_session_exited_handler (GdmSession *session,
                             int        exit_code)
 {
-        gdm_session_record_write (GDM_SESSION_RECORD_TYPE_LOGOUT,
-                                  session->priv->session_pid,
-                                  session->priv->username,
-                                  session->priv->hostname,
-                                  session->priv->x11_display_name,
-                                  session->priv->display_device);
+        gdm_session_record_logout (session->priv->session_pid,
+                                   session->priv->username,
+                                   session->priv->hostname,
+                                   session->priv->x11_display_name,
+                                   session->priv->display_device);
 }
 
 static void
@@ -1392,12 +1388,11 @@ gdm_session_close (GdmSession *session)
 
         if (session->priv->job != NULL) {
                 if (session->priv->is_running) {
-                        gdm_session_record_write (GDM_SESSION_RECORD_TYPE_LOGOUT,
-                                                  session->priv->session_pid,
-                                                  session->priv->username,
-                                                  session->priv->hostname,
-                                                  session->priv->x11_display_name,
-                                                  session->priv->display_device);
+                        gdm_session_record_logout (session->priv->session_pid,
+                                                   session->priv->username,
+                                                   session->priv->hostname,
+                                                   session->priv->x11_display_name,
+                                                   session->priv->display_device);
                 }
 
                 cancel_pending_query (session);

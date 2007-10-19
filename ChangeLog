@@ -1,5 +1,18 @@
 2007-10-18  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-record.c: (record_set_username),
+	(record_set_timestamp), (record_set_pid), (record_set_id),
+	(record_set_host), (record_set_line), (gdm_session_record_login),
+	(gdm_session_record_logout), (gdm_session_record_failed):
+	* daemon/gdm-session-record.h:
+	* daemon/gdm-session.c:
+	(gdm_session_user_verification_error_handler),
+	(gdm_session_started_handler), (gdm_session_startup_error_handler),
+	(gdm_session_exited_handler), (gdm_session_close):
+	Try to reduce the complexity of the utmp/wtmp recording code.
+
+2007-10-18  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/Makefile.am (test_session_SOURCES): Add file.
 
 	* daemon/gdm-session-record.c (gdm_session_write_record):

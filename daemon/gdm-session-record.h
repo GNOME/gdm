@@ -25,19 +25,24 @@
 
 G_BEGIN_DECLS
 
-typedef enum {
-        GDM_SESSION_RECORD_TYPE_LOGIN,
-        GDM_SESSION_RECORD_TYPE_FAILED_ATTEMPT,
-        GDM_SESSION_RECORD_TYPE_LOGOUT,
-} GdmSessionRecordType;
-
 void
-gdm_session_record_write (GdmSessionRecordType  record_type,
-                          GPid                  session_pid,
-                          const char           *user_name,
-                          const char           *host_name,
-                          const char           *x11_display_name,
-                          const char           *display_device);
+gdm_session_record_login  (GPid                  session_pid,
+                           const char           *user_name,
+                           const char           *host_name,
+                           const char           *x11_display_name,
+                           const char           *display_device);
+void
+gdm_session_record_logout (GPid                  session_pid,
+                           const char           *user_name,
+                           const char           *host_name,
+                           const char           *x11_display_name,
+                           const char           *display_device);
+void
+gdm_session_record_failed (GPid                  session_pid,
+                           const char           *user_name,
+                           const char           *host_name,
+                           const char           *x11_display_name,
+                           const char           *display_device);
 
 
 G_END_DECLS
