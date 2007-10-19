@@ -42,14 +42,19 @@
 #define GDM_SIGNAL_HANDLER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIGNAL_HANDLER, GdmSignalHandlerPrivate))
 
 typedef struct {
+        int                  signal_number;
         GdmSignalHandlerFunc func;
         gpointer             data;
+        guint                id;
 } CallbackData;
 
 struct GdmSignalHandlerPrivate
 {
         GMainLoop  *main_loop;
         GHashTable *lookup;
+        GHashTable *id_lookup;
+        GHashTable *action_lookup;
+        guint       next_id;
 };
 
 static void     gdm_signal_handler_class_init   (GdmSignalHandlerClass *klass);
@@ -98,6 +103,8 @@ signal_io_watch (GIOChannel       *ioc,
         gsize    bytes_read;
         int      i;
 
+        g_debug ("SIGNAL");
+
         block_signals_push ();
 
         g_io_channel_read_chars (ioc, buf, sizeof (buf), &bytes_read, NULL);
@@ -121,11 +128,13 @@ signal_io_watch (GIOChannel       *ioc,
                         gboolean      res;
                         CallbackData *data;
 
-                        data = l->data;
-                        g_debug ("running %d handler: %p", signum, data->func);
-                        res = data->func (signum, data->data);
-                        if (! res) {
-                                is_fatal = TRUE;
+                        data = g_hash_table_lookup (handler->priv->id_lookup, l->data);
+                        if (data != NULL) {
+                                g_debug ("running %d handler: %p", signum, data->func);
+                                res = data->func (signum, data->data);
+                                if (! res) {
+                                        is_fatal = TRUE;
+                                }
                         }
                 }
         }
@@ -253,17 +262,43 @@ static void
 catch_signal (GdmSignalHandler *handler,
               int               signal_number)
 {
-        struct sigaction action;
+        struct sigaction  action;
+        struct sigaction *old_action;
+
+        g_debug ("Registering for %d signals", signal_number);
 
         action.sa_handler = signal_handler;
         sigemptyset (&action.sa_mask);
         action.sa_flags = 0;
 
-        /* FIXME: save old action? */
-        sigaction (signal_number, &action, NULL);
+        old_action = g_new0 (struct sigaction, 1);
+
+        sigaction (signal_number, &action, old_action);
+
+        g_hash_table_insert (handler->priv->action_lookup,
+                             GINT_TO_POINTER (signal_number),
+                             old_action);
 }
 
-void
+static void
+uncatch_signal (GdmSignalHandler *handler,
+                int               signal_number)
+{
+        struct sigaction *old_action;
+
+        g_debug ("Unregistering for %d signals", signal_number);
+
+        old_action = g_hash_table_lookup (handler->priv->action_lookup,
+                                          GINT_TO_POINTER (signal_number));
+        g_hash_table_remove (handler->priv->action_lookup,
+                             GINT_TO_POINTER (signal_number));
+
+        sigaction (signal_number, old_action, NULL);
+
+        g_free (old_action);
+}
+
+guint
 gdm_signal_handler_add (GdmSignalHandler    *handler,
                         int                  signal_number,
                         GdmSignalHandlerFunc callback,
@@ -272,20 +307,123 @@ gdm_signal_handler_add (GdmSignalHandler    *handler,
         CallbackData *cdata;
         GSList       *list;
 
-        g_return_if_fail (GDM_IS_SIGNAL_HANDLER (handler));
+        g_return_val_if_fail (GDM_IS_SIGNAL_HANDLER (handler), 0);
 
         cdata = g_new0 (CallbackData, 1);
+        cdata->signal_number = signal_number;
         cdata->func = callback;
         cdata->data = data;
+        cdata->id = handler->priv->next_id++;
 
-        list = g_hash_table_lookup (handler->priv->lookup, GINT_TO_POINTER (signal_number));
-        if (list == NULL) {
+        g_debug ("Adding handler %u: signum=%d %p", cdata->id, cdata->signal_number, cdata->func);
+
+        if (g_hash_table_lookup (handler->priv->action_lookup, GINT_TO_POINTER (signal_number)) == NULL) {
                 catch_signal (handler, signal_number);
         }
 
-        list = g_slist_prepend (list, cdata);
-        g_debug ("Inserting %d callback %p", signal_number, cdata->func);
+        /* ID lookup owns the CallbackData */
+        g_hash_table_insert (handler->priv->id_lookup, GUINT_TO_POINTER (cdata->id), cdata);
+
+        list = g_hash_table_lookup (handler->priv->lookup, GINT_TO_POINTER (signal_number));
+        list = g_slist_prepend (list, GUINT_TO_POINTER (cdata->id));
+
         g_hash_table_insert (handler->priv->lookup, GINT_TO_POINTER (signal_number), list);
+
+        return cdata->id;
+}
+
+static void
+callback_data_free (CallbackData *d)
+{
+        g_free (d);
+}
+
+static void
+gdm_signal_handler_remove_and_free_data (GdmSignalHandler *handler,
+                                         CallbackData     *cdata)
+{
+        GSList *list;
+
+        g_return_if_fail (GDM_IS_SIGNAL_HANDLER (handler));
+
+        list = g_hash_table_lookup (handler->priv->lookup, GINT_TO_POINTER (cdata->signal_number));
+        list = g_slist_remove_all (list, GUINT_TO_POINTER (cdata->id));
+        if (list == NULL) {
+                uncatch_signal (handler, cdata->signal_number);
+        }
+
+        g_debug ("Removing handler %u: signum=%d %p", cdata->signal_number, cdata->id, cdata->func);
+        /* put changed list back in */
+        g_hash_table_insert (handler->priv->lookup, GINT_TO_POINTER (cdata->signal_number), list);
+
+        g_hash_table_remove (handler->priv->id_lookup, GUINT_TO_POINTER (cdata->id));
+}
+
+void
+gdm_signal_handler_remove (GdmSignalHandler    *handler,
+                           guint                id)
+{
+        CallbackData *found;
+
+        g_return_if_fail (GDM_IS_SIGNAL_HANDLER (handler));
+
+        found = g_hash_table_lookup (handler->priv->id_lookup, GUINT_TO_POINTER (id));
+        if (found != NULL) {
+                gdm_signal_handler_remove_and_free_data (handler, found);
+                found = NULL;
+        }
+}
+
+static CallbackData *
+find_callback_data_by_func (GdmSignalHandler    *handler,
+                            guint                signal_number,
+                            GdmSignalHandlerFunc callback,
+                            gpointer             data)
+{
+        GSList       *list;
+        GSList       *l;
+        CallbackData *found;
+
+        found = NULL;
+
+        list = g_hash_table_lookup (handler->priv->lookup, GINT_TO_POINTER (signal_number));
+
+        for (l = list; l != NULL; l = l->next) {
+                guint         id;
+                CallbackData *d;
+
+                id = GPOINTER_TO_UINT (l->data);
+
+                d = g_hash_table_lookup (handler->priv->id_lookup, GUINT_TO_POINTER (id));
+                if (d != NULL
+                    && d->func == callback
+                    && d->data == data) {
+                        found = d;
+                        break;
+                }
+        }
+
+        return found;
+}
+
+void
+gdm_signal_handler_remove_func (GdmSignalHandler    *handler,
+                                guint                signal_number,
+                                GdmSignalHandlerFunc callback,
+                                gpointer             data)
+{
+        CallbackData *found;
+
+        g_return_if_fail (GDM_IS_SIGNAL_HANDLER (handler));
+
+        found = find_callback_data_by_func (handler, signal_number, callback, data);
+
+        if (found != NULL) {
+                gdm_signal_handler_remove_and_free_data (handler, found);
+                found = NULL;
+        }
+
+        /* FIXME: once all handlers are removed deregister signum handler */
 }
 
 static void
@@ -301,7 +439,6 @@ gdm_signal_handler_class_init (GdmSignalHandlerClass *klass)
 static void
 signal_list_free (GSList *list)
 {
-        g_slist_foreach (list, (GFunc)g_free, NULL);
         g_slist_free (list);
 }
 
@@ -322,10 +459,18 @@ gdm_signal_handler_init (GdmSignalHandler *handler)
 
         handler->priv = GDM_SIGNAL_HANDLER_GET_PRIVATE (handler);
 
+        handler->priv->next_id = 1;
+
         handler->priv->lookup = g_hash_table_new_full (NULL,
                                                        NULL,
                                                        NULL,
                                                        (GDestroyNotify)signal_list_free);
+        handler->priv->id_lookup = g_hash_table_new_full (NULL,
+                                                          NULL,
+                                                          NULL,
+                                                          (GDestroyNotify)callback_data_free);
+
+        handler->priv->action_lookup = g_hash_table_new (NULL, NULL);
 
         if (pipe (signal_pipes) == -1) {
                 g_error ("Could not create pipe() for signal handling");
@@ -352,8 +497,9 @@ gdm_signal_handler_finalize (GObject *object)
 
         g_return_if_fail (handler->priv != NULL);
 
-        /* FIXME: free hash lists */
         g_hash_table_destroy (handler->priv->lookup);
+        g_hash_table_destroy (handler->priv->id_lookup);
+        g_hash_table_destroy (handler->priv->action_lookup);
 
         G_OBJECT_CLASS (gdm_signal_handler_parent_class)->finalize (object);
 }

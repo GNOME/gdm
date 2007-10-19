@@ -164,7 +164,7 @@ signal_cb (int        signo,
 }
 
 static void
-setup_ready_signal (GdmServer *server)
+add_ready_handler (GdmServer *server)
 {
         GdmSignalHandler *signal_handler;
 
@@ -173,6 +173,19 @@ setup_ready_signal (GdmServer *server)
                                 SIGUSR1,
                                 (GdmSignalHandlerFunc)signal_cb,
                                 server);
+        g_object_unref (signal_handler);
+}
+
+static void
+remove_ready_handler (GdmServer *server)
+{
+        GdmSignalHandler *signal_handler;
+
+        signal_handler = gdm_signal_handler_new ();
+        gdm_signal_handler_remove_func (signal_handler,
+                                        SIGUSR1,
+                                        (GdmSignalHandlerFunc)signal_cb,
+                                        server);
         g_object_unref (signal_handler);
 }
 
@@ -612,7 +625,7 @@ gdm_server_spawn (GdmServer  *server,
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
 
-        g_debug ("Started X server process: %d", (int)server->priv->pid);
+        g_debug ("Started X server process %d - waiting for READY", (int)server->priv->pid);
 
         server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
                                                           (GChildWatchFunc)server_child_watch,
@@ -854,7 +867,7 @@ gdm_server_init (GdmServer *server)
         server->priv->command = g_strdup (X_SERVER " -br -verbose");
         server->priv->log_dir = g_strdup (LOGDIR);
 
-        setup_ready_signal (server);
+        add_ready_handler (server);
 }
 
 static void
@@ -868,6 +881,8 @@ gdm_server_finalize (GObject *object)
         server = GDM_SERVER (object);
 
         g_return_if_fail (server->priv != NULL);
+
+        remove_ready_handler (server);
 
         gdm_server_stop (server);
 

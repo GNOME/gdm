@@ -1,3 +1,18 @@
+2007-10-19  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-signal-handler.c: (signal_io_watch), (catch_signal),
+	(uncatch_signal), (gdm_signal_handler_add), (callback_data_free),
+	(gdm_signal_handler_remove_and_free_data),
+	(gdm_signal_handler_remove), (find_callback_data_by_func),
+	(gdm_signal_handler_remove_func), (signal_list_free),
+	(gdm_signal_handler_init), (gdm_signal_handler_finalize):
+	* common/gdm-signal-handler.h:
+	* daemon/gdm-server.c: (add_ready_handler), (remove_ready_handler),
+	(gdm_server_spawn), (gdm_server_init), (gdm_server_finalize):
+	Assign ids to signal handlers.  Add functions to remove handlers.
+	Restore sigaction when no handlers are present.  Fix some
+	memory management bugs.
+
 2007-10-18  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-session-record.c: (record_set_username),
