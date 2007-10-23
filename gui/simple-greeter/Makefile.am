@@ -20,13 +20,14 @@ INCLUDES = \
 	$(SIMPLE_GREETER_CFLAGS)			\
 	$(NULL)
 
-noinst_PROGRAMS = 		\
-	test-greeter-background	\
-	test-greeter-panel	\
-	test-language-chooser	\
-	test-session-chooser	\
-	test-user-chooser	\
-	test-user-manager	\
+noinst_PROGRAMS = 			\
+	test-greeter-background		\
+	test-greeter-login-window	\
+	test-greeter-panel		\
+	test-language-chooser		\
+	test-session-chooser		\
+	test-user-chooser		\
+	test-user-manager		\
 	$(NULL)
 
 test_greeter_background_SOURCES = 	\
@@ -37,6 +38,25 @@ test_greeter_background_SOURCES = 	\
 
 test_greeter_background_LDADD =	\
 	$(SIMPLE_GREETER_LIBS)	\
+	$(NULL)
+
+test_greeter_login_window_SOURCES = 	\
+	test-greeter-login-window.c	\
+	gdm-greeter-login-window.h	\
+	gdm-greeter-login-window.c	\
+	gdm-user-chooser-widget.h	\
+	gdm-user-chooser-widget.c	\
+	gdm-user-chooser-dialog.h	\
+	gdm-user-chooser-dialog.c	\
+	gdm-user-manager.h		\
+	gdm-user-manager.c		\
+	gdm-user-private.h		\
+	gdm-user.h			\
+	gdm-user.c			\
+	$(NULL)
+
+test_greeter_login_window_LDADD =	\
+	$(SIMPLE_GREETER_LIBS)		\
 	$(NULL)
 
 test_greeter_panel_SOURCES = 	\
