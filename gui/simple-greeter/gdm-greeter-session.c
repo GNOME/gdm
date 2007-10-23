@@ -31,8 +31,9 @@
 
 #include "gdm-greeter-session.h"
 #include "gdm-greeter-client.h"
-#include "gdm-simple-greeter.h"
-#include "gdm-greeter.h"
+#include "gdm-greeter-panel.h"
+#include "gdm-greeter-background.h"
+#include "gdm-greeter-login-window.h"
 
 typedef enum {
         GDM_GREETER_SESSION_LEVEL_NONE,
@@ -48,8 +49,12 @@ typedef enum {
 
 struct GdmGreeterSessionPrivate
 {
-        GdmGreeterClient *client;
-        GdmGreeter       *greeter;
+        GdmGreeterClient      *client;
+        GtkWidget             *login_window;
+        GtkWidget             *panel;
+        GtkWidget             *background;
+
+        GdmGreeterSessionLevel level;
 };
 
 enum {
@@ -71,7 +76,7 @@ on_info (GdmGreeterClient  *client,
 {
         g_debug ("GREETER INFO: %s", text);
 
-        gdm_greeter_info (session->priv->greeter, text);
+        gdm_greeter_login_window_info (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
 
 static void
@@ -81,7 +86,7 @@ on_problem (GdmGreeterClient  *client,
 {
         g_debug ("GREETER PROBLEM: %s", text);
 
-        gdm_greeter_problem (session->priv->greeter, text);
+        gdm_greeter_login_window_problem (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
 
 static void
@@ -90,7 +95,7 @@ on_ready (GdmGreeterClient  *client,
 {
         g_debug ("GREETER SERVER READY");
 
-        gdm_greeter_ready (session->priv->greeter);
+        gdm_greeter_login_window_ready (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
 
 static void
@@ -99,7 +104,7 @@ on_reset (GdmGreeterClient  *client,
 {
         g_debug ("GREETER RESET");
 
-        gdm_greeter_reset (session->priv->greeter);
+        gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
 
 static void
@@ -109,7 +114,7 @@ on_info_query (GdmGreeterClient  *client,
 {
         g_debug ("GREETER Info query: %s", text);
 
-        gdm_greeter_info_query (session->priv->greeter, text);
+        gdm_greeter_login_window_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
 
 static void
@@ -119,73 +124,73 @@ on_secret_info_query (GdmGreeterClient  *client,
 {
         g_debug ("GREETER Secret info query: %s", text);
 
-        gdm_greeter_secret_info_query (session->priv->greeter, text);
+        gdm_greeter_login_window_secret_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
 
 static void
-on_begin_verification (GdmGreeter        *greeter,
-                       const char        *username,
-                       GdmGreeterSession *session)
+on_begin_verification (GdmGreeterLoginWindow *login_window,
+                       const char            *username,
+                       GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_begin_verification (session->priv->client,
                                                     username);
 }
 
 static void
-on_query_answer (GdmGreeter        *greeter,
-                 const char        *text,
-                 GdmGreeterSession *session)
+on_query_answer (GdmGreeterLoginWindow *login_window,
+                 const char            *text,
+                 GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_answer_query (session->priv->client,
                                               text);
 }
 
 static void
-on_select_session (GdmGreeter        *greeter,
-                   const char        *text,
-                   GdmGreeterSession *session)
+on_select_session (GdmGreeterLoginWindow *login_window,
+                   const char            *text,
+                   GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_select_session (session->priv->client,
                                                 text);
 }
 
 static void
-on_select_language (GdmGreeter        *greeter,
-                    const char        *text,
-                    GdmGreeterSession *session)
+on_select_language (GdmGreeterLoginWindow *login_window,
+                    const char            *text,
+                    GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_select_language (session->priv->client,
                                                  text);
 }
 
 static void
-on_select_user (GdmGreeter        *greeter,
-                const char        *text,
-                GdmGreeterSession *session)
+on_select_user (GdmGreeterLoginWindow *login_window,
+                const char            *text,
+                GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_select_user (session->priv->client,
                                              text);
 }
 
 static void
-on_select_hostname (GdmGreeter        *greeter,
-                    const char        *text,
-                    GdmGreeterSession *session)
+on_select_hostname (GdmGreeterLoginWindow *login_window,
+                    const char            *text,
+                    GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_select_hostname (session->priv->client,
                                                  text);
 }
 
 static void
-on_cancelled (GdmGreeter        *greeter,
-              GdmGreeterSession *session)
+on_cancelled (GdmGreeterLoginWindow *login_window,
+              GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_cancel (session->priv->client);
 }
 
 static void
-on_disconnected (GdmGreeter        *greeter,
-                 GdmGreeterSession *session)
+on_disconnected (GdmGreeterLoginWindow *login_window,
+                 GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_disconnect (session->priv->client);
 }
@@ -193,44 +198,130 @@ on_disconnected (GdmGreeter        *greeter,
 static void
 start_login_window (GdmGreeterSession *session)
 {
-        char *display_id;
+        gboolean is_local;
 
-        display_id = gdm_greeter_client_call_get_display_id (session->priv->client);
-        session->priv->greeter = gdm_simple_greeter_new (display_id);
-        g_free (display_id);
+        is_local = gdm_greeter_client_get_display_is_local (session->priv->client);
 
-        g_signal_connect (session->priv->greeter,
+        session->priv->login_window = gdm_greeter_login_window_new (is_local);
+
+        g_signal_connect (session->priv->login_window,
                           "begin-verification",
                           G_CALLBACK (on_begin_verification),
                           NULL);
-        g_signal_connect (session->priv->greeter,
+        g_signal_connect (session->priv->login_window,
                           "query-answer",
                           G_CALLBACK (on_query_answer),
                           NULL);
-        g_signal_connect (session->priv->greeter,
+        g_signal_connect (session->priv->login_window,
                           "session-selected",
                           G_CALLBACK (on_select_session),
                           NULL);
-        g_signal_connect (session->priv->greeter,
+        g_signal_connect (session->priv->login_window,
                           "language-selected",
                           G_CALLBACK (on_select_language),
                           NULL);
-        g_signal_connect (session->priv->greeter,
+        g_signal_connect (session->priv->login_window,
                           "user-selected",
                           G_CALLBACK (on_select_user),
                           NULL);
-        g_signal_connect (session->priv->greeter,
+        g_signal_connect (session->priv->login_window,
                           "hostname-selected",
                           G_CALLBACK (on_select_hostname),
                           NULL);
-        g_signal_connect (session->priv->greeter,
+        g_signal_connect (session->priv->login_window,
                           "cancelled",
                           G_CALLBACK (on_cancelled),
                           NULL);
-        g_signal_connect (session->priv->greeter,
+        g_signal_connect (session->priv->login_window,
                           "disconnected",
                           G_CALLBACK (on_disconnected),
                           NULL);
+        gtk_widget_show (session->priv->login_window);
+}
+
+static void
+stop_login_window (GdmGreeterSession *session)
+{
+}
+
+static gboolean
+launch_compiz (GdmGreeterSession *session)
+{
+        GError  *error;
+        gboolean ret;
+
+        g_debug ("Launching compiz");
+
+        ret = FALSE;
+
+        error = NULL;
+        g_spawn_command_line_async ("gtk-window-decorator --replace", &error);
+        if (error != NULL) {
+                g_warning ("Error starting WM: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        error = NULL;
+        g_spawn_command_line_async ("compiz --replace", &error);
+        if (error != NULL) {
+                g_warning ("Error starting WM: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        ret = TRUE;
+
+        /* FIXME: should try to detect if it actually works */
+
+ out:
+        return ret;
+}
+
+static gboolean
+launch_metacity (GdmGreeterSession *session)
+{
+        GError  *error;
+        gboolean ret;
+
+        g_debug ("Launching metacity");
+
+        ret = FALSE;
+
+        error = NULL;
+        g_spawn_command_line_async ("metacity --replace", &error);
+        if (error != NULL) {
+                g_warning ("Error starting WM: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        return ret;
+}
+
+static void
+start_panel (GdmGreeterSession *session)
+{
+        session->priv->panel = gdm_greeter_panel_new ();
+        gtk_widget_show (session->priv->panel);
+}
+
+static void
+start_background (GdmGreeterSession *session)
+{
+        session->priv->background = gdm_greeter_background_new ();
+        gtk_widget_show (session->priv->background);
+}
+
+static void
+start_window_manager (GdmGreeterSession *session)
+{
+        if (! launch_compiz (session)) {
+                launch_metacity (session);
+        }
 }
 
 static void
@@ -241,17 +332,36 @@ gdm_greeter_session_set_level (GdmGreeterSession     *session,
         case GDM_GREETER_SESSION_LEVEL_NONE:
                 break;
         case GDM_GREETER_SESSION_LEVEL_STARTUP:
+                start_window_manager (session);
+                start_background (session);
                 break;
         case GDM_GREETER_SESSION_LEVEL_CONFIGURATION:
                 break;
         case GDM_GREETER_SESSION_LEVEL_LOGIN_WINDOW:
+                start_panel (session);
                 start_login_window (session);
                 break;
         case GDM_GREETER_SESSION_LEVEL_SHUTDOWN:
+                stop_login_window (session);
                 break;
         default:
                 g_assert_not_reached ();
                 break;
+        }
+
+        session->priv->level = level;
+}
+
+static void
+gdm_greeter_session_goto_level (GdmGreeterSession     *session,
+                                GdmGreeterSessionLevel level)
+{
+        while (level != session->priv->level) {
+                if (level < session->priv->level) {
+                        gdm_greeter_session_set_level (session, session->priv->level - 1);
+                } else {
+                        gdm_greeter_session_set_level (session, session->priv->level + 1);
+                }
         }
 }
 
@@ -265,7 +375,7 @@ gdm_greeter_session_start (GdmGreeterSession *session,
 
         res = gdm_greeter_client_start (session->priv->client, error);
 
-        gdm_greeter_session_set_level (session, GDM_GREETER_SESSION_LEVEL_LOGIN_WINDOW);
+        gdm_greeter_session_goto_level (session, GDM_GREETER_SESSION_LEVEL_LOGIN_WINDOW);
 
         return res;
 }
@@ -359,6 +469,8 @@ gdm_greeter_session_init (GdmGreeterSession *session)
 {
 
         session->priv = GDM_GREETER_SESSION_GET_PRIVATE (session);
+
+        session->priv->level = GDM_GREETER_SESSION_LEVEL_NONE;
 
         session->priv->client = gdm_greeter_client_new ();
         g_signal_connect (session->priv->client,

@@ -39,11 +39,17 @@
 #define SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
 #define SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
 
+#define GDM_DBUS_NAME              "org.gnome.DisplayManager"
+#define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
+
 struct GdmGreeterClientPrivate
 {
         DBusGConnection  *connection;
         DBusGProxy       *server_proxy;
         char             *address;
+
+        char             *display_id;
+        gboolean          display_is_local;
 };
 
 enum {
@@ -79,6 +85,14 @@ gdm_greeter_client_error_quark (void)
                 error_quark = g_quark_from_static_string ("gdm-greeter-client");
 
         return error_quark;
+}
+
+gboolean
+gdm_greeter_client_get_display_is_local (GdmGreeterClient *client)
+{
+        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+
+        return client->priv->display_is_local;
 }
 
 static void
@@ -357,6 +371,53 @@ proxy_destroyed (GObject *object,
         g_debug ("GREETER Proxy disconnected");
 }
 
+static void
+cache_display_values (GdmGreeterClient *client)
+{
+        DBusGProxy      *display_proxy;
+        DBusGConnection *connection;
+        GError          *error;
+        gboolean         res;
+
+        g_free (client->priv->display_id);
+        client->priv->display_id = gdm_greeter_client_call_get_display_id (client);
+        if (client->priv->display_id == NULL) {
+                return;
+        }
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+                return;
+        }
+
+        g_debug ("Creating proxy for %s", client->priv->display_id);
+        display_proxy = dbus_g_proxy_new_for_name (connection,
+                                                   GDM_DBUS_NAME,
+                                                   client->priv->display_id,
+                                                   GDM_DBUS_DISPLAY_INTERFACE);
+        /* cache some values up front */
+        error = NULL;
+        res = dbus_g_proxy_call (display_proxy,
+                                 "IsLocal",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &client->priv->display_is_local,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+        }
+}
+
 gboolean
 gdm_greeter_client_start (GdmGreeterClient *client,
                           GError           **error)
@@ -419,33 +480,36 @@ gdm_greeter_client_start (GdmGreeterClient *client,
         dbus_g_proxy_connect_signal (client->priv->server_proxy,
                                      "InfoQuery",
                                      G_CALLBACK (on_info_query),
-                                     NULL,
+                                     client,
                                      NULL);
         dbus_g_proxy_connect_signal (client->priv->server_proxy,
                                      "SecretInfoQuery",
                                      G_CALLBACK (on_secret_info_query),
-                                     NULL,
+                                     client,
                                      NULL);
         dbus_g_proxy_connect_signal (client->priv->server_proxy,
                                      "Info",
                                      G_CALLBACK (on_info),
-                                     NULL,
+                                     client,
                                      NULL);
         dbus_g_proxy_connect_signal (client->priv->server_proxy,
                                      "Problem",
                                      G_CALLBACK (on_problem),
-                                     NULL,
+                                     client,
                                      NULL);
         dbus_g_proxy_connect_signal (client->priv->server_proxy,
                                      "Ready",
                                      G_CALLBACK (on_ready),
-                                     NULL,
+                                     client,
                                      NULL);
         dbus_g_proxy_connect_signal (client->priv->server_proxy,
                                      "Reset",
                                      G_CALLBACK (on_reset),
-                                     NULL,
+                                     client,
                                      NULL);
+
+        cache_display_values (client);
+
         ret = TRUE;
 
  out:
@@ -588,6 +652,17 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterClientClass, ready),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+
+        gdm_greeter_client_signals[READY] =
+                g_signal_new ("reset",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, reset),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

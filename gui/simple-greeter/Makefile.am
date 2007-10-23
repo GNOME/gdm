@@ -110,12 +110,12 @@ libexec_PROGRAMS =			\
 
 gdm_simple_greeter_SOURCES =  		\
 	greeter-main.c 			\
-	gdm-simple-greeter.c		\
-	gdm-simple-greeter.h		\
 	gdm-greeter-client.h		\
 	gdm-greeter-client.c		\
 	gdm-greeter-session.h		\
 	gdm-greeter-session.c		\
+	gdm-greeter-login-window.c	\
+	gdm-greeter-login-window.h	\
 	gdm-greeter-panel.h		\
 	gdm-greeter-panel.c		\
 	gdm-greeter-background.h	\
@@ -139,7 +139,7 @@ gdm_simple_greeter_LDADD = 		\
 
 gladedir = $(pkgdatadir)
 glade_DATA = 				\
-	gdm-simple-greeter.glade	\
+	gdm-greeter-login-window.glade	\
 	$(NULL)
 
 EXTRA_DIST = 			\

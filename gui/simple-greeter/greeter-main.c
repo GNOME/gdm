@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <locale.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -31,6 +32,23 @@
 #include "gdm-settings-keys.h"
 
 #include "gdm-greeter-session.h"
+
+static void
+set_fatal_warnings (void)
+{
+        char **versions;
+
+        versions = g_strsplit (VERSION, ".", 3);
+        if (versions && versions [0] && versions [1]) {
+                int major;
+                major = atoi (versions [1]);
+                if ((major % 2) != 0) {
+                        g_setenv ("G_DEBUG", "fatal_warnings", FALSE);
+                        g_log_set_always_fatal (G_LOG_LEVEL_WARNING);
+                }
+        }
+        g_strfreev (versions);
+}
 
 int
 main (int argc, char *argv[])
@@ -45,15 +63,21 @@ main (int argc, char *argv[])
 
         setlocale (LC_ALL, "");
 
+        set_fatal_warnings ();
+
         g_type_init ();
 
         if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
                 exit (1);
         }
 
-        g_debug ("Greeter session for display %s xauthority:%s",
+        g_debug ("Greeter session pid=%d display=%s xauthority=%s",
+                 (int)getpid (),
                  g_getenv ("DISPLAY"),
                  g_getenv ("XAUTHORITY"));
+
+        /* FIXME: For testing to make it easier to attach gdb */
+        sleep (15);
 
         gdm_log_init ();
         gdm_log_set_debug (TRUE);

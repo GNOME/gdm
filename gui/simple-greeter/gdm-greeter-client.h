@@ -75,6 +75,7 @@ gboolean              gdm_greeter_client_start                          (GdmGree
                                                                          GError          **error);
 void                  gdm_greeter_client_stop                           (GdmGreeterClient *client);
 
+gboolean              gdm_greeter_client_get_display_is_local           (GdmGreeterClient *client);
 
 char *                gdm_greeter_client_call_get_display_id            (GdmGreeterClient *client);
 
