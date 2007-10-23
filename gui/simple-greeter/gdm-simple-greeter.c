@@ -151,7 +151,7 @@ set_sensitive (GdmSimpleGreeter *greeter,
         box = glade_xml_get_widget (greeter->priv->xml, "auth-input-box");
         gtk_widget_set_sensitive (box, sensitive);
 
-        box = glade_xml_get_widget (greeter->priv->xml, "auth-button-box");
+        box = glade_xml_get_widget (greeter->priv->xml, "buttonbox");
         gtk_widget_set_sensitive (box, sensitive);
 }
 
@@ -161,7 +161,7 @@ set_focus (GdmSimpleGreeter *greeter)
         GtkWidget *top_level;
         GtkWidget *entry;
 
-        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-entry");
         top_level = glade_xml_get_widget (greeter->priv->xml, "auth-window");
 
         gdk_window_focus (top_level->window, GDK_CURRENT_TIME);
@@ -214,11 +214,11 @@ reset_dialog (GdmSimpleGreeter *greeter)
 
         g_debug ("Resetting dialog");
 
-        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 
-        label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
+        label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), "");
 
         set_message (greeter, "");
@@ -299,11 +299,11 @@ gdm_simple_greeter_info_query (GdmGreeter *greeter,
 
         g_debug ("SIMPLE GREETER: info query: %s", text);
 
-        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 
-        label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
+        label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), text);
 
         set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
@@ -330,11 +330,11 @@ gdm_simple_greeter_secret_info_query (GdmGreeter *greeter,
 
         g_debug ("SIMPLE GREETER: secret info query: %s", text);
 
-        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
 
-        label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-label");
+        label = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), text);
 
         set_sensitive (GDM_SIMPLE_GREETER (greeter), TRUE);
@@ -379,8 +379,8 @@ gdm_simple_greeter_get_property (GObject    *object,
 }
 
 static void
-ok_button_clicked (GtkButton        *button,
-                   GdmSimpleGreeter *greeter)
+log_in_button_clicked (GtkButton        *button,
+                       GdmSimpleGreeter *greeter)
 {
         gboolean    res;
         GtkWidget  *entry;
@@ -389,7 +389,7 @@ ok_button_clicked (GtkButton        *button,
         set_busy (greeter);
         set_sensitive (greeter, FALSE);
 
-        entry = glade_xml_get_widget (greeter->priv->xml, "auth-entry");
+        entry = glade_xml_get_widget (greeter->priv->xml, "auth-prompt-entry");
         text = gtk_entry_get_text (GTK_ENTRY (entry));
         res = gdm_greeter_emit_answer_query (GDM_GREETER (greeter), text);
 }
@@ -515,18 +515,18 @@ create_greeter (GdmSimpleGreeter *greeter)
         }
         gtk_container_add (GTK_CONTAINER (box), greeter->priv->user_chooser);
 
-        button = glade_xml_get_widget (greeter->priv->xml, "auth-ok-button");
+        button = glade_xml_get_widget (greeter->priv->xml, "log-in-button");
         if (dialog != NULL) {
                 gtk_widget_grab_default (button);
-                g_signal_connect (button, "clicked", G_CALLBACK (ok_button_clicked), greeter);
+                g_signal_connect (button, "clicked", G_CALLBACK (log_in_button_clicked), greeter);
         }
 
-        button = glade_xml_get_widget (greeter->priv->xml, "auth-cancel-button");
+        button = glade_xml_get_widget (greeter->priv->xml, "cancel-button");
         if (dialog != NULL) {
                 g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), greeter);
         }
 
-        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-entry");
+        entry = glade_xml_get_widget (GDM_SIMPLE_GREETER (greeter)->priv->xml, "auth-prompt-entry");
         /* Only change the invisible character if it '*' otherwise assume it is OK */
         if ('*' == gtk_entry_get_invisible_char (GTK_ENTRY (entry))) {
                 gunichar invisible_char;
@@ -600,6 +600,7 @@ static void
 gdm_simple_greeter_init (GdmSimpleGreeter *simple_greeter)
 {
 
+        sleep (15);
         simple_greeter->priv = GDM_SIMPLE_GREETER_GET_PRIVATE (simple_greeter);
 
 }

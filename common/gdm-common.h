@@ -27,6 +27,9 @@
 
 G_BEGIN_DECLS
 
+int            gdm_signal_pid            (int pid,
+                                          int signal);
+
 gboolean       gdm_generate_random_bytes (GString *str,
                                           int      n_bytes);
 

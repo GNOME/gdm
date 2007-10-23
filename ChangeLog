@@ -1,9 +1,41 @@
+2007-10-23  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-common.c: (gdm_signal_pid):
+	* common/gdm-common.h:
+	* daemon/Makefile.am:
+	* daemon/gdm-greeter-session.c: (spawn_child_setup),
+	(stop_dbus_daemon), (gdm_greeter_session_stop):
+	* daemon/gdm-server.c: (gdm_server_stop):
+	* daemon/gdm-session-worker-job.c: (gdm_session_worker_job_stop):
+	* daemon/gdm-slave-proxy.c: (kill_slave):
+	* gui/simple-greeter/gdm-simple-greeter.c: (set_sensitive),
+	(set_focus), (reset_dialog), (gdm_simple_greeter_info_query),
+	(gdm_simple_greeter_secret_info_query), (log_in_button_clicked),
+	(create_greeter), (gdm_simple_greeter_init):
+	* gui/simple-greeter/gdm-simple-greeter.glade:
+	Rework the dialog design a bit.
+
 2007-10-18  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm-session-record.c: Some trivial fixes.  The #ifdef
 	  GETUTXENT got lost in the logout function.  It should match the
 	  login function.  Also make sure to set both tv_sec and tv_usec when
 	  doing logout.
+
+2007-10-19  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-common.c: (gdm_signal_pid):
+	* common/gdm-common.h:
+	* daemon/Makefile.am:
+	* daemon/gdm-greeter-session.c: (spawn_child_setup),
+	(stop_dbus_daemon), (gdm_greeter_session_stop):
+	* daemon/gdm-server.c: (gdm_server_stop):
+	* daemon/gdm-session-worker-job.c: (gdm_session_worker_job_stop):
+	* daemon/gdm-slave-proxy.c: (kill_slave):
+	Move the signal_pid func to common.  Make the greeter process
+	a session leader.  Signal greeter and dbus process groups instead
+	of just the individual processes so that we clean up the entire greeter
+	session.
 
 2007-10-19  William Jon McCann  <mccann@jhu.edu>
 

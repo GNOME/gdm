@@ -292,9 +292,9 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
 }
 
 static void
-greeter_session_child_watch (GPid        pid,
-                     int         status,
-                     GdmGreeterSession *greeter_session)
+greeter_session_child_watch (GPid               pid,
+                             int                status,
+                             GdmGreeterSession *greeter_session)
 {
         g_debug ("child (pid:%d) done (%s:%d)",
                  (int) pid,
@@ -311,32 +311,6 @@ greeter_session_child_watch (GPid        pid,
         if (greeter_session->priv->ckc != NULL) {
                 close_greeter_session (greeter_session);
         }
-}
-
-static int
-signal_pid (int pid,
-            int signal)
-{
-        int status = -1;
-
-        /* perhaps block sigchld */
-
-        status = kill (pid, signal);
-
-        if (status < 0) {
-                if (errno == ESRCH) {
-                        g_warning ("Child process %lu was already dead.",
-                                   (unsigned long) pid);
-                } else {
-                        g_warning ("Couldn't kill child process %lu: %s",
-                                   (unsigned long) pid,
-                                   g_strerror (errno));
-                }
-        }
-
-        /* perhaps unblock sigchld */
-
-        return status;
 }
 
 typedef struct {
@@ -401,6 +375,12 @@ spawn_child_setup (SpawnChildData *data)
 
                 /* this will get rid of any suplementary groups etc... */
                 setgroups (1, groups);
+        }
+
+        if (setsid () < 0) {
+                g_debug ("could not set pid '%u' as leader of new session and process group - %s",
+                         (guint) getpid (), g_strerror (errno));
+                _exit (2);
         }
 }
 
@@ -624,7 +604,7 @@ static gboolean
 stop_dbus_daemon (GdmGreeterSession *greeter_session)
 {
         if (greeter_session->priv->dbus_pid > 0) {
-                signal_pid (greeter_session->priv->dbus_pid, SIGTERM);
+                gdm_signal_pid (-1 * greeter_session->priv->dbus_pid, SIGTERM);
                 greeter_session->priv->dbus_pid = 0;
         }
         return TRUE;
@@ -764,7 +744,7 @@ gdm_greeter_session_stop (GdmGreeterSession *greeter_session)
 
         g_debug ("Stopping greeter_session");
 
-        signal_pid (greeter_session->priv->pid, SIGTERM);
+        gdm_signal_pid (-1 * greeter_session->priv->pid, SIGTERM);
         greeter_session_died (greeter_session);
 
         if (greeter_session->priv->ckc != NULL) {

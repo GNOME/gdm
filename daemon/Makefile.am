@@ -76,6 +76,7 @@ test_session_SOURCES = 		\
 test_session_LDADD =		\
 	$(DAEMON_LIBS)		\
 	$(PAM_LIBS)		\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 libexec_PROGRAMS = 			\

@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -32,6 +33,32 @@
 
 #include "gdm-common.h"
 #include "gdm-md5.h"
+
+int
+gdm_signal_pid (int pid,
+                int signal)
+{
+        int status = -1;
+
+        /* perhaps block sigchld */
+        g_debug ("sending signal %d to process %d", signal, pid);
+        status = kill (pid, signal);
+
+        if (status < 0) {
+                if (errno == ESRCH) {
+                        g_warning ("Child process %d was already dead.",
+                                   (int)pid);
+                } else {
+                        g_warning ("Couldn't kill child process %d: %s",
+                                   pid,
+                                   g_strerror (errno));
+                }
+        }
+
+        /* perhaps unblock sigchld */
+
+        return status;
+}
 
 /* hex conversion adapted from D-Bus */
 /**

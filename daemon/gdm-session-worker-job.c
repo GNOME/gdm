@@ -222,32 +222,6 @@ gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job)
 }
 
 static int
-signal_pid (int pid,
-            int signal)
-{
-        int status = -1;
-
-        /* perhaps block sigchld */
-
-        status = kill (pid, signal);
-
-        if (status < 0) {
-                if (errno == ESRCH) {
-                        g_warning ("Child process %lu was already dead.",
-                                   (unsigned long) pid);
-                } else {
-                        g_warning ("Couldn't kill child process %lu: %s",
-                                   (unsigned long) pid,
-                                   g_strerror (errno));
-                }
-        }
-
-        /* perhaps unblock sigchld */
-
-        return status;
-}
-
-static int
 wait_on_child (int pid)
 {
         int status;
@@ -302,7 +276,7 @@ gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
 
         g_debug ("Stopping session_worker_job pid:%d", session_worker_job->priv->pid);
 
-        signal_pid (session_worker_job->priv->pid, SIGTERM);
+        gdm_signal_pid (session_worker_job->priv->pid, SIGTERM);
         session_worker_job_died (session_worker_job);
 
         return TRUE;

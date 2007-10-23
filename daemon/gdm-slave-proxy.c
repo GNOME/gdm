@@ -33,6 +33,8 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#include "gdm-common.h"
+
 #include "gdm-slave-proxy.h"
 
 #define GDM_SLAVE_PROXY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE_PROXY, GdmSlaveProxyPrivate))
@@ -141,33 +143,6 @@ spawn_slave (GdmSlaveProxy *slave)
         return result;
 }
 
-static int
-signal_pid (int pid,
-            int signal)
-{
-        int status = -1;
-
-        /* perhaps block sigchld */
-        g_debug ("Sending signal %d to pid %d", signal, pid);
-
-        status = kill (pid, signal);
-
-        if (status < 0) {
-                if (errno == ESRCH) {
-                        g_warning ("Child process %lu was already dead.",
-                                   (unsigned long) pid);
-                } else {
-                        g_warning ("Couldn't kill child process %lu: %s",
-                                   (unsigned long) pid,
-                                   g_strerror (errno));
-                }
-        }
-
-        /* perhaps unblock sigchld */
-
-        return status;
-}
-
 static void
 kill_slave (GdmSlaveProxy *slave)
 {
@@ -175,7 +150,7 @@ kill_slave (GdmSlaveProxy *slave)
                 return;
         }
 
-        signal_pid (slave->priv->pid, SIGTERM);
+        gdm_signal_pid (slave->priv->pid, SIGTERM);
 }
 
 gboolean

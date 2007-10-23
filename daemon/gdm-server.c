@@ -653,32 +653,6 @@ gdm_server_start (GdmServer *server)
 }
 
 static int
-signal_pid (int pid,
-            int signal)
-{
-        int status = -1;
-
-        /* perhaps block sigchld */
-
-        status = kill (pid, signal);
-
-        if (status < 0) {
-                if (errno == ESRCH) {
-                        g_warning ("Child process %lu was already dead.",
-                                   (unsigned long) pid);
-                } else {
-                        g_warning ("Couldn't kill child process %lu: %s",
-                                   (unsigned long) pid,
-                                   g_strerror (errno));
-                }
-        }
-
-        /* perhaps unblock sigchld */
-
-        return status;
-}
-
-static int
 wait_on_child (int pid)
 {
         int status;
@@ -732,7 +706,7 @@ gdm_server_stop (GdmServer *server)
 
         g_debug ("Stopping server");
 
-        signal_pid (server->priv->pid, SIGTERM);
+        gdm_signal_pid (server->priv->pid, SIGTERM);
         server_died (server);
 
         return TRUE;
