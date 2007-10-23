@@ -1,5 +1,46 @@
 2007-10-23  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-greeter-server.h:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(gdm_greeter_client_error_quark), (on_info), (on_problem),
+	(on_ready), (on_reset), (on_info_query), (on_secret_info_query),
+	(gdm_greeter_client_call_begin_verification),
+	(gdm_greeter_client_call_answer_query),
+	(gdm_greeter_client_call_select_session),
+	(gdm_greeter_client_call_select_language),
+	(gdm_greeter_client_call_select_user),
+	(gdm_greeter_client_call_select_hostname),
+	(gdm_greeter_client_call_cancel),
+	(gdm_greeter_client_call_disconnect),
+	(gdm_greeter_client_call_get_display_id), (proxy_destroyed),
+	(gdm_greeter_client_start), (gdm_greeter_client_stop),
+	(gdm_greeter_client_set_property),
+	(gdm_greeter_client_get_property),
+	(gdm_greeter_client_constructor), (gdm_greeter_client_dispose),
+	(gdm_greeter_client_class_init), (gdm_greeter_client_init),
+	(gdm_greeter_client_finalize), (gdm_greeter_client_new):
+	* gui/simple-greeter/gdm-greeter-client.h:
+	* gui/simple-greeter/gdm-greeter-session.c: (on_info),
+	(on_problem), (on_ready), (on_reset), (on_info_query),
+	(on_secret_info_query), (on_begin_verification), (on_query_answer),
+	(on_select_session), (on_select_language), (on_select_user),
+	(on_select_hostname), (on_cancelled), (on_disconnected),
+	(start_login_window), (gdm_greeter_session_set_level),
+	(gdm_greeter_session_start), (gdm_greeter_session_stop),
+	(gdm_greeter_session_set_property),
+	(gdm_greeter_session_get_property),
+	(gdm_greeter_session_constructor), (gdm_greeter_session_dispose),
+	(gdm_greeter_session_class_init), (gdm_greeter_session_init),
+	(gdm_greeter_session_finalize), (gdm_greeter_session_new):
+	* gui/simple-greeter/gdm-greeter-session.h:
+	* gui/simple-greeter/gdm-user-manager.c: (gdm_user_manager_init):
+	* gui/simple-greeter/greeter-main.c: (main):
+	Refactor some of the greeter.  Break DBus client into new class.
+	Create a GdmGreeterSession that will run external apps.
+
+2007-10-23  William Jon McCann  <mccann@jhu.edu>
+
 	* common/gdm-common.c: (gdm_signal_pid):
 	* common/gdm-common.h:
 	* daemon/Makefile.am:

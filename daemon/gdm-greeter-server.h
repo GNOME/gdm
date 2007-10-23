@@ -69,6 +69,7 @@ gboolean            gdm_greeter_server_start             (GdmGreeterServer *gree
 gboolean            gdm_greeter_server_stop              (GdmGreeterServer *greeter_server);
 char *              gdm_greeter_server_get_address       (GdmGreeterServer *greeter_server);
 
+
 gboolean            gdm_greeter_server_info_query        (GdmGreeterServer *greeter_server,
                                                           const char       *text);
 gboolean            gdm_greeter_server_secret_info_query (GdmGreeterServer *greeter_server,

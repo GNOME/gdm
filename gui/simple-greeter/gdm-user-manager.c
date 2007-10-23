@@ -34,7 +34,7 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
-#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include "gdm-user-manager.h"
 #include "gdm-user-private.h"
@@ -374,6 +374,10 @@ gdm_user_manager_init (GdmUserManager *manager)
         GnomeVFSResult result;
         int            i;
         const char    *exclude_default[] = DEFAULT_EXCLUDE;
+
+        if (! gnome_vfs_initialized ()) {
+                gnome_vfs_init ();
+        }
 
         manager->priv = GDM_USER_MANAGER_GET_PRIVATE (manager);
 

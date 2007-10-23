@@ -105,13 +105,17 @@ test_user_manager_LDADD =	\
 	$(SIMPLE_GREETER_LIBS)	\
 	$(NULL)
 
-libexec_PROGRAMS =					\
+libexec_PROGRAMS =			\
 	gdm-simple-greeter
 
 gdm_simple_greeter_SOURCES =  		\
 	greeter-main.c 			\
 	gdm-simple-greeter.c		\
 	gdm-simple-greeter.h		\
+	gdm-greeter-client.h		\
+	gdm-greeter-client.c		\
+	gdm-greeter-session.h		\
+	gdm-greeter-session.c		\
 	gdm-greeter-panel.h		\
 	gdm-greeter-panel.c		\
 	gdm-greeter-background.h	\
