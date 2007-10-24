@@ -2078,13 +2078,13 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 }
 
                                 /* sanity check cookie */
-                                g_debug ("Reencoded cookie len:%d '%s'", test_cookie->len, test_cookie->str);
+                                g_debug ("Reencoded cookie len:%d '%s'", (int) test_cookie->len, test_cookie->str);
                                 g_assert (test_cookie->len == cookie->len);
                                 g_assert (strcmp (test_cookie->str, cookie->str) == 0);
                                 g_string_free (test_cookie, TRUE);
 
                                 g_debug ("Sending authorization key for display %s", cookie->str);
-                                g_debug ("Decoded cookie len %d", binary_cookie->len);
+                                g_debug ("Decoded cookie len %d", (int) binary_cookie->len);
 
                                 session_number = gdm_xdmcp_display_get_session_number (GDM_XDMCP_DISPLAY (display));
 

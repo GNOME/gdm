@@ -146,7 +146,7 @@ set_local_auth (GdmSlave *slave)
                 goto out;
         }
 
-        g_debug ("Decoded cookie len %d", binary_cookie->len);
+        g_debug ("Decoded cookie len %d", (int) binary_cookie->len);
 
         XSetAuthorization ("MIT-MAGIC-COOKIE-1",
                            (int) strlen ("MIT-MAGIC-COOKIE-1"),

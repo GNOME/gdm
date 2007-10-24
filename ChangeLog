@@ -1,3 +1,10 @@
+2007-10-24  Ray Strode <rstrode@redhat.com>
+
+	* daemon/gdm-slave.c:
+	* daemon/gdm-session-record.c:
+	* daemon/gdm-xdmcp-display-factory.c: cast size_t values
+	to int before passing to g_debug, to stop warnings on 64-bit
+
 2007-10-24  William Jon McCann  <mccann@jhu.edu>
 
 	* Makefile.am:

@@ -81,14 +81,14 @@ record_set_username (UTMP       *u,
                  username,
                  sizeof (u->ut_user));
         g_debug ("using ut_user %.*s",
-                 sizeof (u->ut_user),
+                 (int) sizeof (u->ut_user),
                  u->ut_user);
 #elif defined(HAVE_UT_UT_NAME)
         strncpy (u->ut_name,
                  username
                  sizeof (u->ut_name));
         g_debug ("using ut_name %.*s",
-                 sizeof (u->ut_name),
+                 (int) sizeof (u->ut_name),
                  u->ut_name);
 #endif
 }
@@ -132,7 +132,7 @@ record_set_id (UTMP       *u,
 {
 #if defined(HAVE_UT_UT_ID)
         strncpy (u->ut_id, id, sizeof (u->ut_id));
-        g_debug ("using ut_id %.*s", sizeof (u->ut_id), u->ut_id);
+        g_debug ("using ut_id %.*s", (int) sizeof (u->ut_id), u->ut_id);
 #endif
 }
 
@@ -158,7 +158,7 @@ record_set_host (UTMP       *u,
 
         if (hostname != NULL) {
                 strncpy (u->ut_host, hostname, sizeof (u->ut_host));
-                g_debug ("using ut_host %.*s", sizeof (u->ut_host), u->ut_host);
+                g_debug ("using ut_host %.*s", (int) sizeof (u->ut_host), u->ut_host);
                 g_free (hostname);
 
 #ifdef HAVE_UT_UT_SYSLEN
@@ -188,7 +188,7 @@ record_set_line (UTMP       *u,
                          sizeof (u->ut_line));
         }
 
-        g_debug ("using ut_line %.*s", sizeof (u->ut_line), u->ut_line);
+        g_debug ("using ut_line %.*s", (int) sizeof (u->ut_line), u->ut_line);
 }
 
 void
