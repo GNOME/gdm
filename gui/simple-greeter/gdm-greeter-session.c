@@ -207,35 +207,35 @@ start_login_window (GdmGreeterSession *session)
         g_signal_connect (session->priv->login_window,
                           "begin-verification",
                           G_CALLBACK (on_begin_verification),
-                          NULL);
+                          session);
         g_signal_connect (session->priv->login_window,
                           "query-answer",
                           G_CALLBACK (on_query_answer),
-                          NULL);
+                          session);
         g_signal_connect (session->priv->login_window,
                           "session-selected",
                           G_CALLBACK (on_select_session),
-                          NULL);
+                          session);
         g_signal_connect (session->priv->login_window,
                           "language-selected",
                           G_CALLBACK (on_select_language),
-                          NULL);
+                          session);
         g_signal_connect (session->priv->login_window,
                           "user-selected",
                           G_CALLBACK (on_select_user),
-                          NULL);
+                          session);
         g_signal_connect (session->priv->login_window,
                           "hostname-selected",
                           G_CALLBACK (on_select_hostname),
-                          NULL);
+                          session);
         g_signal_connect (session->priv->login_window,
                           "cancelled",
                           G_CALLBACK (on_cancelled),
-                          NULL);
+                          session);
         g_signal_connect (session->priv->login_window,
                           "disconnected",
                           G_CALLBACK (on_disconnected),
-                          NULL);
+                          session);
         gtk_widget_show (session->priv->login_window);
 }
 
