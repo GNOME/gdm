@@ -520,16 +520,50 @@ file_read_one_line (const char *filename)
         return line;
 }
 
+static const char *known_etc_info_files [] = {
+        "redhat-release",
+        "SuSE-release",
+        "gentoo-release",
+        "arch-release",
+        "debian_version",
+        "mandriva-release",
+        "slackware-version",
+        NULL
+};
+
+
 static char *
 get_system_version (void)
 {
         char *version;
+        int i;
 
         version = NULL;
-        if (g_access (SYSCONFDIR "/redhat-release", R_OK) == 0) {
-                version = file_read_one_line (SYSCONFDIR "/redhat-release");
-        } else if (g_access ("/etc/redhat-release", R_OK) == 0) {
-                version = file_read_one_line ("/etc/redhat-release");
+
+        for (i = 0; known_etc_info_files [i]; i++) {
+                char *path1;
+                char *path2;
+
+                path1 = g_build_filename (SYSCONFDIR, known_etc_info_files [i], NULL);
+                path2 = g_build_filename ("/etc", known_etc_info_files [i], NULL);
+                if (g_access (path1, R_OK) == 0) {
+                        version = file_read_one_line (path1);
+                } else if (g_access (path2, R_OK) == 0) {
+                        version = file_read_one_line (path2);
+                }
+                g_free (path2);
+                g_free (path1);
+                if (version != NULL) {
+                        break;
+                }
+        }
+
+        if (version == NULL) {
+                char *output;
+                output = NULL;
+                if (g_spawn_command_line_sync ("uname -sr", &output, NULL, NULL, NULL)) {
+                        version = g_strchomp (output);
+                }
         }
 
         return version;
