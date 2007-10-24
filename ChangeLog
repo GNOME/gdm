@@ -1,5 +1,19 @@
 2007-10-23  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-greeter-login-window.c: (update_clock),
+	(set_clock_timeout), (update_clock_timeout_cb),
+	(remove_clock_timeout), (on_computer_info_label_button_press),
+	(file_read_one_line), (get_system_version), (get_time_format),
+	(create_computer_info), (load_theme),
+	(gdm_greeter_login_window_init),
+	(gdm_greeter_login_window_finalize):
+	* gui/simple-greeter/gdm-greeter-login-window.glade:
+	Add a computer information widget.  Displays info about
+	name, version, ip, network-status, and time.
+
+2007-10-23  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c: (set_focus),
 	(gdm_greeter_login_window_info_query):
 	Fix a warning - only set focus if realized

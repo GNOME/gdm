@@ -11,6 +11,7 @@ INCLUDES = \
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
 	-DDATADIR=\""$(datadir)"\"		 	\
+	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DLIBLOCALEDIR=\""$(libdir)/locale"\"		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DGLADEDIR=\""$(pkgdatadir)"\" 	\

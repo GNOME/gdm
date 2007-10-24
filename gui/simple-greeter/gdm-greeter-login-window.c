@@ -29,9 +29,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/time.h>
+#include <errno.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
@@ -61,6 +64,9 @@ struct GdmGreeterLoginWindowPrivate
         GladeXML        *xml;
         GtkWidget       *user_chooser;
         gboolean         display_is_local;
+        char            *timeformat;
+        guint            update_clock_id;
+        gboolean         clock_show_seconds;
 };
 
 enum {
@@ -85,6 +91,8 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_greeter_login_window_class_init   (GdmGreeterLoginWindowClass *klass);
 static void     gdm_greeter_login_window_init         (GdmGreeterLoginWindow      *greeter_login_window);
 static void     gdm_greeter_login_window_finalize     (GObject                    *object);
+
+static gboolean update_clock_timeout_cb               (GdmGreeterLoginWindow *login_window);
 
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
 
@@ -338,7 +346,7 @@ gdm_greeter_login_window_get_property (GObject    *object,
 }
 
 static void
-log_in_button_clicked (GtkButton        *button,
+log_in_button_clicked (GtkButton             *button,
                        GdmGreeterLoginWindow *login_window)
 {
         GtkWidget  *entry;
@@ -373,6 +381,214 @@ on_user_activated (GdmUserChooserWidget  *user_chooser,
         switch_page (login_window, PAGE_AUTH);
 }
 
+static void
+update_clock (GtkLabel   *label,
+              const char *format)
+{
+        time_t     t;
+        struct tm *tm;
+        char       buf[256];
+        char      *utf8;
+
+        time (&t);
+        tm = localtime (&t);
+        if (tm == NULL) {
+                g_warning ("Unable to get broken down local time");
+                return;
+        }
+        if (strftime (buf, sizeof (buf), format, tm) == 0) {
+                g_warning ("Couldn't format time: %s", format);
+                strcpy (buf, "???");
+        }
+        utf8 = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+        gtk_label_set_text (label, utf8);
+        g_free (utf8);
+}
+
+static void
+set_clock_timeout (GdmGreeterLoginWindow *login_window,
+                   time_t                 now)
+{
+        struct timeval tv;
+        int            timeouttime;
+
+        if (login_window->priv->update_clock_id > 0) {
+                g_source_remove (login_window->priv->update_clock_id);
+                login_window->priv->update_clock_id = 0;
+        }
+
+        gettimeofday (&tv, NULL);
+        timeouttime = (G_USEC_PER_SEC - tv.tv_usec) / 1000 + 1;
+
+        /* timeout of one minute if we don't care about the seconds */
+        if (! login_window->priv->clock_show_seconds) {
+                timeouttime += 1000 * (59 - now % 60);
+        }
+
+        login_window->priv->update_clock_id = g_timeout_add (timeouttime,
+                                                             (GSourceFunc)update_clock_timeout_cb,
+                                                             login_window);
+
+}
+
+static gboolean
+update_clock_timeout_cb (GdmGreeterLoginWindow *login_window)
+{
+        GtkWidget *label;
+        time_t     new_time;
+
+        time (&new_time);
+
+        label = glade_xml_get_widget (login_window->priv->xml, "computer-info-time-label");
+        if (label != NULL) {
+                update_clock (GTK_LABEL (label), login_window->priv->timeformat);
+        }
+
+        set_clock_timeout (login_window, new_time);
+
+        return FALSE;
+}
+
+static void
+remove_clock_timeout (GdmGreeterLoginWindow *login_window)
+{
+        if (login_window->priv->update_clock_id > 0) {
+                g_source_remove (login_window->priv->update_clock_id);
+                login_window->priv->update_clock_id = 0;
+        }
+}
+
+static gboolean
+on_computer_info_label_button_press (GtkWidget             *widget,
+                                     GdkEventButton        *event,
+                                     GdmGreeterLoginWindow *login_window)
+{
+        GtkWidget *notebook;
+        int        current_page;
+        int        n_pages;
+        GtkWidget *label;
+
+        /* switch page */
+        notebook = glade_xml_get_widget (login_window->priv->xml, "computer-info-notebook");
+        current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+        n_pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+
+        if (current_page + 1 < n_pages) {
+                gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
+        } else {
+                gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 0);
+        }
+
+        /* if the clock is visible then start it */
+        label = glade_xml_get_widget (login_window->priv->xml, "computer-info-time-label");
+        if (gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook)) == gtk_notebook_page_num (GTK_NOTEBOOK (notebook), label)) {
+                time_t now;
+                time (&now);
+                set_clock_timeout (login_window, now);
+        } else {
+                remove_clock_timeout (login_window);
+        }
+
+        return FALSE;
+}
+
+static char *
+file_read_one_line (const char *filename)
+{
+        FILE *f;
+        char *line;
+        char buf[4096];
+
+        line = NULL;
+
+        f = fopen (filename, "r");
+        if (f == NULL) {
+                g_warning ("Unable to open file %s: %s", filename, g_strerror (errno));
+                goto out;
+        }
+
+        if (fgets (buf, sizeof (buf), f) == NULL) {
+                g_warning ("Unable to read from file %s", filename);
+        }
+
+        line = g_strdup (buf);
+        g_strchomp (line);
+
+ out:
+        fclose (f);
+
+        return line;
+}
+
+static char *
+get_system_version (void)
+{
+        char *version;
+
+        version = NULL;
+        if (g_access (SYSCONFDIR "/redhat-release", R_OK) == 0) {
+                version = file_read_one_line (SYSCONFDIR "/redhat-release");
+        } else if (g_access ("/etc/redhat-release", R_OK) == 0) {
+                version = file_read_one_line ("/etc/redhat-release");
+        }
+
+        return version;
+}
+
+static char *
+get_time_format (GdmGreeterLoginWindow *login_window)
+{
+        const char *time_format;
+        const char *date_format;
+        char       *clock_format;
+        char       *result;
+
+        time_format = login_window->priv->clock_show_seconds ? _("%l:%M:%S %p") : _("%l:%M %p");
+        /* translators: replace %e with %d if, when the day of the
+         *              month as a decimal number is a single digit, it
+         *              should begin with a 0 in your locale (e.g. "May
+         *              01" instead of "May  1").
+         */
+        date_format = _("%a %b %e");
+        /* translators: reverse the order of these arguments
+         *              if the time should come before the
+         *              date on a clock in your locale.
+         */
+        clock_format = g_strdup_printf (_("%1$s, %2$s"),
+                                        date_format,
+                                        time_format);
+
+        result = g_locale_from_utf8 (clock_format, -1, NULL, NULL, NULL);
+        g_free (clock_format);
+
+        return result;
+}
+
+static void
+create_computer_info (GdmGreeterLoginWindow *login_window)
+{
+        GtkWidget *label;
+
+        label = glade_xml_get_widget (login_window->priv->xml, "computer-info-name-label");
+        if (label != NULL) {
+                gtk_label_set_text (GTK_LABEL (label), g_get_host_name ());
+        }
+
+        label = glade_xml_get_widget (login_window->priv->xml, "computer-info-version-label");
+        if (label != NULL) {
+                char *version;
+                version = get_system_version ();
+                gtk_label_set_text (GTK_LABEL (label), version);
+                g_free (version);
+        }
+
+
+        label = glade_xml_get_widget (login_window->priv->xml, "computer-info-time-label");
+        if (label != NULL) {
+                login_window->priv->timeformat = get_time_format (login_window);
+                update_clock (GTK_LABEL (label), login_window->priv->timeformat);
+        }
+}
 
 #define INVISIBLE_CHAR_DEFAULT       '*'
 #define INVISIBLE_CHAR_BLACK_CIRCLE  0x25cf
@@ -409,13 +625,18 @@ load_theme (GdmGreeterLoginWindow *login_window)
         button = glade_xml_get_widget (login_window->priv->xml, "cancel-button");
         g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
 
-        entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
+        entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
         /* Only change the invisible character if it '*' otherwise assume it is OK */
         if ('*' == gtk_entry_get_invisible_char (GTK_ENTRY (entry))) {
                 gunichar invisible_char;
                 invisible_char = INVISIBLE_CHAR_BLACK_CIRCLE;
                 gtk_entry_set_invisible_char (GTK_ENTRY (entry), invisible_char);
         }
+
+        create_computer_info (login_window);
+
+        box = glade_xml_get_widget (login_window->priv->xml, "computer-info-event-box");
+        g_signal_connect (box, "button-press-event", G_CALLBACK (on_computer_info_label_button_press), login_window);
 }
 
 static void
@@ -559,6 +780,9 @@ static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
+
+        login_window->priv->clock_show_seconds = TRUE;
+
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
         g_signal_connect (login_window->priv->user_chooser,
                           "user-activated",
@@ -591,6 +815,8 @@ gdm_greeter_login_window_finalize (GObject *object)
         login_window = GDM_GREETER_LOGIN_WINDOW (object);
 
         g_return_if_fail (login_window->priv != NULL);
+
+        remove_clock_timeout (login_window);
 
         G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->finalize (object);
 }
