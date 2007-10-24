@@ -130,7 +130,7 @@ set_focus (GdmGreeterLoginWindow *login_window)
 
         gdk_window_focus (GTK_WIDGET (login_window)->window, GDK_CURRENT_TIME);
 
-        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
+        if (GTK_WIDGET_REALIZED (entry) && ! GTK_WIDGET_HAS_FOCUS (entry)) {
                 gtk_widget_grab_focus (entry);
         }
 }
@@ -263,10 +263,6 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
-
-        if (! GTK_WIDGET_HAS_FOCUS (entry)) {
-                gtk_widget_grab_focus (entry);
-        }
 
         return TRUE;
 }
