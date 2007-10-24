@@ -17,6 +17,7 @@ INCLUDES = \
 	-DGLADEDIR=\""$(pkgdatadir)"\" 	\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
+	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
 	$(GREETER_CFLAGS)				\
 	$(SIMPLE_GREETER_CFLAGS)			\
 	$(NULL)

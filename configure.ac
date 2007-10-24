@@ -153,6 +153,14 @@ AC_ARG_WITH(console-kit,
   [  --with-console-kit=[auto/yes/no]  Add ConsoleKit support [default=auto]],,
   with_console_kit=auto)
 
+AC_ARG_WITH(at-spi-registryd-directory,
+              [AC_HELP_STRING([--with-at-spi-registryd-directory],
+                              [Specify the directory of at-spi-registryd @<:@default=libexecdir@:>@])],,
+                              [with_at_spi_registryd_directory="\${libexecdir}"])
+
+AT_SPI_REGISTRYD_DIR=$with_at_spi_registryd_directory
+AC_SUBST(AT_SPI_REGISTRYD_DIR)
+
 # On Solaris, Xnest is only shipped in /usr/openwin/, but your
 # should use "--with-post-path=/usr/openwin/bin" for full
 # Xserver support (such as access to Xnest and other X executables

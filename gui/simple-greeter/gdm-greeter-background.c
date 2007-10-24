@@ -625,8 +625,6 @@ gdm_greeter_background_real_map (GtkWidget *widget)
         if (GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->map) {
                 GTK_WIDGET_CLASS (gdm_greeter_background_parent_class)->map (widget);
         }
-
-        /*gdk_window_lower (widget->window);*/
 }
 
 static void
@@ -861,13 +859,13 @@ gdm_greeter_background_init (GdmGreeterBackground *background)
 {
         background->priv = GDM_GREETER_BACKGROUND_GET_PRIVATE (background);
 
+        gtk_window_set_keep_below (GTK_WINDOW (background), TRUE);
         gtk_window_set_decorated (GTK_WINDOW (background), FALSE);
         gtk_widget_set_app_paintable (GTK_WIDGET (background), TRUE);
 
         gtk_window_set_skip_taskbar_hint (GTK_WINDOW (background), TRUE);
         gtk_window_set_skip_pager_hint (GTK_WINDOW (background), TRUE);
         gtk_window_set_type_hint (GTK_WINDOW (background), GDK_WINDOW_TYPE_HINT_DESKTOP);
-        gtk_window_fullscreen (GTK_WINDOW (background));
 
         g_signal_connect (background, "delete_event", G_CALLBACK (on_delete_event), NULL);
 }

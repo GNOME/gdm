@@ -324,6 +324,30 @@ start_window_manager (GdmGreeterSession *session)
         }
 }
 
+static gboolean
+start_settings_daemon (GdmGreeterSession *session)
+{
+        GError  *error;
+        gboolean ret;
+
+        g_debug ("Launching settings daemon");
+
+        ret = FALSE;
+
+        error = NULL;
+        g_spawn_command_line_async (LIBEXECDIR "/gnome-settings-daemon", &error);
+        if (error != NULL) {
+                g_warning ("Error starting settings daemon: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        return ret;
+}
+
 static void
 gdm_greeter_session_set_level (GdmGreeterSession     *session,
                                GdmGreeterSessionLevel level)
@@ -332,13 +356,14 @@ gdm_greeter_session_set_level (GdmGreeterSession     *session,
         case GDM_GREETER_SESSION_LEVEL_NONE:
                 break;
         case GDM_GREETER_SESSION_LEVEL_STARTUP:
+                start_settings_daemon (session);
                 start_window_manager (session);
                 start_background (session);
                 break;
         case GDM_GREETER_SESSION_LEVEL_CONFIGURATION:
+                start_panel (session);
                 break;
         case GDM_GREETER_SESSION_LEVEL_LOGIN_WINDOW:
-                start_panel (session);
                 start_login_window (session);
                 break;
         case GDM_GREETER_SESSION_LEVEL_SHUTDOWN:

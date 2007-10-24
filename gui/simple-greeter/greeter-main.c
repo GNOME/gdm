@@ -22,16 +22,24 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <unistd.h>
+#include <signal.h>
+#include <string.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
+#include <gconf/gconf-client.h>
 
 #include "gdm-log.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
 #include "gdm-greeter-session.h"
+
+#define ACCESSIBILITY_KEY         "/desktop/gnome/interface/accessibility"
+
+static Atom AT_SPI_IOR;
 
 static void
 set_fatal_warnings (void)
@@ -50,12 +58,168 @@ set_fatal_warnings (void)
         g_strfreev (versions);
 }
 
+static gboolean
+assistive_registry_launch (void)
+{
+        GPid        pid;
+        GError     *error;
+        const char *command;
+        char      **argv;
+        gboolean    res;
+
+        command = AT_SPI_REGISTRYD_DIR "/at-spi-registryd";
+
+        argv = NULL;
+        error = NULL;
+        res = g_shell_parse_argv (command, NULL, &argv, &error);
+        if (! res) {
+                g_warning ("Unable to parse command: %s", error->message);
+                return FALSE;
+        }
+
+        error = NULL;
+        res = g_spawn_async (NULL,
+                             argv,
+                             NULL,
+                             G_SPAWN_SEARCH_PATH
+                             | G_SPAWN_STDOUT_TO_DEV_NULL
+                             | G_SPAWN_STDERR_TO_DEV_NULL,
+                             NULL,
+                             NULL,
+                             &pid,
+                             &error);
+        g_strfreev (argv);
+
+        if (! res) {
+                g_warning ("Unable to run command %s: %s", command, error->message);
+                return FALSE;
+        }
+
+        if (kill (pid, 0) < 0) {
+                g_warning ("at-spi-registryd not running");
+                return FALSE;
+        }
+
+        return TRUE;
+
+}
+
+static GdkFilterReturn
+filter_watch (GdkXEvent *xevent,
+              GdkEvent  *event,
+              gpointer   data)
+{
+        XEvent *xev = (XEvent *)xevent;
+
+        if (xev->xany.type == PropertyNotify
+            && xev->xproperty.atom == AT_SPI_IOR) {
+                gtk_main_quit ();
+
+                return GDK_FILTER_REMOVE;
+        }
+
+        return GDK_FILTER_CONTINUE;
+}
+
+static gboolean
+filter_timeout (gpointer data)
+{
+        g_warning ("The accessibility registry was not found.");
+
+        gtk_main_quit ();
+
+        return FALSE;
+}
+
+static void
+assistive_registry_start (void)
+{
+        GdkWindow *root;
+        guint      tid;
+
+        root = gdk_get_default_root_window ();
+
+        if ( ! AT_SPI_IOR) {
+                AT_SPI_IOR = XInternAtom (GDK_DISPLAY (), "AT_SPI_IOR", False);
+        }
+
+        gdk_window_set_events (root,  GDK_PROPERTY_CHANGE_MASK);
+
+        if ( ! assistive_registry_launch ()) {
+                g_warning ("The accessibility registry could not be started.");
+                return;
+        }
+
+        gdk_window_add_filter (root, filter_watch, NULL);
+        tid = g_timeout_add_seconds (5, filter_timeout, NULL);
+
+        gtk_main ();
+
+        gdk_window_remove_filter (root, filter_watch, NULL);
+        g_source_remove (tid);
+}
+
+static void
+at_set_gtk_modules (void)
+{
+        GSList     *modules_list;
+        GSList     *l;
+        const char *old;
+        char      **modules;
+        gboolean    found_gail;
+        gboolean    found_atk_bridge;
+        int         n;
+
+        n = 0;
+        modules_list = NULL;
+        found_gail = FALSE;
+        found_atk_bridge = FALSE;
+
+        if ((old = g_getenv ("GTK_MODULES")) != NULL) {
+                modules = g_strsplit (old, ":", -1);
+                for (n = 0; modules[n]; n++) {
+                        if (!strcmp (modules[n], "gail")) {
+                                found_gail = TRUE;
+                        } else if (!strcmp (modules[n], "atk-bridge")) {
+                                found_atk_bridge = TRUE;
+                        }
+
+                        modules_list = g_slist_prepend (modules_list, modules[n]);
+                        modules[n] = NULL;
+                }
+                g_free (modules);
+        }
+
+        if (!found_gail) {
+                modules_list = g_slist_prepend (modules_list, "gail");
+                ++n;
+        }
+
+        if (!found_atk_bridge) {
+                modules_list = g_slist_prepend (modules_list, "atk-bridge");
+                ++n;
+        }
+
+        modules = g_new (char *, n + 1);
+        modules[n--] = NULL;
+        for (l = modules_list; l; l = l->next) {
+                modules[n--] = g_strdup (l->data);
+        }
+
+        g_setenv ("GTK_MODULES", g_strjoinv (":", modules), TRUE);
+        g_strfreev (modules);
+        g_slist_free (modules_list);
+}
+
 int
 main (int argc, char *argv[])
 {
         GError            *error;
         GdmGreeterSession *session;
         gboolean           res;
+        const char        *env_a_t_support;
+        gboolean           a_t_support;
+        GConfClient       *gconf_client;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -77,13 +241,27 @@ main (int argc, char *argv[])
                  g_getenv ("XAUTHORITY"));
 
         /* FIXME: For testing to make it easier to attach gdb */
-        sleep (15);
+        /*sleep (15);*/
 
         gdm_log_init ();
         gdm_log_set_debug (TRUE);
 
         gdk_init (&argc, &argv);
-        /*gdm_common_atspi_launch ();*/
+
+        gconf_client = gconf_client_get_default ();
+
+        env_a_t_support = g_getenv ("GNOME_ACCESSIBILITY");
+        if (env_a_t_support) {
+                a_t_support = atoi (env_a_t_support);
+        } else {
+                a_t_support = gconf_client_get_bool (gconf_client, ACCESSIBILITY_KEY, NULL);
+        }
+
+        if (a_t_support) {
+                assistive_registry_start ();
+                at_set_gtk_modules ();
+        }
+
         gtk_init (&argc, &argv);
 
         session = gdm_greeter_session_new ();
