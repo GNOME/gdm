@@ -6,7 +6,6 @@ SUBDIRS = 				\
 
 INCLUDES = \
 	-I$(top_srcdir)/common				\
-	-I$(top_srcdir)/libgreeter			\
 	-I$(top_srcdir)/gui/simple-greeter/libnotificationarea	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
@@ -153,8 +152,6 @@ gdm_simple_greeter_SOURCES =  		\
 
 gdm_simple_greeter_LDADD = 		\
 	$(EXTRA_GREETER_LIBS)   	\
-	-L$(top_builddir)/libgreeter	\
-	-lgreeter			\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(NULL)

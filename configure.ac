@@ -1278,7 +1278,6 @@ AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH")
 AC_OUTPUT([
 Makefile
 daemon/Makefile
-libgreeter/Makefile
 gui/Makefile
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile

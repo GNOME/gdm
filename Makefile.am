@@ -5,7 +5,6 @@ SUBDIRS = 			\
 	config 			\
 	common 			\
 	daemon 			\
-	libgreeter		\
 	gui 			\
 	utils 			\
 	po 			\
