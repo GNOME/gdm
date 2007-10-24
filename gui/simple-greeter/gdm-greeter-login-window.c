@@ -92,12 +92,9 @@ static void
 set_busy (GdmGreeterLoginWindow *login_window)
 {
         GdkCursor *cursor;
-        GtkWidget *top_level;
-
-        top_level = glade_xml_get_widget (login_window->priv->xml, "auth-window");
 
         cursor = gdk_cursor_new (GDK_WATCH);
-        gdk_window_set_cursor (top_level->window, cursor);
+        gdk_window_set_cursor (GTK_WIDGET (login_window)->window, cursor);
         gdk_cursor_unref (cursor);
 }
 
@@ -105,12 +102,9 @@ static void
 set_ready (GdmGreeterLoginWindow *login_window)
 {
         GdkCursor *cursor;
-        GtkWidget *top_level;
-
-        top_level = glade_xml_get_widget (login_window->priv->xml, "auth-window");
 
         cursor = gdk_cursor_new (GDK_LEFT_PTR);
-        gdk_window_set_cursor (top_level->window, cursor);
+        gdk_window_set_cursor (GTK_WIDGET (login_window)->window, cursor);
         gdk_cursor_unref (cursor);
 }
 
@@ -130,13 +124,11 @@ set_sensitive (GdmGreeterLoginWindow *login_window,
 static void
 set_focus (GdmGreeterLoginWindow *login_window)
 {
-        GtkWidget *top_level;
         GtkWidget *entry;
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
-        top_level = glade_xml_get_widget (login_window->priv->xml, "auth-window");
 
-        gdk_window_focus (top_level->window, GDK_CURRENT_TIME);
+        gdk_window_focus (GTK_WIDGET (login_window)->window, GDK_CURRENT_TIME);
 
         if (! GTK_WIDGET_HAS_FOCUS (entry)) {
                 gtk_widget_grab_focus (entry);
@@ -385,6 +377,7 @@ on_user_activated (GdmUserChooserWidget  *user_chooser,
         switch_page (login_window, PAGE_AUTH);
 }
 
+
 #define INVISIBLE_CHAR_DEFAULT       '*'
 #define INVISIBLE_CHAR_BLACK_CIRCLE  0x25cf
 #define INVISIBLE_CHAR_WHITE_BULLET  0x25e6
@@ -392,48 +385,33 @@ on_user_activated (GdmUserChooserWidget  *user_chooser,
 #define INVISIBLE_CHAR_NONE          0
 
 static void
-create_greeter (GdmGreeterLoginWindow *login_window)
+load_theme (GdmGreeterLoginWindow *login_window)
 {
-        GtkWidget *dialog;
         GtkWidget *entry;
         GtkWidget *button;
         GtkWidget *box;
 
-        login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
-        g_signal_connect (login_window->priv->user_chooser,
-                          "user-activated",
-                          G_CALLBACK (on_user_activated),
-                          login_window);
+        login_window->priv->xml = glade_xml_new (GLADEDIR "/" GLADE_XML_FILE,
+                                                 "window-box",
+                                                 PACKAGE);
 
-        gtk_widget_show_all (login_window->priv->user_chooser);
+        g_assert (login_window->priv->xml != NULL);
 
-        login_window->priv->xml = glade_xml_new (GLADEDIR "/" GLADE_XML_FILE, NULL, PACKAGE);
-        if (login_window->priv->xml == NULL) {
-                /* FIXME: */
-        }
-
-        dialog = glade_xml_get_widget (login_window->priv->xml, "auth-window");
-        if (dialog == NULL) {
-                /* FIXME: */
-        }
+        box = glade_xml_get_widget (login_window->priv->xml, "window-box");
+        gtk_container_add (GTK_CONTAINER (login_window), box);
 
         box = glade_xml_get_widget (login_window->priv->xml, "userlist-box");
         if (box == NULL) {
-                g_warning ("Userlist box not found");
-                /* FIXME: */
+                g_critical ("Userlist box not found");
         }
         gtk_container_add (GTK_CONTAINER (box), login_window->priv->user_chooser);
 
         button = glade_xml_get_widget (login_window->priv->xml, "log-in-button");
-        if (dialog != NULL) {
-                gtk_widget_grab_default (button);
-                g_signal_connect (button, "clicked", G_CALLBACK (log_in_button_clicked), login_window);
-        }
+        gtk_widget_grab_default (button);
+        g_signal_connect (button, "clicked", G_CALLBACK (log_in_button_clicked), login_window);
 
         button = glade_xml_get_widget (login_window->priv->xml, "cancel-button");
-        if (dialog != NULL) {
-                g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
-        }
+        g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
         /* Only change the invisible character if it '*' otherwise assume it is OK */
@@ -442,16 +420,21 @@ create_greeter (GdmGreeterLoginWindow *login_window)
                 invisible_char = INVISIBLE_CHAR_BLACK_CIRCLE;
                 gtk_entry_set_invisible_char (GTK_ENTRY (entry), invisible_char);
         }
+}
 
-        gtk_window_set_opacity (GTK_WINDOW (dialog), 0.75);
+static void
+gdm_greeter_login_window_size_request (GtkWidget      *widget,
+                                       GtkRequisition *requisition)
+{
+        int screen_h;
 
-        gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-        gtk_window_set_deletable (GTK_WINDOW (dialog), FALSE);
-        gtk_window_set_decorated (GTK_WINDOW (dialog), FALSE);
-        gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), TRUE);
-        gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), TRUE);
-        gtk_window_stick (GTK_WINDOW (dialog));
-        gtk_widget_show (dialog);
+        if (GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request) {
+                GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request (widget, requisition);
+        }
+
+        screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
+
+        requisition->height = screen_h * 0.6;
 }
 
 static GObject *
@@ -468,7 +451,6 @@ gdm_greeter_login_window_constructor (GType                  type,
                                                                                                                       n_construct_properties,
                                                                                                                       construct_properties));
 
-        create_greeter (login_window);
 
         return G_OBJECT (login_window);
 }
@@ -476,12 +458,15 @@ gdm_greeter_login_window_constructor (GType                  type,
 static void
 gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
         object_class->get_property = gdm_greeter_login_window_get_property;
         object_class->set_property = gdm_greeter_login_window_set_property;
         object_class->constructor = gdm_greeter_login_window_constructor;
         object_class->finalize = gdm_greeter_login_window_finalize;
+
+        widget_class->size_request = gdm_greeter_login_window_size_request;
 
         signals [BEGIN_VERIFICATION] =
                 g_signal_new ("begin-verification",
@@ -578,6 +563,25 @@ static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
+        login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
+        g_signal_connect (login_window->priv->user_chooser,
+                          "user-activated",
+                          G_CALLBACK (on_user_activated),
+                          login_window);
+
+        gtk_widget_show_all (login_window->priv->user_chooser);
+
+        load_theme (login_window);
+
+        gtk_window_set_opacity (GTK_WINDOW (login_window), 0.75);
+        gtk_window_set_position (GTK_WINDOW (login_window), GTK_WIN_POS_CENTER_ALWAYS);
+        gtk_window_set_deletable (GTK_WINDOW (login_window), FALSE);
+        gtk_window_set_decorated (GTK_WINDOW (login_window), FALSE);
+        gtk_window_set_skip_taskbar_hint (GTK_WINDOW (login_window), TRUE);
+        gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
+        gtk_window_stick (GTK_WINDOW (login_window));
+        gtk_container_set_border_width (GTK_CONTAINER (login_window), 12);
+
 }
 
 static void
