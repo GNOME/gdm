@@ -135,8 +135,8 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-greeter-client.c		\
 	gdm-greeter-session.h		\
 	gdm-greeter-session.c		\
-	gdm-autostart-manager.h		\
-	gdm-autostart-manager.c		\
+	gdm-session-manager.h		\
+	gdm-session-manager.c		\
 	gdm-greeter-login-window.c	\
 	gdm-greeter-login-window.h	\
 	gdm-greeter-panel.h		\
@@ -154,6 +154,7 @@ gdm_simple_greeter_SOURCES =  		\
 
 gdm_simple_greeter_LDADD = 		\
 	$(EXTRA_GREETER_LIBS)   	\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(NULL)

@@ -69,21 +69,89 @@ typedef struct _GdmUserClass
         void (* sessions_changed) (GdmUser *user);
 } GdmUserClass;
 
-/* GObject Functions */
-static void gdm_user_set_property (GObject      *object,
-                                   guint         param_id,
-                                   const GValue *value,
-                                   GParamSpec   *pspec);
-static void gdm_user_get_property (GObject      *object,
-                                   guint         param_id,
-                                   GValue       *value,
-                                   GParamSpec   *pspec);
 static void gdm_user_finalize     (GObject      *object);
-
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (GdmUser, gdm_user, G_TYPE_OBJECT);
+
+
+static void
+gdm_user_set_property (GObject      *object,
+                       guint         param_id,
+                       const GValue *value,
+                       GParamSpec   *pspec)
+{
+        GdmUser *user;
+
+        user = GDM_USER (object);
+
+        switch (param_id) {
+        case PROP_MANAGER:
+                user->manager = g_value_get_object (value);
+                g_assert (user->manager);
+                break;
+
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+                break;
+        }
+}
+
+static void
+gdm_user_get_property (GObject    *object,
+                       guint       param_id,
+                       GValue     *value,
+                       GParamSpec *pspec)
+{
+        GdmUser *user;
+
+        user = GDM_USER (object);
+
+        switch (param_id) {
+        case PROP_MANAGER:
+                g_value_set_object (value, user->manager);
+                break;
+        case PROP_USER_NAME:
+                g_value_set_string (value, user->user_name);
+                break;
+        case PROP_REAL_NAME:
+                g_value_set_string (value, user->real_name);
+                break;
+        case PROP_HOME_DIR:
+                g_value_set_string (value, user->home_dir);
+                break;
+        case PROP_UID:
+                g_value_set_ulong (value, user->uid);
+                break;
+        case PROP_SHELL:
+                g_value_set_string (value, user->shell);
+                break;
+        case PROP_SESSIONS:
+                if (user->sessions) {
+                        GValueArray *ar;
+                        GSList      *list;
+                        GValue       tmp = { 0 };
+
+                        ar = g_value_array_new (g_slist_length (user->sessions));
+                        g_value_init (&tmp, GDM_TYPE_USER);
+                        for (list = user->sessions; list; list = list->next) {
+                                g_value_set_object (&tmp, list->data);
+                                g_value_array_append (ar, &tmp);
+                                g_value_reset (&tmp);
+                        }
+
+                        g_value_take_boxed (value, ar);
+                } else {
+                        g_value_set_boxed (value, NULL);
+                }
+
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+                break;
+        }
+}
 
 static void
 gdm_user_class_init (GdmUserClass *class)
@@ -167,83 +235,6 @@ gdm_user_init (GdmUser *user)
         user->user_name = NULL;
         user->real_name = NULL;
         user->sessions = NULL;
-}
-
-static void
-gdm_user_set_property (GObject      *object,
-                       guint         param_id,
-                       const GValue *value,
-                       GParamSpec   *pspec)
-{
-        GdmUser *user;
-
-        user = GDM_USER (object);
-
-        switch (param_id) {
-        case PROP_MANAGER:
-                user->manager = g_value_get_object (value);
-                g_assert (user->manager);
-                break;
-
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
-                break;
-        }
-}
-
-static void
-gdm_user_get_property (GObject    *object,
-                       guint       param_id,
-                       GValue     *value,
-                       GParamSpec *pspec)
-{
-        GdmUser *user;
-
-        user = GDM_USER (object);
-
-        switch (param_id) {
-        case PROP_MANAGER:
-                g_value_set_object (value, user->manager);
-                break;
-        case PROP_USER_NAME:
-                g_value_set_string (value, user->user_name);
-                break;
-        case PROP_REAL_NAME:
-                g_value_set_string (value, user->real_name);
-                break;
-        case PROP_HOME_DIR:
-                g_value_set_string (value, user->home_dir);
-                break;
-        case PROP_UID:
-                g_value_set_ulong (value, user->uid);
-                break;
-        case PROP_SHELL:
-                g_value_set_string (value, user->shell);
-                break;
-        case PROP_SESSIONS:
-                if (user->sessions) {
-                        GValueArray *ar;
-                        GSList      *list;
-                        GValue       tmp = { 0 };
-
-                        ar = g_value_array_new (g_slist_length (user->sessions));
-                        g_value_init (&tmp, GDM_TYPE_USER);
-                        for (list = user->sessions; list; list = list->next) {
-                                g_value_set_object (&tmp, list->data);
-                                g_value_array_append (ar, &tmp);
-                                g_value_reset (&tmp);
-                        }
-
-                        g_value_take_boxed (value, ar);
-                } else {
-                        g_value_set_boxed (value, NULL);
-                }
-
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
-                break;
-        }
 }
 
 static void

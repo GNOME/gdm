@@ -57,9 +57,7 @@ gdm_session_manager_start (GdmSessionManager *session,
 
         g_return_val_if_fail (GDM_IS_SESSION_MANAGER (session), FALSE);
 
-        res = gdm_greeter_client_start (session->priv->client, error);
-
-        gdm_session_manager_goto_level (session, GDM_SESSION_MANAGER_LEVEL_LOGIN_WINDOW);
+        res = TRUE;
 
         return res;
 }
@@ -151,8 +149,6 @@ gdm_session_manager_init (GdmSessionManager *session)
 {
 
         session->priv = GDM_SESSION_MANAGER_GET_PRIVATE (session);
-
-        session->priv->level = GDM_SESSION_MANAGER_LEVEL_NONE;
 
 }
 

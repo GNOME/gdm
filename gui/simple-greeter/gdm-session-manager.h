@@ -23,6 +23,8 @@
 
 #include <glib-object.h>
 
+#include "gdm-session-client.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_SESSION_MANAGER         (gdm_session_manager_get_type ())
@@ -49,9 +51,15 @@ GType                  gdm_session_manager_get_type            (void);
 
 GdmSessionManager    * gdm_session_manager_new                 (void);
 
-gboolean               gdm_session_manager_start               (GdmSessionManager *session,
-                                                                  GError             **error);
-void                   gdm_session_manager_stop                (GdmSessionManager *session);
+void                   gdm_session_manager_add_client          (GdmSessionManager *manager,
+                                                                GdmSessionClient  *client);
+void                   gdm_session_manager_add_autostart_dir   (GdmSessionManager *manager,
+                                                                const char        *path,
+                                                                guint              runlevel);
+
+gboolean               gdm_session_manager_start               (GdmSessionManager *manager,
+                                                                GError             **error);
+void                   gdm_session_manager_stop                (GdmSessionManager *manager);
 
 G_END_DECLS
 
