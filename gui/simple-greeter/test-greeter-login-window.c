@@ -46,7 +46,7 @@ main (int argc, char *argv[])
         gtk_init (&argc, &argv);
 
         login_window = gdm_greeter_login_window_new (TRUE);
-        gtk_widget_show_all (login_window);
+        gtk_widget_show (login_window);
 
         gtk_main ();
 

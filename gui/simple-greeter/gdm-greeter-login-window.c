@@ -155,6 +155,23 @@ set_message (GdmGreeterLoginWindow *login_window,
 }
 
 static void
+show_widget (GdmGreeterLoginWindow *login_window,
+             const char            *name,
+             gboolean               visible)
+{
+        GtkWidget *widget;
+
+        widget = glade_xml_get_widget (login_window->priv->xml, name);
+        if (widget != NULL) {
+                if (visible) {
+                        gtk_widget_show (widget);
+                } else {
+                        gtk_widget_hide (widget);
+                }
+        }
+}
+
+static void
 switch_page (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
@@ -163,6 +180,27 @@ switch_page (GdmGreeterLoginWindow *login_window,
         /* switch page */
         notebook = glade_xml_get_widget (login_window->priv->xml, "notebook");
         gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), number);
+
+        switch (number) {
+        case PAGE_USERLIST:
+                show_widget (login_window, "log-in-button", FALSE);
+                show_widget (login_window, "cancel-button", FALSE);
+                show_widget (login_window, "shutdown-button", TRUE);
+                show_widget (login_window, "restart-button", TRUE);
+                show_widget (login_window, "suspend-button", TRUE);
+                show_widget (login_window, "disconnect-button", ! login_window->priv->display_is_local);
+                break;
+        case PAGE_AUTH:
+                show_widget (login_window, "log-in-button", TRUE);
+                show_widget (login_window, "cancel-button", TRUE);
+                show_widget (login_window, "shutdown-button", FALSE);
+                show_widget (login_window, "restart-button", FALSE);
+                show_widget (login_window, "suspend-button", FALSE);
+                show_widget (login_window, "disconnect-button", FALSE);
+                break;
+        default:
+                g_assert_not_reached ();
+        }
 
 }
 
@@ -671,6 +709,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         box = glade_xml_get_widget (login_window->priv->xml, "computer-info-event-box");
         g_signal_connect (box, "button-press-event", G_CALLBACK (on_computer_info_label_button_press), login_window);
+
+        switch_page (login_window, PAGE_USERLIST);
 }
 
 static void
@@ -816,6 +856,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
 
         login_window->priv->clock_show_seconds = TRUE;
+        login_window->priv->display_is_local = TRUE;
 
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
         g_signal_connect (login_window->priv->user_chooser,
@@ -835,7 +876,6 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
         gtk_container_set_border_width (GTK_CONTAINER (login_window), 12);
-
 }
 
 static void
