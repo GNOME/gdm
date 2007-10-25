@@ -51,8 +51,8 @@ set_fatal_warnings (void)
                 int major;
                 major = atoi (versions [1]);
                 if ((major % 2) != 0) {
-                        g_setenv ("G_DEBUG", "fatal_warnings", FALSE);
-                        g_log_set_always_fatal (G_LOG_LEVEL_WARNING);
+                        g_setenv ("G_DEBUG", "fatal_criticals", FALSE);
+                        g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
                 }
         }
         g_strfreev (versions);
