@@ -11,25 +11,19 @@ INCLUDES = \
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
-	$(SIMPLE_CHOOSER_CFLAGS)			\
+	$(SETTINGS_DAEMON_CFLAGS)			\
 	$(NULL)
 
 libexec_PROGRAMS =			\
-	gdm-simple-chooser		\
+	gdm-settings-daemon		\
 	$(NULL)
 
-gdm_simple_chooser_SOURCES =  		\
-	chooser-main.c 			\
-	gdm-host-chooser-widget.c	\
-	gdm-host-chooser-widget.h	\
-	gdm-host-chooser-dialog.c	\
-	gdm-host-chooser-dialog.h	\
+gdm_settings_daemon_SOURCES =  		\
+	main.c				\
 	$(NULL)
 
-gdm_simple_chooser_LDADD = 		\
-	$(EXTRA_CHOOSER_LIBS)   	\
-	$(SIMPLE_CHOOSER_LIBS)		\
-	$(XDMCP_LIBS)			\
+gdm_settings_daemon_LDADD = 		\
+	$(SETTINGS_DAEMON_LIBS)		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
