@@ -403,7 +403,7 @@ gdm_user_manager_init (GdmUserManager *manager)
         error = NULL;
         uri = g_filename_to_uri ("/etc/shells", NULL, &error);
         if (uri == NULL) {
-                g_critical ("Could not create URI for shells file `/etc/shells': %s",
+                g_warning ("Could not create URI for shells file `/etc/shells': %s",
                             error->message);
                 g_error_free (error);
         } else {
@@ -415,7 +415,7 @@ gdm_user_manager_init (GdmUserManager *manager)
                 g_free (uri);
 
                 if (result != GNOME_VFS_OK)
-                        g_critical ("Could not install monitor for shells file `/etc/shells': %s",
+                        g_warning ("Could not install monitor for shells file `/etc/shells': %s",
                                     gnome_vfs_result_to_string (result));
         }
 
@@ -427,7 +427,7 @@ gdm_user_manager_init (GdmUserManager *manager)
         error = NULL;
         uri = g_filename_to_uri ("/etc/passwd", NULL, &error);
         if (uri == NULL) {
-                g_critical ("Could not create URI for password file `/etc/passwd': %s",
+                g_warning ("Could not create URI for password file `/etc/passwd': %s",
                             error->message);
                 g_error_free (error);
         } else {
@@ -439,8 +439,8 @@ gdm_user_manager_init (GdmUserManager *manager)
                 g_free (uri);
 
                 if (result != GNOME_VFS_OK)
-                        g_critical ("Could not install monitor for password file `/etc/passwd: %s",
-                                    gnome_vfs_result_to_string (result));
+                        g_warning ("Could not install monitor for password file `/etc/passwd: %s",
+                                   gnome_vfs_result_to_string (result));
         }
 
         /* FIXME: add ConsoleKit seat monitoring */
