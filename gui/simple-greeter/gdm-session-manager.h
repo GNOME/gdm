@@ -36,6 +36,18 @@ G_BEGIN_DECLS
 
 typedef struct GdmSessionManagerPrivate GdmSessionManagerPrivate;
 
+typedef enum {
+        GDM_SESSION_LEVEL_NONE          = 1 << 0,
+        GDM_SESSION_LEVEL_STARTUP       = 1 << 1,
+        GDM_SESSION_LEVEL_CONFIGURATION = 1 << 2,
+        GDM_SESSION_LEVEL_LOGIN_WINDOW  = 1 << 3,
+        GDM_SESSION_LEVEL_HOST_CHOOSER  = 1 << 4,
+        GDM_SESSION_LEVEL_REMOTE_HOST   = 1 << 5,
+        GDM_SESSION_LEVEL_SHUTDOWN      = 1 << 6,
+} GdmSessionLevel;
+
+#define GDM_SESSION_ALL_LEVELS (GDM_SESSION_LEVEL_STARTUP | GDM_SESSION_LEVEL_CONFIGURATION | GDM_SESSION_LEVEL_LOGIN_WINDOW | GDM_SESSION_LEVEL_HOST_CHOOSER | GDM_SESSION_LEVEL_REMOTE_HOST | GDM_SESSION_LEVEL_SHUTDOWN)
+
 typedef struct
 {
         GObject                   parent;
@@ -45,21 +57,36 @@ typedef struct
 typedef struct
 {
         GObjectClass   parent_class;
+
+        void          (* level_changed)    (GdmSessionManager *manager,
+                                            guint              old_level,
+                                            guint              new_level);
 } GdmSessionManagerClass;
 
-GType                  gdm_session_manager_get_type            (void);
+typedef gboolean (* GdmSessionLevelNotifyFunc) (GdmSessionManager *manager,
+                                                gboolean           enabled,
+                                                gpointer           data);
 
-GdmSessionManager    * gdm_session_manager_new                 (void);
+GType               gdm_session_manager_get_type            (void);
 
-void                   gdm_session_manager_add_client          (GdmSessionManager *manager,
-                                                                GdmSessionClient  *client);
-void                   gdm_session_manager_add_autostart_dir   (GdmSessionManager *manager,
-                                                                const char        *path,
-                                                                guint              runlevel);
+GdmSessionManager * gdm_session_manager_new                 (void);
 
-gboolean               gdm_session_manager_start               (GdmSessionManager *manager,
-                                                                GError             **error);
-void                   gdm_session_manager_stop                (GdmSessionManager *manager);
+void                gdm_session_manager_add_client          (GdmSessionManager        *manager,
+                                                             GdmSessionClient         *client,
+                                                             GdmSessionLevel           levels);
+guint               gdm_session_manager_add_notify          (GdmSessionManager        *manager,
+                                                             GdmSessionLevel           levels,
+                                                             GdmSessionLevelNotifyFunc func,
+                                                             gpointer                  data);
+
+void                gdm_session_manager_load_autostart_dir  (GdmSessionManager        *manager,
+                                                             const char               *path,
+                                                             GdmSessionLevel           levels);
+
+void                gdm_session_manager_set_level           (GdmSessionManager        *manager,
+                                                             GdmSessionLevel           level);
+GdmSessionLevel     gdm_session_manager_get_level           (GdmSessionManager        *manager);
+
 
 G_END_DECLS
 

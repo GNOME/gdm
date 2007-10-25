@@ -1,5 +1,34 @@
 2007-10-24  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-marshal.list:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-greeter-session.c: (toggle_panel),
+	(toggle_login_window), (toggle_all_levels),
+	(gdm_greeter_session_start), (gdm_greeter_session_init):
+	* gui/simple-greeter/gdm-session-client.c:
+	(gdm_session_client_start), (gdm_session_client_stop),
+	(_gdm_session_client_set_desktop_file),
+	(gdm_session_client_set_property),
+	(gdm_session_client_get_property), (load_from_desktop_file),
+	(gdm_session_client_constructor), (gdm_session_client_dispose),
+	(gdm_session_client_class_init), (gdm_session_client_init),
+	(gdm_session_client_finalize), (gdm_session_client_new),
+	(gdm_session_client_new_from_desktop_file):
+	* gui/simple-greeter/gdm-session-client.h:
+	* gui/simple-greeter/gdm-session-manager.c: (notify_data_free),
+	(add_notify_for_level), (get_next_notify_id),
+	(gdm_session_manager_add_notify), (add_client_to_level),
+	(gdm_session_manager_add_client),
+	(gdm_session_manager_load_autostart_dir),
+	(gdm_session_manager_get_level), (_change_level),
+	(gdm_session_manager_set_level), (gdm_session_manager_class_init),
+	(gdm_session_manager_init):
+	* gui/simple-greeter/gdm-session-manager.h:
+	Use new session level based system.  Start/stop widgets
+	on level transitions.
+
+2007-10-24  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/Makefile.am:
 	* gui/simple-greeter/gdm-autostart-manager.c:
 	* gui/simple-greeter/gdm-autostart-manager.h:

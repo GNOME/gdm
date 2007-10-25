@@ -137,6 +137,8 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-greeter-session.c		\
 	gdm-session-manager.h		\
 	gdm-session-manager.c		\
+	gdm-session-client.h		\
+	gdm-session-client.c		\
 	gdm-greeter-login-window.c	\
 	gdm-greeter-login-window.h	\
 	gdm-greeter-panel.h		\
