@@ -36,7 +36,7 @@ main (int argc, char *argv[])
         gboolean            res;
         GError             *error;
 
-        bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+        bindtextdomain (GETTEXT_PACKAGE, GDM_SETTINGS_LOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
         textdomain (GETTEXT_PACKAGE);
 

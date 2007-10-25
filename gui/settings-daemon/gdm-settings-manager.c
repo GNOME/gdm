@@ -30,6 +30,7 @@
 #include <glib-object.h>
 
 #include "gdm-settings-manager.h"
+#include "gdm-settings-plugins-engine.h"
 
 #define GDM_SETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SETTINGS_MANAGER, GdmSettingsManagerPrivate))
 
@@ -56,7 +57,10 @@ gdm_settings_manager_start (GdmSettingsManager *manager,
 {
         gboolean ret;
 
+        g_debug ("Starting settings manager");
+
         ret = TRUE;
+        gdm_settings_plugins_engine_activate_all ();
 
         return ret;
 }
@@ -64,6 +68,7 @@ gdm_settings_manager_start (GdmSettingsManager *manager,
 void
 gdm_settings_manager_stop (GdmSettingsManager *manager)
 {
+        g_debug ("Stopping settings manager");
 }
 
 static void
@@ -124,6 +129,8 @@ gdm_settings_manager_dispose (GObject *object)
 
         settings_manager = GDM_SETTINGS_MANAGER (object);
 
+        gdm_settings_plugins_engine_shutdown ();
+
         G_OBJECT_CLASS (gdm_settings_manager_parent_class)->dispose (object);
 }
 
@@ -146,6 +153,8 @@ gdm_settings_manager_init (GdmSettingsManager *manager)
 {
 
         manager->priv = GDM_SETTINGS_MANAGER_GET_PRIVATE (manager);
+
+        gdm_settings_plugins_engine_init ();
 }
 
 static void

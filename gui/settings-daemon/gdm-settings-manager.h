@@ -40,7 +40,7 @@ typedef struct GdmSettingsManagerPrivate GdmSettingsManagerPrivate;
 
 typedef struct
 {
-        GObject                   parent;
+        GObject                    parent;
         GdmSettingsManagerPrivate *priv;
 } GdmSettingsManager;
 

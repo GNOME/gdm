@@ -90,6 +90,15 @@ PKG_CHECK_MODULES(SETTINGS_DAEMON,
 AC_SUBST(SETTINGS_DAEMON_CFLAGS)
 AC_SUBST(SETTINGS_DAEMON_LIBS)
 
+PKG_CHECK_MODULES(SETTINGS_PLUGIN,
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+)
+AC_SUBST(SETTINGS_PLUGIN_CFLAGS)
+AC_SUBST(SETTINGS_PLUGIN_LIBS)
+
+PLUGIN_LIBTOOL_FLAGS="-export_dynamic -module -avoid-version"
+AC_SUBST(PLUGIN_LIBTOOL_FLAGS)
+
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 AC_PATH_XTRA
 
@@ -1272,6 +1281,8 @@ Makefile
 daemon/Makefile
 gui/Makefile
 gui/settings-daemon/Makefile
+gui/settings-daemon/plugins/Makefile
+gui/settings-daemon/plugins/xsettings/Makefile
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile

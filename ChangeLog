@@ -1,5 +1,57 @@
 2007-10-25  William Jon McCann  <mccann@jhu.edu>
 
+	* configure.ac:
+	* gui/settings-daemon/Makefile.am:
+	* gui/settings-daemon/gdm-settings-manager.c:
+	(gdm_settings_manager_start), (gdm_settings_manager_stop),
+	(gdm_settings_manager_dispose), (gdm_settings_manager_init):
+	* gui/settings-daemon/gdm-settings-module.c:
+	(gdm_settings_module_load), (gdm_settings_module_unload),
+	(gdm_settings_module_get_path), (gdm_settings_module_new_object),
+	(gdm_settings_module_init), (gdm_settings_module_finalize),
+	(gdm_settings_module_class_init), (gdm_settings_module_new):
+	* gui/settings-daemon/gdm-settings-module.h:
+	* gui/settings-daemon/gdm-settings-plugin.c: (dummy),
+	(gdm_settings_plugin_class_init), (gdm_settings_plugin_init),
+	(gdm_settings_plugin_activate), (gdm_settings_plugin_deactivate):
+	* gui/settings-daemon/gdm-settings-plugin.h:
+	* gui/settings-daemon/gdm-settings-plugins-engine.c:
+	(gdm_settings_plugin_info_free),
+	(gdm_settings_plugins_engine_load), (compare_plugin_info),
+	(gdm_settings_plugins_engine_load_dir),
+	(gdm_settings_plugins_engine_load_all),
+	(gdm_settings_plugins_engine_init),
+	(gdm_settings_plugins_engine_garbage_collect),
+	(gdm_settings_plugins_engine_shutdown),
+	(gdm_settings_plugins_engine_get_plugins_list),
+	(load_plugin_module),
+	(gdm_settings_plugins_engine_activate_plugin_real),
+	(gdm_settings_plugins_engine_activate_plugin),
+	(gdm_settings_plugins_engine_deactivate_plugin_real),
+	(gdm_settings_plugins_engine_deactivate_plugin),
+	(gdm_settings_plugins_engine_plugin_is_active),
+	(gdm_settings_plugins_engine_plugin_is_available),
+	(reactivate_all), (gdm_settings_plugins_engine_activate_all),
+	(gdm_settings_plugins_engine_get_plugin_name),
+	(gdm_settings_plugins_engine_get_plugin_description),
+	(gdm_settings_plugins_engine_get_plugin_authors),
+	(gdm_settings_plugins_engine_get_plugin_website),
+	(gdm_settings_plugins_engine_get_plugin_copyright):
+	* gui/settings-daemon/gdm-settings-plugins-engine.h:
+	* gui/settings-daemon/main.c: (main):
+	* gui/settings-daemon/plugins/Makefile.am:
+	* gui/settings-daemon/plugins/xsettings/Makefile.am:
+	* gui/settings-daemon/plugins/xsettings/gdm-xsettings-plugin.c:
+	(gdm_xsettings_plugin_init), (gdm_xsettings_plugin_finalize),
+	(impl_activate), (impl_deactivate),
+	(gdm_xsettings_plugin_class_init):
+	* gui/settings-daemon/plugins/xsettings/gdm-xsettings-plugin.h:
+	* gui/settings-daemon/plugins/xsettings/xsettings.gdm-settings-plug
+	in.desktop.in:
+	Add a stub for xsettings plugin.
+
+2007-10-25  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/settings-daemon/Makefile.am:
 	* gui/settings-daemon/gdm-settings-manager.c:
 	(gdm_settings_manager_start), (gdm_settings_manager_stop),

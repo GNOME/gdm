@@ -1,16 +1,16 @@
 NULL =
 
+SUBDIRS =		\
+	plugins		\
+	$(NULL)
+
 INCLUDES = \
 	-I$(top_srcdir)/common				\
-	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
-	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
-	-DDMCONFDIR=\""$(dmconfdir)"\"		 	\
-	-DGDMLOCALEDIR=\""$(gdmlocaledir)"\"		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
+	-DGDM_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
-	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
+	-DGDM_SETTINGS_PLUGINDIR=\""$(libdir)/gdm/settings/plugins"\"	\
 	$(SETTINGS_DAEMON_CFLAGS)			\
 	$(NULL)
 
@@ -22,6 +22,12 @@ gdm_settings_daemon_SOURCES =  		\
 	main.c				\
 	gdm-settings-manager.c		\
 	gdm-settings-manager.h		\
+	gdm-settings-plugin.c		\
+	gdm-settings-plugin.h		\
+	gdm-settings-plugins-engine.c	\
+	gdm-settings-plugins-engine.h	\
+	gdm-settings-module.c		\
+	gdm-settings-module.h		\
 	$(NULL)
 
 gdm_settings_daemon_LDADD = 		\
