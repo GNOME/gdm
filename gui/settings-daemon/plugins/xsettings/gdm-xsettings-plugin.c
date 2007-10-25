@@ -20,11 +20,16 @@
 
 #include "config.h"
 
-#include "gdm-settings-plugin.h"
-#include "gdm-xsettings-plugin.h"
-
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
+
+#include "gdm-settings-plugin.h"
+#include "gdm-xsettings-plugin.h"
+#include "gdm-xsettings-manager.h"
+
+struct GdmXsettingsPluginPrivate {
+        GdmXsettingsManager *manager;
+};
 
 #define GDM_XSETTINGS_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), GDM_TYPE_XSETTINGS_PLUGIN, GdmXsettingsPluginPrivate))
 
@@ -33,13 +38,30 @@ GDM_SETTINGS_PLUGIN_REGISTER (GdmXsettingsPlugin, gdm_xsettings_plugin)
 static void
 gdm_xsettings_plugin_init (GdmXsettingsPlugin *plugin)
 {
+        plugin->priv = GDM_XSETTINGS_PLUGIN_GET_PRIVATE (plugin);
+
         g_debug ("GdmXsettingsPlugin initializing");
+
+        plugin->priv->manager = gdm_xsettings_manager_new ();
 }
 
 static void
 gdm_xsettings_plugin_finalize (GObject *object)
 {
+        GdmXsettingsPlugin *plugin;
+
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (GDM_IS_XSETTINGS_PLUGIN (object));
+
         g_debug ("GdmXsettingsPlugin finalizing");
+
+        plugin = GDM_XSETTINGS_PLUGIN (object);
+
+        g_return_if_fail (plugin->priv != NULL);
+
+        if (plugin->priv->manager != NULL) {
+                g_object_unref (plugin->priv->manager);
+        }
 
         G_OBJECT_CLASS (gdm_xsettings_plugin_parent_class)->finalize (object);
 }
@@ -47,13 +69,23 @@ gdm_xsettings_plugin_finalize (GObject *object)
 static void
 impl_activate (GdmSettingsPlugin *plugin)
 {
-        g_debug ("Activating plugin");
+        gboolean res;
+        GError  *error;
+
+        g_debug ("Activating xsettings plugin");
+
+        error = NULL;
+        res = gdm_xsettings_manager_start (GDM_XSETTINGS_PLUGIN (plugin)->priv->manager, &error);
+        if (! res) {
+                g_warning ("Unable to start xsettings manager: %s", error->message);
+                g_error_free (error);
+        }
 }
 
 static void
 impl_deactivate (GdmSettingsPlugin *plugin)
 {
-        g_debug ("Deactivating plugin");
+        g_debug ("Deactivating xsettings plugin");
 }
 
 static void
@@ -66,4 +98,6 @@ gdm_xsettings_plugin_class_init (GdmXsettingsPluginClass *klass)
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
+
+        g_type_class_add_private (klass, sizeof (GdmXsettingsPluginPrivate));
 }

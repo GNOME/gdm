@@ -47,6 +47,7 @@ GNOME_VFS_REQUIRED_VERSION=2.18.0
 PANGO_REQUIRED_VERSION=1.3.0
 LIBGLADE_REQUIRED_VERSION=1.99.2
 SCROLLKEEPER_REQUIRED_VERSION=0.1.4
+GCONF_REQUIRED_VERSION=2.6.1
 
 EXTRA_COMPILE_WARNINGS(yes)
 
@@ -98,6 +99,7 @@ AC_SUBST(SETTINGS_DAEMON_LIBS)
 
 PKG_CHECK_MODULES(SETTINGS_PLUGIN,
         gtk+-2.0 >= $GTK_REQUIRED_VERSION
+        gconf-2.0 >= $GCONF_REQUIRED_VERSION
 )
 AC_SUBST(SETTINGS_PLUGIN_CFLAGS)
 AC_SUBST(SETTINGS_PLUGIN_LIBS)
@@ -650,6 +652,16 @@ LIBS="$OLD_LIBS"
 fi
 
 AC_SUBST(LIBWRAP_LIBS)
+
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for XFT2 (for gdm-settings-daemon)
+dnl ---------------------------------------------------------------------------
+
+if $PKG_CONFIG --exists xft ; then
+  AC_DEFINE(HAVE_XFT2,,[Define if Xft functionality is available])
+fi
+
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for Xinput

@@ -1,5 +1,50 @@
 2007-10-25  William Jon McCann  <mccann@jhu.edu>
 
+	* configure.ac:
+	* gui/settings-daemon/plugins/xsettings/Makefile.am:
+	* gui/settings-daemon/plugins/xsettings/gdm-xsettings-manager.c:
+	(translate_bool_int), (translate_int_int),
+	(translate_string_string), (translate_string_string_toolbar),
+	(dpi_from_pixels_and_mm), (get_dpi_from_x_server),
+	(get_dpi_from_gconf_or_x_server), (xft_settings_get),
+	(xft_settings_set_xsettings), (write_all), (child_watch_cb),
+	(spawn_with_input), (xft_settings_set_xresources),
+	(update_xft_settings), (xft_callback), (type_to_string),
+	(process_value), (gdm_xsettings_manager_start),
+	(gdm_xsettings_manager_stop), (gdm_xsettings_manager_set_property),
+	(gdm_xsettings_manager_get_property),
+	(gdm_xsettings_manager_constructor),
+	(gdm_xsettings_manager_dispose),
+	(gdm_xsettings_manager_class_init), (find_translation_entry),
+	(xsettings_callback), (register_config_callback), (terminate_cb),
+	(gdm_xsettings_manager_init), (gdm_xsettings_manager_finalize),
+	(gdm_xsettings_manager_new):
+	* gui/settings-daemon/plugins/xsettings/gdm-xsettings-manager.h:
+	* gui/settings-daemon/plugins/xsettings/gdm-xsettings-plugin.c:
+	(gdm_xsettings_plugin_init), (gdm_xsettings_plugin_finalize),
+	(impl_activate), (impl_deactivate),
+	(gdm_xsettings_plugin_class_init):
+	* gui/settings-daemon/plugins/xsettings/xsettings-common.c:
+	(xsettings_setting_copy), (xsettings_list_copy),
+	(xsettings_setting_equal), (xsettings_setting_free),
+	(xsettings_list_free), (xsettings_list_insert),
+	(xsettings_list_delete), (xsettings_list_lookup),
+	(xsettings_byte_order):
+	* gui/settings-daemon/plugins/xsettings/xsettings-common.h:
+	* gui/settings-daemon/plugins/xsettings/xsettings-manager.c:
+	(timestamp_predicate), (get_server_time),
+	(xsettings_manager_check_running), (xsettings_manager_new),
+	(xsettings_manager_destroy), (xsettings_manager_get_window),
+	(xsettings_manager_process_event),
+	(xsettings_manager_delete_setting),
+	(xsettings_manager_set_setting), (xsettings_manager_set_int),
+	(xsettings_manager_set_string), (xsettings_manager_set_color),
+	(setting_length), (setting_store), (xsettings_manager_notify):
+	* gui/settings-daemon/plugins/xsettings/xsettings-manager.h:
+	Add an xsettings manager.
+
+2007-10-25  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-user-manager.c (gdm_user_manager_init):
 	Convert criticals to warnings.
 	Patch from Brian Cameron <brian.cameron@sun.com>

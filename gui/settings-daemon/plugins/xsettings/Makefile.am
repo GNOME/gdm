@@ -18,6 +18,12 @@ plugin_LTLIBRARIES = \
 libxsettings_la_SOURCES = 	\
 	gdm-xsettings-plugin.h	\
 	gdm-xsettings-plugin.c	\
+	gdm-xsettings-manager.h	\
+	gdm-xsettings-manager.c	\
+	xsettings-common.h	\
+	xsettings-common.c	\
+	xsettings-manager.h	\
+	xsettings-manager.c	\
 	$(NULL)
 
 libxsettings_la_LDFLAGS = 	\
