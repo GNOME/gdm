@@ -1,6 +1,6 @@
 NULL =
 
-modules_flags = -export_dynamic -avoid-version -module
+modules_flags = -export_dynamic -avoid-version -module -no-undefined
 
 plugindir = $(libdir)/gdm/settings/plugins
 

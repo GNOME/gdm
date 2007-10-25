@@ -2,22 +2,21 @@
 AC_PREREQ(2.59c)
 AC_INIT([gdm],
         [2.21.1],
-        [http://bugzilla.gnome.org/enter_bug.cgi?product=gdm],
-        [gdm])
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=gdm])
 
 AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.9])
 
 AM_MAINTAINER_MODE
 
 # for utmpx stuff
 AC_GNU_SOURCE
 
-AC_ISC_POSIX
-AC_PROG_CC
 AC_STDC_HEADERS
-AC_PROG_LIBTOOL
+AC_PROG_CXX
+AM_PROG_CC_C_O
+AC_PROG_LIBTOOL()
 
 AC_HEADER_STDC
 
@@ -66,6 +65,12 @@ PKG_CHECK_MODULES(DAEMON,
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
+PKG_CHECK_MODULES(GTK,
+        gtk+-2.0 >= $GTK_REQUIRED_VERSION
+)
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
+
 PKG_CHECK_MODULES(SIMPLE_GREETER,
         dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
         gtk+-2.0 >= $GTK_REQUIRED_VERSION
@@ -86,6 +91,7 @@ AC_SUBST(SIMPLE_CHOOSER_LIBS)
 
 PKG_CHECK_MODULES(SETTINGS_DAEMON,
         gtk+-2.0 >= $GTK_REQUIRED_VERSION
+        gmodule-2.0
 )
 AC_SUBST(SETTINGS_DAEMON_CFLAGS)
 AC_SUBST(SETTINGS_DAEMON_LIBS)

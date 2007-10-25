@@ -2,6 +2,17 @@
 
 	* configure.ac:
 	* gui/settings-daemon/Makefile.am:
+	* gui/settings-daemon/plugins/xsettings/Makefile.am:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/libnotificationarea/Makefile.am:
+	OMFG - I hate you.  Add gmodule to SETTINGS_DAEMON modules so we don't get:
+	undefined symbol: gdm_settings_plugin_get_type
+	Twiddled some other crap during the screaming.
+
+2007-10-25  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
+	* gui/settings-daemon/Makefile.am:
 	* gui/settings-daemon/gdm-settings-manager.c:
 	(gdm_settings_manager_start), (gdm_settings_manager_stop),
 	(gdm_settings_manager_dispose), (gdm_settings_manager_init):

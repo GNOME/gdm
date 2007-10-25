@@ -3,14 +3,14 @@ NULL =
 INCLUDES = \
 	-I.					\
 	-I..					\
-	-DBINDIR=\"$(bindir)\"				\
-	-DDATADIR=\"$(datadir)\"			\
-	-DLIBDIR=\"$(libdir)\"				\
-	-DLIBEXECDIR=\"$(libexecdir)\"			\
-	-DLOGDIR=\"$(logdir)\"				\
-	-DPIXMAPDIR=\"$(pixmapdir)\"			\
-	-DSBINDIR=\"$(sbindir)\"			\
-	$(GREETER_CFLAGS)				\
+	-DBINDIR=\"$(bindir)\"			\
+	-DDATADIR=\"$(datadir)\"		\
+	-DLIBDIR=\"$(libdir)\"			\
+	-DLIBEXECDIR=\"$(libexecdir)\"		\
+	-DLOGDIR=\"$(logdir)\"			\
+	-DPIXMAPDIR=\"$(pixmapdir)\"		\
+	-DSBINDIR=\"$(sbindir)\"		\
+	$(GTK_CFLAGS)				\
 	$(NULL)
 
 noinst_LTLIBRARIES = 			\
@@ -36,7 +36,7 @@ libnotificationarea_la_SOURCES =		\
 	$(NULL)
 
 libnotificationarea_la_LIBADD =			\
-	$(GUI_LIBS)				\
+	$(GTK_LIBS)				\
 	$(NULL)
 
 libnotificationarea_la_LDFLAGS = 		\

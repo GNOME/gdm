@@ -17,7 +17,7 @@ INCLUDES = \
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
-	$(GREETER_CFLAGS)				\
+	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
 	$(NULL)
 
@@ -67,7 +67,7 @@ test_greeter_panel_SOURCES = 	\
 	$(NULL)
 
 test_greeter_panel_LDADD =	\
-	$(GREETER_LIBS)		\
+	$(GTK_LIBS)		\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(NULL)
 
@@ -81,7 +81,7 @@ test_language_chooser_SOURCES = 	\
 	$(NULL)
 
 test_language_chooser_LDADD =	\
-	$(GREETER_LIBS)		\
+	$(GTK_LIBS)		\
 	$(NULL)
 
 test_session_chooser_SOURCES = 	\
@@ -93,7 +93,7 @@ test_session_chooser_SOURCES = 	\
 	$(NULL)
 
 test_session_chooser_LDADD =		\
-	$(GREETER_LIBS)			\
+	$(GTK_LIBS)			\
 	$(NULL)
 
 test_user_chooser_SOURCES = 		\

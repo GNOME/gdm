@@ -11,6 +11,8 @@ INCLUDES = \
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DGDM_SETTINGS_PLUGINDIR=\""$(libdir)/gdm/settings/plugins"\"	\
+	$(WARN_CFLAGS)					\
+	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(SETTINGS_DAEMON_CFLAGS)			\
 	$(NULL)
 
@@ -28,6 +30,18 @@ gdm_settings_daemon_SOURCES =  		\
 	gdm-settings-plugins-engine.h	\
 	gdm-settings-module.c		\
 	gdm-settings-module.h		\
+	$(NULL)
+
+gdm_settings_daemon_CPPFLAGS =		\
+	$(AM_CPPFLAGS)			\
+	$(NULL)
+
+gdm_settings_daemon_CFLAGS =		\
+	$(AM_CFLAGS)			\
+	$(NULL)
+
+gdm_settings_daemon_LDFLAGS = 		\
+	$(AM_LDFLAGS)			\
 	$(NULL)
 
 gdm_settings_daemon_LDADD = 		\
