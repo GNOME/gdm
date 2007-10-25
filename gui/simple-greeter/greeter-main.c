@@ -101,7 +101,6 @@ assistive_registry_launch (void)
         }
 
         return TRUE;
-
 }
 
 static GdkFilterReturn

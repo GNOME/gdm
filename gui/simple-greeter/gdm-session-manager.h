@@ -82,6 +82,7 @@ guint               gdm_session_manager_add_notify          (GdmSessionManager  
 void                gdm_session_manager_load_autostart_dir  (GdmSessionManager        *manager,
                                                              const char               *path,
                                                              GdmSessionLevel           levels);
+void                gdm_session_manager_load_system_dirs    (GdmSessionManager        *manager);
 
 void                gdm_session_manager_set_level           (GdmSessionManager        *manager,
                                                              GdmSessionLevel           level);

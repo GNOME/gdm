@@ -466,6 +466,8 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         session->priv = GDM_GREETER_SESSION_GET_PRIVATE (session);
 
         session->priv->manager = gdm_session_manager_new ();
+        gdm_session_manager_load_system_dirs (session->priv->manager);
+
         gdm_session_manager_add_notify (session->priv->manager,
                                         GDM_SESSION_LEVEL_LOGIN_WINDOW,
                                         (GdmSessionLevelNotifyFunc)toggle_login_window,

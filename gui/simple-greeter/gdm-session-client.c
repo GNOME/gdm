@@ -24,12 +24,14 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <signal.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
 #include "gdm-session-client.h"
+#include "gdm-common.h"
 
 #define GDM_SESSION_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_CLIENT, GdmSessionClientPrivate))
 
@@ -56,23 +58,66 @@ static void     gdm_session_client_finalize    (GObject               *object);
 G_DEFINE_TYPE (GdmSessionClient, gdm_session_client, G_TYPE_OBJECT)
 
 gboolean
-gdm_session_client_start (GdmSessionClient *session,
-                           GError           **error)
+gdm_session_client_start (GdmSessionClient *client,
+                          GError          **error)
 {
-        gboolean res;
+        GError     *local_error;
+        char      **argv;
+        gboolean    res;
+        gboolean    ret;
 
-        g_return_val_if_fail (GDM_IS_SESSION_CLIENT (session), FALSE);
+        g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), FALSE);
 
-        res = TRUE;
+        g_debug ("Starting client: %s", client->priv->name);
 
-        return res;
+        ret = FALSE;
+
+        argv = NULL;
+        local_error = NULL;
+        res = g_shell_parse_argv (client->priv->command, NULL, &argv, &local_error);
+        if (! res) {
+                g_warning ("Unable to parse command: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        local_error = NULL;
+        res = g_spawn_async (NULL,
+                             argv,
+                             NULL,
+                             G_SPAWN_SEARCH_PATH
+                             | G_SPAWN_STDOUT_TO_DEV_NULL
+                             | G_SPAWN_STDERR_TO_DEV_NULL,
+                             NULL,
+                             NULL,
+                             &client->priv->pid,
+                             &local_error);
+        g_strfreev (argv);
+
+        if (! res) {
+                g_warning ("Unable to run command %s: %s",
+                           client->priv->command,
+                           local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        return ret;
 }
 
 void
-gdm_session_client_stop (GdmSessionClient *session)
+gdm_session_client_stop (GdmSessionClient *client)
 {
-        g_return_if_fail (GDM_IS_SESSION_CLIENT (session));
+        g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
 
+        g_debug ("Stopping client: %s", client->priv->name);
+        if (client->priv->pid > 0) {
+                gdm_signal_pid (client->priv->pid, SIGTERM);
+                client->priv->pid = 0;
+        }
 }
 
 static void

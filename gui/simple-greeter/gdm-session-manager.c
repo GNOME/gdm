@@ -167,7 +167,59 @@ gdm_session_manager_load_autostart_dir  (GdmSessionManager *manager,
                                          const char        *path,
                                          GdmSessionLevel    levels)
 {
+        const char *file;
+        GDir       *dir;
+
         g_return_if_fail (GDM_IS_SESSION_MANAGER (manager));
+
+        g_debug ("Looking for autostart files in: %s", path);
+
+        dir = g_dir_open (path, 0, NULL);
+        if (dir == NULL) {
+                return;
+        }
+
+        while ((file = g_dir_read_name (dir))) {
+                char             *desktop_file;
+                GdmSessionClient *client;
+
+                if (! g_str_has_suffix (file, ".desktop")) {
+                        continue;
+                }
+
+                desktop_file = g_build_filename (path, file, NULL);
+
+                client = gdm_session_client_new_from_desktop_file (desktop_file);
+                if (client != NULL) {
+                        gdm_session_manager_add_client (manager, client, levels);
+                        g_object_unref (client);
+                }
+
+                g_free (desktop_file);
+        }
+}
+
+void
+gdm_session_manager_load_system_dirs (GdmSessionManager *manager)
+{
+        const char * const * system_dirs;
+        int                  i;
+        int                  len;
+
+        system_dirs = g_get_system_data_dirs ();
+
+        for (len = 0; system_dirs[len] != NULL; len++);
+
+        for (i = len - 1; i >= 0; i--) {
+                char *path;
+
+                path = g_build_filename (system_dirs[i], "gdm", "autostart", "LoginWindow", NULL);
+                gdm_session_manager_load_autostart_dir (manager,
+                                                        path,
+                                                        GDM_SESSION_LEVEL_LOGIN_WINDOW);
+
+                g_free (path);
+    }
 }
 
 GdmSessionLevel
@@ -189,6 +241,8 @@ _change_level (GdmSessionManager *manager,
         GList *list;
         guint  old_level;
 
+        g_debug ("Changing level to %u", (guint)new_level);
+
         /* unlike some other run level systems
          * we do not run intermediate levels
          * but jump directly to the new level */
@@ -205,6 +259,7 @@ _change_level (GdmSessionManager *manager,
 
         /* shutdown all running services that won't
          * be run in the new level */
+        g_debug ("Stopping old clients");
         for (list = old_clients; list; list = list->next) {
                 if (! g_list_find (new_clients, list->data)) {
                         GdmSessionClient *client;
@@ -214,6 +269,7 @@ _change_level (GdmSessionManager *manager,
         }
 
         /* run the off notifications for the new level */
+        g_debug ("Calling off notifications");
         for (list = old_notify; list; list = list->next) {
                 if (! g_list_find (new_notify, list->data)) {
                         NotifyData *ndata;
@@ -228,6 +284,7 @@ _change_level (GdmSessionManager *manager,
         g_signal_emit (manager, signals [LEVEL_CHANGED], 0, old_level, new_level);
 
         /* start up the new services for new level */
+        g_debug ("Starting new clients");
         for (list = new_clients; list; list = list->next) {
                 if (! g_list_find (old_clients, list->data)) {
                         GdmSessionClient *client;
