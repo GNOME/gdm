@@ -26,11 +26,15 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include "gdm-settings-manager.h"
 #include "gdm-common.h"
 
 int
 main (int argc, char *argv[])
 {
+        GdmSettingsManager *manager;
+        gboolean            res;
+        GError             *error;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -42,7 +46,21 @@ main (int argc, char *argv[])
 
         gtk_init (&argc, &argv);
 
+        manager = gdm_settings_manager_new ();
+
+        res = gdm_settings_manager_start (manager, &error);
+        if (! res) {
+                g_warning ("Unable to start: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
         gtk_main ();
+
+ out:
+        if (manager != NULL) {
+                g_object_unref (manager);
+        }
 
         return 0;
 }

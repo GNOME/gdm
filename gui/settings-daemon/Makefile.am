@@ -20,6 +20,8 @@ libexec_PROGRAMS =			\
 
 gdm_settings_daemon_SOURCES =  		\
 	main.c				\
+	gdm-settings-manager.c		\
+	gdm-settings-manager.h		\
 	$(NULL)
 
 gdm_settings_daemon_LDADD = 		\
