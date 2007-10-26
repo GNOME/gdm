@@ -1,5 +1,18 @@
 2007-10-26  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-signal-handler.c: (gdm_signal_handler_init),
+	(gdm_signal_handler_finalize): only call signal_list_free on
+	elements in signal lookup hash table, when the hash table is about
+	to be destroyed. Previously, signal_list_free was set up as the
+	value destroy notifier.  The problem is the destroy notifier gets
+	called on every g_hash_table_insert call (well except for the
+	first one), so the list being appended to/reinserted was getting
+	clobbered.
+
+	Patch from: Ray Strode <halfline@gmail.com>
+
+2007-10-26  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/settings-daemon/plugins/xsettings/gdm-xsettings-manager.c:
 	Add locale.h to fix build
 	Patch from: Ray Strode <halfline@gmail.com>

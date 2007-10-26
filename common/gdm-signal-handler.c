@@ -461,15 +461,8 @@ gdm_signal_handler_init (GdmSignalHandler *handler)
 
         handler->priv->next_id = 1;
 
-        handler->priv->lookup = g_hash_table_new_full (NULL,
-                                                       NULL,
-                                                       NULL,
-                                                       (GDestroyNotify)signal_list_free);
-        handler->priv->id_lookup = g_hash_table_new_full (NULL,
-                                                          NULL,
-                                                          NULL,
-                                                          (GDestroyNotify)callback_data_free);
-
+        handler->priv->lookup = g_hash_table_new (NULL, NULL);
+        handler->priv->id_lookup = g_hash_table_new (NULL, NULL);
         handler->priv->action_lookup = g_hash_table_new (NULL, NULL);
 
         if (pipe (signal_pipes) == -1) {
@@ -487,6 +480,7 @@ static void
 gdm_signal_handler_finalize (GObject *object)
 {
         GdmSignalHandler *handler;
+        GList            *l;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_SIGNAL_HANDLER (object));
@@ -496,9 +490,20 @@ gdm_signal_handler_finalize (GObject *object)
         g_debug ("Finalizing signal handler");
 
         g_return_if_fail (handler->priv != NULL);
-
+        for (l = g_hash_table_get_values (handler->priv->lookup);
+             l != NULL; l = l->next) {
+                signal_list_free ((GSList *) l->data);
+        }
         g_hash_table_destroy (handler->priv->lookup);
+        for (l = g_hash_table_get_values (handler->priv->id_lookup);
+             l != NULL; l = l->next) {
+                callback_data_free ((CallbackData *) l->data);
+        }
         g_hash_table_destroy (handler->priv->id_lookup);
+        for (l = g_hash_table_get_values (handler->priv->action_lookup);
+             l != NULL; l = l->next) {
+                g_free (l->data);
+        }
         g_hash_table_destroy (handler->priv->action_lookup);
 
         G_OBJECT_CLASS (gdm_signal_handler_parent_class)->finalize (object);
