@@ -658,7 +658,7 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_TYPE_NONE,
                               0);
 
-        gdm_greeter_client_signals[READY] =
+        gdm_greeter_client_signals[RESET] =
                 g_signal_new ("reset",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
