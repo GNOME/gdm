@@ -183,9 +183,9 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         case MODE_SELECTION:
                 show_widget (login_window, "log-in-button", FALSE);
                 show_widget (login_window, "cancel-button", FALSE);
-                show_widget (login_window, "shutdown-button", TRUE);
-                show_widget (login_window, "restart-button", TRUE);
-                show_widget (login_window, "suspend-button", TRUE);
+                show_widget (login_window, "shutdown-button", login_window->priv->display_is_local);
+                show_widget (login_window, "restart-button", login_window->priv->display_is_local);
+                show_widget (login_window, "suspend-button", login_window->priv->display_is_local);
                 show_widget (login_window, "disconnect-button", ! login_window->priv->display_is_local);
                 show_widget (login_window, "auth-input-box", FALSE);
                 default_name = NULL;
