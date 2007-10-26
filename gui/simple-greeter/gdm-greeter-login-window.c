@@ -55,8 +55,8 @@
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 
 enum {
-        PAGE_USERLIST = 0,
-        PAGE_AUTH
+        MODE_SELECTION = 0,
+        MODE_AUTHENTICATION
 };
 
 struct GdmGreeterLoginWindowPrivate
@@ -172,31 +172,31 @@ show_widget (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-switch_page (GdmGreeterLoginWindow *login_window,
+switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
-        GtkWidget *notebook;
+        /* switch mode */
 
-        /* switch page */
-        notebook = glade_xml_get_widget (login_window->priv->xml, "notebook");
-        gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), number);
+        /* FIXME: do animation */
 
         switch (number) {
-        case PAGE_USERLIST:
+        case MODE_SELECTION:
                 show_widget (login_window, "log-in-button", FALSE);
                 show_widget (login_window, "cancel-button", FALSE);
                 show_widget (login_window, "shutdown-button", TRUE);
                 show_widget (login_window, "restart-button", TRUE);
                 show_widget (login_window, "suspend-button", TRUE);
                 show_widget (login_window, "disconnect-button", ! login_window->priv->display_is_local);
+                show_widget (login_window, "auth-input-box", FALSE);
                 break;
-        case PAGE_AUTH:
+        case MODE_AUTHENTICATION:
                 show_widget (login_window, "log-in-button", TRUE);
                 show_widget (login_window, "cancel-button", TRUE);
                 show_widget (login_window, "shutdown-button", FALSE);
                 show_widget (login_window, "restart-button", FALSE);
                 show_widget (login_window, "suspend-button", FALSE);
                 show_widget (login_window, "disconnect-button", FALSE);
+                show_widget (login_window, "auth-input-box", TRUE);
                 break;
         default:
                 g_assert_not_reached ();
@@ -207,7 +207,7 @@ switch_page (GdmGreeterLoginWindow *login_window,
 static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
-        switch_page (login_window, PAGE_USERLIST);
+        switch_mode (login_window, MODE_SELECTION);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
 
@@ -233,7 +233,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
 
         set_message (login_window, "");
 
-        switch_page (login_window, PAGE_USERLIST);
+        switch_mode (login_window, MODE_SELECTION);
 
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
@@ -416,7 +416,7 @@ on_user_activated (GdmUserChooserWidget  *user_chooser,
 
         g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, user_name);
 
-        switch_page (login_window, PAGE_AUTH);
+        switch_mode (login_window, MODE_AUTHENTICATION);
 }
 
 static void
@@ -710,7 +710,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
         box = glade_xml_get_widget (login_window->priv->xml, "computer-info-event-box");
         g_signal_connect (box, "button-press-event", G_CALLBACK (on_computer_info_label_button_press), login_window);
 
-        switch_page (login_window, PAGE_USERLIST);
+        switch_mode (login_window, MODE_SELECTION);
 }
 
 static void
@@ -876,7 +876,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         gtk_window_set_skip_taskbar_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
-        gtk_container_set_border_width (GTK_CONTAINER (login_window), 12);
+        gtk_container_set_border_width (GTK_CONTAINER (login_window), 20);
 }
 
 static void

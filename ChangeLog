@@ -1,5 +1,15 @@
 2007-10-26  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/gdm-greeter-login-window.c: (switch_mode),
+	(do_cancel), (reset_dialog), (on_user_activated), (load_theme),
+	(gdm_greeter_login_window_init):
+	* gui/simple-greeter/gdm-greeter-login-window.glade:
+	Get rid of notebook.  Put auth prompt box in main page.
+	Make visible on demand and hope to animate at some point.
+	Also a few spacing tweaks.
+
+2007-10-26  William Jon McCann  <mccann@jhu.edu>
+
 	* common/gdm-signal-handler.c: (gdm_signal_handler_init),
 	(gdm_signal_handler_finalize): only call signal_list_free on
 	elements in signal lookup hash table, when the hash table is about
