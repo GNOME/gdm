@@ -175,7 +175,7 @@ static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
-        /* switch mode */
+        const char *default_name;
 
         /* FIXME: do animation */
 
@@ -188,6 +188,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 show_widget (login_window, "suspend-button", TRUE);
                 show_widget (login_window, "disconnect-button", ! login_window->priv->display_is_local);
                 show_widget (login_window, "auth-input-box", FALSE);
+                default_name = NULL;
                 break;
         case MODE_AUTHENTICATION:
                 show_widget (login_window, "log-in-button", TRUE);
@@ -197,11 +198,18 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 show_widget (login_window, "suspend-button", FALSE);
                 show_widget (login_window, "disconnect-button", FALSE);
                 show_widget (login_window, "auth-input-box", TRUE);
+                default_name = "log-in-button";
                 break;
         default:
                 g_assert_not_reached ();
         }
 
+        if (default_name != NULL) {
+                GtkWidget *widget;
+
+                widget = glade_xml_get_widget (login_window->priv->xml, default_name);
+                gtk_widget_grab_default (widget);
+        }
 }
 
 static void
