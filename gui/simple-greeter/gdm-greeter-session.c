@@ -193,6 +193,7 @@ toggle_panel (GdmSessionManager *manager,
               gboolean           enabled,
               GdmGreeterSession *session)
 {
+#if 0
         if (enabled) {
                 session->priv->panel = gdm_greeter_panel_new ();
                 gtk_widget_show (session->priv->panel);
@@ -200,6 +201,7 @@ toggle_panel (GdmSessionManager *manager,
                 gtk_widget_destroy (session->priv->panel);
                 session->priv->panel = NULL;
         }
+#endif
 }
 
 static void
@@ -330,9 +332,9 @@ start_settings_daemon (GdmGreeterSession *session)
         ret = FALSE;
 
         error = NULL;
-        g_spawn_command_line_async (LIBEXECDIR "/gnome-settings-daemon", &error);
+        g_spawn_command_line_async (LIBEXECDIR "/gdm-settings-daemon", &error);
         if (error != NULL) {
-                g_warning ("Error starting settings daemon: %s", error->message);
+                g_warning ("Error starting GDM settings daemon: %s", error->message);
                 g_error_free (error);
                 goto out;
         }
