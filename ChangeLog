@@ -1,5 +1,17 @@
 2007-10-26  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-common.c: (gdm_set_fatal_warnings_if_unstable):
+	* common/gdm-common.h:
+	* daemon/factory-slave-main.c: (main):
+	* daemon/main.c: (main):
+	* daemon/product-slave-main.c: (main):
+	* daemon/simple-slave-main.c: (main):
+	* gui/simple-greeter/greeter-main.c: (main):
+	Use assertions for criticals everywhere for unstable
+	builds.
+
+2007-10-26  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c: (switch_mode):
 	Hide shutdown/restart/suspend buttons on remote displays.
 	Can't see ever allowing this.

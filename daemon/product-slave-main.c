@@ -41,6 +41,7 @@
 
 #include "gdm-signal-handler.h"
 #include "gdm-log.h"
+#include "gdm-common.h"
 #include "gdm-product-slave.h"
 
 static int gdm_return_code = 0;
@@ -159,6 +160,8 @@ main (int    argc,
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         textdomain (GETTEXT_PACKAGE);
         setlocale (LC_ALL, "");
+
+        gdm_set_fatal_warnings_if_unstable ();
 
         g_type_init ();
 

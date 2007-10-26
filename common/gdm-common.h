@@ -27,6 +27,8 @@
 
 G_BEGIN_DECLS
 
+void           gdm_set_fatal_warnings_if_unstable (void);
+
 int            gdm_signal_pid            (int pid,
                                           int signal);
 

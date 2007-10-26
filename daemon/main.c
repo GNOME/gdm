@@ -44,6 +44,7 @@
 
 #include "gdm-manager.h"
 #include "gdm-log.h"
+#include "gdm-common.h"
 #include "gdm-signal-handler.h"
 
 #include "gdm-settings.h"
@@ -540,6 +541,8 @@ main (int    argc,
         setlocale (LC_ALL, "");
 
         ret = 1;
+
+        gdm_set_fatal_warnings_if_unstable ();
 
         g_type_init ();
 

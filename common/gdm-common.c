@@ -34,6 +34,23 @@
 #include "gdm-common.h"
 #include "gdm-md5.h"
 
+void
+gdm_set_fatal_warnings_if_unstable (void)
+{
+        char **versions;
+
+        versions = g_strsplit (VERSION, ".", 3);
+        if (versions && versions [0] && versions [1]) {
+                int major;
+                major = atoi (versions [1]);
+                if ((major % 2) != 0) {
+                        g_setenv ("G_DEBUG", "fatal_criticals", FALSE);
+                        g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
+                }
+        }
+        g_strfreev (versions);
+}
+
 int
 gdm_signal_pid (int pid,
                 int signal)

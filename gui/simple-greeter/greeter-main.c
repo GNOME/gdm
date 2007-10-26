@@ -32,6 +32,7 @@
 #include <gconf/gconf-client.h>
 
 #include "gdm-log.h"
+#include "gdm-common.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
@@ -40,23 +41,6 @@
 #define ACCESSIBILITY_KEY         "/desktop/gnome/interface/accessibility"
 
 static Atom AT_SPI_IOR;
-
-static void
-set_fatal_warnings (void)
-{
-        char **versions;
-
-        versions = g_strsplit (VERSION, ".", 3);
-        if (versions && versions [0] && versions [1]) {
-                int major;
-                major = atoi (versions [1]);
-                if ((major % 2) != 0) {
-                        g_setenv ("G_DEBUG", "fatal_criticals", FALSE);
-                        g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
-                }
-        }
-        g_strfreev (versions);
-}
 
 static gboolean
 assistive_registry_launch (void)
@@ -226,7 +210,7 @@ main (int argc, char *argv[])
 
         setlocale (LC_ALL, "");
 
-        set_fatal_warnings ();
+        gdm_set_fatal_warnings_if_unstable ();
 
         g_type_init ();
 
