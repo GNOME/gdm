@@ -53,7 +53,7 @@ main (int argc, char *argv[])
         if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
                 char *name;
 
-                name = gdm_user_chooser_dialog_get_current_user_name (GDM_USER_CHOOSER_DIALOG (dialog));
+                name = gdm_user_chooser_dialog_get_chosen_user_name (GDM_USER_CHOOSER_DIALOG (dialog));
                 g_message ("User: %s", name ? name : "(null)");
                 g_free (name);
         }

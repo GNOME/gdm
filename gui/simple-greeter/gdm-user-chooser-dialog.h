@@ -50,7 +50,7 @@ GType                  gdm_user_chooser_dialog_get_type                   (void)
 
 GtkWidget            * gdm_user_chooser_dialog_new                        (void);
 
-char *                 gdm_user_chooser_dialog_get_current_user_name      (GdmUserChooserDialog *dialog);
+char *                 gdm_user_chooser_dialog_get_chosen_user_name       (GdmUserChooserDialog *dialog);
 
 G_END_DECLS
 

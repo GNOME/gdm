@@ -51,13 +51,13 @@ static void     gdm_user_chooser_dialog_finalize    (GObject                    
 G_DEFINE_TYPE (GdmUserChooserDialog, gdm_user_chooser_dialog, GTK_TYPE_DIALOG)
 
 char *
-gdm_user_chooser_dialog_get_current_user_name (GdmUserChooserDialog *dialog)
+gdm_user_chooser_dialog_get_chosen_user_name (GdmUserChooserDialog *dialog)
 {
         char *user_name;
 
         g_return_val_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog), NULL);
 
-        user_name = gdm_user_chooser_widget_get_current_user_name (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget));
+        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget));
 
         return user_name;
 }
@@ -154,7 +154,7 @@ gdm_user_chooser_dialog_init (GdmUserChooserDialog *dialog)
         dialog->priv = GDM_USER_CHOOSER_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->chooser_widget = gdm_user_chooser_widget_new ();
-
+        gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),

@@ -207,6 +207,9 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
+
+        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
+
         switch_mode (login_window, MODE_SELECTION);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
@@ -407,12 +410,12 @@ cancel_button_clicked (GtkButton             *button,
 }
 
 static void
-on_user_activated (GdmUserChooserWidget  *user_chooser,
-                   GdmGreeterLoginWindow *login_window)
+on_user_chosen (GdmUserChooserWidget  *user_chooser,
+                GdmGreeterLoginWindow *login_window)
 {
         char *user_name;
 
-        user_name = gdm_user_chooser_widget_get_current_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
 
         g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, user_name);
 
@@ -859,9 +862,11 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv->display_is_local = TRUE;
 
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
+        gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+
         g_signal_connect (login_window->priv->user_chooser,
-                          "user-activated",
-                          G_CALLBACK (on_user_activated),
+                          "user-chosen",
+                          G_CALLBACK (on_user_chosen),
                           login_window);
 
         gtk_widget_show_all (login_window->priv->user_chooser);

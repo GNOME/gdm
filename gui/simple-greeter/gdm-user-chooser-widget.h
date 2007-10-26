@@ -46,15 +46,17 @@ typedef struct
         GtkVBoxClass   parent_class;
 
         /* signals */
-        void (* user_activated)        (GdmUserChooserWidget *widget);
+        void (* user_chosen)        (GdmUserChooserWidget *widget);
 } GdmUserChooserWidgetClass;
 
 GType                  gdm_user_chooser_widget_get_type                   (void);
 GtkWidget *            gdm_user_chooser_widget_new                        (void);
 
-char *                 gdm_user_chooser_widget_get_current_user_name      (GdmUserChooserWidget *widget);
-void                   gdm_user_chooser_widget_set_current_user_name      (GdmUserChooserWidget *widget,
+char *                 gdm_user_chooser_widget_get_chosen_user_name       (GdmUserChooserWidget *widget);
+void                   gdm_user_chooser_widget_set_chosen_user_name       (GdmUserChooserWidget *widget,
                                                                            const char           *user_name);
+void                   gdm_user_chooser_widget_set_show_only_chosen       (GdmUserChooserWidget *widget,
+                                                                           gboolean              show_only);
 
 G_END_DECLS
 
