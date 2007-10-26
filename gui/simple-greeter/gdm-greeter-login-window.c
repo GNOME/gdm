@@ -215,7 +215,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
-
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
 
         switch_mode (login_window, MODE_SELECTION);
@@ -243,6 +242,8 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         gtk_label_set_text (GTK_LABEL (label), "");
 
         set_message (login_window, "");
+
+        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
 
         switch_mode (login_window, MODE_SELECTION);
 
