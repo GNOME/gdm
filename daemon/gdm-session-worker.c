@@ -770,16 +770,28 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         worker->priv->pam_handle = NULL;
 }
 
+static char *
+_get_tty_for_pam (const char *x11_display_name,
+                  const char *display_device)
+{
+#ifdef __sun
+        return g_strdup (display_device);
+#endif
+        return g_strdup (x11_display_name);
+}
+
 static gboolean
 gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *service,
                                    const char       *username,
                                    const char       *hostname,
+                                   const char       *x11_display_name,
                                    const char       *display_device,
                                    GError          **error)
 {
-        struct pam_conv pam_conversation;
-        int             error_code;
+        struct pam_conv  pam_conversation;
+        int              error_code;
+        char            *pam_tty;
 
         g_assert (worker->priv->pam_handle == NULL);
 
@@ -836,7 +848,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 }
         }
 
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, display_device);
+        pam_tty = _get_tty_for_pam (x11_display_name, display_device);
+        error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY,
+                                   pam_tty);
+        g_free (pam_tty);
 
         if (error_code != PAM_SUCCESS) {
                 g_set_error (error,
@@ -1132,6 +1147,7 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
                                                  service_name,
                                                  username,
                                                  hostname,
+                                                 x11_display_name,
                                                  display_device,
                                                  &pam_error);
         if (! res) {

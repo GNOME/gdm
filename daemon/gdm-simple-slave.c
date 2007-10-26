@@ -905,7 +905,9 @@ static void
 on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmSimpleSlave   *slave)
 {
-        char *display_name;
+        gboolean       display_is_local;
+        char          *display_name;
+        char          *display_device;
 
         g_debug ("Greeter cancelled");
 
@@ -920,13 +922,20 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
 
         create_new_session (slave);
 
+        if (display_is_local) {
+                display_device = gdm_server_get_display_device (slave->priv->server);
+        } else {
+                display_device = g_strdup ("");
+        }
+
         gdm_session_open (slave->priv->session,
                           "gdm",
                           "" /* hostname */,
                           display_name,
-                          "/dev/console",
+                          display_device,
                           NULL);
 
+        g_free (display_device);
         g_free (display_name);
 }
 
@@ -936,6 +945,7 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 {
         gboolean       display_is_local;
         char          *display_name;
+        char          *display_device;
 
         g_object_get (slave,
                       "display-name", &display_name,
@@ -944,12 +954,19 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 
         g_debug ("Greeter started");
 
+        if (display_is_local) {
+                display_device = gdm_server_get_display_device (slave->priv->server);
+        } else {
+                display_device = g_strdup ("");
+        }
+
         gdm_session_open (slave->priv->session,
                           "gdm",
                           "" /* hostname */,
                           display_name,
-                          "/dev/console",
+                          display_device,
                           NULL);
+        g_free (display_device);
 
         /* If XDMCP stop pinging */
         if ( ! display_is_local) {

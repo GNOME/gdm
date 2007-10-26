@@ -69,6 +69,7 @@ struct GdmServerPrivate
 
         char    *log_dir;
         char    *display_name;
+        char    *display_device;
         char    *auth_file;
 
         gboolean is_parented;
@@ -82,6 +83,7 @@ struct GdmServerPrivate
 enum {
         PROP_0,
         PROP_DISPLAY_NAME,
+        PROP_DISPLAY_DEVICE,
         PROP_AUTH_FILE,
         PROP_IS_PARENTED,
         PROP_PARENT_DISPLAY_NAME,
@@ -108,8 +110,8 @@ static void     gdm_server_finalize     (GObject        *object);
 
 G_DEFINE_TYPE (GdmServer, gdm_server, G_TYPE_OBJECT)
 
-char *
-gdm_server_get_display_device (GdmServer *server)
+static char *
+_gdm_server_query_ck_for_display_device (GdmServer *server)
 {
         char    *out;
         char    *command;
@@ -141,6 +143,19 @@ gdm_server_get_display_device (GdmServer *server)
         g_free (command);
 
         return out;
+}
+
+char *
+gdm_server_get_display_device (GdmServer *server)
+{
+        if (server->priv->display_device == NULL) {
+                server->priv->display_device =
+                    _gdm_server_query_ck_for_display_device (server);
+
+                g_object_notify (G_OBJECT (server), "display-device");
+        }
+
+        return g_strdup (server->priv->display_device);
 }
 
 static gboolean
@@ -688,6 +703,12 @@ server_died (GdmServer *server)
         g_spawn_close_pid (server->priv->pid);
         server->priv->pid = -1;
 
+        if (server->priv->display_device != NULL) {
+                g_free (server->priv->display_device);
+                server->priv->display_device = NULL;
+                g_object_notify (G_OBJECT (server), "display-device");
+        }
+
         g_debug ("Server died");
 }
 
@@ -766,6 +787,10 @@ gdm_server_get_property (GObject    *object,
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
+        case PROP_DISPLAY_DEVICE:
+                g_value_take_string (value,
+                                     gdm_server_get_display_device (self));
+                break;
         case PROP_USER_NAME:
                 g_value_set_string (value, self->priv->user_name);
                 break;
@@ -821,6 +846,14 @@ gdm_server_class_init (GdmServerClass *klass)
                                                               "name",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_DEVICE,
+                                         g_param_spec_string ("display-device",
+                                                              "Display Device",
+                                                              "Path to terminal display is running on",
+                                                              NULL,
+                                                              G_PARAM_READABLE));
+
         g_object_class_install_property (object_class,
                                          PROP_USER_NAME,
                                          g_param_spec_string ("user-name",
