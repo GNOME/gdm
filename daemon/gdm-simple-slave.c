@@ -913,6 +913,7 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
 
         g_object_get (slave,
                       "display-name", &display_name,
+                      "display-is-local", &display_is_local,
                       NULL);
 
         if (slave->priv->session != NULL) {
