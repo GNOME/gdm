@@ -92,15 +92,6 @@ enum {
         PROP_0,
 };
 
-enum {
-        SESSION_STARTED,
-        SESSION_EXITED,
-        SESSION_DIED,
-        LAST_SIGNAL
-};
-
-static guint signals [LAST_SIGNAL] = { 0, };
-
 static void     gdm_simple_slave_class_init     (GdmSimpleSlaveClass *klass);
 static void     gdm_simple_slave_init           (GdmSimpleSlave      *simple_slave);
 static void     gdm_simple_slave_finalize       (GObject             *object);
@@ -366,7 +357,8 @@ on_session_started (GdmSession     *session,
                     GdmSimpleSlave *slave)
 {
         g_debug ("session started on pid %d\n", (int) pid);
-        g_signal_emit (slave, signals [SESSION_STARTED], 0, pid);
+
+        /* FIXME: should we do something here? */
 }
 
 static void

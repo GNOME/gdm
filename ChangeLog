@@ -1,5 +1,11 @@
 2007-10-26  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-simple-slave.c: (on_session_started):
+	Remove rogue (ie. undefined) signals.  Caught with
+	assertions.
+
+2007-10-26  William Jon McCann  <mccann@jhu.edu>
+
 	* common/gdm-common.c: (gdm_set_fatal_warnings_if_unstable):
 	* common/gdm-common.h:
 	* daemon/factory-slave-main.c: (main):
