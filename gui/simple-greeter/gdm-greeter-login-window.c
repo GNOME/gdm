@@ -883,6 +883,10 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
+        /* FIXME: set from gconf */
+        gdm_user_chooser_widget_set_show_other_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+        gdm_user_chooser_widget_set_show_guest_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+
         g_signal_connect (login_window->priv->user_chooser,
                           "user-chosen",
                           G_CALLBACK (on_user_chosen),

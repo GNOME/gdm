@@ -43,6 +43,9 @@ enum {
 
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
+#define OTHER_USER_ID "__other"
+#define GUEST_USER_ID "__guest"
+
 typedef struct _GdmChooserUser {
         char      *name;
         char      *realname;
@@ -63,6 +66,8 @@ struct GdmUserChooserWidgetPrivate
 
         char               *chosen_user;
         gboolean            show_only_chosen;
+        gboolean            show_other_user;
+        gboolean            show_guest_user;
 };
 
 enum {
@@ -115,6 +120,34 @@ gdm_user_chooser_widget_set_show_only_chosen (GdmUserChooserWidget *widget,
 
         if (widget->priv->show_only_chosen != show_only) {
                 widget->priv->show_only_chosen = show_only;
+                if (widget->priv->filter_model != NULL) {
+                        gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (widget->priv->filter_model));
+                }
+        }
+}
+
+void
+gdm_user_chooser_widget_set_show_other_user (GdmUserChooserWidget *widget,
+                                             gboolean              show_user)
+{
+        g_return_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget));
+
+        if (widget->priv->show_other_user != show_user) {
+                widget->priv->show_other_user = show_user;
+                if (widget->priv->filter_model != NULL) {
+                        gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (widget->priv->filter_model));
+                }
+        }
+}
+
+void
+gdm_user_chooser_widget_set_show_guest_user (GdmUserChooserWidget *widget,
+                                             gboolean              show_user)
+{
+        g_return_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget));
+
+        if (widget->priv->show_guest_user != show_user) {
+                widget->priv->show_guest_user = show_user;
                 if (widget->priv->filter_model != NULL) {
                         gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (widget->priv->filter_model));
                 }
@@ -412,6 +445,31 @@ static void
 populate_model (GdmUserChooserWidget *widget,
                 GtkTreeModel         *model)
 {
+        GtkTreeIter iter;
+        GdkPixbuf  *pixbuf;
+
+        pixbuf = get_pixbuf_for_user (widget, NULL);
+
+        /* Add some fake entries */
+        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                            CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
+                            CHOOSER_LIST_NAME_COLUMN, _("Other..."),
+                            CHOOSER_LIST_TOOLTIP_COLUMN, _("Choose a different account"),
+                            CHOOSER_LIST_ID_COLUMN, OTHER_USER_ID,
+                            -1);
+
+        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                            CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
+                            CHOOSER_LIST_NAME_COLUMN, _("Guest"),
+                            CHOOSER_LIST_TOOLTIP_COLUMN, _("Login as a temporary guest"),
+                            CHOOSER_LIST_ID_COLUMN, GUEST_USER_ID,
+                            -1);
+
+        if (pixbuf != NULL) {
+                g_object_unref (pixbuf);
+        }
 
         g_hash_table_foreach (widget->priv->available_users,
                               (GHFunc)add_user_to_model,
@@ -441,9 +499,9 @@ separator_func (GtkTreeModel *model,
 
 static int
 compare_user_names (char *name_a,
-                       char *name_b,
-                       char *id_a,
-                       char *id_b)
+                    char *name_b,
+                    char *id_a,
+                    char *id_b)
 {
 
         if (id_a == NULL) {
@@ -452,18 +510,14 @@ compare_user_names (char *name_a,
                 return -1;
         }
 
-        if (strcmp (id_a, "__previous-user") == 0) {
-                return -1;
-        } else if (strcmp (id_b, "__previous-user") == 0) {
+        if (strcmp (id_a, "__other") == 0) {
                 return 1;
-        } else if (strcmp (id_a, "__default-user") == 0) {
+        } else if (strcmp (id_b, "__other") == 0) {
                 return -1;
-        } else if (strcmp (id_b, "__default-user") == 0) {
+        } else if (strcmp (id_a, "__guest") == 0) {
                 return 1;
-        } else if (strcmp (id_a, "__separator") == 0) {
+        } else if (strcmp (id_b, "__guest") == 0) {
                 return -1;
-        } else if (strcmp (id_b, "__separator") == 0) {
-                return 1;
         }
 
         if (name_a == NULL) {
@@ -509,15 +563,12 @@ on_user_added (GdmUserManager       *manager,
 {
         GtkTreeIter   iter;
         GdkPixbuf    *pixbuf;
-        char         *name;
         char         *tooltip;
 
         g_debug ("User added: %s", gdm_user_get_user_name (user));
 
         pixbuf = get_pixbuf_for_user (widget, gdm_user_get_user_name (user));
 
-        name = g_strdup_printf ("<span size=\"x-large\">%s</span>",
-                                   gdm_user_get_real_name (user));
         tooltip = g_strdup_printf ("%s: %s",
                                    _("Short Name"),
                                    gdm_user_get_user_name (user));
@@ -525,11 +576,10 @@ on_user_added (GdmUserManager       *manager,
         gtk_list_store_append (GTK_LIST_STORE (widget->priv->real_model), &iter);
         gtk_list_store_set (GTK_LIST_STORE (widget->priv->real_model), &iter,
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
-                            CHOOSER_LIST_NAME_COLUMN, name,
+                            CHOOSER_LIST_NAME_COLUMN, gdm_user_get_real_name (user),
                             CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
                             CHOOSER_LIST_ID_COLUMN, gdm_user_get_user_name (user),
                             -1);
-        g_free (name);
         g_free (tooltip);
 
         if (pixbuf != NULL) {
@@ -555,24 +605,36 @@ user_visible_cb (GtkTreeModel         *model,
         char    *id;
         gboolean ret;
 
-        if (! widget->priv->show_only_chosen) {
-                return TRUE;
-        }
-
-        if (widget->priv->chosen_user == NULL) {
-                return TRUE;
-        }
-
         ret = FALSE;
 
         id = NULL;
         gtk_tree_model_get (model, iter, CHOOSER_LIST_ID_COLUMN, &id, -1);
-        if (id != NULL
-            && widget->priv->chosen_user != NULL
-            && strcmp (id, widget->priv->chosen_user) == 0) {
-                ret = TRUE;
+        if (id == NULL) {
+                goto out;
         }
 
+        /* if a user is chosen */
+        if (widget->priv->chosen_user != NULL
+            && widget->priv->show_only_chosen) {
+
+                ret = (strcmp (id, widget->priv->chosen_user) == 0);
+                goto out;
+        }
+
+        if (! widget->priv->show_other_user
+            && strcmp (id, OTHER_USER_ID) == 0) {
+                ret = FALSE;
+                goto out;
+        }
+        if (! widget->priv->show_guest_user
+            && strcmp (id, GUEST_USER_ID) == 0) {
+                ret = FALSE;
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
         g_free (id);
 
         return ret;

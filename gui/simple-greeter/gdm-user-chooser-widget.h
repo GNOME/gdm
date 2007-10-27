@@ -57,6 +57,10 @@ void                   gdm_user_chooser_widget_set_chosen_user_name       (GdmUs
                                                                            const char           *user_name);
 void                   gdm_user_chooser_widget_set_show_only_chosen       (GdmUserChooserWidget *widget,
                                                                            gboolean              show_only);
+void                   gdm_user_chooser_widget_set_show_other_user        (GdmUserChooserWidget *widget,
+                                                                           gboolean              show_other);
+void                   gdm_user_chooser_widget_set_show_guest_user        (GdmUserChooserWidget *widget,
+                                                                           gboolean              show_other);
 
 G_END_DECLS
 

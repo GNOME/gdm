@@ -64,9 +64,9 @@ gdm_user_chooser_dialog_get_chosen_user_name (GdmUserChooserDialog *dialog)
 
 static void
 gdm_user_chooser_dialog_set_property (GObject        *object,
-                                         guint           prop_id,
-                                         const GValue   *value,
-                                         GParamSpec     *pspec)
+                                      guint           prop_id,
+                                      const GValue   *value,
+                                      GParamSpec     *pspec)
 {
         GdmUserChooserDialog *self;
 
@@ -98,8 +98,8 @@ gdm_user_chooser_dialog_get_property (GObject        *object,
 
 static GObject *
 gdm_user_chooser_dialog_constructor (GType                  type,
-                                        guint                  n_construct_properties,
-                                        GObjectConstructParam *construct_properties)
+                                     guint                  n_construct_properties,
+                                     GObjectConstructParam *construct_properties)
 {
         GdmUserChooserDialog      *user_chooser_dialog;
         GdmUserChooserDialogClass *klass;
@@ -155,6 +155,8 @@ gdm_user_chooser_dialog_init (GdmUserChooserDialog *dialog)
 
         dialog->priv->chooser_widget = gdm_user_chooser_widget_new ();
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
+        gdm_user_chooser_widget_set_show_other_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
+        gdm_user_chooser_widget_set_show_guest_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
