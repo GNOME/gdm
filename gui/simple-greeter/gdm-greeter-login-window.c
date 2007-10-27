@@ -751,15 +751,18 @@ static void
 gdm_greeter_login_window_size_request (GtkWidget      *widget,
                                        GtkRequisition *requisition)
 {
+        int screen_w;
         int screen_h;
 
         if (GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request) {
                 GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request (widget, requisition);
         }
 
+        screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
         screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
 
-        requisition->height = screen_h * 0.6;
+        requisition->height = screen_h * 0.5;
+        requisition->width = screen_w * 0.3;
 }
 
 static GObject *
