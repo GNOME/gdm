@@ -518,13 +518,22 @@ on_session_relay_session_started (GdmSessionRelay *relay,
 
 static void
 on_greeter_begin_verification (GdmGreeterServer *greeter_server,
-                               const char       *username,
                                GdmFactorySlave  *slave)
 {
         g_debug ("begin verification");
 
-        gdm_session_relay_begin_verification (slave->priv->session_relay,
-                                              username);
+        gdm_session_relay_begin_verification (slave->priv->session_relay);
+}
+
+static void
+on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
+                                        const char       *username,
+                                        GdmFactorySlave  *slave)
+{
+        g_debug ("begin verification for user");
+
+        gdm_session_relay_begin_verification_for_user (slave->priv->session_relay,
+                                                       username);
 }
 
 static void
@@ -634,6 +643,10 @@ run_greeter (GdmFactorySlave *slave)
         g_signal_connect (slave->priv->greeter_server,
                           "begin-verification",
                           G_CALLBACK (on_greeter_begin_verification),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-verification-for-user",
+                          G_CALLBACK (on_greeter_begin_verification_for_user),
                           slave);
         g_signal_connect (slave->priv->greeter_server,
                           "query-answer",

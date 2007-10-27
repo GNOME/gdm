@@ -76,6 +76,7 @@ enum {
 
 enum {
         BEGIN_VERIFICATION,
+        BEGIN_VERIFICATION_FOR_USER,
         QUERY_ANSWER,
         SESSION_SELECTED,
         LANGUAGE_SELECTED,
@@ -435,10 +436,21 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
         char *user_name;
 
         user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        if (user_name == NULL) {
+                return;
+        }
 
-        g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, user_name);
+        if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
+                /* FIXME: handle guest account stuff */
+        } else {
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, user_name);
+        }
 
         switch_mode (login_window, MODE_AUTHENTICATION);
+
+        g_free (user_name);
 }
 
 static void
@@ -786,6 +798,16 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+        signals [BEGIN_VERIFICATION_FOR_USER] =
+                g_signal_new ("begin-verification-for-user",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification_for_user),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,

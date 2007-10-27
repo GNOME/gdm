@@ -45,21 +45,22 @@ typedef struct
 {
         GObjectClass   parent_class;
 
-        void (* begin_verification)(GdmGreeterServer  *greeter_server,
-                                    const char        *username);
-        void (* query_answer)      (GdmGreeterServer  *greeter_server,
-                                    const char        *text);
-        void (* session_selected)  (GdmGreeterServer  *greeter_server,
-                                    const char        *name);
-        void (* hostname_selected) (GdmGreeterServer  *greeter_server,
-                                    const char        *hostname);
-        void (* language_selected) (GdmGreeterServer  *greeter_server,
-                                    const char        *name);
-        void (* user_selected)    (GdmGreeterServer  *greeter_server,
-                                    const char        *name);
-        void (* cancelled)         (GdmGreeterServer  *greeter_server);
-        void (* connected)         (GdmGreeterServer  *greeter_server);
-        void (* disconnected)      (GdmGreeterServer  *greeter_server);
+        void (* begin_verification_for_user)(GdmGreeterServer  *greeter_server,
+                                             const char        *username);
+        void (* begin_verification)         (GdmGreeterServer  *greeter_server);
+        void (* query_answer)               (GdmGreeterServer  *greeter_server,
+                                             const char        *text);
+        void (* session_selected)           (GdmGreeterServer  *greeter_server,
+                                             const char        *name);
+        void (* hostname_selected)          (GdmGreeterServer  *greeter_server,
+                                             const char        *hostname);
+        void (* language_selected)          (GdmGreeterServer  *greeter_server,
+                                             const char        *name);
+        void (* user_selected)              (GdmGreeterServer  *greeter_server,
+                                             const char        *name);
+        void (* cancelled)                  (GdmGreeterServer  *greeter_server);
+        void (* connected)                  (GdmGreeterServer  *greeter_server);
+        void (* disconnected)               (GdmGreeterServer  *greeter_server);
 } GdmGreeterServerClass;
 
 GType               gdm_greeter_server_get_type          (void);

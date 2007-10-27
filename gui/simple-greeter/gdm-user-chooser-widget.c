@@ -43,9 +43,6 @@ enum {
 
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
-#define OTHER_USER_ID "__other"
-#define GUEST_USER_ID "__guest"
-
 struct GdmUserChooserWidgetPrivate
 {
         GtkWidget          *treeview;
@@ -385,7 +382,7 @@ populate_model (GdmUserChooserWidget *widget)
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_NAME_COLUMN, _("Other..."),
                             CHOOSER_LIST_TOOLTIP_COLUMN, _("Choose a different account"),
-                            CHOOSER_LIST_ID_COLUMN, OTHER_USER_ID,
+                            CHOOSER_LIST_ID_COLUMN, GDM_USER_CHOOSER_USER_OTHER,
                             -1);
 
         gtk_list_store_append (GTK_LIST_STORE (widget->priv->real_model), &iter);
@@ -393,7 +390,7 @@ populate_model (GdmUserChooserWidget *widget)
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_NAME_COLUMN, _("Guest"),
                             CHOOSER_LIST_TOOLTIP_COLUMN, _("Login as a temporary guest"),
-                            CHOOSER_LIST_ID_COLUMN, GUEST_USER_ID,
+                            CHOOSER_LIST_ID_COLUMN, GDM_USER_CHOOSER_USER_GUEST,
                             -1);
 
         if (pixbuf != NULL) {
@@ -550,12 +547,12 @@ user_visible_cb (GtkTreeModel         *model,
         }
 
         if (! widget->priv->show_other_user
-            && strcmp (id, OTHER_USER_ID) == 0) {
+            && strcmp (id, GDM_USER_CHOOSER_USER_OTHER) == 0) {
                 ret = FALSE;
                 goto out;
         }
         if (! widget->priv->show_guest_user
-            && strcmp (id, GUEST_USER_ID) == 0) {
+            && strcmp (id, GDM_USER_CHOOSER_USER_GUEST) == 0) {
                 ret = FALSE;
                 goto out;
         }

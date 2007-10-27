@@ -122,11 +122,18 @@ on_secret_info_query (GdmGreeterClient  *client,
 
 static void
 on_begin_verification (GdmGreeterLoginWindow *login_window,
-                       const char            *username,
                        GdmGreeterSession     *session)
 {
-        gdm_greeter_client_call_begin_verification (session->priv->client,
-                                                    username);
+        gdm_greeter_client_call_begin_verification (session->priv->client);
+}
+
+static void
+on_begin_verification_for_user (GdmGreeterLoginWindow *login_window,
+                                const char            *username,
+                                GdmGreeterSession     *session)
+{
+        gdm_greeter_client_call_begin_verification_for_user (session->priv->client,
+                                                             username);
 }
 
 static void
@@ -219,6 +226,10 @@ toggle_login_window (GdmSessionManager *manager,
                 g_signal_connect (session->priv->login_window,
                                   "begin-verification",
                                   G_CALLBACK (on_begin_verification),
+                                  session);
+                g_signal_connect (session->priv->login_window,
+                                  "begin-verification-for-user",
+                                  G_CALLBACK (on_begin_verification_for_user),
                                   session);
                 g_signal_connect (session->priv->login_window,
                                   "query-answer",

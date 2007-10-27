@@ -982,21 +982,41 @@ on_session_secret_info_query (GdmSession      *session,
 
 static void
 on_relay_begin_verification (DBusGProxy *proxy,
-                             const char *username,
                              gpointer    data)
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
         GError          *error;
         gboolean         res;
 
-        g_debug ("Relay Begin Verification");
+        g_debug ("Relay BeginVerification");
+
+        error = NULL;
+        res = gdm_session_begin_verification (slave->priv->session,
+                                              NULL,
+                                              &error);
+        if (! res) {
+                g_warning ("Unable to begin verification: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+static void
+on_relay_begin_verification_for_user (DBusGProxy *proxy,
+                                      const char *username,
+                                      gpointer    data)
+{
+        GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
+        GError          *error;
+        gboolean         res;
+
+        g_debug ("Relay BeginVerificationForUser");
 
         error = NULL;
         res = gdm_session_begin_verification (slave->priv->session,
                                               username,
                                               &error);
         if (! res) {
-                g_warning ("Unable to begin verification: %s", error->message);
+                g_warning ("Unable to begin verification for user: %s", error->message);
                 g_error_free (error);
         }
 }
@@ -1283,6 +1303,11 @@ connect_to_session_relay (GdmProductSlave *slave)
         dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
                                      "BeginVerification",
                                      G_CALLBACK (on_relay_begin_verification),
+                                     slave,
+                                     NULL);
+        dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
+                                     "BeginVerificationForUser",
+                                     G_CALLBACK (on_relay_begin_verification_for_user),
                                      slave,
                                      NULL);
         dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,

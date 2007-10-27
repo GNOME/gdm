@@ -49,6 +49,9 @@ typedef struct
         void (* user_chosen)        (GdmUserChooserWidget *widget);
 } GdmUserChooserWidgetClass;
 
+#define GDM_USER_CHOOSER_USER_OTHER "__other"
+#define GDM_USER_CHOOSER_USER_GUEST "__guest"
+
 GType                  gdm_user_chooser_widget_get_type                   (void);
 GtkWidget *            gdm_user_chooser_widget_new                        (void);
 

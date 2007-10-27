@@ -66,33 +66,34 @@ typedef enum _GdmGreeterClientError {
         GDM_GREETER_CLIENT_ERROR_GENERIC = 0,
 } GdmGreeterClientError;
 
-GType                 gdm_greeter_client_get_type                       (void);
-GQuark                gdm_greeter_client_error_quark                    (void);
+GType              gdm_greeter_client_get_type                       (void);
+GQuark             gdm_greeter_client_error_quark                    (void);
 
-GdmGreeterClient    * gdm_greeter_client_new                            (void);
+GdmGreeterClient * gdm_greeter_client_new                            (void);
 
-gboolean              gdm_greeter_client_start                          (GdmGreeterClient *client,
+gboolean           gdm_greeter_client_start                          (GdmGreeterClient *client,
                                                                          GError          **error);
-void                  gdm_greeter_client_stop                           (GdmGreeterClient *client);
+void               gdm_greeter_client_stop                           (GdmGreeterClient *client);
 
-gboolean              gdm_greeter_client_get_display_is_local           (GdmGreeterClient *client);
+gboolean           gdm_greeter_client_get_display_is_local           (GdmGreeterClient *client);
 
-char *                gdm_greeter_client_call_get_display_id            (GdmGreeterClient *client);
+char *             gdm_greeter_client_call_get_display_id            (GdmGreeterClient *client);
 
-void                  gdm_greeter_client_call_begin_verification        (GdmGreeterClient *client,
-                                                                         const char       *username);
-void                  gdm_greeter_client_call_cancel                    (GdmGreeterClient *client);
-void                  gdm_greeter_client_call_disconnect                (GdmGreeterClient *client);
-void                  gdm_greeter_client_call_select_hostname           (GdmGreeterClient *client,
-                                                                         const char       *text);
-void                  gdm_greeter_client_call_select_user               (GdmGreeterClient *client,
-                                                                         const char       *text);
-void                  gdm_greeter_client_call_select_language           (GdmGreeterClient *client,
-                                                                         const char       *text);
-void                  gdm_greeter_client_call_select_session            (GdmGreeterClient *client,
-                                                                         const char       *text);
-void                  gdm_greeter_client_call_answer_query              (GdmGreeterClient *client,
-                                                                         const char       *text);
+void               gdm_greeter_client_call_begin_verification        (GdmGreeterClient *client);
+void               gdm_greeter_client_call_begin_verification_for_user (GdmGreeterClient *client,
+                                                                        const char       *username);
+void               gdm_greeter_client_call_cancel                    (GdmGreeterClient *client);
+void               gdm_greeter_client_call_disconnect                (GdmGreeterClient *client);
+void               gdm_greeter_client_call_select_hostname           (GdmGreeterClient *client,
+                                                                      const char       *text);
+void               gdm_greeter_client_call_select_user               (GdmGreeterClient *client,
+                                                                      const char       *text);
+void               gdm_greeter_client_call_select_language           (GdmGreeterClient *client,
+                                                                      const char       *text);
+void               gdm_greeter_client_call_select_session            (GdmGreeterClient *client,
+                                                                      const char       *text);
+void               gdm_greeter_client_call_answer_query              (GdmGreeterClient *client,
+                                                                      const char       *text);
 
 
 G_END_DECLS

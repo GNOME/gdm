@@ -83,8 +83,9 @@ typedef struct
 GType              gdm_session_relay_get_type          (void);
 GdmSessionRelay *  gdm_session_relay_new               (void);
 
-void               gdm_session_relay_begin_verification (GdmSessionRelay *session_relay,
-                                                         const char      *username);
+void               gdm_session_relay_begin_verification (GdmSessionRelay *session_relay);
+void               gdm_session_relay_begin_verification_for_user (GdmSessionRelay *session_relay,
+                                                                  const char      *username);
 void               gdm_session_relay_answer_query       (GdmSessionRelay *session_relay,
                                                          const char      *text);
 void               gdm_session_relay_open               (GdmSessionRelay *session_relay);

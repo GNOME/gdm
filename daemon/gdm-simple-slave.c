@@ -842,8 +842,26 @@ on_greeter_stop (GdmGreeterSession *greeter,
 
 static void
 on_greeter_begin_verification (GdmGreeterServer *greeter_server,
-                               const char       *username,
                                GdmSimpleSlave   *slave)
+{
+        GError *error;
+        gboolean res;
+
+        g_debug ("begin verification");
+        error = NULL;
+        res = gdm_session_begin_verification (slave->priv->session,
+                                              NULL,
+                                              &error);
+        if (! res) {
+                g_warning ("Unable to begin verification: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+static void
+on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
+                                        const char       *username,
+                                        GdmSimpleSlave   *slave)
 {
         GError *error;
         gboolean res;
@@ -854,7 +872,7 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                               username,
                                               &error);
         if (! res) {
-                g_warning ("Unable to begin verification: %s", error->message);
+                g_warning ("Unable to begin verification for user: %s", error->message);
                 g_error_free (error);
         }
 }
@@ -1036,6 +1054,10 @@ run_greeter (GdmSimpleSlave *slave)
         g_signal_connect (slave->priv->greeter_server,
                           "begin-verification",
                           G_CALLBACK (on_greeter_begin_verification),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-verification-for-user",
+                          G_CALLBACK (on_greeter_begin_verification_for_user),
                           slave);
         g_signal_connect (slave->priv->greeter_server,
                           "query-answer",

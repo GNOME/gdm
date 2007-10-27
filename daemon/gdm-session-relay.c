@@ -160,11 +160,18 @@ gdm_session_relay_open (GdmSessionRelay *session_relay)
 }
 
 void
-gdm_session_relay_begin_verification (GdmSessionRelay *session_relay,
-                                      const char      *username)
+gdm_session_relay_begin_verification (GdmSessionRelay *session_relay)
 {
         g_debug ("Sending signal BeginVerification");
-        send_dbus_string_signal (session_relay, "BeginVerification", username);
+        send_dbus_void_signal (session_relay, "BeginVerification");
+}
+
+void
+gdm_session_relay_begin_verification_for_user (GdmSessionRelay *session_relay,
+                                               const char      *username)
+{
+        g_debug ("Sending signal BeginVerificationForUser");
+        send_dbus_string_signal (session_relay, "BeginVerificationForUser", username);
 }
 
 void

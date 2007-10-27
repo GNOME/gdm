@@ -166,8 +166,7 @@ on_secret_info_query (DBusGProxy       *proxy,
 }
 
 void
-gdm_greeter_client_call_begin_verification (GdmGreeterClient *client,
-                                            const char       *username)
+gdm_greeter_client_call_begin_verification (GdmGreeterClient *client)
 {
         gboolean res;
         GError  *error;
@@ -180,11 +179,35 @@ gdm_greeter_client_call_begin_verification (GdmGreeterClient *client,
         res = dbus_g_proxy_call (client->priv->server_proxy,
                                  "BeginVerification",
                                  &error,
-                                 G_TYPE_STRING, username,
                                  G_TYPE_INVALID,
                                  G_TYPE_INVALID);
         if (! res) {
                 g_warning ("Unable to send BeginVerification: %s", error->message);
+                g_error_free (error);
+        }
+}
+
+
+void
+gdm_greeter_client_call_begin_verification_for_user (GdmGreeterClient *client,
+                                                     const char       *username)
+{
+        gboolean res;
+        GError  *error;
+
+        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+
+        g_debug ("GREETER begin verification for user: '%s'", username);
+
+        error = NULL;
+        res = dbus_g_proxy_call (client->priv->server_proxy,
+                                 "BeginVerificationForUser",
+                                 &error,
+                                 G_TYPE_STRING, username,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Unable to send BeginVerificationForUser: %s", error->message);
                 g_error_free (error);
         }
 }
