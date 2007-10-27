@@ -50,6 +50,8 @@
 #include "gdm-server.h"
 #include "gdm-session.h"
 
+#include "ck-connector.h"
+
 extern char **environ;
 
 #define GDM_PRODUCT_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_PRODUCT_SLAVE, GdmProductSlavePrivate))
@@ -80,6 +82,7 @@ struct GdmProductSlavePrivate
         char             *selected_language;
         char             *selected_user;
 
+        CkConnector      *ckc;
         GdmServer        *server;
         GdmSession       *session;
         DBusGProxy       *session_relay_proxy;
@@ -543,11 +546,105 @@ out:
         return ret;
 }
 
+static gboolean
+slave_open_ck_session (GdmProductSlave *slave,
+                       const char      *display_name,
+                       const char      *display_hostname,
+                       gboolean         display_is_local)
+{
+        char          *username;
+        char          *x11_display_device;
+        struct passwd *pwent;
+        gboolean       ret;
+        int            res;
+        DBusError      error;
+
+        g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
+
+        username = gdm_session_get_username (slave->priv->session);
+
+        x11_display_device = NULL;
+
+        pwent = getpwnam (username);
+        if (pwent == NULL) {
+                return FALSE;
+        }
+
+        slave->priv->ckc = ck_connector_new ();
+        if (slave->priv->ckc == NULL) {
+                g_warning ("Couldn't create new ConsoleKit connector");
+                goto out;
+        }
+
+        if (slave->priv->server != NULL) {
+                x11_display_device = gdm_server_get_display_device (slave->priv->server);
+        }
+
+        if (x11_display_device == NULL) {
+                x11_display_device = g_strdup ("");
+        }
+
+        dbus_error_init (&error);
+        res = ck_connector_open_session_with_parameters (slave->priv->ckc,
+                                                         &error,
+                                                         "unix-user", &pwent->pw_uid,
+                                                         "x11-display", &display_name,
+                                                         "x11-display-device", &x11_display_device,
+                                                         "remote-host-name", &display_hostname,
+                                                         "is-local", &display_is_local,
+                                                         NULL);
+        g_free (x11_display_device);
+
+        if (! res) {
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("%s\n", error.message);
+                        dbus_error_free (&error);
+                } else {
+                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
+                                   "ConsoleKit not available or insufficient privileges.\n");
+                }
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        return ret;
+}
+
 static void
 setup_session_environment (GdmProductSlave *slave)
 {
-        char *display_name;
-        char *auth_file;
+        int         display_number;
+        char       *display_x11_cookie;
+        char       *display_name;
+        char       *display_hostname;
+        char       *auth_file;
+        const char *session_cookie;
+        gboolean    display_is_local;
+
+        display_name = NULL;
+        display_hostname = NULL;
+        display_x11_cookie = NULL;
+        auth_file = NULL;
+        session_cookie = NULL;
+        display_is_local = FALSE;
+
+        g_object_get (slave,
+                      "display-number", &display_number,
+                      "display-name", &display_name,
+                      "display-hostname", &display_hostname,
+                      "display-is-local", &display_is_local,
+                      "display-x11-cookie", &display_x11_cookie,
+                      "display-x11-authority-file", &auth_file,
+                      NULL);
+
+        if (slave_open_ck_session (slave,
+                                   display_name,
+                                   display_hostname,
+                                   display_is_local)) {
+                session_cookie = ck_connector_get_cookie (slave->priv->ckc);
+        }
 
         g_object_get (slave,
                       "display-name", &display_name,
@@ -1379,12 +1476,20 @@ gdm_product_slave_class_init (GdmProductSlaveClass *klass)
 }
 
 static void
-gdm_product_slave_init (GdmProductSlave *product_slave)
+gdm_product_slave_init (GdmProductSlave *slave)
 {
+        const char * const *languages;
 
-        product_slave->priv = GDM_PRODUCT_SLAVE_GET_PRIVATE (product_slave);
+        slave->priv = GDM_PRODUCT_SLAVE_GET_PRIVATE (slave);
 
-        product_slave->priv->pid = -1;
+        slave->priv->pid = -1;
+
+        languages = g_get_language_names ();
+        if (languages != NULL) {
+                slave->priv->selected_language = g_strdup (languages[0]);
+        }
+
+        slave->priv->selected_session = g_strdup ("gnome.desktop");
 }
 
 static void

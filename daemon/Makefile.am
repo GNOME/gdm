@@ -151,6 +151,8 @@ gdm_product_slave_SOURCES = 		\
 	product-slave-main.c 		\
 	gdm-server.c			\
 	gdm-server.h			\
+	ck-connector.h			\
+	ck-connector.c			\
 	gdm-session.c			\
 	gdm-session.h			\
 	gdm-session-record.c		\
