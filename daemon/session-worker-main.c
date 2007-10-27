@@ -79,7 +79,6 @@ signal_cb (int      signo,
                 /* let the fatal signals interrupt us */
                 g_debug ("Caught signal %d, shutting down normally.", signo);
                 ret = FALSE;
-
                 break;
 
         case SIGHUP:

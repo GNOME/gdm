@@ -39,6 +39,7 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 #define DBUS_API_SUBJECT_TO_CHANGE
+#include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
@@ -47,8 +48,9 @@
 
 #define GDM_SESSION_WORKER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerPrivate))
 
-#define GDM_SESSION_DBUS_PATH      "/org/gnome/DisplayManager/Session"
-#define GDM_SESSION_DBUS_INTERFACE "org.gnome.DisplayManager.Session"
+#define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
+#define GDM_SESSION_DBUS_INTERFACE    "org.gnome.DisplayManager.Session"
+#define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
 
 #ifndef GDM_PASSWD_AUXILLARY_BUFFER_SIZE
 #define GDM_PASSWD_AUXILLARY_BUFFER_SIZE 1024
@@ -80,11 +82,11 @@ struct GdmSessionWorkerPrivate
 
         guint32           credentials_are_established : 1;
         guint32           is_running : 1;
+        guint32           cancelled : 1;
         guint             open_idle_id;
 
         char             *server_address;
-        DBusGConnection  *connection;
-        DBusGProxy       *server_proxy;
+        DBusConnection   *connection;
 };
 
 enum {
@@ -300,141 +302,181 @@ gdm_session_execute (const char *file,
         return -1;
 }
 
+static gboolean
+send_dbus_string_method (DBusConnection *connection,
+                         const char     *method,
+                         const char     *payload)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+
+        g_debug ("Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                GDM_SESSION_DBUS_PATH,
+                                                GDM_SESSION_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_STRING,
+                                        &payload);
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                return FALSE;
+        }
+        dbus_message_unref (reply);
+        dbus_connection_flush (connection);
+
+        return TRUE;
+}
+
+static gboolean
+send_dbus_int_method (DBusConnection *connection,
+                      const char     *method,
+                      int             payload)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+
+        g_debug ("Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                GDM_SESSION_DBUS_PATH,
+                                                GDM_SESSION_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_INT32,
+                                        &payload);
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+        dbus_message_unref (message);
+        dbus_message_unref (reply);
+        dbus_connection_flush (connection);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
 static void
 send_user_verified (GdmSessionWorker *worker)
 {
-        GError *error;
-        gboolean res;
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
 
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
-                                 "Verified",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send Verified: %s", error->message);
-                g_error_free (error);
+        g_debug ("Calling Verified");
+        message = dbus_message_new_method_call (NULL,
+                                                GDM_SESSION_DBUS_PATH,
+                                                GDM_SESSION_DBUS_INTERFACE,
+                                                "Verified");
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return;
+        }
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (worker->priv->connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+        dbus_message_unref (message);
+        dbus_message_unref (reply);
+        dbus_connection_flush (worker->priv->connection);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("Verified %s raised: %s\n",
+                           error.name,
+                           error.message);
         }
 }
 
 static void
 send_startup_failed (GdmSessionWorker *worker,
-                     const char       *message)
+                     const char       *msg)
 {
-        GError *error;
-        gboolean res;
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
+        send_dbus_string_method (worker->priv->connection,
                                  "StartupFailed",
-                                 &error,
-                                 G_TYPE_STRING, message,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send StartupFailed: %s", error->message);
-                g_error_free (error);
-        }
+                                 msg);
 }
 
 static void
 send_session_exited (GdmSessionWorker *worker,
                      int               code)
 {
-        GError  *error;
-        gboolean res;
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
-                                 "SessionExited",
-                                 &error,
-                                 G_TYPE_INT, code,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send SessionExited: %s", error->message);
-                g_error_free (error);
-        }
+        send_dbus_int_method (worker->priv->connection,
+                              "SessionExited",
+                              code);
 }
 
 static void
 send_session_died (GdmSessionWorker *worker,
                    int               num)
 {
-        GError  *error;
-        gboolean res;
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
-                                 "SessionDied",
-                                 &error,
-                                 G_TYPE_INT, num,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send SessionDied: %s", error->message);
-                g_error_free (error);
-        }
+        send_dbus_int_method (worker->priv->connection,
+                              "SessionDied",
+                              num);
 }
 
 static void
 send_username_changed (GdmSessionWorker *worker)
 {
-        GError  *error;
-        gboolean res;
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
+        send_dbus_string_method (worker->priv->connection,
                                  "UsernameChanged",
-                                 &error,
-                                 G_TYPE_STRING, worker->priv->username,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send UsernameChanged: %s", error->message);
-                g_error_free (error);
-        }
+                                 worker->priv->username);
 }
 
 static void
 send_user_verification_error (GdmSessionWorker *worker,
-                              const char       *message)
+                              const char       *msg)
 {
-        GError  *error;
-        gboolean res;
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
+        send_dbus_string_method (worker->priv->connection,
                                  "VerificationFailed",
-                                 &error,
-                                 G_TYPE_STRING, message,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send VerificationFailed: %s", error->message);
-                g_error_free (error);
-        }
+                                 msg);
 }
 
 static void
 send_session_started (GdmSessionWorker *worker,
                       GPid              pid)
 {
-        GError  *error;
-        gboolean res;
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
-                                 "SessionStarted",
-                                 &error,
-                                 G_TYPE_INT, (int)pid,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send SessionStarted: %s", error->message);
-                g_error_free (error);
-        }
+        send_dbus_int_method (worker->priv->connection,
+                              "SessionStarted",
+                              (int)pid);
 }
 
 static gboolean
@@ -486,109 +528,100 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
 }
 
 static gboolean
-gdm_session_worker_ask_question (GdmSessionWorker *worker,
-                                 const char       *question,
-                                 char            **answer)
+send_question_method (GdmSessionWorker *worker,
+                      const char       *method,
+                      const char       *question,
+                      char            **answerp)
 {
-        GError  *error;
-        gboolean res;
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+        gboolean        ret;
+        const char     *answer;
 
-        g_assert (answer != NULL);
+        ret = FALSE;
 
-        error = NULL;
-        res = dbus_g_proxy_call_with_timeout (worker->priv->server_proxy,
-                                              "InfoQuery",
-                                              MESSAGE_REPLY_TIMEOUT,
-                                              &error,
-                                              G_TYPE_STRING, question,
-                                              G_TYPE_INVALID,
-                                              G_TYPE_STRING, answer,
-                                              G_TYPE_INVALID);
-        if (! res) {
-                /* FIXME: handle timeout */
-                g_warning ("Unable to send InfoQuery: %s", error->message);
-                g_error_free (error);
+        g_debug ("Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                GDM_SESSION_DBUS_PATH,
+                                                GDM_SESSION_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
         }
 
-        return res;
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_STRING,
+                                        &question);
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (worker->priv->connection,
+                                                           message,
+                                                           MESSAGE_REPLY_TIMEOUT,
+                                                           &error);
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                if (strcmp (error.name, GDM_SESSION_DBUS_ERROR_CANCEL) == 0) {
+                        worker->priv->cancelled = TRUE;
+                }
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                goto out;
+        }
+
+        dbus_message_iter_init (reply, &iter);
+        dbus_message_iter_get_basic (&iter, &answer);
+        if (answerp != NULL) {
+                *answerp = g_strdup (answer);
+        }
+        ret = TRUE;
+
+        dbus_message_unref (reply);
+        dbus_connection_flush (worker->priv->connection);
+
+ out:
+
+        return ret;
+}
+
+static gboolean
+gdm_session_worker_ask_question (GdmSessionWorker *worker,
+                                 const char       *question,
+                                 char            **answerp)
+{
+        return send_question_method (worker, "InfoQuery", question, answerp);
 }
 
 static gboolean
 gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
-                                   const char       *secret,
-                                   char            **answer)
+                                   const char       *question,
+                                   char            **answerp)
 {
-        GError  *error;
-        gboolean res;
-
-        g_debug ("Secret info query: %s", secret);
-
-        g_assert (answer != NULL);
-
-        error = NULL;
-        res = dbus_g_proxy_call_with_timeout (worker->priv->server_proxy,
-                                              "SecretInfoQuery",
-                                              MESSAGE_REPLY_TIMEOUT,
-                                              &error,
-                                              G_TYPE_STRING, secret,
-                                              G_TYPE_INVALID,
-                                              G_TYPE_STRING, answer,
-                                              G_TYPE_INVALID);
-        if (! res) {
-                /* FIXME: handle timeout */
-                g_warning ("Unable to send SecretInfoQuery: %s", error->message);
-                g_error_free (error);
-        }
-
-        return res;
+        return send_question_method (worker, "SecretInfoQuery", question, answerp);
 }
 
 static gboolean
 gdm_session_worker_report_info (GdmSessionWorker *worker,
                                 const char       *info)
 {
-        GError *error;
-        gboolean res;
-
-        g_debug ("Info: %s", info);
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
-                                 "Info",
-                                 &error,
-                                 G_TYPE_STRING, info,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send Info: %s", error->message);
-                g_error_free (error);
-        }
-
-        return res;
+        return send_dbus_string_method (worker->priv->connection,
+                                        "Info",
+                                        info);
 }
 
 static gboolean
 gdm_session_worker_report_problem (GdmSessionWorker *worker,
                                    const char       *problem)
 {
-        GError *error;
-        gboolean res;
-
-        g_debug ("Problem: %s", problem);
-
-        error = NULL;
-        res = dbus_g_proxy_call (worker->priv->server_proxy,
-                                 "Problem",
-                                 &error,
-                                 G_TYPE_STRING, problem,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send Problem: %s", error->message);
-                g_error_free (error);
-        }
-
-        return res;
+        return send_dbus_string_method (worker->priv->connection,
+                                        "Problem",
+                                        problem);
 }
 
 static char *
@@ -636,6 +669,8 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                  query->msg_style, query->msg);
 
         utf8_msg = convert_to_utf8 (query->msg);
+
+        worker->priv->cancelled = FALSE;
 
         user_answer = NULL;
         res = FALSE;
@@ -742,7 +777,9 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
                 *responses = replies;
         }
 
-        g_debug ("PAM conversation returning %d", return_value);
+        g_debug ("PAM conversation returning %d: %s",
+                 return_value,
+                 pam_strerror (worker->priv->pam_handle, return_value));
 
         return return_value;
 }
@@ -1526,28 +1563,50 @@ gdm_session_worker_get_property (GObject    *object,
 }
 
 static void
-on_set_environment_variable (DBusGProxy *proxy,
-                             const char *key,
-                             const char *value,
-                             gpointer    data)
+on_set_environment_variable (GdmSessionWorker *worker,
+                             DBusMessage      *message)
 {
-        GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
+        DBusError   error;
+        const char *key;
+        const char *value;
+        dbus_bool_t res;
 
-        g_debug ("set env: %s = %s", key, value);
-
-        gdm_session_worker_set_environment_variable (worker, key, value);
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &key,
+                                     DBUS_TYPE_STRING, &value,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("set env: %s = %s", key, value);
+                gdm_session_worker_set_environment_variable (worker, key, value);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
 }
 
 static void
-on_start_program (DBusGProxy *proxy,
-                  const char *text,
-                  gpointer    data)
+on_start_program (GdmSessionWorker *worker,
+                  DBusMessage      *message)
 {
-        GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
+        DBusError   error;
+        const char *text;
+        dbus_bool_t res;
 
-        g_debug ("start program: %s", text);
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("start program: %s", text);
 
-        gdm_session_worker_start_program (worker, text);
+                gdm_session_worker_start_program (worker, text);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
 }
 
 typedef struct {
@@ -1623,42 +1682,128 @@ queue_open (GdmSessionWorker *worker,
 }
 
 static void
-on_begin_verification (DBusGProxy *proxy,
-                       const char *service,
-                       const char *x11_display_name,
-                       const char *console,
-                       const char *hostname,
-                       gpointer    data)
+on_begin_verification (GdmSessionWorker *worker,
+                       DBusMessage      *message)
 {
-        GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
+        DBusError   error;
+        const char *service;
+        const char *x11_display_name;
+        const char *console;
+        const char *hostname;
+        dbus_bool_t res;
 
-        g_debug ("begin verification: %s %s", service, console);
-        queue_open (worker, service, x11_display_name, console, hostname, NULL);
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service,
+                                     DBUS_TYPE_STRING, &x11_display_name,
+                                     DBUS_TYPE_STRING, &console,
+                                     DBUS_TYPE_STRING, &hostname,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("begin verification: %s %s", service, console);
+                queue_open (worker, service, x11_display_name, console, hostname, NULL);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
 }
 
 static void
-on_begin_verification_for_user (DBusGProxy *proxy,
-                                const char *service,
-                                const char *x11_display_name,
-                                const char *console,
-                                const char *hostname,
-                                const char *username,
-                                gpointer    data)
+on_begin_verification_for_user (GdmSessionWorker *worker,
+                                DBusMessage      *message)
 {
-        GdmSessionWorker *worker = GDM_SESSION_WORKER (data);
+        DBusError   error;
+        const char *service;
+        const char *x11_display_name;
+        const char *console;
+        const char *hostname;
+        const char *username;
+        dbus_bool_t res;
 
-        g_debug ("begin verification: %s %s", service, console);
-        queue_open (worker, service, x11_display_name, console, hostname, username);
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service,
+                                     DBUS_TYPE_STRING, &x11_display_name,
+                                     DBUS_TYPE_STRING, &console,
+                                     DBUS_TYPE_STRING, &hostname,
+                                     DBUS_TYPE_STRING, &username,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("begin verification: %s %s", service, console);
+                queue_open (worker, service, x11_display_name, console, hostname, username);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
 }
 
-static void
-proxy_destroyed (DBusGProxy       *bus_proxy,
-                 GdmSessionWorker *worker)
+static DBusHandlerResult
+worker_dbus_handle_message (DBusConnection *connection,
+                            DBusMessage    *message,
+                            void           *user_data,
+                            dbus_bool_t     local_interface)
 {
-        g_debug ("Disconnected");
+        GdmSessionWorker *worker = GDM_SESSION_WORKER (user_data);
 
-        /* do cleanup */
-        exit (1);
+#if 0
+        g_message ("obj_path=%s interface=%s method=%s destination=%s",
+                   dbus_message_get_path (message),
+                   dbus_message_get_interface (message),
+                   dbus_message_get_member (message),
+                   dbus_message_get_destination (message));
+#endif
+
+        g_return_val_if_fail (connection != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+        g_return_val_if_fail (message != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+
+        if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "StartProgram")) {
+                on_start_program (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetEnvironmentVariable")) {
+                on_set_environment_variable (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "BeginVerification")) {
+                on_begin_verification (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "BeginVerificationForUser")) {
+                on_begin_verification_for_user (worker, message);
+        }
+
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
+static DBusHandlerResult
+worker_dbus_filter_function (DBusConnection *connection,
+                             DBusMessage    *message,
+                             void           *user_data)
+{
+        GdmSessionWorker *worker = GDM_SESSION_WORKER (user_data);
+        const char       *path;
+
+        path = dbus_message_get_path (message);
+
+        g_debug ("obj_path=%s interface=%s method=%s",
+                 dbus_message_get_path (message),
+                 dbus_message_get_interface (message),
+                 dbus_message_get_member (message));
+
+        if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
+            && strcmp (path, DBUS_PATH_LOCAL) == 0) {
+
+                g_message ("Got disconnected from the session message bus; "
+                           "retrying to reconnect every 10 seconds");
+
+                dbus_connection_unref (connection);
+                worker->priv->connection = NULL;
+
+        } else if (dbus_message_is_signal (message,
+                                           DBUS_INTERFACE_DBUS,
+                                           "NameOwnerChanged")) {
+                g_debug ("Name owner changed?");
+        } else {
+                return worker_dbus_handle_message (connection, message, user_data, FALSE);
+        }
+
+        return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static GObject *
@@ -1668,7 +1813,7 @@ gdm_session_worker_constructor (GType                  type,
 {
         GdmSessionWorker      *worker;
         GdmSessionWorkerClass *klass;
-        GError                *error;
+        DBusError              error;
 
         klass = GDM_SESSION_WORKER_CLASS (g_type_class_peek (GDM_TYPE_SESSION_WORKER));
 
@@ -1678,78 +1823,25 @@ gdm_session_worker_constructor (GType                  type,
 
         g_debug ("connecting to address: %s", worker->priv->server_address);
 
-        error = NULL;
-        worker->priv->connection = dbus_g_connection_open (worker->priv->server_address, &error);
+        dbus_error_init (&error);
+        worker->priv->connection = dbus_connection_open (worker->priv->server_address, &error);
         if (worker->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_warning ("error opening connection: %s", error->message);
-                        g_error_free (error);
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("error opening connection: %s", error.message);
+                        dbus_error_free (&error);
                 } else {
                         g_warning ("Unable to open connection");
                 }
                 exit (1);
         }
 
-        /*dbus_connection_set_exit_on_disconnect (dbus_g_connection_get_connection (worker->priv->connection), TRUE);*/
+        dbus_connection_setup_with_g_main (worker->priv->connection, NULL);
+        dbus_connection_set_exit_on_disconnect (worker->priv->connection, TRUE);
 
-        g_debug ("creating proxy for peer: %s", GDM_SESSION_DBUS_PATH);
-        worker->priv->server_proxy = dbus_g_proxy_new_for_peer (worker->priv->connection,
-                                                                GDM_SESSION_DBUS_PATH,
-                                                                GDM_SESSION_DBUS_INTERFACE);
-        if (worker->priv->server_proxy == NULL) {
-                g_warning ("Unable to create proxy for peer");
-                exit (1);
-        }
-
-        g_signal_connect (worker->priv->server_proxy, "destroy", G_CALLBACK (proxy_destroyed), NULL);
-
-        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING,
-                                           G_TYPE_NONE,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_INVALID);
-        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING_STRING_STRING,
-                                           G_TYPE_NONE,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_INVALID);
-        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING_STRING_STRING_STRING,
-                                           G_TYPE_NONE,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_STRING,
-                                           G_TYPE_INVALID);
-
-        /* FIXME: not sure why introspection isn't working */
-        dbus_g_proxy_add_signal (worker->priv->server_proxy, "StartProgram", G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (worker->priv->server_proxy, "SetEnvironmentVariable", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (worker->priv->server_proxy, "BeginVerification", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (worker->priv->server_proxy, "BeginVerificationForUser", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-
-        dbus_g_proxy_connect_signal (worker->priv->server_proxy,
-                                     "StartProgram",
-                                     G_CALLBACK (on_start_program),
-                                     worker,
-                                     NULL);
-        dbus_g_proxy_connect_signal (worker->priv->server_proxy,
-                                     "SetEnvironmentVariable",
-                                     G_CALLBACK (on_set_environment_variable),
-                                     worker,
-                                     NULL);
-        dbus_g_proxy_connect_signal (worker->priv->server_proxy,
-                                     "BeginVerification",
-                                     G_CALLBACK (on_begin_verification),
-                                     worker,
-                                     NULL);
-        dbus_g_proxy_connect_signal (worker->priv->server_proxy,
-                                     "BeginVerificationForUser",
-                                     G_CALLBACK (on_begin_verification_for_user),
-                                     worker,
-                                     NULL);
+        dbus_connection_add_filter (worker->priv->connection,
+                                    worker_dbus_filter_function,
+                                    worker,
+                                    NULL);
 
         return G_OBJECT (worker);
 }

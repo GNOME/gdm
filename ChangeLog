@@ -1,3 +1,27 @@
+2007-10-27  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-session-worker.c: (send_dbus_string_method),
+	(send_dbus_int_method), (send_user_verified),
+	(send_startup_failed), (send_session_exited), (send_session_died),
+	(send_username_changed), (send_user_verification_error),
+	(send_session_started), (send_question_method),
+	(gdm_session_worker_ask_question),
+	(gdm_session_worker_ask_for_secret),
+	(gdm_session_worker_report_info),
+	(gdm_session_worker_report_problem),
+	(gdm_session_worker_process_pam_message),
+	(gdm_session_worker_pam_new_messages_handler),
+	(on_set_environment_variable), (on_start_program),
+	(on_begin_verification), (on_begin_verification_for_user),
+	(worker_dbus_handle_message), (worker_dbus_filter_function),
+	(gdm_session_worker_constructor):
+	* daemon/gdm-session.c: (cancel_pending_query),
+	(handle_connection), (gdm_session_close):
+	* daemon/session-worker-main.c: (signal_cb):
+	Make the authentication cancellation much more robust.
+	Remove dbus-glib from session-worker.  Fix some problems
+	with message handling in the session server.
+
 2007-10-26  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-greeter-login-window.glade:

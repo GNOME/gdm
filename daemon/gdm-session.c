@@ -49,9 +49,9 @@
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
 
-#define GDM_SESSION_DBUS_PATH      "/org/gnome/DisplayManager/Session"
-#define GDM_SESSION_DBUS_INTERFACE "org.gnome.DisplayManager.Session"
-#define GDM_SESSION_DBUS_ERROR_NAME "org.gnome.DisplayManager.Session.Error"
+#define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
+#define GDM_SESSION_DBUS_INTERFACE    "org.gnome.DisplayManager.Session"
+#define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
 
 struct _GdmSessionPrivate
 {
@@ -494,9 +494,11 @@ cancel_pending_query (GdmSession *session)
         g_debug ("Cancelling pending query");
 
         reply = dbus_message_new_error (session->priv->message_pending_reply,
-                                        GDM_SESSION_DBUS_ERROR_NAME,
+                                        GDM_SESSION_DBUS_ERROR_CANCEL,
                                         "Operation cancelled");
         dbus_connection_send (session->priv->worker_connection, reply, NULL);
+        dbus_connection_flush (session->priv->worker_connection);
+
         dbus_message_unref (reply);
         dbus_message_unref (session->priv->message_pending_reply);
         session->priv->message_pending_reply = NULL;
@@ -983,41 +985,6 @@ session_unregister_handler (DBusConnection  *connection,
         g_debug ("session_unregister_handler");
 }
 
-static DBusHandlerResult
-connection_filter_function (DBusConnection *connection,
-                            DBusMessage    *message,
-                            void           *user_data)
-{
-        GdmSession *session        = GDM_SESSION (user_data);
-        const char *dbus_path      = dbus_message_get_path (message);
-        const char *dbus_interface = dbus_message_get_interface (message);
-        const char *dbus_message   = dbus_message_get_member (message);
-
-        g_debug ("obj_path=%s interface=%s method=%s",
-                 dbus_path      ? dbus_path      : "(null)",
-                 dbus_interface ? dbus_interface : "(null)",
-                 dbus_message   ? dbus_message   : "(null)");
-
-        if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
-            && strcmp (dbus_path, DBUS_PATH_LOCAL) == 0) {
-
-                g_debug ("Disconnected");
-
-                /*dbus_connection_unref (connection);*/
-                session->priv->worker_connection = NULL;
-
-                g_debug ("Emitting closed signal");
-                g_signal_emit (session, gdm_session_signals [CLOSED], 0);
-        } else if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")) {
-
-
-        } else {
-                return session_message_handler (connection, message, user_data);
-        }
-
-        return DBUS_HANDLER_RESULT_HANDLED;
-}
-
 static dbus_bool_t
 allow_user_function (DBusConnection *connection,
                      unsigned long   uid,
@@ -1052,12 +1019,6 @@ handle_connection (DBusServer      *server,
                 dbus_connection_setup_with_g_main (new_connection, NULL);
 
                 g_debug ("worker connection is %p", new_connection);
-
-                dbus_connection_add_filter (new_connection,
-                                            connection_filter_function,
-                                            session,
-                                            NULL);
-
                 dbus_connection_set_exit_on_disconnect (new_connection, FALSE);
 
                 dbus_connection_set_unix_user_function (new_connection,
@@ -1402,6 +1363,7 @@ gdm_session_close (GdmSession *session)
                 }
 
                 gdm_session_worker_job_stop (session->priv->job);
+
         }
 
         session->priv->is_running = FALSE;
