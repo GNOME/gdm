@@ -84,8 +84,9 @@ G_DEFINE_TYPE (GdmUserChooserWidget, gdm_user_chooser_widget, GTK_TYPE_VBOX)
 
 enum {
         CHOOSER_LIST_PIXBUF_COLUMN = 0,
-        CHOOSER_LIST_CAPTION_COLUMN,
+        CHOOSER_LIST_NAME_COLUMN,
         CHOOSER_LIST_TOOLTIP_COLUMN,
+        CHOOSER_LIST_IS_LOGGED_IN_COLUMN,
         CHOOSER_LIST_ID_COLUMN
 };
 
@@ -368,7 +369,6 @@ add_user_to_model (const char           *name,
 {
         GtkTreeModel *model;
         GtkTreeIter   iter;
-        char         *caption;
         char         *tooltip;
 
         if (user->flags & USER_NO_DISPLAY
@@ -377,8 +377,6 @@ add_user_to_model (const char           *name,
                 g_debug ("Not adding user to list: %s", user->name);
         }
 
-        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>",
-                                   user->realname);
         tooltip = g_strdup_printf ("%s: %s",
                                    _("Short Name"),
                                    user->name);
@@ -389,11 +387,10 @@ add_user_to_model (const char           *name,
         gtk_list_store_set (GTK_LIST_STORE (model),
                             &iter,
                             CHOOSER_LIST_PIXBUF_COLUMN, user->pixbuf,
-                            CHOOSER_LIST_CAPTION_COLUMN, caption,
+                            CHOOSER_LIST_NAME_COLUMN, user->realname,
                             CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
                             CHOOSER_LIST_ID_COLUMN, name,
                             -1);
-        g_free (caption);
 }
 
 static GdkPixbuf *
@@ -490,8 +487,8 @@ compare_user  (GtkTreeModel *model,
         char *id_b;
         int   result;
 
-        gtk_tree_model_get (model, a, CHOOSER_LIST_CAPTION_COLUMN, &name_a, -1);
-        gtk_tree_model_get (model, b, CHOOSER_LIST_CAPTION_COLUMN, &name_b, -1);
+        gtk_tree_model_get (model, a, CHOOSER_LIST_NAME_COLUMN, &name_a, -1);
+        gtk_tree_model_get (model, b, CHOOSER_LIST_NAME_COLUMN, &name_b, -1);
         gtk_tree_model_get (model, a, CHOOSER_LIST_ID_COLUMN, &id_a, -1);
         gtk_tree_model_get (model, b, CHOOSER_LIST_ID_COLUMN, &id_b, -1);
 
@@ -512,14 +509,14 @@ on_user_added (GdmUserManager       *manager,
 {
         GtkTreeIter   iter;
         GdkPixbuf    *pixbuf;
-        char         *caption;
+        char         *name;
         char         *tooltip;
 
         g_debug ("User added: %s", gdm_user_get_user_name (user));
 
         pixbuf = get_pixbuf_for_user (widget, gdm_user_get_user_name (user));
 
-        caption = g_strdup_printf ("<span size=\"x-large\">%s</span>",
+        name = g_strdup_printf ("<span size=\"x-large\">%s</span>",
                                    gdm_user_get_real_name (user));
         tooltip = g_strdup_printf ("%s: %s",
                                    _("Short Name"),
@@ -528,11 +525,11 @@ on_user_added (GdmUserManager       *manager,
         gtk_list_store_append (GTK_LIST_STORE (widget->priv->real_model), &iter);
         gtk_list_store_set (GTK_LIST_STORE (widget->priv->real_model), &iter,
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
-                            CHOOSER_LIST_CAPTION_COLUMN, caption,
+                            CHOOSER_LIST_NAME_COLUMN, name,
                             CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
                             CHOOSER_LIST_ID_COLUMN, gdm_user_get_user_name (user),
                             -1);
-        g_free (caption);
+        g_free (name);
         g_free (tooltip);
 
         if (pixbuf != NULL) {
@@ -582,11 +579,46 @@ user_visible_cb (GtkTreeModel         *model,
 }
 
 static void
+name_cell_data_func (GtkTreeViewColumn    *tree_column,
+                     GtkCellRenderer      *cell,
+                     GtkTreeModel         *model,
+                     GtkTreeIter          *iter,
+                     GdmUserChooserWidget *widget)
+{
+        gboolean logged_in;
+        char    *name;
+        char    *markup;
+
+        name = NULL;
+        gtk_tree_model_get (model,
+                            iter,
+                            CHOOSER_LIST_IS_LOGGED_IN_COLUMN, &logged_in,
+                            CHOOSER_LIST_NAME_COLUMN, &name,
+                            -1);
+
+        if (logged_in) {
+                markup = g_strdup_printf ("<b>%s</b>\n<i><small>%s</small></i>",
+                                          name,
+                                          _("Currently logged in"));
+        } else {
+                markup = g_strdup_printf ("<b>%s</b>", name);
+        }
+
+        g_object_set (cell,
+                      "markup", markup,
+                      NULL);
+
+        g_free (markup);
+        g_free (name);
+}
+
+static void
 gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 {
         GtkWidget         *scrolled;
         GtkTreeViewColumn *column;
         GtkTreeSelection  *selection;
+        GtkCellRenderer   *renderer;
 
         widget->priv = GDM_USER_CHOOSER_WIDGET_GET_PRIVATE (widget);
 
@@ -625,10 +657,11 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                           G_CALLBACK (on_selection_changed),
                           widget);
 
-        widget->priv->real_model = (GtkTreeModel *)gtk_list_store_new (4,
+        widget->priv->real_model = (GtkTreeModel *)gtk_list_store_new (5,
                                                                        GDK_TYPE_PIXBUF,
                                                                        G_TYPE_STRING,
                                                                        G_TYPE_STRING,
+                                                                       G_TYPE_BOOLEAN,
                                                                        G_TYPE_STRING);
 
         widget->priv->filter_model = gtk_tree_model_filter_new (widget->priv->real_model, NULL);
@@ -641,12 +674,12 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
         widget->priv->sort_model = gtk_tree_model_sort_new_with_model (widget->priv->filter_model);
 
         gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (widget->priv->sort_model),
-                                         CHOOSER_LIST_CAPTION_COLUMN,
+                                         CHOOSER_LIST_NAME_COLUMN,
                                          compare_user,
                                          NULL, NULL);
 
         gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (widget->priv->sort_model),
-                                              CHOOSER_LIST_CAPTION_COLUMN,
+                                              CHOOSER_LIST_NAME_COLUMN,
                                               GTK_SORT_ASCENDING);
 
         gtk_tree_view_set_model (GTK_TREE_VIEW (widget->priv->treeview), widget->priv->sort_model);
@@ -658,11 +691,13 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                                                            NULL);
         gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
 
-        column = gtk_tree_view_column_new_with_attributes ("Caption",
-                                                           gtk_cell_renderer_text_new (),
-                                                           "markup", CHOOSER_LIST_CAPTION_COLUMN,
-                                                           NULL);
-        gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
+        renderer = gtk_cell_renderer_text_new ();
+        gtk_tree_view_column_pack_start (column, renderer, FALSE);
+        gtk_tree_view_column_set_cell_data_func (column,
+                                                 renderer,
+                                                 (GtkTreeCellDataFunc) name_cell_data_func,
+                                                 widget,
+                                                 NULL);
 
         gtk_tree_view_set_tooltip_column (GTK_TREE_VIEW (widget->priv->treeview), CHOOSER_LIST_TOOLTIP_COLUMN);
 
