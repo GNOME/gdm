@@ -176,6 +176,8 @@ switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
         const char *default_name;
+        GtkWidget  *user_list;
+        GtkWidget  *box;
 
         /* FIXME: do animation */
 
@@ -204,6 +206,14 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 g_assert_not_reached ();
         }
 
+        box = glade_xml_get_widget (login_window->priv->xml, "selection-box");
+        user_list = glade_xml_get_widget (login_window->priv->xml, "userlist-box");
+        gtk_box_set_child_packing (GTK_BOX (box),
+                                   user_list,
+                                   number == MODE_SELECTION,
+                                   number == MODE_SELECTION,
+                                   10,
+                                   GTK_PACK_START);
         if (default_name != NULL) {
                 GtkWidget *widget;
 
