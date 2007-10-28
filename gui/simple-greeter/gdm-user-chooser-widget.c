@@ -673,6 +673,12 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_pack_start (column, renderer, FALSE);
         gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
+
+        g_object_set (renderer,
+                      "width", 128,
+                      "yalign", 0.5,
+                      "xalign", 1.0,
+                      NULL);
         gtk_tree_view_column_set_attributes (column,
                                              renderer,
                                              "pixbuf", CHOOSER_LIST_PIXBUF_COLUMN,

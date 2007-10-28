@@ -207,6 +207,10 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 g_assert_not_reached ();
         }
 
+        box = glade_xml_get_widget (login_window->priv->xml, "buttonbox");
+        gtk_button_box_set_layout (GTK_BUTTON_BOX (box),
+                                   (number == MODE_SELECTION) ? GTK_BUTTONBOX_SPREAD : GTK_BUTTONBOX_END );
+
         box = glade_xml_get_widget (login_window->priv->xml, "selection-box");
         user_list = glade_xml_get_widget (login_window->priv->xml, "userlist-box");
         gtk_box_set_child_packing (GTK_BOX (box),
@@ -922,7 +926,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         load_theme (login_window);
 
         gtk_window_set_keep_above (GTK_WINDOW (login_window), TRUE);
-        gtk_window_set_opacity (GTK_WINDOW (login_window), 0.75);
+        gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);
         gtk_window_set_position (GTK_WINDOW (login_window), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_deletable (GTK_WINDOW (login_window), FALSE);
         gtk_window_set_decorated (GTK_WINDOW (login_window), FALSE);
