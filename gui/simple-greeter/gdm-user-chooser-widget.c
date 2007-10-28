@@ -517,9 +517,41 @@ on_user_removed (GdmUserManager       *manager,
                  GdmUser              *user,
                  GdmUserChooserWidget *widget)
 {
+        GtkTreeIter iter;
+        gboolean    found;
+        const char *user_name;
+
         g_debug ("User removed: %s", gdm_user_get_user_name (user));
 
-        /* FIXME: */
+        found = FALSE;
+
+        user_name = gdm_user_get_user_name (user);
+
+        if (gtk_tree_model_get_iter_first (widget->priv->real_model, &iter)) {
+
+                do {
+                        char *id;
+
+                        id = NULL;
+                        gtk_tree_model_get (widget->priv->real_model,
+                                            &iter,
+                                            CHOOSER_LIST_ID_COLUMN, &id,
+                                            -1);
+                        if (id == NULL) {
+                                continue;
+                        }
+
+                        found = (strcmp (id, user_name) == 0);
+
+                        if (found) {
+                                break;
+                        }
+
+                } while (gtk_tree_model_iter_next (widget->priv->real_model, &iter));
+        }
+        if (found) {
+                gtk_list_store_remove (GTK_LIST_STORE (widget->priv->real_model), &iter);
+        }
 }
 
 static gboolean

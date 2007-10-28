@@ -39,10 +39,10 @@ typedef struct _GdmUser GdmUser;
 GType                 gdm_user_get_type           (void) G_GNUC_CONST;
 
 uid_t                 gdm_user_get_uid            (GdmUser   *user);
-G_CONST_RETURN gchar *gdm_user_get_user_name      (GdmUser   *user);
-G_CONST_RETURN gchar *gdm_user_get_real_name      (GdmUser   *user);
-G_CONST_RETURN gchar *gdm_user_get_home_directory (GdmUser   *user);
-G_CONST_RETURN gchar *gdm_user_get_shell          (GdmUser   *user);
+G_CONST_RETURN char  *gdm_user_get_user_name      (GdmUser   *user);
+G_CONST_RETURN char  *gdm_user_get_real_name      (GdmUser   *user);
+G_CONST_RETURN char  *gdm_user_get_home_directory (GdmUser   *user);
+G_CONST_RETURN char  *gdm_user_get_shell          (GdmUser   *user);
 
 GSList               *gdm_user_get_sessions       (GdmUser   *user);
 guint                 gdm_user_get_n_sessions     (GdmUser   *user);
